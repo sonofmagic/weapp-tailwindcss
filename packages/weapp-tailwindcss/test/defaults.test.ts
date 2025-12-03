@@ -26,6 +26,9 @@ describe('defaults getDefaultOptions', () => {
     expect(matcher('main.css', 'taro')).toBe(false)
 
     expect(matcher('app.css', 'mpx')).toBe(true)
+    expect(matcher('styles/app364cd4a4.wxss', 'mpx')).toBe(true)
+    expect(matcher('styles/sub/a.wxss', 'mpx')).toBe(true)
+    expect(matcher('wx/styles/app364cd4a4.wxss', 'mpx')).toBe(true)
     expect(matcher('main.css', 'mpx')).toBe(false)
 
     expect(matcher('bundle.css', 'rax')).toBe(true)

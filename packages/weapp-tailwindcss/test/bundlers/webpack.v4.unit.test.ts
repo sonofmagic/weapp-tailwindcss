@@ -5,6 +5,7 @@ import { createCache } from '@/cache'
 
 interface LoaderModule {
   loaders: Array<{ loader: string, options?: Record<string, any> }>
+  resource?: string
 }
 
 interface TestContext {
@@ -328,6 +329,59 @@ describe('bundlers/webpack UnifiedWebpackPluginV4', () => {
     expect(classSetIndex).toBeLessThan(anchorIndex)
   })
 
+  it('inserts rewrite loader after style compiler for mpx modules', () => {
+    currentContext = createContext({ appType: 'mpx' })
+    currentContext.twPatcher.majorVersion = 4
+    getCompilerContextMock.mockImplementation(() => currentContext)
+    const { compiler, getLoaderHandler } = createCompilerWithLoaderTracking()
+    const plugin = new UnifiedWebpackPluginV4()
+    plugin.apply(compiler as any)
+
+    const handler = getLoaderHandler()
+    const module: LoaderModule = {
+      loaders: [
+        { loader: '/abs/node_modules/@mpxjs/webpack-plugin/lib/style-compiler/strip-conditional-loader.js??ruleSet[0]' },
+        { loader: '/abs/node_modules/@mpxjs/webpack-plugin/lib/style-compiler/index.js??ruleSet[0]' },
+      ],
+    }
+
+    handler?.({}, module)
+
+    const styleIndex = module.loaders.findIndex(entry =>
+      entry.loader.includes('@mpxjs/webpack-plugin/lib/style-compiler/index'),
+    )
+    const rewriteIndex = module.loaders.findIndex(entry =>
+      entry.loader === currentContext.runtimeCssImportRewriteLoaderPath,
+    )
+    expect(styleIndex).toBeGreaterThanOrEqual(0)
+    expect(rewriteIndex).toBeGreaterThan(styleIndex)
+  })
+
+  it('falls back to strip-conditional loader when style compiler anchor is missing', () => {
+    currentContext = createContext({ appType: 'mpx' })
+    currentContext.twPatcher.majorVersion = 4
+    getCompilerContextMock.mockImplementation(() => currentContext)
+    const { compiler, getLoaderHandler } = createCompilerWithLoaderTracking()
+    const plugin = new UnifiedWebpackPluginV4()
+    plugin.apply(compiler as any)
+
+    const handler = getLoaderHandler()
+    const module: LoaderModule = {
+      loaders: [{ loader: '/abs/node_modules/@mpxjs/webpack-plugin/lib/style-compiler/strip-conditional-loader.js??ruleSet[0]' }],
+    }
+
+    handler?.({}, module)
+
+    const stripIndex = module.loaders.findIndex(entry =>
+      entry.loader.includes('@mpxjs/webpack-plugin/lib/style-compiler/strip-conditional-loader'),
+    )
+    const rewriteIndex = module.loaders.findIndex(entry =>
+      entry.loader === currentContext.runtimeCssImportRewriteLoaderPath,
+    )
+    expect(stripIndex).toBeGreaterThanOrEqual(0)
+    expect(rewriteIndex).toBeGreaterThan(stripIndex)
+  })
+
   it('falls back to css matcher when anchor is missing', () => {
     currentContext = createContext({ appType: 'mpx' })
     currentContext.twPatcher.majorVersion = 4
@@ -351,6 +405,68 @@ describe('bundlers/webpack UnifiedWebpackPluginV4', () => {
     const lastIndex = module.loaders.length - 1
     expect(module.loaders[lastIndex]).toBe(rewriteLoaderEntry)
     expect(module.loaders[0]).toBe(classSetLoaderEntry)
+  })
+
+  it('treats css resources with query parameters as css modules', () => {
+    currentContext = createContext()
+    currentContext.twPatcher.majorVersion = 4
+    getCompilerContextMock.mockImplementation(() => currentContext)
+    const { compiler, getLoaderHandler } = createCompilerWithLoaderTracking()
+    const plugin = new UnifiedWebpackPluginV4()
+    plugin.apply(compiler as any)
+
+    const handler = getLoaderHandler()
+    const module: LoaderModule = {
+      loaders: [],
+      resource: '/abs/app.css?type=styles',
+    }
+
+    handler?.({}, module)
+
+    const rewriteLoaderEntry = module.loaders.find(entry => entry.loader.includes(currentContext.runtimeCssImportRewriteLoaderPath))
+    const classSetLoaderEntry = module.loaders.find(entry => entry.loader.includes(currentContext.runtimeLoaderPath))
+    expect(rewriteLoaderEntry).toBeDefined()
+    expect(classSetLoaderEntry).toBeDefined()
+  })
+
+  it('detects mpx style blocks via resource query when anchors missing', () => {
+    currentContext = createContext({ appType: 'mpx' })
+    currentContext.twPatcher.majorVersion = 4
+    getCompilerContextMock.mockImplementation(() => currentContext)
+    const { compiler, getLoaderHandler } = createCompilerWithLoaderTracking()
+    const plugin = new UnifiedWebpackPluginV4()
+    plugin.apply(compiler as any)
+
+    const handler = getLoaderHandler()
+    const module: LoaderModule = {
+      loaders: [],
+      resource: '/abs/pages/index.mpx?type=styles&lang=css',
+    }
+
+    handler?.({}, module)
+    const classSetLoaderEntry = module.loaders.find(entry => entry.loader.includes(currentContext.runtimeLoaderPath))
+    expect(classSetLoaderEntry).toBeDefined()
+  })
+
+  it('skips inserting duplicate rewrite loaders when already present', () => {
+    currentContext = createContext()
+    currentContext.twPatcher.majorVersion = 4
+    getCompilerContextMock.mockImplementation(() => currentContext)
+    const { compiler, getLoaderHandler } = createCompilerWithLoaderTracking()
+    const plugin = new UnifiedWebpackPluginV4()
+    plugin.apply(compiler as any)
+
+    const handler = getLoaderHandler()
+    const module: LoaderModule = {
+      loaders: [
+        { loader: `${currentContext.runtimeCssImportRewriteLoaderPath}??ruleSet[0]` },
+      ],
+      resource: '/abs/app.css',
+    }
+
+    handler?.({}, module)
+    const rewriteLoaders = module.loaders.filter(entry => entry.loader.includes(currentContext.runtimeCssImportRewriteLoaderPath))
+    expect(rewriteLoaders).toHaveLength(1)
   })
 
   it('does not attach runtime loader when postcss loader is missing', () => {

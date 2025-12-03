@@ -17,7 +17,7 @@ import { resolveOutputSpecifier, toAbsoluteOutputPath } from '../../shared/modul
 import { pushConcurrentTaskFactories } from '../../shared/run-tasks'
 import { applyTailwindcssCssImportRewrite } from '../shared/css-imports'
 import { createLoaderAnchorFinders } from '../shared/loader-anchors'
-import { getCacheKey } from './shared'
+import { getCacheKey, hasLoaderEntry, isCssLikeModuleResource } from './shared'
 
 const debug = createDebug()
 export const weappTailwindcssPackageDir = resolvePackageDir('weapp-tailwindcss')
@@ -157,7 +157,7 @@ export class UnifiedWebpackPluginV5 implements IBaseWebpackPlugin {
         const loaderEntries = module.loaders || []
         const rewriteAnchorIdx = findRewriteAnchor(loaderEntries)
         const classSetAnchorIdx = findClassSetAnchor(loaderEntries)
-        const isCssModule = typeof module.resource === 'string' && this.options.cssMatcher(module.resource)
+        const isCssModule = isCssLikeModuleResource(module.resource, this.options.cssMatcher, this.appType)
         if (process.env.WEAPP_TW_LOADER_DEBUG && isCssModule) {
           debug('loader hook css module: %s loaders=%o anchors=%o', module.resource, loaderEntries.map((x: any) => x.loader), { rewriteAnchorIdx, classSetAnchorIdx })
         }
@@ -178,7 +178,12 @@ export class UnifiedWebpackPluginV5 implements IBaseWebpackPlugin {
             loaderEntries.unshift(entry)
           }
         }
-        if (cssImportRewriteLoaderOptions && runtimeCssImportRewriteLoaderExists) {
+        if (
+          cssImportRewriteLoaderOptions
+          && runtimeCssImportRewriteLoaderExists
+          && runtimeCssImportRewriteLoader
+          && !hasLoaderEntry(loaderEntries, runtimeCssImportRewriteLoader)
+        ) {
           const rewriteLoaderEntry = createCssImportRewriteLoaderEntry()
           if (rewriteLoaderEntry) {
             // 让 rewrite 处于锚点 loader 之后（数组索引更大），这样执行时会排在锚点 loader 之前。
@@ -190,7 +195,7 @@ export class UnifiedWebpackPluginV5 implements IBaseWebpackPlugin {
             }
           }
         }
-        if (runtimeClassSetLoaderExists) {
+        if (runtimeClassSetLoaderExists && !hasLoaderEntry(loaderEntries, runtimeClassSetLoader)) {
           const classSetLoaderEntry = createRuntimeClassSetLoaderEntry()
           const anchorIndex = findClassSetAnchor(loaderEntries)
           if (anchorIndex === -1) {

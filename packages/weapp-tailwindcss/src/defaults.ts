@@ -6,10 +6,22 @@ const CSS_FILE_PATTERN = /.+\.(?:wx|ac|jx|tt|q|c|ty)ss$/
 const HTML_FILE_PATTERN = /.+\.(?:(?:wx|ax|jx|ks|tt|q|ty|xhs)ml|swan)$/
 const JS_FILE_PATTERN = /.+\.[cm]?js?$/
 
+function normalizePath(p: string) {
+  return p.replace(/\\/g, '/')
+}
+
+const MPX_STYLES_DIR_PATTERN = /(?:^|\/)styles\/.*\.(?:wx|ac|jx|tt|q|c|ty)ss$/i
+
 const MAIN_CSS_CHUNK_MATCHERS: Partial<Record<AppType, (file: string) => boolean>> = {
   'uni-app': file => file.startsWith('common/main') || file.startsWith('app'),
   'uni-app-vite': file => file.startsWith('app') || file.startsWith('common/main'),
-  'mpx': file => file.startsWith('app'),
+  'mpx': (file) => {
+    const normalized = normalizePath(file)
+    if (normalized.startsWith('app')) {
+      return true
+    }
+    return MPX_STYLES_DIR_PATTERN.test(normalized)
+  },
   'taro': file => file.startsWith('app'),
   'remax': file => file.startsWith('app'),
   'rax': file => file.startsWith('bundle'),

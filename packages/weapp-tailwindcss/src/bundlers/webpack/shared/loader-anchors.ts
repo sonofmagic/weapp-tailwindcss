@@ -3,12 +3,25 @@ import { isMpx } from '@/shared/mpx'
 
 export interface LoaderEntry { loader?: string }
 
-function createFinder(candidates: string[]) {
+const MPX_STRIP_CONDITIONAL_LOADER = '@mpxjs/webpack-plugin/lib/style-compiler/strip-conditional-loader'
+const MPX_STYLE_COMPILER_LOADER = '@mpxjs/webpack-plugin/lib/style-compiler/index'
+const MPX_REWRITE_PRECEDENCE_LOADERS = [
+  MPX_STYLE_COMPILER_LOADER,
+  MPX_STRIP_CONDITIONAL_LOADER,
+]
+
+function createFinder(targets: string[]) {
+  return (entries: LoaderEntry[]) => entries.findIndex(entry =>
+    targets.some(target => entry?.loader?.includes?.(target)),
+  )
+}
+
+function createPrioritizedFinder(targets: string[]) {
   return (entries: LoaderEntry[]) => {
-    for (const candidate of candidates) {
-      const index = entries.findIndex(entry => entry?.loader?.includes?.(candidate))
-      if (index !== -1) {
-        return index
+    for (const target of targets) {
+      const idx = entries.findIndex(entry => entry?.loader?.includes?.(target))
+      if (idx !== -1) {
+        return idx
       }
     }
     return -1
@@ -17,25 +30,17 @@ function createFinder(candidates: string[]) {
 
 export function createLoaderAnchorFinders(appType?: AppType) {
   if (isMpx(appType)) {
+    // Rewrite should run before style-compiler (and strip-conditional as fallback);
+    // class-set should still run after style-compiler.
     return {
-      // 重写需要尽量提前到 strip-conditional-loader 之前。
-      findRewriteAnchor: createFinder([
-        '@mpxjs/webpack-plugin/lib/style-compiler/strip-conditional-loader',
-        '@mpxjs/webpack-plugin/lib/style-compiler/index',
-        'postcss-loader',
-      ]),
-      // class set 需等 style-compiler/index 跑完再做。
-      findClassSetAnchor: createFinder([
-        '@mpxjs/webpack-plugin/lib/style-compiler/index',
-        '@mpxjs/webpack-plugin/lib/style-compiler/strip-conditional-loader',
-        'postcss-loader',
-      ]),
+      findRewriteAnchor: createPrioritizedFinder(MPX_REWRITE_PRECEDENCE_LOADERS),
+      findClassSetAnchor: createFinder([MPX_STYLE_COMPILER_LOADER]),
     }
   }
 
-  const find = createFinder(['postcss-loader'])
+  const fallbackFinder = createFinder(['postcss-loader'])
   return {
-    findRewriteAnchor: find,
-    findClassSetAnchor: find,
+    findRewriteAnchor: fallbackFinder,
+    findClassSetAnchor: fallbackFinder,
   }
 }

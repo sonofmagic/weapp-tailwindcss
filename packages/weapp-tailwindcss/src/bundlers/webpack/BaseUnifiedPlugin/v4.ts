@@ -18,7 +18,7 @@ import { resolveOutputSpecifier, toAbsoluteOutputPath } from '../../shared/modul
 import { pushConcurrentTaskFactories } from '../../shared/run-tasks'
 import { applyTailwindcssCssImportRewrite } from '../shared/css-imports'
 import { createLoaderAnchorFinders } from '../shared/loader-anchors'
-import { getCacheKey } from './shared'
+import { getCacheKey, hasLoaderEntry, isCssLikeModuleResource } from './shared'
 
 const debug = createDebug()
 export const weappTailwindcssPackageDir = resolvePackageDir('weapp-tailwindcss')
@@ -157,7 +157,7 @@ export class UnifiedWebpackPluginV4 implements IBaseWebpackPlugin {
         const rewriteAnchorIdx = findRewriteAnchor(loaderEntries)
         const classSetAnchorIdx = findClassSetAnchor(loaderEntries)
 
-        const isCssModule = typeof module.resource === 'string' && this.options.cssMatcher(module.resource)
+        const isCssModule = isCssLikeModuleResource(module.resource, this.options.cssMatcher, this.appType)
         if (process.env.WEAPP_TW_LOADER_DEBUG && isCssModule) {
           debug('loader hook css module: %s loaders=%o anchors=%o', module.resource, loaderEntries.map((x: any) => x.loader), { rewriteAnchorIdx, classSetAnchorIdx })
         }
@@ -181,7 +181,13 @@ export class UnifiedWebpackPluginV4 implements IBaseWebpackPlugin {
           }
         }
 
-        if (runtimeLoaderRewriteOptions && runtimeCssImportRewriteLoaderExists && cssImportRewriteLoaderOptions) {
+        if (
+          runtimeLoaderRewriteOptions
+          && runtimeCssImportRewriteLoaderExists
+          && cssImportRewriteLoaderOptions
+          && runtimeCssImportRewriteLoader
+          && !hasLoaderEntry(loaderEntries, runtimeCssImportRewriteLoader)
+        ) {
           const rewriteEntry = createCssImportRewriteLoaderEntry()
           if (rewriteEntry) {
             // 为了让 rewrite 在执行顺序上先于锚点 loader，需要把它插到
@@ -194,7 +200,7 @@ export class UnifiedWebpackPluginV4 implements IBaseWebpackPlugin {
             }
           }
         }
-        if (runtimeClassSetLoaderExists) {
+        if (runtimeClassSetLoaderExists && !hasLoaderEntry(loaderEntries, runtimeClassSetLoader)) {
           const anchorIndex = findClassSetAnchor(loaderEntries)
           if (anchorIndex === -1) {
             anchorlessInsert(createRuntimeClassSetLoaderEntry(), 'before')

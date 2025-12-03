@@ -9,11 +9,17 @@ import { createGetCase, createPutCase, cssCasePath, rootPath } from '../util'
 const getCase = createGetCase(cssCasePath)
 const putCase = createPutCase(cssCasePath)
 
-function getCtx() {
+type CompilerOptions = Parameters<typeof getCompilerContext>[0]
+
+function getCtx(options?: CompilerOptions) {
+  const postcssOptions = options?.postcssOptions ?? {}
   return getCompilerContext({
+    ...options,
     postcssOptions: {
+      ...postcssOptions,
       plugins: [
         postcssRemoveComment,
+        ...(postcssOptions.plugins ?? []),
       ],
     },
   })
@@ -67,6 +73,14 @@ describe('tailwindcss v4', () => {
     await putCase('v4-weapp-tailwindcss-default-with-layer-output.before.css', hahaCss)
     const { css } = await styleHandler(hahaCss)
     await putCase('v4-weapp-tailwindcss-default-with-layer-output.css', css)
+    expect(css).toMatchSnapshot()
+  })
+
+  it('mpx handles tailwindcss v4.1.17 css bundle', async () => {
+    const rawCss = await getCase('mpx-tailwindcss-v4.1.17.css')
+    const { styleHandler } = getCtx({ appType: 'mpx' })
+    const { css } = await styleHandler(rawCss)
+    await putCase('mpx-tailwindcss-v4.1.17-output.css', css)
     expect(css).toMatchSnapshot()
   })
 })
