@@ -1,3 +1,4 @@
+import type { AppType } from '@/types'
 import path from 'node:path'
 
 const tailwindcssImportRE = /^tailwindcss(?:\/.*)?$/
@@ -5,6 +6,7 @@ const tailwindcssCssImportStatementRE = /(@import\s+(?:url\(\s*)?)(["'])(tailwin
 
 export interface ResolveTailwindcssImportOptions {
   join?: (base: string, subpath: string) => string
+  appType?: AppType
 }
 
 function normalizeTailwindcssSpecifier(specifier: string) {
@@ -29,6 +31,9 @@ export function resolveTailwindcssImport(
   const normalized = normalizeTailwindcssSpecifier(specifier)
   if (!tailwindcssImportRE.test(normalized)) {
     return null
+  }
+  if (options?.appType === 'mpx' && normalized === 'tailwindcss') {
+    return 'weapp-tailwindcss/index.css'
   }
   const join = options?.join ?? path.join
   const subpath = getTailwindcssSubpath(normalized)

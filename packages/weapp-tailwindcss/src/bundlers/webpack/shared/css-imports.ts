@@ -1,3 +1,4 @@
+import type { AppType } from '@/types'
 import { pluginName } from '@/constants'
 import { resolveTailwindcssImport } from '../../shared/css-imports'
 
@@ -18,7 +19,11 @@ function stripResourceQuery(file: string) {
   return idx === -1 ? file : file.slice(0, idx)
 }
 
-function rewriteTailwindcssRequestForCss(data: BeforeResolveData | undefined, pkgDir: string) {
+function rewriteTailwindcssRequestForCss(
+  data: BeforeResolveData | undefined,
+  pkgDir: string,
+  appType?: AppType,
+) {
   if (!data) {
     return
   }
@@ -39,7 +44,7 @@ function rewriteTailwindcssRequestForCss(data: BeforeResolveData | undefined, pk
     return
   }
 
-  const resolved = resolveTailwindcssImport(request, pkgDir)
+  const resolved = resolveTailwindcssImport(request, pkgDir, { appType })
   if (!resolved) {
     return
   }
@@ -48,7 +53,7 @@ function rewriteTailwindcssRequestForCss(data: BeforeResolveData | undefined, pk
 
 export function applyTailwindcssCssImportRewrite(
   compiler: any,
-  options: { pkgDir: string, enabled: boolean },
+  options: { pkgDir: string, enabled: boolean, appType?: AppType },
 ) {
   if (!options.enabled) {
     return
@@ -56,7 +61,7 @@ export function applyTailwindcssCssImportRewrite(
 
   compiler.hooks.normalModuleFactory.tap(pluginName, (factory: any) => {
     factory.hooks.beforeResolve.tap(pluginName, (data: BeforeResolveData | undefined) => {
-      rewriteTailwindcssRequestForCss(data, options.pkgDir)
+      rewriteTailwindcssRequestForCss(data, options.pkgDir, options.appType)
     })
   })
 }

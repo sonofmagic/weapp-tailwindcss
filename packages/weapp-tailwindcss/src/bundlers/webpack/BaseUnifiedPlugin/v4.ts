@@ -16,7 +16,8 @@ import { processCachedTask } from '../../shared/cache'
 import { resolveOutputSpecifier, toAbsoluteOutputPath } from '../../shared/module-graph'
 import { pushConcurrentTaskFactories } from '../../shared/run-tasks'
 import { applyTailwindcssCssImportRewrite } from '../shared/css-imports'
-import { createLoaderAnchorFinder } from '../shared/loader-anchors'
+import { createLoaderAnchorFinders } from '../shared/loader-anchors'
+import { installTailwindcssCssRedirect } from '../shared/tailwindcss-css-redirect'
 import { getCacheKey } from './shared'
 
 const debug = createDebug()
@@ -38,6 +39,8 @@ export class UnifiedWebpackPluginV4 implements IBaseWebpackPlugin {
   }
 
   apply(compiler: Compiler) {
+    // 保证 options 对象存在，便于后续写入 resolve/module 等。
+    compiler.options = compiler.options || {} as any
     const {
       mainCssChunkMatcher,
       disabled,
@@ -64,7 +67,11 @@ export class UnifiedWebpackPluginV4 implements IBaseWebpackPlugin {
       applyTailwindcssCssImportRewrite(compiler, {
         pkgDir: weappTailwindcssPackageDir,
         enabled: true,
+        appType: this.appType,
       })
+      if (this.appType === 'mpx') {
+        installTailwindcssCssRedirect(weappTailwindcssPackageDir)
+      }
     }
     const patchRecorderState = setupPatchRecorder(initialTwPatcher, this.options.tailwindcssBasedir, {
       source: 'runtime',
@@ -87,7 +94,6 @@ export class UnifiedWebpackPluginV4 implements IBaseWebpackPlugin {
       await collectRuntimeClassSet(runtimeState.twPatcher, { force: true, skipRefresh: true })
     }
 
-    onLoad()
     const runtimeClassSetLoader = runtimeLoaderPath
       ?? path.resolve(__dirname, './weapp-tw-runtime-classset-loader.js')
     const runtimeCssImportRewriteLoader = shouldRewriteCssImports
@@ -101,6 +107,7 @@ export class UnifiedWebpackPluginV4 implements IBaseWebpackPlugin {
     const runtimeLoaderRewriteOptions = shouldRewriteCssImports
       ? {
           pkgDir: weappTailwindcssPackageDir,
+          appType: this.appType,
         }
       : undefined
     const classSetLoaderOptions = {
@@ -111,7 +118,34 @@ export class UnifiedWebpackPluginV4 implements IBaseWebpackPlugin {
           rewriteCssImports: runtimeLoaderRewriteOptions,
         }
       : undefined
-    const findLoaderAnchorIndex = createLoaderAnchorFinder(this.appType)
+    const { findRewriteAnchor, findClassSetAnchor } = createLoaderAnchorFinders(this.appType)
+    const tailwindcssCssEntry = path.join(weappTailwindcssPackageDir, 'index.css')
+
+    onLoad()
+    if (shouldRewriteCssImports && this.appType === 'mpx') {
+      compiler.options.resolve = compiler.options.resolve || {}
+      compiler.options.resolve.alias = compiler.options.resolve.alias || {}
+      compiler.options.resolve.alias.tailwindcss = tailwindcssCssEntry
+      compiler.options.resolve.alias.tailwindcss$ = tailwindcssCssEntry
+    }
+    if (runtimeCssImportRewriteLoader && shouldRewriteCssImports && cssImportRewriteLoaderOptions && this.appType === 'mpx') {
+      const moduleOptions = (compiler.options.module ??= { rules: [] as any })
+      moduleOptions.rules = moduleOptions.rules || []
+      const createRule = (match: { test?: RegExp, resourceQuery?: RegExp }) => ({
+        ...match,
+        enforce: 'pre' as const,
+        use: [
+          {
+            loader: runtimeCssImportRewriteLoader,
+            options: cssImportRewriteLoaderOptions,
+          },
+        ],
+      })
+      moduleOptions.rules.unshift(
+        createRule({ resourceQuery: /type=styles/ }),
+        createRule({ test: /\.css$/i }),
+      )
+    }
     const createRuntimeClassSetLoaderEntry = () => ({
       loader: runtimeClassSetLoader,
       options: classSetLoaderOptions,
@@ -131,17 +165,53 @@ export class UnifiedWebpackPluginV4 implements IBaseWebpackPlugin {
     }
 
     compiler.hooks.compilation.tap(pluginName, (compilation) => {
-      compilation.hooks.normalModuleLoader.tap(pluginName, (_loaderContext, module) => {
+      compilation.hooks.normalModuleLoader.tap(pluginName, (_loaderContext, module: any) => {
         const hasRuntimeLoader = runtimeClassSetLoaderExists || runtimeCssImportRewriteLoaderExists
         if (!hasRuntimeLoader) {
           return
         }
-        // @ts-ignore
-        const loaderEntries = module.loaders || []
-        const idx = findLoaderAnchorIndex(loaderEntries)
+        if (shouldRewriteCssImports && this.appType === 'mpx' && typeof _loaderContext.resolve === 'function') {
+          const originalResolve = _loaderContext.resolve
+          if (!(originalResolve as any).__weappTwPatched) {
+            const wrappedResolve = function (this: any, context: any, request: string, callback: any) {
+              if (request === 'tailwindcss' || request === 'tailwindcss$') {
+                return callback(null, tailwindcssCssEntry)
+              }
+              if (request?.startsWith('tailwindcss/')) {
+                return callback(null, path.join(weappTailwindcssPackageDir, request.slice('tailwindcss/'.length)))
+              }
+              return originalResolve.call(this, context, request, callback)
+            }
+            ;(wrappedResolve as any).__weappTwPatched = true
+            _loaderContext.resolve = wrappedResolve as any
+          }
+        }
+        const loaderEntries: Array<{ loader?: string }> = module.loaders || []
+        const rewriteAnchorIdx = findRewriteAnchor(loaderEntries)
+        const classSetAnchorIdx = findClassSetAnchor(loaderEntries)
 
-        if (idx === -1) {
+        const isCssModule = typeof module.resource === 'string' && this.options.cssMatcher(module.resource)
+        if (process.env.WEAPP_TW_LOADER_DEBUG && isCssModule) {
+          debug('loader hook css module: %s loaders=%o anchors=%o', module.resource, loaderEntries.map((x: any) => x.loader), { rewriteAnchorIdx, classSetAnchorIdx })
+        }
+        if (process.env.WEAPP_TW_LOADER_DEBUG && typeof module.resource === 'string' && module.resource.includes('app.css')) {
+          debug('app.css module loaders=%o anchors=%o', loaderEntries.map((x: any) => x.loader), { rewriteAnchorIdx, classSetAnchorIdx })
+        }
+        else if (process.env.WEAPP_TW_LOADER_DEBUG && typeof module.resource === 'string' && module.resource.endsWith('.css')) {
+          debug('css module seen: %s loaders=%o anchors=%o', module.resource, loaderEntries.map((x: any) => x.loader), { rewriteAnchorIdx, classSetAnchorIdx })
+        }
+
+        if (rewriteAnchorIdx === -1 && classSetAnchorIdx === -1 && !isCssModule) {
           return
+        }
+
+        const anchorlessInsert = (entry: any, position: 'before' | 'after') => {
+          if (position === 'after') {
+            loaderEntries.push(entry)
+          }
+          else {
+            loaderEntries.unshift(entry)
+          }
         }
 
         if (runtimeLoaderRewriteOptions && runtimeCssImportRewriteLoaderExists && cssImportRewriteLoaderOptions) {
@@ -149,16 +219,24 @@ export class UnifiedWebpackPluginV4 implements IBaseWebpackPlugin {
           if (rewriteEntry) {
             // 为了让 rewrite 在执行顺序上先于锚点 loader，需要把它插到
             // 锚点 loader 的后方（数组索引更大，执行时更靠前）。
-            // @ts-ignore
-            loaderEntries.splice(idx + 1, 0, rewriteEntry)
+            if (rewriteAnchorIdx === -1) {
+              anchorlessInsert(rewriteEntry, 'after')
+            }
+            else {
+              loaderEntries.splice(rewriteAnchorIdx + 1, 0, rewriteEntry)
+            }
           }
         }
         if (runtimeClassSetLoaderExists) {
-          const anchorIndex = findLoaderAnchorIndex(loaderEntries)
-          const insertIndex = anchorIndex === -1 ? idx : anchorIndex
-          // 将 class-set 插在锚点 loader 的当前位置（数组索引更小），这样在实际执行顺序里它会排在锚点 loader 之后。
-          // @ts-ignore
-          loaderEntries.splice(insertIndex, 0, createRuntimeClassSetLoaderEntry())
+          const anchorIndex = findClassSetAnchor(loaderEntries)
+          if (anchorIndex === -1) {
+            anchorlessInsert(createRuntimeClassSetLoaderEntry(), 'before')
+          }
+          else {
+            const insertIndex = anchorIndex === -1 ? rewriteAnchorIdx : anchorIndex
+            // 将 class-set 插在锚点 loader 的当前位置（数组索引更小），这样在实际执行顺序里它会排在锚点 loader 之后。
+            loaderEntries.splice(insertIndex, 0, createRuntimeClassSetLoaderEntry())
+          }
         }
       })
     })

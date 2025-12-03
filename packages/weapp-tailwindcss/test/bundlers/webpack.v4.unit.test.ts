@@ -328,6 +328,31 @@ describe('bundlers/webpack UnifiedWebpackPluginV4', () => {
     expect(classSetIndex).toBeLessThan(anchorIndex)
   })
 
+  it('falls back to css matcher when anchor is missing', () => {
+    currentContext = createContext({ appType: 'mpx' })
+    currentContext.twPatcher.majorVersion = 4
+    getCompilerContextMock.mockImplementation(() => currentContext)
+    const { compiler, getLoaderHandler } = createCompilerWithLoaderTracking()
+    const plugin = new UnifiedWebpackPluginV4()
+    plugin.apply(compiler as any)
+
+    const handler = getLoaderHandler()
+    const module: LoaderModule = {
+      loaders: [],
+      resource: '/abs/src/app.css',
+    } as any
+
+    handler?.({}, module)
+
+    const rewriteLoaderEntry = module.loaders.find(entry => entry.loader === currentContext.runtimeCssImportRewriteLoaderPath)
+    const classSetLoaderEntry = module.loaders.find(entry => entry.loader === currentContext.runtimeLoaderPath)
+    expect(rewriteLoaderEntry).toBeDefined()
+    expect(classSetLoaderEntry).toBeDefined()
+    const lastIndex = module.loaders.length - 1
+    expect(module.loaders[lastIndex]).toBe(rewriteLoaderEntry)
+    expect(module.loaders[0]).toBe(classSetLoaderEntry)
+  })
+
   it('does not attach runtime loader when postcss loader is missing', () => {
     const { compiler, getLoaderHandler } = createCompilerWithLoaderTracking()
     const plugin = new UnifiedWebpackPluginV4()

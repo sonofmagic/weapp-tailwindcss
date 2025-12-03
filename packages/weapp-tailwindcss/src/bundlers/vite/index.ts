@@ -220,7 +220,10 @@ export function UnifiedViteWeappTailwindcssPlugin(options: UserDefinedOptions = 
           resolveId: {
             order: 'pre',
             handler(id, importer) {
-              const replacement = resolveTailwindcssImport(id, weappTailwindcssDirPosix, { join: joinPosixPath })
+              const replacement = resolveTailwindcssImport(id, weappTailwindcssDirPosix, {
+                join: joinPosixPath,
+                appType,
+              })
               if (!replacement) {
                 return null
               }
@@ -236,7 +239,10 @@ export function UnifiedViteWeappTailwindcssPlugin(options: UserDefinedOptions = 
               if (!isCSSRequest(id)) {
                 return null
               }
-              const rewritten = rewriteTailwindcssImportsInCode(code, weappTailwindcssDirPosix, { join: joinPosixPath })
+              const rewritten = rewriteTailwindcssImportsInCode(code, weappTailwindcssDirPosix, {
+                join: joinPosixPath,
+                appType,
+              })
               if (!rewritten) {
                 return null
               }
