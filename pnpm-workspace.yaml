@@ -39,7 +39,7 @@ catalogs:
   postcssRpx:
     postcss-rpx-transform: ^1.0.1
   prettier371:
-    prettier: ^3.7.3
+    prettier: ^3.7.4
   react18:
     '@types/react': 18.2.15
     '@types/react-dom': 18.2.7
@@ -100,9 +100,9 @@ catalogs:
   vite5421:
     vite: ^5.4.21
   vite724:
-    vite: ^7.2.4
+    vite: ^7.2.6
   vite724exact:
-    vite: 7.2.4
+    vite: ^7.2.6
   vue3:
     '@vue/compiler-dom': ^3.5.25
     '@vue/compiler-sfc': ^3.5.25
