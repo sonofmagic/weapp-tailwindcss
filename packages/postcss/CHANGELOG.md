@@ -1,5 +1,11 @@
 # @weapp-tailwindcss/postcss
 
+## 2.0.5
+
+### Patch Changes
+
+- [`c39cbfb`](https://github.com/sonofmagic/weapp-tailwindcss/commit/c39cbfb1980befdaf3df250b2966794ddec01d1e) Thanks [@sonofmagic](https://github.com/sonofmagic)! - 抽取 tailwindcss v4 与 uni-app x 的特定兼容逻辑到独立 compat 模块，精简插件主体代码并方便后续维护。
+
 ## 2.0.4
 
 ### Patch Changes

@@ -1,5 +1,26 @@
 # weapp-tailwindcss
 
+## 4.8.8
+
+### Patch Changes
+
+- [`1379d4b`](https://github.com/sonofmagic/weapp-tailwindcss/commit/1379d4b997084ddd42dd9a8c381507f46d1912ef) Thanks [@sonofmagic](https://github.com/sonofmagic)! - 拆分运行时 Loader，新增仅 TailwindCSS v4 会启用的 CSS import 重写 Loader，并将 classSet 采集逻辑放入独立 Loader，便于在正确的 loader 顺序中执行。
+
+- [`8c89cb2`](https://github.com/sonofmagic/weapp-tailwindcss/commit/8c89cb28ac21694433e9fe31e9b5d54e650ba673) Thanks [@sonofmagic](https://github.com/sonofmagic)! - 修正 runtime loader 的插入顺序，使 `runtimeCssImportRewriteLoader` 总是在 `postcss-loader` 之前执行，而 `runtimeClassSetLoader` 在其之后执行；同时新增调试日志和文档，方便排查 loader 链。
+
+- [`e84e6b5`](https://github.com/sonofmagic/weapp-tailwindcss/commit/e84e6b5c8f9134201cc58e2e01ea2db902a5620c) Thanks [@sonofmagic](https://github.com/sonofmagic)! - 统一 mpx 场景判断到共享 isMpx 辅助函数，并为 mpx 相关工具补充全覆盖单元测试（别名、resolve 重写与规则注入）。
+
+- [`3a795ae`](https://github.com/sonofmagic/weapp-tailwindcss/commit/3a795aeda3db4df12c666ba84783240db3a46ee1) Thanks [@sonofmagic](https://github.com/sonofmagic)! - 修复 mpx 场景下的处理：
+  - webpack runtime loader 锚点改为跟随 `@mpxjs/webpack-plugin/lib/style-compiler/index` 插入顺序。
+  - rewrite css import 时 `@import "tailwindcss";` 改写为 `@import "weapp-tailwindcss/index.css";`。
+
+- [`6e29641`](https://github.com/sonofmagic/weapp-tailwindcss/commit/6e296415cb354e96dfc63846f46fcb5d52945067) Thanks [@sonofmagic](https://github.com/sonofmagic)! - 改进 mpx 默认的 `mainCssChunkMatcher`，凡是落在 `styles/` 目录下的 CSS/WXSS 产物都会被视为主样式包。这样像 `dist/wx/styles/app364cd4a4.wxss` 这种带 hash 的入口也能自动注入 Tailwind v4 变量与预设，不必再额外配置 matcher。
+
+- [`0935ee0`](https://github.com/sonofmagic/weapp-tailwindcss/commit/0935ee03de5dba28da6a4e3be1737423067c0978) Thanks [@sonofmagic](https://github.com/sonofmagic)! - 优化 webpack 注入逻辑，确保 `weapp-tw-css-import-rewrite-loader` 在 Mpx 的 `@mpxjs/webpack-plugin/lib/style-compiler` 之前运行，避免重复注入导致的执行顺序混乱；同时在 Rax 场景下自动识别 `src/global.*` 作为 `cssEntries`，即使未显式配置 `appType` 也能正确收集 Tailwind 类，修复 demo `rax-app` 中 JS 类名无法转译的问题。
+
+- Updated dependencies [[`c39cbfb`](https://github.com/sonofmagic/weapp-tailwindcss/commit/c39cbfb1980befdaf3df250b2966794ddec01d1e)]:
+  - @weapp-tailwindcss/postcss@2.0.5
+
 ## 4.8.7
 
 ### Patch Changes
