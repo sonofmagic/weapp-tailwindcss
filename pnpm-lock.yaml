@@ -3756,6 +3756,60 @@ importers:
         specifier: ~7.28.5
         version: 7.28.5
 
+  packages/build-all:
+    dependencies:
+      '@weapp-tailwindcss/babel':
+        specifier: workspace:*
+        version: link:../babel
+      '@weapp-tailwindcss/debug-uni-app-x':
+        specifier: workspace:*
+        version: link:../debug-uni-app-x
+      '@weapp-tailwindcss/experimental':
+        specifier: workspace:*
+        version: link:../experimental
+      '@weapp-tailwindcss/init':
+        specifier: workspace:*
+        version: link:../init
+      '@weapp-tailwindcss/logger':
+        specifier: workspace:*
+        version: link:../logger
+      '@weapp-tailwindcss/minify-preserve':
+        specifier: workspace:*
+        version: link:../minify-preserve
+      '@weapp-tailwindcss/postcss':
+        specifier: workspace:*
+        version: link:../postcss
+      '@weapp-tailwindcss/shared':
+        specifier: workspace:*
+        version: link:../shared
+      '@weapp-tailwindcss/test-helper':
+        specifier: workspace:*
+        version: link:../test-helper
+      tailwindcss-config:
+        specifier: workspace:*
+        version: link:../tailwindcss-config
+      tailwindcss-core-plugins-extractor:
+        specifier: workspace:*
+        version: link:../tailwindcss-core-plugins-extractor
+      tailwindcss-injector:
+        specifier: workspace:*
+        version: link:../tailwindcss-injector
+      weapp-style-injector:
+        specifier: workspace:*
+        version: link:../weapp-style-injector
+      weapp-tailwindcss:
+        specifier: workspace:*
+        version: link:../weapp-tailwindcss
+      weapp-tw:
+        specifier: workspace:*
+        version: link:../weapp-tw
+      weapptw:
+        specifier: workspace:*
+        version: link:../weapptw
+      wetw:
+        specifier: workspace:*
+        version: link:../wetw
+
   packages/debug-uni-app-x:
     dependencies:
       defu:

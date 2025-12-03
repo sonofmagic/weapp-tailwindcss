@@ -1,0 +1,28 @@
+{
+  "name": "@weapp-tailwindcss/build-all",
+  "type": "module",
+  "version": "0.0.0",
+  "private": true,
+  "scripts": {
+    "build": "node -e \"console.log('build-all meta build complete')\""
+  },
+  "dependencies": {
+    "@weapp-tailwindcss/babel": "workspace:*",
+    "@weapp-tailwindcss/debug-uni-app-x": "workspace:*",
+    "@weapp-tailwindcss/experimental": "workspace:*",
+    "@weapp-tailwindcss/init": "workspace:*",
+    "@weapp-tailwindcss/logger": "workspace:*",
+    "@weapp-tailwindcss/minify-preserve": "workspace:*",
+    "@weapp-tailwindcss/postcss": "workspace:*",
+    "@weapp-tailwindcss/shared": "workspace:*",
+    "@weapp-tailwindcss/test-helper": "workspace:*",
+    "tailwindcss-config": "workspace:*",
+    "tailwindcss-core-plugins-extractor": "workspace:*",
+    "tailwindcss-injector": "workspace:*",
+    "weapp-style-injector": "workspace:*",
+    "weapp-tailwindcss": "workspace:*",
+    "weapp-tw": "workspace:*",
+    "weapptw": "workspace:*",
+    "wetw": "workspace:*"
+  }
+}

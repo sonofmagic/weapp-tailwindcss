@@ -33,6 +33,38 @@
     "release": {},
     "sync": {
       "cache": false
+    },
+    "demo/*#build": {
+      "dependsOn": [
+        "^build",
+        "@weapp-tailwindcss/build-all#build"
+      ],
+      "outputs": [
+        "dist/**",
+        "build/**",
+        "result.css",
+        "result.json",
+        "transformed.css"
+      ]
+    },
+    "apps/**#build": {
+      "dependsOn": [
+        "^build",
+        "@weapp-tailwindcss/build-all#build"
+      ],
+      "outputs": [
+        "dist/**",
+        "build/**",
+        "result.css",
+        "result.json",
+        "transformed.css"
+      ]
     }
+  },
+  "boundaries": {
+    "implicitDependencies": [
+      "apps/* -> packages/*",
+      "demo/* -> packages/*"
+    ]
   }
 }
