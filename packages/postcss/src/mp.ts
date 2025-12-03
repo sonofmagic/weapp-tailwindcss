@@ -1,8 +1,8 @@
 // 小程序端预处理逻辑，负责变量注入与选择器修正
 import type { IStyleHandlerOptions } from './types'
 import { Declaration, Rule } from 'postcss'
+import { cssVarsV4Nodes, isTailwindcssV4, testIfRootHostForV4 } from './compat/tailwindcss-v4'
 import cssVarsV3 from './cssVarsV3'
-import cssVarsV4 from './cssVarsV4'
 import { isOnlyBeforeAndAfterPseudoElement } from './selectorParser'
 
 // v3 变量集合在运行时转换为 Declaration 以便快速插入
@@ -13,13 +13,6 @@ const cssVarsV3Nodes = cssVarsV3.map((x) => {
   })
 })
 
-// v4 变量集合在运行时以 PostCSS Declaration 形式复用
-export const cssVarsV4Nodes = cssVarsV4.map((x) => {
-  return new Declaration({
-    prop: x.prop,
-    value: x.value,
-  })
-})
 // ':not(template) ~ :not(template)'
 // ':not(template)~:not(template)'
 // const regexp1 = /:not\(template\)\s*~\s*:not\(template\)/g
@@ -81,11 +74,6 @@ export function testIfTwBackdrop(node: Rule, count = 2) {
     return false
   }
   return false
-}
-
-// Tailwind v4 会把 :root 与 :host 组合在一起，这里单独识别
-export function testIfRootHostForV4(node: Rule) {
-  return node.type === 'rule' && node.selector.includes(':root') && node.selector.includes(':host')
 }
 
 // 构造 ::before/::after 的占位规则，为变量注入腾出空间
@@ -150,7 +138,7 @@ export function commonChunkPreflight(node: Rule, options: IStyleHandlerOptions) 
       node.append(...cssInjectPreflight())
     }
   }
-  const isTailwindcss4 = options.majorVersion === 4
+  const isTailwindcss4 = isTailwindcssV4(options)
   if (injectAdditionalCssVarScope && (isTailwindcss4 ? testIfRootHostForV4(node) : testIfTwBackdrop(node))) {
     const syntheticRule = new Rule({
       selectors: ['*', '::after', '::before'],

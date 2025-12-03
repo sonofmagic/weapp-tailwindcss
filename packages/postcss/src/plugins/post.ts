@@ -2,6 +2,8 @@
 import type { Declaration, Plugin, PluginCreator, Rule } from 'postcss'
 import type { IStyleHandlerOptions } from '../types'
 import { defu } from '@weapp-tailwindcss/shared'
+import { normalizeTailwindcssV4Declaration } from '../compat/tailwindcss-v4'
+import { shouldRemoveEmptyRuleForUniAppX } from '../compat/uni-app-x'
 import { postcssPlugin } from '../constants'
 import { getFallbackRemove } from '../selectorParser'
 
@@ -70,8 +72,6 @@ function createRootSpecificityCleaner(options: IStyleHandlerOptions) {
 // 可选依赖：import valueParser from 'postcss-value-parser'
 
 export type PostcssWeappTailwindcssRenamePlugin = PluginCreator<IStyleHandlerOptions>
-// tailwindcss@4 兼容标记
-const OklabSuffix = 'in oklab'
 
 const logicalPropMap = new Map<string, string>([
   // margin 方向映射
@@ -360,7 +360,7 @@ const postcssWeappTailwindcssPostPlugin: PostcssWeappTailwindcssRenamePlugin = (
           rule.remove()
         }
 
-        if (opts.uniAppX && rule.nodes.length === 0) {
+        if (shouldRemoveEmptyRuleForUniAppX(rule, opts)) {
           rule.remove()
         }
       }
@@ -368,50 +368,7 @@ const postcssWeappTailwindcssPostPlugin: PostcssWeappTailwindcssRenamePlugin = (
   }
 
   if (enableMainChunkTransforms) {
-    p.DeclarationExit = (decl) => {
-      // tailwindcss v4
-      /**
-       * @description oklab 处理
-       */
-      if (decl.prop === '--tw-gradient-position' && decl.value.endsWith(OklabSuffix)) {
-        decl.value = decl.value.slice(0, decl.value.length - OklabSuffix.length)
-      }
-      /**
-       * @description 移除 calc(infinity * 1px)
-       * https://github.com/tailwindlabs/tailwindcss/blob/77b3cb5318840925d8a75a11cc90552a93507ddc/packages/tailwindcss/src/utilities.ts#L2128
-       */
-      else if (/calc\(\s*infinity\s*\*\s*(?:\d+(?:\.\d*)?|\.\d+)r?px/.test(decl.value)) {
-        decl.value = '9999px'
-      }
-      /**
-       * @description 一些构建链路（如上游已将 infinity 计算为科学计数法的极大值）
-       * 会产生如 `3.40282e38px` 的半径，这不符合小程序规范。这里对 border-*-radius
-       * 类属性做兜底钳制，若出现极大像素值（含科学计数法或超过阈值），统一替换为 9999px。
-       */
-      else if (decl.prop.includes('radius')) {
-        // 钳制阈值，极大情况下统一回退为 9999px
-        const CLAMP_PX = 9999
-        const THRESHOLD = 100000 // 明显不合理的 px 数值阈值
-        // 仅对 px/rpx 的数值片段进行判断与替换，避免误伤其他语法
-        const next = decl.value.replace(
-          /\b([+-]?(?:\d+(?:\.\d+)?|\.\d+)(?:e[+-]?\d+)?)\s*(r?px)\b/gi,
-          (m, num) => {
-            const n = Number(num)
-            if (!Number.isFinite(n)) {
-              return `${CLAMP_PX}px`
-            }
-            // 科学计数法或超阈值都视为需要钳制
-            if (/e/i.test(String(num)) || n > THRESHOLD) {
-              return `${CLAMP_PX}px`
-            }
-            return m
-          },
-        )
-        if (next !== decl.value) {
-          decl.value = next
-        }
-      }
-    }
+    p.DeclarationExit = decl => normalizeTailwindcssV4Declaration(decl)
 
     p.AtRuleExit = (atRule) => {
       /**

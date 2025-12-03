@@ -2,6 +2,7 @@
 import type { AtRule, Plugin, PluginCreator } from 'postcss'
 import type { IStyleHandlerOptions } from '../types'
 import { defu } from '@weapp-tailwindcss/shared'
+import { isTailwindcssV4ModernCheck } from '../compat/tailwindcss-v4'
 import { postcssPlugin } from '../constants'
 import { commonChunkPreflight } from '../mp'
 import { ruleTransformSync } from '../selectorParser'
@@ -59,16 +60,6 @@ function isAtMediaHover(atRule: AtRule) {
 //     }
 //   }
 // }
-// Tailwind v4 的现代检查语句需要特殊处理以恢复具体规则
-export function isTailwindcssV4ModernCheck(atRule: AtRule) {
-  return atRule.name === 'supports' && [
-    /-webkit-hyphens\s*:\s*none/,
-    /margin-trim\s*:\s*inline/,
-    /-moz-orient\s*:\s*inline/,
-    /color\s*:\s*rgb\(\s*from\s+red\s+r\s+g\s+b\s*\)/,
-  ].every(regex => regex.test(atRule.params))
-}
-
 const postcssWeappTailwindcssPrePlugin: PostcssWeappTailwindcssRenamePlugin = (
   options,
 ) => {

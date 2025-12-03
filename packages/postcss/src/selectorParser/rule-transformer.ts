@@ -3,6 +3,7 @@ import type { Declaration, Rule } from 'postcss'
 import type { Node, Pseudo, Root, Selector, SyncProcessor } from 'postcss-selector-parser'
 import type { IStyleHandlerOptions } from '../types'
 import psp from 'postcss-selector-parser'
+import { isUniAppXEnabled, stripUnsupportedNodeForUniAppX } from '../compat/uni-app-x'
 import { composeIsPseudo, internalCssSelectorReplacer } from '../shared'
 import {
   getCombinatorSelectorAst,
@@ -195,7 +196,7 @@ function normalizeSpacingDeclarations(rule: Rule) {
 }
 
 function flattenWherePseudo(node: Pseudo, context: TransformContext, index: number, parent: Selector | undefined) {
-  if (context.options.uniAppX) {
+  if (isUniAppXEnabled(context.options)) {
     node.value = ':is'
   }
 
@@ -303,13 +304,7 @@ function handlePseudoNode(node: Node, index: number, context: TransformContext, 
 }
 
 function handleTagOrAttribute(node: Node, context: TransformContext) {
-  if (!context.options.uniAppX) {
-    return
-  }
-
-  if (node.type === 'tag' || node.type === 'attribute') {
-    node.remove()
-  }
+  stripUnsupportedNodeForUniAppX(node, context.options)
 }
 
 function handleSelectorNode(selector: Selector, context: TransformContext) {

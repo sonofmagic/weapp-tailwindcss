@@ -4,6 +4,7 @@ import type { IStyleHandlerOptions } from '../types'
 import type { RuleTransformer } from './rule-transformer'
 import type { ParserTransformOptions } from './utils'
 import psp from 'postcss-selector-parser'
+import { isUniAppXEnabled, stripUnsupportedPseudoForUniAppX } from '../compat/uni-app-x'
 import { normalizeTransformOptions } from './utils'
 
 const fallbackRemoveCache = new WeakMap<object, {
@@ -21,7 +22,7 @@ export function getFallbackRemove(_rule?: Rule, options?: IStyleHandlerOptions) 
   let entry = fallbackRemoveCache.get(cacheKey)
 
   if (!entry) {
-    const uniAppX = Boolean(options?.uniAppX)
+    const uniAppX = isUniAppXEnabled(options)
     let currentRule: Rule | undefined
 
     const parser = psp((selectors) => {
@@ -83,9 +84,7 @@ export function getFallbackRemove(_rule?: Rule, options?: IStyleHandlerOptions) 
             }
           }
           else if (selector.type === 'pseudo') {
-            if (uniAppX) {
-              selector.remove()
-            }
+            stripUnsupportedPseudoForUniAppX(selector, uniAppX)
           }
         }
       })
