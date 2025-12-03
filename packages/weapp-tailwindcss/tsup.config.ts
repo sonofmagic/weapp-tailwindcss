@@ -1,7 +1,20 @@
-import { defineConfig } from 'tsup'
+import { createRequire } from 'node:module'
 
-export default defineConfig(
-  [
+const require = createRequire(__filename)
+// Use require so TS doesn't resolve tsup's broken './types.cts' import during type-checking
+const { defineConfig } = require('tsup') as { defineConfig: (...args: any[]) => any }
+
+type WatchFlag = boolean | string | Array<boolean | string>
+interface WatchAwareOptions {
+  watch?: WatchFlag
+}
+
+export default defineConfig((options: WatchAwareOptions = {}) => {
+  // Avoid cleaning during watch rebuilds or tsup deletes loader outputs mid-dev
+  const isWatching = Boolean(options.watch)
+  const shouldClean = !isWatching
+
+  return [
     {
       entry: {
         'index': 'src/index.ts',
@@ -20,7 +33,7 @@ export default defineConfig(
         'postcss-html-transform': 'src/postcss-html-transform.ts',
       },
       dts: true,
-      clean: true,
+      clean: shouldClean,
       cjsInterop: true,
       splitting: true,
       shims: true,
@@ -55,5 +68,5 @@ export default defineConfig(
       format: ['cjs'],
       external: ['webpack', 'loader-utils'],
     },
-  ],
-)
+  ]
+})
