@@ -4,6 +4,7 @@ import devConfig from './dev'
 import prodConfig from './prod'
 import { UnifiedViteWeappTailwindcssPlugin } from 'weapp-tailwindcss/vite'
 import tailwindcss from '@tailwindcss/postcss'
+import path from 'path'
 // import tailwindcss from '@tailwindcss/vite'
 
 // https://taro-docs.jd.com/docs/next/config#defineconfig-辅助函数
@@ -50,6 +51,9 @@ export default defineConfig<'vite'>(async (merge, { command, mode }) => {
         },
         UnifiedViteWeappTailwindcssPlugin({
           rem2rpx: true,
+          cssEntries:[
+            path.resolve(__dirname, '../src/app.css')
+          ]
           // injectAdditionalCssVarScope: true,
         })
       ]

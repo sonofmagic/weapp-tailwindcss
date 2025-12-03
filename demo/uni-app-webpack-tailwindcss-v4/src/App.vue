@@ -14,6 +14,3 @@
     });
 </script>
 
-<style>
-@import "weapp-tailwindcss";
-</style>
