@@ -17,7 +17,7 @@ import { resolveOutputSpecifier, toAbsoluteOutputPath } from '../../shared/modul
 import { pushConcurrentTaskFactories } from '../../shared/run-tasks'
 import { applyTailwindcssCssImportRewrite } from '../shared/css-imports'
 import { createLoaderAnchorFinders } from '../shared/loader-anchors'
-import { installTailwindcssCssRedirect } from '../shared/tailwindcss-css-redirect'
+import { ensureMpxTailwindcssAliases, isMpx, patchMpxLoaderResolve, setupMpxTailwindcssRedirect } from '../shared/mpx'
 import { getCacheKey } from './shared'
 
 const debug = createDebug()
@@ -63,15 +63,14 @@ export class UnifiedWebpackPluginV4 implements IBaseWebpackPlugin {
     }
     const isTailwindcssV4 = (initialTwPatcher.majorVersion ?? 0) >= 4
     const shouldRewriteCssImports = isTailwindcssV4 && this.options.rewriteCssImports !== false
+    const isMpxApp = isMpx(this.appType)
     if (shouldRewriteCssImports) {
       applyTailwindcssCssImportRewrite(compiler, {
         pkgDir: weappTailwindcssPackageDir,
         enabled: true,
         appType: this.appType,
       })
-      if (this.appType === 'mpx') {
-        installTailwindcssCssRedirect(weappTailwindcssPackageDir)
-      }
+      setupMpxTailwindcssRedirect(weappTailwindcssPackageDir, isMpxApp)
     }
     const patchRecorderState = setupPatchRecorder(initialTwPatcher, this.options.tailwindcssBasedir, {
       source: 'runtime',
@@ -113,20 +112,16 @@ export class UnifiedWebpackPluginV4 implements IBaseWebpackPlugin {
     const classSetLoaderOptions = {
       getClassSet: getClassSetInLoader,
     }
+    const { findRewriteAnchor, findClassSetAnchor } = createLoaderAnchorFinders(this.appType)
     const cssImportRewriteLoaderOptions = runtimeLoaderRewriteOptions
       ? {
           rewriteCssImports: runtimeLoaderRewriteOptions,
         }
       : undefined
-    const { findRewriteAnchor, findClassSetAnchor } = createLoaderAnchorFinders(this.appType)
-    const tailwindcssCssEntry = path.join(weappTailwindcssPackageDir, 'index.css')
 
     onLoad()
     if (shouldRewriteCssImports && this.appType === 'mpx') {
-      compiler.options.resolve = compiler.options.resolve || {}
-      compiler.options.resolve.alias = compiler.options.resolve.alias || {}
-      compiler.options.resolve.alias.tailwindcss = tailwindcssCssEntry
-      compiler.options.resolve.alias.tailwindcss$ = tailwindcssCssEntry
+      ensureMpxTailwindcssAliases(compiler, weappTailwindcssPackageDir)
     }
     if (runtimeCssImportRewriteLoader && shouldRewriteCssImports && cssImportRewriteLoaderOptions && this.appType === 'mpx') {
       const moduleOptions = (compiler.options.module ??= { rules: [] as any })
@@ -171,20 +166,7 @@ export class UnifiedWebpackPluginV4 implements IBaseWebpackPlugin {
           return
         }
         if (shouldRewriteCssImports && this.appType === 'mpx' && typeof _loaderContext.resolve === 'function') {
-          const originalResolve = _loaderContext.resolve
-          if (!(originalResolve as any).__weappTwPatched) {
-            const wrappedResolve = function (this: any, context: any, request: string, callback: any) {
-              if (request === 'tailwindcss' || request === 'tailwindcss$') {
-                return callback(null, tailwindcssCssEntry)
-              }
-              if (request?.startsWith('tailwindcss/')) {
-                return callback(null, path.join(weappTailwindcssPackageDir, request.slice('tailwindcss/'.length)))
-              }
-              return originalResolve.call(this, context, request, callback)
-            }
-            ;(wrappedResolve as any).__weappTwPatched = true
-            _loaderContext.resolve = wrappedResolve as any
-          }
+          patchMpxLoaderResolve(_loaderContext, weappTailwindcssPackageDir, true)
         }
         const loaderEntries: Array<{ loader?: string }> = module.loaders || []
         const rewriteAnchorIdx = findRewriteAnchor(loaderEntries)

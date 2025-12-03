@@ -16,7 +16,7 @@ import { resolveOutputSpecifier, toAbsoluteOutputPath } from '../../shared/modul
 import { pushConcurrentTaskFactories } from '../../shared/run-tasks'
 import { applyTailwindcssCssImportRewrite } from '../shared/css-imports'
 import { createLoaderAnchorFinders } from '../shared/loader-anchors'
-import { installTailwindcssCssRedirect } from '../shared/tailwindcss-css-redirect'
+import { ensureMpxTailwindcssAliases, isMpx, patchMpxLoaderResolve, setupMpxTailwindcssRedirect } from '../shared/mpx'
 import { getCacheKey } from './shared'
 
 const debug = createDebug()
@@ -61,15 +61,14 @@ export class UnifiedWebpackPluginV5 implements IBaseWebpackPlugin {
     }
     const isTailwindcssV4 = (initialTwPatcher.majorVersion ?? 0) >= 4
     const shouldRewriteCssImports = isTailwindcssV4 && this.options.rewriteCssImports !== false
+    const isMpxApp = isMpx(this.appType)
     if (shouldRewriteCssImports) {
       applyTailwindcssCssImportRewrite(compiler, {
         pkgDir: weappTailwindcssPackageDir,
         enabled: true,
         appType: this.appType,
       })
-      if (this.appType === 'mpx') {
-        installTailwindcssCssRedirect(weappTailwindcssPackageDir)
-      }
+      setupMpxTailwindcssRedirect(weappTailwindcssPackageDir, isMpxApp)
     }
     const patchRecorderState = setupPatchRecorder(initialTwPatcher, this.options.tailwindcssBasedir, {
       source: 'runtime',
@@ -112,29 +111,16 @@ export class UnifiedWebpackPluginV5 implements IBaseWebpackPlugin {
     const classSetLoaderOptions = {
       getClassSet: getClassSetInLoader,
     }
+    const { findRewriteAnchor, findClassSetAnchor } = createLoaderAnchorFinders(this.appType)
     const cssImportRewriteLoaderOptions = runtimeLoaderRewriteOptions
       ? {
           rewriteCssImports: runtimeLoaderRewriteOptions,
         }
       : undefined
-    const { findRewriteAnchor, findClassSetAnchor } = createLoaderAnchorFinders(this.appType)
-    const tailwindcssCssEntry = path.join(weappTailwindcssPackageDir, 'index.css')
 
     onLoad()
-    if (shouldRewriteCssImports && this.appType === 'mpx') {
-      compiler.options.resolve = compiler.options.resolve || {}
-      const alias = compiler.options.resolve.alias ?? {}
-      if (Array.isArray(alias)) {
-        alias.push(
-          { name: 'tailwindcss', alias: tailwindcssCssEntry },
-          { name: 'tailwindcss$', alias: tailwindcssCssEntry },
-        )
-      }
-      else {
-        compiler.options.resolve.alias = alias
-        alias.tailwindcss = tailwindcssCssEntry
-        alias.tailwindcss$ = tailwindcssCssEntry
-      }
+    if (shouldRewriteCssImports && isMpxApp) {
+      ensureMpxTailwindcssAliases(compiler, weappTailwindcssPackageDir)
     }
     if (runtimeCssImportRewriteLoader && shouldRewriteCssImports && cssImportRewriteLoaderOptions && this.appType === 'mpx') {
       // Ensure CSS files（如 app.css）在进入 postcss-import 前先被重写。
@@ -182,22 +168,7 @@ export class UnifiedWebpackPluginV5 implements IBaseWebpackPlugin {
         if (!hasRuntimeLoader) {
           return
         }
-        if (shouldRewriteCssImports && this.appType === 'mpx' && typeof _loaderContext.resolve === 'function') {
-          const originalResolve = _loaderContext.resolve
-          if (!(originalResolve as any).__weappTwPatched) {
-            const wrappedResolve = function (this: any, context: any, request: string, callback: any) {
-              if (request === 'tailwindcss' || request === 'tailwindcss$') {
-                return callback(null, tailwindcssCssEntry)
-              }
-              if (request?.startsWith('tailwindcss/')) {
-                return callback(null, path.join(weappTailwindcssPackageDir, request.slice('tailwindcss/'.length)))
-              }
-              return originalResolve.call(this, context, request, callback)
-            }
-            ;(wrappedResolve as any).__weappTwPatched = true
-            _loaderContext.resolve = wrappedResolve as any
-          }
-        }
+        patchMpxLoaderResolve(_loaderContext, weappTailwindcssPackageDir, shouldRewriteCssImports && isMpxApp)
         const loaderEntries = module.loaders || []
         const rewriteAnchorIdx = findRewriteAnchor(loaderEntries)
         const classSetAnchorIdx = findClassSetAnchor(loaderEntries)
