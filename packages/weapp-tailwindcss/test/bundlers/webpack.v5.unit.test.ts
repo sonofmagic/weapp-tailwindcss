@@ -49,6 +49,7 @@ interface TestContext {
   wxsMatcher: (file: string) => boolean
   runtimeLoaderPath: string
   runtimeCssImportRewriteLoaderPath: string
+  appType?: string
 }
 let existsSyncSpy: ReturnType<typeof vi.spyOn>
 
@@ -91,6 +92,7 @@ function createContext(overrides: Partial<TestContext> = {}): TestContext {
     wxsMatcher: (_file: string) => false,
     runtimeLoaderPath: '/virtual/weapp-tw-runtime-classset-loader.js',
     runtimeCssImportRewriteLoaderPath: '/virtual/weapp-tw-css-import-rewrite-loader.js',
+    appType: overrides.appType,
     ...overrides,
   }
 }
@@ -388,6 +390,29 @@ describe('bundlers/webpack UnifiedWebpackPluginV5', () => {
     const rewriteIndex = module.loaders.indexOf(rewriteLoaderEntry!)
     expect(classSetIndex).toBeLessThan(postcssIndex)
     expect(rewriteIndex).toBeGreaterThan(postcssIndex)
+  })
+
+  it('uses mpx style compiler loader as anchor when appType is mpx', () => {
+    currentContext = createContext({ appType: 'mpx' })
+    getCompilerContextMock.mockReturnValue(currentContext)
+    const { compiler, getLoaderHandler } = createCompilerWithLoaderTracking()
+    const plugin = new UnifiedWebpackPluginV5()
+    plugin.apply(compiler as any)
+
+    const handler = getLoaderHandler()
+    const module: LoaderModule = {
+      loaders: [{ loader: '/abs/node_modules/@mpxjs/webpack-plugin/lib/style-compiler/index.js??ruleSet[1]' }],
+    }
+    handler?.({}, module)
+
+    const classSetLoaderEntry = module.loaders.find(entry => entry.loader === currentContext.runtimeLoaderPath)
+    expect(classSetLoaderEntry).toBeDefined()
+    const anchorIndex = module.loaders.findIndex(entry =>
+      entry.loader.includes('@mpxjs/webpack-plugin/lib/style-compiler/index'),
+    )
+    expect(anchorIndex).toBeGreaterThanOrEqual(0)
+    const classSetIndex = module.loaders.indexOf(classSetLoaderEntry!)
+    expect(classSetIndex).toBeLessThan(anchorIndex)
   })
 
   it('does not attach runtime loader when postcss loader is missing', () => {

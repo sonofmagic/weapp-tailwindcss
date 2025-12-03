@@ -15,6 +15,7 @@ import { processCachedTask } from '../../shared/cache'
 import { resolveOutputSpecifier, toAbsoluteOutputPath } from '../../shared/module-graph'
 import { pushConcurrentTaskFactories } from '../../shared/run-tasks'
 import { applyTailwindcssCssImportRewrite } from '../shared/css-imports'
+import { createLoaderAnchorFinder } from '../shared/loader-anchors'
 import { getCacheKey } from './shared'
 
 const debug = createDebug()
@@ -86,6 +87,8 @@ export class UnifiedWebpackPluginV5 implements IBaseWebpackPlugin {
       await collectRuntimeClassSet(runtimeState.twPatcher, { force: true, skipRefresh: true })
     }
 
+    const findLoaderAnchorIndex = createLoaderAnchorFinder(this.appType)
+
     onLoad()
     const runtimeClassSetLoader = runtimeLoaderPath
       ?? path.resolve(__dirname, './weapp-tw-runtime-classset-loader.js')
@@ -138,26 +141,21 @@ export class UnifiedWebpackPluginV5 implements IBaseWebpackPlugin {
           return
         }
         const loaderEntries = module.loaders || []
-        const idx = loaderEntries.findIndex((entry) => {
-          if (!entry?.loader) {
-            return false
-          }
-          return entry.loader.includes('postcss-loader')
-        })
+        const idx = findLoaderAnchorIndex(loaderEntries)
         if (idx === -1) {
           return
         }
         if (cssImportRewriteLoaderOptions && runtimeCssImportRewriteLoaderExists) {
           const rewriteLoaderEntry = createCssImportRewriteLoaderEntry()
           if (rewriteLoaderEntry) {
-            // 让 rewrite 处于 postcss-loader 之后（数组索引更大），这样执行时会排在 postcss-loader 之前。
+            // 让 rewrite 处于锚点 loader 之后（数组索引更大），这样执行时会排在锚点 loader 之前。
             loaderEntries.splice(idx + 1, 0, rewriteLoaderEntry)
           }
         }
         if (runtimeClassSetLoaderExists) {
           const classSetLoaderEntry = createRuntimeClassSetLoaderEntry()
-          const postcssIndex = loaderEntries.findIndex(entry => entry?.loader?.includes?.('postcss-loader'))
-          const insertIndex = postcssIndex === -1 ? idx : postcssIndex
+          const anchorIndex = findLoaderAnchorIndex(loaderEntries)
+          const insertIndex = anchorIndex === -1 ? idx : anchorIndex
           loaderEntries.splice(insertIndex, 0, classSetLoaderEntry)
         }
       })

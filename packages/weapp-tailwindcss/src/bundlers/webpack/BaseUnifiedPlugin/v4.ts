@@ -16,6 +16,7 @@ import { processCachedTask } from '../../shared/cache'
 import { resolveOutputSpecifier, toAbsoluteOutputPath } from '../../shared/module-graph'
 import { pushConcurrentTaskFactories } from '../../shared/run-tasks'
 import { applyTailwindcssCssImportRewrite } from '../shared/css-imports'
+import { createLoaderAnchorFinder } from '../shared/loader-anchors'
 import { getCacheKey } from './shared'
 
 const debug = createDebug()
@@ -110,6 +111,7 @@ export class UnifiedWebpackPluginV4 implements IBaseWebpackPlugin {
           rewriteCssImports: runtimeLoaderRewriteOptions,
         }
       : undefined
+    const findLoaderAnchorIndex = createLoaderAnchorFinder(this.appType)
     const createRuntimeClassSetLoaderEntry = () => ({
       loader: runtimeClassSetLoader,
       options: classSetLoaderOptions,
@@ -136,12 +138,7 @@ export class UnifiedWebpackPluginV4 implements IBaseWebpackPlugin {
         }
         // @ts-ignore
         const loaderEntries = module.loaders || []
-        const idx = loaderEntries.findIndex((entry: any) => {
-          if (!entry?.loader) {
-            return false
-          }
-          return entry.loader.includes('postcss-loader')
-        })
+        const idx = findLoaderAnchorIndex(loaderEntries)
 
         if (idx === -1) {
           return
@@ -150,16 +147,16 @@ export class UnifiedWebpackPluginV4 implements IBaseWebpackPlugin {
         if (runtimeLoaderRewriteOptions && runtimeCssImportRewriteLoaderExists && cssImportRewriteLoaderOptions) {
           const rewriteEntry = createCssImportRewriteLoaderEntry()
           if (rewriteEntry) {
-            // 为了让 rewrite 在执行顺序上先于 postcss-loader，需要把它插到
-            // postcss-loader 的后方（数组索引更大，执行时更靠前）。
+            // 为了让 rewrite 在执行顺序上先于锚点 loader，需要把它插到
+            // 锚点 loader 的后方（数组索引更大，执行时更靠前）。
             // @ts-ignore
             loaderEntries.splice(idx + 1, 0, rewriteEntry)
           }
         }
         if (runtimeClassSetLoaderExists) {
-          const postcssIndex = loaderEntries.findIndex((entry: any) => entry?.loader?.includes?.('postcss-loader'))
-          const insertIndex = postcssIndex === -1 ? idx : postcssIndex
-          // 将 class-set 插在 postcss-loader 的当前位置（数组索引更小），这样在实际执行顺序里它会排在 postcss-loader 之后。
+          const anchorIndex = findLoaderAnchorIndex(loaderEntries)
+          const insertIndex = anchorIndex === -1 ? idx : anchorIndex
+          // 将 class-set 插在锚点 loader 的当前位置（数组索引更小），这样在实际执行顺序里它会排在锚点 loader 之后。
           // @ts-ignore
           loaderEntries.splice(insertIndex, 0, createRuntimeClassSetLoaderEntry())
         }
