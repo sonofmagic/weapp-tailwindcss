@@ -35,6 +35,11 @@ interface TargetPackage {
   ensurePnpmOnlyBuilt?: boolean
 }
 
+interface TailwindResolution {
+  targets: TargetPackage[]
+  removePackages: string[]
+}
+
 const TEMPLATES_DIR = path.join(ROOT, 'templates')
 const TEMP_LOCK_ROOT = path.join(os.tmpdir(), 'weapp-tailwindcss-template-locks')
 const LOCK_UPDATE_TIMEOUT_MS = 30 * 60_000
@@ -68,6 +73,19 @@ function readWorkspacePackageVersion(relativeDir: string): string {
   const pkg = JSON.parse(pkgRaw) as { version: string }
   return pkg.version
 }
+
+const MERGE_PACKAGES = {
+  v4: {
+    name: '@weapp-tailwindcss/merge',
+    version: readWorkspacePackageVersion(path.join('packages-runtime', 'merge')),
+  },
+  v3: {
+    name: '@weapp-tailwindcss/merge-v3',
+    version: readWorkspacePackageVersion(path.join('packages-runtime', 'merge-v3')),
+  },
+} as const
+
+const MERGE_PACKAGE_NAMES = [MERGE_PACKAGES.v4.name, MERGE_PACKAGES.v3.name] as const
 
 async function fetchLatestVersion(pkgName: string): Promise<string> {
   const cached = latestVersionCache.get(pkgName)
@@ -112,7 +130,6 @@ async function fetchTailwindVersion(pkgName: string, major: number): Promise<str
 
 async function resolveBaseTargets(): Promise<TargetPackage[]> {
   const weappTailwindcssVersion = readWorkspacePackageVersion(path.join('packages', 'weapp-tailwindcss'))
-  const mergeVersion = readWorkspacePackageVersion(path.join('packages-runtime', 'merge'))
   const [
     weappIdeCliVersion,
     weappViteVersion,
@@ -132,14 +149,6 @@ async function resolveBaseTargets(): Promise<TargetPackage[]> {
       version: weappTailwindcssVersion,
       range: `^${weappTailwindcssVersion}`,
       addIfMissing: 'devDependencies',
-    },
-    {
-      name: '@weapp-tailwindcss/merge',
-      version: mergeVersion,
-      range: `^${mergeVersion}`,
-      addIfMissing: 'dependencies',
-      forceInclude: true,
-      ensurePnpmOnlyBuilt: true,
     },
     {
       name: 'weapp-ide-cli',
@@ -220,6 +229,36 @@ function hasPackageReference(pkg: PackageJson, name: string): boolean {
   const deps = pkg.dependencies ?? {}
   const devDeps = pkg.devDependencies ?? {}
   return Boolean((deps as Record<string, string>)[name] ?? (devDeps as Record<string, string>)[name])
+}
+
+function removePackageReferences(pkg: PackageJson, names: string[]): boolean {
+  if (!names.length) {
+    return false
+  }
+  let changed = false
+  for (const field of ['dependencies', 'devDependencies'] as const) {
+    const section = pkg[field]
+    if (!section || typeof section !== 'object') {
+      continue
+    }
+    const typedSection = section as Record<string, string>
+    let sectionChanged = false
+    for (const name of names) {
+      if (name in typedSection) {
+        delete typedSection[name]
+        changed = true
+        sectionChanged = true
+      }
+    }
+    if (sectionChanged && Object.keys(typedSection).length === 0) {
+      delete pkg[field]
+    }
+  }
+  return changed
+}
+
+function collectMergePackagesToRemove(pkg: PackageJson, keep?: string): string[] {
+  return MERGE_PACKAGE_NAMES.filter(name => name !== keep && hasPackageReference(pkg, name))
 }
 
 function ensureSection(pkg: PackageJson, field: 'dependencies' | 'devDependencies'): Record<string, string> {
@@ -396,26 +435,43 @@ function isExternalSpecifier(range: string): boolean {
   return range.startsWith('npm:') || range.startsWith('catalog:')
 }
 
-async function resolveTailwindTargets(pkg: PackageJson): Promise<TargetPackage[]> {
+async function resolveTailwindTargets(pkg: PackageJson): Promise<TailwindResolution> {
   const range = getPackageRange(pkg, 'tailwindcss')
   if (!range || isExternalSpecifier(range)) {
-    return []
+    return {
+      targets: [],
+      removePackages: collectMergePackagesToRemove(pkg),
+    }
   }
   const min = minVersion(range)
   if (!min) {
-    return []
+    return {
+      targets: [],
+      removePackages: collectMergePackagesToRemove(pkg),
+    }
   }
   const major = min.major
 
   if (major === 3) {
     const version = await fetchTailwindVersion('tailwindcss', 3)
-    return [
+    const targets: TargetPackage[] = [
       {
         name: 'tailwindcss',
         version,
         range: `^${version}`,
       },
+      {
+        name: MERGE_PACKAGES.v3.name,
+        version: MERGE_PACKAGES.v3.version,
+        range: `^${MERGE_PACKAGES.v3.version}`,
+        addIfMissing: 'dependencies',
+        ensurePnpmOnlyBuilt: true,
+      },
     ]
+    return {
+      targets,
+      removePackages: collectMergePackagesToRemove(pkg, MERGE_PACKAGES.v3.name),
+    }
   }
 
   if (major === 4) {
@@ -446,10 +502,24 @@ async function resolveTailwindTargets(pkg: PackageJson): Promise<TargetPackage[]
       })
     }
 
-    return targets
+    targets.push({
+      name: MERGE_PACKAGES.v4.name,
+      version: MERGE_PACKAGES.v4.version,
+      range: `^${MERGE_PACKAGES.v4.version}`,
+      addIfMissing: 'dependencies',
+      ensurePnpmOnlyBuilt: true,
+    })
+
+    return {
+      targets,
+      removePackages: collectMergePackagesToRemove(pkg, MERGE_PACKAGES.v4.name),
+    }
   }
 
-  return []
+  return {
+    targets: [],
+    removePackages: collectMergePackagesToRemove(pkg),
+  }
 }
 
 async function runCommand(
@@ -622,13 +692,15 @@ async function processTemplate(
   const raw = readFileSync(pkgPath, 'utf8')
   const indent = detectIndentation(raw)
   const pkg = JSON.parse(raw) as PackageJson
-  const tailwindTargets = await resolveTailwindTargets(pkg)
+  const tailwindResolution = await resolveTailwindTargets(pkg)
   const relevantTargets = dedupeTargets([
     ...filterTargetsForPackage(pkg, baseTargets),
-    ...tailwindTargets,
+    ...tailwindResolution.targets,
   ])
   const manager = detectManager(templateDir, pkg)
-  const { changed: depsChanged, touched: changedTargets } = updateDependencyRange(pkg, relevantTargets)
+  const removalChanged = removePackageReferences(pkg, tailwindResolution.removePackages)
+  const { changed: rangeChanged, touched: changedTargets } = updateDependencyRange(pkg, relevantTargets)
+  const depsChanged = removalChanged || rangeChanged
   const pnpmChanged = ensurePnpmOnlyBuiltDependencies(pkg, relevantTargets, manager)
 
   if (depsChanged || pnpmChanged) {
@@ -641,7 +713,7 @@ async function processTemplate(
     lockUpdated = await regenerateLockfile(templateDir, manager)
   }
 
-  if (depsChanged) {
+  if (rangeChanged) {
     changedTargets.forEach(target => summary.add(`${target.name}@${target.range}`))
   }
 
