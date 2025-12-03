@@ -1,5 +1,6 @@
 import type { TailwindcssPatcherFactoryOptions } from '@/tailwindcss/v4'
-import type { InternalUserDefinedOptions } from '@/types'
+import type { AppType, InternalUserDefinedOptions } from '@/types'
+import { existsSync, readFileSync } from 'node:fs'
 import { createRequire } from 'node:module'
 import path from 'node:path'
 import process from 'node:process'
@@ -187,6 +188,72 @@ export function resolveTailwindcssBasedir(basedir?: string, fallback?: string) {
   return path.normalize(cwd)
 }
 
+function isRaxWorkspace(appType: AppType | undefined, baseDir: string): boolean {
+  if (appType === 'rax') {
+    return true
+  }
+  try {
+    const pkgPath = path.join(baseDir, 'package.json')
+    if (!existsSync(pkgPath)) {
+      return false
+    }
+    const pkg = JSON.parse(readFileSync(pkgPath, 'utf8')) as Record<string, any>
+    const deps = {
+      ...(pkg.dependencies ?? {}),
+      ...(pkg.devDependencies ?? {}),
+    }
+    if (deps['rax-app'] || deps.rax) {
+      return true
+    }
+  }
+  catch {
+    return false
+  }
+  return false
+}
+
+function collectRaxStyleEntries(baseDir: string): string[] {
+  const STYLE_CANDIDATES = [
+    'src/global.css',
+    'src/global.scss',
+    'src/global.less',
+    'src/global.sass',
+    'src/global.styl',
+    'src/global.stylus',
+  ] as const
+  const discovered: string[] = []
+  for (const relative of STYLE_CANDIDATES) {
+    const candidate = path.resolve(baseDir, relative)
+    if (existsSync(candidate)) {
+      discovered.push(path.normalize(candidate))
+    }
+  }
+  return discovered
+}
+
+function detectImplicitCssEntries(appType: AppType | undefined, baseDir: string): string[] | undefined {
+  const baseCandidates = new Set<string>()
+  baseCandidates.add(path.normalize(baseDir))
+  const envCandidates = [process.cwd(), process.env.INIT_CWD, process.env.PWD]
+  for (const candidate of envCandidates) {
+    if (candidate) {
+      baseCandidates.add(path.normalize(candidate))
+    }
+  }
+
+  for (const candidateBase of baseCandidates) {
+    if (!isRaxWorkspace(appType, candidateBase)) {
+      continue
+    }
+    const entries = collectRaxStyleEntries(candidateBase)
+    if (entries.length) {
+      return entries
+    }
+  }
+
+  return undefined
+}
+
 export function createTailwindcssPatcherFromContext(ctx: InternalUserDefinedOptions) {
   const {
     tailwindcssBasedir,
@@ -202,7 +269,10 @@ export function createTailwindcssPatcherFromContext(ctx: InternalUserDefinedOpti
   ctx.tailwindcssBasedir = resolvedTailwindcssBasedir
   logger.debug('tailwindcss basedir resolved: %s', resolvedTailwindcssBasedir)
 
-  const normalizedCssEntries = normalizeCssEntries(rawCssEntries, resolvedTailwindcssBasedir)
+  let normalizedCssEntries = normalizeCssEntries(rawCssEntries, resolvedTailwindcssBasedir)
+  if (!normalizedCssEntries) {
+    normalizedCssEntries = detectImplicitCssEntries(ctx.appType, resolvedTailwindcssBasedir)
+  }
   if (normalizedCssEntries) {
     ctx.cssEntries = normalizedCssEntries
   }

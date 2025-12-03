@@ -2,6 +2,15 @@ import type { AppType } from '@/types'
 import path from 'node:path'
 import { installTailwindcssCssRedirect } from './tailwindcss-css-redirect'
 
+const MPX_STYLE_RESOURCE_QUERY_RE = /(?:^|[?&])type=styles(?:&|$)/
+
+function isMpxStyleResourceQuery(query?: string) {
+  if (typeof query !== 'string') {
+    return false
+  }
+  return MPX_STYLE_RESOURCE_QUERY_RE.test(query)
+}
+
 export function isMpx(appType?: AppType) {
   return appType === 'mpx'
 }
@@ -74,7 +83,7 @@ export function injectMpxCssRewritePreRules(
   }
   const moduleOptions = (compiler.options.module ??= { rules: [] } as any)
   moduleOptions.rules = moduleOptions.rules || []
-  const createRule = (match: { test?: RegExp, resourceQuery?: RegExp }) => ({
+  const createRule = (match: { test?: RegExp, resourceQuery?: RegExp | ((query: string) => boolean) }) => ({
     ...match,
     enforce: 'pre' as const,
     use: [
@@ -85,7 +94,10 @@ export function injectMpxCssRewritePreRules(
     ],
   })
   moduleOptions.rules.unshift(
-    createRule({ resourceQuery: /type=styles/ }),
-    createRule({ test: /\.css$/i }),
+    createRule({ resourceQuery: (query: string) => isMpxStyleResourceQuery(query) }),
+    createRule({
+      test: /\.css$/i,
+      resourceQuery: (query: string) => !isMpxStyleResourceQuery(query),
+    }),
   )
 }

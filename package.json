@@ -46,6 +46,7 @@
   },
   "scripts": {
     "build": "turbo run build",
+    "build:nocache": "cross-env TURBO_FORCE=1 pnpm build",
     "build:docs": "turbo run build --filter=./website/",
     "build:apps": "turbo run build --filter=./apps/*",
     "build:pkgs": "turbo run build --filter=./packages/*",

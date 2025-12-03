@@ -155,7 +155,7 @@ export class UnifiedWebpackPluginV5 implements IBaseWebpackPlugin {
         }
         patchMpxLoaderResolve(_loaderContext, weappTailwindcssPackageDir, shouldRewriteCssImports && isMpxApp)
         const loaderEntries = module.loaders || []
-        const rewriteAnchorIdx = findRewriteAnchor(loaderEntries)
+        let rewriteAnchorIdx = findRewriteAnchor(loaderEntries)
         const classSetAnchorIdx = findClassSetAnchor(loaderEntries)
         const isCssModule = isCssLikeModuleResource(module.resource, this.options.cssMatcher, this.appType)
         if (process.env.WEAPP_TW_LOADER_DEBUG && isCssModule) {
@@ -182,17 +182,21 @@ export class UnifiedWebpackPluginV5 implements IBaseWebpackPlugin {
           cssImportRewriteLoaderOptions
           && runtimeCssImportRewriteLoaderExists
           && runtimeCssImportRewriteLoader
-          && !hasLoaderEntry(loaderEntries, runtimeCssImportRewriteLoader)
         ) {
-          const rewriteLoaderEntry = createCssImportRewriteLoaderEntry()
+          const existingIndex = loaderEntries.findIndex(entry => entry.loader?.includes?.(runtimeCssImportRewriteLoader))
+          const rewriteLoaderEntry = existingIndex !== -1
+            ? loaderEntries.splice(existingIndex, 1)[0]
+            : createCssImportRewriteLoaderEntry()
           if (rewriteLoaderEntry) {
             // 让 rewrite 处于锚点 loader 之后（数组索引更大），这样执行时会排在锚点 loader 之前。
-            if (rewriteAnchorIdx === -1) {
+            const anchorIndex = findRewriteAnchor(loaderEntries)
+            if (anchorIndex === -1) {
               anchorlessInsert(rewriteLoaderEntry, 'after')
             }
             else {
-              loaderEntries.splice(rewriteAnchorIdx + 1, 0, rewriteLoaderEntry)
+              loaderEntries.splice(anchorIndex + 1, 0, rewriteLoaderEntry)
             }
+            rewriteAnchorIdx = findRewriteAnchor(loaderEntries)
           }
         }
         if (runtimeClassSetLoaderExists && !hasLoaderEntry(loaderEntries, runtimeClassSetLoader)) {

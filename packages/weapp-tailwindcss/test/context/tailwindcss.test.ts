@@ -209,4 +209,110 @@ describe('createTailwindcssPatcherFromContext', () => {
       rmSync(workspaceTemp, { recursive: true, force: true })
     }
   })
+
+  it('detects default cssEntries for rax projects when omitted', async () => {
+    const createdPatchers: TailwindcssPatcherLike[] = []
+    const createTailwindcssPatcher = vi.fn((options: CreateTailwindcssPatcherOptions) => {
+      const stub: TailwindcssPatcherLike = {
+        packageInfo: { version: '4.1.0' } as any,
+        majorVersion: 4,
+        options: options as any,
+        patch: vi.fn(async () => ({})),
+        getClassSet: vi.fn(async () => new Set(['foo'])),
+        extract: vi.fn(async () => ({
+          classList: ['foo'],
+          classSet: new Set(['foo']),
+        })),
+      }
+      createdPatchers.push(stub)
+      return stub
+    })
+
+    vi.resetModules()
+    vi.doMock('@/tailwindcss/patcher', () => ({ createTailwindcssPatcher }))
+
+    const { createTailwindcssPatcherFromContext } = await import('@/context/tailwindcss')
+    const tempRoot = mkdtempSync(path.join(os.tmpdir(), 'weapp-tw-rax-'))
+    const projectRoot = path.join(tempRoot, 'rax-app')
+    mkdirSync(path.join(projectRoot, 'src'), { recursive: true })
+    const globalEntry = path.join(projectRoot, 'src', 'global.scss')
+    writeFileSync(globalEntry, '@import "tailwindcss";')
+
+    try {
+      const ctx = {
+        tailwindcssBasedir: projectRoot,
+        supportCustomLengthUnitsPatch: undefined,
+        tailwindcss: undefined,
+        tailwindcssPatcherOptions: undefined,
+        cssEntries: undefined,
+        appType: 'rax',
+      } as unknown as InternalUserDefinedOptions
+
+      const patcher = createTailwindcssPatcherFromContext(ctx)
+      expect(patcher).toBe(createdPatchers[0])
+      expect(createTailwindcssPatcher).toHaveBeenCalledTimes(1)
+      expect(createTailwindcssPatcher).toHaveBeenCalledWith(expect.objectContaining({
+        tailwindcss: expect.objectContaining({
+          v4: expect.objectContaining({
+            cssEntries: [globalEntry],
+          }),
+        }),
+      }))
+      expect(ctx.cssEntries).toEqual([globalEntry])
+    }
+    finally {
+      rmSync(tempRoot, { recursive: true, force: true })
+    }
+  })
+
+  it('infers cssEntries from package.json when appType is missing but project depends on rax', async () => {
+    const createTailwindcssPatcher = vi.fn((options: CreateTailwindcssPatcherOptions) => {
+      const stub: TailwindcssPatcherLike = {
+        packageInfo: { version: '4.1.0' } as any,
+        majorVersion: 4,
+        options: options as any,
+        patch: vi.fn(async () => ({})),
+        getClassSet: vi.fn(async () => new Set(['foo'])),
+        extract: vi.fn(async () => ({
+          classList: ['foo'],
+          classSet: new Set(['foo']),
+        })),
+      }
+      return stub
+    })
+
+    vi.resetModules()
+    vi.doMock('@/tailwindcss/patcher', () => ({ createTailwindcssPatcher }))
+
+    const { createTailwindcssPatcherFromContext } = await import('@/context/tailwindcss')
+    const tempRoot = mkdtempSync(path.join(os.tmpdir(), 'weapp-tw-rax-auto-'))
+    const projectRoot = path.join(tempRoot, 'rax-auto')
+    mkdirSync(path.join(projectRoot, 'src'), { recursive: true })
+    const globalEntry = path.join(projectRoot, 'src', 'global.css')
+    writeFileSync(globalEntry, '@import "tailwindcss";')
+    writeFileSync(path.join(projectRoot, 'package.json'), JSON.stringify({
+      name: 'auto-rax',
+      version: '0.0.1',
+      dependencies: {
+        rax: '^1.0.0',
+      },
+    }))
+
+    try {
+      const ctx = {
+        tailwindcssBasedir: projectRoot,
+        supportCustomLengthUnitsPatch: undefined,
+        tailwindcss: undefined,
+        tailwindcssPatcherOptions: undefined,
+        cssEntries: undefined,
+        appType: undefined,
+      } as unknown as InternalUserDefinedOptions
+
+      createTailwindcssPatcherFromContext(ctx)
+      expect(ctx.cssEntries).toEqual([globalEntry])
+    }
+    finally {
+      rmSync(tempRoot, { recursive: true, force: true })
+    }
+  })
 })

@@ -469,6 +469,31 @@ describe('bundlers/webpack UnifiedWebpackPluginV5', () => {
     expect(rewriteIndex).toBeGreaterThan(stripIndex)
   })
 
+  it('reorders an existing rewrite loader so it runs before the mpx style compiler', () => {
+    currentContext = createContext({ appType: 'mpx' })
+    currentContext.twPatcher.majorVersion = 4
+    getCompilerContextMock.mockImplementation(() => currentContext)
+    const { compiler, getLoaderHandler } = createCompilerWithLoaderTracking()
+    const plugin = new UnifiedWebpackPluginV5()
+    plugin.apply(compiler as any)
+
+    const handler = getLoaderHandler()
+    const module: LoaderModule = {
+      loaders: [
+        { loader: currentContext.runtimeCssImportRewriteLoaderPath },
+        { loader: '/abs/node_modules/@mpxjs/webpack-plugin/lib/style-compiler/index.js??ruleSet[0]' },
+      ],
+    }
+
+    handler?.({}, module)
+
+    const styleIndex = module.loaders.findIndex(entry => entry.loader?.includes('@mpxjs/webpack-plugin/lib/style-compiler/index'))
+    const rewriteIndex = module.loaders.findIndex(entry => entry.loader === currentContext.runtimeCssImportRewriteLoaderPath)
+    expect(styleIndex).toBeGreaterThanOrEqual(0)
+    expect(rewriteIndex).toBeGreaterThan(styleIndex)
+    expect(module.loaders.filter(entry => entry.loader === currentContext.runtimeCssImportRewriteLoaderPath)).toHaveLength(1)
+  })
+
   it('falls back to css matcher when anchor is missing', () => {
     currentContext = createContext({ appType: 'mpx' })
     currentContext.twPatcher.majorVersion = 4
