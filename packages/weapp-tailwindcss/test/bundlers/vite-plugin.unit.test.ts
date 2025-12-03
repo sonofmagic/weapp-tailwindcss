@@ -1,6 +1,7 @@
 import type { OutputAsset, OutputChunk } from 'rollup'
 import type { HmrContext, Plugin, ResolvedConfig, TransformResult } from 'vite'
 import type { CreateJsHandlerOptions } from '@/types'
+import type * as UniAppXModule from '@/uni-app-x'
 import path from 'node:path'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 import { UnifiedViteWeappTailwindcssPlugin } from '@/bundlers/vite'
@@ -74,9 +75,15 @@ const transformUVueMock = vi.hoisted(() =>
     code: `uvue:${id}:${code}`,
   })),
 )
-vi.mock('@/uni-app-x', () => ({
+vi.mock('@/uni-app-x/transform', () => ({
   transformUVue: transformUVueMock,
 }))
+vi.mock('@/uni-app-x', async (importOriginal) => {
+  const actual = await importOriginal<typeof UniAppXModule>()
+  return {
+    ...actual,
+  }
+})
 
 const getCompilerContextMock = vi.fn<(options?: unknown) => InternalContext>(() => currentContext)
 vi.mock('@/context', () => ({

@@ -1,6 +1,5 @@
-import type { RawSourceMap } from '@ampproject/remapping'
-import type { ExistingRawSourceMap, OutputAsset, OutputChunk, SourceMap } from 'rollup'
-import type { HmrContext, Plugin, ResolvedConfig, TransformResult } from 'vite'
+import type { OutputAsset, OutputChunk } from 'rollup'
+import type { Plugin, ResolvedConfig } from 'vite'
 import type { CreateJsHandlerOptions, LinkedJsModuleResult, UserDefinedOptions } from '@/types'
 import { Buffer } from 'node:buffer'
 import path from 'node:path'
@@ -12,15 +11,14 @@ import { toCustomAttributesEntities } from '@/context/custom-attributes'
 import { createDebug } from '@/debug'
 import { setupPatchRecorder } from '@/tailwindcss/recorder'
 import { collectRuntimeClassSet, refreshTailwindRuntimeState } from '@/tailwindcss/runtime'
-import { transformUVue } from '@/uni-app-x'
+import { createUniAppXAssetTask, createUniAppXPlugins } from '@/uni-app-x'
 import { getGroupedEntries } from '@/utils'
 import { resolvePackageDir } from '@/utils/resolve-package'
 import { processCachedTask } from '../shared/cache'
 import { resolveTailwindcssImport, rewriteTailwindcssImportsInCode } from '../shared/css-imports'
 import { resolveOutputSpecifier, toAbsoluteOutputPath } from '../shared/module-graph'
 import { pushConcurrentTaskFactories } from '../shared/run-tasks'
-import { parseVueRequest } from './query'
-import { cleanUrl, formatPostcssSourceMap, isCSSRequest, slash } from './utils'
+import { cleanUrl, isCSSRequest, slash } from './utils'
 
 const debug = createDebug()
 const weappTailwindcssPackageDir = resolvePackageDir('weapp-tailwindcss')
@@ -255,6 +253,21 @@ export function UnifiedViteWeappTailwindcssPlugin(options: UserDefinedOptions = 
         },
       ]
 
+  const getResolvedConfig = () => resolvedConfig
+  const uniAppXPlugins = uniAppX
+    ? createUniAppXPlugins({
+        appType,
+        customAttributesEntities,
+        disabledDefaultTemplateHandler,
+        mainCssChunkMatcher,
+        runtimeState,
+        styleHandler,
+        jsHandler,
+        ensureRuntimeClassSet,
+        getResolvedConfig,
+      })
+    : undefined
+
   const plugins: Plugin[] = [
     ...rewritePlugins,
     {
@@ -309,6 +322,9 @@ export function UnifiedViteWeappTailwindcssPlugin(options: UserDefinedOptions = 
             }
           })
         }
+        const applyLinkedUpdates = (linked?: Record<string, LinkedJsModuleResult>) => {
+          applyLinkedResults(linked, jsEntries, handleLinkedUpdate, scheduleLinkedApply)
+        }
         const createHandlerOptions = (absoluteFilename: string, extra?: CreateJsHandlerOptions): CreateJsHandlerOptions => ({
           ...extra,
           filename: absoluteFilename,
@@ -335,7 +351,7 @@ export function UnifiedViteWeappTailwindcssPlugin(options: UserDefinedOptions = 
                 },
                 async transform() {
                   const transformed = await templateHandler(rawSource, {
-                    runtimeSet,
+                    runtimeSet: runtime,
                   })
                   onUpdate(file, rawSource, transformed)
                   debug('html handle: %s', file)
@@ -368,10 +384,10 @@ export function UnifiedViteWeappTailwindcssPlugin(options: UserDefinedOptions = 
                   },
                   async transform() {
                     const rawSource = originalSource.code
-                    const { code, linked } = await jsHandler(rawSource, runtimeSet, createHandlerOptions(absoluteFile))
+                    const { code, linked } = await jsHandler(rawSource, runtime, createHandlerOptions(absoluteFile))
                     onUpdate(file, rawSource, code)
                     debug('js handle: %s', file)
-                    applyLinkedResults(linked, jsEntries, handleLinkedUpdate, scheduleLinkedApply)
+                    applyLinkedUpdates(linked)
                     return {
                       result: code,
                     }
@@ -380,39 +396,23 @@ export function UnifiedViteWeappTailwindcssPlugin(options: UserDefinedOptions = 
               })
             }
             else if (uniAppX && originalSource.type === 'asset') {
-              const absoluteFile = toAbsoluteOutputPath(file, outDir)
-              const rawSource = originalSource.source.toString()
-              jsTaskFactories.push(async () => {
-                await processCachedTask<string>({
-                  cache,
-                  cacheKey: file,
-                  rawSource,
-                  applyResult(source) {
-                    originalSource.source = source
+              jsTaskFactories.push(
+                createUniAppXAssetTask(
+                  file,
+                  originalSource,
+                  outDir,
+                  {
+                    cache,
+                    createHandlerOptions,
+                    debug,
+                    jsHandler,
+                    onUpdate,
+                    runtimeSet: runtime,
+                    applyLinkedResults: applyLinkedUpdates,
+                    uniAppX,
                   },
-                  onCacheHit() {
-                    debug('js cache hit: %s', file)
-                  },
-                  async transform() {
-                    const currentSource = originalSource.source.toString()
-                    const { code, linked } = await jsHandler(currentSource, runtimeSet, createHandlerOptions(absoluteFile, {
-                      uniAppX,
-                      babelParserOptions: {
-                        plugins: [
-                          'typescript',
-                        ],
-                        sourceType: 'unambiguous',
-                      },
-                    }))
-                    onUpdate(file, currentSource, code)
-                    debug('js handle: %s', file)
-                    applyLinkedResults(linked, jsEntries, handleLinkedUpdate, scheduleLinkedApply)
-                    return {
-                      result: code,
-                    }
-                  },
-                })
-              })
+                ),
+              )
             }
           }
         }
@@ -463,105 +463,8 @@ export function UnifiedViteWeappTailwindcssPlugin(options: UserDefinedOptions = 
       },
     },
   ]
-  if (uniAppX) {
-    /**
-     * 参考：
-     * https://github.com/dcloudio/uni-app/blob/794d762f4c2d5f76028e604e154840d1e45155ff/packages/uni-app-uts/src/plugins/js/css.ts#L40
-     * https://github.com/dcloudio/uni-app/tree/794d762f4c2d5f76028e604e154840d1e45155ff/packages/uni-nvue-styler
-     * https://github.com/dcloudio/uni-app/blob/794d762f4c2d5f76028e604e154840d1e45155ff/packages/uni-app-uts/src/plugins/android/css.ts#L31
-     */
-    ;([undefined, 'pre'] as ('pre' | 'post' | undefined)[]).forEach((enforce) => {
-      plugins.push(
-        {
-          name: `weapp-tailwindcss:uni-app-x:css${enforce ? `:${enforce}` : ''}`,
-          enforce,
-          async transform(code, id) {
-            await runtimeState.patchPromise
-            const { query } = parseVueRequest(id)
-            if (isCSSRequest(id) || (query.vue && query.type === 'style')) {
-            // uvue 仅支持 className 选择器
-              const postcssResult = await styleHandler(code, {
-                isMainChunk: mainCssChunkMatcher(id, appType),
-                postcssOptions: {
-                  options: {
-                    from: id,
-                    map: {
-                      inline: false,
-                      annotation: false,
-                      // PostCSS 可能返回虚拟文件，因此需要启用这一项以获取源内容
-                      sourcesContent: true,
-                    // 若上游预处理器已经生成 source map，sources 中可能出现重复条目
-                    },
-                  },
-                },
-              })
-              const rawPostcssMap = postcssResult.map.toJSON()
-              const postcssMap = await formatPostcssSourceMap(
-              // rawPostcssMap.version 类型声明为字符串，实际需要数值
-                rawPostcssMap as Omit<RawSourceMap, 'version'> as ExistingRawSourceMap,
-                cleanUrl(id),
-              )
-              return {
-                code: postcssResult.css,
-                map: postcssMap as SourceMap,
-              } as TransformResult
-            }
-          },
-        },
-      )
-    })
-
-    plugins.push(
-      {
-        name: 'weapp-tailwindcss:uni-app-x:nvue',
-        enforce: 'pre',
-        async buildStart() {
-          await ensureRuntimeClassSet(true)
-        },
-        async transform(code, id) {
-          if (!/\.(?:uvue|nvue)(?:\?.*)?$/.test(id)) {
-            return
-          }
-          const isServeCommand = resolvedConfig?.command === 'serve'
-          const isWatchBuild = resolvedConfig?.command === 'build' && !!resolvedConfig.build?.watch
-          const isNonWatchBuild = resolvedConfig?.command === 'build' && !resolvedConfig.build?.watch
-          const shouldForceRefresh = isServeCommand || isWatchBuild || isNonWatchBuild
-          const currentRuntimeSet: Set<string> = shouldForceRefresh
-            ? await ensureRuntimeClassSet(true) // 热更新或循环构建时强制刷新运行时类集
-            : await ensureRuntimeClassSet()
-          const extraOptions = customAttributesEntities.length > 0 || disabledDefaultTemplateHandler
-            ? {
-                customAttributesEntities,
-                disabledDefaultTemplateHandler,
-              }
-            : undefined
-          if (extraOptions) {
-            return transformUVue(code, id, jsHandler, currentRuntimeSet, extraOptions)
-          }
-          return transformUVue(code, id, jsHandler, currentRuntimeSet)
-        },
-        async handleHotUpdate(ctx: HmrContext) {
-          if (resolvedConfig?.command !== 'serve') {
-            return
-          }
-          if (!/\.(?:uvue|nvue)$/.test(ctx.file)) {
-            return
-          }
-          // 热重载新增类名，无需等待完整重建
-          await ensureRuntimeClassSet(true)
-        },
-        async watchChange(id) {
-          if (resolvedConfig?.command !== 'build' || !resolvedConfig.build?.watch) {
-            return
-          }
-          if (!/\.(?:uvue|nvue)(?:\?.*)?$/.test(id)) {
-            return
-          }
-          // 针对 `vite build --watch` 的增量构建刷新运行时类集
-          await ensureRuntimeClassSet(true)
-        },
-      },
-    )
+  if (uniAppXPlugins) {
+    plugins.push(...uniAppXPlugins)
   }
   return plugins
 }
