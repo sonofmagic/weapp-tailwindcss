@@ -9,10 +9,12 @@ import {
   setupMpxTailwindcssRedirect,
 } from '@/shared/mpx'
 
-const installTailwindcssCssRedirectMock = vi.fn()
-vi.mock('@/shared/tailwindcss-css-redirect', () => ({
-  installTailwindcssCssRedirect: installTailwindcssCssRedirectMock,
-}))
+const installTailwindcssCssRedirectMock = vi.hoisted(() => vi.fn())
+vi.mock('@/shared/tailwindcss-css-redirect', () => {
+  return {
+    installTailwindcssCssRedirect: installTailwindcssCssRedirectMock,
+  }
+})
 
 const pkgDir = '/virtual/weapp-tailwindcss'
 

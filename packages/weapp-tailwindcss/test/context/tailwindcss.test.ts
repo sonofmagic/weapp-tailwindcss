@@ -61,7 +61,7 @@ describe('resolveTailwindcssBasedir', () => {
 
 describe('createTailwindcssPatcherFromContext', () => {
   afterEach(() => {
-    vi.doUnmock('@/tailwindcss')
+    vi.doUnmock('@/tailwindcss/patcher')
     vi.resetModules()
   })
 
@@ -71,7 +71,7 @@ describe('createTailwindcssPatcherFromContext', () => {
     const classSets = [['foo'], ['bar']]
 
     vi.resetModules()
-    vi.doMock('@/tailwindcss', () => {
+    vi.doMock('@/tailwindcss/patcher', () => {
       return {
         createTailwindcssPatcher: vi.fn((options: CreateTailwindcssPatcherOptions) => {
           calls.push(options)
@@ -166,7 +166,7 @@ describe('createTailwindcssPatcherFromContext', () => {
     })
 
     vi.resetModules()
-    vi.doMock('@/tailwindcss', () => ({ createTailwindcssPatcher }))
+    vi.doMock('@/tailwindcss/patcher', () => ({ createTailwindcssPatcher }))
 
     const { createTailwindcssPatcherFromContext } = await import('@/context/tailwindcss')
     const workspaceTemp = mkdtempSync(path.join(os.tmpdir(), 'weapp-tw-single-'))

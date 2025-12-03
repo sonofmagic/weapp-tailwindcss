@@ -5,7 +5,7 @@ import { afterEach, describe, expect, it, vi } from 'vitest'
 
 describe('tailwindcss targets', () => {
   afterEach(() => {
-    vi.doUnmock('@/tailwindcss')
+    vi.doUnmock('@/tailwindcss/patcher')
     vi.resetModules()
   })
 
@@ -35,7 +35,7 @@ describe('tailwindcss targets', () => {
       return stub
     })
 
-    vi.doMock('@/tailwindcss', () => ({ createTailwindcssPatcher }))
+    vi.doMock('@/tailwindcss/patcher', () => ({ createTailwindcssPatcher }))
 
     const { createTailwindcssPatcherFromContext } = await import('@/context/tailwindcss')
     const workspace = path.resolve('/workspace/project')
