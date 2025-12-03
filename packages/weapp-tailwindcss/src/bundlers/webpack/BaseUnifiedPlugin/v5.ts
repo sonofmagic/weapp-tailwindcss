@@ -16,7 +16,7 @@ import { resolveOutputSpecifier, toAbsoluteOutputPath } from '../../shared/modul
 import { pushConcurrentTaskFactories } from '../../shared/run-tasks'
 import { applyTailwindcssCssImportRewrite } from '../shared/css-imports'
 import { createLoaderAnchorFinders } from '../shared/loader-anchors'
-import { ensureMpxTailwindcssAliases, isMpx, patchMpxLoaderResolve, setupMpxTailwindcssRedirect } from '../shared/mpx'
+import { ensureMpxTailwindcssAliases, injectMpxCssRewritePreRules, isMpx, patchMpxLoaderResolve, setupMpxTailwindcssRedirect } from '../shared/mpx'
 import { getCacheKey } from './shared'
 
 const debug = createDebug()
@@ -122,24 +122,9 @@ export class UnifiedWebpackPluginV5 implements IBaseWebpackPlugin {
     if (shouldRewriteCssImports && isMpxApp) {
       ensureMpxTailwindcssAliases(compiler, weappTailwindcssPackageDir)
     }
-    if (runtimeCssImportRewriteLoader && shouldRewriteCssImports && cssImportRewriteLoaderOptions && this.appType === 'mpx') {
+    if (runtimeCssImportRewriteLoader && shouldRewriteCssImports && cssImportRewriteLoaderOptions && isMpxApp) {
       // Ensure CSS files（如 app.css）在进入 postcss-import 前先被重写。
-      const moduleOptions = (compiler.options.module ??= { rules: [] } as any)
-      moduleOptions.rules = moduleOptions.rules || []
-      const createRule = (match: { test?: RegExp, resourceQuery?: RegExp }) => ({
-        ...match,
-        enforce: 'pre' as const,
-        use: [
-          {
-            loader: runtimeCssImportRewriteLoader,
-            options: cssImportRewriteLoaderOptions,
-          },
-        ],
-      })
-      moduleOptions.rules.unshift(
-        createRule({ resourceQuery: /type=styles/ }),
-        createRule({ test: /\.css$/i }),
-      )
+      injectMpxCssRewritePreRules(compiler, runtimeCssImportRewriteLoader, cssImportRewriteLoaderOptions)
     }
     const createRuntimeClassSetLoaderEntry = () => ({
       loader: runtimeClassSetLoader,

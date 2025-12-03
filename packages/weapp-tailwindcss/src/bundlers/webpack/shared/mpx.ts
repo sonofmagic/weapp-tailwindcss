@@ -63,3 +63,29 @@ export function setupMpxTailwindcssRedirect(
     installTailwindcssCssRedirect(pkgDir)
   }
 }
+
+export function injectMpxCssRewritePreRules(
+  compiler: any,
+  loader: string | undefined,
+  loaderOptions: any,
+) {
+  if (!loader) {
+    return
+  }
+  const moduleOptions = (compiler.options.module ??= { rules: [] } as any)
+  moduleOptions.rules = moduleOptions.rules || []
+  const createRule = (match: { test?: RegExp, resourceQuery?: RegExp }) => ({
+    ...match,
+    enforce: 'pre' as const,
+    use: [
+      {
+        loader,
+        options: loaderOptions,
+      },
+    ],
+  })
+  moduleOptions.rules.unshift(
+    createRule({ resourceQuery: /type=styles/ }),
+    createRule({ test: /\.css$/i }),
+  )
+}
