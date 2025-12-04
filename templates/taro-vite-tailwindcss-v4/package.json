@@ -93,5 +93,6 @@
       "weapp-tailwindcss",
       "@weapp-tailwindcss/merge"
     ]
-  }
+  },
+  "packageManager": "pnpm@10.24.0"
 }

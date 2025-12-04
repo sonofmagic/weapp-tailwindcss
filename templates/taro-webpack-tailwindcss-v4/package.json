@@ -92,7 +92,9 @@
   },
   "pnpm": {
     "onlyBuiltDependencies": [
-      "@weapp-tailwindcss/merge"
+      "@weapp-tailwindcss/merge",
+      "weapp-tailwindcss"
     ]
-  }
+  },
+  "packageManager": "pnpm@10.24.0"
 }

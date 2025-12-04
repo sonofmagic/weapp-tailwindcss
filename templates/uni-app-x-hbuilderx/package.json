@@ -15,5 +15,6 @@
   },
   "dependencies": {
     "@weapp-tailwindcss/merge-v3": "^0.1.2"
-  }
+  },
+  "packageManager": "pnpm@10.24.0"
 }

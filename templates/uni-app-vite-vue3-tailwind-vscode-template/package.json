@@ -1,7 +1,7 @@
 {
   "name": "uni-app-vite-vue3-tailwind-vscode-template",
   "version": "0.0.0",
-  "packageManager": "pnpm@10.22.0",
+  "packageManager": "pnpm@10.24.0",
   "scripts": {
     "dev": "uni -p mp-weixin",
     "build": "npm run build:mp-weixin",

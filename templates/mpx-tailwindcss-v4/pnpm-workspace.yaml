@@ -4,3 +4,4 @@ ignoredBuiltDependencies:
 
 onlyBuiltDependencies:
   - weapp-tailwindcss
+  - '@weapp-tailwindcss/merge'
