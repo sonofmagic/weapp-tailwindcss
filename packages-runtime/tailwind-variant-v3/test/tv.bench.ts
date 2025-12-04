@@ -110,7 +110,19 @@ describe('tailwind-variant benchmarks', () => {
   )
 
   bench(
-    'tv slots render',
+    'tv slots render (default)',
+    () => {
+      const slots = button()
+
+      slots.base()
+      slots.icon()
+      slots.label()
+    },
+    { time: 500 },
+  )
+
+  bench(
+    'tv slots render (overrides)',
     () => {
       const slots = button({ size: 'lg' })
 

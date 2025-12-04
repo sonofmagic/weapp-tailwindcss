@@ -1,0 +1,50 @@
+{
+  "command": "pnpm --filter tailwind-variant-v3 bench",
+  "environment": {
+    "node": "v22.20.0",
+    "vitest": "4.0.15"
+  },
+  "timestamp": "2025-12-04T17:17:00Z",
+  "results": [
+    {
+      "name": "tv base render",
+      "hz": 35751442.86,
+      "mean": 0.000028,
+      "min": 0.0,
+      "max": 1.4412,
+      "samples": 17875722
+    },
+    {
+      "name": "tv variants render",
+      "hz": 133358.83,
+      "mean": 0.0075,
+      "min": 0.0063,
+      "max": 0.4173,
+      "samples": 66680
+    },
+    {
+      "name": "tv slots render (default)",
+      "hz": 34974319.3,
+      "mean": 0.0000286,
+      "min": 0.0,
+      "max": 0.0594,
+      "samples": 17487160
+    },
+    {
+      "name": "tv slots render (overrides)",
+      "hz": 309159.24,
+      "mean": 0.0032,
+      "min": 0.0027,
+      "max": 0.5105,
+      "samples": 154580
+    },
+    {
+      "name": "cn tailwind merge",
+      "hz": 3005242.08,
+      "mean": 0.0003,
+      "min": 0.0002,
+      "max": 0.4026,
+      "samples": 1502622
+    }
+  ]
+}
