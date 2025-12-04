@@ -78,7 +78,7 @@
     "uview-ui": "^2.0.38",
     "vue": "~2.6.14",
     "vuex": "^3.2.0",
-    "@weapp-tailwindcss/merge": "^2.1.2"
+    "@weapp-tailwindcss/merge-v3": "^0.1.2"
   },
   "devDependencies": {
     "@babel/plugin-syntax-typescript": "^7.27.1",
@@ -113,7 +113,7 @@
     "typescript": "^5.9.3",
     "vue-template-compiler": "^2.7.16",
     "weapp-ide-cli": "^4.1.0",
-    "weapp-tailwindcss": "^4.8.6"
+    "weapp-tailwindcss": "^4.8.8"
   },
   "browserslist": [
     "Android >= 4",

@@ -86,7 +86,7 @@
     "typescript": "^5.9.3",
     "vite": "^7.1.3",
     "weapp-ide-cli": "^4.1.0",
-    "weapp-tailwindcss": "^4.8.6"
+    "weapp-tailwindcss": "^4.8.8"
   },
   "pnpm": {
     "onlyBuiltDependencies": [

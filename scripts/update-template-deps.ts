@@ -47,6 +47,7 @@ const DEFAULT_YARN_VERSION = '1.22.22'
 const COPY_IGNORE_DIRS = new Set(['node_modules', '.git', '.idea', '.turbo', 'dist'])
 const tailwindVersionCache = new Map<string, string>()
 const latestVersionCache = new Map<string, string>()
+const ROOT_PNPM_PACKAGE_MANAGER = readRootPnpmPackageManager()
 
 function buildCommandEnv(overrides: CommandEnv = {}): NodeJS.ProcessEnv {
   const baseEnv: NodeJS.ProcessEnv = { ...process.env }
@@ -65,6 +66,24 @@ function ensureDir(dir: string): void {
   if (!existsSync(dir)) {
     mkdirSync(dir, { recursive: true })
   }
+}
+
+function readRootPnpmPackageManager(): string | null {
+  const pkgPath = path.join(ROOT, 'package.json')
+  if (!existsSync(pkgPath)) {
+    return null
+  }
+  try {
+    const content = readFileSync(pkgPath, 'utf8')
+    const pkg = JSON.parse(content) as { packageManager?: string }
+    if (typeof pkg.packageManager === 'string' && pkg.packageManager.startsWith('pnpm')) {
+      return pkg.packageManager
+    }
+  }
+  catch {
+    // 忽略读取失败，按未配置处理
+  }
+  return null
 }
 
 function readWorkspacePackageVersion(relativeDir: string): string {
@@ -149,6 +168,7 @@ async function resolveBaseTargets(): Promise<TargetPackage[]> {
       version: weappTailwindcssVersion,
       range: `^${weappTailwindcssVersion}`,
       addIfMissing: 'devDependencies',
+      ensurePnpmOnlyBuilt: true,
     },
     {
       name: 'weapp-ide-cli',
@@ -271,10 +291,15 @@ function ensureSection(pkg: PackageJson, field: 'dependencies' | 'devDependencie
   return created
 }
 
+function arraysShallowEqual(a: string[], b: string[]): boolean {
+  return a.length === b.length && a.every((item, index) => item === b[index])
+}
+
 function ensurePnpmOnlyBuiltDependencies(
   pkg: PackageJson,
   targets: TargetPackage[],
   manager: ManagerInfo,
+  remove: string[] = [],
 ): boolean {
   if (manager.name !== 'pnpm') {
     return false
@@ -288,7 +313,10 @@ function ensurePnpmOnlyBuiltDependencies(
     ),
   )
 
-  if (required.length === 0) {
+  const removal = new Set(remove)
+  const hasWork = required.length > 0 || removal.size > 0
+
+  if (!hasWork) {
     return false
   }
 
@@ -302,23 +330,20 @@ function ensurePnpmOnlyBuiltDependencies(
 
   const config = pnpmConfig as PnpmConfig
   const rawOnlyBuilt = config.onlyBuiltDependencies
+  const originalOnlyBuilt = Array.isArray(rawOnlyBuilt)
+    ? rawOnlyBuilt.filter((item): item is string => typeof item === 'string')
+    : []
 
-  let onlyBuilt: string[]
-  if (Array.isArray(rawOnlyBuilt)) {
-    const allStrings = rawOnlyBuilt.every(item => typeof item === 'string')
-    if (allStrings) {
-      onlyBuilt = rawOnlyBuilt as string[]
-    }
-    else {
-      onlyBuilt = rawOnlyBuilt.filter((item): item is string => typeof item === 'string')
-      changed = true
-    }
+  if (Array.isArray(rawOnlyBuilt) && originalOnlyBuilt.length !== rawOnlyBuilt.length) {
+    changed = true
   }
-  else {
-    onlyBuilt = []
-    if (rawOnlyBuilt !== undefined) {
-      changed = true
-    }
+  else if (!Array.isArray(rawOnlyBuilt) && rawOnlyBuilt !== undefined) {
+    changed = true
+  }
+
+  const onlyBuilt = originalOnlyBuilt.filter(name => !removal.has(name))
+  if (onlyBuilt.length !== originalOnlyBuilt.length) {
+    changed = true
   }
 
   for (const name of required) {
@@ -328,8 +353,23 @@ function ensurePnpmOnlyBuiltDependencies(
     }
   }
 
-  if (changed) {
+  if (onlyBuilt.length === 0 && !required.length) {
+    if ('onlyBuiltDependencies' in config) {
+      delete config.onlyBuiltDependencies
+      changed = true
+    }
+    if (Object.keys(config).length === 0) {
+      delete pkg.pnpm
+      changed = true
+    }
+    return changed
+  }
+
+  if (!Array.isArray(rawOnlyBuilt) || !arraysShallowEqual(onlyBuilt, originalOnlyBuilt)) {
     config.onlyBuiltDependencies = onlyBuilt
+    if (!changed) {
+      changed = true
+    }
   }
 
   return changed
@@ -698,12 +738,26 @@ async function processTemplate(
     ...tailwindResolution.targets,
   ])
   const manager = detectManager(templateDir, pkg)
+
+  let packageManagerChanged = false
+  if (manager.name === 'pnpm' && ROOT_PNPM_PACKAGE_MANAGER) {
+    if (pkg.packageManager !== ROOT_PNPM_PACKAGE_MANAGER) {
+      pkg.packageManager = ROOT_PNPM_PACKAGE_MANAGER
+      packageManagerChanged = true
+    }
+  }
+
   const removalChanged = removePackageReferences(pkg, tailwindResolution.removePackages)
   const { changed: rangeChanged, touched: changedTargets } = updateDependencyRange(pkg, relevantTargets)
   const depsChanged = removalChanged || rangeChanged
-  const pnpmChanged = ensurePnpmOnlyBuiltDependencies(pkg, relevantTargets, manager)
+  const pnpmChanged = ensurePnpmOnlyBuiltDependencies(
+    pkg,
+    relevantTargets,
+    manager,
+    tailwindResolution.removePackages,
+  )
 
-  if (depsChanged || pnpmChanged) {
+  if (depsChanged || pnpmChanged || packageManagerChanged) {
     writeFileSync(pkgPath, `${JSON.stringify(pkg, null, indent)}\n`)
   }
 

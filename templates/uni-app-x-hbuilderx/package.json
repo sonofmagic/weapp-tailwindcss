@@ -5,15 +5,15 @@
   },
   "devDependencies": {
     "tailwindcss": "^3.4.18",
-    "weapp-tailwindcss": "^4.8.6"
+    "weapp-tailwindcss": "^4.8.8"
   },
   "pnpm": {
     "onlyBuiltDependencies": [
       "weapp-tailwindcss",
-      "@weapp-tailwindcss/merge"
+      "@weapp-tailwindcss/merge-v3"
     ]
   },
   "dependencies": {
-    "@weapp-tailwindcss/merge": "^2.1.2"
+    "@weapp-tailwindcss/merge-v3": "^0.1.2"
   }
 }
