@@ -65,7 +65,7 @@
     "@types/file-saver": "^2.0.7",
     "@types/node": "^24.10.1",
     "autoprefixer": "catalog:autoprefixer10",
-    "baseline-browser-mapping": "^2.8.32",
+    "baseline-browser-mapping": "^2.9.0",
     "cross-env": "catalog:crossEnv",
     "docusaurus-plugin-llms": "^0.2.2",
     "docusaurus-plugin-sass": "^0.2.6",
