@@ -39,6 +39,7 @@
     "build": "tsdown",
     "test": "vitest run",
     "test:dev": "vitest",
+    "bench": "vitest bench test/tv.bench.ts",
     "release": "pnpm publish",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix"
