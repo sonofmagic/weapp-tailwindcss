@@ -75,7 +75,7 @@
     "@tarojs/vite-runner": "catalog:taro4",
     "@types/react": "^19.1.13",
     "@vitejs/plugin-react": "^5.1.1",
-    "@weapp-tailwindcss/merge": "catalog:weappMerge",
+    "@weapp-tailwindcss/merge-v3": "workspace:*",
     "autoprefixer": "catalog:autoprefixer10",
     "babel-preset-taro": "catalog:taro4",
     "eslint": "^9.39.1",

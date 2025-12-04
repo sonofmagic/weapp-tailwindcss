@@ -15,7 +15,7 @@
   "author": "ice breaker <1324318532@qq.com>",
   "license": "",
   "devDependencies": {
-    "@weapp-tailwindcss/merge": "catalog:weappMerge",
+    "@weapp-tailwindcss/merge-v3": "workspace:*",
     "autoprefixer": "catalog:autoprefixer10",
     "miniprogram-api-typings": "catalog:miniApiTypings",
     "postcss": "^8.4.49",

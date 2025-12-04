@@ -25,6 +25,7 @@
     "cross-env": "catalog:crossEnv",
     "postcss": "catalog:postcss85",
     "tailwindcss": "catalog:tailwindcss3",
+    "@weapp-tailwindcss/merge-v3": "workspace:*",
     "typescript": "catalog:typescript59",
     "weapp-tailwindcss": "workspace:*"
   }

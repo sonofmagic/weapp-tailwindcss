@@ -1,10 +1,8 @@
-import { create as createRuntime, twMerge } from '@weapp-tailwindcss/merge'
+import { create as createRuntime, twMerge } from '@weapp-tailwindcss/merge-v3'
 import { cva } from '@weapp-tailwindcss/cva'
 import { tv } from '@weapp-tailwindcss/variants'
-import { twMerge as twMergeV3 } from '@weapp-tailwindcss/merge-v3'
 
 const defaultMerge = twMerge
-const twMergeV4 = twMerge
 const { twMerge: mergeWithoutEscape } = createRuntime({ escape: false })
 const { twMerge: mergeWithoutUnescape } = createRuntime({ unescape: false })
 const { twMerge: mergePassthrough } = createRuntime({ escape: false, unescape: false })
@@ -13,17 +11,7 @@ const basePreviewItems = ['A', 'B', 'C']
 
 const versionComparison = [
   {
-    label: 'twMerge v3 (Tailwind CSS v3)',
-    code: "twMergeV3('p-1 p-2 p-0.5 text-[34px] text-[#ececec]')",
-    result: twMergeV3('p-1 p-2 p-0.5 text-[34px] text-[#ececec]'),
-  },
-  {
-    label: 'twMerge v4 (Tailwind CSS v4)',
-    code: "twMergeV4('p-1 p-2 p-0.5 text-[34px] text-[#ececec]')",
-    result: twMergeV4('p-1 p-2 p-0.5 text-[34px] text-[#ececec]'),
-  },
-  {
-    label: '默认入口 (tailwindcss v4)',
+    label: 'twMerge (Tailwind CSS v3 runtime)',
     code: "twMerge('p-1 p-2 p-0.5 text-[34px] text-[#ececec]')",
     result: defaultMerge('p-1 p-2 p-0.5 text-[34px] text-[#ececec]'),
   },

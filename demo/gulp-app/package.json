@@ -53,7 +53,7 @@
     "@types/gulp-sass": "^6.0.0",
     "@types/gulp-util": "^3.0.41",
     "@types/node": "^24.10.1",
-    "@weapp-tailwindcss/merge": "catalog:weappMerge",
+    "@weapp-tailwindcss/merge-v3": "workspace:*",
     "autoprefixer": "catalog:autoprefixer10",
     "cross-env": "catalog:crossEnv",
     "eslint": "^9.39.1",

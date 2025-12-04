@@ -26,7 +26,6 @@
   },
   "devDependencies": {
     "@weapp-tailwindcss/cva": "workspace:*",
-    "@weapp-tailwindcss/merge": "workspace:*",
     "@weapp-tailwindcss/merge-v3": "workspace:*",
     "@weapp-tailwindcss/variants": "workspace:*",
     "autoprefixer": "catalog:autoprefixer10",

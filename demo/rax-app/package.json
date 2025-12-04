@@ -42,7 +42,7 @@
   "devDependencies": {
     "@iceworks/spec": "^1.6.0",
     "@types/rax": "^1.0.21",
-    "@weapp-tailwindcss/merge": "catalog:weappMerge",
+    "@weapp-tailwindcss/merge-v3": "workspace:*",
     "autoprefixer": "catalog:autoprefixer10",
     "cross-env": "catalog:crossEnv",
     "eslint": "^9.39.1",

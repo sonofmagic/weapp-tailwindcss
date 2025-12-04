@@ -1,5 +1,5 @@
 import { cva } from '@weapp-tailwindcss/cva'
-import { twMerge } from '@weapp-tailwindcss/merge'
+import { twMerge } from '@weapp-tailwindcss/merge-v3'
 
 const button = cva(['font-semibold', 'border', 'rounded'], {
   variants: {

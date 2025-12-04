@@ -1,5 +1,5 @@
 // app.ts
-import { create } from '@weapp-tailwindcss/merge'
+import { create } from '@weapp-tailwindcss/merge-v3'
 
 const { twMerge } = create(
   // {
