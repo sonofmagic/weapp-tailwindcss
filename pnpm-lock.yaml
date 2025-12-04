@@ -3693,6 +3693,8 @@ importers:
         specifier: ^2.1.1
         version: 2.1.1
 
+  packages-runtime/tailwind-variant-v3: {}
+
   packages-runtime/theme-transition: {}
 
   packages-runtime/typography:
@@ -3752,6 +3754,8 @@ importers:
       tailwind-variants:
         specifier: ^3.2.2
         version: 3.2.2(tailwind-merge@3.4.0)(tailwindcss@4.1.17)
+
+  packages-runtime/variants-v3: {}
 
   packages/babel:
     dependencies:
