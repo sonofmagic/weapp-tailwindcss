@@ -66,22 +66,30 @@ module.exports = {
 }
 ```
 
-#### postcss.config.js
+#### PostCSS 内联配置
 
-接着在原先的 `postcss.config.js` 基础上，加上 `tailwindcss` 和 `postcss-rem-to-responsive-pixel`
+通过 `postcssInlineConfig` 把 `tailwindcss` 注册到 mpx 插件链，无需再维护单独的 `postcss.config.js`：
 
 ```js
+const tailwindcss = require('tailwindcss')
+const autoprefixer = require('autoprefixer')
+
 module.exports = {
-  plugins: [
-    require('tailwindcss')(),
-    require('autoprefixer')({ remove: false }),
-    require('postcss-rem-to-responsive-pixel')({
-      // 下面这段配置项的意思是，1rem转化为32rpx，* 的意思是所有的 rem 会被转化
-      rootValue: 32,
-      propList: ['*'],
-      transformUnit: 'rpx'
-    })
-  ]
+  pluginOptions: {
+    mpx: {
+      plugin: {
+        postcssInlineConfig: {
+          ignoreConfigFile: true,
+          plugins: [
+            tailwindcss(),
+            autoprefixer({ remove: false })
+            // 如果需要 rem 转 rpx，可加上:
+            // require('postcss-rem-to-responsive-pixel')({ rootValue: 32, propList: ['*'], transformUnit: 'rpx' })
+          ]
+        }
+      }
+    }
+  }
 }
 ```
 
@@ -91,17 +99,29 @@ module.exports = {
 
 ```js
 const { defineConfig } = require('@vue/cli-service')
-const { MpxWeappTailwindcssWebpackPluginV5 } = require('weapp-tailwindcss-webpack-plugin')
+const { UnifiedWebpackPluginV5 } = require('weapp-tailwindcss/webpack')
+const tailwindcss = require('tailwindcss')
+const autoprefixer = require('autoprefixer')
 module.exports = defineConfig({
   pluginOptions: {
     mpx: {
       srcMode: 'wx',
-      plugin: {},
+      plugin: {
+        postcssInlineConfig: {
+          ignoreConfigFile: true,
+          plugins: [
+            tailwindcss(),
+            autoprefixer({ remove: false })
+          ]
+        }
+      },
       loader: {}
     }
   },
   configureWebpack(config) {
-    config.plugins.push(new MpxWeappTailwindcssWebpackPluginV5())
+    config.plugins.push(new UnifiedWebpackPluginV5({
+      rem2rpx: true
+    }))
   }
 })
 ```

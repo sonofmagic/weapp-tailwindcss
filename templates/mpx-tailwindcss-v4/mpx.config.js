@@ -1,12 +1,19 @@
 const { defineConfig } = require('@vue/cli-service')
 const { UnifiedWebpackPluginV5 } = require('weapp-tailwindcss/webpack')
 const path = require('path')
+const tailwindPostcss = require('@tailwindcss/postcss')
 
 module.exports = defineConfig({
   outputDir: `dist/${process.env.MPX_CURRENT_TARGET_MODE}`,
   pluginOptions: {
     mpx: {
       plugin: {
+        postcssInlineConfig: {
+          ignoreConfigFile: true,
+          plugins: [
+            tailwindPostcss()
+          ]
+        },
         srcMode: 'wx',
         hackResolveBuildDependencies: ({ files, resolveDependencies }) => {
           const path = require('path')
@@ -17,7 +24,7 @@ module.exports = defineConfig({
           }
         }
       },
-      loader: {}
+      loader: {},
     }
   },
   /**

@@ -18,11 +18,17 @@ npm install -D tailwindcss @tailwindcss/postcss postcss weapp-tailwindcss
 const { defineConfig } = require('@vue/cli-service')
 const { UnifiedWebpackPluginV5 } = require('weapp-tailwindcss/webpack')
 const path = require('node:path')
+const tailwindPostcss = require('@tailwindcss/postcss')
 module.exports = defineConfig({
   outputDir: `dist/${process.env.MPX_CURRENT_TARGET_MODE}`,
   pluginOptions: {
     mpx: {
       plugin: {
+        postcssInlineConfig: {
+          // tailwindcss@4 需要在此处注册 @tailwindcss/postcss，详见 templates/mpx-tailwindcss-v4/mpx.config.js
+          ignoreConfigFile: true,
+          plugins: [tailwindPostcss()]
+        },
         srcMode: 'wx',
         hackResolveBuildDependencies: ({ files, resolveDependencies }) => {
           const path = require('path')
@@ -41,6 +47,7 @@ module.exports = defineConfig({
     // highlight-start
     config.plugins.push(
       new UnifiedWebpackPluginV5({
+        appType: 'mpx',
         rem2rpx: true,
         cssEntries: [
           // 你 @import "weapp-tailwindcss"; 那个文件绝对路径
@@ -54,17 +61,7 @@ module.exports = defineConfig({
 ```
 
 > tailwindcss@4 必须配置 `cssEntries` 并且使用绝对路径，否则 `tailwindcss` 生成的类名不会参与转译。
-
-添加 `postcss.config.js` 注册 `@tailwindcss/postcss`
-
-```js title="postcss.config.js"
-module.exports = {
-  plugins: [
-    require('@tailwindcss/postcss')()
-  ]
-}
-```
-
+> tailwindcss@4 下必须在 `mpx.config.js` 里用 `postcssInlineConfig` 注册 `@tailwindcss/postcss`（同仓库 `templates/mpx-tailwindcss-v4/mpx.config.js` 的写法），否则插件不会生效，无需再单独维护 `postcss.config.js`。
 
 ## 添加样式
 

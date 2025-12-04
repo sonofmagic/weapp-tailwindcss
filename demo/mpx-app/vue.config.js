@@ -1,12 +1,21 @@
 const { defineConfig } = require('@vue/cli-service')
 const { UnifiedWebpackPluginV5 } = require('weapp-tailwindcss/webpack')
 const bench = require('../bench.cjs')('mpx')
+const tailwindcss = require('tailwindcss')
+const autoprefixer = require('autoprefixer')
 
 module.exports = defineConfig({
   pluginOptions: {
     mpx: {
       srcMode: 'wx',
       plugin: {
+        postcssInlineConfig: {
+          ignoreConfigFile: true,
+          plugins: [
+            tailwindcss(),
+            autoprefixer({ remove: false })
+          ]
+        },
         hackResolveBuildDependencies: ({ files, resolveDependencies }) => {
           const path = require('path')
           const packageJSONPath = path.resolve('package.json')
@@ -36,6 +45,7 @@ module.exports = defineConfig({
         // console.log('UnifiedWebpackPluginV5 onEnd:', performance.now() - start, 'ms')
       },
       rem2rpx: true,
+      appType: 'mpx'
     }))
   },
 })

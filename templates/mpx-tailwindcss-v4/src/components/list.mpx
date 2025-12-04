@@ -1,6 +1,6 @@
 <template>
-  <view class="bg-[#434344]">
-    <view wx:for="{{listData}}" wx:key="*this" class="text-[#ced41e]">{{item}}</view>
+  <view class="bg-[#434344] active:bg-[#543210]">
+    <view wx:for="{{listData}}" wx:key="*this">{{item}}</view>
   </view>
 </template>
 
@@ -9,7 +9,8 @@ import { createComponent } from '@mpxjs/core'
 
 createComponent({
   data: {
-    listData: ['手机', '电视', '电脑']
+    listData: ['手机', '电视', '电脑'],
+    clsnm: 'bg-[#010101] active:bg-[#989898]'
   },
   options: {
     addGlobalClass: true
