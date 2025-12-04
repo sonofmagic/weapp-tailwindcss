@@ -1,6 +1,6 @@
 import type { extendTailwindMerge } from 'tailwind-merge'
 import type { TVGeneratedScreens } from './generated'
-import type { TVVariants } from './index'
+import type { TVVariants } from './types'
 
 type MergeConfig = Parameters<typeof extendTailwindMerge>[0]
 type LegacyMergeConfig = Extract<MergeConfig, { extend?: unknown }>['extend']

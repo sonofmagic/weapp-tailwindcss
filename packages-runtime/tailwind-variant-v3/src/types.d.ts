@@ -3,6 +3,8 @@ import type { ClassNameValue as ClassValue } from 'tailwind-merge'
 import type { TVConfig, TWMConfig } from './config'
 import type { TVGeneratedScreens } from './generated'
 
+export type { TVConfig, TWMConfig } from './config'
+
 /**
  * ----------------------------------------
  * Base Types
@@ -48,7 +50,7 @@ export declare const cnBase: <T extends CnOptions>(...classes: T) => CnReturn
 export declare const cn: <T extends CnOptions>(...classes: T) => (config?: TWMConfig) => CnReturn
 
 // compare if the value is true or array of values
-export type isTrueOrArray<T> = T extends true | unknown[] ? true : false
+export type isTrueOrArray<T> = [Extract<T, true | unknown[]>] extends [never] ? false : true
 
 export type WithInitialScreen<T extends Array<string>> = ['initial', ...T]
 
@@ -412,11 +414,17 @@ export interface CreateTV<RV extends TVConfig['responsiveVariants'] = undefined>
   ): TVReturnType<V, S, B, C & RV, EV, ES, E>
 }
 
+export type CreateTVFactory = <
+  RV extends TVConfig['responsiveVariants'] = undefined,
+>(
+  config: TVConfig & { responsiveVariants?: RV },
+) => CreateTV<RV>
+
 // main function
 export declare const tv: TV
 
 export declare function createTV<T extends TVConfig['responsiveVariants']>(
-  config: TVConfig & T,
+  config: TVConfig & { responsiveVariants?: T },
 ): CreateTV<T>
 
 export declare const defaultConfig: TVConfig

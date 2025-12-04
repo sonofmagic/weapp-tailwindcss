@@ -24,9 +24,6 @@ expect.extend({
             this.utils.printDiffOrStringify(
               normalizedExpected,
               normalizedReceived,
-              'Expected',
-              'Received',
-              this.expand !== false,
             )}`
         )
       },

@@ -1,36 +1,47 @@
-export function falsyToString(value) {
+export function falsyToString<T>(value: T): T | string {
   return typeof value === 'boolean' ? `${value}` : value === 0 ? '0' : value
 }
 
-export function isEmptyObject(obj) {
+export function isEmptyObject(obj: unknown): obj is Record<string, never> {
   return !obj || typeof obj !== 'object' || Object.keys(obj).length === 0
 }
 
-export const isEqual = (obj1, obj2) => JSON.stringify(obj1) === JSON.stringify(obj2)
+export function isEqual(obj1: object, obj2: object): boolean {
+  return JSON.stringify(obj1) === JSON.stringify(obj2)
+}
 
-export const isBoolean = value => typeof value === 'boolean'
+export function isBoolean(value: unknown): value is boolean {
+  return typeof value === 'boolean'
+}
 
-function flat(arr, target) {
+function flat(arr: unknown[], target: unknown[]): void {
   arr.forEach((el) => {
     if (Array.isArray(el)) {
       flat(el, target)
     }
-    else { target.push(el) }
+    else {
+      target.push(el)
+    }
   })
 }
 
-export function flatArray(arr) {
-  const flattened = []
+export function flatArray(arr: unknown[]): unknown[] {
+  const flattened: unknown[] = []
 
   flat(arr, flattened)
 
   return flattened
 }
 
-export const flatMergeArrays = (...arrays) => flatArray(arrays).filter(Boolean)
+export function flatMergeArrays(...arrays: unknown[]): unknown[] {
+  return flatArray(arrays).filter(Boolean)
+}
 
-export function mergeObjects(obj1, obj2) {
-  const result = {}
+export function mergeObjects(
+  obj1: Record<string, any>,
+  obj2: Record<string, any>,
+): Record<string, any> {
+  const result: Record<string, any> = {}
   const keys1 = Object.keys(obj1)
   const keys2 = Object.keys(obj2)
 
@@ -43,7 +54,7 @@ export function mergeObjects(obj1, obj2) {
         result[key] = flatMergeArrays(val2, val1)
       }
       else if (typeof val1 === 'object' && typeof val2 === 'object') {
-        result[key] = mergeObjects(val1, val2)
+        result[key] = mergeObjects(val1 as Record<string, any>, val2 as Record<string, any>)
       }
       else {
         result[key] = `${val2} ${val1}`
@@ -63,9 +74,9 @@ export function mergeObjects(obj1, obj2) {
   return result
 }
 
-export function removeExtraSpaces(str) {
+export function removeExtraSpaces(str: string | undefined): string {
   if (!str || typeof str !== 'string') {
-    return str
+    return ''
   }
 
   return str.replace(/\s+/g, ' ').trim()

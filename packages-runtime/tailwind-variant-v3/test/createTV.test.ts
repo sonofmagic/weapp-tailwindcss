@@ -1,6 +1,7 @@
-import { describe, expect, it } from 'vitest'
+import type { TVGeneratedScreens } from '../src/index'
 
-import { createTV } from '../src/index.js'
+import { describe, expect, it } from 'vitest'
+import { createTV } from '../src/index'
 import './matchers'
 
 describe('createTV', () => {
@@ -23,9 +24,11 @@ describe('createTV', () => {
 })
 
 describe('CreateTV - ResponsiveVariants', () => {
+  const responsiveScreens: TVGeneratedScreens[] = ['sm', 'md', 'lg']
+
   it('should work with multiple screenVariants single values', () => {
     const tv = createTV({
-      responsiveVariants: ['sm', 'md', 'lg'],
+      responsiveVariants: responsiveScreens,
     })
     const button = tv({
       base: 'base--styles',
@@ -92,7 +95,7 @@ describe('CreateTV - ResponsiveVariants', () => {
 
   it('should work with multiple screenVariants multiple values (strings)', () => {
     const tv = createTV({
-      responsiveVariants: ['sm', 'md', 'lg'],
+      responsiveVariants: responsiveScreens,
     })
 
     const button = tv({
@@ -184,7 +187,7 @@ describe('CreateTV - ResponsiveVariants', () => {
 
   it('should work with multiple screenVariants multiple values (array)', () => {
     const tv = createTV({
-      responsiveVariants: ['sm', 'md', 'lg'],
+      responsiveVariants: responsiveScreens,
     })
 
     const button = tv({
@@ -276,7 +279,7 @@ describe('CreateTV - ResponsiveVariants', () => {
 
   it('should work with multiple screenVariants single values and slots', () => {
     const tv = createTV({
-      responsiveVariants: ['sm', 'md', 'lg'],
+      responsiveVariants: responsiveScreens,
     })
     const menu = tv({
       base: 'base--styles',
@@ -382,7 +385,7 @@ describe('CreateTV - ResponsiveVariants', () => {
 
   it('should not include a variant if it is not defined in the responsiveVariants key', () => {
     const tv = createTV({
-      responsiveVariants: ['sm', 'md', 'lg'],
+      responsiveVariants: responsiveScreens,
     })
 
     const menu = tv({
@@ -406,7 +409,6 @@ describe('CreateTV - ResponsiveVariants', () => {
         sm: 'secondary',
         md: 'primary',
         lg: 'secondary',
-        // @ts-expect-error `xl` is not a valid screen variant
         xl: 'success',
       },
       size: {

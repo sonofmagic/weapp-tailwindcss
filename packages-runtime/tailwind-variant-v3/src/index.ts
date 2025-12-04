@@ -1,5 +1,13 @@
+import type { TVGeneratedScreens } from './generated'
+import type {
+  CnOptions,
+  CnReturn,
+  CreateTVFactory,
+  TV,
+  TVConfig,
+  TWMConfig,
+} from './types'
 import { extendTailwindMerge, twMerge as twMergeBase } from 'tailwind-merge'
-
 import {
   falsyToString,
   flatArray,
@@ -8,54 +16,88 @@ import {
   isEqual,
   mergeObjects,
   removeExtraSpaces,
-} from './utils.js'
+} from './utils'
 
-export const defaultConfig = {
+export type { TVGeneratedScreens } from './generated'
+export type {
+  ClassProp,
+  ClassValue,
+  CnOptions,
+  CnReturn,
+  CreateTVFactory,
+  isTrueOrArray,
+  OmitUndefined,
+  StringToBoolean,
+  TV,
+  TVCompoundSlots,
+  TVCompoundVariants,
+  TVConfig,
+  TVDefaultVariants,
+  TVProps,
+  TVReturnProps,
+  TVReturnType,
+  TVScreenPropsValue,
+  TVVariantKeys,
+  TVVariants,
+  TWMConfig,
+  VariantProps,
+  WithInitialScreen,
+} from './types'
+
+export const defaultConfig: TVConfig = {
   twMerge: true,
   twMergeConfig: {},
   responsiveVariants: false,
 }
 
-export const voidEmpty = value => (value || undefined)
+export function voidEmpty<T>(value: T): T | undefined {
+  return value || undefined
+}
 
-export const cnBase = (...classes) => voidEmpty(flatArray(classes).filter(Boolean).join(' '))
+export function cnBase(...classes: CnOptions): CnReturn {
+  return voidEmpty(flatArray(classes).filter(Boolean).join(' '))
+}
 
-let cachedTwMerge = null
-let cachedTwMergeConfig = {}
+type TailwindMergeConfig = NonNullable<TWMConfig['twMergeConfig']> | Record<string, never>
+
+let cachedTwMerge: typeof twMergeBase | null = null
+let cachedTwMergeConfig: TailwindMergeConfig = {}
 let didTwMergeConfigChange = false
 
-export function cn(...classes) {
-  return (config) => {
+export function cn<T extends CnOptions>(...classes: T) {
+  return (config: TWMConfig = defaultConfig) => {
     if (!config.twMerge) {
-      return cnBase(classes)
+      return cnBase(...classes)
     }
 
     if (!cachedTwMerge || didTwMergeConfigChange) {
       didTwMergeConfigChange = false
-      cachedTwMerge = isEmptyObject(cachedTwMergeConfig)
+      const activeMergeConfig = cachedTwMergeConfig as Record<string, any>
+
+      cachedTwMerge = isEmptyObject(activeMergeConfig)
         ? twMergeBase
         : extendTailwindMerge({
-            ...cachedTwMergeConfig,
+            ...activeMergeConfig,
             extend: {
               // Support for legacy tailwind-merge config shape
-              theme: cachedTwMergeConfig.theme,
-              classGroups: cachedTwMergeConfig.classGroups,
-              conflictingClassGroupModifiers: cachedTwMergeConfig.conflictingClassGroupModifiers,
-              conflictingClassGroups: cachedTwMergeConfig.conflictingClassGroups,
+              theme: activeMergeConfig.theme,
+              classGroups: activeMergeConfig.classGroups,
+              conflictingClassGroupModifiers: activeMergeConfig.conflictingClassGroupModifiers,
+              conflictingClassGroups: activeMergeConfig.conflictingClassGroups,
               // Support for new tailwind-merge config shape
-              ...cachedTwMergeConfig.extend,
+              ...activeMergeConfig.extend,
             },
           })
     }
 
-    return voidEmpty(cachedTwMerge(cnBase(classes)))
+    return voidEmpty(cachedTwMerge(cnBase(...classes)))
   }
 }
 
-function joinObjects(obj1, obj2) {
+function joinObjects(obj1: Record<string, any>, obj2: Record<string, any>) {
   for (const key in obj2) {
     if (Object.prototype.hasOwnProperty.call(obj1, key)) {
-      obj1[key] = cnBase(obj1[key], obj2[key])
+      obj1[key] = cnBase(obj1[key] as any, obj2[key])
     }
     else {
       obj1[key] = obj2[key]
@@ -65,7 +107,7 @@ function joinObjects(obj1, obj2) {
   return obj1
 }
 
-export function tv(options, configProp) {
+function tvImplementation(options: Record<string, any>, configProp?: TVConfig) {
   const {
     extend = null,
     slots: slotProps = {},
@@ -75,7 +117,7 @@ export function tv(options, configProp) {
     defaultVariants: defaultVariantsProps = {},
   } = options
 
-  const config = { ...defaultConfig, ...configProp }
+  const config: TVConfig = { ...defaultConfig, ...configProp }
 
   const base = extend?.base ? cnBase(extend.base, options?.base) : options?.base
   const variants
@@ -88,9 +130,13 @@ export function tv(options, configProp) {
       : defaultVariantsProps
 
   // save twMergeConfig to the cache
-  if (!isEmptyObject(config.twMergeConfig) && !isEqual(config.twMergeConfig, cachedTwMergeConfig)) {
-    didTwMergeConfigChange = true
-    cachedTwMergeConfig = config.twMergeConfig
+  const incomingMergeConfig = config.twMergeConfig
+
+  if (incomingMergeConfig && !isEmptyObject(incomingMergeConfig)) {
+    if (!isEqual(incomingMergeConfig, cachedTwMergeConfig)) {
+      didTwMergeConfigChange = true
+      cachedTwMergeConfig = incomingMergeConfig as TailwindMergeConfig
+    }
   }
 
   const isExtendedSlotsEmpty = isEmptyObject(extend?.slots)
@@ -115,9 +161,11 @@ export function tv(options, configProp) {
     ? compoundVariantsProps
     : flatMergeArrays(extend?.compoundVariants, compoundVariantsProps)
 
-  const component = (props) => {
+  const component = (propsParam?: Record<string, any>) => {
+    const props = propsParam ?? {}
+
     if (isEmptyObject(variants) && isEmptyObject(slotProps) && isExtendedSlotsEmpty) {
-      return cn(base, props?.class, props?.className)(config)
+      return cn(base, propsParam?.class, propsParam?.className)(config)
     }
 
     if (compoundVariants && !Array.isArray(compoundVariants)) {
@@ -132,8 +180,13 @@ export function tv(options, configProp) {
       )
     }
 
-    const getScreenVariantValues = (screen, screenVariantValue, acc = [], slotKey) => {
-      let result = acc
+    const getScreenVariantValues = (
+      screen: string,
+      screenVariantValue: any,
+      acc: any = [],
+      slotKey?: string,
+    ) => {
+      let result: any = acc
 
       if (typeof screenVariantValue === 'string') {
         result = result.concat(
@@ -178,14 +231,19 @@ export function tv(options, configProp) {
       return result
     }
 
-    const getVariantValue = (variant, vrs = variants, slotKey = null, slotProps = null) => {
+    const getVariantValue = (
+      variant: string,
+      vrs: Record<string, any> = variants,
+      slotKey: string | null = null,
+      slotProps: Record<string, any> | null = null,
+    ) => {
       const variantObj = vrs[variant]
 
       if (!variantObj || isEmptyObject(variantObj)) {
         return null
       }
 
-      const variantProp = slotProps?.[variant] ?? props?.[variant]
+      const variantProp = slotProps?.[variant] ?? propsParam?.[variant]
 
       if (variantProp === null) {
         return null
@@ -199,11 +257,14 @@ export function tv(options, configProp) {
           || config.responsiveVariants === true
 
       let defaultVariantProp = defaultVariants?.[variant]
-      let screenValues = []
+      let screenValues: any = []
 
       if (typeof variantKey === 'object' && responsiveVarsEnabled) {
-        for (const [screen, screenVariantKey] of Object.entries(variantKey)) {
-          const screenVariantValue = variantObj[screenVariantKey]
+        const variantKeyEntries = Object.entries(variantKey as Record<string, any>)
+
+        for (const [screen, screenVariantKey] of variantKeyEntries) {
+          const variantObjRecord = variantObj as Record<string, any>
+          const screenVariantValue = variantObjRecord[String(screenVariantKey)]
 
           if (screen === 'initial') {
             defaultVariantProp = screenVariantKey
@@ -213,12 +274,17 @@ export function tv(options, configProp) {
           // if the screen is not in the responsiveVariants array, skip it
           if (
             Array.isArray(config.responsiveVariants)
-            && !config.responsiveVariants.includes(screen)
+            && !config.responsiveVariants.includes(screen as TVGeneratedScreens)
           ) {
             continue
           }
 
-          screenValues = getScreenVariantValues(screen, screenVariantValue, screenValues, slotKey)
+          screenValues = getScreenVariantValues(
+            screen,
+            screenVariantValue,
+            screenValues,
+            slotKey ?? undefined,
+          )
         }
       }
 
@@ -260,12 +326,15 @@ export function tv(options, configProp) {
       return Object.keys(variants).map(vk => getVariantValue(vk, variants))
     }
 
-    const getVariantClassNamesBySlotKey = (slotKey, slotProps) => {
+    const getVariantClassNamesBySlotKey = (
+      slotKey: string,
+      slotProps: Record<string, any> | null,
+    ) => {
       if (!variants || typeof variants !== 'object') {
         return null
       }
 
-      const result = []
+      const result: any[] = []
 
       for (const variant in variants) {
         const variantValue = getVariantValue(variant, variants, slotKey, slotProps)
@@ -273,7 +342,7 @@ export function tv(options, configProp) {
         const value
           = slotKey === 'base' && typeof variantValue === 'string'
             ? variantValue
-            : variantValue && variantValue[slotKey]
+            : variantValue && (variantValue as Record<string, any>)[slotKey]
 
         if (value) {
           result[result.length] = value
@@ -283,7 +352,7 @@ export function tv(options, configProp) {
       return result
     }
 
-    const propsWithoutUndefined = {}
+    const propsWithoutUndefined: Record<string, unknown> = {}
 
     for (const prop in props) {
       if (props[prop] !== undefined) {
@@ -291,9 +360,9 @@ export function tv(options, configProp) {
       }
     }
 
-    const getCompleteProps = (key, slotProps) => {
+    const getCompleteProps = (key: string, slotProps: Record<string, any> | null) => {
       const initialProp
-        = typeof props?.[key] === 'object'
+        = typeof propsParam?.[key] === 'object'
           ? {
               [key]: props[key]?.initial,
             }
@@ -307,8 +376,11 @@ export function tv(options, configProp) {
       }
     }
 
-    const getCompoundVariantsValue = (cv = [], slotProps) => {
-      const result = []
+    const getCompoundVariantsValue = (
+      cv: any[] = [],
+      slotProps: Record<string, any> | null = null,
+    ) => {
+      const result: any[] = []
 
       for (const { class: tvClass, className: tvClassName, ...compoundVariantOptions } of cv) {
         let isValid = true
@@ -323,7 +395,7 @@ export function tv(options, configProp) {
             }
           }
           else {
-            const isBlankOrFalse = v => v == null || v === false
+            const isBlankOrFalse = (v: unknown) => v == null || v === false
 
             if (isBlankOrFalse(value) && isBlankOrFalse(completePropsValue)) {
               continue
@@ -345,14 +417,14 @@ export function tv(options, configProp) {
       return result
     }
 
-    const getCompoundVariantClassNamesBySlot = (slotProps) => {
+    const getCompoundVariantClassNamesBySlot = (slotProps: Record<string, any> | null) => {
       const compoundClassNames = getCompoundVariantsValue(compoundVariants, slotProps)
 
       if (!Array.isArray(compoundClassNames)) {
         return compoundClassNames
       }
 
-      const result = {}
+      const result: Record<string, any> = {}
 
       for (const className of compoundClassNames) {
         if (typeof className === 'string') {
@@ -369,12 +441,12 @@ export function tv(options, configProp) {
       return result
     }
 
-    const getCompoundSlotClassNameBySlot = (slotProps) => {
+    const getCompoundSlotClassNameBySlot = (slotProps: Record<string, any> | null) => {
       if (compoundSlots.length < 1) {
         return null
       }
 
-      const result = {}
+      const result: Record<string, any> = {}
 
       for (const {
         slots = [],
@@ -415,18 +487,18 @@ export function tv(options, configProp) {
 
     // with slots
     if (!isEmptyObject(slotProps) || !isExtendedSlotsEmpty) {
-      const slotsFns = {}
+      const slotsFns: Record<string, any> = {}
 
       if (typeof slots === 'object' && !isEmptyObject(slots)) {
         for (const slotKey of Object.keys(slots)) {
-          slotsFns[slotKey] = slotProps =>
+          slotsFns[slotKey] = (slotPropsArg?: Record<string, any>) =>
             cn(
               slots[slotKey],
-              getVariantClassNamesBySlotKey(slotKey, slotProps),
-              (getCompoundVariantClassNamesBySlot(slotProps) ?? [])[slotKey],
-              (getCompoundSlotClassNameBySlot(slotProps) ?? [])[slotKey],
-              slotProps?.class,
-              slotProps?.className,
+              getVariantClassNamesBySlotKey(slotKey, slotPropsArg ?? null),
+              (getCompoundVariantClassNamesBySlot(slotPropsArg ?? null) ?? {})[slotKey],
+              (getCompoundSlotClassNameBySlot(slotPropsArg ?? null) ?? {})[slotKey],
+              slotPropsArg?.class,
+              slotPropsArg?.className,
             )(config)
         }
       }
@@ -439,8 +511,8 @@ export function tv(options, configProp) {
       base,
       getVariantClassNames(),
       getCompoundVariantsValue(compoundVariants),
-      props?.class,
-      props?.className,
+      propsParam?.class,
+      propsParam?.className,
     )(config)
   }
 
@@ -452,18 +524,27 @@ export function tv(options, configProp) {
     return Object.keys(variants)
   }
 
-  component.variantKeys = getVariantKeys()
-  component.extend = extend
-  component.base = base
-  component.slots = slots
-  component.variants = variants
-  component.defaultVariants = defaultVariants
-  component.compoundSlots = compoundSlots
-  component.compoundVariants = compoundVariants
+  const componentWithMeta = component as any
+  componentWithMeta.variantKeys = getVariantKeys()
+  componentWithMeta.extend = extend
+  componentWithMeta.base = base
+  componentWithMeta.slots = slots
+  componentWithMeta.variants = variants
+  componentWithMeta.defaultVariants = defaultVariants
+  componentWithMeta.compoundSlots = compoundSlots
+  componentWithMeta.compoundVariants = compoundVariants
 
-  return component
+  return componentWithMeta
 }
 
-export function createTV(configProp) {
-  return (options, config) => tv(options, config ? mergeObjects(configProp, config) : configProp)
+function createTVImplementation(configProp: TVConfig) {
+  return (options: Parameters<TV>[0], config?: TVConfig) =>
+    tvImplementation(
+      options,
+      (config ? mergeObjects(configProp, config) : configProp) as TVConfig,
+    )
 }
+
+export const tv = tvImplementation as unknown as TV
+export const createTV
+  = ((configProp: TVConfig) => createTVImplementation(configProp)) as unknown as CreateTVFactory

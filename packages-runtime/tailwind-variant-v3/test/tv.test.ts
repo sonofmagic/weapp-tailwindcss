@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
 
-import { cn, tv } from '../src/index.js'
+import { cn, tv } from '../src/index'
 import './matchers'
 
 const COMMON_UNITS = ['small', 'medium', 'large']
