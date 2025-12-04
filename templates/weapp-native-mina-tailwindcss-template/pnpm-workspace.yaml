@@ -1,0 +1,5 @@
+ignoredBuiltDependencies:
+  - '@parcel/watcher'
+
+onlyBuiltDependencies:
+  - weapp-tailwindcss
