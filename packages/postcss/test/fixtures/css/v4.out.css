@@ -1,6 +1,6 @@
 /*! tailwindcss v4.0.9 | MIT License | https://tailwindcss.com */
 page,:host {
-    --font-sans: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, Cantarell, Noto Sans, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol",
+    --font-sans: ui-sans-serif,system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,Cantarell,Noto Sans, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol",
       "Noto Color Emoji";
     --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
     --color-red-50: rgb(254, 242, 242);
@@ -73,7 +73,8 @@ html,:host {
     font-family: var(
       --default-font-family,
       ui-sans-serif,
-      system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, Cantarell, Noto Sans, sans-serif,
+      system-ui,
+      sans-serif,
       "Apple Color Emoji",
       "Segoe UI Emoji",
       "Segoe UI Symbol",

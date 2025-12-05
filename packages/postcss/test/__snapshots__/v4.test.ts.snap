@@ -19,7 +19,7 @@ exports[`v4 > postcss 1`] = `
 "/*! tailwindcss v4.0.3 | MIT License | https://tailwindcss.com */
 
 page,:host {
-    --font-sans: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, Cantarell, Noto Sans, sans-serif, "Apple Color Emoji",
+    --font-sans: ui-sans-serif,system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,Cantarell,Noto Sans, sans-serif, "Apple Color Emoji",
       "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
     --font-serif: ui-serif, georgia, cambria, "Times New Roman", times, serif;
     --font-mono: ui-monospace, sfmono-regular, menlo, monaco, consolas,
@@ -604,7 +604,7 @@ view,text,::after,::before,::backdrop,::file-selector-button {
   }
 
 html,:host {
-    font-family: var( --default-font-family, ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, Cantarell, Noto Sans, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji" );
+    font-family: var( --default-font-family, ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji" );
     font-variation-settings: var( --default-font-variation-settings, normal );
     font-feature-settings: var(--default-font-feature-settings, normal);
     line-height: 1.5;
@@ -917,7 +917,7 @@ exports[`v4 > postcss uni-app x 1`] = `
 exports[`v4 > v4 1`] = `
 "/*! tailwindcss v4.0.9 | MIT License | https://tailwindcss.com */
 page,:host {
-    --font-sans: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, Cantarell, Noto Sans, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol",
+    --font-sans: ui-sans-serif,system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,Cantarell,Noto Sans, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol",
       "Noto Color Emoji";
     --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
     --color-red-50: rgb(254, 242, 242);
@@ -990,7 +990,8 @@ html,:host {
     font-family: var(
       --default-font-family,
       ui-sans-serif,
-      system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, Cantarell, Noto Sans, sans-serif,
+      system-ui,
+      sans-serif,
       "Apple Color Emoji",
       "Segoe UI Emoji",
       "Segoe UI Symbol",
@@ -3012,7 +3013,7 @@ page image {
 exports[`v4 > vite 1`] = `
 "/*! tailwindcss v4.0.3 | MIT License | https://tailwindcss.com */
 page,:host {
-    --font-sans: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, Cantarell, Noto Sans, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+    --font-sans: ui-sans-serif,system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,Cantarell,Noto Sans, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
     --font-serif: ui-serif, georgia, cambria, "Times New Roman", times, serif;
     --font-mono: ui-monospace, sfmono-regular, menlo, monaco, consolas, "Liberation Mono", "Courier New", monospace;
     --color-red-50: rgb(254, 242, 242);
@@ -3594,7 +3595,7 @@ view,text,::after,::before,::backdrop {
   }
 
 html,:host {
-    font-family: var(--default-font-family, ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, Cantarell, Noto Sans, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji");
+    font-family: var(--default-font-family, ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji");
     font-variation-settings: var(--default-font-variation-settings, normal);
     font-feature-settings: var(--default-font-feature-settings, normal);
     line-height: 1.5;
