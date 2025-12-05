@@ -4,7 +4,6 @@ import type { InternalUserDefinedOptions, TailwindcssPatcherLike } from '@/types
 import path from 'node:path'
 import { logger } from '@weapp-tailwindcss/logger'
 import { findNearestPackageRoot } from '@/context/workspace'
-import { isMpx } from '@/shared/mpx'
 import { createTailwindcssPatcher } from '@/tailwindcss/patcher'
 import { defuOverrideArray } from '@/utils'
 
@@ -204,7 +203,6 @@ export function createPatcherForBase(
     tailwindcss,
     tailwindcssPatcherOptions,
     supportCustomLengthUnitsPatch,
-    appType,
   } = options
 
   const defaultTailwindcssConfig: TailwindUserOptions = {
@@ -254,7 +252,6 @@ export function createPatcherForBase(
 
   return createTailwindcssPatcher({
     basedir: baseDir,
-    cacheDir: isMpx(appType) ? 'node_modules/tailwindcss-patch/.cache' : undefined,
     supportCustomLengthUnitsPatch: supportCustomLengthUnitsPatch ?? true,
     tailwindcss: mergedTailwindOptions,
     tailwindcssPatcherOptions: patchedOptions,

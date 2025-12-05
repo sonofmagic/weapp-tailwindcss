@@ -123,7 +123,12 @@ function tryGetRuntimeClassSetSync(twPatcher: TailwindcssPatcherLike) {
   }
 
   try {
-    return twPatcher.getClassSetSync()
+    const set = twPatcher.getClassSetSync()
+    if (set && set.size === 0) {
+      // 空集合通常意味着 patcher 尚未真正执行提取，继续走异步路径
+      return undefined
+    }
+    return set
   }
   catch (error) {
     if (twPatcher.majorVersion === 4) {

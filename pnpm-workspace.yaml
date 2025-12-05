@@ -23,9 +23,9 @@ catalogs:
   crossEnv:
     cross-env: ^10.1.0
   lucideReact0555:
-    lucide-react: ^0.555.0
+    lucide-react: ^0.556.0
   lucideVueNext0555:
-    lucide-vue-next: ^0.555.0
+    lucide-vue-next: ^0.556.0
   miniApiTypings:
     miniprogram-api-typings: ^4.1.1
   postcss85:
@@ -64,7 +64,7 @@ catalogs:
     tailwindcss: ^4.1.17
     tailwindcss4: npm:tailwindcss@^4.1.17
   tailwindcssPatch:
-    tailwindcss-patch: ^8.4.2
+    tailwindcss-patch: ^8.4.3
   tailwindcssRem:
     tailwindcss-rem2px-preset: ^1.0.3
   taro4:
