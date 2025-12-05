@@ -1,17 +1,19 @@
-import type { ClassNameValue as ClassValue } from 'tailwind-merge'
-
 import type { TVConfig, TWMConfig } from './config'
 import type { TVGeneratedScreens } from './generated'
 
 export type { TVConfig, TWMConfig } from './config'
+export type { TailwindMergeAdapter } from './config'
 
-/**
- * ----------------------------------------
- * Base Types
- * ----------------------------------------
- */
+type ClassDictionary = Record<string, any>
 
-export type { ClassValue }
+export type ClassValue
+  = | string
+    | number
+    | boolean
+    | null
+    | undefined
+    | ClassDictionary
+    | ClassValue[]
 
 export type ClassProp<V = ClassValue>
   = | { class?: V, className?: never }
@@ -52,7 +54,8 @@ export declare const cn: <T extends CnOptions>(...classes: T) => (config?: TWMCo
 // compare if the value is true or array of values
 export type isTrueOrArray<T> = [Extract<T, true | unknown[]>] extends [never] ? false : true
 
-export type WithInitialScreen<T extends Array<string>> = ['initial', ...T]
+export type WithInitialScreen<T extends Array<string>>
+  = ['initial', ...T]
 
 /**
  * ----------------------------------------------------------------------

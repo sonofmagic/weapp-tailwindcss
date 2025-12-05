@@ -1,12 +1,12 @@
 # tailwind-variant-v3
 
-面向 Tailwind CSS 的运行时变体工具，支持 TypeScript、slot 缓存与可拓展的 `tailwind-merge` 配置。本包对应 monorepo 中 `packages-runtime/tailwind-variant-v3` 的发布产物。
+面向 Tailwind CSS v3 的运行时变体工具，支持 TypeScript、slot 缓存与可拓展的 `tailwind-merge` 风格实现（仅支持 `tailwind-merge` 2.x 及兼容实现）。默认会尝试 `tailwind-merge@2.x`，若需要使用 `@weapp-tailwindcss/merge-v3`，请自行安装并通过 `twMergeAdapter` 注入。本包对应 monorepo 中 `packages-runtime/tailwind-variant-v3` 的发布产物。若使用 Tailwind v4，请选用对应的 v4 运行时。
 
 ## 特性
 
 - ⚡️ **组合式变体**：同一组件可同时定义 `base`、`slots`、`variants`、`compoundVariants` 与 `compoundSlots`。
 - 📱 **响应式变体**：通过 `responsiveVariants` 一次声明，即可获得 `sm: / md:` 前缀的派生类。
-- 🧰 **Tailwind Merge 支持**：内置 `cn`、`cnBase`，可自定义 `twMergeConfig` 并自动缓存。
+- 🧰 **Tailwind Merge 支持**：内置 `cn`、`cnBase`，可自定义 `twMergeConfig`，并可接入兼容的合并器（如 `@weapp-tailwindcss/merge-v3`）。
 - 🧠 **Slot 缓存**：slot 渲染默认复用缓存结果，仅在传入 variant 覆盖时重新计算。
 - 🧪 **TypeScript 优先**：`tv`、`createTV`、响应式 props、Vitest 匹配器都有完善类型。
 
@@ -60,12 +60,32 @@ const className = cn('flex', ['text-sm', 'md:text-lg'])({ twMerge: true })
 
 ## API 摘要
 
+<!-- prettier-ignore -->
 | Helper                       | 说明                                                            |
 | ---------------------------- | --------------------------------------------------------------- |
 | `tv(config, runtimeConfig?)` | 创建带 slot/variant/compound 能力的生成器，支持响应式与默认值。 |
 | `createTV(baseConfig)`       | 预先注入一份全局配置，创建多个风格一致的 `tv` 实例。            |
-| `cn(...classValues)`         | 基于 `tailwind-merge` 的类名合并工具。                          |
+| `cn(...classValues)`         | 基于 `tailwind-merge` 风格适配器的类名合并工具。               |
 | `cnBase(...classValues)`     | 纯字符串连接（不做 merge）。                                    |
+
+## 自定义 merge 适配器
+
+`tailwind-merge` 现在是可选 peer 依赖，可按需替换为兼容的实现，通过 `twMergeAdapter` 注入（需要自行安装适配器）：
+
+```ts
+import type { TailwindMergeAdapter } from 'tailwind-variant-v3'
+import { extendTailwindMerge, twMerge } from '@weapp-tailwindcss/merge-v3'
+import { tv } from 'tailwind-variant-v3'
+
+const adapter: TailwindMergeAdapter = { twMerge, extendTailwindMerge }
+
+const button = tv(
+  { base: 'px-3 py-2 text-sm' },
+  { twMergeAdapter: adapter },
+)
+
+button() // 使用 @weapp-tailwindcss/merge-v3 进行合并
+```
 
 更多类型定义可参考 `src/types.d.ts`。
 

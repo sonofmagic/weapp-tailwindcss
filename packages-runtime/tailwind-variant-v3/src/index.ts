@@ -12,6 +12,7 @@ export type {
   isTrueOrArray,
   OmitUndefined,
   StringToBoolean,
+  TailwindMergeAdapter,
   TV,
   TVCompoundSlots,
   TVCompoundVariants,

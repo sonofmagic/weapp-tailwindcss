@@ -1,15 +1,114 @@
 import type { TailwindMergeConfig } from './constants'
-import type { ClassValue, TVConfig, TWMConfig } from './types'
-import { extendTailwindMerge, twMerge as twMergeBase } from 'tailwind-merge'
-
+import type { ClassValue, TailwindMergeAdapter, TVConfig, TWMConfig } from './types'
 import { defaultConfig } from './constants'
 import { isEmptyObject, isEqual } from './utils'
+// eslint-disable-next-line perfectionist/sort-imports
+import { createRequire } from 'node:module'
 
 export type ClassMerger = (...classes: ClassValue[]) => string | undefined
 
-let cachedTwMerge: typeof twMergeBase | null = null
+const MERGE_MODULE_IDS = ['tailwind-merge'] as const
+const requireFromThisModule = (() => {
+  try {
+    return createRequire(import.meta.url)
+  }
+  catch {
+    return null
+  }
+})()
+
+let cachedTwMerge: ((className: string) => string) | null = null
 let cachedTwMergeConfig: TailwindMergeConfig = {}
+let cachedAutoMergeAdapter: TailwindMergeAdapter | null = null
+let cachedActiveAdapter: TailwindMergeAdapter | null = null
 let didTwMergeConfigChange = false
+
+function normalizeAdapter(mod: any): TailwindMergeAdapter | null {
+  const candidates = [mod, mod?.default]
+
+  for (const candidate of candidates) {
+    if (!candidate) {
+      continue
+    }
+
+    if (typeof candidate === 'function') {
+      return { twMerge: candidate }
+    }
+
+    const twMerge = candidate.twMerge
+    const extendTailwindMerge = candidate.extendTailwindMerge
+
+    if (typeof twMerge === 'function') {
+      return {
+        twMerge,
+        extendTailwindMerge: typeof extendTailwindMerge === 'function' ? extendTailwindMerge : undefined,
+      }
+    }
+  }
+
+  return null
+}
+
+function tryRequire(moduleId: string) {
+  if (!requireFromThisModule) {
+    return null
+  }
+
+  try {
+    return requireFromThisModule(moduleId)
+  }
+  catch (error: any) {
+    if (error && (error.code === 'MODULE_NOT_FOUND' || error.code === 'ERR_MODULE_NOT_FOUND')) {
+      return null
+    }
+
+    throw error
+  }
+}
+
+function loadMergeAdapter(): TailwindMergeAdapter | null {
+  if (cachedAutoMergeAdapter) {
+    return cachedAutoMergeAdapter
+  }
+
+  for (const moduleId of MERGE_MODULE_IDS) {
+    const adapter = normalizeAdapter(tryRequire(moduleId))
+
+    if (adapter) {
+      cachedAutoMergeAdapter = adapter
+      return adapter
+    }
+  }
+
+  return null
+}
+
+function resolveMergeAdapter(config: TWMConfig): TailwindMergeAdapter | null {
+  return config.twMergeAdapter ?? loadMergeAdapter()
+}
+
+function createTailwindMerge(adapter: TailwindMergeAdapter | null) {
+  if (!adapter) {
+    return null
+  }
+
+  if (!adapter.extendTailwindMerge || isEmptyObject(cachedTwMergeConfig)) {
+    return adapter.twMerge
+  }
+
+  const activeMergeConfig = cachedTwMergeConfig as Record<string, any>
+
+  return adapter.extendTailwindMerge({
+    ...activeMergeConfig,
+    extend: {
+      theme: activeMergeConfig.theme,
+      classGroups: activeMergeConfig.classGroups,
+      conflictingClassGroupModifiers: activeMergeConfig.conflictingClassGroupModifiers,
+      conflictingClassGroups: activeMergeConfig.conflictingClassGroups,
+      ...activeMergeConfig.extend,
+    },
+  })
+}
 
 function appendClassValue(value: ClassValue | ClassValue[] | null | undefined, acc: string[]) {
   if (!value) {
@@ -83,22 +182,13 @@ export function cn<T extends ClassValue[]>(...classes: T) {
       return className
     }
 
-    if (!cachedTwMerge || didTwMergeConfigChange) {
-      didTwMergeConfigChange = false
-      const activeMergeConfig = cachedTwMergeConfig as Record<string, any>
+    const adapter = resolveMergeAdapter(config)
+    const shouldRefreshAdapter = adapter !== cachedActiveAdapter
 
-      cachedTwMerge = isEmptyObject(activeMergeConfig)
-        ? twMergeBase
-        : extendTailwindMerge({
-            ...activeMergeConfig,
-            extend: {
-              theme: activeMergeConfig.theme,
-              classGroups: activeMergeConfig.classGroups,
-              conflictingClassGroupModifiers: activeMergeConfig.conflictingClassGroupModifiers,
-              conflictingClassGroups: activeMergeConfig.conflictingClassGroups,
-              ...activeMergeConfig.extend,
-            },
-          })
+    if (!cachedTwMerge || didTwMergeConfigChange || shouldRefreshAdapter) {
+      didTwMergeConfigChange = false
+      cachedActiveAdapter = adapter
+      cachedTwMerge = createTailwindMerge(adapter)
     }
 
     const merged = cachedTwMerge ? cachedTwMerge(className) : className

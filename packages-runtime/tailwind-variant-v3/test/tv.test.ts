@@ -1,5 +1,5 @@
+import type { TailwindMergeAdapter } from '../src/index'
 import { describe, expect, it } from 'vitest'
-
 import { cn, tv } from '../src/index'
 import './matchers'
 
@@ -250,6 +250,49 @@ describe('Tailwind Variants (TV) - Default', () => {
     const expectedResult = ['text-3xl', 'font-bold', 'text-blue-400', 'text-xl', 'text-blue-200']
 
     expect(h1()).toHaveClass(expectedResult)
+  })
+
+  it('should accept custom twMerge adapter', () => {
+    const adapter: TailwindMergeAdapter = {
+      twMerge: (value: string) => value.replace('text-blue-400', 'text-blue-500'),
+    }
+
+    const h1 = tv(
+      {
+        base: 'text-3xl font-bold text-blue-400 text-xl',
+      },
+      { twMergeAdapter: adapter },
+    )
+
+    expect(h1()).toBe('text-3xl font-bold text-blue-500 text-xl')
+  })
+
+  it('should forward twMergeConfig into custom adapter', () => {
+    const receivedConfigs: any[] = []
+    const adapter: TailwindMergeAdapter = {
+      twMerge: (value: string) => value,
+      extendTailwindMerge: (config: any) => {
+        receivedConfigs.push(config)
+        return (value: string) => `custom-${value}`
+      },
+    }
+
+    const h1 = tv(
+      {
+        base: 'text-blue-400 text-xl',
+      },
+      {
+        twMergeAdapter: adapter,
+        twMergeConfig: {
+          extend: {
+            classGroups: { mock: ['text-blue-400'] },
+          },
+        },
+      },
+    )
+
+    expect(h1()).toBe('custom-text-blue-400 text-xl')
+    expect(receivedConfigs[0]?.extend?.classGroups?.mock).toEqual(['text-blue-400'])
   })
 
   it('should work without defaultsVariants', () => {

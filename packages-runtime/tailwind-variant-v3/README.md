@@ -2,13 +2,15 @@
 
 Type-safe runtime helpers for composing Tailwind CSS class variants in modern frameworks. This package is the next iteration of the `tailwind-variants` runtime and mirrors the API exposed from `packages-runtime/tailwind-variant-v3` inside the monorepo.
 
+> Targeted at `tailwindcss@3` projects. For Tailwind v4, use the v4 runtime instead. Merge adapters must be `tailwind-merge` 2.x compatible; by default it tries `tailwind-merge@2.x`. If you prefer `@weapp-tailwindcss/merge-v3`, install it yourself and pass it via `twMergeAdapter`.
+
 ## Features
 
 - ⚡️ **Composable variants** – define base classes, slots, and multiple variant groups with defaults.
 - 🧠 **Responsive-aware** – opt into per-screen variants with automatic prefix expansion.
 - 🧩 **Slot caching** – slot renders reuse cached class lists, recomputing only when overrides are provided.
 - 🧪 **TypeScript first** – full typings for `tv`, `createTV`, and custom matchers used in Vitest.
-- 🧰 **Tailwind merge integration** – configurable `tailwind-merge` support with extendable config.
+- 🧰 **Merge adapter support** – pluggable `tailwind-merge`-style adapters (including `@weapp-tailwindcss/merge-v3`) with extendable config.
 
 ## Installation
 
@@ -66,8 +68,29 @@ const className = cn('flex', ['text-sm', 'md:text-lg'], { foo: true })({
 | ---------------------------- | ---------------------------------------------------------------------------------------------------------------------- |
 | `tv(config, runtimeConfig?)` | Creates a variant composer with slots, variants, defaults, responsive variants, compound variants, and compound slots. |
 | `createTV(baseConfig)`       | Returns a factory preloaded with shared config (e.g., disable `twMerge`).                                              |
-| `cn(...classValues)`         | Lightweight wrapper around `tailwind-merge` with caching.                                                              |
+| `cn(...classValues)`         | Lightweight wrapper around `tailwind-merge`-style adapters with caching.                                               |
 | `cnBase(...classValues)`     | Raw string joiner when you do not need merging.                                                                        |
+
+## Custom merge adapters
+
+`tailwind-variant-v3` now treats `tailwind-merge` as an optional peer. You can swap in compatible adapters such as `@weapp-tailwindcss/merge-v3` via the `twMergeAdapter` option (remember to install the adapter yourself):
+
+```ts
+import type { TailwindMergeAdapter } from 'tailwind-variant-v3'
+import { extendTailwindMerge, twMerge } from '@weapp-tailwindcss/merge-v3'
+import { tv } from 'tailwind-variant-v3'
+
+const adapter: TailwindMergeAdapter = { twMerge, extendTailwindMerge }
+
+const button = tv(
+  {
+    base: 'px-3 py-2 text-sm',
+  },
+  { twMergeAdapter: adapter },
+)
+
+button() // merged using @weapp-tailwindcss/merge-v3
+```
 
 See `src/types.d.ts` for the full type surface.
 

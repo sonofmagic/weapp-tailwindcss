@@ -1,9 +1,27 @@
-import type { extendTailwindMerge } from 'tailwind-merge'
 import type { TVGeneratedScreens } from './generated'
 import type { TVVariants } from './types'
 
-type MergeConfig = Parameters<typeof extendTailwindMerge>[0]
-type LegacyMergeConfig = Extract<MergeConfig, { extend?: unknown }>['extend']
+interface MergeConfig {
+  [key: string]: any
+  cacheSize?: number
+  classGroups?: Record<string, any>
+  conflictingClassGroupModifiers?: Record<string, any>
+  conflictingClassGroups?: Record<string, any>
+  extend?: Record<string, any>
+  override?: Record<string, any>
+  prefix?: string
+  separator?: string
+  theme?: Record<string, any>
+}
+
+interface LegacyMergeConfig {
+  extend?: Record<string, any>
+}
+
+export interface TailwindMergeAdapter {
+  twMerge: (className: string) => string
+  extendTailwindMerge?: (config: MergeConfig & LegacyMergeConfig) => (className: string) => string
+}
 
 export interface TWMConfig {
   /**
@@ -18,6 +36,11 @@ export interface TWMConfig {
    * @see https://github.com/dcastil/tailwind-merge/blob/v2.2.0/docs/configuration.md
    */
   twMergeConfig?: MergeConfig & LegacyMergeConfig
+  /**
+   * Custom merge adapter. Provide this to plug in drop-in replacements
+   * (e.g. `@weapp-tailwindcss/merge-v3`) instead of the default `tailwind-merge`.
+   */
+  twMergeAdapter?: TailwindMergeAdapter
 }
 
 export type TVConfig<

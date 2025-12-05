@@ -45,7 +45,16 @@
     "lint:fix": "eslint . --fix"
   },
   "publishConfig": {},
-  "dependencies": {
-    "tailwind-merge": "^2.6.0"
+  "peerDependencies": {
+    "tailwind-merge": ">=2 <3"
+  },
+  "peerDependenciesMeta": {
+    "tailwind-merge": {
+      "optional": true
+    }
+  },
+  "dependencies": {},
+  "devDependencies": {
+    "tailwind-merge": ">=2 <3"
   }
 }

@@ -9,6 +9,6 @@ export default defineConfig({
   clean: true,
   target: 'node18',
   external: [
-    'tailwindcss/resolveConfig',
+    'tailwind-merge',
   ],
 })

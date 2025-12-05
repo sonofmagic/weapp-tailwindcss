@@ -3695,8 +3695,12 @@ importers:
 
   packages-runtime/tailwind-variant-v3:
     dependencies:
+      '@weapp-tailwindcss/merge-v3':
+        specifier: ^0.1.2
+        version: 0.1.2
+    devDependencies:
       tailwind-merge:
-        specifier: ^2.6.0
+        specifier: '>=2 <3'
         version: 2.6.0
 
   packages-runtime/theme-transition: {}
@@ -12501,6 +12505,9 @@ packages:
 
   '@weapp-core/shared@2.0.1':
     resolution: {integrity: sha512-L/YUXp/lU0LlB5kLlYIsvfDtCWlajiFmB1AZvDLcQeDnlCiuFZkBG1Lql9TmtWaU2mhn5cJRnmEjRO6l5Tyo+A==}
+
+  '@weapp-tailwindcss/merge-v3@0.1.2':
+    resolution: {integrity: sha512-GsAWjJjszi8UkmBLMyMoryWggcXBtGVNDjMAkQ4AXchvf7L/o59t38lS8tau8emDw83dYzJ7xHQlWpyhCTR0XQ==}
 
   '@weapp-tailwindcss/merge@2.1.2':
     resolution: {integrity: sha512-A/rvjRrWe1FxX/MbPK/4O62psb0kYddNvtBVwBfREGip0BvGzgvhFq1fqr5aA0ZyeHksunHsuFWEsllc9ZpZhw==}
@@ -42507,6 +42514,11 @@ snapshots:
   '@weapp-core/shared@2.0.1':
     dependencies:
       object-hash: 3.0.0
+
+  '@weapp-tailwindcss/merge-v3@0.1.2':
+    dependencies:
+      '@weapp-tailwindcss/runtime': 0.1.2
+      tailwind-merge: 2.6.0
 
   '@weapp-tailwindcss/merge@2.1.2':
     dependencies:
