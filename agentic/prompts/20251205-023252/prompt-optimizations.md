@@ -1,0 +1,29 @@
+# prompt 优化建议（可直接补充到现有提示或拆成子任务）
+
+- **受众与目标**：明确听众画像（前端 1-3 年/全栈/设计师）、分享时长（30/45/60 分钟）、交付形式（slides + 文档 + Demo），并声明希望听众带走的 3-5 个核心结论。
+- **产出清单**：要求生成 `website/docs/tailwindcss` 下的多页/单页结构化文档（MDX），附导航 Frontmatter（`title`、`description`、`sidebar_position`）与专题链接配置；React/Vue Demo 代码在 `apps/react-app`、`apps/vue-app` 中可本地运行，附启动命令与截图占位；可选导出讲稿提纲/演讲稿。
+- **章节骨架**：
+  - 历史纵览：Raw CSS → 预处理器（Sass/Less + BEM/OOCSS）→ CSS Modules → CSS-in-JS（styled-components/Emotion + 优劣）→ Utility-first（Tailwind/Windi/Uno）→ Design Token/原子化的下个阶段；建议用时间轴表格/mermaid 图。
+  - 组件库演进：Element/AntD（多主题成本、样式覆盖痛点）→ Headless UI/shadcn/ui/reka-ui（组合性、无样式哲学），列出「API/样式隔离/可定制性/无障碍/生态」对比表。
+  - 原子化 CSS 优劣：解决的核心问题（认知负担、样式漂移、原子复用、摇树优化），风险（可读性、class 爆炸、约束失效、设计不统一、构建体积），给出“何时不用原子化”的场景。
+  - Tailwind 设计理念与特性：设计 tokens、JIT、分层（base/components/utilities）、variants（responsive/state/aria）、插件体系、`@apply` 与限制、`preflight` 注意点。
+  - Tailwind vs UnoCSS：生态（插件/主题/社区资产）、类型提示、`tailwind-merge` 去重规则和边界、`clsx`/`cva` 组合范式、与 Vite/RSC/SSR/HMR 的集成差异。
+  - 最佳实践：
+    - 设计体系：token 化、暗色/多品牌主题、`data-*` + variant、布局 primitives（Stack/Cluster/Sidebar/Grid）。
+    - 工程：class 组织约定、`cva`/`tv` 模式、预设层级、`@layer` 隔离、`group`/`peer`/`aria`、`container queries`、`clamp()` 响应式。
+    - 性能：`content` 精准匹配、防止滥用动态类、产物体积验证（分析报告）、无用样式检查。
+    - 维护：与设计稿对齐流程、命名/注释策略、代码评审清单。
+  - AI 友好：为什么原子类降低生成难度、给模型的提示模板（约束/示例/禁用指令）、如何用工具链校验（lint/format/class-merge）、常见错误案例（顺序冲突/断点误用/自定义色未注册）。
+  - Demo 需求：React + shadcn/ui、Vue + shadcn-vue；包含主题切换、响应式布局、表单/数据表/卡片交互；展示 `tailwind-merge` 或 `cva` 的实际用例；附运行命令与期望截图描述。
+- **写作与呈现**：技术口吻但通俗；每节有 TL;DR；穿插代码块、对照表、FAQ、Checklists；适量类比（但避免过度比喻），用真实类名示例；中英术语对照；标注引用来源链接。
+- **格式与素材建议**：
+  - 使用 MDX 的 `Tabs`/`CodeTabs` 展示 React/Vue 双版本。
+  - 提供 1-2 个 `mermaid` 图（历史时间轴、架构层次）。
+  - 提供可复制的命令清单（安装/构建/运行/测试）。
+  - 若需要截图，留下占位符与描述（如 `<!-- screenshot: homepage-light/dark -->`）。
+- **校验与验收**：
+  - 内容层：覆盖上方章节骨架，明确正反论点、不可用场景、生态比较结论。
+  - 代码层：`pnpm install`（如需）→ `pnpm build:docs` 或对应文档构建命令；React/Vue 示例能 `pnpm --filter apps/react-app dev`/`pnpm --filter apps/vue-app dev` 启动；如有测试补充 `pnpm test`。
+  - 质量层：确保导航入口可见、内部链接有效、无中文排版/中英空格硬伤、代码块可复制、类名无冲突。
+- **风险与防护**：明确不做/少做项（不引入新设计系统、不修改核心构建配置除非必要、避免大体积新依赖）；提示兼容性注意点（RSC/SSR/老版浏览器、Mini Program 差异）；引用第三方示例需注明来源。
+- **迭代提示**：列出可选的下一步深化：性能基准对比、类名重排自动化脚本、`tailwind-merge` 自定义规则、原子化与 Design Token 同步流程、与 Mini Program 的适配指南。
