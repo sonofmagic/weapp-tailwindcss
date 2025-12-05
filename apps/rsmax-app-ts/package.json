@@ -21,11 +21,12 @@
   },
   "devDependencies": {
     "@types/react": "catalog:react18",
+    "@types/react-dom": "catalog:react18",
+    "@weapp-tailwindcss/merge-v3": "workspace:*",
     "autoprefixer": "catalog:autoprefixer10",
     "cross-env": "catalog:crossEnv",
     "postcss": "catalog:postcss85",
     "tailwindcss": "catalog:tailwindcss3",
-    "@weapp-tailwindcss/merge-v3": "workspace:*",
     "typescript": "catalog:typescript59",
     "weapp-tailwindcss": "workspace:*"
   }

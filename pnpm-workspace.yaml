@@ -1,3 +1,9 @@
+catalogMode: prefer
+
+cleanupUnusedCatalogs: true
+shellEmulator: true
+# eslint-disable-next-line pnpm/yaml-enforce-settings
+trustPolicy: off
 packages:
   - packages/*
   - packages-runtime/*
@@ -47,7 +53,7 @@ catalogs:
     react-dom: 18.3.1
   react19:
     '@types/react': 19.2.2
-    '@types/react-dom': 19.1.13
+    '@types/react-dom': 19.2.3
     react: ^19.2.1
     react-dom: ^19.2.1
   reactRefresh018:
@@ -101,8 +107,6 @@ catalogs:
     vite: ^5.4.21
   vite724:
     vite: ^7.2.6
-  vite724exact:
-    vite: ^7.2.6
   vue3:
     '@vue/compiler-dom': ^3.5.25
     '@vue/compiler-sfc': ^3.5.25
@@ -122,6 +126,7 @@ onlyBuiltDependencies:
   - '@tarojs/cli'
   - '@weapp-tailwindcss/merge'
   - esbuild
+
 packageExtensions:
   '@dcloudio/vue-cli-plugin-hbuilderx@*':
     dependencies:

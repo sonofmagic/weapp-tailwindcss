@@ -64,6 +64,8 @@
     "@tailwindcss/typography": "^0.5.19",
     "@types/file-saver": "^2.0.7",
     "@types/node": "^24.10.1",
+    "@types/react": "catalog:react19",
+    "@types/react-dom": "catalog:react19",
     "autoprefixer": "catalog:autoprefixer10",
     "baseline-browser-mapping": "^2.9.2",
     "cross-env": "catalog:crossEnv",

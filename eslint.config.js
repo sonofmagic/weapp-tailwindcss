@@ -41,4 +41,10 @@ export default icebreaker(
 
     },
   },
+  {
+    files: ['pnpm-workspace.yaml'],
+    rules: {
+      'pnpm/yaml-no-duplicate-catalog-item': ['error', { checkDuplicates: 'exact-version' }],
+    },
+  },
 )
