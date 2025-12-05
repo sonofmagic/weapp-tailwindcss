@@ -1,0 +1,88 @@
+---
+id: tailwind-core
+title: Tailwind 设计理念与对比
+description: Tailwind 的核心特性、与 UnoCSS 的取舍，以及 tailwind-merge/cva/tailwind-variants 思想
+sidebar_position: 3
+---
+
+## TL;DR
+
+- Tailwind 将设计 token、variants、JIT 输出和插件体系抽象到一个工程化闭环，生态与工具链（`tailwind-merge`、`cva`、`tailwind-variants`、IDE 提示）是其护城河。
+- UnoCSS 灵活、可自定义规则，但在生态/社区资产、成熟的 `merge` 规则、预置设计体系上略弱；选择取决于团队的可维护性诉求与已有资产。
+
+## 核心特性速览
+
+- **JIT + content 精准扫描**：按需生成，避免未使用的样式；content 必须尽量收窄，避免动态模板注入。
+- **分层**：`@layer base/components/utilities` 以及 `@apply` 的受限使用（避免跨层污染）。
+- **variants**：响应式（`md:`）、状态（`hover:`、`aria-checked:`）、关系（`group-`/`peer-`）、自定义（`data-[state=open]:`）。
+- **Design token 对齐**：通过 CSS 变量或 `@theme` 内联 token，把设计语义映射到类名。
+- **插件与生态**：官方/社区插件（typography/forms/line-clamp），以及 shadcn/ui、reka-ui 等基于 Tailwind 的 UI 套件。
+
+## Tailwind vs UnoCSS（决策表）
+
+| 维度 | Tailwind | UnoCSS |
+| --- | --- | --- |
+| 生态/社区 | 大量预设、主题、范式示例、`tailwind-merge` 成熟 | 灵活 rule/variant 扩展，预设较少 |
+| 类型提示 | `@tailwindcss/language-service`/IDE 支持完善 | 需额外插件，提示程度取决于 preset |
+| Merge 去重 | `tailwind-merge` 针对 Tailwind 语义（含 v4）有完整规则 | `unocss` 默认不处理 class 去重，需要自定规则 |
+| 运行时 | v4 JIT 产物稳定，适配 RSC/SSR | 即时模式极快，支持极度自定义；但团队需维护自定义 preset |
+| 迁移/资产 | 现成组件库、范式、设计体系丰富 | 灵活性高，迁移成本取决于自建规则 |
+
+## tailwind-merge、cva、tailwind-variants 思想
+
+### tailwind-merge
+
+- 作用：在运行时/构建时去重与解决冲突（如 `p-4` + `p-2` → `p-2`）。
+- 使用建议：将 `clsx` + `tailwind-merge` 包装为 `cn`，用于所有 class 拼接；对自定义主题添加自定义规则时同步更新 merge config。
+
+### class-variance-authority (cva)
+
+- 思路：集中声明 `variants`、`defaultVariants`、`compoundVariants`，输出 class builder，保持样式与状态的单一真实来源。
+- 示例：
+
+```ts
+import { cva } from 'class-variance-authority'
+
+export const badgeVariants = cva('inline-flex items-center rounded-md text-xs font-medium', {
+  variants: {
+    tone: {
+      subtle: 'bg-muted text-muted-foreground border border-border',
+      brand: 'bg-primary text-primary-foreground',
+      danger: 'bg-destructive text-white',
+    },
+    size: {
+      sm: 'px-2 py-1',
+      md: 'px-2.5 py-1.5',
+    },
+  },
+  compoundVariants: [{ tone: 'brand', size: 'md', class: 'shadow-sm' }],
+  defaultVariants: { tone: 'subtle', size: 'md' },
+})
+```
+
+### tailwind-variants (tv)
+
+- 思路：在 cva 的基础上内置 `tailwind-merge`，提供 slots/recipes、更严格的类型推导；适合大型设计系统。
+- 示例：
+
+```ts
+import { tv } from 'tailwind-variants'
+
+export const input = tv({
+  base: 'inline-flex h-10 w-full rounded-md border bg-background px-3 text-sm outline-none focus-visible:ring-2 focus-visible:ring-ring',
+  variants: {
+    state: { default: '', invalid: 'border-destructive ring-destructive/30' },
+    density: { cozy: 'py-2', compact: 'py-1.5 text-xs' },
+  },
+  defaultVariants: { state: 'default', density: 'cozy' },
+})
+
+// 调用：input({ state: 'invalid', class: 'w-64' })
+```
+
+> 决策：需要 slots、自动 merge、强类型时选 `tailwind-variants`；仅需轻量 variants 时 `cva` 即可。
+
+## preflight 与 @apply 注意事项
+
+- preflight 会重置全局样式：在组件库/微前端场景要确认不与宿主冲突，必要时局部关闭。
+- `@apply` 适用于提炼重复类，但避免跨层引用或堆叠太多原子类；当出现冲突时优先回到 `cva`/`tv` 的 variants 声明。

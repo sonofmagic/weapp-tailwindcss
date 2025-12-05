@@ -1,0 +1,96 @@
+---
+id: index
+title: 原子化 CSS 专题导览
+description: 从历史演进到 Tailwind 实战与 AI 友好工作流的技术分享索引
+sidebar_position: 1
+---
+
+import Tabs from '@theme/Tabs'
+import TabItem from '@theme/TabItem'
+
+## TL;DR
+
+- 原子化 CSS 是工程化的折衷：用小而精的类名替代组件级样式，降低认知和维护成本，同时配合设计 token、variants 与摇树优化。
+- Tailwind 的强项在生态：JIT、variants、插件、`tailwind-merge`/`clsx`/`cva`/`tailwind-variants` 组合，以及社区资产（预设、主题、UI 套件）。
+- 不是银弹：需要约束（设计系统、class 组织、content 精准匹配），否则会出现 class 爆炸、可读性差、设计漂移。
+- AI 友好：原子类是可组合的语料，配合提示模板和 lint/merge 校验，可以让模型安全地产出 UI。
+
+## 你会获得什么
+
+- 历史与生态：从 Raw CSS → 预处理器 → CSS-in-JS → Utility-first 的关键转折，以及组件库从 Element/AntD 走向 Headless UI/shadcn/ui/reka-ui。
+- 方法论：Tailwind 设计理念、与 UnoCSS 的取舍、`tailwind-merge`、`cva`、`tailwind-variants` 的封装策略。
+- 最佳实践：设计 token、`data-*` 驱动的 variants、`group/peer/aria` 组合、性能/体积验证、代码评审清单。
+- AI 友好工作流：可直接复用的提示模板、常见错误与防护、自动化校验建议。
+- Demo：React（shadcn/ui 风格）与 Vue（shadcn-vue/reka-ui 风格）的小型页面，含主题切换、响应式卡片、表单/数据块示例。
+
+## 导航
+
+1. [历史与组件库演进](tailwindcss/history-and-evolution)
+2. [Tailwind 设计理念与对比](tailwindcss/tailwind-core)
+3. [原子化 CSS 最佳实践](tailwindcss/best-practices)
+4. [AI 友好提示与 Demo 运行指南](tailwindcss/ai-friendly-and-demos)
+
+## React/Vue 代码快速预览
+
+<Tabs>
+  <TabItem value="react" label="React (shadcn/ui 风格)">
+
+```tsx
+import { Button } from '@/components/ui/button'
+import { cn } from '@/lib/utils'
+
+export function Hero() {
+  return (
+    <div className="grid gap-4 rounded-2xl border bg-card/80 p-6 shadow-sm md:grid-cols-2">
+      <div className="space-y-3">
+        <p className="text-xs uppercase tracking-[0.2em] text-muted-foreground">Atomic CSS</p>
+        <h1 className="text-2xl font-semibold">让设计系统与类名对齐</h1>
+        <p className="text-sm text-muted-foreground">`cva`/`tailwind-variants` 集中声明 variants，`tailwind-merge` 兜底合并，搭配 tokens 保持一致。</p>
+        <div className="flex gap-2">
+          <Button>开始体验</Button>
+          <Button variant="secondary" className={cn('gap-1')}>
+            预览代码
+          </Button>
+        </div>
+      </div>
+      <div className="rounded-xl border bg-muted/60 p-4 text-xs leading-relaxed">
+        <pre className="whitespace-pre-wrap">
+{`const button = cva('inline-flex items-center px-4 py-2', {
+  variants: { intent: { primary: 'bg-primary text-primary-foreground', ghost: 'hover:bg-accent' } },
+  compoundVariants: [{ intent: 'primary', size: 'lg', class: 'shadow-lg' }],
+})`}
+        </pre>
+      </div>
+    </div>
+  )
+}
+```
+
+  </TabItem>
+  <TabItem value="vue" label="Vue (shadcn-vue/reka-ui 风格)">
+
+```vue
+<script setup lang="ts">
+import { Button } from '@/components/ui/button'
+</script>
+
+<template>
+  <section class="grid gap-4 rounded-2xl border bg-card/80 p-6 shadow-sm md:grid-cols-2">
+    <div class="space-y-3">
+      <p class="text-xs uppercase tracking-[0.2em] text-muted-foreground">Atomic CSS</p>
+      <h1 class="text-2xl font-semibold">组合变体，保持一致</h1>
+      <p class="text-sm text-muted-foreground">用 `cva` 或 `tailwind-variants` 宣告变体，再用 `cn`/`twMerge` 兜底。</p>
+      <div class="flex gap-2">
+        <Button>开始体验</Button>
+        <Button variant="secondary" class="gap-1">预览代码</Button>
+      </div>
+    </div>
+    <div class="rounded-xl border bg-muted/60 p-4 text-xs leading-relaxed">
+      <pre class="whitespace-pre-wrap">buttonVariants({ intent: 'primary', size: 'lg' })</pre>
+    </div>
+  </section>
+</template>
+```
+
+  </TabItem>
+</Tabs>

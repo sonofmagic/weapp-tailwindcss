@@ -1,0 +1,87 @@
+---
+id: ai-friendly-and-demos
+title: AI 友好提示与 Demo 运行指南
+description: 提示模板、校验链与 React/Vue 示例运行方式
+sidebar_position: 5
+---
+
+## TL;DR
+
+- 原子类的可组合性降低了 AI 生成的复杂度；配合提示模板、黑名单指令和 `tailwind-merge`/lint 校验，可显著减少错误。
+- React/Vue 两个 Demo 已放在 `apps/react-app`、`apps/vue-app`，演示主题切换、卡片/表单/数据块以及 `cva` 变体封装。
+
+## 提示模板（示例）
+
+```
+目标：使用 Tailwind 原子类，遵守设计 tokens（不要写裸色值），用 `cn`/`tailwind-merge` 合并类。
+必须：
+- 仅使用已存在的色板/间距/圆角 tokens。
+- 封装变体时用 `cva` 或 `tailwind-variants`，声明 defaultVariants/compoundVariants。
+- 状态类优先 aria/data（示例：`aria-invalid:border-destructive`）。
+- 禁止在运行时拼接未声明的动态类。
+输出：React/Vue 代码块 + 关键 class 解释。
+```
+
+## 常见错误与防护
+
+- 类冲突：使用 `cn` 包装 `tailwind-merge`，避免 `p-2 p-4` 并存。
+- 断点缺失：Mobile-first 书写，必要时添加 `sm:/md:/lg:`，并自检核心段。
+- 未注册色值：统一从 tokens 取色，禁止 `text-[#123456]`。
+- 动态类膨胀：在后端/渲染层避免字符串拼接类名；若必须动态，改用 `cva`/`tv` 参数化。
+
+## React/Vue 运行与查看
+
+- 安装依赖（首次）：`pnpm install`
+- 运行 React Demo：`pnpm --filter react-app dev`
+- 运行 Vue Demo：`pnpm --filter vue-app dev`
+- 构建文档（可选）：`pnpm --filter website build` 或 `pnpm build:docs`（若有别名）
+- 截图占位：`<!-- screenshot: tailwindcss-react-demo -->`、`<!-- screenshot: tailwindcss-vue-demo -->`
+
+## Demo 内容速览
+
+- 主题切换：通过 `.dark` 切换 tokens，组件自动继承。
+- 变体封装：Button/Badge/Input 等使用 `cva`，可展示 `tailwind-merge` 的冲突合并。
+- 交互：表单验证态、数据卡片、清单列表、小型表格/统计。
+
+## 关键代码片段
+
+```tsx title="React：variants + merge"
+import { cva } from 'class-variance-authority'
+import { cn } from '@/lib/utils'
+
+const pill = cva('inline-flex items-center rounded-full text-xs font-medium', {
+  variants: {
+    tone: { info: 'bg-blue-50 text-blue-900', success: 'bg-emerald-50 text-emerald-900' },
+    dense: { true: 'px-2 py-1', false: 'px-3 py-1.5' },
+  },
+  defaultVariants: { dense: false, tone: 'info' },
+})
+
+export function Pill({ className, ...rest }: { className?: string }) {
+  return <span className={cn(pill(rest), className)}>AI-ready</span>
+}
+```
+
+```vue title="Vue：cva + data 状态"
+<script setup lang="ts">
+import { cva } from 'class-variance-authority'
+import { cn } from '@/lib/utils'
+
+const banner = cva('flex items-center justify-between rounded-xl border px-4 py-3 text-sm', {
+  variants: {
+    tone: {
+      neutral: 'bg-muted text-muted-foreground',
+      success: 'bg-emerald-50 text-emerald-900 dark:bg-emerald-500/10',
+    },
+  },
+  defaultVariants: { tone: 'neutral' },
+})
+</script>
+
+<template>
+  <div :class="cn(banner({ tone: 'success' }), 'data-[state=pending]:opacity-70')" data-state="pending">
+    <span>已启用原子化工作流</span>
+    <button class="underline decoration-dotted">查看指南</button>
+  </div>
+</template>
+```

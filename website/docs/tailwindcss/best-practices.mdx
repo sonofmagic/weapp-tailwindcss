@@ -1,0 +1,65 @@
+---
+id: best-practices
+title: 原子化 CSS 最佳实践
+description: 设计 token、variants、性能与代码评审清单
+sidebar_position: 4
+---
+
+## TL;DR
+
+- 先建设计体系（tokens、间距/字号/色板），再落类名；避免「就地取值」。
+- 组件层用 `cva`/`tailwind-variants` 宣告 variants，`cn` 兜底合并；`@layer`/`@apply` 仅用于基础复用。
+- 性能=精准 content + 避免动态类；验证产物体积；保留可复制命令与检查清单。
+
+## 设计体系与 tokens
+
+- 定义色板、间距、圆角、阴影、字号等 tokens，并映射到 CSS 变量或 `@theme inline`。
+- 主题切换：通过 `data-theme` 或 `.dark` 切换 tokens，避免在 class 中直接写颜色值。
+- 布局 primitives：约定 Stack/Cluster/Sidebar/Grid 的原子组合，减少重复记忆。
+
+## 组件与变体
+
+- 用 `cva`/`tv` 描述 variants/defaultVariants/compoundVariants，示例：
+
+```ts
+const card = cva('rounded-2xl border bg-card/80 shadow-sm transition-all', {
+  variants: {
+    tone: { neutral: 'border-border', brand: 'border-primary/40 shadow-lg', subtle: 'border-muted bg-muted/60' },
+    interactive: { true: 'hover:-translate-y-0.5 hover:shadow-md' },
+  },
+  defaultVariants: { tone: 'neutral', interactive: true },
+})
+```
+
+- 组合技巧：
+  - `group`/`peer` 触发的状态组合：`group-data-[state=open]:rotate-90`。
+  - `aria-*` 状态：`aria-invalid:border-destructive`，`aria-busy:opacity-60`。
+  - `data-*` 驱动主题：`data-theme=brand` 切换色板。
+
+## 布局与响应式
+
+- 提前定义容器宽度与栅格：`max-w-screen-xl mx-auto px-4 sm:px-6 lg:px-8`。
+- 使用 `clamp()` 与 container queries（`@container`）实现流式排版。
+- 避免过度嵌套的 flex/grid；使用 `gap` 代替 margin 互推。
+
+## 性能与体积
+
+- 精准 `content`：覆盖到模板文件但不要使用通配符目录；避免字符串拼 class。
+- 产物验证：构建后检查 CSS 体积/源映射；如需，开启分析或使用浏览器 Coverage。
+- 动态类回退：必要时用 `@apply`/`cva` 固化，避免在运行时拼接任意值。
+
+## 代码评审清单（示例）
+
+- 类名是否只使用预设 token？有无裸写色值/字号？
+- 是否使用了 `cn`/`tailwind-merge` 处理动态组合？
+- variants 是否集中在组件工厂（`cva`/`tv`），而不是散落在业务组件？
+- 有无 `group`/`peer`/`aria`/`data-*` 的滥用或缺乏语义？
+- content 匹配是否过宽，是否引入了动态类？
+- 文档/示例是否同步更新运行命令与截图占位？
+
+## 常见坑与对策
+
+- 类顺序冲突：使用 `tailwind-merge`；在组件入口统一使用 `cn`。
+- 自定义色未注册：用 tokens 或在 `@theme`/配置中声明；避免 `text-[#123]` 这类零散值。
+- 断点误用：确认 mobile-first；自测关键断点（sm/md/lg/xl）。
+- preflight 冲突：在可发布组件库或微前端中谨慎启用，可局部关闭。

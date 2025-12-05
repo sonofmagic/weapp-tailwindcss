@@ -16,6 +16,13 @@ const navbar: NonNullable<ThemeConfig['navbar']> = {
 
     {
       type: 'doc',
+      label: '原子化 CSS 专题',
+      docId: 'tailwindcss/index',
+      position: 'left',
+    },
+
+    {
+      type: 'doc',
       label: '生态及解决方案',
       docId: 'community/templates',
     },

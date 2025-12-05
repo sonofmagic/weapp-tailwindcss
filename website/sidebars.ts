@@ -9,6 +9,33 @@ const tutorialSidebar: SidebarConfig = [
   'intro',
   {
     type: 'category',
+    label: '🧭 原子化 CSS 专题',
+    collapsed: false,
+    items: [
+      {
+        type: 'doc',
+        id: 'tailwindcss/index',
+      },
+      {
+        type: 'doc',
+        id: 'tailwindcss/history-and-evolution',
+      },
+      {
+        type: 'doc',
+        id: 'tailwindcss/tailwind-core',
+      },
+      {
+        type: 'doc',
+        id: 'tailwindcss/best-practices',
+      },
+      {
+        type: 'doc',
+        id: 'tailwindcss/ai-friendly-and-demos',
+      },
+    ],
+  },
+  {
+    type: 'category',
     label: '🔥Tailwind CSS @3.x',
     collapsed: false,
     items: [
