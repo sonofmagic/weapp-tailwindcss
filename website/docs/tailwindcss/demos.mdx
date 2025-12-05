@@ -1,0 +1,263 @@
+---
+id: demos
+title: 各样式方案 Demo 与产物对照
+description: 同一 UI 在 Raw CSS、Sass、CSS Modules、CSS-in-JS、Tailwind、Headless + cva/tv 下的代码与预期产物
+sidebar_position: 6
+---
+
+import Tabs from '@theme/Tabs'
+import TabItem from '@theme/TabItem'
+
+## 目标与产物
+
+- 统一用一张「卡片 + 按钮」UI，展示不同样式方案的实现方式。
+- 每个方案给出：核心代码片段、运行思路、预期产物（截图占位或构建结果描述）。
+- 可以把片段复制到 `apps/react-app` 或 `apps/vue-app` 中对比，或单独放入 `tmp/style-demos/` 做对照。
+
+> 注：产物大小/性能需本地测量；下方给出测量命令。截图占位：`<!-- screenshot: style-demo-{方案名} -->`。
+
+## 测量命令（可选）
+
+- 运行 React Demo（Tailwind/Headless 版本已内置）：`pnpm --filter react-app dev`
+- 运行 Vue Demo：`pnpm --filter vue-app dev`
+- 若在独立 HTML 中测试：用 `npx serve` 或 VSCode Live Server 打开 HTML，配合浏览器 Coverage 查看实际 CSS 命中。
+
+## Demo 片段
+
+### Raw CSS / BEM
+
+```html
+<section class="card card--elevated">
+  <header class="card__header">
+    <p class="eyebrow">Raw CSS / BEM</p>
+    <h2 class="title">小而直接，没有工具链</h2>
+    <p class="desc">全局命名，命中简单，但易被覆盖，需要团队命名纪律。</p>
+    <button class="btn btn--primary">查看详情</button>
+  </header>
+</section>
+
+<style>
+  .card { border: 1px solid #e5e7eb; border-radius: 16px; padding: 16px; }
+  .card--elevated { box-shadow: 0 10px 30px rgba(0,0,0,0.06); }
+  .card__header { display: flex; flex-direction: column; gap: 8px; }
+  .eyebrow { font-size: 12px; letter-spacing: 0.1em; color: #6b7280; }
+  .title { font-size: 18px; margin: 0; }
+  .desc { color: #4b5563; font-size: 14px; }
+  .btn { padding: 10px 16px; border-radius: 8px; border: 1px solid #111827; background: #111827; color: #fff; }
+  .btn--primary:hover { background: #0f172a; }
+</style>
+```
+
+预期产物：单一 CSS，无拆分；全局命名容易冲突。
+
+### Sass + BEM（含变量）
+
+```scss
+$radius: 16px;
+$primary: #111827;
+$muted: #6b7280;
+
+.card {
+  border: 1px solid lighten($primary, 65%);
+  border-radius: $radius;
+  padding: 16px;
+  &--elevated { box-shadow: 0 10px 30px rgba(0, 0, 0, 0.06); }
+  &__header { display: flex; flex-direction: column; gap: 8px; }
+}
+
+.eyebrow { font-size: 12px; letter-spacing: 0.1em; color: $muted; }
+.btn {
+  padding: 10px 16px;
+  border-radius: $radius - 4px;
+  border: 1px solid $primary;
+  background: $primary;
+  color: #fff;
+  &:hover { background: darken($primary, 5%); }
+}
+```
+
+预期产物：编译成单个 CSS，变量在构建时内联；仍是全局作用域。
+
+### CSS Modules（React）
+
+```tsx title="Card.tsx"
+import styles from './Card.module.css'
+
+export function Card() {
+  return (
+    <section className={`${styles.card} ${styles.elevated}`}>
+      <div className={styles.header}>
+        <p className={styles.eyebrow}>CSS Modules</p>
+        <h2 className={styles.title}>作用域隔离</h2>
+        <p className={styles.desc}>类名变为哈希，不会与全局冲突。</p>
+        <button className={styles.button}>查看详情</button>
+      </div>
+    </section>
+  )
+}
+```
+
+```css title="Card.module.css"
+.card { border: 1px solid #e5e7eb; border-radius: 16px; padding: 16px; }
+.elevated { box-shadow: 0 10px 30px rgba(0,0,0,0.06); }
+.header { display: flex; flex-direction: column; gap: 8px; }
+.eyebrow { font-size: 12px; letter-spacing: 0.1em; color: #6b7280; }
+.title { font-size: 18px; margin: 0; }
+.desc { color: #4b5563; font-size: 14px; }
+.button { padding: 10px 16px; border-radius: 8px; border: 1px solid #111827; background: #111827; color: #fff; }
+```
+
+预期产物：编译后类名哈希化，隔离性好；主题切换需额外 token 管线。
+
+### Vue `<style scoped>`
+
+```vue
+<template>
+  <section class="card">
+    <p class="eyebrow">Scoped CSS</p>
+    <h2 class="title">作用域隔离（编译时）</h2>
+    <p class="desc">Vue SFC 编译时添加 data-v-xxx，避免全局污染。</p>
+    <button class="button">查看详情</button>
+  </section>
+</template>
+
+<style scoped>
+.card { border: 1px solid #e5e7eb; border-radius: 16px; padding: 16px; box-shadow: 0 10px 30px rgba(0,0,0,0.06); }
+.eyebrow { font-size: 12px; letter-spacing: 0.1em; color: #6b7280; }
+.title { font-size: 18px; margin: 0; }
+.desc { color: #4b5563; font-size: 14px; }
+.button { padding: 10px 16px; border-radius: 8px; border: 1px solid #111827; background: #111827; color: #fff; }
+</style>
+```
+
+预期产物：编译为 data-v-xxx 的 scoped 选择器，避免全局污染；仍需额外管线处理主题/tokens。
+
+### CSS-in-JS（styled-components 示例）
+
+```tsx
+import styled from 'styled-components'
+
+const Card = styled.section`
+  border: 1px solid #e5e7eb;
+  border-radius: 16px;
+  padding: 16px;
+  box-shadow: ${({ elevated }) => (elevated ? '0 10px 30px rgba(0,0,0,0.06)' : 'none')};
+`
+
+const Button = styled.button`
+  padding: 10px 16px;
+  border-radius: 8px;
+  border: 1px solid #111827;
+  background: #111827;
+  color: #fff;
+  &:hover { background: #0f172a; }
+`
+
+export const Demo = () => (
+  <Card elevated>
+    <p className="eyebrow">CSS-in-JS</p>
+    <h2>动态样式，组件边界</h2>
+    <Button>查看详情</Button>
+  </Card>
+)
+```
+
+预期产物：运行时注入样式；要关注 SSR 注水体积与运行时开销。
+
+### Utility-first（Tailwind）
+
+<Tabs>
+  <TabItem value="react" label="React">
+
+```tsx
+export function TailwindCard() {
+  return (
+    <section className="grid gap-3 rounded-2xl border bg-card/80 p-4 shadow-sm">
+      <div className="text-xs uppercase tracking-[0.2em] text-muted-foreground">Tailwind</div>
+      <h2 className="text-lg font-semibold">类名即样式</h2>
+      <p className="text-sm text-muted-foreground">JIT + tokens；类名一目了然，摇树后产物小。</p>
+      <button className="inline-flex items-center gap-2 rounded-lg bg-primary px-4 py-2 text-sm text-primary-foreground hover:bg-primary/90">
+        查看详情
+      </button>
+    </section>
+  )
+}
+```
+
+  </TabItem>
+  <TabItem value="vue" label="Vue">
+
+```vue
+<template>
+  <section class="grid gap-3 rounded-2xl border bg-card/80 p-4 shadow-sm">
+    <p class="text-xs uppercase tracking-[0.2em] text-muted-foreground">Tailwind</p>
+    <h2 class="text-lg font-semibold">类名即样式</h2>
+    <p class="text-sm text-muted-foreground">JIT + tokens；类名一目了然，摇树后产物小。</p>
+    <button class="inline-flex items-center gap-2 rounded-lg bg-primary px-4 py-2 text-sm text-primary-foreground hover:bg-primary/90">
+      查看详情
+    </button>
+  </section>
+</template>
+```
+
+  </TabItem>
+</Tabs>
+
+预期产物：按需生成的原子类，配合 `content` 精准扫描，产物可控。
+
+### Headless + cva/tailwind-variants（已在 Demo 应用内）
+
+<Tabs>
+  <TabItem value="react" label="React">
+
+```tsx
+import { buttonVariants } from '@/components/ui/button'
+import { cn } from '@/lib/utils'
+
+export function HeadlessCard() {
+  return (
+    <section className="rounded-2xl border bg-card/80 p-4 shadow-sm">
+      <p className="text-xs uppercase tracking-[0.2em] text-muted-foreground">Headless + cva</p>
+      <h2 className="text-lg font-semibold">API 与样式解耦</h2>
+      <p className="text-sm text-muted-foreground">variants/compoundVariants 集中声明，`tailwind-merge` 兜底。</p>
+      <div className="mt-3 flex gap-2">
+        <button className={cn(buttonVariants({ variant: 'default' }), 'gap-2')}>主按钮</button>
+        <button className={buttonVariants({ variant: 'outline', size: 'sm' })}>次按钮</button>
+      </div>
+    </section>
+  )
+}
+```
+
+  </TabItem>
+  <TabItem value="vue" label="Vue">
+
+```vue
+<script setup lang="ts">
+import { buttonVariants } from '@/components/ui/button'
+import { cn } from '@/lib/utils'
+</script>
+
+<template>
+  <section class="rounded-2xl border bg-card/80 p-4 shadow-sm">
+    <p class="text-xs uppercase tracking-[0.2em] text-muted-foreground">Headless + cva</p>
+    <h2 class="text-lg font-semibold">API 与样式解耦</h2>
+    <p class="text-sm text-muted-foreground">variants/compoundVariants 集中声明，`tailwind-merge` 兜底。</p>
+    <div class="mt-3 flex gap-2">
+      <button :class="cn(buttonVariants({ variant: 'default' }), 'gap-2')">主按钮</button>
+      <button :class="buttonVariants({ variant: 'outline', size: 'sm' })">次按钮</button>
+    </div>
+  </section>
+</template>
+```
+
+  </TabItem>
+</Tabs>
+
+预期产物：原子类 + merge 去重；与设计 token 对齐，可直接在现有 React/Vue Demo 中运行。
+
+## 如何在本仓库验证这些方案
+
+1. Tailwind / Headless：直接运行 `pnpm --filter react-app dev` 或 `pnpm --filter vue-app dev`，对应代码已内置。
+2. Raw/Sass/CSS Modules/CSS-in-JS：将上方片段复制到 `tmp/style-demos/`（或现有 app），用 `npx serve tmp/style-demos` 打开，对比样式与产物；Coverage 面板可查看实际命中。
+3. 若需要稳定截图，在对应 HTML 旁添加注释占位：`<!-- screenshot: style-demo-css-modules -->`，再用浏览器截图工具生成并放入文档。

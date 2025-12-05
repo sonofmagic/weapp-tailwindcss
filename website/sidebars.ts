@@ -32,6 +32,10 @@ const tutorialSidebar: SidebarConfig = [
         type: 'doc',
         id: 'tailwindcss/ai-friendly-and-demos',
       },
+      {
+        type: 'doc',
+        id: 'tailwindcss/demos',
+      },
     ],
   },
   {
