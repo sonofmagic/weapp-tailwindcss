@@ -1,10 +1,13 @@
 import { useEffect, useMemo, useState } from "react"
+import type { ComponentType } from "react"
 import { Activity, ArrowUpRight, CheckCircle2, Code2, Moon, Sparkles, Sun, Table2, Wand2 } from "lucide-react"
+import type { LucideIcon, LucideProps } from "lucide-react"
 
 import { Badge } from "@/components/ui/badge"
-import { Button, buttonVariants } from "@/components/ui/button"
+import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
+import { buttonVariants } from "@/components/ui/button-variants"
 import { cn } from "@/lib/utils"
 
 const checklist = [
@@ -57,6 +60,21 @@ const variantPreview = [
   { label: "Ghost", className: buttonVariants({ variant: "ghost", size: "sm" }) },
 ]
 
+// React 19 JSX expects components to return ReactNode | Promise<ReactNode>, so
+// cast lucide-react icons once to a plain component type to satisfy TS.
+const toIconComponent = (Icon: LucideIcon): ComponentType<LucideProps> =>
+  Icon as unknown as ComponentType<LucideProps>
+
+const ActivityIcon = toIconComponent(Activity)
+const ArrowUpRightIcon = toIconComponent(ArrowUpRight)
+const CheckCircle2Icon = toIconComponent(CheckCircle2)
+const Code2Icon = toIconComponent(Code2)
+const MoonIcon = toIconComponent(Moon)
+const SparklesIcon = toIconComponent(Sparkles)
+const SunIcon = toIconComponent(Sun)
+const Table2Icon = toIconComponent(Table2)
+const Wand2Icon = toIconComponent(Wand2)
+
 function App() {
   const [theme, setTheme] = useState(() =>
     typeof document !== "undefined" && document.documentElement.classList.contains("dark")
@@ -84,13 +102,13 @@ function App() {
     <div className="min-h-screen bg-gradient-to-b from-background to-muted/60 text-foreground">
       <div className="mx-auto flex max-w-6xl items-center justify-between px-4 pb-2 pt-6">
         <div className="flex items-center gap-2 text-sm text-muted-foreground">
-          <Sparkles className="size-4 text-primary" />
+          <SparklesIcon className="size-4 text-primary" />
           <span>原子化 CSS 专题 Demo · React</span>
         </div>
         <div className="flex items-center gap-2">
           <Badge variant="brand" tone="ghost">cva · tailwind-merge</Badge>
           <Button variant="secondary" size="sm" className="gap-2" onClick={toggleTheme}>
-            {theme === "dark" ? <Sun className="size-4" /> : <Moon className="size-4" />}
+            {theme === "dark" ? <SunIcon className="size-4" /> : <MoonIcon className="size-4" />}
             {theme === "dark" ? "浅色" : "深色"}
           </Button>
         </div>
@@ -108,7 +126,7 @@ function App() {
                 </CardDescription>
               </div>
               <div className="hidden rounded-full bg-primary/10 px-3 py-1 text-xs font-medium text-primary lg:block">
-                <div className="flex items-center gap-1"><Activity className="size-4" /> Runtime safe</div>
+                <div className="flex items-center gap-1"><ActivityIcon className="size-4" /> Runtime safe</div>
               </div>
             </CardHeader>
             <CardContent className="flex flex-col gap-4 lg:flex-row lg:items-center">
@@ -119,7 +137,7 @@ function App() {
                       key={item.label}
                       className="inline-flex items-center gap-2 rounded-full border border-dashed px-3 py-1"
                     >
-                      <Wand2 className="size-3" />
+                      <Wand2Icon className="size-3" />
                       {item.label}: {item.value}
                     </span>
                   ))}
@@ -127,14 +145,14 @@ function App() {
                 <div className="flex flex-wrap gap-2">
                   <Button className="gap-2">
                     立即查看文档
-                    <ArrowUpRight className="size-4" />
+                    <ArrowUpRightIcon className="size-4" />
                   </Button>
                   <Button variant="outline" className="gap-2" size="sm">
                     tailwind-variants 配方
                   </Button>
                   <Button variant="ghost" size="sm" className="gap-2">
                     cva 变体
-                    <Code2 className="size-4" />
+                    <Code2Icon className="size-4" />
                   </Button>
                 </div>
               </div>
@@ -154,7 +172,7 @@ button({ intent: 'primary', size: 'lg' })
           <Card>
             <CardHeader>
               <CardTitle className="flex items-center gap-2 text-lg">
-                <Table2 className="size-5 text-primary" /> 结构化看板
+                <Table2Icon className="size-5 text-primary" /> 结构化看板
               </CardTitle>
               <CardDescription>围绕 token / variants / merge / AI 的四个支柱。</CardDescription>
             </CardHeader>
@@ -178,7 +196,7 @@ button({ intent: 'primary', size: 'lg' })
           <Card>
             <CardHeader>
               <CardTitle className="flex items-center gap-2 text-lg">
-                <Wand2 className="size-5 text-primary" /> 变体与 merge 演示
+                <Wand2Icon className="size-5 text-primary" /> 变体与 merge 演示
               </CardTitle>
               <CardDescription>按钮由 cva 定义 variants，`cn` 内置 tailwind-merge 防止冲突。</CardDescription>
             </CardHeader>
@@ -189,14 +207,21 @@ button({ intent: 'primary', size: 'lg' })
                 ))}
               </div>
               <div className="rounded-xl border bg-muted/50 p-3 text-xs text-muted-foreground">
-                `buttonVariants({ variant: 'outline', size: 'lg', className: 'w-full sm:w-auto' })`
+                <code className="block font-mono text-[11px] leading-5">
+                  {"buttonVariants({ variant: 'outline', size: 'lg', className: 'w-full sm:w-auto' })"}
+                </code>
               </div>
               <div className="rounded-xl border border-dashed bg-background/70 p-3 text-sm">
                 <div className="flex items-center gap-2 text-muted-foreground">
-                  <CheckCircle2 className="size-4 text-emerald-500" /> tailwind-merge 去重：`p-4 p-2` → `p-2`
+                  <CheckCircle2Icon className="size-4 text-emerald-500" /> tailwind-merge 去重：
+                  <code className="font-mono text-xs text-foreground">p-4 p-2</code>
+                  <span>→</span>
+                  <code className="font-mono text-xs text-foreground">p-2</code>
                 </div>
                 <div className="flex items-center gap-2 text-muted-foreground">
-                  <CheckCircle2 className="size-4 text-emerald-500" /> compoundVariants：`variant=brand & size=lg` 追加阴影
+                  <CheckCircle2Icon className="size-4 text-emerald-500" /> compoundVariants：
+                  <code className="font-mono text-xs text-foreground">variant=brand &amp; size=lg</code>
+                  追加阴影
                 </div>
               </div>
             </CardContent>
@@ -205,7 +230,7 @@ button({ intent: 'primary', size: 'lg' })
           <Card className="h-full">
             <CardHeader>
               <CardTitle className="flex items-center gap-2 text-lg">
-                <CheckCircle2 className="size-5 text-primary" /> AI Ready 清单
+                <CheckCircle2Icon className="size-5 text-primary" /> AI Ready 清单
               </CardTitle>
               <CardDescription>模型可复制、可校验的交付格式。</CardDescription>
             </CardHeader>
@@ -224,7 +249,7 @@ button({ intent: 'primary', size: 'lg' })
           <Card>
             <CardHeader>
               <CardTitle className="flex items-center gap-2 text-lg">
-                <Code2 className="size-5 text-primary" /> AI 生成守护
+                <Code2Icon className="size-5 text-primary" /> AI 生成守护
               </CardTitle>
               <CardDescription>tailwind-merge + tailwind-variants + lint/content 策略。</CardDescription>
             </CardHeader>
@@ -246,7 +271,7 @@ button({ intent: 'primary', size: 'lg' })
           <Card>
             <CardHeader>
               <CardTitle className="flex items-center gap-2 text-lg">
-                <Activity className="size-5 text-primary" /> 快速反馈表单
+                <ActivityIcon className="size-5 text-primary" /> 快速反馈表单
               </CardTitle>
               <CardDescription>用于收集文档/组件反馈，字段样式由 tokens 驱动。</CardDescription>
             </CardHeader>
@@ -273,10 +298,10 @@ button({ intent: 'primary', size: 'lg' })
               <div className="flex items-center gap-2">
                 <Button className="gap-2">
                   提交反馈
-                  <ArrowUpRight className="size-4" />
+                  <ArrowUpRightIcon className="size-4" />
                 </Button>
                 <Badge variant="outline" tone="ghost" className="gap-1">
-                  <Moon className="size-3" /> 支持暗色
+                  <MoonIcon className="size-3" /> 支持暗色
                 </Badge>
               </div>
             </CardContent>

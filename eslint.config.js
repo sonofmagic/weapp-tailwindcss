@@ -21,7 +21,6 @@ export default icebreaker(
   {
     rules: {
       'ts/no-require-imports': 'warn',
-      'better-tailwindcss/no-unregistered-classes': 'warn',
     },
   },
   {

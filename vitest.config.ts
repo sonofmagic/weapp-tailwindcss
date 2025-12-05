@@ -82,7 +82,7 @@ function resolveProjects(): string[] {
 
     const rootConfig = findConfig(rootPath)
     if (rootConfig) {
-      projects.push(path.relative(ROOT_DIR, rootConfig))
+      projects.push(rootConfig)
     }
 
     const entries = fs.readdirSync(rootPath, { withFileTypes: true })
@@ -94,7 +94,7 @@ function resolveProjects(): string[] {
       const projectDir = path.join(rootPath, entry.name)
       const configPath = findConfig(projectDir)
       if (configPath) {
-        projects.push(path.relative(ROOT_DIR, configPath))
+        projects.push(configPath)
       }
     }
   }

@@ -12,4 +12,4 @@ const Input = React.forwardRef<HTMLInputElement, React.InputHTMLAttributes<HTMLI
 )
 Input.displayName = "Input"
 
-export { Input, inputBase }
+export { Input }
