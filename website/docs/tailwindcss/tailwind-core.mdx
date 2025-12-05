@@ -5,18 +5,18 @@ description: Tailwind 的核心特性、与 UnoCSS 的取舍，以及 tailwind-m
 sidebar_position: 3
 ---
 
-## TL;DR
+## TL;DR（更像实战笔记）
 
-- Tailwind 将设计 token、variants、JIT 输出和插件体系抽象到一个工程化闭环，生态与工具链（`tailwind-merge`、`cva`、`tailwind-variants`、IDE 提示）是其护城河。
-- UnoCSS 灵活、可自定义规则，但在生态/社区资产、成熟的 `merge` 规则、预置设计体系上略弱；选择取决于团队的可维护性诉求与已有资产。
+- Tailwind 把「设计 token → 类名 → 插件 → 产物」做成闭环，加上 `tailwind-merge`/`cva`/`tailwind-variants`/IDE 提示，默认路就很宽；如果不想自己养 preset/merge 规则，就选它。
+- UnoCSS 灵活得像乐高：任意规则、任意 preset，但 merge/类型提示要自己兜底，团队需要有人养规则库；适合愿意自定义、且已有内部 preset 的团队。
 
-## 核心特性速览
+## 核心特性速览（顺便说说坑）
 
-- **JIT + content 精准扫描**：按需生成，避免未使用的样式；content 必须尽量收窄，避免动态模板注入。
-- **分层**：`@layer base/components/utilities` 以及 `@apply` 的受限使用（避免跨层污染）。
-- **variants**：响应式（`md:`）、状态（`hover:`、`aria-checked:`）、关系（`group-`/`peer-`）、自定义（`data-[state=open]:`）。
-- **Design token 对齐**：通过 CSS 变量或 `@theme` 内联 token，把设计语义映射到类名。
-- **插件与生态**：官方/社区插件（typography/forms/line-clamp），以及 shadcn/ui、reka-ui 等基于 Tailwind 的 UI 套件。
+- **JIT + content 精准扫描**：只生成用到的类。content 太宽（如 `./src/**/*` 加上动态字符串）会让产物膨胀，建议精确到模板目录；SSR/RSC 场景需保证 server 侧也能扫描到。
+- **分层**：`@layer base/components/utilities` 控制覆盖优先级。`@apply` 可用，但别跨层堆叠；出现冲突优先回到 variants 工厂解决。
+- **variants**：`md:`、`hover:`、`group-`/`peer-`、`aria-`、`data-`，以及自定义 variant。关系类很强大，但如果嵌套过多，可读性会崩，最好有 lint/评审清单。
+- **Design token 对齐**：把色板、间距、圆角写成 tokens（CSS 变量或 `@theme`），类名只引用语义，不直接写 `#fff`。切换品牌/暗色时，只改 tokens。
+- **插件与生态**：typography/forms/line-clamp/animate 等官方插件，加上 shadcn/ui、reka-ui 的大量范式与可复制代码。选 Tailwind 的核心理由之一是「社区资产可直接拿来」。
 
 ## Tailwind vs UnoCSS（决策表）
 
@@ -28,12 +28,24 @@ sidebar_position: 3
 | 运行时 | v4 JIT 产物稳定，适配 RSC/SSR | 即时模式极快，支持极度自定义；但团队需维护自定义 preset |
 | 迁移/资产 | 现成组件库、范式、设计体系丰富 | 灵活性高，迁移成本取决于自建规则 |
 
+### 什么时候更适合 Tailwind？
+
+- 团队不想养一套 merge/variant 规则，也不想自己维护 IDE 提示；更看重「拿来就能跑」。
+- 需要快速对齐社区资产（shadcn/ui、reka-ui 组件、插件、设计体系），或者要让外部协作成员快速上手。
+- 需要与 RSC/SSR、Next/Vite/Rspack 等框架顺畅集成，且希望默认行为稳定（例如 preflight、分层、JIT 产物）。
+
+### 什么时候会选 UnoCSS？
+
+- 需要大量自定义规则（如内部 DSL），或希望把类名语义定得比 Tailwind 更短、更贴近业务。
+- 产物必须极小、规则必须可控（例如小程序/低码引擎内嵌），团队有人维护 preset。
+- 需要更多运行时调度（如按需 rule 生成）且能接受自己维护 merge/类型提示。
+
 ## tailwind-merge、cva、tailwind-variants 思想
 
 ### tailwind-merge
 
 - 作用：在运行时/构建时去重与解决冲突（如 `p-4` + `p-2` → `p-2`）。
-- 使用建议：将 `clsx` + `tailwind-merge` 包装为 `cn`，用于所有 class 拼接；对自定义主题添加自定义规则时同步更新 merge config。
+- 使用建议：将 `clsx` + `tailwind-merge` 包装为 `cn`，用于所有 class 拼接；对自定义主题添加自定义规则时同步更新 merge config。遇到边缘 case（如自定义色板/大小），要验证 merge 是否按预期覆盖。
 
 ### class-variance-authority (cva)
 
@@ -81,6 +93,17 @@ export const input = tv({
 ```
 
 > 决策：需要 slots、自动 merge、强类型时选 `tailwind-variants`；仅需轻量 variants 时 `cva` 即可。
+
+### 实战对比：cva vs tv
+
+- **cva**：轻量、心智负担低。适合按钮、Badge 这类单槽组件；合并需要 `cn` 包一层。
+- **tv**：内置 merge，提供 slots/recipes，能把组件拆成多个 slot 并保持类型安全；适合卡片、模态框等多槽位组件。成本是心智模型更复杂，但大型设计系统更省力。
+
+## RSC/SSR/HMR 下的注意点（踩坑后总结）
+
+- RSC（React Server Components）：确保 `content` 能扫描到 server 组件模板；避免在服务器拼接动态类名；`tailwind-merge`/`cva` 可安全用于 server 端。
+- SSR：Tailwind v4 产物可直接 SSR；注意 preflight 是否与宿主冲突，必要时局部关闭或按 route 注入。
+- HMR：JIT 很快，但自定义插件过多会拖慢冷启动；遇到慢启动时先收紧 `content`，再检查插件链。
 
 ## preflight 与 @apply 注意事项
 

@@ -5,10 +5,10 @@ description: 提示模板、校验链与 React/Vue 示例运行方式
 sidebar_position: 5
 ---
 
-## TL;DR
+## TL;DR（让模型写得像人）
 
-- 原子类的可组合性降低了 AI 生成的复杂度；配合提示模板、黑名单指令和 `tailwind-merge`/lint 校验，可显著减少错误。
-- React/Vue 两个 Demo 已放在 `apps/react-app`、`apps/vue-app`，演示主题切换、卡片/表单/数据块以及 `cva` 变体封装。
+- 原子类的可组合性降低了 AI 生成的复杂度，但要给足「轨道」：提示模板、黑名单/白名单、`tailwind-merge`/lint 校验链、固定的 tokens/variants。
+- React/Vue Demo 在 `apps/react-app`、`apps/vue-app`，包含主题切换、卡片/表单/数据块，`cva`/`tailwind-variants` 思路都能直接看到。
 
 ## 提示模板（示例）
 
@@ -22,12 +22,15 @@ sidebar_position: 5
 输出：React/Vue 代码块 + 关键 class 解释。
 ```
 
+> 小技巧：附上 1-2 段「示范类名」，模型会按节奏输出；再给一段「不要做什么」黑名单（例如：不要输出内联 style，不要写随机 16 进制色）。
+
 ## 常见错误与防护
 
-- 类冲突：使用 `cn` 包装 `tailwind-merge`，避免 `p-2 p-4` 并存。
-- 断点缺失：Mobile-first 书写，必要时添加 `sm:/md:/lg:`，并自检核心段。
-- 未注册色值：统一从 tokens 取色，禁止 `text-[#123456]`。
-- 动态类膨胀：在后端/渲染层避免字符串拼接类名；若必须动态，改用 `cva`/`tv` 参数化。
+- 类冲突：使用 `cn` 包装 `tailwind-merge`，避免 `p-2 p-4` 并存；检查自定义色/尺寸是否在 merge 规则里。
+- 断点缺失：Mobile-first 书写，必要时添加 `sm:/md:/lg:`，并自检核心段；提示里明确「默认是 mobile」。
+- 未注册色值：统一从 tokens 取色，禁止 `text-[#123456]`；在提示里声明「禁用 hex/rgb」。
+- 动态类膨胀：在后端/渲染层避免字符串拼接类名；若必须动态，改用 `cva`/`tv` 参数化，并限制枚举值。
+- 关系类过深：`group/peer` 不要超过两层；提示里写「最多两层关系类」。
 
 ## React/Vue 运行与查看
 
@@ -39,9 +42,9 @@ sidebar_position: 5
 
 ## Demo 内容速览
 
-- 主题切换：通过 `.dark` 切换 tokens，组件自动继承。
-- 变体封装：Button/Badge/Input 等使用 `cva`，可展示 `tailwind-merge` 的冲突合并。
-- 交互：表单验证态、数据卡片、清单列表、小型表格/统计。
+- 主题切换：通过 `.dark` 切换 tokens，组件自动继承，观感差异明显。
+- 变体封装：Button/Badge/Input 使用 `cva`，可观察 `tailwind-merge` 去重；可在 UI 中切换 variant/size 看类名组合效果。
+- 交互：表单验证态（aria-invalid）、数据卡片、清单列表、小型表格/统计。可按提示模板让模型补充新卡片，验证 merge/lint 是否兜底。
 
 ## 关键代码片段
 
@@ -85,3 +88,10 @@ const banner = cva('flex items-center justify-between rounded-xl border px-4 py-
   </div>
 </template>
 ```
+
+## 校验链建议（让 AI 结果可交付）
+
+- 静态校验：ESLint + Tailwind IntelliSense + `tailwind-merge` 包装的 `cn`；对 `content` 目录有 lint 或脚本检查，避免通配符。
+- 人工 spot-check：每个 PR 至少抽查 1-2 个组件，确认类名来自 tokens，没有裸色/裸间距。
+- 产物验证：构建后记录 CSS 体积、主色板是否命中 tokens（可用简单脚本扫描 CSS 中的裸色值）。
+- 回归用例：为按钮/表单等高频组件加一两个 Story/截图，用来对比后续 AI 产出是否偏离风格。

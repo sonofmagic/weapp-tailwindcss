@@ -9,7 +9,7 @@ sidebar_position: 2
 
 - 样式方案从「全局命名」走向「模块化/组件化」再到「原子化」，每一步都在降低耦合与认知成本。
 - 组件库从「重样式」到「Headless」：API 与样式解耦，让原子类和设计系统更容易落地。
-- 原子化 CSS 的价值：更好的可组合性与摇树优化；风险在于约束失效后的 class 泛滥与设计漂移。
+- 原子化 CSS 的价值：更好的可组合性与摇树优化；风险在于约束失效后的 class 泛滥与设计漂移。它不是风口产物，而是长期向「更小粒度、更好约束」演进的结果。
 
 ## 样式方案时间轴
 
@@ -24,6 +24,25 @@ timeline
   2024 : Token/原子类与多 Runtime（Web/RSC/Mini Program）协作
 ```
 
+### 现场感：几段常见的「升级理由」
+
+- BEM 项目重构时，遇到 `.btn--primary` 在四个文件里被覆盖，且 hover 颜色不一致；引入 Utility-first 后把按钮拆成变体，类名归到 `cva` 工厂，审阅时一眼能看出状态组合。
+- CSS-in-JS 方案在 SSR 下首屏注水 60KB，改为 Tailwind + tokens 后，首屏 CSS 控制在 8KB 以内，且通过 `content` 精准扫描避免动态膨胀。
+- Mini Program 场景 class 长度有限，原子类 + 预生成模板替换了动态拼接的 style 字符串，稳定性提高，构建速度更快。
+
+## 各阶段优势 / 劣势 / 适用场景
+
+| 阶段 | 核心优势 | 主要劣势 | 适用场景 | 常见坑 & 规避 |
+| --- | --- | --- | --- | --- |
+| Raw CSS + BEM/OOCSS | 简单直观；命名带语义 | 全局污染、样式覆盖难排查；复用弱 | 小体量页面、低复杂度站点 | 命名规则不统一 → 制定前缀/分块；避免长选择器链 |
+| 预处理器（Sass/Less） | 变量/混入/函数提高复用；BEM 更容易落地 | 仍是全局；易出现嵌套地狱；编译体积膨胀 | 需要一定复用，但没有组件边界要求 | 限制嵌套层级；lint 禁止 `#id`/深度选择器；保持色板集中 |
+| CSS Modules | 作用域隔离，防止全局污染；类名可组合 | 样式与组件耦合，跨组件复用要额外抽象；难对齐统一 design token | 可发布组件库、需要隔离的中大型项目 | 建立 shared variables 文件；避免在组件内声明全局变量；主题切换需额外管线 |
+| CSS-in-JS | 组件边界天然隔离；props 驱动样式；SSR 友好（视库而定） | 运行时开销；编译链复杂；类名可读性差；热更/缓存成本 | 需要强动态样式、主题切换、设计系统与组件强绑定 | 使用零运行时方案（vanilla-extract）或编译模式；监控包体；限定动态样式范围 |
+| Utility-first（Tailwind/Uno） | 类名即样式，低认知切换；JIT/摇树；与 tokens 对齐；生态丰富 | 可读性与约束依赖团队规范；content 不精准会膨胀；动态类易失控 | 需要高迭代速度、设计体系对齐、组件组合化的前后端/多端项目 | 建立 tokens/variants 规范；统一 `cn` + merge；禁止字符串拼类；content 精准匹配；保留「推荐组合」文档 |
+| Token + Headless 组件（shadcn/ui, reka-ui） | API 与样式解耦；通过 `cva`/`tailwind-variants` 集中管理变体；易被 AI/脚本生成 | 需要自建 design system；无约束时风格漂移 | 需要统一体验的多产品线、希望可插拔主题/品牌的团队 | 维护 tokens 表；评审类名；为 AI 提示加入黑名单/白名单；保留 merge/lint 校验链 |
+
+> 迁移建议：如果已有 CSS Modules/组件库想拥抱原子化，可先将公共 tokens 抽出，再在 Headless 组件上叠加 `cva`/`tailwind-variants`，逐步替换局部样式。
+
 ## 组件库演进对比
 
 | 阶段 | 代表 | 特点 | 问题 |
@@ -31,6 +50,17 @@ timeline
 | 传统 UI 套件 | Element, AntD | 样式随组件绑定，主题切换成本高 | 自定义成本高，覆盖样式易碎 |
 | 设计体系化 | Chakra, MUI | 主题与 tokens，部分可组合 | 仍有样式耦合，深层改造困难 |
 | Headless/UI primitives | Headless UI, shadcn/ui, reka-ui, Radix Primitives | API 与样式解耦，留出 design layer | 需要自己的 design system 与类名约束 |
+
+### Headless 组合范式的优劣
+
+- 优势：
+  - API 与样式拆分，样式完全交给 Tailwind/Uno + tokens；易于多品牌/暗色切换。
+  - 与 `cva`/`tailwind-variants` 配合，变体集中声明，降低审阅成本。
+  - 对 AI 生成友好：模板固定，类名受 merge/lint 保护。
+- 劣势：
+  - 需要自建设计系统与 token 表，否则不同页面风格易漂移。
+  - 文档/示例建设成本高，需要给出「推荐类名组合」。
+  - 对初学者，class 可读性与语义化需要额外培训。
 
 **对齐点**：在 Headless/无样式组件上叠加 `cva`/`tailwind-variants`，把 variants（尺寸/语义/状态）集中声明，再配合 `tailwind-merge` 兜底合并，形成稳定的 class builder。
 

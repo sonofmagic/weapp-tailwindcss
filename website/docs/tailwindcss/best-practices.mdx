@@ -5,19 +5,28 @@ description: 设计 token、variants、性能与代码评审清单
 sidebar_position: 4
 ---
 
-## TL;DR
+## TL;DR（更接地气的用法）
 
-- 先建设计体系（tokens、间距/字号/色板），再落类名；避免「就地取值」。
-- 组件层用 `cva`/`tailwind-variants` 宣告 variants，`cn` 兜底合并；`@layer`/`@apply` 仅用于基础复用。
-- 性能=精准 content + 避免动态类；验证产物体积；保留可复制命令与检查清单。
+- 先建设计体系（tokens、间距/字号/色板），再落类名；禁止就地写 `#123` 或 `18px`。
+- 组件层用 `cva`/`tailwind-variants` 集中声明 variants，`cn` 兜底合并；`@layer`/`@apply` 只做基础复用，避免藏逻辑。
+- 性能 = 精准 content + 少动态类；交付 = 体积验证 + 检查清单 + 可复制命令，不靠感觉。
 
 ## 设计体系与 tokens
 
-- 定义色板、间距、圆角、阴影、字号等 tokens，并映射到 CSS 变量或 `@theme inline`。
-- 主题切换：通过 `data-theme` 或 `.dark` 切换 tokens，避免在 class 中直接写颜色值。
-- 布局 primitives：约定 Stack/Cluster/Sidebar/Grid 的原子组合，减少重复记忆。
+- 定义色板、间距、圆角、阴影、字号等 tokens，并映射到 CSS 变量或 `@theme inline`。保留「设计稿 → token 名称」映射表，方便新人接入。
+- 主题切换：通过 `data-theme` 或 `.dark` 切换 tokens，避免在 class 中直接写颜色值。多品牌时，把品牌变量与暗色变量分开管理。
+- 布局 primitives：约定 Stack/Cluster/Sidebar/Grid 的原子组合，减少重复记忆。示例：
 
-## 组件与变体
+```ts
+// Stack（竖向间距统一）
+const stack = 'flex flex-col gap-4'
+// Cluster（行内 wrap 排布，适合标签/按钮组）
+const cluster = 'flex flex-wrap items-center gap-2'
+// Sidebar（主体 + 侧栏）
+const sidebar = 'grid gap-4 lg:grid-cols-[1fr,360px]'
+```
+
+## 组件与变体（把状态写全、默认值写死）
 
 - 用 `cva`/`tv` 描述 variants/defaultVariants/compoundVariants，示例：
 
@@ -32,34 +41,44 @@ const card = cva('rounded-2xl border bg-card/80 shadow-sm transition-all', {
 ```
 
 - 组合技巧：
-  - `group`/`peer` 触发的状态组合：`group-data-[state=open]:rotate-90`。
-  - `aria-*` 状态：`aria-invalid:border-destructive`，`aria-busy:opacity-60`。
-  - `data-*` 驱动主题：`data-theme=brand` 切换色板。
+  - `group`/`peer` 触发的状态组合：`group-data-[state=open]:rotate-90`；列表项 hover 驱动子元素。
+  - `aria-*` 状态：`aria-invalid:border-destructive`，`aria-busy:opacity-60`；表单状态不用写 JS。
+  - `data-*` 驱动主题：`data-theme=brand` 切换色板；`data-state=open` 切换动画方向。
+  - `tv` slots：适合「卡片/模态」这类多槽位组件，可一次定义 header/body/footer 的类，保持一致性。
+
+### 业务场景范式
+
+- 表单：输入框 `focus:ring` + `aria-invalid` 组合，错误文案用 `text-destructive`；Submit 按钮禁用态用 `disabled:`，避免内联 style。
+- 数据表/列表：`grid` + `gap` + `minmax` 控制列宽；hover/selected 用 `data-selected` 组合，保持视觉一致。
+- 空状态：`flex flex-col items-center gap-3 text-center text-muted-foreground` 作为基类，图标尺寸约定 `size-10`。
 
 ## 布局与响应式
 
-- 提前定义容器宽度与栅格：`max-w-screen-xl mx-auto px-4 sm:px-6 lg:px-8`。
-- 使用 `clamp()` 与 container queries（`@container`）实现流式排版。
+- 提前定义容器宽度与栅格：`max-w-screen-xl mx-auto px-4 sm:px-6 lg:px-8`；后台/文档常用。
+- `clamp()` + container queries：`text-[clamp(1rem,1.2vw,1.1rem)]` 控制标题，`@container` 让子栅格随父容器宽度变化。
 - 避免过度嵌套的 flex/grid；使用 `gap` 代替 margin 互推。
+- 栅格优先：比起到处写 `md:flex-row`，用 `grid-cols-1 md:grid-cols-2 lg:grid-cols-3` 更直观。
 
 ## 性能与体积
 
-- 精准 `content`：覆盖到模板文件但不要使用通配符目录；避免字符串拼 class。
-- 产物验证：构建后检查 CSS 体积/源映射；如需，开启分析或使用浏览器 Coverage。
-- 动态类回退：必要时用 `@apply`/`cva` 固化，避免在运行时拼接任意值。
+- 精准 `content`：覆盖到模板文件但不要使用通配符目录；避免字符串拼 class。SSR 要确保 server、client 模板都被扫描。
+- 产物验证：构建后检查 CSS 体积/源映射；如需，开启分析或使用浏览器 Coverage。记录基线（如首页 CSS < 10KB）放进 CI 报告。
+- 动态类回退：必要时用 `@apply`/`cva` 固化，避免在运行时拼接任意值。对「自定义颜色/尺寸」场景，提供有限选项而不是自由输入。
+- 慢路径监控：Tailwind v4 JIT 已够快，但 content 过宽或自定义插件过多会拖慢冷启动，可用 `DEBUG=tailwindcss` 检查耗时。
 
 ## 代码评审清单（示例）
 
 - 类名是否只使用预设 token？有无裸写色值/字号？
-- 是否使用了 `cn`/`tailwind-merge` 处理动态组合？
-- variants 是否集中在组件工厂（`cva`/`tv`），而不是散落在业务组件？
-- 有无 `group`/`peer`/`aria`/`data-*` 的滥用或缺乏语义？
-- content 匹配是否过宽，是否引入了动态类？
-- 文档/示例是否同步更新运行命令与截图占位？
+- 是否使用了 `cn`/`tailwind-merge` 处理动态组合？有无同类冲突（`p-4` vs `p-2`）？
+- variants 是否集中在组件工厂（`cva`/`tv`），而不是散落在业务组件？默认值是否写死？
+- 有无 `group`/`peer`/`aria`/`data-*` 的滥用或缺乏语义？关系链是否超过 2 层？
+- content 匹配是否过宽，是否引入了动态类？是否有字符串拼接类名？
+- 文档/示例是否同步更新运行命令与截图占位？有没有给出「推荐类名组合」列表？
 
 ## 常见坑与对策
 
-- 类顺序冲突：使用 `tailwind-merge`；在组件入口统一使用 `cn`。
-- 自定义色未注册：用 tokens 或在 `@theme`/配置中声明；避免 `text-[#123]` 这类零散值。
-- 断点误用：确认 mobile-first；自测关键断点（sm/md/lg/xl）。
+- 类顺序冲突：使用 `tailwind-merge`；在组件入口统一使用 `cn`，不要散落 `clsx`。
+- 自定义色未注册：用 tokens 或在 `@theme`/配置中声明；避免 `text-[#123]` 这类零散值，必要时创建 `brand-50/100/...`。
+- 断点误用：确认 mobile-first；自测关键断点（sm/md/lg/xl），尤其是 `gap`/`grid` 在小屏的表现。
 - preflight 冲突：在可发布组件库或微前端中谨慎启用，可局部关闭。
+- 插件过度：typography/forms 很方便，但要检查是否影响宿主样式；可以按需导入或局部关闭。
