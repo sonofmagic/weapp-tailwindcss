@@ -1,5 +1,14 @@
 # weapp-tailwindcss
 
+## 4.8.9
+
+### Patch Changes
+
+- [`ce046d2`](https://github.com/sonofmagic/weapp-tailwindcss/commit/ce046d24bb1c843eb4682667f5b2584c3b49bdb5) Thanks [@sonofmagic](https://github.com/sonofmagic)! - 移除 MPX 专属的 tailwindcss-patch 缓存目录配置，改回复用默认路径，保持与其它应用类型一致。
+
+- Updated dependencies [[`ce046d2`](https://github.com/sonofmagic/weapp-tailwindcss/commit/ce046d24bb1c843eb4682667f5b2584c3b49bdb5)]:
+  - @weapp-tailwindcss/postcss@2.0.6
+
 ## 4.8.8
 
 ### Patch Changes
