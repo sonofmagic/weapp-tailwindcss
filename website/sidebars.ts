@@ -9,37 +9,6 @@ const tutorialSidebar: SidebarConfig = [
   'intro',
   {
     type: 'category',
-    label: '🧭 原子化 CSS 专题',
-    collapsed: false,
-    items: [
-      {
-        type: 'doc',
-        id: 'tailwindcss/index',
-      },
-      {
-        type: 'doc',
-        id: 'tailwindcss/history-and-evolution',
-      },
-      {
-        type: 'doc',
-        id: 'tailwindcss/tailwind-core',
-      },
-      {
-        type: 'doc',
-        id: 'tailwindcss/best-practices',
-      },
-      {
-        type: 'doc',
-        id: 'tailwindcss/ai-friendly-and-demos',
-      },
-      {
-        type: 'doc',
-        id: 'tailwindcss/demos',
-      },
-    ],
-  },
-  {
-    type: 'category',
     label: '🔥Tailwind CSS @3.x',
     collapsed: false,
     items: [
@@ -266,6 +235,33 @@ const tutorialSidebar: SidebarConfig = [
     type: 'link',
     href: 'https://github.com/sonofmagic/weapp-tailwindcss/issues/270',
     label: '谁在使用？',
+  },
+]
+
+const tailwindcssSidebar: SidebarConfig = [
+  {
+    type: 'doc',
+    id: 'tailwindcss/index',
+  },
+  {
+    type: 'doc',
+    id: 'tailwindcss/history-and-evolution',
+  },
+  {
+    type: 'doc',
+    id: 'tailwindcss/tailwind-core',
+  },
+  {
+    type: 'doc',
+    id: 'tailwindcss/best-practices',
+  },
+  {
+    type: 'doc',
+    id: 'tailwindcss/ai-friendly-and-demos',
+  },
+  {
+    type: 'doc',
+    id: 'tailwindcss/demos',
   },
 ]
 
@@ -501,6 +497,7 @@ const sidebars: SidebarsConfig = {
   API,
   communitySidebar,
   migrationsSidebar,
+  tailwindcssSidebar,
 }
 
 module.exports = sidebars

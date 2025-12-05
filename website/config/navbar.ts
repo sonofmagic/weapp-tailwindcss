@@ -16,13 +16,6 @@ const navbar: NonNullable<ThemeConfig['navbar']> = {
 
     {
       type: 'doc',
-      label: '原子化 CSS 专题',
-      docId: 'tailwindcss/index',
-      position: 'left',
-    },
-
-    {
-      type: 'doc',
       label: '生态及解决方案',
       docId: 'community/templates',
     },
@@ -52,6 +45,13 @@ const navbar: NonNullable<ThemeConfig['navbar']> = {
       href: '/blog',
       position: 'left',
       label: '博客',
+    },
+
+    {
+      type: 'doc',
+      label: '原子化 CSS 专题',
+      docId: 'tailwindcss/index',
+      position: 'left',
     },
     {
       href: 'https://vite.icebreaker.top/',
