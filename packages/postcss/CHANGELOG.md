@@ -1,5 +1,11 @@
 # @weapp-tailwindcss/postcss
 
+## 2.0.6
+
+### Patch Changes
+
+- [`ce046d2`](https://github.com/sonofmagic/weapp-tailwindcss/commit/ce046d24bb1c843eb4682667f5b2584c3b49bdb5) Thanks [@sonofmagic](https://github.com/sonofmagic)! - chore: upgrade postcss-preset-env to 10.5.0
+
 ## 2.0.5
 
 ### Patch Changes

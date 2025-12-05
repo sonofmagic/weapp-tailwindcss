@@ -1,5 +1,11 @@
 # tailwind-variant-v3
 
+## 0.1.1
+
+### Patch Changes
+
+- [`04c2529`](https://github.com/sonofmagic/weapp-tailwindcss/commit/04c2529d4e80325c808967adc40b3a030d01fbc7) Thanks [@sonofmagic](https://github.com/sonofmagic)! - 将 `tailwind-merge` 降为可选 peer，仅默认探测 2.x；可通过 `twMergeAdapter` 显式注入替换实现。
+
 ## 0.1.0
 
 ### Minor Changes
