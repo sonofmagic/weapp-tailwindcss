@@ -48,11 +48,17 @@
     "tailwindcss": "^4.1.17",
     "typescript": "^5.9.3",
     "weapp-ide-cli": "^4.1.0",
-    "weapp-tailwindcss": "^4.8.8",
+    "weapp-tailwindcss": "^4.8.9",
     "webpack": "^5.101.3"
   },
   "browserslist": [
     "ios >= 8",
     "chrome >= 47"
-  ]
+  ],
+  "pnpm": {
+    "onlyBuiltDependencies": [
+      "weapp-tailwindcss",
+      "@weapp-tailwindcss/merge"
+    ]
+  }
 }
