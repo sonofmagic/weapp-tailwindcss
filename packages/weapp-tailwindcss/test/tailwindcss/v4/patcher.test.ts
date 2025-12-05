@@ -196,7 +196,7 @@ describe('tailwindcss/v4/patcher helpers', () => {
     expect(createTailwindcssPatcher).toHaveBeenCalledTimes(1)
     const call = createTailwindcssPatcher.mock.calls[0][0]
     expect(call.basedir).toBe(baseDir)
-    expect(call.cacheDir).toBe('node_modules/tailwindcss-patch/.cache')
+    expect(call.cacheDir).toBeUndefined()
     expect(call.tailwindcss?.version).toBe(4)
     expect(call.tailwindcss?.v4?.base).toBe(baseDir)
     expect(call.tailwindcss?.v4?.cssEntries).toEqual(cssEntries)

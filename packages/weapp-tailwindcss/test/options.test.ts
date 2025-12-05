@@ -135,9 +135,7 @@ describe('get options', () => {
       appType: 'mpx',
     })
     cacheOptions = config.twPatcher.options?.cache
-    expect(
-      cacheOptions?.dir?.endsWith(path.normalize('node_modules/tailwindcss-patch/.cache')),
-    ).toBe(true)
+    expect(cacheOptions?.dir).toBe(path.join(process.cwd(), 'node_modules', '.cache', 'tailwindcss-patch'))
   })
 
   // it('customAttributes map defu merge', () => {
