@@ -1,7 +1,7 @@
 # prompt 优化建议（可直接补充到现有提示或拆成子任务）
 
 - **受众与目标**：明确听众画像（前端 1-3 年/全栈/设计师）、分享时长（30/45/60 分钟）、交付形式（slides + 文档 + Demo），并声明希望听众带走的 3-5 个核心结论。
-- **产出清单**：要求生成 `website/docs/tailwindcss` 下的多页/单页结构化文档（MDX），附导航 Frontmatter（`title`、`description`、`sidebar_position`）与专题链接配置；React/Vue Demo 代码在 `apps/react-app`、`apps/vue-app` 中可本地运行，附启动命令与截图占位；可选导出讲稿提纲/演讲稿。
+- **产出清单**：要求生成 `website/docs/tailwindcss` 下的多页/单页结构化文档（MDX），附导航 Frontmatter（`title`、`description`、`sidebar_position`）与专题链接配置；React/Vue Demo 代码在 `apps/react-app`、`apps/vue-app` 中可本地运行，附启动命令与截图占位；新增「样式方案对照」页，覆盖 raw css、sass/less、css modules、css-in-js、tailwind、headless + cva/tailwind-variants、Vue `<style scoped>` 的代码与预期产物；可选导出讲稿提纲/演讲稿。
 - **章节骨架**：
   - 历史纵览：Raw CSS → 预处理器（Sass/Less + BEM/OOCSS）→ CSS Modules → CSS-in-JS（styled-components/Emotion + 优劣）→ Utility-first（Tailwind/Windi/Uno）→ Design Token/原子化的下个阶段；建议用时间轴表格/mermaid 图。
   - 组件库演进：Element/AntD（多主题成本、样式覆盖痛点）→ Headless UI/shadcn/ui/reka-ui（组合性、无样式哲学），列出「API/样式隔离/可定制性/无障碍/生态」对比表。
@@ -15,7 +15,7 @@
     - 维护：与设计稿对齐流程、命名/注释策略、代码评审清单。
   - AI 友好：为什么原子类降低生成难度、给模型的提示模板（约束/示例/禁用指令）、如何用工具链校验（lint/format/class-merge）、常见错误案例（顺序冲突/断点误用/自定义色未注册）。
   - Demo 需求：React + shadcn/ui、Vue + shadcn-vue；包含主题切换、响应式布局、表单/数据表/卡片交互；展示 `tailwind-merge` 或 `cva` 的实际用例；附运行命令与期望截图描述。
-- **写作与呈现**：技术口吻但通俗；每节有 TL;DR；穿插代码块、对照表、FAQ、Checklists；适量类比（但避免过度比喻），用真实类名示例；中英术语对照；标注引用来源链接。
+- **写作与呈现**：技术口吻但通俗；每节有 TL;DR；穿插代码块、对照表、FAQ、Checklists；适量类比（但避免过度比喻），用真实类名示例；中英术语对照；标注引用来源链接；避免 AI 腔，多用真实场景/产物描述。
 - **格式与素材建议**：
   - 使用 MDX 的 `Tabs`/`CodeTabs` 展示 React/Vue 双版本。
   - 提供 1-2 个 `mermaid` 图（历史时间轴、架构层次）。

@@ -9,14 +9,15 @@
 - 原子化 CSS 的最佳实践
 - 为什么 原子化 CSS 是 AI 友好的，如何驱动 AI 来大量编写原子化CSS来提升前端开发效率
 - 需要 react 和 vue 的示例, 分别使用 shadcn/ui 和 shadcn-vue 来做一个小 demo 页面
+- 需要准备各样式方案的对照 demo（raw css、sass/less、css modules、css-in-js、tailwind、headless + cva/tailwind-variants、vue 的 `<style scoped>`），给出代码片段与预期产物说明
 
 ## 约束（性能/风格/兼容/不可改动范围）
 
-- 写作风格需要偏技术风, 适合技术分享，所以需要通俗易懂，而且里面需要大量使用案例，来辅助大家进行理解
+- 写作风格需要偏技术风, 适合技术分享，所以需要通俗易懂，避免 AI 腔，多用真实场景和可复制代码片段，辅以案例说明
 
 ## 验收标准（要跑的命令、预期输出/文件）
 
-- 我需要你在 website/docs/tailwindcss 目录下，生成多个文件，然后在 website 上设置一个专题链接，点进去可以看到这个技术分享的内容
+- 我需要你在 website/docs/tailwindcss 目录下，生成多个文件，并在 website 上设置一个专题链接，点进去可以看到内容；文档需包含上述各样式方案 demo 对照（含 Vue scoped）、React/Vue 示例、运行命令与预期产物说明
 
 ## 仓库路径
 
