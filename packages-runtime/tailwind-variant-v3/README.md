@@ -2,7 +2,7 @@
 
 Type-safe runtime helpers for composing Tailwind CSS class variants in modern frameworks. This package is the next iteration of the `tailwind-variants` runtime and mirrors the API exposed from `packages-runtime/tailwind-variant-v3` inside the monorepo.
 
-> Targeted at `tailwindcss@3` projects. For Tailwind v4, use the v4 runtime instead. Merge adapters must be `tailwind-merge` 2.x compatible; by default it tries `tailwind-merge@2.x`. If you prefer `@weapp-tailwindcss/merge-v3`, install it yourself and pass it via `twMergeAdapter`.
+> Targeted at `tailwindcss@3` projects. For Tailwind v4, use the v4 runtime instead. Merge adapters must be `tailwind-merge` 2.x compatible; by default it tries `tailwind-merge@2.x` (make sure to install it). If you prefer `@weapp-tailwindcss/merge-v3`, install it yourself and pass it via `twMergeAdapter`.
 
 ## Features
 
@@ -15,11 +15,11 @@ Type-safe runtime helpers for composing Tailwind CSS class variants in modern fr
 ## Installation
 
 ```bash
-pnpm add tailwind-variant-v3
+pnpm add tailwind-variant-v3 tailwind-merge@^2
 # or
-npm install tailwind-variant-v3
+npm install tailwind-variant-v3 tailwind-merge@^2
 # or
-yarn add tailwind-variant-v3
+yarn add tailwind-variant-v3 tailwind-merge@^2
 ```
 
 ## Quick start

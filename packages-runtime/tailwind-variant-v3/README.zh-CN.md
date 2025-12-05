@@ -1,6 +1,6 @@
 # tailwind-variant-v3
 
-面向 Tailwind CSS v3 的运行时变体工具，支持 TypeScript、slot 缓存与可拓展的 `tailwind-merge` 风格实现（仅支持 `tailwind-merge` 2.x 及兼容实现）。默认会尝试 `tailwind-merge@2.x`，若需要使用 `@weapp-tailwindcss/merge-v3`，请自行安装并通过 `twMergeAdapter` 注入。本包对应 monorepo 中 `packages-runtime/tailwind-variant-v3` 的发布产物。若使用 Tailwind v4，请选用对应的 v4 运行时。
+面向 Tailwind CSS v3 的运行时变体工具，支持 TypeScript、slot 缓存与可拓展的 `tailwind-merge` 风格实现（仅支持 `tailwind-merge` 2.x 及兼容实现）。默认会尝试 `tailwind-merge@2.x`，需要在项目里手动安装。若需要使用 `@weapp-tailwindcss/merge-v3`，请自行安装并通过 `twMergeAdapter` 注入。本包对应 monorepo 中 `packages-runtime/tailwind-variant-v3` 的发布产物。若使用 Tailwind v4，请选用对应的 v4 运行时。
 
 ## 特性
 
@@ -13,11 +13,11 @@
 ## 安装
 
 ```bash
-pnpm add tailwind-variant-v3
+pnpm add tailwind-variant-v3 tailwind-merge@^2
 # 或
-npm install tailwind-variant-v3
+npm install tailwind-variant-v3 tailwind-merge@^2
 # 或
-yarn add tailwind-variant-v3
+yarn add tailwind-variant-v3 tailwind-merge@^2
 ```
 
 ## 快速上手
