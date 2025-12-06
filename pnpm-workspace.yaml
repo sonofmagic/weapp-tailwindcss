@@ -1,4 +1,3 @@
-
 packages:
   - packages/*
   - packages-runtime/*
@@ -109,11 +108,11 @@ catalogs:
   weappChildren:
     weapp-tailwindcss-children: ^0.1.0
   weappIdeCli:
-    weapp-ide-cli: ^4.1.0
+    weapp-ide-cli: ^4.1.1
   weappMerge:
     '@weapp-tailwindcss/merge': ^2.1.2
   weappVite:
-    weapp-vite: ^5.10.0
+    weapp-vite: ^5.11.0
 
 onlyBuiltDependencies:
   - '@tailwindcss/oxide'
