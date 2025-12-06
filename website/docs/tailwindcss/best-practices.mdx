@@ -5,7 +5,7 @@ description: 设计 token、variants、性能与代码评审清单
 sidebar_position: 4
 ---
 
-## TL;DR（更接地气的用法）
+## 更接地气的用法
 
 - 先建设计体系（tokens、间距/字号/色板），再落类名；禁止就地写 `#123` 或 `18px`。
 - 组件层用 `cva`/`tailwind-variants` 集中声明 variants，`cn` 兜底合并；`@layer`/`@apply` 只做基础复用，避免藏逻辑。
