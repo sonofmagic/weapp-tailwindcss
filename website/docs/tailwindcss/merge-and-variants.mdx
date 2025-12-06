@@ -1,0 +1,90 @@
+---
+id: merge-and-variants
+title: tailwind-merge、cva、tailwind-variants 精要
+description: 去重、变体工厂与从设计到产物的闭环
+sidebar_position: 3.2
+---
+
+## 要点
+
+- `tailwind-merge` 负责 class 冲突/去重，是安全拼 class 的底座；推荐封装 `cn = twMerge(clsx(...))`。
+- `cva`/`tailwind-variants` 把 variants/default/compound 集中声明，输出 class builder，避免状态散落；`tv` 内置 merge + slots，适合多槽组件。
+- 闭环：tokens → 原子类/variants → builder → 组件 → content 扫描 → JIT → merge → 产物。
+
+## tailwind-merge：去重与边界
+
+- 作用：`p-4 p-2` → `p-2`；自定义 tokens/尺寸时需同步规则。
+- 建议：在所有 class 拼接入口统一用 `cn`；对常见自定义（色板、spacing、radius）写额外 merge config 并加用例验证。
+- 快测：在 Demo 按钮里故意写 `p-4 p-2`，观察输出；对自定义色板 class 也做覆盖测试。
+
+## cva：轻量变体工厂
+
+```ts
+import { cva } from 'class-variance-authority'
+
+export const badge = cva('inline-flex items-center rounded-md text-xs font-medium', {
+  variants: {
+    tone: {
+      subtle: 'bg-muted text-muted-foreground border border-border',
+      brand: 'bg-primary text-primary-foreground',
+      danger: 'bg-destructive text-white',
+    },
+    size: { sm: 'px-2 py-1', md: 'px-2.5 py-1.5' },
+  },
+  compoundVariants: [{ tone: 'brand', size: 'md', class: 'shadow-sm' }],
+  defaultVariants: { tone: 'subtle', size: 'md' },
+})
+```
+
+- 场景：单槽组件（按钮、Badge、Input 等）；与 `cn` 组合解决冲突。
+
+## tailwind-variants (tv)：内置 merge + slots
+
+```ts
+import { tv } from 'tailwind-variants'
+
+export const card = tv({
+  base: 'rounded-2xl border bg-card/80 shadow-sm transition',
+  slots: {
+    header: 'flex items-center justify-between gap-2',
+    body: 'space-y-2 text-sm text-muted-foreground',
+    footer: 'flex items-center gap-2',
+  },
+  variants: {
+    tone: { neutral: 'border-border', brand: 'border-primary/40 shadow-lg', subtle: 'border-muted bg-muted/60' },
+    interactive: { true: 'hover:-translate-y-0.5 hover:shadow-md' },
+  },
+  defaultVariants: { tone: 'neutral', interactive: true },
+})
+```
+
+- 场景：多槽组件（Card、Modal、List item），需要 slots/recipes 与自动 merge。
+
+## cva vs tv 对照
+
+| 项 | cva | tailwind-variants |
+| --- | --- | --- |
+| Merge | 无内置，需要 `cn` 包装 | 内置 tailwind-merge |
+| 多槽 | 不支持 slots | 支持 slots/recipes |
+| 心智负担 | 轻，语法简单 | 略重，类型更严格 |
+| 适用 | 按钮/Badge 等单槽 | 卡片/模态/多槽组件，设计系统 |
+
+## 从设计到产物（示意图）
+
+```mermaid
+flowchart LR
+  Tokens[Design Tokens / @theme] --> Variants[原子类 + variants]
+  Variants --> Builders[cva / tailwind-variants]
+  Builders --> Components[React/Vue 组件]
+  Components --> Content[content 精准扫描]
+  Content --> JIT[Tailwind JIT 生成按需 CSS]
+  JIT --> Merge[tailwind-merge 去重]
+  Merge --> Output[最终 CSS/HTML 产物]
+```
+
+## 实用检查清单
+
+- 所有动态 class 是否经 `cn`（含 `tailwind-merge`）合并？
+- 是否存在散落的 `clsx`/字符串拼接 class？是否可迁移到 `cva`/`tv`？
+- `variants/defaultVariants/compoundVariants` 是否集中在 builder 文件，业务组件不再拼装状态？
+- 自定义 tokens 是否同步到 merge 规则？是否有用例验证覆盖顺序？

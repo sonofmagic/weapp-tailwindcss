@@ -5,6 +5,9 @@ description: 提示模板、校验链与 React/Vue 示例运行方式
 sidebar_position: 5
 ---
 
+import Tabs from '@theme/Tabs'
+import TabItem from '@theme/TabItem'
+
 ## 让模型写得像人
 
 - 原子类的可组合性降低了 AI 生成的复杂度，但要给足「轨道」：提示模板、黑名单/白名单、`tailwind-merge`/lint 校验链、固定的 tokens/variants。
@@ -23,6 +26,90 @@ sidebar_position: 5
 ```
 
 > 小技巧：附上 1-2 段「示范类名」，模型会按节奏输出；再给一段「不要做什么」黑名单（例如：不要输出内联 style，不要写随机 16 进制色）。
+
+## 结构化提示（即贴即用）
+
+```
+你将为原子化 CSS 专题编写组件，遵守现有 tokens/variants。
+
+上下文：
+- 仓库：weapp-tailwindcss，React 在 apps/react-app，Vue 在 apps/vue-app。
+- 工具链：Tailwind v4 JIT，`cn` 内置 tailwind-merge，Button/Badge 已用 cva 定义。
+- 设计：使用 OKLCH 色板、`--radius`，暗色通过 `.dark` 或 `data-theme` 切换。
+
+必须：
+- 仅用已有 tokens（不要写裸色/px），类名可组合但需可读。
+- 变体用 `cva`/`tailwind-variants`，声明 defaultVariants + compoundVariants。
+- 状态优先 `aria-` / `data-` / `group` / `peer`，最多两层关系类。
+- 给出 React + Vue 代码块，附 1-2 行解释，禁止 inline style/随机色值。
+
+禁用：
+- 运行时字符串拼接类名、未注册的自定义色值、超过两层的关系类。
+- 依赖未在仓库中的第三方 UI 库（shadcn-ui 已内置）。
+
+输出：
+- React 代码块（tsx）+ Vue 代码块（vue SFC），包含 class 解释或推荐检查清单。
+- 若需要安装/运行命令，给出 `pnpm --filter react-app dev` / `pnpm --filter vue-app dev`。
+```
+
+## 示例输出（React/Vue，对应提示）
+
+<Tabs>
+  <TabItem value="react" label="React">
+
+```tsx
+import { cva } from 'class-variance-authority'
+import { cn } from '@/lib/utils'
+
+const banner = cva('flex items-center justify-between rounded-xl border px-4 py-3 text-sm', {
+  variants: {
+    tone: {
+      neutral: 'bg-muted text-muted-foreground',
+      success: 'bg-emerald-50 text-emerald-900 dark:bg-emerald-500/10',
+    },
+  },
+  defaultVariants: { tone: 'neutral' },
+})
+
+export function Promo() {
+  return (
+    <div className={cn(banner({ tone: 'success' }), 'data-[state=pending]:opacity-70')} data-state="pending">
+      <span>已启用原子化工作流</span>
+      <button className="underline decoration-dotted">查看指南</button>
+    </div>
+  )
+}
+```
+
+  </TabItem>
+  <TabItem value="vue" label="Vue">
+
+```vue
+<script setup lang="ts">
+import { cva } from 'class-variance-authority'
+import { cn } from '@/lib/utils'
+
+const banner = cva('flex items-center justify-between rounded-xl border px-4 py-3 text-sm', {
+  variants: {
+    tone: {
+      neutral: 'bg-muted text-muted-foreground',
+      success: 'bg-emerald-50 text-emerald-900 dark:bg-emerald-500/10',
+    },
+  },
+  defaultVariants: { tone: 'neutral' },
+})
+</script>
+
+<template>
+  <div :class="cn(banner({ tone: 'success' }), 'data-[state=pending]:opacity-70')" data-state="pending">
+    <span>已启用原子化工作流</span>
+    <button class="underline decoration-dotted">查看指南</button>
+  </div>
+</template>
+```
+
+  </TabItem>
+</Tabs>
 
 ## 常见错误与防护
 
@@ -95,3 +182,18 @@ const banner = cva('flex items-center justify-between rounded-xl border px-4 py-
 - 人工 spot-check：每个 PR 至少抽查 1-2 个组件，确认类名来自 tokens，没有裸色/裸间距。
 - 产物验证：构建后记录 CSS 体积、主色板是否命中 tokens（可用简单脚本扫描 CSS 中的裸色值）。
 - 回归用例：为按钮/表单等高频组件加一两个 Story/截图，用来对比后续 AI 产出是否偏离风格。
+
+### 流程示意
+
+```mermaid
+flowchart LR
+  Prompt[结构化提示模板] --> Gen[模型生成 React/Vue 代码]
+  Gen --> Merge[cn(twMerge) 去重]
+  Merge --> Lint[ESLint + Tailwind IntelliSense]
+  Lint --> Build[pnpm build / dev]
+  Build --> Review[人工 Spot Check]
+  Review --> Snapshot[截图/Story 基线]
+  Snapshot --> Deploy[上线/分发]
+  Build --> Metrics[CSS 体积/coverage]
+  Metrics --> Review
+```

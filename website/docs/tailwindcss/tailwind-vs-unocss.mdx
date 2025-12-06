@@ -1,0 +1,53 @@
+---
+id: tailwind-vs-unocss
+title: Tailwind vs UnoCSS 对比
+description: 生态、类型提示、merge 去重、运行时与迁移成本的取舍
+sidebar_position: 3.1
+---
+
+## 要点
+
+- Tailwind 提供「开箱即用」的 preset、插件、`tailwind-merge`、IDE 支持和社区范式；UnoCSS 提供高度可定制的 rules/variants/preset，但 merge/提示需自养。
+- 选择标准：是否要复用社区资产、是否有资源维护规则库、对运行时/编译速度的需求、是否需要极度自定义的类名语义。
+
+## 决策表（精简版）
+
+| 维度 | Tailwind | UnoCSS |
+| --- | --- | --- |
+| 生态/社区 | 官方插件 + 大量社区 preset/组件范式，`tailwind-merge` 成熟 | rule/variant 任意扩展，高度灵活；预设较少，需要自养 |
+| 类型提示 | 官方 language-service，IDE 友好 | 依赖 preset/插件质量，需额外配置 |
+| Merge 去重 | `tailwind-merge` 针对 Tailwind 语义完善 | 默认不做去重，需自写或引入规则 |
+| 运行时/JIT | v4 JIT 稳定，RSC/SSR 产物成熟 | 即时模式极快，自定义自由；规则库越大越需维护 |
+| 迁移/资产 | 现成组件库（shadcn/ui、reka-ui）、设计体系示例丰富 | 灵活性高，迁移成本取决于自建规则与团队习惯 |
+
+## 什么时候选 Tailwind？
+
+- 不想维护 merge/variant/IDE 提示规则，倾向「拿来即用」。
+- 需要快速复用社区资产、Preset、组件库（shadcn/ui、reka-ui 等）。
+- 关注 RSC/SSR 稳定性、插件完备度，或需要让外部协作者迅速上手。
+
+## 什么时候选 UnoCSS？
+
+- 希望完全自定义类名语义（甚至 DSL），或已有内部 preset 库。
+- 产物/规则必须极度可控（小程序/低码等），团队可维护规则和 merge 逻辑。
+- 需要极快的即时模式，能接受自行实现去重/类型提示。
+
+## 集成/实践差异
+
+- IDE：Tailwind 语言服务即插即用；Uno 需根据 preset 配置提示插件。
+- Merge：Tailwind 配 `tailwind-merge`，遇自定义 tokens/尺寸需更新规则；Uno 默认不去重，需要自写或组合。
+- content 扫描：两者都需精准 content，Tailwind v4 JIT 对 SSR/RSC 产物更成熟；Uno 自定义时也要防止通配放大产物。
+- 插件链：Tailwind 官方 typography/forms/animate 等即用；Uno 插件生态较少但可自由拼接规则。
+
+## 简易选择流程（文本版）
+
+1) 是否要复用现成组件/范式？要 → Tailwind；无所谓 → 继续。
+2) 是否有维护规则库的人力？没有 → Tailwind；有 → 继续。
+3) 是否需要极短类名/DSL？需要 → UnoCSS；不需要 → Tailwind。
+4) 是否首屏/产物极限压缩并可自管规则？是 → UnoCSS；否则 Tailwind。
+
+## 常见坑与对策
+
+- Tailwind：content 过宽、动态类膨胀 → 收紧扫描范围，使用 `cva/tv` 参数化；自定义 tokens 记得更新 `tailwind-merge` 规则。
+- UnoCSS：规则/merge/提示需要自养 → 建 preset 仓库 + merge 规则；对 DSL 做 lint，避免团队分叉。
+- 两者：关系类嵌套过深可读性差 → 约束 `group/peer/aria/data` 深度；保持 tokens 映射表。

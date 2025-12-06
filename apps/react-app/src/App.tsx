@@ -54,6 +54,51 @@ const aiNotes = [
   },
 ]
 
+const styleComparisons = [
+  {
+    title: "Raw CSS / BEM",
+    note: "全局命名，容易理解，但靠纪律控制覆盖/命名冲突。",
+    output: "单一 CSS，适合一次性页面或极小应用。",
+    tag: "基础",
+  },
+  {
+    title: "Sass / Less",
+    note: "变量/混入提高复用；仍是全局作用域，需要 lint 控制嵌套。",
+    output: "编译期内联变量，产物体积取决于复用度。",
+    tag: "预处理",
+  },
+  {
+    title: "CSS Modules",
+    note: "类名哈希隔离，易于复用，但主题切换需额外 token 管线。",
+    output: "作用域隔离的 CSS，适合可发布组件库。",
+    tag: "组件边界",
+  },
+  {
+    title: "CSS-in-JS",
+    note: "props 驱动样式，动态能力强；需关注运行时/SSR 注水体积。",
+    output: "运行时注入样式（或编译时提取），适合高度动态场景。",
+    tag: "运行时",
+  },
+  {
+    title: "Tailwind",
+    note: "类名即样式，JIT + content 精准摇树，生态齐全。",
+    output: "按需生成的原子类，依赖 tokens/variants 约束。",
+    tag: "utility",
+  },
+  {
+    title: "Headless + cva/tv",
+    note: "API 与样式解耦，variants/compoundVariants 集中声明。",
+    output: "class builder + merge 去重，最适合设计体系与 AI 流水线。",
+    tag: "headless",
+  },
+  {
+    title: "Vue <style scoped>",
+    note: "SFC 编译时加 data-v 隔离，快速落地小型模块。",
+    output: "scoped CSS + 原子类可混用，适合中小型 Vue 模块。",
+    tag: "SFC",
+  },
+]
+
 const variantPreview = [
   { label: "Default", className: buttonVariants({ variant: "default" }) },
   { label: "Outline", className: buttonVariants({ variant: "outline", size: "lg" }) },
@@ -304,6 +349,29 @@ button({ intent: 'primary', size: 'lg' })
                   <MoonIcon className="size-3" /> 支持暗色
                 </Badge>
               </div>
+            </CardContent>
+          </Card>
+        </section>
+
+        <section>
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2 text-lg">
+                <Table2Icon className="size-5 text-primary" /> 样式方案对照速览
+              </CardTitle>
+              <CardDescription>可在文档的「各样式方案 Demo」章节找到对应片段，下面是速查表。</CardDescription>
+            </CardHeader>
+            <CardContent className="grid gap-3 md:grid-cols-2 xl:grid-cols-3">
+              {styleComparisons.map(item => (
+                <div key={item.title} className="flex flex-col gap-2 rounded-xl border bg-muted/30 p-3">
+                  <div className="flex items-center justify-between">
+                    <p className="font-medium leading-tight">{item.title}</p>
+                    <Badge variant="outline" tone="ghost">{item.tag}</Badge>
+                  </div>
+                  <p className="text-sm text-muted-foreground">{item.note}</p>
+                  <div className="text-xs text-muted-foreground">产物：{item.output}</div>
+                </div>
+              ))}
             </CardContent>
           </Card>
         </section>

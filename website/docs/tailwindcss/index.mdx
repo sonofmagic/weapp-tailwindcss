@@ -23,11 +23,26 @@ import TabItem from '@theme/TabItem'
 - AI 友好工作流：可直接复用的提示模板、常见错误与防护、自动化校验建议。
 - Demo：React（shadcn/ui 风格）与 Vue（shadcn-vue/reka-ui 风格）的小型页面，含主题切换、响应式卡片、表单/数据块示例，可作为「让 AI 续写」的基准。
 
+{/* ## 快速命令与讲稿提纲
+
+- 安装依赖：`pnpm install`
+- 运行 React Demo：`pnpm --filter react-app dev`；运行 Vue Demo：`pnpm --filter vue-app dev`
+- 构建文档：`pnpm --filter website build`（或 `pnpm build:docs` 若存在别名）
+- 若需拍照/截图：在对应页面保留 `<!-- screenshot: tailwindcss-{section} -->` 占位
+
+参考提纲（45-60 分钟）：
+- 开场（5m）：样式方案为何不断演进，展示时间轴与组件库演进。
+- 原子化价值/风险（10m）：解决/未解决的问题 + 不适用场景。
+- Tailwind 设计（10m）：JIT、variants、分层、插件与 `tailwind-merge`。UnoCSS 取舍。
+- 最佳实践（10m）：tokens、`cva`/`tv`、关系类、性能/体积验证。
+- AI 友好（10m）：提示模板、校验链，React/Vue 代码演示。
+- Demo & Q&A（10-15m）：React/Vue 实机运行与对照代码。 */}
+
 > 阅读顺序建议：如果你正在做迁移或评审代码，先看「最佳实践」；如果你要说服团队或输出分享，先看「历史与演进」「设计理念与对比」。
 
 ## 导航
 
-1. [历史与组件库演进](tailwindcss/history-and-evolution)
+1. [历史与组件库演进](tailwindcss/history)
 2. [Tailwind 设计理念与对比](tailwindcss/tailwind-core)
 3. [原子化 CSS 最佳实践](tailwindcss/best-practices)
 4. [AI 友好提示与 Demo 运行指南](tailwindcss/ai-friendly-and-demos)
@@ -72,7 +87,7 @@ export function Hero() {
   </TabItem>
   <TabItem value="vue" label="Vue (shadcn-vue/reka-ui 风格)">
 
-```vue
+```html
 <script setup lang="ts">
 import { Button } from '@/components/ui/button'
 </script>

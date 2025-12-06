@@ -79,6 +79,51 @@ const variantPreview = computed(() => [
   { label: 'Outline', className: buttonVariants({ variant: 'outline', size: 'lg' }) },
   { label: 'Ghost', className: buttonVariants({ variant: 'ghost', size: 'sm' }) },
 ])
+
+const styleComparisons = [
+  {
+    title: 'Raw CSS / BEM',
+    note: '全局命名，简单直接，但靠纪律避免覆盖/冲突。',
+    output: '单一 CSS，适合小体量页面。',
+    tag: '基础',
+  },
+  {
+    title: 'Sass / Less',
+    note: '变量/混入提升复用，仍在全局作用域，需要限制嵌套。',
+    output: '编译期内联变量，产物体积取决于复用度。',
+    tag: '预处理',
+  },
+  {
+    title: 'CSS Modules',
+    note: '类名哈希隔离，适合组件库；主题切换需额外 token 管线。',
+    output: '作用域隔离 CSS，可发布/复用友好。',
+    tag: '组件边界',
+  },
+  {
+    title: 'CSS-in-JS',
+    note: 'props 驱动样式，动态能力强；需关注运行时/SSR 注水体积。',
+    output: '运行时注入或编译提取的样式，适合高度动态场景。',
+    tag: '运行时',
+  },
+  {
+    title: 'Tailwind',
+    note: '类名即样式，JIT + content 精准摇树，生态完善。',
+    output: '按需生成原子类，依赖 tokens/variants 约束。',
+    tag: 'utility',
+  },
+  {
+    title: 'Headless + cva/tv',
+    note: 'API 与样式解耦，集中声明 variants/compoundVariants。',
+    output: 'class builder + merge 去重，适合设计体系与 AI 流水线。',
+    tag: 'headless',
+  },
+  {
+    title: 'Vue <style scoped>',
+    note: 'SFC 编译时 data-v 隔离，快速落地中小模块。',
+    output: 'scoped CSS 与原子类共存，易于局部修改。',
+    tag: 'SFC',
+  },
+]
 </script>
 
 <template>
@@ -275,6 +320,31 @@ button({ intent: 'primary', size: 'lg' })
               <Badge variant="outline" tone="ghost" class="gap-1">
                 <Moon class="h-3 w-3" /> 支持暗色
               </Badge>
+            </div>
+          </CardContent>
+        </Card>
+      </section>
+
+      <section>
+        <Card>
+          <CardHeader>
+            <CardTitle class="flex items-center gap-2 text-lg">
+              <Table2 class="h-5 w-5 text-primary" /> 样式方案对照速览
+            </CardTitle>
+            <CardDescription>对应文档「各样式方案 Demo」章节的速查表，可用来决定落地方案。</CardDescription>
+          </CardHeader>
+          <CardContent class="grid gap-3 md:grid-cols-2 xl:grid-cols-3">
+            <div
+              v-for="item in styleComparisons"
+              :key="item.title"
+              class="flex flex-col gap-2 rounded-xl border bg-muted/30 p-3"
+            >
+              <div class="flex items-center justify-between">
+                <p class="font-medium leading-tight">{{ item.title }}</p>
+                <Badge variant="outline" tone="ghost">{{ item.tag }}</Badge>
+              </div>
+              <p class="text-sm text-muted-foreground">{{ item.note }}</p>
+              <div class="text-xs text-muted-foreground">产物：{{ item.output }}</div>
             </div>
           </CardContent>
         </Card>

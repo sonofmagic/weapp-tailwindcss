@@ -1,0 +1,121 @@
+---
+id: history-css-in-js
+title: CSS-in-JS 阶段
+description: 动态样式、运行时开销与 SSR 考量
+slug: /tailwindcss/history/css-in-js
+sidebar_position: 5
+---
+
+## 要点
+
+- 组件边界天然隔离，props 可驱动样式；动态主题/状态友好。
+- 成本：运行时/SSR 注水体积、构建链复杂；类名可读性差。
+- 适合需要高度动态样式、主题切换、设计系统与组件强绑定的团队。
+- 代表性包：运行时流派（`styled-components`、`Emotion`、`JSS`）、编译期/零运行时流派（`vanilla-extract`、`Linaria`、`Astro/Uno + scoped` 混合方案）。
+
+## 优势 / 劣势 / 何时使用
+
+| 项 | 内容 |
+| --- | --- |
+| 优势 | 组件粒度隔离；props 驱动；可在 JS 里复用逻辑/常量 |
+| 劣势 | 运行时开销；SSR 注水；类名调试性差；可能影响 HMR 速度 |
+| 适用 | 需要复杂动态样式、主题即逻辑的设计系统；部分 SSR/CSR 混合场景 |
+| 不适用 | 对首屏体积极敏感、运行时预算极小的多端/小程序场景 |
+
+## 代表性包与用法
+
+- **styled-components（运行时）**：模板字符串 + props；支持 `ThemeProvider` 统一主题。
+
+```tsx title="styled-components 主题"
+import styled, { ThemeProvider } from 'styled-components'
+
+const theme = { primary: '#111827', radius: '12px' }
+const Button = styled.button`
+  padding: 10px 16px;
+  border-radius: ${({ theme }) => theme.radius};
+  background: ${({ theme }) => theme.primary};
+`
+
+export function Demo() {
+  return (
+    <ThemeProvider theme={theme}>
+      <Button>Dark Button</Button>
+    </ThemeProvider>
+  )
+}
+```
+
+- **Emotion（运行时 + 编译模式）**：`css` prop 与 `@emotion/babel-plugin` 编译模式减少运行时。
+
+```tsx title="Emotion css prop"
+import { css } from '@emotion/react'
+
+const card = css({
+  border: '1px solid #e5e7eb',
+  borderRadius: 16,
+  padding: 16,
+})
+
+export const Card = () => <section css={card}>Emotion css prop</section>
+```
+
+- **vanilla-extract（零运行时）**：TypeScript API 生成 CSS，运行时仅使用 className。
+
+```ts title="vanilla-extract button.css.ts"
+import { style, createVar } from '@vanilla-extract/css'
+
+export const color = createVar()
+export const button = style({
+  vars: { [color]: '#111827' },
+  background: color,
+  borderRadius: '8px',
+  color: '#fff',
+})
+```
+
+## 运行时 vs 编译期（示意）
+
+```mermaid
+flowchart LR
+  A[源码: styled-components/Emotion] --> B{运行时注入?}
+  B -->|是| C[客户端生成 style 标签]\n首屏注水 + HMR 成本
+  B -->|否| D[编译期生成 CSS]\nvanilla-extract/Linaria 产出静态 CSS
+  D --> E[仅 className 传递]\n运行时开销小
+```
+
+## 示例（styled-components）
+
+```tsx
+import styled from 'styled-components'
+
+const Card = styled.section`
+  border: 1px solid #e5e7eb;
+  border-radius: 16px;
+  padding: 16px;
+  box-shadow: ${({ elevated }) => (elevated ? '0 10px 30px rgba(0,0,0,0.06)' : 'none')};
+`
+
+const Button = styled.button`
+  padding: 10px 16px;
+  border-radius: 8px;
+  border: 1px solid #111827;
+  background: #111827;
+  color: #fff;
+  &:hover { background: #0f172a; }
+`
+
+export const Demo = () => (
+  <Card elevated>
+    <p className="eyebrow">CSS-in-JS</p>
+    <h2>动态样式，组件边界</h2>
+    <Button>查看详情</Button>
+  </Card>
+)
+```
+
+## 常见坑与对策
+
+- 运行时体积：优先选择编译模式或零运行时方案（如 vanilla-extract），或开启 Babel SWC 优化。
+- SSR 注水：衡量首屏样式注入体积；必要时提取静态样式或开启样式缓存。
+- 类名调试：在开发环境打开 displayName/label；在生产环境启用最小化。
+- HMR 性能：减少过深的动态表达式；拆分组件，降低热更范围。

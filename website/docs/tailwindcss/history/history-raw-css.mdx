@@ -1,0 +1,88 @@
+---
+id: history-raw-css
+title: Raw CSS / BEM / OOCSS
+description: 全局命名阶段的优劣、适用场景与常见坑
+slug: /tailwindcss/history/raw-css
+sidebar_position: 2
+---
+
+## 要点
+
+- 全局样式 + 命名约定（BEM/OOCSS）降低心智负担，工具链简单。
+- 成本：覆盖链条难排查、命名冲突频发，复用依赖团队纪律。
+- 适合一次性页面/静态站点或极小体量项目；越过一定规模后维护成本陡增。
+- 代表性包：`normalize.css`/`reset.css` 负责基线统一，`Bootstrap 3/4` 带着 "组件 + 全局样式" 的典型模式，`Pure.css`/`Bulma` 以小体积展示了语义化 class 的上限。
+
+## 优势 / 劣势 / 何时使用
+
+| 项 | 内容 |
+| --- | --- |
+| 优势 | 无构建依赖，浏览器直读；类名语义清晰；入门成本低 |
+| 劣势 | 全局污染；覆盖顺序难控；难对齐 design token；重复样式多 |
+| 适用 | Landing/活动页、小型展示站点；无复杂主题/状态需求 |
+| 不适用 | 中大型应用、需要强隔离或多主题的项目 |
+
+## 代表性包与典型用法
+
+- **normalize.css / reset.css**：放在入口，统一不同浏览器的默认样式；之后才叠加自己的命名体系。
+
+```html title="入口引入"
+<link rel="stylesheet" href="/static/normalize.css" />
+<link rel="stylesheet" href="/static/site.css" />
+```
+
+- **Bootstrap 3/4**：全局命名 + 组件样式绑定，适合快速拼页面。
+
+```html title="Bootstrap 卡片"
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4/dist/css/bootstrap.min.css" />
+<div class="card shadow-sm">
+  <div class="card-body">
+    <p class="text-uppercase text-muted small mb-2">Bootstrap</p>
+    <h5 class="card-title">全局 + 组件绑定</h5>
+    <p class="card-text">通过 utility 辅助类和组件 class 组合完成 UI。</p>
+    <button class="btn btn-dark">查看详情</button>
+  </div>
+</div>
+```
+
+- **Bulma / Pure.css**：语义化 class + 轻量体积，适合无需强定制的小站点。
+
+```html title="Bulma 按钮示例"
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.4/css/bulma.min.css" />
+<div class="buttons">
+  <button class="button is-dark">Dark</button>
+  <button class="button is-outlined is-dark">Outline</button>
+  <button class="button is-light">Light</button>
+</div>
+```
+
+## 示例（BEM）
+
+```html
+<section class="card card--elevated">
+  <header class="card__header">
+    <p class="card__eyebrow">Raw CSS</p>
+    <h2 class="card__title">简单但全局</h2>
+    <p class="card__desc">命名靠约定，覆盖与复用全靠纪律。</p>
+    <button class="btn btn--primary">查看详情</button>
+  </header>
+</section>
+
+<style>
+  .card { border: 1px solid #e5e7eb; border-radius: 16px; padding: 16px; }
+  .card--elevated { box-shadow: 0 10px 30px rgba(0,0,0,0.06); }
+  .card__header { display: flex; flex-direction: column; gap: 8px; }
+  .card__eyebrow { font-size: 12px; letter-spacing: 0.1em; color: #6b7280; }
+  .card__title { font-size: 18px; margin: 0; }
+  .card__desc { color: #4b5563; font-size: 14px; }
+  .btn { padding: 10px 16px; border-radius: 8px; border: 1px solid #111827; background: #111827; color: #fff; }
+  .btn--primary:hover { background: #0f172a; }
+</style>
+```
+
+## 常见坑与对策
+
+- 命名冲突：统一前缀或分块（如 `layout-`/`component-`）。
+- 覆盖链条：禁止超过 3 层嵌套；避免 `!important` 堆叠。
+- 设计对齐：提前抽出色板/间距变量，即便是 CSS 变量也能减少漂移。
+- 可维护性：为组件化迁移预留出口（拆分局部文件，减少跨文件覆盖）。

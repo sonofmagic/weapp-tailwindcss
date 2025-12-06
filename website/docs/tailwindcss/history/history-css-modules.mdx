@@ -1,0 +1,98 @@
+---
+id: history-css-modules
+title: CSS Modules 阶段
+description: 作用域隔离、复用模式与主题化的挑战
+slug: /tailwindcss/history/css-modules
+sidebar_position: 4
+---
+
+## 要点
+
+- 类名哈希化实现作用域隔离，天然防止全局污染；适合可发布组件库。
+- 复用靠共享变量/混入文件，跨组件复用需要额外抽象；主题切换需额外 token 管线。
+- 适合中大型 Web 应用或组件库，需要隔离但不想引入运行时。
+- 代表性包/工具链：`webpack css-loader modules`、`Vite + vite:css-modules`、`Next.js` 内置 CSS Modules 支持、`vanilla-extract`（零运行时但同属编译期 CSS 模块流派）。
+
+## 优势 / 劣势 / 何时使用
+
+| 项 | 内容 |
+| --- | --- |
+| 优势 | 隔离性好；无运行时；与 React/Vue 配合顺畅 |
+| 劣势 | tokens/主题需额外管线；跨组件样式复用需要谨慎抽象 |
+| 适用 | 设计体系尚未 token 化、但需要隔离的组件库/应用 |
+| 不适用 | 需要跨平台（小程序）共享原子类，或希望直接用 Utility-first 的团队 |
+
+## 代表性包与用法
+
+- **webpack / Vite CSS Modules**：在 bundler 中开启 `modules`，生成哈希类名；可结合 `:global` 暴露公共样式。
+
+```js title="Vite 配置示例 vite.config.ts"
+export default defineConfig({
+  css: {
+    modules: {
+      localsConvention: 'camelCase',
+      generateScopedName: '[name]__[local]___[hash:base64:5]',
+    },
+  },
+})
+```
+
+- **Next.js / CRA 默认支持**：在 `.module.css`、`.module.scss` 文件中书写样式，自动作用域隔离。
+
+```tsx title="Next.js 页面使用 CSS Modules"
+import styles from './page.module.css'
+
+export default function Page() {
+  return <div className={styles.hero}>Next.js 带来的开箱隔离</div>
+}
+```
+
+- **vanilla-extract**：编译期生成 CSS，暴露 `className` 与变量，零运行时，常用于对性能要求高的组件库。
+
+```ts title="vanilla-extract" 
+// styles.css.ts
+import { style, createVar } from '@vanilla-extract/css'
+
+export const primary = createVar()
+export const card = style({
+  borderRadius: '16px',
+  vars: { [primary]: '#111827' },
+  border: `1px solid color-mix(in srgb, ${primary} 10%, transparent)`,
+})
+```
+
+## 示例（React）
+
+```tsx title="Card.tsx"
+import styles from './Card.module.css'
+
+export function Card() {
+  return (
+    <section className={`${styles.card} ${styles.elevated}`}>
+      <div className={styles.header}>
+        <p className={styles.eyebrow}>CSS Modules</p>
+        <h2 className={styles.title}>作用域隔离</h2>
+        <p className={styles.desc}>类名哈希化，不会与全局冲突。</p>
+        <button className={styles.button}>查看详情</button>
+      </div>
+    </section>
+  )
+}
+```
+
+```css title="Card.module.css"
+.card { border: 1px solid #e5e7eb; border-radius: 16px; padding: 16px; }
+.elevated { box-shadow: 0 10px 30px rgba(0,0,0,0.06); }
+.header { display: flex; flex-direction: column; gap: 8px; }
+.eyebrow { font-size: 12px; letter-spacing: 0.1em; color: #6b7280; }
+.title { font-size: 18px; margin: 0; }
+.desc { color: #4b5563; font-size: 14px; }
+.button { padding: 10px 16px; border-radius: 8px; border: 1px solid #111827; background: #111827; color: #fff; }
+```
+
+## 常见坑与对策
+
+- 主题/多品牌：通过 CSS 变量承载 tokens，再在 Modules 中引用，减少全局文件。
+- 复用：抽出 `variables.css` 与 `mixins.css`，避免在多个模块重复定义色板与间距。
+- 动态类：避免在运行时拼接哈希类，统一在模块里声明必要的修饰类。
+- 与 Utility-first 协作：可在 Modules 内少量 `@apply`（若配置允许），或在过渡期同时保留 atomic 辅助类。

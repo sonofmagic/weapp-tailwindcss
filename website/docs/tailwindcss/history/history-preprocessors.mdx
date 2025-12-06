@@ -1,0 +1,101 @@
+---
+id: history-preprocessors
+title: Sass / Less 预处理阶段
+description: 变量、混入与嵌套带来的复用与风险
+slug: /tailwindcss/history/preprocessors
+sidebar_position: 3
+---
+
+## 要点
+
+- 变量/混入/函数提升复用度，BEM/OOCSS 更易落地；仍是全局作用域。
+- 嵌套与继承易失控，编译体积可能膨胀；设计 token 对齐仍需额外规范。
+- 适合有一定复用需求但尚未组件化的团队，或需快速落地主题的中小项目。
+- 代表性包：`Sass/SCSS`（社区最强，`node-sass`/`dart-sass` 编译器）、`Less`（Ant Design 时代的主题变量代表）、`Stylus`（函数式写法灵活）、`PostCSS`（通过插件完成 autoprefixer、nesting）。
+
+## 优势 / 劣势 / 何时使用
+
+| 项 | 内容 |
+| --- | --- |
+| 优势 | 变量/混入提升复用；工具链成熟；CSS 输出可控 |
+| 劣势 | 仍是全局污染；嵌套地狱；主题切换需额外管线 |
+| 适用 | 中小型项目、需要少量主题切换或设计稿映射 |
+| 不适用 | 需要强隔离/可发布组件库、希望直接对齐 tokens 的项目 |
+
+## 代表性包与常见场景
+
+- **Sass/SCSS**：主流功能最全，配合 `@use`/`@forward` 进行模块化。
+- **Less**：变量 + 计算的主题切换（Ant Design `modifyVars`）经典用法；仍然是全局样式。
+- **Stylus**：缩进语法 + 函数式 mixin；在 Vue 早期模板中常见。
+- **PostCSS 插件链**：`autoprefixer` + `postcss-nesting` 组合，在不迁移到 CSS-in-JS 的情况下获得新语法支持。
+
+```scss title="Sass 模块化 tokens"
+// tokens/_color.scss
+$primary: #111827;
+$muted: #6b7280;
+
+// tokens/_radius.scss
+$card-radius: 16px;
+
+// styles/card.scss
+@use '../tokens/color' as *;
+@use '../tokens/radius' as *;
+
+.card {
+  border: 1px solid lighten($primary, 65%);
+  border-radius: $card-radius;
+}
+```
+
+```less title="Less modifyVars 快速主题切换"
+// 通过 webpack/vite 调整 modifyVars
+lessOptions: {
+  javascriptEnabled: true,
+  modifyVars: {
+    '@primary-color': '#111827',
+    '@btn-border-radius-base': '8px',
+  },
+}
+```
+
+```css title="PostCSS 插件链 (postcss.config.js)">
+module.exports = {
+  plugins: {
+    'postcss-nesting': {},
+    autoprefixer: {},
+  },
+}
+```
+
+## 示例（Sass + BEM）
+
+```scss
+$radius: 16px;
+$primary: #111827;
+$muted: #6b7280;
+
+.card {
+  border: 1px solid lighten($primary, 65%);
+  border-radius: $radius;
+  padding: 16px;
+  &--elevated { box-shadow: 0 10px 30px rgba(0, 0, 0, 0.06); }
+  &__header { display: flex; flex-direction: column; gap: 8px; }
+}
+
+.eyebrow { font-size: 12px; letter-spacing: 0.1em; color: $muted; }
+.btn {
+  padding: 10px 16px;
+  border-radius: $radius - 4px;
+  border: 1px solid $primary;
+  background: $primary;
+  color: #fff;
+  &:hover { background: darken($primary, 5%); }
+}
+```
+
+## 常见坑与对策
+
+- 嵌套层级：限制在 3 层以内；通过 lint 阻止深层选择器。
+- 变量散落：集中 tokens 到单一文件，防止多处色板分叉。
+- 产物体积：避免滥用 `@extend` 与全局混入；定期检查编译后大小。
+- 迁移路径：提前用 CSS 变量承载 tokens，便于未来切到 Utility-first/组件化。

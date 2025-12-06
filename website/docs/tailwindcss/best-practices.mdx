@@ -59,6 +59,19 @@ const card = cva('rounded-2xl border bg-card/80 shadow-sm transition-all', {
 - 避免过度嵌套的 flex/grid；使用 `gap` 代替 margin 互推。
 - 栅格优先：比起到处写 `md:flex-row`，用 `grid-cols-1 md:grid-cols-2 lg:grid-cols-3` 更直观。
 
+示例（容器查询 + clamp）：
+
+```css
+/* 在容器上启用查询 */
+.dashboard { @apply container mx-auto px-4; container-type: inline-size; container-name: dash; }
+
+@container dash (min-width: 720px) {
+  .stat-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+
+.title-fluid { font-size: clamp(1.25rem, 1.8vw, 1.5rem); }
+```
+
 ## 性能与体积
 
 - 精准 `content`：覆盖到模板文件但不要使用通配符目录；避免字符串拼 class。SSR 要确保 server、client 模板都被扫描。
@@ -74,6 +87,17 @@ const card = cva('rounded-2xl border bg-card/80 shadow-sm transition-all', {
 - 有无 `group`/`peer`/`aria`/`data-*` 的滥用或缺乏语义？关系链是否超过 2 层？
 - content 匹配是否过宽，是否引入了动态类？是否有字符串拼接类名？
 - 文档/示例是否同步更新运行命令与截图占位？有没有给出「推荐类名组合」列表？
+
+快速展示（表格版）：
+
+| 维度 | 要求 | 检查方式 |
+| --- | --- | --- |
+| tokens | 不写裸色/裸间距 | 搜索 `#`/`px`/`rgb(`；查看配置映射 |
+| variants | 集中在 `cva`/`tv` | 查 `variants`/`compoundVariants` 是否在单点声明 |
+| merge | 动态类统一走 `cn` | 搜索 `clsx`/`classNames` 是否零散存在 |
+| 关系类 | `group/peer/aria/data` ≤ 2 层 | 抽查组件 class 字符串长度与层级 |
+| content | 精准扫描模板 | 检查 `tailwind.config` 的 content 路径 |
+| 产物 | CSS 体积可控 | 构建后查看 CSS 体积/coverage |
 
 ## 常见坑与对策
 

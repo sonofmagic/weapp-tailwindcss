@@ -53,6 +53,7 @@
   "devDependencies": {
     "@docusaurus/module-type-aliases": "3.9.2",
     "@docusaurus/remark-plugin-npm2yarn": "^3.9.2",
+    "@docusaurus/theme-mermaid": "^3.9.2",
     "@docusaurus/tsconfig": "3.9.2",
     "@docusaurus/types": "3.9.2",
     "@icebreakers/deploy": "^0.1.6",

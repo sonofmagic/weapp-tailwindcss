@@ -2,7 +2,8 @@
 id: history-and-evolution
 title: 样式方案与组件库演进
 description: 从 Raw CSS 到 Utility-first，再到 Headless 组件的生态变迁
-sidebar_position: 2
+slug: /tailwindcss/history
+sidebar_position: 1
 ---
 
 ## 要点
@@ -43,6 +44,15 @@ timeline
 
 > 迁移建议：如果已有 CSS Modules/组件库想拥抱原子化，可先将公共 tokens 抽出，再在 Headless 组件上叠加 `cva`/`tailwind-variants`，逐步替换局部样式。
 
+## 深入阅读（按阶段拆分）
+
+- [Raw CSS / BEM / OOCSS](/docs/tailwindcss/history/raw-css)
+- [Sass / Less 预处理](/docs/tailwindcss/history/preprocessors)
+- [CSS Modules 阶段](/docs/tailwindcss/history/css-modules)
+- [CSS-in-JS 阶段](/docs/tailwindcss/history/css-in-js)
+- [Utility-first / Tailwind / UnoCSS](/docs/tailwindcss/history/utility-first)
+- [Token 化与 Headless 组件](/docs/tailwindcss/history/headless-tokens)
+
 ## 组件库演进对比
 
 | 阶段 | 代表 | 特点 | 问题 |
@@ -50,6 +60,43 @@ timeline
 | 传统 UI 套件 | Element, AntD | 样式随组件绑定，主题切换成本高 | 自定义成本高，覆盖样式易碎 |
 | 设计体系化 | Chakra, MUI | 主题与 tokens，部分可组合 | 仍有样式耦合，深层改造困难 |
 | Headless/UI primitives | Headless UI, shadcn/ui, reka-ui, Radix Primitives | API 与样式解耦，留出 design layer | 需要自己的 design system 与类名约束 |
+
+```mermaid
+timeline
+  title 组件库演进
+  2017 : Element / AntD 「组件 + 样式捆绑」
+  2019 : Chakra / MUI 「主题与组件半解耦」
+  2022 : Headless UI / Radix 「API 与样式分离」
+  2023 : shadcn/ui, reka-ui 「Headless + tokens + Tailwind」
+```
+
+## 阶段代表性包速览与跳转
+
+| 阶段 | 包 | 常见用法 | Demo/图表 |
+| --- | --- | --- | --- |
+| Raw CSS | normalize.css, Bootstrap, Bulma | 全局命名 + 组件 class | 本页 BEM 例子 + Reset 引入 |
+| 预处理器 | Sass, Less, PostCSS, Stylus | 变量/混入、`modifyVars` 主题 | Sass 片段 & PostCSS 插件链 |
+| CSS Modules | webpack/Vite modules, Next.js, vanilla-extract | 作用域哈希、零运行时 | 模块化 Card 组件 |
+| CSS-in-JS | styled-components, Emotion, JSS, vanilla-extract | 运行时/编译期动态样式 | 主题 Button + 运行时 vs 编译期图 |
+| Utility-first | Tailwind, Windi, UnoCSS, twin.macro | JIT 原子类、attributify、宏模式 | Tailwind 卡片 + Uno attributify + JIT 时序图 |
+| Headless + tokens | Radix, Headless UI, shadcn/ui, tailwind-variants | tokens → variants → primitives | Radix Tabs、Menu Demo、tokens 流程图 |
+
+### 决策树：选择样式方案
+
+```mermaid
+flowchart TD
+  A[团队现状?] --> B{需要高度动态/多品牌吗?}
+  B -->|是| C[CSS-in-JS 或 Headless + Tailwind]
+  B -->|否| D{已有 design tokens?}
+  D -->|有| E[Tailwind / Uno + tokens]
+  D -->|无| F[CSS Modules / Vue scoped 先隔离]
+  C --> G{关注运行时/SSR 体积?}
+  G -->|是| H[Tailwind + cva/tv，减少运行时]
+  G -->|否| I[styled-components/Emotion 编译模式]
+  E --> J{生态资产重要?}
+  J -->|重要| K[Tailwind（插件/merge/社区资产）]
+  J -->|不重要| L[UnoCSS（更灵活自定义）]
+```
 
 ### Headless 组合范式的优劣
 
