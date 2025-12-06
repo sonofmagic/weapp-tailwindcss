@@ -17,6 +17,7 @@ export default icebreaker(
       'e2e/__snapshots__/**/*',
       'templates/**',
     ],
+    pnpm: false,
   },
   {
     rules: {

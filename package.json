@@ -170,7 +170,7 @@
     "babel-loader": "^10.0.0",
     "boxen": "^8.0.1",
     "browserslist": "^4.28.1",
-    "chokidar": "^4.0.3",
+    "chokidar": "^5.0.0",
     "ci-info": "^4.3.1",
     "clsx": "^2.1.1",
     "colorette": "^2.0.20",

@@ -1,9 +1,4 @@
-catalogMode: prefer
 
-cleanupUnusedCatalogs: true
-shellEmulator: true
-# eslint-disable-next-line pnpm/yaml-enforce-settings
-trustPolicy: off
 packages:
   - packages/*
   - packages-runtime/*
