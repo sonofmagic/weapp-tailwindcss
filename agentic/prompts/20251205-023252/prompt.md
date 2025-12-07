@@ -9,7 +9,7 @@
 - 原子化 CSS 的最佳实践
 - 为什么 原子化 CSS 是 AI 友好的，如何驱动 AI 来大量编写原子化CSS来提升前端开发效率
 - 需要 react 和 vue 的示例, 分别使用 shadcn/ui 和 shadcn-vue 来做一个小 demo 页面
-- 需要准备各样式方案的对照 demo（raw css、sass/less、css modules、css-in-js、tailwind、headless + cva/tailwind-variants、vue 的 `<style scoped>`），给出代码片段与预期产物说明
+- 需要准备各样式方案的对照 demo（raw css、sass/less、css modules、css-in-js、tailwind、headless + cva/tailwind-variants、Vue 的 `<style scoped>`/Svelte scoped），给出代码片段与预期产物说明，并补充样式隔离方案（prefix/important、CSS Modules/vanilla-extract、Vue scoped、Svelte scoped、Shadow DOM/iframe、preflight 控制）的原理与取舍
 
 ## 约束（性能/风格/兼容/不可改动范围）
 

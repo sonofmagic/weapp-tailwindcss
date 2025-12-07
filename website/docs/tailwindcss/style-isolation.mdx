@@ -18,6 +18,7 @@ sidebar_position: 5
 - 命名空间：`prefix` + `important`；选择器优先级隔离，最轻量但不改变层叠本质。
 - 编译期哈希：CSS Modules/vanilla-extract；类名重写，天然不污染全局。
 - 作用域容器：`data-*` + `:where` / `@scope`；为局部 DOM 套壳，提高特定区域优先级。
+- Vue `scoped`：编译时给选择器自动加 `data-v-*`，局部生效。
 - Shadow DOM / iframe：浏览器级边界；最强隔离，但需在边界内独立注入样式。
 - preflight 控制：关闭/改写 base，避免 reset 污染宿主；常与以上方案组合。
 
@@ -60,6 +61,31 @@ export function Card() {
 
 - **适用**：可发布组件库、中大型应用，希望「类名可读 + 不污染全局」。
 - **注意**：跨组件复用 tokens 要单独导出变量；主题切换需额外变量管线。
+
+## Vue `<style scoped>`
+
+- **原理**：SFC 编译器为当前文件的元素和样式选择器都加上 `data-v-xxxx`，样式仅作用于本组件渲染出的 DOM。
+- **示例**：
+
+```html
+<template>
+  <section class="card">
+    <h2>{{ title }}</h2>
+  </section>
+</template>
+
+<style scoped>
+.card {
+  @apply rounded-xl border bg-card/80 p-4;
+}
+</style>
+```
+
+- **产物**：模板生成的节点带 `data-v-xxxx`，CSS 选择器编译为 `.card[data-v-xxxx]`。
+- **适用**：Vue SFC 局部隔离，尤其是中小组件或局部定制。Tailwind 原子类可直接写在模板，也可在 scoped 样式里 `@apply`。
+- **注意**：
+  - 需要跨组件的全局样式用 `:global(.class)` 包裹；第三方组件需显式穿透（`::v-deep`）。
+  - scoped 不重写类名本身，若要避免外部覆盖，可与 `prefix`/命名空间组合。
 
 ## 作用域容器（data-* + :where / @scope）
 

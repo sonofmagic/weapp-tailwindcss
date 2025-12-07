@@ -1,7 +1,7 @@
 ---
 id: history-css-modules
-title: CSS Modules 阶段
-description: 作用域隔离、复用模式与主题化的挑战
+title: CSS Modules / Scoped 阶段
+description: 哈希类名与编译期 scoped（Vue/Svelte）隔离方案、复用模式与主题化挑战
 slug: /tailwindcss/history/css-modules
 sidebar_position: 4
 ---
@@ -11,7 +11,7 @@ sidebar_position: 4
 - 类名哈希化实现作用域隔离，天然防止全局污染；适合可发布组件库。
 - 复用靠共享变量/混入文件，跨组件复用需要额外抽象；主题切换需额外 token 管线。
 - 适合中大型 Web 应用或组件库，需要隔离但不想引入运行时。
-- 代表性包/工具链：`webpack css-loader modules`、`Vite + vite:css-modules`、`Next.js` 内置 CSS Modules 支持、`vanilla-extract`（零运行时但同属编译期 CSS 模块流派）。
+- 代表性包/工具链：`webpack css-loader modules`、`Vite + vite:css-modules`、`Next.js` 内置 CSS Modules 支持、`vanilla-extract`（零运行时但同属编译期 CSS 模块流派）、Vue `<style scoped>`（为选择器自动加 `data-v-*` 的同类方案）、Svelte `<style>`（自动注入 `svelte-xxx` 选择器）。
 
 ## 优势 / 劣势 / 何时使用
 
@@ -60,6 +60,54 @@ export const card = style({
   border: `1px solid color-mix(in srgb, ${primary} 10%, transparent)`,
 })
 ```
+
+## Vue `<style scoped>`（同属编译期作用域流派）
+
+- **原理**：SFC 编译时为模板节点与样式选择器都添加 `data-v-xxxx`，使样式仅作用于当前组件渲染的 DOM。
+- **示例**：
+
+```html
+<template>
+  <section class="card">
+    <p class="eyebrow">Scoped</p>
+    <h2>{{ title }}</h2>
+  </section>
+</template>
+
+<style scoped>
+.card { @apply rounded-xl border bg-card/80 p-4; }
+.eyebrow { @apply text-xs uppercase tracking-[0.2em] text-muted-foreground; }
+</style>
+```
+
+- **产物**：`.card[data-v-xxxx] { ... }`，节点渲染为 `<section class="card" data-v-xxxx>`。
+- **适用/注意**：适合 Vue 组件局部隔离；若需全局样式或第三方组件穿透，使用 `:global`/`::v-deep`；可与 Tailwind `prefix` 叠加以减少宿主覆盖。
+
+## Svelte `<style>` 默认隔离
+
+- **原理**：Svelte 编译器为组件生成唯一标识（如 `svelte-abc123`），并将其附着在 DOM 与样式选择器上，效果类似 scoped。
+- **示例**：
+
+```html
+<script>
+  export let title = 'Svelte Scoped'
+</script>
+
+<section class="card">
+  <h2>{title}</h2>
+</section>
+
+<style>
+  .card {
+    border: 1px solid #e5e7eb;
+    border-radius: 16px;
+    padding: 16px;
+  }
+</style>
+```
+
+- **产物**：编译后节点为 `<section class="card svelte-abc123">`，CSS 为 `.card.svelte-abc123 { ... }`。
+- **适用/注意**：默认即可隔离，跨组件共用样式需 `:global(.class)`；如叠加 Tailwind，可直接在模板写原子类或在 `<style>` 中 `@apply`（需配置）。在微前端/嵌入场景仍可与 `prefix`/命名空间组合。
 
 ## 示例（React）
 

@@ -78,7 +78,7 @@ module.exports = defineConfig({
 - **Tailwind CSS v3.x**：沿用旧模块名即可（例如 `@import 'tailwindcss/base.css'`、`@import 'tailwindcss/components.css'`、`@import 'tailwindcss/utilities.css'`）。
 - **Tailwind CSS v4.x**：推荐直接引入 `weapp-tailwindcss` 提供的聚合样式：
 
-```vue title="src/app.mpx"
+```html title="src/app.mpx"
 <style lang="scss">
   @import 'weapp-tailwindcss/index.css';
 </style>
@@ -88,7 +88,7 @@ module.exports = defineConfig({
 
 然后在项目目录下，小程序全局的 `app.mpx` 中，通过 `@import` 引入该文件：
 
-```vue title="app.mpx"
+```html title="app.mpx"
 <style lang="css">
 @import "./app.css";
 </style>

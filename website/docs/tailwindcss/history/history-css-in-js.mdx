@@ -78,10 +78,68 @@ export const button = style({
 ```mermaid
 flowchart LR
   A[源码: styled-components/Emotion] --> B{运行时注入?}
-  B -->|是| C[客户端生成 style 标签]\n首屏注水 + HMR 成本
-  B -->|否| D[编译期生成 CSS]\nvanilla-extract/Linaria 产出静态 CSS
-  D --> E[仅 className 传递]\n运行时开销小
+  B -->|是| C[客户端生成 style 标签<br/>首屏注水 + HMR 成本]
+  B -->|否| D[编译期生成 CSS<br/>vanilla-extract/Linaria 产出静态 CSS]
+  D --> E[仅 className 传递<br/>运行时开销小]
 ```
+
+### 写法与产物对照
+
+- 运行时（styled-components/Emotion）：
+  - 写法：模板字符串或对象样式，允许使用 props / theme 计算样式；开发态插入 `<style>`，生产态可能提取 critical CSS。
+  - 产物：JS bundle + 内联 style 标签，类名在运行时生成（`sc-abc123`），首屏注水与 HMR 需要样式注入开销。
+- 编译期（Linaria/vanilla-extract）：
+  - 写法：受限的模板字符串或 TS API（`css`/`style`），编译器提前求值并生成 `.css`，JS 中只保留 `className` 映射。
+  - 产物：静态 CSS 文件（或内联 chunk）+ 极薄的 className 映射，运行时不再注入 style，SSR 直接 link CSS。
+
+### Linaria 示例（编译期）
+
+源码（编译前）：
+
+```tsx title="card.tsx"
+import { css } from '@linaria/core'
+
+const card = css`
+  border: 1px solid #e5e7eb;
+  border-radius: 16px;
+  padding: 16px;
+  background: white;
+  transition: box-shadow 150ms ease;
+
+  &:hover {
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.06);
+  }
+`
+
+export function Card({ children }: { children: React.ReactNode }) {
+  return <section className={card}>{children}</section>
+}
+```
+
+编译产物（示意）：
+
+```css title="card.linaria.css"
+.card_h3dj1z {
+  border: 1px solid #e5e7eb;
+  border-radius: 16px;
+  padding: 16px;
+  background: white;
+  transition: box-shadow 150ms ease;
+}
+.card_h3dj1z:hover {
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.06);
+}
+```
+
+```js title="card.tsx (compiled excerpt)"
+import './card.linaria.css'
+const card = 'card_h3dj1z'
+export function Card({ children }) {
+  return <section className={card}>{children}</section>
+}
+```
+
+特点：CSS 被提前生成，JS 仅保留类名字符串；运行时不再注入 `<style>`，与传统静态 CSS 链路类似。
 
 ## 示例（styled-components）
 

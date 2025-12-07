@@ -22,7 +22,7 @@ Tailwind CSS 的核心不在于背公式，而是把 UI 拆成「布局」「排
 
 以「订单卡片」为例，先在 `src/components/order-card/index.vue` 写出骨架：
 
-```vue title="src/components/order-card/index.vue"
+```html title="src/components/order-card/index.vue"
 <template>
   <view class="order-card">
     <view class="order-card__header">
@@ -84,7 +84,7 @@ Tailwind CSS 的核心不在于背公式，而是把 UI 拆成「布局」「排
 
 最后在组件实例上应用：
 
-```vue title="src/pages/index/index.vue"
+```html title="src/pages/index/index.vue"
 <template>
   <order-card
     class="order-card"

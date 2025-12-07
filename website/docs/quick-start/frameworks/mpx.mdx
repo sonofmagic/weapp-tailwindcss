@@ -31,7 +31,7 @@ Tailwind 的底层样式需要显式导入。不同主版本的包结构略有�
 
 仍然可以直接引用 Tailwind 提供的底层样式文件（带 `.css` 扩展名）：
 
-```vue title="src/app.mpx"
+```html title="src/app.mpx"
 <style lang="scss">
   @import 'tailwindcss/base.css';
   @import 'tailwindcss/components.css';
@@ -43,7 +43,7 @@ Tailwind 的底层样式需要显式导入。不同主版本的包结构略有�
 
 v4 官方改用了全新的 CSS 包结构，推荐直接引入 `weapp-tailwindcss` 提供的聚合样式文件：
 
-```vue title="src/app.mpx"
+```html title="src/app.mpx"
 <style lang="scss">
   @import 'weapp-tailwindcss/index.css';
 </style>
