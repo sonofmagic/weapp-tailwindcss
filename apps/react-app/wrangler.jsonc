@@ -1,0 +1,7 @@
+{
+  "name": "weapp-tailwindcss-react",
+  "compatibility_date": "2025-12-07",
+  "assets": {
+    "directory": "./dist"
+  }
+}
