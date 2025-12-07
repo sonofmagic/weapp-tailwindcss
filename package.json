@@ -260,7 +260,7 @@
     "weapp-tailwindcss-children": "catalog:weappChildren",
     "webpack": "5.103.0",
     "webpack-build-utils": "^0.0.7",
-    "wrangler": "^4.53.0",
+    "wrangler": "catalog:wrangler4530",
     "yaml": "^2.8.2"
   }
 }

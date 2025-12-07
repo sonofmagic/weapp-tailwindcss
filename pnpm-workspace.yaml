@@ -113,6 +113,8 @@ catalogs:
     '@weapp-tailwindcss/merge': ^2.1.2
   weappVite:
     weapp-vite: ^5.11.0
+  wrangler4530:
+    wrangler: ^4.53.0
 
 onlyBuiltDependencies:
   - '@tailwindcss/oxide'

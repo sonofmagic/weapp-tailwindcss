@@ -244,6 +244,10 @@ catalogs:
     weapp-vite:
       specifier: ^5.11.0
       version: 5.11.0
+  wrangler4530:
+    wrangler:
+      specifier: ^4.53.0
+      version: 4.53.0
 
 packageExtensionsChecksum: sha256-0d9QSPRdZHJObgJmTCTej+IKvHvKnj5WTqFnxG1/RhA=
 
@@ -711,7 +715,7 @@ importers:
         specifier: ^0.0.7
         version: 0.0.7
       wrangler:
-        specifier: ^4.53.0
+        specifier: catalog:wrangler4530
         version: 4.53.0
       yaml:
         specifier: ^2.8.2
@@ -789,6 +793,9 @@ importers:
       vite:
         specifier: ^7.2.6
         version: 7.2.6(@types/node@24.10.1)(jiti@2.6.1)(less@4.4.2)(lightningcss@1.30.2)(sass-embedded@1.93.3)(sass@1.94.2)(stylus@0.64.0)(terser@5.44.1)(tsx@4.21.0)(yaml@2.8.2)
+      wrangler:
+        specifier: catalog:wrangler4530
+        version: 4.53.0
 
   apps/rsmax-app-ts:
     dependencies:
@@ -1180,6 +1187,9 @@ importers:
       vue-tsc:
         specifier: ^3.1.6
         version: 3.1.6(typescript@5.9.3)
+      wrangler:
+        specifier: catalog:wrangler4530
+        version: 4.53.0
 
   apps/weapp-wechat-zhihu:
     devDependencies:
@@ -4238,6 +4248,9 @@ importers:
       webpack-node-externals:
         specifier: ^3.0.0
         version: 3.0.0
+      wrangler:
+        specifier: catalog:wrangler4530
+        version: 4.53.0
 
 packages:
 
@@ -35684,7 +35697,10 @@ snapshots:
       jest-runner: 25.5.4
       jest-runtime: 25.5.4
     transitivePeerDependencies:
+      - bufferutil
+      - canvas
       - supports-color
+      - utf-8-validate
 
   '@jest/test-sequencer@27.5.1':
     dependencies:
