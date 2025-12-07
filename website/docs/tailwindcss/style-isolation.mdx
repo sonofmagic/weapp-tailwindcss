@@ -1,0 +1,106 @@
+---
+id: style-isolation
+title: 样式隔离方案与原理
+description: 在微前端、组件库或第三方嵌入场景避免样式互相污染的可选方案与工作原理
+sidebar_position: 5
+---
+
+## 什么时候需要隔离
+
+- 微前端/Widget/站外嵌入：宿主可能有全局 reset 或 UI 库，必须避免互相覆盖。
+- 可发布组件库：希望类名可读但不污染全局，或交付「带样式的组件」给第三方。
+- 多团队共用容器：同一页面叠加多套样式（营销区、业务区）时，需要给各自套壳。
+
+> 大部分普通页面无需额外隔离；优先保证 tokens、variants、一致的 class 习惯即可。
+
+## 方案速览
+
+- 命名空间：`prefix` + `important`；选择器优先级隔离，最轻量但不改变层叠本质。
+- 编译期哈希：CSS Modules/vanilla-extract；类名重写，天然不污染全局。
+- 作用域容器：`data-*` + `:where` / `@scope`；为局部 DOM 套壳，提高特定区域优先级。
+- Shadow DOM / iframe：浏览器级边界；最强隔离，但需在边界内独立注入样式。
+- preflight 控制：关闭/改写 base，避免 reset 污染宿主；常与以上方案组合。
+
+## 命名空间（Tailwind prefix + important）
+
+- **原理**：给所有生成类名加前缀（如 `tw-btn`），并通过 `important: '#app'` 或 `[data-scope=root]` 提升选择器优先级，减少宿主样式覆盖。
+- **配置示例**：
+
+```ts
+// tailwind.config.ts
+export default {
+  prefix: 'tw-',
+  important: '[data-scope=widget]', // 或 '#app'
+  content: ['./src/**/*.{tsx,vue,html}'],
+}
+```
+
+- **适用**：微前端、第三方嵌入、只需「不被覆盖」的场景。
+- **注意**：仍是全局样式，宿主的 `!important` 仍可能干扰；preflight 仍会影响宿主（可关闭）。
+
+## 编译期哈希（CSS Modules / vanilla-extract）
+
+- **原理**：构建时把类名重写为哈希，JS 通过映射引用，默认不泄漏到全局；Tailwind 类可以在 `.module.css` 中用 `@apply` 复用。
+- **示例（CSS Modules）**：
+
+```css
+/* card.module.css */
+.card {
+  @apply rounded-xl border bg-card/80 p-4;
+}
+```
+
+```tsx
+import styles from './card.module.css'
+
+export function Card() {
+  return <div className={styles.card}>隔离的卡片</div>
+}
+```
+
+- **适用**：可发布组件库、中大型应用，希望「类名可读 + 不污染全局」。
+- **注意**：跨组件复用 tokens 要单独导出变量；主题切换需额外变量管线。
+
+## 作用域容器（data-* + :where / @scope）
+
+- **原理**：在根节点加标识，再用强选择器把样式限定在此容器内；`:where` 不增加特异性，便于覆盖；`@scope` 是未来方案（渐进支持）。
+- **示例**：
+
+```css
+:where([data-scope=mini]) .card {
+  @apply rounded-xl border bg-card/80 p-4;
+}
+```
+
+```html
+<section data-scope="mini">
+  <div class="card">局部作用域</div>
+</section>
+```
+
+- **适用**：在宿主页面局部注入样式，或需要多套区域并存。
+- **注意**：仍共用同一张 CSS，需手动管理作用域选择器；与 `prefix`/哈希可组合。
+
+## Shadow DOM / iframe
+
+- **原理**：利用浏览器原生隔离边界，Shadow DOM/iframe 内的样式默认不影响外部。
+- **实现要点**：
+  - Shadow DOM：在 Web Component 内注入 Tailwind 产物（可内联 `<style>`）；注意构建时把 CSS 携带进入组件。
+  - iframe：在子页面独立引入 Tailwind 产物；通信/事件需额外桥接。
+- **适用**：强隔离要求的 Widget、广告位、跨团队微前端。
+- **注意**：每个边界都需要单独注入样式，打包与运行时体积可能增加；预渲染/SSR 时需处理样式注入。
+
+## preflight 控制（可选组合）
+
+- **原理**：关闭或局部启用 Tailwind preflight，避免全局 reset 影响宿主。
+- **做法**：
+  - 在 `tailwind.config.ts` 配置 `corePlugins: { preflight: false }`，或仅在特定入口引入 `@tailwind base;`。
+  - 在组件库中不引入 preflight，让宿主自行决定全局 reset。
+- **适用**：可发布组件库、微前端、与现有 UI 库共存时。
+
+## 选择建议
+
+- 嵌入第三方页面：`prefix` + `important` 起步；若宿主样式复杂，再加作用域容器。
+- 组件库：优先 CSS Modules/vanilla-extract（编译期哈希），可关闭 preflight。
+- Widget/广告位/微前端：Shadow DOM 或 iframe 提供最强隔离，视体积和运行时成本选择。
+- 需要渐进策略：先用命名空间和 preflight 控制，确认仍有冲突再升级到容器/Shadow DOM。

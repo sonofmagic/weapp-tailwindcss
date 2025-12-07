@@ -72,6 +72,8 @@ const card = cva('rounded-2xl border bg-card/80 shadow-sm transition-all', {
 .title-fluid { font-size: clamp(1.25rem, 1.8vw, 1.5rem); }
 ```
 
+> 需要在微前端/组件库/第三方嵌入中避免样式污染？详见「[样式隔离方案与原理](./style-isolation)」。
+
 ## 性能与体积
 
 - 精准 `content`：覆盖到模板文件但不要使用通配符目录；避免字符串拼 class。SSR 要确保 server、client 模板都被扫描。
