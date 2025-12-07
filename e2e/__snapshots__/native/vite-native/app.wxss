@@ -28,41 +28,37 @@ text,
 page,
 .tw-root,
 :host {
-  --color-red-700: #bf000f;
-  --color-amber-300: #ffd236;
-  --color-green-300: #7bf1a8;
-  --color-blue-200: #bedbff;
-  --color-blue-300: #90c5ff;
-  --color-blue-500: #3080ff;
-  --color-pink-300: #fda5d5;
-  --color-zinc-50: #fafafa;
-  --color-zinc-900: #18181b;
+  --color-red-700: rgb(191, 0, 15);
+  --color-amber-300: rgb(255, 210, 55);
+  --color-green-300: rgb(123, 241, 168);
+  --color-blue-200: rgb(190, 219, 255);
+  --color-blue-300: rgb(145, 197, 255);
+  --color-blue-500: rgb(50, 128, 255);
+  --color-pink-300: rgb(253, 165, 213);
+  --color-zinc-50: rgb(250, 250, 250);
+  --color-zinc-900: rgb(24, 24, 27);
   --spacing: 8rpx;
 }
-@supports (color: lab(0% 0 0)) {
+@supports (color: color(display-p3 0 0 0%)) {
   page,
   .tw-root,
   :host {
-    --color-red-700: rgb(191, 0, 15);
+    --color-red-700: rgb(191, 0, 16);
     --color-amber-300: rgb(255, 210, 55);
-    --color-green-300: lab(86.9953% -47.2691 25.0054);
     --color-blue-200: rgb(190, 219, 255);
     --color-blue-300: rgb(145, 197, 255);
     --color-blue-500: rgb(50, 128, 255);
-    --color-pink-300: lab(77.8308% 38.525 -10.5394);
-    --color-zinc-50: lab(98.26% 0 0);
-    --color-zinc-900: lab(8.30603% 0.618205 -2.16572);
   }
 
   @media (color-gamut: p3) {
     page,
     .tw-root,
     :host {
-      --color-red-700: lab(40.4273% 67.2623 53.7441);
-      --color-amber-300: lab(86.4156% 6.13147 78.3961);
-      --color-blue-200: lab(86.15% -4.04379 -21.0797);
-      --color-blue-300: lab(77.5052% -6.4629 -36.42);
-      --color-blue-500: lab(54.1736% 13.3369 -74.6839);
+      --color-red-700: color(display-p3 0.69274 0.11623 0.10468);
+      --color-amber-300: color(display-p3 0.97433 0.83063 0.33298);
+      --color-blue-200: color(display-p3 0.76688 0.85521 0.98748);
+      --color-blue-300: color(display-p3 0.60256 0.76721 0.99394);
+      --color-blue-500: color(display-p3 0.26642 0.49122 0.98862);
     }
   }
 }
@@ -187,14 +183,15 @@ text,
   background-color: #68c828;
 }
 .bg-amber-300 {
-  background-color: #ffd236;
+  background-color: rgb(255, 210, 55);
+  background-color: color(display-p3 0.97433 0.83063 0.33298);
   background-color: var(--color-amber-300);
 }
 .bg-blue-500_f30 {
   background-color: rgba(48, 128, 255, 0.30196);
 }
 .bg-zinc-50 {
-  background-color: #fafafa;
+  background-color: rgb(250, 250, 250);
   background-color: var(--color-zinc-50);
 }
 .bg-gradient-to-b {
@@ -244,20 +241,22 @@ text,
   color: #123456;
 }
 .text-blue-300 {
-  color: #90c5ff;
+  color: rgb(145, 197, 255);
+  color: color(display-p3 0.60256 0.76721 0.99394);
   color: var(--color-blue-300);
 }
 .text-pink-300 {
-  color: #fda5d5;
+  color: rgb(253, 165, 213);
   color: var(--color-pink-300);
 }
 .text-red-700 {
-  color: #bf000f;
+  color: rgb(191, 0, 15);
+  color: color(display-p3 0.69274 0.11623 0.10468);
   color: var(--color-red-700);
 }
 @media (prefers-color-scheme: dark) {
   .dark_cbg-zinc-900 {
-    background-color: #18181b;
+    background-color: rgb(24, 24, 27);
     background-color: var(--color-zinc-900);
   }
 }
