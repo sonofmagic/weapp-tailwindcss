@@ -109,8 +109,6 @@ catalogs:
     weapp-tailwindcss-children: ^0.1.0
   weappIdeCli:
     weapp-ide-cli: ^4.1.1
-  weappMerge:
-    '@weapp-tailwindcss/merge': ^2.1.2
   weappVite:
     weapp-vite: ^5.11.0
   wrangler4530:

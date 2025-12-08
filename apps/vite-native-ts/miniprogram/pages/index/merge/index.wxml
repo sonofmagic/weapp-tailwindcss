@@ -105,7 +105,7 @@
 
   <view class="section">
     <view class="section__title">Variants 运行时示例</view>
-    <view class="section__desc">`@weapp-tailwindcss/variants` 内置合并和转义，适合做组件样式模式切换。</view>
+    <view class="section__desc">`@weapp-tailwindcss/variants-v3` 内置合并和转义，适合做组件样式模式切换。</view>
     <view class="section__list">
       <view class="sample" wx:for="{{variantsSamples}}" wx:key="label">
         <view class="sample__label">{{item.label}}</view>

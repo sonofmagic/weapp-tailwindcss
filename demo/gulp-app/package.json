@@ -54,6 +54,7 @@
     "@types/gulp-util": "^3.0.41",
     "@types/node": "^24.10.1",
     "@weapp-tailwindcss/merge-v3": "workspace:*",
+    "@weapp-tailwindcss/variants-v3": "workspace:*",
     "autoprefixer": "catalog:autoprefixer10",
     "cross-env": "catalog:crossEnv",
     "eslint": "^9.39.1",

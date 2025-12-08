@@ -55,6 +55,7 @@
     "@mpxjs/webpack-plugin": "2.10.17",
     "@vue/cli-service": "~5.0.0",
     "@weapp-tailwindcss/merge-v3": "workspace:*",
+    "@weapp-tailwindcss/variants-v3": "workspace:*",
     "autoprefixer": "catalog:autoprefixer10",
     "babel-jest": "^30.2.0",
     "cross-env": "catalog:crossEnv",

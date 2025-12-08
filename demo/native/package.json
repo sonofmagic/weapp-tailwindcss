@@ -12,6 +12,7 @@
   "license": "ISC",
   "devDependencies": {
     "@weapp-tailwindcss/merge-v3": "workspace:*",
+    "@weapp-tailwindcss/variants-v3": "workspace:*",
     "postcss-rem-to-responsive-pixel": "catalog:postcssRem602",
     "postcss-rpx-transform": "catalog:postcssRpx",
     "tailwindcss": "catalog:tailwindcss3",

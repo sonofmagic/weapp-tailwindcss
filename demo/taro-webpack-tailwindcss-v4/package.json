@@ -63,8 +63,8 @@
     "@tarojs/runtime": "catalog:taro4",
     "@tarojs/shared": "catalog:taro4",
     "@tarojs/taro": "catalog:taro4",
-    "react": "^18.0.0",
-    "react-dom": "^18.0.0"
+    "react": "catalog:react18",
+    "react-dom": "catalog:react18"
   },
   "devDependencies": {
     "@babel/core": "catalog:babelCore7285",
@@ -76,9 +76,10 @@
     "@tarojs/taro-loader": "catalog:taro4",
     "@tarojs/webpack5-runner": "catalog:taro4",
     "@types/node": "^24.10.1",
-    "@types/react": "^19.1.13",
+    "@types/react": "catalog:react18",
     "@types/webpack-env": "^1.13.6",
-    "@weapp-tailwindcss/merge": "catalog:weappMerge",
+    "@weapp-tailwindcss/merge": "workspace:*",
+    "@weapp-tailwindcss/variants": "workspace:*",
     "babel-preset-taro": "catalog:taro4",
     "eslint": "^9.39.1",
     "eslint-config-taro": "catalog:taro4",

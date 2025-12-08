@@ -1,6 +1,6 @@
 import { create as createRuntime, twMerge } from '@weapp-tailwindcss/merge-v3'
 import { cva } from '@weapp-tailwindcss/cva'
-import { tv } from '@weapp-tailwindcss/variants'
+import { tv } from '@weapp-tailwindcss/variants-v3'
 
 const defaultMerge = twMerge
 const { twMerge: mergeWithoutEscape } = createRuntime({ escape: false })

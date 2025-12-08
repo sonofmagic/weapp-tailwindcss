@@ -64,8 +64,8 @@
     "@tarojs/runtime": "catalog:taro4",
     "@tarojs/shared": "catalog:taro4",
     "@tarojs/taro": "catalog:taro4",
-    "react": "^18.0.0",
-    "react-dom": "^18.0.0"
+    "react": "catalog:react18",
+    "react-dom": "catalog:react18"
   },
   "devDependencies": {
     "@babel/core": "catalog:babelCore7285",
@@ -73,9 +73,10 @@
     "@babel/preset-react": "catalog:babelPresetReact7285",
     "@tarojs/cli": "catalog:taro4",
     "@tarojs/vite-runner": "catalog:taro4",
-    "@types/react": "^19.1.13",
+    "@types/react": "catalog:react18",
     "@vitejs/plugin-react": "^5.1.1",
     "@weapp-tailwindcss/merge-v3": "workspace:*",
+    "@weapp-tailwindcss/variants-v3": "workspace:*",
     "autoprefixer": "catalog:autoprefixer10",
     "babel-preset-taro": "catalog:taro4",
     "eslint": "^9.39.1",

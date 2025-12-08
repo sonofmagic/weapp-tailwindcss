@@ -92,6 +92,7 @@
     "@weapp-tailwindcss/cva": "workspace:*",
     "@weapp-tailwindcss/merge-v3": "workspace:*",
     "@weapp-tailwindcss/typography": "workspace:*",
+    "@weapp-tailwindcss/variants-v3": "workspace:*",
     "autoprefixer": "catalog:autoprefixer10",
     "domelementtype": "^2.3.0",
     "miniprogram-api-typings": "catalog:miniApiTypings",

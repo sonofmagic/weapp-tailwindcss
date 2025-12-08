@@ -36,6 +36,7 @@
     "@iconify-json/mdi": "^1.2.3",
     "@tailwindcss/postcss": "catalog:tailwindcss4",
     "@tailwindcss/vite": "catalog:tailwindcss4",
+    "@weapp-tailwindcss/variants": "workspace:*",
     "autoprefixer": "catalog:autoprefixer10",
     "postcss": "catalog:postcss85",
     "tailwindcss": "catalog:tailwindcss4",

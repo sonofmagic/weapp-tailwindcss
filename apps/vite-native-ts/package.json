@@ -27,7 +27,7 @@
   "devDependencies": {
     "@weapp-tailwindcss/cva": "workspace:*",
     "@weapp-tailwindcss/merge-v3": "workspace:*",
-    "@weapp-tailwindcss/variants": "workspace:*",
+    "@weapp-tailwindcss/variants-v3": "workspace:*",
     "autoprefixer": "catalog:autoprefixer10",
     "miniprogram-api-typings": "catalog:miniApiTypings",
     "postcss": "catalog:postcss85",

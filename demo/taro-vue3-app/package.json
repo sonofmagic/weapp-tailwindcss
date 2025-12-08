@@ -76,6 +76,7 @@
     "@vue/babel-plugin-jsx": "^2.0.1",
     "@vue/compiler-sfc": "catalog:vue3",
     "@weapp-tailwindcss/merge-v3": "workspace:*",
+    "@weapp-tailwindcss/variants-v3": "workspace:*",
     "autoprefixer": "catalog:autoprefixer10",
     "babel-preset-taro": "catalog:taro4",
     "cross-env": "catalog:crossEnv",

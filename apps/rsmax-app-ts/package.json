@@ -23,6 +23,7 @@
     "@types/react": "catalog:react18",
     "@types/react-dom": "catalog:react18",
     "@weapp-tailwindcss/merge-v3": "workspace:*",
+    "@weapp-tailwindcss/variants-v3": "workspace:*",
     "autoprefixer": "catalog:autoprefixer10",
     "cross-env": "catalog:crossEnv",
     "postcss": "catalog:postcss85",

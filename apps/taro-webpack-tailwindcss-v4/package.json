@@ -80,6 +80,7 @@
     "@types/react-dom": "catalog:react18",
     "@types/webpack-env": "^1.13.6",
     "@weapp-tailwindcss/merge": "workspace:*",
+    "@weapp-tailwindcss/variants": "workspace:*",
     "babel-preset-taro": "catalog:taro4",
     "postcss": "catalog:postcss85",
     "react-refresh": "catalog:reactRefresh018",
