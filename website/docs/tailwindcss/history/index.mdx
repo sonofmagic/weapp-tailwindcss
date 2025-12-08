@@ -1,7 +1,7 @@
 ---
-id: history-and-evolution
-title: 样式方案与组件库演进
-description: 从 Raw CSS 到 Utility-first，再到 Headless 组件的生态变迁
+id: history-style-evolution
+title: 样式方案的演化
+description: 从 Raw CSS 到 Utility-first 的迁移路径与多端适配考量
 slug: /tailwindcss/history
 sidebar_position: 1
 ---
@@ -9,8 +9,10 @@ sidebar_position: 1
 ## 要点
 
 - 样式方案从「全局命名」走向「模块化/组件化」再到「原子化」，每一步都在降低耦合与认知成本。
-- 组件库从「重样式」到「Headless」：API 与样式解耦，让原子类和设计系统更容易落地。
 - 原子化 CSS 的价值：更好的可组合性与摇树优化；风险在于约束失效后的 class 泛滥与设计漂移。它不是风口产物，而是长期向「更小粒度、更好约束」演进的结果。
+- 多 runtime（Web/RSC/小程序）下，需要把 tokens 抽象到样式方案之外，避免在构建或运行时动态拼类。
+
+> 组件库部分已拆为独立页面：[组件库的演进](/docs/tailwindcss/history/component-evolution)。
 
 ## <span className="mr-2 inline-block align-middle text-primary dark:text-primary-200 icon-[mdi--calendar-month]"></span> 样式方案时间轴
 
@@ -82,44 +84,6 @@ flowchart TB
 - [Utility-first / Tailwind / UnoCSS](/docs/tailwindcss/history/utility-first)
 - [Token 化与 Headless 组件](/docs/tailwindcss/history/headless-tokens)
 
-## <span className="mr-2 inline-block align-middle text-primary dark:text-primary-200 icon-[mdi--chart-areaspline]"></span> 组件库演进对比
-
-| 阶段 | 代表 | 特点 | 问题 |
-| --- | --- | --- | --- |
-| 传统 UI 套件 | Element, AntD | 样式随组件绑定，主题切换成本高 | 自定义成本高，覆盖样式易碎 |
-| 设计体系化 | Chakra, MUI | 主题与 tokens，部分可组合 | 仍有样式耦合，深层改造困难 |
-| Headless/UI primitives | Headless UI, shadcn/ui, reka-ui, Radix Primitives | API 与样式解耦，留出 design layer | 需要自己的 design system 与类名约束 |
-
-```mermaid
-%%{ init: { "flowchart": { "curve": "basis", "nodeSpacing": 32, "rankSpacing": 24 } } }%%
-flowchart TB
-  C1["2017 · Element / AntD：组件 + 样式捆绑"]
-  C2["2019 · Chakra / MUI：主题与组件半解耦"]
-  C3["2022 · Headless UI / Radix：API 与样式分离"]
-  C4["2023 · shadcn/ui, reka-ui：Headless + tokens + Tailwind"]
-
-  C1 --> C2 --> C3 --> C4
-```
-
-<div className="mt-3 grid gap-2 text-sm text-muted-foreground">
-  <div className="flex items-start gap-2">
-    <span className="icon-[mdi--cube] text-lg text-primary dark:text-primary-200" aria-hidden="true" />
-    <span>2017：传统组件库，样式与组件强绑定。</span>
-  </div>
-  <div className="flex items-start gap-2">
-    <span className="icon-[mdi--tune] text-lg text-primary dark:text-primary-200" aria-hidden="true" />
-    <span>2019：主题化/设计体系化的组件库。</span>
-  </div>
-  <div className="flex items-start gap-2">
-    <span className="icon-[mdi--link] text-lg text-primary dark:text-primary-200" aria-hidden="true" />
-    <span>2022：Headless Primitives，API 与样式解耦。</span>
-  </div>
-  <div className="flex items-start gap-2">
-    <span className="icon-[mdi--magic-staff] text-lg text-primary dark:text-primary-200" aria-hidden="true" />
-    <span>2023：shadcn/ui 等模板化方案，Headless + tokens + Tailwind。</span>
-  </div>
-</div>
-
 ## 阶段代表性包速览与跳转
 
 | 阶段 | 包 | 常见用法 | Demo/图表 |
@@ -147,19 +111,6 @@ flowchart TD
   J -->|重要| K["Tailwind（插件 / merge / 社区资产）"]
   J -->|不重要| L["UnoCSS（更灵活自定义）"]
 ```
-
-### Headless 组合范式的优劣
-
-- 优势：
-  - API 与样式拆分，样式完全交给 Tailwind/Uno + tokens；易于多品牌/暗色切换。
-  - 与 `cva`/`tailwind-variants` 配合，变体集中声明，降低审阅成本。
-  - 对 AI 生成友好：模板固定，类名受 merge/lint 保护。
-- 劣势：
-  - 需要自建设计系统与 token 表，否则不同页面风格易漂移。
-  - 文档/示例建设成本高，需要给出「推荐类名组合」。
-  - 对初学者，class 可读性与语义化需要额外培训。
-
-**对齐点**：在 Headless/无样式组件上叠加 `cva`/`tailwind-variants`，把 variants（尺寸/语义/状态）集中声明，再配合 `tailwind-merge` 兜底合并，形成稳定的 class builder。
 
 ## 原子化 CSS 解决/未解决的问题
 

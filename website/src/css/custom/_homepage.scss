@@ -915,7 +915,7 @@ html[data-theme='dark'] .homepage .home-cta:hover {
   transform: translateY(-4px);
 }
 
-.floating-icon .iconify {
+.floating-icon [class*='icon-['] {
   font-size: 1.2rem;
 }
 

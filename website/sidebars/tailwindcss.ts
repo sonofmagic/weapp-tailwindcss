@@ -9,8 +9,9 @@ const tailwindcssSidebar: SidebarConfig = [
     type: 'category',
     label: '样式方案与组件库演进',
     collapsed: false,
-    link: { type: 'doc', id: 'tailwindcss/history/history-and-evolution' },
+    link: { type: 'doc', id: 'tailwindcss/history/history-style-evolution' },
     items: [
+      'tailwindcss/history/history-component-evolution',
       {
         type: 'category',
         label: 'Raw CSS / BEM / OOCSS',
