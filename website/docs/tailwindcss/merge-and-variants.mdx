@@ -13,9 +13,45 @@ sidebar_position: 3.2
 
 ## tailwind-merge：去重与边界
 
+- 意义：让「后写覆盖前写」成为可预测规则，避免动态组合时出现 `p-4 p-2` 这类冲突导致的随机样式；类名越多越需要去重。
 - 作用：`p-4 p-2` → `p-2`；自定义 tokens/尺寸时需同步规则。
 - 建议：在所有 class 拼接入口统一用 `cn`；对常见自定义（色板、spacing、radius）写额外 merge config 并加用例验证。
 - 快测：在 Demo 按钮里故意写 `p-4 p-2`，观察输出；对自定义色板 class 也做覆盖测试。
+
+### 没有 tailwind-merge 时
+
+```tsx
+import clsx from 'clsx'
+
+function Button({ size = 'md', className, ...props }) {
+  // 难以保证调用方不会传入冲突类（如 px-2），只能靠约定
+  const base = 'inline-flex items-center rounded-md px-3 py-2 text-sm font-medium'
+  const sizeClass = size === 'lg' ? 'px-4 py-2.5 text-base' : 'px-3 py-2 text-sm'
+  return <button className={clsx(base, sizeClass, className)} {...props} />
+}
+
+// 使用方
+// 这里传了 px-2，最终输出 class 顺序取决于 props 位置，样式不可控
+;<Button className="px-2 text-red-600" />
+```
+
+### 引入 tailwind-merge 之后
+
+```tsx
+import { twMerge } from 'tailwind-merge'
+import clsx from 'clsx'
+const cn = (...inputs: clsx.ClassValue[]) => twMerge(clsx(...inputs))
+
+function Button({ size = 'md', className, ...props }) {
+  const base = 'inline-flex items-center rounded-md px-3 py-2 text-sm font-medium'
+  const sizeClass = size === 'lg' ? 'px-4 py-2.5 text-base' : 'px-3 py-2 text-sm'
+  return <button className={cn(base, sizeClass, className)} {...props} />
+}
+
+// 使用方
+// 即便传入 px-2，tailwind-merge 也会保留「最后的有效值」，变为 px-2，行为可预测
+;<Button className="px-2 text-red-600" />
+```
 
 ## cva：轻量变体工厂
 
