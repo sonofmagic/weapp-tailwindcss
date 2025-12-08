@@ -22,6 +22,17 @@ sidebar_position: 7
 | 适用 | 需要统一体验、多产品线、多主题/品牌、希望自动化生成 UI 的团队 |
 | 不适用 | 极简站点或无设计体系、无法投入规范建设的团队 |
 
+## 什么是 token？什么是 token 化
+
+- **Design Token**：把颜色、间距、圆角、字号、阴影、动效等设计属性抽象成命名变量（如 `color-primary-500`、`radius-lg`），集中管理，作为唯一取值来源。
+- **Token 化**：将设计稿中的具体数值（#123456、18px 等）转译为 token 名称，在代码/样式里只引用 token，不写裸值；同时保留映射表与校验链，确保所有取值来自 token。
+- **落地方式**：
+  - CSS 变量：`:root { --color-primary-500: #2563eb; --radius-lg: 12px; }`，配合 Tailwind `@theme` 或自定义 theme 读取。
+  - Tailwind 配置：在 `theme.colors/spacing/radius` 中声明，生成对应原子类。
+  - 多主题/多品牌：通过 `data-theme` 或类名切换一组 token 变量，实现暗色/品牌切换而不改组件逻辑。
+- **收益**：统一视觉取值，减少随手取值漂移；便于 lint/merge/脚本校验；支持跨品牌/主题的快速切换。
+- **注意**：token 只是基石，还需 `cva`/`tailwind-variants` 把 token 编织成变体，再由 Headless 组件消费。
+
 ## 代表性包与组合方式
 
 - **Radix Primitives / Ark UI**：提供无样式、可访问性完善的组件原件。
@@ -89,7 +100,7 @@ export function Badge({ asChild, className, ...props }: { asChild?: boolean } & 
 }
 ```
 
-## tokens → variants → primitives 流程（示意）
+## <span className="mr-2 inline-block align-middle text-primary dark:text-primary-200 icon-[mdi--link]"></span> tokens → variants → primitives 流程（示意）
 
 ```mermaid
 %%{ init: { "flowchart": { "curve": "basis" } } }%%
@@ -99,6 +110,25 @@ flowchart TD
   Primitives --> UI["业务组件组合"]
   Tokens --> Lint["lint / merge 校验，防止越界取值"]
 ```
+
+<div className="mt-3 grid gap-2 text-sm text-muted-foreground">
+  <div className="flex items-start gap-2">
+    <span className="icon-[mdi--palette-swatch] text-lg text-primary dark:text-primary-200" aria-hidden="true" />
+    <span>Tokens：统一色板/间距/圆角/排版，作为唯一取值来源。</span>
+  </div>
+  <div className="flex items-start gap-2">
+    <span className="icon-[mdi--widgets] text-lg text-primary dark:text-primary-200" aria-hidden="true" />
+    <span>Factory：用 cva/tv 把尺寸、语义、状态集中声明。</span>
+  </div>
+  <div className="flex items-start gap-2">
+    <span className="icon-[mdi--layers] text-lg text-primary dark:text-primary-200" aria-hidden="true" />
+    <span>Primitives/UI：Headless 组件消费变体，组合成业务 UI。</span>
+  </div>
+  <div className="flex items-start gap-2">
+    <span className="icon-[mdi--check-circle-outline] text-lg text-primary dark:text-primary-200" aria-hidden="true" />
+    <span>Lint/Merge：校验取值合法，合并类名，防止越界与冲突。</span>
+  </div>
+</div>
 
 ## 示例（Button with cva，React）
 

@@ -12,7 +12,7 @@ sidebar_position: 1
 - 组件库从「重样式」到「Headless」：API 与样式解耦，让原子类和设计系统更容易落地。
 - 原子化 CSS 的价值：更好的可组合性与摇树优化；风险在于约束失效后的 class 泛滥与设计漂移。它不是风口产物，而是长期向「更小粒度、更好约束」演进的结果。
 
-## 样式方案时间轴
+## <span className="mr-2 inline-block align-middle text-primary dark:text-primary-200 icon-[mdi--calendar-month]"></span> 样式方案时间轴
 
 ```mermaid
 %%{ init: { "flowchart": { "curve": "basis", "nodeSpacing": 32, "rankSpacing": 24 } } }%%
@@ -26,6 +26,33 @@ flowchart TB
 
   A --> B --> C --> D --> E --> F
 ```
+
+<div className="mt-3 grid gap-2 text-sm text-muted-foreground">
+  <div className="flex items-start gap-2">
+    <span className="icon-[mdi--pencil] text-lg text-primary dark:text-primary-200" aria-hidden="true" />
+    <span>2010：Raw CSS / BEM / OOCSS，语义命名 + 手写层级。</span>
+  </div>
+  <div className="flex items-start gap-2">
+    <span className="icon-[mdi--layers] text-lg text-primary dark:text-primary-200" aria-hidden="true" />
+    <span>2013：Sass/Less 变量与混入，BEM 体系化。</span>
+  </div>
+  <div className="flex items-start gap-2">
+    <span className="icon-[mdi--shield-check] text-lg text-primary dark:text-primary-200" aria-hidden="true" />
+    <span>2015：CSS Modules 作用域隔离。</span>
+  </div>
+  <div className="flex items-start gap-2">
+    <span className="icon-[mdi--code-tags] text-lg text-primary dark:text-primary-200" aria-hidden="true" />
+    <span>2017：CSS-in-JS，组件边界 + 运行时成本。</span>
+  </div>
+  <div className="flex items-start gap-2">
+    <span className="icon-[mdi--star-four-points] text-lg text-primary dark:text-primary-200" aria-hidden="true" />
+    <span>2020：Utility-first，JIT、摇树、tokens 对齐。</span>
+  </div>
+  <div className="flex items-start gap-2">
+    <span className="icon-[mdi--timeline-clock-outline] text-lg text-primary dark:text-primary-200" aria-hidden="true" />
+    <span>2024：Token/原子类跨 Web/RSC/小程序协作。</span>
+  </div>
+</div>
 
 ### 现场感：几段常见的「升级理由」
 
@@ -55,7 +82,7 @@ flowchart TB
 - [Utility-first / Tailwind / UnoCSS](/docs/tailwindcss/history/utility-first)
 - [Token 化与 Headless 组件](/docs/tailwindcss/history/headless-tokens)
 
-## 组件库演进对比
+## <span className="mr-2 inline-block align-middle text-primary dark:text-primary-200 icon-[mdi--chart-areaspline]"></span> 组件库演进对比
 
 | 阶段 | 代表 | 特点 | 问题 |
 | --- | --- | --- | --- |
@@ -64,13 +91,34 @@ flowchart TB
 | Headless/UI primitives | Headless UI, shadcn/ui, reka-ui, Radix Primitives | API 与样式解耦，留出 design layer | 需要自己的 design system 与类名约束 |
 
 ```mermaid
-timeline
-  title 组件库演进
-  2017 : "Element / AntD：组件 + 样式捆绑"
-  2019 : "Chakra / MUI：主题与组件半解耦"
-  2022 : "Headless UI / Radix：API 与样式分离"
-  2023 : "shadcn/ui, reka-ui：Headless + tokens + Tailwind"
+%%{ init: { "flowchart": { "curve": "basis", "nodeSpacing": 32, "rankSpacing": 24 } } }%%
+flowchart TB
+  C1["2017 · Element / AntD：组件 + 样式捆绑"]
+  C2["2019 · Chakra / MUI：主题与组件半解耦"]
+  C3["2022 · Headless UI / Radix：API 与样式分离"]
+  C4["2023 · shadcn/ui, reka-ui：Headless + tokens + Tailwind"]
+
+  C1 --> C2 --> C3 --> C4
 ```
+
+<div className="mt-3 grid gap-2 text-sm text-muted-foreground">
+  <div className="flex items-start gap-2">
+    <span className="icon-[mdi--cube] text-lg text-primary dark:text-primary-200" aria-hidden="true" />
+    <span>2017：传统组件库，样式与组件强绑定。</span>
+  </div>
+  <div className="flex items-start gap-2">
+    <span className="icon-[mdi--tune] text-lg text-primary dark:text-primary-200" aria-hidden="true" />
+    <span>2019：主题化/设计体系化的组件库。</span>
+  </div>
+  <div className="flex items-start gap-2">
+    <span className="icon-[mdi--link] text-lg text-primary dark:text-primary-200" aria-hidden="true" />
+    <span>2022：Headless Primitives，API 与样式解耦。</span>
+  </div>
+  <div className="flex items-start gap-2">
+    <span className="icon-[mdi--magic-staff] text-lg text-primary dark:text-primary-200" aria-hidden="true" />
+    <span>2023：shadcn/ui 等模板化方案，Headless + tokens + Tailwind。</span>
+  </div>
+</div>
 
 ## 阶段代表性包速览与跳转
 
@@ -83,7 +131,7 @@ timeline
 | Utility-first | Tailwind, Windi, UnoCSS, twin.macro | JIT 原子类、attributify、宏模式 | Tailwind 卡片 + Uno attributify + JIT 时序图 |
 | Headless + tokens | Radix, Headless UI, shadcn/ui, tailwind-variants | tokens → variants → primitives | Radix Tabs、Menu Demo、tokens 流程图 |
 
-### 决策树：选择样式方案
+### <span className="mr-2 inline-block align-middle text-primary dark:text-primary-200 icon-[mdi--source-branch]" aria-hidden="true" /> 决策树：选择样式方案
 
 ```mermaid
 flowchart TD

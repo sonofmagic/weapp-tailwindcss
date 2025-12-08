@@ -16,6 +16,14 @@ html[data-theme='dark'] {
   --tw-gradient-stop-1: rgba(14, 165, 233, 0.35);
   --tw-gradient-stop-2: rgba(7, 193, 96, 0.28);
   --tw-gradient-stop-3: rgba(45, 212, 191, 0.22);
+  --doc-table-surface: rgba(15, 23, 42, 0.82);
+  --doc-table-border: rgba(226, 232, 240, 0.1);
+  --doc-table-head-bg: rgba(14, 165, 233, 0.16);
+  --doc-table-head-text: #e2e8f0;
+  --doc-table-row-alt: rgba(255, 255, 255, 0.03);
+  --doc-table-row-hover: rgba(14, 165, 233, 0.12);
+  --doc-table-shadow: 0 12px 34px -24px rgba(0, 0, 0, 0.55);
+  --doc-table-code: rgba(14, 165, 233, 0.18);
 
   background:
     linear-gradient(

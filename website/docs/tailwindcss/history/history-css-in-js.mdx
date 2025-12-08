@@ -73,7 +73,7 @@ export const button = style({
 })
 ```
 
-## 运行时 vs 编译期（示意）
+## <span className="mr-2 inline-block align-middle text-primary dark:text-primary-200 icon-[mdi--layers-triple-outline]"></span> 运行时 vs 编译期（示意）
 
 ```mermaid
 %%{ init: { "flowchart": { "curve": "basis" } } }%%
@@ -83,6 +83,17 @@ flowchart LR
   B -->|否| D["编译期生成 CSS\nvanilla-extract / Linaria 产出静态 CSS"]
   D --> E["仅 className 传递\n运行时开销小"]
 ```
+
+<div className="mt-3 grid gap-2 text-sm text-muted-foreground">
+  <div className="flex items-start gap-2">
+    <span className="icon-[mdi--download] text-lg text-primary dark:text-primary-200" aria-hidden="true" />
+    <span>运行时注入：在客户端生成 style，首屏注水 + HMR 有额外成本。</span>
+  </div>
+  <div className="flex items-start gap-2">
+    <span className="icon-[mdi--file-code-outline] text-lg text-primary dark:text-primary-200" aria-hidden="true" />
+    <span>编译期生成：静态 CSS 提前产出，JS 只保留 className 映射。</span>
+  </div>
+</div>
 
 ### 写法与产物对照
 

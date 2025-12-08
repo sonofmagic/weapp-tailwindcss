@@ -11,17 +11,21 @@ const tailwindcssSidebar: SidebarConfig = [
     collapsed: false,
     link: { type: 'doc', id: 'tailwindcss/history/history-and-evolution' },
     items: [
-      'tailwindcss/history/history-raw-css',
+      {
+        type: 'category',
+        label: 'Raw CSS / BEM / OOCSS',
+        collapsed: false,
+        link: { type: 'doc', id: 'tailwindcss/history/history-raw-css' },
+        items: [
+          'tailwindcss/bem-and-oocss',
+        ],
+      },
       'tailwindcss/history/history-preprocessors',
       'tailwindcss/history/history-css-modules',
       'tailwindcss/history/history-css-in-js',
       'tailwindcss/history/history-utility-first',
       'tailwindcss/history/history-headless-tokens',
     ],
-  },
-  {
-    type: 'doc',
-    id: 'tailwindcss/bem-and-oocss',
   },
   {
     type: 'category',

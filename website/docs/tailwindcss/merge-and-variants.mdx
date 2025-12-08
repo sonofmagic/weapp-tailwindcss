@@ -177,7 +177,7 @@ export const card = tv({
 | 心智负担 | 轻，语法简单 | 略重，类型更严格 |
 | 适用 | 按钮/Badge 等单槽 | 卡片/模态/多槽组件，设计系统 |
 
-## 从设计到产物（示意图）
+## <span className="mr-2 inline-block align-middle text-primary dark:text-primary-200 icon-[mdi--chart-timeline]" aria-hidden="true" /> 从设计到产物（示意图）
 
 ```mermaid
 %%{ init: { "flowchart": { "curve": "basis" } } }%%
@@ -190,6 +190,25 @@ flowchart LR
   JIT --> Merge["tailwind-merge 去重"]
   Merge --> Output["最终 CSS/HTML 产物"]
 ```
+
+<div className="mt-3 grid gap-2 text-sm text-muted-foreground">
+  <div className="flex items-start gap-2">
+    <span className="icon-[mdi--palette-swatch] text-lg text-primary dark:text-primary-200" aria-hidden="true" />
+    <span>Tokens：色板/间距/半径/排版等设计变量。</span>
+  </div>
+  <div className="flex items-start gap-2">
+    <span className="icon-[mdi--widgets] text-lg text-primary dark:text-primary-200" aria-hidden="true" />
+    <span>Variants/Builders：用 cva/tv 封装 size、tone、state 等变体。</span>
+  </div>
+  <div className="flex items-start gap-2">
+    <span className="icon-[mdi--monitor] text-lg text-primary dark:text-primary-200" aria-hidden="true" />
+    <span>Components/Content/JIT：组件消费 builder，content 精准扫描驱动 JIT 生成。</span>
+  </div>
+  <div className="flex items-start gap-2">
+    <span className="icon-[mdi--check-circle-outline] text-lg text-primary dark:text-primary-200" aria-hidden="true" />
+    <span>Merge/Output：tailwind-merge 清理冲突，产出可预期的最终样式。</span>
+  </div>
+</div>
 
 ## 实用检查清单
 

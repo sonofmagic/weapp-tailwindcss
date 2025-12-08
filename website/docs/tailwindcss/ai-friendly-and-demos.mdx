@@ -183,7 +183,7 @@ const banner = cva('flex items-center justify-between rounded-xl border px-4 py-
 - 产物验证：构建后记录 CSS 体积、主色板是否命中 tokens（可用简单脚本扫描 CSS 中的裸色值）。
 - 回归用例：为按钮/表单等高频组件加一两个 Story/截图，用来对比后续 AI 产出是否偏离风格。
 
-### 流程示意
+### <span className="mr-2 inline-block align-middle text-primary dark:text-primary-200 icon-[mdi--chart-timeline]" aria-hidden="true" /> 流程示意
 
 <div style={{ maxWidth: 860, margin: '0 auto', textAlign: 'center' }}>
 
@@ -204,4 +204,23 @@ flowchart TB
   Build --> Metrics --> Review
 ```
 
+</div>
+
+<div className="mt-3 grid gap-2 text-sm text-muted-foreground">
+  <div className="flex items-start gap-2">
+    <span className="icon-[mdi--lightbulb-on-outline] text-lg text-primary dark:text-primary-200" aria-hidden="true" />
+    <span>Prompt/Gen：给出结构化提示，产出 React/Vue 代码。</span>
+  </div>
+  <div className="flex items-start gap-2">
+    <span className="icon-[mdi--link] text-lg text-primary dark:text-primary-200" aria-hidden="true" />
+    <span>Merge/Lint：cn(twMerge) 去重 + ESLint/Tailwind 提示兜底。</span>
+  </div>
+  <div className="flex items-start gap-2">
+    <span className="icon-[mdi--laptop] text-lg text-primary dark:text-primary-200" aria-hidden="true" />
+    <span>Build/Review：构建验证 + 人工 spot check，再做截图基线。</span>
+  </div>
+  <div className="flex items-start gap-2">
+    <span className="icon-[mdi--chart-bar] text-lg text-primary dark:text-primary-200" aria-hidden="true" />
+    <span>Metrics：记录 CSS 体积/覆盖率，支撑迭代。</span>
+  </div>
 </div>

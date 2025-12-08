@@ -1,11 +1,19 @@
+import type { IconifyJSON } from '@iconify/types'
 import type { Config } from 'tailwindcss'
-import { addIconSelectors } from '@iconify/tailwind'
+import lineMdIconsRaw from '@iconify-json/line-md/icons.json'
+import logosIconsRaw from '@iconify-json/logos/icons.json'
+import mdiIconsRaw from '@iconify-json/mdi/icons.json'
+import { addDynamicIconSelectors, addIconSelectors } from '@iconify/tailwind'
 import typography from '@tailwindcss/typography'
 import svgToDataUri from 'mini-svg-data-uri'
 import defaultTheme from 'tailwindcss/defaultTheme'
 import themeTransitionPlugin from 'theme-transition/tailwindcss'
 
-export default <Config> {
+const lineMdIcons = lineMdIconsRaw as IconifyJSON
+const logosIcons = logosIconsRaw as IconifyJSON
+const mdiIcons = mdiIconsRaw as IconifyJSON
+
+const config = {
   content: [
     './src/**/*.{js,jsx,ts,tsx}',
     './docusaurus.config.ts',
@@ -267,13 +275,22 @@ export default <Config> {
     typography,
     addIconSelectors({
       prefixes: [
-        'line-md',
-        'logos',
-        'mdi',
+        { prefix: 'mdi', source: mdiIcons },
+        { prefix: 'line-md', source: lineMdIcons },
+        { prefix: 'logos', source: logosIcons },
       ],
+    }),
+    addDynamicIconSelectors({
+      iconSets: {
+        'mdi': mdiIcons,
+        'line-md': lineMdIcons,
+        'logos': logosIcons,
+      },
     }),
   ],
   corePlugins: {
     preflight: false,
   },
-}
+} satisfies Config
+
+export default config

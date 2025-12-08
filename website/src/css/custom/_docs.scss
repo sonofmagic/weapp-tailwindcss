@@ -83,3 +83,77 @@ html[data-theme='dark'] .docs-cta-secondary {
 .docs-cta-secondary:hover {
   background: rgba(30, 41, 59, 0.55);
 }
+
+/* Markdown tables: clean card style with sticky header and subtle accent bar */
+:where(.theme-doc-markdown) table {
+  display: table;
+  table-layout: fixed;
+  width: 100%;
+  margin: 1.4rem 0;
+  border-collapse: separate;
+  border-spacing: 0;
+  position: relative;
+  overflow: hidden;
+  background: var(--doc-table-surface);
+  border: 1px solid var(--doc-table-border);
+  border-radius: 10px;
+  box-shadow: var(--doc-table-shadow);
+}
+:where(.theme-doc-markdown) table::before {
+  content: '';
+  position: absolute;
+  inset: 0 0 auto 0;
+  height: 2px;
+  background: linear-gradient(90deg, var(--ifm-color-primary), transparent);
+  opacity: 0.9;
+  pointer-events: none;
+  z-index: 3;
+}
+
+:where(.theme-doc-markdown) table th,
+:where(.theme-doc-markdown) table td {
+  padding: 0.85rem 1rem;
+  text-align: left;
+  vertical-align: middle;
+  word-break: break-word;
+  transition:
+    background-color 150ms ease,
+    color 150ms ease;
+}
+
+:where(.theme-doc-markdown) table thead th {
+  position: sticky;
+  top: 0;
+  z-index: 2;
+  background: var(--doc-table-head-bg);
+  color: var(--doc-table-head-text);
+  font-weight: 550;
+  letter-spacing: 0.01em;
+  border-bottom: 1px solid var(--doc-table-border);
+}
+:where(.theme-doc-markdown) table thead th:first-child {
+  border-top-left-radius: 10px;
+}
+:where(.theme-doc-markdown) table thead th:last-child {
+  border-top-right-radius: 10px;
+}
+
+:where(.theme-doc-markdown) table tr + tr td {
+  border-top: 1px solid var(--doc-table-border);
+}
+
+:where(.theme-doc-markdown) table tbody tr:nth-child(even) td {
+  background-color: var(--doc-table-row-alt);
+}
+
+:where(.theme-doc-markdown) table tbody tr:hover td {
+  background-color: var(--doc-table-row-hover);
+}
+
+:where(.theme-doc-markdown) table code {
+  padding: 0.18rem 0.4rem;
+  background: transparent;
+  border: 1px solid var(--doc-table-border);
+  border-radius: 999px;
+  font-size: 0.9em;
+}

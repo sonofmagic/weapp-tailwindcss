@@ -75,7 +75,7 @@ export function TwinDemo() {
 }
 ```
 
-## JIT 摇树流程示意
+## <span className="mr-2 inline-block align-middle text-primary dark:text-primary-200 icon-[mdi--flash]"></span> JIT 摇树流程示意
 
 ```mermaid
 %%{ init: { "sequence": { "mirrorActors": false } } }%%
@@ -89,6 +89,21 @@ sequenceDiagram
   JIT-->>CSS: "生成仅用到的规则"
   CSS-->>Source: "产出 build 结果，摇树完成"
 ```
+
+<div className="mt-3 grid gap-2 text-sm text-muted-foreground">
+  <div className="flex items-start gap-2">
+    <span className="icon-[mdi--magnify] text-lg text-primary dark:text-primary-200" aria-hidden="true" />
+    <span>Scanner：只扫描模板里的静态类名（含 cva/tv 输出），避免 content 过宽。</span>
+  </div>
+  <div className="flex items-start gap-2">
+    <span className="icon-[mdi--code-tags] text-lg text-primary dark:text-primary-200" aria-hidden="true" />
+    <span>JIT：按需生成规则，删除未命中的原子类。</span>
+  </div>
+  <div className="flex items-start gap-2">
+    <span className="icon-[mdi--check-circle-outline] text-lg text-primary dark:text-primary-200" aria-hidden="true" />
+    <span>产物：构建出的 CSS 只保留使用过的类，体积可控。</span>
+  </div>
+</div>
 
 ## 示例（Tailwind 基础卡片）
 
