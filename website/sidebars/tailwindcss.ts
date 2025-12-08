@@ -31,6 +31,7 @@ const tailwindcssSidebar: SidebarConfig = [
     items: [
       'tailwindcss/tailwind-vs-unocss',
       'tailwindcss/merge-and-variants',
+      'tailwindcss/shadcn-ui',
     ],
   },
   {

@@ -1,0 +1,90 @@
+---
+id: shadcn-ui
+title: shadcn/ui 的出现与意义
+description: 复制即用的组件模式、Radix + Tailwind + merge 架构带来的行业影响
+sidebar_position: 3.3
+---
+
+## 背景：复制源码，而非安装依赖
+
+- 模式：shadcn/ui 不发布 npm 包，而是提供可复制的源码和 CLI，生成组件文件后由团队自行维护、改造。
+- 影响：避免被包版本锁定，组件完全归团队所有；更新节奏、Breaking 变更都变成「你自己合并」，风险可控。
+- 底座：Radix UI（无样式、可访问性交互） + Tailwind（视觉）+ `tailwind-merge`（冲突解析）+ `cva`/`variants`（变体），形成清晰的组合范式。
+
+## 核心范式
+
+1) 设计 tokens：通过 Tailwind 主题或 CSS 变量定义颜色、半径、间距。  
+2) 变体声明：用 `cva` 或 `tailwind-variants` 管理 `size/tone/state` 等。  
+3) merge 兜底：封装 `cn = twMerge(clsx(...))`，所有组件 `className` 都经由 merge。  
+4) 可复制：CLI 产出 `Button.tsx` 等源码，直接落在仓库，便于二次定制和代码审查。
+
+## 与其他 Headless UI 的结合
+
+- Radix 不是唯一选项，同样模式可套到 Headless UI、Ark UI、Ariakit、React Aria/Headless、TanStack 状态机等无样式基座上。
+- 关键在于：交互/可访问性由基座提供，视觉与变体由 Tailwind + `tailwind-merge` + `cva`/`variants` 接管。换基座时，仅需调整属性映射与状态类名。
+- 示例：将 Ark UI 的 `Popover` 包装为 `cn + variants`，或用 Ariakit 的 Dialog 组件配合自定义 tokens，依然保持「复制源码、可改造、可覆盖」的模式。
+
+## 什么是 Headless UI？常见基座与定位
+
+- 定义：只提供交互逻辑与可访问性，不附带样式（或极少样式）的组件/Hook；通过 render props、slots 或原生元素组合让你自行决定 DOM 结构与 class。
+- 典型代表：
+  - Radix UI：无样式交互原件，搭配任意样式层。
+  - Headless UI（Tailwind Labs）：提供 render props/slots 的交互组件。
+  - Ark UI / Kobalte / Ariakit：无样式 + 可访问性，适合自定义主题。
+  - React Aria / React Stately：Hook 形式提供交互与状态。
+  - TanStack Table：表格/数据表逻辑完全 headless，可与任意样式库组合。
+  - TanStack Form（原 React Form）：表单状态/校验 Hook，不负责视觉。
+- 不算严格 headless 的场景：带默认主题/样式的 UI kits（如部分 reka UI 套件）通常已经封装视觉层，虽可定制但不属于纯 headless 范畴。
+
+## Headless UI 库划分（速查）
+
+- 交互原件型（组件 primitives）：Radix UI、Headless UI、Ark UI、Ariakit、Kobalte —— 提供 DOM 结构/状态机/可访问性，样式全由你决定。
+- Hook/逻辑型：React Aria + React Stately（ARIA + 状态）、TanStack Form（表单状态），只暴露 Hook，不负责 DOM。
+- 数据逻辑型：TanStack Table（表格/数据表逻辑，渲染自定义），近似纯逻辑层。
+- 半 Headless/带样式的 kits：如部分 reka UI 或带主题的 UI 套件，提供默认皮肤但可替换，严格意义上不算纯 headless。
+
+## 组件示例（缩写版）
+
+```tsx
+// utils/cn.ts
+import { clsx, type ClassValue } from 'clsx'
+import { twMerge } from 'tailwind-merge'
+export const cn = (...inputs: ClassValue[]) => twMerge(clsx(...inputs))
+
+// components/button.tsx
+import { cva, type VariantProps } from 'class-variance-authority'
+import { cn } from '@/utils/cn'
+
+const button = cva(
+  'inline-flex items-center gap-2 rounded-md font-medium transition-colors',
+  {
+    variants: {
+      tone: {
+        default: 'bg-primary text-primary-foreground hover:bg-primary/90',
+        ghost: 'bg-transparent text-foreground hover:bg-accent',
+      },
+      size: { sm: 'h-8 px-2.5 text-sm', md: 'h-10 px-3 text-sm', lg: 'h-12 px-4 text-base' },
+    },
+    defaultVariants: { tone: 'default', size: 'md' },
+  }
+)
+
+type ButtonProps = React.ButtonHTMLAttributes<HTMLButtonElement> & VariantProps<typeof button>
+
+export function Button({ tone, size, className, ...props }: ButtonProps) {
+  return <button className={cn(button({ tone, size }), className)} {...props} />
+}
+```
+
+- 通过 `cva` 统一管理 `tone/size`，`cn` 确保用户传入的类（如 `px-10`、`bg-yellow-400`）能可预测地覆盖默认值。
+- 组件文件在项目内，可随团队规范调整（如换色板、改 radius、增加 slots），而不是等待上游发版。
+
+## 行业意义
+
+- **模板化脚手架**：为 Tailwind 场景提供「可复制源码 + merge + variants」的即插架构，成为大量团队的默认起点。
+- **所有权转移**：将组件所有权从包作者转回使用团队，降低依赖风险，方便安全审计与定制化。
+- **事实标准**：使 `tailwind-merge` 成为类名冲突解决的默认方案，催生各类 `cn` 封装与自定义 merge 规则。
+- **无样式交互的普及**：推广了「Radix 等无样式交互 + 原子化样式」的组合，证明无需高度封装也能快速产出高可用组件。
+---
+
+> 想要深挖「merge 解决什么问题」？见「[tailwind-merge、cva、tailwind-variants 精要](./merge-and-variants)」章节。
