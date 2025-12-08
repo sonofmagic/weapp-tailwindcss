@@ -180,14 +180,15 @@ export const card = tv({
 ## 从设计到产物（示意图）
 
 ```mermaid
+%%{ init: { "flowchart": { "curve": "basis" } } }%%
 flowchart LR
-  Tokens[Design Tokens / @theme] --> Variants[原子类 + variants]
-  Variants --> Builders[cva / tailwind-variants]
-  Builders --> Components[React/Vue 组件]
-  Components --> Content[content 精准扫描]
-  Content --> JIT[Tailwind JIT 生成按需 CSS]
-  JIT --> Merge[tailwind-merge 去重]
-  Merge --> Output[最终 CSS/HTML 产物]
+  Tokens["Design Tokens / @theme"] --> Variants["原子类 + variants"]
+  Variants --> Builders["cva / tailwind-variants"]
+  Builders --> Components["React/Vue 组件"]
+  Components --> Content["content 精准扫描"]
+  Content --> JIT["Tailwind JIT 生成按需 CSS"]
+  JIT --> Merge["tailwind-merge 去重"]
+  Merge --> Output["最终 CSS/HTML 产物"]
 ```
 
 ## 实用检查清单

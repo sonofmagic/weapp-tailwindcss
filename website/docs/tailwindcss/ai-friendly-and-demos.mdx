@@ -185,15 +185,23 @@ const banner = cva('flex items-center justify-between rounded-xl border px-4 py-
 
 ### 流程示意
 
+<div style={{ maxWidth: 860, margin: '0 auto', textAlign: 'center' }}>
+
 ```mermaid
-flowchart LR
-  Prompt[结构化提示模板] --> Gen[模型生成 React/Vue 代码]
-  Gen --> Merge[cn(twMerge) 去重]
-  Merge --> Lint[ESLint + Tailwind IntelliSense]
-  Lint --> Build[pnpm build / dev]
-  Build --> Review[人工 Spot Check]
-  Review --> Snapshot[截图/Story 基线]
-  Snapshot --> Deploy[上线/分发]
-  Build --> Metrics[CSS 体积/coverage]
-  Metrics --> Review
+%%{ init: { "flowchart": { "curve": "basis", "nodeSpacing": 55, "rankSpacing": 75 } } }%%
+flowchart TB
+  Prompt["结构化提示"]
+  Gen["生成 React/Vue"]
+  Merge["cn(twMerge) 去重"]
+  Lint["ESLint + Tailwind 提示"]
+  Build["pnpm build / dev"]
+  Review["人工 Spot Check"]
+  Snapshot["截图 / Story 基线"]
+  Deploy["上线 / 分发"]
+  Metrics["CSS 体积 / coverage"]
+
+  Prompt --> Gen --> Merge --> Lint --> Build --> Review --> Snapshot --> Deploy
+  Build --> Metrics --> Review
 ```
+
+</div>

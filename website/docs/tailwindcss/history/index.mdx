@@ -15,14 +15,16 @@ sidebar_position: 1
 ## 样式方案时间轴
 
 ```mermaid
-timeline
-  title 样式方案演进
-  2010 : Raw CSS / BEM / OOCSS
-  2013 : 预处理器 Sass/Less，变量/混入，BEM 体系化
-  2015 : CSS Modules，局部作用域
-  2017 : CSS-in-JS（styled-components/Emotion），组件边界 + 运行时成本
-  2020 : Utility-first (Tailwind/Windi/Uno)，JIT、摇树优化、设计 token 对齐
-  2024 : Token/原子类与多 Runtime（Web/RSC/Mini Program）协作
+%%{ init: { "flowchart": { "curve": "basis", "nodeSpacing": 32, "rankSpacing": 24 } } }%%
+flowchart TB
+  A["2010 · Raw CSS / BEM / OOCSS"]
+  B["2013 · 预处理器 Sass/Less，变量/混入，BEM 体系化"]
+  C["2015 · CSS Modules，局部作用域"]
+  D["2017 · CSS-in-JS（styled-components/Emotion），组件边界 + 运行时成本"]
+  E["2020 · Utility-first (Tailwind/Windi/Uno)，JIT、摇树优化、设计 token 对齐"]
+  F["2024 · Token/原子类与多 Runtime（Web/RSC/Mini Program）协作"]
+
+  A --> B --> C --> D --> E --> F
 ```
 
 ### 现场感：几段常见的「升级理由」
@@ -64,10 +66,10 @@ timeline
 ```mermaid
 timeline
   title 组件库演进
-  2017 : Element / AntD 「组件 + 样式捆绑」
-  2019 : Chakra / MUI 「主题与组件半解耦」
-  2022 : Headless UI / Radix 「API 与样式分离」
-  2023 : shadcn/ui, reka-ui 「Headless + tokens + Tailwind」
+  2017 : "Element / AntD：组件 + 样式捆绑"
+  2019 : "Chakra / MUI：主题与组件半解耦"
+  2022 : "Headless UI / Radix：API 与样式分离"
+  2023 : "shadcn/ui, reka-ui：Headless + tokens + Tailwind"
 ```
 
 ## 阶段代表性包速览与跳转
@@ -85,17 +87,17 @@ timeline
 
 ```mermaid
 flowchart TD
-  A[团队现状?] --> B{需要高度动态/多品牌吗?}
-  B -->|是| C[CSS-in-JS 或 Headless + Tailwind]
-  B -->|否| D{已有 design tokens?}
-  D -->|有| E[Tailwind / Uno + tokens]
-  D -->|无| F[CSS Modules / Vue scoped 先隔离]
-  C --> G{关注运行时/SSR 体积?}
-  G -->|是| H[Tailwind + cva/tv，减少运行时]
-  G -->|否| I[styled-components/Emotion 编译模式]
-  E --> J{生态资产重要?}
-  J -->|重要| K[Tailwind（插件/merge/社区资产）]
-  J -->|不重要| L[UnoCSS（更灵活自定义）]
+  A["团队现状？"] --> B{"需要高度动态/多品牌吗？"}
+  B -->|是| C["CSS-in-JS 或 Headless + Tailwind"]
+  B -->|否| D{"已有 design tokens？"}
+  D -->|有| E["Tailwind / Uno + tokens"]
+  D -->|无| F["CSS Modules / Vue scoped 先隔离"]
+  C --> G{"关注运行时/SSR 体积？"}
+  G -->|是| H["Tailwind + cva/tv，减少运行时"]
+  G -->|否| I["styled-components / Emotion 编译模式"]
+  E --> J{"生态资产重要？"}
+  J -->|重要| K["Tailwind（插件 / merge / 社区资产）"]
+  J -->|不重要| L["UnoCSS（更灵活自定义）"]
 ```
 
 ### Headless 组合范式的优劣

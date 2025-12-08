@@ -92,11 +92,12 @@ export function Badge({ asChild, className, ...props }: { asChild?: boolean } & 
 ## tokens → variants → primitives 流程（示意）
 
 ```mermaid
+%%{ init: { "flowchart": { "curve": "basis" } } }%%
 flowchart TD
-  Tokens[设计 Token: color/space/radius/typography] --> Factory[cva/tv 工厂: size/variant/state]
-  Factory --> Primitives[Headless/Primitives 组件]
-  Primitives --> UI[业务组件组合]
-  Tokens --> Lint[lint/merge 校验]\n防止不在 token 表的取值
+  Tokens["设计 Token: color / space / radius / typography"] --> Factory["cva/tv 工厂: size / variant / state"]
+  Factory --> Primitives["Headless / Primitives 组件"]
+  Primitives --> UI["业务组件组合"]
+  Tokens --> Lint["lint / merge 校验，防止越界取值"]
 ```
 
 ## 示例（Button with cva，React）

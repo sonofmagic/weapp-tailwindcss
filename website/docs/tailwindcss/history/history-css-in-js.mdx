@@ -76,11 +76,12 @@ export const button = style({
 ## 运行时 vs 编译期（示意）
 
 ```mermaid
+%%{ init: { "flowchart": { "curve": "basis" } } }%%
 flowchart LR
-  A[源码: styled-components/Emotion] --> B{运行时注入?}
-  B -->|是| C[客户端生成 style 标签<br/>首屏注水 + HMR 成本]
-  B -->|否| D[编译期生成 CSS<br/>vanilla-extract/Linaria 产出静态 CSS]
-  D --> E[仅 className 传递<br/>运行时开销小]
+  A["源码：styled-components / Emotion"] --> B{"运行时注入？"}
+  B -->|是| C["客户端生成 style 标签\n首屏注水 + HMR 成本"]
+  B -->|否| D["编译期生成 CSS\nvanilla-extract / Linaria 产出静态 CSS"]
+  D --> E["仅 className 传递\n运行时开销小"]
 ```
 
 ### 写法与产物对照

@@ -78,15 +78,16 @@ export function TwinDemo() {
 ## JIT 摇树流程示意
 
 ```mermaid
+%%{ init: { "sequence": { "mirrorActors": false } } }%%
 sequenceDiagram
-  participant Source as 模板源码
-  participant Scanner as content 扫描
-  participant JIT as JIT 生成器
-  participant CSS as 精简 CSS 产物
-  Source->>Scanner: 扫描类名 (含 cva/tv 静态值)
-  Scanner->>JIT: 传递匹配到的原子类
-  JIT-->>CSS: 生成仅用到的规则
-  CSS-->>Source: 产出 build 结果，摇树完成
+  participant Source as "模板源码"
+  participant Scanner as "content 扫描"
+  participant JIT as "JIT 生成器"
+  participant CSS as "精简 CSS 产物"
+  Source->>Scanner: "扫描类名（含 cva/tv 静态值）"
+  Scanner->>JIT: "传递匹配到的原子类"
+  JIT-->>CSS: "生成仅用到的规则"
+  CSS-->>Source: "产出 build 结果，摇树完成"
 ```
 
 ## 示例（Tailwind 基础卡片）
