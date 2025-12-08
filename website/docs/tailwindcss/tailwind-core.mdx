@@ -1,43 +1,210 @@
 ---
 id: tailwind-core
-title: Tailwind 设计理念与对比
-description: Tailwind 的核心特性、与 UnoCSS 的取舍，以及 tailwind-merge/cva/tailwind-variants 思想
+title: Tailwind 设计理念
+description: Tailwind 本质是把设计 token 压成原子类，再让组件接口重新长出语义
 sidebar_position: 3
 ---
 
-## 更像实战笔记
+## Tailwind 本质是什么
 
-- Tailwind 把「设计 token → 类名 → 插件 → 产物」做成闭环，加上 `tailwind-merge`/`cva`/`tailwind-variants`/IDE 提示，默认路就很宽；如果不想自己养 preset/merge 规则，就选它。
-- UnoCSS 灵活得像乐高：任意规则、任意 preset，但 merge/类型提示要自己兜底，团队需要有人养规则库；适合愿意自定义、且已有内部 preset 的团队。
+- 它是一个“把设计语义压平成原子类，再在组件里组装回语义”的流水线。
+- 入口是设计 token（色板、间距、圆角、字号），中段是 JIT 按 content 生成类，出口是组件接口用 variants/merge 把类重新打包。
+- 目标是：样式可组合、可控，切换主题或品牌时只改 token，组件 API 依旧可读。
 
-> 深入阅读：
+**Demo（整体串联）**
+
+```ts
+// tailwind.config.ts
+export default {
+  content: ['./src/**/*.{tsx,jsx,html}'],
+  theme: {
+    extend: {
+      colors: { brand: { 50: '#f1f5ff', 500: '#3b82f6' } },
+      spacing: { 3.5: '0.875rem' },
+      borderRadius: { pill: '999px' },
+    },
+  },
+  plugins: [require('@tailwindcss/typography')],
+}
+```
+
+```tsx
+// src/components/Button.tsx
+import { tv } from 'tailwind-variants'
+
+const button = tv({
+  base: 'inline-flex items-center justify-center font-medium transition-colors',
+  variants: {
+    tone: {
+      primary: 'bg-brand-500 text-white hover:bg-brand-500/90',
+      ghost: 'bg-transparent text-brand-500 hover:bg-brand-50',
+    },
+    size: { md: 'h-10 px-4 rounded-pill', lg: 'h-11 px-5 rounded-pill text-base' },
+  },
+  defaultVariants: { tone: 'primary', size: 'md' },
+})
+
+export function Button({ tone, size, className, ...props }) {
+  return <button {...props} className={button({ tone, size, class: className })} />
+}
+```
+
+## 入口：设计语义的单一来源
+
+- 先把设计值写成 token（CSS 变量或 `@theme`），Class 只引用 token，不直接写裸值。
+- 约束梯度和命名，避免随便一个数字就进主题；换品牌/暗黑只动这份 token。
+- 保证“设计稿和 Tailwind 主题是一份真相”，更新 token 时同步配置。
+
+**Demo：token 定义**
+
+```ts
+// tailwind.config.ts 片段
+export default {
+  theme: {
+    extend: {
+      colors: {
+        brand: { 50: 'var(--brand-50)', 500: 'var(--brand-500)' },
+      },
+      spacing: { 3.5: 'var(--space-3_5)' },
+      borderRadius: { pill: 'var(--radius-pill)' },
+    },
+  },
+}
+```
+
+```css
+/* src/styles/theme.css */
+:root {
+  --brand-50: #eef2ff;
+  --brand-500: #4f46e5;
+  --space-3_5: 0.875rem;
+  --radius-pill: 999px;
+}
+```
+
+## 中段：Tailwind 的生成逻辑
+
+- **JIT + content**：扫描模板只生成用到的类；content 越精准，产物越瘦，动态拼接要收敛。
+- **@layer**：`base/components/utilities` 管覆盖关系，`@apply` 只在同层或下层用，冲突先用 variants 解决。
+- **Variants/关系类**：`md:`、`hover:`、`group-`、`peer-`、`aria-`、`data-` 覆盖常见状态，深度别乱堆。
+- **插件**：官方插件覆盖常用模式，自定义插件把你们的设计规则翻译成类。
+
+**Demo：content 精准 + 局部 @layer**
+
+```ts
+// tailwind.config.ts 片段
+export default {
+  content: ['./src/app/**/*.{tsx,jsx}', './src/pages/**/*.{tsx,jsx}'],
+  plugins: [],
+}
+```
+
+```css
+/* src/styles/components.css */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer components {
+  .card {
+    @apply rounded-xl border border-slate-200 bg-white shadow-sm;
+  }
+  .card-title {
+    @apply text-lg font-semibold text-slate-900;
+  }
+}
+```
+
+```tsx
+// src/app/Card.tsx
+export function Card({ title, children }) {
+  return (
+    <div className="card">
+      <h3 className="card-title">{title}</h3>
+      <div className="text-sm text-slate-600">{children}</div>
+    </div>
+  )
+}
+```
+
+**Demo：关系类和状态类**
+
+```tsx
+// src/components/Nav.tsx
+export function Nav() {
+  return (
+    <nav className="flex items-center gap-4">
+      <button className="relative group px-3 py-2 text-sm font-medium text-slate-600 hover:text-slate-900">
+        Home
+        <span className="absolute inset-x-3 -bottom-1 block h-0.5 scale-x-0 bg-brand-500 transition group-hover:scale-x-100" />
+      </button>
+      <button className="px-3 py-2 text-sm text-slate-600 data-[active=true]:text-brand-600 data-[active=true]:font-semibold">
+        Docs
+      </button>
+    </nav>
+  )
+}
+```
+
+**Demo：自定义插件扩展一个工具类**
+
+```ts
+// tailwind.config.ts 片段
+import plugin from 'tailwindcss/plugin'
+
+export default {
+  // ...
+  plugins: [
+    plugin(({ matchUtilities, theme }) => {
+      matchUtilities(
+        {
+          'grid-auto-fill': (value) => ({
+            gridTemplateColumns: `repeat(auto-fill, minmax(${value}, 1fr))`,
+          }),
+        },
+        { values: theme('spacing') },
+      )
+    }),
+  ],
+}
+```
+
+```tsx
+// 使用自定义工具类
+<div className="grid gap-4 grid-auto-fill-48">
+  {/* 自动填充列，最小 12rem */}
+</div>
+```
+
+## 出口：组件重新长出语义
+
+- 用 `cva` 或 `tailwind-variants(tv)` 定义组件的尺寸、色板、状态、slot，不要直接暴露一长串类。
+- 用 `tailwind-merge` 收尾，防止外部 class 无声覆盖核心样式。
+- 组件 API 保持克制，只留必要的开关和插槽，既能扩展又不失读。
+
+**Demo：用 tailwind-variants 简化 variants**
+
+```tsx
+// src/components/Badge.tsx
+import { tv } from 'tailwind-variants'
+
+const badge = tv({
+  base: 'inline-flex items-center gap-1 rounded-full font-medium',
+  variants: {
+    tone: {
+      success: 'bg-emerald-50 text-emerald-700 ring-1 ring-emerald-100',
+      warning: 'bg-amber-50 text-amber-700 ring-1 ring-amber-100',
+    },
+    size: { sm: 'px-2 py-1 text-xs', md: 'px-3 py-1.5 text-sm' },
+  },
+  defaultVariants: { tone: 'success', size: 'sm' },
+})
+
+export function Badge({ tone, size, className, ...props }) {
+  return <span {...props} className={badge({ tone, size, class: className })} />
+}
+```
+
+> 延伸阅读：
 > - [Tailwind vs UnoCSS 对比](./tailwind-vs-unocss)
 > - [tailwind-merge、cva、tailwind-variants 精要](./merge-and-variants)
-
-## 核心特性速览（顺便说说坑）
-
-- **JIT + content 精准扫描**：只生成用到的类。content 太宽（如 `./src/**/*` 加上动态字符串）会让产物膨胀，建议精确到模板目录；SSR/RSC 场景需保证 server 侧也能扫描到。
-- **分层**：`@layer base/components/utilities` 控制覆盖优先级。`@apply` 可用，但别跨层堆叠；出现冲突优先回到 variants 工厂解决。
-- **variants**：`md:`、`hover:`、`group-`/`peer-`、`aria-`、`data-`，以及自定义 variant。关系类很强大，但如果嵌套过多，可读性会崩，最好有 lint/评审清单。
-- **Design token 对齐**：把色板、间距、圆角写成 tokens（CSS 变量或 `@theme`），类名只引用语义，不直接写 `#fff`。切换品牌/暗色时，只改 tokens。
-- **插件与生态**：typography/forms/line-clamp/animate 等官方插件，加上 shadcn/ui、reka-ui 的大量范式与可复制代码。选 Tailwind 的核心理由之一是「社区资产可直接拿来」。
-
-
-## RSC/SSR/HMR 下的注意点（踩坑后总结）
-
-- RSC（React Server Components）：确保 `content` 能扫描到 server 组件模板；避免在服务器拼接动态类名；`tailwind-merge`/`cva` 可安全用于 server 端。
-- SSR：Tailwind v4 产物可直接 SSR；注意 preflight 是否与宿主冲突，必要时局部关闭或按 route 注入。
-- HMR：JIT 很快，但自定义插件过多会拖慢冷启动；遇到慢启动时先收紧 `content`，再检查插件链。
-
-### 快速验证命令（建议在分享或评审前执行）
-
-- 安装依赖：`pnpm install`
-- React Demo：`pnpm --filter react-app dev`，Vue Demo：`pnpm --filter vue-app dev`
-- 文档构建：`pnpm --filter website build`（或 `pnpm build:docs` 若存在别名）
-- 体积检查：`pnpm --filter react-app build` 或 `pnpm --filter vue-app build`，结合浏览器 Coverage 查看实际命中类。
-- Merge 校验：在 Demo 中故意写 `p-4 p-2`，确认 `tailwind-merge` 去重；调整 `button-variants` 的自定义色/尺寸后确认冲突被正确覆盖。
-
-## preflight 与 @apply 注意事项
-
-- preflight 会重置全局样式：在组件库/微前端场景要确认不与宿主冲突，必要时局部关闭。
-- `@apply` 适用于提炼重复类，但避免跨层引用或堆叠太多原子类；当出现冲突时优先回到 `cva`/`tv` 的 variants 声明。
