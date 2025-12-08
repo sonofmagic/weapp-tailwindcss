@@ -1,8 +1,6 @@
 <script setup lang="ts">
 import { computed } from 'vue'
 import { CheckCircle2, Wand2 } from 'lucide-vue-next'
-
-import { Badge } from '@/components/ui/badge'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { buttonVariants } from '@/components/ui/button'
 import { checklist } from '@/features/home/content'

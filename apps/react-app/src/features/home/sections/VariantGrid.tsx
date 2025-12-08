@@ -1,4 +1,3 @@
-import { Badge } from "@/components/ui/badge"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { buttonVariants } from "@/components/ui/button-variants"
 import { checklist } from "@/features/home/content"
