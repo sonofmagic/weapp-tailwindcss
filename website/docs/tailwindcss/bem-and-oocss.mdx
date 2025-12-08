@@ -1,0 +1,79 @@
+---
+id: bem-and-oocss
+title: BEM 与 OOCSS 方法论
+description: 传统 CSS 架构的命名规则、设计思想与示例
+sidebar_position: 2.5
+---
+
+## BEM（Block / Element / Modifier）
+
+- 目标：通过约定命名减少层级选择器，保证组件内聚且易于组合。
+- 命名：`block` 描述独立组件，`block__element` 表示内部元素，`block--modifier` 表示单一维度的变体/状态；不要把多维状态堆在同一个 modifier 上。
+- 适用：多页面或老项目中需要稳定、可读的类名约束；也常用作 JS/测试的钩子。
+
+### 示例
+
+```html
+<article class="card card--featured">
+  <header class="card__header">
+    <h3 class="card__title">标题</h3>
+    <button class="card__action card__action--primary">查看</button>
+  </header>
+  <p class="card__desc">说明文案</p>
+</article>
+```
+
+```css
+.card { border: 1px solid #e5e7eb; padding: 16px; border-radius: 12px; background: #fff; }
+.card__header { display: flex; align-items: center; gap: 8px; }
+.card__title { margin: 0; font-size: 16px; }
+.card__action { border: none; background: transparent; color: #6b7280; cursor: pointer; }
+.card__action--primary { color: #2563eb; font-weight: 600; }
+.card--featured { border-color: #2563eb; box-shadow: 0 12px 32px rgba(37, 99, 235, 0.12); }
+```
+
+- 优势：类名自描述、可组合；元素/变体边界清晰，方便拆分文件。
+- 常见坑：嵌套层级依然可能增加（`card__header__title` 违背 BEM）；modifier 爆炸时需要回收公共样式或引入 tokens。
+- 与 Tailwind：若转向原子化，可保留 block/element 作为数据钩子，把视觉交给 utilities；或在少量需要全局复用的容器上维持 BEM。
+
+## OOCSS（Object-Oriented CSS）
+
+- 目标：把样式拆成「结构对象」与「皮肤对象」，鼓励复用组合，减少耦合。
+- 核心原则：结构与皮肤分离（布局 vs. 视觉）、容器与内容解耦（对象独立、可嵌套）、单一职责（一个类只管一个维度）。
+- 适用：设计系统或多主题场景，尤其需要跨组件复用相同布局骨架时。
+
+### 示例
+
+```css
+/* 结构对象：媒体块骨架 */
+.media { display: grid; grid-template-columns: auto 1fr; gap: 12px; align-items: start; }
+.media__img { width: 56px; height: 56px; object-fit: cover; border-radius: 12px; }
+.media__body { display: grid; gap: 4px; }
+
+/* 皮肤对象：可在不同地方复用 */
+.card-skin { padding: 16px; border: 1px solid #e5e7eb; border-radius: 16px; background: #fff; }
+.card-skin--muted { background: #f9fafb; color: #4b5563; }
+.tag-skin { display: inline-flex; align-items: center; padding: 4px 8px; border-radius: 999px; background: #eef2ff; color: #4338ca; font-size: 12px; }
+```
+
+```html
+<article class="media card-skin card-skin--muted">
+  <img class="media__img" src="/img/avatar.png" alt="avatar" />
+  <div class="media__body">
+    <div class="tag-skin">Pro</div>
+    <p>对象结构 + 皮肤组合得到卡片</p>
+  </div>
+</article>
+
+<div class="media">
+  <img class="media__img" src="/img/icon.png" alt="icon" />
+  <div class="media__body">
+    <strong>同一结构对象</strong>
+    <span>换皮肤即可变成标签、卡片或列表项</span>
+  </div>
+</div>
+```
+
+- 优势：抽象出「可实例化」的样式对象，减少重复 CSS；皮肤可在不改结构的前提下切换。
+- 局限：类名数量增多；复杂状态可能需要额外的状态类或 JS 参与。
+- 与 Tailwind：Tailwind 的 utility/variants 本质也在拆结构与皮肤，只是把对象拆得更细。迁移时可以把常用 OOCSS 对象翻译成原子组合（或 `@apply`），保留组件语义但减轻样式维护。

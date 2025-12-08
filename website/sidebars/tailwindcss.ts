@@ -20,6 +20,10 @@ const tailwindcssSidebar: SidebarConfig = [
     ],
   },
   {
+    type: 'doc',
+    id: 'tailwindcss/bem-and-oocss',
+  },
+  {
     type: 'category',
     label: 'Tailwind 设计与对比',
     collapsed: false,
