@@ -65,7 +65,7 @@
     "postcss-loader": "^8.1.1",
     "postcss-rem-to-responsive-pixel": "catalog:postcssRem602",
     "postcss-rpx-transform": "catalog:postcssRpx",
-    "sass": "^1.94.2",
+    "sass": "^1.95.0",
     "sass-loader": "^16.0.6",
     "tailwindcss": "catalog:tailwindcss3",
     "tailwindcss-patch": "catalog:tailwindcssPatch",

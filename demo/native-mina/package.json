@@ -54,7 +54,7 @@
     "replace-ext": "^2.0.0",
     "required-path": "^1.0.1",
     "run-script-os": "^1.1.6",
-    "sass": "^1.94.2",
+    "sass": "^1.95.0",
     "sass-loader": "^16.0.6",
     "tailwindcss": "catalog:tailwindcss3",
     "tailwindcss-patch": "catalog:tailwindcssPatch",

@@ -114,7 +114,7 @@
     "postcss-comment": "catalog:postcssComment2",
     "postcss-rem-to-responsive-pixel": "catalog:postcssRem602",
     "postcss-rpx-transform": "catalog:postcssRpx",
-    "sass": "^1.94.2",
+    "sass": "^1.95.0",
     "sass-loader": "16.0.6",
     "speed-measure-webpack-plugin": "^1.5.0",
     "tailwindcss": "catalog:tailwindcss3",
