@@ -91,6 +91,7 @@
     "lint:fix": "eslint . --fix",
     "lint:view": "npx @eslint/config-inspector",
     "publish-packages": "pnpm build && pnpm test && changeset version && changeset publish",
+    "dev:apps": "pnpm -r --parallel --filter ./apps/react-app --filter ./apps/vue-app run dev",
     "run:watch": "tsx scripts/watcher",
     "showcase:update": "tsx scripts/update-showcase.ts",
     "set-private": "tsx scripts/setPrivate.ts",

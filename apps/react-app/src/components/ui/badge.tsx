@@ -19,6 +19,7 @@ const badgeVariants = cva(
       },
     },
     compoundVariants: [
+      { variant: "brand", tone: "ghost", class: "text-primary border-primary/50 bg-primary/5" },
       { variant: "outline", tone: "ghost", class: "border-border text-muted-foreground" },
       { variant: "brand", tone: "solid", class: "shadow-sm" },
     ],
