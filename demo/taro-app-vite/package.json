@@ -87,7 +87,7 @@
     "postcss-rem-to-responsive-pixel": "catalog:postcssRem610",
     "postcss-rpx-transform": "catalog:postcssRpx",
     "react-refresh": "catalog:reactRefresh018",
-    "sass": "^1.95.0",
+    "sass": "catalog:sass195",
     "stylelint": "catalog:stylelint1625",
     "tailwindcss": "catalog:tailwindcss3",
     "tailwindcss-patch": "catalog:tailwindcssPatch",
