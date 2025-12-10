@@ -20,18 +20,25 @@ export function createRpxLengthTransform(prefixes = DEFAULT_PREFIXES) {
   const arbitraryRegexps = prefixes.map(prefix => new RegExp(`${prefix}-\\[(\\d+(?:\\.\\d+)?)rpx\\]`, 'g'))
 
   function prepareValue(value: string) {
+    // Skip the regex pass entirely when we know there is nothing to normalize.
+    if (!value || !value.includes('rpx')) {
+      return value
+    }
+
+    let hasReplacements = false
     const replacements: ReplacementCounters = {}
     const transformed = arbitraryRegexps.reduce((acc, regex, index) => {
       const prefix = prefixes[index]
       return acc.replace(regex, (_match, amount) => {
         const placeholder = `${prefix}-[length:${amount}rpx]`
         replacements[placeholder] = (replacements[placeholder] ?? 0) + 1
+        hasReplacements = true
         return placeholder
       })
     }, value)
 
-    if (Object.keys(replacements).length === 0) {
-      return transformed
+    if (!hasReplacements) {
+      return value
     }
 
     return {

@@ -37,14 +37,40 @@ interface CreateRuntimeFactoryOptions<
   restoreValue?: (value: string, metadata?: unknown) => string
 }
 
+const CACHE_LIMIT = 256
+
+function shouldUnescape(value: string) {
+  return value.includes('_') || /u[0-9a-f]{3,}/i.test(value)
+}
+
 function wrapClassAggregator(
   fn: TailwindMergeLibraryFn,
   transformers: Transformers,
   prepareValue?: (value: string) => string | TransformResult,
   restoreValue?: (value: string, metadata?: unknown) => string,
 ): TailwindMergeRuntime {
+  const cache = new Map<string, string>()
+
   return (...inputs: Parameters<typeof clsx>) => {
-    const normalized = transformers.unescape(clsx(...inputs))
+    let rawInput: string
+    if (inputs.length === 1 && typeof inputs[0] === 'string') {
+      rawInput = inputs[0]
+    }
+    else {
+      rawInput = clsx(...inputs)
+    }
+
+    if (!rawInput) {
+      // `clsx` returns an empty string when nothing is aggregatable, keep parity.
+      return rawInput as string
+    }
+
+    const cached = cache.get(rawInput)
+    if (cached !== undefined) {
+      return cached
+    }
+
+    const normalized = shouldUnescape(rawInput) ? transformers.unescape(rawInput) : rawInput
     let metadata: unknown
     let preparedValue = normalized
     if (prepareValue) {
@@ -59,7 +85,18 @@ function wrapClassAggregator(
     }
     const merged = fn(preparedValue)
     const restored = restoreValue ? restoreValue(merged, metadata) : merged
-    return transformers.escape(restored)
+
+    const escaped = transformers.escape(restored)
+
+    if (cache.size >= CACHE_LIMIT) {
+      const firstEntry = cache.keys().next()
+      if (!firstEntry.done) {
+        cache.delete(firstEntry.value)
+      }
+    }
+    cache.set(rawInput, escaped)
+
+    return escaped
   }
 }
 

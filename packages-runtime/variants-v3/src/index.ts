@@ -136,15 +136,13 @@ function createVariantsRuntime(options?: CreateOptions) {
       return value
     }
 
-    const normalized = transformers.unescape(value)
-
     const shouldMerge = config?.twMerge ?? true
     if (!shouldMerge) {
-      return transformers.escape(normalized)
+      return transformers.escape(value)
     }
 
     const mergeFn = getMergeFn(config?.twMergeConfig)
-    return transformers.escape(mergeFn(normalized))
+    return transformers.escape(mergeFn(value))
   }
 
   const cn: TailwindVariantCn = (...classes) => {
@@ -159,8 +157,7 @@ function createVariantsRuntime(options?: CreateOptions) {
       return aggregated
     }
 
-    const normalized = transformers.unescape(aggregated)
-    return transformers.escape(normalized)
+    return transformers.escape(aggregated)
   }
 
   const tv = ((options: TailwindVariantOptions, config?: TailwindVariantConfig) => {
