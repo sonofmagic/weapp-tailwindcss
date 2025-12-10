@@ -168,6 +168,7 @@
     "test": "npm run postinstall && vitest run",
     "test:dev": "vitest",
     "test:ui": "vitest --ui",
+    "bench": "vitest bench --config ./vitest.config.ts",
     "bench:js-handlers": "tsx scripts/js-bench.ts",
     "bench:js-diff": "tsx scripts/js-bench-diff.ts",
     "clean": "tsx scripts/clean.ts",

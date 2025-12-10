@@ -14,10 +14,12 @@ export default defineConfig({
       },
     ],
     include: ['test/**/*.{test,spec}.?(c|m)[jt]s?(x)'],
+    benchmark: {
+      include: ['test/**/*.bench.ts'],
+      outputJson: 'benchmark/bench-report.json',
+    },
     coverage: {
       enabled: true,
-      all: false,
-
       // reportsDirectory: 'coverage/vitest'
     },
     testTimeout: 60_000,
