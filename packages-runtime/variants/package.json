@@ -1,7 +1,7 @@
 {
   "name": "@weapp-tailwindcss/variants",
   "type": "module",
-  "version": "0.1.3",
+  "version": "0.1.4",
   "description": "tailwind-variants 的运行时封装，提供 tv/cn 等 API 的小程序增强版本。",
   "author": "ice breaker <1324318532@qq.com>",
   "license": "MIT",

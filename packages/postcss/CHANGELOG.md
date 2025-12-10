@@ -1,5 +1,11 @@
 # @weapp-tailwindcss/postcss
 
+## 2.0.7
+
+### Patch Changes
+
+- [`3ed3aa8`](https://github.com/sonofmagic/weapp-tailwindcss/commit/3ed3aa817a68dae544baf434316399cc78c15b99) Thanks [@sonofmagic](https://github.com/sonofmagic)! - feat: upgrade "@weapp-core/escape": "~6.0.1"
+
 ## 2.0.6
 
 ### Patch Changes

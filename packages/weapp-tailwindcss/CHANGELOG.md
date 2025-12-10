@@ -1,5 +1,14 @@
 # weapp-tailwindcss
 
+## 4.8.10
+
+### Patch Changes
+
+- [`3ed3aa8`](https://github.com/sonofmagic/weapp-tailwindcss/commit/3ed3aa817a68dae544baf434316399cc78c15b99) Thanks [@sonofmagic](https://github.com/sonofmagic)! - feat: upgrade "@weapp-core/escape": "~6.0.1"
+
+- Updated dependencies [[`3ed3aa8`](https://github.com/sonofmagic/weapp-tailwindcss/commit/3ed3aa817a68dae544baf434316399cc78c15b99)]:
+  - @weapp-tailwindcss/postcss@2.0.7
+
 ## 4.8.9
 
 ### Patch Changes
