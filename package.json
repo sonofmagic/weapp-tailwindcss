@@ -264,5 +264,10 @@
     "webpack-build-utils": "^0.0.7",
     "wrangler": "catalog:wrangler4530",
     "yaml": "^2.8.2"
+  },
+  "pnpm": {
+    "overrides": {
+      "postcss-urlrewrite": "0.3.0"
+    }
   }
 }

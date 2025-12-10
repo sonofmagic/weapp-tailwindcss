@@ -93,6 +93,7 @@
     "@dcloudio/vue-cli-plugin-uni-optimize": "2.0.2-4080520251106001",
     "@dcloudio/webpack-uni-mp-loader": "2.0.2-4080520251106001",
     "@dcloudio/webpack-uni-pages-loader": "2.0.2-4080520251106001",
+    "copy-webpack-plugin": "^13.0.1",
     "@tailwindcss/postcss": "catalog:tailwindcss4",
     "@vue/cli-plugin-babel": "~5.0.0",
     "@vue/cli-plugin-typescript": "~5.0.8",
