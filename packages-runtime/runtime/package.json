@@ -52,7 +52,7 @@
     "access": "public"
   },
   "dependencies": {
-    "@weapp-core/escape": "^5.0.1",
+    "@weapp-core/escape": "^6.0.1",
     "clsx": "^2.1.1"
   }
 }

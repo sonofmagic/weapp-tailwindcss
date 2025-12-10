@@ -111,6 +111,9 @@ export default defineConfig(() => {
       coverage: {
         enabled: true,
         skipFull: true,
+        exclude: [
+          '**/dist/**',
+        ],
       },
       forceRerunTriggers: [
         '**/{vitest,vite}.config.*/**',

@@ -23,9 +23,9 @@ catalogs:
   crossEnv:
     cross-env: ^10.1.0
   lucideReact0555:
-    lucide-react: ^0.556.0
+    lucide-react: ^0.559.0
   lucideVueNext0555:
-    lucide-vue-next: ^0.556.0
+    lucide-vue-next: ^0.559.0
   miniApiTypings:
     miniprogram-api-typings: ^4.1.1
   postcss85:
@@ -52,10 +52,10 @@ catalogs:
     react-dom: ^19.2.1
   reactRefresh018:
     react-refresh: ^0.18.0
+  sass195:
+    sass: ^1.95.1
   stylelint1625:
     stylelint: ^16.26.1
-  sass195:
-    sass: ^1.95.0
   tailwindMerge:
     tailwind-merge: ^3.4.0
   tailwindcss3:
@@ -97,14 +97,14 @@ catalogs:
     postcss-pxtransform: ^4.1.9
   typesNode2410:
     '@types/node': ^24.10.2
-  typescriptEslint849:
-    '@typescript-eslint/eslint-plugin': ^8.49.0
-    '@typescript-eslint/parser': ^8.49.0
-    typescript-eslint: ^8.49.0
   typescript59:
     typescript: ^5.9.3
   typescript59tilde:
     typescript: ~5.9.3
+  typescriptEslint849:
+    '@typescript-eslint/eslint-plugin': ^8.49.0
+    '@typescript-eslint/parser': ^8.49.0
+    typescript-eslint: ^8.49.0
   vite5421:
     vite: ^5.4.21
   vite724:
