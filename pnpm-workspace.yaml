@@ -3,7 +3,7 @@ packages:
   - packages-runtime/*
   - apps/*
   - website
-  - benchmark
+  - benchmark/*
   - e2e
   - '!tailwindcss-weapp'
   - '!**/test/**'

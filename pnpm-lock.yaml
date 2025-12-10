@@ -1264,7 +1264,7 @@ importers:
         specifier: workspace:^
         version: link:../../packages/weapp-tailwindcss
 
-  benchmark:
+  benchmark/app:
     dependencies:
       vue:
         specifier: catalog:vue3
@@ -1308,7 +1308,7 @@ importers:
         version: 3.1.8(typescript@5.9.3)
       weapp-tailwindcss:
         specifier: workspace:*
-        version: link:../packages/weapp-tailwindcss
+        version: link:../../packages/weapp-tailwindcss
 
   demo/gulp-app:
     dependencies:

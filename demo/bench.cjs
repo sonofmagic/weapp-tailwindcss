@@ -34,7 +34,7 @@ class Bench {
   dump(key = 'babel') {
     const ts = this.timeSpan()
     const filename = dayjs().format('YYYY-MM-DD') + '.json'
-    const targetDataFile = path.resolve(__dirname, '../benchmark/data', filename)
+    const targetDataFile = path.resolve(__dirname, '../benchmark/app/data', filename)
     const targetDir = path.dirname(targetDataFile)
     try {
       fs.ensureDirSync(targetDir)
