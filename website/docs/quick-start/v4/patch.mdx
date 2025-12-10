@@ -7,6 +7,10 @@
  }
 ```
 
+:::caution 使用 pnpm@10+
+`pnpm@10` 默认只允许 `onlyBuiltDependencies` 中的包运行生命周期脚本。安装完本插件后，请执行 `pnpm approve-builds weapp-tailwindcss` 将其加入白名单，避免 `postinstall` 的 `weapp-tw patch` 被跳过。
+:::
+
 这是为了给 `tailwindcss@4` 打上支持 `rpx` 单位的补丁，否则它会把 `rpx` 认为是一种颜色
 
 如需在补丁前强制刷新 `tailwindcss-patch` 的缓存，可改为：

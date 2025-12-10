@@ -18,6 +18,10 @@ npm i -D weapp-tailwindcss
  }
 ```
 
+:::caution 使用 pnpm@10+
+`pnpm@10` 默认只允许 `onlyBuiltDependencies` 中的包运行生命周期脚本。安装完本插件后，请执行 `pnpm approve-builds weapp-tailwindcss` 将其加入白名单，避免 `postinstall` 的 `weapp-tw patch` 被跳过。
+:::
+
 :::info
 执行 `weapp-tw patch` 主要是做2件事情
 
