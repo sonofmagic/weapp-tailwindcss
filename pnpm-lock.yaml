@@ -1310,6 +1310,59 @@ importers:
         specifier: workspace:*
         version: link:../../packages/weapp-tailwindcss
 
+  benchmark/tailwindcss3:
+    dependencies:
+      '@weapp-tailwindcss/merge-v3':
+        specifier: workspace:*
+        version: link:../../packages-runtime/merge-v3
+      '@weapp-tailwindcss/variants-v3':
+        specifier: workspace:*
+        version: link:../../packages-runtime/variants-v3
+      tailwind-merge:
+        specifier: ^2.6.0
+        version: 2.6.0
+      tailwind-variant-v3:
+        specifier: workspace:*
+        version: link:../../packages-runtime/tailwind-variant-v3
+      tailwind-variants:
+        specifier: ^0.1.20
+        version: 0.1.20(tailwindcss@3.4.18(tsx@4.21.0)(yaml@2.8.2))
+      tailwindcss:
+        specifier: catalog:tailwindcss3
+        version: 3.4.18(tsx@4.21.0)(yaml@2.8.2)
+    devDependencies:
+      vitest:
+        specifier: ~4.0.15
+        version: 4.0.15(@opentelemetry/api@1.9.0)(@types/node@24.10.2)(@vitest/ui@4.0.15)(jiti@2.6.1)(jsdom@27.3.0(postcss@8.5.6))(less@4.4.2)(lightningcss@1.30.2)(sass-embedded@1.93.3)(sass@1.95.0)(stylus@0.64.0)(terser@5.44.1)(tsx@4.21.0)(yaml@2.8.2)
+
+  benchmark/tailwindcss4:
+    dependencies:
+      '@weapp-tailwindcss/cva':
+        specifier: workspace:*
+        version: link:../../packages-runtime/cva
+      '@weapp-tailwindcss/merge':
+        specifier: workspace:*
+        version: link:../../packages-runtime/merge
+      '@weapp-tailwindcss/variants':
+        specifier: workspace:*
+        version: link:../../packages-runtime/variants
+      class-variance-authority:
+        specifier: ^0.7.1
+        version: 0.7.1
+      tailwind-merge:
+        specifier: ^3.4.0
+        version: 3.4.0
+      tailwind-variants:
+        specifier: ^3.2.2
+        version: 3.2.2(tailwind-merge@3.4.0)(tailwindcss@4.1.17)
+      tailwindcss:
+        specifier: catalog:tailwindcss4
+        version: 4.1.17
+    devDependencies:
+      vitest:
+        specifier: ~4.0.15
+        version: 4.0.15(@opentelemetry/api@1.9.0)(@types/node@24.10.2)(@vitest/ui@4.0.15)(jiti@2.6.1)(jsdom@27.3.0(postcss@8.5.6))(less@4.4.2)(lightningcss@1.30.2)(sass-embedded@1.93.3)(sass@1.95.0)(stylus@0.64.0)(terser@5.44.1)(tsx@4.21.0)(yaml@2.8.2)
+
   demo/gulp-app:
     dependencies:
       '@vant/weapp':
@@ -27447,11 +27500,20 @@ packages:
     resolution: {integrity: sha512-FzD187HuFIZEyeR7Xy6sJbJll2d4SybS90satC8SKIuaNRC05CxMvdzN7BUsfDQffcnabckRM5OIcfArjsZ0mg==}
     engines: {node: '>=18.18'}
 
+  tailwind-merge@1.14.0:
+    resolution: {integrity: sha512-3mFKyCo/MBcgyOTlrY8T7odzZFx+w+qKSMAmdFzRvqBfLlSigU6TZnlFHK0lkMwj9Bj8OYU+9yW9lmGuS0QEnQ==}
+
   tailwind-merge@2.6.0:
     resolution: {integrity: sha512-P+Vu1qXfzediirmHOC3xKGAYeZtPcV9g76X+xg2FD4tYgR71ewMA35Y3sCz3zhiN/dwefRpJX0yBcgwi1fXNQA==}
 
   tailwind-merge@3.4.0:
     resolution: {integrity: sha512-uSaO4gnW+b3Y2aWoWfFpX62vn2sR3skfhbjsEnaBI81WD1wBLlHZe5sWf0AqjksNdYTbGBEd0UasQMT3SNV15g==}
+
+  tailwind-variants@0.1.20:
+    resolution: {integrity: sha512-AMh7x313t/V+eTySKB0Dal08RHY7ggYK0MSn/ad8wKWOrDUIzyiWNayRUm2PIJ4VRkvRnfNuyRuKbLV3EN+ewQ==}
+    engines: {node: '>=16.x', pnpm: '>=7.x'}
+    peerDependencies:
+      tailwindcss: '*'
 
   tailwind-variants@3.2.2:
     resolution: {integrity: sha512-Mi4kHeMTLvKlM98XPnK+7HoBPmf4gygdFmqQPaDivc3DpYS6aIY6KiG/PgThrGvii5YZJqRsPz0aPyhoFzmZgg==}
@@ -27744,9 +27806,6 @@ packages:
 
   tinyexec@0.3.2:
     resolution: {integrity: sha512-KQQR9yN7R5+OSwaK0XQoj22pwHoTlgYqmUscPYoknOoWCWfj/5/ABTMRi69FrKU5ffPVh5QcFikpWJI/P1ocHA==}
-
-  tinyexec@1.0.1:
-    resolution: {integrity: sha512-5uC6DDlmeqiOwCPmK9jMSdOuZTh8bU39Ys6yidB+UTt5hfZUPGAypSgFRiEp+jbi9qH40BLDvy85jIU88wKSqw==}
 
   tinyexec@1.0.2:
     resolution: {integrity: sha512-W/KYk+NFhkmsYpuHq5JykngiOCnxeVL8v8dFnqxSD8qEEdRfXk1SDM6JzNqcERbcGYj9tMrDQBYV9cjgnunFIg==}
@@ -30253,7 +30312,7 @@ snapshots:
   '@antfu/install-pkg@1.1.0':
     dependencies:
       package-manager-detector: 1.3.0
-      tinyexec: 1.0.1
+      tinyexec: 1.0.2
 
   '@antfu/utils@8.1.1': {}
 
@@ -41753,7 +41812,7 @@ snapshots:
   '@types/react-router@5.1.20':
     dependencies:
       '@types/history': 4.7.11
-      '@types/react': 19.2.2
+      '@types/react': 19.2.7
 
   '@types/react@18.2.15':
     dependencies:
@@ -58354,7 +58413,7 @@ snapshots:
       postcss: 8.5.6
       postcss-value-parser: 4.2.0
       read-cache: 1.0.0
-      resolve: 1.22.10
+      resolve: 1.22.11
 
   postcss-import@15.1.0(postcss@8.5.6):
     dependencies:
@@ -62523,7 +62582,7 @@ snapshots:
     dependencies:
       '@jridgewell/gen-mapping': 0.3.13
       commander: 4.1.1
-      glob: 10.4.5
+      glob: 10.5.0
       lines-and-columns: 1.2.4
       mz: 2.7.0
       pirates: 4.0.7
@@ -62645,9 +62704,16 @@ snapshots:
 
   tailwind-csstree@0.1.4: {}
 
+  tailwind-merge@1.14.0: {}
+
   tailwind-merge@2.6.0: {}
 
   tailwind-merge@3.4.0: {}
+
+  tailwind-variants@0.1.20(tailwindcss@3.4.18(tsx@4.21.0)(yaml@2.8.2)):
+    dependencies:
+      tailwind-merge: 1.14.0
+      tailwindcss: 3.4.18(tsx@4.21.0)(yaml@2.8.2)
 
   tailwind-variants@3.2.2(tailwind-merge@3.4.0)(tailwindcss@3.4.18(tsx@4.21.0)(yaml@2.8.2)):
     dependencies:
@@ -63142,8 +63208,6 @@ snapshots:
   tinycolor2@1.6.0: {}
 
   tinyexec@0.3.2: {}
-
-  tinyexec@1.0.1: {}
 
   tinyexec@1.0.2: {}
 

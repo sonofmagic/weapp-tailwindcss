@@ -1,0 +1,20 @@
+{
+  "name": "benchmark-tailwindcss3",
+  "type": "module",
+  "version": "0.0.0",
+  "private": true,
+  "scripts": {
+    "bench": "vitest bench --config ./vitest.config.mts"
+  },
+  "dependencies": {
+    "@weapp-tailwindcss/merge-v3": "workspace:*",
+    "@weapp-tailwindcss/variants-v3": "workspace:*",
+    "tailwind-merge": "^2.6.0",
+    "tailwind-variant-v3": "workspace:*",
+    "tailwind-variants": "^0.1.20",
+    "tailwindcss": "catalog:tailwindcss3"
+  },
+  "devDependencies": {
+    "vitest": "~4.0.15"
+  }
+}

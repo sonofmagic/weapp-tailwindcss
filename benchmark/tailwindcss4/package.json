@@ -1,0 +1,21 @@
+{
+  "name": "benchmark-tailwindcss4",
+  "type": "module",
+  "version": "0.0.0",
+  "private": true,
+  "scripts": {
+    "bench": "vitest bench --config ./vitest.config.mts"
+  },
+  "dependencies": {
+    "@weapp-tailwindcss/cva": "workspace:*",
+    "@weapp-tailwindcss/merge": "workspace:*",
+    "@weapp-tailwindcss/variants": "workspace:*",
+    "class-variance-authority": "^0.7.1",
+    "tailwind-merge": "^3.4.0",
+    "tailwind-variants": "^3.2.2",
+    "tailwindcss": "catalog:tailwindcss4"
+  },
+  "devDependencies": {
+    "vitest": "~4.0.15"
+  }
+}

@@ -54,6 +54,7 @@
     "build:analyze": "tsx scripts/check-build-size.ts",
     "test": "vitest run",
     "test:bench": "vitest bench",
+    "bench": "pnpm --filter benchmark-* bench",
     "test:plugins": "vitest run --coverage.enabled --coverage.all=false --project=@weapp-tailwindcss/*",
     "test:typography": "vitest run --coverage.enabled --coverage.all=false --project=@weapp-tailwindcss/typography",
     "test:core": "vitest run --coverage.enabled --coverage.all=false --project=weapp-tailwindcss",
