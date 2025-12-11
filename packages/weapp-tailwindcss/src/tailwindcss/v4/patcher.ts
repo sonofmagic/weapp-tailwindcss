@@ -250,12 +250,47 @@ export function createPatcherForBase(
     cssEntries ?? [],
   )
 
-  return createTailwindcssPatcher({
-    basedir: baseDir,
-    supportCustomLengthUnitsPatch: supportCustomLengthUnitsPatch ?? true,
-    tailwindcss: mergedTailwindOptions,
-    tailwindcssPatcherOptions: patchedOptions,
+  const configuredPackageName = tailwindcss?.packageName
+    || (tailwindcssPatcherOptions as any)?.tailwind?.packageName
+    || (tailwindcssPatcherOptions as any)?.patch?.tailwindcss?.packageName
+  const configuredVersion = tailwindcss?.version
+    || (tailwindcssPatcherOptions as any)?.tailwind?.version
+    || (tailwindcssPatcherOptions as any)?.patch?.tailwindcss?.version
+    || mergedTailwindOptions.version
+
+  const isTailwindcss4Package = (packageName: string | undefined) => Boolean(
+    packageName
+    && (packageName === 'tailwindcss4' || packageName === '@tailwindcss/postcss' || packageName.includes('tailwindcss4')),
+  )
+
+  const isV4 = configuredVersion === 4
+    || mergedTailwindOptions.version === 4
+    || isTailwindcss4Package(configuredPackageName ?? mergedTailwindOptions.packageName)
+
+  const tailwindPackageConfigured = Boolean(configuredPackageName)
+  const shouldPatchV4PostcssPackage = isV4 && !tailwindPackageConfigured
+  const packageCandidates = new Set<string>()
+  if (shouldPatchV4PostcssPackage) {
+    packageCandidates.add('@tailwindcss/postcss')
+  }
+  packageCandidates.add(
+    mergedTailwindOptions.packageName ?? configuredPackageName ?? 'tailwindcss',
+  )
+
+  const patchers = Array.from(packageCandidates).map((packageName) => {
+    const tailwindOptionsForPackage: TailwindUserOptions = {
+      ...mergedTailwindOptions,
+      packageName,
+    }
+    return createTailwindcssPatcher({
+      basedir: baseDir,
+      supportCustomLengthUnitsPatch: supportCustomLengthUnitsPatch ?? true,
+      tailwindcss: tailwindOptionsForPackage,
+      tailwindcssPatcherOptions: patchedOptions,
+    })
   })
+
+  return patchers.length === 1 ? patchers[0] : createMultiTailwindcssPatcher(patchers)
 }
 
 export function createMultiTailwindcssPatcher(patchers: TailwindcssPatcherLike[]): TailwindcssPatcherLike {

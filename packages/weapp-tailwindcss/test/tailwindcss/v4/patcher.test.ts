@@ -203,6 +203,52 @@ describe('tailwindcss/v4/patcher helpers', () => {
     expect(patcher.majorVersion).toBe(4)
   })
 
+  it('creates dual patchers for v4 when no package is configured', async () => {
+    createTailwindcssPatcher.mockImplementation(options => ({
+      packageInfo: { name: options.tailwindcss?.packageName } as any,
+      majorVersion: 4,
+      options,
+      patch: vi.fn(async () => ({})),
+      getClassSet: vi.fn(async () => new Set()),
+      extract: vi.fn(async () => undefined as any),
+    }))
+    const { createPatcherForBase } = await loadModule()
+
+    createPatcherForBase('/workspace/app', ['/workspace/app/src/app.css'], {
+      tailwindcss: { version: 4 },
+      tailwindcssPatcherOptions: undefined,
+      supportCustomLengthUnitsPatch: true,
+      appType: 'taro',
+    } as unknown as InternalUserDefinedOptions)
+
+    expect(createTailwindcssPatcher).toHaveBeenCalledTimes(2)
+    const packageNames = createTailwindcssPatcher.mock.calls.map(call => call[0].tailwindcss?.packageName)
+    expect(packageNames).toContain('@tailwindcss/postcss')
+    expect(packageNames).toContain('tailwindcss')
+  })
+
+  it('does not create extra patcher when packageName is already configured', async () => {
+    createTailwindcssPatcher.mockImplementation(options => ({
+      packageInfo: { name: options.tailwindcss?.packageName } as any,
+      majorVersion: 4,
+      options,
+      patch: vi.fn(async () => ({})),
+      getClassSet: vi.fn(async () => new Set()),
+      extract: vi.fn(async () => undefined as any),
+    }))
+    const { createPatcherForBase } = await loadModule()
+
+    createPatcherForBase('/workspace/app', ['/workspace/app/src/app.css'], {
+      tailwindcss: { version: 4, packageName: 'tailwindcss4' },
+      tailwindcssPatcherOptions: undefined,
+      supportCustomLengthUnitsPatch: true,
+      appType: 'taro',
+    } as unknown as InternalUserDefinedOptions)
+
+    expect(createTailwindcssPatcher).toHaveBeenCalledTimes(1)
+    expect(createTailwindcssPatcher.mock.calls[0][0].tailwindcss?.packageName).toBe('tailwindcss4')
+  })
+
   it('defaults supportCustomLengthUnitsPatch to true when unspecified', async () => {
     createTailwindcssPatcher.mockImplementation(options => options)
     const { createPatcherForBase } = await loadModule()
