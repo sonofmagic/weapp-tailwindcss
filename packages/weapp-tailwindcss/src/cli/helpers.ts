@@ -1,7 +1,9 @@
 import { mkdir } from 'node:fs/promises'
 import path from 'node:path'
 import process from 'node:process'
+import { findWorkspaceRoot } from '@/context/workspace'
 import { logger } from '@/logger'
+import { getTailwindcssPackageInfo } from '@/tailwindcss'
 
 export function readStringOption(flag: string, value: unknown): string | undefined {
   if (value == null) {
@@ -94,24 +96,52 @@ export function resolveCliCwd(value: unknown): string | undefined {
  * Resolve default working directory for `weapp-tw patch`.
  * Prefer explicit env overrides to avoid cross-package INIT_CWD pollution.
  */
-export function resolvePatchDefaultCwd(currentCwd = process.cwd()) {
-  const candidates = [
-    process.env.WEAPP_TW_PATCH_CWD,
-    process.env.INIT_CWD,
-    process.env.npm_config_local_prefix,
-  ]
+function normalizeCandidatePath(baseDir: string, candidate: string | undefined) {
+  if (!candidate) {
+    return undefined
+  }
+  return path.isAbsolute(candidate) ? path.normalize(candidate) : path.resolve(baseDir, candidate)
+}
 
-  for (const candidate of candidates) {
-    if (!candidate) {
-      continue
+function detectTailwindWorkspace(paths: string[]) {
+  for (const candidate of paths) {
+    try {
+      const info = getTailwindcssPackageInfo({ paths: [candidate] })
+      if (info?.rootPath) {
+        return candidate
+      }
     }
-    const normalized = path.isAbsolute(candidate)
-      ? path.normalize(candidate)
-      : path.resolve(currentCwd, candidate)
-    return normalized
+    catch {
+      // ignore resolution errors and continue probing other candidates
+    }
+  }
+  return undefined
+}
+
+export function resolvePatchDefaultCwd(currentCwd = process.cwd()) {
+  const baseDir = path.normalize(currentCwd)
+  const explicitCwd = normalizeCandidatePath(baseDir, process.env.WEAPP_TW_PATCH_CWD)
+  if (explicitCwd) {
+    return explicitCwd
   }
 
-  return path.normalize(currentCwd)
+  const workspaceRoot = findWorkspaceRoot(baseDir)
+  const initCwd = normalizeCandidatePath(baseDir, process.env.INIT_CWD)
+  const localPrefix = normalizeCandidatePath(baseDir, process.env.npm_config_local_prefix)
+
+  const candidates = [
+    baseDir,
+    workspaceRoot,
+    initCwd,
+    localPrefix,
+  ].filter(Boolean) as string[]
+
+  const detected = detectTailwindWorkspace([...new Set(candidates)])
+  if (detected) {
+    return detected
+  }
+
+  return initCwd ?? localPrefix ?? workspaceRoot ?? baseDir
 }
 
 export async function ensureDir(dir: string) {
