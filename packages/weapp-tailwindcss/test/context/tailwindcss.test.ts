@@ -119,7 +119,7 @@ describe('createTailwindcssPatcherFromContext', () => {
         appType: 'taro',
       } as unknown as InternalUserDefinedOptions
 
-      const _patcher = createTailwindcssPatcherFromContext(ctx)
+      const patcher = createTailwindcssPatcherFromContext(ctx)
 
       expect(calls).toHaveLength(4)
       const basedirs = calls.map(call => call.basedir)
