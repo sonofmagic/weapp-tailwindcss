@@ -1,5 +1,17 @@
 # weapp-tailwindcss
 
+## 4.8.11
+
+### Patch Changes
+
+- [`ccaa9bd`](https://github.com/sonofmagic/weapp-tailwindcss/commit/ccaa9bde3965c2d7bc918da346bd7e2b674aed7c) Thanks [@sonofmagic](https://github.com/sonofmagic)! - 修复 v4 补丁目标选择，只有显式使用 tailwindcss v4 时才会额外尝试为 @tailwindcss/postcss 打补丁，避免 v3 工程被误导到 v4 包后构建失败。
+
+- [`65d5b12`](https://github.com/sonofmagic/weapp-tailwindcss/commit/65d5b129080331c43cc46979b28e732b87483e9e) Thanks [@sonofmagic](https://github.com/sonofmagic)! - 优化 `weapp-tw patch` 默认 cwd 选择逻辑，workspace 下优先定位到实际安装 tailwindcss 的包或根目录，避免 pnpm hoist 时 postinstall 误选路径导致补丁遗漏。
+
+- [`66a2316`](https://github.com/sonofmagic/weapp-tailwindcss/commit/66a2316116e763069fce58f3afa9eee1981f11c9) Thanks [@sonofmagic](https://github.com/sonofmagic)! - 修复 `weapp-tw patch` 默认工作目录解析，优先使用 WEAPP_TW_PATCH_CWD/INIT_CWD，避免 postinstall 未对真实子包打补丁导致运行时才补丁的问题。
+
+- [`e7404e2`](https://github.com/sonofmagic/weapp-tailwindcss/commit/e7404e290e9cb3432f7b76cf58d463d055ab2fbe) Thanks [@sonofmagic](https://github.com/sonofmagic)! - 默认在 CLI 与运行时补丁中启用 extendLengthUnits（含 rpx），让 postinstall 阶段即可补齐长度单位补丁并避免二次补丁日志。
+
 ## 4.8.10
 
 ### Patch Changes
