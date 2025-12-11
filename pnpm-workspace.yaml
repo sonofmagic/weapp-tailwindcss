@@ -23,9 +23,9 @@ catalogs:
   crossEnv:
     cross-env: ^10.1.0
   lucideReact0555:
-    lucide-react: ^0.559.0
+    lucide-react: ^0.560.0
   lucideVueNext0555:
-    lucide-vue-next: ^0.559.0
+    lucide-vue-next: ^0.560.0
   miniApiTypings:
     miniprogram-api-typings: ^4.1.1
   postcss85:
@@ -53,7 +53,7 @@ catalogs:
   reactRefresh018:
     react-refresh: ^0.18.0
   sass195:
-    sass: ^1.95.1
+    sass: ^1.96.0
   stylelint1625:
     stylelint: ^16.26.1
   tailwindMerge:
@@ -120,7 +120,7 @@ catalogs:
   weappIdeCli:
     weapp-ide-cli: ^4.1.1
   weappVite:
-    weapp-vite: ^5.11.0
+    weapp-vite: ^5.11.2
   wrangler4530:
     wrangler: ^4.53.0
 
