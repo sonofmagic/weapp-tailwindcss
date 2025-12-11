@@ -23,7 +23,7 @@
     "postcss": "^8.5.6",
     "tailwindcss": "3.4.19",
     "vite": "5.4.21",
-    "weapp-tailwindcss": "^4.8.10"
+    "weapp-tailwindcss": "^4.8.11"
   },
   "dependencies": {
     "@weapp-tailwindcss/merge-v3": "^0.1.3"

@@ -46,8 +46,8 @@ importers:
         specifier: ^5.9.3
         version: 5.9.3
       weapp-tailwindcss:
-        specifier: ^4.8.10
-        version: 4.8.10(tailwindcss@3.4.19(tsx@4.19.2)(yaml@2.8.2))
+        specifier: ^4.8.11
+        version: 4.8.11(tailwindcss@3.4.19(tsx@4.19.2)(yaml@2.8.2))
       weapp-vite:
         specifier: ^5.11.2
         version: 5.11.2(@types/node@22.19.0)(esbuild@0.25.4)(jiti@1.21.7)(rollup@4.40.2)(sass-embedded@1.96.0)(sass@1.96.0)(synckit@0.11.11)(terser@5.36.0)(tsx@4.19.2)(typescript@5.9.3)(yaml@2.8.2)
@@ -5286,8 +5286,8 @@ packages:
     resolution: {integrity: sha512-UkNnS18JlVE7JNlxfYQVeD1h3XAEum5gad58EBmD6n7oNg4rO6EEQkYcEa3Q0Z2aUiGS4KKWUrSlYXzzJjo9kA==}
     hasBin: true
 
-  weapp-tailwindcss@4.8.10:
-    resolution: {integrity: sha512-J4blJiW1p9imyRqRGUmOS8Ohttsm/jkKg+EeGZ7cMOEsypf1IuGPtcS42nEksdzkMbbzxoYxx8oyK4TT+zgedg==}
+  weapp-tailwindcss@4.8.11:
+    resolution: {integrity: sha512-gQQ8ApW17etG2Ed92yY2kEaG13HZ+4DxLOFXWFTypXffv9EAynwvEd5f5HQsQ875YYEjdBtcjnua9rfQXWur5g==}
     engines: {node: ^18.17.0 || >=20.5.0}
     hasBin: true
 
@@ -11606,7 +11606,7 @@ snapshots:
       fs-extra: 11.3.2
       pathe: 2.0.3
 
-  weapp-tailwindcss@4.8.10(tailwindcss@3.4.19(tsx@4.19.2)(yaml@2.8.2)):
+  weapp-tailwindcss@4.8.11(tailwindcss@3.4.19(tsx@4.19.2)(yaml@2.8.2)):
     dependencies:
       '@ast-core/escape': 1.0.1
       '@babel/parser': 7.28.5
