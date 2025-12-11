@@ -111,7 +111,66 @@ const config: Config = {
     [
       'docusaurus-plugin-llms',
       {
-
+        title: 'weapp-tailwindcss 文档索引',
+        description: 'Tailwind CSS 小程序适配方案，覆盖 uni-app、taro、rax、mpx、原生等场景的官方文档合集。',
+        docsDir: 'docs',
+        includeBlog: true,
+        generateMarkdownFiles: true,
+        excludeImports: true,
+        removeDuplicateHeadings: true,
+        keepFrontMatter: ['sidebar_label', 'title', 'description'],
+        includeOrder: [
+          'docs/intro.md',
+          'docs/quick-start/**',
+          'docs/quick-start/v4/**',
+          'docs/tools/**',
+          'docs/uni-app-x/**',
+          'docs/community/templates.md',
+          'docs/api/**',
+          'docs/api-v2/**',
+          'docs/options/**',
+          'docs/migrations/**',
+          'docs/issues/**',
+          'docs/ai/**',
+        ],
+        includeUnmatchedLast: true,
+        rootContent: `LLM 导航说明：
+- 顺序为「入门 → 配置 → API → 迁移/问题 → AI 工作流」，覆盖 webpack/vite/gulp 与各类小程序框架。
+- 站点根为 ${siteUrl}，GitHub Pages 下为 /weapp-tailwindcss/ 前缀。
+- 已剔除 MDX import 与重复标题，便于模型解析；附带保留的标题/描述 frontmatter。`,
+        fullRootContent: `完整文档合辑，适合离线或单文件加载：
+- quick-start/* 给出接入步骤与常见框架示例，options/*、api* 提供配置与 API 细节，ai/* 收录提示词与工作流。
+- 内容按上手优先排序，并保留关键 frontmatter 供模型摘要与索引。`,
+        customLLMFiles: [
+          {
+            filename: 'llms-quickstart.txt',
+            includePatterns: [
+              'docs/intro.md',
+              'docs/quick-start/**',
+              'docs/quick-start/v4/**',
+              'docs/community/templates.md',
+              'docs/tools/**',
+              'docs/uni-app-x/**',
+              'docs/ai/**',
+            ],
+            fullContent: true,
+            title: 'weapp-tailwindcss 上手与 AI 工作流',
+            description: '快速接入、模板、CLI 与 AI 辅助编排的完整内容，优先用于回答「如何开始」「如何让 AI 生成小程序代码」类问题。',
+          },
+          {
+            filename: 'llms-api.txt',
+            includePatterns: [
+              'docs/options/**',
+              'docs/api/**',
+              'docs/api-v2/**',
+              'docs/issues/**',
+              'docs/migrations/**',
+            ],
+            fullContent: true,
+            title: 'weapp-tailwindcss API 与配置参考',
+            description: '包含插件配置、API 细节、常见问题与迁移指南，适合回答配置/兼容性问题。',
+          },
+        ],
       },
     ],
     [

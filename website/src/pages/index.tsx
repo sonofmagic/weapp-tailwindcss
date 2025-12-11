@@ -267,7 +267,27 @@ function HomepageHeader() {
                   </svg>
                 </span>
               </a>
-              <InteractionPill href="/docs/community/group" icon="🚀" label="加入技术交流群" />
+              <div className={`
+                flex w-full flex-col gap-2
+                sm:w-auto sm:flex-row sm:items-center
+              `}
+              >
+                <InteractionPill
+                  href="/llms"
+                  icon={(
+                    <i
+                      aria-hidden="true"
+                      className={`
+                        icon-[logos--openai-icon] text-[18px] leading-none
+                        text-emerald-600
+                        dark:text-white dark:invert dark:brightness-200 dark:contrast-200
+                      `}
+                    />
+                  )}
+                  label="AI 学习入口"
+                />
+                <InteractionPill href="/docs/community/group" icon="🚀" label="加入技术交流群" />
+              </div>
             </div>
             <div className={`
               mt-6 flex flex-wrap items-center justify-center gap-2.5
