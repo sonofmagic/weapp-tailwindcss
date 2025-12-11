@@ -17,6 +17,7 @@ import {
   resolvePatchDefaultCwd,
   toBoolean,
 } from './cli/helpers'
+import { buildExtendLengthUnitsOverride } from './cli/patch-options'
 import {
   DEFAULT_VSCODE_ENTRY_OUTPUT,
   generateVscodeIntellisenseEntry,
@@ -102,7 +103,11 @@ const mountOptions: TailwindcssPatchCliMountOptions = {
         })
         return
       }
-      const patcher = await ctx.createPatcher()
+      const patchOptions = await ctx.loadPatchOptions()
+      const extendLengthUnitsOverride = buildExtendLengthUnitsOverride(patchOptions)
+      const patcher = extendLengthUnitsOverride
+        ? await ctx.createPatcher(extendLengthUnitsOverride)
+        : await ctx.createPatcher()
       if (shouldClearCache) {
         await clearTailwindcssPatcherCache(patcher, { removeDirectory: true })
       }

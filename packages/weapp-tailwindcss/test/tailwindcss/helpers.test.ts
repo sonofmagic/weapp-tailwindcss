@@ -102,6 +102,16 @@ describe('tailwindcss helpers', () => {
     expect(callArgs.cache).toEqual({ dir: '/global/cache' })
   })
 
+  it('enables extendLengthUnits patch by default', async () => {
+    const { createTailwindcssPatcher } = await import('@/tailwindcss')
+
+    createTailwindcssPatcher()
+
+    const lastCall = tailwindcssPatcherMock.mock.calls[tailwindcssPatcherMock.mock.calls.length - 1]
+    const callArgs = lastCall?.[0] as any
+    expect(callArgs.features?.extendLengthUnits).toEqual({ enabled: true })
+  })
+
   it('falls back to cwd when basedir is not provided', async () => {
     const cwdSpy = vi.spyOn(process, 'cwd').mockReturnValue('/workspace')
     const { createTailwindcssPatcher } = await import('@/tailwindcss')

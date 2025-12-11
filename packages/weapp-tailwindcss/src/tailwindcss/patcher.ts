@@ -328,7 +328,7 @@ export function createTailwindcssPatcher(options?: CreateTailwindcssPatcherOptio
 
   const normalizedUserOptions = normalizeTailwindcssPatcherOptions(tailwindcssPatcherOptions)
 
-  const extendLengthUnits = normalizeExtendLengthUnits(supportCustomLengthUnitsPatch)
+  const extendLengthUnits = normalizeExtendLengthUnits(supportCustomLengthUnitsPatch ?? true)
 
   const baseTailwindOptions = defuOverrideArray<TailwindUserOptions, Partial<TailwindUserOptions>[]>(
     (tailwindcss ?? {}) as TailwindUserOptions,

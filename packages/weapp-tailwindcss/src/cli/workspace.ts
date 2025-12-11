@@ -1,4 +1,3 @@
-import type { TailwindcssPatchOptions } from 'tailwindcss-patch'
 import { existsSync, readFileSync } from 'node:fs'
 import path from 'node:path'
 import process from 'node:process'
@@ -10,6 +9,7 @@ import { findWorkspaceRoot } from '@/context/workspace'
 import { logger } from '@/logger'
 import { getTailwindcssPackageInfo } from '@/tailwindcss'
 import { createPatchTargetRecorder, logTailwindcssTarget } from '@/tailwindcss/targets'
+import { withDefaultExtendLengthUnits } from './patch-options'
 
 interface WorkspacePatchOptions {
   cwd: string | undefined
@@ -124,9 +124,11 @@ async function resolveWorkspacePackageDirs(workspaceRoot: string) {
 }
 
 function createWorkspacePatcher(cwd: string) {
-  const normalized = normalizeOptions({
-    cwd,
-  } as TailwindcssPatchOptions)
+  const normalized = normalizeOptions(
+    withDefaultExtendLengthUnits({
+      cwd,
+    }),
+  )
   return new TailwindcssPatcher(normalized)
 }
 
