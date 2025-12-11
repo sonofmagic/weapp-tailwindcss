@@ -1,0 +1,45 @@
+@use "sass:color";
+
+$primary: #111827;
+$primary-glow: rgba(17, 24, 39, 0.09);
+$muted: #6b7280;
+$surface: #f9fafb;
+$surface-dark: #0b1220;
+$radius: 16px;
+
+@mixin surface($elevated: true) {
+  background: $surface;
+  border: 1px solid color.adjust($primary, $lightness: 70%);
+  border-radius: $radius;
+  padding: 16px;
+  @if $elevated {
+    box-shadow: 0 12px 38px rgba(17, 24, 39, 0.08);
+  }
+}
+
+@mixin eyebrow {
+  font-size: 12px;
+  letter-spacing: 0.16em;
+  color: $muted;
+  text-transform: uppercase;
+}
+
+@mixin badge($tone: "primary") {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 10px;
+  border-radius: 999px;
+  font-weight: 600;
+  font-size: 12px;
+  @if $tone == "primary" {
+    color: $primary;
+    background: rgba(17, 24, 39, 0.08);
+  } @else if $tone == "success" {
+    color: #0f766e;
+    background: rgba(16, 185, 129, 0.1);
+  } @else {
+    color: $muted;
+    background: rgba(107, 114, 128, 0.1);
+  }
+}

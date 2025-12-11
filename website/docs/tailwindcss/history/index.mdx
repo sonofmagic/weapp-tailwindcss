@@ -95,6 +95,87 @@ flowchart TB
 | Utility-first | Tailwind, Windi, UnoCSS, twin.macro | JIT 原子类、attributify、宏模式 | Tailwind 卡片 + Uno attributify + JIT 时序图 |
 | Headless + tokens | Radix, Headless UI, shadcn/ui, tailwind-variants | tokens → variants → primitives | Radix Tabs、Menu Demo、tokens 流程图 |
 
+## 阶段 Demo：把「方式」落到机制
+
+### Raw CSS / BEM：零构建 + 约定
+
+```html title="index.html"
+<link rel="stylesheet" href="/reset.css" />
+<section class="card card--elevated">
+  <p class="card__eyebrow">Raw CSS</p>
+  <h2 class="card__title">全局命名</h2>
+</section>
+```
+
+### 预处理器：脚本化编译与 tokens 复用
+
+```json title="package.json"
+{
+  "scripts": {
+    "build:css": "sass src/styles/index.scss dist/index.css --no-source-map && postcss dist/index.css -o dist/index.css",
+    "watch:css": "sass --watch src/styles/index.scss:dist/index.css"
+  }
+}
+```
+
+```scss title="src/styles/index.scss"
+@use './tokens' as *;
+.card { border: 1px solid lighten($color-primary, 65%); border-radius: $radius-lg; }
+```
+
+### CSS Modules：编译期隔离 + 组件消费
+
+```ts title="vite.config.ts"
+export default { css: { modules: { generateScopedName: '[name]__[local]___[hash:base64:5]' } } }
+```
+
+```tsx title="Card.tsx"
+import styles from './card.module.css'
+export const Card = () => <section className={`${styles.card} ${styles.elevated}`}>CSS Modules</section>
+```
+
+### CSS-in-JS：主题运行时 + 编译模式
+
+```tsx title="styled-components + ThemeProvider"
+import styled, { ThemeProvider } from 'styled-components'
+const theme = { primary: '#111827', radius: '12px' }
+const Button = styled.button`border-radius: ${({ theme }) => theme.radius}; background: ${({ theme }) => theme.primary};`
+export const Demo = () => <ThemeProvider theme={theme}><Button>动态主题</Button></ThemeProvider>
+```
+
+### Utility-first：Tailwind + cva 生成变体
+
+```ts title="tailwind.config.ts"
+export default { content: ['./src/**/*.{ts,tsx,html}'], theme: { extend: { colors: { brand: '#111827' } } } }
+```
+
+```tsx title="components/button.tsx"
+import { cva } from 'class-variance-authority'
+const button = cva('rounded-lg px-4 py-2 text-sm font-medium', { variants: { tone: { brand: 'bg-brand text-white' } }, defaultVariants: { tone: 'brand' } })
+export const Button = ({ tone = 'brand', ...props }) => <button className={button({ tone })} {...props} />
+```
+
+### Token + Headless：tokens 文件 + Headless 组件装饰
+
+```css title="src/styles/tokens.css"
+:root { --color-primary: #111827; --radius-lg: 12px; }
+[data-theme="dark"] { --color-primary: #e5e7eb; }
+```
+
+```tsx title="components/menu.tsx"
+import { Menu } from '@headlessui/react'
+import { tv } from 'tailwind-variants'
+const item = tv({ base: 'flex items-center rounded-lg px-3 py-2 text-sm', variants: { active: { true: 'bg-muted text-foreground' } } })
+export const MenuDemo = () => (
+  <Menu>
+    <Menu.Button className="rounded-lg border px-3 py-2">操作</Menu.Button>
+    <Menu.Items className="mt-2 w-40 rounded-xl border bg-card p-2 shadow-xl">
+      <Menu.Item>{({ active }) => <button className={item({ active })}>编辑</button>}</Menu.Item>
+    </Menu.Items>
+  </Menu>
+)
+```
+
 ### <span className="mr-2 inline-block align-middle text-primary dark:text-primary-200 icon-[mdi--source-branch]" aria-hidden="true" /> 决策树：选择样式方案
 
 ```mermaid

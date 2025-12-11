@@ -8,6 +8,7 @@ import OverviewGrid from '@/features/home/OverviewGrid.vue'
 import StyleComparisonSection from '@/features/home/StyleComparisonSection.vue'
 import ThemeSwitcher from '@/features/home/ThemeSwitcher.vue'
 import VariantGrid from '@/features/home/VariantGrid.vue'
+import StageDemos from '@/features/history/StageDemos.vue'
 import { useThemePreset } from '@/features/home/useThemePreset'
 
 const { theme, setTheme } = useThemePreset()
@@ -29,6 +30,7 @@ const { theme, setTheme } = useThemePreset()
 
     <main class="mx-auto flex max-w-6xl flex-col gap-6 px-4 pb-14">
       <OverviewGrid />
+      <StageDemos />
       <VariantGrid />
       <AiFeedbackGrid />
       <StyleComparisonSection />
