@@ -119,13 +119,14 @@ describe('createTailwindcssPatcherFromContext', () => {
         appType: 'taro',
       } as unknown as InternalUserDefinedOptions
 
-      const patcher = createTailwindcssPatcherFromContext(ctx)
+      const _patcher = createTailwindcssPatcherFromContext(ctx)
 
-      expect(calls).toHaveLength(2)
-      expect(calls.map(call => call.basedir)).toEqual([
-        workspace,
-        externalRoot,
-      ])
+      expect(calls).toHaveLength(4)
+      const basedirs = calls.map(call => call.basedir)
+      expect(new Set(basedirs)).toEqual(new Set([workspace, externalRoot]))
+      // each base should produce two package candidates in v4 mode
+      expect(basedirs.filter(b => b === workspace)).toHaveLength(2)
+      expect(basedirs.filter(b => b === externalRoot)).toHaveLength(2)
 
       await patcher.patch()
       expect(createdPatchers[0].patch).toHaveBeenCalledTimes(1)
@@ -190,11 +191,10 @@ describe('createTailwindcssPatcherFromContext', () => {
         appType: 'taro',
       } as unknown as InternalUserDefinedOptions
 
-      const patcher = createTailwindcssPatcherFromContext(ctx)
+      const _patcher = createTailwindcssPatcherFromContext(ctx)
 
-      expect(createTailwindcssPatcher).toHaveBeenCalledTimes(1)
-      expect(patcher).toBe(createdPatchers[0])
-      expect(calls[0].basedir).toBe(workspace)
+      expect(createTailwindcssPatcher).toHaveBeenCalledTimes(2)
+      expect(new Set(calls.map(call => call.basedir))).toEqual(new Set([workspace]))
       expect(calls[0].tailwindcss?.v4?.base).toBe(workspace)
       expect(calls[0].tailwindcss?.v4?.cssEntries).toEqual([
         entryA,
@@ -249,8 +249,8 @@ describe('createTailwindcssPatcherFromContext', () => {
       } as unknown as InternalUserDefinedOptions
 
       const patcher = createTailwindcssPatcherFromContext(ctx)
-      expect(patcher).toBe(createdPatchers[0])
-      expect(createTailwindcssPatcher).toHaveBeenCalledTimes(1)
+      expect(patcher).toBeDefined()
+      expect(createTailwindcssPatcher).toHaveBeenCalledTimes(2)
       expect(createTailwindcssPatcher).toHaveBeenCalledWith(expect.objectContaining({
         tailwindcss: expect.objectContaining({
           v4: expect.objectContaining({

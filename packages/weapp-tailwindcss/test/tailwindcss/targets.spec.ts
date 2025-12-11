@@ -50,7 +50,7 @@ describe('tailwindcss targets', () => {
 
     const patcher = createTailwindcssPatcherFromContext(ctx)
 
-    expect(createTailwindcssPatcher).toHaveBeenCalledTimes(1)
+    expect(createTailwindcssPatcher).toHaveBeenCalledTimes(2)
     const options = createTailwindcssPatcher.mock.calls[0][0]
     expect(options.tailwindcss?.v4?.base).toBe(workspace)
     expect(options.tailwindcss?.v4?.cssEntries).toEqual([

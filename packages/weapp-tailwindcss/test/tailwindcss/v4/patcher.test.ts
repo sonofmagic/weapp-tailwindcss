@@ -193,13 +193,13 @@ describe('tailwindcss/v4/patcher helpers', () => {
 
     const patcher = createPatcherForBase(baseDir, cssEntries, factoryOptions)
 
-    expect(createTailwindcssPatcher).toHaveBeenCalledTimes(1)
-    const call = createTailwindcssPatcher.mock.calls[0][0]
-    expect(call.basedir).toBe(baseDir)
-    expect(call.cacheDir).toBeUndefined()
-    expect(call.tailwindcss?.version).toBe(4)
-    expect(call.tailwindcss?.v4?.base).toBe(baseDir)
-    expect(call.tailwindcss?.v4?.cssEntries).toEqual(cssEntries)
+    expect(createTailwindcssPatcher).toHaveBeenCalledTimes(2)
+    const [callA, callB] = createTailwindcssPatcher.mock.calls.map(call => call[0])
+    expect(new Set([callA.basedir, callB.basedir])).toEqual(new Set([baseDir]))
+    expect(callA.cacheDir).toBeUndefined()
+    expect(callA.tailwindcss?.version).toBe(4)
+    expect(callA.tailwindcss?.v4?.base).toBe(baseDir)
+    expect(callA.tailwindcss?.v4?.cssEntries).toEqual(cssEntries)
     expect(patcher.majorVersion).toBe(4)
   })
 
@@ -350,17 +350,20 @@ describe('tailwindcss/v4/patcher helpers', () => {
     createTailwindcssPatcher.mockImplementation(options => options)
     const { createPatcherForBase } = await loadModule()
 
-    const patcher = createPatcherForBase('/workspace/app', ['/workspace/app/src/app.css'], {
+    const _patcher = createPatcherForBase('/workspace/app', ['/workspace/app/src/app.css'], {
       tailwindcss: undefined,
       tailwindcssPatcherOptions: { patch: { tailwindcss: {} } } as any,
       supportCustomLengthUnitsPatch: true,
       appType: 'taro',
     } as unknown as InternalUserDefinedOptions) as any
 
-    expect(patcher.tailwindcssPatcherOptions.patch.tailwindcss.v4).toEqual({
+    const firstCall = createTailwindcssPatcher.mock.calls[0]?.[0] ?? {}
+    const patchedV4 = firstCall.tailwindcssPatcherOptions?.patch?.tailwindcss?.v4
+    expect(patchedV4).toEqual({
       base: '/workspace/app',
       cssEntries: ['/workspace/app/src/app.css'],
     })
+    expect(patchedV4?.cssEntries?.length).toBe(1)
   })
 
   it('returns early for invalid tailwindcssPatcherOptions shapes', async () => {
@@ -623,7 +626,7 @@ describe('tailwindcss/v4/patcher helpers', () => {
     } as unknown as InternalUserDefinedOptions)
 
     expect(merged).toBeDefined()
-    expect(createTailwindcssPatcher).toHaveBeenCalledTimes(2)
+    expect(createTailwindcssPatcher).toHaveBeenCalledTimes(4)
     expect(logger.debug).toHaveBeenCalled()
 
     const classSet = await merged!.getClassSet()
