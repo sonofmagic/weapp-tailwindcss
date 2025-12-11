@@ -27,7 +27,7 @@ title: weapp-tw CLI 使用指南
 
 | 参数 | 默认值 | 含义 |
 | --- | --- | --- |
-| `--cwd <dir>` | 当前工作目录 | 指定要补丁的子包目录，等价于先 `cd`。 |
+| `--cwd <dir>` | `WEAPP_TW_PATCH_CWD` \| `INIT_CWD` \| `npm_config_local_prefix` \| 当前工作目录 | 指定要补丁的子包目录，等价于先 `cd`。默认会按顺序读取上述环境变量，避免在 `pnpm`/CI 里被 wrapper 覆盖成根目录。 |
 | `--record-target` | `true` | 默认记录本次打补丁对应的 `tailwindcss` 根路径到子包专属的 `node_modules/.cache/weapp-tailwindcss/<hash>/tailwindcss-target.json`，包含 `cwd`、Tailwind 路径、补丁版本与时间戳；如需关闭请传 `--record-target false`。 |
 | `--clear-cache` | `false` | 按需清理 `tailwindcss-patch` 缓存目录后再执行补丁。默认不清理，避免不必要的 IO 和 CI 侧效应。 |
 | `--workspace` | `false` | 批量扫描 workspace（`pnpm-lock.yaml`/`pnpm-workspace.yaml`/`workspaces`），逐个子包执行 patch 并输出“补丁/跳过/失败”状态。 |
@@ -74,5 +74,6 @@ npx weapp-tw tokens --format grouped-json --group-key absolute
 2. **如确实不需要追踪，可传 `--record-target false`**，避免生成额外 JSON。
 3. **看到自动重补丁/记录迁移提示**：确认日志里的 Tailwind 路径与子包一致，`pnpm --filter ... exec weapp-tw patch --cwd .` 或 `weapp-tw patch --workspace --cwd <repo-root>` 可避免 `INIT_CWD` 导致的跨包记录污染。
 4. **类名缺失**： 用 `weapp-tw extract` 或 `weapp-tw tokens --no-write` 辅助定位是哪段代码没有被 Tailwind `content` 收录。
+5. **需要强制指定根目录时**：在 monorepo 根执行 `WEAPP_TW_PATCH_CWD=$PWD weapp-tw patch --workspace`，可覆盖外层脚本设置的 `INIT_CWD`，确保一次性为所有子包补丁并写入各自的缓存记录。
 
 配合这些命令，可以更直观地观察 Tailwind 依赖解析与补丁状态，减少“rpx 被当成颜色” 等由于上下游不一致导致的问题。

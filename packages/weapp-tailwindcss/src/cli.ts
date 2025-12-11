@@ -14,6 +14,7 @@ import {
   readStringArrayOption,
   readStringOption,
   resolveCliCwd,
+  resolvePatchDefaultCwd,
   toBoolean,
 } from './cli/helpers'
 import {
@@ -64,7 +65,13 @@ const mountOptions: TailwindcssPatchCliMountOptions = {
     install: {
       name: 'patch',
       aliases: ['install'],
+      appendDefaultOptions: false,
       optionDefs: [
+        {
+          flags: '--cwd <dir>',
+          description: 'Working directory',
+          config: { default: resolvePatchDefaultCwd() },
+        },
         {
           flags: '--record-target',
           description:

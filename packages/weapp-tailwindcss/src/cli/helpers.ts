@@ -90,6 +90,30 @@ export function resolveCliCwd(value: unknown): string | undefined {
   return path.isAbsolute(raw) ? path.normalize(raw) : path.resolve(process.cwd(), raw)
 }
 
+/**
+ * Resolve default working directory for `weapp-tw patch`.
+ * Prefer explicit env overrides to avoid cross-package INIT_CWD pollution.
+ */
+export function resolvePatchDefaultCwd(currentCwd = process.cwd()) {
+  const candidates = [
+    process.env.WEAPP_TW_PATCH_CWD,
+    process.env.INIT_CWD,
+    process.env.npm_config_local_prefix,
+  ]
+
+  for (const candidate of candidates) {
+    if (!candidate) {
+      continue
+    }
+    const normalized = path.isAbsolute(candidate)
+      ? path.normalize(candidate)
+      : path.resolve(currentCwd, candidate)
+    return normalized
+  }
+
+  return path.normalize(currentCwd)
+}
+
 export async function ensureDir(dir: string) {
   await mkdir(dir, { recursive: true })
 }
