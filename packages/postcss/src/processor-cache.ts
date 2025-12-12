@@ -2,6 +2,7 @@ import type { ProcessOptions, Processor } from 'postcss'
 import type { StyleProcessingPipeline } from './pipeline'
 import type { IStyleHandlerOptions } from './types'
 import postcss from 'postcss'
+import { fingerprintOptions } from './fingerprint'
 import { createStylePipeline } from './pipeline'
 
 function createProcessOptions(options: IStyleHandlerOptions): ProcessOptions {
@@ -13,7 +14,7 @@ function createProcessOptions(options: IStyleHandlerOptions): ProcessOptions {
 
 export class StyleProcessorCache {
   private readonly pipelineCache = new WeakMap<IStyleHandlerOptions, StyleProcessingPipeline>()
-  private readonly processOptionsCache = new WeakMap<IStyleHandlerOptions, { value: ProcessOptions, source: unknown }>()
+  private readonly processOptionsCache = new WeakMap<IStyleHandlerOptions, { value: ProcessOptions, fingerprint?: string | undefined }>()
   private readonly processorCache = new WeakMap<IStyleHandlerOptions, Processor>()
 
   getPipeline(options: IStyleHandlerOptions) {
@@ -27,11 +28,12 @@ export class StyleProcessorCache {
 
   getProcessOptions(options: IStyleHandlerOptions): ProcessOptions {
     const source = options.postcssOptions?.options
+    const fingerprint = source ? fingerprintOptions(source) : undefined
     const cached = this.processOptionsCache.get(options)
 
-    if (!cached || cached.source !== source) {
+    if (!cached || cached.fingerprint !== fingerprint) {
       const created = createProcessOptions(options)
-      this.processOptionsCache.set(options, { value: created, source })
+      this.processOptionsCache.set(options, { value: created, fingerprint })
       return { ...created }
     }
 
