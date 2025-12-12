@@ -2,6 +2,7 @@
 import type { Declaration, Plugin, PluginCreator, Rule } from 'postcss'
 import type { IStyleHandlerOptions } from '../types'
 import { defu } from '@weapp-tailwindcss/shared'
+import { normalizeTailwindcssRpxDeclaration } from '../compat/tailwindcss-rpx'
 import { normalizeTailwindcssV4Declaration } from '../compat/tailwindcss-v4'
 import { shouldRemoveEmptyRuleForUniAppX } from '../compat/uni-app-x'
 import { postcssPlugin } from '../constants'
@@ -368,7 +369,10 @@ const postcssWeappTailwindcssPostPlugin: PostcssWeappTailwindcssRenamePlugin = (
   }
 
   if (enableMainChunkTransforms) {
-    p.DeclarationExit = decl => normalizeTailwindcssV4Declaration(decl)
+    p.DeclarationExit = (decl) => {
+      normalizeTailwindcssRpxDeclaration(decl, { majorVersion: opts.majorVersion })
+      normalizeTailwindcssV4Declaration(decl)
+    }
 
     p.AtRuleExit = (atRule) => {
       /**

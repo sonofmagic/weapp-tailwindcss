@@ -180,7 +180,7 @@ view,text,:after,:before,::backdrop {
 }
 
 .text-_b100rpx_B {
-  color: 100rpx
+  font-size: 100rpx
 }
 
 .text-red-700 {

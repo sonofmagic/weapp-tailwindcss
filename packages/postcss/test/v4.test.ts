@@ -439,4 +439,46 @@ page{--status-bar-height:25px;--top-window-height:0px;--window-top:0px;--window-
     expect(css).toMatchSnapshot()
     await fs.writeFile(path.resolve(__dirname, './fixtures/css/v4.1.10.out.css'), css, 'utf8')
   })
+
+  it('recovers misparsed arbitrary lengths when tailwind patch is missing', async () => {
+    const styleHandler = createStyleHandler({
+      isMainChunk: true,
+    })
+    const code = `
+.border-_b10rpx_B { border-style: var(--tw-border-style); border-color: 10rpx; }
+.text-_b32rpx_B { color: 32rpx; }
+.bg-_b10rpx_B { background-color: 10rpx; }
+.outline-_b5rpx_B { outline-color: 5rpx; }
+.ring-_b8rpx_B { --tw-ring-color: 8rpx; }
+`
+    const { css } = await styleHandler(code, {
+      isMainChunk: true,
+      majorVersion: 4,
+    })
+
+    expect(css).toContain('border-width: 10rpx')
+    expect(css).not.toContain('border-color: 10rpx')
+    expect(css).toContain('font-size: 32rpx')
+    expect(css).not.toContain('color: 32rpx')
+    expect(css).toContain('background-size: 10rpx')
+    expect(css).not.toContain('background-color: 10rpx')
+    expect(css).toContain('outline-width: 5rpx')
+    expect(css).not.toContain('outline-color: 5rpx')
+    expect(css).toContain('--tw-ring-offset-width: 8rpx')
+    expect(css).not.toContain('--tw-ring-color: 8rpx')
+
+    const v3 = await styleHandler(code, {
+      isMainChunk: true,
+      majorVersion: 3,
+    })
+    expect(v3.css).toContain('border-width: 10rpx')
+    expect(v3.css).toContain('font-size: 32rpx')
+
+    const v2jit = await styleHandler(code, {
+      isMainChunk: true,
+      majorVersion: 2,
+    })
+    expect(v2jit.css).toContain('border-width: 10rpx')
+    expect(v2jit.css).toContain('font-size: 32rpx')
+  })
 })
