@@ -88,7 +88,7 @@
     "@tailwindcss/forms": "^0.5.7",
     "@tailwindcss/line-clamp": "^0.4.4",
     "@tailwindcss/typography": "^0.5.10",
-    "@vue/runtime-core": "^3.5.22",
+    "@vue/runtime-core": "^3.5.25",
     "@weapp-tailwindcss/cva": "workspace:*",
     "@weapp-tailwindcss/merge-v3": "workspace:*",
     "@weapp-tailwindcss/typography": "workspace:*",

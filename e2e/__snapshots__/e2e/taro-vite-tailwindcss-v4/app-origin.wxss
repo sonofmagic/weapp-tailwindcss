@@ -1,4 +1,3 @@
-/*! tailwindcss v4.1.17 | MIT License | https://tailwindcss.com */
 ::-webkit-backdrop {
   --tw-gradient-position: initial;
   --tw-gradient-from: rgba(0, 0, 0, 0);

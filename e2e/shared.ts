@@ -170,6 +170,12 @@ function extractCssImports(source: string): string[] {
   return imports
 }
 
+const TAILWIND_BANNER = /^\s*\/\*! tailwindcss v[\d.]+ \| MIT License \| https:\/\/tailwindcss\.com \*\/\s*/i
+
+function stripTailwindBanner(source: string) {
+  return source.replace(TAILWIND_BANNER, '')
+}
+
 async function formatCss(css: string) {
   return prettier.format(css, {
     parser: 'css',
@@ -202,14 +208,15 @@ export async function collectCssSnapshots(projectRoot: string, cssRelativePath: 
     visited.add(normalizedPath)
 
     const source = await fs.readFile(normalizedPath, 'utf8')
-    const formatted = await formatCss(source)
+    const withoutBanner = stripTailwindBanner(source)
+    const formatted = await formatCss(withoutBanner)
 
     snapshots.push({
       fileName: snapshotName,
       content: formatted,
     })
 
-    const imports = extractCssImports(source)
+    const imports = extractCssImports(withoutBanner)
     for (const request of imports) {
       const resolved = resolveCssImport(projectRoot, normalizedPath, request)
       if (!resolved) {
