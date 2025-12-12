@@ -26,6 +26,7 @@ const tailwindcssSidebar: SidebarConfig = [
       'tailwindcss/history/history-css-in-js',
       'tailwindcss/history/history-utility-first',
       'tailwindcss/history/history-headless-tokens',
+      'tailwindcss/history/history-future-generative-css',
     ],
   },
   {

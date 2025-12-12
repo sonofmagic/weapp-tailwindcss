@@ -1,0 +1,86 @@
+---
+id: history-future-generative-css
+title: 生成式 CSS / 原生能力融合
+description: 展望 @layer / @container / @scope / @property 与生成式流水线
+slug: /tailwindcss/history/future-generative-css
+sidebar_position: 8
+---
+
+## 要点
+
+- 核心思想：CSS 将越来越生成式——tokens/设计意图 → 构建器/AI 生成规则 → @layer/@scope 限界 → 运行时仅保留需要的原子或组件级片段。
+- 原生能力上收：`@container`、`:has()`、`@scope`、`@property`、`color-mix()` 让布局/状态/主题更多在 CSS 层解决，减少 JS 占用。
+- 规则协同：`@layer` 控制覆盖顺序，`@scope` 限制影响面，`@container` 驱动响应式组件，`@property` 让自定义属性可动画、可类型化。
+- 生态趋势：Tailwind/UnoCSS 等生成器与原生新特性融合，JIT/摇树继续演化；AI 生成需要「白名单 tokens + 层级约束 + lint」闭环。
+
+## 未来能力组合（示意）
+
+```css title="future.css"
+@layer reset, theme, components, utilities;
+
+@layer theme {
+  @property --radius-lg {
+    syntax: '<length>';
+    inherits: false;
+    initial-value: 16px;
+  }
+
+  :root {
+    --brand: color-mix(in srgb, #0ea5e9 60%, #111827 40%);
+  }
+}
+
+@layer components {
+  @scope (.card) {
+    .card {
+      border-radius: var(--radius-lg);
+      border: 1px solid color-mix(in srgb, var(--brand) 30%, #e5e7eb 70%);
+      background: white;
+      transition: box-shadow 150ms ease, transform 150ms ease;
+    }
+
+    @container style(--wide: min-width: 640px) {
+      .card { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+    }
+
+    .card:has(button:focus-visible) { box-shadow: 0 12px 40px rgba(0,0,0,0.08); }
+  }
+}
+```
+
+- `@layer`：把生成产物分层，便于 merge/覆盖与分析。
+- `@scope`：限制作用域，避免全局污染；可以与组件入口 class 对齐。
+- `@container`：让组件按父容器而非视口响应式，适合卡片/区块。
+- `@property`：声明式类型化，配合 tokens/动画避免 “数字魔法值”。
+
+## 生成式流水线设想
+
+1. 设计源：设计稿/Design Token/接口协议输出 JSON（颜色、间距、阴影、配色模式）。
+2. 生成阶段：脚本或 AI 根据 tokens + 组件意图生成 `@layer theme/components/utilities`，只产出命中的规则；原子类生成器继续提供 JIT，辅以 `content` 精准扫描。
+3. 约束阶段：lint 检查 `@scope` 边界、动态类白名单、`@property` 类型；merge 规则防止类冲突。
+4. 运行时：`@container`/`:has()`/`color-mix()` 在浏览器内完成适配，JS 仅负责交互或数据绑定。
+5. 反馈：覆盖率/体积监控回写到生成器，调整 tokens 或 layer 顺序。
+
+> 这条链路的目标是「声明意图→生成→约束→运行」，开发者关注 tokens 与交互，而不是手写长链选择器。
+
+## 对现有工具链的启示
+
+- Tailwind/UnoCSS：保留原子类生态，但补充 `@layer`/`@scope` 输出选项，配合容器查询 preset；JIT 应能理解 `@property`/`color-mix()`。
+- RSC/小程序场景：通过预编译生成层化 CSS，运行时只使用容器查询/自定义属性，避免 JS 注水。
+- 设计系统：tokens 需要类型（color, length, angle），与 `@property` 对齐；AI 生成 prompt 应包含「可用 tokens」「允许的 layer」清单。
+
+## 更多未来方向与落地思考
+
+- 多维适配：容器查询 + 视口查询 + 环境查询（prefers-reduced-motion、HDR/dynamic-range）组合，减少 JS 监听 resize 的需求。
+- 层级版本化：把 `@layer` 视作 “样式 API”，为主题/品牌定制留出独立层，避免升级时破坏核心组件层。
+- 作用域化 Islands：`@scope` 与路由/微前端边界绑定，配合 `:has()` 处理局部交互，降低全局选择器对不同应用的干扰。
+- 类型化 tokens：通过 `@property` 为长度/颜色/角度声明类型，结合 design-token JSON schema，让生成器/AI 在编译期就能发现非法取值。
+- CSS Houdini 与动画：自定义属性 + paint/worklet 组合，替代 JS 动画；配合 `view-transition` 等 API，把 UI 过渡交给浏览器管线。
+- 生成式护栏：为 AI/脚本提供 “允许的 tokens + 层级 + scope 边界” 的提示词或配置，输出后再用 lint/visual diff 校验，形成闭环。
+
+## 进一步阅读
+
+- https://developer.mozilla.org/en-US/docs/Web/CSS/@scope
+- https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_Container_Queries
+- https://developer.mozilla.org/en-US/docs/Web/CSS/@property
+- https://tailwindcss.com/blog/tailwindcss-v4-alpha
