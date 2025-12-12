@@ -43,6 +43,7 @@ const LEGACY_WEBKIT_SPACING_PROPS = new Set([
 ])
 
 const VAR_REFERENCE_PATTERN = /var\(/i
+const SELECTOR_TRANSFORM_OPTIONS = normalizeTransformOptions()
 
 interface TransformContext {
   rule: Rule
@@ -388,7 +389,7 @@ function createRuleTransformer(options: IStyleHandlerOptions): RuleTransformer {
     }
 
     try {
-      parser.transformSync(rule, normalizeTransformOptions())
+      parser.transformSync(rule, SELECTOR_TRANSFORM_OPTIONS)
     }
     finally {
       context = undefined

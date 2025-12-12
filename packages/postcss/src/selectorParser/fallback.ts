@@ -12,6 +12,7 @@ const fallbackRemoveCache = new WeakMap<object, {
   transform: RuleTransformer
 }>()
 const fallbackDefaultKey: object = {}
+const FALLBACK_TRANSFORM_OPTIONS = normalizeTransformOptions()
 
 /**
  * 获取用于小程序兼容性处理的解析器，内部会缓存实例并移除不支持的选择器。
@@ -95,7 +96,7 @@ export function getFallbackRemove(_rule?: Rule, options?: IStyleHandlerOptions) 
     const transform: RuleTransformer = (targetRule: Rule) => {
       currentRule = targetRule
       try {
-        rawTransformSync(targetRule, normalizeTransformOptions())
+        rawTransformSync(targetRule, FALLBACK_TRANSFORM_OPTIONS)
       }
       finally {
         currentRule = undefined
@@ -103,19 +104,21 @@ export function getFallbackRemove(_rule?: Rule, options?: IStyleHandlerOptions) 
     }
 
     parser.transformSync = ((input: unknown, opts?: ParserTransformOptions) => {
+      const transformOptions = opts ? normalizeTransformOptions(opts) : FALLBACK_TRANSFORM_OPTIONS
+
       if (input && typeof input === 'object' && 'type' in (input as Record<string, unknown>)) {
         const maybeRule = input as Record<string, unknown>
         if (maybeRule.type === 'rule') {
           currentRule = input as Rule
           try {
-            return rawTransformSync(input as string | Rule, normalizeTransformOptions(opts))
+            return rawTransformSync(input as string | Rule, transformOptions)
           }
           finally {
             currentRule = undefined
           }
         }
       }
-      return rawTransformSync(input as string | Rule, opts)
+      return rawTransformSync(input as string | Rule, transformOptions)
     }) as typeof parser.transformSync
 
     entry = {

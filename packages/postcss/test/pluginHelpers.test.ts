@@ -1,3 +1,4 @@
+import type { Plugin } from 'postcss'
 import type { IStyleHandlerOptions } from '@/types'
 import postcss from 'postcss'
 import { afterEach, beforeAll, describe, expect, it, vi } from 'vitest'
@@ -69,7 +70,7 @@ describe('getPxTransformPlugin', () => {
         designWidth: 1080,
         replace: false,
       },
-    }))
+    })) as Plugin | null
 
     expect(pxMock).toHaveBeenCalledTimes(1)
     expect(pxMock).toHaveBeenCalledWith(expect.objectContaining({
@@ -95,14 +96,14 @@ describe('getRemTransformPlugin', () => {
     const plugin = getRemTransformPlugin(createOptions({
       rem2rpx: {
         rootValue: 16,
-        processorStage: 'BeforeExit',
+        processorStage: 'Once',
       },
-    }))
+    })) as Plugin | null
 
     expect(remMock).toHaveBeenCalledTimes(1)
     expect(remMock).toHaveBeenCalledWith(expect.objectContaining({
       rootValue: 16,
-      processorStage: 'BeforeExit',
+      processorStage: 'Once',
     }))
     expect(plugin?.postcssPlugin).toBe('mock-rem')
   })
@@ -110,7 +111,7 @@ describe('getRemTransformPlugin', () => {
   it('applies OnceExit processor stage when missing', () => {
     remMock.mockImplementation(options => ({ postcssPlugin: 'mock-rem', options }))
 
-    const plugin = getRemTransformPlugin(createOptions({ rem2rpx: true }))
+    const plugin = getRemTransformPlugin(createOptions({ rem2rpx: true })) as Plugin | null
 
     expect(remMock).toHaveBeenCalledTimes(1)
     expect(remMock).toHaveBeenCalledWith(expect.objectContaining({
@@ -136,7 +137,7 @@ describe('getCalcPlugin', () => {
         includeCustomProperties: ['--keep'],
         precision: 6,
       },
-    }))
+    })) as Plugin | null
 
     expect(calcMock).toHaveBeenCalledTimes(1)
     expect(calcMock).toHaveBeenCalledWith({ precision: 6 })
@@ -155,11 +156,11 @@ describe('getCustomPropertyCleaner', () => {
       cssCalc: {
         includeCustomProperties: [/^--tw-/],
       },
-    }))
+    })) as Plugin | null
     expect(plugin).not.toBeNull()
 
     const root = postcss.parse(':root{--foo:var(--other);--foo:var(--tw-color);}')
-    plugin!.OnceExit?.(root)
+    plugin!.OnceExit?.(root, {} as any)
     expect(root.toString()).toBe(':root{--foo:var(--other);}')
   })
 })
