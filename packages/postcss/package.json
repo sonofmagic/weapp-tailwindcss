@@ -42,6 +42,7 @@
     "dev": "tsup --watch --sourcemap",
     "build": "tsup",
     "test": "vitest run",
+    "bench": "vitest bench",
     "test:dev": "vitest",
     "release": "pnpm publish",
     "lint": "eslint .",

@@ -1,0 +1,50 @@
+{
+  "command": "pnpm test:bench packages/postcss/test/bench/style-handler.bench.ts",
+  "runner": "vitest bench v4.0.15",
+  "file": "packages/postcss/test/bench/style-handler.bench.ts",
+  "results": [
+    {
+      "name": "tailwind v4 main chunk",
+      "hz": 441.77,
+      "minMs": 1.8632,
+      "maxMs": 3.3745,
+      "meanMs": 2.2636,
+      "p75Ms": 2.4403,
+      "p99Ms": 3.1385,
+      "p995Ms": 3.225,
+      "p999Ms": 3.3745,
+      "relativeMarginOfError": "±1.89%",
+      "samples": 221
+    },
+    {
+      "name": "tailwind v3 main chunk",
+      "hz": 872.95,
+      "minMs": 0.9596,
+      "maxMs": 2.153,
+      "meanMs": 1.1455,
+      "p75Ms": 1.178,
+      "p99Ms": 2.0748,
+      "p995Ms": 2.1302,
+      "p999Ms": 2.153,
+      "relativeMarginOfError": "±1.94%",
+      "samples": 437
+    },
+    {
+      "name": "rpx arbitrary value normalization (v2 jit)",
+      "hz": 975.46,
+      "minMs": 0.9116,
+      "maxMs": 1.913,
+      "meanMs": 1.0252,
+      "p75Ms": 1.0305,
+      "p99Ms": 1.7312,
+      "p995Ms": 1.8215,
+      "p999Ms": 1.913,
+      "relativeMarginOfError": "±1.36%",
+      "samples": 488
+    }
+  ],
+  "summary": [
+    "rpx arbitrary value normalization (v2 jit): 1.12x faster than tailwind v3 main chunk",
+    "rpx arbitrary value normalization (v2 jit): 2.21x faster than tailwind v4 main chunk"
+  ]
+}

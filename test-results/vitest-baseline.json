@@ -1,0 +1,32 @@
+{
+  "command": "pnpm test",
+  "startAt": "01:27:49",
+  "durationSeconds": {
+    "vitestReported": 11.22,
+    "wallClock": 12.021,
+    "user": 100.12,
+    "system": 18.07
+  },
+  "vitest": {
+    "files": {
+      "passed": 197,
+      "skipped": 5,
+      "total": 202
+    },
+    "tests": {
+      "passed": 1331,
+      "skipped": 44,
+      "total": 1375
+    }
+  },
+  "coverage": {
+    "tool": "v8",
+    "statements": 85.17,
+    "branches": 76.07,
+    "functions": 90.19,
+    "lines": 85.28
+  },
+  "notes": [
+    "Warnings observed: PostCSS missing `from` option and Tailwind `content` empty/no utilities in some suites."
+  ]
+}

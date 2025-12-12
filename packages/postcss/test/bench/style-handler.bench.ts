@@ -1,0 +1,41 @@
+import fs from 'fs-extra'
+import path from 'pathe'
+import { bench, describe } from 'vitest'
+import { createStyleHandler } from '@/index'
+
+const v4Code = fs.readFileSync(path.resolve(__dirname, '../fixtures/css/v4.1.2.css'), 'utf8')
+const v3Code = fs.readFileSync(path.resolve(__dirname, '../fixtures/css/v3.css'), 'utf8')
+const rpxCode = `
+.border-_b10rpx_B { border-style: var(--tw-border-style); border-color: 10rpx; }
+.text-_b32rpx_B { color: 32rpx; }
+.bg-_b10rpx_B { background-color: 10rpx; }
+.outline-_b5rpx_B { outline-color: 5rpx; }
+.ring-_b8rpx_B { --tw-ring-color: 8rpx; }
+`
+
+const v4Handler = createStyleHandler({ isMainChunk: true })
+const v3Handler = createStyleHandler({ isMainChunk: true })
+const v2Handler = createStyleHandler({ isMainChunk: true })
+
+describe('style handler benchmark', () => {
+  bench('tailwind v4 main chunk', async () => {
+    await v4Handler(v4Code, {
+      isMainChunk: true,
+      majorVersion: 4,
+    })
+  })
+
+  bench('tailwind v3 main chunk', async () => {
+    await v3Handler(v3Code, {
+      isMainChunk: true,
+      majorVersion: 3,
+    })
+  })
+
+  bench('rpx arbitrary value normalization (v2 jit)', async () => {
+    await v2Handler(rpxCode, {
+      isMainChunk: true,
+      majorVersion: 2,
+    })
+  })
+})
