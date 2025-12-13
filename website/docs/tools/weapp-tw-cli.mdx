@@ -12,6 +12,7 @@ title: weapp-tw CLI 使用指南
 | 强制刷新补丁缓存后再打补丁 | `npx weapp-tw patch --clear-cache` | 默认不会清理缓存；仅在怀疑缓存导致补丁未生效或版本不一致时使用。 |
 | 在 monorepo 针对子包补丁 | `pnpm --filter <pkg> exec weapp-tw patch --cwd .` | `pnpm` 场景建议显式传 `--cwd .`，每个子包只写入自己的缓存，避免 hoist 后的 `node_modules` 不一致。 |
 | 一键扫描 workspace 并补丁 | `weapp-tw patch --workspace --cwd <repo-root>` | 自动读取 `pnpm-lock.yaml`/`pnpm-workspace.yaml` 批量补丁，跳过未安装 Tailwind 的包，并输出每个子包状态。 |
+| 查看补丁应用/缺失情况 | `npx weapp-tw status --json` | 复用 `tailwindcss-patch` 的状态检查，输出各补丁是否已应用，可配合 `--cwd` 指定子包。 |
 | 收集 Tailwind 产出的类名缓存 | `npx weapp-tw extract --css src/app.css` | 适用于 Tailwind v3/v4，v4 需传入 `--css`，生成 `.tw-patch/tw-class-cache.*`，支持 `--output`/`--format`。 |
 | 输出 Tailwind token 和定位信息 | `npx weapp-tw tokens --format grouped-json` | 调试 `content` 配置时非常有用，可与 `--no-write` 一起纯输出。 |
 
@@ -67,6 +68,17 @@ npx weapp-tw tokens --format grouped-json --group-key absolute
 - `--no-write`：终端预览，不落盘；默认写入 `.tw-patch/tw-token-report.json`。
 
 输出的数据包含扫描到的文件、类名 token、出现位置（行列）、以及被跳过的文件列表。
+
+## `status` 子命令
+
+```bash
+npx weapp-tw status --cwd demo/native-mina
+npx weapp-tw status --json
+```
+
+- 复用 `tailwindcss-patch` 的状态检查，按补丁列出 `applied`/`not-applied`/`skipped`/`unsupported`。
+- `--cwd`：指定要检查的子包目录，默认沿用 `patch` 的自动推断。
+- `--json`：输出 JSON 报告，方便 CI 或脚本读取。
 
 ## 快速排查指引
 

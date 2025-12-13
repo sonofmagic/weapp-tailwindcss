@@ -1,139 +1,28 @@
-import type {
-  TailwindcssPatchCliMountOptions,
-  TailwindcssPatchCommand,
-  TailwindcssPatchCommandHandler,
-} from 'tailwindcss-patch'
 import type { CommonCommandOptions } from './cli/types'
 import process from 'node:process'
 import semver from 'semver'
 import { createTailwindcssPatchCli } from 'tailwindcss-patch'
-import { clearTailwindcssPatcherCache } from '@/context'
 import { formatOutputPath } from './cli/context'
 import {
   commandAction,
   readStringArrayOption,
   readStringOption,
   resolveCliCwd,
-  resolvePatchDefaultCwd,
   toBoolean,
 } from './cli/helpers'
-import { buildExtendLengthUnitsOverride } from './cli/patch-options'
+import { mountOptions } from './cli/mount-options'
 import {
   DEFAULT_VSCODE_ENTRY_OUTPUT,
   generateVscodeIntellisenseEntry,
 } from './cli/vscode-entry'
-import { patchWorkspace } from './cli/workspace'
 import { WEAPP_TW_REQUIRED_NODE_VERSION } from './constants'
 import { logger } from './logger'
-import { createPatchTargetRecorder, logTailwindcssTarget } from './tailwindcss/targets'
 
 type VscodeEntryCommandOptions = CommonCommandOptions & {
   css?: string
   force?: boolean | string
   output?: string | boolean
   source?: string | string[]
-}
-
-function handleCliError(error: unknown) {
-  if (error instanceof Error) {
-    logger.error(error.message)
-    if (error.stack && process.env.WEAPP_TW_DEBUG === '1') {
-      logger.error(error.stack)
-    }
-  }
-  else {
-    logger.error(String(error))
-  }
-}
-
-function withCommandErrorHandling<TCommand extends TailwindcssPatchCommand>(
-  handler: TailwindcssPatchCommandHandler<TCommand>,
-): TailwindcssPatchCommandHandler<TCommand> {
-  return (async (ctx, next) => {
-    try {
-      return await handler(ctx, next)
-    }
-    catch (error) {
-      handleCliError(error)
-      process.exitCode = 1
-      return undefined as ReturnType<TailwindcssPatchCommandHandler<TCommand>>
-    }
-  }) as TailwindcssPatchCommandHandler<TCommand>
-}
-
-const mountOptions: TailwindcssPatchCliMountOptions = {
-  commandOptions: {
-    install: {
-      name: 'patch',
-      aliases: ['install'],
-      appendDefaultOptions: false,
-      optionDefs: [
-        {
-          flags: '--cwd <dir>',
-          description: 'Working directory',
-          config: { default: resolvePatchDefaultCwd() },
-        },
-        {
-          flags: '--record-target',
-          description:
-            'Write tailwindcss target metadata (node_modules/.cache/weapp-tailwindcss/tailwindcss-target.json). Pass "--record-target false" to skip.',
-          config: { default: true },
-        },
-        {
-          flags: '--clear-cache',
-          description: 'Clear tailwindcss-patch cache before patch (opt-in)',
-        },
-        {
-          flags: '--workspace',
-          description: 'Scan pnpm workspace packages and patch each Tailwind CSS dependency',
-        },
-      ],
-    },
-  },
-  commandHandlers: {
-    install: withCommandErrorHandling<'install'>(async (ctx) => {
-      const shouldClearCache = toBoolean((ctx as any).args.clearCache, false)
-      const shouldRecordTarget = toBoolean((ctx as any).args.recordTarget, true)
-      const runWorkspace = toBoolean((ctx as any).args.workspace, false)
-      if (runWorkspace) {
-        await patchWorkspace({
-          cwd: ctx.cwd,
-          clearCache: shouldClearCache,
-          recordTarget: shouldRecordTarget,
-        })
-        return
-      }
-      const patchOptions = await ctx.loadPatchOptions()
-      const extendLengthUnitsOverride = buildExtendLengthUnitsOverride(patchOptions)
-      const patcher = extendLengthUnitsOverride
-        ? await ctx.createPatcher(extendLengthUnitsOverride)
-        : await ctx.createPatcher()
-      if (shouldClearCache) {
-        await clearTailwindcssPatcherCache(patcher, { removeDirectory: true })
-      }
-      const recorder = createPatchTargetRecorder(ctx.cwd, patcher, {
-        source: 'cli',
-        cwd: ctx.cwd,
-        recordTarget: shouldRecordTarget,
-        alwaysRecord: true,
-      })
-      if (recorder?.message) {
-        logger.info(recorder.message)
-      }
-      logTailwindcssTarget('cli', patcher, ctx.cwd)
-      await patcher.patch()
-      if (recorder?.onPatched) {
-        const recordPath = await recorder.onPatched()
-        if (recordPath) {
-          logger.info(`记录 weapp-tw patch 目标 -> ${formatOutputPath(recordPath, ctx.cwd)}`)
-        }
-      }
-      logger.success('Tailwind CSS 运行时补丁已完成。')
-    }),
-    extract: withCommandErrorHandling<'extract'>(async (_ctx, next) => next()),
-    tokens: withCommandErrorHandling<'tokens'>(async (_ctx, next) => next()),
-    init: withCommandErrorHandling<'init'>(async (_ctx, next) => next()),
-  },
 }
 
 process.title = 'node (weapp-tailwindcss)'
