@@ -1,5 +1,15 @@
 # @weapp-tailwindcss/postcss
 
+## 2.0.8
+
+### Patch Changes
+
+- [`07a0d5b`](https://github.com/sonofmagic/weapp-tailwindcss/commit/07a0d5b8b27ebd52b4f9363f004f80d17c3d1f2e) Thanks [@sonofmagic](https://github.com/sonofmagic)! - 为 postcss 模块补充中文覆盖率用例，覆盖 html 转换、mp 预处理、兼容性工具与选择器解析的边界路径，确保源码分支全部被校验。
+
+- [`8bd4842`](https://github.com/sonofmagic/weapp-tailwindcss/commit/8bd4842871a96dadb2b85139ffded7f61c99ca01) Thanks [@sonofmagic](https://github.com/sonofmagic)! - 优化样式处理器缓存：以 WeakMap 和引用缓存替换字符串指纹查找，减少 options 合并和管线复用的热路径开销，并复用选择器解析配置以降低分配。基准显示 v3/v4 主块和 rpx 处理吞吐均有明显提升。
+
+- [`74ed4a3`](https://github.com/sonofmagic/weapp-tailwindcss/commit/74ed4a324e528d67d5f4fc22d4cf704b0c246cb8) Thanks [@sonofmagic](https://github.com/sonofmagic)! - 修复 tailwindcss v2/v3/v4 中任意 rpx 值被误判为颜色的问题，确保 text/border/bg/outline/ring 输出正确的尺寸样式；补充 Vitest bench 覆盖典型转换场景以跟踪性能。
+
 ## 2.0.7
 
 ### Patch Changes
