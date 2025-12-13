@@ -387,7 +387,7 @@ text,
 .divide-_b3rpx_B > view + text,
 .divide-_b3rpx_B > text + view,
 .divide-_b3rpx_B > text + text {
-  border-color: 3rpx;
+  border-width: 3rpx;
 }
 .overflow-hidden {
   overflow: hidden;
