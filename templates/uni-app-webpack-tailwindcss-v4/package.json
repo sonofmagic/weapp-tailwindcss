@@ -93,7 +93,7 @@
     "@dcloudio/vue-cli-plugin-uni-optimize": "2.0.2-4070620250821001",
     "@dcloudio/webpack-uni-mp-loader": "2.0.2-4070620250821001",
     "@dcloudio/webpack-uni-pages-loader": "2.0.2-4070620250821001",
-    "@tailwindcss/postcss": "^4.1.17",
+    "@tailwindcss/postcss": "^4.1.18",
     "@vue/cli-plugin-babel": "~5.0.9",
     "@vue/cli-plugin-typescript": "~5.0.9",
     "@vue/cli-service": "~5.0.9",
@@ -103,11 +103,11 @@
     "postcss": "^8.5.6",
     "postcss-comment": "^2.0.0",
     "postcss-loader": "^8.1.1",
-    "tailwindcss": "^4.1.17",
+    "tailwindcss": "^4.1.18",
     "typescript": "~5.9.3",
     "vue-template-compiler": ">= 2.6.14 < 2.7",
     "weapp-ide-cli": "^4.1.1",
-    "weapp-tailwindcss": "^4.8.11"
+    "weapp-tailwindcss": "^4.8.12"
   },
   "browserslist": [
     "Android >= 4.4",

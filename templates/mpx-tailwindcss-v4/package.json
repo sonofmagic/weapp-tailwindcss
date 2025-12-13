@@ -37,7 +37,7 @@
     "@mpxjs/vue-cli-plugin-mpx": "^2.2.2",
     "@mpxjs/vue-cli-plugin-mpx-typescript": "^2.2.2",
     "@mpxjs/webpack-plugin": "^2.10.14",
-    "@tailwindcss/postcss": "^4.1.17",
+    "@tailwindcss/postcss": "^4.1.18",
     "@vue/cli-service": "~5.0.9",
     "autoprefixer": "^10.4.21",
     "eslint": "^9.34.0",
@@ -45,10 +45,10 @@
     "process": "^0.11.10",
     "stylus": "^0.64.0",
     "stylus-loader": "^8.1.2",
-    "tailwindcss": "^4.1.17",
+    "tailwindcss": "^4.1.18",
     "typescript": "^5.9.3",
     "weapp-ide-cli": "^4.1.1",
-    "weapp-tailwindcss": "^4.8.11",
+    "weapp-tailwindcss": "^4.8.12",
     "webpack": "^5.101.3"
   },
   "browserslist": [
