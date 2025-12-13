@@ -73,6 +73,86 @@ export const button = style({
 })
 ```
 
+- **Panda CSS（编译期 / 零运行时）**：Chakra 团队推出的 TS-first 原子化方案，`css`/`cva`/`recipes` API 将设计 Token 编译成静态类名。
+
+```tsx title="Panda CSS recipes"
+import { css, cva } from '../styled-system/css'
+
+const badge = css({
+  borderRadius: 'full',
+  fontWeight: 'semibold',
+  px: '3',
+  py: '1.5',
+  bg: 'blue.50',
+  color: 'blue.700',
+})
+
+const button = cva({
+  base: { borderRadius: 'xl', fontWeight: 'semibold', px: '4', py: '3' },
+  variants: {
+    intent: {
+      solid: { bg: 'blue.600', color: 'white', _hover: { bg: 'blue.700' } },
+      ghost: { color: 'blue.700', border: '1px solid #bfdbfe', bg: 'transparent' },
+    },
+  },
+})
+
+export function PandaSection() {
+  return (
+    <section className={css({ display: 'flex', gap: '3', alignItems: 'center' })}>
+      <span className={badge}>token 驱动</span>
+      <button className={button({ intent: 'solid' })}>Panda Button</button>
+    </section>
+  )
+}
+```
+
+- **styled-jsx（Next.js 内置，编译期作用域 + 轻量运行时注入）**：JSX 内联 `<style jsx>`，Babel 在编译时生成作用域类名，运行时插入局部 style。
+
+```tsx title="styled-jsx 局部作用域"
+export default function StyledJsxCard({ title }: { title: string }) {
+  return (
+    <div className="card">
+      <h3>{title}</h3>
+      <p>Next.js 默认支持，SSR 时自动收集样式。</p>
+      <style jsx>{`
+        .card {
+          padding: 16px;
+          border-radius: 12px;
+          background: #fff;
+          box-shadow: 0 10px 30px rgba(0, 0, 0, 0.06);
+        }
+        h3 { margin: 0 0 8px; }
+      `}</style>
+    </div>
+  )
+}
+```
+
+- **stylex（编译期原子化，零运行时）**：Meta 发布的跨 React Web/Native 工具，受限的 StyleX 语法在编译时拆成原子类，运行时只保留 `stylex.props`。
+
+```tsx title="stylex 原子类"
+import * as stylex from '@stylexjs/stylex'
+
+const styles = stylex.create({
+  base: {
+    backgroundColor: 'var(--blue-600)',
+    borderRadius: 12,
+    color: '#fff',
+    paddingBlock: 10,
+    paddingInline: 16,
+    transitionDuration: '150ms',
+  },
+  hoverable: {
+    ':hover': { backgroundColor: 'var(--blue-700)' },
+  },
+})
+
+export function StylexButton({ hoverable = true }) {
+  return <button {...stylex.props(styles.base, hoverable && styles.hoverable)}>StyleX</button>
+}
+```
+
 ## <span className="mr-2 inline-block align-middle text-primary dark:text-primary-200 icon-[mdi--layers-triple-outline]"></span> 运行时 vs 编译期（示意）
 
 ```mermaid
@@ -94,6 +174,18 @@ flowchart LR
     <span>编译期生成：静态 CSS 提前产出，JS 只保留 className 映射。</span>
   </div>
 </div>
+
+### 方案对比（运行时/编译期，七选）
+
+| 方案 | 类型 | 写法/入口 | 动态与主题 | 产物/性能 | 适用 | 
+| --- | --- | --- | --- | --- | --- |
+| styled-components | 运行时 | `styled` 模板字符串 | 强：props + `ThemeProvider` | JS 注入 style，SSR 需注水 | 组件库、主题切换频繁 |
+| Emotion | 运行时/编译混合 | `css` prop / `styled` | 强，Babel 插件可提前抽离 | 默认运行时注入，编译模式减少开销 | React/Next 需要灵活度 |
+| styled-jsx | 编译期作用域 + 轻量运行时 | `<style jsx>` 内联 CSS | 中：支持插值但鼓励静态 | 按组件生成作用域 class + style 标签 | Next.js 局部隔离样式 |
+| Panda CSS | 编译期 / 零运行时 | `css`/`cva`/`recipes` TS API | 中：受 Token/受限表达式约束 | 产出原子 CSS + class 映射 | 设计 Token 驱动、追求首屏体积 |
+| stylex | 编译期原子化 / 零运行时 | `stylex.create` + `stylex.props` | 中：受限语法，推荐 Token | 编译成原子类，运行时极薄 | 性能敏感、跨 Web/Native 代码复用 |
+| vanilla-extract | 编译期 / 零运行时 | `style`/`createVar` TS API | 中：静态值 + 变量 | 生成静态 CSS，引入 className | 追求零 runtime、与构建深度集成 |
+| Linaria | 编译期 / 零运行时 | `css`/`styled` 模板字符串 | 弱：表达式需可静态求值，props 通过切换 class | 生成静态 CSS，JS 仅类名映射 | 想要 CSS-in-JS 写法但首屏/SSR 预算敏感 |
 
 ### 写法与产物对照
 
@@ -182,6 +274,25 @@ export const Demo = () => (
   </Card>
 )
 ```
+
+### styled-components 的 SWC 插件提示
+
+`@swc/plugin-styled-components`（或 Next.js `compiler.styledComponents`）在编译阶段处理标签模板，保持运行时链路但优化可读性与 SSR 稳定性：
+
+```json title=".swcrc"
+{
+  "jsc": {
+    "experimental": {
+      "plugins": [
+        ["@swc/plugin-styled-components", { "displayName": true, "ssr": true, "minify": true, "pure": true }]
+      ]
+    }
+  }
+}
+```
+
+- `displayName`：开发态易调试；`ssr`：确保类名/注入顺序稳定，减少水合不一致。
+- `minify`/`pure`：压缩模板输出，帮助摇树减轻运行时体积，但依旧属于运行时注入流派。
 
 ## 常见坑与对策
 
