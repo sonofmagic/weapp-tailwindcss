@@ -1,5 +1,14 @@
 # weapp-tailwindcss
 
+## 4.8.12
+
+### Patch Changes
+
+- [`077cca6`](https://github.com/sonofmagic/weapp-tailwindcss/commit/077cca6ac83008fa619700e870532bc7f28038f0) Thanks [@sonofmagic](https://github.com/sonofmagic)! - weapp-tw CLI 对齐 tailwindcss-patch，内置 `status` 子命令并同步使用指南，方便在子包或 CI 查看补丁应用情况。
+
+- Updated dependencies [[`07a0d5b`](https://github.com/sonofmagic/weapp-tailwindcss/commit/07a0d5b8b27ebd52b4f9363f004f80d17c3d1f2e), [`8bd4842`](https://github.com/sonofmagic/weapp-tailwindcss/commit/8bd4842871a96dadb2b85139ffded7f61c99ca01), [`74ed4a3`](https://github.com/sonofmagic/weapp-tailwindcss/commit/74ed4a324e528d67d5f4fc22d4cf704b0c246cb8)]:
+  - @weapp-tailwindcss/postcss@2.0.8
+
 ## 4.8.11
 
 ### Patch Changes
