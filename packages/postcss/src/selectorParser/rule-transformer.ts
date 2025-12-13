@@ -5,6 +5,7 @@ import type { IStyleHandlerOptions } from '../types'
 import psp from 'postcss-selector-parser'
 import { isUniAppXEnabled, stripUnsupportedNodeForUniAppX } from '../compat/uni-app-x'
 import { composeIsPseudo, internalCssSelectorReplacer } from '../shared'
+import { reorderLiteralFirst } from '../utils/decl-order'
 import {
   getCombinatorSelectorAst,
   normalizeTransformOptions,
@@ -96,33 +97,11 @@ function dedupeSpacingProps(rule: Rule) {
       continue
     }
 
-    const literals = unique.filter(decl => !VAR_REFERENCE_PATTERN.test(decl.value))
-    const variables = unique.filter(decl => VAR_REFERENCE_PATTERN.test(decl.value))
-
-    if (variables.length === 0 || literals.length === 0) {
-      continue
-    }
-
-    const ordered = [...literals, ...variables]
-    const alreadyOrdered = ordered.every((decl, index) => decl === unique[index])
-    if (alreadyOrdered) {
-      continue
-    }
-
-    const anchor = unique[unique.length - 1]?.next() ?? undefined
-
-    for (const decl of unique) {
-      decl.remove()
-    }
-
-    for (const decl of ordered) {
-      if (anchor) {
-        rule.insertBefore(anchor, decl)
-      }
-      else {
-        rule.append(decl)
-      }
-    }
+    reorderLiteralFirst(
+      rule,
+      unique,
+      decl => VAR_REFERENCE_PATTERN.test(decl.value),
+    )
   }
 }
 

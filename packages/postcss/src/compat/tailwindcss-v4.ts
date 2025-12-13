@@ -1,7 +1,7 @@
 // Tailwind CSS v4 兼容性相关的辅助方法，集中复用特殊处理逻辑
-import type { AtRule, Rule } from 'postcss'
-import { Declaration } from 'postcss'
+import type { AtRule, Declaration, Rule } from 'postcss'
 import cssVarsV4 from '../cssVarsV4'
+import { createCssVarNodes } from '../utils/css-vars'
 
 const OKLAB_SUFFIX = 'in oklab'
 const INFINITY_CALC_REGEXP = /calc\(\s*infinity\s*\*\s*(?:\d+(?:\.\d*)?|\.\d+)r?px/
@@ -18,12 +18,7 @@ export function testIfRootHostForV4(node: Rule) {
 }
 
 // Tailwind CSS v4 默认 CSS 变量映射，参考官方 utilities 定义
-export const cssVarsV4Nodes = cssVarsV4.map((x) => {
-  return new Declaration({
-    prop: x.prop,
-    value: x.value,
-  })
-})
+export const cssVarsV4Nodes = createCssVarNodes(cssVarsV4)
 
 // Tailwind v4 的现代检查语句需要特殊处理以恢复具体规则
 export function isTailwindcssV4ModernCheck(atRule: AtRule) {

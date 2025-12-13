@@ -4,14 +4,11 @@ import { Declaration, Rule } from 'postcss'
 import { cssVarsV4Nodes, isTailwindcssV4, testIfRootHostForV4 } from './compat/tailwindcss-v4'
 import cssVarsV3 from './cssVarsV3'
 import { isOnlyBeforeAndAfterPseudoElement } from './selectorParser'
+import { createCssVarNodes } from './utils/css-vars'
+import { hasTwVars } from './utils/tw-vars'
 
 // v3 变量集合在运行时转换为 Declaration 以便快速插入
-const cssVarsV3Nodes = cssVarsV3.map((x) => {
-  return new Declaration({
-    prop: x.prop,
-    value: x.value,
-  })
-})
+const cssVarsV3Nodes = createCssVarNodes(cssVarsV3)
 
 // ':not(template) ~ :not(template)'
 // ':not(template)~:not(template)'
@@ -43,17 +40,7 @@ const cssVarsV3Nodes = cssVarsV3.map((x) => {
 // 判断当前规则是否仅包含 before/after 的变量声明，用于标记变量作用域
 export function testIfVariablesScope(node: Rule, count = 2): boolean {
   if (isOnlyBeforeAndAfterPseudoElement(node)) {
-    const nodes = node.nodes
-    let c = 0
-    for (const tryTestDecl of nodes) {
-      if (tryTestDecl && tryTestDecl.type === 'decl' && tryTestDecl.prop.startsWith('--tw-')) {
-        c++
-      }
-      if (c >= count) {
-        return true
-      }
-    }
-    return false
+    return hasTwVars(node, count)
   }
   return false
 }
@@ -61,17 +48,7 @@ export function testIfVariablesScope(node: Rule, count = 2): boolean {
 // Tailwind backdrop 相关规则也需要被视为变量作用域
 export function testIfTwBackdrop(node: Rule, count = 2) {
   if (node.type === 'rule' && node.selector === '::backdrop') {
-    const nodes = node.nodes
-    let c = 0
-    for (const tryTestDecl of nodes) {
-      if (tryTestDecl && tryTestDecl.type === 'decl' && tryTestDecl.prop.startsWith('--tw-')) {
-        c++
-      }
-      if (c >= count) {
-        return true
-      }
-    }
-    return false
+    return hasTwVars(node, count)
   }
   return false
 }

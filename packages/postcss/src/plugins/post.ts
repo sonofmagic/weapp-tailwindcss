@@ -7,6 +7,7 @@ import { normalizeTailwindcssV4Declaration } from '../compat/tailwindcss-v4'
 import { shouldRemoveEmptyRuleForUniAppX } from '../compat/uni-app-x'
 import { postcssPlugin } from '../constants'
 import { getFallbackRemove } from '../selectorParser'
+import { reorderLiteralFirst } from '../utils/decl-order'
 
 // normalizeSelectorList 将 root/universal 替换配置规范化为数组
 function normalizeSelectorList(value?: string | string[] | false) {
@@ -159,44 +160,11 @@ export function reorderVariableDeclarations(rule: Rule) {
   }
 
   for (const declarations of groupedByProp.values()) {
-    if (declarations.length <= 1) {
-      continue
-    }
-
-    const literalDecls = declarations.filter(decl => !hasVariableReference(decl.value))
-    const variableDecls = declarations.filter(decl => hasVariableReference(decl.value))
-
-    if (literalDecls.length === 0 || variableDecls.length === 0) {
-      continue
-    }
-
-    const desiredOrder = [...literalDecls, ...variableDecls]
-    let needsReorder = false
-
-    for (let index = 0; index < declarations.length && !needsReorder; index++) {
-      if (declarations[index] !== desiredOrder[index]) {
-        needsReorder = true
-      }
-    }
-
-    if (!needsReorder) {
-      continue
-    }
-
-    const anchor = declarations[declarations.length - 1].next() ?? undefined
-
-    for (const decl of declarations) {
-      decl.remove()
-    }
-
-    for (const decl of desiredOrder) {
-      if (anchor) {
-        rule.insertBefore(anchor, decl)
-      }
-      else {
-        rule.append(decl)
-      }
-    }
+    reorderLiteralFirst(
+      rule,
+      declarations,
+      decl => hasVariableReference(decl.value),
+    )
   }
 }
 
@@ -266,41 +234,11 @@ function dedupeDeclarations(rule: Rule) {
       continue
     }
 
-    const literals = declarations.filter(decl => !hasVariableReference(decl.value))
-    const variables = declarations.filter(decl => hasVariableReference(decl.value))
-
-    if (literals.length === 0 || variables.length === 0) {
-      continue
-    }
-
-    const ordered = [...literals, ...variables]
-
-    let needReorder = false
-    for (let index = 0; index < ordered.length; index++) {
-      if (ordered[index] !== declarations[index]) {
-        needReorder = true
-        break
-      }
-    }
-
-    if (!needReorder) {
-      continue
-    }
-
-    const anchor = declarations[declarations.length - 1]?.next() ?? undefined
-
-    for (const decl of declarations) {
-      decl.remove()
-    }
-
-    for (const decl of ordered) {
-      if (anchor) {
-        rule.insertBefore(anchor, decl)
-      }
-      else {
-        rule.append(decl)
-      }
-    }
+    reorderLiteralFirst(
+      rule,
+      declarations,
+      decl => hasVariableReference(decl.value),
+    )
   }
 
   const literalSeen = new Map<string, Declaration>()
