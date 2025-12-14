@@ -80,7 +80,7 @@
     "autoprefixer": "catalog:autoprefixer10",
     "babel-preset-taro": "catalog:taro4",
     "cross-env": "catalog:crossEnv",
-    "eslint": "^9.39.1",
+    "eslint": "^9.39.2",
     "eslint-config-taro": "catalog:taro4",
     "eslint-plugin-vue": "^10.6.2",
     "less": "^4.4.1",

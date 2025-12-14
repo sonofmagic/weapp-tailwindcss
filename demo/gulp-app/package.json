@@ -57,7 +57,7 @@
     "@weapp-tailwindcss/variants-v3": "workspace:*",
     "autoprefixer": "catalog:autoprefixer10",
     "cross-env": "catalog:crossEnv",
-    "eslint": "^9.39.1",
+    "eslint": "^9.39.2",
     "gulp": "^5.0.1",
     "gulp-cached": "^1.1.1",
     "gulp-debug": "^5.0.1",

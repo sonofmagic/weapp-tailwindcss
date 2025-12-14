@@ -11,6 +11,7 @@ const tailwindcssSidebar: SidebarConfig = [
     collapsed: false,
     link: { type: 'doc', id: 'tailwindcss/history/history-style-evolution' },
     items: [
+      'tailwindcss/css-origin-evolution',
       'tailwindcss/history/history-component-evolution',
       {
         type: 'category',

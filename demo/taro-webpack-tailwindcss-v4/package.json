@@ -81,7 +81,7 @@
     "@weapp-tailwindcss/merge": "workspace:*",
     "@weapp-tailwindcss/variants": "workspace:*",
     "babel-preset-taro": "catalog:taro4",
-    "eslint": "^9.39.1",
+    "eslint": "^9.39.2",
     "eslint-config-taro": "catalog:taro4",
     "eslint-plugin-react": "^7.37.5",
     "eslint-plugin-react-hooks": "^7.0.1",

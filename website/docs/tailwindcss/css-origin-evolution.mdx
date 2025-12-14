@@ -1,0 +1,58 @@
+---
+id: css-origin-evolution
+title: CSS 的诞生与演化
+description: 为什么会有 CSS，它如何从字体颜色到布局体系，再到原子化与多运行时协作
+slug: /tailwindcss/css-origin-evolution
+sidebar_position: 0.5
+---
+
+## 要点
+
+- 起因：HTML 早期的表现与结构耦合（`<font>`、table 布局），浏览器厂商私有标签泛滥，缺少跨页面的样式复用。
+- CSS 让样式与结构分离，浏览器统一解析模型；随后通过模块化迭代（CSS1 → CSS2 → CSS3/Level 3+）。
+- 核心演化方向：布局（float → Flexbox → Grid）、响应式（媒体查询 → 容器查询）、可维护性（自定义属性/层级/逻辑选择器）、性能与工具链（预处理、后处理、JIT 原子化）。
+- 今天的场景：多 runtime（Web/RSC/小程序/Native），依赖 tokens、原子类和编译期工具保持一致性与性能。
+
+## CSS 诞生的背景
+
+- 1994 年，Håkon Wium Lie 在 CERN 提出「层叠样式表」，与 HTML 分离表现层，降低表现标签膨胀。
+- 1996 年发布 CSS1：定义选择器、层叠与继承模型、字体与文本、颜色与背景等基础能力。
+- 设计目标：
+  - **分离结构与表现**：HTML 只描述语义/结构；样式由 CSS 控制。
+  - **层叠与继承**：同一元素接受多来源样式（作者/用户/UA），按优先级与权重合并。
+  - **跨页面复用**：外链样式表 `link`，避免每页重复写内联。
+
+## 时间脉络（里程碑）
+
+```mermaid
+%%{ init: { "themeVariables": { "fontSize": "16px", "fontFamily": "Inter, 'Helvetica Neue', Arial, sans-serif" }, "flowchart": { "curve": "basis", "nodeSpacing": 28, "rankSpacing": 22 } } }%%
+flowchart LR
+  A["1996 · CSS1<br/>字体/颜色/背景"] --> B["1998 · CSS2<br/>媒体类型、定位、@media"]
+  B --> C["2009 · CSS2.1 完成<br/>修补兼容性"] --> D["2009 · Flexbox 初稿"]
+  D --> E["2011 · CSS3 模块化<br/>Transforms/Transitions"]
+  E --> F["2017 · Grid 正式落地"]
+  F --> G["2021 · Cascade Layers / @layer"]
+  G --> H["2022 · Container Queries"]
+  H --> I["2024 · CSS Nesting 标准化<br/>:has() / 色彩 / 媒体新特性"]
+```
+
+## 演化主线
+
+- **布局体系**：table → float 清除 → 多栏 → Flexbox（单轴）→ Grid（二维）→ subgrid/容器查询协同，极大减少包装 div 数量。
+- **响应式与适配**：`@media` → 自适应单位（vw/vh/rem）→ `@container`（基于容器尺寸）→ View Transitions/新媒体特性（动态范围、首选配色、指针类型）。
+- **可维护性**：自定义属性（CSS 变量）支撑 design tokens；`@layer`、`:where()`、`:is()`、`@scope`（提案中）帮助管理优先级；`color-mix`/`lab` 等色彩空间。
+- **表现与交互**：Transforms/Transitions/Animations → 滚动驱动动画（Scroll-driven Animations）、`view-transition-name`。
+- **工具链/性能**：Sass/Less 等预处理器 → PostCSS 自动补全/压缩 → 原子化 + JIT（Tailwind/Uno）→ 编译期 CSS-in-JS（vanilla-extract/stylex/Linaria）减少运行时。
+
+## 与现代方案的衔接
+
+- **语义化**：从全局命名（BEM）到组件/作用域（CSS Modules、Scoped、CSS-in-JS），再到类名弱语义但组合语义强的原子化；自定义属性承担语义载体。
+- **信息密度**：媒体查询/断点复用、Tokens/原子化/recipes（`cva`/`tv`/Panda）提高密度，避免在模板重复写数值。
+- **多运行时**：小程序/Native 需提前编译、限制动态样式；RSC/SSR 要求零或极薄运行时注入；统一 token 表成为跨端桥梁。
+- **性能**：HTTP/2+ 多路复用、`content-visibility`/`contain` 提升渲染；JIT/摇树裁剪未用样式；`@layer` 让原子库与自定义样式共存而不失控。
+
+## 继续阅读
+
+- [样式方案时间轴](/docs/tailwindcss/history)
+- [Utility-first 与 JIT](/docs/tailwindcss/history/utility-first)
+- [CSS-in-JS 阶段](/docs/tailwindcss/history/css-in-js)

@@ -71,7 +71,7 @@
     "babel-preset-taro": "catalog:taro4",
     "create-functional-loader": "^0.1.4",
     "cross-env": "catalog:crossEnv",
-    "eslint": "^9.39.1",
+    "eslint": "^9.39.2",
     "eslint-config-taro": "catalog:taro4",
     "eslint-plugin-import": "^2.32.0",
     "eslint-plugin-react": "^7.37.5",

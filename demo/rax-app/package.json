@@ -46,7 +46,7 @@
     "@weapp-tailwindcss/variants-v3": "workspace:*",
     "autoprefixer": "catalog:autoprefixer10",
     "cross-env": "catalog:crossEnv",
-    "eslint": "^9.39.1",
+    "eslint": "^9.39.2",
     "postcss": "catalog:postcss85",
     "postcss-rem-to-responsive-pixel": "catalog:postcssRem610",
     "postcss-rpx-transform": "catalog:postcssRpx",

@@ -96,7 +96,7 @@ catalogs:
   taroPxtransform:
     postcss-pxtransform: ^4.1.9
   typesNode2410:
-    '@types/node': ^24.10.3
+    '@types/node': ^24.10.4
   typescript59:
     typescript: ^5.9.3
   typescript59tilde:
