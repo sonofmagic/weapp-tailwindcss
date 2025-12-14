@@ -22,7 +22,7 @@
     "build:e2e": "npm run build && npm run test:e2e",
     "test": "jest test/components",
     "open": "weapp open -p dist/wx",
-    "postinstall": "weapp-tw patch"
+    "postinstall": "node ./scripts/patch-webpack-serialization.js && weapp-tw patch"
   },
   "dependencies": {
     "@mpxjs/api-proxy": "^2.10.17",
