@@ -23,6 +23,7 @@ const tailwindcssSidebar: SidebarConfig = [
         ],
       },
       'tailwindcss/history/history-preprocessors',
+      'tailwindcss/postcss',
       'tailwindcss/history/history-css-modules',
       'tailwindcss/history/history-css-in-js',
       'tailwindcss/history/history-utility-first',
