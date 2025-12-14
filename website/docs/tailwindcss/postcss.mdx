@@ -50,7 +50,7 @@ sidebar_position: 2.8
 
 ## 与 CSS Modules / CSS-in-JS 的衔接
 
-- **postcss-modules**：以插件形式实现 CSS Modules 规范，生成哈希类名与映射文件，是 [CSS Modules / Scoped 阶段](/tailwindcss/history/css-modules) 的构建期实现之一；当你在 webpack/Vite 开启 `modules` 时，底层也是类似逻辑。
+- **postcss-modules**：以插件形式实现 CSS Modules 规范，生成哈希类名与映射文件，是 [CSS Modules / Scoped 阶段](/docs/tailwindcss/history/css-modules) 的构建期实现之一；当你在 webpack/Vite 开启 `modules` 时，底层也是类似逻辑。
 - **postcss-js**：允许用 JS 对象描述样式，再复用 PostCSS 插件链（如 autoprefixer/preset-env）；常被 CSS-in-JS 库用于在编译期/构建期对静态样式做兼容性处理，实现「CSS-in-JS 也能复用 PostCSS 生态」。
 - **组合策略**：如果你在 React/Vue 里同时用 Tailwind + CSS Modules，可以把 `postcss-modules` 放在 import/nesting 之后、Tailwind 之前；若在 CSS-in-JS 中提取静态样式，则可用 `postcss-js` 让 autoprefixer/preset-env 同样生效。
 

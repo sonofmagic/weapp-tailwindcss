@@ -106,6 +106,7 @@ dist
 stats/*.html
 
 packages/weapp-tailwindcss/stats/*.html
+benchmark/app/public/data/
 
 .DS_Store
 coverage-vitest

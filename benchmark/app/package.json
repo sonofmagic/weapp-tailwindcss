@@ -13,8 +13,9 @@
     "url": "https://github.com/sonofmagic/weapp-tailwindcss/issues"
   },
   "scripts": {
-    "dev": "vite",
-    "build": "vue-tsc && vite build",
+    "dev": "pnpm run build:data && vite",
+    "build": "pnpm run build:data && vue-tsc && vite build",
+    "build:data": "tsx ./scripts/build-data.ts",
     "preview": "vite preview",
     "gen:postcss": "tsx ./scripts/postcss.ts",
     "gen:vite": "tsx ./scripts/vite.ts",
