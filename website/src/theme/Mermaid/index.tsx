@@ -1,6 +1,7 @@
 import type { Props } from '@theme/Mermaid'
 import useDocusaurusContext from '@docusaurus/useDocusaurusContext'
 import OriginalMermaid from '@theme-original/Mermaid'
+import clsx from 'clsx'
 import { deflateRaw } from 'pako'
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 
@@ -54,9 +55,16 @@ export default function MermaidWithToolbar({ value, ...rest }: Props) {
   const [scale, setScale] = useState(1)
   const [offset, setOffset] = useState({ x: 0, y: 0 })
   const [isPanning, setIsPanning] = useState(false)
+  const [isReady, setIsReady] = useState(false)
   const startRef = useRef<{ x: number, y: number, ox: number, oy: number } | null>(null)
   const centeredRef = useRef(false)
+  const readyRef = useRef(false)
   const liveHref = useRef<string>(MERMAID_LIVE)
+  const estimatedHeight = useMemo(() => {
+    const lines = value.split('\n').filter(line => line.trim().length > 0).length
+    const height = lines * 26 + 140
+    return Math.max(260, Math.min(height, 760))
+  }, [value])
 
   useEffect(() => {
     let cancelled = false
@@ -93,12 +101,19 @@ export default function MermaidWithToolbar({ value, ...rest }: Props) {
     }
 
     let cleanup: (() => void) | undefined
+    const markReady = () => {
+      if (!readyRef.current) {
+        readyRef.current = true
+        setIsReady(true)
+      }
+    }
     const tryAttach = () => {
       const content = contentRef.current
       const svg = content?.querySelector('svg')
       if (!content || !svg) {
         return false
       }
+      markReady()
       const updated = applySize(content, svg)
 
       if (!centeredRef.current && containerRef.current && diagramRef.current) {
@@ -113,7 +128,6 @@ export default function MermaidWithToolbar({ value, ...rest }: Props) {
           const nextY = contentRect.height < viewport.height ? (viewport.height - contentRect.height) / 2 : 0
           setOffset({ x: nextX, y: nextY })
 
-          // const scaledWidth = contentRect.width * scale
           const scaledHeight = contentRect.height * scale
           diagramRef.current.scrollLeft = 0
           if (scaledHeight > viewport.height) {
@@ -153,7 +167,7 @@ export default function MermaidWithToolbar({ value, ...rest }: Props) {
     }
     content.style.transform = `translate(${offset.x}px, ${offset.y}px) scale(${scale})`
     content.style.transformOrigin = '0 0'
-    content.style.transition = isPanning ? 'none' : 'transform 120ms ease'
+    content.style.transition = isPanning ? 'opacity 160ms ease' : 'opacity 160ms ease, transform 120ms ease'
     content.style.cursor = isPanning ? 'grabbing' : 'grab'
   }, [scale, offset, isPanning])
 
@@ -259,6 +273,8 @@ export default function MermaidWithToolbar({ value, ...rest }: Props) {
     setScale(1)
     setOffset({ x: 0, y: 0 })
     centeredRef.current = false
+    readyRef.current = false
+    setIsReady(false)
   }, [value])
 
   const renderToolbar = useMemo(
@@ -300,8 +316,9 @@ export default function MermaidWithToolbar({ value, ...rest }: Props) {
       onWheel={handleWheel}
     >
       {renderToolbar}
-      <div className={styles.diagram} ref={diagramRef}>
-        <div className={styles.content} ref={contentRef}>
+      <div className={styles.diagram} ref={diagramRef} style={{ minHeight: estimatedHeight }}>
+        {!isReady && <div className={styles.skeleton} aria-hidden />}
+        <div className={clsx(styles.content, isReady && styles.contentReady)} ref={contentRef}>
           <OriginalMermaid {...rest} value={value} />
         </div>
       </div>
