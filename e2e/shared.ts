@@ -1,12 +1,15 @@
-import fs from 'node:fs/promises'
 import { createRequire } from 'node:module'
 import process from 'node:process'
 import { format as formatMessage } from 'node:util'
 import { getConfig } from '@tailwindcss-mangle/config'
+import fs from 'fs-extra'
 import path from 'pathe'
 import prettier from 'prettier'
 import { TailwindcssPatcher } from 'tailwindcss-patch'
 import { removeWxmlId } from '../packages/weapp-tailwindcss/test/util'
+
+export { collectCssSnapshots } from './snapshotUtils'
+export type { CssSnapshotEntry } from './snapshotUtils'
 
 export {
   removeWxmlId,
@@ -74,165 +77,6 @@ interface E2EPatchOptions {
 }
 
 type NormalizedPatchOptions = E2EPatchOptions
-
-export interface CssSnapshotEntry {
-  fileName: string
-  content: string
-}
-
-async function exists(target: string) {
-  try {
-    await fs.access(target)
-    return true
-  }
-  catch {
-    return false
-  }
-}
-
-function sanitizeImportRequest(request: string): string {
-  const withoutQuery = request.split('?')[0] ?? ''
-  const withoutHash = withoutQuery.split('#')[0] ?? ''
-  return withoutHash.trim()
-}
-
-function normalizeSnapshotName(name: string): string | undefined {
-  const segments = name.split(/[/\\]+/).filter(segment => segment.length > 0 && segment !== '.')
-  if (segments.length === 0) {
-    return undefined
-  }
-  return segments.join(path.sep)
-}
-
-function safeRelative(from: string, to: string): string | undefined {
-  const relativePath = path.relative(from, to)
-  if (!relativePath || relativePath.startsWith('..') || path.isAbsolute(relativePath)) {
-    return undefined
-  }
-  return relativePath
-}
-
-function resolveCssImport(projectRoot: string, fromFile: string, request: string): string | undefined {
-  const cleaned = sanitizeImportRequest(request)
-  if (!cleaned || cleaned.startsWith('~')) {
-    return undefined
-  }
-  if (/^(?:https?:)?\/\//i.test(cleaned) || cleaned.startsWith('data:')) {
-    return undefined
-  }
-
-  const fromDir = path.dirname(fromFile)
-  const normalizedRequest = cleaned.replace(/\\/g, '/')
-
-  const target = normalizedRequest.startsWith('/')
-    ? path.resolve(projectRoot, `.${normalizedRequest}`)
-    : path.resolve(fromDir, normalizedRequest)
-
-  return target
-}
-
-function computeSnapshotName(projectRoot: string, fromFile: string, targetFile: string): string | undefined {
-  const fromDir = path.dirname(fromFile)
-
-  const relativeFromCurrent = safeRelative(fromDir, targetFile)
-  if (relativeFromCurrent) {
-    const normalized = normalizeSnapshotName(relativeFromCurrent)
-    if (normalized) {
-      return normalized
-    }
-  }
-
-  const relativeFromProject = safeRelative(projectRoot, targetFile)
-  if (relativeFromProject) {
-    const normalized = normalizeSnapshotName(relativeFromProject)
-    if (normalized) {
-      return normalized
-    }
-  }
-
-  return path.basename(targetFile)
-}
-
-function extractCssImports(source: string): string[] {
-  const pattern = /@import\s+(?:url\(\s*)?(?:"([^"]+)"|'([^']+)'|([^"'()\s]+))\s*\)?/gi
-  const imports: string[] = []
-  while (true) {
-    const match = pattern.exec(source)
-    if (!match) {
-      break
-    }
-    const request = (match[1] ?? match[2] ?? match[3] ?? '').trim()
-    if (request.length === 0) {
-      continue
-    }
-    imports.push(request)
-  }
-  return imports
-}
-
-const TAILWIND_BANNER = /^\s*\/\*! tailwindcss v[\d.]+ \| MIT License \| https:\/\/tailwindcss\.com \*\/\s*/i
-
-function stripTailwindBanner(source: string) {
-  return source.replace(TAILWIND_BANNER, '')
-}
-
-async function formatCss(css: string) {
-  return prettier.format(css, {
-    parser: 'css',
-    tabWidth: 2,
-    useTabs: false,
-    semi: false,
-    singleQuote: true,
-    endOfLine: 'lf',
-    trailingComma: 'none',
-    printWidth: 180,
-    bracketSameLine: true,
-    htmlWhitespaceSensitivity: 'ignore',
-  })
-}
-
-export async function collectCssSnapshots(projectRoot: string, cssRelativePath: string): Promise<CssSnapshotEntry[]> {
-  const rootCssPath = path.resolve(projectRoot, cssRelativePath)
-  const visited = new Set<string>()
-  const snapshots: CssSnapshotEntry[] = []
-  async function visit(targetPath: string, snapshotName: string) {
-    const normalizedPath = path.normalize(targetPath)
-    if (visited.has(normalizedPath)) {
-      return
-    }
-
-    if (!(await exists(normalizedPath))) {
-      return
-    }
-
-    visited.add(normalizedPath)
-
-    const source = await fs.readFile(normalizedPath, 'utf8')
-    const withoutBanner = stripTailwindBanner(source)
-    const formatted = await formatCss(withoutBanner)
-
-    snapshots.push({
-      fileName: snapshotName,
-      content: formatted,
-    })
-
-    const imports = extractCssImports(withoutBanner)
-    for (const request of imports) {
-      const resolved = resolveCssImport(projectRoot, normalizedPath, request)
-      if (!resolved) {
-        continue
-      }
-      const nextSnapshotName = computeSnapshotName(projectRoot, normalizedPath, resolved)
-      if (!nextSnapshotName) {
-        continue
-      }
-      await visit(resolved, nextSnapshotName)
-    }
-  }
-
-  await visit(rootCssPath, path.basename(cssRelativePath))
-  return snapshots
-}
 
 export interface ProjectEntry {
   name: string
@@ -472,7 +316,7 @@ async function runTwExtract(root: string): Promise<ExtractionResult | undefined>
     INIT_CWD: process.env.INIT_CWD,
   }
 
-  if (await exists(packageJsonPath)) {
+  if (await fs.exists(packageJsonPath)) {
     process.env.npm_package_json = packageJsonPath
   }
   else {

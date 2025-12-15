@@ -1,5 +1,6 @@
 {
   "name": "@weapp-tailwindcss/e2e",
+  "type": "module",
   "version": "0.0.0",
   "private": true,
   "scripts": {},

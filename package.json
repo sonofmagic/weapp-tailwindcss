@@ -64,7 +64,7 @@
     "e2e": "vitest run -c ./e2e/vitest.e2e.config.ts",
     "e2e:dev": "vitest -c ./e2e/vitest.e2e.config.ts",
     "e2e:u": "vitest run -u -c ./e2e/vitest.e2e.config.ts",
-    "e2e:update-snapshots": "node scripts/update-e2e-css-snapshots.mjs",
+    "e2e:update-snapshots": "tsx scripts/update-e2e-css-snapshots.ts",
     "demo:build": "pnpm run build:demo && pnpm run build:apps",
     "demo:install": "tsx scripts/demo/install.ts",
     "demo:install:beta": "tsx scripts/demo/install.ts --beta",

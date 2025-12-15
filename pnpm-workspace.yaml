@@ -11,7 +11,7 @@ packages:
 
 catalogs:
   autoprefixer10:
-    autoprefixer: ^10.4.22
+    autoprefixer: ^10.4.23
   babelCore7285:
     '@babel/core': ^7.28.5
   babelPresetReact7285:
