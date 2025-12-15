@@ -1,5 +1,5 @@
 import type { ThemeConfig } from '@docusaurus/preset-classic'
-import { defaultMetaDescription, socialImageUrl } from './siteMetadata'
+import { defaultMetaDescription, defaultMetaTitle, siteName, siteUrl, socialImageUrl } from './siteMetadata'
 
 const themeMetadata: NonNullable<ThemeConfig['metadata']> = [
   {
@@ -9,6 +9,22 @@ const themeMetadata: NonNullable<ThemeConfig['metadata']> = [
   {
     name: 'description',
     content: defaultMetaDescription,
+  },
+  {
+    property: 'og:title',
+    content: defaultMetaTitle,
+  },
+  {
+    property: 'og:description',
+    content: defaultMetaDescription,
+  },
+  {
+    property: 'og:image',
+    content: socialImageUrl,
+  },
+  {
+    property: 'og:url',
+    content: siteUrl,
   },
   {
     name: 'author',
@@ -28,7 +44,7 @@ const themeMetadata: NonNullable<ThemeConfig['metadata']> = [
   },
   {
     property: 'og:site_name',
-    content: 'weapp-tailwindcss',
+    content: siteName,
   },
   {
     property: 'og:image:alt',
@@ -45,6 +61,10 @@ const themeMetadata: NonNullable<ThemeConfig['metadata']> = [
   {
     name: 'twitter:description',
     content: defaultMetaDescription,
+  },
+  {
+    name: 'twitter:title',
+    content: defaultMetaTitle,
   },
 ]
 

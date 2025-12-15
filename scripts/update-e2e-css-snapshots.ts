@@ -1,10 +1,10 @@
-import type { ProjectEntry } from '../e2e/shared.ts'
+import type { ProjectEntry } from '../e2e/shared'
 import fs from 'node:fs/promises'
 import process from 'node:process'
 import { fileURLToPath } from 'node:url'
 import path from 'pathe'
-import { E2E_PROJECTS, NATIVE_PROJECTS } from '../e2e/projectEntries.ts'
-import { collectCssSnapshots } from '../e2e/snapshotUtils.ts'
+import { E2E_PROJECTS, NATIVE_PROJECTS } from '../e2e/projectEntries'
+import { collectCssSnapshots } from '../e2e/snapshotUtils'
 
 interface SuiteConfig {
   suite: string
