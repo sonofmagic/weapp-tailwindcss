@@ -53,7 +53,7 @@ catalogs:
   reactRefresh018:
     react-refresh: ^0.18.0
   sass195:
-    sass: ^1.96.0
+    sass: ^1.97.0
   stylelint1625:
     stylelint: ^16.26.1
   tailwindMerge:
@@ -102,13 +102,13 @@ catalogs:
   typescript59tilde:
     typescript: ~5.9.3
   typescriptEslint849:
-    '@typescript-eslint/eslint-plugin': ^8.49.0
-    '@typescript-eslint/parser': ^8.49.0
-    typescript-eslint: ^8.49.0
+    '@typescript-eslint/eslint-plugin': ^8.50.0
+    '@typescript-eslint/parser': ^8.50.0
+    typescript-eslint: ^8.50.0
   vite5421:
     vite: ^5.4.21
   vite724:
-    vite: ^7.2.6
+    vite: ^7.3.0
   vue3:
     '@vue/compiler-dom': ^3.5.25
     '@vue/compiler-sfc': ^3.5.25
@@ -120,7 +120,7 @@ catalogs:
   weappIdeCli:
     weapp-ide-cli: ^4.1.1
   weappVite:
-    weapp-vite: ^5.11.2
+    weapp-vite: ^5.11.3
   wrangler4530:
     wrangler: ^4.54.0
 

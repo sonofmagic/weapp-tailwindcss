@@ -70,7 +70,7 @@
     "p-queue": "9.0.1",
     "tailwind-merge": "catalog:tailwindMerge",
     "tailwind-merge-v2": "npm:tailwind-merge@^2.6.0",
-    "uview-plus": "^3.6.18",
+    "uview-plus": "^3.6.26",
     "vk-uview-ui": "^1.5.2",
     "vue": "catalog:vue3",
     "vue-i18n": "^9.14.5",
