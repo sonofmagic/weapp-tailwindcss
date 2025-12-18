@@ -1,5 +1,14 @@
 # weapp-tailwindcss
 
+## 4.8.13
+
+### Patch Changes
+
+- [`644bc7f`](https://github.com/sonofmagic/weapp-tailwindcss/commit/644bc7f23c7f46c9bfe28d19757bc8d530e67669) Thanks [@sonofmagic](https://github.com/sonofmagic)! - 拆分 presets 到独立文件并补充 uni-app/Taro/HBuilderX 预设，uni-app 在 H5/App 目标默认禁用转换，同时完善相关测试。
+
+- Updated dependencies [[`19e9417`](https://github.com/sonofmagic/weapp-tailwindcss/commit/19e94172cd2b79b28b863a15e477136f269bbc3b)]:
+  - @weapp-tailwindcss/postcss@2.1.0
+
 ## 4.8.12
 
 ### Patch Changes

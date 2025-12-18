@@ -1,5 +1,12 @@
 # @weapp-tailwindcss/postcss
 
+## 2.1.0
+
+### Minor Changes
+
+- [`19e9417`](https://github.com/sonofmagic/weapp-tailwindcss/commit/19e94172cd2b79b28b863a15e477136f269bbc3b) Thanks [@sonofmagic](https://github.com/sonofmagic)! - - postcss 包的 px2rpx 链路全面切换为 postcss-pxtrans，移除对 postcss-pxtransform 的依赖
+  - 升级 postcss-rem-to-responsive-pixel 到 7.0.0 版本
+
 ## 2.0.8
 
 ### Patch Changes
