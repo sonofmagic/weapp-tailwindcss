@@ -152,7 +152,7 @@ describe('bundlers/vite UnifiedViteWeappTailwindcssPlugin', () => {
     const subpathImporter = '/src/global.scss?inline'
 
     const resolvedRoot = await resolveId?.('tailwindcss', cssImporter)
-    expect(resolvedRoot).toBe(`${pkgDir}/index.css`)
+    expect(resolvedRoot).toBe('weapp-tailwindcss/index.css')
 
     const resolvedBase = await resolveId?.('tailwindcss/base', subpathImporter)
     expect(resolvedBase).toBe(`${pkgDir}/base`)
@@ -183,7 +183,7 @@ describe('bundlers/vite UnifiedViteWeappTailwindcssPlugin', () => {
 .foo { color: red; }
 `
     const result = await transform?.(source, '/src/app.css') as TransformResult
-    expect(result?.code).toContain(`@import '${pkgDir}/index.css' layer(base);`)
+    expect(result?.code).toContain(`@import 'weapp-tailwindcss/index.css' layer(base);`)
     expect(result?.code).toContain(`@import url("${pkgDir}/utilities");`)
   })
 
@@ -233,7 +233,7 @@ describe('bundlers/vite UnifiedViteWeappTailwindcssPlugin', () => {
 
     let source = '@import "tailwindcss";'
     const id = '/src/app.css'
-    const pkgDir = slash(resolvePackageDir('weapp-tailwindcss'))
+    slash(resolvePackageDir('weapp-tailwindcss'))
 
     for (const { handler } of orderedTransforms) {
       const result = await handler(source, id) as TransformResult
@@ -242,7 +242,7 @@ describe('bundlers/vite UnifiedViteWeappTailwindcssPlugin', () => {
       }
     }
 
-    expect(source).toContain(`@import "${pkgDir}/index.css";`)
+    expect(source).toContain(`@import "weapp-tailwindcss/index.css";`)
     expect(source.startsWith('tailwind:')).toBeTruthy()
   })
 

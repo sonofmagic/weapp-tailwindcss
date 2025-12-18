@@ -45,7 +45,7 @@ describe('bundlers/webpack css-imports rewrite', () => {
       contextInfo: { issuer: '/src/app.css' },
     }
     handler(data)
-    expect(data.request).toBe(path.join('/virtual/weapp-tailwindcss', 'index.css'))
+    expect(data.request).toBe('weapp-tailwindcss/index.css')
   })
 
   it('rewrites subpath imports and handles resource queries', () => {
@@ -77,7 +77,7 @@ describe('bundlers/webpack css-imports rewrite', () => {
       contextInfo: { issuer: '/src/styles.less' },
     }
     handler(sentinel)
-    expect(sentinel.request).toBe(path.join('/virtual/weapp-tailwindcss', 'index.css'))
+    expect(sentinel.request).toBe('weapp-tailwindcss/index.css')
 
     const nonCss = {
       request: 'tailwindcss',

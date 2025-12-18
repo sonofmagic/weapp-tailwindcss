@@ -39,9 +39,9 @@ describe('bundlers/shared css-imports', () => {
     expect(rewritten).toBe('@import "weapp-tailwindcss/index.css";')
   })
 
-  it('keeps original rewrite behaviour for non-mpx', () => {
+  it('rewrites tailwindcss import to weapp entry for non-mpx', () => {
     const code = '@import "tailwindcss";'
     const rewritten = rewriteTailwindcssImportsInCode(code, pkgDir, { join: joinPosixPath })
-    expect(rewritten).toBe(`@import "${pkgDir}/index.css";`)
+    expect(rewritten).toBe('@import "weapp-tailwindcss/index.css";')
   })
 })
