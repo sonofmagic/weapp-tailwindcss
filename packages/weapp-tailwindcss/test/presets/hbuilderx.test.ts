@@ -1,6 +1,6 @@
 import { afterEach, describe, expect, it, vi } from 'vitest'
 
-import { hbuilderx } from '@/presets'
+import { hbuilderx } from '@/presets/hbuilderx'
 import { setupEnvSandbox } from './helpers'
 
 describe('hbuilderx preset', () => {

@@ -1,6 +1,6 @@
 import { afterEach, describe, expect, it, vi } from 'vitest'
 
-import { taro } from '@/presets'
+import { taro } from '@/presets/taro'
 import { setupEnvSandbox } from './helpers'
 
 describe('taro preset', () => {
