@@ -11,7 +11,7 @@ const { pxMock, remMock, calcMock } = vi.hoisted(() => {
   }
 })
 
-vi.mock('postcss-pxtransform', () => ({ __esModule: true, default: pxMock }))
+vi.mock('postcss-pxtrans', () => ({ __esModule: true, default: pxMock }))
 vi.mock('postcss-rem-to-responsive-pixel', () => ({ __esModule: true, default: remMock }))
 vi.mock('@weapp-tailwindcss/postcss-calc', () => ({ __esModule: true, default: calcMock }))
 

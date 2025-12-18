@@ -93,8 +93,6 @@ catalogs:
     '@tarojs/webpack5-runner': ^4.1.9
     babel-preset-taro: ^4.1.9
     eslint-config-taro: ^4.1.9
-  taroPxtransform:
-    postcss-pxtransform: ^4.1.9
   typesNode2410:
     '@types/node': ^24.10.4
   typescript59:

@@ -54,7 +54,7 @@
     "@weapp-tailwindcss/shared": "workspace:*",
     "postcss": "~8.5.6",
     "postcss-preset-env": "^10.5.0",
-    "postcss-pxtransform": "catalog:taroPxtransform",
+    "postcss-pxtrans": "^1.0.0",
     "postcss-rem-to-responsive-pixel": "catalog:postcssRem610",
     "postcss-selector-parser": "~7.1.1",
     "postcss-value-parser": "^4.2.0"
