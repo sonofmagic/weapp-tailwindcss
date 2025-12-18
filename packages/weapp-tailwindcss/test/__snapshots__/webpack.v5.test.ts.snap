@@ -360,15 +360,15 @@ view,text,::before,::after {
  */
 /******/ var __webpack_modules__ = ({
 
-/***/ "./test/fixtures/webpack/v5/wxml/pages/index.js":
+/***/ "./test/fixtures/webpack/v5/wxml/pages/index.js"
 /*!******************************************************!*\\
   !*** ./test/fixtures/webpack/v5/wxml/pages/index.js ***!
   \\******************************************************/
-/***/ (() => {
+() {
 
 eval("{// import \\'./index.wxml\\'\\n// import \\'./index.css\\'\\n\\nconst className = \\'w-_b100px_B h-_b100px_B \\' + \\"bg-_burl_p_ahttps_c_f_fxxx_dcom_fxx_dwebp_a_P_B\\"\\n\\ndocument.body.append(\`<div class=\\"\${className}\\">className</div>\`)\\n\\nconst el = document.createElement()\\n\\nel.classList.add(\\'w-_b99px_B\\', \`h-_b99px_B\`, \\"bg-_burl_p_ahttps_c_f_fyyy_dcom_fxx_dwebp_a_P_B\\")\\n\\ndocument.body.appendChild(el)\\n\\n//# sourceURL=webpack://weapp-tailwindcss/./test/fixtures/webpack/v5/wxml/pages/index.js?\\n}");
 
-/***/ })
+/***/ }
 
 /******/ });
 /************************************************************************/
@@ -747,15 +747,15 @@ view,text,::before,::after {
  */
 /******/ var __webpack_modules__ = ({
 
-/***/ "./test/fixtures/webpack/v5/wxml/pages/index.js":
+/***/ "./test/fixtures/webpack/v5/wxml/pages/index.js"
 /*!******************************************************!*\\
   !*** ./test/fixtures/webpack/v5/wxml/pages/index.js ***!
   \\******************************************************/
-/***/ (() => {
+() {
 
 eval("{// import \\'./index.wxml\\'\\n// import \\'./index.css\\'\\n\\nconst className = \\'w-_b100px_B h-_b100px_B \\' + \\"bg-_burl_p_ahttps_c_f_fxxx_dcom_fxx_dwebp_a_P_B\\"\\n\\ndocument.body.append(\`<div class=\\"\${className}\\">className</div>\`)\\n\\nconst el = document.createElement()\\n\\nel.classList.add(\\'w-_b99px_B\\', \`h-_b99px_B\`, \\"bg-_burl_p_ahttps_c_f_fyyy_dcom_fxx_dwebp_a_P_B\\")\\n\\ndocument.body.appendChild(el)\\n\\n//# sourceURL=webpack://weapp-tailwindcss/./test/fixtures/webpack/v5/wxml/pages/index.js?\\n}");
 
-/***/ })
+/***/ }
 
 /******/ });
 /************************************************************************/
@@ -1134,15 +1134,15 @@ view,text,::before,::after {
  */
 /******/ var __webpack_modules__ = ({
 
-/***/ "./test/fixtures/webpack/v5/wxml/pages/index.js":
+/***/ "./test/fixtures/webpack/v5/wxml/pages/index.js"
 /*!******************************************************!*\\
   !*** ./test/fixtures/webpack/v5/wxml/pages/index.js ***!
   \\******************************************************/
-/***/ (() => {
+() {
 
 eval("{// import \\'./index.wxml\\'\\n// import \\'./index.css\\'\\n\\nconst className = \\'w-_b100px_B h-_b100px_B \\' + \\"bg-_burl_p_ahttps_c_f_fxxx_dcom_fxx_dwebp_a_P_B\\"\\n\\ndocument.body.append(\`<div class=\\"\${className}\\">className</div>\`)\\n\\nconst el = document.createElement()\\n\\nel.classList.add(\\'w-_b99px_B\\', \`h-_b99px_B\`, \\"bg-_burl_p_ahttps_c_f_fyyy_dcom_fxx_dwebp_a_P_B\\")\\n\\ndocument.body.appendChild(el)\\n\\n//# sourceURL=webpack://weapp-tailwindcss/./test/fixtures/webpack/v5/wxml/pages/index.js?\\n}");
 
-/***/ })
+/***/ }
 
 /******/ });
 /************************************************************************/
@@ -1517,15 +1517,15 @@ view,text,::before,::after {
  */
 /******/ var __webpack_modules__ = ({
 
-/***/ "./test/fixtures/webpack/v5/wxml/pages/index.js":
+/***/ "./test/fixtures/webpack/v5/wxml/pages/index.js"
 /*!******************************************************!*\\
   !*** ./test/fixtures/webpack/v5/wxml/pages/index.js ***!
   \\******************************************************/
-/***/ (() => {
+() {
 
 eval("{// import \\'./index.wxml\\'\\n// import \\'./index.css\\'\\n\\nconst className = \\'w-_b100px_B h-_b100px_B \\' + \\"bg-_burl_p_ahttps_c_f_fxxx_dcom_fxx_dwebp_a_P_B\\"\\n\\ndocument.body.append(\`<div class=\\"\${className}\\">className</div>\`)\\n\\nconst el = document.createElement()\\n\\nel.classList.add(\\'w-_b99px_B\\', \`h-_b99px_B\`, \\"bg-_burl_p_ahttps_c_f_fyyy_dcom_fxx_dwebp_a_P_B\\")\\n\\ndocument.body.appendChild(el)\\n\\n//# sourceURL=webpack://weapp-tailwindcss/./test/fixtures/webpack/v5/wxml/pages/index.js?\\n}");
 
-/***/ })
+/***/ }
 
 /******/ });
 /************************************************************************/
@@ -1908,15 +1908,15 @@ view,text,::before,::after {
  */
 /******/ var __webpack_modules__ = ({
 
-/***/ "./test/fixtures/webpack/v5/wxml/pages/index.js":
+/***/ "./test/fixtures/webpack/v5/wxml/pages/index.js"
 /*!******************************************************!*\\
   !*** ./test/fixtures/webpack/v5/wxml/pages/index.js ***!
   \\******************************************************/
-/***/ (() => {
+() {
 
 eval("{// import \\'./index.wxml\\'\\n// import \\'./index.css\\'\\n\\nconst className = \\'w-_b100px_B h-_b100px_B \\' + \\"bg-_burl_p_ahttps_c_f_fxxx_dcom_fxx_dwebp_a_P_B\\"\\n\\ndocument.body.append(\`<div class=\\"\${className}\\">className</div>\`)\\n\\nconst el = document.createElement()\\n\\nel.classList.add(\\'w-_b99px_B\\', \`h-_b99px_B\`, \\"bg-_burl_p_ahttps_c_f_fyyy_dcom_fxx_dwebp_a_P_B\\")\\n\\ndocument.body.appendChild(el)\\n\\n//# sourceURL=webpack://weapp-tailwindcss/./test/fixtures/webpack/v5/wxml/pages/index.js?\\n}");
 
-/***/ })
+/***/ }
 
 /******/ });
 /************************************************************************/
@@ -2295,15 +2295,15 @@ view,text,::before,::after {
  */
 /******/ var __webpack_modules__ = ({
 
-/***/ "./test/fixtures/webpack/v5/wxml/pages/index.js":
+/***/ "./test/fixtures/webpack/v5/wxml/pages/index.js"
 /*!******************************************************!*\\
   !*** ./test/fixtures/webpack/v5/wxml/pages/index.js ***!
   \\******************************************************/
-/***/ (() => {
+() {
 
 eval("{// import \\'./index.wxml\\'\\n// import \\'./index.css\\'\\n\\nconst className = \\'w-_b100px_B h-_b100px_B \\' + \\"bg-_burl_p_ahttps_c_f_fxxx_dcom_fxx_dwebp_a_P_B\\"\\n\\ndocument.body.append(\`<div class=\\"\${className}\\">className</div>\`)\\n\\nconst el = document.createElement()\\n\\nel.classList.add(\\'w-_b99px_B\\', \`h-_b99px_B\`, \\"bg-_burl_p_ahttps_c_f_fyyy_dcom_fxx_dwebp_a_P_B\\")\\n\\ndocument.body.appendChild(el)\\n\\n//# sourceURL=webpack://weapp-tailwindcss/./test/fixtures/webpack/v5/wxml/pages/index.js?\\n}");
 
-/***/ })
+/***/ }
 
 /******/ });
 /************************************************************************/
@@ -2680,15 +2680,15 @@ exports[`webpack5 plugin > disabled true > assets 1`] = `
  */
 /******/ var __webpack_modules__ = ({
 
-/***/ "./test/fixtures/webpack/v5/wxml/pages/index.js":
+/***/ "./test/fixtures/webpack/v5/wxml/pages/index.js"
 /*!******************************************************!*\\
   !*** ./test/fixtures/webpack/v5/wxml/pages/index.js ***!
   \\******************************************************/
-/***/ (() => {
+() {
 
 eval("{// import './index.wxml'\\n// import './index.css'\\n\\nconst className = 'w-[100px] h-[100px] ' + \\"bg-[url('https://xxx.com/xx.webp')]\\"\\n\\ndocument.body.append(\`<div class=\\"\${className}\\">className</div>\`)\\n\\nconst el = document.createElement()\\n\\nel.classList.add('w-[99px]', \`h-[99px]\`, \\"bg-[url('https://yyy.com/xx.webp')]\\")\\n\\ndocument.body.appendChild(el)\\n\\n//# sourceURL=webpack://weapp-tailwindcss/./test/fixtures/webpack/v5/wxml/pages/index.js?\\n}");
 
-/***/ })
+/***/ }
 
 /******/ });
 /************************************************************************/
@@ -2907,7 +2907,7 @@ exports[`webpack5 plugin > multiple tailwindcss contexts raw case 0 > assets 1`]
     content: var(--tw-content)
 }
 ",
-  "index.js": "(()=>{var e={477:e=>{e.exports=" "}},r={};function t(n){var o=r[n];if(void 0!==o)return o.exports;var a=r[n]={exports:{}};return e[n](a,a.exports,t),a.exports}t.n=e=>{var r=e&&e.__esModule?()=>e.default:()=>e;return t.d(r,{a:r}),r},t.d=(e,r)=>{for(var n in r)t.o(r,n)&&!t.o(e,n)&&Object.defineProperty(e,n,{enumerable:!0,get:r[n]})},t.o=(e,r)=>Object.prototype.hasOwnProperty.call(e,r),(()=>{"use strict";t(477),document.querySelector("#app").innerHTML='\\n<main class="after:content-[\\'index.js\\']"">\\n</main>\\n'})()})();",
+  "index.js": "(()=>{var e={477(e){e.exports=" "}},r={};function t(n){var o=r[n];if(void 0!==o)return o.exports;var a=r[n]={exports:{}};return e[n](a,a.exports,t),a.exports}t.n=e=>{var r=e&&e.__esModule?()=>e.default:()=>e;return t.d(r,{a:r}),r},t.d=(e,r)=>{for(var n in r)t.o(r,n)&&!t.o(e,n)&&Object.defineProperty(e,n,{enumerable:!0,get:r[n]})},t.o=(e,r)=>Object.prototype.hasOwnProperty.call(e,r),(()=>{"use strict";t(477),document.querySelector("#app").innerHTML='\\n<main class="after:content-[\\'index.js\\']"">\\n</main>\\n'})()})();",
   "module.css": "
 
 /* .b {
@@ -2922,7 +2922,7 @@ exports[`webpack5 plugin > multiple tailwindcss contexts raw case 0 > assets 1`]
     content: var(--tw-content)
 }
 ",
-  "module.js": "(()=>{var e={480:e=>{e.exports=" "}},r={};function t(n){var o=r[n];if(void 0!==o)return o.exports;var a=r[n]={exports:{}};return e[n](a,a.exports,t),a.exports}t.n=e=>{var r=e&&e.__esModule?()=>e.default:()=>e;return t.d(r,{a:r}),r},t.d=(e,r)=>{for(var n in r)t.o(r,n)&&!t.o(e,n)&&Object.defineProperty(e,n,{enumerable:!0,get:r[n]})},t.o=(e,r)=>Object.prototype.hasOwnProperty.call(e,r),(()=>{"use strict";t(480),document.querySelector("#app").innerHTML="\\n<main class=\\"after:content-['m/index.js']\\">\\n</main>\\n"})()})();",
+  "module.js": "(()=>{var e={480(e){e.exports=" "}},r={};function t(n){var o=r[n];if(void 0!==o)return o.exports;var a=r[n]={exports:{}};return e[n](a,a.exports,t),a.exports}t.n=e=>{var r=e&&e.__esModule?()=>e.default:()=>e;return t.d(r,{a:r}),r},t.d=(e,r)=>{for(var n in r)t.o(r,n)&&!t.o(e,n)&&Object.defineProperty(e,n,{enumerable:!0,get:r[n]})},t.o=(e,r)=>Object.prototype.hasOwnProperty.call(e,r),(()=>{"use strict";t(480),document.querySelector("#app").innerHTML="\\n<main class=\\"after:content-['m/index.js']\\">\\n</main>\\n"})()})();",
 }
 `;
 
@@ -3337,15 +3337,15 @@ view,text,::before,::after {
  */
 /******/ var __webpack_modules__ = ({
 
-/***/ "./test/fixtures/webpack/v5/wxml/pages/index.js":
+/***/ "./test/fixtures/webpack/v5/wxml/pages/index.js"
 /*!******************************************************!*\\
   !*** ./test/fixtures/webpack/v5/wxml/pages/index.js ***!
   \\******************************************************/
-/***/ (() => {
+() {
 
 eval("{// import \\'./index.wxml\\'\\n// import \\'./index.css\\'\\n\\nconst className = \\'w-_b100px_B h-_b100px_B \\' + \\"bg-_burl_p_ahttps_c_f_fxxx_dcom_fxx_dwebp_a_P_B\\"\\n\\ndocument.body.append(\`<div class=\\"\${className}\\">className</div>\`)\\n\\nconst el = document.createElement()\\n\\nel.classList.add(\\'w-_b99px_B\\', \`h-_b99px_B\`, \\"bg-_burl_p_ahttps_c_f_fyyy_dcom_fxx_dwebp_a_P_B\\")\\n\\ndocument.body.appendChild(el)\\n\\n//# sourceURL=webpack://weapp-tailwindcss/./test/fixtures/webpack/v5/wxml/pages/index.js?\\n}");
 
-/***/ })
+/***/ }
 
 /******/ });
 /************************************************************************/

@@ -23,19 +23,19 @@ catalogs:
   crossEnv:
     cross-env: ^10.1.0
   lucideReact0555:
-    lucide-react: ^0.560.0
+    lucide-react: ^0.561.0
   lucideVueNext0555:
-    lucide-vue-next: ^0.560.0
+    lucide-vue-next: ^0.561.0
   miniApiTypings:
-    miniprogram-api-typings: ^4.1.1
+    miniprogram-api-typings: ^4.1.2
   postcss85:
     postcss: ^8.5.6
   postcssComment2:
     postcss-comment: ^2.0.0
   postcssRem602:
-    postcss-rem-to-responsive-pixel: ^6.0.2
+    postcss-rem-to-responsive-pixel: ^7.0.0
   postcssRem610:
-    postcss-rem-to-responsive-pixel: ^6.1.0
+    postcss-rem-to-responsive-pixel: ^7.0.0
   postcssRpx:
     postcss-rpx-transform: ^1.0.1
   prettier371:
@@ -122,7 +122,7 @@ catalogs:
   weappVite:
     weapp-vite: ^5.11.3
   wrangler4530:
-    wrangler: ^4.54.0
+    wrangler: ^4.55.0
 
 onlyBuiltDependencies:
   - '@tailwindcss/oxide'

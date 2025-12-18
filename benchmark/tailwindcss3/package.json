@@ -15,6 +15,6 @@
     "tailwindcss": "catalog:tailwindcss3"
   },
   "devDependencies": {
-    "vitest": "~4.0.15"
+    "vitest": "~4.0.16"
   }
 }
