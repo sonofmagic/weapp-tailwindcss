@@ -23,9 +23,9 @@ catalogs:
   crossEnv:
     cross-env: ^10.1.0
   lucideReact0555:
-    lucide-react: ^0.561.0
+    lucide-react: ^0.562.0
   lucideVueNext0555:
-    lucide-vue-next: ^0.561.0
+    lucide-vue-next: ^0.562.0
   miniApiTypings:
     miniprogram-api-typings: ^4.1.2
   postcss85:
@@ -108,9 +108,9 @@ catalogs:
   vite724:
     vite: ^7.3.0
   vue3:
-    '@vue/compiler-dom': ^3.5.25
-    '@vue/compiler-sfc': ^3.5.25
-    vue: ^3.5.25
+    '@vue/compiler-dom': ^3.5.26
+    '@vue/compiler-sfc': ^3.5.26
+    vue: ^3.5.26
   vueTsc318:
     vue-tsc: ^3.1.8
   weappChildren:
@@ -120,7 +120,7 @@ catalogs:
   weappVite:
     weapp-vite: ^5.11.3
   wrangler4530:
-    wrangler: ^4.55.0
+    wrangler: ^4.56.0
 
 onlyBuiltDependencies:
   - '@tailwindcss/oxide'

@@ -127,7 +127,7 @@
     "@icebreakers/eslint-config": "^1.6.7",
     "@icebreakers/monorepo": "^3.1.11",
     "@icebreakers/stylelint-config": "^1.2.4",
-    "@swc/core": "^1.15.6",
+    "@swc/core": "^1.15.7",
     "@tailwindcss/postcss": "catalog:tailwindcss4",
     "@tailwindcss/vite": "catalog:tailwindcss4",
     "@tsconfig/recommended": "^1.0.13",
@@ -263,7 +263,7 @@
     "vitest": "~4.0.16",
     "weapp-tailwindcss": "workspace:*",
     "weapp-tailwindcss-children": "catalog:weappChildren",
-    "webpack": "5.104.0",
+    "webpack": "5.104.1",
     "webpack-build-utils": "^0.0.7",
     "wrangler": "catalog:wrangler4530",
     "yaml": "^2.8.2"

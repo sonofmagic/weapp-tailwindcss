@@ -3,14 +3,11 @@ import type { UserDefinedOptions } from '@/types'
 import { resolveTailwindcssBasedir } from '@/context/tailwindcss'
 import { defuOverrideArray } from '@/utils'
 
-export interface BasePresetOptions {
+export interface BasePresetOptions extends Omit<Partial<UserDefinedOptions>, 'cssEntries'> {
   base?: string
   cssEntries?: string | string[]
-  rem2rpx?: UserDefinedOptions['rem2rpx']
-  rawOptions?: UserDefinedOptions
   resolve?: PackageResolvingOptions
-  customAttributes?: UserDefinedOptions['customAttributes']
-  disabled?: UserDefinedOptions['disabled']
+  rawOptions?: UserDefinedOptions
 }
 
 export function normalizeCssEntries(entries?: string | string[]) {
@@ -22,26 +19,34 @@ export function normalizeCssEntries(entries?: string | string[]) {
 }
 
 export function createBasePreset(options: BasePresetOptions = {}) {
-  const baseDir = resolveTailwindcssBasedir(options.base)
-  const cssEntries = normalizeCssEntries(options.cssEntries)
+  const {
+    base,
+    cssEntries,
+    resolve,
+    rawOptions,
+    ...userOptions
+  } = options
+
+  const baseDir = resolveTailwindcssBasedir(base)
+  const normalizedCssEntries = normalizeCssEntries(cssEntries)
 
   const tailwindConfig: NonNullable<UserDefinedOptions['tailwindcss']> = {
     v2: { cwd: baseDir },
     v3: { cwd: baseDir },
     v4: {
       base: baseDir,
-      cssEntries,
+      cssEntries: normalizedCssEntries,
     },
   }
 
-  if (cssEntries && cssEntries.length > 0) {
+  if (normalizedCssEntries && normalizedCssEntries.length > 0) {
     tailwindConfig.version = 4
   }
 
-  const patchTailwindConfig: NonNullable<UserDefinedOptions['tailwindcss']> = options.resolve
+  const patchTailwindConfig: NonNullable<UserDefinedOptions['tailwindcss']> = resolve
     ? {
         ...tailwindConfig,
-        resolve: options.resolve,
+        resolve,
       }
     : tailwindConfig
 
@@ -54,23 +59,13 @@ export function createBasePreset(options: BasePresetOptions = {}) {
     },
   }
 
-  if (options.customAttributes) {
-    preset.customAttributes = options.customAttributes
-  }
-
-  if (options.disabled !== undefined) {
-    preset.disabled = options.disabled
-  }
-
-  if (options.rem2rpx !== undefined) {
-    preset.rem2rpx = options.rem2rpx
-  }
-
-  return defuOverrideArray<
+  const mergedUserOptions = defuOverrideArray<
     Partial<UserDefinedOptions>,
     Partial<UserDefinedOptions>[]
-  >(
-    options.rawOptions ?? {},
+  >(userOptions, rawOptions ?? {})
+
+  return defuOverrideArray<Partial<UserDefinedOptions>, Partial<UserDefinedOptions>[]>(
+    mergedUserOptions,
     preset,
   )
 }

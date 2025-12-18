@@ -22,6 +22,6 @@
     "lint:fix": "eslint . --fix"
   },
   "devDependencies": {
-    "@swc/core": "^1.15.6"
+    "@swc/core": "^1.15.7"
   }
 }

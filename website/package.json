@@ -72,7 +72,7 @@
     "@types/react": "catalog:react19",
     "@types/react-dom": "catalog:react19",
     "autoprefixer": "catalog:autoprefixer10",
-    "baseline-browser-mapping": "^2.9.9",
+    "baseline-browser-mapping": "^2.9.10",
     "cross-env": "catalog:crossEnv",
     "docusaurus-plugin-llms": "^0.2.2",
     "docusaurus-plugin-sass": "^0.2.6",
@@ -86,7 +86,7 @@
     "theme-transition": "workspace:*",
     "typedoc": "^0.28.15",
     "typedoc-plugin-markdown": "4.9.0",
-    "webpack": "5.104.0",
+    "webpack": "5.104.1",
     "webpack-node-externals": "^3.0.0",
     "wrangler": "catalog:wrangler4530"
   },
