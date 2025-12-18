@@ -133,8 +133,8 @@ importers:
         specifier: ^4.1.1
         version: 4.1.1
       weapp-tailwindcss:
-        specifier: ^4.8.12
-        version: 4.8.12(tailwindcss@4.1.18)
+        specifier: ^4.8.13
+        version: 4.8.13(tailwindcss@4.1.18)
       webpack:
         specifier: 5.103.0
         version: 5.103.0(@swc/core@1.3.96)
@@ -2353,26 +2353,26 @@ packages:
   '@vue/compiler-core@3.5.22':
     resolution: {integrity: sha512-jQ0pFPmZwTEiRNSb+i9Ow/I/cHv2tXYqsnHKKyCQ08irI2kdF5qmYedmF8si8mA7zepUFmJ2hqzS8CQmNOWOkQ==}
 
-  '@vue/compiler-core@3.5.25':
-    resolution: {integrity: sha512-vay5/oQJdsNHmliWoZfHPoVZZRmnSWhug0BYT34njkYTPqClh3DNWLkZNJBVSjsNMrg0CCrBfoKkjZQPM/QVUw==}
+  '@vue/compiler-core@3.5.26':
+    resolution: {integrity: sha512-vXyI5GMfuoBCnv5ucIT7jhHKl55Y477yxP6fc4eUswjP8FG3FFVFd41eNDArR+Uk3QKn2Z85NavjaxLxOC19/w==}
 
   '@vue/compiler-dom@3.5.22':
     resolution: {integrity: sha512-W8RknzUM1BLkypvdz10OVsGxnMAuSIZs9Wdx1vzA3mL5fNMN15rhrSCLiTm6blWeACwUwizzPVqGJgOGBEN/hA==}
 
-  '@vue/compiler-dom@3.5.25':
-    resolution: {integrity: sha512-4We0OAcMZsKgYoGlMjzYvaoErltdFI2/25wqanuTu+S4gismOTRTBPi4IASOjxWdzIwrYSjnqONfKvuqkXzE2Q==}
+  '@vue/compiler-dom@3.5.26':
+    resolution: {integrity: sha512-y1Tcd3eXs834QjswshSilCBnKGeQjQXB6PqFn/1nxcQw4pmG42G8lwz+FZPAZAby6gZeHSt/8LMPfZ4Rb+Bd/A==}
 
   '@vue/compiler-sfc@3.5.22':
     resolution: {integrity: sha512-tbTR1zKGce4Lj+JLzFXDq36K4vcSZbJ1RBu8FxcDv1IGRz//Dh2EBqksyGVypz3kXpshIfWKGOCcqpSbyGWRJQ==}
 
-  '@vue/compiler-sfc@3.5.25':
-    resolution: {integrity: sha512-PUgKp2rn8fFsI++lF2sO7gwO2d9Yj57Utr5yEsDf3GNaQcowCLKL7sf+LvVFvtJDXUp/03+dC6f2+LCv5aK1ag==}
+  '@vue/compiler-sfc@3.5.26':
+    resolution: {integrity: sha512-egp69qDTSEZcf4bGOSsprUr4xI73wfrY5oRs6GSgXFTiHrWj4Y3X5Ydtip9QMqiCMCPVwLglB9GBxXtTadJ3mA==}
 
   '@vue/compiler-ssr@3.5.22':
     resolution: {integrity: sha512-GdgyLvg4R+7T8Nk2Mlighx7XGxq/fJf9jaVofc3IL0EPesTE86cP/8DD1lT3h1JeZr2ySBvyqKQJgbS54IX1Ww==}
 
-  '@vue/compiler-ssr@3.5.25':
-    resolution: {integrity: sha512-ritPSKLBcParnsKYi+GNtbdbrIE1mtuFEJ4U1sWeuOMlIziK5GtOL85t5RhsNy4uWIXPgk+OUdpnXiTdzn8o3A==}
+  '@vue/compiler-ssr@3.5.26':
+    resolution: {integrity: sha512-lZT9/Y0nSIRUPVvapFJEVDbEXruZh2IYHMk2zTtEgJSlP5gVOqeWXH54xDKAaFS4rTnDeDBQUYDtxKyoW9FwDw==}
 
   '@vue/reactivity@3.5.22':
     resolution: {integrity: sha512-f2Wux4v/Z2pqc9+4SmgZC1p73Z53fyD90NFWXiX9AKVnVBEvLFOWCEgJD3GdGnlxPZt01PSlfmLqbLYzY/Fw4A==}
@@ -2391,8 +2391,8 @@ packages:
   '@vue/shared@3.5.22':
     resolution: {integrity: sha512-F4yc6palwq3TT0u+FYf0Ns4Tfl9GRFURDN2gWG7L1ecIaS/4fCIuFOjMTnCyjsu/OK6vaDKLCrGAa+KvvH+h4w==}
 
-  '@vue/shared@3.5.25':
-    resolution: {integrity: sha512-AbOPdQQnAnzs58H2FrrDxYj/TJfmeS2jdfEEhgiKINy+bnOANmVizIEgq1r+C5zsbs6l1CCQxtcj71rwNQ4jWg==}
+  '@vue/shared@3.5.26':
+    resolution: {integrity: sha512-7Z6/y3uFI5PRoKeorTOSXKcDj0MSasfNNltcslbFrPpcw6aXRUALq4IfJlaTRspiWIUOEZbrpM+iQGmCOiWe4A==}
 
   '@weapp-core/escape@6.0.1':
     resolution: {integrity: sha512-p9vzvAAOejWDAhNGrmlNBO8MpOJQTUj9SOwKx/pCjvCnR/N8CF8yUFBaPH9WOGHCFxGPWxPEhViQSeDF+3vfFA==}
@@ -2415,8 +2415,8 @@ packages:
     peerDependencies:
       postcss: ^8.4.38
 
-  '@weapp-tailwindcss/postcss@2.0.8':
-    resolution: {integrity: sha512-KZiNuB1D4OWEplyDj3rzbwFnzQ5uG0n6Gg55MTtcvvuYUJ8jwecevxExRZ9uwyenM78RclCI9HorxqpbxrLJWQ==}
+  '@weapp-tailwindcss/postcss@2.1.0':
+    resolution: {integrity: sha512-c4Jw8IB+4wHWpCJ0cKm0dC1sXWPCwsXhRLulM7E1nvgYjFxa5dM/9mLkc6PoaVwghYC2UB4J8P4YIhg3yfJS6A==}
 
   '@weapp-tailwindcss/runtime@0.1.3':
     resolution: {integrity: sha512-y5hpHmEHwwj7+SUErblgC+e7k18XfLm5kZ32nBtVthg0WjyZjmStxCAX6RrHIiDmi5PjtlWJYbkYvRqcbz7ZnQ==}
@@ -3494,6 +3494,10 @@ packages:
 
   entities@6.0.1:
     resolution: {integrity: sha512-aN97NXWF6AWBTahfVOIrB/NShkzi5H7F9r1s9mD3cDj4Ko5f2qhhVoYMibXF7GlLveb/D2ioWay8lxI97Ven3g==}
+    engines: {node: '>=0.12'}
+
+  entities@7.0.0:
+    resolution: {integrity: sha512-FDWG5cmEYf2Z00IkYRhbFrwIwvdFKH07uV8dvNy0omp/Qb1xcyCWp2UDtcwJF4QZZvk0sLudP6/hAu42TaqVhQ==}
     engines: {node: '>=0.12'}
 
   env-paths@2.2.1:
@@ -5679,6 +5683,11 @@ packages:
     peerDependencies:
       postcss: ^8
 
+  postcss-plugin-shared@1.0.0:
+    resolution: {integrity: sha512-3x83BXvFXlbtIaD/GC4C2uZQ+UmGwh1uYCm4DjQTEjDv8HrrBmZWZH968W+Shq/vxP+amsH08OafVt8aVzqL2w==}
+    peerDependencies:
+      postcss: ^8
+
   postcss-preset-env@10.5.0:
     resolution: {integrity: sha512-xgxFQPAPxeWmsgy8cR7GM1PGAL/smA5E9qU7K//D4vucS01es3M0fDujhDJn3kY8Ip7/vVYcecbe1yY+vBo3qQ==}
     engines: {node: '>=18'}
@@ -5691,14 +5700,13 @@ packages:
     peerDependencies:
       postcss: ^8.4
 
-  postcss-pxtransform@4.1.8:
-    resolution: {integrity: sha512-45h1xNAz7sdNfDRT3ob4btv/ugk7Cl4o+SUgI0DcYliaX+IxUgYfl/fVTK/TGeZm5Y8KVzhKiAJTb4K5rnQTlQ==}
-    engines: {node: '>= 18'}
+  postcss-pxtrans@1.0.0:
+    resolution: {integrity: sha512-1AKXs+w/hor0EAmxCAa2ATfYKgzqey/rHTgJ6LvvpNsRyeV9hyVNczF3N1hSXcB5ruM4E3ezg8cf3W+W/GY4GA==}
     peerDependencies:
       postcss: ^8
 
-  postcss-pxtransform@4.1.9:
-    resolution: {integrity: sha512-GYMUk34NuqDsFvvuEEgiZGirxkn2tXmrjlM72SusAQVqRSIuXR6zJmqxL+l8i+ap1Ybp83dqWB8B9xONju9kug==}
+  postcss-pxtransform@4.1.8:
+    resolution: {integrity: sha512-45h1xNAz7sdNfDRT3ob4btv/ugk7Cl4o+SUgI0DcYliaX+IxUgYfl/fVTK/TGeZm5Y8KVzhKiAJTb4K5rnQTlQ==}
     engines: {node: '>= 18'}
     peerDependencies:
       postcss: ^8
@@ -5715,9 +5723,11 @@ packages:
     peerDependencies:
       postcss: ^8.4.31
 
-  postcss-rem-to-responsive-pixel@6.1.0:
-    resolution: {integrity: sha512-rttz/ThJWKpmhS134NcQCZQBE4CUJIAJAMx9DB0YudIeTH4fNp/hhhjxo14RnGF/OGdBpX9PQw1bnPZ56H0E1Q==}
+  postcss-rem-to-responsive-pixel@7.0.0:
+    resolution: {integrity: sha512-m22VCg246RpyFDTByp0cR0KwK4MhnRgrX5yHTTkFeQddFqhCviE13P5c8Dwi2ISBB4DVeJnEYBxEKjUNyrigdQ==}
     engines: {node: '>=16.6.0'}
+    peerDependencies:
+      postcss: ^8
 
   postcss-replace-overflow-wrap@4.0.0:
     resolution: {integrity: sha512-KmF7SBPphT4gPPcKZc7aDkweHiKEEO8cla/GjcBK+ckKxiZslIu3C4GCRW3DNfL0o7yW7kMQu9xlZ1kXRXLXtw==}
@@ -6795,8 +6805,8 @@ packages:
     resolution: {integrity: sha512-UkNnS18JlVE7JNlxfYQVeD1h3XAEum5gad58EBmD6n7oNg4rO6EEQkYcEa3Q0Z2aUiGS4KKWUrSlYXzzJjo9kA==}
     hasBin: true
 
-  weapp-tailwindcss@4.8.12:
-    resolution: {integrity: sha512-mPLJVAtnqVtTPSmth4Q/ZFe9f0tkwOrz9UgOcFLmu2xsncHzRcgfUFjjo7pp5fCmcXwXW1nOy5OqCaegJJSyMg==}
+  weapp-tailwindcss@4.8.13:
+    resolution: {integrity: sha512-dXH0JDVbQ6P5XRfxRanudrmMfmS8ohAK1WsoE13hcoL/8CWViMxHcMDY1xQzwa0S3icdjTsmd8s3vykkmFZqnw==}
     engines: {node: ^18.17.0 || >=20.5.0}
     hasBin: true
 
@@ -9441,11 +9451,11 @@ snapshots:
       source-map-js: 1.2.1
     optional: true
 
-  '@vue/compiler-core@3.5.25':
+  '@vue/compiler-core@3.5.26':
     dependencies:
       '@babel/parser': 7.28.5
-      '@vue/shared': 3.5.25
-      entities: 4.5.0
+      '@vue/shared': 3.5.26
+      entities: 7.0.0
       estree-walker: 2.0.2
       source-map-js: 1.2.1
 
@@ -9455,10 +9465,10 @@ snapshots:
       '@vue/shared': 3.5.22
     optional: true
 
-  '@vue/compiler-dom@3.5.25':
+  '@vue/compiler-dom@3.5.26':
     dependencies:
-      '@vue/compiler-core': 3.5.25
-      '@vue/shared': 3.5.25
+      '@vue/compiler-core': 3.5.26
+      '@vue/shared': 3.5.26
 
   '@vue/compiler-sfc@3.5.22':
     dependencies:
@@ -9473,13 +9483,13 @@ snapshots:
       source-map-js: 1.2.1
     optional: true
 
-  '@vue/compiler-sfc@3.5.25':
+  '@vue/compiler-sfc@3.5.26':
     dependencies:
       '@babel/parser': 7.28.5
-      '@vue/compiler-core': 3.5.25
-      '@vue/compiler-dom': 3.5.25
-      '@vue/compiler-ssr': 3.5.25
-      '@vue/shared': 3.5.25
+      '@vue/compiler-core': 3.5.26
+      '@vue/compiler-dom': 3.5.26
+      '@vue/compiler-ssr': 3.5.26
+      '@vue/shared': 3.5.26
       estree-walker: 2.0.2
       magic-string: 0.30.21
       postcss: 8.5.6
@@ -9491,10 +9501,10 @@ snapshots:
       '@vue/shared': 3.5.22
     optional: true
 
-  '@vue/compiler-ssr@3.5.25':
+  '@vue/compiler-ssr@3.5.26':
     dependencies:
-      '@vue/compiler-dom': 3.5.25
-      '@vue/shared': 3.5.25
+      '@vue/compiler-dom': 3.5.26
+      '@vue/shared': 3.5.26
 
   '@vue/reactivity@3.5.22':
     dependencies:
@@ -9525,7 +9535,7 @@ snapshots:
   '@vue/shared@3.5.22':
     optional: true
 
-  '@vue/shared@3.5.25': {}
+  '@vue/shared@3.5.26': {}
 
   '@weapp-core/escape@6.0.1': {}
 
@@ -9552,15 +9562,15 @@ snapshots:
       postcss-selector-parser: 7.1.1
       postcss-value-parser: 4.2.0
 
-  '@weapp-tailwindcss/postcss@2.0.8':
+  '@weapp-tailwindcss/postcss@2.1.0':
     dependencies:
       '@weapp-core/escape': 6.0.1
       '@weapp-tailwindcss/postcss-calc': 1.0.0(postcss@8.5.6)
       '@weapp-tailwindcss/shared': 1.1.1
       postcss: 8.5.6
       postcss-preset-env: 10.5.0(postcss@8.5.6)
-      postcss-pxtransform: 4.1.9(postcss@8.5.6)
-      postcss-rem-to-responsive-pixel: 6.1.0
+      postcss-pxtrans: 1.0.0(postcss@8.5.6)
+      postcss-rem-to-responsive-pixel: 7.0.0(postcss@8.5.6)
       postcss-selector-parser: 7.1.1
       postcss-value-parser: 4.2.0
 
@@ -10790,6 +10800,8 @@ snapshots:
   entities@4.5.0: {}
 
   entities@6.0.1: {}
+
+  entities@7.0.0: {}
 
   env-paths@2.2.1: {}
 
@@ -13274,6 +13286,11 @@ snapshots:
     dependencies:
       postcss: 8.5.6
 
+  postcss-plugin-shared@1.0.0(postcss@8.5.6):
+    dependencies:
+      defu: 6.1.4
+      postcss: 8.5.6
+
   postcss-preset-env@10.5.0(postcss@8.5.6):
     dependencies:
       '@csstools/postcss-alpha-function': 1.0.1(postcss@8.5.6)
@@ -13352,11 +13369,12 @@ snapshots:
       postcss: 8.5.6
       postcss-selector-parser: 7.1.1
 
-  postcss-pxtransform@4.1.8(postcss@8.5.6):
+  postcss-pxtrans@1.0.0(postcss@8.5.6):
     dependencies:
       postcss: 8.5.6
+      postcss-plugin-shared: 1.0.0(postcss@8.5.6)
 
-  postcss-pxtransform@4.1.9(postcss@8.5.6):
+  postcss-pxtransform@4.1.8(postcss@8.5.6):
     dependencies:
       postcss: 8.5.6
 
@@ -13371,7 +13389,10 @@ snapshots:
       postcss: 8.5.6
       postcss-value-parser: 4.2.0
 
-  postcss-rem-to-responsive-pixel@6.1.0: {}
+  postcss-rem-to-responsive-pixel@7.0.0(postcss@8.5.6):
+    dependencies:
+      postcss: 8.5.6
+      postcss-plugin-shared: 1.0.0(postcss@8.5.6)
 
   postcss-replace-overflow-wrap@4.0.0(postcss@8.5.6):
     dependencies:
@@ -14589,19 +14610,19 @@ snapshots:
       fs-extra: 11.3.2
       pathe: 2.0.3
 
-  weapp-tailwindcss@4.8.12(tailwindcss@4.1.18):
+  weapp-tailwindcss@4.8.13(tailwindcss@4.1.18):
     dependencies:
       '@ast-core/escape': 1.0.1
       '@babel/parser': 7.28.5
       '@babel/traverse': 7.28.5
       '@babel/types': 7.28.5
       '@tailwindcss-mangle/config': 6.1.0
-      '@vue/compiler-dom': 3.5.25
-      '@vue/compiler-sfc': 3.5.25
+      '@vue/compiler-dom': 3.5.26
+      '@vue/compiler-sfc': 3.5.26
       '@weapp-core/escape': 6.0.1
       '@weapp-core/regex': 1.0.1
       '@weapp-tailwindcss/logger': 1.1.0
-      '@weapp-tailwindcss/postcss': 2.0.8
+      '@weapp-tailwindcss/postcss': 2.1.0
       '@weapp-tailwindcss/shared': 1.1.1
       cac: 6.7.14
       debug: 4.4.3
