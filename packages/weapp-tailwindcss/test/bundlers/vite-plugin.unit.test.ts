@@ -246,6 +246,36 @@ describe('bundlers/vite UnifiedViteWeappTailwindcssPlugin', () => {
     expect(source.startsWith('tailwind:')).toBeTruthy()
   })
 
+  it('can disable only css import rewriting through disabled.rewriteCssImports', () => {
+    currentContext = createContext({ disabled: { rewriteCssImports: true } as any })
+    currentContext.twPatcher.majorVersion = 4
+    const plugins = UnifiedViteWeappTailwindcssPlugin({
+      disabled: { rewriteCssImports: true },
+    })
+    const rewritePlugin = plugins?.find(plugin => plugin.name === `${vitePluginName}:rewrite-css-imports`)
+    const postPlugin = plugins?.find(plugin => plugin.name === 'weapp-tailwindcss:adaptor:post')
+    expect(rewritePlugin).toBeUndefined()
+    expect(postPlugin).toBeTruthy()
+  })
+
+  it('keeps tailwindcss imports rewritten when plugin is disabled for tailwind v4 projects', async () => {
+    currentContext = createContext({ disabled: true })
+    currentContext.twPatcher.majorVersion = 4
+    const plugins = UnifiedViteWeappTailwindcssPlugin()
+    expect(plugins?.length).toBe(1)
+    const rewritePlugin = plugins?.[0]
+    expect(rewritePlugin?.name).toBe(`${vitePluginName}:rewrite-css-imports`)
+    expect(currentContext.twPatcher.patch).not.toHaveBeenCalled()
+
+    const transform = typeof rewritePlugin?.transform === 'function'
+      ? rewritePlugin.transform.bind(rewritePlugin)
+      : rewritePlugin?.transform?.handler?.bind(rewritePlugin)
+    expect(transform).toBeTypeOf('function')
+
+    const result = await transform?.('@import "tailwindcss";', '/src/app.css') as TransformResult
+    expect(result?.code).toContain('@import "weapp-tailwindcss/index.css";')
+  })
+
   it('can disable css import rewriting through options', () => {
     ;(currentContext as any).rewriteCssImports = false
     currentContext.twPatcher.majorVersion = 4
@@ -381,9 +411,12 @@ const fallback = "bg-[#434332] px-[32px]"
     expect(code).not.toContain('bg-[#434332]')
   })
 
-  it('returns undefined when disabled', () => {
-    currentContext = createContext({ disabled: true })
-    const plugins = UnifiedViteWeappTailwindcssPlugin()
+  it('returns undefined when disabled plugin and css rewrite are both turned off', () => {
+    currentContext = createContext({ disabled: { plugin: true, rewriteCssImports: true } as any })
+    const plugins = UnifiedViteWeappTailwindcssPlugin({
+      // pass through to keep object shape
+      disabled: { plugin: true, rewriteCssImports: true },
+    })
     expect(plugins).toBeUndefined()
     expect(currentContext.twPatcher.patch).not.toHaveBeenCalled()
   })

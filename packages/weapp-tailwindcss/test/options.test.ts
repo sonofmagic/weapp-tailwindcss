@@ -138,6 +138,21 @@ describe('get options', () => {
     expect(cacheOptions?.dir).toBe(path.join(process.cwd(), 'node_modules', '.cache', 'tailwindcss-patch'))
   })
 
+  describe('px2rpx options', () => {
+    it('defaults to undefined', () => {
+      expect(getCompilerContext().px2rpx).toBeUndefined()
+    })
+
+    it.each([
+      ['enabled as boolean', true],
+      ['disabled as boolean', false],
+      ['custom options object', { selectorBlackList: ['van-'] }],
+    ] as const)('preserves px2rpx when %s', (_label, px2rpx) => {
+      const config = getCompilerContext({ px2rpx })
+      expect(config.px2rpx).toEqual(px2rpx)
+    })
+  })
+
   // it('customAttributes map defu merge', () => {
   //   // const { customAttributes } = getCompilerContext()
 

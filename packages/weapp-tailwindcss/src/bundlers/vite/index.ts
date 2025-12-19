@@ -13,6 +13,7 @@ import { setupPatchRecorder } from '@/tailwindcss/recorder'
 import { collectRuntimeClassSet, refreshTailwindRuntimeState } from '@/tailwindcss/runtime'
 import { createUniAppXAssetTask, createUniAppXPlugins } from '@/uni-app-x'
 import { getGroupedEntries } from '@/utils'
+import { resolveDisabledOptions } from '@/utils/disabled'
 import { resolvePackageDir } from '@/utils/resolve-package'
 import { processCachedTask } from '../shared/cache'
 import { resolveTailwindcssImport, rewriteTailwindcssImportsInCode } from '../shared/css-imports'
@@ -151,8 +152,58 @@ export function UnifiedViteWeappTailwindcssPlugin(options: UserDefinedOptions = 
     uniAppX,
     disabledDefaultTemplateHandler,
   } = opts
-  if (disabled) {
-    return
+
+  const disabledOptions = resolveDisabledOptions(disabled)
+  const tailwindcssMajorVersion = initialTwPatcher.majorVersion ?? 0
+  const shouldRewriteCssImports = opts.rewriteCssImports !== false
+    && !disabledOptions.rewriteCssImports
+    && (rewriteCssImportsSpecified || tailwindcssMajorVersion >= 4)
+  const rewritePlugins: Plugin[] = !shouldRewriteCssImports
+    ? []
+    : [
+        {
+          name: `${vitePluginName}:rewrite-css-imports`,
+          enforce: 'pre',
+          resolveId: {
+            order: 'pre',
+            handler(id, importer) {
+              const replacement = resolveTailwindcssImport(id, weappTailwindcssDirPosix, {
+                join: joinPosixPath,
+                appType,
+              })
+              if (!replacement) {
+                return null
+              }
+              if (importer && !isCssLikeImporter(importer)) {
+                return null
+              }
+              return replacement
+            },
+          },
+          transform: {
+            order: 'pre',
+            handler(code, id) {
+              if (!isCSSRequest(id)) {
+                return null
+              }
+              const rewritten = rewriteTailwindcssImportsInCode(code, weappTailwindcssDirPosix, {
+                join: joinPosixPath,
+                appType,
+              })
+              if (!rewritten) {
+                return null
+              }
+              return {
+                code: rewritten,
+                map: null,
+              }
+            },
+          },
+        },
+      ]
+
+  if (disabledOptions.plugin) {
+    return rewritePlugins.length ? rewritePlugins : undefined
   }
 
   const customAttributesEntities = toCustomAttributesEntities(customAttributes)
@@ -207,52 +258,6 @@ export function UnifiedViteWeappTailwindcssPlugin(options: UserDefinedOptions = 
     }
   }
   onLoad()
-  const shouldRewriteCssImports = opts.rewriteCssImports !== false
-    && (rewriteCssImportsSpecified || (runtimeState.twPatcher.majorVersion ?? 0) >= 4)
-  const rewritePlugins: Plugin[] = !shouldRewriteCssImports
-    ? []
-    : [
-        {
-          name: `${vitePluginName}:rewrite-css-imports`,
-          enforce: 'pre',
-          resolveId: {
-            order: 'pre',
-            handler(id, importer) {
-              const replacement = resolveTailwindcssImport(id, weappTailwindcssDirPosix, {
-                join: joinPosixPath,
-                appType,
-              })
-              if (!replacement) {
-                return null
-              }
-              if (importer && !isCssLikeImporter(importer)) {
-                return null
-              }
-              return replacement
-            },
-          },
-          transform: {
-            order: 'pre',
-            handler(code, id) {
-              if (!isCSSRequest(id)) {
-                return null
-              }
-              const rewritten = rewriteTailwindcssImportsInCode(code, weappTailwindcssDirPosix, {
-                join: joinPosixPath,
-                appType,
-              })
-              if (!rewritten) {
-                return null
-              }
-              return {
-                code: rewritten,
-                map: null,
-              }
-            },
-          },
-        },
-      ]
-
   const getResolvedConfig = () => resolvedConfig
   const uniAppXPlugins = uniAppX
     ? createUniAppXPlugins({

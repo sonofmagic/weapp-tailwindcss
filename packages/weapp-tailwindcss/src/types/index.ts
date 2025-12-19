@@ -4,7 +4,7 @@ import type { SourceMap } from 'magic-string'
 import type { Document, Result as PostcssResult, Root } from 'postcss'
 import type { ILengthUnitsPatchOptions, TailwindcssPatcher } from 'tailwindcss-patch'
 import type { ICreateCacheReturnType } from '../cache'
-import type { UserDefinedOptions } from '../typedoc.export'
+import type { DisabledOptions, UserDefinedOptions } from '../typedoc.export'
 import type { ItemOrItemArray } from './base'
 
 type AsyncableMethod<T> = T extends (...args: infer A) => infer R
@@ -12,6 +12,7 @@ type AsyncableMethod<T> = T extends (...args: infer A) => infer R
   : never
 
 export type {
+  DisabledOptions,
   UserDefinedOptions,
 }
 

@@ -16,6 +16,38 @@ vi.mock('@/wxml', () => ({
   createTemplateHandler: templateHandlerFactory,
 }))
 
+type InternalUserDefinedOptions = import('@/types').InternalUserDefinedOptions
+type Px2rpxOption = InternalUserDefinedOptions['px2rpx']
+
+const customAttributesEntities: import('@/types').ICustomAttributesEntities = [
+  ['view', ['class']],
+]
+
+function createContext(px2rpx?: Px2rpxOption): InternalUserDefinedOptions {
+  return {
+    cssPreflight: {},
+    cssPreflightRange: 'all' as const,
+    escapeMap: { '&': '_amp' },
+    cssChildCombinatorReplaceValue: 'view + view',
+    injectAdditionalCssVarScope: true,
+    cssSelectorReplacement: { root: '.app', universal: false },
+    rem2rpx: false,
+    postcssOptions: {},
+    cssRemoveProperty: true,
+    cssRemoveHoverPseudoClass: false,
+    cssPresetEnv: { stage: 0 },
+    uniAppX: true,
+    px2rpx,
+    arbitraryValues: { allowDoubleQuotes: true },
+    jsPreserveClass: vi.fn(),
+    babelParserOptions: { sourceType: 'module' },
+    ignoreCallExpressionIdentifiers: [/^tw/],
+    ignoreTaggedTemplateExpressionIdentifiers: ['twMerge'],
+    inlineWxs: true,
+    disabledDefaultTemplateHandler: true,
+  } as unknown as InternalUserDefinedOptions
+}
+
 describe('createHandlersFromContext', () => {
   beforeEach(() => {
     styleHandlerFactory.mockClear()
@@ -34,32 +66,7 @@ describe('createHandlersFromContext', () => {
     jsHandlerFactory.mockReturnValueOnce(jsHandler)
     templateHandlerFactory.mockReturnValueOnce(templateHandler)
 
-    const ctx = {
-      cssPreflight: {},
-      cssPreflightRange: 'all' as const,
-      escapeMap: { '&': '_amp' },
-      cssChildCombinatorReplaceValue: 'view + view',
-      injectAdditionalCssVarScope: true,
-      cssSelectorReplacement: { root: '.app', universal: false },
-      rem2rpx: false,
-      postcssOptions: {},
-      cssRemoveProperty: true,
-      cssRemoveHoverPseudoClass: false,
-      cssPresetEnv: { stage: 0 },
-      uniAppX: true,
-      px2rpx: { selectorBlackList: ['van-'] },
-      arbitraryValues: { allowDoubleQuotes: true },
-      jsPreserveClass: vi.fn(),
-      babelParserOptions: { sourceType: 'module' },
-      ignoreCallExpressionIdentifiers: [/^tw/],
-      ignoreTaggedTemplateExpressionIdentifiers: ['twMerge'],
-      inlineWxs: true,
-      disabledDefaultTemplateHandler: true,
-    } as unknown as import('@/types').InternalUserDefinedOptions
-
-    const customAttributesEntities: import('@/types').ICustomAttributesEntities = [
-      ['view', ['class']],
-    ]
+    const ctx = createContext({ selectorBlackList: ['van-'] })
 
     const result = createHandlersFromContext(
       ctx,
@@ -89,5 +96,28 @@ describe('createHandlersFromContext', () => {
       jsHandler,
       templateHandler,
     })
+  })
+
+  it.each([
+    ['enabled', true],
+    ['disabled', false],
+    ['omitted', undefined],
+  ] as const)('forwards px2rpx when %s', async (_label, px2rpx) => {
+    const { createHandlersFromContext } = await import('@/context/handlers')
+
+    const styleHandler = vi.fn()
+    styleHandlerFactory.mockReturnValueOnce(styleHandler)
+    jsHandlerFactory.mockReturnValueOnce(vi.fn())
+    templateHandlerFactory.mockReturnValueOnce(vi.fn())
+
+    createHandlersFromContext(
+      createContext(px2rpx),
+      customAttributesEntities,
+      true,
+    )
+
+    expect(styleHandlerFactory).toHaveBeenCalledWith(expect.objectContaining({
+      px2rpx,
+    }))
   })
 })
