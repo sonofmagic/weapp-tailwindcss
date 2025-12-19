@@ -11,7 +11,3 @@
 		}
 	}
 </script>
-
-<style src="./main.css">
-
-</style>
