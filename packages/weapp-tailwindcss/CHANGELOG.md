@@ -1,5 +1,13 @@
 # weapp-tailwindcss
 
+## 4.8.14
+
+### Patch Changes
+
+- [`cd3975d`](https://github.com/sonofmagic/weapp-tailwindcss/commit/cd3975dfeefa5a1ba298b6724d2af681a26cd260) Thanks [@sonofmagic](https://github.com/sonofmagic)! - 开启 css import 重写时，将 `@import "tailwindcss"` 映射到 `@import "weapp-tailwindcss/index.css"`。
+
+- [`ade6fe0`](https://github.com/sonofmagic/weapp-tailwindcss/commit/ade6fe02b994f08f8d4c422485a982b4aaad34b8) Thanks [@sonofmagic](https://github.com/sonofmagic)! - 为 `disabled` 增加细粒度配置，支持仅关闭主流程或仅关闭 `@import "tailwindcss"` 重写，方便多端场景按需禁用。
+
 ## 4.8.13
 
 ### Patch Changes
