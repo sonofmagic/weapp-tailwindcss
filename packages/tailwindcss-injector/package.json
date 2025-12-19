@@ -54,7 +54,7 @@
   },
   "dependencies": {
     "@weapp-tailwindcss/shared": "workspace:*",
-    "fs-extra": "^11.3.2",
+    "fs-extra": "^11.3.3",
     "htmlparser2": "^10.0.0",
     "magic-string": "^0.30.21",
     "postcss": "catalog:postcss85",

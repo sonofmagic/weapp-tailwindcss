@@ -197,7 +197,7 @@
     "execa": "^9.6.1",
     "express": "^5.2.1",
     "fast-glob": "^3.3.3",
-    "fs-extra": "^11.3.2",
+    "fs-extra": "^11.3.3",
     "get-value": "^4.0.1",
     "gulp": "^5.0.1",
     "gulp-postcss": "^10.0.0",
