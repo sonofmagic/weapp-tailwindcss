@@ -30,7 +30,7 @@
     "sass-embedded": "^1.97.0",
     "tailwindcss": "^3.4.19",
     "typescript": "^5.9.3",
-    "weapp-tailwindcss": "^4.8.13",
+    "weapp-tailwindcss": "^4.8.14",
     "weapp-vite": "^5.11.3"
   },
   "pnpm": {

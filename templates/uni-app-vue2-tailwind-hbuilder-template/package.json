@@ -15,7 +15,7 @@
     "dotenv": "^16.5.0",
     "postcss": "7",
     "tailwindcss": "npm:@tailwindcss/postcss7-compat",
-    "weapp-tailwindcss": "^4.8.13",
+    "weapp-tailwindcss": "^4.8.14",
     "webpack": "npm:webpack@webpack-4"
   },
   "uni-app": {

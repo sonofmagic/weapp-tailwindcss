@@ -139,8 +139,8 @@ importers:
         specifier: ^4.1.1
         version: 4.1.1
       weapp-tailwindcss:
-        specifier: ^4.8.13
-        version: 4.8.13(tailwindcss@3.4.19(yaml@2.8.2))
+        specifier: ^4.8.14
+        version: 4.8.14(tailwindcss@3.4.19(yaml@2.8.2))
       weapp-tailwindcss-children:
         specifier: ^0.1.0
         version: 0.1.0(tailwindcss@3.4.19(yaml@2.8.2))
@@ -4656,8 +4656,8 @@ packages:
     peerDependencies:
       tailwindcss: ^3.0.0
 
-  weapp-tailwindcss@4.8.13:
-    resolution: {integrity: sha512-dXH0JDVbQ6P5XRfxRanudrmMfmS8ohAK1WsoE13hcoL/8CWViMxHcMDY1xQzwa0S3icdjTsmd8s3vykkmFZqnw==}
+  weapp-tailwindcss@4.8.14:
+    resolution: {integrity: sha512-uhleGDqQe6lOvxxCTNwnhs+RWfpHA1GlXgEZGguXnu7Xa8uCYA8Zt6yvYLn7dBHasU2opR4aGYTuW0yp2z0KOQ==}
     engines: {node: ^18.17.0 || >=20.5.0}
     hasBin: true
 
@@ -9988,7 +9988,7 @@ snapshots:
     dependencies:
       tailwindcss: 3.4.19(yaml@2.8.2)
 
-  weapp-tailwindcss@4.8.13(tailwindcss@3.4.19(yaml@2.8.2)):
+  weapp-tailwindcss@4.8.14(tailwindcss@3.4.19(yaml@2.8.2)):
     dependencies:
       '@ast-core/escape': 1.0.1
       '@babel/parser': 7.28.5
