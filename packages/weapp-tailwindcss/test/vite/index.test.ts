@@ -9,6 +9,7 @@ describe('parseVueRequest', () => {
       'type': 'style',
       'index': 0,
       'inline': '',
+      'lang': 'css',
       'lang.css': '',
     })
   })
