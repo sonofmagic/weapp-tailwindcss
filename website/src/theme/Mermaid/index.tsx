@@ -101,6 +101,8 @@ export default function MermaidWithToolbar({ value, ...rest }: Props) {
     }
 
     let cleanup: (() => void) | undefined
+    let observerCleanup: (() => void) | undefined
+    let fallbackTimer: number | undefined
     const markReady = () => {
       if (!readyRef.current) {
         readyRef.current = true
@@ -148,14 +150,43 @@ export default function MermaidWithToolbar({ value, ...rest }: Props) {
     const timer = window.setInterval(() => {
       attempts += 1
       const ok = tryAttach()
-      if (ok || attempts > 10) {
+      if (ok || attempts > 25) {
         window.clearInterval(timer)
+        // 如果定时探测未命中，在节点异步插入较慢时再用 MutationObserver 捕获
+        if (!ok && !readyRef.current) {
+          const content = contentRef.current
+          if (content) {
+            const mo = new MutationObserver(() => {
+              const ready = tryAttach()
+              if (ready) {
+                mo.disconnect()
+              }
+            })
+            mo.observe(content, { childList: true, subtree: true })
+            observerCleanup = () => mo.disconnect()
+            // 兜底：长时间仍未触发时也标记为 ready，避免永远透明
+            fallbackTimer = window.setTimeout(() => {
+              if (!readyRef.current) {
+                const ok2 = tryAttach()
+                if (!ok2) {
+                  markReady()
+                }
+              }
+            }, 4000)
+          }
+        }
       }
     }, 80)
     return () => {
       window.clearInterval(timer)
       if (cleanup) {
         cleanup()
+      }
+      if (observerCleanup) {
+        observerCleanup()
+      }
+      if (fallbackTimer) {
+        window.clearTimeout(fallbackTimer)
       }
     }
   }, [value])

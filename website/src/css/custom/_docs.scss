@@ -142,6 +142,13 @@ html[data-theme='dark'] .docs-cta-secondary {
   border-top: 1px solid var(--doc-table-border);
 }
 
+:where(.theme-doc-markdown) table tbody tr:last-child td:first-child {
+  border-bottom-left-radius: 10px;
+}
+:where(.theme-doc-markdown) table tbody tr:last-child td:last-child {
+  border-bottom-right-radius: 10px;
+}
+
 :where(.theme-doc-markdown) table tbody tr:nth-child(even) td {
   background-color: var(--doc-table-row-alt);
 }

@@ -1,5 +1,6 @@
 import type { SidebarsConfig } from '@docusaurus/plugin-content-docs'
 
+import aiSidebar from './sidebars/ai'
 import API from './sidebars/api'
 import communitySidebar from './sidebars/community'
 import issuesSidebar from './sidebars/issues'
@@ -13,6 +14,7 @@ const sidebars: SidebarsConfig = {
   optionsSidebar,
   issuesSidebar,
   API,
+  aiSidebar,
   communitySidebar,
   migrationsSidebar,
   tailwindcssSidebar,

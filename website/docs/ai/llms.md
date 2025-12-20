@@ -1,3 +1,8 @@
+---
+sidebar: aiSidebar
+title: LLM 友好文档 (llms.txt)
+---
+
 # LLM 友好文档 (llms.txt)
 
 ## 生成方式

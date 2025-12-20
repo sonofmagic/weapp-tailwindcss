@@ -1,3 +1,8 @@
+---
+sidebar: aiSidebar
+title: AI 生成小程序代码
+---
+
 # AI 生成小程序代码
 
 ## 提升效率
