@@ -91,7 +91,8 @@
 .content {
   display: inline-block;
   min-height: 120px;
-  opacity: 0;
+  /* 默认可见，避免极端情况下因 ready 状态未切换而一直透明 */
+  opacity: 1;
   transform-origin: 0 0;
   will-change: transform;
 }

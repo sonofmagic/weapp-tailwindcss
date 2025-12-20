@@ -60,11 +60,17 @@ export default function MermaidWithToolbar({ value, ...rest }: Props) {
   const centeredRef = useRef(false)
   const readyRef = useRef(false)
   const liveHref = useRef<string>(MERMAID_LIVE)
+  const markReady = useCallback(() => {
+    if (!readyRef.current) {
+      readyRef.current = true
+      setIsReady(true)
+    }
+  }, [])
   const estimatedHeight = useMemo(() => {
     const lines = value.split('\n').filter(line => line.trim().length > 0).length
     const height = lines * 26 + 140
     return Math.max(260, Math.min(height, 760))
-  }, [value])
+  }, [markReady, value])
 
   useEffect(() => {
     let cancelled = false
@@ -77,6 +83,12 @@ export default function MermaidWithToolbar({ value, ...rest }: Props) {
       cancelled = true
     }
   }, [value])
+
+  // Fallback: even在极慢渲染或观察失效时也确保展示内容
+  useEffect(() => {
+    const timer = window.setTimeout(() => markReady(), 800)
+    return () => window.clearTimeout(timer)
+  }, [markReady, value])
 
   useEffect(() => {
     const applySize = (content: HTMLDivElement, svg: SVGSVGElement) => {
@@ -103,12 +115,6 @@ export default function MermaidWithToolbar({ value, ...rest }: Props) {
     let cleanup: (() => void) | undefined
     let observerCleanup: (() => void) | undefined
     let fallbackTimer: number | undefined
-    const markReady = () => {
-      if (!readyRef.current) {
-        readyRef.current = true
-        setIsReady(true)
-      }
-    }
     const tryAttach = () => {
       const content = contentRef.current
       const svg = content?.querySelector('svg')
