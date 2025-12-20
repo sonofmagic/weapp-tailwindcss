@@ -1,5 +1,11 @@
 # weapp-tailwindcss
 
+## 4.8.15
+
+### Patch Changes
+
+- [`bb845b5`](https://github.com/sonofmagic/weapp-tailwindcss/commit/bb845b5ce3d01d19d04336c8fbf6fca47f6a3347) Thanks [@sonofmagic](https://github.com/sonofmagic)! - 修复 uni-app-x Vite 插件在 pre 钩子上解析 SCSS 导致 iOS 打包报错的问题，并补充 .uvue lang.scss 回归用例。
+
 ## 4.8.14
 
 ### Patch Changes
