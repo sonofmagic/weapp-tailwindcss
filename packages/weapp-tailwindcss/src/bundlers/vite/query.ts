@@ -15,7 +15,8 @@ export function parseVueRequest(id: string): {
   query: VueQuery
 } {
   const [filename, rawQuery] = id.split(`?`, 2)
-  const query = Object.fromEntries(new URLSearchParams(rawQuery)) as VueQuery
+  const searchParams = new URLSearchParams(rawQuery)
+  const query = Object.fromEntries(searchParams) as VueQuery & Record<string, string>
   if (query.vue != null) {
     query.vue = true
   }
@@ -30,6 +31,12 @@ export function parseVueRequest(id: string): {
   }
   if (query.scoped != null) {
     query.scoped = true
+  }
+
+  const langTypeMatch = [...searchParams.keys()].find(key => key.startsWith('lang.'))
+  const langType = query.lang || (langTypeMatch ? langTypeMatch.slice('lang.'.length) : undefined)
+  if (langType) {
+    query.lang = langType
   }
   return {
     filename,

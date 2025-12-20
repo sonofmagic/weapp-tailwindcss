@@ -32,6 +32,15 @@ interface CreateUniAppXPluginsOptions {
   getResolvedConfig: () => ResolvedConfig | undefined
 }
 
+const preprocessorLangs = new Set(['scss', 'sass', 'less', 'styl', 'stylus'])
+
+function isPreprocessorRequest(id: string, lang?: string): boolean {
+  if (lang && preprocessorLangs.has(lang)) {
+    return true
+  }
+  return /\.(?:scss|sass|less|styl|stylus)(?:\?|$)/.test(id)
+}
+
 export function createUniAppXPlugins(options: CreateUniAppXPluginsOptions): Plugin[] {
   const {
     appType,
@@ -51,6 +60,10 @@ export function createUniAppXPlugins(options: CreateUniAppXPluginsOptions): Plug
     async transform(code, id) {
       await runtimeState.patchPromise
       const { query } = parseVueRequest(id)
+      const lang = query.lang
+      if (enforce === 'pre' && isPreprocessorRequest(id, lang)) {
+        return
+      }
       if (isCSSRequest(id) || (query.vue && query.type === 'style')) {
         const postcssResult = await styleHandler(code, {
           isMainChunk: mainCssChunkMatcher(id, appType),
