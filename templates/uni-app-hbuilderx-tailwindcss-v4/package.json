@@ -11,7 +11,7 @@
   "devDependencies": {
     "@tailwindcss/postcss": "^4.1.18",
     "tailwindcss": "^4.1.18",
-    "weapp-tailwindcss": "^4.8.14"
+    "weapp-tailwindcss": "^4.8.15"
   },
   "pnpm": {
     "onlyBuiltDependencies": [

@@ -106,14 +106,14 @@
     "postcss-comment": "^2.0.0",
     "postcss-loader": "^8.1.1",
     "postcss-rem-to-responsive-pixel": "^6.0.2",
-    "sass": "^1.97.0",
+    "sass": "^1.97.1",
     "sass-loader": "~14.2.1",
     "tailwindcss": "^3.4.19",
     "tailwindcss-miniprogram-preset": "^2.0.0",
     "typescript": "^5.9.3",
     "vue-template-compiler": "^2.7.16",
-    "weapp-ide-cli": "^4.1.1",
-    "weapp-tailwindcss": "^4.8.14"
+    "weapp-ide-cli": "^4.1.2",
+    "weapp-tailwindcss": "^4.8.15"
   },
   "browserslist": [
     "Android >= 4",

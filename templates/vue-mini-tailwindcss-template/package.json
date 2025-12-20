@@ -27,11 +27,11 @@
     "eslint": "^9.39.1",
     "miniprogram-api-typings": "^4.1.0",
     "postcss": "^8.5.6",
-    "sass-embedded": "^1.97.0",
+    "sass-embedded": "^1.97.1",
     "tailwindcss": "^3.4.19",
     "typescript": "^5.9.3",
-    "weapp-tailwindcss": "^4.8.14",
-    "weapp-vite": "^5.11.3"
+    "weapp-tailwindcss": "^4.8.15",
+    "weapp-vite": "^5.11.4"
   },
   "pnpm": {
     "onlyBuiltDependencies": [

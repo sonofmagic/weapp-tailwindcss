@@ -130,11 +130,11 @@ importers:
         specifier: ^5.9.3
         version: 5.9.3
       weapp-ide-cli:
-        specifier: ^4.1.1
-        version: 4.1.1
+        specifier: ^4.1.2
+        version: 4.1.2
       weapp-tailwindcss:
-        specifier: ^4.8.14
-        version: 4.8.14(tailwindcss@4.1.18)
+        specifier: ^4.8.15
+        version: 4.8.15(tailwindcss@4.1.18)
       webpack:
         specifier: 5.103.0
         version: 5.103.0(@swc/core@1.3.96)
@@ -3901,6 +3901,10 @@ packages:
     resolution: {integrity: sha512-Xr9F6z6up6Ws+NjzMCZc6WXg2YFRlrLP9NQDO3VQrWrfiojdhS56TzueT88ze0uBdCTwEIhQ3ptnmKeWGFAe0A==}
     engines: {node: '>=14.14'}
 
+  fs-extra@11.3.3:
+    resolution: {integrity: sha512-VWSRii4t0AFm6ixFFmLLx1t7wS1gh+ckoa84aOeapGum0h+EZd1EhEumSB+ZdDLnEPuucsVB9oB7cxJHap6Afg==}
+    engines: {node: '>=14.14'}
+
   fs-extra@8.1.0:
     resolution: {integrity: sha512-yhlQgA6mnOJUKOsRUFsgJdQCvkKhcz8tlZG5HBQfReYZy46OwLcY+Zia0mtdHsOo9y/hP+CxMN0TU9QxoOtG4g==}
     engines: {node: '>=6 <7 || >=8'}
@@ -6801,12 +6805,12 @@ packages:
   wcwidth@1.0.1:
     resolution: {integrity: sha512-XHPEwS0q6TaxcvG85+8EYkbiCux2XtWG2mkc47Ng2A77BQu9+DqIOJldST4HgPkuea7dvKSj5VgX3P1d4rW8Tg==}
 
-  weapp-ide-cli@4.1.1:
-    resolution: {integrity: sha512-UkNnS18JlVE7JNlxfYQVeD1h3XAEum5gad58EBmD6n7oNg4rO6EEQkYcEa3Q0Z2aUiGS4KKWUrSlYXzzJjo9kA==}
+  weapp-ide-cli@4.1.2:
+    resolution: {integrity: sha512-8gGsdpz9aMztS+VDGqK3sKMoq1XB1qTlNb4CdTGAhmQf1K6Im+Ee5rL7Tu6rV+uZT9enbTVhzFGwrAg+8mCVhw==}
     hasBin: true
 
-  weapp-tailwindcss@4.8.14:
-    resolution: {integrity: sha512-uhleGDqQe6lOvxxCTNwnhs+RWfpHA1GlXgEZGguXnu7Xa8uCYA8Zt6yvYLn7dBHasU2opR4aGYTuW0yp2z0KOQ==}
+  weapp-tailwindcss@4.8.15:
+    resolution: {integrity: sha512-k4Q7iIsuy4emlQCy/0fHfkYtmV/JYimJYj20VyUcBE5bzIdt6TeEzlrJIrM+TNc/G1C+YY07i7ePkLHm7k6LjQ==}
     engines: {node: ^18.17.0 || >=20.5.0}
     hasBin: true
 
@@ -11507,6 +11511,12 @@ snapshots:
       jsonfile: 6.2.0
       universalify: 2.0.1
 
+  fs-extra@11.3.3:
+    dependencies:
+      graceful-fs: 4.2.11
+      jsonfile: 6.2.0
+      universalify: 2.0.1
+
   fs-extra@8.1.0:
     dependencies:
       graceful-fs: 4.2.11
@@ -14603,14 +14613,14 @@ snapshots:
     dependencies:
       defaults: 1.0.4
 
-  weapp-ide-cli@4.1.1:
+  weapp-ide-cli@4.1.2:
     dependencies:
       '@weapp-core/logger': 2.0.0
       execa: 9.6.1
-      fs-extra: 11.3.2
+      fs-extra: 11.3.3
       pathe: 2.0.3
 
-  weapp-tailwindcss@4.8.14(tailwindcss@4.1.18):
+  weapp-tailwindcss@4.8.15(tailwindcss@4.1.18):
     dependencies:
       '@ast-core/escape': 1.0.1
       '@babel/parser': 7.28.5

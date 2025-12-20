@@ -83,13 +83,13 @@
     "autoprefixer": "^10.4.22",
     "eslint": "^9.39.1",
     "postcss": "^8.5.6",
-    "sass": "^1.97.0",
+    "sass": "^1.97.1",
     "tailwindcss": "^3.4.19",
     "typescript": "^5.9.3",
     "unplugin-auto-import": "^20.3.0",
     "vite": "5.2.8",
-    "weapp-ide-cli": "^4.1.1",
-    "weapp-tailwindcss": "^4.8.14"
+    "weapp-ide-cli": "^4.1.2",
+    "weapp-tailwindcss": "^4.8.15"
   },
   "pnpm": {
     "onlyBuiltDependencies": [
