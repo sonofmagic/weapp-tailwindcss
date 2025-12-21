@@ -53,7 +53,7 @@ catalogs:
   reactRefresh018:
     react-refresh: ^0.18.0
   sass195:
-    sass: ^1.97.0
+    sass: ^1.97.1
   stylelint1625:
     stylelint: ^16.26.1
   tailwindMerge:
@@ -66,7 +66,7 @@ catalogs:
     tailwindcss: ^4.1.18
     tailwindcss4: npm:tailwindcss@^4.1.17
   tailwindcssPatch:
-    tailwindcss-patch: ^8.5.0
+    tailwindcss-patch: ^8.5.1
   tailwindcssRem:
     tailwindcss-rem2px-preset: ^1.0.3
   taro4:
@@ -112,7 +112,7 @@ catalogs:
     '@vue/compiler-sfc': ^3.5.26
     vue: ^3.5.26
   vueTsc318:
-    vue-tsc: ^3.1.8
+    vue-tsc: ^3.2.0
   weappChildren:
     weapp-tailwindcss-children: ^0.1.0
   weappIdeCli:
