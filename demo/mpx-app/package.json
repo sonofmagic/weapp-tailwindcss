@@ -22,7 +22,7 @@
     "build:e2e": "npm run build && npm run test:e2e",
     "test": "jest test/components",
     "open": "weapp open -p dist/wx",
-    "postinstall": "node ./scripts/patch-webpack-serialization.js && weapp-tw patch"
+    "postinstall": "weapp-tw patch"
   },
   "dependencies": {
     "@mpxjs/api-proxy": "^2.10.17",
@@ -76,7 +76,7 @@
     "weapp-ide-cli": "catalog:weappIdeCli",
     "weapp-tailwindcss": "workspace:*",
     "weapp-tailwindcss-children": "catalog:weappChildren",
-    "webpack": "^5.104.1"
+    "webpack": "5.99.9"
   },
   "browserslist": [
     "ios >= 8",

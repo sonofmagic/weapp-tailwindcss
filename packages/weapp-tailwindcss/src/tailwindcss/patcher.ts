@@ -301,7 +301,9 @@ function normalizeTailwindcssPatcherOptions(
 
 export function createTailwindcssPatcher(options?: CreateTailwindcssPatcherOptions): TailwindcssPatcherLike {
   const { basedir, cacheDir, supportCustomLengthUnitsPatch, tailwindcss, tailwindcssPatcherOptions } = options || {}
-  const cache: TailwindCacheOptions = {}
+  const cache: TailwindCacheOptions = {
+    driver: 'memory',
+  }
   const normalizedBasedir = basedir ? path.resolve(basedir) : undefined
   const cacheRoot = findNearestPackageRoot(normalizedBasedir) ?? normalizedBasedir ?? process.cwd()
 

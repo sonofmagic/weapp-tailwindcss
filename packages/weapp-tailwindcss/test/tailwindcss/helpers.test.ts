@@ -84,6 +84,7 @@ describe('tailwindcss helpers', () => {
     expect(tailwindcssPatcherMock).toHaveBeenCalledTimes(1)
     const callArgs = tailwindcssPatcherMock.mock.calls[0][0] as any
     expect(callArgs.cache).toMatchObject({ dir: path.resolve('/repo', 'cache') })
+    expect(callArgs.cache?.driver).toBe('memory')
     expect(callArgs.features?.extendLengthUnits).toBe(false)
     expect(callArgs.cwd).toBe('/repo')
     expect(Array.isArray(callArgs.tailwind?.resolve?.paths)).toBe(true)
@@ -99,7 +100,7 @@ describe('tailwindcss helpers', () => {
 
     const lastCall = tailwindcssPatcherMock.mock.calls[tailwindcssPatcherMock.mock.calls.length - 1]
     const callArgs = lastCall?.[0] as any
-    expect(callArgs.cache).toEqual({ dir: '/global/cache' })
+    expect(callArgs.cache).toEqual({ dir: '/global/cache', driver: 'memory' })
   })
 
   it('enables extendLengthUnits patch by default', async () => {
@@ -120,7 +121,7 @@ describe('tailwindcss helpers', () => {
 
     const lastCall = tailwindcssPatcherMock.mock.calls[tailwindcssPatcherMock.mock.calls.length - 1]
     const callArgs = lastCall?.[0] as any
-    expect(callArgs.cache).toEqual({ dir: path.resolve('/workspace', '.cache') })
+    expect(callArgs.cache).toEqual({ dir: path.resolve('/workspace', '.cache'), driver: 'memory' })
     cwdSpy.mockRestore()
   })
 
