@@ -1,6 +1,8 @@
 import type { InternalUserDefinedOptions } from '../types'
 import { defu, defuOverrideArray, groupBy, isMap, isRegexp, noop, regExpTest, removeExt } from '@weapp-tailwindcss/shared'
 
+export * from './hbuilderx'
+
 export {
   defu,
   defuOverrideArray,
