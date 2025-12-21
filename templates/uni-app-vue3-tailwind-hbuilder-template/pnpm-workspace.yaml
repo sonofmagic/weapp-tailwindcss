@@ -1,0 +1,5 @@
+ignoredBuiltDependencies:
+  - esbuild
+
+onlyBuiltDependencies:
+  - weapp-tailwindcss
