@@ -68,5 +68,8 @@
     "wetw": "0.1.0",
     "@weapp-tailwindcss/website": "1.0.12"
   },
-  "changesets": []
+  "changesets": [
+    "fast-geckos-tap",
+    "quick-camels-sell"
+  ]
 }
