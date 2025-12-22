@@ -1,5 +1,6 @@
 .navbar {
   @apply lg:border-b lg:border-slate-900/10 dark:border-slate-50/[0.06];
+
   // backdrop-filter: blur(18px);
   transition:
     background 0.4s ease,
@@ -12,33 +13,81 @@
 }
 
 [data-theme='light'] .navbar {
-  background: linear-gradient(120deg, rgba(255, 255, 255, 0.92), rgba(226, 232, 240, 0.75));
+  background: linear-gradient(120deg, rgb(255 255 255 / 92%), rgb(226 232 240 / 75%));
   box-shadow:
     0 12px 32px rgb(15 23 42 / 12%),
     inset 0 1px 0 rgb(255 255 255 / 45%);
 }
 
 [data-theme='dark'] .navbar {
-  background: linear-gradient(120deg, rgba(15, 23, 42, 0.88), rgba(15, 23, 42, 0.5));
+  background: linear-gradient(120deg, rgb(15 23 42 / 88%), rgb(15 23 42 / 50%));
   box-shadow: 0 8px 32px rgb(15 23 42 / 35%);
+}
+
+.navbar__items {
+  align-items: center;
+}
+
+.navbar__items--right {
+  gap: 0.35rem;
+}
+
+.navbar__github-link {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.5rem;
+  height: 2.5rem;
+  padding: 0;
+  font-size: 0;
+  line-height: 1;
+  color: var(--ifm-navbar-link-color);
+  border-radius: 9999px;
+  transition:
+    color 0.2s ease,
+    transform 0.2s ease;
+}
+
+.navbar__github-link::before {
+  display: inline-block;
+  width: 1.25rem;
+  height: 1.25rem;
+  content: '';
+  background: currentcolor;
+  mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='currentColor'%3E%3Cpath d='M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.387.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.726-4.042-1.61-4.042-1.61-.547-1.387-1.335-1.757-1.335-1.757-1.09-.745.083-.729.083-.729 1.205.085 1.84 1.235 1.84 1.235 1.07 1.834 2.807 1.304 3.492.997.108-.776.418-1.305.76-1.605-2.665-.304-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.435.372.81 1.102.81 2.222 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297 24 5.67 18.63.297 12 .297z'/%3E%3C/svg%3E")
+    center / contain no-repeat;
+}
+
+.navbar__github-link:hover {
+  color: var(--ifm-color-primary);
+  transform: translateY(-1px);
+}
+
+.navbar__github-link:active {
+  transform: translateY(0);
+}
+
+.navbar__github-link svg[class*='iconExternalLink'] {
+  display: none;
 }
 
 .footer {
   @apply lg:border-t lg:border-slate-900/10 dark:border-slate-50/[0.08];
-  background: linear-gradient(140deg, rgba(255, 255, 255, 0.95), rgba(240, 247, 255, 0.85));
+
   color: rgb(15 23 42);
+  background: linear-gradient(140deg, rgb(255 255 255 / 95%), rgb(240 247 255 / 85%));
+  box-shadow: 0 -18px 45px rgb(14 165 233 / 8%);
   backdrop-filter: blur(22px);
-  box-shadow: 0 -18px 45px rgb(14 165 233 / 0.08);
 }
 
 .footer .footer__title {
-  color: rgb(30 41 59);
   font-weight: 600;
+  color: rgb(30 41 59);
 }
 
 .footer a {
-  color: rgb(39 84 110);
   font-weight: 500;
+  color: rgb(39 84 110);
   transition: color 0.3s ease;
 }
 
@@ -51,15 +100,15 @@
 }
 
 .footer .footer__bottom {
-  border-top: 1px solid rgba(148, 163, 184, 0.35);
   padding-top: 1rem;
-  color: rgba(15, 23, 42, 0.75);
+  color: rgb(15 23 42 / 75%);
+  border-top: 1px solid rgb(148 163 184 / 35%);
 }
 
 [data-theme='dark'] .footer {
-  background: linear-gradient(140deg, rgba(15, 23, 42, 0.9), rgba(30, 41, 59, 0.82));
   color: rgb(226 232 240);
-  box-shadow: 0 -18px 45px rgb(14 165 233 / 0.15);
+  background: linear-gradient(140deg, rgb(15 23 42 / 90%), rgb(30 41 59 / 82%));
+  box-shadow: 0 -18px 45px rgb(14 165 233 / 15%);
 }
 
 [data-theme='dark'] .footer .footer__title {
@@ -75,8 +124,8 @@
 }
 
 [data-theme='dark'] .footer .footer__bottom {
-  border-top: 1px solid rgba(148, 163, 184, 0.2);
-  color: rgba(203, 213, 225, 0.7);
+  color: rgb(203 213 225 / 70%);
+  border-top: 1px solid rgb(148 163 184 / 20%);
 }
 
 [data-theme='light'] .DocSearch {

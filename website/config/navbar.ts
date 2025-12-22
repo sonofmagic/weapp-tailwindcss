@@ -62,6 +62,8 @@ const navbar: NonNullable<ThemeConfig['navbar']> = {
     {
       href: 'https://github.com/sonofmagic/weapp-tailwindcss',
       label: 'GitHub',
+      ariaLabel: 'GitHub repository',
+      className: 'navbar__github-link',
       position: 'right',
     },
   ],
