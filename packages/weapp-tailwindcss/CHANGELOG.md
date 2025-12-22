@@ -1,5 +1,15 @@
 # weapp-tailwindcss
 
+## 4.9.0
+
+### Minor Changes
+
+- [`01c4f02`](https://github.com/sonofmagic/weapp-tailwindcss/commit/01c4f025272a6b6fbe4021a713dc838bb92fc625) Thanks [@sonofmagic](https://github.com/sonofmagic)! - feat: 默认 tailwindcss-patcher 的缓存策略从 文件缓存，变为内存缓存，可通过配置恢复
+
+### Patch Changes
+
+- [`914b61c`](https://github.com/sonofmagic/weapp-tailwindcss/commit/914b61ca8995becda219d67ea98aa0ee6a2359a6) Thanks [@sonofmagic](https://github.com/sonofmagic)! - chore: 升级 tailwindcss-patch 优化 windows 系统下发生的 ERROR Unable to persist Tailwind class cache EPERM: operation not permitted, lstat '\\?\E:\workspace\uni-app-x-hbuilderx\node_modules\.cache\tailwindcss-patch\class-cache.json' 错误报告
+
 ## 4.9.0-alpha.0
 
 ### Minor Changes
