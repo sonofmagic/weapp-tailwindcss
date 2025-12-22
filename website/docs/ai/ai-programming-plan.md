@@ -96,6 +96,9 @@ sidebar: aiSidebar
 ## 三、选型建议
 
 ### 3.0 不同规模团队的决策要点
+- **提效优先结论**：追求最佳 AI 编程提效时，优先选 Claude Code（AI 工程化最完善，$100/月足够覆盖重度开发）；成本敏感可选 codex（工程化稍弱，约 $20/月满足多数场景）。
+- **多模态优势**：Gemini Pro 3 在图像/视觉理解上领先，适合涉及设计稿还原或多模态需求的团队，纯编程能力弱于 Claude Code/codex。
+- **极致降本路径**：在 SaaS 订阅外，还可组合开源项目自建中转站与号池，进一步压缩调用成本（需评估合规与运维成本）。
 - **个人 / 1-10 人**：优先 ChatGPT Plus、Claude Pro、Cursor Pro（或 Windsurf Free/Pro）+ Copilot Pro；关注易用与成本封顶。
 - **10-50 人**：Cursor Pro/Pro+ + Claude Max / ChatGPT Pro；国内可选 Doubao Lite/Pro + Windsurf Pro；统一 1-2 款 IDE，建立提示词与代码片段库。
 - **50-200 人**：国际（Cursor Pro+/Ultra + Claude Max / ChatGPT Pro）+ 国内（Doubao Pro 或 GLM Pro/Max + Windsurf/Trae）；开始启用 SSO、审计、内网代理，分团队额度管理。
