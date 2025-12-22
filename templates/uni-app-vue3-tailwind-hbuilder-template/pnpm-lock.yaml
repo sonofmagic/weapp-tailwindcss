@@ -25,8 +25,8 @@ importers:
         specifier: 5.4.21
         version: 5.4.21(lightningcss@1.30.2)
       weapp-tailwindcss:
-        specifier: ^4.9.0
-        version: 4.9.0(tailwindcss@3.4.19(yaml@2.8.2))
+        specifier: ^4.9.1
+        version: 4.9.1(tailwindcss@3.4.19(yaml@2.8.2))
 
 packages:
 
@@ -1536,8 +1536,8 @@ packages:
       terser:
         optional: true
 
-  weapp-tailwindcss@4.9.0:
-    resolution: {integrity: sha512-nsLECYAx+sMraxS+3DyAcI1qJiF0Pn/2GsNPSO3EmObPGHZ9UFC4AvzVH3Fwz8J9qgjr+x+EW+UATiUNm7lhWg==}
+  weapp-tailwindcss@4.9.1:
+    resolution: {integrity: sha512-CS9hL0tt3n4TfmMzj+SdEmHKKj0V6sqB52D/uGoF8qA2/kevFjErWHOD8Uo0vT5GLYIn5q1UyvvIzzaMaox48g==}
     engines: {node: ^18.17.0 || >=20.5.0}
     hasBin: true
 
@@ -3049,7 +3049,7 @@ snapshots:
       fsevents: 2.3.3
       lightningcss: 1.30.2
 
-  weapp-tailwindcss@4.9.0(tailwindcss@3.4.19(yaml@2.8.2)):
+  weapp-tailwindcss@4.9.1(tailwindcss@3.4.19(yaml@2.8.2)):
     dependencies:
       '@ast-core/escape': 1.0.1
       '@babel/parser': 7.28.5
