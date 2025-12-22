@@ -42,6 +42,7 @@ sidebar: aiSidebar
 | 代码执行（Code Interpreter） | 更高并发与用量                       | 最高并发/用量，适合数据分析与脚本                 | 团队并发/用量共享                                      |
 | 自定义工具/Memory            | ✓                                    | ✓（更高容量）                                     | ✓（团队共享，权限可管控）                              |
 | 团队/组织                    | 个人订阅                             | 可与 Team/Enterprise 联动                         | 席位制，含团队管理/审计入口                            |
+- 定价计算: [OpenAI Pricing](https://openai.com/pricing) / [API Pricing](https://openai.com/api/pricing)
 
 #### **Claude (Anthropic)**
 
@@ -59,6 +60,7 @@ sidebar: aiSidebar
 | 上下文/文件          | 更长上下文/文件上传               | 最高上下文/文件上限                                    | 最高上限，适合跨大仓库重构            |
 | Artifacts / Projects | ✓                                 | ✓（团队项目/共享空间）                                 | ✓（Premium 同享）                     |
 | 管理与审计           | ✗                                 | 管理后台、成员管理、单点登录                           | 管理后台、审计、Premium 支持          |
+- 定价计算: [Claude Pricing](https://claude.com/pricing)
 
 #### **Gemini Pro 3 / Flash (Google)**
 
@@ -78,6 +80,7 @@ sidebar: aiSidebar
 | Deep Research（深度研究） | 20 份/天           | 200 份/天               |
 | Gemini Code Assist/CLI    | 更高上限           | 最高上限                |
 | Jules（程式设计代理）     | 更高额度           | 最高额度                |
+- 定价计算: [Google AI Studio Pricing](https://ai.google.dev/pricing) / [Vertex AI Pricing](https://cloud.google.com/vertex-ai/pricing)
 | Project Mariner           | ✗                  | ✓（抢先体验，仅限美国） |
 
 **ChatGPT vs Claude vs Gemini Pro 3 对比（Team 编码场景）**
