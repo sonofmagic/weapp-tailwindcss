@@ -46,6 +46,7 @@ describe('uni-app-x vite plugins', () => {
       appType: 'uni-app',
       customAttributesEntities: [],
       disabledDefaultTemplateHandler: false,
+      isIosPlatform: true,
       mainCssChunkMatcher: vi.fn(() => true),
       runtimeState: { patchPromise: Promise.resolve() },
       styleHandler,
@@ -75,6 +76,56 @@ describe('uni-app-x vite plugins', () => {
   })
 
   it('skips pre hook for preprocessor styles and runs after preprocess', async () => {
+    const originalPlatform = process.env.UNI_UTS_PLATFORM
+    process.env.UNI_UTS_PLATFORM = 'app-ios'
+    try {
+      const styleHandler = vi.fn(async (code: string, options?: Record<string, unknown>) => ({
+        css: `css:${code}`,
+        map: {
+          toJSON: () => ({
+            version: 3,
+            file: options?.postcssOptions?.options?.from ?? '',
+            sources: [options?.postcssOptions?.options?.from ?? ''],
+            names: [],
+            mappings: '',
+            sourcesContent: [code],
+          }),
+        },
+      }))
+      const plugins = createUniAppXPlugins({
+        appType: 'uni-app',
+        customAttributesEntities: [],
+        disabledDefaultTemplateHandler: false,
+        isIosPlatform: true,
+        mainCssChunkMatcher: vi.fn(() => true),
+        runtimeState: { patchPromise: Promise.resolve() },
+        styleHandler,
+        jsHandler: vi.fn(),
+        ensureRuntimeClassSet: vi.fn(async () => new Set<string>()),
+        getResolvedConfig: () => ({ command: 'build', build: { watch: false } } as ResolvedConfig),
+      })
+      const cssPlugin = plugins.find((p): p is Plugin => p.name === 'weapp-tailwindcss:uni-app-x:css')
+      const preCssPlugin = plugins.find((p): p is Plugin => p.name === 'weapp-tailwindcss:uni-app-x:css:pre')
+      expect(cssPlugin).toBeDefined()
+      expect(preCssPlugin).toBeDefined()
+
+      const scssId = '/pages/index/index.uvue?vue&type=style&index=0&lang.scss'
+
+      const preResult = await preCssPlugin!.transform?.('$color: red;', scssId)
+      expect(preResult).toBeUndefined()
+      expect(styleHandler).not.toHaveBeenCalled()
+
+      const result = await cssPlugin!.transform?.('body { color: red; }', scssId)
+      expect(styleHandler).toHaveBeenCalledTimes(1)
+      expect(result?.code).toBe('css:body { color: red; }')
+      expect((result?.map as any)?.sources).toContain('/pages/index/index.uvue')
+    }
+    finally {
+      process.env.UNI_UTS_PLATFORM = originalPlatform
+    }
+  })
+
+  it('pre hook continues for preprocessors on non-iOS platforms', async () => {
     const styleHandler = vi.fn(async (code: string, options?: Record<string, unknown>) => ({
       css: `css:${code}`,
       map: {
@@ -92,6 +143,7 @@ describe('uni-app-x vite plugins', () => {
       appType: 'uni-app',
       customAttributesEntities: [],
       disabledDefaultTemplateHandler: false,
+      isIosPlatform: false,
       mainCssChunkMatcher: vi.fn(() => true),
       runtimeState: { patchPromise: Promise.resolve() },
       styleHandler,
@@ -99,21 +151,12 @@ describe('uni-app-x vite plugins', () => {
       ensureRuntimeClassSet: vi.fn(async () => new Set<string>()),
       getResolvedConfig: () => ({ command: 'build', build: { watch: false } } as ResolvedConfig),
     })
-    const cssPlugin = plugins.find((p): p is Plugin => p.name === 'weapp-tailwindcss:uni-app-x:css')
     const preCssPlugin = plugins.find((p): p is Plugin => p.name === 'weapp-tailwindcss:uni-app-x:css:pre')
-    expect(cssPlugin).toBeDefined()
     expect(preCssPlugin).toBeDefined()
 
     const scssId = '/pages/index/index.uvue?vue&type=style&index=0&lang.scss'
-
-    const preResult = await preCssPlugin!.transform?.('$color: red;', scssId)
-    expect(preResult).toBeUndefined()
-    expect(styleHandler).not.toHaveBeenCalled()
-
-    const result = await cssPlugin!.transform?.('body { color: red; }', scssId)
+    await preCssPlugin!.transform?.('$color: red;', scssId)
     expect(styleHandler).toHaveBeenCalledTimes(1)
-    expect(result?.code).toBe('css:body { color: red; }')
-    expect((result?.map as any)?.sources).toContain('/pages/index/index.uvue')
   })
 
   it('runs nvue transform with runtime set and custom options', async () => {

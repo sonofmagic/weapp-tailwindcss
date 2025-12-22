@@ -14,6 +14,7 @@ import { processCachedTask } from '@/bundlers/shared/cache'
 import { toAbsoluteOutputPath } from '@/bundlers/shared/module-graph'
 import { parseVueRequest } from '@/bundlers/vite/query'
 import { cleanUrl, formatPostcssSourceMap, isCSSRequest } from '@/bundlers/vite/utils'
+import { resolveUniUtsPlatform } from '@/utils'
 import { transformUVue } from './transform'
 
 interface UniAppXRuntimeState {
@@ -30,15 +31,21 @@ interface CreateUniAppXPluginsOptions {
   jsHandler: JsHandler
   ensureRuntimeClassSet: (force?: boolean) => Promise<Set<string>>
   getResolvedConfig: () => ResolvedConfig | undefined
+  isIosPlatform?: boolean
 }
 
 const preprocessorLangs = new Set(['scss', 'sass', 'less', 'styl', 'stylus'])
 
 function isPreprocessorRequest(id: string, lang?: string): boolean {
-  if (lang && preprocessorLangs.has(lang)) {
+  const normalizedLang = lang?.toLowerCase()
+  if (normalizedLang && preprocessorLangs.has(normalizedLang)) {
     return true
   }
-  return /\.(?:scss|sass|less|styl|stylus)(?:\?|$)/.test(id)
+  const inlineLangMatch = id.match(/lang\.([a-z]+)/i)
+  if (inlineLangMatch && preprocessorLangs.has(inlineLangMatch[1].toLowerCase())) {
+    return true
+  }
+  return /\.(?:scss|sass|less|styl|stylus)(?:\?|$)/i.test(id)
 }
 
 export function createUniAppXPlugins(options: CreateUniAppXPluginsOptions): Plugin[] {
@@ -46,6 +53,7 @@ export function createUniAppXPlugins(options: CreateUniAppXPluginsOptions): Plug
     appType,
     customAttributesEntities,
     disabledDefaultTemplateHandler,
+    isIosPlatform: providedIosPlatform,
     mainCssChunkMatcher,
     runtimeState,
     styleHandler,
@@ -53,45 +61,61 @@ export function createUniAppXPlugins(options: CreateUniAppXPluginsOptions): Plug
     ensureRuntimeClassSet,
     getResolvedConfig,
   } = options
+  const isIosPlatform = providedIosPlatform ?? resolveUniUtsPlatform().isAppIos
 
-  const cssPlugins = ([undefined, 'pre'] as ('pre' | 'post' | undefined)[]).map<Plugin>(enforce => ({
-    name: `weapp-tailwindcss:uni-app-x:css${enforce ? `:${enforce}` : ''}`,
-    enforce,
+  async function transformStyle(code: string, id: string, query?: ReturnType<typeof parseVueRequest>['query']) {
+    const parsed = query ?? parseVueRequest(id).query
+    if (isCSSRequest(id) || (parsed.vue && parsed.type === 'style')) {
+      const postcssResult = await styleHandler(code, {
+        isMainChunk: mainCssChunkMatcher(id, appType),
+        postcssOptions: {
+          options: {
+            from: id,
+            map: {
+              inline: false,
+              annotation: false,
+              // PostCSS 可能返回虚拟文件，因此需要启用这一项以获取源内容
+              sourcesContent: true,
+              // 若上游预处理器已经生成 source map，sources 中可能出现重复条目
+            },
+          },
+        },
+      })
+      const rawPostcssMap = postcssResult.map.toJSON()
+      const postcssMap = await formatPostcssSourceMap(
+        rawPostcssMap as Omit<RawSourceMap, 'version'> as ExistingRawSourceMap,
+        cleanUrl(id),
+      )
+      return {
+        code: postcssResult.css,
+        map: postcssMap as SourceMap,
+      } as TransformResult
+    }
+  }
+
+  const cssPrePlugin: Plugin = {
+    name: 'weapp-tailwindcss:uni-app-x:css:pre',
+    enforce: 'pre',
     async transform(code, id) {
       await runtimeState.patchPromise
       const { query } = parseVueRequest(id)
       const lang = query.lang
-      if (enforce === 'pre' && isPreprocessorRequest(id, lang)) {
+      if (isIosPlatform && isPreprocessorRequest(id, lang)) {
         return
       }
-      if (isCSSRequest(id) || (query.vue && query.type === 'style')) {
-        const postcssResult = await styleHandler(code, {
-          isMainChunk: mainCssChunkMatcher(id, appType),
-          postcssOptions: {
-            options: {
-              from: id,
-              map: {
-                inline: false,
-                annotation: false,
-                // PostCSS 可能返回虚拟文件，因此需要启用这一项以获取源内容
-                sourcesContent: true,
-                // 若上游预处理器已经生成 source map，sources 中可能出现重复条目
-              },
-            },
-          },
-        })
-        const rawPostcssMap = postcssResult.map.toJSON()
-        const postcssMap = await formatPostcssSourceMap(
-          rawPostcssMap as Omit<RawSourceMap, 'version'> as ExistingRawSourceMap,
-          cleanUrl(id),
-        )
-        return {
-          code: postcssResult.css,
-          map: postcssMap as SourceMap,
-        } as TransformResult
-      }
+      return transformStyle(code, id, query)
     },
-  }))
+  }
+
+  const cssPlugin: Plugin = {
+    name: 'weapp-tailwindcss:uni-app-x:css',
+    async transform(code, id) {
+      await runtimeState.patchPromise
+      return transformStyle(code, id)
+    },
+  }
+
+  const cssPlugins = [cssPlugin, cssPrePlugin]
 
   const nvuePlugin: Plugin = {
     name: 'weapp-tailwindcss:uni-app-x:nvue',

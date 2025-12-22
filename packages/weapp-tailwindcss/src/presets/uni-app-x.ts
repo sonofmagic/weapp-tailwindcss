@@ -2,7 +2,7 @@ import type { PackageResolvingOptions } from 'local-pkg'
 import type { UserDefinedOptions } from '@/types'
 import process from 'node:process'
 import { logger } from '@/logger'
-import { defuOverrideArray } from '@/utils'
+import { defuOverrideArray, resolveUniUtsPlatform } from '@/utils'
 import { normalizeCssEntries } from './shared'
 
 export interface UniAppXOptions {
@@ -16,9 +16,12 @@ export interface UniAppXOptions {
 
 export function uniAppX(options: UniAppXOptions) {
   logger.info(`UNI_PLATFORM: ${process.env.UNI_PLATFORM}`)
-  const isApp = process.env.UNI_PLATFORM === 'app'
-    || process.env.UNI_PLATFORM === 'app-plus'
-    || process.env.UNI_PLATFORM === 'app-harmony'
+  const utsPlatform = resolveUniUtsPlatform()
+  const uniPlatform = resolveUniUtsPlatform(process.env.UNI_PLATFORM)
+
+  logger.info(`UNI_UTS_PLATFORM: ${utsPlatform.raw ?? 'undefined'}`)
+
+  const isApp = utsPlatform.isApp || uniPlatform.isApp
   const cssEntries = normalizeCssEntries(options.cssEntries)
   return defuOverrideArray<
     Partial<UserDefinedOptions>,

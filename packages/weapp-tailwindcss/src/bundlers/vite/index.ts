@@ -12,7 +12,7 @@ import { createDebug } from '@/debug'
 import { setupPatchRecorder } from '@/tailwindcss/recorder'
 import { collectRuntimeClassSet, refreshTailwindRuntimeState } from '@/tailwindcss/runtime'
 import { createUniAppXAssetTask, createUniAppXPlugins } from '@/uni-app-x'
-import { getGroupedEntries } from '@/utils'
+import { getGroupedEntries, resolveUniUtsPlatform } from '@/utils'
 import { resolveDisabledOptions } from '@/utils/disabled'
 import { resolvePackageDir } from '@/utils/resolve-package'
 import { processCachedTask } from '../shared/cache'
@@ -259,11 +259,14 @@ export function UnifiedViteWeappTailwindcssPlugin(options: UserDefinedOptions = 
   }
   onLoad()
   const getResolvedConfig = () => resolvedConfig
+  const utsPlatform = resolveUniUtsPlatform()
+  const isIosPlatform = utsPlatform.isAppIos
   const uniAppXPlugins = uniAppX
     ? createUniAppXPlugins({
         appType,
         customAttributesEntities,
         disabledDefaultTemplateHandler,
+        isIosPlatform,
         mainCssChunkMatcher,
         runtimeState,
         styleHandler,
