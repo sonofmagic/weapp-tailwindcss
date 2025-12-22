@@ -12530,10 +12530,10 @@ tailwindcss-miniprogram-preset@^2.0.0:
   dependencies:
     "@types/tailwindcss" "^2.2.4"
 
-tailwindcss-patch@^8.5.0:
-  version "8.5.0"
-  resolved "https://registry.yarnpkg.com/tailwindcss-patch/-/tailwindcss-patch-8.5.0.tgz#bbec3e46bc5eee501286437f11e49fd4c9d2de58"
-  integrity sha512-+NyJAIZ2EA/JOMQpxMVT3149DvsN7Istl3XCrt/Shdf+0P9zpZAiCpz/c6tx5f+9DypfJLtumctcND1X0GTwZw==
+tailwindcss-patch@^8.6.0:
+  version "8.6.0"
+  resolved "https://registry.yarnpkg.com/tailwindcss-patch/-/tailwindcss-patch-8.6.0.tgz#ed5af55aae29a9860b9e008ef88f5810f0fa6dd0"
+  integrity sha512-sQlMG+gzVjRa6JBXQMf4Tkjcigv5kGhJ17mORT18f2tF3QZ/27dWOscXMFWQLaxdt9D/4OwUFAI8rnPMzFC4Ng==
   dependencies:
     "@babel/generator" "^7.28.5"
     "@babel/parser" "^7.28.5"
@@ -12543,7 +12543,7 @@ tailwindcss-patch@^8.5.0:
     "@tailwindcss/node" "^4.1.18"
     cac "^6.7.14"
     consola "^3.4.2"
-    fs-extra "^11.3.2"
+    fs-extra "^11.3.3"
     local-pkg "^1.1.2"
     pathe "^2.0.3"
     postcss "^8.5.6"
@@ -13309,10 +13309,10 @@ weapp-ide-cli@^4.1.2:
     fs-extra "^11.3.3"
     pathe "^2.0.3"
 
-weapp-tailwindcss@^4.8.15:
-  version "4.8.15"
-  resolved "https://registry.yarnpkg.com/weapp-tailwindcss/-/weapp-tailwindcss-4.8.15.tgz#f009565ffc7c5d6a40df35b6eceb8c8135ff0a01"
-  integrity sha512-k4Q7iIsuy4emlQCy/0fHfkYtmV/JYimJYj20VyUcBE5bzIdt6TeEzlrJIrM+TNc/G1C+YY07i7ePkLHm7k6LjQ==
+weapp-tailwindcss@^4.9.0:
+  version "4.9.0"
+  resolved "https://registry.yarnpkg.com/weapp-tailwindcss/-/weapp-tailwindcss-4.9.0.tgz#74c7a4ad250f071a5cb21ac64e38c997e0e43bec"
+  integrity sha512-nsLECYAx+sMraxS+3DyAcI1qJiF0Pn/2GsNPSO3EmObPGHZ9UFC4AvzVH3Fwz8J9qgjr+x+EW+UATiUNm7lhWg==
   dependencies:
     "@ast-core/escape" "~1.0.1"
     "@babel/parser" "~7.28.5"
@@ -13335,7 +13335,7 @@ weapp-tailwindcss@^4.8.15:
     lru-cache "10.4.3"
     magic-string "0.30.21"
     semver "~7.7.3"
-    tailwindcss-patch "^8.5.0"
+    tailwindcss-patch "^8.6.0"
     webpack-sources "3.3.3"
     yaml "^2.8.2"
 

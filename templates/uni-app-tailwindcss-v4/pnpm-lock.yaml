@@ -106,8 +106,8 @@ importers:
         specifier: ^4.1.2
         version: 4.1.2
       weapp-tailwindcss:
-        specifier: ^4.8.15
-        version: 4.8.15(tailwindcss@4.1.18)
+        specifier: ^4.9.0
+        version: 4.9.0(tailwindcss@4.1.18)
 
 packages:
 
@@ -2736,10 +2736,6 @@ packages:
     resolution: {integrity: sha512-oRXApq54ETRj4eMiFzGnHWGy+zo5raudjuxN0b8H7s/RU2oW0Wvsx9O0ACRN/kRq9E8Vu/ReskGB5o3ji+FzHQ==}
     engines: {node: '>=12'}
 
-  fs-extra@11.3.2:
-    resolution: {integrity: sha512-Xr9F6z6up6Ws+NjzMCZc6WXg2YFRlrLP9NQDO3VQrWrfiojdhS56TzueT88ze0uBdCTwEIhQ3ptnmKeWGFAe0A==}
-    engines: {node: '>=14.14'}
-
   fs-extra@11.3.3:
     resolution: {integrity: sha512-VWSRii4t0AFm6ixFFmLLx1t7wS1gh+ckoa84aOeapGum0h+EZd1EhEumSB+ZdDLnEPuucsVB9oB7cxJHap6Afg==}
     engines: {node: '>=14.14'}
@@ -4196,8 +4192,8 @@ packages:
   tailwindcss-config@1.1.3:
     resolution: {integrity: sha512-7AN01Cwz2vd/vl6nKwoR0y/KlgpbKBREp1Q+MHJw8QF53AueVRFgU2Cqq0yhIQ4nC2wGvEJtlBCTeKYPX3TCXQ==}
 
-  tailwindcss-patch@8.5.0:
-    resolution: {integrity: sha512-+NyJAIZ2EA/JOMQpxMVT3149DvsN7Istl3XCrt/Shdf+0P9zpZAiCpz/c6tx5f+9DypfJLtumctcND1X0GTwZw==}
+  tailwindcss-patch@8.6.0:
+    resolution: {integrity: sha512-sQlMG+gzVjRa6JBXQMf4Tkjcigv5kGhJ17mORT18f2tF3QZ/27dWOscXMFWQLaxdt9D/4OwUFAI8rnPMzFC4Ng==}
     hasBin: true
     peerDependencies:
       tailwindcss: '>=2.0.0'
@@ -4443,8 +4439,8 @@ packages:
     resolution: {integrity: sha512-8gGsdpz9aMztS+VDGqK3sKMoq1XB1qTlNb4CdTGAhmQf1K6Im+Ee5rL7Tu6rV+uZT9enbTVhzFGwrAg+8mCVhw==}
     hasBin: true
 
-  weapp-tailwindcss@4.8.15:
-    resolution: {integrity: sha512-k4Q7iIsuy4emlQCy/0fHfkYtmV/JYimJYj20VyUcBE5bzIdt6TeEzlrJIrM+TNc/G1C+YY07i7ePkLHm7k6LjQ==}
+  weapp-tailwindcss@4.9.0:
+    resolution: {integrity: sha512-nsLECYAx+sMraxS+3DyAcI1qJiF0Pn/2GsNPSO3EmObPGHZ9UFC4AvzVH3Fwz8J9qgjr+x+EW+UATiUNm7lhWg==}
     engines: {node: ^18.17.0 || >=20.5.0}
     hasBin: true
 
@@ -7027,7 +7023,7 @@ snapshots:
     dependencies:
       '@tailwindcss-mangle/shared': 4.1.1
       c12: 3.3.1
-      fs-extra: 11.3.2
+      fs-extra: 11.3.3
       is-css-request: 1.0.1
       pathe: 2.0.3
     transitivePeerDependencies:
@@ -8186,12 +8182,6 @@ snapshots:
   fresh@0.5.2: {}
 
   fs-extra@10.1.0:
-    dependencies:
-      graceful-fs: 4.2.11
-      jsonfile: 6.2.0
-      universalify: 2.0.1
-
-  fs-extra@11.3.2:
     dependencies:
       graceful-fs: 4.2.11
       jsonfile: 6.2.0
@@ -9891,7 +9881,7 @@ snapshots:
       jiti: 2.6.1
       lilconfig: 3.1.3
 
-  tailwindcss-patch@8.5.0(tailwindcss@4.1.18):
+  tailwindcss-patch@8.6.0(tailwindcss@4.1.18):
     dependencies:
       '@babel/generator': 7.28.5
       '@babel/parser': 7.28.5
@@ -9901,7 +9891,7 @@ snapshots:
       '@tailwindcss/node': 4.1.18
       cac: 6.7.14
       consola: 3.4.2
-      fs-extra: 11.3.2
+      fs-extra: 11.3.3
       local-pkg: 1.1.2
       pathe: 2.0.3
       postcss: 8.5.6
@@ -10128,7 +10118,7 @@ snapshots:
       fs-extra: 11.3.3
       pathe: 2.0.3
 
-  weapp-tailwindcss@4.8.15(tailwindcss@4.1.18):
+  weapp-tailwindcss@4.9.0(tailwindcss@4.1.18):
     dependencies:
       '@ast-core/escape': 1.0.1
       '@babel/parser': 7.28.5
@@ -10151,7 +10141,7 @@ snapshots:
       lru-cache: 10.4.3
       magic-string: 0.30.21
       semver: 7.7.3
-      tailwindcss-patch: 8.5.0(tailwindcss@4.1.18)
+      tailwindcss-patch: 8.6.0(tailwindcss@4.1.18)
       webpack-sources: 3.3.3
       yaml: 2.8.2
     transitivePeerDependencies:

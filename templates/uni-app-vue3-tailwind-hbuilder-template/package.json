@@ -22,9 +22,16 @@
     "postcss": "^8.5.6",
     "tailwindcss": "3.4.19",
     "vite": "5.4.21",
-    "weapp-tailwindcss": "^4.8.15"
+    "weapp-tailwindcss": "^4.9.0"
   },
   "dependencies": {
     "@weapp-tailwindcss/merge-v3": "^0.1.3"
+  },
+  "packageManager": "pnpm@10.26.1",
+  "pnpm": {
+    "onlyBuiltDependencies": [
+      "weapp-tailwindcss",
+      "@weapp-tailwindcss/merge-v3"
+    ]
   }
 }

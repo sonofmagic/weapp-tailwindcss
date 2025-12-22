@@ -25,8 +25,8 @@ importers:
         specifier: 5.4.21
         version: 5.4.21(lightningcss@1.30.2)
       weapp-tailwindcss:
-        specifier: ^4.8.15
-        version: 4.8.15(tailwindcss@3.4.19(yaml@2.8.2))
+        specifier: ^4.9.0
+        version: 4.9.0(tailwindcss@3.4.19(yaml@2.8.2))
 
 packages:
 
@@ -1446,8 +1446,8 @@ packages:
   tailwindcss-config@1.1.3:
     resolution: {integrity: sha512-7AN01Cwz2vd/vl6nKwoR0y/KlgpbKBREp1Q+MHJw8QF53AueVRFgU2Cqq0yhIQ4nC2wGvEJtlBCTeKYPX3TCXQ==}
 
-  tailwindcss-patch@8.5.1:
-    resolution: {integrity: sha512-ouK7/hjM3uvv2Fmmjbest6D9QXnM1D+LXcN/sOfzSUsaLm+wXuLcW6nut1nIXv/Ro/+xZtXZ5sK2NdX1KtbZeg==}
+  tailwindcss-patch@8.6.0:
+    resolution: {integrity: sha512-sQlMG+gzVjRa6JBXQMf4Tkjcigv5kGhJ17mORT18f2tF3QZ/27dWOscXMFWQLaxdt9D/4OwUFAI8rnPMzFC4Ng==}
     hasBin: true
     peerDependencies:
       tailwindcss: '>=2.0.0'
@@ -1536,8 +1536,8 @@ packages:
       terser:
         optional: true
 
-  weapp-tailwindcss@4.8.15:
-    resolution: {integrity: sha512-k4Q7iIsuy4emlQCy/0fHfkYtmV/JYimJYj20VyUcBE5bzIdt6TeEzlrJIrM+TNc/G1C+YY07i7ePkLHm7k6LjQ==}
+  weapp-tailwindcss@4.9.0:
+    resolution: {integrity: sha512-nsLECYAx+sMraxS+3DyAcI1qJiF0Pn/2GsNPSO3EmObPGHZ9UFC4AvzVH3Fwz8J9qgjr+x+EW+UATiUNm7lhWg==}
     engines: {node: ^18.17.0 || >=20.5.0}
     hasBin: true
 
@@ -2953,7 +2953,7 @@ snapshots:
       jiti: 2.6.1
       lilconfig: 3.1.3
 
-  tailwindcss-patch@8.5.1(tailwindcss@3.4.19(yaml@2.8.2)):
+  tailwindcss-patch@8.6.0(tailwindcss@3.4.19(yaml@2.8.2)):
     dependencies:
       '@babel/generator': 7.28.5
       '@babel/parser': 7.28.5
@@ -3049,7 +3049,7 @@ snapshots:
       fsevents: 2.3.3
       lightningcss: 1.30.2
 
-  weapp-tailwindcss@4.8.15(tailwindcss@3.4.19(yaml@2.8.2)):
+  weapp-tailwindcss@4.9.0(tailwindcss@3.4.19(yaml@2.8.2)):
     dependencies:
       '@ast-core/escape': 1.0.1
       '@babel/parser': 7.28.5
@@ -3072,7 +3072,7 @@ snapshots:
       lru-cache: 10.4.3
       magic-string: 0.30.21
       semver: 7.7.3
-      tailwindcss-patch: 8.5.1(tailwindcss@3.4.19(yaml@2.8.2))
+      tailwindcss-patch: 8.6.0(tailwindcss@3.4.19(yaml@2.8.2))
       webpack-sources: 3.3.3
       yaml: 2.8.2
     transitivePeerDependencies:
