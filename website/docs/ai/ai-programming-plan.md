@@ -21,6 +21,7 @@ sidebar: aiSidebar
 **真实工程 Bug 修复基准**：SWE-bench（含真实 GitHub Issues）可参考 **[官方网站](https://www.swebench.com)**。
 **国产模型评测榜单**：OpenCompass（国内权威评测体系之一）可查看 **[排行榜](https://rank.opencompass.org.cn/home)**。
 **国产模型国际榜单入口**：AI Rank 汇总多家国际评测的国产模型成绩，可访问 **[AI Rank](https://airank.dev/)**。
+**国产模型评测项目**：开源评测框架 OpenCompass（国人自研，涵盖多维度对比）仓库见 **[github.com/open-compass/opencompass](https://github.com/open-compass/opencompass)**。
 
 ### 2.1 国际主流 AI 平台
 
