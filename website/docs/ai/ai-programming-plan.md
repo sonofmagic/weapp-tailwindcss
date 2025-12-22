@@ -100,18 +100,21 @@ sidebar: aiSidebar
 - **核心优势**: GLM-4.6 代码能力对齐 Claude Sonnet 4，国内最强 Coding 模型，token 消耗比前代少 30%
 - **性价比**: 最低 ¥40/月，约 Claude 价格的 1/7，性能达 Claude 的 9/10
 - **评价**: 在 CC-Bench 等 7 大权威测试中表现卓越，真实编程测试中超过 Claude Sonnet 4
+- **定价**: [bigmodel.cn/pricing](https://bigmodel.cn/pricing)
 
 #### **MiniMax M2**
 
 - **核心优势**: 专为 Agent 和代码而生，SWE-bench 冠军 (44% 成功率超 GPT-5 Codex)，价格仅 Claude 的 8%，速度是其 2 倍
 - **技术参数**: 100 亿激活参数，2300 亿总参数，20 万+ 上下文窗口
 - **评价**: 开源排名第一，前端设计和交互方案表现尤为出色
+- **定价**: [MiniMax 定价](https://platform.minimaxi.com/docs/guides/pricing?key=68aec7e84c75b9c918ccd10d)
 
 #### **Kimi K2 Thinking (月之暗面)**
 
 - **核心优势**: 万亿参数混合专家架构，支持 256K 上下文，能执行 200-300 次连续工具调用
 - **技术特点**: 原生 INT4 量化，低延迟模式下 2 倍加速且无损性能
 - **评价**: NIST 评估为当时中国最强 AI 模型，在 SWE-Multilingual 得分 61.1%
+- **定价**: [Kimi 定价](https://kimi.moonshot.cn/pricing)
 
 #### **通义千问 (阿里云 Qwen 系列)**
 
@@ -120,12 +123,14 @@ sidebar: aiSidebar
 - **适用场景**: 百炼平台一键编排多模型与工具，适合电商/内容/客服/代码等多轮推理场景；长文档与多模态（设计稿还原、表格解析）场景表现稳健
 - **计费/托管**: 百炼提供按量/订阅与企业版（VPC、审计、CMEK、数据不出境），支持私有化或混合云部署，便于满足国内合规
 - **评价**: 中文语料和行业场景打磨成熟，工程化与性价比兼顾，是国内团队可长期依赖的主力模型
+- **定价**: [百炼模型市场-Qwen](https://bailian.console.aliyun.com/#/model-market/detail/qwen-max)
 
 #### **火山方舟 (豆包 Doubao-Seed-Code)**
 
 - **核心优势**: 国内首个支持视觉理解的编程模型，可根据 UI 设计稿/截图生成代码，在 TRAE 环境中 SWE-Bench Verified 达 78.80% (SOTA)
 - **成本优势**: 业界综合成本降低 62.7%，国内最低价，同样任务成本仅为 Claude 的 8%，GLM 的 44%
 - **评价**: 前端页面复刻能力 "遥遥领先"，兼容 Anthropic API，易于迁移
+- **定价**: [Doubao 定价](https://www.volcengine.com/product/doubao)
 
 ### 2.3 IDE 与开发环境
 
