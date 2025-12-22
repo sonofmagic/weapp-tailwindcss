@@ -1,5 +1,11 @@
 # weapp-tailwindcss
 
+## 4.9.1
+
+### Patch Changes
+
+- [`4961548`](https://github.com/sonofmagic/weapp-tailwindcss/commit/4961548799c55bc3e07866e20354f69292d53345) Thanks [@sonofmagic](https://github.com/sonofmagic)! - 仅在 iOS 编译场景跳过 uni-app-x 预处理样式的 pre 钩子，补充 UNI_UTS_PLATFORM 平台解析工具与相关测试。
+
 ## 4.9.0
 
 ### Minor Changes
