@@ -21,6 +21,16 @@ const aiSidebar: SidebarConfig = [
         id: 'ai/llms',
         label: 'LLM 友好文档',
       },
+      {
+        type: 'doc',
+        id: 'ai/glm',
+        label: 'GLM4.6 模型使用体验',
+      },
+      {
+        type: 'doc',
+        id: 'ai/ai-limitations',
+        label: 'AI 的不足和缺陷',
+      },
     ],
   },
 ]
