@@ -1,0 +1,176 @@
+import { Meta } from '@storybook/blocks'
+
+<Meta title="介绍/欢迎" />
+
+# @weapp-tailwindcss/ui
+
+欢迎使用 **@weapp-tailwindcss/ui** 组件库！
+
+## 项目概述
+
+这是一个跨端的原子化 UI 组件库，专为微信小程序、Taro、uni-app 等多端框架设计。
+
+### 核心特性
+
+- 🎨 **原子化设计** - 基于 Tailwind CSS 的设计令牌系统
+- 🔧 **Headless 架构** - 完全可定制的组件实现
+- 🌍 **多端兼容** - 支持原生小程序、Taro、uni-app
+- ⚡ **高性能** - JIT 编译，按需生成样式
+- 🎯 **类型安全** - 完整的 TypeScript 支持
+
+## 快速开始
+
+### 安装
+
+```bash
+npm install @weapp-tailwindcss/ui
+# 或
+pnpm add @weapp-tailwindcss/ui
+```
+
+### 配置 Tailwind
+
+在 `tailwind.config.ts` 中添加预设：
+
+```typescript
+import { weappTailwindcssUIPreset } from '@weapp-tailwindcss/ui/preset'
+
+export default {
+  content: ['./src/**/*.{ts,tsx,vue,html}'],
+  presets: [weappTailwindcssUIPreset],
+}
+```
+
+### 引入样式
+
+```css
+/* Tailwind CSS v4 项目 */
+@import '@weapp-tailwindcss/ui/css';
+
+/* Tailwind CSS v3 项目 */
+@import '@weapp-tailwindcss/ui/tailwind3.css';
+```
+
+### 使用组件
+
+```typescript
+import { button } from '@weapp-tailwindcss/ui/variants'
+
+// 生成按钮样式类名
+const primaryButton = button({ tone: 'primary', appearance: 'solid' })
+// => 'wt-button'
+```
+
+## 设计原则
+
+### 原子化优先
+
+所有组件都使用原子化的 CSS 类构建，确保：
+- 样式可预测
+- 易于覆盖
+- 体积最小化
+
+### Headless 组件架构
+
+组件只提供逻辑和样式变体函数，UI 实现完全由开发者控制：
+- 适配器系统支持多平台
+- Hooks 提供可复用的状态逻辑
+- 样式变体函数生成最优类名
+
+### 跨端兼容
+
+通过适配器模式实现：
+- **Taro** - React 组件实现
+- **uni-app** - Vue 组件实现
+- **原生小程序** - 原生 WXML/JS 实现
+
+## 组件分类
+
+### Core 核心组件
+
+表单和交互的基础组件：
+- Button - 按钮
+- Input - 输入框
+- Textarea - 多行文本框
+- Checkbox - 复选框
+- Radio - 单选框
+- Switch - 开关
+
+### Data Display 数据展示
+
+展示各类数据的组件：
+- Avatar - 头像
+- Badge - 徽章
+- Card - 卡片
+- Tag - 标签
+- List - 列表
+- Table - 表格
+- Collapse - 折叠面板
+
+### Feedback 反馈组件
+
+用户操作反馈：
+- Alert - 警告提示
+- Toast - 轻提示
+- Modal - 模态框
+- Dialog - 对话框
+- Loading - 加载中
+- Progress - 进度条
+
+### Layout 布局组件
+
+页面布局辅助：
+- Divider - 分割线
+- Flex - 弹性布局
+- Grid - 网格布局
+
+### Navigation 导航组件
+
+页面导航相关：
+- Menu - 菜单
+- Tabs - 标签页
+- Pagination - 分页
+
+## 浏览组件
+
+点击左侧导航栏浏览各个组件的示例和文档。
+
+每个组件都提供：
+- ✅ 多种变体展示
+- ✅ 状态演示
+- ✅ 交互测试
+- ✅ API 文档
+- ✅ 无障碍支持
+
+## 技术栈
+
+- **TypeScript** - 类型安全
+- **Tailwind CSS v4** - 原子化 CSS
+- **tailwind-variants** - 样式变体管理
+- **Vite** - 快速构建
+- **Vitest** - 单元测试
+
+## 平台支持
+
+| 平台 | 支持状态 | 说明 |
+|------|---------|------|
+| 微信小程序 | ✅ 完全支持 | 原生 WXML/JS 实现 |
+| Taro | ✅ 完全支持 | React 组件 |
+| uni-app | ✅ 完全支持 | Vue 组件 |
+| 支付宝小程序 | 🚧 计划中 | - |
+| 百度小程序 | 🚧 计划中 | - |
+
+## 资源链接
+
+- 📦 [NPM Package](https://www.npmjs.com/package/@weapp-tailwindcss/ui)
+- 📚 [官方文档](https://tw.icebreaker.top/docs/community/ui)
+- 💻 [GitHub Repository](https://github.com/sonofmagic/weapp-tailwindcss)
+- 🐛 [问题反馈](https://github.com/sonofmagic/weapp-tailwindcss/issues)
+
+## 贡献
+
+欢迎贡献代码、提交问题或建议！
+
+## 许可证
+
+ISC License
