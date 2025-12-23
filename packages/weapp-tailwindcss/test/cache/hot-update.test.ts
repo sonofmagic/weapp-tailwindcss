@@ -18,7 +18,7 @@ describe('Cache Hot Update', () => {
 
   describe('processCachedTask', () => {
     it('should call transform on cache miss', async () => {
-      const cache = initializeCache({})
+      const cache = initializeCache()
       const transform = vi.fn().mockResolvedValue({ result: 'transformed' })
       const applyResult = vi.fn()
 
@@ -35,7 +35,7 @@ describe('Cache Hot Update', () => {
     })
 
     it('should hit cache on second call with same key and source', async () => {
-      const cache = initializeCache({})
+      const cache = initializeCache()
       const transform = vi.fn().mockResolvedValue({ result: 'transformed' })
       const applyResult = vi.fn()
       const onCacheHit = vi.fn()
@@ -72,7 +72,7 @@ describe('Cache Hot Update', () => {
     })
 
     it('should invalidate cache when source changes', async () => {
-      const cache = initializeCache({})
+      const cache = initializeCache()
       const transform = vi.fn()
         .mockResolvedValueOnce({ result: 'transformed-1' })
         .mockResolvedValueOnce({ result: 'transformed-2' })
@@ -106,7 +106,7 @@ describe('Cache Hot Update', () => {
     })
 
     it('should use different cache for different keys', async () => {
-      const cache = initializeCache({})
+      const cache = initializeCache()
       const transform1 = vi.fn().mockResolvedValue({ result: 'result-1' })
       const transform2 = vi.fn().mockResolvedValue({ result: 'result-2' })
       const applyResult1 = vi.fn()
@@ -135,7 +135,7 @@ describe('Cache Hot Update', () => {
     })
 
     it('should handle custom hashKey', async () => {
-      const cache = initializeCache({})
+      const cache = initializeCache()
       const transform = vi.fn().mockResolvedValue({ result: 'transformed' })
       const applyResult = vi.fn()
       const onCacheHit = vi.fn()
@@ -170,13 +170,28 @@ describe('Cache Hot Update', () => {
     })
 
     it('should handle readCache function', async () => {
-      const cache = initializeCache({})
+      const cache = initializeCache()
       const cachedValue = 'from-custom-cache'
       const readCache = vi.fn().mockReturnValue(cachedValue)
       const applyResult = vi.fn()
-      const transform = vi.fn()
+      const transform = vi.fn().mockResolvedValue({ result: 'transformed' })
       const onCacheHit = vi.fn()
 
+      // 第一次调用，缓存未命中
+      await processCachedTask({
+        cache,
+        cacheKey: 'test-key',
+        rawSource: 'source',
+        applyResult,
+        transform,
+      })
+
+      expect(transform).toHaveBeenCalledTimes(1)
+      expect(readCache).not.toHaveBeenCalled()
+
+      applyResult.mockClear()
+
+      // 第二次调用，使用自定义 readCache
       await processCachedTask({
         cache,
         cacheKey: 'test-key',
@@ -190,11 +205,11 @@ describe('Cache Hot Update', () => {
       expect(readCache).toHaveBeenCalled()
       expect(onCacheHit).toHaveBeenCalled()
       expect(applyResult).toHaveBeenCalledWith(cachedValue)
-      expect(transform).not.toHaveBeenCalled()
+      expect(transform).toHaveBeenCalledTimes(1) // 不应该再次调用 transform
     })
 
     it('should handle applyResult that returns promise', async () => {
-      const cache = initializeCache({})
+      const cache = initializeCache()
       const transform = vi.fn().mockResolvedValue({ result: 'transformed' })
       const applyResult = vi.fn().mockResolvedValue(undefined)
 
@@ -210,7 +225,7 @@ describe('Cache Hot Update', () => {
     })
 
     it('BC-003: should handle cache key conflicts with MD5 hash', async () => {
-      const cache = initializeCache({})
+      const cache = initializeCache()
       const transform = vi.fn()
         .mockResolvedValueOnce({ result: 'result-1' })
         .mockResolvedValueOnce({ result: 'result-2' })
@@ -244,7 +259,7 @@ describe('Cache Hot Update', () => {
 
   describe('Cache boundary conditions', () => {
     it('BC-009: should handle empty source', async () => {
-      const cache = initializeCache({})
+      const cache = initializeCache()
       const transform = vi.fn().mockResolvedValue({ result: '' })
       const applyResult = vi.fn()
 
@@ -261,7 +276,7 @@ describe('Cache Hot Update', () => {
     })
 
     it('should handle large source content', async () => {
-      const cache = initializeCache({})
+      const cache = initializeCache()
       const largeSource = 'x'.repeat(10 * 1024 * 1024) // 10MB
       const transform = vi.fn().mockResolvedValue({ result: 'transformed' })
       const applyResult = vi.fn()
@@ -279,7 +294,7 @@ describe('Cache Hot Update', () => {
     })
 
     it('should handle special characters in cache key', async () => {
-      const cache = initializeCache({})
+      const cache = initializeCache()
       const transform = vi.fn().mockResolvedValue({ result: 'transformed' })
       const applyResult = vi.fn()
 
@@ -307,7 +322,7 @@ describe('Cache Hot Update', () => {
     })
 
     it('should handle transform errors', async () => {
-      const cache = initializeCache({})
+      const cache = initializeCache()
       const transform = vi.fn().mockRejectedValue(new Error('Transform failed'))
       const applyResult = vi.fn()
 
@@ -324,7 +339,7 @@ describe('Cache Hot Update', () => {
     })
 
     it('should handle undefined rawSource', async () => {
-      const cache = initializeCache({})
+      const cache = initializeCache()
       const transform = vi.fn().mockResolvedValue({ result: 'transformed' })
       const applyResult = vi.fn()
 
@@ -343,7 +358,7 @@ describe('Cache Hot Update', () => {
 
   describe('Cache invalidation strategies', () => {
     it('should support manual cache invalidation', async () => {
-      const cache = initializeCache({})
+      const cache = initializeCache()
       const transform = vi.fn()
         .mockResolvedValueOnce({ result: 'result-1' })
         .mockResolvedValueOnce({ result: 'result-2' })
@@ -382,7 +397,7 @@ describe('Cache Hot Update', () => {
 
     it('BC-004: should invalidate cache on version change (simulated)', async () => {
       // 模拟版本变化导致缓存失效
-      const cache1 = initializeCache({})
+      const cache1 = initializeCache()
       const transform = vi.fn().mockResolvedValue({ result: 'result-1' })
       const applyResult = vi.fn()
 
@@ -397,7 +412,7 @@ describe('Cache Hot Update', () => {
       expect(transform).toHaveBeenCalledTimes(1)
 
       // 模拟版本升级后，创建新的 cache 实例
-      const cache2 = initializeCache({})
+      const cache2 = initializeCache()
       transform.mockResolvedValue({ result: 'result-2' })
       applyResult.mockClear()
 
@@ -417,7 +432,7 @@ describe('Cache Hot Update', () => {
 
   describe('Concurrent cache operations', () => {
     it('BC-005: should handle concurrent requests for same key', async () => {
-      const cache = initializeCache({})
+      const cache = initializeCache()
       let transformCallCount = 0
       const transform = vi.fn(async () => {
         transformCallCount++
