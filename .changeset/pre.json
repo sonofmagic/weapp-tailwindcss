@@ -72,6 +72,7 @@
   "changesets": [
     "fix-tailwind-v4-css-entries",
     "fix-weapp-vue-runtime",
-    "keep-v4-base-in-context"
+    "keep-v4-base-in-context",
+    "patch-weapp-tailwindcss-v4-config"
   ]
 }
