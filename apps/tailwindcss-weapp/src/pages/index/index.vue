@@ -1,10 +1,10 @@
 <script setup lang="ts">
+import debounce from 'lodash/debounce'
 import BaseLayout from '@/components/BaseLayout.vue'
 import FloatButton from '@/components/FloatButton.vue'
 import Navbar from '@/components/Navbar.vue'
 import { useSystemStore } from '@/stores'
 import { documentationNav } from '@/stores/documentation'
-import debounce from 'lodash/debounce'
 import { devDependencies } from '../../../package.json'
 
 const version = devDependencies.tailwindcss.slice(1)
@@ -151,7 +151,7 @@ function copy(data: string) {
       </view>
       <view class="flex items-center justify-center" @click="copy('https://github.com/sonofmagic/weapp-tailwindcss')">
         @powered by
-        <image class="ml-2 w-6" src="../../../../assets/logo.png" mode="widthFix" />
+        <image class="ml-2 w-6" src="../../../../../assets/logo.png" mode="widthFix" />
         weapp-tailwindcss!
       </view>
     </view>
