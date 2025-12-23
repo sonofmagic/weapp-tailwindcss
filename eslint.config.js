@@ -16,6 +16,9 @@ export default icebreaker(
       'packages/weapp-tailwindcss/*.css',
       'e2e/__snapshots__/**/*',
       'templates/**',
+      // 排除文档和quest文件
+      '.qoder/**/*.md',
+      'packages-runtime/ui/**/*.md',
     ],
     pnpm: false,
   },

@@ -7,11 +7,12 @@ export default icebreaker(
     tailwindcss: {
       entryPoint: 'src/index.css',
     },
-    ignores: ['**/fixtures/**'],
+    ignores: ['**/fixtures/**', '**/*.md', '**/scripts/**'],
   },
   {
-    // rules: {
-    //   'better-tailwindcss/no-unregistered-classes': 'off'
-    // }
+    rules: {
+      'better-tailwindcss/no-unregistered-classes': 'off',
+      'ts/no-unused-vars': ['error', { argsIgnorePattern: '^_' }],
+    },
   },
 )

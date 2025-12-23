@@ -1,18 +1,24 @@
 {
   "extends": "../../tsconfig.json",
   "compilerOptions": {
+    "jsx": "react-jsx",
     "paths": {
       "tailwind-merge": [
         "../merge/node_modules/tailwind-merge"
+      ],
+      "@tarojs/components": [
+        "./node_modules/@tarojs/components"
       ]
     },
     "types": [
       "vitest/globals"
     ],
-    "noEmit": true
+    "noEmit": true,
+    "skipLibCheck": true
   },
   "include": [
     "src/**/*.ts",
+    "src/**/*.tsx",
     "test/**/*.ts",
     "tailwind.config.ts"
   ]

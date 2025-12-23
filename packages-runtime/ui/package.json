@@ -42,6 +42,26 @@
       "types": "./dist/preset.d.ts",
       "import": "./dist/preset.js",
       "require": "./dist/preset.cjs"
+    },
+    "./components": {
+      "types": "./dist/components/index.d.ts",
+      "import": "./dist/components/index.js",
+      "require": "./dist/components/index.cjs"
+    },
+    "./utils": {
+      "types": "./dist/utils/index.d.ts",
+      "import": "./dist/utils/index.js",
+      "require": "./dist/utils/index.cjs"
+    },
+    "./hooks": {
+      "types": "./dist/hooks/index.d.ts",
+      "import": "./dist/hooks/index.js",
+      "require": "./dist/hooks/index.cjs"
+    },
+    "./adapters": {
+      "types": "./dist/adapters/index.d.ts",
+      "import": "./dist/adapters/index.js",
+      "require": "./dist/adapters/index.cjs"
     }
   },
   "files": [
@@ -53,7 +73,8 @@
     "test": "vitest run",
     "test:dev": "vitest",
     "lint": "eslint .",
-    "lint:fix": "eslint . --fix"
+    "lint:fix": "eslint . --fix",
+    "gen:component": "tsx scripts/generate-component.ts"
   },
   "publishConfig": {
     "exports": {
@@ -72,9 +93,37 @@
         "types": "./dist/preset.d.ts",
         "import": "./dist/preset.js",
         "require": "./dist/preset.cjs"
+      },
+      "./components": {
+        "types": "./dist/components/index.d.ts",
+        "import": "./dist/components/index.js",
+        "require": "./dist/components/index.cjs"
+      },
+      "./utils": {
+        "types": "./dist/utils/index.d.ts",
+        "import": "./dist/utils/index.js",
+        "require": "./dist/utils/index.cjs"
+      },
+      "./hooks": {
+        "types": "./dist/hooks/index.d.ts",
+        "import": "./dist/hooks/index.js",
+        "require": "./dist/hooks/index.cjs"
+      },
+      "./adapters": {
+        "types": "./dist/adapters/index.d.ts",
+        "import": "./dist/adapters/index.js",
+        "require": "./dist/adapters/index.cjs"
       }
     },
     "main": "./dist/index.css"
+  },
+  "peerDependencies": {
+    "react": ">=16.8.0"
+  },
+  "peerDependenciesMeta": {
+    "react": {
+      "optional": true
+    }
   },
   "dependencies": {
     "tailwind-merge": "catalog:tailwindMerge",
@@ -82,6 +131,7 @@
   },
   "devDependencies": {
     "@tailwindcss/vite": "catalog:tailwindcss4",
+    "@types/react": "^19.0.0",
     "tailwindcss": "catalog:tailwindcss4",
     "typescript": "catalog:typescript59",
     "vite": "^7.3.0",
