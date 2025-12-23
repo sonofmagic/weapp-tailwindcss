@@ -126,8 +126,8 @@ catalogs:
       version: 4.1.17
   tailwindcssPatch:
     tailwindcss-patch:
-      specifier: ^8.6.0
-      version: 8.6.0
+      specifier: ^8.6.1
+      version: 8.6.1
   tailwindcssRem:
     tailwindcss-rem2px-preset:
       specifier: ^1.0.3
@@ -1002,7 +1002,7 @@ importers:
         specifier: ^4.1.1
         version: 4.1.1
       tailwindcss:
-        specifier: ^3.4.18
+        specifier: ^3.4.19
         version: 3.4.19(tsx@4.21.0)(yaml@2.8.2)
       unplugin-auto-import:
         specifier: ^19.1.1
@@ -1133,7 +1133,7 @@ importers:
         version: 4.1.18
       tailwindcss-patch:
         specifier: catalog:tailwindcssPatch
-        version: 8.6.0(magicast@0.5.1)(tailwindcss@4.1.18)
+        version: 8.6.1(magicast@0.5.1)(tailwindcss@4.1.18)
       tsconfig-paths-webpack-plugin:
         specifier: ^4.1.0
         version: 4.2.0
@@ -1166,7 +1166,7 @@ importers:
         version: 3.4.19(tsx@4.21.0)(yaml@2.8.2)
       tailwindcss-patch:
         specifier: catalog:tailwindcssPatch
-        version: 8.6.0(magicast@0.5.1)(tailwindcss@3.4.19(tsx@4.21.0)(yaml@2.8.2))
+        version: 8.6.1(magicast@0.5.1)(tailwindcss@3.4.19(tsx@4.21.0)(yaml@2.8.2))
       weapp-tailwindcss:
         specifier: workspace:*
         version: link:../../packages/weapp-tailwindcss
@@ -1190,7 +1190,7 @@ importers:
         version: 4.1.18
       tailwindcss-patch:
         specifier: catalog:tailwindcssPatch
-        version: 8.6.0(magicast@0.5.1)(tailwindcss@4.1.18)
+        version: 8.6.1(magicast@0.5.1)(tailwindcss@4.1.18)
       weapp-tailwindcss:
         specifier: workspace:*
         version: link:../../packages/weapp-tailwindcss
@@ -1408,7 +1408,7 @@ importers:
     dependencies:
       tailwindcss-patch:
         specifier: catalog:tailwindcssPatch
-        version: 8.6.0(@tailwindcss/postcss7-compat@2.2.17(ts-node@10.9.2(@swc/core@1.15.7(@swc/helpers@0.5.17))(@types/node@25.0.3)(typescript@5.9.3)))(magicast@0.5.1)
+        version: 8.6.1(@tailwindcss/postcss7-compat@2.2.17(ts-node@10.9.2(@swc/core@1.15.7(@swc/helpers@0.5.17))(@types/node@25.0.3)(typescript@5.9.3)))(magicast@0.5.1)
     devDependencies:
       autoprefixer:
         specifier: catalog:autoprefixer10
@@ -1644,7 +1644,7 @@ importers:
         version: 3.4.19(tsx@4.21.0)(yaml@2.8.2)
       tailwindcss-patch:
         specifier: catalog:tailwindcssPatch
-        version: 8.6.0(magicast@0.5.1)(tailwindcss@3.4.19(tsx@4.21.0)(yaml@2.8.2))
+        version: 8.6.1(magicast@0.5.1)(tailwindcss@3.4.19(tsx@4.21.0)(yaml@2.8.2))
       tailwindcss-rem2px-preset:
         specifier: catalog:tailwindcssRem
         version: 1.0.3(tailwindcss@3.4.19(tsx@4.21.0)(yaml@2.8.2))
@@ -1726,13 +1726,13 @@ importers:
         version: 2.2.5(@rspack/core@1.5.3(@swc/helpers@0.5.17))(@swc/core@1.15.7(@swc/helpers@0.5.17))(@vue/compiler-sfc@3.5.26)(ejs@3.1.10)(encoding@0.1.13)(esbuild@0.27.2)(handlebars@4.7.8)(lodash@4.17.21)(mustache@3.2.1)(prettier@3.7.4)(sass-loader@16.0.6(@rspack/core@1.5.3(@swc/helpers@0.5.17))(sass-embedded@1.97.1)(sass@1.97.1)(webpack@5.99.9(@swc/core@1.15.7(@swc/helpers@0.5.17))(esbuild@0.27.2)))(vue-template-compiler@2.7.16)(vue@2.7.16)(webpack-sources@3.3.3)
       '@mpxjs/mpx-jest':
         specifier: ^0.0.32
-        version: 0.0.32(@mpxjs/core@2.10.17)(@mpxjs/webpack-plugin@2.10.17(@mpxjs/core@2.10.17)(postcss-less@6.0.0(postcss@8.5.6))(postcss-scss@4.0.9(postcss@8.5.6))(postcss-styl@0.12.3)(ts-node@10.9.2(@swc/core@1.15.7(@swc/helpers@0.5.17))(@types/node@25.0.3)(typescript@5.9.3))(webpack@5.99.9(@swc/core@1.15.7(@swc/helpers@0.5.17))(esbuild@0.27.2)))
+        version: 0.0.32(@mpxjs/core@2.10.17)(@mpxjs/webpack-plugin@2.10.17(@mpxjs/core@2.10.17)(postcss-less@6.0.0(postcss@8.5.6))(postcss-scss@4.0.9(postcss@8.5.6))(postcss-styl@0.12.3)(ts-node@10.9.2(@swc/core@1.15.7(@swc/helpers@0.5.17))(@types/node@25.0.2)(typescript@5.9.3))(webpack@5.99.9(@swc/core@1.15.7(@swc/helpers@0.5.17))(esbuild@0.27.2)))
       '@mpxjs/size-report':
         specifier: ^2.9.42
-        version: 2.10.6(@mpxjs/webpack-plugin@2.10.17(@mpxjs/core@2.10.17)(postcss-less@6.0.0(postcss@8.5.6))(postcss-scss@4.0.9(postcss@8.5.6))(postcss-styl@0.12.3)(ts-node@10.9.2(@swc/core@1.15.7(@swc/helpers@0.5.17))(@types/node@25.0.3)(typescript@5.9.3))(webpack@5.99.9(@swc/core@1.15.7(@swc/helpers@0.5.17))(esbuild@0.27.2)))
+        version: 2.10.6(@mpxjs/webpack-plugin@2.10.17(@mpxjs/core@2.10.17)(postcss-less@6.0.0(postcss@8.5.6))(postcss-scss@4.0.9(postcss@8.5.6))(postcss-styl@0.12.3)(ts-node@10.9.2(@swc/core@1.15.7(@swc/helpers@0.5.17))(@types/node@25.0.2)(typescript@5.9.3))(webpack@5.99.9(@swc/core@1.15.7(@swc/helpers@0.5.17))(esbuild@0.27.2)))
       '@mpxjs/vue-cli-plugin-mpx':
         specifier: 2.2.5
-        version: 2.2.5(@babel/core@7.28.5)(@mpxjs/webpack-plugin@2.10.17(@mpxjs/core@2.10.17)(postcss-less@6.0.0(postcss@8.5.6))(postcss-scss@4.0.9(postcss@8.5.6))(postcss-styl@0.12.3)(ts-node@10.9.2(@swc/core@1.15.7(@swc/helpers@0.5.17))(@types/node@25.0.3)(typescript@5.9.3))(webpack@5.99.9(@swc/core@1.15.7(@swc/helpers@0.5.17))(esbuild@0.27.2)))(@swc/core@1.15.7(@swc/helpers@0.5.17))(@vue/compiler-sfc@3.5.26)(css-loader@7.1.2(@rspack/core@1.5.3(@swc/helpers@0.5.17))(webpack@5.99.9(@swc/core@1.15.7(@swc/helpers@0.5.17))(esbuild@0.27.2)))(debug@4.4.3)(ejs@3.1.10)(encoding@0.1.13)(esbuild@0.27.2)(handlebars@4.7.8)(lodash@4.17.21)(mustache@3.2.1)(prettier@3.7.4)(sass-loader@16.0.6(@rspack/core@1.5.3(@swc/helpers@0.5.17))(sass-embedded@1.97.1)(sass@1.97.1)(webpack@5.99.9(@swc/core@1.15.7(@swc/helpers@0.5.17))(esbuild@0.27.2)))(vue-template-compiler@2.7.16)(webpack@5.99.9(@swc/core@1.15.7(@swc/helpers@0.5.17))(esbuild@0.27.2))
+        version: 2.2.5(@babel/core@7.28.5)(@mpxjs/webpack-plugin@2.10.17(@mpxjs/core@2.10.17)(postcss-less@6.0.0(postcss@8.5.6))(postcss-scss@4.0.9(postcss@8.5.6))(postcss-styl@0.12.3)(ts-node@10.9.2(@swc/core@1.15.7(@swc/helpers@0.5.17))(@types/node@25.0.2)(typescript@5.9.3))(webpack@5.99.9(@swc/core@1.15.7(@swc/helpers@0.5.17))(esbuild@0.27.2)))(@swc/core@1.15.7(@swc/helpers@0.5.17))(@vue/compiler-sfc@3.5.26)(css-loader@7.1.2(@rspack/core@1.5.3(@swc/helpers@0.5.17))(webpack@5.99.9(@swc/core@1.15.7(@swc/helpers@0.5.17))(esbuild@0.27.2)))(debug@4.4.3)(ejs@3.1.10)(encoding@0.1.13)(esbuild@0.27.2)(handlebars@4.7.8)(lodash@4.17.21)(mustache@3.2.1)(prettier@3.7.4)(sass-loader@16.0.6(@rspack/core@1.5.3(@swc/helpers@0.5.17))(sass-embedded@1.97.1)(sass@1.97.1)(webpack@5.99.9(@swc/core@1.15.7(@swc/helpers@0.5.17))(esbuild@0.27.2)))(vue-template-compiler@2.7.16)(webpack@5.99.9(@swc/core@1.15.7(@swc/helpers@0.5.17))(esbuild@0.27.2))
       '@mpxjs/vue-cli-plugin-mpx-e2e-test':
         specifier: 2.2.5
         version: 2.2.5
@@ -1741,10 +1741,10 @@ importers:
         version: 2.2.5(typescript@5.9.3)(webpack@5.99.9(@swc/core@1.15.7(@swc/helpers@0.5.17))(esbuild@0.27.2))
       '@mpxjs/vue-cli-plugin-mpx-unit-test':
         specifier: 2.2.5
-        version: 2.2.5(@babel/core@7.28.5)(@mpxjs/core@2.10.17)(@mpxjs/webpack-plugin@2.10.17(@mpxjs/core@2.10.17)(postcss-less@6.0.0(postcss@8.5.6))(postcss-scss@4.0.9(postcss@8.5.6))(postcss-styl@0.12.3)(ts-node@10.9.2(@swc/core@1.15.7(@swc/helpers@0.5.17))(@types/node@25.0.3)(typescript@5.9.3))(webpack@5.99.9(@swc/core@1.15.7(@swc/helpers@0.5.17))(esbuild@0.27.2)))(node-notifier@8.0.2)(ts-node@10.9.2(@swc/core@1.15.7(@swc/helpers@0.5.17))(@types/node@25.0.3)(typescript@5.9.3))
+        version: 2.2.5(@babel/core@7.28.5)(@mpxjs/core@2.10.17)(@mpxjs/webpack-plugin@2.10.17(@mpxjs/core@2.10.17)(postcss-less@6.0.0(postcss@8.5.6))(postcss-scss@4.0.9(postcss@8.5.6))(postcss-styl@0.12.3)(ts-node@10.9.2(@swc/core@1.15.7(@swc/helpers@0.5.17))(@types/node@25.0.2)(typescript@5.9.3))(webpack@5.99.9(@swc/core@1.15.7(@swc/helpers@0.5.17))(esbuild@0.27.2)))(node-notifier@8.0.2)(ts-node@10.9.2(@swc/core@1.15.7(@swc/helpers@0.5.17))(@types/node@25.0.2)(typescript@5.9.3))
       '@mpxjs/webpack-plugin':
         specifier: 2.10.17
-        version: 2.10.17(@mpxjs/core@2.10.17)(postcss-less@6.0.0(postcss@8.5.6))(postcss-scss@4.0.9(postcss@8.5.6))(postcss-styl@0.12.3)(ts-node@10.9.2(@swc/core@1.15.7(@swc/helpers@0.5.17))(@types/node@25.0.3)(typescript@5.9.3))(webpack@5.99.9(@swc/core@1.15.7(@swc/helpers@0.5.17))(esbuild@0.27.2))
+        version: 2.10.17(@mpxjs/core@2.10.17)(postcss-less@6.0.0(postcss@8.5.6))(postcss-scss@4.0.9(postcss@8.5.6))(postcss-styl@0.12.3)(ts-node@10.9.2(@swc/core@1.15.7(@swc/helpers@0.5.17))(@types/node@25.0.2)(typescript@5.9.3))(webpack@5.99.9(@swc/core@1.15.7(@swc/helpers@0.5.17))(esbuild@0.27.2))
       '@vue/cli-service':
         specifier: ~5.0.0
         version: 5.0.9(@rspack/core@1.5.3(@swc/helpers@0.5.17))(@swc/core@1.15.7(@swc/helpers@0.5.17))(@vue/compiler-sfc@3.5.26)(ejs@3.1.10)(encoding@0.1.13)(esbuild@0.27.2)(handlebars@4.7.8)(lodash@4.17.21)(mustache@3.2.1)(prettier@3.7.4)(sass-loader@16.0.6(@rspack/core@1.5.3(@swc/helpers@0.5.17))(sass-embedded@1.97.1)(sass@1.97.1)(webpack@5.99.9(@swc/core@1.15.7(@swc/helpers@0.5.17))(esbuild@0.27.2)))(vue-template-compiler@2.7.16)(vue@2.7.16)(webpack-sources@3.3.3)
@@ -1768,7 +1768,7 @@ importers:
         version: 9.39.2(jiti@2.6.1)
       jest:
         specifier: ^30.2.0
-        version: 30.2.0(@types/node@25.0.3)(babel-plugin-macros@3.1.0)(esbuild-register@3.6.0(esbuild@0.27.2))(node-notifier@8.0.2)(ts-node@10.9.2(@swc/core@1.15.7(@swc/helpers@0.5.17))(@types/node@25.0.3)(typescript@5.9.3))
+        version: 30.2.0(@types/node@25.0.2)(babel-plugin-macros@3.1.0)(esbuild-register@3.6.0(esbuild@0.27.2))(node-notifier@8.0.2)(ts-node@10.9.2(@swc/core@1.15.7(@swc/helpers@0.5.17))(@types/node@25.0.2)(typescript@5.9.3))
       postcss:
         specifier: ^8.5.1
         version: 8.5.6
@@ -1792,13 +1792,13 @@ importers:
         version: 3.4.19(tsx@4.21.0)(yaml@2.8.2)
       tailwindcss-patch:
         specifier: catalog:tailwindcssPatch
-        version: 8.6.0(magicast@0.5.1)(tailwindcss@3.4.19(tsx@4.21.0)(yaml@2.8.2))
+        version: 8.6.1(magicast@0.5.1)(tailwindcss@3.4.19(tsx@4.21.0)(yaml@2.8.2))
       tailwindcss-rem2px-preset:
         specifier: catalog:tailwindcssRem
         version: 1.0.3(tailwindcss@3.4.19(tsx@4.21.0)(yaml@2.8.2))
       ts-jest:
         specifier: ^29.4.6
-        version: 29.4.6(@babel/core@7.28.5)(@jest/transform@30.2.0)(@jest/types@30.2.0)(babel-jest@30.2.0(@babel/core@7.28.5))(esbuild@0.27.2)(jest-util@30.2.0)(jest@30.2.0(@types/node@25.0.3)(babel-plugin-macros@3.1.0)(esbuild-register@3.6.0(esbuild@0.27.2))(node-notifier@8.0.2)(ts-node@10.9.2(@swc/core@1.15.7(@swc/helpers@0.5.17))(@types/node@25.0.3)(typescript@5.9.3)))(typescript@5.9.3)
+        version: 29.4.6(@babel/core@7.28.5)(@jest/transform@30.2.0)(@jest/types@30.2.0)(babel-jest@30.2.0(@babel/core@7.28.5))(esbuild@0.27.2)(jest-util@30.2.0)(jest@30.2.0(@types/node@25.0.2)(babel-plugin-macros@3.1.0)(esbuild-register@3.6.0(esbuild@0.27.2))(node-notifier@8.0.2)(ts-node@10.9.2(@swc/core@1.15.7(@swc/helpers@0.5.17))(@types/node@25.0.2)(typescript@5.9.3)))(typescript@5.9.3)
       typescript:
         specifier: catalog:typescript59
         version: 5.9.3
@@ -1883,7 +1883,7 @@ importers:
         version: 2.10.6(@mpxjs/webpack-plugin@2.10.17(@mpxjs/core@2.10.17)(postcss-less@6.0.0(postcss@8.5.6))(postcss-scss@4.0.9(postcss@8.5.6))(postcss-styl@0.12.3)(ts-node@10.9.2(@swc/core@1.15.7(@swc/helpers@0.5.17))(@types/node@25.0.3)(typescript@5.9.3))(webpack@5.99.9(@swc/core@1.15.7(@swc/helpers@0.5.17))(esbuild@0.27.2)))
       '@mpxjs/vue-cli-plugin-mpx':
         specifier: ^2.2.5
-        version: 2.2.5(@babel/core@7.28.5)(@mpxjs/webpack-plugin@2.10.17(@mpxjs/core@2.10.17)(postcss-less@6.0.0(postcss@8.5.6))(postcss-scss@4.0.9(postcss@8.5.6))(postcss-styl@0.12.3)(ts-node@10.9.2(@swc/core@1.15.7(@swc/helpers@0.5.17))(@types/node@25.0.3)(typescript@5.9.3))(webpack@5.99.9(@swc/core@1.15.7(@swc/helpers@0.5.17))(esbuild@0.27.2)))(@swc/core@1.15.7(@swc/helpers@0.5.17))(@vue/compiler-sfc@3.5.26)(css-loader@7.1.2(@rspack/core@1.5.3(@swc/helpers@0.5.17))(webpack@5.99.9(@swc/core@1.15.7(@swc/helpers@0.5.17))(esbuild@0.27.2)))(debug@4.4.3)(ejs@3.1.10)(encoding@0.1.13)(esbuild@0.27.2)(handlebars@4.7.8)(lodash@4.17.21)(mustache@3.2.1)(prettier@3.7.4)(sass-loader@16.0.6(@rspack/core@1.5.3(@swc/helpers@0.5.17))(sass-embedded@1.97.1)(sass@1.97.1)(webpack@5.99.9(@swc/core@1.15.7(@swc/helpers@0.5.17))(esbuild@0.27.2)))(vue-template-compiler@2.7.16)(webpack@5.99.9(@swc/core@1.15.7(@swc/helpers@0.5.17))(esbuild@0.27.2))
+        version: 2.2.5(@babel/core@7.28.5)(@mpxjs/webpack-plugin@2.10.17(@mpxjs/core@2.10.17)(postcss-less@6.0.0(postcss@8.5.6))(postcss-scss@4.0.9(postcss@8.5.6))(postcss-styl@0.12.3)(ts-node@10.9.2(@swc/core@1.15.7(@swc/helpers@0.5.17))(@types/node@25.0.3)(typescript@5.9.3))(webpack@5.99.9(@swc/core@1.15.7(@swc/helpers@0.5.17))(esbuild@0.27.2)))(@swc/core@1.15.7(@swc/helpers@0.5.17))(@vue/compiler-sfc@3.5.26)(css-loader@7.1.2(@rspack/core@1.5.3(@swc/helpers@0.5.17))(webpack@5.99.9(@swc/core@1.15.7(@swc/helpers@0.5.17))(esbuild@0.27.2)))(debug@4.4.3)(ejs@3.1.10)(encoding@0.1.13)(esbuild@0.27.2)(handlebars@4.7.8)(lodash@4.17.21)(mustache@3.2.1)(prettier@3.7.4)(vue-template-compiler@2.7.16)(webpack@5.99.9(@swc/core@1.15.7(@swc/helpers@0.5.17))(esbuild@0.27.2))
       '@mpxjs/vue-cli-plugin-mpx-typescript':
         specifier: ^2.2.5
         version: 2.2.5(typescript@5.9.3)(webpack@5.99.9(@swc/core@1.15.7(@swc/helpers@0.5.17))(esbuild@0.27.2))
@@ -1919,7 +1919,7 @@ importers:
         version: 4.1.18
       tailwindcss-patch:
         specifier: catalog:tailwindcssPatch
-        version: 8.6.0(magicast@0.5.1)(tailwindcss@4.1.18)
+        version: 8.6.1(magicast@0.5.1)(tailwindcss@4.1.18)
       typescript:
         specifier: catalog:typescript59
         version: 5.9.3
@@ -1952,7 +1952,7 @@ importers:
         version: 3.4.19(tsx@4.21.0)(yaml@2.8.2)
       tailwindcss-patch:
         specifier: catalog:tailwindcssPatch
-        version: 8.6.0(magicast@0.5.1)(tailwindcss@3.4.19(tsx@4.21.0)(yaml@2.8.2))
+        version: 8.6.1(magicast@0.5.1)(tailwindcss@3.4.19(tsx@4.21.0)(yaml@2.8.2))
       tailwindcss-rem2px-preset:
         specifier: catalog:tailwindcssRem
         version: 1.0.3(tailwindcss@3.4.19(tsx@4.21.0)(yaml@2.8.2))
@@ -2022,7 +2022,7 @@ importers:
         version: 6.2.0(webpack@5.104.1)
       jest:
         specifier: ^30.2.0
-        version: 30.2.0(@types/node@25.0.2)(babel-plugin-macros@3.1.0)(esbuild-register@3.6.0(esbuild@0.27.2))(node-notifier@8.0.2)(ts-node@10.9.2(@swc/core@1.15.7(@swc/helpers@0.5.17))(@types/node@25.0.2)(typescript@5.9.3))
+        version: 30.2.0(@types/node@25.0.3)(babel-plugin-macros@3.1.0)(esbuild-register@3.6.0(esbuild@0.27.2))(node-notifier@8.0.2)(ts-node@10.9.2(@swc/core@1.15.7(@swc/helpers@0.5.17))(@types/node@25.0.3)(typescript@5.9.3))
       lodash-webpack-plugin:
         specifier: ^0.11.5
         version: 0.11.6(webpack@5.104.1)
@@ -2064,7 +2064,7 @@ importers:
         version: 3.4.19(tsx@4.21.0)(yaml@2.8.2)
       tailwindcss-patch:
         specifier: catalog:tailwindcssPatch
-        version: 8.6.0(magicast@0.5.1)(tailwindcss@3.4.19(tsx@4.21.0)(yaml@2.8.2))
+        version: 8.6.1(magicast@0.5.1)(tailwindcss@3.4.19(tsx@4.21.0)(yaml@2.8.2))
       tailwindcss-rem2px-preset:
         specifier: catalog:tailwindcssRem
         version: 1.0.3(tailwindcss@3.4.19(tsx@4.21.0)(yaml@2.8.2))
@@ -2118,7 +2118,7 @@ importers:
         version: 3.4.19(tsx@4.21.0)(yaml@2.8.2)
       tailwindcss-patch:
         specifier: catalog:tailwindcssPatch
-        version: 8.6.0(magicast@0.5.1)(tailwindcss@3.4.19(tsx@4.21.0)(yaml@2.8.2))
+        version: 8.6.1(magicast@0.5.1)(tailwindcss@3.4.19(tsx@4.21.0)(yaml@2.8.2))
       tailwindcss-rem2px-preset:
         specifier: catalog:tailwindcssRem
         version: 1.0.3(tailwindcss@3.4.19(tsx@4.21.0)(yaml@2.8.2))
@@ -2218,7 +2218,7 @@ importers:
         version: 3.4.19(tsx@4.21.0)(yaml@2.8.2)
       tailwindcss-patch:
         specifier: catalog:tailwindcssPatch
-        version: 8.6.0(magicast@0.5.1)(tailwindcss@3.4.19(tsx@4.21.0)(yaml@2.8.2))
+        version: 8.6.1(magicast@0.5.1)(tailwindcss@3.4.19(tsx@4.21.0)(yaml@2.8.2))
       tailwindcss-rem2px-preset:
         specifier: catalog:tailwindcssRem
         version: 1.0.3(tailwindcss@3.4.19(tsx@4.21.0)(yaml@2.8.2))
@@ -2360,7 +2360,7 @@ importers:
         version: 3.4.19(tsx@4.21.0)(yaml@2.8.2)
       tailwindcss-patch:
         specifier: catalog:tailwindcssPatch
-        version: 8.6.0(magicast@0.5.1)(tailwindcss@3.4.19(tsx@4.21.0)(yaml@2.8.2))
+        version: 8.6.1(magicast@0.5.1)(tailwindcss@3.4.19(tsx@4.21.0)(yaml@2.8.2))
       tailwindcss-rem2px-preset:
         specifier: catalog:tailwindcssRem
         version: 1.0.3(tailwindcss@3.4.19(tsx@4.21.0)(yaml@2.8.2))
@@ -2511,7 +2511,7 @@ importers:
         version: 3.4.19(tsx@4.21.0)(yaml@2.8.2)
       tailwindcss-patch:
         specifier: catalog:tailwindcssPatch
-        version: 8.6.0(magicast@0.5.1)(tailwindcss@3.4.19(tsx@4.21.0)(yaml@2.8.2))
+        version: 8.6.1(magicast@0.5.1)(tailwindcss@3.4.19(tsx@4.21.0)(yaml@2.8.2))
       tailwindcss-rem2px-preset:
         specifier: catalog:tailwindcssRem
         version: 1.0.3(tailwindcss@3.4.19(tsx@4.21.0)(yaml@2.8.2))
@@ -2656,7 +2656,7 @@ importers:
         version: 4.1.18
       tailwindcss-patch:
         specifier: catalog:tailwindcssPatch
-        version: 8.6.0(magicast@0.5.1)(tailwindcss@4.1.18)
+        version: 8.6.1(magicast@0.5.1)(tailwindcss@4.1.18)
       terser:
         specifier: ^5.44.1
         version: 5.44.1
@@ -2783,7 +2783,7 @@ importers:
         version: 3.4.19(tsx@4.21.0)(yaml@2.8.2)
       tailwindcss-patch:
         specifier: catalog:tailwindcssPatch
-        version: 8.6.0(magicast@0.5.1)(tailwindcss@3.4.19(tsx@4.21.0)(yaml@2.8.2))
+        version: 8.6.1(magicast@0.5.1)(tailwindcss@3.4.19(tsx@4.21.0)(yaml@2.8.2))
       tailwindcss-rem2px-preset:
         specifier: catalog:tailwindcssRem
         version: 1.0.3(tailwindcss@3.4.19(tsx@4.21.0)(yaml@2.8.2))
@@ -2940,7 +2940,7 @@ importers:
         version: 4.1.18
       tailwindcss-patch:
         specifier: catalog:tailwindcssPatch
-        version: 8.6.0(magicast@0.5.1)(tailwindcss@4.1.18)
+        version: 8.6.1(magicast@0.5.1)(tailwindcss@4.1.18)
       tsconfig-paths-webpack-plugin:
         specifier: ^4.1.0
         version: 4.2.0
@@ -3154,7 +3154,7 @@ importers:
         version: 3.4.19(tsx@4.21.0)(yaml@2.8.2)
       tailwindcss-patch:
         specifier: catalog:tailwindcssPatch
-        version: 8.6.0(magicast@0.5.1)(tailwindcss@3.4.19(tsx@4.21.0)(yaml@2.8.2))
+        version: 8.6.1(magicast@0.5.1)(tailwindcss@3.4.19(tsx@4.21.0)(yaml@2.8.2))
       tailwindcss-rem2px-preset:
         specifier: catalog:tailwindcssRem
         version: 1.0.3(tailwindcss@3.4.19(tsx@4.21.0)(yaml@2.8.2))
@@ -3284,7 +3284,7 @@ importers:
         version: 4.1.18
       tailwindcss-patch:
         specifier: catalog:tailwindcssPatch
-        version: 8.6.0(magicast@0.5.1)(tailwindcss@4.1.18)
+        version: 8.6.1(magicast@0.5.1)(tailwindcss@4.1.18)
       typescript:
         specifier: catalog:typescript59
         version: 5.9.3
@@ -3480,7 +3480,7 @@ importers:
         version: 3.4.19(tsx@4.21.0)(yaml@2.8.2)
       tailwindcss-patch:
         specifier: catalog:tailwindcssPatch
-        version: 8.6.0(magicast@0.5.1)(tailwindcss@3.4.19(tsx@4.21.0)(yaml@2.8.2))
+        version: 8.6.1(magicast@0.5.1)(tailwindcss@3.4.19(tsx@4.21.0)(yaml@2.8.2))
       tailwindcss-rem2px-preset:
         specifier: catalog:tailwindcssRem
         version: 1.0.3(tailwindcss@3.4.19(tsx@4.21.0)(yaml@2.8.2))
@@ -3676,7 +3676,7 @@ importers:
         version: 4.1.18
       tailwindcss-patch:
         specifier: catalog:tailwindcssPatch
-        version: 8.6.0(magicast@0.5.1)(tailwindcss@4.1.18)
+        version: 8.6.1(magicast@0.5.1)(tailwindcss@4.1.18)
       typescript:
         specifier: catalog:typescript59tilde
         version: 5.9.3
@@ -3875,7 +3875,7 @@ importers:
         version: 3.4.19(tsx@4.21.0)(yaml@2.8.2)
       tailwindcss-patch:
         specifier: catalog:tailwindcssPatch
-        version: 8.6.0(magicast@0.5.1)(tailwindcss@3.4.19(tsx@4.21.0)(yaml@2.8.2))
+        version: 8.6.1(magicast@0.5.1)(tailwindcss@3.4.19(tsx@4.21.0)(yaml@2.8.2))
       tailwindcss-rem2px-preset:
         specifier: catalog:tailwindcssRem
         version: 1.0.3(tailwindcss@3.4.19(tsx@4.21.0)(yaml@2.8.2))
@@ -3914,7 +3914,7 @@ importers:
         version: 3.4.19(tsx@4.21.0)(yaml@2.8.2)
       tailwindcss-patch:
         specifier: catalog:tailwindcssPatch
-        version: 8.6.0(magicast@0.5.1)(tailwindcss@3.4.19(tsx@4.21.0)(yaml@2.8.2))
+        version: 8.6.1(magicast@0.5.1)(tailwindcss@3.4.19(tsx@4.21.0)(yaml@2.8.2))
       weapp-ide-cli:
         specifier: catalog:weappIdeCli
         version: 4.1.2
@@ -3941,7 +3941,7 @@ importers:
         version: 4.1.18
       tailwindcss-patch:
         specifier: catalog:tailwindcssPatch
-        version: 8.6.0(magicast@0.5.1)(tailwindcss@4.1.18)
+        version: 8.6.1(magicast@0.5.1)(tailwindcss@4.1.18)
       weapp-ide-cli:
         specifier: catalog:weappIdeCli
         version: 4.1.2
@@ -3975,7 +3975,7 @@ importers:
         version: 3.4.19(tsx@4.21.0)(yaml@2.8.2)
       tailwindcss-patch:
         specifier: catalog:tailwindcssPatch
-        version: 8.6.0(magicast@0.5.1)(tailwindcss@3.4.19(tsx@4.21.0)(yaml@2.8.2))
+        version: 8.6.1(magicast@0.5.1)(tailwindcss@3.4.19(tsx@4.21.0)(yaml@2.8.2))
       tailwindcss-rem2px-preset:
         specifier: catalog:tailwindcssRem
         version: 1.0.3(tailwindcss@3.4.19(tsx@4.21.0)(yaml@2.8.2))
@@ -3999,7 +3999,7 @@ importers:
         version: 3.7.4
       tailwindcss-patch:
         specifier: catalog:tailwindcssPatch
-        version: 8.6.0(magicast@0.5.1)(tailwindcss@4.1.18)
+        version: 8.6.1(magicast@0.5.1)(tailwindcss@4.1.18)
 
   packages-runtime/cva:
     dependencies:
@@ -4137,7 +4137,7 @@ importers:
         version: link:../runtime
       tailwind-variants:
         specifier: ^3.2.2
-        version: 3.2.2(tailwind-merge@3.4.0)(tailwindcss@4.1.18)
+        version: 3.2.2(tailwind-merge@3.4.0)(tailwindcss@3.4.19(tsx@4.21.0)(yaml@2.8.2))
 
   packages-runtime/variants-v3:
     dependencies:
@@ -4430,7 +4430,7 @@ importers:
         version: 7.7.3
       tailwindcss-patch:
         specifier: catalog:tailwindcssPatch
-        version: 8.6.0(magicast@0.5.1)(tailwindcss@4.1.18)
+        version: 8.6.1(magicast@0.5.1)(tailwindcss@4.1.18)
       webpack-sources:
         specifier: 3.3.3
         version: 3.3.3
@@ -28489,8 +28489,8 @@ packages:
   tailwindcss-core-plugins-extractor@0.2.0:
     resolution: {integrity: sha512-idLHKZ2Mc0YXauIQ/1Hx2/0Hx5VH8z+N6E++O+W6GF0b6+nHQPv6A27ySlQt+HQdlnSZ2tx0Cpzpx+F2ez8YQg==}
 
-  tailwindcss-patch@8.6.0:
-    resolution: {integrity: sha512-sQlMG+gzVjRa6JBXQMf4Tkjcigv5kGhJ17mORT18f2tF3QZ/27dWOscXMFWQLaxdt9D/4OwUFAI8rnPMzFC4Ng==}
+  tailwindcss-patch@8.6.1:
+    resolution: {integrity: sha512-DMK8j1ZAl1p1KdX5G4kT2atTbkrf3Su7BVIPsow6FXJV6mias0dm4+lg/pykA05EUzEHpKPrRfw3A6ScPWV2qQ==}
     hasBin: true
     peerDependencies:
       tailwindcss: '>=2.0.0'
@@ -37565,7 +37565,7 @@ snapshots:
       - supports-color
       - utf-8-validate
 
-  '@jest/core@27.5.1(node-notifier@8.0.2)(ts-node@10.9.2(@swc/core@1.15.7(@swc/helpers@0.5.17))(@types/node@25.0.3)(typescript@5.9.3))':
+  '@jest/core@27.5.1(node-notifier@8.0.2)(ts-node@10.9.2(@swc/core@1.15.7(@swc/helpers@0.5.17))(@types/node@25.0.2)(typescript@5.9.3))':
     dependencies:
       '@jest/console': 27.5.1
       '@jest/reporters': 27.5.1(node-notifier@8.0.2)
@@ -37579,7 +37579,7 @@ snapshots:
       exit: 0.1.2
       graceful-fs: 4.2.11
       jest-changed-files: 27.5.1
-      jest-config: 27.5.1(ts-node@10.9.2(@swc/core@1.15.7(@swc/helpers@0.5.17))(@types/node@25.0.3)(typescript@5.9.3))
+      jest-config: 27.5.1(ts-node@10.9.2(@swc/core@1.15.7(@swc/helpers@0.5.17))(@types/node@25.0.2)(typescript@5.9.3))
       jest-haste-map: 27.5.1
       jest-message-util: 27.5.1
       jest-regex-util: 27.5.1
@@ -39070,11 +39070,11 @@ snapshots:
       - webpack-sources
       - whiskers
 
-  '@mpxjs/mpx-jest@0.0.32(@mpxjs/core@2.10.17)(@mpxjs/webpack-plugin@2.10.17(@mpxjs/core@2.10.17)(postcss-less@6.0.0(postcss@8.5.6))(postcss-scss@4.0.9(postcss@8.5.6))(postcss-styl@0.12.3)(ts-node@10.9.2(@swc/core@1.15.7(@swc/helpers@0.5.17))(@types/node@25.0.3)(typescript@5.9.3))(webpack@5.99.9(@swc/core@1.15.7(@swc/helpers@0.5.17))(esbuild@0.27.2)))':
+  '@mpxjs/mpx-jest@0.0.32(@mpxjs/core@2.10.17)(@mpxjs/webpack-plugin@2.10.17(@mpxjs/core@2.10.17)(postcss-less@6.0.0(postcss@8.5.6))(postcss-scss@4.0.9(postcss@8.5.6))(postcss-styl@0.12.3)(ts-node@10.9.2(@swc/core@1.15.7(@swc/helpers@0.5.17))(@types/node@25.0.2)(typescript@5.9.3))(webpack@5.99.9(@swc/core@1.15.7(@swc/helpers@0.5.17))(esbuild@0.27.2)))':
     dependencies:
       '@babel/core': 7.28.5
       '@mpxjs/utils': 2.10.17(@mpxjs/core@2.10.17)
-      '@mpxjs/webpack-plugin': 2.10.17(@mpxjs/core@2.10.17)(postcss-less@6.0.0(postcss@8.5.6))(postcss-scss@4.0.9(postcss@8.5.6))(postcss-styl@0.12.3)(ts-node@10.9.2(@swc/core@1.15.7(@swc/helpers@0.5.17))(@types/node@25.0.3)(typescript@5.9.3))(webpack@5.99.9(@swc/core@1.15.7(@swc/helpers@0.5.17))(esbuild@0.27.2))
+      '@mpxjs/webpack-plugin': 2.10.17(@mpxjs/core@2.10.17)(postcss-less@6.0.0(postcss@8.5.6))(postcss-scss@4.0.9(postcss@8.5.6))(postcss-styl@0.12.3)(ts-node@10.9.2(@swc/core@1.15.7(@swc/helpers@0.5.17))(@types/node@25.0.2)(typescript@5.9.3))(webpack@5.99.9(@swc/core@1.15.7(@swc/helpers@0.5.17))(esbuild@0.27.2))
       json5: 2.2.3
       magic-string: 0.26.7
     transitivePeerDependencies:
@@ -39088,6 +39088,21 @@ snapshots:
       pinia: 2.3.1(@vue/composition-api@1.7.2(vue@2.7.16))(typescript@5.9.3)(vue@2.7.16)
       vue: 2.7.16
       vue-demi: 0.14.10(@vue/composition-api@1.7.2(vue@2.7.16))(vue@2.7.16)
+
+  '@mpxjs/size-report@2.10.6(@mpxjs/webpack-plugin@2.10.17(@mpxjs/core@2.10.17)(postcss-less@6.0.0(postcss@8.5.6))(postcss-scss@4.0.9(postcss@8.5.6))(postcss-styl@0.12.3)(ts-node@10.9.2(@swc/core@1.15.7(@swc/helpers@0.5.17))(@types/node@25.0.2)(typescript@5.9.3))(webpack@5.99.9(@swc/core@1.15.7(@swc/helpers@0.5.17))(esbuild@0.27.2)))':
+    dependencies:
+      '@mpxjs/webpack-plugin': 2.10.17(@mpxjs/core@2.10.17)(postcss-less@6.0.0(postcss@8.5.6))(postcss-scss@4.0.9(postcss@8.5.6))(postcss-styl@0.12.3)(ts-node@10.9.2(@swc/core@1.15.7(@swc/helpers@0.5.17))(@types/node@25.0.2)(typescript@5.9.3))(webpack@5.99.9(@swc/core@1.15.7(@swc/helpers@0.5.17))(esbuild@0.27.2))
+      acorn: 8.15.0
+      acorn-walk: 7.2.0
+      ejs: 3.1.10
+      express: 4.21.2
+      loader-utils: 2.0.4
+      opener: 1.5.2
+      ws: 7.5.10
+    transitivePeerDependencies:
+      - bufferutil
+      - supports-color
+      - utf-8-validate
 
   '@mpxjs/size-report@2.10.6(@mpxjs/webpack-plugin@2.10.17(@mpxjs/core@2.10.17)(postcss-less@6.0.0(postcss@8.5.6))(postcss-scss@4.0.9(postcss@8.5.6))(postcss-styl@0.12.3)(ts-node@10.9.2(@swc/core@1.15.7(@swc/helpers@0.5.17))(@types/node@25.0.3)(typescript@5.9.3))(webpack@5.99.9(@swc/core@1.15.7(@swc/helpers@0.5.17))(esbuild@0.27.2)))':
     dependencies:
@@ -39108,6 +39123,18 @@ snapshots:
     dependencies:
       '@mpxjs/core': 2.10.17(@mpxjs/api-proxy@2.10.17)(@mpxjs/store@2.10.17)(vue-demi@0.14.10(@vue/composition-api@1.7.2(vue@2.7.16))(vue@2.7.16))(vue-i18n-bridge@9.14.1(@vue/composition-api@1.7.2(vue@2.7.16))(vue@2.7.16))(vue-i18n@8.28.2(vue@2.7.16))(vue@2.7.16)
       '@mpxjs/utils': 2.10.17(@mpxjs/core@2.10.17)
+
+  '@mpxjs/template-engine@2.8.7(@mpxjs/core@2.10.17)(postcss-less@6.0.0(postcss@8.5.6))(postcss-scss@4.0.9(postcss@8.5.6))(postcss-styl@0.12.3)(ts-node@10.9.2(@swc/core@1.15.7(@swc/helpers@0.5.17))(@types/node@25.0.2)(typescript@5.9.3))(webpack@5.99.9(@swc/core@1.15.7(@swc/helpers@0.5.17))(esbuild@0.27.2))':
+    dependencies:
+      '@mpxjs/webpack-plugin': 2.10.17(@mpxjs/core@2.10.17)(postcss-less@6.0.0(postcss@8.5.6))(postcss-scss@4.0.9(postcss@8.5.6))(postcss-styl@0.12.3)(ts-node@10.9.2(@swc/core@1.15.7(@swc/helpers@0.5.17))(@types/node@25.0.2)(typescript@5.9.3))(webpack@5.99.9(@swc/core@1.15.7(@swc/helpers@0.5.17))(esbuild@0.27.2))
+    transitivePeerDependencies:
+      - '@mpxjs/core'
+      - postcss-less
+      - postcss-scss
+      - postcss-styl
+      - supports-color
+      - ts-node
+      - webpack
 
   '@mpxjs/template-engine@2.8.7(@mpxjs/core@2.10.17)(postcss-less@6.0.0(postcss@8.5.6))(postcss-scss@4.0.9(postcss@8.5.6))(postcss-styl@0.12.3)(ts-node@10.9.2(@swc/core@1.15.7(@swc/helpers@0.5.17))(@types/node@25.0.3)(typescript@5.9.3))(webpack@5.99.9(@swc/core@1.15.7(@swc/helpers@0.5.17))(esbuild@0.27.2))':
     dependencies:
@@ -39142,13 +39169,13 @@ snapshots:
       - typescript
       - webpack
 
-  '@mpxjs/vue-cli-plugin-mpx-unit-test@2.2.5(@babel/core@7.28.5)(@mpxjs/core@2.10.17)(@mpxjs/webpack-plugin@2.10.17(@mpxjs/core@2.10.17)(postcss-less@6.0.0(postcss@8.5.6))(postcss-scss@4.0.9(postcss@8.5.6))(postcss-styl@0.12.3)(ts-node@10.9.2(@swc/core@1.15.7(@swc/helpers@0.5.17))(@types/node@25.0.3)(typescript@5.9.3))(webpack@5.99.9(@swc/core@1.15.7(@swc/helpers@0.5.17))(esbuild@0.27.2)))(node-notifier@8.0.2)(ts-node@10.9.2(@swc/core@1.15.7(@swc/helpers@0.5.17))(@types/node@25.0.3)(typescript@5.9.3))':
+  '@mpxjs/vue-cli-plugin-mpx-unit-test@2.2.5(@babel/core@7.28.5)(@mpxjs/core@2.10.17)(@mpxjs/webpack-plugin@2.10.17(@mpxjs/core@2.10.17)(postcss-less@6.0.0(postcss@8.5.6))(postcss-scss@4.0.9(postcss@8.5.6))(postcss-styl@0.12.3)(ts-node@10.9.2(@swc/core@1.15.7(@swc/helpers@0.5.17))(@types/node@25.0.2)(typescript@5.9.3))(webpack@5.99.9(@swc/core@1.15.7(@swc/helpers@0.5.17))(esbuild@0.27.2)))(node-notifier@8.0.2)(ts-node@10.9.2(@swc/core@1.15.7(@swc/helpers@0.5.17))(@types/node@25.0.2)(typescript@5.9.3))':
     dependencies:
       '@mpxjs/miniprogram-simulate': 1.4.20
-      '@mpxjs/mpx-jest': 0.0.32(@mpxjs/core@2.10.17)(@mpxjs/webpack-plugin@2.10.17(@mpxjs/core@2.10.17)(postcss-less@6.0.0(postcss@8.5.6))(postcss-scss@4.0.9(postcss@8.5.6))(postcss-styl@0.12.3)(ts-node@10.9.2(@swc/core@1.15.7(@swc/helpers@0.5.17))(@types/node@25.0.3)(typescript@5.9.3))(webpack@5.99.9(@swc/core@1.15.7(@swc/helpers@0.5.17))(esbuild@0.27.2)))
+      '@mpxjs/mpx-jest': 0.0.32(@mpxjs/core@2.10.17)(@mpxjs/webpack-plugin@2.10.17(@mpxjs/core@2.10.17)(postcss-less@6.0.0(postcss@8.5.6))(postcss-scss@4.0.9(postcss@8.5.6))(postcss-styl@0.12.3)(ts-node@10.9.2(@swc/core@1.15.7(@swc/helpers@0.5.17))(@types/node@25.0.2)(typescript@5.9.3))(webpack@5.99.9(@swc/core@1.15.7(@swc/helpers@0.5.17))(esbuild@0.27.2)))
       '@types/jest': 27.5.2
       babel-jest: 25.5.1(@babel/core@7.28.5)
-      jest: 27.5.1(node-notifier@8.0.2)(ts-node@10.9.2(@swc/core@1.15.7(@swc/helpers@0.5.17))(@types/node@25.0.3)(typescript@5.9.3))
+      jest: 27.5.1(node-notifier@8.0.2)(ts-node@10.9.2(@swc/core@1.15.7(@swc/helpers@0.5.17))(@types/node@25.0.2)(typescript@5.9.3))
     transitivePeerDependencies:
       - '@babel/core'
       - '@mpxjs/core'
@@ -39160,10 +39187,10 @@ snapshots:
       - ts-node
       - utf-8-validate
 
-  '@mpxjs/vue-cli-plugin-mpx@2.2.5(@babel/core@7.28.5)(@mpxjs/webpack-plugin@2.10.17(@mpxjs/core@2.10.17)(postcss-less@6.0.0(postcss@8.5.6))(postcss-scss@4.0.9(postcss@8.5.6))(postcss-styl@0.12.3)(ts-node@10.9.2(@swc/core@1.15.7(@swc/helpers@0.5.17))(@types/node@25.0.3)(typescript@5.9.3))(webpack@5.99.9(@swc/core@1.15.7(@swc/helpers@0.5.17))(esbuild@0.27.2)))(@swc/core@1.15.7(@swc/helpers@0.5.17))(@vue/compiler-sfc@3.5.26)(css-loader@7.1.2(@rspack/core@1.5.3(@swc/helpers@0.5.17))(webpack@5.99.9(@swc/core@1.15.7(@swc/helpers@0.5.17))(esbuild@0.27.2)))(debug@4.4.3)(ejs@3.1.10)(encoding@0.1.13)(esbuild@0.27.2)(handlebars@4.7.8)(lodash@4.17.21)(mustache@3.2.1)(prettier@3.7.4)(sass-loader@16.0.6(@rspack/core@1.5.3(@swc/helpers@0.5.17))(sass-embedded@1.97.1)(sass@1.97.1)(webpack@5.99.9(@swc/core@1.15.7(@swc/helpers@0.5.17))(esbuild@0.27.2)))(vue-template-compiler@2.7.16)(webpack@5.99.9(@swc/core@1.15.7(@swc/helpers@0.5.17))(esbuild@0.27.2))':
+  '@mpxjs/vue-cli-plugin-mpx@2.2.5(@babel/core@7.28.5)(@mpxjs/webpack-plugin@2.10.17(@mpxjs/core@2.10.17)(postcss-less@6.0.0(postcss@8.5.6))(postcss-scss@4.0.9(postcss@8.5.6))(postcss-styl@0.12.3)(ts-node@10.9.2(@swc/core@1.15.7(@swc/helpers@0.5.17))(@types/node@25.0.2)(typescript@5.9.3))(webpack@5.99.9(@swc/core@1.15.7(@swc/helpers@0.5.17))(esbuild@0.27.2)))(@swc/core@1.15.7(@swc/helpers@0.5.17))(@vue/compiler-sfc@3.5.26)(css-loader@7.1.2(@rspack/core@1.5.3(@swc/helpers@0.5.17))(webpack@5.99.9(@swc/core@1.15.7(@swc/helpers@0.5.17))(esbuild@0.27.2)))(debug@4.4.3)(ejs@3.1.10)(encoding@0.1.13)(esbuild@0.27.2)(handlebars@4.7.8)(lodash@4.17.21)(mustache@3.2.1)(prettier@3.7.4)(sass-loader@16.0.6(@rspack/core@1.5.3(@swc/helpers@0.5.17))(sass-embedded@1.97.1)(sass@1.97.1)(webpack@5.99.9(@swc/core@1.15.7(@swc/helpers@0.5.17))(esbuild@0.27.2)))(vue-template-compiler@2.7.16)(webpack@5.99.9(@swc/core@1.15.7(@swc/helpers@0.5.17))(esbuild@0.27.2))':
     dependencies:
       '@mpxjs/cli-shared-utils': 2.2.5
-      '@mpxjs/webpack-plugin': 2.10.17(@mpxjs/core@2.10.17)(postcss-less@6.0.0(postcss@8.5.6))(postcss-scss@4.0.9(postcss@8.5.6))(postcss-styl@0.12.3)(ts-node@10.9.2(@swc/core@1.15.7(@swc/helpers@0.5.17))(@types/node@25.0.3)(typescript@5.9.3))(webpack@5.99.9(@swc/core@1.15.7(@swc/helpers@0.5.17))(esbuild@0.27.2))
+      '@mpxjs/webpack-plugin': 2.10.17(@mpxjs/core@2.10.17)(postcss-less@6.0.0(postcss@8.5.6))(postcss-scss@4.0.9(postcss@8.5.6))(postcss-styl@0.12.3)(ts-node@10.9.2(@swc/core@1.15.7(@swc/helpers@0.5.17))(@types/node@25.0.2)(typescript@5.9.3))(webpack@5.99.9(@swc/core@1.15.7(@swc/helpers@0.5.17))(esbuild@0.27.2))
       '@soda/friendly-errors-webpack-plugin': 1.8.1(webpack@5.99.9(@swc/core@1.15.7(@swc/helpers@0.5.17))(esbuild@0.27.2))
       '@vue/cli-shared-utils': 5.0.9(encoding@0.1.13)
       '@vue/vue-loader-v15': vue-loader@15.11.1(@vue/compiler-sfc@3.5.26)(css-loader@7.1.2(@rspack/core@1.5.3(@swc/helpers@0.5.17))(webpack@5.99.9(@swc/core@1.15.7(@swc/helpers@0.5.17))(esbuild@0.27.2)))(ejs@3.1.10)(handlebars@4.7.8)(lodash@4.17.21)(mustache@3.2.1)(prettier@3.7.4)(vue-template-compiler@2.7.16)(webpack@5.99.9(@swc/core@1.15.7(@swc/helpers@0.5.17))(esbuild@0.27.2))
@@ -39255,6 +39282,158 @@ snapshots:
       - walrus
       - webpack-cli
       - whiskers
+
+  '@mpxjs/vue-cli-plugin-mpx@2.2.5(@babel/core@7.28.5)(@mpxjs/webpack-plugin@2.10.17(@mpxjs/core@2.10.17)(postcss-less@6.0.0(postcss@8.5.6))(postcss-scss@4.0.9(postcss@8.5.6))(postcss-styl@0.12.3)(ts-node@10.9.2(@swc/core@1.15.7(@swc/helpers@0.5.17))(@types/node@25.0.3)(typescript@5.9.3))(webpack@5.99.9(@swc/core@1.15.7(@swc/helpers@0.5.17))(esbuild@0.27.2)))(@swc/core@1.15.7(@swc/helpers@0.5.17))(@vue/compiler-sfc@3.5.26)(css-loader@7.1.2(@rspack/core@1.5.3(@swc/helpers@0.5.17))(webpack@5.99.9(@swc/core@1.15.7(@swc/helpers@0.5.17))(esbuild@0.27.2)))(debug@4.4.3)(ejs@3.1.10)(encoding@0.1.13)(esbuild@0.27.2)(handlebars@4.7.8)(lodash@4.17.21)(mustache@3.2.1)(prettier@3.7.4)(vue-template-compiler@2.7.16)(webpack@5.99.9(@swc/core@1.15.7(@swc/helpers@0.5.17))(esbuild@0.27.2))':
+    dependencies:
+      '@mpxjs/cli-shared-utils': 2.2.5
+      '@mpxjs/webpack-plugin': 2.10.17(@mpxjs/core@2.10.17)(postcss-less@6.0.0(postcss@8.5.6))(postcss-scss@4.0.9(postcss@8.5.6))(postcss-styl@0.12.3)(ts-node@10.9.2(@swc/core@1.15.7(@swc/helpers@0.5.17))(@types/node@25.0.3)(typescript@5.9.3))(webpack@5.99.9(@swc/core@1.15.7(@swc/helpers@0.5.17))(esbuild@0.27.2))
+      '@soda/friendly-errors-webpack-plugin': 1.8.1(webpack@5.99.9(@swc/core@1.15.7(@swc/helpers@0.5.17))(esbuild@0.27.2))
+      '@vue/cli-shared-utils': 5.0.9(encoding@0.1.13)
+      '@vue/vue-loader-v15': vue-loader@15.11.1(@vue/compiler-sfc@3.5.26)(css-loader@7.1.2(@rspack/core@1.5.3(@swc/helpers@0.5.17))(webpack@5.99.9(@swc/core@1.15.7(@swc/helpers@0.5.17))(esbuild@0.27.2)))(ejs@3.1.10)(handlebars@4.7.8)(lodash@4.17.21)(mustache@3.2.1)(prettier@3.7.4)(vue-template-compiler@2.7.16)(webpack@5.99.9(@swc/core@1.15.7(@swc/helpers@0.5.17))(esbuild@0.27.2))
+      ansi-escapes: 4.3.2
+      babel-loader: 8.4.1(@babel/core@7.28.5)(webpack@5.99.9(@swc/core@1.15.7(@swc/helpers@0.5.17))(esbuild@0.27.2))
+      cli-highlight: 2.1.11
+      consola: 2.15.3
+      copy-webpack-plugin: 9.1.0(webpack@5.99.9(@swc/core@1.15.7(@swc/helpers@0.5.17))(esbuild@0.27.2))
+      fs-extra: 9.1.0
+      launch-editor-middleware: 2.12.0
+      portfinder: 1.0.38(supports-color@6.1.0)
+      std-env: 3.10.0
+      terser-webpack-plugin: 5.3.14(@swc/core@1.15.7(@swc/helpers@0.5.17))(esbuild@0.27.2)(webpack@5.99.9(@swc/core@1.15.7(@swc/helpers@0.5.17))(esbuild@0.27.2))
+      webpack: 5.99.9(@swc/core@1.15.7(@swc/helpers@0.5.17))(esbuild@0.27.2)
+      webpack-bundle-analyzer: 4.10.2
+      webpack-chain: 6.5.1
+      webpack-dev-server: 4.15.2(debug@4.4.3)(webpack@5.99.9(@swc/core@1.15.7(@swc/helpers@0.5.17))(esbuild@0.27.2))
+      webpack-merge: 5.10.0
+      webpackbar: 5.0.2(webpack@5.99.9(@swc/core@1.15.7(@swc/helpers@0.5.17))(esbuild@0.27.2))
+      wrap-ansi: 5.1.0
+    transitivePeerDependencies:
+      - '@babel/core'
+      - '@swc/core'
+      - '@vue/compiler-sfc'
+      - arc-templates
+      - atpl
+      - babel-core
+      - bracket-template
+      - bufferutil
+      - cache-loader
+      - coffee-script
+      - css-loader
+      - debug
+      - dot
+      - dust
+      - dustjs-helpers
+      - dustjs-linkedin
+      - eco
+      - ect
+      - ejs
+      - encoding
+      - esbuild
+      - haml-coffee
+      - hamlet
+      - hamljs
+      - handlebars
+      - hogan.js
+      - htmling
+      - jade
+      - jazz
+      - jqtpl
+      - just
+      - liquid-node
+      - liquor
+      - lodash
+      - marko
+      - mote
+      - mustache
+      - nunjucks
+      - plates
+      - prettier
+      - pug
+      - qejs
+      - ractive
+      - razor-tmpl
+      - react
+      - react-dom
+      - slm
+      - squirrelly
+      - supports-color
+      - swig
+      - swig-templates
+      - teacup
+      - templayed
+      - then-jade
+      - then-pug
+      - tinyliquid
+      - toffee
+      - twig
+      - twing
+      - uglify-js
+      - underscore
+      - utf-8-validate
+      - vash
+      - velocityjs
+      - vue-template-compiler
+      - walrus
+      - webpack-cli
+      - whiskers
+
+  '@mpxjs/webpack-plugin@2.10.17(@mpxjs/core@2.10.17)(postcss-less@6.0.0(postcss@8.5.6))(postcss-scss@4.0.9(postcss@8.5.6))(postcss-styl@0.12.3)(ts-node@10.9.2(@swc/core@1.15.7(@swc/helpers@0.5.17))(@types/node@25.0.2)(typescript@5.9.3))(webpack@5.99.9(@swc/core@1.15.7(@swc/helpers@0.5.17))(esbuild@0.27.2))':
+    dependencies:
+      '@babel/code-frame': 7.27.1
+      '@babel/generator': 7.28.5
+      '@babel/parser': 7.28.5
+      '@babel/traverse': 7.28.5
+      '@babel/types': 7.28.5
+      '@better-scroll/core': 2.5.1
+      '@better-scroll/mouse-wheel': 2.5.1
+      '@better-scroll/movable': 2.5.1
+      '@better-scroll/observe-dom': 2.5.1
+      '@better-scroll/pull-down': 2.5.1
+      '@better-scroll/slide': 2.5.1
+      '@better-scroll/wheel': 2.5.1
+      '@better-scroll/zoom': 2.5.1
+      '@mpxjs/template-engine': 2.8.7(@mpxjs/core@2.10.17)(postcss-less@6.0.0(postcss@8.5.6))(postcss-scss@4.0.9(postcss@8.5.6))(postcss-styl@0.12.3)(ts-node@10.9.2(@swc/core@1.15.7(@swc/helpers@0.5.17))(@types/node@25.0.2)(typescript@5.9.3))(webpack@5.99.9(@swc/core@1.15.7(@swc/helpers@0.5.17))(esbuild@0.27.2))
+      '@mpxjs/utils': 2.10.17(@mpxjs/core@2.10.17)
+      acorn: 8.15.0
+      acorn-walk: 7.2.0
+      async: 2.6.4
+      css: 2.2.4
+      css-selector-tokenizer: 0.7.3
+      cssnano: 5.1.15(postcss@8.5.6)
+      de-indent: 1.0.2
+      fastparse: 1.1.2
+      hash-sum: 1.0.2
+      he: 1.2.0
+      html-minifier: 3.5.21
+      icss-utils: 2.1.0
+      json5: 2.2.3
+      loader-utils: 2.0.4
+      lodash: 4.17.21
+      lodash.camelcase: 4.3.0
+      lru-cache: 4.1.5
+      magic-string: 0.26.7
+      mime: 2.6.0
+      object-assign: 4.1.1
+      postcss: 8.5.6
+      postcss-import: 16.1.1(postcss@8.5.6)
+      postcss-less: 6.0.0(postcss@8.5.6)
+      postcss-load-config: 3.1.4(postcss@8.5.6)(ts-node@10.9.2(@swc/core@1.15.7(@swc/helpers@0.5.17))(@types/node@25.0.2)(typescript@5.9.3))
+      postcss-modules-extract-imports: 3.1.0(postcss@8.5.6)
+      postcss-modules-local-by-default: 4.2.0(postcss@8.5.6)
+      postcss-modules-scope: 3.2.1(postcss@8.5.6)
+      postcss-modules-values: 4.0.0(postcss@8.5.6)
+      postcss-scss: 4.0.9(postcss@8.5.6)
+      postcss-selector-parser: 6.1.2
+      postcss-styl: 0.12.3
+      postcss-value-parser: 4.2.0
+      semver: 7.7.3
+      source-list-map: 2.0.1
+      webpack: 5.99.9(@swc/core@1.15.7(@swc/helpers@0.5.17))(esbuild@0.27.2)
+      webpack-virtual-modules: 0.6.2
+    transitivePeerDependencies:
+      - '@mpxjs/core'
+      - supports-color
+      - ts-node
 
   '@mpxjs/webpack-plugin@2.10.17(@mpxjs/core@2.10.17)(postcss-less@6.0.0(postcss@8.5.6))(postcss-scss@4.0.9(postcss@8.5.6))(postcss-styl@0.12.3)(ts-node@10.9.2(@swc/core@1.15.7(@swc/helpers@0.5.17))(@types/node@25.0.3)(typescript@5.9.3))(webpack@5.99.9(@swc/core@1.15.7(@swc/helpers@0.5.17))(esbuild@0.27.2))':
     dependencies:
@@ -56285,16 +56464,16 @@ snapshots:
       - supports-color
       - utf-8-validate
 
-  jest-cli@27.5.1(node-notifier@8.0.2)(ts-node@10.9.2(@swc/core@1.15.7(@swc/helpers@0.5.17))(@types/node@25.0.3)(typescript@5.9.3)):
+  jest-cli@27.5.1(node-notifier@8.0.2)(ts-node@10.9.2(@swc/core@1.15.7(@swc/helpers@0.5.17))(@types/node@25.0.2)(typescript@5.9.3)):
     dependencies:
-      '@jest/core': 27.5.1(node-notifier@8.0.2)(ts-node@10.9.2(@swc/core@1.15.7(@swc/helpers@0.5.17))(@types/node@25.0.3)(typescript@5.9.3))
+      '@jest/core': 27.5.1(node-notifier@8.0.2)(ts-node@10.9.2(@swc/core@1.15.7(@swc/helpers@0.5.17))(@types/node@25.0.2)(typescript@5.9.3))
       '@jest/test-result': 27.5.1
       '@jest/types': 27.5.1
       chalk: 4.1.2
       exit: 0.1.2
       graceful-fs: 4.2.11
       import-local: 3.2.0
-      jest-config: 27.5.1(ts-node@10.9.2(@swc/core@1.15.7(@swc/helpers@0.5.17))(@types/node@25.0.3)(typescript@5.9.3))
+      jest-config: 27.5.1(ts-node@10.9.2(@swc/core@1.15.7(@swc/helpers@0.5.17))(@types/node@25.0.2)(typescript@5.9.3))
       jest-util: 27.5.1
       jest-validate: 27.5.1
       prompts: 2.4.2
@@ -56377,7 +56556,7 @@ snapshots:
       - supports-color
       - utf-8-validate
 
-  jest-config@27.5.1(ts-node@10.9.2(@swc/core@1.15.7(@swc/helpers@0.5.17))(@types/node@25.0.3)(typescript@5.9.3)):
+  jest-config@27.5.1(ts-node@10.9.2(@swc/core@1.15.7(@swc/helpers@0.5.17))(@types/node@25.0.2)(typescript@5.9.3)):
     dependencies:
       '@babel/core': 7.28.5
       '@jest/test-sequencer': 27.5.1
@@ -56404,7 +56583,7 @@ snapshots:
       slash: 3.0.0
       strip-json-comments: 3.1.1
     optionalDependencies:
-      ts-node: 10.9.2(@swc/core@1.15.7(@swc/helpers@0.5.17))(@types/node@25.0.3)(typescript@5.9.3)
+      ts-node: 10.9.2(@swc/core@1.15.7(@swc/helpers@0.5.17))(@types/node@25.0.2)(typescript@5.9.3)
     transitivePeerDependencies:
       - bufferutil
       - canvas
@@ -57342,11 +57521,11 @@ snapshots:
       - supports-color
       - utf-8-validate
 
-  jest@27.5.1(node-notifier@8.0.2)(ts-node@10.9.2(@swc/core@1.15.7(@swc/helpers@0.5.17))(@types/node@25.0.3)(typescript@5.9.3)):
+  jest@27.5.1(node-notifier@8.0.2)(ts-node@10.9.2(@swc/core@1.15.7(@swc/helpers@0.5.17))(@types/node@25.0.2)(typescript@5.9.3)):
     dependencies:
-      '@jest/core': 27.5.1(node-notifier@8.0.2)(ts-node@10.9.2(@swc/core@1.15.7(@swc/helpers@0.5.17))(@types/node@25.0.3)(typescript@5.9.3))
+      '@jest/core': 27.5.1(node-notifier@8.0.2)(ts-node@10.9.2(@swc/core@1.15.7(@swc/helpers@0.5.17))(@types/node@25.0.2)(typescript@5.9.3))
       import-local: 3.2.0
-      jest-cli: 27.5.1(node-notifier@8.0.2)(ts-node@10.9.2(@swc/core@1.15.7(@swc/helpers@0.5.17))(@types/node@25.0.3)(typescript@5.9.3))
+      jest-cli: 27.5.1(node-notifier@8.0.2)(ts-node@10.9.2(@swc/core@1.15.7(@swc/helpers@0.5.17))(@types/node@25.0.2)(typescript@5.9.3))
     optionalDependencies:
       node-notifier: 8.0.2
     transitivePeerDependencies:
@@ -61478,6 +61657,14 @@ snapshots:
     optionalDependencies:
       postcss: 7.0.39
       ts-node: 10.9.2(@swc/core@1.15.7(@swc/helpers@0.5.17))(@types/node@25.0.3)(typescript@5.9.3)
+
+  postcss-load-config@3.1.4(postcss@8.5.6)(ts-node@10.9.2(@swc/core@1.15.7(@swc/helpers@0.5.17))(@types/node@25.0.2)(typescript@5.9.3)):
+    dependencies:
+      lilconfig: 2.1.0
+      yaml: 1.10.2
+    optionalDependencies:
+      postcss: 8.5.6
+      ts-node: 10.9.2(@swc/core@1.15.7(@swc/helpers@0.5.17))(@types/node@25.0.2)(typescript@5.9.3)
 
   postcss-load-config@3.1.4(postcss@8.5.6)(ts-node@10.9.2(@swc/core@1.15.7(@swc/helpers@0.5.17))(@types/node@25.0.3)(typescript@5.9.3)):
     dependencies:
@@ -65859,7 +66046,7 @@ snapshots:
 
   tailwindcss-core-plugins-extractor@0.2.0: {}
 
-  tailwindcss-patch@8.6.0(@tailwindcss/postcss7-compat@2.2.17(ts-node@10.9.2(@swc/core@1.15.7(@swc/helpers@0.5.17))(@types/node@25.0.3)(typescript@5.9.3)))(magicast@0.5.1):
+  tailwindcss-patch@8.6.1(@tailwindcss/postcss7-compat@2.2.17(ts-node@10.9.2(@swc/core@1.15.7(@swc/helpers@0.5.17))(@types/node@25.0.3)(typescript@5.9.3)))(magicast@0.5.1):
     dependencies:
       '@babel/generator': 7.28.5
       '@babel/parser': 7.28.5
@@ -65881,7 +66068,7 @@ snapshots:
       - magicast
       - supports-color
 
-  tailwindcss-patch@8.6.0(magicast@0.5.1)(tailwindcss@3.4.19(tsx@4.21.0)(yaml@2.8.2)):
+  tailwindcss-patch@8.6.1(magicast@0.5.1)(tailwindcss@3.4.19(tsx@4.21.0)(yaml@2.8.2)):
     dependencies:
       '@babel/generator': 7.28.5
       '@babel/parser': 7.28.5
@@ -65903,7 +66090,7 @@ snapshots:
       - magicast
       - supports-color
 
-  tailwindcss-patch@8.6.0(magicast@0.5.1)(tailwindcss@4.1.18):
+  tailwindcss-patch@8.6.1(magicast@0.5.1)(tailwindcss@4.1.18):
     dependencies:
       '@babel/generator': 7.28.5
       '@babel/parser': 7.28.5
@@ -66559,12 +66746,12 @@ snapshots:
 
   ts-interface-checker@0.1.13: {}
 
-  ts-jest@29.4.6(@babel/core@7.28.5)(@jest/transform@30.2.0)(@jest/types@30.2.0)(babel-jest@30.2.0(@babel/core@7.28.5))(esbuild@0.27.2)(jest-util@30.2.0)(jest@30.2.0(@types/node@25.0.3)(babel-plugin-macros@3.1.0)(esbuild-register@3.6.0(esbuild@0.27.2))(node-notifier@8.0.2)(ts-node@10.9.2(@swc/core@1.15.7(@swc/helpers@0.5.17))(@types/node@25.0.3)(typescript@5.9.3)))(typescript@5.9.3):
+  ts-jest@29.4.6(@babel/core@7.28.5)(@jest/transform@30.2.0)(@jest/types@30.2.0)(babel-jest@30.2.0(@babel/core@7.28.5))(esbuild@0.27.2)(jest-util@30.2.0)(jest@30.2.0(@types/node@25.0.2)(babel-plugin-macros@3.1.0)(esbuild-register@3.6.0(esbuild@0.27.2))(node-notifier@8.0.2)(ts-node@10.9.2(@swc/core@1.15.7(@swc/helpers@0.5.17))(@types/node@25.0.2)(typescript@5.9.3)))(typescript@5.9.3):
     dependencies:
       bs-logger: 0.2.6
       fast-json-stable-stringify: 2.1.0
       handlebars: 4.7.8
-      jest: 30.2.0(@types/node@25.0.3)(babel-plugin-macros@3.1.0)(esbuild-register@3.6.0(esbuild@0.27.2))(node-notifier@8.0.2)(ts-node@10.9.2(@swc/core@1.15.7(@swc/helpers@0.5.17))(@types/node@25.0.3)(typescript@5.9.3))
+      jest: 30.2.0(@types/node@25.0.2)(babel-plugin-macros@3.1.0)(esbuild-register@3.6.0(esbuild@0.27.2))(node-notifier@8.0.2)(ts-node@10.9.2(@swc/core@1.15.7(@swc/helpers@0.5.17))(@types/node@25.0.2)(typescript@5.9.3))
       json5: 2.2.3
       lodash.memoize: 4.1.2
       make-error: 1.3.6

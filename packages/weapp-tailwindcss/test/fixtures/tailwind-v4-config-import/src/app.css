@@ -1,0 +1,8 @@
+@import "tailwindcss";
+@config "../tailwind.config.js";
+
+@layer components {
+  .btn {
+    @apply px-[48rpx];
+  }
+}

@@ -375,10 +375,29 @@ describe('tailwindcss/v4/patcher helpers', () => {
     const firstCall = createTailwindcssPatcher.mock.calls[0]?.[0] ?? {}
     const patchedV4 = firstCall.tailwindcssPatcherOptions?.patch?.tailwindcss?.v4
     expect(patchedV4).toEqual({
-      base: '/workspace/app',
       cssEntries: ['/workspace/app/src/app.css'],
     })
+    expect(patchedV4?.base).toBeUndefined()
     expect(patchedV4?.cssEntries?.length).toBe(1)
+  })
+
+  it('preserves modern tailwindcssPatcherOptions v4 base when css entries are provided', async () => {
+    createTailwindcssPatcher.mockImplementation(options => options)
+    const { createPatcherForBase } = await loadModule()
+
+    const patcher = createPatcherForBase('/workspace/app', ['/workspace/app/src/app.css'], {
+      tailwindcss: undefined,
+      tailwindcssPatcherOptions: {
+        tailwind: {
+          v4: { base: '/custom/base' },
+        },
+      } as any,
+      supportCustomLengthUnitsPatch: true,
+      appType: 'taro',
+    } as unknown as InternalUserDefinedOptions) as any
+
+    expect(patcher.tailwindcssPatcherOptions?.tailwind?.v4?.base).toBe('/custom/base')
+    expect(patcher.tailwindcssPatcherOptions?.tailwind?.v4?.cssEntries).toEqual(['/workspace/app/src/app.css'])
   })
 
   it('returns early for invalid tailwindcssPatcherOptions shapes', async () => {

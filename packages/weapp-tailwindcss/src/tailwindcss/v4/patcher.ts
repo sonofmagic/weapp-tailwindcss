@@ -136,6 +136,8 @@ function overrideTailwindcssPatcherOptionsForBase(
   baseDir: string,
   cssEntries: string[],
 ) {
+  const hasCssEntries = cssEntries.length > 0
+
   if (!options) {
     return options
   }
@@ -151,13 +153,23 @@ function overrideTailwindcssPatcherOptionsForBase(
       cwd: patchOptions.cwd ?? baseDir,
     }
     if (patchOptions.tailwindcss) {
+      const nextV4 = {
+        ...(patchOptions.tailwindcss.v4 ?? {}),
+      }
+
+      if (hasCssEntries) {
+        nextV4.cssEntries = cssEntries
+      }
+      else {
+        nextV4.cssEntries = nextV4.cssEntries ?? cssEntries
+        if (nextV4.base === undefined) {
+          nextV4.base = baseDir
+        }
+      }
+
       nextPatch.tailwindcss = {
         ...patchOptions.tailwindcss,
-        v4: {
-          ...(patchOptions.tailwindcss.v4 ?? {}),
-          base: baseDir,
-          cssEntries,
-        },
+        v4: nextV4,
       }
     }
     return {
@@ -180,8 +192,10 @@ function overrideTailwindcssPatcherOptionsForBase(
       ...options.tailwind,
       v4: {
         ...(options.tailwind.v4 ?? {}),
-        base: baseDir,
-        cssEntries,
+        ...(hasCssEntries ? {} : { base: options.tailwind.v4?.base ?? baseDir }),
+        cssEntries: hasCssEntries
+          ? cssEntries
+          : options.tailwind.v4?.cssEntries ?? cssEntries,
       },
     },
   }
