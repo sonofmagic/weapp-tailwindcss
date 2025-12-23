@@ -1,5 +1,11 @@
 # weapp-tailwindcss
 
+## 4.9.2-alpha.0
+
+### Patch Changes
+
+- [`fb723b0`](https://github.com/sonofmagic/weapp-tailwindcss/commit/fb723b038bd94866118a56b74cd8b35a0e0c85cd) Thanks [@sonofmagic](https://github.com/sonofmagic)! - 修复配置 cssEntries 时默认强制覆盖 tailwind v4 base 导致 @config 解析到错误目录的问题，保持用户自定义 base 并让入口目录成为默认解析基准，避免运行时类名收集为空。
+
 ## 4.9.1
 
 ### Patch Changes
