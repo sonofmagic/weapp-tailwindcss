@@ -1,5 +1,11 @@
 # weapp-tailwindcss
 
+## 4.9.2-alpha.2
+
+### Patch Changes
+
+- [`acdfd59`](https://github.com/sonofmagic/weapp-tailwindcss/commit/acdfd5928c02343c78a8f4cdc3889f5b067533ea) Thanks [@sonofmagic](https://github.com/sonofmagic)! - 修复 v4 patcher 在提供 cssEntries 時錯誤覆寫 base 導致 @config 解析失效，補充回歸確保 runtime class set 正確收集並轉義，並依賴升級至修復版 tailwindcss-patch@8.6.1。
+
 ## 4.9.2-alpha.1
 
 ### Patch Changes
