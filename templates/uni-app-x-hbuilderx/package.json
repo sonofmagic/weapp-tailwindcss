@@ -5,7 +5,7 @@
   },
   "devDependencies": {
     "tailwindcss": "^3.4.19",
-    "weapp-tailwindcss": "^4.9.1"
+    "weapp-tailwindcss": "^4.9.2"
   },
   "pnpm": {
     "onlyBuiltDependencies": [

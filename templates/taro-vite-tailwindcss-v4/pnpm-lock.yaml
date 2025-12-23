@@ -130,8 +130,8 @@ importers:
         specifier: ^4.1.2
         version: 4.1.2
       weapp-tailwindcss:
-        specifier: ^4.9.1
-        version: 4.9.1(tailwindcss@4.1.18)
+        specifier: ^4.9.2
+        version: 4.9.2(tailwindcss@4.1.18)
 
 packages:
 
@@ -5422,7 +5422,7 @@ packages:
     resolution: {integrity: sha512-7AN01Cwz2vd/vl6nKwoR0y/KlgpbKBREp1Q+MHJw8QF53AueVRFgU2Cqq0yhIQ4nC2wGvEJtlBCTeKYPX3TCXQ==}
 
   tailwindcss-patch@8.6.1:
-    resolution: {integrity: sha512-sQlMG+gzVjRa6JBXQMf4Tkjcigv5kGhJ17mORT18f2tF3QZ/27dWOscXMFWQLaxdt9D/4OwUFAI8rnPMzFC4Ng==}
+    resolution: {integrity: sha512-DMK8j1ZAl1p1KdX5G4kT2atTbkrf3Su7BVIPsow6FXJV6mias0dm4+lg/pykA05EUzEHpKPrRfw3A6ScPWV2qQ==}
     hasBin: true
     peerDependencies:
       tailwindcss: '>=2.0.0'
@@ -5699,8 +5699,8 @@ packages:
     resolution: {integrity: sha512-8gGsdpz9aMztS+VDGqK3sKMoq1XB1qTlNb4CdTGAhmQf1K6Im+Ee5rL7Tu6rV+uZT9enbTVhzFGwrAg+8mCVhw==}
     hasBin: true
 
-  weapp-tailwindcss@4.9.1:
-    resolution: {integrity: sha512-CS9hL0tt3n4TfmMzj+SdEmHKKj0V6sqB52D/uGoF8qA2/kevFjErWHOD8Uo0vT5GLYIn5q1UyvvIzzaMaox48g==}
+  weapp-tailwindcss@4.9.2:
+    resolution: {integrity: sha512-2DnADF3pp9HSjrhhHXY8UH6InJn/J1HXPhh0xA8u/isL9c0wa/TL8shLGpf1l3Kj6dCcey8LDT33sumwFF139g==}
     engines: {node: ^18.17.0 || >=20.5.0}
     hasBin: true
 
@@ -12081,7 +12081,7 @@ snapshots:
       fs-extra: 11.3.3
       pathe: 2.0.3
 
-  weapp-tailwindcss@4.9.1(tailwindcss@4.1.18):
+  weapp-tailwindcss@4.9.2(tailwindcss@4.1.18):
     dependencies:
       '@ast-core/escape': 1.0.1
       '@babel/parser': 7.28.5
