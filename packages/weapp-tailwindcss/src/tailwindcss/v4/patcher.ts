@@ -205,6 +205,8 @@ export function createPatcherForBase(
     supportCustomLengthUnitsPatch,
   } = options
 
+  const hasCssEntries = Boolean(cssEntries?.length)
+
   const defaultTailwindcssConfig: TailwindUserOptions = {
     cwd: baseDir,
     v2: {
@@ -213,13 +215,15 @@ export function createPatcherForBase(
     v3: {
       cwd: baseDir,
     },
-    v4: {
-      base: baseDir,
-      cssEntries,
-    },
+    v4: hasCssEntries
+      ? { cssEntries }
+      : {
+          base: baseDir,
+          cssEntries,
+        },
   }
 
-  if (cssEntries?.length && (tailwindcss == null || tailwindcss.version == null)) {
+  if (hasCssEntries && (tailwindcss == null || tailwindcss.version == null)) {
     defaultTailwindcssConfig.version = 4
   }
 
@@ -229,18 +233,28 @@ export function createPatcherForBase(
   )
 
   if (!mergedTailwindOptions.v4) {
-    mergedTailwindOptions.v4 = {
-      base: baseDir,
-      cssEntries: cssEntries ?? [],
-    }
+    mergedTailwindOptions.v4 = hasCssEntries
+      ? { cssEntries: cssEntries ?? [] }
+      : {
+          base: baseDir,
+          cssEntries: cssEntries ?? [],
+        }
   }
   else {
-    mergedTailwindOptions.v4.base = baseDir
-    if (cssEntries?.length) {
-      mergedTailwindOptions.v4.cssEntries = cssEntries
+    if (!hasCssEntries && !mergedTailwindOptions.v4.base) {
+      mergedTailwindOptions.v4.base = baseDir
+    }
+
+    if (hasCssEntries) {
+      if (cssEntries?.length) {
+        mergedTailwindOptions.v4.cssEntries = cssEntries
+      }
+      else if (!mergedTailwindOptions.v4.cssEntries) {
+        mergedTailwindOptions.v4.cssEntries = []
+      }
     }
     else if (!mergedTailwindOptions.v4.cssEntries) {
-      mergedTailwindOptions.v4.cssEntries = []
+      mergedTailwindOptions.v4.cssEntries = cssEntries ?? []
     }
   }
 

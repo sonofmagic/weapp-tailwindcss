@@ -124,7 +124,7 @@
     "@csstools/postcss-is-pseudo-class": "^5.0.3",
     "@eslint/config-inspector": "^1.4.2",
     "@icebreakers/commitlint-config": "^1.2.3",
-    "@icebreakers/eslint-config": "^1.6.8",
+    "@icebreakers/eslint-config": "^1.6.9",
     "@icebreakers/monorepo": "^3.1.12",
     "@icebreakers/stylelint-config": "^1.2.4",
     "@swc/core": "^1.15.7",
@@ -219,12 +219,12 @@
     "normalize-newline": "^5.0.0",
     "npm-registry-fetch": "^19.1.1",
     "only-allow": "^1.2.2",
-    "oxc-parser": "^0.103.0",
+    "oxc-parser": "^0.105.0",
     "pathe": "^2.0.3",
     "picocolors": "^1.1.1",
     "pkg-types": "^2.3.0",
     "postcss": "catalog:postcss85",
-    "postcss-js": "^5.0.2",
+    "postcss-js": "^5.0.3",
     "postcss-load-config": "^6.0.1",
     "postcss-loader": "^8.2.0",
     "postcss-preset-env": "^10.5.0",
@@ -246,7 +246,7 @@
     "traverse": "^0.6.11",
     "ts-morph": "^27.0.2",
     "tsd": "^0.33.0",
-    "tsdown": "0.18.1",
+    "tsdown": "0.18.2",
     "tslib": "^2.8.1",
     "tsup": "^8.5.1",
     "tsx": "^4.21.0",
@@ -271,6 +271,13 @@
   "pnpm": {
     "overrides": {
       "postcss-urlrewrite": "0.3.0"
+    },
+    "packageExtensions": {
+      "@dcloudio/vue-cli-plugin-hbuilderx@*": {
+        "dependencies": {
+          "@dcloudio/uni-cli-shared": "2.0.2-4080520251106001"
+        }
+      }
     }
   }
 }

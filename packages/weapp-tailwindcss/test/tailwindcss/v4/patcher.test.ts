@@ -198,7 +198,7 @@ describe('tailwindcss/v4/patcher helpers', () => {
     expect(new Set([callA.basedir, callB.basedir])).toEqual(new Set([baseDir]))
     expect(callA.cacheDir).toBeUndefined()
     expect(callA.tailwindcss?.version).toBe(4)
-    expect(callA.tailwindcss?.v4?.base).toBe(baseDir)
+    expect(callA.tailwindcss?.v4?.base).toBeUndefined()
     expect(callA.tailwindcss?.v4?.cssEntries).toEqual(cssEntries)
     expect(patcher.majorVersion).toBe(4)
   })
@@ -288,7 +288,22 @@ describe('tailwindcss/v4/patcher helpers', () => {
       appType: 'taro',
     } as unknown as InternalUserDefinedOptions) as any
 
-    expect(patcher.tailwindcss?.v4?.base).toBe('/workspace/app')
+    expect(patcher.tailwindcss?.v4?.base).toBeUndefined()
+    expect(patcher.tailwindcss?.v4?.cssEntries).toEqual(['/workspace/app/src/app.css'])
+  })
+
+  it('preserves user-specified v4 base when css entries are provided', async () => {
+    createTailwindcssPatcher.mockImplementation(options => options)
+    const { createPatcherForBase } = await loadModule()
+
+    const patcher = createPatcherForBase('/workspace/app', ['/workspace/app/src/app.css'], {
+      tailwindcss: { v4: { base: '/custom/base' } },
+      tailwindcssPatcherOptions: undefined,
+      supportCustomLengthUnitsPatch: true,
+      appType: 'taro',
+    } as unknown as InternalUserDefinedOptions) as any
+
+    expect(patcher.tailwindcss?.v4?.base).toBe('/custom/base')
     expect(patcher.tailwindcss?.v4?.cssEntries).toEqual(['/workspace/app/src/app.css'])
   })
 

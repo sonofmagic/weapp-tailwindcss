@@ -41,12 +41,12 @@ catalogs:
   prettier371:
     prettier: ^3.7.4
   react18:
-    '@types/react': 18.2.15
+    '@types/react': ^19.2.7
     '@types/react-dom': 18.2.7
     react: ^18.3.1
     react-dom: ^18.3.1
   react19:
-    '@types/react': 19.2.2
+    '@types/react': ^19.2.7
     '@types/react-dom': 19.2.3
     react: ^19.2.3
     react-dom: ^19.2.3
@@ -100,9 +100,9 @@ catalogs:
   typescript59tilde:
     typescript: ~5.9.3
   typescriptEslint849:
-    '@typescript-eslint/eslint-plugin': ^8.50.0
-    '@typescript-eslint/parser': ^8.50.0
-    typescript-eslint: ^8.50.0
+    '@typescript-eslint/eslint-plugin': ^8.50.1
+    '@typescript-eslint/parser': ^8.50.1
+    typescript-eslint: ^8.50.1
   vite5421:
     vite: ^5.4.21
   vite724:
@@ -112,13 +112,13 @@ catalogs:
     '@vue/compiler-sfc': ^3.5.26
     vue: ^3.5.26
   vueTsc318:
-    vue-tsc: ^3.2.0
+    vue-tsc: ^3.2.1
   weappChildren:
     weapp-tailwindcss-children: ^0.1.0
   weappIdeCli:
     weapp-ide-cli: ^4.1.2
   weappVite:
-    weapp-vite: ^5.11.4
+    weapp-vite: ^5.12.0
   wrangler4530:
     wrangler: ^4.56.0
 
