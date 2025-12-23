@@ -843,8 +843,8 @@ page {
 .nut-uploader-preview-list .nut-uploader-preview-img-file-name {
   align-items: center;
   display: flex;
-  -webkit-line-clamp: 1;
   height: 48rpx;
+  -webkit-line-clamp: 1;
   overflow: hidden;
   padding: 4rpx;
   text-overflow: ellipsis;
@@ -6694,11 +6694,11 @@ page {
 .nut-hoverbutton-item-icon {
   color: #171a26;
   color: var(--nutui-hoverbutton-item-icon-color, var(--nutui-color-title, #1a1a1a));
+  fill: #171a26;
+  fill: var(--nutui-hoverbutton-item-icon-color, var(--nutui-color-title, #1a1a1a));
   height: 40rpx;
   margin: 18rpx;
   width: 40rpx;
-  fill: #171a26;
-  fill: var(--nutui-hoverbutton-item-icon-color, var(--nutui-color-title, #1a1a1a));
 }
 .nut-hoverbutton-item-icon .nut-icon {
   display: block;
@@ -8901,10 +8901,10 @@ page {
 .nut-card-right-title {
   display: -webkit-box;
   -webkit-box-orient: vertical;
-  -webkit-line-clamp: 2;
   color: #171a26;
   color: var(--nutui-color-title, #1a1a1a);
   font-size: 28rpx;
+  -webkit-line-clamp: 2;
   line-height: 1.5;
   overflow: hidden;
   word-break: break-all;
