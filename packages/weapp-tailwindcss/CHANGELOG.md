@@ -1,5 +1,11 @@
 # weapp-tailwindcss
 
+## 4.9.2-alpha.1
+
+### Patch Changes
+
+- [`94b2c71`](https://github.com/sonofmagic/weapp-tailwindcss/commit/94b2c719ce916a1001070bda1bce30b04454080d) Thanks [@sonofmagic](https://github.com/sonofmagic)! - 修复 tailwindcss v4 在自动收集 cssEntries 时丢失基准目录的问题：从上下文创建 patcher 时附带工作区 base，保留用户显式设置的 v4 base，并在多 patcher 聚合时沿用首个 patcher 的配置。
+
 ## 4.9.2-alpha.0
 
 ### Patch Changes
