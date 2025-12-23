@@ -69,5 +69,8 @@
     "wetw": "0.1.0",
     "@weapp-tailwindcss/website": "1.0.12"
   },
-  "changesets": []
+  "changesets": [
+    "fix-tailwind-v4-css-entries",
+    "fix-weapp-vue-runtime"
+  ]
 }
