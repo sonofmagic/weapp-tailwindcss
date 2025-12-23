@@ -1,5 +1,15 @@
 # weapp-tailwindcss
 
+## 4.9.2
+
+### Patch Changes
+
+- [`fb723b0`](https://github.com/sonofmagic/weapp-tailwindcss/commit/fb723b038bd94866118a56b74cd8b35a0e0c85cd) Thanks [@sonofmagic](https://github.com/sonofmagic)! - 修复配置 cssEntries 时默认强制覆盖 tailwind v4 base 导致 @config 解析到错误目录的问题，保持用户自定义 base 并让入口目录成为默认解析基准，避免运行时类名收集为空。
+
+- [`94b2c71`](https://github.com/sonofmagic/weapp-tailwindcss/commit/94b2c719ce916a1001070bda1bce30b04454080d) Thanks [@sonofmagic](https://github.com/sonofmagic)! - 修复 tailwindcss v4 在自动收集 cssEntries 时丢失基准目录的问题：从上下文创建 patcher 时附带工作区 base，保留用户显式设置的 v4 base，并在多 patcher 聚合时沿用首个 patcher 的配置。
+
+- [`acdfd59`](https://github.com/sonofmagic/weapp-tailwindcss/commit/acdfd5928c02343c78a8f4cdc3889f5b067533ea) Thanks [@sonofmagic](https://github.com/sonofmagic)! - 修复 v4 patcher 在提供 cssEntries 時錯誤覆寫 base 導致 @config 解析失效，補充回歸確保 runtime class set 正確收集並轉義，並依賴升級至修復版 tailwindcss-patch@8.6.1。
+
 ## 4.9.2-alpha.2
 
 ### Patch Changes

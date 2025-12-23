@@ -1,7 +1,7 @@
 {
   "name": "@weapp-tailwindcss/build-all",
   "type": "module",
-  "version": "0.0.11-alpha.2",
+  "version": "0.0.11",
   "private": true,
   "scripts": {
     "build": "node -e \"console.log('build-all meta build complete')\""
