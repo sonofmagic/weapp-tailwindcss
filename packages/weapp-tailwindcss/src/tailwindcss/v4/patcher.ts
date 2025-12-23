@@ -316,6 +316,7 @@ export function createMultiTailwindcssPatcher(patchers: TailwindcssPatcherLike[]
 
   const [first] = patchers
   const multiPatcher: TailwindcssPatcherLike = {
+    ...first,
     packageInfo: first?.packageInfo,
     majorVersion: first?.majorVersion,
     options: first?.options,
