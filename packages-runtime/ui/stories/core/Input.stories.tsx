@@ -79,7 +79,7 @@ export const Controlled: Story = {
     return (
       <div className="space-y-2">
         <Input value={value} onChange={e => setValue(e.target.value)} placeholder="受控输入" />
-        <p className="text-sm text-gray-600">
+        <p className="text-gray-600 text-sm">
           当前值:
           {' '}
           {value}

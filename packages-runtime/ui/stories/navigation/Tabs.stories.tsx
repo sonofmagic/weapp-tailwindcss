@@ -16,7 +16,12 @@ const Tabs: React.FC<TabsProps> = ({ tabs, activeTab = 0 }) => (
       <button
         key={tab}
         type="button"
-        className={`px-4 py-2 ${index === activeTab ? 'border-b-2 border-blue-600 text-blue-600' : 'text-gray-600'}`}
+        className={`
+          px-4 py-2
+          ${index === activeTab
+        ? 'border-blue-600 text-blue-600 border-b-2'
+        : `text-gray-600`}
+        `}
       >
         {tab}
       </button>

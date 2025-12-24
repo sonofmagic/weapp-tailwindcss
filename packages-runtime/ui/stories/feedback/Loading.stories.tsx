@@ -7,7 +7,10 @@ import React from 'react'
 
 const Loading: React.FC = () => (
   <div className="flex items-center justify-center">
-    <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600" />
+    <div className={`
+      animate-spin border-blue-600 h-8 w-8 rounded-full border-b-2
+    `}
+    />
   </div>
 )
 

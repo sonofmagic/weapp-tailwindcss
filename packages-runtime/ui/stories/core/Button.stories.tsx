@@ -170,7 +170,7 @@ export const Appearances: Story = {
 // 所有尺寸
 export const Sizes: Story = {
   render: () => (
-    <div className="flex items-center flex-wrap gap-4">
+    <div className="flex flex-wrap items-center gap-4">
       <Button size="sm">Small</Button>
       <Button size="md">Medium</Button>
       <Button size="icon">🔍</Button>
