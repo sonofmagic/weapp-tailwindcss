@@ -1,25 +1,34 @@
 import type { FC } from 'react'
 import type { RadioProps } from './types'
 /**
- * Radio - Taro 组件
- * 单选框组件
+ * Radio - Taro 组件实现 (使用新的统一架构)
+ * 单选框组件 - 跨端统一实现
  */
 import { View } from '@tarojs/components'
-import React from 'react'
-import { cn } from '../../../utils/class-names'
+import { useRadio } from './use-radio'
 
-const Radio: FC<RadioProps> = ({
-  className,
-  style,
-  children,
-  ..._props
-}) => {
+const Radio: FC<RadioProps> = (props) => {
+  const { style, children, ariaLabel, ...restProps } = props
+
+  const { checked, className: radioClassName, inputClassName, handleClick, isDisabled }
+    = useRadio(props)
+
   return (
     <View
-      className={cn('wt-radio', className)}
+      className={radioClassName}
       style={style}
+      onClick={handleClick}
+      aria-label={ariaLabel}
+      aria-checked={checked}
+      aria-disabled={isDisabled}
+      role="radio"
+      {...restProps}
     >
-      {children}
+      <View className={inputClassName}>
+        <View className="wt-radio__circle" />
+        {checked && <View className="wt-radio__dot" />}
+      </View>
+      {children && <View className="wt-radio__label">{children}</View>}
     </View>
   )
 }
