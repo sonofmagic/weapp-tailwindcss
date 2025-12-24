@@ -1,4 +1,5 @@
 import Patch from './patch.mdx'
+import CssImportReminder from '@site/src/components/CssImportReminder'
 
 # Taro vite
 
@@ -35,7 +36,7 @@ import path from 'node:path'
       UnifiedViteWeappTailwindcssPlugin({
         rem2rpx: true,
         cssEntries: [
-          // 你 @import "weapp-tailwindcss"; 那个文件绝对路径
+          // 你 @import "tailwindcss"; 那个文件绝对路径
           path.resolve(__dirname, '../src/app.css'),
         ],
       }),
@@ -53,9 +54,10 @@ import path from 'node:path'
 在项目目录下的 `src/app.css` 中，添加以下内容：
 
 ```css title="src/app.css"
-@import "weapp-tailwindcss";
+@import "tailwindcss";
 ```
 
+<CssImportReminder />
 
 更改好配置之后，直接运行启动项目，微信开发者工具导入这个项目，即可看到效果。
 

@@ -4,6 +4,8 @@ sidebar_position: 1
 toc_max_heading_level: 4
 ---
 
+import CssImportReminder from '@site/src/components/CssImportReminder';
+
 # 入门篇：快速认识 Tailwind CSS 4 与 weapp-tailwindcss
 
 Tailwind CSS 4 重新定义了“原子化”样式的组织方式：配置文件换成了 `CSS`，主题变量与自定义工具也变成了原生语法。这一变化对小程序生态同样生效，`weapp-tailwindcss` 已经适配了新的编译流程。本篇入门指南帮助你在 30 分钟内从零搭好一套 `tailwindcss@4` + `weapp-tailwindcss` 的基础开发环境，并理解最核心的概念。
@@ -80,7 +82,7 @@ Tailwind CSS 4 已内置 Autoprefixer，无需手动补充。若项目仍需其�
 在 `src/app.css` 中写入：
 
 ```css title="src/app.css"
-@import "weapp-tailwindcss";
+@import "tailwindcss";
 
 /* 声明模板扫描路径，确保原子类能被收集 */
 @source "../src/**/*.{vue,tsx,jsx,svelte,wxml}";
@@ -91,6 +93,8 @@ Tailwind CSS 4 已内置 Autoprefixer，无需手动补充。若项目仍需其�
   --spacing-safe: clamp(12px, 1.2vw + 8px, 24px);
 }
 ```
+
+<CssImportReminder />
 
 `@source` 是 Tailwind 4 的新写法，用于替代旧版本的 `content` 配置。路径请根据项目结构调整。若你需要在局部样式文件使用 `@apply`，在对应文件顶部添加 `@reference "./app.css";`。
 

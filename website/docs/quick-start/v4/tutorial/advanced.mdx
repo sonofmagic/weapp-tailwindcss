@@ -58,12 +58,12 @@ export default defineConfig({
 @source "../src/**/*.{vue,wxml}";
 @source not "../src/**/*.h5.*"; /* 排除只用于 H5 的模板 */
 
-/* H5 用 Tailwind 官方包，小程序继续用 weapp-tailwindcss */
+/* 多端开发：H5 用官方 tailwindcss，小程序用 weapp-tailwindcss */
 /*  #ifdef  H5  */
 @import "tailwindcss";
 /*  #endif  */
 /*  #ifndef  H5  */
-@import "weapp-tailwindcss";
+@import "tailwindcss"; /* weapp-tailwindcss 会自动改写为 @import 'weapp-tailwindcss/index.css' */
 /*  #endif  */
 ```
 

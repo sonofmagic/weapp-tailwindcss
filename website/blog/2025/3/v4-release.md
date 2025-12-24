@@ -80,8 +80,10 @@ export default defineConfig(async () => {
 在项目目录下创建 `main.css`，然后添加以下内容：
 
 ```css title="main.css"
-@import 'weapp-tailwindcss';
+@import 'tailwindcss';
 ```
+
+> **注意**：`weapp-tailwindcss` 的 `rewriteCssImports` 选项会自动将 `@import 'tailwindcss'` 改写为 `@import 'weapp-tailwindcss/index.css'`。如果遇到报错或样式不生效，请手动改为 `@import 'weapp-tailwindcss/index.css'`。
 
 接着在 `main.js` 里引用这个文件作为全局样式，然后直接运行：
 

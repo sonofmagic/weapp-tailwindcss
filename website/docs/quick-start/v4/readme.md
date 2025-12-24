@@ -39,16 +39,15 @@
 
 ## 小程序样式引入 `tailwindcss` 不同点
 
-在小程序的样式文件中，引入 `tailwindcss` 的时候，需要把官方文档上写的 `@import "tailwindcss"` 替换为 `@import "weapp-tailwindcss"`。
+:::tip 自动导入转换
+从 v4.7.10 起，`weapp-tailwindcss` 默认会通过 `rewriteCssImports` 选项，将代码中的 `@import "tailwindcss"` 自动改写为 `@import "weapp-tailwindcss/index.css"`。这意味着你可以直接使用官方文档的标准写法，插件会自动处理小程序适配。
 
-```diff
-- @import "tailwindcss";
-+ @import "weapp-tailwindcss";
-```
+如果遇到报错或样式不生效，可以手动改为 `@import "weapp-tailwindcss/index.css"`，或将 `rewriteCssImports` 设置为 `false`。
+:::
 
 ### 有什么区别?
 
-`@import "weapp-tailwindcss"` 相比 `@import "tailwindcss"` 的主要区别是:
+`@import "weapp-tailwindcss/index.css"` 相比 `@import "tailwindcss"` 的主要区别是:
 
 1. `"weapp-tailwindcss"` 没有 `"tailwindcss"` 中 `h5` `preflight` 的类(这些都是给 `h5` 用的，小程序用不到)
 2. `"weapp-tailwindcss"` 中，不使用 `tailwindcss` 默认的 `@layer` 来控制样式优先级。这是因为小程序本身不支持 `css` `@layer` 这个特性，强行启用会造成一些样式难以覆盖的问题。
@@ -62,7 +61,7 @@
 @import "tailwindcss";
 /*  #endif  */
 /*  #ifndef  H5  */
-@import "weapp-tailwindcss";
+@import "tailwindcss"; /* weapp-tailwindcss 会自动改写为小程序适配版本 */
 /*  #endif  */
 ```
 
@@ -74,12 +73,12 @@
 
 来让 `weapp-tailwindcss` 和 `tailwindcss` 保持一致的处理模式
 
-> `cssEntries` 为一个数组，就是你 @import "weapp-tailwindcss"; 那些文件，可以有多个
+> `cssEntries` 为一个数组，就是你 @import "tailwindcss"; 那些文件，可以有多个
 
 ```ts
 {
   cssEntries: [
-    // 就是你 @import "weapp-tailwindcss"; 那个文件
+    // 就是你 @import "tailwindcss"; 那个文件
     // 比如 tarojs
     path.resolve(__dirname, '../src/app.css')
     // 比如 uni-app (没有 app.css 需要先创建，然后让 `main` 入口文件引入)
@@ -97,10 +96,10 @@
 如果你想在 页面或者组件独立的 `CSS` 模块中使用 `@apply` 或 `@variant`，你需要使用 `@reference` 指令，来导入主题变量、自定义工具和自定义变体，以使这些值在该上下文中可用。
 
 ```css
-/* 到你引入 weapp-tailwindcss 的 css 相对路径 */
+/* 到你引入 tailwindcss 的 css 相对路径 */
 @reference "../../app.css";
-/* 如果你只使用默认主题，没有自定义，你可以直接 reference weapp-tailwindcss */
-@reference "weapp-tailwindcss";
+/* 如果你只使用默认主题，没有自定义，你可以直接 reference tailwindcss */
+@reference "tailwindcss";
 ```
 
 详见: https://tailwindcss.com/docs/functions-and-directives#reference-directive
@@ -142,9 +141,11 @@ shamefully-hoist=true
 这就导致，我们假如想在 `vue` 项目(比如 `uni-app`) 中获得智能提示，必须再随便创建一个 `main.css`，然后通过 `App.vue` 文件引入它
 
 ```css title="main.css"
-@import "weapp-tailwindcss/css";
+@import "tailwindcss/css";
 @source not "dist";
 ```
+
+> **注意**：`weapp-tailwindcss` 的 `rewriteCssImports` 选项会自动将 `@import 'tailwindcss/css'` 改写为 `@import 'weapp-tailwindcss/css'`。如果遇到报错或样式不生效，请手动改为 `@import 'weapp-tailwindcss/css'`。
 
 ```html title="App.vue"
 <style src="./main.css"></style>
@@ -152,7 +153,7 @@ shamefully-hoist=true
 
 ## 如何去除 preflight 样式
 
-在引入 `@import "weapp-tailwindcss"` 时，默认会引入 `preflight` 样式。
+在引入 `@import "tailwindcss"` 时，默认会引入 `preflight` 样式。
 
 ### 什么是 preflight 样式
 
@@ -171,7 +172,7 @@ view,text,::before,::after,::backdrop {
 
 ### 解决方案
 
-`@import "weapp-tailwindcss"` 本质上由三个部分组成:
+`@import "tailwindcss"` (被改写为 `@import "weapp-tailwindcss/index.css"`) 本质上由三个部分组成:
 
 ```css
 @import 'weapp-tailwindcss/theme.css';
@@ -182,7 +183,7 @@ view,text,::before,::after,::backdrop {
 所以想要去除 `preflight` 样式，只需像下面一样写即可
 
 ```diff
-- @import "weapp-tailwindcss";
+- @import "tailwindcss";
 + @import 'weapp-tailwindcss/theme.css';
 + @import 'weapp-tailwindcss/utilities.css';
 ```

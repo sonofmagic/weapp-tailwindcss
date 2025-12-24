@@ -1,4 +1,5 @@
 import Patch from './patch.mdx'
+import CssImportReminder from '@site/src/components/CssImportReminder'
 import UniappCliStyle from './UniappCliStyle.mdx'
 
 # uni-app cli vue2 webpack
@@ -28,7 +29,7 @@ const config = {
       new UnifiedWebpackPluginV5({
         rem2rpx: true,
         cssEntries: [
-          // 你 @import "weapp-tailwindcss"; 那个文件绝对路径
+          // 你 @import "tailwindcss"; 那个文件绝对路径
           path.resolve(__dirname, './src/app.css'),
         ],
       })

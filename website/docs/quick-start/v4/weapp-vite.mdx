@@ -1,4 +1,5 @@
 import Patch from './patch.mdx'
+import CssImportReminder from '@site/src/components/CssImportReminder'
 import ExternalClassesReminder from '@site/fragments/ExternalClassesReminder.mdx'
 
 # Weapp-vite
@@ -52,8 +53,9 @@ export default {
 在项目目录下，小程序全局的 `app.css` 中，添加以下内容：
 
 ```css title="app.css"
-@import "weapp-tailwindcss";
+@import "tailwindcss";
 ```
 
+<CssImportReminder />
 
 更改好配置之后，直接启动即可

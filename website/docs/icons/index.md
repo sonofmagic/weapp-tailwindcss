@@ -57,11 +57,13 @@ module.exports = {
 在 `Tailwindcss@4` 中，不会自动读取 `tailwind.config.js` 文件，所以你需要使用 [@config](https://tailwindcss.com/docs/functions-and-directives#config-directive) 指令，手动 引入 `tailwindcss` 的配置文件。
 
 ```css
-@import "weapp-tailwindcss";
+@import "tailwindcss";
 /* 添加下面这一行，路径为你创建的 tailwind.config.js 文件路径 */
 /* highlight-next-line */
 @config "../tailwind.config.js";
 ```
+
+> **注意**：`weapp-tailwindcss` 的 `rewriteCssImports` 选项会自动将 `@import 'tailwindcss'` 改写为 `@import 'weapp-tailwindcss/index.css'`。如果遇到报错或样式不生效，请手动改为 `@import 'weapp-tailwindcss/index.css'`。
 
 这样在 `tailwindcss@4` 中才能起效果
 
