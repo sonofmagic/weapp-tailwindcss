@@ -14,7 +14,22 @@ sidebar: aiSidebar
 
 ---
 
-## 二、核心平台特点总结
+## 二、详细对比文档
+
+对于更深入的模型和工具对比分析，可参考以下文档：
+
+| 文档 | 说明 | 链接 |
+| ---- | ---- | ---- |
+| **国外顶尖编程模型选型建议书** | Claude Opus 4.5、GPT-5.2、Gemini 3 Pro 三大模型的深度对比，含价格、刷新周期、额度用完后如何继续使用 | [international-ai-models-comparison.md](./international-ai-models-comparison.md) |
+| **AI 编程工具选型建议书** | GLM-4.7 + Claude Code CLI 最佳组合，Qoder vs Cursor IDE 对比，含刷新周期和额度限制详解 | [qoder-vs-glm47-cursor-claude-comparison.md](./qoder-vs-glm47-cursor-claude-comparison.md) |
+
+> **核心要点**：
+> - **刷新周期对比**：GLM-4.7/ChatGPT 每 **5 小时**（最快）> Gemini Code Assist 每 **日** > GitHub Copilot/Qoder/Cursor 每 **月** > Claude Code 每 **7 天**（最慢）
+> - **额度用完后方案**：等待刷新周期 / 使用 API KEY 按量计费 / 切换其他订阅账号 / 升级更高版本套餐
+
+---
+
+## 三、核心平台特点总结
 
 - **AI 编程能力排行**：可随时查看 **[LLM Stats](https://llm-stats.com/)** 获取最新模型榜单与分数，用于快速对比模型迭代效果。
 - **综合榜单（能力/价格/上下文）**：如需更全面的横向对比，可参考 **[Vellum Leaderboard](https://www.vellum.ai/llm-leaderboard)**。
