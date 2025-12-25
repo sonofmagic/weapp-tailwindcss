@@ -272,7 +272,6 @@ Cline（VS Code 插件）读取 `.clinerules` 或 `llms.txt`：
 
 | 工具 | 支持的文件 |
 | ---- | ---------- |
-| **Qoder** | `README.md`, 自定义配置 |
 | **Roo Code** | `roo-rules.txt` |
 | **Continue** | `continue_config.json` |
 | **Aider** | `.aider.conf.yml` |

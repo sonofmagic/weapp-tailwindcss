@@ -73,7 +73,6 @@ POST /api/auth/login
 │  3. AI 代码生成         ┌─────────────────┐          │
 │     │                     │ Claude Code     │          │
 │     ├────────────────────▶│ Cursor Agent    │          │
-│     │                     │ Qoder Spec Mode │          │
 │     │                     └─────────────────┘          │
 │     │                                                   │
 │     ▼                                                   │
@@ -201,35 +200,7 @@ interface LoginResponse {
 
 ## 支持 Spec-Driven 的工具
 
-### 1. Qoder Spec Mode
-
-Qoder 的**规范驱动编程**功能：
-
-```
-┌─────────────────────────────────────────────────────────┐
-│                    Qoder Spec Mode                     │
-├─────────────────────────────────────────────────────────┤
-│                                                         │
-│  1. 用户输入自然语言需求                                │
-│     "创建一个用户登录页面，支持邮箱和密码登录"          │
-│                                                         │
-│  2. Qoder 自动生成规范                                  │
-│     ├── 功能分析                                        │
-│     ├── 数据模型                                        │
-│     ├── API 设计                                        │
-│     └── UI 规范                                         │
-│                                                         │
-│  3. 用户确认/修改规范                                   │
-│                                                         │
-│  4. Qoder 根据规范生成代码                              │
-│     ├── 前端组件                                        │
-│     ├── 后端接口                                        │
-│     └── 数据库设计                                      │
-│                                                         │
-└─────────────────────────────────────────────────────────┘
-```
-
-### 2. Cursor Composer
+### 1. Cursor Composer
 
 Cursor 的多步骤任务执行：
 
@@ -245,7 +216,7 @@ Cursor 的多步骤任务执行：
 5. 编写测试用例
 ```
 
-### 3. Claude Code CLI
+### 2. Claude Code CLI
 
 通过 CLAUDE.md 定义规范：
 
@@ -395,7 +366,6 @@ specs/
 
 ### 相关工具
 
-- [Qoder Spec Mode](https://docs.qoder.com/spec-driven-programming)
 - [Cursor Composer](https://cursor.com/docs/composer)
 - [OpenAPI Specification](https://swagger.io/specification/)
 

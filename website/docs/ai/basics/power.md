@@ -200,21 +200,7 @@ def evaluate_power(ai_tool, test_cases):
 
 ## Power 在不同工具中的体现
 
-### 1. Qoder Spec Mode
-
-Qoder 的 **Spec Mode** 专注于 Power 能力：
-
-```
-特点:
-├── 自然语言 → 结构化规范
-├── 规范确认机制
-├── 多步骤代码生成
-└── 规范可复用
-
-Power 水平: Level 3-4
-```
-
-### 2. Cursor Composer
+### 1. Cursor Composer
 
 Cursor 的 **Composer** 特性：
 
@@ -228,7 +214,7 @@ Cursor 的 **Composer** 特性：
 Power 水平: Level 2-3
 ```
 
-### 3. Claude Code
+### 2. Claude Code
 
 Claude Code 的 **Plan Mode**：
 
@@ -242,7 +228,7 @@ Claude Code 的 **Plan Mode**：
 Power 水平: Level 3
 ```
 
-### 4. GitHub Copilot Workspace
+### 3. GitHub Copilot Workspace
 
 Copilot 的 **Workspace**：
 
@@ -500,7 +486,6 @@ Level 4: 探索
 
 ### 工具
 
-- [Qoder](https://qoder.com) - Spec Mode 支持
 - [Cursor](https://cursor.sh) - Composer 功能
 - [Claude Code](https://claude.ai/code) - Plan Mode
 
