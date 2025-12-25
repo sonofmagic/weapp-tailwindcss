@@ -21,16 +21,118 @@ const aiSidebar: SidebarConfig = [
         id: 'ai/llms',
         label: 'LLM 友好文档',
       },
-      // {
-      //   type: 'doc',
-      //   id: 'ai/glm',
-      //   label: 'GLM4.6 模型使用体验',
-      // },
-      // {
-      //   type: 'doc',
-      //   id: 'ai/ai-limitations',
-      //   label: 'AI 的不足和缺陷',
-      // },
+    ],
+  },
+  {
+    type: 'category',
+    label: '📚 AI 基础知识',
+    collapsed: false,
+    items: [
+      {
+        type: 'category',
+        label: '核心概念',
+        collapsed: false,
+        items: [
+          {
+            type: 'doc',
+            id: 'ai/basics/token',
+            label: 'Token（词元）',
+          },
+          {
+            type: 'doc',
+            id: 'ai/basics/context-window',
+            label: '上下文窗口（Context Window）',
+          },
+          {
+            type: 'doc',
+            id: 'ai/basics/llms-txt',
+            label: 'LLMs.txt（LLM 友好文档）',
+          },
+        ],
+      },
+      {
+        type: 'category',
+        label: '协议与工具',
+        collapsed: false,
+        items: [
+          {
+            type: 'doc',
+            id: 'ai/basics/mcp',
+            label: 'MCP（Model Context Protocol）',
+          },
+          {
+            type: 'doc',
+            id: 'ai/basics/skill',
+            label: 'Skill（技能系统）',
+          },
+          {
+            type: 'doc',
+            id: 'ai/basics/agent',
+            label: 'AI Agent（智能体）',
+          },
+          {
+            type: 'doc',
+            id: 'ai/basics/rag',
+            label: 'RAG（检索增强生成）',
+          },
+          {
+            type: 'doc',
+            id: 'ai/basics/power',
+            label: 'Power（规范驱动编程能力）',
+          },
+        ],
+      },
+      {
+        type: 'category',
+        label: '安全与隔离',
+        collapsed: false,
+        items: [
+          {
+            type: 'doc',
+            id: 'ai/basics/ai-sandbox',
+            label: 'AI 沙箱（Sandbox）',
+          },
+        ],
+      },
+      {
+        type: 'category',
+        label: '开发方法',
+        collapsed: false,
+        items: [
+          {
+            type: 'doc',
+            id: 'ai/basics/spec-driven-development',
+            label: 'Spec-Driven Development（规范驱动开发）',
+          },
+          {
+            type: 'doc',
+            id: 'ai/basics/vibe-coding',
+            label: 'Vibe Coding（直觉编程）',
+          },
+          {
+            type: 'doc',
+            id: 'ai/basics/prompt-engineering',
+            label: 'Prompt Engineering（提示词工程）',
+          },
+        ],
+      },
+    ],
+  },
+  {
+    type: 'category',
+    label: '📊 模型对比',
+    collapsed: false,
+    items: [
+      {
+        type: 'doc',
+        id: 'ai/international-ai-models-comparison',
+        label: '国外顶尖编程模型选型',
+      },
+      {
+        type: 'doc',
+        id: 'ai/qoder-vs-glm47-cursor-claude-comparison',
+        label: 'AI 编程工具选型建议',
+      },
     ],
   },
 ]
