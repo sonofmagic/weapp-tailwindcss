@@ -20,10 +20,10 @@ jobs:
         os: [ubuntu-latest, windows-latest, macos-latest]
         node-version: [20, 22, 24]
     runs-on: ${{ matrix.os }}
-    # To use Remote Caching, uncomment the next lines and follow the steps below.
-    # env:
-    #  TURBO_TOKEN: ${{ secrets.TURBO_TOKEN }}
-    #  TURBO_TEAM: ${{ vars.TURBO_TEAM }}
+    # Remote Caching enabled - configure TURBO_TOKEN and TURBO_TEAM in repository settings
+    env:
+      TURBO_TOKEN: ${{ secrets.TURBO_TOKEN }}
+      TURBO_TEAM: ${{ vars.TURBO_TEAM }}
 
     steps:
       - name: Check out code
@@ -38,9 +38,17 @@ jobs:
         with:
           node-version: ${{ matrix.node-version }}
           cache: pnpm
+          cache-dependency-path: pnpm-lock.yaml
 
       - name: Install dependencies
-        run: pnpm install
+        run: pnpm install --frozen-lockfile
+
+      - name: Security Audit
+        run: pnpm audit --audit-level=moderate
+        continue-on-error: true
+
+      - name: Lint
+        run: pnpm lint
 
       - name: Build
         run: pnpm build
