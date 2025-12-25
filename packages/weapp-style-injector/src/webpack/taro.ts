@@ -52,8 +52,13 @@ export function StyleInjector(options: WebpackTaroStyleInjectorOptions = {}) {
 
   const taroResolver = createTaroSubPackageImportResolver(Array.from(configs.values()))
 
-  return weappStyleInjectorWebpack({
+  const injectorOptions: WebpackWeappStyleInjectorOptions = {
     ...rest,
-    perFileImports: mergePerFileResolvers([perFileImports, taroResolver]),
-  })
+  }
+  const mergedResolver = mergePerFileResolvers([perFileImports, taroResolver])
+  if (mergedResolver !== undefined) {
+    injectorOptions.perFileImports = mergedResolver
+  }
+
+  return weappStyleInjectorWebpack(injectorOptions)
 }

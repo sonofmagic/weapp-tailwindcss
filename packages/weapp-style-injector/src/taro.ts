@@ -103,8 +103,10 @@ function resolveSubPackages(config: TaroSubPackageConfig): ResolvedSubPackage[] 
     return []
   }
 
-  const primary = ensureArray(appConfig.subPackages as Array<{ root?: string }> | undefined)
-  const secondary = ensureArray((appConfig as { subpackages?: Array<{ root?: string }> | undefined }).subpackages)
+  // eslint-disable-next-line dot-notation
+  const primary = ensureArray((appConfig as Record<string, unknown>)['subPackages'] as Array<{ root?: string }> | undefined)
+  // eslint-disable-next-line dot-notation
+  const secondary = ensureArray((appConfig as Record<string, unknown>)['subpackages'] as Array<{ root?: string }> | undefined)
   const subPackagesInput = [...primary, ...secondary]
 
   if (subPackagesInput.length === 0) {

@@ -15,9 +15,12 @@ export function internalCssSelectorReplacer(
   },
 ) {
   const { escapeMap } = options
-  return escape(selectors, {
-    map: escapeMap,
-  })
+  const escapeOptions: Record<string, unknown> = {}
+  if (escapeMap !== undefined) {
+    // eslint-disable-next-line dot-notation
+    escapeOptions['map'] = escapeMap
+  }
+  return escape(selectors, escapeOptions)
 }
 
 // composeIsPseudo 将字符串数组包装成 :is(...)，保持选择器语义一致

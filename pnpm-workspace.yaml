@@ -8,7 +8,6 @@ packages:
   - '!tailwindcss-weapp'
   - '!**/test/**'
   - demo/*
-
 catalogs:
   autoprefixer10:
     autoprefixer: ^10.4.23
@@ -121,14 +120,14 @@ catalogs:
     weapp-vite: ^5.12.0
   wrangler4530:
     wrangler: ^4.56.0
-
 onlyBuiltDependencies:
   - '@tailwindcss/oxide'
   - '@tarojs/binding'
   - '@tarojs/cli'
   - '@weapp-tailwindcss/merge'
   - esbuild
-
+  - sharp
+  - workerd
 packageExtensions:
   '@dcloudio/vue-cli-plugin-hbuilderx@*':
     dependencies:

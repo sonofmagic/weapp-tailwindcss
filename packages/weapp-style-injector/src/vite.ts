@@ -23,10 +23,14 @@ export function weappStyleInjector(options: ViteWeappStyleInjectorOptions = {}):
     createUniAppSubPackageImportResolver(uniAppSubPackages, uniAppStyleScopes),
   ])
 
-  const injector = createStyleInjector({
+  const injectorOptions: WeappStyleInjectorOptions = {
     ...restOptions,
-    perFileImports: perFileResolver,
-  })
+  }
+  if (perFileResolver !== undefined) {
+    injectorOptions.perFileImports = perFileResolver
+  }
+
+  const injector = createStyleInjector(injectorOptions)
 
   return {
     name: PLUGIN_NAME,

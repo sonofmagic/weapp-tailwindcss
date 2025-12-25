@@ -49,10 +49,14 @@ export class WeappStyleInjectorWebpackPlugin implements WebpackPluginInstance {
       createUniAppSubPackageImportResolver(uniAppSubPackages, uniAppStyleScopes),
     ])
 
-    const injector = createStyleInjector({
+    const injectorOptions: WeappStyleInjectorOptions = {
       ...restOptions,
-      perFileImports: perFileResolver,
-    })
+    }
+    if (perFileResolver !== undefined) {
+      injectorOptions.perFileImports = perFileResolver
+    }
+
+    const injector = createStyleInjector(injectorOptions)
 
     if (!injector.hasImports) {
       return

@@ -45,19 +45,28 @@ export function StyleInjector(options: WebpackUniAppStyleInjectorOptions = {}) {
 
   for (const candidate of candidatePaths) {
     if (!configs.has(candidate) && fs.existsSync(candidate)) {
-      configs.set(candidate, {
+      const config: UniAppSubPackageConfig = {
         pagesJsonPath: candidate,
-        indexFileName,
-      })
+      }
+      if (indexFileName !== undefined) {
+        config.indexFileName = indexFileName
+      }
+      configs.set(candidate, config)
     }
   }
 
   const entries = configs.size > 0 ? Array.from(configs.values()) : undefined
   const manualEntries = manualStyleScopes.length > 0 ? manualStyleScopes : undefined
 
-  return weappStyleInjectorWebpack({
+  const injectorOptions: WebpackWeappStyleInjectorOptions = {
     ...rest,
-    uniAppSubPackages: entries,
-    uniAppStyleScopes: manualEntries,
-  })
+  }
+  if (entries !== undefined) {
+    injectorOptions.uniAppSubPackages = entries
+  }
+  if (manualEntries !== undefined) {
+    injectorOptions.uniAppStyleScopes = manualEntries
+  }
+
+  return weappStyleInjectorWebpack(injectorOptions)
 }

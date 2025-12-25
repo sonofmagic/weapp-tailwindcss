@@ -65,7 +65,7 @@ export function groupBy<T>(arr: T[], cb: (arg: T) => string): Record<string, T[]
     const bucket = result[bucketCategory]
 
     if (Array.isArray(bucket)) {
-      result[bucketCategory].push(item)
+      bucket.push(item)
     }
     else {
       result[bucketCategory] = [item]

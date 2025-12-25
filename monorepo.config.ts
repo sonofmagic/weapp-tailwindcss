@@ -8,7 +8,7 @@ export default defineMonorepoConfig({
     },
     clean: {
       autoConfirm: false,
-      ignorePackages: ['@icebreakers/website'],
+      includePrivate: true,
     },
     sync: {
       concurrency: 4,

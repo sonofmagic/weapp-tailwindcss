@@ -222,10 +222,13 @@ export function StyleInjector(options: ViteUniAppStyleInjectorOptions = {}) {
 
   for (const candidate of candidatePaths) {
     if (!configs.has(candidate) && fs.existsSync(candidate)) {
-      configs.set(candidate, {
+      const config: UniAppSubPackageConfig = {
         pagesJsonPath: candidate,
-        indexFileName,
-      })
+      }
+      if (indexFileName !== undefined) {
+        config.indexFileName = indexFileName
+      }
+      configs.set(candidate, config)
     }
   }
 
@@ -233,12 +236,18 @@ export function StyleInjector(options: ViteUniAppStyleInjectorOptions = {}) {
   const manualEntries = manualStyleScopes.length > 0 ? manualStyleScopes : undefined
   const resolvedSubPackages = resolveUniAppStyleScopes(entries, manualEntries)
 
+  const injectorOptions: ViteWeappStyleInjectorOptions = {
+    ...rest,
+  }
+  if (entries !== undefined) {
+    injectorOptions.uniAppSubPackages = entries
+  }
+  if (manualEntries !== undefined) {
+    injectorOptions.uniAppStyleScopes = manualEntries
+  }
+
   const plugins = [
-    weappStyleInjector({
-      ...rest,
-      uniAppSubPackages: entries,
-      uniAppStyleScopes: manualEntries,
-    }),
+    weappStyleInjector(injectorOptions),
   ]
 
   if (resolvedSubPackages.length > 0) {

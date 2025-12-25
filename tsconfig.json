@@ -1,18 +1,51 @@
 {
   "compilerOptions": {
+    // 指定 ECMAScript 目标版本，ESNext 表示支持最新的 ES 特性
     "target": "ESNext",
+
+    // 指定模块系统，ESNext 使用原生 ES 模块 (import/export)
     "module": "ESNext",
+
+    // 模块解析策略，Bundler 模式适用于打包工具（如 Vite、Webpack），支持更宽松的解析规则
     "moduleResolution": "Bundler",
+
+    // 允许导入 .json 文件，并自动生成类型声明
     "resolveJsonModule": true,
+
+    // 指定要包含的类型声明文件，node 提供 Node.js API 类型，vitest/globals 提供测试全局变量类型
     "types": [
       "node",
       "vitest/globals"
     ],
+
+    // 允许编译 JavaScript 文件，使其可以被导入和进行类型检查
     "allowJs": true,
+
+    // 启用所有严格类型检查选项，包括 noImplicitAny、strictNullChecks 等
     "strict": true,
+
+    // 严格检查可选属性类型，区分 undefined 和缺失的属性
+    "exactOptionalPropertyTypes": true,
+
+    // 要求子类重写父类方法时必须使用 override 关键字
+    "noImplicitOverride": true,
+
+    // 禁止通过索引签名（如 obj['key']）访问未在索引签名中定义的属性
+    "noPropertyAccessFromIndexSignature": true,
+
+    // 访问索引签名时返回 undefined | T，而不是 T（防止未定义访问错误）
+    "noUncheckedIndexedAccess": true,
+
+    // 不生成输出文件（仅用于类型检查，实际由打包工具处理编译）
     "noEmit": true,
+
+    // 允许从没有默认导出的模块中默认导入（如 import React from 'react'）
     "allowSyntheticDefaultImports": true,
+
+    // 启用 ES 模块互操作性，为 CommonJS 模块提供 synthetic default imports
     "esModuleInterop": true,
+
+    // 跳过库文件的类型检查，提高编译速度（库文件通常已经有类型声明）
     "skipLibCheck": true
   },
   "exclude": [

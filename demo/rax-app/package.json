@@ -45,6 +45,7 @@
     "@weapp-tailwindcss/merge-v3": "workspace:*",
     "@weapp-tailwindcss/variants-v3": "workspace:*",
     "autoprefixer": "catalog:autoprefixer10",
+    "build-plugin-app-core": "^2.1.4",
     "cross-env": "catalog:crossEnv",
     "eslint": "^9.39.2",
     "postcss": "catalog:postcss85",

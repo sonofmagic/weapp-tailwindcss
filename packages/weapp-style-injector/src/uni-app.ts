@@ -323,21 +323,31 @@ export function splitUniAppStyleScopes(
     }
 
     if ('style' in entry) {
-      manual.push({
+      const config: UniAppManualStyleConfig = {
         style: entry.style,
         scope: entry.scope,
-        output: entry.output,
-        preprocess: entry.preprocess,
-      })
+      }
+      if (entry.output !== undefined) {
+        config.output = entry.output
+      }
+      if (entry.preprocess !== undefined) {
+        config.preprocess = entry.preprocess
+      }
+      manual.push(config)
       continue
     }
 
     if ('pagesJsonPath' in entry) {
-      subPackages.push({
+      const config: UniAppSubPackageConfig = {
         pagesJsonPath: entry.pagesJsonPath,
-        indexFileName: entry.indexFileName,
-        preprocess: entry.preprocess,
-      })
+      }
+      if (entry.indexFileName !== undefined) {
+        config.indexFileName = entry.indexFileName
+      }
+      if (entry.preprocess !== undefined) {
+        config.preprocess = entry.preprocess
+      }
+      subPackages.push(config)
     }
   }
 

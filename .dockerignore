@@ -1,6 +1,44 @@
+# Dependencies
 node_modules
+**/node_modules/
+
+# Build outputs
+dist
+**/dist/
+
+# Version control
 .git
 .gitignore
+.github
+
+# Documentation
 *.md
-dist
-**/node_modules/
+README*
+
+# Testing
+coverage
+**/coverage/
+**/*.test.ts
+**/*.test.js
+**/*.spec.ts
+**/*.spec.js
+
+# Build caches
+.turbo
+**/.turbo/
+.vitepress/cache
+**/.vitepress/cache
+
+# Development
+.vscode
+.idea
+*.log
+.DS_Store
+
+# CI/CD
+.github/workflows
+
+# Environment
+.env
+.env.*
+!.env.example

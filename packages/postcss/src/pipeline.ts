@@ -246,18 +246,26 @@ export function createStylePipeline(options: IStyleHandlerOptions): StyleProcess
       size,
       stageIndex,
       stageSize: stageSizes.get(node.stage) ?? 0,
-      previous: index > 0
-        ? {
-            id: preparedNodes[index - 1].id,
-            stage: preparedNodes[index - 1].stage,
-          }
-        : undefined,
-      next: index < size - 1
-        ? {
-            id: preparedNodes[index + 1].id,
-            stage: preparedNodes[index + 1].stage,
-          }
-        : undefined,
+    }
+
+    if (index > 0) {
+      const prevNode = preparedNodes[index - 1]
+      if (prevNode) {
+        context.previous = {
+          id: prevNode.id,
+          stage: prevNode.stage,
+        }
+      }
+    }
+
+    if (index < size - 1) {
+      const nextNode = preparedNodes[index + 1]
+      if (nextNode) {
+        context.next = {
+          id: nextNode.id,
+          stage: nextNode.stage,
+        }
+      }
     }
 
     stageIndices.set(node.stage, stageIndex + 1)

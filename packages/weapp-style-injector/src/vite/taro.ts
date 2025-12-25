@@ -52,8 +52,13 @@ export function StyleInjector(options: ViteTaroStyleInjectorOptions = {}) {
 
   const taroResolver = createTaroSubPackageImportResolver(Array.from(configs.values()))
 
-  return weappStyleInjector({
+  const injectorOptions: ViteWeappStyleInjectorOptions = {
     ...rest,
-    perFileImports: mergePerFileResolvers([perFileImports, taroResolver]),
-  })
+  }
+  const mergedResolver = mergePerFileResolvers([perFileImports, taroResolver])
+  if (mergedResolver !== undefined) {
+    injectorOptions.perFileImports = mergedResolver
+  }
+
+  return weappStyleInjector(injectorOptions)
 }
