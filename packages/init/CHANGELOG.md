@@ -1,5 +1,12 @@
 # @weapp-tailwindcss/init
 
+## 1.0.10
+
+### Patch Changes
+
+- Updated dependencies [[`84061c4`](https://github.com/sonofmagic/weapp-tailwindcss/commit/84061c4606d4ae28334bcce5fd4552211130e1d3)]:
+  - @weapp-tailwindcss/shared@1.1.2
+
 ## 1.0.9
 
 ### Patch Changes
