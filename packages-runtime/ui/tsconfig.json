@@ -3,9 +3,6 @@
   "compilerOptions": {
     "jsx": "react-jsx",
     "paths": {
-      "tailwind-merge": [
-        "../merge/node_modules/tailwind-merge"
-      ],
       "@tarojs/components": [
         "./node_modules/@tarojs/components"
       ]

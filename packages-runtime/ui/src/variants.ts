@@ -1,235 +1,195 @@
 import type { VariantProps } from 'tailwind-variants'
-import { twMerge } from 'tailwind-merge'
-import { createTV } from 'tailwind-variants'
+import { twMerge } from '@weapp-tailwindcss/merge'
+import { tv } from '@weapp-tailwindcss/variants'
 
-const tv = createTV({
-  twMerge: false,
+export const button = tv({
+  base: 'wt-button',
+  variants: {
+    tone: {
+      primary: '',
+      secondary: 'wt-button--secondary',
+      success: 'wt-button--success',
+      danger: 'wt-button--danger',
+    },
+    appearance: {
+      solid: '',
+      outline: 'wt-button--outline',
+      ghost: 'wt-button--ghost',
+      tonal: 'wt-button--tonal',
+    },
+    size: {
+      md: '',
+      sm: 'wt-button--small',
+      icon: 'wt-button--icon',
+    },
+    disabled: {
+      true: 'is-disabled',
+    },
+  },
+  defaultVariants: {
+    tone: 'primary',
+    appearance: 'solid',
+    size: 'md',
+  },
 })
 
-function withMerge<T extends (...args: any[]) => string>(variant: T): T {
-  const merged = ((options?: Parameters<T>[0]) => {
-    const value = variant(options)
-    if (typeof value !== 'string') {
-      return value as string
-    }
-    return twMerge(value)
-  }) as T
+export const badge = tv({
+  base: 'wt-badge',
+  variants: {
+    tone: {
+      primary: '',
+      soft: 'wt-badge--soft',
+      outline: 'wt-badge--outline',
+      success: 'wt-badge--success',
+      warning: 'wt-badge--warning',
+      danger: 'wt-badge--danger',
+    },
+  },
+  defaultVariants: {
+    tone: 'primary',
+  },
+})
 
-  return Object.assign(merged, variant)
-}
+export const chip = tv({
+  base: 'wt-chip',
+  variants: {
+    tone: {
+      primary: '',
+      solid: 'wt-chip--solid',
+      ghost: 'wt-chip--ghost',
+    },
+  },
+  defaultVariants: {
+    tone: 'primary',
+  },
+})
 
-export const button = withMerge(
-  tv({
-    base: 'wt-button',
-    variants: {
-      tone: {
-        primary: '',
-        secondary: 'wt-button--secondary',
-        success: 'wt-button--success',
-        danger: 'wt-button--danger',
-      },
-      appearance: {
-        solid: '',
-        outline: 'wt-button--outline',
-        ghost: 'wt-button--ghost',
-        tonal: 'wt-button--tonal',
-      },
-      size: {
-        md: '',
-        sm: 'wt-button--small',
-        icon: 'wt-button--icon',
-      },
-      disabled: {
-        true: 'is-disabled',
-      },
+export const card = tv({
+  base: 'wt-card',
+  variants: {
+    shadow: {
+      none: 'shadow-none',
+      sm: 'shadow-sm',
+      md: 'shadow-md',
     },
-    defaultVariants: {
-      tone: 'primary',
-      appearance: 'solid',
-      size: 'md',
+    border: {
+      muted: '',
+      strong: 'border-border-strong',
     },
-  }),
-)
+  },
+  defaultVariants: {
+    shadow: 'sm',
+    border: 'muted',
+  },
+})
 
-export const badge = withMerge(
-  tv({
-    base: 'wt-badge',
-    variants: {
-      tone: {
-        primary: '',
-        soft: 'wt-badge--soft',
-        outline: 'wt-badge--outline',
-        success: 'wt-badge--success',
-        warning: 'wt-badge--warning',
-        danger: 'wt-badge--danger',
-      },
+export const input = tv({
+  base: 'wt-input',
+  variants: {
+    state: {
+      default: '',
+      success: 'is-success',
+      error: 'is-error',
     },
-    defaultVariants: {
-      tone: 'primary',
+    disabled: {
+      true: 'is-disabled',
     },
-  }),
-)
+  },
+  defaultVariants: {
+    state: 'default',
+  },
+})
 
-export const chip = withMerge(
-  tv({
-    base: 'wt-chip',
-    variants: {
-      tone: {
-        primary: '',
-        solid: 'wt-chip--solid',
-        ghost: 'wt-chip--ghost',
-      },
+export const avatar = tv({
+  base: 'wt-avatar',
+  variants: {
+    size: {
+      sm: 'wt-avatar--sm',
+      md: '',
+      lg: 'wt-avatar--lg',
     },
-    defaultVariants: {
-      tone: 'primary',
-    },
-  }),
-)
+  },
+  defaultVariants: {
+    size: 'md',
+  },
+})
 
-export const card = withMerge(
-  tv({
-    base: 'wt-card',
-    variants: {
-      shadow: {
-        none: 'shadow-none',
-        sm: 'shadow-sm',
-        md: 'shadow-md',
-      },
-      border: {
-        muted: '',
-        strong: 'border-border-strong',
-      },
+export const toolbar = tv({
+  base: 'wt-toolbar',
+  variants: {
+    elevated: {
+      true: 'shadow-xs',
+      false: '',
     },
-    defaultVariants: {
-      shadow: 'sm',
-      border: 'muted',
+    borderless: {
+      true: 'border-b-0',
+      false: '',
     },
-  }),
-)
+  },
+  defaultVariants: {
+    elevated: false,
+    borderless: false,
+  },
+})
 
-export const input = withMerge(
-  tv({
-    base: 'wt-input',
-    variants: {
-      state: {
-        default: '',
-        success: 'is-success',
-        error: 'is-error',
-      },
-      disabled: {
-        true: 'is-disabled',
-      },
+export const toast = tv({
+  base: 'wt-toast',
+  variants: {
+    tone: {
+      neutral: '',
+      success: 'wt-toast--success',
+      warning: 'wt-toast--warning',
+      danger: 'wt-toast--danger',
     },
-    defaultVariants: {
-      state: 'default',
-    },
-  }),
-)
+  },
+  defaultVariants: {
+    tone: 'neutral',
+  },
+})
 
-export const avatar = withMerge(
-  tv({
-    base: 'wt-avatar',
-    variants: {
-      size: {
-        sm: 'wt-avatar--sm',
-        md: '',
-        lg: 'wt-avatar--lg',
-      },
-    },
-    defaultVariants: {
-      size: 'md',
-    },
-  }),
-)
+export const list = tv({
+  base: 'wt-list',
+})
 
-export const toolbar = withMerge(
-  tv({
-    base: 'wt-toolbar',
-    variants: {
-      elevated: {
-        true: 'shadow-xs',
-        false: '',
-      },
-      borderless: {
-        true: 'border-b-0',
-        false: '',
-      },
+export const listItem = tv({
+  base: 'wt-list__item',
+  variants: {
+    interactive: {
+      true: 'wt-list__item--interactive',
     },
-    defaultVariants: {
-      elevated: false,
-      borderless: false,
-    },
-  }),
-)
+  },
+  defaultVariants: {
+    interactive: false,
+  },
+})
 
-export const toast = withMerge(
-  tv({
-    base: 'wt-toast',
-    variants: {
-      tone: {
-        neutral: '',
-        success: 'wt-toast--success',
-        warning: 'wt-toast--warning',
-        danger: 'wt-toast--danger',
-      },
+export const tag = tv({
+  base: 'wt-tag',
+  variants: {
+    tone: {
+      default: '',
+      active: 'wt-tag--active',
+      danger: 'wt-tag--danger',
+      ghost: 'wt-tag--ghost',
     },
-    defaultVariants: {
-      tone: 'neutral',
-    },
-  }),
-)
+  },
+  defaultVariants: {
+    tone: 'default',
+  },
+})
 
-export const list = withMerge(
-  tv({
-    base: 'wt-list',
-  }),
-)
-
-export const listItem = withMerge(
-  tv({
-    base: 'wt-list__item',
-    variants: {
-      interactive: {
-        true: 'wt-list__item--interactive',
-      },
+export const skeleton = tv({
+  base: 'wt-skeleton',
+  variants: {
+    tone: {
+      default: '',
+      dark: 'wt-skeleton--dark',
     },
-    defaultVariants: {
-      interactive: false,
-    },
-  }),
-)
-
-export const tag = withMerge(
-  tv({
-    base: 'wt-tag',
-    variants: {
-      tone: {
-        default: '',
-        active: 'wt-tag--active',
-        danger: 'wt-tag--danger',
-        ghost: 'wt-tag--ghost',
-      },
-    },
-    defaultVariants: {
-      tone: 'default',
-    },
-  }),
-)
-
-export const skeleton = withMerge(
-  tv({
-    base: 'wt-skeleton',
-    variants: {
-      tone: {
-        default: '',
-        dark: 'wt-skeleton--dark',
-      },
-    },
-    defaultVariants: {
-      tone: 'default',
-    },
-  }),
-)
+  },
+  defaultVariants: {
+    tone: 'default',
+  },
+})
 
 type ClassValue = Parameters<typeof twMerge>[number]
 

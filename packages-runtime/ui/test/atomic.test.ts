@@ -75,7 +75,7 @@ describe('variants utilities', () => {
     expect(mergeClassNames('px-4', 'px-6')).toBe('px-6')
   })
 
-  it('composes button variants with tailwind-merge', () => {
+  it('composes button variants with @weapp-tailwindcss/merge', () => {
     const classes = button({ tone: 'secondary', appearance: 'outline', class: 'px-4 px-6' })
     expect(classes.split(' ')).toContain('wt-button')
     expect(classes.split(' ')).toContain('wt-button--secondary')

@@ -1,11 +1,6 @@
 {
   "extends": "../../tsconfig.json",
   "compilerOptions": {
-    "paths": {
-      "tailwind-merge": [
-        "../merge/node_modules/tailwind-merge"
-      ]
-    },
     "types": [],
     "declaration": true,
     "declarationMap": false,

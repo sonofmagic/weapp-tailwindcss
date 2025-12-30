@@ -112,7 +112,13 @@ export default defineConfig(async ({ command, mode }) => {
         fileName: (format, entryName) => `${entryName}.${format === 'es' ? 'js' : 'cjs'}`,
       },
       rollupOptions: {
-        external: ['tailwind-merge', 'tailwind-variants', 'tailwindcss', 'tailwindcss/plugin'],
+        external: [
+          '@weapp-tailwindcss/merge',
+          '@weapp-tailwindcss/variants',
+          'tailwind-variants',
+          'tailwindcss',
+          'tailwindcss/plugin',
+        ],
       },
     },
   }

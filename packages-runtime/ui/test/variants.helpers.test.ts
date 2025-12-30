@@ -4,18 +4,18 @@ describe('variant helpers', () => {
   afterEach(() => {
     vi.resetModules()
     vi.clearAllMocks()
-    vi.unmock('tailwind-variants')
-    vi.unmock('tailwind-merge')
+    vi.unmock('@weapp-tailwindcss/variants')
+    vi.unmock('@weapp-tailwindcss/merge')
   })
 
-  it('returns non-string outputs without merging', async () => {
+  it('does not merge when variant returns undefined', async () => {
     const mergeSpy = vi.fn()
 
-    vi.doMock('tailwind-variants', () => ({
+    vi.doMock('@weapp-tailwindcss/variants', () => ({
       __esModule: true,
-      createTV: () => () => () => undefined,
+      tv: () => () => undefined,
     }))
-    vi.doMock('tailwind-merge', () => ({
+    vi.doMock('@weapp-tailwindcss/merge', () => ({
       __esModule: true,
       twMerge: mergeSpy,
     }))

@@ -129,7 +129,8 @@
     }
   },
   "dependencies": {
-    "tailwind-merge": "catalog:tailwindMerge",
+    "@weapp-tailwindcss/merge": "workspace:*",
+    "@weapp-tailwindcss/variants": "workspace:*",
     "tailwind-variants": "^3.2.2"
   },
   "devDependencies": {
