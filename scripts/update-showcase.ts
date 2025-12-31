@@ -87,6 +87,34 @@ if (Number.isNaN(issueNumber)) {
   throw new TypeError('SHOWCASE_ISSUE must be a valid number')
 }
 
+function parseProxyOption(args: string[]): { enabled: boolean, url?: string } {
+  for (let index = 0; index < args.length; index += 1) {
+    const arg = args[index]
+    if (!arg) {
+      continue
+    }
+
+    if (arg === '--no-proxy') {
+      return { enabled: false }
+    }
+
+    if (arg === '--proxy') {
+      const next = args[index + 1]
+      if (next && !next.startsWith('-')) {
+        return { enabled: true, url: next }
+      }
+      return { enabled: true }
+    }
+
+    if (arg.startsWith('--proxy=')) {
+      const url = arg.slice('--proxy='.length).trim()
+      return url ? { enabled: true, url } : { enabled: true }
+    }
+  }
+
+  return { enabled: false }
+}
+
 const apiBase = `https://api.github.com/repos/${repo}`
 const issueApiUrl = `${apiBase}/issues/${issueNumber}`
 const commentsApiUrl = `${issueApiUrl}/comments`
@@ -95,13 +123,15 @@ const imageTimeoutMs = Number.isFinite(parsedTimeout) && parsedTimeout > 0 ? par
 const parsedAttempts = Number(process.env.SHOWCASE_IMAGE_RETRY ?? '3')
 const maxDownloadAttempts = Number.isFinite(parsedAttempts) && parsedAttempts > 0 ? parsedAttempts : 3
 const skipImageDownload = /^1|true$/i.test(process.env.SHOWCASE_SKIP_IMAGES ?? '')
-const proxyUrl
+const proxyOption = parseProxyOption(process.argv.slice(2))
+const defaultProxyUrl
   = process.env.SHOWCASE_PROXY
     ?? process.env.HTTPS_PROXY
     ?? process.env.HTTP_PROXY
     ?? 'http://127.0.0.1:7890'
+const proxyUrl = proxyOption.enabled ? (proxyOption.url?.trim() || defaultProxyUrl) : null
 
-if (proxyUrl) {
+if (proxyUrl && proxyOption.enabled) {
   try {
     const agent = new ProxyAgent(proxyUrl)
     setGlobalDispatcher(agent)
@@ -245,7 +275,8 @@ function stripImages(body: string): { text: string, images: RemoteImage[] } {
       continue
     }
     if (!seen.has(url)) {
-      images.push({ url, alt: match[1]?.trim() })
+      const alt = match[1]?.trim()
+      images.push(alt ? { url, alt } : { url })
       seen.add(url)
     }
     const start = match.index ?? 0
@@ -261,7 +292,8 @@ function stripImages(body: string): { text: string, images: RemoteImage[] } {
     }
     if (!seen.has(url)) {
       const altMatch = raw.match(/alt=["']([^"']*)["']/i)
-      images.push({ url, alt: altMatch?.[1]?.trim() })
+      const alt = altMatch?.[1]?.trim()
+      images.push(alt ? { url, alt } : { url })
       seen.add(url)
     }
     const start = match.index ?? 0
@@ -345,16 +377,17 @@ function parseDisplayValue(value: string): DisplayValue | undefined {
 
   const markdownLinkMatch = trimmed.match(/\[([^\]]+)\]\(([^)]+)\)/)
   if (markdownLinkMatch) {
-    const url = sanitizeUrl(markdownLinkMatch[2]) ?? undefined
-    const text = markdownLinkMatch[1].trim() || url || trimmed
-    return { text, url }
+    const url = sanitizeUrl(markdownLinkMatch[2])
+    const urlText = url ?? ''
+    const text = markdownLinkMatch[1]?.trim() || urlText || trimmed
+    return url ? { text, url } : { text }
   }
 
   const urlMatch = trimmed.match(/https?:\/\/\S+/)
   if (urlMatch) {
-    const url = sanitizeUrl(urlMatch[0]) ?? undefined
+    const url = sanitizeUrl(urlMatch[0])
     const text = trimmed.replace(urlMatch[0], '').trim() || urlMatch[0]
-    return { text, url }
+    return url ? { text, url } : { text }
   }
 
   return { text: trimmed }
@@ -390,22 +423,28 @@ function parseComment(comment: GitHubComment): ParsedEntry | null {
     const keyValueMatch = line.match(/^([^：:]+)[：:](.*)$/)
 
     if (keyValueMatch) {
-      const [, rawLabel, rawValue] = keyValueMatch
+      const rawLabel = keyValueMatch[1]?.trim()
+      const rawValue = keyValueMatch[2]
+      if (!rawLabel || rawValue == null) {
+        extra.push(originalLine)
+        continue
+      }
       const normalized = normalizeLabel(rawLabel)
+      const value = rawValue.trim()
       if (normalized === 'name' && !name) {
-        name = rawValue.trim()
+        name = value
         continue
       }
       if (normalized === 'link' && !link) {
-        link = parseDisplayValue(rawValue.trim())
+        link = parseDisplayValue(value)
         continue
       }
       if (normalized === 'github' && !github) {
-        github = parseDisplayValue(rawValue.trim())
+        github = parseDisplayValue(value)
         continue
       }
       if (normalized === 'description' && !description) {
-        description = rawValue.trim()
+        description = value
         continue
       }
     }
@@ -429,22 +468,32 @@ function parseComment(comment: GitHubComment): ParsedEntry | null {
     return null
   }
 
-  const descriptionText = descriptionParts.length
+  const normalizedDescription = descriptionParts.length
     ? sanitizeDescriptionContent(descriptionParts.join('\n\n'))
-    : undefined
+    : ''
+  const descriptionText = normalizedDescription || undefined
 
-  return {
+  const parsedEntry: ParsedEntry = {
     id: comment.id,
     commentUrl: comment.html_url,
     createdAt: comment.created_at,
     author: comment.user,
     name: programName,
-    link,
-    github,
-    description: descriptionText,
     remoteImages: images,
     slugSource: programName,
   }
+
+  if (link) {
+    parsedEntry.link = link
+  }
+  if (github) {
+    parsedEntry.github = github
+  }
+  if (descriptionText) {
+    parsedEntry.description = descriptionText
+  }
+
+  return parsedEntry
 }
 
 function slugifySegment(value: string, fallback: string): string {
@@ -507,7 +556,10 @@ function resolveImageExtension(contentType: string | null, url: string): string 
     const { pathname } = new URL(url)
     const extMatch = pathname.match(/\.([a-z0-9]+)$/i)
     if (extMatch) {
-      return extMatch[1].toLowerCase()
+      const ext = extMatch[1]
+      if (ext) {
+        return ext.toLowerCase()
+      }
     }
   }
   catch (_error) {
@@ -743,6 +795,9 @@ async function main() {
         }
 
         const fallback = entry.remoteImages[idx]
+        if (!fallback) {
+          return
+        }
         allImages.push({
           alt: fallback.alt?.trim() || '',
           src: fallback.url,
