@@ -80,8 +80,21 @@ const showcaseDocsPath = path.resolve(repoRoot, 'website/docs/showcase/index.mdx
 const showcaseImageRoot = path.resolve(repoRoot, 'website/static/img/showcase')
 const showcaseConfigPath = path.resolve(repoRoot, 'website/docs/showcase/config.json')
 
-const repo = process.env.SHOWCASE_REPO ?? 'sonofmagic/weapp-tailwindcss'
-const issueNumber = Number(process.env.SHOWCASE_ISSUE ?? '270')
+const env = process.env as NodeJS.ProcessEnv & {
+  SHOWCASE_REPO?: string
+  SHOWCASE_ISSUE?: string
+  SHOWCASE_IMAGE_TIMEOUT?: string
+  SHOWCASE_IMAGE_RETRY?: string
+  SHOWCASE_SKIP_IMAGES?: string
+  SHOWCASE_PROXY?: string
+  HTTPS_PROXY?: string
+  HTTP_PROXY?: string
+  GITHUB_TOKEN?: string
+  GH_TOKEN?: string
+}
+
+const repo = env.SHOWCASE_REPO ?? 'sonofmagic/weapp-tailwindcss'
+const issueNumber = Number(env.SHOWCASE_ISSUE ?? '270')
 
 if (Number.isNaN(issueNumber)) {
   throw new TypeError('SHOWCASE_ISSUE must be a valid number')
@@ -118,16 +131,16 @@ function parseProxyOption(args: string[]): { enabled: boolean, url?: string } {
 const apiBase = `https://api.github.com/repos/${repo}`
 const issueApiUrl = `${apiBase}/issues/${issueNumber}`
 const commentsApiUrl = `${issueApiUrl}/comments`
-const parsedTimeout = Number(process.env.SHOWCASE_IMAGE_TIMEOUT ?? '20000')
+const parsedTimeout = Number(env.SHOWCASE_IMAGE_TIMEOUT ?? '20000')
 const imageTimeoutMs = Number.isFinite(parsedTimeout) && parsedTimeout > 0 ? parsedTimeout : 20000
-const parsedAttempts = Number(process.env.SHOWCASE_IMAGE_RETRY ?? '3')
+const parsedAttempts = Number(env.SHOWCASE_IMAGE_RETRY ?? '3')
 const maxDownloadAttempts = Number.isFinite(parsedAttempts) && parsedAttempts > 0 ? parsedAttempts : 3
-const skipImageDownload = /^1|true$/i.test(process.env.SHOWCASE_SKIP_IMAGES ?? '')
+const skipImageDownload = /^1|true$/i.test(env.SHOWCASE_SKIP_IMAGES ?? '')
 const proxyOption = parseProxyOption(process.argv.slice(2))
 const defaultProxyUrl
-  = process.env.SHOWCASE_PROXY
-    ?? process.env.HTTPS_PROXY
-    ?? process.env.HTTP_PROXY
+  = env.SHOWCASE_PROXY
+    ?? env.HTTPS_PROXY
+    ?? env.HTTP_PROXY
     ?? 'http://127.0.0.1:7890'
 const proxyUrl = proxyOption.enabled ? (proxyOption.url?.trim() || defaultProxyUrl) : null
 
@@ -142,8 +155,8 @@ if (proxyUrl && proxyOption.enabled) {
   }
 }
 
-const token = process.env.GITHUB_TOKEN ?? process.env.GH_TOKEN
-const baseHeaders: Record<string, string> = {
+const token = env.GITHUB_TOKEN ?? env.GH_TOKEN
+const baseHeaders: { 'User-Agent': string, 'Authorization'?: string } = {
   'User-Agent': 'weapp-tailwindcss-showcase-script',
 }
 
