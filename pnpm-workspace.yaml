@@ -8,6 +8,7 @@ packages:
   - '!tailwindcss-weapp'
   - '!**/test/**'
   - demo/*
+
 catalogs:
   autoprefixer10:
     autoprefixer: ^10.4.23
@@ -99,9 +100,9 @@ catalogs:
   typescript59tilde:
     typescript: ~5.9.3
   typescriptEslint849:
-    '@typescript-eslint/eslint-plugin': ^8.50.1
-    '@typescript-eslint/parser': ^8.50.1
-    typescript-eslint: ^8.50.1
+    '@typescript-eslint/eslint-plugin': ^8.51.0
+    '@typescript-eslint/parser': ^8.51.0
+    typescript-eslint: ^8.51.0
   vite5421:
     vite: ^5.4.21
   vite724:
@@ -120,6 +121,7 @@ catalogs:
     weapp-vite: ^5.12.0
   wrangler4530:
     wrangler: ^4.56.0
+
 onlyBuiltDependencies:
   - '@tailwindcss/oxide'
   - '@tarojs/binding'
@@ -128,6 +130,7 @@ onlyBuiltDependencies:
   - esbuild
   - sharp
   - workerd
+
 packageExtensions:
   '@dcloudio/vue-cli-plugin-hbuilderx@*':
     dependencies:

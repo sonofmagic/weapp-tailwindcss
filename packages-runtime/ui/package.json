@@ -139,7 +139,7 @@
     "@storybook/addon-interactions": "^8.5.0",
     "@storybook/react": "^8.5.0",
     "@storybook/react-vite": "^8.5.0",
-    "@storybook/test": "^8.5.0",
+    "@storybook/test": "^8.6.15",
     "@tailwindcss/vite": "catalog:tailwindcss4",
     "@types/react": "^19.2.7",
     "@types/react-dom": "^19.0.0",

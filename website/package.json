@@ -58,7 +58,7 @@
     "@docusaurus/tsconfig": "3.9.2",
     "@docusaurus/types": "3.9.2",
     "@icebreakers/deploy": "^0.1.6",
-    "@iconify-json/line-md": "^1.2.11",
+    "@iconify-json/line-md": "^1.2.13",
     "@iconify-json/logos": "^1.2.10",
     "@iconify-json/mdi": "^1.2.3",
     "@iconify-json/mdi-light": "^1.2.2",
