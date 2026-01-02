@@ -1,8 +1,6 @@
-type TrendPoint = number
+import { defineComponent, onMounted, onUnmounted, ref, watch } from 'wevu'
 
-interface SkylineNavbarInstance extends WechatMiniprogram.Component.TrivialInstance {
-  __timer?: number
-}
+type TrendPoint = number
 
 const defaultTrend: TrendPoint[] = [42, 68, 54, 92, 78, 118, 88]
 
@@ -13,7 +11,7 @@ function formatTime() {
   return `${hours}:${minutes}`
 }
 
-Component({
+export default defineComponent({
   options: {
     addGlobalClass: true,
   },
@@ -35,40 +33,19 @@ Component({
       value: defaultTrend,
     },
   },
-  data: {
-    currentTime: formatTime(),
-    trendBars: [] as Array<{ height: number, label: string }>,
-  },
-  lifetimes: {
-    attached() {
-      this.updateTime()
-      this.updateTrend(this.properties.trend as TrendPoint[])
-      ;(this as SkylineNavbarInstance).__timer = setInterval(() => {
-        this.updateTime()
-      }, 60000) as unknown as number
-    },
-    detached() {
-      const instance = this as SkylineNavbarInstance
-      if (typeof instance.__timer === 'number') {
-        clearInterval(instance.__timer)
-        delete instance.__timer
-      }
-    },
-  },
-  observers: {
-    trend(value: TrendPoint[]) {
-      this.updateTrend(value)
-    },
-  },
-  methods: {
-    updateTime() {
-      this.setData({
-        currentTime: formatTime(),
-      })
-    },
-    updateTrend(trend: TrendPoint[]) {
+  setup(props, ctx) {
+    const currentTime = ref(formatTime())
+    const trendBars = ref<Array<{ height: number, label: string }>>([])
+
+    let timer: number | undefined
+
+    function updateTime() {
+      currentTime.value = formatTime()
+    }
+
+    function updateTrend(trend: TrendPoint[]) {
       if (!Array.isArray(trend) || trend.length === 0) {
-        this.setData({ trendBars: [] })
+        trendBars.value = []
         return
       }
 
@@ -76,20 +53,39 @@ Component({
       const min = Math.min(...trend)
       const range = Math.max(max - min, 1)
 
-      const normalized = trend.map((value, index) => {
+      trendBars.value = trend.map((value, index) => {
         const height = Math.round(((value - min) / range) * 55 + 45)
         return {
           height,
           label: `T${index + 1}`,
         }
       })
+    }
 
-      this.setData({
-        trendBars: normalized,
-      })
-    },
-    handlePrimaryTap() {
-      this.triggerEvent('primarytap')
-    },
+    watch(
+      () => props.trend as TrendPoint[],
+      (value) => updateTrend(value),
+      { immediate: true, deep: true },
+    )
+
+    onMounted(() => {
+      updateTime()
+      timer = setInterval(updateTime, 60000)
+    })
+
+    onUnmounted(() => {
+      if (timer != null) clearInterval(timer)
+      timer = undefined
+    })
+
+    function handlePrimaryTap() {
+      ctx.emit('primarytap')
+    }
+
+    return {
+      currentTime,
+      trendBars,
+      handlePrimaryTap,
+    }
   },
 })

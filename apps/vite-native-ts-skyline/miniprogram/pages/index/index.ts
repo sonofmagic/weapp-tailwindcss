@@ -1,63 +1,85 @@
-// index.ts
-// 获取应用实例
+import { defineComponent, reactive, ref } from 'wevu'
 
-Component({
-  data: {
-    motto: 'Hello World',
-    userInfo: {
+const defaultAvatarUrl =
+  'https://mmbiz.qpic.cn/mmbiz/vi_32/Q0j4TwGTfTJLTpJ5dD6Y3vR0pu2Lx5D3w1lUwLrZ7NCyKz1q8I4xA86c1k3apwFVB9C7bPBCn2iYg4JibL0z0icA/0'
+
+interface UserInfo {
+  nickName: string
+  avatarUrl: string
+}
+
+export default defineComponent({
+  setup() {
+    const motto = ref('Hello World')
+    const userInfo = reactive<UserInfo>({
       nickName: '',
-    },
-    hasUserInfo: false,
-    canIUseGetUserProfile: wx.canIUse('getUserProfile'),
-    canIUseNicknameComp: wx.canIUse('input.type.nickname'),
-    skylineNav: {
+      avatarUrl: defaultAvatarUrl,
+    })
+    const hasUserInfo = ref(false)
+    const canIUseGetUserProfile = wx.canIUse('getUserProfile')
+    const canIUseNicknameComp = wx.canIUse('input.type.nickname')
+    const skylineNav = reactive({
       title: 'Skyline Market',
       location: '深圳 · 夜景塔群',
       weather: '晴 · 26°C',
-      trend: [48, 76, 58, 102, 96, 132, 118],
-    },
-  },
-  methods: {
-    // 事件处理函数
-    bindViewTap() {
+      trend: [48, 76, 58, 102, 96, 132, 118] as number[],
+    })
+
+    function syncHasUserInfo() {
+      hasUserInfo.value = Boolean(
+        userInfo.nickName
+          && userInfo.avatarUrl
+          && userInfo.avatarUrl !== defaultAvatarUrl,
+      )
+    }
+
+    function bindViewTap() {
       wx.navigateTo({
         url: '../logs/logs',
       })
-    },
-    onChooseAvatar(e: any) {
+    }
+
+    function onChooseAvatar(e: any) {
       const { avatarUrl } = e.detail
-      const { nickName } = this.data.userInfo
-      this.setData({
-        'userInfo.avatarUrl': avatarUrl,
-        'hasUserInfo': nickName && avatarUrl && avatarUrl !== defaultAvatarUrl,
-      })
-    },
-    onInputChange(e: any) {
-      const nickName = e.detail.value
-      const { avatarUrl } = this.data.userInfo
-      this.setData({
-        'userInfo.nickName': nickName,
-        'hasUserInfo': nickName && avatarUrl && avatarUrl !== defaultAvatarUrl,
-      })
-    },
-    handleNavAction() {
+      userInfo.avatarUrl = avatarUrl
+      syncHasUserInfo()
+    }
+
+    function onInputChange(e: any) {
+      userInfo.nickName = e.detail.value
+      syncHasUserInfo()
+    }
+
+    function handleNavAction() {
       wx.showToast({
         title: '更多趋势即将上线',
         icon: 'none',
       })
-    },
-    getUserProfile() {
-      // 推荐使用wx.getUserProfile获取用户信息，开发者每次通过该接口获取用户个人信息均需用户确认，开发者妥善保管用户快速填写的头像昵称，避免重复弹窗
+    }
+
+    function getUserProfile() {
       wx.getUserProfile({
-        desc: '展示用户信息', // 声明获取用户个人信息后的用途，后续会展示在弹窗中，请谨慎填写
+        desc: '展示用户信息',
         success: (res) => {
           console.log(res)
-          this.setData({
-            userInfo: res.userInfo,
-            hasUserInfo: true,
-          })
+          Object.assign(userInfo, res.userInfo)
+          syncHasUserInfo()
         },
       })
-    },
+    }
+
+    return {
+      motto,
+      userInfo,
+      hasUserInfo,
+      canIUseGetUserProfile,
+      canIUseNicknameComp,
+      skylineNav,
+      bindViewTap,
+      onChooseAvatar,
+      onInputChange,
+      handleNavAction,
+      getUserProfile,
+    }
   },
 })
