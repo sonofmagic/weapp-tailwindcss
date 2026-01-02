@@ -1,7 +1,7 @@
 {
   "$schema": "https://unpkg.com/@changesets/config@3.0.2/schema.json",
   "changelog": [
-    "@changesets/changelog-github",
+    "@icebreakers/changelog-github",
     {
       "repo": "sonofmagic/weapp-tailwindcss"
     }
