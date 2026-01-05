@@ -125,13 +125,18 @@ const aiSidebar: SidebarConfig = [
     items: [
       {
         type: 'doc',
+        id: 'ai/ai-coding-deployment-guide',
+        label: 'AI 编程助手落地实施方案',
+      },
+      {
+        type: 'doc',
         id: 'ai/international-ai-models-comparison',
-        label: '国外顶尖编程模型选型',
+        label: '国外编程模型/工具选型建议',
       },
       {
         type: 'doc',
         id: 'ai/qoder-vs-glm47-cursor-claude-comparison',
-        label: 'AI 编程工具选型建议',
+        label: '国内编程模型/工具选型建议',
       },
     ],
   },
