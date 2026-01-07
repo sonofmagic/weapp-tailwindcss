@@ -194,7 +194,8 @@ sidebar: aiSidebar
 
 - **AWS 背景加持**：由 Amazon 官方支持，依托 AWS 基础设施，企业级可靠性
 - **Spec-Driven 开发**：独特的"先计划后构建"模式，将需求转化为可执行的规格说明
-- **Claude 模型驱动**：主要使用 Claude Sonnet 4.0/3.7 模型，代码能力出色
+- **Claude 4.5 全系列**：支持 **Claude Opus 4.5**、Sonnet 4.5、Haiku 4.5 全系列模型
+- **智能模型选择**：Auto 模式可根据任务复杂度自动选择最合适的模型
 - **中国区域可用**：通过 AWS 中国区域提供服务，国内用户可直接访问（无需代理）
 - **VS Code 架构**：基于 VS Code fork，界面熟悉，上手容易
 - **Agent Hooks**：支持自动化触发器，工作流可定制
@@ -244,24 +245,42 @@ sidebar: aiSidebar
 | 特性 | 说明 |
 |------|------|
 | **Spec-Driven** | 将想法转化为"活的可执行规格"，自动应用软件工程最佳实践 |
-| **主要模型** | Claude Sonnet 4.0、Claude Sonnet 3.7 |
+| **主要模型** | **Claude Opus 4.5**、Sonnet 4.5、Haiku 4.5、Sonnet 4.0 |
+| **模型选择** | 支持 Auto 模式智能选择，也可手动指定 |
 | **架构基础** | 基于 VS Code |
 | **开发模式** | Agent 模式 + Spec 驱动 |
 | **扩展协议** | 支持 MCP (Model Context Protocol) |
+
+#### Claude 4.5 模型 Credit 倍率
+
+| 模型 | Credit 倍率 | 适用场景 |
+|------|-----------|---------|
+| **Haiku 4.5** | 0.4× | 快速、低成本任务 |
+| **Sonnet 4.5** | 1.3× | 复杂代理和编码（推荐大多数场景） |
+| **Opus 4.5** | 2.2× | 最强推理能力，最具挑战性的任务 |
+
+**模型能力说明**：
+- 所有 Claude 4.5 模型输出可达 **64,000 tokens/响应**
+- **Opus 4.5**：2024 年 11 月 24 日发布，在所有基准测试中超越 Sonnet 4.5
+- **Auto 模式**：Kiro 智能自动选择最适合的模型
 
 ### 参考链接
 
 - [Kiro 官方网站](https://kiro.dev/)
 - [Kiro 官方定价页面](https://kiro.dev/pricing/)
 - [Kiro 新定价和 Auto Agent 公告](https://kiro.dev/blog/new-pricing-plans-and-auto/)
+- [Kiro 引入 Opus 4.5 官方博客](https://kiro.dev/blog/introducing-opus-45/)
+- [Kiro 模型选择文档 (IDE)](https://kiro.dev/docs/chat/model-selection/)
+- [Kiro 模型选择文档 (CLI)](https://kiro.dev/docs/cli/chat/model-selection/)
 - [Kiro 个人计费文档](https://kiro.dev/docs/billing/)
 - [Kiro 企业计费文档](https://kiro.dev/docs/enterprise/billing/)
 - [Kiro 超量使用说明](https://kiro.dev/docs/billing/overages/)
-- [Kiro 定价理解：Specs、Vibes 和使用追踪](https://kiro.dev/blog/understanding-kiro-pricing-specs-vibes-usage-tracking/)
+- [Kiro 正式发布公告](https://kiro.dev/blog/general-availability/)
 - [AWS 中国 Kiro CDK 教程](https://aws.amazon.com/cn/blogs/china/blog-03-kiro-ai-cdk-development/)
 - [Kiro 介绍官方博客](https://kiro.dev/blog/introducing-kiro/)
 - [Kiro vs Cursor 对比 2025](https://scalevise.com/resources/kiro-vs-cursor-ai-ide/)
 - [AWS re:Invent 2025 - Kiro Spec-Driven Development](https://www.youtube.com/watch?v=4qcWgPb-8Fk)
+- [Claude Opus 4.5 官方公告](https://www.anthropic.com/news/claude-opus-4-5)
 
 ---
 
