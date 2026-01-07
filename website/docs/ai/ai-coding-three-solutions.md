@@ -1,16 +1,16 @@
 ---
 id: ai-coding-three-solutions
-title: AI 编程三大方案选型指南
-sidebar_label: Cursor / Claude / Codex 三大方案
-description: 深度对比 Cursor IDE、Claude Code 和 OpenAI Codex 三大 AI 编程方案的价格、额度和适用场景
+title: AI 编程四大方案选型指南
+sidebar_label: Cursor / Claude / Codex / Kiro 四大方案
+description: 深度对比 Cursor IDE、Claude Code、OpenAI Codex 和 AWS Kiro 四大 AI 编程方案的价格、额度和适用场景
 sidebar: aiSidebar
 ---
 
-# AI 编程三大方案选型指南
+# AI 编程四大方案选型指南
 
 ## 概述
 
-本文档将深入对比当前最主流的三种 AI 编程方案：**Cursor IDE**、**Claude Code** 和 **OpenAI Codex**，帮助开发者根据自身需求选择最适合的工具。
+本文档将深入对比当前最主流的四种 AI 编程方案：**Cursor IDE**、**Claude Code**、**OpenAI Codex** 和 **AWS Kiro**，帮助开发者根据自身需求选择最适合的工具。
 
 ---
 
@@ -186,7 +186,86 @@ sidebar: aiSidebar
 
 ---
 
-## 三大方案对比总结
+## 方案四：AWS Kiro
+
+### 选择理由
+
+**Kiro** 是 Amazon AWS 推出的 AI 原生 IDE，采用独特的 Spec-Driven（规格驱动）开发模式：
+
+- **AWS 背景加持**：由 Amazon 官方支持，依托 AWS 基础设施，企业级可靠性
+- **Spec-Driven 开发**：独特的"先计划后构建"模式，将需求转化为可执行的规格说明
+- **Claude 模型驱动**：主要使用 Claude Sonnet 4.0/3.7 模型，代码能力出色
+- **中国区域可用**：通过 AWS 中国区域提供服务，国内用户可直接访问（无需代理）
+- **VS Code 架构**：基于 VS Code fork，界面熟悉，上手容易
+- **Agent Hooks**：支持自动化触发器，工作流可定制
+- **公测免费**：目前处于公测阶段，可免费使用
+
+### ⚠️ 中国用户注意事项
+
+> **重要提示**：虽然 Kiro 目前在中国可通过 AWS 中国区域访问，但需要注意：
+>
+> 1. **政策风险**：各类产品的迭代与政策可能随时变化，不能保证一直可以在国内使用
+> 2. **Anthropic 限制**：Claude 官方已于 2025 年 9 月更新政策，禁止中国控制的实体使用 Claude 服务
+> 3. **AWS Bedrock 渠道**：Kiro 通过 AWS Bedrock 提供 Claude 模型访问，目前 AWS 中国区域仍可正常使用
+> 4. **变化无常**：如遇访问问题，建议关注 AWS 中国官方公告或考虑替代方案
+
+### 个人订阅方案
+
+| 套餐 | 月费 | Credits | 超量使用 |
+|------|------|---------|---------|
+| **Free** | 免费 | 50 credits/月 | 不可超量，用完需等待下月 |
+| **Pro** | $20/月 | 1,000 credits/月 | $0.04/credit |
+| **Pro+** | $40/月 | 2,000-3,000 credits/月 | $0.04/credit |
+| **Power** | $200/月 | 10,000 credits/月 | $0.04/credit |
+
+**使用说明**：
+- **刷新周期**：每月按订阅日期重置
+- **超额处理**：付费套餐（Pro/Pro+/Power）可超量使用，按 $0.04/credit 计费
+  - 例如：Pro 套餐使用 1,100 credits（超出 100），额外收费 $4
+- **Free 限制**：免费版固定限额，不可超量，用完需等待下月或升级
+- **升级保留**：30 天内升级可保留未使用的试用额度
+  - 例如：升级到 Pro 可获得 1,500 credits（1,000 Pro + 500 试用）
+
+### 团队订阅方案
+
+| 套餐 | 价格 | 最低人数 | 核心功能 |
+|------|------|---------|---------|
+| **Enterprise** | 定制定价 | **20 人** | 所有个人功能 + SSO/SCIM + 集中许可证管理 + 组织策略 + AWS 集成 + 专属支持 |
+
+**Enterprise 额外功能**：
+- **SSO/SCIM**：单点登录和用户自动预配
+- **集中许可证管理**：统一管理团队订阅
+- **组织策略**：企业级策略控制
+- **AWS 集成**：与 AWS 生态系统深度集成
+- **数据隐私**：企业级数据安全保障
+
+### 技术特点
+
+| 特性 | 说明 |
+|------|------|
+| **Spec-Driven** | 将想法转化为"活的可执行规格"，自动应用软件工程最佳实践 |
+| **主要模型** | Claude Sonnet 4.0、Claude Sonnet 3.7 |
+| **架构基础** | 基于 VS Code |
+| **开发模式** | Agent 模式 + Spec 驱动 |
+| **扩展协议** | 支持 MCP (Model Context Protocol) |
+
+### 参考链接
+
+- [Kiro 官方网站](https://kiro.dev/)
+- [Kiro 官方定价页面](https://kiro.dev/pricing/)
+- [Kiro 新定价和 Auto Agent 公告](https://kiro.dev/blog/new-pricing-plans-and-auto/)
+- [Kiro 个人计费文档](https://kiro.dev/docs/billing/)
+- [Kiro 企业计费文档](https://kiro.dev/docs/enterprise/billing/)
+- [Kiro 超量使用说明](https://kiro.dev/docs/billing/overages/)
+- [Kiro 定价理解：Specs、Vibes 和使用追踪](https://kiro.dev/blog/understanding-kiro-pricing-specs-vibes-usage-tracking/)
+- [AWS 中国 Kiro CDK 教程](https://aws.amazon.com/cn/blogs/china/blog-03-kiro-ai-cdk-development/)
+- [Kiro 介绍官方博客](https://kiro.dev/blog/introducing-kiro/)
+- [Kiro vs Cursor 对比 2025](https://scalevise.com/resources/kiro-vs-cursor-ai-ide/)
+- [AWS re:Invent 2025 - Kiro Spec-Driven Development](https://www.youtube.com/watch?v=4qcWgPb-8Fk)
+
+---
+
+## 四大方案对比总结
 
 ### 价格对比（个人版）
 
@@ -195,6 +274,7 @@ sidebar: aiSidebar
 | **Cursor** | $20/月 (Pro) | $60/月 (Pro+) | $200/月 (Ultra) | 月度重置 |
 | **Claude Code** | $20/月 (Pro) | $100/月 (Max 5x) | $200/月 (Max 20x) | 5小时/周 |
 | **OpenAI Codex** | $20/月 (Plus) | - | $200/月 (Pro) | 3-5小时 |
+| **AWS Kiro** | 免费 (Free) | $20/月 (Pro) | $200/月 (Power) | 月度重置 |
 
 ### 价格对比（团队版）
 
@@ -203,6 +283,7 @@ sidebar: aiSidebar
 | **Cursor** | $40/人/月 | 无明确要求 | 定制 |
 | **Claude** | $25-30/人/月 | **5 人** | 定制 |
 | **OpenAI** | $25-30/人/月 | **2 人** | 定制 (通常100人起) |
+| **AWS Kiro** | - | **20 人** | 定制 |
 
 ### 刷新周期对比
 
@@ -211,6 +292,16 @@ sidebar: aiSidebar
 | **Cursor** | 每月重置 | 每月重置 | 5-24小时可能部分恢复 |
 | **Claude** | 5小时/周 | 5小时/周 | 窗口期最短 |
 | **OpenAI** | 3-5小时 | 3-5小时 | Plus 3小时，Free 5小时 |
+| **AWS Kiro** | 每月重置 | 每月重置 | 支持$0.04/credit超量计费 |
+
+### 国内可用性对比
+
+| 方案 | 国内直接访问 | 需要代理 | 说明 |
+|------|-------------|---------|------|
+| **Cursor** | ❌ | ✅ | 需要海外网络环境 |
+| **Claude Code** | ❌ | ✅ | Anthropic 已禁止中国用户使用 |
+| **OpenAI Codex** | ❌ | ✅ | OpenAI 服务不在中国提供 |
+| **AWS Kiro** | ✅ | ❌ | 通过 AWS 中国区域可访问，但有政策风险 |
 
 ### 选型建议
 
@@ -219,18 +310,29 @@ sidebar: aiSidebar
 - 需要预测式代码补全和跨文件重构
 - 团队需要统一的 IDE 环境和管理
 - 预算 $20-200/月可接受
+- 有稳定的海外网络环境
 
 **选择 Claude Code 如果**：
 - 已习惯现有 IDE (VS Code/JetBrains)，不想切换
 - 需要顶尖的代码理解和审查能力
 - 希望通过 CLI 与 AI 交互
 - 需要频繁处理大型代码库
+- 有稳定的海外网络环境
 
 **选择 OpenAI Codex 如果**：
 - 需要 GPT-5.2/o3 等最新推理模型
 - 需要多模态能力（图像、音频）
 - 需要 Code Interpreter 进行数据分析
 - 需要 API 接入自定义应用
+- 有稳定的海外网络环境
+
+**选择 AWS Kiro 如果**：
+- **位于国内**，无法使用海外服务
+- 偏好 Spec-Driven（规格驱动）开发模式
+- 团队已使用 AWS 生态系统
+- 需要企业级可靠性和数据合规
+- 想要尝试免费的 Claude 模型（公测期）
+- 可以接受潜在的政策变化风险
 
 ---
 
