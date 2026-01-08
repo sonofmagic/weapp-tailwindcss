@@ -1,20 +1,174 @@
 ---
 id: ai-coding-three-solutions
-title: AI 编程四大方案选型指南
-sidebar_label: Cursor / Claude / Codex / Kiro 四大方案
-description: 深度对比 Cursor IDE、Claude Code、OpenAI Codex 和 AWS Kiro 四大 AI 编程方案的价格、额度和适用场景
+title: AI 编码助手五大方案选型指南
+sidebar_label: Cursor / Copilot / Claude / Codex / Kiro 五大方案
+description: 深度对比 Cursor IDE、GitHub Copilot、Claude Code、OpenAI Codex 和 AWS Kiro 五大 AI 编程方案的价格、额度和适用场景
 sidebar: aiSidebar
 ---
 
-# AI 编程四大方案选型指南
+# AI 编程五大方案选型指南
 
 ## 概述
 
-本文档将深入对比当前最主流的四种 AI 编程方案：**Cursor IDE**、**Claude Code**、**OpenAI Codex** 和 **AWS Kiro**，帮助开发者根据自身需求选择最适合的工具。
+本文档将深入对比当前最主流的五种 AI 编程方案：**AWS Kiro**、**GitHub Copilot**、**Cursor IDE**、**Claude Code** 和 **OpenAI Codex**，帮助开发者根据自身需求选择最适合的工具。
+
+> **国内用户优先推荐**：对于中国大陆用户，我们优先推荐 **AWS Kiro**（国内可直接访问）和 **GitHub Copilot**（市场最成熟）。其他工具均需要稳定的海外网络环境。
 
 ---
 
-## 方案一：Cursor IDE
+## 国内可用方案
+
+> **说明**：以下方案在中国大陆地区可直接或较容易访问，无需复杂的网络配置。
+
+### 方案一：AWS Kiro（国内直接可用）
+
+### 选择理由
+
+**Kiro** 是 Amazon AWS 推出的 AI 原生 IDE，采用独特的 Spec-Driven（规格驱动）开发模式：
+
+- **国内直接可用**：通过 AWS 中国区域提供服务，**中国大陆用户无需代理即可访问**
+- **AWS 背景加持**：由 Amazon 官方支持，依托 AWS 基础设施，企业级可靠性
+- **Spec-Driven 开发**：独特的"先计划后构建"模式，将需求转化为可执行的规格说明
+- **Claude 4.5 全系列**：支持 **Claude Opus 4.5**、Sonnet 4.5、Haiku 4.5 全系列模型
+- **智能模型选择**：Auto 模式可根据任务复杂度自动选择最合适的模型
+- **VS Code 架构**：基于 VS Code fork，界面熟悉，上手容易
+- **Agent Hooks**：支持自动化触发器，工作流可定制
+- **新用户福利**：注册后每月赠送 500 积分用于体验
+
+### ⚠️ 中国用户注意事项
+
+> **重要提示**：虽然 Kiro 目前在中国可通过 AWS 中国区域访问，但需要注意：
+>
+> 1. **政策风险**：各类产品的迭代与政策可能随时变化，不能保证一直可以在国内使用
+> 2. **Anthropic 限制**：Claude 官方已于 2025 年 9 月更新政策，禁止中国控制的实体使用 Claude 服务
+> 3. **AWS Bedrock 渠道**：Kiro 通过 AWS Bedrock 提供 Claude 模型访问，目前 AWS 中国区域仍可正常使用
+> 4. **变化无常**：如遇访问问题，建议关注 AWS 中国官方公告或考虑替代方案
+
+### 个人订阅方案
+
+| 套餐      | 月费    | Credits                | 超量使用                 |
+| --------- | ------- | ---------------------- | ------------------------ |
+| **试用**  | -       | 50 credits/月          | 不可超量，用完需等待下月 |
+| **Pro**   | $20/月  | 1,000 credits/月       | $0.04/credit             |
+| **Pro+**  | $40/月  | 2,000-3,000 credits/月 | $0.04/credit             |
+| **Power** | $200/月 | 10,000 credits/月      | $0.04/credit             |
+
+**使用说明**：
+
+- **刷新周期**：每月按订阅日期重置
+- **超额处理**：付费套餐（Pro/Pro+/Power）可超量使用，按 $0.04/credit 计费
+- **试用限制**：试用版固定限额，不可超量
+- **升级保留**：30 天内升级可保留未使用的试用额度
+
+### 团队订阅方案
+
+| 套餐           | 价格     | 最低人数  | 核心功能                                                                  |
+| -------------- | -------- | --------- | ------------------------------------------------------------------------- |
+| **Enterprise** | 定制定价 | **20 人** | 所有个人功能 + SSO/SCIM + 集中许可证管理 + 组织策略 + AWS 集成 + 专属支持 |
+
+### 技术特点
+
+| 特性            | 说明                                                   |
+| --------------- | ------------------------------------------------------ |
+| **Spec-Driven** | 将想法转化为"活的可执行规格"，自动应用软件工程最佳实践 |
+| **主要模型**    | **Claude Opus 4.5**、Sonnet 4.5、Haiku 4.5 |
+| **架构基础**    | 基于 VS Code                                           |
+| **扩展协议**    | 支持 MCP (Model Context Protocol)                      |
+
+#### Claude 4.5 模型 Credit 倍率
+
+| 模型             | Credit 倍率 | 适用场景                         |
+| ---------------- | ----------- | -------------------------------- |
+| **Haiku 4.5**    | 0.4×        | 快速、低成本任务                 |
+| **Sonnet 4.5**   | 1.3×        | 复杂代理和编码（推荐大多数场景） |
+| **Opus 4.5**     | 2.2×        | 最强推理能力，最具挑战性的任务   |
+
+### 参考链接
+
+- [Kiro 官方网站](https://kiro.dev/)
+- [Kiro 官方定价页面](https://kiro.dev/pricing/)
+- [AWS 中国 Kiro CDK 教程](https://aws.amazon.com/cn/blogs/china/blog-03-kiro-ai-cdk-development/)
+
+---
+
+### 方案二：GitHub Copilot（市场最成熟）
+
+### 选择理由
+
+**GitHub Copilot** 是由 GitHub 和 OpenAI 联合开发的 AI 编程助手，是目前市场上最早的、用户基数最大的 AI 编码工具：
+
+- **市场先驱**：2021年首次发布，用户数超过 150 万，占 AI 编程工具市场主导地位
+- **深度集成**：与 GitHub 生态深度整合，支持 VS Code、Visual Studio、JetBrains 全系列 IDE
+- **多模型支持**：支持 **Claude 4.5**（Sonnet/Opus/Haiku）、**GPT 5.2**、**Gemini Pro 3** 等多种模型
+- **企业级支持**：GitHub 背书，企业版提供完善的权限管理和安全合规
+- **Premium 请求系统**：2025年引入新的 premium requests 计费模式
+- **⚠️ 国内限制**：中国大陆地区访问需要稳定的网络环境
+
+### 个人订阅方案（2025-2026 最新）
+
+| 套餐        | 月费       | 年费            | 核心额度                                                     |
+| ----------- | ---------- | --------------- | ------------------------------------------------------------ |
+| **Free**    | 免费       | 免费            | 基础代码补全，有限的 Copilot Chat 功能                       |
+| **Pro**     | $10/月     | $100/年 (省17%) | 完整代码补全 + Copilot Chat + CLI + 多文件编辑               |
+| **Pro+**    | $39/月     | -               | 全模型访问 + **1,500 次 premium 请求/月** + 超量 $0.04/次    |
+
+**使用说明**：
+
+- **Free 限制**：基础代码补全，有限的 Chat 功能
+- **Pro 功能**：完整 Copilot 功能，包括代码补全、Chat、CLI
+- **Pro+ 额度**：每月 1,500 次 premium 请求（使用更强大的模型）
+- **超量计费**：Pro+ 超出部分按 **$0.04/次** 计费
+- **刷新周期**：每月按订阅日期重置
+
+### 支持的 AI 模型（2026）
+
+| 模型分类       | 具体模型                              | 说明                     |
+| -------------- | ------------------------------------- | ------------------------ |
+| **OpenAI**     | **GPT 5.2**、o3、o4-mini              | OpenAI 最新推理模型     |
+| **Anthropic**  | **Claude 4.5**（Sonnet/Opus/Haiku）   | Claude 最新高性能模型   |
+| **Google**     | **Gemini Pro 3**                      | Google 最新推理模型      |
+
+> **注意**：模型可用性会根据 GitHub 和各 AI 提供商的合作协议动态调整。部分高级模型需要 Pro+ 订阅。
+
+### 团队订阅方案
+
+| 套餐           | 价格          | 最低人数   | 核心功能                                                                      |
+| -------------- | ------------- | ---------- | ----------------------------------------------------------------------------- |
+| **Business**   | $19/人/月     | -          | Pro 功能 + 管理控制台 + 组织策略 + 数据不训练 + 使用统计                      |
+| **Enterprise** | $39/人/月     | -          | Business 全部 + SSO 单点登录 + 审计日志 + 私有化部署 + 专属支持 + 合规认证    |
+
+**Business/Enterprise 额外功能**：
+
+- **管理控制台**：集中管理用户许可证和策略
+- **单点登录 (SSO)**：支持 SAML 2.0 和 SCIM
+- **数据隐私**：承诺不使用企业代码训练模型
+- **使用统计**：详细的使用报告和分析
+- **合规认证**：SOC 2、ISO 27001 等认证
+
+### 技术特点
+
+| 特性              | 说明                                                         |
+| ----------------- | ------------------------------------------------------------ |
+| **支持的 IDE**    | VS Code、Visual Studio、JetBrains 全系列、Vim/Neovim         |
+| **Copilot Chat**  | 交互式对话编程，支持代码库级别的上下文理解                   |
+| **Copilot CLI**   | 命令行工具，可直接在终端使用                                 |
+| **Copilot Workspace** | AI 驱动的开发环境，支持从需求到代码的完整工作流          |
+
+### 参考链接
+
+- [GitHub Copilot 官方定价页面](https://github.com/features/copilot/plans)
+- [GitHub Copilot 官方文档](https://docs.github.com/en/copilot/get-started/plans)
+- [GitHub Copilot 支持的 AI 模型](https://docs.github.com/zh/copilot/reference/ai-models/supported-models)
+- [GitHub Copilot 请求计费说明](https://docs.github.com/en/copilot/concepts/billing/copilot-requests)
+- [GitHub Copilot Pricing Guide 2026](https://userjot.com/blog/github-copilot-pricing-guide-2025)
+
+---
+
+## 需要代理的方案
+
+> **说明**：以下方案在中国大陆地区**无法直接访问**，需要稳定的海外网络环境（VPN/代理）。
+
+### 方案三：Cursor IDE
 
 ### 选择理由
 
@@ -26,6 +180,7 @@ sidebar: aiSidebar
 - **Agent 模式**：Background Agent 可在后台自动完成复杂任务
 - **生态完善**：v1.0/v1.1 新增 BugBot 审查、Memory 能力
 - **市场地位**：估值 99 亿美元，年化收入 5 亿美元
+- **⚠️ 国内限制**：中国大陆地区访问需要稳定的网络环境
 
 ### 个人订阅方案
 
@@ -57,12 +212,10 @@ sidebar: aiSidebar
 - [Cursor 官方定价页面](https://cursor.com/pricing)
 - [Cursor Teams 定价详情](https://cursor.com/docs/account/teams/pricing)
 - [Cursor 企业版介绍](https://cursor.com/enterprise)
-- [Cursor 定价完整指南 2025](https://flexprice.io/blog/cursor-pricing-guide)
-- [Cursor 定价解释 (2025)](https://www.eesel.ai/blog/cursor-pricing)
 
 ---
 
-## 方案二：Claude Code
+### 方案四：Claude Code
 
 ### 选择理由
 
@@ -73,7 +226,7 @@ sidebar: aiSidebar
 - **深度代码理解**：可处理大型代码库，支持跨文件重构和代码审查
 - **MCP 协议支持**：可扩展连接各种工具和数据源
 - **成本效益**：相对较低的价格获得高质量编程辅助
-- **开发者社区**：超过 11.5 万开发者使用，单周处理 1.95 亿行代码
+- **⚠️ 国内限制**：Anthropic 已禁止中国用户使用
 
 ### 个人订阅方案
 
@@ -87,9 +240,6 @@ sidebar: aiSidebar
 
 - **刷新周期**：5 小时滚动窗口
 - **周限额**：自 2024 年 8 月 28 日起引入周限额
-  - Pro: 约 40-80 小时 Sonnet 4/周
-  - Max 5x: 约 140-280 小时 Sonnet 4 + 15-35 小时 Opus 4/周
-  - Max 20x: 约 900 条消息/5 小时窗口
 - **超额处理**：达到限制后可选择升级或等待刷新
 
 ### 团队订阅方案
@@ -100,34 +250,21 @@ sidebar: aiSidebar
 | **Team (Premium)**  | $150/人/月                           | 5 人     | Standard 全部 + Premium 优先队列 + 更高配额 + 审计日志      |
 | **Enterprise**      | 联系销售                             | -        | 企业级功能 + DPA/BAA 合同 + 专属支持 + 定制部署             |
 
-**Team 套餐额外功能**：
-
-- 管理后台和成员管理
-- 单点登录 (SSO)
-- 审计日志
-- 团队共享额度池
-- 组织级权限控制
-
 ### 参考链接
 
 - [Claude 官方定价页面](https://claude.com/pricing)
-- [Claude Max 方案介绍](https://claude.com/pricing/max)
-- [Claude Team 方案介绍](https://claude.com/pricing/team)
-- [Claude Enterprise 方案](https://claude.com/pricing/enterprise)
 - [Claude Code 使用指南](https://support.claude.com/en/articles/11145838-using-claude-code-with-your-pro-or-max-plan)
-- [Claude 额外使用说明](https://support.claude.com/en/articles/12429409-extra-usage-for-paid-claude-plans)
-- [Claude 额度使用详解](https://www.claudelog.com/faqs/claude-code-usage/)
 
 ---
 
-## 方案三：OpenAI Codex (ChatGPT)
+### 方案五：OpenAI Codex (ChatGPT)
 
 ### 选择理由
 
 **OpenAI Codex** 已整合到 ChatGPT 订阅中，提供业界领先的代码生成能力：
 
-- **GPT-5.2 模型**：在 SWE-Bench Pro 达到 55.6% 成功率
-- **o1/o3 推理模型**：专为复杂编程和推理优化
+- **GPT 5.2 模型**：最新一代模型，代码生成能力业界领先
+- **o3/o4-mini 推理模型**：专为复杂编程和推理优化
 - **深度集成**：ChatGPT 网页版、CLI、API 全覆盖
 - **Code Interpreter**：可执行代码进行数据分析
 - **生态成熟**：插件系统最完善，第三方工具支持最广泛
@@ -139,21 +276,21 @@ sidebar: aiSidebar
 
 | 套餐     | 月费    | 核心额度                                                                                    |
 | -------- | ------- | ------------------------------------------------------------------------------------------- |
-| **Free** | 免费    | GPT-4o: 10-60 条/5小时<br>GPT-5: 约 10 条/5小时                                             |
-| **Plus** | $20/月  | GPT-5/GPT-4o: 160 条/3小时<br>o3-mini: 150 条/天<br>o3: 100 条/周<br>o4-mini: 300 条/天     |
-| **Pro**  | $200/月 | 声称"无限消息"+ GPT-5.2 Pro<br>更快图像生成 + 最大深度研究额度<br>实际仍可能遇到 5 小时限制 |
+| **Free** | 免费    | GPT 5.2: 约 10 条/5小时                                                                      |
+| **Plus** | $20/月  | GPT 5.2: 160 条/3小时<br>o3-mini: 150 条/天<br>o3: 100 条/周<br>o4-mini: 300 条/天             |
+| **Pro**  | $200/月 | 声称"无限消息"+ GPT 5.2 Pro<br>更快图像生成 + 最大深度研究额度<br>实际仍可能遇到 5 小时限制 |
 
 **使用说明**：
 
 - **Free 刷新周期**：5 小时滚动窗口
-- **Plus 刷新周期**：3 小时滚动窗口（GPT-5/GPT-4o），部分模型按天/周计算
+- **Plus 刷新周期**：3 小时滚动窗口（GPT 5.2），部分模型按天/周计算
 - **Pro 说明**：官方宣传"无限"，但用户报告仍可能遇到限制
 
 ### 团队订阅方案
 
 | 套餐           | 价格                                 | 最低人数          | 核心功能                                      |
 | -------------- | ------------------------------------ | ----------------- | --------------------------------------------- |
-| **Team**       | $30/人/月 (月付)<br>$25/人/月 (年付) | **2 人**          | GPT-5 访问 + 协作工具 + 团队管理 + 数据不训练 |
+| **Team**       | $30/人/月 (月付)<br>$25/人/月 (年付) | **2 人**          | GPT 5.2 访问 + 协作工具 + 团队管理 + 数据不训练 |
 | **Business**   | $25-30/人/月                         | -                 | Team 全部 + 管理控制台 + SSO + 数据分析       |
 | **Enterprise** | 联系销售                             | 通常 100-150 人起 | 企业级合规 + DPA/BAA + 私有端点 + 专属支持    |
 
@@ -171,13 +308,10 @@ sidebar: aiSidebar
 
 | 模型                   | 输入 Token        | 缓存输入           | 输出 Token         |
 | ---------------------- | ----------------- | ------------------ | ------------------ |
-| **codex-mini-latest**  | $1.50 / 1M tokens | -                  | $6.00 / 1M tokens  |
-| **gpt-5.1-codex-mini** | $0.25 / 1M tokens | $0.025 / 1M tokens | -                  |
-| **GPT-5**              | $1.25 / 1M tokens | $0.125 / 1M tokens | $10.00 / 1M tokens |
-| **GPT-5.1**            | $1.25 / 1M tokens | $0.125 / 1M tokens | $10.00 / 1M tokens |
-| **GPT-5.2**            | $1.75 / 1M tokens | $0.175 / 1M tokens | $14.00 / 1M tokens |
+| **GPT 5.2-mini**       | $0.25 / 1M tokens | $0.025 / 1M tokens | $1.00 / 1M tokens  |
+| **GPT 5.2**            | $1.75 / 1M tokens | $0.175 / 1M tokens | $14.00 / 1M tokens |
 
-**新用户福利**：新 API 账户可获得 $5 免费额度（约 400 万 GPT-5 Codex tokens）
+**新用户福利**：新 API 账户可获得 $5 免费额度（约 400 万 GPT 5.2 tokens）
 
 ### 参考链接
 
@@ -191,146 +325,65 @@ sidebar: aiSidebar
 
 ---
 
-## 方案四：AWS Kiro
-
-### 选择理由
-
-**Kiro** 是 Amazon AWS 推出的 AI 原生 IDE，采用独特的 Spec-Driven（规格驱动）开发模式：
-
-- **AWS 背景加持**：由 Amazon 官方支持，依托 AWS 基础设施，企业级可靠性
-- **Spec-Driven 开发**：独特的"先计划后构建"模式，将需求转化为可执行的规格说明
-- **Claude 4.5 全系列**：支持 **Claude Opus 4.5**、Sonnet 4.5、Haiku 4.5 全系列模型
-- **智能模型选择**：Auto 模式可根据任务复杂度自动选择最合适的模型
-- **中国区域可用**：通过 AWS 中国区域提供服务，国内用户可直接访问（无需代理）
-- **VS Code 架构**：基于 VS Code fork，界面熟悉，上手容易
-- **Agent Hooks**：支持自动化触发器，工作流可定制
-- **公测免费**：目前处于公测阶段，可免费使用
-
-### ⚠️ 中国用户注意事项
-
-> **重要提示**：虽然 Kiro 目前在中国可通过 AWS 中国区域访问，但需要注意：
->
-> 1. **政策风险**：各类产品的迭代与政策可能随时变化，不能保证一直可以在国内使用
-> 2. **Anthropic 限制**：Claude 官方已于 2025 年 9 月更新政策，禁止中国控制的实体使用 Claude 服务
-> 3. **AWS Bedrock 渠道**：Kiro 通过 AWS Bedrock 提供 Claude 模型访问，目前 AWS 中国区域仍可正常使用
-> 4. **变化无常**：如遇访问问题，建议关注 AWS 中国官方公告或考虑替代方案
-
-### 个人订阅方案
-
-| 套餐      | 月费    | Credits                | 超量使用                 |
-| --------- | ------- | ---------------------- | ------------------------ |
-| **Free**  | 免费    | 50 credits/月          | 不可超量，用完需等待下月 |
-| **Pro**   | $20/月  | 1,000 credits/月       | $0.04/credit             |
-| **Pro+**  | $40/月  | 2,000-3,000 credits/月 | $0.04/credit             |
-| **Power** | $200/月 | 10,000 credits/月      | $0.04/credit             |
-
-**使用说明**：
-
-- **刷新周期**：每月按订阅日期重置
-- **超额处理**：付费套餐（Pro/Pro+/Power）可超量使用，按 $0.04/credit 计费
-  - 例如：Pro 套餐使用 1,100 credits（超出 100），额外收费 $4
-- **Free 限制**：免费版固定限额，不可超量，用完需等待下月或升级
-- **升级保留**：30 天内升级可保留未使用的试用额度
-  - 例如：升级到 Pro 可获得 1,500 credits（1,000 Pro + 500 试用）
-
-### 团队订阅方案
-
-| 套餐           | 价格     | 最低人数  | 核心功能                                                                  |
-| -------------- | -------- | --------- | ------------------------------------------------------------------------- |
-| **Enterprise** | 定制定价 | **20 人** | 所有个人功能 + SSO/SCIM + 集中许可证管理 + 组织策略 + AWS 集成 + 专属支持 |
-
-**Enterprise 额外功能**：
-
-- **SSO/SCIM**：单点登录和用户自动预配
-- **集中许可证管理**：统一管理团队订阅
-- **组织策略**：企业级策略控制
-- **AWS 集成**：与 AWS 生态系统深度集成
-- **数据隐私**：企业级数据安全保障
-
-### 技术特点
-
-| 特性            | 说明                                                   |
-| --------------- | ------------------------------------------------------ |
-| **Spec-Driven** | 将想法转化为"活的可执行规格"，自动应用软件工程最佳实践 |
-| **主要模型**    | **Claude Opus 4.5**、Sonnet 4.5、Haiku 4.5、Sonnet 4.0 |
-| **模型选择**    | 支持 Auto 模式智能选择，也可手动指定                   |
-| **架构基础**    | 基于 VS Code                                           |
-| **开发模式**    | Agent 模式 + Spec 驱动                                 |
-| **扩展协议**    | 支持 MCP (Model Context Protocol)                      |
-
-#### Claude 4.5 模型 Credit 倍率
-
-| 模型           | Credit 倍率 | 适用场景                         |
-| -------------- | ----------- | -------------------------------- |
-| **Haiku 4.5**  | 0.4×        | 快速、低成本任务                 |
-| **Sonnet 4.5** | 1.3×        | 复杂代理和编码（推荐大多数场景） |
-| **Opus 4.5**   | 2.2×        | 最强推理能力，最具挑战性的任务   |
-
-**模型能力说明**：
-
-- 所有 Claude 4.5 模型输出可达 **64,000 tokens/响应**
-- **Opus 4.5**：2025 年 11 月 25 日发布，在所有基准测试中超越 Sonnet 4.5
-- **Auto 模式**：Kiro 智能自动选择最适合的模型
-
-### 参考链接
-
-- [Kiro 官方网站](https://kiro.dev/)
-- [Kiro 官方定价页面](https://kiro.dev/pricing/)
-- [Kiro 新定价和 Auto Agent 公告](https://kiro.dev/blog/new-pricing-plans-and-auto/)
-- [Kiro 引入 Opus 4.5 官方博客](https://kiro.dev/blog/introducing-opus-45/)
-- [Kiro 模型选择文档 (IDE)](https://kiro.dev/docs/chat/model-selection/)
-- [Kiro 模型选择文档 (CLI)](https://kiro.dev/docs/cli/chat/model-selection/)
-- [Kiro 个人计费文档](https://kiro.dev/docs/billing/)
-- [Kiro 企业计费文档](https://kiro.dev/docs/enterprise/billing/)
-- [Kiro 超量使用说明](https://kiro.dev/docs/billing/overages/)
-- [Kiro 正式发布公告](https://kiro.dev/blog/general-availability/)
-- [AWS 中国 Kiro CDK 教程](https://aws.amazon.com/cn/blogs/china/blog-03-kiro-ai-cdk-development/)
-- [Kiro 介绍官方博客](https://kiro.dev/blog/introducing-kiro/)
-- [Kiro vs Cursor 对比 2025](https://scalevise.com/resources/kiro-vs-cursor-ai-ide/)
-- [AWS re:Invent 2025 - Kiro Spec-Driven Development](https://www.youtube.com/watch?v=4qcWgPb-8Fk)
-- [Claude Opus 4.5 官方公告](https://www.anthropic.com/news/claude-opus-4-5)
-
----
-
-## 四大方案对比总结
+## 五大方案对比总结
 
 ### 价格对比（个人版）
 
-| 方案             | 入门价格      | 中级价格         | 高级价格          | 刷新周期 |
-| ---------------- | ------------- | ---------------- | ----------------- | -------- |
-| **Cursor**       | $20/月 (Pro)  | $60/月 (Pro+)    | $200/月 (Ultra)   | 月度重置 |
-| **Claude Code**  | $20/月 (Pro)  | $100/月 (Max 5x) | $200/月 (Max 20x) | 5小时/周 |
-| **OpenAI Codex** | $20/月 (Plus) | -                | $200/月 (Pro)     | 3-5小时  |
-| **AWS Kiro**     | 免费 (Free)   | $20/月 (Pro)     | $200/月 (Power)   | 月度重置 |
+| 方案               | 入门价格         | 中级价格          | 高级价格           | 刷新周期 |
+| ------------------ | ---------------- | ----------------- | ------------------ | -------- |
+| **AWS Kiro**       | 试用 50 积分/月  | $20/月 (Pro)      | $200/月 (Power)    | 月度重置 |
+| **GitHub Copilot** | $10/月 (Pro)     | $39/月 (Pro+)     | -                  | 月度重置 |
+| **Cursor**         | $20/月 (Pro)     | $60/月 (Pro+)     | $200/月 (Ultra)    | 月度重置 |
+| **Claude Code**    | $20/月 (Pro)     | $100/月 (Max 5x)  | $200/月 (Max 20x)  | 5小时/周 |
+| **OpenAI Codex**   | $20/月 (Plus)    | -                 | $200/月 (Pro)      | 3-5小时  |
 
 ### 价格对比（团队版）
 
-| 方案         | 团队价格     | 最低人数   | 企业版             |
-| ------------ | ------------ | ---------- | ------------------ |
-| **Cursor**   | $40/人/月    | 无明确要求 | 定制               |
-| **Claude**   | $25-30/人/月 | **5 人**   | 定制               |
-| **OpenAI**   | $25-30/人/月 | **2 人**   | 定制 (通常100人起) |
-| **AWS Kiro** | -            | **20 人**  | 定制               |
+| 方案               | 团队价格       | 最低人数   | 企业版             |
+| ------------------ | -------------- | ---------- | ------------------ |
+| **AWS Kiro**       | -              | **20 人**  | 定制               |
+| **GitHub Copilot** | $19/人/月      | -          | $39/人/月          |
+| **Cursor**         | $40/人/月      | 无明确要求 | 定制               |
+| **Claude**         | $25-30/人/月   | **5 人**   | 定制               |
+| **OpenAI**         | $25-30/人/月   | **2 人**   | 定制 (通常100人起) |
 
 ### 刷新周期对比
 
-| 方案         | 个人版刷新 | 团队版刷新 | 特点                     |
-| ------------ | ---------- | ---------- | ------------------------ |
-| **Cursor**   | 每月重置   | 每月重置   | 5-24小时可能部分恢复     |
-| **Claude**   | 5小时/周   | 5小时/周   | 窗口期最短               |
-| **OpenAI**   | 3-5小时    | 3-5小时    | Plus 3小时，Free 5小时   |
-| **AWS Kiro** | 每月重置   | 每月重置   | 支持$0.04/credit超量计费 |
+| 方案               | 个人版刷新 | 团队版刷新 | 特点                     |
+| ------------------ | ---------- | ---------- | ------------------------ |
+| **AWS Kiro**       | 每月重置   | 每月重置   | 支持$0.04/credit超量计费 |
+| **GitHub Copilot** | 每月重置   | 每月重置   | Pro+ 超量 $0.04/次       |
+| **Cursor**         | 每月重置   | 每月重置   | 5-24小时可能部分恢复     |
+| **Claude**         | 5小时/周   | 5小时/周   | 窗口期最短               |
+| **OpenAI**         | 3-5小时    | 3-5小时    | Plus 3小时，Free 5小时   |
 
 ### 国内可用性对比
 
-| 方案             | 国内直接访问 | 需要代理 | 说明                                  |
-| ---------------- | ------------ | -------- | ------------------------------------- |
-| **Cursor**       | ❌           | ✅       | 需要海外网络环境                      |
-| **Claude Code**  | ❌           | ✅       | Anthropic 已禁止中国用户使用          |
-| **OpenAI Codex** | ❌           | ✅       | OpenAI 服务不在中国提供               |
-| **AWS Kiro**     | ✅           | ❌       | 通过 AWS 中国区域可访问，但有政策风险 |
+| 方案               | 国内直接访问 | 需要代理 | 说明                                  |
+| ------------------ | ------------ | -------- | ------------------------------------- |
+| **AWS Kiro**       | ✅           | ❌       | 通过 AWS 中国区域可访问，但有政策风险 |
+| **GitHub Copilot** | ❌           | ✅       | 需要海外网络环境                      |
+| **Cursor**         | ❌           | ✅       | 需要海外网络环境                      |
+| **Claude Code**    | ❌           | ✅       | Anthropic 已禁止中国用户使用          |
+| **OpenAI Codex**   | ❌           | ✅       | OpenAI 服务不在中国提供               |
 
 ### 选型建议
+
+**选择 AWS Kiro 如果**：
+
+- **位于国内**，希望无需代理即可使用
+- 偏好 Spec-Driven（规格驱动）开发模式
+- 团队已使用 AWS 生态系统
+- 需要企业级可靠性和数据合规
+- 可以接受潜在的政策变化风险
+
+**选择 GitHub Copilot 如果**：
+
+- 已习惯使用 VS Code/JetBrains 等 IDE
+- 需要最成熟稳定的 AI 编码工具
+- 预算有限，$10-39/月的价格更有吸引力
+- 团队已深度使用 GitHub 生态
+- 需要企业级合规和支持
 
 **选择 Cursor 如果**：
 
@@ -356,17 +409,79 @@ sidebar: aiSidebar
 - 需要 API 接入自定义应用
 - 有稳定的海外网络环境
 
-**选择 AWS Kiro 如果**：
+---
 
-- **位于国内**，无法使用海外服务
-- 偏好 Spec-Driven（规格驱动）开发模式
-- 团队已使用 AWS 生态系统
-- 需要企业级可靠性和数据合规
-- 想要尝试免费的 Claude 模型（公测期）
-- 可以接受潜在的政策变化风险
+## 附录：Anthropic 公司股东与融资信息
+
+### 公司背景
+
+**Anthropic** 是一家美国人工智能安全公司，由 Dario Amodei 和 Daniela Amodei 于 2021 年创立。公司前身为 OpenAI 的核心成员，后独立发展专注于 AI 安全研究。Anthropic 推出了 Claude 系列 AI 模型，包括 Haiku、Sonnet 和 Opus。
+
+### 融资历程与估值
+
+#### 最新融资（2026 年 1 月）
+
+| 融资轮次 | 金额          | 估值          | 领投方        | 状态         |
+| -------- | ------------- | ------------- | ------------- | ------------ |
+| **Series G** | **$100 亿**  | **$3500 亿**  | **GIC**（新加坡主权财富基金） | 洽谈中       |
+
+#### 历史主要融资
+
+| 时间       | 轮次      | 金额         | 估值        | 主要投资方                           |
+| ---------- | --------- | ------------ | ----------- | ------------------------------------ |
+| 2025年9月  | Series F  | $130 亿      | $1830 亿    | Lightspeed、Fidelity 等              |
+| 2024年     | 多轮      | 累计约 $170+亿 | -          | Google、Amazon、Spark Capital 等      |
+| 2023年     | -         | $40 亿（Amazon投资） | -      | Amazon                               |
+| 2023年     | -         | $20 亿（Google投资） | -      | Google                               |
+
+**累计融资金额**：至少 **$400 亿**（约 14 轮融资）
+
+### 主要股东与投资方
+
+#### 机构投资者
+
+| 投资方              | 类型                | 投资轮次/金额                    |
+| ------------------- | ------------------- | -------------------------------- |
+| **GIC**             | 新加坡主权财富基金   | 领投 Series G（洽谈中）           |
+| **Lightspeed Venture Partners** | 风险投资       | Series F 领投                   |
+| **Fidelity Management & Research** | 资产管理   | 多轮投资                        |
+| **Google (Alphabet)** | 战略投资者         | $20 亿 + 多轮投资                |
+| **Amazon**          | 战略投资者         | $40 亿投资，云服务合作           |
+| **Spark Capital**   | 风险投资           | 早期及后续轮次                   |
+| **Menlo Ventures**  | 风险投资           | 早期投资者                      |
+
+#### 战略合作
+
+- **Amazon AWS**：Anthropic 选择 AWS 作为主要云服务提供商，Amazon 累计投资 $40 亿
+- **Google Cloud**：Google 投资并提供云基础设施支持
+
+### 财务预期
+
+| 指标            | 数据                          |
+| --------------- | ----------------------------- |
+| **2025 年 ARR 预期** | $90 亿                        |
+| **2026 年收入预期** | $200-260 亿                   |
+| **增长率**       | 3 年期内约 13-28% 增长预期    |
+
+### 上市计划
+
+根据多家媒体报道：
+- **IPO 时间窗口**：最早可能在 **2026 年底** 或 2027 年
+- **上市地点**：预计在美国公开市场上市
+- **当前状态**：已开始筹备上市相关工作
+
+### 参考链接
+
+- [Anthropic 寻求 100 亿美元融资，估值达 3500 亿美元 - The New York Times](https://www.nytimes.com/2026/01/07/technology/anthropic-funding-valuation.html)
+- [Anthropic 以 3500 亿美元估值筹集 100 亿美元 - Wall Street Journal](https://www.wsj.com/tech/ai/anthropic-raising-10-billion-at-350-billion-value-62af49f4)
+- [Anthropic 瞄准 3500 亿美元估值进行大规模融资 - Yahoo Finance](https://finance.yahoo.com/news/anthropic-eyes-350-billion-valuation-190120429.html)
+- [Anthropic 计划以 3500 亿美元估值筹集 100 亿美元 - Seeking Alpha](https://seekingalpha.com/news/4537469-anthropic-plans-to-raise-10b-at-350b-valuation)
+- [Anthropic 寻求 100 亿美元融资，估值 3500 亿美元 - SiliconANGLE](https://siliconangle.com/2026/01/07/anthropic-reportedly-seeking-raise-10b-350-billion-valuation/)
+- [Anthropic 公司介绍 - Wikipedia](https://en.wikipedia.org/wiki/Anthropic)
+- [Anthropic 股权投资指南 - TSG Invest](https://tsginvest.com/anthropic-pbc/)
 
 ---
 
 > **最后更新时间**：2026 年 1 月
 >
-> **注意**：以上价格和额度信息可能随时间变化，请以官方页面为准。如需最新信息，请访问各方案的官方定价页面。
+> **注意**：以上价格和额度信息可能随时间变化，请以官方页面为准。如需最新信息，请访问各方案的官方定价页面。Anthropic 融资信息基于公开媒体报道，实际数据以公司官方披露为准。
