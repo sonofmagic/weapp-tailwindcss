@@ -45,7 +45,7 @@
     "@tarojs/runtime": "catalog:taro4",
     "@tarojs/shared": "catalog:taro4",
     "@tarojs/taro": "catalog:taro4",
-    "antd-mobile": "^5.42.1",
+    "antd-mobile": "^5.42.3",
     "classnames": "^2.5.1",
     "react": "catalog:react18",
     "react-dom": "catalog:react18",

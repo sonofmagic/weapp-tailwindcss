@@ -72,7 +72,7 @@
     "@types/react": "catalog:react19",
     "@types/react-dom": "catalog:react19",
     "autoprefixer": "catalog:autoprefixer10",
-    "baseline-browser-mapping": "^2.9.11",
+    "baseline-browser-mapping": "^2.9.14",
     "cross-env": "catalog:crossEnv",
     "docusaurus-plugin-llms": "^0.2.2",
     "docusaurus-plugin-sass": "^0.2.6",

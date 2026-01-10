@@ -53,7 +53,7 @@ catalogs:
   reactRefresh018:
     react-refresh: ^0.18.0
   sass195:
-    sass: ^1.97.1
+    sass: ^1.97.2
   stylelint1625:
     stylelint: ^16.26.1
   tailwindMerge:
@@ -94,33 +94,33 @@ catalogs:
     babel-preset-taro: ^4.1.9
     eslint-config-taro: ^4.1.9
   typesNode2410:
-    '@types/node': ^24.10.4
+    '@types/node': ^24.10.6
   typescript59:
     typescript: ^5.9.3
   typescript59tilde:
     typescript: ~5.9.3
   typescriptEslint849:
-    '@typescript-eslint/eslint-plugin': ^8.51.0
-    '@typescript-eslint/parser': ^8.51.0
-    typescript-eslint: ^8.51.0
+    '@typescript-eslint/eslint-plugin': ^8.52.0
+    '@typescript-eslint/parser': ^8.52.0
+    typescript-eslint: ^8.52.0
   vite5421:
     vite: ^5.4.21
   vite724:
-    vite: ^7.3.0
+    vite: ^7.3.1
   vue3:
     '@vue/compiler-dom': ^3.5.26
     '@vue/compiler-sfc': ^3.5.26
     vue: ^3.5.26
   vueTsc318:
-    vue-tsc: ^3.2.1
+    vue-tsc: ^3.2.2
   weappChildren:
     weapp-tailwindcss-children: ^0.1.0
   weappIdeCli:
     weapp-ide-cli: ^4.1.2
   weappVite:
-    weapp-vite: ^6.0.1
+    weapp-vite: ^6.1.7
   wrangler4530:
-    wrangler: ^4.56.0
+    wrangler: ^4.58.0
 
 onlyBuiltDependencies:
   - '@tailwindcss/oxide'
