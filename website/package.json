@@ -84,7 +84,7 @@
     "sass-loader": "^16.0.6",
     "tailwindcss": "catalog:tailwindcss3",
     "theme-transition": "workspace:*",
-    "typedoc": "^0.28.15",
+    "typedoc": "^0.28.16",
     "typedoc-plugin-markdown": "4.9.0",
     "webpack": "5.104.1",
     "webpack-node-externals": "^3.0.0",

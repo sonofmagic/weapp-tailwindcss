@@ -13,13 +13,13 @@ catalogs:
   autoprefixer10:
     autoprefixer: ^10.4.23
   babelCore7285:
-    '@babel/core': ^7.28.5
+    '@babel/core': ^7.28.6
   babelPresetReact7285:
     '@babel/preset-react': ^7.28.5
   babelRuntime7284:
-    '@babel/runtime': ^7.28.4
+    '@babel/runtime': ^7.28.6
   babelRuntime7284tilde:
-    '@babel/runtime': ~7.28.4
+    '@babel/runtime': ^7.28.6
   crossEnv:
     cross-env: ^10.1.0
   lucideReact0555:
@@ -41,12 +41,12 @@ catalogs:
   prettier371:
     prettier: ^3.7.4
   react18:
-    '@types/react': ^19.2.7
+    '@types/react': ^19.2.8
     '@types/react-dom': 18.2.7
     react: ^18.3.1
     react-dom: ^18.3.1
   react19:
-    '@types/react': ^19.2.7
+    '@types/react': ^19.2.8
     '@types/react-dom': 19.2.3
     react: ^19.2.3
     react-dom: ^19.2.3
@@ -94,15 +94,15 @@ catalogs:
     babel-preset-taro: ^4.1.9
     eslint-config-taro: ^4.1.9
   typesNode2410:
-    '@types/node': ^24.10.6
+    '@types/node': ^24.10.7
   typescript59:
     typescript: ^5.9.3
   typescript59tilde:
     typescript: ~5.9.3
   typescriptEslint849:
-    '@typescript-eslint/eslint-plugin': ^8.52.0
-    '@typescript-eslint/parser': ^8.52.0
-    typescript-eslint: ^8.52.0
+    '@typescript-eslint/eslint-plugin': ^8.53.0
+    '@typescript-eslint/parser': ^8.53.0
+    typescript-eslint: ^8.53.0
   vite5421:
     vite: ^5.4.21
   vite724:

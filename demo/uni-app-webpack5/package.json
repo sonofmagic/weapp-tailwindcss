@@ -85,7 +85,7 @@
     "vuex": "^3.6.2"
   },
   "devDependencies": {
-    "@babel/plugin-syntax-typescript": "^7.23.3",
+    "@babel/plugin-syntax-typescript": "^7.28.6",
     "@babel/runtime": "catalog:babelRuntime7284tilde",
     "@dcloudio/types": "^3.4.8",
     "@dcloudio/uni-automator": "2.0.2-4080520251106001",

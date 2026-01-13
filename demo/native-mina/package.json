@@ -32,7 +32,7 @@
   },
   "devDependencies": {
     "@babel/plugin-proposal-class-properties": "^7.18.6",
-    "@types/lodash": "^4.17.22",
+    "@types/lodash": "^4.17.23",
     "@weapp-tailwindcss/merge-v3": "workspace:*",
     "@weapp-tailwindcss/variants-v3": "workspace:*",
     "autoprefixer": "catalog:autoprefixer10",

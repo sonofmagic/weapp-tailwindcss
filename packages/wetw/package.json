@@ -48,7 +48,7 @@
   },
   "publishConfig": {},
   "dependencies": {
-    "@inquirer/prompts": "^8.1.0",
+    "@inquirer/prompts": "^8.2.0",
     "c12": "^3.3.3",
     "cac": "^6.7.14"
   }

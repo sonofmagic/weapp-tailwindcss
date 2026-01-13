@@ -65,7 +65,7 @@
   },
   "devDependencies": {
     "@babel/core": "catalog:babelCore7285",
-    "@babel/plugin-syntax-decorators": "^7.27.1",
+    "@babel/plugin-syntax-decorators": "^7.28.6",
     "@tarojs/cli": "catalog:taro4",
     "@tarojs/plugin-platform-weapp": "catalog:taro4",
     "@tarojs/taro-loader": "catalog:taro4",
