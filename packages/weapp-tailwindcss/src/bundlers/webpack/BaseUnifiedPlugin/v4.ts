@@ -1,25 +1,17 @@
 // webpack 4
 import type { Compiler } from 'webpack4'
-import type { AppType, IBaseWebpackPlugin, InternalUserDefinedOptions, LinkedJsModuleResult, UserDefinedOptions } from '@/types'
-import fs from 'node:fs'
-import path from 'node:path'
+import type { AppType, IBaseWebpackPlugin, InternalUserDefinedOptions, UserDefinedOptions } from '@/types'
 import process from 'node:process'
-import { ConcatSource } from 'webpack-sources'
-import { pluginName } from '@/constants'
 import { getCompilerContext } from '@/context'
 import { createDebug } from '@/debug'
-import { ensureMpxTailwindcssAliases, injectMpxCssRewritePreRules, isMpx, patchMpxLoaderResolve, setupMpxTailwindcssRedirect } from '@/shared/mpx'
+import { isMpx, setupMpxTailwindcssRedirect } from '@/shared/mpx'
 import { setupPatchRecorder } from '@/tailwindcss/recorder'
 import { collectRuntimeClassSet, refreshTailwindRuntimeState } from '@/tailwindcss/runtime'
-import { getGroupedEntries } from '@/utils'
 import { resolveDisabledOptions } from '@/utils/disabled'
 import { resolvePackageDir } from '@/utils/resolve-package'
-import { processCachedTask } from '../../shared/cache'
-import { resolveOutputSpecifier, toAbsoluteOutputPath } from '../../shared/module-graph'
-import { pushConcurrentTaskFactories } from '../../shared/run-tasks'
 import { applyTailwindcssCssImportRewrite } from '../shared/css-imports'
-import { createLoaderAnchorFinders } from '../shared/loader-anchors'
-import { getCacheKey, hasLoaderEntry, isCssLikeModuleResource } from './shared'
+import { setupWebpackV4EmitHook } from './v4-assets'
+import { setupWebpackV4Loaders } from './v4-loaders'
 
 const debug = createDebug()
 export const weappTailwindcssPackageDir = resolvePackageDir('weapp-tailwindcss')
@@ -43,18 +35,10 @@ export class UnifiedWebpackPluginV4 implements IBaseWebpackPlugin {
     // 保证 options 对象存在，便于后续写入 resolve/module 等。
     compiler.options = compiler.options || {} as any
     const {
-      mainCssChunkMatcher,
       disabled,
       onLoad,
-      onUpdate,
-      onEnd,
-      onStart,
-      styleHandler,
-      templateHandler,
-      jsHandler,
       runtimeLoaderPath,
       runtimeCssImportRewriteLoaderPath,
-      cache,
       twPatcher: initialTwPatcher,
       refreshTailwindcssPatcher,
     } = this.options
@@ -97,341 +81,26 @@ export class UnifiedWebpackPluginV4 implements IBaseWebpackPlugin {
       await collectRuntimeClassSet(runtimeState.twPatcher, { force: true, skipRefresh: true })
     }
 
-    const runtimeClassSetLoader = runtimeLoaderPath
-      ?? path.resolve(__dirname, './weapp-tw-runtime-classset-loader.js')
-    const runtimeCssImportRewriteLoader = shouldRewriteCssImports
-      ? (runtimeCssImportRewriteLoaderPath
-        ?? path.resolve(__dirname, './weapp-tw-css-import-rewrite-loader.js'))
-      : undefined
-    const runtimeClassSetLoaderExists = fs.existsSync(runtimeClassSetLoader)
-    const runtimeCssImportRewriteLoaderExists = runtimeCssImportRewriteLoader
-      ? fs.existsSync(runtimeCssImportRewriteLoader)
-      : false
-    const runtimeLoaderRewriteOptions = shouldRewriteCssImports
-      ? {
-          pkgDir: weappTailwindcssPackageDir,
-          appType: this.appType,
-        }
-      : undefined
-    const classSetLoaderOptions = {
-      getClassSet: getClassSetInLoader,
-    }
-    const { findRewriteAnchor, findClassSetAnchor } = createLoaderAnchorFinders(this.appType)
-    const cssImportRewriteLoaderOptions = runtimeLoaderRewriteOptions
-      ? {
-          rewriteCssImports: runtimeLoaderRewriteOptions,
-        }
-      : undefined
-
     onLoad()
-    if (shouldRewriteCssImports && isMpxApp) {
-      ensureMpxTailwindcssAliases(compiler, weappTailwindcssPackageDir)
-    }
-    if (runtimeCssImportRewriteLoader && shouldRewriteCssImports && cssImportRewriteLoaderOptions && isMpxApp) {
-      injectMpxCssRewritePreRules(compiler, runtimeCssImportRewriteLoader, cssImportRewriteLoaderOptions)
-    }
-    const createRuntimeClassSetLoaderEntry = () => ({
-      loader: runtimeClassSetLoader,
-      options: classSetLoaderOptions,
-      ident: null,
-      type: null,
-    })
-    const createCssImportRewriteLoaderEntry = () => {
-      if (!runtimeCssImportRewriteLoader) {
-        return null
-      }
-      return {
-        loader: runtimeCssImportRewriteLoader,
-        options: cssImportRewriteLoaderOptions,
-        ident: null,
-        type: null,
-      }
-    }
-
-    compiler.hooks.compilation.tap(pluginName, (compilation) => {
-      compilation.hooks.normalModuleLoader.tap(pluginName, (_loaderContext, module: any) => {
-        const hasRuntimeLoader = runtimeClassSetLoaderExists || runtimeCssImportRewriteLoaderExists
-        if (!hasRuntimeLoader) {
-          return
-        }
-        if (shouldRewriteCssImports && isMpx(this.appType) && typeof _loaderContext.resolve === 'function') {
-          patchMpxLoaderResolve(_loaderContext, weappTailwindcssPackageDir, true)
-        }
-        const loaderEntries: Array<{ loader?: string }> = module.loaders || []
-        let rewriteAnchorIdx = findRewriteAnchor(loaderEntries)
-        const classSetAnchorIdx = findClassSetAnchor(loaderEntries)
-
-        const isCssModule = isCssLikeModuleResource(module.resource, this.options.cssMatcher, this.appType)
-        if (process.env.WEAPP_TW_LOADER_DEBUG && isCssModule) {
-          debug('loader hook css module: %s loaders=%o anchors=%o', module.resource, loaderEntries.map((x: any) => x.loader), { rewriteAnchorIdx, classSetAnchorIdx })
-        }
-        if (process.env.WEAPP_TW_LOADER_DEBUG && typeof module.resource === 'string' && module.resource.includes('app.css')) {
-          debug('app.css module loaders=%o anchors=%o', loaderEntries.map((x: any) => x.loader), { rewriteAnchorIdx, classSetAnchorIdx })
-        }
-        else if (process.env.WEAPP_TW_LOADER_DEBUG && typeof module.resource === 'string' && module.resource.endsWith('.css')) {
-          debug('css module seen: %s loaders=%o anchors=%o', module.resource, loaderEntries.map((x: any) => x.loader), { rewriteAnchorIdx, classSetAnchorIdx })
-        }
-
-        if (rewriteAnchorIdx === -1 && classSetAnchorIdx === -1 && !isCssModule) {
-          return
-        }
-
-        const anchorlessInsert = (entry: any, position: 'before' | 'after') => {
-          if (position === 'after') {
-            loaderEntries.push(entry)
-          }
-          else {
-            loaderEntries.unshift(entry)
-          }
-        }
-
-        if (
-          runtimeLoaderRewriteOptions
-          && runtimeCssImportRewriteLoaderExists
-          && cssImportRewriteLoaderOptions
-          && runtimeCssImportRewriteLoader
-        ) {
-          const existingIndex = loaderEntries.findIndex(entry =>
-            entry.loader?.includes?.(runtimeCssImportRewriteLoader!),
-          )
-          const rewriteEntry = existingIndex !== -1
-            ? loaderEntries.splice(existingIndex, 1)[0]
-            : createCssImportRewriteLoaderEntry()
-          if (rewriteEntry) {
-            const anchorIndex = findRewriteAnchor(loaderEntries)
-            if (anchorIndex === -1) {
-              anchorlessInsert(rewriteEntry, 'after')
-            }
-            else {
-              loaderEntries.splice(anchorIndex + 1, 0, rewriteEntry)
-            }
-            rewriteAnchorIdx = findRewriteAnchor(loaderEntries)
-          }
-        }
-        if (runtimeClassSetLoaderExists && !hasLoaderEntry(loaderEntries, runtimeClassSetLoader)) {
-          const anchorIndex = findClassSetAnchor(loaderEntries)
-          if (anchorIndex === -1) {
-            anchorlessInsert(createRuntimeClassSetLoaderEntry(), 'before')
-          }
-          else {
-            const insertIndex = anchorIndex === -1 ? rewriteAnchorIdx : anchorIndex
-            // 将 class-set 插在锚点 loader 的当前位置（数组索引更小），这样在实际执行顺序里它会排在锚点 loader 之后。
-            loaderEntries.splice(insertIndex, 0, createRuntimeClassSetLoaderEntry())
-          }
-        }
-      })
+    setupWebpackV4Loaders({
+      compiler,
+      options: this.options,
+      appType: this.appType,
+      weappTailwindcssPackageDir,
+      shouldRewriteCssImports,
+      runtimeLoaderPath,
+      runtimeCssImportRewriteLoaderPath,
+      getClassSetInLoader,
+      debug,
     })
 
-    compiler.hooks.emit.tapPromise(pluginName, async (compilation) => {
-      await runtimeState.patchPromise
-      onStart()
-      debug('start')
-
-      // 第一次进来的时候为 init
-      for (const chunk of compilation.chunks) {
-        if (chunk.id && chunk.hash) {
-          cache.calcHashValueChanged(chunk.id, chunk.hash)
-        }
-      }
-      const assets = compilation.assets
-      const entries = Object.entries(assets)
-      const outputDir = compiler.options?.output?.path
-        ? path.resolve(compiler.options.output.path)
-        : process.cwd()
-      const jsAssets = new Map<string, string>()
-      for (const [file] of entries) {
-        if (this.options.jsMatcher(file) || this.options.wxsMatcher(file)) {
-          const absolute = toAbsoluteOutputPath(file, outputDir)
-          jsAssets.set(absolute, file)
-        }
-      }
-      const moduleGraphOptions = {
-        resolve(specifier: string, importer: string) {
-          return resolveOutputSpecifier(specifier, importer, outputDir, candidate => jsAssets.has(candidate))
-        },
-        load: (id: string) => {
-          const assetName = jsAssets.get(id)
-          if (!assetName) {
-            return undefined
-          }
-          const assetSource = compilation.assets[assetName]
-          if (!assetSource) {
-            return undefined
-          }
-          const source = assetSource.source()
-          return typeof source === 'string' ? source : source.toString()
-        },
-        filter(id: string) {
-          return jsAssets.has(id)
-        },
-      }
-      const applyLinkedResults = (linked: Record<string, LinkedJsModuleResult> | undefined) => {
-        if (!linked) {
-          return
-        }
-        for (const [id, { code }] of Object.entries(linked)) {
-          const assetName = jsAssets.get(id)
-          if (!assetName) {
-            continue
-          }
-          const assetSource = compilation.assets[assetName]
-          if (!assetSource) {
-            continue
-          }
-          const previousSource = assetSource.source()
-          const previous = typeof previousSource === 'string' ? previousSource : previousSource.toString()
-          if (previous === code) {
-            continue
-          }
-          const source = new ConcatSource(code)
-          // @ts-ignore
-          compilation.updateAsset(assetName, source)
-          onUpdate(assetName, previous, code)
-          debug('js linked handle: %s', assetName)
-        }
-      }
-      const groupedEntries = getGroupedEntries(entries, this.options)
-      // 再次 build 不转化的原因是此时 set.size 为0
-      // 也就是说当开启缓存的时候没有触发 postcss,导致 tailwindcss 并没有触发
-      await refreshRuntimeState(true)
-      await runtimeState.patchPromise
-      const runtimeSet = await collectRuntimeClassSet(runtimeState.twPatcher, { force: true, skipRefresh: true })
-      debug('get runtimeSet, class count: %d', runtimeSet.size)
-      const tasks: Promise<void>[] = []
-      if (Array.isArray(groupedEntries.html)) {
-        for (const element of groupedEntries.html) {
-          const [file, originalSource] = element
-          // @ts-ignore
-          const rawSource = originalSource.source().toString()
-
-          const cacheKey = file
-          tasks.push(
-            processCachedTask({
-              cache,
-              cacheKey,
-              rawSource,
-              applyResult(source) {
-                // @ts-ignore
-                compilation.updateAsset(file, source)
-              },
-              onCacheHit() {
-                debug('html cache hit: %s', file)
-              },
-              transform: async () => {
-                const wxml = await templateHandler(rawSource, {
-                  runtimeSet,
-                })
-                const source = new ConcatSource(wxml)
-
-                onUpdate(file, rawSource, wxml)
-                debug('html handle: %s', file)
-
-                return {
-                  result: source,
-                }
-              },
-            }),
-          )
-        }
-      }
-
-      const jsTaskFactories: Array<() => Promise<void>> = []
-
-      if (Array.isArray(groupedEntries.js)) {
-        for (const [file] of groupedEntries.js) {
-          const cacheKey = getCacheKey(file)
-          const assetSource = compilation.assets[file]
-          if (!assetSource) {
-            continue
-          }
-          const initialValue = assetSource.source()
-          const initialRawSource = typeof initialValue === 'string' ? initialValue : initialValue.toString()
-          const absoluteFile = toAbsoluteOutputPath(file, outputDir)
-          jsTaskFactories.push(async () => {
-            await processCachedTask({
-              cache,
-              cacheKey,
-              rawSource: initialRawSource,
-              applyResult(source) {
-                // @ts-ignore
-                compilation.updateAsset(file, source)
-              },
-              onCacheHit() {
-                debug('js cache hit: %s', file)
-              },
-              transform: async () => {
-                const currentAsset = compilation.assets[file]
-                const currentValue = currentAsset?.source()
-                const currentSource = typeof currentValue === 'string'
-                  ? currentValue
-                  : currentValue?.toString() ?? ''
-                const { code, linked } = await jsHandler(currentSource, runtimeSet, {
-                  filename: absoluteFile,
-                  moduleGraph: moduleGraphOptions,
-                  babelParserOptions: {
-                    sourceFilename: absoluteFile,
-                  },
-                })
-                const source = new ConcatSource(code)
-                onUpdate(file, currentSource, code)
-                debug('js handle: %s', file)
-                applyLinkedResults(linked)
-                return {
-                  result: source,
-                }
-              },
-            })
-          })
-        }
-      }
-
-      if (Array.isArray(groupedEntries.css)) {
-        for (const element of groupedEntries.css) {
-          const [file, originalSource] = element
-          // @ts-ignore
-          const rawSource = originalSource.source().toString()
-          const cacheKey = file
-          tasks.push(
-            processCachedTask({
-              cache,
-              cacheKey,
-              rawSource,
-              applyResult(source) {
-                // @ts-ignore
-                compilation.updateAsset(file, source)
-              },
-              onCacheHit() {
-                debug('css cache hit: %s', file)
-              },
-              transform: async () => {
-                await runtimeState.patchPromise
-                const { css } = await styleHandler(rawSource, {
-                  isMainChunk: mainCssChunkMatcher(file, this.appType),
-                  postcssOptions: {
-                    options: {
-                      from: file,
-                    },
-                  },
-                  majorVersion: runtimeState.twPatcher.majorVersion,
-                })
-                const source = new ConcatSource(css)
-
-                onUpdate(file, rawSource, css)
-                debug('css handle: %s', file)
-
-                return {
-                  result: source,
-                }
-              },
-            }),
-          )
-        }
-      }
-      pushConcurrentTaskFactories(tasks, jsTaskFactories)
-
-      await Promise.all(tasks)
-      debug('end')
-      onEnd()
+    setupWebpackV4EmitHook({
+      compiler,
+      options: this.options,
+      appType: this.appType,
+      runtimeState,
+      refreshRuntimeState,
+      debug,
     })
   }
 }

@@ -1,8 +1,5 @@
-import type { OutputAsset, OutputChunk } from 'rollup'
 import type { Plugin, ResolvedConfig } from 'vite'
-import type { CreateJsHandlerOptions, LinkedJsModuleResult, UserDefinedOptions } from '@/types'
-import { Buffer } from 'node:buffer'
-import path from 'node:path'
+import type { UserDefinedOptions } from '@/types'
 import process from 'node:process'
 import postcssHtmlTransform from '@weapp-tailwindcss/postcss/html-transform'
 import { vitePluginName } from '@/constants'
@@ -11,120 +8,17 @@ import { toCustomAttributesEntities } from '@/context/custom-attributes'
 import { createDebug } from '@/debug'
 import { setupPatchRecorder } from '@/tailwindcss/recorder'
 import { collectRuntimeClassSet, refreshTailwindRuntimeState } from '@/tailwindcss/runtime'
-import { createUniAppXAssetTask, createUniAppXPlugins } from '@/uni-app-x'
-import { getGroupedEntries, resolveUniUtsPlatform } from '@/utils'
+import { createUniAppXPlugins } from '@/uni-app-x'
+import { resolveUniUtsPlatform } from '@/utils'
 import { resolveDisabledOptions } from '@/utils/disabled'
 import { resolvePackageDir } from '@/utils/resolve-package'
-import { processCachedTask } from '../shared/cache'
-import { resolveTailwindcssImport, rewriteTailwindcssImportsInCode } from '../shared/css-imports'
-import { resolveOutputSpecifier, toAbsoluteOutputPath } from '../shared/module-graph'
-import { pushConcurrentTaskFactories } from '../shared/run-tasks'
-import { cleanUrl, isCSSRequest, slash } from './utils'
+import { createGenerateBundleHook } from './generate-bundle'
+import { createRewriteCssImportsPlugins } from './rewrite-css-imports'
+import { slash } from './utils'
 
 const debug = createDebug()
 const weappTailwindcssPackageDir = resolvePackageDir('weapp-tailwindcss')
 const weappTailwindcssDirPosix = slash(weappTailwindcssPackageDir)
-
-function joinPosixPath(base: string, subpath: string) {
-  if (base.endsWith('/')) {
-    return `${base}${subpath}`
-  }
-  return `${base}/${subpath}`
-}
-
-function isCssLikeImporter(importer?: string | null) {
-  if (!importer) {
-    return false
-  }
-  const normalized = cleanUrl(importer)
-  return isCSSRequest(normalized)
-}
-
-interface OutputEntry {
-  fileName: string
-  output: OutputAsset | OutputChunk
-}
-
-function readOutputEntry(entry: OutputEntry): string | undefined {
-  if (entry.output.type === 'chunk') {
-    return entry.output.code
-  }
-  const source = entry.output.source
-  if (typeof source === 'string') {
-    return source
-  }
-  if (source instanceof Uint8Array) {
-    return Buffer.from(source).toString()
-  }
-  const fallbackSource = source as unknown
-  if (fallbackSource == null) {
-    return undefined
-  }
-  if (typeof (fallbackSource as { toString?: unknown }).toString === 'function') {
-    return (fallbackSource as { toString: () => string }).toString()
-  }
-  return undefined
-}
-
-function isJavaScriptEntry(entry: OutputEntry): boolean {
-  if (entry.output.type === 'chunk') {
-    return true
-  }
-  return entry.fileName.endsWith('.js')
-}
-
-function createBundleModuleGraphOptions(
-  outputDir: string,
-  entries: Map<string, OutputEntry>,
-) {
-  return {
-    resolve(specifier: string, importer: string) {
-      return resolveOutputSpecifier(specifier, importer, outputDir, candidate => entries.has(candidate))
-    },
-    load(id: string) {
-      const entry = entries.get(id)
-      if (!entry) {
-        return undefined
-      }
-      return readOutputEntry(entry)
-    },
-    filter(id: string) {
-      return entries.has(id)
-    },
-  }
-}
-
-function applyLinkedResults(
-  linked: Record<string, LinkedJsModuleResult> | undefined,
-  entries: Map<string, OutputEntry>,
-  onLinkedUpdate: (fileName: string, previous: string, next: string) => void,
-  onApplied?: (entry: OutputEntry, code: string) => void,
-) {
-  if (!linked) {
-    return
-  }
-
-  for (const [id, { code }] of Object.entries(linked)) {
-    const entry = entries.get(id)
-    if (!entry) {
-      continue
-    }
-    const previous = readOutputEntry(entry)
-    if (previous == null || previous === code) {
-      continue
-    }
-
-    if (entry.output.type === 'chunk') {
-      entry.output.code = code
-    }
-    else {
-      entry.output.source = code
-    }
-
-    onApplied?.(entry, code)
-    onLinkedUpdate(entry.fileName, previous, code)
-  }
-}
 
 /**
  * @name UnifiedViteWeappTailwindcssPlugin
@@ -137,16 +31,11 @@ export function UnifiedViteWeappTailwindcssPlugin(options: UserDefinedOptions = 
   const {
     disabled,
     customAttributes,
-    onEnd,
     onLoad,
-    onStart,
-    onUpdate,
-    templateHandler,
-    styleHandler,
-    jsHandler,
     mainCssChunkMatcher,
     appType,
-    cache,
+    styleHandler,
+    jsHandler,
     twPatcher: initialTwPatcher,
     refreshTailwindcssPatcher,
     uniAppX,
@@ -158,49 +47,11 @@ export function UnifiedViteWeappTailwindcssPlugin(options: UserDefinedOptions = 
   const shouldRewriteCssImports = opts.rewriteCssImports !== false
     && !disabledOptions.rewriteCssImports
     && (rewriteCssImportsSpecified || tailwindcssMajorVersion >= 4)
-  const rewritePlugins: Plugin[] = !shouldRewriteCssImports
-    ? []
-    : [
-        {
-          name: `${vitePluginName}:rewrite-css-imports`,
-          enforce: 'pre',
-          resolveId: {
-            order: 'pre',
-            handler(id, importer) {
-              const replacement = resolveTailwindcssImport(id, weappTailwindcssDirPosix, {
-                join: joinPosixPath,
-                appType,
-              })
-              if (!replacement) {
-                return null
-              }
-              if (importer && !isCssLikeImporter(importer)) {
-                return null
-              }
-              return replacement
-            },
-          },
-          transform: {
-            order: 'pre',
-            handler(code, id) {
-              if (!isCSSRequest(id)) {
-                return null
-              }
-              const rewritten = rewriteTailwindcssImportsInCode(code, weappTailwindcssDirPosix, {
-                join: joinPosixPath,
-                appType,
-              })
-              if (!rewritten) {
-                return null
-              }
-              return {
-                code: rewritten,
-                map: null,
-              }
-            },
-          },
-        },
-      ]
+  const rewritePlugins = createRewriteCssImportsPlugins({
+    appType,
+    shouldRewrite: shouldRewriteCssImports,
+    weappTailwindcssDirPosix,
+  })
 
   if (disabledOptions.plugin) {
     return rewritePlugins.length ? rewritePlugins : undefined
@@ -293,182 +144,13 @@ export function UnifiedViteWeappTailwindcssPlugin(options: UserDefinedOptions = 
           }
         }
       },
-      async generateBundle(_opt, bundle) {
-        await runtimeState.patchPromise
-        debug('start')
-        onStart()
-
-        const entries = Object.entries(bundle)
-        const rootDir = resolvedConfig?.root ? path.resolve(resolvedConfig.root) : process.cwd()
-        const outDir = resolvedConfig?.build?.outDir
-          ? path.resolve(rootDir, resolvedConfig.build.outDir)
-          : rootDir
-        const jsEntries = new Map<string, OutputEntry>()
-        for (const [fileName, output] of entries) {
-          const entry: OutputEntry = { fileName, output }
-          if (isJavaScriptEntry(entry)) {
-            const absolute = toAbsoluteOutputPath(fileName, outDir)
-            jsEntries.set(absolute, entry)
-          }
-        }
-        const moduleGraphOptions = createBundleModuleGraphOptions(outDir, jsEntries)
-        const groupedEntries = getGroupedEntries(entries, opts)
-        const runtime = await ensureRuntimeClassSet(true)
-        debug('get runtimeSet, class count: %d', runtime.size)
-        const handleLinkedUpdate = (fileName: string, previous: string, next: string) => {
-          onUpdate(fileName, previous, next)
-          debug('js linked handle: %s', fileName)
-        }
-        const pendingLinkedUpdates: Array<() => void> = []
-        const scheduleLinkedApply = (entry: OutputEntry, code: string) => {
-          pendingLinkedUpdates.push(() => {
-            if (entry.output.type === 'chunk') {
-              entry.output.code = code
-            }
-            else {
-              entry.output.source = code
-            }
-          })
-        }
-        const applyLinkedUpdates = (linked?: Record<string, LinkedJsModuleResult>) => {
-          applyLinkedResults(linked, jsEntries, handleLinkedUpdate, scheduleLinkedApply)
-        }
-        const createHandlerOptions = (absoluteFilename: string, extra?: CreateJsHandlerOptions): CreateJsHandlerOptions => ({
-          ...extra,
-          filename: absoluteFilename,
-          moduleGraph: moduleGraphOptions,
-          babelParserOptions: {
-            ...(extra?.babelParserOptions ?? {}),
-            sourceFilename: absoluteFilename,
-          },
-        })
-        const tasks: Promise<void>[] = []
-        if (Array.isArray(groupedEntries.html)) {
-          for (const [file, originalSource] of groupedEntries.html as [string, OutputAsset][]) {
-            const rawSource = originalSource.source.toString()
-            tasks.push(
-              processCachedTask<string>({
-                cache,
-                cacheKey: file,
-                rawSource,
-                applyResult(source) {
-                  originalSource.source = source
-                },
-                onCacheHit() {
-                  debug('html cache hit: %s', file)
-                },
-                async transform() {
-                  const transformed = await templateHandler(rawSource, {
-                    runtimeSet: runtime,
-                  })
-                  onUpdate(file, rawSource, transformed)
-                  debug('html handle: %s', file)
-                  return {
-                    result: transformed,
-                  }
-                },
-              }),
-            )
-          }
-        }
-
-        const jsTaskFactories: Array<() => Promise<void>> = []
-
-        if (Array.isArray(groupedEntries.js)) {
-          for (const [file, originalSource] of groupedEntries.js as [string, OutputAsset | OutputChunk][]) {
-            if (originalSource.type === 'chunk') {
-              const absoluteFile = toAbsoluteOutputPath(file, outDir)
-              const initialRawSource = originalSource.code
-              jsTaskFactories.push(async () => {
-                await processCachedTask<string>({
-                  cache,
-                  cacheKey: file,
-                  rawSource: initialRawSource,
-                  applyResult(source) {
-                    originalSource.code = source
-                  },
-                  onCacheHit() {
-                    debug('js cache hit: %s', file)
-                  },
-                  async transform() {
-                    const rawSource = originalSource.code
-                    const { code, linked } = await jsHandler(rawSource, runtime, createHandlerOptions(absoluteFile))
-                    onUpdate(file, rawSource, code)
-                    debug('js handle: %s', file)
-                    applyLinkedUpdates(linked)
-                    return {
-                      result: code,
-                    }
-                  },
-                })
-              })
-            }
-            else if (uniAppX && originalSource.type === 'asset') {
-              jsTaskFactories.push(
-                createUniAppXAssetTask(
-                  file,
-                  originalSource,
-                  outDir,
-                  {
-                    cache,
-                    createHandlerOptions,
-                    debug,
-                    jsHandler,
-                    onUpdate,
-                    runtimeSet: runtime,
-                    applyLinkedResults: applyLinkedUpdates,
-                    uniAppX,
-                  },
-                ),
-              )
-            }
-          }
-        }
-
-        if (Array.isArray(groupedEntries.css)) {
-          for (const [file, originalSource] of groupedEntries.css as [string, OutputAsset][]) {
-            const rawSource = originalSource.source.toString()
-            tasks.push(
-              processCachedTask<string>({
-                cache,
-                cacheKey: file,
-                rawSource,
-                applyResult(source) {
-                  originalSource.source = source
-                },
-                onCacheHit() {
-                  debug('css cache hit: %s', file)
-                },
-                async transform() {
-                  await runtimeState.patchPromise
-                  const { css } = await styleHandler(rawSource, {
-                    isMainChunk: mainCssChunkMatcher(originalSource.fileName, appType),
-                    postcssOptions: {
-                      options: {
-                        from: file,
-                      },
-                    },
-                    majorVersion: runtimeState.twPatcher.majorVersion,
-                  })
-                  onUpdate(file, rawSource, css)
-                  debug('css handle: %s', file)
-                  return {
-                    result: css,
-                  }
-                },
-              }),
-            )
-          }
-        }
-        pushConcurrentTaskFactories(tasks, jsTaskFactories)
-
-        await Promise.all(tasks)
-        for (const apply of pendingLinkedUpdates) {
-          apply()
-        }
-        onEnd()
-        debug('end')
-      },
+      generateBundle: createGenerateBundleHook({
+        opts,
+        runtimeState,
+        ensureRuntimeClassSet,
+        debug,
+        getResolvedConfig,
+      }),
     },
   ]
   if (uniAppXPlugins) {
