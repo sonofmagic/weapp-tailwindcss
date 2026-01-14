@@ -50,6 +50,25 @@ declare module '../typedoc.export' {
     jsPreserveClass?: (keyword: string) => boolean | undefined
 
     /**
+     * 是否替换运行时依赖包名。
+     *
+     * @group 3.一般配置
+     * @remarks
+     * 适用于运行时包名需要重定向的场景，例如：
+     * - 小程序侧无法直接安装 `tailwind-merge`/`class-variance-authority`/`tailwind-variants`，需要替换为内置的 weapp 版本。
+     * - 企业内私有镜像/多包发布导致运行时包名不同，希望在转换后统一到目标包名。
+     * 传入 `true` 使用内置替换表，或传入对象自定义映射。
+     * @example
+     * ```ts
+     * replaceRuntimePackages: {
+     *   'tailwind-merge': '@weapp-tailwindcss/merge',
+     *   'class-variance-authority': '@weapp-tailwindcss/cva',
+     * }
+     * ```
+     */
+    replaceRuntimePackages?: boolean | Record<string, string>
+
+    /**
      * 禁用默认的 `wxml` 模板替换器。
      *
      * @group 3.一般配置
