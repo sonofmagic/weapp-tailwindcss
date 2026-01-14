@@ -94,7 +94,7 @@ catalogs:
     babel-preset-taro: ^4.1.9
     eslint-config-taro: ^4.1.9
   typesNode2410:
-    '@types/node': ^24.10.7
+    '@types/node': ^24.10.8
   typescript59:
     typescript: ^5.9.3
   typescript59tilde:
@@ -118,9 +118,9 @@ catalogs:
   weappIdeCli:
     weapp-ide-cli: ^4.1.2
   weappVite:
-    weapp-vite: ^6.1.7
+    weapp-vite: ^6.1.9
   wrangler4530:
-    wrangler: ^4.58.0
+    wrangler: ^4.59.1
 
 onlyBuiltDependencies:
   - '@tailwindcss/oxide'
