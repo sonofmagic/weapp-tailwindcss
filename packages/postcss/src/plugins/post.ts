@@ -1,5 +1,5 @@
 // 后处理阶段插件：负责选择器兜底、声明去重与变量排序
-import type { Declaration, Plugin, PluginCreator, Rule } from 'postcss'
+import type { Plugin, PluginCreator } from 'postcss'
 import type { IStyleHandlerOptions } from '../types'
 import { defu } from '@weapp-tailwindcss/shared'
 import { normalizeTailwindcssRpxDeclaration } from '../compat/tailwindcss-rpx'
@@ -7,267 +7,13 @@ import { normalizeTailwindcssV4Declaration } from '../compat/tailwindcss-v4'
 import { shouldRemoveEmptyRuleForUniAppX } from '../compat/uni-app-x'
 import { postcssPlugin } from '../constants'
 import { getFallbackRemove } from '../selectorParser'
-import { reorderLiteralFirst } from '../utils/decl-order'
-
-// normalizeSelectorList 将 root/universal 替换配置规范化为数组
-function normalizeSelectorList(value?: string | string[] | false) {
-  if (value === undefined || value === false) {
-    return []
-  }
-  return Array.isArray(value) ? value.filter(Boolean) : [value]
-}
-
-// 读取 preset-env 设置的 specificityMatchingName，供后续清理使用
-function getSpecificityMatchingName(options: IStyleHandlerOptions) {
-  const feature = options.cssPresetEnv?.features?.['is-pseudo-class']
-  if (feature && typeof feature === 'object' && 'specificityMatchingName' in feature) {
-    const specificityName = (feature as { specificityMatchingName?: string }).specificityMatchingName
-    return typeof specificityName === 'string' && specificityName.length > 0 ? specificityName : undefined
-  }
-  return undefined
-}
-
-// createRootSpecificityCleaner 用于删除 root 选择器上多余的 :not() 包裹
-function createRootSpecificityCleaner(options: IStyleHandlerOptions) {
-  const specificityMatchingName = getSpecificityMatchingName(options)
-  const selectors = normalizeSelectorList(options.cssSelectorReplacement?.root)
-
-  if (!specificityMatchingName || selectors.length === 0) {
-    return undefined
-  }
-
-  const suffix = `:not(.${specificityMatchingName})`
-  const targets = selectors
-    .map(selector => selector?.trim())
-    .filter((selector): selector is string => Boolean(selector?.length))
-    .map(selector => ({
-      match: `${selector}${suffix}`,
-      spacedMatch: `${selector} ${suffix}`,
-      replacement: selector,
-    }))
-
-  if (!targets.length) {
-    return undefined
-  }
-
-  return (rule: Rule) => {
-    if (!rule.selectors || rule.selectors.length === 0) {
-      return
-    }
-
-    const next = rule.selectors.map((selector) => {
-      let updated = selector
-      for (const target of targets) {
-        if (updated.includes(target.match)) {
-          updated = updated.split(target.match).join(target.replacement)
-        }
-        if (updated.includes(target.spacedMatch)) {
-          updated = updated.split(target.spacedMatch).join(target.replacement)
-        }
-      }
-      return updated
-    })
-
-    rule.selectors = next
-  }
-}
+import { dedupeDeclarations } from './post/decl-dedupe'
+import { createRootSpecificityCleaner } from './post/specificity-cleaner'
 // 可选依赖：import valueParser from 'postcss-value-parser'
 
 export type PostcssWeappTailwindcssRenamePlugin = PluginCreator<IStyleHandlerOptions>
 
-const logicalPropMap = new Map<string, string>([
-  // margin 方向映射
-  ['margin-inline-start', 'margin-left'],
-  ['margin-inline-end', 'margin-right'],
-  ['margin-block-start', 'margin-top'],
-  ['margin-block-end', 'margin-bottom'],
-  // padding 方向映射
-  ['padding-inline-start', 'padding-left'],
-  ['padding-inline-end', 'padding-right'],
-  ['padding-block-start', 'padding-top'],
-  ['padding-block-end', 'padding-bottom'],
-  // border 方向映射
-  ['border-inline-start', 'border-left'],
-  ['border-inline-end', 'border-right'],
-  ['border-block-start', 'border-top'],
-  ['border-block-end', 'border-bottom'],
-  ['border-inline-start-width', 'border-left-width'],
-  ['border-inline-end-width', 'border-right-width'],
-])
-
-const variablePriorityProps = new Set([
-  'margin-left',
-  'margin-right',
-  'margin-top',
-  'margin-bottom',
-  'border-left-width',
-  'border-right-width',
-  'border-top-width',
-  'border-bottom-width',
-])
-
-function getCanonicalProp(prop: string) {
-  return logicalPropMap.get(prop) ?? prop
-}
-
-// normalizeCalcValue 消除嵌套 calc 带来的冗余括号，兼容小程序解析器
-function normalizeCalcValue(value: string) {
-  if (!value.includes('calc')) {
-    return value
-  }
-
-  let next = value
-  let prev: string
-
-  do {
-    prev = next
-    next = prev.replace(/calc\(\s*calc\(/gi, 'calc((')
-  } while (next !== prev)
-
-  return next.replace(/calc\(\s*(1\s*-\s*var\([^()]+\))\s*\)/gi, '($1)')
-}
-
-interface DedupeEntry {
-  decl: Declaration
-  normalizedValue: string
-  canonicalProp: string
-  importantKey: string
-  isLogical: boolean
-}
-
-function hasVariableReference(value: string) {
-  return value.includes('var(')
-}
-
-// reorderVariableDeclarations 确保普通声明在变量声明之前，避免被变量覆盖
-export function reorderVariableDeclarations(rule: Rule) {
-  const groupedByProp = new Map<string, Declaration[]>()
-
-  for (const node of rule.nodes) {
-    if (node.type !== 'decl') {
-      continue
-    }
-    if (node.prop.startsWith('--')) {
-      continue
-    }
-    const existing = groupedByProp.get(node.prop)
-    if (existing) {
-      existing.push(node)
-    }
-    else {
-      groupedByProp.set(node.prop, [node])
-    }
-  }
-
-  for (const declarations of groupedByProp.values()) {
-    reorderLiteralFirst(
-      rule,
-      declarations,
-      decl => hasVariableReference(decl.value),
-    )
-  }
-}
-
-// dedupeDeclarations 去除逻辑属性与变量重复定义，保留最优组合
-function dedupeDeclarations(rule: Rule) {
-  const entries: DedupeEntry[] = []
-
-  for (const node of [...rule.nodes]) {
-    if (node.type !== 'decl') {
-      continue
-    }
-    const decl = node
-    const normalizedValue = normalizeCalcValue(decl.value)
-    if (normalizedValue !== decl.value) {
-      decl.value = normalizedValue
-    }
-    const canonicalProp = getCanonicalProp(decl.prop)
-    entries.push({
-      decl,
-      normalizedValue,
-      canonicalProp,
-      importantKey: decl.important ? '!important' : '',
-      isLogical: canonicalProp !== decl.prop,
-    })
-  }
-
-  const seen = new Map<string, DedupeEntry>()
-
-  for (const entry of entries) {
-    const key = `${entry.canonicalProp}${entry.importantKey}@@${entry.normalizedValue}`
-    const existing = seen.get(key)
-    if (!existing) {
-      seen.set(key, entry)
-      continue
-    }
-
-    if (existing.isLogical && !entry.isLogical) {
-      existing.decl.remove()
-      seen.set(key, entry)
-    }
-    else {
-      entry.decl.remove()
-    }
-  }
-
-  const reorderGroups = new Map<string, Declaration[]>()
-
-  for (const node of rule.nodes) {
-    if (node.type !== 'decl') {
-      continue
-    }
-    const canonical = getCanonicalProp(node.prop)
-    if (!variablePriorityProps.has(canonical)) {
-      continue
-    }
-    const existing = reorderGroups.get(canonical)
-    if (existing) {
-      existing.push(node)
-    }
-    else {
-      reorderGroups.set(canonical, [node])
-    }
-  }
-
-  for (const declarations of reorderGroups.values()) {
-    if (declarations.length <= 1) {
-      continue
-    }
-
-    reorderLiteralFirst(
-      rule,
-      declarations,
-      decl => hasVariableReference(decl.value),
-    )
-  }
-
-  const literalSeen = new Map<string, Declaration>()
-
-  for (const node of [...rule.nodes]) {
-    if (node.type !== 'decl') {
-      continue
-    }
-
-    const canonical = getCanonicalProp(node.prop)
-    if (!variablePriorityProps.has(canonical)) {
-      continue
-    }
-
-    if (hasVariableReference(node.value)) {
-      continue
-    }
-
-    const existing = literalSeen.get(canonical)
-    if (existing) {
-      node.remove()
-    }
-    else {
-      literalSeen.set(canonical, node)
-    }
-  }
-
-  // reorderVariableDeclarations(rule)
-}
+export { reorderVariableDeclarations } from './post/decl-dedupe'
 
 // 后处理插件收敛所有规则，在退出阶段执行去重与兜底
 const postcssWeappTailwindcssPostPlugin: PostcssWeappTailwindcssRenamePlugin = (
@@ -308,7 +54,12 @@ const postcssWeappTailwindcssPostPlugin: PostcssWeappTailwindcssRenamePlugin = (
 
   if (enableMainChunkTransforms) {
     p.DeclarationExit = (decl) => {
-      normalizeTailwindcssRpxDeclaration(decl, { majorVersion: opts.majorVersion })
+      if (opts.majorVersion === undefined) {
+        normalizeTailwindcssRpxDeclaration(decl)
+      }
+      else {
+        normalizeTailwindcssRpxDeclaration(decl, { majorVersion: opts.majorVersion })
+      }
       normalizeTailwindcssV4Declaration(decl)
     }
 

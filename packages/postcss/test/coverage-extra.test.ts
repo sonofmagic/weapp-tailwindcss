@@ -233,6 +233,12 @@ describe('selector parser coverage', () => {
     expect(rule.selector).toBe('')
   })
 
+  it('fallback transformSync handles string input', () => {
+    const fallback = getFallbackRemove(undefined, {})
+    const result = fallback.transformSync('a :where(.b)')
+    expect(result).toBeUndefined()
+  })
+
   it('rule transformer normalizes spacing and hover removals', () => {
     const options = {
       cssSelectorReplacement: { universal: ['view'], root: ['page'] },
