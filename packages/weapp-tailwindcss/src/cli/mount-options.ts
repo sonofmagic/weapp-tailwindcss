@@ -1,5 +1,4 @@
 import type {
-  PatchStatusReport,
   TailwindcssPatchCliMountOptions,
   TailwindcssPatchCommand,
   TailwindcssPatchCommandHandler,
@@ -13,6 +12,7 @@ import {
   resolvePatchDefaultCwd,
   toBoolean,
 } from './helpers'
+import { logPatchStatusReport } from './mount-options/patch-status'
 import { buildExtendLengthUnitsOverride } from './patch-options'
 import { patchWorkspace } from './workspace'
 
@@ -52,49 +52,6 @@ async function createPatcherWithDefaultExtendLengthUnits<TCommand extends Tailwi
     return ctx.createPatcher(extendLengthUnitsOverride)
   }
   return ctx.createPatcher()
-}
-
-function formatStatusFilesHint(files?: string[]) {
-  if (!files?.length) {
-    return ''
-  }
-  return ` (${files.join(', ')})`
-}
-
-function logPatchStatusReport(report: PatchStatusReport) {
-  const applied = report.entries.filter(entry => entry.status === 'applied')
-  const pending = report.entries.filter(entry => entry.status === 'not-applied')
-  const skipped = report.entries.filter(
-    entry => entry.status === 'skipped' || entry.status === 'unsupported',
-  )
-  const packageLabel = `${report.package.name ?? 'tailwindcss'}@${report.package.version ?? 'unknown'}`
-  logger.info(`Patch status for ${packageLabel} (v${report.majorVersion})`)
-
-  if (applied.length) {
-    logger.success('Applied:')
-    applied.forEach((entry) => {
-      logger.success(`  - ${entry.name}${formatStatusFilesHint(entry.files)}`)
-    })
-  }
-
-  if (pending.length) {
-    logger.warn('Needs attention:')
-    pending.forEach((entry) => {
-      const details = entry.reason ? ` - ${entry.reason}` : ''
-      logger.warn(`  - ${entry.name}${formatStatusFilesHint(entry.files)}${details}`)
-    })
-  }
-  else {
-    logger.success('All applicable patches are applied.')
-  }
-
-  if (skipped.length) {
-    logger.info('Skipped:')
-    skipped.forEach((entry) => {
-      const details = entry.reason ? ` - ${entry.reason}` : ''
-      logger.info(`  - ${entry.name}${details}`)
-    })
-  }
 }
 
 export const mountOptions: TailwindcssPatchCliMountOptions = {

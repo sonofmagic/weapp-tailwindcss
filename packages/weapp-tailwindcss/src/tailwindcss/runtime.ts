@@ -1,59 +1,25 @@
 import type { RefreshTailwindcssPatcherOptions, TailwindcssPatcherLike } from '@/types'
-import { statSync } from 'node:fs'
 import { createDebug } from '@/debug'
+import {
+  getRuntimeClassSetCacheEntry,
+  getRuntimeClassSetSignature,
+  invalidateRuntimeClassSet,
+} from './runtime/cache'
 
 const debug = createDebug('[tailwindcss:runtime] ')
 
 export const refreshTailwindcssPatcherSymbol = Symbol.for('weapp-tailwindcss.refreshTailwindcssPatcher')
-
-interface RuntimeClassSetCacheEntry {
-  value?: Set<string>
-  promise?: Promise<Set<string>>
-  signature?: string
-}
-
-const runtimeClassSetCache = new WeakMap<TailwindcssPatcherLike, RuntimeClassSetCacheEntry>()
 
 export interface CollectRuntimeClassSetOptions {
   force?: boolean
   skipRefresh?: boolean
 }
 
-function getCacheEntry(twPatcher: TailwindcssPatcherLike) {
-  let entry = runtimeClassSetCache.get(twPatcher)
-  if (!entry) {
-    entry = {}
-    runtimeClassSetCache.set(twPatcher, entry)
-  }
-  return entry
-}
-
-function getTailwindConfigSignature(twPatcher: TailwindcssPatcherLike): string | undefined {
-  const configPath = twPatcher.options?.tailwind?.config
-  if (typeof configPath !== 'string' || configPath.length === 0) {
-    return undefined
-  }
-  try {
-    const stats = statSync(configPath)
-    return `${configPath}:${stats.size}:${stats.mtimeMs}`
-  }
-  catch {
-    return `${configPath}:missing`
-  }
-}
-
-export function invalidateRuntimeClassSet(twPatcher?: TailwindcssPatcherLike) {
-  if (!twPatcher) {
-    return
-  }
-  runtimeClassSetCache.delete(twPatcher)
-}
-
 export function createTailwindPatchPromise(
   twPatcher: TailwindcssPatcherLike,
   onPatched?: () => Promise<void> | void,
-): Promise<unknown> {
-  return Promise.resolve(twPatcher.patch()).then(async (result) => {
+): Promise<void> {
+  return Promise.resolve(twPatcher.patch()).then(async () => {
     invalidateRuntimeClassSet(twPatcher)
     if (onPatched) {
       try {
@@ -63,13 +29,12 @@ export function createTailwindPatchPromise(
         debug('failed to persist patch target after patch(): %O', error)
       }
     }
-    return result
   })
 }
 
 export interface TailwindRuntimeState {
   twPatcher: TailwindcssPatcherLike
-  patchPromise: Promise<unknown>
+  patchPromise: Promise<void>
   refreshTailwindcssPatcher?: (options?: RefreshTailwindcssPatcherOptions) => Promise<TailwindcssPatcherLike>
   onPatchCompleted?: () => Promise<void> | void
 }
@@ -166,8 +131,8 @@ async function collectRuntimeClassSet(
     }
   }
 
-  const entry = getCacheEntry(activePatcher)
-  const signature = getTailwindConfigSignature(activePatcher)
+  const entry = getRuntimeClassSetCacheEntry(activePatcher)
+  const signature = getRuntimeClassSetSignature(activePatcher)
 
   if (!options.force) {
     if (entry.value && entry.signature === signature) {
@@ -226,4 +191,4 @@ async function collectRuntimeClassSet(
   }
 }
 
-export { collectRuntimeClassSet }
+export { collectRuntimeClassSet, invalidateRuntimeClassSet }

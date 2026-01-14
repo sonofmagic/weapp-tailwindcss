@@ -14,7 +14,7 @@ interface SetupPatchRecorderOptions extends PatchTargetRecorderOptions {
 
 export interface PatchRecorderState {
   recorder?: PatchTargetRecorder
-  patchPromise: Promise<unknown>
+  patchPromise: Promise<void>
   onPatchCompleted?: () => Promise<void> | void
 }
 

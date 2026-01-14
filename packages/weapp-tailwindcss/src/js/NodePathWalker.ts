@@ -7,9 +7,6 @@ import type {
   ExportDeclaration,
   ExportDefaultDeclaration,
   ExportNamedDeclaration,
-  ImportDeclaration,
-  ImportDefaultSpecifier,
-  ImportSpecifier,
   LogicalExpression,
   Node,
   ObjectExpression,
@@ -18,33 +15,18 @@ import type {
   TemplateLiteral,
   VariableDeclarator,
 } from '@babel/types'
+import type { ImportToken } from './node-path-walker/import-tokens'
 import type { NameMatcher } from '@/utils/nameMatcher'
 import { createNameMatcher } from '@/utils/nameMatcher'
+import {
+  walkExportAllDeclaration,
+  walkExportDeclaration,
+  walkExportDefaultDeclaration,
+  walkExportNamedDeclaration,
+} from './node-path-walker/export-handlers'
+import { maybeAddImportToken } from './node-path-walker/import-tokens'
 
-export interface ImportSpecifierImportToken {
-  declaration: NodePath<ImportDeclaration>
-  specifier: NodePath<ImportSpecifier>
-  local: string
-  imported: string
-  source: string
-  type: 'ImportSpecifier'
-}
-
-export interface ImportDefaultSpecifierImportToken {
-  declaration: NodePath<ImportDeclaration>
-  specifier: NodePath<ImportDefaultSpecifier>
-  local: string
-  source: string
-  type: 'ImportDefaultSpecifier'
-}
-
-export interface ExportAllDeclarationImportToken {
-  declaration: NodePath<ExportAllDeclaration>
-  source: string
-  type: 'ExportAllDeclaration'
-}
-
-export type ImportToken = ImportSpecifierImportToken | ImportDefaultSpecifierImportToken | ExportAllDeclarationImportToken
+export type { ImportToken } from './node-path-walker/import-tokens'
 
 /**
  * 遍历我们关注的调用表达式所关联的绑定，收集后续需要转换的字符串节点。
@@ -166,39 +148,8 @@ export class NodePathWalker {
     else if (arg.isVariableDeclarator()) {
       this.walkVariableDeclarator(arg)
     }
-    else if (
-      (arg.isImportSpecifier() && arg.node.importKind !== 'type')
-      || arg.isImportDefaultSpecifier()
-    ) {
-      const importDeclaration = arg.parentPath
-      if (importDeclaration.isImportDeclaration() && importDeclaration.node.importKind !== 'type') {
-        if (arg.isImportSpecifier()) {
-          const imported = arg.get('imported')
-          if (imported.isIdentifier()) {
-            this.imports.add(
-              {
-                declaration: importDeclaration,
-                specifier: arg,
-                imported: imported.node.name,
-                local: arg.node.local.name,
-                source: importDeclaration.node.source.value,
-                type: 'ImportSpecifier',
-              } satisfies ImportSpecifierImportToken,
-            )
-          }
-        }
-        else if (arg.isImportDefaultSpecifier()) {
-          this.imports.add(
-            {
-              declaration: importDeclaration,
-              specifier: arg,
-              local: arg.node.local.name,
-              source: importDeclaration.node.source.value,
-              type: 'ImportDefaultSpecifier',
-            } satisfies ImportDefaultSpecifierImportToken,
-          )
-        }
-      }
+    else if (maybeAddImportToken(this.imports, arg)) {
+      // Token is recorded via helper; nothing else to traverse.
     }
   }
 
@@ -218,58 +169,18 @@ export class NodePathWalker {
   }
 
   walkExportDeclaration(path: NodePath<ExportDeclaration>) {
-    if (path.isExportDeclaration()) {
-      if (path.isExportNamedDeclaration()) {
-        this.walkExportNamedDeclaration(path)
-      }
-      else if (path.isExportDefaultDeclaration()) {
-        this.walkExportDefaultDeclaration(path)
-      }
-      else if (path.isExportAllDeclaration()) {
-        this.walkExportAllDeclaration(path)
-      }
-    }
+    walkExportDeclaration(this, path)
   }
 
   walkExportNamedDeclaration(path: NodePath<ExportNamedDeclaration>) {
-    const declaration = path.get('declaration')
-    if (declaration.isVariableDeclaration()) {
-      for (const decl of declaration.get('declarations')) {
-        this.walkNode(decl)
-      }
-    }
-    const specifiers = path.get('specifiers')
-    for (const spec of specifiers) {
-      if (spec.isExportSpecifier()) {
-        const local = spec.get('local')
-        if (local.isIdentifier()) {
-          this.walkNode(local)
-        }
-      }
-    }
+    walkExportNamedDeclaration(this, path)
   }
 
   walkExportDefaultDeclaration(path: NodePath<ExportDefaultDeclaration>) {
-    const decl = path.get('declaration')
-    if (decl.isIdentifier()) {
-      this.walkNode(decl)
-    }
-    else {
-      this.walkNode(decl as unknown as NodePath<Node | null | undefined>)
-    }
+    walkExportDefaultDeclaration(this, path)
   }
 
   walkExportAllDeclaration(path: NodePath<ExportAllDeclaration>) {
-    const source = path.get('source')
-    if (source.isStringLiteral()) {
-      // Capture re-export paths so that the caller can decide how to process them.
-      this.imports.add(
-        {
-          declaration: path,
-          source: source.node.value,
-          type: 'ExportAllDeclaration',
-        } satisfies ExportAllDeclarationImportToken,
-      )
-    }
+    walkExportAllDeclaration(this, path)
   }
 }

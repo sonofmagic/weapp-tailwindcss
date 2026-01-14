@@ -1,70 +1,28 @@
-import type { PackageResolvingOptions } from 'local-pkg'
 import type { ILengthUnitsPatchOptions, TailwindcssPatchOptions } from 'tailwindcss-patch'
+import type { LegacyTailwindcssPatcherOptions } from './patcher-options'
 import type { TailwindcssPatcherLike } from '@/types'
-import { existsSync } from 'node:fs'
-import { createRequire } from 'node:module'
 import path from 'node:path'
 import process from 'node:process'
-import { fileURLToPath } from 'node:url'
 import { logger } from '@weapp-tailwindcss/logger'
 import { defuOverrideArray } from '@weapp-tailwindcss/shared'
 import { TailwindcssPatcher } from 'tailwindcss-patch'
 import { findNearestPackageRoot } from '@/context/workspace'
+import {
+
+  normalizeExtendLengthUnits,
+  normalizeTailwindcssPatcherOptions,
+} from './patcher-options'
+import {
+  createDefaultResolvePaths,
+  findTailwindConfig,
+  resolveModuleFromPaths,
+  resolveTailwindConfigFallback,
+} from './patcher-resolve'
 
 type TailwindcssExtractOptions = Parameters<TailwindcssPatcher['extract']>[0]
 type TailwindcssExtractResult = ReturnType<TailwindcssPatcher['extract']>
 type TailwindUserOptions = NonNullable<TailwindcssPatchOptions['tailwind']>
 type TailwindCacheOptions = Exclude<NonNullable<TailwindcssPatchOptions['cache']>, boolean>
-type TailwindFeaturesOptions = NonNullable<TailwindcssPatchOptions['features']>
-type TailwindExtendLengthUnitsOption = TailwindFeaturesOptions['extendLengthUnits']
-const GENERIC_RELATIVE_SPECIFIERS = ['.', '..']
-const DEFAULT_TAILWIND_CONFIG_SPECIFIERS = [
-  'stubs/config.full.js',
-  'defaultConfig.js',
-]
-
-function isPathSpecifier(specifier: string) {
-  if (!specifier) {
-    return false
-  }
-  if (specifier.startsWith('file://')) {
-    return true
-  }
-  if (path.isAbsolute(specifier)) {
-    return true
-  }
-  return GENERIC_RELATIVE_SPECIFIERS.some(prefix => specifier.startsWith(`${prefix}/`) || specifier.startsWith(`${prefix}\\`))
-}
-
-function resolveModuleFromPaths(specifier: string | undefined, paths: string[]) {
-  if (!specifier || isPathSpecifier(specifier) || paths.length === 0) {
-    return undefined
-  }
-  try {
-    const req = createRequire(import.meta.url)
-    return req.resolve(specifier, { paths })
-  }
-  catch {
-    return undefined
-  }
-}
-
-function resolveTailwindConfigFallback(
-  packageName: string | undefined,
-  paths: string[],
-) {
-  if (!packageName) {
-    return undefined
-  }
-  for (const suffix of DEFAULT_TAILWIND_CONFIG_SPECIFIERS) {
-    const candidate = `${packageName}/${suffix}`
-    const resolved = resolveModuleFromPaths(candidate, paths)
-    if (resolved) {
-      return resolved
-    }
-  }
-  return undefined
-}
 
 export interface CreateTailwindcssPatcherOptions {
   basedir?: string
@@ -72,28 +30,6 @@ export interface CreateTailwindcssPatcherOptions {
   supportCustomLengthUnitsPatch?: boolean | ILengthUnitsPatchOptions
   tailwindcss?: TailwindUserOptions
   tailwindcssPatcherOptions?: TailwindcssPatchOptions | LegacyTailwindcssPatcherOptions
-}
-
-interface LegacyTailwindcssPatcherOptions {
-  cache?: boolean | {
-    enabled?: boolean
-    cwd?: string
-    dir?: string
-    file?: string
-    strategy?: 'merge' | 'overwrite'
-  }
-  patch?: {
-    overwrite?: boolean
-    basedir?: string
-    cwd?: string
-    filter?: (className: string) => boolean
-    resolve?: PackageResolvingOptions
-    tailwindcss?: TailwindUserOptions
-    applyPatches?: {
-      exportContext?: boolean
-      extendLengthUnits?: boolean | ILengthUnitsPatchOptions
-    }
-  }
 }
 
 function createFallbackTailwindcssPatcher(): TailwindcssPatcherLike {
@@ -135,169 +71,6 @@ function createFallbackTailwindcssPatcher(): TailwindcssPatcherLike {
 }
 
 let hasLoggedMissingTailwind = false
-
-function appendNodeModules(paths: Set<string>, dir?: string) {
-  if (!dir) {
-    return
-  }
-  const nodeModulesDir = path.join(dir, 'node_modules')
-  if (existsSync(nodeModulesDir)) {
-    paths.add(nodeModulesDir)
-  }
-}
-
-const TAILWIND_CONFIG_FILES = [
-  'tailwind.config.js',
-  'tailwind.config.cjs',
-  'tailwind.config.mjs',
-  'tailwind.config.ts',
-  'tailwind.config.cts',
-  'tailwind.config.mts',
-]
-
-function findTailwindConfig(searchRoots: Iterable<string>): string | undefined {
-  for (const root of searchRoots) {
-    for (const file of TAILWIND_CONFIG_FILES) {
-      const candidate = path.resolve(root, file)
-      if (existsSync(candidate)) {
-        return candidate
-      }
-    }
-  }
-  return undefined
-}
-
-function createDefaultResolvePaths(basedir?: string) {
-  const paths = new Set<string>()
-  let fallbackCandidates: string[] = []
-  if (basedir) {
-    const resolvedBase = path.resolve(basedir)
-    appendNodeModules(paths, resolvedBase)
-    fallbackCandidates.push(resolvedBase)
-    const packageRoot = findNearestPackageRoot(resolvedBase)
-    if (packageRoot) {
-      appendNodeModules(paths, packageRoot)
-      fallbackCandidates.push(packageRoot)
-    }
-  }
-  const cwd = process.cwd()
-  appendNodeModules(paths, cwd)
-  try {
-    const modulePath = fileURLToPath(import.meta.url)
-    const candidate = existsSync(modulePath) && !path.extname(modulePath)
-      ? modulePath
-      : path.dirname(modulePath)
-    paths.add(candidate)
-  }
-  catch {
-    // 在无法使用 fileURLToPath 的环境下退回到原始 URL
-    paths.add(import.meta.url)
-  }
-  if (paths.size === 0) {
-    fallbackCandidates = fallbackCandidates.filter(Boolean)
-    if (fallbackCandidates.length === 0) {
-      fallbackCandidates.push(cwd)
-    }
-    for (const candidate of fallbackCandidates) {
-      paths.add(candidate)
-    }
-  }
-  return [...paths]
-}
-
-function normalizeExtendLengthUnits(
-  value: boolean | ILengthUnitsPatchOptions | undefined,
-): TailwindExtendLengthUnitsOption | undefined {
-  if (value === false) {
-    return false
-  }
-  if (value === true) {
-    return { enabled: true }
-  }
-  if (value && typeof value === 'object') {
-    return {
-      enabled: true,
-      ...value,
-    }
-  }
-  return undefined
-}
-
-function normalizeTailwindcssPatcherOptions(
-  options?: TailwindcssPatchOptions | LegacyTailwindcssPatcherOptions,
-): TailwindcssPatchOptions | undefined {
-  if (!options) {
-    return undefined
-  }
-
-  if ('patch' in options) {
-    const { cache, patch } = options
-    const normalized: TailwindcssPatchOptions = {}
-
-    if (cache !== undefined) {
-      normalized.cache = cache
-    }
-
-    if (patch?.overwrite !== undefined) {
-      normalized.overwrite = patch.overwrite
-    }
-
-    if (patch?.filter) {
-      normalized.filter = patch.filter
-    }
-
-    const extendLengthUnits = normalizeExtendLengthUnits(patch?.applyPatches?.extendLengthUnits)
-    const exposeContext = patch?.applyPatches?.exportContext
-
-    if (extendLengthUnits !== undefined || exposeContext !== undefined) {
-      normalized.features = {
-        exposeContext,
-        extendLengthUnits,
-      }
-    }
-
-    const cwd = patch?.cwd ?? patch?.basedir
-    if (cwd) {
-      normalized.cwd = cwd
-    }
-
-    const tailwindOptions: TailwindUserOptions | undefined = patch?.tailwindcss
-      ? { ...patch.tailwindcss }
-      : undefined
-    const legacyResolve = patch?.resolve
-
-    let nextTailwindOptions = tailwindOptions
-    if (nextTailwindOptions?.version === 2 && !nextTailwindOptions.packageName) {
-      nextTailwindOptions = {
-        ...nextTailwindOptions,
-        packageName: '@tailwindcss/postcss7-compat',
-        postcssPlugin: nextTailwindOptions.postcssPlugin,
-      }
-      if (!nextTailwindOptions.postcssPlugin) {
-        nextTailwindOptions.postcssPlugin = '@tailwindcss/postcss7-compat'
-      }
-    }
-
-    if (nextTailwindOptions || legacyResolve) {
-      const resolveOptions = nextTailwindOptions?.resolve
-      const mergedResolve = legacyResolve || resolveOptions
-        ? {
-            ...(resolveOptions ?? {}),
-            ...(legacyResolve ?? {}),
-          }
-        : undefined
-
-      normalized.tailwind = {
-        ...(nextTailwindOptions ?? {}),
-        ...(mergedResolve ? { resolve: mergedResolve } : {}),
-      }
-    }
-
-    return normalized
-  }
-
-  return options
-}
 
 export function createTailwindcssPatcher(options?: CreateTailwindcssPatcherOptions): TailwindcssPatcherLike {
   const { basedir, cacheDir, supportCustomLengthUnitsPatch, tailwindcss, tailwindcssPatcherOptions } = options || {}

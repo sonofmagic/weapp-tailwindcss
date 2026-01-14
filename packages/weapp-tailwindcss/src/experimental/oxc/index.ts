@@ -10,182 +10,31 @@
  * Features: same subset as swcJsHandler.
  */
 import type { IJsHandlerOptions, JsHandlerResult } from '../../types'
+import type { Oxcast } from './ast-utils'
 import MagicString from 'magic-string'
 import { createNameMatcher, createToken, transformLiteralText } from '../shared'
+import {
+  getCallArguments,
+  getCallCallee,
+  getIdentifierName,
+  getTaggedTemplateTag,
+  getTemplateQuasis,
+  getTplElementRaw,
+  isCallExpression,
+  isExportAllDeclaration,
+  isImportDeclaration,
+  isStringLiteral,
+  isTaggedTemplate,
+  isTemplateLiteral,
 
-interface Oxcast {
-  [key: string]: any
-}
+  parseWithOxc,
+  sliceStringLiteralText,
+  sliceTplElementText,
+} from './ast-utils'
+import { maybePushModuleSpecifierReplacement } from './module-specifiers'
 
 const WRAP_PREFIX = '(\n'
 const WRAP_SUFFIX = '\n)'
-
-function tryRequire<T = any>(id: string): T | undefined {
-  try {
-    // eslint-disable-next-line ts/no-require-imports
-    return require(id)
-  }
-  catch {
-    return undefined
-  }
-}
-
-function parseWithOxc(code: string): Oxcast {
-  // Order: native > wasm > fallback
-  const oxcNode = tryRequire<any>('@oxc-parser/node')
-  if (oxcNode?.parseSync) {
-    return oxcNode.parseSync(code, {
-      sourceType: 'module',
-      allowReturnOutsideFunction: true,
-      allowAwaitOutsideFunction: true,
-      allowImportExportEverywhere: true,
-      babelCompat: true,
-      // collectComments: true, // if supported by the binding
-    })
-  }
-  const oxcWasm = tryRequire<any>('@oxc-parser/wasm') ?? tryRequire<any>('oxc-parser')
-  if (oxcWasm?.parseSync) {
-    return oxcWasm.parseSync(code, {
-      sourceType: 'module',
-      babelCompat: true,
-    })
-  }
-  throw new Error('No OXC parser binding found. Install @oxc-parser/node or @oxc-parser/wasm to use this POC.')
-}
-
-function getIdentifierName(node: any): string | undefined {
-  if (!node || typeof node !== 'object') {
-    return undefined
-  }
-  if (node.type === 'Identifier') {
-    return node.name
-  }
-  if (typeof node.name === 'string') {
-    return node.name
-  }
-  return undefined
-}
-
-function getSpan(node: any): { start: number, end: number } | undefined {
-  const span = node?.span
-  if (!span) {
-    return undefined
-  }
-  const start = typeof span.start === 'number' ? span.start : undefined
-  const end = typeof span.end === 'number' ? span.end : undefined
-  if (typeof start === 'number' && typeof end === 'number') {
-    return { start, end }
-  }
-  return undefined
-}
-
-function isStringLiteral(node: any): node is { type: string, value: string } {
-  return node?.type === 'StringLiteral' && typeof node?.value === 'string'
-}
-
-function isTemplateLiteral(node: any): boolean {
-  return node?.type === 'TemplateLiteral'
-}
-
-function getTemplateQuasis(node: any): any[] {
-  if (Array.isArray(node?.quasis)) {
-    return node.quasis
-  }
-  return []
-}
-
-function getTplElementRaw(elem: any): string | undefined {
-  if (typeof elem?.value?.raw === 'string') {
-    return elem.value.raw
-  }
-  if (typeof elem?.raw === 'string') {
-    return elem.raw
-  }
-  return undefined
-}
-
-function isTaggedTemplate(node: any): boolean {
-  return node?.type === 'TaggedTemplateExpression'
-}
-function getTaggedTemplateTag(node: any): any {
-  return node?.tag
-}
-function isCallExpression(node: any): boolean {
-  return node?.type === 'CallExpression'
-}
-function getCallCallee(node: any): any {
-  return node?.callee
-}
-function getCallArguments(node: any): any[] {
-  const args = node?.arguments
-  if (Array.isArray(args)) {
-    return args
-  }
-  return []
-}
-function isImportDeclaration(node: any): boolean {
-  return node?.type === 'ImportDeclaration'
-}
-function isExportAllDeclaration(node: any): boolean {
-  return node?.type === 'ExportAllDeclaration'
-}
-function getImportSourceLiteral(node: any): any | undefined {
-  const src = node?.source
-  if (src && typeof src === 'object') {
-    return src
-  }
-  return undefined
-}
-
-function sliceStringLiteralText(code: string, node: any): { start: number, end: number, text: string } | undefined {
-  const span = getSpan(node)
-  if (!span) {
-    return undefined
-  }
-  const start = span.start + 1
-  const end = span.end - 1
-  if (start >= end) {
-    return undefined
-  }
-  const text = code.slice(start, end)
-  return { start, end, text }
-}
-function sliceTplElementText(code: string, elem: any): { start: number, end: number, text: string } | undefined {
-  const span = getSpan(elem)
-  if (!span) {
-    return undefined
-  }
-  const { start, end } = span
-  if (start >= end) {
-    return undefined
-  }
-  const text = code.slice(start, end)
-  return { start, end, text }
-}
-
-function maybePushModuleSpecifierReplacement(
-  tokens: ReturnType<typeof createToken>[],
-  code: string,
-  nodeWithSource: any,
-  replacements: Record<string, string> | undefined,
-) {
-  if (!replacements) {
-    return
-  }
-  const src = getImportSourceLiteral(nodeWithSource)
-  if (!src || !isStringLiteral(src)) {
-    return
-  }
-  const slice = sliceStringLiteralText(code, src)
-  if (!slice) {
-    return
-  }
-  const replacement = replacements[src.value]
-  if (!replacement || replacement === src.value) {
-    return
-  }
-  tokens.push(createToken(slice.start, slice.end, replacement))
-}
 
 export function oxcJsHandler(rawSource: string, options: IJsHandlerOptions): JsHandlerResult {
   const shouldWrapExpression = Boolean(options.wrapExpression)

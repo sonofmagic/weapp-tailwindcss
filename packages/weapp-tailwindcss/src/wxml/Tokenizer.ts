@@ -1,28 +1,11 @@
+import type { Expression, Token } from './tokenizer/types'
+import { State } from './tokenizer/types'
 // 针对微信的属性表达式进行切词
 // https://github.com/sonofmagic/weapp-tailwindcss/issues/319
 // all state
 import { isWhitespace } from './whitespace'
 
-export enum State {
-  START,
-  TEXT,
-  OPEN_BRACE,
-  POTENTIAL_CLOSE,
-  BRACES_COMPLETE,
-}
-
-export interface Expression {
-  start: number
-  end: number
-  value: string
-}
-
-export interface Token {
-  start: number
-  end: number
-  value: string
-  expressions: Expression[]
-}
+export type { Expression, Token } from './tokenizer/types'
 
 export class Tokenizer {
   private state: State

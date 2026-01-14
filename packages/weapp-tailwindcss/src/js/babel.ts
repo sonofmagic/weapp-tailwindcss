@@ -1,62 +1,21 @@
-import type { ParseError, ParseResult, ParserOptions } from '@babel/parser'
+import type { ParseError, ParseResult } from '@babel/parser'
 import type { NodePath, TraverseOptions } from '@babel/traverse'
 import type { ExportDeclaration, File, ImportDeclaration, Node, StringLiteral, TemplateElement } from '@babel/types'
 import type { IJsHandlerOptions, JsHandlerResult } from '../types'
 import type { EvalHandler } from './evalTransforms'
 import type { SourceAnalysis } from './sourceAnalysis'
-import type { JsToken } from './types'
-import { LRUCache } from 'lru-cache'
-import MagicString from 'magic-string'
-import { parse, traverse } from '@/babel'
+import { traverse } from '@/babel'
 import { createNameMatcher } from '@/utils/nameMatcher'
+import { babelParse } from './babel/parse'
+import { processUpdatedSource } from './babel/process'
 import { isEvalPath, walkEvalExpression } from './evalTransforms'
-import { replaceHandleValue } from './handlers'
 import { JsTokenUpdater } from './JsTokenUpdater'
 import { JsModuleGraph } from './ModuleGraph'
 import { NodePathWalker } from './NodePathWalker'
-import { collectModuleSpecifierReplacementTokens } from './sourceAnalysis'
 import { createTaggedTemplateIgnore } from './taggedTemplateIgnore'
 
 const EXPRESSION_WRAPPER_PREFIX = '(\n'
 const EXPRESSION_WRAPPER_SUFFIX = '\n)'
-
-export const parseCache: LRUCache<string, ParseResult<File>> = new LRUCache<string, ParseResult<File>>(
-  {
-    max: 1024,
-  },
-)
-
-export function genCacheKey(source: string, options: any): string {
-  // 允许调用方传入预先计算好的 cacheKey 字符串，避免重复 JSON.stringify
-  if (typeof options === 'string') {
-    return source + options
-  }
-  return source + JSON.stringify(options, (_, val) => (typeof val === 'function' ? val.toString() : val))
-}
-
-export function babelParse(
-  code: string,
-  // 接受可选的 cacheKey，避免每次都对 options 做 JSON.stringify。
-  opts: (ParserOptions & { cache?: boolean, cacheKey?: string }) = {},
-) {
-  const { cache, cacheKey, ...rest } = opts as any
-  const cacheKeyString = genCacheKey(code, cacheKey ?? rest)
-  let result: ParseResult<File> | undefined
-  if (cache) {
-    result = parseCache.get(cacheKeyString)
-  }
-
-  if (!result) {
-    // 传给 @babel/parser 前剔除自定义字段，避免产生意外行为。
-    const { cache: _cache, cacheKey: _cacheKey, ...parseOptions } = opts as any
-    result = parse(code, parseOptions)
-    if (cache) {
-      parseCache.set(cacheKeyString, result)
-    }
-  }
-
-  return result
-}
 
 export function analyzeSource(
   ast: ParseResult<File>,
@@ -175,49 +134,6 @@ export function analyzeSource(
   }
 }
 
-export function processUpdatedSource(
-  rawSource: string,
-  options: IJsHandlerOptions,
-  analysis: SourceAnalysis,
-) {
-  const { targetPaths, jsTokenUpdater, ignoredPaths } = analysis
-
-  // 为前面收集到的所有字符串节点生成替换 token。
-  const replacementTokens: JsToken[] = []
-  for (const path of targetPaths) {
-    if (ignoredPaths.has(path)) {
-      continue
-    }
-
-    const token = replaceHandleValue(
-      path,
-      {
-        ...options,
-        needEscaped: path.isStringLiteral() ? options.needEscaped ?? true : false,
-      },
-    )
-
-    if (token) {
-      replacementTokens.push(token)
-    }
-  }
-
-  if (options.moduleSpecifierReplacements) {
-    replacementTokens.push(
-      ...collectModuleSpecifierReplacementTokens(analysis, options.moduleSpecifierReplacements),
-    )
-  }
-
-  // 若没有任何待更新的 token，避免不必要的 MagicString 开销。
-  if ((jsTokenUpdater.length + replacementTokens.length) === 0) {
-    return new MagicString(rawSource)
-  }
-
-  const ms = new MagicString(rawSource)
-  jsTokenUpdater.push(...replacementTokens).filter(token => !ignoredPaths.has(token.path)).updateMagicString(ms)
-  return ms
-}
-
 export function jsHandler(rawSource: string, options: IJsHandlerOptions): JsHandlerResult {
   const shouldWrapExpression = Boolean(options.wrapExpression)
   const source = shouldWrapExpression
@@ -271,5 +187,7 @@ export function jsHandler(rawSource: string, options: IJsHandlerOptions): JsHand
   return result
 }
 
+export { babelParse, processUpdatedSource }
+export { genCacheKey, parseCache } from './babel/parse'
 export { isEvalPath } from './evalTransforms'
 export type { SourceAnalysis } from './sourceAnalysis'
