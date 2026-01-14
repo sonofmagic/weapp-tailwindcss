@@ -118,7 +118,7 @@ catalogs:
   weappIdeCli:
     weapp-ide-cli: ^4.1.2
   weappVite:
-    weapp-vite: ^6.1.9
+    weapp-vite: ^6.1.10
   wrangler4530:
     wrangler: ^4.59.1
 

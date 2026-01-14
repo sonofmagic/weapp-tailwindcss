@@ -14,4 +14,11 @@
       Tailwind CSS 渲染的趋势线让导航条具备强烈的科技感，向下滑动探索更多组件示例。
     </view>
   </view>
+
+  <button
+    class="mt-[36rpx] w-full rounded-[999rpx] bg-white py-[24rpx] text-[28rpx] font-semibold text-slate-950"
+    bindtap="goToCart"
+  >
+    前往购物车
+  </button>
 </view>

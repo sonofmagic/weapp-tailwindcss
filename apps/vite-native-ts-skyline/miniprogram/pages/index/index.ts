@@ -57,6 +57,12 @@ export default defineComponent({
       })
     }
 
+    function goToCart() {
+      wx.navigateTo({
+        url: '/pages/cart/index',
+      })
+    }
+
     function getUserProfile() {
       wx.getUserProfile({
         desc: '展示用户信息',
@@ -79,6 +85,7 @@ export default defineComponent({
       onChooseAvatar,
       onInputChange,
       handleNavAction,
+      goToCart,
       getUserProfile,
     }
   },
