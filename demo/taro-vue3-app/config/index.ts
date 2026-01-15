@@ -38,7 +38,8 @@ export default defineConfig<'webpack5'>((merge) => {
     },
     defineConstants: {},
     cache: {
-      enable: true
+      // Avoid noisy webpack cache restore warnings from mini-css-extract-plugin.
+      enable: false
     },
     copy: {
       patterns: [],
