@@ -1,7 +1,7 @@
 {
   "name": "tailwindcss-core-plugins-extractor",
   "type": "module",
-  "version": "0.2.0",
+  "version": "1.0.0",
   "description": "tailwindcss-core-plugins-extractor",
   "author": "ice breaker <1324318532@qq.com>",
   "license": "MIT",

@@ -1,5 +1,17 @@
 # weapp-tailwindcss
 
+## 5.0.0
+
+### Major Changes
+
+- 🚀 **要求 Node.js 版本为 `^20.19.0 || >=22.12.0`。** [`4476838`](https://github.com/sonofmagic/weapp-tailwindcss/commit/44768386ceca452a3e05f9153ab48b86f3354693) by @sonofmagic
+
+### Patch Changes
+
+- 🐛 **拆分并整理类型注释与 workspace 辅助函数，便于维护与扩展。** [`44cf297`](https://github.com/sonofmagic/weapp-tailwindcss/commit/44cf29784441a67e1a14609b26ce520e7df00541) by @sonofmagic
+- 📦 **Dependencies** [`d2b3629`](https://github.com/sonofmagic/weapp-tailwindcss/commit/d2b3629c4dce3ebaa28525fb3299e3c49f290898)
+  → `@weapp-tailwindcss/postcss@3.0.0`, `@weapp-tailwindcss/shared@2.0.0`, `@weapp-tailwindcss/logger@2.0.0`
+
 ## 4.9.2
 
 ### Patch Changes

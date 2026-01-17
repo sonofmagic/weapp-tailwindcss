@@ -1,5 +1,16 @@
 # @weapp-tailwindcss/init
 
+## 2.0.0
+
+### Major Changes
+
+- 🚀 **要求 Node.js 版本为 `^20.19.0 || >=22.12.0`。** [`4476838`](https://github.com/sonofmagic/weapp-tailwindcss/commit/44768386ceca452a3e05f9153ab48b86f3354693) by @sonofmagic
+
+### Patch Changes
+
+- 📦 **Dependencies** [`84061c4`](https://github.com/sonofmagic/weapp-tailwindcss/commit/84061c4606d4ae28334bcce5fd4552211130e1d3)
+  → `@weapp-tailwindcss/shared@2.0.0`, `@weapp-tailwindcss/logger@2.0.0`
+
 ## 1.0.9
 
 ### Patch Changes
