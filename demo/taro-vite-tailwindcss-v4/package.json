@@ -87,7 +87,7 @@
     "stylelint": "catalog:stylelint1625",
     "tailwindcss": "catalog:tailwindcss4",
     "tailwindcss-patch": "catalog:tailwindcssPatch",
-    "terser": "^5.45.0",
+    "terser": "^5.46.0",
     "typescript": "catalog:typescript59",
     "vite": "catalog:vite5421",
     "weapp-ide-cli": "catalog:weappIdeCli",

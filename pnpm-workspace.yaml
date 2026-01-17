@@ -70,31 +70,31 @@ catalogs:
   tailwindcssRem:
     tailwindcss-rem2px-preset: ^1.0.3
   taro4:
-    '@tarojs/cli': ^4.1.9
-    '@tarojs/components': ^4.1.9
-    '@tarojs/helper': ^4.1.9
-    '@tarojs/plugin-framework-react': ^4.1.9
-    '@tarojs/plugin-framework-vue3': ^4.1.9
-    '@tarojs/plugin-html': ^4.1.9
-    '@tarojs/plugin-platform-alipay': ^4.1.9
-    '@tarojs/plugin-platform-h5': ^4.1.9
-    '@tarojs/plugin-platform-harmony-hybrid': ^4.1.9
-    '@tarojs/plugin-platform-jd': ^4.1.9
-    '@tarojs/plugin-platform-qq': ^4.1.9
-    '@tarojs/plugin-platform-swan': ^4.1.9
-    '@tarojs/plugin-platform-tt': ^4.1.9
-    '@tarojs/plugin-platform-weapp': ^4.1.9
-    '@tarojs/react': ^4.1.9
-    '@tarojs/runtime': ^4.1.9
-    '@tarojs/shared': ^4.1.9
-    '@tarojs/taro': ^4.1.9
-    '@tarojs/taro-loader': ^4.1.9
-    '@tarojs/vite-runner': ^4.1.9
-    '@tarojs/webpack5-runner': ^4.1.9
-    babel-preset-taro: ^4.1.9
-    eslint-config-taro: ^4.1.9
+    '@tarojs/cli': ^4.1.10
+    '@tarojs/components': ^4.1.10
+    '@tarojs/helper': ^4.1.10
+    '@tarojs/plugin-framework-react': ^4.1.10
+    '@tarojs/plugin-framework-vue3': ^4.1.10
+    '@tarojs/plugin-html': ^4.1.10
+    '@tarojs/plugin-platform-alipay': ^4.1.10
+    '@tarojs/plugin-platform-h5': ^4.1.10
+    '@tarojs/plugin-platform-harmony-hybrid': ^4.1.10
+    '@tarojs/plugin-platform-jd': ^4.1.10
+    '@tarojs/plugin-platform-qq': ^4.1.10
+    '@tarojs/plugin-platform-swan': ^4.1.10
+    '@tarojs/plugin-platform-tt': ^4.1.10
+    '@tarojs/plugin-platform-weapp': ^4.1.10
+    '@tarojs/react': ^4.1.10
+    '@tarojs/runtime': ^4.1.10
+    '@tarojs/shared': ^4.1.10
+    '@tarojs/taro': ^4.1.10
+    '@tarojs/taro-loader': ^4.1.10
+    '@tarojs/vite-runner': ^4.1.10
+    '@tarojs/webpack5-runner': ^4.1.10
+    babel-preset-taro: ^4.1.10
+    eslint-config-taro: ^4.1.10
   typesNode2410:
-    '@types/node': ^24.10.8
+    '@types/node': ^24.10.9
   typescript59:
     typescript: ^5.9.3
   typescript59tilde:
@@ -118,7 +118,7 @@ catalogs:
   weappIdeCli:
     weapp-ide-cli: ^4.1.2
   weappVite:
-    weapp-vite: ^6.2.0
+    weapp-vite: ^6.2.3
   wrangler4530:
     wrangler: ^4.59.2
 
