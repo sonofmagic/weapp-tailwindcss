@@ -2,6 +2,9 @@
   "name": "@weapp-tailwindcss-demo/uni-app-tailwindcss-v4",
   "private": true,
   "version": "0.0.0",
+  "engines": {
+    "node": "^20.19.0 || >=22.12.0"
+  },
   "scripts": {
     "build": "npm run build:mp-weixin",
     "dev:custom": "uni -p",

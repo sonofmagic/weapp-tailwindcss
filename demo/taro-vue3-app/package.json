@@ -1,6 +1,9 @@
 {
   "name": "@weapp-tailwindcss-demo/taro-vue3-app",
   "version": "1.0.0",
+  "engines": {
+    "node": "^20.19.0 || >=22.12.0"
+  },
   "private": true,
   "description": "taro-vue3-app",
   "templateInfo": {
@@ -87,7 +90,7 @@
     "postcss": "catalog:postcss85",
     "postcss-rem-to-responsive-pixel": "catalog:postcssRem610",
     "postcss-rpx-transform": "catalog:postcssRpx",
-    "stylelint": "16.26.1",
+    "stylelint": "17.0.0",
     "tailwindcss": "catalog:tailwindcss3",
     "tailwindcss-patch": "catalog:tailwindcssPatch",
     "tailwindcss-rem2px-preset": "catalog:tailwindcssRem",

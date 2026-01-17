@@ -1,6 +1,9 @@
 {
   "name": "@weapp-tailwindcss-demo/mpx-tailwindcss-v4",
   "version": "0.1.0",
+  "engines": {
+    "node": "^20.19.0 || >=22.12.0"
+  },
   "private": true,
   "scripts": {
     "dev": "mpx-cli-service serve",

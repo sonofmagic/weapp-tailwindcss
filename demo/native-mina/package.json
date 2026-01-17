@@ -2,6 +2,9 @@
   "name": "@weapp-tailwindcss-demo/native-mina",
   "private": true,
   "version": "1.0.0",
+  "engines": {
+    "node": "^20.19.0 || >=22.12.0"
+  },
   "description": "",
   "keywords": [],
   "author": "ice breaker <1324318532@qq.com>",

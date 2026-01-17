@@ -3,6 +3,9 @@
   "type": "module",
   "version": "0.0.11",
   "private": true,
+  "engines": {
+    "node": "^20.19.0 || >=22.12.0"
+  },
   "scripts": {
     "build": "node -e \"console.log('build-all meta build complete')\""
   },

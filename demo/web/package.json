@@ -1,6 +1,9 @@
 {
   "name": "@weapp-tailwindcss-demo/web",
   "version": "1.0.0",
+  "engines": {
+    "node": "^20.19.0 || >=22.12.0"
+  },
   "main": "index.js",
   "license": "MIT",
   "scripts": {

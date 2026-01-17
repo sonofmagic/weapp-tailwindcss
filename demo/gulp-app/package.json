@@ -2,6 +2,9 @@
   "name": "@weapp-tailwindcss-demo/gulp-app",
   "private": true,
   "version": "0.0.5",
+  "engines": {
+    "node": "^20.19.0 || >=22.12.0"
+  },
   "description": "A workflow for better weapp developing.",
   "author": "ice breaker <1324318532@qq.com>",
   "license": "MIT",

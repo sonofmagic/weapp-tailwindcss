@@ -7,6 +7,9 @@
   "license": "MIT",
   "keywords": [],
   "main": "index.js",
+  "engines": {
+    "node": "^20.19.0 || >=22.12.0"
+  },
   "scripts": {
     "dev": "rsmax build -w -t wechat",
     "_build": "cross-env NODE_ENV=production rsmax build -t wechat",

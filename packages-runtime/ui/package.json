@@ -67,6 +67,9 @@
   "files": [
     "dist"
   ],
+  "engines": {
+    "node": "^20.19.0 || >=22.12.0"
+  },
   "scripts": {
     "build": "vite build",
     "build:watch": "vite build --watch",

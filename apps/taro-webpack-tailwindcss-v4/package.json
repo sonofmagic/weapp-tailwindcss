@@ -10,6 +10,9 @@
     "framework": "React"
   },
   "author": "",
+  "engines": {
+    "node": "^20.19.0 || >=22.12.0"
+  },
   "scripts": {
     "build": "pnpm build:weapp",
     "build:weapp": "taro build --type weapp",

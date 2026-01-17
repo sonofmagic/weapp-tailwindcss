@@ -2,6 +2,9 @@
   "name": "@weapp-tailwindcss-demo/uni-app-vue3-vite",
   "private": true,
   "version": "0.0.1",
+  "engines": {
+    "node": "^20.19.0 || >=22.12.0"
+  },
   "scripts": {
     "dev": "cross-env DEBUG=weapp-tw BABEL=1 uni -p mp-weixin",
     "dev:local": "cross-env LOCAL=1 uni -p mp-weixin",

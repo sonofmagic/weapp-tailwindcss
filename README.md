@@ -30,6 +30,7 @@
 
 - [特性](#特性)
 - [版本对应](#版本对应)
+- [环境要求](#环境要求)
 - [安装与使用方式](#安装与使用方式)
 - [生态和解决方案](#生态和解决方案)
 - [常见问题](#常见问题)
@@ -61,7 +62,11 @@
 - 支持最新版本的 `tailwindcss v4` 和 `v3` 还有 `v2 jit` 版本。
 - 支持 `webpack5`，`webpack4`, `vite` 和 `gulp` 这些打包工具，也支持纯 `Nodejs` API 的方式，集成到你自己的构建工具中。
 
-> 如果你还在使用 `tailwindcss@2` 版本，那你应该使用从 `weapp-tailwindcss/webpack4` 导出的本插件的 `postcss7` `webpack4` 版本。另外请确保你的 `nodejs` 版本 `>=16.6.0`。目前低于 `16` 的长期维护版本(`偶数版本`) 都已经结束了生命周期，建议安装 `nodejs` 的 `LTS` 版本，详见 [nodejs/release](https://github.com/nodejs/release)
+> 如果你还在使用 `tailwindcss@2` 版本，那你应该使用从 `weapp-tailwindcss/webpack4` 导出的本插件的 `postcss7` `webpack4` 版本。`weapp-tailwindcss@4` 需要 `nodejs` 版本 `^20.19.0 || >=22.12.0`，建议安装 `nodejs` 的 `LTS` 版本，详见 [nodejs/release](https://github.com/nodejs/release)
+
+## 环境要求
+
+- Node.js `^20.19.0` 或 `>=22.12.0`（建议 LTS）
 
 ## [安装与使用方式](https://tw.icebreaker.top/docs/quick-start/install)
 

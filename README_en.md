@@ -26,6 +26,7 @@
 
 - [Features](#features)
   - [Plugin Introduction](#plugin-introduction)
+- [Requirements](#requirements)
 - [Installation and usage](#installation-and-usage)
 - [Migrating from v1 to v2](#migrating-from-v1-to-v2)
 - [Configuration reference](#configuration-reference)
@@ -71,7 +72,11 @@ And our `gulp` plugin method, can be exported from `weapp-tailwindcss/gulp`.
 
 Currently, these plugins support the latest version of the `tailwindcss v3.x.x` version and `webpack5`, `vite`, and `gulp`.
 
-> If you are still using the `tailwindcss@2` version, then you should use the `1.x` version of this plugin. Also, make sure your `nodejs` version `>=16`. At present, the long-term maintenance version (`even-numbered version`) below `16` has ended its life cycle. It is recommended to install the `LTS` version of `nodejs`, See [nodejs/release](<https://github.com/> nodejs/release)
+> If you are still using the `tailwindcss@2` version, then you should use the `1.x` version of this plugin. `weapp-tailwindcss@4` requires Node.js `^20.19.0 || >=22.12.0`. LTS is recommended. See [nodejs/release](https://github.com/nodejs/release).
+
+## Requirements
+
+- Node.js `^20.19.0` or `>=22.12.0` (LTS recommended)
 
 ## [Installation and usage](https://tw.icebreaker.top/docs/quick-start/install)
 

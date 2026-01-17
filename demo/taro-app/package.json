@@ -80,7 +80,7 @@
     "postcss": "catalog:postcss85",
     "postcss-rem-to-responsive-pixel": "catalog:postcssRem610",
     "postcss-rpx-transform": "catalog:postcssRpx",
-    "stylelint": "16.26.1",
+    "stylelint": "17.0.0",
     "tailwindcss": "catalog:tailwindcss3",
     "tailwindcss-patch": "catalog:tailwindcssPatch",
     "tailwindcss-rem2px-preset": "catalog:tailwindcssRem",
@@ -93,7 +93,7 @@
     "webpack-chain": "^6.5.1"
   },
   "engines": {
-    "node": ">=12.0.0"
+    "node": "^20.19.0 || >=22.12.0"
   },
   "bugs": {
     "url": "https://github.com/sonofmagic/weapp-tailwindcss/issues"

@@ -1,17 +1,17 @@
 {
   "compilerOptions": {
     "target": "ESNext",
+    "jsx": "preserve",
+    "lib": ["DOM", "ES2015"],
+    "baseUrl": "./",
+    "rootDir": "src",
     "module": "ESNext",
     "moduleResolution": "node",
-    "strict": true,
-    "esModuleInterop": true,
-    "jsx": "preserve",
-    "rootDir": "src",
-    "baseUrl": "./",
     "paths": {
       "@/*": ["./src/*"]
     },
-    "lib": ["DOM", "ES2015"]
+    "strict": true,
+    "esModuleInterop": true
   },
   "include": ["src/**/*", "typings/**/*"]
 }

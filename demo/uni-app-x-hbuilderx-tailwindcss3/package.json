@@ -1,6 +1,9 @@
 {
   "name": "@weapp-tailwindcss-demo/uni-app-x-hbuilderx-tailwindcss3",
   "version": "0.0.0",
+  "engines": {
+    "node": "^20.19.0 || >=22.12.0"
+  },
   "private": true,
   "type": "module",
   "scripts": {
