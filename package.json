@@ -233,7 +233,7 @@
     "prettier": "catalog:prettier371",
     "promisify-loader-runner": "^1.0.1",
     "rimraf": "^6.1.2",
-    "rollup": "^4.55.1",
+    "rollup": "^4.55.2",
     "sass": "catalog:sass195",
     "sass-embedded": "^1.97.2",
     "sass-true": "^10.1.0",

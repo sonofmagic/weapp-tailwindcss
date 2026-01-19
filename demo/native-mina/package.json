@@ -29,7 +29,7 @@
   "dependencies": {
     "@vant/weapp": "^1.11.6",
     "dayjs": "^1.11.19",
-    "eventemitter3": "^5.0.1",
+    "eventemitter3": "^5.0.2",
     "lodash": "^4.17.21",
     "rxjs": "^7.8.1"
   },

@@ -108,9 +108,9 @@ catalogs:
   vite724:
     vite: ^7.3.1
   vue3:
-    '@vue/compiler-dom': ^3.5.26
-    '@vue/compiler-sfc': ^3.5.26
-    vue: ^3.5.26
+    '@vue/compiler-dom': ^3.5.27
+    '@vue/compiler-sfc': ^3.5.27
+    vue: ^3.5.27
   vueTsc318:
     vue-tsc: ^3.2.2
   weappChildren:
