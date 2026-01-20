@@ -152,8 +152,9 @@ const raw = weappTwIgnore`
 `create` 会根据传入的 `options` 返回一组隔离的运行时函数（`twMerge`、`twJoin`、`createTailwindMerge`、`extendTailwindMerge`），用于控制转义行为：
 
 ```ts
-const { twMerge: mergeForWeb } = create({ escape: false, unescape: false })
-const { twMerge: mergeForMiniProgram } = create()
+// 跨平台框架请自行判断是否为 H5 构建，通常可从环境变量读取。
+const isH5 = false
+const { twMerge } = create({ escape: !isH5, unescape: !isH5 })
 ```
 
 ### CreateOptions

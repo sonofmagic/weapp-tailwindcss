@@ -8,12 +8,14 @@ description: '基于 packages-runtime 的跨端示例：uni-app + Web、Taro + W
 
 ## Demo 1：uni-app + Web（Vue + TS）
 
+同一份 `tv` 实例即可覆盖小程序与 H5，通过环境变量决定是否关闭 escape/unescape。
+
 ### 共享变体（`src/ui/button.variants.ts`）
 
 ```ts
-import { tv, create } from '@weapp-tailwindcss/variants'
+import { create } from '@weapp-tailwindcss/variants'
 
-type ButtonConfig = Parameters<typeof tv>[0]
+type ButtonConfig = Parameters<ReturnType<typeof create>['tv']>[0]
 
 const config: ButtonConfig = {
   base: 'inline-flex items-center justify-center rounded-md px-3 py-2 text-sm font-medium',
@@ -33,14 +35,18 @@ const config: ButtonConfig = {
   },
 }
 
-let tvRuntime = tv
-
+// 跨平台框架请自行判断是否为 H5 构建，通常可从环境变量读取。
+let isH5 = false
 // #ifdef H5
-const { tv: tvWeb } = create({ escape: false, unescape: false })
-tvRuntime = tvWeb
+isH5 = true
 // #endif
 
-export const button = tvRuntime(config)
+const { tv } = create({
+  escape: !isH5,
+  unescape: !isH5,
+})
+
+export const button = tv(config)
 ```
 
 ### 小程序 / H5 共用页面（`src/pages/index/index.vue`）
@@ -65,12 +71,14 @@ import { button } from '@/ui/button.variants'
 
 ## Demo 2：Taro + Web（React + TSX）
 
+同一份 `tv` 实例即可覆盖小程序与 H5，通过环境变量决定是否关闭 escape/unescape。
+
 ### 共享变体（`src/ui/card.variants.ts`）
 
 ```ts
-import { tv, create } from '@weapp-tailwindcss/variants'
+import { create } from '@weapp-tailwindcss/variants'
 
-type CardConfig = Parameters<typeof tv>[0]
+type CardConfig = Parameters<ReturnType<typeof create>['tv']>[0]
 
 const config: CardConfig = {
   base: 'rounded-xl border border-[#E2E8F0] bg-white p-4 shadow-sm',
@@ -85,11 +93,14 @@ const config: CardConfig = {
   },
 }
 
+// 跨平台框架请自行判断是否为 H5 构建，通常可从环境变量读取。
 const isH5 = process.env.TARO_ENV === 'h5'
-const { tv: tvWeb } = create({ escape: false, unescape: false })
-const tvRuntime = isH5 ? tvWeb : tv
+const { tv } = create({
+  escape: !isH5,
+  unescape: !isH5,
+})
 
-export const card = tvRuntime(config)
+export const card = tv(config)
 ```
 
 ### 小程序页面（`src/pages/index/index.tsx`）

@@ -32,10 +32,11 @@ description: 'runtime 系列包的版本选择、能力矩阵与多端使用心�
 ```ts
 import { create } from '@weapp-tailwindcss/merge'
 
-const { twMerge: mergeForMiniProgram } = create()
-const { twMerge: mergeForWeb } = create({
-  escape: false,
-  unescape: false,
+// 跨平台框架请自行判断是否为 H5 构建，通常可从环境变量读取。
+const isH5 = false
+const { twMerge } = create({
+  escape: !isH5,
+  unescape: !isH5,
 })
 ```
 

@@ -59,7 +59,9 @@ button({ tone: 'outline', size: 'sm' })
   ```ts
   import { create } from '@weapp-tailwindcss/cva'
 
-  const { cva: cvaForWeb } = create({ escape: false, unescape: false })
+  // 跨平台框架请自行判断是否为 H5 构建，通常可从环境变量读取。
+  const isH5 = true
+  const { cva: cvaForWeb } = create({ escape: !isH5, unescape: !isH5 })
   ```
 
 ### Live Demo
@@ -139,9 +141,11 @@ mergeLater({ twMerge: false })
 ```ts
 import { create } from '@weapp-tailwindcss/variants'
 
+// 跨平台框架请自行判断是否为 H5 构建，通常可从环境变量读取。
+const isH5 = true
 const { tv: tvForWeb, cn: cnForWeb } = create({
-  escape: false,
-  unescape: false,
+  escape: !isH5,
+  unescape: !isH5,
 })
 ```
 

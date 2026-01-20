@@ -117,16 +117,17 @@ badge({ tone: 'success' })
 ```ts
 import { create } from '@weapp-tailwindcss/merge'
 
-const { twMerge: mergeForMiniProgram } = create()
-const { twMerge: mergeForWeb } = create({
-  escape: false,
-  unescape: false,
+// 跨平台框架请自行判断是否为 H5 构建，通常可从环境变量读取。
+const isH5 = false
+const { twMerge } = create({
+  escape: !isH5,
+  unescape: !isH5,
 })
 
-mergeForMiniProgram('text-[#ececec]', 'text-[#ECECEC]') // → 'text-_b_hECECEC_B'
-mergeForWeb('text-[#ececec]', 'text-[#ECECEC]')         // → 'text-[#ECECEC]'
+twMerge('text-[#ececec]', 'text-[#ECECEC]') // → 小程序时得到转义结果
 ```
 
+- H5 环境只需将 `isH5` 设为 `true`，即可关闭 escape/unescape。
 - `escape: false` 表示结果保持原样（适合 Web 或同构渲染）。
 - `unescape: false` 可跳过运行前的「反转义」，用于确保输入不会被改写。
 - 如果只想自定义映射表，传入 `escape: { map: { '#': '__hash__' } }` 即可；运行时会把自定义映射与默认映射合并，保证编译期和运行时的行为一致。
