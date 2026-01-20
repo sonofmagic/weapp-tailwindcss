@@ -6,6 +6,13 @@ description: 'shared runtime —— @weapp-tailwindcss/runtime 以及 merge 系�
 
 `@weapp-tailwindcss/runtime` 是所有运行时包的公共底座，统一提供 escape/unescape、`clsx` 封装、`weappTwIgnore` 以及 `createRuntimeFactory`。`@weapp-tailwindcss/merge`、`merge-v3`、`cva`、`variants` 都是基于它实现的。
 
+:::tip 运行时包详解
+更完整的使用方式与多端示例已收录在 packages-runtime 章节：  
+- [packages-runtime 总览](/docs/community/packages-runtime)  
+- [@weapp-tailwindcss/merge](/docs/community/packages-runtime/merge)  
+- [@weapp-tailwindcss/variants](/docs/community/packages-runtime/variants)
+:::
+
 ## 安装
 
 ```ts
@@ -183,8 +190,10 @@ custom.twMerge('text-_b__hash__ececec_B') // => 'text-_b__hash__ececec_B'
 
 ## 基于 runtime 的其他包
 
-- `@weapp-tailwindcss/cva`：封装 `class-variance-authority`，详见 [cva 支持](/docs/community/merge/cva-and-variants#cva)  
-- `@weapp-tailwindcss/variants`：封装 `tailwind-variants`，详见 [variants 支持](/docs/community/merge/cva-and-variants#tailwind-variants)  
-- `@weapp-tailwindcss/merge-v3`：面向 `tailwindcss@3` 的长期支持分支
+- `@weapp-tailwindcss/cva`：封装 `class-variance-authority`，详见 [@weapp-tailwindcss/cva](/docs/community/packages-runtime/cva)  
+- `@weapp-tailwindcss/variants`：封装 `tailwind-variants`，详见 [@weapp-tailwindcss/variants](/docs/community/packages-runtime/variants)  
+- `@weapp-tailwindcss/merge-v3`：面向 `tailwindcss@3` 的长期支持分支  
+- `@weapp-tailwindcss/variants-v3`：基于 `tailwind-variant-v3` 的小程序运行时  
+- `tailwind-variant-v3`：上游 v3 runtime（Web 优先）
 
 它们全部依赖 `@weapp-tailwindcss/runtime`，因此可以共享 escape 配置、`weappTwIgnore` 以及 `clsx`。

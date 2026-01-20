@@ -5,9 +5,13 @@ slug: /community/merge
 description: '@weapp-tailwindcss/merge 的定位、安装方式、快速上手示例以及多端项目的常见用法。'
 ---
 
-import Link from '@docusaurus/Link'
-
 `@weapp-tailwindcss/merge` 是面向小程序生态的 [`tailwind-merge`](https://github.com/dcastil/tailwind-merge) 运行时封装。它在保留原库全部 API 的基础上，对类名做了小程序合法化转义，并与 `weapp-tailwindcss` 编译期插件联动，提供稳定的跨端开发体验。
+
+:::tip 运行时文档已升级
+更完整的 packages-runtime 使用方式与多端 Demo 已整理在新章节：  
+- [packages-runtime 总览](/docs/community/packages-runtime)  
+- [多端 Demo（小程序 + Web）](/docs/community/packages-runtime/multi-platform-demos)
+:::
 
 ## 为什么要使用 merge 运行时
 
@@ -34,6 +38,8 @@ import Link from '@docusaurus/Link'
 | `@weapp-tailwindcss/merge-v3` | `tailwindcss@3` | 基于 `tailwind-merge@2`，专为老项目保留 |
 | `@weapp-tailwindcss/cva` | `class-variance-authority` | 自动 escape 的 `cva()` 运行时 |
 | `@weapp-tailwindcss/variants` | `tailwind-variants` | 提供 `tv`/`cn` 等扩展能力 |
+| `@weapp-tailwindcss/variants-v3` | `tailwind-variant-v3` | Tailwind v3 小程序变体运行时 |
+| `tailwind-variant-v3` | `tailwindcss@3` | 上游 v3 运行时，可接入自定义合并器 |
 
 ## 安装
 
@@ -100,7 +106,9 @@ badge({ tone: 'success' })
 // => 'inline-flex ... bg-_b_hDCFCE7_B text-_b_h166534_B'
 ```
 
-更多组合用法、`cn` 聚合器以及逃逸策略见后文的 <Link to="/docs/community/merge/cva-and-variants"><code>cva 与 tailwind-variants 支持</code></Link> 章节。
+更多组合用法、`cn` 聚合器以及逃逸策略见新的运行时文档：  
+- [@weapp-tailwindcss/variants](/docs/community/packages-runtime/variants)  
+- [@weapp-tailwindcss/cva](/docs/community/packages-runtime/cva)
 
 ### 多端项目：按需控制转义
 
@@ -122,6 +130,8 @@ mergeForWeb('text-[#ececec]', 'text-[#ECECEC]')         // → 'text-[#ECECEC]'
 - `escape: false` 表示结果保持原样（适合 Web 或同构渲染）。
 - `unescape: false` 可跳过运行前的「反转义」，用于确保输入不会被改写。
 - 如果只想自定义映射表，传入 `escape: { map: { '#': '__hash__' } }` 即可；运行时会把自定义映射与默认映射合并，保证编译期和运行时的行为一致。
+
+多端示例详见 [多端 Demo（小程序 + Web）](/docs/community/packages-runtime/multi-platform-demos)。
 
 ### 在线体验
 

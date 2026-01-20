@@ -1,0 +1,129 @@
+---
+id: multi-platform-demos
+title: '多端 Demo：小程序 + Web'
+description: '基于 packages-runtime 的跨端示例：uni-app + Web、Taro + Web。'
+---
+
+本页示例统一以 **Tailwind v4** 为主线（`@weapp-tailwindcss/merge` + `@weapp-tailwindcss/variants`）。如果你的项目仍是 Tailwind v3，请将 `merge/variants` 替换为 `merge-v3/variants-v3`。
+
+## Demo 1：uni-app + Web（Vue + TS）
+
+### 共享变体（`src/ui/button.variants.ts`）
+
+```ts
+import { tv, create } from '@weapp-tailwindcss/variants'
+
+type ButtonConfig = Parameters<typeof tv>[0]
+
+const config: ButtonConfig = {
+  base: 'inline-flex items-center justify-center rounded-md px-3 py-2 text-sm font-medium',
+  variants: {
+    tone: {
+      primary: 'bg-[#2563EB] text-white hover:bg-[#1D4ED8]',
+      ghost: 'bg-transparent text-[#0F172A] hover:bg-[#E2E8F0]',
+    },
+    size: {
+      sm: 'h-8 px-3',
+      md: 'h-9 px-4',
+    },
+  },
+  defaultVariants: {
+    tone: 'primary',
+    size: 'md',
+  },
+}
+
+let tvRuntime = tv
+
+// #ifdef H5
+const { tv: tvWeb } = create({ escape: false, unescape: false })
+tvRuntime = tvWeb
+// #endif
+
+export const button = tvRuntime(config)
+```
+
+### 小程序 / H5 共用页面（`src/pages/index/index.vue`）
+
+```vue
+<template>
+  <view class="p-6 space-y-3">
+    <view :class="button({ tone: 'primary' })">Primary</view>
+    <view :class="button({ tone: 'ghost', size: 'sm' })">Ghost</view>
+  </view>
+</template>
+
+<script setup lang="ts">
+import { button } from '@/ui/button.variants'
+</script>
+```
+
+### 注意事项
+
+- 若你把 `tv`/`cn` 改名封装，请同步更新 `ignoreCallExpressionIdentifiers`。
+- H5 端关闭 escape 后，类名保持原样，Tailwind 才能正常匹配。
+
+## Demo 2：Taro + Web（React + TSX）
+
+### 共享变体（`src/ui/card.variants.ts`）
+
+```ts
+import { tv, create } from '@weapp-tailwindcss/variants'
+
+type CardConfig = Parameters<typeof tv>[0]
+
+const config: CardConfig = {
+  base: 'rounded-xl border border-[#E2E8F0] bg-white p-4 shadow-sm',
+  variants: {
+    tone: {
+      normal: 'text-[#0F172A]',
+      muted: 'text-[#64748B] bg-[#F8FAFC]',
+    },
+  },
+  defaultVariants: {
+    tone: 'normal',
+  },
+}
+
+const isH5 = process.env.TARO_ENV === 'h5'
+const { tv: tvWeb } = create({ escape: false, unescape: false })
+const tvRuntime = isH5 ? tvWeb : tv
+
+export const card = tvRuntime(config)
+```
+
+### 小程序页面（`src/pages/index/index.tsx`）
+
+```tsx
+import { View, Text } from '@tarojs/components'
+import { card } from '@/ui/card.variants'
+
+export default function Index() {
+  return (
+    <View className={card({ tone: 'normal' })}>
+      <Text>Card for Mini Program</Text>
+    </View>
+  )
+}
+```
+
+### Web 组件（`src/components/Card.web.tsx`）
+
+```tsx
+import { card } from '@/ui/card.variants'
+
+export function CardWeb() {
+  return <div className={card({ tone: 'muted' })}>Card for Web</div>
+}
+```
+
+### 注意事项
+
+- `process.env.TARO_ENV` 在构建期注入，适用于 H5/小程序的条件切换。
+- 若你使用 Tailwind v3，请切换为 `@weapp-tailwindcss/variants-v3`。
+
+## 扩展方向
+
+- 用 `compoundVariants` 或 `slots` 增强可复用组件。
+- 为 `cn` 设置 `twMerge: false`，在需要保留全部类名的场景禁用合并。
+- 将多端配置封装为 `createVariantsRuntime()`，统一团队用法。

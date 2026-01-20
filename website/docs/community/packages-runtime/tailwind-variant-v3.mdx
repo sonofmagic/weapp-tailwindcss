@@ -1,0 +1,63 @@
+---
+id: tailwind-variant-v3
+title: 'tailwind-variant-v3'
+description: '面向 Tailwind v3 的通用变体运行时，支持 twMergeAdapter 与 slots。'
+---
+
+`tailwind-variant-v3` 是 Tailwind v3 时代的变体运行时（上游包），提供 `tv`/`createTV`/`cn` 等 API，并支持通过 `twMergeAdapter` 接入自定义合并器。它不包含小程序的 escape/unescape 逻辑。
+
+## 安装
+
+```bash npm2yarn
+pnpm add tailwind-variant-v3 tailwind-merge@^2
+```
+
+## 基础用法
+
+```ts
+import { tv, cn } from 'tailwind-variant-v3'
+
+const button = tv({
+  base: 'inline-flex items-center rounded-md px-3 py-2 text-sm',
+  variants: {
+    tone: {
+      primary: 'bg-blue-600 text-white',
+      ghost: 'bg-transparent text-zinc-900',
+    },
+  },
+  defaultVariants: {
+    tone: 'primary',
+  },
+})
+
+const className = button({ tone: 'ghost' })
+const merged = cn('text-zinc-900', 'text-zinc-700')({ twMerge: true })
+```
+
+## 小程序适配：注入 merge-v3
+
+如果你希望在小程序端使用 `tailwind-variant-v3`，可以通过 `twMergeAdapter` 接入 `@weapp-tailwindcss/merge-v3`：
+
+```ts
+import type { TailwindMergeAdapter } from 'tailwind-variant-v3'
+import { tv } from 'tailwind-variant-v3'
+import { twMerge, extendTailwindMerge } from '@weapp-tailwindcss/merge-v3'
+
+const adapter: TailwindMergeAdapter = { twMerge, extendTailwindMerge }
+
+const badge = tv(
+  {
+    base: 'inline-flex items-center rounded-full px-2 text-xs',
+  },
+  {
+    twMergeAdapter: adapter,
+  },
+)
+```
+
+> 如果你主要面向小程序，推荐使用 `@weapp-tailwindcss/variants-v3`，它会自动处理 escape/unescape。
+
+## 适用场景建议
+
+- **Web / SSR**：直接使用 `tailwind-variant-v3`。
+- **小程序**：优先使用 [`@weapp-tailwindcss/variants-v3`](./variants-v3)。

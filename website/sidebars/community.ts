@@ -24,6 +24,21 @@ const communitySidebar: SidebarConfig = [
     ],
   },
   {
+    type: 'category',
+    label: 'packages-runtime',
+    collapsed: false,
+    items: [
+      'community/packages-runtime/index',
+      'community/packages-runtime/merge',
+      'community/packages-runtime/merge-v3',
+      'community/packages-runtime/cva',
+      'community/packages-runtime/variants',
+      'community/packages-runtime/tailwind-variant-v3',
+      'community/packages-runtime/variants-v3',
+      'community/packages-runtime/multi-platform-demos',
+    ],
+  },
+  {
     type: 'doc',
     id: 'quick-start/apply-themes',
   },

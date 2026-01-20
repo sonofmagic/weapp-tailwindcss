@@ -1,0 +1,52 @@
+---
+id: index
+title: packages-runtime 总览
+slug: /community/packages-runtime
+description: 'runtime 系列包的版本选择、能力矩阵与多端使用心智模型。'
+---
+
+`packages-runtime` 是 `weapp-tailwindcss` 的运行时能力集合，用来把编译期的类名规则延伸到小程序端，解决「动态类名冲突」「非法字符转义」「多端一致性」等问题。它们基于 `@weapp-tailwindcss/runtime` 提供 escape/unescape 与工厂能力，配合不同的 Tailwind 版本进行组合。
+
+## 运行时矩阵
+
+| 包名 | Tailwind 版本 | 适用场景 | 说明 |
+| --- | --- | --- | --- |
+| `@weapp-tailwindcss/merge` | v4 | 小程序 / 多端项目 | `tailwind-merge@3` 兼容实现，默认入口 |
+| `@weapp-tailwindcss/merge-v3` | v3 | 旧项目 / 长期维护 | `tailwind-merge@2` 兼容实现 |
+| `@weapp-tailwindcss/cva` | v3/v4 | 组件变体工厂 | `class-variance-authority` 运行时封装 |
+| `@weapp-tailwindcss/variants` | v4 | 组件变体 + slots | `tailwind-variants` 运行时封装 |
+| `tailwind-variant-v3` | v3 | Web / 通用 runtime | 上游 v3 runtime，可接入 `twMergeAdapter` |
+| `@weapp-tailwindcss/variants-v3` | v3 | 小程序 / 多端 | 基于 `tailwind-variant-v3` + `merge-v3` 的封装 |
+
+> `@weapp-tailwindcss/runtime` 是底座包，通常作为间接依赖自动安装，无需单独引入。
+
+## 版本选择
+
+- **Tailwind v4**：优先 `@weapp-tailwindcss/merge` + `@weapp-tailwindcss/variants`；需要变体工厂时加 `@weapp-tailwindcss/cva`。
+- **Tailwind v3**：优先 `@weapp-tailwindcss/merge-v3` + `@weapp-tailwindcss/variants-v3`；仅 Web 或需要定制合并器时可用 `tailwind-variant-v3`。
+
+## 多端心智模型（小程序 + Web）
+
+小程序端需要 escape/unescape 来保持类名合法；Web 端则希望保留原始类名。各包的 `create(...)` 工厂允许你为不同端生成隔离实例：
+
+```ts
+import { create } from '@weapp-tailwindcss/merge'
+
+const { twMerge: mergeForMiniProgram } = create()
+const { twMerge: mergeForWeb } = create({
+  escape: false,
+  unescape: false,
+})
+```
+
+这套模式同样适用于 `cva`、`tv`、`cn` 等变体工具，详见各包的「多端用法」与「多端 Demo」章节。
+
+## 章节速览
+
+- [@weapp-tailwindcss/merge（Tailwind v4）](/docs/community/packages-runtime/merge)
+- [@weapp-tailwindcss/merge-v3（Tailwind v3）](/docs/community/packages-runtime/merge-v3)
+- [@weapp-tailwindcss/cva](/docs/community/packages-runtime/cva)
+- [@weapp-tailwindcss/variants](/docs/community/packages-runtime/variants)
+- [tailwind-variant-v3](/docs/community/packages-runtime/tailwind-variant-v3)
+- [@weapp-tailwindcss/variants-v3](/docs/community/packages-runtime/variants-v3)
+- [多端 Demo：uni-app + Web、Taro + Web](/docs/community/packages-runtime/multi-platform-demos)

@@ -1,0 +1,87 @@
+---
+id: cva
+title: '@weapp-tailwindcss/cva'
+description: 'class-variance-authority 的小程序运行时封装，自动处理 escape 并保持类型推导。'
+---
+
+`@weapp-tailwindcss/cva` 是 `class-variance-authority` 的运行时封装，输出的类名会自动完成小程序转义。API 与类型推导保持一致，可直接替换原版 `cva`。
+
+## 安装
+
+```bash npm2yarn
+pnpm add @weapp-tailwindcss/cva
+```
+
+## 基础用法
+
+```ts
+import { cva, type VariantProps } from '@weapp-tailwindcss/cva'
+
+const button = cva(
+  'inline-flex items-center justify-center rounded-md text-sm font-medium transition-colors',
+  {
+    variants: {
+      tone: {
+        primary: 'bg-[#2563EB] text-white hover:bg-[#1D4ED8]',
+        outline: 'border border-border/60 bg-transparent',
+      },
+      size: {
+        sm: 'h-8 px-3',
+        md: 'h-9 px-4',
+        lg: 'h-10 px-6',
+      },
+    },
+    defaultVariants: {
+      tone: 'primary',
+      size: 'md',
+    },
+  },
+)
+
+type ButtonVariants = VariantProps<typeof button>
+
+const className = button({ tone: 'outline', size: 'sm' })
+// => 已转义的类名
+```
+
+## 小程序 + Web
+
+使用 `create` 为 Web 关闭转义，保证原始类名：
+
+```ts
+import { create } from '@weapp-tailwindcss/cva'
+
+const { cva: cvaWeb } = create({
+  escape: false,
+  unescape: false,
+})
+
+const badge = cvaWeb('text-[#0F172A] bg-[#E2E8F0]')
+```
+
+## Demo：跨端变体工厂
+
+```ts
+import { cva, create } from '@weapp-tailwindcss/cva'
+
+const config = {
+  variants: {
+    status: {
+      ok: 'text-[#16A34A] bg-[#DCFCE7]',
+      warn: 'text-[#B45309] bg-[#FEF3C7]',
+    },
+  },
+  defaultVariants: {
+    status: 'ok',
+  },
+}
+
+const pill = cva('inline-flex items-center rounded-full px-2 text-xs font-medium', config)
+const { cva: cvaWeb } = create({ escape: false, unescape: false })
+const pillWeb = cvaWeb('inline-flex items-center rounded-full px-2 text-xs font-medium', config)
+```
+
+## 常见注意事项
+
+- **函数名别名**：若封装 `cva` 为 `createVariants` 等，请更新 `ignoreCallExpressionIdentifiers`。
+- **与 Tailwind 版本关系**：`cva` 不绑定 Tailwind 版本，但 escape 规则需与 `weapp-tailwindcss` 版本一致。

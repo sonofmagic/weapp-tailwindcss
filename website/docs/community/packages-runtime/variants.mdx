@@ -1,0 +1,101 @@
+---
+id: variants
+title: '@weapp-tailwindcss/variants'
+description: 'tailwind-variants 的小程序运行时封装，提供 tv/cn/createTV 等 API。'
+---
+
+`@weapp-tailwindcss/variants` 是 `tailwind-variants` 的小程序封装，自动完成 escape/unescape，并默认集成 `@weapp-tailwindcss/merge` 的合并能力。适用于 Tailwind v4 项目。
+
+## 安装
+
+```bash npm2yarn
+pnpm add @weapp-tailwindcss/variants
+```
+
+## tv：变体工厂
+
+```ts
+import { tv } from '@weapp-tailwindcss/variants'
+
+const button = tv({
+  base: 'inline-flex items-center gap-2 rounded-md text-sm font-medium transition-colors',
+  slots: {
+    icon: 'size-4',
+    label: 'truncate',
+  },
+  variants: {
+    tone: {
+      primary: 'bg-[#2563EB] text-white hover:bg-[#1D4ED8]',
+      ghost: 'bg-transparent text-[#0F172A] hover:bg-[#E2E8F0]',
+    },
+    size: {
+      sm: { base: 'h-8 px-3', icon: 'size-3' },
+      md: { base: 'h-9 px-4', icon: 'size-4' },
+    },
+  },
+  defaultVariants: {
+    tone: 'primary',
+    size: 'md',
+  },
+})
+
+const slots = button({ tone: 'ghost', size: 'sm' })
+slots.base() // => 已转义类名
+slots.icon({ class: 'text-xs' })
+```
+
+## cn / cnBase
+
+```ts
+import { cn } from '@weapp-tailwindcss/variants'
+
+const mergeLater = cn('text-[#ececec]', isActive && 'text-[#ECECEC]')
+mergeLater() // => 合并 + escape
+
+mergeLater({ twMerge: false }) // => 仅 escape，不合并
+```
+
+## 小程序 + Web
+
+```ts
+import { create } from '@weapp-tailwindcss/variants'
+
+const { tv: tvWeb, cn: cnWeb } = create({
+  escape: false,
+  unescape: false,
+})
+
+const card = tvWeb({
+  base: 'rounded-xl border border-[#E2E8F0] bg-white',
+})
+
+const className = cnWeb('text-[#0F172A]', 'text-[#1E293B]')()
+```
+
+## Demo：复用同一配置
+
+```ts
+import { tv, create } from '@weapp-tailwindcss/variants'
+
+const buttonConfig = {
+  base: 'inline-flex items-center rounded-md px-3 py-2 text-sm font-medium',
+  variants: {
+    tone: {
+      primary: 'bg-[#2563EB] text-white',
+      danger: 'bg-[#DC2626] text-white',
+    },
+  },
+  defaultVariants: {
+    tone: 'primary',
+  },
+}
+
+const button = tv(buttonConfig)
+const { tv: tvWeb } = create({ escape: false, unescape: false })
+const buttonWeb = tvWeb(buttonConfig)
+```
+
+## 常见注意事项
+
+- **函数名保留**：`tv`/`cn` 若被改名，需要配置 `ignoreCallExpressionIdentifiers`。
+- **Tailwind v3**：请改用 [`@weapp-tailwindcss/variants-v3`](./variants-v3)。

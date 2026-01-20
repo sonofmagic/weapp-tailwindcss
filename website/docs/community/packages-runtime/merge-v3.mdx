@@ -1,0 +1,55 @@
+---
+id: merge-v3
+title: '@weapp-tailwindcss/merge-v3（Tailwind v3）'
+description: '适配 Tailwind v3 的 tailwind-merge 运行时封装，面向旧项目与长期维护。'
+---
+
+`@weapp-tailwindcss/merge-v3` 是 `tailwind-merge@2` 的小程序友好封装，专为 `tailwindcss@3` 设计。API 与 `@weapp-tailwindcss/merge` 完全一致，只是内部合并规则基于 v3 体系。
+
+## 安装
+
+```bash npm2yarn
+pnpm add @weapp-tailwindcss/merge-v3
+```
+
+## 基础用法
+
+```ts
+import { twMerge } from '@weapp-tailwindcss/merge-v3'
+
+const className = twMerge('p-2 p-4', 'bg-[#0F172A]')
+// => 已转义的类名，可直接用于小程序模板
+```
+
+## 自定义运行时
+
+```ts
+import { create } from '@weapp-tailwindcss/merge-v3'
+
+const { twMerge: twMergeWeb } = create({
+  escape: false,
+  unescape: false,
+})
+
+twMergeWeb('text-[#2563EB]', 'text-[#1D4ED8]')
+// => 'text-[#1D4ED8]'
+```
+
+## 与 Tailwind v4 的区别
+
+- `tailwindMergeVersion` 在 v3 入口下为 `2`。
+- 仅用于 `tailwindcss@3` 项目；若已升级到 v4，请切换到 [`@weapp-tailwindcss/merge`](./merge)。
+
+## Demo：自定义合并规则
+
+```ts
+import { extendTailwindMerge } from '@weapp-tailwindcss/merge-v3'
+
+const mergeSpacing = extendTailwindMerge({
+  classGroups: {
+    spacing: ['gap-safe', 'gap-huge'],
+  },
+})
+
+mergeSpacing('gap-huge gap-safe') // => 'gap-safe'
+```
