@@ -1,5 +1,11 @@
 # @weapp-tailwindcss/runtime
 
+## 0.1.4
+
+### Patch Changes
+
+- 🐛 **允许 `escape`/`unescape` 传入 `true`/`false` 布尔值，并保持默认转换行为一致。** [`ff1a74b`](https://github.com/sonofmagic/weapp-tailwindcss/commit/ff1a74b0e70de0ef723e1164b75af6e452f9cb02) by @sonofmagic
+
 ## 0.1.3
 
 ### Patch Changes

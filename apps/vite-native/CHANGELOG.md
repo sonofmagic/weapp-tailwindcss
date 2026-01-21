@@ -1,5 +1,12 @@
 # vite-native
 
+## 1.0.17
+
+### Patch Changes
+
+- 📦 **Dependencies**
+  → `@weapp-tailwindcss/merge@2.1.4`
+
 ## 1.0.16
 
 ### Patch Changes
