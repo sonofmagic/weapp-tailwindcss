@@ -41,12 +41,12 @@ catalogs:
   prettier371:
     prettier: ^3.8.0
   react18:
-    '@types/react': ^19.2.8
+    '@types/react': ^19.2.9
     '@types/react-dom': 18.2.7
     react: ^18.3.1
     react-dom: ^18.3.1
   react19:
-    '@types/react': ^19.2.8
+    '@types/react': ^19.2.9
     '@types/react-dom': 19.2.3
     react: ^19.2.3
     react-dom: ^19.2.3
@@ -100,9 +100,9 @@ catalogs:
   typescript59tilde:
     typescript: ~5.9.3
   typescriptEslint849:
-    '@typescript-eslint/eslint-plugin': ^8.53.0
-    '@typescript-eslint/parser': ^8.53.0
-    typescript-eslint: ^8.53.0
+    '@typescript-eslint/eslint-plugin': ^8.53.1
+    '@typescript-eslint/parser': ^8.53.1
+    typescript-eslint: ^8.53.1
   vite5421:
     vite: ^5.4.21
   vite724:
@@ -118,9 +118,9 @@ catalogs:
   weappIdeCli:
     weapp-ide-cli: ^5.0.0
   weappVite:
-    weapp-vite: ^6.2.3
+    weapp-vite: ^6.3.2
   wrangler4530:
-    wrangler: ^4.59.2
+    wrangler: ^4.59.3
 
 onlyBuiltDependencies:
   - '@tailwindcss/oxide'

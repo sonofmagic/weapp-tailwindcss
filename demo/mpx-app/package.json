@@ -36,7 +36,7 @@
     "@mpxjs/utils": "^2.10.17",
     "@vant/weapp": "^1.11.6",
     "pinia": "^2.3.1",
-    "tdesign-miniprogram": "^1.12.1",
+    "tdesign-miniprogram": "^1.12.2",
     "vue": "^2.7.16",
     "vue-demi": "^0.14.10",
     "vue-i18n": "^8.27.2",
