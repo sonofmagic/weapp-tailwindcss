@@ -228,3 +228,4 @@ export type {
   TVConfig,
   TWMConfig,
 }
+export type { VariantProps } from 'tailwind-variant-v3'

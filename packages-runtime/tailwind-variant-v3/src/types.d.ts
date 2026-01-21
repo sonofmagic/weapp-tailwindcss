@@ -52,7 +52,7 @@ export declare const cnBase: <T extends CnOptions>(...classes: T) => CnReturn
 export declare const cn: <T extends CnOptions>(...classes: T) => (config?: TWMConfig) => CnReturn
 
 // compare if the value is true or array of values
-export type isTrueOrArray<T> = [Extract<T, true | unknown[]>] extends [never] ? false : true
+export type isTrueOrArray<T> = [T] extends [true | readonly unknown[]] ? true : false
 
 export type WithInitialScreen<T extends Array<string>>
   = ['initial', ...T]
@@ -158,7 +158,7 @@ export type TVScreenPropsValue<
 type TVPropsWithoutExtended<
   V extends TVVariants<S>,
   S extends TVSlots,
-  C extends TVConfig<V, EV>,
+  C extends TVConfig<V, undefined>,
 > = V extends undefined
   ? ClassProp<ClassValue>
   : {
@@ -168,7 +168,7 @@ type TVPropsWithoutExtended<
   } & ClassProp<ClassValue>
 
 type TVPropsExtendedWithoutVariants<
-  C extends TVConfig<any, EV>,
+  C extends TVConfig<undefined, EV>,
   EV extends TVVariants<ES>,
   ES extends TVSlots,
 > = {
@@ -182,6 +182,7 @@ type TVPropsExtendedWithVariants<
   S extends TVSlots,
   C extends TVConfig<V, EV>,
   EV extends TVVariants<ES>,
+  ES extends TVSlots,
 > = {
   [K in keyof V | keyof EV]?: isTrueOrArray<C['responsiveVariants']> extends true
     ? | (K extends keyof V ? StringToBoolean<keyof V[K]> : never)
@@ -201,7 +202,7 @@ type TVPropsWithExtended<
   ES extends TVSlots,
 > = V extends undefined
   ? TVPropsExtendedWithoutVariants<C, EV, ES>
-  : TVPropsExtendedWithVariants<V, S, C, EV>
+  : TVPropsExtendedWithVariants<V, S, C, EV, ES>
 
 export type TVProps<
   V extends TVVariants<S>,

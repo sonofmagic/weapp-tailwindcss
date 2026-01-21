@@ -30,6 +30,12 @@
         "coverage/**"
       ]
     },
+    "tsd": {
+      "dependsOn": [
+        "^tsd"
+      ],
+      "outputs": []
+    },
     "release": {},
     "sync": {
       "cache": false

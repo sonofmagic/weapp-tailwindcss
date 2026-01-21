@@ -31,27 +31,32 @@ function mergeConfigs(...configs: (TVConfig | undefined)[]): TVConfig {
     ? { ...defaultConfig.twMergeConfig }
     : undefined
 
+  const baseConfig: TVConfig = {
+    ...defaultConfig,
+    ...(baseTwMergeConfig ? { twMergeConfig: baseTwMergeConfig } : {}),
+  }
+
   return configs.reduce<TVConfig>((acc, config) => {
     if (!config) {
       return acc
     }
 
-    const nextTwMergeConfig = config.twMergeConfig
+    const { twMergeConfig: configTwMergeConfig, ...configRest } = config
+    const { twMergeConfig: accTwMergeConfig, ...accRest } = acc
+
+    const nextTwMergeConfig = configTwMergeConfig
       ? {
-          ...(acc.twMergeConfig ?? {}),
-          ...config.twMergeConfig,
+          ...(accTwMergeConfig ?? {}),
+          ...configTwMergeConfig,
         }
-      : acc.twMergeConfig
+      : accTwMergeConfig
 
     return {
-      ...acc,
-      ...config,
-      twMergeConfig: nextTwMergeConfig,
+      ...accRest,
+      ...configRest,
+      ...(nextTwMergeConfig ? { twMergeConfig: nextTwMergeConfig } : {}),
     }
-  }, {
-    ...defaultConfig,
-    twMergeConfig: baseTwMergeConfig,
-  })
+  }, baseConfig)
 }
 
 function disableTailwindMerge(config?: TVConfig): TVConfig {
@@ -69,9 +74,9 @@ function disableTailwindMerge(config?: TVConfig): TVConfig {
 function copyComponentMetadata(target: TailwindVariantsComponent, source: TailwindVariantsComponent) {
   const descriptors = Object.getOwnPropertyDescriptors(source)
 
-  delete descriptors.length
-  delete descriptors.name
-  delete descriptors.prototype
+  Reflect.deleteProperty(descriptors, 'length')
+  Reflect.deleteProperty(descriptors, 'name')
+  Reflect.deleteProperty(descriptors, 'prototype')
 
   Object.defineProperties(target, descriptors)
 }
@@ -224,3 +229,4 @@ export type {
   TWMConfig,
   TWMergeConfig,
 }
+export type { VariantProps } from 'tailwind-variants'
