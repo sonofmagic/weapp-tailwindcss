@@ -25,19 +25,28 @@ type TailwindVariantOptions = Parameters<typeof tailwindVariantTv>[0]
 
 type TailwindVariantConfig = Parameters<typeof tailwindVariantTv>[1]
 
+type TVConfigWithMerge = Omit<TVConfig, 'twMergeConfig'> & {
+  twMergeConfig: NonNullable<TVConfig['twMergeConfig']>
+}
+
 function mergeConfigs(...configs: (TVConfig | undefined)[]): TVConfig {
   const baseTwMergeConfig = defaultConfig.twMergeConfig
     ? { ...defaultConfig.twMergeConfig }
-    : undefined
+    : {}
 
-  return configs.reduce<TVConfig>((acc, config) => {
+  const baseConfig: TVConfigWithMerge = {
+    ...defaultConfig,
+    twMergeConfig: baseTwMergeConfig,
+  }
+
+  return configs.reduce<TVConfigWithMerge>((acc, config) => {
     if (!config) {
       return acc
     }
 
     const nextTwMergeConfig = config.twMergeConfig
       ? {
-          ...(acc.twMergeConfig ?? {}),
+          ...acc.twMergeConfig,
           ...config.twMergeConfig,
         }
       : acc.twMergeConfig
@@ -47,10 +56,7 @@ function mergeConfigs(...configs: (TVConfig | undefined)[]): TVConfig {
       ...config,
       twMergeConfig: nextTwMergeConfig,
     }
-  }, {
-    ...defaultConfig,
-    twMergeConfig: baseTwMergeConfig,
-  })
+  }, baseConfig)
 }
 
 function disableTailwindMerge(config?: TVConfig): TVConfig {
@@ -68,9 +74,9 @@ function disableTailwindMerge(config?: TVConfig): TVConfig {
 function copyComponentMetadata(target: TailwindVariantComponent, source: TailwindVariantComponent) {
   const descriptors = Object.getOwnPropertyDescriptors(source)
 
-  delete descriptors.length
-  delete descriptors.name
-  delete descriptors.prototype
+  Reflect.deleteProperty(descriptors, 'length')
+  Reflect.deleteProperty(descriptors, 'name')
+  Reflect.deleteProperty(descriptors, 'prototype')
 
   Object.defineProperties(target, descriptors)
 }
