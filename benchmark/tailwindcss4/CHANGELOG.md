@@ -1,5 +1,12 @@
 # benchmark-tailwindcss4
 
+## 0.0.3
+
+### Patch Changes
+
+- 📦 **Dependencies** [`edb9d7a`](https://github.com/sonofmagic/weapp-tailwindcss/commit/edb9d7ae31d5e0ea36647e9738639a830e54679f)
+  → `@weapp-tailwindcss/cva@0.1.5`, `@weapp-tailwindcss/variants@0.1.6`
+
 ## 0.0.2
 
 ### Patch Changes
