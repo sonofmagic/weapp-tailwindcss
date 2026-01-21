@@ -1,5 +1,11 @@
 # tailwind-variant-v3
 
+## 0.1.2
+
+### Patch Changes
+
+- 🐛 **Fix twMerge adapter resolution for browser-safe builds and keep default merge behavior when overriding config.** [`8cec196`](https://github.com/sonofmagic/weapp-tailwindcss/commit/8cec196a1c65ec66d1108ce818f54c87674aa1a3) by @sonofmagic
+
 ## 0.1.1
 
 ### Patch Changes
