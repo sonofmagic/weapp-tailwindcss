@@ -1,5 +1,12 @@
 # website
 
+## 1.0.13
+
+### Patch Changes
+
+- 📦 **Dependencies**
+  → `@weapp-tailwindcss/cva@0.1.4`, `@weapp-tailwindcss/merge@2.1.4`, `@weapp-tailwindcss/variants@0.1.5`
+
 ## 1.0.12
 
 ### Patch Changes
