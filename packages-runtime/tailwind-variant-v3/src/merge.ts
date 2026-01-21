@@ -2,19 +2,57 @@ import type { TailwindMergeConfig } from './constants'
 import type { ClassValue, TailwindMergeAdapter, TVConfig, TWMConfig } from './types'
 import { defaultConfig } from './constants'
 import { isEmptyObject, isEqual } from './utils'
-// eslint-disable-next-line perfectionist/sort-imports
-import { createRequire } from 'node:module'
 
 export type ClassMerger = (...classes: ClassValue[]) => string | undefined
 
 const MERGE_MODULE_IDS = ['tailwind-merge'] as const
+// Keep the ESM output browser-friendly by avoiding static Node built-in imports.
 const requireFromThisModule = (() => {
-  try {
-    return createRequire(import.meta.url)
-  }
-  catch {
+  const moduleRef = globalThis.module as unknown as {
+    createRequire?: (url: string | URL) => NodeRequire
+    require?: NodeRequire
+  } | undefined
+
+  if (!moduleRef) {
     return null
   }
+
+  if (typeof moduleRef.createRequire === 'function') {
+    try {
+      const moduleUrl = new URL(import.meta.url)
+      moduleUrl.search = ''
+      moduleUrl.hash = ''
+      return moduleRef.createRequire(moduleUrl)
+    }
+    catch {
+      return null
+    }
+  }
+
+  const moduleCtor = (moduleRef as { constructor?: { createRequire?: (url: string | URL) => NodeRequire } }).constructor
+
+  if (typeof moduleCtor?.createRequire === 'function') {
+    try {
+      const moduleUrl = new URL(import.meta.url)
+      moduleUrl.search = ''
+      moduleUrl.hash = ''
+      return moduleCtor.createRequire(moduleUrl)
+    }
+    catch {
+      return null
+    }
+  }
+
+  if (typeof moduleRef.require === 'function') {
+    try {
+      return moduleRef.require.bind(moduleRef)
+    }
+    catch {
+      return null
+    }
+  }
+
+  return null
 })()
 
 let cachedTwMerge: ((className: string) => string) | null = null
@@ -96,7 +134,7 @@ function createTailwindMerge(adapter: TailwindMergeAdapter | null) {
     return adapter.twMerge
   }
 
-  const activeMergeConfig = cachedTwMergeConfig as Record<string, any>
+  const activeMergeConfig = cachedTwMergeConfig as NonNullable<TWMConfig['twMergeConfig']>
 
   return adapter.extendTailwindMerge({
     ...activeMergeConfig,
@@ -178,11 +216,13 @@ export function cn<T extends ClassValue[]>(...classes: T) {
       return undefined
     }
 
-    if (!config.twMerge) {
+    const resolvedConfig = config === defaultConfig ? config : { ...defaultConfig, ...config }
+
+    if (!resolvedConfig.twMerge) {
       return className
     }
 
-    const adapter = resolveMergeAdapter(config)
+    const adapter = resolveMergeAdapter(resolvedConfig)
     const shouldRefreshAdapter = adapter !== cachedActiveAdapter
 
     if (!cachedTwMerge || didTwMergeConfigChange || shouldRefreshAdapter) {

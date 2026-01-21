@@ -26,10 +26,12 @@ export function resolveResponsiveSettings(
   if (Array.isArray(responsiveConfig) || typeof responsiveConfig === 'boolean') {
     globalResponsiveSetting = responsiveConfig
   }
-  else if (responsiveConfig && typeof responsiveConfig === 'object') {
+  else if (responsiveConfig && typeof responsiveConfig === 'object' && !Array.isArray(responsiveConfig)) {
+    const responsiveMap = responsiveConfig as Record<string, boolean | string[] | undefined>
+
     for (const key of variantKeys) {
-      if (responsiveConfig[key] !== undefined) {
-        variantResponsiveSettings[key] = responsiveConfig[key] as boolean | string[]
+      if (responsiveMap[key] !== undefined) {
+        variantResponsiveSettings[key] = responsiveMap[key] as boolean | string[]
       }
     }
   }
@@ -337,7 +339,7 @@ export function getCompoundVariantClassNamesBySlot(
     return compoundClassNames
   }
 
-  const result: Record<string, any> = {}
+  const result: { base?: any } & Record<string, any> = {}
 
   for (const className of compoundClassNames) {
     if (typeof className === 'string') {

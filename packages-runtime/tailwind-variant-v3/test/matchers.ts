@@ -1,4 +1,8 @@
+import { extendTailwindMerge, twMerge } from 'tailwind-merge'
 import { expect } from 'vitest'
+import { defaultConfig } from '../src/index'
+
+defaultConfig.twMergeAdapter = { extendTailwindMerge, twMerge }
 
 function parseClasses(result: string | string[]) {
   return (typeof result === 'string' ? result.split(' ') : result).slice().sort()

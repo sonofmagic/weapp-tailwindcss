@@ -1,4 +1,4 @@
-import type { CreateTVFactory, TV, TVConfig } from './types'
+import type { ClassValue, CreateTVFactory, TV, TVConfig } from './types'
 import { defaultConfig } from './constants'
 import { hasSlotOverrides, hasVariantOverrides } from './helpers'
 import { cn, cnBase, createClassMerger, updateTailwindMergeConfig } from './merge'
@@ -12,6 +12,37 @@ import {
   getVariantClassNamesBySlotKey,
   resolveResponsiveSettings,
 } from './variants'
+
+interface TVExtendShape {
+  base?: ClassValue
+  variants?: Record<string, any>
+  defaultVariants?: Record<string, any>
+  slots?: Record<string, any>
+  compoundVariants?: any[]
+  compoundSlots?: any[]
+}
+
+type TVExtend = TVExtendShape | null
+
+interface TVOptions {
+  base?: ClassValue
+  extend?: TVExtend
+  slots?: Record<string, any> | undefined
+  variants?: Record<string, any>
+  compoundVariants?: any[]
+  compoundSlots?: any[]
+  defaultVariants?: Record<string, any>
+}
+
+interface TVProps extends Record<string, any> {
+  class?: ClassValue
+  className?: ClassValue
+}
+
+interface SlotPropsArg extends Record<string, any> {
+  class?: ClassValue
+  className?: ClassValue
+}
 
 function mergeSlotDefinitions(
   baseSlots: Record<string, any>,
@@ -39,7 +70,7 @@ function assertArray(value: unknown, propName: string): asserts value is any[] {
   }
 }
 
-export function tvImplementation(options: Record<string, any>, configProp?: TVConfig) {
+export function tvImplementation(options: TVOptions, configProp?: TVConfig) {
   const {
     extend = null,
     slots: slotProps = {},
@@ -51,7 +82,9 @@ export function tvImplementation(options: Record<string, any>, configProp?: TVCo
 
   const config: TVConfig = { ...defaultConfig, ...configProp }
 
-  const base = extend?.base ? cnBase(extend.base, options?.base) : options?.base
+  const base = extend?.base
+    ? cnBase(extend.base, options?.base)
+    : options?.base
 
   const variants = extend?.variants && !isEmptyObject(extend.variants)
     ? mergeObjects(variantsProps, extend.variants)
@@ -67,14 +100,14 @@ export function tvImplementation(options: Record<string, any>, configProp?: TVCo
   const isExtendedSlotsEmpty = isEmptyObject(extendSlots)
   const hasOwnSlots = !isEmptyObject(slotProps)
 
-  const componentSlots = hasOwnSlots
+  const componentSlots: Record<string, any> = hasOwnSlots
     ? {
         base: cnBase(options?.base, isExtendedSlotsEmpty && extend?.base),
         ...slotProps,
       }
     : {}
 
-  const slots = isExtendedSlotsEmpty
+  const slots: Record<string, any> = isExtendedSlotsEmpty
     ? componentSlots
     : mergeSlotDefinitions(
         { ...extendSlots },
@@ -93,12 +126,12 @@ export function tvImplementation(options: Record<string, any>, configProp?: TVCo
   let cachedDefaultResult: any
   let hasCachedDefaultResult = false
 
-  const component = (propsParam?: Record<string, any>) => {
+  const component = (propsParam?: TVProps) => {
     if (!propsParam && hasCachedDefaultResult) {
       return cachedDefaultResult
     }
 
-    const props = propsParam ?? {}
+    const props: Record<string, any> = propsParam ?? {}
 
     assertArray(compoundVariants, 'compoundVariants')
     assertArray(compoundSlots, 'compoundSlots')
@@ -116,7 +149,9 @@ export function tvImplementation(options: Record<string, any>, configProp?: TVCo
       config,
       props,
       variantResponsiveSettings: responsiveState.variantResponsiveSettings,
-      globalResponsiveSetting: responsiveState.globalResponsiveSetting,
+      ...(responsiveState.globalResponsiveSetting === undefined
+        ? {}
+        : { globalResponsiveSetting: responsiveState.globalResponsiveSetting }),
     })
 
     const baseVariantClassNames = getVariantClassNames(context)
@@ -157,12 +192,15 @@ export function tvImplementation(options: Record<string, any>, configProp?: TVCo
       )
     }
 
-    const slotsFns: Record<string, any> = {}
+    const slotsFns: Record<
+      string,
+      (slotPropsArg?: SlotPropsArg) => ReturnType<typeof mergeClasses>
+    > = {}
 
     for (const slotKey of slotKeys) {
       const cached = baseSlotOutputs.get(slotKey)
 
-      slotsFns[slotKey] = (slotPropsArg?: Record<string, any>) => {
+      slotsFns[slotKey] = (slotPropsArg?: SlotPropsArg) => {
         if (!slotPropsArg || !hasSlotOverrides(slotPropsArg)) {
           return cached
         }
