@@ -1,5 +1,11 @@
 # @weapp-tailwindcss/variants
 
+## 0.1.6
+
+### Patch Changes
+
+- 🐛 **修复类型声明与 VariantProps 导出，并为相关运行时包补充 tsd 类型测试。** [`edb9d7a`](https://github.com/sonofmagic/weapp-tailwindcss/commit/edb9d7ae31d5e0ea36647e9738639a830e54679f) by @sonofmagic
+
 ## 0.1.5
 
 ### Patch Changes
