@@ -1,5 +1,11 @@
 # @weapp-tailwindcss/variants-v3
 
+## 0.0.4
+
+### Patch Changes
+
+- 🐛 **修复运行时配置合并的类型问题，避免 `twMergeConfig` 被推断为 `undefined`，并兼容严格的属性访问规则。** [`4d8fc39`](https://github.com/sonofmagic/weapp-tailwindcss/commit/4d8fc39cdff6f2b6057a93d1f75897d8032e6098) by @sonofmagic
+
 ## 0.0.3
 
 ### Patch Changes
