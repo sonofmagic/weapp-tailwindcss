@@ -15,6 +15,13 @@ describe('cva runtime', () => {
     expect(badge()).toBe('text-[#ececec]')
   })
 
+  it('accepts boolean escape/unescape options', () => {
+    const { cva: rawCva } = create({ escape: true, unescape: true })
+    const badge = rawCva('text-[#ececec]')
+
+    expect(badge()).toBe('text-_b_hececec_B')
+  })
+
   it('normalizes escaped classes before evaluating variants', () => {
     const badge = cva('text-_b_hececec_B', {
       variants: {

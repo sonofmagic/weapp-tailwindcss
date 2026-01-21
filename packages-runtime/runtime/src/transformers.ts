@@ -8,7 +8,7 @@ import {
 
 const identity = (value: string) => value
 
-function isConfig<T extends object>(value: false | T | undefined): value is T {
+function isConfig<T extends object>(value: boolean | T | undefined): value is T {
   return typeof value === 'object' && value !== null
 }
 

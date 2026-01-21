@@ -25,6 +25,12 @@ describe('merge-v3 runtime exports', () => {
     expect(rawTwMerge('text-[#ececec]')).toBe('text-[#ececec]')
   })
 
+  it('accepts boolean escape/unescape options', () => {
+    const { twMerge: rawTwMerge } = create({ escape: true, unescape: true })
+
+    expect(rawTwMerge('text-[#ececec]', 'text-[#ECECEC]')).toBe('text-_b_hECECEC_B')
+  })
+
   it('treats rpx arbitrary values as lengths for color-like utilities', () => {
     expect(twMerge('text-red', 'text-[80rpx]')).toBe('text-red text-_b80rpx_B')
     expect(twMerge('border-red-500', 'border-[10rpx]')).toBe('border-red-500 border-_b10rpx_B')

@@ -50,7 +50,7 @@
     "build:nocache": "cross-env TURBO_FORCE=1 pnpm build",
     "build:docs": "turbo run build --filter=./website/",
     "build:apps": "turbo run build --filter=./apps/*",
-    "build:pkgs": "turbo run build --filter=./packages/*",
+    "build:pkgs": "turbo run build --filter=./packages/* --filter=./packages-runtime/*",
     "build:demo": "turbo run build --filter=./demo/*",
     "build:analyze": "tsx scripts/check-build-size.ts",
     "test": "vitest run",

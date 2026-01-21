@@ -64,6 +64,13 @@ describe('variants runtime', () => {
     expect(badge()).toBe('text-[#ececec]')
   })
 
+  it('accepts boolean escape/unescape options', () => {
+    const { tv: rawTv } = createVariants({ escape: true, unescape: true })
+    const badge = rawTv({ base: 'text-[#ececec]' })
+
+    expect(badge()).toBe('text-_b_hececec_B')
+  })
+
   it('respects disabled escape/unescape options in runtime factory', () => {
     const runtime = createVariants({ escape: false, unescape: false })
     const badge = runtime.tv({

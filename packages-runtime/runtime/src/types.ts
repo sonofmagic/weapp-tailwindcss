@@ -1,9 +1,9 @@
 import type { EscapeOptions, UnescapeOptions } from '@weapp-core/escape'
 import type { ClassValue } from 'clsx'
 
-export type EscapeConfig = false | EscapeOptions
+export type EscapeConfig = boolean | EscapeOptions
 
-export type UnescapeConfig = false | UnescapeOptions
+export type UnescapeConfig = boolean | UnescapeOptions
 
 export interface CreateOptions {
   escape?: EscapeConfig

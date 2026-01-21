@@ -11,7 +11,7 @@ describe('createRuntimeFactory', () => {
       value: `prepared:${value}`,
       metadata: 'meta-token',
     }))
-    const restoreValue = vi.fn((value: string, metadata?: string) => {
+    const restoreValue = vi.fn((value: string, metadata?: unknown) => {
       expect(metadata).toBe('meta-token')
       return value.replace('prepared:', 'restored:')
     })
@@ -72,6 +72,24 @@ describe('createRuntimeFactory', () => {
 
     expect(twMergeImpl).toHaveBeenCalledWith('text-[#ececec]')
     expect(merged).toBe('text-[#ececec]')
+  })
+
+  it('accepts boolean escape/unescape options', () => {
+    const twMergeImpl = vi.fn((value: string) => value)
+
+    const createRuntime = createRuntimeFactory({
+      version: 3,
+      twMerge: twMergeImpl,
+      twJoin: twMergeImpl,
+      extendTailwindMerge: vi.fn(() => twMergeImpl),
+      createTailwindMerge: vi.fn(() => twMergeImpl),
+    })
+
+    const runtime = createRuntime({ escape: true, unescape: true })
+    const merged = runtime.twMerge('text-_b_hececec_B')
+
+    expect(twMergeImpl).toHaveBeenCalledWith('text-[#ececec]')
+    expect(merged).toBe('text-_b_hececec_B')
   })
 
   it('accepts plain string responses from prepareValue hooks', () => {

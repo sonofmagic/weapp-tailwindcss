@@ -24,4 +24,10 @@ describe('v4 runtime exports', () => {
 
     expect(rawTwMerge('text-[#ececec]')).toBe('text-[#ececec]')
   })
+
+  it('accepts boolean escape/unescape options', () => {
+    const { twMerge: rawTwMerge } = create({ escape: true, unescape: true })
+
+    expect(rawTwMerge('text-[#ececec]', 'text-[#ECECEC]')).toBe('text-_b_hECECEC_B')
+  })
 })
