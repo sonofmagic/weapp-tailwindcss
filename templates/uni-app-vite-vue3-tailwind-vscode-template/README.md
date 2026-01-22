@@ -23,7 +23,7 @@
 ## 快速开始
 
 > [!IMPORTANT]
-> 请使用 Node >=22(LTS) 运行此项目! 详见 [issues/29](https://github.com/sonofmagic/uni-app-vite-vue3-tailwind-vscode-template/issues/29)
+> 推荐使用 `"node": "^20.19.0 || >=22.12.0"` 的 Node.js 版本进行开发! 详见 [issues/29](https://github.com/sonofmagic/uni-app-vite-vue3-tailwind-vscode-template/issues/29)
 >
 > 另外谨慎升级 `package.json` 中锁定的 `pinia`/`vue`/`@vue/*` 相关包的版本，新版本可能 `uni-app` 没有兼容，造成一些奇怪的 bug
 
