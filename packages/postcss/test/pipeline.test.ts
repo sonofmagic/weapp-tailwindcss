@@ -32,6 +32,7 @@ describe('style processing pipeline', () => {
       'normal:px-transform',
       'normal:rem-transform',
       'normal:calc',
+      'normal:calc-duplicate-cleaner',
       'normal:custom-property-cleaner',
       'post:core',
     ])
