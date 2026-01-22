@@ -75,7 +75,7 @@
     "@dcloudio/uni-stacktracey": "2.0.2-4080520251106001",
     "@dcloudio/uni-stat": "2.0.2-4080520251106001",
     "@vue/shared": "^3.5.27",
-    "core-js": "^3.47.0",
+    "core-js": "^3.48.0",
     "flyio": "^0.6.14",
     "vue": "^2.6.14",
     "vue-class-component": "^7.2.6",

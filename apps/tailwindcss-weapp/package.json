@@ -101,7 +101,7 @@
     "indent-string": "^5.0.0",
     "miniprogram-api-typings": "^5.0.0",
     "postcss": "^8.5.3",
-    "prettier": "^3.8.0",
+    "prettier": "^3.8.1",
     "prettier-plugin-tailwindcss": "^0.7.2",
     "redent": "^4.0.0",
     "strip-indent": "^4.1.1",

@@ -31,7 +31,7 @@
   },
   "dependencies": {
     "@weapp-tailwindcss/merge": "workspace:*",
-    "lodash": "^4.17.21"
+    "lodash": "^4.17.23"
   },
   "devDependencies": {
     "@egoist/tailwindcss-icons": "^1.9.0",

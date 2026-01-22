@@ -39,7 +39,7 @@ catalogs:
   postcssRpx:
     postcss-rpx-transform: ^1.0.1
   prettier371:
-    prettier: ^3.8.0
+    prettier: ^3.8.1
   react18:
     '@types/react': ^19.2.9
     '@types/react-dom': 18.2.7
@@ -53,7 +53,7 @@ catalogs:
   reactRefresh018:
     react-refresh: ^0.18.0
   sass195:
-    sass: ^1.97.2
+    sass: ^1.97.3
   stylelint1625:
     stylelint: ^17.0.0
   tailwindMerge:
@@ -118,9 +118,9 @@ catalogs:
   weappIdeCli:
     weapp-ide-cli: ^5.0.0
   weappVite:
-    weapp-vite: ^6.3.2
+    weapp-vite: ^6.3.6
   wrangler4530:
-    wrangler: ^4.59.3
+    wrangler: ^4.60.0
 
 onlyBuiltDependencies:
   - '@tailwindcss/oxide'

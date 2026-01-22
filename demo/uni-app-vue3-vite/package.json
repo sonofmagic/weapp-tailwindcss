@@ -67,7 +67,7 @@
     "clipboard": "^2.0.11",
     "dayjs": "^1.11.19",
     "eventemitter3": "^5.0.4",
-    "htmlparser2": "^10.0.0",
+    "htmlparser2": "^10.1.0",
     "magic-string": "^0.30.21",
     "miniprogram-computed": "^7.1.0",
     "p-queue": "9.1.0",
