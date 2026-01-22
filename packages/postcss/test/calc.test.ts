@@ -192,6 +192,20 @@ describe('calc', () => {
     expect(css).toContain('margin-left: calc(var(--spacing)*4);')
   })
 
+  it('removes duplicate literal declarations when cssCalc is enabled', async () => {
+    const code = `.mt-1{ margin-top: 8rpx; margin-top: 8rpx; }`
+
+    const styleHandler = createStyleHandler({
+      isMainChunk: false,
+      cssCalc: true,
+    })
+    const { css } = await styleHandler(code, {
+      isMainChunk: false,
+    })
+    const count = css.match(/margin-top:\s*8rpx;/g)?.length ?? 0
+    expect(count).toBe(1)
+  })
+
   it('cssCalc 传入 --spacing 示例', async () => {
     const code = `page,
 :root {

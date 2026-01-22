@@ -4,6 +4,7 @@ import type { IStyleHandlerOptions } from './types'
 import postcssPresetEnv from 'postcss-preset-env'
 import { createColorFunctionalFallback } from './plugins/colorFunctionalFallback'
 import { createContext } from './plugins/ctx'
+import { getCalcDuplicateCleaner } from './plugins/getCalcDuplicateCleaner'
 import { getCalcPlugin } from './plugins/getCalcPlugin'
 import { getCustomPropertyCleaner } from './plugins/getCustomPropertyCleaner'
 import { getPxTransformPlugin } from './plugins/getPxTransformPlugin'
@@ -177,6 +178,21 @@ function createPipelineDefinitions(options: IStyleHandlerOptions): PipelineNodeD
       return plugin
         ? {
             id: 'normal:calc',
+            stage: 'normal',
+            createPlugin: () => plugin,
+          }
+        : undefined
+    },
+  })
+
+  stages.normal.push({
+    id: 'normal:calc-duplicate-cleaner',
+    stage: 'normal',
+    prepare: () => {
+      const plugin = getCalcDuplicateCleaner(options)
+      return plugin
+        ? {
+            id: 'normal:calc-duplicate-cleaner',
             stage: 'normal',
             createPlugin: () => plugin,
           }
