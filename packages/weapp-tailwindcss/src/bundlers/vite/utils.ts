@@ -1,9 +1,10 @@
 import type { ExistingRawSourceMap } from 'rollup'
 import path from 'node:path'
 import process from 'node:process'
+import { cleanUrl, ensurePosix } from '@weapp-tailwindcss/shared'
 
 export function slash(p: string): string {
-  return p.replace(/\\/g, '/')
+  return ensurePosix(p)
 }
 
 export const isWindows = process.platform === 'win32'
@@ -15,13 +16,9 @@ export function isCSSRequest(request: string): boolean {
 }
 
 export function normalizePath(id: string): string {
-  return path.posix.normalize(isWindows ? slash(id) : id)
+  return path.posix.normalize(isWindows ? ensurePosix(id) : id)
 }
-
-const postfixRE = /[?#].*$/
-export function cleanUrl(url: string): string {
-  return url.replace(postfixRE, '')
-}
+export { cleanUrl }
 
 export async function formatPostcssSourceMap(
   rawMap: ExistingRawSourceMap,

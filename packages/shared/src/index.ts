@@ -6,12 +6,46 @@ export { getValue, setValue }
 
 export { defu } from 'defu'
 
+const HTTP_PATTERN = /^https?:\/\//i
+const CLEAN_URL_REGEXP = /[?#].*$/
+
 export function isRegexp(value: unknown): value is RegExp {
   return value instanceof RegExp
 }
 
 export function isMap<T = unknown, K = unknown>(value: unknown): value is Map<T, K> {
   return value instanceof Map
+}
+
+export function isHttp(target: string) {
+  return HTTP_PATTERN.test(target)
+}
+
+export function cleanUrl(url: string): string {
+  return url.replace(CLEAN_URL_REGEXP, '')
+}
+
+export function toArray<T>(value: T | T[] | null | undefined): Array<NonNullable<T>> {
+  if (value == null) {
+    return []
+  }
+  return (Array.isArray(value) ? value : [value]) as Array<NonNullable<T>>
+}
+
+export function ensurePosix(value: string): string {
+  return value.replace(/\\/g, '/')
+}
+
+export function normalizeRoot(root: string): string {
+  const trimmed = root.trim().replace(/^[./\\]+/, '').replace(/\\+/g, '/')
+  return trimmed.endsWith('/') ? trimmed.slice(0, -1) : trimmed
+}
+
+export function normalizeRelativeImport(target: string): string {
+  if (target.startsWith('.') || target.startsWith('/')) {
+    return target
+  }
+  return `./${target}`
 }
 export function regExpTest(arr: (string | RegExp)[], str: string, options?: { exact?: boolean }) {
   if (!Array.isArray(arr)) {

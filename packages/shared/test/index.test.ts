@@ -1,5 +1,19 @@
 import { describe, expect, it } from 'vitest'
-import { defuOverrideArray, groupBy, isMap, isRegexp, noop, regExpTest, removeExt } from '@/index'
+import {
+  cleanUrl,
+  defuOverrideArray,
+  ensurePosix,
+  groupBy,
+  isHttp,
+  isMap,
+  isRegexp,
+  noop,
+  normalizeRelativeImport,
+  normalizeRoot,
+  regExpTest,
+  removeExt,
+  toArray,
+} from '@/index'
 
 describe('shared utils', () => {
   it('isRegexp correctly detects regular expressions', () => {
@@ -93,5 +107,36 @@ describe('shared utils', () => {
 
   it('noop returns undefined without side effects', () => {
     expect(noop()).toBeUndefined()
+  })
+
+  it('toArray normalizes values to arrays', () => {
+    expect(toArray(null)).toEqual([])
+    expect(toArray('a')).toEqual(['a'])
+    expect(toArray(['a', 'b'])).toEqual(['a', 'b'])
+  })
+
+  it('ensurePosix normalizes windows separators', () => {
+    expect(ensurePosix('C:\\Users\\file.css')).toBe('C:/Users/file.css')
+  })
+
+  it('normalizeRoot trims and normalizes root paths', () => {
+    expect(normalizeRoot('./src/')).toBe('src')
+    expect(normalizeRoot(' /src/app ')).toBe('src/app')
+  })
+
+  it('normalizeRelativeImport prepends dot for bare paths', () => {
+    expect(normalizeRelativeImport('styles/index.css')).toBe('./styles/index.css')
+    expect(normalizeRelativeImport('./styles/index.css')).toBe('./styles/index.css')
+    expect(normalizeRelativeImport('/styles/index.css')).toBe('/styles/index.css')
+  })
+
+  it('cleanUrl strips query and hash', () => {
+    expect(cleanUrl('style.css?inline#hash')).toBe('style.css')
+  })
+
+  it('isHttp detects http/https urls', () => {
+    expect(isHttp('http://example.com')).toBe(true)
+    expect(isHttp('https://example.com')).toBe(true)
+    expect(isHttp('ftp://example.com')).toBe(false)
   })
 })

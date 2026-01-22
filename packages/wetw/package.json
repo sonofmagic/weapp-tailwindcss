@@ -52,6 +52,7 @@
   "publishConfig": {},
   "dependencies": {
     "@inquirer/prompts": "^8.2.0",
+    "@weapp-tailwindcss/shared": "workspace:*",
     "c12": "^3.3.3",
     "cac": "^6.7.14"
   }

@@ -81,6 +81,7 @@
     "lint:fix": "eslint . --fix"
   },
   "dependencies": {
+    "@weapp-tailwindcss/shared": "workspace:*",
     "micromatch": "^4.0.8"
   },
   "publishConfig": {}

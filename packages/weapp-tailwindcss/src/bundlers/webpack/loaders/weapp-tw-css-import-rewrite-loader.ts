@@ -3,6 +3,7 @@ import type { Buffer } from 'node:buffer'
 import type webpack from 'webpack'
 import type { AppType } from '@/types'
 import process from 'node:process'
+import { ensurePosix } from '@weapp-tailwindcss/shared'
 import loaderUtils from 'loader-utils'
 import { rewriteTailwindcssImportsInCode } from '@/bundlers/shared/css-imports'
 
@@ -11,10 +12,6 @@ interface CssImportRewriteLoaderOptions {
     pkgDir: string
     appType?: AppType
   }
-}
-
-function slash(p: string): string {
-  return p.replace(/\\/g, '/')
 }
 
 function joinPosixPath(base: string, subpath: string) {
@@ -32,7 +29,7 @@ function applyCssImportRewrite(source: string, options: CssImportRewriteLoaderOp
   }
   const rewritten = rewriteTailwindcssImportsInCode(
     source,
-    slash(pkgDir),
+    ensurePosix(pkgDir),
     {
       join: joinPosixPath,
       appType: rewriteOptions.appType,
