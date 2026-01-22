@@ -35,6 +35,36 @@ jobs:
       - name: Install Dependencies
         run: pnpm i
 
+      - name: Verify packed deps are resolved
+        run: |
+          set -euo pipefail
+          TMP_DIR="$(mktemp -d)"
+          PACKAGES=(
+            "@weapp-tailwindcss/runtime"
+            "@weapp-tailwindcss/merge"
+            "@weapp-tailwindcss/merge-v3"
+            "@weapp-tailwindcss/variants"
+            "@weapp-tailwindcss/variants-v3"
+            "@weapp-tailwindcss/cva"
+            "tailwind-variant-v3"
+            "@weapp-tailwindcss/typography"
+            "@weapp-tailwindcss/ui"
+            "theme-transition"
+          )
+          for pkg in "${PACKAGES[@]}"; do
+            SAFE_PKG="${pkg//@/}"
+            SAFE_PKG="${SAFE_PKG//\//_}"
+            PKG_DIR="$TMP_DIR/$SAFE_PKG"
+            mkdir -p "$PKG_DIR"
+            pnpm --filter "$pkg" pack --pack-destination "$PKG_DIR"
+            TARBALL="$(ls "$PKG_DIR"/*.tgz | head -n 1)"
+            tar -xzf "$TARBALL" -C "$PKG_DIR" package/package.json
+            if grep -n '"workspace:\\*"' "$PKG_DIR/package/package.json"; then
+              echo "ERROR: workspace:* found in packed package.json for $pkg"
+              exit 1
+            fi
+          done
+
       - name: Create Release Pull Request or Publish to npm
         id: changesets
         uses: changesets/action@v1
