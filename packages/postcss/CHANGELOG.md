@@ -1,5 +1,13 @@
 # @weapp-tailwindcss/postcss
 
+## 2.1.1
+
+### Patch Changes
+
+- 🐛 **修复 `cssCalc` 预计算时可能输出重复声明的问题，新增仅在启用 `cssCalc` 时生效的去重清理。** [`366027a`](https://github.com/sonofmagic/weapp-tailwindcss/commit/366027a3a9831cbdcb609297c75596ade0f42ad5) by @sonofmagic
+- 📦 **Dependencies** [`ccc0a33`](https://github.com/sonofmagic/weapp-tailwindcss/commit/ccc0a330b5cd455665a0f2f2c3e8895b27a04b52)
+  → `@weapp-tailwindcss/shared@1.1.2`
+
 ## 2.1.0
 
 ### Minor Changes
