@@ -1,5 +1,11 @@
 # @weapp-tailwindcss/postcss
 
+## 2.1.2
+
+### Patch Changes
+
+- 🐛 **chore: 降级 postcss-preset-env** [`becab46`](https://github.com/sonofmagic/weapp-tailwindcss/commit/becab46e7df4864feba2e708f67a3e3a08e341e0) by @sonofmagic
+
 ## 2.1.1
 
 ### Patch Changes
