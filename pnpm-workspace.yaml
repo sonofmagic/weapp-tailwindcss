@@ -112,7 +112,7 @@ catalogs:
     '@vue/compiler-sfc': ^3.5.27
     vue: ^3.5.27
   vueTsc318:
-    vue-tsc: ^3.2.2
+    vue-tsc: ^3.2.3
   weappChildren:
     weapp-tailwindcss-children: ^0.1.0
   weappIdeCli:
