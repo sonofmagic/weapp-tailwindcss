@@ -6,10 +6,10 @@ import type {
   Rem2rpxOptions,
 } from '@weapp-tailwindcss/postcss'
 import type { TailwindcssPatchOptions } from 'tailwindcss-patch'
-import type { ICustomAttributes } from '../types'
-import type { DisabledOptions } from './disabled-options'
+import type { DisabledOptions } from '../disabled-options'
+import type { ICustomAttributes } from '../shared'
 
-interface UserDefinedOptionsImportantPart {
+export interface UserDefinedOptionsImportantPart {
 
   /**
    * 是否禁用此插件。
@@ -262,13 +262,4 @@ interface UserDefinedOptionsImportantPart {
    * @ignore
    */
   uniAppX?: boolean
-}
-
-declare module '../typedoc.export' {
-  // 0.重要配置
-  export interface UserDefinedOptions extends UserDefinedOptionsImportantPart {}
-}
-
-declare module 'weapp-tailwindcss/types' {
-  export interface UserDefinedOptions extends UserDefinedOptionsImportantPart {}
 }

@@ -78,6 +78,7 @@
     "templates:push": "tsx scripts/push-templates.ts",
     "templates:update-deps": "tsx scripts/update-template-deps.ts",
     "generate:readme": "tsx scripts/readme/write.ts",
+    "docs:api": "tsx website/scripts/generate-api-docs.ts",
     "format": "prettier --check \"src/**/*.{ts,js}\" -w",
     "format:test": "prettier --check \"test/**/*.test.{ts,js}\" -w",
     "ls:pack": "npm pack --dry-run",

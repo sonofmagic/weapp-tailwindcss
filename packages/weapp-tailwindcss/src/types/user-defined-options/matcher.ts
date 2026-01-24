@@ -1,6 +1,6 @@
-import type { AppType } from '../types'
+import type { AppType } from '../shared'
 
-interface UserDefinedOptionsMatcherPart {
+export interface UserDefinedOptionsMatcherPart {
   /**
    * 匹配需要处理的 `wxml` 等模板文件。
    *
@@ -63,13 +63,4 @@ interface UserDefinedOptionsMatcherPart {
    * @default false
    */
   inlineWxs?: boolean
-}
-
-declare module '../typedoc.export' {
-  // 1.文件匹配
-  export interface UserDefinedOptions extends UserDefinedOptionsMatcherPart {}
-}
-
-declare module 'weapp-tailwindcss/types' {
-  export interface UserDefinedOptions extends UserDefinedOptionsMatcherPart {}
 }

@@ -1,5 +1,6 @@
 import type { ParserOptions } from '@babel/parser'
 import type { IJsHandlerOptions, JsModuleGraphOptions, LinkedJsModuleResult } from '../types'
+import type { SourceAnalysis } from './babel'
 import type { ModuleGraphEntry, ModuleState, QueueItem } from './module-graph/types'
 import type { ImportToken } from './NodePathWalker'
 import { analyzeSource, babelParse, processUpdatedSource } from './babel'

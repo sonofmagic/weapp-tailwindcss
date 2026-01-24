@@ -1,10 +1,10 @@
 import type { ParserOptions } from '@babel/parser'
 import type { LoadedPostcssOptions } from '@weapp-tailwindcss/postcss'
 import type { ILengthUnitsPatchOptions, TailwindcssPatchOptions } from 'tailwindcss-patch'
-import type { ICreateCacheReturnType } from '../cache'
-import type { AppType, IArbitraryValues } from '../types'
+import type { ICreateCacheReturnType } from '../../cache'
+import type { AppType, IArbitraryValues } from '../shared'
 
-interface UserDefinedOptionsGeneralPart {
+export interface UserDefinedOptionsGeneralPart {
   /**
    * 控制 Tailwind 自定义长度单位补丁。
    *
@@ -178,13 +178,4 @@ interface UserDefinedOptionsGeneralPart {
    * 默认 `info`，可设置为 `silent` 屏蔽全部输出。
    */
   logLevel?: 'info' | 'warn' | 'error' | 'silent'
-}
-
-declare module '../typedoc.export' {
-  // 3.一般配置
-  export interface UserDefinedOptions extends UserDefinedOptionsGeneralPart {}
-}
-
-declare module 'weapp-tailwindcss/types' {
-  export interface UserDefinedOptions extends UserDefinedOptionsGeneralPart {}
 }

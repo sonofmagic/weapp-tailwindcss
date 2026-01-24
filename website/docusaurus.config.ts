@@ -195,18 +195,6 @@ const config: Config = {
         },
       }
     },
-    [
-      'docusaurus-plugin-typedoc',
-      {
-        id: 'api',
-        entryPoints: ['../packages/weapp-tailwindcss/src/typedoc.export.ts'],
-        tsconfig: '../packages/weapp-tailwindcss/tsconfig.typedoc.json',
-        readme: 'none',
-        watch: process.env.TYPEDOC_WATCH,
-        skipErrorChecking: true,
-        lang: 'zh',
-      },
-    ],
   ],
   themeConfig:
     {
