@@ -1,4 +1,13 @@
-import type { InterfaceDeclaration, JSDocTag, Symbol as MorphSymbol, PropertySignature, Type, TypeAliasDeclaration } from 'ts-morph'
+import type {
+  InterfaceDeclaration,
+  JSDocableNode,
+  JSDocTag,
+  Symbol as MorphSymbol,
+  PropertySignature,
+  Signature,
+  Type,
+  TypeAliasDeclaration,
+} from 'ts-morph'
 import { execSync } from 'node:child_process'
 import fs from 'node:fs'
 import path from 'node:path'
@@ -197,7 +206,7 @@ function readTagText(tag: JSDocTag): string {
   return comment.toString().trim()
 }
 
-function readJsDoc(node: Node): JsDocInfo {
+function readJsDoc(node: JSDocableNode): JsDocInfo {
   const docs = node.getJsDocs()
   if (!docs.length) {
     return { description: '', tags: {} }
@@ -222,7 +231,7 @@ function readJsDoc(node: Node): JsDocInfo {
   return { description, tags }
 }
 
-function getPrimaryCallSignature(type: Type): ts.Signature | undefined {
+function getPrimaryCallSignature(type: Type): Signature | undefined {
   const signatures = type.getCallSignatures()
   if (signatures.length) {
     return signatures[0]
