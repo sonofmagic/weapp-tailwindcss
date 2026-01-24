@@ -171,6 +171,7 @@
     "bench": "vitest bench --config ./vitest.config.ts",
     "bench:js-handlers": "tsx scripts/js-bench.ts",
     "bench:js-diff": "tsx scripts/js-bench-diff.ts",
+    "tsd": "tsd",
     "clean": "tsx scripts/clean.ts",
     "get-decl": "tsx scripts/get-decl.ts",
     "ls:pack": "npm pack --dry-run",

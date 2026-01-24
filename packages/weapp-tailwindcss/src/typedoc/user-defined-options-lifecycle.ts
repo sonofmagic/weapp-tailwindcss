@@ -1,37 +1,43 @@
+interface UserDefinedOptionsLifecyclePart {
+  /**
+   * 插件 `apply` 初始调用时触发。
+   *
+   * @group 2.生命周期
+   */
+  onLoad?: () => void
+  /**
+   * 开始处理前触发。
+   *
+   * @group 2.生命周期
+   */
+  onStart?: () => void
+  /**
+   * 匹配并修改文件内容前触发。
+   *
+   * @group 2.生命周期
+   */
+  // onBeforeUpdate?: (filename: string, oldVal: string, newVal: string) => void
+  /**
+   * 匹配并修改文件后触发。
+   *
+   * @group 2.生命周期
+   */
+  onUpdate?: (filename: string, oldVal: string, newVal: string) => void
+  /**
+   * 结束处理时触发。
+   *
+   * @group 2.生命周期
+   */
+  onEnd?: () => void
+}
+
 declare module '../typedoc.export' {
   // 2.生命周期
-  export interface UserDefinedOptions {
-    /**
-     * 插件 `apply` 初始调用时触发。
-     *
-     * @group 2.生命周期
-     */
-    onLoad?: () => void
-    /**
-     * 开始处理前触发。
-     *
-     * @group 2.生命周期
-     */
-    onStart?: () => void
-    /**
-     * 匹配并修改文件内容前触发。
-     *
-     * @group 2.生命周期
-     */
-    // onBeforeUpdate?: (filename: string, oldVal: string, newVal: string) => void
-    /**
-     * 匹配并修改文件后触发。
-     *
-     * @group 2.生命周期
-     */
-    onUpdate?: (filename: string, oldVal: string, newVal: string) => void
-    /**
-     * 结束处理时触发。
-     *
-     * @group 2.生命周期
-     */
-    onEnd?: () => void
-  }
+  export interface UserDefinedOptions extends UserDefinedOptionsLifecyclePart {}
+}
+
+declare module 'weapp-tailwindcss/types' {
+  export interface UserDefinedOptions extends UserDefinedOptionsLifecyclePart {}
 }
 
 export {}

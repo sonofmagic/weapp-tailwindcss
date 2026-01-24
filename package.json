@@ -63,6 +63,7 @@
     "test:ui": "vitest --ui",
     "tsd": "turbo run tsd",
     "tsd:runtime": "turbo run tsd --filter=./packages-runtime/cva --filter=./packages-runtime/tailwind-variant-v3 --filter=./packages-runtime/variants --filter=./packages-runtime/variants-v3",
+    "tsd:weapp-tailwindcss": "pnpm --filter weapp-tailwindcss tsd",
     "e2e": "vitest run -c ./e2e/vitest.e2e.config.ts",
     "e2e:dev": "vitest -c ./e2e/vitest.e2e.config.ts",
     "e2e:u": "vitest run -u -c ./e2e/vitest.e2e.config.ts",
