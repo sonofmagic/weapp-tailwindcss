@@ -1,4 +1,4 @@
-# 接口: TailwindcssPatchOptions
+# TailwindcssPatchOptions
 
 定义于: node_modules/.pnpm/tailwindcss-patch@8.6.1_magicast@0.5.1_tailwindcss@4.1.18/node_modules/tailwindcss-patch/dist/index.d.ts:117
 
@@ -47,13 +47,23 @@ Feature toggles for optional helpers.
 
 ***
 
-### filter?
+### filter()?
 
-> `optional` **filter**: `((className: string) => boolean)`
+> `optional` **filter()**: `((className: string) => boolean)`
 
 定义于: node_modules/.pnpm/tailwindcss-patch@8.6.1_magicast@0.5.1_tailwindcss@4.1.18/node_modules/tailwindcss-patch/dist/index.d.ts:130
 
 Optional function that filters final class names.
+
+#### 参数
+
+##### className
+
+`string`
+
+#### 返回
+
+`boolean`
 
 ***
 
