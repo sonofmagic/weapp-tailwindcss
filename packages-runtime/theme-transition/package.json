@@ -51,6 +51,14 @@
     "lint:fix": "eslint . --fix",
     "start": "tsx scripts/index.ts"
   },
+  "peerDependencies": {
+    "tailwindcss": ">=3 <5"
+  },
+  "peerDependenciesMeta": {
+    "tailwindcss": {
+      "optional": true
+    }
+  },
   "publishConfig": {
     "exports": {
       ".": {
