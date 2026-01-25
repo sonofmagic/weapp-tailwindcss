@@ -7,7 +7,10 @@ export default defineConfig({
   clean: true,
   dts: true,
   external: [/^tailwindcss(\/|$)/],
-  inlineOnly: ['defu'],
+  inlineOnly: ['defu', /^tailwindcss(\/|$)/],
+  outputOptions: {
+    exports: 'named',
+  },
   target: 'es6',
   // https://github.com/egoist/tsdown/pull/1056
   // https://github.com/egoist/tsdown/issues?q=cjsInterop
