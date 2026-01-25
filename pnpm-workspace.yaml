@@ -25,7 +25,7 @@ catalogs:
   lucideReact0555:
     lucide-react: ^0.562.0
   lucideVueNext0555:
-    lucide-vue-next: ^0.562.0
+    lucide-vue-next: ^0.563.0
   miniApiTypings:
     miniprogram-api-typings: ^5.0.0
   postcss85:
@@ -118,7 +118,7 @@ catalogs:
   weappIdeCli:
     weapp-ide-cli: ^5.0.0
   weappVite:
-    weapp-vite: ^6.3.6
+    weapp-vite: ^6.4.0
   wrangler4530:
     wrangler: ^4.60.0
 
