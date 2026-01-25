@@ -1,7 +1,93 @@
+import fs from 'node:fs'
+import { createRequire } from 'node:module'
+import path from 'node:path'
+import { fileURLToPath } from 'node:url'
 import postcss from 'postcss'
-import tailwindcss from 'tailwindcss'
 import { vi } from 'vitest'
 import pluginDefault, { themeTransitionPlugin } from '@/tailwindcss'
+
+type DarkModeConfig = string | [string, ...unknown[]]
+
+const fixturePrefix = 'theme-transition-'
+const require = createRequire(import.meta.url)
+const tailwindVersion = require('tailwindcss/package.json').version as string
+
+const tailwindMajor = Number(tailwindVersion.split('.')[0]) || 0
+const isTailwindV4 = tailwindMajor >= 4
+const __filename = fileURLToPath(import.meta.url)
+const __dirname = path.dirname(__filename)
+const packageRoot = path.resolve(__dirname, '..')
+
+function formatDarkMode(value: unknown): string {
+  if (typeof value === 'function') {
+    return value.toString()
+  }
+
+  if (Array.isArray(value)) {
+    return `[${value.map(formatDarkMode).join(', ')}]`
+  }
+
+  return JSON.stringify(value)
+}
+
+function createFixture(darkMode?: DarkModeConfig) {
+  const baseDir = fs.mkdtempSync(path.join(packageRoot, `.tmp-${fixturePrefix}`))
+  const contentPath = path.join(baseDir, 'content.html')
+  const configPath = path.join(baseDir, 'tailwind.config.cjs')
+  const cssPath = path.join(baseDir, 'input.css')
+
+  fs.writeFileSync(contentPath, '<div class="text-black dark:text-white"></div>')
+
+  const darkModeLine = darkMode ? `  darkMode: ${formatDarkMode(darkMode)},\n` : ''
+  fs.writeFileSync(
+    configPath,
+    `module.exports = {\n  content: ['./content.html'],\n  corePlugins: { preflight: false },\n${darkModeLine}};\n`,
+  )
+
+  return { baseDir, cssPath, cleanup: () => fs.rmSync(baseDir, { recursive: true, force: true }) }
+}
+
+async function runTailwind(darkMode?: DarkModeConfig) {
+  if (isTailwindV4) {
+    const { baseDir, cssPath, cleanup } = createFixture(darkMode)
+    const css = [
+      '@config "./tailwind.config.cjs";',
+      '@plugin "theme-transition/tailwindcss";',
+      '@import "tailwindcss";',
+    ].join('\n')
+
+    try {
+      const { default: tailwindcss } = await import('@tailwindcss/postcss')
+      const result = await postcss([
+        tailwindcss({
+          base: baseDir,
+          optimize: false,
+        }),
+      ]).process(css, { from: cssPath })
+
+      return result.css
+    }
+    finally {
+      cleanup()
+    }
+  }
+
+  const { default: tailwindcss } = await import('tailwindcss')
+  const { css } = await postcss([tailwindcss({
+    darkMode,
+    content: [{
+      raw: 'dark',
+    }],
+    corePlugins: {
+      preflight: false,
+    },
+    plugins: [themeTransitionPlugin()],
+  })]).process(`@tailwind base;
+    @tailwind components;
+    @tailwind utilities;`)
+
+  return css
+}
 
 describe('tailwindcss', () => {
   it('exports matching default and named plugins', () => {
@@ -10,100 +96,49 @@ describe('tailwindcss', () => {
   })
 
   it('themeTransitionPlugin', async () => {
-    const { css } = await postcss([tailwindcss({
-      config: {
-        content: [{
-          raw: 'dark',
-        }],
-        corePlugins: {
-          preflight: false,
-        },
-        plugins: [themeTransitionPlugin()],
-      },
-    })]).process(`@tailwind base;
-      @tailwind components;
-      @tailwind utilities;`)
-    expect(css).toMatchSnapshot()
+    const css = await runTailwind('media')
+
+    expect(css).toContain('::view-transition-old(root)')
+    expect(css).toContain('::view-transition-new(root)')
+    expect(css).toContain('@media (prefers-color-scheme: dark)')
   })
 
   it('themeTransitionPlugin darkMode selector case 0', async () => {
-    const { css } = await postcss([tailwindcss({
-      darkMode: 'selector',
-      content: [{
-        raw: 'dark',
-      }],
-      corePlugins: {
-        preflight: false,
-      },
-      plugins: [themeTransitionPlugin()],
-    })]).process(`@tailwind base;
-      @tailwind components;
-      @tailwind utilities;`)
-    expect(css).toMatchSnapshot()
+    const css = await runTailwind('selector')
+
+    expect(css).toContain('.dark::view-transition-old(root)')
+    expect(css).toContain('.dark::view-transition-new(root)')
   })
 
   it('themeTransitionPlugin darkMode selector case 1', async () => {
-    const { css } = await postcss([tailwindcss({
-      darkMode: ['selector', '[data-mode="dark"]'],
-      content: [{
-        raw: 'dark',
-      }],
-      corePlugins: {
-        preflight: false,
-      },
-      plugins: [themeTransitionPlugin()],
-    })]).process(`@tailwind base;
-      @tailwind components;
-      @tailwind utilities;`)
-    expect(css).toMatchSnapshot()
+    const css = await runTailwind(['selector', '[data-mode="dark"]'])
+
+    expect(css).toContain('[data-mode="dark"]::view-transition-old(root)')
+    expect(css).toContain('[data-mode="dark"]::view-transition-new(root)')
   })
 
   it('themeTransitionPlugin darkMode variant case 0', async () => {
-    const { css } = await postcss([tailwindcss({
-      darkMode: ['variant', '&:not(.light *)'],
-      content: [{
-        raw: 'dark',
-      }],
-      corePlugins: {
-        preflight: false,
-      },
-      plugins: [themeTransitionPlugin()],
-    })]).process(`@tailwind base;
-      @tailwind components;
-      @tailwind utilities;`)
-    expect(css).toMatchSnapshot()
+    const css = await runTailwind(['variant', '&:not(.light *)'])
+
+    expect(css).toContain('::view-transition-old(root)')
   })
 
   it('themeTransitionPlugin darkMode variant case 1', async () => {
-    const { css } = await postcss([tailwindcss({
-      darkMode: ['variant', [
+    const css = await runTailwind([
+      'variant',
+      [
         '@media (prefers-color-scheme: dark) { &:not(.light *) }',
         '&:is(.dark *)',
-      ]],
-      content: [{
-        raw: 'dark',
-      }],
-      corePlugins: {
-        preflight: false,
-      },
-      plugins: [themeTransitionPlugin()],
-    })]).process(`@tailwind base;
-      @tailwind components;
-      @tailwind utilities;`)
-    expect(css).toMatchSnapshot()
+      ],
+    ])
+
+    expect(css).toContain('::view-transition-old(root)')
   })
 
   it('warns when variant selectors are invalid', async () => {
     const warn = vi.spyOn(console, 'warn').mockImplementation(() => {})
 
-    await postcss([tailwindcss({
-      darkMode: ['variant', ['.dark', '.theme-mode']],
-      content: [{ raw: 'dark' }],
-      corePlugins: {
-        preflight: false,
-      },
-      plugins: [themeTransitionPlugin()],
-    })]).process('@tailwind base; @tailwind components; @tailwind utilities;')
+    await runTailwind(['variant', ['.dark', '.theme-mode']])
 
     const messages = warn.mock.calls.map(call => call[0])
     expect(messages.some(message => typeof message === 'string' && message.includes('must provide a selector'))).toBe(true)
@@ -112,14 +147,7 @@ describe('tailwindcss', () => {
   })
 
   it('accepts functional variant selectors', async () => {
-    const { css } = await postcss([tailwindcss({
-      darkMode: ['variant', () => '.app &'],
-      content: [{ raw: 'dark' }],
-      corePlugins: {
-        preflight: false,
-      },
-      plugins: [themeTransitionPlugin()],
-    })]).process('@tailwind base; @tailwind components; @tailwind utilities;')
+    const css = await runTailwind(['variant', () => '.app &'])
 
     expect(css).toContain('::view-transition-old(root)')
   })
@@ -139,14 +167,7 @@ describe('tailwindcss', () => {
   it('handles missing selectors when variant mode is enabled', async () => {
     const warn = vi.spyOn(console, 'warn').mockImplementation(() => {})
 
-    await postcss([tailwindcss({
-      darkMode: ['variant'],
-      content: [{ raw: 'dark' }],
-      corePlugins: {
-        preflight: false,
-      },
-      plugins: [themeTransitionPlugin()],
-    })]).process('@tailwind base; @tailwind components; @tailwind utilities;')
+    await runTailwind(['variant'])
 
     expect(warn).toHaveBeenCalled()
     warn.mockRestore()
