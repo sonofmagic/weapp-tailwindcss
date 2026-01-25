@@ -1,5 +1,13 @@
 # weapp-tailwindcss
 
+## 4.9.5
+
+### Patch Changes
+
+- 🐛 **修复导出的 UserDefinedOptions 类型合并，确保 matcher 回调参数能正确推断并提供智能提示。** [`2b7c018`](https://github.com/sonofmagic/weapp-tailwindcss/commit/2b7c018c5131feb108bb227f71854ec62e4ec4d4) by @sonofmagic
+
+- 🐛 **简化 UserDefinedOptions 类型结构，移除 typedoc 增强依赖并修复相关类型问题。** [`466e1a6`](https://github.com/sonofmagic/weapp-tailwindcss/commit/466e1a6d3054938750559124e17bc11a577953a0) by @sonofmagic
+
 ## 4.9.4
 
 ### Patch Changes
