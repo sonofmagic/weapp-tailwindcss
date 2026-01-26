@@ -1,5 +1,13 @@
 # weapp-tailwindcss
 
+## 4.9.6
+
+### Patch Changes
+
+- 🐛 **chore: 升级到 "@weapp-core/escape": "~7.0.0"** [`4bbda03`](https://github.com/sonofmagic/weapp-tailwindcss/commit/4bbda03bc7f924bc7ef75291d27316309c827c58) by @sonofmagic
+- 📦 **Dependencies** [`4bbda03`](https://github.com/sonofmagic/weapp-tailwindcss/commit/4bbda03bc7f924bc7ef75291d27316309c827c58)
+  → `@weapp-tailwindcss/postcss@2.1.3`
+
 ## 4.9.5
 
 ### Patch Changes
