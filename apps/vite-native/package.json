@@ -35,7 +35,7 @@
   },
   "devDependencies": {
     "@egoist/tailwindcss-icons": "^1.9.0",
-    "@iconify-json/lucide": "^1.2.86",
+    "@iconify-json/lucide": "^1.2.87",
     "@iconify-json/mdi": "^1.2.3",
     "@tailwindcss/postcss": "catalog:tailwindcss4",
     "@tailwindcss/vite": "catalog:tailwindcss4",

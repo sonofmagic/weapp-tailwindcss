@@ -853,7 +853,7 @@ view,text,::before,::after{--tw-border-opacity: 1;box-sizing: border-box;border-
 exports[`styleHandler > use with weapp-pandacss case 4  1`] = `".space-y-4>view+view,.space-y-4>view+text,.space-y-4>text+view,.space-y-4>text+text{--tw-border-opacity: 1;}"`;
 
 exports[`styleHandler > utf8 charset 1`] = `
-".after_ccontent-_b_au6211u662fu4f2au5143u7d20_a_B::after {
+".after_ccontent-_b_au_x6211_u_x662f_u_x4f2a_u_x5143_u_x7d20__a_B::after {
     --tw-content: '我是伪元素';
     content: var(--tw-content)
 }"

@@ -23,7 +23,7 @@ catalogs:
   crossEnv:
     cross-env: ^10.1.0
   lucideReact0555:
-    lucide-react: ^0.562.0
+    lucide-react: ^0.563.0
   lucideVueNext0555:
     lucide-vue-next: ^0.563.0
   miniApiTypings:
@@ -112,13 +112,13 @@ catalogs:
     '@vue/compiler-sfc': ^3.5.27
     vue: ^3.5.27
   vueTsc318:
-    vue-tsc: ^3.2.3
+    vue-tsc: ^3.2.4
   weappChildren:
     weapp-tailwindcss-children: ^0.1.0
   weappIdeCli:
     weapp-ide-cli: ^5.0.0
   weappVite:
-    weapp-vite: ^6.4.0
+    weapp-vite: ^6.4.1
   wrangler4530:
     wrangler: ^4.60.0
 

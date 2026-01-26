@@ -6,7 +6,7 @@
 
 然而 `@tarojs/plugin-html` 这个插件，默认情况下它会移除整个 `tailwindcss` 注入的 `css var` 区域块，这会造成所有 `tw-*` 相关变量找不到，导致样式大量挂掉的问题。例如（`drop-shadow-2xl`，`translate-1/2` 等样式）。
 
-此时可以启用这个插件的 [`injectAdditionalCssVarScope`](/docs/api/interfaces/UserDefinedOptions#injectadditionalcssvarscope) 配置项，把它设为 `true`，这能在插件内部启用功能，来重新注入整个 `tailwindcss` 的 `css` 中的 `var` 区域块( `tailwindcss@3` )。
+此时可以启用这个插件的 [`injectAdditionalCssVarScope`](/docs/api/options/important#injectadditionalcssvarscope) 配置项，把它设为 `true`，这能在插件内部启用功能，来重新注入整个 `tailwindcss` 的 `css` 中的 `var` 区域块( `tailwindcss@3` )。
 
 按照初始的配置，只需要添加一行即可，示例如下：
 

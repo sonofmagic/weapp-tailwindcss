@@ -11,6 +11,10 @@ describe('merge-v3 runtime exports', () => {
     expect(twMerge('text-[#ececec]', 'text-[#ECECEC]')).toBe('text-_b_hECECEC_B')
   })
 
+  it('keeps simple class lists unchanged', () => {
+    expect(twMerge('w-full rounded-full bg-success p-1')).toBe('w-full rounded-full bg-success p-1')
+  })
+
   it('reports the underlying tailwind-merge major version', () => {
     expect(tailwindMergeVersion).toBe(2)
   })

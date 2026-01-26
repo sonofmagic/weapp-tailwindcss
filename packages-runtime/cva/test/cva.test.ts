@@ -8,6 +8,12 @@ describe('cva runtime', () => {
     expect(button()).toBe('text-_b_hececec_B')
   })
 
+  it('keeps simple class lists unchanged after escaping', () => {
+    const button = cva('w-full rounded-full bg-success p-1')
+
+    expect(button()).toBe('w-full rounded-full bg-success p-1')
+  })
+
   it('supports disabling the final escape stage', () => {
     const { cva: rawCva } = create({ escape: false })
     const badge = rawCva('text-[#ececec]')

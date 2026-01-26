@@ -33,7 +33,7 @@ Component({
 
 ## 根本原因
 
-插件默认只会转译 `class` 和 `hover-class`。外部样式类属于自定义属性，如果没有配置 [`customAttributes`](/docs/api/interfaces/UserDefinedOptions#customattributes)，就不会被识别处理。
+插件默认只会转译 `class` 和 `hover-class`。外部样式类属于自定义属性，如果没有配置 [`customAttributes`](/docs/api/options/important#customattributes)，就不会被识别处理。
 
 ## 解决方案
 
@@ -55,6 +55,6 @@ customAttributes: {
 ## 扩展阅读
 
 - 微信官方文档：[外部样式类](https://developers.weixin.qq.com/miniprogram/dev/framework/custom-component/wxml-wxss.html#外部样式类)
-- 插件配置项说明：[customAttributes](/docs/api/interfaces/UserDefinedOptions#customattributes)
+- 插件配置项说明：[customAttributes](/docs/api/options/important#customattributes)
 
 > 使用正则进行自定义匹配标签时，需要传入一个 `Map`，其中正则作为 `key`，数组作为 `value`。

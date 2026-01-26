@@ -107,7 +107,7 @@ module.exports = {
 
 - 组件外层套一层 `<view>` 元素。
 - `virtualHost` 解决方案，在自定义组件中添加 `options: { virtualHost: true }` 即可解决此问题。
-- [`cssChildCombinatorReplaceValue`](/docs/api/interfaces/UserDefinedOptions#csschildcombinatorreplacevalue) 配置项
+- [`cssChildCombinatorReplaceValue`](/docs/api/options/general#csschildcombinatorreplacevalue) 配置项
 
 ## 使用 uni-app vite vue 注册插件时，发行到 h5 环境出现: [plugin:vite-plugin-uni-app-weapp-tailwindcss-adaptor] 'import' and 'export' may appear only with 'sourceType: "module"' (1:0) 错误
 

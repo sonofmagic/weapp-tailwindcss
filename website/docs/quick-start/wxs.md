@@ -5,7 +5,7 @@
 
 具体见配置项:
 
-- [`wxsMatcher`](/docs/api/interfaces/UserDefinedOptions#wxsmatcher)
-- [`inlineWxs`](/docs/api/interfaces/UserDefinedOptions#inlinewxs)
+- [`wxsMatcher`](/docs/api/options/matchers#wxsmatcher)
+- [`inlineWxs`](/docs/api/options/matchers#inlinewxs)
 
 :::

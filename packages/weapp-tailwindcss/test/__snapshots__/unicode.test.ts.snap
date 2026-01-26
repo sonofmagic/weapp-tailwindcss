@@ -16,8 +16,8 @@ exports[`unicode > unicode case 1 fs 1`] = `
       + '\\u2003\\u2004\\u2005\\u2006\\u2007\\u2008\\u2009\\u200A\\u202F\\u205F\\u3000\\u2028\\u2029\\uFEFF'"
 `;
 
-exports[`unicode > unicode case 2 fs 1`] = `"const x = "after_ccontent-_b_au6211u77e5u9053u6211u5fc3_mu6c38u605212we_ds_a_B""`;
+exports[`unicode > unicode case 2 fs 1`] = `"const x = "after_ccontent-_b_au_x6211_u_x77e5_u_x9053_u_x6211_u_x5fc3__mu_x6c38_u_x6052_12we_ds_a_B""`;
 
-exports[`unicode > unicode case 2 fs babel 1`] = `"const x = "after_ccontent-_b_au6211u77e5u9053u6211u5fc3_mu6c38u605212we_ds_a_B""`;
+exports[`unicode > unicode case 2 fs babel 1`] = `"const x = "after_ccontent-_b_au_x6211_u_x77e5_u_x9053_u_x6211_u_x5fc3__mu_x6c38_u_x6052_12we_ds_a_B""`;
 
 exports[`unicode > unicode case 2 fs no replace 1`] = `"const x = "after:content-['\\u6211\\u77e5\\u9053\\u6211\\u5fc3,\\u6c38\\u605212we_ds']""`;

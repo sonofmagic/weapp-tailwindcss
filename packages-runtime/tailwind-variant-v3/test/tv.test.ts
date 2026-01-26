@@ -88,6 +88,14 @@ describe('Tailwind Variants (TV) - Default', () => {
     expect(result).toBe(expectedResult)
   })
 
+  it('keeps simple class lists untouched', () => {
+    const badge = tv({
+      base: 'w-full rounded-full bg-success p-1',
+    })
+
+    expect(badge()).toBe('w-full rounded-full bg-success p-1')
+  })
+
   it('should work with variants', () => {
     const h1 = tv({
       base: 'text-3xl font-bold',
@@ -3114,6 +3122,12 @@ describe('Tailwind Variants (TV) - Extends', () => {
     expect(resultWithMerge).toBe('h-fit w-full')
     expect(emptyResultWithoutMerge).toBe(undefined)
     expect(emptyResultWithMerge).toBe(undefined)
+  })
+
+  it('keeps simple class lists unchanged with cn', () => {
+    const result = cn('w-full rounded-full bg-success p-1')({ twMerge: true })
+
+    expect(result).toBe('w-full rounded-full bg-success p-1')
   })
 
   it('should support parent w/slots when base does not have slots', () => {

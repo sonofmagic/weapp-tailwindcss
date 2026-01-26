@@ -52,7 +52,7 @@
     "lint:fix": "eslint . --fix"
   },
   "dependencies": {
-    "@weapp-core/escape": "~6.0.1",
+    "@weapp-core/escape": "~7.0.0",
     "@weapp-tailwindcss/postcss-calc": "^1.0.0",
     "@weapp-tailwindcss/shared": "workspace:*",
     "postcss": "~8.5.6",

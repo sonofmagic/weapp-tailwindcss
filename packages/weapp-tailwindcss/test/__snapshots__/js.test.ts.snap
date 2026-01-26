@@ -4,7 +4,7 @@ exports[`jsHandler > "after:content-["对酒当歌，人生几何"]" 1`] = `"con
 
 exports[`jsHandler > 'common' "after:content-['对酒当歌，人生几何']" 1`] = `"const a = "after:content-['对酒当歌，人生几何']""`;
 
-exports[`jsHandler > 'common' TemplateElement case 0 1`] = `"const p = 'text-_b12px_B';const n = \`bg-_burl_p_au5929u6c14u597d_a_P_B\${p}text-_b199px_B \\n\\n  flex  \\n\\n  bg-_bred_B '\`"`;
+exports[`jsHandler > 'common' TemplateElement case 0 1`] = `"const p = 'text-_b12px_B';const n = \`bg-_burl_p_au_x5929_u_x6c14_u_x597d__a_P_B\${p}text-_b199px_B \\n\\n  flex  \\n\\n  bg-_bred_B '\`"`;
 
 exports[`jsHandler > 'common' img url case 1`] = `
 "data: {
@@ -118,9 +118,9 @@ exports[`jsHandler > unicode case 0 1`] = `
 "
 `;
 
-exports[`jsHandler > 中文字符 case 0 1`] = `"const a ={ className: "after_ccontent-_b_au7684u6492u7684u6492_a_B", children: "事实上" }"`;
+exports[`jsHandler > 中文字符 case 0 1`] = `"const a ={ className: "after_ccontent-_b_au_x7684_u_x6492_u_x7684_u_x6492__a_B", children: "事实上" }"`;
 
-exports[`jsHandler > 中文字符 case 2 1`] = `""use strict";(wx["webpackJsonp"]=wx["webpackJsonp"]||[]).push([[280],{3747:function(n,e,o){var t=o(6073),c=o(118),r=o(5349),u=function(){return(0,r.jsx)(c.Ss,{className:"before_ccontent-_b_amoduleA_u666eu901au5206u5305_a_B",children:"moduleA 普通分包"})},s={};Page((0,t.createPageConfig)(u,"moduleA/pages/index",{root:{cn:[]}},s||{}))}},function(n){var e=function(e){return n(n.s=e)};n.O(0,[907,96],(function(){return e(3747)}));n.O()}]);"`;
+exports[`jsHandler > 中文字符 case 2 1`] = `""use strict";(wx["webpackJsonp"]=wx["webpackJsonp"]||[]).push([[280],{3747:function(n,e,o){var t=o(6073),c=o(118),r=o(5349),u=function(){return(0,r.jsx)(c.Ss,{className:"before_ccontent-_b_amoduleA_u_x666e_u_x901a_u_x5206_u_x5305__a_B",children:"moduleA 普通分包"})},s={};Page((0,t.createPageConfig)(u,"moduleA/pages/index",{root:{cn:[]}},s||{}))}},function(n){var e=function(e){return n(n.s=e)};n.O(0,[907,96],(function(){return e(3747)}));n.O()}]);"`;
 
 exports[`jsHandler > 中文字符产物 case 0 1`] = `
 ""use strict";
@@ -207,7 +207,7 @@ var _hoisted_1 = {
 };
 
 var _hoisted_2 = /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("view", {
-  class: "text-[20px] text-[blue] after_ccontent-_b_au6211u77e5u9053u6211u5fc3_mu6c38u605212we_ds_a_B"
+  class: "text-[20px] text-[blue] after_ccontent-_b_au_x6211_u_x77e5_u_x9053_u_x6211_u_x5fc3__mu_x6c38_u_x6052_12we_ds_a_B"
 }, "对酒当歌", -1
 /* HOISTED */
 );
@@ -394,7 +394,7 @@ if (false) {}
 /* harmony import */ var vue__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(vue__WEBPACK_IMPORTED_MODULE_0__);
 /* unplugin-vue-components disabled */
 var _hoisted_1 = {
-  class: "w-1.5 h-[calc(100vh-100px)] bg-[#fafafa] after_ccontent-_b_au6211u77e5u9053u6211u5fc3_mu6c38u605212we_ds_a_B"
+  class: "w-1.5 h-[calc(100vh-100px)] bg-[#fafafa] after_ccontent-_b_au_x6211_u_x77e5_u_x9053_u_x6211_u_x5fc3__mu_x6c38_u_x6052_12we_ds_a_B"
 };
 function render(_ctx, _cache, $props, $setup, $data, $options) {
   return (0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("div", _hoisted_1, "123");
@@ -462,7 +462,7 @@ var inst = Page((0,_tarojs_runtime__WEBPACK_IMPORTED_MODULE_0__.createPageConfig
 //# sourceMappingURL=test.js.map",
   "map": SourceMap {
     "file": undefined,
-    "mappings": "AAAA;AACA;;AAEA;AACA;AACA;AACA;AACA;;AAEA;AACA;AACA;AACA;;;;AAIA;AACA;AACA;AACA;;;AAGA;;AAEA;;AAEA;AACA;AACA;AACA;AACA;;AAEA;;AAEA;;AAEA;AACA;AACA;AACA;AACA;;AAEA;AACA;AACA;AACA;AACA;AACA;AACA;AACA,UAAU,4GAA0E;AACpF;AACA;AACA;AACA;;AAEA;;AAEA;AACA;AACA;AACA;AACA;;AAEA;AACA;AACA;;;AAGA;;;AAGA;;;AAGA;;;AAGA;;AAEA;AACA;AACA;AACA;AACA;;AAEA;AACA;AACA;AACA;AACA;;AAEA;;AAEA;AACA;AACA;AACA;AACA;;AAEA;AACA;AACA;AACA;AACA;;AAEA;;AAEA;AACA;AACA;AACA;AACA;AACA;AACA;AACA",
+    "mappings": "AAAA;AACA;;AAEA;AACA;AACA;AACA;AACA;;AAEA;AACA;AACA;AACA;;;;AAIA;AACA;AACA;AACA;;;AAGA;;AAEA;;AAEA;AACA;AACA;AACA;AACA;;AAEA;;AAEA;;AAEA;AACA;AACA;AACA;AACA;;AAEA;AACA;AACA;AACA;AACA;AACA;AACA;AACA,UAAU,iIAA0E;AACpF;AACA;AACA;AACA;;AAEA;;AAEA;AACA;AACA;AACA;AACA;;AAEA;AACA;AACA;;;AAGA;;;AAGA;;;AAGA;;;AAGA;;AAEA;AACA;AACA;AACA;AACA;;AAEA;AACA;AACA;AACA;AACA;;AAEA;;AAEA;AACA;AACA;AACA;AACA;;AAEA;AACA;AACA;AACA;AACA;;AAEA;;AAEA;AACA;AACA;AACA;AACA;AACA;AACA;AACA",
     "names": [],
     "sources": [
       "",
@@ -475,10 +475,10 @@ var inst = Page((0,_tarojs_runtime__WEBPACK_IMPORTED_MODULE_0__.createPageConfig
 
 exports[`jsHandler > 中文字符产物 case 3 1`] = `
 {
-  "code": ""use strict";(wx["webpackJsonp"]=wx["webpackJsonp"]||[]).push([[603],{422:function(n,e,t){var a=t(818),r=t(61),c={class:"w-1.5 h-[calc(100vh-100px)] bg-[#fafafa] after_ccontent-_b_au6211u77e5u9053u6211u5fc3_mu6c38u605212we_ds_a_B"};function o(n,e,t,a,o,s){return(0,r.uX)(),(0,r.CE)("div",c,"123")}var s={},u=t(306);const f=(0,u.A)(s,[["render",o]]);var i=f,p={};Page((0,a.createPageConfig)(i,"pages/index/test",{root:{cn:[]}},p||{}))}},function(n){var e=function(e){return n(n.s=e)};n.O(0,[907,96],(function(){return e(422)}));n.O()}]);",
+  "code": ""use strict";(wx["webpackJsonp"]=wx["webpackJsonp"]||[]).push([[603],{422:function(n,e,t){var a=t(818),r=t(61),c={class:"w-1.5 h-[calc(100vh-100px)] bg-[#fafafa] after_ccontent-_b_au_x6211_u_x77e5_u_x9053_u_x6211_u_x5fc3__mu_x6c38_u_x6052_12we_ds_a_B"};function o(n,e,t,a,o,s){return(0,r.uX)(),(0,r.CE)("div",c,"123")}var s={},u=t(306);const f=(0,u.A)(s,[["render",o]]);var i=f,p={};Page((0,a.createPageConfig)(i,"pages/index/test",{root:{cn:[]}},p||{}))}},function(n){var e=function(e){return n(n.s=e)};n.O(0,[907,96],(function(){return e(422)}));n.O()}]);",
   "map": SourceMap {
     "file": undefined,
-    "mappings": "AAAA,yHAAyH,4GAA6G",
+    "mappings": "AAAA,yHAAyH,iIAA6G",
     "names": [],
     "sources": [
       "",
@@ -491,10 +491,10 @@ exports[`jsHandler > 中文字符产物 case 3 1`] = `
 
 exports[`jsHandler > 中文字符产物 case 4 1`] = `
 {
-  "code": "const a = "w-1.5 h-[calc(100vh-100px)] bg-[#fafafa] after_ccontent-_b_au6211u77e5u9053u6211u5fc3_mu6c38u605212we_ds_a_B"",
+  "code": "const a = "w-1.5 h-[calc(100vh-100px)] bg-[#fafafa] after_ccontent-_b_au_x6211_u_x77e5_u_x9053_u_x6211_u_x5fc3__mu_x6c38_u_x6052_12we_ds_a_B"",
   "map": SourceMap {
     "file": undefined,
-    "mappings": "AAAA,WAAW,4GAA6G",
+    "mappings": "AAAA,WAAW,iIAA6G",
     "names": [],
     "sources": [
       "",

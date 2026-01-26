@@ -64,6 +64,21 @@ describe('variants-v3 runtime', () => {
     expect(badge()).toBe('text-[#ececec]')
   })
 
+  it('returns base classes from create().tv for simple class lists', () => {
+    const { tv: runtimeTv } = create()
+    const test = runtimeTv({
+      base: 'w-full rounded-full bg-success p-1',
+    })
+
+    expect(test()).toBe('w-full rounded-full bg-success p-1')
+  })
+
+  it('returns simple class lists from cn unchanged', () => {
+    const aggregate = cn('w-full rounded-full bg-success p-1')
+
+    expect(aggregate()).toBe('w-full rounded-full bg-success p-1')
+  })
+
   it('accepts boolean escape/unescape options', () => {
     const { tv: rawTv } = create({ escape: true, unescape: true })
     const badge = rawTv({ base: 'text-[#ececec]' })

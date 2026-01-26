@@ -15,6 +15,10 @@ describe('merge behavior reference', () => {
     expect(merge('w-[10rpx]', 'w-[24rpx]')).toBe(esc('w-[24rpx]'))
   })
 
+  it('keeps simple class lists unchanged', () => {
+    expect(merge('w-full rounded-full bg-success p-1')).toBe('w-full rounded-full bg-success p-1')
+  })
+
   it('allows refinements without conflicts', () => {
     expect(merge('p-3 px-5')).toBe('p-3 px-5')
     expect(merge('inset-x-4 right-4')).toBe('inset-x-4 right-4')

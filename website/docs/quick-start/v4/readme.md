@@ -116,7 +116,7 @@
 
 ![](./tailwindcss-v4-uniapp-layer.png)
 
-这种情况，你就非常需要兼容性降级方案，即使用 [`postcss-preset-env`](https://www.npmjs.com/package/postcss-preset-env) (`weapp-tailwindcss` 已经内置了这个插件了，你可以直接使用它的配置，详见 [cssPresetEnv](/docs/api/interfaces/UserDefinedOptions#csspresetenv))
+这种情况，你就非常需要兼容性降级方案，即使用 [`postcss-preset-env`](https://www.npmjs.com/package/postcss-preset-env) (`weapp-tailwindcss` 已经内置了这个插件了，你可以直接使用它的配置，详见 [cssPresetEnv](/docs/api/options/important#csspresetenv))
 
 这在开发需要兼容低版本移动端 h5 的时候很重要。
 

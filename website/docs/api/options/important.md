@@ -74,7 +74,7 @@ uvtw({
 - 使用 `'*'` 作为键可为所有标签追加通用规则。
 - 支持传入 `Map<string | RegExp, (string | RegExp)[]>` 以满足复杂匹配需求。
 - 常见场景包括通过组件 `prop` 传递类名，或对三方组件的自定义属性做匹配，更多讨论见 [issue#129](https://github.com/sonofmagic/weapp-tailwindcss/issues/129#issuecomment-1340914688) 与 [issue#134](https://github.com/sonofmagic/weapp-tailwindcss/issues/134#issuecomment-1351288238)。
-如果自定义规则已经覆盖默认的 `class`/`hover-class`，可开启 [`disabledDefaultTemplateHandler`](/docs/api/interfaces/UserDefinedOptions#disableddefaulttemplatehandler) 以关闭内置模板处理器。
+如果自定义规则已经覆盖默认的 `class`/`hover-class`，可开启 [`disabledDefaultTemplateHandler`](/docs/api/options/general#disableddefaulttemplatehandler) 以关闭内置模板处理器。
 
 #### 示例
 
