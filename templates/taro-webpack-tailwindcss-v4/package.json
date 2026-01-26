@@ -60,7 +60,7 @@
     "@tarojs/runtime": "4.1.9",
     "@tarojs/shared": "4.1.9",
     "@tarojs/taro": "4.1.9",
-    "@weapp-tailwindcss/merge": "^2.1.4",
+    "@weapp-tailwindcss/merge": "^2.1.5",
     "react": "^18.0.0",
     "react-dom": "^18.0.0"
   },
@@ -87,7 +87,7 @@
     "tsconfig-paths-webpack-plugin": "^4.1.0",
     "typescript": "^5.9.3",
     "weapp-ide-cli": "^5.0.0",
-    "weapp-tailwindcss": "^4.9.5",
+    "weapp-tailwindcss": "^4.9.6",
     "webpack": "5.104.1"
   },
   "pnpm": {
