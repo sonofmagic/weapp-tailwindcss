@@ -25,6 +25,33 @@ description: 'runtime 系列包的版本选择、能力矩阵与多端使用心�
 - **Tailwind v4**：优先 `@weapp-tailwindcss/merge` + `@weapp-tailwindcss/variants`；需要变体工厂时加 `@weapp-tailwindcss/cva`。
 - **Tailwind v3**：优先 `@weapp-tailwindcss/merge-v3` + `@weapp-tailwindcss/variants-v3`；仅 Web 或需要定制合并器时可用 `tailwind-variant-v3`。
 
+## pnpm + uni-app 注意事项
+
+uni-app 的 Vite 默认开启 `preserveSymlinks`，会从包内 symlink 路径解析依赖；pnpm 的隔离布局不会把传递依赖放到该路径下，于是会反复出现 “找不到 XXX”（例如 `@vueuse/shared` 是 `@vueuse/core` 的传递依赖）。npm / yarn 不受影响。
+
+想“彻底”解决有两条路：
+
+1. 改 `node-linker` 为 `hoisted`（最彻底，接近 npm/yarn classic）
+
+   在根目录 `.npmrc`（或 `pnpm-workspace.yaml` 的 workspace 配置）中设置后重新 `pnpm install`，依赖会更扁平，`preserveSymlinks` 下也能解析到传递依赖。
+
+   ```ini
+   node-linker=hoisted
+   ```
+
+2. 保持 `isolated`，持续补 hoist/直依赖（不彻底，维护成本高）
+
+   例如在 `.npmrc` 中追加：
+
+   ```ini
+   public-hoist-pattern[]=@weapp-tailwindcss/*
+   public-hoist-pattern[]=tailwind-variant-v3
+   public-hoist-pattern[]=tailwind-merge
+   public-hoist-pattern[]=@weapp-core/*
+   ```
+
+   之后遇到新的缺失依赖（如 `@vueuse/shared`）还需要继续补齐为直依赖。
+
 ## 多端心智模型（小程序 + Web）
 
 小程序端需要 escape/unescape 来保持类名合法；Web 端则希望保留原始类名。各包的 `create(...)` 工厂允许你为不同端生成隔离实例：
