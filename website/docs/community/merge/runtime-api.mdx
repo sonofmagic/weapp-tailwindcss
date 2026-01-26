@@ -4,9 +4,9 @@ title: 运行时 API
 description: 'shared runtime —— @weapp-tailwindcss/runtime 以及 merge 系列在小程序里的用法。'
 ---
 
-`@weapp-tailwindcss/runtime` 是所有运行时包的公共底座，统一提供 escape/unescape、`clsx` 封装、`weappTwIgnore` 以及 `createRuntimeFactory`。`@weapp-tailwindcss/merge`、`merge-v3`、`cva`、`variants` 都是基于它实现的。
+`@weapp-tailwindcss/runtime` 是所有运行时包的公共底座，统一提供 escape/unescape、`clsx`、`weappTwIgnore`、`createRuntimeFactory` 与 `createRpxLengthTransform`。
 
-:::tip 运行时包详解
+:::tip 已迁移到 packages-runtime
 更完整的使用方式与多端示例已收录在 packages-runtime 章节：  
 - [packages-runtime 总览](/docs/community/packages-runtime)  
 - [@weapp-tailwindcss/merge](/docs/community/packages-runtime/merge)  
@@ -15,13 +15,13 @@ description: 'shared runtime —— @weapp-tailwindcss/runtime 以及 merge 系�
 
 ## 安装
 
-```ts
+```bash npm2yarn
 pnpm add @weapp-tailwindcss/merge
 ```
 
-如果项目仍在使用 Tailwind CSS v3，请改用 `@weapp-tailwindcss/merge-v3`；而 `@weapp-tailwindcss/runtime` 在大部分场景下会作为间接依赖被自动安装。
+如果项目仍在使用 Tailwind CSS v3，请改用 `@weapp-tailwindcss/merge-v3`；而 `@weapp-tailwindcss/runtime` 通常作为间接依赖被自动安装。
 
-## Runtime 基本面
+## Runtime 基础导出
 
 ```ts
 import {
@@ -29,17 +29,48 @@ import {
   weappTwIgnore,
   resolveTransformers,
   createRuntimeFactory,
+  createRpxLengthTransform,
 } from '@weapp-tailwindcss/runtime'
 ```
 
-- `clsx` / `ClassValue`：统一的类名聚合工具，避免各包重复安装 `clsx`
-- `weappTwIgnore`：`String.raw` 的别名，用于跳过 weapp 转义
-- `resolveTransformers(createOptions)`：返回 `{ escape, unescape }`
-- `createRuntimeFactory(factoryOptions)`：将 `tailwind-merge`、`tailwind-variants` 等库注入 weapp 运行时
+- `clsx` / `ClassValue`：统一的类名聚合工具，参数类型与 `clsx` 一致。
+- `weappTwIgnore`：`String.raw` 的别名，用于跳过编译期转义。
+- `resolveTransformers(options?)`：返回 `{ escape, unescape }`，并自动合并默认映射表。
+- `createRuntimeFactory(options)`：包装 `tailwind-merge` 等运行时，内置 escape/unescape、短缓存与可插拔的预处理/还原钩子。
+- `createRpxLengthTransform(prefixes?)`：提供 `prepareValue`/`restoreValue`，用于 rpx 长度归一化。
+
+## createRuntimeFactory
+
+`createRuntimeFactory` 会把原始 `twMerge`/`twJoin`/`extendTailwindMerge`/`createTailwindMerge` 包装成小程序运行时，内部流程为：
+
+1. 可选 unescape（仅当输入包含占位符时触发）。
+2. `prepareValue` 预处理（例如 rpx 归一化）。
+3. 原始合并。
+4. `restoreValue` 还原。
+5. escape 输出并缓存结果（256 条）。
+
+`@weapp-tailwindcss/merge` 与 `merge-v3` 默认使用 `createRpxLengthTransform()` 作为预处理/还原钩子。
+
+## createRpxLengthTransform
+
+默认对以下前缀的任意值进行 rpx 归一化：`text`、`border`、`bg`、`outline`、`ring`。
+
+```ts
+import { createRpxLengthTransform, createRuntimeFactory } from '@weapp-tailwindcss/runtime'
+import { twMerge, twJoin, createTailwindMerge, extendTailwindMerge } from 'tailwind-merge'
+
+const rpxTransform = createRpxLengthTransform(['text', 'bg'])
+const create = createRuntimeFactory({
+  version: 3,
+  twMerge,
+  twJoin,
+  createTailwindMerge,
+  extendTailwindMerge,
+  ...rpxTransform,
+})
+```
 
 ## merge 运行时的标准导出
-
-所有 API 都与 `tailwind-merge` 原版保持一致，只是在调用前后包裹了转义逻辑。你可以继续使用熟悉的导入路径：
 
 ```ts
 import {
@@ -55,86 +86,49 @@ import {
 } from '@weapp-tailwindcss/merge'
 ```
 
-> - `@weapp-tailwindcss/merge` 适配 `tailwindcss@4`
-> - `@weapp-tailwindcss/merge-v3` 适配 `tailwindcss@3`
->
-> 两个包内部均依赖 `@weapp-tailwindcss/runtime`，API 完全一致。
+- `@weapp-tailwindcss/merge` 适配 `tailwindcss@4`，`tailwindMergeVersion` 为 `3`。
+- `@weapp-tailwindcss/merge-v3` 适配 `tailwindcss@3`，`tailwindMergeVersion` 为 `2`。
+- 两个包均内置 rpx 归一化与 escape/unescape，API 完全一致。
 
 ## twMerge(...classValues)
 
-合并 Tailwind 工具类并移除冲突项，返回一个经过小程序转义的字符串。支持布尔值、数字、数组、嵌套数组等所有 `tailwind-merge` 支持的参数类型。
+合并 Tailwind 工具类并移除冲突项，返回转义后的字符串。支持 `clsx` 兼容的所有参数类型（布尔、数组、对象等）。
 
 ```ts
 twMerge('px-2 py-1', ['px-6', { 'py-5': shouldExpand }])
 // => 'px-6 py-5'
-
-twMerge('text-[#ececec]', flag && 'text-[#ECECEC]')
-// => 'text-_b_hECECEC_B'
 ```
-
-### 常见问题
-
-- 如果输入已经是转义过的占位符（例如 `text-_b_hececec_B`），运行时会先调用 `unescape` 还原，再进行合并，因此不会出现重复。
-- 返回结果永远是字符串；若想在 Web 端保持原样，需要使用下文的 `create` 禁用转义。
 
 ## twJoin(...classValues)
 
-单纯把类名拼接成一个字符串，不做冲突判断，但仍会执行「先 unescape、后 escape」的流程，保证多端结果一致。适合用于低成本地去除 `undefined` / `false`。
+拼接类名，不做冲突判断，但仍会走 unescape/escape 与 rpx 归一化流程。
 
 ```ts
 twJoin('text-[#ececec]', condition && 'bg-[#010101]')
-// => 'text-_b_hececec_B bg-_b_h010101_B'
+// => 仍会输出转义后的类名
 ```
 
-## createTailwindMerge(config)
+## create(options?)
 
-与原版一致，可以基于自定义配置创建一个新的 `twMerge` 实例。区别在于返回值会自动带上小程序转义。
+`create` 会基于 `CreateOptions` 返回一组隔离运行时，常用于多端项目控制转义：
 
 ```ts
-const mergeCard = createTailwindMerge({
-  classGroups: {
-    card: ['card-default', 'card-primary'],
-  },
-})
-
-mergeCard('card-default card-primary') // => 'card-primary'
+const { twMerge } = create({ escape: false, unescape: false })
 ```
 
-同一个实例在调用过程中仍然执行转义，因此你可以安全地混用转义前后的字符串。
+### CreateOptions
 
-## extendTailwindMerge(config)
+| 选项 | 类型 | 默认值 | 说明 |
+| --- | --- | --- | --- |
+| `escape` | `false` \| `EscapeConfig` | `MappingChars2String` | 控制输出时是否转义；可自定义映射表。 |
+| `unescape` | `false` \| `UnescapeConfig` | `MappingChars2String` | 控制合并前是否还原占位符。 |
 
-基于默认配置扩展新的合并规则，返回一个新的 `twMerge` 运行时。
-
-```ts
-const mergeWithCustomSpacing = extendTailwindMerge({
-  classGroups: {
-    spacing: ['gap-safe', 'gap-huge'],
-  },
-})
-
-mergeWithCustomSpacing('gap-huge gap-safe') // => 'gap-safe'
-```
-
-## getDefaultConfig() 与 mergeConfigs(a, b)
-
-两者直接透传自 `tailwind-merge`：
-
-- `getDefaultConfig()` 返回内部使用的原始配置对象；
-- `mergeConfigs(a, b)` 用于把两个配置合并成一个新的配置，常见于库内部复用。
-
-## tailwindMergeVersion
-
-表示当前入口绑定的 `tailwind-merge` 主版本：
-
-- `2` ➜ 运行时基于 `tailwind-merge@2`，适配 `tailwindcss@3`
-- `3` ➜ 运行时基于 `tailwind-merge@3`，适配 `tailwindcss@4`
-
-该值可用于调试或在运行时判断最终行为。
+- 当 `escape`/`unescape` 提供自定义 `map` 时，会与默认映射自动合并。
+- `resolveTransformers` 会尽量共享同一映射表，避免编译期与运行时不一致。
 
 ## weappTwIgnore
 
-模板字符串标签函数，本质是 `String.raw`。与 `weapp-tailwindcss` 的 `ignoreTaggedTemplateExpressionIdentifiers` 配置联动，用来标记「不要转义」的代码片段。
+模板字符串标签函数，本质是 `String.raw`，与 `ignoreTaggedTemplateExpressionIdentifiers` 配置联动：
 
 ```ts
 import { weappTwIgnore } from '@weapp-tailwindcss/merge'
@@ -145,50 +139,6 @@ const raw = weappTwIgnore`
 `
 ```
 
-当小程序端确实需要原始类名（例如传递给第三方库）时，可借助该标签避免被编译期改写。
-
-## create(options?)
-
-`create` 会根据传入的 `options` 返回一组隔离的运行时函数（`twMerge`、`twJoin`、`createTailwindMerge`、`extendTailwindMerge`），用于控制转义行为：
-
-```ts
-// 跨平台框架请自行判断是否为 H5 构建，通常可从环境变量读取。
-const isH5 = false
-const { twMerge } = create({ escape: !isH5, unescape: !isH5 })
-```
-
-### CreateOptions
-
-| 选项 | 类型 | 默认值 | 说明 |
-| --- | --- | --- | --- |
-| `escape` | `false` \| `EscapeOptions` | `{ map: 默认映射 }` | 控制输出时是否转义；传入对象可自定义映射表。 |
-| `unescape` | `false` \| `UnescapeOptions` | `{ map: 默认映射 }` | 控制在合并前是否还原占位符。 |
-
-- 传入 `false` 会彻底关闭对应阶段；
-- 当 `escape`/`unescape` 同时提供自定义 `map` 时，运行时会自动与默认映射 `MappingChars2String` 合并，确保和编译期保持一致；
-- 该工厂返回的实例不会影响默认导出的全局实例，可在多端方案里自由组合。
-- `EscapeOptions`/`UnescapeOptions` 类型来自 `@weapp-core/escape` 包，与编译期所使用的转义逻辑保持一致。
-
-```ts
-import { create } from '@weapp-tailwindcss/merge'
-
-const custom = create({
-  escape: {
-    map: {
-      '#': '__hash__',
-    },
-  },
-  unescape: {
-    map: {
-      '#': '__hash__',
-    },
-  },
-})
-
-custom.twMerge('text-[#ececec]')        // => 'text-_b__hash__ececec_B'
-custom.twMerge('text-_b__hash__ececec_B') // => 'text-_b__hash__ececec_B'
-```
-
 ## 基于 runtime 的其他包
 
 - `@weapp-tailwindcss/cva`：封装 `class-variance-authority`，详见 [@weapp-tailwindcss/cva](/docs/community/packages-runtime/cva)  
@@ -196,5 +146,3 @@ custom.twMerge('text-_b__hash__ececec_B') // => 'text-_b__hash__ececec_B'
 - `@weapp-tailwindcss/merge-v3`：面向 `tailwindcss@3` 的长期支持分支  
 - `@weapp-tailwindcss/variants-v3`：基于 `tailwind-variant-v3` 的小程序运行时  
 - `tailwind-variant-v3`：上游 v3 runtime（Web 优先）
-
-它们全部依赖 `@weapp-tailwindcss/runtime`，因此可以共享 escape 配置、`weappTwIgnore` 以及 `clsx`。

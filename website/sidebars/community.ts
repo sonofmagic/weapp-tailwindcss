@@ -14,17 +14,6 @@ const communitySidebar: SidebarConfig = [
   },
   {
     type: 'category',
-    label: '@weapp-tailwindcss/merge',
-    collapsed: false,
-    items: [
-      'community/merge/overview',
-      'community/merge/runtime-api',
-      'community/merge/cva-and-variants',
-      'community/merge/integration',
-    ],
-  },
-  {
-    type: 'category',
     label: 'packages-runtime',
     collapsed: false,
     items: [

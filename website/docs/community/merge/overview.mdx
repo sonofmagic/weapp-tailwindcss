@@ -5,73 +5,76 @@ slug: /community/merge
 description: '@weapp-tailwindcss/merge 的定位、安装方式、快速上手示例以及多端项目的常见用法。'
 ---
 
-`@weapp-tailwindcss/merge` 是面向小程序生态的 [`tailwind-merge`](https://github.com/dcastil/tailwind-merge) 运行时封装。它在保留原库全部 API 的基础上，对类名做了小程序合法化转义，并与 `weapp-tailwindcss` 编译期插件联动，提供稳定的跨端开发体验。
-
-:::tip 运行时文档已升级
-更完整的 packages-runtime 使用方式与多端 Demo 已整理在新章节：  
+:::tip 已迁移到 packages-runtime
+本页为旧入口，内容已按最新源码同步更新；完整体系请参考：  
 - [packages-runtime 总览](/docs/community/packages-runtime)  
+- [@weapp-tailwindcss/merge](/docs/community/packages-runtime/merge)  
 - [多端 Demo（小程序 + Web）](/docs/community/packages-runtime/multi-platform-demos)
 :::
 
-## 为什么要使用 merge 运行时
-
-- **动态类名更安全**：在组件里根据状态拼接类名时，`twMerge` 会自动剔除冲突项，确保最终样式一致。
-- **小程序专属转义**：运行时会把诸如 `[#ececec]`、`[length:24rpx]` 等非法字符转成小程序可识别的占位符，并在编译期再还原。
-- **覆盖多个 Tailwind CSS 主版本**：`@weapp-tailwindcss/merge` 针对 `tailwindcss@4`（基于 `tailwind-merge@3`），而 `@weapp-tailwindcss/merge-v3` 保持对 `tailwindcss@3` 的长期支持，两者 API 完全一致。
-- **保留原生 API**：`twMerge`、`twJoin`、`extendTailwindMerge`、`createTailwindMerge` 等函数与原版完全一致，迁移成本低。
-
-:::info 与原库的差异
-为了适配小程序，`@weapp-tailwindcss/merge` 会在运行时做两件事：
-
-1. 先调用 `@weapp-core/escape` 对字符串「去转义」，把已经被编译期处理过的值还原为标准 Tailwind 类名；
-2. 调用原始的 `tailwind-merge` 完成合并后，再重新转义一次，交给小程序端运行。
-
-如果你在纯 Web 项目中使用，请参考下方的「多端项目」章节配置。
-:::
+`@weapp-tailwindcss/merge` 是面向小程序生态的 `tailwind-merge` 运行时封装，适配 `tailwindcss@4`。它在合并前后自动执行 escape/unescape，并内置 rpx 长度归一化，保证小程序与编译期插件输出保持一致。
 
 ## 运行时矩阵
 
 | 包名 | 适用场景 | 说明 |
 | --- | --- | --- |
-| `@weapp-tailwindcss/runtime` | 共享依赖 | 封装 escape/unescape、`clsx`、`weappTwIgnore`，被下游包复用 |
+| `@weapp-tailwindcss/runtime` | 共享依赖 | 提供 escape/unescape、`clsx`、`weappTwIgnore`、`createRuntimeFactory` |
 | `@weapp-tailwindcss/merge` | `tailwindcss@4` | 基于 `tailwind-merge@3`，默认入口 |
-| `@weapp-tailwindcss/merge-v3` | `tailwindcss@3` | 基于 `tailwind-merge@2`，专为老项目保留 |
-| `@weapp-tailwindcss/cva` | `class-variance-authority` | 自动 escape 的 `cva()` 运行时 |
-| `@weapp-tailwindcss/variants` | `tailwind-variants` | 提供 `tv`/`cn` 等扩展能力 |
-| `@weapp-tailwindcss/variants-v3` | `tailwind-variant-v3` | Tailwind v3 小程序变体运行时 |
-| `tailwind-variant-v3` | `tailwindcss@3` | 上游 v3 运行时，可接入自定义合并器 |
+| `@weapp-tailwindcss/merge-v3` | `tailwindcss@3` | 基于 `tailwind-merge@2`，旧项目使用 |
+| `@weapp-tailwindcss/cva` | 组件变体 | `class-variance-authority` 运行时封装 |
+| `@weapp-tailwindcss/variants` | 组件变体 + slots | `tailwind-variants` 运行时封装 |
+| `@weapp-tailwindcss/variants-v3` | v3 小程序 | `tailwind-variant-v3` + `merge-v3` |
+| `tailwind-variant-v3` | v3 Web | 上游 v3 runtime，可自定义合并器 |
+
+## 运行时流程（小程序）
+
+`@weapp-tailwindcss/merge` 的默认 `twMerge` 会按以下流程处理：
+
+1. **可选 unescape**：输入包含占位符或 unicode 片段时先还原。
+2. **rpx 长度归一化**：`text-[12rpx]` ➜ `text-[length:12rpx]`，避免被合并规则误判。
+3. **tailwind-merge 合并**：执行冲突移除。
+4. **还原 rpx**：把 `length:` 占位还原回原始写法。
+5. **escape 输出**：得到小程序可用的类名。
+
+为了减少重复计算，运行时还内置了短缓存（256 条）。
 
 ## 安装
 
 ```bash npm2yarn
-npm i @weapp-tailwindcss/merge
+pnpm add @weapp-tailwindcss/merge
 ```
 
-> 适用于 `tailwindcss@4` 的项目。若你仍在维护 `tailwindcss@3`，请改为安装 `@weapp-tailwindcss/merge-v3`：
-
-```bash npm2yarn
-npm i @weapp-tailwindcss/merge-v3
-```
+> 如果项目仍在使用 `tailwindcss@3`，请安装 `@weapp-tailwindcss/merge-v3`。
 
 ## 快速上手
 
 ```ts
 import { twMerge } from '@weapp-tailwindcss/merge'
 
-const buttonClass = twMerge(
+const className = twMerge(
   'px-2 py-1 bg-red hover:bg-dark-red',
   'p-3 bg-[#B91C1C]'
 )
 
-// => 'hovercbg-dark-red p-3 bg-_hB91C1C_'
+// => 已转义的类名，可直接写入小程序 class
 ```
 
-同样的写法在 Web 端会得到 `hover:bg-dark-red p-3 bg-[#B91C1C]`。在小程序里之所以出现 `_h`、`_` 等占位符，是因为运行时完成了转义。`weapp-tailwindcss` 插件会在编译阶段把这些占位符还原成合法类名。
+## rpx 长度归一化
 
-### 与 weapp-tailwindcss 的编译期配合
+运行时会在合并前把以下前缀的 `rpx` 任意值转换为 `length:` 语义，再在合并后还原：
 
-- `weapp-tailwindcss` 默认把 `twMerge`、`twJoin`、`cva` 标记为「无需再次转义」的调用点，如果你自定义了函数名（例如把 `twMerge` 重命名为 `cn`），需要在配置里补充 [`ignoreCallExpressionIdentifiers`](../../api/interfaces/UserDefinedOptions.md#ignorecallexpressionidentifiers)。
-- 对于模板字符串，可以使用 `weappTwIgnore` 标签跳过编译期处理：
+- `text-*`
+- `border-*`
+- `bg-*`
+- `outline-*`
+- `ring-*`
+
+这一步能让 `tailwind-merge` 正确理解 `rpx` 维度，避免误合并。
+
+## 与 weapp-tailwindcss 编译期协作
+
+- `twMerge`、`twJoin`、`cva` 等函数名若被改名，请补充 `ignoreCallExpressionIdentifiers`。
+- 需要跳过编译期转义时，使用 `weappTwIgnore` 模板标签：
 
   ```ts
   import { weappTwIgnore } from '@weapp-tailwindcss/merge'
@@ -79,40 +82,7 @@ const buttonClass = twMerge(
   const raw = weappTwIgnore`text-[#123456]`
   ```
 
-  这个 helper 实际上就是 `String.raw`，但它可以让插件准确识别并跳过转义。
-
-### tailwind-variants 快速体验
-
-`@weapp-tailwindcss/variants` 提供了 [`tailwind-variants`](https://tailwind-variants.org/) 的运行时封装，在小程序环境中同样可以使用 `tv`/`cn` 输出带转义的类名：
-
-```ts
-import { tv } from '@weapp-tailwindcss/variants'
-
-const badge = tv({
-  base: 'inline-flex items-center rounded-full px-2 text-xs font-semibold',
-  variants: {
-    tone: {
-      neutral: 'bg-[#F4F4F5] text-[#18181B]',
-      success: 'bg-[#DCFCE7] text-[#166534]',
-      danger: 'bg-[#FEE2E2] text-[#B91C1C]',
-    },
-  },
-  defaultVariants: {
-    tone: 'neutral',
-  },
-})
-
-badge({ tone: 'success' })
-// => 'inline-flex ... bg-_b_hDCFCE7_B text-_b_h166534_B'
-```
-
-更多组合用法、`cn` 聚合器以及逃逸策略见新的运行时文档：  
-- [@weapp-tailwindcss/variants](/docs/community/packages-runtime/variants)  
-- [@weapp-tailwindcss/cva](/docs/community/packages-runtime/cva)
-
-### 多端项目：按需控制转义
-
-`create` 工厂允许你为不同运行时定制 escape 策略：
+## 多端项目：按需控制转义
 
 ```ts
 import { create } from '@weapp-tailwindcss/merge'
@@ -123,23 +93,20 @@ const { twMerge } = create({
   escape: !isH5,
   unescape: !isH5,
 })
-
-twMerge('text-[#ececec]', 'text-[#ECECEC]') // → 小程序时得到转义结果
 ```
 
-- H5 环境只需将 `isH5` 设为 `true`，即可关闭 escape/unescape。
-- `escape: false` 表示结果保持原样（适合 Web 或同构渲染）。
-- `unescape: false` 可跳过运行前的「反转义」，用于确保输入不会被改写。
-- 如果只想自定义映射表，传入 `escape: { map: { '#': '__hash__' } }` 即可；运行时会把自定义映射与默认映射合并，保证编译期和运行时的行为一致。
+H5 环境将 `isH5` 设为 `true` 即可保持原始类名。
 
-多端示例详见 [多端 Demo（小程序 + Web）](/docs/community/packages-runtime/multi-platform-demos)。
+## 相关运行时
 
-### 在线体验
+- [@weapp-tailwindcss/variants](/docs/community/packages-runtime/variants)
+- [@weapp-tailwindcss/cva](/docs/community/packages-runtime/cva)
+- [@weapp-tailwindcss/variants-v3](/docs/community/packages-runtime/variants-v3)
+
+## 在线体验
 
 ```jsx live
 function () {
   return <MergeDemo/>
 }
 ```
-
-上方示例允许切换「禁用 escape/unescape」，用来对比运行时转义前后的差异。

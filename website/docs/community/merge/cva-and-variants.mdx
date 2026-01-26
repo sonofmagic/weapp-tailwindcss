@@ -4,7 +4,7 @@ title: cva 与 tailwind-variants 支持
 description: '使用 weapp-tailwindcss runtime 系列（@weapp-tailwindcss/cva 与 @weapp-tailwindcss/variants）内置的 cva()、tv() 等工具，快速封装跨端组件。'
 ---
 
-`@weapp-tailwindcss/cva` 与 `@weapp-tailwindcss/variants` 对 `class-variance-authority`（简称 `cva`）和 `tailwind-variants` 进行了运行时封装，帮你在定义组件变体时自动处理类名冲突和小程序转义。
+`@weapp-tailwindcss/cva` 与 `@weapp-tailwindcss/variants` 对 `class-variance-authority`（cva）和 `tailwind-variants` 进行了运行时封装，保证输出类名与小程序编译期一致。
 
 :::tip 已迁移到 packages-runtime 体系
 详细用法与多端 Demo 请参考：  
@@ -23,6 +23,8 @@ pnpm add @weapp-tailwindcss/variants
 > 运行时已经内置 `class-variance-authority` / `tailwind-variants`，无需再安装上游依赖。
 
 ## cva()
+
+`@weapp-tailwindcss/cva` 直接封装上游 `cva`，并对输出做 escape；返回类型与 `VariantProps` 与原库保持一致。内部带有 256 条短缓存。
 
 ```ts
 import { cva } from '@weapp-tailwindcss/cva'
@@ -49,20 +51,18 @@ const button = cva(
 )
 
 button({ tone: 'outline', size: 'sm' })
-// => 'inline-flex items-center ... border border-border_f60 bg-transparent h-8 px-3'
+// => 已转义类名
 ```
 
-- 返回结果已经完成小程序转义，可直接用在 `class` 属性中；
-- 与原版 `cva` 的 API、推导出的 `VariantProps` 类型完全一致；
-- 如果需要自定义转义行为，可通过 `create` 获取隔离实例：
+如需在 Web/H5 端关闭转义，可用 `create`：
 
-  ```ts
-  import { create } from '@weapp-tailwindcss/cva'
+```ts
+import { create } from '@weapp-tailwindcss/cva'
 
-  // 跨平台框架请自行判断是否为 H5 构建，通常可从环境变量读取。
-  const isH5 = true
-  const { cva: cvaForWeb } = create({ escape: !isH5, unescape: !isH5 })
-  ```
+// 跨平台框架请自行判断是否为 H5 构建，通常可从环境变量读取。
+const isH5 = true
+const { cva: cvaForWeb } = create({ escape: !isH5, unescape: !isH5 })
+```
 
 ### Live Demo
 
@@ -72,24 +72,17 @@ function () {
 }
 ```
 
-可以动态切换 tone、size 以及是否关闭 escape/unescape，对比运行时返回的不同字符串。
-
 ## tailwind-variants
 
-直接从 `@weapp-tailwindcss/variants` 导入 `tv`/`cn`/`createTV` 等工具，即可在运行时获得与小程序兼容的类名字符串。封装会自动把合并结果转义，保持与编译期一致。
+`@weapp-tailwindcss/variants` 基于 `tailwind-variants`，并默认集成 `@weapp-tailwindcss/merge` 的合并逻辑：
 
-该包还提供了对 [`tailwind-variants`](https://tailwind-variants.org/) 的封装，导出项包括：
+- `tv`：变体工厂（支持 `slots`、`compoundVariants`），返回的类名已转义。
+- `cn`：类名聚合器，**返回一个函数**，可选择是否启用 `twMerge`。
+- `cnBase`：只拼接并转义，不做合并。
+- `createTV`：创建带预设配置的 `tv` 工厂。
+- `create`：为多端项目控制 escape/unescape。
 
-| 导出 | 说明 |
-| --- | --- |
-| `tv` | 等价于默认的 `tailwind-variants` 工厂，但会自动执行小程序转义与合并。 |
-| `createTV` | 返回一个「预配置」的 `tv` 工厂，常用于库内定制。 |
-| `cn` | 将多个类名组合并（默认开启 `twMerge`），再进行小程序转义。 |
-| `cnBase` | 纯拼接工具，不做合并，仅处理转义。 |
-| `defaultConfig` | 直接透传上游默认配置。 |
-| `create` | 工厂函数，允许为 `tv` / `cn` 自定义转义行为。 |
-
-### 示例：组合变体
+### 组合变体
 
 ```ts
 import { tv } from '@weapp-tailwindcss/variants'
@@ -119,37 +112,31 @@ const badge = tv({
 })
 
 badge({ tone: 'success' })
-// => 'inline-flex ... bg-_b_hDCFCE7_B text-_b_h166534_B'
+// => 已转义类名
 ```
 
-### 自定义合并策略
-
-`cn` 默认会调用 `twMerge` 去重。如果想关闭合并或覆盖其配置，可以使用第二个参数：
+### cn / cnBase
 
 ```ts
-import { cn } from '@weapp-tailwindcss/variants'
+import { cn, cnBase } from '@weapp-tailwindcss/variants'
 
 const mergeLater = cn('text-[#ececec]', 'text-[#ECECEC]')
-mergeLater() // => 'text-_b_hECECEC_B'
+mergeLater() // => 合并 + escape
 
-mergeLater({ twMerge: false })
-// => 'text-_b_hececec_B text-_b_hECECEC_B'
+mergeLater({ twMerge: false }) // => 仅 escape，不合并
+
+cnBase('text-[#ececec]', 'text-[#ECECEC]') // => 仅 escape
 ```
 
-当需要精细化控制转义（例如 SSR 或混合应用中），同样可以结合 `create`：
+### 多端项目
 
 ```ts
 import { create } from '@weapp-tailwindcss/variants'
 
 // 跨平台框架请自行判断是否为 H5 构建，通常可从环境变量读取。
 const isH5 = true
-const { tv: tvForWeb, cn: cnForWeb } = create({
-  escape: !isH5,
-  unescape: !isH5,
-})
+const { tv, cn } = create({ escape: !isH5, unescape: !isH5 })
 ```
-
-这样生成的类名就会保持原样，方便在 Web 渲染时与已有代码复用。
 
 ### Live Demo
 
@@ -159,4 +146,7 @@ function () {
 }
 ```
 
-示例中可切换 tone、soft、twMerge 以及 escape/unescape，观察 `tv` 与 `cn` 输出的差异。
+## Tailwind v3 项目
+
+- `tailwindcss@3` ➜ 请使用 `@weapp-tailwindcss/variants-v3`
+- Web-only 项目也可直接使用 `tailwind-variant-v3`
