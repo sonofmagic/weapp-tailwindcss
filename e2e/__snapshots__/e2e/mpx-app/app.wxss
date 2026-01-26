@@ -158,11 +158,11 @@ text,
   color: rgba(239, 68, 68, var(--tw-text-opacity, 1));
   content: var(--tw-content);
 }
-.after_ccontent-_b_qu4f60u597du554auff0cu6211u5f88u65e0u804a_q_B:after {
+.after_ccontent-_b_qu_x4f60_u_x597d_u_x554a_u_xff0c_u_x6211_u_x5f88_u_x65e0_u_x804a__q_B:after {
   --tw-content: '你好啊，我很无聊';
   content: var(--tw-content);
 }
-.after_ccontent-_b_au4f60u597du554auff0cu6211u8fd9u662fu4e2du6587u5b57u7b26u4e32_a_B:after {
+.after_ccontent-_b_au_x4f60_u_x597d_u_x554a_u_xff0c_u_x6211_u_x8fd9_u_x662f_u_x4e2d_u_x6587_u_x5b57_u_x7b26_u_x4e32__a_B:after {
   --tw-content: '你好啊，我这是中文字符串';
   content: var(--tw-content);
 }

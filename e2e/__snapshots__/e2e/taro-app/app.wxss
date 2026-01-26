@@ -612,15 +612,15 @@ text,
   --tw-border-opacity: 1;
   border-color: rgba(75, 214, 80, var(--tw-border-opacity, 1));
 }
-.before_ccontent-_b_amoduleA_u666eu901au5206u5305_a_B::before {
+.before_ccontent-_b_amoduleA_u_x666e_u_x901a_u_x5206_u_x5305__a_B::before {
   --tw-content: 'moduleA 普通分包';
   content: var(--tw-content);
 }
-.before_ccontent-_b_amoduleB_u72ecu7acbu5206u5305_a_B::before {
+.before_ccontent-_b_amoduleB_u_x72ec_u_x7acb_u_x5206_u_x5305__a_B::before {
   --tw-content: 'moduleB 独立分包';
   content: var(--tw-content);
 }
-.before_ccontent-_b_amoduleC_u72ecu7acbu5206u5305_a_B::before {
+.before_ccontent-_b_amoduleC_u_x72ec_u_x7acb_u_x5206_u_x5305__a_B::before {
   --tw-content: 'moduleC 独立分包';
   content: var(--tw-content);
 }
@@ -641,7 +641,7 @@ text,
   --tw-content: '*';
   content: var(--tw-content);
 }
-.after_ccontent-_b_qu7684u6492u7684u6492_q_B::after {
+.after_ccontent-_b_qu_x7684_u_x6492_u_x7684_u_x6492__q_B::after {
   --tw-content: '的撒的撒';
   content: var(--tw-content);
 }
@@ -653,7 +653,7 @@ text,
   --tw-content: 'Hello World';
   content: var(--tw-content);
 }
-.after_ccontent-_b_au7684u6492u7684u6492_a_B::after {
+.after_ccontent-_b_au_x7684_u_x6492_u_x7684_u_x6492__a_B::after {
   --tw-content: '的撒的撒';
   content: var(--tw-content);
 }

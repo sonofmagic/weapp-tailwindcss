@@ -48,7 +48,7 @@
 <view class="after_cborder-none after_ccontent-_b_aHello_World_a_B a" style="">after_cborder-none</view>
 <view class="after content- after_cml-0_d5 after_ctext-red-500 b" style="">yellow</view>
 <view class="after content- after_cml-0_d5 after_ctext-red-500" style="">事实上</view>
-<view class="after_ccontent-_b_au7684u6492u7684u6492_a_B after_cml-0_d5 after_ctext-red-500" style="">事实上</view>
+<view class="after_ccontent-_b_au_x7684_u_x6492_u_x7684_u_x6492__a_B after_cml-0_d5 after_ctext-red-500" style="">事实上</view>
 <view class="after_ccontent-_b_x_B after_cml-0_d5 after_ctext-red-500 aspect-w-16" style="">
   <view class="_etext-_b_h555_B" style="">aspect</view>
   <view class="bg-_b_hfaf_B" style="">w</view>

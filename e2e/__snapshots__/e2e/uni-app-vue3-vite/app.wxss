@@ -5259,7 +5259,7 @@ text,
   --tw-content: 'Festivus';
   content: var(--tw-content);
 }
-.before_ccontent-_b_amoduleA_u72ecu7acbu5206u5305_a_B::before {
+.before_ccontent-_b_amoduleA_u_x72ec_u_x7acb_u_x5206_u_x5305__a_B::before {
   --tw-content: 'moduleA 独立分包';
   content: var(--tw-content);
 }
@@ -5267,15 +5267,15 @@ text,
   content: var(--tw-content);
   border-style: none;
 }
-.after_ccontent-_b_au6211u662fclassName_a_B::after {
+.after_ccontent-_b_au_x6211_u_x662f_className_a_B::after {
   --tw-content: '我是className';
   content: var(--tw-content);
 }
-.after_ccontent-_b_au6211u6765u81eautils_dfilter_djs_a_B::after {
+.after_ccontent-_b_au_x6211_u_x6765_u_x81ea_utils_dfilter_djs_a_B::after {
   --tw-content: '我来自utils.filter.js';
   content: var(--tw-content);
 }
-.after_ccontent-_b_r_au6211u6765u81eainline-wxs_r_a_B::after {
+.after_ccontent-_b_r_au_x6211_u_x6765_u_x81ea_inline-wxs_r_a_B::after {
   --tw-content: \'我来自inline-wxs\';
   content: var(--tw-content);
 }
