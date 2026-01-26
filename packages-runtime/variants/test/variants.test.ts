@@ -64,6 +64,15 @@ describe('variants runtime', () => {
     expect(badge()).toBe('text-[#ececec]')
   })
 
+  it('returns base classes from create().tv for simple class lists', () => {
+    const { tv: runtimeTv } = createVariants()
+    const test = runtimeTv({
+      base: 'w-full rounded-full bg-success p-1',
+    })
+
+    expect(test()).toBe('w-full rounded-full bg-success p-1')
+  })
+
   it('accepts boolean escape/unescape options', () => {
     const { tv: rawTv } = createVariants({ escape: true, unescape: true })
     const badge = rawTv({ base: 'text-[#ececec]' })
