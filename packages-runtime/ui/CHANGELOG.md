@@ -1,5 +1,12 @@
 # @weapp-tailwindcss/ui
 
+## 0.0.4
+
+### Patch Changes
+
+- 📦 **Dependencies** [`59e4131`](https://github.com/sonofmagic/weapp-tailwindcss/commit/59e4131fd7c355fc769517c8823d6b53d7457365)
+  → `@weapp-tailwindcss/variants@0.2.0`
+
 ## 0.0.3
 
 ### Patch Changes
