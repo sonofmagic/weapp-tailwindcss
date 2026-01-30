@@ -45,7 +45,7 @@ exports[`compose > components 0 2`] = `
     view,text,::before,::after,::backdrop {
       --tw-font-weight: initial;
     }
-page,:host {
+page,.tw-root,wx-root-portal-content,:host {
   --font-sans: ui-sans-serif,system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,Cantarell,Noto Sans,sans-serif,"Apple Color Emoji","Segoe UI Emoji","Segoe UI Symbol","Noto Color Emoji";
   --color-white: #fff;
   --spacing: .25rem;
@@ -114,7 +114,7 @@ exports[`compose > no components 0 2`] = `
     view,text,::before,::after,::backdrop {
       --tw-font-weight: initial;
     }
-page,:host {
+page,.tw-root,wx-root-portal-content,:host {
   --font-sans: ui-sans-serif,system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,Cantarell,Noto Sans,sans-serif,"Apple Color Emoji","Segoe UI Emoji","Segoe UI Symbol","Noto Color Emoji";
   --color-white: #fff;
   --spacing: .25rem;

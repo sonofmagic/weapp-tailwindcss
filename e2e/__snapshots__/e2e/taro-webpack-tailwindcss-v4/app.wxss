@@ -45,7 +45,8 @@ text,
 }
 :host,
 page,
-.tw-root {
+.tw-root,
+wx-root-portal-content {
   --color-cyan-500: rgb(0, 182, 212);
   --color-blue-500: rgb(50, 128, 255);
   --color-purple-800: rgb(110, 17, 176);
@@ -55,7 +56,8 @@ page,
 @supports (color: color(display-p3 0 0 0%)) {
   :host,
   page,
-  .tw-root {
+  .tw-root,
+  wx-root-portal-content {
     --color-cyan-500: rgb(0, 182, 212);
     --color-blue-500: rgb(50, 128, 255);
   }
@@ -63,7 +65,8 @@ page,
   @media (color-gamut: p3) {
     :host,
     page,
-    .tw-root {
+    .tw-root,
+    wx-root-portal-content {
       --color-cyan-500: color(display-p3 0.2467 0.71003 0.84144);
       --color-blue-500: color(display-p3 0.26642 0.49122 0.98862);
     }
@@ -165,6 +168,7 @@ text,
 }
 page,
 .tw-root,
+wx-root-portal-content,
 page {
   --nutui-brand-1: #ffebf1;
   --nutui-brand-2: #ffd6e1;

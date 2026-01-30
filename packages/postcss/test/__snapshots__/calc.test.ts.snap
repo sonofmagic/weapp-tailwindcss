@@ -1,7 +1,7 @@
 // Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
 exports[`calc > cssCalc 传入 --spacing 示例 1`] = `
-"page,page {
+"page,page,.tw-root,wx-root-portal-content {
   --spacing: 8rpx;
 }
 .h-2 {
@@ -10,7 +10,7 @@ exports[`calc > cssCalc 传入 --spacing 示例 1`] = `
 `;
 
 exports[`calc > cssCalc 传入 --spacing 示例 2 1`] = `
-"page,page {
+"page,page,.tw-root,wx-root-portal-content {
   --spacing: 8rpx;
 }
 .h-2 {
@@ -19,7 +19,7 @@ exports[`calc > cssCalc 传入 --spacing 示例 2 1`] = `
 `;
 
 exports[`calc > cssCalc 传入 true 示例 1`] = `
-"page,page {
+"page,page,.tw-root,wx-root-portal-content {
   --spacing: 8rpx;
 }
 .h-2 {
@@ -28,10 +28,10 @@ exports[`calc > cssCalc 传入 true 示例 1`] = `
 }"
 `;
 
-exports[`calc > cssCalc 传入数组 1`] = `"page{--ch:2}; .a{ width: 2rpx;}"`;
+exports[`calc > cssCalc 传入数组 1`] = `"page,.tw-root,wx-root-portal-content{--ch:2}; .a{ width: 2rpx;}"`;
 
 exports[`calc > cssCalc 和 rem2rpx 同时开启 1`] = `
-"page,:host {
+"page,.tw-root,wx-root-portal-content,:host {
   --spacing: 8rpx;
 }
 view,text,:after,:before,::backdrop {
@@ -47,7 +47,7 @@ view,text,:after,:before,::backdrop {
 `;
 
 exports[`calc > custom-properties 设置 preserve 为 true 1`] = `
-"page,:host {
+"page,.tw-root,wx-root-portal-content,:host {
   --spacing: .25rem;
 }
 view,text,:after,:before,::backdrop {
@@ -62,16 +62,16 @@ view,text,:after,:before,::backdrop {
 }"
 `;
 
-exports[`calc > px 转化 + root 变量运算去除 1`] = `"page{--ch:2}; .a{ width: 2rpx; width: calc(var(--ch)*1rpx);}"`;
+exports[`calc > px 转化 + root 变量运算去除 1`] = `"page,.tw-root,wx-root-portal-content{--ch:2}; .a{ width: 2rpx; width: calc(var(--ch)*1rpx);}"`;
 
-exports[`calc > rpx + root 变量运算 1`] = `"page{--ch:2}; .a{ width: 2rpx; width: calc(var(--ch)*1rpx);}"`;
+exports[`calc > rpx + root 变量运算 1`] = `"page,.tw-root,wx-root-portal-content{--ch:2}; .a{ width: 2rpx; width: calc(var(--ch)*1rpx);}"`;
 
-exports[`calc > rpx + root 变量运算去除 1`] = `"page{--ch:2}; .a{ width: 2rpx;}"`;
+exports[`calc > rpx + root 变量运算去除 1`] = `"page,.tw-root,wx-root-portal-content{--ch:2}; .a{ width: 2rpx;}"`;
 
 exports[`calc > rpx 运算 1`] = `".a{ width: 200rpx; height: 10000rpx;width: 272rpx;height: 68rpx;width: 272rpx;height: 68rpx;}"`;
 
 exports[`calc > 传入 cssCalc 配置 1`] = `
-"page,:host {
+"page,.tw-root,wx-root-portal-content,:host {
   --spacing: .25rem;
 }
 view,text,:after,:before,::backdrop {
@@ -87,7 +87,7 @@ view,text,:after,:before,::backdrop {
 `;
 
 exports[`calc > 同时确保 custom-properties 也开启 1`] = `
-"page,:host {
+"page,.tw-root,wx-root-portal-content,:host {
   --spacing: .25rem;
 }
 view,text,:after,:before,::backdrop {
@@ -103,7 +103,7 @@ view,text,:after,:before,::backdrop {
 `;
 
 exports[`calc > 设置 cssCalc true 1`] = `
-"page,:host {
+"page,.tw-root,wx-root-portal-content,:host {
   --spacing: .25rem;
 }
 view,text,:after,:before,::backdrop {

@@ -37,7 +37,7 @@ page image {
 
 /*! tailwindcss v4.1.10 | MIT License | https://tailwindcss.com */
 
-:host,page {
+:host,page,.tw-root,wx-root-portal-content {
   --text-4xl: 2.25rem;
   --text-4xl--line-height: 1.11111;
 }

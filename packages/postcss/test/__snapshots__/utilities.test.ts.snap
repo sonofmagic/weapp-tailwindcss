@@ -19,7 +19,7 @@ exports[`utilities > utilities + custom theme 1`] = `
 `;
 
 exports[`utilities > utilities + custom theme 2`] = `
-"page,:host {
+"page,.tw-root,wx-root-portal-content,:host {
   --spacing: 0.25rem;
 }
 .size-12 {
@@ -50,7 +50,7 @@ exports[`utilities > utilities + theme + rgb 1`] = `
 `;
 
 exports[`utilities > utilities + theme + rgb 2`] = `
-"page,:host {
+"page,.tw-root,wx-root-portal-content,:host {
   --color-red-500: rgb(251, 44, 54);
   --color-blue-500: rgb(43, 127, 255);
   --spacing: .25rem;
@@ -89,19 +89,19 @@ exports[`utilities > utilities + theme 1`] = `
 `;
 
 exports[`utilities > utilities + theme 2`] = `
-"page,:host {
+"page,.tw-root,wx-root-portal-content,:host {
   --color-red-500: rgb(251, 44, 54);
   --color-blue-500: rgb(50, 128, 255);
   --spacing: .25rem;
 }
 
 @supports (color: color(display-p3 0 0 0%)) {
-page,:host {
+page,.tw-root,wx-root-portal-content,:host {
   --color-blue-500: rgb(50, 128, 255);
 }
 
 @media (color-gamut: p3) {
-page,:host {
+page,.tw-root,wx-root-portal-content,:host {
   --color-blue-500: color(display-p3 0.26642 0.49122 0.98862);
 }
 }

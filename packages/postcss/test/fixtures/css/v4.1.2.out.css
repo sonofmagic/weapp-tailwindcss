@@ -32,7 +32,7 @@ view,text,::before,::after,::backdrop {
       --tw-drop-shadow-size: initial;
       --tw-content: "";
     }
-page,:host {
+page,.tw-root,wx-root-portal-content,:host {
   --color-zinc-800: rgb(39, 39, 42);
 }
 view,text,:after,:before,::backdrop {

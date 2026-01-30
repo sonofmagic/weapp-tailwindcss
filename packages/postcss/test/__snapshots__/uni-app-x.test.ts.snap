@@ -21,7 +21,7 @@ exports[`uni-app-x > app.uvue.css > css 1`] = `
 
 exports[`uni-app-x > css > css 1`] = `
 "/*! tailwindcss v4.1.4 | MIT License | https://tailwindcss.com */
-page,:host {
+page,.tw-root,wx-root-portal-content,:host {
   --spacing: .25rem;
 }
 .mt-_b32_d43rpx_B {

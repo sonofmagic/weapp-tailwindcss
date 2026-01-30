@@ -45,6 +45,7 @@ text,
 }
 page,
 .tw-root,
+wx-root-portal-content,
 :host {
   --color-cyan-500: rgb(0, 182, 212);
   --color-blue-500: rgb(50, 128, 255);
@@ -54,6 +55,7 @@ page,
 @supports (color: color(display-p3 0 0 0%)) {
   page,
   .tw-root,
+  wx-root-portal-content,
   :host {
     --color-cyan-500: rgb(0, 182, 212);
     --color-blue-500: rgb(50, 128, 255);
@@ -63,6 +65,7 @@ page,
   @media (color-gamut: p3) {
     page,
     .tw-root,
+    wx-root-portal-content,
     :host {
       --color-cyan-500: color(display-p3 0.2467 0.71003 0.84144);
       --color-blue-500: color(display-p3 0.26642 0.49122 0.98862);

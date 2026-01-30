@@ -11,7 +11,7 @@ view,text,:before,:after,::backdrop {
 
 }
 
-page,:host {
+page,.tw-root,wx-root-portal-content,:host {
   --color-white: #fff;
   --spacing: .25rem;
   --font-weight-bold: 700;

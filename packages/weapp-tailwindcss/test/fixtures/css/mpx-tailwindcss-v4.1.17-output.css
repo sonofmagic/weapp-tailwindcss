@@ -27,7 +27,7 @@ view,text,::before,::after,::backdrop {
       border-style: solid;
       border-color: currentColor;
     }
-page,.tw-root,:host {
+page,.tw-root,wx-root-portal-content,:host {
   --color-red-400: rgb(255, 101, 104);
   --color-red-500: rgb(251, 44, 54);
   --color-yellow-400: rgb(247, 201, 0);
@@ -51,7 +51,7 @@ page,.tw-root,:host {
   --radius-md: .375rem;
 }
 @supports (color: color(display-p3 0 0 0%)) {
-page,.tw-root,:host {
+page,.tw-root,wx-root-portal-content,:host {
   --color-red-400: rgb(255, 101, 104);
   --color-yellow-400: rgb(247, 201, 0);
   --color-green-500: rgb(0, 198, 90);
@@ -60,7 +60,7 @@ page,.tw-root,:host {
 }
 
 @media (color-gamut: p3) {
-page,.tw-root,:host {
+page,.tw-root,wx-root-portal-content,:host {
   --color-red-400: color(display-p3 0.93353 0.43168 0.42349);
   --color-yellow-400: color(display-p3 0.95994 0.79017 0.05852);
   --color-green-500: color(display-p3 0.30873 0.77475 0.37431);

@@ -27,7 +27,7 @@
     "postinstall": "weapp-tw patch"
   },
   "dependencies": {
-    "wevu": "^2.1.2"
+    "wevu": "^2.1.3"
   },
   "devDependencies": {
     "@egoist/tailwindcss-icons": "^1.9.0",

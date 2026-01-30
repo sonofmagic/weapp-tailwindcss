@@ -34,6 +34,7 @@ text,
 }
 page,
 .tw-root,
+wx-root-portal-content,
 :host {
   --color-emerald-500: rgb(0, 185, 129);
   --color-emerald-600: rgb(0, 150, 105);
@@ -48,6 +49,7 @@ page,
 @supports (color: color(display-p3 0 0 0%)) {
   page,
   .tw-root,
+  wx-root-portal-content,
   :host {
     --color-emerald-500: rgb(0, 185, 129);
     --color-emerald-600: rgb(0, 150, 105);
@@ -56,6 +58,7 @@ page,
   @media (color-gamut: p3) {
     page,
     .tw-root,
+    wx-root-portal-content,
     :host {
       --color-emerald-500: color(display-p3 0.26711 0.72685 0.5084);
       --color-emerald-600: color(display-p3 0.20656 0.58906 0.41396);

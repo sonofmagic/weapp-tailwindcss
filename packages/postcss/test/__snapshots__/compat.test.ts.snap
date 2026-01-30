@@ -2,7 +2,7 @@
 
 exports[`compat > styleHandler calc 1`] = `
 "
-page{
+page,.tw-root,wx-root-portal-content{
 --spacing: 8rpx;
 --radius-3xl: 48rpx;
 --radius-4xl: calc(var(--spacing) * 8);

@@ -30,7 +30,7 @@ view,text,::before,::after,::backdrop {
       border-style: solid;
       border-color: currentColor;
     }
-page,.tw-root,:host {
+page,.tw-root,wx-root-portal-content,:host {
   --color-red-400: rgb(255, 101, 104);
   --color-red-500: rgb(251, 44, 54);
   --color-yellow-400: rgb(247, 201, 0);
@@ -54,7 +54,7 @@ page,.tw-root,:host {
   --radius-md: .375rem;
 }
 @supports (color: color(display-p3 0 0 0%)) {
-page,.tw-root,:host {
+page,.tw-root,wx-root-portal-content,:host {
   --color-red-400: rgb(255, 101, 104);
   --color-yellow-400: rgb(247, 201, 0);
   --color-green-500: rgb(0, 198, 90);
@@ -63,7 +63,7 @@ page,.tw-root,:host {
 }
 
 @media (color-gamut: p3) {
-page,.tw-root,:host {
+page,.tw-root,wx-root-portal-content,:host {
   --color-red-400: color(display-p3 0.93353 0.43168 0.42349);
   --color-yellow-400: color(display-p3 0.95994 0.79017 0.05852);
   --color-green-500: color(display-p3 0.30873 0.77475 0.37431);
@@ -395,7 +395,7 @@ view,text,:after,:before,::backdrop {
 `;
 
 exports[`tailwindcss v4 > v4-default.css 1`] = `
-"page,.tw-root,:host {
+"page,.tw-root,wx-root-portal-content,:host {
     --font-sans: ui-sans-serif,system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,Cantarell,Noto Sans, sans-serif, "Apple Color Emoji",
       "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
     --font-serif: ui-serif, Georgia, Cambria, "Times New Roman", Times, serif;
@@ -774,7 +774,7 @@ exports[`tailwindcss v4 > v4-default.css 1`] = `
   }
 
 @supports (color: color(display-p3 0 0 0%)) {
-page,.tw-root,:host {
+page,.tw-root,wx-root-portal-content,:host {
     --color-red-200: rgb(255, 202, 202);
     --color-red-300: rgb(255, 163, 164);
     --color-red-400: rgb(255, 101, 104);
@@ -873,7 +873,7 @@ page,.tw-root,:host {
   }
 
 @media (color-gamut: p3) {
-page,.tw-root,:host {
+page,.tw-root,wx-root-portal-content,:host {
     --color-red-200: color(display-p3 0.96956 0.79815 0.7943);
     --color-red-300: color(display-p3 0.95692 0.65189 0.64512);
     --color-red-400: color(display-p3 0.93353 0.43168 0.42349);
@@ -1412,7 +1412,7 @@ view,text,::before,::after,::backdrop {
       border-style: solid;
       border-color: currentColor;
     }
-page,.tw-root,:host {
+page,.tw-root,wx-root-portal-content,:host {
   --color-zinc-800: rgb(39, 39, 42);
 }
 view,text,:after,:before,::backdrop {
@@ -1684,7 +1684,7 @@ view,text,::before,::after,::backdrop {
       border-style: solid;
       border-color: currentColor;
     }
-page,.tw-root,:host {
+page,.tw-root,wx-root-portal-content,:host {
     --color-zinc-800: rgb(39, 39, 42);
   }
 view,text,:after,:before,::backdrop {

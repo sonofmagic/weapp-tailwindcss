@@ -1,5 +1,5 @@
 /*! tailwindcss v4.0.9 | MIT License | https://tailwindcss.com */
-page,:host {
+page,.tw-root,wx-root-portal-content,:host {
     --font-sans: ui-sans-serif,system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,Cantarell,Noto Sans, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol",
       "Noto Color Emoji";
     --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
@@ -39,14 +39,14 @@ page,:host {
     --default-mono-font-variation-settings: var(--font-mono--font-variation-settings);
   }
 @supports (color: color(display-p3 0 0 0%)) {
-page,:host {
+page,.tw-root,wx-root-portal-content,:host {
     --color-red-300: rgb(255, 163, 164);
     --color-red-400: rgb(255, 101, 104);
     --color-red-600: rgb(228, 0, 22);
   }
 
 @media (color-gamut: p3) {
-page,:host {
+page,.tw-root,wx-root-portal-content,:host {
     --color-red-300: color(display-p3 0.95692 0.65189 0.64512);
     --color-red-400: color(display-p3 0.93353 0.43168 0.42349);
     --color-red-600: color(display-p3 0.83032 0.14038 0.1332);
@@ -269,7 +269,7 @@ button,input {
 ::-webkit-outer-spin-button {
     height: auto;
   }
-page {
+page,.tw-root,wx-root-portal-content {
     --background: 0 0% 100%;
     --foreground: 222.2 84% 4.9%;
     --muted: 210 40% 96.1%;
