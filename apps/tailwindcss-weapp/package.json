@@ -94,7 +94,7 @@
     "@iconify-json/ci": "^1.2.2",
     "@iconify-json/logos": "^1.2.4",
     "@iconify-json/mdi": "^1.2.3",
-    "@iconify-json/ri": "^1.2.7",
+    "@iconify-json/ri": "^1.2.8",
     "@iconify-json/svg-spinners": "^1.2.2",
     "@vue/runtime-core": "^3.5.27",
     "autoprefixer": "^10.4.21",

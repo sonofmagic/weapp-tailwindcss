@@ -41,15 +41,15 @@ catalogs:
   prettier371:
     prettier: ^3.8.1
   react18:
-    '@types/react': ^19.2.9
+    '@types/react': ^19.2.10
     '@types/react-dom': 18.2.7
     react: ^18.3.1
     react-dom: ^18.3.1
   react19:
-    '@types/react': ^19.2.9
+    '@types/react': ^19.2.10
     '@types/react-dom': 19.2.3
-    react: ^19.2.3
-    react-dom: ^19.2.3
+    react: ^19.2.4
+    react-dom: ^19.2.4
   reactRefresh018:
     react-refresh: ^0.18.0
   sass195:
@@ -70,29 +70,29 @@ catalogs:
   tailwindcssRem:
     tailwindcss-rem2px-preset: ^1.0.3
   taro4:
-    '@tarojs/cli': ^4.1.10
-    '@tarojs/components': ^4.1.10
-    '@tarojs/helper': ^4.1.10
-    '@tarojs/plugin-framework-react': ^4.1.10
-    '@tarojs/plugin-framework-vue3': ^4.1.10
-    '@tarojs/plugin-html': ^4.1.10
-    '@tarojs/plugin-platform-alipay': ^4.1.10
-    '@tarojs/plugin-platform-h5': ^4.1.10
-    '@tarojs/plugin-platform-harmony-hybrid': ^4.1.10
-    '@tarojs/plugin-platform-jd': ^4.1.10
-    '@tarojs/plugin-platform-qq': ^4.1.10
-    '@tarojs/plugin-platform-swan': ^4.1.10
-    '@tarojs/plugin-platform-tt': ^4.1.10
-    '@tarojs/plugin-platform-weapp': ^4.1.10
-    '@tarojs/react': ^4.1.10
-    '@tarojs/runtime': ^4.1.10
-    '@tarojs/shared': ^4.1.10
-    '@tarojs/taro': ^4.1.10
-    '@tarojs/taro-loader': ^4.1.10
-    '@tarojs/vite-runner': ^4.1.10
-    '@tarojs/webpack5-runner': ^4.1.10
-    babel-preset-taro: ^4.1.10
-    eslint-config-taro: ^4.1.10
+    '@tarojs/cli': ^4.1.11
+    '@tarojs/components': ^4.1.11
+    '@tarojs/helper': ^4.1.11
+    '@tarojs/plugin-framework-react': ^4.1.11
+    '@tarojs/plugin-framework-vue3': ^4.1.11
+    '@tarojs/plugin-html': ^4.1.11
+    '@tarojs/plugin-platform-alipay': ^4.1.11
+    '@tarojs/plugin-platform-h5': ^4.1.11
+    '@tarojs/plugin-platform-harmony-hybrid': ^4.1.11
+    '@tarojs/plugin-platform-jd': ^4.1.11
+    '@tarojs/plugin-platform-qq': ^4.1.11
+    '@tarojs/plugin-platform-swan': ^4.1.11
+    '@tarojs/plugin-platform-tt': ^4.1.11
+    '@tarojs/plugin-platform-weapp': ^4.1.11
+    '@tarojs/react': ^4.1.11
+    '@tarojs/runtime': ^4.1.11
+    '@tarojs/shared': ^4.1.11
+    '@tarojs/taro': ^4.1.11
+    '@tarojs/taro-loader': ^4.1.11
+    '@tarojs/vite-runner': ^4.1.11
+    '@tarojs/webpack5-runner': ^4.1.11
+    babel-preset-taro: ^4.1.11
+    eslint-config-taro: ^4.1.11
   typesNode2410:
     '@types/node': ^24.10.9
   typescript59:
@@ -100,9 +100,9 @@ catalogs:
   typescript59tilde:
     typescript: ~5.9.3
   typescriptEslint849:
-    '@typescript-eslint/eslint-plugin': ^8.53.1
-    '@typescript-eslint/parser': ^8.53.1
-    typescript-eslint: ^8.53.1
+    '@typescript-eslint/eslint-plugin': ^8.54.0
+    '@typescript-eslint/parser': ^8.54.0
+    typescript-eslint: ^8.54.0
   vite5421:
     vite: ^5.4.21
   vite724:
@@ -118,9 +118,9 @@ catalogs:
   weappIdeCli:
     weapp-ide-cli: ^5.0.0
   weappVite:
-    weapp-vite: ^6.4.1
+    weapp-vite: ^6.4.4
   wrangler4530:
-    wrangler: ^4.60.0
+    wrangler: ^4.61.1
 
 onlyBuiltDependencies:
   - '@tailwindcss/oxide'
