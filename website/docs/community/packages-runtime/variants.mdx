@@ -99,6 +99,25 @@ const { tv: tvRuntime } = create({ escape: !isH5, unescape: !isH5 })
 const buttonWeb = tvRuntime(buttonConfig)
 ```
 
+## 默认 twMerge 配置
+
+```ts
+import { create } from '@weapp-tailwindcss/variants'
+
+const { cn, tv } = create({
+  twMergeConfig: {
+    extend: {
+      classGroups: {
+        'font-size': [{ text: ['20', '22', '24', '26', '28', '30', '32'] }],
+      },
+    },
+  },
+})
+
+cn('text-32', 'text-surface-700')()
+tv({ base: 'text-32 text-surface-700' })()
+```
+
 ## 常见注意事项
 
 - **函数名保留**：`tv`/`cn` 若被改名，需要配置 `ignoreCallExpressionIdentifiers`。

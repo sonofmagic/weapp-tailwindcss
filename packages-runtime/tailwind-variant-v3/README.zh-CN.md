@@ -64,9 +64,29 @@ const className = cn('flex', ['text-sm', 'md:text-lg'])({ twMerge: true })
 | Helper                       | 说明                                                            |
 | ---------------------------- | --------------------------------------------------------------- |
 | `tv(config, runtimeConfig?)` | 创建带 slot/variant/compound 能力的生成器，支持响应式与默认值。 |
+| `create(baseConfig?)`        | 预先注入默认配置，返回绑定后的 `cn`/`tv`/`createTV`。            |
 | `createTV(baseConfig)`       | 预先注入一份全局配置，创建多个风格一致的 `tv` 实例。            |
 | `cn(...classValues)`         | 基于 `tailwind-merge` 风格适配器的类名合并工具。               |
 | `cnBase(...classValues)`     | 纯字符串连接（不做 merge）。                                    |
+
+## 默认 twMerge 配置
+
+```ts
+import { create } from 'tailwind-variant-v3'
+
+const { cn, tv } = create({
+  twMergeConfig: {
+    extend: {
+      classGroups: {
+        'font-size': [{ text: ['20', '22', '24', '26', '28', '30', '32'] }],
+      },
+    },
+  },
+})
+
+cn('text-32', 'text-surface-700')()
+tv({ base: 'text-32 text-surface-700' })()
+```
 
 ## 自定义 merge 适配器
 

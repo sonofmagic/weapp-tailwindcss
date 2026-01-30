@@ -7,6 +7,7 @@
 - `tv` 与官方写法完全一致，但输出结果已转义
 - 提供 `cn`/`cnBase`，适合组合类名或开启/关闭 `twMerge`
 - 可通过 `create` 传入 `escape`/`unescape` 配置，微调运行时行为
+- 支持在 `create` 里配置默认 `twMergeConfig` / `twMergeAdapter`
 
 ## 安装
 
@@ -44,6 +45,25 @@ import { cn } from '@weapp-tailwindcss/variants'
 const mergeLater = cn('text-[#ececec]', isActive && 'text-[#ECECEC]')
 mergeLater() // => 去重 + escape
 mergeLater({ twMerge: false }) // => 仅 escape，不做合并
+```
+
+## 默认 twMerge 配置
+
+```ts
+import { create } from '@weapp-tailwindcss/variants'
+
+const { cn, tv } = create({
+  twMergeConfig: {
+    extend: {
+      classGroups: {
+        'font-size': [{ text: ['20', '22', '24', '26', '28', '30', '32'] }],
+      },
+    },
+  },
+})
+
+cn('text-32', 'text-surface-700')()
+tv({ base: 'text-32 text-surface-700' })()
 ```
 
 更多说明：<https://tw.icebreaker.top/docs/community/merge/cva-and-variants>

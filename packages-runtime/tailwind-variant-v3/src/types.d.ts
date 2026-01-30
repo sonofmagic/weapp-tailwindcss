@@ -431,6 +431,16 @@ export declare function createTV<T extends TVConfig['responsiveVariants']>(
   config: TVConfig & { responsiveVariants?: T },
 ): CreateTV<T>
 
+export declare function create(config?: TVConfig): {
+  cn: <T extends CnOptions>(...classes: T) => (config?: TWMConfig) => CnReturn
+  cnBase: <T extends CnOptions>(...classes: T) => CnReturn
+  tv: TV
+  createTV: <RV extends TVConfig['responsiveVariants'] = undefined>(
+    config: TVConfig & { responsiveVariants?: RV },
+  ) => CreateTV<RV>
+  defaultConfig: TVConfig
+}
+
 export declare const defaultConfig: TVConfig
 
 export type VariantProps<Component extends (...args: any) => any> = Omit<

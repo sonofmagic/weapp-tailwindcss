@@ -67,9 +67,29 @@ const className = cn('flex', ['text-sm', 'md:text-lg'], { foo: true })({
 | Helper                       | Description                                                                                                            |
 | ---------------------------- | ---------------------------------------------------------------------------------------------------------------------- |
 | `tv(config, runtimeConfig?)` | Creates a variant composer with slots, variants, defaults, responsive variants, compound variants, and compound slots. |
+| `create(baseConfig?)`        | Returns helpers (`cn`/`tv`/`createTV`) preloaded with shared config (e.g., `twMergeConfig`).                           |
 | `createTV(baseConfig)`       | Returns a factory preloaded with shared config (e.g., disable `twMerge`).                                              |
 | `cn(...classValues)`         | Lightweight wrapper around `tailwind-merge`-style adapters with caching.                                               |
 | `cnBase(...classValues)`     | Raw string joiner when you do not need merging.                                                                        |
+
+## Default twMerge config
+
+```ts
+import { create } from 'tailwind-variant-v3'
+
+const { cn, tv } = create({
+  twMergeConfig: {
+    extend: {
+      classGroups: {
+        'font-size': [{ text: ['20', '22', '24', '26', '28', '30', '32'] }],
+      },
+    },
+  },
+})
+
+cn('text-32', 'text-surface-700')()
+tv({ base: 'text-32 text-surface-700' })()
+```
 
 ## Custom merge adapters
 

@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest'
 import {
   create,
+  extendTailwindMerge,
   tailwindMergeVersion,
   twMerge,
   weappTwIgnore,
@@ -55,5 +56,25 @@ describe('merge-v3 runtime exports', () => {
     expect(twMerge('ring-[10rpx]', 'ring-[4rpx]', 'ring-[8rpx]', 'ring-red-500')).toBe(
       'ring-_b8rpx_B ring-red-500',
     )
+  })
+
+  it('keeps arbitrary rpx font sizes alongside custom text colors', () => {
+    expect(twMerge('text-[28rpx] text-surface-700')).toBe('text-_b28rpx_B text-surface-700')
+  })
+
+  it('treats numeric text utilities as conflicting with custom text colors', () => {
+    expect(twMerge('text-32 text-surface-700')).toBe('text-surface-700')
+  })
+
+  it('supports numeric font sizes via extended class groups', () => {
+    const customMerge = extendTailwindMerge({
+      extend: {
+        classGroups: {
+          'font-size': [{ text: ['20', '22', '24', '26', '28', '30', '32', '36', '40', '48', '52'] }],
+        },
+      },
+    })
+
+    expect(customMerge('text-32 text-surface-700')).toBe('text-32 text-surface-700')
   })
 })

@@ -2,6 +2,7 @@ import { escape as escapeClassName } from '@weapp-core/escape'
 import { describe, expect, it } from 'vitest'
 import {
   create,
+  extendTailwindMerge,
   tailwindMergeVersion,
   twMerge,
 } from '@/index'
@@ -89,6 +90,26 @@ describe('merge behavior reference', () => {
   it('supports custom colors out of the box', () => {
     expect(merge('text-red text-secret-sauce')).toBe('text-secret-sauce')
     expect(merge('text-[#123456]', 'text-[#654321]')).toBe(esc('text-[#654321]'))
+  })
+
+  it('keeps arbitrary rpx font sizes alongside custom text colors', () => {
+    expect(merge('text-[28rpx] text-surface-700')).toBe(esc('text-[28rpx] text-surface-700'))
+  })
+
+  it('treats numeric text utilities as conflicting with custom text colors', () => {
+    expect(merge('text-32 text-surface-700')).toBe('text-surface-700')
+  })
+
+  it('supports numeric font sizes via extended class groups', () => {
+    const customMerge = extendTailwindMerge({
+      extend: {
+        classGroups: {
+          'font-size': [{ text: ['20', '22', '24', '26', '28', '30', '32', '36', '40', '48', '52'] }],
+        },
+      },
+    })
+
+    expect(customMerge('text-32 text-surface-700')).toBe('text-32 text-surface-700')
   })
 
   it('supports multiple arguments', () => {

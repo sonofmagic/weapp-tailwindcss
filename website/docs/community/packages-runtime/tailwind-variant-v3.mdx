@@ -34,6 +34,25 @@ const className = button({ tone: 'ghost' })
 const merged = cn('text-zinc-900', 'text-zinc-700')({ twMerge: true })
 ```
 
+## 默认 twMerge 配置
+
+```ts
+import { create } from 'tailwind-variant-v3'
+
+const { cn, tv } = create({
+  twMergeConfig: {
+    extend: {
+      classGroups: {
+        'font-size': [{ text: ['20', '22', '24', '26', '28', '30', '32'] }],
+      },
+    },
+  },
+})
+
+cn('text-32', 'text-surface-700')()
+tv({ base: 'text-32 text-surface-700' })()
+```
+
 ## 小程序适配：注入 merge-v3
 
 如果你希望在小程序端使用 `tailwind-variant-v3`，可以通过 `twMergeAdapter` 接入 `@weapp-tailwindcss/merge-v3`：

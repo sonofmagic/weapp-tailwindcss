@@ -116,7 +116,7 @@ function wrapComponent<TComponent extends TailwindVariantComponent>(
   return wrapped
 }
 
-function createVariantsRuntime(options?: CreateOptions) {
+function createVariantsRuntime(options?: CreateOptions, runtimeConfig?: TVConfig) {
   const transformers = resolveTransformers(options)
   const mergeRuntime = createMergeRuntime(options)
 
@@ -151,10 +151,12 @@ function createVariantsRuntime(options?: CreateOptions) {
     return transformers.escape(mergeFn(value))
   }
 
+  const resolveConfig = (...configs: (TVConfig | undefined)[]) => mergeConfigs(runtimeConfig, ...configs)
+
   const cn: TailwindVariantCn = (...classes) => {
     const aggregated = tailwindVariantCnBase(...classes)
 
-    return (config?: TWMConfig) => mergeClassList(aggregated, config)
+    return (config?: TWMConfig) => mergeClassList(aggregated, resolveConfig(config as TVConfig))
   }
 
   const cnBase = (...classes: CnOptions) => {
@@ -167,8 +169,8 @@ function createVariantsRuntime(options?: CreateOptions) {
   }
 
   const tv = ((options: TailwindVariantOptions, config?: TailwindVariantConfig) => {
-    const mergedConfig = mergeConfigs(config)
-    const upstreamConfig = disableTailwindMerge(config)
+    const mergedConfig = resolveConfig(config)
+    const upstreamConfig = disableTailwindMerge(mergedConfig)
     const component = tailwindVariantTv(
       options as TailwindVariantOptions,
       upstreamConfig as TailwindVariantConfig,
@@ -177,10 +179,11 @@ function createVariantsRuntime(options?: CreateOptions) {
   }) as unknown as TV
 
   const createTVRuntime: typeof tailwindVariantCreateTV = (configProp?: TVConfig) => {
-    const tailwindCreate = tailwindVariantCreateTV(disableTailwindMerge(configProp))
+    const mergedBaseConfig = resolveConfig(configProp)
+    const tailwindCreate = tailwindVariantCreateTV(disableTailwindMerge(mergedBaseConfig))
 
     return ((options: TailwindVariantOptions, config?: TailwindVariantConfig) => {
-      const mergedConfig = mergeConfigs(configProp, config)
+      const mergedConfig = resolveConfig(configProp, config)
       const component = config
         ? tailwindCreate(
             options as TailwindVariantOptions,
@@ -199,8 +202,21 @@ function createVariantsRuntime(options?: CreateOptions) {
   }
 }
 
-function create(options?: CreateOptions) {
-  return createVariantsRuntime(options)
+function isRuntimeConfig(value: unknown): value is TVConfig {
+  return !!value
+    && typeof value === 'object'
+    && ('twMerge' in value
+      || 'twMergeConfig' in value
+      || 'twMergeAdapter' in value
+      || 'responsiveVariants' in value)
+}
+
+function create(options?: CreateOptions | TVConfig, config?: TVConfig) {
+  if (isRuntimeConfig(options)) {
+    return createVariantsRuntime(undefined, options)
+  }
+
+  return createVariantsRuntime(options as CreateOptions | undefined, config)
 }
 
 const variantsRuntime = create()

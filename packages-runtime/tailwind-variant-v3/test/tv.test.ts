@@ -1,6 +1,6 @@
 import type { TailwindMergeAdapter } from '../src/index'
 import { describe, expect, it } from 'vitest'
-import { cn, tv } from '../src/index'
+import { cn, create, tv } from '../src/index'
 import './matchers'
 
 const COMMON_UNITS = ['small', 'medium', 'large']
@@ -3224,6 +3224,42 @@ describe('Tailwind Variants (TV) - Tailwind Merge', () => {
     })
 
     expect(result).toHaveClass(['text-medium', 'text-blue-500', 'w-unit-4'])
+  })
+
+  it('should allow numeric text sizes with custom config', () => {
+    const styles = tv(
+      {
+        base: 'text-32 text-surface-700',
+      },
+      {
+        twMergeConfig: {
+          extend: {
+            classGroups: {
+              'font-size': [{ text: ['32'] }],
+            },
+          },
+        },
+      },
+    )
+
+    expect(styles()).toHaveClass(['text-32', 'text-surface-700'])
+  })
+
+  it('should allow numeric text sizes via create defaults', () => {
+    const runtime = create({
+      twMergeConfig: {
+        extend: {
+          classGroups: {
+            'font-size': [{ text: ['32'] }],
+          },
+        },
+      },
+    })
+
+    expect(runtime.cn('text-32', 'text-surface-700')()).toHaveClass(['text-32', 'text-surface-700'])
+
+    const styles = runtime.tv({ base: 'text-32 text-surface-700' })
+    expect(styles()).toHaveClass(['text-32', 'text-surface-700'])
   })
 
   it('should support legacy custom config', () => {

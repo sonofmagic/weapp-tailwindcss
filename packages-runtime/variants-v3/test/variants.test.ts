@@ -79,6 +79,56 @@ describe('variants-v3 runtime', () => {
     expect(aggregate()).toBe('w-full rounded-full bg-success p-1')
   })
 
+  it('respects twMergeConfig for numeric text sizes in cn', () => {
+    const aggregate = cn('text-32', 'text-surface-700')
+
+    expect(
+      aggregate({
+        twMergeConfig: {
+          extend: {
+            classGroups: {
+              'font-size': [{ text: ['32'] }],
+            },
+          },
+        },
+      }),
+    ).toBe('text-32 text-surface-700')
+  })
+
+  it('respects twMergeConfig for numeric text sizes in tv', () => {
+    const badge = tv(
+      { base: 'text-32 text-surface-700' },
+      {
+        twMergeConfig: {
+          extend: {
+            classGroups: {
+              'font-size': [{ text: ['32'] }],
+            },
+          },
+        },
+      },
+    )
+
+    expect(badge()).toBe('text-32 text-surface-700')
+  })
+
+  it('supports default twMergeConfig via create', () => {
+    const runtime = create({
+      twMergeConfig: {
+        extend: {
+          classGroups: {
+            'font-size': [{ text: ['32'] }],
+          },
+        },
+      },
+    })
+
+    expect(runtime.cn('text-32', 'text-surface-700')()).toBe('text-32 text-surface-700')
+
+    const badge = runtime.tv({ base: 'text-32 text-surface-700' })
+    expect(badge()).toBe('text-32 text-surface-700')
+  })
+
   it('accepts boolean escape/unescape options', () => {
     const { tv: rawTv } = create({ escape: true, unescape: true })
     const badge = rawTv({ base: 'text-[#ececec]' })
