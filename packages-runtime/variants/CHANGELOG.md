@@ -1,5 +1,11 @@
 # @weapp-tailwindcss/variants
 
+## 0.2.0
+
+### Minor Changes
+
+- ✨ **新增 create 默认配置入口，支持向 tailwind-merge 透传 twMergeConfig 等参数。** [`59e4131`](https://github.com/sonofmagic/weapp-tailwindcss/commit/59e4131fd7c355fc769517c8823d6b53d7457365) by @sonofmagic
+
 ## 0.1.7
 
 ### Patch Changes

@@ -1,5 +1,11 @@
 # weapp-tailwindcss
 
+## 4.9.7
+
+### Patch Changes
+
+- 🐛 **添加 `wx-root-portal-content` 作为默认的 css var 根节点类名** [`a40a766`](https://github.com/sonofmagic/weapp-tailwindcss/commit/a40a76679536a3c08177143081963e3e80d84eed) by @sonofmagic
+
 ## 4.9.6
 
 ### Patch Changes
