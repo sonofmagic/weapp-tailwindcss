@@ -80,7 +80,7 @@ function getLightningDefaultOptions(options?: Partial<IStyleHandlerOptions>): Pa
     cssRemoveHoverPseudoClass: true,
     cssChildCombinatorReplaceValue: ['view', 'text'],
     cssSelectorReplacement: {
-      root: 'page',
+      root: ['page', '.tw-root', 'wx-root-portal-content'],
       universal: ['view', 'text'],
     },
   }

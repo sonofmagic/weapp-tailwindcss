@@ -36,7 +36,7 @@ export default defineConfig({
 
 额外提示：
 
-- `cssSelectorReplacement.root` 默认包含 `['page', '.tw-root']`。当页面外的容器（例如自定义 tab bar、弹出层根节点等）需要承载 Tailwind 注入的 `--tw-*` 变量时，只需在容器上加上 `class="tw-root"` 即可复用整套预设，无需额外配置。下面是一个在自定义 tab bar 中注入主题变量的示例：
+- `cssSelectorReplacement.root` 默认包含 `['page', '.tw-root', 'wx-root-portal-content']`。当页面外的容器（例如自定义 tab bar、弹出层根节点等）需要承载 Tailwind 注入的 `--tw-*` 变量时，只需在容器上加上 `class="tw-root"` 即可复用整套预设，无需额外配置。下面是一个在自定义 tab bar 中注入主题变量的示例：
 
   ```xml title="custom-tab-bar/index.mpx"
   <template>

@@ -58,6 +58,7 @@ exports[`get options > default options 1`] = `
     "root": [
       "page",
       ".tw-root",
+      "wx-root-portal-content",
     ],
     "universal": [
       "view",

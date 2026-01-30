@@ -268,8 +268,38 @@ true
 
 #### 默认值
 
-`ts 'page'` |
-| `universal?` | `string` \| `false` | **`Default`** `ts 'view'` |
+```ts
+{
+  root: ['page', '.tw-root', 'wx-root-portal-content'],
+  universal: ['view', 'text'],
+}
+```
+
+#### root
+
+用于替换 CSS 中的 `:root` 选择器，决定 Tailwind `--tw-*` 变量的作用域。支持 `string | string[] | false`：
+
+- `false`：不替换 `:root`。
+- `string` / `string[]`：将 `:root` 展开为对应选择器列表。
+
+默认包含 `['page', '.tw-root', 'wx-root-portal-content']`。其中 `.tw-root` 用于“自定义根容器”场景：只需在容器节点上加 `class="tw-root"`，即可复用变量作用域，无需额外配置；`wx-root-portal-content` 用于覆盖 RootPortal 等根容器。
+
+**RootPortal/弹层容器场景**
+
+当 `RootPortal` 或类似根容器无法继承 `app.wxss` 里挂在 `page` 下的变量时，可将容器选择器追加到 `root` 中，让 Tailwind 变量在该容器内生效：
+
+```ts
+cssSelectorReplacement: {
+  root: ['page', '.tw-root', 'wx-root-portal-content'],
+}
+```
+
+#### universal
+
+用于替换 CSS 中的通配选择器 `*`。小程序环境普遍不支持 `*`，因此默认替换为 `['view', 'text']`。
+
+- `false`：保留 `*`（仅在宿主支持通配选择器时使用）。
+- `string` / `string[]`：将 `*` 展开为更多标签/组件（例如需要覆盖自定义组件或更多基础组件时）。
 
 ### rem2rpx
 

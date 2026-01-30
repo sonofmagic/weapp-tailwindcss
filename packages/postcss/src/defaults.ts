@@ -29,7 +29,7 @@ export function getDefaultOptions(options?: Partial<IStyleHandlerOptions>): Part
     // cssRemoveAtSupports: true,
     // cssRemoveAtMedia: true,
     cssSelectorReplacement: {
-      root: 'page',
+      root: ['page', '.tw-root', 'wx-root-portal-content'],
       universal: ['view', 'text'],
     },
   }

@@ -8,6 +8,7 @@ import {
 import {
   cn,
   cnBase,
+  create,
   createTV,
   tv,
 } from '..'
@@ -117,3 +118,18 @@ type ResponsiveProps = VariantProps<typeof responsiveButton>
 expectAssignable<ResponsiveProps>({ size: 'sm' })
 expectAssignable<ResponsiveProps>({ size: { initial: 'sm', md: 'lg' } })
 expectError(responsiveButton({ size: { lg: 'sm' } }))
+
+const runtime = create({
+  twMergeConfig: {
+    extend: {
+      classGroups: {
+        'font-size': [{ text: ['32'] }],
+      },
+    },
+  },
+})
+
+expectType<string | undefined>(runtime.cn('text-32', 'text-surface-700')())
+
+const runtimeWithOptions = create({ escape: false }, { twMerge: false })
+expectType<string | undefined>(runtimeWithOptions.cn('px-2')())

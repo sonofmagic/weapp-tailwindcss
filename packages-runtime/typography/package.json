@@ -54,6 +54,7 @@
     "build": "tsup",
     "test": "vitest run",
     "test:dev": "vitest",
+    "tsd": "tsd",
     "release": "pnpm publish",
     "sync": "cnpm sync @weapp-tailwindcss/typography"
   },

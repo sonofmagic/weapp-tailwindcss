@@ -8,6 +8,7 @@ import {
 import {
   cn,
   cnBase,
+  create,
   createTV,
   tv,
 } from '..'
@@ -101,8 +102,8 @@ expectType<string>(cardSlots.icon())
 expectType<string>(cardSlots.root({ size: 'lg' }))
 expectError(cardSlots.root({ size: 'xl' }))
 
-const create = createTV({ twMerge: false })
-const createButton = create({
+const createFactory = createTV({ twMerge: false })
+const createButton = createFactory({
   variants: {
     tone: {
       solid: 'bg-black',
@@ -114,3 +115,18 @@ const createButton = create({
 type CreateButtonProps = VariantProps<typeof createButton>
 expectAssignable<CreateButtonProps>({ tone: 'solid' })
 expectError(createButton({ tone: 'ghost' }))
+
+const runtime = create({
+  twMergeConfig: {
+    extend: {
+      classGroups: {
+        'font-size': [{ text: ['32'] }],
+      },
+    },
+  },
+})
+
+expectType<string | undefined>(runtime.cn('text-32', 'text-surface-700')())
+
+const runtimeWithOptions = create({ escape: false }, { twMerge: false })
+expectType<string | undefined>(runtimeWithOptions.cn('px-2')())

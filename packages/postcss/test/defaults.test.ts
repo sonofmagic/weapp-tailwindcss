@@ -11,7 +11,10 @@ describe('getDefaultOptions', () => {
     expect(defaults.cssPresetEnv?.features?.['oklab-function']).toBe(true)
     expect(defaults.cssPresetEnv?.features?.['color-functional-notation']).toEqual({ preserve: false })
     expect(defaults.cssPresetEnv?.autoprefixer?.add).toBe(false)
-    expect(defaults.cssSelectorReplacement).toEqual({ root: 'page', universal: ['view', 'text'] })
+    expect(defaults.cssSelectorReplacement).toEqual({
+      root: ['page', '.tw-root', 'wx-root-portal-content'],
+      universal: ['view', 'text'],
+    })
     expect(defaults.cssRemoveProperty).toBe(true)
   })
 

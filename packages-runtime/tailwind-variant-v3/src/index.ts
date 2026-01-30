@@ -1,4 +1,4 @@
-import type { CnOptions, TVConfig, TWMConfig } from './types'
+import type { CnOptions, TailwindVariantRuntime, TV, TVConfig, TWMConfig } from './types'
 import { defaultConfig } from './constants'
 import { cn, cnBase } from './merge'
 import { createTV, tv } from './tv'
@@ -33,7 +33,7 @@ export type {
 
 export { cn, cnBase, createTV, defaultConfig, tv }
 
-export function create(configProp?: TVConfig) {
+export function create(configProp?: TVConfig): TailwindVariantRuntime {
   const baseConfig = configProp
     ? (mergeObjects(defaultConfig, configProp) as TVConfig)
     : defaultConfig
@@ -42,11 +42,17 @@ export function create(configProp?: TVConfig) {
     ? (mergeObjects(baseConfig as Record<string, any>, config as Record<string, any>) as TVConfig)
     : baseConfig)
 
+  const runtimeTv = ((options: Parameters<TV>[0], config?: TVConfig) =>
+    tv(options as any, mergeConfig(config))) as unknown as TailwindVariantRuntime['tv']
+
+  const runtimeCreateTV = ((config?: TVConfig) =>
+    createTV(mergeConfig(config))) as TailwindVariantRuntime['createTV']
+
   return {
     cn: (...classes: CnOptions) => (config?: TWMConfig) => cn(...classes)(mergeConfig(config)),
     cnBase,
-    tv: (options: Parameters<typeof tv>[0], config?: TVConfig) => tv(options, mergeConfig(config)),
-    createTV: (config?: TVConfig) => createTV(mergeConfig(config)),
+    tv: runtimeTv,
+    createTV: runtimeCreateTV,
     defaultConfig: baseConfig,
   }
 }

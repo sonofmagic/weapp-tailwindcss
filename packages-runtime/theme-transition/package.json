@@ -46,6 +46,7 @@
     "build": "tsdown",
     "test": "vitest run",
     "test:dev": "vitest",
+    "tsd": "tsd",
     "release": "pnpm publish",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",

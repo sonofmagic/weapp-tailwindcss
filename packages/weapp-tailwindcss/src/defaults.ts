@@ -109,7 +109,7 @@ export function getDefaultOptions(): UserDefinedOptions {
     },
     disabledDefaultTemplateHandler: false,
     cssSelectorReplacement: {
-      root: ['page', '.tw-root'],
+      root: ['page', '.tw-root', 'wx-root-portal-content'],
       universal: ['view', 'text'],
     },
     babelParserOptions: {

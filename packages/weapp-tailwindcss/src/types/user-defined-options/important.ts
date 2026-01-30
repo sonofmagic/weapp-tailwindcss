@@ -184,11 +184,11 @@ export interface UserDefinedOptionsImportantPart {
     /**
      * 将全局选择器 `:root` 替换为指定值。
      *
-     * @default `'page'` <br/>
+     * @default `['page','.tw-root','wx-root-portal-content']` <br/>
      * @remarks
      * 设置为 `false` 时不再替换，可根据宿主环境（例如 RootPortal）传入数组值。
      * @example
-     * root: ['page', 'wx-root-content']
+     * root: ['page', '.tw-root', 'wx-root-portal-content']
      */
     root?: string | string[] | false
     /**
