@@ -16,8 +16,8 @@ importers:
         specifier: ^3.4.19
         version: 3.4.19
       weapp-tailwindcss:
-        specifier: ^4.9.6
-        version: 4.9.6(tailwindcss@3.4.19)
+        specifier: ^4.9.7
+        version: 4.9.7(tailwindcss@3.4.19)
 
 packages:
 
@@ -836,24 +836,28 @@ packages:
     engines: {node: '>= 12.0.0'}
     cpu: [arm64]
     os: [linux]
+    libc: [glibc]
 
   lightningcss-linux-arm64-musl@1.30.2:
     resolution: {integrity: sha512-5Vh9dGeblpTxWHpOx8iauV02popZDsCYMPIgiuw97OJ5uaDsL86cnqSFs5LZkG3ghHoX5isLgWzMs+eD1YzrnA==}
     engines: {node: '>= 12.0.0'}
     cpu: [arm64]
     os: [linux]
+    libc: [musl]
 
   lightningcss-linux-x64-gnu@1.30.2:
     resolution: {integrity: sha512-Cfd46gdmj1vQ+lR6VRTTadNHu6ALuw2pKR9lYq4FnhvgBc4zWY1EtZcAc6EffShbb1MFrIPfLDXD6Xprbnni4w==}
     engines: {node: '>= 12.0.0'}
     cpu: [x64]
     os: [linux]
+    libc: [glibc]
 
   lightningcss-linux-x64-musl@1.30.2:
     resolution: {integrity: sha512-XJaLUUFXb6/QG2lGIW6aIk6jKdtjtcffUT0NKvIqhSBY3hh9Ch+1LCeH80dR9q9LBjG3ewbDjnumefsLsP6aiA==}
     engines: {node: '>= 12.0.0'}
     cpu: [x64]
     os: [linux]
+    libc: [musl]
 
   lightningcss-win32-arm64-msvc@1.30.2:
     resolution: {integrity: sha512-FZn+vaj7zLv//D/192WFFVA0RgHawIcHqLX9xuWiQt7P0PtdFEVaxgF9rjM/IRYHQXNnk61/H/gb2Ei+kUQ4xQ==}
@@ -1341,8 +1345,8 @@ packages:
   util-deprecate@1.0.2:
     resolution: {integrity: sha512-EPD5q1uXyFxJpCrLnCc1nHnq3gOa6DZBocAIiI2TaSCA7VCJ1UJDMagCzIkXNsUYfD1daK//LTEQ8xiIbrHtcw==}
 
-  weapp-tailwindcss@4.9.6:
-    resolution: {integrity: sha512-sX4Fxb7Xl9VOpcUJjrSEdsWe5GzBB9IzCwc04SjsEvkREfkjakTCZj6gm+2W3lACgPHPCv/I4QdJI5Bs8124DQ==}
+  weapp-tailwindcss@4.9.7:
+    resolution: {integrity: sha512-rq7nciLDPqaEWKfHQGCSKHVJ8RsuQyHQ4rHC2lkjl1UjqZqLLlV/iZ2Zqv4lNKxdYJZfnTKL9g0tF42cIH9ELA==}
     engines: {node: ^20.19.0 || >=22.12.0}
     hasBin: true
 
@@ -2782,7 +2786,7 @@ snapshots:
 
   util-deprecate@1.0.2: {}
 
-  weapp-tailwindcss@4.9.6(tailwindcss@3.4.19):
+  weapp-tailwindcss@4.9.7(tailwindcss@3.4.19):
     dependencies:
       '@ast-core/escape': 1.0.1
       '@babel/parser': 7.28.6

@@ -82,7 +82,7 @@
     "unplugin-vue-components": "^0.27.4",
     "vite": "^5.4.5",
     "weapp-ide-cli": "^5.0.0",
-    "weapp-tailwindcss": "^4.9.6"
+    "weapp-tailwindcss": "^4.9.7"
   },
   "pnpm": {
     "onlyBuiltDependencies": [
@@ -90,5 +90,5 @@
       "weapp-tailwindcss"
     ]
   },
-  "packageManager": "pnpm@10.28.1"
+  "packageManager": "pnpm@10.28.2"
 }

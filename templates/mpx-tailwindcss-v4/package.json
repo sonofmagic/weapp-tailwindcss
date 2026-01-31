@@ -2,7 +2,7 @@
   "name": "mpx-tailwindcss-v4",
   "version": "0.1.0",
   "private": true,
-  "packageManager": "pnpm@10.28.1",
+  "packageManager": "pnpm@10.28.2",
   "scripts": {
     "serve": "mpx-cli-service serve",
     "build": "mpx-cli-service build",
@@ -48,7 +48,7 @@
     "tailwindcss": "^4.1.18",
     "typescript": "^5.9.3",
     "weapp-ide-cli": "^5.0.0",
-    "weapp-tailwindcss": "^4.9.6",
+    "weapp-tailwindcss": "^4.9.7",
     "webpack": "^5.101.3"
   },
   "browserslist": [
