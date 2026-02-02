@@ -12,10 +12,10 @@ sidebar_position: 2
 
 | 配置项 | 类型 | 默认值 | 说明 |
 | --- | --- | --- | --- |
-| [htmlMatcher](#htmlmatcher) | <code>(name: string) => boolean</code> | — | 匹配需要处理的 `wxml` 等模板文件。 |
-| [cssMatcher](#cssmatcher) | <code>(name: string) => boolean</code> | — | 匹配需要处理的 `wxss` 等样式文件。 |
-| [jsMatcher](#jsmatcher) | <code>(name: string) => boolean</code> | — | 匹配需要处理的编译后 `js` 文件。 |
-| [mainCssChunkMatcher](#maincsschunkmatcher) | <code>(name: string, appType?: AppType) => boolean</code> | — | 匹配负责注入 Tailwind CSS 变量作用域的 CSS Bundle。 |
+| [htmlMatcher](#htmlmatcher) | <code>(name: string) => boolean</code> | <code>匹配 *.wxml/axml/jxml/ksml/ttml/qml/tyml/xhsml/swan</code> | 匹配需要处理的 `wxml` 等模板文件。 |
+| [cssMatcher](#cssmatcher) | <code>(name: string) => boolean</code> | <code>匹配 *.wxss/acss/jxss/ttss/qss/css/tyss</code> | 匹配需要处理的 `wxss` 等样式文件。 |
+| [jsMatcher](#jsmatcher) | <code>(name: string) => boolean</code> | <code>匹配 *.js/*.mjs/*.cjs（排除 node_modules）</code> | 匹配需要处理的编译后 `js` 文件。 |
+| [mainCssChunkMatcher](#maincsschunkmatcher) | <code>(name: string, appType?: AppType) => boolean</code> | <code>按 appType 匹配 app.css/common/main.css 等</code> | 匹配负责注入 Tailwind CSS 变量作用域的 CSS Bundle。 |
 | [wxsMatcher](#wxsmatcher) | <code>(name: string) => boolean</code> | <code>()=>false</code> | 匹配各端的 `wxs`/`sjs`/`.filter.js` 文件。 |
 | [inlineWxs](#inlinewxs) | <code>boolean</code> | <code>false</code> | 是否转义 `wxml` 中的内联 `wxs`。 |
 
@@ -28,6 +28,26 @@ sidebar_position: 2
 定义于: [packages/weapp-tailwindcss/src/types/user-defined-options/matcher.ts:9](https://github.com/sonofmagic/weapp-tailwindcss/blob/59073fec6f66bb3fbd1d15468f6e89437dc3f862/packages/weapp-tailwindcss/src/types/user-defined-options/matcher.ts#L9)
 
 匹配需要处理的 `wxml` 等模板文件。
+
+#### 备注
+
+返回 `true` 的文件会进入模板处理流程，建议与 `tailwind.config.js` 的 `content` 范围保持一致。
+
+#### 默认值
+
+```ts
+name => /.+\\.(?:(?:wx|ax|jx|ks|tt|q|ty|xhs)ml|swan)$/.test(name)
+```
+
+#### 示例
+
+```ts
+import { UnifiedViteWeappTailwindcssPlugin as uvtw } from 'weapp-tailwindcss/vite'
+
+uvtw({
+  htmlMatcher: name => /\\.(?:wxml|axml)$/.test(name),
+})
+```
 
 #### 参数
 
@@ -47,6 +67,26 @@ sidebar_position: 2
 
 匹配需要处理的 `wxss` 等样式文件。
 
+#### 备注
+
+返回 `true` 的样式会进入 PostCSS 处理链路，通常仅需覆盖非常规后缀或自定义目录。
+
+#### 默认值
+
+```ts
+name => /.+\\.(?:wx|ac|jx|tt|q|c|ty)ss$/.test(name)
+```
+
+#### 示例
+
+```ts
+import { UnifiedViteWeappTailwindcssPlugin as uvtw } from 'weapp-tailwindcss/vite'
+
+uvtw({
+  cssMatcher: name => /\\.(?:wxss|acss|css)$/.test(name),
+})
+```
+
 #### 参数
 
 ##### name
@@ -64,6 +104,26 @@ sidebar_position: 2
 定义于: [packages/weapp-tailwindcss/src/types/user-defined-options/matcher.ts:21](https://github.com/sonofmagic/weapp-tailwindcss/blob/59073fec6f66bb3fbd1d15468f6e89437dc3f862/packages/weapp-tailwindcss/src/types/user-defined-options/matcher.ts#L21)
 
 匹配需要处理的编译后 `js` 文件。
+
+#### 备注
+
+返回 `true` 的脚本会执行 class 名称转译，建议保持对 `node_modules` 的排除。
+
+#### 默认值
+
+```ts
+name => !name.includes('node_modules') && /.+\\.[cm]?js?$/.test(name)
+```
+
+#### 示例
+
+```ts
+import { UnifiedViteWeappTailwindcssPlugin as uvtw } from 'weapp-tailwindcss/vite'
+
+uvtw({
+  jsMatcher: name => !name.includes('node_modules') && /\\.m?js$/.test(name),
+})
+```
 
 #### 参数
 
@@ -86,6 +146,55 @@ sidebar_position: 2
 #### 备注
 
 在处理 `::before`/`::after` 等不兼容选择器时，建议手动指定文件位置。
+
+#### 默认值
+
+```ts
+const MPX_STYLES_DIR_PATTERN = /(?:^|\\/)styles\\/.*\\.(?:wx|ac|jx|tt|q|c|ty)ss$/i
+
+function normalizePath(value) {
+  return value.replace(/\\\\/g, '/')
+}
+
+function matcher(name, appType) {
+  if (!appType) {
+    return true
+  }
+  if (appType === 'uni-app') {
+    return name.startsWith('common/main') || name.startsWith('app')
+  }
+  if (appType === 'uni-app-vite') {
+    return name.startsWith('app') || name.startsWith('common/main')
+  }
+  if (appType === 'mpx') {
+    const normalized = normalizePath(name)
+    if (normalized.startsWith('app')) {
+      return true
+    }
+    return MPX_STYLES_DIR_PATTERN.test(normalized)
+  }
+  if (appType === 'taro' || appType === 'remax' || appType === 'native') {
+    return name.startsWith('app')
+  }
+  if (appType === 'rax') {
+    return name.startsWith('bundle')
+  }
+  if (appType === 'kbone') {
+    return /^(?:common\\/)?miniprogram-app/.test(name)
+  }
+  return true
+}
+```
+
+#### 示例
+
+```ts
+import { UnifiedViteWeappTailwindcssPlugin as uvtw } from 'weapp-tailwindcss/vite'
+
+uvtw({
+  mainCssChunkMatcher: name => name.startsWith('app') || name.startsWith('common/main'),
+})
+```
 
 #### 参数
 
@@ -113,10 +222,22 @@ sidebar_position: 2
 
 配置前请确保在 `tailwind.config.js` 的 `content` 中包含对应格式。
 
+若同时处理内联 `wxs`，请配合 [`inlineWxs`](#inlinewxs) 开启。
+
 #### 默认值
 
 ```ts
 ()=>false
+```
+
+#### 示例
+
+```ts
+import { UnifiedViteWeappTailwindcssPlugin as uvtw } from 'weapp-tailwindcss/vite'
+
+uvtw({
+  wxsMatcher: name => /\\.(?:wxs|sjs|filter\\.js)$/.test(name),
+})
 ```
 
 #### 参数
@@ -148,6 +269,15 @@ false
 ```
 
 #### 示例
+
+```ts
+import { UnifiedViteWeappTailwindcssPlugin as uvtw } from 'weapp-tailwindcss/vite'
+
+uvtw({
+  inlineWxs: true,
+})
+```
+
 
 ```html
 <!-- index.wxml -->

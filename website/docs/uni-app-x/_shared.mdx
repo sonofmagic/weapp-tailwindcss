@@ -107,7 +107,8 @@ export default defineConfig({
     UnifiedViteWeappTailwindcssPlugin(
       uniAppX({
         base: __dirname,
-        rem2rpx: true,
+        // uni-app x 官方推荐使用 px 作为单位
+        unitsToPx: true,
       }),
     ),
   ],
@@ -122,6 +123,38 @@ export default defineConfig({
   },
 })
 ```
+
+#### CSS 单位转换（推荐）
+
+`uni-app x` 官方推荐使用 `px` 作为长度单位，开启 `unitsToPx` 后会将 `rem/em/vw/vh/vmin/vmax/rpx` 统一转换为 `px`：
+
+```js title="vite.config.ts"
+UnifiedViteWeappTailwindcssPlugin(
+  uniAppX({
+    base: __dirname,
+    unitsToPx: true,
+  }),
+)
+```
+
+需要自定义转换规则时可以传入对象，例如调整精度或覆盖单位映射：
+
+```js title="vite.config.ts"
+UnifiedViteWeappTailwindcssPlugin(
+  uniAppX({
+    base: __dirname,
+    unitsToPx: {
+      unitPrecision: 2,
+      unitMap: {
+        rem: 16,
+        rpx: 0.5,
+      },
+    },
+  }),
+)
+```
+
+> 如果希望最终输出为 `rpx`，请不要启用 `unitsToPx`，改用 `rem2rpx` / `px2rpx`。
 
 ### 5) 配置 Tailwind
 

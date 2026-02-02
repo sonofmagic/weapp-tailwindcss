@@ -37,6 +37,22 @@ new UnifiedWebpackPluginV5({
 
 当然这个选项也可以传入一个 `object`, 这个默认值和参数，可以参考 [`postcss-pxtransform`](https://www.npmjs.com/package/postcss-pxtransform) 插件。
 
+如果希望 `px` 按 `1:2` 转换成 `rpx`（例如 `10px` -> `20rpx`），可以传入下面配置：
+
+```js
+// vite
+import { UnifiedViteWeappTailwindcssPlugin } from 'weapp-tailwindcss/vite'
+UnifiedViteWeappTailwindcssPlugin({
+  // ...other-options
+  px2rpx: {
+    designWidth: 375,
+    deviceRatio: {
+      375: 2,
+    },
+  },
+})
+```
+
 ### 4.3.0 以前
 
 这里我们使用 [`postcss-pxtransform`](https://www.npmjs.com/package/postcss-pxtransform) 这个 `postcss` 插件来做。
@@ -89,3 +105,38 @@ module.exports = {
 你可以在 [taro 官网的设计稿及尺寸单位章节内](https://docs.taro.zone/docs/size) 查看这个插件的所有用法。
 
 另外，假如你要禁止单个文件 `px` 转 `rpx`，可以在样式表文件内头部，添加 `/*postcss-pxtransform disable*/` 这样的注视，禁用该文件 `px` 转 `rpx`。
+
+## 多单位转 px（unitsToPx）
+
+在 `uni-app x` 等官方推荐使用 `px` 的场景，可以启用 `unitsToPx`，把 `rem/em/vw/vh/vmin/vmax/rpx` 等单位转换为 `px`。默认关闭。
+
+```js
+// vite
+import { UnifiedViteWeappTailwindcssPlugin } from 'weapp-tailwindcss/vite'
+UnifiedViteWeappTailwindcssPlugin({
+  // ...other-options
+  unitsToPx: true,
+})
+```
+
+```js
+// webpack
+const { UnifiedWebpackPluginV5 } = require('weapp-tailwindcss/webpack')
+new UnifiedWebpackPluginV5({
+  // ...other-options
+  unitsToPx: {
+    unitPrecision: 2,
+    unitMap: {
+      rem: 16,
+      rpx: 0.5,
+      vw: 3.75,
+    },
+  },
+})
+```
+
+启用后（默认单位表）：
+- `1rem` → `16px`
+- `2rpx` → `1px`
+
+> 注意：如果同时开启 `px2rpx` / `rem2rpx`，`unitsToPx` 会先转换成 `px`，后续还会继续转成 `rpx`。如果希望最终输出为 `px`，请不要同时开启 `px2rpx` / `rem2rpx`。

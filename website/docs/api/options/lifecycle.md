@@ -12,10 +12,10 @@ sidebar_position: 3
 
 | 配置项 | 类型 | 默认值 | 说明 |
 | --- | --- | --- | --- |
-| [onLoad](#onload) | <code>(() => void)</code> | — | 插件 `apply` 初始调用时触发。 |
-| [onStart](#onstart) | <code>(() => void)</code> | — | 开始处理前触发。 |
-| [onUpdate](#onupdate) | <code>(filename: string, oldVal: string, newVal: string) => void</code> | — | 匹配并修改文件后触发。 |
-| [onEnd](#onend) | <code>(() => void)</code> | — | 结束处理时触发。 |
+| [onLoad](#onload) | <code>(() => void)</code> | <code>() => {}</code> | 插件 `apply` 初始调用时触发。 |
+| [onStart](#onstart) | <code>(() => void)</code> | <code>() => {}</code> | 开始处理前触发。 |
+| [onUpdate](#onupdate) | <code>(filename: string, oldVal: string, newVal: string) => void</code> | <code>() => {}</code> | 匹配并修改文件后触发。 |
+| [onEnd](#onend) | <code>(() => void)</code> | <code>() => {}</code> | 结束处理时触发。 |
 
 ## 详细说明
 
@@ -26,6 +26,28 @@ sidebar_position: 3
 定义于: [packages/weapp-tailwindcss/src/types/user-defined-options/lifecycle.ts:7](https://github.com/sonofmagic/weapp-tailwindcss/blob/59073fec6f66bb3fbd1d15468f6e89437dc3f862/packages/weapp-tailwindcss/src/types/user-defined-options/lifecycle.ts#L7)
 
 插件 `apply` 初始调用时触发。
+
+#### 备注
+
+适合在插件初始化阶段记录环境信息或初始化统计计数。
+
+#### 默认值
+
+```ts
+() => {}
+```
+
+#### 示例
+
+```ts
+import { UnifiedViteWeappTailwindcssPlugin as uvtw } from 'weapp-tailwindcss/vite'
+
+uvtw({
+  onLoad() {
+    console.info('[weapp-tw] loaded')
+  },
+})
+```
 
 #### 返回
 
@@ -39,6 +61,28 @@ sidebar_position: 3
 
 开始处理前触发。
 
+#### 备注
+
+每次构建/编译开始时都会调用，可用于计时或清理上一次的状态。
+
+#### 默认值
+
+```ts
+() => {}
+```
+
+#### 示例
+
+```ts
+import { UnifiedViteWeappTailwindcssPlugin as uvtw } from 'weapp-tailwindcss/vite'
+
+uvtw({
+  onStart() {
+    console.info('[weapp-tw] start')
+  },
+})
+```
+
 #### 返回
 
 `void`
@@ -50,6 +94,30 @@ sidebar_position: 3
 定义于: [packages/weapp-tailwindcss/src/types/user-defined-options/lifecycle.ts:19](https://github.com/sonofmagic/weapp-tailwindcss/blob/59073fec6f66bb3fbd1d15468f6e89437dc3f862/packages/weapp-tailwindcss/src/types/user-defined-options/lifecycle.ts#L19)
 
 匹配并修改文件后触发。
+
+#### 备注
+
+适合用于记录被修改的文件路径、输出差异或触发自定义日志。
+
+#### 默认值
+
+```ts
+() => {}
+```
+
+#### 示例
+
+```ts
+import { UnifiedViteWeappTailwindcssPlugin as uvtw } from 'weapp-tailwindcss/vite'
+
+uvtw({
+  onUpdate(filename, oldVal, newVal) {
+    if (oldVal !== newVal) {
+      console.info('[weapp-tw] updated', filename)
+    }
+  },
+})
+```
 
 #### 参数
 
@@ -76,6 +144,28 @@ sidebar_position: 3
 定义于: [packages/weapp-tailwindcss/src/types/user-defined-options/lifecycle.ts:25](https://github.com/sonofmagic/weapp-tailwindcss/blob/59073fec6f66bb3fbd1d15468f6e89437dc3f862/packages/weapp-tailwindcss/src/types/user-defined-options/lifecycle.ts#L25)
 
 结束处理时触发。
+
+#### 备注
+
+在本轮处理结束后触发，可用于输出汇总信息或性能指标。
+
+#### 默认值
+
+```ts
+() => {}
+```
+
+#### 示例
+
+```ts
+import { UnifiedViteWeappTailwindcssPlugin as uvtw } from 'weapp-tailwindcss/vite'
+
+uvtw({
+  onEnd() {
+    console.info('[weapp-tw] end')
+  },
+})
+```
 
 #### 返回
 
