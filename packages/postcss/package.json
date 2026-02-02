@@ -60,7 +60,7 @@
     "postcss-pxtrans": "^1.0.1",
     "postcss-rem-to-responsive-pixel": "catalog:postcssRem610",
     "postcss-selector-parser": "~7.1.1",
-    "postcss-units-to-px": "^0.1.0",
+    "postcss-units-to-px": "^0.2.0",
     "postcss-value-parser": "^4.2.0"
   },
   "devDependencies": {
