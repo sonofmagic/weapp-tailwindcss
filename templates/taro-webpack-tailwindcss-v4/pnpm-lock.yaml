@@ -133,8 +133,8 @@ importers:
         specifier: ^5.0.0
         version: 5.0.0
       weapp-tailwindcss:
-        specifier: ^4.9.7
-        version: 4.9.7(tailwindcss@4.1.18)
+        specifier: ^4.9.8
+        version: 4.9.8(tailwindcss@4.1.18)
       webpack:
         specifier: 5.104.1
         version: 5.104.1(@swc/core@1.3.96)
@@ -158,8 +158,8 @@ packages:
     resolution: {integrity: sha512-cjQ7ZlQ0Mv3b47hABuTevyTuYN4i+loJKGeV9flcCgIK37cCXRh+L1bd3iBHlynerhQ7BhCkn2BPbQUL+rGqFg==}
     engines: {node: '>=6.9.0'}
 
-  '@babel/code-frame@7.28.6':
-    resolution: {integrity: sha512-JYgintcMjRiCvS8mMECzaEn+m3PfoQiyqukOMCCVQtoJGYJw8j/8LBJEiqkHLkfwCcs74E3pbAUFNg7d9VNJ+Q==}
+  '@babel/code-frame@7.29.0':
+    resolution: {integrity: sha512-9NhCeYjq9+3uxgdtp20LSiJXJvN0FeCtNGpJxuMFZ1Kv3cWUNb6DOhJwUvcVCzKGR66cw4njwM6hrJLqgOwbcw==}
     engines: {node: '>=6.9.0'}
 
   '@babel/compat-data@7.28.5':
@@ -183,6 +183,10 @@ packages:
 
   '@babel/generator@7.28.6':
     resolution: {integrity: sha512-lOoVRwADj8hjf7al89tvQ2a1lf53Z+7tiXMgpZJL3maQPDxh0DgLMN62B2MKUOFcoodBHLMbDM6WAbKgNy5Suw==}
+    engines: {node: '>=6.9.0'}
+
+  '@babel/generator@7.29.0':
+    resolution: {integrity: sha512-vSH118/wwM/pLR38g/Sgk05sNtro6TlTJKuiMXDaZqPUfjTFcudpCOt00IhOfj+1BFAX+UFAlzCU+6WXr3GLFQ==}
     engines: {node: '>=6.9.0'}
 
   '@babel/helper-annotate-as-pure@7.27.3':
@@ -292,6 +296,11 @@ packages:
 
   '@babel/parser@7.28.6':
     resolution: {integrity: sha512-TeR9zWR18BvbfPmGbLampPMW+uW1NZnJlRuuHso8i87QZNq2JRF9i6RgxRqtEq+wQGsS19NNTWr2duhnE49mfQ==}
+    engines: {node: '>=6.0.0'}
+    hasBin: true
+
+  '@babel/parser@7.29.0':
+    resolution: {integrity: sha512-IyDgFV5GeDUVX4YdF/3CPULtVGSXXMLh1xVIgdCgxApktqnQV0r7/8Nqthg+8YLGaAtdyIlo2qIdZrbCv4+7ww==}
     engines: {node: '>=6.0.0'}
     hasBin: true
 
@@ -758,8 +767,8 @@ packages:
     resolution: {integrity: sha512-TCCj4t55U90khlYkVV/0TfkJkAkUg3jZFA3Neb7unZT8CPok7iiRfaX0F+WnqWqt7OxhOn0uBKXCw4lbL8W0aQ==}
     engines: {node: '>=6.9.0'}
 
-  '@babel/traverse@7.28.6':
-    resolution: {integrity: sha512-fgWX62k02qtjqdSNTAGxmKYY/7FSL9WAS1o2Hu5+I5m9T0yxZzr4cnrfXQ/MX0rIifthCSs6FKTlzYbJcPtMNg==}
+  '@babel/traverse@7.29.0':
+    resolution: {integrity: sha512-4HPiQr0X7+waHfyXPZpWPfWL/J7dcN1mx9gL6WdQVMbPnF3+ZhSMs8tCxN7oHddJE9fhNE7+lxdnlyemKfJRuA==}
     engines: {node: '>=6.9.0'}
 
   '@babel/types@7.28.4':
@@ -772,6 +781,10 @@ packages:
 
   '@babel/types@7.28.6':
     resolution: {integrity: sha512-0ZrskXVEHSWIqZM/sQZ4EV3jZJXRkio/WCxaqKZP1g//CEWEPSfeZFcms4XeKBCHU0ZKnIkdJeU/kF+eRp5lBg==}
+    engines: {node: '>=6.9.0'}
+
+  '@babel/types@7.29.0':
+    resolution: {integrity: sha512-LwdZHpScM4Qz8Xw2iKSzS+cfglZzJGvofQICy7W7v4caru4EaAmyUuO6BGrbyQ2mYV11W0U8j5mBhd14dd3B0A==}
     engines: {node: '>=6.9.0'}
 
   '@cacheable/memory@2.0.6':
@@ -2474,8 +2487,8 @@ packages:
     peerDependencies:
       postcss: ^8.4.38
 
-  '@weapp-tailwindcss/postcss@2.1.3':
-    resolution: {integrity: sha512-g9HOBRqggZGDSkopL/HgvONQn93nH7iEBVcjQFmY6/0b6V/4nvFipwkpxxmgmnHUFZyJ/glz92knJzx6L2E5BA==}
+  '@weapp-tailwindcss/postcss@2.1.4':
+    resolution: {integrity: sha512-n1QSNL2J2yV6et+1JI+eZKmRnqS0iZp3yUb9lhylatO7ETUqMEGIB/kaN4a6z2hq+QXlgLTtB++mZgNiHHDC2A==}
     engines: {node: ^20.19.0 || >=22.12.0}
 
   '@weapp-tailwindcss/runtime@0.1.5':
@@ -5764,8 +5777,8 @@ packages:
     peerDependencies:
       postcss: ^8
 
-  postcss-plugin-shared@1.0.0:
-    resolution: {integrity: sha512-3x83BXvFXlbtIaD/GC4C2uZQ+UmGwh1uYCm4DjQTEjDv8HrrBmZWZH968W+Shq/vxP+amsH08OafVt8aVzqL2w==}
+  postcss-plugin-shared@1.1.0:
+    resolution: {integrity: sha512-gH/iDzmzPrndCQ7rsEhOW9MXAEo0xyhoD7gX0M1X5UybAG1xMPNWTmdEGUq89QESfekQFenGfk4R9dYHtbygEg==}
     peerDependencies:
       postcss: ^8
 
@@ -5781,8 +5794,8 @@ packages:
     peerDependencies:
       postcss: ^8.4
 
-  postcss-pxtrans@1.0.0:
-    resolution: {integrity: sha512-1AKXs+w/hor0EAmxCAa2ATfYKgzqey/rHTgJ6LvvpNsRyeV9hyVNczF3N1hSXcB5ruM4E3ezg8cf3W+W/GY4GA==}
+  postcss-pxtrans@1.0.1:
+    resolution: {integrity: sha512-oNxhcSbbhkfhgJP/E0JJHIuQs8asqAuD1FqFT4VFF7xhkBmKKTIM08T7WIRHo9rjod8E4PR/CuOxtcWjftufcg==}
     peerDependencies:
       postcss: ^8
 
@@ -5804,8 +5817,8 @@ packages:
     peerDependencies:
       postcss: ^8.4.31
 
-  postcss-rem-to-responsive-pixel@7.0.0:
-    resolution: {integrity: sha512-m22VCg246RpyFDTByp0cR0KwK4MhnRgrX5yHTTkFeQddFqhCviE13P5c8Dwi2ISBB4DVeJnEYBxEKjUNyrigdQ==}
+  postcss-rem-to-responsive-pixel@7.0.1:
+    resolution: {integrity: sha512-enzOmpYK8RHTOL7Y9o3AsSRnYqigGu4OZbDmpP7dUsRRIpyqS1h3hKZHHH5B+WJRyw58DRSAFuicM0uc/2GRJQ==}
     engines: {node: '>=16.6.0'}
     peerDependencies:
       postcss: ^8
@@ -5849,6 +5862,11 @@ packages:
     engines: {node: ^14 || ^16 || >=18.0}
     peerDependencies:
       postcss: ^8.4.31
+
+  postcss-units-to-px@0.2.0:
+    resolution: {integrity: sha512-IN0zGe3JnOJvbFQRlUeSr1icsjQbFwHuso3IfhzCuILb+z9aj+0Nlzka5Q/A5Ulnh9Cd8mEs1Rfl7NxQdw+6iA==}
+    peerDependencies:
+      postcss: ^8
 
   postcss-url@10.1.3:
     resolution: {integrity: sha512-FUzyxfI5l2tKmXdYc6VTu3TWZsInayEKPbiyW+P6vmmIrrb4I6CGX0BFoewgYHLK+oIL5FECEK02REYRpBvUCw==}
@@ -6885,8 +6903,8 @@ packages:
     engines: {node: ^20.19.0 || >=22.12.0}
     hasBin: true
 
-  weapp-tailwindcss@4.9.7:
-    resolution: {integrity: sha512-rq7nciLDPqaEWKfHQGCSKHVJ8RsuQyHQ4rHC2lkjl1UjqZqLLlV/iZ2Zqv4lNKxdYJZfnTKL9g0tF42cIH9ELA==}
+  weapp-tailwindcss@4.9.8:
+    resolution: {integrity: sha512-Q7/RvHxIAfGwE4TOsRb3daIBZhQM8BtFk1uSEgUWO9czNdCcnHW9xfZ6FePbFJF2krbLHVdYCoYKpoXZ8wEbAQ==}
     engines: {node: ^20.19.0 || >=22.12.0}
     hasBin: true
 
@@ -7121,7 +7139,7 @@ snapshots:
       js-tokens: 4.0.0
       picocolors: 1.1.1
 
-  '@babel/code-frame@7.28.6':
+  '@babel/code-frame@7.29.0':
     dependencies:
       '@babel/helper-validator-identifier': 7.28.5
       js-tokens: 4.0.0
@@ -7167,8 +7185,16 @@ snapshots:
 
   '@babel/generator@7.28.6':
     dependencies:
-      '@babel/parser': 7.28.6
-      '@babel/types': 7.28.6
+      '@babel/parser': 7.29.0
+      '@babel/types': 7.29.0
+      '@jridgewell/gen-mapping': 0.3.13
+      '@jridgewell/trace-mapping': 0.3.31
+      jsesc: 3.1.0
+
+  '@babel/generator@7.29.0':
+    dependencies:
+      '@babel/parser': 7.29.0
+      '@babel/types': 7.29.0
       '@jridgewell/gen-mapping': 0.3.13
       '@jridgewell/trace-mapping': 0.3.31
       jsesc: 3.1.0
@@ -7308,6 +7334,11 @@ snapshots:
   '@babel/parser@7.28.6':
     dependencies:
       '@babel/types': 7.28.6
+    optional: true
+
+  '@babel/parser@7.29.0':
+    dependencies:
+      '@babel/types': 7.29.0
 
   '@babel/plugin-bugfix-firefox-class-in-computed-class-key@7.28.5(@babel/core@7.28.5)':
     dependencies:
@@ -7893,9 +7924,9 @@ snapshots:
 
   '@babel/template@7.28.6':
     dependencies:
-      '@babel/code-frame': 7.28.6
-      '@babel/parser': 7.28.6
-      '@babel/types': 7.28.6
+      '@babel/code-frame': 7.29.0
+      '@babel/parser': 7.29.0
+      '@babel/types': 7.29.0
 
   '@babel/traverse@7.28.5':
     dependencies:
@@ -7909,14 +7940,14 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  '@babel/traverse@7.28.6':
+  '@babel/traverse@7.29.0':
     dependencies:
-      '@babel/code-frame': 7.28.6
-      '@babel/generator': 7.28.6
+      '@babel/code-frame': 7.29.0
+      '@babel/generator': 7.29.0
       '@babel/helper-globals': 7.28.0
-      '@babel/parser': 7.28.6
+      '@babel/parser': 7.29.0
       '@babel/template': 7.28.6
-      '@babel/types': 7.28.6
+      '@babel/types': 7.29.0
       debug: 4.4.3
     transitivePeerDependencies:
       - supports-color
@@ -7932,6 +7963,12 @@ snapshots:
       '@babel/helper-validator-identifier': 7.28.5
 
   '@babel/types@7.28.6':
+    dependencies:
+      '@babel/helper-string-parser': 7.27.1
+      '@babel/helper-validator-identifier': 7.28.5
+    optional: true
+
+  '@babel/types@7.29.0':
     dependencies:
       '@babel/helper-string-parser': 7.27.1
       '@babel/helper-validator-identifier': 7.28.5
@@ -9580,7 +9617,7 @@ snapshots:
 
   '@vue/compiler-core@3.5.27':
     dependencies:
-      '@babel/parser': 7.28.6
+      '@babel/parser': 7.29.0
       '@vue/shared': 3.5.27
       entities: 7.0.1
       estree-walker: 2.0.2
@@ -9612,7 +9649,7 @@ snapshots:
 
   '@vue/compiler-sfc@3.5.27':
     dependencies:
-      '@babel/parser': 7.28.6
+      '@babel/parser': 7.29.0
       '@vue/compiler-core': 3.5.27
       '@vue/compiler-dom': 3.5.27
       '@vue/compiler-ssr': 3.5.27
@@ -9689,16 +9726,17 @@ snapshots:
       postcss-selector-parser: 7.1.1
       postcss-value-parser: 4.2.0
 
-  '@weapp-tailwindcss/postcss@2.1.3':
+  '@weapp-tailwindcss/postcss@2.1.4':
     dependencies:
       '@weapp-core/escape': 7.0.0
       '@weapp-tailwindcss/postcss-calc': 1.0.0(postcss@8.5.6)
       '@weapp-tailwindcss/shared': 1.1.2
       postcss: 8.5.6
       postcss-preset-env: 10.6.1(postcss@8.5.6)
-      postcss-pxtrans: 1.0.0(postcss@8.5.6)
-      postcss-rem-to-responsive-pixel: 7.0.0(postcss@8.5.6)
+      postcss-pxtrans: 1.0.1(postcss@8.5.6)
+      postcss-rem-to-responsive-pixel: 7.0.1(postcss@8.5.6)
       postcss-selector-parser: 7.1.1
+      postcss-units-to-px: 0.2.0(postcss@8.5.6)
       postcss-value-parser: 4.2.0
 
   '@weapp-tailwindcss/runtime@0.1.5':
@@ -13485,7 +13523,7 @@ snapshots:
     dependencies:
       postcss: 8.5.6
 
-  postcss-plugin-shared@1.0.0(postcss@8.5.6):
+  postcss-plugin-shared@1.1.0(postcss@8.5.6):
     dependencies:
       defu: 6.1.4
       postcss: 8.5.6
@@ -13570,10 +13608,10 @@ snapshots:
       postcss: 8.5.6
       postcss-selector-parser: 7.1.1
 
-  postcss-pxtrans@1.0.0(postcss@8.5.6):
+  postcss-pxtrans@1.0.1(postcss@8.5.6):
     dependencies:
       postcss: 8.5.6
-      postcss-plugin-shared: 1.0.0(postcss@8.5.6)
+      postcss-plugin-shared: 1.1.0(postcss@8.5.6)
 
   postcss-pxtransform@4.1.9(postcss@8.5.6):
     dependencies:
@@ -13590,10 +13628,10 @@ snapshots:
       postcss: 8.5.6
       postcss-value-parser: 4.2.0
 
-  postcss-rem-to-responsive-pixel@7.0.0(postcss@8.5.6):
+  postcss-rem-to-responsive-pixel@7.0.1(postcss@8.5.6):
     dependencies:
       postcss: 8.5.6
-      postcss-plugin-shared: 1.0.0(postcss@8.5.6)
+      postcss-plugin-shared: 1.1.0(postcss@8.5.6)
 
   postcss-replace-overflow-wrap@4.0.0(postcss@8.5.6):
     dependencies:
@@ -13630,6 +13668,11 @@ snapshots:
     dependencies:
       postcss: 8.5.6
       postcss-selector-parser: 6.1.2
+
+  postcss-units-to-px@0.2.0(postcss@8.5.6):
+    dependencies:
+      postcss: 8.5.6
+      postcss-plugin-shared: 1.1.0(postcss@8.5.6)
 
   postcss-url@10.1.3(postcss@8.5.6):
     dependencies:
@@ -14479,9 +14522,9 @@ snapshots:
   tailwindcss-patch@8.6.1(tailwindcss@4.1.18):
     dependencies:
       '@babel/generator': 7.28.6
-      '@babel/parser': 7.28.6
-      '@babel/traverse': 7.28.6
-      '@babel/types': 7.28.6
+      '@babel/parser': 7.29.0
+      '@babel/traverse': 7.29.0
+      '@babel/types': 7.29.0
       '@tailwindcss-mangle/config': 6.1.0
       '@tailwindcss/node': 4.1.18
       cac: 6.7.14
@@ -14806,19 +14849,19 @@ snapshots:
       fs-extra: 11.3.3
       pathe: 2.0.3
 
-  weapp-tailwindcss@4.9.7(tailwindcss@4.1.18):
+  weapp-tailwindcss@4.9.8(tailwindcss@4.1.18):
     dependencies:
       '@ast-core/escape': 1.0.1
-      '@babel/parser': 7.28.6
-      '@babel/traverse': 7.28.6
-      '@babel/types': 7.28.6
+      '@babel/parser': 7.29.0
+      '@babel/traverse': 7.29.0
+      '@babel/types': 7.29.0
       '@tailwindcss-mangle/config': 6.1.0
       '@vue/compiler-dom': 3.5.27
       '@vue/compiler-sfc': 3.5.27
       '@weapp-core/escape': 7.0.0
       '@weapp-core/regex': 1.0.1
       '@weapp-tailwindcss/logger': 1.1.0
-      '@weapp-tailwindcss/postcss': 2.1.3
+      '@weapp-tailwindcss/postcss': 2.1.4
       '@weapp-tailwindcss/shared': 1.1.2
       cac: 6.7.14
       debug: 4.4.3

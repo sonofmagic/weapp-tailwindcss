@@ -105,6 +105,7 @@ const MERGE_PACKAGES = {
 } as const
 
 const MERGE_PACKAGE_NAMES = [MERGE_PACKAGES.v4.name, MERGE_PACKAGES.v3.name] as const
+const MERGE_V3_EXCLUDED_TEMPLATES = new Set(['uni-app-x-hbuilderx'])
 
 async function fetchLatestVersion(pkgName: string): Promise<string> {
   const cached = latestVersionCache.get(pkgName)
@@ -732,7 +733,14 @@ async function processTemplate(
   const raw = readFileSync(pkgPath, 'utf8')
   const indent = detectIndentation(raw)
   const pkg = JSON.parse(raw) as PackageJson
-  const tailwindResolution = await resolveTailwindTargets(pkg)
+  let tailwindResolution = await resolveTailwindTargets(pkg)
+  if (MERGE_V3_EXCLUDED_TEMPLATES.has(templateName)) {
+    const removePackages = new Set([...tailwindResolution.removePackages, MERGE_PACKAGES.v3.name])
+    tailwindResolution = {
+      targets: tailwindResolution.targets.filter(target => target.name !== MERGE_PACKAGES.v3.name),
+      removePackages: [...removePackages],
+    }
+  }
   const relevantTargets = dedupeTargets([
     ...filterTargetsForPackage(pkg, baseTargets),
     ...tailwindResolution.targets,
