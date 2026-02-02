@@ -1,5 +1,11 @@
 # @weapp-tailwindcss/babel
 
+## 0.0.3-alpha.0
+
+### Patch Changes
+
+- 🐛 **chore: bump babel from 7.28.6 to 7.29.0** [`3d21a8c`](https://github.com/sonofmagic/weapp-tailwindcss/commit/3d21a8c849cabd2683a0e160be197c9970866b4e) by @sonofmagic
+
 ## 0.0.2
 
 ### Patch Changes
