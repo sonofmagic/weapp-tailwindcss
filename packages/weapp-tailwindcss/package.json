@@ -188,9 +188,9 @@
   },
   "dependencies": {
     "@ast-core/escape": "~1.0.1",
-    "@babel/parser": "~7.28.6",
-    "@babel/traverse": "~7.28.6",
-    "@babel/types": "~7.28.6",
+    "@babel/parser": "~7.29.0",
+    "@babel/traverse": "~7.29.0",
+    "@babel/types": "~7.29.0",
     "@tailwindcss-mangle/config": "^6.1.0",
     "@vue/compiler-dom": "catalog:vue3",
     "@vue/compiler-sfc": "catalog:vue3",
