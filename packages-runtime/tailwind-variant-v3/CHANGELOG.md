@@ -1,5 +1,11 @@
 # tailwind-variant-v3
 
+## 0.2.1
+
+### Patch Changes
+
+- 🐛 **chore(deps): bump tailwind-merge 2.6.0 -> 2.6.1** [`8643f23`](https://github.com/sonofmagic/weapp-tailwindcss/commit/8643f232c6aa2d229bc12d77b39656094a4176d9) by @sonofmagic
+
 ## 0.2.1-alpha.0
 
 ### Patch Changes

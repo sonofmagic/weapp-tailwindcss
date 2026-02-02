@@ -1,5 +1,15 @@
 # weapp-tailwindcss
 
+## 4.9.8
+
+### Patch Changes
+
+- 🐛 **新增 unitsToPx 配置，支持将多种长度单位转换为 px，并在 uni-app-x 预设中透出该选项。** [`d20c0b7`](https://github.com/sonofmagic/weapp-tailwindcss/commit/d20c0b7db503c0b8e022101908ff520dc00ed2df) by @sonofmagic
+
+- 🐛 **chore: bump babel from 7.28.6 to 7.29.0** [`3d21a8c`](https://github.com/sonofmagic/weapp-tailwindcss/commit/3d21a8c849cabd2683a0e160be197c9970866b4e) by @sonofmagic
+- 📦 **Dependencies** [`d20c0b7`](https://github.com/sonofmagic/weapp-tailwindcss/commit/d20c0b7db503c0b8e022101908ff520dc00ed2df)
+  → `@weapp-tailwindcss/postcss@2.1.4`
+
 ## 4.9.8-alpha.0
 
 ### Patch Changes

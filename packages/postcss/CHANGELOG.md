@@ -1,5 +1,11 @@
 # @weapp-tailwindcss/postcss
 
+## 2.1.4
+
+### Patch Changes
+
+- 🐛 **新增 unitsToPx 配置，支持将多种长度单位转换为 px，并在 uni-app-x 预设中透出该选项。** [`d20c0b7`](https://github.com/sonofmagic/weapp-tailwindcss/commit/d20c0b7db503c0b8e022101908ff520dc00ed2df) by @sonofmagic
+
 ## 2.1.4-alpha.0
 
 ### Patch Changes

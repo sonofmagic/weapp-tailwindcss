@@ -1,7 +1,7 @@
 {
   "name": "tailwind-variant-v3",
   "type": "module",
-  "version": "0.2.1-alpha.0",
+  "version": "0.2.1",
   "description": "tsdown bundler template",
   "author": "ice breaker <1324318532@qq.com>",
   "license": "MIT",
