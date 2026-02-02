@@ -30,7 +30,7 @@
     "wevu": "^2.1.3"
   },
   "devDependencies": {
-    "@egoist/tailwindcss-icons": "^1.9.0",
+    "@egoist/tailwindcss-icons": "^1.9.2",
     "@iconify-json/mdi": "^1.2.3",
     "@weapp-tailwindcss/merge-v3": "workspace:*",
     "@weapp-tailwindcss/variants-v3": "workspace:*",

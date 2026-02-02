@@ -58,6 +58,6 @@
   },
   "dependencies": {
     "@weapp-tailwindcss/runtime": "workspace:*",
-    "tailwind-merge": "^2.6.0"
+    "tailwind-merge": "^2.6.1"
   }
 }

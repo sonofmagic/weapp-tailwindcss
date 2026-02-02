@@ -11,9 +11,9 @@ packages:
 
 catalogs:
   autoprefixer10:
-    autoprefixer: ^10.4.23
+    autoprefixer: ^10.4.24
   babelCore7285:
-    '@babel/core': ^7.28.6
+    '@babel/core': ^7.29.0
   babelPresetReact7285:
     '@babel/preset-react': ^7.28.5
   babelRuntime7284:
@@ -118,7 +118,7 @@ catalogs:
   weappIdeCli:
     weapp-ide-cli: ^5.0.0
   weappVite:
-    weapp-vite: ^6.4.5
+    weapp-vite: ^6.4.7
   wrangler4530:
     wrangler: ^4.61.1
 

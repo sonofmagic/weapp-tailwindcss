@@ -44,7 +44,7 @@
     "@vant/weapp": "^1.11.6"
   },
   "devDependencies": {
-    "@egoist/tailwindcss-icons": "^1.8.2",
+    "@egoist/tailwindcss-icons": "^1.9.2",
     "@iconify-json/mdi": "^1.2.2",
     "@types/gulp": "^4.0.18",
     "@types/gulp-debug": "^2.0.36",

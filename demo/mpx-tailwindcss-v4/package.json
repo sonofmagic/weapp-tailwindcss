@@ -29,9 +29,9 @@
   },
   "devDependencies": {
     "@babel/core": "catalog:babelCore7285",
-    "@babel/plugin-transform-runtime": "^7.28.5",
-    "@babel/preset-env": "^7.28.6",
-    "@babel/runtime-corejs3": "^7.28.6",
+    "@babel/plugin-transform-runtime": "^7.29.0",
+    "@babel/preset-env": "^7.29.0",
+    "@babel/runtime-corejs3": "^7.29.0",
     "@mpxjs/babel-plugin-inject-page-events": "^2.9.0",
     "@mpxjs/eslint-config-ts": "^1.0.5",
     "@mpxjs/mpx-cli-service": "^2.2.12",

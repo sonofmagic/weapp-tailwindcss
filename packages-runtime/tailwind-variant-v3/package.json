@@ -57,8 +57,7 @@
       "optional": true
     }
   },
-  "dependencies": {},
   "devDependencies": {
-    "tailwind-merge": ">=2 <3"
+    "tailwind-merge": "^2.6.1"
   }
 }
