@@ -18,24 +18,23 @@ import { OptionCard, OptionDetails, OptionTable } from '@site/src/components/doc
 
 | 配置项 | 类型 | 默认值 | 说明 |
 | --- | --- | --- | --- |
-| [disabled](#disabled) | `boolean \| DisabledOptions` | `false` | 是否禁用此插件。 |
-| [customAttributes](#customattributes) | `ICustomAttributes` | `{}` | 自定义 `wxml` 标签属性的转换规则。 |
-| [customReplaceDictionary](#customreplacedictionary) | `Record<string, string>` | `MappingChars2String` | 自定义 class 名称的替换字典。 |
-| [ignoreTaggedTemplateExpressionIdentifiers](#ignoretaggedtemplateexpressionidentifiers) | `(string \| RegExp)[]` | `['weappTwIgnore']` | 忽略指定标签模板表达式中的标识符。 |
-| [ignoreCallExpressionIdentifiers](#ignorecallexpressionidentifiers) | `(string \| RegExp)[]` | `[]` | 忽略指定调用表达式中的标识符。 |
+| [cssCalc](#csscalc) | `boolean \| (string \| RegExp)[] \| CssCalcOptions` | `false` | 预计算 CSS 变量或 `calc` 表达式的结果。 |
+| [cssEntries](#cssentries) | `string[]` | `undefined` | 指定 tailwindcss@4 的入口 CSS。 |
 | [cssPreflight](#csspreflight) | `CssPreflightOptions` | `内置预设` | 控制在视图节点上注入的 CSS 预设。 |
 | [cssPreflightRange](#csspreflightrange) | `"all"` | `undefined` | 控制 `cssPreflight` 注入的 DOM 选择器范围。 |
-| [cssCalc](#csscalc) | `boolean \| (string \| RegExp)[] \| CssCalcOptions` | `false` | 预计算 CSS 变量或 `calc` 表达式的结果。 |
-| [injectAdditionalCssVarScope](#injectadditionalcssvarscope) | `boolean` | `false` | 是否额外注入 `tailwindcss css var scope`。 |
-| [rewriteCssImports](#rewritecssimports) | `boolean` | `true` | 是否在 webpack/vite 阶段自动把 CSS 中的 `@import 'tailwindcss'` 映射为 `weapp-tailwindcss`。 |
-| [cssSelectorReplacement](#cssselectorreplacement) | `{ root?: string \| string[] \| false; universal?: string \| string[] \| false; }` | `内置替换表` | 控制 CSS 选择器的替换规则。 |
-| [rem2rpx](#rem2rpx) | `boolean \| Rem2rpxOptions` | `false` | rem 到 rpx 的转换配置。 |
-| [px2rpx](#px2rpx) | `boolean \| Px2rpxOptions` | `false` | px 到 rpx 的转换配置。 |
-| [unitsToPx](#unitstopx) | `boolean \| UnitsToPxOptions` | `false` | 多单位转 px 的转换配置。 |
 | [cssPresetEnv](#csspresetenv) | `PresetEnvOptions` | `内置默认配置` | `postcss-preset-env` 的配置项。 |
+| [cssSelectorReplacement](#cssselectorreplacement) | `{ root?: string \| string[] \| false; universal?: string \| string[] \| false; }` | `内置替换表` | 控制 CSS 选择器的替换规则。 |
+| [customAttributes](#customattributes) | `ICustomAttributes` | `{}` | 自定义 `wxml` 标签属性的转换规则。 |
+| [customReplaceDictionary](#customreplacedictionary) | `Record<string, string>` | `MappingChars2String` | 自定义 class 名称的替换字典。 |
+| [disabled](#disabled) | `boolean \| DisabledOptions` | `false` | 是否禁用此插件。 |
+| [ignoreCallExpressionIdentifiers](#ignorecallexpressionidentifiers) | `(string \| RegExp)[]` | `[]` | 忽略指定调用表达式中的标识符。 |
+| [ignoreTaggedTemplateExpressionIdentifiers](#ignoretaggedtemplateexpressionidentifiers) | `(string \| RegExp)[]` | `['weappTwIgnore']` | 忽略指定标签模板表达式中的标识符。 |
+| [injectAdditionalCssVarScope](#injectadditionalcssvarscope) | `boolean` | `false` | 是否额外注入 `tailwindcss css var scope`。 |
+| [px2rpx](#px2rpx) | `boolean \| Px2rpxOptions` | `false` | px 到 rpx 的转换配置。 |
+| [rem2rpx](#rem2rpx) | `boolean \| Rem2rpxOptions` | `false` | rem 到 rpx 的转换配置。 |
+| [rewriteCssImports](#rewritecssimports) | `boolean` | `true` | 是否在 webpack/vite 阶段自动把 CSS 中的 `@import 'tailwindcss'` 映射为 `weapp-tailwindcss`。 |
 | [tailwindcss](#tailwindcss) | `TailwindUserOptions` | `undefined` | 为不同版本的 Tailwind 配置行为。 |
-| [cssEntries](#cssentries) | `string[]` | `undefined` | 指定 tailwindcss@4 的入口 CSS。 |
-
+| [unitsToPx](#unitstopx) | `boolean \| UnitsToPxOptions` | `false` | 多单位转 px 的转换配置。 |
 
 </OptionTable>
 </OptionDetails>
@@ -62,18 +61,18 @@ uvtw({
 
 <OptionCard>
 
-### disabled
+### cssCalc
 
-> 可选 | 类型: `boolean | DisabledOptions`
+> 可选 | 类型: `boolean | (string | RegExp)[] | CssCalcOptions` | 版本: ^4.3.0
 
-定义于: [packages/weapp-tailwindcss/src/types/user-defined-options/important.ts:36](https://github.com/sonofmagic/weapp-tailwindcss/blob/59073fec6f66bb3fbd1d15468f6e89437dc3f862/packages/weapp-tailwindcss/src/types/user-defined-options/important.ts#L36)
+定义于: [packages/weapp-tailwindcss/src/types/user-defined-options/important.ts:157](https://github.com/sonofmagic/weapp-tailwindcss/blob/59073fec6f66bb3fbd1d15468f6e89437dc3f862/packages/weapp-tailwindcss/src/types/user-defined-options/important.ts#L157)
 
-是否禁用此插件。
+预计算 CSS 变量或 `calc` 表达式的结果。
 
 <OptionDetails title="默认值 / 说明 / 示例">
 #### 备注
 
-在多平台构建场景下常用：小程序构建保持默认，非小程序环境（H5、App）传入 `true` 即可跳过转换。
+解决部分机型对 `calc` 计算不一致的问题，可传入布尔值、选项对象或自定义匹配列表（支持正则）。在启用计算后，可通过 `includeCustomProperties` 指定需要保留的变量。
 
 #### 默认值
 
@@ -83,84 +82,61 @@ false
 
 #### 示例
 
-```ts
-// uni-app vue3 vite
-import process from 'node:process'
-
-const isH5 = process.env.UNI_PLATFORM === 'h5'
-const isApp = process.env.UNI_PLATFORM === 'app'
-const disabled = isH5 || isApp
-
-import { UnifiedViteWeappTailwindcssPlugin as uvtw } from 'weapp-tailwindcss/vite'
-
-uvtw({
-  disabled,
-})
-```
-</OptionDetails>
-</OptionCard>
-
-<OptionCard>
-
-### customAttributes
-
-> 可选 | 类型: `ICustomAttributes`
-
-定义于: [packages/weapp-tailwindcss/src/types/user-defined-options/important.ts:57](https://github.com/sonofmagic/weapp-tailwindcss/blob/59073fec6f66bb3fbd1d15468f6e89437dc3f862/packages/weapp-tailwindcss/src/types/user-defined-options/important.ts#L57)
-
-自定义 `wxml` 标签属性的转换规则。
-
-<OptionDetails title="默认值 / 说明 / 示例">
-#### 备注
-
-默认会转换所有标签上的 `class` 与 `hover-class`。此配置允许通过 `Map` 或对象为特定标签指定需要转换的属性字符串或正则表达式数组。
-- 使用 `'*'` 作为键可为所有标签追加通用规则。
-- 支持传入 `Map<string | RegExp, (string | RegExp)[]>` 以满足复杂匹配需求。
-- 常见场景包括通过组件 `prop` 传递类名，或对三方组件的自定义属性做匹配，更多讨论见 [issue#129](https://github.com/sonofmagic/weapp-tailwindcss/issues/129#issuecomment-1340914688) 与 [issue#134](https://github.com/sonofmagic/weapp-tailwindcss/issues/134#issuecomment-1351288238)。
-如果自定义规则已经覆盖默认的 `class`/`hover-class`，可开启 [`disabledDefaultTemplateHandler`](/docs/api/options/general#disableddefaulttemplatehandler) 以关闭内置模板处理器。
-
-#### 默认值
-
-```ts
-{}
+```css
+// 原始输出
+page,
+:root {
+  --spacing: 8rpx;
+}
+.h-2 {
+  height: calc(var(--spacing) * 2);
+}
 ```
 
-#### 示例
+```css
+// 启用 cssCalc 后
+.h-2 {
+  height: 16rpx;
+  height: calc(var(--spacing) * 2);
+}
+```
 
 ```js
+cssCalc: ['--spacing']
+cssCalc: { includeCustomProperties: ['--spacing'] }
+```
+
+```ts
 import { UnifiedViteWeappTailwindcssPlugin as uvtw } from 'weapp-tailwindcss/vite'
 
 uvtw({
-  customAttributes: {
-    '*': [/[A-Za-z]?[A-Za-z-]*[Cc]lass/],
-    'van-image': ['custom-class'],
-    'ice-button': ['testClass'],
+  cssCalc: {
+    includeCustomProperties: ['--spacing'],
   },
 })
 ```
-
 </OptionDetails>
 </OptionCard>
 
 <OptionCard>
 
-### customReplaceDictionary
+### cssEntries
 
-> 可选 | 类型: `Record<string, string>` | 默认值: `MappingChars2String`
+> 可选 | 类型: `string[]` | 版本: ^4.2.6
 
-定义于: [packages/weapp-tailwindcss/src/types/user-defined-options/important.ts:66](https://github.com/sonofmagic/weapp-tailwindcss/blob/59073fec6f66bb3fbd1d15468f6e89437dc3f862/packages/weapp-tailwindcss/src/types/user-defined-options/important.ts#L66)
+定义于: [packages/weapp-tailwindcss/src/types/user-defined-options/important.ts:260](https://github.com/sonofmagic/weapp-tailwindcss/blob/59073fec6f66bb3fbd1d15468f6e89437dc3f862/packages/weapp-tailwindcss/src/types/user-defined-options/important.ts#L260)
 
-自定义 class 名称的替换字典。
+指定 tailwindcss@4 的入口 CSS。
 
 <OptionDetails title="默认值 / 说明 / 示例">
 #### 备注
 
-默认策略会将小程序不允许的字符映射为等长度的替代字符串，因此无法通过结果反推出原始类名。如需完全自定义，可传入 `Record<string, string>`，只需确保生成的类名不会与已有样式冲突。示例参考 [dic.ts](https://github.com/sonofmagic/weapp-core/blob/main/packages/escape/src/dic.ts)。
+未配置时无法加载自定义插件，等价于设置 `tailwindcss.v4.cssEntries`。
 
 #### 默认值
 
 ```ts
-MappingChars2String
+undefined
 ```
 
 #### 示例
@@ -169,78 +145,7 @@ MappingChars2String
 import { UnifiedViteWeappTailwindcssPlugin as uvtw } from 'weapp-tailwindcss/vite'
 
 uvtw({
-  customReplaceDictionary: {
-    ':': '_',
-    '/': '__',
-  },
-})
-```
-
-</OptionDetails>
-</OptionCard>
-
-<OptionCard>
-
-### ignoreTaggedTemplateExpression&#8203;Identifiers
-
-> 可选 | 类型: `(string | RegExp)[]` | 默认值: `['weappTwIgnore']` | 版本: ^4.0.0
-
-定义于: [packages/weapp-tailwindcss/src/types/user-defined-options/important.ts:77](https://github.com/sonofmagic/weapp-tailwindcss/blob/59073fec6f66bb3fbd1d15468f6e89437dc3f862/packages/weapp-tailwindcss/src/types/user-defined-options/important.ts#L77)
-
-忽略指定标签模板表达式中的标识符。
-
-<OptionDetails title="默认值 / 说明 / 示例">
-#### 备注
-
-当模板字符串被这些标识符包裹时，将跳过转义处理。
-
-#### 默认值
-
-```ts
-['weappTwIgnore']
-```
-
-#### 示例
-
-```ts
-import { UnifiedViteWeappTailwindcssPlugin as uvtw } from 'weapp-tailwindcss/vite'
-
-uvtw({
-  ignoreTaggedTemplateExpressionIdentifiers: ['weappTwIgnore', 'twIgnore'],
-})
-```
-
-</OptionDetails>
-</OptionCard>
-
-<OptionCard>
-
-### ignoreCallExpressionIdentifiers
-
-> 可选 | 类型: `(string | RegExp)[]` | 版本: ^4.0.0
-
-定义于: [packages/weapp-tailwindcss/src/types/user-defined-options/important.ts:86](https://github.com/sonofmagic/weapp-tailwindcss/blob/59073fec6f66bb3fbd1d15468f6e89437dc3f862/packages/weapp-tailwindcss/src/types/user-defined-options/important.ts#L86)
-
-忽略指定调用表达式中的标识符。
-
-<OptionDetails title="默认值 / 说明 / 示例">
-#### 备注
-
-使用这些方法包裹的模板字符串或字符串字面量会跳过转义，常与 `@weapp-tailwindcss/merge` 配合（如 `['twMerge', 'twJoin', 'cva']`）。
-
-#### 默认值
-
-```ts
-[]
-```
-
-#### 示例
-
-```ts
-import { UnifiedViteWeappTailwindcssPlugin as uvtw } from 'weapp-tailwindcss/vite'
-
-uvtw({
-  ignoreCallExpressionIdentifiers: ['twMerge', 'twJoin', 'cva'],
+  cssEntries: ['src/tailwind.css'],
 })
 ```
 
@@ -335,82 +240,44 @@ uvtw({
 
 <OptionCard>
 
-### cssCalc
+### cssPresetEnv
 
-> 可选 | 类型: `boolean | (string | RegExp)[] | CssCalcOptions` | 版本: ^4.3.0
+> 可选 | 类型: `PresetEnvOptions` | 版本: ^4.0.0
 
-定义于: [packages/weapp-tailwindcss/src/types/user-defined-options/important.ts:157](https://github.com/sonofmagic/weapp-tailwindcss/blob/59073fec6f66bb3fbd1d15468f6e89437dc3f862/packages/weapp-tailwindcss/src/types/user-defined-options/important.ts#L157)
+定义于: [packages/weapp-tailwindcss/src/types/user-defined-options/important.ts:242](https://github.com/sonofmagic/weapp-tailwindcss/blob/59073fec6f66bb3fbd1d15468f6e89437dc3f862/packages/weapp-tailwindcss/src/types/user-defined-options/important.ts#L242)
 
-预计算 CSS 变量或 `calc` 表达式的结果。
+`postcss-preset-env` 的配置项。
 
 <OptionDetails title="默认值 / 说明 / 示例">
+#### 参阅
+
+- https://preset-env.cssdb.org/
+- https://github.com/csstools/postcss-plugins/tree/main/plugin-packs/postcss-preset-env#readme
+
 #### 备注
 
-解决部分机型对 `calc` 计算不一致的问题，可传入布尔值、选项对象或自定义匹配列表（支持正则）。在启用计算后，可通过 `includeCustomProperties` 指定需要保留的变量。
+用于按需启用 CSS 新特性转换与降级策略，建议仅在需要兼容特定语法或关闭某些特性时配置。
 
 #### 默认值
 
 ```ts
-false
-```
-
-#### 示例
-
-```css
-// 原始输出
-page,
-:root {
-  --spacing: 8rpx;
-}
-.h-2 {
-  height: calc(var(--spacing) * 2);
-}
-```
-
-```css
-// 启用 cssCalc 后
-.h-2 {
-  height: 16rpx;
-  height: calc(var(--spacing) * 2);
-}
-```
-
-```js
-cssCalc: ['--spacing']
-cssCalc: { includeCustomProperties: ['--spacing'] }
-```
-
-```ts
-import { UnifiedViteWeappTailwindcssPlugin as uvtw } from 'weapp-tailwindcss/vite'
-
-uvtw({
-  cssCalc: {
-    includeCustomProperties: ['--spacing'],
+{
+  features: {
+    'cascade-layers': true,
+    'is-pseudo-class': {
+      specificityMatchingName: 'weapp-tw-ig',
+    },
+    'oklab-function': true,
+    'color-mix': true,
+    'color-functional-notation': {
+      preserve: false,
+    },
+    'custom-properties': false,
   },
-})
-```
-</OptionDetails>
-</OptionCard>
-
-<OptionCard>
-
-### injectAdditionalCssVarScope
-
-> 可选 | 类型: `boolean` | 默认值: `false` | 版本: ^2.6.0
-
-定义于: [packages/weapp-tailwindcss/src/types/user-defined-options/important.ts:168](https://github.com/sonofmagic/weapp-tailwindcss/blob/59073fec6f66bb3fbd1d15468f6e89437dc3f862/packages/weapp-tailwindcss/src/types/user-defined-options/important.ts#L168)
-
-是否额外注入 `tailwindcss css var scope`。
-
-<OptionDetails title="默认值 / 说明 / 示例">
-#### 备注
-
-当构建链路（例如 `@tarojs/plugin-html`）移除了包含 `*` 的选择器时，可启用该选项重新写入变量作用域，以避免渐变等功能失效。
-
-#### 默认值
-
-```ts
-false
+  autoprefixer: {
+    add: false,
+  },
+}
 ```
 
 #### 示例
@@ -419,41 +286,12 @@ false
 import { UnifiedViteWeappTailwindcssPlugin as uvtw } from 'weapp-tailwindcss/vite'
 
 uvtw({
-  injectAdditionalCssVarScope: true,
-})
-```
-
-</OptionDetails>
-</OptionCard>
-
-<OptionCard>
-
-### rewriteCssImports
-
-> 可选 | 类型: `boolean` | 默认值: `true`
-
-定义于: [packages/weapp-tailwindcss/src/types/user-defined-options/important.ts:177](https://github.com/sonofmagic/weapp-tailwindcss/blob/59073fec6f66bb3fbd1d15468f6e89437dc3f862/packages/weapp-tailwindcss/src/types/user-defined-options/important.ts#L177)
-
-是否在 webpack/vite 阶段自动把 CSS 中的 `@import 'tailwindcss'` 映射为 `weapp-tailwindcss`。
-
-<OptionDetails title="默认值 / 说明 / 示例">
-#### 备注
-
-开启后打包链路只会在处理样式时拦截 `tailwindcss` 的导入路径（JS/TS `import 'tailwindcss'` 不会被修改），让源码可以继续写 `@import 'tailwindcss';`，同时输出 weapp-tailwindcss 的样式。传入 `false` 可完全关闭该行为。
-
-#### 默认值
-
-```ts
-true
-```
-
-#### 示例
-
-```ts
-import { UnifiedViteWeappTailwindcssPlugin as uvtw } from 'weapp-tailwindcss/vite'
-
-uvtw({
-  rewriteCssImports: false,
+  cssPresetEnv: {
+    stage: 3,
+    features: {
+      'nesting-rules': true,
+    },
+  },
 })
 ```
 
@@ -523,6 +361,265 @@ uvtw({
 
 <OptionCard>
 
+### customAttributes
+
+> 可选 | 类型: `ICustomAttributes`
+
+定义于: [packages/weapp-tailwindcss/src/types/user-defined-options/important.ts:57](https://github.com/sonofmagic/weapp-tailwindcss/blob/59073fec6f66bb3fbd1d15468f6e89437dc3f862/packages/weapp-tailwindcss/src/types/user-defined-options/important.ts#L57)
+
+自定义 `wxml` 标签属性的转换规则。
+
+<OptionDetails title="默认值 / 说明 / 示例">
+#### 备注
+
+默认会转换所有标签上的 `class` 与 `hover-class`。此配置允许通过 `Map` 或对象为特定标签指定需要转换的属性字符串或正则表达式数组。
+- 使用 `'*'` 作为键可为所有标签追加通用规则。
+- 支持传入 `Map<string | RegExp, (string | RegExp)[]>` 以满足复杂匹配需求。
+- 常见场景包括通过组件 `prop` 传递类名，或对三方组件的自定义属性做匹配，更多讨论见 [issue#129](https://github.com/sonofmagic/weapp-tailwindcss/issues/129#issuecomment-1340914688) 与 [issue#134](https://github.com/sonofmagic/weapp-tailwindcss/issues/134#issuecomment-1351288238)。
+如果自定义规则已经覆盖默认的 `class`/`hover-class`，可开启 [`disabledDefaultTemplateHandler`](/docs/api/options/general#disableddefaulttemplatehandler) 以关闭内置模板处理器。
+
+#### 默认值
+
+```ts
+{}
+```
+
+#### 示例
+
+```js
+import { UnifiedViteWeappTailwindcssPlugin as uvtw } from 'weapp-tailwindcss/vite'
+
+uvtw({
+  customAttributes: {
+    '*': [/[A-Za-z]?[A-Za-z-]*[Cc]lass/],
+    'van-image': ['custom-class'],
+    'ice-button': ['testClass'],
+  },
+})
+```
+
+</OptionDetails>
+</OptionCard>
+
+<OptionCard>
+
+### customReplaceDictionary
+
+> 可选 | 类型: `Record<string, string>` | 默认值: `MappingChars2String`
+
+定义于: [packages/weapp-tailwindcss/src/types/user-defined-options/important.ts:66](https://github.com/sonofmagic/weapp-tailwindcss/blob/59073fec6f66bb3fbd1d15468f6e89437dc3f862/packages/weapp-tailwindcss/src/types/user-defined-options/important.ts#L66)
+
+自定义 class 名称的替换字典。
+
+<OptionDetails title="默认值 / 说明 / 示例">
+#### 备注
+
+默认策略会将小程序不允许的字符映射为等长度的替代字符串，因此无法通过结果反推出原始类名。如需完全自定义，可传入 `Record<string, string>`，只需确保生成的类名不会与已有样式冲突。示例参考 [dic.ts](https://github.com/sonofmagic/weapp-core/blob/main/packages/escape/src/dic.ts)。
+
+#### 默认值
+
+```ts
+MappingChars2String
+```
+
+#### 示例
+
+```ts
+import { UnifiedViteWeappTailwindcssPlugin as uvtw } from 'weapp-tailwindcss/vite'
+
+uvtw({
+  customReplaceDictionary: {
+    ':': '_',
+    '/': '__',
+  },
+})
+```
+
+</OptionDetails>
+</OptionCard>
+
+<OptionCard>
+
+### disabled
+
+> 可选 | 类型: `boolean | DisabledOptions`
+
+定义于: [packages/weapp-tailwindcss/src/types/user-defined-options/important.ts:36](https://github.com/sonofmagic/weapp-tailwindcss/blob/59073fec6f66bb3fbd1d15468f6e89437dc3f862/packages/weapp-tailwindcss/src/types/user-defined-options/important.ts#L36)
+
+是否禁用此插件。
+
+<OptionDetails title="默认值 / 说明 / 示例">
+#### 备注
+
+在多平台构建场景下常用：小程序构建保持默认，非小程序环境（H5、App）传入 `true` 即可跳过转换。
+
+#### 默认值
+
+```ts
+false
+```
+
+#### 示例
+
+```ts
+// uni-app vue3 vite
+import process from 'node:process'
+
+const isH5 = process.env.UNI_PLATFORM === 'h5'
+const isApp = process.env.UNI_PLATFORM === 'app'
+const disabled = isH5 || isApp
+
+import { UnifiedViteWeappTailwindcssPlugin as uvtw } from 'weapp-tailwindcss/vite'
+
+uvtw({
+  disabled,
+})
+```
+</OptionDetails>
+</OptionCard>
+
+<OptionCard>
+
+### ignoreCallExpressionIdentifiers
+
+> 可选 | 类型: `(string | RegExp)[]` | 版本: ^4.0.0
+
+定义于: [packages/weapp-tailwindcss/src/types/user-defined-options/important.ts:86](https://github.com/sonofmagic/weapp-tailwindcss/blob/59073fec6f66bb3fbd1d15468f6e89437dc3f862/packages/weapp-tailwindcss/src/types/user-defined-options/important.ts#L86)
+
+忽略指定调用表达式中的标识符。
+
+<OptionDetails title="默认值 / 说明 / 示例">
+#### 备注
+
+使用这些方法包裹的模板字符串或字符串字面量会跳过转义，常与 `@weapp-tailwindcss/merge` 配合（如 `['twMerge', 'twJoin', 'cva']`）。
+
+#### 默认值
+
+```ts
+[]
+```
+
+#### 示例
+
+```ts
+import { UnifiedViteWeappTailwindcssPlugin as uvtw } from 'weapp-tailwindcss/vite'
+
+uvtw({
+  ignoreCallExpressionIdentifiers: ['twMerge', 'twJoin', 'cva'],
+})
+```
+
+</OptionDetails>
+</OptionCard>
+
+<OptionCard>
+
+### ignoreTaggedTemplateExpression&#8203;Identifiers
+
+> 可选 | 类型: `(string | RegExp)[]` | 默认值: `['weappTwIgnore']` | 版本: ^4.0.0
+
+定义于: [packages/weapp-tailwindcss/src/types/user-defined-options/important.ts:77](https://github.com/sonofmagic/weapp-tailwindcss/blob/59073fec6f66bb3fbd1d15468f6e89437dc3f862/packages/weapp-tailwindcss/src/types/user-defined-options/important.ts#L77)
+
+忽略指定标签模板表达式中的标识符。
+
+<OptionDetails title="默认值 / 说明 / 示例">
+#### 备注
+
+当模板字符串被这些标识符包裹时，将跳过转义处理。
+
+#### 默认值
+
+```ts
+['weappTwIgnore']
+```
+
+#### 示例
+
+```ts
+import { UnifiedViteWeappTailwindcssPlugin as uvtw } from 'weapp-tailwindcss/vite'
+
+uvtw({
+  ignoreTaggedTemplateExpressionIdentifiers: ['weappTwIgnore', 'twIgnore'],
+})
+```
+
+</OptionDetails>
+</OptionCard>
+
+<OptionCard>
+
+### injectAdditionalCssVarScope
+
+> 可选 | 类型: `boolean` | 默认值: `false` | 版本: ^2.6.0
+
+定义于: [packages/weapp-tailwindcss/src/types/user-defined-options/important.ts:168](https://github.com/sonofmagic/weapp-tailwindcss/blob/59073fec6f66bb3fbd1d15468f6e89437dc3f862/packages/weapp-tailwindcss/src/types/user-defined-options/important.ts#L168)
+
+是否额外注入 `tailwindcss css var scope`。
+
+<OptionDetails title="默认值 / 说明 / 示例">
+#### 备注
+
+当构建链路（例如 `@tarojs/plugin-html`）移除了包含 `*` 的选择器时，可启用该选项重新写入变量作用域，以避免渐变等功能失效。
+
+#### 默认值
+
+```ts
+false
+```
+
+#### 示例
+
+```ts
+import { UnifiedViteWeappTailwindcssPlugin as uvtw } from 'weapp-tailwindcss/vite'
+
+uvtw({
+  injectAdditionalCssVarScope: true,
+})
+```
+
+</OptionDetails>
+</OptionCard>
+
+<OptionCard>
+
+### px2rpx
+
+> 可选 | 类型: `boolean | Px2rpxOptions` | 版本: ^4.3.0
+
+定义于: [packages/weapp-tailwindcss/src/types/user-defined-options/important.ts:222](https://github.com/sonofmagic/weapp-tailwindcss/blob/59073fec6f66bb3fbd1d15468f6e89437dc3f862/packages/weapp-tailwindcss/src/types/user-defined-options/important.ts#L222)
+
+px 到 rpx 的转换配置。
+
+<OptionDetails title="默认值 / 说明 / 示例">
+#### 备注
+
+传入 `true` 启用默认映射（`1px = 1rpx`），或通过对象自定义更多行为。
+
+#### 默认值
+
+```ts
+false
+```
+
+#### 示例
+
+```ts
+import { UnifiedViteWeappTailwindcssPlugin as uvtw } from 'weapp-tailwindcss/vite'
+
+uvtw({
+  px2rpx: {
+    designWidth: 375,
+    deviceRatio: {
+      375: 2,
+    },
+  },
+})
+```
+</OptionDetails>
+</OptionCard>
+
+<OptionCard>
+
 ### rem2rpx
 
 > 可选 | 类型: `boolean | Rem2rpxOptions` | 版本: ^3.0.0
@@ -563,23 +660,23 @@ uvtw({
 
 <OptionCard>
 
-### px2rpx
+### rewriteCssImports
 
-> 可选 | 类型: `boolean | Px2rpxOptions` | 版本: ^4.3.0
+> 可选 | 类型: `boolean` | 默认值: `true`
 
-定义于: [packages/weapp-tailwindcss/src/types/user-defined-options/important.ts:222](https://github.com/sonofmagic/weapp-tailwindcss/blob/59073fec6f66bb3fbd1d15468f6e89437dc3f862/packages/weapp-tailwindcss/src/types/user-defined-options/important.ts#L222)
+定义于: [packages/weapp-tailwindcss/src/types/user-defined-options/important.ts:177](https://github.com/sonofmagic/weapp-tailwindcss/blob/59073fec6f66bb3fbd1d15468f6e89437dc3f862/packages/weapp-tailwindcss/src/types/user-defined-options/important.ts#L177)
 
-px 到 rpx 的转换配置。
+是否在 webpack/vite 阶段自动把 CSS 中的 `@import 'tailwindcss'` 映射为 `weapp-tailwindcss`。
 
 <OptionDetails title="默认值 / 说明 / 示例">
 #### 备注
 
-传入 `true` 启用默认映射（`1px = 1rpx`），或通过对象自定义更多行为。
+开启后打包链路只会在处理样式时拦截 `tailwindcss` 的导入路径（JS/TS `import 'tailwindcss'` 不会被修改），让源码可以继续写 `@import 'tailwindcss';`，同时输出 weapp-tailwindcss 的样式。传入 `false` 可完全关闭该行为。
 
 #### 默认值
 
 ```ts
-false
+true
 ```
 
 #### 示例
@@ -588,14 +685,47 @@ false
 import { UnifiedViteWeappTailwindcssPlugin as uvtw } from 'weapp-tailwindcss/vite'
 
 uvtw({
-  px2rpx: {
-    designWidth: 375,
-    deviceRatio: {
-      375: 2,
-    },
+  rewriteCssImports: false,
+})
+```
+
+</OptionDetails>
+</OptionCard>
+
+<OptionCard>
+
+### tailwindcss
+
+> 可选 | 类型: `TailwindUserOptions` | 版本: ^4.0.0
+
+定义于: [packages/weapp-tailwindcss/src/types/user-defined-options/important.ts:252](https://github.com/sonofmagic/weapp-tailwindcss/blob/59073fec6f66bb3fbd1d15468f6e89437dc3f862/packages/weapp-tailwindcss/src/types/user-defined-options/important.ts#L252)
+
+为不同版本的 Tailwind 配置行为。
+
+<OptionDetails title="默认值 / 说明 / 示例">
+#### 备注
+
+适用于需要明确指定 Tailwind 版本、配置文件路径或自定义解析行为的场景，一般情况下无需手动配置。
+
+#### 默认值
+
+```ts
+undefined
+```
+
+#### 示例
+
+```ts
+import { UnifiedViteWeappTailwindcssPlugin as uvtw } from 'weapp-tailwindcss/vite'
+
+uvtw({
+  tailwindcss: {
+    version: 4,
+    config: './tailwind.config.js',
   },
 })
 ```
+
 </OptionDetails>
 </OptionCard>
 
@@ -648,136 +778,5 @@ new UnifiedWebpackPluginV5({
   },
 })
 ```
-</OptionDetails>
-</OptionCard>
-
-<OptionCard>
-
-### cssPresetEnv
-
-> 可选 | 类型: `PresetEnvOptions` | 版本: ^4.0.0
-
-定义于: [packages/weapp-tailwindcss/src/types/user-defined-options/important.ts:242](https://github.com/sonofmagic/weapp-tailwindcss/blob/59073fec6f66bb3fbd1d15468f6e89437dc3f862/packages/weapp-tailwindcss/src/types/user-defined-options/important.ts#L242)
-
-`postcss-preset-env` 的配置项。
-
-<OptionDetails title="默认值 / 说明 / 示例">
-#### 参阅
-
-- https://preset-env.cssdb.org/
-- https://github.com/csstools/postcss-plugins/tree/main/plugin-packs/postcss-preset-env#readme
-
-#### 备注
-
-用于按需启用 CSS 新特性转换与降级策略，建议仅在需要兼容特定语法或关闭某些特性时配置。
-
-#### 默认值
-
-```ts
-{
-  features: {
-    'cascade-layers': true,
-    'is-pseudo-class': {
-      specificityMatchingName: 'weapp-tw-ig',
-    },
-    'oklab-function': true,
-    'color-mix': true,
-    'color-functional-notation': {
-      preserve: false,
-    },
-    'custom-properties': false,
-  },
-  autoprefixer: {
-    add: false,
-  },
-}
-```
-
-#### 示例
-
-```ts
-import { UnifiedViteWeappTailwindcssPlugin as uvtw } from 'weapp-tailwindcss/vite'
-
-uvtw({
-  cssPresetEnv: {
-    stage: 3,
-    features: {
-      'nesting-rules': true,
-    },
-  },
-})
-```
-
-</OptionDetails>
-</OptionCard>
-
-<OptionCard>
-
-### tailwindcss
-
-> 可选 | 类型: `TailwindUserOptions` | 版本: ^4.0.0
-
-定义于: [packages/weapp-tailwindcss/src/types/user-defined-options/important.ts:252](https://github.com/sonofmagic/weapp-tailwindcss/blob/59073fec6f66bb3fbd1d15468f6e89437dc3f862/packages/weapp-tailwindcss/src/types/user-defined-options/important.ts#L252)
-
-为不同版本的 Tailwind 配置行为。
-
-<OptionDetails title="默认值 / 说明 / 示例">
-#### 备注
-
-适用于需要明确指定 Tailwind 版本、配置文件路径或自定义解析行为的场景，一般情况下无需手动配置。
-
-#### 默认值
-
-```ts
-undefined
-```
-
-#### 示例
-
-```ts
-import { UnifiedViteWeappTailwindcssPlugin as uvtw } from 'weapp-tailwindcss/vite'
-
-uvtw({
-  tailwindcss: {
-    version: 4,
-    config: './tailwind.config.js',
-  },
-})
-```
-
-</OptionDetails>
-</OptionCard>
-
-<OptionCard>
-
-### cssEntries
-
-> 可选 | 类型: `string[]` | 版本: ^4.2.6
-
-定义于: [packages/weapp-tailwindcss/src/types/user-defined-options/important.ts:260](https://github.com/sonofmagic/weapp-tailwindcss/blob/59073fec6f66bb3fbd1d15468f6e89437dc3f862/packages/weapp-tailwindcss/src/types/user-defined-options/important.ts#L260)
-
-指定 tailwindcss@4 的入口 CSS。
-
-<OptionDetails title="默认值 / 说明 / 示例">
-#### 备注
-
-未配置时无法加载自定义插件，等价于设置 `tailwindcss.v4.cssEntries`。
-
-#### 默认值
-
-```ts
-undefined
-```
-
-#### 示例
-
-```ts
-import { UnifiedViteWeappTailwindcssPlugin as uvtw } from 'weapp-tailwindcss/vite'
-
-uvtw({
-  cssEntries: ['src/tailwind.css'],
-})
-```
-
 </OptionDetails>
 </OptionCard>

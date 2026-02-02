@@ -18,16 +18,53 @@ import { OptionCard, OptionDetails, OptionTable } from '@site/src/components/doc
 
 | 配置项 | 类型 | 默认值 | 说明 |
 | --- | --- | --- | --- |
+| [onEnd](#onend) | `(() => void)` | `() => {}` | 结束处理时触发。 |
 | [onLoad](#onload) | `(() => void)` | `() => {}` | 插件 `apply` 初始调用时触发。 |
 | [onStart](#onstart) | `(() => void)` | `() => {}` | 开始处理前触发。 |
 | [onUpdate](#onupdate) | `(filename: string, oldVal: string, newVal: string) => void` | `() => {}` | 匹配并修改文件后触发。 |
-| [onEnd](#onend) | `(() => void)` | `() => {}` | 结束处理时触发。 |
-
 
 </OptionTable>
 </OptionDetails>
 
 ## 详细说明
+
+<OptionCard>
+
+### onEnd
+
+> 可选 | 类型: `(() => void)`
+
+定义于: [packages/weapp-tailwindcss/src/types/user-defined-options/lifecycle.ts:25](https://github.com/sonofmagic/weapp-tailwindcss/blob/59073fec6f66bb3fbd1d15468f6e89437dc3f862/packages/weapp-tailwindcss/src/types/user-defined-options/lifecycle.ts#L25)
+
+结束处理时触发。
+
+<OptionDetails title="默认值 / 说明 / 示例">
+#### 备注
+
+在本轮处理结束后触发，可用于输出汇总信息或性能指标。
+
+#### 默认值
+
+```ts
+() => {}
+```
+
+#### 示例
+
+```ts
+import { UnifiedViteWeappTailwindcssPlugin as uvtw } from 'weapp-tailwindcss/vite'
+
+uvtw({
+  onEnd() {
+    console.info('[weapp-tw] end')
+  },
+})
+```
+
+返回：`void`
+
+</OptionDetails>
+</OptionCard>
 
 <OptionCard>
 
@@ -140,44 +177,6 @@ uvtw({
 ```
 
 参数：`filename: string`；`oldVal: string`；`newVal: string`
-
-返回：`void`
-
-</OptionDetails>
-</OptionCard>
-
-<OptionCard>
-
-### onEnd
-
-> 可选 | 类型: `(() => void)`
-
-定义于: [packages/weapp-tailwindcss/src/types/user-defined-options/lifecycle.ts:25](https://github.com/sonofmagic/weapp-tailwindcss/blob/59073fec6f66bb3fbd1d15468f6e89437dc3f862/packages/weapp-tailwindcss/src/types/user-defined-options/lifecycle.ts#L25)
-
-结束处理时触发。
-
-<OptionDetails title="默认值 / 说明 / 示例">
-#### 备注
-
-在本轮处理结束后触发，可用于输出汇总信息或性能指标。
-
-#### 默认值
-
-```ts
-() => {}
-```
-
-#### 示例
-
-```ts
-import { UnifiedViteWeappTailwindcssPlugin as uvtw } from 'weapp-tailwindcss/vite'
-
-uvtw({
-  onEnd() {
-    console.info('[weapp-tw] end')
-  },
-})
-```
 
 返回：`void`
 

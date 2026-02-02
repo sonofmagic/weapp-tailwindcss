@@ -18,18 +18,55 @@ import { OptionCard, OptionDetails, OptionTable } from '@site/src/components/doc
 
 | 配置项 | 类型 | 默认值 | 说明 |
 | --- | --- | --- | --- |
-| [htmlMatcher](#htmlmatcher) | `(name: string) => boolean` | `匹配 *.wxml/axml/jxml/ksml/ttml/qml/tyml/xhsml/swan` | 匹配需要处理的 `wxml` 等模板文件。 |
 | [cssMatcher](#cssmatcher) | `(name: string) => boolean` | `匹配 *.wxss/acss/jxss/ttss/qss/css/tyss` | 匹配需要处理的 `wxss` 等样式文件。 |
+| [htmlMatcher](#htmlmatcher) | `(name: string) => boolean` | `匹配 *.wxml/axml/jxml/ksml/ttml/qml/tyml/xhsml/swan` | 匹配需要处理的 `wxml` 等模板文件。 |
+| [inlineWxs](#inlinewxs) | `boolean` | `false` | 是否转义 `wxml` 中的内联 `wxs`。 |
 | [jsMatcher](#jsmatcher) | `(name: string) => boolean` | `匹配 *.js/*.mjs/*.cjs（排除 node_modules）` | 匹配需要处理的编译后 `js` 文件。 |
 | [mainCssChunkMatcher](#maincsschunkmatcher) | `(name: string, appType?: AppType) => boolean` | `按 appType 匹配 app.css/common/main.css 等` | 匹配负责注入 Tailwind CSS 变量作用域的 CSS Bundle。 |
 | [wxsMatcher](#wxsmatcher) | `(name: string) => boolean` | `()=>false` | 匹配各端的 `wxs`/`sjs`/`.filter.js` 文件。 |
-| [inlineWxs](#inlinewxs) | `boolean` | `false` | 是否转义 `wxml` 中的内联 `wxs`。 |
-
 
 </OptionTable>
 </OptionDetails>
 
 ## 详细说明
+
+<OptionCard>
+
+### cssMatcher
+
+> 可选 | 类型: `(name: string) => boolean`
+
+定义于: [packages/weapp-tailwindcss/src/types/user-defined-options/matcher.ts:15](https://github.com/sonofmagic/weapp-tailwindcss/blob/59073fec6f66bb3fbd1d15468f6e89437dc3f862/packages/weapp-tailwindcss/src/types/user-defined-options/matcher.ts#L15)
+
+匹配需要处理的 `wxss` 等样式文件。
+
+<OptionDetails title="默认值 / 说明 / 示例">
+#### 备注
+
+返回 `true` 的样式会进入 PostCSS 处理链路，通常仅需覆盖非常规后缀或自定义目录。
+
+#### 默认值
+
+```ts
+name => /.+\\.(?:wx|ac|jx|tt|q|c|ty)ss$/.test(name)
+```
+
+#### 示例
+
+```ts
+import { UnifiedViteWeappTailwindcssPlugin as uvtw } from 'weapp-tailwindcss/vite'
+
+uvtw({
+  cssMatcher: name => /\\.(?:wxss|acss|css)$/.test(name),
+})
+```
+
+参数：`name: string`
+
+返回：`boolean`
+
+</OptionDetails>
+</OptionCard>
 
 <OptionCard>
 
@@ -70,23 +107,23 @@ uvtw({
 
 <OptionCard>
 
-### cssMatcher
+### inlineWxs
 
-> 可选 | 类型: `(name: string) => boolean`
+> 可选 | 类型: `boolean` | 默认值: `false`
 
-定义于: [packages/weapp-tailwindcss/src/types/user-defined-options/matcher.ts:15](https://github.com/sonofmagic/weapp-tailwindcss/blob/59073fec6f66bb3fbd1d15468f6e89437dc3f862/packages/weapp-tailwindcss/src/types/user-defined-options/matcher.ts#L15)
+定义于: [packages/weapp-tailwindcss/src/types/user-defined-options/matcher.ts:65](https://github.com/sonofmagic/weapp-tailwindcss/blob/59073fec6f66bb3fbd1d15468f6e89437dc3f862/packages/weapp-tailwindcss/src/types/user-defined-options/matcher.ts#L65)
 
-匹配需要处理的 `wxss` 等样式文件。
+是否转义 `wxml` 中的内联 `wxs`。
 
 <OptionDetails title="默认值 / 说明 / 示例">
 #### 备注
 
-返回 `true` 的样式会进入 PostCSS 处理链路，通常仅需覆盖非常规后缀或自定义目录。
+使用前同样需要在 `tailwind.config.js` 中声明 `wxs` 格式。
 
 #### 默认值
 
 ```ts
-name => /.+\\.(?:wx|ac|jx|tt|q|c|ty)ss$/.test(name)
+false
 ```
 
 #### 示例
@@ -95,13 +132,23 @@ name => /.+\\.(?:wx|ac|jx|tt|q|c|ty)ss$/.test(name)
 import { UnifiedViteWeappTailwindcssPlugin as uvtw } from 'weapp-tailwindcss/vite'
 
 uvtw({
-  cssMatcher: name => /\\.(?:wxss|acss|css)$/.test(name),
+  inlineWxs: true,
 })
 ```
 
-参数：`name: string`
-
-返回：`boolean`
+```html
+<!-- index.wxml -->
+<wxs module="inline">
+// 我是内联wxs
+// 下方的类名会被转义
+var className = "after:content-['我是className']"
+module.exports = {
+className: className
+}
+</wxs>
+<wxs src="./index.wxs" module="outside"/>
+<view><view class="{{inline.className}}"></view><view class="{{outside.className}}"></view></view>
+```
 
 </OptionDetails>
 </OptionCard>
@@ -251,54 +298,6 @@ uvtw({
 参数：`name: string`
 
 返回：`boolean`
-
-</OptionDetails>
-</OptionCard>
-
-<OptionCard>
-
-### inlineWxs
-
-> 可选 | 类型: `boolean` | 默认值: `false`
-
-定义于: [packages/weapp-tailwindcss/src/types/user-defined-options/matcher.ts:65](https://github.com/sonofmagic/weapp-tailwindcss/blob/59073fec6f66bb3fbd1d15468f6e89437dc3f862/packages/weapp-tailwindcss/src/types/user-defined-options/matcher.ts#L65)
-
-是否转义 `wxml` 中的内联 `wxs`。
-
-<OptionDetails title="默认值 / 说明 / 示例">
-#### 备注
-
-使用前同样需要在 `tailwind.config.js` 中声明 `wxs` 格式。
-
-#### 默认值
-
-```ts
-false
-```
-
-#### 示例
-
-```ts
-import { UnifiedViteWeappTailwindcssPlugin as uvtw } from 'weapp-tailwindcss/vite'
-
-uvtw({
-  inlineWxs: true,
-})
-```
-
-```html
-<!-- index.wxml -->
-<wxs module="inline">
-// 我是内联wxs
-// 下方的类名会被转义
-var className = "after:content-['我是className']"
-module.exports = {
-className: className
-}
-</wxs>
-<wxs src="./index.wxs" module="outside"/>
-<view><view class="{{inline.className}}"></view><view class="{{outside.className}}"></view></view>
-```
 
 </OptionDetails>
 </OptionCard>

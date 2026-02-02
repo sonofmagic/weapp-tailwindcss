@@ -18,22 +18,21 @@ import { OptionCard, OptionDetails, OptionTable } from '@site/src/components/doc
 
 | 配置项 | 类型 | 默认值 | 说明 |
 | --- | --- | --- | --- |
-| [supportCustomLengthUnitsPatch](#supportcustomlengthunitspatch) | `boolean \| ILengthUnitsPatchOptions` | `true` | 控制 Tailwind 自定义长度单位补丁。 |
 | [appType](#apptype) | `AppType` | `undefined` | 声明所使用的框架类型。 |
 | [arbitraryValues](#arbitraryvalues) | `IArbitraryValues` | `{ allowDoubleQuotes: false }` | TailwindCSS 任意值的相关配置。 |
-| [jsPreserveClass](#jspreserveclass) | `(keyword: string) => boolean \| undefined` | `保留 * 字符串字面量` | 控制 JS 字面量是否需要保留。 |
-| [replaceRuntimePackages](#replaceruntimepackages) | `boolean \| Record<string, string>` | `false` | 是否替换运行时依赖包名。 |
-| [disabledDefaultTemplateHandler](#disableddefaulttemplatehandler) | `boolean` | `false` | 禁用默认的 `wxml` 模板替换器。 |
-| [tailwindcssBasedir](#tailwindcssbasedir) | `string` | `undefined` | 指定用于获取 Tailwind 上下文的路径。 |
-| [cache](#cache) | `boolean \| ICreateCacheReturnType` | `true` | 控制缓存策略。 |
 | [babelParserOptions](#babelparseroptions) | `(Partial<Options> & { cache?: boolean; cacheKey?: string; })` | `内置默认配置` | `@babel/parser` 的配置选项。 |
+| [cache](#cache) | `boolean \| ICreateCacheReturnType` | `true` | 控制缓存策略。 |
 | [cssChildCombinatorReplaceValue](#csschildcombinatorreplacevalue) | `string \| string[]` | `['view', 'text']` | 自定义 Tailwind 子组合器的替换值。 |
-| [postcssOptions](#postcssoptions) | `LoadedPostcssOptions` | `{}` | `postcss` 的配置选项。 |
 | [cssRemoveHoverPseudoClass](#cssremovehoverpseudoclass) | `boolean` | `true` | 是否移除 CSS 中的 `:hover` 选择器。 |
 | [cssRemoveProperty](#cssremoveproperty) | `boolean` | `true` | 是否移除 `@property` 节点。 |
-| [tailwindcssPatcherOptions](#tailwindcsspatcheroptions) | `TailwindcssPatchOptions` | `内置默认配置` | 自定义 patcher 参数。 |
+| [disabledDefaultTemplateHandler](#disableddefaulttemplatehandler) | `boolean` | `false` | 禁用默认的 `wxml` 模板替换器。 |
+| [jsPreserveClass](#jspreserveclass) | `(keyword: string) => boolean \| undefined` | `保留 * 字符串字面量` | 控制 JS 字面量是否需要保留。 |
 | [logLevel](#loglevel) | `"info" \| "warn" \| "error" \| "silent"` | `'info'` | 控制命令行日志输出级别。 |
-
+| [postcssOptions](#postcssoptions) | `LoadedPostcssOptions` | `{}` | `postcss` 的配置选项。 |
+| [replaceRuntimePackages](#replaceruntimepackages) | `boolean \| Record<string, string>` | `false` | 是否替换运行时依赖包名。 |
+| [supportCustomLengthUnitsPatch](#supportcustomlengthunitspatch) | `boolean \| ILengthUnitsPatchOptions` | `true` | 控制 Tailwind 自定义长度单位补丁。 |
+| [tailwindcssBasedir](#tailwindcssbasedir) | `string` | `undefined` | 指定用于获取 Tailwind 上下文的路径。 |
+| [tailwindcssPatcherOptions](#tailwindcsspatcheroptions) | `TailwindcssPatchOptions` | `内置默认配置` | 自定义 patcher 参数。 |
 
 </OptionTable>
 </OptionDetails>
@@ -55,51 +54,6 @@ uvtw({
 </OptionDetails>
 
 ## 详细说明
-
-<OptionCard>
-
-### supportCustomLengthUnitsPatch
-
-> 可选 | 类型: `boolean | ILengthUnitsPatchOptions`
-
-定义于: [packages/weapp-tailwindcss/src/types/user-defined-options/general.ts:21](https://github.com/sonofmagic/weapp-tailwindcss/blob/59073fec6f66bb3fbd1d15468f6e89437dc3f862/packages/weapp-tailwindcss/src/types/user-defined-options/general.ts#L21)
-
-控制 Tailwind 自定义长度单位补丁。
-
-<OptionDetails title="默认值 / 说明 / 示例">
-#### 参阅
-
-https://github.com/sonofmagic/weapp-tailwindcss/issues/110
-
-#### 备注
-
-TailwindCSS 3.2.0 起对任意值执行长度单位校验，会将未声明的 `rpx` 识别为颜色。本选项默认开启以注入 `rpx` 支持。当 Node.js 在插件执行前已缓存 `tailwindcss` 模块时，首轮运行可能未生效，可通过在 `postinstall` 中执行 `weapp-tw patch` 提前打补丁。
-```diff
-"scripts": {
-+  "postinstall": "weapp-tw patch"
-}
-```
-
-#### 默认值
-
-```ts
-true
-```
-
-#### 示例
-
-```ts
-import { UnifiedViteWeappTailwindcssPlugin as uvtw } from 'weapp-tailwindcss/vite'
-
-uvtw({
-  supportCustomLengthUnitsPatch: {
-    units: ['rpx', 'vw'],
-  },
-})
-```
-
-</OptionDetails>
-</OptionCard>
 
 <OptionCard>
 
@@ -175,155 +129,39 @@ uvtw({
 
 <OptionCard>
 
-### jsPreserveClass
+### babelParserOptions
 
-> 可选 | 类型: `(keyword: string) => boolean | undefined` | 默认值: 见下方 | 版本: ^2.6.1
+> 可选 | 类型: `(Partial<Options> & { cache?: boolean; cacheKey?: string; })` | 版本: ^3.2.0
 
-定义于: [packages/weapp-tailwindcss/src/types/user-defined-options/general.ts:47](https://github.com/sonofmagic/weapp-tailwindcss/blob/59073fec6f66bb3fbd1d15468f6e89437dc3f862/packages/weapp-tailwindcss/src/types/user-defined-options/general.ts#L47)
+定义于: [packages/weapp-tailwindcss/src/types/user-defined-options/general.ts:119](https://github.com/sonofmagic/weapp-tailwindcss/blob/59073fec6f66bb3fbd1d15468f6e89437dc3f862/packages/weapp-tailwindcss/src/types/user-defined-options/general.ts#L119)
 
-控制 JS 字面量是否需要保留。
+`@babel/parser` 的配置选项。
 
 <OptionDetails title="默认值 / 说明 / 示例">
 #### 备注
 
-当 Tailwind 与 JS 字面量冲突时，可通过回调返回 `true` 保留当前值，返回 `false` 或 `undefined` 则继续转义。默认保留所有带 `*` 的字符串字面量。
+用于控制 JS/TS 语法解析行为，如 `sourceType`、`plugins` 等。若只需少量覆盖，可在默认配置基础上追加。
 
 #### 默认值
 
 ```ts
-(keyword) => {
-  if (keyword === '*') {
-    return true
-  }
-  return false
+{
+  sourceType: 'unambiguous',
+  cache: true,
+  cacheKey: 'st:unambiguous',
 }
 ```
 
-参数：`keyword: string`
-
-返回：`boolean | undefined`
-
 #### 示例
 
 ```ts
 import { UnifiedViteWeappTailwindcssPlugin as uvtw } from 'weapp-tailwindcss/vite'
 
 uvtw({
-  jsPreserveClass(keyword) {
-    return keyword.startsWith('safe-')
+  babelParserOptions: {
+    sourceType: 'unambiguous',
+    plugins: ['typescript'],
   },
-})
-```
-
-</OptionDetails>
-</OptionCard>
-
-<OptionCard>
-
-### replaceRuntimePackages
-
-> 可选 | 类型: `boolean | Record<string, string>`
-
-定义于: [packages/weapp-tailwindcss/src/types/user-defined-options/general.ts:66](https://github.com/sonofmagic/weapp-tailwindcss/blob/59073fec6f66bb3fbd1d15468f6e89437dc3f862/packages/weapp-tailwindcss/src/types/user-defined-options/general.ts#L66)
-
-是否替换运行时依赖包名。
-
-<OptionDetails title="默认值 / 说明 / 示例">
-#### 备注
-
-适用于运行时包名需要重定向的场景，例如：
-- 小程序侧无法直接安装 `tailwind-merge`/`class-variance-authority`/`tailwind-variants`，需要替换为内置的 weapp 版本。
-- 企业内私有镜像/多包发布导致运行时包名不同，希望在转换后统一到目标包名。
-传入 `true` 使用内置替换表，或传入对象自定义映射。
-
-#### 默认值
-
-```ts
-false
-```
-
-#### 示例
-
-```ts
-import { UnifiedViteWeappTailwindcssPlugin as uvtw } from 'weapp-tailwindcss/vite'
-
-uvtw({
-  replaceRuntimePackages: {
-    'tailwind-merge': '@weapp-tailwindcss/merge',
-    'class-variance-authority': '@weapp-tailwindcss/cva',
-  },
-})
-```
-
-</OptionDetails>
-</OptionCard>
-
-<OptionCard>
-
-### disabledDefaultTemplateHandler
-
-> 可选 | 类型: `boolean` | 默认值: `false` | 版本: ^2.6.2
-
-定义于: [packages/weapp-tailwindcss/src/types/user-defined-options/general.ts:77](https://github.com/sonofmagic/weapp-tailwindcss/blob/59073fec6f66bb3fbd1d15468f6e89437dc3f862/packages/weapp-tailwindcss/src/types/user-defined-options/general.ts#L77)
-
-禁用默认的 `wxml` 模板替换器。
-
-<OptionDetails title="默认值 / 说明 / 示例">
-#### 备注
-
-启用后模板匹配完全交由 [`customAttributes`](/docs/api/options/important#customattributes) 管理，需要自行覆盖默认的 `class` / `hover-class` 等匹配规则。
-
-#### 默认值
-
-```ts
-false
-```
-
-#### 示例
-
-```ts
-import { UnifiedViteWeappTailwindcssPlugin as uvtw } from 'weapp-tailwindcss/vite'
-
-uvtw({
-  disabledDefaultTemplateHandler: true,
-  customAttributes: {
-    '*': [/class/i],
-  },
-})
-```
-
-</OptionDetails>
-</OptionCard>
-
-<OptionCard>
-
-### tailwindcssBasedir
-
-> 可选 | 类型: `string` | 版本: ^2.9.3
-
-定义于: [packages/weapp-tailwindcss/src/types/user-defined-options/general.ts:103](https://github.com/sonofmagic/weapp-tailwindcss/blob/59073fec6f66bb3fbd1d15468f6e89437dc3f862/packages/weapp-tailwindcss/src/types/user-defined-options/general.ts#L103)
-
-指定用于获取 Tailwind 上下文的路径。
-
-<OptionDetails title="默认值 / 说明 / 示例">
-#### 备注
-
-在 linked 或 monorepo 场景下可手动指向目标项目的 `package.json` 所在目录。
-
-#### 默认值
-
-```ts
-undefined
-```
-
-#### 示例
-
-```ts
-import path from 'node:path'
-import { UnifiedViteWeappTailwindcssPlugin as uvtw } from 'weapp-tailwindcss/vite'
-
-uvtw({
-  tailwindcssBasedir: path.resolve(__dirname, '../apps/miniapp'),
 })
 ```
 
@@ -358,47 +196,6 @@ import { UnifiedViteWeappTailwindcssPlugin as uvtw } from 'weapp-tailwindcss/vit
 
 uvtw({
   cache: false,
-})
-```
-
-</OptionDetails>
-</OptionCard>
-
-<OptionCard>
-
-### babelParserOptions
-
-> 可选 | 类型: `(Partial<Options> & { cache?: boolean; cacheKey?: string; })` | 版本: ^3.2.0
-
-定义于: [packages/weapp-tailwindcss/src/types/user-defined-options/general.ts:119](https://github.com/sonofmagic/weapp-tailwindcss/blob/59073fec6f66bb3fbd1d15468f6e89437dc3f862/packages/weapp-tailwindcss/src/types/user-defined-options/general.ts#L119)
-
-`@babel/parser` 的配置选项。
-
-<OptionDetails title="默认值 / 说明 / 示例">
-#### 备注
-
-用于控制 JS/TS 语法解析行为，如 `sourceType`、`plugins` 等。若只需少量覆盖，可在默认配置基础上追加。
-
-#### 默认值
-
-```ts
-{
-  sourceType: 'unambiguous',
-  cache: true,
-  cacheKey: 'st:unambiguous',
-}
-```
-
-#### 示例
-
-```ts
-import { UnifiedViteWeappTailwindcssPlugin as uvtw } from 'weapp-tailwindcss/vite'
-
-uvtw({
-  babelParserOptions: {
-    sourceType: 'unambiguous',
-    plugins: ['typescript'],
-  },
 })
 ```
 
@@ -442,44 +239,6 @@ import { UnifiedViteWeappTailwindcssPlugin as uvtw } from 'weapp-tailwindcss/vit
 
 uvtw({
   cssChildCombinatorReplaceValue: ['view', 'text', 'button'],
-})
-```
-</OptionDetails>
-</OptionCard>
-
-<OptionCard>
-
-### postcssOptions
-
-> 可选 | 类型: `LoadedPostcssOptions` | 版本: ^3.2.0
-
-定义于: [packages/weapp-tailwindcss/src/types/user-defined-options/general.ts:144](https://github.com/sonofmagic/weapp-tailwindcss/blob/59073fec6f66bb3fbd1d15468f6e89437dc3f862/packages/weapp-tailwindcss/src/types/user-defined-options/general.ts#L144)
-
-`postcss` 的配置选项。
-
-<OptionDetails title="默认值 / 说明 / 示例">
-#### 备注
-
-用于向样式处理流程注入额外的 PostCSS 插件或调整处理选项。
-
-#### 默认值
-
-```ts
-{}
-```
-
-#### 示例
-
-```ts
-import { UnifiedViteWeappTailwindcssPlugin as uvtw } from 'weapp-tailwindcss/vite'
-import postcssPresetEnv from 'postcss-preset-env'
-
-uvtw({
-  postcssOptions: {
-    plugins: [
-      postcssPresetEnv({ stage: 3 }),
-    ],
-  },
 })
 ```
 </OptionDetails>
@@ -557,6 +316,279 @@ uvtw({
 
 <OptionCard>
 
+### disabledDefaultTemplateHandler
+
+> 可选 | 类型: `boolean` | 默认值: `false` | 版本: ^2.6.2
+
+定义于: [packages/weapp-tailwindcss/src/types/user-defined-options/general.ts:77](https://github.com/sonofmagic/weapp-tailwindcss/blob/59073fec6f66bb3fbd1d15468f6e89437dc3f862/packages/weapp-tailwindcss/src/types/user-defined-options/general.ts#L77)
+
+禁用默认的 `wxml` 模板替换器。
+
+<OptionDetails title="默认值 / 说明 / 示例">
+#### 备注
+
+启用后模板匹配完全交由 [`customAttributes`](/docs/api/options/important#customattributes) 管理，需要自行覆盖默认的 `class` / `hover-class` 等匹配规则。
+
+#### 默认值
+
+```ts
+false
+```
+
+#### 示例
+
+```ts
+import { UnifiedViteWeappTailwindcssPlugin as uvtw } from 'weapp-tailwindcss/vite'
+
+uvtw({
+  disabledDefaultTemplateHandler: true,
+  customAttributes: {
+    '*': [/class/i],
+  },
+})
+```
+
+</OptionDetails>
+</OptionCard>
+
+<OptionCard>
+
+### jsPreserveClass
+
+> 可选 | 类型: `(keyword: string) => boolean | undefined` | 默认值: 见下方 | 版本: ^2.6.1
+
+定义于: [packages/weapp-tailwindcss/src/types/user-defined-options/general.ts:47](https://github.com/sonofmagic/weapp-tailwindcss/blob/59073fec6f66bb3fbd1d15468f6e89437dc3f862/packages/weapp-tailwindcss/src/types/user-defined-options/general.ts#L47)
+
+控制 JS 字面量是否需要保留。
+
+<OptionDetails title="默认值 / 说明 / 示例">
+#### 备注
+
+当 Tailwind 与 JS 字面量冲突时，可通过回调返回 `true` 保留当前值，返回 `false` 或 `undefined` 则继续转义。默认保留所有带 `*` 的字符串字面量。
+
+#### 默认值
+
+```ts
+(keyword) => {
+  if (keyword === '*') {
+    return true
+  }
+  return false
+}
+```
+
+参数：`keyword: string`
+
+返回：`boolean | undefined`
+
+#### 示例
+
+```ts
+import { UnifiedViteWeappTailwindcssPlugin as uvtw } from 'weapp-tailwindcss/vite'
+
+uvtw({
+  jsPreserveClass(keyword) {
+    return keyword.startsWith('safe-')
+  },
+})
+```
+
+</OptionDetails>
+</OptionCard>
+
+<OptionCard>
+
+### logLevel
+
+> 可选 | 类型: `"info" | "warn" | "error" | "silent"`
+
+定义于: [packages/weapp-tailwindcss/src/types/user-defined-options/general.ts:180](https://github.com/sonofmagic/weapp-tailwindcss/blob/59073fec6f66bb3fbd1d15468f6e89437dc3f862/packages/weapp-tailwindcss/src/types/user-defined-options/general.ts#L180)
+
+控制命令行日志输出级别。
+
+<OptionDetails title="默认值 / 说明 / 示例">
+#### 备注
+
+默认 `info`，可设置为 `silent` 屏蔽全部输出。
+
+#### 默认值
+
+```ts
+'info'
+```
+
+#### 示例
+
+```ts
+import { UnifiedViteWeappTailwindcssPlugin as uvtw } from 'weapp-tailwindcss/vite'
+
+uvtw({
+  logLevel: 'silent',
+})
+```
+</OptionDetails>
+</OptionCard>
+
+<OptionCard>
+
+### postcssOptions
+
+> 可选 | 类型: `LoadedPostcssOptions` | 版本: ^3.2.0
+
+定义于: [packages/weapp-tailwindcss/src/types/user-defined-options/general.ts:144](https://github.com/sonofmagic/weapp-tailwindcss/blob/59073fec6f66bb3fbd1d15468f6e89437dc3f862/packages/weapp-tailwindcss/src/types/user-defined-options/general.ts#L144)
+
+`postcss` 的配置选项。
+
+<OptionDetails title="默认值 / 说明 / 示例">
+#### 备注
+
+用于向样式处理流程注入额外的 PostCSS 插件或调整处理选项。
+
+#### 默认值
+
+```ts
+{}
+```
+
+#### 示例
+
+```ts
+import { UnifiedViteWeappTailwindcssPlugin as uvtw } from 'weapp-tailwindcss/vite'
+import postcssPresetEnv from 'postcss-preset-env'
+
+uvtw({
+  postcssOptions: {
+    plugins: [
+      postcssPresetEnv({ stage: 3 }),
+    ],
+  },
+})
+```
+</OptionDetails>
+</OptionCard>
+
+<OptionCard>
+
+### replaceRuntimePackages
+
+> 可选 | 类型: `boolean | Record<string, string>`
+
+定义于: [packages/weapp-tailwindcss/src/types/user-defined-options/general.ts:66](https://github.com/sonofmagic/weapp-tailwindcss/blob/59073fec6f66bb3fbd1d15468f6e89437dc3f862/packages/weapp-tailwindcss/src/types/user-defined-options/general.ts#L66)
+
+是否替换运行时依赖包名。
+
+<OptionDetails title="默认值 / 说明 / 示例">
+#### 备注
+
+适用于运行时包名需要重定向的场景，例如：
+- 小程序侧无法直接安装 `tailwind-merge`/`class-variance-authority`/`tailwind-variants`，需要替换为内置的 weapp 版本。
+- 企业内私有镜像/多包发布导致运行时包名不同，希望在转换后统一到目标包名。
+传入 `true` 使用内置替换表，或传入对象自定义映射。
+
+#### 默认值
+
+```ts
+false
+```
+
+#### 示例
+
+```ts
+import { UnifiedViteWeappTailwindcssPlugin as uvtw } from 'weapp-tailwindcss/vite'
+
+uvtw({
+  replaceRuntimePackages: {
+    'tailwind-merge': '@weapp-tailwindcss/merge',
+    'class-variance-authority': '@weapp-tailwindcss/cva',
+  },
+})
+```
+
+</OptionDetails>
+</OptionCard>
+
+<OptionCard>
+
+### supportCustomLengthUnitsPatch
+
+> 可选 | 类型: `boolean | ILengthUnitsPatchOptions`
+
+定义于: [packages/weapp-tailwindcss/src/types/user-defined-options/general.ts:21](https://github.com/sonofmagic/weapp-tailwindcss/blob/59073fec6f66bb3fbd1d15468f6e89437dc3f862/packages/weapp-tailwindcss/src/types/user-defined-options/general.ts#L21)
+
+控制 Tailwind 自定义长度单位补丁。
+
+<OptionDetails title="默认值 / 说明 / 示例">
+#### 参阅
+
+https://github.com/sonofmagic/weapp-tailwindcss/issues/110
+
+#### 备注
+
+TailwindCSS 3.2.0 起对任意值执行长度单位校验，会将未声明的 `rpx` 识别为颜色。本选项默认开启以注入 `rpx` 支持。当 Node.js 在插件执行前已缓存 `tailwindcss` 模块时，首轮运行可能未生效，可通过在 `postinstall` 中执行 `weapp-tw patch` 提前打补丁。
+```diff
+"scripts": {
++  "postinstall": "weapp-tw patch"
+}
+```
+
+#### 默认值
+
+```ts
+true
+```
+
+#### 示例
+
+```ts
+import { UnifiedViteWeappTailwindcssPlugin as uvtw } from 'weapp-tailwindcss/vite'
+
+uvtw({
+  supportCustomLengthUnitsPatch: {
+    units: ['rpx', 'vw'],
+  },
+})
+```
+
+</OptionDetails>
+</OptionCard>
+
+<OptionCard>
+
+### tailwindcssBasedir
+
+> 可选 | 类型: `string` | 版本: ^2.9.3
+
+定义于: [packages/weapp-tailwindcss/src/types/user-defined-options/general.ts:103](https://github.com/sonofmagic/weapp-tailwindcss/blob/59073fec6f66bb3fbd1d15468f6e89437dc3f862/packages/weapp-tailwindcss/src/types/user-defined-options/general.ts#L103)
+
+指定用于获取 Tailwind 上下文的路径。
+
+<OptionDetails title="默认值 / 说明 / 示例">
+#### 备注
+
+在 linked 或 monorepo 场景下可手动指向目标项目的 `package.json` 所在目录。
+
+#### 默认值
+
+```ts
+undefined
+```
+
+#### 示例
+
+```ts
+import path from 'node:path'
+import { UnifiedViteWeappTailwindcssPlugin as uvtw } from 'weapp-tailwindcss/vite'
+
+uvtw({
+  tailwindcssBasedir: path.resolve(__dirname, '../apps/miniapp'),
+})
+```
+
+</OptionDetails>
+</OptionCard>
+
+<OptionCard>
+
 ### tailwindcssPatcherOptions
 
 > 可选 | 类型: `TailwindcssPatchOptions`
@@ -599,39 +631,6 @@ uvtw({
 })
 ```
 
-</OptionDetails>
-</OptionCard>
-
-<OptionCard>
-
-### logLevel
-
-> 可选 | 类型: `"info" | "warn" | "error" | "silent"`
-
-定义于: [packages/weapp-tailwindcss/src/types/user-defined-options/general.ts:180](https://github.com/sonofmagic/weapp-tailwindcss/blob/59073fec6f66bb3fbd1d15468f6e89437dc3f862/packages/weapp-tailwindcss/src/types/user-defined-options/general.ts#L180)
-
-控制命令行日志输出级别。
-
-<OptionDetails title="默认值 / 说明 / 示例">
-#### 备注
-
-默认 `info`，可设置为 `silent` 屏蔽全部输出。
-
-#### 默认值
-
-```ts
-'info'
-```
-
-#### 示例
-
-```ts
-import { UnifiedViteWeappTailwindcssPlugin as uvtw } from 'weapp-tailwindcss/vite'
-
-uvtw({
-  logLevel: 'silent',
-})
-```
 </OptionDetails>
 </OptionCard>
 
