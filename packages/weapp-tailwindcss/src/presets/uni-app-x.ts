@@ -9,6 +9,7 @@ export interface UniAppXOptions {
   base: string
   cssEntries?: string[]
   rem2rpx?: UserDefinedOptions['rem2rpx']
+  unitsToPx?: UserDefinedOptions['unitsToPx']
   rawOptions?: UserDefinedOptions
   resolve?: PackageResolvingOptions
   customAttributes?: UserDefinedOptions['customAttributes']
@@ -31,6 +32,7 @@ export function uniAppX(options: UniAppXOptions) {
     {
       uniAppX: isApp,
       rem2rpx: options.rem2rpx,
+      unitsToPx: options.unitsToPx,
       tailwindcssBasedir: options.base,
       tailwindcssPatcherOptions: {
         cwd: options.base,

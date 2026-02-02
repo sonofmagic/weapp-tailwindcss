@@ -9,6 +9,7 @@ import { getCalcPlugin } from './plugins/getCalcPlugin'
 import { getCustomPropertyCleaner } from './plugins/getCustomPropertyCleaner'
 import { getPxTransformPlugin } from './plugins/getPxTransformPlugin'
 import { getRemTransformPlugin } from './plugins/getRemTransformPlugin'
+import { getUnitsToPxPlugin } from './plugins/getUnitsToPxPlugin'
 import { postcssWeappTailwindcssPostPlugin } from './plugins/post'
 import { postcssWeappTailwindcssPrePlugin } from './plugins/pre'
 
@@ -138,6 +139,21 @@ function createPipelineDefinitions(options: IStyleHandlerOptions): PipelineNodeD
       stage: 'normal',
       createPlugin: () => createColorFunctionalFallback(),
     }),
+  })
+
+  stages.normal.push({
+    id: 'normal:units-to-px',
+    stage: 'normal',
+    prepare: () => {
+      const plugin = getUnitsToPxPlugin(options)
+      return plugin
+        ? {
+            id: 'normal:units-to-px',
+            stage: 'normal',
+            createPlugin: () => plugin,
+          }
+        : undefined
+    },
   })
 
   stages.normal.push({

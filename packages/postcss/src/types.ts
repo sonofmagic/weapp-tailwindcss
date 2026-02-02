@@ -5,6 +5,7 @@ import type { Result } from 'postcss-load-config'
 import type { pluginOptions as PresetEnvOptions } from 'postcss-preset-env'
 import type { PxTransformOptions as Px2rpxOptions } from 'postcss-pxtrans'
 import type { UserDefinedOptions as Rem2rpxOptions } from 'postcss-rem-to-responsive-pixel'
+import type { UserDefinedOptions as UnitsToPxOptions } from 'postcss-units-to-px'
 import type { StyleProcessingPipeline } from './pipeline'
 import type { IContext as PostcssContext } from './plugins/ctx'
 import type { InjectPreflight } from './preflight'
@@ -38,6 +39,7 @@ export type RequiredStyleHandlerOptions = {
   | 'cssSelectorReplacement'
   | 'rem2rpx'
   | 'px2rpx'
+  | 'unitsToPx'
 >
 
 export interface InternalCssSelectorReplacerOptions {
@@ -78,6 +80,7 @@ export interface UserDefinedPostcssOptions {
   }
   rem2rpx?: boolean | Rem2rpxOptions
   px2rpx?: boolean | Px2rpxOptions
+  unitsToPx?: boolean | UnitsToPxOptions
   postcssOptions?: LoadedPostcssOptions
   cssRemoveHoverPseudoClass?: boolean
   cssRemoveProperty?: boolean
@@ -89,6 +92,7 @@ export type {
   PresetEnvOptions,
   Px2rpxOptions,
   Rem2rpxOptions,
+  UnitsToPxOptions,
 }
 
 export interface StyleHandler {

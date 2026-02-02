@@ -24,6 +24,7 @@ describe('getPlugins', () => {
     const options = createOptions({
       px2rpx: true,
       rem2rpx: true,
+      unitsToPx: true,
       cssCalc: {
         includeCustomProperties: [/^--tw-/],
       },
@@ -34,6 +35,7 @@ describe('getPlugins', () => {
     expect(pluginNames(plugins)).toEqual(expect.arrayContaining([
       'postcss-weapp-tailwindcss-rename-plugin',
       'postcss-preset-env',
+      'postcss-units-to-px',
       'postcss-pxtrans',
       'postcss-rem-to-responsive-pixel',
       'postcss-calc',
@@ -46,6 +48,7 @@ describe('getPlugins', () => {
     const options = createOptions({
       px2rpx: false,
       rem2rpx: false,
+      unitsToPx: false,
       cssCalc: false,
       postcssOptions: {
         plugins: [userPlugin],
@@ -57,6 +60,7 @@ describe('getPlugins', () => {
     const names = pluginNames(plugins)
     expect(names).not.toContain('postcss-pxtrans')
     expect(names).not.toContain('postcss-rem-to-responsive-pixel')
+    expect(names).not.toContain('postcss-units-to-px')
     expect(names).not.toContain('postcss-calc')
     expect(names).not.toContain('postcss-remove-include-custom-properties')
   })

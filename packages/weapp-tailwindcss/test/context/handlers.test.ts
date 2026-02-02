@@ -18,12 +18,13 @@ vi.mock('@/wxml', () => ({
 
 type InternalUserDefinedOptions = import('@/types').InternalUserDefinedOptions
 type Px2rpxOption = InternalUserDefinedOptions['px2rpx']
+type UnitsToPxOption = InternalUserDefinedOptions['unitsToPx']
 
 const customAttributesEntities: import('@/types').ICustomAttributesEntities = [
   ['view', ['class']],
 ]
 
-function createContext(px2rpx?: Px2rpxOption): InternalUserDefinedOptions {
+function createContext(px2rpx?: Px2rpxOption, unitsToPx?: UnitsToPxOption): InternalUserDefinedOptions {
   return {
     cssPreflight: {},
     cssPreflightRange: 'all' as const,
@@ -38,6 +39,7 @@ function createContext(px2rpx?: Px2rpxOption): InternalUserDefinedOptions {
     cssPresetEnv: { stage: 0 },
     uniAppX: true,
     px2rpx,
+    unitsToPx,
     arbitraryValues: { allowDoubleQuotes: true },
     jsPreserveClass: vi.fn(),
     babelParserOptions: { sourceType: 'module' },
@@ -77,6 +79,7 @@ describe('createHandlersFromContext', () => {
     expect(styleHandlerFactory).toHaveBeenCalledWith(expect.objectContaining({
       cssCalc: true,
       px2rpx: ctx.px2rpx,
+      unitsToPx: ctx.unitsToPx,
       cssPresetEnv: ctx.cssPresetEnv,
     }))
 
@@ -118,6 +121,29 @@ describe('createHandlersFromContext', () => {
 
     expect(styleHandlerFactory).toHaveBeenCalledWith(expect.objectContaining({
       px2rpx,
+    }))
+  })
+
+  it.each([
+    ['enabled', true],
+    ['disabled', false],
+    ['omitted', undefined],
+  ] as const)('forwards unitsToPx when %s', async (_label, unitsToPx) => {
+    const { createHandlersFromContext } = await import('@/context/handlers')
+
+    const styleHandler = vi.fn()
+    styleHandlerFactory.mockReturnValueOnce(styleHandler)
+    jsHandlerFactory.mockReturnValueOnce(vi.fn())
+    templateHandlerFactory.mockReturnValueOnce(vi.fn())
+
+    createHandlersFromContext(
+      createContext(undefined, unitsToPx),
+      customAttributesEntities,
+      true,
+    )
+
+    expect(styleHandlerFactory).toHaveBeenCalledWith(expect.objectContaining({
+      unitsToPx,
     }))
   })
 })

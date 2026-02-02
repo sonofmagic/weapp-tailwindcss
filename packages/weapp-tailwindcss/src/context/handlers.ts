@@ -45,6 +45,7 @@ export function createHandlersFromContext(
     cssPresetEnv,
     uniAppX,
     px2rpx,
+    unitsToPx,
     arbitraryValues,
     jsPreserveClass,
     babelParserOptions,
@@ -72,6 +73,7 @@ export function createHandlersFromContext(
     uniAppX,
     cssCalc: cssCalcOptions,
     px2rpx,
+    unitsToPx,
   })
 
   const jsHandler = createJsHandler({

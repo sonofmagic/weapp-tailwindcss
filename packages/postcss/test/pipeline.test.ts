@@ -83,6 +83,25 @@ describe('style processing pipeline', () => {
     expect(preNode.context.stageIndex).toBe(1)
   })
 
+  it('adds units-to-px when enabled', () => {
+    const options = createOptions({
+      unitsToPx: true,
+      px2rpx: false,
+      rem2rpx: false,
+      cssCalc: false,
+    })
+
+    const pipeline = createStylePipeline(options)
+    const ids = pipeline.nodes.map(node => node.id)
+    expect(ids).toEqual([
+      'pre:core',
+      'normal:preset-env',
+      'normal:color-functional-fallback',
+      'normal:units-to-px',
+      'post:core',
+    ])
+  })
+
   it('exposes cached pipeline through the style handler API', () => {
     const handler = createStyleHandler({
       cssPresetEnv: {

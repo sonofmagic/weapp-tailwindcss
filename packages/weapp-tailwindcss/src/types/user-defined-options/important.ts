@@ -4,6 +4,7 @@ import type {
   PresetEnvOptions,
   Px2rpxOptions,
   Rem2rpxOptions,
+  UnitsToPxOptions,
 } from '@weapp-tailwindcss/postcss'
 import type { TailwindcssPatchOptions } from 'tailwindcss-patch'
 import type { DisabledOptions } from '../disabled-options'
@@ -226,6 +227,16 @@ export interface UserDefinedOptionsImportantPart {
    * 传入 `true` 启用默认映射（`1px = 1rpx`），或通过对象自定义更多行为。
    */
   px2rpx?: boolean | Px2rpxOptions
+
+  /**
+   * 多单位转 px 的转换配置。
+   *
+   * @group 0.重要配置
+   * @remarks
+   * 传入 `true` 启用默认映射（postcss-units-to-px 默认单位表），或通过对象自定义行为。
+   * 默认关闭。
+   */
+  unitsToPx?: boolean | UnitsToPxOptions
 
   /**
    * `postcss-preset-env` 的配置项。
