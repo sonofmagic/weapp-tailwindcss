@@ -1,5 +1,12 @@
 # benchmark-tailwindcss3
 
+## 0.0.8
+
+### Patch Changes
+
+- 📦 **Dependencies** [`8643f23`](https://github.com/sonofmagic/weapp-tailwindcss/commit/8643f232c6aa2d229bc12d77b39656094a4176d9)
+  → `tailwind-variant-v3@0.2.1`, `@weapp-tailwindcss/merge-v3@0.1.6`, `@weapp-tailwindcss/variants-v3@0.1.1`
+
 ## 0.0.8-alpha.0
 
 ### Patch Changes
