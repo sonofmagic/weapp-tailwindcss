@@ -4,31 +4,59 @@ sidebar_label: ⚙️ 一般配置
 sidebar_position: 4
 ---
 
+import { OptionCard, OptionDetails, OptionTable } from '@site/src/components/docs/OptionCards'
+
 定义于: [packages/weapp-tailwindcss/src/types/user-defined-options/index.ts:13](https://github.com/sonofmagic/weapp-tailwindcss/blob/59073fec6f66bb3fbd1d15468f6e89437dc3f862/packages/weapp-tailwindcss/src/types/user-defined-options/index.ts#L13)
 
 本页收录 15 个配置项，来源于 `UserDefinedOptions`。
 
 ## 配置一览
 
+<OptionDetails title="配置一览">
+
+<OptionTable>
+
 | 配置项 | 类型 | 默认值 | 说明 |
 | --- | --- | --- | --- |
-| [supportCustomLengthUnitsPatch](#supportcustomlengthunitspatch) | <code>boolean &#124; ILengthUnitsPatchOptions</code> | <code>true</code> | 控制 Tailwind 自定义长度单位补丁。 |
-| [appType](#apptype) | <code>AppType</code> | <code>undefined</code> | 声明所使用的框架类型。 |
-| [arbitraryValues](#arbitraryvalues) | <code>IArbitraryValues</code> | <code>{ allowDoubleQuotes: false }</code> | TailwindCSS 任意值的相关配置。 |
-| [jsPreserveClass](#jspreserveclass) | <code>(keyword: string) => boolean &#124; undefined</code> | <code>保留 * 字符串字面量</code> | 控制 JS 字面量是否需要保留。 |
-| [replaceRuntimePackages](#replaceruntimepackages) | <code>boolean &#124; Record<string, string></code> | <code>false</code> | 是否替换运行时依赖包名。 |
-| [disabledDefaultTemplateHandler](#disableddefaulttemplatehandler) | <code>boolean</code> | <code>false</code> | 禁用默认的 `wxml` 模板替换器。 |
-| [tailwindcssBasedir](#tailwindcssbasedir) | <code>string</code> | <code>undefined</code> | 指定用于获取 Tailwind 上下文的路径。 |
-| [cache](#cache) | <code>boolean &#124; ICreateCacheReturnType</code> | <code>true</code> | 控制缓存策略。 |
-| [babelParserOptions](#babelparseroptions) | <code>(Partial<Options> & { cache?: boolean; cacheKey?: string; })</code> | <code>内置默认配置</code> | `@babel/parser` 的配置选项。 |
-| [cssChildCombinatorReplaceValue](#csschildcombinatorreplacevalue) | <code>string &#124; string[]</code> | <code>['view', 'text']</code> | 自定义 Tailwind 子组合器的替换值。 |
-| [postcssOptions](#postcssoptions) | <code>LoadedPostcssOptions</code> | <code>{}</code> | `postcss` 的配置选项。 |
-| [cssRemoveHoverPseudoClass](#cssremovehoverpseudoclass) | <code>boolean</code> | <code>true</code> | 是否移除 CSS 中的 `:hover` 选择器。 |
-| [cssRemoveProperty](#cssremoveproperty) | <code>boolean</code> | <code>true</code> | 是否移除 `@property` 节点。 |
-| [tailwindcssPatcherOptions](#tailwindcsspatcheroptions) | <code>TailwindcssPatchOptions</code> | <code>内置默认配置</code> | 自定义 patcher 参数。 |
-| [logLevel](#loglevel) | <code>"info" &#124; "warn" &#124; "error" &#124; "silent"</code> | <code>'info'</code> | 控制命令行日志输出级别。 |
+| [supportCustomLengthUnitsPatch](#supportcustomlengthunitspatch) | `boolean \| ILengthUnitsPatchOptions` | `true` | 控制 Tailwind 自定义长度单位补丁。 |
+| [appType](#apptype) | `AppType` | `undefined` | 声明所使用的框架类型。 |
+| [arbitraryValues](#arbitraryvalues) | `IArbitraryValues` | `{ allowDoubleQuotes: false }` | TailwindCSS 任意值的相关配置。 |
+| [jsPreserveClass](#jspreserveclass) | `(keyword: string) => boolean \| undefined` | `保留 * 字符串字面量` | 控制 JS 字面量是否需要保留。 |
+| [replaceRuntimePackages](#replaceruntimepackages) | `boolean \| Record<string, string>` | `false` | 是否替换运行时依赖包名。 |
+| [disabledDefaultTemplateHandler](#disableddefaulttemplatehandler) | `boolean` | `false` | 禁用默认的 `wxml` 模板替换器。 |
+| [tailwindcssBasedir](#tailwindcssbasedir) | `string` | `undefined` | 指定用于获取 Tailwind 上下文的路径。 |
+| [cache](#cache) | `boolean \| ICreateCacheReturnType` | `true` | 控制缓存策略。 |
+| [babelParserOptions](#babelparseroptions) | `(Partial<Options> & { cache?: boolean; cacheKey?: string; })` | `内置默认配置` | `@babel/parser` 的配置选项。 |
+| [cssChildCombinatorReplaceValue](#csschildcombinatorreplacevalue) | `string \| string[]` | `['view', 'text']` | 自定义 Tailwind 子组合器的替换值。 |
+| [postcssOptions](#postcssoptions) | `LoadedPostcssOptions` | `{}` | `postcss` 的配置选项。 |
+| [cssRemoveHoverPseudoClass](#cssremovehoverpseudoclass) | `boolean` | `true` | 是否移除 CSS 中的 `:hover` 选择器。 |
+| [cssRemoveProperty](#cssremoveproperty) | `boolean` | `true` | 是否移除 `@property` 节点。 |
+| [tailwindcssPatcherOptions](#tailwindcsspatcheroptions) | `TailwindcssPatchOptions` | `内置默认配置` | 自定义 patcher 参数。 |
+| [logLevel](#loglevel) | `"info" \| "warn" \| "error" \| "silent"` | `'info'` | 控制命令行日志输出级别。 |
+
+
+</OptionTable>
+</OptionDetails>
+
+## 常用配置模板
+
+<OptionDetails title="常用配置模板（Vite）">
+```ts
+import { UnifiedViteWeappTailwindcssPlugin as uvtw } from 'weapp-tailwindcss/vite'
+
+uvtw({
+  postcssOptions: {},
+  cssRemoveHoverPseudoClass: true,
+  cssRemoveProperty: true,
+  logLevel: 'info',
+})
+```
+
+</OptionDetails>
 
 ## 详细说明
+
+<OptionCard>
 
 ### supportCustomLengthUnitsPatch
 
@@ -38,6 +66,7 @@ sidebar_position: 4
 
 控制 Tailwind 自定义长度单位补丁。
 
+<OptionDetails title="默认值 / 说明 / 示例">
 #### 参阅
 
 https://github.com/sonofmagic/weapp-tailwindcss/issues/110
@@ -69,6 +98,11 @@ uvtw({
 })
 ```
 
+</OptionDetails>
+</OptionCard>
+
+<OptionCard>
+
 ### appType
 
 > 可选 | 类型: `AppType`
@@ -77,6 +111,7 @@ uvtw({
 
 声明所使用的框架类型。
 
+<OptionDetails title="默认值 / 说明 / 示例">
 #### 备注
 
 用于辅助定位主要的 CSS bundle，以便默认的 `mainCssChunkMatcher` 做出更准确的匹配，未传入时将尝试自动猜测变量注入位置。
@@ -97,6 +132,11 @@ uvtw({
 })
 ```
 
+</OptionDetails>
+</OptionCard>
+
+<OptionCard>
+
 ### arbitraryValues
 
 > 可选 | 类型: `IArbitraryValues`
@@ -105,6 +145,7 @@ uvtw({
 
 TailwindCSS 任意值的相关配置。
 
+<OptionDetails title="默认值 / 说明 / 示例">
 #### 备注
 
 默认只允许单引号包裹任意值，开启 `allowDoubleQuotes` 后可使用双引号，但在部分模板编译链路中可能导致转义冲突（例如部分 Vue3 静态模板）。
@@ -129,6 +170,11 @@ uvtw({
 })
 ```
 
+</OptionDetails>
+</OptionCard>
+
+<OptionCard>
+
 ### jsPreserveClass
 
 > 可选 | 类型: `(keyword: string) => boolean | undefined` | 默认值: 见下方 | 版本: ^2.6.1
@@ -137,6 +183,7 @@ uvtw({
 
 控制 JS 字面量是否需要保留。
 
+<OptionDetails title="默认值 / 说明 / 示例">
 #### 备注
 
 当 Tailwind 与 JS 字面量冲突时，可通过回调返回 `true` 保留当前值，返回 `false` 或 `undefined` 则继续转义。默认保留所有带 `*` 的字符串字面量。
@@ -152,15 +199,9 @@ uvtw({
 }
 ```
 
-#### 参数
+参数：`keyword: string`
 
-##### keyword
-
-`string`
-
-#### 返回
-
-`boolean | undefined`
+返回：`boolean | undefined`
 
 #### 示例
 
@@ -174,6 +215,11 @@ uvtw({
 })
 ```
 
+</OptionDetails>
+</OptionCard>
+
+<OptionCard>
+
 ### replaceRuntimePackages
 
 > 可选 | 类型: `boolean | Record<string, string>`
@@ -182,6 +228,7 @@ uvtw({
 
 是否替换运行时依赖包名。
 
+<OptionDetails title="默认值 / 说明 / 示例">
 #### 备注
 
 适用于运行时包名需要重定向的场景，例如：
@@ -208,6 +255,11 @@ uvtw({
 })
 ```
 
+</OptionDetails>
+</OptionCard>
+
+<OptionCard>
+
 ### disabledDefaultTemplateHandler
 
 > 可选 | 类型: `boolean` | 默认值: `false` | 版本: ^2.6.2
@@ -216,6 +268,7 @@ uvtw({
 
 禁用默认的 `wxml` 模板替换器。
 
+<OptionDetails title="默认值 / 说明 / 示例">
 #### 备注
 
 启用后模板匹配完全交由 [`customAttributes`](/docs/api/options/important#customattributes) 管理，需要自行覆盖默认的 `class` / `hover-class` 等匹配规则。
@@ -239,6 +292,11 @@ uvtw({
 })
 ```
 
+</OptionDetails>
+</OptionCard>
+
+<OptionCard>
+
 ### tailwindcssBasedir
 
 > 可选 | 类型: `string` | 版本: ^2.9.3
@@ -247,6 +305,7 @@ uvtw({
 
 指定用于获取 Tailwind 上下文的路径。
 
+<OptionDetails title="默认值 / 说明 / 示例">
 #### 备注
 
 在 linked 或 monorepo 场景下可手动指向目标项目的 `package.json` 所在目录。
@@ -268,6 +327,11 @@ uvtw({
 })
 ```
 
+</OptionDetails>
+</OptionCard>
+
+<OptionCard>
+
 ### cache
 
 > 可选 | 类型: `boolean | ICreateCacheReturnType` | 版本: ^3.0.11
@@ -276,6 +340,7 @@ uvtw({
 
 控制缓存策略。
 
+<OptionDetails title="默认值 / 说明 / 示例">
 #### 备注
 
 默认开启内存缓存，提升多文件批处理性能。传入 `false` 可禁用缓存，或传入自定义 `ICreateCacheReturnType` 实现。
@@ -296,6 +361,11 @@ uvtw({
 })
 ```
 
+</OptionDetails>
+</OptionCard>
+
+<OptionCard>
+
 ### babelParserOptions
 
 > 可选 | 类型: `(Partial<Options> & { cache?: boolean; cacheKey?: string; })` | 版本: ^3.2.0
@@ -304,6 +374,7 @@ uvtw({
 
 `@babel/parser` 的配置选项。
 
+<OptionDetails title="默认值 / 说明 / 示例">
 #### 备注
 
 用于控制 JS/TS 语法解析行为，如 `sourceType`、`plugins` 等。若只需少量覆盖，可在默认配置基础上追加。
@@ -331,6 +402,11 @@ uvtw({
 })
 ```
 
+</OptionDetails>
+</OptionCard>
+
+<OptionCard>
+
 ### cssChildCombinatorReplaceValue
 
 > 可选 | 类型: `string | string[]` | 默认值: `['view', 'text']`
@@ -339,6 +415,7 @@ uvtw({
 
 自定义 Tailwind 子组合器的替换值。
 
+<OptionDetails title="默认值 / 说明 / 示例">
 #### 备注
 
 为兼容小程序缺乏 `:not([hidden])~` 支持的限制，默认会将 `.space-x-4` 等选择器替换为 `view + view`。可传入字符串或字符串数组以扩展适用标签。
@@ -367,6 +444,10 @@ uvtw({
   cssChildCombinatorReplaceValue: ['view', 'text', 'button'],
 })
 ```
+</OptionDetails>
+</OptionCard>
+
+<OptionCard>
 
 ### postcssOptions
 
@@ -376,6 +457,7 @@ uvtw({
 
 `postcss` 的配置选项。
 
+<OptionDetails title="默认值 / 说明 / 示例">
 #### 备注
 
 用于向样式处理流程注入额外的 PostCSS 插件或调整处理选项。
@@ -400,6 +482,10 @@ uvtw({
   },
 })
 ```
+</OptionDetails>
+</OptionCard>
+
+<OptionCard>
 
 ### cssRemoveHoverPseudoClass
 
@@ -409,6 +495,7 @@ uvtw({
 
 是否移除 CSS 中的 `:hover` 选择器。
 
+<OptionDetails title="默认值 / 说明 / 示例">
 #### 参阅
 
 https://github.com/sonofmagic/weapp-tailwindcss/issues/293
@@ -432,6 +519,10 @@ uvtw({
   cssRemoveHoverPseudoClass: false,
 })
 ```
+</OptionDetails>
+</OptionCard>
+
+<OptionCard>
 
 ### cssRemoveProperty
 
@@ -441,6 +532,7 @@ uvtw({
 
 是否移除 `@property` 节点。
 
+<OptionDetails title="默认值 / 说明 / 示例">
 #### 备注
 
 微信小程序可识别 `@property`，但支付宝暂不支持，默认移除以避免构建失败。
@@ -460,6 +552,10 @@ uvtw({
   cssRemoveProperty: false,
 })
 ```
+</OptionDetails>
+</OptionCard>
+
+<OptionCard>
 
 ### tailwindcssPatcherOptions
 
@@ -469,6 +565,7 @@ uvtw({
 
 自定义 patcher 参数。
 
+<OptionDetails title="默认值 / 说明 / 示例">
 #### 备注
 
 用于控制 `tailwindcss-patch` 的行为，如缓存、补丁开关、扫描路径等。一般无需配置，除非你需要自定义补丁策略或多项目共享缓存。
@@ -502,6 +599,11 @@ uvtw({
 })
 ```
 
+</OptionDetails>
+</OptionCard>
+
+<OptionCard>
+
 ### logLevel
 
 > 可选 | 类型: `"info" | "warn" | "error" | "silent"`
@@ -510,6 +612,7 @@ uvtw({
 
 控制命令行日志输出级别。
 
+<OptionDetails title="默认值 / 说明 / 示例">
 #### 备注
 
 默认 `info`，可设置为 `silent` 屏蔽全部输出。
@@ -529,3 +632,6 @@ uvtw({
   logLevel: 'silent',
 })
 ```
+</OptionDetails>
+</OptionCard>
+

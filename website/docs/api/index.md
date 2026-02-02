@@ -3,10 +3,10 @@
 ## 配置项
 
 - [UserDefinedOptions 总览](interfaces/UserDefinedOptions.md)
-- [✅ 重要配置](options/important.md)
-- [🧩 文件匹配](options/matchers.md)
-- [🧭 生命周期](options/lifecycle.md)
-- [⚙️ 一般配置](options/general.md)
+- [✅ 重要配置](options/important)
+- [🧩 文件匹配](options/matchers)
+- [🧭 生命周期](options/lifecycle)
+- [⚙️ 一般配置](options/general)
 
 ## 接口
 

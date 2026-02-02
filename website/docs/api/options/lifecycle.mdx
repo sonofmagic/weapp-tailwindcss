@@ -4,20 +4,32 @@ sidebar_label: 🧭 生命周期
 sidebar_position: 3
 ---
 
+import { OptionCard, OptionDetails, OptionTable } from '@site/src/components/docs/OptionCards'
+
 定义于: [packages/weapp-tailwindcss/src/types/user-defined-options/index.ts:13](https://github.com/sonofmagic/weapp-tailwindcss/blob/59073fec6f66bb3fbd1d15468f6e89437dc3f862/packages/weapp-tailwindcss/src/types/user-defined-options/index.ts#L13)
 
 本页收录 4 个配置项，来源于 `UserDefinedOptions`。
 
 ## 配置一览
 
+<OptionDetails title="配置一览">
+
+<OptionTable>
+
 | 配置项 | 类型 | 默认值 | 说明 |
 | --- | --- | --- | --- |
-| [onLoad](#onload) | <code>(() => void)</code> | <code>() => {}</code> | 插件 `apply` 初始调用时触发。 |
-| [onStart](#onstart) | <code>(() => void)</code> | <code>() => {}</code> | 开始处理前触发。 |
-| [onUpdate](#onupdate) | <code>(filename: string, oldVal: string, newVal: string) => void</code> | <code>() => {}</code> | 匹配并修改文件后触发。 |
-| [onEnd](#onend) | <code>(() => void)</code> | <code>() => {}</code> | 结束处理时触发。 |
+| [onLoad](#onload) | `(() => void)` | `() => {}` | 插件 `apply` 初始调用时触发。 |
+| [onStart](#onstart) | `(() => void)` | `() => {}` | 开始处理前触发。 |
+| [onUpdate](#onupdate) | `(filename: string, oldVal: string, newVal: string) => void` | `() => {}` | 匹配并修改文件后触发。 |
+| [onEnd](#onend) | `(() => void)` | `() => {}` | 结束处理时触发。 |
+
+
+</OptionTable>
+</OptionDetails>
 
 ## 详细说明
+
+<OptionCard>
 
 ### onLoad
 
@@ -27,6 +39,7 @@ sidebar_position: 3
 
 插件 `apply` 初始调用时触发。
 
+<OptionDetails title="默认值 / 说明 / 示例">
 #### 备注
 
 适合在插件初始化阶段记录环境信息或初始化统计计数。
@@ -48,10 +61,12 @@ uvtw({
   },
 })
 ```
+返回：`void`
 
-#### 返回
+</OptionDetails>
+</OptionCard>
 
-`void`
+<OptionCard>
 
 ### onStart
 
@@ -61,6 +76,7 @@ uvtw({
 
 开始处理前触发。
 
+<OptionDetails title="默认值 / 说明 / 示例">
 #### 备注
 
 每次构建/编译开始时都会调用，可用于计时或清理上一次的状态。
@@ -83,9 +99,12 @@ uvtw({
 })
 ```
 
-#### 返回
+返回：`void`
 
-`void`
+</OptionDetails>
+</OptionCard>
+
+<OptionCard>
 
 ### onUpdate
 
@@ -95,6 +114,7 @@ uvtw({
 
 匹配并修改文件后触发。
 
+<OptionDetails title="默认值 / 说明 / 示例">
 #### 备注
 
 适合用于记录被修改的文件路径、输出差异或触发自定义日志。
@@ -119,23 +139,14 @@ uvtw({
 })
 ```
 
-#### 参数
+参数：`filename: string`；`oldVal: string`；`newVal: string`
 
-##### filename
+返回：`void`
 
-`string`
+</OptionDetails>
+</OptionCard>
 
-##### oldVal
-
-`string`
-
-##### newVal
-
-`string`
-
-#### 返回
-
-`void`
+<OptionCard>
 
 ### onEnd
 
@@ -145,6 +156,7 @@ uvtw({
 
 结束处理时触发。
 
+<OptionDetails title="默认值 / 说明 / 示例">
 #### 备注
 
 在本轮处理结束后触发，可用于输出汇总信息或性能指标。
@@ -167,6 +179,7 @@ uvtw({
 })
 ```
 
-#### 返回
+返回：`void`
 
-`void`
+</OptionDetails>
+</OptionCard>

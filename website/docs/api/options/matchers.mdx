@@ -4,22 +4,34 @@ sidebar_label: 🧩 文件匹配
 sidebar_position: 2
 ---
 
+import { OptionCard, OptionDetails, OptionTable } from '@site/src/components/docs/OptionCards'
+
 定义于: [packages/weapp-tailwindcss/src/types/user-defined-options/index.ts:13](https://github.com/sonofmagic/weapp-tailwindcss/blob/59073fec6f66bb3fbd1d15468f6e89437dc3f862/packages/weapp-tailwindcss/src/types/user-defined-options/index.ts#L13)
 
 本页收录 6 个配置项，来源于 `UserDefinedOptions`。
 
 ## 配置一览
 
+<OptionDetails title="配置一览">
+
+<OptionTable>
+
 | 配置项 | 类型 | 默认值 | 说明 |
 | --- | --- | --- | --- |
-| [htmlMatcher](#htmlmatcher) | <code>(name: string) => boolean</code> | <code>匹配 *.wxml/axml/jxml/ksml/ttml/qml/tyml/xhsml/swan</code> | 匹配需要处理的 `wxml` 等模板文件。 |
-| [cssMatcher](#cssmatcher) | <code>(name: string) => boolean</code> | <code>匹配 *.wxss/acss/jxss/ttss/qss/css/tyss</code> | 匹配需要处理的 `wxss` 等样式文件。 |
-| [jsMatcher](#jsmatcher) | <code>(name: string) => boolean</code> | <code>匹配 *.js/*.mjs/*.cjs（排除 node_modules）</code> | 匹配需要处理的编译后 `js` 文件。 |
-| [mainCssChunkMatcher](#maincsschunkmatcher) | <code>(name: string, appType?: AppType) => boolean</code> | <code>按 appType 匹配 app.css/common/main.css 等</code> | 匹配负责注入 Tailwind CSS 变量作用域的 CSS Bundle。 |
-| [wxsMatcher](#wxsmatcher) | <code>(name: string) => boolean</code> | <code>()=>false</code> | 匹配各端的 `wxs`/`sjs`/`.filter.js` 文件。 |
-| [inlineWxs](#inlinewxs) | <code>boolean</code> | <code>false</code> | 是否转义 `wxml` 中的内联 `wxs`。 |
+| [htmlMatcher](#htmlmatcher) | `(name: string) => boolean` | `匹配 *.wxml/axml/jxml/ksml/ttml/qml/tyml/xhsml/swan` | 匹配需要处理的 `wxml` 等模板文件。 |
+| [cssMatcher](#cssmatcher) | `(name: string) => boolean` | `匹配 *.wxss/acss/jxss/ttss/qss/css/tyss` | 匹配需要处理的 `wxss` 等样式文件。 |
+| [jsMatcher](#jsmatcher) | `(name: string) => boolean` | `匹配 *.js/*.mjs/*.cjs（排除 node_modules）` | 匹配需要处理的编译后 `js` 文件。 |
+| [mainCssChunkMatcher](#maincsschunkmatcher) | `(name: string, appType?: AppType) => boolean` | `按 appType 匹配 app.css/common/main.css 等` | 匹配负责注入 Tailwind CSS 变量作用域的 CSS Bundle。 |
+| [wxsMatcher](#wxsmatcher) | `(name: string) => boolean` | `()=>false` | 匹配各端的 `wxs`/`sjs`/`.filter.js` 文件。 |
+| [inlineWxs](#inlinewxs) | `boolean` | `false` | 是否转义 `wxml` 中的内联 `wxs`。 |
+
+
+</OptionTable>
+</OptionDetails>
 
 ## 详细说明
+
+<OptionCard>
 
 ### htmlMatcher
 
@@ -29,6 +41,7 @@ sidebar_position: 2
 
 匹配需要处理的 `wxml` 等模板文件。
 
+<OptionDetails title="默认值 / 说明 / 示例">
 #### 备注
 
 返回 `true` 的文件会进入模板处理流程，建议与 `tailwind.config.js` 的 `content` 范围保持一致。
@@ -48,16 +61,14 @@ uvtw({
   htmlMatcher: name => /\\.(?:wxml|axml)$/.test(name),
 })
 ```
+参数：`name: string`
 
-#### 参数
+返回：`boolean`
 
-##### name
+</OptionDetails>
+</OptionCard>
 
-`string`
-
-#### 返回
-
-`boolean`
+<OptionCard>
 
 ### cssMatcher
 
@@ -67,6 +78,7 @@ uvtw({
 
 匹配需要处理的 `wxss` 等样式文件。
 
+<OptionDetails title="默认值 / 说明 / 示例">
 #### 备注
 
 返回 `true` 的样式会进入 PostCSS 处理链路，通常仅需覆盖非常规后缀或自定义目录。
@@ -87,15 +99,14 @@ uvtw({
 })
 ```
 
-#### 参数
+参数：`name: string`
 
-##### name
+返回：`boolean`
 
-`string`
+</OptionDetails>
+</OptionCard>
 
-#### 返回
-
-`boolean`
+<OptionCard>
 
 ### jsMatcher
 
@@ -105,6 +116,7 @@ uvtw({
 
 匹配需要处理的编译后 `js` 文件。
 
+<OptionDetails title="默认值 / 说明 / 示例">
 #### 备注
 
 返回 `true` 的脚本会执行 class 名称转译，建议保持对 `node_modules` 的排除。
@@ -125,15 +137,14 @@ uvtw({
 })
 ```
 
-#### 参数
+参数：`name: string`
 
-##### name
+返回：`boolean`
 
-`string`
+</OptionDetails>
+</OptionCard>
 
-#### 返回
-
-`boolean`
+<OptionCard>
 
 ### mainCssChunkMatcher
 
@@ -143,6 +154,7 @@ uvtw({
 
 匹配负责注入 Tailwind CSS 变量作用域的 CSS Bundle。
 
+<OptionDetails title="默认值 / 说明 / 示例">
 #### 备注
 
 在处理 `::before`/`::after` 等不兼容选择器时，建议手动指定文件位置。
@@ -196,19 +208,14 @@ uvtw({
 })
 ```
 
-#### 参数
+参数：`name: string`；`appType?: AppType`
 
-##### name
+返回：`boolean`
 
-`string`
+</OptionDetails>
+</OptionCard>
 
-##### appType?
-
-`AppType`
-
-#### 返回
-
-`boolean`
+<OptionCard>
 
 ### wxsMatcher
 
@@ -218,6 +225,7 @@ uvtw({
 
 匹配各端的 `wxs`/`sjs`/`.filter.js` 文件。
 
+<OptionDetails title="默认值 / 说明 / 示例">
 #### 备注
 
 配置前请确保在 `tailwind.config.js` 的 `content` 中包含对应格式。
@@ -240,15 +248,14 @@ uvtw({
 })
 ```
 
-#### 参数
+参数：`name: string`
 
-##### name
+返回：`boolean`
 
-`string`
+</OptionDetails>
+</OptionCard>
 
-#### 返回
-
-`boolean`
+<OptionCard>
 
 ### inlineWxs
 
@@ -258,6 +265,7 @@ uvtw({
 
 是否转义 `wxml` 中的内联 `wxs`。
 
+<OptionDetails title="默认值 / 说明 / 示例">
 #### 备注
 
 使用前同样需要在 `tailwind.config.js` 中声明 `wxs` 格式。
@@ -278,7 +286,6 @@ uvtw({
 })
 ```
 
-
 ```html
 <!-- index.wxml -->
 <wxs module="inline">
@@ -292,3 +299,7 @@ className: className
 <wxs src="./index.wxs" module="outside"/>
 <view><view class="{{inline.className}}"></view><view class="{{outside.className}}"></view></view>
 ```
+
+</OptionDetails>
+</OptionCard>
+
