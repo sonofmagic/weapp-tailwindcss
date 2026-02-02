@@ -69,5 +69,9 @@
     "wetw": "0.1.1",
     "@weapp-tailwindcss/website": "1.0.16"
   },
-  "changesets": []
+  "changesets": [
+    "bright-kiwis-approve",
+    "common-dancers-relax",
+    "nice-singers-attend"
+  ]
 }
