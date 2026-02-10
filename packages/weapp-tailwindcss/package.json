@@ -169,6 +169,8 @@
     "test:dev": "vitest",
     "test:ui": "vitest --ui",
     "bench": "vitest bench --config ./vitest.config.ts",
+    "bench:vite-perf": "tsx scripts/vite-perf-bench.ts",
+    "bench:vite-perf:summary": "tsx scripts/vite-perf-summary.ts",
     "bench:js-handlers": "tsx scripts/js-bench.ts",
     "bench:js-diff": "tsx scripts/js-bench-diff.ts",
     "tsd": "tsd",

@@ -310,7 +310,7 @@ describe('bundlers/vite UnifiedViteWeappTailwindcssPlugin', () => {
     expect(postcssPlugins?.[0]).toEqual({ postcssPlugin: 'mocked-html-transform' })
 
     const html = '<view class="foo">bar</view>'
-    const js = 'const demo = 1'
+    const js = 'const demo = "text-[#123456]"'
     const css = '.foo { color: red; }'
 
     const bundle = {
@@ -358,8 +358,64 @@ describe('bundlers/vite UnifiedViteWeappTailwindcssPlugin', () => {
     expect(currentContext.onStart).toHaveBeenCalledTimes(2)
     expect(currentContext.onEnd).toHaveBeenCalledTimes(2)
     expect(currentContext.onUpdate).toHaveBeenCalledTimes(3)
-    expect(currentContext.twPatcher.getClassSetSync).toHaveBeenCalledTimes(2)
+    expect(currentContext.twPatcher.getClassSetSync).toHaveBeenCalledTimes(1)
     expect(currentContext.twPatcher.extract).not.toHaveBeenCalled()
+  })
+
+  it('only transforms dirty js entry and affected linked entries on incremental runs', async () => {
+    const rootDir = process.cwd()
+    const outDir = path.resolve(rootDir, 'dist')
+    const linkedFile = path.resolve(outDir, 'chunk.js')
+
+    currentContext = createContext({
+      jsHandler: vi.fn((code: string, _runtimeSet: Set<string>, options?: { filename?: string }) => {
+        if (options?.filename?.endsWith('index.js')) {
+          return {
+            code: `js:${code}`,
+            linked: {
+              [linkedFile]: { code: 'linked:chunk' },
+            },
+          }
+        }
+        return { code: `js:${code}` }
+      }),
+    })
+
+    const plugins = UnifiedViteWeappTailwindcssPlugin()
+    const postPlugin = plugins?.find(plugin => plugin.name === 'weapp-tailwindcss:adaptor:post') as Plugin
+    expect(postPlugin).toBeTruthy()
+
+    const config = {
+      root: rootDir,
+      build: { outDir: 'dist' },
+      css: { postcss: { plugins: [] } },
+    } as unknown as ResolvedConfig
+    await (postPlugin.configResolved as any)?.call(postPlugin, config)
+
+    const generateBundle = postPlugin.generateBundle as any
+
+    const firstBundle = {
+      'index.js': createRollupChunk('import "./chunk.js";\nconsole.log("text-[#111111]")'),
+      'chunk.js': createRollupChunk('export const foo = "text-[#121212]";'),
+    }
+    await generateBundle?.call(postPlugin, {} as any, firstBundle)
+    expect(currentContext.jsHandler).toHaveBeenCalledTimes(2)
+
+    const secondBundle = {
+      'index.js': createRollupChunk('import "./chunk.js";\nconsole.log("text-[#222222]")'),
+      'chunk.js': createRollupChunk('export const foo = "text-[#121212]";'),
+    }
+    await generateBundle?.call(postPlugin, {} as any, secondBundle)
+    expect(currentContext.jsHandler).toHaveBeenCalledTimes(3)
+
+    const thirdBundle = {
+      'index.js': createRollupChunk('import "./chunk.js";\nconsole.log("text-[#222222]")'),
+      'chunk.js': createRollupChunk('export const foo = "text-[#232323]";'),
+    }
+    await generateBundle?.call(postPlugin, {} as any, thirdBundle)
+
+    // third run: chunk.js changed, index.js should rerun because it depends on linked chunk
+    expect(currentContext.jsHandler).toHaveBeenCalledTimes(5)
   })
 
   it('transforms inlined tailwind-merge output within bundle stage', async () => {
@@ -463,11 +519,11 @@ const fallback = "bg-[#434332] px-[32px]"
     expect(nvueResult).toEqual({ code: 'uvue:App.nvue:console.log("x")' })
 
     const bundle = {
-      'index.js': createRollupChunk('const answer = 42'),
+      'index.js': createRollupChunk('const answer = "text-[#424242]"'),
       'index.asset.js': {
         type: 'asset',
         fileName: 'index.js',
-        source: 'console.log("asset")',
+        source: 'console.log("text-[#565656]")',
         name: undefined,
         needsCodeReference: false,
         names: [] as string[],
@@ -478,11 +534,11 @@ const fallback = "bg-[#434332] px-[32px]"
 
     const generateBundle = postPlugin.generateBundle as any
     await generateBundle?.call(postPlugin, {} as any, bundle)
-    expect(currentContext.twPatcher.getClassSetSync).toHaveBeenCalledTimes(2)
-    expect(currentContext.twPatcher.extract).toHaveBeenCalledTimes(2)
+    expect(currentContext.twPatcher.getClassSetSync).toHaveBeenCalledTimes(1)
+    expect(currentContext.twPatcher.extract).toHaveBeenCalledTimes(1)
 
     expect(currentContext.jsHandler).toHaveBeenCalledWith(
-      'const answer = 42',
+      'const answer = "text-[#424242]"',
       runtimeSet,
       expect.objectContaining({
         filename: expect.stringContaining('index.js'),
@@ -495,9 +551,9 @@ const fallback = "bg-[#434332] px-[32px]"
         }),
       }),
     )
-    expect((bundle['index.js'] as OutputChunk).code).toBe('js:const answer = 42')
+    expect((bundle['index.js'] as OutputChunk).code).toBe('js:const answer = "text-[#424242]"')
     expect(currentContext.jsHandler).toHaveBeenCalledWith(
-      'console.log("asset")',
+      'console.log("text-[#565656]")',
       runtimeSet,
       expect.objectContaining({
         filename: expect.stringContaining('index.asset.js'),
@@ -513,7 +569,7 @@ const fallback = "bg-[#434332] px-[32px]"
         uniAppX: currentContext.uniAppX,
       }),
     )
-    expect((bundle['index.asset.js'] as OutputAsset).source).toBe('js:console.log("asset")')
+    expect((bundle['index.asset.js'] as OutputAsset).source).toBe('js:console.log("text-[#565656]")')
   })
 
   it('forces runtime refresh for every uni-app-x transform when serving', async () => {

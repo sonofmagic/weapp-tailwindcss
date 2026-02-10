@@ -1,0 +1,399 @@
+import type { ChildProcessWithoutNullStreams } from 'node:child_process'
+import { spawn } from 'node:child_process'
+import { promises as fs } from 'node:fs'
+import path from 'node:path'
+import process from 'node:process'
+
+interface BenchCliOptions {
+  cwd: string
+  script: string
+  buildScript: string
+  runs: number
+  timeoutMs: number
+  mode: 'optimized' | 'legacy' | 'both'
+  output: string
+  warmup: number
+  projectFile: string
+  hotMarker: string
+}
+
+interface RunMetrics {
+  startupMs: number
+  hotUpdateMs: number
+  coldBuildMs: number
+}
+
+interface Stats {
+  mean: number
+  median: number
+  stddev: number
+}
+
+interface SummaryRow {
+  metric: keyof RunMetrics
+  optimized: Stats
+  legacy: Stats
+  improvementPercent: number
+}
+
+interface BenchReport {
+  generatedAt: string
+  options: BenchCliOptions
+  optimizedRuns: RunMetrics[]
+  legacyRuns: RunMetrics[]
+  summary: SummaryRow[]
+}
+
+interface PnpmCommand {
+  command: string
+  args: string[]
+}
+
+interface StringableChunk {
+  toString: (encoding?: string) => string
+}
+
+function parseArg(flag: string, argv: string[]) {
+  const index = argv.indexOf(flag)
+  if (index === -1) {
+    return undefined
+  }
+  return argv[index + 1]
+}
+
+function parseNumber(value: string | undefined, fallback: number) {
+  if (value == null) {
+    return fallback
+  }
+  const numeric = Number(value)
+  return Number.isFinite(numeric) ? numeric : fallback
+}
+
+function resolveOptions(): BenchCliOptions {
+  const argv = process.argv.slice(2)
+  const mode = (parseArg('--mode', argv) ?? 'both') as BenchCliOptions['mode']
+  const cwd = path.resolve(parseArg('--cwd', argv) ?? path.resolve(process.cwd(), 'templates/uni-app-vite-vue3-tailwind-vscode-template'))
+  const output = path.resolve(parseArg('--output', argv) ?? path.resolve(process.cwd(), 'benchmark/vite-adapter-perf-report.json'))
+
+  return {
+    cwd,
+    script: parseArg('--script', argv) ?? 'dev:mp-weixin',
+    buildScript: parseArg('--build-script', argv) ?? 'build:mp-weixin',
+    runs: parseNumber(parseArg('--runs', argv), 5),
+    timeoutMs: parseNumber(parseArg('--timeout', argv), 120000),
+    warmup: parseNumber(parseArg('--warmup', argv), 1),
+    mode,
+    output,
+    projectFile: parseArg('--project-file', argv) ?? 'src/pages/index/index.vue',
+    hotMarker: parseArg('--hot-marker', argv) ?? 'text-[#0f0f0f]',
+  }
+}
+
+function now() {
+  return performance.now()
+}
+
+function formatStats(values: number[]): Stats {
+  const sorted = [...values].sort((a, b) => a - b)
+  const mean = sorted.reduce((acc, value) => acc + value, 0) / sorted.length
+  const mid = Math.floor(sorted.length / 2)
+  const median = sorted.length % 2 === 0
+    ? (sorted[mid - 1] + sorted[mid]) / 2
+    : sorted[mid]
+  const variance = sorted.reduce((acc, value) => acc + ((value - mean) ** 2), 0) / sorted.length
+  return {
+    mean,
+    median,
+    stddev: Math.sqrt(variance),
+  }
+}
+
+function createEnv(mode: 'optimized' | 'legacy') {
+  const env = { ...process.env }
+  if (mode === 'legacy') {
+    env.WEAPP_TW_VITE_FORCE_RUNTIME_REFRESH = '1'
+    env.WEAPP_TW_VITE_DISABLE_DIRTY = '1'
+    env.WEAPP_TW_VITE_DISABLE_JS_PRECHECK = '1'
+  }
+  else {
+    delete env.WEAPP_TW_VITE_FORCE_RUNTIME_REFRESH
+    delete env.WEAPP_TW_VITE_DISABLE_DIRTY
+    delete env.WEAPP_TW_VITE_DISABLE_JS_PRECHECK
+  }
+  env.WEAPP_TW_BENCH = '1'
+  return env
+}
+
+function resolvePnpmCommand(): PnpmCommand {
+  const npmExecPath = process.env.npm_execpath
+  if (npmExecPath && /pnpm(?:\.c?js)?$/i.test(path.basename(npmExecPath))) {
+    return {
+      command: process.execPath,
+      args: [npmExecPath],
+    }
+  }
+
+  return {
+    command: process.platform === 'win32' ? 'pnpm.cmd' : 'pnpm',
+    args: [],
+  }
+}
+
+function spawnPnpm(args: string[], options: Parameters<typeof spawn>[2]) {
+  const pnpmCommand = resolvePnpmCommand()
+  return spawn(pnpmCommand.command, [...pnpmCommand.args, ...args], options)
+}
+
+function extractReadyTime(line: string): number | undefined {
+  const normalized = line.trim()
+  const direct = normalized.match(/ready\s+in\s+([\d.]+)\s*ms/i)
+  if (direct) {
+    return Number(direct[1])
+  }
+  const fallback = normalized.match(/([\d.]+)\s*ms/i)
+  if (!fallback) {
+    return undefined
+  }
+  if (!/ready/i.test(normalized)) {
+    return undefined
+  }
+  return Number(fallback[1])
+}
+
+function waitForProcessExit(child: ChildProcessWithoutNullStreams) {
+  return new Promise<{ code: number | null, signal: NodeJS.Signals | null }>((resolve, reject) => {
+    child.once('exit', (code, signal) => {
+      resolve({ code, signal })
+    })
+    child.once('error', reject)
+  })
+}
+
+function ensureProcessSucceeded(
+  result: { code: number | null, signal: NodeJS.Signals | null },
+  options?: {
+    allowSignal?: boolean
+  },
+) {
+  const allowSignal = options?.allowSignal === true
+  if (result.code === 0) {
+    return
+  }
+  if (allowSignal && result.code === null && result.signal) {
+    return
+  }
+  if (allowSignal && result.code === 1 && result.signal == null) {
+    return
+  }
+  throw new Error(`Process exited with code=${result.code ?? 'null'} signal=${result.signal ?? 'null'}`)
+}
+
+async function stopProcess(child: ChildProcessWithoutNullStreams) {
+  if (child.exitCode != null || child.signalCode != null) {
+    const exited = await waitForProcessExit(child)
+    ensureProcessSucceeded(exited, {
+      allowSignal: true,
+    })
+    return
+  }
+
+  child.kill('SIGTERM')
+  const exited = await waitForProcessExit(child)
+  ensureProcessSucceeded(exited, {
+    allowSignal: true,
+  })
+}
+
+async function collectReadyTime(options: BenchCliOptions, env: NodeJS.ProcessEnv) {
+  const child = spawnPnpm(['run', options.script], {
+    cwd: options.cwd,
+    env,
+    stdio: ['pipe', 'pipe', 'pipe'],
+  })
+
+  let readyMs = 0
+  let startupDone = false
+  let parseError: Error | undefined
+
+  const timeout = setTimeout(() => {
+    child.kill('SIGTERM')
+  }, options.timeoutMs)
+
+  child.stdout.on('data', (chunk: StringableChunk) => {
+    try {
+      const text = chunk.toString('utf8')
+      for (const line of text.split(/\r?\n/g)) {
+        const value = extractReadyTime(line)
+        if (value && value > 0) {
+          readyMs = value
+          startupDone = true
+          break
+        }
+      }
+    }
+    catch (error) {
+      parseError = error instanceof Error ? error : new Error(String(error))
+    }
+  })
+
+  try {
+    await new Promise<void>((resolve, reject) => {
+      const interval = setInterval(() => {
+        if (startupDone) {
+          clearInterval(interval)
+          resolve()
+          return
+        }
+        if (parseError) {
+          clearInterval(interval)
+          reject(parseError)
+          return
+        }
+        if (child.exitCode != null || child.signalCode != null) {
+          clearInterval(interval)
+          reject(new Error(`Process exited before startup ready: code=${child.exitCode ?? 'null'} signal=${child.signalCode ?? 'null'}`))
+        }
+      }, 100)
+    })
+    await stopProcess(child)
+  }
+  finally {
+    clearTimeout(timeout)
+  }
+
+  return readyMs
+}
+
+async function mutateProjectFile(filePath: string, marker: string) {
+  const original = await fs.readFile(filePath, 'utf8')
+  const needle = '</template>'
+  const index = original.lastIndexOf(needle)
+  if (index === -1) {
+    throw new Error(`Unable to find template closing tag in ${filePath}`)
+  }
+  const next = `${original.slice(0, index)}\n  <view class="${marker}">bench-hot-update</view>\n${original.slice(index)}`
+  await fs.writeFile(filePath, next, 'utf8')
+  return async () => {
+    await fs.writeFile(filePath, original, 'utf8')
+  }
+}
+
+async function runBuild(
+  options: BenchCliOptions,
+  env: NodeJS.ProcessEnv,
+): Promise<number> {
+  const buildStart = now()
+  const child = spawnPnpm(['run', options.buildScript], {
+    cwd: options.cwd,
+    env,
+    stdio: ['pipe', 'pipe', 'pipe'],
+  })
+  const exited = await waitForProcessExit(child)
+  ensureProcessSucceeded(exited)
+  return now() - buildStart
+}
+
+async function runSingleCase(options: BenchCliOptions, mode: 'optimized' | 'legacy', round: number): Promise<RunMetrics> {
+  const env = createEnv(mode)
+  const startupMs = await collectReadyTime(options, env)
+  const coldBuildMs = await runBuild(options, env)
+
+  const projectFilePath = path.resolve(options.cwd, options.projectFile)
+  const restore = await mutateProjectFile(projectFilePath, `${options.hotMarker}-${mode}-${round}`)
+
+  try {
+    const hotUpdateMs = await runBuild(options, env)
+    return {
+      startupMs,
+      hotUpdateMs,
+      coldBuildMs,
+    }
+  }
+  finally {
+    await restore()
+  }
+}
+
+function summarizeRuns(optimizedRuns: RunMetrics[], legacyRuns: RunMetrics[]): SummaryRow[] {
+  const metrics: Array<keyof RunMetrics> = ['startupMs', 'hotUpdateMs', 'coldBuildMs']
+  return metrics.map((metric) => {
+    const optimizedValues = optimizedRuns.map(run => run[metric])
+    const legacyValues = legacyRuns.map(run => run[metric])
+    const optimized = formatStats(optimizedValues)
+    const legacy = formatStats(legacyValues)
+    const improvementPercent = legacy.mean === 0
+      ? 0
+      : ((legacy.mean - optimized.mean) / legacy.mean) * 100
+    return {
+      metric,
+      optimized,
+      legacy,
+      improvementPercent,
+    }
+  })
+}
+
+function printSummary(summary: SummaryRow[]) {
+  const table = summary.map((row) => {
+    return {
+      metric: row.metric,
+      optimized_mean_ms: row.optimized.mean.toFixed(2),
+      optimized_median_ms: row.optimized.median.toFixed(2),
+      optimized_stddev_ms: row.optimized.stddev.toFixed(2),
+      legacy_mean_ms: row.legacy.mean.toFixed(2),
+      legacy_median_ms: row.legacy.median.toFixed(2),
+      legacy_stddev_ms: row.legacy.stddev.toFixed(2),
+      improvement_percent: `${row.improvementPercent.toFixed(2)}%`,
+    }
+  })
+  console.table(table)
+}
+
+async function runMode(options: BenchCliOptions, mode: 'optimized' | 'legacy') {
+  const results: RunMetrics[] = []
+  const totalRounds = options.warmup + options.runs
+  for (let index = 0; index < totalRounds; index++) {
+    const round = index + 1
+    const result = await runSingleCase(options, mode, round)
+    if (index >= options.warmup) {
+      results.push(result)
+      process.stdout.write(`[bench] ${mode} round ${round - options.warmup}/${options.runs} startup=${result.startupMs.toFixed(2)}ms hot=${result.hotUpdateMs.toFixed(2)}ms cold=${result.coldBuildMs.toFixed(2)}ms\n`)
+    }
+    else {
+      process.stdout.write(`[bench] ${mode} warmup ${round}/${options.warmup} done\n`)
+    }
+  }
+  return results
+}
+
+async function main() {
+  const options = resolveOptions()
+  const optimizedRuns = options.mode === 'legacy'
+    ? []
+    : await runMode(options, 'optimized')
+  const legacyRuns = options.mode === 'optimized'
+    ? []
+    : await runMode(options, 'legacy')
+
+  const summary = legacyRuns.length > 0 ? summarizeRuns(optimizedRuns, legacyRuns) : []
+  if (summary.length > 0) {
+    printSummary(summary)
+  }
+
+  const report: BenchReport = {
+    generatedAt: new Date().toISOString(),
+    options,
+    optimizedRuns,
+    legacyRuns,
+    summary,
+  }
+
+  await fs.mkdir(path.dirname(options.output), { recursive: true })
+  await fs.writeFile(options.output, `${JSON.stringify(report, null, 2)}\n`, 'utf8')
+  process.stdout.write(`[bench] report written to ${options.output}\n`)
+}
+
+main().catch((error) => {
+  console.error('[bench] failed:', error)
+  process.exitCode = 1
+})

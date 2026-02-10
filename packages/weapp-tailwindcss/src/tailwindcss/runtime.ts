@@ -13,6 +13,12 @@ export const refreshTailwindcssPatcherSymbol = Symbol.for('weapp-tailwindcss.ref
 export interface CollectRuntimeClassSetOptions {
   force?: boolean
   skipRefresh?: boolean
+  clearCache?: boolean
+}
+
+export interface RefreshTailwindRuntimeStateOptions {
+  force: boolean
+  clearCache?: boolean
 }
 
 export function createTailwindPatchPromise(
@@ -41,8 +47,14 @@ export interface TailwindRuntimeState {
 
 export async function refreshTailwindRuntimeState(
   state: TailwindRuntimeState,
-  force: boolean,
+  forceOrOptions: boolean | RefreshTailwindRuntimeStateOptions,
 ): Promise<boolean> {
+  const normalizedOptions = typeof forceOrOptions === 'boolean'
+    ? { force: forceOrOptions }
+    : forceOrOptions
+  const force = normalizedOptions.force
+  const clearCache = normalizedOptions.clearCache === true
+
   if (!force) {
     return false
   }
@@ -51,7 +63,7 @@ export async function refreshTailwindRuntimeState(
 
   let refreshed = false
   if (typeof state.refreshTailwindcssPatcher === 'function') {
-    const next = await state.refreshTailwindcssPatcher({ clearCache: true })
+    const next = await state.refreshTailwindcssPatcher({ clearCache })
     if (next !== state.twPatcher) {
       state.twPatcher = next
     }
@@ -120,7 +132,7 @@ async function collectRuntimeClassSet(
     const refresh = activePatcher[refreshTailwindcssPatcherSymbol]
     if (typeof refresh === 'function') {
       try {
-        const refreshed = await refresh({ clearCache: true })
+        const refreshed = await refresh({ clearCache: options.clearCache === true })
         if (refreshed) {
           activePatcher = refreshed as RefreshablePatcher
         }

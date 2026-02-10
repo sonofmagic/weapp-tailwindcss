@@ -8,6 +8,7 @@ import { toCustomAttributesEntities } from '@/context/custom-attributes'
 import { createDebug } from '@/debug'
 import { setupPatchRecorder } from '@/tailwindcss/recorder'
 import { collectRuntimeClassSet, refreshTailwindRuntimeState } from '@/tailwindcss/runtime'
+import { getRuntimeClassSetSignature } from '@/tailwindcss/runtime/cache'
 import { createUniAppXPlugins } from '@/uni-app-x'
 import { resolveUniUtsPlatform } from '@/utils'
 import { resolveDisabledOptions } from '@/utils/disabled'
@@ -73,9 +74,40 @@ export function UnifiedViteWeappTailwindcssPlugin(options: UserDefinedOptions = 
   let runtimeSet: Set<string> | undefined
   let runtimeSetPromise: Promise<Set<string>> | undefined
   let resolvedConfig: ResolvedConfig | undefined
+  let runtimeRefreshSignature: string | undefined
+  let runtimeRefreshOptionsKey: string | undefined
+
+  function resolveRuntimeRefreshOptions() {
+    const configPath = runtimeState.twPatcher.options?.tailwind?.config
+    const signature = getRuntimeClassSetSignature(runtimeState.twPatcher)
+    const optionsKey = JSON.stringify({
+      appType,
+      uniAppX: Boolean(uniAppX),
+      customAttributesEntities,
+      disabledDefaultTemplateHandler,
+      configPath,
+      rewriteCssImports: shouldRewriteCssImports,
+    })
+    const changed = signature !== runtimeRefreshSignature || optionsKey !== runtimeRefreshOptionsKey
+    runtimeRefreshSignature = signature
+    runtimeRefreshOptionsKey = optionsKey
+    return {
+      changed,
+      signature,
+      optionsKey,
+    }
+  }
 
   async function refreshRuntimeState(force: boolean) {
-    const refreshed = await refreshTailwindRuntimeState(runtimeState, force)
+    const invalidation = resolveRuntimeRefreshOptions()
+    const shouldRefresh = force || invalidation.changed
+    const refreshed = await refreshTailwindRuntimeState(runtimeState, {
+      force: shouldRefresh,
+      clearCache: force || invalidation.changed,
+    })
+    if (invalidation.changed) {
+      debug('runtime signature changed, refresh triggered. signature: %s', invalidation.signature)
+    }
     if (refreshed) {
       runtimeSet = undefined
       runtimeSetPromise = undefined
@@ -83,16 +115,19 @@ export function UnifiedViteWeappTailwindcssPlugin(options: UserDefinedOptions = 
   }
 
   async function ensureRuntimeClassSet(force = false): Promise<Set<string>> {
+    const forceRuntimeRefresh = force || process.env.WEAPP_TW_VITE_FORCE_RUNTIME_REFRESH === '1'
     await refreshRuntimeState(force)
     await runtimeState.patchPromise
-    if (!force && runtimeSet) {
+    if (!forceRuntimeRefresh && runtimeSet) {
       return runtimeSet
     }
 
-    if (force || !runtimeSetPromise) {
+    if (forceRuntimeRefresh || !runtimeSetPromise) {
+      const invalidation = resolveRuntimeRefreshOptions()
       const task = collectRuntimeClassSet(runtimeState.twPatcher, {
-        force: force || !runtimeSet,
-        skipRefresh: force,
+        force: forceRuntimeRefresh || invalidation.changed,
+        skipRefresh: forceRuntimeRefresh,
+        clearCache: forceRuntimeRefresh || invalidation.changed,
       })
       runtimeSetPromise = task
     }

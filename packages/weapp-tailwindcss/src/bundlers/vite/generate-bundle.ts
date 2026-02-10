@@ -4,12 +4,13 @@ import type { OutputEntry } from './bundle-entries'
 import type { CreateJsHandlerOptions, InternalUserDefinedOptions, LinkedJsModuleResult } from '@/types'
 import path from 'node:path'
 import process from 'node:process'
+import { getRuntimeClassSetSignature } from '@/tailwindcss/runtime/cache'
 import { createUniAppXAssetTask } from '@/uni-app-x'
-import { getGroupedEntries } from '@/utils'
 import { processCachedTask } from '../shared/cache'
 import { toAbsoluteOutputPath } from '../shared/module-graph'
 import { pushConcurrentTaskFactories } from '../shared/run-tasks'
 import { applyLinkedResults, createBundleModuleGraphOptions, isJavaScriptEntry } from './bundle-entries'
+import { shouldSkipViteJsTransform } from './js-precheck'
 
 interface GenerateBundleContext {
   opts: InternalUserDefinedOptions
@@ -22,7 +23,229 @@ interface GenerateBundleContext {
   getResolvedConfig: () => ResolvedConfig | undefined
 }
 
+interface BundleMetric {
+  total: number
+  transformed: number
+  cacheHits: number
+  elapsed: number
+}
+
+interface BundleMetrics {
+  runtimeSet: number
+  html: BundleMetric
+  js: BundleMetric
+  css: BundleMetric
+}
+
+type EntryType = 'html' | 'js' | 'css' | 'other'
+
+interface BundleBuildState {
+  iteration: number
+  previousSourceHashByFile: Map<string, string>
+  previousLinkedByEntry: Map<string, Set<string>>
+  changedByType: Record<EntryType, Set<string>>
+}
+
+interface ProcessFileSets {
+  html: Set<string>
+  js: Set<string>
+  css: Set<string>
+}
+
+function createEmptyMetric(): BundleMetric {
+  return {
+    total: 0,
+    transformed: 0,
+    cacheHits: 0,
+    elapsed: 0,
+  }
+}
+
+function createEmptyMetrics(): BundleMetrics {
+  return {
+    runtimeSet: 0,
+    html: createEmptyMetric(),
+    js: createEmptyMetric(),
+    css: createEmptyMetric(),
+  }
+}
+
+function classifyEntry(file: string, opts: InternalUserDefinedOptions): EntryType {
+  if (opts.cssMatcher(file)) {
+    return 'css'
+  }
+  if (opts.htmlMatcher(file)) {
+    return 'html'
+  }
+  if (opts.jsMatcher(file) || opts.wxsMatcher(file)) {
+    return 'js'
+  }
+  return 'other'
+}
+
+function readEntrySource(output: OutputAsset | OutputChunk) {
+  if (output.type === 'chunk') {
+    return output.code
+  }
+  return output.source.toString()
+}
+
+function toJsAbsoluteFilename(file: string, outDir: string) {
+  return toAbsoluteOutputPath(file, outDir)
+}
+
+function computeDirtyEntries(
+  entries: [string, OutputAsset | OutputChunk][],
+  opts: InternalUserDefinedOptions,
+  state: BundleBuildState,
+) {
+  const nextSourceHashByFile = new Map<string, string>()
+  const changedByType: Record<EntryType, Set<string>> = {
+    html: new Set<string>(),
+    js: new Set<string>(),
+    css: new Set<string>(),
+    other: new Set<string>(),
+  }
+
+  for (const [file, output] of entries) {
+    const type = classifyEntry(file, opts)
+    const source = readEntrySource(output)
+    const hash = opts.cache.computeHash(source)
+    nextSourceHashByFile.set(file, hash)
+
+    const previousHash = state.previousSourceHashByFile.get(file)
+    if (previousHash == null || previousHash !== hash) {
+      changedByType[type].add(file)
+    }
+  }
+
+  state.previousSourceHashByFile = nextSourceHashByFile
+  state.changedByType = changedByType
+  return changedByType
+}
+
+function buildProcessSets(
+  entries: [string, OutputAsset | OutputChunk][],
+  opts: InternalUserDefinedOptions,
+  changedByType: Record<EntryType, Set<string>>,
+  previousLinkedByEntry: Map<string, Set<string>>,
+  forceAll = false,
+) {
+  const processFiles: ProcessFileSets = {
+    html: new Set<string>(),
+    js: new Set<string>(),
+    css: new Set<string>(),
+  }
+  const linkedImpactsByEntry = new Map<string, Set<string>>()
+
+  if (forceAll) {
+    for (const [file] of entries) {
+      const type = classifyEntry(file, opts)
+      if (type === 'html' || type === 'js' || type === 'css') {
+        processFiles[type].add(file)
+      }
+    }
+    return {
+      files: processFiles,
+      linkedImpactsByEntry,
+    }
+  }
+
+  const firstRun = previousLinkedByEntry.size === 0
+  if (firstRun) {
+    for (const [file] of entries) {
+      const type = classifyEntry(file, opts)
+      if (type === 'html' || type === 'js' || type === 'css') {
+        processFiles[type].add(file)
+      }
+    }
+    return {
+      files: processFiles,
+      linkedImpactsByEntry,
+    }
+  }
+
+  for (const file of changedByType.html) {
+    processFiles.html.add(file)
+  }
+  for (const file of changedByType.css) {
+    processFiles.css.add(file)
+  }
+  for (const file of changedByType.js) {
+    processFiles.js.add(file)
+  }
+
+  for (const changedFile of changedByType.js) {
+    for (const [entryFile, linkedFiles] of previousLinkedByEntry.entries()) {
+      if (linkedFiles.has(changedFile)) {
+        processFiles.js.add(entryFile)
+        let impacts = linkedImpactsByEntry.get(entryFile)
+        if (!impacts) {
+          impacts = new Set<string>()
+          linkedImpactsByEntry.set(entryFile, impacts)
+        }
+        impacts.add(changedFile)
+      }
+    }
+  }
+
+  return {
+    files: processFiles,
+    linkedImpactsByEntry,
+  }
+}
+
+function measureElapsed(start: number) {
+  return performance.now() - start
+}
+
+function formatCacheHitRate(metric: BundleMetric) {
+  if (metric.total === 0) {
+    return '0.00%'
+  }
+  return `${((metric.cacheHits / metric.total) * 100).toFixed(2)}%`
+}
+
+function createLinkedImpactSignature(
+  entry: string,
+  linkedImpactsByEntry: Map<string, Set<string>>,
+  sourceHashByFile: Map<string, string>,
+) {
+  const changedLinkedFiles = linkedImpactsByEntry.get(entry)
+  if (!changedLinkedFiles || changedLinkedFiles.size === 0) {
+    return undefined
+  }
+
+  const parts = [...changedLinkedFiles]
+    .sort()
+    .map((file) => {
+      const hash = sourceHashByFile.get(file) ?? 'missing'
+      return `${file}:${hash}`
+    })
+
+  return parts.join(',')
+}
+
+function createJsHashSalt(runtimeSignature: string, linkedImpactSignature?: string) {
+  if (!linkedImpactSignature) {
+    return runtimeSignature
+  }
+  return `${runtimeSignature}:linked:${linkedImpactSignature}`
+}
+
 export function createGenerateBundleHook(context: GenerateBundleContext) {
+  const state: BundleBuildState = {
+    iteration: 0,
+    previousSourceHashByFile: new Map<string, string>(),
+    previousLinkedByEntry: new Map<string, Set<string>>(),
+    changedByType: {
+      html: new Set<string>(),
+      js: new Set<string>(),
+      css: new Set<string>(),
+      other: new Set<string>(),
+    },
+  }
+
   return async function generateBundle(_opt: unknown, bundle: Record<string, OutputAsset | OutputChunk>) {
     const {
       opts,
@@ -48,7 +271,14 @@ export function createGenerateBundleHook(context: GenerateBundleContext) {
     debug('start')
     onStart()
 
+    const metrics = createEmptyMetrics()
+    const forceRuntimeRefresh = process.env.WEAPP_TW_VITE_FORCE_RUNTIME_REFRESH === '1'
+    const disableDirtyOptimization = process.env.WEAPP_TW_VITE_DISABLE_DIRTY === '1'
+    const disableJsPrecheck = process.env.WEAPP_TW_VITE_DISABLE_JS_PRECHECK === '1'
     const entries = Object.entries(bundle)
+    const dirtyByType = computeDirtyEntries(entries, opts, state)
+    const processSets = buildProcessSets(entries, opts, dirtyByType, state.previousLinkedByEntry, disableDirtyOptimization)
+    const processFiles = processSets.files
     const resolvedConfig = getResolvedConfig()
     const rootDir = resolvedConfig?.root ? path.resolve(resolvedConfig.root) : process.cwd()
     const outDir = resolvedConfig?.build?.outDir
@@ -58,14 +288,17 @@ export function createGenerateBundleHook(context: GenerateBundleContext) {
     for (const [fileName, output] of entries) {
       const entry: OutputEntry = { fileName, output }
       if (isJavaScriptEntry(entry)) {
-        const absolute = toAbsoluteOutputPath(fileName, outDir)
+        const absolute = toJsAbsoluteFilename(fileName, outDir)
         jsEntries.set(absolute, entry)
       }
     }
     const moduleGraphOptions = createBundleModuleGraphOptions(outDir, jsEntries)
-    const groupedEntries = getGroupedEntries(entries, opts)
-    const runtime = await ensureRuntimeClassSet(true)
+    const runtimeStart = performance.now()
+    const runtime = await ensureRuntimeClassSet(forceRuntimeRefresh)
+    metrics.runtimeSet = measureElapsed(runtimeStart)
     debug('get runtimeSet, class count: %d', runtime.size)
+    const runtimeSignature = getRuntimeClassSetSignature(runtimeState.twPatcher) ?? 'runtime:missing'
+
     const handleLinkedUpdate = (fileName: string, previous: string, next: string) => {
       onUpdate(fileName, previous, next)
       debug('js linked handle: %s', fileName)
@@ -93,25 +326,40 @@ export function createGenerateBundleHook(context: GenerateBundleContext) {
         sourceFilename: absoluteFilename,
       },
     })
+
+    const linkedByEntry = new Map<string, Set<string>>()
     const tasks: Promise<void>[] = []
-    if (Array.isArray(groupedEntries.html)) {
-      for (const [file, originalSource] of groupedEntries.html as [string, OutputAsset][]) {
+    const jsTaskFactories: Array<() => Promise<void>> = []
+
+    for (const [file, originalSource] of entries) {
+      const type = classifyEntry(file, opts)
+
+      if (type === 'html' && originalSource.type === 'asset') {
+        metrics.html.total++
+        if (!processFiles.html.has(file)) {
+          continue
+        }
         const rawSource = originalSource.source.toString()
         tasks.push(
           processCachedTask<string>({
             cache,
             cacheKey: file,
             rawSource,
+            hashKey: `${file}:html:${runtimeSignature}`,
             applyResult(source) {
               originalSource.source = source
             },
             onCacheHit() {
+              metrics.html.cacheHits++
               debug('html cache hit: %s', file)
             },
             async transform() {
+              const start = performance.now()
               const transformed = await templateHandler(rawSource, {
                 runtimeSet: runtime,
               })
+              metrics.html.elapsed += measureElapsed(start)
+              metrics.html.transformed++
               onUpdate(file, rawSource, transformed)
               debug('html handle: %s', file)
               return {
@@ -120,77 +368,30 @@ export function createGenerateBundleHook(context: GenerateBundleContext) {
             },
           }),
         )
+        continue
       }
-    }
 
-    const jsTaskFactories: Array<() => Promise<void>> = []
-
-    if (Array.isArray(groupedEntries.js)) {
-      for (const [file, originalSource] of groupedEntries.js as [string, OutputAsset | OutputChunk][]) {
-        if (originalSource.type === 'chunk') {
-          const absoluteFile = toAbsoluteOutputPath(file, outDir)
-          const initialRawSource = originalSource.code
-          jsTaskFactories.push(async () => {
-            await processCachedTask<string>({
-              cache,
-              cacheKey: file,
-              rawSource: initialRawSource,
-              applyResult(source) {
-                originalSource.code = source
-              },
-              onCacheHit() {
-                debug('js cache hit: %s', file)
-              },
-              async transform() {
-                const rawSource = originalSource.code
-                const { code, linked } = await jsHandler(rawSource, runtime, createHandlerOptions(absoluteFile))
-                onUpdate(file, rawSource, code)
-                debug('js handle: %s', file)
-                applyLinkedUpdates(linked)
-                return {
-                  result: code,
-                }
-              },
-            })
-          })
+      if (type === 'css' && originalSource.type === 'asset') {
+        metrics.css.total++
+        if (!processFiles.css.has(file)) {
+          continue
         }
-        else if (uniAppX && originalSource.type === 'asset') {
-          jsTaskFactories.push(
-            createUniAppXAssetTask(
-              file,
-              originalSource,
-              outDir,
-              {
-                cache,
-                createHandlerOptions,
-                debug,
-                jsHandler,
-                onUpdate,
-                runtimeSet: runtime,
-                applyLinkedResults: applyLinkedUpdates,
-                uniAppX,
-              },
-            ),
-          )
-        }
-      }
-    }
-
-    if (Array.isArray(groupedEntries.css)) {
-      for (const [file, originalSource] of groupedEntries.css as [string, OutputAsset][]) {
         const rawSource = originalSource.source.toString()
         tasks.push(
           processCachedTask<string>({
             cache,
             cacheKey: file,
             rawSource,
+            hashKey: `${file}:css:${runtimeSignature}:${runtimeState.twPatcher.majorVersion ?? 'unknown'}`,
             applyResult(source) {
               originalSource.source = source
             },
             onCacheHit() {
+              metrics.css.cacheHits++
               debug('css cache hit: %s', file)
             },
             async transform() {
+              const start = performance.now()
               await runtimeState.patchPromise
               const { css } = await styleHandler(rawSource, {
                 isMainChunk: mainCssChunkMatcher(originalSource.fileName, appType),
@@ -201,6 +402,8 @@ export function createGenerateBundleHook(context: GenerateBundleContext) {
                 },
                 majorVersion: runtimeState.twPatcher.majorVersion,
               })
+              metrics.css.elapsed += measureElapsed(start)
+              metrics.css.transformed++
               onUpdate(file, rawSource, css)
               debug('css handle: %s', file)
               return {
@@ -209,14 +412,182 @@ export function createGenerateBundleHook(context: GenerateBundleContext) {
             },
           }),
         )
+        continue
+      }
+
+      if (type !== 'js') {
+        continue
+      }
+
+      metrics.js.total++
+      if (!processFiles.js.has(file)) {
+        continue
+      }
+
+      if (originalSource.type === 'chunk') {
+        const absoluteFile = toJsAbsoluteFilename(file, outDir)
+        const initialRawSource = originalSource.code
+        const linkedSet = new Set<string>()
+        linkedByEntry.set(file, linkedSet)
+
+        jsTaskFactories.push(async () => {
+          const linkedImpactSignature = createLinkedImpactSignature(
+            file,
+            processSets.linkedImpactsByEntry,
+            state.previousSourceHashByFile,
+          )
+          const hashSalt = createJsHashSalt(runtimeSignature, linkedImpactSignature)
+          await processCachedTask<string>({
+            cache,
+            cacheKey: file,
+            hashKey: `${file}:js`,
+            rawSource: `${initialRawSource}\n/*${hashSalt}*/`,
+            applyResult(source) {
+              originalSource.code = source
+            },
+            onCacheHit() {
+              metrics.js.cacheHits++
+              debug('js cache hit: %s', file)
+            },
+            async transform() {
+              const start = performance.now()
+              const rawSource = originalSource.code
+              const handlerOptions = createHandlerOptions(absoluteFile)
+              if (!disableJsPrecheck && shouldSkipViteJsTransform(rawSource, handlerOptions)) {
+                metrics.js.elapsed += measureElapsed(start)
+                metrics.js.transformed++
+                return {
+                  result: rawSource,
+                }
+              }
+
+              const { code, linked } = await jsHandler(rawSource, runtime, handlerOptions)
+              metrics.js.elapsed += measureElapsed(start)
+              metrics.js.transformed++
+              onUpdate(file, rawSource, code)
+              debug('js handle: %s', file)
+              if (linked) {
+                for (const id of Object.keys(linked)) {
+                  const linkedEntry = jsEntries.get(id)
+                  if (linkedEntry) {
+                    linkedSet.add(linkedEntry.fileName)
+                  }
+                }
+              }
+              applyLinkedUpdates(linked)
+              return {
+                result: code,
+              }
+            },
+          })
+        })
+      }
+      else if (uniAppX && originalSource.type === 'asset') {
+        const linkedSet = new Set<string>()
+        linkedByEntry.set(file, linkedSet)
+
+        const baseApplyLinkedUpdates = applyLinkedUpdates
+        const wrappedApplyLinkedUpdates = (linked?: Record<string, LinkedJsModuleResult>) => {
+          if (linked) {
+            for (const id of Object.keys(linked)) {
+              const linkedEntry = jsEntries.get(id)
+              if (linkedEntry) {
+                linkedSet.add(linkedEntry.fileName)
+              }
+            }
+          }
+          baseApplyLinkedUpdates(linked)
+        }
+
+        const factory = createUniAppXAssetTask(
+          file,
+          originalSource,
+          outDir,
+          {
+            cache,
+            hashKey: `${file}:js`,
+            hashSalt: createJsHashSalt(
+              runtimeSignature,
+              createLinkedImpactSignature(
+                file,
+                processSets.linkedImpactsByEntry,
+                state.previousSourceHashByFile,
+              ),
+            ),
+            createHandlerOptions,
+            debug,
+            jsHandler,
+            onUpdate,
+            runtimeSet: runtime,
+            applyLinkedResults: wrappedApplyLinkedUpdates,
+            uniAppX,
+          },
+        )
+
+        jsTaskFactories.push(async () => {
+          const start = performance.now()
+          const currentSource = originalSource.source.toString()
+          const absoluteFile = toJsAbsoluteFilename(file, outDir)
+          const precheckOptions = createHandlerOptions(absoluteFile, {
+            uniAppX: uniAppX ?? true,
+            babelParserOptions: {
+              plugins: ['typescript'],
+              sourceType: 'unambiguous',
+            },
+          })
+          if (!disableJsPrecheck && shouldSkipViteJsTransform(currentSource, precheckOptions)) {
+            metrics.js.elapsed += measureElapsed(start)
+            metrics.js.transformed++
+            return
+          }
+          await factory()
+          metrics.js.elapsed += measureElapsed(start)
+          metrics.js.transformed++
+        })
       }
     }
+
     pushConcurrentTaskFactories(tasks, jsTaskFactories)
 
     await Promise.all(tasks)
     for (const apply of pendingLinkedUpdates) {
       apply()
     }
+
+    state.iteration += 1
+    const nextLinkedByEntry = new Map(state.previousLinkedByEntry)
+    for (const [entryFile, linkedFiles] of linkedByEntry.entries()) {
+      nextLinkedByEntry.set(entryFile, linkedFiles)
+    }
+    for (const entryFile of [...nextLinkedByEntry.keys()]) {
+      const exists = entries.some(([fileName]) => fileName === entryFile)
+      if (!exists) {
+        nextLinkedByEntry.delete(entryFile)
+      }
+    }
+    state.previousLinkedByEntry = nextLinkedByEntry
+
+    debug(
+      'metrics iteration=%d runtime=%.2fms html(total=%d transform=%d hit=%d rate=%s elapsed=%.2fms) js(total=%d transform=%d hit=%d rate=%s elapsed=%.2fms) css(total=%d transform=%d hit=%d rate=%s elapsed=%.2fms)',
+      state.iteration,
+      metrics.runtimeSet,
+      metrics.html.total,
+      metrics.html.transformed,
+      metrics.html.cacheHits,
+      formatCacheHitRate(metrics.html),
+      metrics.html.elapsed,
+      metrics.js.total,
+      metrics.js.transformed,
+      metrics.js.cacheHits,
+      formatCacheHitRate(metrics.js),
+      metrics.js.elapsed,
+      metrics.css.total,
+      metrics.css.transformed,
+      metrics.css.cacheHits,
+      formatCacheHitRate(metrics.css),
+      metrics.css.elapsed,
+    )
+
     onEnd()
     debug('end')
   }

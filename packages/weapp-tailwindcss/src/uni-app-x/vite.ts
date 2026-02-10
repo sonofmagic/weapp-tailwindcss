@@ -180,6 +180,8 @@ type ApplyLinkedResults = (linked: Record<string, LinkedJsModuleResult> | undefi
 
 interface CreateUniAppXAssetTaskOptions {
   cache: ICreateCacheReturnType
+  hashKey?: string
+  hashSalt?: string
   createHandlerOptions: (absoluteFilename: string, extra?: CreateJsHandlerOptions) => CreateJsHandlerOptions
   debug: (format: string, ...args: unknown[]) => void
   jsHandler: JsHandler
@@ -198,6 +200,7 @@ export function createUniAppXAssetTask(
   return async () => {
     const {
       cache,
+      hashKey,
       createHandlerOptions,
       debug,
       jsHandler,
@@ -207,10 +210,14 @@ export function createUniAppXAssetTask(
     } = options
     const absoluteFile = toAbsoluteOutputPath(file, outDir)
     const rawSource = originalSource.source.toString()
+    const rawHashSource = options.hashSalt
+      ? `${rawSource}\n/*${options.hashSalt}*/`
+      : rawSource
     await processCachedTask<string>({
       cache,
       cacheKey: file,
-      rawSource,
+      hashKey,
+      rawSource: rawHashSource,
       applyResult(source) {
         originalSource.source = source
       },

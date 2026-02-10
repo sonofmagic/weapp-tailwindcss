@@ -127,9 +127,38 @@ describe('Runtime Hot Update', () => {
       const result = await refreshTailwindRuntimeState(state, true)
 
       expect(result).toBe(true)
-      expect(refreshFn).toHaveBeenCalledWith({ clearCache: true })
+      expect(refreshFn).toHaveBeenCalledWith({ clearCache: false })
       expect(state.twPatcher).toBe(mockPatcher2)
       expect(mockPatcher2.patch).toHaveBeenCalled()
+    })
+
+    it('passes clearCache=true only when explicitly requested', async () => {
+      const mockPatcher: TailwindcssPatcherLike = {
+        packageInfo: {
+          name: 'tailwindcss',
+          version: '4.0.0',
+          rootPath: '/fake/path',
+          packageJsonPath: '/fake/path/package.json',
+          packageJson: {},
+        },
+        majorVersion: 4,
+        options: undefined,
+        patch: vi.fn().mockResolvedValue(undefined),
+        extract: vi.fn().mockResolvedValue({ classSet: new Set(['class-1']) }),
+        getClassSet: vi.fn().mockResolvedValue(new Set(['class-1'])),
+      }
+
+      const refreshFn = vi.fn<[RefreshTailwindcssPatcherOptions | undefined], Promise<TailwindcssPatcherLike>>()
+        .mockResolvedValue(mockPatcher)
+
+      const state: TailwindRuntimeState = {
+        twPatcher: mockPatcher,
+        patchPromise: Promise.resolve(),
+        refreshTailwindcssPatcher: refreshFn,
+      }
+
+      await refreshTailwindRuntimeState(state, { force: true, clearCache: true })
+      expect(refreshFn).toHaveBeenCalledWith({ clearCache: true })
     })
 
     it('RT-003: should not refresh when force is false', async () => {
@@ -254,8 +283,34 @@ describe('Runtime Hot Update', () => {
 
       const result = await collectRuntimeClassSet(mockPatcher1, { force: true })
 
-      expect(refreshFn).toHaveBeenCalledWith({ clearCache: true })
+      expect(refreshFn).toHaveBeenCalledWith({ clearCache: false })
       expect(result).toBe(mockClassSet2)
+    })
+
+    it('forces refresh with clearCache only when requested', async () => {
+      const mockClassSet = new Set(['class-1'])
+
+      const mockPatcher: TailwindcssPatcherLike = {
+        packageInfo: {
+          name: 'tailwindcss',
+          version: '4.0.0',
+          rootPath: '/fake/path',
+          packageJsonPath: '/fake/path/package.json',
+          packageJson: {},
+        },
+        majorVersion: 4,
+        options: undefined,
+        patch: vi.fn().mockResolvedValue(undefined),
+        extract: vi.fn().mockResolvedValue({ classSet: mockClassSet }),
+        getClassSet: vi.fn().mockResolvedValue(mockClassSet),
+      }
+
+      const refreshFn = vi.fn<[RefreshTailwindcssPatcherOptions | undefined], Promise<TailwindcssPatcherLike>>()
+        .mockResolvedValue(mockPatcher)
+      ;(mockPatcher as any)[refreshTailwindcssPatcherSymbol] = refreshFn
+
+      await collectRuntimeClassSet(mockPatcher, { force: true, clearCache: true })
+      expect(refreshFn).toHaveBeenCalledWith({ clearCache: true })
     })
 
     it('RT-008: should handle concurrent collection requests', async () => {

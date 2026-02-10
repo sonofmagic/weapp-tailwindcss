@@ -32,6 +32,11 @@ function getTailwindConfigSignature(twPatcher: TailwindcssPatcherLike): string |
   }
 }
 
+function getPatchTargetSignature(twPatcher: TailwindcssPatcherLike) {
+  const packageInfo = twPatcher.packageInfo
+  return `${packageInfo?.rootPath ?? 'missing'}:${packageInfo?.version ?? 'unknown'}:${twPatcher.majorVersion ?? 'unknown'}`
+}
+
 export function invalidateRuntimeClassSet(twPatcher?: TailwindcssPatcherLike) {
   if (!twPatcher) {
     return
@@ -44,5 +49,7 @@ export function getRuntimeClassSetCacheEntry(twPatcher: TailwindcssPatcherLike) 
 }
 
 export function getRuntimeClassSetSignature(twPatcher: TailwindcssPatcherLike) {
-  return getTailwindConfigSignature(twPatcher)
+  const configSignature = getTailwindConfigSignature(twPatcher) ?? 'config:missing'
+  const patchTargetSignature = getPatchTargetSignature(twPatcher)
+  return `${configSignature}|patch:${patchTargetSignature}`
 }
