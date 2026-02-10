@@ -58,7 +58,7 @@
     "required-path": "^1.0.1",
     "run-script-os": "^1.1.6",
     "sass": "catalog:sass195",
-    "sass-loader": "^16.0.6",
+    "sass-loader": "^16.0.7",
     "tailwindcss": "catalog:tailwindcss3",
     "tailwindcss-patch": "catalog:tailwindcssPatch",
     "tailwindcss-rem2px-preset": "catalog:tailwindcssRem",
@@ -66,7 +66,7 @@
     "weapp-ide-cli": "catalog:weappIdeCli",
     "weapp-tailwindcss": "workspace:*",
     "weapp-tailwindcss-children": "catalog:weappChildren",
-    "webpack": "^5.104.1",
+    "webpack": "^5.105.1",
     "webpack-cli": "^6.0.1",
     "webpack-sources": "^3.2.3"
   },

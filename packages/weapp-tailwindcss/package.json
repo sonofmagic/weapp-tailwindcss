@@ -210,7 +210,7 @@
     "local-pkg": "^1.1.2",
     "lru-cache": "10.4.3",
     "magic-string": "0.30.21",
-    "semver": "~7.7.3",
+    "semver": "~7.7.4",
     "tailwindcss-patch": "catalog:tailwindcssPatch",
     "webpack-sources": "3.3.3",
     "yaml": "^2.8.2"
