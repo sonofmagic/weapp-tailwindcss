@@ -1,0 +1,76 @@
+{
+  "generatedAt": "2026-02-10T06:38:08.507Z",
+  "options": {
+    "cwd": "/Users/icebreaker/Documents/GitHub/weapp-tailwindcss/demo/uni-app-vue3-vite",
+    "script": "dev",
+    "runs": 3,
+    "warmup": 1,
+    "timeoutMs": 120000,
+    "mode": "both",
+    "output": "/Users/icebreaker/Documents/GitHub/weapp-tailwindcss/benchmark/vite-adapter/vite-dev-hmr-big150.json",
+    "projectFile": "src/pages/index/index.vue",
+    "hotMarker": "text-[#0f0f0f]",
+    "injectPages": 150,
+    "injectPagesRoot": "src/pages/bench-big",
+    "pagesJsonPath": "src/pages.json",
+    "forcePolling": true
+  },
+  "optimizedRuns": [
+    {
+      "startupMs": 6154,
+      "hmrMs": 2125.533624999998
+    },
+    {
+      "startupMs": 6897,
+      "hmrMs": 2030.9724590000005
+    },
+    {
+      "startupMs": 6237,
+      "hmrMs": 2344.149666999998
+    }
+  ],
+  "legacyRuns": [
+    {
+      "startupMs": 5586,
+      "hmrMs": 2036.7223749999976
+    },
+    {
+      "startupMs": 5614,
+      "hmrMs": 2031.8839579999985
+    },
+    {
+      "startupMs": 6522,
+      "hmrMs": 3011.010042000009
+    }
+  ],
+  "summary": [
+    {
+      "metric": "startupMs",
+      "optimized": {
+        "mean": 6429.333333333333,
+        "median": 6237,
+        "stddev": 332.4217535334025
+      },
+      "legacy": {
+        "mean": 5907.333333333333,
+        "median": 5614,
+        "stddev": 434.78525989529845
+      },
+      "improvementPercent": -8.836474438550953
+    },
+    {
+      "metric": "hmrMs",
+      "optimized": {
+        "mean": 2166.8852503333324,
+        "median": 2125.533624999998,
+        "stddev": 131.15501919725813
+      },
+      "legacy": {
+        "mean": 2359.8721250000017,
+        "median": 2036.7223749999976,
+        "stddev": 460.4282736656512
+      },
+      "improvementPercent": 8.177853054926407
+    }
+  ]
+}

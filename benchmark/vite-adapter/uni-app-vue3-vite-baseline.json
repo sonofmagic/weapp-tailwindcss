@@ -1,0 +1,93 @@
+{
+  "generatedAt": "2026-02-10T05:57:12.864Z",
+  "options": {
+    "cwd": "/Users/icebreaker/Documents/GitHub/weapp-tailwindcss/demo/uni-app-vue3-vite",
+    "script": "dev",
+    "buildScript": "build",
+    "runs": 3,
+    "timeoutMs": 120000,
+    "warmup": 1,
+    "mode": "both",
+    "output": "/Users/icebreaker/Documents/GitHub/weapp-tailwindcss/benchmark/vite-adapter/uni-app-vue3-vite-baseline.json",
+    "projectFile": "src/pages/index/index.vue",
+    "hotMarker": "text-[#0f0f0f]"
+  },
+  "optimizedRuns": [
+    {
+      "startupMs": 4371,
+      "hotUpdateMs": 4467.0430830000005,
+      "coldBuildMs": 4146.801375000003
+    },
+    {
+      "startupMs": 4218,
+      "hotUpdateMs": 4205.861708999997,
+      "coldBuildMs": 4162.385458000001
+    },
+    {
+      "startupMs": 4326,
+      "hotUpdateMs": 4829.787540999998,
+      "coldBuildMs": 4478.256542000003
+    }
+  ],
+  "legacyRuns": [
+    {
+      "startupMs": 4542,
+      "hotUpdateMs": 4897.023832999999,
+      "coldBuildMs": 4414.302167000002
+    },
+    {
+      "startupMs": 4153,
+      "hotUpdateMs": 4474.743583999996,
+      "coldBuildMs": 4149.769250000012
+    },
+    {
+      "startupMs": 4138,
+      "hotUpdateMs": 4320.971208000003,
+      "coldBuildMs": 4320.121291999996
+    }
+  ],
+  "summary": [
+    {
+      "metric": "startupMs",
+      "optimized": {
+        "mean": 4305,
+        "median": 4326,
+        "stddev": 64.20280367709809
+      },
+      "legacy": {
+        "mean": 4277.666666666667,
+        "median": 4153,
+        "stddev": 187.01218023314834
+      },
+      "improvementPercent": -0.6389776357827405
+    },
+    {
+      "metric": "hotUpdateMs",
+      "optimized": {
+        "mean": 4500.897444333332,
+        "median": 4467.0430830000005,
+        "stddev": 255.8390761073441
+      },
+      "legacy": {
+        "mean": 4564.246208333333,
+        "median": 4474.743583999996,
+        "stddev": 243.53945130685017
+      },
+      "improvementPercent": 1.3879348551430022
+    },
+    {
+      "metric": "coldBuildMs",
+      "optimized": {
+        "mean": 4262.481125000002,
+        "median": 4162.385458000001,
+        "stddev": 152.70884900550865
+      },
+      "legacy": {
+        "mean": 4294.730903000003,
+        "median": 4320.121291999996,
+        "stddev": 109.4773033838797
+      },
+      "improvementPercent": 0.7509149869546837
+    }
+  ]
+}

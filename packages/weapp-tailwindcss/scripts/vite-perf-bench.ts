@@ -1,6 +1,6 @@
 import type { ChildProcessWithoutNullStreams } from 'node:child_process'
 import { spawn } from 'node:child_process'
-import { promises as fs } from 'node:fs'
+import { existsSync, promises as fs } from 'node:fs'
 import path from 'node:path'
 import process from 'node:process'
 
@@ -69,11 +69,35 @@ function parseNumber(value: string | undefined, fallback: number) {
   return Number.isFinite(numeric) ? numeric : fallback
 }
 
+function resolveBaseCwd() {
+  if (process.env.INIT_CWD) {
+    return path.resolve(process.env.INIT_CWD)
+  }
+
+  let cursor = process.cwd()
+  while (true) {
+    if (existsSync(path.join(cursor, 'pnpm-workspace.yaml'))) {
+      return cursor
+    }
+    const parent = path.dirname(cursor)
+    if (parent === cursor) {
+      return process.cwd()
+    }
+    cursor = parent
+  }
+}
+
+function resolvePathArg(baseCwd: string, value: string | undefined, fallbackPath: string) {
+  const nextPath = value ?? fallbackPath
+  return path.isAbsolute(nextPath) ? nextPath : path.resolve(baseCwd, nextPath)
+}
+
 function resolveOptions(): BenchCliOptions {
   const argv = process.argv.slice(2)
   const mode = (parseArg('--mode', argv) ?? 'both') as BenchCliOptions['mode']
-  const cwd = path.resolve(parseArg('--cwd', argv) ?? path.resolve(process.cwd(), 'templates/uni-app-vite-vue3-tailwind-vscode-template'))
-  const output = path.resolve(parseArg('--output', argv) ?? path.resolve(process.cwd(), 'benchmark/vite-adapter-perf-report.json'))
+  const baseCwd = resolveBaseCwd()
+  const cwd = resolvePathArg(baseCwd, parseArg('--cwd', argv), 'templates/uni-app-vite-vue3-tailwind-vscode-template')
+  const output = resolvePathArg(baseCwd, parseArg('--output', argv), 'benchmark/vite-adapter-perf-report.json')
 
   return {
     cwd,
@@ -125,14 +149,6 @@ function createEnv(mode: 'optimized' | 'legacy') {
 }
 
 function resolvePnpmCommand(): PnpmCommand {
-  const npmExecPath = process.env.npm_execpath
-  if (npmExecPath && /pnpm(?:\.c?js)?$/i.test(path.basename(npmExecPath))) {
-    return {
-      command: process.execPath,
-      args: [npmExecPath],
-    }
-  }
-
   return {
     command: process.platform === 'win32' ? 'pnpm.cmd' : 'pnpm',
     args: [],

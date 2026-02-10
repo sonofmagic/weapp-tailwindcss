@@ -182,7 +182,8 @@
     "release": "tsx scripts/release.ts",
     "lint": "eslint .",
     "lint:fix": "eslint ./src --fix",
-    "postinstall": "node bin/weapp-tailwindcss.js patch"
+    "postinstall": "node bin/weapp-tailwindcss.js patch",
+    "bench:vite-dev-hmr": "tsx scripts/vite-dev-hmr-bench.ts"
   },
   "publishConfig": {
     "access": "public",
