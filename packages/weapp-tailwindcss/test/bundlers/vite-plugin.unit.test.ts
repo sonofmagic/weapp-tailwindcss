@@ -418,6 +418,60 @@ describe('bundlers/vite UnifiedViteWeappTailwindcssPlugin', () => {
     expect(currentContext.jsHandler).toHaveBeenCalledTimes(5)
   })
 
+  it('keeps dirty state stable when bundle temporarily omits js entries', async () => {
+    const plugins = UnifiedViteWeappTailwindcssPlugin()
+    const postPlugin = plugins?.find(plugin => plugin.name === 'weapp-tailwindcss:adaptor:post') as Plugin
+    expect(postPlugin).toBeTruthy()
+
+    const generateBundle = postPlugin.generateBundle as any
+
+    const firstFullBundle = {
+      'index.wxml': createRollupAsset('<view class="foo">a</view>'),
+      'index.js': createRollupChunk('console.log("foo")'),
+      'index.css': {
+        ...createRollupAsset('.foo { color: red; }'),
+        fileName: 'index.css',
+      },
+    }
+
+    await generateBundle?.call(postPlugin, {} as any, firstFullBundle)
+
+    currentContext.templateHandler.mockClear()
+    currentContext.jsHandler.mockClear()
+    currentContext.styleHandler.mockClear()
+    currentContext.onUpdate.mockClear()
+
+    const secondCssOnlyBundle = {
+      'index.css': {
+        ...createRollupAsset('.foo { color: red; }'),
+        fileName: 'index.css',
+      },
+    }
+
+    await generateBundle?.call(postPlugin, {} as any, secondCssOnlyBundle)
+
+    expect(currentContext.templateHandler).not.toHaveBeenCalled()
+    expect(currentContext.jsHandler).not.toHaveBeenCalled()
+    expect(currentContext.styleHandler).not.toHaveBeenCalled()
+    expect(currentContext.onUpdate).not.toHaveBeenCalled()
+
+    const thirdFullBundle = {
+      'index.wxml': createRollupAsset('<view class="foo">a</view>'),
+      'index.js': createRollupChunk('console.log("foo")'),
+      'index.css': {
+        ...createRollupAsset('.foo { color: red; }'),
+        fileName: 'index.css',
+      },
+    }
+
+    await generateBundle?.call(postPlugin, {} as any, thirdFullBundle)
+
+    expect(currentContext.templateHandler).not.toHaveBeenCalled()
+    expect(currentContext.jsHandler).not.toHaveBeenCalled()
+    expect(currentContext.styleHandler).not.toHaveBeenCalled()
+    expect(currentContext.onUpdate).not.toHaveBeenCalled()
+  })
+
   it('transforms inlined tailwind-merge output within bundle stage', async () => {
     const runtimeSet = new Set(['bg-[#434332]', 'bg-[#123324]', 'px-[32px]', 'px-[35px]'])
     const realJsHandler = createJsHandler({

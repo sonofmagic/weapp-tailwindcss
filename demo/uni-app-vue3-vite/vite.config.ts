@@ -2,6 +2,43 @@ import { defineConfig } from 'vite';
 import uni from '@dcloudio/vite-plugin-uni';
 import { UnifiedViteWeappTailwindcssPlugin } from 'weapp-tailwindcss/vite';
 import { StyleInjector } from 'weapp-style-injector/vite/uni-app';
+
+type WeappTwUpdateKind = 'wxss' | 'wxml' | 'js' | 'other';
+
+const DEFAULT_UPDATE_LOG_LIMIT = 20;
+const parsedUpdateLogLimit = Number(process.env.WEAPP_TW_UPDATE_LOG_LIMIT);
+const WEAPP_TW_UPDATE_LOG_LIMIT = Number.isFinite(parsedUpdateLogLimit)
+  ? Math.max(0, parsedUpdateLogLimit)
+  : DEFAULT_UPDATE_LOG_LIMIT;
+const WEAPP_TW_VERBOSE_UPDATE = process.env.WEAPP_TW_VERBOSE_UPDATE === '1';
+
+const weappTwUpdateByKind: Record<WeappTwUpdateKind, number> = {
+  wxss: 0,
+  wxml: 0,
+  js: 0,
+  other: 0,
+};
+
+function resetWeappTwUpdateByKind() {
+  weappTwUpdateByKind.wxss = 0;
+  weappTwUpdateByKind.wxml = 0;
+  weappTwUpdateByKind.js = 0;
+  weappTwUpdateByKind.other = 0;
+}
+
+function resolveWeappTwUpdateKind(filename: string): WeappTwUpdateKind {
+  if (/\.(?:wx|ac|jx|tt|q|c|ty)ss$/i.test(filename)) {
+    return 'wxss';
+  }
+  if (/\.(?:(?:wx|ax|jx|ks|tt|q|ty|xhs)ml|swan)$/i.test(filename)) {
+    return 'wxml';
+  }
+  if (/\.[cm]?js$/i.test(filename)) {
+    return 'js';
+  }
+  return 'other';
+}
+
 const bench =
   process.env.WEAPP_TW_ENABLE_BENCH === '1'
     ? require('../bench.cjs')('uni-app-vite-vue3')
@@ -34,7 +71,10 @@ if (!WeappTailwindcssDisabled) {
   // );
   postcssPlugins.push(require('weapp-tailwindcss/css-macro/postcss'));
 }
-let start: number;
+let weappTwLoadTime = 0;
+let weappTwStartTime = 0;
+let weappTwUpdateCount = 0;
+let weappTwLoggedUpdateCount = 0;
 // https://vitejs.dev/config/
 export default defineConfig(async () => {
   // const { default: Inspect } = await import('vite-plugin-inspect');
@@ -48,14 +88,53 @@ export default defineConfig(async () => {
         },
         inlineWxs: true,
         // jsEscapeStrategy: 'replace', // 'regenerate'
+        onLoad() {
+          weappTwLoadTime = performance.now();
+          console.info('[weapp-tw] onLoad', new Date().toISOString());
+        },
         onStart() {
           bench.start();
-          start = performance.now();
+          weappTwStartTime = performance.now();
+          weappTwUpdateCount = 0;
+          weappTwLoggedUpdateCount = 0;
+          resetWeappTwUpdateByKind();
+          console.info('[weapp-tw] onStart', new Date().toISOString());
+        },
+        onUpdate(filename: string, oldVal: string, newVal: string) {
+          if (oldVal === newVal) {
+            return;
+          }
+          weappTwUpdateCount += 1;
+          const kind = resolveWeappTwUpdateKind(filename);
+          weappTwUpdateByKind[kind] += 1;
+
+          if (!WEAPP_TW_VERBOSE_UPDATE || weappTwLoggedUpdateCount >= WEAPP_TW_UPDATE_LOG_LIMIT) {
+            return;
+          }
+
+          weappTwLoggedUpdateCount += 1;
+          const elapsed = (performance.now() - weappTwStartTime).toFixed(0);
+          console.info(`[weapp-tw] onUpdate #${weappTwUpdateCount} ${filename} (+${elapsed}ms)`);
+
+          if (weappTwLoggedUpdateCount === WEAPP_TW_UPDATE_LOG_LIMIT) {
+            console.info(`[weapp-tw] onUpdate log limit reached: ${WEAPP_TW_UPDATE_LOG_LIMIT}`);
+          }
         },
         onEnd() {
           bench.end();
           bench.dump();
-          console.log('UnifiedWebpackPluginV5 onEnd:', performance.now() - start, 'ms');
+          const loadDuration = weappTwLoadTime > 0
+            ? (performance.now() - weappTwLoadTime).toFixed(0)
+            : '-';
+          const startDuration = weappTwStartTime > 0
+            ? (performance.now() - weappTwStartTime).toFixed(0)
+            : '-';
+          const omitted = Math.max(0, weappTwUpdateCount - weappTwLoggedUpdateCount);
+          const suffix = omitted > 0 ? `, 已省略日志: ${omitted}` : '';
+
+          console.info(
+            `[weapp-tw] onEnd | 自 onLoad 耗时: ${loadDuration}ms, 自 onStart 耗时: ${startDuration}ms, 修改文件数: ${weappTwUpdateCount}, 分类: wxss=${weappTwUpdateByKind.wxss}, wxml=${weappTwUpdateByKind.wxml}, js=${weappTwUpdateByKind.js}, other=${weappTwUpdateByKind.other}${suffix}`
+          );
         },
         rem2rpx: true,
         // cssSelectorReplacement: {

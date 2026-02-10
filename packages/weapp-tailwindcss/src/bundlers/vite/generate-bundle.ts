@@ -46,6 +46,11 @@ interface BundleBuildState {
   changedByType: Record<EntryType, Set<string>>
 }
 
+interface DirtyEntriesResult {
+  sourceHashByFile: Map<string, string>
+  changedByType: Record<EntryType, Set<string>>
+}
+
 interface ProcessFileSets {
   html: Set<string>
   js: Set<string>
@@ -98,7 +103,7 @@ function computeDirtyEntries(
   entries: [string, OutputAsset | OutputChunk][],
   opts: InternalUserDefinedOptions,
   state: BundleBuildState,
-) {
+): DirtyEntriesResult {
   const nextSourceHashByFile = new Map<string, string>()
   const changedByType: Record<EntryType, Set<string>> = {
     html: new Set<string>(),
@@ -119,9 +124,10 @@ function computeDirtyEntries(
     }
   }
 
-  state.previousSourceHashByFile = nextSourceHashByFile
-  state.changedByType = changedByType
-  return changedByType
+  return {
+    sourceHashByFile: nextSourceHashByFile,
+    changedByType,
+  }
 }
 
 function buildProcessSets(
@@ -276,8 +282,8 @@ export function createGenerateBundleHook(context: GenerateBundleContext) {
     const disableDirtyOptimization = process.env.WEAPP_TW_VITE_DISABLE_DIRTY === '1'
     const disableJsPrecheck = process.env.WEAPP_TW_VITE_DISABLE_JS_PRECHECK === '1'
     const entries = Object.entries(bundle)
-    const dirtyByType = computeDirtyEntries(entries, opts, state)
-    const processSets = buildProcessSets(entries, opts, dirtyByType, state.previousLinkedByEntry, disableDirtyOptimization)
+    const dirtyEntries = computeDirtyEntries(entries, opts, state)
+    const processSets = buildProcessSets(entries, opts, dirtyEntries.changedByType, state.previousLinkedByEntry, disableDirtyOptimization)
     const processFiles = processSets.files
     const resolvedConfig = getResolvedConfig()
     const rootDir = resolvedConfig?.root ? path.resolve(resolvedConfig.root) : process.cwd()
@@ -434,7 +440,7 @@ export function createGenerateBundleHook(context: GenerateBundleContext) {
           const linkedImpactSignature = createLinkedImpactSignature(
             file,
             processSets.linkedImpactsByEntry,
-            state.previousSourceHashByFile,
+            dirtyEntries.sourceHashByFile,
           )
           const hashSalt = createJsHashSalt(runtimeSignature, linkedImpactSignature)
           await processCachedTask<string>({
@@ -511,7 +517,7 @@ export function createGenerateBundleHook(context: GenerateBundleContext) {
               createLinkedImpactSignature(
                 file,
                 processSets.linkedImpactsByEntry,
-                state.previousSourceHashByFile,
+                dirtyEntries.sourceHashByFile,
               ),
             ),
             createHandlerOptions,
@@ -555,6 +561,13 @@ export function createGenerateBundleHook(context: GenerateBundleContext) {
     }
 
     state.iteration += 1
+    const finalSourceHashByFile = new Map<string, string>()
+    for (const [fileName, output] of entries) {
+      finalSourceHashByFile.set(fileName, opts.cache.computeHash(readEntrySource(output)))
+    }
+    state.previousSourceHashByFile = finalSourceHashByFile
+    state.changedByType = dirtyEntries.changedByType
+
     const nextLinkedByEntry = new Map(state.previousLinkedByEntry)
     for (const [entryFile, linkedFiles] of linkedByEntry.entries()) {
       nextLinkedByEntry.set(entryFile, linkedFiles)
