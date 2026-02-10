@@ -47,7 +47,7 @@ function dedupeMpxWebpackPlugin() {
   const resolvedPkg = require.resolve("@mpxjs/webpack-plugin/package.json", { paths: [__dirname] });
   const canonicalDir = fs.realpathSync(path.dirname(resolvedPkg));
   const version = require(resolvedPkg).version;
-  const prefix = `@mpxjs+webpack-plugin@${version}`;
+  const prefix = "@mpxjs+webpack-plugin@";
 
   const pnpmDirs = [
     path.resolve(__dirname, "..", "node_modules", ".pnpm"),
@@ -68,7 +68,7 @@ function dedupeMpxWebpackPlugin() {
 
         fs.rmSync(pluginDir, { recursive: true, force: true });
         fs.symlinkSync(canonicalDir, pluginDir);
-        console.log(`Symlinked ${pluginDir} -> ${canonicalDir}`);
+        console.log(`Symlinked ${pluginDir} -> ${canonicalDir} (canonical ${version})`);
       });
   });
 }
