@@ -12,12 +12,20 @@ interface CliOptions {
   pollMs: number
   skipBuild: boolean
   quietSass: boolean
+  reportFile?: string
+  maxHotUpdateMs?: number
 }
 
 interface MutationPayload {
   marker: string
   classLiteral: string
   classVariableName: string
+}
+
+interface MutationScenario extends MutationPayload {
+  classTokens: string[]
+  escapedClasses: string[]
+  mutatedSource: string
 }
 
 interface WatchCase {
@@ -44,6 +52,47 @@ interface OutputMtime {
   js: number
 }
 
+interface WatchCaseMetrics {
+  name: WatchCase['name']
+  label: string
+  marker: string
+  classLiteral: string
+  classTokens: string[]
+  escapedClasses: string[]
+  verifyEscapedIn: Array<'wxml' | 'js'>
+  initialReadyMs: number
+  hotUpdateOutputMs: number
+  hotUpdateEffectiveMs: number
+  rollbackOutputMs: number
+  rollbackEffectiveMs: number
+  totalMs: number
+}
+
+interface WatchSummary {
+  count: number
+  hotUpdateAvgMs: number
+  hotUpdateMaxMs: number
+  hotUpdateMinMs: number
+  rollbackAvgMs: number
+  rollbackMaxMs: number
+  rollbackMinMs: number
+}
+
+interface WatchReport {
+  generatedAt: string
+  repositoryRoot: string
+  options: {
+    caseName: CliOptions['caseName']
+    timeoutMs: number
+    pollMs: number
+    skipBuild: boolean
+    quietSass: boolean
+    maxHotUpdateMs?: number
+  }
+  summary: WatchSummary
+  cases: WatchCaseMetrics[]
+}
+
 function parseArg(flag: string, argv: string[]) {
   const index = argv.indexOf(flag)
   if (index === -1) {
@@ -58,6 +107,14 @@ function parseNumber(value: string | undefined, fallback: number) {
   }
   const numeric = Number(value)
   return Number.isFinite(numeric) ? numeric : fallback
+}
+
+function parseOptionalNumber(value: string | undefined) {
+  if (value == null) {
+    return undefined
+  }
+  const numeric = Number(value)
+  return Number.isFinite(numeric) ? numeric : undefined
 }
 
 function parseBooleanFlag(flag: string, argv: string[]) {
@@ -76,6 +133,8 @@ function resolveOptions(): CliOptions {
     pollMs: parseNumber(parseArg('--poll', argv), 240),
     skipBuild: parseBooleanFlag('--skip-build', argv),
     quietSass: parseBooleanFlag('--quiet-sass', argv),
+    reportFile: parseArg('--report', argv),
+    maxHotUpdateMs: parseOptionalNumber(parseArg('--max-hot-update-ms', argv)),
   }
 }
 
@@ -296,11 +355,11 @@ async function waitFor(
     message: string
     onTick?: () => void
   },
+  startedAt = Date.now(),
 ) {
-  const startedAt = Date.now()
   while (Date.now() - startedAt <= options.timeoutMs) {
     if (await predicate()) {
-      return
+      return Date.now() - startedAt
     }
     options.onTick?.()
     await sleep(options.pollMs)
@@ -392,7 +451,7 @@ function pickCases(allCases: WatchCase[], caseName: CliOptions['caseName']) {
 }
 
 async function waitForOutputsReady(watchCase: WatchCase, options: CliOptions, session: WatchSession) {
-  await waitFor(
+  return waitFor(
     async () => {
       const [wxml, js] = await Promise.all([
         readFileIfExists(watchCase.outputWxml),
@@ -414,8 +473,9 @@ async function waitForOutputsUpdated(
   baseline: OutputMtime,
   options: CliOptions,
   session: WatchSession,
+  startedAt = Date.now(),
 ) {
-  await waitFor(
+  return waitFor(
     async () => {
       const [wxmlMtime, jsMtime] = await Promise.all([
         getMtime(watchCase.outputWxml),
@@ -429,6 +489,7 @@ async function waitForOutputsUpdated(
       message: `[${watchCase.label}] outputs were not updated after source change`,
       onTick: session.ensureRunning,
     },
+    startedAt,
   )
 }
 
@@ -438,8 +499,9 @@ async function waitForMarkerState(
   expected: 'present' | 'absent',
   options: CliOptions,
   session: WatchSession,
+  startedAt = Date.now(),
 ) {
-  await waitFor(
+  return waitFor(
     async () => {
       const [wxml, js] = await Promise.all([
         readFileIfExists(watchCase.outputWxml),
@@ -459,36 +521,154 @@ async function waitForMarkerState(
         : `[${watchCase.label}] marker was not removed from outputs`,
       onTick: session.ensureRunning,
     },
+    startedAt,
   )
 }
 
-async function runCase(watchCase: WatchCase, options: CliOptions) {
-  const seed = Date.now().toString().slice(-6)
-  const arbitraryClass = `text-[23.${seed}px]`
-  const dottedClass = `space-y-2.${seed}`
-  const classLiteral = `${arbitraryClass} ${dottedClass}`
+function buildComplexClassTokens(seed: string) {
+  const opacitySeed = seed.slice(0, 2)
+  const decimalSeed = seed.slice(-1)
+
+  return [
+    `text-[23.${seed}px]`,
+    'space-y-2.5',
+    `w-[calc(100%_-_${seed}px)]`,
+    `grid-cols-[200rpx_minmax(900rpx,_1fr)_${seed}px]`,
+    `after:ml-[0.${seed}px]`,
+    `text-black/[0.${opacitySeed}]`,
+    `ring-[1.${decimalSeed}px]`,
+  ]
+}
+
+function createMutationScenario(
+  watchCase: WatchCase,
+  original: string,
+  baselineWxml: string,
+  baselineJs: string,
+  classVariableName: string,
+): MutationScenario {
+  const maxAttempts = 24
+
+  for (let attempt = 0; attempt < maxAttempts; attempt += 1) {
+    const seedBase = Date.now().toString().slice(-6)
+    const seed = `${seedBase}${attempt}`
+    const classTokens = buildComplexClassTokens(seed)
+    const escapedClasses = classTokens.map(item => replaceWxml(item))
+    const marker = `tw-watch-${watchCase.name}-${seed}`
+    const classLiteral = classTokens.join(' ')
+
+    const hasCollision = escapedClasses.some((escaped) => {
+      return baselineWxml.includes(escaped) || baselineJs.includes(escaped)
+    })
+
+    if (hasCollision) {
+      continue
+    }
+
+    if (baselineWxml.includes(marker) || baselineJs.includes(marker)) {
+      continue
+    }
+
+    const mutatedSource = watchCase.mutate(original, {
+      marker,
+      classLiteral,
+      classVariableName,
+    })
+
+    if (mutatedSource === original) {
+      continue
+    }
+
+    return {
+      marker,
+      classLiteral,
+      classVariableName,
+      classTokens,
+      escapedClasses,
+      mutatedSource,
+    }
+  }
+
+  throw new Error(`[${watchCase.label}] failed to generate non-colliding mutation classes`)
+}
+
+function summarizeMetrics(cases: WatchCaseMetrics[]): WatchSummary {
+  const count = cases.length
+  if (count === 0) {
+    return {
+      count,
+      hotUpdateAvgMs: 0,
+      hotUpdateMaxMs: 0,
+      hotUpdateMinMs: 0,
+      rollbackAvgMs: 0,
+      rollbackMaxMs: 0,
+      rollbackMinMs: 0,
+    }
+  }
+
+  const hotUpdateDurations = cases.map(item => item.hotUpdateEffectiveMs)
+  const rollbackDurations = cases.map(item => item.rollbackEffectiveMs)
+
+  const hotUpdateSum = hotUpdateDurations.reduce((sum, value) => sum + value, 0)
+  const rollbackSum = rollbackDurations.reduce((sum, value) => sum + value, 0)
+
+  return {
+    count,
+    hotUpdateAvgMs: Math.round(hotUpdateSum / count),
+    hotUpdateMaxMs: Math.max(...hotUpdateDurations),
+    hotUpdateMinMs: Math.min(...hotUpdateDurations),
+    rollbackAvgMs: Math.round(rollbackSum / count),
+    rollbackMaxMs: Math.max(...rollbackDurations),
+    rollbackMinMs: Math.min(...rollbackDurations),
+  }
+}
+
+function resolveReportPath(baseCwd: string, file: string) {
+  return path.isAbsolute(file) ? file : path.resolve(baseCwd, file)
+}
+
+async function writeReport(baseCwd: string, options: CliOptions, metrics: WatchCaseMetrics[]) {
+  if (!options.reportFile) {
+    return
+  }
+
+  const summary = summarizeMetrics(metrics)
+  const reportPath = resolveReportPath(baseCwd, options.reportFile)
+
+  const report: WatchReport = {
+    generatedAt: new Date().toISOString(),
+    repositoryRoot: formatPath(baseCwd),
+    options: {
+      caseName: options.caseName,
+      timeoutMs: options.timeoutMs,
+      pollMs: options.pollMs,
+      skipBuild: options.skipBuild,
+      quietSass: options.quietSass,
+      maxHotUpdateMs: options.maxHotUpdateMs,
+    },
+    summary,
+    cases: metrics,
+  }
+
+  await fs.mkdir(path.dirname(reportPath), { recursive: true })
+  await fs.writeFile(reportPath, `${JSON.stringify(report, null, 2)}\n`, 'utf8')
+
+  process.stdout.write(`[watch-hmr] report written: ${formatPath(reportPath)}\n`)
+}
+
+async function runCase(watchCase: WatchCase, options: CliOptions): Promise<WatchCaseMetrics> {
+  const caseStartedAt = Date.now()
   const classVariableName = '__twWatchClass'
-  const escapedClasses = classLiteral.split(/\s+/g).map(item => replaceWxml(item))
-  const marker = `tw-watch-${watchCase.name}-${seed}`
 
   const sourcePath = watchCase.sourceFile
   const original = await fs.readFile(sourcePath, 'utf8')
-  const mutated = watchCase.mutate(original, {
-    marker,
-    classLiteral,
-    classVariableName,
-  })
-
-  if (mutated === original) {
-    throw new Error(`[${watchCase.label}] mutated source is identical to original`)
-  }
 
   const session = createWatchSession(watchCase.cwd, watchCase.devScript, {
     quietSass: options.quietSass,
   })
 
   try {
-    await waitForOutputsReady(watchCase, options, session)
+    const initialReadyMs = await waitForOutputsReady(watchCase, options, session)
 
     const [baselineWxml, baselineJs] = await Promise.all([
       readFileIfExists(watchCase.outputWxml),
@@ -498,6 +678,22 @@ async function runCase(watchCase: WatchCase, options: CliOptions) {
     if (!baselineWxml || !baselineJs) {
       throw new Error(`[${watchCase.label}] baseline outputs are missing`)
     }
+
+    const mutation = createMutationScenario(
+      watchCase,
+      original,
+      baselineWxml,
+      baselineJs,
+      classVariableName,
+    )
+
+    const {
+      marker,
+      classLiteral,
+      classTokens,
+      escapedClasses,
+      mutatedSource,
+    } = mutation
 
     for (const escaped of escapedClasses) {
       assertNotContains(baselineWxml, escaped, `[${watchCase.label}] baseline wxml`)
@@ -509,9 +705,23 @@ async function runCase(watchCase: WatchCase, options: CliOptions) {
       js: await getMtime(watchCase.outputJs),
     }
 
-    await fs.writeFile(sourcePath, mutated, 'utf8')
-    await waitForOutputsUpdated(watchCase, baselineMtime, options, session)
-    await waitForMarkerState(watchCase, marker, 'present', options, session)
+    const hotUpdateStartedAt = Date.now()
+    await fs.writeFile(sourcePath, mutatedSource, 'utf8')
+    const hotUpdateOutputMs = await waitForOutputsUpdated(
+      watchCase,
+      baselineMtime,
+      options,
+      session,
+      hotUpdateStartedAt,
+    )
+    const hotUpdateEffectiveMs = await waitForMarkerState(
+      watchCase,
+      marker,
+      'present',
+      options,
+      session,
+      hotUpdateStartedAt,
+    )
 
     const [updatedWxml, updatedJs] = await Promise.all([
       fs.readFile(watchCase.outputWxml, 'utf8'),
@@ -532,11 +742,45 @@ async function runCase(watchCase: WatchCase, options: CliOptions) {
       js: await getMtime(watchCase.outputJs),
     }
 
+    const rollbackStartedAt = Date.now()
     await fs.writeFile(sourcePath, original, 'utf8')
-    await waitForOutputsUpdated(watchCase, updatedMtime, options, session)
-    await waitForMarkerState(watchCase, marker, 'absent', options, session)
+    const rollbackOutputMs = await waitForOutputsUpdated(
+      watchCase,
+      updatedMtime,
+      options,
+      session,
+      rollbackStartedAt,
+    )
+    const rollbackEffectiveMs = await waitForMarkerState(
+      watchCase,
+      marker,
+      'absent',
+      options,
+      session,
+      rollbackStartedAt,
+    )
 
-    process.stdout.write(`[watch-hmr] ${watchCase.label} passed\n`)
+    const metrics: WatchCaseMetrics = {
+      name: watchCase.name,
+      label: watchCase.label,
+      marker,
+      classLiteral,
+      classTokens,
+      escapedClasses,
+      verifyEscapedIn: watchCase.verifyEscapedIn,
+      initialReadyMs,
+      hotUpdateOutputMs,
+      hotUpdateEffectiveMs,
+      rollbackOutputMs,
+      rollbackEffectiveMs,
+      totalMs: Date.now() - caseStartedAt,
+    }
+
+    process.stdout.write(
+      `[watch-hmr] ${watchCase.label} passed (hotUpdate=${metrics.hotUpdateEffectiveMs}ms, rollback=${metrics.rollbackEffectiveMs}ms)\n`,
+    )
+
+    return metrics
   }
   catch (error) {
     const message = error instanceof Error ? error.message : String(error)
@@ -551,6 +795,24 @@ async function runCase(watchCase: WatchCase, options: CliOptions) {
     }
     await session.stop()
   }
+}
+
+function assertHotUpdateBudget(metrics: WatchCaseMetrics, options: CliOptions) {
+  if (options.maxHotUpdateMs == null) {
+    return
+  }
+
+  if (metrics.hotUpdateEffectiveMs > options.maxHotUpdateMs) {
+    throw new Error(
+      `[${metrics.label}] hot update exceeded budget: ${metrics.hotUpdateEffectiveMs}ms > ${options.maxHotUpdateMs}ms`,
+    )
+  }
+}
+
+function logSummary(summary: WatchSummary) {
+  process.stdout.write(
+    `[watch-hmr] summary: cases=${summary.count}, hotUpdate(avg/min/max)=${summary.hotUpdateAvgMs}/${summary.hotUpdateMinMs}/${summary.hotUpdateMaxMs}ms, rollback(avg/min/max)=${summary.rollbackAvgMs}/${summary.rollbackMinMs}/${summary.rollbackMaxMs}ms\n`,
+  )
 }
 
 async function main() {
@@ -571,10 +833,18 @@ async function main() {
 
   process.stdout.write(`[watch-hmr] running cases: ${selected.map(item => item.label).join(', ')}\n`)
 
+  const metrics: WatchCaseMetrics[] = []
+
   for (const watchCase of selected) {
     process.stdout.write(`[watch-hmr] start ${watchCase.label} (${watchCase.devScript})\n`)
-    await runCase(watchCase, options)
+    const caseMetrics = await runCase(watchCase, options)
+    assertHotUpdateBudget(caseMetrics, options)
+    metrics.push(caseMetrics)
   }
+
+  const summary = summarizeMetrics(metrics)
+  logSummary(summary)
+  await writeReport(baseCwd, options, metrics)
 
   process.stdout.write('[watch-hmr] all cases passed\n')
 }
