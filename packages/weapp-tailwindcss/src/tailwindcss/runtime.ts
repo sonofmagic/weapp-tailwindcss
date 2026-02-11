@@ -45,6 +45,23 @@ export interface TailwindRuntimeState {
   onPatchCompleted?: () => Promise<void> | void
 }
 
+interface RuntimeClassSetStateEntry {
+  value?: Set<string>
+  promise?: Promise<Set<string>>
+  signature?: string
+}
+
+const runtimeClassSetStateCache = new WeakMap<TailwindRuntimeState, RuntimeClassSetStateEntry>()
+
+function getRuntimeClassSetStateEntry(state: TailwindRuntimeState) {
+  let entry = runtimeClassSetStateCache.get(state)
+  if (!entry) {
+    entry = {}
+    runtimeClassSetStateCache.set(state, entry)
+  }
+  return entry
+}
+
 export async function refreshTailwindRuntimeState(
   state: TailwindRuntimeState,
   forceOrOptions: boolean | RefreshTailwindRuntimeStateOptions,
@@ -75,6 +92,83 @@ export async function refreshTailwindRuntimeState(
   }
 
   return refreshed
+}
+
+export interface EnsureRuntimeClassSetOptions {
+  forceRefresh?: boolean
+  forceCollect?: boolean
+  clearCache?: boolean
+  allowEmpty?: boolean
+}
+
+export async function ensureRuntimeClassSet(
+  state: TailwindRuntimeState,
+  options: EnsureRuntimeClassSetOptions = {},
+): Promise<Set<string>> {
+  const forceRefresh = options.forceRefresh === true
+  const forceCollect = options.forceCollect === true
+  const clearCache = options.clearCache === true
+  const allowEmpty = options.allowEmpty === true
+
+  if (forceRefresh) {
+    await refreshTailwindRuntimeState(state, {
+      force: true,
+      clearCache,
+    })
+  }
+
+  await state.patchPromise
+
+  const entry = getRuntimeClassSetStateEntry(state)
+  const signature = getRuntimeClassSetSignature(state.twPatcher)
+  const signatureChanged = entry.signature !== signature
+  const shouldForceCollect = forceCollect || forceRefresh || signatureChanged
+
+  if (!shouldForceCollect) {
+    if (entry.value && (allowEmpty || entry.value.size > 0)) {
+      return entry.value
+    }
+    if (entry.promise) {
+      return entry.promise
+    }
+  }
+
+  const task = (async () => {
+    const collected = await collectRuntimeClassSet(state.twPatcher, {
+      force: shouldForceCollect,
+      skipRefresh: true,
+      clearCache,
+    })
+
+    if (allowEmpty || collected.size > 0) {
+      return collected
+    }
+
+    await refreshTailwindRuntimeState(state, {
+      force: true,
+      clearCache: true,
+    })
+    await state.patchPromise
+    return collectRuntimeClassSet(state.twPatcher, {
+      force: true,
+      skipRefresh: true,
+      clearCache: true,
+    })
+  })()
+
+  entry.promise = task
+
+  try {
+    const runtimeSet = await task
+    entry.value = runtimeSet
+    entry.signature = getRuntimeClassSetSignature(state.twPatcher)
+    return runtimeSet
+  }
+  finally {
+    if (entry.promise === task) {
+      entry.promise = undefined
+    }
+  }
 }
 
 function shouldPreferSync(majorVersion: number | undefined) {

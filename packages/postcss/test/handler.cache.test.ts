@@ -59,4 +59,26 @@ describe('style handler caching', () => {
     const thirdOptions = postcssProcess.mock.calls[2][1]
     expect(thirdOptions?.extra).toBe('value')
   })
+
+  it('reuses processor instance when only from changes', async () => {
+    const handler = createStyleHandler()
+
+    await handler('.foo { color: red; }', {
+      postcssOptions: {
+        options: {
+          from: 'app.wxss',
+        },
+      },
+    })
+
+    await handler('.bar { color: blue; }', {
+      postcssOptions: {
+        options: {
+          from: 'pages/index/index.wxss',
+        },
+      },
+    })
+
+    expect(postcssFactory).toHaveBeenCalledTimes(2)
+  })
 })

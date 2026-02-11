@@ -320,7 +320,7 @@ describe('bundlers/webpack UnifiedWebpackPluginV5', () => {
     expect(currentContext.onStart).toHaveBeenCalledTimes(2)
     expect(currentContext.onEnd).toHaveBeenCalledTimes(2)
     expect(currentContext.onUpdate).toHaveBeenCalledTimes(3)
-    expect(currentContext.twPatcher.getClassSetSync).toHaveBeenCalledTimes(2)
+    expect(currentContext.twPatcher.getClassSetSync).toHaveBeenCalledTimes(1)
     expect(currentContext.twPatcher.extract).not.toHaveBeenCalled()
   })
 

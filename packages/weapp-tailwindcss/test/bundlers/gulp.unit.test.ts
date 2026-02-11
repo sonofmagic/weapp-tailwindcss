@@ -90,20 +90,21 @@ describe('bundlers/gulp createPlugins', () => {
     const processedCss = await runTransform(plugins.transformWxss(), cssFile)
     expect(processedCss.contents?.toString()).toBe('css:.foo { color: red; }')
     expect(styleHandler).toHaveBeenCalledTimes(1)
-    expect(twPatcher.getClassSetSync).toHaveBeenCalledTimes(1)
+    expect(twPatcher.getClassSetSync).not.toHaveBeenCalled()
     expect(twPatcher.extract).not.toHaveBeenCalled()
 
     const cachedCssFile = createFile('/src/app.wxss', '.foo { color: red; }')
     const cachedCss = await runTransform(plugins.transformWxss(), cachedCssFile)
     expect(styleHandler).toHaveBeenCalledTimes(1)
     expect(cachedCss.contents?.toString()).toBe('css:.foo { color: red; }')
-    expect(twPatcher.getClassSetSync).toHaveBeenCalledTimes(2)
+    expect(twPatcher.getClassSetSync).not.toHaveBeenCalled()
     expect(twPatcher.extract).not.toHaveBeenCalled()
 
     // Ensure runtime set is reused for JS handler
     const jsFile = createFile('/src/app.js', 'console.log("hi")')
     const processedJs = await runTransform(plugins.transformJs(), jsFile)
     expect(jsHandler).toHaveBeenCalledTimes(1)
+    expect(twPatcher.getClassSetSync).toHaveBeenCalledTimes(1)
     expect(jsHandler).toHaveBeenCalledWith(
       'console.log("hi")',
       runtimeSet,

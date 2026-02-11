@@ -2,11 +2,13 @@
 import type { Compiler } from 'webpack4'
 import type { AppType, IBaseWebpackPlugin, InternalUserDefinedOptions, UserDefinedOptions } from '@/types'
 import process from 'node:process'
+import { pluginName } from '@/constants'
 import { getCompilerContext } from '@/context'
 import { createDebug } from '@/debug'
 import { isMpx, setupMpxTailwindcssRedirect } from '@/shared/mpx'
 import { setupPatchRecorder } from '@/tailwindcss/recorder'
-import { collectRuntimeClassSet, refreshTailwindRuntimeState } from '@/tailwindcss/runtime'
+import { ensureRuntimeClassSet } from '@/tailwindcss/runtime'
+import { getRuntimeClassSetSignature } from '@/tailwindcss/runtime/cache'
 import { resolveDisabledOptions } from '@/utils/disabled'
 import { resolvePackageDir } from '@/utils/resolve-package'
 import { applyTailwindcssCssImportRewrite } from '../shared/css-imports'
@@ -71,14 +73,27 @@ export class UnifiedWebpackPluginV4 implements IBaseWebpackPlugin {
       onPatchCompleted: patchRecorderState.onPatchCompleted,
     }
 
-    const refreshRuntimeState = async (force: boolean) => {
-      await refreshTailwindRuntimeState(runtimeState, force)
-    }
+    let runtimeSetPrepared = false
+    let runtimeSetSignature: string | undefined
+
+    compiler.hooks.compilation.tap(pluginName, () => {
+      runtimeSetPrepared = false
+    })
 
     async function getClassSetInLoader() {
-      await refreshRuntimeState(true)
-      await runtimeState.patchPromise
-      await collectRuntimeClassSet(runtimeState.twPatcher, { force: true, skipRefresh: true })
+      if (runtimeSetPrepared) {
+        return
+      }
+      const signature = getRuntimeClassSetSignature(runtimeState.twPatcher)
+      const forceRefresh = signature !== runtimeSetSignature
+      runtimeSetPrepared = true
+      await ensureRuntimeClassSet(runtimeState, {
+        forceRefresh,
+        forceCollect: true,
+        clearCache: forceRefresh,
+        allowEmpty: true,
+      })
+      runtimeSetSignature = signature
     }
 
     onLoad()
@@ -99,7 +114,6 @@ export class UnifiedWebpackPluginV4 implements IBaseWebpackPlugin {
       options: this.options,
       appType: this.appType,
       runtimeState,
-      refreshRuntimeState,
       debug,
     })
   }

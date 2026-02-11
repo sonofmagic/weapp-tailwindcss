@@ -1,11 +1,11 @@
 import type { NodePath } from '@babel/traverse'
 import type { StringLiteral, TemplateElement } from '@babel/types'
 import type { IJsHandlerOptions } from '../types'
-// 参考：https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/String
 import type { JsToken } from './types'
 import { jsStringEscape } from '@ast-core/escape'
 import { escapeStringRegexp } from '@weapp-core/regex'
 import { splitCode } from '@weapp-tailwindcss/shared/extractors'
+import { shouldTransformClassNameCandidate } from '../shared/classname-transform'
 import { decodeUnicode2 } from '../utils/decode'
 import { replaceWxml } from '../wxml/shared'
 
@@ -53,29 +53,6 @@ function hasIgnoreComment(node: StringLiteral | TemplateElement) {
     && node.leadingComments.some(comment => comment.value.includes('weapp-tw') && comment.value.includes('ignore'))
 }
 
-function shouldTransformClassName(
-  candidate: string,
-  {
-    alwaysEscape,
-    classNameSet,
-    jsPreserveClass,
-  }: Pick<IJsHandlerOptions, 'alwaysEscape' | 'classNameSet' | 'jsPreserveClass'>,
-) {
-  if (alwaysEscape) {
-    return true
-  }
-
-  if (!classNameSet) {
-    return false
-  }
-
-  if (!classNameSet.has(candidate)) {
-    return false
-  }
-
-  return !jsPreserveClass?.(candidate)
-}
-
 function extractLiteralValue(
   path: NodePath<StringLiteral | TemplateElement>,
   { unescapeUnicode, arbitraryValues }: Pick<IJsHandlerOptions, 'unescapeUnicode' | 'arbitraryValues'>,
@@ -108,10 +85,6 @@ function extractLiteralValue(
   }
 }
 
-/**
- * 计算字符串字面量或模板元素的替换 token。
- * 若无需修改则返回 `undefined`。
- */
 export function replaceHandleValue(
   path: NodePath<StringLiteral | TemplateElement>,
   options: IJsHandlerOptions,
@@ -140,7 +113,7 @@ export function replaceHandleValue(
   let mutated = false
 
   for (const candidate of candidates) {
-    if (!shouldTransformClassName(candidate, options)) {
+    if (!shouldTransformClassNameCandidate(candidate, options)) {
       continue
     }
 

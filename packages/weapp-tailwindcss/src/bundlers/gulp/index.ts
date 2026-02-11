@@ -8,7 +8,7 @@ import stream from 'node:stream'
 import { getCompilerContext } from '@/context'
 import { createDebug } from '@/debug'
 import { setupPatchRecorder } from '@/tailwindcss/recorder'
-import { collectRuntimeClassSet, refreshTailwindRuntimeState } from '@/tailwindcss/runtime'
+import { ensureRuntimeClassSet, refreshTailwindRuntimeState } from '@/tailwindcss/runtime'
 import { processCachedTask } from '../shared/cache'
 
 const debug = createDebug()
@@ -46,12 +46,15 @@ export function createPlugins(options: UserDefinedOptions = {}) {
   }
 
   async function refreshRuntimeSet(force = false) {
-    await refreshRuntimeState(force)
-    await runtimeState.patchPromise
-    if (!force && runtimeSetInitialized && runtimeSet.size > 0) {
+    if (!force && runtimeSetInitialized) {
       return runtimeSet
     }
-    runtimeSet = await collectRuntimeClassSet(runtimeState.twPatcher, { force, skipRefresh: force })
+    runtimeSet = await ensureRuntimeClassSet(runtimeState, {
+      forceRefresh: force,
+      forceCollect: force,
+      clearCache: force,
+      allowEmpty: false,
+    })
     runtimeSetInitialized = true
     return runtimeSet
   }
@@ -140,7 +143,7 @@ export function createPlugins(options: UserDefinedOptions = {}) {
       if (!file.contents) {
         return
       }
-      await refreshRuntimeSet(true)
+      await refreshRuntimeState(true)
       await runtimeState.patchPromise
       const rawSource = file.contents.toString()
       await processCachedTask<string>({
@@ -173,7 +176,7 @@ export function createPlugins(options: UserDefinedOptions = {}) {
       if (!file.contents) {
         return
       }
-      await refreshRuntimeSet(runtimeSet.size === 0)
+      await refreshRuntimeSet(false)
       await runtimeState.patchPromise
       const filename = path.resolve(file.path)
       const moduleGraph = options.moduleGraph ?? createModuleGraphOptionsFor()
@@ -214,7 +217,7 @@ export function createPlugins(options: UserDefinedOptions = {}) {
       if (!file.contents) {
         return
       }
-      await refreshRuntimeSet(runtimeSet.size === 0)
+      await refreshRuntimeSet(false)
       await runtimeState.patchPromise
       const rawSource = file.contents.toString()
       await processCachedTask<string>({

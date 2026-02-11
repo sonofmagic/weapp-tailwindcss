@@ -98,3 +98,64 @@ describe('core transform functions', () => {
     expect(transformedWxml).toBe('<view class="mt-_b8px_B" wx:if="{{ xxx.length > 0 }}">')
   })
 })
+
+describe('core hot update class escaping', () => {
+  it('transforms newly added arbitrary class in js when runtimeSet is stale', async () => {
+    const ctx = createContext()
+
+    await ctx.transformJs(`const initial = ['text-[12px]']`, {
+      runtimeSet: new Set(['text-[12px]']),
+    })
+
+    const { code } = await ctx.transformJs(`const classNames = ['text-[23.43px]']`)
+    expect(code).toBe(`const classNames = ['text-_b23_d43px_B']`)
+  })
+
+  it('transforms newly added dotted utility class in js when runtimeSet is stale', async () => {
+    const ctx = createContext()
+
+    await ctx.transformJs(`const initial = ['space-y-2']`, {
+      runtimeSet: new Set(['space-y-2']),
+    })
+
+    const { code } = await ctx.transformJs(`const classNames = ['space-y-2.5']`)
+    expect(code).toBe(`const classNames = ['space-y-2_d5']`)
+  })
+
+  it('transforms newly added arbitrary class in wxml expression when runtimeSet is stale', async () => {
+    const ctx = createContext()
+
+    const transformed = await ctx.transformWxml(
+      `<view class="{{ isLarge ? 'text-[23.43px]' : 'text-[12px]' }}"></view>`,
+      {
+        runtimeSet: new Set(['text-[12px]']),
+      },
+    )
+
+    expect(transformed).toContain('text-_b23_d43px_B')
+    expect(transformed).toContain('text-_b12px_B')
+  })
+
+  it('transforms newly added dotted utility class in wxml expression when runtimeSet is stale', async () => {
+    const ctx = createContext()
+
+    const transformed = await ctx.transformWxml(
+      `<view class="{{ isLarge ? 'space-y-2.5' : 'space-y-2' }}"></view>`,
+      {
+        runtimeSet: new Set(['space-y-2']),
+      },
+    )
+
+    expect(transformed).toContain('space-y-2_d5')
+    expect(transformed).toContain('space-y-2')
+  })
+
+  it('transforms arbitrary class in vue-like template class attribute', async () => {
+    const ctx = createContext()
+    const transformed = await ctx.transformWxml('<view class="text-[23.43px]"></view>', {
+      runtimeSet: new Set(['text-[12px]']),
+    })
+
+    expect(transformed).toBe('<view class="text-_b23_d43px_B"></view>')
+  })
+})

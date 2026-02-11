@@ -3,7 +3,7 @@ import process from 'node:process'
 import { defuOverrideArray } from '@weapp-tailwindcss/shared'
 import { getCompilerContext } from '@/context'
 import { setupPatchRecorder } from '@/tailwindcss/recorder'
-import { collectRuntimeClassSet, refreshTailwindRuntimeState } from '@/tailwindcss/runtime'
+import { ensureRuntimeClassSet } from '@/tailwindcss/runtime'
 
 /**
  * 创建一个上下文对象，用于处理小程序的模板、样式和脚本转换。
@@ -27,18 +27,15 @@ export function createContext(options: UserDefinedOptions = {}) {
     onPatchCompleted: patchRecorderState.onPatchCompleted,
   }
 
-  async function refreshRuntimeState(force: boolean) {
-    await refreshTailwindRuntimeState(runtimeState, force)
-  }
-
   async function transformWxss(rawCss: string, options?: Partial<IStyleHandlerOptions>) {
     await runtimeState.patchPromise
     const result = await styleHandler(rawCss, defuOverrideArray(options!, {
       isMainChunk: true,
     }))
-    await refreshRuntimeState(true)
-    await runtimeState.patchPromise
-    runtimeSet = await collectRuntimeClassSet(runtimeState.twPatcher, { force: true, skipRefresh: true })
+    runtimeSet = await ensureRuntimeClassSet(runtimeState, {
+      forceRefresh: true,
+      forceCollect: true,
+    })
     return result
   }
 
@@ -47,10 +44,10 @@ export function createContext(options: UserDefinedOptions = {}) {
     if (options?.runtimeSet) {
       runtimeSet = options.runtimeSet
     }
-    else {
-      await refreshRuntimeState(true)
-      await runtimeState.patchPromise
-      runtimeSet = await collectRuntimeClassSet(runtimeState.twPatcher, { force: true, skipRefresh: true })
+    else if (runtimeSet.size === 0) {
+      runtimeSet = await ensureRuntimeClassSet(runtimeState, {
+        forceCollect: true,
+      })
     }
     return await jsHandler(rawJs, runtimeSet, options)
   }
@@ -58,9 +55,9 @@ export function createContext(options: UserDefinedOptions = {}) {
   async function transformWxml(rawWxml: string, options?: ITemplateHandlerOptions) {
     await runtimeState.patchPromise
     if (!options?.runtimeSet && runtimeSet.size === 0) {
-      await refreshRuntimeState(true)
-      await runtimeState.patchPromise
-      runtimeSet = await collectRuntimeClassSet(runtimeState.twPatcher, { force: true, skipRefresh: true })
+      runtimeSet = await ensureRuntimeClassSet(runtimeState, {
+        forceCollect: true,
+      })
     }
     return templateHandler(rawWxml, defuOverrideArray(options!, {
       runtimeSet,

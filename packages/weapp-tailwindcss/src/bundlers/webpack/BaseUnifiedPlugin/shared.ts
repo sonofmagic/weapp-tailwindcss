@@ -48,3 +48,52 @@ export function hasLoaderEntry(
   }
   return entries.some(entry => entry.loader?.includes?.(target))
 }
+
+interface ChunkLike {
+  id?: string | number | null
+  name?: string
+  hash?: string | null
+  files?: Iterable<string> | Array<string>
+}
+
+function toChunkFiles(files: ChunkLike['files']) {
+  if (!files) {
+    return []
+  }
+  if (Array.isArray(files)) {
+    return files
+  }
+  return Array.from(files)
+}
+
+export function createAssetHashByChunkMap(chunks: Iterable<ChunkLike>) {
+  const partsByFile = new Map<string, string[]>()
+
+  for (const chunk of chunks) {
+    const hash = typeof chunk.hash === 'string'
+      ? chunk.hash
+      : undefined
+    if (!hash) {
+      continue
+    }
+
+    const chunkId = String(chunk.id ?? chunk.name ?? '')
+    for (const file of toChunkFiles(chunk.files)) {
+      if (!file) {
+        continue
+      }
+      let parts = partsByFile.get(file)
+      if (!parts) {
+        parts = []
+        partsByFile.set(file, parts)
+      }
+      parts.push(`${chunkId}:${hash}`)
+    }
+  }
+
+  const hashByFile = new Map<string, string>()
+  for (const [file, parts] of partsByFile.entries()) {
+    hashByFile.set(file, parts.sort().join('|'))
+  }
+  return hashByFile
+}

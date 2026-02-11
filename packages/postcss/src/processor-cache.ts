@@ -16,6 +16,26 @@ export class StyleProcessorCache {
   private readonly pipelineCache = new WeakMap<IStyleHandlerOptions, StyleProcessingPipeline>()
   private readonly processOptionsCache = new WeakMap<IStyleHandlerOptions, { value: ProcessOptions, fingerprint?: string | undefined }>()
   private readonly processorCache = new WeakMap<IStyleHandlerOptions, Processor>()
+  private readonly processorCacheByKey = new Map<string, Processor>()
+  private readonly processorKeyCache = new WeakMap<IStyleHandlerOptions, string>()
+
+  private createProcessorCacheKey(options: IStyleHandlerOptions) {
+    const from = options.postcssOptions?.options?.from
+    if (from == null) {
+      return fingerprintOptions(options)
+    }
+
+    return fingerprintOptions({
+      ...options,
+      postcssOptions: {
+        ...(options.postcssOptions ?? {}),
+        options: {
+          ...(options.postcssOptions?.options ?? {}),
+          from: undefined,
+        },
+      },
+    })
+  }
 
   getPipeline(options: IStyleHandlerOptions) {
     let pipeline = this.pipelineCache.get(options)
@@ -43,8 +63,18 @@ export class StyleProcessorCache {
   getProcessor(options: IStyleHandlerOptions) {
     let processor = this.processorCache.get(options)
     if (!processor) {
-      const pipeline = this.getPipeline(options)
-      processor = postcss(pipeline.plugins)
+      let cacheKey = this.processorKeyCache.get(options)
+      if (!cacheKey) {
+        cacheKey = this.createProcessorCacheKey(options)
+        this.processorKeyCache.set(options, cacheKey)
+      }
+
+      processor = this.processorCacheByKey.get(cacheKey)
+      if (!processor) {
+        const pipeline = this.getPipeline(options)
+        processor = postcss(pipeline.plugins)
+        this.processorCacheByKey.set(cacheKey, processor)
+      }
       this.processorCache.set(options, processor)
     }
     return processor

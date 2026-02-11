@@ -3,12 +3,12 @@ import type { AppType, InternalUserDefinedOptions, LinkedJsModuleResult } from '
 import path from 'node:path'
 import process from 'node:process'
 import { pluginName } from '@/constants'
-import { collectRuntimeClassSet } from '@/tailwindcss/runtime'
+import { ensureRuntimeClassSet } from '@/tailwindcss/runtime'
 import { getGroupedEntries } from '@/utils'
 import { processCachedTask } from '../../shared/cache'
 import { resolveOutputSpecifier, toAbsoluteOutputPath } from '../../shared/module-graph'
 import { pushConcurrentTaskFactories } from '../../shared/run-tasks'
-import { getCacheKey } from './shared'
+import { createAssetHashByChunkMap, getCacheKey } from './shared'
 
 interface SetupWebpackV5ProcessAssetsHookOptions {
   compiler: Compiler
@@ -18,7 +18,6 @@ interface SetupWebpackV5ProcessAssetsHookOptions {
     twPatcher: InternalUserDefinedOptions['twPatcher']
     patchPromise: Promise<void>
   }
-  refreshRuntimeState: (force: boolean) => Promise<void>
   debug: (format: string, ...args: unknown[]) => void
 }
 
@@ -28,7 +27,6 @@ export function setupWebpackV5ProcessAssetsHook(options: SetupWebpackV5ProcessAs
     options: compilerOptions,
     appType,
     runtimeState,
-    refreshRuntimeState,
     debug,
   } = options
   const { Compilation, sources } = compiler.webpack
@@ -51,6 +49,7 @@ export function setupWebpackV5ProcessAssetsHook(options: SetupWebpackV5ProcessAs
             compilerOptions.cache.calcHashValueChanged(chunk.id, chunk.hash)
           }
         }
+        const assetHashByChunk = createAssetHashByChunkMap(compilation.chunks as any)
 
         const entries = Object.entries(assets)
         const compilerOutputPath = compilation.compiler?.outputPath ?? compiler.outputPath
@@ -109,10 +108,10 @@ export function setupWebpackV5ProcessAssetsHook(options: SetupWebpackV5ProcessAs
           }
         }
         const groupedEntries = getGroupedEntries(entries, compilerOptions)
-        // Refresh to avoid empty runtime set when cache short-circuits PostCSS.
-        await refreshRuntimeState(true)
-        await runtimeState.patchPromise
-        const runtimeSet = await collectRuntimeClassSet(runtimeState.twPatcher, { force: true, skipRefresh: true })
+        const runtimeSet = await ensureRuntimeClassSet(runtimeState, {
+          forceCollect: false,
+          allowEmpty: false,
+        })
         debug('get runtimeSet, class count: %d', runtimeSet.size)
         const tasks: Promise<void>[] = []
         if (Array.isArray(groupedEntries.html)) {
@@ -122,11 +121,14 @@ export function setupWebpackV5ProcessAssetsHook(options: SetupWebpackV5ProcessAs
             const rawSource = originalSource.source().toString()
 
             const cacheKey = file
+            const chunkHash = assetHashByChunk.get(file)
             tasks.push(
               processCachedTask({
                 cache: compilerOptions.cache,
                 cacheKey,
+                hashKey: `${file}:asset`,
                 rawSource,
+                hash: chunkHash,
                 applyResult(source) {
                   compilation.updateAsset(file, source)
                 },
@@ -163,11 +165,14 @@ export function setupWebpackV5ProcessAssetsHook(options: SetupWebpackV5ProcessAs
             const absoluteFile = toAbsoluteOutputPath(file, outputDir)
             const initialSource = asset.source.source()
             const initialRawSource = typeof initialSource === 'string' ? initialSource : initialSource.toString()
+            const chunkHash = assetHashByChunk.get(file)
             jsTaskFactories.push(async () => {
               await processCachedTask({
                 cache: compilerOptions.cache,
                 cacheKey,
+                hashKey: `${file}:asset`,
                 rawSource: initialRawSource,
+                hash: chunkHash,
                 applyResult(source) {
                   compilation.updateAsset(file, source)
                 },
@@ -206,11 +211,14 @@ export function setupWebpackV5ProcessAssetsHook(options: SetupWebpackV5ProcessAs
 
             const rawSource = originalSource.source().toString()
             const cacheKey = file
+            const chunkHash = assetHashByChunk.get(file)
             tasks.push(
               processCachedTask({
                 cache: compilerOptions.cache,
                 cacheKey,
+                hashKey: `${file}:asset`,
                 rawSource,
+                hash: chunkHash,
                 applyResult(source) {
                   compilation.updateAsset(file, source)
                 },

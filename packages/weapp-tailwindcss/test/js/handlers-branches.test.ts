@@ -165,8 +165,8 @@ describe('replaceHandleValue branch coverage', () => {
     expect(token).toBeUndefined()
   })
 
-  it('skips candidates that are not part of the classNameSet', () => {
-    const literal = getLiteralPath('const missing = \'w-[100px]\'', 'StringLiteral')
+  it('skips non-arbitrary candidates that are not part of the classNameSet', () => {
+    const literal = getLiteralPath('const missing = \'flex\'', 'StringLiteral')
     const token = replaceHandleValue(literal, {
       escapeMap: MappingChars2String,
       classNameSet: new Set(['bg-red-500']),
@@ -176,8 +176,51 @@ describe('replaceHandleValue branch coverage', () => {
     expect(token).toBeUndefined()
   })
 
-  it('ignores classes when neither alwaysEscape nor classNameSet applies', () => {
-    const literal = getLiteralPath('const untouched = \'w-[100px]\'', 'StringLiteral')
+  it('ignores non-arbitrary classes when neither alwaysEscape nor classNameSet applies', () => {
+    const literal = getLiteralPath('const untouched = \'flex\'', 'StringLiteral')
+    const token = replaceHandleValue(literal, {
+      escapeMap: MappingChars2String,
+      needEscaped: true,
+    })
+
+    expect(token).toBeUndefined()
+  })
+
+  it('transforms arbitrary classes when classNameSet is non-empty but stale', () => {
+    const literal = getLiteralPath('const arbitrary = \'w-[100px]\'', 'StringLiteral')
+    const token = replaceHandleValue(literal, {
+      escapeMap: MappingChars2String,
+      classNameSet: new Set(['bg-red-500']),
+      needEscaped: true,
+    })
+
+    expect(token?.value).toBe('w-_b100px_B')
+  })
+
+  it('transforms dotted utility classes when classNameSet is non-empty but stale', () => {
+    const literal = getLiteralPath('const dotted = \'space-y-2.5\'', 'StringLiteral')
+    const token = replaceHandleValue(literal, {
+      escapeMap: MappingChars2String,
+      classNameSet: new Set(['space-y-2']),
+      needEscaped: true,
+    })
+
+    expect(token?.value).toBe('space-y-2_d5')
+  })
+
+  it('skips url-like tokens during stale fallback checks', () => {
+    const literal = getLiteralPath('const url = \'https://foo-bar.com/assets/1.2.3\'', 'StringLiteral')
+    const token = replaceHandleValue(literal, {
+      escapeMap: MappingChars2String,
+      classNameSet: new Set(['bg-red-500']),
+      needEscaped: true,
+    })
+
+    expect(token).toBeUndefined()
+  })
+
+  it('keeps arbitrary classes untouched when classNameSet is missing', () => {
+    const literal = getLiteralPath('const arbitrary = \'w-[100px]\'', 'StringLiteral')
     const token = replaceHandleValue(literal, {
       escapeMap: MappingChars2String,
       needEscaped: true,
