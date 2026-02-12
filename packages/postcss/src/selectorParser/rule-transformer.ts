@@ -137,8 +137,13 @@ function shouldRemoveHoverSelector(selector: Selector, options: IStyleHandlerOpt
   return selector.nodes.some(node => node.type === 'pseudo' && node.value === ':hover')
 }
 
-function shouldRemoveBackdropSelector(selector: Selector) {
-  return selector.nodes.some(node => node.type === 'pseudo' && node.value === '::backdrop')
+const UNSUPPORTED_PSEUDO_ELEMENT_SELECTOR_SET = new Set([
+  '::backdrop',
+  '::file-selector-button',
+])
+
+function shouldRemoveUnsupportedPseudoElementSelector(selector: Selector) {
+  return selector.nodes.some(node => node.type === 'pseudo' && UNSUPPORTED_PSEUDO_ELEMENT_SELECTOR_SET.has(node.value))
 }
 
 function isHiddenOrTemplateNotPseudo(node?: Node | null) {
@@ -218,7 +223,7 @@ function handleTagOrAttribute(node: Node, context: TransformContext) {
 }
 
 function handleSelectorNode(selector: Selector, context: TransformContext) {
-  if (shouldRemoveBackdropSelector(selector)) {
+  if (shouldRemoveUnsupportedPseudoElementSelector(selector)) {
     selector.remove()
     return
   }

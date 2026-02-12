@@ -76,7 +76,7 @@ describe('selectorParser', () => {
     expect(transformed).not.toContain(':lang(')
   })
 
-  it('ruleTransformSync keeps before after pseudo elements and removes backdrop', () => {
+  it('ruleTransformSync keeps before after pseudo elements and removes unsupported pseudo elements', () => {
     const root = postcss.parse('::before,::after,::backdrop{--tw-content:"";}')
     const rule = root.first as Rule
     ruleTransformSync(rule, {})
@@ -84,5 +84,14 @@ describe('selectorParser', () => {
     expect(transformed).toContain('before')
     expect(transformed).toContain('after')
     expect(transformed).not.toContain('backdrop')
+  })
+
+  it('ruleTransformSync removes file selector button pseudo element', () => {
+    const root = postcss.parse('.a::file-selector-button,.b{color:red;}')
+    const rule = root.first as Rule
+    ruleTransformSync(rule, {})
+    const transformed = rule.toString()
+    expect(transformed).not.toContain('file-selector-button')
+    expect(transformed).toContain('.b')
   })
 })
