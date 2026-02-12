@@ -245,7 +245,7 @@ button,input {
 ::-webkit-outer-spin-button {
     height: auto;
   }
-page,.tw-root,wx-root-portal-content {
+page,.tw-root,wx-root-portal-content,:host {
     --background: 0 0% 100%;
     --foreground: 222.2 84% 4.9%;
     --muted: 210 40% 96.1%;
