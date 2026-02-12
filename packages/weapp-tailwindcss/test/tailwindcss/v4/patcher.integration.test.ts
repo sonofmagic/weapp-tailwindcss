@@ -7,10 +7,11 @@ import { createPatcherForBase } from '@/tailwindcss/v4'
 
 describe('tailwindcss/v4 patcher integration with @config + cssEntries', () => {
   it('preserves entry base, collects class set, and escapes runtime literals', async () => {
+    const workspaceRoot = path.resolve(__dirname, '../../../../..')
     const fixtureRoot = path.resolve(__dirname, '../../fixtures/tailwind-v4-config-import')
     const cssEntry = path.resolve(fixtureRoot, 'src/app.css')
     const fixtureModules = path.resolve(fixtureRoot, 'node_modules')
-    const tailwindcss4Path = path.resolve(process.cwd(), 'node_modules/tailwindcss4')
+    const tailwindcss4Path = path.resolve(workspaceRoot, 'node_modules/tailwindcss4')
     const fixtureTailwindcss = path.resolve(fixtureModules, 'tailwindcss')
 
     await fs.mkdir(fixtureModules, { recursive: true })
@@ -25,7 +26,7 @@ describe('tailwindcss/v4 patcher integration with @config + cssEntries', () => {
         packageName: 'tailwindcss4',
         version: 4,
         resolve: {
-          paths: [path.resolve(process.cwd(), 'node_modules')],
+          paths: [path.resolve(workspaceRoot, 'node_modules')],
         },
       },
       tailwindcssPatcherOptions: undefined,
