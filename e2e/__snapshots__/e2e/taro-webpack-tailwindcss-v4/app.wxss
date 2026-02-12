@@ -26,7 +26,6 @@
 }
 view,
 text,
-::backdrop,
 :after,
 :before {
   --tw-gradient-position: initial;
@@ -87,7 +86,6 @@ wx-root-portal-content {
 }
 view,
 text,
-::backdrop,
 :after,
 :before {
   border: 0 solid;

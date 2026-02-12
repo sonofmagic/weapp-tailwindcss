@@ -27,8 +27,7 @@
 view,
 text,
 :before,
-:after,
-::backdrop {
+:after {
   --tw-gradient-position: initial;
   --tw-gradient-from: rgba(0, 0, 0, 0);
   --tw-gradient-via: rgba(0, 0, 0, 0);
@@ -89,8 +88,7 @@ wx-root-portal-content,
 view,
 text,
 :after,
-:before,
-::backdrop {
+:before {
   -webkit-box-sizing: border-box;
   box-sizing: border-box;
   border: 0 solid;

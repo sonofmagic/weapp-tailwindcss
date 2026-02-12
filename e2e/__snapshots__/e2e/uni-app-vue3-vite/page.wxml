@@ -25,7 +25,7 @@
     class="mt-_b96_d3px_B NHostImage--mt-_b96_d3px_B w-_b61_d1px_B NHostImage--w-_b61_d1px_B h-_b50_d99px_B NHostImage--h-_b50_d99px_B"
     role="img"></image>
   <view class="_2xl_ctext-base _2xl_ctext-base">2xl:text-base</view>
-  <view class="2xl 2xl text- text- red red">2xl:text-[red]</view>
+  <view class="_2xl_ctext-_bred_B _2xl_ctext-_bred_B">2xl:text-[red]</view>
   <view class="space-y-4 space-y-4 flex flex flex-col flex-col bg-red-400 bg-red-400">
     <view class="bg-sky-500 bg-sky-500">view space-y-4</view>
     <view class="bg-sky-500 bg-sky-500">view space-y-4</view>
@@ -38,9 +38,12 @@
     <view class="bg-sky-500 bg-sky-500">view space-y-4</view>
     <text class="bg-sky-500 bg-sky-500"></text>
   </view>
-  <view class="bg- bg- 3482f2 3482f2">bgbgbgbg</view>
-  <view class="text- text- 30rpx 30rpx text- text- fafafa fafafa font-bold font-bold bg- bg- url url https https xxx xxx com com xx xx webp webp">classArray</view>
-  <view class="text-sm text-sm text- text- fafafa fafafa">:class="['text-sm', classObj]</view>
+  <view class="bg-_b_h3482f2_B bg-_b_h3482f2_B">bgbgbgbg</view>
+  <view
+    class="text-_b30rpx_B text-_b30rpx_B text-_b_hfafafa_B text-_b_hfafafa_B font-bold font-bold bg-_burl_p_ahttps_c_f_fxxx_dcom_fxx_dwebp_a_P_B bg-_burl_p_ahttps_c_f_fxxx_dcom_fxx_dwebp_a_P_B">
+    classArray
+  </view>
+  <view class="text-sm text-sm text-_b_hfafafa_B text-_b_hfafafa_B">:class="['text-sm', classObj]</view>
   <view class="rotate-_b10deg_B rotate-_b10deg_B">rotate1111111</view>
   <view class="td td highlight highlight">你好</view>
   <view class="td td">1</view>
@@ -88,17 +91,17 @@
   <view class="text-_blength_cvar_p--my-var-length_P_B text-_blength_cvar_p--my-var-length_P_B">text-[length:var(--my-var-length)]</view>
   <view class="text-_blength_ccalc_p2_x9_d43px_P_B text-_blength_ccalc_p2_x9_d43px_P_B">text-[length:calc(2*9.43px)]</view>
   <view class="text-_bcolor_cvar_p--my-var_P_B text-_bcolor_cvar_p--my-var_P_B">text-[color:var(--my-var)]</view>
-  <button class="bg-green-500 bg-green-500 sr-onlytext-white sr-onlytext-white opacity-50 opacity-50" role="button" aria-disabled="true" disabled="">disable</button>
+  <button class="_ebg-green-500 _ebg-green-500 sr-onlytext-white sr-onlytext-white opacity-50 opacity-50" role="button" aria-disabled="true" disabled="">disable</button>
   <view class="test test">test</view>
-  <view class="h- h- 20px 20px w- w- 20px 20px bg- bg- 4268EA 4268EA shadow-indigo-100 shadow-indigo-100"></view>
-  <view class="h- h- 20px 20px w- w- 20px 20px bg- bg- 123456 123456 shadow-blue-100 shadow-blue-100"></view>
-  <view class="h- h- 20px 20px w- w- 20px 20px bg-green-500 bg-green-500 shadow-green-100 shadow-green-100"></view>
-  <view class="h- h- 20px 20px w- w- 20px 20px bg-cyan-500 bg-cyan-500 shadow-cyan-100 shadow-cyan-100"></view>
-  <view class="h- h- 20px 20px w- w- 20px 20px bg-amber-500 bg-amber-500 shadow-amber-100 shadow-amber-100"></view>
+  <view class="h-_b20px_B h-_b20px_B w-_b20px_B w-_b20px_B bg-_b_h4268EA_B bg-_b_h4268EA_B shadow-indigo-100 shadow-indigo-100"></view>
+  <view class="h-_b20px_B h-_b20px_B w-_b20px_B w-_b20px_B bg-_b_h123456_B bg-_b_h123456_B shadow-blue-100 shadow-blue-100"></view>
+  <view class="h-_b20px_B h-_b20px_B w-_b20px_B w-_b20px_B bg-green-500 bg-green-500 shadow-green-100 shadow-green-100"></view>
+  <view class="h-_b20px_B h-_b20px_B w-_b20px_B w-_b20px_B bg-cyan-500 bg-cyan-500 shadow-cyan-100 shadow-cyan-100"></view>
+  <view class="h-_b20px_B h-_b20px_B w-_b20px_B w-_b20px_B bg-amber-500 bg-amber-500 shadow-amber-100 shadow-amber-100"></view>
   <view class="w-2 w-2 h-2 h-2 bg-_b_h123456_B bg-_b_h123456_B"></view>
   <view class="w-2 w-2 h-2 h-2 bg-blue-500_f50 bg-blue-500_f50"></view>
   <view class="flex flex items-center items-center justify-center justify-center w-screen w-screen h-screen h-screen">
-    <view class="font-bold font-bold text- text- 990000 990000 text-2xl text-2xl underline underline">测试标题</view>
+    <view class="_efont-bold _efont-bold _etext-_b_h990000_B _etext-_b_h990000_B text-2xl text-2xl underline underline">测试标题</view>
   </view>
   <image class="logo logo h-10 h-10 w-10 w-10" src="/static/logo.png" role="img"></image>
   <view class="text-area text-area"><text class="title title h-_b200_v_B h-_b200_v_B"></text></view>
@@ -110,7 +113,7 @@
     </view>
     <view class="max-w-_b300rpx_B max-w-_b300rpx_B min-h-_b100px_B min-h-_b100px_B text-_b_hdddddd_B text-_b_hdddddd_B">max-w-[300rpx] min-h-[100px] text-[#dddddd]</view>
     <view
-      class="flex flex items-center items-center justify-center justify-center h- h- 100px 100px w- w- 100px 100px rounded- rounded- 40px 40px bg- bg- 123456 123456 bg-opacity- bg-opacity- 0 0 54 54 text- text- ffffff ffffff text- text- 123456 123456 bg- bg- 666600 666600">
+      class="flex flex items-center items-center justify-center justify-center h-_b100px_B h-_b100px_B w-_b100px_B w-_b100px_B rounded-_b40px_B rounded-_b40px_B bg-_b_h123456_B bg-_b_h123456_B bg-opacity-_b0_d54_B bg-opacity-_b0_d54_B text-_b_hffffff_B text-_b_hffffff_B text-_b_h123456_B text-_b_h123456_B bg-_b_h666600_B bg-_b_h666600_B">
       Hello
     </view>
     <view class="border-_b10px_B border-_b10px_B border-_b_h098765_B border-_b_h098765_B border-solid border-solid border-opacity-_b0_d44_B border-opacity-_b0_d44_B">

@@ -5,8 +5,7 @@
 view,
 text,
 :before,
-:after,
-::backdrop {
+:after {
   --tw-space-y-reverse: 0;
   --tw-space-x-reverse: 0;
   --tw-divide-x-reverse: 0;
@@ -68,8 +67,7 @@ wx-root-portal-content,
 view,
 text,
 :after,
-:before,
-::backdrop {
+:before {
   box-sizing: border-box;
   border: 0 solid;
   margin: 0;

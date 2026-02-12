@@ -4,7 +4,6 @@
 }
 view,
 text,
-::backdrop,
 :after,
 :before {
   --tw-space-y-reverse: 0;
@@ -85,7 +84,6 @@ wx-root-portal-content {
 }
 view,
 text,
-::backdrop,
 :after,
 :before {
   border: 0 solid;
