@@ -1,4 +1,4 @@
-import type { Compiler, sources, WebpackPluginInstance } from 'webpack'
+import type { Compiler, sources } from 'webpack'
 import type { WeappStyleInjectorOptions } from './core'
 import type { UniAppManualStyleConfig, UniAppSubPackageConfig } from './uni-app'
 import { Buffer } from 'node:buffer'
@@ -9,6 +9,9 @@ import { mergePerFileResolvers } from './utils'
 const WEBPACK_PLUGIN_NAME = `${PLUGIN_NAME}:webpack`
 
 type WebpackSource = sources.Source
+interface WebpackObjectPluginInstance {
+  apply: (compiler: Compiler) => void
+}
 
 export interface WebpackWeappStyleInjectorOptions extends WeappStyleInjectorOptions {
   uniAppSubPackages?: UniAppSubPackageConfig | UniAppSubPackageConfig[]
@@ -33,7 +36,7 @@ function extractSourcePayload(assetSource: unknown): string | Uint8Array {
   return assetSource as string | Uint8Array
 }
 
-export class WeappStyleInjectorWebpackPlugin implements WebpackPluginInstance {
+export class WeappStyleInjectorWebpackPlugin implements WebpackObjectPluginInstance {
   constructor(private readonly options: WebpackWeappStyleInjectorOptions = {}) {}
 
   apply(compiler: Compiler) {
@@ -122,7 +125,7 @@ export class WeappStyleInjectorWebpackPlugin implements WebpackPluginInstance {
   }
 }
 
-export function weappStyleInjectorWebpack(options: WebpackWeappStyleInjectorOptions = {}): WebpackPluginInstance {
+export function weappStyleInjectorWebpack(options: WebpackWeappStyleInjectorOptions = {}): WebpackObjectPluginInstance {
   return new WeappStyleInjectorWebpackPlugin(options)
 }
 

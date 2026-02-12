@@ -12,7 +12,7 @@ export default icebreaker(
   {
     // 规则可以在这里禁用
     rules: {
-      'better-tailwindcss/no-unregistered-classes': 'off',
+      'better-tailwindcss/no-unknown-classes': 'off',
     },
   },
 )

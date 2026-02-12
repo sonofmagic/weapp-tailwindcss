@@ -7,7 +7,7 @@ const config = icebreaker({
   react: false,
   markdown: false,
   rules: {
-    'better-tailwindcss/no-unregistered-classes': 'warn',
+    'better-tailwindcss/no-unknown-classes': 'warn',
   },
 })
 

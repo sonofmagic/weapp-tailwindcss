@@ -41,12 +41,12 @@ catalogs:
   prettier371:
     prettier: ^3.8.1
   react18:
-    '@types/react': ^19.2.13
+    '@types/react': ^19.2.14
     '@types/react-dom': 18.2.7
     react: ^18.3.1
     react-dom: ^18.3.1
   react19:
-    '@types/react': ^19.2.13
+    '@types/react': ^19.2.14
     '@types/react-dom': 19.2.3
     react: ^19.2.4
     react-dom: ^19.2.4
@@ -118,7 +118,7 @@ catalogs:
   weappIdeCli:
     weapp-ide-cli: ^5.0.3
   weappVite:
-    weapp-vite: ^6.6.0
+    weapp-vite: ^6.6.3
   wrangler4530:
     wrangler: ^4.64.0
 

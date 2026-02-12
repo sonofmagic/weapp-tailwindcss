@@ -44,7 +44,7 @@
     "@weapp-tailwindcss/merge": "workspace:*",
     "@weapp-tailwindcss/variants": "workspace:*",
     "autoprefixer": "catalog:autoprefixer10",
-    "eslint": "^9.39.2",
+    "eslint": "^10.0.0",
     "postcss": "^8.5.3",
     "process": "^0.11.10",
     "tailwindcss": "catalog:tailwindcss4",
@@ -52,7 +52,7 @@
     "typescript": "catalog:typescript59",
     "weapp-ide-cli": "catalog:weappIdeCli",
     "weapp-tailwindcss": "workspace:*",
-    "webpack": "5.99.9"
+    "webpack": "5.105.1"
   },
   "browserslist": [
     "ios >= 8",

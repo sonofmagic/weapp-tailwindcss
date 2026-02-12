@@ -11,7 +11,7 @@ export default icebreaker(
   },
   {
     rules: {
-      'better-tailwindcss/no-unregistered-classes': 'off',
+      'better-tailwindcss/no-unknown-classes': 'off',
       'ts/no-unused-vars': ['error', { argsIgnorePattern: '^_' }],
     },
   },

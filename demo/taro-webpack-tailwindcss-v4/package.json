@@ -84,7 +84,7 @@
     "@weapp-tailwindcss/merge": "workspace:*",
     "@weapp-tailwindcss/variants": "workspace:*",
     "babel-preset-taro": "catalog:taro4",
-    "eslint": "^9.39.2",
+    "eslint": "^10.0.0",
     "eslint-config-taro": "catalog:taro4",
     "eslint-plugin-react": "^7.37.5",
     "eslint-plugin-react-hooks": "^7.0.1",
@@ -97,6 +97,6 @@
     "typescript": "catalog:typescript59",
     "weapp-ide-cli": "catalog:weappIdeCli",
     "weapp-tailwindcss": "workspace:*",
-    "webpack": "5.104.1"
+    "webpack": "5.105.1"
   }
 }
