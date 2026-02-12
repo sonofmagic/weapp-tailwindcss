@@ -42,6 +42,7 @@ interface WatchCase {
   outputWxml: string
   outputJs: string
   verifyEscapedIn: Array<'wxml' | 'js'>
+  verifyClassLiteralIn?: Array<'wxml' | 'js'>
   mutate: (source: string, payload: MutationPayload) => string
 }
 
@@ -66,6 +67,7 @@ interface WatchCaseMetrics {
   classTokens: string[]
   escapedClasses: string[]
   verifyEscapedIn: Array<'wxml' | 'js'>
+  verifyClassLiteralIn: Array<'wxml' | 'js'>
   initialReadyMs: number
   hotUpdateOutputMs: number
   hotUpdateEffectiveMs: number
@@ -470,6 +472,15 @@ function assertNotContains(source: string, unexpected: string, hint: string) {
   }
 }
 
+function assertContainsOneOf(source: string, expected: string[], hint: string) {
+  for (const value of expected) {
+    if (source.includes(value)) {
+      return
+    }
+  }
+  throw new Error(`${hint}: expected to contain one of ${expected.join(' | ')}`)
+}
+
 function insertBeforeClosingTag(source: string, closingTag: string, snippet: string) {
   const index = source.lastIndexOf(closingTag)
   if (index === -1) {
@@ -487,7 +498,8 @@ function buildCases(baseCwd: string): WatchCase[] {
     sourceFile: path.resolve(baseCwd, 'demo/taro-app/src/pages/index/index.tsx'),
     outputWxml: path.resolve(baseCwd, 'demo/taro-app/dist/pages/index/index.wxml'),
     outputJs: path.resolve(baseCwd, 'demo/taro-app/dist/pages/index/index.js'),
-    verifyEscapedIn: ['js'],
+    verifyEscapedIn: [],
+    verifyClassLiteralIn: ['js'],
     mutate(source, payload) {
       const varAnchor = '  const [flag] = useState(true)'
       if (!source.includes(varAnchor)) {
@@ -513,7 +525,8 @@ function buildCases(baseCwd: string): WatchCase[] {
     sourceFile: path.resolve(baseCwd, 'demo/uni-app/src/pages/index/index.vue'),
     outputWxml: path.resolve(baseCwd, 'demo/uni-app/dist/dev/mp-weixin/pages/index/index.wxml'),
     outputJs: path.resolve(baseCwd, 'demo/uni-app/dist/dev/mp-weixin/pages/index/index.js'),
-    verifyEscapedIn: ['wxml', 'js'],
+    verifyEscapedIn: ['wxml'],
+    verifyClassLiteralIn: ['js'],
     mutate(source, payload) {
       const dataAnchor = '      className: \'bg-[#123456]\','
       if (!source.includes(dataAnchor)) {
@@ -539,7 +552,8 @@ function buildCases(baseCwd: string): WatchCase[] {
     sourceFile: path.resolve(baseCwd, 'demo/mpx-app/src/pages/index.mpx'),
     outputWxml: path.resolve(baseCwd, 'demo/mpx-app/dist/wx/pages/index.wxml'),
     outputJs: path.resolve(baseCwd, 'demo/mpx-app/dist/wx/pages/index.js'),
-    verifyEscapedIn: ['wxml', 'js'],
+    verifyEscapedIn: ['wxml'],
+    verifyClassLiteralIn: ['js'],
     mutate(source, payload) {
       const dataAnchor = '    classNames: \'text-[#123456] text-[50px] bg-[#fff]\','
       if (!source.includes(dataAnchor)) {
@@ -568,7 +582,8 @@ function buildCases(baseCwd: string): WatchCase[] {
     sourceFile: path.resolve(baseCwd, 'demo/rax-app/src/pages/index/index.tsx'),
     outputWxml: path.resolve(baseCwd, 'demo/rax-app/build/wechat-miniprogram/pages/index/index.wxml'),
     outputJs: path.resolve(baseCwd, 'demo/rax-app/build/wechat-miniprogram/bundle.js'),
-    verifyEscapedIn: ['js'],
+    verifyEscapedIn: [],
+    verifyClassLiteralIn: ['js'],
     mutate(source, payload) {
       const varAnchor = '  const [flag, setState] = useState(true);'
       if (!source.includes(varAnchor)) {
@@ -836,6 +851,11 @@ function resolveReportPath(baseCwd: string, file: string) {
   return path.isAbsolute(file) ? file : path.resolve(baseCwd, file)
 }
 
+function resolveRepositoryRootLabel(baseCwd: string) {
+  const label = path.basename(baseCwd)
+  return label || 'workspace'
+}
+
 async function writeReport(baseCwd: string, options: CliOptions, metrics: WatchCaseMetrics[]) {
   if (!options.reportFile) {
     return
@@ -846,7 +866,7 @@ async function writeReport(baseCwd: string, options: CliOptions, metrics: WatchC
 
   const report: WatchReport = {
     generatedAt: new Date().toISOString(),
-    repositoryRoot: formatPath(baseCwd),
+    repositoryRoot: resolveRepositoryRootLabel(baseCwd),
     options: {
       caseName: options.caseName,
       timeoutMs: options.timeoutMs,
@@ -941,12 +961,34 @@ async function runCase(watchCase: WatchCase, options: CliOptions): Promise<Watch
       fs.readFile(watchCase.outputJs, 'utf8'),
     ])
 
+    const verifyClassLiteralIn = watchCase.verifyClassLiteralIn ?? []
+
     for (const escaped of escapedClasses) {
       if (watchCase.verifyEscapedIn.includes('wxml')) {
         assertContains(updatedWxml, escaped, `[${watchCase.label}] updated wxml`)
       }
       if (watchCase.verifyEscapedIn.includes('js')) {
         assertContains(updatedJs, escaped, `[${watchCase.label}] updated js`)
+      }
+    }
+
+    for (const [index, classToken] of classTokens.entries()) {
+      const escapedToken = escapedClasses[index]
+      const expectedValues = escapedToken ? [classToken, escapedToken] : [classToken]
+
+      if (verifyClassLiteralIn.includes('wxml')) {
+        assertContainsOneOf(
+          updatedWxml,
+          expectedValues,
+          `[${watchCase.label}] updated wxml token literal`,
+        )
+      }
+      if (verifyClassLiteralIn.includes('js')) {
+        assertContainsOneOf(
+          updatedJs,
+          expectedValues,
+          `[${watchCase.label}] updated js token literal`,
+        )
       }
     }
 
@@ -981,6 +1023,7 @@ async function runCase(watchCase: WatchCase, options: CliOptions): Promise<Watch
       classTokens,
       escapedClasses,
       verifyEscapedIn: watchCase.verifyEscapedIn,
+      verifyClassLiteralIn,
       initialReadyMs,
       hotUpdateOutputMs,
       hotUpdateEffectiveMs,

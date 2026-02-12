@@ -1,0 +1,57 @@
+{
+  "generatedAt": "2026-02-12T15:31:11.872Z",
+  "repositoryRoot": "weapp-tailwindcss",
+  "options": {
+    "caseName": "taro",
+    "timeoutMs": 240000,
+    "pollMs": 240,
+    "skipBuild": true,
+    "quietSass": true,
+    "maxHotUpdateMs": 15000
+  },
+  "summary": {
+    "count": 1,
+    "hotUpdateAvgMs": 723,
+    "hotUpdateMaxMs": 723,
+    "hotUpdateMinMs": 723,
+    "rollbackAvgMs": 724,
+    "rollbackMaxMs": 724,
+    "rollbackMinMs": 724
+  },
+  "cases": [
+    {
+      "name": "taro",
+      "label": "demo/taro-app",
+      "marker": "tw-watch-taro-2653700",
+      "classLiteral": "text-[23.2653700px] space-y-2.5 w-[calc(100%_-_2653700px)] grid-cols-[200rpx_minmax(900rpx,_1fr)_2653700px] after:ml-[0.2653700px] text-black/[0.26] ring-[1.0px]",
+      "classTokens": [
+        "text-[23.2653700px]",
+        "space-y-2.5",
+        "w-[calc(100%_-_2653700px)]",
+        "grid-cols-[200rpx_minmax(900rpx,_1fr)_2653700px]",
+        "after:ml-[0.2653700px]",
+        "text-black/[0.26]",
+        "ring-[1.0px]"
+      ],
+      "escapedClasses": [
+        "text-_b23_d2653700px_B",
+        "space-y-2_d5",
+        "w-_bcalc_p100_v_-_2653700px_P_B",
+        "grid-cols-_b200rpx_minmax_p900rpx_m_1fr_P_2653700px_B",
+        "after_cml-_b0_d2653700px_B",
+        "text-black_f_b0_d26_B",
+        "ring-_b1_d0px_B"
+      ],
+      "verifyEscapedIn": [],
+      "verifyClassLiteralIn": [
+        "js"
+      ],
+      "initialReadyMs": 5303,
+      "hotUpdateOutputMs": 723,
+      "hotUpdateEffectiveMs": 723,
+      "rollbackOutputMs": 723,
+      "rollbackEffectiveMs": 724,
+      "totalMs": 6754
+    }
+  ]
+}

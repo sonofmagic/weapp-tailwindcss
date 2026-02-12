@@ -1,5 +1,4 @@
 import fs from 'node:fs/promises'
-import os from 'node:os'
 import process from 'node:process'
 import { execa } from 'execa'
 import path from 'pathe'
@@ -64,6 +63,12 @@ function toNumberEnv(name: string, fallback: number) {
   return Number.isFinite(numeric) ? numeric : fallback
 }
 
+function createReportFilePath(cwd: string, caseName: ReturnType<typeof resolveCaseName>) {
+  const reportDir = path.resolve(cwd, './benchmark/e2e-watch-hmr')
+  const timestamp = new Date().toISOString().replaceAll(':', '-').replaceAll('.', '-')
+  return path.join(reportDir, `${timestamp}-${caseName}.json`)
+}
+
 describe('e2e watch hot-update', () => {
   it('should apply complex class updates and report latency', async () => {
     const cwd = path.resolve(__dirname, '../..')
@@ -74,10 +79,7 @@ describe('e2e watch hot-update', () => {
     const skipBuild = toBoolEnv('E2E_WATCH_SKIP_BUILD', true)
     const quietSass = toBoolEnv('E2E_WATCH_QUIET_SASS', true)
 
-    const reportFile = path.join(
-      os.tmpdir(),
-      `weapp-tailwindcss-watch-e2e-${Date.now()}-${Math.random().toString(16).slice(2)}.json`,
-    )
+    const reportFile = createReportFilePath(cwd, caseName)
 
     const args = [
       '--filter',
@@ -113,6 +115,8 @@ describe('e2e watch hot-update', () => {
     const raw = await fs.readFile(reportFile, 'utf8')
     const report = JSON.parse(raw) as HotUpdateReport
 
+    process.stdout.write(`[e2e-watch] hmr report saved: ${reportFile}\n`)
+
     expect(report.summary.count).toBeGreaterThan(0)
     expect(report.cases.length).toBe(report.summary.count)
 
@@ -131,7 +135,5 @@ describe('e2e watch hot-update', () => {
       expect(item.classLiteral).toContain('text-black/[0.')
       expect(item.classLiteral).toContain('ring-[1.')
     }
-
-    await fs.rm(reportFile, { force: true })
   })
 })

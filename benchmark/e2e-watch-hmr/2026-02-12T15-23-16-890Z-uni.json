@@ -1,0 +1,59 @@
+{
+  "generatedAt": "2026-02-12T15:23:21.487Z",
+  "repositoryRoot": "weapp-tailwindcss",
+  "options": {
+    "caseName": "uni",
+    "timeoutMs": 240000,
+    "pollMs": 240,
+    "skipBuild": true,
+    "quietSass": true,
+    "maxHotUpdateMs": 15000
+  },
+  "summary": {
+    "count": 1,
+    "hotUpdateAvgMs": 482,
+    "hotUpdateMaxMs": 482,
+    "hotUpdateMinMs": 482,
+    "rollbackAvgMs": 242,
+    "rollbackMaxMs": 242,
+    "rollbackMinMs": 242
+  },
+  "cases": [
+    {
+      "name": "uni",
+      "label": "demo/uni-app",
+      "marker": "tw-watch-uni-8006620",
+      "classLiteral": "text-[23.8006620px] space-y-2.5 w-[calc(100%_-_8006620px)] grid-cols-[200rpx_minmax(900rpx,_1fr)_8006620px] after:ml-[0.8006620px] text-black/[0.80] ring-[1.0px]",
+      "classTokens": [
+        "text-[23.8006620px]",
+        "space-y-2.5",
+        "w-[calc(100%_-_8006620px)]",
+        "grid-cols-[200rpx_minmax(900rpx,_1fr)_8006620px]",
+        "after:ml-[0.8006620px]",
+        "text-black/[0.80]",
+        "ring-[1.0px]"
+      ],
+      "escapedClasses": [
+        "text-_b23_d8006620px_B",
+        "space-y-2_d5",
+        "w-_bcalc_p100_v_-_8006620px_P_B",
+        "grid-cols-_b200rpx_minmax_p900rpx_m_1fr_P_8006620px_B",
+        "after_cml-_b0_d8006620px_B",
+        "text-black_f_b0_d80_B",
+        "ring-_b1_d0px_B"
+      ],
+      "verifyEscapedIn": [
+        "wxml"
+      ],
+      "verifyClassLiteralIn": [
+        "js"
+      ],
+      "initialReadyMs": 3378,
+      "hotUpdateOutputMs": 482,
+      "hotUpdateEffectiveMs": 482,
+      "rollbackOutputMs": 241,
+      "rollbackEffectiveMs": 242,
+      "totalMs": 4106
+    }
+  ]
+}

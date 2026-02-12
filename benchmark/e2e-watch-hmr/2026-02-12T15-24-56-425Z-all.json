@@ -1,0 +1,231 @@
+{
+  "generatedAt": "2026-02-12T15:25:37.879Z",
+  "repositoryRoot": "weapp-tailwindcss",
+  "options": {
+    "caseName": "all",
+    "timeoutMs": 240000,
+    "pollMs": 240,
+    "skipBuild": true,
+    "quietSass": true,
+    "maxHotUpdateMs": 15000
+  },
+  "summary": {
+    "count": 6,
+    "hotUpdateAvgMs": 483,
+    "hotUpdateMaxMs": 965,
+    "hotUpdateMinMs": 242,
+    "rollbackAvgMs": 322,
+    "rollbackMaxMs": 726,
+    "rollbackMinMs": 240
+  },
+  "cases": [
+    {
+      "name": "taro",
+      "label": "demo/taro-app",
+      "marker": "tw-watch-taro-9018990",
+      "classLiteral": "text-[23.9018990px] space-y-2.5 w-[calc(100%_-_9018990px)] grid-cols-[200rpx_minmax(900rpx,_1fr)_9018990px] after:ml-[0.9018990px] text-black/[0.90] ring-[1.0px]",
+      "classTokens": [
+        "text-[23.9018990px]",
+        "space-y-2.5",
+        "w-[calc(100%_-_9018990px)]",
+        "grid-cols-[200rpx_minmax(900rpx,_1fr)_9018990px]",
+        "after:ml-[0.9018990px]",
+        "text-black/[0.90]",
+        "ring-[1.0px]"
+      ],
+      "escapedClasses": [
+        "text-_b23_d9018990px_B",
+        "space-y-2_d5",
+        "w-_bcalc_p100_v_-_9018990px_P_B",
+        "grid-cols-_b200rpx_minmax_p900rpx_m_1fr_P_9018990px_B",
+        "after_cml-_b0_d9018990px_B",
+        "text-black_f_b0_d90_B",
+        "ring-_b1_d0px_B"
+      ],
+      "verifyEscapedIn": [],
+      "verifyClassLiteralIn": [
+        "js"
+      ],
+      "initialReadyMs": 5063,
+      "hotUpdateOutputMs": 723,
+      "hotUpdateEffectiveMs": 723,
+      "rollbackOutputMs": 723,
+      "rollbackEffectiveMs": 726,
+      "totalMs": 6517
+    },
+    {
+      "name": "uni",
+      "label": "demo/uni-app",
+      "marker": "tw-watch-uni-9115420",
+      "classLiteral": "text-[23.9115420px] space-y-2.5 w-[calc(100%_-_9115420px)] grid-cols-[200rpx_minmax(900rpx,_1fr)_9115420px] after:ml-[0.9115420px] text-black/[0.91] ring-[1.0px]",
+      "classTokens": [
+        "text-[23.9115420px]",
+        "space-y-2.5",
+        "w-[calc(100%_-_9115420px)]",
+        "grid-cols-[200rpx_minmax(900rpx,_1fr)_9115420px]",
+        "after:ml-[0.9115420px]",
+        "text-black/[0.91]",
+        "ring-[1.0px]"
+      ],
+      "escapedClasses": [
+        "text-_b23_d9115420px_B",
+        "space-y-2_d5",
+        "w-_bcalc_p100_v_-_9115420px_P_B",
+        "grid-cols-_b200rpx_minmax_p900rpx_m_1fr_P_9115420px_B",
+        "after_cml-_b0_d9115420px_B",
+        "text-black_f_b0_d91_B",
+        "ring-_b1_d0px_B"
+      ],
+      "verifyEscapedIn": [
+        "wxml"
+      ],
+      "verifyClassLiteralIn": [
+        "js"
+      ],
+      "initialReadyMs": 3132,
+      "hotUpdateOutputMs": 241,
+      "hotUpdateEffectiveMs": 242,
+      "rollbackOutputMs": 241,
+      "rollbackEffectiveMs": 242,
+      "totalMs": 3622
+    },
+    {
+      "name": "mpx",
+      "label": "demo/mpx-app",
+      "marker": "tw-watch-mpx-9164670",
+      "classLiteral": "text-[23.9164670px] space-y-2.5 w-[calc(100%_-_9164670px)] grid-cols-[200rpx_minmax(900rpx,_1fr)_9164670px] after:ml-[0.9164670px] text-black/[0.91] ring-[1.0px]",
+      "classTokens": [
+        "text-[23.9164670px]",
+        "space-y-2.5",
+        "w-[calc(100%_-_9164670px)]",
+        "grid-cols-[200rpx_minmax(900rpx,_1fr)_9164670px]",
+        "after:ml-[0.9164670px]",
+        "text-black/[0.91]",
+        "ring-[1.0px]"
+      ],
+      "escapedClasses": [
+        "text-_b23_d9164670px_B",
+        "space-y-2_d5",
+        "w-_bcalc_p100_v_-_9164670px_P_B",
+        "grid-cols-_b200rpx_minmax_p900rpx_m_1fr_P_9164670px_B",
+        "after_cml-_b0_d9164670px_B",
+        "text-black_f_b0_d91_B",
+        "ring-_b1_d0px_B"
+      ],
+      "verifyEscapedIn": [
+        "wxml"
+      ],
+      "verifyClassLiteralIn": [
+        "js"
+      ],
+      "initialReadyMs": 4336,
+      "hotUpdateOutputMs": 482,
+      "hotUpdateEffectiveMs": 482,
+      "rollbackOutputMs": 240,
+      "rollbackEffectiveMs": 240,
+      "totalMs": 5062
+    },
+    {
+      "name": "rax",
+      "label": "demo/rax-app",
+      "marker": "tw-watch-rax-9209110",
+      "classLiteral": "text-[23.9209110px] space-y-2.5 w-[calc(100%_-_9209110px)] grid-cols-[200rpx_minmax(900rpx,_1fr)_9209110px] after:ml-[0.9209110px] text-black/[0.92] ring-[1.0px]",
+      "classTokens": [
+        "text-[23.9209110px]",
+        "space-y-2.5",
+        "w-[calc(100%_-_9209110px)]",
+        "grid-cols-[200rpx_minmax(900rpx,_1fr)_9209110px]",
+        "after:ml-[0.9209110px]",
+        "text-black/[0.92]",
+        "ring-[1.0px]"
+      ],
+      "escapedClasses": [
+        "text-_b23_d9209110px_B",
+        "space-y-2_d5",
+        "w-_bcalc_p100_v_-_9209110px_P_B",
+        "grid-cols-_b200rpx_minmax_p900rpx_m_1fr_P_9209110px_B",
+        "after_cml-_b0_d9209110px_B",
+        "text-black_f_b0_d92_B",
+        "ring-_b1_d0px_B"
+      ],
+      "verifyEscapedIn": [],
+      "verifyClassLiteralIn": [
+        "js"
+      ],
+      "initialReadyMs": 3615,
+      "hotUpdateOutputMs": 242,
+      "hotUpdateEffectiveMs": 243,
+      "rollbackOutputMs": 242,
+      "rollbackEffectiveMs": 243,
+      "totalMs": 4111
+    },
+    {
+      "name": "mina",
+      "label": "demo/native-mina",
+      "marker": "tw-watch-mina-9279030",
+      "classLiteral": "text-[23.9279030px] space-y-2.5 w-[calc(100%_-_9279030px)] grid-cols-[200rpx_minmax(900rpx,_1fr)_9279030px] after:ml-[0.9279030px] text-black/[0.92] ring-[1.0px]",
+      "classTokens": [
+        "text-[23.9279030px]",
+        "space-y-2.5",
+        "w-[calc(100%_-_9279030px)]",
+        "grid-cols-[200rpx_minmax(900rpx,_1fr)_9279030px]",
+        "after:ml-[0.9279030px]",
+        "text-black/[0.92]",
+        "ring-[1.0px]"
+      ],
+      "escapedClasses": [
+        "text-_b23_d9279030px_B",
+        "space-y-2_d5",
+        "w-_bcalc_p100_v_-_9279030px_P_B",
+        "grid-cols-_b200rpx_minmax_p900rpx_m_1fr_P_9279030px_B",
+        "after_cml-_b0_d9279030px_B",
+        "text-black_f_b0_d92_B",
+        "ring-_b1_d0px_B"
+      ],
+      "verifyEscapedIn": [
+        "wxml"
+      ],
+      "verifyClassLiteralIn": [],
+      "initialReadyMs": 1447,
+      "hotUpdateOutputMs": 241,
+      "hotUpdateEffectiveMs": 242,
+      "rollbackOutputMs": 240,
+      "rollbackEffectiveMs": 241,
+      "totalMs": 1933
+    },
+    {
+      "name": "weapp-vite",
+      "label": "demo/native-ts (weapp-vite)",
+      "marker": "tw-watch-weapp-vite-9316230",
+      "classLiteral": "text-[23.9316230px] space-y-2.5 w-[calc(100%_-_9316230px)] grid-cols-[200rpx_minmax(900rpx,_1fr)_9316230px] after:ml-[0.9316230px] text-black/[0.93] ring-[1.0px]",
+      "classTokens": [
+        "text-[23.9316230px]",
+        "space-y-2.5",
+        "w-[calc(100%_-_9316230px)]",
+        "grid-cols-[200rpx_minmax(900rpx,_1fr)_9316230px]",
+        "after:ml-[0.9316230px]",
+        "text-black/[0.93]",
+        "ring-[1.0px]"
+      ],
+      "escapedClasses": [
+        "text-_b23_d9316230px_B",
+        "space-y-2_d5",
+        "w-_bcalc_p100_v_-_9316230px_P_B",
+        "grid-cols-_b200rpx_minmax_p900rpx_m_1fr_P_9316230px_B",
+        "after_cml-_b0_d9316230px_B",
+        "text-black_f_b0_d93_B",
+        "ring-_b1_d0px_B"
+      ],
+      "verifyEscapedIn": [
+        "wxml"
+      ],
+      "verifyClassLiteralIn": [],
+      "initialReadyMs": 3135,
+      "hotUpdateOutputMs": 965,
+      "hotUpdateEffectiveMs": 965,
+      "rollbackOutputMs": 242,
+      "rollbackEffectiveMs": 242,
+      "totalMs": 4343
+    }
+  ]
+}
