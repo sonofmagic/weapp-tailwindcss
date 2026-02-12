@@ -16,7 +16,7 @@
     "build": "cross-env NODE_ENV=production BUILD_TYPE=release webpack && pnpm run build:npm",
     "build:babel": "cross-env BABEL=1 NODE_ENV=production BUILD_TYPE=release webpack && pnpm run build:npm",
     "build:local": "cross-env LOCAL=1 NODE_ENV=production BUILD_TYPE=release webpack && pnpm run build:npm",
-    "build:npm": "weapp build-npm -p",
+    "build:npm": "node ./scripts/weapp-build-npm.mjs",
     "preupload": "run-s build",
     "upload": "run-script-os",
     "upload:darwin": "/Applications/wechatwebdevtools.app/Contents/MacOS/cli -u $npm_package_version@$INIT_CWD",
