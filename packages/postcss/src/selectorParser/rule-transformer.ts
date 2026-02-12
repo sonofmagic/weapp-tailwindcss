@@ -33,6 +33,17 @@ const RTL_LANGUAGE_ANY_PSEUDO_SET = new Set([
   ':lang',
 ])
 
+const EMPTY_FUNCTIONAL_PSEUDO_CLEANUP_SET = new Set([
+  ':not',
+  ':is',
+  ':where',
+  ':has',
+  ':matches',
+  ':-webkit-any',
+  ':-moz-any',
+  ':lang',
+])
+
 function isRtlLanguageAnyPseudo(node: Node): node is Pseudo {
   return node.type === 'pseudo' && RTL_LANGUAGE_ANY_PSEUDO_SET.has(node.value)
 }
@@ -71,6 +82,15 @@ function stripUnsupportedRtlLanguagePseudo(node: Pseudo) {
 
   // 纯 RTL 分支（如 :...any(:lang(...))）直接移除，避免微信端不支持伪类报错。
   getTopLevelSelector(selectorParent).remove()
+}
+
+function shouldRemoveEmptyFunctionalPseudo(node: Node): node is Pseudo {
+  return (
+    node.type === 'pseudo'
+    && EMPTY_FUNCTIONAL_PSEUDO_CLEANUP_SET.has(node.value)
+    && Array.isArray(node.nodes)
+    && node.nodes.length === 0
+  )
 }
 
 function flattenWherePseudo(node: Pseudo, context: TransformContext, index: number, parent: Selector | undefined) {
@@ -243,7 +263,7 @@ function transformSelectors(selectors: Root, context: TransformContext) {
   }
 
   selectors.walk((node) => {
-    if (node.type === 'pseudo' && Array.isArray(node.nodes) && node.nodes.length === 0) {
+    if (shouldRemoveEmptyFunctionalPseudo(node)) {
       node.remove()
       return
     }

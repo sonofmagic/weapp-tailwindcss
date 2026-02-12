@@ -75,4 +75,14 @@ describe('selectorParser', () => {
     expect(transformed).not.toContain(':-moz-any')
     expect(transformed).not.toContain(':lang(')
   })
+
+  it('ruleTransformSync keeps before after and backdrop pseudo elements', () => {
+    const root = postcss.parse('::before,::after,::backdrop{--tw-content:"";}')
+    const rule = root.first as Rule
+    ruleTransformSync(rule, {})
+    const transformed = rule.toString()
+    expect(transformed).toContain('before')
+    expect(transformed).toContain('after')
+    expect(transformed).toContain('backdrop')
+  })
 })
