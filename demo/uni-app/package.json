@@ -88,6 +88,7 @@
   "devDependencies": {
     "@babel/plugin-syntax-typescript": "^7.28.6",
     "@babel/runtime": "catalog:babelRuntime7284tilde",
+    "@babel/types": "~7.29.0",
     "@dcloudio/types": "3.4.12",
     "@dcloudio/uni-automator": "2.0.2-4080720251210002",
     "@dcloudio/uni-cli-i18n": "2.0.2-4080720251210002",

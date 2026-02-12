@@ -603,6 +603,13 @@ describe('styleHandler', () => {
     expect(css).toBe(rawCode)
   })
 
+  it(':host pseudo should be preserved', async () => {
+    const { styleHandler } = getCompilerContext()
+    const rawCode = `:host{color:yellow;}`
+    const { css } = await styleHandler(rawCode, { isMainChunk: false })
+    expect(css).toBe(rawCode)
+  })
+
   it('combinator selector case 0', async () => {
     const { styleHandler } = getCompilerContext()
     const rawCode = `.space-x-4>:not([hidden])~:not([hidden]){}`

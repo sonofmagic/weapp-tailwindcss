@@ -30,4 +30,14 @@ describe('lightningcss style handler', () => {
 
     expect(code).toContain('view + view')
   })
+
+  it('keeps :host selector rules', async () => {
+    const handler = createLightningcssStyleHandler()
+    const { code } = await handler(`
+      :host { color: yellow; }
+    `)
+
+    expect(code).toContain(':host')
+    expect(code).toMatch(/:host\s*\{[^}]*color:/)
+  })
 })
