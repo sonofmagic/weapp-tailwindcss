@@ -1,7 +1,7 @@
 ::before,::after {
       --tw-content: "";
 }
-view,text,::before,::after,::backdrop {
+view,text,::before,::after {
       --tw-space-y-reverse: 0;
       --tw-divide-x-reverse: 0;
       --tw-border-style: solid;
@@ -69,7 +69,7 @@ page,.tw-root,wx-root-portal-content,:host {
 }
 }
 }
-view,text,:after,:before,::backdrop {
+view,text,:after,:before {
   box-sizing: border-box;
   border: 0 solid;
   margin: 0;

@@ -2,7 +2,7 @@
 
 exports[`vite > v4-vite-plugin > css 1`] = `
 "/*! tailwindcss v4.1.18 | MIT License | https://tailwindcss.com */
-view,text,:after,:before,::backdrop {
+view,text,:after,:before {
   box-sizing: border-box;
   border: 0 solid;
   margin: 0;
@@ -55,7 +55,7 @@ console.log("bg-[#123456] text-[#123456] first-letter:marker:text-clip");
 
 exports[`vite > v4-vite-postcss > css 1`] = `
 "/*! tailwindcss v4.1.18 | MIT License | https://tailwindcss.com */
-view,text,:after,:before,::backdrop {
+view,text,:after,:before {
   box-sizing: border-box;
   border: 0 solid;
   margin: 0;

@@ -13,7 +13,7 @@ exports[`px2rpx > case 0 1`] = `
 `;
 
 exports[`px2rpx > case 0 2`] = `
-"view,text,:after,:before,::backdrop {
+"view,text,:after,:before {
   box-sizing: border-box;
   border: 0 solid;
   margin: 0;
@@ -25,7 +25,7 @@ exports[`px2rpx > case 0 2`] = `
 `;
 
 exports[`px2rpx > case 1 1`] = `
-"view,text,:after,:before,::backdrop {
+"view,text,:after,:before {
   box-sizing: border-box;
   border: 0 solid;
   margin: 0;

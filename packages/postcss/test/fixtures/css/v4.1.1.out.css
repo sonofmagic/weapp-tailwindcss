@@ -2,7 +2,7 @@
 ::before,::after {
       --tw-content: "";
 }
-view,text,::before,::after,::backdrop {
+view,text,::before,::after {
       --tw-shadow: 0 0 rgba(0,0,0,0);
       --tw-shadow-color: initial;
       --tw-shadow-alpha: 100%;
@@ -35,7 +35,7 @@ view,text,::before,::after,::backdrop {
 page,.tw-root,wx-root-portal-content,:host {
   --color-zinc-800: rgb(39, 39, 42);
 }
-view,text,::after,::before,::backdrop {
+view,text,::after,::before {
   box-sizing: border-box;
   margin: 0;
   padding: 0;

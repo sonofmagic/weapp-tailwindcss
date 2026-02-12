@@ -34,13 +34,13 @@ exports[`issues > cssSelectorReplacement case 0 1`] = `
 
 exports[`issues > cssSelectorReplacement case 0 2`] = `
 "
-    view,text,::before,::after,::backdrop {
+    view,text,::before,::after {
       --tw-space-x-reverse: 0;
     }
 page,wx-root-content,:host {
   --spacing: .25rem;
 }
-view,text,:after,:before,::backdrop {
+view,text,:after,:before {
   box-sizing: border-box;
   border: 0 solid;
   margin: 0;
@@ -70,7 +70,7 @@ exports[`issues > custom case 0 1`] = `
 `;
 
 exports[`issues > custom case 0 2`] = `
-"view,text,:after,:before,::backdrop {
+"view,text,:after,:before {
   box-sizing: border-box;
   border: 0 solid;
   margin: 0;
@@ -124,7 +124,7 @@ page,.tw-root,wx-root-portal-content,:host {
 }
 }
 }
-view,text,:after,:before,::backdrop {
+view,text,:after,:before {
   box-sizing: border-box;
   border: 0 solid;
   margin: 0;
@@ -170,7 +170,7 @@ exports[`issues > https://github.com/sonofmagic/weapp-tailwindcss/issues/632 2`]
 "page,.tw-root,wx-root-portal-content,:host {
   --color-blue-100: rgb(219, 234, 254);
 }
-view,text,:after,:before,::backdrop {
+view,text,:after,:before {
   box-sizing: border-box;
   border: 0 solid;
   margin: 0;
@@ -217,7 +217,7 @@ exports[`issues > https://github.com/sonofmagic/weapp-tailwindcss/issues/638 2`]
   --color-green-300: rgb(123, 241, 168);
   --color-gray-600: rgb(74, 85, 101);
 }
-view,text,:after,:before,::backdrop {
+view,text,:after,:before {
   box-sizing: border-box;
   border: 0 solid;
   margin: 0;
@@ -286,7 +286,7 @@ exports[`issues > https://github.com/sonofmagic/weapp-tailwindcss/issues/638 cas
   --color-zinc-900: rgb(24, 24, 27);
   --spacing: .25rem;
 }
-view,text,:after,:before,::backdrop {
+view,text,:after,:before {
   box-sizing: border-box;
   border: 0 solid;
   margin: 0;
@@ -410,7 +410,7 @@ exports[`issues > https://github.com/sonofmagic/weapp-tailwindcss/issues/643 2`]
 "::before,::after {
       --tw-content: "";
 }
-view,text,::before,::after,::backdrop {
+view,text,::before,::after {
       --tw-gradient-position: initial;
       --tw-gradient-from: rgba(0,0,0,0);
       --tw-gradient-via: rgba(0,0,0,0);
@@ -439,7 +439,7 @@ page,.tw-root,wx-root-portal-content,:host {
 }
 }
 }
-view,text,:after,:before,::backdrop {
+view,text,:after,:before {
   box-sizing: border-box;
   border: 0 solid;
   margin: 0;
@@ -634,7 +634,7 @@ exports[`issues > https://github.com/sonofmagic/weapp-tailwindcss/issues/652 2`]
 "::before,::after {
       --tw-content: "";
 }
-view,text,::before,::after,::backdrop {
+view,text,::before,::after {
       --tw-rotate-x: initial;
       --tw-rotate-y: initial;
       --tw-rotate-z: initial;
@@ -666,7 +666,7 @@ view,text,::before,::after,::backdrop {
 page,.tw-root,wx-root-portal-content,:host {
   --blur-2xl: 40px;
 }
-view,text,:after,:before,::backdrop {
+view,text,:after,:before {
   box-sizing: border-box;
   border: 0 solid;
   margin: 0;
@@ -747,7 +747,7 @@ exports[`issues > https://github.com/sonofmagic/weapp-tailwindcss/issues/695 1`]
 `;
 
 exports[`issues > https://github.com/sonofmagic/weapp-tailwindcss/issues/695 2`] = `
-"view,text,:after,:before,::backdrop {
+"view,text,:after,:before {
   box-sizing: border-box;
   border: 0 solid;
   margin: 0;
@@ -847,13 +847,13 @@ exports[`issues > https://github.com/sonofmagic/weapp-tailwindcss/issues/715 1`]
 
 exports[`issues > https://github.com/sonofmagic/weapp-tailwindcss/issues/715 2`] = `
 "
-    view,text,::before,::after,::backdrop {
+    view,text,::before,::after {
       --tw-space-y-reverse: 0;
     }
 page,.tw-root,wx-root-portal-content,:host {
   --spacing: .25rem;
 }
-view,text,:after,:before,::backdrop {
+view,text,:after,:before {
   box-sizing: border-box;
   border: 0 solid;
   margin: 0;
@@ -921,12 +921,12 @@ exports[`issues > https://github.com/sonofmagic/weapp-tailwindcss/issues/726 2`]
 "::before,::after {
       --tw-content: "";
 }
-view,text,::before,::after,::backdrop {
+view,text,::before,::after {
       --tw-divide-x-reverse: 0;
       --tw-border-style: solid;
       --tw-divide-y-reverse: 0;
     }
-view,text,:after,:before,::backdrop {
+view,text,:after,:before {
   box-sizing: border-box;
   border: 0 solid;
   margin: 0;
@@ -982,13 +982,13 @@ exports[`issues > space-x-number 1`] = `
 
 exports[`issues > space-x-number 2`] = `
 "
-    view,text,::before,::after,::backdrop {
+    view,text,::before,::after {
       --tw-space-x-reverse: 0;
     }
 page,.tw-root,wx-root-portal-content,:host {
   --spacing: .25rem;
 }
-view,text,:after,:before,::backdrop {
+view,text,:after,:before {
   box-sizing: border-box;
   border: 0 solid;
   margin: 0;
@@ -1060,7 +1060,7 @@ exports[`issues > tailwindcss@4 text/* heuristics should not treat headers as cl
 "::before,::after {
       --tw-content: "";
 }
-view,text,::before,::after,::backdrop {
+view,text,::before,::after {
       --tw-space-y-reverse: 0;
       --tw-font-weight: initial;
     }
@@ -1071,7 +1071,7 @@ page,.tw-root,wx-root-portal-content,:host {
   --text-sm--line-height: calc(1.25/.875);
   --font-weight-semibold: 600;
 }
-view,text,:after,:before,::backdrop {
+view,text,:after,:before {
   box-sizing: border-box;
   border: 0 solid;
   margin: 0;

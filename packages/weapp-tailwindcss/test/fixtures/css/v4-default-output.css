@@ -575,7 +575,7 @@ page,.tw-root,wx-root-portal-content,:host {
   }
 }
 }
-view,text,::after,::before,::backdrop,::file-selector-button {
+view,text,::after,::before {
     box-sizing: border-box;
     margin: 0;
     padding: 0;
@@ -661,7 +661,7 @@ img,video {
     max-width: 100%;
     height: auto;
   }
-button,input,select,optgroup,textarea,::file-selector-button {
+button,input,select,optgroup,textarea {
     font: inherit;
     font-feature-settings: inherit;
     font-variation-settings: inherit;
@@ -676,9 +676,6 @@ select[multiple] optgroup,select[size] optgroup {
   }
 select[multiple] optgroup option,select[size] optgroup option {
     padding-left: 20px;
-  }
-::file-selector-button {
-    margin-right: 4px;
   }
 ::placeholder {
     opacity: 1;
@@ -707,7 +704,7 @@ textarea {
 :-moz-ui-invalid {
     box-shadow: none;
   }
-button,input,::file-selector-button {
+button,input {
     appearance: button;
   }
 ::-webkit-inner-spin-button,::-webkit-outer-spin-button {

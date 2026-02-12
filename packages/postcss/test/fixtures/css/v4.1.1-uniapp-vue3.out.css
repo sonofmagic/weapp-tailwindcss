@@ -1,5 +1,5 @@
 /*! tailwindcss v4.1.1 | MIT License | https://tailwindcss.com */
-view,text,:before,:after,::backdrop {
+view,text,:before,:after {
       --tw-font-weight: initial;
     }
 
@@ -17,7 +17,7 @@ page,.tw-root,wx-root-portal-content,:host {
   --font-weight-bold: 700;
 }
 
-view,text,:after,:before,::backdrop {
+view,text,:after,:before {
   box-sizing: border-box;
   border: 0 solid;
   margin: 0;

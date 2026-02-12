@@ -53,13 +53,7 @@ page,.tw-root,wx-root-portal-content,:host {
   }
 }
 }
-view,text,:after,:before,::backdrop {
-    box-sizing: border-box;
-    border: 0 solid;
-    margin: 0;
-    padding: 0;
-  }
-::file-selector-button {
+view,text,:after,:before {
     box-sizing: border-box;
     border: 0 solid;
     margin: 0;
@@ -175,24 +169,11 @@ button,input,select,optgroup,textarea {
     background-color: rgba(0,0,0,0);
     border-radius: 0;
   }
-::file-selector-button {
-    font: inherit;
-    font-feature-settings: inherit;
-    font-variation-settings: inherit;
-    letter-spacing: inherit;
-    color: inherit;
-    opacity: 1;
-    background-color: rgba(0,0,0,0);
-    border-radius: 0;
-  }
 select[multiple] optgroup,select[size] optgroup {
     font-weight: bolder;
   }
 select[multiple] optgroup option,select[size] optgroup option {
     padding-left: 20px;
-  }
-::file-selector-button {
-    margin-right: 4px;
   }
 ::placeholder {
     opacity: 1;
@@ -254,11 +235,6 @@ textarea {
     box-shadow: none;
   }
 button,input {
-    -webkit-appearance: button;
-    -moz-appearance: button;
-    appearance: button;
-  }
-::file-selector-button {
     -webkit-appearance: button;
     -moz-appearance: button;
     appearance: button;
@@ -1086,21 +1062,6 @@ body {
   }
 .peer:disabled~text.peer-disabled_copacity-70 {
     opacity: 0.7;
-  }
-.file_cborder-0::file-selector-button {
-    border-style: var(--tw-border-style);
-    border-width: 0;
-  }
-.file_cbg-transparent::file-selector-button {
-    background-color: rgba(0,0,0,0);
-  }
-.file_ctext-sm::file-selector-button {
-    font-size: var(--text-sm);
-    line-height: var(--tw-leading, var(--text-sm--line-height));
-  }
-.file_cfont-medium::file-selector-button {
-    --tw-font-weight: var(--font-weight-medium);
-    font-weight: var(--font-weight-medium);
   }
 .placeholder_ctext-muted-foreground::placeholder {
     color: hsl(var(--muted-foreground));

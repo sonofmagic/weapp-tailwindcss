@@ -4,7 +4,7 @@ exports[`tailwindcss v4 > mpx handles tailwindcss v4.1.17 css bundle 1`] = `
 "::before,::after {
       --tw-content: "";
 }
-view,text,::before,::after,::backdrop {
+view,text,::before,::after {
       --tw-space-y-reverse: 0;
       --tw-divide-x-reverse: 0;
       --tw-border-style: solid;
@@ -72,7 +72,7 @@ page,.tw-root,wx-root-portal-content,:host {
 }
 }
 }
-view,text,:after,:before,::backdrop {
+view,text,:after,:before {
   box-sizing: border-box;
   border: 0 solid;
   margin: 0;
@@ -972,7 +972,7 @@ page,.tw-root,wx-root-portal-content,:host {
   }
 }
 }
-view,text,::after,::before,::backdrop,::file-selector-button {
+view,text,::after,::before {
     box-sizing: border-box;
     margin: 0;
     padding: 0;
@@ -1058,7 +1058,7 @@ img,video {
     max-width: 100%;
     height: auto;
   }
-button,input,select,optgroup,textarea,::file-selector-button {
+button,input,select,optgroup,textarea {
     font: inherit;
     font-feature-settings: inherit;
     font-variation-settings: inherit;
@@ -1073,9 +1073,6 @@ select[multiple] optgroup,select[size] optgroup {
   }
 select[multiple] optgroup option,select[size] optgroup option {
     padding-left: 20px;
-  }
-::file-selector-button {
-    margin-right: 4px;
   }
 ::placeholder {
     opacity: 1;
@@ -1104,7 +1101,7 @@ textarea {
 :-moz-ui-invalid {
     box-shadow: none;
   }
-button,input,::file-selector-button {
+button,input {
     appearance: button;
   }
 ::-webkit-inner-spin-button,::-webkit-outer-spin-button {
@@ -1378,7 +1375,7 @@ exports[`tailwindcss v4 > weapp-tailwindcss default 1`] = `
 "::before,::after {
       --tw-content: "";
 }
-view,text,::before,::after,::backdrop {
+view,text,::before,::after {
       --tw-shadow: 0 0 rgba(0,0,0,0);
       --tw-shadow-color: initial;
       --tw-shadow-alpha: 100%;
@@ -1415,7 +1412,7 @@ view,text,::before,::after,::backdrop {
 page,.tw-root,wx-root-portal-content,:host {
   --color-zinc-800: rgb(39, 39, 42);
 }
-view,text,:after,:before,::backdrop {
+view,text,:after,:before {
   box-sizing: border-box;
   border: 0 solid;
   margin: 0;
@@ -1650,7 +1647,7 @@ exports[`tailwindcss v4 > weapp-tailwindcss default with layer 1`] = `
 "::before,::after {
       --tw-content: "";
 }
-view,text,::before,::after,::backdrop {
+view,text,::before,::after {
       --tw-shadow: 0 0 rgba(0,0,0,0);
       --tw-shadow-color: initial;
       --tw-shadow-alpha: 100%;
@@ -1687,7 +1684,7 @@ view,text,::before,::after,::backdrop {
 page,.tw-root,wx-root-portal-content,:host {
     --color-zinc-800: rgb(39, 39, 42);
   }
-view,text,:after,:before,::backdrop {
+view,text,:after,:before {
     box-sizing: border-box;
     border: 0 solid;
     margin: 0;

@@ -51,7 +51,7 @@ page,.tw-root,wx-root-portal-content,:host {
 }
 }
 }
-view,text,:after,:before,::backdrop {
+view,text,:after,:before {
   box-sizing: border-box;
   border: 0 solid;
   margin: 0;

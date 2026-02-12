@@ -42,7 +42,7 @@ exports[`compose > components 0 1`] = `
 
 exports[`compose > components 0 2`] = `
 "
-    view,text,::before,::after,::backdrop {
+    view,text,::before,::after {
       --tw-font-weight: initial;
     }
 page,.tw-root,wx-root-portal-content,:host {
@@ -52,7 +52,7 @@ page,.tw-root,wx-root-portal-content,:host {
   --font-weight-medium: 500;
   --radius-sm: .25rem;
 }
-view,text,:after,:before,::backdrop {
+view,text,:after,:before {
   box-sizing: border-box;
   border: 0 solid;
   margin: 0;
@@ -111,7 +111,7 @@ exports[`compose > no components 0 1`] = `
 
 exports[`compose > no components 0 2`] = `
 "
-    view,text,::before,::after,::backdrop {
+    view,text,::before,::after {
       --tw-font-weight: initial;
     }
 page,.tw-root,wx-root-portal-content,:host {
@@ -121,7 +121,7 @@ page,.tw-root,wx-root-portal-content,:host {
   --font-weight-medium: 500;
   --radius-sm: .25rem;
 }
-view,text,:after,:before,::backdrop {
+view,text,:after,:before {
   box-sizing: border-box;
   border: 0 solid;
   margin: 0;

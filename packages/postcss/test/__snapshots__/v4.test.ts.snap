@@ -596,7 +596,7 @@ page,.tw-root,wx-root-portal-content,:host {
 }
 }
 
-view,text,::after,::before,::backdrop,::file-selector-button {
+view,text,::after,::before {
     box-sizing: border-box;
     padding: 0;
     margin: 0;
@@ -700,7 +700,7 @@ img,video {
     height: auto;
   }
 
-button,input,select,optgroup,textarea,::file-selector-button {
+button,input,select,optgroup,textarea {
     font: inherit;
     font-variation-settings: inherit;
     font-feature-settings: inherit;
@@ -717,10 +717,6 @@ select[multiple] optgroup,select[size] optgroup {
 
 select[multiple] optgroup option,select[size] optgroup option {
     padding-left: 20px;
-  }
-
-::file-selector-button {
-    margin-right: 4px;
   }
 
 ::placeholder {
@@ -758,7 +754,7 @@ textarea {
     box-shadow: none;
   }
 
-button,input,::file-selector-button {
+button,input {
     appearance: button;
   }
 
@@ -1548,13 +1544,7 @@ page,.tw-root,wx-root-portal-content,:host {
   }
 }
 }
-view,text,:after,:before,::backdrop {
-    box-sizing: border-box;
-    border: 0 solid;
-    margin: 0;
-    padding: 0;
-  }
-::file-selector-button {
+view,text,:after,:before {
     box-sizing: border-box;
     border: 0 solid;
     margin: 0;
@@ -1670,24 +1660,11 @@ button,input,select,optgroup,textarea {
     background-color: rgba(0,0,0,0);
     border-radius: 0;
   }
-::file-selector-button {
-    font: inherit;
-    font-feature-settings: inherit;
-    font-variation-settings: inherit;
-    letter-spacing: inherit;
-    color: inherit;
-    opacity: 1;
-    background-color: rgba(0,0,0,0);
-    border-radius: 0;
-  }
 select[multiple] optgroup,select[size] optgroup {
     font-weight: bolder;
   }
 select[multiple] optgroup option,select[size] optgroup option {
     padding-left: 20px;
-  }
-::file-selector-button {
-    margin-right: 4px;
   }
 ::placeholder {
     opacity: 1;
@@ -1749,11 +1726,6 @@ textarea {
     box-shadow: none;
   }
 button,input {
-    -webkit-appearance: button;
-    -moz-appearance: button;
-    appearance: button;
-  }
-::file-selector-button {
     -webkit-appearance: button;
     -moz-appearance: button;
     appearance: button;
@@ -2582,21 +2554,6 @@ body {
 .peer:disabled~text.peer-disabled_copacity-70 {
     opacity: 0.7;
   }
-.file_cborder-0::file-selector-button {
-    border-style: var(--tw-border-style);
-    border-width: 0;
-  }
-.file_cbg-transparent::file-selector-button {
-    background-color: rgba(0,0,0,0);
-  }
-.file_ctext-sm::file-selector-button {
-    font-size: var(--text-sm);
-    line-height: var(--tw-leading, var(--text-sm--line-height));
-  }
-.file_cfont-medium::file-selector-button {
-    --tw-font-weight: var(--font-weight-medium);
-    font-weight: var(--font-weight-medium);
-  }
 .placeholder_ctext-muted-foreground::placeholder {
     color: hsl(var(--muted-foreground));
   }
@@ -3051,7 +3008,7 @@ exports[`v4 > v4.1.1 1`] = `
 ::before,::after {
       --tw-content: "";
 }
-view,text,::before,::after,::backdrop {
+view,text,::before,::after {
       --tw-shadow: 0 0 rgba(0,0,0,0);
       --tw-shadow-color: initial;
       --tw-shadow-alpha: 100%;
@@ -3084,7 +3041,7 @@ view,text,::before,::after,::backdrop {
 page,.tw-root,wx-root-portal-content,:host {
   --color-zinc-800: rgb(39, 39, 42);
 }
-view,text,::after,::before,::backdrop {
+view,text,::after,::before {
   box-sizing: border-box;
   margin: 0;
   padding: 0;
@@ -3116,7 +3073,7 @@ view,text,::after,::before,::backdrop {
 
 exports[`v4 > v4.1.1 uni-app vue 3 1`] = `
 "/*! tailwindcss v4.1.1 | MIT License | https://tailwindcss.com */
-view,text,:before,:after,::backdrop {
+view,text,:before,:after {
       --tw-font-weight: initial;
     }
 
@@ -3134,7 +3091,7 @@ page,.tw-root,wx-root-portal-content,:host {
   --font-weight-bold: 700;
 }
 
-view,text,:after,:before,::backdrop {
+view,text,:after,:before {
   box-sizing: border-box;
   border: 0 solid;
   margin: 0;
@@ -3218,7 +3175,7 @@ exports[`v4 > v4.1.2 1`] = `
 ::before,::after {
       --tw-content: "";
 }
-view,text,::before,::after,::backdrop {
+view,text,::before,::after {
       --tw-shadow: 0 0 rgba(0,0,0,0);
       --tw-shadow-color: initial;
       --tw-shadow-alpha: 100%;
@@ -3251,7 +3208,7 @@ view,text,::before,::after,::backdrop {
 page,.tw-root,wx-root-portal-content,:host {
   --color-zinc-800: rgb(39, 39, 42);
 }
-view,text,:after,:before,::backdrop {
+view,text,:after,:before {
   box-sizing: border-box;
   border: 0 solid;
   margin: 0;
@@ -3282,13 +3239,13 @@ view,text,:after,:before,::backdrop {
 `;
 
 exports[`v4 > v4.1.2 vite plugin case 0 1`] = `
-"/*! tailwindcss v4.1.2 | MIT License | https://tailwindcss.com */::before,::after{--tw-content:""}view,text,:before,:after,::backdrop{--tw-space-y-reverse:0;--tw-space-x-reverse:0;--tw-border-style:solid;--tw-gradient-position:initial;--tw-gradient-from:rgba(0,0,0,0);--tw-gradient-via:rgba(0,0,0,0);--tw-gradient-to:rgba(0,0,0,0);--tw-gradient-stops:initial;--tw-gradient-via-stops:initial;--tw-gradient-from-position:0%;--tw-gradient-via-position:50%;--tw-gradient-to-position:100%}page,.tw-root,wx-root-portal-content,:host{--color-red-700:rgb(191, 0, 15);--color-amber-300:rgb(255, 210, 55);--spacing:.25rem}@supports (color: color(display-p3 0 0 0%)){
+"/*! tailwindcss v4.1.2 | MIT License | https://tailwindcss.com */::before,::after{--tw-content:""}view,text,:before,:after{--tw-space-y-reverse:0;--tw-space-x-reverse:0;--tw-border-style:solid;--tw-gradient-position:initial;--tw-gradient-from:rgba(0,0,0,0);--tw-gradient-via:rgba(0,0,0,0);--tw-gradient-to:rgba(0,0,0,0);--tw-gradient-stops:initial;--tw-gradient-via-stops:initial;--tw-gradient-from-position:0%;--tw-gradient-via-position:50%;--tw-gradient-to-position:100%}page,.tw-root,wx-root-portal-content,:host{--color-red-700:rgb(191, 0, 15);--color-amber-300:rgb(255, 210, 55);--spacing:.25rem}@supports (color: color(display-p3 0 0 0%)){
 page,.tw-root,wx-root-portal-content,:host{--color-red-700:rgb(191, 0, 16);--color-amber-300:rgb(255, 210, 55)}
 
 @media (color-gamut: p3){
 page,.tw-root,wx-root-portal-content,:host{--color-red-700:color(display-p3 0.69274 0.11623 0.10468);--color-amber-300:color(display-p3 0.97433 0.83063 0.33298)}
 }
-}view,text,:after,:before,::backdrop{box-sizing:border-box;border:0 solid;margin:0;padding:0}.container{width:100%}@media (min-width:40rem){.container{max-width:40rem}}@media (min-width:48rem){.container{max-width:48rem}}@media (min-width:64rem){.container{max-width:64rem}}@media (min-width:80rem){.container{max-width:80rem}}@media (min-width:96rem){.container{max-width:96rem}}.i-mdi-home{width:1em;height:1em;-webkit-mask-image:var(--svg);mask-image:var(--svg);--svg:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' width='24' height='24'%3E%3Cpath fill='black' d='M10 20v-6h4v6h5v-8h3L12 3L2 12h3v8z'/%3E%3C/svg%3E");background-color:currentColor;display:inline-block;-webkit-mask-size:100% 100%;mask-size:100% 100%;-webkit-mask-repeat:no-repeat;mask-repeat:no-repeat}.inline-block{display:inline-block}.h-10{height:calc(var(--spacing)*10)}.h-_b29_d292px_B{height:29.292px}.h-_b30px_B{height:30px}.h-_b45px_B{height:45px}.w-_b50px_B{width:50px}.w-_b323px_B{width:323px}.space-y-2_d5>view+view{--tw-space-y-reverse:0;margin-bottom:calc((var(--spacing)*2.5)*var(--tw-space-y-reverse));margin-top:calc((var(--spacing)*2.5)*(1 - var(--tw-space-y-reverse)))}.space-x-2_d5>view+view{--tw-space-x-reverse:0;margin-right:calc((var(--spacing)*2.5)*var(--tw-space-x-reverse));margin-left:calc((var(--spacing)*2.5)*(1 - var(--tw-space-x-reverse)))}.border-4{border-style:var(--tw-border-style);border-width:4px}.bg-_b_h3a32d1_B{background-color:#3a32d1}.bg-_b_h7d7ac2_B{background-color:#7d7ac2}.bg-amber-300{background-color:var(--color-amber-300)}.bg-gradient-to-b{--tw-gradient-position:to bottom ;background-image:linear-gradient(var(--tw-gradient-stops))}.bg-gradient-to-t{--tw-gradient-position:to top ;background-image:linear-gradient(var(--tw-gradient-stops))}.bg-gradient-to-tr{--tw-gradient-position:to top right ;background-image:linear-gradient(var(--tw-gradient-stops))}.from-_b_h2f73f1_B{--tw-gradient-from:#2f73f1;--tw-gradient-stops:var(--tw-gradient-via-stops,var(--tw-gradient-position),var(--tw-gradient-from)var(--tw-gradient-from-position),var(--tw-gradient-to)var(--tw-gradient-to-position))}.to-_b_h4bcefd_B{--tw-gradient-to:#4bcefd;--tw-gradient-stops:var(--tw-gradient-via-stops,var(--tw-gradient-position),var(--tw-gradient-from)var(--tw-gradient-from-position),var(--tw-gradient-to)var(--tw-gradient-to-position))}.text-_b100px_B{font-size:100px}.text-_b_h123456_B{color:#123456}.text-_b100rpx_B{font-size:100rpx}.text-red-700{color:var(--color-red-700)}
+}view,text,:after,:before{box-sizing:border-box;border:0 solid;margin:0;padding:0}.container{width:100%}@media (min-width:40rem){.container{max-width:40rem}}@media (min-width:48rem){.container{max-width:48rem}}@media (min-width:64rem){.container{max-width:64rem}}@media (min-width:80rem){.container{max-width:80rem}}@media (min-width:96rem){.container{max-width:96rem}}.i-mdi-home{width:1em;height:1em;-webkit-mask-image:var(--svg);mask-image:var(--svg);--svg:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' width='24' height='24'%3E%3Cpath fill='black' d='M10 20v-6h4v6h5v-8h3L12 3L2 12h3v8z'/%3E%3C/svg%3E");background-color:currentColor;display:inline-block;-webkit-mask-size:100% 100%;mask-size:100% 100%;-webkit-mask-repeat:no-repeat;mask-repeat:no-repeat}.inline-block{display:inline-block}.h-10{height:calc(var(--spacing)*10)}.h-_b29_d292px_B{height:29.292px}.h-_b30px_B{height:30px}.h-_b45px_B{height:45px}.w-_b50px_B{width:50px}.w-_b323px_B{width:323px}.space-y-2_d5>view+view{--tw-space-y-reverse:0;margin-bottom:calc((var(--spacing)*2.5)*var(--tw-space-y-reverse));margin-top:calc((var(--spacing)*2.5)*(1 - var(--tw-space-y-reverse)))}.space-x-2_d5>view+view{--tw-space-x-reverse:0;margin-right:calc((var(--spacing)*2.5)*var(--tw-space-x-reverse));margin-left:calc((var(--spacing)*2.5)*(1 - var(--tw-space-x-reverse)))}.border-4{border-style:var(--tw-border-style);border-width:4px}.bg-_b_h3a32d1_B{background-color:#3a32d1}.bg-_b_h7d7ac2_B{background-color:#7d7ac2}.bg-amber-300{background-color:var(--color-amber-300)}.bg-gradient-to-b{--tw-gradient-position:to bottom ;background-image:linear-gradient(var(--tw-gradient-stops))}.bg-gradient-to-t{--tw-gradient-position:to top ;background-image:linear-gradient(var(--tw-gradient-stops))}.bg-gradient-to-tr{--tw-gradient-position:to top right ;background-image:linear-gradient(var(--tw-gradient-stops))}.from-_b_h2f73f1_B{--tw-gradient-from:#2f73f1;--tw-gradient-stops:var(--tw-gradient-via-stops,var(--tw-gradient-position),var(--tw-gradient-from)var(--tw-gradient-from-position),var(--tw-gradient-to)var(--tw-gradient-to-position))}.to-_b_h4bcefd_B{--tw-gradient-to:#4bcefd;--tw-gradient-stops:var(--tw-gradient-via-stops,var(--tw-gradient-position),var(--tw-gradient-from)var(--tw-gradient-from-position),var(--tw-gradient-to)var(--tw-gradient-to-position))}.text-_b100px_B{font-size:100px}.text-_b_h123456_B{color:#123456}.text-_b100rpx_B{font-size:100rpx}.text-red-700{color:var(--color-red-700)}
 /*$vite$:1*/"
 `;
 
@@ -3296,7 +3253,7 @@ exports[`v4 > v4.1.2 vite plugin case 1 1`] = `
 "/*! tailwindcss v4.1.2 | MIT License | https://tailwindcss.com */
 ::before,::after {
       --tw-content: ""}
-view,text,:before,:after,::backdrop {
+view,text,:before,:after {
       --tw-space-y-reverse: 0;
       --tw-space-x-reverse: 0;
       --tw-border-style: solid;
@@ -3329,7 +3286,7 @@ page,.tw-root,wx-root-portal-content,:host {
 }
 }
 
-view,text,:after,:before,::backdrop {
+view,text,:after,:before {
   box-sizing: border-box;
   border: 0 solid;
   margin: 0;
@@ -4158,14 +4115,7 @@ page,.tw-root,wx-root-portal-content,:host {
 }
 }
 
-view,text,::after,::before,::backdrop {
-    box-sizing: border-box;
-    padding: 0;
-    margin: 0;
-    border: 0 solid;
-  }
-
-::file-selector-button {
+view,text,::after,::before {
     box-sizing: border-box;
     padding: 0;
     margin: 0;
@@ -4280,27 +4230,12 @@ button,input,select,optgroup,textarea {
     opacity: 1;
   }
 
-::file-selector-button {
-    font: inherit;
-    font-variation-settings: inherit;
-    font-feature-settings: inherit;
-    color: inherit;
-    letter-spacing: inherit;
-    background-color: rgba(0,0,0,0);
-    border-radius: 0;
-    opacity: 1;
-  }
-
 select[multiple] optgroup,select[size] optgroup {
     font-weight: bolder;
   }
 
 select[multiple] optgroup option,select[size] optgroup option {
     padding-left: 20px;
-  }
-
-::file-selector-button {
-    margin-right: 4px;
   }
 
 ::placeholder {
@@ -4379,10 +4314,6 @@ textarea {
   }
 
 button,input {
-    appearance: button;
-  }
-
-::file-selector-button {
     appearance: button;
   }
 
