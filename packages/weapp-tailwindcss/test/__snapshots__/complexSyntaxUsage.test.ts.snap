@@ -1,0 +1,91 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`tailwind complex syntax corpus > Arbitrary properties and content > [--scroll-offset:calc(theme(spacing.10)-1px)] 1`] = `"_b--scroll-offset_ccalc_ptheme_pspacing_d10_P-1px_P_B"`;
+
+exports[`tailwind complex syntax corpus > Arbitrary properties and content > [background:paint(squiggles)] 1`] = `"_bbackground_cpaint_psquiggles_P_B"`;
+
+exports[`tailwind complex syntax corpus > Arbitrary properties and content > [clip-path:polygon(0_0,100%_0,100%_100%,0_100%)] 1`] = `"_bclip-path_cpolygon_p0_0_m100_v_0_m100_v_100_v_m0_100_v_P_B"`;
+
+exports[`tailwind complex syntax corpus > Arbitrary properties and content > [mask-type:luminance] hover:[mask-type:alpha] 1`] = `"_bmask-type_cluminance_B hover_c_bmask-type_calpha_B"`;
+
+exports[`tailwind complex syntax corpus > Arbitrary properties and content > after:content-["["] 1`] = `"after_ccontent-_b_q_b_q_B"`;
+
+exports[`tailwind complex syntax corpus > Arbitrary properties and content > before:content-["hello_world"] 1`] = `"before_ccontent-_b_qhello_world_q_B"`;
+
+exports[`tailwind complex syntax corpus > Arbitrary properties and content > before:content-[attr(data-label)] 1`] = `"before_ccontent-_battr_pdata-label_P_B"`;
+
+exports[`tailwind complex syntax corpus > Arbitrary properties and content > dark:[&_.card__title]:text-[color:var(--brand-foreground)] 1`] = `"dark_c_b_n__dcard__title_B_ctext-_bcolor_cvar_p--brand-foreground_P_B"`;
+
+exports[`tailwind complex syntax corpus > Arbitrary properties and content > lg:[--card-radius:clamp(8px,1.5vw,20px)] 1`] = `"lg_c_b--card-radius_cclamp_p8px_m1_d5vw_m20px_P_B"`;
+
+exports[`tailwind complex syntax corpus > Arbitrary properties and content > rtl:motion-safe:hover:scale-[1.015] 1`] = `"rtl_cmotion-safe_chover_cscale-_b1_d015_B"`;
+
+exports[`tailwind complex syntax corpus > Arbitrary values and functions > bg-[linear-gradient(135deg,_#111827,_#1f2937)] 1`] = `"bg-_blinear-gradient_p135deg_m__h111827_m__h1f2937_P_B"`;
+
+exports[`tailwind complex syntax corpus > Arbitrary values and functions > grid-cols-[repeat(auto-fit,minmax(12rem,1fr))] 1`] = `"grid-cols-_brepeat_pauto-fit_mminmax_p12rem_m1fr_P_P_B"`;
+
+exports[`tailwind complex syntax corpus > Arbitrary values and functions > max-[37.5rem]:[&_.btn-primary]:!px-[clamp(0.75rem,2vw,1rem)] 1`] = `"max-_b37_d5rem_B_c_b_n__dbtn-primary_B_c_epx-_bclamp_p0_d75rem_m2vw_m1rem_P_B"`;
+
+exports[`tailwind complex syntax corpus > Arbitrary values and functions > min-[712px]:max-[877px]:right-16 1`] = `"min-_b712px_B_cmax-_b877px_B_cright-16"`;
+
+exports[`tailwind complex syntax corpus > Arbitrary values and functions > shadow-[0_0_0_1px_rgb(0_0_0_/_0.1),0_10px_30px_-12px_rgb(0_0_0_/_0.35)] 1`] = `"shadow-_b0_0_0_1px_rgb_p0_0_0__f_0_d1_P_m0_10px_30px_-12px_rgb_p0_0_0__f_0_d35_P_B"`;
+
+exports[`tailwind complex syntax corpus > Arbitrary values and functions > supports-[backdrop-filter:blur(0)]:backdrop-blur-[12px] 1`] = `"supports-_bbackdrop-filter_cblur_p0_P_B_cbackdrop-blur-_b12px_B"`;
+
+exports[`tailwind complex syntax corpus > Arbitrary values and functions > supports-[display:grid]:grid 1`] = `"supports-_bdisplay_cgrid_B_cgrid"`;
+
+exports[`tailwind complex syntax corpus > Arbitrary values and functions > text-[length:var(--step-2)]/7 1`] = `"text-_blength_cvar_p--step-2_P_B_f7"`;
+
+exports[`tailwind complex syntax corpus > Arbitrary values and functions > translate-x-[calc(100%-50%)] 1`] = `"translate-x-_bcalc_p100_v-50_v_P_B"`;
+
+exports[`tailwind complex syntax corpus > Arbitrary values and functions > w-[calc(100%-theme(spacing.4))] 1`] = `"w-_bcalc_p100_v-theme_pspacing_d4_P_P_B"`;
+
+exports[`tailwind complex syntax corpus > Data and aria variants > aria-[expanded=true]:max-h-[32rem] 1`] = `"aria-_bexpanded_ztrue_B_cmax-h-_b32rem_B"`;
+
+exports[`tailwind complex syntax corpus > Data and aria variants > data-[state=open]:animate-[accordion-down_0.2s_ease-out] 1`] = `"data-_bstate_zopen_B_canimate-_baccordion-down_0_d2s_ease-out_B"`;
+
+exports[`tailwind complex syntax corpus > Data and aria variants > group-aria-[sort=ascending]:text-sky-600 1`] = `"group-aria-_bsort_zascending_B_ctext-sky-600"`;
+
+exports[`tailwind complex syntax corpus > Data and aria variants > group-data-[state=open]:rotate-180 1`] = `"group-data-_bstate_zopen_B_crotate-180"`;
+
+exports[`tailwind complex syntax corpus > Data and aria variants > peer-aria-[pressed=true]:scale-[0.98] 1`] = `"peer-aria-_bpressed_ztrue_B_cscale-_b0_d98_B"`;
+
+exports[`tailwind complex syntax corpus > Data and aria variants > peer-data-[disabled=true]:opacity-50 1`] = `"peer-data-_bdisabled_ztrue_B_copacity-50"`;
+
+exports[`tailwind complex syntax corpus > Mixed class sets > [@media(pointer:fine){&:hover}]:opacity-100 [@supports(selector(:has(*)))]:[&:has(>img)]:ring-2 1`] = `"_b_tmedia_ppointer_cfine_P_k_n_chover_K_B_copacity-100 _b_tsupports_pselector_p_chas_p_x_P_P_P_B_c_b_n_chas_p_gimg_P_B_cring-2"`;
+
+exports[`tailwind complex syntax corpus > Mixed class sets > before:content-["hello_world"] after:content-["["] [clip-path:polygon(0_0,100%_0,100%_100%,0_100%)] 1`] = `"before_ccontent-_b_qhello_world_q_B after_ccontent-_b_q_b_q_B _bclip-path_cpolygon_p0_0_m100_v_0_m100_v_100_v_m0_100_v_P_B"`;
+
+exports[`tailwind complex syntax corpus > Mixed class sets > dark:md:hover:[&:not(:first-child)]:underline data-[state=open]:opacity-100 1`] = `"dark_cmd_chover_c_b_n_cnot_p_cfirst-child_P_B_cunderline data-_bstate_zopen_B_copacity-100"`;
+
+exports[`tailwind complex syntax corpus > Mixed class sets > group-aria-[sort=ascending]:text-sky-600 peer-data-[disabled=true]:opacity-50 1`] = `"group-aria-_bsort_zascending_B_ctext-sky-600 peer-data-_bdisabled_ztrue_B_copacity-50"`;
+
+exports[`tailwind complex syntax corpus > Mixed class sets > min-[712px]:max-[877px]:right-16 supports-[display:grid]:grid 1`] = `"min-_b712px_B_cmax-_b877px_B_cright-16 supports-_bdisplay_cgrid_B_cgrid"`;
+
+exports[`tailwind complex syntax corpus > Variant chains > [&:has(>img)]:ring-2 1`] = `"_b_n_chas_p_gimg_P_B_cring-2"`;
+
+exports[`tailwind complex syntax corpus > Variant chains > [&>*:nth-child(2n+1)]:text-red-500 1`] = `"_b_n_g_x_cnth-child_p2n_u1_P_B_ctext-red-500"`;
+
+exports[`tailwind complex syntax corpus > Variant chains > [&[data-state=open]]:opacity-100 1`] = `"_b_n_bdata-state_zopen_B_B_copacity-100"`;
+
+exports[`tailwind complex syntax corpus > Variant chains > [@media(pointer:fine){&:hover}]:opacity-100 1`] = `"_b_tmedia_ppointer_cfine_P_k_n_chover_K_B_copacity-100"`;
+
+exports[`tailwind complex syntax corpus > Variant chains > [@supports(selector(:has(*)))]:[&:has(>img)]:ring-2 1`] = `"_b_tsupports_pselector_p_chas_p_x_P_P_P_B_c_b_n_chas_p_gimg_P_B_cring-2"`;
+
+exports[`tailwind complex syntax corpus > Variant chains > dark:md:hover:[&:not(:first-child)]:underline 1`] = `"dark_cmd_chover_c_b_n_cnot_p_cfirst-child_P_B_cunderline"`;
+
+exports[`tailwind complex syntax corpus > Variant chains > focus-visible:[&_.icon]:translate-x-[calc(100%-1rem)] 1`] = `"focus-visible_c_b_n__dicon_B_ctranslate-x-_bcalc_p100_v-1rem_P_B"`;
+
+exports[`tailwind complex syntax corpus > Variant chains > group-[:nth-of-type(3)_&]:block 1`] = `"group-_b_cnth-of-type_p3_P__n_B_cblock"`;
+
+exports[`tailwind complex syntax corpus > Variant chains > peer-[:nth-of-type(3)_&]:hidden 1`] = `"peer-_b_cnth-of-type_p3_P__n_B_chidden"`;
+
+exports[`tailwind complex syntax corpus > Variant chains > sm:dark:data-[state=open]:hover:[&>svg]:rotate-[180deg] 1`] = `"sm_cdark_cdata-_bstate_zopen_B_chover_c_b_n_gsvg_B_crotate-_b180deg_B"`;
+
+exports[`template expressions with complex syntax > 'array with media and supports variants' 1`] = `"{{["_b_tmedia_ppointer_cfine_P_k_n_chover_K_B_copacity-100","supports-_bdisplay_cgrid_B_cgrid",klass]}}"`;
+
+exports[`template expressions with complex syntax > 'nested ternary with arbitrary values' 1`] = `"{{active ? (compact ? "w-_bcalc_p100_v-theme_pspacing_d4_P_P_B" : "translate-x-_bcalc_p100_v-50_v_P_B") : "grid-cols-_brepeat_pauto-fit_mminmax_p12rem_m1fr_P_P_B"}}"`;
+
+exports[`template expressions with complex syntax > 'string concat with arbitrary properti…' 1`] = `"{{"_b--scroll-offset_ccalc_ptheme_pspacing_d10_P-1px_P_B " + "before_ccontent-_b\\"hello_world\\"] " + cls}}"`;
+
+exports[`template expressions with complex syntax > 'ternary with data variants' 1`] = `"{{open ? "data-_bstate_zopen_B_copacity-100" : "data-_bstate_zclosed_B_copacity-0"}}"`;
