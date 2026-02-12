@@ -1,0 +1,130 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`tailwind complex syntax output > generates wxss selectors for complex syntax corpus > tailwind-css 1`] = `
+".w-\\[calc\\(100\\%_-_17px\\)\\] {
+    width: calc(100% - 17px)
+}
+.grid-cols-\\[200rpx_minmax\\(900rpx\\2c _1fr\\)_17px\\] {
+    grid-template-columns: 200rpx minmax(900rpx, 1fr) 17px
+}
+.text-\\[length\\:var\\(--step-2\\)\\] {
+    font-size: var(--step-2)
+}
+.text-black\\/\\[0\\.37\\] {
+    color: rgb(0 0 0 / 0.37)
+}
+.shadow-\\[0_35px_60px_-15px_rgba\\(0\\2c 0\\2c 0\\2c 0\\.3\\)\\] {
+    --tw-shadow: 0 35px 60px -15px rgba(0,0,0,0.3);
+    --tw-shadow-colored: 0 35px 60px -15px var(--tw-shadow-color);
+    box-shadow: var(--tw-ring-offset-shadow, 0 0 #0000), var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow)
+}
+.ring-\\[1\\.7px\\] {
+    --tw-ring-offset-shadow: var(--tw-ring-inset) 0 0 0 var(--tw-ring-offset-width) var(--tw-ring-offset-color);
+    --tw-ring-shadow: var(--tw-ring-inset) 0 0 0 calc(1.7px + var(--tw-ring-offset-width)) var(--tw-ring-color);
+    box-shadow: var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow, 0 0 #0000)
+}
+.\\[--scroll-offset\\:56px\\] {
+    --scroll-offset: 56px
+}
+.\\[mask-type\\:luminance\\] {
+    mask-type: luminance
+}
+.before\\:content-\\[\\'hello_world\\'\\]::before {
+    --tw-content: 'hello world';
+    content: var(--tw-content)
+}
+.after\\:content-\\[\\'\\[\\'\\]::after {
+    --tw-content: '[';
+    content: var(--tw-content)
+}
+.hover\\:\\[mask-type\\:alpha\\]:hover {
+    mask-type: alpha
+}
+.group.is-published .group-\\[\\.is-published\\]\\:block {
+    display: block
+}
+:nth-of-type(3) .group .group-\\[\\:nth-of-type\\(3\\)_\\&\\]\\:block {
+    display: block
+}
+@media (min-width: 1024px) {
+    .lg\\:\\[--scroll-offset\\:44px\\] {
+        --scroll-offset: 44px
+    }
+}
+.\\[\\&\\:nth-child\\(3\\)\\]\\:underline:nth-child(3) {
+    text-decoration-line: underline
+}
+@media (min-width: 1024px) {
+    .lg\\:\\[\\&\\:nth-child\\(3\\)\\]\\:hover\\:underline:hover:nth-child(3) {
+        text-decoration-line: underline
+    }
+}
+@media(any-hover:hover) {
+    .\\[\\@media\\(any-hover\\:hover\\)\\{\\&\\:hover\\}\\]\\:opacity-100:hover {
+        opacity: 1
+    }
+}
+@supports(display:grid) {
+    .\\[\\@supports\\(display\\:grid\\)\\]\\:grid {
+        display: grid
+    }
+}"
+`;
+
+exports[`tailwind complex syntax output > generates wxss selectors for complex syntax corpus > wxss 1`] = `
+".w-_bcalc_p100_v_-_17px_P_B {
+    width: calc(100% - 17px)
+}
+.grid-cols-_b200rpx_minmax_p900rpx_m_1fr_P_17px_B {
+    grid-template-columns: 200rpx minmax(900rpx, 1fr) 17px
+}
+.text-_blength_cvar_p--step-2_P_B {
+    font-size: var(--step-2)
+}
+.text-black_f_b0_d37_B {
+    color: rgba(0, 0, 0, 0.37)
+}
+.shadow-_b0_35px_60px_-15px_rgba_p0_m0_m0_m0_d3_P_B {
+    --tw-shadow: 0 35px 60px -15px rgba(0,0,0,0.3);
+    --tw-shadow-colored: 0 35px 60px -15px var(--tw-shadow-color);
+    box-shadow: var(--tw-ring-offset-shadow, 0 0 rgba(0,0,0,0)), var(--tw-ring-shadow, 0 0 rgba(0,0,0,0)), var(--tw-shadow)
+}
+.ring-_b1_d7px_B {
+    --tw-ring-offset-shadow: var(--tw-ring-inset) 0 0 0 var(--tw-ring-offset-width) var(--tw-ring-offset-color);
+    --tw-ring-shadow: var(--tw-ring-inset) 0 0 0 calc(1.7px + var(--tw-ring-offset-width)) var(--tw-ring-color);
+    box-shadow: var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow, 0 0 rgba(0,0,0,0))
+}
+._b--scroll-offset_c56px_B {
+    --scroll-offset: 56px
+}
+._bmask-type_cluminance_B {
+    mask-type: luminance
+}
+.before_ccontent-_b_ahello_world_a_B::before {
+    --tw-content: 'hello world';
+    content: var(--tw-content)
+}
+.after_ccontent-_b_a_b_a_B::after {
+    --tw-content: '[';
+    content: var(--tw-content)
+}
+.group.is-published .group-_b_dis-published_B_cblock {
+    display: block
+}
+:nth-of-type(3) .group .group-_b_cnth-of-type_p3_P__n_B_cblock {
+    display: block
+}
+@media (min-width: 1024px) {
+    .lg_c_b--scroll-offset_c44px_B {
+        --scroll-offset: 44px
+    }
+}
+._b_n_cnth-child_p3_P_B_cunderline:nth-child(3) {
+    text-decoration-line: underline
+}
+@supports(display:grid) {
+    ._b_tsupports_pdisplay_cgrid_P_B_cgrid {
+        display: grid
+    }
+}"
+`;

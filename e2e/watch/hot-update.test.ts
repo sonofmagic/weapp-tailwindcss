@@ -10,6 +10,22 @@ interface HotUpdateCaseReport {
   classLiteral: string
   classTokens: string[]
   escapedClasses: string[]
+  rounds: HotUpdateRoundReport[]
+  roundComparison?: {
+    hotUpdateDeltaMs: number
+    rollbackDeltaMs: number
+    hotUpdateRatio: number
+    rollbackRatio: number
+  }
+  hotUpdateEffectiveMs: number
+  rollbackEffectiveMs: number
+}
+
+interface HotUpdateRoundReport {
+  roundName: 'baseline-arbitrary' | 'complex-corpus'
+  classLiteral: string
+  classTokens: string[]
+  escapedClasses: string[]
   hotUpdateEffectiveMs: number
   rollbackEffectiveMs: number
 }
@@ -26,6 +42,7 @@ interface HotUpdateSummary {
 
 interface HotUpdateReport {
   summary: HotUpdateSummary
+  summaryByRound: Partial<Record<'baseline-arbitrary' | 'complex-corpus', HotUpdateSummary>>
   cases: HotUpdateCaseReport[]
 }
 
@@ -119,13 +136,29 @@ describe('e2e watch hot-update', () => {
 
     expect(report.summary.count).toBeGreaterThan(0)
     expect(report.cases.length).toBe(report.summary.count)
+    expect(report.summaryByRound['baseline-arbitrary']?.count).toBe(report.summary.count)
+    expect(report.summaryByRound['complex-corpus']?.count).toBe(report.summary.count)
 
     for (const item of report.cases) {
       expect(item.hotUpdateEffectiveMs).toBeGreaterThan(0)
       expect(item.hotUpdateEffectiveMs).toBeLessThanOrEqual(maxHotUpdateMs)
       expect(item.rollbackEffectiveMs).toBeGreaterThan(0)
-      expect(item.classTokens.length).toBeGreaterThanOrEqual(7)
+      expect(item.classTokens.length).toBeGreaterThanOrEqual(12)
       expect(item.escapedClasses.length).toBe(item.classTokens.length)
+      expect(item.rounds.length).toBe(2)
+
+      const baselineRound = item.rounds.find(round => round.roundName === 'baseline-arbitrary')
+      const complexRound = item.rounds.find(round => round.roundName === 'complex-corpus')
+      expect(baselineRound).toBeDefined()
+      expect(complexRound).toBeDefined()
+
+      expect(baselineRound?.classTokens.length).toBeGreaterThanOrEqual(7)
+      expect(complexRound?.classTokens.length).toBeGreaterThanOrEqual(12)
+      expect(complexRound?.hotUpdateEffectiveMs).toBeGreaterThan(0)
+      expect(complexRound?.rollbackEffectiveMs).toBeGreaterThan(0)
+      expect(item.roundComparison).toBeDefined()
+      expect(item.roundComparison?.hotUpdateRatio).toBeGreaterThan(0)
+      expect(item.roundComparison?.rollbackRatio).toBeGreaterThan(0)
 
       expect(item.classLiteral).toContain('text-[23.')
       expect(item.classLiteral).toContain('space-y-2.')
@@ -134,6 +167,9 @@ describe('e2e watch hot-update', () => {
       expect(item.classLiteral).toContain('after:ml-')
       expect(item.classLiteral).toContain('text-black/[0.')
       expect(item.classLiteral).toContain('ring-[1.')
+      expect(item.classLiteral).toContain('data-[state=open]:opacity-100')
+      expect(item.classLiteral).toContain('supports-[display:grid]:grid')
+      expect(item.classLiteral).toContain('[mask-type:luminance]')
     }
   })
 })

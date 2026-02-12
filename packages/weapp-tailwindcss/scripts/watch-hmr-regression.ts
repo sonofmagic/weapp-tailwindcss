@@ -8,6 +8,7 @@ import { replaceWxml } from '../src/wxml/shared'
 
 type ConcreteWatchCaseName = 'taro' | 'uni' | 'mpx' | 'rax' | 'mina' | 'weapp-vite'
 type WatchCaseName = ConcreteWatchCaseName | 'both' | 'all'
+type MutationRoundName = 'baseline-arbitrary' | 'complex-corpus'
 
 interface CliOptions {
   caseName: WatchCaseName
@@ -25,7 +26,13 @@ interface MutationPayload {
   classVariableName: string
 }
 
+interface MutationRoundConfig {
+  name: MutationRoundName
+  buildClassTokens: (seed: string) => string[]
+}
+
 interface MutationScenario extends MutationPayload {
+  roundName: MutationRoundName
   classTokens: string[]
   escapedClasses: string[]
   freshEscapedClasses: string[]
@@ -66,6 +73,8 @@ interface WatchCaseMetrics {
   classLiteral: string
   classTokens: string[]
   escapedClasses: string[]
+  rounds: MutationRoundMetrics[]
+  roundComparison?: WatchCaseRoundComparison
   verifyEscapedIn: Array<'wxml' | 'js'>
   verifyClassLiteralIn: Array<'wxml' | 'js'>
   initialReadyMs: number
@@ -74,6 +83,28 @@ interface WatchCaseMetrics {
   rollbackOutputMs: number
   rollbackEffectiveMs: number
   totalMs: number
+}
+
+interface MutationRoundMetrics {
+  roundName: MutationRoundName
+  marker: string
+  classLiteral: string
+  classTokens: string[]
+  escapedClasses: string[]
+  hotUpdateOutputMs: number
+  hotUpdateEffectiveMs: number
+  rollbackOutputMs: number
+  rollbackEffectiveMs: number
+  totalMs: number
+}
+
+interface WatchCaseRoundComparison {
+  baselineRoundName: MutationRoundName
+  candidateRoundName: MutationRoundName
+  hotUpdateDeltaMs: number
+  rollbackDeltaMs: number
+  hotUpdateRatio: number
+  rollbackRatio: number
 }
 
 interface WatchSummary {
@@ -98,6 +129,7 @@ interface WatchReport {
     maxHotUpdateMs?: number
   }
   summary: WatchSummary
+  summaryByRound: Partial<Record<MutationRoundName, WatchSummary>>
   cases: WatchCaseMetrics[]
 }
 
@@ -748,7 +780,7 @@ async function waitForMarkerState(
   )
 }
 
-function buildComplexClassTokens(seed: string) {
+function buildBaselineArbitraryClassTokens(seed: string) {
   const opacitySeed = seed.slice(0, 2)
   const decimalSeed = seed.slice(-1)
 
@@ -763,21 +795,48 @@ function buildComplexClassTokens(seed: string) {
   ]
 }
 
+function buildComplexCorpusClassTokens(seed: string) {
+  return [
+    ...buildBaselineArbitraryClassTokens(seed),
+    'group-[:nth-of-type(3)_&]:block',
+    '[@supports(display:grid)]:grid',
+    '[@media(any-hover:hover){&:hover}]:opacity-100',
+    'data-[state=open]:opacity-100',
+    'supports-[display:grid]:grid',
+    '[mask-type:luminance]',
+    `[--watch-hmr-offset:${seed}px]`,
+  ]
+}
+
+function resolveMutationRoundConfigs(): MutationRoundConfig[] {
+  return [
+    {
+      name: 'baseline-arbitrary',
+      buildClassTokens: buildBaselineArbitraryClassTokens,
+    },
+    {
+      name: 'complex-corpus',
+      buildClassTokens: buildComplexCorpusClassTokens,
+    },
+  ]
+}
+
 function createMutationScenario(
   watchCase: WatchCase,
   original: string,
   baselineWxml: string,
   baselineJs: string,
   classVariableName: string,
+  roundConfig: MutationRoundConfig,
 ): MutationScenario {
   const maxAttempts = 24
 
   for (let attempt = 0; attempt < maxAttempts; attempt += 1) {
     const seedBase = Date.now().toString().slice(-6)
     const seed = `${seedBase}${attempt}`
-    const classTokens = buildComplexClassTokens(seed)
+    const classTokens = roundConfig.buildClassTokens(seed)
     const escapedClasses = classTokens.map(item => replaceWxml(item))
-    const marker = `tw-watch-${watchCase.name}-${seed}`
+    const marker = `tw-watch-${watchCase.name}-${roundConfig.name}-${seed}`
     const classLiteral = classTokens.join(' ')
 
     const freshEscapedClasses = escapedClasses.filter((escaped) => {
@@ -803,6 +862,7 @@ function createMutationScenario(
     }
 
     return {
+      roundName: roundConfig.name,
       marker,
       classLiteral,
       classVariableName,
@@ -813,7 +873,7 @@ function createMutationScenario(
     }
   }
 
-  throw new Error(`[${watchCase.label}] failed to generate enough fresh mutation classes`)
+  throw new Error(`[${watchCase.label}] failed to generate enough fresh mutation classes for round=${roundConfig.name}`)
 }
 
 function summarizeMetrics(cases: WatchCaseMetrics[]): WatchSummary {
@@ -847,6 +907,74 @@ function summarizeMetrics(cases: WatchCaseMetrics[]): WatchSummary {
   }
 }
 
+function summarizeMetricsForRound(cases: WatchCaseMetrics[], roundName: MutationRoundName): WatchSummary {
+  const projected = cases
+    .map((item) => {
+      return item.rounds.find(round => round.roundName === roundName)
+    })
+    .filter((item): item is MutationRoundMetrics => Boolean(item))
+    .map((round) => {
+      return {
+        hotUpdateEffectiveMs: round.hotUpdateEffectiveMs,
+        rollbackEffectiveMs: round.rollbackEffectiveMs,
+      }
+    })
+
+  const count = projected.length
+  if (count === 0) {
+    return {
+      count: 0,
+      hotUpdateAvgMs: 0,
+      hotUpdateMaxMs: 0,
+      hotUpdateMinMs: 0,
+      rollbackAvgMs: 0,
+      rollbackMaxMs: 0,
+      rollbackMinMs: 0,
+    }
+  }
+
+  const hotUpdateDurations = projected.map(item => item.hotUpdateEffectiveMs)
+  const rollbackDurations = projected.map(item => item.rollbackEffectiveMs)
+  const hotUpdateSum = hotUpdateDurations.reduce((sum, value) => sum + value, 0)
+  const rollbackSum = rollbackDurations.reduce((sum, value) => sum + value, 0)
+
+  return {
+    count,
+    hotUpdateAvgMs: Math.round(hotUpdateSum / count),
+    hotUpdateMaxMs: Math.max(...hotUpdateDurations),
+    hotUpdateMinMs: Math.min(...hotUpdateDurations),
+    rollbackAvgMs: Math.round(rollbackSum / count),
+    rollbackMaxMs: Math.max(...rollbackDurations),
+    rollbackMinMs: Math.min(...rollbackDurations),
+  }
+}
+
+function summarizeMetricsByRound(cases: WatchCaseMetrics[]) {
+  const summaryByRound: Partial<Record<MutationRoundName, WatchSummary>> = {}
+  for (const roundName of resolveMutationRoundConfigs().map(item => item.name)) {
+    summaryByRound[roundName] = summarizeMetricsForRound(cases, roundName)
+  }
+  return summaryByRound
+}
+
+function buildRoundComparison(rounds: MutationRoundMetrics[]): WatchCaseRoundComparison | undefined {
+  const baseline = rounds.find(item => item.roundName === 'baseline-arbitrary')
+  const candidate = rounds.find(item => item.roundName === 'complex-corpus')
+
+  if (!baseline || !candidate) {
+    return undefined
+  }
+
+  return {
+    baselineRoundName: baseline.roundName,
+    candidateRoundName: candidate.roundName,
+    hotUpdateDeltaMs: candidate.hotUpdateEffectiveMs - baseline.hotUpdateEffectiveMs,
+    rollbackDeltaMs: candidate.rollbackEffectiveMs - baseline.rollbackEffectiveMs,
+    hotUpdateRatio: Number((candidate.hotUpdateEffectiveMs / baseline.hotUpdateEffectiveMs).toFixed(3)),
+    rollbackRatio: Number((candidate.rollbackEffectiveMs / baseline.rollbackEffectiveMs).toFixed(3)),
+  }
+}
+
 function resolveReportPath(baseCwd: string, file: string) {
   return path.isAbsolute(file) ? file : path.resolve(baseCwd, file)
 }
@@ -862,6 +990,7 @@ async function writeReport(baseCwd: string, options: CliOptions, metrics: WatchC
   }
 
   const summary = summarizeMetrics(metrics)
+  const summaryByRound = summarizeMetricsByRound(metrics)
   const reportPath = resolveReportPath(baseCwd, options.reportFile)
 
   const report: WatchReport = {
@@ -876,6 +1005,7 @@ async function writeReport(baseCwd: string, options: CliOptions, metrics: WatchC
       maxHotUpdateMs: options.maxHotUpdateMs,
     },
     summary,
+    summaryByRound,
     cases: metrics,
   }
 
@@ -911,129 +1041,164 @@ async function runCase(watchCase: WatchCase, options: CliOptions): Promise<Watch
       throw new Error(`[${watchCase.label}] baseline outputs are missing`)
     }
 
-    const mutation = createMutationScenario(
-      watchCase,
-      original,
-      baselineWxml,
-      baselineJs,
-      classVariableName,
-    )
-
-    const {
-      marker,
-      classLiteral,
-      classTokens,
-      escapedClasses,
-      freshEscapedClasses,
-      mutatedSource,
-    } = mutation
-
-    for (const escaped of freshEscapedClasses) {
-      assertNotContains(baselineWxml, escaped, `[${watchCase.label}] baseline wxml`)
-      assertNotContains(baselineJs, escaped, `[${watchCase.label}] baseline js`)
-    }
-
-    const baselineMtime = {
-      wxml: await getMtime(watchCase.outputWxml),
-      js: await getMtime(watchCase.outputJs),
-    }
-
-    const hotUpdateStartedAt = Date.now()
-    await fs.writeFile(sourcePath, mutatedSource, 'utf8')
-    const hotUpdateOutputMs = await waitForOutputsUpdated(
-      watchCase,
-      baselineMtime,
-      options,
-      session,
-      hotUpdateStartedAt,
-    )
-    const hotUpdateEffectiveMs = await waitForMarkerState(
-      watchCase,
-      marker,
-      'present',
-      options,
-      session,
-      hotUpdateStartedAt,
-    )
-
-    const [updatedWxml, updatedJs] = await Promise.all([
-      fs.readFile(watchCase.outputWxml, 'utf8'),
-      fs.readFile(watchCase.outputJs, 'utf8'),
-    ])
-
     const verifyClassLiteralIn = watchCase.verifyClassLiteralIn ?? []
-
-    for (const escaped of escapedClasses) {
-      if (watchCase.verifyEscapedIn.includes('wxml')) {
-        assertContains(updatedWxml, escaped, `[${watchCase.label}] updated wxml`)
-      }
-      if (watchCase.verifyEscapedIn.includes('js')) {
-        assertContains(updatedJs, escaped, `[${watchCase.label}] updated js`)
-      }
-    }
-
-    for (const [index, classToken] of classTokens.entries()) {
-      const escapedToken = escapedClasses[index]
-      const expectedValues = escapedToken ? [classToken, escapedToken] : [classToken]
-
-      if (verifyClassLiteralIn.includes('wxml')) {
-        assertContainsOneOf(
-          updatedWxml,
-          expectedValues,
-          `[${watchCase.label}] updated wxml token literal`,
-        )
-      }
-      if (verifyClassLiteralIn.includes('js')) {
-        assertContainsOneOf(
-          updatedJs,
-          expectedValues,
-          `[${watchCase.label}] updated js token literal`,
-        )
-      }
-    }
-
-    const updatedMtime = {
+    const roundMetrics: MutationRoundMetrics[] = []
+    let baselineMtime = {
       wxml: await getMtime(watchCase.outputWxml),
       js: await getMtime(watchCase.outputJs),
     }
 
-    const rollbackStartedAt = Date.now()
-    await fs.writeFile(sourcePath, original, 'utf8')
-    const rollbackOutputMs = await waitForOutputsUpdated(
-      watchCase,
-      updatedMtime,
-      options,
-      session,
-      rollbackStartedAt,
-    )
-    const rollbackEffectiveMs = await waitForMarkerState(
-      watchCase,
-      marker,
-      'absent',
-      options,
-      session,
-      rollbackStartedAt,
-    )
+    for (const roundConfig of resolveMutationRoundConfigs()) {
+      const roundStartedAt = Date.now()
+      const mutation = createMutationScenario(
+        watchCase,
+        original,
+        baselineWxml,
+        baselineJs,
+        classVariableName,
+        roundConfig,
+      )
+
+      const {
+        marker,
+        classLiteral,
+        classTokens,
+        escapedClasses,
+        freshEscapedClasses,
+        mutatedSource,
+      } = mutation
+
+      for (const escaped of freshEscapedClasses) {
+        assertNotContains(baselineWxml, escaped, `[${watchCase.label}] baseline wxml`)
+        assertNotContains(baselineJs, escaped, `[${watchCase.label}] baseline js`)
+      }
+
+      const hotUpdateStartedAt = Date.now()
+      await fs.writeFile(sourcePath, mutatedSource, 'utf8')
+      const hotUpdateOutputMs = await waitForOutputsUpdated(
+        watchCase,
+        baselineMtime,
+        options,
+        session,
+        hotUpdateStartedAt,
+      )
+      const hotUpdateEffectiveMs = await waitForMarkerState(
+        watchCase,
+        marker,
+        'present',
+        options,
+        session,
+        hotUpdateStartedAt,
+      )
+
+      const [updatedWxml, updatedJs] = await Promise.all([
+        fs.readFile(watchCase.outputWxml, 'utf8'),
+        fs.readFile(watchCase.outputJs, 'utf8'),
+      ])
+
+      for (const escaped of escapedClasses) {
+        if (watchCase.verifyEscapedIn.includes('wxml')) {
+          assertContains(updatedWxml, escaped, `[${watchCase.label}] updated wxml`)
+        }
+        if (watchCase.verifyEscapedIn.includes('js')) {
+          assertContains(updatedJs, escaped, `[${watchCase.label}] updated js`)
+        }
+      }
+
+      for (const [index, classToken] of classTokens.entries()) {
+        const escapedToken = escapedClasses[index]
+        const expectedValues = escapedToken ? [classToken, escapedToken] : [classToken]
+
+        if (verifyClassLiteralIn.includes('wxml')) {
+          assertContainsOneOf(
+            updatedWxml,
+            expectedValues,
+            `[${watchCase.label}] updated wxml token literal`,
+          )
+        }
+        if (verifyClassLiteralIn.includes('js')) {
+          assertContainsOneOf(
+            updatedJs,
+            expectedValues,
+            `[${watchCase.label}] updated js token literal`,
+          )
+        }
+      }
+
+      const updatedMtime = {
+        wxml: await getMtime(watchCase.outputWxml),
+        js: await getMtime(watchCase.outputJs),
+      }
+
+      const rollbackStartedAt = Date.now()
+      await fs.writeFile(sourcePath, original, 'utf8')
+      const rollbackOutputMs = await waitForOutputsUpdated(
+        watchCase,
+        updatedMtime,
+        options,
+        session,
+        rollbackStartedAt,
+      )
+      const rollbackEffectiveMs = await waitForMarkerState(
+        watchCase,
+        marker,
+        'absent',
+        options,
+        session,
+        rollbackStartedAt,
+      )
+
+      roundMetrics.push({
+        roundName: roundConfig.name,
+        marker,
+        classLiteral,
+        classTokens,
+        escapedClasses,
+        hotUpdateOutputMs,
+        hotUpdateEffectiveMs,
+        rollbackOutputMs,
+        rollbackEffectiveMs,
+        totalMs: Date.now() - roundStartedAt,
+      })
+
+      process.stdout.write(
+        `[watch-hmr] ${watchCase.label} round=${roundConfig.name} passed (hotUpdate=${hotUpdateEffectiveMs}ms, rollback=${rollbackEffectiveMs}ms)\n`,
+      )
+
+      baselineMtime = {
+        wxml: await getMtime(watchCase.outputWxml),
+        js: await getMtime(watchCase.outputJs),
+      }
+    }
+
+    const preferredRound = roundMetrics.find(item => item.roundName === 'complex-corpus')
+      ?? roundMetrics[roundMetrics.length - 1]
+
+    if (!preferredRound) {
+      throw new Error(`[${watchCase.label}] no round metrics were produced`)
+    }
 
     const metrics: WatchCaseMetrics = {
       name: watchCase.name,
       label: watchCase.label,
-      marker,
-      classLiteral,
-      classTokens,
-      escapedClasses,
+      marker: preferredRound.marker,
+      classLiteral: preferredRound.classLiteral,
+      classTokens: preferredRound.classTokens,
+      escapedClasses: preferredRound.escapedClasses,
+      rounds: roundMetrics,
+      roundComparison: buildRoundComparison(roundMetrics),
       verifyEscapedIn: watchCase.verifyEscapedIn,
       verifyClassLiteralIn,
       initialReadyMs,
-      hotUpdateOutputMs,
-      hotUpdateEffectiveMs,
-      rollbackOutputMs,
-      rollbackEffectiveMs,
+      hotUpdateOutputMs: preferredRound.hotUpdateOutputMs,
+      hotUpdateEffectiveMs: preferredRound.hotUpdateEffectiveMs,
+      rollbackOutputMs: preferredRound.rollbackOutputMs,
+      rollbackEffectiveMs: preferredRound.rollbackEffectiveMs,
       totalMs: Date.now() - caseStartedAt,
     }
 
     process.stdout.write(
-      `[watch-hmr] ${watchCase.label} passed (hotUpdate=${metrics.hotUpdateEffectiveMs}ms, rollback=${metrics.rollbackEffectiveMs}ms)\n`,
+      `[watch-hmr] ${watchCase.label} passed (primaryRound=complex-corpus, hotUpdate=${metrics.hotUpdateEffectiveMs}ms, rollback=${metrics.rollbackEffectiveMs}ms)\n`,
     )
 
     return metrics
@@ -1065,10 +1230,23 @@ function assertHotUpdateBudget(metrics: WatchCaseMetrics, options: CliOptions) {
   }
 }
 
-function logSummary(summary: WatchSummary) {
+function logSummary(summary: WatchSummary, summaryByRound?: Partial<Record<MutationRoundName, WatchSummary>>) {
   process.stdout.write(
     `[watch-hmr] summary: cases=${summary.count}, hotUpdate(avg/min/max)=${summary.hotUpdateAvgMs}/${summary.hotUpdateMinMs}/${summary.hotUpdateMaxMs}ms, rollback(avg/min/max)=${summary.rollbackAvgMs}/${summary.rollbackMinMs}/${summary.rollbackMaxMs}ms\n`,
   )
+
+  if (!summaryByRound) {
+    return
+  }
+
+  for (const [roundName, roundSummary] of Object.entries(summaryByRound)) {
+    if (!roundSummary) {
+      continue
+    }
+    process.stdout.write(
+      `[watch-hmr] round ${roundName}: cases=${roundSummary.count}, hotUpdate(avg/min/max)=${roundSummary.hotUpdateAvgMs}/${roundSummary.hotUpdateMinMs}/${roundSummary.hotUpdateMaxMs}ms, rollback(avg/min/max)=${roundSummary.rollbackAvgMs}/${roundSummary.rollbackMinMs}/${roundSummary.rollbackMaxMs}ms\n`,
+    )
+  }
 }
 
 async function main() {
@@ -1099,7 +1277,8 @@ async function main() {
   }
 
   const summary = summarizeMetrics(metrics)
-  logSummary(summary)
+  const summaryByRound = summarizeMetricsByRound(metrics)
+  logSummary(summary, summaryByRound)
   await writeReport(baseCwd, options, metrics)
 
   process.stdout.write('[watch-hmr] all cases passed\n')
