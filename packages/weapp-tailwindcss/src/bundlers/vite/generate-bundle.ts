@@ -212,6 +212,40 @@ function formatCacheHitRate(metric: BundleMetric) {
   return `${((metric.cacheHits / metric.total) * 100).toFixed(2)}%`
 }
 
+function formatMs(value: number) {
+  return value.toFixed(2)
+}
+
+function summarizeStringDiff(previous: string, next: string) {
+  if (previous === next) {
+    return 'same'
+  }
+
+  const previousLength = previous.length
+  const nextLength = next.length
+  const minLength = Math.min(previousLength, nextLength)
+  let prefixLength = 0
+  while (prefixLength < minLength && previous.charCodeAt(prefixLength) === next.charCodeAt(prefixLength)) {
+    prefixLength += 1
+  }
+
+  let previousSuffixCursor = previousLength - 1
+  let nextSuffixCursor = nextLength - 1
+  while (
+    previousSuffixCursor >= prefixLength
+    && nextSuffixCursor >= prefixLength
+    && previous.charCodeAt(previousSuffixCursor) === next.charCodeAt(nextSuffixCursor)
+  ) {
+    previousSuffixCursor -= 1
+    nextSuffixCursor -= 1
+  }
+
+  const previousChangedLength = previousSuffixCursor >= prefixLength ? previousSuffixCursor - prefixLength + 1 : 0
+  const nextChangedLength = nextSuffixCursor >= prefixLength ? nextSuffixCursor - prefixLength + 1 : 0
+
+  return `changed@${prefixLength} old=${previousChangedLength} new=${nextChangedLength} len=${previousLength}->${nextLength}`
+}
+
 function createLinkedImpactSignature(
   entry: string,
   linkedImpactsByEntry: Map<string, Set<string>>,
@@ -281,6 +315,7 @@ export function createGenerateBundleHook(context: GenerateBundleContext) {
     const forceRuntimeRefresh = process.env.WEAPP_TW_VITE_FORCE_RUNTIME_REFRESH === '1'
     const disableDirtyOptimization = process.env.WEAPP_TW_VITE_DISABLE_DIRTY === '1'
     const disableJsPrecheck = process.env.WEAPP_TW_VITE_DISABLE_JS_PRECHECK === '1'
+    const debugCssDiff = process.env.WEAPP_TW_VITE_DEBUG_CSS_DIFF === '1'
     const entries = Object.entries(bundle)
     const dirtyEntries = computeDirtyEntries(entries, opts, state)
     const processSets = buildProcessSets(entries, opts, dirtyEntries.changedByType, state.previousLinkedByEntry, disableDirtyOptimization)
@@ -408,6 +443,9 @@ export function createGenerateBundleHook(context: GenerateBundleContext) {
                 },
                 majorVersion: runtimeState.twPatcher.majorVersion,
               })
+              if (debugCssDiff) {
+                debug('css diff %s: %s', file, summarizeStringDiff(rawSource, css))
+              }
               metrics.css.elapsed += measureElapsed(start)
               metrics.css.transformed++
               onUpdate(file, rawSource, css)
@@ -581,24 +619,24 @@ export function createGenerateBundleHook(context: GenerateBundleContext) {
     state.previousLinkedByEntry = nextLinkedByEntry
 
     debug(
-      'metrics iteration=%d runtime=%.2fms html(total=%d transform=%d hit=%d rate=%s elapsed=%.2fms) js(total=%d transform=%d hit=%d rate=%s elapsed=%.2fms) css(total=%d transform=%d hit=%d rate=%s elapsed=%.2fms)',
+      'metrics iteration=%d runtime=%sms html(total=%d transform=%d hit=%d rate=%s elapsed=%sms) js(total=%d transform=%d hit=%d rate=%s elapsed=%sms) css(total=%d transform=%d hit=%d rate=%s elapsed=%sms)',
       state.iteration,
-      metrics.runtimeSet,
+      formatMs(metrics.runtimeSet),
       metrics.html.total,
       metrics.html.transformed,
       metrics.html.cacheHits,
       formatCacheHitRate(metrics.html),
-      metrics.html.elapsed,
+      formatMs(metrics.html.elapsed),
       metrics.js.total,
       metrics.js.transformed,
       metrics.js.cacheHits,
       formatCacheHitRate(metrics.js),
-      metrics.js.elapsed,
+      formatMs(metrics.js.elapsed),
       metrics.css.total,
       metrics.css.transformed,
       metrics.css.cacheHits,
       formatCacheHitRate(metrics.css),
-      metrics.css.elapsed,
+      formatMs(metrics.css.elapsed),
     )
 
     onEnd()

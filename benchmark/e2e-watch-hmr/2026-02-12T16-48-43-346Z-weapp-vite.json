@@ -1,0 +1,171 @@
+{
+  "generatedAt": "2026-02-12T16:48:54.758Z",
+  "repositoryRoot": "weapp-tailwindcss",
+  "options": {
+    "caseName": "weapp-vite",
+    "timeoutMs": 240000,
+    "pollMs": 240,
+    "skipBuild": true,
+    "quietSass": true,
+    "maxHotUpdateMs": 15000
+  },
+  "summary": {
+    "count": 1,
+    "hotUpdateAvgMs": 964,
+    "hotUpdateMaxMs": 964,
+    "hotUpdateMinMs": 964,
+    "rollbackAvgMs": 240,
+    "rollbackMaxMs": 240,
+    "rollbackMinMs": 240
+  },
+  "summaryByRound": {
+    "baseline-arbitrary": {
+      "count": 1,
+      "hotUpdateAvgMs": 965,
+      "hotUpdateMaxMs": 965,
+      "hotUpdateMinMs": 965,
+      "rollbackAvgMs": 242,
+      "rollbackMaxMs": 242,
+      "rollbackMinMs": 242
+    },
+    "complex-corpus": {
+      "count": 1,
+      "hotUpdateAvgMs": 964,
+      "hotUpdateMaxMs": 964,
+      "hotUpdateMinMs": 964,
+      "rollbackAvgMs": 240,
+      "rollbackMaxMs": 240,
+      "rollbackMinMs": 240
+    }
+  },
+  "cases": [
+    {
+      "name": "weapp-vite",
+      "label": "demo/native-ts (weapp-vite)",
+      "marker": "tw-watch-weapp-vite-complex-corpus-9285000",
+      "classLiteral": "text-[23.9285000px] space-y-2.5 w-[calc(100%_-_9285000px)] grid-cols-[200rpx_minmax(900rpx,_1fr)_9285000px] after:ml-[0.9285000px] text-black/[0.92] ring-[1.0px] group-[:nth-of-type(3)_&]:block [@supports(display:grid)]:grid [@media(any-hover:hover){&:hover}]:opacity-100 data-[state=open]:opacity-100 supports-[display:grid]:grid [mask-type:luminance] [--watch-hmr-offset:9285000px]",
+      "classTokens": [
+        "text-[23.9285000px]",
+        "space-y-2.5",
+        "w-[calc(100%_-_9285000px)]",
+        "grid-cols-[200rpx_minmax(900rpx,_1fr)_9285000px]",
+        "after:ml-[0.9285000px]",
+        "text-black/[0.92]",
+        "ring-[1.0px]",
+        "group-[:nth-of-type(3)_&]:block",
+        "[@supports(display:grid)]:grid",
+        "[@media(any-hover:hover){&:hover}]:opacity-100",
+        "data-[state=open]:opacity-100",
+        "supports-[display:grid]:grid",
+        "[mask-type:luminance]",
+        "[--watch-hmr-offset:9285000px]"
+      ],
+      "escapedClasses": [
+        "text-_b23_d9285000px_B",
+        "space-y-2_d5",
+        "w-_bcalc_p100_v_-_9285000px_P_B",
+        "grid-cols-_b200rpx_minmax_p900rpx_m_1fr_P_9285000px_B",
+        "after_cml-_b0_d9285000px_B",
+        "text-black_f_b0_d92_B",
+        "ring-_b1_d0px_B",
+        "group-_b_cnth-of-type_p3_P__n_B_cblock",
+        "_b_tsupports_pdisplay_cgrid_P_B_cgrid",
+        "_b_tmedia_pany-hover_chover_P_k_n_chover_K_B_copacity-100",
+        "data-_bstate_zopen_B_copacity-100",
+        "supports-_bdisplay_cgrid_B_cgrid",
+        "_bmask-type_cluminance_B",
+        "_b--watch-hmr-offset_c9285000px_B"
+      ],
+      "rounds": [
+        {
+          "roundName": "baseline-arbitrary",
+          "marker": "tw-watch-weapp-vite-baseline-arbitrary-9272920",
+          "classLiteral": "text-[23.9272920px] space-y-2.5 w-[calc(100%_-_9272920px)] grid-cols-[200rpx_minmax(900rpx,_1fr)_9272920px] after:ml-[0.9272920px] text-black/[0.92] ring-[1.0px]",
+          "classTokens": [
+            "text-[23.9272920px]",
+            "space-y-2.5",
+            "w-[calc(100%_-_9272920px)]",
+            "grid-cols-[200rpx_minmax(900rpx,_1fr)_9272920px]",
+            "after:ml-[0.9272920px]",
+            "text-black/[0.92]",
+            "ring-[1.0px]"
+          ],
+          "escapedClasses": [
+            "text-_b23_d9272920px_B",
+            "space-y-2_d5",
+            "w-_bcalc_p100_v_-_9272920px_P_B",
+            "grid-cols-_b200rpx_minmax_p900rpx_m_1fr_P_9272920px_B",
+            "after_cml-_b0_d9272920px_B",
+            "text-black_f_b0_d92_B",
+            "ring-_b1_d0px_B"
+          ],
+          "hotUpdateOutputMs": 965,
+          "hotUpdateEffectiveMs": 965,
+          "rollbackOutputMs": 242,
+          "rollbackEffectiveMs": 242,
+          "totalMs": 1208
+        },
+        {
+          "roundName": "complex-corpus",
+          "marker": "tw-watch-weapp-vite-complex-corpus-9285000",
+          "classLiteral": "text-[23.9285000px] space-y-2.5 w-[calc(100%_-_9285000px)] grid-cols-[200rpx_minmax(900rpx,_1fr)_9285000px] after:ml-[0.9285000px] text-black/[0.92] ring-[1.0px] group-[:nth-of-type(3)_&]:block [@supports(display:grid)]:grid [@media(any-hover:hover){&:hover}]:opacity-100 data-[state=open]:opacity-100 supports-[display:grid]:grid [mask-type:luminance] [--watch-hmr-offset:9285000px]",
+          "classTokens": [
+            "text-[23.9285000px]",
+            "space-y-2.5",
+            "w-[calc(100%_-_9285000px)]",
+            "grid-cols-[200rpx_minmax(900rpx,_1fr)_9285000px]",
+            "after:ml-[0.9285000px]",
+            "text-black/[0.92]",
+            "ring-[1.0px]",
+            "group-[:nth-of-type(3)_&]:block",
+            "[@supports(display:grid)]:grid",
+            "[@media(any-hover:hover){&:hover}]:opacity-100",
+            "data-[state=open]:opacity-100",
+            "supports-[display:grid]:grid",
+            "[mask-type:luminance]",
+            "[--watch-hmr-offset:9285000px]"
+          ],
+          "escapedClasses": [
+            "text-_b23_d9285000px_B",
+            "space-y-2_d5",
+            "w-_bcalc_p100_v_-_9285000px_P_B",
+            "grid-cols-_b200rpx_minmax_p900rpx_m_1fr_P_9285000px_B",
+            "after_cml-_b0_d9285000px_B",
+            "text-black_f_b0_d92_B",
+            "ring-_b1_d0px_B",
+            "group-_b_cnth-of-type_p3_P__n_B_cblock",
+            "_b_tsupports_pdisplay_cgrid_P_B_cgrid",
+            "_b_tmedia_pany-hover_chover_P_k_n_chover_K_B_copacity-100",
+            "data-_bstate_zopen_B_copacity-100",
+            "supports-_bdisplay_cgrid_B_cgrid",
+            "_bmask-type_cluminance_B",
+            "_b--watch-hmr-offset_c9285000px_B"
+          ],
+          "hotUpdateOutputMs": 964,
+          "hotUpdateEffectiveMs": 964,
+          "rollbackOutputMs": 240,
+          "rollbackEffectiveMs": 240,
+          "totalMs": 1205
+        }
+      ],
+      "roundComparison": {
+        "baselineRoundName": "baseline-arbitrary",
+        "candidateRoundName": "complex-corpus",
+        "hotUpdateDeltaMs": -1,
+        "rollbackDeltaMs": -2,
+        "hotUpdateRatio": 0.999,
+        "rollbackRatio": 0.992
+      },
+      "verifyEscapedIn": [
+        "wxml"
+      ],
+      "verifyClassLiteralIn": [],
+      "initialReadyMs": 3614,
+      "hotUpdateOutputMs": 964,
+      "hotUpdateEffectiveMs": 964,
+      "rollbackOutputMs": 240,
+      "rollbackEffectiveMs": 240,
+      "totalMs": 6031
+    }
+  ]
+}

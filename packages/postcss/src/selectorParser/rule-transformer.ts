@@ -20,11 +20,17 @@ export type RuleTransformer = (rule: Rule) => void
 const ruleTransformCache = new WeakMap<IStyleHandlerOptions, RuleTransformer>()
 
 const SELECTOR_TRANSFORM_OPTIONS = normalizeTransformOptions()
+const SIMPLE_SELECTOR_FAST_PATH = /^[#.][\w-]+(?:\s+[#.][\w-]+)*$/
 
 interface TransformContext {
   rule: Rule
   options: IStyleHandlerOptions
   requiresSpacingNormalization: boolean
+}
+
+interface CachedSelectorTransformResult {
+  action: 'keep' | 'update' | 'remove'
+  selector?: string
 }
 
 const RTL_LANGUAGE_ANY_PSEUDO_SET = new Set([
@@ -238,6 +244,17 @@ function handleSelectorNode(selector: Selector, context: TransformContext) {
   }
 }
 
+function canSkipRuleTransform(rule: Rule) {
+  const selector = rule.selector.trim()
+  if (!selector) {
+    return false
+  }
+
+  // Fast path: pure #id/.class descendant selectors are already valid in weapp
+  // and never require escape/pseudo/combinator rewrites.
+  return SIMPLE_SELECTOR_FAST_PATH.test(selector)
+}
+
 // transformSelectors 会遍历选择器 AST 并触发各类节点处理逻辑
 function transformSelectors(selectors: Root, context: TransformContext) {
   selectors.walk((node, index) => {
@@ -295,6 +312,15 @@ function transformSelectors(selectors: Root, context: TransformContext) {
 // createRuleTransformer 结合上下文执行器与 parser，生成可复用的规则转换函数
 function createRuleTransformer(options: IStyleHandlerOptions): RuleTransformer {
   let context: TransformContext | undefined
+  const selectorResultCache = new Map<string, CachedSelectorTransformResult>()
+  const selectorResultCacheLimit = 50000
+
+  function writeSelectorResultCache(selector: string, result: CachedSelectorTransformResult) {
+    if (selectorResultCache.size >= selectorResultCacheLimit) {
+      selectorResultCache.clear()
+    }
+    selectorResultCache.set(selector, result)
+  }
 
   const transform: SyncProcessor = (selectors) => {
     if (!context) {
@@ -306,17 +332,64 @@ function createRuleTransformer(options: IStyleHandlerOptions): RuleTransformer {
   const parser = psp(transform)
 
   return (rule: Rule) => {
+    const sourceSelector = rule.selector
+    if (!sourceSelector) {
+      return
+    }
+
+    const cached = selectorResultCache.get(sourceSelector)
+    if (cached) {
+      if (cached.action === 'remove') {
+        rule.remove()
+      }
+      else if (cached.action === 'update' && cached.selector && cached.selector !== sourceSelector) {
+        rule.selector = cached.selector
+      }
+      return
+    }
+
+    if (canSkipRuleTransform(rule)) {
+      writeSelectorResultCache(sourceSelector, { action: 'keep' })
+      return
+    }
+
     context = {
       options,
       requiresSpacingNormalization: false,
       rule,
     }
 
+    let wasRemoved = false
+    let requiresSpacingNormalization = false
+
     try {
       parser.transformSync(rule, SELECTOR_TRANSFORM_OPTIONS)
     }
     finally {
+      const currentContext = context
+      wasRemoved = rule.parent == null
+      requiresSpacingNormalization = currentContext?.requiresSpacingNormalization === true
       context = undefined
+    }
+
+    if (wasRemoved) {
+      writeSelectorResultCache(sourceSelector, { action: 'remove' })
+      return
+    }
+
+    if (requiresSpacingNormalization) {
+      return
+    }
+
+    const transformedSelector = rule.selector
+    if (transformedSelector === sourceSelector) {
+      writeSelectorResultCache(sourceSelector, { action: 'keep' })
+    }
+    else {
+      writeSelectorResultCache(sourceSelector, {
+        action: 'update',
+        selector: transformedSelector,
+      })
     }
   }
 }

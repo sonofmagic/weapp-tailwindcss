@@ -1,0 +1,815 @@
+{
+  "generatedAt": "2026-02-12T16:51:40.261Z",
+  "repositoryRoot": "weapp-tailwindcss",
+  "options": {
+    "caseName": "all",
+    "timeoutMs": 240000,
+    "pollMs": 240,
+    "skipBuild": true,
+    "quietSass": true,
+    "maxHotUpdateMs": 15000
+  },
+  "summary": {
+    "count": 6,
+    "hotUpdateAvgMs": 483,
+    "hotUpdateMaxMs": 965,
+    "hotUpdateMinMs": 241,
+    "rollbackAvgMs": 282,
+    "rollbackMaxMs": 482,
+    "rollbackMinMs": 242
+  },
+  "summaryByRound": {
+    "baseline-arbitrary": {
+      "count": 6,
+      "hotUpdateAvgMs": 483,
+      "hotUpdateMaxMs": 964,
+      "hotUpdateMinMs": 241,
+      "rollbackAvgMs": 322,
+      "rollbackMaxMs": 726,
+      "rollbackMinMs": 240
+    },
+    "complex-corpus": {
+      "count": 6,
+      "hotUpdateAvgMs": 483,
+      "hotUpdateMaxMs": 965,
+      "hotUpdateMinMs": 241,
+      "rollbackAvgMs": 282,
+      "rollbackMaxMs": 482,
+      "rollbackMinMs": 242
+    }
+  },
+  "cases": [
+    {
+      "name": "taro",
+      "label": "demo/taro-app",
+      "marker": "tw-watch-taro-complex-corpus-0589540",
+      "classLiteral": "text-[23.0589540px] space-y-2.5 w-[calc(100%_-_0589540px)] grid-cols-[200rpx_minmax(900rpx,_1fr)_0589540px] after:ml-[0.0589540px] text-black/[0.05] ring-[1.0px] group-[:nth-of-type(3)_&]:block [@supports(display:grid)]:grid [@media(any-hover:hover){&:hover}]:opacity-100 data-[state=open]:opacity-100 supports-[display:grid]:grid [mask-type:luminance] [--watch-hmr-offset:0589540px]",
+      "classTokens": [
+        "text-[23.0589540px]",
+        "space-y-2.5",
+        "w-[calc(100%_-_0589540px)]",
+        "grid-cols-[200rpx_minmax(900rpx,_1fr)_0589540px]",
+        "after:ml-[0.0589540px]",
+        "text-black/[0.05]",
+        "ring-[1.0px]",
+        "group-[:nth-of-type(3)_&]:block",
+        "[@supports(display:grid)]:grid",
+        "[@media(any-hover:hover){&:hover}]:opacity-100",
+        "data-[state=open]:opacity-100",
+        "supports-[display:grid]:grid",
+        "[mask-type:luminance]",
+        "[--watch-hmr-offset:0589540px]"
+      ],
+      "escapedClasses": [
+        "text-_b23_d0589540px_B",
+        "space-y-2_d5",
+        "w-_bcalc_p100_v_-_0589540px_P_B",
+        "grid-cols-_b200rpx_minmax_p900rpx_m_1fr_P_0589540px_B",
+        "after_cml-_b0_d0589540px_B",
+        "text-black_f_b0_d05_B",
+        "ring-_b1_d0px_B",
+        "group-_b_cnth-of-type_p3_P__n_B_cblock",
+        "_b_tsupports_pdisplay_cgrid_P_B_cgrid",
+        "_b_tmedia_pany-hover_chover_P_k_n_chover_K_B_copacity-100",
+        "data-_bstate_zopen_B_copacity-100",
+        "supports-_bdisplay_cgrid_B_cgrid",
+        "_bmask-type_cluminance_B",
+        "_b--watch-hmr-offset_c0589540px_B"
+      ],
+      "rounds": [
+        {
+          "roundName": "baseline-arbitrary",
+          "marker": "tw-watch-taro-baseline-arbitrary-0575000",
+          "classLiteral": "text-[23.0575000px] space-y-2.5 w-[calc(100%_-_0575000px)] grid-cols-[200rpx_minmax(900rpx,_1fr)_0575000px] after:ml-[0.0575000px] text-black/[0.05] ring-[1.0px]",
+          "classTokens": [
+            "text-[23.0575000px]",
+            "space-y-2.5",
+            "w-[calc(100%_-_0575000px)]",
+            "grid-cols-[200rpx_minmax(900rpx,_1fr)_0575000px]",
+            "after:ml-[0.0575000px]",
+            "text-black/[0.05]",
+            "ring-[1.0px]"
+          ],
+          "escapedClasses": [
+            "text-_b23_d0575000px_B",
+            "space-y-2_d5",
+            "w-_bcalc_p100_v_-_0575000px_P_B",
+            "grid-cols-_b200rpx_minmax_p900rpx_m_1fr_P_0575000px_B",
+            "after_cml-_b0_d0575000px_B",
+            "text-black_f_b0_d05_B",
+            "ring-_b1_d0px_B"
+          ],
+          "hotUpdateOutputMs": 725,
+          "hotUpdateEffectiveMs": 727,
+          "rollbackOutputMs": 725,
+          "rollbackEffectiveMs": 726,
+          "totalMs": 1454
+        },
+        {
+          "roundName": "complex-corpus",
+          "marker": "tw-watch-taro-complex-corpus-0589540",
+          "classLiteral": "text-[23.0589540px] space-y-2.5 w-[calc(100%_-_0589540px)] grid-cols-[200rpx_minmax(900rpx,_1fr)_0589540px] after:ml-[0.0589540px] text-black/[0.05] ring-[1.0px] group-[:nth-of-type(3)_&]:block [@supports(display:grid)]:grid [@media(any-hover:hover){&:hover}]:opacity-100 data-[state=open]:opacity-100 supports-[display:grid]:grid [mask-type:luminance] [--watch-hmr-offset:0589540px]",
+          "classTokens": [
+            "text-[23.0589540px]",
+            "space-y-2.5",
+            "w-[calc(100%_-_0589540px)]",
+            "grid-cols-[200rpx_minmax(900rpx,_1fr)_0589540px]",
+            "after:ml-[0.0589540px]",
+            "text-black/[0.05]",
+            "ring-[1.0px]",
+            "group-[:nth-of-type(3)_&]:block",
+            "[@supports(display:grid)]:grid",
+            "[@media(any-hover:hover){&:hover}]:opacity-100",
+            "data-[state=open]:opacity-100",
+            "supports-[display:grid]:grid",
+            "[mask-type:luminance]",
+            "[--watch-hmr-offset:0589540px]"
+          ],
+          "escapedClasses": [
+            "text-_b23_d0589540px_B",
+            "space-y-2_d5",
+            "w-_bcalc_p100_v_-_0589540px_P_B",
+            "grid-cols-_b200rpx_minmax_p900rpx_m_1fr_P_0589540px_B",
+            "after_cml-_b0_d0589540px_B",
+            "text-black_f_b0_d05_B",
+            "ring-_b1_d0px_B",
+            "group-_b_cnth-of-type_p3_P__n_B_cblock",
+            "_b_tsupports_pdisplay_cgrid_P_B_cgrid",
+            "_b_tmedia_pany-hover_chover_P_k_n_chover_K_B_copacity-100",
+            "data-_bstate_zopen_B_copacity-100",
+            "supports-_bdisplay_cgrid_B_cgrid",
+            "_bmask-type_cluminance_B",
+            "_b--watch-hmr-offset_c0589540px_B"
+          ],
+          "hotUpdateOutputMs": 724,
+          "hotUpdateEffectiveMs": 725,
+          "rollbackOutputMs": 482,
+          "rollbackEffectiveMs": 482,
+          "totalMs": 1207
+        }
+      ],
+      "roundComparison": {
+        "baselineRoundName": "baseline-arbitrary",
+        "candidateRoundName": "complex-corpus",
+        "hotUpdateDeltaMs": -2,
+        "rollbackDeltaMs": -244,
+        "hotUpdateRatio": 0.997,
+        "rollbackRatio": 0.664
+      },
+      "verifyEscapedIn": [],
+      "verifyClassLiteralIn": [
+        "js"
+      ],
+      "initialReadyMs": 5543,
+      "hotUpdateOutputMs": 724,
+      "hotUpdateEffectiveMs": 725,
+      "rollbackOutputMs": 482,
+      "rollbackEffectiveMs": 482,
+      "totalMs": 8208
+    },
+    {
+      "name": "uni",
+      "label": "demo/uni-app",
+      "marker": "tw-watch-uni-complex-corpus-0695620",
+      "classLiteral": "text-[23.0695620px] space-y-2.5 w-[calc(100%_-_0695620px)] grid-cols-[200rpx_minmax(900rpx,_1fr)_0695620px] after:ml-[0.0695620px] text-black/[0.06] ring-[1.0px] group-[:nth-of-type(3)_&]:block [@supports(display:grid)]:grid [@media(any-hover:hover){&:hover}]:opacity-100 data-[state=open]:opacity-100 supports-[display:grid]:grid [mask-type:luminance] [--watch-hmr-offset:0695620px]",
+      "classTokens": [
+        "text-[23.0695620px]",
+        "space-y-2.5",
+        "w-[calc(100%_-_0695620px)]",
+        "grid-cols-[200rpx_minmax(900rpx,_1fr)_0695620px]",
+        "after:ml-[0.0695620px]",
+        "text-black/[0.06]",
+        "ring-[1.0px]",
+        "group-[:nth-of-type(3)_&]:block",
+        "[@supports(display:grid)]:grid",
+        "[@media(any-hover:hover){&:hover}]:opacity-100",
+        "data-[state=open]:opacity-100",
+        "supports-[display:grid]:grid",
+        "[mask-type:luminance]",
+        "[--watch-hmr-offset:0695620px]"
+      ],
+      "escapedClasses": [
+        "text-_b23_d0695620px_B",
+        "space-y-2_d5",
+        "w-_bcalc_p100_v_-_0695620px_P_B",
+        "grid-cols-_b200rpx_minmax_p900rpx_m_1fr_P_0695620px_B",
+        "after_cml-_b0_d0695620px_B",
+        "text-black_f_b0_d06_B",
+        "ring-_b1_d0px_B",
+        "group-_b_cnth-of-type_p3_P__n_B_cblock",
+        "_b_tsupports_pdisplay_cgrid_P_B_cgrid",
+        "_b_tmedia_pany-hover_chover_P_k_n_chover_K_B_copacity-100",
+        "data-_bstate_zopen_B_copacity-100",
+        "supports-_bdisplay_cgrid_B_cgrid",
+        "_bmask-type_cluminance_B",
+        "_b--watch-hmr-offset_c0695620px_B"
+      ],
+      "rounds": [
+        {
+          "roundName": "baseline-arbitrary",
+          "marker": "tw-watch-uni-baseline-arbitrary-0690780",
+          "classLiteral": "text-[23.0690780px] space-y-2.5 w-[calc(100%_-_0690780px)] grid-cols-[200rpx_minmax(900rpx,_1fr)_0690780px] after:ml-[0.0690780px] text-black/[0.06] ring-[1.0px]",
+          "classTokens": [
+            "text-[23.0690780px]",
+            "space-y-2.5",
+            "w-[calc(100%_-_0690780px)]",
+            "grid-cols-[200rpx_minmax(900rpx,_1fr)_0690780px]",
+            "after:ml-[0.0690780px]",
+            "text-black/[0.06]",
+            "ring-[1.0px]"
+          ],
+          "escapedClasses": [
+            "text-_b23_d0690780px_B",
+            "space-y-2_d5",
+            "w-_bcalc_p100_v_-_0690780px_P_B",
+            "grid-cols-_b200rpx_minmax_p900rpx_m_1fr_P_0690780px_B",
+            "after_cml-_b0_d0690780px_B",
+            "text-black_f_b0_d06_B",
+            "ring-_b1_d0px_B"
+          ],
+          "hotUpdateOutputMs": 241,
+          "hotUpdateEffectiveMs": 242,
+          "rollbackOutputMs": 241,
+          "rollbackEffectiveMs": 241,
+          "totalMs": 483
+        },
+        {
+          "roundName": "complex-corpus",
+          "marker": "tw-watch-uni-complex-corpus-0695620",
+          "classLiteral": "text-[23.0695620px] space-y-2.5 w-[calc(100%_-_0695620px)] grid-cols-[200rpx_minmax(900rpx,_1fr)_0695620px] after:ml-[0.0695620px] text-black/[0.06] ring-[1.0px] group-[:nth-of-type(3)_&]:block [@supports(display:grid)]:grid [@media(any-hover:hover){&:hover}]:opacity-100 data-[state=open]:opacity-100 supports-[display:grid]:grid [mask-type:luminance] [--watch-hmr-offset:0695620px]",
+          "classTokens": [
+            "text-[23.0695620px]",
+            "space-y-2.5",
+            "w-[calc(100%_-_0695620px)]",
+            "grid-cols-[200rpx_minmax(900rpx,_1fr)_0695620px]",
+            "after:ml-[0.0695620px]",
+            "text-black/[0.06]",
+            "ring-[1.0px]",
+            "group-[:nth-of-type(3)_&]:block",
+            "[@supports(display:grid)]:grid",
+            "[@media(any-hover:hover){&:hover}]:opacity-100",
+            "data-[state=open]:opacity-100",
+            "supports-[display:grid]:grid",
+            "[mask-type:luminance]",
+            "[--watch-hmr-offset:0695620px]"
+          ],
+          "escapedClasses": [
+            "text-_b23_d0695620px_B",
+            "space-y-2_d5",
+            "w-_bcalc_p100_v_-_0695620px_P_B",
+            "grid-cols-_b200rpx_minmax_p900rpx_m_1fr_P_0695620px_B",
+            "after_cml-_b0_d0695620px_B",
+            "text-black_f_b0_d06_B",
+            "ring-_b1_d0px_B",
+            "group-_b_cnth-of-type_p3_P__n_B_cblock",
+            "_b_tsupports_pdisplay_cgrid_P_B_cgrid",
+            "_b_tmedia_pany-hover_chover_P_k_n_chover_K_B_copacity-100",
+            "data-_bstate_zopen_B_copacity-100",
+            "supports-_bdisplay_cgrid_B_cgrid",
+            "_bmask-type_cluminance_B",
+            "_b--watch-hmr-offset_c0695620px_B"
+          ],
+          "hotUpdateOutputMs": 241,
+          "hotUpdateEffectiveMs": 241,
+          "rollbackOutputMs": 242,
+          "rollbackEffectiveMs": 242,
+          "totalMs": 484
+        }
+      ],
+      "roundComparison": {
+        "baselineRoundName": "baseline-arbitrary",
+        "candidateRoundName": "complex-corpus",
+        "hotUpdateDeltaMs": -1,
+        "rollbackDeltaMs": 1,
+        "hotUpdateRatio": 0.996,
+        "rollbackRatio": 1.004
+      },
+      "verifyEscapedIn": [
+        "wxml"
+      ],
+      "verifyClassLiteralIn": [
+        "js"
+      ],
+      "initialReadyMs": 3859,
+      "hotUpdateOutputMs": 241,
+      "hotUpdateEffectiveMs": 241,
+      "rollbackOutputMs": 242,
+      "rollbackEffectiveMs": 242,
+      "totalMs": 4831
+    },
+    {
+      "name": "mpx",
+      "label": "demo/mpx-app",
+      "marker": "tw-watch-mpx-complex-corpus-0754530",
+      "classLiteral": "text-[23.0754530px] space-y-2.5 w-[calc(100%_-_0754530px)] grid-cols-[200rpx_minmax(900rpx,_1fr)_0754530px] after:ml-[0.0754530px] text-black/[0.07] ring-[1.0px] group-[:nth-of-type(3)_&]:block [@supports(display:grid)]:grid [@media(any-hover:hover){&:hover}]:opacity-100 data-[state=open]:opacity-100 supports-[display:grid]:grid [mask-type:luminance] [--watch-hmr-offset:0754530px]",
+      "classTokens": [
+        "text-[23.0754530px]",
+        "space-y-2.5",
+        "w-[calc(100%_-_0754530px)]",
+        "grid-cols-[200rpx_minmax(900rpx,_1fr)_0754530px]",
+        "after:ml-[0.0754530px]",
+        "text-black/[0.07]",
+        "ring-[1.0px]",
+        "group-[:nth-of-type(3)_&]:block",
+        "[@supports(display:grid)]:grid",
+        "[@media(any-hover:hover){&:hover}]:opacity-100",
+        "data-[state=open]:opacity-100",
+        "supports-[display:grid]:grid",
+        "[mask-type:luminance]",
+        "[--watch-hmr-offset:0754530px]"
+      ],
+      "escapedClasses": [
+        "text-_b23_d0754530px_B",
+        "space-y-2_d5",
+        "w-_bcalc_p100_v_-_0754530px_P_B",
+        "grid-cols-_b200rpx_minmax_p900rpx_m_1fr_P_0754530px_B",
+        "after_cml-_b0_d0754530px_B",
+        "text-black_f_b0_d07_B",
+        "ring-_b1_d0px_B",
+        "group-_b_cnth-of-type_p3_P__n_B_cblock",
+        "_b_tsupports_pdisplay_cgrid_P_B_cgrid",
+        "_b_tmedia_pany-hover_chover_P_k_n_chover_K_B_copacity-100",
+        "data-_bstate_zopen_B_copacity-100",
+        "supports-_bdisplay_cgrid_B_cgrid",
+        "_bmask-type_cluminance_B",
+        "_b--watch-hmr-offset_c0754530px_B"
+      ],
+      "rounds": [
+        {
+          "roundName": "baseline-arbitrary",
+          "marker": "tw-watch-mpx-baseline-arbitrary-0747290",
+          "classLiteral": "text-[23.0747290px] space-y-2.5 w-[calc(100%_-_0747290px)] grid-cols-[200rpx_minmax(900rpx,_1fr)_0747290px] after:ml-[0.0747290px] text-black/[0.07] ring-[1.0px]",
+          "classTokens": [
+            "text-[23.0747290px]",
+            "space-y-2.5",
+            "w-[calc(100%_-_0747290px)]",
+            "grid-cols-[200rpx_minmax(900rpx,_1fr)_0747290px]",
+            "after:ml-[0.0747290px]",
+            "text-black/[0.07]",
+            "ring-[1.0px]"
+          ],
+          "escapedClasses": [
+            "text-_b23_d0747290px_B",
+            "space-y-2_d5",
+            "w-_bcalc_p100_v_-_0747290px_P_B",
+            "grid-cols-_b200rpx_minmax_p900rpx_m_1fr_P_0747290px_B",
+            "after_cml-_b0_d0747290px_B",
+            "text-black_f_b0_d07_B",
+            "ring-_b1_d0px_B"
+          ],
+          "hotUpdateOutputMs": 481,
+          "hotUpdateEffectiveMs": 481,
+          "rollbackOutputMs": 240,
+          "rollbackEffectiveMs": 240,
+          "totalMs": 723
+        },
+        {
+          "roundName": "complex-corpus",
+          "marker": "tw-watch-mpx-complex-corpus-0754530",
+          "classLiteral": "text-[23.0754530px] space-y-2.5 w-[calc(100%_-_0754530px)] grid-cols-[200rpx_minmax(900rpx,_1fr)_0754530px] after:ml-[0.0754530px] text-black/[0.07] ring-[1.0px] group-[:nth-of-type(3)_&]:block [@supports(display:grid)]:grid [@media(any-hover:hover){&:hover}]:opacity-100 data-[state=open]:opacity-100 supports-[display:grid]:grid [mask-type:luminance] [--watch-hmr-offset:0754530px]",
+          "classTokens": [
+            "text-[23.0754530px]",
+            "space-y-2.5",
+            "w-[calc(100%_-_0754530px)]",
+            "grid-cols-[200rpx_minmax(900rpx,_1fr)_0754530px]",
+            "after:ml-[0.0754530px]",
+            "text-black/[0.07]",
+            "ring-[1.0px]",
+            "group-[:nth-of-type(3)_&]:block",
+            "[@supports(display:grid)]:grid",
+            "[@media(any-hover:hover){&:hover}]:opacity-100",
+            "data-[state=open]:opacity-100",
+            "supports-[display:grid]:grid",
+            "[mask-type:luminance]",
+            "[--watch-hmr-offset:0754530px]"
+          ],
+          "escapedClasses": [
+            "text-_b23_d0754530px_B",
+            "space-y-2_d5",
+            "w-_bcalc_p100_v_-_0754530px_P_B",
+            "grid-cols-_b200rpx_minmax_p900rpx_m_1fr_P_0754530px_B",
+            "after_cml-_b0_d0754530px_B",
+            "text-black_f_b0_d07_B",
+            "ring-_b1_d0px_B",
+            "group-_b_cnth-of-type_p3_P__n_B_cblock",
+            "_b_tsupports_pdisplay_cgrid_P_B_cgrid",
+            "_b_tmedia_pany-hover_chover_P_k_n_chover_K_B_copacity-100",
+            "data-_bstate_zopen_B_copacity-100",
+            "supports-_bdisplay_cgrid_B_cgrid",
+            "_bmask-type_cluminance_B",
+            "_b--watch-hmr-offset_c0754530px_B"
+          ],
+          "hotUpdateOutputMs": 242,
+          "hotUpdateEffectiveMs": 242,
+          "rollbackOutputMs": 242,
+          "rollbackEffectiveMs": 242,
+          "totalMs": 484
+        }
+      ],
+      "roundComparison": {
+        "baselineRoundName": "baseline-arbitrary",
+        "candidateRoundName": "complex-corpus",
+        "hotUpdateDeltaMs": -239,
+        "rollbackDeltaMs": 2,
+        "hotUpdateRatio": 0.503,
+        "rollbackRatio": 1.008
+      },
+      "verifyEscapedIn": [
+        "wxml"
+      ],
+      "verifyClassLiteralIn": [
+        "js"
+      ],
+      "initialReadyMs": 4580,
+      "hotUpdateOutputMs": 242,
+      "hotUpdateEffectiveMs": 242,
+      "rollbackOutputMs": 242,
+      "rollbackEffectiveMs": 242,
+      "totalMs": 5790
+    },
+    {
+      "name": "rax",
+      "label": "demo/rax-app",
+      "marker": "tw-watch-rax-complex-corpus-0806300",
+      "classLiteral": "text-[23.0806300px] space-y-2.5 w-[calc(100%_-_0806300px)] grid-cols-[200rpx_minmax(900rpx,_1fr)_0806300px] after:ml-[0.0806300px] text-black/[0.08] ring-[1.0px] group-[:nth-of-type(3)_&]:block [@supports(display:grid)]:grid [@media(any-hover:hover){&:hover}]:opacity-100 data-[state=open]:opacity-100 supports-[display:grid]:grid [mask-type:luminance] [--watch-hmr-offset:0806300px]",
+      "classTokens": [
+        "text-[23.0806300px]",
+        "space-y-2.5",
+        "w-[calc(100%_-_0806300px)]",
+        "grid-cols-[200rpx_minmax(900rpx,_1fr)_0806300px]",
+        "after:ml-[0.0806300px]",
+        "text-black/[0.08]",
+        "ring-[1.0px]",
+        "group-[:nth-of-type(3)_&]:block",
+        "[@supports(display:grid)]:grid",
+        "[@media(any-hover:hover){&:hover}]:opacity-100",
+        "data-[state=open]:opacity-100",
+        "supports-[display:grid]:grid",
+        "[mask-type:luminance]",
+        "[--watch-hmr-offset:0806300px]"
+      ],
+      "escapedClasses": [
+        "text-_b23_d0806300px_B",
+        "space-y-2_d5",
+        "w-_bcalc_p100_v_-_0806300px_P_B",
+        "grid-cols-_b200rpx_minmax_p900rpx_m_1fr_P_0806300px_B",
+        "after_cml-_b0_d0806300px_B",
+        "text-black_f_b0_d08_B",
+        "ring-_b1_d0px_B",
+        "group-_b_cnth-of-type_p3_P__n_B_cblock",
+        "_b_tsupports_pdisplay_cgrid_P_B_cgrid",
+        "_b_tmedia_pany-hover_chover_P_k_n_chover_K_B_copacity-100",
+        "data-_bstate_zopen_B_copacity-100",
+        "supports-_bdisplay_cgrid_B_cgrid",
+        "_bmask-type_cluminance_B",
+        "_b--watch-hmr-offset_c0806300px_B"
+      ],
+      "rounds": [
+        {
+          "roundName": "baseline-arbitrary",
+          "marker": "tw-watch-rax-baseline-arbitrary-0801380",
+          "classLiteral": "text-[23.0801380px] space-y-2.5 w-[calc(100%_-_0801380px)] grid-cols-[200rpx_minmax(900rpx,_1fr)_0801380px] after:ml-[0.0801380px] text-black/[0.08] ring-[1.0px]",
+          "classTokens": [
+            "text-[23.0801380px]",
+            "space-y-2.5",
+            "w-[calc(100%_-_0801380px)]",
+            "grid-cols-[200rpx_minmax(900rpx,_1fr)_0801380px]",
+            "after:ml-[0.0801380px]",
+            "text-black/[0.08]",
+            "ring-[1.0px]"
+          ],
+          "escapedClasses": [
+            "text-_b23_d0801380px_B",
+            "space-y-2_d5",
+            "w-_bcalc_p100_v_-_0801380px_P_B",
+            "grid-cols-_b200rpx_minmax_p900rpx_m_1fr_P_0801380px_B",
+            "after_cml-_b0_d0801380px_B",
+            "text-black_f_b0_d08_B",
+            "ring-_b1_d0px_B"
+          ],
+          "hotUpdateOutputMs": 241,
+          "hotUpdateEffectiveMs": 243,
+          "rollbackOutputMs": 242,
+          "rollbackEffectiveMs": 243,
+          "totalMs": 492
+        },
+        {
+          "roundName": "complex-corpus",
+          "marker": "tw-watch-rax-complex-corpus-0806300",
+          "classLiteral": "text-[23.0806300px] space-y-2.5 w-[calc(100%_-_0806300px)] grid-cols-[200rpx_minmax(900rpx,_1fr)_0806300px] after:ml-[0.0806300px] text-black/[0.08] ring-[1.0px] group-[:nth-of-type(3)_&]:block [@supports(display:grid)]:grid [@media(any-hover:hover){&:hover}]:opacity-100 data-[state=open]:opacity-100 supports-[display:grid]:grid [mask-type:luminance] [--watch-hmr-offset:0806300px]",
+          "classTokens": [
+            "text-[23.0806300px]",
+            "space-y-2.5",
+            "w-[calc(100%_-_0806300px)]",
+            "grid-cols-[200rpx_minmax(900rpx,_1fr)_0806300px]",
+            "after:ml-[0.0806300px]",
+            "text-black/[0.08]",
+            "ring-[1.0px]",
+            "group-[:nth-of-type(3)_&]:block",
+            "[@supports(display:grid)]:grid",
+            "[@media(any-hover:hover){&:hover}]:opacity-100",
+            "data-[state=open]:opacity-100",
+            "supports-[display:grid]:grid",
+            "[mask-type:luminance]",
+            "[--watch-hmr-offset:0806300px]"
+          ],
+          "escapedClasses": [
+            "text-_b23_d0806300px_B",
+            "space-y-2_d5",
+            "w-_bcalc_p100_v_-_0806300px_P_B",
+            "grid-cols-_b200rpx_minmax_p900rpx_m_1fr_P_0806300px_B",
+            "after_cml-_b0_d0806300px_B",
+            "text-black_f_b0_d08_B",
+            "ring-_b1_d0px_B",
+            "group-_b_cnth-of-type_p3_P__n_B_cblock",
+            "_b_tsupports_pdisplay_cgrid_P_B_cgrid",
+            "_b_tmedia_pany-hover_chover_P_k_n_chover_K_B_copacity-100",
+            "data-_bstate_zopen_B_copacity-100",
+            "supports-_bdisplay_cgrid_B_cgrid",
+            "_bmask-type_cluminance_B",
+            "_b--watch-hmr-offset_c0806300px_B"
+          ],
+          "hotUpdateOutputMs": 483,
+          "hotUpdateEffectiveMs": 484,
+          "rollbackOutputMs": 242,
+          "rollbackEffectiveMs": 244,
+          "totalMs": 735
+        }
+      ],
+      "roundComparison": {
+        "baselineRoundName": "baseline-arbitrary",
+        "candidateRoundName": "complex-corpus",
+        "hotUpdateDeltaMs": 241,
+        "rollbackDeltaMs": 1,
+        "hotUpdateRatio": 1.992,
+        "rollbackRatio": 1.004
+      },
+      "verifyEscapedIn": [],
+      "verifyClassLiteralIn": [
+        "js"
+      ],
+      "initialReadyMs": 4095,
+      "hotUpdateOutputMs": 483,
+      "hotUpdateEffectiveMs": 484,
+      "rollbackOutputMs": 242,
+      "rollbackEffectiveMs": 244,
+      "totalMs": 5328
+    },
+    {
+      "name": "mina",
+      "label": "demo/native-mina",
+      "marker": "tw-watch-mina-complex-corpus-0885840",
+      "classLiteral": "text-[23.0885840px] space-y-2.5 w-[calc(100%_-_0885840px)] grid-cols-[200rpx_minmax(900rpx,_1fr)_0885840px] after:ml-[0.0885840px] text-black/[0.08] ring-[1.0px] group-[:nth-of-type(3)_&]:block [@supports(display:grid)]:grid [@media(any-hover:hover){&:hover}]:opacity-100 data-[state=open]:opacity-100 supports-[display:grid]:grid [mask-type:luminance] [--watch-hmr-offset:0885840px]",
+      "classTokens": [
+        "text-[23.0885840px]",
+        "space-y-2.5",
+        "w-[calc(100%_-_0885840px)]",
+        "grid-cols-[200rpx_minmax(900rpx,_1fr)_0885840px]",
+        "after:ml-[0.0885840px]",
+        "text-black/[0.08]",
+        "ring-[1.0px]",
+        "group-[:nth-of-type(3)_&]:block",
+        "[@supports(display:grid)]:grid",
+        "[@media(any-hover:hover){&:hover}]:opacity-100",
+        "data-[state=open]:opacity-100",
+        "supports-[display:grid]:grid",
+        "[mask-type:luminance]",
+        "[--watch-hmr-offset:0885840px]"
+      ],
+      "escapedClasses": [
+        "text-_b23_d0885840px_B",
+        "space-y-2_d5",
+        "w-_bcalc_p100_v_-_0885840px_P_B",
+        "grid-cols-_b200rpx_minmax_p900rpx_m_1fr_P_0885840px_B",
+        "after_cml-_b0_d0885840px_B",
+        "text-black_f_b0_d08_B",
+        "ring-_b1_d0px_B",
+        "group-_b_cnth-of-type_p3_P__n_B_cblock",
+        "_b_tsupports_pdisplay_cgrid_P_B_cgrid",
+        "_b_tmedia_pany-hover_chover_P_k_n_chover_K_B_copacity-100",
+        "data-_bstate_zopen_B_copacity-100",
+        "supports-_bdisplay_cgrid_B_cgrid",
+        "_bmask-type_cluminance_B",
+        "_b--watch-hmr-offset_c0885840px_B"
+      ],
+      "rounds": [
+        {
+          "roundName": "baseline-arbitrary",
+          "marker": "tw-watch-mina-baseline-arbitrary-0881000",
+          "classLiteral": "text-[23.0881000px] space-y-2.5 w-[calc(100%_-_0881000px)] grid-cols-[200rpx_minmax(900rpx,_1fr)_0881000px] after:ml-[0.0881000px] text-black/[0.08] ring-[1.0px]",
+          "classTokens": [
+            "text-[23.0881000px]",
+            "space-y-2.5",
+            "w-[calc(100%_-_0881000px)]",
+            "grid-cols-[200rpx_minmax(900rpx,_1fr)_0881000px]",
+            "after:ml-[0.0881000px]",
+            "text-black/[0.08]",
+            "ring-[1.0px]"
+          ],
+          "escapedClasses": [
+            "text-_b23_d0881000px_B",
+            "space-y-2_d5",
+            "w-_bcalc_p100_v_-_0881000px_P_B",
+            "grid-cols-_b200rpx_minmax_p900rpx_m_1fr_P_0881000px_B",
+            "after_cml-_b0_d0881000px_B",
+            "text-black_f_b0_d08_B",
+            "ring-_b1_d0px_B"
+          ],
+          "hotUpdateOutputMs": 241,
+          "hotUpdateEffectiveMs": 241,
+          "rollbackOutputMs": 242,
+          "rollbackEffectiveMs": 242,
+          "totalMs": 484
+        },
+        {
+          "roundName": "complex-corpus",
+          "marker": "tw-watch-mina-complex-corpus-0885840",
+          "classLiteral": "text-[23.0885840px] space-y-2.5 w-[calc(100%_-_0885840px)] grid-cols-[200rpx_minmax(900rpx,_1fr)_0885840px] after:ml-[0.0885840px] text-black/[0.08] ring-[1.0px] group-[:nth-of-type(3)_&]:block [@supports(display:grid)]:grid [@media(any-hover:hover){&:hover}]:opacity-100 data-[state=open]:opacity-100 supports-[display:grid]:grid [mask-type:luminance] [--watch-hmr-offset:0885840px]",
+          "classTokens": [
+            "text-[23.0885840px]",
+            "space-y-2.5",
+            "w-[calc(100%_-_0885840px)]",
+            "grid-cols-[200rpx_minmax(900rpx,_1fr)_0885840px]",
+            "after:ml-[0.0885840px]",
+            "text-black/[0.08]",
+            "ring-[1.0px]",
+            "group-[:nth-of-type(3)_&]:block",
+            "[@supports(display:grid)]:grid",
+            "[@media(any-hover:hover){&:hover}]:opacity-100",
+            "data-[state=open]:opacity-100",
+            "supports-[display:grid]:grid",
+            "[mask-type:luminance]",
+            "[--watch-hmr-offset:0885840px]"
+          ],
+          "escapedClasses": [
+            "text-_b23_d0885840px_B",
+            "space-y-2_d5",
+            "w-_bcalc_p100_v_-_0885840px_P_B",
+            "grid-cols-_b200rpx_minmax_p900rpx_m_1fr_P_0885840px_B",
+            "after_cml-_b0_d0885840px_B",
+            "text-black_f_b0_d08_B",
+            "ring-_b1_d0px_B",
+            "group-_b_cnth-of-type_p3_P__n_B_cblock",
+            "_b_tsupports_pdisplay_cgrid_P_B_cgrid",
+            "_b_tmedia_pany-hover_chover_P_k_n_chover_K_B_copacity-100",
+            "data-_bstate_zopen_B_copacity-100",
+            "supports-_bdisplay_cgrid_B_cgrid",
+            "_bmask-type_cluminance_B",
+            "_b--watch-hmr-offset_c0885840px_B"
+          ],
+          "hotUpdateOutputMs": 243,
+          "hotUpdateEffectiveMs": 243,
+          "rollbackOutputMs": 242,
+          "rollbackEffectiveMs": 242,
+          "totalMs": 485
+        }
+      ],
+      "roundComparison": {
+        "baselineRoundName": "baseline-arbitrary",
+        "candidateRoundName": "complex-corpus",
+        "hotUpdateDeltaMs": 2,
+        "rollbackDeltaMs": 0,
+        "hotUpdateRatio": 1.008,
+        "rollbackRatio": 1
+      },
+      "verifyEscapedIn": [
+        "wxml"
+      ],
+      "verifyClassLiteralIn": [],
+      "initialReadyMs": 1687,
+      "hotUpdateOutputMs": 243,
+      "hotUpdateEffectiveMs": 243,
+      "rollbackOutputMs": 242,
+      "rollbackEffectiveMs": 242,
+      "totalMs": 2659
+    },
+    {
+      "name": "weapp-vite",
+      "label": "demo/native-ts (weapp-vite)",
+      "marker": "tw-watch-weapp-vite-complex-corpus-0940050",
+      "classLiteral": "text-[23.0940050px] space-y-2.5 w-[calc(100%_-_0940050px)] grid-cols-[200rpx_minmax(900rpx,_1fr)_0940050px] after:ml-[0.0940050px] text-black/[0.09] ring-[1.0px] group-[:nth-of-type(3)_&]:block [@supports(display:grid)]:grid [@media(any-hover:hover){&:hover}]:opacity-100 data-[state=open]:opacity-100 supports-[display:grid]:grid [mask-type:luminance] [--watch-hmr-offset:0940050px]",
+      "classTokens": [
+        "text-[23.0940050px]",
+        "space-y-2.5",
+        "w-[calc(100%_-_0940050px)]",
+        "grid-cols-[200rpx_minmax(900rpx,_1fr)_0940050px]",
+        "after:ml-[0.0940050px]",
+        "text-black/[0.09]",
+        "ring-[1.0px]",
+        "group-[:nth-of-type(3)_&]:block",
+        "[@supports(display:grid)]:grid",
+        "[@media(any-hover:hover){&:hover}]:opacity-100",
+        "data-[state=open]:opacity-100",
+        "supports-[display:grid]:grid",
+        "[mask-type:luminance]",
+        "[--watch-hmr-offset:0940050px]"
+      ],
+      "escapedClasses": [
+        "text-_b23_d0940050px_B",
+        "space-y-2_d5",
+        "w-_bcalc_p100_v_-_0940050px_P_B",
+        "grid-cols-_b200rpx_minmax_p900rpx_m_1fr_P_0940050px_B",
+        "after_cml-_b0_d0940050px_B",
+        "text-black_f_b0_d09_B",
+        "ring-_b1_d0px_B",
+        "group-_b_cnth-of-type_p3_P__n_B_cblock",
+        "_b_tsupports_pdisplay_cgrid_P_B_cgrid",
+        "_b_tmedia_pany-hover_chover_P_k_n_chover_K_B_copacity-100",
+        "data-_bstate_zopen_B_copacity-100",
+        "supports-_bdisplay_cgrid_B_cgrid",
+        "_bmask-type_cluminance_B",
+        "_b--watch-hmr-offset_c0940050px_B"
+      ],
+      "rounds": [
+        {
+          "roundName": "baseline-arbitrary",
+          "marker": "tw-watch-weapp-vite-baseline-arbitrary-0927990",
+          "classLiteral": "text-[23.0927990px] space-y-2.5 w-[calc(100%_-_0927990px)] grid-cols-[200rpx_minmax(900rpx,_1fr)_0927990px] after:ml-[0.0927990px] text-black/[0.09] ring-[1.0px]",
+          "classTokens": [
+            "text-[23.0927990px]",
+            "space-y-2.5",
+            "w-[calc(100%_-_0927990px)]",
+            "grid-cols-[200rpx_minmax(900rpx,_1fr)_0927990px]",
+            "after:ml-[0.0927990px]",
+            "text-black/[0.09]",
+            "ring-[1.0px]"
+          ],
+          "escapedClasses": [
+            "text-_b23_d0927990px_B",
+            "space-y-2_d5",
+            "w-_bcalc_p100_v_-_0927990px_P_B",
+            "grid-cols-_b200rpx_minmax_p900rpx_m_1fr_P_0927990px_B",
+            "after_cml-_b0_d0927990px_B",
+            "text-black_f_b0_d09_B",
+            "ring-_b1_d0px_B"
+          ],
+          "hotUpdateOutputMs": 964,
+          "hotUpdateEffectiveMs": 964,
+          "rollbackOutputMs": 242,
+          "rollbackEffectiveMs": 242,
+          "totalMs": 1206
+        },
+        {
+          "roundName": "complex-corpus",
+          "marker": "tw-watch-weapp-vite-complex-corpus-0940050",
+          "classLiteral": "text-[23.0940050px] space-y-2.5 w-[calc(100%_-_0940050px)] grid-cols-[200rpx_minmax(900rpx,_1fr)_0940050px] after:ml-[0.0940050px] text-black/[0.09] ring-[1.0px] group-[:nth-of-type(3)_&]:block [@supports(display:grid)]:grid [@media(any-hover:hover){&:hover}]:opacity-100 data-[state=open]:opacity-100 supports-[display:grid]:grid [mask-type:luminance] [--watch-hmr-offset:0940050px]",
+          "classTokens": [
+            "text-[23.0940050px]",
+            "space-y-2.5",
+            "w-[calc(100%_-_0940050px)]",
+            "grid-cols-[200rpx_minmax(900rpx,_1fr)_0940050px]",
+            "after:ml-[0.0940050px]",
+            "text-black/[0.09]",
+            "ring-[1.0px]",
+            "group-[:nth-of-type(3)_&]:block",
+            "[@supports(display:grid)]:grid",
+            "[@media(any-hover:hover){&:hover}]:opacity-100",
+            "data-[state=open]:opacity-100",
+            "supports-[display:grid]:grid",
+            "[mask-type:luminance]",
+            "[--watch-hmr-offset:0940050px]"
+          ],
+          "escapedClasses": [
+            "text-_b23_d0940050px_B",
+            "space-y-2_d5",
+            "w-_bcalc_p100_v_-_0940050px_P_B",
+            "grid-cols-_b200rpx_minmax_p900rpx_m_1fr_P_0940050px_B",
+            "after_cml-_b0_d0940050px_B",
+            "text-black_f_b0_d09_B",
+            "ring-_b1_d0px_B",
+            "group-_b_cnth-of-type_p3_P__n_B_cblock",
+            "_b_tsupports_pdisplay_cgrid_P_B_cgrid",
+            "_b_tmedia_pany-hover_chover_P_k_n_chover_K_B_copacity-100",
+            "data-_bstate_zopen_B_copacity-100",
+            "supports-_bdisplay_cgrid_B_cgrid",
+            "_bmask-type_cluminance_B",
+            "_b--watch-hmr-offset_c0940050px_B"
+          ],
+          "hotUpdateOutputMs": 965,
+          "hotUpdateEffectiveMs": 965,
+          "rollbackOutputMs": 242,
+          "rollbackEffectiveMs": 242,
+          "totalMs": 1207
+        }
+      ],
+      "roundComparison": {
+        "baselineRoundName": "baseline-arbitrary",
+        "candidateRoundName": "complex-corpus",
+        "hotUpdateDeltaMs": 1,
+        "rollbackDeltaMs": 0,
+        "hotUpdateRatio": 1.001,
+        "rollbackRatio": 1
+      },
+      "verifyEscapedIn": [
+        "wxml"
+      ],
+      "verifyClassLiteralIn": [],
+      "initialReadyMs": 3627,
+      "hotUpdateOutputMs": 965,
+      "hotUpdateEffectiveMs": 965,
+      "rollbackOutputMs": 242,
+      "rollbackEffectiveMs": 242,
+      "totalMs": 6042
+    }
+  ]
+}
