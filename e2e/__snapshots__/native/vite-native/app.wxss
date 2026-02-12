@@ -25,7 +25,8 @@ text,
 }
 page,
 .tw-root,
-wx-root-portal-content {
+wx-root-portal-content,
+:host {
   --color-red-700: #bf000f;
   --color-amber-300: #ffd236;
   --color-green-300: #7bf1a8;
@@ -40,7 +41,8 @@ wx-root-portal-content {
 @supports (color: color(display-p3 0 0 0)) {
   page,
   .tw-root,
-  wx-root-portal-content {
+  wx-root-portal-content,
+  :host {
     --color-red-700: rgb(191, 0, 15);
     --color-amber-300: rgb(255, 210, 55);
     --color-green-300: color(display-p3 0.600292 0.935514 0.68114);
@@ -55,7 +57,8 @@ wx-root-portal-content {
   @media (color-gamut: p3) {
     page,
     .tw-root,
-    wx-root-portal-content {
+    wx-root-portal-content,
+    :host {
       --color-red-700: color(display-p3 0.692737 0.116232 0.104679);
       --color-amber-300: color(display-p3 0.974327 0.83063 0.33298);
       --color-blue-200: color(display-p3 0.76688 0.855207 0.987483);
@@ -67,7 +70,8 @@ wx-root-portal-content {
 @supports (color: lab(0% 0 0)) {
   page,
   .tw-root,
-  wx-root-portal-content {
+  wx-root-portal-content,
+  :host {
     --color-red-700: rgb(191, 0, 15);
     --color-amber-300: rgb(255, 210, 55);
     --color-green-300: lab(86.9953% -47.2691 25.0054);
@@ -82,7 +86,8 @@ wx-root-portal-content {
   @media (color-gamut: p3) {
     page,
     .tw-root,
-    wx-root-portal-content {
+    wx-root-portal-content,
+    :host {
       --color-red-700: lab(40.4273% 67.2623 53.7441);
       --color-amber-300: lab(86.4156% 6.13147 78.3961);
       --color-blue-200: lab(86.15% -4.04379 -21.0797);

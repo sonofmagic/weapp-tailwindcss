@@ -52,7 +52,7 @@
 </view>
 <view class="px-_b34_d54rpx_B text-_b32_d4rpx_B text-_b_h5cdc34_B">
   Hello World
-  <list is="components/listdacd7b7a/index">
+  <list is="components/listbdfaa494/index">
     <view class="bg-_b_h434344_B index--bg-_b_h434344_B active_cbg-_b_h543210_B index--active_cbg-_b_h543210_B">
       <view>手机</view>
       <view>电视</view>

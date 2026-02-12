@@ -231,7 +231,6 @@ text,
 }
 .box-content {
   box-sizing: content-box;
-  box-sizing: initial;
 }
 ._eh-5 {
   height: 40rpx !important;
@@ -600,7 +599,7 @@ text,
   content: var(--tw-content);
   display: block;
 }
-.after_ccontent-_b_au8fd9u662fclassArray_mu7528u4e8eu6d4bu8bd5u52a8u6001jsu7ed1u5b9aclass_a_B:after {
+.after_ccontent-_b_au_x8fd9_u_x662f_classArray_mu_x7528_u_x4e8e_u_x6d4b_u_x8bd5_u_x52a8_u_x6001_jsu_x7ed1_u_x5b9a_class_a_B:after {
   --tw-content: '这是classArray,用于测试动态js绑定class';
   content: var(--tw-content);
 }

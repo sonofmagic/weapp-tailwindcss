@@ -167,7 +167,8 @@ text,
 page,
 .tw-root,
 wx-root-portal-content,
-page {
+page,
+:host {
   --nutui-brand-1: #ffebf1;
   --nutui-brand-2: #ffd6e1;
   --nutui-brand-3: #ffadbe;

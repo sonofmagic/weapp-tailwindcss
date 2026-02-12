@@ -1,6 +1,7 @@
 :host,
 page,
-.tw-root {
+.tw-root,
+wx-root-portal-content {
   --spacing: 8rpx;
 }
 ::-webkit-backdrop {
