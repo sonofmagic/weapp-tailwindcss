@@ -186,7 +186,7 @@ describe('replaceHandleValue branch coverage', () => {
     expect(token).toBeUndefined()
   })
 
-  it('transforms arbitrary classes when classNameSet is non-empty but stale', () => {
+  it('keeps arbitrary classes untouched when classNameSet is non-empty but stale', () => {
     const literal = getLiteralPath('const arbitrary = \'w-[100px]\'', 'StringLiteral')
     const token = replaceHandleValue(literal, {
       escapeMap: MappingChars2String,
@@ -194,7 +194,7 @@ describe('replaceHandleValue branch coverage', () => {
       needEscaped: true,
     })
 
-    expect(token?.value).toBe('w-_b100px_B')
+    expect(token).toBeUndefined()
   })
 
   it('transforms dotted utility classes when classNameSet is non-empty but stale', () => {
@@ -202,6 +202,7 @@ describe('replaceHandleValue branch coverage', () => {
     const token = replaceHandleValue(literal, {
       escapeMap: MappingChars2String,
       classNameSet: new Set(['space-y-2']),
+      staleClassNameFallback: true,
       needEscaped: true,
     })
 
@@ -213,6 +214,7 @@ describe('replaceHandleValue branch coverage', () => {
     const token = replaceHandleValue(literal, {
       escapeMap: MappingChars2String,
       classNameSet: new Set(['bg-red-500']),
+      staleClassNameFallback: true,
       needEscaped: true,
     })
 

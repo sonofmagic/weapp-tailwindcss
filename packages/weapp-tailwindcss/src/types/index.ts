@@ -54,6 +54,11 @@ export interface RefreshTailwindcssPatcherOptions {
 export interface IJsHandlerOptions {
   escapeMap?: Record<string, string>
   classNameSet?: Set<string>
+  /**
+   * 当 classNameSet 可能滞后（如热更新）时，允许对未命中集合的候选类名执行保守兜底转义。
+   * 默认关闭，避免在常规 JS 文本中出现误替换。
+   */
+  staleClassNameFallback?: boolean
   arbitraryValues?: IArbitraryValues
   jsPreserveClass?: (keyword: string) => boolean | undefined
   needEscaped?: boolean

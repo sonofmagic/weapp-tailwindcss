@@ -15,7 +15,13 @@ function shouldFallbackEscapeClassName(candidate: string) {
   if (!candidate) {
     return false
   }
+  if (candidate.startsWith('@')) {
+    return false
+  }
   if (candidate.includes('://')) {
+    return false
+  }
+  if (candidate.includes('/')) {
     return false
   }
   if (!utilityLikeClassRE.test(candidate)) {
@@ -27,6 +33,9 @@ function shouldFallbackEscapeClassName(candidate: string) {
   if (!escapableTokenRE.test(candidate)) {
     return false
   }
+  if (!candidate.includes('.')) {
+    return false
+  }
   return candidate.includes('-') || candidate.includes(':')
 }
 
@@ -35,8 +44,9 @@ export function shouldTransformClassNameCandidate(
   {
     alwaysEscape,
     classNameSet,
+    staleClassNameFallback,
     jsPreserveClass,
-  }: Pick<IJsHandlerOptions, 'alwaysEscape' | 'classNameSet' | 'jsPreserveClass'>,
+  }: Pick<IJsHandlerOptions, 'alwaysEscape' | 'classNameSet' | 'staleClassNameFallback' | 'jsPreserveClass'>,
 ) {
   if (alwaysEscape) {
     return true
@@ -52,6 +62,10 @@ export function shouldTransformClassNameCandidate(
 
   if (classNameSet.has(candidate)) {
     return true
+  }
+
+  if (!staleClassNameFallback) {
+    return false
   }
 
   return shouldFallbackEscapeClassName(candidate)

@@ -6,7 +6,7 @@ import { getPattern, getReplacement } from './cache'
 
 export function shouldTransformClassName(
   candidate: string,
-  options: Pick<IJsHandlerOptions, 'alwaysEscape' | 'classNameSet' | 'jsPreserveClass'>,
+  options: Pick<IJsHandlerOptions, 'alwaysEscape' | 'classNameSet' | 'staleClassNameFallback' | 'jsPreserveClass'>,
 ) {
   return shouldTransformClassNameCandidate(candidate, options)
 }

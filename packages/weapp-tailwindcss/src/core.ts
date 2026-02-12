@@ -49,7 +49,10 @@ export function createContext(options: UserDefinedOptions = {}) {
         forceCollect: true,
       })
     }
-    return await jsHandler(rawJs, runtimeSet, options)
+    return await jsHandler(rawJs, runtimeSet, {
+      staleClassNameFallback: true,
+      ...options,
+    })
   }
 
   async function transformWxml(rawWxml: string, options?: ITemplateHandlerOptions) {
@@ -59,8 +62,15 @@ export function createContext(options: UserDefinedOptions = {}) {
         forceCollect: true,
       })
     }
+    const runtimeJsHandler = jsHandler
     return templateHandler(rawWxml, defuOverrideArray(options!, {
       runtimeSet,
+      jsHandler: (source, runtime, handlerOptions) => {
+        return runtimeJsHandler(source, runtime, {
+          staleClassNameFallback: true,
+          ...handlerOptions,
+        })
+      },
     }))
   }
 

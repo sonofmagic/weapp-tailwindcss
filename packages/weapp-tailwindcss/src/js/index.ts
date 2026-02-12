@@ -11,6 +11,7 @@ export function createJsHandler(options: CreateJsHandlerOptions): JsHandler {
   const {
     arbitraryValues,
     escapeMap,
+    staleClassNameFallback,
     jsPreserveClass,
     generateMap,
     needEscaped,
@@ -33,6 +34,7 @@ export function createJsHandler(options: CreateJsHandlerOptions): JsHandler {
       {
         classNameSet,
         escapeMap,
+        staleClassNameFallback,
         arbitraryValues,
         jsPreserveClass,
         generateMap,
