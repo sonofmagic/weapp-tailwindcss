@@ -1,5 +1,7 @@
 require('./scripts/patch-ajv-keywords')
 require('./scripts/patch-chalk')
+const path = require('node:path')
+const CopyWebpackPlugin = require('copy-webpack-plugin')
 const { UnifiedWebpackPluginV5 } = require('weapp-tailwindcss/webpack')
 const { StyleInjector } = require('weapp-style-injector/webpack/uni-app')
 const bench = require('../bench.cjs')('uni-app-webpack-vue2')
@@ -54,6 +56,19 @@ const config = {
     // config.plugins.push(
     //   StyleInjector()
     // )
+    if (process.env.UNI_PLATFORM === 'mp-weixin') {
+      config.plugins.push(
+        new CopyWebpackPlugin({
+          patterns: [
+            {
+              from: path.resolve(__dirname, 'src/wxcomponents'),
+              to: 'wxcomponents',
+              noErrorOnMissing: true,
+            },
+          ],
+        }),
+      )
+    }
     // smp.wrap(config)
   }
 }
