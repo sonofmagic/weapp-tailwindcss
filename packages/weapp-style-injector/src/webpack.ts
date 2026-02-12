@@ -9,7 +9,7 @@ import { mergePerFileResolvers } from './utils'
 const WEBPACK_PLUGIN_NAME = `${PLUGIN_NAME}:webpack`
 
 type WebpackSource = sources.Source
-interface WebpackObjectPluginInstance {
+export interface WebpackObjectPluginInstance {
   apply: (compiler: Compiler) => void
 }
 

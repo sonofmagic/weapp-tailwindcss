@@ -1,5 +1,5 @@
 import type { UniAppStyleScopeInput, UniAppSubPackageConfig } from '../uni-app'
-import type { WebpackWeappStyleInjectorOptions } from '../webpack'
+import type { WebpackObjectPluginInstance, WebpackWeappStyleInjectorOptions } from '../webpack'
 
 import fs from 'node:fs'
 import path from 'node:path'
@@ -23,7 +23,7 @@ function resolveDefaultPagesJsonPaths(): string[] {
   ]
 }
 
-export function StyleInjector(options: WebpackUniAppStyleInjectorOptions = {}) {
+export function StyleInjector(options: WebpackUniAppStyleInjectorOptions = {}): WebpackObjectPluginInstance {
   const {
     pagesJsonPath,
     subPackages,

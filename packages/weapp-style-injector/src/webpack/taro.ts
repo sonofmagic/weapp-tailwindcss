@@ -1,5 +1,5 @@
 import type { TaroSubPackageConfig } from '../taro'
-import type { WebpackWeappStyleInjectorOptions } from '../webpack'
+import type { WebpackObjectPluginInstance, WebpackWeappStyleInjectorOptions } from '../webpack'
 
 import fs from 'node:fs'
 import path from 'node:path'
@@ -26,7 +26,7 @@ function resolveDefaultAppConfigPaths(): string[] {
   ]
 }
 
-export function StyleInjector(options: WebpackTaroStyleInjectorOptions = {}) {
+export function StyleInjector(options: WebpackTaroStyleInjectorOptions = {}): WebpackObjectPluginInstance {
   const {
     appConfigPath,
     subPackages,
