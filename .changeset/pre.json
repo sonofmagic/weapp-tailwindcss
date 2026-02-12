@@ -70,6 +70,11 @@
     "@weapp-tailwindcss/website": "1.0.16"
   },
   "changesets": [
-    "quiet-ligers-travel"
+    "fresh-cherries-build",
+    "funny-sloths-guess",
+    "odd-buses-shop",
+    "pretty-forks-doubt",
+    "quiet-ligers-travel",
+    "shaggy-planets-juggle"
   ]
 }

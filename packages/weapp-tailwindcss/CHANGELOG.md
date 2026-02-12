@@ -1,5 +1,44 @@
 # weapp-tailwindcss
 
+## 4.10.0-beta.1
+
+### Minor Changes
+
+- ✨ **增强 `weapp-tailwindcss` 在复杂 Tailwind 语法与热更新回归场景下的稳定性与可观测性：** [`b2aa840`](https://github.com/sonofmagic/weapp-tailwindcss/commit/b2aa84042aa34fcd01e8667619d5d378b008c046) by @sonofmagic
+  - 扩展 watch HMR 回归到双轮次对比（`baseline-arbitrary` 与 `complex-corpus`），并在报告中输出分轮次指标与差异对比，便于长期性能追踪。
+  - 强化跨框架 watch 路径下的复杂类名热更新验证，覆盖更多任意值、复杂变体与组合语法。
+  - 补充复杂语法语料与端到端样式产物回归测试，提升对 Tailwind 复杂写法转译行为的覆盖度与回归保障。
+
+### Patch Changes
+
+- 🐛 **提升热更新链路的稳定性与性能，并补齐真实 watch 回归保障：** [`7824e01`](https://github.com/sonofmagic/weapp-tailwindcss/commit/7824e010f8f7e4a7a9ae6eedd707ff4a329d991b) by @sonofmagic
+  - 优化运行时类名转译策略，修复 stale runtimeSet 场景下新增任意值类与小数类（如 `text-[23.43px]`、`space-y-2.5`）在 JS/WXML/Vue 中的漏转译问题。
+  - 提炼并复用类名候选判定逻辑，减少重复实现，降低后续维护成本。
+  - 增强 demo 级 watch 回归脚本（taro + uni-app），覆盖新增类热更新、输出变更检测与恢复校验。
+  - 为 watch 回归增加本地构建预热与日志降噪能力（可选 `--quiet-sass`），减少无效噪音并提升排查效率。
+  - 优化相关缓存与增量处理路径，缩短常见热更新阶段插件处理耗时。
+
+- 🐛 **扩展热更新 e2e 回归覆盖面并提升跨框架 watch 稳定性：** [`7261ffa`](https://github.com/sonofmagic/weapp-tailwindcss/commit/7261ffa6b6d8a7c262020123cceef39c827bf9e4) by @sonofmagic
+  - watch 回归用例从 `taro/uni-app` 扩展到 `taro/uni-app/mpx/rax/mina/weapp-vite`，默认运行全量 `all`。
+  - 新增 `e2e:watch:mpx`、`e2e:watch:rax`、`e2e:watch:mina`、`e2e:watch:weapp-vite` 便捷命令。
+  - 加强 watch 预热与编译成功判定，降低误判和超时波动。
+  - 优化子进程退出与清理策略，避免 watch 任务残留影响后续回归。
+  - 强化复杂 Tailwind 类组合（含任意值、小数、calc、伪元素等）在热更新路径下的转译验证。
+
+- 🐛 **修复 Tailwind v4 `space-x-*` 在小程序端生成不兼容方向伪类导致的构建产物报错问题：** [`515aa47`](https://github.com/sonofmagic/weapp-tailwindcss/commit/515aa473159218d67ba8bc461ae7c95d573d3f80) by @sonofmagic
+  - 在选择器转换阶段清理 `:-webkit-any(...)`、`:-moz-any(...)`、`:lang(...)` 相关分支，避免输出微信开发者工具不支持的选择器。
+  - 对 `:not(...)` 包裹的方向条件保留主体选择器并移除条件；对纯方向分支选择器直接移除，避免产生无效 CSS。
+  - 补充 `selectorParser` 回归测试，覆盖上述 RTL/language 伪类清理逻辑。
+
+- 🐛 **新增一条专门面向热更新的 e2e 回归链路（构建产物快照链路之外），用于真实验证 taro/uni-app 在 watch 模式下的 HMR 生效性与耗时：** [`d350d81`](https://github.com/sonofmagic/weapp-tailwindcss/commit/d350d817b006f7727ad8a3ed3950ca9c700a78b6) by @sonofmagic
+  - 新增 `e2e:watch` 系列命令与独立 vitest 配置，支持按 `taro` / `uni` / `both` 运行。
+  - 强化 `test:watch-hmr` 回归脚本：输出结构化报告（含 hot update / rollback 延迟）、支持性能预算断言与日志降噪。
+  - 在回归中注入更复杂的 Tailwind 类名组合（含任意值、小数、`calc()`、`grid-cols-[...]`、`/` 透明度、伪元素变体等），确保新增类在 JS/WXML 场景的转译结果可验证。
+  - 增加“类名避撞”策略，避免测试注入类与 demo 现有类冲突导致误判，提升回归稳定性与可重复性。
+  - 默认 watch e2e 启用 `--skip-build` 聚焦热更新链路，另提供完整预构建模式命令用于全链路对照。
+- 📦 **Dependencies** [`7824e01`](https://github.com/sonofmagic/weapp-tailwindcss/commit/7824e010f8f7e4a7a9ae6eedd707ff4a329d991b)
+  → `@weapp-tailwindcss/postcss@2.1.5-beta.0`
+
 ## 4.9.9-beta.0
 
 ### Patch Changes
