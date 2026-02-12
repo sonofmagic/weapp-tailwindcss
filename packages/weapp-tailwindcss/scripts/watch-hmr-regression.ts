@@ -6,8 +6,11 @@ import path from 'node:path'
 import process from 'node:process'
 import { replaceWxml } from '../src/wxml/shared'
 
+type ConcreteWatchCaseName = 'taro' | 'uni' | 'mpx' | 'rax' | 'mina' | 'weapp-vite'
+type WatchCaseName = ConcreteWatchCaseName | 'both' | 'all'
+
 interface CliOptions {
-  caseName: 'taro' | 'uni' | 'both'
+  caseName: WatchCaseName
   timeoutMs: number
   pollMs: number
   skipBuild: boolean
@@ -25,14 +28,16 @@ interface MutationPayload {
 interface MutationScenario extends MutationPayload {
   classTokens: string[]
   escapedClasses: string[]
+  freshEscapedClasses: string[]
   mutatedSource: string
 }
 
 interface WatchCase {
-  name: 'taro' | 'uni'
+  name: ConcreteWatchCaseName
   label: string
   cwd: string
   devScript: string
+  env?: Record<string, string>
   sourceFile: string
   outputWxml: string
   outputJs: string
@@ -43,6 +48,7 @@ interface WatchCase {
 interface WatchSession {
   child: ChildProcessWithoutNullStreams
   ensureRunning: () => void
+  lastCompileSuccessAt: () => number
   logs: () => string
   stop: () => Promise<void>
 }
@@ -128,7 +134,7 @@ function parseBooleanFlag(flag: string, argv: string[]) {
 function resolveOptions(): CliOptions {
   const argv = process.argv.slice(2)
   return {
-    caseName: (parseArg('--case', argv) ?? 'both') as CliOptions['caseName'],
+    caseName: (parseArg('--case', argv) ?? 'all') as CliOptions['caseName'],
     timeoutMs: parseNumber(parseArg('--timeout', argv), 180000),
     pollMs: parseNumber(parseArg('--poll', argv), 240),
     skipBuild: parseBooleanFlag('--skip-build', argv),
@@ -228,6 +234,53 @@ function createLineCollector(
   }
 }
 
+const compileSuccessLinePatterns = [
+  /compiled successfully/i,
+  /build complete/i,
+  /watching for changes/i,
+  /ready in \d+/i,
+  /built in \d+/i,
+] as const
+
+function stripAnsiControlSequences(line: string) {
+  let output = ''
+  for (let index = 0; index < line.length; index += 1) {
+    const current = line.charCodeAt(index)
+    const next = line.charCodeAt(index + 1)
+
+    if (current !== 27 || next !== 91) {
+      output += line[index]
+      continue
+    }
+
+    index += 2
+    while (index < line.length) {
+      const code = line.charCodeAt(index)
+      const isUpper = code >= 65 && code <= 90
+      const isLower = code >= 97 && code <= 122
+      if (isUpper || isLower) {
+        break
+      }
+      index += 1
+    }
+  }
+  return output
+}
+
+function normalizeLogLine(line: string) {
+  return stripAnsiControlSequences(line).replace(/\u200B/g, '').trim()
+}
+
+function isCompileSuccessLine(line: string) {
+  const normalized = normalizeLogLine(line)
+  for (const pattern of compileSuccessLinePatterns) {
+    if (pattern.test(normalized)) {
+      return true
+    }
+  }
+  return false
+}
+
 async function runCommand(cwd: string, args: string[], label: string) {
   const lines: string[] = []
   const child = spawn(resolvePnpmCommand(), args, {
@@ -257,16 +310,42 @@ async function ensureLocalPackageBuild(baseCwd: string) {
   await runCommand(packageRoot, ['run', 'build'], 'build')
 }
 
-function createWatchSession(cwd: string, devScript: string, options: Pick<CliOptions, 'quietSass'>): WatchSession {
+function createWatchSession(
+  cwd: string,
+  devScript: string,
+  options: Pick<CliOptions, 'quietSass'>,
+  env: Record<string, string> = {},
+): WatchSession {
   const lines: string[] = []
+  let lastCompileSuccessAt = 0
   const child = spawn(resolvePnpmCommand(), ['run', devScript], {
     cwd,
     env: {
       ...process.env,
       WEAPP_TW_WATCH_REGRESSION: '1',
+      ...env,
     },
+    detached: process.platform !== 'win32',
     stdio: 'pipe',
   })
+
+  const killWatchProcess = (signal: NodeJS.Signals) => {
+    const childPid = child.pid
+    if (childPid != null && process.platform !== 'win32') {
+      try {
+        process.kill(-childPid, signal)
+        return
+      }
+      catch {
+      }
+    }
+
+    try {
+      child.kill(signal)
+    }
+    catch {
+    }
+  }
 
   let collecting = true
   const rawCollect = createLineCollector('watch', lines, 240, {
@@ -276,6 +355,17 @@ function createWatchSession(cwd: string, devScript: string, options: Pick<CliOpt
     if (!collecting) {
       return
     }
+
+    const text = chunk.toString()
+    for (const line of text.split(/\r?\n/)) {
+      if (!line) {
+        continue
+      }
+      if (isCompileSuccessLine(line)) {
+        lastCompileSuccessAt = Date.now()
+      }
+    }
+
     rawCollect(chunk)
   }
 
@@ -297,7 +387,7 @@ function createWatchSession(cwd: string, devScript: string, options: Pick<CliOpt
     child.stdout.off('data', collect)
     child.stderr.off('data', collect)
 
-    child.kill('SIGINT')
+    killWatchProcess('SIGINT')
 
     let startedAt = Date.now()
     while (child.exitCode == null && Date.now() - startedAt < 3000) {
@@ -308,7 +398,7 @@ function createWatchSession(cwd: string, devScript: string, options: Pick<CliOpt
       return
     }
 
-    child.kill('SIGTERM')
+    killWatchProcess('SIGTERM')
 
     startedAt = Date.now()
     while (child.exitCode == null && Date.now() - startedAt < 2000) {
@@ -316,13 +406,14 @@ function createWatchSession(cwd: string, devScript: string, options: Pick<CliOpt
     }
 
     if (child.exitCode == null) {
-      child.kill('SIGKILL')
+      killWatchProcess('SIGKILL')
     }
   }
 
   return {
     child,
     ensureRunning,
+    lastCompileSuccessAt: () => lastCompileSuccessAt,
     logs: () => lines.join('\n'),
     stop,
   }
@@ -440,13 +531,103 @@ function buildCases(baseCwd: string): WatchCase[] {
     },
   }
 
-  return [taroCase, uniCase]
+  const mpxCase: WatchCase = {
+    name: 'mpx',
+    label: 'demo/mpx-app',
+    cwd: path.resolve(baseCwd, 'demo/mpx-app'),
+    devScript: 'dev',
+    sourceFile: path.resolve(baseCwd, 'demo/mpx-app/src/pages/index.mpx'),
+    outputWxml: path.resolve(baseCwd, 'demo/mpx-app/dist/wx/pages/index.wxml'),
+    outputJs: path.resolve(baseCwd, 'demo/mpx-app/dist/wx/pages/index.js'),
+    verifyEscapedIn: ['wxml', 'js'],
+    mutate(source, payload) {
+      const dataAnchor = '    classNames: \'text-[#123456] text-[50px] bg-[#fff]\','
+      if (!source.includes(dataAnchor)) {
+        throw new Error('mpx source data anchor not found')
+      }
+      const withData = source.replace(
+        dataAnchor,
+        `${dataAnchor}\n    ${payload.classVariableName}: '${payload.classLiteral}',`,
+      )
+      const snippet = [
+        `    <view class="${payload.classLiteral}">${payload.marker}-static</view>`,
+        `    <view wx:class="{{${payload.classVariableName}}}">${payload.marker}-dynamic</view>`,
+      ].join('\n')
+      return insertBeforeClosingTag(withData, '\n  </view>\n</template>', snippet)
+    },
+  }
+
+  const raxCase: WatchCase = {
+    name: 'rax',
+    label: 'demo/rax-app',
+    cwd: path.resolve(baseCwd, 'demo/rax-app'),
+    devScript: 'start',
+    env: {
+      PORT: '39333',
+    },
+    sourceFile: path.resolve(baseCwd, 'demo/rax-app/src/pages/index/index.tsx'),
+    outputWxml: path.resolve(baseCwd, 'demo/rax-app/build/wechat-miniprogram/pages/index/index.wxml'),
+    outputJs: path.resolve(baseCwd, 'demo/rax-app/build/wechat-miniprogram/bundle.js'),
+    verifyEscapedIn: ['js'],
+    mutate(source, payload) {
+      const varAnchor = '  const [flag, setState] = useState(true);'
+      if (!source.includes(varAnchor)) {
+        throw new Error('rax source anchor not found')
+      }
+      const withVar = source.replace(
+        varAnchor,
+        `${varAnchor}\n  const ${payload.classVariableName} = '${payload.classLiteral}';`,
+      )
+      const snippet = [
+        `      <View className='${payload.classLiteral}'>${payload.marker}-static</View>`,
+        `      <View className={${payload.classVariableName}}>${payload.marker}-dynamic</View>`,
+      ].join('\n')
+      return insertBeforeClosingTag(withVar, '    </>', snippet)
+    },
+  }
+
+  const minaCase: WatchCase = {
+    name: 'mina',
+    label: 'demo/native-mina',
+    cwd: path.resolve(baseCwd, 'demo/native-mina'),
+    devScript: 'start',
+    sourceFile: path.resolve(baseCwd, 'demo/native-mina/src/pages/index/index.wxml'),
+    outputWxml: path.resolve(baseCwd, 'demo/native-mina/dist/pages/index/index.wxml'),
+    outputJs: path.resolve(baseCwd, 'demo/native-mina/dist/pages/index/index.js'),
+    verifyEscapedIn: ['wxml'],
+    mutate(source, payload) {
+      const snippet = `  <view class="${payload.classLiteral}">${payload.marker}-static</view>`
+      return insertBeforeClosingTag(source, '\n</view>', snippet)
+    },
+  }
+
+  const weappViteCase: WatchCase = {
+    name: 'weapp-vite',
+    label: 'demo/native-ts (weapp-vite)',
+    cwd: path.resolve(baseCwd, 'demo/native-ts'),
+    devScript: 'dev',
+    sourceFile: path.resolve(baseCwd, 'demo/native-ts/miniprogram/pages/index/index.wxml'),
+    outputWxml: path.resolve(baseCwd, 'demo/native-ts/dist/pages/index/index.wxml'),
+    outputJs: path.resolve(baseCwd, 'demo/native-ts/dist/pages/index/index.js'),
+    verifyEscapedIn: ['wxml'],
+    mutate(source, payload) {
+      const snippet = `  <view class="${payload.classLiteral}">${payload.marker}-static</view>`
+      return insertBeforeClosingTag(source, '\n</view>', snippet)
+    },
+  }
+
+  return [taroCase, uniCase, mpxCase, raxCase, minaCase, weappViteCase]
 }
 
 function pickCases(allCases: WatchCase[], caseName: CliOptions['caseName']) {
-  if (caseName === 'both') {
+  if (caseName === 'all') {
     return allCases
   }
+
+  if (caseName === 'both') {
+    return allCases.filter(item => item.name === 'taro' || item.name === 'uni')
+  }
+
   return allCases.filter(item => item.name === caseName)
 }
 
@@ -463,6 +644,33 @@ async function waitForOutputsReady(watchCase: WatchCase, options: CliOptions, se
       timeoutMs: options.timeoutMs,
       pollMs: options.pollMs,
       message: `[${watchCase.label}] initial outputs were not generated in time`,
+      onTick: session.ensureRunning,
+    },
+  )
+}
+
+async function waitForInitialWarmup(
+  watchCase: WatchCase,
+  options: CliOptions,
+  session: WatchSession,
+  sessionStartedAt: number,
+) {
+  return waitFor(
+    async () => {
+      if (session.lastCompileSuccessAt() > sessionStartedAt) {
+        return true
+      }
+
+      const [wxmlMtime, jsMtime] = await Promise.all([
+        getMtime(watchCase.outputWxml),
+        getMtime(watchCase.outputJs),
+      ])
+      return wxmlMtime > sessionStartedAt || jsMtime > sessionStartedAt
+    },
+    {
+      timeoutMs: options.timeoutMs,
+      pollMs: options.pollMs,
+      message: `[${watchCase.label}] initial watch warmup did not finish in time`,
       onTick: session.ensureRunning,
     },
   )
@@ -557,11 +765,11 @@ function createMutationScenario(
     const marker = `tw-watch-${watchCase.name}-${seed}`
     const classLiteral = classTokens.join(' ')
 
-    const hasCollision = escapedClasses.some((escaped) => {
-      return baselineWxml.includes(escaped) || baselineJs.includes(escaped)
+    const freshEscapedClasses = escapedClasses.filter((escaped) => {
+      return !baselineWxml.includes(escaped) && !baselineJs.includes(escaped)
     })
 
-    if (hasCollision) {
+    if (freshEscapedClasses.length < 3) {
       continue
     }
 
@@ -585,11 +793,12 @@ function createMutationScenario(
       classVariableName,
       classTokens,
       escapedClasses,
+      freshEscapedClasses,
       mutatedSource,
     }
   }
 
-  throw new Error(`[${watchCase.label}] failed to generate non-colliding mutation classes`)
+  throw new Error(`[${watchCase.label}] failed to generate enough fresh mutation classes`)
 }
 
 function summarizeMetrics(cases: WatchCaseMetrics[]): WatchSummary {
@@ -663,12 +872,15 @@ async function runCase(watchCase: WatchCase, options: CliOptions): Promise<Watch
   const sourcePath = watchCase.sourceFile
   const original = await fs.readFile(sourcePath, 'utf8')
 
+  const sessionStartedAt = Date.now()
   const session = createWatchSession(watchCase.cwd, watchCase.devScript, {
     quietSass: options.quietSass,
-  })
+  }, watchCase.env)
 
   try {
-    const initialReadyMs = await waitForOutputsReady(watchCase, options, session)
+    const outputsReadyMs = await waitForOutputsReady(watchCase, options, session)
+    const warmupMs = await waitForInitialWarmup(watchCase, options, session, sessionStartedAt)
+    const initialReadyMs = Math.max(outputsReadyMs, warmupMs)
 
     const [baselineWxml, baselineJs] = await Promise.all([
       readFileIfExists(watchCase.outputWxml),
@@ -692,10 +904,11 @@ async function runCase(watchCase: WatchCase, options: CliOptions): Promise<Watch
       classLiteral,
       classTokens,
       escapedClasses,
+      freshEscapedClasses,
       mutatedSource,
     } = mutation
 
-    for (const escaped of escapedClasses) {
+    for (const escaped of freshEscapedClasses) {
       assertNotContains(baselineWxml, escaped, `[${watchCase.label}] baseline wxml`)
       assertNotContains(baselineJs, escaped, `[${watchCase.label}] baseline js`)
     }

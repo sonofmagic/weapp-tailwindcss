@@ -6,7 +6,7 @@ import path from 'pathe'
 import { describe, it } from 'vitest'
 
 interface HotUpdateCaseReport {
-  name: 'taro' | 'uni'
+  name: 'taro' | 'uni' | 'mpx' | 'rax' | 'mina' | 'weapp-vite'
   label: string
   classLiteral: string
   classTokens: string[]
@@ -32,10 +32,19 @@ interface HotUpdateReport {
 
 function resolveCaseName() {
   const value = process.env.E2E_WATCH_CASE
-  if (value === 'taro' || value === 'uni' || value === 'both') {
+  if (
+    value === 'taro'
+    || value === 'uni'
+    || value === 'mpx'
+    || value === 'rax'
+    || value === 'mina'
+    || value === 'weapp-vite'
+    || value === 'both'
+    || value === 'all'
+  ) {
     return value
   }
-  return 'both'
+  return 'all'
 }
 
 function toBoolEnv(name: string, fallback: boolean) {
