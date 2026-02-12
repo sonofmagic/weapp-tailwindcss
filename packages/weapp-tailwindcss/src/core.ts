@@ -65,7 +65,7 @@ export function createContext(options: UserDefinedOptions = {}) {
     const runtimeJsHandler = jsHandler
     return templateHandler(rawWxml, defuOverrideArray(options!, {
       runtimeSet,
-      jsHandler: (source, runtime, handlerOptions) => {
+      jsHandler: (source: string, runtime?: Set<string>, handlerOptions?: CreateJsHandlerOptions) => {
         return runtimeJsHandler(source, runtime, {
           staleClassNameFallback: true,
           ...handlerOptions,
