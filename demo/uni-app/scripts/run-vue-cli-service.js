@@ -9,6 +9,7 @@ const babelParserPath = babelCoreRequire.resolve('@babel/parser')
 const originalResolveFilename = Module._resolveFilename
 const originalRequire = Module.prototype.require
 const isDcloudRequest = request => typeof request === 'string' && request.startsWith('@dcloudio/')
+const isBabelRequest = request => typeof request === 'string' && request.startsWith('@babel/')
 const isDirectModuleNotFound = (error, request) => {
   return Boolean(error && error.code === 'MODULE_NOT_FOUND' && error.message.includes(`'${request}'`))
 }
@@ -149,6 +150,14 @@ Module._resolveFilename = function patchedResolveFilename(request, parent, isMai
     return originalResolveFilename.call(this, request, parent, isMain, options)
   }
   catch (error) {
+    if (isBabelRequest(request) && isDirectModuleNotFound(error, request)) {
+      try {
+        return babelCoreRequire.resolve(request)
+      }
+      catch {
+        return projectRequire.resolve(request)
+      }
+    }
     if (isDcloudRequest(request) && isDirectModuleNotFound(error, request)) {
       return projectRequire.resolve(request)
     }
@@ -159,6 +168,14 @@ Module._resolveFilename = function patchedResolveFilename(request, parent, isMai
 Module.prototype.require = function patchedRequire(id, ...args) {
   if (id === '@babel/parser') {
     return originalRequire.call(this, babelParserPath)
+  }
+  if (isBabelRequest(id)) {
+    try {
+      return originalRequire.call(this, babelCoreRequire.resolve(id))
+    }
+    catch {
+      return originalRequire.call(this, projectRequire.resolve(id))
+    }
   }
   if (id === 'copy-webpack-plugin') {
     return createCopyWebpackPluginCompat()
