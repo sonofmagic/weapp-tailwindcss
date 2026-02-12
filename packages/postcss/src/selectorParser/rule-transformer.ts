@@ -137,6 +137,10 @@ function shouldRemoveHoverSelector(selector: Selector, options: IStyleHandlerOpt
   return selector.nodes.some(node => node.type === 'pseudo' && node.value === ':hover')
 }
 
+function shouldRemoveBackdropSelector(selector: Selector) {
+  return selector.nodes.some(node => node.type === 'pseudo' && node.value === '::backdrop')
+}
+
 function isHiddenOrTemplateNotPseudo(node?: Node | null) {
   if (!node || node.type !== 'pseudo' || node.value !== ':not') {
     return false
@@ -214,6 +218,11 @@ function handleTagOrAttribute(node: Node, context: TransformContext) {
 }
 
 function handleSelectorNode(selector: Selector, context: TransformContext) {
+  if (shouldRemoveBackdropSelector(selector)) {
+    selector.remove()
+    return
+  }
+
   if (shouldRemoveHoverSelector(selector, context.options)) {
     selector.remove()
     return
