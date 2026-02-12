@@ -1217,7 +1217,7 @@ text,
 }
 .u-flex-self-end,
 .up-flex-self-end {
-  align-self: flex-en !important;
+  align-self: flex-end !important;
 }
 .u-flex-self-baseline,
 .up-flex-self-baseline {

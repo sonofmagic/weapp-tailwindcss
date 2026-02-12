@@ -244,7 +244,6 @@ text,
 }
 .box-content {
   box-sizing: content-box;
-  box-sizing: initial;
 }
 .block {
   display: block;
@@ -760,7 +759,6 @@ text,
 .u-reset-button {
   padding: 0;
   background-color: transparent;
-  background-color: initial;
   font-size: inherit;
   line-height: inherit;
   color: inherit;
@@ -931,22 +929,21 @@ text,
   --tw-content: 'Hello World';
   content: var(--tw-content);
 }
-.ifdef-_bH5__o_o_MP-WEIXIN_B_cbg-blue-300 {
-  --tw-bg-opacity: 1;
-  background-color: rgba(147, 197, 253, var(--tw-bg-opacity, 1));
-}
-.ifdef-_bH5_o_oMP-WEIXIN_B_cbg-blue-400 {
-  --tw-bg-opacity: 1;
-  background-color: rgba(96, 165, 250, var(--tw-bg-opacity, 1));
-}
 .ifdef-_bMP-WEIXIN_B_cbg-blue-500 {
   --tw-bg-opacity: 1;
   background-color: rgba(59, 130, 246, var(--tw-bg-opacity, 1));
 }
-.mv_cbg-blue-400,
+.ifndef-_bH5_o_oMP-WEIXIN_B_cbg-red-400 {
+  --tw-bg-opacity: 1;
+  background-color: rgba(248, 113, 113, var(--tw-bg-opacity, 1));
+}
 .wx_cbg-blue-400 {
   --tw-bg-opacity: 1;
   background-color: rgba(96, 165, 250, var(--tw-bg-opacity, 1));
+}
+.-mv_cbg-red-400 {
+  --tw-bg-opacity: 1;
+  background-color: rgba(248, 113, 113, var(--tw-bg-opacity, 1));
 }
 @media (prefers-color-scheme: dark) {
   .dark_ctext-white {
