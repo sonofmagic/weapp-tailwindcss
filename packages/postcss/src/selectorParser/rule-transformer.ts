@@ -27,6 +27,52 @@ interface TransformContext {
   requiresSpacingNormalization: boolean
 }
 
+const RTL_LANGUAGE_ANY_PSEUDO_SET = new Set([
+  ':-moz-any',
+  ':-webkit-any',
+  ':lang',
+])
+
+function isRtlLanguageAnyPseudo(node: Node): node is Pseudo {
+  return node.type === 'pseudo' && RTL_LANGUAGE_ANY_PSEUDO_SET.has(node.value)
+}
+
+function getTopLevelSelector(node: Selector): Selector {
+  let current: Node = node
+  let topLevel: Selector = node
+
+  while (current.parent) {
+    const parent = current.parent
+    if (parent.type === 'root') {
+      break
+    }
+    if (parent.type === 'selector') {
+      topLevel = parent
+    }
+    current = parent
+  }
+
+  return topLevel
+}
+
+function stripUnsupportedRtlLanguagePseudo(node: Pseudo) {
+  const selectorParent = node.parent
+  if (!selectorParent || selectorParent.type !== 'selector') {
+    return
+  }
+
+  const maybeNot = selectorParent.parent
+  // Tailwind v4 会生成 :not(:-moz-any(:lang(...))) / :not(:-webkit-any(:lang(...)))
+  // 这里保留主体选择器，去掉方向条件。
+  if (maybeNot && maybeNot.type === 'pseudo' && maybeNot.value === ':not') {
+    maybeNot.remove()
+    return
+  }
+
+  // 纯 RTL 分支（如 :...any(:lang(...))）直接移除，避免微信端不支持伪类报错。
+  getTopLevelSelector(selectorParent).remove()
+}
+
 function flattenWherePseudo(node: Pseudo, context: TransformContext, index: number, parent: Selector | undefined) {
   if (isUniAppXEnabled(context.options)) {
     node.value = ':is'
@@ -128,6 +174,11 @@ function handlePseudoNode(node: Node, index: number, context: TransformContext, 
     return
   }
 
+  if (isRtlLanguageAnyPseudo(node)) {
+    stripUnsupportedRtlLanguagePseudo(node)
+    return
+  }
+
   if (node.value === ':root' && context.options.cssSelectorReplacement?.root) {
     node.value = composeIsPseudo(context.options.cssSelectorReplacement.root)
     return
@@ -192,6 +243,11 @@ function transformSelectors(selectors: Root, context: TransformContext) {
   }
 
   selectors.walk((node) => {
+    if (node.type === 'pseudo' && Array.isArray(node.nodes) && node.nodes.length === 0) {
+      node.remove()
+      return
+    }
+
     if (node.type === 'selector' && node.length === 0) {
       node.remove()
     }

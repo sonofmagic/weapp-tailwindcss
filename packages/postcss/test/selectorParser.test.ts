@@ -64,4 +64,15 @@ describe('selectorParser', () => {
     ruleTransformSync(secondRule, options)
     expect(secondRule.toString()).toMatchSnapshot()
   })
+
+  it('ruleTransformSync strips unsupported rtl language pseudo selectors', () => {
+    const root = postcss.parse('.space-x-2\\.5>view+view:not(:-webkit-any(:lang(ar),:lang(he))),.space-x-2\\.5>view+view:not(:-moz-any(:lang(ar),:lang(he))),.space-x-2\\.5>view+view:-webkit-any(:lang(ar),:lang(he)),.space-x-2\\.5>view+view:-moz-any(:lang(ar),:lang(he)){margin-right:1px;}')
+    const rule = root.first as Rule
+    ruleTransformSync(rule, {})
+    const transformed = rule.toString()
+    expect(transformed).toContain('.space-x-2_d5>view+view')
+    expect(transformed).not.toContain(':-webkit-any')
+    expect(transformed).not.toContain(':-moz-any')
+    expect(transformed).not.toContain(':lang(')
+  })
 })
