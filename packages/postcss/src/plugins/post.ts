@@ -1,5 +1,5 @@
 // 后处理阶段插件：负责选择器兜底、声明去重与变量排序
-import type { Plugin, PluginCreator } from 'postcss'
+import type { Plugin, PluginCreator, Rule } from 'postcss'
 import type { IStyleHandlerOptions } from '../types'
 import { defu } from '@weapp-tailwindcss/shared'
 import { normalizeTailwindcssRpxDeclaration } from '../compat/tailwindcss-rpx'
@@ -14,6 +14,32 @@ import { createRootSpecificityCleaner } from './post/specificity-cleaner'
 export type PostcssWeappTailwindcssRenamePlugin = PluginCreator<IStyleHandlerOptions>
 
 export { reorderVariableDeclarations } from './post/decl-dedupe'
+
+const DEFAULT_ROOT_SELECTORS = ['page', '.tw-root', 'wx-root-portal-content'] as const
+
+function normalizeRootSelectors(value?: string | string[] | false) {
+  if (value === undefined || value === false) {
+    return []
+  }
+  return Array.isArray(value) ? value.filter(Boolean) : [value]
+}
+
+function shouldAppendHostSelector(rule: Rule, options: IStyleHandlerOptions) {
+  const selectors = rule.selectors ?? []
+  if (selectors.includes(':host')) {
+    return false
+  }
+
+  const rootSelectors = normalizeRootSelectors(options.cssSelectorReplacement?.root)
+  if (
+    rootSelectors.length !== DEFAULT_ROOT_SELECTORS.length
+    || !rootSelectors.every((selector, index) => selector === DEFAULT_ROOT_SELECTORS[index])
+  ) {
+    return false
+  }
+
+  return DEFAULT_ROOT_SELECTORS.every(selector => selectors.includes(selector))
+}
 
 // 后处理插件收敛所有规则，在退出阶段执行去重与兜底
 const postcssWeappTailwindcssPostPlugin: PostcssWeappTailwindcssRenamePlugin = (
@@ -39,6 +65,10 @@ const postcssWeappTailwindcssPostPlugin: PostcssWeappTailwindcssRenamePlugin = (
       cleanRootSpecificity?.(rule)
 
       if (enableMainChunkTransforms) {
+        if (shouldAppendHostSelector(rule, opts)) {
+          rule.selectors = [...rule.selectors, ':host']
+        }
+
         dedupeDeclarations(rule)
 
         if (rule.selectors.length === 0 || (rule.selectors.length === 1 && rule.selector.trim() === '')) {

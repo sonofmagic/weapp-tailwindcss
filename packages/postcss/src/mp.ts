@@ -9,6 +9,7 @@ import { hasTwVars } from './utils/tw-vars'
 
 // v3 变量集合在运行时转换为 Declaration 以便快速插入
 const cssVarsV3Nodes = createCssVarNodes(cssVarsV3)
+const DEFAULT_ROOT_SELECTORS = ['page', '.tw-root', 'wx-root-portal-content'] as const
 
 // ':not(template) ~ :not(template)'
 // ':not(template)~:not(template)'
@@ -103,6 +104,29 @@ export function remakeCssVarSelector(selectors: string[], options: IStyleHandler
 // 在通用预处理节点中注入变量、预设声明，并标记上下文状态
 export function commonChunkPreflight(node: Rule, options: IStyleHandlerOptions) {
   const { ctx, cssInjectPreflight, injectAdditionalCssVarScope } = options
+  const rootOption = options.cssSelectorReplacement?.root
+  const rootSelectors = rootOption === false || rootOption === undefined
+    ? []
+    : Array.isArray(rootOption)
+      ? rootOption.filter(Boolean)
+      : [rootOption]
+  const hasHostSelector = node.selectors.some(selector => selector.includes(':host'))
+  const hasRootPseudoSelector = node.selectors.some(selector => selector.includes(':root'))
+  const hasAllDefaultRootSelectors = DEFAULT_ROOT_SELECTORS.every(selector => node.selectors.includes(selector))
+  if (
+    !hasHostSelector
+    && !rootSelectors.includes(':host')
+    && (
+      hasRootPseudoSelector
+      || (
+        rootSelectors.length === DEFAULT_ROOT_SELECTORS.length
+        && rootSelectors.every((selector, index) => selector === DEFAULT_ROOT_SELECTORS[index])
+        && hasAllDefaultRootSelectors
+      )
+    )
+  ) {
+    node.selectors = [...node.selectors, ':host']
+  }
   // 标记 CSS 变量作用域
   // node.selector = remakeCombinatorSelector(node.selector, options)
 

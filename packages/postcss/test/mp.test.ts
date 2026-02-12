@@ -14,6 +14,12 @@ describe('mp', () => {
     expect(root.toString()).toBe(':root,:host { color: red; }')
   })
 
+  it('commonChunkPreflight appends :host when only :root exists', () => {
+    const root = postcss.parse(':root { color: red; }')
+    commonChunkPreflight(root.first as postcss.Rule, {})
+    expect(root.toString()).toBe(':root, :host { color: red; }')
+  })
+
   it('commonChunkPreflight case 2', () => {
     const root = postcss.parse(':root,:host { color: red; }')
     commonChunkPreflight(root.first as postcss.Rule, { injectAdditionalCssVarScope: true })

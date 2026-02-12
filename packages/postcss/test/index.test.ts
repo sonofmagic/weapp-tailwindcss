@@ -17,6 +17,16 @@ function generateCss(css: string, base: string) {
 }
 
 describe('index', () => {
+  it('keeps :host in transformed root scope for main chunk', async () => {
+    const styleHandler = createStyleHandler({
+      isMainChunk: true,
+    })
+    const { css } = await styleHandler(':root{--x:1;}', {
+      isMainChunk: true,
+    })
+    expect(css).toBe('page,.tw-root,wx-root-portal-content,:host{--x:1;}')
+  })
+
   it('only utilities', async () => {
     // https://developer.mozilla.org/en-US/docs/Web/CSS/calc-keyword
     const code = await generateCss('@import "weapp-tailwindcss";', path.resolve(__dirname, './fixtures/main'))
