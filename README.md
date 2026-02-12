@@ -38,6 +38,7 @@
 - [旧版本迁移指南](#旧版本迁移指南)
 - [配置项参考](#配置项参考)
 - [Contribute](#contribute)
+- [热更新 e2e 回归](#热更新-e2e-回归)
 - [License](#license)
 - [Star History](#star-history)
 - [Related projects](#related-projects)
@@ -90,6 +91,16 @@
 - 建议：有增强 `weapp-tailwindcss` 的想法吗？请提 `issue` 来分享您的建议。
 - 文档：如果您对文档有更好的见解或者更棒的修辞方式，欢迎 `pr`。
 - 代码：任何人的代码都不是完美的，我们欢迎你通过 `pr` 给代码提供更好的质量与活力。
+
+### 热更新 e2e 回归
+
+仓库现在提供独立于构建产物快照链路的 watch 回归链路，用于验证各 demo 在真实热更新场景下的生效性与耗时：
+
+- 全量运行：`pnpm e2e:watch`
+- 单项运行：`pnpm e2e:watch:taro` / `pnpm e2e:watch:uni` / `pnpm e2e:watch:mpx` / `pnpm e2e:watch:rax` / `pnpm e2e:watch:mina` / `pnpm e2e:watch:weapp-vite`
+- 包含预构建链路：`pnpm e2e:watch:full`
+
+该链路会注入复杂 Tailwind 类组合（任意值、小数、`calc()`、伪元素变体等），并统计 `hot update` 与 `rollback` 延迟，帮助持续优化日常开发性能。
 
 ## License
 

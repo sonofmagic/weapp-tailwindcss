@@ -32,6 +32,7 @@
 - [Configuration reference](#configuration-reference)
 - [Tailwindcss arbitrary values](#tailwindcss-arbitrary-values)
 - [FAQ](#faq)
+- [Watch-mode hot-update E2E](#watch-mode-hot-update-e2e)
 - [Changelog](#changelog)
 - [Related projects](#related-projects)
   - [CLI tools](#cli-tools)
@@ -131,6 +132,16 @@ If the key platform of your project is `app`, it is recommended to use the `hbui
 ### tailwindcss preset
 
 [tailwindcss-miniprogram-preset](https://github.com/sonofmagic/tailwindcss-miniprogram-preset)
+
+## Watch-mode hot-update E2E
+
+The repository now includes a dedicated watch-mode E2E chain (separate from build-output snapshot checks) to verify whether hot updates are effective and how long they take in real demo projects.
+
+- Run all cases: `pnpm e2e:watch`
+- Run a single case: `pnpm e2e:watch:taro` / `pnpm e2e:watch:uni` / `pnpm e2e:watch:mpx` / `pnpm e2e:watch:rax` / `pnpm e2e:watch:mina` / `pnpm e2e:watch:weapp-vite`
+- Include prebuild path: `pnpm e2e:watch:full`
+
+This chain injects complex Tailwind class combinations (arbitrary values, decimals, `calc()`, pseudo-element variants, etc.) and reports both `hot update` and `rollback` latency.
 
 ## Bugs & Issues
 
