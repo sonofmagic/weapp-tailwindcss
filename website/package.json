@@ -77,7 +77,7 @@
     "docusaurus-plugin-llms": "^0.3.0",
     "docusaurus-plugin-sass": "^0.2.6",
     "docusaurus-plugin-typedoc": "1.4.2",
-    "dotenv": "^17.2.4",
+    "dotenv": "^17.3.1",
     "mini-svg-data-uri": "^1.4.4",
     "node-loader": "^2.1.0",
     "sass": "catalog:sass195",
