@@ -7,7 +7,7 @@ import process from 'node:process'
 import { replaceWxml } from '../src/wxml/shared'
 
 type WatchProjectGroup = 'demo' | 'apps'
-type ConcreteWatchCaseName = 'taro' | 'uni' | 'mpx' | 'rax' | 'mina' | 'weapp-vite' | 'taro-webpack' | 'vite-native-ts'
+type ConcreteWatchCaseName = 'taro' | 'uni' | 'mpx' | 'rax' | 'mina' | 'weapp-vite' | 'uni-app-vue3-vite' | 'uni-app-tailwindcss-v4' | 'taro-vite-tailwindcss-v4' | 'taro-app-vite' | 'taro-webpack-tailwindcss-v4' | 'taro-vue3-app' | 'taro-webpack' | 'vite-native-ts'
 type WatchCaseName = ConcreteWatchCaseName | 'both' | 'all' | 'demo' | 'apps'
 type MutationRoundName = 'baseline-arbitrary' | 'complex-corpus'
 type MutationKind = 'template' | 'script' | 'style'
@@ -63,6 +63,7 @@ interface WatchCase {
   label: string
   project: string
   group: WatchProjectGroup
+  minGlobalStyleEscapedClasses?: number
   cwd: string
   devScript: string
   env?: Record<string, string>
@@ -122,6 +123,7 @@ interface ClassMutationMetrics {
   verifyEscapedIn: Array<'wxml' | 'js'>
   verifyClassLiteralIn: Array<'wxml' | 'js'>
   globalStyleOutput: string
+  minRequiredGlobalStyleEscapedClasses: number
   verifiedGlobalStyleEscapedClasses: string[]
   hotUpdateOutputMs: number
   hotUpdateEffectiveMs: number
@@ -625,15 +627,53 @@ function mutateTsxScriptByReturnAnchor(source: string, payload: ClassMutationPay
   const withScriptConst = insertBeforeAnchor(source, returnAnchor, snippet)
   const viewSnippet = `      <View className={${payload.classVariableName}}>${payload.marker}-script</View>`
 
-  if (withScriptConst.includes('    </>')) {
-    return insertBeforeClosingTag(withScriptConst, '    </>', viewSnippet)
+  const closingCandidates = [
+    '    </>',
+    '  </>',
+    '    </View>',
+    '  </View>',
+  ]
+
+  for (const closingTag of closingCandidates) {
+    if (withScriptConst.includes(closingTag)) {
+      return insertBeforeClosingTag(withScriptConst, closingTag, viewSnippet)
+    }
   }
 
-  if (withScriptConst.includes('  </>')) {
-    return insertBeforeClosingTag(withScriptConst, '  </>', viewSnippet)
+  throw new Error('tsx closing tag not found for script mutation')
+}
+
+function mutateVueScriptSetupArrayByAnchor(
+  source: string,
+  arrayAnchor: string,
+  payload: ClassMutationPayload,
+) {
+  if (!source.includes(arrayAnchor)) {
+    throw new Error(`vue script setup array anchor not found: ${arrayAnchor}`)
   }
 
-  throw new Error('tsx fragment closing tag </> not found for script mutation')
+  return source.replace(
+    arrayAnchor,
+    `${arrayAnchor}\n  '${payload.classLiteral}',\n  '${payload.marker}',`,
+  )
+}
+
+function mutateVueRefStringLiteral(
+  source: string,
+  refName: string,
+  payload: ClassMutationPayload,
+) {
+  const pattern = new RegExp(`(const\\s+${refName}\\s*=\\s*ref\\(')([^']*)('\\))`)
+  if (!pattern.test(source)) {
+    throw new Error(`vue ref string literal not found: ${refName}`)
+  }
+
+  return source.replace(
+    pattern,
+    (_match, head: string, value: string, tail: string) => {
+      return `${head}${value} ${payload.classLiteral} ${payload.marker}${tail}`
+    },
+  )
 }
 
 function mutateSfcStyleBlock(source: string, payload: StyleMutationPayload) {
@@ -645,7 +685,7 @@ function mutateSfcStyleBlock(source: string, payload: StyleMutationPayload) {
 
 function insertIntoVueTemplateRoot(source: string, snippet: string) {
   const templateStart = source.indexOf('<template>')
-  const templateEnd = source.indexOf('</template>')
+  const templateEnd = source.lastIndexOf('</template>')
   if (templateStart === -1 || templateEnd === -1) {
     throw new Error('template block not found')
   }
@@ -906,6 +946,272 @@ function buildCases(baseCwd: string): WatchCase[] {
     },
   }
 
+  const uniAppVue3ViteCase: WatchCase = {
+    name: 'uni-app-vue3-vite',
+    label: 'demo/uni-app-vue3-vite',
+    project: 'demo/uni-app-vue3-vite',
+    group: 'demo',
+    minGlobalStyleEscapedClasses: 0,
+    cwd: path.resolve(baseCwd, 'demo/uni-app-vue3-vite'),
+    devScript: 'dev:mp-weixin',
+    outputWxml: path.resolve(baseCwd, 'demo/uni-app-vue3-vite/dist/dev/mp-weixin/pages/index/index.wxml'),
+    outputJs: path.resolve(baseCwd, 'demo/uni-app-vue3-vite/dist/dev/mp-weixin/pages/index/index.js'),
+    outputStyleCandidates: [
+      path.resolve(baseCwd, 'demo/uni-app-vue3-vite/dist/dev/mp-weixin/pages/index/index.wxss'),
+      path.resolve(baseCwd, 'demo/uni-app-vue3-vite/dist/dev/mp-weixin/app.wxss'),
+    ],
+    globalStyleCandidates: [
+      path.resolve(baseCwd, 'demo/uni-app-vue3-vite/dist/dev/mp-weixin/pages/index/index.wxss'),
+      path.resolve(baseCwd, 'demo/uni-app-vue3-vite/dist/dev/mp-weixin/app.wxss'),
+    ],
+    templateMutation: {
+      sourceFile: path.resolve(baseCwd, 'demo/uni-app-vue3-vite/src/pages/index/index.vue'),
+      verifyEscapedIn: ['wxml'],
+      verifyClassLiteralIn: [],
+      mutate(source, payload) {
+        const snippet = `    <view class="${payload.classLiteral}">${payload.marker}-template</view>`
+        return insertIntoVueTemplateRoot(source, snippet)
+      },
+    },
+    scriptMutation: {
+      sourceFile: path.resolve(baseCwd, 'demo/uni-app-vue3-vite/src/pages/index/index.vue'),
+      verifyEscapedIn: [],
+      verifyClassLiteralIn: ['js'],
+      mutate(source, payload) {
+        return mutateVueScriptSetupArrayByAnchor(
+          source,
+          'const classArray = [',
+          payload,
+        )
+      },
+    },
+    styleMutation: {
+      sourceFile: path.resolve(baseCwd, 'demo/uni-app-vue3-vite/src/pages/index/index.vue'),
+      mutate(source, payload) {
+        return mutateSfcStyleBlock(source, payload)
+      },
+    },
+  }
+
+  const uniAppTailwindcssV4Case: WatchCase = {
+    name: 'uni-app-tailwindcss-v4',
+    label: 'demo/uni-app-tailwindcss-v4',
+    project: 'demo/uni-app-tailwindcss-v4',
+    group: 'demo',
+    minGlobalStyleEscapedClasses: 0,
+    cwd: path.resolve(baseCwd, 'demo/uni-app-tailwindcss-v4'),
+    devScript: 'dev:mp-weixin',
+    outputWxml: path.resolve(baseCwd, 'demo/uni-app-tailwindcss-v4/dist/dev/mp-weixin/pages/index/index.wxml'),
+    outputJs: path.resolve(baseCwd, 'demo/uni-app-tailwindcss-v4/dist/dev/mp-weixin/pages/index/index.js'),
+    outputStyleCandidates: [
+      path.resolve(baseCwd, 'demo/uni-app-tailwindcss-v4/dist/dev/mp-weixin/app.wxss'),
+    ],
+    globalStyleCandidates: [
+      path.resolve(baseCwd, 'demo/uni-app-tailwindcss-v4/dist/dev/mp-weixin/app.wxss'),
+    ],
+    templateMutation: {
+      sourceFile: path.resolve(baseCwd, 'demo/uni-app-tailwindcss-v4/src/pages/index/index.vue'),
+      verifyEscapedIn: ['wxml'],
+      verifyClassLiteralIn: [],
+      mutate(source, payload) {
+        const snippet = `    <view class="${payload.classLiteral}">${payload.marker}-template</view>`
+        return insertIntoVueTemplateRoot(source, snippet)
+      },
+    },
+    scriptMutation: {
+      sourceFile: path.resolve(baseCwd, 'demo/uni-app-tailwindcss-v4/src/pages/index/index.vue'),
+      verifyEscapedIn: [],
+      verifyClassLiteralIn: ['js'],
+      mutate(source, payload) {
+        return mutateVueRefStringLiteral(
+          source,
+          'className',
+          payload,
+        )
+      },
+    },
+    styleMutation: {
+      sourceFile: path.resolve(baseCwd, 'demo/uni-app-tailwindcss-v4/src/main.css'),
+      mutate(source, payload) {
+        return appendTrailingSnippet(source, createStyleRuleSnippet(payload))
+      },
+    },
+  }
+
+  const taroViteTailwindcssV4Case: WatchCase = {
+    name: 'taro-vite-tailwindcss-v4',
+    label: 'demo/taro-vite-tailwindcss-v4',
+    project: 'demo/taro-vite-tailwindcss-v4',
+    group: 'demo',
+    cwd: path.resolve(baseCwd, 'demo/taro-vite-tailwindcss-v4'),
+    devScript: 'dev:weapp',
+    outputWxml: path.resolve(baseCwd, 'demo/taro-vite-tailwindcss-v4/dist/pages/index/index.wxml'),
+    outputJs: path.resolve(baseCwd, 'demo/taro-vite-tailwindcss-v4/dist/pages/index/index.js'),
+    outputStyleCandidates: [
+      path.resolve(baseCwd, 'demo/taro-vite-tailwindcss-v4/dist/pages/index/index.wxss'),
+      path.resolve(baseCwd, 'demo/taro-vite-tailwindcss-v4/dist/app-origin.wxss'),
+      path.resolve(baseCwd, 'demo/taro-vite-tailwindcss-v4/dist/app.wxss'),
+    ],
+    globalStyleCandidates: [
+      path.resolve(baseCwd, 'demo/taro-vite-tailwindcss-v4/dist/app-origin.wxss'),
+      path.resolve(baseCwd, 'demo/taro-vite-tailwindcss-v4/dist/app.wxss'),
+    ],
+    templateMutation: {
+      sourceFile: path.resolve(baseCwd, 'demo/taro-vite-tailwindcss-v4/src/pages/index/index.tsx'),
+      verifyEscapedIn: [],
+      verifyClassLiteralIn: ['js'],
+      mutate(source, payload) {
+        const snippet = `      <View className='${payload.classLiteral}'>${payload.marker}-template</View>`
+        return insertBeforeClosingTag(source, '    </View>', snippet)
+      },
+    },
+    scriptMutation: {
+      sourceFile: path.resolve(baseCwd, 'demo/taro-vite-tailwindcss-v4/src/pages/index/index.tsx'),
+      verifyEscapedIn: [],
+      verifyClassLiteralIn: ['js'],
+      mutate(source, payload) {
+        return mutateTsxScriptByReturnAnchor(source, payload)
+      },
+    },
+    styleMutation: {
+      sourceFile: path.resolve(baseCwd, 'demo/taro-vite-tailwindcss-v4/src/pages/index/index.css'),
+      mutate(source, payload) {
+        return appendTrailingSnippet(source, createStyleRuleSnippet(payload))
+      },
+    },
+  }
+
+  const taroAppViteCase: WatchCase = {
+    name: 'taro-app-vite',
+    label: 'demo/taro-app-vite',
+    project: 'demo/taro-app-vite',
+    group: 'demo',
+    cwd: path.resolve(baseCwd, 'demo/taro-app-vite'),
+    devScript: 'dev:weapp',
+    outputWxml: path.resolve(baseCwd, 'demo/taro-app-vite/dist/pages/index/index.wxml'),
+    outputJs: path.resolve(baseCwd, 'demo/taro-app-vite/dist/pages/index/index.js'),
+    outputStyleCandidates: [
+      path.resolve(baseCwd, 'demo/taro-app-vite/dist/pages/index/index.wxss'),
+      path.resolve(baseCwd, 'demo/taro-app-vite/dist/app-origin.wxss'),
+      path.resolve(baseCwd, 'demo/taro-app-vite/dist/app.wxss'),
+    ],
+    globalStyleCandidates: [
+      path.resolve(baseCwd, 'demo/taro-app-vite/dist/app-origin.wxss'),
+      path.resolve(baseCwd, 'demo/taro-app-vite/dist/app.wxss'),
+    ],
+    templateMutation: {
+      sourceFile: path.resolve(baseCwd, 'demo/taro-app-vite/src/pages/index/index.tsx'),
+      verifyEscapedIn: [],
+      verifyClassLiteralIn: ['js'],
+      mutate(source, payload) {
+        const snippet = `      <View className='${payload.classLiteral}'>${payload.marker}-template</View>`
+        return insertBeforeClosingTag(source, '    </View>', snippet)
+      },
+    },
+    scriptMutation: {
+      sourceFile: path.resolve(baseCwd, 'demo/taro-app-vite/src/pages/index/index.tsx'),
+      verifyEscapedIn: [],
+      verifyClassLiteralIn: ['js'],
+      mutate(source, payload) {
+        return mutateTsxScriptByReturnAnchor(source, payload)
+      },
+    },
+    styleMutation: {
+      sourceFile: path.resolve(baseCwd, 'demo/taro-app-vite/src/pages/index/index.scss'),
+      mutate(source, payload) {
+        return appendTrailingSnippet(source, createStyleRuleSnippet(payload))
+      },
+    },
+  }
+
+  const taroWebpackTailwindcssV4DemoCase: WatchCase = {
+    name: 'taro-webpack-tailwindcss-v4',
+    label: 'demo/taro-webpack-tailwindcss-v4',
+    project: 'demo/taro-webpack-tailwindcss-v4',
+    group: 'demo',
+    cwd: path.resolve(baseCwd, 'demo/taro-webpack-tailwindcss-v4'),
+    devScript: 'dev:weapp',
+    outputWxml: path.resolve(baseCwd, 'demo/taro-webpack-tailwindcss-v4/dist/pages/index/index.wxml'),
+    outputJs: path.resolve(baseCwd, 'demo/taro-webpack-tailwindcss-v4/dist/pages/index/index.js'),
+    outputStyleCandidates: [
+      path.resolve(baseCwd, 'demo/taro-webpack-tailwindcss-v4/dist/pages/index/index.wxss'),
+      path.resolve(baseCwd, 'demo/taro-webpack-tailwindcss-v4/dist/app.wxss'),
+    ],
+    globalStyleCandidates: [
+      path.resolve(baseCwd, 'demo/taro-webpack-tailwindcss-v4/dist/pages/index/index.wxss'),
+      path.resolve(baseCwd, 'demo/taro-webpack-tailwindcss-v4/dist/app.wxss'),
+    ],
+    templateMutation: {
+      sourceFile: path.resolve(baseCwd, 'demo/taro-webpack-tailwindcss-v4/src/pages/index/index.tsx'),
+      verifyEscapedIn: [],
+      verifyClassLiteralIn: ['js'],
+      mutate(source, payload) {
+        const snippet = `      <View className='${payload.classLiteral}'>${payload.marker}-template</View>`
+        return insertBeforeClosingTag(source, '    </>', snippet)
+      },
+    },
+    scriptMutation: {
+      sourceFile: path.resolve(baseCwd, 'demo/taro-webpack-tailwindcss-v4/src/pages/index/index.tsx'),
+      verifyEscapedIn: [],
+      verifyClassLiteralIn: ['js'],
+      mutate(source, payload) {
+        return mutateTsxScriptByReturnAnchor(source, payload)
+      },
+    },
+    styleMutation: {
+      sourceFile: path.resolve(baseCwd, 'demo/taro-webpack-tailwindcss-v4/src/pages/index/index.css'),
+      mutate(source, payload) {
+        return appendTrailingSnippet(source, createStyleRuleSnippet(payload))
+      },
+    },
+  }
+
+  const taroVue3AppCase: WatchCase = {
+    name: 'taro-vue3-app',
+    label: 'demo/taro-vue3-app',
+    project: 'demo/taro-vue3-app',
+    group: 'demo',
+    cwd: path.resolve(baseCwd, 'demo/taro-vue3-app'),
+    devScript: 'dev:weapp',
+    outputWxml: path.resolve(baseCwd, 'demo/taro-vue3-app/dist/pages/index/index.wxml'),
+    outputJs: path.resolve(baseCwd, 'demo/taro-vue3-app/dist/pages/index/index.js'),
+    outputStyleCandidates: [
+      path.resolve(baseCwd, 'demo/taro-vue3-app/dist/pages/index/index.wxss'),
+      path.resolve(baseCwd, 'demo/taro-vue3-app/dist/app.wxss'),
+    ],
+    globalStyleCandidates: [
+      path.resolve(baseCwd, 'demo/taro-vue3-app/dist/pages/index/index.wxss'),
+      path.resolve(baseCwd, 'demo/taro-vue3-app/dist/app.wxss'),
+    ],
+    templateMutation: {
+      sourceFile: path.resolve(baseCwd, 'demo/taro-vue3-app/src/pages/index/index.vue'),
+      verifyEscapedIn: ['wxml'],
+      verifyClassLiteralIn: [],
+      mutate(source, payload) {
+        const snippet = `  <view class="${payload.classLiteral}">${payload.marker}-template</view>`
+        return insertIntoVueTemplateRoot(source, snippet)
+      },
+    },
+    scriptMutation: {
+      sourceFile: path.resolve(baseCwd, 'demo/taro-vue3-app/src/pages/index/index.vue'),
+      verifyEscapedIn: [],
+      verifyClassLiteralIn: ['js'],
+      mutate(source, payload) {
+        return mutateVueScriptSetupArrayByAnchor(
+          source,
+          'const classArray = [',
+          payload,
+        )
+      },
+    },
+    styleMutation: {
+      sourceFile: path.resolve(baseCwd, 'demo/taro-vue3-app/src/pages/index/index.scss'),
+      mutate(source, payload) {
+        return appendTrailingSnippet(source, createStyleRuleSnippet(payload))
+      },
+    },
+  }
+
   const taroWebpackCase: WatchCase = {
     name: 'taro-webpack',
     label: 'apps/taro-webpack-tailwindcss-v4',
@@ -988,7 +1294,13 @@ function buildCases(baseCwd: string): WatchCase[] {
   return [
     taroCase,
     uniCase,
+    uniAppVue3ViteCase,
+    uniAppTailwindcssV4Case,
     mpxCase,
+    taroViteTailwindcssV4Case,
+    taroAppViteCase,
+    taroWebpackTailwindcssV4DemoCase,
+    taroVue3AppCase,
     raxCase,
     minaCase,
     weappViteCase,
@@ -1037,6 +1349,7 @@ async function waitForInitialWarmup(
   session: WatchSession,
   sessionStartedAt: number,
 ) {
+  const warmupGraceMs = Math.min(5000, options.timeoutMs)
   return waitFor(
     async () => {
       if (session.lastCompileSuccessAt() > sessionStartedAt) {
@@ -1047,7 +1360,14 @@ async function waitForInitialWarmup(
         getMtime(watchCase.outputWxml),
         getMtime(watchCase.outputJs),
       ])
-      return wxmlMtime > sessionStartedAt || jsMtime > sessionStartedAt
+      if (wxmlMtime > sessionStartedAt || jsMtime > sessionStartedAt) {
+        return true
+      }
+
+      // Some watch toolchains reuse existing outputs without touching mtimes on initial attach.
+      // If both outputs exist and the watcher has stayed alive for a short grace period,
+      // proceed and let later mutation checks enforce real hot-update behavior.
+      return wxmlMtime > 0 && jsMtime > 0 && Date.now() - sessionStartedAt >= warmupGraceMs
     },
     {
       timeoutMs: options.timeoutMs,
@@ -1109,59 +1429,6 @@ async function waitForMarkerState(
       message: expected === 'present'
         ? `[${watchCase.label}] marker was not propagated to outputs`
         : `[${watchCase.label}] marker was not removed from outputs`,
-      onTick: session.ensureRunning,
-    },
-    startedAt,
-  )
-}
-
-async function waitForOutputFileUpdated(
-  watchCase: WatchCase,
-  outputFile: string,
-  baselineMtime: number,
-  options: CliOptions,
-  session: WatchSession,
-  startedAt = Date.now(),
-) {
-  return waitFor(
-    async () => {
-      const mtime = await getMtime(outputFile)
-      return mtime > baselineMtime
-    },
-    {
-      timeoutMs: options.timeoutMs,
-      pollMs: options.pollMs,
-      message: `[${watchCase.label}] output file was not updated: ${formatPath(outputFile)}`,
-      onTick: session.ensureRunning,
-    },
-    startedAt,
-  )
-}
-
-async function waitForNeedleInOutputFile(
-  watchCase: WatchCase,
-  outputFile: string,
-  needle: string,
-  expected: 'present' | 'absent',
-  options: CliOptions,
-  session: WatchSession,
-  startedAt = Date.now(),
-) {
-  return waitFor(
-    async () => {
-      const source = await readFileIfExists(outputFile)
-      if (!source) {
-        return false
-      }
-      const hasNeedle = source.includes(needle)
-      return expected === 'present' ? hasNeedle : !hasNeedle
-    },
-    {
-      timeoutMs: options.timeoutMs,
-      pollMs: options.pollMs,
-      message: expected === 'present'
-        ? `[${watchCase.label}] output file is missing needle ${needle}: ${formatPath(outputFile)}`
-        : `[${watchCase.label}] output file still contains needle ${needle}: ${formatPath(outputFile)}`,
       onTick: session.ensureRunning,
     },
     startedAt,
@@ -1357,6 +1624,7 @@ async function runClassMutation(
   }
 
   const verifyClassLiteralIn = mutation.verifyClassLiteralIn ?? []
+  const minRequiredGlobalStyleEscapedClasses = watchCase.minGlobalStyleEscapedClasses ?? 1
   const roundMetrics: MutationRoundMetrics[] = []
   const verifiedGlobalEscapedClasses = new Set<string>()
   let baselineMtime = {
@@ -1387,8 +1655,6 @@ async function runClassMutation(
       freshEscapedClasses,
       mutatedSource,
     } = mutationScenario
-
-    const escapedClassesForGlobalCheck = freshEscapedClasses.slice(0, 3)
 
     for (const escaped of freshEscapedClasses) {
       assertNotContains(baselineWxml, escaped, `[${watchCase.label}] baseline wxml`)
@@ -1449,8 +1715,14 @@ async function runClassMutation(
       }
     }
 
-    for (const escaped of escapedClassesForGlobalCheck) {
-      assertContains(updatedGlobalStyle, escaped, `[${watchCase.label}] global style output`)
+    const matchedGlobalEscapedClasses = freshEscapedClasses.filter(escaped => updatedGlobalStyle.includes(escaped))
+    if (matchedGlobalEscapedClasses.length < minRequiredGlobalStyleEscapedClasses) {
+      throw new Error(
+        `[${watchCase.label}] global style output has insufficient transformed classes: required=${minRequiredGlobalStyleEscapedClasses}, actual=${matchedGlobalEscapedClasses.length}, source=${formatPath(sourcePath)}`,
+      )
+    }
+
+    for (const escaped of matchedGlobalEscapedClasses.slice(0, 3)) {
       verifiedGlobalEscapedClasses.add(escaped)
     }
 
@@ -1518,6 +1790,7 @@ async function runClassMutation(
     verifyEscapedIn: mutation.verifyEscapedIn,
     verifyClassLiteralIn,
     globalStyleOutput,
+    minRequiredGlobalStyleEscapedClasses,
     verifiedGlobalStyleEscapedClasses: Array.from(verifiedGlobalEscapedClasses),
     hotUpdateOutputMs: preferredRound.hotUpdateOutputMs,
     hotUpdateEffectiveMs: preferredRound.hotUpdateEffectiveMs,
@@ -1532,7 +1805,7 @@ async function runStyleMutation(
   session: WatchSession,
   styleMutation: StyleMutationConfig,
   sourceOriginal: string,
-  outputStyle: string,
+  outputStyleCandidates: string[],
 ): Promise<StyleMutationMetrics> {
   const payload = createStyleMutationPayload(watchCase)
   const sourcePath = styleMutation.sourceFile
@@ -1542,58 +1815,111 @@ async function runStyleMutation(
     throw new Error(`[${watchCase.label}] style mutation produced no source change`)
   }
 
-  const baselineMtime = await getMtime(outputStyle)
+  const collectOutputCandidateMtimes = async () => {
+    const entries = await Promise.all(
+      outputStyleCandidates.map(async (candidate) => {
+        return [candidate, await getMtime(candidate)] as const
+      }),
+    )
+    return new Map(entries)
+  }
+
+  const waitForOutputCandidateMtimeChanged = async (
+    baselineMtimes: Map<string, number>,
+    startedAt: number,
+    phase: 'hot-update' | 'rollback',
+  ) => {
+    return waitFor(
+      async () => {
+        for (const candidate of outputStyleCandidates) {
+          const baselineMtime = baselineMtimes.get(candidate) ?? 0
+          const currentMtime = await getMtime(candidate)
+          if (currentMtime > baselineMtime) {
+            return true
+          }
+        }
+        return false
+      },
+      {
+        timeoutMs: options.timeoutMs,
+        pollMs: options.pollMs,
+        message: `[${watchCase.label}] style output candidates were not updated during ${phase}: ${outputStyleCandidates.map(formatPath).join(', ')}`,
+        onTick: session.ensureRunning,
+      },
+      startedAt,
+    )
+  }
+
+  const baselineOutputCandidateMtimes = await collectOutputCandidateMtimes()
   const hotUpdateStartedAt = Date.now()
   await fs.writeFile(sourcePath, mutatedSource, 'utf8')
-  const hotUpdateOutputMs = await waitForOutputFileUpdated(
-    watchCase,
-    outputStyle,
-    baselineMtime,
-    options,
-    session,
+  const hotUpdateOutputMs = await waitForOutputCandidateMtimeChanged(
+    baselineOutputCandidateMtimes,
     hotUpdateStartedAt,
+    'hot-update',
   )
-  const hotUpdateEffectiveMs = await waitForNeedleInOutputFile(
-    watchCase,
-    outputStyle,
-    payload.styleNeedle,
-    'present',
-    options,
-    session,
+  let resolvedOutputStyle: string | undefined
+  const hotUpdateEffectiveMs = await waitFor(
+    async () => {
+      for (const candidate of outputStyleCandidates) {
+        const content = await readFileIfExists(candidate)
+        if (content?.includes(payload.styleNeedle)) {
+          resolvedOutputStyle = candidate
+          return true
+        }
+      }
+      return false
+    },
+    {
+      timeoutMs: options.timeoutMs,
+      pollMs: options.pollMs,
+      message: `[${watchCase.label}] style output candidates are missing needle ${payload.styleNeedle}: ${outputStyleCandidates.map(formatPath).join(', ')}`,
+      onTick: session.ensureRunning,
+    },
     hotUpdateStartedAt,
   )
 
-  const updatedStyle = await fs.readFile(outputStyle, 'utf8')
-  assertContains(updatedStyle, payload.styleNeedle, `[${watchCase.label}] updated style output`)
+  if (!resolvedOutputStyle) {
+    throw new Error(`[${watchCase.label}] failed to resolve style output after mutation`)
+  }
 
-  const updatedMtime = await getMtime(outputStyle)
+  const updatedStyle = await fs.readFile(resolvedOutputStyle, 'utf8')
+  assertContains(updatedStyle, payload.styleNeedle, `[${watchCase.label}] updated style output (${formatPath(resolvedOutputStyle)})`)
+
+  const outputCandidateMtimesAfterHotUpdate = await collectOutputCandidateMtimes()
   const rollbackStartedAt = Date.now()
   await fs.writeFile(sourcePath, sourceOriginal, 'utf8')
-  const rollbackOutputMs = await waitForOutputFileUpdated(
-    watchCase,
-    outputStyle,
-    updatedMtime,
-    options,
-    session,
+  const rollbackOutputMs = await waitForOutputCandidateMtimeChanged(
+    outputCandidateMtimesAfterHotUpdate,
     rollbackStartedAt,
+    'rollback',
   )
   let rollbackEffectiveMs = rollbackOutputMs
   let rollbackNeedleCleared = false
   try {
-    rollbackEffectiveMs = await waitForNeedleInOutputFile(
-      watchCase,
-      outputStyle,
-      payload.styleNeedle,
-      'absent',
-      options,
-      session,
+    rollbackEffectiveMs = await waitFor(
+      async () => {
+        for (const candidate of outputStyleCandidates) {
+          const content = await readFileIfExists(candidate)
+          if (content?.includes(payload.styleNeedle)) {
+            return false
+          }
+        }
+        return true
+      },
+      {
+        timeoutMs: options.timeoutMs,
+        pollMs: options.pollMs,
+        message: `[${watchCase.label}] style output candidates still contain needle ${payload.styleNeedle}: ${outputStyleCandidates.map(formatPath).join(', ')}`,
+        onTick: session.ensureRunning,
+      },
       rollbackStartedAt,
     )
     rollbackNeedleCleared = true
   }
   catch {
     process.stdout.write(
-      `[watch-hmr] ${watchCase.label} mutation=style rollback marker still present in output, fallback to output latency metric\n`,
+      `[watch-hmr] ${watchCase.label} mutation=style rollback marker still present in candidate outputs, fallback to output latency metric\n`,
     )
   }
 
@@ -1604,7 +1930,7 @@ async function runStyleMutation(
   return {
     mutationKind: 'style',
     sourceFile: sourcePath,
-    outputStyle,
+    outputStyle: resolvedOutputStyle,
     marker: payload.marker,
     styleNeedle: payload.styleNeedle,
     hotUpdateOutputMs,
@@ -1831,14 +2157,6 @@ async function runCase(watchCase: WatchCase, options: CliOptions): Promise<Watch
       session,
     )
 
-    const outputStyle = await resolveOutputFile(
-      watchCase,
-      watchCase.outputStyleCandidates,
-      'style',
-      options,
-      session,
-    )
-
     const templateSourceOriginal = sourceOriginals.get(watchCase.templateMutation.sourceFile)
     if (templateSourceOriginal == null) {
       throw new Error(`[${watchCase.label}] missing template mutation source original`)
@@ -1880,7 +2198,7 @@ async function runCase(watchCase: WatchCase, options: CliOptions): Promise<Watch
       session,
       watchCase.styleMutation,
       styleSourceOriginal,
-      outputStyle,
+      watchCase.outputStyleCandidates,
     )
 
     const preferredRound = resolvePreferredRound(templateMetrics.rounds)

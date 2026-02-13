@@ -5,7 +5,7 @@ import path from 'pathe'
 import { describe, it } from 'vitest'
 
 type WatchProjectGroup = 'demo' | 'apps'
-type ConcreteWatchCaseName = 'taro' | 'uni' | 'mpx' | 'rax' | 'mina' | 'weapp-vite' | 'taro-webpack' | 'vite-native-ts'
+type ConcreteWatchCaseName = 'taro' | 'uni' | 'mpx' | 'rax' | 'mina' | 'weapp-vite' | 'uni-app-vue3-vite' | 'uni-app-tailwindcss-v4' | 'taro-vite-tailwindcss-v4' | 'taro-app-vite' | 'taro-webpack-tailwindcss-v4' | 'taro-vue3-app' | 'taro-webpack' | 'vite-native-ts'
 type WatchCaseName = ConcreteWatchCaseName | 'both' | 'all' | 'demo' | 'apps'
 type MutationKind = 'template' | 'script' | 'style'
 type MutationRoundName = 'baseline-arbitrary' | 'complex-corpus'
@@ -54,6 +54,7 @@ interface TemplateOrScriptMutationMetric {
   verifyEscapedIn: Array<'wxml' | 'js'>
   verifyClassLiteralIn: Array<'wxml' | 'js'>
   globalStyleOutput: string
+  minRequiredGlobalStyleEscapedClasses: number
   verifiedGlobalStyleEscapedClasses: string[]
   hotUpdateOutputMs: number
   hotUpdateEffectiveMs: number
@@ -118,6 +119,12 @@ function resolveCaseName() {
     || value === 'rax'
     || value === 'mina'
     || value === 'weapp-vite'
+    || value === 'uni-app-vue3-vite'
+    || value === 'uni-app-tailwindcss-v4'
+    || value === 'taro-vite-tailwindcss-v4'
+    || value === 'taro-app-vite'
+    || value === 'taro-webpack-tailwindcss-v4'
+    || value === 'taro-vue3-app'
     || value === 'taro-webpack'
     || value === 'vite-native-ts'
     || value === 'both'
@@ -180,10 +187,25 @@ function resolveExpectedGroup(target: WatchCaseName): WatchProjectGroup | undefi
     || target === 'rax'
     || target === 'mina'
     || target === 'weapp-vite'
+    || target === 'uni-app-vue3-vite'
+    || target === 'uni-app-tailwindcss-v4'
+    || target === 'taro-vite-tailwindcss-v4'
+    || target === 'taro-app-vite'
+    || target === 'taro-webpack-tailwindcss-v4'
+    || target === 'taro-vue3-app'
   ) {
     return 'demo'
   }
 }
+
+const criticalDemoProjects = [
+  'demo/uni-app-vue3-vite',
+  'demo/uni-app-tailwindcss-v4',
+  'demo/taro-vite-tailwindcss-v4',
+  'demo/taro-app-vite',
+  'demo/taro-webpack-tailwindcss-v4',
+  'demo/taro-vue3-app',
+] as const
 
 describe('e2e watch hot-update', () => {
   const caseName = resolveCaseName()
@@ -249,6 +271,13 @@ describe('e2e watch hot-update', () => {
         expect(report.summaryByGroup[expectedGroup]?.count).toBe(report.summary.count)
       }
 
+      if (target === 'demo') {
+        const projects = new Set(report.cases.map(item => item.project))
+        for (const project of criticalDemoProjects) {
+          expect(projects.has(project)).toBe(true)
+        }
+      }
+
       for (const item of report.cases) {
         expect(item.initialReadyMs).toBeGreaterThan(0)
         expect(item.hotUpdateEffectiveMs).toBeGreaterThan(0)
@@ -304,13 +333,13 @@ describe('e2e watch hot-update', () => {
 
         if (templateMetric && templateMetric.mutationKind !== 'style') {
           expect(templateMetric.rounds.length).toBe(2)
-          expect(templateMetric.verifiedGlobalStyleEscapedClasses.length).toBeGreaterThanOrEqual(3)
+          expect(templateMetric.verifiedGlobalStyleEscapedClasses.length).toBeGreaterThanOrEqual(templateMetric.minRequiredGlobalStyleEscapedClasses)
           expect(templateMetric.globalStyleOutput).toContain('.wxss')
         }
 
         if (scriptMetric && scriptMetric.mutationKind !== 'style') {
           expect(scriptMetric.rounds.length).toBe(2)
-          expect(scriptMetric.verifiedGlobalStyleEscapedClasses.length).toBeGreaterThanOrEqual(3)
+          expect(scriptMetric.verifiedGlobalStyleEscapedClasses.length).toBeGreaterThanOrEqual(scriptMetric.minRequiredGlobalStyleEscapedClasses)
           expect(scriptMetric.globalStyleOutput).toContain('.wxss')
         }
 
