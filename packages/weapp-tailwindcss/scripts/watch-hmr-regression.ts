@@ -6,9 +6,11 @@ import path from 'node:path'
 import process from 'node:process'
 import { replaceWxml } from '../src/wxml/shared'
 
-type ConcreteWatchCaseName = 'taro' | 'uni' | 'mpx' | 'rax' | 'mina' | 'weapp-vite'
-type WatchCaseName = ConcreteWatchCaseName | 'both' | 'all'
+type WatchProjectGroup = 'demo' | 'apps'
+type ConcreteWatchCaseName = 'taro' | 'uni' | 'mpx' | 'rax' | 'mina' | 'weapp-vite' | 'taro-webpack' | 'vite-native-ts'
+type WatchCaseName = ConcreteWatchCaseName | 'both' | 'all' | 'demo' | 'apps'
 type MutationRoundName = 'baseline-arbitrary' | 'complex-corpus'
+type MutationKind = 'template' | 'script' | 'style'
 
 interface CliOptions {
   caseName: WatchCaseName
@@ -20,10 +22,15 @@ interface CliOptions {
   maxHotUpdateMs?: number
 }
 
-interface MutationPayload {
+interface ClassMutationPayload {
   marker: string
   classLiteral: string
   classVariableName: string
+}
+
+interface StyleMutationPayload {
+  marker: string
+  styleNeedle: string
 }
 
 interface MutationRoundConfig {
@@ -31,7 +38,7 @@ interface MutationRoundConfig {
   buildClassTokens: (seed: string) => string[]
 }
 
-interface MutationScenario extends MutationPayload {
+interface MutationScenario extends ClassMutationPayload {
   roundName: MutationRoundName
   classTokens: string[]
   escapedClasses: string[]
@@ -39,18 +46,33 @@ interface MutationScenario extends MutationPayload {
   mutatedSource: string
 }
 
+interface ClassMutationConfig {
+  sourceFile: string
+  verifyEscapedIn: Array<'wxml' | 'js'>
+  verifyClassLiteralIn?: Array<'wxml' | 'js'>
+  mutate: (source: string, payload: ClassMutationPayload) => string
+}
+
+interface StyleMutationConfig {
+  sourceFile: string
+  mutate: (source: string, payload: StyleMutationPayload) => string
+}
+
 interface WatchCase {
   name: ConcreteWatchCaseName
   label: string
+  project: string
+  group: WatchProjectGroup
   cwd: string
   devScript: string
   env?: Record<string, string>
-  sourceFile: string
   outputWxml: string
   outputJs: string
-  verifyEscapedIn: Array<'wxml' | 'js'>
-  verifyClassLiteralIn?: Array<'wxml' | 'js'>
-  mutate: (source: string, payload: MutationPayload) => string
+  outputStyleCandidates: string[]
+  globalStyleCandidates: string[]
+  templateMutation: ClassMutationConfig
+  scriptMutation: ClassMutationConfig
+  styleMutation: StyleMutationConfig
 }
 
 interface WatchSession {
@@ -64,25 +86,6 @@ interface WatchSession {
 interface OutputMtime {
   wxml: number
   js: number
-}
-
-interface WatchCaseMetrics {
-  name: WatchCase['name']
-  label: string
-  marker: string
-  classLiteral: string
-  classTokens: string[]
-  escapedClasses: string[]
-  rounds: MutationRoundMetrics[]
-  roundComparison?: WatchCaseRoundComparison
-  verifyEscapedIn: Array<'wxml' | 'js'>
-  verifyClassLiteralIn: Array<'wxml' | 'js'>
-  initialReadyMs: number
-  hotUpdateOutputMs: number
-  hotUpdateEffectiveMs: number
-  rollbackOutputMs: number
-  rollbackEffectiveMs: number
-  totalMs: number
 }
 
 interface MutationRoundMetrics {
@@ -107,6 +110,40 @@ interface WatchCaseRoundComparison {
   rollbackRatio: number
 }
 
+interface ClassMutationMetrics {
+  mutationKind: 'template' | 'script'
+  sourceFile: string
+  marker: string
+  classLiteral: string
+  classTokens: string[]
+  escapedClasses: string[]
+  rounds: MutationRoundMetrics[]
+  roundComparison?: WatchCaseRoundComparison
+  verifyEscapedIn: Array<'wxml' | 'js'>
+  verifyClassLiteralIn: Array<'wxml' | 'js'>
+  globalStyleOutput: string
+  verifiedGlobalStyleEscapedClasses: string[]
+  hotUpdateOutputMs: number
+  hotUpdateEffectiveMs: number
+  rollbackOutputMs: number
+  rollbackEffectiveMs: number
+}
+
+interface StyleMutationMetrics {
+  mutationKind: 'style'
+  sourceFile: string
+  outputStyle: string
+  marker: string
+  styleNeedle: string
+  hotUpdateOutputMs: number
+  hotUpdateEffectiveMs: number
+  rollbackOutputMs: number
+  rollbackEffectiveMs: number
+  rollbackNeedleCleared: boolean
+}
+
+type WatchCaseMutationMetrics = ClassMutationMetrics | StyleMutationMetrics
+
 interface WatchSummary {
   count: number
   hotUpdateAvgMs: number
@@ -115,6 +152,30 @@ interface WatchSummary {
   rollbackAvgMs: number
   rollbackMaxMs: number
   rollbackMinMs: number
+}
+
+interface WatchCaseMetrics {
+  name: WatchCase['name']
+  label: string
+  project: string
+  projectGroup: WatchProjectGroup
+  marker: string
+  classLiteral: string
+  classTokens: string[]
+  escapedClasses: string[]
+  rounds: MutationRoundMetrics[]
+  roundComparison?: WatchCaseRoundComparison
+  verifyEscapedIn: Array<'wxml' | 'js'>
+  verifyClassLiteralIn: Array<'wxml' | 'js'>
+  globalStyleOutput: string
+  mutationMetrics: WatchCaseMutationMetrics[]
+  summaryByMutationKind: Partial<Record<MutationKind, WatchSummary>>
+  initialReadyMs: number
+  hotUpdateOutputMs: number
+  hotUpdateEffectiveMs: number
+  rollbackOutputMs: number
+  rollbackEffectiveMs: number
+  totalMs: number
 }
 
 interface WatchReport {
@@ -130,6 +191,9 @@ interface WatchReport {
   }
   summary: WatchSummary
   summaryByRound: Partial<Record<MutationRoundName, WatchSummary>>
+  summaryByGroup: Partial<Record<WatchProjectGroup, WatchSummary>>
+  summaryByProject: Record<string, WatchSummary>
+  summaryByMutationKind: Partial<Record<MutationKind, WatchSummary>>
   cases: WatchCaseMetrics[]
 }
 
@@ -521,154 +585,425 @@ function insertBeforeClosingTag(source: string, closingTag: string, snippet: str
   return `${source.slice(0, index)}\n${snippet}\n${source.slice(index)}`
 }
 
+function insertBeforeAnchor(source: string, anchor: string, snippet: string) {
+  const index = source.indexOf(anchor)
+  if (index === -1) {
+    throw new Error(`anchor ${anchor} not found`)
+  }
+  return `${source.slice(0, index)}${snippet}${source.slice(index)}`
+}
+
+function appendTrailingSnippet(source: string, snippet: string) {
+  if (source.endsWith('\n')) {
+    return `${source}${snippet}\n`
+  }
+  return `${source}\n${snippet}\n`
+}
+
+function createStyleRuleSnippet(payload: StyleMutationPayload) {
+  const numericSeed = payload.marker.replace(/\D/g, '')
+  const colorSeed = (numericSeed.slice(-6) || '123456').padStart(6, '0').slice(0, 6)
+  return `${payload.styleNeedle} { color: #${colorSeed}; }`
+}
+
+function mutateScriptByDataAnchor(source: string, dataAnchor: string, payload: ClassMutationPayload, indent = '    ') {
+  if (!source.includes(dataAnchor)) {
+    throw new Error(`script data anchor not found: ${dataAnchor}`)
+  }
+  return source.replace(
+    dataAnchor,
+    `${dataAnchor}\n${indent}${payload.classVariableName}: '${payload.classLiteral}',\n${indent}__twWatchScriptMarker: '${payload.marker}',`,
+  )
+}
+
+function mutateTsxScriptByReturnAnchor(source: string, payload: ClassMutationPayload, returnAnchor = '  return (') {
+  const snippet = [
+    `  const ${payload.classVariableName} = '${payload.classLiteral}'`,
+    `  const __twWatchScriptMarker = '${payload.marker}'`,
+    '',
+  ].join('\n')
+  const withScriptConst = insertBeforeAnchor(source, returnAnchor, snippet)
+  const viewSnippet = `      <View className={${payload.classVariableName}}>${payload.marker}-script</View>`
+
+  if (withScriptConst.includes('    </>')) {
+    return insertBeforeClosingTag(withScriptConst, '    </>', viewSnippet)
+  }
+
+  if (withScriptConst.includes('  </>')) {
+    return insertBeforeClosingTag(withScriptConst, '  </>', viewSnippet)
+  }
+
+  throw new Error('tsx fragment closing tag </> not found for script mutation')
+}
+
+function mutateSfcStyleBlock(source: string, payload: StyleMutationPayload) {
+  if (!source.includes('</style>')) {
+    throw new Error('style closing tag </style> not found')
+  }
+  return insertBeforeClosingTag(source, '</style>', createStyleRuleSnippet(payload))
+}
+
+function insertIntoVueTemplateRoot(source: string, snippet: string) {
+  const templateStart = source.indexOf('<template>')
+  const templateEnd = source.indexOf('</template>')
+  if (templateStart === -1 || templateEnd === -1) {
+    throw new Error('template block not found')
+  }
+
+  const templateBlock = source.slice(templateStart, templateEnd + '</template>'.length)
+  const rootClosingTagMatches = [...templateBlock.matchAll(/\n {2}<\/[a-zA-Z][\w-]*>\s*\n<\/template>/g)]
+  const rootClosingTagMatch = rootClosingTagMatches.at(-1)
+  if (rootClosingTagMatch?.index == null) {
+    throw new Error('vue template root closing tag not found')
+  }
+
+  const insertIndex = templateStart + rootClosingTagMatch.index
+  return `${source.slice(0, insertIndex)}\n${snippet}${source.slice(insertIndex)}`
+}
+
 function buildCases(baseCwd: string): WatchCase[] {
   const taroCase: WatchCase = {
     name: 'taro',
     label: 'demo/taro-app',
+    project: 'demo/taro-app',
+    group: 'demo',
     cwd: path.resolve(baseCwd, 'demo/taro-app'),
     devScript: 'dev:weapp',
-    sourceFile: path.resolve(baseCwd, 'demo/taro-app/src/pages/index/index.tsx'),
     outputWxml: path.resolve(baseCwd, 'demo/taro-app/dist/pages/index/index.wxml'),
     outputJs: path.resolve(baseCwd, 'demo/taro-app/dist/pages/index/index.js'),
-    verifyEscapedIn: [],
-    verifyClassLiteralIn: ['js'],
-    mutate(source, payload) {
-      const varAnchor = '  const [flag] = useState(true)'
-      if (!source.includes(varAnchor)) {
-        throw new Error('taro source anchor not found')
-      }
-      const withVar = source.replace(
-        varAnchor,
-        `${varAnchor}\n  const ${payload.classVariableName} = '${payload.classLiteral}'`,
-      )
-      const snippet = [
-        `      <View className='${payload.classLiteral}'>${payload.marker}-static</View>`,
-        `      <View className={${payload.classVariableName}}>${payload.marker}-dynamic</View>`,
-      ].join('\n')
-      return insertBeforeClosingTag(withVar, '    </>', snippet)
+    outputStyleCandidates: [
+      path.resolve(baseCwd, 'demo/taro-app/dist/pages/index/index.wxss'),
+    ],
+    globalStyleCandidates: [
+      path.resolve(baseCwd, 'demo/taro-app/dist/app.wxss'),
+    ],
+    templateMutation: {
+      sourceFile: path.resolve(baseCwd, 'demo/taro-app/src/pages/index/index.tsx'),
+      verifyEscapedIn: [],
+      verifyClassLiteralIn: ['js'],
+      mutate(source, payload) {
+        const snippet = `      <View className='${payload.classLiteral}'>${payload.marker}-template</View>`
+        return insertBeforeClosingTag(source, '    </>', snippet)
+      },
+    },
+    scriptMutation: {
+      sourceFile: path.resolve(baseCwd, 'demo/taro-app/src/pages/index/index.tsx'),
+      verifyEscapedIn: [],
+      verifyClassLiteralIn: ['js'],
+      mutate(source, payload) {
+        return mutateTsxScriptByReturnAnchor(source, payload)
+      },
+    },
+    styleMutation: {
+      sourceFile: path.resolve(baseCwd, 'demo/taro-app/src/pages/index/index.scss'),
+      mutate(source, payload) {
+        return appendTrailingSnippet(source, createStyleRuleSnippet(payload))
+      },
     },
   }
 
   const uniCase: WatchCase = {
     name: 'uni',
     label: 'demo/uni-app',
+    project: 'demo/uni-app',
+    group: 'demo',
     cwd: path.resolve(baseCwd, 'demo/uni-app'),
     devScript: 'dev:mp-weixin',
-    sourceFile: path.resolve(baseCwd, 'demo/uni-app/src/pages/index/index.vue'),
     outputWxml: path.resolve(baseCwd, 'demo/uni-app/dist/dev/mp-weixin/pages/index/index.wxml'),
     outputJs: path.resolve(baseCwd, 'demo/uni-app/dist/dev/mp-weixin/pages/index/index.js'),
-    verifyEscapedIn: ['wxml'],
-    verifyClassLiteralIn: ['js'],
-    mutate(source, payload) {
-      const dataAnchor = '      className: \'bg-[#123456]\','
-      if (!source.includes(dataAnchor)) {
-        throw new Error('uni source data anchor not found')
-      }
-      const withData = source.replace(
-        dataAnchor,
-        `${dataAnchor}\n      ${payload.classVariableName}: '${payload.classLiteral}',`,
-      )
-      const snippet = [
-        `    <view class="${payload.classLiteral}">${payload.marker}-static</view>`,
-        `    <view :class="${payload.classVariableName}">${payload.marker}-dynamic</view>`,
-      ].join('\n')
-      return insertBeforeClosingTag(withData, '\n  </view>\n</template>', snippet)
+    outputStyleCandidates: [
+      path.resolve(baseCwd, 'demo/uni-app/dist/dev/mp-weixin/pages/index/index.wxss'),
+    ],
+    globalStyleCandidates: [
+      path.resolve(baseCwd, 'demo/uni-app/dist/dev/mp-weixin/common/main.wxss'),
+      path.resolve(baseCwd, 'demo/uni-app/dist/dev/mp-weixin/app.wxss'),
+    ],
+    templateMutation: {
+      sourceFile: path.resolve(baseCwd, 'demo/uni-app/src/pages/index/index.vue'),
+      verifyEscapedIn: ['wxml'],
+      verifyClassLiteralIn: [],
+      mutate(source, payload) {
+        const snippet = `    <view class="${payload.classLiteral}">${payload.marker}-template</view>`
+        return insertIntoVueTemplateRoot(source, snippet)
+      },
+    },
+    scriptMutation: {
+      sourceFile: path.resolve(baseCwd, 'demo/uni-app/src/pages/index/index.vue'),
+      verifyEscapedIn: [],
+      verifyClassLiteralIn: ['js'],
+      mutate(source, payload) {
+        return mutateScriptByDataAnchor(source, '      className: \'bg-[#123456]\',', payload, '      ')
+      },
+    },
+    styleMutation: {
+      sourceFile: path.resolve(baseCwd, 'demo/uni-app/src/pages/index/index.vue'),
+      mutate(source, payload) {
+        return mutateSfcStyleBlock(source, payload)
+      },
     },
   }
 
   const mpxCase: WatchCase = {
     name: 'mpx',
     label: 'demo/mpx-app',
+    project: 'demo/mpx-app',
+    group: 'demo',
     cwd: path.resolve(baseCwd, 'demo/mpx-app'),
     devScript: 'dev',
-    sourceFile: path.resolve(baseCwd, 'demo/mpx-app/src/pages/index.mpx'),
     outputWxml: path.resolve(baseCwd, 'demo/mpx-app/dist/wx/pages/index.wxml'),
     outputJs: path.resolve(baseCwd, 'demo/mpx-app/dist/wx/pages/index.js'),
-    verifyEscapedIn: ['wxml'],
-    verifyClassLiteralIn: ['js'],
-    mutate(source, payload) {
-      const dataAnchor = '    classNames: \'text-[#123456] text-[50px] bg-[#fff]\','
-      if (!source.includes(dataAnchor)) {
-        throw new Error('mpx source data anchor not found')
-      }
-      const withData = source.replace(
-        dataAnchor,
-        `${dataAnchor}\n    ${payload.classVariableName}: '${payload.classLiteral}',`,
-      )
-      const snippet = [
-        `    <view class="${payload.classLiteral}">${payload.marker}-static</view>`,
-        `    <view wx:class="{{${payload.classVariableName}}}">${payload.marker}-dynamic</view>`,
-      ].join('\n')
-      return insertBeforeClosingTag(withData, '\n  </view>\n</template>', snippet)
+    outputStyleCandidates: [
+      path.resolve(baseCwd, 'demo/mpx-app/dist/wx/app.wxss'),
+      path.resolve(baseCwd, 'demo/mpx-app/dist/wx/pages/index.wxss'),
+    ],
+    globalStyleCandidates: [
+      path.resolve(baseCwd, 'demo/mpx-app/dist/wx/styles/utilities8aaa9530.wxss'),
+      path.resolve(baseCwd, 'demo/mpx-app/dist/wx/app.wxss'),
+    ],
+    templateMutation: {
+      sourceFile: path.resolve(baseCwd, 'demo/mpx-app/src/pages/index.mpx'),
+      verifyEscapedIn: ['wxml'],
+      verifyClassLiteralIn: [],
+      mutate(source, payload) {
+        const snippet = `    <view class="${payload.classLiteral}">${payload.marker}-template</view>`
+        return insertBeforeClosingTag(source, '</template>', snippet)
+      },
+    },
+    scriptMutation: {
+      sourceFile: path.resolve(baseCwd, 'demo/mpx-app/src/pages/index.mpx'),
+      verifyEscapedIn: [],
+      verifyClassLiteralIn: ['js'],
+      mutate(source, payload) {
+        return mutateScriptByDataAnchor(source, '    classNames: \'text-[#123456] text-[50px] bg-[#fff]\',', payload)
+      },
+    },
+    styleMutation: {
+      sourceFile: path.resolve(baseCwd, 'demo/mpx-app/src/app.mpx'),
+      mutate(source, payload) {
+        return mutateSfcStyleBlock(source, payload)
+      },
     },
   }
 
   const raxCase: WatchCase = {
     name: 'rax',
     label: 'demo/rax-app',
+    project: 'demo/rax-app',
+    group: 'demo',
     cwd: path.resolve(baseCwd, 'demo/rax-app'),
     devScript: 'start',
     env: {
       PORT: '39333',
     },
-    sourceFile: path.resolve(baseCwd, 'demo/rax-app/src/pages/index/index.tsx'),
     outputWxml: path.resolve(baseCwd, 'demo/rax-app/build/wechat-miniprogram/pages/index/index.wxml'),
     outputJs: path.resolve(baseCwd, 'demo/rax-app/build/wechat-miniprogram/bundle.js'),
-    verifyEscapedIn: [],
-    verifyClassLiteralIn: ['js'],
-    mutate(source, payload) {
-      const varAnchor = '  const [flag, setState] = useState(true);'
-      if (!source.includes(varAnchor)) {
-        throw new Error('rax source anchor not found')
-      }
-      const withVar = source.replace(
-        varAnchor,
-        `${varAnchor}\n  const ${payload.classVariableName} = '${payload.classLiteral}';`,
-      )
-      const snippet = [
-        `      <View className='${payload.classLiteral}'>${payload.marker}-static</View>`,
-        `      <View className={${payload.classVariableName}}>${payload.marker}-dynamic</View>`,
-      ].join('\n')
-      return insertBeforeClosingTag(withVar, '    </>', snippet)
+    outputStyleCandidates: [
+      path.resolve(baseCwd, 'demo/rax-app/build/wechat-miniprogram/bundle.wxss'),
+    ],
+    globalStyleCandidates: [
+      path.resolve(baseCwd, 'demo/rax-app/build/wechat-miniprogram/bundle.wxss'),
+    ],
+    templateMutation: {
+      sourceFile: path.resolve(baseCwd, 'demo/rax-app/src/pages/index/index.tsx'),
+      verifyEscapedIn: [],
+      verifyClassLiteralIn: ['js'],
+      mutate(source, payload) {
+        const snippet = `      <View className='${payload.classLiteral}'>${payload.marker}-template</View>`
+        return insertBeforeClosingTag(source, '    </>', snippet)
+      },
+    },
+    scriptMutation: {
+      sourceFile: path.resolve(baseCwd, 'demo/rax-app/src/pages/index/index.tsx'),
+      verifyEscapedIn: [],
+      verifyClassLiteralIn: ['js'],
+      mutate(source, payload) {
+        return mutateTsxScriptByReturnAnchor(source, payload)
+      },
+    },
+    styleMutation: {
+      sourceFile: path.resolve(baseCwd, 'demo/rax-app/src/pages/index/index.css'),
+      mutate(source, payload) {
+        return appendTrailingSnippet(source, createStyleRuleSnippet(payload))
+      },
     },
   }
 
   const minaCase: WatchCase = {
     name: 'mina',
     label: 'demo/native-mina',
+    project: 'demo/native-mina',
+    group: 'demo',
     cwd: path.resolve(baseCwd, 'demo/native-mina'),
     devScript: 'start',
-    sourceFile: path.resolve(baseCwd, 'demo/native-mina/src/pages/index/index.wxml'),
     outputWxml: path.resolve(baseCwd, 'demo/native-mina/dist/pages/index/index.wxml'),
     outputJs: path.resolve(baseCwd, 'demo/native-mina/dist/pages/index/index.js'),
-    verifyEscapedIn: ['wxml'],
-    mutate(source, payload) {
-      const snippet = `  <view class="${payload.classLiteral}">${payload.marker}-static</view>`
-      return insertBeforeClosingTag(source, '\n</view>', snippet)
+    outputStyleCandidates: [
+      path.resolve(baseCwd, 'demo/native-mina/dist/pages/index/index.wxss'),
+    ],
+    globalStyleCandidates: [
+      path.resolve(baseCwd, 'demo/native-mina/dist/app.wxss'),
+    ],
+    templateMutation: {
+      sourceFile: path.resolve(baseCwd, 'demo/native-mina/src/pages/index/index.wxml'),
+      verifyEscapedIn: ['wxml'],
+      mutate(source, payload) {
+        const snippet = `  <view class="${payload.classLiteral}">${payload.marker}-template</view>`
+        return insertBeforeClosingTag(source, '</view>', snippet)
+      },
+    },
+    scriptMutation: {
+      sourceFile: path.resolve(baseCwd, 'demo/native-mina/src/pages/index/index.js'),
+      verifyEscapedIn: [],
+      verifyClassLiteralIn: ['js'],
+      mutate(source, payload) {
+        return mutateScriptByDataAnchor(source, '  data: {', payload)
+      },
+    },
+    styleMutation: {
+      sourceFile: path.resolve(baseCwd, 'demo/native-mina/src/pages/index/index.scss'),
+      mutate(source, payload) {
+        return appendTrailingSnippet(source, createStyleRuleSnippet(payload))
+      },
     },
   }
 
   const weappViteCase: WatchCase = {
     name: 'weapp-vite',
     label: 'demo/native-ts (weapp-vite)',
+    project: 'demo/native-ts',
+    group: 'demo',
     cwd: path.resolve(baseCwd, 'demo/native-ts'),
     devScript: 'dev',
-    sourceFile: path.resolve(baseCwd, 'demo/native-ts/miniprogram/pages/index/index.wxml'),
     outputWxml: path.resolve(baseCwd, 'demo/native-ts/dist/pages/index/index.wxml'),
     outputJs: path.resolve(baseCwd, 'demo/native-ts/dist/pages/index/index.js'),
-    verifyEscapedIn: ['wxml'],
-    mutate(source, payload) {
-      const snippet = `  <view class="${payload.classLiteral}">${payload.marker}-static</view>`
-      return insertBeforeClosingTag(source, '\n</view>', snippet)
+    outputStyleCandidates: [
+      path.resolve(baseCwd, 'demo/native-ts/dist/pages/index/index.wxss'),
+    ],
+    globalStyleCandidates: [
+      path.resolve(baseCwd, 'demo/native-ts/dist/app.wxss'),
+    ],
+    templateMutation: {
+      sourceFile: path.resolve(baseCwd, 'demo/native-ts/miniprogram/pages/index/index.wxml'),
+      verifyEscapedIn: ['wxml'],
+      mutate(source, payload) {
+        const snippet = `  <view class="${payload.classLiteral}">${payload.marker}-template</view>`
+        return insertBeforeClosingTag(source, '</view>', snippet)
+      },
+    },
+    scriptMutation: {
+      sourceFile: path.resolve(baseCwd, 'demo/native-ts/miniprogram/pages/index/index.ts'),
+      verifyEscapedIn: [],
+      verifyClassLiteralIn: ['js'],
+      mutate(source, payload) {
+        return mutateScriptByDataAnchor(source, '  data: {', payload)
+      },
+    },
+    styleMutation: {
+      sourceFile: path.resolve(baseCwd, 'demo/native-ts/miniprogram/pages/index/index.scss'),
+      mutate(source, payload) {
+        return appendTrailingSnippet(source, createStyleRuleSnippet(payload))
+      },
     },
   }
 
-  return [taroCase, uniCase, mpxCase, raxCase, minaCase, weappViteCase]
+  const taroWebpackCase: WatchCase = {
+    name: 'taro-webpack',
+    label: 'apps/taro-webpack-tailwindcss-v4',
+    project: 'apps/taro-webpack-tailwindcss-v4',
+    group: 'apps',
+    cwd: path.resolve(baseCwd, 'apps/taro-webpack-tailwindcss-v4'),
+    devScript: 'dev:weapp',
+    outputWxml: path.resolve(baseCwd, 'apps/taro-webpack-tailwindcss-v4/dist/pages/index/index.wxml'),
+    outputJs: path.resolve(baseCwd, 'apps/taro-webpack-tailwindcss-v4/dist/pages/index/index.js'),
+    outputStyleCandidates: [
+      path.resolve(baseCwd, 'apps/taro-webpack-tailwindcss-v4/dist/pages/index/index.wxss'),
+    ],
+    globalStyleCandidates: [
+      path.resolve(baseCwd, 'apps/taro-webpack-tailwindcss-v4/dist/app.wxss'),
+    ],
+    templateMutation: {
+      sourceFile: path.resolve(baseCwd, 'apps/taro-webpack-tailwindcss-v4/src/pages/index/index.tsx'),
+      verifyEscapedIn: [],
+      verifyClassLiteralIn: ['js'],
+      mutate(source, payload) {
+        const snippet = `      <View className='${payload.classLiteral}'>${payload.marker}-template</View>`
+        return insertBeforeClosingTag(source, '    </>', snippet)
+      },
+    },
+    scriptMutation: {
+      sourceFile: path.resolve(baseCwd, 'apps/taro-webpack-tailwindcss-v4/src/pages/index/index.tsx'),
+      verifyEscapedIn: [],
+      verifyClassLiteralIn: ['js'],
+      mutate(source, payload) {
+        return mutateTsxScriptByReturnAnchor(source, payload)
+      },
+    },
+    styleMutation: {
+      sourceFile: path.resolve(baseCwd, 'apps/taro-webpack-tailwindcss-v4/src/pages/index/index.css'),
+      mutate(source, payload) {
+        return appendTrailingSnippet(source, createStyleRuleSnippet(payload))
+      },
+    },
+  }
+
+  const viteNativeTsCase: WatchCase = {
+    name: 'vite-native-ts',
+    label: 'apps/vite-native-ts',
+    project: 'apps/vite-native-ts',
+    group: 'apps',
+    cwd: path.resolve(baseCwd, 'apps/vite-native-ts'),
+    devScript: 'dev',
+    outputWxml: path.resolve(baseCwd, 'apps/vite-native-ts/dist/pages/index/index.wxml'),
+    outputJs: path.resolve(baseCwd, 'apps/vite-native-ts/dist/pages/index/index.js'),
+    outputStyleCandidates: [
+      path.resolve(baseCwd, 'apps/vite-native-ts/dist/pages/index/index.wxss'),
+    ],
+    globalStyleCandidates: [
+      path.resolve(baseCwd, 'apps/vite-native-ts/dist/app.wxss'),
+    ],
+    templateMutation: {
+      sourceFile: path.resolve(baseCwd, 'apps/vite-native-ts/miniprogram/pages/index/index.wxml'),
+      verifyEscapedIn: ['wxml'],
+      mutate(source, payload) {
+        const snippet = `  <view class="${payload.classLiteral}">${payload.marker}-template</view>`
+        return insertBeforeClosingTag(source, '</view>', snippet)
+      },
+    },
+    scriptMutation: {
+      sourceFile: path.resolve(baseCwd, 'apps/vite-native-ts/miniprogram/pages/index/index.ts'),
+      verifyEscapedIn: [],
+      verifyClassLiteralIn: ['js'],
+      mutate(source, payload) {
+        return mutateScriptByDataAnchor(source, '  data: {', payload)
+      },
+    },
+    styleMutation: {
+      sourceFile: path.resolve(baseCwd, 'apps/vite-native-ts/miniprogram/pages/index/index.scss'),
+      mutate(source, payload) {
+        return appendTrailingSnippet(source, createStyleRuleSnippet(payload))
+      },
+    },
+  }
+
+  return [
+    taroCase,
+    uniCase,
+    mpxCase,
+    raxCase,
+    minaCase,
+    weappViteCase,
+    taroWebpackCase,
+    viteNativeTsCase,
+  ]
 }
 
 function pickCases(allCases: WatchCase[], caseName: CliOptions['caseName']) {
   if (caseName === 'all') {
     return allCases
+  }
+
+  if (caseName === 'demo' || caseName === 'apps') {
+    return allCases.filter(item => item.group === caseName)
   }
 
   if (caseName === 'both') {
@@ -780,6 +1115,59 @@ async function waitForMarkerState(
   )
 }
 
+async function waitForOutputFileUpdated(
+  watchCase: WatchCase,
+  outputFile: string,
+  baselineMtime: number,
+  options: CliOptions,
+  session: WatchSession,
+  startedAt = Date.now(),
+) {
+  return waitFor(
+    async () => {
+      const mtime = await getMtime(outputFile)
+      return mtime > baselineMtime
+    },
+    {
+      timeoutMs: options.timeoutMs,
+      pollMs: options.pollMs,
+      message: `[${watchCase.label}] output file was not updated: ${formatPath(outputFile)}`,
+      onTick: session.ensureRunning,
+    },
+    startedAt,
+  )
+}
+
+async function waitForNeedleInOutputFile(
+  watchCase: WatchCase,
+  outputFile: string,
+  needle: string,
+  expected: 'present' | 'absent',
+  options: CliOptions,
+  session: WatchSession,
+  startedAt = Date.now(),
+) {
+  return waitFor(
+    async () => {
+      const source = await readFileIfExists(outputFile)
+      if (!source) {
+        return false
+      }
+      const hasNeedle = source.includes(needle)
+      return expected === 'present' ? hasNeedle : !hasNeedle
+    },
+    {
+      timeoutMs: options.timeoutMs,
+      pollMs: options.pollMs,
+      message: expected === 'present'
+        ? `[${watchCase.label}] output file is missing needle ${needle}: ${formatPath(outputFile)}`
+        : `[${watchCase.label}] output file still contains needle ${needle}: ${formatPath(outputFile)}`,
+      onTick: session.ensureRunning,
+    },
+    startedAt,
+  )
+}
+
 function buildBaselineArbitraryClassTokens(seed: string) {
   const opacitySeed = seed.slice(0, 2)
   const decimalSeed = seed.slice(-1)
@@ -821,11 +1209,14 @@ function resolveMutationRoundConfigs(): MutationRoundConfig[] {
   ]
 }
 
-function createMutationScenario(
+function createClassMutationScenario(
   watchCase: WatchCase,
+  mutationKind: 'template' | 'script',
+  mutation: ClassMutationConfig,
   original: string,
   baselineWxml: string,
   baselineJs: string,
+  baselineGlobalStyle: string,
   classVariableName: string,
   roundConfig: MutationRoundConfig,
 ): MutationScenario {
@@ -836,22 +1227,22 @@ function createMutationScenario(
     const seed = `${seedBase}${attempt}`
     const classTokens = roundConfig.buildClassTokens(seed)
     const escapedClasses = classTokens.map(item => replaceWxml(item))
-    const marker = `tw-watch-${watchCase.name}-${roundConfig.name}-${seed}`
+    const marker = `tw-watch-${watchCase.name}-${mutationKind}-${roundConfig.name}-${seed}`
     const classLiteral = classTokens.join(' ')
 
     const freshEscapedClasses = escapedClasses.filter((escaped) => {
-      return !baselineWxml.includes(escaped) && !baselineJs.includes(escaped)
+      return !baselineWxml.includes(escaped) && !baselineJs.includes(escaped) && !baselineGlobalStyle.includes(escaped)
     })
 
     if (freshEscapedClasses.length < 3) {
       continue
     }
 
-    if (baselineWxml.includes(marker) || baselineJs.includes(marker)) {
+    if (baselineWxml.includes(marker) || baselineJs.includes(marker) || baselineGlobalStyle.includes(marker)) {
       continue
     }
 
-    const mutatedSource = watchCase.mutate(original, {
+    const mutatedSource = mutation.mutate(original, {
       marker,
       classLiteral,
       classVariableName,
@@ -873,88 +1264,16 @@ function createMutationScenario(
     }
   }
 
-  throw new Error(`[${watchCase.label}] failed to generate enough fresh mutation classes for round=${roundConfig.name}`)
+  throw new Error(`[${watchCase.label}] failed to generate fresh mutation classes for ${mutationKind}/${roundConfig.name}`)
 }
 
-function summarizeMetrics(cases: WatchCaseMetrics[]): WatchSummary {
-  const count = cases.length
-  if (count === 0) {
-    return {
-      count,
-      hotUpdateAvgMs: 0,
-      hotUpdateMaxMs: 0,
-      hotUpdateMinMs: 0,
-      rollbackAvgMs: 0,
-      rollbackMaxMs: 0,
-      rollbackMinMs: 0,
-    }
-  }
-
-  const hotUpdateDurations = cases.map(item => item.hotUpdateEffectiveMs)
-  const rollbackDurations = cases.map(item => item.rollbackEffectiveMs)
-
-  const hotUpdateSum = hotUpdateDurations.reduce((sum, value) => sum + value, 0)
-  const rollbackSum = rollbackDurations.reduce((sum, value) => sum + value, 0)
-
+function createStyleMutationPayload(watchCase: WatchCase): StyleMutationPayload {
+  const seed = `${Date.now().toString().slice(-6)}${Math.floor(Math.random() * 1000).toString().padStart(3, '0')}`
+  const marker = `tw-watch-style-${watchCase.name}-${seed}`
   return {
-    count,
-    hotUpdateAvgMs: Math.round(hotUpdateSum / count),
-    hotUpdateMaxMs: Math.max(...hotUpdateDurations),
-    hotUpdateMinMs: Math.min(...hotUpdateDurations),
-    rollbackAvgMs: Math.round(rollbackSum / count),
-    rollbackMaxMs: Math.max(...rollbackDurations),
-    rollbackMinMs: Math.min(...rollbackDurations),
+    marker,
+    styleNeedle: `.${marker}`,
   }
-}
-
-function summarizeMetricsForRound(cases: WatchCaseMetrics[], roundName: MutationRoundName): WatchSummary {
-  const projected = cases
-    .map((item) => {
-      return item.rounds.find(round => round.roundName === roundName)
-    })
-    .filter((item): item is MutationRoundMetrics => Boolean(item))
-    .map((round) => {
-      return {
-        hotUpdateEffectiveMs: round.hotUpdateEffectiveMs,
-        rollbackEffectiveMs: round.rollbackEffectiveMs,
-      }
-    })
-
-  const count = projected.length
-  if (count === 0) {
-    return {
-      count: 0,
-      hotUpdateAvgMs: 0,
-      hotUpdateMaxMs: 0,
-      hotUpdateMinMs: 0,
-      rollbackAvgMs: 0,
-      rollbackMaxMs: 0,
-      rollbackMinMs: 0,
-    }
-  }
-
-  const hotUpdateDurations = projected.map(item => item.hotUpdateEffectiveMs)
-  const rollbackDurations = projected.map(item => item.rollbackEffectiveMs)
-  const hotUpdateSum = hotUpdateDurations.reduce((sum, value) => sum + value, 0)
-  const rollbackSum = rollbackDurations.reduce((sum, value) => sum + value, 0)
-
-  return {
-    count,
-    hotUpdateAvgMs: Math.round(hotUpdateSum / count),
-    hotUpdateMaxMs: Math.max(...hotUpdateDurations),
-    hotUpdateMinMs: Math.min(...hotUpdateDurations),
-    rollbackAvgMs: Math.round(rollbackSum / count),
-    rollbackMaxMs: Math.max(...rollbackDurations),
-    rollbackMinMs: Math.min(...rollbackDurations),
-  }
-}
-
-function summarizeMetricsByRound(cases: WatchCaseMetrics[]) {
-  const summaryByRound: Partial<Record<MutationRoundName, WatchSummary>> = {}
-  for (const roundName of resolveMutationRoundConfigs().map(item => item.name)) {
-    summaryByRound[roundName] = summarizeMetricsForRound(cases, roundName)
-  }
-  return summaryByRound
 }
 
 function buildRoundComparison(rounds: MutationRoundMetrics[]): WatchCaseRoundComparison | undefined {
@@ -975,6 +1294,460 @@ function buildRoundComparison(rounds: MutationRoundMetrics[]): WatchCaseRoundCom
   }
 }
 
+async function resolveOutputFile(
+  watchCase: WatchCase,
+  candidates: string[],
+  label: string,
+  options: CliOptions,
+  session: WatchSession,
+) {
+  let resolved: string | undefined
+
+  await waitFor(
+    async () => {
+      for (const file of candidates) {
+        const content = await readFileIfExists(file)
+        if (content != null) {
+          resolved = file
+          return true
+        }
+      }
+      return false
+    },
+    {
+      timeoutMs: options.timeoutMs,
+      pollMs: options.pollMs,
+      message: `[${watchCase.label}] could not resolve ${label} output from candidates: ${candidates.map(formatPath).join(', ')}`,
+      onTick: session.ensureRunning,
+    },
+  )
+
+  if (!resolved) {
+    throw new Error(`[${watchCase.label}] no resolved ${label} output`)
+  }
+
+  return resolved
+}
+
+function resolvePreferredRound(rounds: MutationRoundMetrics[]) {
+  return rounds.find(item => item.roundName === 'complex-corpus')
+    ?? rounds[rounds.length - 1]
+}
+
+async function runClassMutation(
+  watchCase: WatchCase,
+  options: CliOptions,
+  session: WatchSession,
+  mutationKind: 'template' | 'script',
+  mutation: ClassMutationConfig,
+  sourceOriginal: string,
+  globalStyleOutput: string,
+): Promise<ClassMutationMetrics> {
+  const classVariableName = '__twWatchClass'
+  const sourcePath = mutation.sourceFile
+
+  const [baselineWxml, baselineJs, baselineGlobalStyle] = await Promise.all([
+    readFileIfExists(watchCase.outputWxml),
+    readFileIfExists(watchCase.outputJs),
+    readFileIfExists(globalStyleOutput),
+  ])
+
+  if (!baselineWxml || !baselineJs || !baselineGlobalStyle) {
+    throw new Error(`[${watchCase.label}] baseline outputs are missing for ${mutationKind}`)
+  }
+
+  const verifyClassLiteralIn = mutation.verifyClassLiteralIn ?? []
+  const roundMetrics: MutationRoundMetrics[] = []
+  const verifiedGlobalEscapedClasses = new Set<string>()
+  let baselineMtime = {
+    wxml: await getMtime(watchCase.outputWxml),
+    js: await getMtime(watchCase.outputJs),
+  }
+
+  for (const roundConfig of resolveMutationRoundConfigs()) {
+    const roundStartedAt = Date.now()
+
+    const mutationScenario = createClassMutationScenario(
+      watchCase,
+      mutationKind,
+      mutation,
+      sourceOriginal,
+      baselineWxml,
+      baselineJs,
+      baselineGlobalStyle,
+      classVariableName,
+      roundConfig,
+    )
+
+    const {
+      marker,
+      classLiteral,
+      classTokens,
+      escapedClasses,
+      freshEscapedClasses,
+      mutatedSource,
+    } = mutationScenario
+
+    const escapedClassesForGlobalCheck = freshEscapedClasses.slice(0, 3)
+
+    for (const escaped of freshEscapedClasses) {
+      assertNotContains(baselineWxml, escaped, `[${watchCase.label}] baseline wxml`)
+      assertNotContains(baselineJs, escaped, `[${watchCase.label}] baseline js`)
+      assertNotContains(baselineGlobalStyle, escaped, `[${watchCase.label}] baseline global style`)
+    }
+
+    const hotUpdateStartedAt = Date.now()
+    await fs.writeFile(sourcePath, mutatedSource, 'utf8')
+    const hotUpdateOutputMs = await waitForOutputsUpdated(
+      watchCase,
+      baselineMtime,
+      options,
+      session,
+      hotUpdateStartedAt,
+    )
+    const hotUpdateEffectiveMs = await waitForMarkerState(
+      watchCase,
+      marker,
+      'present',
+      options,
+      session,
+      hotUpdateStartedAt,
+    )
+
+    const [updatedWxml, updatedJs, updatedGlobalStyle] = await Promise.all([
+      fs.readFile(watchCase.outputWxml, 'utf8'),
+      fs.readFile(watchCase.outputJs, 'utf8'),
+      fs.readFile(globalStyleOutput, 'utf8'),
+    ])
+
+    for (const escaped of escapedClasses) {
+      if (mutation.verifyEscapedIn.includes('wxml')) {
+        assertContains(updatedWxml, escaped, `[${watchCase.label}] updated wxml`)
+      }
+      if (mutation.verifyEscapedIn.includes('js')) {
+        assertContains(updatedJs, escaped, `[${watchCase.label}] updated js`)
+      }
+    }
+
+    for (const [index, classToken] of classTokens.entries()) {
+      const escapedToken = escapedClasses[index]
+      const expectedValues = escapedToken ? [classToken, escapedToken] : [classToken]
+
+      if (verifyClassLiteralIn.includes('wxml')) {
+        assertContainsOneOf(
+          updatedWxml,
+          expectedValues,
+          `[${watchCase.label}] updated wxml token literal`,
+        )
+      }
+      if (verifyClassLiteralIn.includes('js')) {
+        assertContainsOneOf(
+          updatedJs,
+          expectedValues,
+          `[${watchCase.label}] updated js token literal`,
+        )
+      }
+    }
+
+    for (const escaped of escapedClassesForGlobalCheck) {
+      assertContains(updatedGlobalStyle, escaped, `[${watchCase.label}] global style output`)
+      verifiedGlobalEscapedClasses.add(escaped)
+    }
+
+    const updatedMtime = {
+      wxml: await getMtime(watchCase.outputWxml),
+      js: await getMtime(watchCase.outputJs),
+    }
+
+    const rollbackStartedAt = Date.now()
+    await fs.writeFile(sourcePath, sourceOriginal, 'utf8')
+    const rollbackOutputMs = await waitForOutputsUpdated(
+      watchCase,
+      updatedMtime,
+      options,
+      session,
+      rollbackStartedAt,
+    )
+    const rollbackEffectiveMs = await waitForMarkerState(
+      watchCase,
+      marker,
+      'absent',
+      options,
+      session,
+      rollbackStartedAt,
+    )
+
+    roundMetrics.push({
+      roundName: roundConfig.name,
+      marker,
+      classLiteral,
+      classTokens,
+      escapedClasses,
+      hotUpdateOutputMs,
+      hotUpdateEffectiveMs,
+      rollbackOutputMs,
+      rollbackEffectiveMs,
+      totalMs: Date.now() - roundStartedAt,
+    })
+
+    process.stdout.write(
+      `[watch-hmr] ${watchCase.label} mutation=${mutationKind} round=${roundConfig.name} passed (hotUpdate=${hotUpdateEffectiveMs}ms, rollback=${rollbackEffectiveMs}ms)\n`,
+    )
+
+    baselineMtime = {
+      wxml: await getMtime(watchCase.outputWxml),
+      js: await getMtime(watchCase.outputJs),
+    }
+  }
+
+  const preferredRound = resolvePreferredRound(roundMetrics)
+
+  if (!preferredRound) {
+    throw new Error(`[${watchCase.label}] no round metrics produced for mutation=${mutationKind}`)
+  }
+
+  return {
+    mutationKind,
+    sourceFile: sourcePath,
+    marker: preferredRound.marker,
+    classLiteral: preferredRound.classLiteral,
+    classTokens: preferredRound.classTokens,
+    escapedClasses: preferredRound.escapedClasses,
+    rounds: roundMetrics,
+    roundComparison: buildRoundComparison(roundMetrics),
+    verifyEscapedIn: mutation.verifyEscapedIn,
+    verifyClassLiteralIn,
+    globalStyleOutput,
+    verifiedGlobalStyleEscapedClasses: Array.from(verifiedGlobalEscapedClasses),
+    hotUpdateOutputMs: preferredRound.hotUpdateOutputMs,
+    hotUpdateEffectiveMs: preferredRound.hotUpdateEffectiveMs,
+    rollbackOutputMs: preferredRound.rollbackOutputMs,
+    rollbackEffectiveMs: preferredRound.rollbackEffectiveMs,
+  }
+}
+
+async function runStyleMutation(
+  watchCase: WatchCase,
+  options: CliOptions,
+  session: WatchSession,
+  styleMutation: StyleMutationConfig,
+  sourceOriginal: string,
+  outputStyle: string,
+): Promise<StyleMutationMetrics> {
+  const payload = createStyleMutationPayload(watchCase)
+  const sourcePath = styleMutation.sourceFile
+  const mutatedSource = styleMutation.mutate(sourceOriginal, payload)
+
+  if (mutatedSource === sourceOriginal) {
+    throw new Error(`[${watchCase.label}] style mutation produced no source change`)
+  }
+
+  const baselineMtime = await getMtime(outputStyle)
+  const hotUpdateStartedAt = Date.now()
+  await fs.writeFile(sourcePath, mutatedSource, 'utf8')
+  const hotUpdateOutputMs = await waitForOutputFileUpdated(
+    watchCase,
+    outputStyle,
+    baselineMtime,
+    options,
+    session,
+    hotUpdateStartedAt,
+  )
+  const hotUpdateEffectiveMs = await waitForNeedleInOutputFile(
+    watchCase,
+    outputStyle,
+    payload.styleNeedle,
+    'present',
+    options,
+    session,
+    hotUpdateStartedAt,
+  )
+
+  const updatedStyle = await fs.readFile(outputStyle, 'utf8')
+  assertContains(updatedStyle, payload.styleNeedle, `[${watchCase.label}] updated style output`)
+
+  const updatedMtime = await getMtime(outputStyle)
+  const rollbackStartedAt = Date.now()
+  await fs.writeFile(sourcePath, sourceOriginal, 'utf8')
+  const rollbackOutputMs = await waitForOutputFileUpdated(
+    watchCase,
+    outputStyle,
+    updatedMtime,
+    options,
+    session,
+    rollbackStartedAt,
+  )
+  let rollbackEffectiveMs = rollbackOutputMs
+  let rollbackNeedleCleared = false
+  try {
+    rollbackEffectiveMs = await waitForNeedleInOutputFile(
+      watchCase,
+      outputStyle,
+      payload.styleNeedle,
+      'absent',
+      options,
+      session,
+      rollbackStartedAt,
+    )
+    rollbackNeedleCleared = true
+  }
+  catch {
+    process.stdout.write(
+      `[watch-hmr] ${watchCase.label} mutation=style rollback marker still present in output, fallback to output latency metric\n`,
+    )
+  }
+
+  process.stdout.write(
+    `[watch-hmr] ${watchCase.label} mutation=style passed (hotUpdate=${hotUpdateEffectiveMs}ms, rollback=${rollbackEffectiveMs}ms)\n`,
+  )
+
+  return {
+    mutationKind: 'style',
+    sourceFile: sourcePath,
+    outputStyle,
+    marker: payload.marker,
+    styleNeedle: payload.styleNeedle,
+    hotUpdateOutputMs,
+    hotUpdateEffectiveMs,
+    rollbackOutputMs,
+    rollbackEffectiveMs,
+    rollbackNeedleCleared,
+  }
+}
+
+interface SummarySample {
+  hotUpdateEffectiveMs: number
+  rollbackEffectiveMs: number
+}
+
+function summarizeSamples(samples: SummarySample[]): WatchSummary {
+  const count = samples.length
+  if (count === 0) {
+    return {
+      count,
+      hotUpdateAvgMs: 0,
+      hotUpdateMaxMs: 0,
+      hotUpdateMinMs: 0,
+      rollbackAvgMs: 0,
+      rollbackMaxMs: 0,
+      rollbackMinMs: 0,
+    }
+  }
+
+  const hotUpdateDurations = samples.map(item => item.hotUpdateEffectiveMs)
+  const rollbackDurations = samples.map(item => item.rollbackEffectiveMs)
+  const hotUpdateSum = hotUpdateDurations.reduce((sum, value) => sum + value, 0)
+  const rollbackSum = rollbackDurations.reduce((sum, value) => sum + value, 0)
+
+  return {
+    count,
+    hotUpdateAvgMs: Math.round(hotUpdateSum / count),
+    hotUpdateMaxMs: Math.max(...hotUpdateDurations),
+    hotUpdateMinMs: Math.min(...hotUpdateDurations),
+    rollbackAvgMs: Math.round(rollbackSum / count),
+    rollbackMaxMs: Math.max(...rollbackDurations),
+    rollbackMinMs: Math.min(...rollbackDurations),
+  }
+}
+
+function summarizeMetrics(cases: WatchCaseMetrics[]): WatchSummary {
+  return summarizeSamples(
+    cases.map(item => ({
+      hotUpdateEffectiveMs: item.hotUpdateEffectiveMs,
+      rollbackEffectiveMs: item.rollbackEffectiveMs,
+    })),
+  )
+}
+
+function summarizeMetricsForRound(cases: WatchCaseMetrics[], roundName: MutationRoundName): WatchSummary {
+  const projected = cases
+    .map((item) => {
+      return item.rounds.find(round => round.roundName === roundName)
+    })
+    .filter((item): item is MutationRoundMetrics => Boolean(item))
+    .map((round) => {
+      return {
+        hotUpdateEffectiveMs: round.hotUpdateEffectiveMs,
+        rollbackEffectiveMs: round.rollbackEffectiveMs,
+      }
+    })
+
+  return summarizeSamples(projected)
+}
+
+function summarizeMetricsByRound(cases: WatchCaseMetrics[]) {
+  const summaryByRound: Partial<Record<MutationRoundName, WatchSummary>> = {}
+  for (const roundName of resolveMutationRoundConfigs().map(item => item.name)) {
+    summaryByRound[roundName] = summarizeMetricsForRound(cases, roundName)
+  }
+  return summaryByRound
+}
+
+function summarizeMetricsByGroup(cases: WatchCaseMetrics[]) {
+  const summaryByGroup: Partial<Record<WatchProjectGroup, WatchSummary>> = {}
+  for (const groupName of ['demo', 'apps'] as const) {
+    const groupCases = cases.filter(item => item.projectGroup === groupName)
+    summaryByGroup[groupName] = summarizeMetrics(groupCases)
+  }
+  return summaryByGroup
+}
+
+function summarizeMetricsByProject(cases: WatchCaseMetrics[]) {
+  const grouped: Record<string, WatchCaseMetrics[]> = {}
+  for (const item of cases) {
+    if (!grouped[item.project]) {
+      grouped[item.project] = []
+    }
+    grouped[item.project].push(item)
+  }
+
+  const summaryByProject: Record<string, WatchSummary> = {}
+  for (const [projectName, projectCases] of Object.entries(grouped)) {
+    summaryByProject[projectName] = summarizeMetrics(projectCases)
+  }
+
+  return summaryByProject
+}
+
+function summarizeMutationMetricsByKind(mutations: WatchCaseMutationMetrics[]) {
+  const summaryByMutationKind: Partial<Record<MutationKind, WatchSummary>> = {}
+
+  for (const mutationKind of ['template', 'script', 'style'] as const) {
+    const samples: SummarySample[] = []
+    for (const item of mutations) {
+      if (item.mutationKind !== mutationKind) {
+        continue
+      }
+
+      if (item.mutationKind === 'style') {
+        samples.push({
+          hotUpdateEffectiveMs: item.hotUpdateEffectiveMs,
+          rollbackEffectiveMs: item.rollbackEffectiveMs,
+        })
+        continue
+      }
+
+      const preferredRound = resolvePreferredRound(item.rounds)
+      if (!preferredRound) {
+        continue
+      }
+      samples.push({
+        hotUpdateEffectiveMs: preferredRound.hotUpdateEffectiveMs,
+        rollbackEffectiveMs: preferredRound.rollbackEffectiveMs,
+      })
+    }
+
+    summaryByMutationKind[mutationKind] = summarizeSamples(samples)
+  }
+
+  return summaryByMutationKind
+}
+
+function summarizeMutationKindAcrossCases(cases: WatchCaseMetrics[]) {
+  const allMutations = cases.flatMap(item => item.mutationMetrics)
+  return summarizeMutationMetricsByKind(allMutations)
+}
+
 function resolveReportPath(baseCwd: string, file: string) {
   return path.isAbsolute(file) ? file : path.resolve(baseCwd, file)
 }
@@ -991,6 +1764,9 @@ async function writeReport(baseCwd: string, options: CliOptions, metrics: WatchC
 
   const summary = summarizeMetrics(metrics)
   const summaryByRound = summarizeMetricsByRound(metrics)
+  const summaryByGroup = summarizeMetricsByGroup(metrics)
+  const summaryByProject = summarizeMetricsByProject(metrics)
+  const summaryByMutationKind = summarizeMutationKindAcrossCases(metrics)
   const reportPath = resolveReportPath(baseCwd, options.reportFile)
 
   const report: WatchReport = {
@@ -1006,6 +1782,9 @@ async function writeReport(baseCwd: string, options: CliOptions, metrics: WatchC
     },
     summary,
     summaryByRound,
+    summaryByGroup,
+    summaryByProject,
+    summaryByMutationKind,
     cases: metrics,
   }
 
@@ -1015,12 +1794,24 @@ async function writeReport(baseCwd: string, options: CliOptions, metrics: WatchC
   process.stdout.write(`[watch-hmr] report written: ${formatPath(reportPath)}\n`)
 }
 
+function resolveCaseSourceFiles(watchCase: WatchCase) {
+  return Array.from(
+    new Set([
+      watchCase.templateMutation.sourceFile,
+      watchCase.scriptMutation.sourceFile,
+      watchCase.styleMutation.sourceFile,
+    ]),
+  )
+}
+
 async function runCase(watchCase: WatchCase, options: CliOptions): Promise<WatchCaseMetrics> {
   const caseStartedAt = Date.now()
-  const classVariableName = '__twWatchClass'
+  const sourceFiles = resolveCaseSourceFiles(watchCase)
+  const sourceOriginals = new Map<string, string>()
 
-  const sourcePath = watchCase.sourceFile
-  const original = await fs.readFile(sourcePath, 'utf8')
+  for (const sourceFile of sourceFiles) {
+    sourceOriginals.set(sourceFile, await fs.readFile(sourceFile, 'utf8'))
+  }
 
   const sessionStartedAt = Date.now()
   const session = createWatchSession(watchCase.cwd, watchCase.devScript, {
@@ -1032,163 +1823,93 @@ async function runCase(watchCase: WatchCase, options: CliOptions): Promise<Watch
     const warmupMs = await waitForInitialWarmup(watchCase, options, session, sessionStartedAt)
     const initialReadyMs = Math.max(outputsReadyMs, warmupMs)
 
-    const [baselineWxml, baselineJs] = await Promise.all([
-      readFileIfExists(watchCase.outputWxml),
-      readFileIfExists(watchCase.outputJs),
-    ])
+    const globalStyleOutput = await resolveOutputFile(
+      watchCase,
+      watchCase.globalStyleCandidates,
+      'global style',
+      options,
+      session,
+    )
 
-    if (!baselineWxml || !baselineJs) {
-      throw new Error(`[${watchCase.label}] baseline outputs are missing`)
+    const outputStyle = await resolveOutputFile(
+      watchCase,
+      watchCase.outputStyleCandidates,
+      'style',
+      options,
+      session,
+    )
+
+    const templateSourceOriginal = sourceOriginals.get(watchCase.templateMutation.sourceFile)
+    if (templateSourceOriginal == null) {
+      throw new Error(`[${watchCase.label}] missing template mutation source original`)
     }
 
-    const verifyClassLiteralIn = watchCase.verifyClassLiteralIn ?? []
-    const roundMetrics: MutationRoundMetrics[] = []
-    let baselineMtime = {
-      wxml: await getMtime(watchCase.outputWxml),
-      js: await getMtime(watchCase.outputJs),
+    const scriptSourceOriginal = sourceOriginals.get(watchCase.scriptMutation.sourceFile)
+    if (scriptSourceOriginal == null) {
+      throw new Error(`[${watchCase.label}] missing script mutation source original`)
     }
 
-    for (const roundConfig of resolveMutationRoundConfigs()) {
-      const roundStartedAt = Date.now()
-      const mutation = createMutationScenario(
-        watchCase,
-        original,
-        baselineWxml,
-        baselineJs,
-        classVariableName,
-        roundConfig,
-      )
-
-      const {
-        marker,
-        classLiteral,
-        classTokens,
-        escapedClasses,
-        freshEscapedClasses,
-        mutatedSource,
-      } = mutation
-
-      for (const escaped of freshEscapedClasses) {
-        assertNotContains(baselineWxml, escaped, `[${watchCase.label}] baseline wxml`)
-        assertNotContains(baselineJs, escaped, `[${watchCase.label}] baseline js`)
-      }
-
-      const hotUpdateStartedAt = Date.now()
-      await fs.writeFile(sourcePath, mutatedSource, 'utf8')
-      const hotUpdateOutputMs = await waitForOutputsUpdated(
-        watchCase,
-        baselineMtime,
-        options,
-        session,
-        hotUpdateStartedAt,
-      )
-      const hotUpdateEffectiveMs = await waitForMarkerState(
-        watchCase,
-        marker,
-        'present',
-        options,
-        session,
-        hotUpdateStartedAt,
-      )
-
-      const [updatedWxml, updatedJs] = await Promise.all([
-        fs.readFile(watchCase.outputWxml, 'utf8'),
-        fs.readFile(watchCase.outputJs, 'utf8'),
-      ])
-
-      for (const escaped of escapedClasses) {
-        if (watchCase.verifyEscapedIn.includes('wxml')) {
-          assertContains(updatedWxml, escaped, `[${watchCase.label}] updated wxml`)
-        }
-        if (watchCase.verifyEscapedIn.includes('js')) {
-          assertContains(updatedJs, escaped, `[${watchCase.label}] updated js`)
-        }
-      }
-
-      for (const [index, classToken] of classTokens.entries()) {
-        const escapedToken = escapedClasses[index]
-        const expectedValues = escapedToken ? [classToken, escapedToken] : [classToken]
-
-        if (verifyClassLiteralIn.includes('wxml')) {
-          assertContainsOneOf(
-            updatedWxml,
-            expectedValues,
-            `[${watchCase.label}] updated wxml token literal`,
-          )
-        }
-        if (verifyClassLiteralIn.includes('js')) {
-          assertContainsOneOf(
-            updatedJs,
-            expectedValues,
-            `[${watchCase.label}] updated js token literal`,
-          )
-        }
-      }
-
-      const updatedMtime = {
-        wxml: await getMtime(watchCase.outputWxml),
-        js: await getMtime(watchCase.outputJs),
-      }
-
-      const rollbackStartedAt = Date.now()
-      await fs.writeFile(sourcePath, original, 'utf8')
-      const rollbackOutputMs = await waitForOutputsUpdated(
-        watchCase,
-        updatedMtime,
-        options,
-        session,
-        rollbackStartedAt,
-      )
-      const rollbackEffectiveMs = await waitForMarkerState(
-        watchCase,
-        marker,
-        'absent',
-        options,
-        session,
-        rollbackStartedAt,
-      )
-
-      roundMetrics.push({
-        roundName: roundConfig.name,
-        marker,
-        classLiteral,
-        classTokens,
-        escapedClasses,
-        hotUpdateOutputMs,
-        hotUpdateEffectiveMs,
-        rollbackOutputMs,
-        rollbackEffectiveMs,
-        totalMs: Date.now() - roundStartedAt,
-      })
-
-      process.stdout.write(
-        `[watch-hmr] ${watchCase.label} round=${roundConfig.name} passed (hotUpdate=${hotUpdateEffectiveMs}ms, rollback=${rollbackEffectiveMs}ms)\n`,
-      )
-
-      baselineMtime = {
-        wxml: await getMtime(watchCase.outputWxml),
-        js: await getMtime(watchCase.outputJs),
-      }
+    const styleSourceOriginal = sourceOriginals.get(watchCase.styleMutation.sourceFile)
+    if (styleSourceOriginal == null) {
+      throw new Error(`[${watchCase.label}] missing style mutation source original`)
     }
 
-    const preferredRound = roundMetrics.find(item => item.roundName === 'complex-corpus')
-      ?? roundMetrics[roundMetrics.length - 1]
+    const templateMetrics = await runClassMutation(
+      watchCase,
+      options,
+      session,
+      'template',
+      watchCase.templateMutation,
+      templateSourceOriginal,
+      globalStyleOutput,
+    )
 
+    const scriptMetrics = await runClassMutation(
+      watchCase,
+      options,
+      session,
+      'script',
+      watchCase.scriptMutation,
+      scriptSourceOriginal,
+      globalStyleOutput,
+    )
+
+    const styleMetrics = await runStyleMutation(
+      watchCase,
+      options,
+      session,
+      watchCase.styleMutation,
+      styleSourceOriginal,
+      outputStyle,
+    )
+
+    const preferredRound = resolvePreferredRound(templateMetrics.rounds)
     if (!preferredRound) {
-      throw new Error(`[${watchCase.label}] no round metrics were produced`)
+      throw new Error(`[${watchCase.label}] no preferred round produced for template mutation`)
     }
+
+    const mutationMetrics: WatchCaseMutationMetrics[] = [
+      templateMetrics,
+      scriptMetrics,
+      styleMetrics,
+    ]
 
     const metrics: WatchCaseMetrics = {
       name: watchCase.name,
       label: watchCase.label,
+      project: watchCase.project,
+      projectGroup: watchCase.group,
       marker: preferredRound.marker,
       classLiteral: preferredRound.classLiteral,
       classTokens: preferredRound.classTokens,
       escapedClasses: preferredRound.escapedClasses,
-      rounds: roundMetrics,
-      roundComparison: buildRoundComparison(roundMetrics),
-      verifyEscapedIn: watchCase.verifyEscapedIn,
-      verifyClassLiteralIn,
+      rounds: templateMetrics.rounds,
+      roundComparison: templateMetrics.roundComparison,
+      verifyEscapedIn: templateMetrics.verifyEscapedIn,
+      verifyClassLiteralIn: templateMetrics.verifyClassLiteralIn,
+      globalStyleOutput,
+      mutationMetrics,
+      summaryByMutationKind: summarizeMutationMetricsByKind(mutationMetrics),
       initialReadyMs,
       hotUpdateOutputMs: preferredRound.hotUpdateOutputMs,
       hotUpdateEffectiveMs: preferredRound.hotUpdateEffectiveMs,
@@ -1198,7 +1919,7 @@ async function runCase(watchCase: WatchCase, options: CliOptions): Promise<Watch
     }
 
     process.stdout.write(
-      `[watch-hmr] ${watchCase.label} passed (primaryRound=complex-corpus, hotUpdate=${metrics.hotUpdateEffectiveMs}ms, rollback=${metrics.rollbackEffectiveMs}ms)\n`,
+      `[watch-hmr] ${watchCase.label} passed (template=${templateMetrics.hotUpdateEffectiveMs}ms, script=${scriptMetrics.hotUpdateEffectiveMs}ms, style=${styleMetrics.hotUpdateEffectiveMs}ms)\n`,
     )
 
     return metrics
@@ -1209,10 +1930,12 @@ async function runCase(watchCase: WatchCase, options: CliOptions): Promise<Watch
     throw new Error(`${message}\n[${watchCase.label}] recent watch logs:\n${logs}`)
   }
   finally {
-    try {
-      await fs.writeFile(sourcePath, original, 'utf8')
-    }
-    catch {
+    for (const [sourcePath, original] of sourceOriginals.entries()) {
+      try {
+        await fs.writeFile(sourcePath, original, 'utf8')
+      }
+      catch {
+      }
     }
     await session.stop()
   }
@@ -1228,16 +1951,35 @@ function assertHotUpdateBudget(metrics: WatchCaseMetrics, options: CliOptions) {
       `[${metrics.label}] hot update exceeded budget: ${metrics.hotUpdateEffectiveMs}ms > ${options.maxHotUpdateMs}ms`,
     )
   }
+
+  for (const mutation of metrics.mutationMetrics) {
+    if (mutation.mutationKind === 'style') {
+      if (mutation.hotUpdateEffectiveMs > options.maxHotUpdateMs) {
+        throw new Error(
+          `[${metrics.label}] style hot update exceeded budget: ${mutation.hotUpdateEffectiveMs}ms > ${options.maxHotUpdateMs}ms`,
+        )
+      }
+      continue
+    }
+
+    const preferredRound = resolvePreferredRound(mutation.rounds)
+    if (preferredRound && preferredRound.hotUpdateEffectiveMs > options.maxHotUpdateMs) {
+      throw new Error(
+        `[${metrics.label}] ${mutation.mutationKind} hot update exceeded budget: ${preferredRound.hotUpdateEffectiveMs}ms > ${options.maxHotUpdateMs}ms`,
+      )
+    }
+  }
 }
 
-function logSummary(summary: WatchSummary, summaryByRound?: Partial<Record<MutationRoundName, WatchSummary>>) {
+function logSummary(
+  summary: WatchSummary,
+  summaryByRound: Partial<Record<MutationRoundName, WatchSummary>>,
+  summaryByGroup: Partial<Record<WatchProjectGroup, WatchSummary>>,
+  summaryByMutationKind: Partial<Record<MutationKind, WatchSummary>>,
+) {
   process.stdout.write(
     `[watch-hmr] summary: cases=${summary.count}, hotUpdate(avg/min/max)=${summary.hotUpdateAvgMs}/${summary.hotUpdateMinMs}/${summary.hotUpdateMaxMs}ms, rollback(avg/min/max)=${summary.rollbackAvgMs}/${summary.rollbackMinMs}/${summary.rollbackMaxMs}ms\n`,
   )
-
-  if (!summaryByRound) {
-    return
-  }
 
   for (const [roundName, roundSummary] of Object.entries(summaryByRound)) {
     if (!roundSummary) {
@@ -1245,6 +1987,24 @@ function logSummary(summary: WatchSummary, summaryByRound?: Partial<Record<Mutat
     }
     process.stdout.write(
       `[watch-hmr] round ${roundName}: cases=${roundSummary.count}, hotUpdate(avg/min/max)=${roundSummary.hotUpdateAvgMs}/${roundSummary.hotUpdateMinMs}/${roundSummary.hotUpdateMaxMs}ms, rollback(avg/min/max)=${roundSummary.rollbackAvgMs}/${roundSummary.rollbackMinMs}/${roundSummary.rollbackMaxMs}ms\n`,
+    )
+  }
+
+  for (const [groupName, groupSummary] of Object.entries(summaryByGroup)) {
+    if (!groupSummary) {
+      continue
+    }
+    process.stdout.write(
+      `[watch-hmr] group ${groupName}: cases=${groupSummary.count}, hotUpdate(avg/min/max)=${groupSummary.hotUpdateAvgMs}/${groupSummary.hotUpdateMinMs}/${groupSummary.hotUpdateMaxMs}ms, rollback(avg/min/max)=${groupSummary.rollbackAvgMs}/${groupSummary.rollbackMinMs}/${groupSummary.rollbackMaxMs}ms\n`,
+    )
+  }
+
+  for (const [kindName, kindSummary] of Object.entries(summaryByMutationKind)) {
+    if (!kindSummary) {
+      continue
+    }
+    process.stdout.write(
+      `[watch-hmr] mutation ${kindName}: cases=${kindSummary.count}, hotUpdate(avg/min/max)=${kindSummary.hotUpdateAvgMs}/${kindSummary.hotUpdateMinMs}/${kindSummary.hotUpdateMaxMs}ms, rollback(avg/min/max)=${kindSummary.rollbackAvgMs}/${kindSummary.rollbackMinMs}/${kindSummary.rollbackMaxMs}ms\n`,
     )
   }
 }
@@ -1278,7 +2038,9 @@ async function main() {
 
   const summary = summarizeMetrics(metrics)
   const summaryByRound = summarizeMetricsByRound(metrics)
-  logSummary(summary, summaryByRound)
+  const summaryByGroup = summarizeMetricsByGroup(metrics)
+  const summaryByMutationKind = summarizeMutationKindAcrossCases(metrics)
+  logSummary(summary, summaryByRound, summaryByGroup, summaryByMutationKind)
   await writeReport(baseCwd, options, metrics)
 
   process.stdout.write('[watch-hmr] all cases passed\n')
