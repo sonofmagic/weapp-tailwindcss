@@ -315,8 +315,8 @@ importers:
         specifier: ^1.6.19
         version: 1.6.19(@vue/compiler-sfc@3.5.28)(eslint-plugin-pnpm@1.5.0(eslint@10.0.0(jiti@2.6.1)))(eslint@10.0.0(jiti@2.6.1))(tailwindcss@3.4.19(tsx@4.21.0)(yaml@2.8.2))(typescript@5.9.3)(vitest@4.0.18)
       '@icebreakers/monorepo':
-        specifier: ^3.2.9
-        version: 3.2.9(@types/node@24.10.13)(magicast@0.5.1)(typanion@3.14.0)
+        specifier: ^3.2.10
+        version: 3.2.10(@types/node@24.10.13)(magicast@0.5.1)(typanion@3.14.0)
       '@icebreakers/stylelint-config':
         specifier: ^2.0.2
         version: 2.0.2(postcss@8.5.6)(stylelint-order@7.0.0(stylelint@17.3.0(typescript@5.9.3)))(stylelint@17.3.0(typescript@5.9.3))
@@ -8085,12 +8085,12 @@ packages:
       eslint-plugin-pnpm:
         optional: true
 
-  '@icebreakers/monorepo-templates@0.1.9':
-    resolution: {integrity: sha512-Q/+TNO8dUOnA42YuiodwhEGNaEN7JhEBbfVjebcl6q/8tqPUhaoyWpfezglJzhf0PRf9VYPggygPs1xwuiphHg==}
+  '@icebreakers/monorepo-templates@0.1.10':
+    resolution: {integrity: sha512-Y4+bl15Jx0y5N4bpq8EQQynEINoApq2xECczs1s6u7/2tI/2Lez2Ce3xBVUZQWxLZmJV0a/K3oGz8AN/G2XhkQ==}
     engines: {node: '>=18.0.0'}
 
-  '@icebreakers/monorepo@3.2.9':
-    resolution: {integrity: sha512-FmnWlerwTILcp1CjFfSFGIJRWmTZ3nWKUG71UB/SILEMtN6gIXxVxFgmnbl4s+Ckb0HUUxXmLL0G0bFbGJ8aNA==}
+  '@icebreakers/monorepo@3.2.10':
+    resolution: {integrity: sha512-eB4VzCbuUF50IWdoSh4zIulbDfhsDfYkW+TAOZAMQLT1aZu6NN6rFceQJCMBYCN/XNuj704dSmxqh+QQL09vsA==}
     engines: {node: '>=23.5.0 || ^22.13.0 || ^21.7.0 || ^20.12.0'}
     hasBin: true
 
@@ -36722,7 +36722,7 @@ snapshots:
       - typescript
       - vitest
 
-  '@icebreakers/monorepo-templates@0.1.9(@types/node@24.10.13)':
+  '@icebreakers/monorepo-templates@0.1.10(@types/node@24.10.13)':
     dependencies:
       '@inquirer/checkbox': 5.0.4(@types/node@24.10.13)
       '@inquirer/input': 5.0.4(@types/node@24.10.13)
@@ -36732,9 +36732,9 @@ snapshots:
     transitivePeerDependencies:
       - '@types/node'
 
-  '@icebreakers/monorepo@3.2.9(@types/node@24.10.13)(magicast@0.5.1)(typanion@3.14.0)':
+  '@icebreakers/monorepo@3.2.10(@types/node@24.10.13)(magicast@0.5.1)(typanion@3.14.0)':
     dependencies:
-      '@icebreakers/monorepo-templates': 0.1.9(@types/node@24.10.13)
+      '@icebreakers/monorepo-templates': 0.1.10(@types/node@24.10.13)
       '@pnpm/find-workspace-dir': 1000.1.4
       '@pnpm/logger': 1001.0.1
       '@pnpm/types': 1001.3.0
