@@ -97,6 +97,6 @@
     "typescript": "catalog:typescript59",
     "weapp-ide-cli": "catalog:weappIdeCli",
     "weapp-tailwindcss": "workspace:*",
-    "webpack": "5.105.1"
+    "webpack": "5.105.2"
   }
 }

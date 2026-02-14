@@ -79,7 +79,7 @@
     "weapp-ide-cli": "catalog:weappIdeCli",
     "weapp-tailwindcss": "workspace:*",
     "weapp-tailwindcss-children": "catalog:weappChildren",
-    "webpack": "5.105.1"
+    "webpack": "5.105.2"
   },
   "browserslist": [
     "ios >= 8",
