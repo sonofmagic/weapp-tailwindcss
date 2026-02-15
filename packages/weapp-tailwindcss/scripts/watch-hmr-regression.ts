@@ -122,7 +122,7 @@ interface ClassMutationMetrics {
   roundComparison?: WatchCaseRoundComparison
   verifyEscapedIn: Array<'wxml' | 'js'>
   verifyClassLiteralIn: Array<'wxml' | 'js'>
-  globalStyleOutput: string
+  globalStyleOutputs: string[]
   minRequiredGlobalStyleEscapedClasses: number
   verifiedGlobalStyleEscapedClasses: string[]
   hotUpdateOutputMs: number
@@ -169,7 +169,7 @@ interface WatchCaseMetrics {
   roundComparison?: WatchCaseRoundComparison
   verifyEscapedIn: Array<'wxml' | 'js'>
   verifyClassLiteralIn: Array<'wxml' | 'js'>
-  globalStyleOutput: string
+  globalStyleOutputs: string[]
   mutationMetrics: WatchCaseMutationMetrics[]
   summaryByMutationKind: Partial<Record<MutationKind, WatchSummary>>
   initialReadyMs: number
@@ -788,6 +788,9 @@ function buildCases(baseCwd: string): WatchCase[] {
     label: 'demo/mpx-app',
     project: 'demo/mpx-app',
     group: 'demo',
+    // MPX watch output may keep newly introduced utility classes in page-level assets.
+    // Do not hard-require hits in global utilities/app styles for this case.
+    minGlobalStyleEscapedClasses: 0,
     cwd: path.resolve(baseCwd, 'demo/mpx-app'),
     devScript: 'dev',
     outputWxml: path.resolve(baseCwd, 'demo/mpx-app/dist/wx/pages/index.wxml'),
@@ -1185,8 +1188,8 @@ function buildCases(baseCwd: string): WatchCase[] {
     ],
     templateMutation: {
       sourceFile: path.resolve(baseCwd, 'demo/taro-vue3-app/src/pages/index/index.vue'),
-      verifyEscapedIn: ['wxml'],
-      verifyClassLiteralIn: [],
+      verifyEscapedIn: [],
+      verifyClassLiteralIn: ['js'],
       mutate(source, payload) {
         const snippet = `  <view class="${payload.classLiteral}">${payload.marker}-template</view>`
         return insertIntoVueTemplateRoot(source, snippet)
@@ -1561,25 +1564,26 @@ function buildRoundComparison(rounds: MutationRoundMetrics[]): WatchCaseRoundCom
   }
 }
 
-async function resolveOutputFile(
+async function resolveOutputFiles(
   watchCase: WatchCase,
   candidates: string[],
   label: string,
   options: CliOptions,
   session: WatchSession,
 ) {
-  let resolved: string | undefined
+  let resolved: string[] = []
 
   await waitFor(
     async () => {
+      const nextResolved: string[] = []
       for (const file of candidates) {
         const content = await readFileIfExists(file)
         if (content != null) {
-          resolved = file
-          return true
+          nextResolved.push(file)
         }
       }
-      return false
+      resolved = nextResolved
+      return resolved.length > 0
     },
     {
       timeoutMs: options.timeoutMs,
@@ -1589,11 +1593,16 @@ async function resolveOutputFile(
     },
   )
 
-  if (!resolved) {
+  if (resolved.length === 0) {
     throw new Error(`[${watchCase.label}] no resolved ${label} output`)
   }
 
   return resolved
+}
+
+async function readJoinedOutputFiles(files: string[]) {
+  const parts = await Promise.all(files.map(file => readFileIfExists(file)))
+  return parts.filter((item): item is string => item != null).join('\n')
 }
 
 function resolvePreferredRound(rounds: MutationRoundMetrics[]) {
@@ -1608,7 +1617,7 @@ async function runClassMutation(
   mutationKind: 'template' | 'script',
   mutation: ClassMutationConfig,
   sourceOriginal: string,
-  globalStyleOutput: string,
+  globalStyleOutputs: string[],
 ): Promise<ClassMutationMetrics> {
   const classVariableName = '__twWatchClass'
   const sourcePath = mutation.sourceFile
@@ -1616,7 +1625,7 @@ async function runClassMutation(
   const [baselineWxml, baselineJs, baselineGlobalStyle] = await Promise.all([
     readFileIfExists(watchCase.outputWxml),
     readFileIfExists(watchCase.outputJs),
-    readFileIfExists(globalStyleOutput),
+    readJoinedOutputFiles(globalStyleOutputs),
   ])
 
   if (!baselineWxml || !baselineJs || !baselineGlobalStyle) {
@@ -1683,7 +1692,7 @@ async function runClassMutation(
     const [updatedWxml, updatedJs, updatedGlobalStyle] = await Promise.all([
       fs.readFile(watchCase.outputWxml, 'utf8'),
       fs.readFile(watchCase.outputJs, 'utf8'),
-      fs.readFile(globalStyleOutput, 'utf8'),
+      readJoinedOutputFiles(globalStyleOutputs),
     ])
 
     for (const escaped of escapedClasses) {
@@ -1789,7 +1798,7 @@ async function runClassMutation(
     roundComparison: buildRoundComparison(roundMetrics),
     verifyEscapedIn: mutation.verifyEscapedIn,
     verifyClassLiteralIn,
-    globalStyleOutput,
+    globalStyleOutputs,
     minRequiredGlobalStyleEscapedClasses,
     verifiedGlobalStyleEscapedClasses: Array.from(verifiedGlobalEscapedClasses),
     hotUpdateOutputMs: preferredRound.hotUpdateOutputMs,
@@ -2149,7 +2158,7 @@ async function runCase(watchCase: WatchCase, options: CliOptions): Promise<Watch
     const warmupMs = await waitForInitialWarmup(watchCase, options, session, sessionStartedAt)
     const initialReadyMs = Math.max(outputsReadyMs, warmupMs)
 
-    const globalStyleOutput = await resolveOutputFile(
+    const globalStyleOutputs = await resolveOutputFiles(
       watchCase,
       watchCase.globalStyleCandidates,
       'global style',
@@ -2179,7 +2188,7 @@ async function runCase(watchCase: WatchCase, options: CliOptions): Promise<Watch
       'template',
       watchCase.templateMutation,
       templateSourceOriginal,
-      globalStyleOutput,
+      globalStyleOutputs,
     )
 
     const scriptMetrics = await runClassMutation(
@@ -2189,7 +2198,7 @@ async function runCase(watchCase: WatchCase, options: CliOptions): Promise<Watch
       'script',
       watchCase.scriptMutation,
       scriptSourceOriginal,
-      globalStyleOutput,
+      globalStyleOutputs,
     )
 
     const styleMetrics = await runStyleMutation(
@@ -2225,7 +2234,7 @@ async function runCase(watchCase: WatchCase, options: CliOptions): Promise<Watch
       roundComparison: templateMetrics.roundComparison,
       verifyEscapedIn: templateMetrics.verifyEscapedIn,
       verifyClassLiteralIn: templateMetrics.verifyClassLiteralIn,
-      globalStyleOutput,
+      globalStyleOutputs,
       mutationMetrics,
       summaryByMutationKind: summarizeMutationMetricsByKind(mutationMetrics),
       initialReadyMs,

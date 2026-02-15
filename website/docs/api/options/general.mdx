@@ -8,7 +8,7 @@ import { OptionCard, OptionDetails, OptionTable } from '@site/src/components/doc
 
 定义于: [packages/weapp-tailwindcss/src/types/user-defined-options/index.ts:13](https://github.com/sonofmagic/weapp-tailwindcss/blob/59073fec6f66bb3fbd1d15468f6e89437dc3f862/packages/weapp-tailwindcss/src/types/user-defined-options/index.ts#L13)
 
-本页收录 15 个配置项，来源于 `UserDefinedOptions`。
+本页收录 16 个配置项，来源于 `UserDefinedOptions`。
 
 ## 配置一览
 
@@ -27,6 +27,7 @@ import { OptionCard, OptionDetails, OptionTable } from '@site/src/components/doc
 | [cssRemoveProperty](#cssremoveproperty) | `boolean` | `true` | 是否移除 `@property` 节点。 |
 | [disabledDefaultTemplateHandler](#disableddefaulttemplatehandler) | `boolean` | `false` | 禁用默认的 `wxml` 模板替换器。 |
 | [jsPreserveClass](#jspreserveclass) | `(keyword: string) => boolean \| undefined` | `保留 * 字符串字面量` | 控制 JS 字面量是否需要保留。 |
+| [staleClassNameFallback](#staleclassnamefallback) | `boolean` | `Vite serve/watch 自动开启` | 当 runtime class set 滞后时，是否启用 JS 保守兜底转义。 |
 | [logLevel](#loglevel) | `"info" \| "warn" \| "error" \| "silent"` | `'info'` | 控制命令行日志输出级别。 |
 | [postcssOptions](#postcssoptions) | `LoadedPostcssOptions` | `{}` | `postcss` 的配置选项。 |
 | [replaceRuntimePackages](#replaceruntimepackages) | `boolean \| Record<string, string>` | `false` | 是否替换运行时依赖包名。 |
@@ -398,6 +399,47 @@ uvtw({
 
 <OptionCard>
 
+### staleClassNameFallback
+
+> 可选 | 类型: `boolean`
+
+定义于: [packages/weapp-tailwindcss/src/types/user-defined-options/general.ts](https://github.com/sonofmagic/weapp-tailwindcss/blob/59073fec6f66bb3fbd1d15468f6e89437dc3f862/packages/weapp-tailwindcss/src/types/user-defined-options/general.ts)
+
+运行时类集合可能滞后时，是否对未命中 `classNameSet` 的候选类名执行保守兜底转义。
+
+<OptionDetails title="默认值 / 说明 / 示例">
+#### 备注
+
+适用于 Vite HMR / watch 增量场景中 runtime class set 还未同步的情况。
+
+- `true`: 始终启用兜底转义（正确性优先，建议配合 `jsPreserveClass`）
+- `false`: 仅转换命中 `classNameSet` 的类名
+- 未配置：Vite `serve` / `build --watch` 自动启用，其它模式默认关闭
+
+#### 默认值
+
+```ts
+undefined // Vite serve/watch 自动启用，其它模式关闭
+```
+
+#### 示例
+
+```ts
+import { UnifiedViteWeappTailwindcssPlugin as uvtw } from 'weapp-tailwindcss/vite'
+
+uvtw({
+  staleClassNameFallback: true,
+  jsPreserveClass(keyword) {
+    return keyword.startsWith('biz-token')
+  },
+})
+```
+
+</OptionDetails>
+</OptionCard>
+
+<OptionCard>
+
 ### logLevel
 
 > 可选 | 类型: `"info" | "warn" | "error" | "silent"`
@@ -633,4 +675,3 @@ uvtw({
 
 </OptionDetails>
 </OptionCard>
-

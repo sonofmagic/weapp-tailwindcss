@@ -1,0 +1,410 @@
+import type { OutputAsset, OutputChunk } from 'rollup'
+import type { Plugin, ResolvedConfig } from 'vite'
+import type { CreateJsHandlerOptions } from '@/types'
+import path from 'node:path'
+import { beforeEach, describe, expect, it, vi } from 'vitest'
+import { UnifiedViteWeappTailwindcssPlugin } from '@/bundlers/vite'
+import { createJsHandler } from '@/js'
+import { replaceWxml } from '@/wxml'
+import {
+  createContext,
+  createRollupAsset,
+  createRollupChunk,
+  getCurrentContext,
+  resetVitePluginTestContext,
+  setCurrentContext,
+} from './vite-plugin.testkit'
+
+const TEST_TIMEOUT_MS = 2000
+
+describe('bundlers/vite UnifiedViteWeappTailwindcssPlugin bundle', () => {
+  beforeEach(() => {
+    resetVitePluginTestContext()
+  })
+
+  it('generates bundle assets and leverages cache', async () => {
+    const currentContext = getCurrentContext()
+    const plugins = UnifiedViteWeappTailwindcssPlugin()
+    expect(plugins).toBeDefined()
+    const postPlugin = plugins?.find(plugin => plugin.name === 'weapp-tailwindcss:adaptor:post') as Plugin
+    expect(postPlugin).toBeTruthy()
+    expect(currentContext.onLoad).toHaveBeenCalledTimes(1)
+    expect(currentContext.twPatcher.patch).toHaveBeenCalledTimes(1)
+
+    const config = {
+      css: {
+        postcss: {
+          plugins: [
+            { postcssPlugin: 'postcss-html-transform' },
+            { postcssPlugin: 'other' },
+          ],
+        },
+      },
+    } as unknown as ResolvedConfig
+
+    const configResolved = postPlugin.configResolved as any
+    await configResolved?.call(postPlugin, config)
+    const postcssPlugins = (config.css?.postcss as any)?.plugins
+    expect(postcssPlugins?.[0]).toEqual({ postcssPlugin: 'mocked-html-transform' })
+
+    const html = '<view class="foo">bar</view>'
+    const js = 'const demo = "text-[#123456]"'
+    const css = '.foo { color: red; }'
+
+    const bundle = {
+      'index.wxml': createRollupAsset(html),
+      'index.js': createRollupChunk(js),
+      'index.css': {
+        ...createRollupAsset(css),
+        fileName: 'index.css',
+      },
+    }
+
+    const generateBundle = postPlugin.generateBundle as any
+    await generateBundle?.call(postPlugin, {} as any, bundle)
+
+    expect(currentContext.onStart).toHaveBeenCalledTimes(1)
+    expect(currentContext.onEnd).toHaveBeenCalledTimes(1)
+    expect(currentContext.twPatcher.getClassSetSync).toHaveBeenCalledTimes(1)
+    expect(currentContext.twPatcher.extract).not.toHaveBeenCalled()
+
+    expect(currentContext.templateHandler).toHaveBeenCalledTimes(1)
+    expect((bundle['index.wxml'] as OutputAsset).source).toBe(`tpl:${html}`)
+
+    expect(currentContext.jsHandler).toHaveBeenCalledTimes(1)
+    expect((bundle['index.js'] as OutputChunk).code).toBe(`js:${js}`)
+
+    expect(currentContext.styleHandler).toHaveBeenCalledTimes(1)
+    expect((bundle['index.css'] as OutputAsset).source).toBe(`css:${css}`)
+
+    expect(currentContext.onUpdate).toHaveBeenCalledTimes(3)
+
+    const bundleSecondRun = {
+      'index.wxml': createRollupAsset(html),
+      'index.js': createRollupChunk(js),
+      'index.css': {
+        ...createRollupAsset(css),
+        fileName: 'index.css',
+      },
+    }
+
+    await generateBundle?.call(postPlugin, {} as any, bundleSecondRun)
+
+    expect(currentContext.templateHandler).toHaveBeenCalledTimes(1)
+    expect(currentContext.jsHandler).toHaveBeenCalledTimes(1)
+    expect(currentContext.styleHandler).toHaveBeenCalledTimes(1)
+    expect(currentContext.onStart).toHaveBeenCalledTimes(2)
+    expect(currentContext.onEnd).toHaveBeenCalledTimes(2)
+    expect(currentContext.onUpdate).toHaveBeenCalledTimes(3)
+    expect(currentContext.twPatcher.getClassSetSync).toHaveBeenCalledTimes(1)
+    expect(currentContext.twPatcher.extract).not.toHaveBeenCalled()
+  }, TEST_TIMEOUT_MS)
+
+  it('refreshes runtime class set on source changes so new arbitrary classes in :class strings are escaped', async () => {
+    const staticClass = 'rounded-[32rpx] border border-slate-100/70 bg-white/90 p-5 shadow-[0_20px_45px_rgba(15,23,42,0.08)]'
+    const dynamicClass = 'rounded-[92rpx] border border-slate-100/70 bg-[#213435] p-9 shadow-[0_20px_45px_rgba(15,23,42,0.08)]'
+    const runtimeSets = [
+      new Set(staticClass.split(/\s+/)),
+      new Set(dynamicClass.split(/\s+/)),
+    ] as const
+    let runtimeIndex = 0
+    const getRuntimeSet = () => runtimeSets[runtimeIndex]
+
+    setCurrentContext(createContext({
+      templateHandler: vi.fn(async (code: string) => code),
+      jsHandler: createJsHandler({
+        staleClassNameFallback: false,
+      }),
+      staleClassNameFallback: false,
+      twPatcher: {
+        patch: vi.fn(),
+        getClassSet: vi.fn(async () => getRuntimeSet()),
+        getClassSetSync: vi.fn(() => getRuntimeSet()),
+        extract: vi.fn(async () => ({ classSet: getRuntimeSet() })),
+        majorVersion: 4,
+      },
+    }))
+
+    const currentContext = getCurrentContext()
+    const plugins = UnifiedViteWeappTailwindcssPlugin()
+    const postPlugin = plugins?.find(plugin => plugin.name === 'weapp-tailwindcss:adaptor:post') as Plugin
+    expect(postPlugin).toBeTruthy()
+
+    await (postPlugin.configResolved as any)?.call(postPlugin, {
+      command: 'serve',
+      root: process.cwd(),
+      css: { postcss: { plugins: [] } },
+      build: { outDir: 'dist' },
+    } as ResolvedConfig)
+
+    const generateBundle = postPlugin.generateBundle as any
+    await generateBundle?.call(postPlugin, {} as any, {
+      'index.wxml': createRollupAsset(`<view class="${staticClass}" />`),
+      'index.js': createRollupChunk(`const sss = '${staticClass}'`),
+    })
+
+    runtimeIndex = 1
+    const secondBundle = {
+      'index.wxml': createRollupAsset('<view :class="sss" />'),
+      'index.js': createRollupChunk(`const sss = '${dynamicClass}'`),
+    }
+    await generateBundle?.call(postPlugin, {} as any, secondBundle)
+
+    const transformedCode = (secondBundle['index.js'] as OutputChunk).code
+    expect(transformedCode).toContain(replaceWxml('rounded-[92rpx]'))
+    expect(transformedCode).toContain(replaceWxml('bg-[#213435]'))
+    expect(transformedCode).not.toContain('rounded-[92rpx]')
+    expect(transformedCode).not.toContain('bg-[#213435]')
+    expect(currentContext.twPatcher.getClassSetSync).toHaveBeenCalledTimes(2)
+  }, TEST_TIMEOUT_MS)
+
+  it('enables stale fallback in serve mode while allowing jsPreserveClass to keep business strings', async () => {
+    const runtimeSet = new Set(['text-red-500'])
+    setCurrentContext(createContext({
+      jsPreserveClass: (keyword: string) => keyword.startsWith('biz-token'),
+      jsHandler: createJsHandler({
+        jsPreserveClass: (keyword: string) => keyword.startsWith('biz-token'),
+      }),
+      twPatcher: {
+        patch: vi.fn(),
+        getClassSet: vi.fn(async () => runtimeSet),
+        getClassSetSync: vi.fn(() => runtimeSet),
+        extract: vi.fn(async () => ({ classSet: runtimeSet })),
+        majorVersion: 4,
+      },
+    }))
+
+    const plugins = UnifiedViteWeappTailwindcssPlugin()
+    const postPlugin = plugins?.find(plugin => plugin.name === 'weapp-tailwindcss:adaptor:post') as Plugin
+    expect(postPlugin).toBeTruthy()
+
+    await (postPlugin.configResolved as any)?.call(postPlugin, {
+      command: 'serve',
+      root: process.cwd(),
+      css: { postcss: { plugins: [] } },
+      build: { outDir: 'dist' },
+    } as ResolvedConfig)
+
+    const generateBundle = postPlugin.generateBundle as any
+    const bundle = {
+      'index.js': createRollupChunk(`
+const safe = "biz-token-[alpha]"
+const cls = "rounded-[92rpx]"
+`),
+    }
+    await generateBundle?.call(postPlugin, {} as any, bundle)
+
+    const transformedCode = (bundle['index.js'] as OutputChunk).code
+    expect(transformedCode).toContain('biz-token-[alpha]')
+    expect(transformedCode).toContain(replaceWxml('rounded-[92rpx]'))
+    expect(transformedCode).not.toContain('const cls = "rounded-[92rpx]"')
+  }, TEST_TIMEOUT_MS)
+
+  it('only transforms dirty js entry and affected linked entries on incremental runs', async () => {
+    const rootDir = process.cwd()
+    const outDir = path.resolve(rootDir, 'dist')
+    const linkedFile = path.resolve(outDir, 'chunk.js')
+
+    setCurrentContext(createContext({
+      jsHandler: vi.fn((code: string, _runtimeSet: Set<string>, options?: { filename?: string }) => {
+        if (options?.filename?.endsWith('index.js')) {
+          return {
+            code: `js:${code}`,
+            linked: {
+              [linkedFile]: { code: 'linked:chunk' },
+            },
+          }
+        }
+        return { code: `js:${code}` }
+      }),
+    }))
+
+    const currentContext = getCurrentContext()
+    const plugins = UnifiedViteWeappTailwindcssPlugin()
+    const postPlugin = plugins?.find(plugin => plugin.name === 'weapp-tailwindcss:adaptor:post') as Plugin
+    expect(postPlugin).toBeTruthy()
+
+    const config = {
+      root: rootDir,
+      build: { outDir: 'dist' },
+      css: { postcss: { plugins: [] } },
+    } as unknown as ResolvedConfig
+    await (postPlugin.configResolved as any)?.call(postPlugin, config)
+
+    const generateBundle = postPlugin.generateBundle as any
+
+    const firstBundle = {
+      'index.js': createRollupChunk('import "./chunk.js";\nconsole.log("text-[#111111]")'),
+      'chunk.js': createRollupChunk('export const foo = "text-[#121212]";'),
+    }
+    await generateBundle?.call(postPlugin, {} as any, firstBundle)
+    expect(currentContext.jsHandler).toHaveBeenCalledTimes(2)
+
+    const secondBundle = {
+      'index.js': createRollupChunk('import "./chunk.js";\nconsole.log("text-[#222222]")'),
+      'chunk.js': createRollupChunk('export const foo = "text-[#121212]";'),
+    }
+    await generateBundle?.call(postPlugin, {} as any, secondBundle)
+    expect(currentContext.jsHandler).toHaveBeenCalledTimes(3)
+
+    const thirdBundle = {
+      'index.js': createRollupChunk('import "./chunk.js";\nconsole.log("text-[#222222]")'),
+      'chunk.js': createRollupChunk('export const foo = "text-[#232323]";'),
+    }
+    await generateBundle?.call(postPlugin, {} as any, thirdBundle)
+
+    expect(currentContext.jsHandler).toHaveBeenCalledTimes(5)
+  }, TEST_TIMEOUT_MS)
+
+  it('keeps dirty state stable when bundle temporarily omits js entries', async () => {
+    const currentContext = getCurrentContext()
+    const plugins = UnifiedViteWeappTailwindcssPlugin()
+    const postPlugin = plugins?.find(plugin => plugin.name === 'weapp-tailwindcss:adaptor:post') as Plugin
+    expect(postPlugin).toBeTruthy()
+
+    const generateBundle = postPlugin.generateBundle as any
+
+    const firstFullBundle = {
+      'index.wxml': createRollupAsset('<view class="foo">a</view>'),
+      'index.js': createRollupChunk('console.log("foo")'),
+      'index.css': {
+        ...createRollupAsset('.foo { color: red; }'),
+        fileName: 'index.css',
+      },
+    }
+
+    await generateBundle?.call(postPlugin, {} as any, firstFullBundle)
+
+    currentContext.templateHandler.mockClear()
+    currentContext.jsHandler.mockClear()
+    currentContext.styleHandler.mockClear()
+    currentContext.onUpdate.mockClear()
+
+    const secondCssOnlyBundle = {
+      'index.css': {
+        ...createRollupAsset('.foo { color: red; }'),
+        fileName: 'index.css',
+      },
+    }
+
+    await generateBundle?.call(postPlugin, {} as any, secondCssOnlyBundle)
+
+    expect(currentContext.templateHandler).not.toHaveBeenCalled()
+    expect(currentContext.jsHandler).not.toHaveBeenCalled()
+    expect(currentContext.styleHandler).not.toHaveBeenCalled()
+    expect(currentContext.onUpdate).not.toHaveBeenCalled()
+
+    const thirdFullBundle = {
+      'index.wxml': createRollupAsset('<view class="foo">a</view>'),
+      'index.js': createRollupChunk('console.log("foo")'),
+      'index.css': {
+        ...createRollupAsset('.foo { color: red; }'),
+        fileName: 'index.css',
+      },
+    }
+
+    await generateBundle?.call(postPlugin, {} as any, thirdFullBundle)
+
+    expect(currentContext.templateHandler).not.toHaveBeenCalled()
+    expect(currentContext.jsHandler).not.toHaveBeenCalled()
+    expect(currentContext.styleHandler).not.toHaveBeenCalled()
+    expect(currentContext.onUpdate).not.toHaveBeenCalled()
+  }, TEST_TIMEOUT_MS)
+
+  it('transforms inlined tailwind-merge output within bundle stage', async () => {
+    const runtimeSet = new Set(['bg-[#434332]', 'bg-[#123324]', 'px-[32px]', 'px-[35px]'])
+    const realJsHandler = createJsHandler({
+      ignoreCallExpressionIdentifiers: [],
+    })
+    const jsHandlerMock = vi.fn((code: string, classNameSet?: Set<string>, options?: CreateJsHandlerOptions) =>
+      realJsHandler(code, classNameSet, options),
+    )
+    const patchMock = vi.fn(async () => {})
+    const getClassSetMock = vi.fn(async () => runtimeSet)
+    const getClassSetSyncMock = vi.fn(() => runtimeSet)
+    const extractMock = vi.fn(async () => ({ classSet: runtimeSet }))
+
+    const currentContext = getCurrentContext()
+    currentContext.jsHandler = jsHandlerMock as any
+    currentContext.twPatcher = {
+      patch: patchMock,
+      getClassSet: getClassSetMock,
+      getClassSetSync: getClassSetSyncMock,
+      extract: extractMock,
+      majorVersion: 4,
+    }
+
+    const plugins = UnifiedViteWeappTailwindcssPlugin()
+    const postPlugin = plugins?.find(plugin => plugin.name === 'weapp-tailwindcss:adaptor:post') as Plugin
+    expect(postPlugin).toBeTruthy()
+
+    const bundle = {
+      'index.js': createRollupChunk(`
+const merged = "bg-[#123324] px-[35px]"
+const fallback = "bg-[#434332] px-[32px]"
+`),
+    }
+
+    const generateBundle = postPlugin.generateBundle as any
+    await generateBundle?.call(postPlugin, {} as any, bundle)
+
+    expect(patchMock).toHaveBeenCalledTimes(1)
+    expect(getClassSetSyncMock).toHaveBeenCalledTimes(1)
+    expect(getClassSetMock).not.toHaveBeenCalled()
+    expect(extractMock).not.toHaveBeenCalled()
+    expect(jsHandlerMock).toHaveBeenCalledTimes(1)
+
+    const code = (bundle['index.js'] as OutputChunk).code
+    expect(code).toContain('bg-_b_h123324_B px-_b35px_B')
+    expect(code).toContain('bg-_b_h434332_B px-_b32px_B')
+    expect(code).not.toContain('bg-[#123324]')
+    expect(code).not.toContain('bg-[#434332]')
+  }, TEST_TIMEOUT_MS)
+
+  it('propagates linked js module updates', async () => {
+    const rootDir = process.cwd()
+    const outDir = path.resolve(rootDir, 'dist')
+    const linkedFile = path.resolve(outDir, 'chunk.js')
+    setCurrentContext(createContext({
+      jsHandler: vi.fn(async (code: string, _runtimeSet: Set<string>, options?: { filename?: string }) => {
+        if (options?.filename?.endsWith('index.js')) {
+          return {
+            code: `js:${code}`,
+            linked: {
+              [linkedFile]: { code: 'linked:chunk' },
+            },
+          }
+        }
+        return { code }
+      }),
+    }))
+    const currentContext = getCurrentContext()
+    const plugins = UnifiedViteWeappTailwindcssPlugin()
+    const postPlugin = plugins?.find(plugin => plugin.name === 'weapp-tailwindcss:adaptor:post') as Plugin
+    expect(postPlugin).toBeTruthy()
+
+    const config = {
+      root: rootDir,
+      build: { outDir: 'dist' },
+      css: { postcss: { plugins: [] } },
+    } as unknown as ResolvedConfig
+    await (postPlugin.configResolved as any)?.call(postPlugin, config)
+
+    const bundle = {
+      'index.js': createRollupChunk('import "./chunk.js";'),
+      'chunk.js': createRollupChunk('export const foo = 1;'),
+    }
+
+    const generateBundle = postPlugin.generateBundle as any
+    await generateBundle?.call(postPlugin, {} as any, bundle)
+
+    expect((bundle['chunk.js'] as OutputChunk).code).toBe('linked:chunk')
+    const chunkUpdates = currentContext.onUpdate.mock.calls.filter(([file]) => file === 'chunk.js')
+    expect(chunkUpdates.length).toBeGreaterThan(0)
+    expect(chunkUpdates.some(([, , updated]) => updated === 'linked:chunk')).toBe(true)
+
+    const firstCall = currentContext.jsHandler.mock.calls[0] as unknown as [string, Set<string>, CreateJsHandlerOptions] | undefined
+    const linkedOptions = firstCall?.[2]
+    expect(linkedOptions?.moduleGraph?.resolve?.('./chunk.js', linkedOptions.filename ?? '')).toBe(linkedFile)
+  }, TEST_TIMEOUT_MS)
+})

@@ -47,6 +47,19 @@ export interface UserDefinedOptionsGeneralPart {
   jsPreserveClass?: (keyword: string) => boolean | undefined
 
   /**
+   * 运行时类集合可能滞后时，是否对未命中 `classNameSet` 的候选类名执行保守兜底转义。
+   *
+   * @group 3.一般配置
+   * @remarks
+   * 适用于 Vite HMR / watch 增量场景中 class 集合暂时过期的情况。
+   *
+   * - `true`: 始终启用兜底转义（正确性优先，建议配合 `jsPreserveClass` 避免误伤）
+   * - `false`: 仅转换命中 `classNameSet` 的候选类名
+   * - 未配置：Vite `serve` / `build --watch` 默认启用，其它模式默认关闭
+   */
+  staleClassNameFallback?: boolean
+
+  /**
    * 是否替换运行时依赖包名。
    *
    * @group 3.一般配置

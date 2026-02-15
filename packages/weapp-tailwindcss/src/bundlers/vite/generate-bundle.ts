@@ -273,6 +273,29 @@ function createJsHashSalt(runtimeSignature: string, linkedImpactSignature?: stri
   return `${runtimeSignature}:linked:${linkedImpactSignature}`
 }
 
+function hasRuntimeAffectingSourceChanges(changedByType: Record<EntryType, Set<string>>) {
+  return changedByType.html.size > 0 || changedByType.js.size > 0
+}
+
+function resolveViteStaleClassNameFallback(
+  option: InternalUserDefinedOptions['staleClassNameFallback'],
+  resolvedConfig?: ResolvedConfig,
+) {
+  if (typeof option === 'boolean') {
+    return option
+  }
+  if (!resolvedConfig) {
+    return false
+  }
+  if (resolvedConfig.command === 'serve') {
+    return true
+  }
+  if (resolvedConfig.command === 'build' && resolvedConfig.build?.watch) {
+    return true
+  }
+  return false
+}
+
 export function createGenerateBundleHook(context: GenerateBundleContext) {
   const state: BundleBuildState = {
     iteration: 0,
@@ -312,15 +335,18 @@ export function createGenerateBundleHook(context: GenerateBundleContext) {
     onStart()
 
     const metrics = createEmptyMetrics()
-    const forceRuntimeRefresh = process.env.WEAPP_TW_VITE_FORCE_RUNTIME_REFRESH === '1'
+    const forceRuntimeRefreshByEnv = process.env.WEAPP_TW_VITE_FORCE_RUNTIME_REFRESH === '1'
     const disableDirtyOptimization = process.env.WEAPP_TW_VITE_DISABLE_DIRTY === '1'
     const disableJsPrecheck = process.env.WEAPP_TW_VITE_DISABLE_JS_PRECHECK === '1'
     const debugCssDiff = process.env.WEAPP_TW_VITE_DEBUG_CSS_DIFF === '1'
     const entries = Object.entries(bundle)
     const dirtyEntries = computeDirtyEntries(entries, opts, state)
+    const forceRuntimeRefreshBySource = hasRuntimeAffectingSourceChanges(dirtyEntries.changedByType)
+    const forceRuntimeRefresh = forceRuntimeRefreshByEnv || forceRuntimeRefreshBySource
     const processSets = buildProcessSets(entries, opts, dirtyEntries.changedByType, state.previousLinkedByEntry, disableDirtyOptimization)
     const processFiles = processSets.files
     const resolvedConfig = getResolvedConfig()
+    const staleClassNameFallback = resolveViteStaleClassNameFallback(opts.staleClassNameFallback, resolvedConfig)
     const rootDir = resolvedConfig?.root ? path.resolve(resolvedConfig.root) : process.cwd()
     const outDir = resolvedConfig?.build?.outDir
       ? path.resolve(rootDir, resolvedConfig.build.outDir)
@@ -337,6 +363,13 @@ export function createGenerateBundleHook(context: GenerateBundleContext) {
     const runtimeStart = performance.now()
     const runtime = await ensureRuntimeClassSet(forceRuntimeRefresh)
     metrics.runtimeSet = measureElapsed(runtimeStart)
+    if (forceRuntimeRefreshBySource) {
+      debug(
+        'runtimeSet forced refresh due to source changes: html=%d js=%d',
+        dirtyEntries.changedByType.html.size,
+        dirtyEntries.changedByType.js.size,
+      )
+    }
     debug('get runtimeSet, class count: %d', runtime.size)
     const runtimeSignature = getRuntimeClassSetSignature(runtimeState.twPatcher) ?? 'runtime:missing'
 
@@ -360,6 +393,7 @@ export function createGenerateBundleHook(context: GenerateBundleContext) {
     }
     const createHandlerOptions = (absoluteFilename: string, extra?: CreateJsHandlerOptions): CreateJsHandlerOptions => ({
       ...extra,
+      staleClassNameFallback: extra?.staleClassNameFallback ?? staleClassNameFallback,
       filename: absoluteFilename,
       moduleGraph: moduleGraphOptions,
       babelParserOptions: {
@@ -599,11 +633,7 @@ export function createGenerateBundleHook(context: GenerateBundleContext) {
     }
 
     state.iteration += 1
-    const finalSourceHashByFile = new Map<string, string>()
-    for (const [fileName, output] of entries) {
-      finalSourceHashByFile.set(fileName, opts.cache.computeHash(readEntrySource(output)))
-    }
-    state.previousSourceHashByFile = finalSourceHashByFile
+    state.previousSourceHashByFile = dirtyEntries.sourceHashByFile
     state.changedByType = dirtyEntries.changedByType
 
     const nextLinkedByEntry = new Map(state.previousLinkedByEntry)
