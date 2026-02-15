@@ -264,7 +264,7 @@
     "tslib": "^2.8.1",
     "tsup": "^8.5.1",
     "tsx": "^4.21.0",
-    "turbo": "^2.8.8",
+    "turbo": "^2.8.9",
     "type-fest": "^5.4.4",
     "typescript": "catalog:typescript59",
     "unbuild": "^3.6.1",

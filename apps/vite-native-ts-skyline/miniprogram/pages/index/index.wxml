@@ -1,24 +1,79 @@
-<!-- index.wxml -->
-<view class="min-h-screen bg-slate-950 px-[40rpx] pt-[72rpx] pb-[48rpx] text-white">
-  <skyline-navbar
-    title="{{skylineNav.title}}"
-    location="{{skylineNav.location}}"
-    weather="{{skylineNav.weather}}"
-    trend="{{skylineNav.trend}}"
-    bind:primarytap="handleNavAction"
-  ></skyline-navbar>
+<view class="relative min-h-screen overflow-hidden bg-slate-950 px-[36rpx] pb-[56rpx] pt-[64rpx] text-white">
+  <view class="pointer-events-none absolute -top-[220rpx] right-[-180rpx] h-[520rpx] w-[520rpx] rounded-full bg-sky-500/25 blur-[150rpx]"></view>
+  <view class="pointer-events-none absolute bottom-[-180rpx] left-[-120rpx] h-[420rpx] w-[420rpx] rounded-full bg-emerald-400/15 blur-[130rpx]"></view>
 
-  <view class="mt-[48rpx] rounded-[40rpx] border border-white/15 bg-white/8 p-[40rpx] text-slate-100 backdrop-blur-[24rpx]">
-    <view class="text-[36rpx] font-semibold text-white">欢迎来到 Skyline 体验场景</view>
-    <view class="mt-[16rpx] text-[26rpx] leading-[42rpx] text-slate-100">
-      Tailwind CSS 渲染的趋势线让导航条具备强烈的科技感，向下滑动探索更多组件示例。
+  <view class="relative z-[1]">
+    <skyline-navbar
+      title="{{skylineNav.title}}"
+      location="{{skylineNav.location}}"
+      weather="{{skylineNav.weather}}"
+      status="{{skylineNav.status}}"
+      trend="{{skylineNav.trend}}"
+      trendDelta="{{skylineNav.trendDelta}}"
+      bind:primarytap="handleNavAction"
+      bind:secondarytap="handleNavSecondaryAction"
+    ></skyline-navbar>
+
+    <view class="mt-[30rpx] rounded-[34rpx] border border-white/12 bg-white/8 p-[28rpx] backdrop-blur-[24rpx] {{pulseBoost ? 'ring-[4rpx] ring-sky-300/35' : ''}}">
+      <view class="flex items-center justify-between">
+        <view class="text-[30rpx] font-semibold text-white">今日趋势概览</view>
+        <view class="rounded-full border border-white/20 bg-white/5 px-[18rpx] py-[8rpx] text-[20rpx] text-white/70">
+          更新 {{lastUpdated}}
+        </view>
+      </view>
+
+      <view class="mt-[12rpx] text-[23rpx] leading-[36rpx] text-slate-100">
+        {{statusMessage}}
+      </view>
+
+      <view class="mt-[24rpx] grid grid-cols-3 gap-[14rpx]">
+        <view class="rounded-[20rpx] border border-white/12 bg-slate-900/75 px-[16rpx] py-[16rpx]">
+          <view class="text-[20rpx] text-white/60">峰值热度</view>
+          <view class="mt-[10rpx] text-[32rpx] font-semibold text-sky-200">{{trendInsight.peak}}</view>
+        </view>
+        <view class="rounded-[20rpx] border border-white/12 bg-slate-900/75 px-[16rpx] py-[16rpx]">
+          <view class="text-[20rpx] text-white/60">平均热度</view>
+          <view class="mt-[10rpx] text-[32rpx] font-semibold text-white">{{trendInsight.average}}</view>
+        </view>
+        <view class="rounded-[20rpx] border border-white/12 bg-slate-900/75 px-[16rpx] py-[16rpx]">
+          <view class="text-[20rpx] text-white/60">动量</view>
+          <view class="mt-[10rpx] text-[32rpx] font-semibold text-emerald-300">{{trendInsight.momentum}}</view>
+        </view>
+      </view>
+    </view>
+
+    <view class="mt-[24rpx] grid grid-cols-2 gap-[16rpx]">
+      <view
+        class="rounded-[26rpx] border border-white/12 bg-slate-900/75 px-[24rpx] py-[22rpx] active:scale-[0.98]"
+        bindtap="refreshTrend"
+      >
+        <view class="text-[28rpx] font-semibold text-white">刷新趋势</view>
+        <view class="mt-[8rpx] text-[22rpx] text-white/60">模拟实时曲线更新</view>
+      </view>
+
+      <view
+        class="rounded-[26rpx] border border-white/12 bg-slate-900/75 px-[24rpx] py-[22rpx] active:scale-[0.98]"
+        bindtap="showPromotions"
+      >
+        <view class="text-[28rpx] font-semibold text-white">查看优惠</view>
+        <view class="mt-[8rpx] text-[22rpx] text-white/60">快速配置活动策略</view>
+      </view>
+
+      <view
+        class="rounded-[26rpx] border border-white/12 bg-slate-900/75 px-[24rpx] py-[22rpx] active:scale-[0.98]"
+        bindtap="toggleBusinessStatus"
+      >
+        <view class="text-[28rpx] font-semibold text-white">切换状态</view>
+        <view class="mt-[8rpx] text-[22rpx] text-white/60">营业中 / 高峰预警</view>
+      </view>
+
+      <view
+        class="rounded-[26rpx] border border-sky-300/30 bg-gradient-to-r from-sky-500/30 via-cyan-500/20 to-emerald-400/20 px-[24rpx] py-[22rpx] active:scale-[0.98]"
+        bindtap="goToCart"
+      >
+        <view class="text-[28rpx] font-semibold text-white">快速结算</view>
+        <view class="mt-[8rpx] text-[22rpx] text-white/70">进入购物车完成下单</view>
+      </view>
     </view>
   </view>
-
-  <button
-    class="mt-[36rpx] w-full rounded-[999rpx] bg-white py-[24rpx] text-[28rpx] font-semibold text-slate-950"
-    bindtap="goToCart"
-  >
-    前往购物车
-  </button>
 </view>

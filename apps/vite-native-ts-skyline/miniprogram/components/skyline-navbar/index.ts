@@ -28,14 +28,23 @@ export default defineComponent({
       type: String,
       value: '晴 · 26°C',
     },
+    status: {
+      type: String,
+      value: '营业中',
+    },
     trend: {
       type: Array,
       value: defaultTrend,
+    },
+    trendDelta: {
+      type: Number,
+      value: 0,
     },
   },
   setup(props, ctx) {
     const currentTime = ref(formatTime())
     const trendBars = ref<Array<{ height: number, label: string }>>([])
+    const trendDeltaText = ref('▲ +0')
 
     let timer: number | undefined
 
@@ -68,6 +77,26 @@ export default defineComponent({
       { immediate: true, deep: true },
     )
 
+    watch(
+      () => Number(props.trendDelta),
+      (value) => {
+        if (!Number.isFinite(value)) {
+          trendDeltaText.value = '● 0'
+          return
+        }
+        if (value > 0) {
+          trendDeltaText.value = `▲ +${value}`
+          return
+        }
+        if (value < 0) {
+          trendDeltaText.value = `▼ ${value}`
+          return
+        }
+        trendDeltaText.value = '● 0'
+      },
+      { immediate: true },
+    )
+
     onMounted(() => {
       updateTime()
       timer = setInterval(updateTime, 60000)
@@ -82,10 +111,17 @@ export default defineComponent({
       ctx.emit('primarytap')
     }
 
+    function handleSecondaryTap(e: any) {
+      const action = e?.currentTarget?.dataset?.action ?? 'search'
+      ctx.emit('secondarytap', action)
+    }
+
     return {
       currentTime,
       trendBars,
+      trendDeltaText,
       handlePrimaryTap,
+      handleSecondaryTap,
     }
   },
 })

@@ -3,6 +3,7 @@
   "projectname": "vite-native-ts-skyline",
   "setting": {
     "compileHotReLoad": true,
-    "urlCheck": false
+    "urlCheck": false,
+    "skylineRenderEnable": true
   }
 }

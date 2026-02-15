@@ -1,23 +1,29 @@
-<view class="skyline-navbar relative overflow-hidden rounded-[48rpx] border border-white/10 bg-[#040616]/95 px-[48rpx] pt-[64rpx] pb-[48rpx] text-white">
-  <view class="absolute inset-0 bg-[radial-gradient(120%_120%_at_80%_-20%,rgba(56,189,248,0.35),transparent_65%)] opacity-80"></view>
-  <view class="absolute inset-0 bg-[linear-gradient(140deg,rgba(10,17,40,0.8),rgba(0,0,0,0.2))]"></view>
+<view class="skyline-navbar relative rounded-[48rpx] border border-white/10 bg-[#040616]/95 px-[32rpx] pb-[56rpx] pt-[56rpx] text-white">
+  <view class="pointer-events-none absolute inset-0 overflow-hidden rounded-[48rpx]">
+    <view class="absolute inset-0 bg-[radial-gradient(120%_120%_at_80%_-20%,rgba(56,189,248,0.35),transparent_65%)] opacity-80"></view>
+    <view class="absolute inset-0 bg-[linear-gradient(140deg,rgba(10,17,40,0.8),rgba(0,0,0,0.2))]"></view>
+  </view>
 
-  <view class="relative z-[1] flex flex-col gap-[32rpx]">
+  <view class="relative z-[1] flex flex-col gap-[28rpx]">
     <view class="flex items-center justify-between">
-      <view class="flex items-center gap-[24rpx]">
-        <view class="flex h-[96rpx] w-[96rpx] items-center justify-center rounded-[28rpx] border border-white/10 bg-white/10 backdrop-blur-[32rpx]">
+      <view class="flex items-center gap-[20rpx]">
+        <view class="flex h-[88rpx] w-[88rpx] items-center justify-center rounded-[28rpx] border border-white/10 bg-white/10 backdrop-blur-[32rpx]">
           <view class="i-mdi-city-variant-outline text-[48rpx] text-sky-200"></view>
         </view>
         <view class="flex flex-col">
           <text class="text-[22rpx] uppercase tracking-[12rpx] text-slate-100">Skyline</text>
           <text class="mt-[8rpx] text-[44rpx] font-semibold">{{title}}</text>
           <text class="mt-[6rpx] text-[24rpx] text-slate-200">{{location}}</text>
+          <view class="mt-[14rpx] inline-flex max-w-fit items-center gap-[10rpx] rounded-full border border-emerald-300/40 bg-emerald-400/15 px-[14rpx] py-[6rpx] text-[18rpx] text-emerald-200">
+            <view class="h-[8rpx] w-[8rpx] rounded-full bg-emerald-300"></view>
+            <text>{{status}}</text>
+          </view>
         </view>
       </view>
 
-      <view class="flex items-center gap-[28rpx] text-[44rpx]">
-        <view class="i-mdi-magnify text-sky-200"></view>
-        <view class="relative">
+      <view class="flex shrink-0 items-center gap-[22rpx] text-[42rpx]">
+        <view class="i-mdi-magnify rounded-full p-[10rpx] text-sky-200 active:scale-95" data-action="search" bindtap="handleSecondaryTap"></view>
+        <view class="relative rounded-full p-[10rpx] active:scale-95" data-action="notify" bindtap="handleSecondaryTap">
           <view class="i-mdi-bell-badge-outline"></view>
           <view class="absolute -top-[8rpx] -right-[6rpx] h-[18rpx] w-[18rpx] rounded-full bg-rose-500 shadow-[0_0_18rpx_rgba(244,63,94,0.65)]"></view>
         </view>
@@ -35,9 +41,9 @@
         <text class="text-slate-100">{{weather}}</text>
       </view>
 
-      <view class="flex items-center gap-[12rpx]">
-        <text class="uppercase tracking-[12rpx] text-sky-200">Live</text>
-        <view class="h-[4rpx] w-[96rpx] rounded-full bg-gradient-to-r from-sky-400 via-cyan-300 to-emerald-400"></view>
+      <view class="flex items-center gap-[12rpx] rounded-full border border-sky-300/30 bg-sky-500/10 px-[16rpx] py-[8rpx]">
+        <text class="uppercase tracking-[8rpx] text-sky-200">Trend</text>
+        <text class="font-mono text-[23rpx] font-semibold text-sky-100">{{trendDeltaText}}</text>
       </view>
     </view>
 
@@ -57,12 +63,12 @@
       </view>
     </view>
 
-    <view class="flex items-center justify-between text-slate-100">
-      <view class="flex items-center gap-[16rpx] text-[24rpx]">
+    <view class="flex items-center justify-between gap-[16rpx] text-slate-100">
+      <view class="flex min-w-0 flex-1 items-center gap-[14rpx] text-[23rpx]">
         <view class="i-mdi-compass-outline text-[36rpx] text-sky-200"></view>
-        <text class="text-white">探索 Skyline 趋势</text>
+        <text class="truncate text-white">探索 Skyline 趋势</text>
       </view>
-      <view class="rounded-full bg-gradient-to-r from-sky-500 via-cyan-400 to-emerald-400 px-[32rpx] py-[12rpx] text-[24rpx] font-semibold text-slate-100 shadow-[0_0_32rpx_rgba(56,189,248,0.45)] active:scale-95" bindtap="handlePrimaryTap">
+      <view class="shrink-0 rounded-full bg-gradient-to-r from-sky-500 via-cyan-400 to-emerald-400 px-[24rpx] py-[12rpx] text-[24rpx] font-semibold text-slate-100 shadow-[0_0_32rpx_rgba(56,189,248,0.45)] active:scale-95" bindtap="handlePrimaryTap">
         快速进入
       </view>
     </view>
