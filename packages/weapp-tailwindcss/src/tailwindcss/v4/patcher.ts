@@ -10,7 +10,7 @@ import { overrideTailwindcssPatcherOptionsForBase } from './patcher-options'
 export { groupCssEntriesByBase, guessBasedirFromEntries, normalizeCssEntries } from './css-entries'
 export { createMultiTailwindcssPatcher } from './multi-patcher'
 
-type TailwindUserOptions = NonNullable<TailwindcssPatchOptions['tailwind']>
+type TailwindUserOptions = NonNullable<TailwindcssPatchOptions['tailwindcss']>
 
 export interface TailwindcssPatcherFactoryOptions {
   tailwindcss?: TailwindUserOptions
@@ -90,9 +90,11 @@ export function createPatcherForBase(
   )
 
   const configuredPackageName = tailwindcss?.packageName
+    || (tailwindcssPatcherOptions as any)?.tailwindcss?.packageName
     || (tailwindcssPatcherOptions as any)?.tailwind?.packageName
     || (tailwindcssPatcherOptions as any)?.patch?.tailwindcss?.packageName
   const configuredVersion = tailwindcss?.version
+    || (tailwindcssPatcherOptions as any)?.tailwindcss?.version
     || (tailwindcssPatcherOptions as any)?.tailwind?.version
     || (tailwindcssPatcherOptions as any)?.patch?.tailwindcss?.version
     || mergedTailwindOptions.version

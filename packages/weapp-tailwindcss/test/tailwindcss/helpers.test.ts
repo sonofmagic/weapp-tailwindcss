@@ -85,9 +85,9 @@ describe('tailwindcss helpers', () => {
     const callArgs = tailwindcssPatcherMock.mock.calls[0][0] as any
     expect(callArgs.cache).toMatchObject({ dir: path.resolve('/repo', 'cache') })
     expect(callArgs.cache?.driver).toBe('memory')
-    expect(callArgs.features?.extendLengthUnits).toBe(false)
-    expect(callArgs.cwd).toBe('/repo')
-    expect(Array.isArray(callArgs.tailwind?.resolve?.paths)).toBe(true)
+    expect(callArgs.apply?.extendLengthUnits).toBe(false)
+    expect(callArgs.projectRoot).toBe('/repo')
+    expect(Array.isArray(callArgs.tailwindcss?.resolve?.paths)).toBe(true)
     expect(patcher.packageInfo.version).toBe('3.4.17')
   })
 
@@ -110,7 +110,7 @@ describe('tailwindcss helpers', () => {
 
     const lastCall = tailwindcssPatcherMock.mock.calls[tailwindcssPatcherMock.mock.calls.length - 1]
     const callArgs = lastCall?.[0] as any
-    expect(callArgs.features?.extendLengthUnits).toEqual({ enabled: true })
+    expect(callArgs.apply?.extendLengthUnits).toEqual({ enabled: true })
   })
 
   it('falls back to cwd when basedir is not provided', async () => {
@@ -167,9 +167,9 @@ describe('tailwindcss helpers', () => {
 
     const lastCall = tailwindcssPatcherMock.mock.calls[tailwindcssPatcherMock.mock.calls.length - 1]
     const callArgs = lastCall?.[0] as any
-    expect(callArgs.tailwind?.postcssPlugin).toBeDefined()
-    expect(typeof callArgs.tailwind?.postcssPlugin).toBe('string')
-    expect(path.isAbsolute(callArgs.tailwind?.postcssPlugin)).toBe(true)
+    expect(callArgs.tailwindcss?.postcssPlugin).toBeDefined()
+    expect(typeof callArgs.tailwindcss?.postcssPlugin).toBe('string')
+    expect(path.isAbsolute(callArgs.tailwindcss?.postcssPlugin)).toBe(true)
   })
 
   it('falls back to default tailwind config when project has none', async () => {
@@ -182,9 +182,9 @@ describe('tailwindcss helpers', () => {
       })
       const lastCall = tailwindcssPatcherMock.mock.calls[tailwindcssPatcherMock.mock.calls.length - 1]
       const callArgs = lastCall?.[0] as any
-      expect(callArgs.tailwind?.config).toBeDefined()
-      expect(typeof callArgs.tailwind?.config).toBe('string')
-      expect(path.isAbsolute(callArgs.tailwind?.config)).toBe(true)
+      expect(callArgs.tailwindcss?.config).toBeDefined()
+      expect(typeof callArgs.tailwindcss?.config).toBe('string')
+      expect(path.isAbsolute(callArgs.tailwindcss?.config)).toBe(true)
     }
     finally {
       await rm(tempDir, { recursive: true, force: true })

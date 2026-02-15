@@ -10,7 +10,7 @@ import { formatDisplayName } from './patch-utils'
 function createWorkspacePatcher(cwd: string) {
   const normalized = normalizeOptions(
     withDefaultExtendLengthUnits({
-      cwd,
+      projectRoot: cwd,
     }),
   )
   return new TailwindcssPatcher(normalized)

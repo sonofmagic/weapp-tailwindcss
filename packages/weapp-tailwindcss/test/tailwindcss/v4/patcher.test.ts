@@ -185,7 +185,7 @@ describe('tailwindcss/v4/patcher helpers', () => {
     const factoryOptions = {
       tailwindcss: {},
       tailwindcssPatcherOptions: {
-        tailwind: { resolve: { paths: ['/custom'] } },
+        tailwindcss: { resolve: { paths: ['/custom'] } },
       },
       supportCustomLengthUnitsPatch: false,
       appType: 'mpx',
@@ -388,7 +388,7 @@ describe('tailwindcss/v4/patcher helpers', () => {
     const patcher = createPatcherForBase('/workspace/app', ['/workspace/app/src/app.css'], {
       tailwindcss: undefined,
       tailwindcssPatcherOptions: {
-        tailwind: {
+        tailwindcss: {
           v4: { base: '/custom/base' },
         },
       } as any,
@@ -396,8 +396,8 @@ describe('tailwindcss/v4/patcher helpers', () => {
       appType: 'taro',
     } as unknown as InternalUserDefinedOptions) as any
 
-    expect(patcher.tailwindcssPatcherOptions?.tailwind?.v4?.base).toBe('/custom/base')
-    expect(patcher.tailwindcssPatcherOptions?.tailwind?.v4?.cssEntries).toEqual(['/workspace/app/src/app.css'])
+    expect(patcher.tailwindcssPatcherOptions?.tailwindcss?.v4?.base).toBe('/custom/base')
+    expect(patcher.tailwindcssPatcherOptions?.tailwindcss?.v4?.cssEntries).toEqual(['/workspace/app/src/app.css'])
   })
 
   it('returns early for invalid tailwindcssPatcherOptions shapes', async () => {

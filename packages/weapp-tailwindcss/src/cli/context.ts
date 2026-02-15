@@ -30,20 +30,37 @@ export function buildTailwindcssPatcherOptions(
     return undefined
   }
   const filtered: Partial<TailwindcssPatchOptions> = {}
-  if (overrides.cwd) {
-    filtered.cwd = overrides.cwd
+  if (overrides.projectRoot || overrides.cwd) {
+    filtered.projectRoot = overrides.projectRoot ?? overrides.cwd
+  }
+  const extract: NonNullable<TailwindcssPatchOptions['extract']> = {}
+  if (overrides.extract) {
+    if (overrides.extract.file) {
+      extract.file = overrides.extract.file
+    }
+    if (overrides.extract.format) {
+      extract.format = overrides.extract.format
+    }
   }
   if (overrides.output) {
-    const output: NonNullable<TailwindcssPatchOptions['output']> = {}
-    if (overrides.output.file) {
-      output.file = overrides.output.file
+    if (!extract.file && overrides.output.file) {
+      extract.file = overrides.output.file
     }
-    if (overrides.output.format) {
-      output.format = overrides.output.format
+    if (!extract.format && overrides.output.format) {
+      extract.format = overrides.output.format
     }
-    if (Object.keys(output).length > 0) {
-      filtered.output = output
+    if (overrides.output.enabled !== undefined) {
+      extract.write = overrides.output.enabled
     }
+    if (overrides.output.pretty !== undefined) {
+      extract.pretty = overrides.output.pretty
+    }
+    if (overrides.output.removeUniversalSelector !== undefined) {
+      extract.removeUniversalSelector = overrides.output.removeUniversalSelector
+    }
+  }
+  if (Object.keys(extract).length > 0) {
+    filtered.extract = extract
   }
   return Object.keys(filtered).length > 0 ? filtered as TailwindcssPatchOptions : undefined
 }
@@ -60,7 +77,7 @@ export function createCliContext(
     if (!userOptions.tailwindcssBasedir) {
       userOptions.tailwindcssBasedir = resolvedCwd
     }
-    const cwdOptions: TailwindcssPatchOptions = { cwd: resolvedCwd }
+    const cwdOptions: TailwindcssPatchOptions = { projectRoot: resolvedCwd }
     const current = userOptions.tailwindcssPatcherOptions as TailwindcssPatchOptions | undefined
     userOptions.tailwindcssPatcherOptions = mergeTailwindcssPatcherOptions(
       cwdOptions,

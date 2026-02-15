@@ -1,7 +1,7 @@
 import type { TailwindcssPatchOptions } from 'tailwindcss-patch'
 
 type ExtendLengthUnitsFeature = Exclude<
-  NonNullable<NonNullable<TailwindcssPatchOptions['features']>['extendLengthUnits']>,
+  NonNullable<NonNullable<TailwindcssPatchOptions['apply']>['extendLengthUnits']>,
   false
 >
 
@@ -15,13 +15,13 @@ export function withDefaultExtendLengthUnits(
   options: TailwindcssPatchOptions | undefined,
 ): TailwindcssPatchOptions {
   const normalized = options ?? {}
-  const extendLengthUnits = normalized.features?.extendLengthUnits
+  const extendLengthUnits = normalized.apply?.extendLengthUnits
 
   if (extendLengthUnits == null) {
     return {
       ...normalized,
-      features: {
-        ...(normalized.features ?? {}),
+      apply: {
+        ...(normalized.apply ?? {}),
         extendLengthUnits: DEFAULT_EXTEND_LENGTH_UNITS_FEATURE,
       },
     }
@@ -33,12 +33,12 @@ export function withDefaultExtendLengthUnits(
 export function buildExtendLengthUnitsOverride(
   options: TailwindcssPatchOptions | undefined,
 ): TailwindcssPatchOptions | undefined {
-  const extendLengthUnits = options?.features?.extendLengthUnits
+  const extendLengthUnits = options?.apply?.extendLengthUnits
 
   if (extendLengthUnits == null) {
     return {
-      features: {
-        ...(options?.features ?? {}),
+      apply: {
+        ...(options?.apply ?? {}),
         extendLengthUnits: DEFAULT_EXTEND_LENGTH_UNITS_FEATURE,
       },
     }

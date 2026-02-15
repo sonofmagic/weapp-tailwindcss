@@ -19,7 +19,7 @@
     "lucide-react": "catalog:lucideReact0555",
     "react": "catalog:react19",
     "react-dom": "catalog:react19",
-    "tailwind-merge": "^3.4.0"
+    "tailwind-merge": "catalog:tailwindMerge"
   },
   "devDependencies": {
     "@eslint/js": "^10.0.1",

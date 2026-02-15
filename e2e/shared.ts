@@ -1,3 +1,4 @@
+import type { TailwindcssPatchOptions } from 'tailwindcss-patch'
 import { createRequire } from 'node:module'
 import process from 'node:process'
 import { format as formatMessage } from 'node:util'
@@ -48,6 +49,9 @@ interface LegacyTailwindOptions {
   config?: string
   cwd?: string
   postcssPlugin?: string
+  resolve?: {
+    paths?: string[]
+  }
   v2?: LegacyTailwindLocatorOptions
   v3?: LegacyTailwindLocatorOptions
   v4?: LegacyTailwindV4Options
@@ -57,23 +61,27 @@ interface LegacyCacheOptions {
   cwd?: string
   dir?: string
   file?: string
+  driver?: 'file' | 'memory' | 'noop'
+  strategy?: 'merge' | 'overwrite'
+  enabled?: boolean
 }
 
-interface E2EPatchOptions {
+interface E2EPatchOptions extends TailwindcssPatchOptions {
   packageName?: string
   cwd?: string
   basedir?: string
-  overwrite?: boolean
   tailwindcss?: LegacyTailwindOptions
   tailwind?: LegacyTailwindOptions
-  cache?: LegacyCacheOptions & { enabled?: boolean }
+  cache?: LegacyCacheOptions | boolean
   resolve?: {
     paths?: string[]
   }
   output?: {
     filename?: string
     loose?: boolean
+    removeUniversalSelector?: boolean
   }
+  patch?: E2EPatchOptions
 }
 
 type NormalizedPatchOptions = E2EPatchOptions
@@ -164,29 +172,49 @@ function resolveTailwindInfo(root: string, options: NormalizedPatchOptions): Tai
 }
 
 function normalizePatchOptions(root: string, patchOptions: unknown): NormalizedPatchOptions {
+  const legacyRoot = (patchOptions as E2EPatchOptions | undefined)?.patch
   const resolved: NormalizedPatchOptions = {
+    ...((legacyRoot as NormalizedPatchOptions | undefined) ?? {}),
     ...((patchOptions as NormalizedPatchOptions | undefined) ?? {}),
   }
 
-  resolved.cwd = resolved.cwd ?? root
-  resolved.basedir = resolved.basedir ?? root
+  resolved.projectRoot = resolved.projectRoot ?? resolved.cwd ?? resolved.basedir ?? root
+  delete (resolved as any).cwd
+  delete (resolved as any).basedir
 
   const resolvePaths = new Set(
     [
       ...(resolved.resolve?.paths ?? []),
+      ...(resolved.tailwindcss?.resolve?.paths ?? []),
+      ...(resolved.tailwind?.resolve?.paths ?? []),
       root,
     ].map(entry => normalizePath(root, entry)),
   )
 
-  resolved.resolve = {
-    ...resolved.resolve,
+  const mergedResolve = {
+    ...(resolved.tailwindcss?.resolve ?? {}),
+    ...(resolved.tailwind?.resolve ?? {}),
+    ...(resolved.resolve ?? {}),
     paths: Array.from(resolvePaths),
   }
+  delete (resolved as any).resolve
 
-  if (resolved.output?.filename) {
-    resolved.output = {
-      ...resolved.output,
-      filename: normalizePath(root, resolved.output.filename),
+  if (resolved.output) {
+    resolved.extract = {
+      ...(resolved.extract ?? {}),
+      ...(resolved.output.filename ? { file: resolved.output.filename } : {}),
+      ...(resolved.output.loose !== undefined ? { pretty: resolved.output.loose ? 2 : false } : {}),
+      ...(resolved.output.removeUniversalSelector !== undefined
+        ? { removeUniversalSelector: resolved.output.removeUniversalSelector }
+        : {}),
+    }
+    delete (resolved as any).output
+  }
+
+  if (resolved.extract?.file) {
+    resolved.extract = {
+      ...resolved.extract,
+      file: normalizePath(root, resolved.extract.file),
     }
   }
 
@@ -200,8 +228,13 @@ function normalizePatchOptions(root: string, patchOptions: unknown): NormalizedP
   }
 
   let tw = resolved.tailwindcss ? { ...resolved.tailwindcss } : undefined
+  if (!tw && resolved.tailwind) {
+    tw = { ...resolved.tailwind }
+  }
 
   if (tw) {
+    tw.resolve = mergedResolve
+
     if (typeof tw.config === 'string') {
       tw.config = normalizePath(root, tw.config)
     }
@@ -242,15 +275,16 @@ function normalizePatchOptions(root: string, patchOptions: unknown): NormalizedP
       tw.postcssPlugin = tailwindInfo.pluginPath ?? (tailwindInfo.major >= 4 ? '@tailwindcss/postcss' : 'tailwindcss')
     }
     resolved.tailwindcss = tw
-    resolved.tailwind = { ...tw }
   }
   else if (tw) {
     resolved.tailwindcss = tw
-    resolved.tailwind = { ...tw }
   }
-  else {
-    delete (resolved as Record<string, unknown>).tailwind
+  else if (resolvePaths.size > 0) {
+    resolved.tailwindcss = {
+      resolve: mergedResolve,
+    }
   }
+  delete (resolved as Record<string, unknown>).tailwind
 
   return resolved
 }
@@ -278,12 +312,13 @@ async function runTwExtract(root: string): Promise<ExtractionResult | undefined>
     return undefined
   }
 
-  const legacyConfig = config as { patch?: NormalizedPatchOptions }
-  const patchOptions = normalizePatchOptions(root, legacyConfig.patch)
-  const outputOptions = patchOptions.output
+  const legacyConfig = config as { patch?: unknown, registry?: unknown }
+  const rawPatchOptions = legacyConfig.registry ?? legacyConfig.patch ?? config
+  const patchOptions = normalizePatchOptions(root, rawPatchOptions)
+  const outputOptions = patchOptions.extract
     ? {
-        filename: patchOptions.output.filename,
-        loose: patchOptions.output.loose,
+        filename: patchOptions.extract.file,
+        loose: patchOptions.extract.pretty !== false,
       }
     : undefined
 
@@ -330,9 +365,7 @@ async function runTwExtract(root: string): Promise<ExtractionResult | undefined>
   }
   process.env.INIT_CWD = root
 
-  const twPatcher = new TailwindcssPatcher({
-    patch: patchOptions,
-  } as any)
+  const twPatcher = new TailwindcssPatcher(patchOptions)
 
   logE2EDebug('[e2e] Tailwind patch options for %s: %o', root, patchOptions.tailwindcss)
 

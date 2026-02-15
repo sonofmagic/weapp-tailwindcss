@@ -101,6 +101,9 @@ function hasConfiguredCssEntries(ctx: InternalUserDefinedOptions) {
 
   const patcherOptions = ctx.tailwindcssPatcherOptions as any
   if (patcherOptions) {
+    if (normalizeCssEntriesConfig(patcherOptions.tailwindcss?.v4?.cssEntries)) {
+      return true
+    }
     if (normalizeCssEntriesConfig(patcherOptions.tailwind?.v4?.cssEntries)) {
       return true
     }

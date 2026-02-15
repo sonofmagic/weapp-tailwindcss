@@ -31,6 +31,20 @@ export async function clearTailwindcssPatcherCache(
   ) {
     return
   }
+
+  if (typeof (patcher as any).clearCache === 'function') {
+    try {
+      await (patcher as any).clearCache({ scope: 'all' })
+    }
+    catch (error) {
+      logger.debug('failed to clear tailwindcss patcher cache via clearCache(): %O', error)
+    }
+  }
+
+  if (!options?.removeDirectory) {
+    return
+  }
+
   const cachePaths = new Map<string, boolean>()
   const normalizedCacheOptions = typeof cacheOptions === 'object' ? cacheOptions : undefined
   if (normalizedCacheOptions?.path) {

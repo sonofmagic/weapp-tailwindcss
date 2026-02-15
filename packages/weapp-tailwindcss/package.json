@@ -195,7 +195,7 @@
     "@babel/parser": "~7.29.0",
     "@babel/traverse": "~7.29.0",
     "@babel/types": "~7.29.0",
-    "@tailwindcss-mangle/config": "^6.1.0",
+    "@tailwindcss-mangle/config": "^6.1.1",
     "@vue/compiler-dom": "catalog:vue3",
     "@vue/compiler-sfc": "catalog:vue3",
     "@weapp-core/escape": "~7.0.0",

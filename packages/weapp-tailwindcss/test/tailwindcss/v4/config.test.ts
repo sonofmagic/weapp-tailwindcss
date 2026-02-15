@@ -130,7 +130,7 @@ describe('tailwindcss/v4/config', () => {
   it('skips warning when cssEntries are provided via modern tailwind patcher options', async () => {
     const ctx = createCtx({
       tailwindcssPatcherOptions: {
-        tailwind: {
+        tailwindcss: {
           v4: {
             cssEntries: ['/modern/path.css'],
           },

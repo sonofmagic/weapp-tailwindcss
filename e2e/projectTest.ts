@@ -14,6 +14,41 @@ interface ProjectTestOptions {
   allowExtractionFailure?: boolean
 }
 
+interface StableWxmlOptions {
+  timeoutMs?: number
+  intervalMs?: number
+  stableRounds?: number
+  settleMs?: number
+}
+
+async function safeRm(target: string) {
+  try {
+    await fs.rm(target, { recursive: true, force: true })
+  }
+  catch (error: any) {
+    const code = error?.code
+    if (!(code && ['ENOENT', 'EPERM', 'EBUSY', 'ENOTEMPTY'].includes(code))) {
+      throw error
+    }
+  }
+}
+
+async function clearTailwindPatchCaches(root: string) {
+  const workspaceRoot = path.resolve(root, '..', '..')
+  const candidates = new Set<string>([
+    path.resolve(root, 'node_modules/.cache/tailwindcss-patch'),
+    path.resolve(root, 'src/node_modules/.cache/tailwindcss-patch'),
+    path.resolve(root, 'config/node_modules/.cache/tailwindcss-patch'),
+    path.resolve(root, 'node_modules/.vite'),
+    path.resolve(workspaceRoot, 'node_modules/.cache/tailwindcss-patch'),
+    path.resolve(workspaceRoot, 'packages/weapp-tailwindcss/node_modules/.cache/tailwindcss-patch'),
+  ])
+
+  await Promise.all(
+    [...candidates].map(target => safeRm(target)),
+  )
+}
+
 async function expectProjectSnapshot(suite: string, projectName: string, fileName: string, content: string) {
   const snapshotPath = await resolveSnapshotFile(__dirname, suite, projectName, fileName)
   await expect(content).toMatchFileSnapshot(snapshotPath)
@@ -23,21 +58,90 @@ function formatClassListSnapshot(classList: string[]) {
   return `${JSON.stringify(classList, null, 2)}\n`
 }
 
+function countSuspiciousClassFragments(wxml: string) {
+  let count = 0
+  const patterns = [
+    /\b[\w-]+-\s+[a-z0-9#]/gi,
+    /\b\d+xl\s+\d+xl\b/gi,
+  ]
+
+  for (const pattern of patterns) {
+    const matches = wxml.match(pattern)
+    if (matches) {
+      count += matches.length
+    }
+  }
+
+  return count
+}
+
+async function captureStablePageWxml(
+  page: any,
+  options: StableWxmlOptions = {},
+) {
+  const timeoutMs = options.timeoutMs ?? 3000
+  const intervalMs = options.intervalMs ?? 120
+  const stableRounds = options.stableRounds ?? 2
+  const settleMs = options.settleMs ?? 800
+  const deadline = Date.now() + timeoutMs
+
+  if (settleMs > 0) {
+    await page.waitFor(settleMs)
+  }
+
+  let latest = ''
+  let previous = ''
+  let stableCount = 0
+  let best = ''
+  let bestScore = Number.POSITIVE_INFINITY
+
+  while (Date.now() < deadline) {
+    const pageEl = await page.$('page')
+    const current = await pageEl?.wxml() ?? ''
+    latest = current
+    const suspiciousScore = countSuspiciousClassFragments(current)
+
+    if (
+      current.length > 0
+      && (suspiciousScore < bestScore || (suspiciousScore === bestScore && current !== best))
+    ) {
+      best = current
+      bestScore = suspiciousScore
+    }
+
+    if (current.length > 0 && current === previous) {
+      stableCount += 1
+      if (stableCount >= stableRounds && suspiciousScore === 0) {
+        return current
+      }
+    }
+    else {
+      stableCount = 0
+      previous = current
+    }
+
+    await page.waitFor(intervalMs)
+  }
+
+  return best || latest
+}
+
 async function runProjectTest(entry: ProjectEntry, options: ProjectTestOptions) {
   const projectBase = path.resolve(__dirname, options.fixturesDir)
   const projectPath = path.resolve(projectBase, entry.projectPath)
   const root = path.resolve(projectBase, entry.name)
+  const shouldResetPatchCaches = !entry.name.startsWith('taro-')
 
-  // await ensureProjectBuilt(root)
-
-  try {
-    await fs.rm(path.resolve(root, 'node_modules/.cache'), { recursive: true, force: true })
+  if (shouldResetPatchCaches) {
+    await clearTailwindPatchCaches(root)
   }
-  catch (error: any) {
-    const code = error?.code
-    if (!(code && ['ENOENT', 'EPERM', 'EBUSY', 'ENOTEMPTY'].includes(code))) {
-      throw error
-    }
+
+  if (process.env.E2E_SKIP_BUILD !== '1') {
+    await ensureProjectBuilt(root)
+  }
+
+  if (shouldResetPatchCaches) {
+    await clearTailwindPatchCaches(root)
   }
 
   let extraction
@@ -106,8 +210,7 @@ async function runProjectTest(entry: ProjectEntry, options: ProjectTestOptions) 
     const page = await miniProgram.reLaunch(entry.url ?? '/pages/index/index')
 
     if (page) {
-      const pageEl = await page.$('page')
-      let wxml = await pageEl?.wxml()
+      let wxml = await captureStablePageWxml(page)
       if (wxml) {
         wxml = removeWxmlId(wxml)
         try {
@@ -155,15 +258,28 @@ export async function ensureProjectBuilt(root: string) {
     }
 
     const stdio = process.env.E2E_DEBUG_BUILD === '1' ? 'inherit' : 'pipe'
+    const childEnv: Record<string, string | undefined> = {
+      ...process.env,
+      // Vitest workers set NODE_ENV=test; Taro + Vite builds are not stable in that mode.
+      NODE_ENV: 'production',
+      BROWSERSLIST_ENV: 'production',
+      RUST_BACKTRACE: process.env.RUST_BACKTRACE ?? '1',
+      npm_package_json: pkgPath,
+      PNPM_PACKAGE_NAME: pkg?.name ?? process.env.PNPM_PACKAGE_NAME,
+      INIT_CWD: root,
+    }
+
+    delete childEnv.VITEST
+    for (const key of Object.keys(childEnv)) {
+      if (key.startsWith('VITEST_')) {
+        delete childEnv[key]
+      }
+    }
+
     try {
       await execa('pnpm', ['run', 'build'], {
         cwd: root,
-        env: {
-          ...process.env,
-          npm_package_json: pkgPath,
-          PNPM_PACKAGE_NAME: pkg?.name ?? process.env.PNPM_PACKAGE_NAME,
-          INIT_CWD: root,
-        },
+        env: childEnv,
         stdio,
       })
     }

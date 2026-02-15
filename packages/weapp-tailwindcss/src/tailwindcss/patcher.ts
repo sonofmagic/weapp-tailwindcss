@@ -11,6 +11,7 @@ import {
 
   normalizeExtendLengthUnits,
   normalizeTailwindcssPatcherOptions,
+  toModernTailwindcssPatchOptions,
 } from './patcher-options'
 import {
   createDefaultResolvePaths,
@@ -21,8 +22,9 @@ import {
 
 type TailwindcssExtractOptions = Parameters<TailwindcssPatcher['extract']>[0]
 type TailwindcssExtractResult = ReturnType<TailwindcssPatcher['extract']>
-type TailwindUserOptions = NonNullable<TailwindcssPatchOptions['tailwind']>
+type TailwindUserOptions = NonNullable<TailwindcssPatchOptions['tailwindcss']>
 type TailwindCacheOptions = Exclude<NonNullable<TailwindcssPatchOptions['cache']>, boolean>
+type TailwindApplyOptions = NonNullable<TailwindcssPatchOptions['apply']>
 
 export interface CreateTailwindcssPatcherOptions {
   basedir?: string
@@ -78,6 +80,8 @@ export function createTailwindcssPatcher(options?: CreateTailwindcssPatcherOptio
     driver: 'memory',
   }
   const normalizedBasedir = basedir ? path.resolve(basedir) : undefined
+  // 8.7+ 自带 context fingerprint，默认可安全共享缓存文件。
+  // 这里优先维持包级缓存目录，避免把缓存散落到 src 等子目录。
   const cacheRoot = findNearestPackageRoot(normalizedBasedir) ?? normalizedBasedir ?? process.cwd()
 
   if (cacheDir) {
@@ -141,78 +145,81 @@ export function createTailwindcssPatcher(options?: CreateTailwindcssPatcherOptio
   }
 
   const baseOptions: TailwindcssPatchOptions = {
-    cwd: normalizedBasedir,
+    projectRoot: normalizedBasedir,
     cache,
-    tailwind: baseTailwindOptions,
-    features: {
+    tailwindcss: baseTailwindOptions,
+    apply: {
       exposeContext: true,
       extendLengthUnits,
-    },
+    } satisfies TailwindApplyOptions,
   }
 
-  const resolvedOptions = defuOverrideArray<TailwindcssPatchOptions, TailwindcssPatchOptions[]>(
+  const mergedOptions = defuOverrideArray<TailwindcssPatchOptions, TailwindcssPatchOptions[]>(
     (normalizedUserOptions ?? {}) as TailwindcssPatchOptions,
     baseOptions,
   )
+  const resolvedOptions = toModernTailwindcssPatchOptions(mergedOptions) ?? {}
+  const resolvedTailwindOptions: TailwindUserOptions | undefined = resolvedOptions.tailwindcss
 
-  if (resolvedOptions.tailwind) {
-    const existingResolve = resolvedOptions.tailwind.resolve ?? {}
+  if (resolvedTailwindOptions) {
+    const existingResolve = resolvedTailwindOptions.resolve ?? {}
     const customPaths = Array.isArray(existingResolve.paths) && existingResolve.paths.length > 0
     const sourcePaths = customPaths ? existingResolve.paths : resolvePaths
-    resolvedOptions.tailwind.resolve = {
+    resolvedTailwindOptions.resolve = {
       ...existingResolve,
       paths: Array.from(new Set(sourcePaths)),
     }
     logger.debug('Tailwind resolve config %O', {
-      packageName: resolvedOptions.tailwind.packageName,
-      version: resolvedOptions.tailwind.version,
-      resolve: resolvedOptions.tailwind.resolve,
-      cwd: resolvedOptions.tailwind.cwd,
+      packageName: resolvedTailwindOptions.packageName,
+      version: resolvedTailwindOptions.version,
+      resolve: resolvedTailwindOptions.resolve,
+      cwd: resolvedTailwindOptions.cwd,
     })
 
-    if (typeof resolvedOptions.tailwind.postcssPlugin === 'string') {
+    if (typeof resolvedTailwindOptions.postcssPlugin === 'string') {
       const resolvedPlugin = resolveModuleFromPaths(
-        resolvedOptions.tailwind.postcssPlugin,
-        resolvedOptions.tailwind.resolve?.paths ?? resolvePaths,
+        resolvedTailwindOptions.postcssPlugin,
+        resolvedTailwindOptions.resolve?.paths ?? resolvePaths,
       )
       if (resolvedPlugin) {
-        resolvedOptions.tailwind.postcssPlugin = resolvedPlugin
+        resolvedTailwindOptions.postcssPlugin = resolvedPlugin
       }
     }
 
     const searchRoots = new Set<string>()
-    if (resolvedOptions.tailwind.cwd) {
-      searchRoots.add(resolvedOptions.tailwind.cwd)
+    if (resolvedTailwindOptions.cwd) {
+      searchRoots.add(resolvedTailwindOptions.cwd)
     }
-    for (const resolvePath of resolvedOptions.tailwind.resolve?.paths ?? []) {
+    for (const resolvePath of resolvedTailwindOptions.resolve?.paths ?? []) {
       const parentDir = path.dirname(resolvePath)
       searchRoots.add(parentDir)
     }
     const configPath = findTailwindConfig(searchRoots)
-    if (!resolvedOptions.tailwind.config) {
+    if (!resolvedTailwindOptions.config) {
       if (configPath) {
-        resolvedOptions.tailwind.config = configPath
+        resolvedTailwindOptions.config = configPath
       }
       else {
         const fallbackConfig = resolveTailwindConfigFallback(
-          resolvedOptions.tailwind.packageName,
-          resolvedOptions.tailwind.resolve.paths ?? resolvePaths,
+          resolvedTailwindOptions.packageName,
+          resolvedTailwindOptions.resolve.paths ?? resolvePaths,
         )
         if (fallbackConfig) {
-          resolvedOptions.tailwind.config = fallbackConfig
+          resolvedTailwindOptions.config = fallbackConfig
         }
       }
     }
-    if (!resolvedOptions.tailwind.cwd && configPath) {
-      resolvedOptions.tailwind.cwd = path.dirname(configPath)
+    if (!resolvedTailwindOptions.cwd && configPath) {
+      resolvedTailwindOptions.cwd = path.dirname(configPath)
     }
+    resolvedOptions.tailwindcss = resolvedTailwindOptions
   }
 
   try {
     return new TailwindcssPatcher(resolvedOptions)
   }
   catch (error) {
-    const searchPaths = resolvedOptions.tailwind?.resolve?.paths
+    const searchPaths = resolvedOptions.tailwindcss?.resolve?.paths
     if (error instanceof Error && /tailwindcss not found/i.test(error.message)) {
       if (!hasLoggedMissingTailwind) {
         logger.warn('Tailwind CSS 未安装，已跳过 Tailwind 相关补丁。若需使用 Tailwind 能力，请安装 tailwindcss。')
@@ -221,7 +228,7 @@ export function createTailwindcssPatcher(options?: CreateTailwindcssPatcherOptio
       return createFallbackTailwindcssPatcher()
     }
     if (error instanceof Error && /unable to locate tailwind css package/i.test(error.message)) {
-      logger.error('无法定位 Tailwind CSS 包 "%s"，已尝试路径: %O', resolvedOptions.tailwind?.packageName, searchPaths)
+      logger.error('无法定位 Tailwind CSS 包 "%s"，已尝试路径: %O', resolvedOptions.tailwindcss?.packageName, searchPaths)
     }
     throw error
   }

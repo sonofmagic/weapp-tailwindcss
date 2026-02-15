@@ -35,8 +35,8 @@ export function uniAppX(options: UniAppXOptions) {
       unitsToPx: options.unitsToPx,
       tailwindcssBasedir: options.base,
       tailwindcssPatcherOptions: {
-        cwd: options.base,
-        tailwind: {
+        projectRoot: options.base,
+        tailwindcss: {
           cwd: options.base,
           resolve: options.resolve,
           v3: {

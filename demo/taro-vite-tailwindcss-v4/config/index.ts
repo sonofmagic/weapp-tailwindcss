@@ -49,6 +49,21 @@ export default defineConfig<'vite'>(async (merge, { command, mode }) => {
             }
           },
         },
+        {
+          name: 'taro-cjs-stability',
+          enforce: 'post',
+          config() {
+            // Taro mini runner defaults this to true; disabling it avoids ESM
+            // modules in node_modules being forced through CommonJS transforms.
+            return {
+              build: {
+                commonjsOptions: {
+                  transformMixedEsModules: false,
+                },
+              },
+            }
+          },
+        },
         UnifiedViteWeappTailwindcssPlugin({
           rem2rpx: true,
           cssEntries:[

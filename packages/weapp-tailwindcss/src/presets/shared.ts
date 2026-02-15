@@ -54,8 +54,8 @@ export function createBasePreset(options: BasePresetOptions = {}) {
     tailwindcssBasedir: baseDir,
     tailwindcss: tailwindConfig,
     tailwindcssPatcherOptions: {
-      cwd: baseDir,
-      tailwind: patchTailwindConfig,
+      projectRoot: baseDir,
+      tailwindcss: patchTailwindConfig,
     },
   }
 

@@ -1,8 +1,8 @@
 import type { TailwindcssPatchOptions } from 'tailwindcss-patch'
 
-type TailwindUserOptions = NonNullable<TailwindcssPatchOptions['tailwind']>
+type TailwindUserOptions = NonNullable<TailwindcssPatchOptions['tailwindcss']>
 
-interface LegacyTailwindcssPatcherOptionsLike {
+export interface LegacyTailwindcssPatcherOptionsLike {
   patch?: {
     basedir?: string
     cwd?: string
@@ -18,24 +18,25 @@ interface LegacyTailwindcssPatcherOptionsLike {
 }
 
 type ModernTailwindcssPatchOptionsLike = TailwindcssPatchOptions
+type TailwindcssPatcherOptionsForBase = TailwindcssPatchOptions | LegacyTailwindcssPatcherOptionsLike | undefined
 
 function isLegacyTailwindcssPatcherOptions(
-  options: TailwindcssPatchOptions | LegacyTailwindcssPatcherOptionsLike | undefined,
+  options: TailwindcssPatcherOptionsForBase,
 ): options is LegacyTailwindcssPatcherOptionsLike {
   return typeof options === 'object' && options !== null && 'patch' in options
 }
 
 function isModernTailwindcssPatchOptions(
-  options: TailwindcssPatchOptions | LegacyTailwindcssPatcherOptionsLike | undefined,
+  options: TailwindcssPatcherOptionsForBase,
 ): options is ModernTailwindcssPatchOptionsLike {
   return typeof options === 'object' && options !== null && !('patch' in options)
 }
 
 export function overrideTailwindcssPatcherOptionsForBase(
-  options: TailwindcssPatchOptions | LegacyTailwindcssPatcherOptionsLike | undefined,
+  options: TailwindcssPatcherOptionsForBase,
   baseDir: string,
   cssEntries: string[],
-) {
+): TailwindcssPatcherOptionsForBase {
   const hasCssEntries = cssEntries.length > 0
 
   if (!options) {
@@ -82,20 +83,23 @@ export function overrideTailwindcssPatcherOptionsForBase(
     return options
   }
 
-  if (!options.tailwind) {
+  const modernTailwind = options.tailwindcss ?? (options as any).tailwind
+  if (!modernTailwind) {
     return options
   }
 
+  const { tailwind: _legacyTailwind, ...rest } = options as TailwindcssPatchOptions & { tailwind?: TailwindUserOptions }
+
   return {
-    ...options,
-    tailwind: {
-      ...options.tailwind,
+    ...rest,
+    tailwindcss: {
+      ...modernTailwind,
       v4: {
-        ...(options.tailwind.v4 ?? {}),
-        ...(hasCssEntries ? {} : { base: options.tailwind.v4?.base ?? baseDir }),
+        ...(modernTailwind.v4 ?? {}),
+        ...(hasCssEntries ? {} : { base: modernTailwind.v4?.base ?? baseDir }),
         cssEntries: hasCssEntries
           ? cssEntries
-          : options.tailwind.v4?.cssEntries ?? cssEntries,
+          : modernTailwind.v4?.cssEntries ?? cssEntries,
       },
     },
   }

@@ -186,4 +186,3 @@ text,
     color: rgba(236, 79, 79, var(--tw-text-opacity, 1));
   }
 }
-/*$vite$:1*/

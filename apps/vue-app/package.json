@@ -16,7 +16,7 @@
     "clsx": "^2.1.1",
     "lucide-vue-next": "catalog:lucideVueNext0555",
     "reka-ui": "^2.8.0",
-    "tailwind-merge": "^3.4.0",
+    "tailwind-merge": "catalog:tailwindMerge",
     "vue": "catalog:vue3"
   },
   "devDependencies": {

@@ -8,7 +8,7 @@
   },
   "scripts": {},
   "dependencies": {
-    "@tailwindcss-mangle/config": "^6.1.0",
+    "@tailwindcss-mangle/config": "^6.1.1",
     "prettier": "catalog:prettier371",
     "tailwindcss-patch": "catalog:tailwindcssPatch"
   }

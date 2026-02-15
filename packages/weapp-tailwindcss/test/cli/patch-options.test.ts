@@ -7,36 +7,36 @@ import {
 
 describe('cli patch options defaults', () => {
   it('applies extendLengthUnits defaults when missing', () => {
-    const result = withDefaultExtendLengthUnits({ cwd: '/app' })
+    const result = withDefaultExtendLengthUnits({ projectRoot: '/app' })
 
-    expect(result.features?.extendLengthUnits).toEqual(DEFAULT_EXTEND_LENGTH_UNITS_FEATURE)
-    expect(result.cwd).toBe('/app')
+    expect(result.apply?.extendLengthUnits).toEqual(DEFAULT_EXTEND_LENGTH_UNITS_FEATURE)
+    expect(result.projectRoot).toBe('/app')
   })
 
   it('keeps user-specified extendLengthUnits values intact', () => {
     const result = withDefaultExtendLengthUnits({
-      features: {
+      apply: {
         extendLengthUnits: false,
       },
     })
 
-    expect(result.features?.extendLengthUnits).toBe(false)
+    expect(result.apply?.extendLengthUnits).toBe(false)
   })
 
   it('builds override when extendLengthUnits is absent', () => {
     const override = buildExtendLengthUnitsOverride(undefined)
 
-    expect(override?.features?.extendLengthUnits).toEqual(DEFAULT_EXTEND_LENGTH_UNITS_FEATURE)
+    expect(override?.apply?.extendLengthUnits).toEqual(DEFAULT_EXTEND_LENGTH_UNITS_FEATURE)
   })
 
   it('preserves existing feature flags when building override', () => {
     const override = buildExtendLengthUnitsOverride({
-      features: {
+      apply: {
         exposeContext: false,
       },
     })
 
-    expect(override?.features).toMatchObject({
+    expect(override?.apply).toMatchObject({
       exposeContext: false,
       extendLengthUnits: DEFAULT_EXTEND_LENGTH_UNITS_FEATURE,
     })
@@ -44,7 +44,7 @@ describe('cli patch options defaults', () => {
 
   it('skips override when extendLengthUnits is provided', () => {
     const override = buildExtendLengthUnitsOverride({
-      features: {
+      apply: {
         extendLengthUnits: {
           enabled: false,
         },

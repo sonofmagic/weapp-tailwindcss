@@ -77,7 +77,7 @@
     "@tarojs/cli": "catalog:taro4",
     "@tarojs/vite-runner": "catalog:taro4",
     "@types/react": "catalog:react18",
-    "@vitejs/plugin-react": "^5.1.4",
+    "@vitejs/plugin-react": "catalog:vitePluginReact4",
     "@weapp-tailwindcss/merge-v3": "workspace:*",
     "@weapp-tailwindcss/variants-v3": "workspace:*",
     "autoprefixer": "catalog:autoprefixer10",
@@ -98,7 +98,7 @@
     "terser": "^5.46.0",
     "to-fast-properties": "3.0.1",
     "typescript": "catalog:typescript59",
-    "vite": "catalog:vite5421",
+    "vite": "catalog:vite4",
     "weapp-ide-cli": "catalog:weappIdeCli",
     "weapp-tailwindcss": "workspace:*"
   }

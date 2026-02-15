@@ -254,7 +254,7 @@ export interface UserDefinedOptionsImportantPart {
    * @since ^4.0.0
    * @group 0.重要配置
    */
-  tailwindcss?: TailwindcssPatchOptions['tailwind']
+  tailwindcss?: TailwindcssPatchOptions['tailwindcss']
 
   /**
    * 指定 tailwindcss@4 的入口 CSS。
