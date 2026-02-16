@@ -3,6 +3,7 @@ import { promises as fs } from 'node:fs'
 import path from 'node:path'
 import process from 'node:process'
 import { formatPath } from './cli'
+import { MUTATION_ROUND_NAMES } from './types'
 
 interface SummarySample {
   hotUpdateEffectiveMs: number
@@ -13,8 +14,6 @@ function resolvePreferredRound(rounds: MutationRoundMetrics[]) {
   return rounds.find(item => item.roundName === 'complex-corpus')
     ?? rounds[rounds.length - 1]
 }
-
-const MUTATION_ROUND_NAMES: MutationRoundName[] = ['baseline-arbitrary', 'complex-corpus']
 
 export function summarizeSamples(samples: SummarySample[]): WatchSummary {
   const count = samples.length

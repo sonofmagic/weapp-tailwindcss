@@ -34,6 +34,22 @@ export function buildComplexCorpusClassTokens(seed: string) {
   ]
 }
 
+export function buildHexArbitraryClassTokens(seed: string) {
+  const numericSeed = seed.replace(/\D/g, '').padEnd(8, '0')
+  const hex6 = numericSeed.slice(0, 6)
+  const hex4 = `${numericSeed.slice(0, 2)}00`
+  const ringPx = Number(numericSeed.slice(2, 4)) + 1
+  const spacePx = Number(numericSeed.slice(4, 6)) + 8
+
+  return [
+    `bg-[#${hex4}]`,
+    `text-[${Number(numericSeed.slice(0, 2)) + 28}px]`,
+    `h-[${Number(numericSeed.slice(2, 4)) + 16}px]`,
+    `ring-[${ringPx}.5px]`,
+    `shadow-[0_${spacePx}px_${spacePx + 2}px_#${hex6}]`,
+  ]
+}
+
 export function resolveMutationRoundConfigs(): MutationRoundConfig[] {
   return [
     {
@@ -43,6 +59,10 @@ export function resolveMutationRoundConfigs(): MutationRoundConfig[] {
     {
       name: 'complex-corpus',
       buildClassTokens: buildComplexCorpusClassTokens,
+    },
+    {
+      name: 'hex-arbitrary',
+      buildClassTokens: buildHexArbitraryClassTokens,
     },
   ]
 }

@@ -41,6 +41,20 @@ function buildHexScriptRoundConfigs() {
         ]
       },
     },
+    {
+      name: 'hex-arbitrary' as const,
+      buildClassTokens(seed: string) {
+        const numericSeed = seed.replace(/\D/g, '').padEnd(8, '0')
+        const hex = `${numericSeed.slice(0, 2)}00`
+        const textPx = Number(numericSeed.slice(0, 2)) + 46
+        const heightPx = Number(numericSeed.slice(2, 4)) + 28
+        return [
+          `bg-[#${hex}]`,
+          `text-[${textPx}px]`,
+          `h-[${heightPx}px]`,
+        ]
+      },
+    },
   ]
 }
 
@@ -253,6 +267,7 @@ export function buildDemoExtendedCases(baseCwd: string): WatchCase[] {
       sourceFile: path.resolve(baseCwd, 'demo/taro-webpack-tailwindcss-v4/src/pages/index/index.tsx'),
       verifyEscapedIn: ['js'],
       verifyClassLiteralIn: ['js'],
+      forbidBgHexTruncationIn: ['js'],
       roundConfigs: buildHexScriptRoundConfigs(),
       mutate(source, payload) {
         return mutateTsxScriptByReturnAnchor(source, payload)
