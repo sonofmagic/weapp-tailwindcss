@@ -1,5 +1,15 @@
 # weapp-tailwindcss
 
+## 4.10.0-beta.5
+
+### Patch Changes
+
+- 🐛 **Fix css-macro conditional comment generation for logical platform expressions.** [`84e3395`](https://github.com/sonofmagic/weapp-tailwindcss/commit/84e33954cbca5ce565301471469f75cf44fdb1dc) by @sonofmagic
+  - Normalize `ifdef/ifndef` conditions like `H5||APP` and `H5_||_APP` to the uni-app style `H5 || APP`.
+  - Keep escaped expressions (such as `H5\\_||\\_MP-WEIXIN`) as literals.
+  - Ensure emitted conditional comments are always valid paired blocks (`#ifdef/#endif` and `#ifndef/#endif`) without nested `#ifndef` expansion.
+  - Restore stable CSS output generation in uni-app scenarios using `ifdef-[...]` class macros.
+
 ## 4.10.0-beta.4
 
 ### Patch Changes
