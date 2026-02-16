@@ -31,11 +31,18 @@ interface ClassMutationPayload {
 interface StyleMutationPayload {
   marker: string
   styleNeedle: string
+  applyUtilities: string[]
+  expectedApplyDeclarations: string[]
 }
 
 interface MutationRoundConfig {
   name: MutationRoundName
   buildClassTokens: (seed: string) => string[]
+}
+
+interface StyleApplyValidation {
+  utilities: string[]
+  expectedDeclarations: string[]
 }
 
 interface MutationScenario extends ClassMutationPayload {
@@ -137,6 +144,8 @@ interface StyleMutationMetrics {
   outputStyle: string
   marker: string
   styleNeedle: string
+  applyUtilities: string[]
+  expectedApplyDeclarations: string[]
   hotUpdateOutputMs: number
   hotUpdateEffectiveMs: number
   rollbackOutputMs: number
@@ -198,6 +207,18 @@ interface WatchReport {
   summaryByMutationKind: Partial<Record<MutationKind, WatchSummary>>
   cases: WatchCaseMetrics[]
 }
+
+const DEFAULT_STYLE_APPLY_VALIDATION: StyleApplyValidation = {
+  utilities: ['font-bold', 'text-center'],
+  expectedDeclarations: ['font-weight:700', 'text-align:center'],
+}
+
+const STYLE_APPLY_UNSUPPORTED_CASES = new Set<ConcreteWatchCaseName>([
+  'uni-app-tailwindcss-v4',
+  'taro-vite-tailwindcss-v4',
+  'taro-webpack-tailwindcss-v4',
+  'taro-webpack',
+])
 
 function parseArg(flag: string, argv: string[]) {
   const index = argv.indexOf(flag)
@@ -609,6 +630,20 @@ function assertContainsOneOf(source: string, expected: string[], hint: string) {
   throw new Error(`${hint}: expected to contain one of ${expected.join(' | ')}`)
 }
 
+function escapeRegExp(value: string) {
+  return value.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
+}
+
+function findCssRuleBody(source: string, selector: string) {
+  const pattern = new RegExp(`${escapeRegExp(selector)}\\s*\\{([^}]*)\\}`, 'i')
+  const matched = source.match(pattern)
+  return matched?.[1]
+}
+
+function normalizeCssDeclaration(value: string) {
+  return value.replace(/\s+/g, '').toLowerCase()
+}
+
 function insertBeforeClosingTag(source: string, closingTag: string, snippet: string) {
   const index = source.lastIndexOf(closingTag)
   if (index === -1) {
@@ -635,7 +670,10 @@ function appendTrailingSnippet(source: string, snippet: string) {
 function createStyleRuleSnippet(payload: StyleMutationPayload) {
   const numericSeed = payload.marker.replace(/\D/g, '')
   const colorSeed = (numericSeed.slice(-6) || '123456').padStart(6, '0').slice(0, 6)
-  return `${payload.styleNeedle} { color: #${colorSeed}; }`
+  const applySnippet = payload.applyUtilities.length > 0
+    ? ` @apply ${payload.applyUtilities.join(' ')};`
+    : ''
+  return `${payload.styleNeedle} {${applySnippet} color: #${colorSeed}; }`
 }
 
 function mutateScriptByDataAnchor(source: string, dataAnchor: string, payload: ClassMutationPayload, indent = '    ') {
@@ -1486,8 +1524,14 @@ function buildBaselineArbitraryClassTokens(seed: string) {
 function buildComplexCorpusClassTokens(seed: string) {
   return [
     ...buildBaselineArbitraryClassTokens(seed),
+    '!mt-2',
+    '-translate-y-1',
+    'max-[712px]:p-[13px]',
+    'bg-[rgb(12,34,56)]',
+    'grid-rows-[auto_minmax(0,_1fr)]',
     'group-[:nth-of-type(3)_&]:block',
     '[@supports(display:grid)]:grid',
+    'supports-[backdrop-filter:blur(2px)]:backdrop-blur-[2px]',
     '[@media(any-hover:hover){&:hover}]:opacity-100',
     'data-[state=open]:opacity-100',
     'supports-[display:grid]:grid',
@@ -1570,9 +1614,14 @@ function createClassMutationScenario(
 function createStyleMutationPayload(watchCase: WatchCase): StyleMutationPayload {
   const seed = `${Date.now().toString().slice(-6)}${Math.floor(Math.random() * 1000).toString().padStart(3, '0')}`
   const marker = `tw-watch-style-${watchCase.name}-${seed}`
+  const applyValidation = STYLE_APPLY_UNSUPPORTED_CASES.has(watchCase.name)
+    ? undefined
+    : DEFAULT_STYLE_APPLY_VALIDATION
   return {
     marker,
     styleNeedle: `.${marker}`,
+    applyUtilities: applyValidation?.utilities ?? [],
+    expectedApplyDeclarations: applyValidation?.expectedDeclarations ?? [],
   }
 }
 
@@ -1924,6 +1973,20 @@ async function runStyleMutation(
 
   const updatedStyle = await fs.readFile(resolvedOutputStyle, 'utf8')
   assertContains(updatedStyle, payload.styleNeedle, `[${watchCase.label}] updated style output (${formatPath(resolvedOutputStyle)})`)
+  if (payload.expectedApplyDeclarations.length > 0) {
+    const updatedRuleBody = findCssRuleBody(updatedStyle, payload.styleNeedle)
+    if (!updatedRuleBody) {
+      throw new Error(`[${watchCase.label}] failed to locate style rule body for ${payload.styleNeedle}`)
+    }
+    const normalizedRuleBody = normalizeCssDeclaration(updatedRuleBody)
+    for (const expectedDeclaration of payload.expectedApplyDeclarations) {
+      if (!normalizedRuleBody.includes(normalizeCssDeclaration(expectedDeclaration))) {
+        throw new Error(
+          `[${watchCase.label}] style @apply declaration missing: ${expectedDeclaration}, rule=${payload.styleNeedle}`,
+        )
+      }
+    }
+  }
 
   const outputCandidateMtimesAfterHotUpdate = await collectOutputCandidateMtimes()
   const rollbackStartedAt = Date.now()
@@ -1976,6 +2039,8 @@ async function runStyleMutation(
     outputStyle: resolvedOutputStyle,
     marker: payload.marker,
     styleNeedle: payload.styleNeedle,
+    applyUtilities: payload.applyUtilities,
+    expectedApplyDeclarations: payload.expectedApplyDeclarations,
     hotUpdateOutputMs,
     hotUpdateEffectiveMs,
     rollbackOutputMs,

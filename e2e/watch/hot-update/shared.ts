@@ -69,6 +69,8 @@ interface StyleMutationMetric {
   outputStyle: string
   marker: string
   styleNeedle: string
+  applyUtilities: string[]
+  expectedApplyDeclarations: string[]
   hotUpdateOutputMs: number
   hotUpdateEffectiveMs: number
   rollbackOutputMs: number
@@ -122,6 +124,12 @@ const criticalDemoProjects = [
 ] as const
 
 const bothCases = new Set<ConcreteWatchCaseName>(['taro', 'uni'])
+const noApplyValidationCases = new Set<ConcreteWatchCaseName>([
+  'uni-app-tailwindcss-v4',
+  'taro-vite-tailwindcss-v4',
+  'taro-webpack-tailwindcss-v4',
+  'taro-webpack',
+])
 
 function toBoolEnv(name: string, fallback: boolean) {
   const value = process.env[name]
@@ -343,6 +351,12 @@ function assertHotUpdateReport(report: HotUpdateReport, target: WatchCaseName, m
     expect(item.classLiteral).toContain('space-y-2.')
     expect(item.classLiteral).toContain('w-[calc(100%_-_')
     expect(item.classLiteral).toContain('grid-cols-[200rpx_minmax(900rpx,_1fr)_')
+    expect(item.classLiteral).toContain('!mt-2')
+    expect(item.classLiteral).toContain('-translate-y-1')
+    expect(item.classLiteral).toContain('max-[712px]:p-[13px]')
+    expect(item.classLiteral).toContain('bg-[rgb(12,34,56)]')
+    expect(item.classLiteral).toContain('grid-rows-[auto_minmax(0,_1fr)]')
+    expect(item.classLiteral).toContain('supports-[backdrop-filter:blur(2px)]:backdrop-blur-[2px]')
     expect(item.classLiteral).toContain('after:ml-')
     expect(item.classLiteral).toContain('text-black/[0.')
     expect(item.classLiteral).toContain('ring-[1.')
@@ -384,6 +398,14 @@ function assertHotUpdateReport(report: HotUpdateReport, target: WatchCaseName, m
     if (styleMetric && styleMetric.mutationKind === 'style') {
       expect(styleMetric.outputStyle).toContain('.wxss')
       expect(styleMetric.styleNeedle).toContain('.tw-watch-style-')
+      if (noApplyValidationCases.has(item.name)) {
+        expect(styleMetric.applyUtilities.length).toBe(0)
+        expect(styleMetric.expectedApplyDeclarations.length).toBe(0)
+      }
+      else {
+        expect(styleMetric.applyUtilities.length).toBeGreaterThan(0)
+        expect(styleMetric.expectedApplyDeclarations.length).toBeGreaterThan(0)
+      }
       expect(styleMetric.hotUpdateEffectiveMs).toBeGreaterThan(0)
       expect(styleMetric.rollbackEffectiveMs).toBeGreaterThan(0)
       expect(styleMetric.hotUpdateEffectiveMs).toBeLessThanOrEqual(maxHotUpdateMs)
