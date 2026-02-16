@@ -14,8 +14,6 @@ import postcss from 'postcss'
 import { runLoaders } from 'promisify-loader-runner'
 import webpack from 'webpack'
 import { UnifiedWebpackPluginV5 } from '@/index'
-// @ts-ignore
-import { UnifiedWebpackPluginV5 as UnifiedWebpackPluginV5WithLoader } from '..'
 import { readAssets as _readAssets, compile, createLoader, getMemfsCompiler5 as getCompiler5, getErrors, getWarnings } from './helpers'
 
 function readAssets(...args: Parameters<typeof _readAssets>) {
@@ -296,7 +294,7 @@ describe.skipIf(!ci.isCI && os.platform() === 'win32')('webpack5 plugin', () => 
   it('common with loader', async () => {
     let timeStart: number
     let timeTaken: number
-    new UnifiedWebpackPluginV5WithLoader({
+    new UnifiedWebpackPluginV5({
       mainCssChunkMatcher(name: any) {
         return path.basename(name) === 'index.css'
       },

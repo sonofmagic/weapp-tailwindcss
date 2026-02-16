@@ -57,7 +57,10 @@ export function shouldTransformClassNameCandidate(
   }
 
   if (!classNameSet || classNameSet.size === 0) {
-    return false
+    if (!staleClassNameFallback) {
+      return false
+    }
+    return shouldFallbackEscapeClassName(candidate)
   }
 
   if (classNameSet.has(candidate)) {

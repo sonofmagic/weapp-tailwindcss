@@ -17,7 +17,7 @@ export function transformLiteralText(
 ): string | undefined {
   const allowDoubleQuotes = options.arbitraryValues?.allowDoubleQuotes
   const source = options.unescapeUnicode && literal.includes('\\u') ? decodeUnicode2(literal) : literal
-  if (!options.alwaysEscape && (!options.classNameSet || options.classNameSet.size === 0)) {
+  if (!options.alwaysEscape && (!options.classNameSet || options.classNameSet.size === 0) && !options.staleClassNameFallback) {
     return undefined
   }
   const candidates = splitCode(source, allowDoubleQuotes)

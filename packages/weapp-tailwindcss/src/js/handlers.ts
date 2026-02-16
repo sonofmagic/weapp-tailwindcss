@@ -95,7 +95,7 @@ export function replaceHandleValue(
   } = options
   const { classNameSet, alwaysEscape } = options
 
-  if (!alwaysEscape && (!classNameSet || classNameSet.size === 0)) {
+  if (!alwaysEscape && (!classNameSet || classNameSet.size === 0) && !options.staleClassNameFallback) {
     return undefined
   }
 

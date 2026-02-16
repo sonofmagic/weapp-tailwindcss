@@ -41,6 +41,7 @@ export function createContext(options: UserDefinedOptions = {}) {
 
   async function transformJs(rawJs: string, options: { runtimeSet?: Set<string> } & CreateJsHandlerOptions = {}) {
     await runtimeState.patchPromise
+    const hasRuntimeSetOption = Object.prototype.hasOwnProperty.call(options, 'runtimeSet')
     if (options?.runtimeSet) {
       runtimeSet = options.runtimeSet
     }
@@ -49,8 +50,10 @@ export function createContext(options: UserDefinedOptions = {}) {
         forceCollect: true,
       })
     }
+    const useStaleClassNameFallback = options.staleClassNameFallback
+      ?? !(hasRuntimeSetOption && options.runtimeSet instanceof Set && options.runtimeSet.size === 0)
     return await jsHandler(rawJs, runtimeSet, {
-      staleClassNameFallback: true,
+      staleClassNameFallback: useStaleClassNameFallback,
       ...options,
     })
   }

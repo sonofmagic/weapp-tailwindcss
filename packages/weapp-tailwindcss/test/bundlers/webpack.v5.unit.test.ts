@@ -286,7 +286,7 @@ describe('bundlers/webpack UnifiedWebpackPluginV5', () => {
 
     expect(currentContext.onStart).toHaveBeenCalledTimes(1)
     expect(currentContext.twPatcher.getClassSetSync).toHaveBeenCalledTimes(1)
-    expect(currentContext.twPatcher.extract).not.toHaveBeenCalled()
+    expect(currentContext.twPatcher.extract).toHaveBeenCalledTimes(1)
     expect(currentContext.templateHandler).toHaveBeenCalledTimes(1)
     expect(currentContext.jsHandler).toHaveBeenCalledTimes(1)
     expect(currentContext.styleHandler).toHaveBeenCalledTimes(1)
@@ -321,7 +321,7 @@ describe('bundlers/webpack UnifiedWebpackPluginV5', () => {
     expect(currentContext.onEnd).toHaveBeenCalledTimes(2)
     expect(currentContext.onUpdate).toHaveBeenCalledTimes(3)
     expect(currentContext.twPatcher.getClassSetSync).toHaveBeenCalledTimes(1)
-    expect(currentContext.twPatcher.extract).not.toHaveBeenCalled()
+    expect(currentContext.twPatcher.extract).toHaveBeenCalledTimes(1)
   })
 
   it('forwards rewriteCssImports options when tailwindcss v4 detected', () => {

@@ -57,7 +57,25 @@ describe('tailwindcss runtime class set collection', () => {
     expect(collected).toBe(freshExtractedSet)
     expect(collected.has('2xl:text-[red]')).toBe(true)
     expect(patcher.extract).toHaveBeenCalledTimes(1)
-    expect(patcher.getClassSetSync).not.toHaveBeenCalled()
+    expect(patcher.getClassSetSync).toHaveBeenCalledTimes(1)
+  })
+
+  it('falls back to sync set when force collecting but extract result is empty', async () => {
+    const syncSet = new Set(['bg-[length:200rpx_100rpx]'])
+    const patcher = createMockPatcher({
+      syncSet,
+      extractedSet: new Set<string>(),
+      fallbackSet: new Set(['fallback-only']),
+    })
+
+    const collected = await collectRuntimeClassSet(patcher, {
+      force: true,
+      skipRefresh: true,
+    })
+
+    expect(collected).toBe(syncSet)
+    expect(patcher.extract).toHaveBeenCalledTimes(1)
+    expect(patcher.getClassSetSync).toHaveBeenCalledTimes(1)
   })
 
   it('can still use sync set on non-force path when extract is unavailable', async () => {

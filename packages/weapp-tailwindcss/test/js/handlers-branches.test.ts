@@ -231,6 +231,41 @@ describe('replaceHandleValue branch coverage', () => {
     expect(token).toBeUndefined()
   })
 
+  it('falls back to escape arbitrary classes when classNameSet is missing but stale fallback is enabled', () => {
+    const literal = getLiteralPath('const arbitrary = \'w-[100px]\'', 'StringLiteral')
+    const token = replaceHandleValue(literal, {
+      escapeMap: MappingChars2String,
+      staleClassNameFallback: true,
+      needEscaped: true,
+    })
+
+    expect(token?.value).toBe('w-_b100px_B')
+  })
+
+  it('falls back to escape arbitrary classes when classNameSet is empty but stale fallback is enabled', () => {
+    const literal = getLiteralPath('const arbitrary = \'bg-[length:200rpx_100rpx]\'', 'StringLiteral')
+    const token = replaceHandleValue(literal, {
+      escapeMap: MappingChars2String,
+      classNameSet: new Set<string>(),
+      staleClassNameFallback: true,
+      needEscaped: true,
+    })
+
+    expect(token?.value).toBe('bg-_blength_c200rpx_100rpx_B')
+  })
+
+  it('still honours jsPreserveClass when stale fallback runs without classNameSet', () => {
+    const literal = getLiteralPath('const safe = \'biz-token-[alpha]\'', 'StringLiteral')
+    const token = replaceHandleValue(literal, {
+      escapeMap: MappingChars2String,
+      staleClassNameFallback: true,
+      jsPreserveClass: candidate => candidate.startsWith('biz-token'),
+      needEscaped: true,
+    })
+
+    expect(token).toBeUndefined()
+  })
+
   it('avoids emitting tokens when the source span collapses', () => {
     const literal = getLiteralPath('const collapsing = \'w-[100px]\'', 'StringLiteral')
     literal.node.start = 0

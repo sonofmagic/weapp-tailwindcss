@@ -253,6 +253,15 @@ async function collectRuntimeClassSet(
   }
 
   const task = (async () => {
+    // force 场景先抓一份 sync 快照作为兜底，避免 extract() 在某些环境返回空集合后
+    // 破坏本轮 JS/WXML 转译结果（例如构建链路中 class set 尚未落盘的瞬时状态）。
+    const preExtractSyncSet = options.force
+      ? tryGetRuntimeClassSetSync(activePatcher)
+      : undefined
+    if (preExtractSyncSet) {
+      debug('runtime class set snapshot via getClassSetSync() before extract(), size=%d', preExtractSyncSet.size)
+    }
+
     // 强制收集时优先走 extract()：
     // 在多构建/热更新场景下，sync class set 可能受上轮缓存影响而滞后，
     // 先用 extract() 能拿到更接近当前源码状态的类集合。
@@ -261,23 +270,31 @@ async function collectRuntimeClassSet(
     try {
       const result = await activePatcher.extract({ write: false })
       if (result?.classSet) {
-        if (preferExtract || result.classSet.size > 0) {
+        if (result.classSet.size > 0) {
           debug('runtime class set resolved via extract(), size=%d', result.classSet.size)
           return result.classSet
         }
-        debug('runtime class set from extract() is empty, fallback to sync/async class set')
+        if (preferExtract) {
+          debug('runtime class set from extract() is empty on force collect, fallback to sync/async class set')
+        }
+        else {
+          debug('runtime class set from extract() is empty, fallback to sync/async class set')
+        }
       }
     }
     catch (error) {
       debug('extract() failed, fallback to getClassSet(): %O', error)
     }
 
-    if (!preferExtract) {
-      const syncSet = tryGetRuntimeClassSetSync(activePatcher)
-      if (syncSet) {
-        debug('runtime class set resolved via getClassSetSync(), size=%d', syncSet.size)
-        return syncSet
-      }
+    if (preExtractSyncSet) {
+      debug('runtime class set fallback to pre-extract sync snapshot, size=%d', preExtractSyncSet.size)
+      return preExtractSyncSet
+    }
+
+    const syncSet = tryGetRuntimeClassSetSync(activePatcher)
+    if (syncSet) {
+      debug('runtime class set resolved via getClassSetSync(), size=%d', syncSet.size)
+      return syncSet
     }
 
     try {

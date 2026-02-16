@@ -376,7 +376,7 @@ describe('Runtime Hot Update', () => {
       expect(mockPatcher.extract).toHaveBeenCalled()
     })
 
-    it('RT-009: should use getClassSetSync when available for v3', async () => {
+    it('RT-009: should collect sync snapshot and still prefer extract when available for v3', async () => {
       const mockClassSet = new Set(['class-1'])
       const mockPatcher: TailwindcssPatcherLike = {
         packageInfo: {
@@ -398,8 +398,8 @@ describe('Runtime Hot Update', () => {
 
       expect(result).toBe(mockClassSet)
       expect(mockPatcher.getClassSetSync).toHaveBeenCalled()
-      // 由于同步获取成功，应该不会调用 extract
-      expect(mockPatcher.extract).not.toHaveBeenCalled()
+      // force 收集会优先尝试 extract，以保证拿到更新后的 class set
+      expect(mockPatcher.extract).toHaveBeenCalled()
     })
 
     it('should fallback to extract when getClassSetSync returns empty set', async () => {
