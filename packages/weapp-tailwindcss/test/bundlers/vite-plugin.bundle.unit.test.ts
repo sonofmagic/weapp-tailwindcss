@@ -72,7 +72,7 @@ describe('bundlers/vite UnifiedViteWeappTailwindcssPlugin bundle', () => {
     expect(currentContext.onStart).toHaveBeenCalledTimes(1)
     expect(currentContext.onEnd).toHaveBeenCalledTimes(1)
     expect(currentContext.twPatcher.extract).toHaveBeenCalledTimes(1)
-    expect(currentContext.twPatcher.getClassSetSync).not.toHaveBeenCalled()
+    expect(currentContext.twPatcher.getClassSetSync).toHaveBeenCalledTimes(1)
 
     expect(currentContext.templateHandler).toHaveBeenCalledTimes(1)
     expect((bundle['index.wxml'] as OutputAsset).source).toBe(`tpl:${html}`)
@@ -103,7 +103,7 @@ describe('bundlers/vite UnifiedViteWeappTailwindcssPlugin bundle', () => {
     expect(currentContext.onEnd).toHaveBeenCalledTimes(2)
     expect(currentContext.onUpdate).toHaveBeenCalledTimes(3)
     expect(currentContext.twPatcher.extract).toHaveBeenCalledTimes(1)
-    expect(currentContext.twPatcher.getClassSetSync).not.toHaveBeenCalled()
+    expect(currentContext.twPatcher.getClassSetSync).toHaveBeenCalledTimes(1)
   }, TEST_TIMEOUT_MS)
 
   it('refreshes runtime class set on source changes so new arbitrary classes in :class strings are escaped', async () => {
@@ -163,7 +163,7 @@ describe('bundlers/vite UnifiedViteWeappTailwindcssPlugin bundle', () => {
     expect(transformedCode).not.toContain('rounded-[92rpx]')
     expect(transformedCode).not.toContain('bg-[#213435]')
     expect(currentContext.twPatcher.extract).toHaveBeenCalledTimes(2)
-    expect(currentContext.twPatcher.getClassSetSync).not.toHaveBeenCalled()
+    expect(currentContext.twPatcher.getClassSetSync).toHaveBeenCalledTimes(2)
   }, TEST_TIMEOUT_MS)
 
   it('enables stale fallback in serve mode while allowing jsPreserveClass to keep business strings', async () => {
@@ -362,7 +362,7 @@ const fallback = "bg-[#434332] px-[32px]"
 
     expect(patchMock).toHaveBeenCalledTimes(1)
     expect(extractMock).toHaveBeenCalledTimes(1)
-    expect(getClassSetSyncMock).not.toHaveBeenCalled()
+    expect(getClassSetSyncMock).toHaveBeenCalledTimes(1)
     expect(getClassSetMock).not.toHaveBeenCalled()
     expect(jsHandlerMock).toHaveBeenCalledTimes(1)
 
