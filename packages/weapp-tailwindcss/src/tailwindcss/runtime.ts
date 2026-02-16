@@ -253,24 +253,37 @@ async function collectRuntimeClassSet(
   }
 
   const task = (async () => {
-    const syncSet = tryGetRuntimeClassSetSync(activePatcher)
-    if (syncSet) {
-      return syncSet
-    }
+    // 强制收集时优先走 extract()：
+    // 在多构建/热更新场景下，sync class set 可能受上轮缓存影响而滞后，
+    // 先用 extract() 能拿到更接近当前源码状态的类集合。
+    const preferExtract = options.force === true
 
     try {
       const result = await activePatcher.extract({ write: false })
       if (result?.classSet) {
-        return result.classSet
+        if (preferExtract || result.classSet.size > 0) {
+          debug('runtime class set resolved via extract(), size=%d', result.classSet.size)
+          return result.classSet
+        }
+        debug('runtime class set from extract() is empty, fallback to sync/async class set')
       }
     }
     catch (error) {
       debug('extract() failed, fallback to getClassSet(): %O', error)
     }
 
+    if (!preferExtract) {
+      const syncSet = tryGetRuntimeClassSetSync(activePatcher)
+      if (syncSet) {
+        debug('runtime class set resolved via getClassSetSync(), size=%d', syncSet.size)
+        return syncSet
+      }
+    }
+
     try {
       const fallbackSet = await Promise.resolve(activePatcher.getClassSet())
       if (fallbackSet) {
+        debug('runtime class set resolved via getClassSet(), size=%d', fallbackSet.size)
         return fallbackSet
       }
     }

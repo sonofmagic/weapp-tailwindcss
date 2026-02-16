@@ -71,8 +71,8 @@ describe('bundlers/vite UnifiedViteWeappTailwindcssPlugin bundle', () => {
 
     expect(currentContext.onStart).toHaveBeenCalledTimes(1)
     expect(currentContext.onEnd).toHaveBeenCalledTimes(1)
-    expect(currentContext.twPatcher.getClassSetSync).toHaveBeenCalledTimes(1)
-    expect(currentContext.twPatcher.extract).not.toHaveBeenCalled()
+    expect(currentContext.twPatcher.extract).toHaveBeenCalledTimes(1)
+    expect(currentContext.twPatcher.getClassSetSync).not.toHaveBeenCalled()
 
     expect(currentContext.templateHandler).toHaveBeenCalledTimes(1)
     expect((bundle['index.wxml'] as OutputAsset).source).toBe(`tpl:${html}`)
@@ -102,8 +102,8 @@ describe('bundlers/vite UnifiedViteWeappTailwindcssPlugin bundle', () => {
     expect(currentContext.onStart).toHaveBeenCalledTimes(2)
     expect(currentContext.onEnd).toHaveBeenCalledTimes(2)
     expect(currentContext.onUpdate).toHaveBeenCalledTimes(3)
-    expect(currentContext.twPatcher.getClassSetSync).toHaveBeenCalledTimes(1)
-    expect(currentContext.twPatcher.extract).not.toHaveBeenCalled()
+    expect(currentContext.twPatcher.extract).toHaveBeenCalledTimes(1)
+    expect(currentContext.twPatcher.getClassSetSync).not.toHaveBeenCalled()
   }, TEST_TIMEOUT_MS)
 
   it('refreshes runtime class set on source changes so new arbitrary classes in :class strings are escaped', async () => {
@@ -162,7 +162,8 @@ describe('bundlers/vite UnifiedViteWeappTailwindcssPlugin bundle', () => {
     expect(transformedCode).toContain(replaceWxml('bg-[#213435]'))
     expect(transformedCode).not.toContain('rounded-[92rpx]')
     expect(transformedCode).not.toContain('bg-[#213435]')
-    expect(currentContext.twPatcher.getClassSetSync).toHaveBeenCalledTimes(2)
+    expect(currentContext.twPatcher.extract).toHaveBeenCalledTimes(2)
+    expect(currentContext.twPatcher.getClassSetSync).not.toHaveBeenCalled()
   }, TEST_TIMEOUT_MS)
 
   it('enables stale fallback in serve mode while allowing jsPreserveClass to keep business strings', async () => {
@@ -360,9 +361,9 @@ const fallback = "bg-[#434332] px-[32px]"
     await generateBundle?.call(postPlugin, {} as any, bundle)
 
     expect(patchMock).toHaveBeenCalledTimes(1)
-    expect(getClassSetSyncMock).toHaveBeenCalledTimes(1)
+    expect(extractMock).toHaveBeenCalledTimes(1)
+    expect(getClassSetSyncMock).not.toHaveBeenCalled()
     expect(getClassSetMock).not.toHaveBeenCalled()
-    expect(extractMock).not.toHaveBeenCalled()
     expect(jsHandlerMock).toHaveBeenCalledTimes(1)
 
     const code = (bundle['index.js'] as OutputChunk).code

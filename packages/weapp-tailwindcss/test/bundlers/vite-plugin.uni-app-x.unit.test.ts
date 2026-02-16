@@ -61,8 +61,8 @@ describe('bundlers/vite UnifiedViteWeappTailwindcssPlugin uni-app-x', () => {
 
     const nvueBuildStart = nvuePlugin.buildStart as any
     await nvueBuildStart?.call(nvuePlugin)
-    expect(currentContext.twPatcher.getClassSetSync).toHaveBeenCalledTimes(1)
     expect(currentContext.twPatcher.extract).toHaveBeenCalledTimes(1)
+    expect(currentContext.twPatcher.getClassSetSync).not.toHaveBeenCalled()
     const nvueTransform = nvuePlugin.transform as any
     const nvueResult = await nvueTransform?.call(nvuePlugin, 'console.log("x")', 'App.nvue')
     expect(transformUVueMock).toHaveBeenCalledWith('console.log("x")', 'App.nvue', currentContext.jsHandler, runtimeSet)
@@ -84,8 +84,8 @@ describe('bundlers/vite UnifiedViteWeappTailwindcssPlugin uni-app-x', () => {
 
     const generateBundle = postPlugin.generateBundle as any
     await generateBundle?.call(postPlugin, {} as any, bundle)
-    expect(currentContext.twPatcher.getClassSetSync).toHaveBeenCalledTimes(2)
     expect(currentContext.twPatcher.extract).toHaveBeenCalledTimes(2)
+    expect(currentContext.twPatcher.getClassSetSync).not.toHaveBeenCalled()
 
     expect(currentContext.jsHandler).toHaveBeenCalledWith(
       'const answer = "text-[#424242]"',
@@ -178,7 +178,8 @@ describe('bundlers/vite UnifiedViteWeappTailwindcssPlugin uni-app-x', () => {
         'Component.uvue',
       )
       expect(firstResult?.code).toContain(hashedExisting)
-      expect(currentContext.twPatcher.getClassSetSync).toHaveBeenCalledTimes(2)
+      expect(currentContext.twPatcher.extract).toHaveBeenCalledTimes(2)
+      expect(currentContext.twPatcher.getClassSetSync).not.toHaveBeenCalled()
 
       runtimeIndex = 1
       const secondResult = await (nvuePlugin.transform as any)?.call(
@@ -187,7 +188,8 @@ describe('bundlers/vite UnifiedViteWeappTailwindcssPlugin uni-app-x', () => {
         'Component.uvue',
       )
       expect(secondResult?.code).toContain(hashedNew)
-      expect(currentContext.twPatcher.getClassSetSync).toHaveBeenCalledTimes(3)
+      expect(currentContext.twPatcher.extract).toHaveBeenCalledTimes(3)
+      expect(currentContext.twPatcher.getClassSetSync).not.toHaveBeenCalled()
     }
     finally {
       transformUVueMock.mockImplementation(
@@ -252,7 +254,8 @@ describe('bundlers/vite UnifiedViteWeappTailwindcssPlugin uni-app-x', () => {
         'Component.uvue',
       )
       expect(firstResult?.code).toContain(hashedExisting)
-      expect(currentContext.twPatcher.getClassSetSync).toHaveBeenCalledTimes(2)
+      expect(currentContext.twPatcher.extract).toHaveBeenCalledTimes(2)
+      expect(currentContext.twPatcher.getClassSetSync).not.toHaveBeenCalled()
 
       runtimeIndex = 1
       const secondResult = await (nvuePlugin.transform as any)?.call(
@@ -261,7 +264,8 @@ describe('bundlers/vite UnifiedViteWeappTailwindcssPlugin uni-app-x', () => {
         'Component.uvue',
       )
       expect(secondResult?.code).toContain(hashedNew)
-      expect(currentContext.twPatcher.getClassSetSync).toHaveBeenCalledTimes(3)
+      expect(currentContext.twPatcher.extract).toHaveBeenCalledTimes(3)
+      expect(currentContext.twPatcher.getClassSetSync).not.toHaveBeenCalled()
     }
     finally {
       transformUVueMock.mockImplementation(
@@ -306,18 +310,21 @@ describe('bundlers/vite UnifiedViteWeappTailwindcssPlugin uni-app-x', () => {
     await (postPlugin.configResolved as any)?.call(postPlugin, config)
     await (nvuePlugin.buildStart as any)?.call(nvuePlugin)
 
-    currentContext.twPatcher.getClassSetSync.mockClear()
+    currentContext.twPatcher.extract.mockClear()
     runtimeIndex = 1
     await (nvuePlugin.handleHotUpdate as any)?.call(nvuePlugin, { file: '/src/pages/foo.uvue' } as HmrContext)
-    expect(currentContext.twPatcher.getClassSetSync).toHaveBeenCalledTimes(1)
+    expect(currentContext.twPatcher.extract).toHaveBeenCalledTimes(1)
+    expect(currentContext.twPatcher.getClassSetSync).not.toHaveBeenCalled()
 
-    currentContext.twPatcher.getClassSetSync.mockClear()
+    currentContext.twPatcher.extract.mockClear()
     runtimeIndex = 1
     await (nvuePlugin.handleHotUpdate as any)?.call(nvuePlugin, { file: '/src/pages/foo.nvue' } as HmrContext)
-    expect(currentContext.twPatcher.getClassSetSync).toHaveBeenCalledTimes(1)
+    expect(currentContext.twPatcher.extract).toHaveBeenCalledTimes(1)
+    expect(currentContext.twPatcher.getClassSetSync).not.toHaveBeenCalled()
 
-    currentContext.twPatcher.getClassSetSync.mockClear()
+    currentContext.twPatcher.extract.mockClear()
     await (nvuePlugin.handleHotUpdate as any)?.call(nvuePlugin, { file: '/src/pages/foo.vue' } as HmrContext)
+    expect(currentContext.twPatcher.extract).not.toHaveBeenCalled()
     expect(currentContext.twPatcher.getClassSetSync).not.toHaveBeenCalled()
   }, TEST_TIMEOUT_MS)
 
@@ -358,16 +365,19 @@ describe('bundlers/vite UnifiedViteWeappTailwindcssPlugin uni-app-x', () => {
     await (nvuePlugin.buildStart as any)?.call(nvuePlugin)
 
     runtimeIndex = 1
-    currentContext.twPatcher.getClassSetSync.mockClear()
+    currentContext.twPatcher.extract.mockClear()
     await (nvuePlugin.watchChange as any)?.call(nvuePlugin, '/src/pages/foo.uvue')
-    expect(currentContext.twPatcher.getClassSetSync).toHaveBeenCalledTimes(1)
+    expect(currentContext.twPatcher.extract).toHaveBeenCalledTimes(1)
+    expect(currentContext.twPatcher.getClassSetSync).not.toHaveBeenCalled()
 
-    currentContext.twPatcher.getClassSetSync.mockClear()
+    currentContext.twPatcher.extract.mockClear()
     await (nvuePlugin.watchChange as any)?.call(nvuePlugin, '/src/pages/foo.nvue')
-    expect(currentContext.twPatcher.getClassSetSync).toHaveBeenCalledTimes(1)
+    expect(currentContext.twPatcher.extract).toHaveBeenCalledTimes(1)
+    expect(currentContext.twPatcher.getClassSetSync).not.toHaveBeenCalled()
 
-    currentContext.twPatcher.getClassSetSync.mockClear()
+    currentContext.twPatcher.extract.mockClear()
     await (nvuePlugin.watchChange as any)?.call(nvuePlugin, '/src/pages/foo.vue')
+    expect(currentContext.twPatcher.extract).not.toHaveBeenCalled()
     expect(currentContext.twPatcher.getClassSetSync).not.toHaveBeenCalled()
   }, TEST_TIMEOUT_MS)
 
@@ -408,10 +418,11 @@ describe('bundlers/vite UnifiedViteWeappTailwindcssPlugin uni-app-x', () => {
     await (postPlugin.configResolved as any)?.call(postPlugin, config)
     await (nvuePlugin.buildStart as any)?.call(nvuePlugin)
 
-    currentContext.twPatcher.getClassSetSync.mockClear()
+    currentContext.twPatcher.extract.mockClear()
     runtimeIndex = 1
     await (nvuePlugin.transform as any)?.call(nvuePlugin, '<template></template>', 'App.uvue')
-    expect(currentContext.twPatcher.getClassSetSync).toHaveBeenCalledTimes(1)
+    expect(currentContext.twPatcher.extract).toHaveBeenCalledTimes(1)
+    expect(currentContext.twPatcher.getClassSetSync).not.toHaveBeenCalled()
     expect(transformUVueMock).toHaveBeenCalledWith('<template></template>', 'App.uvue', currentContext.jsHandler, runtimeSets[1])
   }, TEST_TIMEOUT_MS)
 })
