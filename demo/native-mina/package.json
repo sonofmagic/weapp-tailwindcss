@@ -51,7 +51,7 @@
     "miniprogram-api-typings": "catalog:miniApiTypings",
     "npm-run-all2": "^8.0.4",
     "postcss": "^8.4.49",
-    "postcss-loader": "^8.1.1",
+    "postcss-loader": "^8.2.1",
     "postcss-rem-to-responsive-pixel": "catalog:postcssRem602",
     "postcss-rpx-transform": "catalog:postcssRpx",
     "replace-ext": "^2.0.0",
@@ -68,7 +68,7 @@
     "weapp-tailwindcss-children": "catalog:weappChildren",
     "webpack": "^5.105.2",
     "webpack-cli": "^6.0.1",
-    "webpack-sources": "^3.2.3"
+    "webpack-sources": "^3.3.4"
   },
   "bugs": {
     "url": "https://github.com/sonofmagic/weapp-tailwindcss/issues"
