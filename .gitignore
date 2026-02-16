@@ -107,6 +107,7 @@ stats/*.html
 
 packages/weapp-tailwindcss/stats/*.html
 benchmark/app/public/data/
+e2e/benchmark/e2e-watch-hmr/
 
 .DS_Store
 coverage-vitest
