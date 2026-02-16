@@ -1,0 +1,554 @@
+{
+  "generatedAt": "2026-02-16T06:46:27.589Z",
+  "repositoryRoot": "weapp-tailwindcss",
+  "options": {
+    "caseName": "mina",
+    "timeoutMs": 240000,
+    "pollMs": 240,
+    "skipBuild": true,
+    "quietSass": true,
+    "maxHotUpdateMs": 15000
+  },
+  "summary": {
+    "count": 1,
+    "hotUpdateAvgMs": 241,
+    "hotUpdateMaxMs": 241,
+    "hotUpdateMinMs": 241,
+    "rollbackAvgMs": 241,
+    "rollbackMaxMs": 241,
+    "rollbackMinMs": 241
+  },
+  "summaryByRound": {
+    "baseline-arbitrary": {
+      "count": 1,
+      "hotUpdateAvgMs": 242,
+      "hotUpdateMaxMs": 242,
+      "hotUpdateMinMs": 242,
+      "rollbackAvgMs": 242,
+      "rollbackMaxMs": 242,
+      "rollbackMinMs": 242
+    },
+    "complex-corpus": {
+      "count": 1,
+      "hotUpdateAvgMs": 241,
+      "hotUpdateMaxMs": 241,
+      "hotUpdateMinMs": 241,
+      "rollbackAvgMs": 241,
+      "rollbackMaxMs": 241,
+      "rollbackMinMs": 241
+    }
+  },
+  "summaryByGroup": {
+    "demo": {
+      "count": 1,
+      "hotUpdateAvgMs": 241,
+      "hotUpdateMaxMs": 241,
+      "hotUpdateMinMs": 241,
+      "rollbackAvgMs": 241,
+      "rollbackMaxMs": 241,
+      "rollbackMinMs": 241
+    },
+    "apps": {
+      "count": 0,
+      "hotUpdateAvgMs": 0,
+      "hotUpdateMaxMs": 0,
+      "hotUpdateMinMs": 0,
+      "rollbackAvgMs": 0,
+      "rollbackMaxMs": 0,
+      "rollbackMinMs": 0
+    }
+  },
+  "summaryByProject": {
+    "demo/native-mina": {
+      "count": 1,
+      "hotUpdateAvgMs": 241,
+      "hotUpdateMaxMs": 241,
+      "hotUpdateMinMs": 241,
+      "rollbackAvgMs": 241,
+      "rollbackMaxMs": 241,
+      "rollbackMinMs": 241
+    }
+  },
+  "summaryByMutationKind": {
+    "template": {
+      "count": 1,
+      "hotUpdateAvgMs": 241,
+      "hotUpdateMaxMs": 241,
+      "hotUpdateMinMs": 241,
+      "rollbackAvgMs": 241,
+      "rollbackMaxMs": 241,
+      "rollbackMinMs": 241
+    },
+    "script": {
+      "count": 1,
+      "hotUpdateAvgMs": 241,
+      "hotUpdateMaxMs": 241,
+      "hotUpdateMinMs": 241,
+      "rollbackAvgMs": 240,
+      "rollbackMaxMs": 240,
+      "rollbackMinMs": 240
+    },
+    "style": {
+      "count": 1,
+      "hotUpdateAvgMs": 242,
+      "hotUpdateMaxMs": 242,
+      "hotUpdateMinMs": 242,
+      "rollbackAvgMs": 241,
+      "rollbackMaxMs": 241,
+      "rollbackMinMs": 241
+    }
+  },
+  "cases": [
+    {
+      "name": "mina",
+      "label": "demo/native-mina",
+      "project": "demo/native-mina",
+      "projectGroup": "demo",
+      "marker": "tw-watch-mina-template-complex-corpus-3855540",
+      "classLiteral": "text-[23.3855540px] space-y-2.5 w-[calc(100%_-_3855540px)] grid-cols-[200rpx_minmax(900rpx,_1fr)_3855540px] after:ml-[0.3855540px] text-black/[0.38] ring-[1.0px] group-[:nth-of-type(3)_&]:block [@supports(display:grid)]:grid [@media(any-hover:hover){&:hover}]:opacity-100 data-[state=open]:opacity-100 supports-[display:grid]:grid [mask-type:luminance] [--watch-hmr-offset:3855540px]",
+      "classTokens": [
+        "text-[23.3855540px]",
+        "space-y-2.5",
+        "w-[calc(100%_-_3855540px)]",
+        "grid-cols-[200rpx_minmax(900rpx,_1fr)_3855540px]",
+        "after:ml-[0.3855540px]",
+        "text-black/[0.38]",
+        "ring-[1.0px]",
+        "group-[:nth-of-type(3)_&]:block",
+        "[@supports(display:grid)]:grid",
+        "[@media(any-hover:hover){&:hover}]:opacity-100",
+        "data-[state=open]:opacity-100",
+        "supports-[display:grid]:grid",
+        "[mask-type:luminance]",
+        "[--watch-hmr-offset:3855540px]"
+      ],
+      "escapedClasses": [
+        "text-_b23_d3855540px_B",
+        "space-y-2_d5",
+        "w-_bcalc_p100_v_-_3855540px_P_B",
+        "grid-cols-_b200rpx_minmax_p900rpx_m_1fr_P_3855540px_B",
+        "after_cml-_b0_d3855540px_B",
+        "text-black_f_b0_d38_B",
+        "ring-_b1_d0px_B",
+        "group-_b_cnth-of-type_p3_P__n_B_cblock",
+        "_b_tsupports_pdisplay_cgrid_P_B_cgrid",
+        "_b_tmedia_pany-hover_chover_P_k_n_chover_K_B_copacity-100",
+        "data-_bstate_zopen_B_copacity-100",
+        "supports-_bdisplay_cgrid_B_cgrid",
+        "_bmask-type_cluminance_B",
+        "_b--watch-hmr-offset_c3855540px_B"
+      ],
+      "rounds": [
+        {
+          "roundName": "baseline-arbitrary",
+          "marker": "tw-watch-mina-template-baseline-arbitrary-3850690",
+          "classLiteral": "text-[23.3850690px] space-y-2.5 w-[calc(100%_-_3850690px)] grid-cols-[200rpx_minmax(900rpx,_1fr)_3850690px] after:ml-[0.3850690px] text-black/[0.38] ring-[1.0px]",
+          "classTokens": [
+            "text-[23.3850690px]",
+            "space-y-2.5",
+            "w-[calc(100%_-_3850690px)]",
+            "grid-cols-[200rpx_minmax(900rpx,_1fr)_3850690px]",
+            "after:ml-[0.3850690px]",
+            "text-black/[0.38]",
+            "ring-[1.0px]"
+          ],
+          "escapedClasses": [
+            "text-_b23_d3850690px_B",
+            "space-y-2_d5",
+            "w-_bcalc_p100_v_-_3850690px_P_B",
+            "grid-cols-_b200rpx_minmax_p900rpx_m_1fr_P_3850690px_B",
+            "after_cml-_b0_d3850690px_B",
+            "text-black_f_b0_d38_B",
+            "ring-_b1_d0px_B"
+          ],
+          "hotUpdateOutputMs": 242,
+          "hotUpdateEffectiveMs": 242,
+          "rollbackOutputMs": 242,
+          "rollbackEffectiveMs": 242,
+          "totalMs": 485
+        },
+        {
+          "roundName": "complex-corpus",
+          "marker": "tw-watch-mina-template-complex-corpus-3855540",
+          "classLiteral": "text-[23.3855540px] space-y-2.5 w-[calc(100%_-_3855540px)] grid-cols-[200rpx_minmax(900rpx,_1fr)_3855540px] after:ml-[0.3855540px] text-black/[0.38] ring-[1.0px] group-[:nth-of-type(3)_&]:block [@supports(display:grid)]:grid [@media(any-hover:hover){&:hover}]:opacity-100 data-[state=open]:opacity-100 supports-[display:grid]:grid [mask-type:luminance] [--watch-hmr-offset:3855540px]",
+          "classTokens": [
+            "text-[23.3855540px]",
+            "space-y-2.5",
+            "w-[calc(100%_-_3855540px)]",
+            "grid-cols-[200rpx_minmax(900rpx,_1fr)_3855540px]",
+            "after:ml-[0.3855540px]",
+            "text-black/[0.38]",
+            "ring-[1.0px]",
+            "group-[:nth-of-type(3)_&]:block",
+            "[@supports(display:grid)]:grid",
+            "[@media(any-hover:hover){&:hover}]:opacity-100",
+            "data-[state=open]:opacity-100",
+            "supports-[display:grid]:grid",
+            "[mask-type:luminance]",
+            "[--watch-hmr-offset:3855540px]"
+          ],
+          "escapedClasses": [
+            "text-_b23_d3855540px_B",
+            "space-y-2_d5",
+            "w-_bcalc_p100_v_-_3855540px_P_B",
+            "grid-cols-_b200rpx_minmax_p900rpx_m_1fr_P_3855540px_B",
+            "after_cml-_b0_d3855540px_B",
+            "text-black_f_b0_d38_B",
+            "ring-_b1_d0px_B",
+            "group-_b_cnth-of-type_p3_P__n_B_cblock",
+            "_b_tsupports_pdisplay_cgrid_P_B_cgrid",
+            "_b_tmedia_pany-hover_chover_P_k_n_chover_K_B_copacity-100",
+            "data-_bstate_zopen_B_copacity-100",
+            "supports-_bdisplay_cgrid_B_cgrid",
+            "_bmask-type_cluminance_B",
+            "_b--watch-hmr-offset_c3855540px_B"
+          ],
+          "hotUpdateOutputMs": 241,
+          "hotUpdateEffectiveMs": 241,
+          "rollbackOutputMs": 241,
+          "rollbackEffectiveMs": 241,
+          "totalMs": 483
+        }
+      ],
+      "roundComparison": {
+        "baselineRoundName": "baseline-arbitrary",
+        "candidateRoundName": "complex-corpus",
+        "hotUpdateDeltaMs": -1,
+        "rollbackDeltaMs": -1,
+        "hotUpdateRatio": 0.996,
+        "rollbackRatio": 0.996
+      },
+      "verifyEscapedIn": [
+        "wxml"
+      ],
+      "verifyClassLiteralIn": [],
+      "globalStyleOutputs": [
+        "/Users/yangqiming/Documents/GitHub/weapp-tailwindcss/demo/native-mina/dist/app.wxss"
+      ],
+      "mutationMetrics": [
+        {
+          "mutationKind": "template",
+          "sourceFile": "/Users/yangqiming/Documents/GitHub/weapp-tailwindcss/demo/native-mina/src/pages/index/index.wxml",
+          "marker": "tw-watch-mina-template-complex-corpus-3855540",
+          "classLiteral": "text-[23.3855540px] space-y-2.5 w-[calc(100%_-_3855540px)] grid-cols-[200rpx_minmax(900rpx,_1fr)_3855540px] after:ml-[0.3855540px] text-black/[0.38] ring-[1.0px] group-[:nth-of-type(3)_&]:block [@supports(display:grid)]:grid [@media(any-hover:hover){&:hover}]:opacity-100 data-[state=open]:opacity-100 supports-[display:grid]:grid [mask-type:luminance] [--watch-hmr-offset:3855540px]",
+          "classTokens": [
+            "text-[23.3855540px]",
+            "space-y-2.5",
+            "w-[calc(100%_-_3855540px)]",
+            "grid-cols-[200rpx_minmax(900rpx,_1fr)_3855540px]",
+            "after:ml-[0.3855540px]",
+            "text-black/[0.38]",
+            "ring-[1.0px]",
+            "group-[:nth-of-type(3)_&]:block",
+            "[@supports(display:grid)]:grid",
+            "[@media(any-hover:hover){&:hover}]:opacity-100",
+            "data-[state=open]:opacity-100",
+            "supports-[display:grid]:grid",
+            "[mask-type:luminance]",
+            "[--watch-hmr-offset:3855540px]"
+          ],
+          "escapedClasses": [
+            "text-_b23_d3855540px_B",
+            "space-y-2_d5",
+            "w-_bcalc_p100_v_-_3855540px_P_B",
+            "grid-cols-_b200rpx_minmax_p900rpx_m_1fr_P_3855540px_B",
+            "after_cml-_b0_d3855540px_B",
+            "text-black_f_b0_d38_B",
+            "ring-_b1_d0px_B",
+            "group-_b_cnth-of-type_p3_P__n_B_cblock",
+            "_b_tsupports_pdisplay_cgrid_P_B_cgrid",
+            "_b_tmedia_pany-hover_chover_P_k_n_chover_K_B_copacity-100",
+            "data-_bstate_zopen_B_copacity-100",
+            "supports-_bdisplay_cgrid_B_cgrid",
+            "_bmask-type_cluminance_B",
+            "_b--watch-hmr-offset_c3855540px_B"
+          ],
+          "rounds": [
+            {
+              "roundName": "baseline-arbitrary",
+              "marker": "tw-watch-mina-template-baseline-arbitrary-3850690",
+              "classLiteral": "text-[23.3850690px] space-y-2.5 w-[calc(100%_-_3850690px)] grid-cols-[200rpx_minmax(900rpx,_1fr)_3850690px] after:ml-[0.3850690px] text-black/[0.38] ring-[1.0px]",
+              "classTokens": [
+                "text-[23.3850690px]",
+                "space-y-2.5",
+                "w-[calc(100%_-_3850690px)]",
+                "grid-cols-[200rpx_minmax(900rpx,_1fr)_3850690px]",
+                "after:ml-[0.3850690px]",
+                "text-black/[0.38]",
+                "ring-[1.0px]"
+              ],
+              "escapedClasses": [
+                "text-_b23_d3850690px_B",
+                "space-y-2_d5",
+                "w-_bcalc_p100_v_-_3850690px_P_B",
+                "grid-cols-_b200rpx_minmax_p900rpx_m_1fr_P_3850690px_B",
+                "after_cml-_b0_d3850690px_B",
+                "text-black_f_b0_d38_B",
+                "ring-_b1_d0px_B"
+              ],
+              "hotUpdateOutputMs": 242,
+              "hotUpdateEffectiveMs": 242,
+              "rollbackOutputMs": 242,
+              "rollbackEffectiveMs": 242,
+              "totalMs": 485
+            },
+            {
+              "roundName": "complex-corpus",
+              "marker": "tw-watch-mina-template-complex-corpus-3855540",
+              "classLiteral": "text-[23.3855540px] space-y-2.5 w-[calc(100%_-_3855540px)] grid-cols-[200rpx_minmax(900rpx,_1fr)_3855540px] after:ml-[0.3855540px] text-black/[0.38] ring-[1.0px] group-[:nth-of-type(3)_&]:block [@supports(display:grid)]:grid [@media(any-hover:hover){&:hover}]:opacity-100 data-[state=open]:opacity-100 supports-[display:grid]:grid [mask-type:luminance] [--watch-hmr-offset:3855540px]",
+              "classTokens": [
+                "text-[23.3855540px]",
+                "space-y-2.5",
+                "w-[calc(100%_-_3855540px)]",
+                "grid-cols-[200rpx_minmax(900rpx,_1fr)_3855540px]",
+                "after:ml-[0.3855540px]",
+                "text-black/[0.38]",
+                "ring-[1.0px]",
+                "group-[:nth-of-type(3)_&]:block",
+                "[@supports(display:grid)]:grid",
+                "[@media(any-hover:hover){&:hover}]:opacity-100",
+                "data-[state=open]:opacity-100",
+                "supports-[display:grid]:grid",
+                "[mask-type:luminance]",
+                "[--watch-hmr-offset:3855540px]"
+              ],
+              "escapedClasses": [
+                "text-_b23_d3855540px_B",
+                "space-y-2_d5",
+                "w-_bcalc_p100_v_-_3855540px_P_B",
+                "grid-cols-_b200rpx_minmax_p900rpx_m_1fr_P_3855540px_B",
+                "after_cml-_b0_d3855540px_B",
+                "text-black_f_b0_d38_B",
+                "ring-_b1_d0px_B",
+                "group-_b_cnth-of-type_p3_P__n_B_cblock",
+                "_b_tsupports_pdisplay_cgrid_P_B_cgrid",
+                "_b_tmedia_pany-hover_chover_P_k_n_chover_K_B_copacity-100",
+                "data-_bstate_zopen_B_copacity-100",
+                "supports-_bdisplay_cgrid_B_cgrid",
+                "_bmask-type_cluminance_B",
+                "_b--watch-hmr-offset_c3855540px_B"
+              ],
+              "hotUpdateOutputMs": 241,
+              "hotUpdateEffectiveMs": 241,
+              "rollbackOutputMs": 241,
+              "rollbackEffectiveMs": 241,
+              "totalMs": 483
+            }
+          ],
+          "roundComparison": {
+            "baselineRoundName": "baseline-arbitrary",
+            "candidateRoundName": "complex-corpus",
+            "hotUpdateDeltaMs": -1,
+            "rollbackDeltaMs": -1,
+            "hotUpdateRatio": 0.996,
+            "rollbackRatio": 0.996
+          },
+          "verifyEscapedIn": [
+            "wxml"
+          ],
+          "verifyClassLiteralIn": [],
+          "globalStyleOutputs": [
+            "/Users/yangqiming/Documents/GitHub/weapp-tailwindcss/demo/native-mina/dist/app.wxss"
+          ],
+          "minRequiredGlobalStyleEscapedClasses": 1,
+          "verifiedGlobalStyleEscapedClasses": [
+            "text-_b23_d3850690px_B",
+            "space-y-2_d5",
+            "w-_bcalc_p100_v_-_3850690px_P_B",
+            "text-_b23_d3855540px_B",
+            "w-_bcalc_p100_v_-_3855540px_P_B"
+          ],
+          "hotUpdateOutputMs": 241,
+          "hotUpdateEffectiveMs": 241,
+          "rollbackOutputMs": 241,
+          "rollbackEffectiveMs": 241
+        },
+        {
+          "mutationKind": "script",
+          "sourceFile": "/Users/yangqiming/Documents/GitHub/weapp-tailwindcss/demo/native-mina/src/pages/index/index.js",
+          "marker": "tw-watch-mina-script-complex-corpus-3865210",
+          "classLiteral": "text-[23.3865210px] space-y-2.5 w-[calc(100%_-_3865210px)] grid-cols-[200rpx_minmax(900rpx,_1fr)_3865210px] after:ml-[0.3865210px] text-black/[0.38] ring-[1.0px] group-[:nth-of-type(3)_&]:block [@supports(display:grid)]:grid [@media(any-hover:hover){&:hover}]:opacity-100 data-[state=open]:opacity-100 supports-[display:grid]:grid [mask-type:luminance] [--watch-hmr-offset:3865210px]",
+          "classTokens": [
+            "text-[23.3865210px]",
+            "space-y-2.5",
+            "w-[calc(100%_-_3865210px)]",
+            "grid-cols-[200rpx_minmax(900rpx,_1fr)_3865210px]",
+            "after:ml-[0.3865210px]",
+            "text-black/[0.38]",
+            "ring-[1.0px]",
+            "group-[:nth-of-type(3)_&]:block",
+            "[@supports(display:grid)]:grid",
+            "[@media(any-hover:hover){&:hover}]:opacity-100",
+            "data-[state=open]:opacity-100",
+            "supports-[display:grid]:grid",
+            "[mask-type:luminance]",
+            "[--watch-hmr-offset:3865210px]"
+          ],
+          "escapedClasses": [
+            "text-_b23_d3865210px_B",
+            "space-y-2_d5",
+            "w-_bcalc_p100_v_-_3865210px_P_B",
+            "grid-cols-_b200rpx_minmax_p900rpx_m_1fr_P_3865210px_B",
+            "after_cml-_b0_d3865210px_B",
+            "text-black_f_b0_d38_B",
+            "ring-_b1_d0px_B",
+            "group-_b_cnth-of-type_p3_P__n_B_cblock",
+            "_b_tsupports_pdisplay_cgrid_P_B_cgrid",
+            "_b_tmedia_pany-hover_chover_P_k_n_chover_K_B_copacity-100",
+            "data-_bstate_zopen_B_copacity-100",
+            "supports-_bdisplay_cgrid_B_cgrid",
+            "_bmask-type_cluminance_B",
+            "_b--watch-hmr-offset_c3865210px_B"
+          ],
+          "rounds": [
+            {
+              "roundName": "baseline-arbitrary",
+              "marker": "tw-watch-mina-script-baseline-arbitrary-3860370",
+              "classLiteral": "text-[23.3860370px] space-y-2.5 w-[calc(100%_-_3860370px)] grid-cols-[200rpx_minmax(900rpx,_1fr)_3860370px] after:ml-[0.3860370px] text-black/[0.38] ring-[1.0px]",
+              "classTokens": [
+                "text-[23.3860370px]",
+                "space-y-2.5",
+                "w-[calc(100%_-_3860370px)]",
+                "grid-cols-[200rpx_minmax(900rpx,_1fr)_3860370px]",
+                "after:ml-[0.3860370px]",
+                "text-black/[0.38]",
+                "ring-[1.0px]"
+              ],
+              "escapedClasses": [
+                "text-_b23_d3860370px_B",
+                "space-y-2_d5",
+                "w-_bcalc_p100_v_-_3860370px_P_B",
+                "grid-cols-_b200rpx_minmax_p900rpx_m_1fr_P_3860370px_B",
+                "after_cml-_b0_d3860370px_B",
+                "text-black_f_b0_d38_B",
+                "ring-_b1_d0px_B"
+              ],
+              "hotUpdateOutputMs": 241,
+              "hotUpdateEffectiveMs": 241,
+              "rollbackOutputMs": 241,
+              "rollbackEffectiveMs": 241,
+              "totalMs": 483
+            },
+            {
+              "roundName": "complex-corpus",
+              "marker": "tw-watch-mina-script-complex-corpus-3865210",
+              "classLiteral": "text-[23.3865210px] space-y-2.5 w-[calc(100%_-_3865210px)] grid-cols-[200rpx_minmax(900rpx,_1fr)_3865210px] after:ml-[0.3865210px] text-black/[0.38] ring-[1.0px] group-[:nth-of-type(3)_&]:block [@supports(display:grid)]:grid [@media(any-hover:hover){&:hover}]:opacity-100 data-[state=open]:opacity-100 supports-[display:grid]:grid [mask-type:luminance] [--watch-hmr-offset:3865210px]",
+              "classTokens": [
+                "text-[23.3865210px]",
+                "space-y-2.5",
+                "w-[calc(100%_-_3865210px)]",
+                "grid-cols-[200rpx_minmax(900rpx,_1fr)_3865210px]",
+                "after:ml-[0.3865210px]",
+                "text-black/[0.38]",
+                "ring-[1.0px]",
+                "group-[:nth-of-type(3)_&]:block",
+                "[@supports(display:grid)]:grid",
+                "[@media(any-hover:hover){&:hover}]:opacity-100",
+                "data-[state=open]:opacity-100",
+                "supports-[display:grid]:grid",
+                "[mask-type:luminance]",
+                "[--watch-hmr-offset:3865210px]"
+              ],
+              "escapedClasses": [
+                "text-_b23_d3865210px_B",
+                "space-y-2_d5",
+                "w-_bcalc_p100_v_-_3865210px_P_B",
+                "grid-cols-_b200rpx_minmax_p900rpx_m_1fr_P_3865210px_B",
+                "after_cml-_b0_d3865210px_B",
+                "text-black_f_b0_d38_B",
+                "ring-_b1_d0px_B",
+                "group-_b_cnth-of-type_p3_P__n_B_cblock",
+                "_b_tsupports_pdisplay_cgrid_P_B_cgrid",
+                "_b_tmedia_pany-hover_chover_P_k_n_chover_K_B_copacity-100",
+                "data-_bstate_zopen_B_copacity-100",
+                "supports-_bdisplay_cgrid_B_cgrid",
+                "_bmask-type_cluminance_B",
+                "_b--watch-hmr-offset_c3865210px_B"
+              ],
+              "hotUpdateOutputMs": 241,
+              "hotUpdateEffectiveMs": 241,
+              "rollbackOutputMs": 240,
+              "rollbackEffectiveMs": 240,
+              "totalMs": 482
+            }
+          ],
+          "roundComparison": {
+            "baselineRoundName": "baseline-arbitrary",
+            "candidateRoundName": "complex-corpus",
+            "hotUpdateDeltaMs": 0,
+            "rollbackDeltaMs": -1,
+            "hotUpdateRatio": 1,
+            "rollbackRatio": 0.996
+          },
+          "verifyEscapedIn": [],
+          "verifyClassLiteralIn": [
+            "js"
+          ],
+          "globalStyleOutputs": [
+            "/Users/yangqiming/Documents/GitHub/weapp-tailwindcss/demo/native-mina/dist/app.wxss"
+          ],
+          "minRequiredGlobalStyleEscapedClasses": 1,
+          "verifiedGlobalStyleEscapedClasses": [
+            "text-_b23_d3860370px_B",
+            "w-_bcalc_p100_v_-_3860370px_P_B",
+            "grid-cols-_b200rpx_minmax_p900rpx_m_1fr_P_3860370px_B",
+            "text-_b23_d3865210px_B",
+            "w-_bcalc_p100_v_-_3865210px_P_B",
+            "grid-cols-_b200rpx_minmax_p900rpx_m_1fr_P_3865210px_B"
+          ],
+          "hotUpdateOutputMs": 241,
+          "hotUpdateEffectiveMs": 241,
+          "rollbackOutputMs": 240,
+          "rollbackEffectiveMs": 240
+        },
+        {
+          "mutationKind": "style",
+          "sourceFile": "/Users/yangqiming/Documents/GitHub/weapp-tailwindcss/demo/native-mina/src/pages/index/index.scss",
+          "outputStyle": "/Users/yangqiming/Documents/GitHub/weapp-tailwindcss/demo/native-mina/dist/pages/index/index.wxss",
+          "marker": "tw-watch-style-mina-387003567",
+          "styleNeedle": ".tw-watch-style-mina-387003567",
+          "hotUpdateOutputMs": 242,
+          "hotUpdateEffectiveMs": 242,
+          "rollbackOutputMs": 241,
+          "rollbackEffectiveMs": 241,
+          "rollbackNeedleCleared": true
+        }
+      ],
+      "summaryByMutationKind": {
+        "template": {
+          "count": 1,
+          "hotUpdateAvgMs": 241,
+          "hotUpdateMaxMs": 241,
+          "hotUpdateMinMs": 241,
+          "rollbackAvgMs": 241,
+          "rollbackMaxMs": 241,
+          "rollbackMinMs": 241
+        },
+        "script": {
+          "count": 1,
+          "hotUpdateAvgMs": 241,
+          "hotUpdateMaxMs": 241,
+          "hotUpdateMinMs": 241,
+          "rollbackAvgMs": 240,
+          "rollbackMaxMs": 240,
+          "rollbackMinMs": 240
+        },
+        "style": {
+          "count": 1,
+          "hotUpdateAvgMs": 242,
+          "hotUpdateMaxMs": 242,
+          "hotUpdateMinMs": 242,
+          "rollbackAvgMs": 241,
+          "rollbackMaxMs": 241,
+          "rollbackMinMs": 241
+        }
+      },
+      "initialReadyMs": 1687,
+      "hotUpdateOutputMs": 241,
+      "hotUpdateEffectiveMs": 241,
+      "rollbackOutputMs": 241,
+      "rollbackEffectiveMs": 241,
+      "totalMs": 4110
+    }
+  ]
+}

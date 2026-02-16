@@ -1,0 +1,554 @@
+{
+  "generatedAt": "2026-02-16T06:37:00.865Z",
+  "repositoryRoot": "weapp-tailwindcss",
+  "options": {
+    "caseName": "uni-app-vue3-vite",
+    "timeoutMs": 240000,
+    "pollMs": 240,
+    "skipBuild": true,
+    "quietSass": true,
+    "maxHotUpdateMs": 15000
+  },
+  "summary": {
+    "count": 1,
+    "hotUpdateAvgMs": 725,
+    "hotUpdateMaxMs": 725,
+    "hotUpdateMinMs": 725,
+    "rollbackAvgMs": 483,
+    "rollbackMaxMs": 483,
+    "rollbackMinMs": 483
+  },
+  "summaryByRound": {
+    "baseline-arbitrary": {
+      "count": 1,
+      "hotUpdateAvgMs": 1449,
+      "hotUpdateMaxMs": 1449,
+      "hotUpdateMinMs": 1449,
+      "rollbackAvgMs": 483,
+      "rollbackMaxMs": 483,
+      "rollbackMinMs": 483
+    },
+    "complex-corpus": {
+      "count": 1,
+      "hotUpdateAvgMs": 725,
+      "hotUpdateMaxMs": 725,
+      "hotUpdateMinMs": 725,
+      "rollbackAvgMs": 483,
+      "rollbackMaxMs": 483,
+      "rollbackMinMs": 483
+    }
+  },
+  "summaryByGroup": {
+    "demo": {
+      "count": 1,
+      "hotUpdateAvgMs": 725,
+      "hotUpdateMaxMs": 725,
+      "hotUpdateMinMs": 725,
+      "rollbackAvgMs": 483,
+      "rollbackMaxMs": 483,
+      "rollbackMinMs": 483
+    },
+    "apps": {
+      "count": 0,
+      "hotUpdateAvgMs": 0,
+      "hotUpdateMaxMs": 0,
+      "hotUpdateMinMs": 0,
+      "rollbackAvgMs": 0,
+      "rollbackMaxMs": 0,
+      "rollbackMinMs": 0
+    }
+  },
+  "summaryByProject": {
+    "demo/uni-app-vue3-vite": {
+      "count": 1,
+      "hotUpdateAvgMs": 725,
+      "hotUpdateMaxMs": 725,
+      "hotUpdateMinMs": 725,
+      "rollbackAvgMs": 483,
+      "rollbackMaxMs": 483,
+      "rollbackMinMs": 483
+    }
+  },
+  "summaryByMutationKind": {
+    "template": {
+      "count": 1,
+      "hotUpdateAvgMs": 725,
+      "hotUpdateMaxMs": 725,
+      "hotUpdateMinMs": 725,
+      "rollbackAvgMs": 483,
+      "rollbackMaxMs": 483,
+      "rollbackMinMs": 483
+    },
+    "script": {
+      "count": 1,
+      "hotUpdateAvgMs": 483,
+      "hotUpdateMaxMs": 483,
+      "hotUpdateMinMs": 483,
+      "rollbackAvgMs": 482,
+      "rollbackMaxMs": 482,
+      "rollbackMinMs": 482
+    },
+    "style": {
+      "count": 1,
+      "hotUpdateAvgMs": 483,
+      "hotUpdateMaxMs": 483,
+      "hotUpdateMinMs": 483,
+      "rollbackAvgMs": 483,
+      "rollbackMaxMs": 483,
+      "rollbackMinMs": 483
+    }
+  },
+  "cases": [
+    {
+      "name": "uni-app-vue3-vite",
+      "label": "demo/uni-app-vue3-vite",
+      "project": "demo/uni-app-vue3-vite",
+      "projectGroup": "demo",
+      "marker": "tw-watch-uni-app-vue3-vite-template-complex-corpus-8114560",
+      "classLiteral": "text-[23.8114560px] space-y-2.5 w-[calc(100%_-_8114560px)] grid-cols-[200rpx_minmax(900rpx,_1fr)_8114560px] after:ml-[0.8114560px] text-black/[0.81] ring-[1.0px] group-[:nth-of-type(3)_&]:block [@supports(display:grid)]:grid [@media(any-hover:hover){&:hover}]:opacity-100 data-[state=open]:opacity-100 supports-[display:grid]:grid [mask-type:luminance] [--watch-hmr-offset:8114560px]",
+      "classTokens": [
+        "text-[23.8114560px]",
+        "space-y-2.5",
+        "w-[calc(100%_-_8114560px)]",
+        "grid-cols-[200rpx_minmax(900rpx,_1fr)_8114560px]",
+        "after:ml-[0.8114560px]",
+        "text-black/[0.81]",
+        "ring-[1.0px]",
+        "group-[:nth-of-type(3)_&]:block",
+        "[@supports(display:grid)]:grid",
+        "[@media(any-hover:hover){&:hover}]:opacity-100",
+        "data-[state=open]:opacity-100",
+        "supports-[display:grid]:grid",
+        "[mask-type:luminance]",
+        "[--watch-hmr-offset:8114560px]"
+      ],
+      "escapedClasses": [
+        "text-_b23_d8114560px_B",
+        "space-y-2_d5",
+        "w-_bcalc_p100_v_-_8114560px_P_B",
+        "grid-cols-_b200rpx_minmax_p900rpx_m_1fr_P_8114560px_B",
+        "after_cml-_b0_d8114560px_B",
+        "text-black_f_b0_d81_B",
+        "ring-_b1_d0px_B",
+        "group-_b_cnth-of-type_p3_P__n_B_cblock",
+        "_b_tsupports_pdisplay_cgrid_P_B_cgrid",
+        "_b_tmedia_pany-hover_chover_P_k_n_chover_K_B_copacity-100",
+        "data-_bstate_zopen_B_copacity-100",
+        "supports-_bdisplay_cgrid_B_cgrid",
+        "_bmask-type_cluminance_B",
+        "_b--watch-hmr-offset_c8114560px_B"
+      ],
+      "rounds": [
+        {
+          "roundName": "baseline-arbitrary",
+          "marker": "tw-watch-uni-app-vue3-vite-template-baseline-arbitrary-8095220",
+          "classLiteral": "text-[23.8095220px] space-y-2.5 w-[calc(100%_-_8095220px)] grid-cols-[200rpx_minmax(900rpx,_1fr)_8095220px] after:ml-[0.8095220px] text-black/[0.80] ring-[1.0px]",
+          "classTokens": [
+            "text-[23.8095220px]",
+            "space-y-2.5",
+            "w-[calc(100%_-_8095220px)]",
+            "grid-cols-[200rpx_minmax(900rpx,_1fr)_8095220px]",
+            "after:ml-[0.8095220px]",
+            "text-black/[0.80]",
+            "ring-[1.0px]"
+          ],
+          "escapedClasses": [
+            "text-_b23_d8095220px_B",
+            "space-y-2_d5",
+            "w-_bcalc_p100_v_-_8095220px_P_B",
+            "grid-cols-_b200rpx_minmax_p900rpx_m_1fr_P_8095220px_B",
+            "after_cml-_b0_d8095220px_B",
+            "text-black_f_b0_d80_B",
+            "ring-_b1_d0px_B"
+          ],
+          "hotUpdateOutputMs": 1449,
+          "hotUpdateEffectiveMs": 1449,
+          "rollbackOutputMs": 483,
+          "rollbackEffectiveMs": 483,
+          "totalMs": 1934
+        },
+        {
+          "roundName": "complex-corpus",
+          "marker": "tw-watch-uni-app-vue3-vite-template-complex-corpus-8114560",
+          "classLiteral": "text-[23.8114560px] space-y-2.5 w-[calc(100%_-_8114560px)] grid-cols-[200rpx_minmax(900rpx,_1fr)_8114560px] after:ml-[0.8114560px] text-black/[0.81] ring-[1.0px] group-[:nth-of-type(3)_&]:block [@supports(display:grid)]:grid [@media(any-hover:hover){&:hover}]:opacity-100 data-[state=open]:opacity-100 supports-[display:grid]:grid [mask-type:luminance] [--watch-hmr-offset:8114560px]",
+          "classTokens": [
+            "text-[23.8114560px]",
+            "space-y-2.5",
+            "w-[calc(100%_-_8114560px)]",
+            "grid-cols-[200rpx_minmax(900rpx,_1fr)_8114560px]",
+            "after:ml-[0.8114560px]",
+            "text-black/[0.81]",
+            "ring-[1.0px]",
+            "group-[:nth-of-type(3)_&]:block",
+            "[@supports(display:grid)]:grid",
+            "[@media(any-hover:hover){&:hover}]:opacity-100",
+            "data-[state=open]:opacity-100",
+            "supports-[display:grid]:grid",
+            "[mask-type:luminance]",
+            "[--watch-hmr-offset:8114560px]"
+          ],
+          "escapedClasses": [
+            "text-_b23_d8114560px_B",
+            "space-y-2_d5",
+            "w-_bcalc_p100_v_-_8114560px_P_B",
+            "grid-cols-_b200rpx_minmax_p900rpx_m_1fr_P_8114560px_B",
+            "after_cml-_b0_d8114560px_B",
+            "text-black_f_b0_d81_B",
+            "ring-_b1_d0px_B",
+            "group-_b_cnth-of-type_p3_P__n_B_cblock",
+            "_b_tsupports_pdisplay_cgrid_P_B_cgrid",
+            "_b_tmedia_pany-hover_chover_P_k_n_chover_K_B_copacity-100",
+            "data-_bstate_zopen_B_copacity-100",
+            "supports-_bdisplay_cgrid_B_cgrid",
+            "_bmask-type_cluminance_B",
+            "_b--watch-hmr-offset_c8114560px_B"
+          ],
+          "hotUpdateOutputMs": 725,
+          "hotUpdateEffectiveMs": 725,
+          "rollbackOutputMs": 483,
+          "rollbackEffectiveMs": 483,
+          "totalMs": 1209
+        }
+      ],
+      "roundComparison": {
+        "baselineRoundName": "baseline-arbitrary",
+        "candidateRoundName": "complex-corpus",
+        "hotUpdateDeltaMs": -724,
+        "rollbackDeltaMs": 0,
+        "hotUpdateRatio": 0.5,
+        "rollbackRatio": 1
+      },
+      "verifyEscapedIn": [
+        "wxml"
+      ],
+      "verifyClassLiteralIn": [],
+      "globalStyleOutputs": [
+        "/Users/yangqiming/Documents/GitHub/weapp-tailwindcss/demo/uni-app-vue3-vite/dist/dev/mp-weixin/pages/index/index.wxss",
+        "/Users/yangqiming/Documents/GitHub/weapp-tailwindcss/demo/uni-app-vue3-vite/dist/dev/mp-weixin/app.wxss"
+      ],
+      "mutationMetrics": [
+        {
+          "mutationKind": "template",
+          "sourceFile": "/Users/yangqiming/Documents/GitHub/weapp-tailwindcss/demo/uni-app-vue3-vite/src/pages/index/index.vue",
+          "marker": "tw-watch-uni-app-vue3-vite-template-complex-corpus-8114560",
+          "classLiteral": "text-[23.8114560px] space-y-2.5 w-[calc(100%_-_8114560px)] grid-cols-[200rpx_minmax(900rpx,_1fr)_8114560px] after:ml-[0.8114560px] text-black/[0.81] ring-[1.0px] group-[:nth-of-type(3)_&]:block [@supports(display:grid)]:grid [@media(any-hover:hover){&:hover}]:opacity-100 data-[state=open]:opacity-100 supports-[display:grid]:grid [mask-type:luminance] [--watch-hmr-offset:8114560px]",
+          "classTokens": [
+            "text-[23.8114560px]",
+            "space-y-2.5",
+            "w-[calc(100%_-_8114560px)]",
+            "grid-cols-[200rpx_minmax(900rpx,_1fr)_8114560px]",
+            "after:ml-[0.8114560px]",
+            "text-black/[0.81]",
+            "ring-[1.0px]",
+            "group-[:nth-of-type(3)_&]:block",
+            "[@supports(display:grid)]:grid",
+            "[@media(any-hover:hover){&:hover}]:opacity-100",
+            "data-[state=open]:opacity-100",
+            "supports-[display:grid]:grid",
+            "[mask-type:luminance]",
+            "[--watch-hmr-offset:8114560px]"
+          ],
+          "escapedClasses": [
+            "text-_b23_d8114560px_B",
+            "space-y-2_d5",
+            "w-_bcalc_p100_v_-_8114560px_P_B",
+            "grid-cols-_b200rpx_minmax_p900rpx_m_1fr_P_8114560px_B",
+            "after_cml-_b0_d8114560px_B",
+            "text-black_f_b0_d81_B",
+            "ring-_b1_d0px_B",
+            "group-_b_cnth-of-type_p3_P__n_B_cblock",
+            "_b_tsupports_pdisplay_cgrid_P_B_cgrid",
+            "_b_tmedia_pany-hover_chover_P_k_n_chover_K_B_copacity-100",
+            "data-_bstate_zopen_B_copacity-100",
+            "supports-_bdisplay_cgrid_B_cgrid",
+            "_bmask-type_cluminance_B",
+            "_b--watch-hmr-offset_c8114560px_B"
+          ],
+          "rounds": [
+            {
+              "roundName": "baseline-arbitrary",
+              "marker": "tw-watch-uni-app-vue3-vite-template-baseline-arbitrary-8095220",
+              "classLiteral": "text-[23.8095220px] space-y-2.5 w-[calc(100%_-_8095220px)] grid-cols-[200rpx_minmax(900rpx,_1fr)_8095220px] after:ml-[0.8095220px] text-black/[0.80] ring-[1.0px]",
+              "classTokens": [
+                "text-[23.8095220px]",
+                "space-y-2.5",
+                "w-[calc(100%_-_8095220px)]",
+                "grid-cols-[200rpx_minmax(900rpx,_1fr)_8095220px]",
+                "after:ml-[0.8095220px]",
+                "text-black/[0.80]",
+                "ring-[1.0px]"
+              ],
+              "escapedClasses": [
+                "text-_b23_d8095220px_B",
+                "space-y-2_d5",
+                "w-_bcalc_p100_v_-_8095220px_P_B",
+                "grid-cols-_b200rpx_minmax_p900rpx_m_1fr_P_8095220px_B",
+                "after_cml-_b0_d8095220px_B",
+                "text-black_f_b0_d80_B",
+                "ring-_b1_d0px_B"
+              ],
+              "hotUpdateOutputMs": 1449,
+              "hotUpdateEffectiveMs": 1449,
+              "rollbackOutputMs": 483,
+              "rollbackEffectiveMs": 483,
+              "totalMs": 1934
+            },
+            {
+              "roundName": "complex-corpus",
+              "marker": "tw-watch-uni-app-vue3-vite-template-complex-corpus-8114560",
+              "classLiteral": "text-[23.8114560px] space-y-2.5 w-[calc(100%_-_8114560px)] grid-cols-[200rpx_minmax(900rpx,_1fr)_8114560px] after:ml-[0.8114560px] text-black/[0.81] ring-[1.0px] group-[:nth-of-type(3)_&]:block [@supports(display:grid)]:grid [@media(any-hover:hover){&:hover}]:opacity-100 data-[state=open]:opacity-100 supports-[display:grid]:grid [mask-type:luminance] [--watch-hmr-offset:8114560px]",
+              "classTokens": [
+                "text-[23.8114560px]",
+                "space-y-2.5",
+                "w-[calc(100%_-_8114560px)]",
+                "grid-cols-[200rpx_minmax(900rpx,_1fr)_8114560px]",
+                "after:ml-[0.8114560px]",
+                "text-black/[0.81]",
+                "ring-[1.0px]",
+                "group-[:nth-of-type(3)_&]:block",
+                "[@supports(display:grid)]:grid",
+                "[@media(any-hover:hover){&:hover}]:opacity-100",
+                "data-[state=open]:opacity-100",
+                "supports-[display:grid]:grid",
+                "[mask-type:luminance]",
+                "[--watch-hmr-offset:8114560px]"
+              ],
+              "escapedClasses": [
+                "text-_b23_d8114560px_B",
+                "space-y-2_d5",
+                "w-_bcalc_p100_v_-_8114560px_P_B",
+                "grid-cols-_b200rpx_minmax_p900rpx_m_1fr_P_8114560px_B",
+                "after_cml-_b0_d8114560px_B",
+                "text-black_f_b0_d81_B",
+                "ring-_b1_d0px_B",
+                "group-_b_cnth-of-type_p3_P__n_B_cblock",
+                "_b_tsupports_pdisplay_cgrid_P_B_cgrid",
+                "_b_tmedia_pany-hover_chover_P_k_n_chover_K_B_copacity-100",
+                "data-_bstate_zopen_B_copacity-100",
+                "supports-_bdisplay_cgrid_B_cgrid",
+                "_bmask-type_cluminance_B",
+                "_b--watch-hmr-offset_c8114560px_B"
+              ],
+              "hotUpdateOutputMs": 725,
+              "hotUpdateEffectiveMs": 725,
+              "rollbackOutputMs": 483,
+              "rollbackEffectiveMs": 483,
+              "totalMs": 1209
+            }
+          ],
+          "roundComparison": {
+            "baselineRoundName": "baseline-arbitrary",
+            "candidateRoundName": "complex-corpus",
+            "hotUpdateDeltaMs": -724,
+            "rollbackDeltaMs": 0,
+            "hotUpdateRatio": 0.5,
+            "rollbackRatio": 1
+          },
+          "verifyEscapedIn": [
+            "wxml"
+          ],
+          "verifyClassLiteralIn": [],
+          "globalStyleOutputs": [
+            "/Users/yangqiming/Documents/GitHub/weapp-tailwindcss/demo/uni-app-vue3-vite/dist/dev/mp-weixin/pages/index/index.wxss",
+            "/Users/yangqiming/Documents/GitHub/weapp-tailwindcss/demo/uni-app-vue3-vite/dist/dev/mp-weixin/app.wxss"
+          ],
+          "minRequiredGlobalStyleEscapedClasses": 0,
+          "verifiedGlobalStyleEscapedClasses": [
+            "text-_b23_d8114560px_B",
+            "space-y-2_d5",
+            "w-_bcalc_p100_v_-_8114560px_P_B"
+          ],
+          "hotUpdateOutputMs": 725,
+          "hotUpdateEffectiveMs": 725,
+          "rollbackOutputMs": 483,
+          "rollbackEffectiveMs": 483
+        },
+        {
+          "mutationKind": "script",
+          "sourceFile": "/Users/yangqiming/Documents/GitHub/weapp-tailwindcss/demo/uni-app-vue3-vite/src/pages/index/index.vue",
+          "marker": "tw-watch-uni-app-vue3-vite-script-complex-corpus-8138760",
+          "classLiteral": "text-[23.8138760px] space-y-2.5 w-[calc(100%_-_8138760px)] grid-cols-[200rpx_minmax(900rpx,_1fr)_8138760px] after:ml-[0.8138760px] text-black/[0.81] ring-[1.0px] group-[:nth-of-type(3)_&]:block [@supports(display:grid)]:grid [@media(any-hover:hover){&:hover}]:opacity-100 data-[state=open]:opacity-100 supports-[display:grid]:grid [mask-type:luminance] [--watch-hmr-offset:8138760px]",
+          "classTokens": [
+            "text-[23.8138760px]",
+            "space-y-2.5",
+            "w-[calc(100%_-_8138760px)]",
+            "grid-cols-[200rpx_minmax(900rpx,_1fr)_8138760px]",
+            "after:ml-[0.8138760px]",
+            "text-black/[0.81]",
+            "ring-[1.0px]",
+            "group-[:nth-of-type(3)_&]:block",
+            "[@supports(display:grid)]:grid",
+            "[@media(any-hover:hover){&:hover}]:opacity-100",
+            "data-[state=open]:opacity-100",
+            "supports-[display:grid]:grid",
+            "[mask-type:luminance]",
+            "[--watch-hmr-offset:8138760px]"
+          ],
+          "escapedClasses": [
+            "text-_b23_d8138760px_B",
+            "space-y-2_d5",
+            "w-_bcalc_p100_v_-_8138760px_P_B",
+            "grid-cols-_b200rpx_minmax_p900rpx_m_1fr_P_8138760px_B",
+            "after_cml-_b0_d8138760px_B",
+            "text-black_f_b0_d81_B",
+            "ring-_b1_d0px_B",
+            "group-_b_cnth-of-type_p3_P__n_B_cblock",
+            "_b_tsupports_pdisplay_cgrid_P_B_cgrid",
+            "_b_tmedia_pany-hover_chover_P_k_n_chover_K_B_copacity-100",
+            "data-_bstate_zopen_B_copacity-100",
+            "supports-_bdisplay_cgrid_B_cgrid",
+            "_bmask-type_cluminance_B",
+            "_b--watch-hmr-offset_c8138760px_B"
+          ],
+          "rounds": [
+            {
+              "roundName": "baseline-arbitrary",
+              "marker": "tw-watch-uni-app-vue3-vite-script-baseline-arbitrary-8126660",
+              "classLiteral": "text-[23.8126660px] space-y-2.5 w-[calc(100%_-_8126660px)] grid-cols-[200rpx_minmax(900rpx,_1fr)_8126660px] after:ml-[0.8126660px] text-black/[0.81] ring-[1.0px]",
+              "classTokens": [
+                "text-[23.8126660px]",
+                "space-y-2.5",
+                "w-[calc(100%_-_8126660px)]",
+                "grid-cols-[200rpx_minmax(900rpx,_1fr)_8126660px]",
+                "after:ml-[0.8126660px]",
+                "text-black/[0.81]",
+                "ring-[1.0px]"
+              ],
+              "escapedClasses": [
+                "text-_b23_d8126660px_B",
+                "space-y-2_d5",
+                "w-_bcalc_p100_v_-_8126660px_P_B",
+                "grid-cols-_b200rpx_minmax_p900rpx_m_1fr_P_8126660px_B",
+                "after_cml-_b0_d8126660px_B",
+                "text-black_f_b0_d81_B",
+                "ring-_b1_d0px_B"
+              ],
+              "hotUpdateOutputMs": 725,
+              "hotUpdateEffectiveMs": 726,
+              "rollbackOutputMs": 483,
+              "rollbackEffectiveMs": 483,
+              "totalMs": 1209
+            },
+            {
+              "roundName": "complex-corpus",
+              "marker": "tw-watch-uni-app-vue3-vite-script-complex-corpus-8138760",
+              "classLiteral": "text-[23.8138760px] space-y-2.5 w-[calc(100%_-_8138760px)] grid-cols-[200rpx_minmax(900rpx,_1fr)_8138760px] after:ml-[0.8138760px] text-black/[0.81] ring-[1.0px] group-[:nth-of-type(3)_&]:block [@supports(display:grid)]:grid [@media(any-hover:hover){&:hover}]:opacity-100 data-[state=open]:opacity-100 supports-[display:grid]:grid [mask-type:luminance] [--watch-hmr-offset:8138760px]",
+              "classTokens": [
+                "text-[23.8138760px]",
+                "space-y-2.5",
+                "w-[calc(100%_-_8138760px)]",
+                "grid-cols-[200rpx_minmax(900rpx,_1fr)_8138760px]",
+                "after:ml-[0.8138760px]",
+                "text-black/[0.81]",
+                "ring-[1.0px]",
+                "group-[:nth-of-type(3)_&]:block",
+                "[@supports(display:grid)]:grid",
+                "[@media(any-hover:hover){&:hover}]:opacity-100",
+                "data-[state=open]:opacity-100",
+                "supports-[display:grid]:grid",
+                "[mask-type:luminance]",
+                "[--watch-hmr-offset:8138760px]"
+              ],
+              "escapedClasses": [
+                "text-_b23_d8138760px_B",
+                "space-y-2_d5",
+                "w-_bcalc_p100_v_-_8138760px_P_B",
+                "grid-cols-_b200rpx_minmax_p900rpx_m_1fr_P_8138760px_B",
+                "after_cml-_b0_d8138760px_B",
+                "text-black_f_b0_d81_B",
+                "ring-_b1_d0px_B",
+                "group-_b_cnth-of-type_p3_P__n_B_cblock",
+                "_b_tsupports_pdisplay_cgrid_P_B_cgrid",
+                "_b_tmedia_pany-hover_chover_P_k_n_chover_K_B_copacity-100",
+                "data-_bstate_zopen_B_copacity-100",
+                "supports-_bdisplay_cgrid_B_cgrid",
+                "_bmask-type_cluminance_B",
+                "_b--watch-hmr-offset_c8138760px_B"
+              ],
+              "hotUpdateOutputMs": 483,
+              "hotUpdateEffectiveMs": 483,
+              "rollbackOutputMs": 482,
+              "rollbackEffectiveMs": 482,
+              "totalMs": 966
+            }
+          ],
+          "roundComparison": {
+            "baselineRoundName": "baseline-arbitrary",
+            "candidateRoundName": "complex-corpus",
+            "hotUpdateDeltaMs": -243,
+            "rollbackDeltaMs": -1,
+            "hotUpdateRatio": 0.665,
+            "rollbackRatio": 0.998
+          },
+          "verifyEscapedIn": [],
+          "verifyClassLiteralIn": [
+            "js"
+          ],
+          "globalStyleOutputs": [
+            "/Users/yangqiming/Documents/GitHub/weapp-tailwindcss/demo/uni-app-vue3-vite/dist/dev/mp-weixin/pages/index/index.wxss",
+            "/Users/yangqiming/Documents/GitHub/weapp-tailwindcss/demo/uni-app-vue3-vite/dist/dev/mp-weixin/app.wxss"
+          ],
+          "minRequiredGlobalStyleEscapedClasses": 0,
+          "verifiedGlobalStyleEscapedClasses": [
+            "text-_b23_d8126660px_B",
+            "space-y-2_d5",
+            "w-_bcalc_p100_v_-_8126660px_P_B",
+            "text-_b23_d8138760px_B",
+            "w-_bcalc_p100_v_-_8138760px_P_B"
+          ],
+          "hotUpdateOutputMs": 483,
+          "hotUpdateEffectiveMs": 483,
+          "rollbackOutputMs": 482,
+          "rollbackEffectiveMs": 482
+        },
+        {
+          "mutationKind": "style",
+          "sourceFile": "/Users/yangqiming/Documents/GitHub/weapp-tailwindcss/demo/uni-app-vue3-vite/src/pages/index/index.vue",
+          "outputStyle": "/Users/yangqiming/Documents/GitHub/weapp-tailwindcss/demo/uni-app-vue3-vite/dist/dev/mp-weixin/pages/index/index.wxss",
+          "marker": "tw-watch-style-uni-app-vue3-vite-814843709",
+          "styleNeedle": ".tw-watch-style-uni-app-vue3-vite-814843709",
+          "hotUpdateOutputMs": 482,
+          "hotUpdateEffectiveMs": 483,
+          "rollbackOutputMs": 482,
+          "rollbackEffectiveMs": 483,
+          "rollbackNeedleCleared": true
+        }
+      ],
+      "summaryByMutationKind": {
+        "template": {
+          "count": 1,
+          "hotUpdateAvgMs": 725,
+          "hotUpdateMaxMs": 725,
+          "hotUpdateMinMs": 725,
+          "rollbackAvgMs": 483,
+          "rollbackMaxMs": 483,
+          "rollbackMinMs": 483
+        },
+        "script": {
+          "count": 1,
+          "hotUpdateAvgMs": 483,
+          "hotUpdateMaxMs": 483,
+          "hotUpdateMinMs": 483,
+          "rollbackAvgMs": 482,
+          "rollbackMaxMs": 482,
+          "rollbackMinMs": 482
+        },
+        "style": {
+          "count": 1,
+          "hotUpdateAvgMs": 483,
+          "hotUpdateMaxMs": 483,
+          "hotUpdateMinMs": 483,
+          "rollbackAvgMs": 483,
+          "rollbackMaxMs": 483,
+          "rollbackMinMs": 483
+        }
+      },
+      "initialReadyMs": 2412,
+      "hotUpdateOutputMs": 725,
+      "hotUpdateEffectiveMs": 725,
+      "rollbackOutputMs": 483,
+      "rollbackEffectiveMs": 483,
+      "totalMs": 8702
+    }
+  ]
+}

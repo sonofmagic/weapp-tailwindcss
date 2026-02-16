@@ -1,0 +1,553 @@
+{
+  "generatedAt": "2026-02-16T06:46:08.987Z",
+  "repositoryRoot": "weapp-tailwindcss",
+  "options": {
+    "caseName": "vite-native-ts",
+    "timeoutMs": 240000,
+    "pollMs": 240,
+    "skipBuild": true,
+    "quietSass": true,
+    "maxHotUpdateMs": 15000
+  },
+  "summary": {
+    "count": 1,
+    "hotUpdateAvgMs": 242,
+    "hotUpdateMaxMs": 242,
+    "hotUpdateMinMs": 242,
+    "rollbackAvgMs": 242,
+    "rollbackMaxMs": 242,
+    "rollbackMinMs": 242
+  },
+  "summaryByRound": {
+    "baseline-arbitrary": {
+      "count": 1,
+      "hotUpdateAvgMs": 243,
+      "hotUpdateMaxMs": 243,
+      "hotUpdateMinMs": 243,
+      "rollbackAvgMs": 241,
+      "rollbackMaxMs": 241,
+      "rollbackMinMs": 241
+    },
+    "complex-corpus": {
+      "count": 1,
+      "hotUpdateAvgMs": 242,
+      "hotUpdateMaxMs": 242,
+      "hotUpdateMinMs": 242,
+      "rollbackAvgMs": 242,
+      "rollbackMaxMs": 242,
+      "rollbackMinMs": 242
+    }
+  },
+  "summaryByGroup": {
+    "demo": {
+      "count": 0,
+      "hotUpdateAvgMs": 0,
+      "hotUpdateMaxMs": 0,
+      "hotUpdateMinMs": 0,
+      "rollbackAvgMs": 0,
+      "rollbackMaxMs": 0,
+      "rollbackMinMs": 0
+    },
+    "apps": {
+      "count": 1,
+      "hotUpdateAvgMs": 242,
+      "hotUpdateMaxMs": 242,
+      "hotUpdateMinMs": 242,
+      "rollbackAvgMs": 242,
+      "rollbackMaxMs": 242,
+      "rollbackMinMs": 242
+    }
+  },
+  "summaryByProject": {
+    "apps/vite-native-ts": {
+      "count": 1,
+      "hotUpdateAvgMs": 242,
+      "hotUpdateMaxMs": 242,
+      "hotUpdateMinMs": 242,
+      "rollbackAvgMs": 242,
+      "rollbackMaxMs": 242,
+      "rollbackMinMs": 242
+    }
+  },
+  "summaryByMutationKind": {
+    "template": {
+      "count": 1,
+      "hotUpdateAvgMs": 242,
+      "hotUpdateMaxMs": 242,
+      "hotUpdateMinMs": 242,
+      "rollbackAvgMs": 242,
+      "rollbackMaxMs": 242,
+      "rollbackMinMs": 242
+    },
+    "script": {
+      "count": 1,
+      "hotUpdateAvgMs": 242,
+      "hotUpdateMaxMs": 242,
+      "hotUpdateMinMs": 242,
+      "rollbackAvgMs": 242,
+      "rollbackMaxMs": 242,
+      "rollbackMinMs": 242
+    },
+    "style": {
+      "count": 1,
+      "hotUpdateAvgMs": 241,
+      "hotUpdateMaxMs": 241,
+      "hotUpdateMinMs": 241,
+      "rollbackAvgMs": 242,
+      "rollbackMaxMs": 242,
+      "rollbackMinMs": 242
+    }
+  },
+  "cases": [
+    {
+      "name": "vite-native-ts",
+      "label": "apps/vite-native-ts",
+      "project": "apps/vite-native-ts",
+      "projectGroup": "apps",
+      "marker": "tw-watch-vite-native-ts-template-complex-corpus-3619940",
+      "classLiteral": "text-[23.3619940px] space-y-2.5 w-[calc(100%_-_3619940px)] grid-cols-[200rpx_minmax(900rpx,_1fr)_3619940px] after:ml-[0.3619940px] text-black/[0.36] ring-[1.0px] group-[:nth-of-type(3)_&]:block [@supports(display:grid)]:grid [@media(any-hover:hover){&:hover}]:opacity-100 data-[state=open]:opacity-100 supports-[display:grid]:grid [mask-type:luminance] [--watch-hmr-offset:3619940px]",
+      "classTokens": [
+        "text-[23.3619940px]",
+        "space-y-2.5",
+        "w-[calc(100%_-_3619940px)]",
+        "grid-cols-[200rpx_minmax(900rpx,_1fr)_3619940px]",
+        "after:ml-[0.3619940px]",
+        "text-black/[0.36]",
+        "ring-[1.0px]",
+        "group-[:nth-of-type(3)_&]:block",
+        "[@supports(display:grid)]:grid",
+        "[@media(any-hover:hover){&:hover}]:opacity-100",
+        "data-[state=open]:opacity-100",
+        "supports-[display:grid]:grid",
+        "[mask-type:luminance]",
+        "[--watch-hmr-offset:3619940px]"
+      ],
+      "escapedClasses": [
+        "text-_b23_d3619940px_B",
+        "space-y-2_d5",
+        "w-_bcalc_p100_v_-_3619940px_P_B",
+        "grid-cols-_b200rpx_minmax_p900rpx_m_1fr_P_3619940px_B",
+        "after_cml-_b0_d3619940px_B",
+        "text-black_f_b0_d36_B",
+        "ring-_b1_d0px_B",
+        "group-_b_cnth-of-type_p3_P__n_B_cblock",
+        "_b_tsupports_pdisplay_cgrid_P_B_cgrid",
+        "_b_tmedia_pany-hover_chover_P_k_n_chover_K_B_copacity-100",
+        "data-_bstate_zopen_B_copacity-100",
+        "supports-_bdisplay_cgrid_B_cgrid",
+        "_bmask-type_cluminance_B",
+        "_b--watch-hmr-offset_c3619940px_B"
+      ],
+      "rounds": [
+        {
+          "roundName": "baseline-arbitrary",
+          "marker": "tw-watch-vite-native-ts-template-baseline-arbitrary-3615090",
+          "classLiteral": "text-[23.3615090px] space-y-2.5 w-[calc(100%_-_3615090px)] grid-cols-[200rpx_minmax(900rpx,_1fr)_3615090px] after:ml-[0.3615090px] text-black/[0.36] ring-[1.0px]",
+          "classTokens": [
+            "text-[23.3615090px]",
+            "space-y-2.5",
+            "w-[calc(100%_-_3615090px)]",
+            "grid-cols-[200rpx_minmax(900rpx,_1fr)_3615090px]",
+            "after:ml-[0.3615090px]",
+            "text-black/[0.36]",
+            "ring-[1.0px]"
+          ],
+          "escapedClasses": [
+            "text-_b23_d3615090px_B",
+            "space-y-2_d5",
+            "w-_bcalc_p100_v_-_3615090px_P_B",
+            "grid-cols-_b200rpx_minmax_p900rpx_m_1fr_P_3615090px_B",
+            "after_cml-_b0_d3615090px_B",
+            "text-black_f_b0_d36_B",
+            "ring-_b1_d0px_B"
+          ],
+          "hotUpdateOutputMs": 242,
+          "hotUpdateEffectiveMs": 243,
+          "rollbackOutputMs": 241,
+          "rollbackEffectiveMs": 241,
+          "totalMs": 484
+        },
+        {
+          "roundName": "complex-corpus",
+          "marker": "tw-watch-vite-native-ts-template-complex-corpus-3619940",
+          "classLiteral": "text-[23.3619940px] space-y-2.5 w-[calc(100%_-_3619940px)] grid-cols-[200rpx_minmax(900rpx,_1fr)_3619940px] after:ml-[0.3619940px] text-black/[0.36] ring-[1.0px] group-[:nth-of-type(3)_&]:block [@supports(display:grid)]:grid [@media(any-hover:hover){&:hover}]:opacity-100 data-[state=open]:opacity-100 supports-[display:grid]:grid [mask-type:luminance] [--watch-hmr-offset:3619940px]",
+          "classTokens": [
+            "text-[23.3619940px]",
+            "space-y-2.5",
+            "w-[calc(100%_-_3619940px)]",
+            "grid-cols-[200rpx_minmax(900rpx,_1fr)_3619940px]",
+            "after:ml-[0.3619940px]",
+            "text-black/[0.36]",
+            "ring-[1.0px]",
+            "group-[:nth-of-type(3)_&]:block",
+            "[@supports(display:grid)]:grid",
+            "[@media(any-hover:hover){&:hover}]:opacity-100",
+            "data-[state=open]:opacity-100",
+            "supports-[display:grid]:grid",
+            "[mask-type:luminance]",
+            "[--watch-hmr-offset:3619940px]"
+          ],
+          "escapedClasses": [
+            "text-_b23_d3619940px_B",
+            "space-y-2_d5",
+            "w-_bcalc_p100_v_-_3619940px_P_B",
+            "grid-cols-_b200rpx_minmax_p900rpx_m_1fr_P_3619940px_B",
+            "after_cml-_b0_d3619940px_B",
+            "text-black_f_b0_d36_B",
+            "ring-_b1_d0px_B",
+            "group-_b_cnth-of-type_p3_P__n_B_cblock",
+            "_b_tsupports_pdisplay_cgrid_P_B_cgrid",
+            "_b_tmedia_pany-hover_chover_P_k_n_chover_K_B_copacity-100",
+            "data-_bstate_zopen_B_copacity-100",
+            "supports-_bdisplay_cgrid_B_cgrid",
+            "_bmask-type_cluminance_B",
+            "_b--watch-hmr-offset_c3619940px_B"
+          ],
+          "hotUpdateOutputMs": 241,
+          "hotUpdateEffectiveMs": 242,
+          "rollbackOutputMs": 241,
+          "rollbackEffectiveMs": 242,
+          "totalMs": 484
+        }
+      ],
+      "roundComparison": {
+        "baselineRoundName": "baseline-arbitrary",
+        "candidateRoundName": "complex-corpus",
+        "hotUpdateDeltaMs": -1,
+        "rollbackDeltaMs": 1,
+        "hotUpdateRatio": 0.996,
+        "rollbackRatio": 1.004
+      },
+      "verifyEscapedIn": [
+        "wxml"
+      ],
+      "verifyClassLiteralIn": [],
+      "globalStyleOutputs": [
+        "/Users/yangqiming/Documents/GitHub/weapp-tailwindcss/apps/vite-native-ts/dist/app.wxss"
+      ],
+      "mutationMetrics": [
+        {
+          "mutationKind": "template",
+          "sourceFile": "/Users/yangqiming/Documents/GitHub/weapp-tailwindcss/apps/vite-native-ts/miniprogram/pages/index/index.wxml",
+          "marker": "tw-watch-vite-native-ts-template-complex-corpus-3619940",
+          "classLiteral": "text-[23.3619940px] space-y-2.5 w-[calc(100%_-_3619940px)] grid-cols-[200rpx_minmax(900rpx,_1fr)_3619940px] after:ml-[0.3619940px] text-black/[0.36] ring-[1.0px] group-[:nth-of-type(3)_&]:block [@supports(display:grid)]:grid [@media(any-hover:hover){&:hover}]:opacity-100 data-[state=open]:opacity-100 supports-[display:grid]:grid [mask-type:luminance] [--watch-hmr-offset:3619940px]",
+          "classTokens": [
+            "text-[23.3619940px]",
+            "space-y-2.5",
+            "w-[calc(100%_-_3619940px)]",
+            "grid-cols-[200rpx_minmax(900rpx,_1fr)_3619940px]",
+            "after:ml-[0.3619940px]",
+            "text-black/[0.36]",
+            "ring-[1.0px]",
+            "group-[:nth-of-type(3)_&]:block",
+            "[@supports(display:grid)]:grid",
+            "[@media(any-hover:hover){&:hover}]:opacity-100",
+            "data-[state=open]:opacity-100",
+            "supports-[display:grid]:grid",
+            "[mask-type:luminance]",
+            "[--watch-hmr-offset:3619940px]"
+          ],
+          "escapedClasses": [
+            "text-_b23_d3619940px_B",
+            "space-y-2_d5",
+            "w-_bcalc_p100_v_-_3619940px_P_B",
+            "grid-cols-_b200rpx_minmax_p900rpx_m_1fr_P_3619940px_B",
+            "after_cml-_b0_d3619940px_B",
+            "text-black_f_b0_d36_B",
+            "ring-_b1_d0px_B",
+            "group-_b_cnth-of-type_p3_P__n_B_cblock",
+            "_b_tsupports_pdisplay_cgrid_P_B_cgrid",
+            "_b_tmedia_pany-hover_chover_P_k_n_chover_K_B_copacity-100",
+            "data-_bstate_zopen_B_copacity-100",
+            "supports-_bdisplay_cgrid_B_cgrid",
+            "_bmask-type_cluminance_B",
+            "_b--watch-hmr-offset_c3619940px_B"
+          ],
+          "rounds": [
+            {
+              "roundName": "baseline-arbitrary",
+              "marker": "tw-watch-vite-native-ts-template-baseline-arbitrary-3615090",
+              "classLiteral": "text-[23.3615090px] space-y-2.5 w-[calc(100%_-_3615090px)] grid-cols-[200rpx_minmax(900rpx,_1fr)_3615090px] after:ml-[0.3615090px] text-black/[0.36] ring-[1.0px]",
+              "classTokens": [
+                "text-[23.3615090px]",
+                "space-y-2.5",
+                "w-[calc(100%_-_3615090px)]",
+                "grid-cols-[200rpx_minmax(900rpx,_1fr)_3615090px]",
+                "after:ml-[0.3615090px]",
+                "text-black/[0.36]",
+                "ring-[1.0px]"
+              ],
+              "escapedClasses": [
+                "text-_b23_d3615090px_B",
+                "space-y-2_d5",
+                "w-_bcalc_p100_v_-_3615090px_P_B",
+                "grid-cols-_b200rpx_minmax_p900rpx_m_1fr_P_3615090px_B",
+                "after_cml-_b0_d3615090px_B",
+                "text-black_f_b0_d36_B",
+                "ring-_b1_d0px_B"
+              ],
+              "hotUpdateOutputMs": 242,
+              "hotUpdateEffectiveMs": 243,
+              "rollbackOutputMs": 241,
+              "rollbackEffectiveMs": 241,
+              "totalMs": 484
+            },
+            {
+              "roundName": "complex-corpus",
+              "marker": "tw-watch-vite-native-ts-template-complex-corpus-3619940",
+              "classLiteral": "text-[23.3619940px] space-y-2.5 w-[calc(100%_-_3619940px)] grid-cols-[200rpx_minmax(900rpx,_1fr)_3619940px] after:ml-[0.3619940px] text-black/[0.36] ring-[1.0px] group-[:nth-of-type(3)_&]:block [@supports(display:grid)]:grid [@media(any-hover:hover){&:hover}]:opacity-100 data-[state=open]:opacity-100 supports-[display:grid]:grid [mask-type:luminance] [--watch-hmr-offset:3619940px]",
+              "classTokens": [
+                "text-[23.3619940px]",
+                "space-y-2.5",
+                "w-[calc(100%_-_3619940px)]",
+                "grid-cols-[200rpx_minmax(900rpx,_1fr)_3619940px]",
+                "after:ml-[0.3619940px]",
+                "text-black/[0.36]",
+                "ring-[1.0px]",
+                "group-[:nth-of-type(3)_&]:block",
+                "[@supports(display:grid)]:grid",
+                "[@media(any-hover:hover){&:hover}]:opacity-100",
+                "data-[state=open]:opacity-100",
+                "supports-[display:grid]:grid",
+                "[mask-type:luminance]",
+                "[--watch-hmr-offset:3619940px]"
+              ],
+              "escapedClasses": [
+                "text-_b23_d3619940px_B",
+                "space-y-2_d5",
+                "w-_bcalc_p100_v_-_3619940px_P_B",
+                "grid-cols-_b200rpx_minmax_p900rpx_m_1fr_P_3619940px_B",
+                "after_cml-_b0_d3619940px_B",
+                "text-black_f_b0_d36_B",
+                "ring-_b1_d0px_B",
+                "group-_b_cnth-of-type_p3_P__n_B_cblock",
+                "_b_tsupports_pdisplay_cgrid_P_B_cgrid",
+                "_b_tmedia_pany-hover_chover_P_k_n_chover_K_B_copacity-100",
+                "data-_bstate_zopen_B_copacity-100",
+                "supports-_bdisplay_cgrid_B_cgrid",
+                "_bmask-type_cluminance_B",
+                "_b--watch-hmr-offset_c3619940px_B"
+              ],
+              "hotUpdateOutputMs": 241,
+              "hotUpdateEffectiveMs": 242,
+              "rollbackOutputMs": 241,
+              "rollbackEffectiveMs": 242,
+              "totalMs": 484
+            }
+          ],
+          "roundComparison": {
+            "baselineRoundName": "baseline-arbitrary",
+            "candidateRoundName": "complex-corpus",
+            "hotUpdateDeltaMs": -1,
+            "rollbackDeltaMs": 1,
+            "hotUpdateRatio": 0.996,
+            "rollbackRatio": 1.004
+          },
+          "verifyEscapedIn": [
+            "wxml"
+          ],
+          "verifyClassLiteralIn": [],
+          "globalStyleOutputs": [
+            "/Users/yangqiming/Documents/GitHub/weapp-tailwindcss/apps/vite-native-ts/dist/app.wxss"
+          ],
+          "minRequiredGlobalStyleEscapedClasses": 1,
+          "verifiedGlobalStyleEscapedClasses": [
+            "text-_b23_d3615090px_B",
+            "space-y-2_d5",
+            "w-_bcalc_p100_v_-_3615090px_P_B",
+            "text-_b23_d3619940px_B",
+            "w-_bcalc_p100_v_-_3619940px_P_B"
+          ],
+          "hotUpdateOutputMs": 241,
+          "hotUpdateEffectiveMs": 242,
+          "rollbackOutputMs": 241,
+          "rollbackEffectiveMs": 242
+        },
+        {
+          "mutationKind": "script",
+          "sourceFile": "/Users/yangqiming/Documents/GitHub/weapp-tailwindcss/apps/vite-native-ts/miniprogram/pages/index/index.ts",
+          "marker": "tw-watch-vite-native-ts-script-complex-corpus-3629620",
+          "classLiteral": "text-[23.3629620px] space-y-2.5 w-[calc(100%_-_3629620px)] grid-cols-[200rpx_minmax(900rpx,_1fr)_3629620px] after:ml-[0.3629620px] text-black/[0.36] ring-[1.0px] group-[:nth-of-type(3)_&]:block [@supports(display:grid)]:grid [@media(any-hover:hover){&:hover}]:opacity-100 data-[state=open]:opacity-100 supports-[display:grid]:grid [mask-type:luminance] [--watch-hmr-offset:3629620px]",
+          "classTokens": [
+            "text-[23.3629620px]",
+            "space-y-2.5",
+            "w-[calc(100%_-_3629620px)]",
+            "grid-cols-[200rpx_minmax(900rpx,_1fr)_3629620px]",
+            "after:ml-[0.3629620px]",
+            "text-black/[0.36]",
+            "ring-[1.0px]",
+            "group-[:nth-of-type(3)_&]:block",
+            "[@supports(display:grid)]:grid",
+            "[@media(any-hover:hover){&:hover}]:opacity-100",
+            "data-[state=open]:opacity-100",
+            "supports-[display:grid]:grid",
+            "[mask-type:luminance]",
+            "[--watch-hmr-offset:3629620px]"
+          ],
+          "escapedClasses": [
+            "text-_b23_d3629620px_B",
+            "space-y-2_d5",
+            "w-_bcalc_p100_v_-_3629620px_P_B",
+            "grid-cols-_b200rpx_minmax_p900rpx_m_1fr_P_3629620px_B",
+            "after_cml-_b0_d3629620px_B",
+            "text-black_f_b0_d36_B",
+            "ring-_b1_d0px_B",
+            "group-_b_cnth-of-type_p3_P__n_B_cblock",
+            "_b_tsupports_pdisplay_cgrid_P_B_cgrid",
+            "_b_tmedia_pany-hover_chover_P_k_n_chover_K_B_copacity-100",
+            "data-_bstate_zopen_B_copacity-100",
+            "supports-_bdisplay_cgrid_B_cgrid",
+            "_bmask-type_cluminance_B",
+            "_b--watch-hmr-offset_c3629620px_B"
+          ],
+          "rounds": [
+            {
+              "roundName": "baseline-arbitrary",
+              "marker": "tw-watch-vite-native-ts-script-baseline-arbitrary-3624780",
+              "classLiteral": "text-[23.3624780px] space-y-2.5 w-[calc(100%_-_3624780px)] grid-cols-[200rpx_minmax(900rpx,_1fr)_3624780px] after:ml-[0.3624780px] text-black/[0.36] ring-[1.0px]",
+              "classTokens": [
+                "text-[23.3624780px]",
+                "space-y-2.5",
+                "w-[calc(100%_-_3624780px)]",
+                "grid-cols-[200rpx_minmax(900rpx,_1fr)_3624780px]",
+                "after:ml-[0.3624780px]",
+                "text-black/[0.36]",
+                "ring-[1.0px]"
+              ],
+              "escapedClasses": [
+                "text-_b23_d3624780px_B",
+                "space-y-2_d5",
+                "w-_bcalc_p100_v_-_3624780px_P_B",
+                "grid-cols-_b200rpx_minmax_p900rpx_m_1fr_P_3624780px_B",
+                "after_cml-_b0_d3624780px_B",
+                "text-black_f_b0_d36_B",
+                "ring-_b1_d0px_B"
+              ],
+              "hotUpdateOutputMs": 242,
+              "hotUpdateEffectiveMs": 242,
+              "rollbackOutputMs": 242,
+              "rollbackEffectiveMs": 242,
+              "totalMs": 484
+            },
+            {
+              "roundName": "complex-corpus",
+              "marker": "tw-watch-vite-native-ts-script-complex-corpus-3629620",
+              "classLiteral": "text-[23.3629620px] space-y-2.5 w-[calc(100%_-_3629620px)] grid-cols-[200rpx_minmax(900rpx,_1fr)_3629620px] after:ml-[0.3629620px] text-black/[0.36] ring-[1.0px] group-[:nth-of-type(3)_&]:block [@supports(display:grid)]:grid [@media(any-hover:hover){&:hover}]:opacity-100 data-[state=open]:opacity-100 supports-[display:grid]:grid [mask-type:luminance] [--watch-hmr-offset:3629620px]",
+              "classTokens": [
+                "text-[23.3629620px]",
+                "space-y-2.5",
+                "w-[calc(100%_-_3629620px)]",
+                "grid-cols-[200rpx_minmax(900rpx,_1fr)_3629620px]",
+                "after:ml-[0.3629620px]",
+                "text-black/[0.36]",
+                "ring-[1.0px]",
+                "group-[:nth-of-type(3)_&]:block",
+                "[@supports(display:grid)]:grid",
+                "[@media(any-hover:hover){&:hover}]:opacity-100",
+                "data-[state=open]:opacity-100",
+                "supports-[display:grid]:grid",
+                "[mask-type:luminance]",
+                "[--watch-hmr-offset:3629620px]"
+              ],
+              "escapedClasses": [
+                "text-_b23_d3629620px_B",
+                "space-y-2_d5",
+                "w-_bcalc_p100_v_-_3629620px_P_B",
+                "grid-cols-_b200rpx_minmax_p900rpx_m_1fr_P_3629620px_B",
+                "after_cml-_b0_d3629620px_B",
+                "text-black_f_b0_d36_B",
+                "ring-_b1_d0px_B",
+                "group-_b_cnth-of-type_p3_P__n_B_cblock",
+                "_b_tsupports_pdisplay_cgrid_P_B_cgrid",
+                "_b_tmedia_pany-hover_chover_P_k_n_chover_K_B_copacity-100",
+                "data-_bstate_zopen_B_copacity-100",
+                "supports-_bdisplay_cgrid_B_cgrid",
+                "_bmask-type_cluminance_B",
+                "_b--watch-hmr-offset_c3629620px_B"
+              ],
+              "hotUpdateOutputMs": 242,
+              "hotUpdateEffectiveMs": 242,
+              "rollbackOutputMs": 242,
+              "rollbackEffectiveMs": 242,
+              "totalMs": 484
+            }
+          ],
+          "roundComparison": {
+            "baselineRoundName": "baseline-arbitrary",
+            "candidateRoundName": "complex-corpus",
+            "hotUpdateDeltaMs": 0,
+            "rollbackDeltaMs": 0,
+            "hotUpdateRatio": 1,
+            "rollbackRatio": 1
+          },
+          "verifyEscapedIn": [],
+          "verifyClassLiteralIn": [
+            "js"
+          ],
+          "globalStyleOutputs": [
+            "/Users/yangqiming/Documents/GitHub/weapp-tailwindcss/apps/vite-native-ts/dist/app.wxss"
+          ],
+          "minRequiredGlobalStyleEscapedClasses": 1,
+          "verifiedGlobalStyleEscapedClasses": [
+            "text-_b23_d3624780px_B",
+            "space-y-2_d5",
+            "w-_bcalc_p100_v_-_3624780px_P_B",
+            "text-_b23_d3629620px_B",
+            "w-_bcalc_p100_v_-_3629620px_P_B"
+          ],
+          "hotUpdateOutputMs": 242,
+          "hotUpdateEffectiveMs": 242,
+          "rollbackOutputMs": 242,
+          "rollbackEffectiveMs": 242
+        },
+        {
+          "mutationKind": "style",
+          "sourceFile": "/Users/yangqiming/Documents/GitHub/weapp-tailwindcss/apps/vite-native-ts/miniprogram/pages/index/index.scss",
+          "outputStyle": "/Users/yangqiming/Documents/GitHub/weapp-tailwindcss/apps/vite-native-ts/dist/pages/index/index.wxss",
+          "marker": "tw-watch-style-vite-native-ts-363446744",
+          "styleNeedle": ".tw-watch-style-vite-native-ts-363446744",
+          "hotUpdateOutputMs": 241,
+          "hotUpdateEffectiveMs": 241,
+          "rollbackOutputMs": 241,
+          "rollbackEffectiveMs": 242,
+          "rollbackNeedleCleared": true
+        }
+      ],
+      "summaryByMutationKind": {
+        "template": {
+          "count": 1,
+          "hotUpdateAvgMs": 242,
+          "hotUpdateMaxMs": 242,
+          "hotUpdateMinMs": 242,
+          "rollbackAvgMs": 242,
+          "rollbackMaxMs": 242,
+          "rollbackMinMs": 242
+        },
+        "script": {
+          "count": 1,
+          "hotUpdateAvgMs": 242,
+          "hotUpdateMaxMs": 242,
+          "hotUpdateMinMs": 242,
+          "rollbackAvgMs": 242,
+          "rollbackMaxMs": 242,
+          "rollbackMinMs": 242
+        },
+        "style": {
+          "count": 1,
+          "hotUpdateAvgMs": 241,
+          "hotUpdateMaxMs": 241,
+          "hotUpdateMinMs": 241,
+          "rollbackAvgMs": 242,
+          "rollbackMaxMs": 242,
+          "rollbackMinMs": 242
+        }
+      },
+      "initialReadyMs": 1447,
+      "hotUpdateOutputMs": 241,
+      "hotUpdateEffectiveMs": 242,
+      "rollbackOutputMs": 241,
+      "rollbackEffectiveMs": 242,
+      "totalMs": 3872
+    }
+  ]
+}

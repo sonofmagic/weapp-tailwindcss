@@ -1,0 +1,625 @@
+{
+  "generatedAt": "2026-02-16T06:59:20.401Z",
+  "repositoryRoot": "weapp-tailwindcss",
+  "options": {
+    "caseName": "uni-app-tailwindcss-v4",
+    "timeoutMs": 240000,
+    "pollMs": 240,
+    "skipBuild": true,
+    "quietSass": true,
+    "maxHotUpdateMs": 15000
+  },
+  "summary": {
+    "count": 1,
+    "hotUpdateAvgMs": 483,
+    "hotUpdateMaxMs": 483,
+    "hotUpdateMinMs": 483,
+    "rollbackAvgMs": 482,
+    "rollbackMaxMs": 482,
+    "rollbackMinMs": 482
+  },
+  "summaryByRound": {
+    "baseline-arbitrary": {
+      "count": 1,
+      "hotUpdateAvgMs": 1446,
+      "hotUpdateMaxMs": 1446,
+      "hotUpdateMinMs": 1446,
+      "rollbackAvgMs": 483,
+      "rollbackMaxMs": 483,
+      "rollbackMinMs": 483
+    },
+    "complex-corpus": {
+      "count": 1,
+      "hotUpdateAvgMs": 483,
+      "hotUpdateMaxMs": 483,
+      "hotUpdateMinMs": 483,
+      "rollbackAvgMs": 482,
+      "rollbackMaxMs": 482,
+      "rollbackMinMs": 482
+    }
+  },
+  "summaryByGroup": {
+    "demo": {
+      "count": 1,
+      "hotUpdateAvgMs": 483,
+      "hotUpdateMaxMs": 483,
+      "hotUpdateMinMs": 483,
+      "rollbackAvgMs": 482,
+      "rollbackMaxMs": 482,
+      "rollbackMinMs": 482
+    },
+    "apps": {
+      "count": 0,
+      "hotUpdateAvgMs": 0,
+      "hotUpdateMaxMs": 0,
+      "hotUpdateMinMs": 0,
+      "rollbackAvgMs": 0,
+      "rollbackMaxMs": 0,
+      "rollbackMinMs": 0
+    }
+  },
+  "summaryByProject": {
+    "demo/uni-app-tailwindcss-v4": {
+      "count": 1,
+      "hotUpdateAvgMs": 483,
+      "hotUpdateMaxMs": 483,
+      "hotUpdateMinMs": 483,
+      "rollbackAvgMs": 482,
+      "rollbackMaxMs": 482,
+      "rollbackMinMs": 482
+    }
+  },
+  "summaryByMutationKind": {
+    "template": {
+      "count": 1,
+      "hotUpdateAvgMs": 483,
+      "hotUpdateMaxMs": 483,
+      "hotUpdateMinMs": 483,
+      "rollbackAvgMs": 482,
+      "rollbackMaxMs": 482,
+      "rollbackMinMs": 482
+    },
+    "script": {
+      "count": 1,
+      "hotUpdateAvgMs": 482,
+      "hotUpdateMaxMs": 482,
+      "hotUpdateMinMs": 482,
+      "rollbackAvgMs": 483,
+      "rollbackMaxMs": 483,
+      "rollbackMinMs": 483
+    },
+    "style": {
+      "count": 1,
+      "hotUpdateAvgMs": 482,
+      "hotUpdateMaxMs": 482,
+      "hotUpdateMinMs": 482,
+      "rollbackAvgMs": 482,
+      "rollbackMaxMs": 482,
+      "rollbackMinMs": 482
+    }
+  },
+  "cases": [
+    {
+      "name": "uni-app-tailwindcss-v4",
+      "label": "demo/uni-app-tailwindcss-v4",
+      "project": "demo/uni-app-tailwindcss-v4",
+      "projectGroup": "demo",
+      "marker": "tw-watch-uni-app-tailwindcss-v4-template-complex-corpus-1517210",
+      "classLiteral": "text-[23.1517210px] space-y-2.5 w-[calc(100%_-_1517210px)] grid-cols-[200rpx_minmax(900rpx,_1fr)_1517210px] after:ml-[0.1517210px] text-black/[0.15] ring-[1.0px] !mt-2 -translate-y-1 max-[712px]:p-[13px] bg-[rgb(12,34,56)] grid-rows-[auto_minmax(0,_1fr)] group-[:nth-of-type(3)_&]:block [@supports(display:grid)]:grid supports-[backdrop-filter:blur(2px)]:backdrop-blur-[2px] [@media(any-hover:hover){&:hover}]:opacity-100 data-[state=open]:opacity-100 supports-[display:grid]:grid [mask-type:luminance] [--watch-hmr-offset:1517210px]",
+      "classTokens": [
+        "text-[23.1517210px]",
+        "space-y-2.5",
+        "w-[calc(100%_-_1517210px)]",
+        "grid-cols-[200rpx_minmax(900rpx,_1fr)_1517210px]",
+        "after:ml-[0.1517210px]",
+        "text-black/[0.15]",
+        "ring-[1.0px]",
+        "!mt-2",
+        "-translate-y-1",
+        "max-[712px]:p-[13px]",
+        "bg-[rgb(12,34,56)]",
+        "grid-rows-[auto_minmax(0,_1fr)]",
+        "group-[:nth-of-type(3)_&]:block",
+        "[@supports(display:grid)]:grid",
+        "supports-[backdrop-filter:blur(2px)]:backdrop-blur-[2px]",
+        "[@media(any-hover:hover){&:hover}]:opacity-100",
+        "data-[state=open]:opacity-100",
+        "supports-[display:grid]:grid",
+        "[mask-type:luminance]",
+        "[--watch-hmr-offset:1517210px]"
+      ],
+      "escapedClasses": [
+        "text-_b23_d1517210px_B",
+        "space-y-2_d5",
+        "w-_bcalc_p100_v_-_1517210px_P_B",
+        "grid-cols-_b200rpx_minmax_p900rpx_m_1fr_P_1517210px_B",
+        "after_cml-_b0_d1517210px_B",
+        "text-black_f_b0_d15_B",
+        "ring-_b1_d0px_B",
+        "_emt-2",
+        "-translate-y-1",
+        "max-_b712px_B_cp-_b13px_B",
+        "bg-_brgb_p12_m34_m56_P_B",
+        "grid-rows-_bauto_minmax_p0_m_1fr_P_B",
+        "group-_b_cnth-of-type_p3_P__n_B_cblock",
+        "_b_tsupports_pdisplay_cgrid_P_B_cgrid",
+        "supports-_bbackdrop-filter_cblur_p2px_P_B_cbackdrop-blur-_b2px_B",
+        "_b_tmedia_pany-hover_chover_P_k_n_chover_K_B_copacity-100",
+        "data-_bstate_zopen_B_copacity-100",
+        "supports-_bdisplay_cgrid_B_cgrid",
+        "_bmask-type_cluminance_B",
+        "_b--watch-hmr-offset_c1517210px_B"
+      ],
+      "rounds": [
+        {
+          "roundName": "baseline-arbitrary",
+          "marker": "tw-watch-uni-app-tailwindcss-v4-template-baseline-arbitrary-1497920",
+          "classLiteral": "text-[23.1497920px] space-y-2.5 w-[calc(100%_-_1497920px)] grid-cols-[200rpx_minmax(900rpx,_1fr)_1497920px] after:ml-[0.1497920px] text-black/[0.14] ring-[1.0px]",
+          "classTokens": [
+            "text-[23.1497920px]",
+            "space-y-2.5",
+            "w-[calc(100%_-_1497920px)]",
+            "grid-cols-[200rpx_minmax(900rpx,_1fr)_1497920px]",
+            "after:ml-[0.1497920px]",
+            "text-black/[0.14]",
+            "ring-[1.0px]"
+          ],
+          "escapedClasses": [
+            "text-_b23_d1497920px_B",
+            "space-y-2_d5",
+            "w-_bcalc_p100_v_-_1497920px_P_B",
+            "grid-cols-_b200rpx_minmax_p900rpx_m_1fr_P_1497920px_B",
+            "after_cml-_b0_d1497920px_B",
+            "text-black_f_b0_d14_B",
+            "ring-_b1_d0px_B"
+          ],
+          "hotUpdateOutputMs": 1445,
+          "hotUpdateEffectiveMs": 1446,
+          "rollbackOutputMs": 482,
+          "rollbackEffectiveMs": 483,
+          "totalMs": 1929
+        },
+        {
+          "roundName": "complex-corpus",
+          "marker": "tw-watch-uni-app-tailwindcss-v4-template-complex-corpus-1517210",
+          "classLiteral": "text-[23.1517210px] space-y-2.5 w-[calc(100%_-_1517210px)] grid-cols-[200rpx_minmax(900rpx,_1fr)_1517210px] after:ml-[0.1517210px] text-black/[0.15] ring-[1.0px] !mt-2 -translate-y-1 max-[712px]:p-[13px] bg-[rgb(12,34,56)] grid-rows-[auto_minmax(0,_1fr)] group-[:nth-of-type(3)_&]:block [@supports(display:grid)]:grid supports-[backdrop-filter:blur(2px)]:backdrop-blur-[2px] [@media(any-hover:hover){&:hover}]:opacity-100 data-[state=open]:opacity-100 supports-[display:grid]:grid [mask-type:luminance] [--watch-hmr-offset:1517210px]",
+          "classTokens": [
+            "text-[23.1517210px]",
+            "space-y-2.5",
+            "w-[calc(100%_-_1517210px)]",
+            "grid-cols-[200rpx_minmax(900rpx,_1fr)_1517210px]",
+            "after:ml-[0.1517210px]",
+            "text-black/[0.15]",
+            "ring-[1.0px]",
+            "!mt-2",
+            "-translate-y-1",
+            "max-[712px]:p-[13px]",
+            "bg-[rgb(12,34,56)]",
+            "grid-rows-[auto_minmax(0,_1fr)]",
+            "group-[:nth-of-type(3)_&]:block",
+            "[@supports(display:grid)]:grid",
+            "supports-[backdrop-filter:blur(2px)]:backdrop-blur-[2px]",
+            "[@media(any-hover:hover){&:hover}]:opacity-100",
+            "data-[state=open]:opacity-100",
+            "supports-[display:grid]:grid",
+            "[mask-type:luminance]",
+            "[--watch-hmr-offset:1517210px]"
+          ],
+          "escapedClasses": [
+            "text-_b23_d1517210px_B",
+            "space-y-2_d5",
+            "w-_bcalc_p100_v_-_1517210px_P_B",
+            "grid-cols-_b200rpx_minmax_p900rpx_m_1fr_P_1517210px_B",
+            "after_cml-_b0_d1517210px_B",
+            "text-black_f_b0_d15_B",
+            "ring-_b1_d0px_B",
+            "_emt-2",
+            "-translate-y-1",
+            "max-_b712px_B_cp-_b13px_B",
+            "bg-_brgb_p12_m34_m56_P_B",
+            "grid-rows-_bauto_minmax_p0_m_1fr_P_B",
+            "group-_b_cnth-of-type_p3_P__n_B_cblock",
+            "_b_tsupports_pdisplay_cgrid_P_B_cgrid",
+            "supports-_bbackdrop-filter_cblur_p2px_P_B_cbackdrop-blur-_b2px_B",
+            "_b_tmedia_pany-hover_chover_P_k_n_chover_K_B_copacity-100",
+            "data-_bstate_zopen_B_copacity-100",
+            "supports-_bdisplay_cgrid_B_cgrid",
+            "_bmask-type_cluminance_B",
+            "_b--watch-hmr-offset_c1517210px_B"
+          ],
+          "hotUpdateOutputMs": 482,
+          "hotUpdateEffectiveMs": 483,
+          "rollbackOutputMs": 482,
+          "rollbackEffectiveMs": 482,
+          "totalMs": 965
+        }
+      ],
+      "roundComparison": {
+        "baselineRoundName": "baseline-arbitrary",
+        "candidateRoundName": "complex-corpus",
+        "hotUpdateDeltaMs": -963,
+        "rollbackDeltaMs": -1,
+        "hotUpdateRatio": 0.334,
+        "rollbackRatio": 0.998
+      },
+      "verifyEscapedIn": [
+        "wxml"
+      ],
+      "verifyClassLiteralIn": [],
+      "globalStyleOutputs": [
+        "/Users/yangqiming/Documents/GitHub/weapp-tailwindcss/demo/uni-app-tailwindcss-v4/dist/dev/mp-weixin/app.wxss"
+      ],
+      "mutationMetrics": [
+        {
+          "mutationKind": "template",
+          "sourceFile": "/Users/yangqiming/Documents/GitHub/weapp-tailwindcss/demo/uni-app-tailwindcss-v4/src/pages/index/index.vue",
+          "marker": "tw-watch-uni-app-tailwindcss-v4-template-complex-corpus-1517210",
+          "classLiteral": "text-[23.1517210px] space-y-2.5 w-[calc(100%_-_1517210px)] grid-cols-[200rpx_minmax(900rpx,_1fr)_1517210px] after:ml-[0.1517210px] text-black/[0.15] ring-[1.0px] !mt-2 -translate-y-1 max-[712px]:p-[13px] bg-[rgb(12,34,56)] grid-rows-[auto_minmax(0,_1fr)] group-[:nth-of-type(3)_&]:block [@supports(display:grid)]:grid supports-[backdrop-filter:blur(2px)]:backdrop-blur-[2px] [@media(any-hover:hover){&:hover}]:opacity-100 data-[state=open]:opacity-100 supports-[display:grid]:grid [mask-type:luminance] [--watch-hmr-offset:1517210px]",
+          "classTokens": [
+            "text-[23.1517210px]",
+            "space-y-2.5",
+            "w-[calc(100%_-_1517210px)]",
+            "grid-cols-[200rpx_minmax(900rpx,_1fr)_1517210px]",
+            "after:ml-[0.1517210px]",
+            "text-black/[0.15]",
+            "ring-[1.0px]",
+            "!mt-2",
+            "-translate-y-1",
+            "max-[712px]:p-[13px]",
+            "bg-[rgb(12,34,56)]",
+            "grid-rows-[auto_minmax(0,_1fr)]",
+            "group-[:nth-of-type(3)_&]:block",
+            "[@supports(display:grid)]:grid",
+            "supports-[backdrop-filter:blur(2px)]:backdrop-blur-[2px]",
+            "[@media(any-hover:hover){&:hover}]:opacity-100",
+            "data-[state=open]:opacity-100",
+            "supports-[display:grid]:grid",
+            "[mask-type:luminance]",
+            "[--watch-hmr-offset:1517210px]"
+          ],
+          "escapedClasses": [
+            "text-_b23_d1517210px_B",
+            "space-y-2_d5",
+            "w-_bcalc_p100_v_-_1517210px_P_B",
+            "grid-cols-_b200rpx_minmax_p900rpx_m_1fr_P_1517210px_B",
+            "after_cml-_b0_d1517210px_B",
+            "text-black_f_b0_d15_B",
+            "ring-_b1_d0px_B",
+            "_emt-2",
+            "-translate-y-1",
+            "max-_b712px_B_cp-_b13px_B",
+            "bg-_brgb_p12_m34_m56_P_B",
+            "grid-rows-_bauto_minmax_p0_m_1fr_P_B",
+            "group-_b_cnth-of-type_p3_P__n_B_cblock",
+            "_b_tsupports_pdisplay_cgrid_P_B_cgrid",
+            "supports-_bbackdrop-filter_cblur_p2px_P_B_cbackdrop-blur-_b2px_B",
+            "_b_tmedia_pany-hover_chover_P_k_n_chover_K_B_copacity-100",
+            "data-_bstate_zopen_B_copacity-100",
+            "supports-_bdisplay_cgrid_B_cgrid",
+            "_bmask-type_cluminance_B",
+            "_b--watch-hmr-offset_c1517210px_B"
+          ],
+          "rounds": [
+            {
+              "roundName": "baseline-arbitrary",
+              "marker": "tw-watch-uni-app-tailwindcss-v4-template-baseline-arbitrary-1497920",
+              "classLiteral": "text-[23.1497920px] space-y-2.5 w-[calc(100%_-_1497920px)] grid-cols-[200rpx_minmax(900rpx,_1fr)_1497920px] after:ml-[0.1497920px] text-black/[0.14] ring-[1.0px]",
+              "classTokens": [
+                "text-[23.1497920px]",
+                "space-y-2.5",
+                "w-[calc(100%_-_1497920px)]",
+                "grid-cols-[200rpx_minmax(900rpx,_1fr)_1497920px]",
+                "after:ml-[0.1497920px]",
+                "text-black/[0.14]",
+                "ring-[1.0px]"
+              ],
+              "escapedClasses": [
+                "text-_b23_d1497920px_B",
+                "space-y-2_d5",
+                "w-_bcalc_p100_v_-_1497920px_P_B",
+                "grid-cols-_b200rpx_minmax_p900rpx_m_1fr_P_1497920px_B",
+                "after_cml-_b0_d1497920px_B",
+                "text-black_f_b0_d14_B",
+                "ring-_b1_d0px_B"
+              ],
+              "hotUpdateOutputMs": 1445,
+              "hotUpdateEffectiveMs": 1446,
+              "rollbackOutputMs": 482,
+              "rollbackEffectiveMs": 483,
+              "totalMs": 1929
+            },
+            {
+              "roundName": "complex-corpus",
+              "marker": "tw-watch-uni-app-tailwindcss-v4-template-complex-corpus-1517210",
+              "classLiteral": "text-[23.1517210px] space-y-2.5 w-[calc(100%_-_1517210px)] grid-cols-[200rpx_minmax(900rpx,_1fr)_1517210px] after:ml-[0.1517210px] text-black/[0.15] ring-[1.0px] !mt-2 -translate-y-1 max-[712px]:p-[13px] bg-[rgb(12,34,56)] grid-rows-[auto_minmax(0,_1fr)] group-[:nth-of-type(3)_&]:block [@supports(display:grid)]:grid supports-[backdrop-filter:blur(2px)]:backdrop-blur-[2px] [@media(any-hover:hover){&:hover}]:opacity-100 data-[state=open]:opacity-100 supports-[display:grid]:grid [mask-type:luminance] [--watch-hmr-offset:1517210px]",
+              "classTokens": [
+                "text-[23.1517210px]",
+                "space-y-2.5",
+                "w-[calc(100%_-_1517210px)]",
+                "grid-cols-[200rpx_minmax(900rpx,_1fr)_1517210px]",
+                "after:ml-[0.1517210px]",
+                "text-black/[0.15]",
+                "ring-[1.0px]",
+                "!mt-2",
+                "-translate-y-1",
+                "max-[712px]:p-[13px]",
+                "bg-[rgb(12,34,56)]",
+                "grid-rows-[auto_minmax(0,_1fr)]",
+                "group-[:nth-of-type(3)_&]:block",
+                "[@supports(display:grid)]:grid",
+                "supports-[backdrop-filter:blur(2px)]:backdrop-blur-[2px]",
+                "[@media(any-hover:hover){&:hover}]:opacity-100",
+                "data-[state=open]:opacity-100",
+                "supports-[display:grid]:grid",
+                "[mask-type:luminance]",
+                "[--watch-hmr-offset:1517210px]"
+              ],
+              "escapedClasses": [
+                "text-_b23_d1517210px_B",
+                "space-y-2_d5",
+                "w-_bcalc_p100_v_-_1517210px_P_B",
+                "grid-cols-_b200rpx_minmax_p900rpx_m_1fr_P_1517210px_B",
+                "after_cml-_b0_d1517210px_B",
+                "text-black_f_b0_d15_B",
+                "ring-_b1_d0px_B",
+                "_emt-2",
+                "-translate-y-1",
+                "max-_b712px_B_cp-_b13px_B",
+                "bg-_brgb_p12_m34_m56_P_B",
+                "grid-rows-_bauto_minmax_p0_m_1fr_P_B",
+                "group-_b_cnth-of-type_p3_P__n_B_cblock",
+                "_b_tsupports_pdisplay_cgrid_P_B_cgrid",
+                "supports-_bbackdrop-filter_cblur_p2px_P_B_cbackdrop-blur-_b2px_B",
+                "_b_tmedia_pany-hover_chover_P_k_n_chover_K_B_copacity-100",
+                "data-_bstate_zopen_B_copacity-100",
+                "supports-_bdisplay_cgrid_B_cgrid",
+                "_bmask-type_cluminance_B",
+                "_b--watch-hmr-offset_c1517210px_B"
+              ],
+              "hotUpdateOutputMs": 482,
+              "hotUpdateEffectiveMs": 483,
+              "rollbackOutputMs": 482,
+              "rollbackEffectiveMs": 482,
+              "totalMs": 965
+            }
+          ],
+          "roundComparison": {
+            "baselineRoundName": "baseline-arbitrary",
+            "candidateRoundName": "complex-corpus",
+            "hotUpdateDeltaMs": -963,
+            "rollbackDeltaMs": -1,
+            "hotUpdateRatio": 0.334,
+            "rollbackRatio": 0.998
+          },
+          "verifyEscapedIn": [
+            "wxml"
+          ],
+          "verifyClassLiteralIn": [],
+          "globalStyleOutputs": [
+            "/Users/yangqiming/Documents/GitHub/weapp-tailwindcss/demo/uni-app-tailwindcss-v4/dist/dev/mp-weixin/app.wxss"
+          ],
+          "minRequiredGlobalStyleEscapedClasses": 0,
+          "verifiedGlobalStyleEscapedClasses": [
+            "text-_b23_d1517210px_B",
+            "space-y-2_d5",
+            "w-_bcalc_p100_v_-_1517210px_P_B"
+          ],
+          "hotUpdateOutputMs": 482,
+          "hotUpdateEffectiveMs": 483,
+          "rollbackOutputMs": 482,
+          "rollbackEffectiveMs": 482
+        },
+        {
+          "mutationKind": "script",
+          "sourceFile": "/Users/yangqiming/Documents/GitHub/weapp-tailwindcss/demo/uni-app-tailwindcss-v4/src/pages/index/index.vue",
+          "marker": "tw-watch-uni-app-tailwindcss-v4-script-complex-corpus-1534100",
+          "classLiteral": "text-[23.1534100px] space-y-2.5 w-[calc(100%_-_1534100px)] grid-cols-[200rpx_minmax(900rpx,_1fr)_1534100px] after:ml-[0.1534100px] text-black/[0.15] ring-[1.0px] !mt-2 -translate-y-1 max-[712px]:p-[13px] bg-[rgb(12,34,56)] grid-rows-[auto_minmax(0,_1fr)] group-[:nth-of-type(3)_&]:block [@supports(display:grid)]:grid supports-[backdrop-filter:blur(2px)]:backdrop-blur-[2px] [@media(any-hover:hover){&:hover}]:opacity-100 data-[state=open]:opacity-100 supports-[display:grid]:grid [mask-type:luminance] [--watch-hmr-offset:1534100px]",
+          "classTokens": [
+            "text-[23.1534100px]",
+            "space-y-2.5",
+            "w-[calc(100%_-_1534100px)]",
+            "grid-cols-[200rpx_minmax(900rpx,_1fr)_1534100px]",
+            "after:ml-[0.1534100px]",
+            "text-black/[0.15]",
+            "ring-[1.0px]",
+            "!mt-2",
+            "-translate-y-1",
+            "max-[712px]:p-[13px]",
+            "bg-[rgb(12,34,56)]",
+            "grid-rows-[auto_minmax(0,_1fr)]",
+            "group-[:nth-of-type(3)_&]:block",
+            "[@supports(display:grid)]:grid",
+            "supports-[backdrop-filter:blur(2px)]:backdrop-blur-[2px]",
+            "[@media(any-hover:hover){&:hover}]:opacity-100",
+            "data-[state=open]:opacity-100",
+            "supports-[display:grid]:grid",
+            "[mask-type:luminance]",
+            "[--watch-hmr-offset:1534100px]"
+          ],
+          "escapedClasses": [
+            "text-_b23_d1534100px_B",
+            "space-y-2_d5",
+            "w-_bcalc_p100_v_-_1534100px_P_B",
+            "grid-cols-_b200rpx_minmax_p900rpx_m_1fr_P_1534100px_B",
+            "after_cml-_b0_d1534100px_B",
+            "text-black_f_b0_d15_B",
+            "ring-_b1_d0px_B",
+            "_emt-2",
+            "-translate-y-1",
+            "max-_b712px_B_cp-_b13px_B",
+            "bg-_brgb_p12_m34_m56_P_B",
+            "grid-rows-_bauto_minmax_p0_m_1fr_P_B",
+            "group-_b_cnth-of-type_p3_P__n_B_cblock",
+            "_b_tsupports_pdisplay_cgrid_P_B_cgrid",
+            "supports-_bbackdrop-filter_cblur_p2px_P_B_cbackdrop-blur-_b2px_B",
+            "_b_tmedia_pany-hover_chover_P_k_n_chover_K_B_copacity-100",
+            "data-_bstate_zopen_B_copacity-100",
+            "supports-_bdisplay_cgrid_B_cgrid",
+            "_bmask-type_cluminance_B",
+            "_b--watch-hmr-offset_c1534100px_B"
+          ],
+          "rounds": [
+            {
+              "roundName": "baseline-arbitrary",
+              "marker": "tw-watch-uni-app-tailwindcss-v4-script-baseline-arbitrary-1526870",
+              "classLiteral": "text-[23.1526870px] space-y-2.5 w-[calc(100%_-_1526870px)] grid-cols-[200rpx_minmax(900rpx,_1fr)_1526870px] after:ml-[0.1526870px] text-black/[0.15] ring-[1.0px]",
+              "classTokens": [
+                "text-[23.1526870px]",
+                "space-y-2.5",
+                "w-[calc(100%_-_1526870px)]",
+                "grid-cols-[200rpx_minmax(900rpx,_1fr)_1526870px]",
+                "after:ml-[0.1526870px]",
+                "text-black/[0.15]",
+                "ring-[1.0px]"
+              ],
+              "escapedClasses": [
+                "text-_b23_d1526870px_B",
+                "space-y-2_d5",
+                "w-_bcalc_p100_v_-_1526870px_P_B",
+                "grid-cols-_b200rpx_minmax_p900rpx_m_1fr_P_1526870px_B",
+                "after_cml-_b0_d1526870px_B",
+                "text-black_f_b0_d15_B",
+                "ring-_b1_d0px_B"
+              ],
+              "hotUpdateOutputMs": 482,
+              "hotUpdateEffectiveMs": 482,
+              "rollbackOutputMs": 240,
+              "rollbackEffectiveMs": 240,
+              "totalMs": 723
+            },
+            {
+              "roundName": "complex-corpus",
+              "marker": "tw-watch-uni-app-tailwindcss-v4-script-complex-corpus-1534100",
+              "classLiteral": "text-[23.1534100px] space-y-2.5 w-[calc(100%_-_1534100px)] grid-cols-[200rpx_minmax(900rpx,_1fr)_1534100px] after:ml-[0.1534100px] text-black/[0.15] ring-[1.0px] !mt-2 -translate-y-1 max-[712px]:p-[13px] bg-[rgb(12,34,56)] grid-rows-[auto_minmax(0,_1fr)] group-[:nth-of-type(3)_&]:block [@supports(display:grid)]:grid supports-[backdrop-filter:blur(2px)]:backdrop-blur-[2px] [@media(any-hover:hover){&:hover}]:opacity-100 data-[state=open]:opacity-100 supports-[display:grid]:grid [mask-type:luminance] [--watch-hmr-offset:1534100px]",
+              "classTokens": [
+                "text-[23.1534100px]",
+                "space-y-2.5",
+                "w-[calc(100%_-_1534100px)]",
+                "grid-cols-[200rpx_minmax(900rpx,_1fr)_1534100px]",
+                "after:ml-[0.1534100px]",
+                "text-black/[0.15]",
+                "ring-[1.0px]",
+                "!mt-2",
+                "-translate-y-1",
+                "max-[712px]:p-[13px]",
+                "bg-[rgb(12,34,56)]",
+                "grid-rows-[auto_minmax(0,_1fr)]",
+                "group-[:nth-of-type(3)_&]:block",
+                "[@supports(display:grid)]:grid",
+                "supports-[backdrop-filter:blur(2px)]:backdrop-blur-[2px]",
+                "[@media(any-hover:hover){&:hover}]:opacity-100",
+                "data-[state=open]:opacity-100",
+                "supports-[display:grid]:grid",
+                "[mask-type:luminance]",
+                "[--watch-hmr-offset:1534100px]"
+              ],
+              "escapedClasses": [
+                "text-_b23_d1534100px_B",
+                "space-y-2_d5",
+                "w-_bcalc_p100_v_-_1534100px_P_B",
+                "grid-cols-_b200rpx_minmax_p900rpx_m_1fr_P_1534100px_B",
+                "after_cml-_b0_d1534100px_B",
+                "text-black_f_b0_d15_B",
+                "ring-_b1_d0px_B",
+                "_emt-2",
+                "-translate-y-1",
+                "max-_b712px_B_cp-_b13px_B",
+                "bg-_brgb_p12_m34_m56_P_B",
+                "grid-rows-_bauto_minmax_p0_m_1fr_P_B",
+                "group-_b_cnth-of-type_p3_P__n_B_cblock",
+                "_b_tsupports_pdisplay_cgrid_P_B_cgrid",
+                "supports-_bbackdrop-filter_cblur_p2px_P_B_cbackdrop-blur-_b2px_B",
+                "_b_tmedia_pany-hover_chover_P_k_n_chover_K_B_copacity-100",
+                "data-_bstate_zopen_B_copacity-100",
+                "supports-_bdisplay_cgrid_B_cgrid",
+                "_bmask-type_cluminance_B",
+                "_b--watch-hmr-offset_c1534100px_B"
+              ],
+              "hotUpdateOutputMs": 481,
+              "hotUpdateEffectiveMs": 482,
+              "rollbackOutputMs": 482,
+              "rollbackEffectiveMs": 483,
+              "totalMs": 966
+            }
+          ],
+          "roundComparison": {
+            "baselineRoundName": "baseline-arbitrary",
+            "candidateRoundName": "complex-corpus",
+            "hotUpdateDeltaMs": 0,
+            "rollbackDeltaMs": 243,
+            "hotUpdateRatio": 1,
+            "rollbackRatio": 2.013
+          },
+          "verifyEscapedIn": [],
+          "verifyClassLiteralIn": [
+            "js"
+          ],
+          "globalStyleOutputs": [
+            "/Users/yangqiming/Documents/GitHub/weapp-tailwindcss/demo/uni-app-tailwindcss-v4/dist/dev/mp-weixin/app.wxss"
+          ],
+          "minRequiredGlobalStyleEscapedClasses": 0,
+          "verifiedGlobalStyleEscapedClasses": [
+            "text-_b23_d1526870px_B",
+            "space-y-2_d5",
+            "w-_bcalc_p100_v_-_1526870px_P_B",
+            "text-_b23_d1534100px_B",
+            "w-_bcalc_p100_v_-_1534100px_P_B"
+          ],
+          "hotUpdateOutputMs": 481,
+          "hotUpdateEffectiveMs": 482,
+          "rollbackOutputMs": 482,
+          "rollbackEffectiveMs": 483
+        },
+        {
+          "mutationKind": "style",
+          "sourceFile": "/Users/yangqiming/Documents/GitHub/weapp-tailwindcss/demo/uni-app-tailwindcss-v4/src/main.css",
+          "outputStyle": "/Users/yangqiming/Documents/GitHub/weapp-tailwindcss/demo/uni-app-tailwindcss-v4/dist/dev/mp-weixin/app.wxss",
+          "marker": "tw-watch-style-uni-app-tailwindcss-v4-154376515",
+          "styleNeedle": ".tw-watch-style-uni-app-tailwindcss-v4-154376515",
+          "applyUtilities": [],
+          "expectedApplyDeclarations": [],
+          "hotUpdateOutputMs": 482,
+          "hotUpdateEffectiveMs": 482,
+          "rollbackOutputMs": 481,
+          "rollbackEffectiveMs": 482,
+          "rollbackNeedleCleared": true
+        }
+      ],
+      "summaryByMutationKind": {
+        "template": {
+          "count": 1,
+          "hotUpdateAvgMs": 483,
+          "hotUpdateMaxMs": 483,
+          "hotUpdateMinMs": 483,
+          "rollbackAvgMs": 482,
+          "rollbackMaxMs": 482,
+          "rollbackMinMs": 482
+        },
+        "script": {
+          "count": 1,
+          "hotUpdateAvgMs": 482,
+          "hotUpdateMaxMs": 482,
+          "hotUpdateMinMs": 482,
+          "rollbackAvgMs": 483,
+          "rollbackMaxMs": 483,
+          "rollbackMinMs": 483
+        },
+        "style": {
+          "count": 1,
+          "hotUpdateAvgMs": 482,
+          "hotUpdateMaxMs": 482,
+          "hotUpdateMinMs": 482,
+          "rollbackAvgMs": 482,
+          "rollbackMaxMs": 482,
+          "rollbackMinMs": 482
+        }
+      },
+      "initialReadyMs": 1931,
+      "hotUpdateOutputMs": 482,
+      "hotUpdateEffectiveMs": 483,
+      "rollbackOutputMs": 482,
+      "rollbackEffectiveMs": 482,
+      "totalMs": 7484
+    }
+  ]
+}

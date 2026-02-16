@@ -1,0 +1,553 @@
+{
+  "generatedAt": "2026-02-16T06:38:47.691Z",
+  "repositoryRoot": "weapp-tailwindcss",
+  "options": {
+    "caseName": "weapp-vite",
+    "timeoutMs": 240000,
+    "pollMs": 240,
+    "skipBuild": true,
+    "quietSass": true,
+    "maxHotUpdateMs": 15000
+  },
+  "summary": {
+    "count": 1,
+    "hotUpdateAvgMs": 966,
+    "hotUpdateMaxMs": 966,
+    "hotUpdateMinMs": 966,
+    "rollbackAvgMs": 241,
+    "rollbackMaxMs": 241,
+    "rollbackMinMs": 241
+  },
+  "summaryByRound": {
+    "baseline-arbitrary": {
+      "count": 1,
+      "hotUpdateAvgMs": 964,
+      "hotUpdateMaxMs": 964,
+      "hotUpdateMinMs": 964,
+      "rollbackAvgMs": 241,
+      "rollbackMaxMs": 241,
+      "rollbackMinMs": 241
+    },
+    "complex-corpus": {
+      "count": 1,
+      "hotUpdateAvgMs": 966,
+      "hotUpdateMaxMs": 966,
+      "hotUpdateMinMs": 966,
+      "rollbackAvgMs": 241,
+      "rollbackMaxMs": 241,
+      "rollbackMinMs": 241
+    }
+  },
+  "summaryByGroup": {
+    "demo": {
+      "count": 1,
+      "hotUpdateAvgMs": 966,
+      "hotUpdateMaxMs": 966,
+      "hotUpdateMinMs": 966,
+      "rollbackAvgMs": 241,
+      "rollbackMaxMs": 241,
+      "rollbackMinMs": 241
+    },
+    "apps": {
+      "count": 0,
+      "hotUpdateAvgMs": 0,
+      "hotUpdateMaxMs": 0,
+      "hotUpdateMinMs": 0,
+      "rollbackAvgMs": 0,
+      "rollbackMaxMs": 0,
+      "rollbackMinMs": 0
+    }
+  },
+  "summaryByProject": {
+    "demo/native-ts": {
+      "count": 1,
+      "hotUpdateAvgMs": 966,
+      "hotUpdateMaxMs": 966,
+      "hotUpdateMinMs": 966,
+      "rollbackAvgMs": 241,
+      "rollbackMaxMs": 241,
+      "rollbackMinMs": 241
+    }
+  },
+  "summaryByMutationKind": {
+    "template": {
+      "count": 1,
+      "hotUpdateAvgMs": 966,
+      "hotUpdateMaxMs": 966,
+      "hotUpdateMinMs": 966,
+      "rollbackAvgMs": 241,
+      "rollbackMaxMs": 241,
+      "rollbackMinMs": 241
+    },
+    "script": {
+      "count": 1,
+      "hotUpdateAvgMs": 724,
+      "hotUpdateMaxMs": 724,
+      "hotUpdateMinMs": 724,
+      "rollbackAvgMs": 241,
+      "rollbackMaxMs": 241,
+      "rollbackMinMs": 241
+    },
+    "style": {
+      "count": 1,
+      "hotUpdateAvgMs": 241,
+      "hotUpdateMaxMs": 241,
+      "hotUpdateMinMs": 241,
+      "rollbackAvgMs": 242,
+      "rollbackMaxMs": 242,
+      "rollbackMinMs": 242
+    }
+  },
+  "cases": [
+    {
+      "name": "weapp-vite",
+      "label": "demo/native-ts (weapp-vite)",
+      "project": "demo/native-ts",
+      "projectGroup": "demo",
+      "marker": "tw-watch-weapp-vite-template-complex-corpus-9189930",
+      "classLiteral": "text-[23.9189930px] space-y-2.5 w-[calc(100%_-_9189930px)] grid-cols-[200rpx_minmax(900rpx,_1fr)_9189930px] after:ml-[0.9189930px] text-black/[0.91] ring-[1.0px] group-[:nth-of-type(3)_&]:block [@supports(display:grid)]:grid [@media(any-hover:hover){&:hover}]:opacity-100 data-[state=open]:opacity-100 supports-[display:grid]:grid [mask-type:luminance] [--watch-hmr-offset:9189930px]",
+      "classTokens": [
+        "text-[23.9189930px]",
+        "space-y-2.5",
+        "w-[calc(100%_-_9189930px)]",
+        "grid-cols-[200rpx_minmax(900rpx,_1fr)_9189930px]",
+        "after:ml-[0.9189930px]",
+        "text-black/[0.91]",
+        "ring-[1.0px]",
+        "group-[:nth-of-type(3)_&]:block",
+        "[@supports(display:grid)]:grid",
+        "[@media(any-hover:hover){&:hover}]:opacity-100",
+        "data-[state=open]:opacity-100",
+        "supports-[display:grid]:grid",
+        "[mask-type:luminance]",
+        "[--watch-hmr-offset:9189930px]"
+      ],
+      "escapedClasses": [
+        "text-_b23_d9189930px_B",
+        "space-y-2_d5",
+        "w-_bcalc_p100_v_-_9189930px_P_B",
+        "grid-cols-_b200rpx_minmax_p900rpx_m_1fr_P_9189930px_B",
+        "after_cml-_b0_d9189930px_B",
+        "text-black_f_b0_d91_B",
+        "ring-_b1_d0px_B",
+        "group-_b_cnth-of-type_p3_P__n_B_cblock",
+        "_b_tsupports_pdisplay_cgrid_P_B_cgrid",
+        "_b_tmedia_pany-hover_chover_P_k_n_chover_K_B_copacity-100",
+        "data-_bstate_zopen_B_copacity-100",
+        "supports-_bdisplay_cgrid_B_cgrid",
+        "_bmask-type_cluminance_B",
+        "_b--watch-hmr-offset_c9189930px_B"
+      ],
+      "rounds": [
+        {
+          "roundName": "baseline-arbitrary",
+          "marker": "tw-watch-weapp-vite-template-baseline-arbitrary-9177830",
+          "classLiteral": "text-[23.9177830px] space-y-2.5 w-[calc(100%_-_9177830px)] grid-cols-[200rpx_minmax(900rpx,_1fr)_9177830px] after:ml-[0.9177830px] text-black/[0.91] ring-[1.0px]",
+          "classTokens": [
+            "text-[23.9177830px]",
+            "space-y-2.5",
+            "w-[calc(100%_-_9177830px)]",
+            "grid-cols-[200rpx_minmax(900rpx,_1fr)_9177830px]",
+            "after:ml-[0.9177830px]",
+            "text-black/[0.91]",
+            "ring-[1.0px]"
+          ],
+          "escapedClasses": [
+            "text-_b23_d9177830px_B",
+            "space-y-2_d5",
+            "w-_bcalc_p100_v_-_9177830px_P_B",
+            "grid-cols-_b200rpx_minmax_p900rpx_m_1fr_P_9177830px_B",
+            "after_cml-_b0_d9177830px_B",
+            "text-black_f_b0_d91_B",
+            "ring-_b1_d0px_B"
+          ],
+          "hotUpdateOutputMs": 963,
+          "hotUpdateEffectiveMs": 964,
+          "rollbackOutputMs": 241,
+          "rollbackEffectiveMs": 241,
+          "totalMs": 1210
+        },
+        {
+          "roundName": "complex-corpus",
+          "marker": "tw-watch-weapp-vite-template-complex-corpus-9189930",
+          "classLiteral": "text-[23.9189930px] space-y-2.5 w-[calc(100%_-_9189930px)] grid-cols-[200rpx_minmax(900rpx,_1fr)_9189930px] after:ml-[0.9189930px] text-black/[0.91] ring-[1.0px] group-[:nth-of-type(3)_&]:block [@supports(display:grid)]:grid [@media(any-hover:hover){&:hover}]:opacity-100 data-[state=open]:opacity-100 supports-[display:grid]:grid [mask-type:luminance] [--watch-hmr-offset:9189930px]",
+          "classTokens": [
+            "text-[23.9189930px]",
+            "space-y-2.5",
+            "w-[calc(100%_-_9189930px)]",
+            "grid-cols-[200rpx_minmax(900rpx,_1fr)_9189930px]",
+            "after:ml-[0.9189930px]",
+            "text-black/[0.91]",
+            "ring-[1.0px]",
+            "group-[:nth-of-type(3)_&]:block",
+            "[@supports(display:grid)]:grid",
+            "[@media(any-hover:hover){&:hover}]:opacity-100",
+            "data-[state=open]:opacity-100",
+            "supports-[display:grid]:grid",
+            "[mask-type:luminance]",
+            "[--watch-hmr-offset:9189930px]"
+          ],
+          "escapedClasses": [
+            "text-_b23_d9189930px_B",
+            "space-y-2_d5",
+            "w-_bcalc_p100_v_-_9189930px_P_B",
+            "grid-cols-_b200rpx_minmax_p900rpx_m_1fr_P_9189930px_B",
+            "after_cml-_b0_d9189930px_B",
+            "text-black_f_b0_d91_B",
+            "ring-_b1_d0px_B",
+            "group-_b_cnth-of-type_p3_P__n_B_cblock",
+            "_b_tsupports_pdisplay_cgrid_P_B_cgrid",
+            "_b_tmedia_pany-hover_chover_P_k_n_chover_K_B_copacity-100",
+            "data-_bstate_zopen_B_copacity-100",
+            "supports-_bdisplay_cgrid_B_cgrid",
+            "_bmask-type_cluminance_B",
+            "_b--watch-hmr-offset_c9189930px_B"
+          ],
+          "hotUpdateOutputMs": 965,
+          "hotUpdateEffectiveMs": 966,
+          "rollbackOutputMs": 240,
+          "rollbackEffectiveMs": 241,
+          "totalMs": 1214
+        }
+      ],
+      "roundComparison": {
+        "baselineRoundName": "baseline-arbitrary",
+        "candidateRoundName": "complex-corpus",
+        "hotUpdateDeltaMs": 2,
+        "rollbackDeltaMs": 0,
+        "hotUpdateRatio": 1.002,
+        "rollbackRatio": 1
+      },
+      "verifyEscapedIn": [
+        "wxml"
+      ],
+      "verifyClassLiteralIn": [],
+      "globalStyleOutputs": [
+        "/Users/yangqiming/Documents/GitHub/weapp-tailwindcss/demo/native-ts/dist/app.wxss"
+      ],
+      "mutationMetrics": [
+        {
+          "mutationKind": "template",
+          "sourceFile": "/Users/yangqiming/Documents/GitHub/weapp-tailwindcss/demo/native-ts/miniprogram/pages/index/index.wxml",
+          "marker": "tw-watch-weapp-vite-template-complex-corpus-9189930",
+          "classLiteral": "text-[23.9189930px] space-y-2.5 w-[calc(100%_-_9189930px)] grid-cols-[200rpx_minmax(900rpx,_1fr)_9189930px] after:ml-[0.9189930px] text-black/[0.91] ring-[1.0px] group-[:nth-of-type(3)_&]:block [@supports(display:grid)]:grid [@media(any-hover:hover){&:hover}]:opacity-100 data-[state=open]:opacity-100 supports-[display:grid]:grid [mask-type:luminance] [--watch-hmr-offset:9189930px]",
+          "classTokens": [
+            "text-[23.9189930px]",
+            "space-y-2.5",
+            "w-[calc(100%_-_9189930px)]",
+            "grid-cols-[200rpx_minmax(900rpx,_1fr)_9189930px]",
+            "after:ml-[0.9189930px]",
+            "text-black/[0.91]",
+            "ring-[1.0px]",
+            "group-[:nth-of-type(3)_&]:block",
+            "[@supports(display:grid)]:grid",
+            "[@media(any-hover:hover){&:hover}]:opacity-100",
+            "data-[state=open]:opacity-100",
+            "supports-[display:grid]:grid",
+            "[mask-type:luminance]",
+            "[--watch-hmr-offset:9189930px]"
+          ],
+          "escapedClasses": [
+            "text-_b23_d9189930px_B",
+            "space-y-2_d5",
+            "w-_bcalc_p100_v_-_9189930px_P_B",
+            "grid-cols-_b200rpx_minmax_p900rpx_m_1fr_P_9189930px_B",
+            "after_cml-_b0_d9189930px_B",
+            "text-black_f_b0_d91_B",
+            "ring-_b1_d0px_B",
+            "group-_b_cnth-of-type_p3_P__n_B_cblock",
+            "_b_tsupports_pdisplay_cgrid_P_B_cgrid",
+            "_b_tmedia_pany-hover_chover_P_k_n_chover_K_B_copacity-100",
+            "data-_bstate_zopen_B_copacity-100",
+            "supports-_bdisplay_cgrid_B_cgrid",
+            "_bmask-type_cluminance_B",
+            "_b--watch-hmr-offset_c9189930px_B"
+          ],
+          "rounds": [
+            {
+              "roundName": "baseline-arbitrary",
+              "marker": "tw-watch-weapp-vite-template-baseline-arbitrary-9177830",
+              "classLiteral": "text-[23.9177830px] space-y-2.5 w-[calc(100%_-_9177830px)] grid-cols-[200rpx_minmax(900rpx,_1fr)_9177830px] after:ml-[0.9177830px] text-black/[0.91] ring-[1.0px]",
+              "classTokens": [
+                "text-[23.9177830px]",
+                "space-y-2.5",
+                "w-[calc(100%_-_9177830px)]",
+                "grid-cols-[200rpx_minmax(900rpx,_1fr)_9177830px]",
+                "after:ml-[0.9177830px]",
+                "text-black/[0.91]",
+                "ring-[1.0px]"
+              ],
+              "escapedClasses": [
+                "text-_b23_d9177830px_B",
+                "space-y-2_d5",
+                "w-_bcalc_p100_v_-_9177830px_P_B",
+                "grid-cols-_b200rpx_minmax_p900rpx_m_1fr_P_9177830px_B",
+                "after_cml-_b0_d9177830px_B",
+                "text-black_f_b0_d91_B",
+                "ring-_b1_d0px_B"
+              ],
+              "hotUpdateOutputMs": 963,
+              "hotUpdateEffectiveMs": 964,
+              "rollbackOutputMs": 241,
+              "rollbackEffectiveMs": 241,
+              "totalMs": 1210
+            },
+            {
+              "roundName": "complex-corpus",
+              "marker": "tw-watch-weapp-vite-template-complex-corpus-9189930",
+              "classLiteral": "text-[23.9189930px] space-y-2.5 w-[calc(100%_-_9189930px)] grid-cols-[200rpx_minmax(900rpx,_1fr)_9189930px] after:ml-[0.9189930px] text-black/[0.91] ring-[1.0px] group-[:nth-of-type(3)_&]:block [@supports(display:grid)]:grid [@media(any-hover:hover){&:hover}]:opacity-100 data-[state=open]:opacity-100 supports-[display:grid]:grid [mask-type:luminance] [--watch-hmr-offset:9189930px]",
+              "classTokens": [
+                "text-[23.9189930px]",
+                "space-y-2.5",
+                "w-[calc(100%_-_9189930px)]",
+                "grid-cols-[200rpx_minmax(900rpx,_1fr)_9189930px]",
+                "after:ml-[0.9189930px]",
+                "text-black/[0.91]",
+                "ring-[1.0px]",
+                "group-[:nth-of-type(3)_&]:block",
+                "[@supports(display:grid)]:grid",
+                "[@media(any-hover:hover){&:hover}]:opacity-100",
+                "data-[state=open]:opacity-100",
+                "supports-[display:grid]:grid",
+                "[mask-type:luminance]",
+                "[--watch-hmr-offset:9189930px]"
+              ],
+              "escapedClasses": [
+                "text-_b23_d9189930px_B",
+                "space-y-2_d5",
+                "w-_bcalc_p100_v_-_9189930px_P_B",
+                "grid-cols-_b200rpx_minmax_p900rpx_m_1fr_P_9189930px_B",
+                "after_cml-_b0_d9189930px_B",
+                "text-black_f_b0_d91_B",
+                "ring-_b1_d0px_B",
+                "group-_b_cnth-of-type_p3_P__n_B_cblock",
+                "_b_tsupports_pdisplay_cgrid_P_B_cgrid",
+                "_b_tmedia_pany-hover_chover_P_k_n_chover_K_B_copacity-100",
+                "data-_bstate_zopen_B_copacity-100",
+                "supports-_bdisplay_cgrid_B_cgrid",
+                "_bmask-type_cluminance_B",
+                "_b--watch-hmr-offset_c9189930px_B"
+              ],
+              "hotUpdateOutputMs": 965,
+              "hotUpdateEffectiveMs": 966,
+              "rollbackOutputMs": 240,
+              "rollbackEffectiveMs": 241,
+              "totalMs": 1214
+            }
+          ],
+          "roundComparison": {
+            "baselineRoundName": "baseline-arbitrary",
+            "candidateRoundName": "complex-corpus",
+            "hotUpdateDeltaMs": 2,
+            "rollbackDeltaMs": 0,
+            "hotUpdateRatio": 1.002,
+            "rollbackRatio": 1
+          },
+          "verifyEscapedIn": [
+            "wxml"
+          ],
+          "verifyClassLiteralIn": [],
+          "globalStyleOutputs": [
+            "/Users/yangqiming/Documents/GitHub/weapp-tailwindcss/demo/native-ts/dist/app.wxss"
+          ],
+          "minRequiredGlobalStyleEscapedClasses": 1,
+          "verifiedGlobalStyleEscapedClasses": [
+            "text-_b23_d9177830px_B",
+            "space-y-2_d5",
+            "w-_bcalc_p100_v_-_9177830px_P_B",
+            "text-_b23_d9189930px_B",
+            "w-_bcalc_p100_v_-_9189930px_P_B"
+          ],
+          "hotUpdateOutputMs": 965,
+          "hotUpdateEffectiveMs": 966,
+          "rollbackOutputMs": 240,
+          "rollbackEffectiveMs": 241
+        },
+        {
+          "mutationKind": "script",
+          "sourceFile": "/Users/yangqiming/Documents/GitHub/weapp-tailwindcss/demo/native-ts/miniprogram/pages/index/index.ts",
+          "marker": "tw-watch-weapp-vite-script-complex-corpus-9211780",
+          "classLiteral": "text-[23.9211780px] space-y-2.5 w-[calc(100%_-_9211780px)] grid-cols-[200rpx_minmax(900rpx,_1fr)_9211780px] after:ml-[0.9211780px] text-black/[0.92] ring-[1.0px] group-[:nth-of-type(3)_&]:block [@supports(display:grid)]:grid [@media(any-hover:hover){&:hover}]:opacity-100 data-[state=open]:opacity-100 supports-[display:grid]:grid [mask-type:luminance] [--watch-hmr-offset:9211780px]",
+          "classTokens": [
+            "text-[23.9211780px]",
+            "space-y-2.5",
+            "w-[calc(100%_-_9211780px)]",
+            "grid-cols-[200rpx_minmax(900rpx,_1fr)_9211780px]",
+            "after:ml-[0.9211780px]",
+            "text-black/[0.92]",
+            "ring-[1.0px]",
+            "group-[:nth-of-type(3)_&]:block",
+            "[@supports(display:grid)]:grid",
+            "[@media(any-hover:hover){&:hover}]:opacity-100",
+            "data-[state=open]:opacity-100",
+            "supports-[display:grid]:grid",
+            "[mask-type:luminance]",
+            "[--watch-hmr-offset:9211780px]"
+          ],
+          "escapedClasses": [
+            "text-_b23_d9211780px_B",
+            "space-y-2_d5",
+            "w-_bcalc_p100_v_-_9211780px_P_B",
+            "grid-cols-_b200rpx_minmax_p900rpx_m_1fr_P_9211780px_B",
+            "after_cml-_b0_d9211780px_B",
+            "text-black_f_b0_d92_B",
+            "ring-_b1_d0px_B",
+            "group-_b_cnth-of-type_p3_P__n_B_cblock",
+            "_b_tsupports_pdisplay_cgrid_P_B_cgrid",
+            "_b_tmedia_pany-hover_chover_P_k_n_chover_K_B_copacity-100",
+            "data-_bstate_zopen_B_copacity-100",
+            "supports-_bdisplay_cgrid_B_cgrid",
+            "_bmask-type_cluminance_B",
+            "_b--watch-hmr-offset_c9211780px_B"
+          ],
+          "rounds": [
+            {
+              "roundName": "baseline-arbitrary",
+              "marker": "tw-watch-weapp-vite-script-baseline-arbitrary-9202080",
+              "classLiteral": "text-[23.9202080px] space-y-2.5 w-[calc(100%_-_9202080px)] grid-cols-[200rpx_minmax(900rpx,_1fr)_9202080px] after:ml-[0.9202080px] text-black/[0.92] ring-[1.0px]",
+              "classTokens": [
+                "text-[23.9202080px]",
+                "space-y-2.5",
+                "w-[calc(100%_-_9202080px)]",
+                "grid-cols-[200rpx_minmax(900rpx,_1fr)_9202080px]",
+                "after:ml-[0.9202080px]",
+                "text-black/[0.92]",
+                "ring-[1.0px]"
+              ],
+              "escapedClasses": [
+                "text-_b23_d9202080px_B",
+                "space-y-2_d5",
+                "w-_bcalc_p100_v_-_9202080px_P_B",
+                "grid-cols-_b200rpx_minmax_p900rpx_m_1fr_P_9202080px_B",
+                "after_cml-_b0_d9202080px_B",
+                "text-black_f_b0_d92_B",
+                "ring-_b1_d0px_B"
+              ],
+              "hotUpdateOutputMs": 724,
+              "hotUpdateEffectiveMs": 724,
+              "rollbackOutputMs": 241,
+              "rollbackEffectiveMs": 242,
+              "totalMs": 970
+            },
+            {
+              "roundName": "complex-corpus",
+              "marker": "tw-watch-weapp-vite-script-complex-corpus-9211780",
+              "classLiteral": "text-[23.9211780px] space-y-2.5 w-[calc(100%_-_9211780px)] grid-cols-[200rpx_minmax(900rpx,_1fr)_9211780px] after:ml-[0.9211780px] text-black/[0.92] ring-[1.0px] group-[:nth-of-type(3)_&]:block [@supports(display:grid)]:grid [@media(any-hover:hover){&:hover}]:opacity-100 data-[state=open]:opacity-100 supports-[display:grid]:grid [mask-type:luminance] [--watch-hmr-offset:9211780px]",
+              "classTokens": [
+                "text-[23.9211780px]",
+                "space-y-2.5",
+                "w-[calc(100%_-_9211780px)]",
+                "grid-cols-[200rpx_minmax(900rpx,_1fr)_9211780px]",
+                "after:ml-[0.9211780px]",
+                "text-black/[0.92]",
+                "ring-[1.0px]",
+                "group-[:nth-of-type(3)_&]:block",
+                "[@supports(display:grid)]:grid",
+                "[@media(any-hover:hover){&:hover}]:opacity-100",
+                "data-[state=open]:opacity-100",
+                "supports-[display:grid]:grid",
+                "[mask-type:luminance]",
+                "[--watch-hmr-offset:9211780px]"
+              ],
+              "escapedClasses": [
+                "text-_b23_d9211780px_B",
+                "space-y-2_d5",
+                "w-_bcalc_p100_v_-_9211780px_P_B",
+                "grid-cols-_b200rpx_minmax_p900rpx_m_1fr_P_9211780px_B",
+                "after_cml-_b0_d9211780px_B",
+                "text-black_f_b0_d92_B",
+                "ring-_b1_d0px_B",
+                "group-_b_cnth-of-type_p3_P__n_B_cblock",
+                "_b_tsupports_pdisplay_cgrid_P_B_cgrid",
+                "_b_tmedia_pany-hover_chover_P_k_n_chover_K_B_copacity-100",
+                "data-_bstate_zopen_B_copacity-100",
+                "supports-_bdisplay_cgrid_B_cgrid",
+                "_bmask-type_cluminance_B",
+                "_b--watch-hmr-offset_c9211780px_B"
+              ],
+              "hotUpdateOutputMs": 723,
+              "hotUpdateEffectiveMs": 724,
+              "rollbackOutputMs": 241,
+              "rollbackEffectiveMs": 241,
+              "totalMs": 971
+            }
+          ],
+          "roundComparison": {
+            "baselineRoundName": "baseline-arbitrary",
+            "candidateRoundName": "complex-corpus",
+            "hotUpdateDeltaMs": 0,
+            "rollbackDeltaMs": -1,
+            "hotUpdateRatio": 1,
+            "rollbackRatio": 0.996
+          },
+          "verifyEscapedIn": [],
+          "verifyClassLiteralIn": [
+            "js"
+          ],
+          "globalStyleOutputs": [
+            "/Users/yangqiming/Documents/GitHub/weapp-tailwindcss/demo/native-ts/dist/app.wxss"
+          ],
+          "minRequiredGlobalStyleEscapedClasses": 1,
+          "verifiedGlobalStyleEscapedClasses": [
+            "text-_b23_d9202080px_B",
+            "space-y-2_d5",
+            "w-_bcalc_p100_v_-_9202080px_P_B",
+            "text-_b23_d9211780px_B",
+            "w-_bcalc_p100_v_-_9211780px_P_B"
+          ],
+          "hotUpdateOutputMs": 723,
+          "hotUpdateEffectiveMs": 724,
+          "rollbackOutputMs": 241,
+          "rollbackEffectiveMs": 241
+        },
+        {
+          "mutationKind": "style",
+          "sourceFile": "/Users/yangqiming/Documents/GitHub/weapp-tailwindcss/demo/native-ts/miniprogram/pages/index/index.scss",
+          "outputStyle": "/Users/yangqiming/Documents/GitHub/weapp-tailwindcss/demo/native-ts/dist/pages/index/index.wxss",
+          "marker": "tw-watch-style-weapp-vite-922150582",
+          "styleNeedle": ".tw-watch-style-weapp-vite-922150582",
+          "hotUpdateOutputMs": 240,
+          "hotUpdateEffectiveMs": 241,
+          "rollbackOutputMs": 241,
+          "rollbackEffectiveMs": 242,
+          "rollbackNeedleCleared": true
+        }
+      ],
+      "summaryByMutationKind": {
+        "template": {
+          "count": 1,
+          "hotUpdateAvgMs": 966,
+          "hotUpdateMaxMs": 966,
+          "hotUpdateMinMs": 966,
+          "rollbackAvgMs": 241,
+          "rollbackMaxMs": 241,
+          "rollbackMinMs": 241
+        },
+        "script": {
+          "count": 1,
+          "hotUpdateAvgMs": 724,
+          "hotUpdateMaxMs": 724,
+          "hotUpdateMinMs": 724,
+          "rollbackAvgMs": 241,
+          "rollbackMaxMs": 241,
+          "rollbackMinMs": 241
+        },
+        "style": {
+          "count": 1,
+          "hotUpdateAvgMs": 241,
+          "hotUpdateMaxMs": 241,
+          "hotUpdateMinMs": 241,
+          "rollbackAvgMs": 242,
+          "rollbackMaxMs": 242,
+          "rollbackMinMs": 242
+        }
+      },
+      "initialReadyMs": 2893,
+      "hotUpdateOutputMs": 965,
+      "hotUpdateEffectiveMs": 966,
+      "rollbackOutputMs": 240,
+      "rollbackEffectiveMs": 241,
+      "totalMs": 7748
+    }
+  ]
+}

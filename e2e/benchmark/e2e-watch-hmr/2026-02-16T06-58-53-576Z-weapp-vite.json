@@ -1,0 +1,633 @@
+{
+  "generatedAt": "2026-02-16T06:59:07.423Z",
+  "repositoryRoot": "weapp-tailwindcss",
+  "options": {
+    "caseName": "weapp-vite",
+    "timeoutMs": 240000,
+    "pollMs": 240,
+    "skipBuild": true,
+    "quietSass": true,
+    "maxHotUpdateMs": 15000
+  },
+  "summary": {
+    "count": 1,
+    "hotUpdateAvgMs": 965,
+    "hotUpdateMaxMs": 965,
+    "hotUpdateMinMs": 965,
+    "rollbackAvgMs": 240,
+    "rollbackMaxMs": 240,
+    "rollbackMinMs": 240
+  },
+  "summaryByRound": {
+    "baseline-arbitrary": {
+      "count": 1,
+      "hotUpdateAvgMs": 965,
+      "hotUpdateMaxMs": 965,
+      "hotUpdateMinMs": 965,
+      "rollbackAvgMs": 241,
+      "rollbackMaxMs": 241,
+      "rollbackMinMs": 241
+    },
+    "complex-corpus": {
+      "count": 1,
+      "hotUpdateAvgMs": 965,
+      "hotUpdateMaxMs": 965,
+      "hotUpdateMinMs": 965,
+      "rollbackAvgMs": 240,
+      "rollbackMaxMs": 240,
+      "rollbackMinMs": 240
+    }
+  },
+  "summaryByGroup": {
+    "demo": {
+      "count": 1,
+      "hotUpdateAvgMs": 965,
+      "hotUpdateMaxMs": 965,
+      "hotUpdateMinMs": 965,
+      "rollbackAvgMs": 240,
+      "rollbackMaxMs": 240,
+      "rollbackMinMs": 240
+    },
+    "apps": {
+      "count": 0,
+      "hotUpdateAvgMs": 0,
+      "hotUpdateMaxMs": 0,
+      "hotUpdateMinMs": 0,
+      "rollbackAvgMs": 0,
+      "rollbackMaxMs": 0,
+      "rollbackMinMs": 0
+    }
+  },
+  "summaryByProject": {
+    "demo/native-ts": {
+      "count": 1,
+      "hotUpdateAvgMs": 965,
+      "hotUpdateMaxMs": 965,
+      "hotUpdateMinMs": 965,
+      "rollbackAvgMs": 240,
+      "rollbackMaxMs": 240,
+      "rollbackMinMs": 240
+    }
+  },
+  "summaryByMutationKind": {
+    "template": {
+      "count": 1,
+      "hotUpdateAvgMs": 965,
+      "hotUpdateMaxMs": 965,
+      "hotUpdateMinMs": 965,
+      "rollbackAvgMs": 240,
+      "rollbackMaxMs": 240,
+      "rollbackMinMs": 240
+    },
+    "script": {
+      "count": 1,
+      "hotUpdateAvgMs": 965,
+      "hotUpdateMaxMs": 965,
+      "hotUpdateMinMs": 965,
+      "rollbackAvgMs": 241,
+      "rollbackMaxMs": 241,
+      "rollbackMinMs": 241
+    },
+    "style": {
+      "count": 1,
+      "hotUpdateAvgMs": 241,
+      "hotUpdateMaxMs": 241,
+      "hotUpdateMinMs": 241,
+      "rollbackAvgMs": 241,
+      "rollbackMaxMs": 241,
+      "rollbackMinMs": 241
+    }
+  },
+  "cases": [
+    {
+      "name": "weapp-vite",
+      "label": "demo/native-ts (weapp-vite)",
+      "project": "demo/native-ts",
+      "projectGroup": "demo",
+      "marker": "tw-watch-weapp-vite-template-complex-corpus-1382500",
+      "classLiteral": "text-[23.1382500px] space-y-2.5 w-[calc(100%_-_1382500px)] grid-cols-[200rpx_minmax(900rpx,_1fr)_1382500px] after:ml-[0.1382500px] text-black/[0.13] ring-[1.0px] !mt-2 -translate-y-1 max-[712px]:p-[13px] bg-[rgb(12,34,56)] grid-rows-[auto_minmax(0,_1fr)] group-[:nth-of-type(3)_&]:block [@supports(display:grid)]:grid supports-[backdrop-filter:blur(2px)]:backdrop-blur-[2px] [@media(any-hover:hover){&:hover}]:opacity-100 data-[state=open]:opacity-100 supports-[display:grid]:grid [mask-type:luminance] [--watch-hmr-offset:1382500px]",
+      "classTokens": [
+        "text-[23.1382500px]",
+        "space-y-2.5",
+        "w-[calc(100%_-_1382500px)]",
+        "grid-cols-[200rpx_minmax(900rpx,_1fr)_1382500px]",
+        "after:ml-[0.1382500px]",
+        "text-black/[0.13]",
+        "ring-[1.0px]",
+        "!mt-2",
+        "-translate-y-1",
+        "max-[712px]:p-[13px]",
+        "bg-[rgb(12,34,56)]",
+        "grid-rows-[auto_minmax(0,_1fr)]",
+        "group-[:nth-of-type(3)_&]:block",
+        "[@supports(display:grid)]:grid",
+        "supports-[backdrop-filter:blur(2px)]:backdrop-blur-[2px]",
+        "[@media(any-hover:hover){&:hover}]:opacity-100",
+        "data-[state=open]:opacity-100",
+        "supports-[display:grid]:grid",
+        "[mask-type:luminance]",
+        "[--watch-hmr-offset:1382500px]"
+      ],
+      "escapedClasses": [
+        "text-_b23_d1382500px_B",
+        "space-y-2_d5",
+        "w-_bcalc_p100_v_-_1382500px_P_B",
+        "grid-cols-_b200rpx_minmax_p900rpx_m_1fr_P_1382500px_B",
+        "after_cml-_b0_d1382500px_B",
+        "text-black_f_b0_d13_B",
+        "ring-_b1_d0px_B",
+        "_emt-2",
+        "-translate-y-1",
+        "max-_b712px_B_cp-_b13px_B",
+        "bg-_brgb_p12_m34_m56_P_B",
+        "grid-rows-_bauto_minmax_p0_m_1fr_P_B",
+        "group-_b_cnth-of-type_p3_P__n_B_cblock",
+        "_b_tsupports_pdisplay_cgrid_P_B_cgrid",
+        "supports-_bbackdrop-filter_cblur_p2px_P_B_cbackdrop-blur-_b2px_B",
+        "_b_tmedia_pany-hover_chover_P_k_n_chover_K_B_copacity-100",
+        "data-_bstate_zopen_B_copacity-100",
+        "supports-_bdisplay_cgrid_B_cgrid",
+        "_bmask-type_cluminance_B",
+        "_b--watch-hmr-offset_c1382500px_B"
+      ],
+      "rounds": [
+        {
+          "roundName": "baseline-arbitrary",
+          "marker": "tw-watch-weapp-vite-template-baseline-arbitrary-1370380",
+          "classLiteral": "text-[23.1370380px] space-y-2.5 w-[calc(100%_-_1370380px)] grid-cols-[200rpx_minmax(900rpx,_1fr)_1370380px] after:ml-[0.1370380px] text-black/[0.13] ring-[1.0px]",
+          "classTokens": [
+            "text-[23.1370380px]",
+            "space-y-2.5",
+            "w-[calc(100%_-_1370380px)]",
+            "grid-cols-[200rpx_minmax(900rpx,_1fr)_1370380px]",
+            "after:ml-[0.1370380px]",
+            "text-black/[0.13]",
+            "ring-[1.0px]"
+          ],
+          "escapedClasses": [
+            "text-_b23_d1370380px_B",
+            "space-y-2_d5",
+            "w-_bcalc_p100_v_-_1370380px_P_B",
+            "grid-cols-_b200rpx_minmax_p900rpx_m_1fr_P_1370380px_B",
+            "after_cml-_b0_d1370380px_B",
+            "text-black_f_b0_d13_B",
+            "ring-_b1_d0px_B"
+          ],
+          "hotUpdateOutputMs": 965,
+          "hotUpdateEffectiveMs": 965,
+          "rollbackOutputMs": 241,
+          "rollbackEffectiveMs": 241,
+          "totalMs": 1212
+        },
+        {
+          "roundName": "complex-corpus",
+          "marker": "tw-watch-weapp-vite-template-complex-corpus-1382500",
+          "classLiteral": "text-[23.1382500px] space-y-2.5 w-[calc(100%_-_1382500px)] grid-cols-[200rpx_minmax(900rpx,_1fr)_1382500px] after:ml-[0.1382500px] text-black/[0.13] ring-[1.0px] !mt-2 -translate-y-1 max-[712px]:p-[13px] bg-[rgb(12,34,56)] grid-rows-[auto_minmax(0,_1fr)] group-[:nth-of-type(3)_&]:block [@supports(display:grid)]:grid supports-[backdrop-filter:blur(2px)]:backdrop-blur-[2px] [@media(any-hover:hover){&:hover}]:opacity-100 data-[state=open]:opacity-100 supports-[display:grid]:grid [mask-type:luminance] [--watch-hmr-offset:1382500px]",
+          "classTokens": [
+            "text-[23.1382500px]",
+            "space-y-2.5",
+            "w-[calc(100%_-_1382500px)]",
+            "grid-cols-[200rpx_minmax(900rpx,_1fr)_1382500px]",
+            "after:ml-[0.1382500px]",
+            "text-black/[0.13]",
+            "ring-[1.0px]",
+            "!mt-2",
+            "-translate-y-1",
+            "max-[712px]:p-[13px]",
+            "bg-[rgb(12,34,56)]",
+            "grid-rows-[auto_minmax(0,_1fr)]",
+            "group-[:nth-of-type(3)_&]:block",
+            "[@supports(display:grid)]:grid",
+            "supports-[backdrop-filter:blur(2px)]:backdrop-blur-[2px]",
+            "[@media(any-hover:hover){&:hover}]:opacity-100",
+            "data-[state=open]:opacity-100",
+            "supports-[display:grid]:grid",
+            "[mask-type:luminance]",
+            "[--watch-hmr-offset:1382500px]"
+          ],
+          "escapedClasses": [
+            "text-_b23_d1382500px_B",
+            "space-y-2_d5",
+            "w-_bcalc_p100_v_-_1382500px_P_B",
+            "grid-cols-_b200rpx_minmax_p900rpx_m_1fr_P_1382500px_B",
+            "after_cml-_b0_d1382500px_B",
+            "text-black_f_b0_d13_B",
+            "ring-_b1_d0px_B",
+            "_emt-2",
+            "-translate-y-1",
+            "max-_b712px_B_cp-_b13px_B",
+            "bg-_brgb_p12_m34_m56_P_B",
+            "grid-rows-_bauto_minmax_p0_m_1fr_P_B",
+            "group-_b_cnth-of-type_p3_P__n_B_cblock",
+            "_b_tsupports_pdisplay_cgrid_P_B_cgrid",
+            "supports-_bbackdrop-filter_cblur_p2px_P_B_cbackdrop-blur-_b2px_B",
+            "_b_tmedia_pany-hover_chover_P_k_n_chover_K_B_copacity-100",
+            "data-_bstate_zopen_B_copacity-100",
+            "supports-_bdisplay_cgrid_B_cgrid",
+            "_bmask-type_cluminance_B",
+            "_b--watch-hmr-offset_c1382500px_B"
+          ],
+          "hotUpdateOutputMs": 965,
+          "hotUpdateEffectiveMs": 965,
+          "rollbackOutputMs": 240,
+          "rollbackEffectiveMs": 240,
+          "totalMs": 1215
+        }
+      ],
+      "roundComparison": {
+        "baselineRoundName": "baseline-arbitrary",
+        "candidateRoundName": "complex-corpus",
+        "hotUpdateDeltaMs": 0,
+        "rollbackDeltaMs": -1,
+        "hotUpdateRatio": 1,
+        "rollbackRatio": 0.996
+      },
+      "verifyEscapedIn": [
+        "wxml"
+      ],
+      "verifyClassLiteralIn": [],
+      "globalStyleOutputs": [
+        "/Users/yangqiming/Documents/GitHub/weapp-tailwindcss/demo/native-ts/dist/app.wxss"
+      ],
+      "mutationMetrics": [
+        {
+          "mutationKind": "template",
+          "sourceFile": "/Users/yangqiming/Documents/GitHub/weapp-tailwindcss/demo/native-ts/miniprogram/pages/index/index.wxml",
+          "marker": "tw-watch-weapp-vite-template-complex-corpus-1382500",
+          "classLiteral": "text-[23.1382500px] space-y-2.5 w-[calc(100%_-_1382500px)] grid-cols-[200rpx_minmax(900rpx,_1fr)_1382500px] after:ml-[0.1382500px] text-black/[0.13] ring-[1.0px] !mt-2 -translate-y-1 max-[712px]:p-[13px] bg-[rgb(12,34,56)] grid-rows-[auto_minmax(0,_1fr)] group-[:nth-of-type(3)_&]:block [@supports(display:grid)]:grid supports-[backdrop-filter:blur(2px)]:backdrop-blur-[2px] [@media(any-hover:hover){&:hover}]:opacity-100 data-[state=open]:opacity-100 supports-[display:grid]:grid [mask-type:luminance] [--watch-hmr-offset:1382500px]",
+          "classTokens": [
+            "text-[23.1382500px]",
+            "space-y-2.5",
+            "w-[calc(100%_-_1382500px)]",
+            "grid-cols-[200rpx_minmax(900rpx,_1fr)_1382500px]",
+            "after:ml-[0.1382500px]",
+            "text-black/[0.13]",
+            "ring-[1.0px]",
+            "!mt-2",
+            "-translate-y-1",
+            "max-[712px]:p-[13px]",
+            "bg-[rgb(12,34,56)]",
+            "grid-rows-[auto_minmax(0,_1fr)]",
+            "group-[:nth-of-type(3)_&]:block",
+            "[@supports(display:grid)]:grid",
+            "supports-[backdrop-filter:blur(2px)]:backdrop-blur-[2px]",
+            "[@media(any-hover:hover){&:hover}]:opacity-100",
+            "data-[state=open]:opacity-100",
+            "supports-[display:grid]:grid",
+            "[mask-type:luminance]",
+            "[--watch-hmr-offset:1382500px]"
+          ],
+          "escapedClasses": [
+            "text-_b23_d1382500px_B",
+            "space-y-2_d5",
+            "w-_bcalc_p100_v_-_1382500px_P_B",
+            "grid-cols-_b200rpx_minmax_p900rpx_m_1fr_P_1382500px_B",
+            "after_cml-_b0_d1382500px_B",
+            "text-black_f_b0_d13_B",
+            "ring-_b1_d0px_B",
+            "_emt-2",
+            "-translate-y-1",
+            "max-_b712px_B_cp-_b13px_B",
+            "bg-_brgb_p12_m34_m56_P_B",
+            "grid-rows-_bauto_minmax_p0_m_1fr_P_B",
+            "group-_b_cnth-of-type_p3_P__n_B_cblock",
+            "_b_tsupports_pdisplay_cgrid_P_B_cgrid",
+            "supports-_bbackdrop-filter_cblur_p2px_P_B_cbackdrop-blur-_b2px_B",
+            "_b_tmedia_pany-hover_chover_P_k_n_chover_K_B_copacity-100",
+            "data-_bstate_zopen_B_copacity-100",
+            "supports-_bdisplay_cgrid_B_cgrid",
+            "_bmask-type_cluminance_B",
+            "_b--watch-hmr-offset_c1382500px_B"
+          ],
+          "rounds": [
+            {
+              "roundName": "baseline-arbitrary",
+              "marker": "tw-watch-weapp-vite-template-baseline-arbitrary-1370380",
+              "classLiteral": "text-[23.1370380px] space-y-2.5 w-[calc(100%_-_1370380px)] grid-cols-[200rpx_minmax(900rpx,_1fr)_1370380px] after:ml-[0.1370380px] text-black/[0.13] ring-[1.0px]",
+              "classTokens": [
+                "text-[23.1370380px]",
+                "space-y-2.5",
+                "w-[calc(100%_-_1370380px)]",
+                "grid-cols-[200rpx_minmax(900rpx,_1fr)_1370380px]",
+                "after:ml-[0.1370380px]",
+                "text-black/[0.13]",
+                "ring-[1.0px]"
+              ],
+              "escapedClasses": [
+                "text-_b23_d1370380px_B",
+                "space-y-2_d5",
+                "w-_bcalc_p100_v_-_1370380px_P_B",
+                "grid-cols-_b200rpx_minmax_p900rpx_m_1fr_P_1370380px_B",
+                "after_cml-_b0_d1370380px_B",
+                "text-black_f_b0_d13_B",
+                "ring-_b1_d0px_B"
+              ],
+              "hotUpdateOutputMs": 965,
+              "hotUpdateEffectiveMs": 965,
+              "rollbackOutputMs": 241,
+              "rollbackEffectiveMs": 241,
+              "totalMs": 1212
+            },
+            {
+              "roundName": "complex-corpus",
+              "marker": "tw-watch-weapp-vite-template-complex-corpus-1382500",
+              "classLiteral": "text-[23.1382500px] space-y-2.5 w-[calc(100%_-_1382500px)] grid-cols-[200rpx_minmax(900rpx,_1fr)_1382500px] after:ml-[0.1382500px] text-black/[0.13] ring-[1.0px] !mt-2 -translate-y-1 max-[712px]:p-[13px] bg-[rgb(12,34,56)] grid-rows-[auto_minmax(0,_1fr)] group-[:nth-of-type(3)_&]:block [@supports(display:grid)]:grid supports-[backdrop-filter:blur(2px)]:backdrop-blur-[2px] [@media(any-hover:hover){&:hover}]:opacity-100 data-[state=open]:opacity-100 supports-[display:grid]:grid [mask-type:luminance] [--watch-hmr-offset:1382500px]",
+              "classTokens": [
+                "text-[23.1382500px]",
+                "space-y-2.5",
+                "w-[calc(100%_-_1382500px)]",
+                "grid-cols-[200rpx_minmax(900rpx,_1fr)_1382500px]",
+                "after:ml-[0.1382500px]",
+                "text-black/[0.13]",
+                "ring-[1.0px]",
+                "!mt-2",
+                "-translate-y-1",
+                "max-[712px]:p-[13px]",
+                "bg-[rgb(12,34,56)]",
+                "grid-rows-[auto_minmax(0,_1fr)]",
+                "group-[:nth-of-type(3)_&]:block",
+                "[@supports(display:grid)]:grid",
+                "supports-[backdrop-filter:blur(2px)]:backdrop-blur-[2px]",
+                "[@media(any-hover:hover){&:hover}]:opacity-100",
+                "data-[state=open]:opacity-100",
+                "supports-[display:grid]:grid",
+                "[mask-type:luminance]",
+                "[--watch-hmr-offset:1382500px]"
+              ],
+              "escapedClasses": [
+                "text-_b23_d1382500px_B",
+                "space-y-2_d5",
+                "w-_bcalc_p100_v_-_1382500px_P_B",
+                "grid-cols-_b200rpx_minmax_p900rpx_m_1fr_P_1382500px_B",
+                "after_cml-_b0_d1382500px_B",
+                "text-black_f_b0_d13_B",
+                "ring-_b1_d0px_B",
+                "_emt-2",
+                "-translate-y-1",
+                "max-_b712px_B_cp-_b13px_B",
+                "bg-_brgb_p12_m34_m56_P_B",
+                "grid-rows-_bauto_minmax_p0_m_1fr_P_B",
+                "group-_b_cnth-of-type_p3_P__n_B_cblock",
+                "_b_tsupports_pdisplay_cgrid_P_B_cgrid",
+                "supports-_bbackdrop-filter_cblur_p2px_P_B_cbackdrop-blur-_b2px_B",
+                "_b_tmedia_pany-hover_chover_P_k_n_chover_K_B_copacity-100",
+                "data-_bstate_zopen_B_copacity-100",
+                "supports-_bdisplay_cgrid_B_cgrid",
+                "_bmask-type_cluminance_B",
+                "_b--watch-hmr-offset_c1382500px_B"
+              ],
+              "hotUpdateOutputMs": 965,
+              "hotUpdateEffectiveMs": 965,
+              "rollbackOutputMs": 240,
+              "rollbackEffectiveMs": 240,
+              "totalMs": 1215
+            }
+          ],
+          "roundComparison": {
+            "baselineRoundName": "baseline-arbitrary",
+            "candidateRoundName": "complex-corpus",
+            "hotUpdateDeltaMs": 0,
+            "rollbackDeltaMs": -1,
+            "hotUpdateRatio": 1,
+            "rollbackRatio": 0.996
+          },
+          "verifyEscapedIn": [
+            "wxml"
+          ],
+          "verifyClassLiteralIn": [],
+          "globalStyleOutputs": [
+            "/Users/yangqiming/Documents/GitHub/weapp-tailwindcss/demo/native-ts/dist/app.wxss"
+          ],
+          "minRequiredGlobalStyleEscapedClasses": 1,
+          "verifiedGlobalStyleEscapedClasses": [
+            "text-_b23_d1370380px_B",
+            "space-y-2_d5",
+            "w-_bcalc_p100_v_-_1370380px_P_B",
+            "text-_b23_d1382500px_B",
+            "w-_bcalc_p100_v_-_1382500px_P_B"
+          ],
+          "hotUpdateOutputMs": 965,
+          "hotUpdateEffectiveMs": 965,
+          "rollbackOutputMs": 240,
+          "rollbackEffectiveMs": 240
+        },
+        {
+          "mutationKind": "script",
+          "sourceFile": "/Users/yangqiming/Documents/GitHub/weapp-tailwindcss/demo/native-ts/miniprogram/pages/index/index.ts",
+          "marker": "tw-watch-weapp-vite-script-complex-corpus-1406780",
+          "classLiteral": "text-[23.1406780px] space-y-2.5 w-[calc(100%_-_1406780px)] grid-cols-[200rpx_minmax(900rpx,_1fr)_1406780px] after:ml-[0.1406780px] text-black/[0.14] ring-[1.0px] !mt-2 -translate-y-1 max-[712px]:p-[13px] bg-[rgb(12,34,56)] grid-rows-[auto_minmax(0,_1fr)] group-[:nth-of-type(3)_&]:block [@supports(display:grid)]:grid supports-[backdrop-filter:blur(2px)]:backdrop-blur-[2px] [@media(any-hover:hover){&:hover}]:opacity-100 data-[state=open]:opacity-100 supports-[display:grid]:grid [mask-type:luminance] [--watch-hmr-offset:1406780px]",
+          "classTokens": [
+            "text-[23.1406780px]",
+            "space-y-2.5",
+            "w-[calc(100%_-_1406780px)]",
+            "grid-cols-[200rpx_minmax(900rpx,_1fr)_1406780px]",
+            "after:ml-[0.1406780px]",
+            "text-black/[0.14]",
+            "ring-[1.0px]",
+            "!mt-2",
+            "-translate-y-1",
+            "max-[712px]:p-[13px]",
+            "bg-[rgb(12,34,56)]",
+            "grid-rows-[auto_minmax(0,_1fr)]",
+            "group-[:nth-of-type(3)_&]:block",
+            "[@supports(display:grid)]:grid",
+            "supports-[backdrop-filter:blur(2px)]:backdrop-blur-[2px]",
+            "[@media(any-hover:hover){&:hover}]:opacity-100",
+            "data-[state=open]:opacity-100",
+            "supports-[display:grid]:grid",
+            "[mask-type:luminance]",
+            "[--watch-hmr-offset:1406780px]"
+          ],
+          "escapedClasses": [
+            "text-_b23_d1406780px_B",
+            "space-y-2_d5",
+            "w-_bcalc_p100_v_-_1406780px_P_B",
+            "grid-cols-_b200rpx_minmax_p900rpx_m_1fr_P_1406780px_B",
+            "after_cml-_b0_d1406780px_B",
+            "text-black_f_b0_d14_B",
+            "ring-_b1_d0px_B",
+            "_emt-2",
+            "-translate-y-1",
+            "max-_b712px_B_cp-_b13px_B",
+            "bg-_brgb_p12_m34_m56_P_B",
+            "grid-rows-_bauto_minmax_p0_m_1fr_P_B",
+            "group-_b_cnth-of-type_p3_P__n_B_cblock",
+            "_b_tsupports_pdisplay_cgrid_P_B_cgrid",
+            "supports-_bbackdrop-filter_cblur_p2px_P_B_cbackdrop-blur-_b2px_B",
+            "_b_tmedia_pany-hover_chover_P_k_n_chover_K_B_copacity-100",
+            "data-_bstate_zopen_B_copacity-100",
+            "supports-_bdisplay_cgrid_B_cgrid",
+            "_bmask-type_cluminance_B",
+            "_b--watch-hmr-offset_c1406780px_B"
+          ],
+          "rounds": [
+            {
+              "roundName": "baseline-arbitrary",
+              "marker": "tw-watch-weapp-vite-script-baseline-arbitrary-1394660",
+              "classLiteral": "text-[23.1394660px] space-y-2.5 w-[calc(100%_-_1394660px)] grid-cols-[200rpx_minmax(900rpx,_1fr)_1394660px] after:ml-[0.1394660px] text-black/[0.13] ring-[1.0px]",
+              "classTokens": [
+                "text-[23.1394660px]",
+                "space-y-2.5",
+                "w-[calc(100%_-_1394660px)]",
+                "grid-cols-[200rpx_minmax(900rpx,_1fr)_1394660px]",
+                "after:ml-[0.1394660px]",
+                "text-black/[0.13]",
+                "ring-[1.0px]"
+              ],
+              "escapedClasses": [
+                "text-_b23_d1394660px_B",
+                "space-y-2_d5",
+                "w-_bcalc_p100_v_-_1394660px_P_B",
+                "grid-cols-_b200rpx_minmax_p900rpx_m_1fr_P_1394660px_B",
+                "after_cml-_b0_d1394660px_B",
+                "text-black_f_b0_d13_B",
+                "ring-_b1_d0px_B"
+              ],
+              "hotUpdateOutputMs": 966,
+              "hotUpdateEffectiveMs": 966,
+              "rollbackOutputMs": 242,
+              "rollbackEffectiveMs": 242,
+              "totalMs": 1212
+            },
+            {
+              "roundName": "complex-corpus",
+              "marker": "tw-watch-weapp-vite-script-complex-corpus-1406780",
+              "classLiteral": "text-[23.1406780px] space-y-2.5 w-[calc(100%_-_1406780px)] grid-cols-[200rpx_minmax(900rpx,_1fr)_1406780px] after:ml-[0.1406780px] text-black/[0.14] ring-[1.0px] !mt-2 -translate-y-1 max-[712px]:p-[13px] bg-[rgb(12,34,56)] grid-rows-[auto_minmax(0,_1fr)] group-[:nth-of-type(3)_&]:block [@supports(display:grid)]:grid supports-[backdrop-filter:blur(2px)]:backdrop-blur-[2px] [@media(any-hover:hover){&:hover}]:opacity-100 data-[state=open]:opacity-100 supports-[display:grid]:grid [mask-type:luminance] [--watch-hmr-offset:1406780px]",
+              "classTokens": [
+                "text-[23.1406780px]",
+                "space-y-2.5",
+                "w-[calc(100%_-_1406780px)]",
+                "grid-cols-[200rpx_minmax(900rpx,_1fr)_1406780px]",
+                "after:ml-[0.1406780px]",
+                "text-black/[0.14]",
+                "ring-[1.0px]",
+                "!mt-2",
+                "-translate-y-1",
+                "max-[712px]:p-[13px]",
+                "bg-[rgb(12,34,56)]",
+                "grid-rows-[auto_minmax(0,_1fr)]",
+                "group-[:nth-of-type(3)_&]:block",
+                "[@supports(display:grid)]:grid",
+                "supports-[backdrop-filter:blur(2px)]:backdrop-blur-[2px]",
+                "[@media(any-hover:hover){&:hover}]:opacity-100",
+                "data-[state=open]:opacity-100",
+                "supports-[display:grid]:grid",
+                "[mask-type:luminance]",
+                "[--watch-hmr-offset:1406780px]"
+              ],
+              "escapedClasses": [
+                "text-_b23_d1406780px_B",
+                "space-y-2_d5",
+                "w-_bcalc_p100_v_-_1406780px_P_B",
+                "grid-cols-_b200rpx_minmax_p900rpx_m_1fr_P_1406780px_B",
+                "after_cml-_b0_d1406780px_B",
+                "text-black_f_b0_d14_B",
+                "ring-_b1_d0px_B",
+                "_emt-2",
+                "-translate-y-1",
+                "max-_b712px_B_cp-_b13px_B",
+                "bg-_brgb_p12_m34_m56_P_B",
+                "grid-rows-_bauto_minmax_p0_m_1fr_P_B",
+                "group-_b_cnth-of-type_p3_P__n_B_cblock",
+                "_b_tsupports_pdisplay_cgrid_P_B_cgrid",
+                "supports-_bbackdrop-filter_cblur_p2px_P_B_cbackdrop-blur-_b2px_B",
+                "_b_tmedia_pany-hover_chover_P_k_n_chover_K_B_copacity-100",
+                "data-_bstate_zopen_B_copacity-100",
+                "supports-_bdisplay_cgrid_B_cgrid",
+                "_bmask-type_cluminance_B",
+                "_b--watch-hmr-offset_c1406780px_B"
+              ],
+              "hotUpdateOutputMs": 965,
+              "hotUpdateEffectiveMs": 965,
+              "rollbackOutputMs": 241,
+              "rollbackEffectiveMs": 241,
+              "totalMs": 1213
+            }
+          ],
+          "roundComparison": {
+            "baselineRoundName": "baseline-arbitrary",
+            "candidateRoundName": "complex-corpus",
+            "hotUpdateDeltaMs": -1,
+            "rollbackDeltaMs": -1,
+            "hotUpdateRatio": 0.999,
+            "rollbackRatio": 0.996
+          },
+          "verifyEscapedIn": [],
+          "verifyClassLiteralIn": [
+            "js"
+          ],
+          "globalStyleOutputs": [
+            "/Users/yangqiming/Documents/GitHub/weapp-tailwindcss/demo/native-ts/dist/app.wxss"
+          ],
+          "minRequiredGlobalStyleEscapedClasses": 1,
+          "verifiedGlobalStyleEscapedClasses": [
+            "text-_b23_d1394660px_B",
+            "space-y-2_d5",
+            "w-_bcalc_p100_v_-_1394660px_P_B",
+            "text-_b23_d1406780px_B",
+            "w-_bcalc_p100_v_-_1406780px_P_B"
+          ],
+          "hotUpdateOutputMs": 965,
+          "hotUpdateEffectiveMs": 965,
+          "rollbackOutputMs": 241,
+          "rollbackEffectiveMs": 241
+        },
+        {
+          "mutationKind": "style",
+          "sourceFile": "/Users/yangqiming/Documents/GitHub/weapp-tailwindcss/demo/native-ts/miniprogram/pages/index/index.scss",
+          "outputStyle": "/Users/yangqiming/Documents/GitHub/weapp-tailwindcss/demo/native-ts/dist/pages/index/index.wxss",
+          "marker": "tw-watch-style-weapp-vite-141892233",
+          "styleNeedle": ".tw-watch-style-weapp-vite-141892233",
+          "applyUtilities": [
+            "font-bold",
+            "text-center"
+          ],
+          "expectedApplyDeclarations": [
+            "font-weight:700",
+            "text-align:center"
+          ],
+          "hotUpdateOutputMs": 240,
+          "hotUpdateEffectiveMs": 241,
+          "rollbackOutputMs": 241,
+          "rollbackEffectiveMs": 241,
+          "rollbackNeedleCleared": true
+        }
+      ],
+      "summaryByMutationKind": {
+        "template": {
+          "count": 1,
+          "hotUpdateAvgMs": 965,
+          "hotUpdateMaxMs": 965,
+          "hotUpdateMinMs": 965,
+          "rollbackAvgMs": 240,
+          "rollbackMaxMs": 240,
+          "rollbackMinMs": 240
+        },
+        "script": {
+          "count": 1,
+          "hotUpdateAvgMs": 965,
+          "hotUpdateMaxMs": 965,
+          "hotUpdateMinMs": 965,
+          "rollbackAvgMs": 241,
+          "rollbackMaxMs": 241,
+          "rollbackMinMs": 241
+        },
+        "style": {
+          "count": 1,
+          "hotUpdateAvgMs": 241,
+          "hotUpdateMaxMs": 241,
+          "hotUpdateMinMs": 241,
+          "rollbackAvgMs": 241,
+          "rollbackMaxMs": 241,
+          "rollbackMinMs": 241
+        }
+      },
+      "initialReadyMs": 3133,
+      "hotUpdateOutputMs": 965,
+      "hotUpdateEffectiveMs": 965,
+      "rollbackOutputMs": 240,
+      "rollbackEffectiveMs": 240,
+      "totalMs": 8474
+    }
+  ]
+}

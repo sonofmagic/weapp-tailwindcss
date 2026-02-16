@@ -1,0 +1,557 @@
+{
+  "generatedAt": "2026-02-16T06:44:31.097Z",
+  "repositoryRoot": "weapp-tailwindcss",
+  "options": {
+    "caseName": "taro-vue3-app",
+    "timeoutMs": 240000,
+    "pollMs": 240,
+    "skipBuild": true,
+    "quietSass": true,
+    "maxHotUpdateMs": 15000
+  },
+  "summary": {
+    "count": 1,
+    "hotUpdateAvgMs": 732,
+    "hotUpdateMaxMs": 732,
+    "hotUpdateMinMs": 732,
+    "rollbackAvgMs": 483,
+    "rollbackMaxMs": 483,
+    "rollbackMinMs": 483
+  },
+  "summaryByRound": {
+    "baseline-arbitrary": {
+      "count": 1,
+      "hotUpdateAvgMs": 725,
+      "hotUpdateMaxMs": 725,
+      "hotUpdateMinMs": 725,
+      "rollbackAvgMs": 484,
+      "rollbackMaxMs": 484,
+      "rollbackMinMs": 484
+    },
+    "complex-corpus": {
+      "count": 1,
+      "hotUpdateAvgMs": 732,
+      "hotUpdateMaxMs": 732,
+      "hotUpdateMinMs": 732,
+      "rollbackAvgMs": 483,
+      "rollbackMaxMs": 483,
+      "rollbackMinMs": 483
+    }
+  },
+  "summaryByGroup": {
+    "demo": {
+      "count": 1,
+      "hotUpdateAvgMs": 732,
+      "hotUpdateMaxMs": 732,
+      "hotUpdateMinMs": 732,
+      "rollbackAvgMs": 483,
+      "rollbackMaxMs": 483,
+      "rollbackMinMs": 483
+    },
+    "apps": {
+      "count": 0,
+      "hotUpdateAvgMs": 0,
+      "hotUpdateMaxMs": 0,
+      "hotUpdateMinMs": 0,
+      "rollbackAvgMs": 0,
+      "rollbackMaxMs": 0,
+      "rollbackMinMs": 0
+    }
+  },
+  "summaryByProject": {
+    "demo/taro-vue3-app": {
+      "count": 1,
+      "hotUpdateAvgMs": 732,
+      "hotUpdateMaxMs": 732,
+      "hotUpdateMinMs": 732,
+      "rollbackAvgMs": 483,
+      "rollbackMaxMs": 483,
+      "rollbackMinMs": 483
+    }
+  },
+  "summaryByMutationKind": {
+    "template": {
+      "count": 1,
+      "hotUpdateAvgMs": 732,
+      "hotUpdateMaxMs": 732,
+      "hotUpdateMinMs": 732,
+      "rollbackAvgMs": 483,
+      "rollbackMaxMs": 483,
+      "rollbackMinMs": 483
+    },
+    "script": {
+      "count": 1,
+      "hotUpdateAvgMs": 483,
+      "hotUpdateMaxMs": 483,
+      "hotUpdateMinMs": 483,
+      "rollbackAvgMs": 723,
+      "rollbackMaxMs": 723,
+      "rollbackMinMs": 723
+    },
+    "style": {
+      "count": 1,
+      "hotUpdateAvgMs": 483,
+      "hotUpdateMaxMs": 483,
+      "hotUpdateMinMs": 483,
+      "rollbackAvgMs": 483,
+      "rollbackMaxMs": 483,
+      "rollbackMinMs": 483
+    }
+  },
+  "cases": [
+    {
+      "name": "taro-vue3-app",
+      "label": "demo/taro-vue3-app",
+      "project": "demo/taro-vue3-app",
+      "projectGroup": "demo",
+      "marker": "tw-watch-taro-vue3-app-template-complex-corpus-2614440",
+      "classLiteral": "text-[23.2614440px] space-y-2.5 w-[calc(100%_-_2614440px)] grid-cols-[200rpx_minmax(900rpx,_1fr)_2614440px] after:ml-[0.2614440px] text-black/[0.26] ring-[1.0px] group-[:nth-of-type(3)_&]:block [@supports(display:grid)]:grid [@media(any-hover:hover){&:hover}]:opacity-100 data-[state=open]:opacity-100 supports-[display:grid]:grid [mask-type:luminance] [--watch-hmr-offset:2614440px]",
+      "classTokens": [
+        "text-[23.2614440px]",
+        "space-y-2.5",
+        "w-[calc(100%_-_2614440px)]",
+        "grid-cols-[200rpx_minmax(900rpx,_1fr)_2614440px]",
+        "after:ml-[0.2614440px]",
+        "text-black/[0.26]",
+        "ring-[1.0px]",
+        "group-[:nth-of-type(3)_&]:block",
+        "[@supports(display:grid)]:grid",
+        "[@media(any-hover:hover){&:hover}]:opacity-100",
+        "data-[state=open]:opacity-100",
+        "supports-[display:grid]:grid",
+        "[mask-type:luminance]",
+        "[--watch-hmr-offset:2614440px]"
+      ],
+      "escapedClasses": [
+        "text-_b23_d2614440px_B",
+        "space-y-2_d5",
+        "w-_bcalc_p100_v_-_2614440px_P_B",
+        "grid-cols-_b200rpx_minmax_p900rpx_m_1fr_P_2614440px_B",
+        "after_cml-_b0_d2614440px_B",
+        "text-black_f_b0_d26_B",
+        "ring-_b1_d0px_B",
+        "group-_b_cnth-of-type_p3_P__n_B_cblock",
+        "_b_tsupports_pdisplay_cgrid_P_B_cgrid",
+        "_b_tmedia_pany-hover_chover_P_k_n_chover_K_B_copacity-100",
+        "data-_bstate_zopen_B_copacity-100",
+        "supports-_bdisplay_cgrid_B_cgrid",
+        "_bmask-type_cluminance_B",
+        "_b--watch-hmr-offset_c2614440px_B"
+      ],
+      "rounds": [
+        {
+          "roundName": "baseline-arbitrary",
+          "marker": "tw-watch-taro-vue3-app-template-baseline-arbitrary-2602310",
+          "classLiteral": "text-[23.2602310px] space-y-2.5 w-[calc(100%_-_2602310px)] grid-cols-[200rpx_minmax(900rpx,_1fr)_2602310px] after:ml-[0.2602310px] text-black/[0.26] ring-[1.0px]",
+          "classTokens": [
+            "text-[23.2602310px]",
+            "space-y-2.5",
+            "w-[calc(100%_-_2602310px)]",
+            "grid-cols-[200rpx_minmax(900rpx,_1fr)_2602310px]",
+            "after:ml-[0.2602310px]",
+            "text-black/[0.26]",
+            "ring-[1.0px]"
+          ],
+          "escapedClasses": [
+            "text-_b23_d2602310px_B",
+            "space-y-2_d5",
+            "w-_bcalc_p100_v_-_2602310px_P_B",
+            "grid-cols-_b200rpx_minmax_p900rpx_m_1fr_P_2602310px_B",
+            "after_cml-_b0_d2602310px_B",
+            "text-black_f_b0_d26_B",
+            "ring-_b1_d0px_B"
+          ],
+          "hotUpdateOutputMs": 724,
+          "hotUpdateEffectiveMs": 725,
+          "rollbackOutputMs": 483,
+          "rollbackEffectiveMs": 484,
+          "totalMs": 1213
+        },
+        {
+          "roundName": "complex-corpus",
+          "marker": "tw-watch-taro-vue3-app-template-complex-corpus-2614440",
+          "classLiteral": "text-[23.2614440px] space-y-2.5 w-[calc(100%_-_2614440px)] grid-cols-[200rpx_minmax(900rpx,_1fr)_2614440px] after:ml-[0.2614440px] text-black/[0.26] ring-[1.0px] group-[:nth-of-type(3)_&]:block [@supports(display:grid)]:grid [@media(any-hover:hover){&:hover}]:opacity-100 data-[state=open]:opacity-100 supports-[display:grid]:grid [mask-type:luminance] [--watch-hmr-offset:2614440px]",
+          "classTokens": [
+            "text-[23.2614440px]",
+            "space-y-2.5",
+            "w-[calc(100%_-_2614440px)]",
+            "grid-cols-[200rpx_minmax(900rpx,_1fr)_2614440px]",
+            "after:ml-[0.2614440px]",
+            "text-black/[0.26]",
+            "ring-[1.0px]",
+            "group-[:nth-of-type(3)_&]:block",
+            "[@supports(display:grid)]:grid",
+            "[@media(any-hover:hover){&:hover}]:opacity-100",
+            "data-[state=open]:opacity-100",
+            "supports-[display:grid]:grid",
+            "[mask-type:luminance]",
+            "[--watch-hmr-offset:2614440px]"
+          ],
+          "escapedClasses": [
+            "text-_b23_d2614440px_B",
+            "space-y-2_d5",
+            "w-_bcalc_p100_v_-_2614440px_P_B",
+            "grid-cols-_b200rpx_minmax_p900rpx_m_1fr_P_2614440px_B",
+            "after_cml-_b0_d2614440px_B",
+            "text-black_f_b0_d26_B",
+            "ring-_b1_d0px_B",
+            "group-_b_cnth-of-type_p3_P__n_B_cblock",
+            "_b_tsupports_pdisplay_cgrid_P_B_cgrid",
+            "_b_tmedia_pany-hover_chover_P_k_n_chover_K_B_copacity-100",
+            "data-_bstate_zopen_B_copacity-100",
+            "supports-_bdisplay_cgrid_B_cgrid",
+            "_bmask-type_cluminance_B",
+            "_b--watch-hmr-offset_c2614440px_B"
+          ],
+          "hotUpdateOutputMs": 731,
+          "hotUpdateEffectiveMs": 732,
+          "rollbackOutputMs": 482,
+          "rollbackEffectiveMs": 483,
+          "totalMs": 1218
+        }
+      ],
+      "roundComparison": {
+        "baselineRoundName": "baseline-arbitrary",
+        "candidateRoundName": "complex-corpus",
+        "hotUpdateDeltaMs": 7,
+        "rollbackDeltaMs": -1,
+        "hotUpdateRatio": 1.01,
+        "rollbackRatio": 0.998
+      },
+      "verifyEscapedIn": [],
+      "verifyClassLiteralIn": [
+        "js"
+      ],
+      "globalStyleOutputs": [
+        "/Users/yangqiming/Documents/GitHub/weapp-tailwindcss/demo/taro-vue3-app/dist/pages/index/index.wxss",
+        "/Users/yangqiming/Documents/GitHub/weapp-tailwindcss/demo/taro-vue3-app/dist/app.wxss"
+      ],
+      "mutationMetrics": [
+        {
+          "mutationKind": "template",
+          "sourceFile": "/Users/yangqiming/Documents/GitHub/weapp-tailwindcss/demo/taro-vue3-app/src/pages/index/index.vue",
+          "marker": "tw-watch-taro-vue3-app-template-complex-corpus-2614440",
+          "classLiteral": "text-[23.2614440px] space-y-2.5 w-[calc(100%_-_2614440px)] grid-cols-[200rpx_minmax(900rpx,_1fr)_2614440px] after:ml-[0.2614440px] text-black/[0.26] ring-[1.0px] group-[:nth-of-type(3)_&]:block [@supports(display:grid)]:grid [@media(any-hover:hover){&:hover}]:opacity-100 data-[state=open]:opacity-100 supports-[display:grid]:grid [mask-type:luminance] [--watch-hmr-offset:2614440px]",
+          "classTokens": [
+            "text-[23.2614440px]",
+            "space-y-2.5",
+            "w-[calc(100%_-_2614440px)]",
+            "grid-cols-[200rpx_minmax(900rpx,_1fr)_2614440px]",
+            "after:ml-[0.2614440px]",
+            "text-black/[0.26]",
+            "ring-[1.0px]",
+            "group-[:nth-of-type(3)_&]:block",
+            "[@supports(display:grid)]:grid",
+            "[@media(any-hover:hover){&:hover}]:opacity-100",
+            "data-[state=open]:opacity-100",
+            "supports-[display:grid]:grid",
+            "[mask-type:luminance]",
+            "[--watch-hmr-offset:2614440px]"
+          ],
+          "escapedClasses": [
+            "text-_b23_d2614440px_B",
+            "space-y-2_d5",
+            "w-_bcalc_p100_v_-_2614440px_P_B",
+            "grid-cols-_b200rpx_minmax_p900rpx_m_1fr_P_2614440px_B",
+            "after_cml-_b0_d2614440px_B",
+            "text-black_f_b0_d26_B",
+            "ring-_b1_d0px_B",
+            "group-_b_cnth-of-type_p3_P__n_B_cblock",
+            "_b_tsupports_pdisplay_cgrid_P_B_cgrid",
+            "_b_tmedia_pany-hover_chover_P_k_n_chover_K_B_copacity-100",
+            "data-_bstate_zopen_B_copacity-100",
+            "supports-_bdisplay_cgrid_B_cgrid",
+            "_bmask-type_cluminance_B",
+            "_b--watch-hmr-offset_c2614440px_B"
+          ],
+          "rounds": [
+            {
+              "roundName": "baseline-arbitrary",
+              "marker": "tw-watch-taro-vue3-app-template-baseline-arbitrary-2602310",
+              "classLiteral": "text-[23.2602310px] space-y-2.5 w-[calc(100%_-_2602310px)] grid-cols-[200rpx_minmax(900rpx,_1fr)_2602310px] after:ml-[0.2602310px] text-black/[0.26] ring-[1.0px]",
+              "classTokens": [
+                "text-[23.2602310px]",
+                "space-y-2.5",
+                "w-[calc(100%_-_2602310px)]",
+                "grid-cols-[200rpx_minmax(900rpx,_1fr)_2602310px]",
+                "after:ml-[0.2602310px]",
+                "text-black/[0.26]",
+                "ring-[1.0px]"
+              ],
+              "escapedClasses": [
+                "text-_b23_d2602310px_B",
+                "space-y-2_d5",
+                "w-_bcalc_p100_v_-_2602310px_P_B",
+                "grid-cols-_b200rpx_minmax_p900rpx_m_1fr_P_2602310px_B",
+                "after_cml-_b0_d2602310px_B",
+                "text-black_f_b0_d26_B",
+                "ring-_b1_d0px_B"
+              ],
+              "hotUpdateOutputMs": 724,
+              "hotUpdateEffectiveMs": 725,
+              "rollbackOutputMs": 483,
+              "rollbackEffectiveMs": 484,
+              "totalMs": 1213
+            },
+            {
+              "roundName": "complex-corpus",
+              "marker": "tw-watch-taro-vue3-app-template-complex-corpus-2614440",
+              "classLiteral": "text-[23.2614440px] space-y-2.5 w-[calc(100%_-_2614440px)] grid-cols-[200rpx_minmax(900rpx,_1fr)_2614440px] after:ml-[0.2614440px] text-black/[0.26] ring-[1.0px] group-[:nth-of-type(3)_&]:block [@supports(display:grid)]:grid [@media(any-hover:hover){&:hover}]:opacity-100 data-[state=open]:opacity-100 supports-[display:grid]:grid [mask-type:luminance] [--watch-hmr-offset:2614440px]",
+              "classTokens": [
+                "text-[23.2614440px]",
+                "space-y-2.5",
+                "w-[calc(100%_-_2614440px)]",
+                "grid-cols-[200rpx_minmax(900rpx,_1fr)_2614440px]",
+                "after:ml-[0.2614440px]",
+                "text-black/[0.26]",
+                "ring-[1.0px]",
+                "group-[:nth-of-type(3)_&]:block",
+                "[@supports(display:grid)]:grid",
+                "[@media(any-hover:hover){&:hover}]:opacity-100",
+                "data-[state=open]:opacity-100",
+                "supports-[display:grid]:grid",
+                "[mask-type:luminance]",
+                "[--watch-hmr-offset:2614440px]"
+              ],
+              "escapedClasses": [
+                "text-_b23_d2614440px_B",
+                "space-y-2_d5",
+                "w-_bcalc_p100_v_-_2614440px_P_B",
+                "grid-cols-_b200rpx_minmax_p900rpx_m_1fr_P_2614440px_B",
+                "after_cml-_b0_d2614440px_B",
+                "text-black_f_b0_d26_B",
+                "ring-_b1_d0px_B",
+                "group-_b_cnth-of-type_p3_P__n_B_cblock",
+                "_b_tsupports_pdisplay_cgrid_P_B_cgrid",
+                "_b_tmedia_pany-hover_chover_P_k_n_chover_K_B_copacity-100",
+                "data-_bstate_zopen_B_copacity-100",
+                "supports-_bdisplay_cgrid_B_cgrid",
+                "_bmask-type_cluminance_B",
+                "_b--watch-hmr-offset_c2614440px_B"
+              ],
+              "hotUpdateOutputMs": 731,
+              "hotUpdateEffectiveMs": 732,
+              "rollbackOutputMs": 482,
+              "rollbackEffectiveMs": 483,
+              "totalMs": 1218
+            }
+          ],
+          "roundComparison": {
+            "baselineRoundName": "baseline-arbitrary",
+            "candidateRoundName": "complex-corpus",
+            "hotUpdateDeltaMs": 7,
+            "rollbackDeltaMs": -1,
+            "hotUpdateRatio": 1.01,
+            "rollbackRatio": 0.998
+          },
+          "verifyEscapedIn": [],
+          "verifyClassLiteralIn": [
+            "js"
+          ],
+          "globalStyleOutputs": [
+            "/Users/yangqiming/Documents/GitHub/weapp-tailwindcss/demo/taro-vue3-app/dist/pages/index/index.wxss",
+            "/Users/yangqiming/Documents/GitHub/weapp-tailwindcss/demo/taro-vue3-app/dist/app.wxss"
+          ],
+          "minRequiredGlobalStyleEscapedClasses": 1,
+          "verifiedGlobalStyleEscapedClasses": [
+            "text-_b23_d2602310px_B",
+            "space-y-2_d5",
+            "w-_bcalc_p100_v_-_2602310px_P_B",
+            "text-_b23_d2614440px_B",
+            "w-_bcalc_p100_v_-_2614440px_P_B"
+          ],
+          "hotUpdateOutputMs": 731,
+          "hotUpdateEffectiveMs": 732,
+          "rollbackOutputMs": 482,
+          "rollbackEffectiveMs": 483
+        },
+        {
+          "mutationKind": "script",
+          "sourceFile": "/Users/yangqiming/Documents/GitHub/weapp-tailwindcss/demo/taro-vue3-app/src/pages/index/index.vue",
+          "marker": "tw-watch-taro-vue3-app-script-complex-corpus-2638720",
+          "classLiteral": "text-[23.2638720px] space-y-2.5 w-[calc(100%_-_2638720px)] grid-cols-[200rpx_minmax(900rpx,_1fr)_2638720px] after:ml-[0.2638720px] text-black/[0.26] ring-[1.0px] group-[:nth-of-type(3)_&]:block [@supports(display:grid)]:grid [@media(any-hover:hover){&:hover}]:opacity-100 data-[state=open]:opacity-100 supports-[display:grid]:grid [mask-type:luminance] [--watch-hmr-offset:2638720px]",
+          "classTokens": [
+            "text-[23.2638720px]",
+            "space-y-2.5",
+            "w-[calc(100%_-_2638720px)]",
+            "grid-cols-[200rpx_minmax(900rpx,_1fr)_2638720px]",
+            "after:ml-[0.2638720px]",
+            "text-black/[0.26]",
+            "ring-[1.0px]",
+            "group-[:nth-of-type(3)_&]:block",
+            "[@supports(display:grid)]:grid",
+            "[@media(any-hover:hover){&:hover}]:opacity-100",
+            "data-[state=open]:opacity-100",
+            "supports-[display:grid]:grid",
+            "[mask-type:luminance]",
+            "[--watch-hmr-offset:2638720px]"
+          ],
+          "escapedClasses": [
+            "text-_b23_d2638720px_B",
+            "space-y-2_d5",
+            "w-_bcalc_p100_v_-_2638720px_P_B",
+            "grid-cols-_b200rpx_minmax_p900rpx_m_1fr_P_2638720px_B",
+            "after_cml-_b0_d2638720px_B",
+            "text-black_f_b0_d26_B",
+            "ring-_b1_d0px_B",
+            "group-_b_cnth-of-type_p3_P__n_B_cblock",
+            "_b_tsupports_pdisplay_cgrid_P_B_cgrid",
+            "_b_tmedia_pany-hover_chover_P_k_n_chover_K_B_copacity-100",
+            "data-_bstate_zopen_B_copacity-100",
+            "supports-_bdisplay_cgrid_B_cgrid",
+            "_bmask-type_cluminance_B",
+            "_b--watch-hmr-offset_c2638720px_B"
+          ],
+          "rounds": [
+            {
+              "roundName": "baseline-arbitrary",
+              "marker": "tw-watch-taro-vue3-app-script-baseline-arbitrary-2626630",
+              "classLiteral": "text-[23.2626630px] space-y-2.5 w-[calc(100%_-_2626630px)] grid-cols-[200rpx_minmax(900rpx,_1fr)_2626630px] after:ml-[0.2626630px] text-black/[0.26] ring-[1.0px]",
+              "classTokens": [
+                "text-[23.2626630px]",
+                "space-y-2.5",
+                "w-[calc(100%_-_2626630px)]",
+                "grid-cols-[200rpx_minmax(900rpx,_1fr)_2626630px]",
+                "after:ml-[0.2626630px]",
+                "text-black/[0.26]",
+                "ring-[1.0px]"
+              ],
+              "escapedClasses": [
+                "text-_b23_d2626630px_B",
+                "space-y-2_d5",
+                "w-_bcalc_p100_v_-_2626630px_P_B",
+                "grid-cols-_b200rpx_minmax_p900rpx_m_1fr_P_2626630px_B",
+                "after_cml-_b0_d2626630px_B",
+                "text-black_f_b0_d26_B",
+                "ring-_b1_d0px_B"
+              ],
+              "hotUpdateOutputMs": 482,
+              "hotUpdateEffectiveMs": 483,
+              "rollbackOutputMs": 724,
+              "rollbackEffectiveMs": 725,
+              "totalMs": 1209
+            },
+            {
+              "roundName": "complex-corpus",
+              "marker": "tw-watch-taro-vue3-app-script-complex-corpus-2638720",
+              "classLiteral": "text-[23.2638720px] space-y-2.5 w-[calc(100%_-_2638720px)] grid-cols-[200rpx_minmax(900rpx,_1fr)_2638720px] after:ml-[0.2638720px] text-black/[0.26] ring-[1.0px] group-[:nth-of-type(3)_&]:block [@supports(display:grid)]:grid [@media(any-hover:hover){&:hover}]:opacity-100 data-[state=open]:opacity-100 supports-[display:grid]:grid [mask-type:luminance] [--watch-hmr-offset:2638720px]",
+              "classTokens": [
+                "text-[23.2638720px]",
+                "space-y-2.5",
+                "w-[calc(100%_-_2638720px)]",
+                "grid-cols-[200rpx_minmax(900rpx,_1fr)_2638720px]",
+                "after:ml-[0.2638720px]",
+                "text-black/[0.26]",
+                "ring-[1.0px]",
+                "group-[:nth-of-type(3)_&]:block",
+                "[@supports(display:grid)]:grid",
+                "[@media(any-hover:hover){&:hover}]:opacity-100",
+                "data-[state=open]:opacity-100",
+                "supports-[display:grid]:grid",
+                "[mask-type:luminance]",
+                "[--watch-hmr-offset:2638720px]"
+              ],
+              "escapedClasses": [
+                "text-_b23_d2638720px_B",
+                "space-y-2_d5",
+                "w-_bcalc_p100_v_-_2638720px_P_B",
+                "grid-cols-_b200rpx_minmax_p900rpx_m_1fr_P_2638720px_B",
+                "after_cml-_b0_d2638720px_B",
+                "text-black_f_b0_d26_B",
+                "ring-_b1_d0px_B",
+                "group-_b_cnth-of-type_p3_P__n_B_cblock",
+                "_b_tsupports_pdisplay_cgrid_P_B_cgrid",
+                "_b_tmedia_pany-hover_chover_P_k_n_chover_K_B_copacity-100",
+                "data-_bstate_zopen_B_copacity-100",
+                "supports-_bdisplay_cgrid_B_cgrid",
+                "_bmask-type_cluminance_B",
+                "_b--watch-hmr-offset_c2638720px_B"
+              ],
+              "hotUpdateOutputMs": 482,
+              "hotUpdateEffectiveMs": 483,
+              "rollbackOutputMs": 722,
+              "rollbackEffectiveMs": 723,
+              "totalMs": 1209
+            }
+          ],
+          "roundComparison": {
+            "baselineRoundName": "baseline-arbitrary",
+            "candidateRoundName": "complex-corpus",
+            "hotUpdateDeltaMs": 0,
+            "rollbackDeltaMs": -2,
+            "hotUpdateRatio": 1,
+            "rollbackRatio": 0.997
+          },
+          "verifyEscapedIn": [],
+          "verifyClassLiteralIn": [
+            "js"
+          ],
+          "globalStyleOutputs": [
+            "/Users/yangqiming/Documents/GitHub/weapp-tailwindcss/demo/taro-vue3-app/dist/pages/index/index.wxss",
+            "/Users/yangqiming/Documents/GitHub/weapp-tailwindcss/demo/taro-vue3-app/dist/app.wxss"
+          ],
+          "minRequiredGlobalStyleEscapedClasses": 1,
+          "verifiedGlobalStyleEscapedClasses": [
+            "text-_b23_d2626630px_B",
+            "w-_bcalc_p100_v_-_2626630px_P_B",
+            "grid-cols-_b200rpx_minmax_p900rpx_m_1fr_P_2626630px_B",
+            "text-_b23_d2638720px_B",
+            "w-_bcalc_p100_v_-_2638720px_P_B",
+            "grid-cols-_b200rpx_minmax_p900rpx_m_1fr_P_2638720px_B"
+          ],
+          "hotUpdateOutputMs": 482,
+          "hotUpdateEffectiveMs": 483,
+          "rollbackOutputMs": 722,
+          "rollbackEffectiveMs": 723
+        },
+        {
+          "mutationKind": "style",
+          "sourceFile": "/Users/yangqiming/Documents/GitHub/weapp-tailwindcss/demo/taro-vue3-app/src/pages/index/index.scss",
+          "outputStyle": "/Users/yangqiming/Documents/GitHub/weapp-tailwindcss/demo/taro-vue3-app/dist/pages/index/index.wxss",
+          "marker": "tw-watch-style-taro-vue3-app-265081109",
+          "styleNeedle": ".tw-watch-style-taro-vue3-app-265081109",
+          "hotUpdateOutputMs": 483,
+          "hotUpdateEffectiveMs": 483,
+          "rollbackOutputMs": 483,
+          "rollbackEffectiveMs": 483,
+          "rollbackNeedleCleared": true
+        }
+      ],
+      "summaryByMutationKind": {
+        "template": {
+          "count": 1,
+          "hotUpdateAvgMs": 732,
+          "hotUpdateMaxMs": 732,
+          "hotUpdateMinMs": 732,
+          "rollbackAvgMs": 483,
+          "rollbackMaxMs": 483,
+          "rollbackMinMs": 483
+        },
+        "script": {
+          "count": 1,
+          "hotUpdateAvgMs": 483,
+          "hotUpdateMaxMs": 483,
+          "hotUpdateMinMs": 483,
+          "rollbackAvgMs": 723,
+          "rollbackMaxMs": 723,
+          "rollbackMinMs": 723
+        },
+        "style": {
+          "count": 1,
+          "hotUpdateAvgMs": 483,
+          "hotUpdateMaxMs": 483,
+          "hotUpdateMinMs": 483,
+          "rollbackAvgMs": 483,
+          "rollbackMaxMs": 483,
+          "rollbackMinMs": 483
+        }
+      },
+      "initialReadyMs": 7476,
+      "hotUpdateOutputMs": 731,
+      "hotUpdateEffectiveMs": 732,
+      "rollbackOutputMs": 482,
+      "rollbackEffectiveMs": 483,
+      "totalMs": 13297
+    }
+  ]
+}

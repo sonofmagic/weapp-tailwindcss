@@ -1,0 +1,630 @@
+{
+  "generatedAt": "2026-02-16T06:55:12.499Z",
+  "repositoryRoot": "weapp-tailwindcss",
+  "options": {
+    "caseName": "taro-vite-tailwindcss-v4",
+    "timeoutMs": 240000,
+    "pollMs": 240,
+    "skipBuild": true,
+    "quietSass": true,
+    "maxHotUpdateMs": 15000
+  },
+  "summary": {
+    "count": 1,
+    "hotUpdateAvgMs": 482,
+    "hotUpdateMaxMs": 482,
+    "hotUpdateMinMs": 482,
+    "rollbackAvgMs": 483,
+    "rollbackMaxMs": 483,
+    "rollbackMinMs": 483
+  },
+  "summaryByRound": {
+    "baseline-arbitrary": {
+      "count": 1,
+      "hotUpdateAvgMs": 484,
+      "hotUpdateMaxMs": 484,
+      "hotUpdateMinMs": 484,
+      "rollbackAvgMs": 485,
+      "rollbackMaxMs": 485,
+      "rollbackMinMs": 485
+    },
+    "complex-corpus": {
+      "count": 1,
+      "hotUpdateAvgMs": 482,
+      "hotUpdateMaxMs": 482,
+      "hotUpdateMinMs": 482,
+      "rollbackAvgMs": 483,
+      "rollbackMaxMs": 483,
+      "rollbackMinMs": 483
+    }
+  },
+  "summaryByGroup": {
+    "demo": {
+      "count": 1,
+      "hotUpdateAvgMs": 482,
+      "hotUpdateMaxMs": 482,
+      "hotUpdateMinMs": 482,
+      "rollbackAvgMs": 483,
+      "rollbackMaxMs": 483,
+      "rollbackMinMs": 483
+    },
+    "apps": {
+      "count": 0,
+      "hotUpdateAvgMs": 0,
+      "hotUpdateMaxMs": 0,
+      "hotUpdateMinMs": 0,
+      "rollbackAvgMs": 0,
+      "rollbackMaxMs": 0,
+      "rollbackMinMs": 0
+    }
+  },
+  "summaryByProject": {
+    "demo/taro-vite-tailwindcss-v4": {
+      "count": 1,
+      "hotUpdateAvgMs": 482,
+      "hotUpdateMaxMs": 482,
+      "hotUpdateMinMs": 482,
+      "rollbackAvgMs": 483,
+      "rollbackMaxMs": 483,
+      "rollbackMinMs": 483
+    }
+  },
+  "summaryByMutationKind": {
+    "template": {
+      "count": 1,
+      "hotUpdateAvgMs": 482,
+      "hotUpdateMaxMs": 482,
+      "hotUpdateMinMs": 482,
+      "rollbackAvgMs": 483,
+      "rollbackMaxMs": 483,
+      "rollbackMinMs": 483
+    },
+    "script": {
+      "count": 1,
+      "hotUpdateAvgMs": 485,
+      "hotUpdateMaxMs": 485,
+      "hotUpdateMinMs": 485,
+      "rollbackAvgMs": 482,
+      "rollbackMaxMs": 482,
+      "rollbackMinMs": 482
+    },
+    "style": {
+      "count": 1,
+      "hotUpdateAvgMs": 483,
+      "hotUpdateMaxMs": 483,
+      "hotUpdateMinMs": 483,
+      "rollbackAvgMs": 482,
+      "rollbackMaxMs": 482,
+      "rollbackMinMs": 482
+    }
+  },
+  "cases": [
+    {
+      "name": "taro-vite-tailwindcss-v4",
+      "label": "demo/taro-vite-tailwindcss-v4",
+      "project": "demo/taro-vite-tailwindcss-v4",
+      "projectGroup": "demo",
+      "marker": "tw-watch-taro-vite-tailwindcss-v4-template-complex-corpus-8738440",
+      "classLiteral": "text-[23.8738440px] space-y-2.5 w-[calc(100%_-_8738440px)] grid-cols-[200rpx_minmax(900rpx,_1fr)_8738440px] after:ml-[0.8738440px] text-black/[0.87] ring-[1.0px] !mt-2 -translate-y-1 max-[712px]:p-[13px] bg-[rgb(12,34,56)] grid-rows-[auto_minmax(0,_1fr)] group-[:nth-of-type(3)_&]:block [@supports(display:grid)]:grid supports-[backdrop-filter:blur(2px)]:backdrop-blur-[2px] [@media(any-hover:hover){&:hover}]:opacity-100 data-[state=open]:opacity-100 supports-[display:grid]:grid [mask-type:luminance] [--watch-hmr-offset:8738440px]",
+      "classTokens": [
+        "text-[23.8738440px]",
+        "space-y-2.5",
+        "w-[calc(100%_-_8738440px)]",
+        "grid-cols-[200rpx_minmax(900rpx,_1fr)_8738440px]",
+        "after:ml-[0.8738440px]",
+        "text-black/[0.87]",
+        "ring-[1.0px]",
+        "!mt-2",
+        "-translate-y-1",
+        "max-[712px]:p-[13px]",
+        "bg-[rgb(12,34,56)]",
+        "grid-rows-[auto_minmax(0,_1fr)]",
+        "group-[:nth-of-type(3)_&]:block",
+        "[@supports(display:grid)]:grid",
+        "supports-[backdrop-filter:blur(2px)]:backdrop-blur-[2px]",
+        "[@media(any-hover:hover){&:hover}]:opacity-100",
+        "data-[state=open]:opacity-100",
+        "supports-[display:grid]:grid",
+        "[mask-type:luminance]",
+        "[--watch-hmr-offset:8738440px]"
+      ],
+      "escapedClasses": [
+        "text-_b23_d8738440px_B",
+        "space-y-2_d5",
+        "w-_bcalc_p100_v_-_8738440px_P_B",
+        "grid-cols-_b200rpx_minmax_p900rpx_m_1fr_P_8738440px_B",
+        "after_cml-_b0_d8738440px_B",
+        "text-black_f_b0_d87_B",
+        "ring-_b1_d0px_B",
+        "_emt-2",
+        "-translate-y-1",
+        "max-_b712px_B_cp-_b13px_B",
+        "bg-_brgb_p12_m34_m56_P_B",
+        "grid-rows-_bauto_minmax_p0_m_1fr_P_B",
+        "group-_b_cnth-of-type_p3_P__n_B_cblock",
+        "_b_tsupports_pdisplay_cgrid_P_B_cgrid",
+        "supports-_bbackdrop-filter_cblur_p2px_P_B_cbackdrop-blur-_b2px_B",
+        "_b_tmedia_pany-hover_chover_P_k_n_chover_K_B_copacity-100",
+        "data-_bstate_zopen_B_copacity-100",
+        "supports-_bdisplay_cgrid_B_cgrid",
+        "_bmask-type_cluminance_B",
+        "_b--watch-hmr-offset_c8738440px_B"
+      ],
+      "rounds": [
+        {
+          "roundName": "baseline-arbitrary",
+          "marker": "tw-watch-taro-vite-tailwindcss-v4-template-baseline-arbitrary-8728730",
+          "classLiteral": "text-[23.8728730px] space-y-2.5 w-[calc(100%_-_8728730px)] grid-cols-[200rpx_minmax(900rpx,_1fr)_8728730px] after:ml-[0.8728730px] text-black/[0.87] ring-[1.0px]",
+          "classTokens": [
+            "text-[23.8728730px]",
+            "space-y-2.5",
+            "w-[calc(100%_-_8728730px)]",
+            "grid-cols-[200rpx_minmax(900rpx,_1fr)_8728730px]",
+            "after:ml-[0.8728730px]",
+            "text-black/[0.87]",
+            "ring-[1.0px]"
+          ],
+          "escapedClasses": [
+            "text-_b23_d8728730px_B",
+            "space-y-2_d5",
+            "w-_bcalc_p100_v_-_8728730px_P_B",
+            "grid-cols-_b200rpx_minmax_p900rpx_m_1fr_P_8728730px_B",
+            "after_cml-_b0_d8728730px_B",
+            "text-black_f_b0_d87_B",
+            "ring-_b1_d0px_B"
+          ],
+          "hotUpdateOutputMs": 484,
+          "hotUpdateEffectiveMs": 484,
+          "rollbackOutputMs": 241,
+          "rollbackEffectiveMs": 485,
+          "totalMs": 970
+        },
+        {
+          "roundName": "complex-corpus",
+          "marker": "tw-watch-taro-vite-tailwindcss-v4-template-complex-corpus-8738440",
+          "classLiteral": "text-[23.8738440px] space-y-2.5 w-[calc(100%_-_8738440px)] grid-cols-[200rpx_minmax(900rpx,_1fr)_8738440px] after:ml-[0.8738440px] text-black/[0.87] ring-[1.0px] !mt-2 -translate-y-1 max-[712px]:p-[13px] bg-[rgb(12,34,56)] grid-rows-[auto_minmax(0,_1fr)] group-[:nth-of-type(3)_&]:block [@supports(display:grid)]:grid supports-[backdrop-filter:blur(2px)]:backdrop-blur-[2px] [@media(any-hover:hover){&:hover}]:opacity-100 data-[state=open]:opacity-100 supports-[display:grid]:grid [mask-type:luminance] [--watch-hmr-offset:8738440px]",
+          "classTokens": [
+            "text-[23.8738440px]",
+            "space-y-2.5",
+            "w-[calc(100%_-_8738440px)]",
+            "grid-cols-[200rpx_minmax(900rpx,_1fr)_8738440px]",
+            "after:ml-[0.8738440px]",
+            "text-black/[0.87]",
+            "ring-[1.0px]",
+            "!mt-2",
+            "-translate-y-1",
+            "max-[712px]:p-[13px]",
+            "bg-[rgb(12,34,56)]",
+            "grid-rows-[auto_minmax(0,_1fr)]",
+            "group-[:nth-of-type(3)_&]:block",
+            "[@supports(display:grid)]:grid",
+            "supports-[backdrop-filter:blur(2px)]:backdrop-blur-[2px]",
+            "[@media(any-hover:hover){&:hover}]:opacity-100",
+            "data-[state=open]:opacity-100",
+            "supports-[display:grid]:grid",
+            "[mask-type:luminance]",
+            "[--watch-hmr-offset:8738440px]"
+          ],
+          "escapedClasses": [
+            "text-_b23_d8738440px_B",
+            "space-y-2_d5",
+            "w-_bcalc_p100_v_-_8738440px_P_B",
+            "grid-cols-_b200rpx_minmax_p900rpx_m_1fr_P_8738440px_B",
+            "after_cml-_b0_d8738440px_B",
+            "text-black_f_b0_d87_B",
+            "ring-_b1_d0px_B",
+            "_emt-2",
+            "-translate-y-1",
+            "max-_b712px_B_cp-_b13px_B",
+            "bg-_brgb_p12_m34_m56_P_B",
+            "grid-rows-_bauto_minmax_p0_m_1fr_P_B",
+            "group-_b_cnth-of-type_p3_P__n_B_cblock",
+            "_b_tsupports_pdisplay_cgrid_P_B_cgrid",
+            "supports-_bbackdrop-filter_cblur_p2px_P_B_cbackdrop-blur-_b2px_B",
+            "_b_tmedia_pany-hover_chover_P_k_n_chover_K_B_copacity-100",
+            "data-_bstate_zopen_B_copacity-100",
+            "supports-_bdisplay_cgrid_B_cgrid",
+            "_bmask-type_cluminance_B",
+            "_b--watch-hmr-offset_c8738440px_B"
+          ],
+          "hotUpdateOutputMs": 482,
+          "hotUpdateEffectiveMs": 482,
+          "rollbackOutputMs": 483,
+          "rollbackEffectiveMs": 483,
+          "totalMs": 966
+        }
+      ],
+      "roundComparison": {
+        "baselineRoundName": "baseline-arbitrary",
+        "candidateRoundName": "complex-corpus",
+        "hotUpdateDeltaMs": -2,
+        "rollbackDeltaMs": -2,
+        "hotUpdateRatio": 0.996,
+        "rollbackRatio": 0.996
+      },
+      "verifyEscapedIn": [],
+      "verifyClassLiteralIn": [
+        "js"
+      ],
+      "globalStyleOutputs": [
+        "/Users/yangqiming/Documents/GitHub/weapp-tailwindcss/demo/taro-vite-tailwindcss-v4/dist/app-origin.wxss",
+        "/Users/yangqiming/Documents/GitHub/weapp-tailwindcss/demo/taro-vite-tailwindcss-v4/dist/app.wxss"
+      ],
+      "mutationMetrics": [
+        {
+          "mutationKind": "template",
+          "sourceFile": "/Users/yangqiming/Documents/GitHub/weapp-tailwindcss/demo/taro-vite-tailwindcss-v4/src/pages/index/index.tsx",
+          "marker": "tw-watch-taro-vite-tailwindcss-v4-template-complex-corpus-8738440",
+          "classLiteral": "text-[23.8738440px] space-y-2.5 w-[calc(100%_-_8738440px)] grid-cols-[200rpx_minmax(900rpx,_1fr)_8738440px] after:ml-[0.8738440px] text-black/[0.87] ring-[1.0px] !mt-2 -translate-y-1 max-[712px]:p-[13px] bg-[rgb(12,34,56)] grid-rows-[auto_minmax(0,_1fr)] group-[:nth-of-type(3)_&]:block [@supports(display:grid)]:grid supports-[backdrop-filter:blur(2px)]:backdrop-blur-[2px] [@media(any-hover:hover){&:hover}]:opacity-100 data-[state=open]:opacity-100 supports-[display:grid]:grid [mask-type:luminance] [--watch-hmr-offset:8738440px]",
+          "classTokens": [
+            "text-[23.8738440px]",
+            "space-y-2.5",
+            "w-[calc(100%_-_8738440px)]",
+            "grid-cols-[200rpx_minmax(900rpx,_1fr)_8738440px]",
+            "after:ml-[0.8738440px]",
+            "text-black/[0.87]",
+            "ring-[1.0px]",
+            "!mt-2",
+            "-translate-y-1",
+            "max-[712px]:p-[13px]",
+            "bg-[rgb(12,34,56)]",
+            "grid-rows-[auto_minmax(0,_1fr)]",
+            "group-[:nth-of-type(3)_&]:block",
+            "[@supports(display:grid)]:grid",
+            "supports-[backdrop-filter:blur(2px)]:backdrop-blur-[2px]",
+            "[@media(any-hover:hover){&:hover}]:opacity-100",
+            "data-[state=open]:opacity-100",
+            "supports-[display:grid]:grid",
+            "[mask-type:luminance]",
+            "[--watch-hmr-offset:8738440px]"
+          ],
+          "escapedClasses": [
+            "text-_b23_d8738440px_B",
+            "space-y-2_d5",
+            "w-_bcalc_p100_v_-_8738440px_P_B",
+            "grid-cols-_b200rpx_minmax_p900rpx_m_1fr_P_8738440px_B",
+            "after_cml-_b0_d8738440px_B",
+            "text-black_f_b0_d87_B",
+            "ring-_b1_d0px_B",
+            "_emt-2",
+            "-translate-y-1",
+            "max-_b712px_B_cp-_b13px_B",
+            "bg-_brgb_p12_m34_m56_P_B",
+            "grid-rows-_bauto_minmax_p0_m_1fr_P_B",
+            "group-_b_cnth-of-type_p3_P__n_B_cblock",
+            "_b_tsupports_pdisplay_cgrid_P_B_cgrid",
+            "supports-_bbackdrop-filter_cblur_p2px_P_B_cbackdrop-blur-_b2px_B",
+            "_b_tmedia_pany-hover_chover_P_k_n_chover_K_B_copacity-100",
+            "data-_bstate_zopen_B_copacity-100",
+            "supports-_bdisplay_cgrid_B_cgrid",
+            "_bmask-type_cluminance_B",
+            "_b--watch-hmr-offset_c8738440px_B"
+          ],
+          "rounds": [
+            {
+              "roundName": "baseline-arbitrary",
+              "marker": "tw-watch-taro-vite-tailwindcss-v4-template-baseline-arbitrary-8728730",
+              "classLiteral": "text-[23.8728730px] space-y-2.5 w-[calc(100%_-_8728730px)] grid-cols-[200rpx_minmax(900rpx,_1fr)_8728730px] after:ml-[0.8728730px] text-black/[0.87] ring-[1.0px]",
+              "classTokens": [
+                "text-[23.8728730px]",
+                "space-y-2.5",
+                "w-[calc(100%_-_8728730px)]",
+                "grid-cols-[200rpx_minmax(900rpx,_1fr)_8728730px]",
+                "after:ml-[0.8728730px]",
+                "text-black/[0.87]",
+                "ring-[1.0px]"
+              ],
+              "escapedClasses": [
+                "text-_b23_d8728730px_B",
+                "space-y-2_d5",
+                "w-_bcalc_p100_v_-_8728730px_P_B",
+                "grid-cols-_b200rpx_minmax_p900rpx_m_1fr_P_8728730px_B",
+                "after_cml-_b0_d8728730px_B",
+                "text-black_f_b0_d87_B",
+                "ring-_b1_d0px_B"
+              ],
+              "hotUpdateOutputMs": 484,
+              "hotUpdateEffectiveMs": 484,
+              "rollbackOutputMs": 241,
+              "rollbackEffectiveMs": 485,
+              "totalMs": 970
+            },
+            {
+              "roundName": "complex-corpus",
+              "marker": "tw-watch-taro-vite-tailwindcss-v4-template-complex-corpus-8738440",
+              "classLiteral": "text-[23.8738440px] space-y-2.5 w-[calc(100%_-_8738440px)] grid-cols-[200rpx_minmax(900rpx,_1fr)_8738440px] after:ml-[0.8738440px] text-black/[0.87] ring-[1.0px] !mt-2 -translate-y-1 max-[712px]:p-[13px] bg-[rgb(12,34,56)] grid-rows-[auto_minmax(0,_1fr)] group-[:nth-of-type(3)_&]:block [@supports(display:grid)]:grid supports-[backdrop-filter:blur(2px)]:backdrop-blur-[2px] [@media(any-hover:hover){&:hover}]:opacity-100 data-[state=open]:opacity-100 supports-[display:grid]:grid [mask-type:luminance] [--watch-hmr-offset:8738440px]",
+              "classTokens": [
+                "text-[23.8738440px]",
+                "space-y-2.5",
+                "w-[calc(100%_-_8738440px)]",
+                "grid-cols-[200rpx_minmax(900rpx,_1fr)_8738440px]",
+                "after:ml-[0.8738440px]",
+                "text-black/[0.87]",
+                "ring-[1.0px]",
+                "!mt-2",
+                "-translate-y-1",
+                "max-[712px]:p-[13px]",
+                "bg-[rgb(12,34,56)]",
+                "grid-rows-[auto_minmax(0,_1fr)]",
+                "group-[:nth-of-type(3)_&]:block",
+                "[@supports(display:grid)]:grid",
+                "supports-[backdrop-filter:blur(2px)]:backdrop-blur-[2px]",
+                "[@media(any-hover:hover){&:hover}]:opacity-100",
+                "data-[state=open]:opacity-100",
+                "supports-[display:grid]:grid",
+                "[mask-type:luminance]",
+                "[--watch-hmr-offset:8738440px]"
+              ],
+              "escapedClasses": [
+                "text-_b23_d8738440px_B",
+                "space-y-2_d5",
+                "w-_bcalc_p100_v_-_8738440px_P_B",
+                "grid-cols-_b200rpx_minmax_p900rpx_m_1fr_P_8738440px_B",
+                "after_cml-_b0_d8738440px_B",
+                "text-black_f_b0_d87_B",
+                "ring-_b1_d0px_B",
+                "_emt-2",
+                "-translate-y-1",
+                "max-_b712px_B_cp-_b13px_B",
+                "bg-_brgb_p12_m34_m56_P_B",
+                "grid-rows-_bauto_minmax_p0_m_1fr_P_B",
+                "group-_b_cnth-of-type_p3_P__n_B_cblock",
+                "_b_tsupports_pdisplay_cgrid_P_B_cgrid",
+                "supports-_bbackdrop-filter_cblur_p2px_P_B_cbackdrop-blur-_b2px_B",
+                "_b_tmedia_pany-hover_chover_P_k_n_chover_K_B_copacity-100",
+                "data-_bstate_zopen_B_copacity-100",
+                "supports-_bdisplay_cgrid_B_cgrid",
+                "_bmask-type_cluminance_B",
+                "_b--watch-hmr-offset_c8738440px_B"
+              ],
+              "hotUpdateOutputMs": 482,
+              "hotUpdateEffectiveMs": 482,
+              "rollbackOutputMs": 483,
+              "rollbackEffectiveMs": 483,
+              "totalMs": 966
+            }
+          ],
+          "roundComparison": {
+            "baselineRoundName": "baseline-arbitrary",
+            "candidateRoundName": "complex-corpus",
+            "hotUpdateDeltaMs": -2,
+            "rollbackDeltaMs": -2,
+            "hotUpdateRatio": 0.996,
+            "rollbackRatio": 0.996
+          },
+          "verifyEscapedIn": [],
+          "verifyClassLiteralIn": [
+            "js"
+          ],
+          "globalStyleOutputs": [
+            "/Users/yangqiming/Documents/GitHub/weapp-tailwindcss/demo/taro-vite-tailwindcss-v4/dist/app-origin.wxss",
+            "/Users/yangqiming/Documents/GitHub/weapp-tailwindcss/demo/taro-vite-tailwindcss-v4/dist/app.wxss"
+          ],
+          "minRequiredGlobalStyleEscapedClasses": 1,
+          "verifiedGlobalStyleEscapedClasses": [
+            "text-_b23_d8728730px_B",
+            "space-y-2_d5",
+            "w-_bcalc_p100_v_-_8728730px_P_B",
+            "text-_b23_d8738440px_B",
+            "w-_bcalc_p100_v_-_8738440px_P_B"
+          ],
+          "hotUpdateOutputMs": 482,
+          "hotUpdateEffectiveMs": 482,
+          "rollbackOutputMs": 483,
+          "rollbackEffectiveMs": 483
+        },
+        {
+          "mutationKind": "script",
+          "sourceFile": "/Users/yangqiming/Documents/GitHub/weapp-tailwindcss/demo/taro-vite-tailwindcss-v4/src/pages/index/index.tsx",
+          "marker": "tw-watch-taro-vite-tailwindcss-v4-script-complex-corpus-8757780",
+          "classLiteral": "text-[23.8757780px] space-y-2.5 w-[calc(100%_-_8757780px)] grid-cols-[200rpx_minmax(900rpx,_1fr)_8757780px] after:ml-[0.8757780px] text-black/[0.87] ring-[1.0px] !mt-2 -translate-y-1 max-[712px]:p-[13px] bg-[rgb(12,34,56)] grid-rows-[auto_minmax(0,_1fr)] group-[:nth-of-type(3)_&]:block [@supports(display:grid)]:grid supports-[backdrop-filter:blur(2px)]:backdrop-blur-[2px] [@media(any-hover:hover){&:hover}]:opacity-100 data-[state=open]:opacity-100 supports-[display:grid]:grid [mask-type:luminance] [--watch-hmr-offset:8757780px]",
+          "classTokens": [
+            "text-[23.8757780px]",
+            "space-y-2.5",
+            "w-[calc(100%_-_8757780px)]",
+            "grid-cols-[200rpx_minmax(900rpx,_1fr)_8757780px]",
+            "after:ml-[0.8757780px]",
+            "text-black/[0.87]",
+            "ring-[1.0px]",
+            "!mt-2",
+            "-translate-y-1",
+            "max-[712px]:p-[13px]",
+            "bg-[rgb(12,34,56)]",
+            "grid-rows-[auto_minmax(0,_1fr)]",
+            "group-[:nth-of-type(3)_&]:block",
+            "[@supports(display:grid)]:grid",
+            "supports-[backdrop-filter:blur(2px)]:backdrop-blur-[2px]",
+            "[@media(any-hover:hover){&:hover}]:opacity-100",
+            "data-[state=open]:opacity-100",
+            "supports-[display:grid]:grid",
+            "[mask-type:luminance]",
+            "[--watch-hmr-offset:8757780px]"
+          ],
+          "escapedClasses": [
+            "text-_b23_d8757780px_B",
+            "space-y-2_d5",
+            "w-_bcalc_p100_v_-_8757780px_P_B",
+            "grid-cols-_b200rpx_minmax_p900rpx_m_1fr_P_8757780px_B",
+            "after_cml-_b0_d8757780px_B",
+            "text-black_f_b0_d87_B",
+            "ring-_b1_d0px_B",
+            "_emt-2",
+            "-translate-y-1",
+            "max-_b712px_B_cp-_b13px_B",
+            "bg-_brgb_p12_m34_m56_P_B",
+            "grid-rows-_bauto_minmax_p0_m_1fr_P_B",
+            "group-_b_cnth-of-type_p3_P__n_B_cblock",
+            "_b_tsupports_pdisplay_cgrid_P_B_cgrid",
+            "supports-_bbackdrop-filter_cblur_p2px_P_B_cbackdrop-blur-_b2px_B",
+            "_b_tmedia_pany-hover_chover_P_k_n_chover_K_B_copacity-100",
+            "data-_bstate_zopen_B_copacity-100",
+            "supports-_bdisplay_cgrid_B_cgrid",
+            "_bmask-type_cluminance_B",
+            "_b--watch-hmr-offset_c8757780px_B"
+          ],
+          "rounds": [
+            {
+              "roundName": "baseline-arbitrary",
+              "marker": "tw-watch-taro-vite-tailwindcss-v4-script-baseline-arbitrary-8748110",
+              "classLiteral": "text-[23.8748110px] space-y-2.5 w-[calc(100%_-_8748110px)] grid-cols-[200rpx_minmax(900rpx,_1fr)_8748110px] after:ml-[0.8748110px] text-black/[0.87] ring-[1.0px]",
+              "classTokens": [
+                "text-[23.8748110px]",
+                "space-y-2.5",
+                "w-[calc(100%_-_8748110px)]",
+                "grid-cols-[200rpx_minmax(900rpx,_1fr)_8748110px]",
+                "after:ml-[0.8748110px]",
+                "text-black/[0.87]",
+                "ring-[1.0px]"
+              ],
+              "escapedClasses": [
+                "text-_b23_d8748110px_B",
+                "space-y-2_d5",
+                "w-_bcalc_p100_v_-_8748110px_P_B",
+                "grid-cols-_b200rpx_minmax_p900rpx_m_1fr_P_8748110px_B",
+                "after_cml-_b0_d8748110px_B",
+                "text-black_f_b0_d87_B",
+                "ring-_b1_d0px_B"
+              ],
+              "hotUpdateOutputMs": 483,
+              "hotUpdateEffectiveMs": 484,
+              "rollbackOutputMs": 483,
+              "rollbackEffectiveMs": 483,
+              "totalMs": 967
+            },
+            {
+              "roundName": "complex-corpus",
+              "marker": "tw-watch-taro-vite-tailwindcss-v4-script-complex-corpus-8757780",
+              "classLiteral": "text-[23.8757780px] space-y-2.5 w-[calc(100%_-_8757780px)] grid-cols-[200rpx_minmax(900rpx,_1fr)_8757780px] after:ml-[0.8757780px] text-black/[0.87] ring-[1.0px] !mt-2 -translate-y-1 max-[712px]:p-[13px] bg-[rgb(12,34,56)] grid-rows-[auto_minmax(0,_1fr)] group-[:nth-of-type(3)_&]:block [@supports(display:grid)]:grid supports-[backdrop-filter:blur(2px)]:backdrop-blur-[2px] [@media(any-hover:hover){&:hover}]:opacity-100 data-[state=open]:opacity-100 supports-[display:grid]:grid [mask-type:luminance] [--watch-hmr-offset:8757780px]",
+              "classTokens": [
+                "text-[23.8757780px]",
+                "space-y-2.5",
+                "w-[calc(100%_-_8757780px)]",
+                "grid-cols-[200rpx_minmax(900rpx,_1fr)_8757780px]",
+                "after:ml-[0.8757780px]",
+                "text-black/[0.87]",
+                "ring-[1.0px]",
+                "!mt-2",
+                "-translate-y-1",
+                "max-[712px]:p-[13px]",
+                "bg-[rgb(12,34,56)]",
+                "grid-rows-[auto_minmax(0,_1fr)]",
+                "group-[:nth-of-type(3)_&]:block",
+                "[@supports(display:grid)]:grid",
+                "supports-[backdrop-filter:blur(2px)]:backdrop-blur-[2px]",
+                "[@media(any-hover:hover){&:hover}]:opacity-100",
+                "data-[state=open]:opacity-100",
+                "supports-[display:grid]:grid",
+                "[mask-type:luminance]",
+                "[--watch-hmr-offset:8757780px]"
+              ],
+              "escapedClasses": [
+                "text-_b23_d8757780px_B",
+                "space-y-2_d5",
+                "w-_bcalc_p100_v_-_8757780px_P_B",
+                "grid-cols-_b200rpx_minmax_p900rpx_m_1fr_P_8757780px_B",
+                "after_cml-_b0_d8757780px_B",
+                "text-black_f_b0_d87_B",
+                "ring-_b1_d0px_B",
+                "_emt-2",
+                "-translate-y-1",
+                "max-_b712px_B_cp-_b13px_B",
+                "bg-_brgb_p12_m34_m56_P_B",
+                "grid-rows-_bauto_minmax_p0_m_1fr_P_B",
+                "group-_b_cnth-of-type_p3_P__n_B_cblock",
+                "_b_tsupports_pdisplay_cgrid_P_B_cgrid",
+                "supports-_bbackdrop-filter_cblur_p2px_P_B_cbackdrop-blur-_b2px_B",
+                "_b_tmedia_pany-hover_chover_P_k_n_chover_K_B_copacity-100",
+                "data-_bstate_zopen_B_copacity-100",
+                "supports-_bdisplay_cgrid_B_cgrid",
+                "_bmask-type_cluminance_B",
+                "_b--watch-hmr-offset_c8757780px_B"
+              ],
+              "hotUpdateOutputMs": 484,
+              "hotUpdateEffectiveMs": 485,
+              "rollbackOutputMs": 482,
+              "rollbackEffectiveMs": 482,
+              "totalMs": 967
+            }
+          ],
+          "roundComparison": {
+            "baselineRoundName": "baseline-arbitrary",
+            "candidateRoundName": "complex-corpus",
+            "hotUpdateDeltaMs": 1,
+            "rollbackDeltaMs": -1,
+            "hotUpdateRatio": 1.002,
+            "rollbackRatio": 0.998
+          },
+          "verifyEscapedIn": [],
+          "verifyClassLiteralIn": [
+            "js"
+          ],
+          "globalStyleOutputs": [
+            "/Users/yangqiming/Documents/GitHub/weapp-tailwindcss/demo/taro-vite-tailwindcss-v4/dist/app-origin.wxss",
+            "/Users/yangqiming/Documents/GitHub/weapp-tailwindcss/demo/taro-vite-tailwindcss-v4/dist/app.wxss"
+          ],
+          "minRequiredGlobalStyleEscapedClasses": 1,
+          "verifiedGlobalStyleEscapedClasses": [
+            "text-_b23_d8748110px_B",
+            "space-y-2_d5",
+            "w-_bcalc_p100_v_-_8748110px_P_B",
+            "text-_b23_d8757780px_B",
+            "w-_bcalc_p100_v_-_8757780px_P_B"
+          ],
+          "hotUpdateOutputMs": 484,
+          "hotUpdateEffectiveMs": 485,
+          "rollbackOutputMs": 482,
+          "rollbackEffectiveMs": 482
+        },
+        {
+          "mutationKind": "style",
+          "sourceFile": "/Users/yangqiming/Documents/GitHub/weapp-tailwindcss/demo/taro-vite-tailwindcss-v4/src/pages/index/index.css",
+          "outputStyle": "/Users/yangqiming/Documents/GitHub/weapp-tailwindcss/demo/taro-vite-tailwindcss-v4/dist/pages/index/index.wxss",
+          "marker": "tw-watch-style-taro-vite-tailwindcss-v4-876745458",
+          "styleNeedle": ".tw-watch-style-taro-vite-tailwindcss-v4-876745458",
+          "applyUtilities": [],
+          "expectedApplyDeclarations": [],
+          "hotUpdateOutputMs": 483,
+          "hotUpdateEffectiveMs": 483,
+          "rollbackOutputMs": 482,
+          "rollbackEffectiveMs": 482,
+          "rollbackNeedleCleared": false
+        }
+      ],
+      "summaryByMutationKind": {
+        "template": {
+          "count": 1,
+          "hotUpdateAvgMs": 482,
+          "hotUpdateMaxMs": 482,
+          "hotUpdateMinMs": 482,
+          "rollbackAvgMs": 483,
+          "rollbackMaxMs": 483,
+          "rollbackMinMs": 483
+        },
+        "script": {
+          "count": 1,
+          "hotUpdateAvgMs": 485,
+          "hotUpdateMaxMs": 485,
+          "hotUpdateMinMs": 485,
+          "rollbackAvgMs": 482,
+          "rollbackMaxMs": 482,
+          "rollbackMinMs": 482
+        },
+        "style": {
+          "count": 1,
+          "hotUpdateAvgMs": 483,
+          "hotUpdateMaxMs": 483,
+          "hotUpdateMinMs": 483,
+          "rollbackAvgMs": 482,
+          "rollbackMaxMs": 482,
+          "rollbackMinMs": 482
+        }
+      },
+      "initialReadyMs": 4101,
+      "hotUpdateOutputMs": 482,
+      "hotUpdateEffectiveMs": 482,
+      "rollbackOutputMs": 483,
+      "rollbackEffectiveMs": 483,
+      "totalMs": 38682
+    }
+  ]
+}

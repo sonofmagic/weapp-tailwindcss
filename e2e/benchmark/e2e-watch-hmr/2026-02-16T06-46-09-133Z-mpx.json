@@ -1,0 +1,541 @@
+{
+  "generatedAt": "2026-02-16T06:46:16.776Z",
+  "repositoryRoot": "weapp-tailwindcss",
+  "options": {
+    "caseName": "mpx",
+    "timeoutMs": 240000,
+    "pollMs": 240,
+    "skipBuild": true,
+    "quietSass": true,
+    "maxHotUpdateMs": 15000
+  },
+  "summary": {
+    "count": 1,
+    "hotUpdateAvgMs": 242,
+    "hotUpdateMaxMs": 242,
+    "hotUpdateMinMs": 242,
+    "rollbackAvgMs": 241,
+    "rollbackMaxMs": 241,
+    "rollbackMinMs": 241
+  },
+  "summaryByRound": {
+    "baseline-arbitrary": {
+      "count": 1,
+      "hotUpdateAvgMs": 483,
+      "hotUpdateMaxMs": 483,
+      "hotUpdateMinMs": 483,
+      "rollbackAvgMs": 242,
+      "rollbackMaxMs": 242,
+      "rollbackMinMs": 242
+    },
+    "complex-corpus": {
+      "count": 1,
+      "hotUpdateAvgMs": 242,
+      "hotUpdateMaxMs": 242,
+      "hotUpdateMinMs": 242,
+      "rollbackAvgMs": 241,
+      "rollbackMaxMs": 241,
+      "rollbackMinMs": 241
+    }
+  },
+  "summaryByGroup": {
+    "demo": {
+      "count": 1,
+      "hotUpdateAvgMs": 242,
+      "hotUpdateMaxMs": 242,
+      "hotUpdateMinMs": 242,
+      "rollbackAvgMs": 241,
+      "rollbackMaxMs": 241,
+      "rollbackMinMs": 241
+    },
+    "apps": {
+      "count": 0,
+      "hotUpdateAvgMs": 0,
+      "hotUpdateMaxMs": 0,
+      "hotUpdateMinMs": 0,
+      "rollbackAvgMs": 0,
+      "rollbackMaxMs": 0,
+      "rollbackMinMs": 0
+    }
+  },
+  "summaryByProject": {
+    "demo/mpx-app": {
+      "count": 1,
+      "hotUpdateAvgMs": 242,
+      "hotUpdateMaxMs": 242,
+      "hotUpdateMinMs": 242,
+      "rollbackAvgMs": 241,
+      "rollbackMaxMs": 241,
+      "rollbackMinMs": 241
+    }
+  },
+  "summaryByMutationKind": {
+    "template": {
+      "count": 1,
+      "hotUpdateAvgMs": 242,
+      "hotUpdateMaxMs": 242,
+      "hotUpdateMinMs": 242,
+      "rollbackAvgMs": 241,
+      "rollbackMaxMs": 241,
+      "rollbackMinMs": 241
+    },
+    "script": {
+      "count": 1,
+      "hotUpdateAvgMs": 242,
+      "hotUpdateMaxMs": 242,
+      "hotUpdateMinMs": 242,
+      "rollbackAvgMs": 241,
+      "rollbackMaxMs": 241,
+      "rollbackMinMs": 241
+    },
+    "style": {
+      "count": 1,
+      "hotUpdateAvgMs": 241,
+      "hotUpdateMaxMs": 241,
+      "hotUpdateMinMs": 241,
+      "rollbackAvgMs": 241,
+      "rollbackMaxMs": 241,
+      "rollbackMinMs": 241
+    }
+  },
+  "cases": [
+    {
+      "name": "mpx",
+      "label": "demo/mpx-app",
+      "project": "demo/mpx-app",
+      "projectGroup": "demo",
+      "marker": "tw-watch-mpx-template-complex-corpus-3747390",
+      "classLiteral": "text-[23.3747390px] space-y-2.5 w-[calc(100%_-_3747390px)] grid-cols-[200rpx_minmax(900rpx,_1fr)_3747390px] after:ml-[0.3747390px] text-black/[0.37] ring-[1.0px] group-[:nth-of-type(3)_&]:block [@supports(display:grid)]:grid [@media(any-hover:hover){&:hover}]:opacity-100 data-[state=open]:opacity-100 supports-[display:grid]:grid [mask-type:luminance] [--watch-hmr-offset:3747390px]",
+      "classTokens": [
+        "text-[23.3747390px]",
+        "space-y-2.5",
+        "w-[calc(100%_-_3747390px)]",
+        "grid-cols-[200rpx_minmax(900rpx,_1fr)_3747390px]",
+        "after:ml-[0.3747390px]",
+        "text-black/[0.37]",
+        "ring-[1.0px]",
+        "group-[:nth-of-type(3)_&]:block",
+        "[@supports(display:grid)]:grid",
+        "[@media(any-hover:hover){&:hover}]:opacity-100",
+        "data-[state=open]:opacity-100",
+        "supports-[display:grid]:grid",
+        "[mask-type:luminance]",
+        "[--watch-hmr-offset:3747390px]"
+      ],
+      "escapedClasses": [
+        "text-_b23_d3747390px_B",
+        "space-y-2_d5",
+        "w-_bcalc_p100_v_-_3747390px_P_B",
+        "grid-cols-_b200rpx_minmax_p900rpx_m_1fr_P_3747390px_B",
+        "after_cml-_b0_d3747390px_B",
+        "text-black_f_b0_d37_B",
+        "ring-_b1_d0px_B",
+        "group-_b_cnth-of-type_p3_P__n_B_cblock",
+        "_b_tsupports_pdisplay_cgrid_P_B_cgrid",
+        "_b_tmedia_pany-hover_chover_P_k_n_chover_K_B_copacity-100",
+        "data-_bstate_zopen_B_copacity-100",
+        "supports-_bdisplay_cgrid_B_cgrid",
+        "_bmask-type_cluminance_B",
+        "_b--watch-hmr-offset_c3747390px_B"
+      ],
+      "rounds": [
+        {
+          "roundName": "baseline-arbitrary",
+          "marker": "tw-watch-mpx-template-baseline-arbitrary-3740140",
+          "classLiteral": "text-[23.3740140px] space-y-2.5 w-[calc(100%_-_3740140px)] grid-cols-[200rpx_minmax(900rpx,_1fr)_3740140px] after:ml-[0.3740140px] text-black/[0.37] ring-[1.0px]",
+          "classTokens": [
+            "text-[23.3740140px]",
+            "space-y-2.5",
+            "w-[calc(100%_-_3740140px)]",
+            "grid-cols-[200rpx_minmax(900rpx,_1fr)_3740140px]",
+            "after:ml-[0.3740140px]",
+            "text-black/[0.37]",
+            "ring-[1.0px]"
+          ],
+          "escapedClasses": [
+            "text-_b23_d3740140px_B",
+            "space-y-2_d5",
+            "w-_bcalc_p100_v_-_3740140px_P_B",
+            "grid-cols-_b200rpx_minmax_p900rpx_m_1fr_P_3740140px_B",
+            "after_cml-_b0_d3740140px_B",
+            "text-black_f_b0_d37_B",
+            "ring-_b1_d0px_B"
+          ],
+          "hotUpdateOutputMs": 482,
+          "hotUpdateEffectiveMs": 483,
+          "rollbackOutputMs": 242,
+          "rollbackEffectiveMs": 242,
+          "totalMs": 725
+        },
+        {
+          "roundName": "complex-corpus",
+          "marker": "tw-watch-mpx-template-complex-corpus-3747390",
+          "classLiteral": "text-[23.3747390px] space-y-2.5 w-[calc(100%_-_3747390px)] grid-cols-[200rpx_minmax(900rpx,_1fr)_3747390px] after:ml-[0.3747390px] text-black/[0.37] ring-[1.0px] group-[:nth-of-type(3)_&]:block [@supports(display:grid)]:grid [@media(any-hover:hover){&:hover}]:opacity-100 data-[state=open]:opacity-100 supports-[display:grid]:grid [mask-type:luminance] [--watch-hmr-offset:3747390px]",
+          "classTokens": [
+            "text-[23.3747390px]",
+            "space-y-2.5",
+            "w-[calc(100%_-_3747390px)]",
+            "grid-cols-[200rpx_minmax(900rpx,_1fr)_3747390px]",
+            "after:ml-[0.3747390px]",
+            "text-black/[0.37]",
+            "ring-[1.0px]",
+            "group-[:nth-of-type(3)_&]:block",
+            "[@supports(display:grid)]:grid",
+            "[@media(any-hover:hover){&:hover}]:opacity-100",
+            "data-[state=open]:opacity-100",
+            "supports-[display:grid]:grid",
+            "[mask-type:luminance]",
+            "[--watch-hmr-offset:3747390px]"
+          ],
+          "escapedClasses": [
+            "text-_b23_d3747390px_B",
+            "space-y-2_d5",
+            "w-_bcalc_p100_v_-_3747390px_P_B",
+            "grid-cols-_b200rpx_minmax_p900rpx_m_1fr_P_3747390px_B",
+            "after_cml-_b0_d3747390px_B",
+            "text-black_f_b0_d37_B",
+            "ring-_b1_d0px_B",
+            "group-_b_cnth-of-type_p3_P__n_B_cblock",
+            "_b_tsupports_pdisplay_cgrid_P_B_cgrid",
+            "_b_tmedia_pany-hover_chover_P_k_n_chover_K_B_copacity-100",
+            "data-_bstate_zopen_B_copacity-100",
+            "supports-_bdisplay_cgrid_B_cgrid",
+            "_bmask-type_cluminance_B",
+            "_b--watch-hmr-offset_c3747390px_B"
+          ],
+          "hotUpdateOutputMs": 241,
+          "hotUpdateEffectiveMs": 242,
+          "rollbackOutputMs": 241,
+          "rollbackEffectiveMs": 241,
+          "totalMs": 483
+        }
+      ],
+      "roundComparison": {
+        "baselineRoundName": "baseline-arbitrary",
+        "candidateRoundName": "complex-corpus",
+        "hotUpdateDeltaMs": -241,
+        "rollbackDeltaMs": -1,
+        "hotUpdateRatio": 0.501,
+        "rollbackRatio": 0.996
+      },
+      "verifyEscapedIn": [
+        "wxml"
+      ],
+      "verifyClassLiteralIn": [],
+      "globalStyleOutputs": [
+        "/Users/yangqiming/Documents/GitHub/weapp-tailwindcss/demo/mpx-app/dist/wx/app.wxss"
+      ],
+      "mutationMetrics": [
+        {
+          "mutationKind": "template",
+          "sourceFile": "/Users/yangqiming/Documents/GitHub/weapp-tailwindcss/demo/mpx-app/src/pages/index.mpx",
+          "marker": "tw-watch-mpx-template-complex-corpus-3747390",
+          "classLiteral": "text-[23.3747390px] space-y-2.5 w-[calc(100%_-_3747390px)] grid-cols-[200rpx_minmax(900rpx,_1fr)_3747390px] after:ml-[0.3747390px] text-black/[0.37] ring-[1.0px] group-[:nth-of-type(3)_&]:block [@supports(display:grid)]:grid [@media(any-hover:hover){&:hover}]:opacity-100 data-[state=open]:opacity-100 supports-[display:grid]:grid [mask-type:luminance] [--watch-hmr-offset:3747390px]",
+          "classTokens": [
+            "text-[23.3747390px]",
+            "space-y-2.5",
+            "w-[calc(100%_-_3747390px)]",
+            "grid-cols-[200rpx_minmax(900rpx,_1fr)_3747390px]",
+            "after:ml-[0.3747390px]",
+            "text-black/[0.37]",
+            "ring-[1.0px]",
+            "group-[:nth-of-type(3)_&]:block",
+            "[@supports(display:grid)]:grid",
+            "[@media(any-hover:hover){&:hover}]:opacity-100",
+            "data-[state=open]:opacity-100",
+            "supports-[display:grid]:grid",
+            "[mask-type:luminance]",
+            "[--watch-hmr-offset:3747390px]"
+          ],
+          "escapedClasses": [
+            "text-_b23_d3747390px_B",
+            "space-y-2_d5",
+            "w-_bcalc_p100_v_-_3747390px_P_B",
+            "grid-cols-_b200rpx_minmax_p900rpx_m_1fr_P_3747390px_B",
+            "after_cml-_b0_d3747390px_B",
+            "text-black_f_b0_d37_B",
+            "ring-_b1_d0px_B",
+            "group-_b_cnth-of-type_p3_P__n_B_cblock",
+            "_b_tsupports_pdisplay_cgrid_P_B_cgrid",
+            "_b_tmedia_pany-hover_chover_P_k_n_chover_K_B_copacity-100",
+            "data-_bstate_zopen_B_copacity-100",
+            "supports-_bdisplay_cgrid_B_cgrid",
+            "_bmask-type_cluminance_B",
+            "_b--watch-hmr-offset_c3747390px_B"
+          ],
+          "rounds": [
+            {
+              "roundName": "baseline-arbitrary",
+              "marker": "tw-watch-mpx-template-baseline-arbitrary-3740140",
+              "classLiteral": "text-[23.3740140px] space-y-2.5 w-[calc(100%_-_3740140px)] grid-cols-[200rpx_minmax(900rpx,_1fr)_3740140px] after:ml-[0.3740140px] text-black/[0.37] ring-[1.0px]",
+              "classTokens": [
+                "text-[23.3740140px]",
+                "space-y-2.5",
+                "w-[calc(100%_-_3740140px)]",
+                "grid-cols-[200rpx_minmax(900rpx,_1fr)_3740140px]",
+                "after:ml-[0.3740140px]",
+                "text-black/[0.37]",
+                "ring-[1.0px]"
+              ],
+              "escapedClasses": [
+                "text-_b23_d3740140px_B",
+                "space-y-2_d5",
+                "w-_bcalc_p100_v_-_3740140px_P_B",
+                "grid-cols-_b200rpx_minmax_p900rpx_m_1fr_P_3740140px_B",
+                "after_cml-_b0_d3740140px_B",
+                "text-black_f_b0_d37_B",
+                "ring-_b1_d0px_B"
+              ],
+              "hotUpdateOutputMs": 482,
+              "hotUpdateEffectiveMs": 483,
+              "rollbackOutputMs": 242,
+              "rollbackEffectiveMs": 242,
+              "totalMs": 725
+            },
+            {
+              "roundName": "complex-corpus",
+              "marker": "tw-watch-mpx-template-complex-corpus-3747390",
+              "classLiteral": "text-[23.3747390px] space-y-2.5 w-[calc(100%_-_3747390px)] grid-cols-[200rpx_minmax(900rpx,_1fr)_3747390px] after:ml-[0.3747390px] text-black/[0.37] ring-[1.0px] group-[:nth-of-type(3)_&]:block [@supports(display:grid)]:grid [@media(any-hover:hover){&:hover}]:opacity-100 data-[state=open]:opacity-100 supports-[display:grid]:grid [mask-type:luminance] [--watch-hmr-offset:3747390px]",
+              "classTokens": [
+                "text-[23.3747390px]",
+                "space-y-2.5",
+                "w-[calc(100%_-_3747390px)]",
+                "grid-cols-[200rpx_minmax(900rpx,_1fr)_3747390px]",
+                "after:ml-[0.3747390px]",
+                "text-black/[0.37]",
+                "ring-[1.0px]",
+                "group-[:nth-of-type(3)_&]:block",
+                "[@supports(display:grid)]:grid",
+                "[@media(any-hover:hover){&:hover}]:opacity-100",
+                "data-[state=open]:opacity-100",
+                "supports-[display:grid]:grid",
+                "[mask-type:luminance]",
+                "[--watch-hmr-offset:3747390px]"
+              ],
+              "escapedClasses": [
+                "text-_b23_d3747390px_B",
+                "space-y-2_d5",
+                "w-_bcalc_p100_v_-_3747390px_P_B",
+                "grid-cols-_b200rpx_minmax_p900rpx_m_1fr_P_3747390px_B",
+                "after_cml-_b0_d3747390px_B",
+                "text-black_f_b0_d37_B",
+                "ring-_b1_d0px_B",
+                "group-_b_cnth-of-type_p3_P__n_B_cblock",
+                "_b_tsupports_pdisplay_cgrid_P_B_cgrid",
+                "_b_tmedia_pany-hover_chover_P_k_n_chover_K_B_copacity-100",
+                "data-_bstate_zopen_B_copacity-100",
+                "supports-_bdisplay_cgrid_B_cgrid",
+                "_bmask-type_cluminance_B",
+                "_b--watch-hmr-offset_c3747390px_B"
+              ],
+              "hotUpdateOutputMs": 241,
+              "hotUpdateEffectiveMs": 242,
+              "rollbackOutputMs": 241,
+              "rollbackEffectiveMs": 241,
+              "totalMs": 483
+            }
+          ],
+          "roundComparison": {
+            "baselineRoundName": "baseline-arbitrary",
+            "candidateRoundName": "complex-corpus",
+            "hotUpdateDeltaMs": -241,
+            "rollbackDeltaMs": -1,
+            "hotUpdateRatio": 0.501,
+            "rollbackRatio": 0.996
+          },
+          "verifyEscapedIn": [
+            "wxml"
+          ],
+          "verifyClassLiteralIn": [],
+          "globalStyleOutputs": [
+            "/Users/yangqiming/Documents/GitHub/weapp-tailwindcss/demo/mpx-app/dist/wx/app.wxss"
+          ],
+          "minRequiredGlobalStyleEscapedClasses": 0,
+          "verifiedGlobalStyleEscapedClasses": [],
+          "hotUpdateOutputMs": 241,
+          "hotUpdateEffectiveMs": 242,
+          "rollbackOutputMs": 241,
+          "rollbackEffectiveMs": 241
+        },
+        {
+          "mutationKind": "script",
+          "sourceFile": "/Users/yangqiming/Documents/GitHub/weapp-tailwindcss/demo/mpx-app/src/pages/index.mpx",
+          "marker": "tw-watch-mpx-script-complex-corpus-3757070",
+          "classLiteral": "text-[23.3757070px] space-y-2.5 w-[calc(100%_-_3757070px)] grid-cols-[200rpx_minmax(900rpx,_1fr)_3757070px] after:ml-[0.3757070px] text-black/[0.37] ring-[1.0px] group-[:nth-of-type(3)_&]:block [@supports(display:grid)]:grid [@media(any-hover:hover){&:hover}]:opacity-100 data-[state=open]:opacity-100 supports-[display:grid]:grid [mask-type:luminance] [--watch-hmr-offset:3757070px]",
+          "classTokens": [
+            "text-[23.3757070px]",
+            "space-y-2.5",
+            "w-[calc(100%_-_3757070px)]",
+            "grid-cols-[200rpx_minmax(900rpx,_1fr)_3757070px]",
+            "after:ml-[0.3757070px]",
+            "text-black/[0.37]",
+            "ring-[1.0px]",
+            "group-[:nth-of-type(3)_&]:block",
+            "[@supports(display:grid)]:grid",
+            "[@media(any-hover:hover){&:hover}]:opacity-100",
+            "data-[state=open]:opacity-100",
+            "supports-[display:grid]:grid",
+            "[mask-type:luminance]",
+            "[--watch-hmr-offset:3757070px]"
+          ],
+          "escapedClasses": [
+            "text-_b23_d3757070px_B",
+            "space-y-2_d5",
+            "w-_bcalc_p100_v_-_3757070px_P_B",
+            "grid-cols-_b200rpx_minmax_p900rpx_m_1fr_P_3757070px_B",
+            "after_cml-_b0_d3757070px_B",
+            "text-black_f_b0_d37_B",
+            "ring-_b1_d0px_B",
+            "group-_b_cnth-of-type_p3_P__n_B_cblock",
+            "_b_tsupports_pdisplay_cgrid_P_B_cgrid",
+            "_b_tmedia_pany-hover_chover_P_k_n_chover_K_B_copacity-100",
+            "data-_bstate_zopen_B_copacity-100",
+            "supports-_bdisplay_cgrid_B_cgrid",
+            "_bmask-type_cluminance_B",
+            "_b--watch-hmr-offset_c3757070px_B"
+          ],
+          "rounds": [
+            {
+              "roundName": "baseline-arbitrary",
+              "marker": "tw-watch-mpx-script-baseline-arbitrary-3752230",
+              "classLiteral": "text-[23.3752230px] space-y-2.5 w-[calc(100%_-_3752230px)] grid-cols-[200rpx_minmax(900rpx,_1fr)_3752230px] after:ml-[0.3752230px] text-black/[0.37] ring-[1.0px]",
+              "classTokens": [
+                "text-[23.3752230px]",
+                "space-y-2.5",
+                "w-[calc(100%_-_3752230px)]",
+                "grid-cols-[200rpx_minmax(900rpx,_1fr)_3752230px]",
+                "after:ml-[0.3752230px]",
+                "text-black/[0.37]",
+                "ring-[1.0px]"
+              ],
+              "escapedClasses": [
+                "text-_b23_d3752230px_B",
+                "space-y-2_d5",
+                "w-_bcalc_p100_v_-_3752230px_P_B",
+                "grid-cols-_b200rpx_minmax_p900rpx_m_1fr_P_3752230px_B",
+                "after_cml-_b0_d3752230px_B",
+                "text-black_f_b0_d37_B",
+                "ring-_b1_d0px_B"
+              ],
+              "hotUpdateOutputMs": 242,
+              "hotUpdateEffectiveMs": 242,
+              "rollbackOutputMs": 241,
+              "rollbackEffectiveMs": 242,
+              "totalMs": 484
+            },
+            {
+              "roundName": "complex-corpus",
+              "marker": "tw-watch-mpx-script-complex-corpus-3757070",
+              "classLiteral": "text-[23.3757070px] space-y-2.5 w-[calc(100%_-_3757070px)] grid-cols-[200rpx_minmax(900rpx,_1fr)_3757070px] after:ml-[0.3757070px] text-black/[0.37] ring-[1.0px] group-[:nth-of-type(3)_&]:block [@supports(display:grid)]:grid [@media(any-hover:hover){&:hover}]:opacity-100 data-[state=open]:opacity-100 supports-[display:grid]:grid [mask-type:luminance] [--watch-hmr-offset:3757070px]",
+              "classTokens": [
+                "text-[23.3757070px]",
+                "space-y-2.5",
+                "w-[calc(100%_-_3757070px)]",
+                "grid-cols-[200rpx_minmax(900rpx,_1fr)_3757070px]",
+                "after:ml-[0.3757070px]",
+                "text-black/[0.37]",
+                "ring-[1.0px]",
+                "group-[:nth-of-type(3)_&]:block",
+                "[@supports(display:grid)]:grid",
+                "[@media(any-hover:hover){&:hover}]:opacity-100",
+                "data-[state=open]:opacity-100",
+                "supports-[display:grid]:grid",
+                "[mask-type:luminance]",
+                "[--watch-hmr-offset:3757070px]"
+              ],
+              "escapedClasses": [
+                "text-_b23_d3757070px_B",
+                "space-y-2_d5",
+                "w-_bcalc_p100_v_-_3757070px_P_B",
+                "grid-cols-_b200rpx_minmax_p900rpx_m_1fr_P_3757070px_B",
+                "after_cml-_b0_d3757070px_B",
+                "text-black_f_b0_d37_B",
+                "ring-_b1_d0px_B",
+                "group-_b_cnth-of-type_p3_P__n_B_cblock",
+                "_b_tsupports_pdisplay_cgrid_P_B_cgrid",
+                "_b_tmedia_pany-hover_chover_P_k_n_chover_K_B_copacity-100",
+                "data-_bstate_zopen_B_copacity-100",
+                "supports-_bdisplay_cgrid_B_cgrid",
+                "_bmask-type_cluminance_B",
+                "_b--watch-hmr-offset_c3757070px_B"
+              ],
+              "hotUpdateOutputMs": 242,
+              "hotUpdateEffectiveMs": 242,
+              "rollbackOutputMs": 241,
+              "rollbackEffectiveMs": 241,
+              "totalMs": 483
+            }
+          ],
+          "roundComparison": {
+            "baselineRoundName": "baseline-arbitrary",
+            "candidateRoundName": "complex-corpus",
+            "hotUpdateDeltaMs": 0,
+            "rollbackDeltaMs": -1,
+            "hotUpdateRatio": 1,
+            "rollbackRatio": 0.996
+          },
+          "verifyEscapedIn": [],
+          "verifyClassLiteralIn": [
+            "js"
+          ],
+          "globalStyleOutputs": [
+            "/Users/yangqiming/Documents/GitHub/weapp-tailwindcss/demo/mpx-app/dist/wx/app.wxss"
+          ],
+          "minRequiredGlobalStyleEscapedClasses": 0,
+          "verifiedGlobalStyleEscapedClasses": [],
+          "hotUpdateOutputMs": 242,
+          "hotUpdateEffectiveMs": 242,
+          "rollbackOutputMs": 241,
+          "rollbackEffectiveMs": 241
+        },
+        {
+          "mutationKind": "style",
+          "sourceFile": "/Users/yangqiming/Documents/GitHub/weapp-tailwindcss/demo/mpx-app/src/app.mpx",
+          "outputStyle": "/Users/yangqiming/Documents/GitHub/weapp-tailwindcss/demo/mpx-app/dist/wx/app.wxss",
+          "marker": "tw-watch-style-mpx-376191863",
+          "styleNeedle": ".tw-watch-style-mpx-376191863",
+          "hotUpdateOutputMs": 241,
+          "hotUpdateEffectiveMs": 241,
+          "rollbackOutputMs": 241,
+          "rollbackEffectiveMs": 241,
+          "rollbackNeedleCleared": true
+        }
+      ],
+      "summaryByMutationKind": {
+        "template": {
+          "count": 1,
+          "hotUpdateAvgMs": 242,
+          "hotUpdateMaxMs": 242,
+          "hotUpdateMinMs": 242,
+          "rollbackAvgMs": 241,
+          "rollbackMaxMs": 241,
+          "rollbackMinMs": 241
+        },
+        "script": {
+          "count": 1,
+          "hotUpdateAvgMs": 242,
+          "hotUpdateMaxMs": 242,
+          "hotUpdateMinMs": 242,
+          "rollbackAvgMs": 241,
+          "rollbackMaxMs": 241,
+          "rollbackMinMs": 241
+        },
+        "style": {
+          "count": 1,
+          "hotUpdateAvgMs": 241,
+          "hotUpdateMaxMs": 241,
+          "hotUpdateMinMs": 241,
+          "rollbackAvgMs": 241,
+          "rollbackMaxMs": 241,
+          "rollbackMinMs": 241
+        }
+      },
+      "initialReadyMs": 4577,
+      "hotUpdateOutputMs": 241,
+      "hotUpdateEffectiveMs": 242,
+      "rollbackOutputMs": 241,
+      "rollbackEffectiveMs": 241,
+      "totalMs": 7241
+    }
+  ]
+}

@@ -1,0 +1,551 @@
+{
+  "generatedAt": "2026-02-16T06:45:47.543Z",
+  "repositoryRoot": "weapp-tailwindcss",
+  "options": {
+    "caseName": "uni-app-tailwindcss-v4",
+    "timeoutMs": 240000,
+    "pollMs": 240,
+    "skipBuild": true,
+    "quietSass": true,
+    "maxHotUpdateMs": 15000
+  },
+  "summary": {
+    "count": 1,
+    "hotUpdateAvgMs": 483,
+    "hotUpdateMaxMs": 483,
+    "hotUpdateMinMs": 483,
+    "rollbackAvgMs": 241,
+    "rollbackMaxMs": 241,
+    "rollbackMinMs": 241
+  },
+  "summaryByRound": {
+    "baseline-arbitrary": {
+      "count": 1,
+      "hotUpdateAvgMs": 1206,
+      "hotUpdateMaxMs": 1206,
+      "hotUpdateMinMs": 1206,
+      "rollbackAvgMs": 483,
+      "rollbackMaxMs": 483,
+      "rollbackMinMs": 483
+    },
+    "complex-corpus": {
+      "count": 1,
+      "hotUpdateAvgMs": 483,
+      "hotUpdateMaxMs": 483,
+      "hotUpdateMinMs": 483,
+      "rollbackAvgMs": 241,
+      "rollbackMaxMs": 241,
+      "rollbackMinMs": 241
+    }
+  },
+  "summaryByGroup": {
+    "demo": {
+      "count": 1,
+      "hotUpdateAvgMs": 483,
+      "hotUpdateMaxMs": 483,
+      "hotUpdateMinMs": 483,
+      "rollbackAvgMs": 241,
+      "rollbackMaxMs": 241,
+      "rollbackMinMs": 241
+    },
+    "apps": {
+      "count": 0,
+      "hotUpdateAvgMs": 0,
+      "hotUpdateMaxMs": 0,
+      "hotUpdateMinMs": 0,
+      "rollbackAvgMs": 0,
+      "rollbackMaxMs": 0,
+      "rollbackMinMs": 0
+    }
+  },
+  "summaryByProject": {
+    "demo/uni-app-tailwindcss-v4": {
+      "count": 1,
+      "hotUpdateAvgMs": 483,
+      "hotUpdateMaxMs": 483,
+      "hotUpdateMinMs": 483,
+      "rollbackAvgMs": 241,
+      "rollbackMaxMs": 241,
+      "rollbackMinMs": 241
+    }
+  },
+  "summaryByMutationKind": {
+    "template": {
+      "count": 1,
+      "hotUpdateAvgMs": 483,
+      "hotUpdateMaxMs": 483,
+      "hotUpdateMinMs": 483,
+      "rollbackAvgMs": 241,
+      "rollbackMaxMs": 241,
+      "rollbackMinMs": 241
+    },
+    "script": {
+      "count": 1,
+      "hotUpdateAvgMs": 482,
+      "hotUpdateMaxMs": 482,
+      "hotUpdateMinMs": 482,
+      "rollbackAvgMs": 242,
+      "rollbackMaxMs": 242,
+      "rollbackMinMs": 242
+    },
+    "style": {
+      "count": 1,
+      "hotUpdateAvgMs": 482,
+      "hotUpdateMaxMs": 482,
+      "hotUpdateMinMs": 482,
+      "rollbackAvgMs": 482,
+      "rollbackMaxMs": 482,
+      "rollbackMinMs": 482
+    }
+  },
+  "cases": [
+    {
+      "name": "uni-app-tailwindcss-v4",
+      "label": "demo/uni-app-tailwindcss-v4",
+      "project": "demo/uni-app-tailwindcss-v4",
+      "projectGroup": "demo",
+      "marker": "tw-watch-uni-app-tailwindcss-v4-template-complex-corpus-3391090",
+      "classLiteral": "text-[23.3391090px] space-y-2.5 w-[calc(100%_-_3391090px)] grid-cols-[200rpx_minmax(900rpx,_1fr)_3391090px] after:ml-[0.3391090px] text-black/[0.33] ring-[1.0px] group-[:nth-of-type(3)_&]:block [@supports(display:grid)]:grid [@media(any-hover:hover){&:hover}]:opacity-100 data-[state=open]:opacity-100 supports-[display:grid]:grid [mask-type:luminance] [--watch-hmr-offset:3391090px]",
+      "classTokens": [
+        "text-[23.3391090px]",
+        "space-y-2.5",
+        "w-[calc(100%_-_3391090px)]",
+        "grid-cols-[200rpx_minmax(900rpx,_1fr)_3391090px]",
+        "after:ml-[0.3391090px]",
+        "text-black/[0.33]",
+        "ring-[1.0px]",
+        "group-[:nth-of-type(3)_&]:block",
+        "[@supports(display:grid)]:grid",
+        "[@media(any-hover:hover){&:hover}]:opacity-100",
+        "data-[state=open]:opacity-100",
+        "supports-[display:grid]:grid",
+        "[mask-type:luminance]",
+        "[--watch-hmr-offset:3391090px]"
+      ],
+      "escapedClasses": [
+        "text-_b23_d3391090px_B",
+        "space-y-2_d5",
+        "w-_bcalc_p100_v_-_3391090px_P_B",
+        "grid-cols-_b200rpx_minmax_p900rpx_m_1fr_P_3391090px_B",
+        "after_cml-_b0_d3391090px_B",
+        "text-black_f_b0_d33_B",
+        "ring-_b1_d0px_B",
+        "group-_b_cnth-of-type_p3_P__n_B_cblock",
+        "_b_tsupports_pdisplay_cgrid_P_B_cgrid",
+        "_b_tmedia_pany-hover_chover_P_k_n_chover_K_B_copacity-100",
+        "data-_bstate_zopen_B_copacity-100",
+        "supports-_bdisplay_cgrid_B_cgrid",
+        "_bmask-type_cluminance_B",
+        "_b--watch-hmr-offset_c3391090px_B"
+      ],
+      "rounds": [
+        {
+          "roundName": "baseline-arbitrary",
+          "marker": "tw-watch-uni-app-tailwindcss-v4-template-baseline-arbitrary-3374180",
+          "classLiteral": "text-[23.3374180px] space-y-2.5 w-[calc(100%_-_3374180px)] grid-cols-[200rpx_minmax(900rpx,_1fr)_3374180px] after:ml-[0.3374180px] text-black/[0.33] ring-[1.0px]",
+          "classTokens": [
+            "text-[23.3374180px]",
+            "space-y-2.5",
+            "w-[calc(100%_-_3374180px)]",
+            "grid-cols-[200rpx_minmax(900rpx,_1fr)_3374180px]",
+            "after:ml-[0.3374180px]",
+            "text-black/[0.33]",
+            "ring-[1.0px]"
+          ],
+          "escapedClasses": [
+            "text-_b23_d3374180px_B",
+            "space-y-2_d5",
+            "w-_bcalc_p100_v_-_3374180px_P_B",
+            "grid-cols-_b200rpx_minmax_p900rpx_m_1fr_P_3374180px_B",
+            "after_cml-_b0_d3374180px_B",
+            "text-black_f_b0_d33_B",
+            "ring-_b1_d0px_B"
+          ],
+          "hotUpdateOutputMs": 1206,
+          "hotUpdateEffectiveMs": 1206,
+          "rollbackOutputMs": 483,
+          "rollbackEffectiveMs": 483,
+          "totalMs": 1690
+        },
+        {
+          "roundName": "complex-corpus",
+          "marker": "tw-watch-uni-app-tailwindcss-v4-template-complex-corpus-3391090",
+          "classLiteral": "text-[23.3391090px] space-y-2.5 w-[calc(100%_-_3391090px)] grid-cols-[200rpx_minmax(900rpx,_1fr)_3391090px] after:ml-[0.3391090px] text-black/[0.33] ring-[1.0px] group-[:nth-of-type(3)_&]:block [@supports(display:grid)]:grid [@media(any-hover:hover){&:hover}]:opacity-100 data-[state=open]:opacity-100 supports-[display:grid]:grid [mask-type:luminance] [--watch-hmr-offset:3391090px]",
+          "classTokens": [
+            "text-[23.3391090px]",
+            "space-y-2.5",
+            "w-[calc(100%_-_3391090px)]",
+            "grid-cols-[200rpx_minmax(900rpx,_1fr)_3391090px]",
+            "after:ml-[0.3391090px]",
+            "text-black/[0.33]",
+            "ring-[1.0px]",
+            "group-[:nth-of-type(3)_&]:block",
+            "[@supports(display:grid)]:grid",
+            "[@media(any-hover:hover){&:hover}]:opacity-100",
+            "data-[state=open]:opacity-100",
+            "supports-[display:grid]:grid",
+            "[mask-type:luminance]",
+            "[--watch-hmr-offset:3391090px]"
+          ],
+          "escapedClasses": [
+            "text-_b23_d3391090px_B",
+            "space-y-2_d5",
+            "w-_bcalc_p100_v_-_3391090px_P_B",
+            "grid-cols-_b200rpx_minmax_p900rpx_m_1fr_P_3391090px_B",
+            "after_cml-_b0_d3391090px_B",
+            "text-black_f_b0_d33_B",
+            "ring-_b1_d0px_B",
+            "group-_b_cnth-of-type_p3_P__n_B_cblock",
+            "_b_tsupports_pdisplay_cgrid_P_B_cgrid",
+            "_b_tmedia_pany-hover_chover_P_k_n_chover_K_B_copacity-100",
+            "data-_bstate_zopen_B_copacity-100",
+            "supports-_bdisplay_cgrid_B_cgrid",
+            "_bmask-type_cluminance_B",
+            "_b--watch-hmr-offset_c3391090px_B"
+          ],
+          "hotUpdateOutputMs": 483,
+          "hotUpdateEffectiveMs": 483,
+          "rollbackOutputMs": 241,
+          "rollbackEffectiveMs": 241,
+          "totalMs": 724
+        }
+      ],
+      "roundComparison": {
+        "baselineRoundName": "baseline-arbitrary",
+        "candidateRoundName": "complex-corpus",
+        "hotUpdateDeltaMs": -723,
+        "rollbackDeltaMs": -242,
+        "hotUpdateRatio": 0.4,
+        "rollbackRatio": 0.499
+      },
+      "verifyEscapedIn": [
+        "wxml"
+      ],
+      "verifyClassLiteralIn": [],
+      "globalStyleOutputs": [
+        "/Users/yangqiming/Documents/GitHub/weapp-tailwindcss/demo/uni-app-tailwindcss-v4/dist/dev/mp-weixin/app.wxss"
+      ],
+      "mutationMetrics": [
+        {
+          "mutationKind": "template",
+          "sourceFile": "/Users/yangqiming/Documents/GitHub/weapp-tailwindcss/demo/uni-app-tailwindcss-v4/src/pages/index/index.vue",
+          "marker": "tw-watch-uni-app-tailwindcss-v4-template-complex-corpus-3391090",
+          "classLiteral": "text-[23.3391090px] space-y-2.5 w-[calc(100%_-_3391090px)] grid-cols-[200rpx_minmax(900rpx,_1fr)_3391090px] after:ml-[0.3391090px] text-black/[0.33] ring-[1.0px] group-[:nth-of-type(3)_&]:block [@supports(display:grid)]:grid [@media(any-hover:hover){&:hover}]:opacity-100 data-[state=open]:opacity-100 supports-[display:grid]:grid [mask-type:luminance] [--watch-hmr-offset:3391090px]",
+          "classTokens": [
+            "text-[23.3391090px]",
+            "space-y-2.5",
+            "w-[calc(100%_-_3391090px)]",
+            "grid-cols-[200rpx_minmax(900rpx,_1fr)_3391090px]",
+            "after:ml-[0.3391090px]",
+            "text-black/[0.33]",
+            "ring-[1.0px]",
+            "group-[:nth-of-type(3)_&]:block",
+            "[@supports(display:grid)]:grid",
+            "[@media(any-hover:hover){&:hover}]:opacity-100",
+            "data-[state=open]:opacity-100",
+            "supports-[display:grid]:grid",
+            "[mask-type:luminance]",
+            "[--watch-hmr-offset:3391090px]"
+          ],
+          "escapedClasses": [
+            "text-_b23_d3391090px_B",
+            "space-y-2_d5",
+            "w-_bcalc_p100_v_-_3391090px_P_B",
+            "grid-cols-_b200rpx_minmax_p900rpx_m_1fr_P_3391090px_B",
+            "after_cml-_b0_d3391090px_B",
+            "text-black_f_b0_d33_B",
+            "ring-_b1_d0px_B",
+            "group-_b_cnth-of-type_p3_P__n_B_cblock",
+            "_b_tsupports_pdisplay_cgrid_P_B_cgrid",
+            "_b_tmedia_pany-hover_chover_P_k_n_chover_K_B_copacity-100",
+            "data-_bstate_zopen_B_copacity-100",
+            "supports-_bdisplay_cgrid_B_cgrid",
+            "_bmask-type_cluminance_B",
+            "_b--watch-hmr-offset_c3391090px_B"
+          ],
+          "rounds": [
+            {
+              "roundName": "baseline-arbitrary",
+              "marker": "tw-watch-uni-app-tailwindcss-v4-template-baseline-arbitrary-3374180",
+              "classLiteral": "text-[23.3374180px] space-y-2.5 w-[calc(100%_-_3374180px)] grid-cols-[200rpx_minmax(900rpx,_1fr)_3374180px] after:ml-[0.3374180px] text-black/[0.33] ring-[1.0px]",
+              "classTokens": [
+                "text-[23.3374180px]",
+                "space-y-2.5",
+                "w-[calc(100%_-_3374180px)]",
+                "grid-cols-[200rpx_minmax(900rpx,_1fr)_3374180px]",
+                "after:ml-[0.3374180px]",
+                "text-black/[0.33]",
+                "ring-[1.0px]"
+              ],
+              "escapedClasses": [
+                "text-_b23_d3374180px_B",
+                "space-y-2_d5",
+                "w-_bcalc_p100_v_-_3374180px_P_B",
+                "grid-cols-_b200rpx_minmax_p900rpx_m_1fr_P_3374180px_B",
+                "after_cml-_b0_d3374180px_B",
+                "text-black_f_b0_d33_B",
+                "ring-_b1_d0px_B"
+              ],
+              "hotUpdateOutputMs": 1206,
+              "hotUpdateEffectiveMs": 1206,
+              "rollbackOutputMs": 483,
+              "rollbackEffectiveMs": 483,
+              "totalMs": 1690
+            },
+            {
+              "roundName": "complex-corpus",
+              "marker": "tw-watch-uni-app-tailwindcss-v4-template-complex-corpus-3391090",
+              "classLiteral": "text-[23.3391090px] space-y-2.5 w-[calc(100%_-_3391090px)] grid-cols-[200rpx_minmax(900rpx,_1fr)_3391090px] after:ml-[0.3391090px] text-black/[0.33] ring-[1.0px] group-[:nth-of-type(3)_&]:block [@supports(display:grid)]:grid [@media(any-hover:hover){&:hover}]:opacity-100 data-[state=open]:opacity-100 supports-[display:grid]:grid [mask-type:luminance] [--watch-hmr-offset:3391090px]",
+              "classTokens": [
+                "text-[23.3391090px]",
+                "space-y-2.5",
+                "w-[calc(100%_-_3391090px)]",
+                "grid-cols-[200rpx_minmax(900rpx,_1fr)_3391090px]",
+                "after:ml-[0.3391090px]",
+                "text-black/[0.33]",
+                "ring-[1.0px]",
+                "group-[:nth-of-type(3)_&]:block",
+                "[@supports(display:grid)]:grid",
+                "[@media(any-hover:hover){&:hover}]:opacity-100",
+                "data-[state=open]:opacity-100",
+                "supports-[display:grid]:grid",
+                "[mask-type:luminance]",
+                "[--watch-hmr-offset:3391090px]"
+              ],
+              "escapedClasses": [
+                "text-_b23_d3391090px_B",
+                "space-y-2_d5",
+                "w-_bcalc_p100_v_-_3391090px_P_B",
+                "grid-cols-_b200rpx_minmax_p900rpx_m_1fr_P_3391090px_B",
+                "after_cml-_b0_d3391090px_B",
+                "text-black_f_b0_d33_B",
+                "ring-_b1_d0px_B",
+                "group-_b_cnth-of-type_p3_P__n_B_cblock",
+                "_b_tsupports_pdisplay_cgrid_P_B_cgrid",
+                "_b_tmedia_pany-hover_chover_P_k_n_chover_K_B_copacity-100",
+                "data-_bstate_zopen_B_copacity-100",
+                "supports-_bdisplay_cgrid_B_cgrid",
+                "_bmask-type_cluminance_B",
+                "_b--watch-hmr-offset_c3391090px_B"
+              ],
+              "hotUpdateOutputMs": 483,
+              "hotUpdateEffectiveMs": 483,
+              "rollbackOutputMs": 241,
+              "rollbackEffectiveMs": 241,
+              "totalMs": 724
+            }
+          ],
+          "roundComparison": {
+            "baselineRoundName": "baseline-arbitrary",
+            "candidateRoundName": "complex-corpus",
+            "hotUpdateDeltaMs": -723,
+            "rollbackDeltaMs": -242,
+            "hotUpdateRatio": 0.4,
+            "rollbackRatio": 0.499
+          },
+          "verifyEscapedIn": [
+            "wxml"
+          ],
+          "verifyClassLiteralIn": [],
+          "globalStyleOutputs": [
+            "/Users/yangqiming/Documents/GitHub/weapp-tailwindcss/demo/uni-app-tailwindcss-v4/dist/dev/mp-weixin/app.wxss"
+          ],
+          "minRequiredGlobalStyleEscapedClasses": 0,
+          "verifiedGlobalStyleEscapedClasses": [
+            "text-_b23_d3391090px_B",
+            "space-y-2_d5",
+            "w-_bcalc_p100_v_-_3391090px_P_B"
+          ],
+          "hotUpdateOutputMs": 483,
+          "hotUpdateEffectiveMs": 483,
+          "rollbackOutputMs": 241,
+          "rollbackEffectiveMs": 241
+        },
+        {
+          "mutationKind": "script",
+          "sourceFile": "/Users/yangqiming/Documents/GitHub/weapp-tailwindcss/demo/uni-app-tailwindcss-v4/src/pages/index/index.vue",
+          "marker": "tw-watch-uni-app-tailwindcss-v4-script-complex-corpus-3408000",
+          "classLiteral": "text-[23.3408000px] space-y-2.5 w-[calc(100%_-_3408000px)] grid-cols-[200rpx_minmax(900rpx,_1fr)_3408000px] after:ml-[0.3408000px] text-black/[0.34] ring-[1.0px] group-[:nth-of-type(3)_&]:block [@supports(display:grid)]:grid [@media(any-hover:hover){&:hover}]:opacity-100 data-[state=open]:opacity-100 supports-[display:grid]:grid [mask-type:luminance] [--watch-hmr-offset:3408000px]",
+          "classTokens": [
+            "text-[23.3408000px]",
+            "space-y-2.5",
+            "w-[calc(100%_-_3408000px)]",
+            "grid-cols-[200rpx_minmax(900rpx,_1fr)_3408000px]",
+            "after:ml-[0.3408000px]",
+            "text-black/[0.34]",
+            "ring-[1.0px]",
+            "group-[:nth-of-type(3)_&]:block",
+            "[@supports(display:grid)]:grid",
+            "[@media(any-hover:hover){&:hover}]:opacity-100",
+            "data-[state=open]:opacity-100",
+            "supports-[display:grid]:grid",
+            "[mask-type:luminance]",
+            "[--watch-hmr-offset:3408000px]"
+          ],
+          "escapedClasses": [
+            "text-_b23_d3408000px_B",
+            "space-y-2_d5",
+            "w-_bcalc_p100_v_-_3408000px_P_B",
+            "grid-cols-_b200rpx_minmax_p900rpx_m_1fr_P_3408000px_B",
+            "after_cml-_b0_d3408000px_B",
+            "text-black_f_b0_d34_B",
+            "ring-_b1_d0px_B",
+            "group-_b_cnth-of-type_p3_P__n_B_cblock",
+            "_b_tsupports_pdisplay_cgrid_P_B_cgrid",
+            "_b_tmedia_pany-hover_chover_P_k_n_chover_K_B_copacity-100",
+            "data-_bstate_zopen_B_copacity-100",
+            "supports-_bdisplay_cgrid_B_cgrid",
+            "_bmask-type_cluminance_B",
+            "_b--watch-hmr-offset_c3408000px_B"
+          ],
+          "rounds": [
+            {
+              "roundName": "baseline-arbitrary",
+              "marker": "tw-watch-uni-app-tailwindcss-v4-script-baseline-arbitrary-3398330",
+              "classLiteral": "text-[23.3398330px] space-y-2.5 w-[calc(100%_-_3398330px)] grid-cols-[200rpx_minmax(900rpx,_1fr)_3398330px] after:ml-[0.3398330px] text-black/[0.33] ring-[1.0px]",
+              "classTokens": [
+                "text-[23.3398330px]",
+                "space-y-2.5",
+                "w-[calc(100%_-_3398330px)]",
+                "grid-cols-[200rpx_minmax(900rpx,_1fr)_3398330px]",
+                "after:ml-[0.3398330px]",
+                "text-black/[0.33]",
+                "ring-[1.0px]"
+              ],
+              "escapedClasses": [
+                "text-_b23_d3398330px_B",
+                "space-y-2_d5",
+                "w-_bcalc_p100_v_-_3398330px_P_B",
+                "grid-cols-_b200rpx_minmax_p900rpx_m_1fr_P_3398330px_B",
+                "after_cml-_b0_d3398330px_B",
+                "text-black_f_b0_d33_B",
+                "ring-_b1_d0px_B"
+              ],
+              "hotUpdateOutputMs": 482,
+              "hotUpdateEffectiveMs": 483,
+              "rollbackOutputMs": 483,
+              "rollbackEffectiveMs": 483,
+              "totalMs": 966
+            },
+            {
+              "roundName": "complex-corpus",
+              "marker": "tw-watch-uni-app-tailwindcss-v4-script-complex-corpus-3408000",
+              "classLiteral": "text-[23.3408000px] space-y-2.5 w-[calc(100%_-_3408000px)] grid-cols-[200rpx_minmax(900rpx,_1fr)_3408000px] after:ml-[0.3408000px] text-black/[0.34] ring-[1.0px] group-[:nth-of-type(3)_&]:block [@supports(display:grid)]:grid [@media(any-hover:hover){&:hover}]:opacity-100 data-[state=open]:opacity-100 supports-[display:grid]:grid [mask-type:luminance] [--watch-hmr-offset:3408000px]",
+              "classTokens": [
+                "text-[23.3408000px]",
+                "space-y-2.5",
+                "w-[calc(100%_-_3408000px)]",
+                "grid-cols-[200rpx_minmax(900rpx,_1fr)_3408000px]",
+                "after:ml-[0.3408000px]",
+                "text-black/[0.34]",
+                "ring-[1.0px]",
+                "group-[:nth-of-type(3)_&]:block",
+                "[@supports(display:grid)]:grid",
+                "[@media(any-hover:hover){&:hover}]:opacity-100",
+                "data-[state=open]:opacity-100",
+                "supports-[display:grid]:grid",
+                "[mask-type:luminance]",
+                "[--watch-hmr-offset:3408000px]"
+              ],
+              "escapedClasses": [
+                "text-_b23_d3408000px_B",
+                "space-y-2_d5",
+                "w-_bcalc_p100_v_-_3408000px_P_B",
+                "grid-cols-_b200rpx_minmax_p900rpx_m_1fr_P_3408000px_B",
+                "after_cml-_b0_d3408000px_B",
+                "text-black_f_b0_d34_B",
+                "ring-_b1_d0px_B",
+                "group-_b_cnth-of-type_p3_P__n_B_cblock",
+                "_b_tsupports_pdisplay_cgrid_P_B_cgrid",
+                "_b_tmedia_pany-hover_chover_P_k_n_chover_K_B_copacity-100",
+                "data-_bstate_zopen_B_copacity-100",
+                "supports-_bdisplay_cgrid_B_cgrid",
+                "_bmask-type_cluminance_B",
+                "_b--watch-hmr-offset_c3408000px_B"
+              ],
+              "hotUpdateOutputMs": 481,
+              "hotUpdateEffectiveMs": 482,
+              "rollbackOutputMs": 242,
+              "rollbackEffectiveMs": 242,
+              "totalMs": 724
+            }
+          ],
+          "roundComparison": {
+            "baselineRoundName": "baseline-arbitrary",
+            "candidateRoundName": "complex-corpus",
+            "hotUpdateDeltaMs": -1,
+            "rollbackDeltaMs": -241,
+            "hotUpdateRatio": 0.998,
+            "rollbackRatio": 0.501
+          },
+          "verifyEscapedIn": [],
+          "verifyClassLiteralIn": [
+            "js"
+          ],
+          "globalStyleOutputs": [
+            "/Users/yangqiming/Documents/GitHub/weapp-tailwindcss/demo/uni-app-tailwindcss-v4/dist/dev/mp-weixin/app.wxss"
+          ],
+          "minRequiredGlobalStyleEscapedClasses": 0,
+          "verifiedGlobalStyleEscapedClasses": [
+            "text-_b23_d3398330px_B",
+            "space-y-2_d5",
+            "w-_bcalc_p100_v_-_3398330px_P_B",
+            "text-_b23_d3408000px_B",
+            "w-_bcalc_p100_v_-_3408000px_P_B"
+          ],
+          "hotUpdateOutputMs": 481,
+          "hotUpdateEffectiveMs": 482,
+          "rollbackOutputMs": 242,
+          "rollbackEffectiveMs": 242
+        },
+        {
+          "mutationKind": "style",
+          "sourceFile": "/Users/yangqiming/Documents/GitHub/weapp-tailwindcss/demo/uni-app-tailwindcss-v4/src/main.css",
+          "outputStyle": "/Users/yangqiming/Documents/GitHub/weapp-tailwindcss/demo/uni-app-tailwindcss-v4/dist/dev/mp-weixin/app.wxss",
+          "marker": "tw-watch-style-uni-app-tailwindcss-v4-341524008",
+          "styleNeedle": ".tw-watch-style-uni-app-tailwindcss-v4-341524008",
+          "hotUpdateOutputMs": 481,
+          "hotUpdateEffectiveMs": 482,
+          "rollbackOutputMs": 482,
+          "rollbackEffectiveMs": 482,
+          "rollbackNeedleCleared": true
+        }
+      ],
+      "summaryByMutationKind": {
+        "template": {
+          "count": 1,
+          "hotUpdateAvgMs": 483,
+          "hotUpdateMaxMs": 483,
+          "hotUpdateMinMs": 483,
+          "rollbackAvgMs": 241,
+          "rollbackMaxMs": 241,
+          "rollbackMinMs": 241
+        },
+        "script": {
+          "count": 1,
+          "hotUpdateAvgMs": 482,
+          "hotUpdateMaxMs": 482,
+          "hotUpdateMinMs": 482,
+          "rollbackAvgMs": 242,
+          "rollbackMaxMs": 242,
+          "rollbackMinMs": 242
+        },
+        "style": {
+          "count": 1,
+          "hotUpdateAvgMs": 482,
+          "hotUpdateMaxMs": 482,
+          "hotUpdateMinMs": 482,
+          "rollbackAvgMs": 482,
+          "rollbackMaxMs": 482,
+          "rollbackMinMs": 482
+        }
+      },
+      "initialReadyMs": 2171,
+      "hotUpdateOutputMs": 483,
+      "hotUpdateEffectiveMs": 483,
+      "rollbackOutputMs": 241,
+      "rollbackEffectiveMs": 241,
+      "totalMs": 7245
+    }
+  ]
+}

@@ -1,0 +1,634 @@
+{
+  "generatedAt": "2026-02-16T06:59:12.013Z",
+  "repositoryRoot": "weapp-tailwindcss",
+  "options": {
+    "caseName": "mina",
+    "timeoutMs": 240000,
+    "pollMs": 240,
+    "skipBuild": true,
+    "quietSass": true,
+    "maxHotUpdateMs": 15000
+  },
+  "summary": {
+    "count": 1,
+    "hotUpdateAvgMs": 242,
+    "hotUpdateMaxMs": 242,
+    "hotUpdateMinMs": 242,
+    "rollbackAvgMs": 241,
+    "rollbackMaxMs": 241,
+    "rollbackMinMs": 241
+  },
+  "summaryByRound": {
+    "baseline-arbitrary": {
+      "count": 1,
+      "hotUpdateAvgMs": 242,
+      "hotUpdateMaxMs": 242,
+      "hotUpdateMinMs": 242,
+      "rollbackAvgMs": 241,
+      "rollbackMaxMs": 241,
+      "rollbackMinMs": 241
+    },
+    "complex-corpus": {
+      "count": 1,
+      "hotUpdateAvgMs": 242,
+      "hotUpdateMaxMs": 242,
+      "hotUpdateMinMs": 242,
+      "rollbackAvgMs": 241,
+      "rollbackMaxMs": 241,
+      "rollbackMinMs": 241
+    }
+  },
+  "summaryByGroup": {
+    "demo": {
+      "count": 1,
+      "hotUpdateAvgMs": 242,
+      "hotUpdateMaxMs": 242,
+      "hotUpdateMinMs": 242,
+      "rollbackAvgMs": 241,
+      "rollbackMaxMs": 241,
+      "rollbackMinMs": 241
+    },
+    "apps": {
+      "count": 0,
+      "hotUpdateAvgMs": 0,
+      "hotUpdateMaxMs": 0,
+      "hotUpdateMinMs": 0,
+      "rollbackAvgMs": 0,
+      "rollbackMaxMs": 0,
+      "rollbackMinMs": 0
+    }
+  },
+  "summaryByProject": {
+    "demo/native-mina": {
+      "count": 1,
+      "hotUpdateAvgMs": 242,
+      "hotUpdateMaxMs": 242,
+      "hotUpdateMinMs": 242,
+      "rollbackAvgMs": 241,
+      "rollbackMaxMs": 241,
+      "rollbackMinMs": 241
+    }
+  },
+  "summaryByMutationKind": {
+    "template": {
+      "count": 1,
+      "hotUpdateAvgMs": 242,
+      "hotUpdateMaxMs": 242,
+      "hotUpdateMinMs": 242,
+      "rollbackAvgMs": 241,
+      "rollbackMaxMs": 241,
+      "rollbackMinMs": 241
+    },
+    "script": {
+      "count": 1,
+      "hotUpdateAvgMs": 242,
+      "hotUpdateMaxMs": 242,
+      "hotUpdateMinMs": 242,
+      "rollbackAvgMs": 241,
+      "rollbackMaxMs": 241,
+      "rollbackMinMs": 241
+    },
+    "style": {
+      "count": 1,
+      "hotUpdateAvgMs": 242,
+      "hotUpdateMaxMs": 242,
+      "hotUpdateMinMs": 242,
+      "rollbackAvgMs": 240,
+      "rollbackMaxMs": 240,
+      "rollbackMinMs": 240
+    }
+  },
+  "cases": [
+    {
+      "name": "mina",
+      "label": "demo/native-mina",
+      "project": "demo/native-mina",
+      "projectGroup": "demo",
+      "marker": "tw-watch-mina-template-complex-corpus-1499760",
+      "classLiteral": "text-[23.1499760px] space-y-2.5 w-[calc(100%_-_1499760px)] grid-cols-[200rpx_minmax(900rpx,_1fr)_1499760px] after:ml-[0.1499760px] text-black/[0.14] ring-[1.0px] !mt-2 -translate-y-1 max-[712px]:p-[13px] bg-[rgb(12,34,56)] grid-rows-[auto_minmax(0,_1fr)] group-[:nth-of-type(3)_&]:block [@supports(display:grid)]:grid supports-[backdrop-filter:blur(2px)]:backdrop-blur-[2px] [@media(any-hover:hover){&:hover}]:opacity-100 data-[state=open]:opacity-100 supports-[display:grid]:grid [mask-type:luminance] [--watch-hmr-offset:1499760px]",
+      "classTokens": [
+        "text-[23.1499760px]",
+        "space-y-2.5",
+        "w-[calc(100%_-_1499760px)]",
+        "grid-cols-[200rpx_minmax(900rpx,_1fr)_1499760px]",
+        "after:ml-[0.1499760px]",
+        "text-black/[0.14]",
+        "ring-[1.0px]",
+        "!mt-2",
+        "-translate-y-1",
+        "max-[712px]:p-[13px]",
+        "bg-[rgb(12,34,56)]",
+        "grid-rows-[auto_minmax(0,_1fr)]",
+        "group-[:nth-of-type(3)_&]:block",
+        "[@supports(display:grid)]:grid",
+        "supports-[backdrop-filter:blur(2px)]:backdrop-blur-[2px]",
+        "[@media(any-hover:hover){&:hover}]:opacity-100",
+        "data-[state=open]:opacity-100",
+        "supports-[display:grid]:grid",
+        "[mask-type:luminance]",
+        "[--watch-hmr-offset:1499760px]"
+      ],
+      "escapedClasses": [
+        "text-_b23_d1499760px_B",
+        "space-y-2_d5",
+        "w-_bcalc_p100_v_-_1499760px_P_B",
+        "grid-cols-_b200rpx_minmax_p900rpx_m_1fr_P_1499760px_B",
+        "after_cml-_b0_d1499760px_B",
+        "text-black_f_b0_d14_B",
+        "ring-_b1_d0px_B",
+        "_emt-2",
+        "-translate-y-1",
+        "max-_b712px_B_cp-_b13px_B",
+        "bg-_brgb_p12_m34_m56_P_B",
+        "grid-rows-_bauto_minmax_p0_m_1fr_P_B",
+        "group-_b_cnth-of-type_p3_P__n_B_cblock",
+        "_b_tsupports_pdisplay_cgrid_P_B_cgrid",
+        "supports-_bbackdrop-filter_cblur_p2px_P_B_cbackdrop-blur-_b2px_B",
+        "_b_tmedia_pany-hover_chover_P_k_n_chover_K_B_copacity-100",
+        "data-_bstate_zopen_B_copacity-100",
+        "supports-_bdisplay_cgrid_B_cgrid",
+        "_bmask-type_cluminance_B",
+        "_b--watch-hmr-offset_c1499760px_B"
+      ],
+      "rounds": [
+        {
+          "roundName": "baseline-arbitrary",
+          "marker": "tw-watch-mina-template-baseline-arbitrary-1494920",
+          "classLiteral": "text-[23.1494920px] space-y-2.5 w-[calc(100%_-_1494920px)] grid-cols-[200rpx_minmax(900rpx,_1fr)_1494920px] after:ml-[0.1494920px] text-black/[0.14] ring-[1.0px]",
+          "classTokens": [
+            "text-[23.1494920px]",
+            "space-y-2.5",
+            "w-[calc(100%_-_1494920px)]",
+            "grid-cols-[200rpx_minmax(900rpx,_1fr)_1494920px]",
+            "after:ml-[0.1494920px]",
+            "text-black/[0.14]",
+            "ring-[1.0px]"
+          ],
+          "escapedClasses": [
+            "text-_b23_d1494920px_B",
+            "space-y-2_d5",
+            "w-_bcalc_p100_v_-_1494920px_P_B",
+            "grid-cols-_b200rpx_minmax_p900rpx_m_1fr_P_1494920px_B",
+            "after_cml-_b0_d1494920px_B",
+            "text-black_f_b0_d14_B",
+            "ring-_b1_d0px_B"
+          ],
+          "hotUpdateOutputMs": 242,
+          "hotUpdateEffectiveMs": 242,
+          "rollbackOutputMs": 240,
+          "rollbackEffectiveMs": 241,
+          "totalMs": 484
+        },
+        {
+          "roundName": "complex-corpus",
+          "marker": "tw-watch-mina-template-complex-corpus-1499760",
+          "classLiteral": "text-[23.1499760px] space-y-2.5 w-[calc(100%_-_1499760px)] grid-cols-[200rpx_minmax(900rpx,_1fr)_1499760px] after:ml-[0.1499760px] text-black/[0.14] ring-[1.0px] !mt-2 -translate-y-1 max-[712px]:p-[13px] bg-[rgb(12,34,56)] grid-rows-[auto_minmax(0,_1fr)] group-[:nth-of-type(3)_&]:block [@supports(display:grid)]:grid supports-[backdrop-filter:blur(2px)]:backdrop-blur-[2px] [@media(any-hover:hover){&:hover}]:opacity-100 data-[state=open]:opacity-100 supports-[display:grid]:grid [mask-type:luminance] [--watch-hmr-offset:1499760px]",
+          "classTokens": [
+            "text-[23.1499760px]",
+            "space-y-2.5",
+            "w-[calc(100%_-_1499760px)]",
+            "grid-cols-[200rpx_minmax(900rpx,_1fr)_1499760px]",
+            "after:ml-[0.1499760px]",
+            "text-black/[0.14]",
+            "ring-[1.0px]",
+            "!mt-2",
+            "-translate-y-1",
+            "max-[712px]:p-[13px]",
+            "bg-[rgb(12,34,56)]",
+            "grid-rows-[auto_minmax(0,_1fr)]",
+            "group-[:nth-of-type(3)_&]:block",
+            "[@supports(display:grid)]:grid",
+            "supports-[backdrop-filter:blur(2px)]:backdrop-blur-[2px]",
+            "[@media(any-hover:hover){&:hover}]:opacity-100",
+            "data-[state=open]:opacity-100",
+            "supports-[display:grid]:grid",
+            "[mask-type:luminance]",
+            "[--watch-hmr-offset:1499760px]"
+          ],
+          "escapedClasses": [
+            "text-_b23_d1499760px_B",
+            "space-y-2_d5",
+            "w-_bcalc_p100_v_-_1499760px_P_B",
+            "grid-cols-_b200rpx_minmax_p900rpx_m_1fr_P_1499760px_B",
+            "after_cml-_b0_d1499760px_B",
+            "text-black_f_b0_d14_B",
+            "ring-_b1_d0px_B",
+            "_emt-2",
+            "-translate-y-1",
+            "max-_b712px_B_cp-_b13px_B",
+            "bg-_brgb_p12_m34_m56_P_B",
+            "grid-rows-_bauto_minmax_p0_m_1fr_P_B",
+            "group-_b_cnth-of-type_p3_P__n_B_cblock",
+            "_b_tsupports_pdisplay_cgrid_P_B_cgrid",
+            "supports-_bbackdrop-filter_cblur_p2px_P_B_cbackdrop-blur-_b2px_B",
+            "_b_tmedia_pany-hover_chover_P_k_n_chover_K_B_copacity-100",
+            "data-_bstate_zopen_B_copacity-100",
+            "supports-_bdisplay_cgrid_B_cgrid",
+            "_bmask-type_cluminance_B",
+            "_b--watch-hmr-offset_c1499760px_B"
+          ],
+          "hotUpdateOutputMs": 242,
+          "hotUpdateEffectiveMs": 242,
+          "rollbackOutputMs": 241,
+          "rollbackEffectiveMs": 241,
+          "totalMs": 484
+        }
+      ],
+      "roundComparison": {
+        "baselineRoundName": "baseline-arbitrary",
+        "candidateRoundName": "complex-corpus",
+        "hotUpdateDeltaMs": 0,
+        "rollbackDeltaMs": 0,
+        "hotUpdateRatio": 1,
+        "rollbackRatio": 1
+      },
+      "verifyEscapedIn": [
+        "wxml"
+      ],
+      "verifyClassLiteralIn": [],
+      "globalStyleOutputs": [
+        "/Users/yangqiming/Documents/GitHub/weapp-tailwindcss/demo/native-mina/dist/app.wxss"
+      ],
+      "mutationMetrics": [
+        {
+          "mutationKind": "template",
+          "sourceFile": "/Users/yangqiming/Documents/GitHub/weapp-tailwindcss/demo/native-mina/src/pages/index/index.wxml",
+          "marker": "tw-watch-mina-template-complex-corpus-1499760",
+          "classLiteral": "text-[23.1499760px] space-y-2.5 w-[calc(100%_-_1499760px)] grid-cols-[200rpx_minmax(900rpx,_1fr)_1499760px] after:ml-[0.1499760px] text-black/[0.14] ring-[1.0px] !mt-2 -translate-y-1 max-[712px]:p-[13px] bg-[rgb(12,34,56)] grid-rows-[auto_minmax(0,_1fr)] group-[:nth-of-type(3)_&]:block [@supports(display:grid)]:grid supports-[backdrop-filter:blur(2px)]:backdrop-blur-[2px] [@media(any-hover:hover){&:hover}]:opacity-100 data-[state=open]:opacity-100 supports-[display:grid]:grid [mask-type:luminance] [--watch-hmr-offset:1499760px]",
+          "classTokens": [
+            "text-[23.1499760px]",
+            "space-y-2.5",
+            "w-[calc(100%_-_1499760px)]",
+            "grid-cols-[200rpx_minmax(900rpx,_1fr)_1499760px]",
+            "after:ml-[0.1499760px]",
+            "text-black/[0.14]",
+            "ring-[1.0px]",
+            "!mt-2",
+            "-translate-y-1",
+            "max-[712px]:p-[13px]",
+            "bg-[rgb(12,34,56)]",
+            "grid-rows-[auto_minmax(0,_1fr)]",
+            "group-[:nth-of-type(3)_&]:block",
+            "[@supports(display:grid)]:grid",
+            "supports-[backdrop-filter:blur(2px)]:backdrop-blur-[2px]",
+            "[@media(any-hover:hover){&:hover}]:opacity-100",
+            "data-[state=open]:opacity-100",
+            "supports-[display:grid]:grid",
+            "[mask-type:luminance]",
+            "[--watch-hmr-offset:1499760px]"
+          ],
+          "escapedClasses": [
+            "text-_b23_d1499760px_B",
+            "space-y-2_d5",
+            "w-_bcalc_p100_v_-_1499760px_P_B",
+            "grid-cols-_b200rpx_minmax_p900rpx_m_1fr_P_1499760px_B",
+            "after_cml-_b0_d1499760px_B",
+            "text-black_f_b0_d14_B",
+            "ring-_b1_d0px_B",
+            "_emt-2",
+            "-translate-y-1",
+            "max-_b712px_B_cp-_b13px_B",
+            "bg-_brgb_p12_m34_m56_P_B",
+            "grid-rows-_bauto_minmax_p0_m_1fr_P_B",
+            "group-_b_cnth-of-type_p3_P__n_B_cblock",
+            "_b_tsupports_pdisplay_cgrid_P_B_cgrid",
+            "supports-_bbackdrop-filter_cblur_p2px_P_B_cbackdrop-blur-_b2px_B",
+            "_b_tmedia_pany-hover_chover_P_k_n_chover_K_B_copacity-100",
+            "data-_bstate_zopen_B_copacity-100",
+            "supports-_bdisplay_cgrid_B_cgrid",
+            "_bmask-type_cluminance_B",
+            "_b--watch-hmr-offset_c1499760px_B"
+          ],
+          "rounds": [
+            {
+              "roundName": "baseline-arbitrary",
+              "marker": "tw-watch-mina-template-baseline-arbitrary-1494920",
+              "classLiteral": "text-[23.1494920px] space-y-2.5 w-[calc(100%_-_1494920px)] grid-cols-[200rpx_minmax(900rpx,_1fr)_1494920px] after:ml-[0.1494920px] text-black/[0.14] ring-[1.0px]",
+              "classTokens": [
+                "text-[23.1494920px]",
+                "space-y-2.5",
+                "w-[calc(100%_-_1494920px)]",
+                "grid-cols-[200rpx_minmax(900rpx,_1fr)_1494920px]",
+                "after:ml-[0.1494920px]",
+                "text-black/[0.14]",
+                "ring-[1.0px]"
+              ],
+              "escapedClasses": [
+                "text-_b23_d1494920px_B",
+                "space-y-2_d5",
+                "w-_bcalc_p100_v_-_1494920px_P_B",
+                "grid-cols-_b200rpx_minmax_p900rpx_m_1fr_P_1494920px_B",
+                "after_cml-_b0_d1494920px_B",
+                "text-black_f_b0_d14_B",
+                "ring-_b1_d0px_B"
+              ],
+              "hotUpdateOutputMs": 242,
+              "hotUpdateEffectiveMs": 242,
+              "rollbackOutputMs": 240,
+              "rollbackEffectiveMs": 241,
+              "totalMs": 484
+            },
+            {
+              "roundName": "complex-corpus",
+              "marker": "tw-watch-mina-template-complex-corpus-1499760",
+              "classLiteral": "text-[23.1499760px] space-y-2.5 w-[calc(100%_-_1499760px)] grid-cols-[200rpx_minmax(900rpx,_1fr)_1499760px] after:ml-[0.1499760px] text-black/[0.14] ring-[1.0px] !mt-2 -translate-y-1 max-[712px]:p-[13px] bg-[rgb(12,34,56)] grid-rows-[auto_minmax(0,_1fr)] group-[:nth-of-type(3)_&]:block [@supports(display:grid)]:grid supports-[backdrop-filter:blur(2px)]:backdrop-blur-[2px] [@media(any-hover:hover){&:hover}]:opacity-100 data-[state=open]:opacity-100 supports-[display:grid]:grid [mask-type:luminance] [--watch-hmr-offset:1499760px]",
+              "classTokens": [
+                "text-[23.1499760px]",
+                "space-y-2.5",
+                "w-[calc(100%_-_1499760px)]",
+                "grid-cols-[200rpx_minmax(900rpx,_1fr)_1499760px]",
+                "after:ml-[0.1499760px]",
+                "text-black/[0.14]",
+                "ring-[1.0px]",
+                "!mt-2",
+                "-translate-y-1",
+                "max-[712px]:p-[13px]",
+                "bg-[rgb(12,34,56)]",
+                "grid-rows-[auto_minmax(0,_1fr)]",
+                "group-[:nth-of-type(3)_&]:block",
+                "[@supports(display:grid)]:grid",
+                "supports-[backdrop-filter:blur(2px)]:backdrop-blur-[2px]",
+                "[@media(any-hover:hover){&:hover}]:opacity-100",
+                "data-[state=open]:opacity-100",
+                "supports-[display:grid]:grid",
+                "[mask-type:luminance]",
+                "[--watch-hmr-offset:1499760px]"
+              ],
+              "escapedClasses": [
+                "text-_b23_d1499760px_B",
+                "space-y-2_d5",
+                "w-_bcalc_p100_v_-_1499760px_P_B",
+                "grid-cols-_b200rpx_minmax_p900rpx_m_1fr_P_1499760px_B",
+                "after_cml-_b0_d1499760px_B",
+                "text-black_f_b0_d14_B",
+                "ring-_b1_d0px_B",
+                "_emt-2",
+                "-translate-y-1",
+                "max-_b712px_B_cp-_b13px_B",
+                "bg-_brgb_p12_m34_m56_P_B",
+                "grid-rows-_bauto_minmax_p0_m_1fr_P_B",
+                "group-_b_cnth-of-type_p3_P__n_B_cblock",
+                "_b_tsupports_pdisplay_cgrid_P_B_cgrid",
+                "supports-_bbackdrop-filter_cblur_p2px_P_B_cbackdrop-blur-_b2px_B",
+                "_b_tmedia_pany-hover_chover_P_k_n_chover_K_B_copacity-100",
+                "data-_bstate_zopen_B_copacity-100",
+                "supports-_bdisplay_cgrid_B_cgrid",
+                "_bmask-type_cluminance_B",
+                "_b--watch-hmr-offset_c1499760px_B"
+              ],
+              "hotUpdateOutputMs": 242,
+              "hotUpdateEffectiveMs": 242,
+              "rollbackOutputMs": 241,
+              "rollbackEffectiveMs": 241,
+              "totalMs": 484
+            }
+          ],
+          "roundComparison": {
+            "baselineRoundName": "baseline-arbitrary",
+            "candidateRoundName": "complex-corpus",
+            "hotUpdateDeltaMs": 0,
+            "rollbackDeltaMs": 0,
+            "hotUpdateRatio": 1,
+            "rollbackRatio": 1
+          },
+          "verifyEscapedIn": [
+            "wxml"
+          ],
+          "verifyClassLiteralIn": [],
+          "globalStyleOutputs": [
+            "/Users/yangqiming/Documents/GitHub/weapp-tailwindcss/demo/native-mina/dist/app.wxss"
+          ],
+          "minRequiredGlobalStyleEscapedClasses": 1,
+          "verifiedGlobalStyleEscapedClasses": [
+            "text-_b23_d1494920px_B",
+            "space-y-2_d5",
+            "w-_bcalc_p100_v_-_1494920px_P_B",
+            "text-_b23_d1499760px_B",
+            "w-_bcalc_p100_v_-_1499760px_P_B"
+          ],
+          "hotUpdateOutputMs": 242,
+          "hotUpdateEffectiveMs": 242,
+          "rollbackOutputMs": 241,
+          "rollbackEffectiveMs": 241
+        },
+        {
+          "mutationKind": "script",
+          "sourceFile": "/Users/yangqiming/Documents/GitHub/weapp-tailwindcss/demo/native-mina/src/pages/index/index.js",
+          "marker": "tw-watch-mina-script-complex-corpus-1509440",
+          "classLiteral": "text-[23.1509440px] space-y-2.5 w-[calc(100%_-_1509440px)] grid-cols-[200rpx_minmax(900rpx,_1fr)_1509440px] after:ml-[0.1509440px] text-black/[0.15] ring-[1.0px] !mt-2 -translate-y-1 max-[712px]:p-[13px] bg-[rgb(12,34,56)] grid-rows-[auto_minmax(0,_1fr)] group-[:nth-of-type(3)_&]:block [@supports(display:grid)]:grid supports-[backdrop-filter:blur(2px)]:backdrop-blur-[2px] [@media(any-hover:hover){&:hover}]:opacity-100 data-[state=open]:opacity-100 supports-[display:grid]:grid [mask-type:luminance] [--watch-hmr-offset:1509440px]",
+          "classTokens": [
+            "text-[23.1509440px]",
+            "space-y-2.5",
+            "w-[calc(100%_-_1509440px)]",
+            "grid-cols-[200rpx_minmax(900rpx,_1fr)_1509440px]",
+            "after:ml-[0.1509440px]",
+            "text-black/[0.15]",
+            "ring-[1.0px]",
+            "!mt-2",
+            "-translate-y-1",
+            "max-[712px]:p-[13px]",
+            "bg-[rgb(12,34,56)]",
+            "grid-rows-[auto_minmax(0,_1fr)]",
+            "group-[:nth-of-type(3)_&]:block",
+            "[@supports(display:grid)]:grid",
+            "supports-[backdrop-filter:blur(2px)]:backdrop-blur-[2px]",
+            "[@media(any-hover:hover){&:hover}]:opacity-100",
+            "data-[state=open]:opacity-100",
+            "supports-[display:grid]:grid",
+            "[mask-type:luminance]",
+            "[--watch-hmr-offset:1509440px]"
+          ],
+          "escapedClasses": [
+            "text-_b23_d1509440px_B",
+            "space-y-2_d5",
+            "w-_bcalc_p100_v_-_1509440px_P_B",
+            "grid-cols-_b200rpx_minmax_p900rpx_m_1fr_P_1509440px_B",
+            "after_cml-_b0_d1509440px_B",
+            "text-black_f_b0_d15_B",
+            "ring-_b1_d0px_B",
+            "_emt-2",
+            "-translate-y-1",
+            "max-_b712px_B_cp-_b13px_B",
+            "bg-_brgb_p12_m34_m56_P_B",
+            "grid-rows-_bauto_minmax_p0_m_1fr_P_B",
+            "group-_b_cnth-of-type_p3_P__n_B_cblock",
+            "_b_tsupports_pdisplay_cgrid_P_B_cgrid",
+            "supports-_bbackdrop-filter_cblur_p2px_P_B_cbackdrop-blur-_b2px_B",
+            "_b_tmedia_pany-hover_chover_P_k_n_chover_K_B_copacity-100",
+            "data-_bstate_zopen_B_copacity-100",
+            "supports-_bdisplay_cgrid_B_cgrid",
+            "_bmask-type_cluminance_B",
+            "_b--watch-hmr-offset_c1509440px_B"
+          ],
+          "rounds": [
+            {
+              "roundName": "baseline-arbitrary",
+              "marker": "tw-watch-mina-script-baseline-arbitrary-1504600",
+              "classLiteral": "text-[23.1504600px] space-y-2.5 w-[calc(100%_-_1504600px)] grid-cols-[200rpx_minmax(900rpx,_1fr)_1504600px] after:ml-[0.1504600px] text-black/[0.15] ring-[1.0px]",
+              "classTokens": [
+                "text-[23.1504600px]",
+                "space-y-2.5",
+                "w-[calc(100%_-_1504600px)]",
+                "grid-cols-[200rpx_minmax(900rpx,_1fr)_1504600px]",
+                "after:ml-[0.1504600px]",
+                "text-black/[0.15]",
+                "ring-[1.0px]"
+              ],
+              "escapedClasses": [
+                "text-_b23_d1504600px_B",
+                "space-y-2_d5",
+                "w-_bcalc_p100_v_-_1504600px_P_B",
+                "grid-cols-_b200rpx_minmax_p900rpx_m_1fr_P_1504600px_B",
+                "after_cml-_b0_d1504600px_B",
+                "text-black_f_b0_d15_B",
+                "ring-_b1_d0px_B"
+              ],
+              "hotUpdateOutputMs": 241,
+              "hotUpdateEffectiveMs": 241,
+              "rollbackOutputMs": 241,
+              "rollbackEffectiveMs": 241,
+              "totalMs": 484
+            },
+            {
+              "roundName": "complex-corpus",
+              "marker": "tw-watch-mina-script-complex-corpus-1509440",
+              "classLiteral": "text-[23.1509440px] space-y-2.5 w-[calc(100%_-_1509440px)] grid-cols-[200rpx_minmax(900rpx,_1fr)_1509440px] after:ml-[0.1509440px] text-black/[0.15] ring-[1.0px] !mt-2 -translate-y-1 max-[712px]:p-[13px] bg-[rgb(12,34,56)] grid-rows-[auto_minmax(0,_1fr)] group-[:nth-of-type(3)_&]:block [@supports(display:grid)]:grid supports-[backdrop-filter:blur(2px)]:backdrop-blur-[2px] [@media(any-hover:hover){&:hover}]:opacity-100 data-[state=open]:opacity-100 supports-[display:grid]:grid [mask-type:luminance] [--watch-hmr-offset:1509440px]",
+              "classTokens": [
+                "text-[23.1509440px]",
+                "space-y-2.5",
+                "w-[calc(100%_-_1509440px)]",
+                "grid-cols-[200rpx_minmax(900rpx,_1fr)_1509440px]",
+                "after:ml-[0.1509440px]",
+                "text-black/[0.15]",
+                "ring-[1.0px]",
+                "!mt-2",
+                "-translate-y-1",
+                "max-[712px]:p-[13px]",
+                "bg-[rgb(12,34,56)]",
+                "grid-rows-[auto_minmax(0,_1fr)]",
+                "group-[:nth-of-type(3)_&]:block",
+                "[@supports(display:grid)]:grid",
+                "supports-[backdrop-filter:blur(2px)]:backdrop-blur-[2px]",
+                "[@media(any-hover:hover){&:hover}]:opacity-100",
+                "data-[state=open]:opacity-100",
+                "supports-[display:grid]:grid",
+                "[mask-type:luminance]",
+                "[--watch-hmr-offset:1509440px]"
+              ],
+              "escapedClasses": [
+                "text-_b23_d1509440px_B",
+                "space-y-2_d5",
+                "w-_bcalc_p100_v_-_1509440px_P_B",
+                "grid-cols-_b200rpx_minmax_p900rpx_m_1fr_P_1509440px_B",
+                "after_cml-_b0_d1509440px_B",
+                "text-black_f_b0_d15_B",
+                "ring-_b1_d0px_B",
+                "_emt-2",
+                "-translate-y-1",
+                "max-_b712px_B_cp-_b13px_B",
+                "bg-_brgb_p12_m34_m56_P_B",
+                "grid-rows-_bauto_minmax_p0_m_1fr_P_B",
+                "group-_b_cnth-of-type_p3_P__n_B_cblock",
+                "_b_tsupports_pdisplay_cgrid_P_B_cgrid",
+                "supports-_bbackdrop-filter_cblur_p2px_P_B_cbackdrop-blur-_b2px_B",
+                "_b_tmedia_pany-hover_chover_P_k_n_chover_K_B_copacity-100",
+                "data-_bstate_zopen_B_copacity-100",
+                "supports-_bdisplay_cgrid_B_cgrid",
+                "_bmask-type_cluminance_B",
+                "_b--watch-hmr-offset_c1509440px_B"
+              ],
+              "hotUpdateOutputMs": 241,
+              "hotUpdateEffectiveMs": 242,
+              "rollbackOutputMs": 241,
+              "rollbackEffectiveMs": 241,
+              "totalMs": 483
+            }
+          ],
+          "roundComparison": {
+            "baselineRoundName": "baseline-arbitrary",
+            "candidateRoundName": "complex-corpus",
+            "hotUpdateDeltaMs": 1,
+            "rollbackDeltaMs": 0,
+            "hotUpdateRatio": 1.004,
+            "rollbackRatio": 1
+          },
+          "verifyEscapedIn": [],
+          "verifyClassLiteralIn": [
+            "js"
+          ],
+          "globalStyleOutputs": [
+            "/Users/yangqiming/Documents/GitHub/weapp-tailwindcss/demo/native-mina/dist/app.wxss"
+          ],
+          "minRequiredGlobalStyleEscapedClasses": 1,
+          "verifiedGlobalStyleEscapedClasses": [
+            "text-_b23_d1504600px_B",
+            "w-_bcalc_p100_v_-_1504600px_P_B",
+            "grid-cols-_b200rpx_minmax_p900rpx_m_1fr_P_1504600px_B",
+            "text-_b23_d1509440px_B",
+            "w-_bcalc_p100_v_-_1509440px_P_B",
+            "grid-cols-_b200rpx_minmax_p900rpx_m_1fr_P_1509440px_B"
+          ],
+          "hotUpdateOutputMs": 241,
+          "hotUpdateEffectiveMs": 242,
+          "rollbackOutputMs": 241,
+          "rollbackEffectiveMs": 241
+        },
+        {
+          "mutationKind": "style",
+          "sourceFile": "/Users/yangqiming/Documents/GitHub/weapp-tailwindcss/demo/native-mina/src/pages/index/index.scss",
+          "outputStyle": "/Users/yangqiming/Documents/GitHub/weapp-tailwindcss/demo/native-mina/dist/pages/index/index.wxss",
+          "marker": "tw-watch-style-mina-151427812",
+          "styleNeedle": ".tw-watch-style-mina-151427812",
+          "applyUtilities": [
+            "font-bold",
+            "text-center"
+          ],
+          "expectedApplyDeclarations": [
+            "font-weight:700",
+            "text-align:center"
+          ],
+          "hotUpdateOutputMs": 242,
+          "hotUpdateEffectiveMs": 242,
+          "rollbackOutputMs": 240,
+          "rollbackEffectiveMs": 240,
+          "rollbackNeedleCleared": true
+        }
+      ],
+      "summaryByMutationKind": {
+        "template": {
+          "count": 1,
+          "hotUpdateAvgMs": 242,
+          "hotUpdateMaxMs": 242,
+          "hotUpdateMinMs": 242,
+          "rollbackAvgMs": 241,
+          "rollbackMaxMs": 241,
+          "rollbackMinMs": 241
+        },
+        "script": {
+          "count": 1,
+          "hotUpdateAvgMs": 242,
+          "hotUpdateMaxMs": 242,
+          "hotUpdateMinMs": 242,
+          "rollbackAvgMs": 241,
+          "rollbackMaxMs": 241,
+          "rollbackMinMs": 241
+        },
+        "style": {
+          "count": 1,
+          "hotUpdateAvgMs": 242,
+          "hotUpdateMaxMs": 242,
+          "hotUpdateMinMs": 242,
+          "rollbackAvgMs": 240,
+          "rollbackMaxMs": 240,
+          "rollbackMinMs": 240
+        }
+      },
+      "initialReadyMs": 1687,
+      "hotUpdateOutputMs": 242,
+      "hotUpdateEffectiveMs": 242,
+      "rollbackOutputMs": 241,
+      "rollbackEffectiveMs": 241,
+      "totalMs": 4109
+    }
+  ]
+}
