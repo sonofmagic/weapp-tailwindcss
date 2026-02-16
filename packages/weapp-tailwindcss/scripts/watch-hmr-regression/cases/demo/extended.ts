@@ -11,6 +11,39 @@ import {
   mutateVueScriptSetupArrayByAnchor,
 } from '../../text'
 
+function buildHexScriptRoundConfigs() {
+  return [
+    {
+      name: 'baseline-arbitrary' as const,
+      buildClassTokens(seed: string) {
+        const numericSeed = seed.replace(/\D/g, '').padEnd(6, '0')
+        const hex = numericSeed.slice(0, 6)
+        const textPx = Number(numericSeed.slice(0, 2)) + 20
+        const heightPx = Number(numericSeed.slice(2, 4)) + 12
+        return [
+          `bg-[#${hex}]`,
+          `text-[${textPx}px]`,
+          `h-[${heightPx}px]`,
+        ]
+      },
+    },
+    {
+      name: 'complex-corpus' as const,
+      buildClassTokens(seed: string) {
+        const numericSeed = seed.replace(/\D/g, '').padEnd(6, '0')
+        const hex = numericSeed.slice(0, 4)
+        const textPx = Number(numericSeed.slice(0, 2)) + 34
+        const heightPx = Number(numericSeed.slice(2, 4)) + 22
+        return [
+          `bg-[#${hex}]`,
+          `text-[${textPx}px]`,
+          `h-[${heightPx}px]`,
+        ]
+      },
+    },
+  ]
+}
+
 export function buildDemoExtendedCases(baseCwd: string): WatchCase[] {
   const uniAppVue3ViteCase: WatchCase = {
     name: 'uni-app-vue3-vite',
@@ -218,8 +251,9 @@ export function buildDemoExtendedCases(baseCwd: string): WatchCase[] {
     },
     scriptMutation: {
       sourceFile: path.resolve(baseCwd, 'demo/taro-webpack-tailwindcss-v4/src/pages/index/index.tsx'),
-      verifyEscapedIn: [],
+      verifyEscapedIn: ['js'],
       verifyClassLiteralIn: ['js'],
+      roundConfigs: buildHexScriptRoundConfigs(),
       mutate(source, payload) {
         return mutateTsxScriptByReturnAnchor(source, payload)
       },

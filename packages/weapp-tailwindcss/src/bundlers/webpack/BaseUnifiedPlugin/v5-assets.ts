@@ -21,6 +21,16 @@ interface SetupWebpackV5ProcessAssetsHookOptions {
   debug: (format: string, ...args: unknown[]) => void
 }
 
+function resolveWebpackStaleClassNameFallback(
+  option: InternalUserDefinedOptions['staleClassNameFallback'],
+  _compiler: Compiler,
+) {
+  if (typeof option === 'boolean') {
+    return option
+  }
+  return false
+}
+
 export function setupWebpackV5ProcessAssetsHook(options: SetupWebpackV5ProcessAssetsHookOptions) {
   const {
     compiler,
@@ -108,8 +118,11 @@ export function setupWebpackV5ProcessAssetsHook(options: SetupWebpackV5ProcessAs
           }
         }
         const groupedEntries = getGroupedEntries(entries, compilerOptions)
+        const staleClassNameFallback = resolveWebpackStaleClassNameFallback(compilerOptions.staleClassNameFallback, compiler)
         const runtimeSet = await ensureRuntimeClassSet(runtimeState, {
-          forceCollect: false,
+          // webpack 的 script-only 热更新可能不会触发 runtime classset loader，
+          // 这里强制收集可避免沿用上轮 class set，保证 JS 仅按最新集合精确命中。
+          forceCollect: true,
           allowEmpty: false,
         })
         debug('get runtimeSet, class count: %d', runtimeSet.size)
@@ -186,6 +199,7 @@ export function setupWebpackV5ProcessAssetsHook(options: SetupWebpackV5ProcessAs
                     ? currentSourceValue
                     : currentSourceValue?.toString() ?? ''
                   const { code, linked } = await compilerOptions.jsHandler(currentSource, runtimeSet, {
+                    staleClassNameFallback,
                     filename: absoluteFile,
                     moduleGraph: moduleGraphOptions,
                     babelParserOptions: {

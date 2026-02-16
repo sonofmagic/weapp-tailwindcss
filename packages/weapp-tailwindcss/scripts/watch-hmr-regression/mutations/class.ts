@@ -22,6 +22,18 @@ import {
 } from './shared'
 import { resolveMutationRoundConfigs } from './tokens'
 
+function collectBgHexTruncationNeedles(classTokens: string[]) {
+  const needles: string[] = []
+  for (const token of classTokens) {
+    const matched = token.match(/^bg-\[#([0-9a-fA-F]{3,8})\]$/)
+    if (!matched) {
+      continue
+    }
+    needles.push(`bg- ${matched[1]}`)
+  }
+  return needles
+}
+
 export async function runClassMutation(
   watchCase: WatchCase,
   options: CliOptions,
@@ -45,6 +57,7 @@ export async function runClassMutation(
   }
 
   const verifyClassLiteralIn = mutation.verifyClassLiteralIn ?? []
+  const forbidBgHexTruncationIn = mutation.forbidBgHexTruncationIn ?? []
   const minRequiredGlobalStyleEscapedClasses = watchCase.minGlobalStyleEscapedClasses ?? 1
   const roundMetrics: MutationRoundMetrics[] = []
   const verifiedGlobalEscapedClasses = new Set<string>()
@@ -53,7 +66,9 @@ export async function runClassMutation(
     js: await getMtime(watchCase.outputJs),
   }
 
-  for (const roundConfig of resolveMutationRoundConfigs()) {
+  const roundConfigs = mutation.roundConfigs ?? resolveMutationRoundConfigs()
+
+  for (const roundConfig of roundConfigs) {
     const roundStartedAt = Date.now()
 
     const mutationScenario = createClassMutationScenario(
@@ -133,6 +148,26 @@ export async function runClassMutation(
           expectedValues,
           `[${watchCase.label}] updated js token literal`,
         )
+      }
+    }
+
+    if (forbidBgHexTruncationIn.length > 0) {
+      const truncationNeedles = collectBgHexTruncationNeedles(classTokens)
+      for (const truncationNeedle of truncationNeedles) {
+        if (forbidBgHexTruncationIn.includes('wxml')) {
+          assertNotContains(
+            updatedWxml,
+            truncationNeedle,
+            `[${watchCase.label}] updated wxml should not contain truncated bg hex class`,
+          )
+        }
+        if (forbidBgHexTruncationIn.includes('js')) {
+          assertNotContains(
+            updatedJs,
+            truncationNeedle,
+            `[${watchCase.label}] updated js should not contain truncated bg hex class`,
+          )
+        }
       }
     }
 

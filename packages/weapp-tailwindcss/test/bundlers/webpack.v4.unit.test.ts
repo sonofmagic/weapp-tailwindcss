@@ -2,6 +2,8 @@ import fs from 'node:fs'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import { UnifiedWebpackPluginV4 } from '@/bundlers/webpack/BaseUnifiedPlugin/v4'
 import { createCache } from '@/cache'
+import { createJsHandler } from '@/js'
+import { replaceWxml } from '@/wxml'
 
 interface LoaderModule {
   loaders: Array<{ loader: string, options?: Record<string, any> }>
@@ -32,6 +34,7 @@ interface TestContext {
   wxsMatcher: (file: string) => boolean
   runtimeLoaderPath: string
   runtimeCssImportRewriteLoaderPath: string
+  staleClassNameFallback?: boolean
   appType?: string
 }
 
@@ -71,6 +74,7 @@ function createContext(overrides: Partial<TestContext> = {}): TestContext {
     wxsMatcher: (_file: string) => false,
     runtimeLoaderPath: '/virtual/weapp-tw-runtime-classset-loader.js',
     runtimeCssImportRewriteLoaderPath: '/virtual/weapp-tw-css-import-rewrite-loader.js',
+    staleClassNameFallback: undefined,
     appType: overrides.appType,
     ...overrides,
   }
@@ -243,8 +247,247 @@ describe('bundlers/webpack UnifiedWebpackPluginV4', () => {
     expect(currentContext.onStart).toHaveBeenCalledTimes(2)
     expect(currentContext.onEnd).toHaveBeenCalledTimes(2)
     expect(currentContext.onUpdate).toHaveBeenCalledTimes(3)
-    expect(currentContext.twPatcher.getClassSetSync).toHaveBeenCalledTimes(1)
-    expect(currentContext.twPatcher.extract).toHaveBeenCalledTimes(1)
+    expect(currentContext.twPatcher.getClassSetSync).toHaveBeenCalledTimes(2)
+    expect(currentContext.twPatcher.extract).toHaveBeenCalledTimes(2)
+  })
+
+  it('keeps precise matching by default and still escapes classes when runtime set is fresh', async () => {
+    const runtimeSet = new Set(['bg-[#f50505]', 'text-[100rpx]', 'text-white'])
+    const realJsHandler = createJsHandler({
+      escapeMap: undefined,
+    })
+    currentContext = createContext({
+      jsHandler: vi.fn((code: string, classSet?: Set<string>, options?: Record<string, unknown>) =>
+        realJsHandler(code, classSet, options as any)),
+      twPatcher: {
+        patch: vi.fn(),
+        getClassSet: vi.fn(async () => runtimeSet),
+        getClassSetSync: vi.fn(() => runtimeSet),
+        extract: vi.fn(async () => ({ classSet: runtimeSet })),
+        majorVersion: 4,
+      },
+    })
+    getCompilerContextMock.mockImplementation(() => currentContext)
+
+    const emitHandlers: Array<(compilation: any) => Promise<void>> = []
+    const assets: Record<string, any> = {}
+    const compilation = {
+      chunks: [{ id: 'main', hash: 'hash-1', files: ['index.js'] }],
+      hooks: {
+        normalModuleLoader: {
+          tap: vi.fn(),
+        },
+      },
+      assets,
+      updateAsset: vi.fn((file: string, source: any) => {
+        compilation.assets[file] = source
+      }),
+    }
+    const compiler = {
+      watching: {},
+      options: {
+        watch: false,
+      },
+      hooks: {
+        normalModuleFactory: {
+          tap: (_name: string, handler: (factory: any) => void) => {
+            handler({
+              hooks: {
+                beforeResolve: {
+                  tap: vi.fn(),
+                },
+              },
+            })
+          },
+        },
+        compilation: {
+          tap: (_name: string, handler: (_compilation: any) => void) => {
+            handler(compilation)
+          },
+        },
+        emit: {
+          tapPromise: (_name: string, handler: (_compilation: any) => Promise<void>) => {
+            emitHandlers.push(handler)
+          },
+        },
+      },
+    }
+
+    const plugin = new UnifiedWebpackPluginV4()
+    plugin.apply(compiler as any)
+
+    const js = 'const cls = "bg-[#f50505] text-[100rpx] text-white"'
+    compilation.assets['index.js'] = { source: () => js }
+
+    await emitHandlers[0](compilation)
+
+    const transformed = compilation.assets['index.js'].source()
+    expect(transformed).toContain(replaceWxml('bg-[#f50505]'))
+    expect(transformed).not.toContain('bg-[#f50505]')
+    expect(transformed).toContain(replaceWxml('text-[100rpx]'))
+
+    const lastCall = currentContext.jsHandler.mock.calls.at(-1) as [string, Set<string> | undefined, { staleClassNameFallback?: boolean }]
+    expect(lastCall?.[2]?.staleClassNameFallback).toBe(false)
+  })
+
+  it('respects explicit stale fallback option when set to false', async () => {
+    const runtimeSet = new Set(['text-[100rpx]', 'text-white'])
+    const realJsHandler = createJsHandler({
+      escapeMap: undefined,
+    })
+    currentContext = createContext({
+      staleClassNameFallback: false,
+      jsHandler: vi.fn((code: string, classSet?: Set<string>, options?: Record<string, unknown>) =>
+        realJsHandler(code, classSet, options as any)),
+      twPatcher: {
+        patch: vi.fn(),
+        getClassSet: vi.fn(async () => runtimeSet),
+        getClassSetSync: vi.fn(() => runtimeSet),
+        extract: vi.fn(async () => ({ classSet: runtimeSet })),
+        majorVersion: 4,
+      },
+    })
+    getCompilerContextMock.mockImplementation(() => currentContext)
+
+    const emitHandlers: Array<(compilation: any) => Promise<void>> = []
+    const assets: Record<string, any> = {}
+    const compilation = {
+      chunks: [{ id: 'main', hash: 'hash-1', files: ['index.js'] }],
+      hooks: {
+        normalModuleLoader: {
+          tap: vi.fn(),
+        },
+      },
+      assets,
+      updateAsset: vi.fn((file: string, source: any) => {
+        compilation.assets[file] = source
+      }),
+    }
+    const compiler = {
+      watching: {},
+      options: {
+        watch: false,
+      },
+      hooks: {
+        normalModuleFactory: {
+          tap: (_name: string, handler: (factory: any) => void) => {
+            handler({
+              hooks: {
+                beforeResolve: {
+                  tap: vi.fn(),
+                },
+              },
+            })
+          },
+        },
+        compilation: {
+          tap: (_name: string, handler: (_compilation: any) => void) => {
+            handler(compilation)
+          },
+        },
+        emit: {
+          tapPromise: (_name: string, handler: (_compilation: any) => Promise<void>) => {
+            emitHandlers.push(handler)
+          },
+        },
+      },
+    }
+
+    const plugin = new UnifiedWebpackPluginV4()
+    plugin.apply(compiler as any)
+
+    const js = 'const cls = "bg-[#f50505] text-[100rpx] text-white"'
+    compilation.assets['index.js'] = { source: () => js }
+
+    await emitHandlers[0](compilation)
+
+    const transformed = compilation.assets['index.js'].source()
+    expect(transformed).toContain('bg-[#f50505]')
+    expect(transformed).not.toContain(replaceWxml('bg-[#f50505]'))
+    expect(transformed).toContain(replaceWxml('text-[100rpx]'))
+
+    const lastCall = currentContext.jsHandler.mock.calls.at(-1) as [string, Set<string> | undefined, { staleClassNameFallback?: boolean }]
+    expect(lastCall?.[2]?.staleClassNameFallback).toBe(false)
+  })
+
+  it('refreshes runtime class set on each emit so script-only updates stay precisely escaped', async () => {
+    let runtimeSet = new Set(['bg-[#f40404]', 'text-[100rpx]', 'text-white'])
+    const realJsHandler = createJsHandler({
+      escapeMap: undefined,
+    })
+    currentContext = createContext({
+      staleClassNameFallback: false,
+      jsHandler: vi.fn((code: string, classSet?: Set<string>, options?: Record<string, unknown>) =>
+        realJsHandler(code, classSet, options as any)),
+      twPatcher: {
+        patch: vi.fn(),
+        getClassSet: vi.fn(async () => runtimeSet),
+        getClassSetSync: vi.fn(() => runtimeSet),
+        extract: vi.fn(async () => ({ classSet: runtimeSet })),
+        majorVersion: 4,
+      },
+    })
+    getCompilerContextMock.mockImplementation(() => currentContext)
+
+    const emitHandlers: Array<(compilation: any) => Promise<void>> = []
+    const assets: Record<string, any> = {}
+    const compilation = {
+      chunks: [{ id: 'main', hash: 'hash-1', files: ['index.js'] }],
+      hooks: {
+        normalModuleLoader: {
+          tap: vi.fn(),
+        },
+      },
+      assets,
+      updateAsset: vi.fn((file: string, source: any) => {
+        compilation.assets[file] = source
+      }),
+    }
+    const compiler = {
+      hooks: {
+        normalModuleFactory: {
+          tap: (_name: string, handler: (factory: any) => void) => {
+            handler({
+              hooks: {
+                beforeResolve: {
+                  tap: vi.fn(),
+                },
+              },
+            })
+          },
+        },
+        compilation: {
+          tap: (_name: string, handler: (_compilation: any) => void) => {
+            handler(compilation)
+          },
+        },
+        emit: {
+          tapPromise: (_name: string, handler: (_compilation: any) => Promise<void>) => {
+            emitHandlers.push(handler)
+          },
+        },
+      },
+    }
+
+    const plugin = new UnifiedWebpackPluginV4()
+    plugin.apply(compiler as any)
+
+    compilation.assets['index.js'] = { source: () => 'const cls = "bg-[#f40404] text-[100rpx] text-white"' }
+    await emitHandlers[0](compilation)
+    const firstPass = compilation.assets['index.js'].source()
+    expect(firstPass).toContain(replaceWxml('bg-[#f40404]'))
+    expect(firstPass).not.toContain('bg-[#f40404]')
+
+    runtimeSet = new Set(['bg-[#f0a0a0]', 'text-[100rpx]', 'text-white'])
+    compilation.assets['index.js'] = { source: () => 'const cls = "bg-[#f0a0a0] text-[100rpx] text-white"' }
+    await emitHandlers[0](compilation)
+    const secondPass = compilation.assets['index.js'].source()
+    expect(secondPass).toContain(replaceWxml('bg-[#f0a0a0]'))
+    expect(secondPass).not.toContain('bg-[#f0a0a0]')
+    expect(currentContext.twPatcher.extract).toHaveBeenCalledTimes(2)
+
+    const lastCall = currentContext.jsHandler.mock.calls.at(-1) as [string, Set<string> | undefined, { staleClassNameFallback?: boolean }]
+    expect(lastCall?.[2]?.staleClassNameFallback).toBe(false)
   })
 
   it('forwards rewriteCssImports options when tailwindcss v4 detected', () => {
