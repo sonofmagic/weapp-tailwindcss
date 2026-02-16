@@ -171,8 +171,13 @@ function buildProcessSets(
     }
   }
 
-  for (const file of changedByType.html) {
-    processFiles.html.add(file)
+  // 在 uni-app + Vite/HBuilderX 的 watch 模式下，即使模板源码未变化，
+  // 产物阶段仍可能在每一轮重新输出 html 资产。
+  // 因此这里始终让 html 进入缓存回填流程，避免仅 script 变更时 wxml 回退到未转义类名。
+  for (const [file] of entries) {
+    if (classifyEntry(file, opts) === 'html') {
+      processFiles.html.add(file)
+    }
   }
   for (const file of changedByType.css) {
     processFiles.css.add(file)

@@ -373,6 +373,128 @@ const cls = "rounded-[92rpx]"
     expect(currentContext.styleHandler).toHaveBeenCalledTimes(1)
   }, TEST_TIMEOUT_MS)
 
+  it('keeps template transform stable on script-only incremental updates', async () => {
+    const UnifiedViteWeappTailwindcssPlugin = await loadUnifiedVitePlugin()
+    const htmlFile = 'pages/index/index.wxml'
+    const jsFile = 'pages/index/index.js'
+    const cssFile = 'app.wxss'
+    const escapedAfterContent = replaceWxml('after:content-[\'A\']')
+    const escapedHeight = replaceWxml('h-[20px]')
+    const escapedColorA = replaceWxml('bg-[#fafa00]')
+    const escapedColorB = replaceWxml('bg-[#0000]')
+    const replaceKnownClasses = (code: string) =>
+      code
+        .replaceAll('after:content-[\'A\']', escapedAfterContent)
+        .replaceAll('h-[20px]', escapedHeight)
+        .replaceAll('bg-[#fafa00]', escapedColorA)
+        .replaceAll('bg-[#0000]', escapedColorB)
+
+    setCurrentContext(createContext({
+      cssMatcher: (file: string) => file.endsWith('.css') || file.endsWith('.wxss'),
+      templateHandler: vi.fn(async (code: string) => replaceKnownClasses(code)),
+      jsHandler: vi.fn((code: string) => ({ code: replaceKnownClasses(code) })),
+      styleHandler: vi.fn(async (code: string) => ({ css: replaceKnownClasses(code) })),
+    }))
+    const currentContext = getCurrentContext()
+    const plugins = UnifiedViteWeappTailwindcssPlugin()
+    const postPlugin = plugins?.find(plugin => plugin.name === 'weapp-tailwindcss:adaptor:post') as Plugin
+    expect(postPlugin).toBeTruthy()
+
+    await (postPlugin.configResolved as any)?.call(postPlugin, {
+      command: 'serve',
+      root: process.cwd(),
+      css: { postcss: { plugins: [] } },
+      build: { outDir: 'dist' },
+    } as ResolvedConfig)
+
+    const generateBundle = postPlugin.generateBundle as any
+    const wxmlSource = `<view class="after:content-['A'] h-[20px]">{{ cardsColor }}</view>`
+    const wxssSource = [
+      '.a { @apply after:content-[\'A\'] h-[20px]; }',
+      '.b { @apply bg-[#fafa00] bg-[#0000]; }',
+    ].join('\n')
+    const assertStableOutputs = (
+      bundle: Record<string, OutputAsset | OutputChunk>,
+      expectedEscapedColor: string,
+      unexpectedRawColor: string,
+    ) => {
+      const wxml = (bundle[htmlFile] as OutputAsset).source.toString()
+      expect(wxml).toContain(escapedAfterContent)
+      expect(wxml).toContain(escapedHeight)
+      expect(wxml).not.toContain('after:content-[\'A\']')
+      expect(wxml).not.toContain('h-[20px]')
+
+      const js = (bundle[jsFile] as OutputChunk).code
+      expect(js).toContain(expectedEscapedColor)
+      expect(js).not.toContain(unexpectedRawColor)
+
+      const wxss = (bundle[cssFile] as OutputAsset).source.toString()
+      expect(wxss).toContain(escapedAfterContent)
+      expect(wxss).toContain(escapedHeight)
+      expect(wxss).toContain(escapedColorA)
+      expect(wxss).toContain(escapedColorB)
+      expect(wxss).not.toContain('after:content-[\'A\']')
+      expect(wxss).not.toContain('h-[20px]')
+      expect(wxss).not.toContain('bg-[#fafa00]')
+      expect(wxss).not.toContain('bg-[#0000]')
+    }
+
+    const firstBundle = {
+      [htmlFile]: {
+        ...createRollupAsset(wxmlSource),
+        fileName: htmlFile,
+      },
+      [jsFile]: {
+        ...createRollupChunk('const cardsColor = "bg-[#fafa00]"'),
+        fileName: jsFile,
+      },
+      [cssFile]: {
+        ...createRollupAsset(wxssSource),
+        fileName: cssFile,
+      },
+    }
+    await generateBundle?.call(postPlugin, {} as any, firstBundle)
+    assertStableOutputs(firstBundle, escapedColorA, 'bg-[#fafa00]')
+
+    const secondBundle = {
+      [htmlFile]: {
+        ...createRollupAsset(wxmlSource),
+        fileName: htmlFile,
+      },
+      [jsFile]: {
+        ...createRollupChunk('const cardsColor = "bg-[#0000]"'),
+        fileName: jsFile,
+      },
+      [cssFile]: {
+        ...createRollupAsset(wxssSource),
+        fileName: cssFile,
+      },
+    }
+    await generateBundle?.call(postPlugin, {} as any, secondBundle)
+    assertStableOutputs(secondBundle, escapedColorB, 'bg-[#0000]')
+
+    const thirdBundle = {
+      [htmlFile]: {
+        ...createRollupAsset(wxmlSource),
+        fileName: htmlFile,
+      },
+      [jsFile]: {
+        ...createRollupChunk('const cardsColor = "bg-[#fafa00]"'),
+        fileName: jsFile,
+      },
+      [cssFile]: {
+        ...createRollupAsset(wxssSource),
+        fileName: cssFile,
+      },
+    }
+    await generateBundle?.call(postPlugin, {} as any, thirdBundle)
+    assertStableOutputs(thirdBundle, escapedColorA, 'bg-[#fafa00]')
+
+    expect(currentContext.templateHandler).toHaveBeenCalledTimes(1)
+    expect(currentContext.styleHandler).toHaveBeenCalledTimes(1)
+    expect(currentContext.jsHandler).toHaveBeenCalledTimes(3)
+  }, TEST_TIMEOUT_MS)
+
   it('transforms inlined tailwind-merge output within bundle stage', async () => {
     const UnifiedViteWeappTailwindcssPlugin = await loadUnifiedVitePlugin()
     const runtimeSet = new Set(['bg-[#434332]', 'bg-[#123324]', 'px-[32px]', 'px-[35px]'])
