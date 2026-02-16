@@ -73,7 +73,7 @@ function detectCallerLocation() {
       continue
     }
 
-    // Skip internal weapp-tailwindcss call frames to keep caller hint stable across wrappers.
+    // 跳过 weapp-tailwindcss 内部调用栈，确保 caller 提示在不同封装层下保持稳定。
     if (
       candidatePath.includes(`${path.sep}weapp-tailwindcss${path.sep}src${path.sep}`)
       || candidatePath.includes(`${path.sep}weapp-tailwindcss${path.sep}dist${path.sep}`)
@@ -89,6 +89,11 @@ function detectCallerLocation() {
 }
 
 function getRuntimeCacheScope() {
+  // 为什么把 runtime scope 纳入 cache key：
+  // 在 e2e/watch 场景中，同一个 Node 进程会连续构建多个 demo 项目。
+  // 有些调用方依赖隐式 basedir 推导（未显式传 tailwindcssBasedir），
+  // 这会依赖 env/cwd/package 语境。如果 cache key 只包含用户 options，
+  // 不同项目会误复用同一 context，最终导致 class-set 错配、WXML 转义异常。
   return {
     cwd: process.cwd(),
     npm_package_json: process.env.npm_package_json,
@@ -234,6 +239,8 @@ function normalizeOptionsValue(
 
 export function createCompilerContextCacheKey(opts?: UserDefinedOptions): string | undefined {
   try {
+    // 缓存键同时包含「静态 options + 动态 runtime scope」：
+    // 即便 options 字面量完全一致，也要避免跨项目命中同一 compiler context。
     const normalized = normalizeOptionsValue({
       options: opts ?? {},
       runtime: getRuntimeCacheScope(),

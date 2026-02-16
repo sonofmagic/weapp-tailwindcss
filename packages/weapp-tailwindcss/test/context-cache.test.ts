@@ -63,6 +63,9 @@ describe('compiler context cache', () => {
   })
 
   it('creates isolated context when runtime package scope differs with implicit basedir', () => {
+    // 回归保护：
+    // 当同一进程里连续构建多个项目，且 options 隐式/一致时，
+    // cache 仍必须按 runtime package scope 隔离，防止 Tailwind context 串用。
     const firstProject = path.resolve(process.cwd(), 'demo/uni-app')
     const secondProject = path.resolve(process.cwd(), 'demo/uni-app-vue3-vite')
 
