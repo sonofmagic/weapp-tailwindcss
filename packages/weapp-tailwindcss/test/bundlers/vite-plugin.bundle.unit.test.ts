@@ -322,6 +322,57 @@ const cls = "rounded-[92rpx]"
     expect(currentContext.onUpdate).not.toHaveBeenCalled()
   }, TEST_TIMEOUT_MS)
 
+  it('reapplies cached css transform when js changes but css source stays the same', async () => {
+    const UnifiedViteWeappTailwindcssPlugin = await loadUnifiedVitePlugin()
+    setCurrentContext(createContext({
+      styleHandler: vi.fn(async (code: string) => ({
+        css: code
+          .replace('*,::before,::after', 'view,text,::before,::after')
+          .replaceAll('border-emerald-200\\/70', '_f70'),
+      })),
+    }))
+    const currentContext = getCurrentContext()
+    const plugins = UnifiedViteWeappTailwindcssPlugin()
+    const postPlugin = plugins?.find(plugin => plugin.name === 'weapp-tailwindcss:adaptor:post') as Plugin
+    expect(postPlugin).toBeTruthy()
+
+    const generateBundle = postPlugin.generateBundle as any
+    const rawCss = [
+      '*,::before,::after { --tw-content: ""; }',
+      '.border-emerald-200\\/70 { border-color: rgb(167 243 208 / 0.7); }',
+    ].join('\n')
+
+    const firstBundle = {
+      'index.js': createRollupChunk('const sss = "border-emerald-200/70"'),
+      'index.css': {
+        ...createRollupAsset(rawCss),
+        fileName: 'index.css',
+      },
+    }
+    await generateBundle?.call(postPlugin, {} as any, firstBundle)
+    const firstCss = (firstBundle['index.css'] as OutputAsset).source.toString()
+    expect(firstCss).toContain('view,text,::before,::after')
+    expect(firstCss).toContain('._f70')
+    expect(firstCss).not.toContain('*,::before,::after')
+    expect(firstCss).not.toContain('border-emerald-200\\/70')
+
+    const secondBundle = {
+      'index.js': createRollupChunk('const sss = "border-emerald-300/70"'),
+      'index.css': {
+        ...createRollupAsset(rawCss),
+        fileName: 'index.css',
+      },
+    }
+    await generateBundle?.call(postPlugin, {} as any, secondBundle)
+
+    const secondCss = (secondBundle['index.css'] as OutputAsset).source.toString()
+    expect(secondCss).toContain('view,text,::before,::after')
+    expect(secondCss).toContain('._f70')
+    expect(secondCss).not.toContain('*,::before,::after')
+    expect(secondCss).not.toContain('border-emerald-200\\/70')
+    expect(currentContext.styleHandler).toHaveBeenCalledTimes(1)
+  }, TEST_TIMEOUT_MS)
+
   it('transforms inlined tailwind-merge output within bundle stage', async () => {
     const UnifiedViteWeappTailwindcssPlugin = await loadUnifiedVitePlugin()
     const runtimeSet = new Set(['bg-[#434332]', 'bg-[#123324]', 'px-[32px]', 'px-[35px]'])

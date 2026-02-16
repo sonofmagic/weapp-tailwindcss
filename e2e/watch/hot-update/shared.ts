@@ -61,6 +61,23 @@ interface TemplateOrScriptMutationMetric {
   hotUpdateEffectiveMs: number
   rollbackOutputMs: number
   rollbackEffectiveMs: number
+  sameClassLiteralHmr?: SameClassLiteralHmrMetric
+}
+
+interface SameClassLiteralHmrMetric {
+  markerBefore: string
+  markerAfter: string
+  classLiteral: string
+  escapedClasses: string[]
+  verifiedEscapedClasses: string[]
+  minRequiredEscapedClasses: number
+  stableGlobalStyleRequired: boolean
+  stableGlobalStyleOutputs: string[]
+  changedGlobalStyleOutputs: string[]
+  hotUpdateOutputMs: number
+  hotUpdateEffectiveMs: number
+  rollbackOutputMs: number
+  rollbackEffectiveMs: number
 }
 
 interface StyleMutationMetric {
@@ -393,6 +410,21 @@ function assertHotUpdateReport(report: HotUpdateReport, target: WatchCaseName, m
         normalizeGlobalStyleOutputs(scriptMetric.globalStyleOutputs ?? scriptMetric.globalStyleOutput),
         `[${item.project}] script mutation global style outputs`,
       )
+      const sameClassLiteralHmr = scriptMetric.sameClassLiteralHmr
+      expect(sameClassLiteralHmr).toBeDefined()
+      if (!sameClassLiteralHmr) {
+        throw new Error(`[${item.project}] missing sameClassLiteralHmr metric in script mutation`)
+      }
+      expect(sameClassLiteralHmr.classLiteral).toBe(scriptMetric.classLiteral)
+      expect(sameClassLiteralHmr.hotUpdateEffectiveMs).toBeGreaterThan(0)
+      expect(sameClassLiteralHmr.rollbackEffectiveMs).toBeGreaterThan(0)
+      expect(sameClassLiteralHmr.verifiedEscapedClasses.length).toBeGreaterThanOrEqual(sameClassLiteralHmr.minRequiredEscapedClasses)
+      if (sameClassLiteralHmr.stableGlobalStyleRequired) {
+        expect(
+          sameClassLiteralHmr.stableGlobalStyleOutputs.length,
+          `[${item.project}] same-class-literal should keep at least one global style output stable`,
+        ).toBeGreaterThan(0)
+      }
     }
 
     if (styleMetric && styleMetric.mutationKind === 'style') {
