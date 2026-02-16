@@ -49,6 +49,9 @@ jobs:
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
+      - name: Build weapp-tailwindcss package
+        run: pnpm --filter weapp-tailwindcss run build
+
       - name: Run e2e watch suite
         run: pnpm e2e:watch
 
