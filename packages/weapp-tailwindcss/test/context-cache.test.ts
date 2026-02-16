@@ -1,7 +1,27 @@
-import { describe, expect, it } from 'vitest'
+import path from 'node:path'
+import { afterEach, beforeEach, describe, expect, it } from 'vitest'
 import { getCompilerContext } from '@/context'
 
+const originalEnv = process.env
+
+function clearCompilerContextCache() {
+  const holder = globalThis as {
+    __WEAPP_TW_COMPILER_CONTEXT_CACHE__?: Map<string, unknown>
+  }
+  holder.__WEAPP_TW_COMPILER_CONTEXT_CACHE__?.clear()
+}
+
 describe('compiler context cache', () => {
+  beforeEach(() => {
+    process.env = { ...originalEnv }
+    clearCompilerContextCache()
+  })
+
+  afterEach(() => {
+    process.env = originalEnv
+    clearCompilerContextCache()
+  })
+
   it('reuses context for identical option values', () => {
     const ctxA = getCompilerContext({
       cssEntries: ['src/app.weapp.css'],
@@ -40,5 +60,22 @@ describe('compiler context cache', () => {
     })
 
     expect(ctxA).toBe(ctxB)
+  })
+
+  it('creates isolated context when runtime package scope differs with implicit basedir', () => {
+    const firstProject = path.resolve(process.cwd(), 'demo/uni-app')
+    const secondProject = path.resolve(process.cwd(), 'demo/uni-app-vue3-vite')
+
+    process.env.npm_package_json = path.join(firstProject, 'package.json')
+    process.env.PNPM_PACKAGE_NAME = '@weapp-tailwindcss-demo/uni-app'
+    const ctxA = getCompilerContext()
+
+    process.env.npm_package_json = path.join(secondProject, 'package.json')
+    process.env.PNPM_PACKAGE_NAME = '@weapp-tailwindcss-demo/uni-app-vue3-vite'
+    const ctxB = getCompilerContext()
+
+    expect(ctxA).not.toBe(ctxB)
+    expect(ctxA.tailwindcssBasedir).toBe(firstProject)
+    expect(ctxB.tailwindcssBasedir).toBe(secondProject)
   })
 })

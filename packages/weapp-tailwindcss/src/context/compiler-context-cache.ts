@@ -1,5 +1,7 @@
 import type { InternalUserDefinedOptions, UserDefinedOptions } from '@/types'
 import { Buffer } from 'node:buffer'
+import path from 'node:path'
+import process from 'node:process'
 import { logger } from '@weapp-tailwindcss/logger'
 import { md5Hash } from '@/cache/md5'
 
@@ -50,6 +52,60 @@ function encodeTaggedValue(type: string, value?: NormalizedOptionsValue): Record
     record.value = value
   }
   return record
+}
+
+function detectCallerLocation() {
+  const stack = new Error('compiler-context-cache stack probe').stack
+  if (!stack) {
+    return undefined
+  }
+
+  const lines = stack.split('\n')
+  for (const line of lines) {
+    const match = line.match(/\(([^)]+)\)/u) ?? line.match(/at\s+(\S.*)$/u)
+    const location = match?.[1]
+    if (!location) {
+      continue
+    }
+
+    const candidatePath = location.replace(/:\d+(?::\d+)?$/u, '')
+    if (!candidatePath || !path.isAbsolute(candidatePath)) {
+      continue
+    }
+
+    // Skip internal weapp-tailwindcss call frames to keep caller hint stable across wrappers.
+    if (
+      candidatePath.includes(`${path.sep}weapp-tailwindcss${path.sep}src${path.sep}`)
+      || candidatePath.includes(`${path.sep}weapp-tailwindcss${path.sep}dist${path.sep}`)
+      || candidatePath.includes(`${path.sep}node_modules${path.sep}weapp-tailwindcss${path.sep}`)
+    ) {
+      continue
+    }
+
+    return candidatePath
+  }
+
+  return undefined
+}
+
+function getRuntimeCacheScope() {
+  return {
+    cwd: process.cwd(),
+    npm_package_json: process.env.npm_package_json,
+    npm_config_local_prefix: process.env.npm_config_local_prefix,
+    pnpm_package_name: process.env.PNPM_PACKAGE_NAME,
+    init_cwd: process.env.INIT_CWD,
+    pwd: process.env.PWD,
+    weapp_tailwindcss_basedir: process.env.WEAPP_TAILWINDCSS_BASEDIR,
+    weapp_tailwindcss_base_dir: process.env.WEAPP_TAILWINDCSS_BASE_DIR,
+    tailwindcss_basedir: process.env.TAILWINDCSS_BASEDIR,
+    tailwindcss_base_dir: process.env.TAILWINDCSS_BASE_DIR,
+    uni_input_dir: process.env.UNI_INPUT_DIR,
+    uni_input_root: process.env.UNI_INPUT_ROOT,
+    uni_cli_root: process.env.UNI_CLI_ROOT,
+    uni_app_input_dir: process.env.UNI_APP_INPUT_DIR,
+    caller: detectCallerLocation(),
+  }
 }
 
 function normalizeOptionsValue(
@@ -178,7 +234,10 @@ function normalizeOptionsValue(
 
 export function createCompilerContextCacheKey(opts?: UserDefinedOptions): string | undefined {
   try {
-    const normalized = normalizeOptionsValue(opts ?? {})
+    const normalized = normalizeOptionsValue({
+      options: opts ?? {},
+      runtime: getRuntimeCacheScope(),
+    })
     const serialized = JSON.stringify(normalized)
     return md5Hash(serialized)
   }
