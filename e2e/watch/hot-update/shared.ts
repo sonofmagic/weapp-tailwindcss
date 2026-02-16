@@ -246,7 +246,7 @@ export function shouldRunTarget(caseName: WatchCaseName, target: ConcreteWatchCa
   return false
 }
 
-async function runWatchHmrCommand(cwd: string, args: string[]) {
+async function runWatchHmrCommand(cwd: string, args: string[], commandTimeoutMs: number) {
   const maxAttempts = 2
   const env = { ...process.env }
 
@@ -254,6 +254,12 @@ async function runWatchHmrCommand(cwd: string, args: string[]) {
     if (key === 'VITEST' || key.startsWith('VITEST_')) {
       delete env[key]
     }
+  }
+  if (env.NODE_ENV === 'test') {
+    delete env.NODE_ENV
+  }
+  if (env.BABEL_ENV === 'test') {
+    delete env.BABEL_ENV
   }
 
   for (let attempt = 1; attempt <= maxAttempts; attempt += 1) {
@@ -263,6 +269,9 @@ async function runWatchHmrCommand(cwd: string, args: string[]) {
         stdio: 'inherit',
         env,
         extendEnv: false,
+        timeout: commandTimeoutMs,
+        killSignal: 'SIGKILL',
+        forceKillAfterDelay: 1000,
       })
       return
     }
@@ -387,6 +396,10 @@ export async function runHotUpdateTarget(target: WatchCaseName) {
   const timeoutMs = toNumberEnv('E2E_WATCH_TIMEOUT_MS', 240000)
   const pollMs = toNumberEnv('E2E_WATCH_POLL_MS', 240)
   const maxHotUpdateMs = toNumberEnv('E2E_WATCH_MAX_HOT_UPDATE_MS', 15000)
+  const commandTimeoutMs = toNumberEnv(
+    'E2E_WATCH_COMMAND_TIMEOUT_MS',
+    Math.max(timeoutMs * 2 + 60_000, 240_000),
+  )
   const skipBuild = toBoolEnv('E2E_WATCH_SKIP_BUILD', true)
   const quietSass = toBoolEnv('E2E_WATCH_QUIET_SASS', true)
   const reportFile = createReportFilePath(cwd, target)
@@ -416,7 +429,7 @@ export async function runHotUpdateTarget(target: WatchCaseName) {
     args.push('--quiet-sass')
   }
 
-  await runWatchHmrCommand(cwd, args)
+  await runWatchHmrCommand(cwd, args, commandTimeoutMs)
 
   const raw = await fs.readFile(reportFile, 'utf8')
   const report = JSON.parse(raw) as HotUpdateReport

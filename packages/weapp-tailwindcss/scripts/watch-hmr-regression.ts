@@ -1935,7 +1935,11 @@ async function runStyleMutation(
   )
   let rollbackEffectiveMs = rollbackOutputMs
   let rollbackNeedleCleared = false
+  const rollbackNeedleCheckTimeoutMs = Math.min(options.timeoutMs, 30_000)
   try {
+    process.stdout.write(
+      `[watch-hmr] ${watchCase.label} mutation=style waiting rollback marker clear (timeout=${rollbackNeedleCheckTimeoutMs}ms)\n`,
+    )
     rollbackEffectiveMs = await waitFor(
       async () => {
         for (const candidate of outputStyleCandidates) {
@@ -1947,7 +1951,7 @@ async function runStyleMutation(
         return true
       },
       {
-        timeoutMs: options.timeoutMs,
+        timeoutMs: rollbackNeedleCheckTimeoutMs,
         pollMs: options.pollMs,
         message: `[${watchCase.label}] style output candidates still contain needle ${payload.styleNeedle}: ${outputStyleCandidates.map(formatPath).join(', ')}`,
         onTick: session.ensureRunning,
