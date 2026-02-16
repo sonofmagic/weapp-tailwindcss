@@ -49,6 +49,9 @@ jobs:
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
+      - name: Build watch suite package dependencies
+        run: pnpm --filter @weapp-tailwindcss/postcss run build
+
       - name: Build weapp-tailwindcss package
         run: pnpm --filter weapp-tailwindcss run build
 
