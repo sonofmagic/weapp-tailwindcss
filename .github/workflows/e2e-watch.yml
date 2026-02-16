@@ -54,6 +54,7 @@ jobs:
           pnpm --filter @weapp-tailwindcss/shared run build
           pnpm --filter @weapp-tailwindcss/logger run build
           pnpm --filter @weapp-tailwindcss/postcss run build
+          pnpm --filter weapp-style-injector run build
 
       - name: Build weapp-tailwindcss package
         run: pnpm --filter weapp-tailwindcss run build
