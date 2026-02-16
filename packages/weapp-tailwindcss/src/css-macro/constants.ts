@@ -41,7 +41,15 @@ export function createNegativeMediaQuery(value: string) {
 
 export function normalComment(text: string) {
   if (typeof text === 'string') {
-    return text.replaceAll(/(?<!\\)_/g, ' ')
+    const normalized = text.replaceAll(/(?<!\\)_/g, ' ').replaceAll(/\s+/g, ' ').trim()
+    // Keep escaped expressions untouched (e.g. H5\\_||\\_MP-WEIXIN).
+    // They are intentionally literal and should not be rewritten.
+    if (normalized.includes('\\')) {
+      return normalized
+    }
+    // Normalize logical operators to the style supported by uni-app conditional comments:
+    // #ifdef H5 || APP
+    return normalized.replaceAll(/\s*(\|\||&&)\s*/g, ' $1 ').replaceAll(/\s+/g, ' ').trim()
   }
   return text
 }

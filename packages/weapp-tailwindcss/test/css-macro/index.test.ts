@@ -88,6 +88,32 @@ describe('css-macro tailwindcss plugin', () => {
     expect(cssOutput).toMatchSnapshot('postcss')
   })
 
+  it('dynamic case 5 ifdef without spaces', async () => {
+    const { css } = await getCss('ifdef-[H5||MP-WEIXIN]:bg-blue-500', {
+      twConfig: {
+        plugins: [twPlugin],
+      },
+    })
+    expect(css).toMatchSnapshot('tw')
+    const { css: cssOutput } = await postcss(postcssPlugin).process(css, {
+      from: undefined,
+    })
+    expect(cssOutput).toMatchSnapshot('postcss')
+  })
+
+  it('dynamic case 5 ifdef with underscored spaces', async () => {
+    const { css } = await getCss('ifdef-[H5_||_MP-WEIXIN]:bg-blue-500', {
+      twConfig: {
+        plugins: [twPlugin],
+      },
+    })
+    expect(css).toMatchSnapshot('tw')
+    const { css: cssOutput } = await postcss(postcssPlugin).process(css, {
+      from: undefined,
+    })
+    expect(cssOutput).toMatchSnapshot('postcss')
+  })
+
   it('dynamic apply case 6', async () => {
     const { css } = await getCss('', {
       css: `.apply-test {
