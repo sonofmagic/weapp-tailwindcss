@@ -1,7 +1,6 @@
 import type { OutputAsset } from 'rollup'
 import type { HmrContext, Plugin, ResolvedConfig, TransformResult } from 'vite'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
-import { UnifiedViteWeappTailwindcssPlugin } from '@/bundlers/vite'
 import { replaceWxml } from '@/wxml'
 import {
   createContext,
@@ -14,12 +13,19 @@ import {
 
 const TEST_TIMEOUT_MS = 2000
 
+async function loadUnifiedVitePlugin() {
+  const mod = await import('@/bundlers/vite')
+  return mod.UnifiedViteWeappTailwindcssPlugin
+}
+
 describe('bundlers/vite UnifiedViteWeappTailwindcssPlugin uni-app-x', () => {
   beforeEach(() => {
+    vi.resetModules()
     resetVitePluginTestContext()
   })
 
   it('provides uni-app-x specific transforms', async () => {
+    const UnifiedViteWeappTailwindcssPlugin = await loadUnifiedVitePlugin()
     const transformUVueMock = getTransformUVueMock()
     const runtimeSet = new Set(['uvue'])
     setCurrentContext(createContext())
@@ -117,6 +123,7 @@ describe('bundlers/vite UnifiedViteWeappTailwindcssPlugin uni-app-x', () => {
   }, TEST_TIMEOUT_MS)
 
   it('forces runtime refresh for every uni-app-x transform when serving', async () => {
+    const UnifiedViteWeappTailwindcssPlugin = await loadUnifiedVitePlugin()
     const transformUVueMock = getTransformUVueMock()
     const runtimeSets = [
       new Set(['text-[#123456]']),
@@ -190,6 +197,7 @@ describe('bundlers/vite UnifiedViteWeappTailwindcssPlugin uni-app-x', () => {
   }, TEST_TIMEOUT_MS)
 
   it('refreshes runtime class set during build watch transforms so new classes are hashed immediately', async () => {
+    const UnifiedViteWeappTailwindcssPlugin = await loadUnifiedVitePlugin()
     const transformUVueMock = getTransformUVueMock()
     const runtimeSets = [
       new Set(['text-[#123456]']),
@@ -263,6 +271,7 @@ describe('bundlers/vite UnifiedViteWeappTailwindcssPlugin uni-app-x', () => {
   }, TEST_TIMEOUT_MS)
 
   it('refreshes runtime class set on .uvue/.nvue hot updates in serve mode', async () => {
+    const UnifiedViteWeappTailwindcssPlugin = await loadUnifiedVitePlugin()
     const runtimeSets = [
       new Set(['text-[#123456]']),
       new Set(['text-[#234567]']),
@@ -313,6 +322,7 @@ describe('bundlers/vite UnifiedViteWeappTailwindcssPlugin uni-app-x', () => {
   }, TEST_TIMEOUT_MS)
 
   it('refreshes runtime class set on .uvue/.nvue watch changes in build watch mode', async () => {
+    const UnifiedViteWeappTailwindcssPlugin = await loadUnifiedVitePlugin()
     const runtimeSets = [
       new Set(['text-[#123456]']),
       new Set(['text-[#654321]']),
@@ -362,6 +372,7 @@ describe('bundlers/vite UnifiedViteWeappTailwindcssPlugin uni-app-x', () => {
   }, TEST_TIMEOUT_MS)
 
   it('forces runtime refresh for uni-app-x transform even for non-watch build runs', async () => {
+    const UnifiedViteWeappTailwindcssPlugin = await loadUnifiedVitePlugin()
     const transformUVueMock = getTransformUVueMock()
     const runtimeSets = [
       new Set(['text-[#aaaaaa]']),

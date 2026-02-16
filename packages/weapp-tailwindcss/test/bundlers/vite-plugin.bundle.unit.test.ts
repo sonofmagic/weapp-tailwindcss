@@ -3,7 +3,6 @@ import type { Plugin, ResolvedConfig } from 'vite'
 import type { CreateJsHandlerOptions } from '@/types'
 import path from 'node:path'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
-import { UnifiedViteWeappTailwindcssPlugin } from '@/bundlers/vite'
 import { createJsHandler } from '@/js'
 import { replaceWxml } from '@/wxml'
 import {
@@ -17,12 +16,19 @@ import {
 
 const TEST_TIMEOUT_MS = 2000
 
+async function loadUnifiedVitePlugin() {
+  const mod = await import('@/bundlers/vite')
+  return mod.UnifiedViteWeappTailwindcssPlugin
+}
+
 describe('bundlers/vite UnifiedViteWeappTailwindcssPlugin bundle', () => {
   beforeEach(() => {
+    vi.resetModules()
     resetVitePluginTestContext()
   })
 
   it('generates bundle assets and leverages cache', async () => {
+    const UnifiedViteWeappTailwindcssPlugin = await loadUnifiedVitePlugin()
     const currentContext = getCurrentContext()
     const plugins = UnifiedViteWeappTailwindcssPlugin()
     expect(plugins).toBeDefined()
@@ -101,6 +107,7 @@ describe('bundlers/vite UnifiedViteWeappTailwindcssPlugin bundle', () => {
   }, TEST_TIMEOUT_MS)
 
   it('refreshes runtime class set on source changes so new arbitrary classes in :class strings are escaped', async () => {
+    const UnifiedViteWeappTailwindcssPlugin = await loadUnifiedVitePlugin()
     const staticClass = 'rounded-[32rpx] border border-slate-100/70 bg-white/90 p-5 shadow-[0_20px_45px_rgba(15,23,42,0.08)]'
     const dynamicClass = 'rounded-[92rpx] border border-slate-100/70 bg-[#213435] p-9 shadow-[0_20px_45px_rgba(15,23,42,0.08)]'
     const runtimeSets = [
@@ -159,6 +166,7 @@ describe('bundlers/vite UnifiedViteWeappTailwindcssPlugin bundle', () => {
   }, TEST_TIMEOUT_MS)
 
   it('enables stale fallback in serve mode while allowing jsPreserveClass to keep business strings', async () => {
+    const UnifiedViteWeappTailwindcssPlugin = await loadUnifiedVitePlugin()
     const runtimeSet = new Set(['text-red-500'])
     setCurrentContext(createContext({
       jsPreserveClass: (keyword: string) => keyword.startsWith('biz-token'),
@@ -201,6 +209,7 @@ const cls = "rounded-[92rpx]"
   }, TEST_TIMEOUT_MS)
 
   it('only transforms dirty js entry and affected linked entries on incremental runs', async () => {
+    const UnifiedViteWeappTailwindcssPlugin = await loadUnifiedVitePlugin()
     const rootDir = process.cwd()
     const outDir = path.resolve(rootDir, 'dist')
     const linkedFile = path.resolve(outDir, 'chunk.js')
@@ -257,6 +266,7 @@ const cls = "rounded-[92rpx]"
   }, TEST_TIMEOUT_MS)
 
   it('keeps dirty state stable when bundle temporarily omits js entries', async () => {
+    const UnifiedViteWeappTailwindcssPlugin = await loadUnifiedVitePlugin()
     const currentContext = getCurrentContext()
     const plugins = UnifiedViteWeappTailwindcssPlugin()
     const postPlugin = plugins?.find(plugin => plugin.name === 'weapp-tailwindcss:adaptor:post') as Plugin
@@ -312,6 +322,7 @@ const cls = "rounded-[92rpx]"
   }, TEST_TIMEOUT_MS)
 
   it('transforms inlined tailwind-merge output within bundle stage', async () => {
+    const UnifiedViteWeappTailwindcssPlugin = await loadUnifiedVitePlugin()
     const runtimeSet = new Set(['bg-[#434332]', 'bg-[#123324]', 'px-[32px]', 'px-[35px]'])
     const realJsHandler = createJsHandler({
       ignoreCallExpressionIdentifiers: [],
@@ -362,6 +373,7 @@ const fallback = "bg-[#434332] px-[32px]"
   }, TEST_TIMEOUT_MS)
 
   it('propagates linked js module updates', async () => {
+    const UnifiedViteWeappTailwindcssPlugin = await loadUnifiedVitePlugin()
     const rootDir = process.cwd()
     const outDir = path.resolve(rootDir, 'dist')
     const linkedFile = path.resolve(outDir, 'chunk.js')
