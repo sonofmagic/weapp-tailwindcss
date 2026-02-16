@@ -9,6 +9,9 @@ Run `pnpm install` (Node ≥18) before anything else. Use `pnpm build` for a ful
 ## Coding Style & Naming Conventions
 TypeScript and modern ESM are the defaults; keep indentation at two spaces and favour descriptive camelCase for functions while reserving PascalCase for classes and React-style components. Follow Tailwind utility casing when authoring configs. Linting is enforced by `pnpm lint` (ESLint) and style checks by `pnpm format` or `pnpm lint-staged` on pre-commit. CSS modules should align with utility-first naming, and Rust crates adhere to snake_case per Cargo conventions.
 
+## File Size & Split Rules
+When a code file grows beyond ~300 lines, evaluate splitting it before adding more logic. Prefer directory-based decomposition (for example `feature/a.ts`, `feature/b.ts`) instead of suffix-based split patterns like `feature.a.ts`.
+
 ## Testing Guidelines
 Vitest powers unit, integration, and snapshot coverage; place new suites inside the relevant package’s `__tests__/` or `test/` folder and name files `*.test.ts`. When editing snapshot-heavy plugins, refresh snapshots with `pnpm e2e:u` or `pnpm test -u`. Maintain >80% coverage within critical packages and add regression cases for bug fixes. For e2e scenarios, mirror fixture names after the feature being validated (e.g., `vite-native.test.ts`).
 
