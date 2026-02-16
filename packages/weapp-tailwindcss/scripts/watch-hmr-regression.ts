@@ -342,6 +342,15 @@ const compileSuccessLinePatterns = [
   /built in \d+/i,
 ] as const
 
+const compileFailureLinePatterns = [
+  /build failed with \d+ error/i,
+  /\[unhandleable_error\]/i,
+  /unable to start fsevent stream/i,
+  /err_pnpm_recursive_run_first_fail/i,
+  /error:\s*listen eperm/i,
+  /error:\s*listen emfile/i,
+] as const
+
 function stripAnsiControlSequences(line: string) {
   let output = ''
   for (let index = 0; index < line.length; index += 1) {
@@ -381,6 +390,20 @@ function isCompileSuccessLine(line: string) {
   return false
 }
 
+function resolveCompileFatalError(line: string) {
+  const normalized = normalizeLogLine(line)
+  for (const pattern of compileFailureLinePatterns) {
+    if (pattern.test(normalized)) {
+      return normalized
+    }
+  }
+
+  // Some toolchains prefix fatal lines with `ERROR` but include extra symbols/text.
+  if (/error/i.test(normalized) && /emfile/i.test(normalized)) {
+    return normalized
+  }
+}
+
 async function runCommand(cwd: string, args: string[], label: string) {
   const lines: string[] = []
   const child = spawn(resolvePnpmCommand(), args, {
@@ -418,6 +441,7 @@ function createWatchSession(
 ): WatchSession {
   const lines: string[] = []
   let lastCompileSuccessAt = 0
+  let compileFatalError: string | undefined
   const child = spawn(resolvePnpmCommand(), ['run', devScript], {
     cwd,
     env: {
@@ -464,6 +488,9 @@ function createWatchSession(
       if (isCompileSuccessLine(line)) {
         lastCompileSuccessAt = Date.now()
       }
+      if (!compileFatalError) {
+        compileFatalError = resolveCompileFatalError(line)
+      }
     }
 
     rawCollect(chunk)
@@ -473,6 +500,9 @@ function createWatchSession(
   child.stderr.on('data', collect)
 
   const ensureRunning = () => {
+    if (compileFatalError) {
+      throw new Error(`watch process reported fatal error: ${compileFatalError}`)
+    }
     if (child.exitCode != null) {
       throw new Error(`watch process exited unexpectedly with code ${child.exitCode}`)
     }
