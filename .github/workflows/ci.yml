@@ -56,6 +56,15 @@ jobs:
       - name: Test
         run: pnpm test
 
+      - name: CI Status Note
+        if: always()
+        run: |
+          {
+            echo "## CI 状态说明"
+            echo "- 本工作流负责：lint、build、unit/integration tests、coverage 上传。"
+            echo "- \`pnpm e2e:watch\` 已拆分到独立工作流：\`E2E Watch\`（.github/workflows/e2e-watch.yml）。"
+          } >> "$GITHUB_STEP_SUMMARY"
+
       - name: Upload coverage reports to Codecov
         uses: codecov/codecov-action@v5
         env:
