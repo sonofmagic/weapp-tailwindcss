@@ -60,6 +60,10 @@ jobs:
         run: pnpm --filter weapp-tailwindcss run build
 
       - name: Run e2e watch suite
+        env:
+          # CI runners are slower for uni-app watch scenarios; raise timeout to reduce flaky exits at 240s.
+          E2E_WATCH_TIMEOUT_MS: '360000'
+          E2E_WATCH_COMMAND_TIMEOUT_MS: '900000'
         run: pnpm e2e:watch
 
       - name: Upload e2e watch reports
