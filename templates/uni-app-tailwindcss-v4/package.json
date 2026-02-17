@@ -73,8 +73,8 @@
     "typescript": "^5.9.3",
     "vite": "5.2.8",
     "vue-tsc": "^2.2.10",
-    "weapp-ide-cli": "^5.0.0",
-    "weapp-tailwindcss": "^4.9.8"
+    "weapp-ide-cli": "^5.0.4",
+    "weapp-tailwindcss": "^4.10.0"
   },
   "pnpm": {
     "onlyBuiltDependencies": [
@@ -83,5 +83,5 @@
       "weapp-tailwindcss"
     ]
   },
-  "packageManager": "pnpm@10.28.2"
+  "packageManager": "pnpm@10.29.3"
 }

@@ -65,14 +65,14 @@
     "tailwindcss": "^3.4.19",
     "tailwindcss-rem2px-preset": "^1.0.3",
     "typescript": "^5.9.3",
-    "weapp-ide-cli": "^5.0.0",
-    "weapp-tailwindcss": "^4.9.8",
+    "weapp-ide-cli": "^5.0.4",
+    "weapp-tailwindcss": "^4.10.0",
     "weapp-tailwindcss-children": "^0.1.0",
     "webpack": "^5.92.0",
     "webpack-cli": "^6.0.1",
     "webpack-sources": "^3.2.3"
   },
-  "packageManager": "pnpm@10.28.2",
+  "packageManager": "pnpm@10.29.3",
   "pnpm": {
     "onlyBuiltDependencies": [
       "weapp-tailwindcss",

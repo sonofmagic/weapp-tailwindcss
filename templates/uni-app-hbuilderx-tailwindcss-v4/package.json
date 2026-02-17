@@ -11,7 +11,7 @@
   "devDependencies": {
     "@tailwindcss/postcss": "^4.1.18",
     "tailwindcss": "^4.1.18",
-    "weapp-tailwindcss": "^4.9.8"
+    "weapp-tailwindcss": "^4.10.0"
   },
   "pnpm": {
     "onlyBuiltDependencies": [
@@ -22,5 +22,5 @@
   "dependencies": {
     "@weapp-tailwindcss/merge": "^2.1.5"
   },
-  "packageManager": "pnpm@10.28.2"
+  "packageManager": "pnpm@10.29.3"
 }
