@@ -136,11 +136,36 @@ function resolveCompileFatalError(line: string) {
   }
 }
 
+function createSpawnEnv(
+  base: NodeJS.ProcessEnv,
+  extra: Record<string, string> = {},
+): NodeJS.ProcessEnv {
+  const merged: NodeJS.ProcessEnv = {
+    ...base,
+    ...extra,
+  }
+  const sanitized: NodeJS.ProcessEnv = {}
+
+  for (const [key, value] of Object.entries(merged)) {
+    if (typeof value !== 'string') {
+      continue
+    }
+    // Windows keeps internal drive-scoped entries like `=C:` in process.env,
+    // which can make child_process.spawn fail with EINVAL.
+    if (process.platform === 'win32' && key.includes('=')) {
+      continue
+    }
+    sanitized[key] = value
+  }
+
+  return sanitized
+}
+
 async function runCommand(cwd: string, args: string[], label: string) {
   const lines: string[] = []
   const child = spawn(resolvePnpmCommand(), args, {
     cwd,
-    env: process.env,
+    env: createSpawnEnv(process.env),
     stdio: 'pipe',
   })
 
@@ -176,11 +201,10 @@ export function createWatchSession(
   let compileFatalError: string | undefined
   const child = spawn(resolvePnpmCommand(), ['run', devScript], {
     cwd,
-    env: {
-      ...process.env,
+    env: createSpawnEnv(process.env, {
       WEAPP_TW_WATCH_REGRESSION: '1',
       ...env,
-    },
+    }),
     detached: process.platform !== 'win32',
     stdio: 'pipe',
   })
