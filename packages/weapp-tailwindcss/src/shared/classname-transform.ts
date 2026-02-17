@@ -82,7 +82,7 @@ function shouldFallbackEscapeClassName(
   if (!normalized) {
     return false
   }
-  // Source-location tokens from stack traces/logs must never be treated as utility classes.
+  // 堆栈与日志中的 source-location token 不能被当成 utility class 处理。
   if (isLikelySourceLocationToken(normalized)) {
     return false
   }

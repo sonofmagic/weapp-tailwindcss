@@ -18,5 +18,10 @@ Vitest powers unit, integration, and snapshot coverage; place new suites inside 
 ## Commit & Pull Request Guidelines
 Commits follow Conventional Commit semantics, enforced by commitlint and the existing history (e.g., `feat: add runtime matcher`). Keep commits scoped to a logical change and run the relevant build/test commands beforehand. Pull requests should include a clear summary, link to issues when available, and attach screenshots or logs for UI or e2e changes. Note any Changeset entries required for package releases and mark breaking changes explicitly.
 
+## Language Rules
+- 所有新增或修改的 Changeset 内容必须使用中文。
+- JSDoc 风格代码注释（包括 `/** ... */` 及等效 API 文档注释）必须使用中文。
+- 新增行内代码注释默认使用中文；若第三方 API/协议术语必须固定为英文，可保留英文术语。
+
 ## Environment & Tooling Notes
 Use `pnpm` for all workspace tasks; other package managers are blocked by the `only-allow` hook. Husky manages git hooks, so run `pnpm prepare` after fresh clones. When working on the docs site (`website/`), export environment variables via `.env.local` and run `pnpm build:docs` before publishing.
