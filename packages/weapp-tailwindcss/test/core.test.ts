@@ -100,7 +100,7 @@ describe('core transform functions', () => {
 })
 
 describe('core hot update class escaping', () => {
-  it('transforms newly added arbitrary class in js when runtimeSet is stale', async () => {
+  it('keeps newly added arbitrary class in js unchanged when runtimeSet is stale', async () => {
     const ctx = createContext()
 
     await ctx.transformJs(`const initial = ['text-[12px]']`, {
@@ -108,10 +108,10 @@ describe('core hot update class escaping', () => {
     })
 
     const { code } = await ctx.transformJs(`const classNames = ['text-[23.43px]']`)
-    expect(code).toBe(`const classNames = ['text-_b23_d43px_B']`)
+    expect(code).toBe(`const classNames = ['text-[23.43px]']`)
   })
 
-  it('transforms newly added dotted utility class in js when runtimeSet is stale', async () => {
+  it('keeps newly added dotted utility class in js unchanged when runtimeSet is stale', async () => {
     const ctx = createContext()
 
     await ctx.transformJs(`const initial = ['space-y-2']`, {
@@ -119,10 +119,10 @@ describe('core hot update class escaping', () => {
     })
 
     const { code } = await ctx.transformJs(`const classNames = ['space-y-2.5']`)
-    expect(code).toBe(`const classNames = ['space-y-2_d5']`)
+    expect(code).toBe(`const classNames = ['space-y-2.5']`)
   })
 
-  it('transforms newly added arbitrary class in wxml expression when runtimeSet is stale', async () => {
+  it('keeps newly added arbitrary class in wxml expression unchanged when runtimeSet is stale', async () => {
     const ctx = createContext()
 
     const transformed = await ctx.transformWxml(
@@ -132,11 +132,11 @@ describe('core hot update class escaping', () => {
       },
     )
 
-    expect(transformed).toContain('text-_b23_d43px_B')
+    expect(transformed).toContain('text-[23.43px]')
     expect(transformed).toContain('text-_b12px_B')
   })
 
-  it('transforms newly added dotted utility class in wxml expression when runtimeSet is stale', async () => {
+  it('keeps newly added dotted utility class in wxml expression unchanged when runtimeSet is stale', async () => {
     const ctx = createContext()
 
     const transformed = await ctx.transformWxml(
@@ -146,7 +146,7 @@ describe('core hot update class escaping', () => {
       },
     )
 
-    expect(transformed).toContain('space-y-2_d5')
+    expect(transformed).toContain('space-y-2.5')
     expect(transformed).toContain('space-y-2')
   })
 

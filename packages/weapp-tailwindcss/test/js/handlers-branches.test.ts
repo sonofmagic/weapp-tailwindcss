@@ -197,7 +197,7 @@ describe('replaceHandleValue branch coverage', () => {
     expect(token).toBeUndefined()
   })
 
-  it('transforms dotted utility classes when classNameSet is non-empty but stale', () => {
+  it('does not transform non-set candidates even when stale fallback is enabled', () => {
     const literal = getLiteralPath('const dotted = \'space-y-2.5\'', 'StringLiteral')
     const token = replaceHandleValue(literal, {
       escapeMap: MappingChars2String,
@@ -206,10 +206,10 @@ describe('replaceHandleValue branch coverage', () => {
       needEscaped: true,
     })
 
-    expect(token?.value).toBe('space-y-2_d5')
+    expect(token).toBeUndefined()
   })
 
-  it('skips url-like tokens during stale fallback checks', () => {
+  it('keeps url-like tokens untouched when candidate not in classNameSet', () => {
     const literal = getLiteralPath('const url = \'https://foo-bar.com/assets/1.2.3\'', 'StringLiteral')
     const token = replaceHandleValue(literal, {
       escapeMap: MappingChars2String,
@@ -231,7 +231,7 @@ describe('replaceHandleValue branch coverage', () => {
     expect(token).toBeUndefined()
   })
 
-  it('falls back to escape arbitrary classes when classNameSet is missing but stale fallback is enabled', () => {
+  it('does not escape arbitrary classes when classNameSet is missing even if stale fallback is enabled', () => {
     const literal = getLiteralPath('const arbitrary = \'w-[100px]\'', 'StringLiteral')
     const token = replaceHandleValue(literal, {
       escapeMap: MappingChars2String,
@@ -239,10 +239,10 @@ describe('replaceHandleValue branch coverage', () => {
       needEscaped: true,
     })
 
-    expect(token?.value).toBe('w-_b100px_B')
+    expect(token).toBeUndefined()
   })
 
-  it('falls back to escape arbitrary classes when classNameSet is empty but stale fallback is enabled', () => {
+  it('does not escape arbitrary classes when classNameSet is empty even if stale fallback is enabled', () => {
     const literal = getLiteralPath('const arbitrary = \'bg-[length:200rpx_100rpx]\'', 'StringLiteral')
     const token = replaceHandleValue(literal, {
       escapeMap: MappingChars2String,
@@ -251,7 +251,7 @@ describe('replaceHandleValue branch coverage', () => {
       needEscaped: true,
     })
 
-    expect(token?.value).toBe('bg-_blength_c200rpx_100rpx_B')
+    expect(token).toBeUndefined()
   })
 
   it('still honours jsPreserveClass when stale fallback runs without classNameSet', () => {

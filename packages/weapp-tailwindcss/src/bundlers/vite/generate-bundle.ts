@@ -282,25 +282,6 @@ function hasRuntimeAffectingSourceChanges(changedByType: Record<EntryType, Set<s
   return changedByType.html.size > 0 || changedByType.js.size > 0
 }
 
-function resolveViteStaleClassNameFallback(
-  option: InternalUserDefinedOptions['staleClassNameFallback'],
-  resolvedConfig?: ResolvedConfig,
-) {
-  if (typeof option === 'boolean') {
-    return option
-  }
-  if (!resolvedConfig) {
-    return false
-  }
-  if (resolvedConfig.command === 'serve') {
-    return true
-  }
-  if (resolvedConfig.command === 'build' && resolvedConfig.build?.watch) {
-    return true
-  }
-  return false
-}
-
 export function createGenerateBundleHook(context: GenerateBundleContext) {
   const state: BundleBuildState = {
     iteration: 0,
@@ -351,7 +332,6 @@ export function createGenerateBundleHook(context: GenerateBundleContext) {
     const processSets = buildProcessSets(entries, opts, dirtyEntries.changedByType, state.previousLinkedByEntry, disableDirtyOptimization)
     const processFiles = processSets.files
     const resolvedConfig = getResolvedConfig()
-    const staleClassNameFallback = resolveViteStaleClassNameFallback(opts.staleClassNameFallback, resolvedConfig)
     const rootDir = resolvedConfig?.root ? path.resolve(resolvedConfig.root) : process.cwd()
     const outDir = resolvedConfig?.build?.outDir
       ? path.resolve(rootDir, resolvedConfig.build.outDir)
@@ -398,7 +378,6 @@ export function createGenerateBundleHook(context: GenerateBundleContext) {
     }
     const createHandlerOptions = (absoluteFilename: string, extra?: CreateJsHandlerOptions): CreateJsHandlerOptions => ({
       ...extra,
-      staleClassNameFallback: extra?.staleClassNameFallback ?? staleClassNameFallback,
       filename: absoluteFilename,
       moduleGraph: moduleGraphOptions,
       babelParserOptions: {

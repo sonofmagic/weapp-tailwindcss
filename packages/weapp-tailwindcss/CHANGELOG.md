@@ -11,11 +11,10 @@
 
 ### Patch Changes
 
-- 🐛 **修复 JS stale fallback 对 source-location 文本的误转义，并增强兜底排除扩展能力：**
+- 🐛 **收敛 JS 转译策略为 classNameSet 精确命中，修复 source-location 文本误转义：**
+  - JS 仅转译来自 `tailwindcss-patch` 的 `classNameSet` 命中项，不再对普通字符串做启发式 fallback 转译。
   - 修复 `at App.vue:4`、`index.ts:120:3`、`Foo.jsx:8` 等 source-location token 被误判为 class 并转义的问题。
-  - `staleClassNameFallback` 下新增 source location / URL / 文件路径默认排除，避免日志与堆栈文本误伤。
-  - 新增可配置项 `fallbackExcludePatterns` 与 `fallbackCandidateFilter`，用于扩展兜底候选排除规则。
-  - 补充 JS handler 与 Vite bundle 回归测试，覆盖 `staleClassNameFallback=true/false` 以及真实 tailwind 候选转义行为。
+  - 补充 JS handler 与 Vite bundle 回归测试，覆盖 `staleClassNameFallback=true/false` 下的 classNameSet-only 行为与正向类名转译能力。
 
 - 🐛 **修复 Vite + uni-app 场景下的 HMR 类名漏转译问题，并增强 JS 转译鲁棒性：** [`be6f65d`](https://github.com/sonofmagic/weapp-tailwindcss/commit/be6f65d4232621fedef617a00a2072bc02b89ec6) by @sonofmagic
   - 修复 `generateBundle` 阶段 runtime class set 失效策略：当 `html/js` 源码发生变化时强制刷新 runtimeSet，不再只依赖 `tailwind.config` 签名，避免新增 arbitrary value 在热更新后漏转义。

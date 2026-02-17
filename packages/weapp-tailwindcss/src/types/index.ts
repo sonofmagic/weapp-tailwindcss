@@ -55,21 +55,11 @@ export interface IJsHandlerOptions {
   escapeMap?: Record<string, string>
   classNameSet?: Set<string>
   /**
-   * 当 classNameSet 可能滞后（如热更新）时，允许对未命中集合的候选类名执行保守兜底转义。
-   * 默认关闭，避免在常规 JS 文本中出现误替换。
+   * 兼容字段：不再参与 JS 候选判定。
+   *
+   * JS 转译统一遵循 `classNameSet` 精确命中策略，仅转换 tailwindcss-patch 提供的类名集合。
    */
   staleClassNameFallback?: boolean
-  /**
-   * stale fallback 候选排除规则。
-   *
-   * - `string`: 按子串匹配
-   * - `RegExp`: 按正则匹配
-   */
-  fallbackExcludePatterns?: (string | RegExp)[]
-  /**
-   * stale fallback 候选过滤器，返回 `false` 时跳过当前候选。
-   */
-  fallbackCandidateFilter?: (candidate: string) => boolean | undefined
   arbitraryValues?: IArbitraryValues
   jsPreserveClass?: (keyword: string) => boolean | undefined
   needEscaped?: boolean

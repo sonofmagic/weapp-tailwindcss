@@ -47,40 +47,13 @@ export interface UserDefinedOptionsGeneralPart {
   jsPreserveClass?: (keyword: string) => boolean | undefined
 
   /**
-   * 运行时类集合可能滞后时，是否对未命中 `classNameSet` 的候选类名执行保守兜底转义。
+   * 兼容字段：不再参与 JS 候选判定。
    *
    * @group 3.一般配置
    * @remarks
-   * 适用于 Vite HMR / watch 增量场景中 class 集合暂时过期的情况。
-   *
-   * - `true`: 始终启用兜底转义（正确性优先，建议配合 `jsPreserveClass` 避免误伤）
-   * - `false`: 仅转换命中 `classNameSet` 的候选类名
-   * - 未配置：Vite `serve` / `build --watch` 默认启用，其它模式默认关闭
+   * JS 转译统一采用 `classNameSet` 精确匹配策略，仅转换 tailwindcss-patch 提供的类名集合。
    */
   staleClassNameFallback?: boolean
-
-  /**
-   * stale fallback 的候选排除规则。
-   *
-   * @group 3.一般配置
-   * @since ^4.10.1
-   * @remarks
-   * 仅在 `staleClassNameFallback` 生效时参与判断。
-   *
-   * - `string`: 子串匹配
-   * - `RegExp`: 正则匹配
-   */
-  fallbackExcludePatterns?: (string | RegExp)[]
-
-  /**
-   * stale fallback 的候选过滤器。
-   *
-   * @group 3.一般配置
-   * @since ^4.10.1
-   * @remarks
-   * 回调返回 `false` 时，当前候选不会执行兜底转义。
-   */
-  fallbackCandidateFilter?: (candidate: string) => boolean | undefined
 
   /**
    * 是否替换运行时依赖包名。

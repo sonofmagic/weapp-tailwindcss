@@ -23,5 +23,10 @@ Commits follow Conventional Commit semantics, enforced by commitlint and the exi
 - JSDoc 风格代码注释（包括 `/** ... */` 及等效 API 文档注释）必须使用中文。
 - 新增行内代码注释默认使用中文；若第三方 API/协议术语必须固定为英文，可保留英文术语。
 
+## JS Transform Rules
+- `packages/weapp-tailwindcss` 中 JS 相关转译必须遵循“classNameSet 精确命中”原则：仅转译来自 `tailwindcss-patch` 的类名集合。
+- 禁止在 JS 转译链路中对普通字符串执行启发式兜底转译（例如基于 token 形态猜测 class）。
+- 若需要降低误伤风险，优先改进 class 集合获取与刷新时机，不通过放宽候选匹配规则来实现。
+
 ## Environment & Tooling Notes
 Use `pnpm` for all workspace tasks; other package managers are blocked by the `only-allow` hook. Husky manages git hooks, so run `pnpm prepare` after fresh clones. When working on the docs site (`website/`), export environment variables via `.env.local` and run `pnpm build:docs` before publishing.

@@ -27,19 +27,20 @@ function getStringLiteralPath(code: string) {
   return result
 }
 
-describe('replaceHandleValue stale fallback regressions', () => {
-  it('keeps source-location tokens untouched when stale fallback is enabled', () => {
-    const literal = getStringLiteralPath('const trace = "at App.vue:4 index.ts:120:3 Foo.jsx:8 w-[1.5px]"')
+describe('replaceHandleValue strict class set regressions', () => {
+  it('keeps source-location tokens untouched and only transforms classNameSet hits', () => {
+    const literal = getStringLiteralPath('const trace = "at App.vue:4 index.ts:120:3 Foo.jsx:8 hover:bg-red-500 w-[1.5px]"')
     const token = replaceHandleValue(literal, {
       escapeMap: MappingChars2String,
-      classNameSet: new Set(['bg-red-500']),
+      classNameSet: new Set(['hover:bg-red-500']),
       staleClassNameFallback: true,
       needEscaped: true,
     })
 
-    expect(token?.value).toBe('at App.vue:4 index.ts:120:3 Foo.jsx:8 w-_b1_d5px_B')
+    expect(token?.value).toBe('at App.vue:4 index.ts:120:3 Foo.jsx:8 hover_cbg-red-500 w-[1.5px]')
     expect(token?.value).not.toContain('App_dvue_c4')
     expect(token?.value).not.toContain('index_dts_c120_c3')
+    expect(token?.value).toContain('w-[1.5px]')
   })
 
   it('does not run stale fallback when staleClassNameFallback is false', () => {
@@ -65,24 +66,11 @@ describe('replaceHandleValue stale fallback regressions', () => {
     expect(token?.value).toBe('hover_cbg-red-500')
   })
 
-  it('supports fallbackExcludePatterns to skip stale fallback candidates', () => {
+  it('does not transform non-set candidates even with stale fallback enabled', () => {
     const literal = getStringLiteralPath('const cls = "w-[1.5px]"')
     const token = replaceHandleValue(literal, {
       escapeMap: MappingChars2String,
       staleClassNameFallback: true,
-      fallbackExcludePatterns: ['w-[1.5px]'],
-      needEscaped: true,
-    })
-
-    expect(token).toBeUndefined()
-  })
-
-  it('supports fallbackCandidateFilter to skip stale fallback candidates', () => {
-    const literal = getStringLiteralPath('const cls = "w-[1.5px]"')
-    const token = replaceHandleValue(literal, {
-      escapeMap: MappingChars2String,
-      staleClassNameFallback: true,
-      fallbackCandidateFilter: candidate => candidate !== 'w-[1.5px]',
       needEscaped: true,
     })
 

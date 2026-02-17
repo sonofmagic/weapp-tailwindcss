@@ -6,7 +6,7 @@ import { getPattern, getReplacement } from './cache'
 
 export function shouldTransformClassName(
   candidate: string,
-  options: Pick<IJsHandlerOptions, 'alwaysEscape' | 'classNameSet' | 'staleClassNameFallback' | 'jsPreserveClass'>,
+  options: Pick<IJsHandlerOptions, 'alwaysEscape' | 'classNameSet' | 'jsPreserveClass'>,
 ) {
   return shouldTransformClassNameCandidate(candidate, options)
 }
@@ -17,7 +17,7 @@ export function transformLiteralText(
 ): string | undefined {
   const allowDoubleQuotes = options.arbitraryValues?.allowDoubleQuotes
   const source = options.unescapeUnicode && literal.includes('\\u') ? decodeUnicode2(literal) : literal
-  if (!options.alwaysEscape && (!options.classNameSet || options.classNameSet.size === 0) && !options.staleClassNameFallback) {
+  if (!options.alwaysEscape && (!options.classNameSet || options.classNameSet.size === 0)) {
     return undefined
   }
   const candidates = splitCode(source, allowDoubleQuotes)

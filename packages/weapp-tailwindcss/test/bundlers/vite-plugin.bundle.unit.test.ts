@@ -170,7 +170,7 @@ const trace = "at App.vue:4"
     expect(currentContext.twPatcher.getClassSetSync).toHaveBeenCalledTimes(2)
   }, TEST_TIMEOUT_MS)
 
-  it('enables stale fallback in serve mode while allowing jsPreserveClass to keep business strings', async () => {
+  it('keeps non-set business literals unchanged in serve mode while preserving classNameSet-only strategy', async () => {
     const UnifiedViteWeappTailwindcssPlugin = await loadUnifiedVitePlugin()
     const runtimeSet = new Set(['text-red-500'])
     setCurrentContext(createContext({
@@ -211,11 +211,11 @@ const cls = "rounded-[92rpx]"
     const transformedCode = (bundle['index.js'] as OutputChunk).code
     expect(transformedCode).toContain('biz-token-[alpha]')
     expect(transformedCode).toContain('at App.vue:4')
-    expect(transformedCode).toContain(replaceWxml('rounded-[92rpx]'))
-    expect(transformedCode).not.toContain('const cls = "rounded-[92rpx]"')
+    expect(transformedCode).toContain('rounded-[92rpx]')
+    expect(transformedCode).not.toContain(replaceWxml('rounded-[92rpx]'))
   }, TEST_TIMEOUT_MS)
 
-  it('keeps source-location tokens unchanged in build mode when stale fallback is disabled by default', async () => {
+  it('keeps source-location tokens unchanged in build mode with classNameSet-only strategy', async () => {
     const UnifiedViteWeappTailwindcssPlugin = await loadUnifiedVitePlugin()
     const runtimeSet = new Set(['text-red-500'])
     setCurrentContext(createContext({
