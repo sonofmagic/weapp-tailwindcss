@@ -139,8 +139,9 @@ export function createClassMutationScenario(
   const maxAttempts = 24
 
   for (let attempt = 0; attempt < maxAttempts; attempt += 1) {
-    const seedBase = Date.now().toString().slice(-6)
-    const seed = `${seedBase}${attempt}`
+    // Keep attempt-specific digits at the front because some round configs
+    // only read the first few digits from seed.
+    const seed = `${attempt.toString().padStart(2, '0')}${Date.now().toString().slice(-4).padStart(4, '0')}`
     const classTokens = roundConfig.buildClassTokens(seed)
     const escapedClasses = classTokens.map(item => replaceWxml(item))
     const marker = `tw-watch-${watchCase.name}-${mutationKind}-${roundConfig.name}-${seed}`
