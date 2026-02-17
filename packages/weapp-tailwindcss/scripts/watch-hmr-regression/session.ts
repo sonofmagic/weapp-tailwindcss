@@ -1,6 +1,6 @@
 import type { Buffer } from 'node:buffer'
 import type { CliOptions, WatchSession } from './types'
-import { spawn } from 'node:child_process'
+import { spawn, spawnSync } from 'node:child_process'
 import { existsSync } from 'node:fs'
 import path from 'node:path'
 import process from 'node:process'
@@ -192,6 +192,17 @@ function spawnPnpm(
   return spawn(resolvePnpmCommand(), args, options)
 }
 
+function killProcessTreeOnWindows(pid: number) {
+  try {
+    spawnSync('taskkill', ['/pid', String(pid), '/t', '/f'], {
+      stdio: 'ignore',
+      windowsHide: true,
+    })
+  }
+  catch {
+  }
+}
+
 async function runCommand(cwd: string, args: string[], label: string) {
   const lines: string[] = []
   const child = spawnPnpm(args, {
@@ -242,6 +253,13 @@ export function createWatchSession(
 
   const killWatchProcess = (signal: NodeJS.Signals) => {
     const childPid = child.pid
+    if (childPid != null && process.platform === 'win32') {
+      if (signal === 'SIGTERM' || signal === 'SIGKILL') {
+        killProcessTreeOnWindows(childPid)
+        return
+      }
+    }
+
     if (childPid != null && process.platform !== 'win32') {
       try {
         process.kill(-childPid, signal)
@@ -253,6 +271,29 @@ export function createWatchSession(
 
     try {
       child.kill(signal)
+    }
+    catch {
+    }
+  }
+
+  const closePipes = () => {
+    try {
+      child.stdin.end()
+    }
+    catch {
+    }
+    try {
+      child.stdin.destroy()
+    }
+    catch {
+    }
+    try {
+      child.stdout.destroy()
+    }
+    catch {
+    }
+    try {
+      child.stderr.destroy()
     }
     catch {
     }
@@ -297,6 +338,7 @@ export function createWatchSession(
 
   const stop = async () => {
     if (child.exitCode != null) {
+      closePipes()
       return
     }
 
@@ -325,6 +367,8 @@ export function createWatchSession(
     if (child.exitCode == null) {
       killWatchProcess('SIGKILL')
     }
+
+    closePipes()
   }
 
   return {
