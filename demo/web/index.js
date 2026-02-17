@@ -1,4 +1,5 @@
 const fs = require('node:fs/promises')
+const path = require('node:path')
 const { defu } = require('defu')
 const tailwindcss = require('tailwindcss')
 const postcss = require('postcss')
@@ -37,7 +38,7 @@ async function getCss(content, options) {
 }
 
 async function main() {
-  const { css } = await getCss([
+  const demoClasses = [
     // flexbox and grid
     'basis-[32rpx]',
     'grid-cols-[200rpx_minmax(900rpx,_1fr)_100rpx]',
@@ -78,14 +79,28 @@ async function main() {
     // Transforms
     'translate-y-[17rpx]',
     'dark:text-[14.54rpx]'
-  ])
+  ]
+  const { css } = await getCss(demoClasses)
   await fs.writeFile('./index.css', css, 'utf8')
-  const ctx = createContext()
+  const demoDir = __dirname
+  const tailwindConfigPath = path.join(demoDir, 'tailwind.config.cjs')
+  const ctx = createContext({
+    tailwindcssBasedir: demoDir,
+    tailwindcss: {
+      cwd: demoDir,
+      config: tailwindConfigPath,
+    },
+  })
   const wxml = await ctx.transformWxml('<view class="shadow-[0_35rpx_60rx_-15px_rgba(0,0,0,0.3)]" wx:if="{{ xxx.length > 0 }}">')
   await fs.writeFile('./out.html', wxml, 'utf8')
   const { css: cssOut } = await ctx.transformWxss(css)
   await fs.writeFile('./out.css', cssOut, 'utf8')
-  const content = `const classNames = ['bg-[length:200rpx_100rpx]']`
+  const jsClassNames = [
+    'bg-[length:200rpx_100rpx]',
+    'grid-cols-[200rpx_minmax(900rpx,_1fr)_100rpx]',
+    'dark:text-[14.54rpx]',
+  ]
+  const content = `const classNames = ${JSON.stringify(jsClassNames)}`
   const { code } = await ctx.transformJs(content)
   await fs.writeFile('./out.js', code, 'utf8')
 }
