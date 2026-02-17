@@ -153,11 +153,15 @@ describe('bundlers/vite UnifiedViteWeappTailwindcssPlugin bundle', () => {
     runtimeIndex = 1
     const secondBundle = {
       'index.wxml': createRollupAsset('<view :class="sss" />'),
-      'index.js': createRollupChunk(`const sss = '${dynamicClass}'`),
+      'index.js': createRollupChunk(`
+const sss = '${dynamicClass}'
+const trace = "at App.vue:4"
+`),
     }
     await generateBundle?.call(postPlugin, {} as any, secondBundle)
 
     const transformedCode = (secondBundle['index.js'] as OutputChunk).code
+    expect(transformedCode).toContain('at App.vue:4')
     expect(transformedCode).toContain(replaceWxml('rounded-[92rpx]'))
     expect(transformedCode).toContain(replaceWxml('bg-[#213435]'))
     expect(transformedCode).not.toContain('rounded-[92rpx]')
@@ -198,6 +202,7 @@ describe('bundlers/vite UnifiedViteWeappTailwindcssPlugin bundle', () => {
     const bundle = {
       'index.js': createRollupChunk(`
 const safe = "biz-token-[alpha]"
+const trace = "at App.vue:4"
 const cls = "rounded-[92rpx]"
 `),
     }
@@ -205,8 +210,49 @@ const cls = "rounded-[92rpx]"
 
     const transformedCode = (bundle['index.js'] as OutputChunk).code
     expect(transformedCode).toContain('biz-token-[alpha]')
+    expect(transformedCode).toContain('at App.vue:4')
     expect(transformedCode).toContain(replaceWxml('rounded-[92rpx]'))
     expect(transformedCode).not.toContain('const cls = "rounded-[92rpx]"')
+  }, TEST_TIMEOUT_MS)
+
+  it('keeps source-location tokens unchanged in build mode when stale fallback is disabled by default', async () => {
+    const UnifiedViteWeappTailwindcssPlugin = await loadUnifiedVitePlugin()
+    const runtimeSet = new Set(['text-red-500'])
+    setCurrentContext(createContext({
+      jsHandler: createJsHandler({}),
+      twPatcher: {
+        patch: vi.fn(),
+        getClassSet: vi.fn(async () => runtimeSet),
+        getClassSetSync: vi.fn(() => runtimeSet),
+        extract: vi.fn(async () => ({ classSet: runtimeSet })),
+        majorVersion: 4,
+      },
+    }))
+
+    const plugins = UnifiedViteWeappTailwindcssPlugin()
+    const postPlugin = plugins?.find(plugin => plugin.name === 'weapp-tailwindcss:adaptor:post') as Plugin
+    expect(postPlugin).toBeTruthy()
+
+    await (postPlugin.configResolved as any)?.call(postPlugin, {
+      command: 'build',
+      root: process.cwd(),
+      css: { postcss: { plugins: [] } },
+      build: { outDir: 'dist' },
+    } as ResolvedConfig)
+
+    const generateBundle = postPlugin.generateBundle as any
+    const bundle = {
+      'index.js': createRollupChunk(`
+const trace = "at App.vue:4"
+const cls = "w-[1.5px]"
+`),
+    }
+    await generateBundle?.call(postPlugin, {} as any, bundle)
+
+    const transformedCode = (bundle['index.js'] as OutputChunk).code
+    expect(transformedCode).toContain('at App.vue:4')
+    expect(transformedCode).toContain('w-[1.5px]')
+    expect(transformedCode).not.toContain(replaceWxml('w-[1.5px]'))
   }, TEST_TIMEOUT_MS)
 
   it('only transforms dirty js entry and affected linked entries on incremental runs', async () => {

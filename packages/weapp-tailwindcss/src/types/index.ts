@@ -59,6 +59,17 @@ export interface IJsHandlerOptions {
    * 默认关闭，避免在常规 JS 文本中出现误替换。
    */
   staleClassNameFallback?: boolean
+  /**
+   * stale fallback 候选排除规则。
+   *
+   * - `string`: 按子串匹配
+   * - `RegExp`: 按正则匹配
+   */
+  fallbackExcludePatterns?: (string | RegExp)[]
+  /**
+   * stale fallback 候选过滤器，返回 `false` 时跳过当前候选。
+   */
+  fallbackCandidateFilter?: (candidate: string) => boolean | undefined
   arbitraryValues?: IArbitraryValues
   jsPreserveClass?: (keyword: string) => boolean | undefined
   needEscaped?: boolean

@@ -108,6 +108,8 @@ export function getDefaultOptions(): UserDefinedOptions {
       return false
     },
     staleClassNameFallback: undefined,
+    fallbackExcludePatterns: undefined,
+    fallbackCandidateFilter: undefined,
     disabledDefaultTemplateHandler: false,
     cssSelectorReplacement: {
       root: ['page', '.tw-root', 'wx-root-portal-content'],

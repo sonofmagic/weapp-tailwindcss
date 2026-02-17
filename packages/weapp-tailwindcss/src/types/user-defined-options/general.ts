@@ -60,6 +60,29 @@ export interface UserDefinedOptionsGeneralPart {
   staleClassNameFallback?: boolean
 
   /**
+   * stale fallback 的候选排除规则。
+   *
+   * @group 3.一般配置
+   * @since ^4.10.1
+   * @remarks
+   * 仅在 `staleClassNameFallback` 生效时参与判断。
+   *
+   * - `string`: 子串匹配
+   * - `RegExp`: 正则匹配
+   */
+  fallbackExcludePatterns?: (string | RegExp)[]
+
+  /**
+   * stale fallback 的候选过滤器。
+   *
+   * @group 3.一般配置
+   * @since ^4.10.1
+   * @remarks
+   * 回调返回 `false` 时，当前候选不会执行兜底转义。
+   */
+  fallbackCandidateFilter?: (candidate: string) => boolean | undefined
+
+  /**
    * 是否替换运行时依赖包名。
    *
    * @group 3.一般配置
