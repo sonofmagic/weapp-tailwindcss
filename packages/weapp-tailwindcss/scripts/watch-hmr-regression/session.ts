@@ -161,9 +161,29 @@ function createSpawnEnv(
   return sanitized
 }
 
+function spawnPnpm(
+  args: string[],
+  options: {
+    cwd: string
+    env: NodeJS.ProcessEnv
+    detached?: boolean
+    stdio: 'pipe'
+  },
+) {
+  if (process.platform === 'win32') {
+    return spawn('pnpm', args, {
+      ...options,
+      shell: true,
+      windowsHide: true,
+    })
+  }
+
+  return spawn(resolvePnpmCommand(), args, options)
+}
+
 async function runCommand(cwd: string, args: string[], label: string) {
   const lines: string[] = []
-  const child = spawn(resolvePnpmCommand(), args, {
+  const child = spawnPnpm(args, {
     cwd,
     env: createSpawnEnv(process.env),
     stdio: 'pipe',
@@ -199,7 +219,7 @@ export function createWatchSession(
   const lines: string[] = []
   let lastCompileSuccessAt = 0
   let compileFatalError: string | undefined
-  const child = spawn(resolvePnpmCommand(), ['run', devScript], {
+  const child = spawnPnpm(['run', devScript], {
     cwd,
     env: createSpawnEnv(process.env, {
       WEAPP_TW_WATCH_REGRESSION: '1',
