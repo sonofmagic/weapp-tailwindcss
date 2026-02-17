@@ -5033,10 +5033,10 @@ watchpack@^1.7.4:
     chokidar "^3.4.1"
     watchpack-chokidar2 "^2.0.1"
 
-weapp-tailwindcss@^4.10.0:
-  version "4.10.0"
-  resolved "https://registry.yarnpkg.com/weapp-tailwindcss/-/weapp-tailwindcss-4.10.0.tgz#1a5eaf3ee6e7adc3e83dbbdaea95b00308ea4f15"
-  integrity sha512-6xBo4NckdHvf5W4xXdbUAnymn5kxhOdA0ZrbIDh238HVXiILBxtR2nyImxPjTF7EGGutDhnP8bBT+J1AUsYt6Q==
+weapp-tailwindcss@^4.10.1:
+  version "4.10.1"
+  resolved "https://registry.yarnpkg.com/weapp-tailwindcss/-/weapp-tailwindcss-4.10.1.tgz#131ff74184e0495fecd496d00edc49d43b084ff8"
+  integrity sha512-8DOWN1Sq2GhmgocfhNXQkFP0ojtAkoYRgJ3tnOoJwsTr+iZZaG6x4OrTI3hAVm+ehWpd2Hg6nMnn5BWqueuarA==
   dependencies:
     "@ast-core/escape" "~1.0.1"
     "@babel/parser" "~7.29.0"
