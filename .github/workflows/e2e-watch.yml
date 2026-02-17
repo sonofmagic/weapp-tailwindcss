@@ -25,10 +25,35 @@ permissions:
 
 jobs:
   e2e-watch:
-    name: e2e-watch (ubuntu-node22)
+    name: e2e-watch (${{ matrix.runner_label }}-node22-${{ matrix.watch_case }})
     if: github.event_name != 'pull_request' || github.event.pull_request.draft == false
-    runs-on: ubuntu-latest
-    timeout-minutes: 45
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - os: ubuntu-latest
+            runner_label: ubuntu
+            watch_case: all
+            timeout_minutes: 45
+            watch_timeout_ms: '360000'
+            watch_poll_ms: '240'
+            watch_command_timeout_ms: '900000'
+          - os: macos-latest
+            runner_label: macos
+            watch_case: both
+            timeout_minutes: 60
+            watch_timeout_ms: '480000'
+            watch_poll_ms: '320'
+            watch_command_timeout_ms: '1200000'
+          - os: windows-latest
+            runner_label: windows
+            watch_case: both
+            timeout_minutes: 70
+            watch_timeout_ms: '540000'
+            watch_poll_ms: '400'
+            watch_command_timeout_ms: '1500000'
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: ${{ matrix.timeout_minutes }}
 
     steps:
       - name: Check out code
@@ -51,26 +76,29 @@ jobs:
 
       - name: Build watch suite package dependencies
         run: |
-          pnpm --filter @weapp-tailwindcss/shared run build
-          pnpm --filter @weapp-tailwindcss/logger run build
-          pnpm --filter @weapp-tailwindcss/postcss run build
-          pnpm --filter weapp-style-injector run build
+          pnpm --filter "@weapp-tailwindcss/shared" run build
+          pnpm --filter "@weapp-tailwindcss/logger" run build
+          pnpm --filter "@weapp-tailwindcss/postcss" run build
+          pnpm --filter "weapp-style-injector" run build
+          pnpm -r --filter "./packages-runtime/*" run build
 
       - name: Build weapp-tailwindcss package
         run: pnpm --filter weapp-tailwindcss run build
 
       - name: Run e2e watch suite
         env:
-          # CI runners are slower for uni-app watch scenarios; raise timeout to reduce flaky exits at 240s.
-          E2E_WATCH_TIMEOUT_MS: '360000'
-          E2E_WATCH_COMMAND_TIMEOUT_MS: '900000'
+          E2E_WATCH_CASE: ${{ matrix.watch_case }}
+          # CI runners are slower for watch/hmr scenarios on macOS/Windows, so use matrix-specific budgets.
+          E2E_WATCH_TIMEOUT_MS: ${{ matrix.watch_timeout_ms }}
+          E2E_WATCH_POLL_MS: ${{ matrix.watch_poll_ms }}
+          E2E_WATCH_COMMAND_TIMEOUT_MS: ${{ matrix.watch_command_timeout_ms }}
         run: pnpm e2e:watch
 
       - name: Upload e2e watch reports
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: e2e-watch-hmr-reports-${{ github.run_id }}
+          name: e2e-watch-hmr-reports-${{ matrix.runner_label }}-${{ matrix.watch_case }}-${{ github.run_id }}
           path: e2e/benchmark/e2e-watch-hmr/*.json
           if-no-files-found: ignore
           retention-days: 14
