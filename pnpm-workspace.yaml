@@ -102,17 +102,17 @@ catalogs:
   typescript59tilde:
     typescript: ~5.9.3
   typescriptEslint849:
-    '@typescript-eslint/eslint-plugin': ^8.55.0
-    '@typescript-eslint/parser': ^8.55.0
-    typescript-eslint: ^8.55.0
-  vite5421:
-    vite: ^5.4.21
+    '@typescript-eslint/eslint-plugin': ^8.56.0
+    '@typescript-eslint/parser': ^8.56.0
+    typescript-eslint: ^8.56.0
   vite4:
     vite: ^4.5.14
-  vitePluginReact4:
-    '@vitejs/plugin-react': ^4.7.0
+  vite5421:
+    vite: ^5.4.21
   vite724:
     vite: ^7.3.1
+  vitePluginReact4:
+    '@vitejs/plugin-react': ^4.7.0
   vue3:
     '@vue/compiler-dom': ^3.5.28
     '@vue/compiler-sfc': ^3.5.28
