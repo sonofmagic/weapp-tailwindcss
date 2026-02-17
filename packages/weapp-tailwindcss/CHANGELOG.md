@@ -1,5 +1,89 @@
 # weapp-tailwindcss
 
+## 4.10.0
+
+### Minor Changes
+
+- ✨ **增强 `weapp-tailwindcss` 在复杂 Tailwind 语法与热更新回归场景下的稳定性与可观测性：** [`b2aa840`](https://github.com/sonofmagic/weapp-tailwindcss/commit/b2aa84042aa34fcd01e8667619d5d378b008c046) by @sonofmagic
+  - 扩展 watch HMR 回归到双轮次对比（`baseline-arbitrary` 与 `complex-corpus`），并在报告中输出分轮次指标与差异对比，便于长期性能追踪。
+  - 强化跨框架 watch 路径下的复杂类名热更新验证，覆盖更多任意值、复杂变体与组合语法。
+  - 补充复杂语法语料与端到端样式产物回归测试，提升对 Tailwind 复杂写法转译行为的覆盖度与回归保障。
+
+### Patch Changes
+
+- 🐛 **修复 Vite + uni-app 场景下的 HMR 类名漏转译问题，并增强 JS 转译鲁棒性：** [`be6f65d`](https://github.com/sonofmagic/weapp-tailwindcss/commit/be6f65d4232621fedef617a00a2072bc02b89ec6) by @sonofmagic
+  - 修复 `generateBundle` 阶段 runtime class set 失效策略：当 `html/js` 源码发生变化时强制刷新 runtimeSet，不再只依赖 `tailwind.config` 签名，避免新增 arbitrary value 在热更新后漏转义。
+  - 为 Vite JS 处理链路补充 `staleClassNameFallback` 策略（`serve` 与 `build --watch` 默认开启），并新增 `UserDefinedOptions.staleClassNameFallback` 供用户显式配置。
+  - 补充对应回归测试：覆盖“静态 class -> `:class` 常量字符串（包含新增 arbitrary value）”的热更新场景，并验证 `jsPreserveClass` 可避免业务字符串误转义。
+
+- 🐛 **适配 `tailwindcss-patch@8.7.x` 的选项结构升级，并补齐向后兼容与稳定性修复：** [`fe5ac5e`](https://github.com/sonofmagic/weapp-tailwindcss/commit/fe5ac5e400609878d2ce2e91aede134cde0e1823) by @sonofmagic
+  - 将 patch 选项统一迁移到新版字段（如 `tailwindcss` / `apply` / `extract` / `projectRoot`），同时兼容旧字段输入，降低升级成本。
+  - 修复 v4 patcher 选项合并与基路径覆盖逻辑，确保 `cssEntries` 与 `tailwindcss` 相关配置在新旧格式下行为一致。
+  - 更新 CLI 默认 patch 选项映射，`extendLengthUnits` 等能力迁移到 `apply` 分组，避免新版 `tailwindcss-patch` 下配置失效。
+  - 补齐相关类型定义与测试，避免在 DTS 构建和 patch 选项推导中出现类型漂移。
+
+- 🐛 **Fix css-macro conditional comment generation for logical platform expressions.** [`84e3395`](https://github.com/sonofmagic/weapp-tailwindcss/commit/84e33954cbca5ce565301471469f75cf44fdb1dc) by @sonofmagic
+  - Normalize `ifdef/ifndef` conditions like `H5||APP` and `H5_||_APP` to the uni-app style `H5 || APP`.
+  - Keep escaped expressions (such as `H5\\_||\\_MP-WEIXIN`) as literals.
+  - Ensure emitted conditional comments are always valid paired blocks (`#ifdef/#endif` and `#ifndef/#endif`) without nested `#ifndef` expansion.
+  - Restore stable CSS output generation in uni-app scenarios using `ifdef-[...]` class macros.
+
+- 🐛 **提升热更新链路的稳定性与性能，并补齐真实 watch 回归保障：** [`7824e01`](https://github.com/sonofmagic/weapp-tailwindcss/commit/7824e010f8f7e4a7a9ae6eedd707ff4a329d991b) by @sonofmagic
+  - 优化运行时类名转译策略，修复 stale runtimeSet 场景下新增任意值类与小数类（如 `text-[23.43px]`、`space-y-2.5`）在 JS/WXML/Vue 中的漏转译问题。
+  - 提炼并复用类名候选判定逻辑，减少重复实现，降低后续维护成本。
+  - 增强 demo 级 watch 回归脚本（taro + uni-app），覆盖新增类热更新、输出变更检测与恢复校验。
+  - 为 watch 回归增加本地构建预热与日志降噪能力（可选 `--quiet-sass`），减少无效噪音并提升排查效率。
+  - 优化相关缓存与增量处理路径，缩短常见热更新阶段插件处理耗时。
+
+- 🐛 **修复 Vite + uni-app 在 HMR 增量阶段的样式回退问题，并增强 watch 热更新回归覆盖：** [`5dbec90`](https://github.com/sonofmagic/weapp-tailwindcss/commit/5dbec90798221d9e941ecc44e2e7f00ecc2edc18) by @sonofmagic
+  - 修复 `generateBundle` 的 CSS dirty 跳过逻辑：即使本轮 CSS 原文 hash 未变化，也会通过缓存回填已转译结果，避免 `app.wxss` 在 dev/watch 下回退到未转译内容并与同轮 JS/WXML class 改写失配。
+  - 新增对应单元测试，覆盖“JS 变化但 CSS 原文不变”场景，确保缓存命中时仍应用 CSS 转译结果。
+  - 增强 `e2e:watch` 的 same-class-literal HMR 校验：新增全局样式稳定性指标与断言，确保“源码变化但 class literal 不变”时仍能覆盖并检测样式稳定性。
+  - 对 `mpx` 用例保留兼容策略：该场景仅放宽同字面量变更时的全局样式稳定断言，不影响其余项目的严格校验。
+
+- 🐛 **扩展热更新 e2e 回归覆盖面并提升跨框架 watch 稳定性：** [`7261ffa`](https://github.com/sonofmagic/weapp-tailwindcss/commit/7261ffa6b6d8a7c262020123cceef39c827bf9e4) by @sonofmagic
+  - watch 回归用例从 `taro/uni-app` 扩展到 `taro/uni-app/mpx/rax/mina/weapp-vite`，默认运行全量 `all`。
+  - 新增 `e2e:watch:mpx`、`e2e:watch:rax`、`e2e:watch:mina`、`e2e:watch:weapp-vite` 便捷命令。
+  - 加强 watch 预热与编译成功判定，降低误判和超时波动。
+  - 优化子进程退出与清理策略，避免 watch 任务残留影响后续回归。
+  - 强化复杂 Tailwind 类组合（含任意值、小数、calc、伪元素等）在热更新路径下的转译验证。
+
+- 🐛 **修复 Tailwind v4 `space-x-*` 在小程序端生成不兼容方向伪类导致的构建产物报错问题：** [`515aa47`](https://github.com/sonofmagic/weapp-tailwindcss/commit/515aa473159218d67ba8bc461ae7c95d573d3f80) by @sonofmagic
+  - 在选择器转换阶段清理 `:-webkit-any(...)`、`:-moz-any(...)`、`:lang(...)` 相关分支，避免输出微信开发者工具不支持的选择器。
+  - 对 `:not(...)` 包裹的方向条件保留主体选择器并移除条件；对纯方向分支选择器直接移除，避免产生无效 CSS。
+  - 补充 `selectorParser` 回归测试，覆盖上述 RTL/language 伪类清理逻辑。
+
+- 🐛 **扩展 watch 热更新回归矩阵与分项目报告能力，补齐重点 demo/apps 的可观测性：** [`a76b055`](https://github.com/sonofmagic/weapp-tailwindcss/commit/a76b0557ae378cf149aa0df7ec213c9fd3eaeacc) by @sonofmagic
+  - 将热更新用例按项目维度拆分执行，覆盖 apps 与 demos 的独立链路，报告按项目分别输出。
+  - 新增并强制校验重点项目热更新报告覆盖：`demo/uni-app-vue3-vite`、`demo/uni-app-tailwindcss-v4`、`demo/taro-vite-tailwindcss-v4`、`demo/taro-app-vite`、`demo/taro-webpack-tailwindcss-v4`、`demo/taro-vue3-app`。
+  - 在模板文件（wxml/vue/tsx 等）与 JS/TS 变更热更新验证之外，增加全局样式 `app.wxss` 转译类同步检查，确保新增类在全局产物可追踪。
+  - 增强回归脚本稳定性与报告字段，补充按项目的热更新耗时与样式转译校验信息，便于横向对比与回归排查。
+
+- 🐛 **优化 Vite 适配器的启动与增量构建性能（保持功能一致性）：** [`9fc32ff`](https://github.com/sonofmagic/weapp-tailwindcss/commit/9fc32ff8d12430e7d8e207127e1130a16e13731d) by @sonofmagic
+  - 运行时类集刷新改为按签名与配置变化触发，不再在每次 `generateBundle` 强制刷新。
+  - `generateBundle` 支持基于 dirty entries 与 linked entries 的增量处理，减少全量遍历开销。
+  - JS 转换新增轻量 precheck，无相关特征时跳过 Babel 解析与遍历。
+  - 新增 Vite 性能基准与汇总脚本，支持 optimized/legacy 对照复现。
+
+- 🐛 **新增一条专门面向热更新的 e2e 回归链路（构建产物快照链路之外），用于真实验证 taro/uni-app 在 watch 模式下的 HMR 生效性与耗时：** [`d350d81`](https://github.com/sonofmagic/weapp-tailwindcss/commit/d350d817b006f7727ad8a3ed3950ca9c700a78b6) by @sonofmagic
+  - 新增 `e2e:watch` 系列命令与独立 vitest 配置，支持按 `taro` / `uni` / `both` 运行。
+  - 强化 `test:watch-hmr` 回归脚本：输出结构化报告（含 hot update / rollback 延迟）、支持性能预算断言与日志降噪。
+  - 在回归中注入更复杂的 Tailwind 类名组合（含任意值、小数、`calc()`、`grid-cols-[...]`、`/` 透明度、伪元素变体等），确保新增类在 JS/WXML 场景的转译结果可验证。
+  - 增加“类名避撞”策略，避免测试注入类与 demo 现有类冲突导致误判，提升回归稳定性与可重复性。
+  - 默认 watch e2e 启用 `--skip-build` 聚焦热更新链路，另提供完整预构建模式命令用于全链路对照。
+
+- 🐛 **修复 uni-app + Vite/HBuilderX 增量热更新中 template 转译退化导致 `wxml` 回退为未转义类名的问题：** [`76df4cf`](https://github.com/sonofmagic/weapp-tailwindcss/commit/76df4cfbc0ba1e8e2bcea7afd33a40060dae3580) by @sonofmagic
+  - 调整 `generateBundle` 的 html 增量处理策略：非首轮也会将当前 bundle 内 html 资产纳入处理流程，确保每轮都能命中缓存并回填上次转译结果（`processCachedTask`）。
+  - 避免仅 script 变更时出现 `wxml` 未转义而 `js/wxss` 已转义的链路不一致问题。
+  - 补充 Vite bundle 回归测试，覆盖 script-only 连续变更与 `bg-[#0000]` 等 arbitrary value 场景，确保 `wxml/js/wxss` 增量输出始终一致。
+
+- 🐛 **修复 webpack（Taro/uni）增量热更新下的类名转译一致性问题，并确保 JS 仅按最新 class set 精确匹配：** [`bac7fe4`](https://github.com/sonofmagic/weapp-tailwindcss/commit/bac7fe4831bb13ad4c663c0bf51ebf9832737850) by @sonofmagic
+  - webpack 资产处理阶段每轮强制收集 runtime class set，避免 script-only 热更新时复用过期集合导致 `bg-[#xxxx]` 一类类名漏转译或截断。
+  - webpack 模式下 `staleClassNameFallback` 回到默认关闭，保持 JS 转译“只命中 class set”的精确策略。
+  - 增强 watch-hmr 回归：新增 `bg-[#hex]` 防截断断言（禁止出现 `bg- xxxx`），并纳入 `apps/taro-webpack-tailwindcss-v4` 的脚本热更新用例，确保 e2e:watch 覆盖该场景。
+- 📦 **Dependencies** [`7824e01`](https://github.com/sonofmagic/weapp-tailwindcss/commit/7824e010f8f7e4a7a9ae6eedd707ff4a329d991b)
+  → `@weapp-tailwindcss/postcss@2.1.5`
+
 ## 4.10.0-beta.8
 
 ### Patch Changes
