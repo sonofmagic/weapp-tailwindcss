@@ -1,6 +1,7 @@
 import type { Buffer } from 'node:buffer'
 import type { CliOptions, WatchSession } from './types'
 import { spawn } from 'node:child_process'
+import { existsSync } from 'node:fs'
 import path from 'node:path'
 import process from 'node:process'
 import { resolvePnpmCommand } from './cli'
@@ -170,6 +171,16 @@ function spawnPnpm(
     stdio: 'pipe'
   },
 ) {
+  const npmExecPath = process.env.npm_execpath
+  if (
+    typeof npmExecPath === 'string'
+    && npmExecPath.length > 0
+    && /pnpm/i.test(path.basename(npmExecPath))
+    && existsSync(npmExecPath)
+  ) {
+    return spawn(process.execPath, [npmExecPath, ...args], options)
+  }
+
   if (process.platform === 'win32') {
     return spawn('pnpm', args, {
       ...options,
