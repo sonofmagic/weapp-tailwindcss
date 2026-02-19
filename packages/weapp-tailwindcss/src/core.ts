@@ -27,6 +27,20 @@ export function createContext(options: UserDefinedOptions = {}) {
     onPatchCompleted: patchRecorderState.onPatchCompleted,
   }
 
+  function withRuntimeTailwindMajorVersion(options?: CreateJsHandlerOptions): CreateJsHandlerOptions {
+    const resolvedOptions: CreateJsHandlerOptions = {
+      ...(options ?? {}),
+    }
+    if (typeof resolvedOptions.tailwindcssMajorVersion === 'number') {
+      return resolvedOptions
+    }
+    const majorVersion = runtimeState.twPatcher.majorVersion
+    if (typeof majorVersion === 'number') {
+      resolvedOptions.tailwindcssMajorVersion = majorVersion
+    }
+    return resolvedOptions
+  }
+
   async function transformWxss(rawCss: string, options?: Partial<IStyleHandlerOptions>) {
     await runtimeState.patchPromise
     const result = await styleHandler(rawCss, defuOverrideArray(options!, {
@@ -49,9 +63,7 @@ export function createContext(options: UserDefinedOptions = {}) {
         forceCollect: true,
       })
     }
-    return await jsHandler(rawJs, runtimeSet, defuOverrideArray(options, {
-      tailwindcssMajorVersion: runtimeState.twPatcher.majorVersion,
-    }))
+    return await jsHandler(rawJs, runtimeSet, withRuntimeTailwindMajorVersion(options))
   }
 
   async function transformWxml(rawWxml: string, options?: ITemplateHandlerOptions) {
@@ -65,9 +77,7 @@ export function createContext(options: UserDefinedOptions = {}) {
     return templateHandler(rawWxml, defuOverrideArray(options!, {
       runtimeSet,
       jsHandler: (source: string, runtime?: Set<string>, handlerOptions?: CreateJsHandlerOptions) => {
-        return runtimeJsHandler(source, runtime, defuOverrideArray(handlerOptions ?? {}, {
-          tailwindcssMajorVersion: runtimeState.twPatcher.majorVersion,
-        }))
+        return runtimeJsHandler(source, runtime, withRuntimeTailwindMajorVersion(handlerOptions))
       },
     }))
   }
