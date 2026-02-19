@@ -1,5 +1,12 @@
 # @weapp-tailwindcss/variants
 
+## 0.2.1
+
+### Patch Changes
+
+- 📦 **Dependencies** [`bb3ad1e`](https://github.com/sonofmagic/weapp-tailwindcss/commit/bb3ad1ea2c1794a0559580a074b0c64927ac9ea9)
+  → `@weapp-tailwindcss/merge@2.1.6`
+
 ## 0.2.0
 
 ### Minor Changes
