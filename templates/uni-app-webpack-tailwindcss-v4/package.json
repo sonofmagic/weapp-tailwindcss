@@ -77,7 +77,7 @@
     "vue-class-component": "^6.3.2",
     "vue-property-decorator": "^8.0.0",
     "vuex": "^3.2.0",
-    "@weapp-tailwindcss/merge": "^2.1.5"
+    "@weapp-tailwindcss/merge": "^2.1.6"
   },
   "devDependencies": {
     "@babel/plugin-syntax-typescript": "^7.27.1",
@@ -93,7 +93,7 @@
     "@dcloudio/vue-cli-plugin-uni-optimize": "2.0.2-4070620250821001",
     "@dcloudio/webpack-uni-mp-loader": "2.0.2-4070620250821001",
     "@dcloudio/webpack-uni-pages-loader": "2.0.2-4070620250821001",
-    "@tailwindcss/postcss": "^4.1.18",
+    "@tailwindcss/postcss": "^4.2.0",
     "@vue/cli-plugin-babel": "~5.0.9",
     "@vue/cli-plugin-typescript": "~5.0.9",
     "@vue/cli-service": "~5.0.9",
@@ -103,11 +103,11 @@
     "postcss": "^8.5.6",
     "postcss-comment": "^2.0.0",
     "postcss-loader": "^8.1.1",
-    "tailwindcss": "^4.1.18",
+    "tailwindcss": "^4.2.0",
     "typescript": "~5.9.3",
     "vue-template-compiler": ">= 2.6.14 < 2.7",
     "weapp-ide-cli": "^5.0.4",
-    "weapp-tailwindcss": "^4.10.1"
+    "weapp-tailwindcss": "^4.10.2"
   },
   "browserslist": [
     "Android >= 4.4",

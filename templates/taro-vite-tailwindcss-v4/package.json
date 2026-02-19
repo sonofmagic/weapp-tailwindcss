@@ -62,13 +62,13 @@
     "@tarojs/taro": "4.1.6",
     "react": "^18.0.0",
     "react-dom": "^18.0.0",
-    "@weapp-tailwindcss/merge": "^2.1.5"
+    "@weapp-tailwindcss/merge": "^2.1.6"
   },
   "devDependencies": {
     "@babel/core": "^7.28.3",
     "@babel/preset-react": "^7.27.1",
-    "@tailwindcss/postcss": "^4.1.18",
-    "@tailwindcss/vite": "^4.1.18",
+    "@tailwindcss/postcss": "^4.2.0",
+    "@tailwindcss/vite": "^4.2.0",
     "@tarojs/cli": "4.1.6",
     "@tarojs/vite-runner": "4.1.6",
     "@types/react": "^19.1.12",
@@ -81,12 +81,12 @@
     "postcss": "^8.5.6",
     "react-refresh": "^0.17.0",
     "stylelint": "^16.23.1",
-    "tailwindcss": "^4.1.18",
+    "tailwindcss": "^4.2.0",
     "terser": "^5.43.1",
     "typescript": "^5.9.3",
     "vite": "^4.5.14",
     "weapp-ide-cli": "^5.0.4",
-    "weapp-tailwindcss": "^4.10.1"
+    "weapp-tailwindcss": "^4.10.2"
   },
   "pnpm": {
     "onlyBuiltDependencies": [
