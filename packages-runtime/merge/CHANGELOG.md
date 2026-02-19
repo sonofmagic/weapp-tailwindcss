@@ -1,5 +1,11 @@
 # @weapp-tailwindcss/merge
 
+## 2.1.6
+
+### Patch Changes
+
+- 🐛 **将 `tailwind-merge` 从 `^3.4.1` 升级到 `^3.5.0`，同步上游合并规则更新，减少类名合并结果与最新版本不一致的问题。** [`bb3ad1e`](https://github.com/sonofmagic/weapp-tailwindcss/commit/bb3ad1ea2c1794a0559580a074b0c64927ac9ea9) by @sonofmagic
+
 ## 2.1.5
 
 ### Patch Changes
