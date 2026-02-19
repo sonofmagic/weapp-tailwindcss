@@ -5,12 +5,15 @@ import type { JsToken } from './types'
 import { jsStringEscape } from '@ast-core/escape'
 import { escapeStringRegexp } from '@weapp-core/regex'
 import { splitCode } from '@weapp-tailwindcss/shared/extractors'
-import { shouldTransformClassNameCandidate } from '../shared/classname-transform'
+import { createDebug } from '@/debug'
+import { resolveClassNameTransformDecision, shouldEnableArbitraryValueFallback } from '../shared/classname-transform'
 import { decodeUnicode2 } from '../utils/decode'
 import { replaceWxml } from '../wxml/shared'
+import { isClassContextLiteralPath } from './class-context'
 
 type EscapeMap = NonNullable<IJsHandlerOptions['escapeMap']>
 
+const debug = createDebug('[js:handlers] ')
 const patternCache = new Map<string, RegExp>()
 const replacementCacheByEscapeMap = new WeakMap<EscapeMap, Map<string, string>>()
 const defaultReplacementCache = new Map<string, string>()
@@ -94,8 +97,10 @@ export function replaceHandleValue(
     needEscaped = false,
   } = options
   const { classNameSet, alwaysEscape } = options
+  const fallbackEnabled = shouldEnableArbitraryValueFallback(options)
+  const classContext = options.wrapExpression || isClassContextLiteralPath(path)
 
-  if (!alwaysEscape && (!classNameSet || classNameSet.size === 0)) {
+  if (!alwaysEscape && !fallbackEnabled && (!classNameSet || classNameSet.size === 0)) {
     return undefined
   }
 
@@ -111,10 +116,24 @@ export function replaceHandleValue(
 
   let transformed = literal
   let mutated = false
+  let matchedCandidateCount = 0
+  let escapedDecisionCount = 0
+  let fallbackDecisionCount = 0
 
   for (const candidate of candidates) {
-    if (!shouldTransformClassNameCandidate(candidate, options)) {
+    const decision = resolveClassNameTransformDecision(candidate, {
+      ...options,
+      classContext,
+    })
+    if (decision === 'skip') {
       continue
+    }
+    matchedCandidateCount += 1
+    if (decision === 'escaped') {
+      escapedDecisionCount += 1
+    }
+    if (decision === 'fallback') {
+      fallbackDecisionCount += 1
     }
 
     if (!transformed.includes(candidate)) {
@@ -134,6 +153,17 @@ export function replaceHandleValue(
   const node = path.node
   if (!mutated || typeof node.start !== 'number' || typeof node.end !== 'number') {
     return undefined
+  }
+
+  if (debug.enabled) {
+    debug(
+      'runtimeSet size=%d fallbackTriggered=%s matchedCandidates=%d escapedHits=%d file=%s',
+      classNameSet?.size ?? 0,
+      fallbackDecisionCount > 0,
+      matchedCandidateCount,
+      escapedDecisionCount,
+      options.filename ?? 'unknown',
+    )
   }
 
   const start = node.start + offset

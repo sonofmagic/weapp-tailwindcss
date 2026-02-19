@@ -56,6 +56,18 @@ export interface UserDefinedOptionsGeneralPart {
   staleClassNameFallback?: boolean
 
   /**
+   * 控制 JS 任意值类名在 classNameSet 异常时的受控兜底策略。
+   *
+   * @group 3.一般配置
+   * @remarks
+   * 为避免误伤业务字符串，兜底仅在 class 语义上下文生效。
+   * - `false`：关闭兜底；
+   * - `true`：始终开启受控兜底；
+   * - `'auto'`：仅 TailwindCSS v4 且 classNameSet 为空时启用。
+   */
+  jsArbitraryValueFallback?: boolean | 'auto'
+
+  /**
    * 是否替换运行时依赖包名。
    *
    * @group 3.一般配置

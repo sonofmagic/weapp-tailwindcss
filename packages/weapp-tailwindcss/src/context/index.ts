@@ -107,6 +107,7 @@ function createInternalCompilerContext(opts?: UserDefinedOptions): InternalUserD
     ctx,
     customAttributesEntities,
     cssCalcOptions,
+    twPatcher.majorVersion,
   )
 
   ctx.styleHandler = styleHandler

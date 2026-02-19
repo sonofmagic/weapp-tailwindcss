@@ -49,7 +49,9 @@ export function createContext(options: UserDefinedOptions = {}) {
         forceCollect: true,
       })
     }
-    return await jsHandler(rawJs, runtimeSet, options)
+    return await jsHandler(rawJs, runtimeSet, defuOverrideArray(options, {
+      tailwindcssMajorVersion: runtimeState.twPatcher.majorVersion,
+    }))
   }
 
   async function transformWxml(rawWxml: string, options?: ITemplateHandlerOptions) {
@@ -63,7 +65,9 @@ export function createContext(options: UserDefinedOptions = {}) {
     return templateHandler(rawWxml, defuOverrideArray(options!, {
       runtimeSet,
       jsHandler: (source: string, runtime?: Set<string>, handlerOptions?: CreateJsHandlerOptions) => {
-        return runtimeJsHandler(source, runtime, handlerOptions)
+        return runtimeJsHandler(source, runtime, defuOverrideArray(handlerOptions ?? {}, {
+          tailwindcssMajorVersion: runtimeState.twPatcher.majorVersion,
+        }))
       },
     }))
   }

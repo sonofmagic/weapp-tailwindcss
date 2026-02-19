@@ -1,6 +1,7 @@
 import type { OutputAsset, OutputChunk } from 'rollup'
 import type { Plugin, ResolvedConfig } from 'vite'
 import type { CreateJsHandlerOptions } from '@/types'
+import { readFile } from 'node:fs/promises'
 import path from 'node:path'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 import { createJsHandler } from '@/js'
@@ -19,6 +20,21 @@ const TEST_TIMEOUT_MS = 2000
 async function loadUnifiedVitePlugin() {
   const mod = await import('@/bundlers/vite')
   return mod.UnifiedViteWeappTailwindcssPlugin
+}
+
+async function loadIssue814Fixture() {
+  const fixtureRoot = path.resolve(
+    __dirname,
+    '../fixtures/issue-814/tw4/pages/index',
+  )
+  const [wxml, js] = await Promise.all([
+    readFile(path.join(fixtureRoot, 'index.wxml'), 'utf8'),
+    readFile(path.join(fixtureRoot, 'index.js'), 'utf8'),
+  ])
+  return {
+    js,
+    wxml,
+  }
 }
 
 describe('bundlers/vite UnifiedViteWeappTailwindcssPlugin bundle', () => {
@@ -168,6 +184,237 @@ const trace = "at App.vue:4"
     expect(transformedCode).not.toContain('bg-[#213435]')
     expect(currentContext.twPatcher.extract).toHaveBeenCalledTimes(2)
     expect(currentContext.twPatcher.getClassSetSync).toHaveBeenCalledTimes(2)
+  }, TEST_TIMEOUT_MS)
+
+  it('fixes issue #814 in tw4 fixture when cwd is app root (escaped runtime set entries should still hit)', async () => {
+    const UnifiedViteWeappTailwindcssPlugin = await loadUnifiedVitePlugin()
+    const { wxml, js } = await loadIssue814Fixture()
+    const escapedGap = replaceWxml('gap-[20px]')
+    const runtimeSet = new Set(['flex', escapedGap])
+    const appRoot = path.resolve(process.cwd(), 'apps/issue-814-tw4')
+    setCurrentContext(createContext({
+      templateHandler: vi.fn(async (code: string) => code.replaceAll('gap-[20px]', escapedGap)),
+      jsHandler: createJsHandler({
+        staleClassNameFallback: false,
+      }),
+      staleClassNameFallback: false,
+      twPatcher: {
+        patch: vi.fn(),
+        getClassSet: vi.fn(async () => runtimeSet),
+        getClassSetSync: vi.fn(() => runtimeSet),
+        extract: vi.fn(async () => ({ classSet: runtimeSet })),
+        majorVersion: 4,
+      },
+    }))
+
+    const plugins = UnifiedViteWeappTailwindcssPlugin()
+    const postPlugin = plugins?.find(plugin => plugin.name === 'weapp-tailwindcss:adaptor:post') as Plugin
+    expect(postPlugin).toBeTruthy()
+
+    await (postPlugin.configResolved as any)?.call(postPlugin, {
+      command: 'build',
+      root: appRoot,
+      css: { postcss: { plugins: [] } },
+      build: { outDir: 'dist' },
+    } as ResolvedConfig)
+
+    const generateBundle = postPlugin.generateBundle as any
+    const bundle = {
+      'dist/pages/index/index.wxml': createRollupAsset(wxml),
+      'dist/pages/index/index.js': createRollupChunk(js),
+    }
+    await generateBundle?.call(postPlugin, {} as any, bundle)
+
+    const transformedWxml = (bundle['dist/pages/index/index.wxml'] as OutputAsset).source.toString()
+    const transformedJs = (bundle['dist/pages/index/index.js'] as OutputChunk).code
+
+    expect(transformedWxml).toContain(escapedGap)
+    expect(transformedJs).toContain(escapedGap)
+    expect(transformedJs).not.toContain('gap-[20px]')
+  }, TEST_TIMEOUT_MS)
+
+  it('fixes issue #814 in tw4 fixture when cwd is workspace root and build root points to app root', async () => {
+    const UnifiedViteWeappTailwindcssPlugin = await loadUnifiedVitePlugin()
+    const { wxml, js } = await loadIssue814Fixture()
+    const escapedGap = replaceWxml('gap-[20px]')
+    const workspaceRoot = path.resolve(process.cwd())
+    const appRoot = path.resolve(workspaceRoot, 'apps/issue-814-tw4')
+    const emptySet = new Set<string>()
+    const issueSet = new Set(['flex', 'gap-[20px]'])
+
+    const initialPatcher = {
+      patch: vi.fn(async () => {}),
+      getClassSet: vi.fn(async () => emptySet),
+      getClassSetSync: vi.fn(() => emptySet),
+      extract: vi.fn(async () => ({ classSet: emptySet })),
+      majorVersion: 4,
+    }
+    const refreshedPatcher = {
+      patch: vi.fn(async () => {}),
+      getClassSet: vi.fn(async () => issueSet),
+      getClassSetSync: vi.fn(() => issueSet),
+      extract: vi.fn(async () => ({ classSet: issueSet })),
+      majorVersion: 4,
+    }
+    const refreshTailwindcssPatcher = vi.fn(async () => refreshedPatcher)
+
+    setCurrentContext(createContext({
+      tailwindcssBasedir: workspaceRoot,
+      refreshTailwindcssPatcher,
+      templateHandler: vi.fn(async (code: string) => code.replaceAll('gap-[20px]', escapedGap)),
+      jsHandler: createJsHandler({
+        jsArbitraryValueFallback: false,
+        staleClassNameFallback: false,
+      }),
+      staleClassNameFallback: false,
+      twPatcher: initialPatcher,
+    }))
+
+    const plugins = UnifiedViteWeappTailwindcssPlugin()
+    const postPlugin = plugins?.find(plugin => plugin.name === 'weapp-tailwindcss:adaptor:post') as Plugin
+    expect(postPlugin).toBeTruthy()
+
+    await (postPlugin.configResolved as any)?.call(postPlugin, {
+      command: 'build',
+      root: appRoot,
+      css: { postcss: { plugins: [] } },
+      build: { outDir: 'dist' },
+    } as ResolvedConfig)
+
+    const generateBundle = postPlugin.generateBundle as any
+    const bundle = {
+      'dist/pages/index/index.wxml': createRollupAsset(wxml),
+      'dist/pages/index/index.js': createRollupChunk(js),
+    }
+    await generateBundle?.call(postPlugin, {} as any, bundle)
+
+    const transformedWxml = (bundle['dist/pages/index/index.wxml'] as OutputAsset).source.toString()
+    const transformedJs = (bundle['dist/pages/index/index.js'] as OutputChunk).code
+
+    expect(refreshTailwindcssPatcher).toHaveBeenCalled()
+    expect(transformedWxml).toContain(escapedGap)
+    expect(transformedJs).toContain(escapedGap)
+    expect(transformedJs).not.toContain('gap-[20px]')
+  }, TEST_TIMEOUT_MS)
+
+  it('captures issue #814 fault mode when jsPreserveClass keeps gap candidate untouched', async () => {
+    const UnifiedViteWeappTailwindcssPlugin = await loadUnifiedVitePlugin()
+    const { wxml, js } = await loadIssue814Fixture()
+    const escapedGap = replaceWxml('gap-[20px]')
+    const runtimeSet = new Set(['flex', 'gap-[20px]'])
+    setCurrentContext(createContext({
+      templateHandler: vi.fn(async (code: string) => code.replaceAll('gap-[20px]', escapedGap)),
+      jsHandler: createJsHandler({
+        jsPreserveClass: keyword => keyword === 'gap-[20px]',
+        staleClassNameFallback: false,
+      }),
+      staleClassNameFallback: false,
+      twPatcher: {
+        patch: vi.fn(),
+        getClassSet: vi.fn(async () => runtimeSet),
+        getClassSetSync: vi.fn(() => runtimeSet),
+        extract: vi.fn(async () => ({ classSet: runtimeSet })),
+        majorVersion: 4,
+      },
+    }))
+
+    const plugins = UnifiedViteWeappTailwindcssPlugin()
+    const postPlugin = plugins?.find(plugin => plugin.name === 'weapp-tailwindcss:adaptor:post') as Plugin
+    expect(postPlugin).toBeTruthy()
+
+    await (postPlugin.configResolved as any)?.call(postPlugin, {
+      command: 'build',
+      root: path.resolve(process.cwd(), 'apps/issue-814-tw4'),
+      css: { postcss: { plugins: [] } },
+      build: { outDir: 'dist' },
+    } as ResolvedConfig)
+
+    const generateBundle = postPlugin.generateBundle as any
+    const bundle = {
+      'dist/pages/index/index.wxml': createRollupAsset(wxml),
+      'dist/pages/index/index.js': createRollupChunk(js),
+    }
+    await generateBundle?.call(postPlugin, {} as any, bundle)
+
+    const transformedJs = (bundle['dist/pages/index/index.js'] as OutputChunk).code
+    expect(transformedJs).toContain('gap-[20px]')
+    expect(transformedJs).not.toContain(escapedGap)
+  }, TEST_TIMEOUT_MS)
+
+  it('aligns implicit tailwindcss basedir to vite root before bundle processing', async () => {
+    const UnifiedViteWeappTailwindcssPlugin = await loadUnifiedVitePlugin()
+    const workspaceRoot = path.resolve(process.cwd())
+    const appRoot = path.resolve(workspaceRoot, 'apps/issue-814-tw4')
+    const runtimeSet = new Set(['flex', 'gap-[20px]'])
+    const refreshedPatcher = {
+      patch: vi.fn(async () => {}),
+      getClassSet: vi.fn(async () => runtimeSet),
+      getClassSetSync: vi.fn(() => runtimeSet),
+      extract: vi.fn(async () => ({ classSet: runtimeSet })),
+      majorVersion: 4,
+    }
+    const refreshTailwindcssPatcher = vi.fn(async () => refreshedPatcher)
+
+    setCurrentContext(createContext({
+      tailwindcssBasedir: workspaceRoot,
+      refreshTailwindcssPatcher,
+      twPatcher: {
+        patch: vi.fn(async () => {}),
+        getClassSet: vi.fn(async () => new Set<string>()),
+        getClassSetSync: vi.fn(() => new Set<string>()),
+        extract: vi.fn(async () => ({ classSet: new Set<string>() })),
+        majorVersion: 4,
+      },
+    }))
+
+    const plugins = UnifiedViteWeappTailwindcssPlugin()
+    const postPlugin = plugins?.find(plugin => plugin.name === 'weapp-tailwindcss:adaptor:post') as Plugin
+    expect(postPlugin).toBeTruthy()
+
+    await (postPlugin.configResolved as any)?.call(postPlugin, {
+      command: 'build',
+      root: appRoot,
+      css: { postcss: { plugins: [] } },
+      build: { outDir: 'dist' },
+    } as ResolvedConfig)
+
+    expect(getCurrentContext().tailwindcssBasedir).toBe(appRoot)
+    expect(refreshTailwindcssPatcher).toHaveBeenCalledTimes(1)
+  }, TEST_TIMEOUT_MS)
+
+  it('keeps explicit tailwindcss basedir unchanged on configResolved', async () => {
+    const UnifiedViteWeappTailwindcssPlugin = await loadUnifiedVitePlugin()
+    const workspaceRoot = path.resolve(process.cwd())
+    const appRoot = path.resolve(workspaceRoot, 'apps/issue-814-tw4')
+    const refreshTailwindcssPatcher = vi.fn(async () => getCurrentContext().twPatcher)
+
+    setCurrentContext(createContext({
+      tailwindcssBasedir: workspaceRoot,
+      refreshTailwindcssPatcher,
+      twPatcher: {
+        patch: vi.fn(async () => {}),
+        getClassSet: vi.fn(async () => new Set<string>()),
+        getClassSetSync: vi.fn(() => new Set<string>()),
+        extract: vi.fn(async () => ({ classSet: new Set<string>() })),
+        majorVersion: 4,
+      },
+    }))
+
+    const plugins = UnifiedViteWeappTailwindcssPlugin({
+      tailwindcssBasedir: workspaceRoot,
+    })
+    const postPlugin = plugins?.find(plugin => plugin.name === 'weapp-tailwindcss:adaptor:post') as Plugin
+    expect(postPlugin).toBeTruthy()
+
+    await (postPlugin.configResolved as any)?.call(postPlugin, {
+      command: 'build',
+      root: appRoot,
+      css: { postcss: { plugins: [] } },
+      build: { outDir: 'dist' },
+    } as ResolvedConfig)
+
+    expect(getCurrentContext().tailwindcssBasedir).toBe(workspaceRoot)
+    expect(refreshTailwindcssPatcher).not.toHaveBeenCalled()
   }, TEST_TIMEOUT_MS)
 
   it('keeps non-set business literals unchanged in serve mode while preserving classNameSet-only strategy', async () => {
@@ -421,8 +668,8 @@ const cls = "w-[1.5px]"
 
   it('keeps template transform stable on script-only incremental updates', async () => {
     const UnifiedViteWeappTailwindcssPlugin = await loadUnifiedVitePlugin()
-    const htmlFile = 'pages/index/index.wxml'
-    const jsFile = 'pages/index/index.js'
+    const htmlFile = 'dist/pages/index/index.wxml'
+    const jsFile = 'dist/pages/index/index.js'
     const cssFile = 'app.wxss'
     const escapedAfterContent = replaceWxml('after:content-[\'A\']')
     const escapedHeight = replaceWxml('h-[20px]')

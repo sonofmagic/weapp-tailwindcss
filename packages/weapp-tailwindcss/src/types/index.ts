@@ -60,6 +60,18 @@ export interface IJsHandlerOptions {
    * JS 转译统一遵循 `classNameSet` 精确命中策略，仅转换 tailwindcss-patch 提供的类名集合。
    */
   staleClassNameFallback?: boolean
+  /**
+   * 控制在 classNameSet 异常时的任意值兜底策略。
+   *
+   * - `false`：关闭兜底。
+   * - `true`：在 class 语义上下文中允许任意值兜底。
+   * - `'auto'`：仅在 TailwindCSS v4 且 classNameSet 为空时启用。
+   */
+  jsArbitraryValueFallback?: boolean | 'auto'
+  /**
+   * 当前 TailwindCSS 主版本号，用于自动兜底判定。
+   */
+  tailwindcssMajorVersion?: number
   arbitraryValues?: IArbitraryValues
   jsPreserveClass?: (keyword: string) => boolean | undefined
   needEscaped?: boolean

@@ -200,6 +200,7 @@ export function setupWebpackV5ProcessAssetsHook(options: SetupWebpackV5ProcessAs
                     : currentSourceValue?.toString() ?? ''
                   const { code, linked } = await compilerOptions.jsHandler(currentSource, runtimeSet, {
                     staleClassNameFallback,
+                    tailwindcssMajorVersion: runtimeState.twPatcher.majorVersion,
                     filename: absoluteFile,
                     moduleGraph: moduleGraphOptions,
                     babelParserOptions: {

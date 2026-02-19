@@ -1,5 +1,6 @@
 import type { Plugin, ResolvedConfig } from 'vite'
 import type { UserDefinedOptions } from '@/types'
+import path from 'node:path'
 import process from 'node:process'
 import postcssHtmlTransform from '@weapp-tailwindcss/postcss/html-transform'
 import { vitePluginName } from '@/constants'
@@ -28,6 +29,8 @@ const weappTailwindcssDirPosix = slash(weappTailwindcssPackageDir)
  */
 export function UnifiedViteWeappTailwindcssPlugin(options: UserDefinedOptions = {}): Plugin[] | undefined {
   const rewriteCssImportsSpecified = Object.prototype.hasOwnProperty.call(options, 'rewriteCssImports')
+  const hasExplicitTailwindcssBasedir = typeof options.tailwindcssBasedir === 'string'
+    && options.tailwindcssBasedir.trim().length > 0
   const opts = getCompilerContext(options)
   const {
     disabled,
@@ -167,8 +170,19 @@ export function UnifiedViteWeappTailwindcssPlugin(options: UserDefinedOptions = 
     {
       name: `${vitePluginName}:post`,
       enforce: 'post',
-      configResolved(config) {
+      async configResolved(config) {
         resolvedConfig = config
+        const resolvedRoot = config.root ? path.resolve(config.root) : undefined
+        if (
+          !hasExplicitTailwindcssBasedir
+          && resolvedRoot
+          && opts.tailwindcssBasedir !== resolvedRoot
+        ) {
+          const previousBasedir = opts.tailwindcssBasedir
+          opts.tailwindcssBasedir = resolvedRoot
+          debug('align tailwindcss basedir with vite root: %s -> %s', previousBasedir ?? 'undefined', resolvedRoot)
+          await refreshRuntimeState(true)
+        }
         if (typeof config.css.postcss === 'object' && Array.isArray(config.css.postcss.plugins)) {
           const idx = config.css.postcss.plugins.findIndex(x =>
             // @ts-ignore

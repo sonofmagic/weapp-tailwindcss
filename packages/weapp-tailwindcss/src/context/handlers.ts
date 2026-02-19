@@ -30,6 +30,7 @@ export function createHandlersFromContext(
   ctx: InternalUserDefinedOptions,
   customAttributesEntities: ICustomAttributesEntities,
   cssCalcOptions: InternalUserDefinedOptions['cssCalc'],
+  tailwindcssMajorVersion?: number,
 ) {
   const {
     cssPreflight,
@@ -49,6 +50,7 @@ export function createHandlersFromContext(
     arbitraryValues,
     jsPreserveClass,
     staleClassNameFallback,
+    jsArbitraryValueFallback,
     babelParserOptions,
     ignoreCallExpressionIdentifiers,
     ignoreTaggedTemplateExpressionIdentifiers,
@@ -82,6 +84,8 @@ export function createHandlersFromContext(
     arbitraryValues,
     jsPreserveClass,
     staleClassNameFallback,
+    jsArbitraryValueFallback: jsArbitraryValueFallback ?? 'auto',
+    tailwindcssMajorVersion,
     generateMap: true,
     babelParserOptions,
     ignoreCallExpressionIdentifiers,

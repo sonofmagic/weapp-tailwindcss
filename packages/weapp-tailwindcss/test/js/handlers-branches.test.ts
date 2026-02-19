@@ -266,6 +266,41 @@ describe('replaceHandleValue branch coverage', () => {
     expect(token).toBeUndefined()
   })
 
+  it('matches escaped runtime-set entries for arbitrary utilities', () => {
+    const literal = getLiteralPath('const cls = \'flex gap-[20px]\'', 'StringLiteral')
+    const token = replaceHandleValue(literal, {
+      escapeMap: MappingChars2String,
+      classNameSet: new Set(['flex', 'gap-_b20px_B']),
+      needEscaped: true,
+    })
+
+    expect(token?.value).toBe('flex gap-_b20px_B')
+  })
+
+  it('supports controlled arbitrary fallback in explicit class context for tailwindcss v4 when runtime set is empty', () => {
+    const literal = getLiteralPath('const state = { className: \'flex gap-[20px]\' }', 'StringLiteral')
+    const token = replaceHandleValue(literal, {
+      escapeMap: MappingChars2String,
+      jsArbitraryValueFallback: 'auto',
+      tailwindcssMajorVersion: 4,
+      needEscaped: true,
+    })
+
+    expect(token?.value).toBe('flex gap-_b20px_B')
+  })
+
+  it('does not apply controlled arbitrary fallback for non-class strings', () => {
+    const literal = getLiteralPath('const trace = \'at App.vue:4 gap-[20px]\'', 'StringLiteral')
+    const token = replaceHandleValue(literal, {
+      escapeMap: MappingChars2String,
+      jsArbitraryValueFallback: 'auto',
+      tailwindcssMajorVersion: 4,
+      needEscaped: true,
+    })
+
+    expect(token).toBeUndefined()
+  })
+
   it('avoids emitting tokens when the source span collapses', () => {
     const literal = getLiteralPath('const collapsing = \'w-[100px]\'', 'StringLiteral')
     literal.node.start = 0

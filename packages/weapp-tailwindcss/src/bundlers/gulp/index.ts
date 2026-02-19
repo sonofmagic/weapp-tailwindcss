@@ -184,6 +184,7 @@ export function createPlugins(options: UserDefinedOptions = {}) {
         ...options,
         filename,
         moduleGraph,
+        tailwindcssMajorVersion: runtimeState.twPatcher.majorVersion,
         babelParserOptions: {
           ...(options?.babelParserOptions ?? {}),
           sourceFilename: filename,

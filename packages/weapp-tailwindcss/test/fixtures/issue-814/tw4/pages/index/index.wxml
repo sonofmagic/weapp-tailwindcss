@@ -1,0 +1,2 @@
+<view class="flex gap-[20px]">1</view>
+<view :class="['flex gap-[20px]']">2</view>

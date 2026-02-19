@@ -195,6 +195,7 @@ export function setupWebpackV4EmitHook(options: SetupWebpackV4EmitHookOptions) {
                 : currentValue?.toString() ?? ''
               const { code, linked } = await compilerOptions.jsHandler(currentSource, runtimeSet, {
                 staleClassNameFallback,
+                tailwindcssMajorVersion: runtimeState.twPatcher.majorVersion,
                 filename: absoluteFile,
                 moduleGraph: moduleGraphOptions,
                 babelParserOptions: {

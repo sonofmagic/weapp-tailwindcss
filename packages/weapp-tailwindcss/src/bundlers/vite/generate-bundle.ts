@@ -379,6 +379,7 @@ export function createGenerateBundleHook(context: GenerateBundleContext) {
     const createHandlerOptions = (absoluteFilename: string, extra?: CreateJsHandlerOptions): CreateJsHandlerOptions => ({
       ...extra,
       filename: absoluteFilename,
+      tailwindcssMajorVersion: runtimeState.twPatcher.majorVersion,
       moduleGraph: moduleGraphOptions,
       babelParserOptions: {
         ...(extra?.babelParserOptions ?? {}),
