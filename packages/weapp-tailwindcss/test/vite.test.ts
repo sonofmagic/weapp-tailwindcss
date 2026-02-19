@@ -9,6 +9,15 @@ import { afterAll } from 'vitest'
 import { UnifiedViteWeappTailwindcssPlugin } from '@/vite'
 import { fixturesRootPath } from './util'
 
+const tailwindcssBannerPattern = /\/\*! tailwindcss v[\d.]+ \| MIT License \| https:\/\/tailwindcss\.com \*\//g
+
+function normalizeTailwindcssBanner(content: string) {
+  return content.replaceAll(
+    tailwindcssBannerPattern,
+    '/*! tailwindcss v<version> | MIT License | https://tailwindcss.com */',
+  )
+}
+
 const require = createRequire(import.meta.url)
 const tailwindcss4Basedir = path.dirname(require.resolve('tailwindcss4/package.json'))
 const previousTailwindcssBasedir = process.env.WEAPP_TAILWINDCSS_BASEDIR
@@ -53,7 +62,11 @@ describe.skipIf(isCI)('vite', () => {
         },
       },
     })
-    expect(await fs.readFile(path.resolve(fixturesRootPath, 'v4-vite-plugin/dist/index.css'), 'utf-8')).toMatchSnapshot('css')
+    expect(
+      normalizeTailwindcssBanner(
+        await fs.readFile(path.resolve(fixturesRootPath, 'v4-vite-plugin/dist/index.css'), 'utf-8'),
+      ),
+    ).toMatchSnapshot('css')
     expect(await fs.readFile(path.resolve(fixturesRootPath, 'v4-vite-plugin/dist/index.js'), 'utf-8')).toMatchSnapshot('js')
   })
 
@@ -89,7 +102,11 @@ describe.skipIf(isCI)('vite', () => {
         },
       },
     })
-    expect(await fs.readFile(path.resolve(fixturesRootPath, 'v4-vite-postcss/dist/index.css'), 'utf-8')).toMatchSnapshot('css')
+    expect(
+      normalizeTailwindcssBanner(
+        await fs.readFile(path.resolve(fixturesRootPath, 'v4-vite-postcss/dist/index.css'), 'utf-8'),
+      ),
+    ).toMatchSnapshot('css')
     expect(await fs.readFile(path.resolve(fixturesRootPath, 'v4-vite-postcss/dist/index.js'), 'utf-8')).toMatchSnapshot('js')
   })
 })
