@@ -124,3 +124,7 @@ vite.config.ts.timestamp-*.mjs
 **/.yarn-cache/
 **/.yarn-global/
 website/tests/index.spec.ts-snapshots
+
+# Local Playwright artifacts
+/.playwright/
+/.playwright-cli/

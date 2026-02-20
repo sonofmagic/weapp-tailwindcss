@@ -36,7 +36,7 @@ export default function LLMSPage() {
   const baseUrl = useBaseUrl()
 
   return (
-    <Layout title="LLM 文档入口" description="为大模型准备的 weapp-tailwindcss 文档索引与使用说明">
+    <Layout title="LLM / Skill 文档入口" description="为大模型准备的 llms 文档入口与 weapp-tailwindcss skill 安装说明">
       <main className="relative overflow-hidden">
         <div className="pointer-events-none absolute inset-0">
           <div className={`
@@ -75,7 +75,7 @@ export default function LLMSPage() {
               md:text-4xl
             `}
             >
-              LLM 文档入口
+              LLM / Skill 文档入口
             </h1>
             <p className={`
               max-w-4xl text-slate-600
@@ -83,7 +83,7 @@ export default function LLMSPage() {
             `}
             >
               构建后会生成一组便于大模型消费的文件：索引型 txt、全量 txt 以及去除 MDX import 的 Markdown 副本。
-              下方列出所有入口，并附上推荐加载顺序与示例提示词。
+              本页同时包含 weapp-tailwindcss skill 安装指令，方便直接接入 AI 工作流。
             </p>
             <div className="flex flex-wrap gap-3">
               <a
@@ -92,7 +92,8 @@ export default function LLMSPage() {
                   py-2 text-sm font-semibold text-white shadow-lg
                   shadow-sky-500/25 transition
                   hover:-translate-y-0.5 hover:bg-slate-800
-                  dark:bg-white dark:text-slate-900 dark:hover:bg-slate-100
+                  dark:bg-white dark:text-slate-900
+                  dark:hover:bg-slate-100
                 `}
                 href={`${baseUrl}/llms-quickstart.txt`}
                 target="_blank"
@@ -143,7 +144,8 @@ export default function LLMSPage() {
                         className={`
                           font-semibold text-sky-600
                           hover:text-sky-500
-                          dark:text-sky-300 dark:hover:text-sky-200
+                          dark:text-sky-300
+                          dark:hover:text-sky-200
                         `}
                         href={`${baseUrl}${item.path}`}
                         target="_blank"
@@ -177,7 +179,8 @@ export default function LLMSPage() {
                   className={`
                     font-semibold text-sky-600
                     hover:text-sky-500
-                    dark:text-sky-300 dark:hover:text-sky-200
+                    dark:text-sky-300
+                    dark:hover:text-sky-200
                   `}
                   href={`${baseUrl}/llms.txt`}
                   target="_blank"
@@ -203,7 +206,8 @@ export default function LLMSPage() {
                         className={`
                           font-semibold text-sky-600
                           hover:text-sky-500
-                          dark:text-sky-300 dark:hover:text-sky-200
+                          dark:text-sky-300
+                          dark:hover:text-sky-200
                         `}
                         href={`${baseUrl}${item.path}`}
                         target="_blank"
@@ -222,6 +226,109 @@ export default function LLMSPage() {
                   </li>
                 ))}
               </ul>
+            </div>
+          </section>
+
+          <section className={cardBase}>
+            <h2 className="mb-3 text-xl font-semibold">Skill 安装与使用</h2>
+            <p className={`
+              text-sm text-slate-600
+              dark:text-slate-300
+            `}
+            >
+              如果你希望 AI 在业务项目中按 weapp-tailwindcss 最佳实践输出配置与排障流程，可以先安装官方 skill：
+            </p>
+            <div className={`
+              mt-3 rounded-xl border border-dashed border-slate-300/70
+              bg-slate-50/70 p-3 text-sm text-slate-700
+              dark:border-white/15 dark:bg-white/5 dark:text-slate-200
+            `}
+            >
+              <p className="font-semibold">安装命令</p>
+              <code className={`
+                mt-2 block whitespace-pre-wrap rounded-lg bg-black/90 px-3 py-3
+                text-xs text-emerald-200 shadow-[0_8px_30px_rgba(0,0,0,0.35)]
+              `}
+              >
+                npx skills add sonofmagic/weapp-tailwindcss --skill weapp-tailwindcss
+              </code>
+              <p className="mt-3 font-semibold">查看可安装 Skill 列表</p>
+              <code className={`
+                mt-2 block whitespace-pre-wrap rounded-lg bg-black/90 px-3 py-3
+                text-xs text-emerald-200 shadow-[0_8px_30px_rgba(0,0,0,0.35)]
+              `}
+              >
+                npx skills add sonofmagic/weapp-tailwindcss --list
+              </code>
+              <p className="mt-3 font-semibold">本地仓库调试安装</p>
+              <code className={`
+                mt-2 block whitespace-pre-wrap rounded-lg bg-black/90 px-3 py-3
+                text-xs text-emerald-200 shadow-[0_8px_30px_rgba(0,0,0,0.35)]
+              `}
+              >
+                npx skills add . --skill weapp-tailwindcss
+              </code>
+            </div>
+
+            <div className={`
+              mt-4 grid gap-3
+              md:grid-cols-2
+            `}
+            >
+              <div className={`
+                rounded-xl bg-slate-50/80 px-3 py-3 text-sm text-slate-700
+                dark:bg-white/5 dark:text-slate-200
+              `}
+              >
+                <p className="font-semibold">推荐提示词（新项目）</p>
+                <code className={`
+                  mt-2 block whitespace-pre-wrap rounded-lg bg-black/90 px-3
+                  py-3 text-xs text-emerald-200
+                  shadow-[0_8px_30px_rgba(0,0,0,0.35)]
+                `}
+                >
+                  我现在是 uni-app cli vue3 vite 项目，目标端是微信小程序 + H5。请按 weapp-tailwindcss skill 给我最小可用配置，输出需要包含安装命令、完整配置文件、验证步骤。
+                </code>
+              </div>
+              <div className={`
+                rounded-xl bg-slate-50/80 px-3 py-3 text-sm text-slate-700
+                dark:bg-white/5 dark:text-slate-200
+              `}
+              >
+                <p className="font-semibold">文档入口</p>
+                <ul className="mt-2 list-disc space-y-1 pl-5">
+                  <li>
+                    <a
+                      className={`
+                        font-semibold text-sky-600
+                        hover:text-sky-500
+                        dark:text-sky-300
+                        dark:hover:text-sky-200
+                      `}
+                      href={`${baseUrl}/docs/ai/basics/skill`}
+                      target="_blank"
+                      rel="noreferrer"
+                    >
+                      Skill（技能系统）文档
+                    </a>
+                  </li>
+                  <li>
+                    <a
+                      className={`
+                        font-semibold text-sky-600
+                        hover:text-sky-500
+                        dark:text-sky-300
+                        dark:hover:text-sky-200
+                      `}
+                      href={`${baseUrl}/docs/ai/basics/skill-release`}
+                      target="_blank"
+                      rel="noreferrer"
+                    >
+                      Skill 发布与版本化
+                    </a>
+                  </li>
+                </ul>
+              </div>
             </div>
           </section>
 
