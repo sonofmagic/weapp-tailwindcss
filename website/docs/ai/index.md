@@ -11,6 +11,16 @@ title: AI 生成小程序代码
 
 同时也希望大家一起讨论参与，快速的生成他个成百上千个小程序, APP, 和网站！
 
+## AI 学习中心：Skill 快速安装
+
+如果你希望 AI 在本仓库中按既定规则稳定执行任务，可以先安装 `weapp-tailwindcss` Skill：
+
+```bash
+npx skills add sonofmagic/weapp-tailwindcss --skill weapp-tailwindcss
+```
+
+详细说明见：[Skill（技能系统）](/docs/ai/basics/skill)
+
 ## 如何参与贡献
 
 ### 前置环境
