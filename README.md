@@ -31,6 +31,7 @@
 - [特性](#特性)
 - [版本对应](#版本对应)
 - [环境要求](#环境要求)
+- [AI Skill (For Users)](#ai-skill-for-users)
 - [安装与使用方式](#安装与使用方式)
 - [生态和解决方案](#生态和解决方案)
 - [常见问题](#常见问题)
@@ -68,6 +69,24 @@
 ## 环境要求
 
 - Node.js `^20.19.0` 或 `>=22.12.0`（建议 LTS）
+
+## AI Skill (For Users)
+
+如果你希望 AI 在你的业务项目中，按 `weapp-tailwindcss` 的最佳实践快速完成“小程序 + 多端”接入，可以先安装官方 Skill：
+
+```bash
+npx skills add sonofmagic/weapp-tailwindcss --skill weapp-tailwindcss
+```
+
+安装后可用于：
+
+- 快速生成 `uni-app` / `taro` / `uni-app x` 接入配置
+- 输出可复制的安装命令、配置文件与验证步骤
+- 处理 `rpx` 任意值、`JS` 字符串 class 不生效等常见问题
+
+详细使用说明见 AI 学习中心：
+
+- [Skill（技能系统）](https://tw.icebreaker.top/docs/ai/basics/skill)
 
 ## [安装与使用方式](https://tw.icebreaker.top/docs/quick-start/install)
 

@@ -1,60 +1,70 @@
 ---
 name: weapp-tailwindcss
-description: 为 weapp-tailwindcss 单仓库任务提供约束优先的执行流程，覆盖包定位、构建测试命令、JS 转译高风险规则与提交流程。
+description: 帮助用户在 uni-app、taro、原生小程序与 uni-app x 项目中快速集成 weapp-tailwindcss，实现小程序与多端开发。
 ---
 
 # weapp-tailwindcss Skill
 
-适用于在 `weapp-tailwindcss` 单仓库中执行开发、修复、文档同步与发布前验证任务。
+用于业务项目中接入 `weapp-tailwindcss`，让 AI 能稳定完成“小程序 + 多端”配置与排障。
 
 ## 何时使用
 
-- 用户明确提到 `weapp-tailwindcss` 仓库
-- 需要在 `packages/*`、`packages-runtime/*`、`website/*`、`e2e/*` 中修改代码
-- 需要给出或执行本仓库标准命令（`pnpm build/test/e2e`）
-- 需要处理高风险链路（转译、编译、代码生成、批量改动）
+- 新项目要快速启用 `tailwindcss + weapp-tailwindcss`
+- 已有 `uni-app` / `taro` / `uni-app x` / 原生小程序 项目要迁移
+- 需要同时兼顾小程序与 `H5` / `App` / 其他端构建
+- 出现样式不生效、`rpx` 任意值异常、`JS` 字符串 class 未转译等问题
 
-## 工作规则
+## 先收集信息
 
-1. 先做最近规则检查
+缺少关键信息时，先询问用户：
 
-- 修改前先读取目标目录最近的 `AGENTS.md`
-- 规则优先级：就近目录 > 上级目录 > 根目录
+- 当前框架：`uni-app` / `taro` / `uni-app x` / 原生小程序 / 其他
+- 构建工具：`vite` / `webpack5` / `webpack4`
+- 目标端：仅小程序，还是小程序 + `H5` / `App`
+- `tailwindcss` 主版本与包管理器（尤其是否为 `pnpm@10+`）
 
-2. 使用仓库标准工具链
+## 执行流程
 
-- 统一使用 `pnpm`
-- Node 版本要求：`>=20.19.0`
-- 默认技术栈：TypeScript + ESM，2 空格缩进
+1. 初始化依赖与基础配置
 
-3. 高风险约束（必须遵守）
+- 安装 `tailwindcss`、`postcss`、`autoprefixer`
+- 配置 `tailwind.config.js`，确保 `content` 或 `@source` 包括真实业务源码
+- 在入口样式文件引入 `@tailwind base/components/utilities`（或等价 `@import`）
 
-- 在 `packages/weapp-tailwindcss` 的 JS 转译链路中，仅允许 `classNameSet` 精确命中
-- 禁止对普通字符串做启发式兜底转译（禁止“猜测 class”）
-- 若误伤风险升高，优先改进 class 集合获取与刷新时机，不放宽候选匹配规则
+2. 安装并激活 `weapp-tailwindcss`
 
-4. 变更与验证策略
+- 安装 `weapp-tailwindcss`
+- 在 `package.json` 添加 `postinstall: "weapp-tw patch"`
+- 若使用 `pnpm@10+`，提醒执行 `pnpm approve-builds weapp-tailwindcss`
+- 补丁失效时可引导执行 `npx weapp-tw patch --clear-cache`
 
-- 小步修改，优先局部验证
-- 改行为或修复缺陷时补回归测试
-- 文件超过约 300 行时优先按目录拆分
+3. 按框架注册插件
 
-## 常用命令
+- `uni-app cli vue3 vite`：使用 `weapp-tailwindcss/vite`，并在 `vite.config` 内联注册 `postcss`
+- `uni-app cli vue2 webpack`：使用 `weapp-tailwindcss/webpack`（或历史项目按版本选 `webpack4`）
+- `taro webpack5`：在 `webpackChain` 注册 `UnifiedWebpackPluginV5`
+- `taro vite`：用 `weapp-tailwindcss/vite` + 内联 `postcss`，并处理 css 变量注入
+- `uni-app x`：使用 `vite` + `weapp-tailwindcss/vite`，按官方专题配置
+- 原生小程序：优先引导到官方模板（`gulp` / `webpack`）
 
-```bash
-pnpm install
-pnpm build
-pnpm build:apps
-pnpm build:pkgs
-pnpm test
-pnpm test:core
-pnpm test:plugins
-pnpm e2e
-pnpm --filter @weapp-tailwindcss/website build
-```
+4. 验证与回归
 
-## 提交规范
+- 先跑开发态编译，再跑目标端构建
+- 至少验证 3 类样式：基础工具类、任意值（含 `rpx`）、变体/伪类
+- 若 `JS/TS` 内 class 不生效，优先检查 `content/@source` 是否覆盖该文件
 
-- 提交信息遵循 Conventional Commits
-- Changeset 内容必须使用中文
-- JSDoc 注释必须使用中文；新增行内注释默认中文（必要术语可保留英文）
+## 输出要求
+
+输出结果需包含：
+
+1. 修改文件清单
+2. 可直接复制的配置片段
+3. 安装/运行命令
+4. 验证步骤与预期结果
+
+## 关键约束
+
+- 不要省略 `weapp-tw patch`，否则 `rpx` 与 `JS` 转译链路可能失效
+- 不要把小程序转译插件无条件应用到纯 `H5` 场景
+- 不要忽略 `content/@source` 范围配置；这会直接导致 class 不生成
+- 对版本不确定时，优先给出与官方文档一致的最小可用方案，再做增量优化

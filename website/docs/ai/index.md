@@ -13,7 +13,7 @@ title: AI 生成小程序代码
 
 ## AI 学习中心：Skill 快速安装
 
-如果你希望 AI 在本仓库中按既定规则稳定执行任务，可以先安装 `weapp-tailwindcss` Skill：
+如果你希望 AI 在你的业务项目中，按 `weapp-tailwindcss` 最佳实践快速完成小程序与多端接入，可以先安装 `weapp-tailwindcss` Skill：
 
 ```bash
 npx skills add sonofmagic/weapp-tailwindcss --skill weapp-tailwindcss

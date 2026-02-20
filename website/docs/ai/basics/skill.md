@@ -7,9 +7,13 @@ title: Skill（技能系统）
 
 ## 概述
 
-Skill 是一组可复用的执行规则与工作流，用来让 AI 在特定仓库中更稳定地完成任务。
+Skill 是一组可复用的执行规则与工作流，用来让 AI 在特定任务中更稳定地输出结果。
 
-在本项目中，我们采用 [`vercel-labs/skills`](https://github.com/vercel-labs/skills) 的安装方式，Skill 文件以 `SKILL.md` 形式存在于仓库中。
+`weapp-tailwindcss` 提供的 Skill 目标是帮助用户在自己的业务项目中，快速接入并稳定使用 `weapp-tailwindcss`，用于小程序与多端开发。
+
+> 这个 Skill 主要服务“项目使用者”，不是仓库二次开发维护指南。
+
+在本项目中，我们采用 [`vercel-labs/skills`](https://github.com/vercel-labs/skills) 安装 Skill，技能文件为 `SKILL.md`。
 
 ## weapp-tailwindcss Skill 安装
 
@@ -33,26 +37,51 @@ npx skills add sonofmagic/weapp-tailwindcss --list
 npx skills add . --skill weapp-tailwindcss
 ```
 
-## Skill 文件位置
+## 装完后能做什么
 
-本仓库 Skill 位于：
+安装后，你可以让 AI 按你的项目类型直接产出可运行配置，例如：
+
+- `uni-app cli vue3 vite` 项目接入方案
+- `taro webpack5` / `taro vite` 项目接入方案
+- `uni-app x` 同时构建 `Web` / 小程序 / `Android` / `iOS` / 鸿蒙
+- 已有项目迁移、样式失效排障、`rpx` 任意值问题定位
+
+Skill 会要求 AI 优先完成这些关键动作：
+
+- 识别你当前框架和目标端
+- 补齐 `tailwindcss` 与 `weapp-tailwindcss` 最小可用配置
+- 明确 `postinstall` 中的 `weapp-tw patch`
+- 给出“可复制命令 + 可复制配置 + 验证步骤”
+
+## 推荐提示词
+
+1. 新项目快速接入
+
+```text
+我现在是 uni-app cli vue3 vite 项目，目标端是微信小程序 + H5。
+请按 weapp-tailwindcss skill 给我最小可用配置，
+输出需要包含：安装命令、完整配置文件、验证步骤。
+```
+
+2. 旧项目迁移
+
+```text
+这是一个 taro webpack5 老项目，已经有 tailwindcss 但样式经常丢失。
+请按 weapp-tailwindcss skill 给迁移方案，并列出最小改动清单。
+```
+
+3. 问题排查
+
+```text
+我在 JS 字符串里写了 tailwind 任意值 class，但小程序端不生效。
+请按 weapp-tailwindcss skill 给排查顺序，并指出应该检查的配置项。
+```
+
+## Skill 文件位置
 
 ```text
 skills/weapp-tailwindcss/SKILL.md
 ```
-
-其核心目标：
-
-- 为 `weapp-tailwindcss` 单仓库任务提供统一执行约束
-- 固化目录级 AGENTS 规则读取顺序
-- 提供标准构建/测试命令与高风险链路注意事项
-
-## 适用场景
-
-- 在 `packages/*` 中修改核心能力并做回归验证
-- 在 `website/*` 中更新 AI/文档内容并保持构建可用
-- 在 `e2e/*` 中补充场景测试并同步验证命令
-- 在跨包改动时，保持提交范围清晰且符合 Conventional Commits
 
 ## 常见问题
 
@@ -61,14 +90,9 @@ skills/weapp-tailwindcss/SKILL.md
 排查顺序：
 
 1. 先执行 `npx skills add <repo> --list` 确认技能名。
-2. 确认安装命令里的 `--skill weapp-tailwindcss` 名称完全一致。
-3. 确认当前仓库已经推送到远端，且 `skills/weapp-tailwindcss/SKILL.md` 在默认分支可见。
+2. 确认安装命令中的 `--skill weapp-tailwindcss` 名称完全一致。
+3. 确认默认分支已包含 `skills/weapp-tailwindcss/SKILL.md`。
 
-### 什么时候要更新 Skill
+### 我是 Skill 维护者，如何发布版本
 
-当以下内容变化时建议同步更新：
-
-- 仓库目录结构和职责边界
-- 构建/测试主命令
-- 高风险规则（例如 JS 转译约束）
-- 提交规范与发布前检查流程
+请查看：[Skill 发布与版本化](/docs/ai/basics/skill-release)

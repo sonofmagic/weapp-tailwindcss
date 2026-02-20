@@ -67,6 +67,11 @@ const aiSidebar: SidebarConfig = [
           },
           {
             type: 'doc',
+            id: 'ai/basics/skill-release',
+            label: 'Skill 发布与版本化',
+          },
+          {
+            type: 'doc',
             id: 'ai/basics/agent',
             label: 'AI Agent（智能体）',
           },
