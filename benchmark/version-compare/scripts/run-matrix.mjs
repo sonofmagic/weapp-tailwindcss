@@ -284,7 +284,16 @@ function injectContent(original, marker, injectType) {
   return replaced
 }
 
-async function runHmrRounds({ cwd, sourceFile, outputTemplate, devScript, injectType, rounds, timeoutMs }) {
+async function runHmrRounds({
+  cwd,
+  sourceFile,
+  outputTemplate,
+  devScript,
+  injectType,
+  rounds,
+  timeoutMs,
+  pollIntervalMs,
+}) {
   const sourcePath = path.join(cwd, sourceFile)
   const outputPath = path.join(cwd, outputTemplate)
   const original = await fs.readFile(sourcePath, 'utf8')
@@ -316,7 +325,7 @@ async function runHmrRounds({ cwd, sourceFile, outputTemplate, devScript, inject
       }
       const text = await readText(outputPath)
       return text.length > 120
-    }, timeoutMs)
+    }, timeoutMs, pollIntervalMs)
 
     if (!ready) {
       throw new Error(`dev warmup timeout ${timeoutMs}ms\n${logs.slice(-120).join('\n')}`)
@@ -336,7 +345,7 @@ async function runHmrRounds({ cwd, sourceFile, outputTemplate, devScript, inject
         }
         const text = await readText(outputPath)
         return text.includes(marker)
-      }, timeoutMs)
+      }, timeoutMs, pollIntervalMs)
 
       if (!ok) {
         throw new Error(`hmr round ${i + 1} timeout ${timeoutMs}ms marker=${marker}`)
@@ -375,6 +384,7 @@ async function runCase(versionMeta, projectMeta, options) {
     injectType: projectMeta.injectType,
     rounds: options.hmrRuns,
     timeoutMs: options.timeoutMs,
+    pollIntervalMs: options.pollIntervalMs,
   })
 
   hmrMs.forEach((ms, idx) => {
@@ -400,10 +410,11 @@ async function main() {
   const buildRuns = parseNumber('--build-runs', 3)
   const hmrRuns = parseNumber('--hmr-runs', 5)
   const timeoutMs = parseNumber('--timeout', 180000)
+  const pollIntervalMs = parseNumber('--poll-interval', 120)
   const output = parseString('--out', 'benchmark/version-compare/data/matrix-raw.json')
   const only = parseString('--only', '')
 
-  const options = { buildRuns, hmrRuns, timeoutMs }
+  const options = { buildRuns, hmrRuns, timeoutMs, pollIntervalMs }
   const rows = []
   const selectedProjects = only
     ? projects.filter(item => only.split(',').map(v => v.trim()).filter(Boolean).includes(item.key))

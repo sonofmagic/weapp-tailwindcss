@@ -1,0 +1,207 @@
+{
+  "generatedAt": "2026-02-22T17:27:40.176Z",
+  "options": {
+    "buildRuns": 1,
+    "hmrRuns": 12,
+    "timeoutMs": 180000,
+    "pollIntervalMs": 20
+  },
+  "versions": [
+    {
+      "version": "4.9.8",
+      "root": "/tmp/weapp-tailwindcss-4.9.8"
+    },
+    {
+      "version": "4.10.2",
+      "root": "/tmp/weapp-tailwindcss-4.10.2"
+    }
+  ],
+  "projects": [
+    {
+      "key": "demo-uni-app-vue3-vite",
+      "project": "demo/uni-app-vue3-vite",
+      "sourceFile": "src/pages/index/index.vue",
+      "outputTemplate": "dist/dev/mp-weixin/pages/index/index.wxml",
+      "devScript": "dev",
+      "buildScript": "build",
+      "injectType": "vue"
+    },
+    {
+      "key": "demo-uni-app-tailwindcss-v4",
+      "project": "demo/uni-app-tailwindcss-v4",
+      "sourceFile": "src/pages/index/index.vue",
+      "outputTemplate": "dist/dev/mp-weixin/pages/index/index.wxml",
+      "devScript": "dev",
+      "buildScript": "build",
+      "injectType": "vue"
+    },
+    {
+      "key": "apps-vite-native-ts",
+      "project": "apps/vite-native-ts",
+      "sourceFile": "miniprogram/pages/index/index.wxml",
+      "outputTemplate": "dist/pages/index/index.wxml",
+      "devScript": "dev",
+      "buildScript": "build",
+      "injectType": "wxml-class"
+    },
+    {
+      "key": "apps-vite-native",
+      "project": "apps/vite-native",
+      "sourceFile": "pages/index/index.wxml",
+      "outputTemplate": "dist/pages/index/index.wxml",
+      "devScript": "dev",
+      "buildScript": "build",
+      "injectType": "wxml-class"
+    },
+    {
+      "key": "apps-vite-native-skyline",
+      "project": "apps/vite-native-skyline",
+      "sourceFile": "pages/index/index.wxml",
+      "outputTemplate": "dist/pages/index/index.wxml",
+      "devScript": "dev",
+      "buildScript": "build",
+      "injectType": "wxml-class"
+    },
+    {
+      "key": "apps-vite-native-ts-skyline",
+      "project": "apps/vite-native-ts-skyline",
+      "sourceFile": "miniprogram/pages/index/index.wxml",
+      "outputTemplate": "dist/pages/index/index.wxml",
+      "devScript": "dev",
+      "buildScript": "build",
+      "injectType": "wxml-class"
+    },
+    {
+      "key": "demo-native-ts",
+      "project": "demo/native-ts",
+      "sourceFile": "miniprogram/pages/index/index.wxml",
+      "outputTemplate": "dist/pages/index/index.wxml",
+      "devScript": "dev",
+      "buildScript": "build",
+      "injectType": "wxml-class"
+    },
+    {
+      "key": "apps-weapp-wechat-zhihu",
+      "project": "apps/weapp-wechat-zhihu",
+      "sourceFile": "pages/index/index.wxml",
+      "outputTemplate": "dist/pages/index/index.wxml",
+      "devScript": "dev",
+      "buildScript": "build",
+      "injectType": "wxml-class"
+    }
+  ],
+  "rows": [
+    {
+      "version": "4.9.8",
+      "root": "/tmp/weapp-tailwindcss-4.9.8",
+      "key": "demo-native-ts",
+      "project": "demo/native-ts",
+      "sourceFile": "miniprogram/pages/index/index.wxml",
+      "outputTemplate": "dist/pages/index/index.wxml",
+      "devScript": "dev",
+      "buildScript": "build",
+      "injectType": "wxml-class",
+      "buildMs": [
+        1302.5084590000001
+      ],
+      "hmrMs": [
+        990.321042,
+        88.85033300000032,
+        86.98745899999994,
+        64.23024999999961,
+        86.90112499999941,
+        85.1040409999996,
+        65.12804099999994,
+        63.3744999999999,
+        65.01054199999999,
+        84.19445799999994,
+        63.38174999999865,
+        64.26250000000073
+      ],
+      "summary": {
+        "build": {
+          "mean": 1302.5084590000001,
+          "median": 1302.5084590000001,
+          "min": 1302.5084590000001,
+          "max": 1302.5084590000001,
+          "stddev": 0
+        },
+        "hmr": {
+          "mean": 150.64550341666651,
+          "median": 74.66124949999994,
+          "min": 63.3744999999999,
+          "max": 990.321042,
+          "stddev": 253.39497550077957
+        },
+        "buildSteady": {
+          "mean": null,
+          "median": null,
+          "stddev": null
+        },
+        "hmrSteady": {
+          "mean": 74.31136354545437,
+          "median": 65.12804099999994,
+          "min": 63.3744999999999,
+          "max": 88.85033300000032,
+          "stddev": 11.107913659849068
+        }
+      }
+    },
+    {
+      "version": "4.10.2",
+      "root": "/tmp/weapp-tailwindcss-4.10.2",
+      "key": "demo-native-ts",
+      "project": "demo/native-ts",
+      "sourceFile": "miniprogram/pages/index/index.wxml",
+      "outputTemplate": "dist/pages/index/index.wxml",
+      "devScript": "dev",
+      "buildScript": "build",
+      "injectType": "wxml-class",
+      "buildMs": [
+        1165.559209000001
+      ],
+      "hmrMs": [
+        1033.152,
+        63.657624999999825,
+        61.758333000001585,
+        84.34087499999805,
+        63.971166999999696,
+        85.33379100000093,
+        64.32187500000146,
+        63.84820799999943,
+        65.38387499999953,
+        64.6997080000001,
+        64.35404199999903,
+        64.27158299999792
+      ],
+      "summary": {
+        "build": {
+          "mean": 1165.559209000001,
+          "median": 1165.559209000001,
+          "min": 1165.559209000001,
+          "max": 1165.559209000001,
+          "stddev": 0
+        },
+        "hmr": {
+          "mean": 148.25775683333313,
+          "median": 64.33795850000024,
+          "min": 61.758333000001585,
+          "max": 1033.152,
+          "stddev": 266.9175777074871
+        },
+        "buildSteady": {
+          "mean": null,
+          "median": null,
+          "stddev": null
+        },
+        "hmrSteady": {
+          "mean": 67.81282563636341,
+          "median": 64.32187500000146,
+          "min": 61.758333000001585,
+          "max": 85.33379100000093,
+          "stddev": 8.072632628734969
+        }
+      }
+    }
+  ]
+}
