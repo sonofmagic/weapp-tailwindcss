@@ -1,0 +1,93 @@
+{
+  "generatedAt": "2026-02-22T16:39:50.880Z",
+  "options": {
+    "buildRuns": 3,
+    "hmrRuns": 5,
+    "timeoutMs": 180000
+  },
+  "versions": [
+    {
+      "version": "4.9.8",
+      "root": "/tmp/weapp-tailwindcss-4.9.8"
+    },
+    {
+      "version": "4.10.2",
+      "root": "/tmp/weapp-tailwindcss-4.10.2"
+    }
+  ],
+  "projects": [
+    {
+      "key": "demo-uni-app-vue3-vite",
+      "project": "demo/uni-app-vue3-vite",
+      "sourceFile": "src/pages/index/index.vue",
+      "outputTemplate": "dist/dev/mp-weixin/pages/index/index.wxml",
+      "devScript": "dev",
+      "buildScript": "build",
+      "injectType": "vue"
+    },
+    {
+      "key": "demo-uni-app-tailwindcss-v4",
+      "project": "demo/uni-app-tailwindcss-v4",
+      "sourceFile": "src/pages/index/index.vue",
+      "outputTemplate": "dist/dev/mp-weixin/pages/index/index.wxml",
+      "devScript": "dev",
+      "buildScript": "build",
+      "injectType": "vue"
+    },
+    {
+      "key": "apps-vite-native-ts",
+      "project": "apps/vite-native-ts",
+      "sourceFile": "miniprogram/pages/index/index.wxml",
+      "outputTemplate": "dist/pages/index/index.wxml",
+      "devScript": "dev",
+      "buildScript": "build",
+      "injectType": "wxml-class"
+    },
+    {
+      "key": "apps-vite-native",
+      "project": "apps/vite-native",
+      "sourceFile": "pages/index/index.wxml",
+      "outputTemplate": "dist/pages/index/index.wxml",
+      "devScript": "dev",
+      "buildScript": "build",
+      "injectType": "wxml-class"
+    },
+    {
+      "key": "apps-vite-native-skyline",
+      "project": "apps/vite-native-skyline",
+      "sourceFile": "pages/index/index.wxml",
+      "outputTemplate": "dist/pages/index/index.wxml",
+      "devScript": "dev",
+      "buildScript": "build",
+      "injectType": "wxml-class"
+    },
+    {
+      "key": "apps-vite-native-ts-skyline",
+      "project": "apps/vite-native-ts-skyline",
+      "sourceFile": "miniprogram/pages/index/index.wxml",
+      "outputTemplate": "dist/pages/index/index.wxml",
+      "devScript": "dev",
+      "buildScript": "build",
+      "injectType": "wxml-class"
+    },
+    {
+      "key": "demo-native-ts",
+      "project": "demo/native-ts",
+      "sourceFile": "miniprogram/pages/index/index.wxml",
+      "outputTemplate": "dist/pages/index/index.wxml",
+      "devScript": "dev",
+      "buildScript": "build",
+      "injectType": "wxml-class"
+    },
+    {
+      "key": "apps-weapp-wechat-zhihu",
+      "project": "apps/weapp-wechat-zhihu",
+      "sourceFile": "pages/index/index.wxml",
+      "outputTemplate": "dist/pages/index/index.wxml",
+      "devScript": "dev",
+      "buildScript": "build",
+      "injectType": "wxml-class"
+    }
+  ],
+  "rows": []
+}
