@@ -8,6 +8,9 @@ function fmtMs(value) {
   if (value == null || Number.isNaN(value)) {
     return 'N/A'
   }
+  if (value < 1) {
+    return `${value.toFixed(4)}`
+  }
   return `${value.toFixed(2)}`
 }
 
@@ -50,18 +53,18 @@ function buildErrorLines(rows, workspaceRoot) {
 
 function buildMedianTable(rows) {
   const head = [
-    '| 框架 | 项目 | Build 中位数 (ms) | HMR 中位数 (ms) | Runtime 冷启动中位数 (ms) | Runtime 首屏中位数 (ms) | Runtime setData 中位数 (ms) | Runtime 样本数 |',
+    '| 框架 | 项目 | Build 中位数 (ms) | HMR 中位数 (ms) | HMR 模式 | Runtime 单次 `ref.value` 中位数 (ms) | Runtime 单轮总耗时中位数 (ms) | Runtime 样本数 |',
     '| --- | --- | ---: | ---: | ---: | ---: | ---: | ---: |',
   ]
 
   const body = rows.map((row) => {
     const buildMedian = row.summary?.build?.median ?? null
     const hmrMedian = row.summary?.hmr?.median ?? null
-    const launchMedian = row.summary?.runtime?.launchMs?.median ?? null
-    const firstWxmlMedian = row.summary?.runtime?.firstWxmlMs?.median ?? null
-    const setDataMedian = row.summary?.runtime?.setDataAvgMs?.median ?? null
+    const hmrMode = row.hmrMode ?? 'N/A'
+    const runtimeOpMedian = row.summary?.runtime?.opMedianMs?.median ?? null
+    const runtimeRoundMedian = row.summary?.runtime?.roundTotalMs?.median ?? null
     const runtimeCount = row.summary?.runtime?.count ?? 0
-    return `| ${row.label} | ${row.project} | ${fmtMs(buildMedian)} | ${fmtMs(hmrMedian)} | ${fmtMs(launchMedian)} | ${fmtMs(firstWxmlMedian)} | ${fmtMs(setDataMedian)} | ${fmtCount(runtimeCount)} |`
+    return `| ${row.label} | ${row.project} | ${fmtMs(buildMedian)} | ${fmtMs(hmrMedian)} | ${hmrMode} | ${fmtMs(runtimeOpMedian)} | ${fmtMs(runtimeRoundMedian)} | ${fmtCount(runtimeCount)} |`
   })
 
   return [...head, ...body].join('\n')
@@ -109,8 +112,8 @@ async function main() {
     '统一采集口径：',
     '- 三组用例在采集前均会被临时替换为同一份标准 Vue SFC，采集结束后自动回滚。',
     '- Build：执行项目 `build` 脚本，重复多轮取统计值。',
-    '- HMR：在三组 `.vue` 页面中注入同一批 class 语料，测量源码改动到目标 `.wxml` 出现 marker 的耗时。',
-    '- Runtime：基于 `miniprogram-automator` 采集冷启动、首屏可读、`setData` 往返。',
+    '- HMR：优先测量 watch 模式下源码改动到目标 `.wxml` 出现 marker 的耗时；watch 失败时自动回退到“源码改动 + 全量 build”补偿口径并标记模式。',
+    '- Runtime：统一执行 `ref.value` 大批量更新基准（批量长度与每轮操作次数一致），对比每轮内单次更新耗时。',
     '',
     '## 总览',
     '',
@@ -118,9 +121,8 @@ async function main() {
     '',
     buildRankingSection(rows, 'Build 排名（中位数，越小越好）', row => row.summary?.build?.median ?? null),
     buildRankingSection(rows, 'HMR 排名（中位数，越小越好）', row => row.summary?.hmr?.median ?? null),
-    buildRankingSection(rows, 'Runtime 冷启动排名（中位数，越小越好）', row => row.summary?.runtime?.launchMs?.median ?? null),
-    buildRankingSection(rows, 'Runtime 首屏排名（中位数，越小越好）', row => row.summary?.runtime?.firstWxmlMs?.median ?? null),
-    buildRankingSection(rows, 'Runtime setData 排名（中位数，越小越好）', row => row.summary?.runtime?.setDataAvgMs?.median ?? null),
+    buildRankingSection(rows, 'Runtime `ref.value` 单次更新排名（中位数，越小越好）', row => row.summary?.runtime?.opMedianMs?.median ?? null),
+    buildRankingSection(rows, 'Runtime 单轮总耗时排名（中位数，越小越好）', row => row.summary?.runtime?.roundTotalMs?.median ?? null),
   ]
 
   const errorLines = buildErrorLines(rows, workspaceRoot)

@@ -10,17 +10,14 @@
 
 - Build：项目构建耗时（多轮统计）
 - HMR：统一模板注入场景下的热更新耗时
-- Runtime：
-  - 冷启动耗时（`automator.launch`）
-  - 首屏可读耗时（`reLaunch` 到页面可读 WXML）
-  - `setData` 往返耗时（多轮均值）
+- Runtime：`ref.value` 大批量更新性能（统一批量大小 + 操作次数）
 
 ## 统一场景说明
 
 - Build / HMR / Runtime 采集前，脚本会将目标页面临时替换为同一份标准 Vue SFC，用完自动回滚，确保三套框架输入源码一致。
 - HMR 统一修改“Vue SFC 页面模板（`.vue`）”，注入同一批 class 语料和 marker。
-- 三套框架均以“源码写入 -> 目标 `wxml` 出现 marker”为判定口径。
-- Runtime 统一打开各自对齐的 Vue 入口页并执行同构采样流程。
+- HMR 优先使用 watch 口径（源码写入 -> 目标 `wxml` 出现 marker）；watch 不可用时自动回退为“源码写入 -> 完整 build 完成 + marker 命中”。
+- Runtime 对三套框架统一执行 `ref.value` 批量赋值脚本（变量、写法、负载规模一致）。
 
 当前三组入口页分别为：
 
@@ -45,7 +42,7 @@ pnpm run bench:framework:report
 
 说明：
 
-- Runtime 采样依赖微信开发者工具可用环境；若本机环境不可用，可加 `--skip-runtime` 先完成 Build + HMR 对比。
+- Runtime 采样不依赖微信开发者工具，默认直接在各项目依赖环境中执行统一 `ref.value` 批量赋值基准。
 - `bench:framework:sanitize` 会对结果中的绝对路径做脱敏（默认覆盖原始 JSON）。
 
 ## 常用参数
@@ -54,11 +51,13 @@ pnpm run bench:framework:report
 
 - `--build-runs <n>`：Build 轮数（默认 3）
 - `--hmr-runs <n>`：HMR 轮数（默认 5）
+- `--hmr-watch-retries <n>`：watch HMR 失败重试次数（默认 0）
+- `--hmr-timeout <ms>`：watch HMR 单轮超时（默认 120000）
 - `--runtime-runs <n>`：Runtime 轮数（默认 3）
 - `--runtime-timeout <ms>`：每个 runtime 子阶段超时（默认 45000）
-- `--setdata-runs <n>`：每轮 runtime 的 setData 采样次数（默认 8）
-- `--wxml-query-runs <n>`：每轮 runtime 的 WXML 查询采样次数（默认 8）
+- `--ref-batch-size <n>`：每次 `ref.value` 赋值的数据规模（默认 2500）
+- `--ref-ops-per-round <n>`：每轮 runtime 中的 `ref.value` 赋值次数（默认 160）
 - `--only <k1,k2,...>`：只跑指定框架 key（`uni-app-vue3` / `taro-vue3` / `weapp-vite-wevu`）
 - `--skip-hmr`：跳过 HMR
-- `--skip-runtime`：跳过 Runtime（无开发者工具环境时可用）
+- `--skip-runtime`：跳过 Runtime
 - `--out <file>`：自定义原始报告输出路径

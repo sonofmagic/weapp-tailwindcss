@@ -29,8 +29,10 @@ function resolveOptions(argv) {
     buildRuns: parseNumber('--build-runs', argv, 3),
     hmrRuns: parseNumber('--hmr-runs', argv, 5),
     runtimeRuns: parseNumber('--runtime-runs', argv, 3),
-    setDataRuns: parseNumber('--setdata-runs', argv, 8),
-    wxmlQueryRuns: parseNumber('--wxml-query-runs', argv, 8),
+    hmrWatchRetries: parseNumber('--hmr-watch-retries', argv, 0),
+    hmrTimeoutMs: parseNumber('--hmr-timeout', argv, 120000),
+    refBatchSize: parseNumber('--ref-batch-size', argv, 2500),
+    refOpsPerRound: parseNumber('--ref-ops-per-round', argv, 160),
     timeoutMs: parseNumber('--timeout', argv, 240000),
     runtimeTimeoutMs: parseNumber('--runtime-timeout', argv, 45000),
     pollMs: parseNumber('--poll', argv, 180),
@@ -52,7 +54,6 @@ function resolveCasePaths(workspaceRoot, caseMeta) {
     projectRoot,
     sourcePath: path.resolve(projectRoot, caseMeta.hmrSourceFile),
     outputPath: path.resolve(projectRoot, caseMeta.hmrOutputFile),
-    runtimeProjectPath: path.resolve(projectRoot, caseMeta.runtimeProjectPath),
   }
 }
 
@@ -116,7 +117,7 @@ async function runHmrRounds(caseMeta, casePaths, options) {
         return output.length > 120
       },
       {
-        timeoutMs: options.timeoutMs,
+        timeoutMs: options.hmrTimeoutMs,
         pollMs: options.pollMs,
         timeoutMessage: `[${caseMeta.key}] dev warmup timeout`,
       },
@@ -131,7 +132,7 @@ async function runHmrRounds(caseMeta, casePaths, options) {
       const elapsedMs = await waitFor(
         async () => fileContains(casePaths.outputPath, scenario.marker),
         {
-          timeoutMs: options.timeoutMs,
+          timeoutMs: options.hmrTimeoutMs,
           pollMs: options.pollMs,
           timeoutMessage: `[${caseMeta.key}] hmr timeout marker=${scenario.marker}`,
         },
@@ -159,7 +160,56 @@ async function runHmrRounds(caseMeta, casePaths, options) {
   }
 }
 
-async function runCase(automator, caseMeta, options) {
+async function runHmrWatchWithRetry(caseMeta, casePaths, options) {
+  const failures = []
+  const attempts = Math.max(1, options.hmrWatchRetries + 1)
+
+  for (let attempt = 1; attempt <= attempts; attempt += 1) {
+    try {
+      return await runHmrRounds(caseMeta, casePaths, options)
+    }
+    catch (error) {
+      const message = error instanceof Error ? error.message : String(error)
+      failures.push(`attempt ${attempt}: ${message}`)
+      if (attempt < attempts) {
+        await sleep(600)
+      }
+    }
+  }
+
+  throw new Error(failures.join('\n\n'))
+}
+
+async function runHmrFallbackRounds(caseMeta, casePaths, options) {
+  const original = await fs.readFile(casePaths.sourcePath, 'utf8')
+  const hmrMs = []
+
+  try {
+    for (let roundIndex = 0; roundIndex < options.hmrRuns; roundIndex += 1) {
+      const scenario = createScenario(createSeed(roundIndex))
+      const mutatedSource = caseMeta.mutateSource(original, scenario)
+      await fs.writeFile(casePaths.sourcePath, mutatedSource, 'utf8')
+      const result = await runPnpmOnce(
+        casePaths.projectRoot,
+        ['run', caseMeta.buildScript],
+        options.timeoutMs,
+      )
+      hmrMs.push(result.elapsedMs)
+      process.stdout.write(
+        `[framework-matrix] ${caseMeta.key} hmr-fallback ${roundIndex + 1}/${options.hmrRuns}: ${result.elapsedMs.toFixed(2)}ms\n`,
+      )
+      await fs.writeFile(casePaths.sourcePath, original, 'utf8')
+      await sleep(options.resetDelayMs)
+    }
+
+    return hmrMs
+  }
+  finally {
+    await fs.writeFile(casePaths.sourcePath, original, 'utf8')
+  }
+}
+
+async function runCase(caseMeta, options) {
   assertVueScenario(caseMeta)
   const casePaths = resolveCasePaths(options.workspaceRoot, caseMeta)
   const sourceOriginal = await fs.readFile(casePaths.sourcePath, 'utf8')
@@ -171,7 +221,9 @@ async function runCase(automator, caseMeta, options) {
     devScript: caseMeta.devScript,
     buildMs: [],
     hmrMs: [],
+    hmrMode: null,
     runtimeRounds: [],
+    runtimeMode: options.skipRuntime ? null : 'ref-bulk-value-update',
     summary: {
       build: null,
       hmr: null,
@@ -195,18 +247,29 @@ async function runCase(automator, caseMeta, options) {
 
     if (!options.skipHmr) {
       try {
-        row.hmrMs = await runHmrRounds(caseMeta, casePaths, options)
+        row.hmrMs = await runHmrWatchWithRetry(caseMeta, casePaths, options)
+        row.hmrMode = 'watch'
         row.summary.hmr = summarize(row.hmrMs)
       }
       catch (error) {
         const message = error instanceof Error ? error.message : String(error)
-        row.errors.hmr = sanitizeTextPaths(message, options.workspaceRoot)
+        row.errors.hmrWatch = sanitizeTextPaths(message, options.workspaceRoot)
+
+        try {
+          row.hmrMs = await runHmrFallbackRounds(caseMeta, casePaths, options)
+          row.hmrMode = 'fallback-build'
+          row.summary.hmr = summarize(row.hmrMs)
+        }
+        catch (fallbackError) {
+          const fallbackMessage = fallbackError instanceof Error ? fallbackError.message : String(fallbackError)
+          row.errors.hmrFallback = sanitizeTextPaths(fallbackMessage, options.workspaceRoot)
+        }
       }
     }
 
-    if (!options.skipRuntime && automator) {
+    if (!options.skipRuntime) {
       try {
-        row.runtimeRounds = await runRuntimeRounds(automator, caseMeta, casePaths, options)
+        row.runtimeRounds = await runRuntimeRounds(caseMeta, casePaths, options)
         row.summary.runtime = summarizeRuntime(row.runtimeRounds)
       }
       catch (error) {
@@ -232,23 +295,10 @@ async function main() {
     throw new Error('no framework case selected')
   }
 
-  let automator = null
-  if (!options.skipRuntime) {
-    try {
-      const module = await import('miniprogram-automator')
-      automator = module.default ?? module
-    }
-    catch (error) {
-      options.skipRuntime = true
-      const message = error instanceof Error ? error.message : String(error)
-      process.stdout.write(`[framework-matrix] runtime disabled: ${message}\n`)
-    }
-  }
-
   const rows = []
   for (const caseMeta of selectedCases) {
     process.stdout.write(`[framework-matrix] start ${caseMeta.key}\n`)
-    const row = await runCase(automator, caseMeta, options)
+    const row = await runCase(caseMeta, options)
     rows.push(row)
     process.stdout.write(`[framework-matrix] finish ${caseMeta.key}\n`)
   }
@@ -258,9 +308,11 @@ async function main() {
     options: {
       buildRuns: options.buildRuns,
       hmrRuns: options.hmrRuns,
+      hmrWatchRetries: options.hmrWatchRetries,
+      hmrTimeoutMs: options.hmrTimeoutMs,
       runtimeRuns: options.runtimeRuns,
-      setDataRuns: options.setDataRuns,
-      wxmlQueryRuns: options.wxmlQueryRuns,
+      refBatchSize: options.refBatchSize,
+      refOpsPerRound: options.refOpsPerRound,
       timeoutMs: options.timeoutMs,
       runtimeTimeoutMs: options.runtimeTimeoutMs,
       pollMs: options.pollMs,
@@ -276,8 +328,7 @@ async function main() {
       devScript: item.devScript,
       hmrSourceFile: item.hmrSourceFile,
       hmrOutputFile: item.hmrOutputFile,
-      runtimeProjectPath: item.runtimeProjectPath,
-      runtimeUrl: item.runtimeUrl,
+      runtimeRefPackage: item.runtimeRefPackage,
     })),
     rows,
   }
