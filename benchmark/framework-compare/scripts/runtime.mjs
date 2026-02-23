@@ -29,6 +29,8 @@ function runRuntimeWorker(caseMeta, casePaths, options, runtimeTask) {
       caseMeta.key,
       '--package',
       caseMeta.runtimeRefPackage,
+      '--module-root',
+      casePaths.sourceProjectRoot,
       '--rounds',
       String(options.runtimeRuns),
       '--ops-per-round',

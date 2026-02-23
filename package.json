@@ -56,6 +56,7 @@
     "test": "vitest run",
     "test:bench": "vitest bench",
     "bench": "pnpm --filter benchmark-* bench",
+    "bench:framework:prepare": "node benchmark/framework-compare/scripts/prepare-minimal-projects.mjs",
     "bench:framework:matrix": "node benchmark/framework-compare/scripts/run-matrix.mjs",
     "bench:framework:sanitize": "node benchmark/framework-compare/scripts/sanitize-results.mjs",
     "bench:framework:report": "node benchmark/framework-compare/scripts/generate-report.mjs",

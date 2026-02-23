@@ -2,9 +2,9 @@
 
 该目录用于统一对比以下三组小程序技术栈：
 
-- `uni-app vue3`（`demo/uni-app-vue3-vite`）
-- `taro vue3`（`demo/taro-vue3-app`）
-- `weapp-vite wevu`（`apps/vite-native-ts-skyline`）
+- `uni-app vue3`（最小项目：`benchmark/framework-compare/projects/uni-app-vue3`）
+- `taro vue3`（最小项目：`benchmark/framework-compare/projects/taro-vue3`）
+- `weapp-vite wevu`（最小项目：`benchmark/framework-compare/projects/weapp-vite-wevu`）
 
 ## 对比维度
 
@@ -14,22 +14,25 @@
 
 ## 统一场景说明
 
-- Build / HMR / Runtime 采集前，脚本会将目标页面临时替换为同一份标准 Vue SFC，用完自动回滚，确保三套框架输入源码一致。
+- Build / HMR / Runtime 采集前，脚本会先在 `benchmark/framework-compare/projects/*` 生成三套最小化项目（来源于 `demo/*` / `apps/*` 的依赖环境），然后在最小化项目中采集。
+- 最小化项目仅保留基准必需的配置与页面源码，构建/热更新命令会复用源项目已安装的 CLI（不在最小项目里安装依赖）。
+- 采集时目标页面会被临时替换为同一份标准 Vue SFC，用完自动回滚，确保三套框架输入源码一致。
 - HMR 统一修改“Vue SFC 页面模板（`.vue`）”，注入同一批 class 语料和 marker。
-- HMR 优先使用 watch 口径（源码写入 -> 目标 `wxml` 出现 marker）；watch 不可用时自动回退为“源码写入 -> 完整 build 完成 + marker 命中”。
+- HMR 优先使用 watch 口径（源码写入 -> 目标产物文件 `wxml/js` 出现 marker）；watch 不可用时自动回退为“源码写入 -> 完整 build 完成 + marker 命中”。
 - Runtime 对三套框架统一执行 `ref.value` 批量赋值脚本（变量、写法、负载规模一致），默认对 `10,100,1000,10000,1000000` 五个数量级分别采样。
 
 当前三组入口页分别为：
 
-- `demo/uni-app-vue3-vite/src/pages/index/index.vue`
-- `demo/taro-vue3-app/src/pages/index/index.vue`
-- `apps/vite-native-ts-skyline/miniprogram/pages/cart/index.vue`
+- `benchmark/framework-compare/projects/uni-app-vue3/src/pages/index/index.vue`
+- `benchmark/framework-compare/projects/taro-vue3/src/pages/index/index.vue`
+- `benchmark/framework-compare/projects/weapp-vite-wevu/miniprogram/pages/cart/index.vue`
 
 ## 运行命令
 
 在仓库根目录执行：
 
 ```bash
+pnpm run bench:framework:prepare
 pnpm run bench:framework:matrix
 pnpm run bench:framework:sanitize
 pnpm run bench:framework:report
@@ -42,6 +45,8 @@ pnpm run bench:framework:report
 
 说明：
 
+- `bench:framework:matrix` 默认会自动执行最小项目准备；如需复用已有最小项目，可加 `--skip-prepare`。
+- 运行前需保证源项目依赖已安装（`demo/uni-app-vue3-vite`、`demo/taro-vue3-app`、`apps/vite-native-ts-skyline`）。
 - Runtime 采样不依赖微信开发者工具，默认直接在各项目依赖环境中执行统一 `ref.value` 批量赋值基准。
 - `bench:framework:sanitize` 会对结果中的绝对路径做脱敏（默认覆盖原始 JSON）。
 
@@ -62,4 +67,5 @@ pnpm run bench:framework:report
 - `--only <k1,k2,...>`：只跑指定框架 key（`uni-app-vue3` / `taro-vue3` / `weapp-vite-wevu`）
 - `--skip-hmr`：跳过 HMR
 - `--skip-runtime`：跳过 Runtime
+- `--skip-prepare`：跳过最小项目准备阶段
 - `--out <file>`：自定义原始报告输出路径

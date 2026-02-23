@@ -70,8 +70,8 @@ function pickEntryFromExports(value) {
   return null
 }
 
-async function resolvePackageEntryPath(packageName) {
-  const packageDir = path.join(process.cwd(), 'node_modules', packageName)
+async function resolvePackageEntryPath(packageName, moduleRoot) {
+  const packageDir = path.join(moduleRoot, 'node_modules', packageName)
   const packageJsonPath = path.join(packageDir, 'package.json')
   const raw = await fs.readFile(packageJsonPath, 'utf8')
   const pkg = JSON.parse(raw)
@@ -102,6 +102,7 @@ async function resolvePackageEntryPath(packageName) {
 async function main() {
   const argv = process.argv.slice(2)
   const packageName = parseArg('--package', argv, '')
+  const moduleRootArg = parseArg('--module-root', argv, process.cwd())
   const frameworkKey = parseArg('--framework-key', argv, 'unknown')
   const rounds = Math.max(1, parseNumberArg('--rounds', argv, 3))
   const opsPerRound = Math.max(1, parseNumberArg('--ops-per-round', argv, 160))
@@ -111,7 +112,8 @@ async function main() {
     throw new Error('missing --package')
   }
 
-  const entryPath = await resolvePackageEntryPath(packageName)
+  const moduleRoot = path.resolve(moduleRootArg)
+  const entryPath = await resolvePackageEntryPath(packageName, moduleRoot)
   const runtimeModule = await import(pathToFileURL(entryPath).href)
   const ref = runtimeModule?.ref ?? runtimeModule?.default?.ref
   if (typeof ref !== 'function') {

@@ -195,7 +195,7 @@ async function main() {
     '统一采集口径：',
     '- 三组用例在采集前均会被临时替换为同一份标准 Vue SFC，采集结束后自动回滚。',
     '- Build：执行项目 `build` 脚本，重复多轮取统计值。',
-    '- HMR：优先测量 watch 模式下源码改动到目标 `.wxml` 出现 marker 的耗时；watch 失败时自动回退到“源码改动 + 全量 build”补偿口径并标记模式。',
+    '- HMR：优先测量 watch 模式下源码改动到目标产物文件（`wxml/js`）出现 marker 的耗时；watch 失败时自动回退到“源码改动 + 全量 build”补偿口径并标记模式。',
     '- Runtime：统一执行 `ref.value` 大批量更新基准，按数量级分层统计单次更新耗时。',
     `- Runtime 数量级：${runtimeScaleOrder.length ? runtimeScaleOrder.join(', ') : 'N/A'}`,
     '',

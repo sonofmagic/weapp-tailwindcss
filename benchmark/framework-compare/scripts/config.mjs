@@ -2,37 +2,35 @@ export const FRAMEWORK_CASES = [
   {
     key: 'uni-app-vue3',
     label: 'uni-app vue3',
-    project: 'demo/uni-app-vue3-vite',
+    project: 'benchmark/framework-compare/projects/uni-app-vue3',
+    sourceProject: 'demo/uni-app-vue3-vite',
     buildScript: 'build',
     devScript: 'dev:mp-weixin',
-    runtimeProjectPath: 'dist/build/mp-weixin',
-    runtimeUrl: '/pages/index/index',
     runtimeRefPackage: 'vue',
     hmrSourceFile: 'src/pages/index/index.vue',
     hmrOutputFile: 'dist/dev/mp-weixin/pages/index/index.wxml',
+    buildOutputFile: 'dist/build/mp-weixin/pages/index/index.wxml',
     mutateSource: injectIntoVueTemplate,
   },
   {
     key: 'taro-vue3',
     label: 'taro vue3',
-    project: 'demo/taro-vue3-app',
+    project: 'benchmark/framework-compare/projects/taro-vue3',
+    sourceProject: 'demo/taro-vue3-app',
     buildScript: 'build',
     devScript: 'dev:weapp',
-    runtimeProjectPath: '.',
-    runtimeUrl: '/pages/index/index',
     runtimeRefPackage: 'vue',
     hmrSourceFile: 'src/pages/index/index.vue',
-    hmrOutputFile: 'dist/pages/index/index.wxml',
+    hmrOutputFile: 'dist/pages/index/index.js',
     mutateSource: injectIntoVueTemplate,
   },
   {
     key: 'weapp-vite-wevu',
     label: 'weapp-vite wevu',
-    project: 'apps/vite-native-ts-skyline',
+    project: 'benchmark/framework-compare/projects/weapp-vite-wevu',
+    sourceProject: 'apps/vite-native-ts-skyline',
     buildScript: 'build',
     devScript: 'dev',
-    runtimeProjectPath: '.',
-    runtimeUrl: '/pages/cart/index',
     runtimeRefPackage: 'wevu',
     hmrSourceFile: 'miniprogram/pages/cart/index.vue',
     hmrOutputFile: 'dist/pages/cart/index.wxml',
@@ -46,6 +44,9 @@ export const CONTROLLED_VUE_SFC_SOURCE = `<template>
     <view class="tw-framework-bench-anchor">anchor</view>
   </view>
 </template>
+
+<script setup lang="ts">
+</script>
 
 <style>
 .tw-framework-bench-root {

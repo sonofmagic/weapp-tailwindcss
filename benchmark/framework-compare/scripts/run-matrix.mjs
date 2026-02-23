@@ -3,6 +3,7 @@ import fs from 'node:fs/promises'
 import path from 'node:path'
 import process from 'node:process'
 import { CONTROLLED_VUE_SFC_SOURCE, createScenario, FRAMEWORK_CASES } from './config.mjs'
+import { prepareMinimalProjects } from './prepare-minimal-projects.mjs'
 import { runRuntimeRounds, summarizeRuntime } from './runtime.mjs'
 import {
   parseArg,
@@ -61,6 +62,7 @@ function resolveOptions(argv) {
     resetDelayMs: parseNumber('--reset-delay', argv, 280),
     skipHmr: parseBoolean('--skip-hmr', argv),
     skipRuntime: parseBoolean('--skip-runtime', argv),
+    skipPrepare: parseBoolean('--skip-prepare', argv),
     onlySet: parseCsvSet('--only', argv),
     outFile: resolvePath(
       workspaceRoot,
@@ -72,10 +74,13 @@ function resolveOptions(argv) {
 
 function resolveCasePaths(workspaceRoot, caseMeta) {
   const projectRoot = path.resolve(workspaceRoot, caseMeta.project)
+  const sourceProjectRoot = path.resolve(workspaceRoot, caseMeta.sourceProject)
   return {
     projectRoot,
+    sourceProjectRoot,
     sourcePath: path.resolve(projectRoot, caseMeta.hmrSourceFile),
-    outputPath: path.resolve(projectRoot, caseMeta.hmrOutputFile),
+    hmrOutputPath: path.resolve(projectRoot, caseMeta.hmrOutputFile),
+    buildOutputPath: path.resolve(projectRoot, caseMeta.buildOutputFile ?? caseMeta.hmrOutputFile),
   }
 }
 
@@ -88,6 +93,13 @@ function assertVueScenario(caseMeta) {
 async function fileContains(file, token) {
   const content = await readText(file)
   return content.includes(token)
+}
+
+async function assertOutputReady(caseMeta, casePaths, outputPath, phase) {
+  const output = await readText(outputPath)
+  if (output.trim().length === 0) {
+    throw new Error(`[${caseMeta.key}] ${phase} output empty: ${path.relative(casePaths.projectRoot, outputPath)}`)
+  }
 }
 
 function createSeed(roundIndex) {
@@ -103,6 +115,7 @@ async function runBuildRounds(caseMeta, casePaths, options) {
       ['run', caseMeta.buildScript],
       options.timeoutMs,
     )
+    await assertOutputReady(caseMeta, casePaths, casePaths.buildOutputPath, 'build')
     buildMs.push(result.elapsedMs)
     process.stdout.write(
       `[framework-matrix] ${caseMeta.key} build ${index + 1}/${options.buildRuns}: ${result.elapsedMs.toFixed(2)}ms\n`,
@@ -135,8 +148,8 @@ async function runHmrRounds(caseMeta, casePaths, options) {
   try {
     await waitFor(
       async () => {
-        const output = await readText(casePaths.outputPath)
-        return output.length > 120
+        const output = await readText(casePaths.hmrOutputPath)
+        return output.trim().length > 0
       },
       {
         timeoutMs: options.hmrTimeoutMs,
@@ -152,7 +165,7 @@ async function runHmrRounds(caseMeta, casePaths, options) {
       await fs.writeFile(casePaths.sourcePath, mutatedSource, 'utf8')
 
       const elapsedMs = await waitFor(
-        async () => fileContains(casePaths.outputPath, scenario.marker),
+        async () => fileContains(casePaths.hmrOutputPath, scenario.marker),
         {
           timeoutMs: options.hmrTimeoutMs,
           pollMs: options.pollMs,
@@ -216,6 +229,10 @@ async function runHmrFallbackRounds(caseMeta, casePaths, options) {
         ['run', caseMeta.buildScript],
         options.timeoutMs,
       )
+      const containsMarker = await fileContains(casePaths.buildOutputPath, scenario.marker)
+      if (!containsMarker) {
+        throw new Error(`[${caseMeta.key}] hmr fallback marker missing: ${scenario.marker}`)
+      }
       hmrMs.push(result.elapsedMs)
       process.stdout.write(
         `[framework-matrix] ${caseMeta.key} hmr-fallback ${roundIndex + 1}/${options.hmrRuns}: ${result.elapsedMs.toFixed(2)}ms\n`,
@@ -318,6 +335,13 @@ async function main() {
   }
 
   const rows = []
+  if (!options.skipPrepare) {
+    await prepareMinimalProjects({
+      workspaceRoot: options.workspaceRoot,
+      onlySet: options.onlySet,
+    })
+  }
+
   for (const caseMeta of selectedCases) {
     process.stdout.write(`[framework-matrix] start ${caseMeta.key}\n`)
     const row = await runCase(caseMeta, options)
@@ -341,16 +365,19 @@ async function main() {
       pollMs: options.pollMs,
       skipHmr: options.skipHmr,
       skipRuntime: options.skipRuntime,
+      skipPrepare: options.skipPrepare,
       outFile: path.relative(options.workspaceRoot, options.outFile),
     },
     cases: selectedCases.map(item => ({
       key: item.key,
       label: item.label,
       project: item.project,
+      sourceProject: item.sourceProject,
       buildScript: item.buildScript,
       devScript: item.devScript,
       hmrSourceFile: item.hmrSourceFile,
       hmrOutputFile: item.hmrOutputFile,
+      buildOutputFile: item.buildOutputFile ?? item.hmrOutputFile,
       runtimeRefPackage: item.runtimeRefPackage,
     })),
     rows,
