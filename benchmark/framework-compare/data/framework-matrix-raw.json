@@ -1,0 +1,143 @@
+{
+  "generatedAt": "2026-02-23T15:29:14.461Z",
+  "options": {
+    "buildRuns": 3,
+    "hmrRuns": 5,
+    "runtimeRuns": 3,
+    "setDataRuns": 8,
+    "wxmlQueryRuns": 8,
+    "timeoutMs": 60000,
+    "runtimeTimeoutMs": 30000,
+    "pollMs": 180,
+    "skipHmr": false,
+    "skipRuntime": false,
+    "outFile": "benchmark/framework-compare/data/framework-matrix-raw.json"
+  },
+  "cases": [
+    {
+      "key": "uni-app-vue3",
+      "label": "uni-app vue3",
+      "project": "demo/uni-app-vue3-vite",
+      "buildScript": "build",
+      "devScript": "dev:mp-weixin",
+      "hmrSourceFile": "src/pages/index/index.vue",
+      "hmrOutputFile": "dist/dev/mp-weixin/pages/index/index.wxml",
+      "runtimeProjectPath": "dist/build/mp-weixin",
+      "runtimeUrl": "/pages/index/index"
+    },
+    {
+      "key": "taro-vue3",
+      "label": "taro vue3",
+      "project": "demo/taro-vue3-app",
+      "buildScript": "build",
+      "devScript": "dev:weapp",
+      "hmrSourceFile": "src/pages/index/index.vue",
+      "hmrOutputFile": "dist/pages/index/index.wxml",
+      "runtimeProjectPath": ".",
+      "runtimeUrl": "/pages/index/index"
+    },
+    {
+      "key": "weapp-vite-wevu",
+      "label": "weapp-vite wevu",
+      "project": "apps/vite-native-ts-skyline",
+      "buildScript": "build",
+      "devScript": "dev",
+      "hmrSourceFile": "miniprogram/pages/cart/index.vue",
+      "hmrOutputFile": "dist/pages/cart/index.wxml",
+      "runtimeProjectPath": ".",
+      "runtimeUrl": "/pages/cart/index"
+    }
+  ],
+  "rows": [
+    {
+      "key": "uni-app-vue3",
+      "label": "uni-app vue3",
+      "project": "demo/uni-app-vue3-vite",
+      "buildScript": "build",
+      "devScript": "dev:mp-weixin",
+      "buildMs": [
+        3328.7534579999997,
+        3450.2790829999994,
+        3334.7967499999995
+      ],
+      "hmrMs": [],
+      "runtimeRounds": [],
+      "summary": {
+        "build": {
+          "count": 3,
+          "mean": 3371.276430333333,
+          "median": 3334.7967499999995,
+          "min": 3328.7534579999997,
+          "max": 3450.2790829999994,
+          "stddev": 55.91776516055688
+        },
+        "hmr": null,
+        "runtime": null
+      },
+      "errors": {
+        "hmr": "[uni-app-vue3] hmr failed: [uni-app-vue3] hmr timeout marker=tw-framework-bench-19002902\n> @weapp-tailwindcss-demo/uni-app-vue3-vite@0.0.1 dev:mp-weixin <REPO_ROOT>/demo/uni-app-vue3-vite\n> uni -p mp-weixin\nPlease note that in running mode, due to log output, sourcemap, and uncompressed source code, the performance and package size are not as good as release mode.To officially release, please click the release menu or use the cli release command to release\nCompiling...\nℹ tailwindcss-patcher 绑定 Tailwind CSS -> <REPO_ROOT>/node_modules/.pnpm/tailwindcss@3.4.19_tsx@4.21.0_yaml@2.8.2/node_modules/tailwindcss (v3.4.19)\n✔ 当前使用 Tailwind CSS 版本为: 3.4.19\n[weapp-tw] onLoad 2026-02-23T15:23:07.776Z\n[weapp-tw] onStart 2026-02-23T15:23:09.290Z\n[weapp-tw] onEnd | 自 onLoad 耗时: 1965ms, 自 onStart 耗时: 450ms, 修改文件数: 22, 分类: wxss=6, wxml=12, js=4, other=0, 已省略日志: 22\nDONE  Build complete. Watching for changes...\nRun method: open Weixin Mini Program Devtools, import dist/dev/mp-weixin run.\nready in 3694ms.",
+        "runtime": "listen EPERM: operation not permitted 0.0.0.0"
+      }
+    },
+    {
+      "key": "taro-vue3",
+      "label": "taro vue3",
+      "project": "demo/taro-vue3-app",
+      "buildScript": "build",
+      "devScript": "dev:weapp",
+      "buildMs": [
+        60030.50791699998,
+        60032.136666000006,
+        60035.29545800001
+      ],
+      "hmrMs": [],
+      "runtimeRounds": [],
+      "summary": {
+        "build": {
+          "count": 3,
+          "mean": 60032.64668033333,
+          "median": 60032.136666000006,
+          "min": 60030.50791699998,
+          "max": 60035.29545800001,
+          "stddev": 1.9874981210696439
+        },
+        "hmr": null,
+        "runtime": null
+      },
+      "errors": {
+        "hmr": "[taro-vue3] hmr failed: [taro-vue3] dev warmup timeout\n> @weapp-tailwindcss-demo/taro-vue3-app@1.0.0 dev:weapp <REPO_ROOT>/demo/taro-vue3-app\n> npm run build:weapp -- --watch\n> @weapp-tailwindcss-demo/taro-vue3-app@1.0.0 build:weapp\n> taro build --type weapp --watch\n👽 Taro v4.1.11\nuseBabel: false\nthread 'tokio-runtime-worker' panicked at <ABS_PATH>\nAttempted to create a NULL object.\nnote: run with `RUST_BACKTRACE=1` environment variable to display a backtrace",
+        "runtime": "listen EPERM: operation not permitted 0.0.0.0"
+      }
+    },
+    {
+      "key": "weapp-vite-wevu",
+      "label": "weapp-vite wevu",
+      "project": "apps/vite-native-ts-skyline",
+      "buildScript": "build",
+      "devScript": "dev",
+      "buildMs": [
+        1533.214541000023,
+        1172.3098330000066,
+        1133.3869169999962
+      ],
+      "hmrMs": [],
+      "runtimeRounds": [],
+      "summary": {
+        "build": {
+          "count": 3,
+          "mean": 1279.6370970000087,
+          "median": 1172.3098330000066,
+          "min": 1133.3869169999962,
+          "max": 1533.214541000023,
+          "stddev": 180.00905241435555
+        },
+        "hmr": null,
+        "runtime": null
+      },
+      "errors": {
+        "hmr": "[weapp-vite-wevu] hmr failed: [weapp-vite-wevu] hmr timeout marker=tw-framework-bench-49441101\n> vite-native-ts-skyline@1.0.1 dev <REPO_ROOT>/apps/vite-native-ts-skyline\n> weapp-vite dev\nℹ tailwindcss-patcher 绑定 Tailwind CSS -> <REPO_ROOT>/node_modules/.pnpm/tailwindcss@3.4.19_tsx@4.21.0_yaml@2.8.2/node_modules/tailwindcss (v3.4.19)\n✔ 当前使用 Tailwind CSS 版本为: 3.4.19\nℹ 目标平台：weapp\n✔ 已清空 dist/ 目录\n[npm] ℹ [npm] 依赖 wevu 未发生变化，跳过处理!\n WARN  [监听] miniprogram 监听数量达到上限 (EMFILE)，侧车文件监听已停用\nBuild failed with 1 error:\n\u001b[31m[UNHANDLEABLE_ERROR] Error:\u001b[0m Something went wrong inside rolldown, please report this problem at https://github.com/rolldown/rolldown/issues.\nunable to start FSEvent stream\n ERROR  [监听] 文件监听数量达到上限 (EMFILE)，可先执行 ulimit -n 65536 后重试。\n✔ 构建完成，耗时 322.20 ms",
+        "runtime": "listen EPERM: operation not permitted 0.0.0.0"
+      }
+    }
+  ]
+}
