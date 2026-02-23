@@ -141,7 +141,8 @@ async function main() {
       roundTotalMs: performance.now() - roundStartedAt,
       opAvgMs: mean(opLatencyMs),
       opMedianMs: median(opLatencyMs),
-      opLatencyMs,
+      opMinMs: Math.min(...opLatencyMs),
+      opMaxMs: Math.max(...opLatencyMs),
     })
   }
 

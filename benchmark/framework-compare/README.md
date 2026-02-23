@@ -10,14 +10,14 @@
 
 - Build：项目构建耗时（多轮统计）
 - HMR：统一模板注入场景下的热更新耗时
-- Runtime：`ref.value` 大批量更新性能（统一批量大小 + 操作次数）
+- Runtime：`ref.value` 大批量更新性能（多数量级 + 操作次数）
 
 ## 统一场景说明
 
 - Build / HMR / Runtime 采集前，脚本会将目标页面临时替换为同一份标准 Vue SFC，用完自动回滚，确保三套框架输入源码一致。
 - HMR 统一修改“Vue SFC 页面模板（`.vue`）”，注入同一批 class 语料和 marker。
 - HMR 优先使用 watch 口径（源码写入 -> 目标 `wxml` 出现 marker）；watch 不可用时自动回退为“源码写入 -> 完整 build 完成 + marker 命中”。
-- Runtime 对三套框架统一执行 `ref.value` 批量赋值脚本（变量、写法、负载规模一致）。
+- Runtime 对三套框架统一执行 `ref.value` 批量赋值脚本（变量、写法、负载规模一致），默认对 `10,100,1000,10000,1000000` 五个数量级分别采样。
 
 当前三组入口页分别为：
 
@@ -55,8 +55,10 @@ pnpm run bench:framework:report
 - `--hmr-timeout <ms>`：watch HMR 单轮超时（默认 120000）
 - `--runtime-runs <n>`：Runtime 轮数（默认 3）
 - `--runtime-timeout <ms>`：每个 runtime 子阶段超时（默认 45000）
-- `--ref-batch-size <n>`：每次 `ref.value` 赋值的数据规模（默认 2500）
-- `--ref-ops-per-round <n>`：每轮 runtime 中的 `ref.value` 赋值次数（默认 160）
+- `--ref-batch-scales <a,b,c,...>`：Runtime 数量级列表（默认 `10,100,1000,10000,1000000`）
+- `--ref-batch-size <n>`：兼容单数量级写法（等价于 `--ref-batch-scales <n>`）
+- `--ref-ops-per-round <n>`：每个数量级的基础 `ref.value` 赋值次数上限（默认 160）
+- `--ref-max-elements-per-round <n>`：每轮最大元素预算，超大数量级会自动降低操作次数（默认 5000000）
 - `--only <k1,k2,...>`：只跑指定框架 key（`uni-app-vue3` / `taro-vue3` / `weapp-vite-wevu`）
 - `--skip-hmr`：跳过 HMR
 - `--skip-runtime`：跳过 Runtime

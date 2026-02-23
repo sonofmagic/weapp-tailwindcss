@@ -17,7 +17,7 @@ function parseWorkerResult(logs, key) {
   throw new Error(`[${key}] runtime worker output parse failed`)
 }
 
-function runRuntimeWorker(caseMeta, casePaths, options) {
+function runRuntimeWorker(caseMeta, casePaths, options, runtimeTask) {
   return new Promise((resolve, reject) => {
     const workerPath = path.resolve(
       options.workspaceRoot,
@@ -32,9 +32,9 @@ function runRuntimeWorker(caseMeta, casePaths, options) {
       '--rounds',
       String(options.runtimeRuns),
       '--ops-per-round',
-      String(options.refOpsPerRound),
+      String(runtimeTask.opsPerRound),
       '--batch-size',
-      String(options.refBatchSize),
+      String(runtimeTask.batchSize),
     ]
 
     const child = spawn('node', args, {
@@ -83,37 +83,67 @@ function runRuntimeWorker(caseMeta, casePaths, options) {
   })
 }
 
-export async function runRuntimeRounds(caseMeta, casePaths, options) {
-  const workerResult = await runRuntimeWorker(caseMeta, casePaths, options)
-  const rounds = Array.isArray(workerResult.roundResults) ? workerResult.roundResults : []
-  for (const round of rounds) {
-    process.stdout.write(
-      `[framework-matrix] ${caseMeta.key} runtime round=${round.round}: opMedian=${round.opMedianMs.toFixed(4)}ms opAvg=${round.opAvgMs.toFixed(4)}ms total=${round.roundTotalMs.toFixed(2)}ms\n`,
-    )
+function resolveOpsPerRound(batchSize, options) {
+  const byElementCap = Math.floor(options.refMaxElementsPerRound / batchSize)
+  if (byElementCap <= 0) {
+    return 1
   }
-  return rounds
+  return Math.max(1, Math.min(options.refOpsPerRound, byElementCap))
 }
 
-export function summarizeRuntime(rounds) {
-  if (!Array.isArray(rounds) || rounds.length === 0) {
+export async function runRuntimeRounds(caseMeta, casePaths, options) {
+  const scaleResults = []
+  for (const batchSize of options.refBatchScales) {
+    const runtimeTask = {
+      batchSize,
+      opsPerRound: resolveOpsPerRound(batchSize, options),
+    }
+    const workerResult = await runRuntimeWorker(caseMeta, casePaths, options, runtimeTask)
+    const rounds = Array.isArray(workerResult.roundResults) ? workerResult.roundResults : []
+    const roundMedianSummary = summarize(rounds.map(item => item.opMedianMs))
+    process.stdout.write(
+      `[framework-matrix] ${caseMeta.key} runtime scale=${batchSize} ops=${runtimeTask.opsPerRound}: opMedian=${(roundMedianSummary?.median ?? 0).toFixed(4)}ms rounds=${rounds.length}\n`,
+    )
+    scaleResults.push({
+      batchSize,
+      opsPerRound: runtimeTask.opsPerRound,
+      rounds,
+    })
+  }
+  return scaleResults
+}
+
+export function summarizeRuntime(scaleResults) {
+  if (!Array.isArray(scaleResults) || scaleResults.length === 0) {
     return null
   }
 
-  const opAvgValues = rounds.map(item => item.opAvgMs)
-  const opMedianValues = rounds.map(item => item.opMedianMs)
-  const roundTotalValues = rounds.map(item => item.roundTotalMs)
-  const allOpValues = rounds.flatMap((item) => {
-    if (!Array.isArray(item.opLatencyMs)) {
-      return []
+  const ordered = [...scaleResults]
+    .filter(item => Number.isFinite(item?.batchSize))
+    .sort((a, b) => a.batchSize - b.batchSize)
+
+  if (!ordered.length) {
+    return null
+  }
+
+  const scales = {}
+  const scaleOrder = []
+  for (const item of ordered) {
+    const rounds = Array.isArray(item.rounds) ? item.rounds : []
+    const key = String(item.batchSize)
+    scales[key] = {
+      batchSize: item.batchSize,
+      opsPerRound: item.opsPerRound,
+      count: rounds.length,
+      opAvgMs: summarize(rounds.map(round => round.opAvgMs)),
+      opMedianMs: summarize(rounds.map(round => round.opMedianMs)),
+      roundTotalMs: summarize(rounds.map(round => round.roundTotalMs)),
     }
-    return item.opLatencyMs
-  })
+    scaleOrder.push(item.batchSize)
+  }
 
   return {
-    count: rounds.length,
-    opAvgMs: summarize(opAvgValues),
-    opMedianMs: summarize(opMedianValues),
-    roundTotalMs: summarize(roundTotalValues),
-    allOpsMs: summarize(allOpValues),
+    scaleOrder,
+    scales,
   }
 }

@@ -22,6 +22,27 @@ import {
   writeJson,
 } from './shared.mjs'
 
+function parseBatchScales(argv) {
+  const raw = parseArg('--ref-batch-scales', argv)
+  if (raw) {
+    const values = raw
+      .split(',')
+      .map(item => Number(item.trim()))
+      .filter(item => Number.isFinite(item) && item > 0)
+      .map(item => Math.trunc(item))
+    if (values.length) {
+      return [...new Set(values)].sort((a, b) => a - b)
+    }
+  }
+
+  const singleBatch = parseNumber('--ref-batch-size', argv, Number.NaN)
+  if (Number.isFinite(singleBatch) && singleBatch > 0) {
+    return [Math.trunc(singleBatch)]
+  }
+
+  return [10, 100, 1000, 10000, 1000000]
+}
+
 function resolveOptions(argv) {
   const workspaceRoot = resolveWorkspaceRoot(process.env.INIT_CWD ?? process.cwd())
   return {
@@ -31,8 +52,9 @@ function resolveOptions(argv) {
     runtimeRuns: parseNumber('--runtime-runs', argv, 3),
     hmrWatchRetries: parseNumber('--hmr-watch-retries', argv, 0),
     hmrTimeoutMs: parseNumber('--hmr-timeout', argv, 120000),
-    refBatchSize: parseNumber('--ref-batch-size', argv, 2500),
+    refBatchScales: parseBatchScales(argv),
     refOpsPerRound: parseNumber('--ref-ops-per-round', argv, 160),
+    refMaxElementsPerRound: parseNumber('--ref-max-elements-per-round', argv, 5000000),
     timeoutMs: parseNumber('--timeout', argv, 240000),
     runtimeTimeoutMs: parseNumber('--runtime-timeout', argv, 45000),
     pollMs: parseNumber('--poll', argv, 180),
@@ -311,8 +333,9 @@ async function main() {
       hmrWatchRetries: options.hmrWatchRetries,
       hmrTimeoutMs: options.hmrTimeoutMs,
       runtimeRuns: options.runtimeRuns,
-      refBatchSize: options.refBatchSize,
+      refBatchScales: options.refBatchScales,
       refOpsPerRound: options.refOpsPerRound,
+      refMaxElementsPerRound: options.refMaxElementsPerRound,
       timeoutMs: options.timeoutMs,
       runtimeTimeoutMs: options.runtimeTimeoutMs,
       pollMs: options.pollMs,
