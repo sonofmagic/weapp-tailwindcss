@@ -63,9 +63,9 @@ catalogs:
   tailwindcss3:
     tailwindcss: ^3.4.19
   tailwindcss4:
-    '@tailwindcss/postcss': ^4.2.0
-    '@tailwindcss/vite': ^4.2.0
-    tailwindcss: ^4.2.0
+    '@tailwindcss/postcss': ^4.2.1
+    '@tailwindcss/vite': ^4.2.1
+    tailwindcss: ^4.2.1
     tailwindcss4: npm:tailwindcss@^4.1.17
   tailwindcssPatch:
     tailwindcss-patch: ^8.7.1
@@ -118,13 +118,13 @@ catalogs:
     '@vue/compiler-sfc': ^3.5.28
     vue: ^3.5.28
   vueTsc318:
-    vue-tsc: ^3.2.4
+    vue-tsc: ^3.2.5
   weappChildren:
     weapp-tailwindcss-children: ^0.1.0
   weappIdeCli:
     weapp-ide-cli: ^5.0.4
   weappVite:
-    weapp-vite: ^6.6.9
+    weapp-vite: ^6.6.10
   wrangler4530:
     wrangler: ^4.67.0
 
