@@ -188,7 +188,7 @@ jobs:
           - os: ubuntu-latest
             runner_label: ubuntu
             watch_case: all
-            round_profile: issue33
+            round_profile: default
             watch_save_snapshots: '1'
             timeout_minutes: 60
             watch_timeout_ms: '480000'
@@ -197,7 +197,7 @@ jobs:
           - os: macos-latest
             runner_label: macos
             watch_case: all
-            round_profile: issue33
+            round_profile: default
             watch_save_snapshots: '1'
             timeout_minutes: 80
             watch_timeout_ms: '600000'
@@ -206,7 +206,7 @@ jobs:
           - os: windows-latest
             runner_label: windows
             watch_case: all
-            round_profile: issue33
+            round_profile: default
             watch_save_snapshots: '1'
             timeout_minutes: 95
             watch_timeout_ms: '720000'
