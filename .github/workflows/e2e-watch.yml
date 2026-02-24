@@ -212,6 +212,60 @@ jobs:
             watch_timeout_ms: '720000'
             watch_poll_ms: '400'
             watch_command_timeout_ms: '1800000'
+          - os: ubuntu-latest
+            runner_label: ubuntu
+            watch_case: uni-app-vue3-vite
+            round_profile: issue33
+            watch_save_snapshots: '1'
+            timeout_minutes: 35
+            watch_timeout_ms: '240000'
+            watch_poll_ms: '220'
+            watch_command_timeout_ms: '720000'
+          - os: ubuntu-latest
+            runner_label: ubuntu
+            watch_case: weapp-vite
+            round_profile: issue33
+            watch_save_snapshots: '1'
+            timeout_minutes: 35
+            watch_timeout_ms: '240000'
+            watch_poll_ms: '220'
+            watch_command_timeout_ms: '720000'
+          - os: macos-latest
+            runner_label: macos
+            watch_case: uni-app-vue3-vite
+            round_profile: issue33
+            watch_save_snapshots: '1'
+            timeout_minutes: 45
+            watch_timeout_ms: '300000'
+            watch_poll_ms: '300'
+            watch_command_timeout_ms: '900000'
+          - os: macos-latest
+            runner_label: macos
+            watch_case: weapp-vite
+            round_profile: issue33
+            watch_save_snapshots: '1'
+            timeout_minutes: 45
+            watch_timeout_ms: '300000'
+            watch_poll_ms: '300'
+            watch_command_timeout_ms: '900000'
+          - os: windows-latest
+            runner_label: windows
+            watch_case: uni-app-vue3-vite
+            round_profile: issue33
+            watch_save_snapshots: '1'
+            timeout_minutes: 55
+            watch_timeout_ms: '360000'
+            watch_poll_ms: '360'
+            watch_command_timeout_ms: '1080000'
+          - os: windows-latest
+            runner_label: windows
+            watch_case: weapp-vite
+            round_profile: issue33
+            watch_save_snapshots: '1'
+            timeout_minutes: 55
+            watch_timeout_ms: '360000'
+            watch_poll_ms: '360'
+            watch_command_timeout_ms: '1080000'
     runs-on: ${{ matrix.os }}
     timeout-minutes: ${{ matrix.timeout_minutes }}
 
