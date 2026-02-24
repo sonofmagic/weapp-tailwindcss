@@ -9,9 +9,9 @@
     "postinstall": "weapp-tw patch"
   },
   "devDependencies": {
-    "@tailwindcss/postcss": "^4.2.0",
-    "tailwindcss": "^4.2.0",
-    "weapp-tailwindcss": "^4.10.2"
+    "@tailwindcss/postcss": "^4.2.1",
+    "tailwindcss": "^4.2.1",
+    "weapp-tailwindcss": "^4.10.3"
   },
   "pnpm": {
     "onlyBuiltDependencies": [
