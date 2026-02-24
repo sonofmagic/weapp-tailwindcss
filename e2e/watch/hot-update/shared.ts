@@ -8,8 +8,10 @@ export type WatchProjectGroup = 'demo' | 'apps'
 export type ConcreteWatchCaseName = 'taro' | 'uni' | 'mpx' | 'rax' | 'mina' | 'weapp-vite' | 'uni-app-vue3-vite' | 'uni-app-tailwindcss-v4' | 'taro-vite-tailwindcss-v4' | 'taro-app-vite' | 'taro-webpack-tailwindcss-v4' | 'taro-vue3-app' | 'taro-webpack' | 'vite-native-ts'
 export type WatchCaseName = ConcreteWatchCaseName | 'both' | 'all' | 'demo' | 'apps'
 type MutationKind = 'template' | 'script' | 'style'
-type MutationRoundName = 'baseline-arbitrary' | 'complex-corpus' | 'hex-arbitrary'
-const REQUIRED_MUTATION_ROUNDS: MutationRoundName[] = ['baseline-arbitrary', 'complex-corpus', 'hex-arbitrary']
+type MutationRoundName = 'baseline-arbitrary' | 'complex-corpus' | 'hex-arbitrary' | 'issue33-arbitrary'
+const BASE_REQUIRED_MUTATION_ROUNDS: MutationRoundName[] = ['baseline-arbitrary', 'complex-corpus', 'hex-arbitrary']
+const ISSUE33_REQUIRED_MUTATION_ROUND: MutationRoundName = 'issue33-arbitrary'
+const ISSUE33_MODIFY_CLASS_TOKENS = ['bg-[#0f0f0f]', 'px-[256.25px]'] as const
 
 interface MutationRoundReport {
   roundName: MutationRoundName
@@ -148,6 +150,17 @@ const noApplyValidationCases = new Set<ConcreteWatchCaseName>([
   'taro-webpack-tailwindcss-v4',
   'taro-webpack',
 ])
+
+function isIssue33RoundProfile() {
+  return process.env.E2E_WATCH_ROUND_PROFILE === 'issue33'
+}
+
+function resolveRequiredMutationRounds() {
+  if (isIssue33RoundProfile()) {
+    return [...BASE_REQUIRED_MUTATION_ROUNDS, ISSUE33_REQUIRED_MUTATION_ROUND]
+  }
+  return [...BASE_REQUIRED_MUTATION_ROUNDS]
+}
 
 function toBoolEnv(name: string, fallback: boolean) {
   const value = process.env[name]
@@ -312,9 +325,11 @@ async function runWatchHmrCommand(cwd: string, args: string[], commandTimeoutMs:
 }
 
 function assertHotUpdateReport(report: HotUpdateReport, target: WatchCaseName, maxHotUpdateMs: number) {
+  const requiredMutationRounds = resolveRequiredMutationRounds()
+  const issue33RoundProfile = isIssue33RoundProfile()
   expect(report.summary.count).toBeGreaterThan(0)
   expect(report.cases.length).toBe(report.summary.count)
-  for (const roundName of REQUIRED_MUTATION_ROUNDS) {
+  for (const roundName of requiredMutationRounds) {
     expect(report.summaryByRound[roundName]?.count).toBe(report.summary.count)
   }
   expect(report.summaryByMutationKind.template?.count).toBe(report.summary.count)
@@ -341,7 +356,7 @@ function assertHotUpdateReport(report: HotUpdateReport, target: WatchCaseName, m
     expect(item.rollbackEffectiveMs).toBeGreaterThan(0)
     expect(item.classTokens.length).toBeGreaterThanOrEqual(12)
     expect(item.escapedClasses.length).toBe(item.classTokens.length)
-    expect(item.rounds.length).toBeGreaterThanOrEqual(REQUIRED_MUTATION_ROUNDS.length)
+    expect(item.rounds.length).toBeGreaterThanOrEqual(requiredMutationRounds.length)
     expect(item.mutationMetrics.length).toBe(3)
     expect(item.summaryByMutationKind.template?.count).toBe(1)
     expect(item.summaryByMutationKind.script?.count).toBe(1)
@@ -403,8 +418,8 @@ function assertHotUpdateReport(report: HotUpdateReport, target: WatchCaseName, m
     expect(scriptMetric?.hotUpdateEffectiveMs).toBeLessThanOrEqual(maxHotUpdateMs)
 
     if (templateMetric && templateMetric.mutationKind !== 'style') {
-      expect(templateMetric.rounds.length).toBeGreaterThanOrEqual(REQUIRED_MUTATION_ROUNDS.length)
-      for (const roundName of REQUIRED_MUTATION_ROUNDS) {
+      expect(templateMetric.rounds.length).toBeGreaterThanOrEqual(requiredMutationRounds.length)
+      for (const roundName of requiredMutationRounds) {
         expect(templateMetric.rounds.some(round => round.roundName === roundName)).toBe(true)
       }
       expect(templateMetric.verifiedGlobalStyleEscapedClasses.length).toBeGreaterThanOrEqual(templateMetric.minRequiredGlobalStyleEscapedClasses)
@@ -415,8 +430,8 @@ function assertHotUpdateReport(report: HotUpdateReport, target: WatchCaseName, m
     }
 
     if (scriptMetric && scriptMetric.mutationKind !== 'style') {
-      expect(scriptMetric.rounds.length).toBeGreaterThanOrEqual(REQUIRED_MUTATION_ROUNDS.length)
-      for (const roundName of REQUIRED_MUTATION_ROUNDS) {
+      expect(scriptMetric.rounds.length).toBeGreaterThanOrEqual(requiredMutationRounds.length)
+      for (const roundName of requiredMutationRounds) {
         expect(scriptMetric.rounds.some(round => round.roundName === roundName)).toBe(true)
       }
       expect(scriptMetric.verifiedGlobalStyleEscapedClasses.length).toBeGreaterThanOrEqual(scriptMetric.minRequiredGlobalStyleEscapedClasses)
@@ -439,6 +454,29 @@ function assertHotUpdateReport(report: HotUpdateReport, target: WatchCaseName, m
           `[${item.project}] same-class-literal should keep at least one global style output stable`,
         ).toBeGreaterThan(0)
       }
+
+      if (issue33RoundProfile) {
+        const issue33Round = scriptMetric.rounds.find(round => round.roundName === ISSUE33_REQUIRED_MUTATION_ROUND)
+        expect(issue33Round).toBeDefined()
+        expect(issue33Round?.classTokens).toEqual(expect.arrayContaining([...ISSUE33_MODIFY_CLASS_TOKENS]))
+        expect(issue33Round?.classLiteral).toContain(ISSUE33_MODIFY_CLASS_TOKENS[0])
+        expect(issue33Round?.classLiteral).toContain(ISSUE33_MODIFY_CLASS_TOKENS[1])
+        expect(issue33Round?.classLiteral ?? '').not.toMatch(/\bbg-\s+\[#?[0-9a-fA-F]{3,8}\]?/g)
+        expect(issue33Round?.classLiteral ?? '').not.toMatch(/\bbg-\[[^\]]*$/gm)
+        expect(issue33Round?.classLiteral ?? '').not.toMatch(/\bpx-\[[^\]]*$/gm)
+        expect(issue33Round?.classLiteral ?? '').not.toMatch(/\bbg-\[[^\]\s]*\s[^\]\s]*\]/g)
+        expect(issue33Round?.classLiteral ?? '').not.toMatch(/\bpx-\[[^\]\s]*\s[^\]\s]*\]/g)
+        expect(
+          scriptMetric.verifiedGlobalStyleEscapedClasses.length,
+          `[${item.project}] issue33 script round should hit transformed classes in wxss outputs`,
+        ).toBeGreaterThan(0)
+      }
+    }
+
+    if (issue33RoundProfile && templateMetric && templateMetric.mutationKind !== 'style') {
+      const issue33Round = templateMetric.rounds.find(round => round.roundName === ISSUE33_REQUIRED_MUTATION_ROUND)
+      expect(issue33Round).toBeDefined()
+      expect(issue33Round?.classTokens).toEqual(expect.arrayContaining([...ISSUE33_MODIFY_CLASS_TOKENS]))
     }
 
     if (styleMetric && styleMetric.mutationKind === 'style') {
@@ -503,4 +541,23 @@ export async function runHotUpdateTarget(target: WatchCaseName) {
   const report = JSON.parse(raw) as HotUpdateReport
   process.stdout.write(`[e2e-watch] hmr report saved: ${reportFile}\n`)
   assertHotUpdateReport(report, target, maxHotUpdateMs)
+
+  if (isIssue33RoundProfile()) {
+    const snapshotsDir = path.resolve(cwd, './benchmark/e2e-watch-hmr/snapshots')
+    const entries = await fs.readdir(snapshotsDir).catch(() => [])
+    const expectedPhases = [
+      '-template-add-success',
+      '-template-modify-success',
+      '-template-delete-success',
+      '-script-add-success',
+      '-script-modify-success',
+      '-script-delete-success',
+    ]
+    for (const phaseSuffix of expectedPhases) {
+      expect(
+        entries.some(item => item.includes(phaseSuffix)),
+        `[issue33] missing snapshot phase output: ${phaseSuffix}`,
+      ).toBe(true)
+    }
+  }
 }

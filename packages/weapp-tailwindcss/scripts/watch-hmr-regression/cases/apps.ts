@@ -1,5 +1,6 @@
 import type { WatchCase } from '../types'
 import path from 'node:path'
+import { isIssue33RoundEnabled, ISSUE33_ADD_CLASS_TOKENS } from '../mutations/tokens'
 import {
   appendTrailingSnippet,
   createStyleRuleSnippet,
@@ -9,7 +10,7 @@ import {
 } from '../text'
 
 function buildHexScriptRoundConfigs() {
-  return [
+  const rounds = [
     {
       name: 'baseline-arbitrary' as const,
       buildClassTokens(seed: string) {
@@ -50,6 +51,18 @@ function buildHexScriptRoundConfigs() {
           `text-[${textPx}px]`,
           `h-[${heightPx}px]`,
         ]
+      },
+    },
+  ]
+  if (!isIssue33RoundEnabled()) {
+    return rounds
+  }
+  return [
+    ...rounds,
+    {
+      name: 'issue33-arbitrary' as const,
+      buildClassTokens() {
+        return [...ISSUE33_ADD_CLASS_TOKENS]
       },
     },
   ]

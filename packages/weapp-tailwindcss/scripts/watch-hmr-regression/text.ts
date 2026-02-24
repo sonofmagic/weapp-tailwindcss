@@ -2,9 +2,55 @@ import type { ClassMutationPayload, StyleMutationPayload } from './types'
 import { promises as fs } from 'node:fs'
 import { sleep } from './session'
 
+function isRetryableFsError(error: unknown) {
+  const code = (error as NodeJS.ErrnoException | undefined)?.code
+  return code === 'ENOENT' || code === 'EPERM' || code === 'EBUSY' || code === 'EACCES'
+}
+
+function resolvePreferredEol(source: string) {
+  const crlfCount = (source.match(/\r\n/g) ?? []).length
+  const lfCount = (source.match(/(?<!\r)\n/g) ?? []).length
+  if (crlfCount > 0 && crlfCount >= lfCount) {
+    return '\r\n'
+  }
+  return '\n'
+}
+
+export function alignContentEol(content: string, source: string) {
+  const eol = resolvePreferredEol(source)
+  return content.replace(/\r?\n/g, eol)
+}
+
+export async function readFileWithRetry(
+  file: string,
+  options: {
+    retries?: number
+    retryDelayMs?: number
+  } = {},
+) {
+  const retries = options.retries ?? 6
+  const retryDelayMs = options.retryDelayMs ?? 40
+  let lastError: unknown
+
+  for (let attempt = 0; attempt <= retries; attempt += 1) {
+    try {
+      return await fs.readFile(file, 'utf8')
+    }
+    catch (error) {
+      lastError = error
+      if (!isRetryableFsError(error) || attempt >= retries) {
+        throw error
+      }
+      await sleep(retryDelayMs)
+    }
+  }
+
+  throw lastError
+}
+
 export async function readFileIfExists(file: string) {
   try {
-    return await fs.readFile(file, 'utf8')
+    return await readFileWithRetry(file)
   }
   catch {
     return undefined
@@ -12,12 +58,46 @@ export async function readFileIfExists(file: string) {
 }
 
 export async function getMtime(file: string) {
-  try {
-    const stats = await fs.stat(file)
-    return stats.mtimeMs
+  const retries = 6
+  for (let attempt = 0; attempt <= retries; attempt += 1) {
+    try {
+      const stats = await fs.stat(file)
+      return stats.mtimeMs
+    }
+    catch (error) {
+      if (!isRetryableFsError(error) || attempt >= retries) {
+        return 0
+      }
+      await sleep(40)
+    }
   }
-  catch {
-    return 0
+  return 0
+}
+
+export async function writeFilePreserveEol(
+  file: string,
+  content: string,
+  source: string,
+  options: {
+    retries?: number
+    retryDelayMs?: number
+  } = {},
+) {
+  const retries = options.retries ?? 6
+  const retryDelayMs = options.retryDelayMs ?? 40
+  const alignedContent = alignContentEol(content, source)
+
+  for (let attempt = 0; attempt <= retries; attempt += 1) {
+    try {
+      await fs.writeFile(file, alignedContent, 'utf8')
+      return
+    }
+    catch (error) {
+      if (!isRetryableFsError(error) || attempt >= retries) {
+        throw error
+      }
+      await sleep(retryDelayMs)
+    }
   }
 }
 

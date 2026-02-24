@@ -6,10 +6,9 @@ import type {
   WatchCase,
   WatchSession,
 } from '../../types'
-import { promises as fs } from 'node:fs'
 import process from 'node:process'
 import { formatPath } from '../../cli'
-import { getMtime, readFileIfExists } from '../../text'
+import { getMtime, readFileIfExists, writeFilePreserveEol } from '../../text'
 import {
   readJoinedOutputFiles,
   waitForMarkerState,
@@ -76,7 +75,7 @@ export async function runSameClassLiteralMutation(
   }
 
   const hotUpdateBeforeStartedAt = Date.now()
-  await fs.writeFile(sourcePath, sourceWithMarkerBefore, 'utf8')
+  await writeFilePreserveEol(sourcePath, sourceWithMarkerBefore, sourceOriginal)
   await waitForOutputsUpdated(
     watchCase,
     baselineMtime,
@@ -104,7 +103,7 @@ export async function runSameClassLiteralMutation(
   }
 
   const hotUpdateAfterStartedAt = Date.now()
-  await fs.writeFile(sourcePath, sourceWithMarkerAfter, 'utf8')
+  await writeFilePreserveEol(sourcePath, sourceWithMarkerAfter, sourceOriginal)
   const hotUpdateOutputMs = await waitForOutputsUpdated(
     watchCase,
     mtimeAfterBefore,
@@ -166,7 +165,7 @@ export async function runSameClassLiteralMutation(
   }
 
   const rollbackStartedAt = Date.now()
-  await fs.writeFile(sourcePath, sourceOriginal, 'utf8')
+  await writeFilePreserveEol(sourcePath, sourceOriginal, sourceOriginal)
   const rollbackOutputMs = await waitForOutputsUpdated(
     watchCase,
     mtimeAfterAfter,

@@ -20,6 +20,7 @@ import {
 import { resolvePreferredRound } from './mutations/shared'
 import { createWatchSession } from './session'
 import { summarizeMutationMetricsByKind } from './summary'
+import { writeFilePreserveEol } from './text'
 
 function resolveCaseSourceFiles(watchCase: WatchCase) {
   return Array.from(
@@ -151,7 +152,7 @@ export async function runCase(watchCase: WatchCase, options: CliOptions): Promis
   finally {
     for (const [sourcePath, original] of sourceOriginals.entries()) {
       try {
-        await fs.writeFile(sourcePath, original, 'utf8')
+        await writeFilePreserveEol(sourcePath, original, original)
       }
       catch {
       }

@@ -254,10 +254,8 @@ export function createWatchSession(
   const killWatchProcess = (signal: NodeJS.Signals) => {
     const childPid = child.pid
     if (childPid != null && process.platform === 'win32') {
-      if (signal === 'SIGTERM' || signal === 'SIGKILL') {
-        killProcessTreeOnWindows(childPid)
-        return
-      }
+      killProcessTreeOnWindows(childPid)
+      return
     }
 
     if (childPid != null && process.platform !== 'win32') {
@@ -337,6 +335,14 @@ export function createWatchSession(
   }
 
   const stop = async () => {
+    const waitForExit = async (timeoutMs: number) => {
+      const startedAt = Date.now()
+      while (child.exitCode == null && Date.now() - startedAt < timeoutMs) {
+        await sleep(100)
+      }
+      return child.exitCode != null
+    }
+
     if (child.exitCode != null) {
       closePipes()
       return
@@ -347,27 +353,19 @@ export function createWatchSession(
     child.stderr.off('data', collect)
 
     killWatchProcess('SIGINT')
-
-    let startedAt = Date.now()
-    while (child.exitCode == null && Date.now() - startedAt < 3000) {
-      await sleep(100)
-    }
-
-    if (child.exitCode != null) {
+    if (await waitForExit(3000)) {
+      closePipes()
       return
     }
 
     killWatchProcess('SIGTERM')
-
-    startedAt = Date.now()
-    while (child.exitCode == null && Date.now() - startedAt < 2000) {
-      await sleep(100)
+    if (await waitForExit(2500)) {
+      closePipes()
+      return
     }
 
-    if (child.exitCode == null) {
-      killWatchProcess('SIGKILL')
-    }
-
+    killWatchProcess('SIGKILL')
+    await waitForExit(2500)
     closePipes()
   }
 

@@ -1,4 +1,6 @@
 import type { WatchCaseMetrics } from './types'
+import { promises as fs } from 'node:fs'
+import path from 'node:path'
 import process from 'node:process'
 import { buildCases, pickCases } from './cases'
 import { formatPath, resolveBaseCwd, resolveOptions } from './cli'
@@ -11,6 +13,22 @@ import {
   summarizeMutationKindAcrossCases,
   writeReport,
 } from './summary'
+
+function resolveFailureLogPath(baseCwd: string) {
+  const timestamp = new Date().toISOString().replaceAll(':', '-').replaceAll('.', '-')
+  return path.resolve(
+    baseCwd,
+    'e2e/benchmark/e2e-watch-hmr/failures',
+    `${timestamp}-watch-hmr-runner-failure.log`,
+  )
+}
+
+async function writeFailureLog(baseCwd: string, message: string) {
+  const file = resolveFailureLogPath(baseCwd)
+  await fs.mkdir(path.dirname(file), { recursive: true })
+  await fs.writeFile(file, `${message}\n`, 'utf8')
+  process.stdout.write(`[watch-hmr] failure log written: ${formatPath(file)}\n`)
+}
 
 export async function main() {
   const options = resolveOptions()
@@ -54,8 +72,14 @@ export async function main() {
   process.stdout.write('[watch-hmr] all cases passed\n')
 }
 
-main().catch((error) => {
+main().catch(async (error) => {
   const message = error instanceof Error ? error.stack ?? error.message : String(error)
+  const baseCwd = resolveBaseCwd()
+  try {
+    await writeFailureLog(baseCwd, message)
+  }
+  catch {
+  }
   console.error(`[watch-hmr] failed\n${message}`)
   process.exitCode = 1
 })

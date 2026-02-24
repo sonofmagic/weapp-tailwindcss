@@ -1,4 +1,8 @@
 import type { MutationRoundConfig } from '../types'
+import process from 'node:process'
+
+export const ISSUE33_ADD_CLASS_TOKENS = ['bg-[#123435]', 'px-[432.43px]'] as const
+export const ISSUE33_MODIFY_CLASS_TOKENS = ['bg-[#0f0f0f]', 'px-[256.25px]'] as const
 
 export function buildBaselineArbitraryClassTokens(seed: string) {
   const opacitySeed = seed.slice(0, 2)
@@ -50,8 +54,29 @@ export function buildHexArbitraryClassTokens(seed: string) {
   ]
 }
 
-export function resolveMutationRoundConfigs(): MutationRoundConfig[] {
+export function buildIssue33ArbitraryClassTokens() {
+  return [...ISSUE33_ADD_CLASS_TOKENS]
+}
+
+export function isIssue33RoundEnabled() {
+  return process.env.E2E_WATCH_ROUND_PROFILE === 'issue33'
+}
+
+export function appendIssue33RoundConfig(rounds: MutationRoundConfig[]) {
+  if (!isIssue33RoundEnabled()) {
+    return rounds
+  }
   return [
+    ...rounds,
+    {
+      name: 'issue33-arbitrary',
+      buildClassTokens: buildIssue33ArbitraryClassTokens,
+    },
+  ]
+}
+
+export function resolveMutationRoundConfigs(): MutationRoundConfig[] {
+  return appendIssue33RoundConfig([
     {
       name: 'baseline-arbitrary',
       buildClassTokens: buildBaselineArbitraryClassTokens,
@@ -64,5 +89,5 @@ export function resolveMutationRoundConfigs(): MutationRoundConfig[] {
       name: 'hex-arbitrary',
       buildClassTokens: buildHexArbitraryClassTokens,
     },
-  ]
+  ])
 }

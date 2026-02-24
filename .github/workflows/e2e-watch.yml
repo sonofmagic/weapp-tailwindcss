@@ -25,7 +25,7 @@ permissions:
 
 jobs:
   e2e-watch:
-    name: e2e-watch (${{ matrix.runner_label }}-node22-${{ matrix.watch_case }})
+    name: e2e-watch (${{ matrix.runner_label }}-node22-${{ matrix.watch_case }}-${{ matrix.round_profile }})
     if: github.event_name != 'pull_request' || github.event.pull_request.draft == false
     strategy:
       fail-fast: false
@@ -34,6 +34,8 @@ jobs:
           - os: ubuntu-latest
             runner_label: ubuntu
             watch_case: all
+            round_profile: default
+            watch_save_snapshots: '0'
             timeout_minutes: 45
             watch_timeout_ms: '360000'
             watch_poll_ms: '240'
@@ -41,6 +43,8 @@ jobs:
           - os: macos-latest
             runner_label: macos
             watch_case: both
+            round_profile: default
+            watch_save_snapshots: '0'
             timeout_minutes: 60
             watch_timeout_ms: '480000'
             watch_poll_ms: '320'
@@ -48,10 +52,39 @@ jobs:
           - os: windows-latest
             runner_label: windows
             watch_case: both
+            round_profile: default
+            watch_save_snapshots: '0'
             timeout_minutes: 70
             watch_timeout_ms: '540000'
             watch_poll_ms: '400'
             watch_command_timeout_ms: '1500000'
+          - os: ubuntu-latest
+            runner_label: ubuntu
+            watch_case: both
+            round_profile: issue33
+            watch_save_snapshots: '1'
+            timeout_minutes: 50
+            watch_timeout_ms: '420000'
+            watch_poll_ms: '260'
+            watch_command_timeout_ms: '960000'
+          - os: macos-latest
+            runner_label: macos
+            watch_case: both
+            round_profile: issue33
+            watch_save_snapshots: '1'
+            timeout_minutes: 65
+            watch_timeout_ms: '520000'
+            watch_poll_ms: '340'
+            watch_command_timeout_ms: '1260000'
+          - os: windows-latest
+            runner_label: windows
+            watch_case: both
+            round_profile: issue33
+            watch_save_snapshots: '1'
+            timeout_minutes: 75
+            watch_timeout_ms: '580000'
+            watch_poll_ms: '420'
+            watch_command_timeout_ms: '1560000'
     runs-on: ${{ matrix.os }}
     timeout-minutes: ${{ matrix.timeout_minutes }}
 
@@ -92,13 +125,18 @@ jobs:
           E2E_WATCH_TIMEOUT_MS: ${{ matrix.watch_timeout_ms }}
           E2E_WATCH_POLL_MS: ${{ matrix.watch_poll_ms }}
           E2E_WATCH_COMMAND_TIMEOUT_MS: ${{ matrix.watch_command_timeout_ms }}
+          E2E_WATCH_ROUND_PROFILE: ${{ matrix.round_profile }}
+          E2E_WATCH_SAVE_SNAPSHOTS: ${{ matrix.watch_save_snapshots }}
         run: pnpm e2e:watch
 
       - name: Upload e2e watch reports
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: e2e-watch-hmr-reports-${{ matrix.runner_label }}-${{ matrix.watch_case }}-${{ github.run_id }}
-          path: e2e/benchmark/e2e-watch-hmr/*.json
+          name: e2e-watch-hmr-${{ matrix.runner_label }}-${{ matrix.watch_case }}-${{ matrix.round_profile }}-${{ github.run_id }}
+          path: |
+            e2e/benchmark/e2e-watch-hmr/*.json
+            e2e/benchmark/e2e-watch-hmr/snapshots/**
+            e2e/benchmark/e2e-watch-hmr/failures/**
           if-no-files-found: ignore
           retention-days: 14

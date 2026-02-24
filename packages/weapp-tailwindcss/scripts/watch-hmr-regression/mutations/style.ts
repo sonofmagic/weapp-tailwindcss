@@ -2,7 +2,15 @@ import type { CliOptions, StyleMutationConfig, StyleMutationMetrics, WatchCase, 
 import { promises as fs } from 'node:fs'
 import process from 'node:process'
 import { formatPath } from '../cli'
-import { assertContains, findCssRuleBody, getMtime, normalizeCssDeclaration, readFileIfExists, waitFor } from '../text'
+import {
+  assertContains,
+  findCssRuleBody,
+  getMtime,
+  normalizeCssDeclaration,
+  readFileIfExists,
+  waitFor,
+  writeFilePreserveEol,
+} from '../text'
 import { createStyleMutationPayload } from './shared'
 
 export async function runStyleMutation(
@@ -58,7 +66,7 @@ export async function runStyleMutation(
 
   const baselineOutputCandidateMtimes = await collectOutputCandidateMtimes()
   const hotUpdateStartedAt = Date.now()
-  await fs.writeFile(sourcePath, mutatedSource, 'utf8')
+  await writeFilePreserveEol(sourcePath, mutatedSource, sourceOriginal)
   const hotUpdateOutputMs = await waitForOutputCandidateMtimeChanged(
     baselineOutputCandidateMtimes,
     hotUpdateStartedAt,
@@ -108,7 +116,7 @@ export async function runStyleMutation(
 
   const outputCandidateMtimesAfterHotUpdate = await collectOutputCandidateMtimes()
   const rollbackStartedAt = Date.now()
-  await fs.writeFile(sourcePath, sourceOriginal, 'utf8')
+  await writeFilePreserveEol(sourcePath, sourceOriginal, sourceOriginal)
   const rollbackOutputMs = await waitForOutputCandidateMtimeChanged(
     outputCandidateMtimesAfterHotUpdate,
     rollbackStartedAt,

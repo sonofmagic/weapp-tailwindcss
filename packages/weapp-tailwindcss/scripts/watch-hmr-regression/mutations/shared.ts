@@ -137,6 +137,7 @@ export function createClassMutationScenario(
   roundConfig: MutationRoundConfig,
 ): MutationScenario {
   const maxAttempts = 24
+  const minFreshEscapedClasses = roundConfig.name === 'issue33-arbitrary' ? 0 : 3
 
   for (let attempt = 0; attempt < maxAttempts; attempt += 1) {
     // Keep attempt-specific digits at the front because some round configs
@@ -151,7 +152,7 @@ export function createClassMutationScenario(
       return !baselineWxml.includes(escaped) && !baselineJs.includes(escaped) && !baselineGlobalStyle.includes(escaped)
     })
 
-    if (freshEscapedClasses.length < 3) {
+    if (freshEscapedClasses.length < minFreshEscapedClasses) {
       continue
     }
 

@@ -2,15 +2,26 @@ import type {
   ClassMutationConfig,
   ClassMutationMetrics,
   CliOptions,
+  MutationRoundConfig,
   MutationRoundMetrics,
   SameClassLiteralHmrMetrics,
   WatchCase,
   WatchSession,
 } from '../types'
 import { promises as fs } from 'node:fs'
+import path from 'node:path'
 import process from 'node:process'
+import { replaceWxml } from '../../../src/wxml/shared'
 import { formatPath } from '../cli'
-import { assertContains, assertContainsOneOf, assertNotContains, getMtime, readFileIfExists } from '../text'
+import {
+  assertContains,
+  assertContainsOneOf,
+  assertNotContains,
+  getMtime,
+  readFileIfExists,
+  readFileWithRetry,
+  writeFilePreserveEol,
+} from '../text'
 import { runSameClassLiteralMutation } from './class/same-literal'
 import {
   buildRoundComparison,
@@ -20,7 +31,18 @@ import {
   waitForMarkerState,
   waitForOutputsUpdated,
 } from './shared'
-import { resolveMutationRoundConfigs } from './tokens'
+import {
+  ISSUE33_MODIFY_CLASS_TOKENS,
+  resolveMutationRoundConfigs,
+} from './tokens'
+
+const ISSUE33_ROUND_NAME = 'issue33-arbitrary' as const
+
+interface RoundOutputs {
+  wxml: string
+  js: string
+  globalStyle: string
+}
 
 function collectBgHexTruncationNeedles(classTokens: string[]) {
   const needles: string[] = []
@@ -32,6 +54,258 @@ function collectBgHexTruncationNeedles(classTokens: string[]) {
     needles.push(`bg- ${matched[1]}`)
   }
   return needles
+}
+
+function isIssue33Round(roundConfig: MutationRoundConfig) {
+  return roundConfig.name === ISSUE33_ROUND_NAME
+}
+
+function shouldPersistIssue33Snapshot() {
+  return process.env.E2E_WATCH_SAVE_SNAPSHOTS === '1'
+    || process.env.E2E_WATCH_ROUND_PROFILE === 'issue33'
+}
+
+function sanitizePathSegment(value: string) {
+  return value.replace(/[^\w.-]/g, '-')
+}
+
+function asErrorMessage(error: unknown) {
+  return error instanceof Error ? error.message : String(error)
+}
+
+function resolveIssue33SnapshotDir(
+  watchCase: WatchCase,
+  mutationKind: 'template' | 'script',
+  phase: 'add' | 'modify' | 'delete',
+  stage: 'success' | 'failure',
+) {
+  const timestamp = new Date().toISOString().replaceAll(':', '-').replaceAll('.', '-')
+  const dirName = `${timestamp}-${sanitizePathSegment(watchCase.name)}-${mutationKind}-${phase}-${stage}`
+  return path.resolve(
+    watchCase.cwd,
+    '../../e2e/benchmark/e2e-watch-hmr/snapshots',
+    dirName,
+  )
+}
+
+function resolveIssue33FailureDir(watchCase: WatchCase) {
+  return path.resolve(
+    watchCase.cwd,
+    '../../e2e/benchmark/e2e-watch-hmr/failures',
+  )
+}
+
+async function writeIssue33FailureLog(
+  watchCase: WatchCase,
+  mutationKind: 'template' | 'script',
+  roundName: string,
+  phase: 'add' | 'modify' | 'delete',
+  sourceFile: string,
+  classTokens: string[],
+  error: unknown,
+) {
+  const dir = resolveIssue33FailureDir(watchCase)
+  const timestamp = new Date().toISOString().replaceAll(':', '-').replaceAll('.', '-')
+  const file = path.join(
+    dir,
+    `${timestamp}-${sanitizePathSegment(watchCase.name)}-${mutationKind}-${roundName}-${phase}.log`,
+  )
+  const message = asErrorMessage(error)
+  const payload = [
+    `label=${watchCase.label}`,
+    `project=${watchCase.project}`,
+    `mutation=${mutationKind}`,
+    `round=${roundName}`,
+    `phase=${phase}`,
+    `source=${formatPath(sourceFile)}`,
+    `tokens=${classTokens.join(' | ')}`,
+    `error=${message}`,
+    '',
+  ].join('\n')
+  await fs.mkdir(dir, { recursive: true })
+  await fs.writeFile(file, payload, 'utf8')
+}
+
+async function writeIssue33Snapshot(
+  watchCase: WatchCase,
+  mutationKind: 'template' | 'script',
+  phase: 'add' | 'modify' | 'delete',
+  stage: 'success' | 'failure',
+  roundName: string,
+  marker: string,
+  outputs: RoundOutputs,
+  sourceFile: string,
+) {
+  if (!shouldPersistIssue33Snapshot()) {
+    return
+  }
+
+  const dir = resolveIssue33SnapshotDir(watchCase, mutationKind, phase, stage)
+  await fs.mkdir(dir, { recursive: true })
+  await Promise.all([
+    fs.writeFile(path.join(dir, 'index.wxml'), outputs.wxml, 'utf8'),
+    fs.writeFile(path.join(dir, 'index.js'), outputs.js, 'utf8'),
+    fs.writeFile(path.join(dir, 'bundle.wxss'), outputs.globalStyle, 'utf8'),
+    fs.writeFile(
+      path.join(dir, 'meta.json'),
+      `${JSON.stringify({
+        label: watchCase.label,
+        project: watchCase.project,
+        mutationKind,
+        roundName,
+        phase,
+        stage,
+        marker,
+        sourceFile: formatPath(sourceFile),
+      }, null, 2)}\n`,
+      'utf8',
+    ),
+  ])
+}
+
+async function loadRoundOutputs(
+  watchCase: WatchCase,
+  globalStyleOutputs: string[],
+): Promise<RoundOutputs> {
+  const [wxml, js, globalStyle] = await Promise.all([
+    readFileWithRetry(watchCase.outputWxml),
+    readFileWithRetry(watchCase.outputJs),
+    readJoinedOutputFiles(globalStyleOutputs),
+  ])
+  return {
+    wxml,
+    js,
+    globalStyle,
+  }
+}
+
+async function loadRoundOutputsSafe(
+  watchCase: WatchCase,
+  globalStyleOutputs: string[],
+): Promise<RoundOutputs> {
+  const [wxml, js, globalStyle] = await Promise.all([
+    readFileIfExists(watchCase.outputWxml),
+    readFileIfExists(watchCase.outputJs),
+    readJoinedOutputFiles(globalStyleOutputs),
+  ])
+  return {
+    wxml: wxml ?? '',
+    js: js ?? '',
+    globalStyle,
+  }
+}
+
+function assertIssue33ScriptTokenHealth(
+  source: string,
+  watchCase: WatchCase,
+  sourcePath: string,
+  phase: 'add' | 'modify' | 'delete',
+) {
+  const invalidPatterns: Array<{ pattern: RegExp, hint: string }> = [
+    { pattern: /\bbg-\s+\[#?[0-9a-fA-F]{3,8}\]?/g, hint: 'truncated bg hex token with whitespace' },
+    { pattern: /\bbg-\[[^\]]*$/gm, hint: 'unterminated bg arbitrary token' },
+    { pattern: /\bpx-\[[^\]]*$/gm, hint: 'unterminated px arbitrary token' },
+    { pattern: /\bpx-\s+\[[0-9.]+px\]/g, hint: 'broken px arbitrary token with whitespace' },
+    { pattern: /\bbg-\[[^\]\s]*\s[^\]\s]*\]/g, hint: 'unexpected whitespace inside bg arbitrary token' },
+    { pattern: /\bpx-\[[^\]\s]*\s[^\]\s]*\]/g, hint: 'unexpected whitespace inside px arbitrary token' },
+  ]
+
+  for (const { pattern, hint } of invalidPatterns) {
+    const matched = source.match(pattern)
+    if (matched?.length) {
+      throw new Error(
+        `[${watchCase.label}] mutation=script phase=${phase} issue33 token health check failed (${hint}): ${matched[0]}, source=${formatPath(sourcePath)}`,
+      )
+    }
+  }
+}
+
+function assertRoundOutputs(
+  watchCase: WatchCase,
+  mutationKind: 'template' | 'script',
+  sourcePath: string,
+  phase: 'add' | 'modify',
+  mutation: ClassMutationConfig,
+  verifyClassLiteralIn: Array<'wxml' | 'js'>,
+  forbidBgHexTruncationIn: Array<'wxml' | 'js'>,
+  minRequiredGlobalStyleEscapedClasses: number,
+  classTokens: string[],
+  escapedClasses: string[],
+  outputs: RoundOutputs,
+) {
+  for (const escaped of escapedClasses) {
+    if (mutation.verifyEscapedIn.includes('wxml')) {
+      assertContains(outputs.wxml, escaped, `[${watchCase.label}] mutation=${mutationKind} phase=${phase} updated wxml`)
+    }
+    if (mutation.verifyEscapedIn.includes('js')) {
+      assertContains(outputs.js, escaped, `[${watchCase.label}] mutation=${mutationKind} phase=${phase} updated js`)
+    }
+  }
+
+  for (const [index, classToken] of classTokens.entries()) {
+    const escapedToken = escapedClasses[index]
+    const expectedValues = escapedToken ? [classToken, escapedToken] : [classToken]
+
+    if (verifyClassLiteralIn.includes('wxml')) {
+      assertContainsOneOf(
+        outputs.wxml,
+        expectedValues,
+        `[${watchCase.label}] mutation=${mutationKind} phase=${phase} updated wxml token literal`,
+      )
+    }
+    if (verifyClassLiteralIn.includes('js')) {
+      assertContainsOneOf(
+        outputs.js,
+        expectedValues,
+        `[${watchCase.label}] mutation=${mutationKind} phase=${phase} updated js token literal`,
+      )
+    }
+  }
+
+  if (forbidBgHexTruncationIn.length > 0) {
+    const truncationNeedles = collectBgHexTruncationNeedles(classTokens)
+    for (const truncationNeedle of truncationNeedles) {
+      if (forbidBgHexTruncationIn.includes('wxml')) {
+        assertNotContains(
+          outputs.wxml,
+          truncationNeedle,
+          `[${watchCase.label}] mutation=${mutationKind} phase=${phase} wxml should not contain truncated bg hex class`,
+        )
+      }
+      if (forbidBgHexTruncationIn.includes('js')) {
+        assertNotContains(
+          outputs.js,
+          truncationNeedle,
+          `[${watchCase.label}] mutation=${mutationKind} phase=${phase} js should not contain truncated bg hex class`,
+        )
+      }
+    }
+  }
+
+  const matchedGlobalEscapedClasses = escapedClasses.filter(escaped => outputs.globalStyle.includes(escaped))
+  if (matchedGlobalEscapedClasses.length < minRequiredGlobalStyleEscapedClasses) {
+    throw new Error(
+      `[${watchCase.label}] mutation=${mutationKind} phase=${phase} global style output has insufficient transformed classes: required=${minRequiredGlobalStyleEscapedClasses}, actual=${matchedGlobalEscapedClasses.length}, source=${formatPath(sourcePath)}`,
+    )
+  }
+
+  return matchedGlobalEscapedClasses
+}
+
+function assertIssue33WxssHit(
+  watchCase: WatchCase,
+  sourcePath: string,
+  phase: 'add' | 'modify',
+  escapedClasses: string[],
+  globalStyle: string,
+) {
+  for (const escaped of escapedClasses) {
+    if (!globalStyle.includes(escaped)) {
+      throw new Error(
+        `[${watchCase.label}] mutation=script phase=${phase} missing escaped class in wxss outputs: ${escaped}, source=${formatPath(sourcePath)}`,
+      )
+    }
+  }
 }
 
 export async function runClassMutation(
@@ -70,6 +344,7 @@ export async function runClassMutation(
 
   for (const roundConfig of roundConfigs) {
     const roundStartedAt = Date.now()
+    const issue33Round = isIssue33Round(roundConfig)
 
     const mutationScenario = createClassMutationScenario(
       watchCase,
@@ -98,133 +373,315 @@ export async function runClassMutation(
       assertNotContains(baselineGlobalStyle, escaped, `[${watchCase.label}] baseline global style`)
     }
 
-    const hotUpdateStartedAt = Date.now()
-    await fs.writeFile(sourcePath, mutatedSource, 'utf8')
-    const hotUpdateOutputMs = await waitForOutputsUpdated(
-      watchCase,
-      baselineMtime,
-      options,
-      session,
-      hotUpdateStartedAt,
-    )
-    const hotUpdateEffectiveMs = await waitForMarkerState(
-      watchCase,
-      marker,
-      'present',
-      options,
-      session,
-      hotUpdateStartedAt,
-    )
+    let effectiveMarker = marker
+    let effectiveClassLiteral = classLiteral
+    let effectiveClassTokens = classTokens
+    let effectiveEscapedClasses = escapedClasses
 
-    const [updatedWxml, updatedJs, updatedGlobalStyle] = await Promise.all([
-      fs.readFile(watchCase.outputWxml, 'utf8'),
-      fs.readFile(watchCase.outputJs, 'utf8'),
-      readJoinedOutputFiles(globalStyleOutputs),
-    ])
+    let effectiveHotUpdateOutputMs = 0
+    let effectiveHotUpdateEffectiveMs = 0
+    let phaseOutputs: RoundOutputs | undefined
 
-    for (const escaped of escapedClasses) {
-      if (mutation.verifyEscapedIn.includes('wxml')) {
-        assertContains(updatedWxml, escaped, `[${watchCase.label}] updated wxml`)
+    try {
+      const hotUpdateStartedAt = Date.now()
+      process.stdout.write(
+        `[watch-hmr] ${watchCase.label} mutation=${mutationKind} round=${roundConfig.name} phase=add dirty=${formatPath(sourcePath)} tokens=${classTokens.join(' | ')}\n`,
+      )
+      await writeFilePreserveEol(sourcePath, mutatedSource, sourceOriginal)
+      const hotUpdateOutputMs = await waitForOutputsUpdated(
+        watchCase,
+        baselineMtime,
+        options,
+        session,
+        hotUpdateStartedAt,
+      )
+      const hotUpdateEffectiveMs = await waitForMarkerState(
+        watchCase,
+        marker,
+        'present',
+        options,
+        session,
+        hotUpdateStartedAt,
+      )
+
+      const outputs = await loadRoundOutputs(watchCase, globalStyleOutputs)
+      phaseOutputs = outputs
+      const matchedEscapedClasses = assertRoundOutputs(
+        watchCase,
+        mutationKind,
+        sourcePath,
+        'add',
+        mutation,
+        verifyClassLiteralIn,
+        forbidBgHexTruncationIn,
+        minRequiredGlobalStyleEscapedClasses,
+        classTokens,
+        escapedClasses,
+        outputs,
+      )
+
+      for (const escaped of matchedEscapedClasses.slice(0, 3)) {
+        verifiedGlobalEscapedClasses.add(escaped)
       }
-      if (mutation.verifyEscapedIn.includes('js')) {
-        assertContains(updatedJs, escaped, `[${watchCase.label}] updated js`)
+
+      if (mutationKind === 'script' && issue33Round) {
+        assertIssue33ScriptTokenHealth(outputs.js, watchCase, sourcePath, 'add')
+        assertIssue33WxssHit(watchCase, sourcePath, 'add', escapedClasses, outputs.globalStyle)
       }
-    }
 
-    for (const [index, classToken] of classTokens.entries()) {
-      const escapedToken = escapedClasses[index]
-      const expectedValues = escapedToken ? [classToken, escapedToken] : [classToken]
-
-      if (verifyClassLiteralIn.includes('wxml')) {
-        assertContainsOneOf(
-          updatedWxml,
-          expectedValues,
-          `[${watchCase.label}] updated wxml token literal`,
+      if (issue33Round) {
+        await writeIssue33Snapshot(
+          watchCase,
+          mutationKind,
+          'add',
+          'success',
+          roundConfig.name,
+          marker,
+          outputs,
+          sourcePath,
         )
       }
-      if (verifyClassLiteralIn.includes('js')) {
-        assertContainsOneOf(
-          updatedJs,
-          expectedValues,
-          `[${watchCase.label}] updated js token literal`,
+
+      effectiveHotUpdateOutputMs = hotUpdateOutputMs
+      effectiveHotUpdateEffectiveMs = hotUpdateEffectiveMs
+    }
+    catch (error) {
+      if (issue33Round) {
+        await writeIssue33FailureLog(
+          watchCase,
+          mutationKind,
+          roundConfig.name,
+          'add',
+          sourcePath,
+          classTokens,
+          error,
+        )
+        const outputs = await loadRoundOutputsSafe(watchCase, globalStyleOutputs)
+        await writeIssue33Snapshot(
+          watchCase,
+          mutationKind,
+          'add',
+          'failure',
+          roundConfig.name,
+          marker,
+          outputs,
+          sourcePath,
         )
       }
-    }
-
-    if (forbidBgHexTruncationIn.length > 0) {
-      const truncationNeedles = collectBgHexTruncationNeedles(classTokens)
-      for (const truncationNeedle of truncationNeedles) {
-        if (forbidBgHexTruncationIn.includes('wxml')) {
-          assertNotContains(
-            updatedWxml,
-            truncationNeedle,
-            `[${watchCase.label}] updated wxml should not contain truncated bg hex class`,
-          )
-        }
-        if (forbidBgHexTruncationIn.includes('js')) {
-          assertNotContains(
-            updatedJs,
-            truncationNeedle,
-            `[${watchCase.label}] updated js should not contain truncated bg hex class`,
-          )
-        }
-      }
-    }
-
-    const matchedGlobalEscapedClasses = freshEscapedClasses.filter(escaped => updatedGlobalStyle.includes(escaped))
-    if (matchedGlobalEscapedClasses.length < minRequiredGlobalStyleEscapedClasses) {
       throw new Error(
-        `[${watchCase.label}] global style output has insufficient transformed classes: required=${minRequiredGlobalStyleEscapedClasses}, actual=${matchedGlobalEscapedClasses.length}, source=${formatPath(sourcePath)}`,
+        `[${watchCase.label}] mutation=${mutationKind} round=${roundConfig.name} phase=add failed: ${asErrorMessage(error)}`,
       )
     }
 
-    for (const escaped of matchedGlobalEscapedClasses.slice(0, 3)) {
-      verifiedGlobalEscapedClasses.add(escaped)
+    if (issue33Round) {
+      const modifyMarker = `tw-watch-${watchCase.name}-${mutationKind}-issue33-modify-${Date.now()}`
+      const modifyClassTokens = [...ISSUE33_MODIFY_CLASS_TOKENS]
+      const modifyEscapedClasses = modifyClassTokens.map(token => replaceWxml(token))
+      const modifyClassLiteral = modifyClassTokens.join(' ')
+      const sourceForModify = mutation.mutate(sourceOriginal, {
+        marker: modifyMarker,
+        classLiteral: modifyClassLiteral,
+        classVariableName,
+      })
+
+      if (sourceForModify === sourceOriginal) {
+        throw new Error(
+          `[${watchCase.label}] mutation=${mutationKind} round=${roundConfig.name} phase=modify failed: mutation produced no source change`,
+        )
+      }
+
+      try {
+        const baselineBeforeModify = {
+          wxml: await getMtime(watchCase.outputWxml),
+          js: await getMtime(watchCase.outputJs),
+        }
+        const modifyStartedAt = Date.now()
+        process.stdout.write(
+          `[watch-hmr] ${watchCase.label} mutation=${mutationKind} round=${roundConfig.name} phase=modify dirty=${formatPath(sourcePath)} tokens=${modifyClassTokens.join(' | ')}\n`,
+        )
+        await writeFilePreserveEol(sourcePath, sourceForModify, sourceOriginal)
+        const modifyOutputMs = await waitForOutputsUpdated(
+          watchCase,
+          baselineBeforeModify,
+          options,
+          session,
+          modifyStartedAt,
+        )
+        const modifyEffectiveMs = await waitForMarkerState(
+          watchCase,
+          modifyMarker,
+          'present',
+          options,
+          session,
+          modifyStartedAt,
+        )
+
+        const outputs = await loadRoundOutputs(watchCase, globalStyleOutputs)
+        phaseOutputs = outputs
+        const matchedEscapedClasses = assertRoundOutputs(
+          watchCase,
+          mutationKind,
+          sourcePath,
+          'modify',
+          mutation,
+          verifyClassLiteralIn,
+          forbidBgHexTruncationIn,
+          minRequiredGlobalStyleEscapedClasses,
+          modifyClassTokens,
+          modifyEscapedClasses,
+          outputs,
+        )
+
+        for (const escaped of matchedEscapedClasses.slice(0, 3)) {
+          verifiedGlobalEscapedClasses.add(escaped)
+        }
+
+        if (mutationKind === 'script') {
+          assertIssue33ScriptTokenHealth(outputs.js, watchCase, sourcePath, 'modify')
+          assertIssue33WxssHit(watchCase, sourcePath, 'modify', modifyEscapedClasses, outputs.globalStyle)
+        }
+
+        await writeIssue33Snapshot(
+          watchCase,
+          mutationKind,
+          'modify',
+          'success',
+          roundConfig.name,
+          modifyMarker,
+          outputs,
+          sourcePath,
+        )
+
+        effectiveMarker = modifyMarker
+        effectiveClassLiteral = modifyClassLiteral
+        effectiveClassTokens = modifyClassTokens
+        effectiveEscapedClasses = modifyEscapedClasses
+        effectiveHotUpdateOutputMs = modifyOutputMs
+        effectiveHotUpdateEffectiveMs = modifyEffectiveMs
+      }
+      catch (error) {
+        await writeIssue33FailureLog(
+          watchCase,
+          mutationKind,
+          roundConfig.name,
+          'modify',
+          sourcePath,
+          modifyClassTokens,
+          error,
+        )
+        const outputs = await loadRoundOutputsSafe(watchCase, globalStyleOutputs)
+        await writeIssue33Snapshot(
+          watchCase,
+          mutationKind,
+          'modify',
+          'failure',
+          roundConfig.name,
+          modifyMarker,
+          outputs,
+          sourcePath,
+        )
+        throw new Error(
+          `[${watchCase.label}] mutation=${mutationKind} round=${roundConfig.name} phase=modify failed: ${asErrorMessage(error)}`,
+        )
+      }
     }
 
-    const updatedMtime = {
-      wxml: await getMtime(watchCase.outputWxml),
-      js: await getMtime(watchCase.outputJs),
-    }
+    let rollbackOutputMs = 0
+    let rollbackEffectiveMs = 0
+    try {
+      const updatedMtime = {
+        wxml: await getMtime(watchCase.outputWxml),
+        js: await getMtime(watchCase.outputJs),
+      }
+      const rollbackStartedAt = Date.now()
+      process.stdout.write(
+        `[watch-hmr] ${watchCase.label} mutation=${mutationKind} round=${roundConfig.name} phase=delete dirty=${formatPath(sourcePath)}\n`,
+      )
+      await writeFilePreserveEol(sourcePath, sourceOriginal, sourceOriginal)
+      rollbackOutputMs = await waitForOutputsUpdated(
+        watchCase,
+        updatedMtime,
+        options,
+        session,
+        rollbackStartedAt,
+      )
+      rollbackEffectiveMs = await waitForMarkerState(
+        watchCase,
+        effectiveMarker,
+        'absent',
+        options,
+        session,
+        rollbackStartedAt,
+      )
 
-    const rollbackStartedAt = Date.now()
-    await fs.writeFile(sourcePath, sourceOriginal, 'utf8')
-    const rollbackOutputMs = await waitForOutputsUpdated(
-      watchCase,
-      updatedMtime,
-      options,
-      session,
-      rollbackStartedAt,
-    )
-    const rollbackEffectiveMs = await waitForMarkerState(
-      watchCase,
-      marker,
-      'absent',
-      options,
-      session,
-      rollbackStartedAt,
-    )
+      if (issue33Round) {
+        const outputs = await loadRoundOutputs(watchCase, globalStyleOutputs)
+        await writeIssue33Snapshot(
+          watchCase,
+          mutationKind,
+          'delete',
+          'success',
+          roundConfig.name,
+          effectiveMarker,
+          outputs,
+          sourcePath,
+        )
+      }
+    }
+    catch (error) {
+      if (issue33Round) {
+        await writeIssue33FailureLog(
+          watchCase,
+          mutationKind,
+          roundConfig.name,
+          'delete',
+          sourcePath,
+          effectiveClassTokens,
+          error,
+        )
+        const outputs = await loadRoundOutputsSafe(watchCase, globalStyleOutputs)
+        await writeIssue33Snapshot(
+          watchCase,
+          mutationKind,
+          'delete',
+          'failure',
+          roundConfig.name,
+          effectiveMarker,
+          outputs,
+          sourcePath,
+        )
+      }
+      throw new Error(
+        `[${watchCase.label}] mutation=${mutationKind} round=${roundConfig.name} phase=delete failed: ${asErrorMessage(error)}`,
+      )
+    }
 
     roundMetrics.push({
       roundName: roundConfig.name,
-      marker,
-      classLiteral,
-      classTokens,
-      escapedClasses,
-      hotUpdateOutputMs,
-      hotUpdateEffectiveMs,
+      marker: effectiveMarker,
+      classLiteral: effectiveClassLiteral,
+      classTokens: effectiveClassTokens,
+      escapedClasses: effectiveEscapedClasses,
+      hotUpdateOutputMs: effectiveHotUpdateOutputMs,
+      hotUpdateEffectiveMs: effectiveHotUpdateEffectiveMs,
       rollbackOutputMs,
       rollbackEffectiveMs,
       totalMs: Date.now() - roundStartedAt,
     })
 
     process.stdout.write(
-      `[watch-hmr] ${watchCase.label} mutation=${mutationKind} round=${roundConfig.name} passed (hotUpdate=${hotUpdateEffectiveMs}ms, rollback=${rollbackEffectiveMs}ms)\n`,
+      `[watch-hmr] ${watchCase.label} mutation=${mutationKind} round=${roundConfig.name} passed (hotUpdate=${effectiveHotUpdateEffectiveMs}ms, rollback=${rollbackEffectiveMs}ms)\n`,
     )
 
     baselineMtime = {
       wxml: await getMtime(watchCase.outputWxml),
       js: await getMtime(watchCase.outputJs),
+    }
+
+    if (!phaseOutputs) {
+      process.stdout.write(
+        `[watch-hmr] ${watchCase.label} mutation=${mutationKind} round=${roundConfig.name} produced no output snapshot in memory\n`,
+      )
     }
   }
 
