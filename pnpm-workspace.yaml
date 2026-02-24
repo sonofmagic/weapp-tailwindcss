@@ -68,7 +68,7 @@ catalogs:
     tailwindcss: ^4.2.1
     tailwindcss4: npm:tailwindcss@^4.1.17
   tailwindcssPatch:
-    tailwindcss-patch: ^8.7.1
+    tailwindcss-patch: ^8.7.3
   tailwindcssRem:
     tailwindcss-rem2px-preset: ^1.0.3
   taro4:
@@ -102,9 +102,9 @@ catalogs:
   typescript59tilde:
     typescript: ~5.9.3
   typescriptEslint849:
-    '@typescript-eslint/eslint-plugin': ^8.56.0
-    '@typescript-eslint/parser': ^8.56.0
-    typescript-eslint: ^8.56.0
+    '@typescript-eslint/eslint-plugin': ^8.56.1
+    '@typescript-eslint/parser': ^8.56.1
+    typescript-eslint: ^8.56.1
   vite4:
     vite: ^4.5.14
   vite5421:
@@ -126,7 +126,7 @@ catalogs:
   weappVite:
     weapp-vite: ^6.6.10
   wrangler4530:
-    wrangler: ^4.67.0
+    wrangler: ^4.68.0
 
 onlyBuiltDependencies:
   - '@tailwindcss/oxide'
