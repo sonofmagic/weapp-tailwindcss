@@ -46,7 +46,9 @@
   },
   "scripts": {
     "build": "turbo run build",
+    "prebuild": "pnpm run clean:build-cache",
     "postbuild": "pnpm run e2e:update-snapshots",
+    "clean:build-cache": "rimraf .turbo node_modules/.cache/turbo",
     "build:nocache": "cross-env TURBO_FORCE=1 pnpm build",
     "build:docs": "turbo run build --filter=./website/",
     "build:apps": "turbo run build --filter=./apps/*",

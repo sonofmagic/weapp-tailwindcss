@@ -10,6 +10,7 @@ export const FRAMEWORK_CASES = [
     hmrSourceFile: 'src/pages/index/index.vue',
     hmrOutputFile: 'dist/dev/mp-weixin/pages/index/index.wxml',
     buildOutputFile: 'dist/build/mp-weixin/pages/index/index.wxml',
+    buildCleanPaths: [],
     mutateSource: injectIntoVueTemplate,
   },
   {
@@ -22,6 +23,7 @@ export const FRAMEWORK_CASES = [
     runtimeRefPackage: 'vue',
     hmrSourceFile: 'src/pages/index/index.vue',
     hmrOutputFile: 'dist/pages/index/index.js',
+    buildCleanPaths: [],
     mutateSource: injectIntoVueTemplate,
   },
   {
@@ -34,6 +36,7 @@ export const FRAMEWORK_CASES = [
     runtimeRefPackage: 'wevu',
     hmrSourceFile: 'miniprogram/pages/cart/index.vue',
     hmrOutputFile: 'dist/pages/cart/index.wxml',
+    buildCleanPaths: [],
     mutateSource: injectIntoVueTemplate,
   },
 ]

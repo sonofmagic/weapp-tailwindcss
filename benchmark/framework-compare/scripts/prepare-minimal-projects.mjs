@@ -43,6 +43,18 @@ async function writeJson(file, value) {
   await writeFile(file, `${JSON.stringify(value, null, 2)}\n`)
 }
 
+async function resolveSourceBinCommand(sourceRoot, targetRoot, binName) {
+  const filename = process.platform === 'win32'
+    ? `${binName}.cmd`
+    : binName
+  const absolute = path.join(sourceRoot, 'node_modules', '.bin', filename)
+  if (!(await pathExists(absolute))) {
+    throw new Error(`source cli binary not found: ${absolute}`)
+  }
+  const relative = path.relative(targetRoot, absolute).replaceAll('\\', '/')
+  return relative.includes(' ') ? `"${relative}"` : relative
+}
+
 async function linkResolverNodeModules(sourceRoot, targetRoot, key) {
   const sourceNodeModules = path.join(sourceRoot, 'node_modules')
   if (!(await pathExists(sourceNodeModules))) {
@@ -70,16 +82,19 @@ async function buildPackageJson(caseMeta, sourceRoot, targetRoot) {
   }
 
   if (caseMeta.key === 'uni-app-vue3') {
-    scripts.build = 'uni build -p mp-weixin'
-    scripts[caseMeta.devScript] = 'uni -p mp-weixin'
+    const uniBin = await resolveSourceBinCommand(sourceRoot, targetRoot, 'uni')
+    scripts.build = `${uniBin} build -p mp-weixin`
+    scripts[caseMeta.devScript] = `${uniBin} -p mp-weixin`
   }
   else if (caseMeta.key === 'taro-vue3') {
-    scripts.build = 'BABEL=1 taro build --type weapp --no-check'
-    scripts[caseMeta.devScript] = 'taro build --type weapp --watch --no-check'
+    const taroBin = await resolveSourceBinCommand(sourceRoot, targetRoot, 'taro')
+    scripts.build = `BABEL=1 ${taroBin} build --type weapp --no-check`
+    scripts[caseMeta.devScript] = `${taroBin} build --type weapp --watch --no-check`
   }
   else if (caseMeta.key === 'weapp-vite-wevu') {
-    scripts.build = 'weapp-vite build'
-    scripts[caseMeta.devScript] = 'weapp-vite dev'
+    const weappViteBin = await resolveSourceBinCommand(sourceRoot, targetRoot, 'weapp-vite')
+    scripts.build = `${weappViteBin} build`
+    scripts[caseMeta.devScript] = `${weappViteBin} dev`
   }
   else {
     throw new Error(`[${caseMeta.key}] unsupported framework key`)

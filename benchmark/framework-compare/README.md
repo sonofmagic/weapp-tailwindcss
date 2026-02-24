@@ -17,6 +17,7 @@
 - Build / HMR / Runtime 采集前，脚本会先在 `benchmark/framework-compare/projects/*` 生成三套最小化项目（来源于 `demo/*` / `apps/*` 的依赖环境），然后在最小化项目中采集。
 - 最小化项目仅保留基准必需的配置与页面源码，构建/热更新命令会复用源项目已安装的 CLI（不在最小项目里安装依赖）。
 - 采集时目标页面会被临时替换为同一份标准 Vue SFC，用完自动回滚，确保三套框架输入源码一致。
+- 所有 `pnpm run build` 触发前会自动清理项目级缓存目录（如 `dist/.temp/.cache/.vite`），避免上一轮结果污染当前轮次。
 - HMR 统一修改“Vue SFC 页面模板（`.vue`）”，注入同一批 class 语料和 marker。
 - HMR 优先使用 watch 口径（源码写入 -> 目标产物文件 `wxml/js` 出现 marker）；watch 不可用时自动回退为“源码写入 -> 完整 build 完成 + marker 命中”。
 - Runtime 对三套框架统一执行 `ref.value` 批量赋值脚本（变量、写法、负载规模一致），默认对 `10,100,1000,10000,1000000` 五个数量级分别采样。

@@ -23,6 +23,14 @@ import {
   writeJson,
 } from './shared.mjs'
 
+const DEFAULT_BUILD_CLEAN_PATHS = [
+  'dist',
+  '.temp',
+  '.cache',
+  '.vite',
+  '.weapp-vite',
+]
+
 function parseBatchScales(argv) {
   const raw = parseArg('--ref-batch-scales', argv)
   if (raw) {
@@ -90,6 +98,47 @@ function assertVueScenario(caseMeta) {
   }
 }
 
+function toSafeRelativePath(input) {
+  if (typeof input !== 'string') {
+    return null
+  }
+  const trimmed = input.trim()
+  if (!trimmed) {
+    return null
+  }
+  if (path.isAbsolute(trimmed)) {
+    return null
+  }
+  const normalized = path.posix.normalize(trimmed.replaceAll('\\', '/'))
+  if (normalized === '..' || normalized.startsWith('../')) {
+    return null
+  }
+  return normalized
+}
+
+function resolveBuildCleanPaths(caseMeta) {
+  const custom = Array.isArray(caseMeta.buildCleanPaths)
+    ? caseMeta.buildCleanPaths
+    : []
+  const merged = [...DEFAULT_BUILD_CLEAN_PATHS, ...custom]
+  const safePaths = merged
+    .map(toSafeRelativePath)
+    .filter(item => item != null)
+  return [...new Set(safePaths)]
+}
+
+async function cleanBuildCaches(caseMeta, casePaths) {
+  const cleanPaths = resolveBuildCleanPaths(caseMeta)
+  if (!cleanPaths.length) {
+    return
+  }
+
+  for (const relativePath of cleanPaths) {
+    const absolutePath = path.resolve(casePaths.projectRoot, relativePath)
+    await fs.rm(absolutePath, { recursive: true, force: true })
+  }
+}
+
 async function fileContains(file, token) {
   const content = await readText(file)
   return content.includes(token)
@@ -110,6 +159,7 @@ function createSeed(roundIndex) {
 async function runBuildRounds(caseMeta, casePaths, options) {
   const buildMs = []
   for (let index = 0; index < options.buildRuns; index += 1) {
+    await cleanBuildCaches(caseMeta, casePaths)
     const result = await runPnpmOnce(
       casePaths.projectRoot,
       ['run', caseMeta.buildScript],
@@ -224,6 +274,7 @@ async function runHmrFallbackRounds(caseMeta, casePaths, options) {
       const scenario = createScenario(createSeed(roundIndex))
       const mutatedSource = caseMeta.mutateSource(original, scenario)
       await fs.writeFile(casePaths.sourcePath, mutatedSource, 'utf8')
+      await cleanBuildCaches(caseMeta, casePaths)
       const result = await runPnpmOnce(
         casePaths.projectRoot,
         ['run', caseMeta.buildScript],
@@ -378,6 +429,7 @@ async function main() {
       hmrSourceFile: item.hmrSourceFile,
       hmrOutputFile: item.hmrOutputFile,
       buildOutputFile: item.buildOutputFile ?? item.hmrOutputFile,
+      buildCleanPaths: Array.isArray(item.buildCleanPaths) ? item.buildCleanPaths : [],
       runtimeRefPackage: item.runtimeRefPackage,
     })),
     rows,
