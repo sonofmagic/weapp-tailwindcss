@@ -57,6 +57,17 @@ interface ProcessFileSets {
   css: Set<string>
 }
 
+function formatDebugFileList(files: Set<string>, limit = 8) {
+  if (files.size === 0) {
+    return '-'
+  }
+  const sorted = [...files].sort()
+  if (sorted.length <= limit) {
+    return sorted.join(',')
+  }
+  return `${sorted.slice(0, limit).join(',')},...(+${sorted.length - limit})`
+}
+
 function createEmptyMetric(): BundleMetric {
   return {
     total: 0,
@@ -331,6 +342,28 @@ export function createGenerateBundleHook(context: GenerateBundleContext) {
     const forceRuntimeRefresh = forceRuntimeRefreshByEnv || forceRuntimeRefreshBySource
     const processSets = buildProcessSets(entries, opts, dirtyEntries.changedByType, state.previousLinkedByEntry, disableDirtyOptimization)
     const processFiles = processSets.files
+    debug(
+      'dirty iteration=%d html=%d[%s] js=%d[%s] css=%d[%s] other=%d[%s]',
+      state.iteration + 1,
+      dirtyEntries.changedByType.html.size,
+      formatDebugFileList(dirtyEntries.changedByType.html),
+      dirtyEntries.changedByType.js.size,
+      formatDebugFileList(dirtyEntries.changedByType.js),
+      dirtyEntries.changedByType.css.size,
+      formatDebugFileList(dirtyEntries.changedByType.css),
+      dirtyEntries.changedByType.other.size,
+      formatDebugFileList(dirtyEntries.changedByType.other),
+    )
+    debug(
+      'process iteration=%d html=%d[%s] js=%d[%s] css=%d[%s]',
+      state.iteration + 1,
+      processFiles.html.size,
+      formatDebugFileList(processFiles.html),
+      processFiles.js.size,
+      formatDebugFileList(processFiles.js),
+      processFiles.css.size,
+      formatDebugFileList(processFiles.css),
+    )
     const resolvedConfig = getResolvedConfig()
     const rootDir = resolvedConfig?.root ? path.resolve(resolvedConfig.root) : process.cwd()
     const outDir = resolvedConfig?.build?.outDir
@@ -483,8 +516,10 @@ export function createGenerateBundleHook(context: GenerateBundleContext) {
       }
 
       metrics.js.total++
-      if (!processFiles.js.has(file)) {
-        continue
+      const shouldTransformJs = processFiles.js.has(file)
+      if (!shouldTransformJs) {
+        // 增量轮次上游可能重写相同源码的原始 JS 产物，这里仍要走缓存回填以保持转译结果稳定。
+        debug('js skip transform (clean), replay cache: %s', file)
       }
 
       if (originalSource.type === 'chunk') {
@@ -515,6 +550,9 @@ export function createGenerateBundleHook(context: GenerateBundleContext) {
             async transform() {
               const start = performance.now()
               const rawSource = originalSource.code
+              if (!shouldTransformJs) {
+                debug('js cache replay miss, fallback transform: %s', file)
+              }
               const handlerOptions = createHandlerOptions(absoluteFile)
               if (!disableJsPrecheck && shouldSkipViteJsTransform(rawSource, handlerOptions)) {
                 metrics.js.elapsed += measureElapsed(start)
@@ -589,6 +627,13 @@ export function createGenerateBundleHook(context: GenerateBundleContext) {
 
         jsTaskFactories.push(async () => {
           const start = performance.now()
+          if (!shouldTransformJs) {
+            debug('js skip transform (clean, uni-app-x), replay cache: %s', file)
+            await factory()
+            metrics.js.elapsed += measureElapsed(start)
+            metrics.js.transformed++
+            return
+          }
           const currentSource = originalSource.source.toString()
           const absoluteFile = toJsAbsoluteFilename(file, outDir)
           const precheckOptions = createHandlerOptions(absoluteFile, {

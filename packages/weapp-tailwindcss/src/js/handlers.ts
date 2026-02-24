@@ -119,6 +119,8 @@ export function replaceHandleValue(
   let matchedCandidateCount = 0
   let escapedDecisionCount = 0
   let fallbackDecisionCount = 0
+  const escapedSamples: string[] = []
+  const skippedSamples: string[] = []
 
   for (const candidate of candidates) {
     const decision = resolveClassNameTransformDecision(candidate, {
@@ -126,11 +128,17 @@ export function replaceHandleValue(
       classContext,
     })
     if (decision === 'skip') {
+      if (skippedSamples.length < 6) {
+        skippedSamples.push(candidate)
+      }
       continue
     }
     matchedCandidateCount += 1
     if (decision === 'escaped') {
       escapedDecisionCount += 1
+      if (escapedSamples.length < 6) {
+        escapedSamples.push(candidate)
+      }
     }
     if (decision === 'fallback') {
       fallbackDecisionCount += 1
@@ -155,16 +163,18 @@ export function replaceHandleValue(
     return undefined
   }
 
-  if (debug.enabled) {
-    debug(
-      'runtimeSet size=%d fallbackTriggered=%s matchedCandidates=%d escapedHits=%d file=%s',
-      classNameSet?.size ?? 0,
-      fallbackDecisionCount > 0,
-      matchedCandidateCount,
-      escapedDecisionCount,
-      options.filename ?? 'unknown',
-    )
-  }
+  debug(
+    'runtimeSet size=%d fallbackTriggered=%s candidates=%d matched=%d escapedHits=%d skipped=%d file=%s escapedSamples=%s skippedSamples=%s',
+    classNameSet?.size ?? 0,
+    fallbackDecisionCount > 0,
+    candidates.length,
+    matchedCandidateCount,
+    escapedDecisionCount,
+    skippedSamples.length,
+    options.filename ?? 'unknown',
+    escapedSamples.join(',') || '-',
+    skippedSamples.join(',') || '-',
+  )
 
   const start = node.start + offset
   const end = node.end - offset
