@@ -10,6 +10,7 @@ const cardBase = `
 `
 
 const txtFiles = [
+  { label: 'llms-index.json', path: '/llms-index.json', desc: 'GEO 索引（标题、摘要、关键词、canonical）' },
   { label: 'llms.txt', path: '/llms.txt', desc: '全站文档链接索引（llmstxt.org 规范）' },
   { label: 'llms-full.txt', path: '/llms-full.txt', desc: '全量内容（适合离线/一次性载入）' },
   { label: 'llms-quickstart.txt', path: '/llms-quickstart.txt', desc: '入门、模板、AI 工作流合集' },
@@ -127,7 +128,7 @@ export default function LLMSPage() {
           `}
           >
             <div className={cardBase}>
-              <h2 className="mb-3 text-xl font-semibold">可用 txt 文件</h2>
+              <h2 className="mb-3 text-xl font-semibold">可用索引文件</h2>
               <ul className="space-y-2">
                 {txtFiles.map(item => (
                   <li
@@ -347,6 +348,16 @@ export default function LLMSPage() {
                 <p className="font-semibold">在线模式</p>
                 <ol className="list-decimal space-y-1 pl-5">
                   <li>
+                    结构化检索：先读取
+                    {' '}
+                    <code>
+                      {baseUrl}
+                      /llms-index.json
+                    </code>
+                    {' '}
+                    拿到标题、摘要、关键词和 canonical
+                  </li>
+                  <li>
                     入门/模板/AI 工作流：加载
                     {' '}
                     <code>
@@ -391,6 +402,7 @@ export default function LLMSPage() {
                 <ul className="list-disc space-y-1 pl-5">
                   <li>下载 llms-full.txt 或构建产出的 Markdown 文件整体打包。</li>
                   <li>向量化时可按章节拆分，使用 llms.txt 里的标题做元信息。</li>
+                  <li>需要元信息检索可使用 llms-index.json 作为首层索引，再按 url 读取正文。</li>
                   <li>生成回答时引用具体链接或标题，便于追溯来源。</li>
                 </ul>
               </div>
