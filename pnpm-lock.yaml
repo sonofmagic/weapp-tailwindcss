@@ -4611,6 +4611,12 @@ importers:
       dotenv:
         specifier: ^17.3.1
         version: 17.3.1
+      gray-matter:
+        specifier: ^4.0.3
+        version: 4.0.3
+      js-yaml:
+        specifier: ^4.1.1
+        version: 4.1.1
       mini-svg-data-uri:
         specifier: ^1.4.4
         version: 1.4.4
@@ -56689,7 +56695,10 @@ snapshots:
       pretty-format: 25.5.0
       throat: 5.0.0
     transitivePeerDependencies:
+      - bufferutil
+      - canvas
       - supports-color
+      - utf-8-validate
 
   jest-jasmine2@27.5.1:
     dependencies:
