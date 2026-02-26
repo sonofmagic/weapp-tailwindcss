@@ -45,6 +45,7 @@ npx skills add . --skill weapp-tailwindcss
 - `taro webpack5` / `taro vite` 项目接入方案
 - `uni-app x` 同时构建 `Web` / 小程序 / `Android` / `iOS` / 鸿蒙
 - 已有项目迁移、样式失效排障、`rpx` 任意值问题定位
+- Tailwind 写法规范沉淀（含 `space-y-*` / `space-x-*` 在小程序端的标签限制与修复顺序）
 
 Skill 会要求 AI 优先完成这些关键动作：
 
@@ -52,6 +53,17 @@ Skill 会要求 AI 优先完成这些关键动作：
 - 补齐 `tailwindcss` 与 `weapp-tailwindcss` 最小可用配置
 - 明确 `postinstall` 中的 `weapp-tw patch`
 - 给出“可复制命令 + 可复制配置 + 验证步骤”
+- 对 `space-y-*` / `space-x-*` 问题按固定优先级排查：先改结构，再评估 `virtualHost`，最后扩展 `cssChildCombinatorReplaceValue`
+
+## 写法规范补充：space-y / space-x
+
+在小程序里，`space-y-*`、`space-x-*` 这类依赖子组合器的工具类，默认不是“全标签通用”，通常会按 `view + view`（含 `text`）处理。
+
+如果你遇到 `space-y-2` 不生效，建议按下面顺序处理：
+
+1. 先改结构：让相邻子节点落在 `view/text`，或外层包一层 `view`
+2. 再评估组件层：自定义组件场景启用 `virtualHost`
+3. 最后改配置：仅在必要时扩展 `cssChildCombinatorReplaceValue`，并保持最小化标签范围
 
 ## 推荐提示词
 
@@ -75,6 +87,13 @@ Skill 会要求 AI 优先完成这些关键动作：
 ```text
 我在 JS 字符串里写了 tailwind 任意值 class，但小程序端不生效。
 请按 weapp-tailwindcss skill 给排查顺序，并指出应该检查的配置项。
+```
+
+4. `space-y` / `space-x` 不生效排查
+
+```text
+我的容器写了 space-y-2，但子节点是 button 和自定义组件，间距没有生效。
+请按 weapp-tailwindcss skill 给固定优先级排查方案，并给出最小改动配置。
 ```
 
 ## Skill 文件位置

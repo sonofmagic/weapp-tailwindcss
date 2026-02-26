@@ -19,6 +19,8 @@ title: AI 生成小程序代码
 npx skills add sonofmagic/weapp-tailwindcss --skill weapp-tailwindcss
 ```
 
+该 Skill 除了接入配置与排障，也覆盖 Tailwind 写法规范（例如 `space-y-*` / `space-x-*` 在小程序端默认标签限制与修复优先级）。
+
 详细说明见：[Skill（技能系统）](/docs/ai/basics/skill)
 
 ## 如何参与贡献
