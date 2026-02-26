@@ -1,6 +1,22 @@
 ---
 sidebar: aiSidebar
 title: AI Agent（智能体）
+description: 1. **感知** (Perceive)：获取环境信息
+keywords:
+  - AI 编程
+  - LLM
+  - 工作流
+  - AI
+  - Agent
+  - 智能体
+  - basics
+  - weapp-tailwindcss
+  - tailwindcss
+  - 小程序
+  - 微信小程序
+  - uni-app
+  - taro
+  - rax
 ---
 
 # AI Agent（智能体）

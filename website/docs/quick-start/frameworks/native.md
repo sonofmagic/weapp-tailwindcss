@@ -1,3 +1,24 @@
+---
+title: 原生开发(打包方案)
+description: 模板项目 weapp-tailwindcss-gulp-template(gulp打包)
+keywords:
+  - 快速开始
+  - 安装
+  - 配置
+  - 原生开发
+  - 打包方案
+  - quick start
+  - frameworks
+  - native
+  - weapp-tailwindcss
+  - tailwindcss
+  - 小程序
+  - 微信小程序
+  - uni-app
+  - taro
+  - rax
+  - mpx
+---
 # 原生开发(打包方案)
 
 :::warning

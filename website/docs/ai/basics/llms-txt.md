@@ -1,6 +1,24 @@
 ---
 sidebar: aiSidebar
 title: LLMs.txt（LLM 友好文档）
+description: '├── components/ # 组件目录'
+keywords:
+  - AI 编程
+  - LLM
+  - 工作流
+  - LLMs.txt
+  - 友好文档
+  - ai
+  - basics
+  - llms txt
+  - weapp-tailwindcss
+  - tailwindcss
+  - 小程序
+  - 微信小程序
+  - uni-app
+  - taro
+  - rax
+  - mpx
 ---
 
 # LLMs.txt（LLM 友好文档）

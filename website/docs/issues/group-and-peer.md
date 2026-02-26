@@ -1,3 +1,24 @@
+---
+title: group 和 peer 使用限制
+description: '在 tailwindcss 中，我们常常会这样写:'
+keywords:
+  - 常见问题
+  - 故障排查
+  - 兼容性
+  - group
+  - peer
+  - 使用限制
+  - issues
+  - group and peer
+  - weapp-tailwindcss
+  - tailwindcss
+  - 小程序
+  - 微信小程序
+  - uni-app
+  - taro
+  - rax
+  - mpx
+---
 # group 和 peer 使用限制
 
 ## group 使用注意事项

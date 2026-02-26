@@ -1,3 +1,24 @@
+---
+title: css 中使用 @apply 警告问题
+description: 解决在项目中使用 Tailwind CSS `@apply` 时的编辑器告警问题，并提供 VSCode 配置示例。
+keywords:
+  - 常见问题
+  - 故障排查
+  - 兼容性
+  - css
+  - 中使用
+  - apply
+  - 警告问题
+  - issues
+  - at apply
+  - weapp-tailwindcss
+  - tailwindcss
+  - 小程序
+  - 微信小程序
+  - uni-app
+  - taro
+  - rax
+---
 # css 中使用 @apply 警告问题
 
 ## 解决方案

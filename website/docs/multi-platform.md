@@ -1,3 +1,18 @@
+---
+title: "\U0001F4A8跨多端开发CSS兼容"
+description: 本插件主要作用于小程序环境，让开发者可以在小程序环境下可以使用 tailwindcss 的特性
+keywords:
+  - 跨多端开发CSS兼容
+  - multi platform
+  - weapp-tailwindcss
+  - tailwindcss
+  - 小程序
+  - 微信小程序
+  - uni-app
+  - taro
+  - rax
+  - mpx
+---
 # 💨跨多端开发CSS兼容
 
 ## 何时开启插件

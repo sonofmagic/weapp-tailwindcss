@@ -1,3 +1,22 @@
+---
+title: Taro (所有框架)
+description: 目前 Taro v4 同时支持了 Webpack 和 Vite 进行打包编译，weapp-tailwindcss 这 2 者都支持，但是配置有些许的不同
+keywords:
+  - 快速开始
+  - 安装
+  - 配置
+  - Taro
+  - 所有框架
+  - quick start
+  - frameworks
+  - weapp-tailwindcss
+  - tailwindcss
+  - 小程序
+  - 微信小程序
+  - uni-app
+  - rax
+  - mpx
+---
 # Taro (所有框架)
 
 目前 Taro v4 同时支持了 `Webpack` 和 `Vite` 进行打包编译，`weapp-tailwindcss` 这 `2` 者都支持，但是配置有些许的不同

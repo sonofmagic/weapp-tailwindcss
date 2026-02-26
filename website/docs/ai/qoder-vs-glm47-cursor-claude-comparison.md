@@ -1,6 +1,22 @@
 ---
 sidebar: aiSidebar
 title: AI 编程工具选型建议书
+description: 经过对当前主流 AI 编程工具和模型的深入分析，我们建议：
+keywords:
+  - AI 编程
+  - LLM
+  - 工作流
+  - AI
+  - 编程工具选型建议书
+  - qoder vs glm47 cursor claude comparison
+  - weapp-tailwindcss
+  - tailwindcss
+  - 小程序
+  - 微信小程序
+  - uni-app
+  - taro
+  - rax
+  - mpx
 ---
 
 # AI 编程工具选型建议书

@@ -1,9 +1,26 @@
 ---
-id: "IPropValue"
-title: "Interface: IPropValue"
-sidebar_label: "IPropValue"
+id: IPropValue
+title: 'Interface: IPropValue'
+sidebar_label: IPropValue
 sidebar_position: 0
 custom_edit_url: null
+description: '• **prop**: string'
+keywords:
+  - API
+  - 接口文档
+  - 配置项
+  - Interface
+  - IPropValue
+  - api v2
+  - interfaces
+  - weapp-tailwindcss
+  - tailwindcss
+  - 小程序
+  - 微信小程序
+  - uni-app
+  - taro
+  - rax
+  - mpx
 ---
 
 ## Properties

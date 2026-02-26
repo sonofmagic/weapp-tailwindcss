@@ -1,3 +1,22 @@
+---
+title: uni-app 条件编译语法糖插件
+description: '在 uni-app 里，存在一种类似宏指令的样式条件编译写法:'
+keywords:
+  - 快速开始
+  - 安装
+  - 配置
+  - uni-app
+  - 条件编译语法糖插件
+  - quick start
+  - uni app css macro
+  - weapp-tailwindcss
+  - tailwindcss
+  - 小程序
+  - 微信小程序
+  - taro
+  - rax
+  - mpx
+---
 # uni-app 条件编译语法糖插件
 
 > 版本需求 2.10.0+

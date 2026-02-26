@@ -1,9 +1,26 @@
 ---
-id: "UserDefinedOptions"
-title: "Interface: UserDefinedOptions"
-sidebar_label: "配置项(v2.x)"
+id: UserDefinedOptions
+title: 'Interface: UserDefinedOptions'
+sidebar_label: 配置项(v2.x)
 sidebar_position: 0
 custom_edit_url: null
+description: '• Optional **appType**: AppType'
+keywords:
+  - API
+  - 接口文档
+  - 配置项
+  - Interface
+  - UserDefinedOptions
+  - api v2
+  - interfaces
+  - weapp-tailwindcss
+  - tailwindcss
+  - 小程序
+  - 微信小程序
+  - uni-app
+  - taro
+  - rax
+  - mpx
 ---
 
 ## Properties

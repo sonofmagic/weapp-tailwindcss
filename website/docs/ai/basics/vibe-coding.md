@@ -1,6 +1,24 @@
 ---
 sidebar: aiSidebar
 title: Vibe Coding（直觉编程）
+description: 即使采用 Vibe Coding，也要：
+keywords:
+  - AI 编程
+  - LLM
+  - 工作流
+  - Vibe
+  - Coding
+  - 直觉编程
+  - ai
+  - basics
+  - vibe coding
+  - weapp-tailwindcss
+  - tailwindcss
+  - 小程序
+  - 微信小程序
+  - uni-app
+  - taro
+  - rax
 ---
 
 # Vibe Coding（直觉编程）

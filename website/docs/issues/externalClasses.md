@@ -6,6 +6,11 @@ keywords:
   - externalClasses
   - tailwindcss
   - 微信小程序
+  - 组件外部样式类
+  - customAttributes
+  - 样式拆分
+  - 插件配置
+  - 常见问题
 ---
 
 :::warning 快速结论

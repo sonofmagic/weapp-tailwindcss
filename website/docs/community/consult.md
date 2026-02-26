@@ -1,3 +1,22 @@
+---
+title: 咨询与定制服务
+description: 国内像我这种开源，大部分都是为爱发电，除了个别朋友零星的打赏之外就再也没有人赞助了，当然打赏的钱也非常少，总的打赏金额比我一天的工资少多了。
+keywords:
+  - 社区
+  - 模板
+  - 案例
+  - 咨询与定制服务
+  - community
+  - consult
+  - weapp-tailwindcss
+  - tailwindcss
+  - 小程序
+  - 微信小程序
+  - uni-app
+  - taro
+  - rax
+  - mpx
+---
 # 咨询与定制服务
 
 ## 一些碎碎念

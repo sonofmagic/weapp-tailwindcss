@@ -1,9 +1,26 @@
 ---
-id: "IArbitraryValues"
-title: "Interface: IArbitraryValues"
-sidebar_label: "IArbitraryValues"
+id: IArbitraryValues
+title: 'Interface: IArbitraryValues'
+sidebar_label: IArbitraryValues
 sidebar_position: 0
 custom_edit_url: null
+description: '• Optional **allowDoubleQuotes**: boolean'
+keywords:
+  - API
+  - 接口文档
+  - 配置项
+  - Interface
+  - IArbitraryValues
+  - api v2
+  - interfaces
+  - weapp-tailwindcss
+  - tailwindcss
+  - 小程序
+  - 微信小程序
+  - uni-app
+  - taro
+  - rax
+  - mpx
 ---
 
 ## Properties

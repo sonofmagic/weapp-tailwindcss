@@ -1,3 +1,21 @@
+---
+title: '@weapp-tailwindcss/typography'
+description: 小程序 @tailwindcss/typography 富文本渲染方案
+keywords:
+  - 社区
+  - 模板
+  - 案例
+  - weapp-tailwindcss
+  - typography
+  - community
+  - tailwindcss
+  - 小程序
+  - 微信小程序
+  - uni-app
+  - taro
+  - rax
+  - mpx
+---
 # @weapp-tailwindcss/typography
 
 小程序 `@tailwindcss/typography` 富文本渲染方案

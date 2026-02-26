@@ -1,6 +1,24 @@
 ---
 sidebar: aiSidebar
 title: 上下文窗口（Context Window）
+description: 当上下文接近窗口上限时，模型可能：
+keywords:
+  - AI 编程
+  - LLM
+  - 工作流
+  - 上下文窗口
+  - Context
+  - Window
+  - ai
+  - basics
+  - context window
+  - weapp-tailwindcss
+  - tailwindcss
+  - 小程序
+  - 微信小程序
+  - uni-app
+  - taro
+  - rax
 ---
 
 # 上下文窗口（Context Window）

@@ -1,6 +1,23 @@
 ---
 sidebar: aiSidebar
 title: AI 沙箱（Sandbox）
+description: 介绍 AI 沙箱的核心概念、风险隔离机制与实践方案，帮助在本地安全运行 AI 生成代码与命令。
+keywords:
+  - AI 编程
+  - LLM
+  - 工作流
+  - AI
+  - 沙箱
+  - Sandbox
+  - basics
+  - ai sandbox
+  - weapp-tailwindcss
+  - tailwindcss
+  - 小程序
+  - 微信小程序
+  - uni-app
+  - taro
+  - rax
 ---
 
 # AI 沙箱（AI Sandbox）

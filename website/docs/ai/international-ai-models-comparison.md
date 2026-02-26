@@ -1,6 +1,22 @@
 ---
 sidebar: aiSidebar
 title: 国外顶尖编程模型选型建议书
+description: 经过对当前三大国外顶尖 AI 编程模型的深入分析，我们建议：
+keywords:
+  - AI 编程
+  - LLM
+  - 工作流
+  - 国外顶尖编程模型选型建议书
+  - ai
+  - international ai models comparison
+  - weapp-tailwindcss
+  - tailwindcss
+  - 小程序
+  - 微信小程序
+  - uni-app
+  - taro
+  - rax
+  - mpx
 ---
 
 # 国外顶尖编程模型选型建议书

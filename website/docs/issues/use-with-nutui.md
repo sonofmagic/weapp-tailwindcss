@@ -1,3 +1,23 @@
+---
+title: 和 NutUI 一起使用
+description: 'taro 使用 NutUI 的 vue 和 react 版本的共同注意点:'
+keywords:
+  - 常见问题
+  - 故障排查
+  - 兼容性
+  - NutUI
+  - 一起使用
+  - issues
+  - use with nutui
+  - weapp-tailwindcss
+  - tailwindcss
+  - 小程序
+  - 微信小程序
+  - uni-app
+  - taro
+  - rax
+  - mpx
+---
 # 和 NutUI 一起使用
 
 `taro` 使用 [NutUI](https://nutui.jd.com) 的 `vue` 和 `react` 版本的共同注意点:

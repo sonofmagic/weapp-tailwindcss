@@ -1,9 +1,26 @@
 ---
-id: "UnifiedWebpackPluginV5"
-title: "Class: UnifiedWebpackPluginV5"
-sidebar_label: "UnifiedWebpackPluginV5"
+id: UnifiedWebpackPluginV5
+title: 'Class: UnifiedWebpackPluginV5'
+sidebar_label: UnifiedWebpackPluginV5
 sidebar_position: 0
 custom_edit_url: null
+description: UnifiedWebpackPluginV5
+keywords:
+  - API
+  - 接口文档
+  - 配置项
+  - Class
+  - UnifiedWebpackPluginV5
+  - api v2
+  - classes
+  - weapp-tailwindcss
+  - tailwindcss
+  - 小程序
+  - 微信小程序
+  - uni-app
+  - taro
+  - rax
+  - mpx
 ---
 
 **`Name`**

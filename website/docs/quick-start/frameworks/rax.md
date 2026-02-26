@@ -1,3 +1,22 @@
+---
+title: Rax (react)
+description: 在根目录下创建一个 build.plugin.js 文件，然后在 build.json 中注册：
+keywords:
+  - 快速开始
+  - 安装
+  - 配置
+  - Rax
+  - react
+  - quick start
+  - frameworks
+  - weapp-tailwindcss
+  - tailwindcss
+  - 小程序
+  - 微信小程序
+  - uni-app
+  - taro
+  - mpx
+---
 # Rax (react)
 
 在根目录下创建一个 `build.plugin.js` 文件，然后在 `build.json` 中注册：

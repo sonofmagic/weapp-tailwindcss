@@ -1,3 +1,23 @@
+---
+title: 适配的 `tailwindcss` 插件
+description: 虽然，相当一部分 tailwindcss 插件，都可以直接在 weapp-tailwindcss 里使用了。
+keywords:
+  - 社区
+  - 模板
+  - 案例
+  - 适配的
+  - tailwindcss
+  - 插件
+  - community
+  - plugins
+  - weapp-tailwindcss
+  - 小程序
+  - 微信小程序
+  - uni-app
+  - taro
+  - rax
+  - mpx
+---
 # 适配的 `tailwindcss` 插件
 
 虽然，相当一部分 `tailwindcss` 插件，都可以直接在 `weapp-tailwindcss` 里使用了。

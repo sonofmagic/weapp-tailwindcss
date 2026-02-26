@@ -1,3 +1,22 @@
+---
+title: 生成样式只作用于view和text标签
+description: '在微信小程序中，darkMode 设置为 class/ selector 后，dark:className 类选择器在 button 上无效，看生成样式只作用于 view 和 text 标签'
+keywords:
+  - 常见问题
+  - 故障排查
+  - 兼容性
+  - 生成样式只作用于view和text标签
+  - issues
+  - more tags
+  - weapp-tailwindcss
+  - tailwindcss
+  - 小程序
+  - 微信小程序
+  - uni-app
+  - taro
+  - rax
+  - mpx
+---
 # 生成样式只作用于view和text标签
 
 在微信小程序中，`darkMode` 设置为 `class`/ `selector` 后，`dark:className` 类选择器在 `button` 上无效，看生成样式只作用于 `view` 和 `text` 标签

@@ -1,6 +1,23 @@
 ---
 sidebar: aiSidebar
 title: RAG（检索增强生成）
+description: 系统讲解 RAG 架构、核心流程与实现要点，帮助你构建可检索、可追溯的 AI 知识问答系统。
+keywords:
+  - AI 编程
+  - LLM
+  - 工作流
+  - RAG
+  - 检索增强生成
+  - ai
+  - basics
+  - weapp-tailwindcss
+  - tailwindcss
+  - 小程序
+  - 微信小程序
+  - uni-app
+  - taro
+  - rax
+  - mpx
 ---
 
 # RAG（检索增强生成）

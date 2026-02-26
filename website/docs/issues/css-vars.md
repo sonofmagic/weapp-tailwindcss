@@ -1,3 +1,23 @@
+---
+title: CSS 变量失效问题
+description: 在使用 taro 或者 uni-app 中，可能你会遇到 CSS 变量失效问题
+keywords:
+  - 常见问题
+  - 故障排查
+  - 兼容性
+  - CSS
+  - 变量失效问题
+  - issues
+  - css vars
+  - weapp-tailwindcss
+  - tailwindcss
+  - 小程序
+  - 微信小程序
+  - uni-app
+  - taro
+  - rax
+  - mpx
+---
 # CSS 变量失效问题
 
 ## 问题的现象

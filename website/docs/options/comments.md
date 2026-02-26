@@ -1,3 +1,23 @@
+---
+title: js 中的精确转化与忽略
+description: '默认对所有 jsx、js、wxml、wxss 中出现的 tailwindcss 运行时工具类进行转化，如果不需要转化可以使用 weappTwIgnore 标识符来进行忽略:'
+keywords:
+  - 配置项
+  - 插件参数
+  - 选项
+  - js
+  - 中的精确转化与忽略
+  - options
+  - comments
+  - weapp-tailwindcss
+  - tailwindcss
+  - 小程序
+  - 微信小程序
+  - uni-app
+  - taro
+  - rax
+  - mpx
+---
 # js 中的精确转化与忽略
 
 默认对所有 `jsx`、`js`、`wxml`、`wxss` 中出现的 `tailwindcss` 运行时工具类进行转化，如果不需要转化可以使用 `weappTwIgnore` 标识符来进行忽略:

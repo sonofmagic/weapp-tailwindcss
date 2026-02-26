@@ -1,6 +1,22 @@
 ---
 sidebar: aiSidebar
 title: AI 共有的不足和缺陷
+description: 把模型当作不稳定的外部依赖来治理：先明确人类的职责、审批和复核流程，再让 AI 进入关键路径；留足监控、评测、韧性与人工兜底的预算，确保“人是决策者，AI 是工具”。
+keywords:
+  - AI 编程
+  - LLM
+  - 工作流
+  - AI
+  - 共有的不足和缺陷
+  - ai limitations
+  - weapp-tailwindcss
+  - tailwindcss
+  - 小程序
+  - 微信小程序
+  - uni-app
+  - taro
+  - rax
+  - mpx
 ---
 
 # AI 共有的不足和缺陷

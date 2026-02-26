@@ -1,9 +1,26 @@
 ---
-id: "ILengthUnitsPatchDangerousOptions"
-title: "Interface: ILengthUnitsPatchDangerousOptions"
-sidebar_label: "ILengthUnitsPatchDangerousOptions"
+id: ILengthUnitsPatchDangerousOptions
+title: 'Interface: ILengthUnitsPatchDangerousOptions'
+sidebar_label: ILengthUnitsPatchDangerousOptions
 sidebar_position: 0
 custom_edit_url: null
+description: '• Optional **destPath**: string'
+keywords:
+  - API
+  - 接口文档
+  - 配置项
+  - Interface
+  - ILengthUnitsPatchDangerousOptions
+  - api v2
+  - interfaces
+  - weapp-tailwindcss
+  - tailwindcss
+  - 小程序
+  - 微信小程序
+  - uni-app
+  - taro
+  - rax
+  - mpx
 ---
 
 ## Properties

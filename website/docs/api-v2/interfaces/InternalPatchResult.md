@@ -1,9 +1,26 @@
 ---
-id: "InternalPatchResult"
-title: "Interface: InternalPatchResult"
-sidebar_label: "InternalPatchResult"
+id: InternalPatchResult
+title: 'Interface: InternalPatchResult'
+sidebar_label: InternalPatchResult
 sidebar_position: 0
 custom_edit_url: null
+description: InternalPatchResult
+keywords:
+  - API
+  - 接口文档
+  - 配置项
+  - Interface
+  - InternalPatchResult
+  - api v2
+  - interfaces
+  - weapp-tailwindcss
+  - tailwindcss
+  - 小程序
+  - 微信小程序
+  - uni-app
+  - taro
+  - rax
+  - mpx
 ---
 
 **`Description`**

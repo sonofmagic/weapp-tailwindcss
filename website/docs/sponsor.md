@@ -1,3 +1,19 @@
+---
+title: 成为 weapp-tailwindcss 的赞助商
+description: weapp-tailwindcss 是采用 MIT 许可的开源项目，使用完全免费。
+keywords:
+  - 成为
+  - weapp-tailwindcss
+  - 的赞助商
+  - sponsor
+  - tailwindcss
+  - 小程序
+  - 微信小程序
+  - uni-app
+  - taro
+  - rax
+  - mpx
+---
 # 成为 weapp-tailwindcss 的赞助商
 
 `weapp-tailwindcss` 是采用 `MIT` 许可的开源项目，使用完全免费。

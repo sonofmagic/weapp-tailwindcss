@@ -1,6 +1,23 @@
 ---
 sidebar: aiSidebar
 title: Skill（技能系统）
+description: Skill 是一组可复用的执行规则与工作流，用来让 AI 在特定任务中更稳定地输出结果。
+keywords:
+  - AI 编程
+  - LLM
+  - 工作流
+  - Skill
+  - 技能系统
+  - ai
+  - basics
+  - weapp-tailwindcss
+  - tailwindcss
+  - 小程序
+  - 微信小程序
+  - uni-app
+  - taro
+  - rax
+  - mpx
 ---
 
 # Skill（技能系统）

@@ -1,9 +1,26 @@
 ---
-id: "RawSource"
-title: "Interface: RawSource"
-sidebar_label: "RawSource"
+id: RawSource
+title: 'Interface: RawSource'
+sidebar_label: RawSource
 sidebar_position: 0
 custom_edit_url: null
+description: '• **end**: number'
+keywords:
+  - API
+  - 接口文档
+  - 配置项
+  - Interface
+  - RawSource
+  - api v2
+  - interfaces
+  - weapp-tailwindcss
+  - tailwindcss
+  - 小程序
+  - 微信小程序
+  - uni-app
+  - taro
+  - rax
+  - mpx
 ---
 
 ## Properties

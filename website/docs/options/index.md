@@ -1,8 +1,23 @@
-id: options/index
+---
 slug: /options
 sidebar_position: 0
 title: 选项概览
 description: weapp-tailwindcss 可用配置概览
+keywords:
+  - 配置项
+  - 插件参数
+  - 选项
+  - options
+  - 选项概览
+  - weapp-tailwindcss
+  - tailwindcss
+  - 小程序
+  - 微信小程序
+  - uni-app
+  - taro
+  - rax
+  - mpx
+---
 
 该章节的详细配置已经迁移至 [API / 配置项文档](/docs/api/interfaces/UserDefinedOptions)。
 

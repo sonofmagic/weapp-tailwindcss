@@ -1,7 +1,18 @@
 ---
-title: 4.0.0 🚀
-date: 2025-03-01
+title: "4.0.0 \U0001F680"
+date: 2025-03-01T00:00:00.000Z
 authors: sonofmagic
+description: weapp-tailwindcss v4.0 正式发布，核心亮点是兼容 tailwindcss@4 并引入 tailwind-merge 运行时整合能力。文章总结了升级背后的思路，并提供 uni-app 示例帮助你快速落地。
+keywords:
+  - v4 release
+  - weapp-tailwindcss
+  - tailwindcss
+  - 小程序
+  - 微信小程序
+  - uni-app
+  - taro
+  - rax
+  - mpx
 ---
 
 weapp-tailwindcss v4.0 正式发布，核心亮点是兼容 `tailwindcss@4` 并引入 `tailwind-merge` 运行时整合能力。文章总结了升级背后的思路，并提供 uni-app 示例帮助你快速落地。

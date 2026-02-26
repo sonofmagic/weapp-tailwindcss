@@ -1,3 +1,23 @@
+---
+title: Nodejs API
+description: '有时候,我们不一定会使用 webpack/vite/gulp，可能是直接使用 nodejs 去构建应用，或者封装更高阶的工具，这时候可以使用api去转义你的应用。'
+keywords:
+  - 快速开始
+  - 安装
+  - 配置
+  - Nodejs
+  - API
+  - quick start
+  - frameworks
+  - weapp-tailwindcss
+  - tailwindcss
+  - 小程序
+  - 微信小程序
+  - uni-app
+  - taro
+  - rax
+  - mpx
+---
 # Nodejs API
 
 > 版本 2.11.0+ , 此为高阶 `api`，使用起来有难度，不适合新手，假如你不清楚你在做什么，请使用 `webpack/vite/gulp` 插件

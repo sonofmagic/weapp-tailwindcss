@@ -1,3 +1,23 @@
+---
+title: uni-app HbuilderX 使用方式
+description: '注意: 在使用 hbuilderx 进行开发时，由于目录结构和启动项的不同，你必须要给你 tailwind.config.js 传入**绝对路径**:'
+keywords:
+  - 快速开始
+  - 安装
+  - 配置
+  - uni-app
+  - HbuilderX
+  - 使用方式
+  - quick start
+  - frameworks
+  - weapp-tailwindcss
+  - tailwindcss
+  - 小程序
+  - 微信小程序
+  - taro
+  - rax
+  - mpx
+---
 # uni-app HbuilderX 使用方式
 
 ## 默认使用方式

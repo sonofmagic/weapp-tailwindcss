@@ -1,6 +1,24 @@
 ---
 sidebar: aiSidebar
 title: Prompt Engineering（提示词工程）
+description: 'function SubmitForm() {'
+keywords:
+  - AI 编程
+  - LLM
+  - 工作流
+  - Prompt
+  - Engineering
+  - 提示词工程
+  - ai
+  - basics
+  - prompt engineering
+  - weapp-tailwindcss
+  - tailwindcss
+  - 小程序
+  - 微信小程序
+  - uni-app
+  - taro
+  - rax
 ---
 
 # Prompt Engineering（提示词工程）

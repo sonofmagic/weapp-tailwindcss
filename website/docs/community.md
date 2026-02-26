@@ -1,3 +1,21 @@
+---
+title: 生态以及解决方案
+description: 汇总 weapp-tailwindcss 生态插件、模板与多端实践方案，包含主题、多上下文与外部组件集成指南。
+keywords:
+  - 生态以及解决方案
+  - community
+  - 生态插件
+  - 模板
+  - 多端方案
+  - weapp-tailwindcss
+  - tailwindcss
+  - 小程序
+  - 微信小程序
+  - uni-app
+  - taro
+  - rax
+  - mpx
+---
 # 生态以及解决方案
 
 ## 插件

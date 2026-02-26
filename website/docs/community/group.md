@@ -1,3 +1,22 @@
+---
+title: 加入技术交流群
+description: 如果你在使用中遇到什么问题，也欢迎你进入交流群进行提问。
+keywords:
+  - 社区
+  - 模板
+  - 案例
+  - 加入技术交流群
+  - community
+  - group
+  - weapp-tailwindcss
+  - tailwindcss
+  - 小程序
+  - 微信小程序
+  - uni-app
+  - taro
+  - rax
+  - mpx
+---
 # 加入技术交流群
 
 如果你在使用中遇到什么问题，也欢迎你进入交流群进行提问。

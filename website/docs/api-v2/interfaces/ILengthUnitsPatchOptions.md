@@ -1,9 +1,26 @@
 ---
-id: "ILengthUnitsPatchOptions"
-title: "Interface: ILengthUnitsPatchOptions"
-sidebar_label: "ILengthUnitsPatchOptions"
+id: ILengthUnitsPatchOptions
+title: 'Interface: ILengthUnitsPatchOptions'
+sidebar_label: ILengthUnitsPatchOptions
 sidebar_position: 0
 custom_edit_url: null
+description: '• Optional **basedir**: string'
+keywords:
+  - API
+  - 接口文档
+  - 配置项
+  - Interface
+  - ILengthUnitsPatchOptions
+  - api v2
+  - interfaces
+  - weapp-tailwindcss
+  - tailwindcss
+  - 小程序
+  - 微信小程序
+  - uni-app
+  - taro
+  - rax
+  - mpx
 ---
 
 **`Deprecated`**

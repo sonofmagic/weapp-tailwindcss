@@ -1,3 +1,23 @@
+---
+title: rpx 任意值颜色或长度单位二义性与解决方案
+description: 在不使用 weapp-tailwindcss 的情况下，你直接写这样的 rpx 写法：
+keywords:
+  - 常见问题
+  - 故障排查
+  - 兼容性
+  - rpx
+  - 任意值颜色或长度单位二义性与解决方案
+  - issues
+  - rpx ambiguities
+  - weapp-tailwindcss
+  - tailwindcss
+  - 小程序
+  - 微信小程序
+  - uni-app
+  - taro
+  - rax
+  - mpx
+---
 # rpx 任意值颜色或长度单位二义性与解决方案
 
 ## 这是一个什么问题？

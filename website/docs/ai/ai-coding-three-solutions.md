@@ -4,6 +4,21 @@ title: AI 编码助手五大方案选型指南
 sidebar_label: Cursor / Copilot / Claude / Codex / Kiro 五大方案
 description: 深度对比 Cursor IDE、GitHub Copilot、Claude Code、OpenAI Codex 和 AWS Kiro 五大 AI 编程方案的价格、额度和适用场景
 sidebar: aiSidebar
+keywords:
+  - AI 编程
+  - LLM
+  - 工作流
+  - AI
+  - 编码助手五大方案选型指南
+  - ai coding three solutions
+  - weapp-tailwindcss
+  - tailwindcss
+  - 小程序
+  - 微信小程序
+  - uni-app
+  - taro
+  - rax
+  - mpx
 ---
 
 # AI 编程五大方案选型指南

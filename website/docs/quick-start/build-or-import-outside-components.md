@@ -1,3 +1,22 @@
+---
+title: 构建以及引入外部组件
+description: 我们在日常的开发中，经常会去使用和封装各种各样的组件库。有些是开源的，第三方开发的UI库，有些是我们开发人员给自己的特定的业务封装的UI库。其中很多情况其实是以流行的 开源UI库(或者fork的改版) + 自己封装的业务组件为主的
+keywords:
+  - 快速开始
+  - 安装
+  - 配置
+  - 构建以及引入外部组件
+  - quick start
+  - build or import outside components
+  - weapp-tailwindcss
+  - tailwindcss
+  - 小程序
+  - 微信小程序
+  - uni-app
+  - taro
+  - rax
+  - mpx
+---
 # 构建以及引入外部组件
 
 ## 前言

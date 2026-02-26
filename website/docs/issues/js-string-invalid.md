@@ -1,3 +1,24 @@
+---
+title: 写在 js 中的 tailwindcss 任意值失效
+description: weapp-tailwindcss 是允许你在 js 中编写任意值的，而且 weapp-tailwindcss 会自动帮你做好任意值的转译。
+keywords:
+  - 常见问题
+  - 故障排查
+  - 兼容性
+  - 写在
+  - js
+  - 中的
+  - tailwindcss
+  - 任意值失效
+  - issues
+  - js string invalid
+  - weapp-tailwindcss
+  - 小程序
+  - 微信小程序
+  - uni-app
+  - taro
+  - rax
+---
 # 写在 js 中的 tailwindcss 任意值失效
 
 `weapp-tailwindcss` 是允许你在 `js` 中编写任意值的，而且 `weapp-tailwindcss` 会自动帮你做好任意值的转译。

@@ -1,3 +1,22 @@
+---
+title: 常见问题
+description: >-
+  目前微信开发者工具会默认开启代码自动热重载 compileHotReLoad 功能，这个功能在原生开发中表现良好，但在 uni-app 和 taro 等的框架中，存在一定的问题，参见
+  issues#37，所以如果你遇到了此类问题，建议关闭 compileHotReLoad 功能。
+keywords:
+  - 常见问题
+  - 故障排查
+  - 兼容性
+  - issues
+  - weapp-tailwindcss
+  - tailwindcss
+  - 小程序
+  - 微信小程序
+  - uni-app
+  - taro
+  - rax
+  - mpx
+---
 # 常见问题
 
 :::info 组件外部样式类必读

@@ -1,3 +1,23 @@
+---
+title: 和 Taroify 一起使用
+description: 'taro 使用 Taroify 的共同注意点:'
+keywords:
+  - 常见问题
+  - 故障排查
+  - 兼容性
+  - Taroify
+  - 一起使用
+  - issues
+  - use with taroify
+  - weapp-tailwindcss
+  - tailwindcss
+  - 小程序
+  - 微信小程序
+  - uni-app
+  - taro
+  - rax
+  - mpx
+---
 # 和 Taroify 一起使用
 
 `taro` 使用 [Taroify](https://taroify.github.io/taroify.com/) 的共同注意点:

@@ -1,3 +1,23 @@
+---
+title: TailwindcssPatchOptions
+description: >-
+  定义于:
+  node_modules/.pnpm/tailwindcss-patch@8.6.1_magicast@0.5.1_tailwindcss@4.1.18/node_modules/tailwindcss-patch/dist/index.d.ts:117
+keywords:
+  - API
+  - 接口文档
+  - 配置项
+  - TailwindcssPatchOptions
+  - interfaces
+  - weapp-tailwindcss
+  - tailwindcss
+  - 小程序
+  - 微信小程序
+  - uni-app
+  - taro
+  - rax
+  - mpx
+---
 # TailwindcssPatchOptions
 
 定义于: node_modules/.pnpm/tailwindcss-patch@8.6.1_magicast@0.5.1_tailwindcss@4.1.18/node_modules/tailwindcss-patch/dist/index.d.ts:117

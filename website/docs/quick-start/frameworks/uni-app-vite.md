@@ -1,3 +1,24 @@
+---
+title: uni-app cli vue3 vite
+description: 创建完成后，快速上手中的准备工作都完成之后，就可以便捷的注册了：
+keywords:
+  - 快速开始
+  - 安装
+  - 配置
+  - uni-app
+  - cli
+  - vue3
+  - vite
+  - quick start
+  - frameworks
+  - uni app vite
+  - weapp-tailwindcss
+  - tailwindcss
+  - 小程序
+  - 微信小程序
+  - taro
+  - rax
+---
 # uni-app cli vue3 vite
 
 :::warning

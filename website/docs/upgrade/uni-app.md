@@ -1,3 +1,19 @@
+---
+title: 旧有uni-app项目升级webpack5指南
+description: 由于目前 uni-app hbuilderx和cli默认创建的 vue2 项目，还是使用的 @vue/cli-service@4
+keywords:
+  - 旧有uni-app项目升级webpack5指南
+  - upgrade
+  - uni app
+  - weapp-tailwindcss
+  - tailwindcss
+  - 小程序
+  - 微信小程序
+  - uni-app
+  - taro
+  - rax
+  - mpx
+---
 # 旧有uni-app项目升级webpack5指南
 
 :::caution

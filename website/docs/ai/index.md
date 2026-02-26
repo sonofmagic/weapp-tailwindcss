@@ -1,6 +1,21 @@
 ---
 sidebar: aiSidebar
 title: AI 生成小程序代码
+description: 本页面为使用 AI 快速构建小程序的专题，希望能够帮助大家不断的提升自己的开发效率
+keywords:
+  - AI 编程
+  - LLM
+  - 工作流
+  - AI
+  - 生成小程序代码
+  - weapp-tailwindcss
+  - tailwindcss
+  - 小程序
+  - 微信小程序
+  - uni-app
+  - taro
+  - rax
+  - mpx
 ---
 
 # AI 生成小程序代码

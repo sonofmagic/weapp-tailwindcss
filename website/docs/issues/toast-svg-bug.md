@@ -1,3 +1,24 @@
+---
+title: H5 端原生 toast 样式偏移问题
+description: 在使用 tailwindcss 的时候，编译到 h5 平台，使用 uni.toast / taro.toast 时，出现下列的效果
+keywords:
+  - 常见问题
+  - 故障排查
+  - 兼容性
+  - H5
+  - 端原生
+  - toast
+  - 样式偏移问题
+  - issues
+  - toast svg bug
+  - weapp-tailwindcss
+  - tailwindcss
+  - 小程序
+  - 微信小程序
+  - uni-app
+  - taro
+  - rax
+---
 # H5 端原生 toast 样式偏移问题
 
 在使用 `tailwindcss` 的时候，编译到 `h5` 平台，使用 `uni.toast` / `taro.toast` 时，出现下列的效果

@@ -1,3 +1,22 @@
+---
+title: 开发参考手册
+description: 所以假如你要兼容更多的手机机型，请使用 tailwindcss@3.x。
+keywords:
+  - 快速开始
+  - 安装
+  - 配置
+  - 开发参考手册
+  - quick start
+  - v4
+  - weapp-tailwindcss
+  - tailwindcss
+  - 小程序
+  - 微信小程序
+  - uni-app
+  - taro
+  - rax
+  - mpx
+---
 # 开发参考手册
 
 :::warning

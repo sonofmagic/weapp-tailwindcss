@@ -1,3 +1,22 @@
+---
+title: weapp-tailwindcss
+description: weapp-tailwindcss API 入口，汇总配置项、生命周期、文件匹配与接口说明，便于按场景查阅插件能力。
+keywords:
+  - API
+  - 接口文档
+  - 配置项
+  - 插件配置
+  - 生命周期
+  - 文件匹配
+  - weapp-tailwindcss
+  - tailwindcss
+  - 小程序
+  - 微信小程序
+  - uni-app
+  - taro
+  - rax
+  - mpx
+---
 # weapp-tailwindcss
 
 ## 配置项

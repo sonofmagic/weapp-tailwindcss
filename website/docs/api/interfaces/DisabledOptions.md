@@ -1,3 +1,21 @@
+---
+title: DisabledOptions
+description: '定义于: packages/weapp-tailwindcss/src/types/disabled-options.ts:9'
+keywords:
+  - API
+  - 接口文档
+  - 配置项
+  - DisabledOptions
+  - interfaces
+  - weapp-tailwindcss
+  - tailwindcss
+  - 小程序
+  - 微信小程序
+  - uni-app
+  - taro
+  - rax
+  - mpx
+---
 # DisabledOptions
 
 定义于: [packages/weapp-tailwindcss/src/types/disabled-options.ts:9](https://github.com/sonofmagic/weapp-tailwindcss/blob/59073fec6f66bb3fbd1d15468f6e89437dc3f862/packages/weapp-tailwindcss/src/types/disabled-options.ts#L9)

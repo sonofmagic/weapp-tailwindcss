@@ -1,9 +1,26 @@
 ---
-id: "IBaseWebpackPlugin"
-title: "Interface: IBaseWebpackPlugin"
-sidebar_label: "IBaseWebpackPlugin"
+id: IBaseWebpackPlugin
+title: 'Interface: IBaseWebpackPlugin'
+sidebar_label: IBaseWebpackPlugin
 sidebar_position: 0
 custom_edit_url: null
+description: '• Optional **appType**: AppType'
+keywords:
+  - API
+  - 接口文档
+  - 配置项
+  - Interface
+  - IBaseWebpackPlugin
+  - api v2
+  - interfaces
+  - weapp-tailwindcss
+  - tailwindcss
+  - 小程序
+  - 微信小程序
+  - uni-app
+  - taro
+  - rax
+  - mpx
 ---
 
 ## Implemented by

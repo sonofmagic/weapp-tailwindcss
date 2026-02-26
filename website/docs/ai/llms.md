@@ -1,6 +1,23 @@
 ---
 sidebar: aiSidebar
 title: LLM 友好文档 (llms.txt)
+description: 1. 在仓库根目录执行 pnpm --filter @weapp-tailwindcss/website build（或 cd website && pnpm build）。
+keywords:
+  - AI 编程
+  - LLM
+  - 工作流
+  - 友好文档
+  - llms.txt
+  - ai
+  - llms
+  - weapp-tailwindcss
+  - tailwindcss
+  - 小程序
+  - 微信小程序
+  - uni-app
+  - taro
+  - rax
+  - mpx
 ---
 
 # LLM 友好文档 (llms.txt)

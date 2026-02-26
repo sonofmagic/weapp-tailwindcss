@@ -1,3 +1,22 @@
+---
+title: 小程序多主题方案
+description: 对于 web 来说，多主题色的需求是非常常见的，比如 暗黑模式 就是一个极其常见的需求，
+keywords:
+  - 快速开始
+  - 安装
+  - 配置
+  - 小程序多主题方案
+  - quick start
+  - apply themes
+  - weapp-tailwindcss
+  - tailwindcss
+  - 小程序
+  - 微信小程序
+  - uni-app
+  - taro
+  - rax
+  - mpx
+---
 # 小程序多主题方案
 
 ## 自由的 web 方案

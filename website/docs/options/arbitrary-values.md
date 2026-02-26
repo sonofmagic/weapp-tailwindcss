@@ -1,3 +1,24 @@
+---
+title: 使用 arbitrary values
+description: arbitrary values 是 tailwindcss v3 的重要更新内容，幸运的是你使用了本插件。
+keywords:
+  - 配置项
+  - 插件参数
+  - 选项
+  - 使用
+  - arbitrary
+  - values
+  - options
+  - arbitrary values
+  - weapp-tailwindcss
+  - tailwindcss
+  - 小程序
+  - 微信小程序
+  - uni-app
+  - taro
+  - rax
+  - mpx
+---
 # 使用 arbitrary values
 
 `arbitrary values` 是 `tailwindcss v3` 的重要更新内容，幸运的是你使用了本插件。

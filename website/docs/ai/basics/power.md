@@ -1,6 +1,23 @@
 ---
 sidebar: aiSidebar
 title: Power（规范驱动编程）
+description: Cursor 的 **Composer** 特性：
+keywords:
+  - AI 编程
+  - LLM
+  - 工作流
+  - Power
+  - 规范驱动编程
+  - ai
+  - basics
+  - weapp-tailwindcss
+  - tailwindcss
+  - 小程序
+  - 微信小程序
+  - uni-app
+  - taro
+  - rax
+  - mpx
 ---
 
 # Power（规范驱动编程能力）

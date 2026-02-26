@@ -1,3 +1,18 @@
+---
+title: Tailwindcss 原子类维护指南
+description: 很多开发者，看到 Tailwindcss 的写法，或者初步使用它的时候，第一感觉可能就是 写是真的爽，维护火葬场。
+keywords:
+  - Tailwindcss
+  - 原子类维护指南
+  - tailwindcss maintenance book
+  - weapp-tailwindcss
+  - 小程序
+  - 微信小程序
+  - uni-app
+  - taro
+  - rax
+  - mpx
+---
 # Tailwindcss 原子类维护指南
 
 ## 前言

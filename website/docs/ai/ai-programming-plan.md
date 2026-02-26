@@ -4,6 +4,21 @@ title: AI 编程方案选型指南
 sidebar_label: AI 编程方案对比
 description: 国际与国产 AI 编程平台、IDE 和插件的能力与订阅方案对比，附预算与场景化选型建议。
 sidebar: aiSidebar
+keywords:
+  - AI 编程
+  - LLM
+  - 工作流
+  - AI
+  - 编程方案选型指南
+  - ai programming plan
+  - weapp-tailwindcss
+  - tailwindcss
+  - 小程序
+  - 微信小程序
+  - uni-app
+  - taro
+  - rax
+  - mpx
 ---
 
 # AI 编程方案选型指南

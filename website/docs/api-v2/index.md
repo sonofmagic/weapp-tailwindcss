@@ -1,9 +1,24 @@
 ---
-id: "index"
-title: "weapp-tailwindcss-webpack-plugin"
-sidebar_label: "Exports"
+id: index
+title: weapp-tailwindcss-webpack-plugin
+sidebar_label: Exports
 sidebar_position: 0.5
 custom_edit_url: null
+description: 'Ƭ **AppType**: "uni-app" \| "uni-app-vite" \| "taro" \| "remax" \| "rax" \| "native" \| "kbone" \| "mpx"'
+keywords:
+  - API
+  - 接口文档
+  - 配置项
+  - weapp-tailwindcss-webpack-plugin
+  - api v2
+  - weapp-tailwindcss
+  - tailwindcss
+  - 小程序
+  - 微信小程序
+  - uni-app
+  - taro
+  - rax
+  - mpx
 ---
 
 ## Classes

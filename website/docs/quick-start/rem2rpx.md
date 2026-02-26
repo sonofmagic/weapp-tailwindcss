@@ -1,3 +1,24 @@
+---
+title: 4. rem 转 rpx (或 px)
+description: '这是因为 tailwindcss 里面工具类的长度单位，默认都是 rem，比如:'
+keywords:
+  - 快速开始
+  - 安装
+  - 配置
+  - '4.'
+  - rem
+  - rpx
+  - px
+  - quick start
+  - rem2rpx
+  - weapp-tailwindcss
+  - tailwindcss
+  - 小程序
+  - 微信小程序
+  - uni-app
+  - taro
+  - rax
+---
 # 4. rem 转 rpx (或 px)
 
 > 此为可选步骤，根据你自己的需求进行配置。通常此配置的值，是由你拿到的设计稿尺寸决定的。

@@ -1,6 +1,24 @@
 ---
 sidebar: aiSidebar
 title: Spec-Driven Development（规范驱动开发）
+description: Cursor 的多步骤任务执行：
+keywords:
+  - AI 编程
+  - LLM
+  - 工作流
+  - Spec-Driven
+  - Development
+  - 规范驱动开发
+  - ai
+  - basics
+  - spec driven development
+  - weapp-tailwindcss
+  - tailwindcss
+  - 小程序
+  - 微信小程序
+  - uni-app
+  - taro
+  - rax
 ---
 
 # Spec-Driven Development（规范驱动开发）

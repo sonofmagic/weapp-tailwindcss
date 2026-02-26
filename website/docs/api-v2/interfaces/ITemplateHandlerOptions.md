@@ -1,9 +1,26 @@
 ---
-id: "ITemplateHandlerOptions"
-title: "Interface: ITemplateHandlerOptions"
-sidebar_label: "ITemplateHandlerOptions"
+id: ITemplateHandlerOptions
+title: 'Interface: ITemplateHandlerOptions'
+sidebar_label: ITemplateHandlerOptions
 sidebar_position: 0
 custom_edit_url: null
+description: ↳ **ITemplateHandlerOptions**
+keywords:
+  - API
+  - 接口文档
+  - 配置项
+  - Interface
+  - ITemplateHandlerOptions
+  - api v2
+  - interfaces
+  - weapp-tailwindcss
+  - tailwindcss
+  - 小程序
+  - 微信小程序
+  - uni-app
+  - taro
+  - rax
+  - mpx
 ---
 
 ## Hierarchy

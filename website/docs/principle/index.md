@@ -1,6 +1,19 @@
 ---
-
-title: 'tailwindcss in weapp 的原理'
+title: tailwindcss in weapp 的原理
+description: '转眼又是一年，感觉是时候再来修订一下 tailwindcss in weapp 的原理 这篇文章了, 放心，这次我写作核心就是要让大多数人看懂！'
+keywords:
+  - tailwindcss
+  - in
+  - weapp
+  - 的原理
+  - principle
+  - weapp-tailwindcss
+  - 小程序
+  - 微信小程序
+  - uni-app
+  - taro
+  - rax
+  - mpx
 ---
 
 ## 2024-02-20 版本

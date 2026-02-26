@@ -1,3 +1,22 @@
+---
+title: Tailwindcss 格式化
+description: 使用并在 prettier 注册 prettier-plugin-tailwindcss
+keywords:
+  - 常见问题
+  - 故障排查
+  - 兼容性
+  - Tailwindcss
+  - 格式化
+  - issues
+  - format
+  - weapp-tailwindcss
+  - 小程序
+  - 微信小程序
+  - uni-app
+  - taro
+  - rax
+  - mpx
+---
 # Tailwindcss 格式化
 
 ## prettier 插件

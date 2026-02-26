@@ -1,3 +1,18 @@
+---
+title: Related projects
+description: 'weapp-ide-cli: 一个微信开发者工具命令行，快速方便的直接启动 ide 进行登录，开发，预览，上传代码等等功能。'
+keywords:
+  - Related
+  - projects
+  - weapp-tailwindcss
+  - tailwindcss
+  - 小程序
+  - 微信小程序
+  - uni-app
+  - taro
+  - rax
+  - mpx
+---
 # Related projects
 
 ### CLI 工具

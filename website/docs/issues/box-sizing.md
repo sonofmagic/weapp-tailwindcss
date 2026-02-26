@@ -1,3 +1,24 @@
+---
+title: 默认盒模型(box-sizing)问题
+description: Tailwindcss 默认会把所有的元素的盒模型，设置为 border-box
+keywords:
+  - 常见问题
+  - 故障排查
+  - 兼容性
+  - 默认盒模型
+  - box-sizing
+  - 问题
+  - issues
+  - box sizing
+  - weapp-tailwindcss
+  - tailwindcss
+  - 小程序
+  - 微信小程序
+  - uni-app
+  - taro
+  - rax
+  - mpx
+---
 # 默认盒模型(box-sizing)问题
 
 `Tailwindcss` 默认会把所有的元素的盒模型，设置为 `border-box`

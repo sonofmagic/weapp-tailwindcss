@@ -1,3 +1,22 @@
+---
+title: 原生头条小程序使用 TailWindCSS
+description: '创建项目 test-miniapp, 进入项目目录并初始化 package.json'
+keywords:
+  - 常见问题
+  - 故障排查
+  - 兼容性
+  - 原生头条小程序使用
+  - TailWindCSS
+  - issues
+  - native toutiao
+  - weapp-tailwindcss
+  - 小程序
+  - 微信小程序
+  - uni-app
+  - taro
+  - rax
+  - mpx
+---
 # 原生头条小程序使用 TailWindCSS
 
 > 以下内容由使用 `weapp-tailwindcss` 的热心网友提供，十分感谢！

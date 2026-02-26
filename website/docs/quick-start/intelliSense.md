@@ -1,7 +1,26 @@
 ---
-# 显示 h2 到 h5 标题
 toc_min_heading_level: 2
 toc_max_heading_level: 4
+title: IDE 智能提示设置
+description: >-
+  tailwindcss-intellisense 在 v4 中必须看到 @import "tailwindcss" 才会将工作区视为 Tailwind 根文件。从 v4.7.10 起，weapp-tailwindcss
+  默认会在构建阶段把这些 @import 'tailwind…
+keywords:
+  - 快速开始
+  - 安装
+  - 配置
+  - IDE
+  - 智能提示设置
+  - quick start
+  - intelliSense
+  - weapp-tailwindcss
+  - tailwindcss
+  - 小程序
+  - 微信小程序
+  - uni-app
+  - taro
+  - rax
+  - mpx
 ---
 
 # IDE 智能提示设置

@@ -1,6 +1,22 @@
 ---
 sidebar: aiSidebar
 title: AI 编程助手落地实施方案
+description: 1. **合规边界**：哪些仓库/文件允许出境？是否必须审计留痕？（决定能不能用海外、能用到什么程度）
+keywords:
+  - AI 编程
+  - LLM
+  - 工作流
+  - AI
+  - 编程助手落地实施方案
+  - ai coding deployment guide
+  - weapp-tailwindcss
+  - tailwindcss
+  - 小程序
+  - 微信小程序
+  - uni-app
+  - taro
+  - rax
+  - mpx
 ---
 
 # AI 编程助手落地实施方案

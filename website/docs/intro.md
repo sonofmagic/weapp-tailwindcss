@@ -1,3 +1,18 @@
+---
+title: 简介
+description: 由于小程序运行时，本身有自己的一套 **独特的** 技术规范标准。这导致你无法使用 web 开发中的很多的特性，
+keywords:
+  - 简介
+  - intro
+  - weapp-tailwindcss
+  - tailwindcss
+  - 小程序
+  - 微信小程序
+  - uni-app
+  - taro
+  - rax
+  - mpx
+---
 # 简介
 
 <!-- :::tip

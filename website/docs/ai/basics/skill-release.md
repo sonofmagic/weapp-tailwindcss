@@ -1,6 +1,24 @@
 ---
 sidebar: aiSidebar
 title: Skill 发布与版本化
+description: 本页面面向 weapp-tailwindcss Skill 维护者，说明如何做版本管理、打 tag、发 release，并保持安装指令稳定可用。
+keywords:
+  - AI 编程
+  - LLM
+  - 工作流
+  - Skill
+  - 发布与版本化
+  - ai
+  - basics
+  - skill release
+  - weapp-tailwindcss
+  - tailwindcss
+  - 小程序
+  - 微信小程序
+  - uni-app
+  - taro
+  - rax
+  - mpx
 ---
 
 # Skill 发布与版本化

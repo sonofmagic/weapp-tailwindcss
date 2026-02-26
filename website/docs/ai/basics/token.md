@@ -1,6 +1,23 @@
 ---
 sidebar: aiSidebar
 title: Token（词元）
+description: Token 是将文本切分成的**序列片段**：
+keywords:
+  - AI 编程
+  - LLM
+  - 工作流
+  - Token
+  - 词元
+  - ai
+  - basics
+  - weapp-tailwindcss
+  - tailwindcss
+  - 小程序
+  - 微信小程序
+  - uni-app
+  - taro
+  - rax
+  - mpx
 ---
 
 # Token（词元）
