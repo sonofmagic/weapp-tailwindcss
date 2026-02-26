@@ -251,7 +251,7 @@ export default function LLMSPage() {
                 text-xs text-emerald-200 shadow-[0_8px_30px_rgba(0,0,0,0.35)]
               `}
               >
-                npx skills add sonofmagic/weapp-tailwindcss --skill weapp-tailwindcss
+                npx skills add sonofmagic/skills --skill weapp-tailwindcss
               </code>
               <p className="mt-3 font-semibold">查看可安装 Skill 列表</p>
               <code className={`
@@ -259,7 +259,7 @@ export default function LLMSPage() {
                 text-xs text-emerald-200 shadow-[0_8px_30px_rgba(0,0,0,0.35)]
               `}
               >
-                npx skills add sonofmagic/weapp-tailwindcss --list
+                npx skills add sonofmagic/skills --list
               </code>
               <p className="mt-3 font-semibold">本地仓库调试安装</p>
               <code className={`

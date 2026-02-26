@@ -31,7 +31,7 @@ keywords:
 如果你希望 AI 在你的业务项目中，按 `weapp-tailwindcss` 最佳实践快速完成小程序与多端接入，可以先安装 `weapp-tailwindcss` Skill：
 
 ```bash
-npx skills add sonofmagic/weapp-tailwindcss --skill weapp-tailwindcss
+npx skills add sonofmagic/skills --skill weapp-tailwindcss
 ```
 
 该 Skill 除了接入配置与排障，也覆盖 Tailwind 写法规范（例如 `space-y-*` / `space-x-*` 在小程序端默认标签限制与修复优先级）。

@@ -98,7 +98,7 @@ gh release create skill-weapp-tailwindcss-v1.0.0 \
 为了降低用户学习成本，安装命令建议保持固定：
 
 ```bash
-npx skills add sonofmagic/weapp-tailwindcss --skill weapp-tailwindcss
+npx skills add sonofmagic/skills --skill weapp-tailwindcss
 ```
 
 每次 Skill 行为发生变更时，同步更新以下入口：
@@ -106,4 +106,3 @@ npx skills add sonofmagic/weapp-tailwindcss --skill weapp-tailwindcss
 - `website/docs/ai/basics/skill.md`
 - `website/docs/ai/index.md`
 - `README.md`
-

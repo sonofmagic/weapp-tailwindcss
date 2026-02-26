@@ -75,7 +75,7 @@
 如果你希望 AI 在你的业务项目中，按 `weapp-tailwindcss` 的最佳实践快速完成“小程序 + 多端”接入，可以先安装官方 Skill：
 
 ```bash
-npx skills add sonofmagic/weapp-tailwindcss --skill weapp-tailwindcss
+npx skills add sonofmagic/skills --skill weapp-tailwindcss
 ```
 
 安装后可用于：
