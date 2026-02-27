@@ -27,6 +27,7 @@
 - [Features](#features)
   - [Plugin Introduction](#plugin-introduction)
 - [Requirements](#requirements)
+- [AI Skill (For Users)](#ai-skill-for-users)
 - [Installation and usage](#installation-and-usage)
 - [Migrating from v1 to v2](#migrating-from-v1-to-v2)
 - [Configuration reference](#configuration-reference)
@@ -78,6 +79,31 @@ Currently, these plugins support the latest version of the `tailwindcss v3.x.x` 
 ## Requirements
 
 - Node.js `^20.19.0` or `>=22.12.0` (LTS recommended)
+
+## AI Skill (For Users)
+
+If you want AI to integrate `weapp-tailwindcss` in your business project with stable best practices, install the official Skill first:
+
+```bash
+npx skills add sonofmagic/skills --skill weapp-tailwindcss
+```
+
+After installation, AI can help you with:
+
+- Fast setup for `uni-app` / `taro` / `uni-app x`
+- Copy-paste ready commands and config snippets
+- Troubleshooting for `rpx` ambiguities, JS string class issues, and `space-y/space-x` behavior
+
+The Skill workflow (short version):
+
+1. Route the request type first: setup, migration, troubleshooting, or coding-style guidance
+2. Collect minimum context: framework, bundler, targets, Tailwind version, and whether you use `pnpm@10+`
+3. Return an actionable plan with validation steps and rollback guidance
+
+Read more:
+
+- [Skill System](https://tw.icebreaker.top/docs/ai/basics/skill)
+- [Tailwind Writing Best Practices (Skill Reference)](./skills/weapp-tailwindcss/references/tailwind-writing-best-practices.md)
 
 ## [Installation and usage](https://tw.icebreaker.top/docs/quick-start/install)
 

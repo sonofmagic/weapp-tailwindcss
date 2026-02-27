@@ -84,9 +84,24 @@ npx skills add sonofmagic/skills --skill weapp-tailwindcss
 - 输出可复制的安装命令、配置文件与验证步骤
 - 处理 `rpx` 任意值、`JS` 字符串 class 不生效等常见问题
 
-详细使用说明见 AI 学习中心：
+Skill 的执行流程（简版）：
+
+1. 先分流任务类型：新接入、迁移、排障、写法规范
+2. 先补齐最小上下文：框架、构建器、目标端、Tailwind 版本、是否 `pnpm@10+`
+3. 再给出可落地方案，并强制包含回滚路径
+
+Skill 输出默认包含：
+
+- 结论（框架 + Tailwind 版本 + 目标端）
+- 修改文件清单
+- 可复制配置与命令（默认 `pnpm`）
+- 验证步骤与预期结果
+- 回滚方案
+
+推荐同时阅读：
 
 - [Skill（技能系统）](https://tw.icebreaker.top/docs/ai/basics/skill)
+- [Tailwind 写法最佳实践（Skill 引用）](./skills/weapp-tailwindcss/references/tailwind-writing-best-practices.md)
 
 ## [安装与使用方式](https://tw.icebreaker.top/docs/quick-start/install)
 

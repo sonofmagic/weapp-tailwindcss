@@ -72,6 +72,33 @@ Skill 会要求 AI 优先完成这些关键动作：
 - 给出“可复制命令 + 可复制配置 + 验证步骤”
 - 对 `space-y-*` / `space-x-*` 问题按固定优先级排查：先改结构，再评估 `virtualHost`，最后扩展 `cssChildCombinatorReplaceValue`
 
+## Skill 执行流程（更新）
+
+当前 `weapp-tailwindcss` Skill 会把请求先分流，再输出结果：
+
+1. 任务分流：新项目接入、存量迁移、问题排查、写法规范沉淀
+2. 信息收集最小集：
+   - 框架（`uni-app` / `taro` / `uni-app x` / 原生）
+   - 构建器（`vite` / `webpack5` / `webpack4`）
+   - 目标端（仅小程序 / 小程序 + `H5/App`）
+   - Tailwind 版本（v3/v4）与包管理器（重点 `pnpm@10+`）
+   - Node 版本（建议 `^20.19.0 || >=22.12.0`）
+3. 按任务读取对应参考文件：
+   - 集成/迁移：`references/integration-playbook.md`
+   - 排障：`references/troubleshooting-playbook.md`
+   - 写法规范：`references/tailwind-writing-best-practices.md`
+
+## Skill 输出标准（更新）
+
+Skill 输出会强制包含以下项目，避免只给概念不落地：
+
+1. 结论（适用框架、Tailwind 版本、目标端）
+2. 修改文件清单
+3. 可直接复制的配置片段
+4. 安装/运行命令（默认 `pnpm`）
+5. 验证步骤与预期结果
+6. 回滚方案（至少一条）
+
 ## 写法规范补充：space-y / space-x
 
 在小程序里，`space-y-*`、`space-x-*` 这类依赖子组合器的工具类，默认不是“全标签通用”，通常会按 `view + view`（含 `text`）处理。
@@ -113,10 +140,25 @@ Skill 会要求 AI 优先完成这些关键动作：
 请按 weapp-tailwindcss skill 给固定优先级排查方案，并给出最小改动配置。
 ```
 
+5. 要求带回滚方案
+
+```text
+这是一个 uni-app vite 项目，请按 weapp-tailwindcss skill 给我迁移方案。
+输出必须包含：改动文件、可复制配置、验证步骤、回滚方案。
+```
+
 ## Skill 文件位置
 
 ```text
 skills/weapp-tailwindcss/SKILL.md
+```
+
+## Skill 参考文件位置
+
+```text
+skills/weapp-tailwindcss/references/integration-playbook.md
+skills/weapp-tailwindcss/references/troubleshooting-playbook.md
+skills/weapp-tailwindcss/references/tailwind-writing-best-practices.md
 ```
 
 ## 常见问题

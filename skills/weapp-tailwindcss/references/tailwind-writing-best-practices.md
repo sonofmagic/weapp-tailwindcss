@@ -17,6 +17,7 @@
 - 必须动态时，使用“完整字面量枚举”，不要拼半截 token。
 - 动态组合统一经过 `cn`（`clsx + twMerge`）或 `cva/tv`。
 - 小程序项目默认保留 `postinstall: "weapp-tw patch"`。
+- `JS` 转译遵循 `classNameSet` 精确命中：不要依赖“看起来像 Tailwind”的启发式字符串拼接。
 
 ## 3. 推荐写法与反例
 
