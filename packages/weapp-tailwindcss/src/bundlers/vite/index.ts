@@ -184,11 +184,12 @@ export function UnifiedViteWeappTailwindcssPlugin(options: UserDefinedOptions = 
           await refreshRuntimeState(true)
         }
         if (typeof config.css.postcss === 'object' && Array.isArray(config.css.postcss.plugins)) {
-          const idx = config.css.postcss.plugins.findIndex(x =>
+          const postcssPlugins = config.css.postcss.plugins as unknown[]
+          const idx = postcssPlugins.findIndex(x =>
             // @ts-ignore
             x.postcssPlugin === 'postcss-html-transform')
           if (idx > -1) {
-            config.css.postcss.plugins.splice(idx, 1, postcssHtmlTransform())
+            postcssPlugins.splice(idx, 1, postcssHtmlTransform())
             debug('remove postcss-html-transform plugin from vite config')
           }
         }
