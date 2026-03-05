@@ -60,6 +60,13 @@ const navbar: NonNullable<ThemeConfig['navbar']> = {
     },
 
     {
+      href: 'https://atomgit.com/sonofmagic/weapp-tailwindcss',
+      label: 'AtomGit',
+      ariaLabel: 'AtomGit repository',
+      className: 'navbar__atomgit-link',
+      position: 'right',
+    },
+    {
       href: 'https://github.com/sonofmagic/weapp-tailwindcss',
       label: 'GitHub',
       ariaLabel: 'GitHub repository',
