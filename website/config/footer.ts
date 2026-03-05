@@ -41,9 +41,11 @@ const footerLinks: NonNullable<ThemeConfig['footer']>['links'] = [
   },
 ]
 
+const copyrightYears = '2021-present'
+
 export const footerCustomFields = {
   legal: {
-    href: '/docs/copyright',
+    href: '/copyright',
     label: 'Copyright',
     target: '_self',
   },
@@ -63,4 +65,5 @@ export const footerCustomFields = {
 export const footer: NonNullable<ThemeConfig['footer']> = {
   style: 'dark',
   links: footerLinks,
+  copyright: `<a href="/copyright" target="_self" rel="noopener noreferrer">Copyright</a> © ${copyrightYears} <a href="https://github.com/sonofmagic" target="_blank" rel="noopener noreferrer">sonofmagic</a>. Released under the <a href="https://github.com/sonofmagic/weapp-tailwindcss/blob/main/LICENSE" target="_blank" rel="noopener noreferrer">MIT License</a>.`,
 }
