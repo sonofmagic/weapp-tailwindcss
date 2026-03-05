@@ -129,6 +129,11 @@
     mask: none;
     transform: translateY(0);
     transform-origin: center;
+    filter: brightness(0);
+  }
+
+  [data-theme='dark'] .navbar-sidebar .navbar__atomgit-link::before {
+    filter: brightness(0) invert(1);
   }
 
   .navbar-sidebar .navbar__atomgit-link:hover,
