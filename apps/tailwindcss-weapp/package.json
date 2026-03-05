@@ -97,10 +97,10 @@
     "@iconify-json/ri": "^1.2.10",
     "@iconify-json/svg-spinners": "^1.2.2",
     "@vue/runtime-core": "^3.5.29",
-    "autoprefixer": "^10.4.24",
+    "autoprefixer": "^10.4.27",
     "indent-string": "^5.0.0",
-    "miniprogram-api-typings": "^5.0.1",
-    "postcss": "^8.5.3",
+    "miniprogram-api-typings": "^5.1.1",
+    "postcss": "^8.5.8",
     "prettier": "^3.8.1",
     "prettier-plugin-tailwindcss": "^0.7.2",
     "redent": "^4.0.0",
@@ -109,7 +109,7 @@
     "unplugin-auto-import": "^19.1.1",
     "vite": "5.2.8",
     "vue-eslint-parser": "^10.4.0",
-    "weapp-ide-cli": "^5.0.4",
+    "weapp-ide-cli": "^5.1.0",
     "weapp-tailwindcss": "workspace:*"
   }
 }

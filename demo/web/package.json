@@ -14,7 +14,7 @@
   },
   "dependencies": {
     "defu": "^6.1.4",
-    "postcss": "^8.4.38"
+    "postcss": "^8.5.8"
   },
   "devDependencies": {
     "@weapp-tailwindcss/merge-v3": "workspace:*",

@@ -22,7 +22,7 @@
     "@weapp-tailwindcss/variants-v3": "workspace:*",
     "autoprefixer": "catalog:autoprefixer10",
     "miniprogram-api-typings": "catalog:miniApiTypings",
-    "postcss": "^8.4.49",
+    "postcss": "^8.5.8",
     "postcss-rem-to-responsive-pixel": "catalog:postcssRem602",
     "postcss-rpx-transform": "catalog:postcssRpx",
     "tailwindcss": "catalog:tailwindcss3",

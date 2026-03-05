@@ -84,12 +84,12 @@
     "tailwindcss": "catalog:tailwindcss3",
     "tailwindcss-patch": "catalog:tailwindcssPatch",
     "tailwindcss-rem2px-preset": "catalog:tailwindcssRem",
-    "terser-webpack-plugin": "^5.3.16",
+    "terser-webpack-plugin": "^5.3.17",
     "typescript": "catalog:typescript59tilde",
     "weapp-ide-cli": "catalog:weappIdeCli",
     "weapp-tailwindcss": "workspace:*",
     "weapp-tailwindcss-children": "catalog:weappChildren",
-    "webpack": "^5.105.2",
+    "webpack": "^5.105.4",
     "webpack-chain": "^6.5.1"
   },
   "engines": {

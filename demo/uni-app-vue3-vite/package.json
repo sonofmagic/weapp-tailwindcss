@@ -100,7 +100,7 @@
     "domelementtype": "^2.3.0",
     "miniprogram-api-typings": "catalog:miniApiTypings",
     "path-browserify": "^1.0.1",
-    "postcss": "^8.4.35",
+    "postcss": "^8.5.8",
     "postcss-rem-to-responsive-pixel": "catalog:postcssRem602",
     "postcss-rpx-transform": "catalog:postcssRpx",
     "sass": "catalog:sass195",

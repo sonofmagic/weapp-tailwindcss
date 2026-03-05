@@ -106,7 +106,7 @@
     "copy-webpack-plugin": "^13.0.1",
     "cross-env": "^7.0.2",
     "jest": "^25.4.0",
-    "postcss": "^8.5.3",
+    "postcss": "^8.5.8",
     "postcss-comment": "catalog:postcssComment2",
     "regenerator-transform": "^0.15.1",
     "tailwindcss": "catalog:tailwindcss4",

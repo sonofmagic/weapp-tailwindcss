@@ -11,7 +11,7 @@ packages:
 
 catalogs:
   autoprefixer10:
-    autoprefixer: ^10.4.24
+    autoprefixer: ^10.4.27
   babelCore7285:
     '@babel/core': ^7.29.0
   babelPresetReact7285:
@@ -27,9 +27,9 @@ catalogs:
   lucideVueNext0555:
     lucide-vue-next: ^0.575.0
   miniApiTypings:
-    miniprogram-api-typings: ^5.0.1
+    miniprogram-api-typings: ^5.1.1
   postcss85:
-    postcss: ^8.5.6
+    postcss: ^8.5.8
   postcssComment2:
     postcss-comment: ^2.0.0
   postcssRem602:
@@ -55,7 +55,7 @@ catalogs:
   sass195:
     sass: ^1.97.3
   stylelint1625:
-    stylelint: ^17.3.0
+    stylelint: ^17.4.0
   tailwindMerge:
     tailwind-merge: ^3.5.0
   tailwindMerge2:
@@ -96,7 +96,7 @@ catalogs:
     babel-preset-taro: ^4.1.11
     eslint-config-taro: ^4.1.11
   typesNode2410:
-    '@types/node': ^24.10.13
+    '@types/node': ^24.11.0
   typescript59:
     typescript: ^5.9.3
   typescript59tilde:
@@ -122,11 +122,11 @@ catalogs:
   weappChildren:
     weapp-tailwindcss-children: ^0.1.0
   weappIdeCli:
-    weapp-ide-cli: ^5.0.4
+    weapp-ide-cli: ^5.1.0
   weappVite:
-    weapp-vite: ^6.6.10
+    weapp-vite: ^6.7.3
   wrangler4530:
-    wrangler: ^4.68.1
+    wrangler: ^4.70.0
 
 onlyBuiltDependencies:
   - '@tailwindcss/oxide'
