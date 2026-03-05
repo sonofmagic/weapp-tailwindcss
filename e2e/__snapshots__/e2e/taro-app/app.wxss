@@ -388,7 +388,6 @@ text,
   background-image: url(https://yyy.com/xx.webp);
 }
 .bg-gradient-to-r {
-  background-image: -webkit-gradient(linear, left top, right top, from(var(--tw-gradient-stops)));
   background-image: -webkit-linear-gradient(left, var(--tw-gradient-stops));
   background-image: linear-gradient(to right, var(--tw-gradient-stops));
 }

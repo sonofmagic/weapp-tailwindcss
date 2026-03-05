@@ -1,6 +1,6 @@
 {
   "version": "1.0.0",
-  "generatedAt": "2026-02-26T06:59:45.509Z",
+  "generatedAt": "2026-03-05T13:28:28.390Z",
   "siteUrl": "https://tw.icebreaker.top",
   "totals": {
     "all": 168,
@@ -30,10 +30,12 @@
       "headings": [
         "**总结**",
         "**uni-app 快速集成示例**",
+        "# **1. 安装依赖**",
+        "# **2. 配置 `vite.config.ts`**",
+        "# **3. 添加样式**",
         "**遇到的问题以及解决方案**",
-        "**开发心得**",
-        "最后一点碎碎念",
-        "**参考链接**"
+        "# **1. `tailwindcss@4` 的样式兼容性问题**",
+        "# **2. `tailwind-merge` 样式合并问题**"
       ],
       "updatedAt": "2025-03-01T00:00:00.000Z",
       "source": "blog/2025/3/v4-release.md"
@@ -60,11 +62,12 @@
       "headings": [
         "前言",
         "快速集成",
-        "如何运行",
-        "常见问题",
-        "尾言",
-        "配置好的模板",
-        "参考文档"
+        "# 0. 创建项目",
+        "# 1. 安装并引入 tailwindcss@3",
+        "# 2. 安装 weapp-tailwindcss",
+        "# 3. uni-app x 中注册 weapp-tailwindcss",
+        "## 3.0. 创建辅助函数",
+        "## 3.1. 配置 `Vite`"
       ],
       "updatedAt": "2025-08-01T00:00:00.000Z",
       "source": "blog/2025/8/v4.2-release.mdx"
@@ -90,7 +93,9 @@
       ],
       "headings": [
         "CSS变量计算模式",
-        "新增配置项"
+        "新增配置项",
+        "# px2rpx",
+        "# logLevel"
       ],
       "updatedAt": "2025-09-13T00:00:00.000Z",
       "source": "blog/2025/9/v4.3-release.md"
@@ -118,12 +123,13 @@
       ],
       "headings": [
         "巨大的阻碍",
+        "# 为什么无法在小程序里使用？",
         "1. tailwind-merge plugin / createTailwindMerge",
         "2. 编译期豁免",
+        "# 新的挑战",
+        "# 然而理想很丰满，现实很骨感",
         "为什么要重写 merge？",
-        "新版 merge 的核心思路",
-        "发布 4.7.x 版本",
-        "源代码附录"
+        "新版 merge 的核心思路"
       ],
       "updatedAt": "2025-11-02T00:00:00.000Z",
       "source": "blog/2025/11/v4.7.0-merge-runtime.mdx"
@@ -155,7 +161,11 @@
         "提升效率",
         "AI 学习中心：Skill 快速安装",
         "如何参与贡献",
-        "示例"
+        "# 前置环境",
+        "# 开始",
+        "示例",
+        "# 网站",
+        "# 上传图片"
       ],
       "updatedAt": null,
       "source": "docs/ai/index.md"
@@ -186,13 +196,13 @@
       ],
       "headings": [
         "0. 一页结论（先做决策，再做对比）",
+        "# 0.1 决策最短路径（建议按这个顺序拍板）",
+        "# 0.2 快速分流（用一句话选出“主力方案”）",
+        "# 0.3 默认推荐（适用于大多数公司）",
         "1. 我们要解决什么问题（落地目标与边界）",
-        "2. 选型原则（先解决网络与合规）",
-        "3. 方案概览（我们讨论的 4 种可落地方案）",
-        "4. 价格与额度（只保留对企业/大多数人有用的档位）",
-        "5. 企业级座席设计（怎么买才不浪费）",
-        "6. 落地路线图（公司多团队循序渐进）",
-        "7. “落地到每个项目”怎么做（仓库接入规范）"
+        "# 1.1 业务目标（建议写进 OKR）",
+        "# 1.2 范围边界（避免项目失控）",
+        "# 1.3 术语（让跨团队对齐）"
       ],
       "updatedAt": null,
       "source": "docs/ai/ai-coding-deployment-guide.md"
@@ -224,9 +234,12 @@
       "headings": [
         "概述",
         "国内直接可用方案",
-        "需要美国节点的方案",
-        "五大方案对比总结",
-        "附录：Anthropic 公司股东与融资信息"
+        "# 方案一：AWS Kiro ✅ 国内直接可用",
+        "# 选择理由",
+        "# ⚠️ 中国用户注意事项",
+        "# 个人订阅方案",
+        "# 团队订阅方案",
+        "# 技术特点"
       ],
       "updatedAt": null,
       "source": "docs/ai/ai-coding-three-solutions.md"
@@ -296,11 +309,11 @@
         "一、方案概述",
         "二、详细对比文档",
         "三、核心平台特点总结",
-        "三、选型建议",
-        "订阅计划",
-        "IDE/插件",
-        "Coding Plan",
-        "Kimi"
+        "# 2.1 国际主流 AI 平台",
+        "## **ChatGPT (OpenAI)**",
+        "## **Claude (Anthropic)**",
+        "## **Gemini Pro 3 / Flash (Google)**",
+        "# 2.2 国产 Coding Plan 平台"
       ],
       "updatedAt": null,
       "source": "docs/ai/ai-programming-plan.md"
@@ -333,12 +346,12 @@
       "headings": [
         "概述",
         "核心概念",
+        "# 1. Agent 的定义",
+        "# 2. Agent 与 Chatbot 的区别",
         "Agent 的架构",
-        "Agent 的类型",
-        "主流 Agent 框架",
-        "Agent 的设计模式",
-        "Agent 的最佳实践",
-        "Agent 的应用场景"
+        "# 基本架构",
+        "# 核心组件",
+        "## 1. 规划模块 (Planning)"
       ],
       "updatedAt": null,
       "source": "docs/ai/basics/agent.md"
@@ -372,12 +385,12 @@
       "headings": [
         "概述",
         "为什么需要 AI 沙箱",
+        "# 1. 安全风险",
+        "# 2. 典型场景",
         "沙箱的类型",
-        "主流 AI 沙箱方案",
-        "AI 工具中的沙箱使用",
-        "构建自己的 AI 沙箱",
-        "沙箱的最佳实践",
-        "沙箱方案对比"
+        "# 1. 进程级沙箱",
+        "# 2. 容器级沙箱",
+        "# 3. 虚拟机级沙箱"
       ],
       "updatedAt": null,
       "source": "docs/ai/basics/ai-sandbox.md"
@@ -411,12 +424,12 @@
       "headings": [
         "概述",
         "核心概念",
+        "# 1. 上下文窗口的组成",
+        "# 2. 输入 vs 输出窗口",
         "主流模型的上下文窗口",
-        "上下文窗口的演进",
-        "上下文窗口的作用",
-        "上下文管理技术",
-        "超长上下文技术",
-        "上下文窗口的最佳实践"
+        "# 超长上下文模型 (>500K)",
+        "# 标准上下文模型 (100K-200K)",
+        "# 中等上下文模型 (32K-100K)"
       ],
       "updatedAt": null,
       "source": "docs/ai/basics/context-window.md"
@@ -450,12 +463,12 @@
       "headings": [
         "概述",
         "llms.txt 的作用",
+        "# 1. 为 AI 提供项目上下文",
+        "# 2. 与 Claude Code CLAUDE.md 的关系",
+        "# 3. 标准 vs 自定义",
         "llms.txt 的标准格式",
-        "项目概述",
-        "技术栈",
-        "项目结构",
-        "快速开始",
-        "编码规范"
+        "# 推荐结构",
+        "项目概述"
       ],
       "updatedAt": null,
       "source": "docs/ai/basics/llms-txt.md"
@@ -489,12 +502,12 @@
       "headings": [
         "概述",
         "核心概念",
+        "# 1. MCP 的定义",
+        "# 2. 架构组件",
         "MCP 的核心能力",
-        "MCP 传输层",
-        "使用场景",
-        "MCP 服务端示例",
-        "MCP 的优势",
-        "MCP 与其他方案的对比"
+        "# 1. 资源 (Resources)",
+        "# 2. 提示词模板 (Prompts)",
+        "# 3. 工具 (Tools)"
       ],
       "updatedAt": null,
       "source": "docs/ai/basics/mcp.md"
@@ -527,12 +540,12 @@
       "headings": [
         "概述",
         "Power 的定义",
+        "# 1. 基本概念",
+        "# 2. Power 的维度",
         "Power 的级别",
-        "Power 的评估",
-        "Power 评估卡",
-        "Power 在不同工具中的体现",
-        "提升 Power 的技巧",
-        "功能：用户管理"
+        "# Level 0: 无规范能力",
+        "# Level 1: 基础规范理解",
+        "# Level 2: 中级规范能力"
       ],
       "updatedAt": null,
       "source": "docs/ai/basics/power.md"
@@ -566,12 +579,12 @@
       "headings": [
         "概述",
         "什么是提示词",
+        "# 1. 基本定义",
+        "# 2. 提示词的组成部分",
         "好的提示词原则",
+        "# CREATE 框架",
         "好的提示词 vs 差的提示词",
-        "高级提示词技巧",
-        "问题描述",
-        "根本原因",
-        "解决方案"
+        "# 示例 1：代码生成"
       ],
       "updatedAt": null,
       "source": "docs/ai/basics/prompt-engineering.md"
@@ -604,12 +617,12 @@
       "headings": [
         "概述",
         "RAG 的核心概念",
+        "# 1. 为什么需要 RAG",
+        "# 2. RAG vs Fine-tuning",
         "RAG 的工作原理",
-        "RAG 的实现方式",
-        "RAG 的优化技术",
-        "RAG 的应用场景",
-        "RAG 的评估指标",
-        "RAG 的常见问题"
+        "# 1. 基本流程",
+        "# 2. 关键组件",
+        "## 向量嵌入 (Embedding)"
       ],
       "updatedAt": null,
       "source": "docs/ai/basics/rag.md"
@@ -642,11 +655,12 @@
       "headings": [
         "概述",
         "weapp-tailwindcss Skill 安装",
+        "# 1. 从 GitHub 安装（推荐）",
+        "# 2. 查看仓库可安装 Skill 列表",
+        "# 3. 本地开发时安装当前目录 Skill",
         "装完后能做什么",
-        "写法规范补充：space-y / space-x",
-        "推荐提示词",
-        "Skill 文件位置",
-        "常见问题"
+        "Skill 执行流程（更新）",
+        "Skill 输出标准（更新）"
       ],
       "updatedAt": null,
       "source": "docs/ai/basics/skill.md"
@@ -716,12 +730,12 @@
       "headings": [
         "概述",
         "核心概念",
+        "# 1. 什么是 Spec（规范）",
         "功能描述",
         "输入",
         "输出",
         "验证规则",
-        "API 端点",
-        "Spec-Driven Development 的流程"
+        "API 端点"
       ],
       "updatedAt": null,
       "source": "docs/ai/basics/spec-driven-development.md"
@@ -754,12 +768,12 @@
       "headings": [
         "概述",
         "Token 的本质",
+        "# 1. 什么是 Token",
+        "# 2. 分词 (Tokenization)",
+        "# 3. 字节对编码 (BPE)",
         "Token 的计数规则",
-        "各模型的 Token 限制",
-        "Token 实用计算",
-        "Token 使用优化",
-        "Token 成本计算",
-        "Token 常见问题"
+        "# 1. 英文文本",
+        "# 2. 中文文本"
       ],
       "updatedAt": null,
       "source": "docs/ai/basics/token.md"
@@ -793,12 +807,12 @@
       "headings": [
         "概述",
         "核心概念",
+        "# 1. 什么是 Vibe Coding",
+        "# 2. Vibe Coding vs 传统编程",
         "Vibe Coding 的风格",
-        "Vibe Coding 的场景",
-        "Vibe Coding + AI",
-        "Vibe Coding 的技巧",
-        "Vibe Coding vs Spec-Driven Development",
-        "Vibe Coding 的最佳实践"
+        "# 1. 探索式编程",
+        "# 2. 对话式编程",
+        "# 3. 试错式编程"
       ],
       "updatedAt": null,
       "source": "docs/ai/basics/vibe-coding.md"
@@ -830,12 +844,12 @@
       "headings": [
         "执行摘要",
         "一、三大模型核心对比",
+        "# 1.1 基础信息对比",
+        "# 1.2 核心能力雷达图",
         "二、Claude Opus 4.5：代码质量之王",
-        "三、GPT-5.2：数学推理之王",
-        "四、Gemini 3 Pro：长上下文和多模态之王",
-        "五、三大模型深度对比",
-        "六、场景化选型建议",
-        "七、混合策略：多模型协同"
+        "# 2.1 为什么 Claude Opus 4.5 代码质量第一？",
+        "## 权威排名",
+        "## 核心优势"
       ],
       "updatedAt": null,
       "source": "docs/ai/international-ai-models-comparison.md"
@@ -901,12 +915,12 @@
       "headings": [
         "执行摘要",
         "一、为什么选择 GLM-4.7？",
-        "二、GLM-4.7 + Claude Code CLI：最佳工程化组合",
-        "三、产品对比分析",
-        "四、GLM-4.7 详细成本分析",
-        "五、为什么选择 CLI 而不是编辑器插件？",
-        "六、实施建议",
-        "七、成本效益分析"
+        "# 1.0 模型质量的重要性",
+        "## 为什么模型好坏如此关键？",
+        "## 真实案例对比",
+        "# 1.1 用新不用旧：模型迭代的核心原则",
+        "# 1.2 GLM-4.7 核心优势",
+        "## 技术优势"
       ],
       "updatedAt": null,
       "source": "docs/ai/qoder-vs-glm47-cursor-claude-comparison.md"
@@ -969,7 +983,11 @@
         "Classes",
         "Interfaces",
         "Type Aliases",
-        "Functions"
+        "# AppType",
+        "## Defined in",
+        "# CreateJsHandlerOptions",
+        "## Defined in",
+        "# CssPreflightOptions"
       ],
       "updatedAt": null,
       "source": "docs/api-v2/index.md"
@@ -1002,8 +1020,12 @@
       "headings": [
         "Implements",
         "Constructors",
+        "# constructor",
+        "## Parameters",
+        "## Returns",
+        "## Defined in",
         "Properties",
-        "Methods"
+        "# appType"
       ],
       "updatedAt": null,
       "source": "docs/api-v2/classes/UnifiedWebpackPluginV5.md"
@@ -1034,7 +1056,9 @@
         "mpx"
       ],
       "headings": [
-        "Properties"
+        "Properties",
+        "# allowDoubleQuotes",
+        "## Defined in"
       ],
       "updatedAt": null,
       "source": "docs/api-v2/interfaces/IArbitraryValues.md"
@@ -1066,7 +1090,13 @@
       ],
       "headings": [
         "Implemented by",
-        "Properties"
+        "Properties",
+        "# appType",
+        "## Defined in",
+        "# apply",
+        "## Type declaration",
+        "### Parameters",
+        "### Returns"
       ],
       "updatedAt": null,
       "source": "docs/api-v2/interfaces/IBaseWebpackPlugin.md"
@@ -1098,7 +1128,11 @@
       ],
       "headings": [
         "Hierarchy",
-        "Properties"
+        "Properties",
+        "# escapeMap",
+        "## Defined in",
+        "# keepEOL",
+        "## Defined in"
       ],
       "updatedAt": null,
       "source": "docs/api-v2/interfaces/ICommonReplaceOptions.md"
@@ -1129,7 +1163,14 @@
         "mpx"
       ],
       "headings": [
-        "Properties"
+        "Properties",
+        "# destPath",
+        "## Defined in",
+        "# gteVersion",
+        "## Defined in",
+        "# lengthUnitsFilePath",
+        "## Defined in",
+        "# overwrite"
       ],
       "updatedAt": null,
       "source": "docs/api-v2/interfaces/ILengthUnitsPatchDangerousOptions.md"
@@ -1160,7 +1201,14 @@
         "mpx"
       ],
       "headings": [
-        "Properties"
+        "Properties",
+        "# basedir",
+        "## Defined in",
+        "# dangerousOptions",
+        "## Defined in",
+        "# paths",
+        "## Defined in",
+        "# units"
       ],
       "updatedAt": null,
       "source": "docs/api-v2/interfaces/ILengthUnitsPatchOptions.md"
@@ -1191,7 +1239,9 @@
         "mpx"
       ],
       "headings": [
-        "Properties"
+        "Properties",
+        "# escapeMap",
+        "## Defined in"
       ],
       "updatedAt": null,
       "source": "docs/api-v2/interfaces/InternalCssSelectorReplacerOptions.md"
@@ -1222,7 +1272,13 @@
         "mpx"
       ],
       "headings": [
-        "Properties"
+        "Properties",
+        "# dataTypes",
+        "## Defined in",
+        "# plugin",
+        "## Defined in",
+        "# processTailwindFeatures",
+        "## Defined in"
       ],
       "updatedAt": null,
       "source": "docs/api-v2/interfaces/InternalPatchResult.md"
@@ -1253,7 +1309,11 @@
         "mpx"
       ],
       "headings": [
-        "Properties"
+        "Properties",
+        "# prop",
+        "## Defined in",
+        "# value",
+        "## Defined in"
       ],
       "updatedAt": null,
       "source": "docs/api-v2/interfaces/IPropValue.md"
@@ -1285,7 +1345,13 @@
       ],
       "headings": [
         "Hierarchy",
-        "Properties"
+        "Properties",
+        "# customAttributesEntities",
+        "## Defined in",
+        "# disabledDefaultTemplateHandler",
+        "## Defined in",
+        "# escapeMap",
+        "## Overrides"
       ],
       "updatedAt": null,
       "source": "docs/api-v2/interfaces/ITemplateHandlerOptions.md"
@@ -1316,7 +1382,14 @@
         "mpx"
       ],
       "headings": [
-        "Properties"
+        "Properties",
+        "# end",
+        "## Defined in",
+        "# raw",
+        "## Defined in",
+        "# source",
+        "## Defined in",
+        "# start"
       ],
       "updatedAt": null,
       "source": "docs/api-v2/interfaces/RawSource.md"
@@ -1347,7 +1420,14 @@
         "mpx"
       ],
       "headings": [
-        "Properties"
+        "Properties",
+        "# appType",
+        "## Defined in",
+        "# arbitraryValues",
+        "## Defined in",
+        "# cssChildCombinatorReplaceValue",
+        "## Defined in",
+        "# cssMatcher"
       ],
       "updatedAt": null,
       "source": "docs/api-v2/interfaces/UserDefinedOptions.md"
@@ -1378,7 +1458,11 @@
       "headings": [
         "添加于",
         "备注",
-        "属性"
+        "属性",
+        "# plugin?",
+        "## 默认值",
+        "# rewriteCssImports?",
+        "## 默认值"
       ],
       "updatedAt": null,
       "source": "docs/api/interfaces/DisabledOptions.md"
@@ -1407,7 +1491,14 @@
         "mpx"
       ],
       "headings": [
-        "属性"
+        "属性",
+        "# cwd?",
+        "# overwrite?",
+        "# tailwind?",
+        "# features?",
+        "# filter()?",
+        "## 参数",
+        "### className"
       ],
       "updatedAt": null,
       "source": "docs/api/interfaces/TailwindcssPatchOptions.md"
@@ -1468,7 +1559,12 @@
       "headings": [
         "配置一览",
         "常用配置模板",
-        "详细说明"
+        "详细说明",
+        "# appType",
+        "## 备注",
+        "## 默认值",
+        "## 示例",
+        "# arbitraryValues"
       ],
       "updatedAt": null,
       "source": "docs/api/options/general.mdx"
@@ -1500,7 +1596,12 @@
       "headings": [
         "配置一览",
         "常用配置模板",
-        "详细说明"
+        "详细说明",
+        "# cssCalc",
+        "## 备注",
+        "## 默认值",
+        "## 示例",
+        "# cssEntries"
       ],
       "updatedAt": null,
       "source": "docs/api/options/important.mdx"
@@ -1531,7 +1632,13 @@
       ],
       "headings": [
         "配置一览",
-        "详细说明"
+        "详细说明",
+        "# onEnd",
+        "## 备注",
+        "## 默认值",
+        "## 示例",
+        "# onLoad",
+        "## 备注"
       ],
       "updatedAt": null,
       "source": "docs/api/options/lifecycle.mdx"
@@ -1562,7 +1669,13 @@
       ],
       "headings": [
         "配置一览",
-        "详细说明"
+        "详细说明",
+        "# cssMatcher",
+        "## 备注",
+        "## 默认值",
+        "## 示例",
+        "# htmlMatcher",
+        "## 备注"
       ],
       "updatedAt": null,
       "source": "docs/api/options/matchers.mdx"
@@ -1619,11 +1732,11 @@
         "1. `@property` 的基本作用",
         "2. 为什么它能优化性能",
         "3. 示例场景",
+        "# 动画数值",
+        "# 渐变颜色",
+        "# 响应式尺寸",
         "4. 小结",
-        "1. **防止变量未定义时的 FOUC（闪烁）**",
-        "2. **保证变量输入合法性**",
-        "3. **在继承/不继承上的精细控制**",
-        "4. **与容器查询（Container Query）结合**"
+        "1. **防止变量未定义时的 FOUC（闪烁）**"
       ],
       "updatedAt": null,
       "source": "docs/at-property.md"
@@ -1653,9 +1766,13 @@
       ],
       "headings": [
         "插件",
+        "# [@weapp-tailwindcss/typography](./community/typography)",
+        "# [开箱即用的小程序icon解决方案](./icons)",
+        "# [uni-app 条件编译语法糖插件](./quick-start/uni-app-css-macro)",
         "模板",
+        "# [各个框架的模板](./community/templates)",
         "解决方案",
-        "社群"
+        "# [小程序多主题方案](./quick-start/apply-themes)"
       ],
       "updatedAt": null,
       "source": "docs/community.md"
@@ -1815,8 +1932,12 @@
       "headings": [
         "安装",
         "cva()",
+        "# Live Demo",
         "tailwind-variants",
-        "Tailwind v3 项目"
+        "# 组合变体",
+        "# cn / cnBase",
+        "# 多端项目",
+        "# Live Demo"
       ],
       "updatedAt": null,
       "source": "docs/community/merge/cva-and-variants.mdx"
@@ -1848,6 +1969,7 @@
       ],
       "headings": [
         "与构建工具协作",
+        "# 保留关键函数名",
         "运行时包选择",
         "与 weapp-tailwindcss 插件联动",
         "rpx 长度与任意值",
@@ -1993,6 +2115,8 @@
       "headings": [
         "安装",
         "核心 API",
+        "# 基础示例",
+        "# 扩展合并规则",
         "小程序用法",
         "Web 用法（关闭转义）",
         "Demo：按钮类名合并",
@@ -2065,8 +2189,13 @@
       ],
       "headings": [
         "Demo 1：uni-app + Web（Vue + TS）",
+        "# 共享变体（`src/ui/button.variants.ts`）",
+        "# 小程序 / H5 共用页面（`src/pages/index/index.vue`）",
+        "# 注意事项",
         "Demo 2：Taro + Web（React + TSX）",
-        "扩展方向"
+        "# 共享变体（`src/ui/card.variants.ts`）",
+        "# 小程序页面（`src/pages/index/index.tsx`）",
+        "# Web 组件（`src/components/Card.web.tsx`）"
       ],
       "updatedAt": null,
       "source": "docs/community/packages-runtime/multi-platform-demos.mdx"
@@ -2234,10 +2363,13 @@
       ],
       "headings": [
         "uni-app",
+        "# 使用 `uni-app cli` 进行构建 `vscode` 开发",
+        "# 使用 `hbuilderx` 进行构建和开发",
         "tarojs",
+        "# 使用 `tarojs` 进行构建 `vscode` 开发",
         "native",
-        "`tailwindcss@4`",
-        "更多模板"
+        "# 原生小程序开发模板",
+        "## 下方的技术架构过于老旧，不推荐"
       ],
       "updatedAt": null,
       "source": "docs/community/templates.mdx"
@@ -2268,9 +2400,12 @@
       "headings": [
         "介绍",
         "如何使用?",
-        "配置项",
-        "原理解释",
-        "Demo"
+        "# 安装",
+        "# 注册",
+        "## 创建组件",
+        "## 创建独立 tailwindcss 上下文",
+        "## 指定全局样式配置文件",
+        "配置项"
       ],
       "updatedAt": null,
       "source": "docs/community/typography.md"
@@ -2279,13 +2414,16 @@
       "kind": "doc",
       "id": "doc:copyright",
       "title": "版权信息",
-      "description": "weapp-tailwindcss 项目版权与资源归属说明，包含 logo 与文档内容的使用范围。",
-      "summary": "weapp-tailwindcss 项目版权与资源归属说明，包含 logo 与文档内容的使用范围。",
+      "description": "weapp-tailwindcss 项目版权与证书信息，包含 G-Star 认证与软件著作权证书展示。",
+      "summary": "weapp-tailwindcss 项目版权与证书信息，包含 G-Star 认证与软件著作权证书展示。",
       "url": "/docs/copyright",
       "canonical": "https://tw.icebreaker.top/docs/copyright",
       "keywords": [
         "版权信息",
         "copyright",
+        "证书",
+        "G-Star",
+        "软件著作权",
         "版权声明",
         "资源归属",
         "weapp-tailwindcss",
@@ -2297,7 +2435,10 @@
         "rax",
         "mpx"
       ],
-      "headings": [],
+      "headings": [
+        "AtomGit G-Star 项目毕业认证",
+        "软件著作权登记证书"
+      ],
       "updatedAt": null,
       "source": "docs/copyright.md"
     },
@@ -2352,8 +2493,12 @@
       "headings": [
         "如何本项目做贡献？",
         "贡献指南",
-        "如何本地调试",
-        "源码映射调试"
+        "# 文档贡献",
+        "## 目录介绍",
+        "# 代码贡献",
+        "## 根目录介绍",
+        "## 使用技术介绍",
+        "# src 源代码介绍"
       ],
       "updatedAt": null,
       "source": "docs/how-to-contribute.md"
@@ -2413,8 +2558,10 @@
         "环境要求",
         "Why `weapp-tailwindcss`?",
         "快速开始 :rocket:",
-        "演示视频",
-        "另外特别感谢 [舜岳同学](https://space.bilibili.com/475498258) 为 `weapp-tailwindcss` 制作的视频"
+        "# 🔥 Tailwind CSS @3.x",
+        "## 👉 [1. 框架类( `taro` , `uni-app` , `mpx` )小程序开发的快速开始](/docs/quick-start/install)",
+        "## 👉 [2. 原生小程序开发的快速开始](/docs/quick-start/native/install)",
+        "## 👉 [3. 可直接使用的各个框架的小程序模板](/docs/community/templates)"
       ],
       "updatedAt": null,
       "source": "docs/intro.md"
@@ -2680,7 +2827,9 @@
         "rax"
       ],
       "headings": [
-        "解决方案"
+        "解决方案",
+        "# tailwindcss@3",
+        "# tailwindcss@4"
       ],
       "updatedAt": null,
       "source": "docs/issues/js-string-invalid.md"
@@ -2772,7 +2921,10 @@
         "创建项目",
         "安装 gulp 及插件",
         "安装与配置 tailwindcss",
-        "配置 vscode 插件"
+        "配置 vscode 插件",
+        "# Prettier - Code formatter",
+        "# Tailwind CSS IntelliSense",
+        "# Gulp Tasks"
       ],
       "updatedAt": null,
       "source": "docs/issues/native-toutiao.md"
@@ -2935,6 +3087,8 @@
       ],
       "headings": [
         "解决方案",
+        "# 修改Taroify引入方式",
+        "# 修改引入样式顺序",
         "参见"
       ],
       "updatedAt": null,
@@ -3057,7 +3211,13 @@
         "mpx"
       ],
       "headings": [
-        "配置项改动"
+        "配置项改动",
+        "# 删除的配置项",
+        "# 增加的配置项",
+        "## 为什么默认不开启？",
+        "# 增强的配置项",
+        "# 修改的默认值",
+        "# 现在选项合并，数组默认行为变为覆盖，原先是合并"
       ],
       "updatedAt": null,
       "source": "docs/migrations/v2.md"
@@ -3118,8 +3278,12 @@
       ],
       "headings": [
         "何时开启插件",
+        "# uni-app 示例",
+        "# Taro 示例",
         "uni-app 打包到 h5 svg icon 偏移问题",
         "uni-app 打包安卓 `rgb()` 颜色失效问题",
+        "# 安装 `postcss-preset-env`",
+        "# 设置 `postcss.config.js`",
         "CSS变量计算模式"
       ],
       "updatedAt": null,
@@ -3304,8 +3468,8 @@
         "为什么需要 weapp-tailwindcss ？",
         "核心原理",
         "`wxml`",
-        "js / wxs",
-        "wxss"
+        "# 为什么是 `htmlparser2`",
+        "# 如何使用 `htmlparser2`"
       ],
       "updatedAt": null,
       "source": "docs/principle/index.md"
@@ -3330,7 +3494,15 @@
         "rax",
         "mpx"
       ],
-      "headings": [],
+      "headings": [
+        "# CLI 工具",
+        "# 模板 template",
+        "## 如何选择？",
+        "## 使用`uni-app cli`进行构建 `vscode`开发",
+        "## 使用`hbuilderx` 进行构建和开发",
+        "# tailwindcss plugin",
+        "# tailwindcss preset"
+      ],
       "updatedAt": null,
       "source": "docs/projects/index.md"
     },
@@ -3361,6 +3533,9 @@
       "headings": [
         "自由的 web 方案",
         "方案的设计和实现",
+        "# 1. 页面属性配置节点 page-meta",
+        "# 2. 自己实现 css 变量切换组件",
+        "## 实现",
         "动态调整主题参考链接",
         "参考示例"
       ],
@@ -3394,9 +3569,12 @@
       "headings": [
         "前言",
         "构建组件",
+        "# 核心思想",
+        "# 可行方案",
+        "# 不可行方案",
         "可行方案详解",
-        "构建demo链接",
-        "相关 issues"
+        "# custom css selector + Functions & Directives",
+        "# add prefix"
       ],
       "updatedAt": null,
       "source": "docs/quick-start/build-or-import-outside-components.md"
@@ -3429,6 +3607,10 @@
       "headings": [
         "rem 转 rpx (或 px)",
         "px 转 rpx",
+        "# 4.3.0 以后",
+        "# 4.3.0 以前",
+        "## 安装插件",
+        "## 注册到 postcss 配置中",
         "多单位转 px（unitsToPx）"
       ],
       "updatedAt": null,
@@ -3492,6 +3674,8 @@
       ],
       "headings": [
         "默认使用方式",
+        "# tailwind.config.js",
+        "# vite.config.[tj]s",
         "Hbuilderx 与 uni-app cli 环境汇总",
         "hbuilderx vue2 webpack4 postcss7 版本模板",
         "Hack hbuilderx vue2 Way",
@@ -3526,6 +3710,8 @@
       ],
       "headings": [
         "引入 Tailwind CSS 样式",
+        "# Tailwind CSS v3.x",
+        "# Tailwind CSS v4.x",
         "mpx 中的 vscode tailwindcss 智能提示缺失设置"
       ],
       "updatedAt": null,
@@ -3620,7 +3806,9 @@
       ],
       "headings": [
         "使用 Webpack 作为打包工具",
+        "# 注册插件",
         "使用 Vite 作为打包工具",
+        "# 在 `config/index.ts` 中注册插件",
         "视频演示"
       ],
       "updatedAt": null,
@@ -3752,8 +3940,10 @@
         "创建与配置示例",
         "单 `tailwindcss` 上下文的方案（不完美不推荐）",
         "多 `tailwindcss` 上下文的方案",
-        "尾言",
-        "参考示例"
+        "# 创建多个 `tailwind.config.js`",
+        "## 独立分包的上下文配置",
+        "## 主包以及相互依赖的子包的上下文配置",
+        "# `postcss.config.js` 配置"
       ],
       "updatedAt": null,
       "source": "docs/quick-start/independent-pkg.md"
@@ -3788,6 +3978,8 @@
         "2. 在项目目录下创建 `postcss.config.js` 并注册 `tailwindcss`",
         "3. 配置 `tailwind.config.js`",
         "4. 引入 `tailwindcss`",
+        "# uni-app",
+        "# Taro",
         "参考链接"
       ],
       "updatedAt": null,
@@ -3820,8 +4012,13 @@
       ],
       "headings": [
         "VS Code",
-        "WebStorm",
-        "HbuilderX"
+        "# 让 `Tailwind CSS IntelliSense` 识别 weapp-tailwindcss v4",
+        "# wxml 的智能提示",
+        "## 全局设置",
+        "## 工作区设置",
+        "# js,jsx,ts,tsx,vue...这类文件的智能提示",
+        "## 场景",
+        "## 解决方案"
       ],
       "updatedAt": null,
       "source": "docs/quick-start/intelliSense.md"
@@ -3854,6 +4051,7 @@
       ],
       "headings": [
         "前言",
+        "# 运行环境",
         "创建项目",
         "0. 初始化 `package.json`",
         "1. 使用包管理器安装 `tailwindcss`",
@@ -3933,9 +4131,11 @@
         "为什么要配置 rem 转 rpx 呢？",
         "三种转化方式(根据你的需求选其一即可)",
         "插件内置 rem 转 rpx 功能 (推荐)",
+        "# 优势",
         "外置 postcss 插件",
+        "# 优势",
         "外置 tailwindcss 插件",
-        "px 转 rpx"
+        "# 优势"
       ],
       "updatedAt": null,
       "source": "docs/quick-start/rem2rpx.md"
@@ -3964,7 +4164,10 @@
         "rax",
         "mpx"
       ],
-      "headings": [],
+      "headings": [
+        "# 1. 给当前你本地的 `tailwindcss` 打上支持 `rpx` 的补丁 (小程序特有单位，非 `web` 标准)。",
+        "# 2. 暴露 `tailwindcss` 运行上下文给 `webpack`/`vite`/`glup` 插件。"
+      ],
       "updatedAt": null,
       "source": "docs/quick-start/this-plugin.mdx"
     },
@@ -3995,8 +4198,12 @@
       "headings": [
         "这是什么玩意?",
         "如何使用",
-        "配置项",
-        "IDE智能提示"
+        "# tailwind.config.js 注册",
+        "## Tailwind CSS 3.x 配置",
+        "## Tailwind CSS 4.x 配置",
+        "# postcss 插件注册",
+        "## uni-app vite vue3",
+        "## uni-app vue2"
       ],
       "updatedAt": null,
       "source": "docs/quick-start/uni-app-css-macro.md"
@@ -4059,6 +4266,7 @@
         "安装",
         "配置",
         "添加样式",
+        "# Tailwind CSS 样式引用指引",
         "参考模版"
       ],
       "updatedAt": null,
@@ -4120,11 +4328,11 @@
         "定位的变化: 样式预处理器",
         "集成选择",
         "小程序样式引入 `tailwindcss` 不同点",
+        "# 有什么区别?",
+        "# 多端开发",
         "css 作为配置文件",
         "使用 @apply",
-        "@layer 在小程序的降级方案",
-        "使用 pnpm",
-        "智能提示"
+        "@layer 在小程序的降级方案"
       ],
       "updatedAt": null,
       "source": "docs/quick-start/v4/readme.md"
@@ -4191,6 +4399,9 @@
       "headings": [
         "安装",
         "配置",
+        "# 在你的根目录创建 `postcss.config.mjs`",
+        "# 在你的 `app.css` 里面添加",
+        "# 注册插件",
         "运行",
         "参考模板"
       ],
@@ -4403,6 +4614,7 @@
       "headings": [
         "安装",
         "配置",
+        "# 创建 `vue.config.js`",
         "配置 `postcss.config.js`",
         "添加样式",
         "参考模板"
@@ -4642,7 +4854,16 @@
         "rax",
         "mpx"
       ],
-      "headings": [],
+      "headings": [
+        "# 区白白",
+        "# 紫薇告诉你",
+        "# 今修小程序",
+        "# 聚贞顺",
+        "# 安心校友圈",
+        "# 一键呼援",
+        "# 杭州数据交易所",
+        "# 俞行日记"
+      ],
       "updatedAt": null,
       "source": "docs/showcase/index.mdx"
     },
@@ -4803,7 +5024,9 @@
       ],
       "headings": [
         "BEM（Block / Element / Modifier）",
-        "OOCSS（Object-Oriented CSS）"
+        "# 示例",
+        "OOCSS（Object-Oriented CSS）",
+        "# 示例"
       ],
       "updatedAt": null,
       "source": "docs/tailwindcss/bem-and-oocss.mdx"
@@ -4835,6 +5058,7 @@
         "更接地气的用法",
         "设计体系与 tokens",
         "组件与变体（把状态写全、默认值写死）",
+        "# 业务场景范式",
         "布局与响应式",
         "性能与体积",
         "代码评审清单（示例）",
@@ -4905,7 +5129,11 @@
         "目标与产物",
         "测量命令（可选）",
         "Demo 片段",
-        "如何在本仓库验证这些方案"
+        "# Raw CSS / BEM",
+        "# Sass + BEM（含变量）",
+        "# CSS Modules（React）",
+        "# Vue `<style scoped>`",
+        "# CSS-in-JS（styled-components 示例）"
       ],
       "updatedAt": null,
       "source": "docs/tailwindcss/demos.mdx"
@@ -4935,12 +5163,12 @@
       "headings": [
         "要点",
         "<span className=\"mr-2 inline-block align-middle text-primary dark:text-primary-200 icon-[mdi--calendar-month]\"></span> 样式方案时间轴",
+        "# 现场感：几段常见的「升级理由」",
         "各阶段优势 / 劣势 / 适用场景",
         "深入阅读（按阶段拆分）",
         "阶段代表性包速览与跳转",
         "阶段 Demo：把「方式」落到机制",
-        "语义化 vs 信息密度（跨方案视角）",
-        "原子化 CSS 解决/未解决的问题"
+        "# Raw CSS / BEM：零构建 + 约定"
       ],
       "updatedAt": null,
       "source": "docs/tailwindcss/history/index.mdx"
@@ -5006,8 +5234,10 @@
         "优势 / 劣势 / 何时使用",
         "代表性包与用法",
         "<span className=\"mr-2 inline-block align-middle text-primary dark:text-primary-200 icon-[mdi--layers-triple-outline]\"></span> 运行时 vs 编译期（示意）",
-        "示例（styled-components）",
-        "常见坑与对策"
+        "# 方案对比（运行时/编译期，七选）",
+        "# 写法与产物对照",
+        "# Linaria 示例（编译期）",
+        "示例（styled-components）"
       ],
       "updatedAt": null,
       "source": "docs/tailwindcss/history/history-css-in-js.mdx"
@@ -5261,11 +5491,12 @@
       "headings": [
         "要点",
         "tailwind-merge：去重与边界",
-        "cva：轻量变体工厂",
-        "tailwind-variants (tv)：内置 merge + slots",
-        "cva vs tv 对照",
-        "<span className=\"mr-2 inline-block align-middle text-primary dark:text-primary-200 icon-[mdi--chart-timeline]\" aria-hidden=\"true\" /> 从设计到产物（示意图）",
-        "实用检查清单"
+        "# 为什么它是「基石」",
+        "# 没有 tailwind-merge 时",
+        "## 示例：生成产物的「顺序陷阱」",
+        "# 引入 tailwind-merge 之后",
+        "## 示例：merge 后的产物",
+        "# shadcn 风格组件的常见模式"
       ],
       "updatedAt": null,
       "source": "docs/tailwindcss/merge-and-variants.mdx"
@@ -5474,6 +5705,8 @@
       "headings": [
         "常见场景",
         "`patch` 子命令",
+        "# 功能",
+        "# 常用参数",
         "`extract` 子命令",
         "`tokens` 子命令",
         "`status` 子命令",
@@ -5509,7 +5742,8 @@
         "开发建议（从用户出发）",
         "为什么推荐先用 Android",
         "常见问题",
-        "接下来"
+        "# VS Code 对 uvue/uts 的高亮与跳转",
+        "# Tailwind CSS 智能提示"
       ],
       "updatedAt": null,
       "source": "docs/uni-app-x/index.mdx"
@@ -5563,7 +5797,13 @@
         "rax",
         "mpx"
       ],
-      "headings": [],
+      "headings": [
+        "# 1. 升级 `@dcloudio/*` 相关的包",
+        "# 2. 升级 `@vue/cli-*` 相关的包",
+        "# 3. 升级你所有的 `webpack` `plugin` 和 `loader`",
+        "# 4. 配置文件升级",
+        "# 5. 运行排错"
+      ],
       "updatedAt": null,
       "source": "docs/upgrade/uni-app.md"
     }

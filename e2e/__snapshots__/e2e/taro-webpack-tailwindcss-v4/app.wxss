@@ -110,7 +110,6 @@ text,
 }
 .bg-gradient-to-r {
   --tw-gradient-position: to right;
-  background-image: -webkit-gradient(linear, left top, left bottom, from(var(--tw-gradient-stops)));
   background-image: -webkit-linear-gradient(var(--tw-gradient-stops));
   background-image: linear-gradient(var(--tw-gradient-stops));
 }
