@@ -201,17 +201,32 @@ function HomepageHeader() {
                 小程序 · Tailwind 精准适配
               </span>
             </div>
-            <h1 className={`
-              text-4xl font-semibold tracking-tight text-slate-900
-              sm:text-5xl
-              lg:text-6xl
-              dark:text-slate-50
-            `}
-            >
-              <span className="text-[#07c160]">weapp</span>
-              <span className="from-weapp-to-tailwindcss">-</span>
-              <span className="text-sky-500">tailwindcss</span>
-            </h1>
+            <div className="home-hero__title-wrap">
+              <h1 className={`
+                text-4xl font-semibold tracking-tight text-slate-900
+                sm:text-5xl
+                lg:text-6xl
+                dark:text-slate-50
+              `}
+              >
+                <span className="text-[#07c160]">weapp</span>
+                <span className="from-weapp-to-tailwindcss">-</span>
+                <span className="text-sky-500">tailwindcss</span>
+              </h1>
+              <a
+                aria-label="查看版权与证书页面"
+                className="home-hero__gstar-corner"
+                href="/copyright"
+                title="G-Star 毕业项目认证"
+              >
+                <img
+                  alt="AtomGit G-Star 毕业项目认证徽章"
+                  className="home-hero__gstar-corner-image"
+                  loading="lazy"
+                  src="/img/gstar-tag-twinkle.gif"
+                />
+              </a>
+            </div>
             <h3 className={`
               mt-5 text-xl font-medium text-slate-700
               sm:text-2xl
@@ -295,22 +310,6 @@ function HomepageHeader() {
             >
               <HeroGithubBadge />
               <HeroVersionBadge className="mr-1.5" />
-            </div>
-            <div className="home-hero__gstar-entry">
-              <a
-                className="home-hero__gstar-link"
-                href="/copyright"
-              >
-                <span className="home-hero__gstar-badge">
-                  <img
-                    alt="AtomGit G-Star 毕业项目认证徽章"
-                    className="home-hero__gstar-image"
-                    loading="lazy"
-                    src="/img/gstar-tag-twinkle.gif"
-                  />
-                </span>
-                <span className="home-hero__gstar-text">G-Star 毕业项目认证，点击查看版权与证书</span>
-              </a>
             </div>
             <div className={`
               mt-8 flex flex-wrap items-center justify-center gap-3
