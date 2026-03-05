@@ -14,7 +14,7 @@
 > 简体中文(zh-cn) | [English](./README_en.md)
 
 ![star](https://badgen.net/github/stars/sonofmagic/weapp-tailwindcss)
-![gstar](https://atomgit.com/qq_33020601/weapp-tailwindcss/star/badge.svg)
+![gstar](https://atomgit.com/sonofmagic/weapp-tailwindcss/star/badge.svg)
 ![dm0](https://badgen.net/npm/dm/weapp-tailwindcss)
 ![dm1](https://badgen.net/npm/dm/weapp-tailwindcss-webpack-plugin)
 ![license](https://badgen.net/npm/license/weapp-tailwindcss)
