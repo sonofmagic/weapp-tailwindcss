@@ -296,6 +296,22 @@ function HomepageHeader() {
               <HeroGithubBadge />
               <HeroVersionBadge className="mr-1.5" />
             </div>
+            <div className="home-hero__gstar-entry">
+              <a
+                className="home-hero__gstar-link"
+                href="/copyright"
+              >
+                <span className="home-hero__gstar-badge">
+                  <img
+                    alt="AtomGit G-Star 毕业项目认证徽章"
+                    className="home-hero__gstar-image"
+                    loading="lazy"
+                    src="/img/gstar-tag-twinkle.gif"
+                  />
+                </span>
+                <span className="home-hero__gstar-text">G-Star 毕业项目认证，点击查看版权与证书</span>
+              </a>
+            </div>
             <div className={`
               mt-8 flex flex-wrap items-center justify-center gap-3
               sm:gap-4

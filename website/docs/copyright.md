@@ -23,9 +23,10 @@ keywords:
 <div class="text-center" style="margin-bottom: 24px;">
   <div style="display: inline-block; background: #ffffff; padding: 16px; border-radius: 12px; border: 1px solid #e5e7eb; box-shadow: 0 8px 24px rgba(15, 23, 42, 0.08);">
     <img
-      width="860"
-      src="/img/gstar.png"
-      alt="AtomGit G-Star 项目毕业认证证书"
+      width="420"
+      style="max-width: 100%; height: auto;"
+      src="/img/gstar-tag-twinkle.gif"
+      alt="AtomGit G-Star 项目毕业认证徽章"
     />
   </div>
 </div>

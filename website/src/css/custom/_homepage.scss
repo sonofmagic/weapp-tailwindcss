@@ -244,6 +244,91 @@ html[data-theme='dark'] .homepage .home-cta:hover {
   animation-duration: 22s;
 }
 
+.home-hero__gstar-entry {
+  margin-top: clamp(1rem, 2vw, 1.5rem);
+  display: flex;
+  justify-content: center;
+}
+
+.home-hero__gstar-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.75rem;
+  border-radius: 9999px;
+  border: 1px solid rgb(226 232 240 / 85%);
+  background: linear-gradient(130deg, rgb(255 255 255 / 92%), rgb(240 249 255 / 80%));
+  box-shadow: 0 10px 36px rgb(8 47 73 / 12%);
+  padding: 0.45rem 0.85rem 0.45rem 0.5rem;
+  transition:
+    transform 0.25s ease,
+    box-shadow 0.25s ease,
+    border-color 0.25s ease;
+}
+
+.home-hero__gstar-link:hover {
+  transform: translateY(-2px);
+  border-color: rgb(56 189 248 / 0.5);
+  box-shadow: 0 14px 40px rgb(14 165 233 / 22%);
+}
+
+.home-hero__gstar-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 9999px;
+  background: #fff;
+  padding: 0.2rem 0.55rem;
+  border: 1px solid rgb(226 232 240 / 95%);
+}
+
+.home-hero__gstar-image {
+  display: block;
+  width: clamp(102px, 14vw, 148px);
+  height: auto;
+}
+
+.home-hero__gstar-text {
+  font-size: 0.86rem;
+  font-weight: 600;
+  color: rgb(12 74 110);
+  white-space: nowrap;
+}
+
+[data-theme='dark'] .home-hero__gstar-link {
+  border-color: rgb(51 65 85 / 0.85);
+  background: linear-gradient(130deg, rgb(15 23 42 / 0.82), rgb(15 23 42 / 0.66));
+  box-shadow: 0 14px 36px rgb(2 6 23 / 50%);
+}
+
+[data-theme='dark'] .home-hero__gstar-link:hover {
+  border-color: rgb(56 189 248 / 0.55);
+  box-shadow: 0 16px 42px rgb(14 165 233 / 30%);
+}
+
+[data-theme='dark'] .home-hero__gstar-badge {
+  border-color: rgb(148 163 184 / 0.4);
+}
+
+[data-theme='dark'] .home-hero__gstar-text {
+  color: rgb(186 230 253);
+}
+
+@media (max-width: 640px) {
+  .home-hero__gstar-link {
+    width: 100%;
+    justify-content: center;
+    border-radius: 1rem;
+    padding: 0.55rem 0.75rem;
+  }
+
+  .home-hero__gstar-text {
+    font-size: 0.8rem;
+    white-space: normal;
+    line-height: 1.35;
+    text-align: left;
+  }
+}
+
 .feature-card {
   position: relative;
   overflow: hidden;
