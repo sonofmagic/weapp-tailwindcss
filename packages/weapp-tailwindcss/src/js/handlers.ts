@@ -3,10 +3,9 @@ import type { StringLiteral, TemplateElement } from '@babel/types'
 import type { IJsHandlerOptions } from '../types'
 import type { JsToken } from './types'
 import { jsStringEscape } from '@ast-core/escape'
-import { escapeStringRegexp } from '@weapp-core/regex'
 import { splitCode } from '@weapp-tailwindcss/shared/extractors'
 import { createDebug } from '@/debug'
-import { resolveClassNameTransformDecision, shouldEnableArbitraryValueFallback } from '../shared/classname-transform'
+import { resolveClassNameTransformWithResult, shouldEnableArbitraryValueFallback } from '../shared/classname-transform'
 import { decodeUnicode2 } from '../utils/decode'
 import { replaceWxml } from '../wxml/shared'
 import { isClassContextLiteralPath } from './class-context'
@@ -14,18 +13,8 @@ import { isClassContextLiteralPath } from './class-context'
 type EscapeMap = NonNullable<IJsHandlerOptions['escapeMap']>
 
 const debug = createDebug('[js:handlers] ')
-const patternCache = new Map<string, RegExp>()
 const replacementCacheByEscapeMap = new WeakMap<EscapeMap, Map<string, string>>()
 const defaultReplacementCache = new Map<string, string>()
-
-function getPattern(candidate: string) {
-  let cached = patternCache.get(candidate)
-  if (!cached) {
-    cached = new RegExp(escapeStringRegexp(candidate))
-    patternCache.set(candidate, cached)
-  }
-  return cached
-}
 
 function getReplacement(candidate: string, escapeMap?: EscapeMap) {
   if (!escapeMap) {
@@ -49,6 +38,23 @@ function getReplacement(candidate: string, escapeMap?: EscapeMap) {
     store.set(candidate, cached)
   }
   return cached
+}
+
+/**
+ * 将 replacement 写入对应的缓存，供后续 getReplacement 命中。
+ */
+function setReplacementCache(candidate: string, replacement: string, escapeMap?: EscapeMap) {
+  if (!escapeMap) {
+    defaultReplacementCache.set(candidate, replacement)
+  }
+  else {
+    let store = replacementCacheByEscapeMap.get(escapeMap)
+    if (!store) {
+      store = new Map<string, string>()
+      replacementCacheByEscapeMap.set(escapeMap, store)
+    }
+    store.set(candidate, replacement)
+  }
 }
 
 function hasIgnoreComment(node: StringLiteral | TemplateElement) {
@@ -123,24 +129,24 @@ export function replaceHandleValue(
   const skippedSamples: string[] = []
 
   for (const candidate of candidates) {
-    const decision = resolveClassNameTransformDecision(candidate, {
+    const result = resolveClassNameTransformWithResult(candidate, {
       ...options,
       classContext,
     })
-    if (decision === 'skip') {
+    if (result.decision === 'skip') {
       if (skippedSamples.length < 6) {
         skippedSamples.push(candidate)
       }
       continue
     }
     matchedCandidateCount += 1
-    if (decision === 'escaped') {
+    if (result.decision === 'escaped') {
       escapedDecisionCount += 1
       if (escapedSamples.length < 6) {
         escapedSamples.push(candidate)
       }
     }
-    if (decision === 'fallback') {
+    if (result.decision === 'fallback') {
       fallbackDecisionCount += 1
     }
 
@@ -148,10 +154,18 @@ export function replaceHandleValue(
       continue
     }
 
-    const pattern = getPattern(candidate)
-    const replacement = getReplacement(candidate, escapeMap)
-    const replaced = transformed.replace(pattern, replacement)
+    // 复用 escapedValue 或走缓存的 getReplacement，避免重复 escape 计算
+    let replacement: string
+    if (result.decision === 'escaped' && result.escapedValue) {
+      replacement = result.escapedValue
+      setReplacementCache(candidate, replacement, escapeMap)
+    }
+    else {
+      replacement = getReplacement(candidate, escapeMap)
+    }
 
+    // 使用 String.replace 仅替换首次出现，与原始行为一致
+    const replaced = transformed.replace(candidate, replacement)
     if (replaced !== transformed) {
       transformed = replaced
       mutated = true

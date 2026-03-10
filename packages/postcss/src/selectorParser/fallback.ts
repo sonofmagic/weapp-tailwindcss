@@ -7,6 +7,11 @@ import psp from 'postcss-selector-parser'
 import { isUniAppXEnabled, stripUnsupportedPseudoForUniAppX } from '../compat/uni-app-x'
 import { normalizeTransformOptions } from './utils'
 
+interface CachedFallbackResult {
+  action: 'keep' | 'update' | 'remove'
+  selector?: string
+}
+
 const fallbackRemoveCache = new WeakMap<object, {
   parser: ReturnType<typeof psp>
   transform: RuleTransformer
@@ -16,6 +21,7 @@ const FALLBACK_TRANSFORM_OPTIONS = normalizeTransformOptions()
 
 /**
  * 获取用于小程序兼容性处理的解析器，内部会缓存实例并移除不支持的选择器。
+ * 增加了选择器字符串级缓存，避免对相同选择器重复 parse。
  * @returns 带清理规则的解析器实例。
  */
 export function getFallbackRemove(_rule?: Rule, options?: IStyleHandlerOptions) {
@@ -25,6 +31,16 @@ export function getFallbackRemove(_rule?: Rule, options?: IStyleHandlerOptions) 
   if (!entry) {
     const uniAppX = isUniAppXEnabled(options)
     let currentRule: Rule | undefined
+    // 选择器字符串级缓存，避免对相同选择器重复 parse + walk
+    const selectorCache = new Map<string, CachedFallbackResult>()
+    const selectorCacheLimit = 50000
+
+    function writeSelectorCache(selector: string, result: CachedFallbackResult) {
+      if (selectorCache.size >= selectorCacheLimit) {
+        selectorCache.clear()
+      }
+      selectorCache.set(selector, result)
+    }
 
     const parser = psp((selectors) => {
       const activeRule = currentRule
@@ -94,12 +110,41 @@ export function getFallbackRemove(_rule?: Rule, options?: IStyleHandlerOptions) 
     const rawTransformSync = parser.transformSync.bind(parser)
 
     const transform: RuleTransformer = (targetRule: Rule) => {
+      const sourceSelector = targetRule.selector
+      if (!sourceSelector) {
+        return
+      }
+
+      // 查询选择器字符串级缓存
+      const cached = selectorCache.get(sourceSelector)
+      if (cached) {
+        if (cached.action === 'remove') {
+          targetRule.remove()
+        }
+        else if (cached.action === 'update' && cached.selector && cached.selector !== sourceSelector) {
+          targetRule.selector = cached.selector
+        }
+        return
+      }
+
       currentRule = targetRule
       try {
         rawTransformSync(targetRule, FALLBACK_TRANSFORM_OPTIONS)
       }
       finally {
         currentRule = undefined
+      }
+
+      // 写入缓存
+      const wasRemoved = targetRule.parent == null
+      if (wasRemoved) {
+        writeSelectorCache(sourceSelector, { action: 'remove' })
+      }
+      else if (targetRule.selector === sourceSelector) {
+        writeSelectorCache(sourceSelector, { action: 'keep' })
+      }
+      else {
+        writeSelectorCache(sourceSelector, { action: 'update', selector: targetRule.selector })
       }
     }
 

@@ -1,10 +1,11 @@
 import type { ITemplateHandlerOptions } from '../../types'
+import type { AttributeMatcher } from '../custom-attributes'
 import { Parser } from 'htmlparser2'
 import MagicString from 'magic-string'
 import { createAttributeMatcher } from '../custom-attributes'
 import { templateReplacer } from './template-fragments'
 
-export async function customTemplateHandler(rawSource: string, options: Required<ITemplateHandlerOptions>) {
+export async function customTemplateHandler(rawSource: string, options: Required<ITemplateHandlerOptions>, cachedMatcher?: AttributeMatcher | undefined) {
   const {
     customAttributesEntities = [],
     disabledDefaultTemplateHandler,
@@ -12,7 +13,8 @@ export async function customTemplateHandler(rawSource: string, options: Required
     runtimeSet,
     jsHandler,
   } = options ?? {}
-  const matchCustomAttribute = createAttributeMatcher(customAttributesEntities)
+  // 优先使用外部预构建的 matcher，避免每次调用都重建
+  const matchCustomAttribute = cachedMatcher ?? createAttributeMatcher(customAttributesEntities)
 
   const s = new MagicString(rawSource)
   let tag = ''

@@ -3,6 +3,15 @@ import { replaceWxml } from '../wxml/shared'
 
 export type ClassNameTransformDecision = 'direct' | 'escaped' | 'fallback' | 'skip'
 
+/**
+ * 决策结果，附带已计算的 escaped 值以避免下游重复计算。
+ */
+export interface ClassNameTransformResult {
+  decision: ClassNameTransformDecision
+  /** 仅在 decision 为 'escaped' 时有值，可直接作为替换结果复用 */
+  escapedValue?: string
+}
+
 interface ResolveClassNameTransformOptions extends Pick<
   IJsHandlerOptions,
   | 'alwaysEscape'
@@ -48,13 +57,19 @@ export function shouldEnableArbitraryValueFallback(
   return tailwindcssMajorVersion === 4 && (!classNameSet || classNameSet.size === 0)
 }
 
+const SKIP_RESULT: ClassNameTransformResult = { decision: 'skip' }
+const DIRECT_RESULT: ClassNameTransformResult = { decision: 'direct' }
+const FALLBACK_RESULT: ClassNameTransformResult = { decision: 'fallback' }
+
 /**
  * JS 转译严格遵循 runtime class set：
  * 1. 直接命中 classNameSet 原始值；
  * 2. 兼容命中 classNameSet 中已转义值；
  * 3. 仅在受控条件下允许 class 语义兜底。
+ *
+ * 返回结构化结果，附带已计算的 escapedValue 以避免下游重复 escape。
  */
-export function resolveClassNameTransformDecision(
+export function resolveClassNameTransformWithResult(
   candidate: string,
   {
     alwaysEscape,
@@ -65,23 +80,23 @@ export function resolveClassNameTransformDecision(
     tailwindcssMajorVersion,
     classContext,
   }: ResolveClassNameTransformOptions,
-): ClassNameTransformDecision {
+): ClassNameTransformResult {
   if (alwaysEscape) {
-    return 'direct'
+    return DIRECT_RESULT
   }
 
   if (jsPreserveClass?.(candidate)) {
-    return 'skip'
+    return SKIP_RESULT
   }
 
   if (classNameSet?.has(candidate)) {
-    return 'direct'
+    return DIRECT_RESULT
   }
 
   if (classNameSet && classNameSet.size > 0) {
     const escapedCandidate = replaceWxml(candidate, { escapeMap })
     if (escapedCandidate !== candidate && classNameSet.has(escapedCandidate)) {
-      return 'escaped'
+      return { decision: 'escaped', escapedValue: escapedCandidate }
     }
   }
 
@@ -94,10 +109,20 @@ export function resolveClassNameTransformDecision(
       tailwindcssMajorVersion,
     })
   ) {
-    return 'fallback'
+    return FALLBACK_RESULT
   }
 
-  return 'skip'
+  return SKIP_RESULT
+}
+
+/**
+ * 兼容旧接口，仅返回 decision 字符串。
+ */
+export function resolveClassNameTransformDecision(
+  candidate: string,
+  options: ResolveClassNameTransformOptions,
+): ClassNameTransformDecision {
+  return resolveClassNameTransformWithResult(candidate, options).decision
 }
 
 export function shouldTransformClassNameCandidate(

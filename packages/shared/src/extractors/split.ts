@@ -8,15 +8,36 @@ export function isValidSelector(selector = ''): selector is string {
 
 // 可选实现：export const splitCode = (code: string) => [...new Set(code.split(/\\?[\s'"`;={}]+/g))].filter(isValidSelector)
 
+/**
+ * splitCode 结果缓存，避免对相同字符串重复分割和过滤。
+ * 使用两个独立缓存分别对应 allowDoubleQuotes 的两种取值。
+ */
+const splitCacheDefault = new Map<string, string[]>()
+const splitCacheAllowQuotes = new Map<string, string[]>()
+const SPLIT_CACHE_LIMIT = 8192
+
+/** 预编译的分割正则，避免每次调用都创建 */
+const SPLITTER_DEFAULT = /\s+|"/
+const SPLITTER_ALLOW_QUOTES = /\s+/
+
 export function splitCode(code: string, allowDoubleQuotes = false) {
+  const cache = allowDoubleQuotes ? splitCacheAllowQuotes : splitCacheDefault
+  const cached = cache.get(code)
+  if (cached) {
+    return cached
+  }
+
   // 把压缩产物中的转义空白字符(\n \r \t)先还原成空格，避免被粘连到类名上
   const normalized = code.includes('\\') ? code.replace(/\\[nrt]/g, ' ') : code
 
-  // 参数 onlyWhiteSpace?: boolean
-  // const regex = onlyWhiteSpace ? /[\s]+/ : /"|[\s]+/
-  // 默认使用 /\s+/
-  // 用于处理 Vue 的静态节点
-  // 示例：|class="
-  const splitter = allowDoubleQuotes ? /\s+/ : /\s+|"/
-  return normalized.split(splitter).filter(element => isValidSelector(element))
+  const splitter = allowDoubleQuotes ? SPLITTER_ALLOW_QUOTES : SPLITTER_DEFAULT
+  const result = normalized.split(splitter).filter(element => isValidSelector(element))
+
+  // 防止缓存无限增长
+  if (cache.size >= SPLIT_CACHE_LIMIT) {
+    cache.clear()
+  }
+  cache.set(code, result)
+
+  return result
 }
