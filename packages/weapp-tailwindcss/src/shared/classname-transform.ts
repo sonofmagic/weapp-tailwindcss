@@ -6,7 +6,6 @@ type EscapeMap = NonNullable<IJsHandlerOptions['escapeMap']>
 
 const escapedCandidateCacheByEscapeMap = new WeakMap<EscapeMap, Map<string, string>>()
 const defaultEscapedCandidateCache = new Map<string, string>()
-const URL_LIKE_CANDIDATE_REGEXP = /^(?:https?:)?\/\//
 
 /**
  * 决策结果，附带已计算的 escaped 值以避免下游重复计算。
@@ -29,14 +28,38 @@ interface ResolveClassNameTransformOptions extends Pick<
   classContext?: boolean
 }
 
+function isUrlLikeCandidate(candidate: string) {
+  return candidate.startsWith('//')
+    || candidate.startsWith('http://')
+    || candidate.startsWith('https://')
+}
+
 function isArbitraryValueCandidate(candidate: string) {
-  const normalized = candidate.trim()
-  if (!normalized.includes('[') || !normalized.includes(']')) {
+  let hasOpenBracket = false
+  let hasCloseBracket = false
+
+  for (let i = 0; i < candidate.length; i++) {
+    const char = candidate[i]
+    if (char === '[') {
+      hasOpenBracket = true
+    }
+    else if (char === ']') {
+      hasCloseBracket = true
+    }
+
+    if (hasOpenBracket && hasCloseBracket) {
+      break
+    }
+  }
+
+  if (!hasOpenBracket || !hasCloseBracket) {
     return false
   }
 
+  const normalized = candidate.trim()
+
   // URL 片段中的 [] 不应作为任意值候选处理。
-  if (URL_LIKE_CANDIDATE_REGEXP.test(normalized)) {
+  if (isUrlLikeCandidate(normalized)) {
     return false
   }
 

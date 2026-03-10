@@ -24,4 +24,26 @@ describe('classname transform caching', () => {
     expect(second).toEqual(first)
     expect(spy).toHaveBeenCalledTimes(1)
   })
+
+  it('keeps whitespace-wrapped arbitrary candidates eligible for controlled fallback', () => {
+    const result = classNameTransform.resolveClassNameTransformWithResult('  bg-[length:200rpx_100rpx]  ', {
+      classContext: true,
+      jsArbitraryValueFallback: true,
+    })
+
+    expect(result).toEqual({
+      decision: 'fallback',
+    })
+  })
+
+  it('keeps whitespace-wrapped url-like arbitrary fragments excluded from fallback', () => {
+    const result = classNameTransform.resolveClassNameTransformWithResult('  https://foo-bar.com/assets/[token]  ', {
+      classContext: true,
+      jsArbitraryValueFallback: true,
+    })
+
+    expect(result).toEqual({
+      decision: 'skip',
+    })
+  })
 })
