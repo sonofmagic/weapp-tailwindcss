@@ -25,11 +25,37 @@ export function createJsHandler(options: CreateJsHandlerOptions): JsHandler {
     uniAppX: options.uniAppX,
     moduleSpecifierReplacements: options.moduleSpecifierReplacements,
   } as IJsHandlerOptions
+  const resolvedOptionsByClassNameSet = new WeakMap<Set<string>, IJsHandlerOptions>()
+  let resolvedOptionsWithoutClassNameSet: IJsHandlerOptions | undefined
+
+  function resolveDefaultOptions(classNameSet?: Set<string>) {
+    if (!classNameSet) {
+      if (!resolvedOptionsWithoutClassNameSet) {
+        resolvedOptionsWithoutClassNameSet = {
+          ...defaults,
+          classNameSet,
+        }
+      }
+      return resolvedOptionsWithoutClassNameSet
+    }
+
+    const cached = resolvedOptionsByClassNameSet.get(classNameSet)
+    if (cached) {
+      return cached
+    }
+
+    const created = {
+      ...defaults,
+      classNameSet,
+    }
+    resolvedOptionsByClassNameSet.set(classNameSet, created)
+    return created
+  }
 
   function handler(rawSource: string, classNameSet?: Set<string>, options?: CreateJsHandlerOptions) {
     // 快路径：无覆盖选项时跳过 defuOverrideArray，直接合并 classNameSet
     if (!options || Object.keys(options).length === 0) {
-      return jsHandler(rawSource, { ...defaults, classNameSet })
+      return jsHandler(rawSource, resolveDefaultOptions(classNameSet))
     }
 
     const resolvedOptions = defuOverrideArray<IJsHandlerOptions, IJsHandlerOptions[]>(

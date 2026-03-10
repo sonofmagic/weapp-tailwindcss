@@ -64,17 +64,34 @@ describe('createJsHandler', () => {
     const handler = createJsHandler(base)
 
     const output = handler('another-source')
+    handler('another-source-2')
 
     expect(output.code).toBe('secondary')
-    expect(spy).toHaveBeenCalledTimes(1)
+    expect(spy).toHaveBeenCalledTimes(2)
 
     const [, resolved] = spy.mock.calls[0]
+    const [, resolvedAgain] = spy.mock.calls[1]
+    expect(resolved).toBe(resolvedAgain)
     expect(resolved.classNameSet).toBeUndefined()
     expect(resolved.escapeMap).toBe(base.escapeMap)
     expect(resolved.ignoreCallExpressionIdentifiers).toBe(base.ignoreCallExpressionIdentifiers)
     expect(resolved.needEscaped).toBe(true)
     expect(resolved.alwaysEscape).toBe(true)
     expect(resolved.unescapeUnicode).toBe(true)
+  })
+
+  it('reuses the cached configuration for the same runtime classNameSet when no overrides are supplied', () => {
+    const spy = vi.spyOn(babel, 'jsHandler').mockReturnValue({ code: 'set-cache' })
+    const base = createBaseOptions()
+    const handler = createJsHandler(base)
+    const classNameSet = new Set(['foo'])
+
+    handler('source-a', classNameSet)
+    handler('source-b', classNameSet)
+
+    expect(spy).toHaveBeenCalledTimes(2)
+    expect(spy.mock.calls[0][1]).toBe(spy.mock.calls[1][1])
+    expect(spy.mock.calls[0][1].classNameSet).toBe(classNameSet)
   })
 
   it('escapes class names when alwaysEscape is provided at creation time', () => {

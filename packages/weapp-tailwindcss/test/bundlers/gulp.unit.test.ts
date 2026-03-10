@@ -231,4 +231,16 @@ describe('bundlers/gulp createPlugins', () => {
       statSpy.mockRestore()
     }
   })
+
+  it('reuses the default moduleGraph across transformJs invocations', async () => {
+    const plugins = createPlugins()
+
+    await runTransform(plugins.transformJs(), createFile('/src/app.js', 'console.log("a")'))
+    await runTransform(plugins.transformJs(), createFile('/src/page.js', 'console.log("b")'))
+
+    const firstOptions = jsHandler.mock.calls[0]?.[2]
+    const secondOptions = jsHandler.mock.calls[1]?.[2]
+
+    expect(firstOptions?.moduleGraph).toBe(secondOptions?.moduleGraph)
+  })
 })

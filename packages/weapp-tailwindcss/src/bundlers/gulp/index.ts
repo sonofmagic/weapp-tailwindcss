@@ -40,6 +40,7 @@ export function createPlugins(options: UserDefinedOptions = {}) {
   const defaultStyleHandlerOptionsCache = new Map<number | 'unknown', Partial<IStyleHandlerOptions>>()
   let cachedDefaultTemplateHandlerOptions: Partial<ITemplateHandlerOptions> | undefined
   let cachedDefaultTemplateRuntimeSet: Set<string> | undefined
+  let cachedDefaultModuleGraphOptions: JsModuleGraphOptions | undefined
 
   const MODULE_EXTENSIONS = ['.js', '.mjs', '.cjs', '.ts', '.tsx', '.jsx']
   let runtimeSetInitialized = false
@@ -124,6 +125,18 @@ export function createPlugins(options: UserDefinedOptions = {}) {
         return opts.jsMatcher(relative) || opts.wxsMatcher(relative)
       },
     }
+  }
+
+  function resolveModuleGraphOptions(moduleGraph?: JsModuleGraphOptions) {
+    if (moduleGraph) {
+      return moduleGraph
+    }
+
+    if (!cachedDefaultModuleGraphOptions) {
+      cachedDefaultModuleGraphOptions = createModuleGraphOptionsFor()
+    }
+
+    return cachedDefaultModuleGraphOptions
   }
 
   function createVinylTransform(handler: (file: File) => Promise<void>) {
@@ -216,7 +229,7 @@ export function createPlugins(options: UserDefinedOptions = {}) {
       await refreshRuntimeSet(false)
       await runtimeState.patchPromise
       const filename = path.resolve(file.path)
-      const moduleGraph = options.moduleGraph ?? createModuleGraphOptionsFor()
+      const moduleGraph = resolveModuleGraphOptions(options.moduleGraph)
       const handlerOptions: CreateJsHandlerOptions = {
         ...options,
         filename,
