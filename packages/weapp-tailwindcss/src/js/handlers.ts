@@ -105,6 +105,12 @@ function createCandidatePlanResolver(
   classContext: boolean,
 ) {
   const { escapeMap } = options
+  const transformOptions = classContext
+    ? {
+        ...options,
+        classContext,
+      }
+    : options
   const cache = new Map<string, CandidatePlan>()
 
   return (candidate: string): CandidatePlan => {
@@ -113,10 +119,7 @@ function createCandidatePlanResolver(
       return cached
     }
 
-    const result = resolveClassNameTransformWithResult(candidate, {
-      ...options,
-      classContext,
-    })
+    const result = resolveClassNameTransformWithResult(candidate, transformOptions)
 
     if (result.decision === 'skip') {
       const plan = { result }

@@ -22,6 +22,12 @@ export function createLegacyTraverseOptions(
   options: ITemplateHandlerOptions,
   jsTokenUpdater: JsTokenUpdater,
 ) {
+  const legacyReplaceOptions = {
+    escapeMap: options.escapeMap,
+    classNameSet: options.runtimeSet,
+    needEscaped: true,
+    alwaysEscape: true,
+  }
   return {
     StringLiteral(path) {
       if (shouldSkipLegacyStringLiteral(path)) {
@@ -30,12 +36,7 @@ export function createLegacyTraverseOptions(
       jsTokenUpdater.addToken(
         replaceHandleValue(
           path,
-          {
-            escapeMap: options.escapeMap,
-            classNameSet: options.runtimeSet,
-            needEscaped: true,
-            alwaysEscape: true,
-          },
+          legacyReplaceOptions,
         ),
       )
 

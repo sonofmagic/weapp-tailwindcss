@@ -1,9 +1,10 @@
 import type { NodePath } from '@babel/traverse'
 import type { NumericLiteral, StringLiteral, TemplateElement } from '@babel/types'
 import { MappingChars2String } from '@weapp-core/escape'
-import { describe, expect, it } from 'vitest'
+import { describe, expect, it, vi } from 'vitest'
 import { parse, traverse } from '@/babel'
 import { replaceHandleValue } from '@/js/handlers'
+import * as classNameTransform from '@/shared/classname-transform'
 
 type LiteralKind = 'StringLiteral' | 'TemplateElement'
 
@@ -162,6 +163,20 @@ describe('replaceHandleValue branch coverage', () => {
     })
 
     expect(token?.value).toBe('gap-_b20px_B gap-_b20px_B')
+  })
+
+  it('reuses the candidate plan for repeated candidates in one literal', () => {
+    const literal = getLiteralPath('const repeated = \'w-[100px] w-[100px]\'', 'StringLiteral')
+    const spy = vi.spyOn(classNameTransform, 'resolveClassNameTransformWithResult')
+
+    const token = replaceHandleValue(literal, {
+      escapeMap: MappingChars2String,
+      classNameSet: new Set(['w-[100px]']),
+      needEscaped: true,
+    })
+
+    expect(token?.value).toBe('w-_b100px_B w-_b100px_B')
+    expect(spy).toHaveBeenCalledTimes(1)
   })
 
   it('evaluates unicode decoding guard when no escape is present', () => {

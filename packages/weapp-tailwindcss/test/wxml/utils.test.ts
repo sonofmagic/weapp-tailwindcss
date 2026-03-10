@@ -102,4 +102,9 @@ describe('utils', () => {
       wrapExpression: true,
     })
   })
+
+  it('falls back to legacy expression rewriting when runtime js handler is unavailable', () => {
+    const code = generateCode(`{'w-[100px]': flag}`)
+    expect(code).toContain(`'w-_b100px_B'`)
+  })
 })
