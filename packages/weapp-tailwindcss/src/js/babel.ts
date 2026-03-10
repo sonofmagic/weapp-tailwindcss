@@ -162,9 +162,16 @@ export function jsHandler(rawSource: string, options: IJsHandlerOptions): JsHand
 
   const result: JsHandlerResult = {
     code: ms.toString(),
-    get map() {
-      return ms.generateMap()
-    },
+  }
+
+  if (options.generateMap) {
+    Object.defineProperty(result, 'map', {
+      configurable: true,
+      enumerable: true,
+      get() {
+        return ms.generateMap()
+      },
+    })
   }
 
   if (options.moduleGraph && options.filename) {

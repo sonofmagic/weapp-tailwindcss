@@ -2,6 +2,11 @@ import type { IJsHandlerOptions } from '../types'
 import { replaceWxml } from '../wxml/shared'
 
 export type ClassNameTransformDecision = 'direct' | 'escaped' | 'fallback' | 'skip'
+type EscapeMap = NonNullable<IJsHandlerOptions['escapeMap']>
+
+const escapedCandidateCacheByEscapeMap = new WeakMap<EscapeMap, Map<string, string>>()
+const defaultEscapedCandidateCache = new Map<string, string>()
+const URL_LIKE_CANDIDATE_REGEXP = /^(?:https?:)?\/\//
 
 /**
  * 决策结果，附带已计算的 escaped 值以避免下游重复计算。
@@ -31,7 +36,7 @@ function isArbitraryValueCandidate(candidate: string) {
   }
 
   // URL 片段中的 [] 不应作为任意值候选处理。
-  if (/^(?:https?:)?\/\//.test(normalized)) {
+  if (URL_LIKE_CANDIDATE_REGEXP.test(normalized)) {
     return false
   }
 
@@ -60,6 +65,30 @@ export function shouldEnableArbitraryValueFallback(
 const SKIP_RESULT: ClassNameTransformResult = { decision: 'skip' }
 const DIRECT_RESULT: ClassNameTransformResult = { decision: 'direct' }
 const FALLBACK_RESULT: ClassNameTransformResult = { decision: 'fallback' }
+
+function getEscapedCandidate(candidate: string, escapeMap?: EscapeMap) {
+  if (!escapeMap) {
+    let cached = defaultEscapedCandidateCache.get(candidate)
+    if (cached === undefined) {
+      cached = replaceWxml(candidate, { escapeMap })
+      defaultEscapedCandidateCache.set(candidate, cached)
+    }
+    return cached
+  }
+
+  let store = escapedCandidateCacheByEscapeMap.get(escapeMap)
+  if (!store) {
+    store = new Map<string, string>()
+    escapedCandidateCacheByEscapeMap.set(escapeMap, store)
+  }
+
+  let cached = store.get(candidate)
+  if (cached === undefined) {
+    cached = replaceWxml(candidate, { escapeMap })
+    store.set(candidate, cached)
+  }
+  return cached
+}
 
 /**
  * JS 转译严格遵循 runtime class set：
@@ -94,7 +123,7 @@ export function resolveClassNameTransformWithResult(
   }
 
   if (classNameSet && classNameSet.size > 0) {
-    const escapedCandidate = replaceWxml(candidate, { escapeMap })
+    const escapedCandidate = getEscapedCandidate(candidate, escapeMap)
     if (escapedCandidate !== candidate && classNameSet.has(escapedCandidate)) {
       return { decision: 'escaped', escapedValue: escapedCandidate }
     }

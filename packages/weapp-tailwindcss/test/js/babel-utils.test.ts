@@ -103,4 +103,16 @@ describe('babel helpers additional coverage', () => {
     expect(handled.error).toBeUndefined()
     expect(handled.map).toBeDefined()
   })
+
+  it('does not define a source map getter unless generateMap is enabled', () => {
+    const handled = babel.jsHandler('const cls = "w-[100px]"', {
+      classNameSet: new Set(['w-[100px]']),
+      escapeMap: MappingChars2String,
+      alwaysEscape: true,
+    })
+
+    expect(handled.code).toContain('w-_b100px_B')
+    expect(Object.hasOwn(handled, 'map')).toBe(false)
+    expect(handled.map).toBeUndefined()
+  })
 })
