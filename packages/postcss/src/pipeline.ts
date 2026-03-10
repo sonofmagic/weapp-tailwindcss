@@ -52,10 +52,6 @@ interface PipelinePreparedNode extends PipelineNodeCursor {
   createPlugin: (context: PipelineNodeContext) => AcceptedPlugin
 }
 
-interface PipelineNodeDefinition extends PipelineNodeCursor {
-  prepare: (options: IStyleHandlerOptions) => PipelinePreparedNode | undefined
-}
-
 export interface ResolvedPipelineNode extends PipelineNodeCursor {
   plugin: AcceptedPlugin
   context: PipelineNodeContext
@@ -65,8 +61,6 @@ export interface StyleProcessingPipeline {
   nodes: ResolvedPipelineNode[]
   plugins: AcceptedPlugin[]
 }
-
-const STAGE_ORDER: PipelineStage[] = ['pre', 'normal', 'post']
 
 // normalizeUserPlugins 统一用户自定义插件的写法，确保最终拿到数组形式
 function normalizeUserPlugins(plugins: unknown): AcceptedPlugin[] {
@@ -85,163 +79,63 @@ function normalizeUserPlugins(plugins: unknown): AcceptedPlugin[] {
   return []
 }
 
-// createStaticDefinition 用于封装固定插件节点，避免重复描述
-function createStaticDefinition(id: string, stage: PipelineStage, plugin: AcceptedPlugin): PipelineNodeDefinition {
+function createPreparedNode(
+  id: string,
+  stage: PipelineStage,
+  createPlugin: PipelinePreparedNode['createPlugin'],
+): PipelinePreparedNode {
   return {
     id,
     stage,
-    prepare: () => ({
-      id,
-      stage,
-      createPlugin: () => plugin,
-    }),
+    createPlugin,
   }
 }
 
-// createPipelineDefinitions 将配置拆分成 pre/normal/post 三个阶段的节点描述
-function createPipelineDefinitions(options: IStyleHandlerOptions): PipelineNodeDefinition[] {
-  const stages: Record<PipelineStage, PipelineNodeDefinition[]> = {
-    pre: [],
-    normal: [],
-    post: [],
-  }
-
+// createPreparedNodes 直接按最终顺序生成可实例化节点，避免 definition 二次中转
+function createPreparedNodes(options: IStyleHandlerOptions): PipelinePreparedNode[] {
+  const preparedNodes: PipelinePreparedNode[] = []
   const userPlugins = normalizeUserPlugins(options.postcssOptions?.plugins)
   userPlugins.forEach((plugin, index) => {
-    stages.pre.push(createStaticDefinition(`pre:user-${index}`, 'pre', plugin))
+    preparedNodes.push(createPreparedNode(`pre:user-${index}`, 'pre', () => plugin))
   })
 
-  stages.pre.push({
-    id: 'pre:core',
-    stage: 'pre',
-    prepare: () => ({
-      id: 'pre:core',
-      stage: 'pre',
-      createPlugin: () => postcssWeappTailwindcssPrePlugin(options),
-    }),
-  })
+  preparedNodes.push(createPreparedNode('pre:core', 'pre', () => postcssWeappTailwindcssPrePlugin(options)))
+  preparedNodes.push(createPreparedNode('normal:preset-env', 'normal', () => postcssPresetEnv(options.cssPresetEnv)))
+  preparedNodes.push(createPreparedNode('normal:color-functional-fallback', 'normal', () => createColorFunctionalFallback()))
 
-  stages.normal.push({
-    id: 'normal:preset-env',
-    stage: 'normal',
-    prepare: () => ({
-      id: 'normal:preset-env',
-      stage: 'normal',
-      createPlugin: () => postcssPresetEnv(options.cssPresetEnv),
-    }),
-  })
+  const unitsToPxPlugin = getUnitsToPxPlugin(options)
+  if (unitsToPxPlugin) {
+    preparedNodes.push(createPreparedNode('normal:units-to-px', 'normal', () => unitsToPxPlugin))
+  }
 
-  stages.normal.push({
-    id: 'normal:color-functional-fallback',
-    stage: 'normal',
-    prepare: () => ({
-      id: 'normal:color-functional-fallback',
-      stage: 'normal',
-      createPlugin: () => createColorFunctionalFallback(),
-    }),
-  })
+  const pxTransformPlugin = getPxTransformPlugin(options)
+  if (pxTransformPlugin) {
+    preparedNodes.push(createPreparedNode('normal:px-transform', 'normal', () => pxTransformPlugin))
+  }
 
-  stages.normal.push({
-    id: 'normal:units-to-px',
-    stage: 'normal',
-    prepare: () => {
-      const plugin = getUnitsToPxPlugin(options)
-      return plugin
-        ? {
-            id: 'normal:units-to-px',
-            stage: 'normal',
-            createPlugin: () => plugin,
-          }
-        : undefined
-    },
-  })
+  const remTransformPlugin = getRemTransformPlugin(options)
+  if (remTransformPlugin) {
+    preparedNodes.push(createPreparedNode('normal:rem-transform', 'normal', () => remTransformPlugin))
+  }
 
-  stages.normal.push({
-    id: 'normal:px-transform',
-    stage: 'normal',
-    prepare: () => {
-      const plugin = getPxTransformPlugin(options)
-      return plugin
-        ? {
-            id: 'normal:px-transform',
-            stage: 'normal',
-            createPlugin: () => plugin,
-          }
-        : undefined
-    },
-  })
+  const calcPlugin = getCalcPlugin(options)
+  if (calcPlugin) {
+    preparedNodes.push(createPreparedNode('normal:calc', 'normal', () => calcPlugin))
+  }
 
-  stages.normal.push({
-    id: 'normal:rem-transform',
-    stage: 'normal',
-    prepare: () => {
-      const plugin = getRemTransformPlugin(options)
-      return plugin
-        ? {
-            id: 'normal:rem-transform',
-            stage: 'normal',
-            createPlugin: () => plugin,
-          }
-        : undefined
-    },
-  })
+  const calcDuplicateCleaner = getCalcDuplicateCleaner(options)
+  if (calcDuplicateCleaner) {
+    preparedNodes.push(createPreparedNode('normal:calc-duplicate-cleaner', 'normal', () => calcDuplicateCleaner))
+  }
 
-  stages.normal.push({
-    id: 'normal:calc',
-    stage: 'normal',
-    prepare: () => {
-      const plugin = getCalcPlugin(options)
-      return plugin
-        ? {
-            id: 'normal:calc',
-            stage: 'normal',
-            createPlugin: () => plugin,
-          }
-        : undefined
-    },
-  })
+  const customPropertyCleaner = getCustomPropertyCleaner(options)
+  if (customPropertyCleaner) {
+    preparedNodes.push(createPreparedNode('normal:custom-property-cleaner', 'normal', () => customPropertyCleaner))
+  }
 
-  stages.normal.push({
-    id: 'normal:calc-duplicate-cleaner',
-    stage: 'normal',
-    prepare: () => {
-      const plugin = getCalcDuplicateCleaner(options)
-      return plugin
-        ? {
-            id: 'normal:calc-duplicate-cleaner',
-            stage: 'normal',
-            createPlugin: () => plugin,
-          }
-        : undefined
-    },
-  })
+  preparedNodes.push(createPreparedNode('post:core', 'post', () => postcssWeappTailwindcssPostPlugin(options)))
 
-  stages.normal.push({
-    id: 'normal:custom-property-cleaner',
-    stage: 'normal',
-    prepare: () => {
-      const plugin = getCustomPropertyCleaner(options)
-      return plugin
-        ? {
-            id: 'normal:custom-property-cleaner',
-            stage: 'normal',
-            createPlugin: () => plugin,
-          }
-        : undefined
-    },
-  })
-
-  stages.post.push({
-    id: 'post:core',
-    stage: 'post',
-    prepare: () => ({
-      id: 'post:core',
-      stage: 'post',
-      createPlugin: () => postcssWeappTailwindcssPostPlugin(options),
-    }),
-  })
-
-  return STAGE_ORDER.flatMap(stage => stages[stage])
+  return preparedNodes
 }
 
 // createStylePipeline 会实例化上下文、串联各个节点并提供邻接信息
@@ -249,9 +143,7 @@ export function createStylePipeline(options: IStyleHandlerOptions): StyleProcess
   // 管线创建前先初始化上下文，以便各插件共享状态
   options.ctx = createContext()
 
-  const preparedNodes = createPipelineDefinitions(options)
-    .map(definition => definition.prepare(options))
-    .filter(Boolean) as PipelinePreparedNode[]
+  const preparedNodes = createPreparedNodes(options)
 
   if (preparedNodes.length === 0) {
     return {
