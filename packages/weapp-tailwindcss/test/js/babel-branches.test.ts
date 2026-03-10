@@ -182,6 +182,16 @@ describe('babel helpers branch coverage', () => {
     expect(spy).not.toHaveBeenCalled()
   })
 
+  it('does not build ignore matchers for tagged templates when ignore identifiers are absent', () => {
+    const spy = vi.spyOn(nameMatcher, 'createNameMatcher')
+    const ast = parse('styled`w-[100px]`', { sourceType: 'module' })
+
+    const analysis = babel.analyzeSource(ast, {})
+
+    expect(analysis.targetPaths).toHaveLength(1)
+    expect(spy).not.toHaveBeenCalled()
+  })
+
   it('reuses ignored tag matchers for the same options object', () => {
     const spy = vi.spyOn(nameMatcher, 'createNameMatcher')
     const options = {

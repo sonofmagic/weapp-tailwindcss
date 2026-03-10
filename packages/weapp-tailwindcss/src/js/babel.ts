@@ -55,6 +55,10 @@ export function analyzeSource(
     : new NodePathWalker()
 
   let taggedTemplateIgnore: ReturnType<typeof createTaggedTemplateIgnore> | undefined
+  const hasTaggedTemplateIgnoreIdentifiers = Boolean(
+    options.ignoreTaggedTemplateExpressionIdentifiers
+    && options.ignoreTaggedTemplateExpressionIdentifiers.length > 0,
+  )
 
   function getTaggedTemplateIgnore() {
     if (!taggedTemplateIgnore) {
@@ -96,7 +100,7 @@ export function analyzeSource(
           if (isEvalPath(ppp)) {
             return
           }
-          if (ppp.isTaggedTemplateExpression()) {
+          if (hasTaggedTemplateIgnoreIdentifiers && ppp.isTaggedTemplateExpression()) {
             const tagPath = ppp.get('tag') as NodePath<Node>
             if (getTaggedTemplateIgnore().shouldIgnore(tagPath)) {
               return
