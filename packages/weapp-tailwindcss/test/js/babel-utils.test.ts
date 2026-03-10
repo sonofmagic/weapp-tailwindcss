@@ -78,6 +78,23 @@ describe('babel helpers additional coverage', () => {
     expect(secondAnalysis.ignoredPaths.has(secondTarget)).toBe(false)
   })
 
+  it('can skip module metadata collection while keeping target path analysis', () => {
+    const code = `
+      import foo from './foo'
+      export * from './bar'
+      const lib = require('./baz')
+      const cls = "w-[100px]"
+    `
+    const ast = parse(code, { sourceType: 'module' as const })
+    const analysis = babel.analyzeSource(ast, {}, undefined, false)
+
+    expect(analysis.targetPaths.length).toBeGreaterThan(0)
+    expect(analysis.importDeclarations.size).toBe(0)
+    expect(analysis.exportDeclarations.size).toBe(0)
+    expect(analysis.requireCallPaths).toHaveLength(0)
+    expect(analysis.walker.imports.size).toBe(0)
+  })
+
   it('returns the original source when parsing fails', () => {
     const raw = 'const = 1'
     const result = babel.jsHandler(raw, {})

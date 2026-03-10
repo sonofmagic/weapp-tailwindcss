@@ -17,6 +17,9 @@ import { createTaggedTemplateIgnore } from './taggedTemplateIgnore'
 const EXPRESSION_WRAPPER_PREFIX = '(\n'
 const EXPRESSION_WRAPPER_SUFFIX = '\n)'
 const EMPTY_IGNORED_PATHS = new WeakSet<NodePath<StringLiteral | TemplateElement>>()
+const EMPTY_IMPORT_DECLARATIONS = new Set<NodePath<ImportDeclaration>>()
+const EMPTY_EXPORT_DECLARATIONS = new Set<NodePath<ExportDeclaration>>()
+const EMPTY_REQUIRE_CALL_PATHS: NodePath<StringLiteral>[] = []
 const ignoredTaggedTemplateMatcherCache = new WeakMap<IJsHandlerOptions, ReturnType<typeof createNameMatcher>>()
 
 function getIgnoredTaggedTemplateMatcher(options: IJsHandlerOptions) {
@@ -34,6 +37,7 @@ export function analyzeSource(
   ast: ParseResult<File>,
   options: IJsHandlerOptions,
   handler?: EvalHandler,
+  collectModuleMetadata = true,
 ): SourceAnalysis {
   const jsTokenUpdater = new JsTokenUpdater()
   // 仅在需要忽略特定调用参数时记录路径，默认路径复用共享空集合。
@@ -63,9 +67,15 @@ export function analyzeSource(
   }
 
   const targetPaths: NodePath<StringLiteral | TemplateElement>[] = []
-  const importDeclarations = new Set<NodePath<ImportDeclaration>>()
-  const exportDeclarations = new Set<NodePath<ExportDeclaration>>()
-  const requireCallPaths: NodePath<StringLiteral>[] = []
+  const importDeclarations = collectModuleMetadata
+    ? new Set<NodePath<ImportDeclaration>>()
+    : EMPTY_IMPORT_DECLARATIONS
+  const exportDeclarations = collectModuleMetadata
+    ? new Set<NodePath<ExportDeclaration>>()
+    : EMPTY_EXPORT_DECLARATIONS
+  const requireCallPaths: NodePath<StringLiteral>[] = collectModuleMetadata
+    ? []
+    : EMPTY_REQUIRE_CALL_PATHS
   // eslint-disable-next-line ts/no-use-before-define -- default handler references exported jsHandler defined later
   const evalHandler = handler ?? jsHandler
 
@@ -105,7 +115,8 @@ export function analyzeSource(
 
         const calleePath = p.get('callee')
         if (
-          calleePath.isIdentifier({ name: 'require' })
+          collectModuleMetadata
+          && calleePath.isIdentifier({ name: 'require' })
           // 若 scope 不存在或无法判断绑定，默认认为未被局部绑定，以便在 noScope 下也能收集 require 字面量。
           && !((p as any)?.scope?.hasBinding?.('require'))
         ) {
@@ -124,16 +135,20 @@ export function analyzeSource(
         }
       },
     },
-    ImportDeclaration: {
-      enter(p) {
-        importDeclarations.add(p)
-      },
-    },
-    ExportDeclaration: {
-      enter(p) {
-        exportDeclarations.add(p)
-      },
-    },
+    ...(collectModuleMetadata
+      ? {
+          ImportDeclaration: {
+            enter(p: NodePath<ImportDeclaration>) {
+              importDeclarations.add(p)
+            },
+          },
+          ExportDeclaration: {
+            enter(p: NodePath<ExportDeclaration>) {
+              exportDeclarations.add(p)
+            },
+          },
+        }
+      : {}),
   }
 
   // 使用 `noScope` 避免在常见路径上构建昂贵的作用域数据。
@@ -167,7 +182,8 @@ export function jsHandler(rawSource: string, options: IJsHandlerOptions): JsHand
       error: error as ParseError,
     } as JsHandlerResult
   }
-  const analysis = analyzeSource(ast, options, jsHandler)
+  const needsModuleMetadata = Boolean(options.moduleSpecifierReplacements || (options.moduleGraph && options.filename))
+  const analysis = analyzeSource(ast, options, jsHandler, needsModuleMetadata)
   const ms = processUpdatedSource(source, options, analysis)
   if (shouldWrapExpression) {
     const start = 0
