@@ -1,5 +1,6 @@
 import type { NodePath } from '@babel/traverse'
 import type { StringLiteral, TemplateElement } from '@babel/types'
+import type { ClassNameTransformResult } from '../shared/classname-transform'
 import type { IJsHandlerOptions } from '../types'
 import type { JsToken } from './types'
 import { jsStringEscape } from '@ast-core/escape'
@@ -94,14 +95,58 @@ function extractLiteralValue(
   }
 }
 
+interface CandidatePlan {
+  result: ClassNameTransformResult
+  replacement?: string
+}
+
+function createCandidatePlanResolver(
+  options: IJsHandlerOptions,
+  classContext: boolean,
+) {
+  const { escapeMap } = options
+  const cache = new Map<string, CandidatePlan>()
+
+  return (candidate: string): CandidatePlan => {
+    const cached = cache.get(candidate)
+    if (cached) {
+      return cached
+    }
+
+    const result = resolveClassNameTransformWithResult(candidate, {
+      ...options,
+      classContext,
+    })
+
+    if (result.decision === 'skip') {
+      const plan = { result }
+      cache.set(candidate, plan)
+      return plan
+    }
+
+    let replacement: string
+    if (result.decision === 'escaped' && result.escapedValue) {
+      replacement = result.escapedValue
+      setReplacementCache(candidate, replacement, escapeMap)
+    }
+    else {
+      replacement = getReplacement(candidate, escapeMap)
+    }
+
+    const plan = {
+      result,
+      replacement,
+    }
+    cache.set(candidate, plan)
+    return plan
+  }
+}
+
 export function replaceHandleValue(
   path: NodePath<StringLiteral | TemplateElement>,
   options: IJsHandlerOptions,
 ): JsToken | undefined {
-  const {
-    escapeMap,
-    needEscaped = false,
-  } = options
+  const { needEscaped = false } = options
   const { classNameSet, alwaysEscape } = options
   const fallbackEnabled = shouldEnableArbitraryValueFallback(options)
   const classContext = options.wrapExpression || isClassContextLiteralPath(path)
@@ -127,45 +172,29 @@ export function replaceHandleValue(
   let fallbackDecisionCount = 0
   const escapedSamples: string[] = []
   const skippedSamples: string[] = []
+  const resolveCandidatePlan = createCandidatePlanResolver(options, classContext)
 
   for (const candidate of candidates) {
-    const result = resolveClassNameTransformWithResult(candidate, {
-      ...options,
-      classContext,
-    })
-    if (result.decision === 'skip') {
+    const plan = resolveCandidatePlan(candidate)
+    if (plan.result.decision === 'skip') {
       if (skippedSamples.length < 6) {
         skippedSamples.push(candidate)
       }
       continue
     }
     matchedCandidateCount += 1
-    if (result.decision === 'escaped') {
+    if (plan.result.decision === 'escaped') {
       escapedDecisionCount += 1
       if (escapedSamples.length < 6) {
         escapedSamples.push(candidate)
       }
     }
-    if (result.decision === 'fallback') {
+    if (plan.result.decision === 'fallback') {
       fallbackDecisionCount += 1
     }
 
-    if (!transformed.includes(candidate)) {
-      continue
-    }
-
-    // 复用 escapedValue 或走缓存的 getReplacement，避免重复 escape 计算
-    let replacement: string
-    if (result.decision === 'escaped' && result.escapedValue) {
-      replacement = result.escapedValue
-      setReplacementCache(candidate, replacement, escapeMap)
-    }
-    else {
-      replacement = getReplacement(candidate, escapeMap)
-    }
-
     // 使用 String.replace 仅替换首次出现，与原始行为一致
-    const replaced = transformed.replace(candidate, replacement)
+    const replaced = transformed.replace(candidate, plan.replacement!)
     if (replaced !== transformed) {
       transformed = replaced
       mutated = true

@@ -328,6 +328,148 @@ describe('bundlers/webpack UnifiedWebpackPluginV5', () => {
     expect(currentContext.twPatcher.extract).toHaveBeenCalledTimes(2)
   })
 
+  it('reuses css handler override objects for repeated asset updates', async () => {
+    const processAssetsCallbacks: Array<(assets: Record<string, any>) => Promise<void>> = []
+    let currentAssetStore: Record<string, string> = {}
+    const compilation = {
+      compiler: { outputPath: path.resolve(process.cwd(), 'dist') },
+      chunks: [{ id: 'main', hash: 'hash-1' }],
+      hooks: {
+        processAssets: {
+          tapPromise: (_options: unknown, handler: (assets: Record<string, any>) => Promise<void>) => {
+            processAssetsCallbacks.push(handler)
+          },
+        },
+      },
+      updateAsset: vi.fn((file: string, source: FakeConcatSource) => {
+        currentAssetStore[file] = source.toString()
+      }),
+      getAsset(file: string) {
+        const content = currentAssetStore[file]
+        if (content === undefined) {
+          return undefined
+        }
+        return {
+          source: {
+            source: () => content,
+          },
+        }
+      },
+    }
+    const compiler = {
+      webpack: {
+        Compilation: {
+          PROCESS_ASSETS_STAGE_SUMMARIZE: Symbol('stage'),
+        },
+        sources: {
+          ConcatSource: FakeConcatSource,
+        },
+        NormalModule: {
+          getCompilationHooks: vi.fn(() => ({
+            loader: {
+              tap: vi.fn(),
+            },
+          })),
+        },
+      },
+      hooks: {
+        normalModuleFactory: {
+          tap: vi.fn(() => {}),
+        },
+        compilation: {
+          tap: vi.fn((_name: string, handler: (_compilation: any) => void) => {
+            handler(compilation)
+          }),
+        },
+      },
+    }
+
+    const plugin = new UnifiedWebpackPluginV5()
+    plugin.apply(compiler as any)
+
+    currentAssetStore = {
+      'index.css': '.foo { color: red; }',
+    }
+    await processAssetsCallbacks[0](createAssetsFromStore(currentAssetStore))
+
+    currentAssetStore = {
+      'index.css': '.foo { color: blue; }',
+    }
+    await processAssetsCallbacks[0](createAssetsFromStore(currentAssetStore))
+
+    expect(currentContext.styleHandler).toHaveBeenCalledTimes(2)
+    expect(currentContext.styleHandler.mock.calls[0]?.[1]).toBe(currentContext.styleHandler.mock.calls[1]?.[1])
+  })
+
+  it('reuses template handler options for multiple html assets in one compilation', async () => {
+    const processAssetsCallbacks: Array<(assets: Record<string, any>) => Promise<void>> = []
+    let currentAssetStore: Record<string, string> = {}
+    const compilation = {
+      compiler: { outputPath: path.resolve(process.cwd(), 'dist') },
+      chunks: [{ id: 'main', hash: 'hash-1' }],
+      hooks: {
+        processAssets: {
+          tapPromise: (_options: unknown, handler: (assets: Record<string, any>) => Promise<void>) => {
+            processAssetsCallbacks.push(handler)
+          },
+        },
+      },
+      updateAsset: vi.fn((file: string, source: FakeConcatSource) => {
+        currentAssetStore[file] = source.toString()
+      }),
+      getAsset(file: string) {
+        const content = currentAssetStore[file]
+        if (content === undefined) {
+          return undefined
+        }
+        return {
+          source: {
+            source: () => content,
+          },
+        }
+      },
+    }
+    const compiler = {
+      webpack: {
+        Compilation: {
+          PROCESS_ASSETS_STAGE_SUMMARIZE: Symbol('stage'),
+        },
+        sources: {
+          ConcatSource: FakeConcatSource,
+        },
+        NormalModule: {
+          getCompilationHooks: vi.fn(() => ({
+            loader: {
+              tap: vi.fn(),
+            },
+          })),
+        },
+      },
+      hooks: {
+        normalModuleFactory: {
+          tap: vi.fn(() => {}),
+        },
+        compilation: {
+          tap: vi.fn((_name: string, handler: (_compilation: any) => void) => {
+            handler(compilation)
+          }),
+        },
+      },
+    }
+
+    const plugin = new UnifiedWebpackPluginV5()
+    plugin.apply(compiler as any)
+
+    currentAssetStore = {
+      'pages/index/index.wxml': '<view class="foo"></view>',
+      'pages/home/index.wxml': '<view class="bar"></view>',
+    }
+    await processAssetsCallbacks[0](createAssetsFromStore(currentAssetStore))
+
+    expect(currentContext.templateHandler).toHaveBeenCalledTimes(2)
+    expect(currentContext.templateHandler.mock.calls[0]?.[1]).toBe(currentContext.templateHandler.mock.calls[1]?.[1])
+  })
+
   it('keeps precise matching by default and still escapes classes when runtime set is fresh', async () => {
     const runtimeSet = new Set(['bg-[#f50505]', 'text-[100rpx]', 'text-white'])
     const realJsHandler = createJsHandler({

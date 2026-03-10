@@ -11,6 +11,12 @@ export function processUpdatedSource(
   analysis: SourceAnalysis,
 ) {
   const { targetPaths, jsTokenUpdater, ignoredPaths } = analysis
+  const stringLiteralOptions = options.needEscaped === undefined
+    ? { ...options, needEscaped: true }
+    : options
+  const templateLiteralOptions = options.needEscaped === false
+    ? options
+    : { ...options, needEscaped: false }
 
   // 为前面收集到的所有字符串节点生成替换 token。
   const replacementTokens: JsToken[] = []
@@ -21,10 +27,7 @@ export function processUpdatedSource(
 
     const token = replaceHandleValue(
       path,
-      {
-        ...options,
-        needEscaped: path.isStringLiteral() ? options.needEscaped ?? true : false,
-      },
+      path.isStringLiteral() ? stringLiteralOptions : templateLiteralOptions,
     )
 
     if (token) {

@@ -1,15 +1,16 @@
 import type { OutputAsset, OutputChunk } from 'rollup'
 import type { ResolvedConfig } from 'vite'
 import type { OutputEntry } from './bundle-entries'
+import type { EntryType } from './bundle-state'
 import type { CreateJsHandlerOptions, InternalUserDefinedOptions, LinkedJsModuleResult } from '@/types'
 import path from 'node:path'
 import process from 'node:process'
 import { getRuntimeClassSetSignature } from '@/tailwindcss/runtime/cache'
 import { createUniAppXAssetTask } from '@/uni-app-x'
 import { processCachedTask } from '../shared/cache'
-import { toAbsoluteOutputPath } from '../shared/module-graph'
 import { pushConcurrentTaskFactories } from '../shared/run-tasks'
-import { applyLinkedResults, createBundleModuleGraphOptions, isJavaScriptEntry } from './bundle-entries'
+import { applyLinkedResults, createBundleModuleGraphOptions } from './bundle-entries'
+import { buildBundleSnapshot, createBundleBuildState, updateBundleBuildState } from './bundle-state'
 import { shouldSkipViteJsTransform } from './js-precheck'
 
 interface GenerateBundleContext {
@@ -35,26 +36,6 @@ interface BundleMetrics {
   html: BundleMetric
   js: BundleMetric
   css: BundleMetric
-}
-
-type EntryType = 'html' | 'js' | 'css' | 'other'
-
-interface BundleBuildState {
-  iteration: number
-  previousSourceHashByFile: Map<string, string>
-  previousLinkedByEntry: Map<string, Set<string>>
-  changedByType: Record<EntryType, Set<string>>
-}
-
-interface DirtyEntriesResult {
-  sourceHashByFile: Map<string, string>
-  changedByType: Record<EntryType, Set<string>>
-}
-
-interface ProcessFileSets {
-  html: Set<string>
-  js: Set<string>
-  css: Set<string>
 }
 
 function formatDebugFileList(files: Set<string>, limit = 8) {
@@ -83,137 +64,6 @@ function createEmptyMetrics(): BundleMetrics {
     html: createEmptyMetric(),
     js: createEmptyMetric(),
     css: createEmptyMetric(),
-  }
-}
-
-function classifyEntry(file: string, opts: InternalUserDefinedOptions): EntryType {
-  if (opts.cssMatcher(file)) {
-    return 'css'
-  }
-  if (opts.htmlMatcher(file)) {
-    return 'html'
-  }
-  if (opts.jsMatcher(file) || opts.wxsMatcher(file)) {
-    return 'js'
-  }
-  return 'other'
-}
-
-function readEntrySource(output: OutputAsset | OutputChunk) {
-  if (output.type === 'chunk') {
-    return output.code
-  }
-  return output.source.toString()
-}
-
-function toJsAbsoluteFilename(file: string, outDir: string) {
-  return toAbsoluteOutputPath(file, outDir)
-}
-
-function computeDirtyEntries(
-  entries: [string, OutputAsset | OutputChunk][],
-  opts: InternalUserDefinedOptions,
-  state: BundleBuildState,
-): DirtyEntriesResult {
-  const nextSourceHashByFile = new Map<string, string>()
-  const changedByType: Record<EntryType, Set<string>> = {
-    html: new Set<string>(),
-    js: new Set<string>(),
-    css: new Set<string>(),
-    other: new Set<string>(),
-  }
-
-  for (const [file, output] of entries) {
-    const type = classifyEntry(file, opts)
-    const source = readEntrySource(output)
-    const hash = opts.cache.computeHash(source)
-    nextSourceHashByFile.set(file, hash)
-
-    const previousHash = state.previousSourceHashByFile.get(file)
-    if (previousHash == null || previousHash !== hash) {
-      changedByType[type].add(file)
-    }
-  }
-
-  return {
-    sourceHashByFile: nextSourceHashByFile,
-    changedByType,
-  }
-}
-
-function buildProcessSets(
-  entries: [string, OutputAsset | OutputChunk][],
-  opts: InternalUserDefinedOptions,
-  changedByType: Record<EntryType, Set<string>>,
-  previousLinkedByEntry: Map<string, Set<string>>,
-  forceAll = false,
-) {
-  const processFiles: ProcessFileSets = {
-    html: new Set<string>(),
-    js: new Set<string>(),
-    css: new Set<string>(),
-  }
-  const linkedImpactsByEntry = new Map<string, Set<string>>()
-
-  if (forceAll) {
-    for (const [file] of entries) {
-      const type = classifyEntry(file, opts)
-      if (type === 'html' || type === 'js' || type === 'css') {
-        processFiles[type].add(file)
-      }
-    }
-    return {
-      files: processFiles,
-      linkedImpactsByEntry,
-    }
-  }
-
-  const firstRun = previousLinkedByEntry.size === 0
-  if (firstRun) {
-    for (const [file] of entries) {
-      const type = classifyEntry(file, opts)
-      if (type === 'html' || type === 'js' || type === 'css') {
-        processFiles[type].add(file)
-      }
-    }
-    return {
-      files: processFiles,
-      linkedImpactsByEntry,
-    }
-  }
-
-  // 在 uni-app + Vite/HBuilderX 的 watch 模式下，即使模板源码未变化，
-  // 产物阶段仍可能在每一轮重新输出 html 资产。
-  // 因此这里始终让 html 进入缓存回填流程，避免仅 script 变更时 wxml 回退到未转义类名。
-  for (const [file] of entries) {
-    if (classifyEntry(file, opts) === 'html') {
-      processFiles.html.add(file)
-    }
-  }
-  for (const file of changedByType.css) {
-    processFiles.css.add(file)
-  }
-  for (const file of changedByType.js) {
-    processFiles.js.add(file)
-  }
-
-  for (const changedFile of changedByType.js) {
-    for (const [entryFile, linkedFiles] of previousLinkedByEntry.entries()) {
-      if (linkedFiles.has(changedFile)) {
-        processFiles.js.add(entryFile)
-        let impacts = linkedImpactsByEntry.get(entryFile)
-        if (!impacts) {
-          impacts = new Set<string>()
-          linkedImpactsByEntry.set(entryFile, impacts)
-        }
-        impacts.add(changedFile)
-      }
-    }
-  }
-
-  return {
-    files: processFiles,
-    linkedImpactsByEntry,
   }
 }
 
@@ -294,17 +144,16 @@ function hasRuntimeAffectingSourceChanges(changedByType: Record<EntryType, Set<s
 }
 
 export function createGenerateBundleHook(context: GenerateBundleContext) {
-  const state: BundleBuildState = {
-    iteration: 0,
-    previousSourceHashByFile: new Map<string, string>(),
-    previousLinkedByEntry: new Map<string, Set<string>>(),
-    changedByType: {
-      html: new Set<string>(),
-      js: new Set<string>(),
-      css: new Set<string>(),
-      other: new Set<string>(),
-    },
-  }
+  const state = createBundleBuildState()
+  const cssHandlerOptionsCache = new Map<string, {
+    isMainChunk: boolean
+    postcssOptions: {
+      options: {
+        from: string
+      }
+    }
+    majorVersion: number | undefined
+  }>()
 
   return async function generateBundle(_opt: unknown, bundle: Record<string, OutputAsset | OutputChunk>) {
     const {
@@ -327,6 +176,29 @@ export function createGenerateBundleHook(context: GenerateBundleContext) {
       uniAppX,
     } = opts
 
+    // 按文件缓存 CSS handler 的 override 对象，减少 watch/incremental 轮次的重复构造与下游 fingerprint 开销。
+    const getCssHandlerOptions = (file: string) => {
+      const majorVersion = runtimeState.twPatcher.majorVersion
+      const isMainChunk = mainCssChunkMatcher(file, appType)
+      const cacheKey = `${majorVersion ?? 'unknown'}:${isMainChunk ? '1' : '0'}:${file}`
+      const cached = cssHandlerOptionsCache.get(cacheKey)
+      if (cached) {
+        return cached
+      }
+
+      const created = {
+        isMainChunk,
+        postcssOptions: {
+          options: {
+            from: file,
+          },
+        },
+        majorVersion,
+      }
+      cssHandlerOptionsCache.set(cacheKey, created)
+      return created
+    }
+
     await runtimeState.patchPromise
     debug('start')
     onStart()
@@ -336,23 +208,26 @@ export function createGenerateBundleHook(context: GenerateBundleContext) {
     const disableDirtyOptimization = process.env.WEAPP_TW_VITE_DISABLE_DIRTY === '1'
     const disableJsPrecheck = process.env.WEAPP_TW_VITE_DISABLE_JS_PRECHECK === '1'
     const debugCssDiff = process.env.WEAPP_TW_VITE_DEBUG_CSS_DIFF === '1'
-    const entries = Object.entries(bundle)
-    const dirtyEntries = computeDirtyEntries(entries, opts, state)
-    const forceRuntimeRefreshBySource = hasRuntimeAffectingSourceChanges(dirtyEntries.changedByType)
+    const resolvedConfig = getResolvedConfig()
+    const rootDir = resolvedConfig?.root ? path.resolve(resolvedConfig.root) : process.cwd()
+    const outDir = resolvedConfig?.build?.outDir
+      ? path.resolve(rootDir, resolvedConfig.build.outDir)
+      : rootDir
+    const snapshot = buildBundleSnapshot(bundle, opts, outDir, state, disableDirtyOptimization)
+    const forceRuntimeRefreshBySource = hasRuntimeAffectingSourceChanges(snapshot.changedByType)
     const forceRuntimeRefresh = forceRuntimeRefreshByEnv || forceRuntimeRefreshBySource
-    const processSets = buildProcessSets(entries, opts, dirtyEntries.changedByType, state.previousLinkedByEntry, disableDirtyOptimization)
-    const processFiles = processSets.files
+    const processFiles = snapshot.processFiles
     debug(
       'dirty iteration=%d html=%d[%s] js=%d[%s] css=%d[%s] other=%d[%s]',
       state.iteration + 1,
-      dirtyEntries.changedByType.html.size,
-      formatDebugFileList(dirtyEntries.changedByType.html),
-      dirtyEntries.changedByType.js.size,
-      formatDebugFileList(dirtyEntries.changedByType.js),
-      dirtyEntries.changedByType.css.size,
-      formatDebugFileList(dirtyEntries.changedByType.css),
-      dirtyEntries.changedByType.other.size,
-      formatDebugFileList(dirtyEntries.changedByType.other),
+      snapshot.changedByType.html.size,
+      formatDebugFileList(snapshot.changedByType.html),
+      snapshot.changedByType.js.size,
+      formatDebugFileList(snapshot.changedByType.js),
+      snapshot.changedByType.css.size,
+      formatDebugFileList(snapshot.changedByType.css),
+      snapshot.changedByType.other.size,
+      formatDebugFileList(snapshot.changedByType.other),
     )
     debug(
       'process iteration=%d html=%d[%s] js=%d[%s] css=%d[%s]',
@@ -364,28 +239,19 @@ export function createGenerateBundleHook(context: GenerateBundleContext) {
       processFiles.css.size,
       formatDebugFileList(processFiles.css),
     )
-    const resolvedConfig = getResolvedConfig()
-    const rootDir = resolvedConfig?.root ? path.resolve(resolvedConfig.root) : process.cwd()
-    const outDir = resolvedConfig?.build?.outDir
-      ? path.resolve(rootDir, resolvedConfig.build.outDir)
-      : rootDir
-    const jsEntries = new Map<string, OutputEntry>()
-    for (const [fileName, output] of entries) {
-      const entry: OutputEntry = { fileName, output }
-      if (isJavaScriptEntry(entry)) {
-        const absolute = toJsAbsoluteFilename(fileName, outDir)
-        jsEntries.set(absolute, entry)
-      }
-    }
+    const jsEntries = snapshot.jsEntries
     const moduleGraphOptions = createBundleModuleGraphOptions(outDir, jsEntries)
     const runtimeStart = performance.now()
     const runtime = await ensureRuntimeClassSet(forceRuntimeRefresh)
+    const defaultTemplateHandlerOptions = {
+      runtimeSet: runtime,
+    }
     metrics.runtimeSet = measureElapsed(runtimeStart)
     if (forceRuntimeRefreshBySource) {
       debug(
         'runtimeSet forced refresh due to source changes: html=%d js=%d',
-        dirtyEntries.changedByType.html.size,
-        dirtyEntries.changedByType.js.size,
+        snapshot.changedByType.html.size,
+        snapshot.changedByType.js.size,
       )
     }
     debug('get runtimeSet, class count: %d', runtime.size)
@@ -424,15 +290,15 @@ export function createGenerateBundleHook(context: GenerateBundleContext) {
     const tasks: Promise<void>[] = []
     const jsTaskFactories: Array<() => Promise<void>> = []
 
-    for (const [file, originalSource] of entries) {
-      const type = classifyEntry(file, opts)
+    for (const entry of snapshot.entries) {
+      const { file, output: originalSource, source: originalEntrySource, type } = entry
 
       if (type === 'html' && originalSource.type === 'asset') {
         metrics.html.total++
         if (!processFiles.html.has(file)) {
           continue
         }
-        const rawSource = originalSource.source.toString()
+        const rawSource = originalEntrySource
         tasks.push(
           processCachedTask<string>({
             cache,
@@ -448,9 +314,7 @@ export function createGenerateBundleHook(context: GenerateBundleContext) {
             },
             async transform() {
               const start = performance.now()
-              const transformed = await templateHandler(rawSource, {
-                runtimeSet: runtime,
-              })
+              const transformed = await templateHandler(rawSource, defaultTemplateHandlerOptions)
               metrics.html.elapsed += measureElapsed(start)
               metrics.html.transformed++
               onUpdate(file, rawSource, transformed)
@@ -469,7 +333,7 @@ export function createGenerateBundleHook(context: GenerateBundleContext) {
         // uni-app dev/watch 会在每轮产物阶段重写 app.wxss。
         // 即便本轮 CSS 原文 hash 未变化，也必须回填缓存中的转译结果，
         // 否则会退回未转译内容并与同轮 JS/WXML 的 class 改写失配。
-        const rawSource = originalSource.source.toString()
+        const rawSource = originalEntrySource
         tasks.push(
           processCachedTask<string>({
             cache,
@@ -486,15 +350,7 @@ export function createGenerateBundleHook(context: GenerateBundleContext) {
             async transform() {
               const start = performance.now()
               await runtimeState.patchPromise
-              const { css } = await styleHandler(rawSource, {
-                isMainChunk: mainCssChunkMatcher(originalSource.fileName, appType),
-                postcssOptions: {
-                  options: {
-                    from: file,
-                  },
-                },
-                majorVersion: runtimeState.twPatcher.majorVersion,
-              })
+              const { css } = await styleHandler(rawSource, getCssHandlerOptions(file))
               if (debugCssDiff) {
                 debug('css diff %s: %s', file, summarizeStringDiff(rawSource, css))
               }
@@ -523,16 +379,16 @@ export function createGenerateBundleHook(context: GenerateBundleContext) {
       }
 
       if (originalSource.type === 'chunk') {
-        const absoluteFile = toJsAbsoluteFilename(file, outDir)
-        const initialRawSource = originalSource.code
+        const absoluteFile = path.resolve(outDir, file)
+        const initialRawSource = originalEntrySource
         const linkedSet = new Set<string>()
         linkedByEntry.set(file, linkedSet)
 
         jsTaskFactories.push(async () => {
           const linkedImpactSignature = createLinkedImpactSignature(
             file,
-            processSets.linkedImpactsByEntry,
-            dirtyEntries.sourceHashByFile,
+            snapshot.linkedImpactsByEntry,
+            snapshot.sourceHashByFile,
           )
           const hashSalt = createJsHashSalt(runtimeSignature, linkedImpactSignature)
           await processCachedTask<string>({
@@ -611,8 +467,8 @@ export function createGenerateBundleHook(context: GenerateBundleContext) {
               runtimeSignature,
               createLinkedImpactSignature(
                 file,
-                processSets.linkedImpactsByEntry,
-                dirtyEntries.sourceHashByFile,
+                snapshot.linkedImpactsByEntry,
+                snapshot.sourceHashByFile,
               ),
             ),
             createHandlerOptions,
@@ -634,8 +490,8 @@ export function createGenerateBundleHook(context: GenerateBundleContext) {
             metrics.js.transformed++
             return
           }
-          const currentSource = originalSource.source.toString()
-          const absoluteFile = toJsAbsoluteFilename(file, outDir)
+          const currentSource = originalEntrySource
+          const absoluteFile = path.resolve(outDir, file)
           const precheckOptions = createHandlerOptions(absoluteFile, {
             uniAppX: uniAppX ?? true,
             babelParserOptions: {
@@ -662,21 +518,7 @@ export function createGenerateBundleHook(context: GenerateBundleContext) {
       apply()
     }
 
-    state.iteration += 1
-    state.previousSourceHashByFile = dirtyEntries.sourceHashByFile
-    state.changedByType = dirtyEntries.changedByType
-
-    const nextLinkedByEntry = new Map(state.previousLinkedByEntry)
-    for (const [entryFile, linkedFiles] of linkedByEntry.entries()) {
-      nextLinkedByEntry.set(entryFile, linkedFiles)
-    }
-    for (const entryFile of [...nextLinkedByEntry.keys()]) {
-      const exists = entries.some(([fileName]) => fileName === entryFile)
-      if (!exists) {
-        nextLinkedByEntry.delete(entryFile)
-      }
-    }
-    state.previousLinkedByEntry = nextLinkedByEntry
+    updateBundleBuildState(state, snapshot, linkedByEntry)
 
     debug(
       'metrics iteration=%d runtime=%sms html(total=%d transform=%d hit=%d rate=%s elapsed=%sms) js(total=%d transform=%d hit=%d rate=%s elapsed=%sms) css(total=%d transform=%d hit=%d rate=%s elapsed=%sms)',

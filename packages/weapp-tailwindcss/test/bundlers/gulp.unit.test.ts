@@ -159,6 +159,33 @@ describe('bundlers/gulp createPlugins', () => {
     expect(templateHandler).toHaveBeenCalledTimes(2)
   })
 
+  it('reuses default css handler options across transformWxss invocations', async () => {
+    const plugins = createPlugins()
+
+    await runTransform(plugins.transformWxss(), createFile('/src/app.wxss', '.foo { color: blue; }'))
+    await runTransform(plugins.transformWxss(), createFile('/src/page.wxss', '.bar { color: green; }'))
+
+    expect(styleHandler).toHaveBeenCalledTimes(2)
+    expect(styleHandler.mock.calls[0]?.[1]).toBe(styleHandler.mock.calls[1]?.[1])
+    expect(styleHandler.mock.calls[0]?.[1]).toEqual({
+      isMainChunk: true,
+      majorVersion: 3,
+    })
+  })
+
+  it('reuses default template handler options across transformWxml invocations', async () => {
+    const plugins = createPlugins()
+
+    await runTransform(plugins.transformWxml(), createFile('/src/app.wxml', '<view class="foo"></view>'))
+    await runTransform(plugins.transformWxml(), createFile('/src/page.wxml', '<view class="bar"></view>'))
+
+    expect(templateHandler).toHaveBeenCalledTimes(2)
+    expect(templateHandler.mock.calls[0]?.[1]).toBe(templateHandler.mock.calls[1]?.[1])
+    expect(templateHandler.mock.calls[0]?.[1]).toEqual({
+      runtimeSet,
+    })
+  })
+
   it('resolves directory index files when building module graph', async () => {
     const plugins = createPlugins()
 

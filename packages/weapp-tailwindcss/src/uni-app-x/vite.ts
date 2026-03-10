@@ -62,25 +62,44 @@ export function createUniAppXPlugins(options: CreateUniAppXPluginsOptions): Plug
     getResolvedConfig,
   } = options
   const isIosPlatform = providedIosPlatform ?? resolveUniUtsPlatform().isAppIos
+  const cssHandlerOptionsCache = new Map<string, {
+    isMainChunk: boolean
+    postcssOptions: {
+      options: {
+        from: string
+        map: {
+          inline: false
+          annotation: false
+          sourcesContent: true
+        }
+      }
+    }
+  }>()
 
   async function transformStyle(code: string, id: string, query?: ReturnType<typeof parseVueRequest>['query']) {
     const parsed = query ?? parseVueRequest(id).query
     if (isCSSRequest(id) || (parsed.vue && parsed.type === 'style')) {
-      const postcssResult = await styleHandler(code, {
-        isMainChunk: mainCssChunkMatcher(id, appType),
-        postcssOptions: {
-          options: {
-            from: id,
-            map: {
-              inline: false,
-              annotation: false,
-              // PostCSS 可能返回虚拟文件，因此需要启用这一项以获取源内容
-              sourcesContent: true,
-              // 若上游预处理器已经生成 source map，sources 中可能出现重复条目
+      const cacheKey = `${mainCssChunkMatcher(id, appType) ? '1' : '0'}:${id}`
+      let styleHandlerOptions = cssHandlerOptionsCache.get(cacheKey)
+      if (!styleHandlerOptions) {
+        styleHandlerOptions = {
+          isMainChunk: mainCssChunkMatcher(id, appType),
+          postcssOptions: {
+            options: {
+              from: id,
+              map: {
+                inline: false,
+                annotation: false,
+                // PostCSS 可能返回虚拟文件，因此需要启用这一项以获取源内容
+                sourcesContent: true,
+                // 若上游预处理器已经生成 source map，sources 中可能出现重复条目
+              },
             },
           },
-        },
-      })
+        }
+        cssHandlerOptionsCache.set(cacheKey, styleHandlerOptions)
+      }
+      const postcssResult = await styleHandler(code, styleHandlerOptions)
       const rawPostcssMap = postcssResult.map.toJSON()
       const postcssMap = await formatPostcssSourceMap(
         rawPostcssMap as Omit<RawSourceMap, 'version'> as ExistingRawSourceMap,

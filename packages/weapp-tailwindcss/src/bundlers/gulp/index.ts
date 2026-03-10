@@ -37,6 +37,9 @@ export function createPlugins(options: UserDefinedOptions = {}) {
     refreshTailwindcssPatcher,
     onPatchCompleted: patchRecorderState.onPatchCompleted,
   }
+  const defaultStyleHandlerOptionsCache = new Map<number | 'unknown', Partial<IStyleHandlerOptions>>()
+  let cachedDefaultTemplateHandlerOptions: Partial<ITemplateHandlerOptions> | undefined
+  let cachedDefaultTemplateRuntimeSet: Set<string> | undefined
 
   const MODULE_EXTENSIONS = ['.js', '.mjs', '.cjs', '.ts', '.tsx', '.jsx']
   let runtimeSetInitialized = false
@@ -138,6 +141,44 @@ export function createPlugins(options: UserDefinedOptions = {}) {
     })
   }
 
+  function resolveWxssHandlerOptions(options?: Partial<IStyleHandlerOptions>) {
+    const majorVersion = runtimeState.twPatcher.majorVersion ?? 'unknown'
+    if (!options || Object.keys(options).length === 0) {
+      let cached = defaultStyleHandlerOptionsCache.get(majorVersion)
+      if (!cached) {
+        cached = {
+          isMainChunk: true,
+          majorVersion: runtimeState.twPatcher.majorVersion,
+        }
+        defaultStyleHandlerOptionsCache.set(majorVersion, cached)
+      }
+      return cached
+    }
+
+    return {
+      isMainChunk: true,
+      majorVersion: runtimeState.twPatcher.majorVersion,
+      ...options,
+    }
+  }
+
+  function resolveWxmlHandlerOptions(options?: Partial<ITemplateHandlerOptions>) {
+    if (!options || Object.keys(options).length === 0) {
+      if (cachedDefaultTemplateRuntimeSet !== runtimeSet || !cachedDefaultTemplateHandlerOptions) {
+        cachedDefaultTemplateRuntimeSet = runtimeSet
+        cachedDefaultTemplateHandlerOptions = {
+          runtimeSet,
+        }
+      }
+      return cachedDefaultTemplateHandlerOptions
+    }
+
+    return {
+      runtimeSet,
+      ...options,
+    }
+  }
+
   const transformWxss = (options: Partial<IStyleHandlerOptions> = {}) =>
     createVinylTransform(async (file) => {
       if (!file.contents) {
@@ -158,11 +199,7 @@ export function createPlugins(options: UserDefinedOptions = {}) {
         },
         async transform() {
           await runtimeState.patchPromise
-          const { css } = await styleHandler(rawSource, {
-            isMainChunk: true,
-            majorVersion: runtimeState.twPatcher.majorVersion,
-            ...options,
-          })
+          const { css } = await styleHandler(rawSource, resolveWxssHandlerOptions(options))
           debug('css handle: %s', file.path)
           return {
             result: css,
@@ -233,10 +270,7 @@ export function createPlugins(options: UserDefinedOptions = {}) {
         },
         async transform() {
           await runtimeState.patchPromise
-          const code = await templateHandler(rawSource, {
-            runtimeSet,
-            ...options,
-          })
+          const code = await templateHandler(rawSource, resolveWxmlHandlerOptions(options))
           debug('html handle: %s', file.path)
           return {
             result: code,

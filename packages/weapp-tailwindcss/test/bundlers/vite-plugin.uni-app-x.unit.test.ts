@@ -122,6 +122,25 @@ describe('bundlers/vite UnifiedViteWeappTailwindcssPlugin uni-app-x', () => {
     expect((bundle['index.asset.js'] as OutputAsset).source).toBe('js:console.log("text-[#565656]")')
   }, TEST_TIMEOUT_MS)
 
+  it('reuses css handler override objects for repeated uni-app-x style transforms', async () => {
+    const UnifiedViteWeappTailwindcssPlugin = await loadUnifiedVitePlugin()
+    setCurrentContext(createContext({
+      uniAppX: { enabled: true },
+    }))
+    const currentContext = getCurrentContext()
+
+    const plugins = UnifiedViteWeappTailwindcssPlugin()
+    const cssPlugin = plugins?.find(plugin => plugin.name === 'weapp-tailwindcss:uni-app-x:css') as Plugin
+    expect(cssPlugin).toBeTruthy()
+
+    const cssTransform = cssPlugin.transform as any
+    await cssTransform?.call(cssPlugin, '.foo { color: red; }', 'App.uvue?vue&type=style&index=0')
+    await cssTransform?.call(cssPlugin, '.foo { color: blue; }', 'App.uvue?vue&type=style&index=0')
+
+    expect(currentContext.styleHandler).toHaveBeenCalledTimes(2)
+    expect(currentContext.styleHandler.mock.calls[0]?.[1]).toBe(currentContext.styleHandler.mock.calls[1]?.[1])
+  }, TEST_TIMEOUT_MS)
+
   it('forces runtime refresh for every uni-app-x transform when serving', async () => {
     const UnifiedViteWeappTailwindcssPlugin = await loadUnifiedVitePlugin()
     const transformUVueMock = getTransformUVueMock()

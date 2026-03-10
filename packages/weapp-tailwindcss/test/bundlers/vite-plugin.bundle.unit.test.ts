@@ -186,6 +186,74 @@ const trace = "at App.vue:4"
     expect(currentContext.twPatcher.getClassSetSync).toHaveBeenCalledTimes(2)
   }, TEST_TIMEOUT_MS)
 
+  it('reuses css handler override objects for the same asset across incremental runs', async () => {
+    const UnifiedViteWeappTailwindcssPlugin = await loadUnifiedVitePlugin()
+    const currentContext = getCurrentContext()
+    const plugins = UnifiedViteWeappTailwindcssPlugin()
+    const postPlugin = plugins?.find(plugin => plugin.name === 'weapp-tailwindcss:adaptor:post') as Plugin
+    expect(postPlugin).toBeTruthy()
+
+    await (postPlugin.configResolved as any)?.call(postPlugin, {
+      command: 'serve',
+      root: process.cwd(),
+      css: { postcss: { plugins: [] } },
+      build: { outDir: 'dist' },
+    } as ResolvedConfig)
+
+    const generateBundle = postPlugin.generateBundle as any
+    const firstBundle = {
+      'pages/index/index.css': {
+        ...createRollupAsset('.foo { color: red; }'),
+        fileName: 'pages/index/index.css',
+      },
+    }
+
+    const secondBundle = {
+      'pages/index/index.css': {
+        ...createRollupAsset('.foo { color: blue; }'),
+        fileName: 'pages/index/index.css',
+      },
+    }
+
+    await generateBundle?.call(postPlugin, {} as any, firstBundle)
+    await generateBundle?.call(postPlugin, {} as any, secondBundle)
+
+    expect(currentContext.styleHandler).toHaveBeenCalledTimes(2)
+    expect(currentContext.styleHandler.mock.calls[0]?.[1]).toBe(currentContext.styleHandler.mock.calls[1]?.[1])
+  }, TEST_TIMEOUT_MS)
+
+  it('reuses template handler options for multiple html assets in one bundle pass', async () => {
+    const UnifiedViteWeappTailwindcssPlugin = await loadUnifiedVitePlugin()
+    const currentContext = getCurrentContext()
+    const plugins = UnifiedViteWeappTailwindcssPlugin()
+    const postPlugin = plugins?.find(plugin => plugin.name === 'weapp-tailwindcss:adaptor:post') as Plugin
+    expect(postPlugin).toBeTruthy()
+
+    await (postPlugin.configResolved as any)?.call(postPlugin, {
+      command: 'serve',
+      root: process.cwd(),
+      css: { postcss: { plugins: [] } },
+      build: { outDir: 'dist' },
+    } as ResolvedConfig)
+
+    const generateBundle = postPlugin.generateBundle as any
+    const bundle = {
+      'pages/index/index.wxml': {
+        ...createRollupAsset('<view class="foo"></view>'),
+        fileName: 'pages/index/index.wxml',
+      },
+      'pages/home/index.wxml': {
+        ...createRollupAsset('<view class="bar"></view>'),
+        fileName: 'pages/home/index.wxml',
+      },
+    }
+
+    await generateBundle?.call(postPlugin, {} as any, bundle)
+
+    expect(currentContext.templateHandler).toHaveBeenCalledTimes(2)
+    expect(currentContext.templateHandler.mock.calls[0]?.[1]).toBe(currentContext.templateHandler.mock.calls[1]?.[1])
+  }, TEST_TIMEOUT_MS)
+
   it('fixes issue #814 in tw4 fixture when cwd is app root (escaped runtime set entries should still hit)', async () => {
     const UnifiedViteWeappTailwindcssPlugin = await loadUnifiedVitePlugin()
     const { wxml, js } = await loadIssue814Fixture()

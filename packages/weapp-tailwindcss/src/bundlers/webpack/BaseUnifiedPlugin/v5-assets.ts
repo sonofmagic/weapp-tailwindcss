@@ -41,6 +41,15 @@ export function setupWebpackV5ProcessAssetsHook(options: SetupWebpackV5ProcessAs
   } = options
   const { Compilation, sources } = compiler.webpack
   const { ConcatSource } = sources
+  const cssHandlerOptionsCache = new Map<string, {
+    isMainChunk: boolean
+    postcssOptions: {
+      options: {
+        from: string
+      }
+    }
+    majorVersion: number | undefined
+  }>()
 
   compiler.hooks.compilation.tap(pluginName, (compilation) => {
     compilation.hooks.processAssets.tapPromise(
@@ -118,6 +127,27 @@ export function setupWebpackV5ProcessAssetsHook(options: SetupWebpackV5ProcessAs
           }
         }
         const groupedEntries = getGroupedEntries(entries, compilerOptions)
+        const getCssHandlerOptions = (file: string) => {
+          const majorVersion = runtimeState.twPatcher.majorVersion
+          const isMainChunk = compilerOptions.mainCssChunkMatcher(file, appType)
+          const cacheKey = `${majorVersion ?? 'unknown'}:${isMainChunk ? '1' : '0'}:${file}`
+          const cached = cssHandlerOptionsCache.get(cacheKey)
+          if (cached) {
+            return cached
+          }
+
+          const created = {
+            isMainChunk,
+            postcssOptions: {
+              options: {
+                from: file,
+              },
+            },
+            majorVersion,
+          }
+          cssHandlerOptionsCache.set(cacheKey, created)
+          return created
+        }
         const staleClassNameFallback = resolveWebpackStaleClassNameFallback(compilerOptions.staleClassNameFallback, compiler)
         const runtimeSet = await ensureRuntimeClassSet(runtimeState, {
           // webpack 的 script-only 热更新可能不会触发 runtime classset loader，
@@ -125,6 +155,9 @@ export function setupWebpackV5ProcessAssetsHook(options: SetupWebpackV5ProcessAs
           forceCollect: true,
           allowEmpty: false,
         })
+        const defaultTemplateHandlerOptions = {
+          runtimeSet,
+        }
         debug('get runtimeSet, class count: %d', runtimeSet.size)
         const tasks: Promise<void>[] = []
         if (Array.isArray(groupedEntries.html)) {
@@ -149,9 +182,7 @@ export function setupWebpackV5ProcessAssetsHook(options: SetupWebpackV5ProcessAs
                   debug('html cache hit: %s', file)
                 },
                 transform: async () => {
-                  const wxml = await compilerOptions.templateHandler(rawSource, {
-                    runtimeSet,
-                  })
+                  const wxml = await compilerOptions.templateHandler(rawSource, defaultTemplateHandlerOptions)
                   const source = new ConcatSource(wxml)
 
                   compilerOptions.onUpdate(file, rawSource, wxml)
@@ -242,15 +273,7 @@ export function setupWebpackV5ProcessAssetsHook(options: SetupWebpackV5ProcessAs
                 },
                 transform: async () => {
                   await runtimeState.patchPromise
-                  const { css } = await compilerOptions.styleHandler(rawSource, {
-                    isMainChunk: compilerOptions.mainCssChunkMatcher(file, appType),
-                    postcssOptions: {
-                      options: {
-                        from: file,
-                      },
-                    },
-                    majorVersion: runtimeState.twPatcher.majorVersion,
-                  })
+                  const { css } = await compilerOptions.styleHandler(rawSource, getCssHandlerOptions(file))
                   const source = new ConcatSource(css)
 
                   compilerOptions.onUpdate(file, rawSource, css)

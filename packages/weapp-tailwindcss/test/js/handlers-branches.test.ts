@@ -153,6 +153,17 @@ describe('replaceHandleValue branch coverage', () => {
     expect(token?.value).toBe('w-_b100px_B w-_b100px_B')
   })
 
+  it('keeps repeated escaped runtime-set hits stable in the same literal', () => {
+    const quasi = getLiteralPath('const tpl = `gap-[20px] gap-[20px]`', 'TemplateElement')
+    const token = replaceHandleValue(quasi, {
+      escapeMap: MappingChars2String,
+      classNameSet: new Set(['gap-_b20px_B']),
+      needEscaped: false,
+    })
+
+    expect(token?.value).toBe('gap-_b20px_B gap-_b20px_B')
+  })
+
   it('evaluates unicode decoding guard when no escape is present', () => {
     const literal = getLiteralPath('const plain = \'flex\'', 'StringLiteral')
     const token = replaceHandleValue(literal, {
