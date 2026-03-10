@@ -169,6 +169,7 @@ describe('replaceHandleValue branch coverage', () => {
   it('reuses the candidate plan for repeated candidates in one literal', () => {
     const literal = getLiteralPath('const repeated = \'w-[100px] w-[100px]\'', 'StringLiteral')
     const spy = vi.spyOn(classNameTransform, 'resolveClassNameTransformWithResult')
+    spy.mockClear()
 
     const token = replaceHandleValue(literal, {
       escapeMap: MappingChars2String,
@@ -178,6 +179,21 @@ describe('replaceHandleValue branch coverage', () => {
 
     expect(token?.value).toBe('w-_b100px_B w-_b100px_B')
     expect(spy).toHaveBeenCalledTimes(1)
+  })
+
+  it('keeps reusing the candidate plan after promoting to a multi-candidate cache', () => {
+    const literal = getLiteralPath('const repeated = \'w-[100px] gap-[20px] w-[100px]\'', 'StringLiteral')
+    const spy = vi.spyOn(classNameTransform, 'resolveClassNameTransformWithResult')
+    spy.mockClear()
+
+    const token = replaceHandleValue(literal, {
+      escapeMap: MappingChars2String,
+      classNameSet: new Set(['w-[100px]', 'gap-[20px]']),
+      needEscaped: true,
+    })
+
+    expect(token?.value).toBe('w-_b100px_B gap-_b20px_B w-_b100px_B')
+    expect(spy).toHaveBeenCalledTimes(2)
   })
 
   it('keeps transformed output stable when escaped and skipped candidates coexist', () => {

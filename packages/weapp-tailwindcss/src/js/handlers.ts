@@ -111,20 +111,15 @@ function createCandidatePlanResolver(
         classContext,
       }
     : options
-  const cache = new Map<string, CandidatePlan>()
+  let firstCandidate = ''
+  let firstPlan: CandidatePlan | undefined
+  let cache: Map<string, CandidatePlan> | undefined
 
-  return (candidate: string): CandidatePlan => {
-    const cached = cache.get(candidate)
-    if (cached) {
-      return cached
-    }
-
+  const buildCandidatePlan = (candidate: string): CandidatePlan => {
     const result = resolveClassNameTransformWithResult(candidate, transformOptions)
 
     if (result.decision === 'skip') {
-      const plan = { result }
-      cache.set(candidate, plan)
-      return plan
+      return { result }
     }
 
     let replacement: string
@@ -136,9 +131,33 @@ function createCandidatePlanResolver(
       replacement = getReplacement(candidate, escapeMap)
     }
 
-    const plan = {
+    return {
       result,
       replacement,
+    }
+  }
+
+  return (candidate: string): CandidatePlan => {
+    if (cache) {
+      const cached = cache.get(candidate)
+      if (cached) {
+        return cached
+      }
+    }
+    else if (firstPlan && candidate === firstCandidate) {
+      return firstPlan
+    }
+
+    const plan = buildCandidatePlan(candidate)
+    if (!firstPlan) {
+      firstCandidate = candidate
+      firstPlan = plan
+      return plan
+    }
+
+    if (!cache) {
+      cache = new Map<string, CandidatePlan>()
+      cache.set(firstCandidate, firstPlan)
     }
     cache.set(candidate, plan)
     return plan
