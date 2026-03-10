@@ -46,61 +46,71 @@ export function createContext(options: UserDefinedOptions = {}) {
   }
   const defaultJsHandlerOptionsCache = new Map<number, CreateJsHandlerOptions>()
 
-  function withRuntimeTailwindMajorVersion(options?: CreateJsHandlerOptions): CreateJsHandlerOptions {
-    const resolvedOptions: CreateJsHandlerOptions = {
-      ...(options ?? {}),
+  function getDefaultJsHandlerOptions(majorVersion = runtimeState.twPatcher.majorVersion) {
+    if (typeof majorVersion !== 'number') {
+      return undefined
     }
-    if (typeof resolvedOptions.tailwindcssMajorVersion === 'number') {
-      return resolvedOptions
+
+    let cached = defaultJsHandlerOptionsCache.get(majorVersion)
+    if (!cached) {
+      cached = {
+        tailwindcssMajorVersion: majorVersion,
+      }
+      defaultJsHandlerOptionsCache.set(majorVersion, cached)
     }
+    return cached
+  }
+
+  function withRuntimeTailwindMajorVersion(options?: CreateJsHandlerOptions) {
+    if (!options) {
+      return getDefaultJsHandlerOptions()
+    }
+
+    if (typeof options.tailwindcssMajorVersion === 'number') {
+      return options
+    }
+
     const majorVersion = runtimeState.twPatcher.majorVersion
-    if (typeof majorVersion === 'number') {
-      resolvedOptions.tailwindcssMajorVersion = majorVersion
+    if (typeof majorVersion !== 'number') {
+      return options
     }
-    return resolvedOptions
+
+    return {
+      ...options,
+      tailwindcssMajorVersion: majorVersion,
+    }
   }
 
   function resolveTransformJsOptions(options?: RuntimeJsTransformOptions): CreateJsHandlerOptions | undefined {
     if (!options) {
-      const majorVersion = runtimeState.twPatcher.majorVersion
-      if (typeof majorVersion !== 'number') {
-        return undefined
-      }
-      let cached = defaultJsHandlerOptionsCache.get(majorVersion)
-      if (!cached) {
-        cached = {
-          tailwindcssMajorVersion: majorVersion,
-        }
-        defaultJsHandlerOptionsCache.set(majorVersion, cached)
-      }
-      return cached
+      return getDefaultJsHandlerOptions()
     }
 
-    if (!('runtimeSet' in options) && typeof options.tailwindcssMajorVersion === 'number') {
+    let hasHandlerOption = false
+    let runtimeSetProvided = false
+    for (const key in options) {
+      if (key === 'runtimeSet') {
+        runtimeSetProvided = true
+        continue
+      }
+      hasHandlerOption = true
+      break
+    }
+
+    if (!hasHandlerOption) {
+      return getDefaultJsHandlerOptions()
+    }
+
+    if (!runtimeSetProvided && typeof options.tailwindcssMajorVersion === 'number') {
       return options
     }
 
-    const { runtimeSet: _runtimeSet, ...handlerOptions } = options
-    if (Object.keys(handlerOptions).length === 0) {
-      const majorVersion = runtimeState.twPatcher.majorVersion
-      if (typeof majorVersion !== 'number') {
-        return undefined
-      }
-      let cached = defaultJsHandlerOptionsCache.get(majorVersion)
-      if (!cached) {
-        cached = {
-          tailwindcssMajorVersion: majorVersion,
-        }
-        defaultJsHandlerOptionsCache.set(majorVersion, cached)
-      }
-      return cached
+    if (runtimeSetProvided) {
+      const { runtimeSet: _runtimeSet, ...handlerOptions } = options
+      return withRuntimeTailwindMajorVersion(handlerOptions)
     }
 
-    if (typeof handlerOptions.tailwindcssMajorVersion === 'number') {
-      return handlerOptions
-    }
-
-    return withRuntimeTailwindMajorVersion(handlerOptions)
+    return withRuntimeTailwindMajorVersion(options)
   }
 
   const runtimeAwareTemplateJsHandler = (
@@ -112,17 +122,47 @@ export function createContext(options: UserDefinedOptions = {}) {
   }
   let cachedDefaultTemplateHandlerOptions: ITemplateHandlerOptions | undefined
   let cachedDefaultTemplateRuntimeSet: Set<string> | undefined
+  let cachedRuntimeOnlyTemplateHandlerOptions: ITemplateHandlerOptions | undefined
+  let cachedRuntimeOnlyTemplateRuntimeSet: Set<string> | undefined
+
+  function getDefaultTemplateHandlerOptions() {
+    if (cachedDefaultTemplateRuntimeSet !== runtimeSet || !cachedDefaultTemplateHandlerOptions) {
+      cachedDefaultTemplateRuntimeSet = runtimeSet
+      cachedDefaultTemplateHandlerOptions = {
+        runtimeSet,
+        jsHandler: runtimeAwareTemplateJsHandler,
+      }
+    }
+    return cachedDefaultTemplateHandlerOptions
+  }
 
   function resolveTransformWxmlOptions(options?: ITemplateHandlerOptions) {
     if (!options) {
-      if (cachedDefaultTemplateRuntimeSet !== runtimeSet || !cachedDefaultTemplateHandlerOptions) {
-        cachedDefaultTemplateRuntimeSet = runtimeSet
-        cachedDefaultTemplateHandlerOptions = {
-          runtimeSet,
+      return getDefaultTemplateHandlerOptions()
+    }
+
+    let hasOverride = false
+    for (const key in options) {
+      if (key !== 'runtimeSet') {
+        hasOverride = true
+        break
+      }
+    }
+
+    if (!hasOverride) {
+      const runtimeOverride = options.runtimeSet
+      if (runtimeOverride === undefined || runtimeOverride === runtimeSet) {
+        return getDefaultTemplateHandlerOptions()
+      }
+
+      if (cachedRuntimeOnlyTemplateRuntimeSet !== runtimeOverride || !cachedRuntimeOnlyTemplateHandlerOptions) {
+        cachedRuntimeOnlyTemplateRuntimeSet = runtimeOverride
+        cachedRuntimeOnlyTemplateHandlerOptions = {
+          runtimeSet: runtimeOverride,
           jsHandler: runtimeAwareTemplateJsHandler,
         }
       }
-      return cachedDefaultTemplateHandlerOptions
+      return cachedRuntimeOnlyTemplateHandlerOptions
     }
 
     return defuOverrideArray(options, {
@@ -141,7 +181,7 @@ export function createContext(options: UserDefinedOptions = {}) {
     return result
   }
 
-  async function transformJs(rawJs: string, options: RuntimeJsTransformOptions = {}) {
+  async function transformJs(rawJs: string, options?: RuntimeJsTransformOptions) {
     await runtimeState.patchPromise
     if (options?.runtimeSet) {
       runtimeSet = options.runtimeSet

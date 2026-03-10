@@ -1,4 +1,5 @@
 // @ts-nocheck
+import { vi } from 'vitest'
 import { MappingChars2String } from '@/escape'
 import { customTemplateHandler } from '@/wxml/utils'
 import { createGetCase, format, wxmlCasePath } from '../util'
@@ -92,6 +93,21 @@ describe('customTemplateHandler', () => {
     const result = await customTemplateHandler(testCase)
 
     expect(result).toBe(testCase)
+  })
+
+  it('transforms inline wxs when enabled', async () => {
+    const testCase = `<wxs module="status">const cls = 'bg-[#fafa00]'</wxs>`
+    const jsHandler = vi.fn(code => ({
+      code: code.replace('bg-[#fafa00]', 'bg-_b_hfafa00_B'),
+    }))
+
+    const result = await customTemplateHandler(testCase, {
+      inlineWxs: true,
+      jsHandler,
+      runtimeSet: new Set(['bg-[#fafa00]']),
+    })
+
+    expect(result).toBe(`<wxs module="status">const cls = 'bg-_b_hfafa00_B'</wxs>`)
   })
 
   it('should ', async () => {

@@ -1,5 +1,4 @@
 import type { ITemplateHandlerOptions } from '../types'
-import { defuOverrideArray } from '../utils'
 import { createAttributeMatcher, isPropsMatch } from './custom-attributes'
 import { generateCode } from './utils/codegen'
 import { customTemplateHandler } from './utils/custom-template'
@@ -13,7 +12,24 @@ export function createTemplateHandler(options: Omit<ITemplateHandlerOptions, 'ru
   const cachedMatcher = createAttributeMatcher(
     (options as ITemplateHandlerOptions).customAttributesEntities,
   )
-  return (rawSource: string, opt: Pick<ITemplateHandlerOptions, 'runtimeSet'> = {}) => {
-    return customTemplateHandler(rawSource, defuOverrideArray(opt, options) as Required<ITemplateHandlerOptions>, cachedMatcher)
+  const defaultOptions = options as Required<ITemplateHandlerOptions>
+  let cachedRuntimeSet: Set<string> | undefined
+  let cachedOptionsWithRuntimeSet: Required<ITemplateHandlerOptions> | undefined
+
+  return (rawSource: string, opt?: Pick<ITemplateHandlerOptions, 'runtimeSet'>) => {
+    const runtimeSet = opt?.runtimeSet
+    if (runtimeSet === undefined) {
+      return customTemplateHandler(rawSource, defaultOptions, cachedMatcher)
+    }
+
+    if (cachedRuntimeSet !== runtimeSet || !cachedOptionsWithRuntimeSet) {
+      cachedRuntimeSet = runtimeSet
+      cachedOptionsWithRuntimeSet = {
+        ...defaultOptions,
+        runtimeSet,
+      } as Required<ITemplateHandlerOptions>
+    }
+
+    return customTemplateHandler(rawSource, cachedOptionsWithRuntimeSet, cachedMatcher)
   }
 }

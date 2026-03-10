@@ -143,6 +143,28 @@ describe('core transformWxml option reuse', () => {
     expect(firstOptions).not.toBe(secondOptions)
     expect(firstOptions?.runtimeSet).not.toBe(secondOptions?.runtimeSet)
   })
+
+  it('reuses the runtimeSet-only template options object when caller runtimeSet is stable', async () => {
+    templateHandler.mockResolvedValue('<view class="text-_b12px_B"></view>')
+    const ctx = createContext()
+    const runtimeSet = new Set(['text-[12px]'])
+
+    await ctx.transformWxml('<view class="text-[12px]"></view>', {
+      runtimeSet,
+    })
+    await ctx.transformWxml('<view class="text-[12px]"></view>', {
+      runtimeSet,
+    })
+
+    const firstOptions = templateHandler.mock.calls[0]?.[1]
+    const secondOptions = templateHandler.mock.calls[1]?.[1]
+
+    expect(firstOptions).toBe(secondOptions)
+    expect(firstOptions).toEqual({
+      runtimeSet,
+      jsHandler: expect.any(Function),
+    })
+  })
 })
 
 describe('core transformJs option reuse', () => {
