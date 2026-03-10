@@ -119,6 +119,22 @@ describe('post plugin edge cases', () => {
     const result = await postcss([post]).process('.a { /*c*/ margin-left: 1px; margin-inline-start: 1px; }', { from: undefined })
     expect(result.css).toContain('margin-left')
   })
+
+  it('appends host only for default root selector groups', async () => {
+    const post = postcssWeappTailwindcssPostPlugin({
+      cssSelectorReplacement: { root: ['page', '.tw-root', 'wx-root-portal-content'] },
+    })
+    const result = await postcss([post]).process('page,.tw-root,wx-root-portal-content { color: red; }', { from: undefined })
+    expect(result.css).toContain(':host')
+  })
+
+  it('skips host append for customized root selectors', async () => {
+    const post = postcssWeappTailwindcssPostPlugin({
+      cssSelectorReplacement: { root: ['page', '.custom-root', 'wx-root-portal-content'] },
+    })
+    const result = await postcss([post]).process('page,.custom-root,wx-root-portal-content { color: red; }', { from: undefined })
+    expect(result.css).not.toContain(':host')
+  })
 })
 
 describe('custom property cleaner', () => {

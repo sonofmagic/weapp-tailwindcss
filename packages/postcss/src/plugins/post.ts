@@ -24,21 +24,24 @@ function normalizeRootSelectors(value?: string | string[] | false) {
   return Array.isArray(value) ? value.filter(Boolean) : [value]
 }
 
-function shouldAppendHostSelector(rule: Rule, options: IStyleHandlerOptions) {
-  const selectors = rule.selectors ?? []
-  if (selectors.includes(':host')) {
-    return false
-  }
-
+function createHostSelectorAppender(options: IStyleHandlerOptions) {
   const rootSelectors = normalizeRootSelectors(options.cssSelectorReplacement?.root)
-  if (
-    rootSelectors.length !== DEFAULT_ROOT_SELECTORS.length
-    || !rootSelectors.every((selector, index) => selector === DEFAULT_ROOT_SELECTORS[index])
-  ) {
-    return false
+  const shouldAppendHostSelector = (
+    rootSelectors.length === DEFAULT_ROOT_SELECTORS.length
+    && rootSelectors.every((selector, index) => selector === DEFAULT_ROOT_SELECTORS[index])
+  )
+
+  if (!shouldAppendHostSelector) {
+    return undefined
   }
 
-  return DEFAULT_ROOT_SELECTORS.every(selector => selectors.includes(selector))
+  return (rule: Rule) => {
+    const selectors = rule.selectors ?? []
+    if (selectors.includes(':host')) {
+      return false
+    }
+    return DEFAULT_ROOT_SELECTORS.every(selector => selectors.includes(selector))
+  }
 }
 
 // 后处理插件收敛所有规则，在退出阶段执行去重与兜底
@@ -52,6 +55,7 @@ const postcssWeappTailwindcssPostPlugin: PostcssWeappTailwindcssRenamePlugin = (
     postcssPlugin,
   }
   const cleanRootSpecificity = createRootSpecificityCleaner(opts)
+  const shouldAppendHostSelector = createHostSelectorAppender(opts)
 
   const enableMainChunkTransforms = opts.isMainChunk !== false
   if (enableMainChunkTransforms || cleanRootSpecificity) {
@@ -65,7 +69,7 @@ const postcssWeappTailwindcssPostPlugin: PostcssWeappTailwindcssRenamePlugin = (
       cleanRootSpecificity?.(rule)
 
       if (enableMainChunkTransforms) {
-        if (shouldAppendHostSelector(rule, opts)) {
+        if (shouldAppendHostSelector?.(rule)) {
           rule.selectors = [...rule.selectors, ':host']
         }
 
