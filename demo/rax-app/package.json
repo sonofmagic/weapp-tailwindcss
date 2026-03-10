@@ -50,7 +50,7 @@
     "autoprefixer": "catalog:autoprefixer10",
     "build-plugin-app-core": "^2.1.4",
     "cross-env": "catalog:crossEnv",
-    "eslint": "^10.0.2",
+    "eslint": "^10.0.3",
     "postcss": "catalog:postcss85",
     "postcss-rem-to-responsive-pixel": "catalog:postcssRem610",
     "postcss-rpx-transform": "catalog:postcssRpx",
