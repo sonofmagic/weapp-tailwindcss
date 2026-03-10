@@ -66,12 +66,10 @@ function isArbitraryValueCandidate(candidate: string) {
   return true
 }
 
-export function shouldEnableArbitraryValueFallback(
-  {
-    classNameSet,
-    jsArbitraryValueFallback,
-    tailwindcssMajorVersion,
-  }: Pick<ResolveClassNameTransformOptions, 'classNameSet' | 'jsArbitraryValueFallback' | 'tailwindcssMajorVersion'>,
+function shouldEnableArbitraryValueFallbackByInputs(
+  classNameSet: ResolveClassNameTransformOptions['classNameSet'],
+  jsArbitraryValueFallback: ResolveClassNameTransformOptions['jsArbitraryValueFallback'],
+  tailwindcssMajorVersion: ResolveClassNameTransformOptions['tailwindcssMajorVersion'],
 ) {
   if (jsArbitraryValueFallback === true) {
     return true
@@ -83,6 +81,20 @@ export function shouldEnableArbitraryValueFallback(
 
   // auto: 仅在 Tailwind v4 且 classNameSet 异常（空）时启用。
   return tailwindcssMajorVersion === 4 && (!classNameSet || classNameSet.size === 0)
+}
+
+export function shouldEnableArbitraryValueFallback(
+  {
+    classNameSet,
+    jsArbitraryValueFallback,
+    tailwindcssMajorVersion,
+  }: Pick<ResolveClassNameTransformOptions, 'classNameSet' | 'jsArbitraryValueFallback' | 'tailwindcssMajorVersion'>,
+) {
+  return shouldEnableArbitraryValueFallbackByInputs(
+    classNameSet,
+    jsArbitraryValueFallback,
+    tailwindcssMajorVersion,
+  )
 }
 
 const SKIP_RESULT: ClassNameTransformResult = { decision: 'skip' }
@@ -155,11 +167,7 @@ export function resolveClassNameTransformWithResult(
   if (
     classContext
     && isArbitraryValueCandidate(candidate)
-    && shouldEnableArbitraryValueFallback({
-      classNameSet,
-      jsArbitraryValueFallback,
-      tailwindcssMajorVersion,
-    })
+    && shouldEnableArbitraryValueFallbackByInputs(classNameSet, jsArbitraryValueFallback, tailwindcssMajorVersion)
   ) {
     return FALLBACK_RESULT
   }

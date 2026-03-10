@@ -46,4 +46,16 @@ describe('classname transform caching', () => {
       decision: 'skip',
     })
   })
+
+  it('enables auto fallback for tailwindcss v4 when the runtime set is empty', () => {
+    expect(classNameTransform.shouldEnableArbitraryValueFallback({
+      tailwindcssMajorVersion: 4,
+      classNameSet: new Set<string>(),
+    })).toBe(true)
+
+    expect(classNameTransform.shouldEnableArbitraryValueFallback({
+      tailwindcssMajorVersion: 4,
+      classNameSet: new Set(['bg-red-500']),
+    })).toBe(false)
+  })
 })
