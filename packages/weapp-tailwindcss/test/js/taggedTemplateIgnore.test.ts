@@ -32,6 +32,20 @@ describe('taggedTemplateIgnore', () => {
     expect(helper.shouldIgnore(tagPath)).toBe(true)
   })
 
+  it('matches multiple configured identifiers without depending on matcher fallback', () => {
+    const helper = createTaggedTemplateIgnore({
+      matcher: value => value === 'ignoredByMatcher',
+      names: ['ignoreMe', 'weappTwIgnore'],
+    })
+    const [configuredTag, matcherTag] = getTagPaths([
+      'ignoreMe`foo`',
+      'ignoredByMatcher`bar`',
+    ].join('\n'))
+
+    expect(helper.shouldIgnore(configuredTag)).toBe(true)
+    expect(helper.shouldIgnore(matcherTag)).toBe(true)
+  })
+
   it('resolves imports of weappTwIgnore and alias chains', () => {
     const helper = createTaggedTemplateIgnore({ matcher: () => false, names: ['weappTwIgnore'] })
     const [importAlias, chainedAlias] = getTagPaths([

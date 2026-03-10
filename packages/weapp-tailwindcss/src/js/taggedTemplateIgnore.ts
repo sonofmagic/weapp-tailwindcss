@@ -18,14 +18,46 @@ export function createTaggedTemplateIgnore(
   const bindingIgnoreCache = new Map<Binding, boolean>()
   const taggedTemplateIgnoreCache = new WeakMap<Node, boolean>()
   const seenBindings = new Set<Binding>()
-  const canonicalIgnoreNames = new Set(
-    (names ?? [])
-      .filter((item): item is string => typeof item === 'string'),
-  )
-  const hasCanonicalIgnoreNames = canonicalIgnoreNames.size > 0
+  let singleCanonicalIgnoreName: string | undefined
+  let canonicalIgnoreNames: Set<string> | undefined
+
+  for (const item of names ?? []) {
+    if (typeof item !== 'string') {
+      continue
+    }
+
+    if (singleCanonicalIgnoreName === undefined) {
+      singleCanonicalIgnoreName = item
+      continue
+    }
+
+    if (item === singleCanonicalIgnoreName) {
+      continue
+    }
+
+    if (!canonicalIgnoreNames) {
+      canonicalIgnoreNames = new Set([singleCanonicalIgnoreName, item])
+      continue
+    }
+
+    canonicalIgnoreNames.add(item)
+  }
+
+  const hasCanonicalIgnoreNames = singleCanonicalIgnoreName !== undefined
 
   const matchesIgnoreName = (value: string): boolean => {
-    return (hasCanonicalIgnoreNames && canonicalIgnoreNames.has(value)) || matcher(value)
+    if (hasCanonicalIgnoreNames) {
+      if (canonicalIgnoreNames) {
+        if (canonicalIgnoreNames.has(value)) {
+          return true
+        }
+      }
+      else if (value === singleCanonicalIgnoreName) {
+        return true
+      }
+    }
+
+    return matcher(value)
   }
 
   const propertyMatches = (propertyPath: NodePath<Node> | undefined): boolean => {
