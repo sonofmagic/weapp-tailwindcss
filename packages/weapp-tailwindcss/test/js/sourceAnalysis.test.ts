@@ -84,17 +84,28 @@ describe('sourceAnalysis helpers', () => {
   })
 
   it('returns early when no replacement entries are provided', () => {
-    const source = `import foo from './foo'`
-    const ast = babelParse(source, { sourceType: 'module' as const })
-    const analysis = analyzeSource(ast, {})
-    const originalImports = analysis.walker.imports
-    const originalImportCount = analysis.walker.imports.size
+    const analysis = {
+      ast: {} as SourceAnalysis['ast'],
+      walker: {
+        get imports() {
+          throw new Error('should not read imports')
+        },
+      } as unknown as SourceAnalysis['walker'],
+      jsTokenUpdater: new JsTokenUpdater(),
+      targetPaths: [],
+      get importDeclarations() {
+        throw new Error('should not read importDeclarations')
+      },
+      get exportDeclarations() {
+        throw new Error('should not read exportDeclarations')
+      },
+      get requireCallPaths() {
+        throw new Error('should not read requireCallPaths')
+      },
+      ignoredPaths: new WeakSet(),
+    } satisfies SourceAnalysis
 
-    const tokens = collectModuleSpecifierReplacementTokens(analysis, {})
-
-    expect(tokens).toEqual([])
-    expect(analysis.walker.imports).toBe(originalImports)
-    expect(analysis.walker.imports.size).toBe(originalImportCount)
+    expect(collectModuleSpecifierReplacementTokens(analysis, {})).toEqual([])
   })
 
   it('returns early when there are no module specifiers to rewrite', () => {
