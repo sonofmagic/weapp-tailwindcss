@@ -16,6 +16,18 @@ import { createTaggedTemplateIgnore } from './taggedTemplateIgnore'
 
 const EXPRESSION_WRAPPER_PREFIX = '(\n'
 const EXPRESSION_WRAPPER_SUFFIX = '\n)'
+const ignoredTaggedTemplateMatcherCache = new WeakMap<IJsHandlerOptions, ReturnType<typeof createNameMatcher>>()
+
+function getIgnoredTaggedTemplateMatcher(options: IJsHandlerOptions) {
+  const cached = ignoredTaggedTemplateMatcherCache.get(options)
+  if (cached) {
+    return cached
+  }
+
+  const created = createNameMatcher(options.ignoreTaggedTemplateExpressionIdentifiers, { exact: true })
+  ignoredTaggedTemplateMatcherCache.set(options, created)
+  return created
+}
 
 export function analyzeSource(
   ast: ParseResult<File>,
@@ -35,11 +47,17 @@ export function analyzeSource(
     },
   )
 
-  const isIgnoredTaggedTemplate = createNameMatcher(options.ignoreTaggedTemplateExpressionIdentifiers, { exact: true })
-  const taggedTemplateIgnore = createTaggedTemplateIgnore({
-    matcher: isIgnoredTaggedTemplate,
-    names: options.ignoreTaggedTemplateExpressionIdentifiers,
-  })
+  let taggedTemplateIgnore: ReturnType<typeof createTaggedTemplateIgnore> | undefined
+
+  function getTaggedTemplateIgnore() {
+    if (!taggedTemplateIgnore) {
+      taggedTemplateIgnore = createTaggedTemplateIgnore({
+        matcher: getIgnoredTaggedTemplateMatcher(options),
+        names: options.ignoreTaggedTemplateExpressionIdentifiers,
+      })
+    }
+    return taggedTemplateIgnore
+  }
 
   // 仅在需要时才构建作用域信息（例如需要遍历调用表达式的实参）。
   const needScope = Boolean(options.ignoreCallExpressionIdentifiers && options.ignoreCallExpressionIdentifiers.length > 0)
@@ -70,7 +88,7 @@ export function analyzeSource(
           }
           if (ppp.isTaggedTemplateExpression()) {
             const tagPath = ppp.get('tag') as NodePath<Node>
-            if (taggedTemplateIgnore.shouldIgnore(tagPath)) {
+            if (getTaggedTemplateIgnore().shouldIgnore(tagPath)) {
               return
             }
           }
