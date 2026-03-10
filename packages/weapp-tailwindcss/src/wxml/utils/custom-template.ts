@@ -15,6 +15,9 @@ export async function customTemplateHandler(rawSource: string, options: Required
   } = options ?? {}
   // 优先使用外部预构建的 matcher，避免每次调用都重建
   const matchCustomAttribute = cachedMatcher ?? createAttributeMatcher(customAttributesEntities)
+  const replaceOptions: ITemplateHandlerOptions = {
+    ...options,
+  }
 
   const s = new MagicString(rawSource)
   let tag = ''
@@ -47,10 +50,7 @@ export async function customTemplateHandler(rawSource: string, options: Required
           // htmlparser2 9.1.0: parser.endIndex - 1
           // https://github.com/sonofmagic/weapp-tailwindcss/issues/269
           parser.endIndex - 1,
-          templateReplacer(value, {
-            ...options,
-            quote,
-          }),
+          templateReplacer(value, Object.assign(replaceOptions, { quote })),
         )
       },
       ontext(data) {

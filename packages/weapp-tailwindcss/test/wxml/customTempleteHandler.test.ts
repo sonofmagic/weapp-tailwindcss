@@ -4,6 +4,8 @@ import { customTemplateHandler } from '@/wxml/utils'
 import { createGetCase, format, wxmlCasePath } from '../util'
 
 const getCase = createGetCase(wxmlCasePath)
+const CLASS_ATTRIBUTE_REGEX = /[A-Za-z-]*[Cc]lass/
+
 describe('customTemplateHandler', () => {
   it('invalid customAttributesEntities options', async () => {
     const res = await customTemplateHandler('<view class="p-[20px]"></view>', {
@@ -26,7 +28,7 @@ describe('customTemplateHandler', () => {
     const testCase = '<view class="p-[20px]" hover-class="w-[99px]"></view>'
     // 'p-[20px] hover-class='
     const res = await customTemplateHandler(testCase, {
-      customAttributesEntities: [['*', /[A-Za-z-]*[Cc]lass/]],
+      customAttributesEntities: [['*', CLASS_ATTRIBUTE_REGEX]],
       disabledDefaultTemplateHandler: true,
     })
     expect(res).toBe('<view class="p-_b20px_B" hover-class="w-_b99px_B"></view>')
@@ -65,6 +67,12 @@ describe('customTemplateHandler', () => {
     const testCase = '<view class="bg-gray-100 dark:bg-zinc-800" hover-class="bg-red-500 dark:bg-green-500"></view>'
     const str = await customTemplateHandler(testCase)
     expect(str).toBe('<view class="bg-gray-100 dark_cbg-zinc-800" hover-class="bg-red-500 dark_cbg-green-500"></view>')
+  })
+
+  it('preserves mixed quote attributes in one template', async () => {
+    const testCase = `<view class='after:content-["甲"]' hover-class="after:content-['乙']"></view>`
+    const str = await customTemplateHandler(testCase)
+    expect(str).toBe(`<view class='after_ccontent-_b_qu_x7532__q_B' hover-class="after_ccontent-_b_au_x4e59__a_B"></view>`)
   })
 
   it('wxs should be ignored ', async () => {
