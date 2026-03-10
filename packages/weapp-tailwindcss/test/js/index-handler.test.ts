@@ -3,6 +3,9 @@ import { afterEach, describe, expect, it, vi } from 'vitest'
 import { createJsHandler } from '@/js'
 import * as babel from '@/js/babel'
 
+const STYLED_TAG_REGEXP = /^styled$/
+const OVERRIDE_CALL_REGEXP = /^override$/
+
 function createBaseOptions() {
   return {
     escapeMap: { base: '_' },
@@ -14,7 +17,7 @@ function createBaseOptions() {
     unescapeUnicode: true,
     babelParserOptions: { sourceType: 'module' as const },
     ignoreCallExpressionIdentifiers: ['cn'],
-    ignoreTaggedTemplateExpressionIdentifiers: [/^styled$/],
+    ignoreTaggedTemplateExpressionIdentifiers: [STYLED_TAG_REGEXP],
     uniAppX: true,
   }
 }
@@ -31,7 +34,7 @@ describe('createJsHandler', () => {
     const override = {
       needEscaped: false,
       escapeMap: { override: '_' },
-      ignoreCallExpressionIdentifiers: [/^override$/],
+      ignoreCallExpressionIdentifiers: [OVERRIDE_CALL_REGEXP],
     }
     const classNameSet = new Set(['foo'])
 
@@ -78,6 +81,23 @@ describe('createJsHandler', () => {
     expect(resolved.needEscaped).toBe(true)
     expect(resolved.alwaysEscape).toBe(true)
     expect(resolved.unescapeUnicode).toBe(true)
+  })
+
+  it('reuses the cached configuration when overrides only contain undefined values', () => {
+    const spy = vi.spyOn(babel, 'jsHandler').mockReturnValue({ code: 'undefined-cache' })
+    const base = createBaseOptions()
+    const handler = createJsHandler(base)
+    const classNameSet = new Set(['foo'])
+
+    handler('source-a', classNameSet)
+    handler('source-b', classNameSet, {
+      needEscaped: undefined,
+      alwaysEscape: undefined,
+    })
+
+    expect(spy).toHaveBeenCalledTimes(2)
+    expect(spy.mock.calls[0][1]).toBe(spy.mock.calls[1][1])
+    expect(spy.mock.calls[1][1].classNameSet).toBe(classNameSet)
   })
 
   it('reuses the cached configuration for the same runtime classNameSet when no overrides are supplied', () => {

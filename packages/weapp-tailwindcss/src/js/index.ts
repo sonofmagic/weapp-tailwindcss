@@ -6,6 +6,20 @@ export {
   jsHandler,
 }
 
+function hasDefinedOverrides(options?: CreateJsHandlerOptions) {
+  if (!options) {
+    return false
+  }
+
+  for (const key in options) {
+    if (options[key as keyof CreateJsHandlerOptions] !== undefined) {
+      return true
+    }
+  }
+
+  return false
+}
+
 export function createJsHandler(options: CreateJsHandlerOptions): JsHandler {
   // 预构建不可变的默认选项对象，避免每次调用都重新创建字面量。
   const defaults: IJsHandlerOptions = {
@@ -53,8 +67,8 @@ export function createJsHandler(options: CreateJsHandlerOptions): JsHandler {
   }
 
   function handler(rawSource: string, classNameSet?: Set<string>, options?: CreateJsHandlerOptions) {
-    // 快路径：无覆盖选项时跳过 defuOverrideArray，直接合并 classNameSet
-    if (!options || Object.keys(options).length === 0) {
+    // 快路径：无有效覆盖选项时跳过 defuOverrideArray，直接合并 classNameSet。
+    if (!hasDefinedOverrides(options)) {
       return jsHandler(rawSource, resolveDefaultOptions(classNameSet))
     }
 
