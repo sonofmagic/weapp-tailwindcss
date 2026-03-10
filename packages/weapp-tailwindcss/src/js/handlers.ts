@@ -16,6 +16,8 @@ type EscapeMap = NonNullable<IJsHandlerOptions['escapeMap']>
 const debug = createDebug('[js:handlers] ')
 const replacementCacheByEscapeMap = new WeakMap<EscapeMap, Map<string, string>>()
 const defaultReplacementCache = new Map<string, string>()
+const WEAPP_TW_IGNORE_MARKER = 'weapp-tw'
+const IGNORE_MARKER = 'ignore'
 
 function getReplacement(candidate: string, escapeMap?: EscapeMap) {
   if (!escapeMap) {
@@ -59,8 +61,19 @@ function setReplacementCache(candidate: string, replacement: string, escapeMap?:
 }
 
 function hasIgnoreComment(node: StringLiteral | TemplateElement) {
-  return Array.isArray(node.leadingComments)
-    && node.leadingComments.some(comment => comment.value.includes('weapp-tw') && comment.value.includes('ignore'))
+  const { leadingComments } = node
+  if (!Array.isArray(leadingComments) || leadingComments.length === 0) {
+    return false
+  }
+
+  for (const comment of leadingComments) {
+    const { value } = comment
+    if (value.includes(WEAPP_TW_IGNORE_MARKER) && value.includes(IGNORE_MARKER)) {
+      return true
+    }
+  }
+
+  return false
 }
 
 function extractLiteralValue(

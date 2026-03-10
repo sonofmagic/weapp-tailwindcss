@@ -97,6 +97,17 @@ describe('replaceHandleValue branch coverage', () => {
     expect(token).toBeUndefined()
   })
 
+  it('does not skip comments that do not contain the weapp-tw marker', () => {
+    const literal = getLiteralPath('const ignored = /* ignore */ \'w-[100px]\'', 'StringLiteral')
+    const token = replaceHandleValue(literal, {
+      escapeMap: MappingChars2String,
+      classNameSet: new Set(['w-[100px]']),
+      needEscaped: true,
+    })
+
+    expect(token?.value).toBe('w-_b100px_B')
+  })
+
   it('respects jsPreserveClass and skips protected candidates', () => {
     const literal = getLiteralPath('const safe = \'w-[100px]\'', 'StringLiteral')
     const token = replaceHandleValue(literal, {
