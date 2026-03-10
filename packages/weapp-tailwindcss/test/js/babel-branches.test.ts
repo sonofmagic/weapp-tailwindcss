@@ -5,6 +5,7 @@ import { MappingChars2String } from '@weapp-core/escape'
 import { describe, expect, it, vi } from 'vitest'
 import { parse, traverse } from '@/babel'
 import * as babel from '@/js/babel'
+import * as sourceAnalysis from '@/js/sourceAnalysis'
 import * as nameMatcher from '@/utils/nameMatcher'
 
 function prepareEval(code: string) {
@@ -127,6 +128,21 @@ describe('babel helpers branch coverage', () => {
 
     expect(result.toString()).toBe(rawSource)
     spy.mockRestore()
+  })
+
+  it('returns early when there are no target paths or replacement sources', () => {
+    const collectSpy = vi.spyOn(sourceAnalysis, 'collectModuleSpecifierReplacementTokens')
+    const rawSource = 'const noop = 1'
+    const ast = parse(rawSource, { sourceType: 'module' })
+    const analysis = {
+      ...babel.analyzeSource(ast, {}),
+      targetPaths: [],
+    }
+
+    const result = babel.processUpdatedSource(rawSource, {}, analysis)
+
+    expect(result.toString()).toBe(rawSource)
+    expect(collectSpy).not.toHaveBeenCalled()
   })
 
   it('respects ignored tagged template identifiers', () => {

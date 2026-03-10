@@ -50,6 +50,15 @@ export function processUpdatedSource(
 ) {
   const { targetPaths, jsTokenUpdater, ignoredPaths } = analysis
 
+  // 纯空路径直接返回，避免创建 replacementTokens 数组。
+  if (
+    targetPaths.length === 0
+    && !options.moduleSpecifierReplacements
+    && jsTokenUpdater.length === 0
+  ) {
+    return new MagicString(rawSource)
+  }
+
   // 为前面收集到的所有字符串节点生成替换 token。
   const replacementTokens: JsToken[] = []
   for (const path of targetPaths) {
