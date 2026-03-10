@@ -6,6 +6,7 @@ import { parse, traverse } from '@/babel'
 import * as classContext from '@/js/class-context'
 import { replaceHandleValue } from '@/js/handlers'
 import * as classNameTransform from '@/shared/classname-transform'
+import * as wxmlShared from '@/wxml/shared'
 
 type LiteralKind = 'StringLiteral' | 'TemplateElement'
 
@@ -201,6 +202,28 @@ describe('replaceHandleValue branch coverage', () => {
     })
 
     expect(token?.value).toBe('w-_b100px_B w-_b100px_B')
+    expect(spy).toHaveBeenCalledTimes(1)
+  })
+
+  it('reuses replacement cache entries across separate literals with the same escape map', () => {
+    const firstLiteral = getLiteralPath('const first = \'h-[37px]\'', 'StringLiteral')
+    const secondLiteral = getLiteralPath('const second = \'h-[37px]\'', 'StringLiteral')
+    const spy = vi.spyOn(wxmlShared, 'replaceWxml')
+    spy.mockClear()
+
+    const firstToken = replaceHandleValue(firstLiteral, {
+      escapeMap: MappingChars2String,
+      classNameSet: new Set(['h-[37px]']),
+      needEscaped: true,
+    })
+    const secondToken = replaceHandleValue(secondLiteral, {
+      escapeMap: MappingChars2String,
+      classNameSet: new Set(['h-[37px]']),
+      needEscaped: true,
+    })
+
+    expect(firstToken?.value).toBe('h-_b37px_B')
+    expect(secondToken?.value).toBe('h-_b37px_B')
     expect(spy).toHaveBeenCalledTimes(1)
   })
 

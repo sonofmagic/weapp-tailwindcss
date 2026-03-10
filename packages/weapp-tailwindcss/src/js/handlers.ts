@@ -19,14 +19,9 @@ const defaultReplacementCache = new Map<string, string>()
 const WEAPP_TW_IGNORE_MARKER = 'weapp-tw'
 const IGNORE_MARKER = 'ignore'
 
-function getReplacement(candidate: string, escapeMap?: EscapeMap) {
+function getReplacementCacheStore(escapeMap?: EscapeMap) {
   if (!escapeMap) {
-    let cached = defaultReplacementCache.get(candidate)
-    if (cached === undefined) {
-      cached = replaceWxml(candidate, { escapeMap })
-      defaultReplacementCache.set(candidate, cached)
-    }
-    return cached
+    return defaultReplacementCache
   }
 
   let store = replacementCacheByEscapeMap.get(escapeMap)
@@ -34,30 +29,16 @@ function getReplacement(candidate: string, escapeMap?: EscapeMap) {
     store = new Map<string, string>()
     replacementCacheByEscapeMap.set(escapeMap, store)
   }
+  return store
+}
 
+function getReplacement(candidate: string, escapeMap: EscapeMap | undefined, store = getReplacementCacheStore(escapeMap)) {
   let cached = store.get(candidate)
   if (cached === undefined) {
     cached = replaceWxml(candidate, { escapeMap })
     store.set(candidate, cached)
   }
   return cached
-}
-
-/**
- * 将 replacement 写入对应的缓存，供后续 getReplacement 命中。
- */
-function setReplacementCache(candidate: string, replacement: string, escapeMap?: EscapeMap) {
-  if (!escapeMap) {
-    defaultReplacementCache.set(candidate, replacement)
-  }
-  else {
-    let store = replacementCacheByEscapeMap.get(escapeMap)
-    if (!store) {
-      store = new Map<string, string>()
-      replacementCacheByEscapeMap.set(escapeMap, store)
-    }
-    store.set(candidate, replacement)
-  }
 }
 
 function hasIgnoreComment(node: StringLiteral | TemplateElement) {
@@ -119,6 +100,7 @@ function createCandidatePlanResolver(
   classContext: boolean,
 ) {
   const { escapeMap } = options
+  const replacementCache = getReplacementCacheStore(escapeMap)
   const transformOptions = classContext
     ? {
         ...options,
@@ -139,10 +121,10 @@ function createCandidatePlanResolver(
     let replacement: string
     if (result.decision === 'escaped' && result.escapedValue) {
       replacement = result.escapedValue
-      setReplacementCache(candidate, replacement, escapeMap)
+      replacementCache.set(candidate, replacement)
     }
     else {
-      replacement = getReplacement(candidate, escapeMap)
+      replacement = getReplacement(candidate, escapeMap, replacementCache)
     }
 
     return {
