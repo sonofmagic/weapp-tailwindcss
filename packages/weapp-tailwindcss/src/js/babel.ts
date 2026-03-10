@@ -16,6 +16,7 @@ import { createTaggedTemplateIgnore } from './taggedTemplateIgnore'
 
 const EXPRESSION_WRAPPER_PREFIX = '(\n'
 const EXPRESSION_WRAPPER_SUFFIX = '\n)'
+const EMPTY_IGNORED_PATHS = new WeakSet<NodePath<StringLiteral | TemplateElement>>()
 const ignoredTaggedTemplateMatcherCache = new WeakMap<IJsHandlerOptions, ReturnType<typeof createNameMatcher>>()
 
 function getIgnoredTaggedTemplateMatcher(options: IJsHandlerOptions) {
@@ -35,17 +36,19 @@ export function analyzeSource(
   handler?: EvalHandler,
 ): SourceAnalysis {
   const jsTokenUpdater = new JsTokenUpdater()
-  const ignoredPaths = new WeakSet<NodePath<StringLiteral | TemplateElement>>()
-  const walker = new NodePathWalker(
-    {
-      ignoreCallExpressionIdentifiers: options.ignoreCallExpressionIdentifiers,
-      callback(path) {
-        if (path.isStringLiteral() || path.isTemplateElement()) {
+  // 仅在需要忽略特定调用参数时记录路径，默认路径复用共享空集合。
+  const needScope = Boolean(options.ignoreCallExpressionIdentifiers && options.ignoreCallExpressionIdentifiers.length > 0)
+  const ignoredPaths = needScope
+    ? new WeakSet<NodePath<StringLiteral | TemplateElement>>()
+    : EMPTY_IGNORED_PATHS
+  const walker = needScope
+    ? new NodePathWalker({
+        ignoreCallExpressionIdentifiers: options.ignoreCallExpressionIdentifiers,
+        callback(path) {
           ignoredPaths.add(path)
-        }
-      },
-    },
-  )
+        },
+      })
+    : new NodePathWalker()
 
   let taggedTemplateIgnore: ReturnType<typeof createTaggedTemplateIgnore> | undefined
 
@@ -58,9 +61,6 @@ export function analyzeSource(
     }
     return taggedTemplateIgnore
   }
-
-  // 仅在需要时才构建作用域信息（例如需要遍历调用表达式的实参）。
-  const needScope = Boolean(options.ignoreCallExpressionIdentifiers && options.ignoreCallExpressionIdentifiers.length > 0)
 
   const targetPaths: NodePath<StringLiteral | TemplateElement>[] = []
   const importDeclarations = new Set<NodePath<ImportDeclaration>>()

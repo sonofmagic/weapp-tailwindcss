@@ -64,6 +64,20 @@ describe('babel helpers additional coverage', () => {
     expect(ms.toString()).toBe(code)
   })
 
+  it('reuses an empty ignored path set when call ignore identifiers are disabled', () => {
+    const firstCode = 'const first = "w-[100px]"'
+    const secondCode = 'const second = "w-[200px]"'
+    const firstAnalysis = babel.analyzeSource(parse(firstCode, { sourceType: 'module' as const }), {})
+    const secondAnalysis = babel.analyzeSource(parse(secondCode, { sourceType: 'module' as const }), {})
+
+    const [firstTarget] = firstAnalysis.targetPaths
+    const [secondTarget] = secondAnalysis.targetPaths
+
+    expect(firstAnalysis.ignoredPaths).toBe(secondAnalysis.ignoredPaths)
+    expect(firstAnalysis.ignoredPaths.has(firstTarget)).toBe(false)
+    expect(secondAnalysis.ignoredPaths.has(secondTarget)).toBe(false)
+  })
+
   it('returns the original source when parsing fails', () => {
     const raw = 'const = 1'
     const result = babel.jsHandler(raw, {})
