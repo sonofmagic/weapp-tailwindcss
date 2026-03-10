@@ -33,6 +33,40 @@ describe('options resolver', () => {
     })
   })
 
+  it('reuses cached merged options for simple postcss boolean and string overrides', () => {
+    const resolver = createOptionsResolver(createBaseOptions())
+
+    const first = resolver.resolve({
+      rem2rpx: true,
+      px2rpx: false,
+      unitsToPx: false,
+      cssCalc: false,
+      cssChildCombinatorReplaceValue: 'view',
+      injectAdditionalCssVarScope: true,
+      cssPreflight: false,
+    })
+    const second = resolver.resolve({
+      rem2rpx: true,
+      px2rpx: false,
+      unitsToPx: false,
+      cssCalc: false,
+      cssChildCombinatorReplaceValue: 'view',
+      injectAdditionalCssVarScope: true,
+      cssPreflight: false,
+    })
+
+    expect(first).toBe(second)
+    expect(second).toMatchObject({
+      rem2rpx: true,
+      px2rpx: false,
+      unitsToPx: false,
+      cssCalc: false,
+      cssChildCombinatorReplaceValue: 'view',
+      injectAdditionalCssVarScope: true,
+      cssPreflight: false,
+    })
+  })
+
   it('keeps nested override references reactive to in-place mutations', () => {
     const resolver = createOptionsResolver(createBaseOptions())
     const override = {

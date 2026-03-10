@@ -12,6 +12,13 @@ function getSimpleOverrideCacheKey(options: Partial<IStyleHandlerOptions>) {
   let cssRemoveHoverPseudoClass = SIMPLE_OVERRIDE_UNSET
   let uniAppX = SIMPLE_OVERRIDE_UNSET
   let cssPreflightRange = SIMPLE_OVERRIDE_UNSET
+  let injectAdditionalCssVarScope = SIMPLE_OVERRIDE_UNSET
+  let rem2rpx = SIMPLE_OVERRIDE_UNSET
+  let px2rpx = SIMPLE_OVERRIDE_UNSET
+  let unitsToPx = SIMPLE_OVERRIDE_UNSET
+  let cssCalc = SIMPLE_OVERRIDE_UNSET
+  let cssChildCombinatorReplaceValue = SIMPLE_OVERRIDE_UNSET
+  let cssPreflight = SIMPLE_OVERRIDE_UNSET
 
   for (const key of Object.keys(options) as Array<keyof IStyleHandlerOptions>) {
     const value = options[key]
@@ -52,6 +59,48 @@ function getSimpleOverrideCacheKey(options: Partial<IStyleHandlerOptions>) {
         }
         cssPreflightRange = value
         break
+      case 'injectAdditionalCssVarScope':
+        if (typeof value !== 'boolean') {
+          return undefined
+        }
+        injectAdditionalCssVarScope = value ? '1' : '0'
+        break
+      case 'rem2rpx':
+        if (typeof value !== 'boolean') {
+          return undefined
+        }
+        rem2rpx = value ? '1' : '0'
+        break
+      case 'px2rpx':
+        if (typeof value !== 'boolean') {
+          return undefined
+        }
+        px2rpx = value ? '1' : '0'
+        break
+      case 'unitsToPx':
+        if (typeof value !== 'boolean') {
+          return undefined
+        }
+        unitsToPx = value ? '1' : '0'
+        break
+      case 'cssCalc':
+        if (typeof value !== 'boolean') {
+          return undefined
+        }
+        cssCalc = value ? '1' : '0'
+        break
+      case 'cssChildCombinatorReplaceValue':
+        if (typeof value !== 'string') {
+          return undefined
+        }
+        cssChildCombinatorReplaceValue = value
+        break
+      case 'cssPreflight':
+        if (value !== false) {
+          return undefined
+        }
+        cssPreflight = '0'
+        break
       default:
         return undefined
     }
@@ -65,6 +114,13 @@ function getSimpleOverrideCacheKey(options: Partial<IStyleHandlerOptions>) {
     cssRemoveHoverPseudoClass,
     uniAppX,
     cssPreflightRange,
+    injectAdditionalCssVarScope,
+    rem2rpx,
+    px2rpx,
+    unitsToPx,
+    cssCalc,
+    cssChildCombinatorReplaceValue,
+    cssPreflight,
   ].join(':')
 }
 
