@@ -73,6 +73,7 @@ describe('isClassContextLiteralPath', () => {
     expect(isClassContextLiteralPath(getLiteralPath('helpers[\'tw-merge\'](\'w-[100px]\')', 'StringLiteral', [], 1))).toBe(true)
     expect(isClassContextLiteralPath(getLiteralPath('helpers.tw_merge(\'w-[100px]\')', 'StringLiteral'))).toBe(true)
     expect(isClassContextLiteralPath(getLiteralPath('format(\'w-[100px]\')', 'StringLiteral'))).toBe(false)
+    expect(isClassContextLiteralPath(getLiteralPath('helpers.run(\'w-[100px]\')', 'StringLiteral'))).toBe(false)
   })
 
   it('supports template elements in class-like contexts', () => {

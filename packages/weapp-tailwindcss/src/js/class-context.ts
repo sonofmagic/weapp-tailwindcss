@@ -111,32 +111,35 @@ function isClassLikeJsxAttribute(path: NodePath<Node>) {
   return CLASS_LIKE_KEYWORDS.has(normalizeKeyword(namePath.node.name))
 }
 
-function isClassLikeCallExpression(path: NodePath<Node>, valuePath: NodePath<Node>) {
-  if (!path.isCallExpression()) {
-    return false
-  }
-
-  const args = path.get('arguments')
-  if (!args.includes(valuePath)) {
-    return false
-  }
-
-  const calleePath = path.get('callee')
+function readCallHelperName(calleePath: NodePath<Node>) {
   if (calleePath.isIdentifier()) {
-    return CLASS_HELPER_IDENTIFIERS.has(normalizeKeyword(calleePath.node.name))
+    return calleePath.node.name
   }
 
   if (calleePath.isMemberExpression()) {
     const propertyPath = calleePath.get('property')
     if (propertyPath.isIdentifier()) {
-      return CLASS_HELPER_IDENTIFIERS.has(normalizeKeyword(propertyPath.node.name))
+      return propertyPath.node.name
     }
     if (propertyPath.isStringLiteral()) {
-      return CLASS_HELPER_IDENTIFIERS.has(normalizeKeyword(propertyPath.node.value))
+      return propertyPath.node.value
     }
   }
 
-  return false
+  return undefined
+}
+
+function isClassLikeCallExpression(path: NodePath<Node>, valuePath: NodePath<Node>) {
+  if (!path.isCallExpression()) {
+    return false
+  }
+
+  const helperName = readCallHelperName(path.get('callee'))
+  if (!helperName || !CLASS_HELPER_IDENTIFIERS.has(normalizeKeyword(helperName))) {
+    return false
+  }
+
+  return path.get('arguments').includes(valuePath)
 }
 
 /**
