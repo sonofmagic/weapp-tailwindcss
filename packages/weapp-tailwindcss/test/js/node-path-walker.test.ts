@@ -119,6 +119,15 @@ describe('NodePathWalker', () => {
     expect(() => walker.walkStringLiteral(literalPath!)).not.toThrow()
   })
 
+  it('reuses a shared empty import token set until imports are discovered', () => {
+    const firstWalker = new NodePathWalker()
+    const secondWalker = new NodePathWalker()
+
+    expect(firstWalker.imports).toBe(secondWalker.imports)
+    expect(firstWalker.imports.size).toBe(0)
+    expect(secondWalker.imports.size).toBe(0)
+  })
+
   it('skips call expression argument walking when ignore identifiers are omitted', () => {
     const ast = parse('cn("w-[100px]")', { sourceType: 'module' })
     const visited: string[] = []

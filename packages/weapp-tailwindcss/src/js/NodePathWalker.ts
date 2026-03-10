@@ -29,6 +29,7 @@ import { maybeAddImportToken } from './node-path-walker/import-tokens'
 export type { ImportToken } from './node-path-walker/import-tokens'
 
 const EMPTY_IGNORE_CALL_EXPRESSION_IDENTIFIERS: (string | RegExp)[] = []
+const EMPTY_IMPORT_TOKENS = new Set<ImportToken>()
 function NOOP_STRING_PATH_CALLBACK() { }
 const NEVER_MATCH_NAME: NameMatcher = () => false
 
@@ -38,10 +39,10 @@ const NEVER_MATCH_NAME: NameMatcher = () => false
 export class NodePathWalker {
   public ignoreCallExpressionIdentifiers: (string | RegExp)[]
   public callback: (path: NodePath<StringLiteral | TemplateElement>) => void
-  public imports: Set<ImportToken>
   private visited: WeakSet<NodePath<Node | null | undefined>>
   private isIgnoredCallIdentifier: NameMatcher
   private hasIgnoredCallIdentifiers: boolean
+  private importsStore: Set<ImportToken> | undefined
 
   constructor(
     { ignoreCallExpressionIdentifiers, callback }:
@@ -53,11 +54,25 @@ export class NodePathWalker {
     this.hasIgnoredCallIdentifiers = Boolean(ignoreCallExpressionIdentifiers && ignoreCallExpressionIdentifiers.length > 0)
     this.ignoreCallExpressionIdentifiers = ignoreCallExpressionIdentifiers ?? EMPTY_IGNORE_CALL_EXPRESSION_IDENTIFIERS
     this.callback = callback ?? NOOP_STRING_PATH_CALLBACK
-    this.imports = new Set()
     this.visited = new WeakSet()
     this.isIgnoredCallIdentifier = this.hasIgnoredCallIdentifiers
       ? createNameMatcher(this.ignoreCallExpressionIdentifiers, { exact: true })
       : NEVER_MATCH_NAME
+  }
+
+  get imports(): Set<ImportToken> {
+    return this.importsStore ?? EMPTY_IMPORT_TOKENS
+  }
+
+  private getWritableImports(): Set<ImportToken> {
+    if (!this.importsStore) {
+      this.importsStore = new Set()
+    }
+    return this.importsStore
+  }
+
+  private addImportToken(token: ImportToken) {
+    this.getWritableImports().add(token)
   }
 
   walkVariableDeclarator(path: NodePath<VariableDeclarator>) {
@@ -156,7 +171,7 @@ export class NodePathWalker {
     else if (arg.isVariableDeclarator()) {
       this.walkVariableDeclarator(arg)
     }
-    else if (maybeAddImportToken(this.imports, arg)) {
+    else if (maybeAddImportToken(this.getWritableImports(), arg)) {
       // Token is recorded via helper; nothing else to traverse.
     }
   }
@@ -181,18 +196,18 @@ export class NodePathWalker {
   }
 
   walkExportDeclaration(path: NodePath<ExportDeclaration>) {
-    walkExportDeclaration(this, path)
+    walkExportDeclaration(this as any, path)
   }
 
   walkExportNamedDeclaration(path: NodePath<ExportNamedDeclaration>) {
-    walkExportNamedDeclaration(this, path)
+    walkExportNamedDeclaration(this as any, path)
   }
 
   walkExportDefaultDeclaration(path: NodePath<ExportDefaultDeclaration>) {
-    walkExportDefaultDeclaration(this, path)
+    walkExportDefaultDeclaration(this as any, path)
   }
 
   walkExportAllDeclaration(path: NodePath<ExportAllDeclaration>) {
-    walkExportAllDeclaration(this, path)
+    walkExportAllDeclaration(this as any, path)
   }
 }

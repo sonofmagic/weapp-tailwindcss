@@ -9,7 +9,7 @@ import type {
 import type { ExportAllDeclarationImportToken, ImportToken } from './import-tokens'
 
 interface ExportWalkContext {
-  imports: Set<ImportToken>
+  addImportToken: (token: ImportToken) => void
   walkNode: (path: NodePath<Node | null | undefined>) => void
 }
 
@@ -59,7 +59,7 @@ export function walkExportAllDeclaration(ctx: ExportWalkContext, path: NodePath<
   const source = path.get('source')
   if (source.isStringLiteral()) {
     // Capture re-export paths so that the caller can decide how to process them.
-    ctx.imports.add(
+    ctx.addImportToken(
       {
         declaration: path,
         source: source.node.value,
