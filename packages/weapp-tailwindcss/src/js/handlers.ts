@@ -173,13 +173,16 @@ export function replaceHandleValue(
   let matchedCandidateCount = 0
   let escapedDecisionCount = 0
   let fallbackDecisionCount = 0
-  const escapedSamples: string[] = []
-  const skippedSamples: string[] = []
+  let escapedSamples: string[] | undefined
+  let skippedSamples: string[] | undefined
   const resolveCandidatePlan = createCandidatePlanResolver(options, classContext)
 
   for (const candidate of candidates) {
     const plan = resolveCandidatePlan(candidate)
     if (plan.result.decision === 'skip') {
+      if (!skippedSamples) {
+        skippedSamples = []
+      }
       if (skippedSamples.length < 6) {
         skippedSamples.push(candidate)
       }
@@ -188,6 +191,9 @@ export function replaceHandleValue(
     matchedCandidateCount += 1
     if (plan.result.decision === 'escaped') {
       escapedDecisionCount += 1
+      if (!escapedSamples) {
+        escapedSamples = []
+      }
       if (escapedSamples.length < 6) {
         escapedSamples.push(candidate)
       }
@@ -216,10 +222,10 @@ export function replaceHandleValue(
     candidates.length,
     matchedCandidateCount,
     escapedDecisionCount,
-    skippedSamples.length,
+    skippedSamples?.length ?? 0,
     options.filename ?? 'unknown',
-    escapedSamples.join(',') || '-',
-    skippedSamples.join(',') || '-',
+    escapedSamples?.join(',') || '-',
+    skippedSamples?.join(',') || '-',
   )
 
   const start = node.start + offset

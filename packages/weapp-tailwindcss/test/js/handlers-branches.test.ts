@@ -179,6 +179,17 @@ describe('replaceHandleValue branch coverage', () => {
     expect(spy).toHaveBeenCalledTimes(1)
   })
 
+  it('keeps transformed output stable when escaped and skipped candidates coexist', () => {
+    const literal = getLiteralPath('const mixed = \'w-[100px] keep-me\'', 'StringLiteral')
+    const token = replaceHandleValue(literal, {
+      escapeMap: MappingChars2String,
+      classNameSet: new Set(['w-[100px]']),
+      needEscaped: true,
+    })
+
+    expect(token?.value).toBe('w-_b100px_B keep-me')
+  })
+
   it('evaluates unicode decoding guard when no escape is present', () => {
     const literal = getLiteralPath('const plain = \'flex\'', 'StringLiteral')
     const token = replaceHandleValue(literal, {
