@@ -200,6 +200,7 @@ export function replaceHandleValue(
     return undefined
   }
 
+  const debugEnabled = debug.enabled
   const classContext = options.wrapExpression || isClassContextLiteralPath(path)
   let transformed = literal
   let mutated = false
@@ -213,26 +214,31 @@ export function replaceHandleValue(
   for (const candidate of candidates) {
     const plan = resolveCandidatePlan(candidate)
     if (plan.result.decision === 'skip') {
-      if (!skippedSamples) {
-        skippedSamples = []
-      }
-      if (skippedSamples.length < 6) {
-        skippedSamples.push(candidate)
+      if (debugEnabled) {
+        if (!skippedSamples) {
+          skippedSamples = []
+        }
+        if (skippedSamples.length < 6) {
+          skippedSamples.push(candidate)
+        }
       }
       continue
     }
-    matchedCandidateCount += 1
-    if (plan.result.decision === 'escaped') {
-      escapedDecisionCount += 1
-      if (!escapedSamples) {
-        escapedSamples = []
+
+    if (debugEnabled) {
+      matchedCandidateCount += 1
+      if (plan.result.decision === 'escaped') {
+        escapedDecisionCount += 1
+        if (!escapedSamples) {
+          escapedSamples = []
+        }
+        if (escapedSamples.length < 6) {
+          escapedSamples.push(candidate)
+        }
       }
-      if (escapedSamples.length < 6) {
-        escapedSamples.push(candidate)
+      if (plan.result.decision === 'fallback') {
+        fallbackDecisionCount += 1
       }
-    }
-    if (plan.result.decision === 'fallback') {
-      fallbackDecisionCount += 1
     }
 
     // 使用 String.replace 仅替换首次出现，与原始行为一致
@@ -248,18 +254,20 @@ export function replaceHandleValue(
     return undefined
   }
 
-  debug(
-    'runtimeSet size=%d fallbackTriggered=%s candidates=%d matched=%d escapedHits=%d skipped=%d file=%s escapedSamples=%s skippedSamples=%s',
-    classNameSet?.size ?? 0,
-    fallbackDecisionCount > 0,
-    candidates.length,
-    matchedCandidateCount,
-    escapedDecisionCount,
-    skippedSamples?.length ?? 0,
-    options.filename ?? 'unknown',
-    escapedSamples?.join(',') || '-',
-    skippedSamples?.join(',') || '-',
-  )
+  if (debugEnabled) {
+    debug(
+      'runtimeSet size=%d fallbackTriggered=%s candidates=%d matched=%d escapedHits=%d skipped=%d file=%s escapedSamples=%s skippedSamples=%s',
+      classNameSet?.size ?? 0,
+      fallbackDecisionCount > 0,
+      candidates.length,
+      matchedCandidateCount,
+      escapedDecisionCount,
+      skippedSamples?.length ?? 0,
+      options.filename ?? 'unknown',
+      escapedSamples?.join(',') || '-',
+      skippedSamples?.join(',') || '-',
+    )
+  }
 
   const start = node.start + offset
   const end = node.end - offset
