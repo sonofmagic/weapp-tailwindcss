@@ -1,5 +1,6 @@
 import type { NodePath } from '@babel/traverse'
 import type { ImportDeclaration, StringLiteral } from '@babel/types'
+import type { SourceAnalysis } from '@/js/babel'
 import type { IJsHandlerOptions } from '@/types'
 import MagicString from 'magic-string'
 import { describe, expect, it } from 'vitest'
@@ -94,5 +95,29 @@ describe('sourceAnalysis helpers', () => {
     expect(tokens).toEqual([])
     expect(analysis.walker.imports).toBe(originalImports)
     expect(analysis.walker.imports.size).toBe(originalImportCount)
+  })
+
+  it('returns early when there are no module specifiers to rewrite', () => {
+    const imports = {
+      size: 0,
+      [Symbol.iterator]() {
+        throw new Error('should not iterate imports')
+      },
+    }
+
+    const analysis = {
+      ast: {} as SourceAnalysis['ast'],
+      walker: {
+        imports,
+      } as unknown as SourceAnalysis['walker'],
+      jsTokenUpdater: new JsTokenUpdater(),
+      targetPaths: [],
+      importDeclarations: new Set(),
+      exportDeclarations: new Set(),
+      requireCallPaths: [],
+      ignoredPaths: new WeakSet(),
+    } satisfies SourceAnalysis
+
+    expect(collectModuleSpecifierReplacementTokens(analysis, { './foo': './bar' })).toEqual([])
   })
 })

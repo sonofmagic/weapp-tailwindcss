@@ -56,7 +56,7 @@ export function collectModuleSpecifierReplacementTokens(
     analysis.importDeclarations.size === 0
     && analysis.exportDeclarations.size === 0
     && analysis.requireCallPaths.length === 0
-    && analysis.walker.imports.length === 0
+    && analysis.walker.imports.size === 0
   ) {
     return []
   }
