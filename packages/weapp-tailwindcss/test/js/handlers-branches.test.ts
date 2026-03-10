@@ -3,6 +3,7 @@ import type { NumericLiteral, StringLiteral, TemplateElement } from '@babel/type
 import { MappingChars2String } from '@weapp-core/escape'
 import { describe, expect, it, vi } from 'vitest'
 import { parse, traverse } from '@/babel'
+import * as classContext from '@/js/class-context'
 import { replaceHandleValue } from '@/js/handlers'
 import * as classNameTransform from '@/shared/classname-transform'
 
@@ -221,6 +222,19 @@ describe('replaceHandleValue branch coverage', () => {
     })
 
     expect(token).toBeUndefined()
+  })
+
+  it('skips class context detection when the default fast-return branch applies', () => {
+    const literal = getLiteralPath('const untouched = \'flex\'', 'StringLiteral')
+    const spy = vi.spyOn(classContext, 'isClassContextLiteralPath')
+
+    const token = replaceHandleValue(literal, {
+      escapeMap: MappingChars2String,
+      needEscaped: true,
+    })
+
+    expect(token).toBeUndefined()
+    expect(spy).not.toHaveBeenCalled()
   })
 
   it('keeps arbitrary classes untouched when classNameSet is non-empty but stale', () => {

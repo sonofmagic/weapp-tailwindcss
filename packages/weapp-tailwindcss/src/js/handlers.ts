@@ -152,22 +152,22 @@ export function replaceHandleValue(
   const { needEscaped = false } = options
   const { classNameSet, alwaysEscape } = options
   const fallbackEnabled = shouldEnableArbitraryValueFallback(options)
-  const classContext = options.wrapExpression || isClassContextLiteralPath(path)
 
   if (!alwaysEscape && !fallbackEnabled && (!classNameSet || classNameSet.size === 0)) {
     return undefined
   }
 
-  const { literal, original, allowDoubleQuotes, offset } = extractLiteralValue(path, options)
   if (hasIgnoreComment(path.node)) {
     return undefined
   }
 
+  const { literal, original, allowDoubleQuotes, offset } = extractLiteralValue(path, options)
   const candidates = splitCode(literal, allowDoubleQuotes)
   if (candidates.length === 0) {
     return undefined
   }
 
+  const classContext = options.wrapExpression || isClassContextLiteralPath(path)
   let transformed = literal
   let mutated = false
   let matchedCandidateCount = 0
