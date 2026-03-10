@@ -20,8 +20,55 @@ const CLASS_HELPER_IDENTIFIERS = new Set([
   'r',
 ])
 
+const DASH_CODE = 45
+const COLON_CODE = 58
+const UPPERCASE_A_CODE = 65
+const UPPERCASE_Z_CODE = 90
+const UNDERSCORE_CODE = 95
+const ASCII_MAX_CODE = 127
+const NORMALIZE_KEYWORD_REGEXP = /[-_:]/g
+
 function normalizeKeyword(name: string) {
-  return name.replace(/[-_:]/g, '').toLowerCase()
+  const length = name.length
+  let firstNormalizedIndex = -1
+
+  for (let i = 0; i < length; i++) {
+    const code = name.charCodeAt(i)
+    if (
+      code === DASH_CODE
+      || code === UNDERSCORE_CODE
+      || code === COLON_CODE
+      || (code >= UPPERCASE_A_CODE && code <= UPPERCASE_Z_CODE)
+    ) {
+      firstNormalizedIndex = i
+      break
+    }
+    if (code > ASCII_MAX_CODE) {
+      return name.replace(NORMALIZE_KEYWORD_REGEXP, '').toLowerCase()
+    }
+  }
+
+  if (firstNormalizedIndex === -1) {
+    return name
+  }
+
+  let normalized = name.slice(0, firstNormalizedIndex)
+  for (let i = firstNormalizedIndex; i < length; i++) {
+    const code = name.charCodeAt(i)
+    if (code === DASH_CODE || code === UNDERSCORE_CODE || code === COLON_CODE) {
+      continue
+    }
+    if (code >= UPPERCASE_A_CODE && code <= UPPERCASE_Z_CODE) {
+      normalized += String.fromCharCode(code + 32)
+      continue
+    }
+    if (code > ASCII_MAX_CODE) {
+      return name.replace(NORMALIZE_KEYWORD_REGEXP, '').toLowerCase()
+    }
+    normalized += name[i]
+  }
+
+  return normalized
 }
 
 function readObjectKeyName(path: NodePath<Node>): string | undefined {
