@@ -45,9 +45,9 @@ describe('taggedTemplateIgnore', () => {
     expect(helper.shouldIgnore(chainedAlias)).toBe(true)
   })
 
-  it('does not treat plain String.raw aliases as ignored', () => {
+  it('does not treat plain String.raw aliases as ignored and clears cycle tracking between evaluations', () => {
     const helper = createTaggedTemplateIgnore({ matcher: () => false, names: ['weappTwIgnore'] })
-    const [rawAlias, chained, cycle] = getTagPaths([
+    const [rawAlias, chained, cycle, importedAlias] = getTagPaths([
       'const rawAlias = String.raw',
       'const chained = rawAlias',
       'rawAlias`foo`',
@@ -55,11 +55,14 @@ describe('taggedTemplateIgnore', () => {
       'const a = b',
       'const b = a',
       'a`cycle`',
+      'import { weappTwIgnore as imported } from "weapp-tailwindcss/escape"',
+      'imported`ok`',
     ].join('\n'))
 
     expect(helper.shouldIgnore(rawAlias)).toBe(false)
     expect(helper.shouldIgnore(chained)).toBe(false)
     expect(helper.shouldIgnore(cycle)).toBe(false)
+    expect(helper.shouldIgnore(importedAlias)).toBe(true)
   })
 
   it('recognises helper properties on objects and computed lookups', () => {
@@ -84,6 +87,21 @@ describe('taggedTemplateIgnore', () => {
     const helper = createTaggedTemplateIgnore({ matcher: () => false, names: ['weappTwIgnore'] })
     const [unsupportedTag] = getTagPaths('(() => String.raw)`nope`')
     expect(helper.shouldIgnore(unsupportedTag)).toBe(false)
+  })
+
+  it('reuses effective tag evaluation for wrapped non-null expressions', () => {
+    const helper = createTaggedTemplateIgnore({ matcher: () => false, names: ['weappTwIgnore'] })
+    const [wrappedTag] = getTagPaths([
+      'import { weappTwIgnore as imported } from "weapp-tailwindcss/escape"',
+      'const chained = imported',
+      'chained!`foo`',
+    ].join('\n'), ['typescript'])
+
+    const effectiveTag = helper.getEffectiveTagPath(wrappedTag)
+
+    expect(effectiveTag.isIdentifier({ name: 'chained' })).toBe(true)
+    expect(helper.shouldIgnore(wrappedTag)).toBe(true)
+    expect(helper.shouldIgnore(effectiveTag)).toBe(true)
   })
 
   it('returns false when identifiers are not recognised', () => {
