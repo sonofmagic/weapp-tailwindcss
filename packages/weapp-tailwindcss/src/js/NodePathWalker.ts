@@ -39,10 +39,10 @@ const NEVER_MATCH_NAME: NameMatcher = () => false
 export class NodePathWalker {
   public ignoreCallExpressionIdentifiers: (string | RegExp)[]
   public callback: (path: NodePath<StringLiteral | TemplateElement>) => void
-  private visited: WeakSet<NodePath<Node | null | undefined>>
   private isIgnoredCallIdentifier: NameMatcher
   private hasIgnoredCallIdentifiers: boolean
   private importsStore: Set<ImportToken> | undefined
+  private visitedStore: WeakSet<NodePath<Node | null | undefined>> | undefined
 
   constructor(
     { ignoreCallExpressionIdentifiers, callback }:
@@ -54,7 +54,6 @@ export class NodePathWalker {
     this.hasIgnoredCallIdentifiers = Boolean(ignoreCallExpressionIdentifiers && ignoreCallExpressionIdentifiers.length > 0)
     this.ignoreCallExpressionIdentifiers = ignoreCallExpressionIdentifiers ?? EMPTY_IGNORE_CALL_EXPRESSION_IDENTIFIERS
     this.callback = callback ?? NOOP_STRING_PATH_CALLBACK
-    this.visited = new WeakSet()
     this.isIgnoredCallIdentifier = this.hasIgnoredCallIdentifiers
       ? createNameMatcher(this.ignoreCallExpressionIdentifiers, { exact: true })
       : NEVER_MATCH_NAME
@@ -73,6 +72,13 @@ export class NodePathWalker {
 
   private addImportToken(token: ImportToken) {
     this.getWritableImports().add(token)
+  }
+
+  private getVisited(): WeakSet<NodePath<Node | null | undefined>> {
+    if (!this.visitedStore) {
+      this.visitedStore = new WeakSet()
+    }
+    return this.visitedStore
   }
 
   walkVariableDeclarator(path: NodePath<VariableDeclarator>) {
@@ -128,10 +134,11 @@ export class NodePathWalker {
   }
 
   walkNode(arg: NodePath<Node | null | undefined>) {
-    if (this.visited.has(arg)) {
+    const visited = this.getVisited()
+    if (visited.has(arg)) {
       return
     }
-    this.visited.add(arg)
+    visited.add(arg)
     // 回溯标识符绑定，便于发现嵌套模板
     if (arg.isIdentifier()) {
       const binding = (arg as any)?.scope?.getBinding?.(arg.node.name)

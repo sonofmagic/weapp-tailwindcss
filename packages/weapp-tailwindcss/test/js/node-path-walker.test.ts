@@ -128,6 +128,42 @@ describe('NodePathWalker', () => {
     expect(secondWalker.imports.size).toBe(0)
   })
 
+  it('tracks visited paths independently after lazy initialisation', () => {
+    const ast = parse('const demo = "noop"', { sourceType: 'module' })
+    let literalPath: NodePath<StringLiteral> | undefined
+
+    traverse(ast, {
+      StringLiteral(path) {
+        literalPath = path
+        path.stop()
+      },
+    })
+
+    const firstVisited: string[] = []
+    const secondVisited: string[] = []
+    const firstWalker = new NodePathWalker({
+      callback(path) {
+        if (path.isStringLiteral()) {
+          firstVisited.push(path.node.value)
+        }
+      },
+    })
+    const secondWalker = new NodePathWalker({
+      callback(path) {
+        if (path.isStringLiteral()) {
+          secondVisited.push(path.node.value)
+        }
+      },
+    })
+
+    firstWalker.walkNode(literalPath!)
+    firstWalker.walkNode(literalPath!)
+    secondWalker.walkNode(literalPath!)
+
+    expect(firstVisited).toEqual(['noop'])
+    expect(secondVisited).toEqual(['noop'])
+  })
+
   it('skips call expression argument walking when ignore identifiers are omitted', () => {
     const ast = parse('cn("w-[100px]")', { sourceType: 'module' })
     const visited: string[] = []
