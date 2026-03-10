@@ -35,56 +35,36 @@ const LEGACY_WEBKIT_SPACING_PROPS = new Set([
 const VAR_REFERENCE_PATTERN = /var\(/i
 
 // dedupeSpacingProps 去重并调整带变量的间距属性，确保静态声明优先
-function dedupeSpacingProps(rule: Rule) {
-  const grouped = new Map<string, Declaration[]>()
-
-  for (const node of rule.nodes) {
-    if (node.type !== 'decl') {
-      continue
-    }
-    if (!SPACING_PROP_SET.has(node.prop)) {
-      continue
-    }
-    const list = grouped.get(node.prop)
-    if (list) {
-      list.push(node)
-    }
-    else {
-      grouped.set(node.prop, [node])
-    }
+function dedupeSpacingGroup(rule: Rule, declarations: Declaration[]) {
+  if (declarations.length <= 1) {
+    return
   }
 
-  for (const [, declarations] of grouped) {
-    if (declarations.length <= 1) {
+  const unique: Declaration[] = []
+  const seenValues = new Set<string>()
+
+  for (const decl of declarations) {
+    if (decl.parent !== rule) {
       continue
     }
-
-    const unique: Declaration[] = []
-    const seenValues = new Set<string>()
-
-    for (const decl of declarations) {
-      if (decl.parent !== rule) {
-        continue
-      }
-      const key = `${decl.important ? '!important@@' : ''}${decl.value}`
-      if (seenValues.has(key)) {
-        decl.remove()
-        continue
-      }
-      seenValues.add(key)
-      unique.push(decl)
-    }
-
-    if (unique.length <= 1) {
+    const key = `${decl.important ? '!important@@' : ''}${decl.value}`
+    if (seenValues.has(key)) {
+      decl.remove()
       continue
     }
-
-    reorderLiteralFirst(
-      rule,
-      unique,
-      decl => VAR_REFERENCE_PATTERN.test(decl.value),
-    )
+    seenValues.add(key)
+    unique.push(decl)
   }
+
+  if (unique.length <= 1) {
+    return
+  }
+
+  reorderLiteralFirst(
+    rule,
+    unique,
+    decl => VAR_REFERENCE_PATTERN.test(decl.value),
+  )
 }
 
 export function isNotLastChildPseudo(node?: Node | null): node is Pseudo {
@@ -138,6 +118,8 @@ export function transformSpacingSelector(nodes: Node[] | undefined, options: ISt
 
 // normalizeSpacingDeclarations 统一逻辑属性方向，兼容不支持的 -webkit 前缀
 export function normalizeSpacingDeclarations(rule: Rule) {
+  const grouped = new Map<string, Declaration[]>()
+
   for (const node of [...rule.nodes]) {
     if (node.type !== 'decl') {
       continue
@@ -152,7 +134,21 @@ export function normalizeSpacingDeclarations(rule: Rule) {
     if (mirror) {
       node.prop = mirror
     }
+
+    if (!SPACING_PROP_SET.has(node.prop)) {
+      continue
+    }
+
+    const declarations = grouped.get(node.prop)
+    if (declarations) {
+      declarations.push(node)
+    }
+    else {
+      grouped.set(node.prop, [node])
+    }
   }
 
-  dedupeSpacingProps(rule)
+  for (const declarations of grouped.values()) {
+    dedupeSpacingGroup(rule, declarations)
+  }
 }
