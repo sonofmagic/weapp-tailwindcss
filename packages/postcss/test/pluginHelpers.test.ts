@@ -29,6 +29,8 @@ let getCalcPlugin: CalcModule['getCalcPlugin']
 let getUnitsToPxPlugin: UnitsModule['getUnitsToPxPlugin']
 let getCustomPropertyCleaner: CleanerModule['getCustomPropertyCleaner']
 
+const TW_CUSTOM_PROPERTY_REGEX = /^--tw-/
+
 beforeAll(async () => {
   const pxModule = await import('@/plugins/getPxTransformPlugin')
   getPxTransformPlugin = pxModule.getPxTransformPlugin
@@ -89,6 +91,21 @@ describe('getPxTransformPlugin', () => {
     }))
     expect(plugin?.postcssPlugin).toBe('mock-px')
   })
+
+  it('reuses default px2rpx options when set to true', () => {
+    pxMock.mockImplementation(options => ({ postcssPlugin: 'mock-px', options }))
+
+    getPxTransformPlugin(createOptions({ px2rpx: true }))
+    getPxTransformPlugin(createOptions({ px2rpx: true }))
+
+    expect(pxMock).toHaveBeenCalledTimes(2)
+    expect(pxMock.mock.calls[0]?.[0]).toBe(pxMock.mock.calls[1]?.[0])
+    expect(pxMock.mock.calls[0]?.[0]).toMatchObject({
+      platform: 'weapp',
+      targetUnit: 'rpx',
+      designWidth: 750,
+    })
+  })
 })
 
 describe('getRemTransformPlugin', () => {
@@ -127,6 +144,21 @@ describe('getRemTransformPlugin', () => {
       transformUnit: 'rpx',
     }))
     expect(plugin?.postcssPlugin).toBe('mock-rem')
+  })
+
+  it('reuses default rem2rpx options when set to true', () => {
+    remMock.mockImplementation(options => ({ postcssPlugin: 'mock-rem', options }))
+
+    getRemTransformPlugin(createOptions({ rem2rpx: true }))
+    getRemTransformPlugin(createOptions({ rem2rpx: true }))
+
+    expect(remMock).toHaveBeenCalledTimes(2)
+    expect(remMock.mock.calls[0]?.[0]).toBe(remMock.mock.calls[1]?.[0])
+    expect(remMock.mock.calls[0]?.[0]).toMatchObject({
+      rootValue: 32,
+      transformUnit: 'rpx',
+      processorStage: 'OnceExit',
+    })
   })
 })
 
@@ -202,7 +234,7 @@ describe('getCustomPropertyCleaner', () => {
   it('removes duplicate declarations containing matched custom properties', () => {
     const plugin = getCustomPropertyCleaner(createOptions({
       cssCalc: {
-        includeCustomProperties: [/^--tw-/],
+        includeCustomProperties: [TW_CUSTOM_PROPERTY_REGEX],
       },
     })) as Plugin | null
     expect(plugin).not.toBeNull()
