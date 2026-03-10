@@ -81,4 +81,18 @@ describe('sourceAnalysis helpers', () => {
     expect(reExports).toHaveLength(1)
     expect(reExports[0]!.source).toBe('./foo?transformed')
   })
+
+  it('returns early when no replacement entries are provided', () => {
+    const source = `import foo from './foo'`
+    const ast = babelParse(source, { sourceType: 'module' as const })
+    const analysis = analyzeSource(ast, {})
+    const originalImports = analysis.walker.imports
+    const originalImportCount = analysis.walker.imports.size
+
+    const tokens = collectModuleSpecifierReplacementTokens(analysis, {})
+
+    expect(tokens).toEqual([])
+    expect(analysis.walker.imports).toBe(originalImports)
+    expect(analysis.walker.imports.size).toBe(originalImportCount)
+  })
 })

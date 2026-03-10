@@ -47,6 +47,20 @@ export function collectModuleSpecifierReplacementTokens(
   analysis: SourceAnalysis,
   replacements: Record<string, string>,
 ) {
+  const replacementKeys = Object.keys(replacements)
+  if (replacementKeys.length === 0) {
+    return []
+  }
+
+  if (
+    analysis.importDeclarations.size === 0
+    && analysis.exportDeclarations.size === 0
+    && analysis.requireCallPaths.length === 0
+    && analysis.walker.imports.length === 0
+  ) {
+    return []
+  }
+
   const tokens: JsToken[] = []
 
   const applyReplacement = (path: NodePath<StringLiteral>) => {
