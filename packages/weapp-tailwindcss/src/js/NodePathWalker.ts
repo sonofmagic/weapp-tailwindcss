@@ -28,6 +28,10 @@ import { maybeAddImportToken } from './node-path-walker/import-tokens'
 
 export type { ImportToken } from './node-path-walker/import-tokens'
 
+const EMPTY_IGNORE_CALL_EXPRESSION_IDENTIFIERS: (string | RegExp)[] = []
+function NOOP_STRING_PATH_CALLBACK() { }
+const NEVER_MATCH_NAME: NameMatcher = () => false
+
 /**
  * 遍历我们关注的调用表达式所关联的绑定，收集后续需要转换的字符串节点。
  */
@@ -37,6 +41,7 @@ export class NodePathWalker {
   public imports: Set<ImportToken>
   private visited: WeakSet<NodePath<Node | null | undefined>>
   private isIgnoredCallIdentifier: NameMatcher
+  private hasIgnoredCallIdentifiers: boolean
 
   constructor(
     { ignoreCallExpressionIdentifiers, callback }:
@@ -45,11 +50,14 @@ export class NodePathWalker {
       callback?: (path: NodePath<StringLiteral | TemplateElement>) => void
     } = {},
   ) {
-    this.ignoreCallExpressionIdentifiers = ignoreCallExpressionIdentifiers ?? []
-    this.callback = callback ?? (() => { })
+    this.hasIgnoredCallIdentifiers = Boolean(ignoreCallExpressionIdentifiers && ignoreCallExpressionIdentifiers.length > 0)
+    this.ignoreCallExpressionIdentifiers = ignoreCallExpressionIdentifiers ?? EMPTY_IGNORE_CALL_EXPRESSION_IDENTIFIERS
+    this.callback = callback ?? NOOP_STRING_PATH_CALLBACK
     this.imports = new Set()
     this.visited = new WeakSet()
-    this.isIgnoredCallIdentifier = createNameMatcher(this.ignoreCallExpressionIdentifiers, { exact: true })
+    this.isIgnoredCallIdentifier = this.hasIgnoredCallIdentifiers
+      ? createNameMatcher(this.ignoreCallExpressionIdentifiers, { exact: true })
+      : NEVER_MATCH_NAME
   }
 
   walkVariableDeclarator(path: NodePath<VariableDeclarator>) {
@@ -157,10 +165,14 @@ export class NodePathWalker {
    * Walk the arguments of a desired call expression so their bindings can be analysed.
    */
   walkCallExpression(path: NodePath<CallExpression>) {
+    if (!this.hasIgnoredCallIdentifiers) {
+      return
+    }
     const calleePath = path.get('callee')
     if (
       calleePath.isIdentifier()
-      && this.isIgnoredCallIdentifier(calleePath.node.name)) {
+      && this.isIgnoredCallIdentifier(calleePath.node.name)
+    ) {
       // We only follow arguments for call expressions that match the allow list.
       for (const arg of path.get('arguments')) {
         this.walkNode(arg)

@@ -95,7 +95,7 @@ describe('NodePathWalker', () => {
 
     walker.walkNode(typeImportPath!)
 
-    const importTokens = Array.from(walker.imports)
+    const importTokens = [...walker.imports]
 
     expect(importTokens.some(token => token.type === 'ImportDefaultSpecifier' && token.source === './mod')).toBe(true)
     expect(importTokens.some(token => token.type === 'ImportSpecifier' && token.imported === 'cls')).toBe(true)
@@ -117,5 +117,25 @@ describe('NodePathWalker', () => {
 
     expect(literalPath).toBeDefined()
     expect(() => walker.walkStringLiteral(literalPath!)).not.toThrow()
+  })
+
+  it('skips call expression argument walking when ignore identifiers are omitted', () => {
+    const ast = parse('cn("w-[100px]")', { sourceType: 'module' })
+    const visited: string[] = []
+    const walker = new NodePathWalker({
+      callback(path) {
+        if (path.isStringLiteral()) {
+          visited.push(path.node.value)
+        }
+      },
+    })
+
+    traverse(ast, {
+      CallExpression(path) {
+        walker.walkCallExpression(path)
+      },
+    })
+
+    expect(visited).toEqual([])
   })
 })
