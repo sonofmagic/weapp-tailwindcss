@@ -2,34 +2,36 @@
 import type { AcceptedPlugin } from 'postcss'
 import type { IStyleHandlerOptions } from '../types'
 
+const calcDuplicateCleanerPlugin: AcceptedPlugin = {
+  postcssPlugin: 'postcss-calc-duplicate-cleaner',
+  Rule(rule) {
+    rule.walkDecls((decl) => {
+      const prev = decl.prev()
+      if (!prev || prev.type !== 'decl') {
+        return
+      }
+
+      if (prev.prop !== decl.prop) {
+        return
+      }
+
+      if (prev.important !== decl.important) {
+        return
+      }
+
+      if (prev.value !== decl.value) {
+        return
+      }
+
+      decl.remove()
+    })
+  },
+}
+
 export function getCalcDuplicateCleaner(options: IStyleHandlerOptions): AcceptedPlugin | null {
   if (!options.cssCalc) {
     return null
   }
 
-  return {
-    postcssPlugin: 'postcss-calc-duplicate-cleaner',
-    Rule(rule) {
-      rule.walkDecls((decl) => {
-        const prev = decl.prev()
-        if (!prev || prev.type !== 'decl') {
-          return
-        }
-
-        if (prev.prop !== decl.prop) {
-          return
-        }
-
-        if (prev.important !== decl.important) {
-          return
-        }
-
-        if (prev.value !== decl.value) {
-          return
-        }
-
-        decl.remove()
-      })
-    },
-  }
+  return calcDuplicateCleanerPlugin
 }
