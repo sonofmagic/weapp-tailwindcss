@@ -18,6 +18,8 @@ export function getCustomPropertyCleaner(options: IStyleHandlerOptions): Accepte
     return null
   }
 
+  const shouldInspectValue = (value: string) => value.includes('var(') && value.includes('--')
+
   return {
     postcssPlugin: 'postcss-remove-include-custom-properties',
     OnceExit(root) {
@@ -32,7 +34,7 @@ export function getCustomPropertyCleaner(options: IStyleHandlerOptions): Accepte
           return
         }
 
-        if (!shouldMatchCustomProperties || !/--/.test(decl.value)) {
+        if (!shouldInspectValue(decl.value)) {
           return
         }
 
