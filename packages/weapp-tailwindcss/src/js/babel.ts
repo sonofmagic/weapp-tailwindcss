@@ -204,7 +204,7 @@ export function jsHandler(rawSource: string, options: IJsHandlerOptions): JsHand
     )
 
     const linked = graph.build()
-    if (Object.keys(linked).length > 0) {
+    if (linked) {
       result.linked = linked
     }
   }
