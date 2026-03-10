@@ -81,15 +81,16 @@ function extractLiteralValue(
   { unescapeUnicode, arbitraryValues }: Pick<IJsHandlerOptions, 'unescapeUnicode' | 'arbitraryValues'>,
 ) {
   const allowDoubleQuotes = arbitraryValues?.allowDoubleQuotes
+  const { node } = path
 
   let offset = 0
   let original: string
-  if (path.isStringLiteral()) {
+  if (node.type === 'StringLiteral') {
     offset = 1
-    original = path.node.value
+    original = node.value
   }
-  else if (path.isTemplateElement()) {
-    original = path.node.value.raw
+  else if (node.type === 'TemplateElement') {
+    original = node.value.raw
   }
   else {
     original = ''

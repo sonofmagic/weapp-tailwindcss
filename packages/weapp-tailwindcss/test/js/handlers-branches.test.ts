@@ -132,6 +132,18 @@ describe('replaceHandleValue branch coverage', () => {
     expect(token?.value).toBe('w-_b100px_B')
   })
 
+  it('decodes unicode escape sequences in template raw values before processing', () => {
+    const quasi = getLiteralPath('const tpl = `\\u0077-[100px]`', 'TemplateElement')
+    const token = replaceHandleValue(quasi, {
+      escapeMap: MappingChars2String,
+      classNameSet: new Set(['w-[100px]']),
+      needEscaped: true,
+      unescapeUnicode: true,
+    })
+
+    expect(token?.value).toBe('w-_b100px_B')
+  })
+
   it('transforms template elements without shifting offsets', () => {
     const quasi = getLiteralPath('const tpl = `w-[100px]`', 'TemplateElement')
     const token = replaceHandleValue(quasi, {
