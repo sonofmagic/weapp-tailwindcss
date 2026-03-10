@@ -95,6 +95,19 @@ describe('babel helpers additional coverage', () => {
     expect(analysis.walker.imports.size).toBe(0)
   })
 
+  it('keeps eval handling when module metadata collection is skipped', () => {
+    const code = 'eval(`const cls = "w-[100px]"`)'
+    const options = {
+      classNameSet: new Set(['w-[100px]']),
+      escapeMap: MappingChars2String,
+      alwaysEscape: true,
+    }
+    const analysis = babel.analyzeSource(parse(code, { sourceType: 'module' as const }), options, undefined, false)
+    const ms = babel.processUpdatedSource(code, options, analysis)
+
+    expect(ms.toString()).toContain('w-_b100px_B')
+  })
+
   it('returns the original source when parsing fails', () => {
     const raw = 'const = 1'
     const result = babel.jsHandler(raw, {})

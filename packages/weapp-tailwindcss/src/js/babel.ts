@@ -83,24 +83,15 @@ export function analyzeSource(
   // eslint-disable-next-line ts/no-use-before-define -- default handler references exported jsHandler defined later
   const evalHandler = handler ?? jsHandler
 
-  const traverseOptions: TraverseOptions<Node> = {
-    StringLiteral: {
-      enter(p) {
-        if (isEvalPath(p.parentPath)) {
-          return
-        }
-        targetPaths.push(p)
-      },
-    },
-    TemplateElement: {
-      enter(p) {
+  const templateElementEnter: NonNullable<TraverseOptions<Node>['TemplateElement']>['enter'] = hasTaggedTemplateIgnoreIdentifiers
+    ? (p) => {
         const pp = p.parentPath
         if (pp.isTemplateLiteral()) {
           const ppp = pp.parentPath
           if (isEvalPath(ppp)) {
             return
           }
-          if (hasTaggedTemplateIgnoreIdentifiers && ppp.isTaggedTemplateExpression()) {
+          if (ppp.isTaggedTemplateExpression()) {
             const tagPath = ppp.get('tag') as NodePath<Node>
             if (getTaggedTemplateIgnore().shouldIgnore(tagPath)) {
               return
@@ -108,10 +99,25 @@ export function analyzeSource(
           }
         }
         targetPaths.push(p)
-      },
-    },
-    CallExpression: {
-      enter(p) {
+      }
+    : (p) => {
+        const pp = p.parentPath
+        if (pp.isTemplateLiteral()) {
+          const ppp = pp.parentPath
+          if (isEvalPath(ppp)) {
+            return
+          }
+        }
+        targetPaths.push(p)
+      }
+
+  const callExpressionEnter: NonNullable<TraverseOptions<Node>['CallExpression']>['enter'] = (!collectModuleMetadata && !needScope)
+    ? (p) => {
+        if (isEvalPath(p)) {
+          walkEvalExpression(p, options, jsTokenUpdater, evalHandler)
+        }
+      }
+    : (p) => {
         if (isEvalPath(p)) {
           walkEvalExpression(p, options, jsTokenUpdater, evalHandler)
           return
@@ -137,7 +143,22 @@ export function analyzeSource(
         if (needScope) {
           walker.walkCallExpression(p)
         }
+      }
+
+  const traverseOptions: TraverseOptions<Node> = {
+    StringLiteral: {
+      enter(p) {
+        if (isEvalPath(p.parentPath)) {
+          return
+        }
+        targetPaths.push(p)
       },
+    },
+    TemplateElement: {
+      enter: templateElementEnter,
+    },
+    CallExpression: {
+      enter: callExpressionEnter,
     },
     ...(collectModuleMetadata
       ? {
