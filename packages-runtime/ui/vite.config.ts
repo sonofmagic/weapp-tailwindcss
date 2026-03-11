@@ -9,6 +9,8 @@ import dts from 'vite-plugin-dts'
 import { loadTailwindcss3 } from './scripts/load-tailwindcss3'
 import { weappTailwindcssUIPreset } from './src/preset'
 
+const CSS_EXT_RE = /\.css$/
+
 const rootDir = fileURLToPath(new URL('.', import.meta.url))
 const srcDir = path.resolve(rootDir, 'src')
 
@@ -24,7 +26,7 @@ function wxssMirror() {
         if (fileName.endsWith('.css') && output.type === 'asset' && typeof output.source === 'string') {
           this.emitFile({
             type: 'asset',
-            fileName: fileName.replace(/\.css$/, '.wxss'),
+            fileName: fileName.replace(CSS_EXT_RE, '.wxss'),
             source: output.source,
           })
         }
@@ -83,7 +85,7 @@ export default defineConfig(async ({ command, mode }) => {
 
     const css3Path = path.resolve(rootDir, 'dist/index.tailwind3.css')
     await writeFile(css3Path, tailwind3Result.css, 'utf8')
-    await writeFile(css3Path.replace(/\.css$/, '.wxss'), tailwind3Result.css, 'utf8')
+    await writeFile(css3Path.replace(CSS_EXT_RE, '.wxss'), tailwind3Result.css, 'utf8')
   }
 
   return {
