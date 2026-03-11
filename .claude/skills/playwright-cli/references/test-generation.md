@@ -45,8 +45,8 @@ test('login flow', async ({ page }) => {
   await page.getByRole('textbox', { name: 'Password' }).fill('password123')
   await page.getByRole('button', { name: 'Sign In' }).click()
 
-  // Add assertions
-  await expect(page).toHaveURL(/.*dashboard/)
+  // 验证跳转到 dashboard
+  await expect(page).toHaveURL('https://example.com/dashboard')
 })
 ```
 

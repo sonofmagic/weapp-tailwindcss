@@ -25,11 +25,13 @@ const markdownExamples = [
   { label: 'ai/index.md', path: '/ai/index.md', desc: 'AI 生成小程序专题' },
 ]
 
+const TRAILING_SLASH_RE = /\/$/
+
 function useBaseUrl() {
   const { siteConfig } = useDocusaurusContext()
   const browserOrigin = typeof window !== 'undefined' ? window.location.origin : ''
-  const siteUrl = (siteConfig?.url || browserOrigin || '').replace(/\/$/, '')
-  const base = (siteConfig?.baseUrl || '/').replace(/\/$/, '')
+  const siteUrl = (siteConfig?.url || browserOrigin || '').replace(TRAILING_SLASH_RE, '')
+  const base = (siteConfig?.baseUrl || '/').replace(TRAILING_SLASH_RE, '')
   return `${siteUrl}${base === '/' ? '' : base}`
 }
 

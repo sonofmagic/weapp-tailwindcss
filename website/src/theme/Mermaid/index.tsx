@@ -44,6 +44,8 @@ async function encodeForMermaidLive(code: string) {
   }
 }
 
+const WHITESPACE_RE = /\s+/
+
 export default function MermaidWithToolbar({ value, ...rest }: Props) {
   const { siteConfig } = useDocusaurusContext()
   const wheelZoomEnabled = Boolean((siteConfig as any)?.customFields?.mermaidWheelZoom)
@@ -86,7 +88,7 @@ export default function MermaidWithToolbar({ value, ...rest }: Props) {
 
   // Fallback: even在极慢渲染或观察失效时也确保展示内容
   useEffect(() => {
-    const timer = window.setTimeout(() => markReady(), 800)
+    const timer = window.setTimeout(markReady, 800)
     return () => window.clearTimeout(timer)
   }, [markReady, value])
 
@@ -94,7 +96,7 @@ export default function MermaidWithToolbar({ value, ...rest }: Props) {
     const applySize = (content: HTMLDivElement, svg: SVGSVGElement) => {
       const viewBox = svg.getAttribute('viewBox')
       if (viewBox) {
-        const parts = viewBox.split(/\s+/).map(Number)
+        const parts = viewBox.split(WHITESPACE_RE).map(Number)
         if (parts.length === 4 && parts[2] > 0 && parts[3] > 0) {
           content.style.width = `${parts[2]}px`
           content.style.height = `${parts[3]}px`
@@ -211,7 +213,7 @@ export default function MermaidWithToolbar({ value, ...rest }: Props) {
   const handleCopy = useCallback(async () => {
     const markDone = () => {
       setCopied(true)
-      setTimeout(() => setCopied(false), 1200)
+      setTimeout(setCopied, 1200, false)
     }
     try {
       await navigator.clipboard.writeText(value)

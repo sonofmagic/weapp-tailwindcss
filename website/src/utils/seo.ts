@@ -32,6 +32,17 @@ const sectionKeywords: Array<{ pattern: RegExp, keywords: string[] }> = [
   },
 ]
 
+const KEYWORD_SPLIT_RE = /[，,、|/]/g
+const CODE_BLOCK_RE = /```[\s\S]*?```/g
+const INLINE_CODE_RE = /`([^`]+)`/g
+const IMAGE_LINK_RE = /!\[[^\]]*\]\([^)]*\)/g
+const MD_LINK_RE = /\[([^\]]+)\]\([^)]*\)/g
+const HTML_TAG_RE = /<[^>]+>/g
+const TITLE_TERM_RE = /[\p{L}\p{N}#+.-]+/gu
+const HYPHEN_UNDERSCORE_RE = /[-_]/g
+const WHITESPACE_RE = /\s+/g
+const TRAILING_SLASH_RE = /\/$/
+
 function normalizeKeywords(input?: string[] | string | null): string[] {
   if (!input) {
     return []
@@ -40,22 +51,22 @@ function normalizeKeywords(input?: string[] | string | null): string[] {
     return input.map(item => String(item).trim()).filter(Boolean)
   }
   return String(input)
-    .split(/[，,、|/]/g)
+    .split(KEYWORD_SPLIT_RE)
     .map(item => item.trim())
     .filter(Boolean)
 }
 
 function stripMarkdown(content: string) {
   return content
-    .replace(/```[\s\S]*?```/g, ' ')
-    .replace(/`([^`]+)`/g, '$1')
-    .replace(/!\[[^\]]*\]\([^)]*\)/g, ' ')
-    .replace(/\[([^\]]+)\]\([^)]*\)/g, '$1')
-    .replace(/<[^>]+>/g, ' ')
+    .replace(CODE_BLOCK_RE, ' ')
+    .replace(INLINE_CODE_RE, '$1')
+    .replace(IMAGE_LINK_RE, ' ')
+    .replace(MD_LINK_RE, '$1')
+    .replace(HTML_TAG_RE, ' ')
 }
 
 function extractTitleTerms(title: string) {
-  return (title.match(/[\p{L}\p{N}#+.-]+/gu) || [])
+  return (title.match(TITLE_TERM_RE) || [])
     .map(item => item.trim())
     .filter(item => item.length >= 2)
 }
@@ -65,7 +76,7 @@ function extractPermalinkTerms(permalink: string) {
     .split('/')
     .filter(Boolean)
     .map(segment => decodeURIComponent(segment))
-    .map(segment => segment.replace(/[-_]/g, ' '))
+    .map(segment => segment.replace(HYPHEN_UNDERSCORE_RE, ' '))
     .map(segment => segment.trim())
     .filter(item => item.length >= 2)
 }
@@ -79,7 +90,7 @@ export function resolveSeoDescription(params: {
   const maxLength = params.maxLength ?? 140
   const raw = [params.description, params.fallbackText, `${params.title} - weapp-tailwindcss 文档`]
     .find(Boolean) || `${params.title} - weapp-tailwindcss 文档`
-  const normalized = stripMarkdown(String(raw)).replace(/\s+/g, ' ').trim()
+  const normalized = stripMarkdown(String(raw)).replace(WHITESPACE_RE, ' ').trim()
   if (!normalized) {
     return `${params.title} - weapp-tailwindcss 文档`
   }
@@ -108,13 +119,11 @@ export function resolveSeoKeywords(params: {
     ...extractPermalinkTerms(params.permalink),
     ...baseKeywords,
   ]
-  const deduped = Array.from(
-    new Set(
-      merged
-        .map(item => item.trim())
-        .filter(Boolean),
-    ),
-  )
+  const deduped = [...new Set(
+    merged
+      .map(item => item.trim())
+      .filter(Boolean),
+  )]
   return deduped.slice(0, params.maxItems ?? 20)
 }
 
@@ -123,7 +132,7 @@ export function buildBreadcrumbJsonLd(params: {
   permalink: string
   title: string
 }) {
-  const rootUrl = params.siteUrl.replace(/\/$/, '')
+  const rootUrl = params.siteUrl.replace(TRAILING_SLASH_RE, '')
   const segments = params.permalink.split('/').filter(Boolean)
   const names: string[] = ['首页']
   const items: string[] = [rootUrl]
@@ -140,10 +149,10 @@ export function buildBreadcrumbJsonLd(params: {
       names.push('博客')
       continue
     }
-    names.push(decodeURIComponent(segment).replace(/[-_]/g, ' '))
+    names.push(decodeURIComponent(segment).replace(HYPHEN_UNDERSCORE_RE, ' '))
   }
 
-  if (!segments.length || names[names.length - 1] !== params.title) {
+  if (!segments.length || names.at(-1) !== params.title) {
     names.push(params.title)
     items.push(`${rootUrl}${params.permalink}`)
   }
