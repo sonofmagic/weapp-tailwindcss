@@ -81,7 +81,7 @@ describe('tailwindcss/v4/patcher helpers', () => {
     const normalized = normalizeCssEntries([' ./src/app.css ', '/abs/global.css'], anchor)
 
     expect(normalized).toEqual([
-      path.normalize('/workspace/project/src/app.css'),
+      path.normalize(path.resolve(anchor, './src/app.css')),
       path.normalize('/abs/global.css'),
     ])
   })
