@@ -29,6 +29,7 @@ export default icebreaker(
       'skills/**',
       // 忽略 apps 中生成的 CSS 和类型声明
       'apps/**/result.css',
+      'apps/**/result.json',
       'apps/**/transformed.css',
       'apps/**/env.d.ts',
       'apps/tailwindcss-weapp/src/env.d.ts',
