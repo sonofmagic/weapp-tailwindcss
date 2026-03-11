@@ -114,6 +114,42 @@ describe('createJsHandler', () => {
     expect(spy.mock.calls[0][1].classNameSet).toBe(classNameSet)
   })
 
+  it('caches repeated short-source transform results for the same resolved options', () => {
+    const spy = vi.spyOn(babel, 'jsHandler').mockReturnValue({ code: 'cached-result' })
+    const base = createBaseOptions()
+    const handler = createJsHandler(base)
+    const classNameSet = new Set(['foo'])
+    const override = {
+      wrapExpression: true as const,
+    }
+
+    const first = handler('item.checked ? "foo" : ""', classNameSet, override)
+    const second = handler('item.checked ? "foo" : ""', classNameSet, override)
+
+    expect(first.code).toBe('cached-result')
+    expect(second.code).toBe('cached-result')
+    expect(spy).toHaveBeenCalledTimes(1)
+  })
+
+  it('does not cache transform results when moduleGraph is enabled', () => {
+    const spy = vi.spyOn(babel, 'jsHandler').mockReturnValue({ code: 'linked-result' })
+    const base = createBaseOptions()
+    const handler = createJsHandler(base)
+
+    const override = {
+      filename: '/project/dist/index.js',
+      moduleGraph: {
+        resolve: vi.fn(),
+        load: vi.fn(),
+      },
+    }
+
+    handler('import "./chunk.js"', undefined, override)
+    handler('import "./chunk.js"', undefined, override)
+
+    expect(spy).toHaveBeenCalledTimes(2)
+  })
+
   it('escapes class names when alwaysEscape is provided at creation time', () => {
     const handler = createJsHandler({
       escapeMap: MappingChars2String,
