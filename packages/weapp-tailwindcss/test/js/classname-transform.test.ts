@@ -47,6 +47,17 @@ describe('classname transform caching', () => {
     })
   })
 
+  it('skips arbitrary candidates in class context when fallback is explicitly disabled', () => {
+    const result = classNameTransform.resolveClassNameTransformWithResult('bg-[length:200rpx_100rpx]', {
+      classContext: true,
+      jsArbitraryValueFallback: false,
+    })
+
+    expect(result).toEqual({
+      decision: 'skip',
+    })
+  })
+
   it('enables auto fallback for tailwindcss v4 when the runtime set is empty', () => {
     expect(classNameTransform.shouldEnableArbitraryValueFallback({
       tailwindcssMajorVersion: 4,

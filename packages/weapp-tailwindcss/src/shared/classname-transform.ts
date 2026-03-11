@@ -166,8 +166,8 @@ export function resolveClassNameTransformWithResult(
 
   if (
     classContext
-    && isArbitraryValueCandidate(candidate)
     && shouldEnableArbitraryValueFallbackByInputs(classNameSet, jsArbitraryValueFallback, tailwindcssMajorVersion)
+    && isArbitraryValueCandidate(candidate)
   ) {
     return FALLBACK_RESULT
   }
