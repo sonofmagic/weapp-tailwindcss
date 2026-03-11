@@ -14,23 +14,24 @@
 ##   Handle line endings automatically for files detected as
 ##   text and leave all files detected as binary untouched.
 ##   This will handle all files NOT defined below.
-*                 text=auto
+##   强制所有文本文件使用 LF，避免 Windows CI 上 CRLF 导致 prettier 报错
+*                 text=auto eol=lf
 
 # Source code
 *.bash            text eol=lf
 *.bat             text eol=crlf
 *.cmd             text eol=crlf
 *.coffee          text
-*.css             text eol=lf diff=css
+*.css             text diff=css
 *.htm             text diff=html
 *.html            text diff=html
 *.inc             text
 *.ini             text
-*.js              text eol=lf
-*.mjs             text eol=lf
-*.cjs             text eol=lf
-*.json            text eol=lf
-*.jsx             text eol=lf
+*.js              text
+*.mjs             text
+*.cjs             text
+*.json            text
+*.jsx             text
 *.less            text
 *.ls              text
 *.map             text -diff
@@ -43,14 +44,14 @@
 *.rb              text diff=ruby
 *.sass            text
 *.scm             text
-*.scss            text eol=lf diff=css
+*.scss            text diff=css
 *.sh              text eol=lf
 .husky/*          text eol=lf
 *.sql             text
 *.styl            text
 *.tag             text
-*.ts              text eol=lf
-*.tsx             text eol=lf
+*.ts              text
+*.tsx             text
 *.xml             text
 *.xhtml           text diff=html
 templates/**      text eol=lf
@@ -97,11 +98,11 @@ TODO              text
 *.mustache        text
 *.njk             text
 *.phtml           text
-*.svelte          text eol=lf
+*.svelte          text
 *.tmpl            text
 *.tpl             text
 *.twig            text
-*.vue             text eol=lf
+*.vue             text
 
 # Configs
 *.cnf             text
