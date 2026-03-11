@@ -50,7 +50,7 @@ export function StyleInjector(options: WebpackTaroStyleInjectorOptions = {}): We
     }
   }
 
-  const taroResolver = createTaroSubPackageImportResolver(Array.from(configs.values()))
+  const taroResolver = createTaroSubPackageImportResolver([...configs.values()])
 
   const injectorOptions: WebpackWeappStyleInjectorOptions = {
     ...rest,

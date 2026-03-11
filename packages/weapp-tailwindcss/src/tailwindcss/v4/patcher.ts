@@ -118,7 +118,7 @@ export function createPatcherForBase(
     mergedTailwindOptions.packageName ?? configuredPackageName ?? 'tailwindcss',
   )
 
-  const patchers = Array.from(packageCandidates).map((packageName) => {
+  const patchers = Array.from(packageCandidates, (packageName) => {
     const tailwindOptionsForPackage: TailwindUserOptions = {
       ...mergedTailwindOptions,
       packageName,

@@ -40,7 +40,7 @@ describe('wxml', () => {
         fixturesDir,
         'wxml/index.wxml',
       ))
-      expect([...files].map((x) => {
+      expect(Array.from(files, (x) => {
         return path.relative(
           path.resolve(__dirname, '..'),
           x,

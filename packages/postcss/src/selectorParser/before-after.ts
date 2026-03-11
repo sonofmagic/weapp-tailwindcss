@@ -9,6 +9,9 @@ interface BeforeAfterState {
 
 let beforeAfterStateRef: BeforeAfterState | null = null
 
+const BEFORE_PSEUDO_RE = /^:?:before$/
+const AFTER_PSEUDO_RE = /^:?:after$/
+
 // 复用 parser 遍历伪元素节点，记录是否存在 before/after
 const beforeAfterParser = psp((selectors) => {
   const state = beforeAfterStateRef
@@ -17,10 +20,10 @@ const beforeAfterParser = psp((selectors) => {
   }
   selectors.walkPseudos((s) => {
     if (s.parent?.length === 1) {
-      if (/^:?:before$/.test(s.value)) {
+      if (BEFORE_PSEUDO_RE.test(s.value)) {
         state.before = true
       }
-      if (/^:?:after$/.test(s.value)) {
+      if (AFTER_PSEUDO_RE.test(s.value)) {
         state.after = true
       }
     }

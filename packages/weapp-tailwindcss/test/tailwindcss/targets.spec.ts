@@ -61,7 +61,7 @@ describe('tailwindcss targets', () => {
     ])
 
     const extracted = await patcher.extract({})
-    expect(Array.from(extracted.classSet)).toEqual(classList)
+    expect([...extracted.classSet]).toEqual(classList)
     expect(extracted.classList).toEqual(classList)
 
     const patched = await patcher.patch()

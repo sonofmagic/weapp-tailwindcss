@@ -63,7 +63,7 @@ function toChunkFiles(files: ChunkLike['files']) {
   if (Array.isArray(files)) {
     return files
   }
-  return Array.from(files)
+  return [...files]
 }
 
 export function createAssetHashByChunkMap(chunks: Iterable<ChunkLike>) {

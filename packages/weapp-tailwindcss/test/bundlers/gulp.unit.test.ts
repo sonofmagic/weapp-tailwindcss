@@ -193,7 +193,7 @@ describe('bundlers/gulp createPlugins', () => {
     await runTransform(plugins.transformJs(), jsFile)
 
     const handlerCalls = jsHandler.mock.calls
-    const handlerOptions = handlerCalls[handlerCalls.length - 1]?.[2]
+    const handlerOptions = handlerCalls.at(-1)?.[2]
     expect(handlerOptions?.moduleGraph).toBeDefined()
     const moduleGraph = handlerOptions?.moduleGraph
     const importer = handlerOptions?.filename

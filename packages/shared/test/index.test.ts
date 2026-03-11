@@ -15,9 +15,17 @@ import {
   toArray,
 } from '@/index'
 
+const ABC_RE = /abc/
+const PARAMATER_ARR_RE = /paramater 'arr'/i
+const BAR_GLOBAL_RE = /bar/g
+const QUX_RE = /qux/
+const EXPECTED_ARRAY_RE = /expected an array/i
+const EXPECTED_FUNCTION_RE = /expected a function/i
+const FOO_GLOBAL_RE = /foo/g
+
 describe('shared utils', () => {
   it('isRegexp correctly detects regular expressions', () => {
-    expect(isRegexp(/abc/)).toBe(true)
+    expect(isRegexp(ABC_RE)).toBe(true)
     expect(isRegexp('abc')).toBe(false)
     expect(isRegexp(null)).toBe(false)
   })
@@ -40,18 +48,19 @@ describe('shared utils', () => {
   })
 
   it('regExpTest supports exact matching and mixed values', () => {
-    expect(() => regExpTest(null as unknown as [], 'test')).toThrowError(/paramater 'arr'/i)
+    expect(() => regExpTest(null as unknown as [], 'test')).toThrowError(PARAMATER_ARR_RE)
 
     expect(regExpTest(['foo'], 'prefix-foo-suffix')).toBe(true)
     expect(regExpTest(['foo'], 'prefix-foo-suffix', { exact: true })).toBe(false)
     expect(regExpTest(['foo'], 'foo', { exact: true })).toBe(true)
 
-    const regex = /bar/g
+    BAR_GLOBAL_RE.lastIndex = 0
+    const regex = BAR_GLOBAL_RE
     regex.lastIndex = 5
     expect(regExpTest([regex], 'bar')).toBe(true)
 
-    expect(regExpTest(['baz', /qux/], 'ends-with-qux')).toBe(true)
-    expect(regExpTest(['baz', /qux/], 'no-match')).toBe(false)
+    expect(regExpTest(['baz', QUX_RE], 'ends-with-qux')).toBe(true)
+    expect(regExpTest(['baz', QUX_RE], 'no-match')).toBe(false)
   })
 
   it('removeExt strips only the final extension', () => {
@@ -92,12 +101,13 @@ describe('shared utils', () => {
   })
 
   it('groupBy validates inputs', () => {
-    expect(() => groupBy(null as unknown as string[], () => 'a')).toThrowError(/expected an array/i)
-    expect(() => groupBy([], null as any)).toThrowError(/expected a function/i)
+    expect(() => groupBy(null as unknown as string[], () => 'a')).toThrowError(EXPECTED_ARRAY_RE)
+    expect(() => groupBy([], null as any)).toThrowError(EXPECTED_FUNCTION_RE)
   })
 
   it('regExpTest resets regex lastIndex and ignores unsupported entries', () => {
-    const regex = /foo/g
+    FOO_GLOBAL_RE.lastIndex = 0
+    const regex = FOO_GLOBAL_RE
     regex.lastIndex = 12
     expect(regExpTest([regex], 'foo')).toBe(true)
     expect(regex.lastIndex).not.toBe(12)

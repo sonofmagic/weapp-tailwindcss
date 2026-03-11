@@ -2,6 +2,11 @@ import path from 'pathe'
 import { createStyleHandler } from '@/handler'
 import { generateCss } from './utils'
 
+const MARGIN_LEFT_32RPX_RE = /margin-left: 32rpx;/g
+const MARGIN_TOP_8RPX_RE = /margin-top:\s*8rpx;/g
+const SPACING_VAR_RE = /--spacing/
+const SPACING_EXACT_RE = /^--spacing$/
+
 describe('calc', () => {
   it('默认的情况', async () => {
     const code = await generateCss(path.resolve(__dirname, './fixtures/issues/calc'))
@@ -187,7 +192,7 @@ describe('calc', () => {
       px2rpx: true,
     })
     const { css } = await styleHandler(code)
-    const fallbackCount = css.match(/margin-left: 32rpx;/g)?.length ?? 0
+    const fallbackCount = css.match(MARGIN_LEFT_32RPX_RE)?.length ?? 0
     expect(fallbackCount).toBe(1)
     expect(css).toContain('margin-left: calc(var(--spacing)*4);')
   })
@@ -202,7 +207,7 @@ describe('calc', () => {
     const { css } = await styleHandler(code, {
       isMainChunk: false,
     })
-    const count = css.match(/margin-top:\s*8rpx;/g)?.length ?? 0
+    const count = css.match(MARGIN_TOP_8RPX_RE)?.length ?? 0
     expect(count).toBe(1)
   })
 
@@ -218,7 +223,7 @@ describe('calc', () => {
     const styleHandler = createStyleHandler({
       isMainChunk: true,
       cssCalc: [
-        /--spacing/,
+        SPACING_VAR_RE,
       ],
       px2rpx: true,
     })
@@ -238,7 +243,7 @@ describe('calc', () => {
     const styleHandler = createStyleHandler({
       isMainChunk: true,
       cssCalc: [
-        /^--spacing$/,
+        SPACING_EXACT_RE,
       ],
       px2rpx: true,
     })

@@ -260,5 +260,5 @@ export async function readJoinedOutputFiles(files: string[]) {
 
 export function resolvePreferredRound(rounds: MutationRoundMetrics[]) {
   return rounds.find(item => item.roundName === 'complex-corpus')
-    ?? rounds[rounds.length - 1]
+    ?? rounds.at(-1)
 }

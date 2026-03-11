@@ -98,7 +98,7 @@ describe('tailwindcss helpers', () => {
       cacheDir: '/global/cache',
     })
 
-    const lastCall = tailwindcssPatcherMock.mock.calls[tailwindcssPatcherMock.mock.calls.length - 1]
+    const lastCall = tailwindcssPatcherMock.mock.calls.at(-1)
     const callArgs = lastCall?.[0] as any
     expect(callArgs.cache).toEqual({ dir: '/global/cache', driver: 'memory' })
   })
@@ -108,7 +108,7 @@ describe('tailwindcss helpers', () => {
 
     createTailwindcssPatcher()
 
-    const lastCall = tailwindcssPatcherMock.mock.calls[tailwindcssPatcherMock.mock.calls.length - 1]
+    const lastCall = tailwindcssPatcherMock.mock.calls.at(-1)
     const callArgs = lastCall?.[0] as any
     expect(callArgs.apply?.extendLengthUnits).toEqual({ enabled: true })
   })
@@ -119,7 +119,7 @@ describe('tailwindcss helpers', () => {
 
     createTailwindcssPatcher({ cacheDir: '.cache' })
 
-    const lastCall = tailwindcssPatcherMock.mock.calls[tailwindcssPatcherMock.mock.calls.length - 1]
+    const lastCall = tailwindcssPatcherMock.mock.calls.at(-1)
     const callArgs = lastCall?.[0] as any
     expect(callArgs.cache).toEqual({ dir: path.resolve('/workspace', '.cache'), driver: 'memory' })
     cwdSpy.mockRestore()
@@ -132,7 +132,7 @@ describe('tailwindcss helpers', () => {
 
     createTailwindcssPatcher({ basedir })
 
-    const lastCall = tailwindcssPatcherMock.mock.calls[tailwindcssPatcherMock.mock.calls.length - 1]
+    const lastCall = tailwindcssPatcherMock.mock.calls.at(-1)
     const callArgs = lastCall?.[0] as any
     expect(callArgs.cache?.dir).toBe(
       path.join(repoRoot, 'packages', 'weapp-tailwindcss', 'node_modules', '.cache', 'tailwindcss-patch'),
@@ -165,7 +165,7 @@ describe('tailwindcss helpers', () => {
       basedir: repoRoot,
     })
 
-    const lastCall = tailwindcssPatcherMock.mock.calls[tailwindcssPatcherMock.mock.calls.length - 1]
+    const lastCall = tailwindcssPatcherMock.mock.calls.at(-1)
     const callArgs = lastCall?.[0] as any
     expect(callArgs.tailwindcss?.postcssPlugin).toBeDefined()
     expect(typeof callArgs.tailwindcss?.postcssPlugin).toBe('string')
@@ -180,7 +180,7 @@ describe('tailwindcss helpers', () => {
       createTailwindcssPatcher({
         basedir: tempDir,
       })
-      const lastCall = tailwindcssPatcherMock.mock.calls[tailwindcssPatcherMock.mock.calls.length - 1]
+      const lastCall = tailwindcssPatcherMock.mock.calls.at(-1)
       const callArgs = lastCall?.[0] as any
       expect(callArgs.tailwindcss?.config).toBeDefined()
       expect(typeof callArgs.tailwindcss?.config).toBe('string')

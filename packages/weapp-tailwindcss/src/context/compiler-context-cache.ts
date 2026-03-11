@@ -5,6 +5,10 @@ import process from 'node:process'
 import { logger } from '@weapp-tailwindcss/logger'
 import { md5Hash } from '@/cache/md5'
 
+const PAREN_CONTENT_RE = /\(([^)]+)\)/u
+const AT_LOCATION_RE = /at\s+(\S.*)$/u
+const TRAILING_LINE_COL_RE = /:\d+(?::\d+)?$/u
+
 type NormalizedOptionsPrimitive = string | number | boolean | null
 interface NormalizedOptionsArray extends Array<NormalizedOptionsValue> {}
 interface NormalizedOptionsRecord {
@@ -75,13 +79,13 @@ function detectCallerLocation() {
 
   const lines = stack.split('\n')
   for (const line of lines) {
-    const match = line.match(/\(([^)]+)\)/u) ?? line.match(/at\s+(\S.*)$/u)
+    const match = line.match(PAREN_CONTENT_RE) ?? line.match(AT_LOCATION_RE)
     const location = match?.[1]
     if (!location) {
       continue
     }
 
-    const candidatePath = location.replace(/:\d+(?::\d+)?$/u, '')
+    const candidatePath = location.replace(TRAILING_LINE_COL_RE, '')
     if (!candidatePath || !path.isAbsolute(candidatePath)) {
       continue
     }
@@ -259,7 +263,7 @@ function normalizeOptionsValue(
   }
   if (rawValue instanceof Map) {
     return withCircularGuard(rawValue, stack, () => {
-      const normalizedEntries = Array.from(rawValue.entries()).map(([key, entryValue]) => {
+      const normalizedEntries = Array.from(rawValue.entries(), ([key, entryValue]) => {
         const normalizedKey = createComparableNormalizedValue(key, stack)
         return {
           key: normalizedKey.normalized,

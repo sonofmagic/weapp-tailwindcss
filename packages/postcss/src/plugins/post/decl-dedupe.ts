@@ -36,6 +36,9 @@ function getCanonicalProp(prop: string) {
   return logicalPropMap.get(prop) ?? prop
 }
 
+const NESTED_CALC_RE = /calc\(\s*calc\(/gi
+const CALC_WRAP_RE = /calc\(\s*(1\s*-\s*var\([^()]+\))\s*\)/gi
+
 // normalizeCalcValue 消除嵌套 calc 带来的冗余括号，兼容小程序解析器
 function normalizeCalcValue(value: string) {
   if (!value.includes('calc')) {
@@ -47,10 +50,12 @@ function normalizeCalcValue(value: string) {
 
   do {
     prev = next
-    next = prev.replace(/calc\(\s*calc\(/gi, 'calc((')
+    NESTED_CALC_RE.lastIndex = 0
+    next = prev.replace(NESTED_CALC_RE, 'calc((')
   } while (next !== prev)
 
-  return next.replace(/calc\(\s*(1\s*-\s*var\([^()]+\))\s*\)/gi, '($1)')
+  CALC_WRAP_RE.lastIndex = 0
+  return next.replace(CALC_WRAP_RE, '($1)')
 }
 
 interface DedupeEntry {

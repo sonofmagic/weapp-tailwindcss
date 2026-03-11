@@ -10,6 +10,8 @@ import {
   toArray,
 } from './utils'
 
+const LEADING_DOTS_SLASHES_RE = /^[./\\]+/
+
 export interface UniAppSubPackageConfig {
   pagesJsonPath: string
   indexFileName?: string | string[]
@@ -260,7 +262,7 @@ function resolveManualStyleScopes(
     const sourceRelativePath = ensurePosix(path.relative(cwd, sourceAbsolutePath))
     const normalizedBaseFileName = resolveOutputFileName(path.basename(entry.output ?? entry.style))
     const trimmedOutput = entry.output
-      ? ensurePosix(entry.output.replace(/^[./\\]+/, ''))
+      ? ensurePosix(entry.output.replace(LEADING_DOTS_SLASHES_RE, ''))
       : null
     const normalizedOutput = trimmedOutput ? resolveOutputFileName(trimmedOutput) : null
     const preprocess = entry.preprocess !== false

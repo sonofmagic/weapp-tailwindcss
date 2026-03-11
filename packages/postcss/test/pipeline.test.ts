@@ -3,6 +3,8 @@ import { describe, expect, it } from 'vitest'
 import { createStyleHandler } from '@/handler'
 import { createStylePipeline } from '@/pipeline'
 
+const TW_CUSTOM_PROP_RE = /^--tw-/
+
 function createOptions(partial: Partial<IStyleHandlerOptions>): IStyleHandlerOptions {
   return {
     cssPresetEnv: {
@@ -19,7 +21,7 @@ describe('style processing pipeline', () => {
       px2rpx: true,
       rem2rpx: true,
       cssCalc: {
-        includeCustomProperties: [/^--tw-/],
+        includeCustomProperties: [TW_CUSTOM_PROP_RE],
       },
     })
 
@@ -116,7 +118,7 @@ describe('style processing pipeline', () => {
     const overridePipeline = handler.getPipeline({
       px2rpx: true,
       cssCalc: {
-        includeCustomProperties: [/^--tw-/],
+        includeCustomProperties: [TW_CUSTOM_PROP_RE],
       },
     })
 

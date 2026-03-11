@@ -23,13 +23,11 @@ import { summarizeMutationMetricsByKind } from './summary'
 import { writeFilePreserveEol } from './text'
 
 function resolveCaseSourceFiles(watchCase: WatchCase) {
-  return Array.from(
-    new Set([
-      watchCase.templateMutation.sourceFile,
-      watchCase.scriptMutation.sourceFile,
-      watchCase.styleMutation.sourceFile,
-    ]),
-  )
+  return [...new Set([
+    watchCase.templateMutation.sourceFile,
+    watchCase.scriptMutation.sourceFile,
+    watchCase.styleMutation.sourceFile,
+  ])]
 }
 
 export async function runCase(watchCase: WatchCase, options: CliOptions): Promise<WatchCaseMetrics> {

@@ -74,6 +74,9 @@ function createFallbackTailwindcssPatcher(): TailwindcssPatcherLike {
 
 let hasLoggedMissingTailwind = false
 
+const TAILWINDCSS_NOT_FOUND_RE = /tailwindcss not found/i
+const UNABLE_TO_LOCATE_TAILWINDCSS_RE = /unable to locate tailwind css package/i
+
 export function createTailwindcssPatcher(options?: CreateTailwindcssPatcherOptions): TailwindcssPatcherLike {
   const { basedir, cacheDir, supportCustomLengthUnitsPatch, tailwindcss, tailwindcssPatcherOptions } = options || {}
   const cache: TailwindCacheOptions = {
@@ -167,7 +170,7 @@ export function createTailwindcssPatcher(options?: CreateTailwindcssPatcherOptio
     const sourcePaths = customPaths ? existingResolve.paths : resolvePaths
     resolvedTailwindOptions.resolve = {
       ...existingResolve,
-      paths: Array.from(new Set(sourcePaths)),
+      paths: [...new Set(sourcePaths)],
     }
     logger.debug('Tailwind resolve config %O', {
       packageName: resolvedTailwindOptions.packageName,
@@ -220,14 +223,14 @@ export function createTailwindcssPatcher(options?: CreateTailwindcssPatcherOptio
   }
   catch (error) {
     const searchPaths = resolvedOptions.tailwindcss?.resolve?.paths
-    if (error instanceof Error && /tailwindcss not found/i.test(error.message)) {
+    if (error instanceof Error && TAILWINDCSS_NOT_FOUND_RE.test(error.message)) {
       if (!hasLoggedMissingTailwind) {
         logger.warn('Tailwind CSS 未安装，已跳过 Tailwind 相关补丁。若需使用 Tailwind 能力，请安装 tailwindcss。')
         hasLoggedMissingTailwind = true
       }
       return createFallbackTailwindcssPatcher()
     }
-    if (error instanceof Error && /unable to locate tailwind css package/i.test(error.message)) {
+    if (error instanceof Error && UNABLE_TO_LOCATE_TAILWINDCSS_RE.test(error.message)) {
       logger.error('无法定位 Tailwind CSS 包 "%s"，已尝试路径: %O', resolvedOptions.tailwindcss?.packageName, searchPaths)
     }
     throw error

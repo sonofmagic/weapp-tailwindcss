@@ -9,6 +9,9 @@ import resolveConfig from 'tailwindcss/resolveConfig.js'
 
 export const defaultConfig = resolveConfig(tailwindDefaultConfig)
 
+const CAMEL_CASE_RE = /([a-z])([A-Z])/g
+const AMPERSAND_RE = /&/g
+
 export function normalizeProperties(input) {
   if (typeof input !== 'object') {
     return input
@@ -19,7 +22,7 @@ export function normalizeProperties(input) {
   return Object.keys(input).reduce((newObj, key) => {
     const val = input[key]
     const newVal = typeof val === 'object' ? normalizeProperties(val) : val
-    newObj[key.replace(/([a-z])([A-Z])/g, (_m, p1, p2) => `${p1}-${p2.toLowerCase()}`)] = newVal
+    newObj[key.replace(CAMEL_CASE_RE, (_m, p1, p2) => `${p1}-${p2.toLowerCase()}`)] = newVal
     return newObj
   }, {})
 }
@@ -101,7 +104,7 @@ export function getUtilities(plugin, { includeNegativeValues = false } = {}) {
             }
             if (subkey.includes('&')) {
               result.push({
-                [subkey.replace(/&/g, key)]: obj[key][subkey],
+                [subkey.replace(AMPERSAND_RE, key)]: obj[key][subkey],
               })
               deleteKey = true
             }

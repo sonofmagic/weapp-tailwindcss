@@ -133,10 +133,10 @@ describe('createTailwindcssPatcherFromContext', () => {
       expect(createdPatchers[1].patch).toHaveBeenCalledTimes(1)
 
       const classSet = await patcher.getClassSet()
-      expect(Array.from(classSet)).toEqual(['foo', 'bar'])
+      expect([...classSet]).toEqual(['foo', 'bar'])
 
       const extracted = await patcher.extract({})
-      expect(Array.from(extracted.classSet)).toEqual(['foo', 'bar'])
+      expect([...extracted.classSet]).toEqual(['foo', 'bar'])
       expect(extracted.classList).toEqual(['foo', 'bar'])
     }
     finally {

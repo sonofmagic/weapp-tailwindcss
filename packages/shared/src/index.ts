@@ -8,6 +8,10 @@ export { defu } from 'defu'
 
 const HTTP_PATTERN = /^https?:\/\//i
 const CLEAN_URL_REGEXP = /[?#].*$/
+const BACKSLASH_RE = /\\/g
+const LEADING_DOTS_SLASHES_RE = /^[./\\]+/
+const MULTI_BACKSLASH_RE = /\\+/g
+const REMOVE_EXT_RE = /\.[^./]*$/
 
 export function isRegexp(value: unknown): value is RegExp {
   return value instanceof RegExp
@@ -33,11 +37,11 @@ export function toArray<T>(value: T | T[] | null | undefined): Array<NonNullable
 }
 
 export function ensurePosix(value: string): string {
-  return value.replace(/\\/g, '/')
+  return value.replace(BACKSLASH_RE, '/')
 }
 
 export function normalizeRoot(root: string): string {
-  const trimmed = root.trim().replace(/^[./\\]+/, '').replace(/\\+/g, '/')
+  const trimmed = root.trim().replace(LEADING_DOTS_SLASHES_RE, '').replace(MULTI_BACKSLASH_RE, '/')
   return trimmed.endsWith('/') ? trimmed.slice(0, -1) : trimmed
 }
 
@@ -113,7 +117,7 @@ export function removeExt(file: string) {
   if (!file) {
     return file
   }
-  return file.replace(/\.[^./]*$/, '')
+  return file.replace(REMOVE_EXT_RE, '')
 }
 
 export const defuOverrideArray = createDefu((obj, key, value) => {

@@ -9,11 +9,15 @@ import { ruleTransformSync } from '../selectorParser'
 
 export type PostcssWeappTailwindcssRenamePlugin = PluginCreator<IStyleHandlerOptions>
 
+const MEDIA_HOVER_NAME_RE = /media\(\s*hover\s*:\s*hover\s*\)/
+const MEDIA_HOVER_PARAMS_RE = /\(\s*hover\s*:\s*hover\s*\)/
+const COLOR_MIX_RE = /color-mix/
+
 // isAtMediaHover 用于识别 hover 媒体查询并将其展开
 function isAtMediaHover(atRule: AtRule) {
   return (
-    /media\(\s*hover\s*:\s*hover\s*\)/.test(atRule.name)
-    || (atRule.name === 'media' && /\(\s*hover\s*:\s*hover\s*\)/.test(atRule.params))
+    MEDIA_HOVER_NAME_RE.test(atRule.name)
+    || (atRule.name === 'media' && MEDIA_HOVER_PARAMS_RE.test(atRule.params))
   )
 }
 
@@ -84,7 +88,7 @@ const postcssWeappTailwindcssPrePlugin: PostcssWeappTailwindcssRenamePlugin = (
       // 参考：https://github.com/sonofmagic/weapp-tailwindcss/issues/632
       // 参考：https://developer.mozilla.org/zh-CN/docs/Web/CSS/color_value/color-mix
       else if (atRule.name === 'supports') {
-        if (/color-mix/.test(atRule.params)) {
+        if (COLOR_MIX_RE.test(atRule.params)) {
           atRule.remove()
         }
       }

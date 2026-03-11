@@ -12,7 +12,7 @@ interface SummarySample {
 
 function resolvePreferredRound(rounds: MutationRoundMetrics[]) {
   return rounds.find(item => item.roundName === 'complex-corpus')
-    ?? rounds[rounds.length - 1]
+    ?? rounds.at(-1)
 }
 
 export function summarizeSamples(samples: SummarySample[]): WatchSummary {
