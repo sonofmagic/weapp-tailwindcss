@@ -78,7 +78,7 @@
     "@iconify-json/mdi": "^1.2.3",
     "@tailwindcss/vite": "catalog:tailwindcss4",
     "@vue/runtime-core": "^3.5.30",
-    "@vue/tsconfig": "^0.8.1",
+    "@vue/tsconfig": "^0.9.0",
     "@weapp-tailwindcss/merge": "workspace:*",
     "@weapp-tailwindcss/variants": "workspace:*",
     "tailwindcss": "catalog:tailwindcss4",

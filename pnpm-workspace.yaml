@@ -23,9 +23,9 @@ catalogs:
   crossEnv:
     cross-env: ^10.1.0
   lucideReact0555:
-    lucide-react: ^0.575.0
+    lucide-react: ^0.577.0
   lucideVueNext0555:
-    lucide-vue-next: ^0.575.0
+    lucide-vue-next: ^0.577.0
   miniApiTypings:
     miniprogram-api-typings: ^5.1.1
   postcss85:
@@ -53,7 +53,7 @@ catalogs:
   reactRefresh018:
     react-refresh: ^0.18.0
   sass195:
-    sass: ^1.97.3
+    sass: ^1.98.0
   stylelint1625:
     stylelint: ^17.4.0
   tailwindMerge:
@@ -114,7 +114,7 @@ catalogs:
   vitePluginReact4:
     '@vitejs/plugin-react': ^4.7.0
   vue3:
-    '@vue/compiler-dom': ^3.5.29
+    '@vue/compiler-dom': ^3.5.30
     '@vue/compiler-sfc': ^3.5.30
     vue: ^3.5.30
   vueTsc318:
@@ -124,9 +124,9 @@ catalogs:
   weappIdeCli:
     weapp-ide-cli: ^5.1.0
   weappVite:
-    weapp-vite: ^6.7.4
+    weapp-vite: ^6.7.6
   wrangler4530:
-    wrangler: ^4.71.0
+    wrangler: ^4.72.0
 
 onlyBuiltDependencies:
   - '@tailwindcss/oxide'

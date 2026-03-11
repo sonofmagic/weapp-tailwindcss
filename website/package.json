@@ -96,7 +96,7 @@
     "theme-transition": "workspace:*",
     "typedoc": "^0.28.17",
     "typedoc-plugin-markdown": "4.10.0",
-    "webpack": "5.105.2",
+    "webpack": "5.105.4",
     "webpack-node-externals": "^3.0.0",
     "wrangler": "catalog:wrangler4530"
   },
