@@ -10,6 +10,13 @@ export async function sleep(ms: number) {
   await new Promise(resolve => setTimeout(resolve, ms))
 }
 
+// 模块级正则，避免函数内重复编译
+const ZERO_WIDTH_SPACE_RE = /\u200B/g
+const NEWLINE_SPLIT_RE = /\r?\n/
+const PNPM_RE = /pnpm/i
+const ERROR_RE = /error/i
+const EMFILE_RE = /emfile/i
+
 const sassDeprecationLinePatterns = [
   /^DEPRECATION WARNING \[/,
   /More info: https:\/\/sass\.lang\.com\/d\//,
@@ -22,7 +29,7 @@ const sassDeprecationLinePatterns = [
 ] as const
 
 function isSassDeprecationNoiseLine(line: string) {
-  const normalized = line.replace(/\u200B/g, '')
+  const normalized = line.replace(ZERO_WIDTH_SPACE_RE, '')
 
   if (normalized.includes('sass-lang.com/d/')) {
     return true
@@ -49,7 +56,7 @@ function createLineCollector(
   const quietSass = options.quietSass === true
   return (chunk: Buffer | string) => {
     const text = chunk.toString()
-    for (const line of text.split(/\r?\n/)) {
+    for (const line of text.split(NEWLINE_SPLIT_RE)) {
       if (!line) {
         continue
       }
@@ -110,7 +117,7 @@ function stripAnsiControlSequences(line: string) {
 }
 
 function normalizeLogLine(line: string) {
-  return stripAnsiControlSequences(line).replace(/\u200B/g, '').trim()
+  return stripAnsiControlSequences(line).replace(ZERO_WIDTH_SPACE_RE, '').trim()
 }
 
 function isCompileSuccessLine(line: string) {
@@ -132,7 +139,7 @@ function resolveCompileFatalError(line: string) {
   }
 
   // Some toolchains prefix fatal lines with `ERROR` but include extra symbols/text.
-  if (/error/i.test(normalized) && /emfile/i.test(normalized)) {
+  if (ERROR_RE.test(normalized) && EMFILE_RE.test(normalized)) {
     return normalized
   }
 }
@@ -175,7 +182,7 @@ function spawnPnpm(
   if (
     typeof npmExecPath === 'string'
     && npmExecPath.length > 0
-    && /pnpm/i.test(path.basename(npmExecPath))
+    && PNPM_RE.test(path.basename(npmExecPath))
     && existsSync(npmExecPath)
   ) {
     return spawn(process.execPath, [npmExecPath, ...args], options)
@@ -307,7 +314,7 @@ export function createWatchSession(
     }
 
     const text = chunk.toString()
-    for (const line of text.split(/\r?\n/)) {
+    for (const line of text.split(NEWLINE_SPLIT_RE)) {
       if (!line) {
         continue
       }

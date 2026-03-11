@@ -38,8 +38,10 @@ export function buildComplexCorpusClassTokens(seed: string) {
   ]
 }
 
+const NON_DIGIT_RE = /\D/g
+
 export function buildHexArbitraryClassTokens(seed: string) {
-  const numericSeed = seed.replace(/\D/g, '').padEnd(8, '0')
+  const numericSeed = seed.replace(NON_DIGIT_RE, '').padEnd(8, '0')
   const hex6 = numericSeed.slice(0, 6)
   const hex4 = `${numericSeed.slice(0, 2)}00`
   const ringPx = Number(numericSeed.slice(2, 4)) + 1

@@ -22,6 +22,18 @@ const websiteRoot = path.resolve(currentDir, '..')
 const staticRoot = path.join(websiteRoot, 'static')
 const outputFile = path.join(staticRoot, 'llms-index.json')
 
+/** 匹配连字符和下划线（用于文件名转空格） */
+const HYPHEN_UNDERSCORE_RE = /[-_]/g
+
+/** 匹配 .md 或 .mdx 文件扩展名（不区分大小写） */
+const MD_MDX_EXTENSION_RE = /\.(md|mdx)$/i
+
+/** 匹配反斜杠 */
+const BACKSLASH_RE = /\\/g
+
+/** 匹配 URL 末尾的斜杠 */
+const TRAILING_SLASH_RE = /\/$/
+
 function resolveTitle(data, content, absPath) {
   if (typeof data.title === 'string' && data.title.trim()) {
     return data.title
@@ -30,7 +42,7 @@ function resolveTitle(data, content, absPath) {
   if (heading) {
     return heading
   }
-  return path.basename(absPath, path.extname(absPath)).replace(/[-_]/g, ' ').trim() || '文档'
+  return path.basename(absPath, path.extname(absPath)).replace(HYPHEN_UNDERSCORE_RE, ' ').trim() || '文档'
 }
 
 function resolveDescription(data, content, title, relativePath) {
@@ -59,7 +71,7 @@ function resolveHeadings(content) {
 
 function toCanonical(routePath) {
   const normalized = routePath.startsWith('/') ? routePath : `/${routePath}`
-  return `${siteUrl.replace(/\/$/, '')}${normalized}`
+  return `${siteUrl.replace(TRAILING_SLASH_RE, '')}${normalized}`
 }
 
 function toDate(data) {
@@ -77,7 +89,7 @@ function toDate(data) {
 function buildDocRecords() {
   const docsFiles = walkMarkdownFiles(docsRoot)
   return docsFiles.map((absPath) => {
-    const relative = path.relative(docsRoot, absPath).replace(/\\/g, '/')
+    const relative = path.relative(docsRoot, absPath).replace(BACKSLASH_RE, '/')
     const { parsed } = readMatterFile(absPath)
     const title = resolveTitle(parsed.data, parsed.content, absPath)
     const routePath = toDocRoute(relative, parsed.data.slug)
@@ -85,7 +97,7 @@ function buildDocRecords() {
     const description = resolveDescription(parsed.data, parsed.content, title, relative)
     return {
       kind: 'doc',
-      id: `doc:${relative.replace(/\.(md|mdx)$/i, '')}`,
+      id: `doc:${relative.replace(MD_MDX_EXTENSION_RE, '')}`,
       title,
       description,
       summary: extractDescription(parsed.content, 180) || description,
@@ -106,7 +118,7 @@ function buildDocRecords() {
 function buildBlogRecords() {
   const blogFiles = walkMarkdownFiles(blogRoot)
   return blogFiles.map((absPath) => {
-    const relative = path.relative(blogRoot, absPath).replace(/\\/g, '/')
+    const relative = path.relative(blogRoot, absPath).replace(BACKSLASH_RE, '/')
     const { parsed } = readMatterFile(absPath)
     const title = resolveTitle(parsed.data, parsed.content, absPath)
     const routePath = toBlogRoute(relative, parsed.data.slug)
@@ -114,7 +126,7 @@ function buildBlogRecords() {
     const description = resolveDescription(parsed.data, parsed.content, title, relative)
     return {
       kind: 'blog',
-      id: `blog:${relative.replace(/\.(md|mdx)$/i, '')}`,
+      id: `blog:${relative.replace(MD_MDX_EXTENSION_RE, '')}`,
       title,
       description,
       summary: extractDescription(parsed.content, 180) || description,

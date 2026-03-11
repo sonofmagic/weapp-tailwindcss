@@ -63,6 +63,63 @@ const keywordNoisePatterns = [
   /^[_-]+$/,
 ]
 
+/** 匹配 import 语句行 */
+const IMPORT_LINE_RE = /^import\s.+$/gm
+
+/** 匹配 export 语句行 */
+const EXPORT_LINE_RE = /^export\s.+$/gm
+
+/** 匹配代码块（三反引号包裹） */
+const CODE_BLOCK_RE = /```[\s\S]*?```/g
+
+/** 匹配行内代码（单反引号包裹） */
+const INLINE_CODE_RE = /`([^`]+)`/g
+
+/** 匹配 Markdown 图片语法 */
+const MD_IMAGE_RE = /!\[[^\]]*\]\([^)]*\)/g
+
+/** 匹配 Markdown 链接语法（保留文本） */
+const MD_LINK_RE = /\[([^\]]+)\]\([^)]*\)/g
+
+/** 匹配 HTML 标签 */
+const HTML_TAG_RE = /<[^>]+>/g
+
+/** 匹配 Docusaurus 容器语法（::: 包裹） */
+const ADMONITION_RE = /:::[\s\S]*?:::/g
+
+/** 匹配一个或多个连续空白字符 */
+const WHITESPACE_COLLAPSE_RE = /\s+/g
+
+/** 匹配关键词分隔符（中英文逗号、顿号、竖线、斜杠） */
+const KEYWORD_SEPARATOR_RE = /[，,、|/]/
+
+/** 匹配单个小写字母 */
+const SINGLE_LOWERCASE_RE = /^[a-z]$/
+
+/** 匹配 Unicode 字母、数字及常见符号的连续序列 */
+const TITLE_TOKEN_RE = /[\p{L}\p{N}#+.-]+/gu
+
+/** 匹配反斜杠 */
+const BACKSLASH_RE = /\\/g
+
+/** 匹配 .md 或 .mdx 文件扩展名（不区分大小写） */
+const MD_MDX_EXTENSION_RE = /\.(md|mdx)$/i
+
+/** 匹配连字符和下划线（用于路径段转空格） */
+const HYPHEN_UNDERSCORE_RE = /[-_]/g
+
+/** 匹配路径末尾的 /index */
+const TRAILING_INDEX_RE = /\/index$/
+
+/** 匹配完整的 index 字符串 */
+const EXACT_INDEX_RE = /^index$/
+
+/** 匹配博客文件名中的日期前缀（YYYY-MM-DD-） */
+const BLOG_DATE_PREFIX_RE = /^\d{4}-\d{2}-\d{2}-/
+
+/** 匹配 frontmatter 首行的键值对格式 */
+const FRONTMATTER_KEY_RE = /^[A-Z_][\w-]*\s*:/i
+
 export function walkMarkdownFiles(rootDir) {
   if (!fs.existsSync(rootDir)) {
     return []
@@ -106,14 +163,14 @@ export function extractFirstHeading(content) {
 
 function stripMarkdown(content) {
   return content
-    .replace(/^import\s.+$/gm, '')
-    .replace(/^export\s.+$/gm, '')
-    .replace(/```[\s\S]*?```/g, ' ')
-    .replace(/`([^`]+)`/g, '$1')
-    .replace(/!\[[^\]]*\]\([^)]*\)/g, ' ')
-    .replace(/\[([^\]]+)\]\([^)]*\)/g, '$1')
-    .replace(/<[^>]+>/g, ' ')
-    .replace(/:::[\s\S]*?:::/g, ' ')
+    .replace(IMPORT_LINE_RE, '')
+    .replace(EXPORT_LINE_RE, '')
+    .replace(CODE_BLOCK_RE, ' ')
+    .replace(INLINE_CODE_RE, '$1')
+    .replace(MD_IMAGE_RE, ' ')
+    .replace(MD_LINK_RE, '$1')
+    .replace(HTML_TAG_RE, ' ')
+    .replace(ADMONITION_RE, ' ')
 }
 
 export function extractDescription(content, maxLength = 140) {
@@ -132,7 +189,7 @@ export function extractDescription(content, maxLength = 140) {
     return line.length >= 12
   }) || ''
 
-  const normalized = candidate.replace(/\s+/g, ' ').trim()
+  const normalized = candidate.replace(WHITESPACE_COLLAPSE_RE, ' ').trim()
   if (!normalized) {
     return ''
   }
@@ -150,7 +207,7 @@ function normalizeKeywordValue(value) {
     return value.map(item => String(item).trim()).filter(Boolean)
   }
   return String(value)
-    .split(/[，,、|/]/)
+    .split(KEYWORD_SEPARATOR_RE)
     .map(item => item.trim())
     .filter(Boolean)
 }
@@ -163,7 +220,7 @@ function isKeywordNoise(value) {
   if (keywordStopwords.has(normalized)) {
     return true
   }
-  if (/^[a-z]$/.test(normalized)) {
+  if (SINGLE_LOWERCASE_RE.test(normalized)) {
     return true
   }
   return keywordNoisePatterns.some(pattern => pattern.test(normalized))
@@ -192,19 +249,19 @@ export function normalizeKeywords(input, options = {}) {
 }
 
 function toTitleKeywords(title) {
-  return (title.match(/[\p{L}\p{N}#+.-]+/gu) || [])
+  return (title.match(TITLE_TOKEN_RE) || [])
     .map(item => item.trim())
     .filter(item => item.length >= 2)
 }
 
 export function resolveKeywords(params) {
-  const relativePath = params.relativePath.replace(/\\/g, '/')
+  const relativePath = params.relativePath.replace(BACKSLASH_RE, '/')
   const firstSection = relativePath.split('/')[0] || ''
   const sectionKeywords = sectionKeywordMap[firstSection] || []
   const pathKeywords = relativePath
-    .replace(/\.(md|mdx)$/i, '')
+    .replace(MD_MDX_EXTENSION_RE, '')
     .split('/')
-    .map(item => item.replace(/[-_]/g, ' ').trim())
+    .map(item => item.replace(HYPHEN_UNDERSCORE_RE, ' ').trim())
     .filter(item => item.length >= 2)
 
   const merged = [
@@ -221,7 +278,7 @@ export function resolveKeywords(params) {
 
 export function buildFallbackDescription(title, relativePath) {
   const normalizedTitle = String(title || '文档').trim() || '文档'
-  const normalizedPath = String(relativePath || '').replace(/\\/g, '/')
+  const normalizedPath = String(relativePath || '').replace(BACKSLASH_RE, '/')
   const firstSection = normalizedPath.split('/')[0] || ''
   const suffix = sectionDescriptionMap[firstSection] || '提供核心概念、配置说明与实践示例。'
   return `${normalizedTitle}，${suffix}`
@@ -235,9 +292,9 @@ export function toDocRoute(relativePath, slug) {
     }
     return `/docs${normalizedSlug}`
   }
-  const normalized = relativePath.replace(/\\/g, '/').replace(/\.(md|mdx)$/i, '')
+  const normalized = relativePath.replace(BACKSLASH_RE, '/').replace(MD_MDX_EXTENSION_RE, '')
   if (normalized === 'index' || normalized.endsWith('/index')) {
-    const withoutIndex = normalized.replace(/\/index$/, '').replace(/^index$/, '')
+    const withoutIndex = normalized.replace(TRAILING_INDEX_RE, '').replace(EXACT_INDEX_RE, '')
     return withoutIndex ? `/docs/${withoutIndex}` : '/docs'
   }
   return `/docs/${normalized}`
@@ -251,9 +308,9 @@ export function toBlogRoute(relativePath, slug) {
     }
     return `/blog${normalizedSlug}`
   }
-  const normalized = relativePath.replace(/\\/g, '/').replace(/\.(md|mdx)$/i, '')
+  const normalized = relativePath.replace(BACKSLASH_RE, '/').replace(MD_MDX_EXTENSION_RE, '')
   const raw = normalized.split('/').pop() || normalized
-  const stripped = raw.replace(/^\d{4}-\d{2}-\d{2}-/, '')
+  const stripped = raw.replace(BLOG_DATE_PREFIX_RE, '')
   return `/blog/${stripped}`
 }
 
@@ -261,7 +318,7 @@ export function readMatterFile(absPath) {
   const raw = fs.readFileSync(absPath, 'utf8')
   const lines = raw.split('\n')
   const firstLine = lines[0]?.trim() || ''
-  if (firstLine && !raw.startsWith('---\n') && /^[A-Z_][\w-]*\s*:/i.test(firstLine)) {
+  if (firstLine && !raw.startsWith('---\n') && FRONTMATTER_KEY_RE.test(firstLine)) {
     let endIndex = 0
     while (endIndex < lines.length && lines[endIndex].trim() !== '') {
       endIndex += 1

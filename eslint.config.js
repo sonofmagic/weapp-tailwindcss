@@ -2,7 +2,7 @@ import { icebreaker } from '@icebreakers/eslint-config'
 
 export default icebreaker(
   {
-    markdown: true,
+    markdown: false,
     ignores: [
       '**/fixtures/**',
       // 'apps',
@@ -19,6 +19,23 @@ export default icebreaker(
       // 排除文档和quest文件
       '.qoder/**/*.md',
       'packages-runtime/ui/**/*.md',
+      // 排除 markdown、单元测试、benchmark、skills 引用等非核心文件
+      '**/*.md',
+      '**/test/**',
+      '**/test-*/**',
+      'benchmark/**',
+      '.claude/**',
+      '.codex/**',
+      'skills/**',
+      // 忽略 apps 中生成的 CSS 和类型声明
+      'apps/**/result.css',
+      'apps/**/transformed.css',
+      'apps/**/env.d.ts',
+      'apps/tailwindcss-weapp/src/env.d.ts',
+      '**/*.d.ts',
+      // 忽略 apps 中的 demo 配置文件（非核心代码）
+      'apps/taro-webpack-tailwindcss-v4/**',
+      'apps/vite-native-ts-skyline/**',
     ],
     pnpm: false,
   },

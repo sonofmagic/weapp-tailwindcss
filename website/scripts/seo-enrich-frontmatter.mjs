@@ -13,6 +13,18 @@ import {
   writeMatterFile,
 } from './seo-shared.mjs'
 
+/** 匹配连字符和下划线（用于文件名转空格） */
+const HYPHEN_UNDERSCORE_RE = /[-_]/g
+
+/** 匹配反斜杠 */
+const BACKSLASH_RE = /\\/g
+
+/** 匹配路径开头的 website/ 前缀 */
+const WEBSITE_PREFIX_RE = /^website\//
+
+/** 匹配路径开头的 docs/ 或 blog/ 前缀 */
+const DOCS_BLOG_PREFIX_RE = /^(docs|blog)\//
+
 function createCounters() {
   return {
     scanned: 0,
@@ -32,7 +44,7 @@ function ensureTitle(data, content, absPath) {
     return { changed: true, value: heading }
   }
   const filename = path.basename(absPath, path.extname(absPath))
-  return { changed: true, value: filename.replace(/[-_]/g, ' ').trim() || '文档' }
+  return { changed: true, value: filename.replace(HYPHEN_UNDERSCORE_RE, ' ').trim() || '文档' }
 }
 
 function ensureDescription(data, content, title, relativePath) {
@@ -67,7 +79,7 @@ function processFile(absPath, counters, write) {
   counters.scanned += 1
   const { parsed } = readMatterFile(absPath)
   const data = { ...parsed.data }
-  const relativePath = path.relative(repoRoot, absPath).replace(/\\/g, '/')
+  const relativePath = path.relative(repoRoot, absPath).replace(BACKSLASH_RE, '/')
 
   const nextTitle = ensureTitle(data, parsed.content, absPath)
   if (nextTitle.changed) {
@@ -75,7 +87,7 @@ function processFile(absPath, counters, write) {
     counters.addTitle += 1
   }
 
-  const relativeContentPath = relativePath.replace(/^website\//, '').replace(/^(docs|blog)\//, '')
+  const relativeContentPath = relativePath.replace(WEBSITE_PREFIX_RE, '').replace(DOCS_BLOG_PREFIX_RE, '')
   const nextDescription = ensureDescription(data, parsed.content, data.title, relativeContentPath)
   if (nextDescription.changed) {
     data.description = nextDescription.value
