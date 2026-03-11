@@ -185,6 +185,7 @@ interface CommentCarrierSummaryItem {
   project: string
   sameClassStable: boolean
   sameClassVerifiedEscapedClasses: number
+  sameClassMinRequiredEscapedClasses: number
   commentCarrierVerifiedEscapedClasses: number
   commentCarrierMinRequiredEscapedClasses: number
   hotUpdateEffectiveMs: number
@@ -572,6 +573,7 @@ function assertHotUpdateReport(report: HotUpdateReport, target: WatchCaseName, m
         project: item.project,
         sameClassStable: scriptMetric.sameClassLiteralHmr.changedGlobalStyleOutputs.length === 0,
         sameClassVerifiedEscapedClasses: scriptMetric.sameClassLiteralHmr.verifiedEscapedClasses.length,
+        sameClassMinRequiredEscapedClasses: scriptMetric.sameClassLiteralHmr.minRequiredEscapedClasses,
         commentCarrierVerifiedEscapedClasses: scriptMetric.commentCarrierHmr.verifiedEscapedClasses.length,
         commentCarrierMinRequiredEscapedClasses: scriptMetric.commentCarrierHmr.minRequiredEscapedClasses,
         hotUpdateEffectiveMs: scriptMetric.commentCarrierHmr.hotUpdateEffectiveMs,
@@ -587,7 +589,7 @@ function assertHotUpdateReport(report: HotUpdateReport, target: WatchCaseName, m
     ).toEqual([...commentCarrierSummary.map(item => item.project)].sort((left, right) => left.localeCompare(right)))
     for (const item of commentCarrierSummary) {
       expect(item.sameClassStable, `[${item.project}] same-class-literal should keep global styles stable`).toBe(true)
-      expect(item.sameClassVerifiedEscapedClasses, `[${item.project}] same-class-literal should verify escaped classes`).toBeGreaterThan(0)
+      expect(item.sameClassVerifiedEscapedClasses, `[${item.project}] same-class-literal should verify escaped classes`).toBeGreaterThanOrEqual(item.sameClassMinRequiredEscapedClasses)
       expect(item.commentCarrierVerifiedEscapedClasses, `[${item.project}] comment-carrier should verify escaped classes`).toBeGreaterThanOrEqual(item.commentCarrierMinRequiredEscapedClasses)
       expect(item.hotUpdateEffectiveMs, `[${item.project}] comment-carrier hot update should be positive`).toBeGreaterThan(0)
       expect(item.rollbackEffectiveMs, `[${item.project}] comment-carrier rollback should be positive`).toBeGreaterThan(0)
