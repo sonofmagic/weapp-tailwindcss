@@ -52,7 +52,7 @@ function loadProjectRootsFromWorkspace(): string[] {
       .map(extractBaseDirFromGlob)
       .filter((entry): entry is string => Boolean(entry))
 
-    return roots.length ? Array.from(new Set(roots)) : []
+    return roots.length ? [...new Set(roots)] : []
   }
   catch (error) {
     console.warn('[vitest] Failed to parse pnpm-workspace.yaml, no project roots will be used.', error)
