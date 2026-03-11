@@ -28,7 +28,8 @@ const weappTailwindcssDirPosix = slash(weappTailwindcssPackageDir)
  * @link https://tw.icebreaker.top/docs/quick-start/frameworks/uni-app-vite
  */
 export function UnifiedViteWeappTailwindcssPlugin(options: UserDefinedOptions = {}): Plugin[] | undefined {
-  const rewriteCssImportsSpecified = Object.hasOwn(options, 'rewriteCssImports')
+  // eslint-disable-next-line e18e/prefer-object-has-own -- lib 为 ES2021，不支持 Object.hasOwn
+  const rewriteCssImportsSpecified = Object.prototype.hasOwnProperty.call(options, 'rewriteCssImports')
   const hasExplicitTailwindcssBasedir = typeof options.tailwindcssBasedir === 'string'
     && options.tailwindcssBasedir.trim().length > 0
   const opts = getCompilerContext(options)
