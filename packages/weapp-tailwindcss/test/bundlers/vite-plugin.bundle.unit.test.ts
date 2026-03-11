@@ -686,6 +686,57 @@ const cls = "w-[1.5px]"
     expect(currentContext.jsHandler).toHaveBeenCalledTimes(5)
   }, TEST_TIMEOUT_MS)
 
+  it('does not keep linked dirty bookkeeping across build mode runs', async () => {
+    const UnifiedViteWeappTailwindcssPlugin = await loadUnifiedVitePlugin()
+    const rootDir = process.cwd()
+    const outDir = path.resolve(rootDir, 'dist')
+    const linkedFile = path.resolve(outDir, 'chunk.js')
+
+    setCurrentContext(createContext({
+      jsHandler: vi.fn((code: string, _runtimeSet: Set<string>, options?: { filename?: string }) => {
+        if (options?.filename?.endsWith('index.js')) {
+          return {
+            code: `js:${code}`,
+            linked: {
+              [linkedFile]: { code: 'linked:chunk' },
+            },
+          }
+        }
+        return { code: `js:${code}` }
+      }),
+    }))
+
+    const currentContext = getCurrentContext()
+    const plugins = UnifiedViteWeappTailwindcssPlugin()
+    const postPlugin = plugins?.find(plugin => plugin.name === 'weapp-tailwindcss:adaptor:post') as Plugin
+    expect(postPlugin).toBeTruthy()
+
+    const config = {
+      command: 'build',
+      root: rootDir,
+      build: { outDir: 'dist' },
+      css: { postcss: { plugins: [] } },
+    } as unknown as ResolvedConfig
+    await (postPlugin.configResolved as any)?.call(postPlugin, config)
+
+    const generateBundle = postPlugin.generateBundle as any
+
+    const firstBundle = {
+      'index.js': createRollupChunk('import "./chunk.js";\nconsole.log("text-[#111111]")'),
+      'chunk.js': createRollupChunk('export const foo = "text-[#121212]";'),
+    }
+    await generateBundle?.call(postPlugin, {} as any, firstBundle)
+    expect(currentContext.jsHandler).toHaveBeenCalledTimes(2)
+
+    const secondBundle = {
+      'index.js': createRollupChunk('import "./chunk.js";\nconsole.log("text-[#111111]")'),
+      'chunk.js': createRollupChunk('export const foo = "text-[#232323]";'),
+    }
+    await generateBundle?.call(postPlugin, {} as any, secondBundle)
+
+    expect(currentContext.jsHandler).toHaveBeenCalledTimes(3)
+  }, TEST_TIMEOUT_MS)
+
   it('keeps dirty state stable when bundle temporarily omits js entries', async () => {
     const UnifiedViteWeappTailwindcssPlugin = await loadUnifiedVitePlugin()
     const currentContext = getCurrentContext()

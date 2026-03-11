@@ -1,7 +1,7 @@
 import type { OutputAsset, OutputChunk } from 'rollup'
 import type { ResolvedConfig } from 'vite'
 import type { OutputEntry } from './bundle-entries'
-import type { EntryType } from './bundle-state'
+import type { BundleSnapshot, EntryType } from './bundle-state'
 import type { CreateJsHandlerOptions, InternalUserDefinedOptions, LinkedJsModuleResult } from '@/types'
 import path from 'node:path'
 import process from 'node:process'
@@ -10,7 +10,7 @@ import { createUniAppXAssetTask } from '@/uni-app-x'
 import { processCachedTask } from '../shared/cache'
 import { pushConcurrentTaskFactories } from '../shared/run-tasks'
 import { applyLinkedResults, createBundleModuleGraphOptions } from './bundle-entries'
-import { buildBundleSnapshot, createBundleBuildState, updateBundleBuildState } from './bundle-state'
+import { buildBundleSnapshot, buildBundleSnapshotForBuild, createBundleBuildState, updateBundleBuildState } from './bundle-state'
 import { shouldSkipViteJsTransform } from './js-precheck'
 
 interface GenerateBundleContext {
@@ -20,6 +20,7 @@ interface GenerateBundleContext {
     patchPromise: Promise<void>
   }
   ensureRuntimeClassSet: (force?: boolean) => Promise<Set<string>>
+  ensureBundleRuntimeClassSet: (snapshot: BundleSnapshot, forceRefresh?: boolean) => Promise<Set<string>>
   debug: (format: string, ...args: unknown[]) => void
   getResolvedConfig: () => ResolvedConfig | undefined
 }
@@ -159,7 +160,7 @@ export function createGenerateBundleHook(context: GenerateBundleContext) {
     const {
       opts,
       runtimeState,
-      ensureRuntimeClassSet,
+      ensureBundleRuntimeClassSet,
       debug,
       getResolvedConfig,
     } = context
@@ -209,40 +210,59 @@ export function createGenerateBundleHook(context: GenerateBundleContext) {
     const disableJsPrecheck = process.env.WEAPP_TW_VITE_DISABLE_JS_PRECHECK === '1'
     const debugCssDiff = process.env.WEAPP_TW_VITE_DEBUG_CSS_DIFF === '1'
     const resolvedConfig = getResolvedConfig()
+    const useIncrementalMode = resolvedConfig?.command !== 'build'
     const rootDir = resolvedConfig?.root ? path.resolve(resolvedConfig.root) : process.cwd()
     const outDir = resolvedConfig?.build?.outDir
       ? path.resolve(rootDir, resolvedConfig.build.outDir)
       : rootDir
-    const snapshot = buildBundleSnapshot(bundle, opts, outDir, state, disableDirtyOptimization)
-    const forceRuntimeRefreshBySource = hasRuntimeAffectingSourceChanges(snapshot.runtimeAffectingChangedByType)
-    const forceRuntimeRefresh = forceRuntimeRefreshByEnv || forceRuntimeRefreshBySource
+    const snapshot = useIncrementalMode
+      ? buildBundleSnapshot(bundle, opts, outDir, state, disableDirtyOptimization)
+      : buildBundleSnapshotForBuild(bundle, opts, outDir)
+    const useBundleRuntimeClassSet = useIncrementalMode || runtimeState.twPatcher.majorVersion === 4
+    const forceRuntimeRefreshBySource = useIncrementalMode
+      && hasRuntimeAffectingSourceChanges(snapshot.runtimeAffectingChangedByType)
     const processFiles = snapshot.processFiles
-    debug(
-      'dirty iteration=%d html=%d[%s] js=%d[%s] css=%d[%s] other=%d[%s]',
-      state.iteration + 1,
-      snapshot.changedByType.html.size,
-      formatDebugFileList(snapshot.changedByType.html),
-      snapshot.changedByType.js.size,
-      formatDebugFileList(snapshot.changedByType.js),
-      snapshot.changedByType.css.size,
-      formatDebugFileList(snapshot.changedByType.css),
-      snapshot.changedByType.other.size,
-      formatDebugFileList(snapshot.changedByType.other),
-    )
-    debug(
-      'process iteration=%d html=%d[%s] js=%d[%s] css=%d[%s]',
-      state.iteration + 1,
-      processFiles.html.size,
-      formatDebugFileList(processFiles.html),
-      processFiles.js.size,
-      formatDebugFileList(processFiles.js),
-      processFiles.css.size,
-      formatDebugFileList(processFiles.css),
-    )
+    if (useIncrementalMode) {
+      debug(
+        'dirty iteration=%d html=%d[%s] js=%d[%s] css=%d[%s] other=%d[%s]',
+        state.iteration + 1,
+        snapshot.changedByType.html.size,
+        formatDebugFileList(snapshot.changedByType.html),
+        snapshot.changedByType.js.size,
+        formatDebugFileList(snapshot.changedByType.js),
+        snapshot.changedByType.css.size,
+        formatDebugFileList(snapshot.changedByType.css),
+        snapshot.changedByType.other.size,
+        formatDebugFileList(snapshot.changedByType.other),
+      )
+      debug(
+        'process iteration=%d html=%d[%s] js=%d[%s] css=%d[%s]',
+        state.iteration + 1,
+        processFiles.html.size,
+        formatDebugFileList(processFiles.html),
+        processFiles.js.size,
+        formatDebugFileList(processFiles.js),
+        processFiles.css.size,
+        formatDebugFileList(processFiles.css),
+      )
+    }
+    else {
+      debug(
+        'build mode full process html=%d[%s] js=%d[%s] css=%d[%s]',
+        processFiles.html.size,
+        formatDebugFileList(processFiles.html),
+        processFiles.js.size,
+        formatDebugFileList(processFiles.js),
+        processFiles.css.size,
+        formatDebugFileList(processFiles.css),
+      )
+    }
     const jsEntries = snapshot.jsEntries
     const moduleGraphOptions = createBundleModuleGraphOptions(outDir, jsEntries)
     const runtimeStart = performance.now()
-    const runtime = await ensureRuntimeClassSet(forceRuntimeRefresh)
+    const runtime = useBundleRuntimeClassSet
+      ? await ensureBundleRuntimeClassSet(snapshot, forceRuntimeRefreshByEnv)
+      : await context.ensureRuntimeClassSet(forceRuntimeRefreshByEnv)
     const defaultTemplateHandlerOptions = {
       runtimeSet: runtime,
     }
@@ -286,7 +306,7 @@ export function createGenerateBundleHook(context: GenerateBundleContext) {
       },
     })
 
-    const linkedByEntry = new Map<string, Set<string>>()
+    const linkedByEntry = useIncrementalMode ? new Map<string, Set<string>>() : undefined
     const tasks: Promise<void>[] = []
     const jsTaskFactories: Array<() => Promise<void>> = []
 
@@ -372,7 +392,7 @@ export function createGenerateBundleHook(context: GenerateBundleContext) {
       }
 
       metrics.js.total++
-      const shouldTransformJs = processFiles.js.has(file)
+      const shouldTransformJs = !useIncrementalMode || processFiles.js.has(file)
       if (!shouldTransformJs) {
         // 增量轮次上游可能重写相同源码的原始 JS 产物，这里仍要走缓存回填以保持转译结果稳定。
         debug('js skip transform (clean), replay cache: %s', file)
@@ -381,15 +401,19 @@ export function createGenerateBundleHook(context: GenerateBundleContext) {
       if (originalSource.type === 'chunk') {
         const absoluteFile = path.resolve(outDir, file)
         const initialRawSource = originalEntrySource
-        const linkedSet = new Set<string>()
-        linkedByEntry.set(file, linkedSet)
+        const linkedSet = useIncrementalMode ? new Set<string>() : undefined
+        if (linkedByEntry && linkedSet) {
+          linkedByEntry.set(file, linkedSet)
+        }
 
         jsTaskFactories.push(async () => {
-          const linkedImpactSignature = createLinkedImpactSignature(
-            file,
-            snapshot.linkedImpactsByEntry,
-            snapshot.sourceHashByFile,
-          )
+          const linkedImpactSignature = useIncrementalMode
+            ? createLinkedImpactSignature(
+                file,
+                snapshot.linkedImpactsByEntry,
+                snapshot.sourceHashByFile,
+              )
+            : undefined
           const hashSalt = createJsHashSalt(runtimeSignature, linkedImpactSignature)
           await processCachedTask<string>({
             cache,
@@ -426,7 +450,7 @@ export function createGenerateBundleHook(context: GenerateBundleContext) {
               if (linked) {
                 for (const id of Object.keys(linked)) {
                   const linkedEntry = jsEntries.get(id)
-                  if (linkedEntry) {
+                  if (linkedEntry && linkedSet) {
                     linkedSet.add(linkedEntry.fileName)
                   }
                 }
@@ -440,15 +464,17 @@ export function createGenerateBundleHook(context: GenerateBundleContext) {
         })
       }
       else if (uniAppX && originalSource.type === 'asset') {
-        const linkedSet = new Set<string>()
-        linkedByEntry.set(file, linkedSet)
+        const linkedSet = useIncrementalMode ? new Set<string>() : undefined
+        if (linkedByEntry && linkedSet) {
+          linkedByEntry.set(file, linkedSet)
+        }
 
         const baseApplyLinkedUpdates = applyLinkedUpdates
         const wrappedApplyLinkedUpdates = (linked?: Record<string, LinkedJsModuleResult>) => {
           if (linked) {
             for (const id of Object.keys(linked)) {
               const linkedEntry = jsEntries.get(id)
-              if (linkedEntry) {
+              if (linkedEntry && linkedSet) {
                 linkedSet.add(linkedEntry.fileName)
               }
             }
@@ -465,11 +491,13 @@ export function createGenerateBundleHook(context: GenerateBundleContext) {
             hashKey: `${file}:js`,
             hashSalt: createJsHashSalt(
               runtimeSignature,
-              createLinkedImpactSignature(
-                file,
-                snapshot.linkedImpactsByEntry,
-                snapshot.sourceHashByFile,
-              ),
+              useIncrementalMode
+                ? createLinkedImpactSignature(
+                    file,
+                    snapshot.linkedImpactsByEntry,
+                    snapshot.sourceHashByFile,
+                  )
+                : undefined,
             ),
             createHandlerOptions,
             debug,
@@ -518,11 +546,13 @@ export function createGenerateBundleHook(context: GenerateBundleContext) {
       apply()
     }
 
-    updateBundleBuildState(state, snapshot, linkedByEntry)
+    if (useIncrementalMode) {
+      updateBundleBuildState(state, snapshot, linkedByEntry ?? new Map<string, Set<string>>())
+    }
 
     debug(
       'metrics iteration=%d runtime=%sms html(total=%d transform=%d hit=%d rate=%s elapsed=%sms) js(total=%d transform=%d hit=%d rate=%s elapsed=%sms) css(total=%d transform=%d hit=%d rate=%s elapsed=%sms)',
-      state.iteration,
+      useIncrementalMode ? state.iteration : 0,
       formatMs(metrics.runtimeSet),
       metrics.html.total,
       metrics.html.transformed,

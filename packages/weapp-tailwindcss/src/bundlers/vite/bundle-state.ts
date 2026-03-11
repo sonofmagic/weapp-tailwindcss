@@ -198,6 +198,40 @@ export function buildBundleSnapshot(
   }
 }
 
+export function buildBundleSnapshotForBuild(
+  bundle: Record<string, OutputAsset | OutputChunk>,
+  opts: InternalUserDefinedOptions,
+  outDir: string,
+): BundleSnapshot {
+  const processFiles = createProcessFiles()
+  const jsEntries = new Map<string, OutputEntry>()
+  const entries: BundleStateEntry[] = []
+
+  for (const [file, output] of Object.entries(bundle)) {
+    const type = classifyBundleEntry(file, opts)
+    const source = readEntrySource(output)
+    markProcessFile(type, file, processFiles)
+    collectJsEntries(file, output, outDir, jsEntries)
+    entries.push({
+      file,
+      output,
+      source,
+      type,
+    })
+  }
+
+  return {
+    entries,
+    jsEntries,
+    sourceHashByFile: new Map<string, string>(),
+    runtimeAffectingHashByFile: new Map<string, string>(),
+    changedByType: createChangedByType(),
+    runtimeAffectingChangedByType: createChangedByType(),
+    processFiles,
+    linkedImpactsByEntry: new Map<string, Set<string>>(),
+  }
+}
+
 function invertLinkedByEntry(linkedByEntry: Map<string, Set<string>>) {
   const dependentsByLinkedFile = new Map<string, Set<string>>()
   for (const [entryFile, linkedFiles] of linkedByEntry.entries()) {

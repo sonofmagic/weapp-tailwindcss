@@ -1,4 +1,5 @@
 import type { Plugin, ResolvedConfig } from 'vite'
+import type { BundleSnapshot } from './bundle-state'
 import type { UserDefinedOptions } from '@/types'
 import path from 'node:path'
 import process from 'node:process'
@@ -15,6 +16,7 @@ import { resolveUniUtsPlatform } from '@/utils'
 import { resolveDisabledOptions } from '@/utils/disabled'
 import { resolvePackageDir } from '@/utils/resolve-package'
 import { createGenerateBundleHook } from './generate-bundle'
+import { createBundleRuntimeClassSetManager } from './incremental-runtime-class-set'
 import { createRewriteCssImportsPlugins } from './rewrite-css-imports'
 import { slash } from './utils'
 
@@ -79,6 +81,7 @@ export function UnifiedViteWeappTailwindcssPlugin(options: UserDefinedOptions = 
   let resolvedConfig: ResolvedConfig | undefined
   let runtimeRefreshSignature: string | undefined
   let runtimeRefreshOptionsKey: string | undefined
+  const bundleRuntimeClassSetManager = createBundleRuntimeClassSetManager()
 
   function resolveRuntimeRefreshOptions() {
     const configPath = runtimeState.twPatcher.options?.tailwind?.config
@@ -146,6 +149,56 @@ export function UnifiedViteWeappTailwindcssPlugin(options: UserDefinedOptions = 
       }
     }
   }
+
+  async function ensureBundleRuntimeClassSet(snapshot: BundleSnapshot, forceRefresh = false) {
+    const forceRuntimeRefresh = forceRefresh || process.env.WEAPP_TW_VITE_FORCE_RUNTIME_REFRESH === '1'
+    const invalidation = resolveRuntimeRefreshOptions()
+    const shouldRefreshPatcher = forceRuntimeRefresh || invalidation.changed
+    const forceCollectBySource = snapshot.runtimeAffectingChangedByType.html.size > 0
+      || snapshot.runtimeAffectingChangedByType.js.size > 0
+
+    await refreshRuntimeState(shouldRefreshPatcher)
+    await runtimeState.patchPromise
+
+    if (shouldRefreshPatcher) {
+      runtimeSet = undefined
+      runtimeSetPromise = undefined
+      await bundleRuntimeClassSetManager.reset()
+    }
+
+    if (runtimeState.twPatcher.majorVersion === 4 && !forceRuntimeRefresh) {
+      try {
+        const nextRuntimeSet = await bundleRuntimeClassSetManager.sync(runtimeState.twPatcher, snapshot)
+        runtimeSet = nextRuntimeSet
+        return nextRuntimeSet
+      }
+      catch (error) {
+        debug('incremental runtime set sync failed, fallback to full collect: %O', error)
+        await bundleRuntimeClassSetManager.reset()
+      }
+    }
+
+    if (!forceRuntimeRefresh && !invalidation.changed && !forceCollectBySource && runtimeSet) {
+      return runtimeSet
+    }
+
+    const task = collectRuntimeClassSet(runtimeState.twPatcher, {
+      force: forceRuntimeRefresh || invalidation.changed || forceCollectBySource,
+      skipRefresh: forceRuntimeRefresh,
+      clearCache: forceRuntimeRefresh || invalidation.changed,
+    })
+    runtimeSetPromise = task
+
+    try {
+      runtimeSet = await task
+      return runtimeSet
+    }
+    finally {
+      if (runtimeSetPromise === task) {
+        runtimeSetPromise = undefined
+      }
+    }
+  }
   onLoad()
   const getResolvedConfig = () => resolvedConfig
   const utsPlatform = resolveUniUtsPlatform()
@@ -198,6 +251,7 @@ export function UnifiedViteWeappTailwindcssPlugin(options: UserDefinedOptions = 
         opts,
         runtimeState,
         ensureRuntimeClassSet,
+        ensureBundleRuntimeClassSet,
         debug,
         getResolvedConfig,
       }),

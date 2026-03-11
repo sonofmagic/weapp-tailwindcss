@@ -2,6 +2,7 @@ import path from 'node:path'
 import { describe, expect, it } from 'vitest'
 import {
   buildBundleSnapshot,
+  buildBundleSnapshotForBuild,
   createBundleBuildState,
   updateBundleBuildState,
 } from '@/bundlers/vite/bundle-state'
@@ -182,5 +183,34 @@ describe('bundlers/vite bundle state', () => {
     expect(state.linkedByEntry.has('assets/entry.js')).toBe(false)
     expect(state.dependentsByLinkedFile.has('assets/shared.js')).toBe(false)
     expect(state.sourceHashByFile.has('assets/entry.js')).toBe(false)
+  })
+
+  it('build snapshot processes all entries without incremental bookkeeping', () => {
+    const opts = createOptions()
+    const outDir = '/project/dist'
+
+    const snapshot = buildBundleSnapshotForBuild({
+      'pages/index/index.wxml': {
+        ...createRollupAsset('<view class="foo" />'),
+        fileName: 'pages/index/index.wxml',
+      },
+      'assets/entry.js': {
+        ...createRollupChunk('console.log("foo")'),
+        fileName: 'assets/entry.js',
+      },
+      'assets/index.css': {
+        ...createRollupAsset('.foo { color: red; }'),
+        fileName: 'assets/index.css',
+      },
+    }, opts, outDir)
+
+    expect(snapshot.processFiles.html).toEqual(new Set(['pages/index/index.wxml']))
+    expect(snapshot.processFiles.js).toEqual(new Set(['assets/entry.js']))
+    expect(snapshot.processFiles.css).toEqual(new Set(['assets/index.css']))
+    expect(snapshot.changedByType.html.size).toBe(0)
+    expect(snapshot.changedByType.js.size).toBe(0)
+    expect(snapshot.changedByType.css.size).toBe(0)
+    expect(snapshot.runtimeAffectingChangedByType.html.size).toBe(0)
+    expect(snapshot.runtimeAffectingChangedByType.js.size).toBe(0)
   })
 })
