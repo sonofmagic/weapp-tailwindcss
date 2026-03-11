@@ -3113,10 +3113,10 @@ describe('Tailwind Variants (TV) - Extends', () => {
     const tvResult = ['w-fit', 'h-fit']
     const custom = ['w-full']
 
-    const resultWithoutMerge = cn(tvResult.concat(custom))({ twMerge: false })
-    const resultWithMerge = cn(tvResult.concat(custom))({ twMerge: true })
-    const emptyResultWithoutMerge = cn([].concat([]))({ twMerge: false })
-    const emptyResultWithMerge = cn([].concat([]))({ twMerge: true })
+    const resultWithoutMerge = cn([...tvResult, ...custom])({ twMerge: false })
+    const resultWithMerge = cn([...tvResult, ...custom])({ twMerge: true })
+    const emptyResultWithoutMerge = cn([...[], ...[]])({ twMerge: false })
+    const emptyResultWithMerge = cn([...[], ...[]])({ twMerge: true })
 
     expect(resultWithoutMerge).toBe('w-fit h-fit w-full')
     expect(resultWithMerge).toBe('h-fit w-full')

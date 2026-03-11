@@ -1,18 +1,23 @@
 /* eslint-disable ts/no-require-imports */
 const colors = require('tailwindcss/colors')
 
+// eslint-disable-next-line regexp/no-super-linear-backtracking
+const TRAILING_ZEROS_RE = /(\.\d+?)0+$/
+const TRAILING_DOT_ZERO_RE = /\.0$/
+
 function round(num) {
   return num
     .toFixed(7)
-    // eslint-disable-next-line regexp/no-super-linear-backtracking
-    .replace(/(\.\d+?)0+$/, '$1')
-    .replace(/\.0$/, '')
+    .replace(TRAILING_ZEROS_RE, '$1')
+    .replace(TRAILING_DOT_ZERO_RE, '')
 }
 const rem = px => `${round(px / 16)}rem`
 const em = (px, base) => `${round(px / base)}em`
+const HEX_CHAR_DOUBLE_RE = /./g
+
 function hexToRgb(hex) {
   hex = hex.replace('#', '')
-  hex = hex.length === 3 ? hex.replaceAll(/./g, '$&$&') : hex
+  hex = hex.length === 3 ? hex.replaceAll(HEX_CHAR_DOUBLE_RE, '$&$&') : hex
   const r = Number.parseInt(hex.slice(0, 2), 16)
   const g = Number.parseInt(hex.slice(2, 4), 16)
   const b = Number.parseInt(hex.slice(4, 6), 16)

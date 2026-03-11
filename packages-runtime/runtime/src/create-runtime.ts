@@ -39,8 +39,10 @@ interface CreateRuntimeFactoryOptions<
 
 const CACHE_LIMIT = 256
 
+const UNESCAPE_RE = /u[0-9a-f]{3,}/i
+
 function shouldUnescape(value: string) {
-  return value.includes('_') || /u[0-9a-f]{3,}/i.test(value)
+  return value.includes('_') || UNESCAPE_RE.test(value)
 }
 
 function wrapClassAggregator(

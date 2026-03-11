@@ -21,7 +21,7 @@ module.exports = {
 
     // Put the pseudo elements in reverse order in a sparse, column-major 2D array
     for (const [i, sel] of ast.nodes.entries()) {
-      for (const [j, child] of [...sel.nodes].reverse().entries()) {
+      for (const [j, child] of sel.nodes.toReversed().entries()) {
         // We only care about pseudo elements
         if (child.type !== 'pseudo' || !child.value.startsWith('::')) {
           break

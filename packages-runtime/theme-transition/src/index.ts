@@ -70,7 +70,7 @@ export function useToggleTheme(options: UseToggleThemeOptions): UseToggleThemeRe
     animationTarget,
     fallbackCoordinates,
     logger = console,
-  } = Object.assign({}, options)
+  } = { ...options }
 
   const resolvedDocument = resolveGlobalDocument(documentLike)
   const resolvedWindow = resolveGlobalWindow(windowLike)
