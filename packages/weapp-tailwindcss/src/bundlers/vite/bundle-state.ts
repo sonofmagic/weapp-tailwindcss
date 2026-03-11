@@ -3,6 +3,7 @@ import type { OutputEntry } from './bundle-entries'
 import type { InternalUserDefinedOptions } from '@/types'
 import { toAbsoluteOutputPath } from '../shared/module-graph'
 import { isJavaScriptEntry } from './bundle-entries'
+import { createRuntimeAffectingSourceSignature } from './runtime-affecting-signature'
 
 export type EntryType = 'html' | 'js' | 'css' | 'other'
 
@@ -23,7 +24,9 @@ export interface BundleSnapshot {
   entries: BundleStateEntry[]
   jsEntries: Map<string, OutputEntry>
   sourceHashByFile: Map<string, string>
+  runtimeAffectingHashByFile: Map<string, string>
   changedByType: Record<EntryType, Set<string>>
+  runtimeAffectingChangedByType: Record<EntryType, Set<string>>
   processFiles: ProcessFileSets
   linkedImpactsByEntry: Map<string, Set<string>>
 }
@@ -31,6 +34,7 @@ export interface BundleSnapshot {
 export interface BundleBuildState {
   iteration: number
   sourceHashByFile: Map<string, string>
+  runtimeAffectingHashByFile: Map<string, string>
   linkedByEntry: Map<string, Set<string>>
   dependentsByLinkedFile: Map<string, Set<string>>
 }
@@ -39,6 +43,7 @@ export function createBundleBuildState(): BundleBuildState {
   return {
     iteration: 0,
     sourceHashByFile: new Map<string, string>(),
+    runtimeAffectingHashByFile: new Map<string, string>(),
     linkedByEntry: new Map<string, Set<string>>(),
     dependentsByLinkedFile: new Map<string, Set<string>>(),
   }
@@ -113,7 +118,9 @@ export function buildBundleSnapshot(
   forceAll = false,
 ): BundleSnapshot {
   const sourceHashByFile = new Map<string, string>()
+  const runtimeAffectingHashByFile = new Map<string, string>()
   const changedByType = createChangedByType()
+  const runtimeAffectingChangedByType = createChangedByType()
   const processFiles = createProcessFiles()
   const linkedImpactsByEntry = new Map<string, Set<string>>()
   const jsEntries = new Map<string, OutputEntry>()
@@ -125,11 +132,20 @@ export function buildBundleSnapshot(
     const source = readEntrySource(output)
     const hash = opts.cache.computeHash(source)
     sourceHashByFile.set(file, hash)
+    const runtimeAffectingSignature = createRuntimeAffectingSourceSignature(source, type)
+    const runtimeAffectingHash = opts.cache.computeHash(runtimeAffectingSignature)
+    runtimeAffectingHashByFile.set(file, runtimeAffectingHash)
 
     const previousHash = state.sourceHashByFile.get(file)
     const changed = previousHash == null || previousHash !== hash
     if (changed) {
       changedByType[type].add(file)
+    }
+    const previousRuntimeAffectingHash = state.runtimeAffectingHashByFile.get(file)
+    const runtimeAffectingChanged
+      = previousRuntimeAffectingHash == null || previousRuntimeAffectingHash !== runtimeAffectingHash
+    if (runtimeAffectingChanged) {
+      runtimeAffectingChangedByType[type].add(file)
     }
 
     if (forceAll || firstRun) {
@@ -174,7 +190,9 @@ export function buildBundleSnapshot(
     entries,
     jsEntries,
     sourceHashByFile,
+    runtimeAffectingHashByFile,
     changedByType,
+    runtimeAffectingChangedByType,
     processFiles,
     linkedImpactsByEntry,
   }
@@ -202,6 +220,7 @@ export function updateBundleBuildState(
 ) {
   state.iteration += 1
   state.sourceHashByFile = snapshot.sourceHashByFile
+  state.runtimeAffectingHashByFile = snapshot.runtimeAffectingHashByFile
   state.linkedByEntry = linkedByEntry
   state.dependentsByLinkedFile = invertLinkedByEntry(linkedByEntry)
 }

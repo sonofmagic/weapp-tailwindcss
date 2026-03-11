@@ -214,7 +214,7 @@ export function createGenerateBundleHook(context: GenerateBundleContext) {
       ? path.resolve(rootDir, resolvedConfig.build.outDir)
       : rootDir
     const snapshot = buildBundleSnapshot(bundle, opts, outDir, state, disableDirtyOptimization)
-    const forceRuntimeRefreshBySource = hasRuntimeAffectingSourceChanges(snapshot.changedByType)
+    const forceRuntimeRefreshBySource = hasRuntimeAffectingSourceChanges(snapshot.runtimeAffectingChangedByType)
     const forceRuntimeRefresh = forceRuntimeRefreshByEnv || forceRuntimeRefreshBySource
     const processFiles = snapshot.processFiles
     debug(
@@ -250,8 +250,8 @@ export function createGenerateBundleHook(context: GenerateBundleContext) {
     if (forceRuntimeRefreshBySource) {
       debug(
         'runtimeSet forced refresh due to source changes: html=%d js=%d',
-        snapshot.changedByType.html.size,
-        snapshot.changedByType.js.size,
+        snapshot.runtimeAffectingChangedByType.html.size,
+        snapshot.runtimeAffectingChangedByType.js.size,
       )
     }
     debug('get runtimeSet, class count: %d', runtime.size)

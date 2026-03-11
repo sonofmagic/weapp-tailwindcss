@@ -55,6 +55,7 @@ export interface ClassMutationConfig {
   forbidBgHexTruncationIn?: Array<'wxml' | 'js'>
   roundConfigs?: MutationRoundConfig[]
   mutate: (source: string, payload: ClassMutationPayload) => string
+  mutateCommentCarrier?: (source: string, payload: ClassMutationPayload) => string
 }
 
 export interface StyleMutationConfig {
@@ -135,6 +136,7 @@ export interface ClassMutationMetrics {
   rollbackOutputMs: number
   rollbackEffectiveMs: number
   sameClassLiteralHmr?: SameClassLiteralHmrMetrics
+  commentCarrierHmr?: CommentCarrierHmrMetrics
 }
 
 export interface SameClassLiteralHmrMetrics {
@@ -147,6 +149,18 @@ export interface SameClassLiteralHmrMetrics {
   stableGlobalStyleRequired: boolean
   stableGlobalStyleOutputs: string[]
   changedGlobalStyleOutputs: string[]
+  hotUpdateOutputMs: number
+  hotUpdateEffectiveMs: number
+  rollbackOutputMs: number
+  rollbackEffectiveMs: number
+}
+
+export interface CommentCarrierHmrMetrics {
+  marker: string
+  classLiteral: string
+  escapedClasses: string[]
+  verifiedEscapedClasses: string[]
+  minRequiredEscapedClasses: number
   hotUpdateOutputMs: number
   hotUpdateEffectiveMs: number
   rollbackOutputMs: number

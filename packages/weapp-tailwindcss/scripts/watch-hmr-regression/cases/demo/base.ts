@@ -6,6 +6,7 @@ import {
   insertBeforeClosingTag,
   insertIntoVueTemplateRoot,
   mutateScriptByDataAnchor,
+  mutateScriptByDataAnchorWithCommentCarrier,
   mutateSfcStyleBlock,
   mutateTsxScriptByReturnAnchor,
 } from '../../text'
@@ -83,6 +84,9 @@ export function buildDemoBaseCases(baseCwd: string): WatchCase[] {
       mutate(source, payload) {
         return mutateScriptByDataAnchor(source, '      className: \'bg-[#123456]\',', payload, '      ')
       },
+      mutateCommentCarrier(source, payload) {
+        return mutateScriptByDataAnchorWithCommentCarrier(source, '      className: \'bg-[#123456]\',', payload, '      ')
+      },
     },
     styleMutation: {
       sourceFile: path.resolve(baseCwd, 'demo/uni-app/src/pages/index/index.vue'),
@@ -130,6 +134,9 @@ export function buildDemoBaseCases(baseCwd: string): WatchCase[] {
       verifyClassLiteralIn: ['js'],
       mutate(source, payload) {
         return mutateScriptByDataAnchor(source, '    classNames: \'text-[#123456] text-[50px] bg-[#fff]\',', payload)
+      },
+      mutateCommentCarrier(source, payload) {
+        return mutateScriptByDataAnchorWithCommentCarrier(source, '    classNames: \'text-[#123456] text-[50px] bg-[#fff]\',', payload)
       },
     },
     styleMutation: {
@@ -251,6 +258,9 @@ export function buildDemoBaseCases(baseCwd: string): WatchCase[] {
       verifyClassLiteralIn: ['js'],
       mutate(source, payload) {
         return mutateScriptByDataAnchor(source, '  data: {', payload)
+      },
+      mutateCommentCarrier(source, payload) {
+        return mutateScriptByDataAnchorWithCommentCarrier(source, '  data: {', payload)
       },
     },
     styleMutation: {

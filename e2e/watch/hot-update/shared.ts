@@ -12,6 +12,11 @@ type MutationRoundName = 'baseline-arbitrary' | 'complex-corpus' | 'hex-arbitrar
 const BASE_REQUIRED_MUTATION_ROUNDS: MutationRoundName[] = ['baseline-arbitrary', 'complex-corpus', 'hex-arbitrary']
 const ISSUE33_REQUIRED_MUTATION_ROUND: MutationRoundName = 'issue33-arbitrary'
 const ISSUE33_MODIFY_CLASS_TOKENS = ['bg-[#0f0f0f]', 'px-[256.25px]'] as const
+const INVALID_BG_HEX_WITH_SPACE_RE = /\bbg-\s+\[#?[0-9a-fA-F]{3,8}\]?/g
+const INVALID_BG_UNTERMINATED_RE = /\bbg-\[[^\]]*$/gm
+const INVALID_PX_UNTERMINATED_RE = /\bpx-\[[^\]]*$/gm
+const INVALID_BG_INNER_SPACE_RE = /\bbg-\[[^\]\s]*\s[^\]\s]*\]/g
+const INVALID_PX_INNER_SPACE_RE = /\bpx-\[[^\]\s]*\s[^\]\s]*\]/g
 
 interface MutationRoundReport {
   roundName: MutationRoundName
@@ -65,6 +70,7 @@ interface TemplateOrScriptMutationMetric {
   rollbackOutputMs: number
   rollbackEffectiveMs: number
   sameClassLiteralHmr?: SameClassLiteralHmrMetric
+  commentCarrierHmr?: CommentCarrierHmrMetric
 }
 
 interface SameClassLiteralHmrMetric {
@@ -77,6 +83,18 @@ interface SameClassLiteralHmrMetric {
   stableGlobalStyleRequired: boolean
   stableGlobalStyleOutputs: string[]
   changedGlobalStyleOutputs: string[]
+  hotUpdateOutputMs: number
+  hotUpdateEffectiveMs: number
+  rollbackOutputMs: number
+  rollbackEffectiveMs: number
+}
+
+interface CommentCarrierHmrMetric {
+  marker: string
+  classLiteral: string
+  escapedClasses: string[]
+  verifiedEscapedClasses: string[]
+  minRequiredEscapedClasses: number
   hotUpdateOutputMs: number
   hotUpdateEffectiveMs: number
   rollbackOutputMs: number
@@ -150,6 +168,28 @@ const noApplyValidationCases = new Set<ConcreteWatchCaseName>([
   'taro-webpack-tailwindcss-v4',
   'taro-webpack',
 ])
+const commentCarrierRequiredCases = new Set<ConcreteWatchCaseName>([
+  'mpx',
+  'taro-webpack',
+  'taro-app-vite',
+  'taro-vite-tailwindcss-v4',
+  'taro-webpack-tailwindcss-v4',
+  'uni',
+  'uni-app-vue3-vite',
+  'vite-native-ts',
+  'weapp-vite',
+])
+
+interface CommentCarrierSummaryItem {
+  name: ConcreteWatchCaseName
+  project: string
+  sameClassStable: boolean
+  sameClassVerifiedEscapedClasses: number
+  commentCarrierVerifiedEscapedClasses: number
+  commentCarrierMinRequiredEscapedClasses: number
+  hotUpdateEffectiveMs: number
+  rollbackEffectiveMs: number
+}
 
 function isIssue33RoundProfile() {
   return process.env.E2E_WATCH_ROUND_PROFILE === 'issue33'
@@ -453,6 +493,10 @@ function assertHotUpdateReport(report: HotUpdateReport, target: WatchCaseName, m
           sameClassLiteralHmr.stableGlobalStyleOutputs.length,
           `[${item.project}] same-class-literal should keep at least one global style output stable`,
         ).toBeGreaterThan(0)
+        expect(
+          sameClassLiteralHmr.changedGlobalStyleOutputs,
+          `[${item.project}] same-class-literal should not rewrite global style outputs when class literal is unchanged`,
+        ).toEqual([])
       }
 
       if (issue33RoundProfile) {
@@ -461,15 +505,27 @@ function assertHotUpdateReport(report: HotUpdateReport, target: WatchCaseName, m
         expect(issue33Round?.classTokens).toEqual(expect.arrayContaining([...ISSUE33_MODIFY_CLASS_TOKENS]))
         expect(issue33Round?.classLiteral).toContain(ISSUE33_MODIFY_CLASS_TOKENS[0])
         expect(issue33Round?.classLiteral).toContain(ISSUE33_MODIFY_CLASS_TOKENS[1])
-        expect(issue33Round?.classLiteral ?? '').not.toMatch(/\bbg-\s+\[#?[0-9a-fA-F]{3,8}\]?/g)
-        expect(issue33Round?.classLiteral ?? '').not.toMatch(/\bbg-\[[^\]]*$/gm)
-        expect(issue33Round?.classLiteral ?? '').not.toMatch(/\bpx-\[[^\]]*$/gm)
-        expect(issue33Round?.classLiteral ?? '').not.toMatch(/\bbg-\[[^\]\s]*\s[^\]\s]*\]/g)
-        expect(issue33Round?.classLiteral ?? '').not.toMatch(/\bpx-\[[^\]\s]*\s[^\]\s]*\]/g)
+        expect(issue33Round?.classLiteral ?? '').not.toMatch(INVALID_BG_HEX_WITH_SPACE_RE)
+        expect(issue33Round?.classLiteral ?? '').not.toMatch(INVALID_BG_UNTERMINATED_RE)
+        expect(issue33Round?.classLiteral ?? '').not.toMatch(INVALID_PX_UNTERMINATED_RE)
+        expect(issue33Round?.classLiteral ?? '').not.toMatch(INVALID_BG_INNER_SPACE_RE)
+        expect(issue33Round?.classLiteral ?? '').not.toMatch(INVALID_PX_INNER_SPACE_RE)
         expect(
           scriptMetric.verifiedGlobalStyleEscapedClasses.length,
           `[${item.project}] issue33 script round should hit transformed classes in wxss outputs`,
         ).toBeGreaterThan(0)
+      }
+
+      if (commentCarrierRequiredCases.has(item.name)) {
+        const commentCarrierHmr = scriptMetric.commentCarrierHmr
+        expect(commentCarrierHmr).toBeDefined()
+        if (!commentCarrierHmr) {
+          throw new Error(`[${item.project}] missing commentCarrierHmr metric in script mutation`)
+        }
+        expect(commentCarrierHmr.classLiteral.length).toBeGreaterThan(0)
+        expect(commentCarrierHmr.hotUpdateEffectiveMs).toBeGreaterThan(0)
+        expect(commentCarrierHmr.rollbackEffectiveMs).toBeGreaterThan(0)
+        expect(commentCarrierHmr.verifiedEscapedClasses.length).toBeGreaterThanOrEqual(commentCarrierHmr.minRequiredEscapedClasses)
       }
     }
 
@@ -493,6 +549,48 @@ function assertHotUpdateReport(report: HotUpdateReport, target: WatchCaseName, m
       expect(styleMetric.hotUpdateEffectiveMs).toBeGreaterThan(0)
       expect(styleMetric.rollbackEffectiveMs).toBeGreaterThan(0)
       expect(styleMetric.hotUpdateEffectiveMs).toBeLessThanOrEqual(maxHotUpdateMs)
+    }
+  }
+
+  const commentCarrierSummary: CommentCarrierSummaryItem[] = report.cases
+    .filter(item => commentCarrierRequiredCases.has(item.name))
+    .map((item) => {
+      const scriptMetric = item.mutationMetrics.find(
+        mutation => mutation.mutationKind === 'script',
+      )
+      if (!scriptMetric || scriptMetric.mutationKind === 'style') {
+        throw new Error(`[${item.project}] missing script metric for comment-carrier summary`)
+      }
+      if (!scriptMetric.sameClassLiteralHmr) {
+        throw new Error(`[${item.project}] missing sameClassLiteralHmr for comment-carrier summary`)
+      }
+      if (!scriptMetric.commentCarrierHmr) {
+        throw new Error(`[${item.project}] missing commentCarrierHmr for comment-carrier summary`)
+      }
+      return {
+        name: item.name,
+        project: item.project,
+        sameClassStable: scriptMetric.sameClassLiteralHmr.changedGlobalStyleOutputs.length === 0,
+        sameClassVerifiedEscapedClasses: scriptMetric.sameClassLiteralHmr.verifiedEscapedClasses.length,
+        commentCarrierVerifiedEscapedClasses: scriptMetric.commentCarrierHmr.verifiedEscapedClasses.length,
+        commentCarrierMinRequiredEscapedClasses: scriptMetric.commentCarrierHmr.minRequiredEscapedClasses,
+        hotUpdateEffectiveMs: scriptMetric.commentCarrierHmr.hotUpdateEffectiveMs,
+        rollbackEffectiveMs: scriptMetric.commentCarrierHmr.rollbackEffectiveMs,
+      }
+    })
+    .sort((left, right) => left.project.localeCompare(right.project))
+
+  if (commentCarrierSummary.length > 0) {
+    expect(
+      commentCarrierSummary.map(item => item.project),
+      '[comment-carrier] summary should cover all current-report required projects in stable order',
+    ).toEqual([...commentCarrierSummary.map(item => item.project)].sort((left, right) => left.localeCompare(right)))
+    for (const item of commentCarrierSummary) {
+      expect(item.sameClassStable, `[${item.project}] same-class-literal should keep global styles stable`).toBe(true)
+      expect(item.sameClassVerifiedEscapedClasses, `[${item.project}] same-class-literal should verify escaped classes`).toBeGreaterThan(0)
+      expect(item.commentCarrierVerifiedEscapedClasses, `[${item.project}] comment-carrier should verify escaped classes`).toBeGreaterThanOrEqual(item.commentCarrierMinRequiredEscapedClasses)
+      expect(item.hotUpdateEffectiveMs, `[${item.project}] comment-carrier hot update should be positive`).toBeGreaterThan(0)
+      expect(item.rollbackEffectiveMs, `[${item.project}] comment-carrier rollback should be positive`).toBeGreaterThan(0)
     }
   }
 }

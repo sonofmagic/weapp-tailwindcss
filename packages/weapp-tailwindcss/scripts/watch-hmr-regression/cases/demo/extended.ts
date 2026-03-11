@@ -8,16 +8,20 @@ import {
   insertIntoVueTemplateRoot,
   mutateSfcStyleBlock,
   mutateTsxScriptByReturnAnchor,
+  mutateTsxScriptByReturnAnchorWithCommentCarrier,
   mutateVueRefStringLiteral,
   mutateVueScriptSetupArrayByAnchor,
+  mutateVueScriptSetupArrayByAnchorWithCommentCarrier,
 } from '../../text'
+
+const NON_DIGIT_RE = /\D/g
 
 function buildHexScriptRoundConfigs() {
   const rounds = [
     {
       name: 'baseline-arbitrary' as const,
       buildClassTokens(seed: string) {
-        const numericSeed = seed.replace(/\D/g, '').padEnd(6, '0')
+        const numericSeed = seed.replace(NON_DIGIT_RE, '').padEnd(6, '0')
         const hex = numericSeed.slice(0, 6)
         const textPx = Number(numericSeed.slice(0, 2)) + 20
         const heightPx = Number(numericSeed.slice(2, 4)) + 12
@@ -31,7 +35,7 @@ function buildHexScriptRoundConfigs() {
     {
       name: 'complex-corpus' as const,
       buildClassTokens(seed: string) {
-        const numericSeed = seed.replace(/\D/g, '').padEnd(6, '0')
+        const numericSeed = seed.replace(NON_DIGIT_RE, '').padEnd(6, '0')
         const hex = numericSeed.slice(0, 4)
         const textPx = Number(numericSeed.slice(0, 2)) + 34
         const heightPx = Number(numericSeed.slice(2, 4)) + 22
@@ -45,7 +49,7 @@ function buildHexScriptRoundConfigs() {
     {
       name: 'hex-arbitrary' as const,
       buildClassTokens(seed: string) {
-        const numericSeed = seed.replace(/\D/g, '').padEnd(8, '0')
+        const numericSeed = seed.replace(NON_DIGIT_RE, '').padEnd(8, '0')
         const hex = `${numericSeed.slice(0, 2)}00`
         const textPx = Number(numericSeed.slice(0, 2)) + 46
         const heightPx = Number(numericSeed.slice(2, 4)) + 28
@@ -105,6 +109,13 @@ export function buildDemoExtendedCases(baseCwd: string): WatchCase[] {
       verifyClassLiteralIn: ['js'],
       mutate(source, payload) {
         return mutateVueScriptSetupArrayByAnchor(
+          source,
+          'const classArray = [',
+          payload,
+        )
+      },
+      mutateCommentCarrier(source, payload) {
+        return mutateVueScriptSetupArrayByAnchorWithCommentCarrier(
           source,
           'const classArray = [',
           payload,
@@ -198,6 +209,9 @@ export function buildDemoExtendedCases(baseCwd: string): WatchCase[] {
       mutate(source, payload) {
         return mutateTsxScriptByReturnAnchor(source, payload)
       },
+      mutateCommentCarrier(source, payload) {
+        return mutateTsxScriptByReturnAnchorWithCommentCarrier(source, payload)
+      },
     },
     styleMutation: {
       sourceFile: path.resolve(baseCwd, 'demo/taro-vite-tailwindcss-v4/src/pages/index/index.css'),
@@ -240,6 +254,9 @@ export function buildDemoExtendedCases(baseCwd: string): WatchCase[] {
       verifyClassLiteralIn: ['js'],
       mutate(source, payload) {
         return mutateTsxScriptByReturnAnchor(source, payload)
+      },
+      mutateCommentCarrier(source, payload) {
+        return mutateTsxScriptByReturnAnchorWithCommentCarrier(source, payload)
       },
     },
     styleMutation: {
@@ -284,6 +301,9 @@ export function buildDemoExtendedCases(baseCwd: string): WatchCase[] {
       roundConfigs: buildHexScriptRoundConfigs(),
       mutate(source, payload) {
         return mutateTsxScriptByReturnAnchor(source, payload)
+      },
+      mutateCommentCarrier(source, payload) {
+        return mutateTsxScriptByReturnAnchorWithCommentCarrier(source, payload)
       },
     },
     styleMutation: {

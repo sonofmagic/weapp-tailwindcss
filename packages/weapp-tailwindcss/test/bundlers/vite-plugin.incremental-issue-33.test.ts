@@ -120,6 +120,88 @@ describe('bundlers/vite incremental issue #33 regression', () => {
     expectEscaped((secondBundle[jsFile] as OutputChunk).code, rawScriptToken)
   }, TEST_TIMEOUT_MS)
 
+  it('does not refresh runtime class set for formatting-only incremental html/js changes', async () => {
+    const UnifiedViteWeappTailwindcssPlugin = await loadUnifiedVitePlugin()
+    const htmlFile = 'dist/pages/index/index.wxml'
+    const jsFile = 'dist/pages/index/index.js'
+    const rawTemplateToken = 'bg-[#000]'
+    const rawScriptToken = 'px-[432.43px]'
+    const runtimeSet = new Set([rawTemplateToken, rawScriptToken])
+    const escapeKnown = createEscaper([rawTemplateToken, rawScriptToken])
+
+    const realJsHandler = createJsHandler({
+      staleClassNameFallback: false,
+      jsArbitraryValueFallback: false,
+    })
+    const jsHandler = vi.fn((code: string, classNameSet?: Set<string>, options?: Record<string, unknown>) =>
+      realJsHandler(code, classNameSet, options as any),
+    )
+
+    setCurrentContext(createContext({
+      templateHandler: vi.fn(async (code: string) => escapeKnown(code)),
+      jsHandler,
+      twPatcher: {
+        patch: vi.fn(async () => {}),
+        getClassSet: vi.fn(async () => runtimeSet),
+        getClassSetSync: vi.fn(() => runtimeSet),
+        extract: vi.fn(async () => ({ classSet: runtimeSet })),
+        majorVersion: 4,
+      },
+    }))
+
+    const currentContext = getCurrentContext()
+    const plugins = UnifiedViteWeappTailwindcssPlugin()
+    const postPlugin = plugins?.find(plugin => plugin.name === 'weapp-tailwindcss:adaptor:post') as Plugin
+    expect(postPlugin).toBeTruthy()
+
+    await (postPlugin.configResolved as any)?.call(postPlugin, {
+      command: 'serve',
+      root: process.cwd(),
+      css: { postcss: { plugins: [] } },
+      build: { outDir: 'dist' },
+    } as ResolvedConfig)
+
+    const generateBundle = postPlugin.generateBundle as any
+
+    const firstBundle = {
+      [htmlFile]: {
+        ...createRollupAsset(`<view class="${rawTemplateToken}">{{ cls }}</view>`),
+        fileName: htmlFile,
+      },
+      [jsFile]: {
+        ...createRollupChunk(`const cls = "${rawScriptToken}"`),
+        fileName: jsFile,
+      },
+    } as Record<string, OutputAsset | OutputChunk>
+
+    await generateBundle?.call(postPlugin, {} as any, firstBundle)
+
+    currentContext.twPatcher.extract.mockClear()
+    currentContext.twPatcher.getClassSetSync.mockClear()
+    currentContext.twPatcher.getClassSet.mockClear()
+
+    const secondBundle = {
+      [htmlFile]: {
+        ...createRollupAsset(`<view class="${rawTemplateToken}">
+  {{ cls }}
+</view>`),
+        fileName: htmlFile,
+      },
+      [jsFile]: {
+        ...createRollupChunk(`const cls = "${rawScriptToken}";\n`),
+        fileName: jsFile,
+      },
+    } as Record<string, OutputAsset | OutputChunk>
+
+    await generateBundle?.call(postPlugin, {} as any, secondBundle)
+
+    expectEscaped((secondBundle[htmlFile] as OutputAsset).source.toString(), rawTemplateToken)
+    expectEscaped((secondBundle[jsFile] as OutputChunk).code, rawScriptToken)
+    expect(currentContext.twPatcher.extract).not.toHaveBeenCalled()
+    expect(currentContext.twPatcher.getClassSetSync).not.toHaveBeenCalled()
+    expect(currentContext.twPatcher.getClassSet).not.toHaveBeenCalled()
+  }, TEST_TIMEOUT_MS)
+
   it('keeps script/template arbitrary values correct across add-modify-delete in incremental runs', async () => {
     const UnifiedViteWeappTailwindcssPlugin = await loadUnifiedVitePlugin()
     const htmlFile = 'dist/pages/index/index.wxml'

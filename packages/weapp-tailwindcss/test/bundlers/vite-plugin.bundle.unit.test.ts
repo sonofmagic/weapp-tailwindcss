@@ -16,6 +16,7 @@ import {
 } from './vite-plugin.testkit'
 
 const TEST_TIMEOUT_MS = 2000
+const SPLIT_WHITESPACE_RE = /\s+/
 
 async function loadUnifiedVitePlugin() {
   const mod = await import('@/bundlers/vite')
@@ -127,8 +128,8 @@ describe('bundlers/vite UnifiedViteWeappTailwindcssPlugin bundle', () => {
     const staticClass = 'rounded-[32rpx] border border-slate-100/70 bg-white/90 p-5 shadow-[0_20px_45px_rgba(15,23,42,0.08)]'
     const dynamicClass = 'rounded-[92rpx] border border-slate-100/70 bg-[#213435] p-9 shadow-[0_20px_45px_rgba(15,23,42,0.08)]'
     const runtimeSets = [
-      new Set(staticClass.split(/\s+/)),
-      new Set(dynamicClass.split(/\s+/)),
+      new Set(staticClass.split(SPLIT_WHITESPACE_RE)),
+      new Set(dynamicClass.split(SPLIT_WHITESPACE_RE)),
     ] as const
     let runtimeIndex = 0
     const getRuntimeSet = () => runtimeSets[runtimeIndex]
@@ -184,6 +185,64 @@ const trace = "at App.vue:4"
     expect(transformedCode).not.toContain('bg-[#213435]')
     expect(currentContext.twPatcher.extract).toHaveBeenCalledTimes(2)
     expect(currentContext.twPatcher.getClassSetSync).toHaveBeenCalledTimes(2)
+  }, TEST_TIMEOUT_MS)
+
+  it('refreshes runtime class set when only comment-carried class candidates change', async () => {
+    const UnifiedViteWeappTailwindcssPlugin = await loadUnifiedVitePlugin()
+    const runtimeSets = [
+      new Set(['text-[#123456]']),
+      new Set(['text-[#654321]']),
+    ] as const
+    let runtimeIndex = 0
+    const getRuntimeSet = () => runtimeSets[runtimeIndex]
+
+    setCurrentContext(createContext({
+      templateHandler: vi.fn(async (code: string) => code),
+      jsHandler: createJsHandler({
+        staleClassNameFallback: false,
+        jsArbitraryValueFallback: false,
+      }),
+      staleClassNameFallback: false,
+      twPatcher: {
+        patch: vi.fn(),
+        getClassSet: vi.fn(async () => getRuntimeSet()),
+        getClassSetSync: vi.fn(() => getRuntimeSet()),
+        extract: vi.fn(async () => ({ classSet: getRuntimeSet() })),
+        majorVersion: 4,
+      },
+    }))
+
+    const currentContext = getCurrentContext()
+    const plugins = UnifiedViteWeappTailwindcssPlugin()
+    const postPlugin = plugins?.find(plugin => plugin.name === 'weapp-tailwindcss:adaptor:post') as Plugin
+    expect(postPlugin).toBeTruthy()
+
+    await (postPlugin.configResolved as any)?.call(postPlugin, {
+      command: 'serve',
+      root: process.cwd(),
+      css: { postcss: { plugins: [] } },
+      build: { outDir: 'dist' },
+    } as ResolvedConfig)
+
+    const generateBundle = postPlugin.generateBundle as any
+    await generateBundle?.call(postPlugin, {} as any, {
+      'index.wxml': createRollupAsset('<view class="card"></view><!-- text-[#123456] -->'),
+      'index.js': createRollupChunk('const cls = "card"\n/* text-[#123456] */'),
+    })
+
+    currentContext.twPatcher.extract.mockClear()
+    currentContext.twPatcher.getClassSetSync.mockClear()
+    currentContext.twPatcher.getClassSet.mockClear()
+    runtimeIndex = 1
+
+    await generateBundle?.call(postPlugin, {} as any, {
+      'index.wxml': createRollupAsset('<view class="card"></view><!-- text-[#654321] -->'),
+      'index.js': createRollupChunk('const cls = "card"\n/* text-[#654321] */'),
+    })
+
+    expect(currentContext.twPatcher.extract).toHaveBeenCalledTimes(1)
+    expect(currentContext.twPatcher.getClassSetSync).toHaveBeenCalledTimes(1)
+    expect(currentContext.twPatcher.getClassSet).not.toHaveBeenCalled()
   }, TEST_TIMEOUT_MS)
 
   it('reuses css handler override objects for the same asset across incremental runs', async () => {

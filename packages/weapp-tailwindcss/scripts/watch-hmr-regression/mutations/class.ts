@@ -2,6 +2,7 @@ import type {
   ClassMutationConfig,
   ClassMutationMetrics,
   CliOptions,
+  CommentCarrierHmrMetrics,
   MutationRoundConfig,
   MutationRoundMetrics,
   SameClassLiteralHmrMetrics,
@@ -22,6 +23,7 @@ import {
   readFileWithRetry,
   writeFilePreserveEol,
 } from '../text'
+import { runCommentCarrierMutation } from './class/comment-carrier'
 import { runSameClassLiteralMutation } from './class/same-literal'
 import {
   buildRoundComparison,
@@ -37,6 +39,14 @@ import {
 } from './tokens'
 
 const ISSUE33_ROUND_NAME = 'issue33-arbitrary' as const
+const BG_HEX_TOKEN_RE = /^bg-\[#([0-9a-fA-F]{3,8})\]$/
+const SANITIZE_PATH_SEGMENT_RE = /[^\w.-]/g
+const INVALID_BG_HEX_WITH_SPACE_RE = /\bbg-\s+\[#?[0-9a-fA-F]{3,8}\]?/g
+const INVALID_BG_UNTERMINATED_RE = /\bbg-\[[^\]]*$/gm
+const INVALID_PX_UNTERMINATED_RE = /\bpx-\[[^\]]*$/gm
+const INVALID_PX_WITH_SPACE_RE = /\bpx-\s+\[[0-9.]+px\]/g
+const INVALID_BG_INNER_SPACE_RE = /\bbg-\[[^\]\s]*\s[^\]\s]*\]/g
+const INVALID_PX_INNER_SPACE_RE = /\bpx-\[[^\]\s]*\s[^\]\s]*\]/g
 
 interface RoundOutputs {
   wxml: string
@@ -47,7 +57,7 @@ interface RoundOutputs {
 function collectBgHexTruncationNeedles(classTokens: string[]) {
   const needles: string[] = []
   for (const token of classTokens) {
-    const matched = token.match(/^bg-\[#([0-9a-fA-F]{3,8})\]$/)
+    const matched = token.match(BG_HEX_TOKEN_RE)
     if (!matched) {
       continue
     }
@@ -66,7 +76,7 @@ function shouldPersistIssue33Snapshot() {
 }
 
 function sanitizePathSegment(value: string) {
-  return value.replace(/[^\w.-]/g, '-')
+  return value.replace(SANITIZE_PATH_SEGMENT_RE, '-')
 }
 
 function asErrorMessage(error: unknown) {
@@ -202,12 +212,12 @@ function assertIssue33ScriptTokenHealth(
   phase: 'add' | 'modify' | 'delete',
 ) {
   const invalidPatterns: Array<{ pattern: RegExp, hint: string }> = [
-    { pattern: /\bbg-\s+\[#?[0-9a-fA-F]{3,8}\]?/g, hint: 'truncated bg hex token with whitespace' },
-    { pattern: /\bbg-\[[^\]]*$/gm, hint: 'unterminated bg arbitrary token' },
-    { pattern: /\bpx-\[[^\]]*$/gm, hint: 'unterminated px arbitrary token' },
-    { pattern: /\bpx-\s+\[[0-9.]+px\]/g, hint: 'broken px arbitrary token with whitespace' },
-    { pattern: /\bbg-\[[^\]\s]*\s[^\]\s]*\]/g, hint: 'unexpected whitespace inside bg arbitrary token' },
-    { pattern: /\bpx-\[[^\]\s]*\s[^\]\s]*\]/g, hint: 'unexpected whitespace inside px arbitrary token' },
+    { pattern: INVALID_BG_HEX_WITH_SPACE_RE, hint: 'truncated bg hex token with whitespace' },
+    { pattern: INVALID_BG_UNTERMINATED_RE, hint: 'unterminated bg arbitrary token' },
+    { pattern: INVALID_PX_UNTERMINATED_RE, hint: 'unterminated px arbitrary token' },
+    { pattern: INVALID_PX_WITH_SPACE_RE, hint: 'broken px arbitrary token with whitespace' },
+    { pattern: INVALID_BG_INNER_SPACE_RE, hint: 'unexpected whitespace inside bg arbitrary token' },
+    { pattern: INVALID_PX_INNER_SPACE_RE, hint: 'unexpected whitespace inside px arbitrary token' },
   ]
 
   for (const { pattern, hint } of invalidPatterns) {
@@ -692,6 +702,7 @@ export async function runClassMutation(
   }
 
   let sameClassLiteralHmr: SameClassLiteralHmrMetrics | undefined
+  let commentCarrierHmr: CommentCarrierHmrMetrics | undefined
   if (mutationKind === 'script') {
     const result = await runSameClassLiteralMutation({
       watchCase,
@@ -711,6 +722,24 @@ export async function runClassMutation(
     })
     baselineMtime = result.baselineMtime
     sameClassLiteralHmr = result.sameClassLiteralHmr
+
+    if (mutation.mutateCommentCarrier) {
+      const commentCarrierResult = await runCommentCarrierMutation({
+        watchCase,
+        options,
+        session,
+        mutation,
+        sourceOriginal,
+        sourcePath,
+        classVariableName,
+        globalStyleOutputs,
+        minRequiredGlobalStyleEscapedClasses,
+        roundConfig: roundConfigs[0],
+        baselineMtime,
+      })
+      baselineMtime = commentCarrierResult.baselineMtime
+      commentCarrierHmr = commentCarrierResult.commentCarrierHmr
+    }
   }
 
   return {
@@ -726,11 +755,12 @@ export async function runClassMutation(
     verifyClassLiteralIn,
     globalStyleOutputs,
     minRequiredGlobalStyleEscapedClasses,
-    verifiedGlobalStyleEscapedClasses: Array.from(verifiedGlobalEscapedClasses),
+    verifiedGlobalStyleEscapedClasses: [...verifiedGlobalEscapedClasses],
     hotUpdateOutputMs: preferredRound.hotUpdateOutputMs,
     hotUpdateEffectiveMs: preferredRound.hotUpdateEffectiveMs,
     rollbackOutputMs: preferredRound.rollbackOutputMs,
     rollbackEffectiveMs: preferredRound.rollbackEffectiveMs,
     sameClassLiteralHmr,
+    commentCarrierHmr,
   }
 }
