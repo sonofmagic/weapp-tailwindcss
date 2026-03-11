@@ -25,6 +25,41 @@ describe('classname transform caching', () => {
     expect(spy).toHaveBeenCalledTimes(1)
   })
 
+  it('keeps escaped candidate caching stable for multiple candidates sharing one escape map', () => {
+    const spy = vi.spyOn(wxmlShared, 'replaceWxml')
+    spy.mockClear()
+    const classNameSet = new Set(['w-_b100px_B', 'h-_b37px_B'])
+
+    const firstWidth = classNameTransform.resolveClassNameTransformWithResult('w-[100px]', {
+      classNameSet,
+      escapeMap: MappingChars2String,
+    })
+    const firstHeight = classNameTransform.resolveClassNameTransformWithResult('h-[37px]', {
+      classNameSet,
+      escapeMap: MappingChars2String,
+    })
+    const secondWidth = classNameTransform.resolveClassNameTransformWithResult('w-[100px]', {
+      classNameSet,
+      escapeMap: MappingChars2String,
+    })
+    const secondHeight = classNameTransform.resolveClassNameTransformWithResult('h-[37px]', {
+      classNameSet,
+      escapeMap: MappingChars2String,
+    })
+
+    expect(firstWidth).toEqual({
+      decision: 'escaped',
+      escapedValue: 'w-_b100px_B',
+    })
+    expect(firstHeight).toEqual({
+      decision: 'escaped',
+      escapedValue: 'h-_b37px_B',
+    })
+    expect(secondWidth).toEqual(firstWidth)
+    expect(secondHeight).toEqual(firstHeight)
+    expect(spy).toHaveBeenCalledTimes(2)
+  })
+
   it('keeps whitespace-wrapped arbitrary candidates eligible for controlled fallback', () => {
     const result = classNameTransform.resolveClassNameTransformWithResult('  bg-[length:200rpx_100rpx]  ', {
       classContext: true,

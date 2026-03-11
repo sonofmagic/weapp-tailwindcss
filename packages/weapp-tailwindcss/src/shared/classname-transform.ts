@@ -6,6 +6,8 @@ type EscapeMap = NonNullable<IJsHandlerOptions['escapeMap']>
 
 const escapedCandidateCacheByEscapeMap = new WeakMap<EscapeMap, Map<string, string>>()
 const defaultEscapedCandidateCache = new Map<string, string>()
+let lastEscapedCandidateEscapeMap: EscapeMap | undefined
+let lastEscapedCandidateCacheStore: Map<string, string> | undefined
 
 /**
  * 决策结果，附带已计算的 escaped 值以避免下游重复计算。
@@ -101,14 +103,13 @@ const SKIP_RESULT: ClassNameTransformResult = { decision: 'skip' }
 const DIRECT_RESULT: ClassNameTransformResult = { decision: 'direct' }
 const FALLBACK_RESULT: ClassNameTransformResult = { decision: 'fallback' }
 
-function getEscapedCandidate(candidate: string, escapeMap?: EscapeMap) {
+function getEscapedCandidateCacheStore(escapeMap?: EscapeMap) {
   if (!escapeMap) {
-    let cached = defaultEscapedCandidateCache.get(candidate)
-    if (cached === undefined) {
-      cached = replaceWxml(candidate, { escapeMap })
-      defaultEscapedCandidateCache.set(candidate, cached)
-    }
-    return cached
+    return defaultEscapedCandidateCache
+  }
+
+  if (escapeMap === lastEscapedCandidateEscapeMap && lastEscapedCandidateCacheStore) {
+    return lastEscapedCandidateCacheStore
   }
 
   let store = escapedCandidateCacheByEscapeMap.get(escapeMap)
@@ -116,7 +117,12 @@ function getEscapedCandidate(candidate: string, escapeMap?: EscapeMap) {
     store = new Map<string, string>()
     escapedCandidateCacheByEscapeMap.set(escapeMap, store)
   }
+  lastEscapedCandidateEscapeMap = escapeMap
+  lastEscapedCandidateCacheStore = store
+  return store
+}
 
+function getEscapedCandidate(candidate: string, escapeMap?: EscapeMap, store = getEscapedCandidateCacheStore(escapeMap)) {
   let cached = store.get(candidate)
   if (cached === undefined) {
     cached = replaceWxml(candidate, { escapeMap })
