@@ -8,6 +8,7 @@ const args = ['exec', 'weapp', 'build-npm', '-p']
 const child = spawn(pnpmCmd, args, {
   stdio: ['ignore', 'inherit', 'inherit'],
   env: process.env,
+  shell: isWin,
 })
 
 child.on('error', (error) => {

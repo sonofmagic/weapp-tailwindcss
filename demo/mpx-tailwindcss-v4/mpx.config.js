@@ -31,6 +31,8 @@ module.exports = defineConfig({
    * 可以将configureWebpack.snap.managedPaths修改为 []
    */
   configureWebpack(config) {
+    // 禁用持久化缓存，避免 @mpxjs/webpack-plugin 序列化器重复注册
+    config.cache = false
     config.plugins.push(
       new UnifiedWebpackPluginV5({
         rem2rpx: true,
