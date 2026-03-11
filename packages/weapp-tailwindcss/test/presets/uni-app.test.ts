@@ -1,3 +1,4 @@
+import path from 'node:path'
 import { afterEach, describe, expect, it, vi } from 'vitest'
 
 import { uniApp } from '@/presets'
@@ -25,7 +26,8 @@ describe('uni-app preset', () => {
       cssEntries: 'src/tailwind.css',
     })
 
-    expect(result.tailwindcssBasedir).toBe('/Users/foo/uni-app')
+    // 环境变量中的绝对路径经 path.normalize 返回平台原生格式
+    expect(result.tailwindcssBasedir).toBe(path.normalize('/Users/foo/uni-app'))
     expect(result.tailwindcss?.v4?.cssEntries).toEqual(['src/tailwind.css'])
     expect(result.tailwindcss?.version).toBe(4)
   })

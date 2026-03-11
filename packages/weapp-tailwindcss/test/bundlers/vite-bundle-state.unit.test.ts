@@ -1,3 +1,4 @@
+import path from 'node:path'
 import { describe, expect, it } from 'vitest'
 import {
   buildBundleSnapshot,
@@ -116,8 +117,9 @@ describe('bundlers/vite bundle state', () => {
     expect(firstSnapshot.processFiles.html.has('pages/index/index.wxml')).toBe(true)
     expect(firstSnapshot.processFiles.js.has('assets/entry.js')).toBe(true)
     expect(firstSnapshot.processFiles.js.has('assets/shared.js')).toBe(true)
-    expect(firstSnapshot.jsEntries.has('/project/dist/assets/entry.js')).toBe(true)
-    expect(firstSnapshot.jsEntries.has('/project/dist/assets/shared.js')).toBe(true)
+    // toAbsoluteOutputPath 使用 path.resolve，Windows 下会带盘符
+    expect(firstSnapshot.jsEntries.has(path.resolve('/project/dist', 'assets/entry.js'))).toBe(true)
+    expect(firstSnapshot.jsEntries.has(path.resolve('/project/dist', 'assets/shared.js'))).toBe(true)
 
     updateBundleBuildState(state, firstSnapshot, new Map([
       ['assets/entry.js', new Set(['assets/shared.js'])],

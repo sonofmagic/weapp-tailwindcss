@@ -86,7 +86,8 @@ describe('tailwindcss helpers', () => {
     expect(callArgs.cache).toMatchObject({ dir: path.resolve('/repo', 'cache') })
     expect(callArgs.cache?.driver).toBe('memory')
     expect(callArgs.apply?.extendLengthUnits).toBe(false)
-    expect(callArgs.projectRoot).toBe('/repo')
+    // 源码使用 path.resolve(basedir) 得到平台原生路径
+    expect(callArgs.projectRoot).toBe(path.resolve('/repo'))
     expect(Array.isArray(callArgs.tailwindcss?.resolve?.paths)).toBe(true)
     expect(patcher.packageInfo.version).toBe('3.4.17')
   })

@@ -1,3 +1,4 @@
+import path from 'node:path'
 import { afterEach, describe, expect, it, vi } from 'vitest'
 
 describe('workspace helpers', () => {
@@ -7,29 +8,33 @@ describe('workspace helpers', () => {
   })
 
   it('locates the nearest pnpm workspace root', async () => {
+    // Windows 下 path.join/resolve 会产生平台原生路径，mock 需使用 path.join 保持一致
+    const workspaceFile = path.join(path.resolve('/repo'), 'pnpm-workspace.yaml')
     vi.doMock('node:fs', () => ({
-      existsSync: (target: string) => target === '/repo/pnpm-workspace.yaml',
+      existsSync: (target: string) => target === workspaceFile,
     }))
 
     const { findWorkspaceRoot } = await import('@/context/workspace')
 
-    expect(findWorkspaceRoot('/repo/apps/foo')).toBe('/repo')
+    expect(findWorkspaceRoot('/repo/apps/foo')).toBe(path.resolve('/repo'))
   })
 
   it('scans workspace directories to find a package', async () => {
-    vi.doMock('node:fs', () => {
-      const files = new Map<string, string | true>([
-        ['/repo/pnpm-workspace.yaml', true],
-        ['/repo/packages/foo/package.json', JSON.stringify({ name: '@demo/foo' })],
-        ['/repo/packages/bar/package.json', JSON.stringify({ name: '@demo/bar' })],
-      ])
-      const dirEntries = new Map<string, string[]>([
-        ['/repo', ['packages']],
-        ['/repo/packages', ['foo', 'bar']],
-        ['/repo/packages/foo', []],
-        ['/repo/packages/bar', []],
-      ])
+    // 所有 mock 路径需使用 path.resolve/path.join 以匹配平台原生格式
+    const resolvedRepo = path.resolve('/repo')
+    const files = new Map<string, string | true>([
+      [path.join(resolvedRepo, 'pnpm-workspace.yaml'), true],
+      [path.join(resolvedRepo, 'packages', 'foo', 'package.json'), JSON.stringify({ name: '@demo/foo' })],
+      [path.join(resolvedRepo, 'packages', 'bar', 'package.json'), JSON.stringify({ name: '@demo/bar' })],
+    ])
+    const dirEntries = new Map<string, string[]>([
+      [resolvedRepo, ['packages']],
+      [path.join(resolvedRepo, 'packages'), ['foo', 'bar']],
+      [path.join(resolvedRepo, 'packages', 'foo'), []],
+      [path.join(resolvedRepo, 'packages', 'bar'), []],
+    ])
 
+    vi.doMock('node:fs', () => {
       return {
         existsSync: (target: string) => files.has(target),
         readFileSync: (target: string) => {
@@ -55,7 +60,7 @@ describe('workspace helpers', () => {
 
     const { findWorkspacePackageDir } = await import('@/context/workspace')
 
-    expect(findWorkspacePackageDir('/repo', '@demo/foo')).toBe('/repo/packages/foo')
+    expect(findWorkspacePackageDir('/repo', '@demo/foo')).toBe(path.join(resolvedRepo, 'packages', 'foo'))
     expect(findWorkspacePackageDir('/repo', '@demo/missing')).toBeUndefined()
   })
 })

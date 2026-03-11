@@ -38,7 +38,8 @@ describe('tailwindcss/v4/patcher helpers', () => {
   })
 
   it('guesses basedir from absolute css entries', async () => {
-    findNearestPackageRoot.mockReturnValue('/packages/app')
+    // 真实的 findNearestPackageRoot 内部使用 path.resolve，返回平台原生路径
+    findNearestPackageRoot.mockReturnValue(path.normalize('/packages/app'))
     const { guessBasedirFromEntries } = await loadModule()
 
     const base = guessBasedirFromEntries(['/packages/app/src/app.css'])

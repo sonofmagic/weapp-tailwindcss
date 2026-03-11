@@ -1,9 +1,15 @@
 import type { OutputAsset } from 'rollup'
 import type { HmrContext, Plugin, ResolvedConfig, TransformResult } from 'vite'
 import type { CreateJsHandlerOptions } from '@/types'
+import path from 'node:path'
 import { describe, expect, it, vi } from 'vitest'
 import { createCache } from '@/cache'
 import { createUniAppXAssetTask, createUniAppXPlugins } from '@/uni-app-x/vite'
+
+/** 将平台路径转为 posix 格式，与源码 normalizePath 行为一致 */
+function toPosix(p: string): string {
+  return p.split(path.sep).join('/')
+}
 
 type TransformUVueMock = (
   code: string,
@@ -72,7 +78,9 @@ describe('uni-app-x vite plugins', () => {
       }),
     )
     expect(result?.code).toBe('css:body { color: red; }')
-    expect((result?.map as any)?.sources).toContain('/foo.css')
+    // formatPostcssSourceMap 使用 path.resolve 后转 posix，Windows 下会带盘符
+    const expectedFooCss = toPosix(path.resolve(path.dirname('/foo.css'), '/foo.css'))
+    expect((result?.map as any)?.sources).toContain(expectedFooCss)
   })
 
   it('skips pre hook for preprocessor styles and runs after preprocess', async () => {
@@ -118,7 +126,9 @@ describe('uni-app-x vite plugins', () => {
       const result = await cssPlugin!.transform?.('body { color: red; }', scssId)
       expect(styleHandler).toHaveBeenCalledTimes(1)
       expect(result?.code).toBe('css:body { color: red; }')
-      expect((result?.map as any)?.sources).toContain('/pages/index/index.uvue')
+      // cleanUrl 去除 query 后为 /pages/index/index.uvue，sources 经 path.resolve 后转 posix
+      const expectedUvue = toPosix(path.resolve(path.dirname('/pages/index/index.uvue'), '/pages/index/index.uvue'))
+      expect((result?.map as any)?.sources).toContain(expectedUvue)
     }
     finally {
       process.env.UNI_UTS_PLATFORM = originalPlatform
@@ -244,13 +254,15 @@ describe('createUniAppXAssetTask', () => {
       'const a = 1',
       runtimeSet,
       expect.objectContaining({
-        filename: '/project/dist/assets/app.js',
+        // toAbsoluteOutputPath 使用 path.resolve，Windows 下会带盘符
+        filename: path.resolve('/project/dist', 'assets/app.js'),
         uniAppX: true,
       }),
     )
     expect(asset.source).toBe('processed')
     expect(applyLinkedResults).toHaveBeenCalledWith(
       expect.objectContaining({
+        // linked 结果中的路径由 jsHandler mock 直接返回，保持原样
         '/project/dist/linked.js': { code: 'linked' },
       }),
     )

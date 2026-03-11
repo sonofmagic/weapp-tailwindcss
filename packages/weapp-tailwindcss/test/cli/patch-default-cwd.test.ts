@@ -87,10 +87,11 @@ describe('resolvePatchDefaultCwd', () => {
   it('prefers workspace package directory when tailwindcss is installed locally', () => {
     const cwd = '/monorepo/packages/app'
     process.env.INIT_CWD = '/monorepo'
-    mockedFindWorkspaceRoot.mockReturnValue('/monorepo')
+    mockedFindWorkspaceRoot.mockReturnValue(path.normalize('/monorepo'))
     mockedGetTailwindcssPackageInfo.mockImplementation(({ paths }) => {
-      if (paths?.includes(cwd)) {
-        return mockedTailwindInfo(cwd)
+      // Windows 下传入的 paths 已经过 path.normalize，需统一格式比较
+      if (paths?.some((p: string) => path.normalize(p) === path.normalize(cwd))) {
+        return mockedTailwindInfo(path.normalize(cwd))
       }
       return undefined
     })
@@ -102,10 +103,11 @@ describe('resolvePatchDefaultCwd', () => {
     const cwd = '/monorepo/packages/app'
     const workspaceRoot = '/monorepo'
     process.env.INIT_CWD = workspaceRoot
-    mockedFindWorkspaceRoot.mockReturnValue(workspaceRoot)
+    mockedFindWorkspaceRoot.mockReturnValue(path.normalize(workspaceRoot))
     mockedGetTailwindcssPackageInfo.mockImplementation(({ paths }) => {
-      if (paths?.includes(workspaceRoot)) {
-        return mockedTailwindInfo(workspaceRoot)
+      // Windows 下传入的 paths 已经过 path.normalize，需统一格式比较
+      if (paths?.some((p: string) => path.normalize(p) === path.normalize(workspaceRoot))) {
+        return mockedTailwindInfo(path.normalize(workspaceRoot))
       }
       return undefined
     })
