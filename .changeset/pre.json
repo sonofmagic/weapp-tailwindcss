@@ -69,5 +69,10 @@
     "wetw": "0.1.1",
     "@weapp-tailwindcss/website": "1.0.17"
   },
-  "changesets": []
+  "changesets": [
+    "bright-horses-clean",
+    "honest-hounds-hug",
+    "perf-hot-path-caching",
+    "weapp-tailwindcss-alias"
+  ]
 }
