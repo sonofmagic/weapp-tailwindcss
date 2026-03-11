@@ -18,8 +18,7 @@ export interface SourceAnalysis {
 
 function hasReplacementEntries(replacements: Record<string, string>) {
   for (const key in replacements) {
-    // eslint-disable-next-line e18e/prefer-object-has-own -- lib 为 ES2021，不支持 Object.hasOwn
-    if (Object.prototype.hasOwnProperty.call(replacements, key)) {
+    if (Object.hasOwn(replacements, key)) {
       return true
     }
   }
