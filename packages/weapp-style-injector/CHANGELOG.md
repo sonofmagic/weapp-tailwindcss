@@ -1,5 +1,12 @@
 # weapp-style-injector
 
+## 0.0.2-alpha.0
+
+### Patch Changes
+
+- 📦 **Dependencies** [`49e50d8`](https://github.com/sonofmagic/weapp-tailwindcss/commit/49e50d8bde7327d47e9ba649537092ea57bcdf16)
+  → `@weapp-tailwindcss/shared@1.1.3-alpha.0`
+
 ## 0.0.1
 
 ### Patch Changes
