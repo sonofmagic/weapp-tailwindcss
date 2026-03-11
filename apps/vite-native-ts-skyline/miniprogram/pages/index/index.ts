@@ -37,7 +37,7 @@ export default defineComponent({
       const values = skylineNav.trend
       const peak = Math.max(...values)
       const average = Math.round(values.reduce((sum, value) => sum + value, 0) / values.length)
-      const delta = values[values.length - 1] - values[0]
+      const delta = values.at(-1) - values[0]
       const momentumPrefix = delta >= 0 ? '▲ +' : '▼ '
       skylineNav.trendDelta = delta
       trendInsight.peak = `${peak}`

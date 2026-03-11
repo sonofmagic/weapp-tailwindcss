@@ -1,12 +1,14 @@
 import type { UserConfigExport } from '@tarojs/cli'
 
+const NODE_MODULES_INCLUDE_RE = /node_modules\/(?!(@babel|core-js|style-loader|css-loader|react|react-dom))/
+
 export default {
   mini: {},
   h5: {
     compile: {
       include: [
         // 确保产物为 es5
-        filename => /node_modules\/(?!(@babel|core-js|style-loader|css-loader|react|react-dom))/.test(filename),
+        filename => NODE_MODULES_INCLUDE_RE.test(filename),
       ],
     },
     /**

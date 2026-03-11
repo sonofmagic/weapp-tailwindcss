@@ -2,8 +2,8 @@
 import mpHtml from 'uni-app-mp-html/components/mp-html/mp-html.vue'
 
 const content
-      = '```js\n'
-      + `const plugin = require('tailwindcss/plugin')
+  = '```js\n'
+    + `const plugin = require('tailwindcss/plugin')
 
 /** @type {import('tailwindcss').Config} */
 module.exports = {
@@ -33,7 +33,7 @@ module.exports = {
   }
 }
 `
-      + '```\n'
+    + '```\n'
 </script>
 
 <template>

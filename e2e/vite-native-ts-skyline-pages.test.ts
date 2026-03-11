@@ -28,13 +28,18 @@ async function withTimeout<T>(task: Promise<T>, timeoutMs: number, label: string
   }
 }
 
+const EPERM_RE = /EPERM/i
+const ECONNREFUSED_RE = /ECONNREFUSED/i
+const TIMEOUT_RE = /timeout/i
+const LAUNCH_TIMEOUT_RE = /LAUNCH_TIMEOUT/i
+
 function canSkipLaunchError(error: any) {
   const message = String(error?.message ?? '')
   return error?.code === 'EPERM'
-    || /EPERM/i.test(message)
-    || /ECONNREFUSED/i.test(message)
-    || /timeout/i.test(message)
-    || /LAUNCH_TIMEOUT/i.test(message)
+    || EPERM_RE.test(message)
+    || ECONNREFUSED_RE.test(message)
+    || TIMEOUT_RE.test(message)
+    || LAUNCH_TIMEOUT_RE.test(message)
 }
 
 describe.skip('e2e native skyline pages', () => {

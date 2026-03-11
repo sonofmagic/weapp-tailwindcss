@@ -8,6 +8,95 @@ import { ProxyAgent, setGlobalDispatcher } from 'undici'
 
 setDefaultResultOrder('ipv4first')
 
+// ── 模块级正则常量（避免函数内重复编译） ──
+
+/** sanitizeUrl：匹配 http/https 协议前缀 */
+const RE_HTTP_PROTOCOL = /^https?:\/\//i
+
+/** stripImages：Markdown 图片语法 */
+const RE_MARKDOWN_IMAGE = /!\[([^\]]*)\]\(([^)\s]+)(?:\s+"([^"]*)")?\)/g
+/** stripImages：HTML img 标签 */
+const RE_HTML_IMAGE = /<img\b[^>]*>/gi
+/** stripImages：img 标签中的 src 属性 */
+const RE_IMG_SRC = /src=["']([^"']+)["']/i
+/** stripImages：img 标签中的 alt 属性 */
+const RE_IMG_ALT = /alt=["']([^"']*)["']/i
+
+/** normalizeLabel - name 类别匹配 */
+const RE_LABEL_MINI_PROGRAM_NAME = /小程序名称/
+const RE_LABEL_MINI_PROGRAM_NAME2 = /小程序名字/
+const RE_LABEL_MINI_PROGRAM_SHORT = /小程序名/
+const RE_LABEL_PROJECT_NAME = /项目名称/
+const RE_LABEL_PRODUCT_NAME = /产品名称/
+const RE_LABEL_PROJECT_SHORT = /项目名/
+const RE_LABEL_PRODUCT_NAME_EN = /product\s*name/
+const RE_LABEL_PROGRAM_NAME_EN = /program\s*name/
+const RE_LABEL_NAME = /^name$/
+const RE_LABEL_TITLE = /^title$/
+const RE_LABEL_MINI_PROGRAM_EN = /mini\s*program/
+
+/** normalizeLabel - link 类别匹配 */
+const RE_LABEL_LINK_ZH = /链接/
+const RE_LABEL_LINK_EN = /link/
+const RE_LABEL_WEBSITE = /website/
+const RE_LABEL_OFFICIAL_SITE = /官网/
+const RE_LABEL_ADDRESS = /地址/
+
+/** normalizeLabel - github 类别匹配 */
+const RE_LABEL_GITHUB = /github/
+const RE_LABEL_GIT = /git/
+const RE_LABEL_REPO_ZH = /仓库/
+const RE_LABEL_REPO_EN = /repo/
+
+/** normalizeLabel - description 类别匹配 */
+const RE_LABEL_INTRO = /介绍/
+const RE_LABEL_BRIEF = /简介/
+const RE_LABEL_DESC_ZH = /描述/
+const RE_LABEL_DESC_EN = /description/
+const RE_LABEL_PROJECT_ZH = /项目/
+const RE_LABEL_PRODUCT_ZH = /产品/
+
+/** parseDisplayValue：Markdown 链接语法 */
+const RE_MARKDOWN_LINK = /\[([^\]]+)\]\(([^)]+)\)/
+/** parseDisplayValue：URL 匹配 */
+const RE_URL = /https?:\/\/\S+/
+
+/** sanitizeDescriptionContent：Markdown 标题前缀 */
+const RE_HEADING_PREFIX = /^#{1,6}\s+/gm
+
+/** parseComment：换行符 */
+const RE_NEWLINE = /\r?\n/
+/** parseComment：表格行 */
+const RE_TABLE_ROW = /^\|/
+/** parseComment：分隔线 */
+const RE_SEPARATOR = /^-+$/
+/** parseComment：列表项前缀 */
+const RE_LIST_PREFIX = /^[*-]\s*/
+/** parseComment：键值对分隔 */
+const RE_KEY_VALUE = /^([^：:]+)[：:](.*)$/
+
+/** slugifySegment：空白字符 */
+const RE_WHITESPACE = /\s+/g
+/** slugifySegment：非法字符（保留中文、字母、数字、点、连字符） */
+const RE_INVALID_SLUG_CHARS = /[^a-z0-9\u4E00-\u9FA5.-]+/gu
+/** slugifySegment：连续连字符 */
+const RE_MULTIPLE_HYPHENS = /-+/g
+/** slugifySegment：首尾连字符 */
+const RE_EDGE_HYPHENS = /^-|-$/g
+
+/** escapeMarkdown：需要转义的 Markdown 特殊字符 */
+const RE_MARKDOWN_SPECIAL = /([\\`*_{}[\]()#+.!|-])/g
+
+/** escapeHtml：HTML 特殊字符 */
+const RE_AMPERSAND = /&/g
+const RE_LESS_THAN = /</g
+const RE_GREATER_THAN = />/g
+const RE_DOUBLE_QUOTE = /"/g
+const RE_SINGLE_QUOTE = /'/g
+
+/** resolveImageExtension：文件扩展名 */
+const RE_FILE_EXTENSION = /\.([a-z0-9]+)$/i
+
 interface GitHubIssue {
   title: string
   html_url: string
@@ -267,7 +356,7 @@ function sanitizeUrl(value: string | undefined | null): string | null {
   }
 
   const trimmed = value.trim()
-  if (!/^https?:\/\//i.test(trimmed)) {
+  if (!RE_HTTP_PROTOCOL.test(trimmed)) {
     return null
   }
 
@@ -279,8 +368,8 @@ function stripImages(body: string): { text: string, images: RemoteImage[] } {
   const images: RemoteImage[] = []
   const segments: Array<{ start: number, end: number }> = []
 
-  const markdownImagePattern = /!\[([^\]]*)\]\(([^)\s]+)(?:\s+"([^"]*)")?\)/g
-  const htmlImagePattern = /<img\b[^>]*>/gi
+  const markdownImagePattern = new RegExp(RE_MARKDOWN_IMAGE.source, RE_MARKDOWN_IMAGE.flags)
+  const htmlImagePattern = new RegExp(RE_HTML_IMAGE.source, RE_HTML_IMAGE.flags)
 
   for (const match of body.matchAll(markdownImagePattern)) {
     const url = sanitizeUrl(match[2])
@@ -298,13 +387,13 @@ function stripImages(body: string): { text: string, images: RemoteImage[] } {
 
   for (const match of body.matchAll(htmlImagePattern)) {
     const raw = match[0]
-    const srcMatch = raw.match(/src=["']([^"']+)["']/i)
+    const srcMatch = raw.match(RE_IMG_SRC)
     const url = sanitizeUrl(srcMatch?.[1])
     if (!url) {
       continue
     }
     if (!seen.has(url)) {
-      const altMatch = raw.match(/alt=["']([^"']*)["']/i)
+      const altMatch = raw.match(RE_IMG_ALT)
       const alt = altMatch?.[1]?.trim()
       images.push(alt ? { url, alt } : { url })
       seen.add(url)
@@ -353,21 +442,21 @@ function normalizeLabel(label: string): 'name' | 'link' | 'github' | 'descriptio
   const normalized = label.trim().toLowerCase()
   const presets: Record<'name' | 'link' | 'github' | 'description', RegExp[]> = {
     name: [
-      /小程序名称/,
-      /小程序名字/,
-      /小程序名/,
-      /项目名称/,
-      /产品名称/,
-      /项目名/,
-      /product\s*name/,
-      /program\s*name/,
-      /^name$/,
-      /^title$/,
-      /mini\s*program/,
+      RE_LABEL_MINI_PROGRAM_NAME,
+      RE_LABEL_MINI_PROGRAM_NAME2,
+      RE_LABEL_MINI_PROGRAM_SHORT,
+      RE_LABEL_PROJECT_NAME,
+      RE_LABEL_PRODUCT_NAME,
+      RE_LABEL_PROJECT_SHORT,
+      RE_LABEL_PRODUCT_NAME_EN,
+      RE_LABEL_PROGRAM_NAME_EN,
+      RE_LABEL_NAME,
+      RE_LABEL_TITLE,
+      RE_LABEL_MINI_PROGRAM_EN,
     ],
-    link: [/链接/, /link/, /website/, /官网/, /地址/],
-    github: [/github/, /git/, /仓库/, /repo/],
-    description: [/介绍/, /简介/, /描述/, /description/, /项目/, /产品/],
+    link: [RE_LABEL_LINK_ZH, RE_LABEL_LINK_EN, RE_LABEL_WEBSITE, RE_LABEL_OFFICIAL_SITE, RE_LABEL_ADDRESS],
+    github: [RE_LABEL_GITHUB, RE_LABEL_GIT, RE_LABEL_REPO_ZH, RE_LABEL_REPO_EN],
+    description: [RE_LABEL_INTRO, RE_LABEL_BRIEF, RE_LABEL_DESC_ZH, RE_LABEL_DESC_EN, RE_LABEL_PROJECT_ZH, RE_LABEL_PRODUCT_ZH],
   }
 
   for (const [key, patterns] of Object.entries(presets) as Array<[
@@ -388,7 +477,7 @@ function parseDisplayValue(value: string): DisplayValue | undefined {
     return undefined
   }
 
-  const markdownLinkMatch = trimmed.match(/\[([^\]]+)\]\(([^)]+)\)/)
+  const markdownLinkMatch = trimmed.match(RE_MARKDOWN_LINK)
   if (markdownLinkMatch) {
     const url = sanitizeUrl(markdownLinkMatch[2])
     const urlText = url ?? ''
@@ -396,7 +485,7 @@ function parseDisplayValue(value: string): DisplayValue | undefined {
     return url ? { text, url } : { text }
   }
 
-  const urlMatch = trimmed.match(/https?:\/\/\S+/)
+  const urlMatch = trimmed.match(RE_URL)
   if (urlMatch) {
     const url = sanitizeUrl(urlMatch[0])
     const text = trimmed.replace(urlMatch[0], '').trim() || urlMatch[0]
@@ -407,7 +496,7 @@ function parseDisplayValue(value: string): DisplayValue | undefined {
 }
 
 function sanitizeDescriptionContent(value: string): string {
-  return value.replace(/^#{1,6}\s+/gm, '').trim()
+  return value.replace(RE_HEADING_PREFIX, '').trim()
 }
 
 function parseComment(comment: GitHubComment): ParsedEntry | null {
@@ -417,7 +506,7 @@ function parseComment(comment: GitHubComment): ParsedEntry | null {
 
   const { text, images } = stripImages(comment.body)
   const lines = text
-    .split(/\r?\n/)
+    .split(RE_NEWLINE)
     .map(line => line.trim())
     .filter(Boolean)
 
@@ -428,12 +517,12 @@ function parseComment(comment: GitHubComment): ParsedEntry | null {
   const extra: string[] = []
 
   for (const originalLine of lines) {
-    if (/^\|/.test(originalLine) || /^-+$/.test(originalLine)) {
+    if (RE_TABLE_ROW.test(originalLine) || RE_SEPARATOR.test(originalLine)) {
       continue
     }
 
-    const line = originalLine.replace(/^[*-]\s*/, '').trim()
-    const keyValueMatch = line.match(/^([^：:]+)[：:](.*)$/)
+    const line = originalLine.replace(RE_LIST_PREFIX, '').trim()
+    const keyValueMatch = line.match(RE_KEY_VALUE)
 
     if (keyValueMatch) {
       const rawLabel = keyValueMatch[1]?.trim()
@@ -513,25 +602,25 @@ function slugifySegment(value: string, fallback: string): string {
   const normalized = value
     .trim()
     .toLowerCase()
-    .replace(/\s+/g, '-')
-    .replace(/[^a-z0-9\u4E00-\u9FA5.-]+/gu, '-')
-    .replace(/-+/g, '-')
-    .replace(/^-|-$/g, '')
+    .replace(RE_WHITESPACE, '-')
+    .replace(RE_INVALID_SLUG_CHARS, '-')
+    .replace(RE_MULTIPLE_HYPHENS, '-')
+    .replace(RE_EDGE_HYPHENS, '')
 
   return normalized || fallback
 }
 
 function escapeMarkdown(value: string): string {
-  return value.replace(/([\\`*_{}[\]()#+.!|-])/g, '\\$1')
+  return value.replace(RE_MARKDOWN_SPECIAL, '\\$1')
 }
 
 function escapeHtml(value: string): string {
   return value
-    .replace(/&/g, '&amp;')
-    .replace(/</g, '&lt;')
-    .replace(/>/g, '&gt;')
-    .replace(/"/g, '&quot;')
-    .replace(/'/g, '&#39;')
+    .replace(RE_AMPERSAND, '&amp;')
+    .replace(RE_LESS_THAN, '&lt;')
+    .replace(RE_GREATER_THAN, '&gt;')
+    .replace(RE_DOUBLE_QUOTE, '&quot;')
+    .replace(RE_SINGLE_QUOTE, '&#39;')
 }
 
 function formatDisplay(display?: DisplayValue): string {
@@ -567,7 +656,7 @@ function resolveImageExtension(contentType: string | null, url: string): string 
 
   try {
     const { pathname } = new URL(url)
-    const extMatch = pathname.match(/\.([a-z0-9]+)$/i)
+    const extMatch = pathname.match(RE_FILE_EXTENSION)
     if (extMatch) {
       const ext = extMatch[1]
       if (ext) {

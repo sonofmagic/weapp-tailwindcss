@@ -89,7 +89,7 @@ Page({
     console.log('continueload')
     const next_data = next.data
     this.setData({
-      feed: this.data.feed.concat(next_data),
+      feed: [...this.data.feed, ...next_data],
       feed_length: this.data.feed_length + next_data.length,
     })
   },

@@ -195,7 +195,7 @@ function normalizePatchOptions(root: string, patchOptions: unknown): NormalizedP
     ...(resolved.tailwindcss?.resolve ?? {}),
     ...(resolved.tailwind?.resolve ?? {}),
     ...(resolved.resolve ?? {}),
-    paths: Array.from(resolvePaths),
+    paths: [...resolvePaths],
   }
   delete (resolved as any).resolve
 
@@ -414,10 +414,12 @@ export function twExtract(root: string) {
   return task
 }
 
+const LEADING_SEPARATORS_RE = /^[\\/]+/
+
 export async function resolveSnapshotFile(testDir: string, suite: string, projectName: string, fileName: string) {
   const snapshotDir = path.resolve(testDir, '__snapshots__', suite, projectName)
   await fs.mkdir(snapshotDir, { recursive: true })
-  const sanitizedName = fileName.replace(/^[\\/]+/, '')
+  const sanitizedName = fileName.replace(LEADING_SEPARATORS_RE, '')
   const snapshotPath = path.resolve(snapshotDir, sanitizedName)
   const relative = path.relative(snapshotDir, snapshotPath)
   if (relative.startsWith('..') || path.isAbsolute(relative)) {

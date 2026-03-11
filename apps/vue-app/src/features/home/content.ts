@@ -27,7 +27,7 @@ export const insights = [
 export const aiNotes = [
   {
     title: 'tailwind-merge 守护',
-    detail: "cn(buttonVariants({ variant: 'ghost', size: 'lg' }), 'px-6')",
+    detail: 'cn(buttonVariants({ variant: \'ghost\', size: \'lg\' }), \'px-6\')',
     status: 'ready',
   },
   {

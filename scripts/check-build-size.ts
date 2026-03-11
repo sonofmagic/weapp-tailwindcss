@@ -18,7 +18,7 @@ function walk(dir: string, baseDir: string): FileInfo[] {
     const stat = fs.statSync(filePath)
 
     if (stat.isDirectory()) {
-      results = results.concat(walk(filePath, baseDir))
+      results = [...results, ...walk(filePath, baseDir)]
     }
     else {
       results.push({

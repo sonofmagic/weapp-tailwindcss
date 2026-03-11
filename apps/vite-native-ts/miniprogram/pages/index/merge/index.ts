@@ -1,5 +1,5 @@
-import { create as createRuntime, twMerge } from '@weapp-tailwindcss/merge-v3'
 import { cva } from '@weapp-tailwindcss/cva'
+import { create as createRuntime, twMerge } from '@weapp-tailwindcss/merge-v3'
 import { tv } from '@weapp-tailwindcss/variants-v3'
 
 const defaultMerge = twMerge
@@ -12,7 +12,7 @@ const basePreviewItems = ['A', 'B', 'C']
 const versionComparison = [
   {
     label: 'twMerge (Tailwind CSS v3 runtime)',
-    code: "twMerge('p-1 p-2 p-0.5 text-[34px] text-[#ececec]')",
+    code: 'twMerge(\'p-1 p-2 p-0.5 text-[34px] text-[#ececec]\')',
     result: defaultMerge('p-1 p-2 p-0.5 text-[34px] text-[#ececec]'),
   },
 ]
@@ -24,12 +24,12 @@ const mergingExamples = [
     samples: [
       {
         label: '基础冲突',
-        code: "twMerge('p-5 p-2 p-4')",
+        code: 'twMerge(\'p-5 p-2 p-4\')',
         result: defaultMerge('p-5 p-2 p-4'),
       },
       {
         label: '小程序 rpx',
-        code: "twMerge('w-[10rpx]', 'w-[24rpx]')",
+        code: 'twMerge(\'w-[10rpx]\', \'w-[24rpx]\')',
         result: defaultMerge('w-[10rpx]', 'w-[24rpx]'),
       },
     ],
@@ -40,17 +40,17 @@ const mergingExamples = [
     samples: [
       {
         label: 'Padding 细分',
-        code: "twMerge('p-3 px-5')",
+        code: 'twMerge(\'p-3 px-5\')',
         result: defaultMerge('p-3 px-5'),
       },
       {
         label: '定位细分',
-        code: "twMerge('inset-x-4 right-4')",
+        code: 'twMerge(\'inset-x-4 right-4\')',
         result: defaultMerge('inset-x-4 right-4'),
       },
       {
         label: '自定义 rpx',
-        code: "twMerge('p-[12rpx]', 'px-5')",
+        code: 'twMerge(\'p-[12rpx]\', \'px-5\')',
         result: defaultMerge('p-[12rpx]', 'px-5'),
       },
     ],
@@ -61,17 +61,17 @@ const mergingExamples = [
     samples: [
       {
         label: '复杂 inset',
-        code: "twMerge('inset-x-px -inset-1')",
+        code: 'twMerge(\'inset-x-px -inset-1\')',
         result: defaultMerge('inset-x-px -inset-1'),
       },
       {
         label: '与 auto 组合',
-        code: "twMerge('bottom-auto inset-y-6')",
+        code: 'twMerge(\'bottom-auto inset-y-6\')',
         result: defaultMerge('bottom-auto inset-y-6'),
       },
       {
         label: '任意值冲突',
-        code: "twMerge('inset-x-[12rpx]', '-inset-[1rpx]')",
+        code: 'twMerge(\'inset-x-[12rpx]\', \'-inset-[1rpx]\')',
         result: defaultMerge('inset-x-[12rpx]', '-inset-[1rpx]'),
       },
     ],
@@ -82,17 +82,17 @@ const mergingExamples = [
     samples: [
       {
         label: 'Hover 保持',
-        code: "twMerge('p-2 hover:p-4')",
+        code: 'twMerge(\'p-2 hover:p-4\')',
         result: defaultMerge('p-2 hover:p-4'),
       },
       {
         label: 'Hover 覆盖',
-        code: "twMerge('hover:p-2 hover:p-4')",
+        code: 'twMerge(\'hover:p-2 hover:p-4\')',
         result: defaultMerge('hover:p-2 hover:p-4'),
       },
       {
         label: '堆叠修饰符',
-        code: "twMerge('hover:focus:w-[12rpx]', 'focus:hover:w-[16rpx]')",
+        code: 'twMerge(\'hover:focus:w-[12rpx]\', \'focus:hover:w-[16rpx]\')',
         result: defaultMerge('hover:focus:w-[12rpx]', 'focus:hover:w-[16rpx]'),
       },
     ],
@@ -103,17 +103,17 @@ const mergingExamples = [
     samples: [
       {
         label: '颜色推断',
-        code: "twMerge('bg-black bg-(--my-color) bg-[color:var(--mystery-var)]')",
+        code: 'twMerge(\'bg-black bg-(--my-color) bg-[color:var(--mystery-var)]\')',
         result: defaultMerge('bg-black bg-(--my-color) bg-[color:var(--mystery-var)]'),
       },
       {
         label: 'Grid 任意值',
-        code: "twMerge('grid-cols-[1fr,auto] grid-cols-2')",
+        code: 'twMerge(\'grid-cols-[1fr,auto] grid-cols-2\')',
         result: defaultMerge('grid-cols-[1fr,auto] grid-cols-2'),
       },
       {
         label: '长度标签',
-        code: "twMerge('text-[length:32rpx]', 'text-[length:24rpx]')",
+        code: 'twMerge(\'text-[length:32rpx]\', \'text-[length:24rpx]\')',
         result: defaultMerge('text-[length:32rpx]', 'text-[length:24rpx]'),
       },
     ],
@@ -124,17 +124,17 @@ const mergingExamples = [
     samples: [
       {
         label: '遮罩属性',
-        code: "twMerge('[mask-type:luminance] [mask-type:alpha]')",
+        code: 'twMerge(\'[mask-type:luminance] [mask-type:alpha]\')',
         result: defaultMerge('[mask-type:luminance] [mask-type:alpha]'),
       },
       {
         label: '断点保留',
-        code: "twMerge('[--scroll-offset:56px] lg:[--scroll-offset:44px]')",
+        code: 'twMerge(\'[--scroll-offset:56px] lg:[--scroll-offset:44px]\')',
         result: defaultMerge('[--scroll-offset:56px] lg:[--scroll-offset:44px]'),
       },
       {
         label: 'Tailwind 共存',
-        code: "twMerge('[padding:20rpx]', 'p-8')",
+        code: 'twMerge(\'[padding:20rpx]\', \'p-8\')',
         result: defaultMerge('[padding:20rpx]', 'p-8'),
       },
     ],
@@ -145,17 +145,17 @@ const mergingExamples = [
     samples: [
       {
         label: '相同选择器覆盖',
-        code: "twMerge('[&:nth-child(3)]:py-0 [&:nth-child(3)]:py-4')",
+        code: 'twMerge(\'[&:nth-child(3)]:py-0 [&:nth-child(3)]:py-4\')',
         result: defaultMerge('[&:nth-child(3)]:py-0 [&:nth-child(3)]:py-4'),
       },
       {
         label: '深度修饰',
-        code: "twMerge('dark:hover:[&:nth-child(3)]:py-0', 'hover:dark:[&:nth-child(3)]:py-4')",
+        code: 'twMerge(\'dark:hover:[&:nth-child(3)]:py-0\', \'hover:dark:[&:nth-child(3)]:py-4\')',
         result: defaultMerge('dark:hover:[&:nth-child(3)]:py-0', 'hover:dark:[&:nth-child(3)]:py-4'),
       },
       {
         label: '小程序节点',
-        code: "twMerge('[&_view]:p-[12rpx]', 'focus:[&_view]:p-4')",
+        code: 'twMerge(\'[&_view]:p-[12rpx]\', \'focus:[&_view]:p-4\')',
         result: defaultMerge('[&_view]:p-[12rpx]', 'focus:[&_view]:p-4'),
       },
     ],
@@ -166,17 +166,17 @@ const mergingExamples = [
     samples: [
       {
         label: 'Padding',
-        code: "twMerge('p-3! p-4! p-5')",
+        code: 'twMerge(\'p-3! p-4! p-5\')',
         result: defaultMerge('p-3! p-4! p-5'),
       },
       {
         label: '定位',
-        code: "twMerge('right-2! -inset-x-1!')",
+        code: 'twMerge(\'right-2! -inset-x-1!\')',
         result: defaultMerge('right-2! -inset-x-1!'),
       },
       {
         label: '任意值',
-        code: "twMerge('w-[12rpx]!', 'w-[24rpx]!', 'w-[10rpx]')",
+        code: 'twMerge(\'w-[12rpx]!\', \'w-[24rpx]!\', \'w-[10rpx]\')',
         result: defaultMerge('w-[12rpx]!', 'w-[24rpx]!', 'w-[10rpx]'),
       },
     ],
@@ -187,12 +187,12 @@ const mergingExamples = [
     samples: [
       {
         label: '标准写法',
-        code: "twMerge('text-sm leading-6 text-lg/7')",
+        code: 'twMerge(\'text-sm leading-6 text-lg/7\')',
         result: defaultMerge('text-sm leading-6 text-lg/7'),
       },
       {
         label: 'rpx 后缀',
-        code: "twMerge('text-sm leading-6 text-[length:28rpx]/7')",
+        code: 'twMerge(\'text-sm leading-6 text-[length:28rpx]/7\')',
         result: defaultMerge('text-sm leading-6 text-[length:28rpx]/7'),
       },
     ],
@@ -203,12 +203,12 @@ const mergingExamples = [
     samples: [
       {
         label: '原子类混合',
-        code: "twMerge('p-5 p-2 my-non-tailwind-class p-4')",
+        code: 'twMerge(\'p-5 p-2 my-non-tailwind-class p-4\')',
         result: defaultMerge('p-5 p-2 my-non-tailwind-class p-4'),
       },
       {
         label: '任意值混合',
-        code: "twMerge('p-[12rpx]', 'mina-card', 'p-[16rpx]')",
+        code: 'twMerge(\'p-[12rpx]\', \'mina-card\', \'p-[16rpx]\')',
         result: defaultMerge('p-[12rpx]', 'mina-card', 'p-[16rpx]'),
       },
     ],
@@ -219,12 +219,12 @@ const mergingExamples = [
     samples: [
       {
         label: '命名颜色',
-        code: "twMerge('text-red', 'text-secret-sauce')",
+        code: 'twMerge(\'text-red\', \'text-secret-sauce\')',
         result: defaultMerge('text-red', 'text-secret-sauce'),
       },
       {
         label: '十六进制',
-        code: "twMerge('text-[#123456]', 'text-[#654321]')",
+        code: 'twMerge(\'text-[#123456]\', \'text-[#654321]\')',
         result: defaultMerge('text-[#123456]', 'text-[#654321]'),
       },
     ],
@@ -235,12 +235,12 @@ const mergingExamples = [
     samples: [
       {
         label: '简单组合',
-        code: "twMerge('some-class', 'another-class yet-another-class', 'so-many-classes')",
+        code: 'twMerge(\'some-class\', \'another-class yet-another-class\', \'so-many-classes\')',
         result: defaultMerge('some-class', 'another-class yet-another-class', 'so-many-classes'),
       },
       {
         label: '与 rpx 结合',
-        code: "twMerge('some-class', 'w-[12rpx]', 'w-[24rpx]')",
+        code: 'twMerge(\'some-class\', \'w-[12rpx]\', \'w-[24rpx]\')',
         result: defaultMerge('some-class', 'w-[12rpx]', 'w-[24rpx]'),
       },
     ],
@@ -251,12 +251,12 @@ const mergingExamples = [
     samples: [
       {
         label: '布尔短路',
-        code: "twMerge('my-class', false && 'not-this', null && 'also-not-this', true && 'but-this')",
+        code: 'twMerge(\'my-class\', false && \'not-this\', null && \'also-not-this\', true && \'but-this\')',
         result: defaultMerge('my-class', false && 'not-this', null && 'also-not-this', true && 'but-this'),
       },
       {
         label: '嵌套数组',
-        code: "twMerge('hi', ['w-[12rpx]', ['w-[24rpx]']])",
+        code: 'twMerge(\'hi\', [\'w-[12rpx]\', [\'w-[24rpx]\']])',
         result: defaultMerge('hi', ['w-[12rpx]', ['w-[24rpx]']]),
       },
     ],
@@ -266,22 +266,22 @@ const mergingExamples = [
 const runtimeExamples = [
   {
     label: '默认 escape/unescape',
-    code: "twMerge('text-[#ececec]', 'text-[#654321]')",
+    code: 'twMerge(\'text-[#ececec]\', \'text-[#654321]\')',
     result: defaultMerge('text-[#ececec]', 'text-[#654321]'),
   },
   {
     label: 'escape: false',
-    code: "create({ escape: false }).twMerge('text-[#ececec]', 'text-[#654321]')",
+    code: 'create({ escape: false }).twMerge(\'text-[#ececec]\', \'text-[#654321]\')',
     result: mergeWithoutEscape('text-[#ececec]', 'text-[#654321]'),
   },
   {
     label: 'unescape: false',
-    code: "create({ unescape: false }).twMerge('text-_bhececec_B', 'text-[#ececec]')",
+    code: 'create({ unescape: false }).twMerge(\'text-_bhececec_B\', \'text-[#ececec]\')',
     result: mergeWithoutUnescape('text-_bhececec_B', 'text-[#ececec]'),
   },
   {
     label: 'escape/unescape: false',
-    code: "create({ escape: false, unescape: false }).twMerge('text-_bhececec_B', 'text-[#ececec]')",
+    code: 'create({ escape: false, unescape: false }).twMerge(\'text-_bhececec_B\', \'text-[#ececec]\')',
     result: mergePassthrough('text-_bhececec_B', 'text-[#ececec]'),
   },
 ]
@@ -317,13 +317,13 @@ const cvaSamples = [
   },
   {
     label: '副按钮',
-    code: "button({ intent: 'secondary', size: 'small' })",
+    code: 'button({ intent: \'secondary\', size: \'small\' })',
     result: button({ intent: 'secondary', size: 'small' }),
     previewItems: ['副按钮'],
   },
   {
     label: '禁用状态',
-    code: "button({ disabled: true })",
+    code: 'button({ disabled: true })',
     result: button({ disabled: true }),
     previewItems: ['禁用按钮'],
   },
@@ -374,48 +374,50 @@ const variantsSamples = [
   },
   {
     label: '描边成功态',
-    code: "badge({ tone: 'success', outline: true })",
+    code: 'badge({ tone: \'success\', outline: true })',
     result: badge({ tone: 'success', outline: true }),
     previewItems: ['Success'],
   },
   {
     label: '危险小号',
-    code: "badge({ tone: 'danger', size: 'sm' })",
+    code: 'badge({ tone: \'danger\', size: \'sm\' })',
     result: badge({ tone: 'danger', size: 'sm' }),
     previewItems: ['Danger'],
   },
 ]
 
-const withPreview = (className: string, previewItems?: string[], previewBaseClass?: string) => ({
-  previewClass: className,
-  previewItems: previewItems ?? basePreviewItems,
-  previewBaseClass: previewBaseClass ?? 'sample__preview-target--flow',
-})
+function withPreview(className: string, previewItems?: string[], previewBaseClass?: string) {
+  return {
+    previewClass: className,
+    previewItems: previewItems ?? basePreviewItems,
+    previewBaseClass: previewBaseClass ?? 'sample__preview-target--flow',
+  }
+}
 
-const versionComparisonWithPreview = versionComparison.map((item) => ({
+const versionComparisonWithPreview = versionComparison.map(item => ({
   ...item,
   ...withPreview(item.result, item.previewItems, item.previewBaseClass),
 }))
 
 const mergingExamplesWithPreview = mergingExamples.map(({ samples, ...rest }) => ({
   ...rest,
-  samples: samples.map((sample) => ({
+  samples: samples.map(sample => ({
     ...sample,
     ...withPreview(sample.result, sample.previewItems, sample.previewBaseClass),
   })),
 }))
 
-const runtimeExamplesWithPreview = runtimeExamples.map((item) => ({
+const runtimeExamplesWithPreview = runtimeExamples.map(item => ({
   ...item,
   ...withPreview(item.result, item.previewItems, item.previewBaseClass),
 }))
 
-const cvaSamplesWithPreview = cvaSamples.map((item) => ({
+const cvaSamplesWithPreview = cvaSamples.map(item => ({
   ...item,
   ...withPreview(item.result, item.previewItems, item.previewBaseClass),
 }))
 
-const variantsSamplesWithPreview = variantsSamples.map((item) => ({
+const variantsSamplesWithPreview = variantsSamples.map(item => ({
   ...item,
   ...withPreview(item.result, item.previewItems, item.previewBaseClass),
 }))

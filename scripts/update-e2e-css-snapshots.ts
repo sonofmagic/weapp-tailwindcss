@@ -17,10 +17,12 @@ const __dirname = path.dirname(__filename)
 const repoRoot = path.resolve(__dirname, '..')
 const e2eRoot = path.resolve(repoRoot, 'e2e')
 
+const LEADING_SEPARATORS_RE = /^[\\/]+/
+
 async function resolveSnapshotFile(testDir: string, suite: string, projectName: string, fileName: string) {
   const snapshotDir = path.resolve(testDir, '__snapshots__', suite, projectName)
   await fs.mkdir(snapshotDir, { recursive: true })
-  const sanitizedName = fileName.replace(/^[\\/]+/, '')
+  const sanitizedName = fileName.replace(LEADING_SEPARATORS_RE, '')
   const snapshotPath = path.resolve(snapshotDir, sanitizedName)
   const relative = path.relative(snapshotDir, snapshotPath)
   if (relative.startsWith('..') || path.isAbsolute(relative)) {

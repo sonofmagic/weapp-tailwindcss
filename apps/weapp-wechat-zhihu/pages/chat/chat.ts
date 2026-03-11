@@ -1,3 +1,5 @@
+const DOUBLE_ONE_RE = /11/g
+
 Page({
   data: {
     focus: false,
@@ -20,12 +22,12 @@ Page({
       // 光标在中间
       const left = e.detail.value.slice(0, pos)
       // 计算光标的位置
-      pos = left.replace(/11/g, '2').length
+      pos = left.replace(DOUBLE_ONE_RE, '2').length
     }
 
     // 直接返回对象，可以对输入进行过滤处理，同时可以控制光标的位置
     return {
-      value: value.replace(/11/g, '2'),
+      value: value.replace(DOUBLE_ONE_RE, '2'),
       cursor: pos,
     }
 

@@ -59,7 +59,7 @@ async function main() {
   // console.log(ctx)
 
   const ctx = await twPatcher.getClassSet()
-  fs.writeFileSync(path.join(__dirname, 'result.json'), JSON.stringify(Array.from(ctx), null, 2), 'utf8')
+  fs.writeFileSync(path.join(__dirname, 'result.json'), JSON.stringify([...ctx], null, 2), 'utf8')
 }
 
 main()

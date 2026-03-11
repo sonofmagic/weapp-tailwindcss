@@ -55,12 +55,12 @@ const VariantContent =/* weapp-tw ignore */ '```html\n<view class="\n bg-green-5
 
 const CssVarContent
   = '```js\n'
-  + `colors: {
+    + `colors: {
   'primary': 'rgba(var(--ice-color-primary), <alpha-value>)',
   'primary-content': 'rgba(var(--ice-color-primary-content), <alpha-value>)',
   'base': 'rgba(var(--ice-color-base), <alpha-value>)'
 }`
-  + '\n```'
+    + '\n```'
 
 function viewCode() {
   uni.navigateTo({

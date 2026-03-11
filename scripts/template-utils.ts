@@ -7,9 +7,14 @@ export const ROOT = process.cwd()
 export const DEFAULT_TEMPLATES_JSONC = path.join(ROOT, 'templates.jsonc')
 export const TEMPLATE_CACHE_ROOT = path.join(ROOT, '.cache', 'template-repos')
 
+const NEWLINE_RE = /\r?\n/u
+const LEADING_SLASHES_RE = /^\/+/u
+const TRAILING_GIT_RE = /\.git$/u
+const REF_HEADS_RE = /refs\/heads\/(\S+)/u
+
 function stripCommentLines(content: string): string {
   return content
-    .split(/\r?\n/u)
+    .split(NEWLINE_RE)
     .filter(line => !line.trimStart().startsWith('//'))
     .join('\n')
 }
@@ -40,14 +45,14 @@ export function readTemplateUrls(configPath: string): string[] {
 
 export function toSshUrl(url: string): string {
   const target = new URL(url)
-  const repoPath = target.pathname.replace(/^\/+/u, '').replace(/\.git$/u, '')
+  const repoPath = target.pathname.replace(LEADING_SLASHES_RE, '').replace(TRAILING_GIT_RE, '')
   return `git@${target.host}:${repoPath}.git`
 }
 
 export function repoFolderName(url: string): string {
   const target = new URL(url)
   const segments = target.pathname.split('/').filter(Boolean)
-  return segments.at(-1)?.replace(/\.git$/u, '') ?? ''
+  return segments.at(-1)?.replace(TRAILING_GIT_RE, '') ?? ''
 }
 
 async function ensureCacheRepoRemote(repoDir: string, sshUrl: string): Promise<void> {
@@ -106,7 +111,7 @@ export async function resolveDefaultBranch(repo: string): Promise<string> {
     throw new Error(`无法解析 ${repo} 的默认分支。命令输出：\n${stdout}`)
   }
 
-  const branchMatch = refLine.match(/refs\/heads\/(\S+)/u)
+  const branchMatch = refLine.match(REF_HEADS_RE)
   if (!branchMatch) {
     throw new Error(`未找到 ${repo} 的默认分支信息。命令输出：\n${stdout}`)
   }

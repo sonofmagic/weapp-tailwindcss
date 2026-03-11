@@ -73,7 +73,7 @@ export default defineComponent({
 
     watch(
       () => props.trend as TrendPoint[],
-      (value) => updateTrend(value),
+      value => updateTrend(value),
       { immediate: true, deep: true },
     )
 
@@ -103,7 +103,7 @@ export default defineComponent({
     })
 
     onUnmounted(() => {
-      if (timer != null) clearInterval(timer)
+      if (timer != null) { clearInterval(timer) }
       timer = undefined
     })
 

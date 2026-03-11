@@ -7,6 +7,8 @@ import path from 'pathe'
 import { describe, it } from 'vitest'
 import { collectCssSnapshots, formatWxml, logE2EError, projectFilter, removeWxmlId, resolveSnapshotFile, twExtract, wait } from './shared'
 
+const EPERM_RE = /EPERM/i
+
 interface ProjectTestOptions {
   suite: string
   fixturesDir: string
@@ -45,7 +47,7 @@ async function clearTailwindPatchCaches(root: string) {
   ])
 
   await Promise.all(
-    [...candidates].map(target => safeRm(target)),
+    Array.from(candidates, target => safeRm(target)),
   )
 }
 
@@ -58,11 +60,14 @@ function formatClassListSnapshot(classList: string[]) {
   return `${JSON.stringify(classList, null, 2)}\n`
 }
 
+const SUSPICIOUS_CLASS_FRAGMENT_RE = /\b[\w-]+-\s+[a-z0-9#]/gi
+const SUSPICIOUS_XL_FRAGMENT_RE = /\b\d+xl\s+\d+xl\b/gi
+
 function countSuspiciousClassFragments(wxml: string) {
   let count = 0
   const patterns = [
-    /\b[\w-]+-\s+[a-z0-9#]/gi,
-    /\b\d+xl\s+\d+xl\b/gi,
+    SUSPICIOUS_CLASS_FRAGMENT_RE,
+    SUSPICIOUS_XL_FRAGMENT_RE,
   ]
 
   for (const pattern of patterns) {
@@ -199,7 +204,7 @@ async function runProjectTest(entry: ProjectEntry, options: ProjectTestOptions) 
     })
   }
   catch (error: any) {
-    if (error?.code === 'EPERM' || /EPERM/i.test(error?.message ?? '')) {
+    if (error?.code === 'EPERM' || EPERM_RE.test(error?.message ?? '')) {
       await wait()
       return
     }

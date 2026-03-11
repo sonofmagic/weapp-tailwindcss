@@ -17,6 +17,10 @@ function formatArgs(entries: Array<[string, string]>) {
   }).join(' ')
 }
 
+const DIGITS_ONLY_RE = /^\d+$/
+const WORKSPACE_PREFIX_RE = /^workspace:/
+const VERSION_PREFIX_RE = /^[~^><=]*/
+
 function shouldInstallDependency(opts: {
   current?: string
   wanted: string
@@ -31,11 +35,11 @@ function shouldInstallDependency(opts: {
   if (wanted === 'rc' || wanted === 'beta' || wanted === 'alpha') {
     return !current.includes(wanted)
   }
-  if (/^\d+$/.test(wanted)) {
+  if (DIGITS_ONLY_RE.test(wanted)) {
     const desiredMajor = Number.parseInt(wanted, 10)
     const cleaned = current
-      .replace(/^workspace:/, '')
-      .replace(/^[~^><=]*/, '')
+      .replace(WORKSPACE_PREFIX_RE, '')
+      .replace(VERSION_PREFIX_RE, '')
     const currentVersion = coerce(cleaned)
     if (!Number.isFinite(desiredMajor) || desiredMajor < 0) {
       return false

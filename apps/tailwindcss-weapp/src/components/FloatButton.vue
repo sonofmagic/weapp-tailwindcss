@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import { useSystemStore } from '@/stores'
 import debounce from 'lodash/debounce'
+import { useSystemStore } from '@/stores'
 
 const props = withDefaults(defineProps<{
   storeKey: string
