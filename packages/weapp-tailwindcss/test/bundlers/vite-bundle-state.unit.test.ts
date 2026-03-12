@@ -60,6 +60,31 @@ describe('bundlers/vite bundle state', () => {
     expect(secondSnapshot.runtimeAffectingChangedByType.js.has('assets/index.js')).toBe(false)
   })
 
+  it('does not mark formatting-only css changes as runtime-affecting', () => {
+    const opts = createOptions()
+    const state = createBundleBuildState()
+    const outDir = '/project/dist'
+
+    const firstSnapshot = buildBundleSnapshot({
+      'assets/index.css': {
+        ...createRollupAsset('.card { color: red; }\n.page { padding: 8px; }'),
+        fileName: 'assets/index.css',
+      },
+    }, opts, outDir, state)
+
+    updateBundleBuildState(state, firstSnapshot, new Map())
+
+    const secondSnapshot = buildBundleSnapshot({
+      'assets/index.css': {
+        ...createRollupAsset('.card{color:red}/* note */\n.page{padding:8px}'),
+        fileName: 'assets/index.css',
+      },
+    }, opts, outDir, state)
+
+    expect(secondSnapshot.changedByType.css.has('assets/index.css')).toBe(true)
+    expect(secondSnapshot.runtimeAffectingChangedByType.css.has('assets/index.css')).toBe(false)
+  })
+
   it('marks comment and literal changes as runtime-affecting', () => {
     const opts = createOptions()
     const state = createBundleBuildState()

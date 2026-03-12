@@ -878,6 +878,62 @@ const cls = "w-[1.5px]"
     expect(currentContext.styleHandler).toHaveBeenCalledTimes(1)
   }, TEST_TIMEOUT_MS)
 
+  it('reapplies cached css transform when css formatting changes only', async () => {
+    const UnifiedViteWeappTailwindcssPlugin = await loadUnifiedVitePlugin()
+    setCurrentContext(createContext({
+      styleHandler: vi.fn(async (code: string) => ({
+        css: code
+          .replace('*,::before,::after', 'view,text,::before,::after')
+          .replaceAll('border-emerald-200\\/70', '_f70'),
+      })),
+    }))
+    const currentContext = getCurrentContext()
+    const plugins = UnifiedViteWeappTailwindcssPlugin()
+    const postPlugin = plugins?.find(plugin => plugin.name === 'weapp-tailwindcss:adaptor:post') as Plugin
+    expect(postPlugin).toBeTruthy()
+
+    await (postPlugin.configResolved as any)?.call(postPlugin, {
+      command: 'serve',
+      root: process.cwd(),
+      css: { postcss: { plugins: [] } },
+      build: { outDir: 'dist' },
+    } as ResolvedConfig)
+
+    const generateBundle = postPlugin.generateBundle as any
+    const firstCss = [
+      '*,::before,::after { --tw-content: ""; }',
+      '.border-emerald-200\\/70 { border-color: rgb(167 243 208 / 0.7); }',
+    ].join('\n')
+    const secondCss = [
+      '*, ::before, ::after { --tw-content: ""; }',
+      '/* note */',
+      '.border-emerald-200\\/70 { border-color: rgb(167 243 208 / 0.7); }',
+    ].join('\n')
+
+    const firstBundle = {
+      'index.js': createRollupChunk('const sss = "border-emerald-200/70"'),
+      'index.css': {
+        ...createRollupAsset(firstCss),
+        fileName: 'index.css',
+      },
+    }
+    await generateBundle?.call(postPlugin, {} as any, firstBundle)
+
+    const secondBundle = {
+      'index.js': createRollupChunk('const sss = "border-emerald-200/70"'),
+      'index.css': {
+        ...createRollupAsset(secondCss),
+        fileName: 'index.css',
+      },
+    }
+    await generateBundle?.call(postPlugin, {} as any, secondBundle)
+
+    const transformedCss = (secondBundle['index.css'] as OutputAsset).source.toString()
+    expect(transformedCss).toContain('view,text,::before,::after')
+    expect(transformedCss).toContain('._f70')
+    expect(currentContext.styleHandler).toHaveBeenCalledTimes(1)
+  }, TEST_TIMEOUT_MS)
+
   it('keeps template transform stable on script-only incremental updates', async () => {
     const UnifiedViteWeappTailwindcssPlugin = await loadUnifiedVitePlugin()
     const htmlFile = 'dist/pages/index/index.wxml'

@@ -354,12 +354,13 @@ export function createGenerateBundleHook(context: GenerateBundleContext) {
         // 即便本轮 CSS 原文 hash 未变化，也必须回填缓存中的转译结果，
         // 否则会退回未转译内容并与同轮 JS/WXML 的 class 改写失配。
         const rawSource = originalEntrySource
+        const cssRuntimeAffectingSignature = snapshot.runtimeAffectingSignatureByFile.get(file) ?? rawSource
         tasks.push(
           processCachedTask<string>({
             cache,
             cacheKey: file,
-            rawSource,
             hashKey: `${file}:css:${runtimeSignature}:${runtimeState.twPatcher.majorVersion ?? 'unknown'}`,
+            rawSource: cssRuntimeAffectingSignature,
             applyResult(source) {
               originalSource.source = source
             },

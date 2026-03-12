@@ -37,9 +37,19 @@ describe('bundlers/vite runtime-affecting signature', () => {
     const htmlB = createRuntimeAffectingSourceSignature('<view   class="card">\n  hello\n</view>', 'html')
     const jsA = createRuntimeAffectingSourceSignature('const cls = "card"\nexport { cls }\n', 'js')
     const jsB = createRuntimeAffectingSourceSignature('const cls = "card";\n\nexport { cls }\n', 'js')
+    const cssA = createRuntimeAffectingSourceSignature('.card { color: red; }\n/* note */\n.page { padding: 8px; }', 'css')
+    const cssB = createRuntimeAffectingSourceSignature('.card{color:red}.page{padding:8px}', 'css')
 
     expect(htmlA).toBe(htmlB)
     expect(jsA).toBe(jsB)
+    expect(cssA).toBe(cssB)
+  })
+
+  it('keeps css value changes in runtime-affecting signature', () => {
+    const first = createRuntimeAffectingSourceSignature('.card { color: red; }', 'css')
+    const second = createRuntimeAffectingSourceSignature('.card { color: blue; }', 'css')
+
+    expect(first).not.toBe(second)
   })
 
   it('falls back to raw source when js parsing fails', () => {

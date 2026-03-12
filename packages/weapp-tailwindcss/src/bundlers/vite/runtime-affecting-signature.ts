@@ -5,6 +5,11 @@ import { Parser } from 'htmlparser2'
 import { traverse } from '@/babel'
 import { babelParse } from '@/js/babel'
 
+const CSS_BLOCK_COMMENT_RE = /\/\*[\s\S]*?\*\//g
+const CSS_AROUND_PUNCTUATION_RE = /\s*([{}:;,>+~()])\s*/g
+const CSS_TRAILING_DECLARATION_SEMICOLON_RE = /;\}/g
+const CSS_WHITESPACE_RE = /\s+/g
+
 function createHtmlRuntimeAffectingSignature(source: string) {
   try {
     const parts: string[] = []
@@ -82,6 +87,15 @@ function createJsRuntimeAffectingSignature(source: string) {
   }
 }
 
+function createCssRuntimeAffectingSignature(source: string) {
+  return source
+    .replace(CSS_BLOCK_COMMENT_RE, '')
+    .replace(CSS_AROUND_PUNCTUATION_RE, '$1')
+    .replace(CSS_TRAILING_DECLARATION_SEMICOLON_RE, '}')
+    .replace(CSS_WHITESPACE_RE, ' ')
+    .trim()
+}
+
 export function createRuntimeAffectingSourceSignature(source: string, type: EntryType) {
   if (type === 'html') {
     return createHtmlRuntimeAffectingSignature(source)
@@ -89,6 +103,10 @@ export function createRuntimeAffectingSourceSignature(source: string, type: Entr
 
   if (type === 'js') {
     return createJsRuntimeAffectingSignature(source)
+  }
+
+  if (type === 'css') {
+    return createCssRuntimeAffectingSignature(source)
   }
 
   return source

@@ -24,6 +24,7 @@ export interface BundleSnapshot {
   entries: BundleStateEntry[]
   jsEntries: Map<string, OutputEntry>
   sourceHashByFile: Map<string, string>
+  runtimeAffectingSignatureByFile: Map<string, string>
   runtimeAffectingHashByFile: Map<string, string>
   changedByType: Record<EntryType, Set<string>>
   runtimeAffectingChangedByType: Record<EntryType, Set<string>>
@@ -118,6 +119,7 @@ export function buildBundleSnapshot(
   forceAll = false,
 ): BundleSnapshot {
   const sourceHashByFile = new Map<string, string>()
+  const runtimeAffectingSignatureByFile = new Map<string, string>()
   const runtimeAffectingHashByFile = new Map<string, string>()
   const changedByType = createChangedByType()
   const runtimeAffectingChangedByType = createChangedByType()
@@ -133,6 +135,7 @@ export function buildBundleSnapshot(
     const hash = opts.cache.computeHash(source)
     sourceHashByFile.set(file, hash)
     const runtimeAffectingSignature = createRuntimeAffectingSourceSignature(source, type)
+    runtimeAffectingSignatureByFile.set(file, runtimeAffectingSignature)
     const runtimeAffectingHash = opts.cache.computeHash(runtimeAffectingSignature)
     runtimeAffectingHashByFile.set(file, runtimeAffectingHash)
 
@@ -190,6 +193,7 @@ export function buildBundleSnapshot(
     entries,
     jsEntries,
     sourceHashByFile,
+    runtimeAffectingSignatureByFile,
     runtimeAffectingHashByFile,
     changedByType,
     runtimeAffectingChangedByType,
@@ -224,6 +228,7 @@ export function buildBundleSnapshotForBuild(
     entries,
     jsEntries,
     sourceHashByFile: new Map<string, string>(),
+    runtimeAffectingSignatureByFile: new Map<string, string>(),
     runtimeAffectingHashByFile: new Map<string, string>(),
     changedByType: createChangedByType(),
     runtimeAffectingChangedByType: createChangedByType(),
