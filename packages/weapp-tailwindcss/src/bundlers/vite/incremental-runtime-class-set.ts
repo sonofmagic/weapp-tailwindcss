@@ -38,7 +38,6 @@ interface RuntimeValidationContext {
   projectRoot: string
 }
 
-const EXTENDED_LENGTH_UNIT_RE = /\b(?:rpx|upx)\b/i
 const EXTENSION_DOT_PREFIX_RE = /^\./
 const VALIDATION_FILE_NAME = 'runtime-candidates.html'
 
@@ -422,17 +421,6 @@ export function createBundleRuntimeClassSetManager(
 
     if (changedRuntimeFiles.length === 0) {
       return new Set(runtimeSet)
-    }
-
-    for (const file of changedRuntimeFiles) {
-      const entry = runtimeEntriesByFile.get(file)
-      if (!entry) {
-        continue
-      }
-      // 扩展长度单位仍依赖 patch 过的完整 Tailwind 运行时，增量路径先保守降级。
-      if (EXTENDED_LENGTH_UNIT_RE.test(entry.source)) {
-        throw new Error(`incremental runtime set fallback for extended length unit: ${file}`)
-      }
     }
 
     const rawCandidatesByFile = new Map<string, Set<string>>()

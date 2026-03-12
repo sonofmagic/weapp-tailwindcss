@@ -232,4 +232,41 @@ describe('bundlers/vite incremental runtime class set', () => {
     expect(extractCandidates).toHaveBeenCalledTimes(1)
     expect(extractCandidates.mock.calls[0]?.[0]?.css).toBe('@import "tailwindcss4";')
   })
+
+  it('keeps incremental runtime sync for extended length unit candidates', async () => {
+    const opts = createOptions()
+    const outDir = '/project/dist'
+    const state = createBundleBuildState()
+    const patcher = createPatcher('/project')
+    const extractCandidates = vi.fn(async () => ['w-[200rpx]', 'h-[20upx]', 'bg-[#123456]'])
+    const extractRawCandidates = vi.fn(async (content: string) => {
+      if (content.includes('w-[200rpx]')) {
+        return [
+          { rawCandidate: 'w-[200rpx]' },
+          { rawCandidate: 'h-[20upx]' },
+          { rawCandidate: 'bg-[#123456]' },
+        ]
+      }
+      return []
+    })
+    const manager = createBundleRuntimeClassSetManager({
+      extractCandidates,
+      extractRawCandidates,
+      tempRoot,
+    })
+
+    const snapshot = buildBundleSnapshot({
+      'common/vendor.js': {
+        ...createRollupChunk('const cls = "w-[200rpx] h-[20upx] bg-[#123456]"'),
+        fileName: 'common/vendor.js',
+      },
+    }, opts, outDir, state)
+
+    await expect(manager.sync(patcher, snapshot)).resolves.toEqual(new Set([
+      'w-[200rpx]',
+      'h-[20upx]',
+      'bg-[#123456]',
+    ]))
+    expect(extractCandidates).toHaveBeenCalledTimes(1)
+  })
 })
