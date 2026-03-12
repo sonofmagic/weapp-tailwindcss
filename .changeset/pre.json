@@ -71,6 +71,7 @@
   },
   "changesets": [
     "bright-horses-clean",
+    "e2e-watch-group-entry",
     "honest-hounds-hug",
     "perf-hot-path-caching",
     "weapp-tailwindcss-alias"
