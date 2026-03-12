@@ -144,6 +144,10 @@ function hasRuntimeAffectingSourceChanges(changedByType: Record<EntryType, Set<s
   return changedByType.html.size > 0 || changedByType.js.size > 0
 }
 
+function canShareCssTransformResult(rawSource: string) {
+  return !rawSource.includes('@import') && !rawSource.includes('url(')
+}
+
 export function createGenerateBundleHook(context: GenerateBundleContext) {
   const state = createBundleBuildState()
   const cssHandlerOptionsCache = new Map<string, {
@@ -307,6 +311,7 @@ export function createGenerateBundleHook(context: GenerateBundleContext) {
     })
 
     const linkedByEntry = useIncrementalMode ? new Map<string, Set<string>>() : undefined
+    const sharedCssResultCache = new Map<string, Promise<string>>()
     const tasks: Promise<void>[] = []
     const jsTaskFactories: Array<() => Promise<void>> = []
 
@@ -355,6 +360,10 @@ export function createGenerateBundleHook(context: GenerateBundleContext) {
         // 否则会退回未转译内容并与同轮 JS/WXML 的 class 改写失配。
         const rawSource = originalEntrySource
         const cssRuntimeAffectingSignature = snapshot.runtimeAffectingSignatureByFile.get(file) ?? rawSource
+        const shareCssResult = canShareCssTransformResult(rawSource)
+        const cssSharedCacheKey = shareCssResult
+          ? `${runtimeSignature}:${runtimeState.twPatcher.majorVersion ?? 'unknown'}:${getCssHandlerOptions(file).isMainChunk ? '1' : '0'}:${cssRuntimeAffectingSignature}`
+          : undefined
         tasks.push(
           processCachedTask<string>({
             cache,
@@ -369,14 +378,39 @@ export function createGenerateBundleHook(context: GenerateBundleContext) {
               debug('css cache hit: %s', file)
             },
             async transform() {
-              const start = performance.now()
-              await runtimeState.patchPromise
-              const { css } = await styleHandler(rawSource, getCssHandlerOptions(file))
-              if (debugCssDiff) {
-                debug('css diff %s: %s', file, summarizeStringDiff(rawSource, css))
+              if (cssSharedCacheKey) {
+                const sharedCssTask = sharedCssResultCache.get(cssSharedCacheKey)
+                if (sharedCssTask != null) {
+                  metrics.css.cacheHits++
+                  debug('css shared hit: %s', file)
+                  const sharedCss = await sharedCssTask
+                  onUpdate(file, rawSource, sharedCss)
+                  return {
+                    result: sharedCss,
+                  }
+                }
               }
-              metrics.css.elapsed += measureElapsed(start)
-              metrics.css.transformed++
+              const runTransform = async () => {
+                const start = performance.now()
+                await runtimeState.patchPromise
+                const { css } = await styleHandler(rawSource, getCssHandlerOptions(file))
+                if (debugCssDiff) {
+                  debug('css diff %s: %s', file, summarizeStringDiff(rawSource, css))
+                }
+                metrics.css.elapsed += measureElapsed(start)
+                metrics.css.transformed++
+                return css
+              }
+
+              const cssTask = cssSharedCacheKey
+                ? sharedCssResultCache.get(cssSharedCacheKey) ?? runTransform()
+                : runTransform()
+
+              if (cssSharedCacheKey && !sharedCssResultCache.has(cssSharedCacheKey)) {
+                sharedCssResultCache.set(cssSharedCacheKey, cssTask)
+              }
+
+              const css = await cssTask
               onUpdate(file, rawSource, css)
               debug('css handle: %s', file)
               return {

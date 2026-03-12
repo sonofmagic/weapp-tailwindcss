@@ -934,6 +934,51 @@ const cls = "w-[1.5px]"
     expect(currentContext.styleHandler).toHaveBeenCalledTimes(1)
   }, TEST_TIMEOUT_MS)
 
+  it('shares non-main css transform results for identical assets in the same bundle round', async () => {
+    const UnifiedViteWeappTailwindcssPlugin = await loadUnifiedVitePlugin()
+    setCurrentContext(createContext({
+      styleHandler: vi.fn(async (code: string) => ({
+        css: `shared:${code}`,
+      })),
+      mainCssChunkMatcher: vi.fn((file: string) => file === 'app.wxss'),
+      cssMatcher: (file: string) => file.endsWith('.wxss'),
+    }))
+    const currentContext = getCurrentContext()
+    const plugins = UnifiedViteWeappTailwindcssPlugin()
+    const postPlugin = plugins?.find(plugin => plugin.name === 'weapp-tailwindcss:adaptor:post') as Plugin
+    expect(postPlugin).toBeTruthy()
+
+    await (postPlugin.configResolved as any)?.call(postPlugin, {
+      command: 'serve',
+      root: process.cwd(),
+      css: { postcss: { plugins: [] } },
+      build: { outDir: 'dist' },
+    } as ResolvedConfig)
+
+    const generateBundle = postPlugin.generateBundle as any
+    const duplicatedCss = '.card{color:red}'
+    const bundle = {
+      'app.wxss': {
+        ...createRollupAsset('.root{color:blue}'),
+        fileName: 'app.wxss',
+      },
+      'pages/a.wxss': {
+        ...createRollupAsset(duplicatedCss),
+        fileName: 'pages/a.wxss',
+      },
+      'pages/b.wxss': {
+        ...createRollupAsset(duplicatedCss),
+        fileName: 'pages/b.wxss',
+      },
+    }
+
+    await generateBundle?.call(postPlugin, {} as any, bundle)
+
+    expect((bundle['pages/a.wxss'] as OutputAsset).source.toString()).toBe(`shared:${duplicatedCss}`)
+    expect((bundle['pages/b.wxss'] as OutputAsset).source.toString()).toBe(`shared:${duplicatedCss}`)
+    expect(currentContext.styleHandler).toHaveBeenCalledTimes(2)
+  }, TEST_TIMEOUT_MS)
+
   it('keeps template transform stable on script-only incremental updates', async () => {
     const UnifiedViteWeappTailwindcssPlugin = await loadUnifiedVitePlugin()
     const htmlFile = 'dist/pages/index/index.wxml'
