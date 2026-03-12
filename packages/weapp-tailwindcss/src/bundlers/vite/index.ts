@@ -1,13 +1,16 @@
 import type { Plugin, ResolvedConfig } from 'vite'
 import type { BundleSnapshot } from './bundle-state'
 import type { UserDefinedOptions } from '@/types'
+import { existsSync } from 'node:fs'
 import path from 'node:path'
 import process from 'node:process'
 import postcssHtmlTransform from '@weapp-tailwindcss/postcss/html-transform'
 import { vitePluginName } from '@/constants'
 import { getCompilerContext } from '@/context'
 import { toCustomAttributesEntities } from '@/context/custom-attributes'
+import { findNearestPackageRoot } from '@/context/workspace'
 import { createDebug } from '@/debug'
+import { findTailwindConfig } from '@/tailwindcss/patcher-resolve'
 import { setupPatchRecorder } from '@/tailwindcss/recorder'
 import { collectRuntimeClassSet, refreshTailwindRuntimeState } from '@/tailwindcss/runtime'
 import { getRuntimeClassSetSignature } from '@/tailwindcss/runtime/cache'
@@ -23,6 +26,37 @@ import { slash } from './utils'
 const debug = createDebug()
 const weappTailwindcssPackageDir = resolvePackageDir('weapp-tailwindcss')
 const weappTailwindcssDirPosix = slash(weappTailwindcssPackageDir)
+const PACKAGE_JSON_FILE = 'package.json'
+
+function resolveImplicitTailwindcssBasedirFromViteRoot(root: string) {
+  const resolvedRoot = path.resolve(root)
+  if (!existsSync(resolvedRoot)) {
+    return resolvedRoot
+  }
+  const searchRoots: string[] = []
+  let current = resolvedRoot
+
+  while (true) {
+    searchRoots.push(current)
+    const parent = path.dirname(current)
+    if (parent === current) {
+      break
+    }
+    current = parent
+  }
+
+  const tailwindConfigPath = findTailwindConfig(searchRoots)
+  if (tailwindConfigPath) {
+    return path.dirname(tailwindConfigPath)
+  }
+
+  const packageRoot = findNearestPackageRoot(resolvedRoot)
+  if (packageRoot && existsSync(path.join(packageRoot, PACKAGE_JSON_FILE))) {
+    return packageRoot
+  }
+
+  return resolvedRoot
+}
 
 /**
  * @name UnifiedViteWeappTailwindcssPlugin
@@ -229,12 +263,18 @@ export function UnifiedViteWeappTailwindcssPlugin(options: UserDefinedOptions = 
         if (
           !hasExplicitTailwindcssBasedir
           && resolvedRoot
-          && opts.tailwindcssBasedir !== resolvedRoot
         ) {
-          const previousBasedir = opts.tailwindcssBasedir
-          opts.tailwindcssBasedir = resolvedRoot
-          debug('align tailwindcss basedir with vite root: %s -> %s', previousBasedir ?? 'undefined', resolvedRoot)
-          await refreshRuntimeState(true)
+          const nextTailwindcssBasedir = resolveImplicitTailwindcssBasedirFromViteRoot(resolvedRoot)
+          if (opts.tailwindcssBasedir !== nextTailwindcssBasedir) {
+            const previousBasedir = opts.tailwindcssBasedir
+            opts.tailwindcssBasedir = nextTailwindcssBasedir
+            debug(
+              'align tailwindcss basedir with vite root: %s -> %s',
+              previousBasedir ?? 'undefined',
+              nextTailwindcssBasedir,
+            )
+            await refreshRuntimeState(true)
+          }
         }
         if (typeof config.css.postcss === 'object' && Array.isArray(config.css.postcss.plugins)) {
           const postcssPlugins = config.css.postcss.plugins as unknown[]

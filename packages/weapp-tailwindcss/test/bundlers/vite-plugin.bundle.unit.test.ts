@@ -509,6 +509,40 @@ const trace = "at App.vue:4"
     expect(refreshTailwindcssPatcher).toHaveBeenCalledTimes(1)
   }, TEST_TIMEOUT_MS)
 
+  it('prefers the nearest tailwind config root when vite root points to a source subdirectory', async () => {
+    const UnifiedViteWeappTailwindcssPlugin = await loadUnifiedVitePlugin()
+    const workspaceRoot = path.resolve(__dirname, '../../..')
+    const fixtureRoot = path.resolve(__dirname, '../fixtures/vite')
+    const viteRoot = path.join(fixtureRoot, 'src')
+    const refreshTailwindcssPatcher = vi.fn(async () => getCurrentContext().twPatcher)
+
+    setCurrentContext(createContext({
+      tailwindcssBasedir: workspaceRoot,
+      refreshTailwindcssPatcher,
+      twPatcher: {
+        patch: vi.fn(async () => {}),
+        getClassSet: vi.fn(async () => new Set<string>()),
+        getClassSetSync: vi.fn(() => new Set<string>()),
+        extract: vi.fn(async () => ({ classSet: new Set<string>() })),
+        majorVersion: 3,
+      },
+    }))
+
+    const plugins = UnifiedViteWeappTailwindcssPlugin()
+    const postPlugin = plugins?.find(plugin => plugin.name === 'weapp-tailwindcss:adaptor:post') as Plugin
+    expect(postPlugin).toBeTruthy()
+
+    await (postPlugin.configResolved as any)?.call(postPlugin, {
+      command: 'build',
+      root: viteRoot,
+      css: { postcss: { plugins: [] } },
+      build: { outDir: 'dist' },
+    } as ResolvedConfig)
+
+    expect(getCurrentContext().tailwindcssBasedir).toBe(fixtureRoot)
+    expect(refreshTailwindcssPatcher).toHaveBeenCalledTimes(1)
+  }, TEST_TIMEOUT_MS)
+
   it('keeps explicit tailwindcss basedir unchanged on configResolved', async () => {
     const UnifiedViteWeappTailwindcssPlugin = await loadUnifiedVitePlugin()
     const workspaceRoot = path.resolve(process.cwd())
