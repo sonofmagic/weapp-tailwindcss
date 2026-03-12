@@ -316,7 +316,7 @@ export function shouldRunTarget(caseName: WatchCaseName, target: ConcreteWatchCa
   }
 
   if (caseName === 'demo' || caseName === 'apps') {
-    return resolveExpectedGroup(target) === caseName
+    return false
   }
 
   if (isConcreteWatchCaseName(caseName)) {
@@ -324,6 +324,10 @@ export function shouldRunTarget(caseName: WatchCaseName, target: ConcreteWatchCa
   }
 
   return false
+}
+
+export function shouldRunGroupedTarget(caseName: WatchCaseName, target: WatchProjectGroup) {
+  return caseName === target
 }
 
 async function runWatchHmrCommand(cwd: string, args: string[], commandTimeoutMs: number) {

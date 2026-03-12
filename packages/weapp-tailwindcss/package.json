@@ -184,7 +184,7 @@
     "lint:fix": "eslint ./src --fix",
     "postinstall": "node bin/weapp-tailwindcss.js patch",
     "bench:vite-dev-hmr": "tsx scripts/vite-dev-hmr-bench.ts",
-    "test:watch-hmr": "tsx scripts/watch-hmr-regression/index.ts"
+    "test:watch-hmr": "node --import tsx scripts/watch-hmr-regression/index.ts"
   },
   "publishConfig": {
     "access": "public",

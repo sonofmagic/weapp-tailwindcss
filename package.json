@@ -76,6 +76,8 @@
     "e2e:watch": "vitest run -c ./e2e/vitest.e2e.watch.config.ts",
     "e2e:watch:full": "cross-env E2E_WATCH_SKIP_BUILD=0 pnpm e2e:watch",
     "e2e:watch:dev": "vitest -c ./e2e/vitest.e2e.watch.config.ts",
+    "e2e:watch:demo": "cross-env E2E_WATCH_CASE=demo pnpm e2e:watch",
+    "e2e:watch:apps": "cross-env E2E_WATCH_CASE=apps pnpm e2e:watch",
     "e2e:watch:taro": "cross-env E2E_WATCH_CASE=taro pnpm e2e:watch",
     "e2e:watch:uni": "cross-env E2E_WATCH_CASE=uni pnpm e2e:watch",
     "e2e:watch:mpx": "cross-env E2E_WATCH_CASE=mpx pnpm e2e:watch",

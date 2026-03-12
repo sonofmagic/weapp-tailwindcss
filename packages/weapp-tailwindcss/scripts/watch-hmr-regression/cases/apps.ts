@@ -79,7 +79,7 @@ export function buildAppCases(baseCwd: string): WatchCase[] {
     project: 'apps/taro-webpack-tailwindcss-v4',
     group: 'apps',
     cwd: path.resolve(baseCwd, 'apps/taro-webpack-tailwindcss-v4'),
-    devScript: 'dev:weapp',
+    devScript: 'dev:weapp2',
     outputWxml: path.resolve(baseCwd, 'apps/taro-webpack-tailwindcss-v4/dist/pages/index/index.wxml'),
     outputJs: path.resolve(baseCwd, 'apps/taro-webpack-tailwindcss-v4/dist/pages/index/index.js'),
     outputStyleCandidates: [
