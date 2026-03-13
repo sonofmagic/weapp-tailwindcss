@@ -1,4 +1,3 @@
-import fs from 'node:fs'
 import path from 'node:path'
 import process from 'node:process'
 import { fileURLToPath } from 'node:url'
@@ -14,6 +13,7 @@ import {
   toDocRoute,
   walkMarkdownFiles,
 } from './seo-shared.mjs'
+import { writeStableJson } from './write-stable-json.mjs'
 
 const siteUrl = process.env.SITE_URL || 'https://tw.icebreaker.top'
 
@@ -144,13 +144,13 @@ function buildBlogRecords() {
   })
 }
 
-function main() {
+export function createGeoIndexPayload(now = new Date().toISOString()) {
   const docs = buildDocRecords()
   const blogs = buildBlogRecords()
   const documents = [...docs, ...blogs].sort((a, b) => a.url.localeCompare(b.url))
-  const payload = {
+  return {
     version: '1.0.0',
-    generatedAt: new Date().toISOString(),
+    generatedAt: now,
     siteUrl,
     totals: {
       all: documents.length,
@@ -159,10 +159,18 @@ function main() {
     },
     documents,
   }
+}
 
-  fs.mkdirSync(staticRoot, { recursive: true })
-  fs.writeFileSync(outputFile, `${JSON.stringify(payload, null, 2)}\n`, 'utf8')
-  console.log(`GEO 索引已生成: ${path.relative(websiteRoot, outputFile)} (docs=${docs.length}, blog=${blogs.length})`)
+export function writeGeoIndex(now = new Date().toISOString()) {
+  const payload = createGeoIndexPayload(now)
+  const changed = writeStableJson(outputFile, payload)
+  return { changed, payload }
+}
+
+function main() {
+  const { changed, payload } = writeGeoIndex()
+  const suffix = changed ? '' : '（内容未变化，跳过写入）'
+  console.log(`GEO 索引已生成: ${path.relative(websiteRoot, outputFile)} (docs=${payload.totals.docs}, blog=${payload.totals.blog})${suffix}`)
 }
 
 main()

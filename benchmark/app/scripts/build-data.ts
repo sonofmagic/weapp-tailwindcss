@@ -1,6 +1,7 @@
 import { promises as fs } from 'node:fs'
 import path from 'node:path'
 import process from 'node:process'
+import { writeStableJson } from './write-stable-json.mjs'
 
 const projectRoot = path.resolve(import.meta.dirname, '..')
 const dataDir = path.resolve(projectRoot, 'data')
@@ -57,8 +58,9 @@ async function writeIndex(entries: DataEntry[]) {
     entryCount: entries.length,
     entries,
   }
-  await fs.writeFile(outputFile, `${JSON.stringify(payload, null, 2)}\n`, 'utf8')
-  console.log(`[benchmark] Wrote ${entries.length} entries -> ${path.relative(projectRoot, outputFile)}`)
+  const changed = await writeStableJson(outputFile, payload)
+  const suffix = changed ? '' : ' (unchanged)'
+  console.log(`[benchmark] Wrote ${entries.length} entries -> ${path.relative(projectRoot, outputFile)}${suffix}`)
 }
 
 async function main() {

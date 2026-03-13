@@ -3,6 +3,7 @@ import { promises as fs } from 'node:fs'
 import path from 'node:path'
 import process from 'node:process'
 import { fileURLToPath } from 'node:url'
+import { writeStableJson } from './write-stable-json.mjs'
 
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = path.dirname(__filename)
@@ -163,8 +164,9 @@ async function main() {
     projects: sorted,
   }
   await ensureDir(outputFile)
-  await fs.writeFile(outputFile, `${JSON.stringify(payload, null, 2)}\n`, 'utf8')
-  console.log(`Generated ${sorted.length} project entries -> ${path.relative(repoRoot, outputFile)}`)
+  const changed = await writeStableJson(outputFile, payload)
+  const suffix = changed ? '' : ' (unchanged)'
+  console.log(`Generated ${sorted.length} project entries -> ${path.relative(repoRoot, outputFile)}${suffix}`)
 }
 
 main().catch((error) => {

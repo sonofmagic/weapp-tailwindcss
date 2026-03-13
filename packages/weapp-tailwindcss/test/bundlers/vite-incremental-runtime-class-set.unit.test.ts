@@ -1,6 +1,8 @@
+import os from 'node:os'
 import path from 'node:path'
+import { mkdtempSync, rmSync } from 'node:fs'
 import { mkdir, readFile, writeFile } from 'node:fs/promises'
-import { afterEach, describe, expect, it, vi } from 'vitest'
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import { buildBundleSnapshot, createBundleBuildState, updateBundleBuildState } from '@/bundlers/vite/bundle-state'
 import { createBundleRuntimeClassSetManager } from '@/bundlers/vite/incremental-runtime-class-set'
 import { createCache } from '@/cache'
@@ -34,12 +36,18 @@ function createPatcher(projectRoot: string) {
 }
 
 describe('bundlers/vite incremental runtime class set', () => {
-  const tempRoot = path.resolve(process.cwd(), '.tmp/vite-incremental-runtime-set-test')
-  const validationFile = path.join(tempRoot, 'runtime-candidates.html')
+  let tempRoot = ''
+  let validationFile = ''
+
+  beforeEach(() => {
+    tempRoot = mkdtempSync(path.join(os.tmpdir(), 'weapp-tw-runtime-set-'))
+    validationFile = path.join(tempRoot, 'runtime-candidates.html')
+  })
 
   afterEach(async () => {
     const manager = createBundleRuntimeClassSetManager({ tempRoot })
     await manager.reset()
+    rmSync(tempRoot, { recursive: true, force: true })
     vi.restoreAllMocks()
   })
 
