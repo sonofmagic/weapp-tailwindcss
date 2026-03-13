@@ -1,0 +1,383 @@
+import { mkdtemp, readFile, rm } from 'node:fs/promises'
+import os from 'node:os'
+import path from 'node:path'
+import { afterEach, describe, expect, it, vi } from 'vitest'
+import {
+  resolveReportPath,
+  resolveRepositoryRootLabel,
+  summarizeMetrics,
+  summarizeMetricsByGroup,
+  summarizeMetricsByProject,
+  summarizeMetricsByRound,
+  summarizeMutationKindAcrossCases,
+  summarizeMutationMetricsByKind,
+  summarizeSamples,
+  writeReport,
+} from '../scripts/watch-hmr-regression/summary'
+import {
+  alignContentEol,
+  appendTrailingSnippet,
+  assertContains,
+  assertContainsOneOf,
+  assertNotContains,
+  createStyleRuleSnippet,
+  escapeRegExp,
+  findCssRuleBody,
+  getMtime,
+  insertBeforeAnchor,
+  insertBeforeClosingTag,
+  insertIntoVueTemplateRoot,
+  mutateScriptByDataAnchor,
+  mutateSfcStyleBlock,
+  mutateTsxScriptByReturnAnchor,
+  mutateTsxScriptByReturnAnchorWithCommentCarrier,
+  mutateVueRefStringLiteral,
+  mutateVueScriptSetupArrayByAnchor,
+  mutateVueScriptSetupArrayByAnchorWithCommentCarrier,
+  normalizeCssDeclaration,
+  readFileIfExists,
+  readFileWithRetry,
+  waitFor,
+  writeFilePreserveEol,
+} from '../scripts/watch-hmr-regression/text'
+import type {
+  CliOptions,
+  MutationRoundMetrics,
+  WatchCaseMetrics,
+  WatchCaseMutationMetrics,
+} from '../scripts/watch-hmr-regression/types'
+
+const payload = {
+  marker: 'tw-watch-20260313',
+  classLiteral: 'text-[#123456] bg-[#0f0f0f]',
+  classVariableName: '__twWatchClass',
+}
+
+function createRound(roundName: MutationRoundMetrics['roundName'], hotUpdateEffectiveMs: number, rollbackEffectiveMs: number): MutationRoundMetrics {
+  return {
+    roundName,
+    marker: `${roundName}-marker`,
+    classLiteral: 'text-[#123456]',
+    classTokens: ['text-[#123456]'],
+    escapedClasses: ['text-_b_h123456_B'],
+    hotUpdateOutputMs: hotUpdateEffectiveMs + 10,
+    hotUpdateEffectiveMs,
+    rollbackOutputMs: rollbackEffectiveMs + 10,
+    rollbackEffectiveMs,
+    totalMs: hotUpdateEffectiveMs + rollbackEffectiveMs,
+  }
+}
+
+function createClassMutationMetrics(
+  mutationKind: 'template' | 'script' | 'content',
+  rounds: MutationRoundMetrics[],
+): WatchCaseMutationMetrics {
+  return {
+    mutationKind,
+    sourceFile: `${mutationKind}.ts`,
+    marker: `${mutationKind}-marker`,
+    classLiteral: 'text-[#123456]',
+    classTokens: ['text-[#123456]'],
+    escapedClasses: ['text-_b_h123456_B'],
+    rounds,
+    verifyEscapedIn: ['wxml'],
+    verifyClassLiteralIn: ['js'],
+    globalStyleOutputs: [],
+    minRequiredGlobalStyleEscapedClasses: 0,
+    verifiedGlobalStyleEscapedClasses: [],
+    hotUpdateOutputMs: 40,
+    hotUpdateEffectiveMs: 30,
+    rollbackOutputMs: 50,
+    rollbackEffectiveMs: 35,
+  }
+}
+
+function createStyleMutationMetrics(): WatchCaseMutationMetrics {
+  return {
+    mutationKind: 'style',
+    sourceFile: 'style.css',
+    outputStyle: 'app.wxss',
+    marker: 'style-marker',
+    styleNeedle: '.watch-style-marker',
+    applyUtilities: ['font-bold'],
+    expectedApplyDeclarations: ['font-weight:'],
+    hotUpdateOutputMs: 45,
+    hotUpdateEffectiveMs: 32,
+    rollbackOutputMs: 55,
+    rollbackEffectiveMs: 36,
+    rollbackNeedleCleared: true,
+  }
+}
+
+function createCase(
+  name: WatchCaseMetrics['name'],
+  projectGroup: WatchCaseMetrics['projectGroup'],
+  hotUpdateEffectiveMs: number,
+  rollbackEffectiveMs: number,
+): WatchCaseMetrics {
+  const complexRound = createRound('complex-corpus', hotUpdateEffectiveMs, rollbackEffectiveMs)
+  return {
+    name,
+    label: `${name} label`,
+    project: `${projectGroup}-${name}`,
+    projectGroup,
+    marker: `${name}-marker`,
+    classLiteral: 'text-[#123456]',
+    classTokens: ['text-[#123456]'],
+    escapedClasses: ['text-_b_h123456_B'],
+    rounds: [
+      createRound('baseline-arbitrary', hotUpdateEffectiveMs + 5, rollbackEffectiveMs + 5),
+      complexRound,
+      createRound('hex-arbitrary', hotUpdateEffectiveMs + 10, rollbackEffectiveMs + 10),
+      createRound('issue33-arbitrary', hotUpdateEffectiveMs + 15, rollbackEffectiveMs + 15),
+    ],
+    verifyEscapedIn: ['wxml'],
+    verifyClassLiteralIn: ['js'],
+    globalStyleOutputs: [],
+    mutationMetrics: [
+      createClassMutationMetrics('template', [complexRound]),
+      createClassMutationMetrics('script', [complexRound]),
+      createClassMutationMetrics('content', [complexRound]),
+      createStyleMutationMetrics(),
+    ],
+    summaryByMutationKind: {},
+    initialReadyMs: 25,
+    hotUpdateOutputMs: hotUpdateEffectiveMs + 10,
+    hotUpdateEffectiveMs,
+    rollbackOutputMs: rollbackEffectiveMs + 10,
+    rollbackEffectiveMs,
+    totalMs: hotUpdateEffectiveMs + rollbackEffectiveMs + 25,
+  }
+}
+
+const tempDirs: string[] = []
+
+afterEach(async () => {
+  await Promise.all(tempDirs.splice(0).map(dir => rm(dir, { recursive: true, force: true })))
+})
+
+describe('watch-hmr regression text helpers', () => {
+  it('aligns EOLs to match the source file', () => {
+    expect(alignContentEol('a\nb\n', 'first\r\nsecond\r\n')).toBe('a\r\nb\r\n')
+    expect(alignContentEol('a\r\nb\r\n', 'first\nsecond\n')).toBe('a\nb\n')
+  })
+
+  it('reads, writes and probes file metadata', async () => {
+    const tempDir = await mkdtemp(path.join(os.tmpdir(), 'weapp-tw-watch-text-'))
+    tempDirs.push(tempDir)
+    const file = path.join(tempDir, 'sample.txt')
+
+    await writeFilePreserveEol(file, 'alpha\nbeta\n', 'one\r\ntwo\r\n')
+
+    expect(await readFileWithRetry(file)).toBe('alpha\r\nbeta\r\n')
+    expect(await readFileIfExists(path.join(tempDir, 'missing.txt'))).toBeUndefined()
+    expect(await getMtime(file)).toBeGreaterThan(0)
+    expect(await getMtime(path.join(tempDir, 'missing.txt'))).toBe(0)
+  })
+
+  it('waits for predicates and reports timeout failures', async () => {
+    let attempt = 0
+    const elapsed = await waitFor(
+      () => ++attempt > 2,
+      {
+        timeoutMs: 200,
+        pollMs: 1,
+        message: 'waited too long',
+      },
+    )
+
+    expect(attempt).toBe(3)
+    expect(elapsed).toBeGreaterThanOrEqual(0)
+
+    await expect(() => {
+      return waitFor(
+        () => false,
+        {
+          timeoutMs: 5,
+          pollMs: 1,
+          message: 'timeout message',
+        },
+      )
+    }).rejects.toThrow('timeout message')
+  })
+
+  it('asserts text presence and absence', () => {
+    expect(() => assertContains('alpha beta', 'alpha', 'contains')).not.toThrow()
+    expect(() => assertNotContains('alpha beta', 'gamma', 'not contains')).not.toThrow()
+    expect(() => assertContainsOneOf('alpha beta', ['beta', 'gamma'], 'one of')).not.toThrow()
+    expect(() => assertContains('alpha beta', 'gamma', 'contains')).toThrow('contains')
+    expect(() => assertNotContains('alpha beta', 'beta', 'not contains')).toThrow('not contains')
+    expect(() => assertContainsOneOf('alpha beta', ['gamma', 'delta'], 'one of')).toThrow('one of')
+  })
+
+  it('handles CSS and anchor based text mutations', () => {
+    expect(escapeRegExp('.foo[bar]?')).toBe('\\.foo\\[bar\\]\\?')
+    expect(findCssRuleBody('.foo { color: red; }', '.foo')).toContain('color: red;')
+    expect(normalizeCssDeclaration(' Color : RGB(1, 2, 3) ; ')).toBe('color:rgb(1,2,3);')
+
+    expect(insertBeforeClosingTag('<view>\n</view>', '</view>', '<text />')).toContain('<text />')
+    expect(insertBeforeAnchor('return ()', '()', '<body>')).toBe('return <body>()')
+    expect(appendTrailingSnippet('const a = 1', 'const b = 2')).toBe('const a = 1\nconst b = 2\n')
+
+    const styleSnippet = createStyleRuleSnippet({
+      marker: 'watch-1234567',
+      styleNeedle: '.watch-style-marker',
+      applyUtilities: ['font-bold', 'text-center'],
+      expectedApplyDeclarations: [],
+    })
+
+    expect(styleSnippet).toContain('@apply font-bold text-center;')
+    expect(styleSnippet).toContain('color: #234567;')
+  })
+
+  it('mutates script, tsx and vue sources for watch markers', () => {
+    const pageSource = `Page({
+  data: {
+    count: 1,
+  },
+})`
+    const pageMutated = mutateScriptByDataAnchor(pageSource, '  data: {', payload)
+    expect(pageMutated).toContain(`${payload.classVariableName}: '${payload.classLiteral}'`)
+    expect(pageMutated).toContain(`__twWatchScriptMarker: '${payload.marker}'`)
+
+    const tsxSource = `export default function Page() {
+  return (
+    <>
+    </>
+  )
+}`
+    expect(mutateTsxScriptByReturnAnchor(tsxSource, payload)).toContain(`<View className={${payload.classVariableName}}>${payload.marker}-script</View>`)
+    expect(mutateTsxScriptByReturnAnchorWithCommentCarrier(tsxSource, payload)).toContain(`${payload.marker}-script-comment`)
+
+    const vueSource = `<template>
+  <view class="content">
+    <view>demo</view>
+  </view>
+</template>
+
+<script setup lang="ts">
+const classArray = [
+  'text-sm',
+]
+const title = ref('demo')
+</script>
+
+<style>
+.content {}
+</style>`
+
+    const arrayMutated = mutateVueScriptSetupArrayByAnchor(vueSource, 'const classArray = [', payload)
+    expect(arrayMutated).toContain(`'${payload.classLiteral}'`)
+    expect(arrayMutated).toContain(`'${payload.marker}'`)
+
+    const commentCarrierMutated = mutateVueScriptSetupArrayByAnchorWithCommentCarrier(vueSource, 'const classArray = [', payload)
+    expect(commentCarrierMutated).toContain(`/* ${payload.classLiteral} */`)
+    expect(commentCarrierMutated).toContain('<view hidden>{{ __twWatchScriptCommentMarker }}</view>')
+
+    const insertedTemplate = insertIntoVueTemplateRoot(vueSource, '    <view class="tail" />')
+    expect(insertedTemplate).toContain('<view class="tail" />')
+
+    const refMutated = mutateVueRefStringLiteral(vueSource, 'title', payload)
+    expect(refMutated).toContain(`const title = ref('demo ${payload.classLiteral} ${payload.marker}')`)
+
+    const styleMutated = mutateSfcStyleBlock(vueSource, {
+      marker: 'watch-123456',
+      styleNeedle: '.watch-style-marker',
+      applyUtilities: ['font-bold'],
+      expectedApplyDeclarations: [],
+    })
+    expect(styleMutated).toContain('.watch-style-marker')
+    expect(styleMutated).toContain('@apply font-bold;')
+  })
+
+  it('throws clear errors when anchors are missing', () => {
+    expect(() => insertBeforeClosingTag('<view />', '</missing>', '<text />')).toThrow('closing tag </missing> not found')
+    expect(() => insertBeforeAnchor('alpha', 'beta', 'gamma')).toThrow('anchor beta not found')
+    expect(() => insertIntoVueTemplateRoot('<script setup></script>', '<view />')).toThrow('template block not found')
+    expect(() => mutateVueRefStringLiteral(`const title = ref('demo')`, 'missing', payload)).toThrow('vue ref string literal not found')
+  })
+})
+
+describe('watch-hmr regression summary helpers', () => {
+  it('summarizes samples and cases', () => {
+    expect(summarizeSamples([])).toEqual({
+      count: 0,
+      hotUpdateAvgMs: 0,
+      hotUpdateMaxMs: 0,
+      hotUpdateMinMs: 0,
+      rollbackAvgMs: 0,
+      rollbackMaxMs: 0,
+      rollbackMinMs: 0,
+    })
+
+    const cases = [
+      createCase('weapp-vite', 'demo', 30, 40),
+      createCase('vite-native-ts', 'apps', 50, 70),
+    ]
+
+    expect(summarizeMetrics(cases)).toEqual({
+      count: 2,
+      hotUpdateAvgMs: 40,
+      hotUpdateMaxMs: 50,
+      hotUpdateMinMs: 30,
+      rollbackAvgMs: 55,
+      rollbackMaxMs: 70,
+      rollbackMinMs: 40,
+    })
+
+    expect(summarizeMetricsByRound(cases)['complex-corpus']).toMatchObject({
+      count: 2,
+      hotUpdateAvgMs: 40,
+      rollbackAvgMs: 55,
+    })
+    expect(summarizeMetricsByGroup(cases).demo).toMatchObject({ count: 1, hotUpdateAvgMs: 30 })
+    expect(summarizeMetricsByProject(cases)['demo-weapp-vite']).toMatchObject({ count: 1, rollbackAvgMs: 40 })
+  })
+
+  it('summarizes mutation kinds using preferred rounds', () => {
+    const cases = [createCase('weapp-vite', 'demo', 30, 40)]
+    const byCase = summarizeMutationKindAcrossCases(cases)
+    const byMutation = summarizeMutationMetricsByKind(cases[0].mutationMetrics)
+
+    expect(byCase.template).toMatchObject({ count: 1, hotUpdateAvgMs: 30, rollbackAvgMs: 40 })
+    expect(byMutation.script).toMatchObject({ count: 1, hotUpdateAvgMs: 30, rollbackAvgMs: 40 })
+    expect(byMutation.style).toMatchObject({ count: 1, hotUpdateAvgMs: 32, rollbackAvgMs: 36 })
+    expect(byMutation.content).toMatchObject({ count: 1, hotUpdateAvgMs: 30, rollbackAvgMs: 40 })
+  })
+
+  it('resolves report paths and writes report files', async () => {
+    const tempDir = await mkdtemp(path.join(os.tmpdir(), 'weapp-tw-watch-summary-'))
+    tempDirs.push(tempDir)
+    const reportFile = 'artifacts/watch-report.json'
+    const cases = [createCase('weapp-vite', 'demo', 30, 40)]
+    const options: CliOptions = {
+      caseName: 'demo',
+      timeoutMs: 2_000,
+      pollMs: 20,
+      skipBuild: true,
+      quietSass: true,
+      reportFile,
+      maxHotUpdateMs: 100,
+    }
+
+    expect(resolveReportPath(tempDir, reportFile)).toBe(path.join(tempDir, reportFile))
+    expect(resolveReportPath(tempDir, path.join(tempDir, reportFile))).toBe(path.join(tempDir, reportFile))
+    expect(resolveRepositoryRootLabel(tempDir)).toBe(path.basename(tempDir))
+
+    const stdoutSpy = vi.spyOn(process.stdout, 'write').mockReturnValue(true)
+    try {
+      await writeReport(tempDir, options, cases)
+    }
+    finally {
+      stdoutSpy.mockRestore()
+    }
+
+    const reportPath = path.join(tempDir, reportFile)
+    const report = JSON.parse(await readFile(reportPath, 'utf8'))
+
+    expect(report.repositoryRoot).toBe(path.basename(tempDir))
+    expect(report.options.caseName).toBe('demo')
+    expect(report.summary).toMatchObject({ count: 1, hotUpdateAvgMs: 30, rollbackAvgMs: 40 })
+    expect(report.summaryByMutationKind.template).toMatchObject({ count: 1, hotUpdateAvgMs: 30 })
+  })
+})
