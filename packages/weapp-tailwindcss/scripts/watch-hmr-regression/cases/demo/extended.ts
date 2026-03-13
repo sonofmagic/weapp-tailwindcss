@@ -193,6 +193,15 @@ export function buildDemoExtendedCases(baseCwd: string): WatchCase[] {
       path.resolve(baseCwd, 'demo/taro-vite-tailwindcss-v4/dist/app-origin.wxss'),
       path.resolve(baseCwd, 'demo/taro-vite-tailwindcss-v4/dist/app.wxss'),
     ],
+    contentMutation: {
+      sourceFile: path.resolve(baseCwd, 'demo/taro-vite-tailwindcss-v4/src/index.html'),
+      verifyEscapedIn: [],
+      verifyClassLiteralIn: [],
+      mutate(source, payload) {
+        const snippet = `  <div class="${payload.classLiteral}">${payload.marker}-content</div>`
+        return insertBeforeClosingTag(source, '</body>', snippet)
+      },
+    },
     templateMutation: {
       sourceFile: path.resolve(baseCwd, 'demo/taro-vite-tailwindcss-v4/src/pages/index/index.tsx'),
       verifyEscapedIn: [],
@@ -239,6 +248,15 @@ export function buildDemoExtendedCases(baseCwd: string): WatchCase[] {
       path.resolve(baseCwd, 'demo/taro-app-vite/dist/app-origin.wxss'),
       path.resolve(baseCwd, 'demo/taro-app-vite/dist/app.wxss'),
     ],
+    contentMutation: {
+      sourceFile: path.resolve(baseCwd, 'demo/taro-app-vite/src/index.html'),
+      verifyEscapedIn: [],
+      verifyClassLiteralIn: [],
+      mutate(source, payload) {
+        const snippet = `  <div class="${payload.classLiteral}">${payload.marker}-content</div>`
+        return insertBeforeClosingTag(source, '</body>', snippet)
+      },
+    },
     templateMutation: {
       sourceFile: path.resolve(baseCwd, 'demo/taro-app-vite/src/pages/index/index.tsx'),
       verifyEscapedIn: [],
@@ -284,6 +302,15 @@ export function buildDemoExtendedCases(baseCwd: string): WatchCase[] {
       path.resolve(baseCwd, 'demo/taro-webpack-tailwindcss-v4/dist/pages/index/index.wxss'),
       path.resolve(baseCwd, 'demo/taro-webpack-tailwindcss-v4/dist/app.wxss'),
     ],
+    contentMutation: {
+      sourceFile: path.resolve(baseCwd, 'demo/taro-webpack-tailwindcss-v4/src/index.html'),
+      verifyEscapedIn: [],
+      verifyClassLiteralIn: [],
+      mutate(source, payload) {
+        const snippet = `  <div class="${payload.classLiteral}">${payload.marker}-content</div>`
+        return insertBeforeClosingTag(source, '</body>', snippet)
+      },
+    },
     templateMutation: {
       sourceFile: path.resolve(baseCwd, 'demo/taro-webpack-tailwindcss-v4/src/pages/index/index.tsx'),
       verifyEscapedIn: [],
@@ -331,6 +358,15 @@ export function buildDemoExtendedCases(baseCwd: string): WatchCase[] {
       path.resolve(baseCwd, 'demo/taro-vue3-app/dist/pages/index/index.wxss'),
       path.resolve(baseCwd, 'demo/taro-vue3-app/dist/app.wxss'),
     ],
+    contentMutation: {
+      sourceFile: path.resolve(baseCwd, 'demo/taro-vue3-app/src/index.html'),
+      verifyEscapedIn: [],
+      verifyClassLiteralIn: [],
+      mutate(source, payload) {
+        const snippet = `  <div class="${payload.classLiteral}">${payload.marker}-content</div>`
+        return insertBeforeClosingTag(source, '</body>', snippet)
+      },
+    },
     templateMutation: {
       sourceFile: path.resolve(baseCwd, 'demo/taro-vue3-app/src/pages/index/index.vue'),
       verifyEscapedIn: [],

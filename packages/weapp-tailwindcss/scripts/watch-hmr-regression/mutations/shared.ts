@@ -93,6 +93,35 @@ export async function waitForOutputsUpdated(
   )
 }
 
+export async function waitForOutputFilesUpdated(
+  watchCase: WatchCase,
+  files: string[],
+  baselineMtimes: Map<string, number>,
+  options: CliOptions,
+  session: WatchSession,
+  startedAt = Date.now(),
+) {
+  return waitFor(
+    async () => {
+      for (const file of files) {
+        const baselineMtime = baselineMtimes.get(file) ?? 0
+        const currentMtime = await getMtime(file)
+        if (currentMtime > baselineMtime) {
+          return true
+        }
+      }
+      return false
+    },
+    {
+      timeoutMs: options.timeoutMs,
+      pollMs: options.pollMs,
+      message: `[${watchCase.label}] output files were not updated after source change: ${files.map(formatPath).join(', ')}`,
+      onTick: session.ensureRunning,
+    },
+    startedAt,
+  )
+}
+
 export async function waitForMarkerState(
   watchCase: WatchCase,
   marker: string,

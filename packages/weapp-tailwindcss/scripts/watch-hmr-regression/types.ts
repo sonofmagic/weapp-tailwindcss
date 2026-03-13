@@ -5,7 +5,7 @@ export type ConcreteWatchCaseName = 'taro' | 'uni' | 'mpx' | 'rax' | 'mina' | 'w
 export type WatchCaseName = ConcreteWatchCaseName | 'both' | 'all' | 'demo' | 'apps'
 export const MUTATION_ROUND_NAMES = ['baseline-arbitrary', 'complex-corpus', 'hex-arbitrary', 'issue33-arbitrary'] as const
 export type MutationRoundName = typeof MUTATION_ROUND_NAMES[number]
-export type MutationKind = 'template' | 'script' | 'style'
+export type MutationKind = 'template' | 'script' | 'style' | 'content'
 
 export interface CliOptions {
   caseName: WatchCaseName
@@ -77,6 +77,7 @@ export interface WatchCase {
   outputJs: string
   outputStyleCandidates: string[]
   globalStyleCandidates: string[]
+  contentMutation?: ClassMutationConfig
   templateMutation: ClassMutationConfig
   scriptMutation: ClassMutationConfig
   styleMutation: StyleMutationConfig
@@ -238,8 +239,14 @@ export interface WatchReport {
 }
 
 export const DEFAULT_STYLE_APPLY_VALIDATION: StyleApplyValidation = {
-  utilities: ['font-bold', 'text-center'],
-  expectedDeclarations: ['font-weight:700', 'text-align:center'],
+  utilities: ['font-bold', 'text-center', 'bg-[#123456]', 'px-[12px]'],
+  expectedDeclarations: [
+    'font-weight:',
+    'text-align:',
+    'background-color:',
+    'padding-left:',
+    'padding-right:',
+  ],
 }
 
 export const STYLE_APPLY_UNSUPPORTED_CASES = new Set<ConcreteWatchCaseName>([

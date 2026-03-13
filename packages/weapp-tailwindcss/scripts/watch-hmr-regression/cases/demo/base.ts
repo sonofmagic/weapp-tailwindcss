@@ -27,6 +27,15 @@ export function buildDemoBaseCases(baseCwd: string): WatchCase[] {
     globalStyleCandidates: [
       path.resolve(baseCwd, 'demo/taro-app/dist/app.wxss'),
     ],
+    contentMutation: {
+      sourceFile: path.resolve(baseCwd, 'demo/taro-app/src/index.html'),
+      verifyEscapedIn: [],
+      verifyClassLiteralIn: [],
+      mutate(source, payload) {
+        const snippet = `  <div class="${payload.classLiteral}">${payload.marker}-content</div>`
+        return insertBeforeClosingTag(source, '</body>', snippet)
+      },
+    },
     templateMutation: {
       sourceFile: path.resolve(baseCwd, 'demo/taro-app/src/pages/index/index.tsx'),
       verifyEscapedIn: [],

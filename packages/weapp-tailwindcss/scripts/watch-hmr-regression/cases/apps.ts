@@ -88,6 +88,15 @@ export function buildAppCases(baseCwd: string): WatchCase[] {
     globalStyleCandidates: [
       path.resolve(baseCwd, 'apps/taro-webpack-tailwindcss-v4/dist/app.wxss'),
     ],
+    contentMutation: {
+      sourceFile: path.resolve(baseCwd, 'apps/taro-webpack-tailwindcss-v4/src/index.html'),
+      verifyEscapedIn: [],
+      verifyClassLiteralIn: [],
+      mutate(source, payload) {
+        const snippet = `  <div class="${payload.classLiteral}">${payload.marker}-content</div>`
+        return insertBeforeClosingTag(source, '</body>', snippet)
+      },
+    },
     templateMutation: {
       sourceFile: path.resolve(baseCwd, 'apps/taro-webpack-tailwindcss-v4/src/pages/index/index.tsx'),
       verifyEscapedIn: [],

@@ -107,7 +107,7 @@ export function summarizeMetricsByProject(cases: WatchCaseMetrics[]) {
 export function summarizeMutationMetricsByKind(mutations: WatchCaseMutationMetrics[]) {
   const summaryByMutationKind: Partial<Record<MutationKind, WatchSummary>> = {}
 
-  for (const mutationKind of ['template', 'script', 'style'] as const) {
+  for (const mutationKind of ['template', 'script', 'style', 'content'] as const) {
     const samples: SummarySample[] = []
     for (const item of mutations) {
       if (item.mutationKind !== mutationKind) {

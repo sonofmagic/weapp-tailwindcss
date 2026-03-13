@@ -402,10 +402,14 @@ function assertHotUpdateReport(report: HotUpdateReport, target: WatchCaseName, m
     expect(item.classTokens.length).toBeGreaterThanOrEqual(12)
     expect(item.escapedClasses.length).toBe(item.classTokens.length)
     expect(item.rounds.length).toBeGreaterThanOrEqual(requiredMutationRounds.length)
-    expect(item.mutationMetrics.length).toBe(3)
+    const hasContentMutation = item.mutationMetrics.some(metric => metric.mutationKind === 'content')
+    expect(item.mutationMetrics.length).toBe(hasContentMutation ? 4 : 3)
     expect(item.summaryByMutationKind.template?.count).toBe(1)
     expect(item.summaryByMutationKind.script?.count).toBe(1)
     expect(item.summaryByMutationKind.style?.count).toBe(1)
+    if (hasContentMutation) {
+      expect(item.summaryByMutationKind.content?.count).toBe(1)
+    }
     assertHasWxssOutput(
       normalizeGlobalStyleOutputs(item.globalStyleOutputs ?? item.globalStyleOutput),
       `[${item.project}] case global style outputs`,
