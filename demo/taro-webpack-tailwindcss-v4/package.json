@@ -49,7 +49,7 @@
   "author": "",
   "dependencies": {
     "@babel/runtime": "catalog:babelRuntime7284",
-    "@nutui/nutui-react-taro": "^3.0.19-cpp-beta.2",
+    "@nutui/nutui-react-taro": "^3.0.19",
     "@tarojs/components": "catalog:taro4",
     "@tarojs/helper": "catalog:taro4",
     "@tarojs/plugin-framework-react": "catalog:taro4",
