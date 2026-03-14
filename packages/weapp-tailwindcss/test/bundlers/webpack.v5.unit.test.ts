@@ -34,6 +34,7 @@ interface TestContext {
   onStart: ReturnType<typeof vi.fn>
   onEnd: ReturnType<typeof vi.fn>
   onUpdate: ReturnType<typeof vi.fn>
+  refreshTailwindcssPatcher: ReturnType<typeof vi.fn>
   templateHandler: ReturnType<typeof vi.fn>
   styleHandler: ReturnType<typeof vi.fn>
   jsHandler: ReturnType<typeof vi.fn>
@@ -78,6 +79,7 @@ function createContext(overrides: Partial<TestContext> = {}): TestContext {
     onStart: vi.fn(),
     onEnd: vi.fn(),
     onUpdate: vi.fn(),
+    refreshTailwindcssPatcher: vi.fn(async () => currentContext.twPatcher),
     templateHandler: vi.fn(async (code: string) => `tpl:${code}`),
     styleHandler: vi.fn(async (code: string) => ({ css: `css:${code}` })),
     jsHandler: vi.fn(async (code: string) => ({ code: `js:${code}` })),
@@ -328,6 +330,99 @@ describe('bundlers/webpack UnifiedWebpackPluginV5', () => {
     expect(currentContext.twPatcher.extract).toHaveBeenCalledTimes(2)
   })
 
+  it('refreshes runtime patcher on watch invalidation even without modifiedFiles', async () => {
+    const processAssetsCallbacks: Array<(assets: Record<string, any>) => Promise<void>> = []
+    const invalidHandlers: Array<() => void> = []
+    const thisCompilationHandlers: Array<(_compilation: any) => void> = []
+    let currentAssetStore: Record<string, string> = {}
+    const compilation = {
+      compiler: { outputPath: path.resolve(process.cwd(), 'dist') },
+      chunks: [{ id: 'main', hash: 'hash-1' }],
+      hooks: {
+        processAssets: {
+          tapPromise: (_options: unknown, handler: (assets: Record<string, any>) => Promise<void>) => {
+            processAssetsCallbacks.push(handler)
+          },
+        },
+      },
+      updateAsset: vi.fn((file: string, source: FakeConcatSource) => {
+        currentAssetStore[file] = source.toString()
+      }),
+      getAsset(file: string) {
+        const content = currentAssetStore[file]
+        if (content === undefined) {
+          return undefined
+        }
+        return {
+          source: {
+            source: () => content,
+          },
+        }
+      },
+    }
+    const compiler = {
+      webpack: {
+        Compilation: {
+          PROCESS_ASSETS_STAGE_SUMMARIZE: Symbol('stage'),
+        },
+        sources: {
+          ConcatSource: FakeConcatSource,
+        },
+        NormalModule: {
+          getCompilationHooks: vi.fn(() => ({
+            loader: {
+              tap: vi.fn(),
+            },
+          })),
+        },
+      },
+      hooks: {
+        invalid: {
+          tap: vi.fn((_name: string, handler: () => void) => {
+            invalidHandlers.push(handler)
+          }),
+        },
+        thisCompilation: {
+          tap: vi.fn((_name: string, handler: (_compilation: any) => void) => {
+            thisCompilationHandlers.push(handler)
+            handler(compilation)
+          }),
+        },
+        normalModuleFactory: {
+          tap: vi.fn(() => {}),
+        },
+        compilation: {
+          tap: vi.fn((_name: string, handler: (_compilation: any) => void) => {
+            handler(compilation)
+          }),
+        },
+        watchRun: {
+          tap: vi.fn(),
+        },
+      },
+    }
+
+    const plugin = new UnifiedWebpackPluginV5()
+    plugin.apply(compiler as any)
+
+    currentAssetStore = {
+      'index.css': '.foo { color: red; }',
+    }
+    await processAssetsCallbacks[0](createAssetsFromStore(currentAssetStore))
+
+    expect(currentContext.refreshTailwindcssPatcher).not.toHaveBeenCalled()
+
+    invalidHandlers[0]?.()
+    thisCompilationHandlers[0]?.(compilation)
+
+    currentAssetStore = {
+      'index.css': '.foo { color: blue; }',
+    }
+    await processAssetsCallbacks[0](createAssetsFromStore(currentAssetStore))
+
+    expect(currentContext.refreshTailwindcssPatcher).toHaveBeenCalledTimes(1)
+  })
+
   it('reuses css handler override objects for repeated asset updates', async () => {
     const processAssetsCallbacks: Array<(assets: Record<string, any>) => Promise<void>> = []
     let currentAssetStore: Record<string, string> = {}
@@ -399,6 +494,86 @@ describe('bundlers/webpack UnifiedWebpackPluginV5', () => {
 
     expect(currentContext.styleHandler).toHaveBeenCalledTimes(2)
     expect(currentContext.styleHandler.mock.calls[0]?.[1]).toBe(currentContext.styleHandler.mock.calls[1]?.[1])
+  })
+
+  it('does not prune non-main css chunks during v4 runtime processing', async () => {
+    currentContext = createContext({
+      mainCssChunkMatcher: vi.fn(() => false),
+      styleHandler: vi.fn(async (code: string) => ({ css: code })),
+      twPatcher: {
+        ...createContext().twPatcher,
+        majorVersion: 4,
+        options: {
+          tailwindcss: {
+            v4: {
+              cssEntries: ['/virtual/app.css'],
+            },
+          },
+        },
+      } as any,
+    })
+
+    const processAssetsCallbacks: Array<(assets: Record<string, any>) => Promise<void>> = []
+    let currentAssetStore: Record<string, string> = {
+      'index.css': '.tw-watch-style-case { color: red; }',
+    }
+    const compilation = {
+      compiler: { outputPath: path.resolve(process.cwd(), 'dist') },
+      chunks: [{ id: 'page', hash: 'hash-1', files: ['index.css'] }],
+      hooks: {
+        processAssets: {
+          tapPromise: (_options: unknown, handler: (assets: Record<string, any>) => Promise<void>) => {
+            processAssetsCallbacks.push(handler)
+          },
+        },
+      },
+      updateAsset: vi.fn((file: string, source: FakeConcatSource) => {
+        currentAssetStore[file] = source.toString()
+      }),
+      getAsset(file: string) {
+        const content = currentAssetStore[file]
+        if (content === undefined) {
+          return undefined
+        }
+        return {
+          source: {
+            source: () => content,
+          },
+        }
+      },
+    }
+    const compiler = {
+      webpack: {
+        Compilation: {
+          PROCESS_ASSETS_STAGE_SUMMARIZE: Symbol('stage'),
+        },
+        sources: {
+          ConcatSource: FakeConcatSource,
+        },
+        NormalModule: {
+          getCompilationHooks: vi.fn(() => ({
+            loader: {
+              tap: vi.fn(),
+            },
+          })),
+        },
+      },
+      hooks: {
+        normalModuleFactory: {
+          tap: vi.fn(() => {}),
+        },
+        compilation: {
+          tap: vi.fn((_name: string, handler: (_compilation: any) => void) => {
+            handler(compilation)
+          }),
+        },
+      },
+    }
+
+    new UnifiedWebpackPluginV5().apply(compiler as any)
+    await processAssetsCallbacks[0](createAssetsFromStore(currentAssetStore))
+
+    expect(currentAssetStore['index.css']).toContain('.tw-watch-style-case')
   })
 
   it('reuses template handler options for multiple html assets in one compilation', async () => {
@@ -778,6 +953,7 @@ describe('bundlers/webpack UnifiedWebpackPluginV5', () => {
     expect(firstPass).not.toContain('bg-[#f40404]')
 
     runtimeSet = new Set(['bg-[#f0a0a0]', 'text-[100rpx]', 'text-white'])
+    compilation.chunks = [{ id: 'main', hash: 'hash-2' }]
     currentAssetStore = {
       'index.js': 'const cls = "bg-[#f0a0a0] text-[100rpx] text-white"',
     }

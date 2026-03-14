@@ -257,6 +257,29 @@ async function waitForContentRoundOutputs(
   }
 }
 
+async function waitForContentRoundRollback(
+  watchCase: WatchCase,
+  globalStyleOutputs: string[],
+  options: CliOptions,
+  session: WatchSession,
+  startedAt: number,
+  escapedClasses: string[],
+): Promise<number> {
+  return waitFor(
+    async () => {
+      const outputs = await loadRoundOutputs(watchCase, globalStyleOutputs)
+      return escapedClasses.every(escaped => !outputs.globalStyle.includes(escaped))
+    },
+    {
+      timeoutMs: options.timeoutMs,
+      pollMs: options.pollMs,
+      message: `[${watchCase.label}] mutation=content global style output did not rollback in time`,
+      onTick: session.ensureRunning,
+    },
+    startedAt,
+  )
+}
+
 function assertIssue33ScriptTokenHealth(
   source: string,
   watchCase: WatchCase,
@@ -734,12 +757,24 @@ export async function runClassMutation(
       )
       await writeFilePreserveEol(sourcePath, sourceOriginal, sourceOriginal)
       rollbackOutputMs = isContentMutation
-        ? await waitForOutputFilesUpdated(
-            watchCase,
-            mutationOutputFiles,
-            updatedOutputMtimes,
-            options,
-            session,
+        ? await waitFor(
+            async () => {
+              for (const file of mutationOutputFiles) {
+                const baselineMtime = updatedOutputMtimes.get(file) ?? 0
+                const currentMtime = await getMtime(file)
+                if (currentMtime > baselineMtime) {
+                  return true
+                }
+              }
+              const outputs = await loadRoundOutputs(watchCase, globalStyleOutputs)
+              return effectiveEscapedClasses.every(escaped => !outputs.globalStyle.includes(escaped))
+            },
+            {
+              timeoutMs: options.timeoutMs,
+              pollMs: options.pollMs,
+              message: `[${watchCase.label}] output files were not updated after source change: ${mutationOutputFiles.map(formatPath).join(', ')}`,
+              onTick: session.ensureRunning,
+            },
             rollbackStartedAt,
           )
         : await waitForOutputsUpdated(
@@ -750,7 +785,14 @@ export async function runClassMutation(
             rollbackStartedAt,
           )
       rollbackEffectiveMs = isContentMutation
-        ? rollbackOutputMs
+        ? await waitForContentRoundRollback(
+            watchCase,
+            globalStyleOutputs,
+            options,
+            session,
+            rollbackStartedAt,
+            effectiveEscapedClasses,
+          )
         : await waitForMarkerState(
             watchCase,
             effectiveMarker,

@@ -5,6 +5,7 @@ export interface ProcessCachedTaskOptions<TValue extends CacheValue> {
   cacheKey: string
   hashKey?: HashMapKey
   rawSource?: string
+  hash?: string
   readCache?: () => TValue | undefined
   applyResult: (value: TValue) => void | Promise<void>
   transform: () => Promise<{
@@ -19,6 +20,7 @@ export async function processCachedTask<TValue extends CacheValue>({
   cacheKey,
   hashKey = cacheKey,
   rawSource,
+  hash,
   readCache,
   applyResult,
   transform,
@@ -29,6 +31,7 @@ export async function processCachedTask<TValue extends CacheValue>({
     key: cacheKey,
     hashKey,
     rawSource,
+    hash,
     resolveCache: readCache,
     async onCacheHit(value) {
       cacheHit = true

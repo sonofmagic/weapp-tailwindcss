@@ -28,6 +28,15 @@ export interface LegacyTailwindcssPatcherOptions {
   }
 }
 
+export function resolveTailwindcssOptions(
+  options?: TailwindcssPatchOptions | LegacyTailwindcssPatcherOptions,
+) {
+  if (!options) {
+    return undefined
+  }
+  return options.tailwindcss ?? (options as TailwindcssPatchOptions).tailwind
+}
+
 export function normalizeExtendLengthUnits(
   value: boolean | ILengthUnitsPatchOptions | undefined,
 ): TailwindExtendLengthUnitsOption | undefined {
@@ -164,7 +173,7 @@ export function toModernTailwindcssPatchOptions(
     normalized.projectRoot = projectRoot
   }
 
-  const tailwindcss = options.tailwindcss ?? options.tailwind
+  const tailwindcss = resolveTailwindcssOptions(options)
   if (tailwindcss) {
     normalized.tailwindcss = {
       ...tailwindcss,

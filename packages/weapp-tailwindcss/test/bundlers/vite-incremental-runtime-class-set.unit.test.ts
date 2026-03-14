@@ -277,4 +277,51 @@ describe('bundlers/vite incremental runtime class set', () => {
     ]))
     expect(extractCandidates).toHaveBeenCalledTimes(1)
   })
+
+  it('resets incremental runtime state when css entry signature changes', async () => {
+    const opts = createOptions()
+    const outDir = path.join(tempRoot, 'dist')
+    const state = createBundleBuildState()
+    const projectRoot = path.join(tempRoot, 'project')
+    const patcher = createPatcher(projectRoot)
+    const cssEntry = path.join(projectRoot, 'src/app.css')
+    await mkdir(path.dirname(cssEntry), { recursive: true })
+    await writeFile(cssEntry, '@import "tailwindcss";', 'utf8')
+    patcher.options.tailwind.v4.cssEntries = [cssEntry]
+
+    const extractCandidates = vi.fn(async () => ['foo'])
+    const extractRawCandidates = vi.fn(async () => [{ rawCandidate: 'foo' }])
+    const manager = createBundleRuntimeClassSetManager({
+      extractCandidates,
+      extractRawCandidates,
+      tempRoot,
+    })
+
+    const firstSnapshot = buildBundleSnapshot({
+      'pages/index/index.wxml': {
+        ...createRollupAsset('<view class="foo" />'),
+        fileName: 'pages/index/index.wxml',
+      },
+    }, opts, outDir, state)
+
+    await manager.sync(patcher, firstSnapshot)
+    expect(extractCandidates).toHaveBeenCalledTimes(1)
+
+    updateBundleBuildState(state, firstSnapshot, new Map([
+      ['pages/index/index.wxml', new Set<string>()],
+    ]))
+
+    await writeFile(cssEntry, '@import "tailwindcss";\n@theme { --color-brand: #123456; }\n', 'utf8')
+    await new Promise(resolve => setTimeout(resolve, 0))
+
+    const secondSnapshot = buildBundleSnapshot({
+      'pages/index/index.wxml': {
+        ...createRollupAsset('<view class="foo" />'),
+        fileName: 'pages/index/index.wxml',
+      },
+    }, opts, outDir, state)
+
+    await manager.sync(patcher, secondSnapshot)
+    expect(extractCandidates).toHaveBeenCalledTimes(2)
+  })
 })

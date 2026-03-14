@@ -173,6 +173,21 @@ describe('tailwindcss helpers', () => {
     expect(path.isAbsolute(callArgs.tailwindcss?.postcssPlugin)).toBe(true)
   })
 
+  it('uses @tailwindcss/postcss as postcss plugin when packageName points to v4 package without explicit version', async () => {
+    const { createTailwindcssPatcher } = await import('@/tailwindcss')
+
+    createTailwindcssPatcher({
+      basedir: '/repo',
+      tailwindcss: {
+        packageName: '@tailwindcss/postcss',
+      },
+    })
+
+    const lastCall = tailwindcssPatcherMock.mock.calls.at(-1)
+    const callArgs = lastCall?.[0] as any
+    expect(callArgs.tailwindcss?.postcssPlugin).toContain('@tailwindcss/postcss')
+  })
+
   it('falls back to default tailwind config when project has none', async () => {
     const tempDir = await mkdtemp(path.join(os.tmpdir(), 'wtw-tailwind-no-config-'))
     const { createTailwindcssPatcher } = await import('@/tailwindcss')

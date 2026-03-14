@@ -12,6 +12,17 @@ export { createMultiTailwindcssPatcher } from './multi-patcher'
 
 type TailwindUserOptions = NonNullable<TailwindcssPatchOptions['tailwindcss']>
 
+function isTailwindcss4Package(packageName: string | undefined) {
+  return Boolean(
+    packageName
+    && (packageName === 'tailwindcss4' || packageName === '@tailwindcss/postcss' || packageName.includes('tailwindcss4')),
+  )
+}
+
+function hasOwnV4Signal(value: unknown) {
+  return typeof value === 'object' && value !== null && 'v4' in value
+}
+
 export interface TailwindcssPatcherFactoryOptions {
   tailwindcss?: TailwindUserOptions
   tailwindcssPatcherOptions?: CreateTailwindcssPatcherOptions['tailwindcssPatcherOptions']
@@ -46,10 +57,6 @@ export function createPatcherForBase(
           base: baseDir,
           cssEntries,
         },
-  }
-
-  if (hasCssEntries && (tailwindcss == null || tailwindcss.version == null)) {
-    defaultTailwindcssConfig.version = 4
   }
 
   const mergedTailwindOptions = defuOverrideArray<TailwindUserOptions, TailwindUserOptions[]>(
@@ -99,14 +106,16 @@ export function createPatcherForBase(
     || (tailwindcssPatcherOptions as any)?.patch?.tailwindcss?.version
     || mergedTailwindOptions.version
 
-  const isTailwindcss4Package = (packageName: string | undefined) => Boolean(
-    packageName
-    && (packageName === 'tailwindcss4' || packageName === '@tailwindcss/postcss' || packageName.includes('tailwindcss4')),
-  )
+  const hasExplicitV4Signals = hasCssEntries
+    || hasOwnV4Signal(tailwindcss)
+    || hasOwnV4Signal((tailwindcssPatcherOptions as any)?.tailwindcss)
+    || hasOwnV4Signal((tailwindcssPatcherOptions as any)?.tailwind)
+    || hasOwnV4Signal((tailwindcssPatcherOptions as any)?.patch?.tailwindcss)
 
   const isV4 = configuredVersion === 4
     || mergedTailwindOptions.version === 4
     || isTailwindcss4Package(configuredPackageName ?? mergedTailwindOptions.packageName)
+    || hasExplicitV4Signals
 
   const tailwindPackageConfigured = Boolean(configuredPackageName)
   const shouldPatchV4PostcssPackage = isV4 && !tailwindPackageConfigured

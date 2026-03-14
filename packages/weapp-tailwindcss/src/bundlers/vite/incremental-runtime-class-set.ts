@@ -6,6 +6,7 @@ import path from 'node:path'
 import process from 'node:process'
 import { extractRawCandidatesWithPositions, extractValidCandidates } from 'tailwindcss-patch'
 import { createDebug } from '@/debug'
+import { resolveTailwindcssOptions } from '@/tailwindcss/patcher-options'
 import { getRuntimeClassSetSignature } from '@/tailwindcss/runtime/cache'
 
 const debug = createDebug('[vite:runtime-set] ')
@@ -63,7 +64,7 @@ function isPostcssPluginImportTarget(value: string | undefined) {
 }
 
 function resolveTailwindCssImportTarget(patcher: TailwindcssPatcherLike) {
-  const tailwindOptions = patcher.options?.tailwind
+  const tailwindOptions = resolveTailwindcssOptions(patcher.options)
   const cssEntries = tailwindOptions?.v4?.cssEntries?.filter((item): item is string => typeof item === 'string' && item.length > 0)
   if (cssEntries && cssEntries.length > 0) {
     return createCssImportSource(cssEntries)
@@ -116,7 +117,7 @@ async function resolveTailwindCssSource(
   patcher: TailwindcssPatcherLike,
 ): Promise<RuntimeValidationContext> {
   const projectRoot = getProjectRoot(patcher)
-  const tailwindOptions = patcher.options?.tailwind
+  const tailwindOptions = resolveTailwindcssOptions(patcher.options)
   const configuredBase = resolveMaybeAbsolute(projectRoot, tailwindOptions?.v4?.base)
   const configDir = tailwindOptions?.config ? path.dirname(tailwindOptions.config) : undefined
   const sharedFallbacks = [

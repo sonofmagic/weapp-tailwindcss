@@ -10,6 +10,7 @@ import { getCompilerContext } from '@/context'
 import { toCustomAttributesEntities } from '@/context/custom-attributes'
 import { findNearestPackageRoot } from '@/context/workspace'
 import { createDebug } from '@/debug'
+import { resolveTailwindcssOptions } from '@/tailwindcss/patcher-options'
 import { findTailwindConfig } from '@/tailwindcss/patcher-resolve'
 import { setupPatchRecorder } from '@/tailwindcss/recorder'
 import { collectRuntimeClassSet, refreshTailwindRuntimeState } from '@/tailwindcss/runtime'
@@ -118,7 +119,7 @@ export function UnifiedViteWeappTailwindcssPlugin(options: UserDefinedOptions = 
   const bundleRuntimeClassSetManager = createBundleRuntimeClassSetManager()
 
   function resolveRuntimeRefreshOptions() {
-    const configPath = runtimeState.twPatcher.options?.tailwind?.config
+    const configPath = resolveTailwindcssOptions(runtimeState.twPatcher.options)?.config
     const signature = getRuntimeClassSetSignature(runtimeState.twPatcher)
     const optionsKey = JSON.stringify({
       appType,

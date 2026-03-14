@@ -17,6 +17,10 @@ interface SetupWebpackV5LoadersOptions {
   runtimeLoaderPath?: string
   runtimeCssImportRewriteLoaderPath?: string
   getClassSetInLoader: () => Promise<void>
+  getRuntimeWatchDependencies: () => {
+    files: ReadonlySet<string>
+    contexts: ReadonlySet<string>
+  }
   debug: (format: string, ...args: unknown[]) => void
 }
 
@@ -30,6 +34,7 @@ export function setupWebpackV5Loaders(options: SetupWebpackV5LoadersOptions) {
     runtimeLoaderPath,
     runtimeCssImportRewriteLoaderPath,
     getClassSetInLoader,
+    getRuntimeWatchDependencies,
     debug,
   } = options
   const isMpxApp = isMpx(appType)
@@ -56,6 +61,7 @@ export function setupWebpackV5Loaders(options: SetupWebpackV5LoadersOptions) {
     : undefined
   const classSetLoaderOptions = {
     getClassSet: getClassSetInLoader,
+    getWatchDependencies: getRuntimeWatchDependencies,
   }
   const { findRewriteAnchor, findClassSetAnchor } = createLoaderAnchorFinders(appType)
   const cssImportRewriteLoaderOptions = runtimeLoaderRewriteOptions

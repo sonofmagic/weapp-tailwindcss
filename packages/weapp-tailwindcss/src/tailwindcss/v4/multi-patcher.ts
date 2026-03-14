@@ -1,4 +1,5 @@
 import type { TailwindcssPatcherLike } from '@/types'
+import { runtimeSignaturePatchersSymbol } from '@/tailwindcss/runtime/cache'
 
 export function createMultiTailwindcssPatcher(patchers: TailwindcssPatcherLike[]): TailwindcssPatcherLike {
   if (patchers.length <= 1) {
@@ -89,6 +90,11 @@ export function createMultiTailwindcssPatcher(patchers: TailwindcssPatcherLike[]
       return aggregated
     }
   }
+
+  Object.defineProperty(multiPatcher, runtimeSignaturePatchersSymbol, {
+    value: [...patchers],
+    configurable: true,
+  })
 
   return multiPatcher
 }
