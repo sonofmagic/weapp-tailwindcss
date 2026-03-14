@@ -1,6 +1,6 @@
 import type { ParserOptions } from '@babel/parser'
-import type { LoadedPostcssOptions } from '@weapp-tailwindcss/postcss'
-import type { ILengthUnitsPatchOptions, TailwindcssPatchOptions } from 'tailwindcss-patch'
+import type { LoadedPostcssOptions } from '@weapp-tailwindcss/postcss/types'
+import type { ILengthUnitsPatchOptions, TailwindCssPatchOptions } from 'tailwindcss-patch'
 import type { ICreateCacheReturnType } from '../../cache'
 import type { AppType, IArbitraryValues } from '../shared'
 
@@ -190,7 +190,7 @@ export interface UserDefinedOptionsGeneralPart {
    *
    * @group 3.一般配置
    */
-  tailwindcssPatcherOptions?: TailwindcssPatchOptions
+  tailwindcssPatcherOptions?: TailwindCssPatchOptions
   /**
    * 控制命令行日志输出级别。
    *

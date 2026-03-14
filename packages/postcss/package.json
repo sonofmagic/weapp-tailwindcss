@@ -35,6 +35,20 @@
   "main": "./dist/index.js",
   "module": "./dist/index.mjs",
   "types": "./dist/index.d.ts",
+  "typesVersions": {
+    "*": {
+      "html-transform": [
+        "./dist/html-transform.d.ts"
+      ],
+      "types": [
+        "./dist/types.d.ts"
+      ],
+      "*": [
+        "./dist/*",
+        "./dist/index.d.ts"
+      ]
+    }
+  },
   "files": [
     "dist"
   ],

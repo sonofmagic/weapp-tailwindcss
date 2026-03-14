@@ -1,4 +1,4 @@
-import type { ILengthUnitsPatchOptions, TailwindcssPatchOptions } from 'tailwindcss-patch'
+import type { ILengthUnitsPatchOptions, TailwindCssPatchOptions } from 'tailwindcss-patch'
 import type { LegacyTailwindcssPatcherOptions } from './patcher-options'
 import type { TailwindcssPatcherLike } from '@/types'
 import path from 'node:path'
@@ -22,16 +22,16 @@ import {
 
 type TailwindcssExtractOptions = Parameters<TailwindcssPatcher['extract']>[0]
 type TailwindcssExtractResult = ReturnType<TailwindcssPatcher['extract']>
-type TailwindUserOptions = NonNullable<TailwindcssPatchOptions['tailwindcss']>
-type TailwindCacheOptions = Exclude<NonNullable<TailwindcssPatchOptions['cache']>, boolean>
-type TailwindApplyOptions = NonNullable<TailwindcssPatchOptions['apply']>
+type TailwindUserOptions = NonNullable<TailwindCssPatchOptions['tailwindcss']>
+type TailwindCacheOptions = Exclude<NonNullable<TailwindCssPatchOptions['cache']>, boolean>
+type TailwindApplyOptions = NonNullable<TailwindCssPatchOptions['apply']>
 
 export interface CreateTailwindcssPatcherOptions {
   basedir?: string
   cacheDir?: string
   supportCustomLengthUnitsPatch?: boolean | ILengthUnitsPatchOptions
   tailwindcss?: TailwindUserOptions
-  tailwindcssPatcherOptions?: TailwindcssPatchOptions | LegacyTailwindcssPatcherOptions
+  tailwindcssPatcherOptions?: TailwindCssPatchOptions | LegacyTailwindcssPatcherOptions
 }
 
 function createFallbackTailwindcssPatcher(): TailwindcssPatcherLike {
@@ -153,7 +153,7 @@ export function createTailwindcssPatcher(options?: CreateTailwindcssPatcherOptio
     }
   }
 
-  const baseOptions: TailwindcssPatchOptions = {
+  const baseOptions: TailwindCssPatchOptions = {
     projectRoot: normalizedBasedir,
     cache,
     tailwindcss: baseTailwindOptions,
@@ -163,8 +163,8 @@ export function createTailwindcssPatcher(options?: CreateTailwindcssPatcherOptio
     } satisfies TailwindApplyOptions,
   }
 
-  const mergedOptions = defuOverrideArray<TailwindcssPatchOptions, TailwindcssPatchOptions[]>(
-    (normalizedUserOptions ?? {}) as TailwindcssPatchOptions,
+  const mergedOptions = defuOverrideArray<TailwindCssPatchOptions, TailwindCssPatchOptions[]>(
+    (normalizedUserOptions ?? {}) as TailwindCssPatchOptions,
     baseOptions,
   )
   const resolvedOptions = toModernTailwindcssPatchOptions(mergedOptions) ?? {}

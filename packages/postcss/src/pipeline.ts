@@ -95,12 +95,13 @@ function createPreparedNode(
 function createPreparedNodes(options: IStyleHandlerOptions): PipelinePreparedNode[] {
   const preparedNodes: PipelinePreparedNode[] = []
   const userPlugins = normalizeUserPlugins(options.postcssOptions?.plugins)
+  const presetEnvOptions = options.cssPresetEnv as Parameters<typeof postcssPresetEnv>[0]
   userPlugins.forEach((plugin, index) => {
     preparedNodes.push(createPreparedNode(`pre:user-${index}`, 'pre', () => plugin))
   })
 
   preparedNodes.push(createPreparedNode('pre:core', 'pre', () => postcssWeappTailwindcssPrePlugin(options)))
-  preparedNodes.push(createPreparedNode('normal:preset-env', 'normal', () => postcssPresetEnv(options.cssPresetEnv)))
+  preparedNodes.push(createPreparedNode('normal:preset-env', 'normal', () => postcssPresetEnv(presetEnvOptions)))
   preparedNodes.push(createPreparedNode('normal:color-functional-fallback', 'normal', () => createColorFunctionalFallback()))
 
   const unitsToPxPlugin = getUnitsToPxPlugin(options)

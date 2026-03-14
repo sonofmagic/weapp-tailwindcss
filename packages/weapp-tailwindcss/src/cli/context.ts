@@ -1,4 +1,4 @@
-import type { TailwindcssPatchOptions } from 'tailwindcss-patch'
+import type { TailwindCssPatchOptions } from 'tailwindcss-patch'
 import type { UserDefinedOptions } from '@/types'
 import path from 'node:path'
 import process from 'node:process'
@@ -6,13 +6,13 @@ import { getCompilerContext } from '@/context'
 import { defuOverrideArray } from '@/utils'
 
 function mergeTailwindcssPatcherOptions(
-  overrides: TailwindcssPatchOptions,
-  current: TailwindcssPatchOptions | undefined,
-): TailwindcssPatchOptions {
+  overrides: TailwindCssPatchOptions,
+  current: TailwindCssPatchOptions | undefined,
+): TailwindCssPatchOptions {
   if (!current) {
     return overrides
   }
-  return defuOverrideArray<TailwindcssPatchOptions, TailwindcssPatchOptions[]>(overrides, current)
+  return defuOverrideArray<TailwindCssPatchOptions, TailwindCssPatchOptions[]>(overrides, current)
 }
 
 export function resolveEntry(entry: string, cwd: string | undefined) {
@@ -24,16 +24,16 @@ export function resolveEntry(entry: string, cwd: string | undefined) {
 }
 
 export function buildTailwindcssPatcherOptions(
-  overrides: Partial<TailwindcssPatchOptions> | undefined,
-): TailwindcssPatchOptions | undefined {
+  overrides: Partial<TailwindCssPatchOptions> | undefined,
+): TailwindCssPatchOptions | undefined {
   if (!overrides) {
     return undefined
   }
-  const filtered: Partial<TailwindcssPatchOptions> = {}
+  const filtered: Partial<TailwindCssPatchOptions> = {}
   if (overrides.projectRoot || overrides.cwd) {
     filtered.projectRoot = overrides.projectRoot ?? overrides.cwd
   }
-  const extract: NonNullable<TailwindcssPatchOptions['extract']> = {}
+  const extract: NonNullable<TailwindCssPatchOptions['extract']> = {}
   if (overrides.extract) {
     if (overrides.extract.file) {
       extract.file = overrides.extract.file
@@ -62,7 +62,7 @@ export function buildTailwindcssPatcherOptions(
   if (Object.keys(extract).length > 0) {
     filtered.extract = extract
   }
-  return Object.keys(filtered).length > 0 ? filtered as TailwindcssPatchOptions : undefined
+  return Object.keys(filtered).length > 0 ? filtered as TailwindCssPatchOptions : undefined
 }
 
 export function createCliContext(
@@ -77,8 +77,8 @@ export function createCliContext(
     if (!userOptions.tailwindcssBasedir) {
       userOptions.tailwindcssBasedir = resolvedCwd
     }
-    const cwdOptions: TailwindcssPatchOptions = { projectRoot: resolvedCwd }
-    const current = userOptions.tailwindcssPatcherOptions as TailwindcssPatchOptions | undefined
+    const cwdOptions: TailwindCssPatchOptions = { projectRoot: resolvedCwd }
+    const current = userOptions.tailwindcssPatcherOptions as TailwindCssPatchOptions | undefined
     userOptions.tailwindcssPatcherOptions = mergeTailwindcssPatcherOptions(
       cwdOptions,
       current,

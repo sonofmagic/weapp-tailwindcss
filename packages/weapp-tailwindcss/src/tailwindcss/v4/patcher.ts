@@ -1,4 +1,4 @@
-import type { TailwindcssPatchOptions } from 'tailwindcss-patch'
+import type { TailwindCssPatchOptions } from 'tailwindcss-patch'
 import type { CreateTailwindcssPatcherOptions } from '@/tailwindcss/patcher'
 import type { InternalUserDefinedOptions, TailwindcssPatcherLike } from '@/types'
 import { logger } from '@weapp-tailwindcss/logger'
@@ -10,7 +10,7 @@ import { overrideTailwindcssPatcherOptionsForBase } from './patcher-options'
 export { groupCssEntriesByBase, guessBasedirFromEntries, normalizeCssEntries } from './css-entries'
 export { createMultiTailwindcssPatcher } from './multi-patcher'
 
-type TailwindUserOptions = NonNullable<TailwindcssPatchOptions['tailwindcss']>
+type TailwindUserOptions = NonNullable<TailwindCssPatchOptions['tailwindcss']>
 
 function isTailwindcss4Package(packageName: string | undefined) {
   return Boolean(

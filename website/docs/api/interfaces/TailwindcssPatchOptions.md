@@ -1,69 +1,47 @@
----
-title: TailwindcssPatchOptions
-description: >-
-  定义于:
-  node_modules/.pnpm/tailwindcss-patch@8.6.1_magicast@0.5.1_tailwindcss@4.1.18/node_modules/tailwindcss-patch/dist/index.d.ts:117
-keywords:
-  - API
-  - 接口文档
-  - 配置项
-  - TailwindcssPatchOptions
-  - interfaces
-  - weapp-tailwindcss
-  - tailwindcss
-  - 小程序
-  - 微信小程序
-  - uni-app
-  - taro
-  - rax
-  - mpx
----
 # TailwindcssPatchOptions
 
-定义于: node_modules/.pnpm/tailwindcss-patch@8.6.1_magicast@0.5.1_tailwindcss@4.1.18/node_modules/tailwindcss-patch/dist/index.d.ts:117
-
-Root configuration consumed by the Tailwind CSS patch runner.
+定义于: [packages/weapp-tailwindcss/src/typedoc.export.ts:17](https://github.com/sonofmagic/weapp-tailwindcss/blob/47e67c82e0f06dcb29b61fdd2fad519d692fbabd/packages/weapp-tailwindcss/src/typedoc.export.ts#L17)
 
 ## 属性
 
-### cwd?
+### projectRoot?
 
-> `optional` **cwd**: `string`
+> `optional` **projectRoot**: `string`
 
-定义于: node_modules/.pnpm/tailwindcss-patch@8.6.1_magicast@0.5.1_tailwindcss@4.1.18/node_modules/tailwindcss-patch/dist/index.d.ts:122
+定义于: node_modules/.pnpm/tailwindcss-patch@9.0.0-alpha.2_magicast@0.5.1_tailwindcss@4.2.1/node_modules/tailwindcss-patch/dist/index.d.ts:127
 
 Base directory used when resolving Tailwind resources.
 Defaults to `process.cwd()`.
 
 ***
 
-### overwrite?
+### tailwindcss?
 
-> `optional` **overwrite**: `boolean`
+> `optional` **tailwindcss**: `TailwindCssOptions`
 
-定义于: node_modules/.pnpm/tailwindcss-patch@8.6.1_magicast@0.5.1_tailwindcss@4.1.18/node_modules/tailwindcss-patch/dist/index.d.ts:124
+定义于: node_modules/.pnpm/tailwindcss-patch@9.0.0-alpha.2_magicast@0.5.1_tailwindcss@4.2.1/node_modules/tailwindcss-patch/dist/index.d.ts:129
 
-Whether to overwrite generated artifacts (e.g., caches, outputs).
-
-***
-
-### tailwind?
-
-> `optional` **tailwind**: `TailwindUserOptions`
-
-定义于: node_modules/.pnpm/tailwindcss-patch@8.6.1_magicast@0.5.1_tailwindcss@4.1.18/node_modules/tailwindcss-patch/dist/index.d.ts:126
-
-Tailwind-specific configuration grouped by major version.
+Preferred Tailwind runtime configuration.
 
 ***
 
-### features?
+### apply?
 
-> `optional` **features**: `FeatureUserOptions`
+> `optional` **apply**: `ApplyOptions`
 
-定义于: node_modules/.pnpm/tailwindcss-patch@8.6.1_magicast@0.5.1_tailwindcss@4.1.18/node_modules/tailwindcss-patch/dist/index.d.ts:128
+定义于: node_modules/.pnpm/tailwindcss-patch@9.0.0-alpha.2_magicast@0.5.1_tailwindcss@4.2.1/node_modules/tailwindcss-patch/dist/index.d.ts:131
 
-Feature toggles for optional helpers.
+Preferred patch toggles.
+
+***
+
+### extract?
+
+> `optional` **extract**: `ExtractOptions`
+
+定义于: node_modules/.pnpm/tailwindcss-patch@9.0.0-alpha.2_magicast@0.5.1_tailwindcss@4.2.1/node_modules/tailwindcss-patch/dist/index.d.ts:133
+
+Preferred extraction output settings.
 
 ***
 
@@ -71,7 +49,7 @@ Feature toggles for optional helpers.
 
 > `optional` **filter()**: `((className: string) => boolean)`
 
-定义于: node_modules/.pnpm/tailwindcss-patch@8.6.1_magicast@0.5.1_tailwindcss@4.1.18/node_modules/tailwindcss-patch/dist/index.d.ts:130
+定义于: node_modules/.pnpm/tailwindcss-patch@9.0.0-alpha.2_magicast@0.5.1_tailwindcss@4.2.1/node_modules/tailwindcss-patch/dist/index.d.ts:135
 
 Optional function that filters final class names.
 
@@ -89,18 +67,8 @@ Optional function that filters final class names.
 
 ### cache?
 
-> `optional` **cache**: `boolean | CacheUserOptions`
+> `optional` **cache**: `boolean | CacheOptions`
 
-定义于: node_modules/.pnpm/tailwindcss-patch@8.6.1_magicast@0.5.1_tailwindcss@4.1.18/node_modules/tailwindcss-patch/dist/index.d.ts:132
+定义于: node_modules/.pnpm/tailwindcss-patch@9.0.0-alpha.2_magicast@0.5.1_tailwindcss@4.2.1/node_modules/tailwindcss-patch/dist/index.d.ts:137
 
 Cache configuration or boolean to enable/disable quickly.
-
-***
-
-### output?
-
-> `optional` **output**: `OutputUserOptions`
-
-定义于: node_modules/.pnpm/tailwindcss-patch@8.6.1_magicast@0.5.1_tailwindcss@4.1.18/node_modules/tailwindcss-patch/dist/index.d.ts:134
-
-Output configuration or boolean to inherits defaults.

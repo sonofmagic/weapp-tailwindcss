@@ -5,4 +5,4 @@ import postcssHtmlTransform from 'weapp-tailwindcss/postcss-html-transform'
 
 type HtmlTransformOptions = Parameters<typeof postcssHtmlTransform>[0]
 expectAssignable<HtmlTransformOptions>({ platform: 'h5', removeUniversal: true })
-expectAssignable<PluginCreator<HtmlTransformOptions>>(postcssHtmlTransform)
+expectAssignable<PluginCreator<NonNullable<HtmlTransformOptions>>>(postcssHtmlTransform)

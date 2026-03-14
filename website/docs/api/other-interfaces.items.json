@@ -1,4 +1,12 @@
 [
+  "api/interfaces/ApplyOptions",
+  "api/interfaces/CacheOptions",
   "api/interfaces/DisabledOptions",
-  "api/interfaces/TailwindcssPatchOptions"
+  "api/interfaces/ExtractOptions",
+  "api/interfaces/TailwindCssOptions",
+  "api/interfaces/TailwindcssPatchOptions",
+  "api/interfaces/TailwindCssPatchOptions",
+  "api/interfaces/TailwindV2Options",
+  "api/interfaces/TailwindV3Options",
+  "api/interfaces/TailwindV4Options"
 ]
