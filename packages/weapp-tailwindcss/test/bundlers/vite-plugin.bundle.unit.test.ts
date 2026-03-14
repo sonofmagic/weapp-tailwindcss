@@ -3,9 +3,11 @@ import type { Plugin, ResolvedConfig } from 'vite'
 import type { CreateJsHandlerOptions } from '@/types'
 import { readFile } from 'node:fs/promises'
 import path from 'node:path'
+import { MappingChars2String } from '@weapp-core/escape'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 import { createJsHandler } from '@/js'
 import { replaceWxml } from '@/wxml'
+import { createTemplateHandler } from '@/wxml/utils'
 import {
   createContext,
   createRollupAsset,
@@ -41,6 +43,7 @@ async function loadIssue814Fixture() {
 describe('bundlers/vite UnifiedViteWeappTailwindcssPlugin bundle', () => {
   beforeEach(() => {
     vi.resetModules()
+    vi.doUnmock('@/bundlers/vite/incremental-runtime-class-set')
     resetVitePluginTestContext()
   })
 
@@ -185,6 +188,83 @@ const trace = "at App.vue:4"
     expect(transformedCode).not.toContain('bg-[#213435]')
     expect(currentContext.twPatcher.extract).toHaveBeenCalledTimes(2)
     expect(currentContext.twPatcher.getClassSetSync).toHaveBeenCalledTimes(2)
+  }, TEST_TIMEOUT_MS)
+
+  it('warns and falls back to full runtime set when bundle runtime set misses dynamic arbitrary candidates in wxml', async () => {
+    const fallbackRuntimeSet = new Set([
+      'bg-[#68c828]',
+      'text-[100px]',
+      'text-[#123456]',
+      'w-[323px]',
+      'h-[30px]',
+      'h-[45px]',
+    ])
+    const incompleteRuntimeSet = new Set([
+      'bg-[#68c828]',
+      'text-[100px]',
+      'text-[#123456]',
+      'w-[323px]',
+    ])
+    const syncMock = vi.fn(async () => incompleteRuntimeSet)
+    const resetMock = vi.fn(async () => undefined)
+    vi.doMock('@/bundlers/vite/incremental-runtime-class-set', () => ({
+      createBundleRuntimeClassSetManager: () => ({
+        sync: syncMock,
+        reset: resetMock,
+      }),
+    }))
+
+    const jsHandler = createJsHandler({
+      escapeMap: MappingChars2String,
+      staleClassNameFallback: false,
+      tailwindcssMajorVersion: 4,
+    })
+    const templateHandler = createTemplateHandler({
+      escapeMap: MappingChars2String,
+      jsHandler,
+    })
+
+    setCurrentContext(createContext({
+      templateHandler,
+      jsHandler,
+      twPatcher: {
+        patch: vi.fn(),
+        getClassSet: vi.fn(async () => fallbackRuntimeSet),
+        getClassSetSync: vi.fn(() => fallbackRuntimeSet),
+        extract: vi.fn(async () => ({ classSet: fallbackRuntimeSet })),
+        majorVersion: 4,
+      },
+    }))
+
+    const UnifiedViteWeappTailwindcssPlugin = await loadUnifiedVitePlugin()
+    const plugins = UnifiedViteWeappTailwindcssPlugin()
+    const postPlugin = plugins?.find(plugin => plugin.name === 'weapp-tailwindcss:adaptor:post') as Plugin
+    expect(postPlugin).toBeTruthy()
+
+    await (postPlugin.configResolved as any)?.call(postPlugin, {
+      command: 'build',
+      root: process.cwd(),
+      css: { postcss: { plugins: [] } },
+      build: { outDir: 'dist' },
+    } as ResolvedConfig)
+
+    const rawWxml = '<view class="bg-[#68c828] text-[100px] text-[#123456] w-[323px] {{true?\'h-[30px]\':\'h-[45px]\'}}">111</view>'
+    const bundle = {
+      'pages/index/index.wxml': {
+        ...createRollupAsset(rawWxml),
+        fileName: 'pages/index/index.wxml',
+      } satisfies OutputAsset,
+    }
+
+    const generateBundle = postPlugin.generateBundle as any
+    await generateBundle?.call(postPlugin, {} as any, bundle)
+
+    expect(syncMock).toHaveBeenCalledTimes(1)
+    const transformed = (bundle['pages/index/index.wxml'] as OutputAsset).source.toString()
+    expect(transformed).toContain('h-_b30px_B')
+    expect(transformed).toContain('h-_b45px_B')
+    expect(transformed).not.toContain('h-[30px]')
+    expect(transformed).not.toContain('h-[45px]')
   }, TEST_TIMEOUT_MS)
 
   it('refreshes runtime class set when only comment-carried class candidates change', async () => {

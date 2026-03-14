@@ -5,6 +5,8 @@ import type { BundleSnapshot, EntryType } from './bundle-state'
 import type { CreateJsHandlerOptions, InternalUserDefinedOptions, LinkedJsModuleResult } from '@/types'
 import path from 'node:path'
 import process from 'node:process'
+import { logger } from '@weapp-tailwindcss/logger'
+import { splitCode } from '@weapp-tailwindcss/shared/extractors'
 import { getRuntimeClassSetSignature } from '@/tailwindcss/runtime/cache'
 import { createUniAppXAssetTask } from '@/uni-app-x'
 import { processCachedTask } from '../shared/cache'
@@ -146,6 +148,37 @@ function hasRuntimeAffectingSourceChanges(changedByType: Record<EntryType, Set<s
 
 function canShareCssTransformResult(rawSource: string) {
   return !rawSource.includes('@import') && !rawSource.includes('url(')
+}
+
+const MUSTACHE_EXPRESSION_RE = /\{\{[\s\S]*?\}\}/g
+const QUOTED_LITERAL_RE = /'([^']*)'|"([^"]*)"|`([^`]*)`/g
+
+function isArbitraryValueCandidate(candidate: string) {
+  return candidate.includes('[') && candidate.includes(']')
+}
+
+function collectUnescapedDynamicCandidates(
+  source: string,
+) {
+  const matches = new Set<string>()
+
+  for (const expression of source.match(MUSTACHE_EXPRESSION_RE) ?? []) {
+    QUOTED_LITERAL_RE.lastIndex = 0
+    let quoted = QUOTED_LITERAL_RE.exec(expression)
+    while (quoted !== null) {
+      const literal = quoted[1] ?? quoted[2] ?? quoted[3] ?? ''
+      for (const candidate of splitCode(literal, true)) {
+        const normalized = candidate.trim()
+        if (!normalized || !isArbitraryValueCandidate(normalized)) {
+          continue
+        }
+        matches.add(normalized)
+      }
+      quoted = QUOTED_LITERAL_RE.exec(expression)
+    }
+  }
+
+  return [...matches]
 }
 
 export function createGenerateBundleHook(context: GenerateBundleContext) {
@@ -339,7 +372,28 @@ export function createGenerateBundleHook(context: GenerateBundleContext) {
             },
             async transform() {
               const start = performance.now()
-              const transformed = await templateHandler(rawSource, defaultTemplateHandlerOptions)
+              let transformed = await templateHandler(rawSource, defaultTemplateHandlerOptions)
+              let unresolvedDynamicCandidates = collectUnescapedDynamicCandidates(transformed)
+
+              if (unresolvedDynamicCandidates.length > 0) {
+                logger.warn(
+                  '检测到 WXML 动态类名未完成转译，已回退到完整 runtimeSet 重试: %s -> %O',
+                  file,
+                  unresolvedDynamicCandidates,
+                )
+                const fullRuntimeSet = await context.ensureRuntimeClassSet(true)
+                transformed = await templateHandler(rawSource, {
+                  runtimeSet: fullRuntimeSet,
+                })
+                unresolvedDynamicCandidates = collectUnescapedDynamicCandidates(transformed)
+                if (unresolvedDynamicCandidates.length > 0) {
+                  logger.warn(
+                    'WXML 动态类名在完整 runtimeSet 重试后仍未完成转译: %s -> %O',
+                    file,
+                    unresolvedDynamicCandidates,
+                  )
+                }
+              }
               metrics.html.elapsed += measureElapsed(start)
               metrics.html.transformed++
               onUpdate(file, rawSource, transformed)
