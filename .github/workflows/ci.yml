@@ -50,9 +50,6 @@ jobs:
       - name: Lint
         run: pnpm lint
 
-      - name: SEO Quality Gate (website)
-        run: pnpm --filter @weapp-tailwindcss/website seo:quality:strict
-
       - name: Build
         run: pnpm build
 
@@ -64,8 +61,9 @@ jobs:
         run: |
           {
             echo "## CI 状态说明"
-            echo "- 本工作流负责：lint、website SEO 质量门禁、build、unit/integration tests、coverage 上传。"
+            echo "- 本工作流负责：lint、build、unit/integration tests、coverage 上传。"
             echo "- \`pnpm e2e:watch\` 已拆分到独立工作流：\`E2E Watch\`（.github/workflows/e2e-watch.yml）。"
+            echo "- website SEO 质量门禁已拆分到独立工作流：\`Website SEO Quality\`（.github/workflows/website-seo-quality.yml）。"
           } >> "$GITHUB_STEP_SUMMARY"
 
       - name: Upload coverage reports to Codecov
