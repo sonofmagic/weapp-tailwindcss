@@ -203,7 +203,7 @@
     "@weapp-tailwindcss/logger": "workspace:*",
     "@weapp-tailwindcss/postcss": "workspace:*",
     "@weapp-tailwindcss/shared": "workspace:*",
-    "cac": "^6.7.14",
+    "cac": "^7.0.0",
     "debug": "~4.4.3",
     "fast-glob": "^3.3.3",
     "htmlparser2": "10.1.0",
