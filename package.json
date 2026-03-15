@@ -143,6 +143,7 @@
     "@csstools/css-parser-algorithms": "^4.0.0",
     "@csstools/css-tokenizer": "^4.0.0",
     "@csstools/postcss-is-pseudo-class": "^6.0.0",
+    "@dcloudio/hbuilderx-cli": "^1.2.0",
     "@eslint/config-inspector": "^1.5.0",
     "@icebreakers/changelog-github": "^0.2.1",
     "@icebreakers/commitlint-config": "^1.2.11",

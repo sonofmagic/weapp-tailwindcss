@@ -1,13 +1,18 @@
 {
-  "version": "1.0",
-  "configurations": [
-    {
-      "openVueDevtools": true,
-      "type": "uni-app:app-ios"
-    },
-    {
-      "openVueDevtools": true,
-      "type": "uni-app:app-android"
-    }
-  ]
+    "version" : "1.0",
+    "configurations" : [
+        {
+            "openVueDevtools" : true,
+            "type" : "uni-app:app-ios"
+        },
+        {
+            "openVueDevtools" : true,
+            "playground" : "standard",
+            "type" : "uni-app:app-android"
+        },
+        {
+            "playground" : "standard",
+            "type" : "uni-app:app-ios_simulator"
+        }
+    ]
 }

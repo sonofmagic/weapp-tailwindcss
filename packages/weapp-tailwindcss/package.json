@@ -156,7 +156,7 @@
     "with-layer.css"
   ],
   "engines": {
-    "node": "^20.19.0 || >=22.12.0"
+    "node": "^18.17.0 || >=20.5.0"
   },
   "scripts": {
     "dev": "tsup --watch --sourcemap",
@@ -203,7 +203,7 @@
     "@weapp-tailwindcss/logger": "workspace:*",
     "@weapp-tailwindcss/postcss": "workspace:*",
     "@weapp-tailwindcss/shared": "workspace:*",
-    "cac": "^7.0.0",
+    "cac": "6.7.14",
     "debug": "~4.4.3",
     "fast-glob": "^3.3.3",
     "htmlparser2": "10.1.0",
