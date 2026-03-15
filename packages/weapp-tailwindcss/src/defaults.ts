@@ -15,6 +15,7 @@ function normalizePath(p: string) {
 const MPX_STYLES_DIR_PATTERN = /(?:^|\/)styles\/.*\.(?:wx|ac|jx|tt|q|c|ty)ss$/i
 
 const KBONE_MAIN_CSS_RE = /^(?:common\/)?miniprogram-app/
+const IMPLICIT_MAIN_CSS_RE = /^(?:app|common\/main|bundle)(?:\.|\/|$)/
 
 const MAIN_CSS_CHUNK_MATCHERS: Partial<Record<AppType, (file: string) => boolean>> = {
   'uni-app': file => file.startsWith('common/main') || file.startsWith('app'),
@@ -38,7 +39,10 @@ const alwaysFalse = () => false
 function createMainCssChunkMatcher() {
   return (file: string, appType?: AppType) => {
     if (!appType) {
-      return true
+      const normalized = normalizePath(file)
+      return IMPLICIT_MAIN_CSS_RE.test(normalized)
+        || MPX_STYLES_DIR_PATTERN.test(normalized)
+        || KBONE_MAIN_CSS_RE.test(normalized)
     }
     const matcher = MAIN_CSS_CHUNK_MATCHERS[appType]
     return matcher ? matcher(file) : true

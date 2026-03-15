@@ -3,6 +3,9 @@ import os from 'node:os'
 import path from 'node:path'
 import { afterEach, describe, expect, it, vi } from 'vitest'
 import {
+  buildAppCases,
+} from '../scripts/watch-hmr-regression/cases/apps'
+import {
   resolveReportPath,
   resolveRepositoryRootLabel,
   summarizeMetrics,
@@ -379,5 +382,20 @@ describe('watch-hmr regression summary helpers', () => {
     expect(report.options.caseName).toBe('demo')
     expect(report.summary).toMatchObject({ count: 1, hotUpdateAvgMs: 30, rollbackAvgMs: 40 })
     expect(report.summaryByMutationKind.template).toMatchObject({ count: 1, hotUpdateAvgMs: 30 })
+  })
+})
+
+describe('watch-hmr regression cases', () => {
+  it('tracks taro webpack app style outputs in both page and app wxss candidates', () => {
+    const [taroWebpackCase] = buildAppCases('/repo')
+
+    expect(taroWebpackCase?.name).toBe('taro-webpack')
+    expect(taroWebpackCase?.outputStyleCandidates).toEqual([
+      path.resolve('/repo', 'apps/taro-webpack-tailwindcss-v4/dist/pages/index/index.wxss'),
+      path.resolve('/repo', 'apps/taro-webpack-tailwindcss-v4/dist/app.wxss'),
+    ])
+    expect(taroWebpackCase?.globalStyleCandidates).toEqual([
+      path.resolve('/repo', 'apps/taro-webpack-tailwindcss-v4/dist/app.wxss'),
+    ])
   })
 })

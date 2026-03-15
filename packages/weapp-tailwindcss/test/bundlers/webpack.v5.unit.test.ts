@@ -576,6 +576,93 @@ describe('bundlers/webpack UnifiedWebpackPluginV5', () => {
     expect(currentAssetStore['index.css']).toContain('.tw-watch-style-case')
   })
 
+  it('preserves authored css rules in main chunks while pruning stale runtime selectors', async () => {
+    const runtimeSet = new Set(['bg-red-500'])
+    const authoredCss = '.tw-page-style-watch-anchor { color: red; }'
+    const staleRuntimeCss = '._b_hstale_B { color: blue; }'
+    currentContext = createContext({
+      mainCssChunkMatcher: vi.fn(() => true),
+      styleHandler: vi.fn(async (code: string) => ({ css: `${code}\n${staleRuntimeCss}` })),
+      twPatcher: {
+        ...createContext().twPatcher,
+        getClassSet: vi.fn(async () => runtimeSet),
+        getClassSetSync: vi.fn(() => runtimeSet),
+        extract: vi.fn(async () => ({ classSet: runtimeSet })),
+        majorVersion: 4,
+        options: {
+          tailwindcss: {
+            v4: {
+              cssEntries: ['/virtual/app.css'],
+            },
+          },
+        },
+      } as any,
+    })
+
+    const processAssetsCallbacks: Array<(assets: Record<string, any>) => Promise<void>> = []
+    let currentAssetStore: Record<string, string> = {
+      'app.wxss': authoredCss,
+    }
+    const compilation = {
+      compiler: { outputPath: path.resolve(process.cwd(), 'dist') },
+      chunks: [{ id: 'app', hash: 'hash-authored', files: ['app.wxss'] }],
+      hooks: {
+        processAssets: {
+          tapPromise: (_options: unknown, handler: (assets: Record<string, any>) => Promise<void>) => {
+            processAssetsCallbacks.push(handler)
+          },
+        },
+      },
+      updateAsset: vi.fn((file: string, source: FakeConcatSource) => {
+        currentAssetStore[file] = source.toString()
+      }),
+      getAsset(file: string) {
+        const content = currentAssetStore[file]
+        if (content === undefined) {
+          return undefined
+        }
+        return {
+          source: {
+            source: () => content,
+          },
+        }
+      },
+    }
+    const compiler = {
+      webpack: {
+        Compilation: {
+          PROCESS_ASSETS_STAGE_SUMMARIZE: Symbol('stage'),
+        },
+        sources: {
+          ConcatSource: FakeConcatSource,
+        },
+        NormalModule: {
+          getCompilationHooks: vi.fn(() => ({
+            loader: {
+              tap: vi.fn(),
+            },
+          })),
+        },
+      },
+      hooks: {
+        normalModuleFactory: {
+          tap: vi.fn(() => {}),
+        },
+        compilation: {
+          tap: vi.fn((_name: string, handler: (_compilation: any) => void) => {
+            handler(compilation)
+          }),
+        },
+      },
+    }
+
+    new UnifiedWebpackPluginV5().apply(compiler as any)
+    await processAssetsCallbacks[0](createAssetsFromStore(currentAssetStore))
+
+    expect(currentAssetStore['app.wxss']).toContain(authoredCss)
+    expect(currentAssetStore['app.wxss']).not.toContain(staleRuntimeCss)
+  })
+
   it('reuses template handler options for multiple html assets in one compilation', async () => {
     const processAssetsCallbacks: Array<(assets: Record<string, any>) => Promise<void>> = []
     let currentAssetStore: Record<string, string> = {}

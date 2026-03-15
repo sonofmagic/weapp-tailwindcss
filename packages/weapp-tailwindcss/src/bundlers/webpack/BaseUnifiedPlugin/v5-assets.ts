@@ -12,6 +12,8 @@ import { pushConcurrentTaskFactories } from '../../shared/run-tasks'
 import { pruneStaleRuntimeCss } from './runtime-css-prune'
 import { createAssetHashByChunkMap, getCacheKey } from './shared'
 
+const AUTHORED_CSS_CLASS_RE = /\.([\w-]+)/g
+
 interface SetupWebpackV5ProcessAssetsHookOptions {
   compiler: Compiler
   options: InternalUserDefinedOptions
@@ -44,6 +46,17 @@ function createRuntimeSetHash(runtimeSet: Set<string>) {
     hash.update('\0')
   }
   return hash.digest('hex')
+}
+
+function collectAuthoredCssClassesFromSource(rawCss: string) {
+  const classNames = new Set<string>()
+  for (const match of rawCss.matchAll(AUTHORED_CSS_CLASS_RE)) {
+    const className = match[1]
+    if (className) {
+      classNames.add(className)
+    }
+  }
+  return classNames
 }
 
 export function setupWebpackV5ProcessAssetsHook(options: SetupWebpackV5ProcessAssetsHookOptions) {
@@ -305,8 +318,14 @@ export function setupWebpackV5ProcessAssetsHook(options: SetupWebpackV5ProcessAs
                 transform: async () => {
                   await runtimeState.patchPromise
                   const { css } = await compilerOptions.styleHandler(rawSource, getCssHandlerOptions(file))
+                  const preservedAuthoredClasses = shouldPruneRuntimeCss
+                    ? new Set([
+                        ...getRuntimeAuthoredCssClasses(),
+                        ...collectAuthoredCssClassesFromSource(rawSource),
+                      ])
+                    : undefined
                   const prunedCss = shouldPruneRuntimeCss
-                    ? pruneStaleRuntimeCss(css, runtimeSet, { escapeMap: compilerOptions.escapeMap }, getRuntimeAuthoredCssClasses())
+                    ? pruneStaleRuntimeCss(css, runtimeSet, { escapeMap: compilerOptions.escapeMap }, preservedAuthoredClasses)
                     : css
                   const source = new ConcatSource(prunedCss)
 
