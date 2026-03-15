@@ -86,7 +86,7 @@
     "eslint": "^10.0.3",
     "eslint-config-taro": "catalog:taro4",
     "eslint-plugin-vue": "^10.8.0",
-    "less": "^4.6.3",
+    "less": "^4.6.4",
     "postcss": "catalog:postcss85",
     "postcss-rem-to-responsive-pixel": "catalog:postcssRem610",
     "postcss-rpx-transform": "catalog:postcssRpx",

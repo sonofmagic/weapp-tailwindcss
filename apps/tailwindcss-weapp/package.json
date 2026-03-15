@@ -99,7 +99,7 @@
     "@vue/runtime-core": "^3.5.30",
     "autoprefixer": "^10.4.27",
     "indent-string": "^5.0.0",
-    "miniprogram-api-typings": "^5.1.1",
+    "miniprogram-api-typings": "^5.1.2",
     "postcss": "^8.5.8",
     "prettier": "^3.8.1",
     "prettier-plugin-tailwindcss": "^0.7.2",

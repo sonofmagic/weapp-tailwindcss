@@ -27,7 +27,7 @@ catalogs:
   lucideVueNext0555:
     lucide-vue-next: ^0.577.0
   miniApiTypings:
-    miniprogram-api-typings: ^5.1.1
+    miniprogram-api-typings: ^5.1.2
   postcss85:
     postcss: ^8.5.8
   postcssComment2:
@@ -124,9 +124,9 @@ catalogs:
   weappIdeCli:
     weapp-ide-cli: ^5.1.0
   weappVite:
-    weapp-vite: ^6.7.7
+    weapp-vite: ^6.8.0
   wrangler4530:
-    wrangler: ^4.72.0
+    wrangler: ^4.73.0
 
 onlyBuiltDependencies:
   - '@tailwindcss/oxide'
