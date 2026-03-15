@@ -1,3 +1,4 @@
+import process from 'node:process'
 import uni from '@dcloudio/vite-plugin-uni'
 import { debugX } from '@weapp-tailwindcss/debug-uni-app-x'
 import tailwindcss from 'tailwindcss'
