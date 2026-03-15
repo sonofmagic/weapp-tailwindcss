@@ -74,6 +74,7 @@
     "e2e-watch-group-entry",
     "honest-hounds-hug",
     "perf-hot-path-caching",
+    "tailwindcss-patch-874-alpha",
     "weapp-tailwindcss-alias"
   ]
 }

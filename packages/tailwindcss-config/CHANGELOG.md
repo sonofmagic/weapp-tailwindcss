@@ -1,5 +1,12 @@
 # tailwindcss-config
 
+## 1.1.5-alpha.1
+
+### Patch Changes
+
+- 📦 **Dependencies** [`cbead4c`](https://github.com/sonofmagic/weapp-tailwindcss/commit/cbead4ced4b7cba116488d745d47bf826bc83859)
+  → `@weapp-tailwindcss/shared@1.1.3-alpha.1`
+
 ## 1.1.5-alpha.0
 
 ### Patch Changes

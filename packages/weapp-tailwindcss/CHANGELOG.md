@@ -1,5 +1,13 @@
 # weapp-tailwindcss
 
+## 4.11.0-alpha.2
+
+### Patch Changes
+
+- 🐛 **升级 `tailwindcss-patch` 到 `8.7.4-alpha.0`，同步消费最新的 alpha 版本依赖。** [#819](https://github.com/sonofmagic/weapp-tailwindcss/pull/819) by @sonofmagic
+- 📦 **Dependencies** [`cbead4c`](https://github.com/sonofmagic/weapp-tailwindcss/commit/cbead4ced4b7cba116488d745d47bf826bc83859)
+  → `@weapp-tailwindcss/postcss@2.1.6-alpha.1`, `@weapp-tailwindcss/shared@1.1.3-alpha.1`
+
 ## 4.11.0-alpha.1
 
 ### Patch Changes
