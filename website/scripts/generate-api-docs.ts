@@ -263,7 +263,7 @@ function readJsDoc(node: JSDocableNode): JsDocInfo {
     const name = tag.getTagName()
     const value = readTagText(tag)
     if (!value) {
-      if (name === 'ignore' || name === 'internal') {
+      if (name === 'ignore' || name === 'internal' || name === 'deprecated') {
         tags[name] = ['true']
       }
       continue
@@ -1049,7 +1049,7 @@ function run(): void {
       continue
     }
     const doc = buildInterfaceDoc(name, decl)
-    if (doc) {
+    if (doc && !doc.tags.deprecated) {
       interfaceDocs.push(doc)
     }
   }

@@ -13,10 +13,11 @@ function createTailwindCompatOptions() {
   return {
     version: 2,
     packageName: 'tailwindcss',
-    cwd: __dirname,
+    resolve: {
+      paths: [path.join(__dirname, 'node_modules')],
+    },
     postcssPlugin: tailwindEntry,
     v2: {
-      cwd: __dirname,
       postcssPlugin: tailwindEntry,
     },
   }
@@ -24,17 +25,19 @@ function createTailwindCompatOptions() {
 
 const { transformWxss } = createContext(
   {
+    tailwindcssBasedir: __dirname,
     rem2rpx: true,
     tailwindcssPatcherOptions: {
-      cwd: __dirname,
-      tailwind: createTailwindCompatOptions(),
+      projectRoot: __dirname,
+      tailwindcss: createTailwindCompatOptions(),
     },
   },
 )
 
 async function main() {
   const twPatcher = new TailwindcssPatcher({
-    tailwind: createTailwindCompatOptions(),
+    projectRoot: __dirname,
+    tailwindcss: createTailwindCompatOptions(),
   })
   twPatcher.patch()
 

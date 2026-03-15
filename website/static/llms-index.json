@@ -1,10 +1,10 @@
 {
   "version": "1.0.0",
-  "generatedAt": "2026-03-11T11:29:25.850Z",
+  "generatedAt": "2026-03-15T03:37:04.448Z",
   "siteUrl": "https://tw.icebreaker.top",
   "totals": {
-    "all": 168,
-    "docs": 164,
+    "all": 175,
+    "docs": 171,
     "blog": 4
   },
   "documents": [
@@ -929,17 +929,14 @@
       "kind": "doc",
       "id": "doc:api/index",
       "title": "weapp-tailwindcss",
-      "description": "weapp-tailwindcss API 入口，汇总配置项、生命周期、文件匹配与接口说明，便于按场景查阅插件能力。",
-      "summary": "weapp-tailwindcss API 入口，汇总配置项、生命周期、文件匹配与接口说明，便于按场景查阅插件能力。",
+      "description": "weapp-tailwindcss，包含配置项、接口定义与参数说明。",
+      "summary": "weapp-tailwindcss，包含配置项、接口定义与参数说明。",
       "url": "/docs/api",
       "canonical": "https://tw.icebreaker.top/docs/api",
       "keywords": [
         "API",
         "接口文档",
         "配置项",
-        "插件配置",
-        "生命周期",
-        "文件匹配",
         "weapp-tailwindcss",
         "tailwindcss",
         "小程序",
@@ -1434,6 +1431,73 @@
     },
     {
       "kind": "doc",
+      "id": "doc:api/interfaces/ApplyOptions",
+      "title": "ApplyOptions",
+      "description": "定义于: node_modules/.pnpm/tailwindcss-patch@9.0.0-alpha.2_magicast@0.5.1_tailwindcss@4.2.1/node_modules/tailwindcss-patch/dist/index.d.ts:63",
+      "summary": "定义于: node_modules/.pnpm/tailwindcss-patch@9.0.0-alpha.2_magicast@0.5.1_tailwindcss@4.2.1/node_modules/tailwindcss-patch/dist/index.d.ts:63",
+      "url": "/docs/api/interfaces/ApplyOptions",
+      "canonical": "https://tw.icebreaker.top/docs/api/interfaces/ApplyOptions",
+      "keywords": [
+        "API",
+        "接口文档",
+        "配置项",
+        "ApplyOptions",
+        "interfaces",
+        "weapp-tailwindcss",
+        "tailwindcss",
+        "小程序",
+        "微信小程序",
+        "uni-app",
+        "taro",
+        "rax",
+        "mpx"
+      ],
+      "headings": [
+        "属性",
+        "# overwrite?",
+        "# exposeContext?",
+        "# extendLengthUnits?"
+      ],
+      "updatedAt": null,
+      "source": "docs/api/interfaces/ApplyOptions.md"
+    },
+    {
+      "kind": "doc",
+      "id": "doc:api/interfaces/CacheOptions",
+      "title": "CacheOptions",
+      "description": "定义于: node_modules/.pnpm/tailwindcss-patch@9.0.0-alpha.2_magicast@0.5.1_tailwindcss@4.2.1/node_modules/tailwindcss-patch/dist/index.d.ts:14",
+      "summary": "定义于: node_modules/.pnpm/tailwindcss-patch@9.0.0-alpha.2_magicast@0.5.1_tailwindcss@4.2.1/node_modules/tailwindcss-patch/dist/index.d.ts:14",
+      "url": "/docs/api/interfaces/CacheOptions",
+      "canonical": "https://tw.icebreaker.top/docs/api/interfaces/CacheOptions",
+      "keywords": [
+        "API",
+        "接口文档",
+        "配置项",
+        "CacheOptions",
+        "interfaces",
+        "weapp-tailwindcss",
+        "tailwindcss",
+        "小程序",
+        "微信小程序",
+        "uni-app",
+        "taro",
+        "rax",
+        "mpx"
+      ],
+      "headings": [
+        "属性",
+        "# enabled?",
+        "# cwd?",
+        "# dir?",
+        "# file?",
+        "# strategy?",
+        "# driver?"
+      ],
+      "updatedAt": null,
+      "source": "docs/api/interfaces/CacheOptions.md"
+    },
+    {
+      "kind": "doc",
       "id": "doc:api/interfaces/DisabledOptions",
       "title": "DisabledOptions",
       "description": "定义于: packages/weapp-tailwindcss/src/types/disabled-options.ts:9",
@@ -1469,12 +1533,82 @@
     },
     {
       "kind": "doc",
-      "id": "doc:api/interfaces/TailwindcssPatchOptions",
+      "id": "doc:api/interfaces/ExtractOptions",
+      "title": "ExtractOptions",
+      "description": "定义于: node_modules/.pnpm/tailwindcss-patch@9.0.0-alpha.2_magicast@0.5.1_tailwindcss@4.2.1/node_modules/tailwindcss-patch/dist/index.d.ts:34",
+      "summary": "定义于: node_modules/.pnpm/tailwindcss-patch@9.0.0-alpha.2_magicast@0.5.1_tailwindcss@4.2.1/node_modules/tailwindcss-patch/dist/index.d.ts:34",
+      "url": "/docs/api/interfaces/ExtractOptions",
+      "canonical": "https://tw.icebreaker.top/docs/api/interfaces/ExtractOptions",
+      "keywords": [
+        "API",
+        "接口文档",
+        "配置项",
+        "ExtractOptions",
+        "interfaces",
+        "weapp-tailwindcss",
+        "tailwindcss",
+        "小程序",
+        "微信小程序",
+        "uni-app",
+        "taro",
+        "rax",
+        "mpx"
+      ],
+      "headings": [
+        "属性",
+        "# write?",
+        "# file?",
+        "# format?",
+        "# pretty?",
+        "# removeUniversalSelector?"
+      ],
+      "updatedAt": null,
+      "source": "docs/api/interfaces/ExtractOptions.md"
+    },
+    {
+      "kind": "doc",
+      "id": "doc:api/interfaces/TailwindCssOptions",
+      "title": "TailwindCssOptions",
+      "description": "定义于: node_modules/.pnpm/tailwindcss-patch@9.0.0-alpha.2_magicast@0.5.1_tailwindcss@4.2.1/node_modules/tailwindcss-patch/dist/index.d.ts:105",
+      "summary": "定义于: node_modules/.pnpm/tailwindcss-patch@9.0.0-alpha.2_magicast@0.5.1_tailwindcss@4.2.1/node_modules/tailwindcss-patch/dist/index.d.ts:105",
+      "url": "/docs/api/interfaces/TailwindCssOptions",
+      "canonical": "https://tw.icebreaker.top/docs/api/interfaces/TailwindCssOptions",
+      "keywords": [
+        "API",
+        "接口文档",
+        "配置项",
+        "TailwindCssOptions",
+        "interfaces",
+        "weapp-tailwindcss",
+        "tailwindcss",
+        "小程序",
+        "微信小程序",
+        "uni-app",
+        "taro",
+        "rax",
+        "mpx"
+      ],
+      "headings": [
+        "属性",
+        "# config?",
+        "# cwd?",
+        "# postcssPlugin?",
+        "# version?",
+        "# packageName?",
+        "# resolve?",
+        "# v2?"
+      ],
+      "updatedAt": null,
+      "source": "docs/api/interfaces/TailwindCssOptions.md"
+    },
+    {
+      "kind": "doc",
+      "id": "doc:api/interfaces/TailwindCssPatchOptions",
       "title": "TailwindcssPatchOptions",
-      "description": "定义于: node_modules/.pnpm/tailwindcss-patch@8.6.1_magicast@0.5.1_tailwindcss@4.1.18/node_modules/tailwindcss-patch/dist/index.d.ts:117",
-      "summary": "定义于: node_modules/.pnpm/tailwindcss-patch@8.6.1_magicast@0.5.1_tailwindcss@4.1.18/node_modules/tailwindcss-patch/dist/index.d.ts:117",
-      "url": "/docs/api/interfaces/TailwindcssPatchOptions",
-      "canonical": "https://tw.icebreaker.top/docs/api/interfaces/TailwindcssPatchOptions",
+      "description": "定义于: packages/weapp-tailwindcss/src/typedoc.export.ts:17",
+      "summary": "定义于: packages/weapp-tailwindcss/src/typedoc.export.ts:17",
+      "url": "/docs/api/interfaces/TailwindCssPatchOptions",
+      "canonical": "https://tw.icebreaker.top/docs/api/interfaces/TailwindCssPatchOptions",
       "keywords": [
         "API",
         "接口文档",
@@ -1492,16 +1626,113 @@
       ],
       "headings": [
         "属性",
-        "# cwd?",
-        "# overwrite?",
-        "# tailwind?",
-        "# features?",
+        "# projectRoot?",
+        "# tailwindcss?",
+        "# apply?",
+        "# extract?",
         "# filter()?",
         "## 参数",
         "### className"
       ],
       "updatedAt": null,
-      "source": "docs/api/interfaces/TailwindcssPatchOptions.md"
+      "source": "docs/api/interfaces/TailwindCssPatchOptions.md"
+    },
+    {
+      "kind": "doc",
+      "id": "doc:api/interfaces/TailwindV2Options",
+      "title": "TailwindV2Options",
+      "description": "定义于: node_modules/.pnpm/tailwindcss-patch@9.0.0-alpha.2_magicast@0.5.1_tailwindcss@4.2.1/node_modules/tailwindcss-patch/dist/index.d.ts:82",
+      "summary": "定义于: node_modules/.pnpm/tailwindcss-patch@9.0.0-alpha.2_magicast@0.5.1_tailwindcss@4.2.1/node_modules/tailwindcss-patch/dist/index.d.ts:82",
+      "url": "/docs/api/interfaces/TailwindV2Options",
+      "canonical": "https://tw.icebreaker.top/docs/api/interfaces/TailwindV2Options",
+      "keywords": [
+        "API",
+        "接口文档",
+        "配置项",
+        "TailwindV2Options",
+        "interfaces",
+        "weapp-tailwindcss",
+        "tailwindcss",
+        "小程序",
+        "微信小程序",
+        "uni-app",
+        "taro",
+        "rax",
+        "mpx"
+      ],
+      "headings": [
+        "属性",
+        "# config?",
+        "# cwd?",
+        "# postcssPlugin?"
+      ],
+      "updatedAt": null,
+      "source": "docs/api/interfaces/TailwindV2Options.md"
+    },
+    {
+      "kind": "doc",
+      "id": "doc:api/interfaces/TailwindV3Options",
+      "title": "TailwindV3Options",
+      "description": "定义于: node_modules/.pnpm/tailwindcss-patch@9.0.0-alpha.2_magicast@0.5.1_tailwindcss@4.2.1/node_modules/tailwindcss-patch/dist/index.d.ts:87",
+      "summary": "定义于: node_modules/.pnpm/tailwindcss-patch@9.0.0-alpha.2_magicast@0.5.1_tailwindcss@4.2.1/node_modules/tailwindcss-patch/dist/index.d.ts:87",
+      "url": "/docs/api/interfaces/TailwindV3Options",
+      "canonical": "https://tw.icebreaker.top/docs/api/interfaces/TailwindV3Options",
+      "keywords": [
+        "API",
+        "接口文档",
+        "配置项",
+        "TailwindV3Options",
+        "interfaces",
+        "weapp-tailwindcss",
+        "tailwindcss",
+        "小程序",
+        "微信小程序",
+        "uni-app",
+        "taro",
+        "rax",
+        "mpx"
+      ],
+      "headings": [
+        "属性",
+        "# config?",
+        "# cwd?",
+        "# postcssPlugin?"
+      ],
+      "updatedAt": null,
+      "source": "docs/api/interfaces/TailwindV3Options.md"
+    },
+    {
+      "kind": "doc",
+      "id": "doc:api/interfaces/TailwindV4Options",
+      "title": "TailwindV4Options",
+      "description": "定义于: node_modules/.pnpm/tailwindcss-patch@9.0.0-alpha.2_magicast@0.5.1_tailwindcss@4.2.1/node_modules/tailwindcss-patch/dist/index.d.ts:92",
+      "summary": "定义于: node_modules/.pnpm/tailwindcss-patch@9.0.0-alpha.2_magicast@0.5.1_tailwindcss@4.2.1/node_modules/tailwindcss-patch/dist/index.d.ts:92",
+      "url": "/docs/api/interfaces/TailwindV4Options",
+      "canonical": "https://tw.icebreaker.top/docs/api/interfaces/TailwindV4Options",
+      "keywords": [
+        "API",
+        "接口文档",
+        "配置项",
+        "TailwindV4Options",
+        "interfaces",
+        "weapp-tailwindcss",
+        "tailwindcss",
+        "小程序",
+        "微信小程序",
+        "uni-app",
+        "taro",
+        "rax",
+        "mpx"
+      ],
+      "headings": [
+        "属性",
+        "# base?",
+        "# css?",
+        "# cssEntries?",
+        "# sources?"
+      ],
+      "updatedAt": null,
+      "source": "docs/api/interfaces/TailwindV4Options.md"
     },
     {
       "kind": "doc",
@@ -1558,16 +1789,16 @@
       ],
       "headings": [
         "配置一览",
-        "常用配置模板",
         "详细说明",
+        "# supportCustomLengthUnitsPatch",
+        "## 参阅",
+        "## 备注",
         "# appType",
         "## 备注",
-        "## 默认值",
-        "## 示例",
         "# arbitraryValues"
       ],
       "updatedAt": null,
-      "source": "docs/api/options/general.mdx"
+      "source": "docs/api/options/general.md"
     },
     {
       "kind": "doc",
@@ -1595,16 +1826,16 @@
       ],
       "headings": [
         "配置一览",
-        "常用配置模板",
         "详细说明",
-        "# cssCalc",
+        "# disabled",
         "## 备注",
-        "## 默认值",
         "## 示例",
-        "# cssEntries"
+        "# customAttributes",
+        "## 备注",
+        "## 示例"
       ],
       "updatedAt": null,
-      "source": "docs/api/options/important.mdx"
+      "source": "docs/api/options/important.md"
     },
     {
       "kind": "doc",
@@ -1633,15 +1864,15 @@
       "headings": [
         "配置一览",
         "详细说明",
-        "# onEnd",
-        "## 备注",
-        "## 默认值",
-        "## 示例",
         "# onLoad",
-        "## 备注"
+        "## 返回",
+        "# onStart",
+        "## 返回",
+        "# onUpdate",
+        "## 参数"
       ],
       "updatedAt": null,
-      "source": "docs/api/options/lifecycle.mdx"
+      "source": "docs/api/options/lifecycle.md"
     },
     {
       "kind": "doc",
@@ -1670,15 +1901,15 @@
       "headings": [
         "配置一览",
         "详细说明",
-        "# cssMatcher",
-        "## 备注",
-        "## 默认值",
-        "## 示例",
         "# htmlMatcher",
-        "## 备注"
+        "## 参数",
+        "### name",
+        "## 返回",
+        "# cssMatcher",
+        "## 参数"
       ],
       "updatedAt": null,
-      "source": "docs/api/options/matchers.mdx"
+      "source": "docs/api/options/matchers.md"
     },
     {
       "kind": "doc",
