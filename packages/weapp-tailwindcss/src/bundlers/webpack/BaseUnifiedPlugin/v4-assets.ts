@@ -204,13 +204,16 @@ export function setupWebpackV4EmitHook(options: SetupWebpackV4EmitHookOptions) {
         const initialRawSource = typeof initialValue === 'string' ? initialValue : initialValue.toString()
         const absoluteFile = toAbsoluteOutputPath(file, outputDir)
         const chunkHash = assetHashByChunk.get(file)
+        const sourceAwareHash = chunkHash
+          ? `${chunkHash}:${compilerOptions.cache.computeHash(initialRawSource)}`
+          : undefined
         jsTaskFactories.push(async () => {
           await processCachedTask({
             cache: compilerOptions.cache,
             cacheKey,
             hashKey: `${file}:asset`,
             rawSource: initialRawSource,
-            hash: chunkHash,
+            hash: sourceAwareHash,
             applyResult(source) {
               // @ts-ignore
               compilation.updateAsset(file, source)
