@@ -84,7 +84,7 @@
     "e2e:watch:rax": "cross-env E2E_WATCH_CASE=rax pnpm e2e:watch",
     "e2e:watch:mina": "cross-env E2E_WATCH_CASE=mina pnpm e2e:watch",
     "e2e:watch:weapp-vite": "cross-env E2E_WATCH_CASE=weapp-vite pnpm e2e:watch",
-    "e2e:update-snapshots": "tsx scripts/update-e2e-css-snapshots.ts",
+    "e2e:update-snapshots": "node --experimental-strip-types scripts/update-e2e-css-snapshots.ts",
     "demo:build": "pnpm run build:demo && pnpm run build:apps",
     "demo:install": "tsx scripts/demo/install.ts",
     "demo:install:beta": "tsx scripts/demo/install.ts --beta",

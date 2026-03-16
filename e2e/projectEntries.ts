@@ -1,4 +1,4 @@
-import type { ProjectEntry } from './shared'
+import type { ProjectEntry } from './shared.ts'
 
 export const E2E_PROJECTS = [
   {

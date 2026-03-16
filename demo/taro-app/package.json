@@ -11,7 +11,7 @@
     "build": "npm run build:weapp",
     "build:babel": "cross-env BABEL=1 npm run build:weapp",
     "build:local": "cross-env LOCAL=1 npm run build:weapp",
-    "build:weapp": "taro build --type weapp",
+    "build:weapp": "node ../../scripts/taro-build-guard.mjs",
     "build:swan": "taro build --type swan",
     "build:alipay": "taro build --type alipay",
     "build:tt": "taro build --type tt",

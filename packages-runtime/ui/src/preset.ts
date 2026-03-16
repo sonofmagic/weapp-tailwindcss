@@ -306,13 +306,24 @@ function buildComponents(api: TailwindPluginAPI): Record<string, CssInJs> {
     const value = api.theme(path)
     return typeof value === 'string' ? value : fallback
   }
+  const getThemeRecordValue = (record: Record<string, string>, key: string, fallback: string) => {
+    const value = record[key]
+    return typeof value === 'string' ? value : fallback
+  }
+  const space1 = getThemeRecordValue(spacing, '1', spacingScale[1])
+  const space2 = getThemeRecordValue(spacing, '2', spacingScale[2])
+  const space3 = getThemeRecordValue(spacing, '3', spacingScale[3])
+  const space4 = getThemeRecordValue(spacing, '4', spacingScale[4])
+  const buttonMinHeight = getThemeRecordValue(minHeight, 'button', '72rpx')
+  const buttonSmallMinHeight = getThemeRecordValue(minHeight, 'button-sm', '56rpx')
+  const toolbarMinHeight = getThemeRecordValue(minHeight, 'toolbar', '96rpx')
 
   return {
     '.wt-surface': {
       backgroundColor: 'var(--wt-color-surface)',
       borderRadius: 'var(--wt-radius-lg)',
       border: '1rpx solid var(--wt-color-border)',
-      padding: spacing[4],
+      padding: space4,
       boxShadow: 'var(--wt-shadow-sm)',
     },
     '.wt-divider': {
@@ -327,10 +338,10 @@ function buildComponents(api: TailwindPluginAPI): Record<string, CssInJs> {
       display: 'inline-flex',
       alignItems: 'center',
       justifyContent: 'center',
-      minHeight: minHeight.button ?? '72rpx',
-      minWidth: minHeight.button ?? '72rpx',
-      padding: `0 ${spacing[4]}`,
-      gap: spacing[2],
+      minHeight: buttonMinHeight,
+      minWidth: buttonMinHeight,
+      padding: `0 ${space4}`,
+      gap: space2,
       borderRadius: 'var(--wt-radius-pill)',
       border: '1rpx solid var(--wt-button-border)',
       backgroundColor: 'var(--wt-button-bg)',
@@ -402,8 +413,8 @@ function buildComponents(api: TailwindPluginAPI): Record<string, CssInJs> {
       },
     },
     '.wt-button--small': {
-      minHeight: minHeight['button-sm'] ?? '56rpx',
-      padding: `0 ${spacing[3]}`,
+      minHeight: buttonSmallMinHeight,
+      padding: `0 ${space3}`,
       fontSize: fontSizeScale.sm.size,
     },
     '.wt-button--icon': {
@@ -415,18 +426,18 @@ function buildComponents(api: TailwindPluginAPI): Record<string, CssInJs> {
     '.wt-card': {
       display: 'flex',
       flexDirection: 'column',
-      gap: spacing[3],
+      gap: space3,
       backgroundColor: 'var(--wt-color-surface)',
       borderRadius: 'var(--wt-radius-lg)',
       border: '1rpx solid var(--wt-color-border)',
-      padding: spacing[4],
+      padding: space4,
       boxShadow: 'var(--wt-shadow-sm)',
     },
     '.wt-card__header': {
       display: 'flex',
       alignItems: 'center',
       justifyContent: 'space-between',
-      gap: spacing[2],
+      gap: space2,
     },
     '.wt-card__title': {
       fontSize: fontSizeScale.lg.size,
@@ -444,14 +455,14 @@ function buildComponents(api: TailwindPluginAPI): Record<string, CssInJs> {
       display: 'flex',
       alignItems: 'center',
       justifyContent: 'flex-end',
-      gap: spacing[2],
+      gap: space2,
     },
     '.wt-badge': {
       display: 'inline-flex',
       alignItems: 'center',
       justifyContent: 'center',
       minHeight: '36rpx',
-      padding: `0 ${spacing[2]}`,
+      padding: `0 ${space2}`,
       borderRadius: 'var(--wt-radius-pill)',
       border: '1rpx solid transparent',
       fontSize: '22rpx',
@@ -483,9 +494,9 @@ function buildComponents(api: TailwindPluginAPI): Record<string, CssInJs> {
     '.wt-tag': {
       display: 'inline-flex',
       alignItems: 'center',
-      gap: spacing[1],
+      gap: space1,
       minHeight: '44rpx',
-      padding: `0 ${spacing[2]}`,
+      padding: `0 ${space2}`,
       borderRadius: 'var(--wt-radius-pill)',
       border: '1rpx solid var(--wt-color-border)',
       backgroundColor: 'var(--wt-color-surface)',
@@ -521,8 +532,8 @@ function buildComponents(api: TailwindPluginAPI): Record<string, CssInJs> {
     },
     '.wt-input': {
       width: '100%',
-      minHeight: minHeight.button ?? '72rpx',
-      padding: `0 ${spacing[3]}`,
+      minHeight: buttonMinHeight,
+      padding: `0 ${space3}`,
       borderRadius: 'var(--wt-radius-md)',
       border: '1rpx solid var(--wt-color-border-strong)',
       backgroundColor: 'var(--wt-color-surface)',
@@ -558,9 +569,9 @@ function buildComponents(api: TailwindPluginAPI): Record<string, CssInJs> {
     '.wt-chip': {
       display: 'inline-flex',
       alignItems: 'center',
-      gap: spacing[1],
+      gap: space1,
       minHeight: '52rpx',
-      padding: `0 ${spacing[2]}`,
+      padding: `0 ${space2}`,
       borderRadius: 'var(--wt-radius-pill)',
       backgroundColor: 'var(--wt-color-primary-soft)',
       color: 'var(--wt-color-primary)',
@@ -602,14 +613,14 @@ function buildComponents(api: TailwindPluginAPI): Record<string, CssInJs> {
     '.wt-list': {
       display: 'flex',
       flexDirection: 'column',
-      gap: spacing[2],
+      gap: space2,
     },
     '.wt-list__item': {
       display: 'flex',
       alignItems: 'center',
       justifyContent: 'space-between',
-      gap: spacing[2],
-      padding: `${spacing[3]} ${spacing[3]}`,
+      gap: space2,
+      padding: `${space3} ${space3}`,
       backgroundColor: 'var(--wt-color-surface)',
       borderRadius: 'var(--wt-radius-md)',
       border: '1rpx solid var(--wt-color-border)',
@@ -622,8 +633,8 @@ function buildComponents(api: TailwindPluginAPI): Record<string, CssInJs> {
       display: 'flex',
       alignItems: 'center',
       justifyContent: 'space-between',
-      minHeight: minHeight.toolbar ?? '96rpx',
-      padding: `0 ${spacing[3]}`,
+      minHeight: toolbarMinHeight,
+      padding: `0 ${space3}`,
       backgroundColor: 'var(--wt-color-surface)',
       borderBottom: '1rpx solid var(--wt-color-border)',
     },
@@ -634,12 +645,12 @@ function buildComponents(api: TailwindPluginAPI): Record<string, CssInJs> {
     '.wt-toolbar__actions': {
       display: 'flex',
       alignItems: 'center',
-      gap: spacing[2],
+      gap: space2,
     },
     '.wt-toast': {
       minWidth: '320rpx',
       maxWidth: '640rpx',
-      padding: spacing[4],
+      padding: space4,
       borderRadius: 'var(--wt-radius-lg)',
       backgroundColor: 'rgba(15, 23, 42, 0.92)',
       color: '#ffffff',

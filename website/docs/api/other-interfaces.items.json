@@ -4,7 +4,7 @@
   "api/interfaces/DisabledOptions",
   "api/interfaces/ExtractOptions",
   "api/interfaces/TailwindCssOptions",
-  "api/interfaces/TailwindCssPatchOptions",
+  "api/interfaces/TailwindcssPatchOptions",
   "api/interfaces/TailwindV2Options",
   "api/interfaces/TailwindV3Options",
   "api/interfaces/TailwindV4Options"

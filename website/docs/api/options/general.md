@@ -27,7 +27,7 @@ sidebar_position: 4
 | [postcssOptions](#postcssoptions) | <code>Partial<Omit<import("/Users/yangqiming/Documents/GitHub/weapp-tailwindcss/node_modules/.pnpm/postcss-load-config@6.0.1_jiti@2.6.1_postcss@8.5.8_tsx@4.21.0_yaml@2.8.2/node_modules/postcss-load-config/src/index").Result, "file">></code> | — | `postcss` 的配置选项。 |
 | [cssRemoveHoverPseudoClass](#cssremovehoverpseudoclass) | <code>boolean</code> | <code>`true`</code> | 是否移除 CSS 中的 `:hover` 选择器。 |
 | [cssRemoveProperty](#cssremoveproperty) | <code>boolean</code> | <code>`true`</code> | 是否移除 `@property` 节点。 |
-| [tailwindcssPatcherOptions](#tailwindcsspatcheroptions) | <code>TailwindCssPatchOptions</code> | — | 自定义 patcher 参数。 |
+| [tailwindcssPatcherOptions](#tailwindcsspatcheroptions) | <code>TailwindcssPatchOptions</code> | — | 自定义 patcher 参数。 |
 | [logLevel](#loglevel) | <code>"info" &#124; "warn" &#124; "error" &#124; "silent"</code> | — | 控制命令行日志输出级别。 |
 
 ## 详细说明
@@ -269,7 +269,7 @@ false
 
 ### tailwindcssPatcherOptions
 
-> 可选 | 类型: `TailwindCssPatchOptions`
+> 可选 | 类型: `TailwindcssPatchOptions`
 
 定义于: [packages/weapp-tailwindcss/src/types/user-defined-options/general.ts:193](https://github.com/sonofmagic/weapp-tailwindcss/blob/47e67c82e0f06dcb29b61fdd2fad519d692fbabd/packages/weapp-tailwindcss/src/types/user-defined-options/general.ts#L193)
 

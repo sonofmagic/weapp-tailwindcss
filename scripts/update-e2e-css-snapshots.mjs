@@ -1,16 +1,9 @@
-import type { ProjectEntry } from '../e2e/shared.ts'
 import fs from 'node:fs/promises'
 import process from 'node:process'
 import { fileURLToPath } from 'node:url'
 import path from 'pathe'
-import { E2E_PROJECTS, NATIVE_PROJECTS } from '../e2e/projectEntries.ts'
-import { collectCssSnapshots } from '../e2e/snapshotUtils.ts'
-
-interface SuiteConfig {
-  suite: string
-  fixturesDir: string
-  projects: ProjectEntry[]
-}
+import { E2E_PROJECTS, NATIVE_PROJECTS } from '../e2e/projectEntries.js'
+import { collectCssSnapshots } from '../e2e/snapshotUtils.js'
 
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = path.dirname(__filename)
@@ -19,7 +12,7 @@ const e2eRoot = path.resolve(repoRoot, 'e2e')
 
 const LEADING_SEPARATORS_RE = /^[\\/]+/
 
-async function resolveSnapshotFile(testDir: string, suite: string, projectName: string, fileName: string) {
+async function resolveSnapshotFile(testDir, suite, projectName, fileName) {
   const snapshotDir = path.resolve(testDir, '__snapshots__', suite, projectName)
   await fs.mkdir(snapshotDir, { recursive: true })
   const sanitizedName = fileName.replace(LEADING_SEPARATORS_RE, '')
@@ -32,7 +25,7 @@ async function resolveSnapshotFile(testDir: string, suite: string, projectName: 
   return snapshotPath
 }
 
-async function updateSuite(config: SuiteConfig) {
+async function updateSuite(config) {
   const projectBase = path.resolve(repoRoot, config.fixturesDir)
 
   for (const project of config.projects) {
@@ -49,7 +42,7 @@ async function updateSuite(config: SuiteConfig) {
 }
 
 async function main() {
-  const suites: SuiteConfig[] = [
+  const suites = [
     {
       suite: 'e2e',
       fixturesDir: '../demo',

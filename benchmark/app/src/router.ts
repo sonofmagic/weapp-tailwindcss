@@ -1,5 +1,12 @@
 import { createRouter, createWebHistory } from 'vue-router'
-import { routes } from 'vue-router/auto-routes'
+import HomePage from './pages/index.vue'
+
+const routes = [
+  {
+    path: '/',
+    component: HomePage,
+  },
+]
 
 const router = createRouter({
   history: createWebHistory(),

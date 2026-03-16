@@ -25,7 +25,7 @@
     "dev": "npm run dev:weapp",
     "build": "npm run build:weapp",
     "build:babel": "npm run build:weapp",
-    "build:weapp": "taro build --type weapp",
+    "build:weapp": "node ../../scripts/taro-build-guard.mjs",
     "build:swan": "taro build --type swan",
     "build:alipay": "taro build --type alipay",
     "build:tt": "taro build --type tt",

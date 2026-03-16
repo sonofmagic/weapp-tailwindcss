@@ -1,6 +1,6 @@
 {
   "version": "1.0.0",
-  "generatedAt": "2026-03-15T03:37:04.448Z",
+  "generatedAt": "2026-03-16T03:05:12.077Z",
   "siteUrl": "https://tw.icebreaker.top",
   "totals": {
     "all": 175,
@@ -1603,12 +1603,12 @@
     },
     {
       "kind": "doc",
-      "id": "doc:api/interfaces/TailwindCssPatchOptions",
+      "id": "doc:api/interfaces/TailwindcssPatchOptions",
       "title": "TailwindcssPatchOptions",
       "description": "定义于: packages/weapp-tailwindcss/src/typedoc.export.ts:17",
       "summary": "定义于: packages/weapp-tailwindcss/src/typedoc.export.ts:17",
-      "url": "/docs/api/interfaces/TailwindCssPatchOptions",
-      "canonical": "https://tw.icebreaker.top/docs/api/interfaces/TailwindCssPatchOptions",
+      "url": "/docs/api/interfaces/TailwindcssPatchOptions",
+      "canonical": "https://tw.icebreaker.top/docs/api/interfaces/TailwindcssPatchOptions",
       "keywords": [
         "API",
         "接口文档",
@@ -1635,7 +1635,7 @@
         "### className"
       ],
       "updatedAt": null,
-      "source": "docs/api/interfaces/TailwindCssPatchOptions.md"
+      "source": "docs/api/interfaces/TailwindcssPatchOptions.md"
     },
     {
       "kind": "doc",
