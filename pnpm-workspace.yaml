@@ -126,7 +126,7 @@ catalogs:
   weappVite:
     weapp-vite: ^6.8.0
   wrangler4530:
-    wrangler: ^4.73.0
+    wrangler: ^4.74.0
 
 onlyBuiltDependencies:
   - '@tailwindcss/oxide'
