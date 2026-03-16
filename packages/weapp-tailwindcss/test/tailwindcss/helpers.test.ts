@@ -185,7 +185,7 @@ describe('tailwindcss helpers', () => {
 
     const lastCall = tailwindcssPatcherMock.mock.calls.at(-1)
     const callArgs = lastCall?.[0] as any
-    expect(callArgs.tailwindcss?.postcssPlugin).toContain('@tailwindcss/postcss')
+    expect(String(callArgs.tailwindcss?.postcssPlugin).replaceAll('\\', '/')).toContain('@tailwindcss/postcss')
   })
 
   it('falls back to default tailwind config when project has none', async () => {

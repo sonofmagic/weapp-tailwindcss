@@ -3,8 +3,6 @@ import process from 'node:process'
 
 const isWin = process.platform === 'win32'
 const pnpmCmd = isWin ? 'pnpm.cmd' : 'pnpm'
-const args = ['run', 'build:data']
-
 function run(command, commandArgs) {
   return new Promise((resolve, reject) => {
     const child = spawn(command, commandArgs, {
@@ -27,7 +25,17 @@ function run(command, commandArgs) {
 const nodeMajor = Number.parseInt(process.versions.node.split('.')[0] ?? '0', 10)
 const shouldSkipViteBuild = process.env.CI === 'true' && nodeMajor === 20
 
-const buildDataExitCode = await run(pnpmCmd, args)
+const buildDataCommand = nodeMajor >= 22
+  ? {
+      command: process.execPath,
+      args: ['--experimental-strip-types', './scripts/build-data.ts'],
+    }
+  : {
+      command: pnpmCmd,
+      args: ['exec', 'tsx', './scripts/build-data.ts'],
+    }
+
+const buildDataExitCode = await run(buildDataCommand.command, buildDataCommand.args)
 if (buildDataExitCode !== 0) {
   process.exit(buildDataExitCode)
 }

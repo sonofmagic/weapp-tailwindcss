@@ -18,7 +18,7 @@
   "scripts": {
     "dev": "pnpm run build:data && vite",
     "build": "node ./scripts/build.mjs",
-    "build:data": "node ./scripts/build-data.ts",
+    "build:data": "tsx ./scripts/build-data.ts",
     "preview": "vite preview",
     "gen:postcss": "tsx ./scripts/postcss.ts",
     "gen:vite": "tsx ./scripts/vite.ts",
