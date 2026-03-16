@@ -4,8 +4,6 @@ sidebar_label: ⚙️ 一般配置
 sidebar_position: 4
 ---
 
-定义于: [packages/weapp-tailwindcss/src/types/user-defined-options/index.ts:13](https://github.com/sonofmagic/weapp-tailwindcss/blob/47e67c82e0f06dcb29b61fdd2fad519d692fbabd/packages/weapp-tailwindcss/src/types/user-defined-options/index.ts#L13)
-
 本页收录 17 个配置项，来源于 `UserDefinedOptions`。
 
 ## 配置一览
@@ -27,7 +25,7 @@ sidebar_position: 4
 | [postcssOptions](#postcssoptions) | <code>Partial<Omit<import("/Users/yangqiming/Documents/GitHub/weapp-tailwindcss/node_modules/.pnpm/postcss-load-config@6.0.1_jiti@2.6.1_postcss@8.5.8_tsx@4.21.0_yaml@2.8.2/node_modules/postcss-load-config/src/index").Result, "file">></code> | — | `postcss` 的配置选项。 |
 | [cssRemoveHoverPseudoClass](#cssremovehoverpseudoclass) | <code>boolean</code> | <code>`true`</code> | 是否移除 CSS 中的 `:hover` 选择器。 |
 | [cssRemoveProperty](#cssremoveproperty) | <code>boolean</code> | <code>`true`</code> | 是否移除 `@property` 节点。 |
-| [tailwindcssPatcherOptions](#tailwindcsspatcheroptions) | <code>TailwindcssPatchOptions</code> | — | 自定义 patcher 参数。 |
+| [tailwindcssPatcherOptions](#tailwindcsspatcheroptions) | <code>TailwindCssPatchOptions</code> | — | 自定义 patcher 参数。 |
 | [logLevel](#loglevel) | <code>"info" &#124; "warn" &#124; "error" &#124; "silent"</code> | — | 控制命令行日志输出级别。 |
 
 ## 详细说明
@@ -35,8 +33,6 @@ sidebar_position: 4
 ### supportCustomLengthUnitsPatch
 
 > 可选 | 类型: `boolean | ILengthUnitsPatchOptions`
-
-定义于: [packages/weapp-tailwindcss/src/types/user-defined-options/general.ts:21](https://github.com/sonofmagic/weapp-tailwindcss/blob/47e67c82e0f06dcb29b61fdd2fad519d692fbabd/packages/weapp-tailwindcss/src/types/user-defined-options/general.ts#L21)
 
 控制 Tailwind 自定义长度单位补丁。
 
@@ -57,8 +53,6 @@ TailwindCSS 3.2.0 起对任意值执行长度单位校验，会将未声明的 `
 
 > 可选 | 类型: `AppType`
 
-定义于: [packages/weapp-tailwindcss/src/types/user-defined-options/general.ts:30](https://github.com/sonofmagic/weapp-tailwindcss/blob/47e67c82e0f06dcb29b61fdd2fad519d692fbabd/packages/weapp-tailwindcss/src/types/user-defined-options/general.ts#L30)
-
 声明所使用的框架类型。
 
 #### 备注
@@ -69,15 +63,11 @@ TailwindCSS 3.2.0 起对任意值执行长度单位校验，会将未声明的 `
 
 > 可选 | 类型: `IArbitraryValues`
 
-定义于: [packages/weapp-tailwindcss/src/types/user-defined-options/general.ts:37](https://github.com/sonofmagic/weapp-tailwindcss/blob/47e67c82e0f06dcb29b61fdd2fad519d692fbabd/packages/weapp-tailwindcss/src/types/user-defined-options/general.ts#L37)
-
 TailwindCSS 任意值的相关配置。
 
 ### jsPreserveClass
 
 > 可选 | 类型: `(keyword: string) => boolean | undefined` | 默认值: `保留所有带 \`*\` js字符串字面量` | 版本: ^2.6.1
-
-定义于: [packages/weapp-tailwindcss/src/types/user-defined-options/general.ts:47](https://github.com/sonofmagic/weapp-tailwindcss/blob/47e67c82e0f06dcb29b61fdd2fad519d692fbabd/packages/weapp-tailwindcss/src/types/user-defined-options/general.ts#L47)
 
 控制 JS 字面量是否需要保留。
 
@@ -105,8 +95,6 @@ TailwindCSS 任意值的相关配置。
 
 > 可选 | 类型: `boolean`
 
-定义于: [packages/weapp-tailwindcss/src/types/user-defined-options/general.ts:56](https://github.com/sonofmagic/weapp-tailwindcss/blob/47e67c82e0f06dcb29b61fdd2fad519d692fbabd/packages/weapp-tailwindcss/src/types/user-defined-options/general.ts#L56)
-
 兼容字段：不再参与 JS 候选判定。
 
 #### 备注
@@ -116,8 +104,6 @@ JS 转译统一采用 `classNameSet` 精确匹配策略，仅转换 tailwindcss-
 ### jsArbitraryValueFallback
 
 > 可选 | 类型: `boolean | "auto"`
-
-定义于: [packages/weapp-tailwindcss/src/types/user-defined-options/general.ts:68](https://github.com/sonofmagic/weapp-tailwindcss/blob/47e67c82e0f06dcb29b61fdd2fad519d692fbabd/packages/weapp-tailwindcss/src/types/user-defined-options/general.ts#L68)
 
 控制 JS 任意值类名在 classNameSet 异常时的受控兜底策略。
 
@@ -131,8 +117,6 @@ JS 转译统一采用 `classNameSet` 精确匹配策略，仅转换 tailwindcss-
 ### replaceRuntimePackages
 
 > 可选 | 类型: `boolean | Record<string, string>`
-
-定义于: [packages/weapp-tailwindcss/src/types/user-defined-options/general.ts:87](https://github.com/sonofmagic/weapp-tailwindcss/blob/47e67c82e0f06dcb29b61fdd2fad519d692fbabd/packages/weapp-tailwindcss/src/types/user-defined-options/general.ts#L87)
 
 是否替换运行时依赖包名。
 
@@ -156,13 +140,11 @@ replaceRuntimePackages: {
 
 > 可选 | 类型: `boolean` | 默认值: `false` | 版本: ^2.6.2
 
-定义于: [packages/weapp-tailwindcss/src/types/user-defined-options/general.ts:98](https://github.com/sonofmagic/weapp-tailwindcss/blob/47e67c82e0f06dcb29b61fdd2fad519d692fbabd/packages/weapp-tailwindcss/src/types/user-defined-options/general.ts#L98)
-
 禁用默认的 `wxml` 模板替换器。
 
 #### 备注
 
-启用后模板匹配完全交由 [`customAttributes`](/docs/api/interfaces/UserDefinedOptions#customattributes) 管理，需要自行覆盖默认的 `class` / `hover-class` 等匹配规则。
+启用后模板匹配完全交由 [`customAttributes`](/docs/api/options/important#customattributes) 管理，需要自行覆盖默认的 `class` / `hover-class` 等匹配规则。
 
 #### 默认值
 
@@ -174,8 +156,6 @@ false
 
 > 可选 | 类型: `string` | 版本: ^2.9.3
 
-定义于: [packages/weapp-tailwindcss/src/types/user-defined-options/general.ts:124](https://github.com/sonofmagic/weapp-tailwindcss/blob/47e67c82e0f06dcb29b61fdd2fad519d692fbabd/packages/weapp-tailwindcss/src/types/user-defined-options/general.ts#L124)
-
 指定用于获取 Tailwind 上下文的路径。
 
 #### 备注
@@ -186,23 +166,17 @@ false
 
 > 可选 | 类型: `boolean | ICreateCacheReturnType` | 版本: ^3.0.11
 
-定义于: [packages/weapp-tailwindcss/src/types/user-defined-options/general.ts:132](https://github.com/sonofmagic/weapp-tailwindcss/blob/47e67c82e0f06dcb29b61fdd2fad519d692fbabd/packages/weapp-tailwindcss/src/types/user-defined-options/general.ts#L132)
-
 控制缓存策略。
 
 ### babelParserOptions
 
 > 可选 | 类型: `(Partial<Options> & { cache?: boolean; cacheKey?: string; })` | 版本: ^3.2.0
 
-定义于: [packages/weapp-tailwindcss/src/types/user-defined-options/general.ts:140](https://github.com/sonofmagic/weapp-tailwindcss/blob/47e67c82e0f06dcb29b61fdd2fad519d692fbabd/packages/weapp-tailwindcss/src/types/user-defined-options/general.ts#L140)
-
 `@babel/parser` 的配置选项。
 
 ### cssChildCombinatorReplaceValue
 
 > 可选 | 类型: `string | string[]` | 默认值: `'view + view'`
-
-定义于: [packages/weapp-tailwindcss/src/types/user-defined-options/general.ts:157](https://github.com/sonofmagic/weapp-tailwindcss/blob/47e67c82e0f06dcb29b61fdd2fad519d692fbabd/packages/weapp-tailwindcss/src/types/user-defined-options/general.ts#L157)
 
 自定义 Tailwind 子组合器的替换值。
 
@@ -227,15 +201,11 @@ false
 
 > 可选 | 类型: `Partial<Omit<import("/Users/yangqiming/Documents/GitHub/weapp-tailwindcss/node_modules/.pnpm/postcss-load-config@6.0.1_jiti@2.6.1_postcss@8.5.8_tsx@4.21.0_yaml@2.8.2/node_modules/postcss-load-config/src/index").Result, "file">>` | 版本: ^3.2.0
 
-定义于: [packages/weapp-tailwindcss/src/types/user-defined-options/general.ts:165](https://github.com/sonofmagic/weapp-tailwindcss/blob/47e67c82e0f06dcb29b61fdd2fad519d692fbabd/packages/weapp-tailwindcss/src/types/user-defined-options/general.ts#L165)
-
 `postcss` 的配置选项。
 
 ### cssRemoveHoverPseudoClass
 
 > 可选 | 类型: `boolean` | 默认值: `\`true\`` | 版本: ^3.2.1
-
-定义于: [packages/weapp-tailwindcss/src/types/user-defined-options/general.ts:176](https://github.com/sonofmagic/weapp-tailwindcss/blob/47e67c82e0f06dcb29b61fdd2fad519d692fbabd/packages/weapp-tailwindcss/src/types/user-defined-options/general.ts#L176)
 
 是否移除 CSS 中的 `:hover` 选择器。
 
@@ -255,8 +225,6 @@ false
 
 > 可选 | 类型: `boolean` | 默认值: `\`true\`` | 版本: ^4.1.2
 
-定义于: [packages/weapp-tailwindcss/src/types/user-defined-options/general.ts:186](https://github.com/sonofmagic/weapp-tailwindcss/blob/47e67c82e0f06dcb29b61fdd2fad519d692fbabd/packages/weapp-tailwindcss/src/types/user-defined-options/general.ts#L186)
-
 是否移除 `@property` 节点。
 
 #### 备注
@@ -269,17 +237,13 @@ false
 
 ### tailwindcssPatcherOptions
 
-> 可选 | 类型: `TailwindcssPatchOptions`
-
-定义于: [packages/weapp-tailwindcss/src/types/user-defined-options/general.ts:193](https://github.com/sonofmagic/weapp-tailwindcss/blob/47e67c82e0f06dcb29b61fdd2fad519d692fbabd/packages/weapp-tailwindcss/src/types/user-defined-options/general.ts#L193)
+> 可选 | 类型: `TailwindCssPatchOptions`
 
 自定义 patcher 参数。
 
 ### logLevel
 
 > 可选 | 类型: `"info" | "warn" | "error" | "silent"`
-
-定义于: [packages/weapp-tailwindcss/src/types/user-defined-options/general.ts:201](https://github.com/sonofmagic/weapp-tailwindcss/blob/47e67c82e0f06dcb29b61fdd2fad519d692fbabd/packages/weapp-tailwindcss/src/types/user-defined-options/general.ts#L201)
 
 控制命令行日志输出级别。
 

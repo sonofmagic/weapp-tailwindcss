@@ -4,8 +4,6 @@ sidebar_label: 🧩 文件匹配
 sidebar_position: 2
 ---
 
-定义于: [packages/weapp-tailwindcss/src/types/user-defined-options/index.ts:13](https://github.com/sonofmagic/weapp-tailwindcss/blob/47e67c82e0f06dcb29b61fdd2fad519d692fbabd/packages/weapp-tailwindcss/src/types/user-defined-options/index.ts#L13)
-
 本页收录 6 个配置项，来源于 `UserDefinedOptions`。
 
 ## 配置一览
@@ -25,8 +23,6 @@ sidebar_position: 2
 
 > 可选 | 类型: `(name: string) => boolean`
 
-定义于: [packages/weapp-tailwindcss/src/types/user-defined-options/matcher.ts:9](https://github.com/sonofmagic/weapp-tailwindcss/blob/47e67c82e0f06dcb29b61fdd2fad519d692fbabd/packages/weapp-tailwindcss/src/types/user-defined-options/matcher.ts#L9)
-
 匹配需要处理的 `wxml` 等模板文件。
 
 #### 参数
@@ -42,8 +38,6 @@ sidebar_position: 2
 ### cssMatcher
 
 > 可选 | 类型: `(name: string) => boolean`
-
-定义于: [packages/weapp-tailwindcss/src/types/user-defined-options/matcher.ts:15](https://github.com/sonofmagic/weapp-tailwindcss/blob/47e67c82e0f06dcb29b61fdd2fad519d692fbabd/packages/weapp-tailwindcss/src/types/user-defined-options/matcher.ts#L15)
 
 匹配需要处理的 `wxss` 等样式文件。
 
@@ -61,8 +55,6 @@ sidebar_position: 2
 
 > 可选 | 类型: `(name: string) => boolean`
 
-定义于: [packages/weapp-tailwindcss/src/types/user-defined-options/matcher.ts:21](https://github.com/sonofmagic/weapp-tailwindcss/blob/47e67c82e0f06dcb29b61fdd2fad519d692fbabd/packages/weapp-tailwindcss/src/types/user-defined-options/matcher.ts#L21)
-
 匹配需要处理的编译后 `js` 文件。
 
 #### 参数
@@ -78,8 +70,6 @@ sidebar_position: 2
 ### mainCssChunkMatcher
 
 > 可选 | 类型: `(name: string, appType?: AppType) => boolean`
-
-定义于: [packages/weapp-tailwindcss/src/types/user-defined-options/matcher.ts:29](https://github.com/sonofmagic/weapp-tailwindcss/blob/47e67c82e0f06dcb29b61fdd2fad519d692fbabd/packages/weapp-tailwindcss/src/types/user-defined-options/matcher.ts#L29)
 
 匹配负责注入 Tailwind CSS 变量作用域的 CSS Bundle。
 
@@ -104,8 +94,6 @@ sidebar_position: 2
 ### wxsMatcher
 
 > 可选 | 类型: `(name: string) => boolean` | 默认值: `()=>false`
-
-定义于: [packages/weapp-tailwindcss/src/types/user-defined-options/matcher.ts:40](https://github.com/sonofmagic/weapp-tailwindcss/blob/47e67c82e0f06dcb29b61fdd2fad519d692fbabd/packages/weapp-tailwindcss/src/types/user-defined-options/matcher.ts#L40)
 
 匹配各端的 `wxs`/`sjs`/`.filter.js` 文件。
 
@@ -132,8 +120,6 @@ sidebar_position: 2
 ### inlineWxs
 
 > 可选 | 类型: `boolean` | 默认值: `false`
-
-定义于: [packages/weapp-tailwindcss/src/types/user-defined-options/matcher.ts:65](https://github.com/sonofmagic/weapp-tailwindcss/blob/47e67c82e0f06dcb29b61fdd2fad519d692fbabd/packages/weapp-tailwindcss/src/types/user-defined-options/matcher.ts#L65)
 
 是否转义 `wxml` 中的内联 `wxs`。
 

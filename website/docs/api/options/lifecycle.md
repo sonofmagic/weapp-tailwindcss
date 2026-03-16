@@ -4,8 +4,6 @@ sidebar_label: 🧭 生命周期
 sidebar_position: 3
 ---
 
-定义于: [packages/weapp-tailwindcss/src/types/user-defined-options/index.ts:13](https://github.com/sonofmagic/weapp-tailwindcss/blob/47e67c82e0f06dcb29b61fdd2fad519d692fbabd/packages/weapp-tailwindcss/src/types/user-defined-options/index.ts#L13)
-
 本页收录 4 个配置项，来源于 `UserDefinedOptions`。
 
 ## 配置一览
@@ -23,8 +21,6 @@ sidebar_position: 3
 
 > 可选 | 类型: `(() => void)`
 
-定义于: [packages/weapp-tailwindcss/src/types/user-defined-options/lifecycle.ts:7](https://github.com/sonofmagic/weapp-tailwindcss/blob/47e67c82e0f06dcb29b61fdd2fad519d692fbabd/packages/weapp-tailwindcss/src/types/user-defined-options/lifecycle.ts#L7)
-
 插件 `apply` 初始调用时触发。
 
 #### 返回
@@ -35,8 +31,6 @@ sidebar_position: 3
 
 > 可选 | 类型: `(() => void)`
 
-定义于: [packages/weapp-tailwindcss/src/types/user-defined-options/lifecycle.ts:13](https://github.com/sonofmagic/weapp-tailwindcss/blob/47e67c82e0f06dcb29b61fdd2fad519d692fbabd/packages/weapp-tailwindcss/src/types/user-defined-options/lifecycle.ts#L13)
-
 开始处理前触发。
 
 #### 返回
@@ -46,8 +40,6 @@ sidebar_position: 3
 ### onUpdate
 
 > 可选 | 类型: `(filename: string, oldVal: string, newVal: string) => void`
-
-定义于: [packages/weapp-tailwindcss/src/types/user-defined-options/lifecycle.ts:19](https://github.com/sonofmagic/weapp-tailwindcss/blob/47e67c82e0f06dcb29b61fdd2fad519d692fbabd/packages/weapp-tailwindcss/src/types/user-defined-options/lifecycle.ts#L19)
 
 匹配并修改文件后触发。
 
@@ -72,8 +64,6 @@ sidebar_position: 3
 ### onEnd
 
 > 可选 | 类型: `(() => void)`
-
-定义于: [packages/weapp-tailwindcss/src/types/user-defined-options/lifecycle.ts:25](https://github.com/sonofmagic/weapp-tailwindcss/blob/47e67c82e0f06dcb29b61fdd2fad519d692fbabd/packages/weapp-tailwindcss/src/types/user-defined-options/lifecycle.ts#L25)
 
 结束处理时触发。
 

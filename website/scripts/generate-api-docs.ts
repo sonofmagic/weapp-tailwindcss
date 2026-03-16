@@ -601,11 +601,6 @@ function renderProperty(prop: PropertyDoc, level: number): string {
   lines.push(`> ${optionalLabel}**${prop.name}${prop.isFunction ? '()' : ''}**: \`${prop.typeText}\``)
   lines.push('')
 
-  if (prop.source) {
-    lines.push(`定义于: ${prop.source}`)
-    lines.push('')
-  }
-
   if (prop.description) {
     lines.push(prop.description)
     lines.push('')
@@ -700,11 +695,6 @@ function renderOptionsProperty(prop: PropertyDoc, level: number): string {
   lines.push(renderPropertyMetaLine(prop))
   lines.push('')
 
-  if (prop.source) {
-    lines.push(`定义于: ${prop.source}`)
-    lines.push('')
-  }
-
   if (prop.description) {
     lines.push(prop.description)
     lines.push('')
@@ -774,10 +764,6 @@ function renderInterfaceDoc(doc: InterfaceDoc): string {
   const lines: string[] = []
   lines.push(`# ${doc.name}`)
   lines.push('')
-  if (doc.source) {
-    lines.push(`定义于: ${doc.source}`)
-    lines.push('')
-  }
   if (doc.description) {
     lines.push(doc.description)
     lines.push('')
@@ -837,11 +823,6 @@ function renderUserDefinedOptionsOverview(
   lines.push('---')
   lines.push('')
 
-  if (doc.source) {
-    lines.push(`定义于: ${doc.source}`)
-    lines.push('')
-  }
-
   if (doc.description) {
     lines.push(doc.description)
     lines.push('')
@@ -864,7 +845,6 @@ function renderUserDefinedOptionsOverview(
 function renderOptionsGroupDoc(
   meta: GroupMeta,
   items: PropertyDoc[],
-  optionsDoc?: InterfaceDoc,
 ): string {
   const lines: string[] = []
   lines.push('---')
@@ -873,11 +853,6 @@ function renderOptionsGroupDoc(
   lines.push(`sidebar_position: ${meta.order + 1}`)
   lines.push('---')
   lines.push('')
-
-  if (optionsDoc?.source) {
-    lines.push(`定义于: ${optionsDoc.source}`)
-    lines.push('')
-  }
 
   lines.push(`本页收录 ${items.length} 个配置项，来源于 \`UserDefinedOptions\`。`)
   lines.push('')
@@ -1076,7 +1051,7 @@ function run(): void {
 
   for (const group of optionGroupMetas) {
     const filePath = path.join(apiOptionsDir, `${group.meta.slug}.md`)
-    fs.writeFileSync(filePath, renderOptionsGroupDoc(group.meta, group.items, userDefinedOptionsDoc), 'utf8')
+    fs.writeFileSync(filePath, renderOptionsGroupDoc(group.meta, group.items), 'utf8')
   }
 
   const otherInterfaces = interfaceDocs.filter(item => item.name !== 'UserDefinedOptions')

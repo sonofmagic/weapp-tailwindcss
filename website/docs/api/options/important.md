@@ -4,8 +4,6 @@ sidebar_label: ✅ 重要配置
 sidebar_position: 1
 ---
 
-定义于: [packages/weapp-tailwindcss/src/types/user-defined-options/index.ts:13](https://github.com/sonofmagic/weapp-tailwindcss/blob/47e67c82e0f06dcb29b61fdd2fad519d692fbabd/packages/weapp-tailwindcss/src/types/user-defined-options/index.ts#L13)
-
 本页收录 17 个配置项，来源于 `UserDefinedOptions`。
 
 ## 配置一览
@@ -36,8 +34,6 @@ sidebar_position: 1
 
 > 可选 | 类型: `boolean | DisabledOptions`
 
-定义于: [packages/weapp-tailwindcss/src/types/user-defined-options/important.ts:37](https://github.com/sonofmagic/weapp-tailwindcss/blob/47e67c82e0f06dcb29b61fdd2fad519d692fbabd/packages/weapp-tailwindcss/src/types/user-defined-options/important.ts#L37)
-
 是否禁用此插件。
 
 #### 备注
@@ -65,8 +61,6 @@ uvtw({
 
 > 可选 | 类型: `ICustomAttributes`
 
-定义于: [packages/weapp-tailwindcss/src/types/user-defined-options/important.ts:58](https://github.com/sonofmagic/weapp-tailwindcss/blob/47e67c82e0f06dcb29b61fdd2fad519d692fbabd/packages/weapp-tailwindcss/src/types/user-defined-options/important.ts#L58)
-
 自定义 `wxml` 标签属性的转换规则。
 
 #### 备注
@@ -75,7 +69,7 @@ uvtw({
 - 使用 `'*'` 作为键可为所有标签追加通用规则。
 - 支持传入 `Map<string | RegExp, (string | RegExp)[]>` 以满足复杂匹配需求。
 - 常见场景包括通过组件 `prop` 传递类名，或对三方组件的自定义属性做匹配，更多讨论见 [issue#129](https://github.com/sonofmagic/weapp-tailwindcss/issues/129#issuecomment-1340914688) 与 [issue#134](https://github.com/sonofmagic/weapp-tailwindcss/issues/134#issuecomment-1351288238)。
-如果自定义规则已经覆盖默认的 `class`/`hover-class`，可开启 [`disabledDefaultTemplateHandler`](/docs/api/interfaces/UserDefinedOptions#disableddefaulttemplatehandler) 以关闭内置模板处理器。
+如果自定义规则已经覆盖默认的 `class`/`hover-class`，可开启 [`disabledDefaultTemplateHandler`](/docs/api/options/general#disableddefaulttemplatehandler) 以关闭内置模板处理器。
 
 #### 示例
 
@@ -90,8 +84,6 @@ const customAttributes = {
 ### customReplaceDictionary
 
 > 可选 | 类型: `Record<string, string>` | 默认值: `MappingChars2String`
-
-定义于: [packages/weapp-tailwindcss/src/types/user-defined-options/important.ts:67](https://github.com/sonofmagic/weapp-tailwindcss/blob/47e67c82e0f06dcb29b61fdd2fad519d692fbabd/packages/weapp-tailwindcss/src/types/user-defined-options/important.ts#L67)
 
 自定义 class 名称的替换字典。
 
@@ -109,8 +101,6 @@ MappingChars2String
 
 > 可选 | 类型: `(string | RegExp)[]` | 默认值: `['weappTwIgnore']` | 版本: ^4.0.0
 
-定义于: [packages/weapp-tailwindcss/src/types/user-defined-options/important.ts:78](https://github.com/sonofmagic/weapp-tailwindcss/blob/47e67c82e0f06dcb29b61fdd2fad519d692fbabd/packages/weapp-tailwindcss/src/types/user-defined-options/important.ts#L78)
-
 忽略指定标签模板表达式中的标识符。
 
 #### 备注
@@ -127,8 +117,6 @@ MappingChars2String
 
 > 可选 | 类型: `(string | RegExp)[]` | 版本: ^4.0.0
 
-定义于: [packages/weapp-tailwindcss/src/types/user-defined-options/important.ts:87](https://github.com/sonofmagic/weapp-tailwindcss/blob/47e67c82e0f06dcb29b61fdd2fad519d692fbabd/packages/weapp-tailwindcss/src/types/user-defined-options/important.ts#L87)
-
 忽略指定调用表达式中的标识符。
 
 #### 备注
@@ -138,8 +126,6 @@ MappingChars2String
 ### cssPreflight
 
 > 可选 | 类型: `CssPreflightOptions`
-
-定义于: [packages/weapp-tailwindcss/src/types/user-defined-options/important.ts:116](https://github.com/sonofmagic/weapp-tailwindcss/blob/47e67c82e0f06dcb29b61fdd2fad519d692fbabd/packages/weapp-tailwindcss/src/types/user-defined-options/important.ts#L116)
 
 控制在视图节点上注入的 CSS 预设。
 
@@ -173,8 +159,6 @@ cssPreflight: {
 
 > 可选 | 类型: `"all"`
 
-定义于: [packages/weapp-tailwindcss/src/types/user-defined-options/important.ts:125](https://github.com/sonofmagic/weapp-tailwindcss/blob/47e67c82e0f06dcb29b61fdd2fad519d692fbabd/packages/weapp-tailwindcss/src/types/user-defined-options/important.ts#L125)
-
 控制 `cssPreflight` 注入的 DOM 选择器范围。
 
 #### 参阅
@@ -188,8 +172,6 @@ cssPreflight: {
 ### cssCalc
 
 > 可选 | 类型: `boolean | (string | RegExp)[] | CssCalcOptions` | 版本: ^4.3.0
-
-定义于: [packages/weapp-tailwindcss/src/types/user-defined-options/important.ts:158](https://github.com/sonofmagic/weapp-tailwindcss/blob/47e67c82e0f06dcb29b61fdd2fad519d692fbabd/packages/weapp-tailwindcss/src/types/user-defined-options/important.ts#L158)
 
 预计算 CSS 变量或 `calc` 表达式的结果。
 
@@ -227,8 +209,6 @@ cssCalc: { includeCustomProperties: ['--spacing'] }
 
 > 可选 | 类型: `boolean` | 默认值: `false` | 版本: ^2.6.0
 
-定义于: [packages/weapp-tailwindcss/src/types/user-defined-options/important.ts:169](https://github.com/sonofmagic/weapp-tailwindcss/blob/47e67c82e0f06dcb29b61fdd2fad519d692fbabd/packages/weapp-tailwindcss/src/types/user-defined-options/important.ts#L169)
-
 是否额外注入 `tailwindcss css var scope`。
 
 #### 备注
@@ -244,8 +224,6 @@ false
 ### rewriteCssImports
 
 > 可选 | 类型: `boolean` | 默认值: `true`
-
-定义于: [packages/weapp-tailwindcss/src/types/user-defined-options/important.ts:178](https://github.com/sonofmagic/weapp-tailwindcss/blob/47e67c82e0f06dcb29b61fdd2fad519d692fbabd/packages/weapp-tailwindcss/src/types/user-defined-options/important.ts#L178)
 
 是否在 webpack/vite 阶段自动把 CSS 中的 `@import 'tailwindcss'` 映射为 `weapp-tailwindcss`。
 
@@ -263,8 +241,6 @@ true
 
 > 可选 | 类型: `{ root?: string | string[] | false; universal?: string | string[] | false; }` | 默认值: 详见下方
 
-定义于: [packages/weapp-tailwindcss/src/types/user-defined-options/important.ts:184](https://github.com/sonofmagic/weapp-tailwindcss/blob/47e67c82e0f06dcb29b61fdd2fad519d692fbabd/packages/weapp-tailwindcss/src/types/user-defined-options/important.ts#L184)
-
 控制 CSS 选择器的替换规则。
 
 #### 默认值
@@ -275,8 +251,6 @@ true
 ### rem2rpx
 
 > 可选 | 类型: `boolean | Rem2rpxOptions` | 版本: ^3.0.0
-
-定义于: [packages/weapp-tailwindcss/src/types/user-defined-options/important.ts:220](https://github.com/sonofmagic/weapp-tailwindcss/blob/47e67c82e0f06dcb29b61fdd2fad519d692fbabd/packages/weapp-tailwindcss/src/types/user-defined-options/important.ts#L220)
 
 rem 到 rpx 的转换配置。
 
@@ -295,8 +269,6 @@ rem 到 rpx 的转换配置。
 
 > 可选 | 类型: `boolean | Px2rpxOptions` | 版本: ^4.3.0
 
-定义于: [packages/weapp-tailwindcss/src/types/user-defined-options/important.ts:229](https://github.com/sonofmagic/weapp-tailwindcss/blob/47e67c82e0f06dcb29b61fdd2fad519d692fbabd/packages/weapp-tailwindcss/src/types/user-defined-options/important.ts#L229)
-
 px 到 rpx 的转换配置。
 
 #### 备注
@@ -306,8 +278,6 @@ px 到 rpx 的转换配置。
 ### unitsToPx
 
 > 可选 | 类型: `boolean | UnitsToPxOptions`
-
-定义于: [packages/weapp-tailwindcss/src/types/user-defined-options/important.ts:239](https://github.com/sonofmagic/weapp-tailwindcss/blob/47e67c82e0f06dcb29b61fdd2fad519d692fbabd/packages/weapp-tailwindcss/src/types/user-defined-options/important.ts#L239)
 
 多单位转 px 的转换配置。
 
@@ -320,8 +290,6 @@ px 到 rpx 的转换配置。
 
 > 可选 | 类型: `PresetEnvOptions` | 版本: ^4.0.0
 
-定义于: [packages/weapp-tailwindcss/src/types/user-defined-options/important.ts:249](https://github.com/sonofmagic/weapp-tailwindcss/blob/47e67c82e0f06dcb29b61fdd2fad519d692fbabd/packages/weapp-tailwindcss/src/types/user-defined-options/important.ts#L249)
-
 `postcss-preset-env` 的配置项。
 
 #### 参阅
@@ -333,15 +301,11 @@ px 到 rpx 的转换配置。
 
 > 可选 | 类型: `import("/Users/yangqiming/Documents/GitHub/weapp-tailwindcss/packages/weapp-tailwindcss/src/typedoc.export").TailwindCssOptions` | 版本: ^4.0.0
 
-定义于: [packages/weapp-tailwindcss/src/types/user-defined-options/important.ts:257](https://github.com/sonofmagic/weapp-tailwindcss/blob/47e67c82e0f06dcb29b61fdd2fad519d692fbabd/packages/weapp-tailwindcss/src/types/user-defined-options/important.ts#L257)
-
 为不同版本的 Tailwind 配置行为。
 
 ### cssEntries
 
 > 可选 | 类型: `string[]` | 版本: ^4.2.6
-
-定义于: [packages/weapp-tailwindcss/src/types/user-defined-options/important.ts:267](https://github.com/sonofmagic/weapp-tailwindcss/blob/47e67c82e0f06dcb29b61fdd2fad519d692fbabd/packages/weapp-tailwindcss/src/types/user-defined-options/important.ts#L267)
 
 指定 tailwindcss@4 的入口 CSS。
 

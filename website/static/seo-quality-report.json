@@ -1,6 +1,6 @@
 {
   "version": "1.0.0",
-  "generatedAt": "2026-03-16T03:05:12.530Z",
+  "generatedAt": "2026-03-16T11:41:09.277Z",
   "totals": {
     "files": 175,
     "issues": 32
@@ -101,6 +101,18 @@
     },
     {
       "type": "weak_description",
+      "file": "api/interfaces/TailwindCssPatchOptions.md",
+      "message": "description 过短或缺失关键信息",
+      "scope": "docs"
+    },
+    {
+      "type": "few_keywords",
+      "file": "api/interfaces/TailwindCssPatchOptions.md",
+      "message": "keywords 数量偏少（0）",
+      "scope": "docs"
+    },
+    {
+      "type": "weak_description",
       "file": "api/interfaces/TailwindV2Options.md",
       "message": "description 过短或缺失关键信息",
       "scope": "docs"
@@ -132,18 +144,6 @@
     {
       "type": "few_keywords",
       "file": "api/interfaces/TailwindV4Options.md",
-      "message": "keywords 数量偏少（0）",
-      "scope": "docs"
-    },
-    {
-      "type": "weak_description",
-      "file": "api/interfaces/TailwindcssPatchOptions.md",
-      "message": "description 过短或缺失关键信息",
-      "scope": "docs"
-    },
-    {
-      "type": "few_keywords",
-      "file": "api/interfaces/TailwindcssPatchOptions.md",
       "message": "keywords 数量偏少（0）",
       "scope": "docs"
     },
