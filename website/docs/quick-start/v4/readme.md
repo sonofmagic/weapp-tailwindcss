@@ -108,6 +108,18 @@ keywords:
 
 假如不添加这个，会造成 `tailwindcss` 插件生成的样式，转义不了的问题。
 
+:::warning 只注册到 CSS，不要注册到预处理样式文件
+`tailwindcss@4` 的入口请只放在 `.css` 文件里，例如 `app.css`。
+
+不要把 `@import "tailwindcss"`、`@tailwindcss/postcss`，或者对应的 `cssEntries` 指向 `scss`、`less`、`sass` 这类预处理样式文件，否则很容易导致最终样式生成失败，或者 `weapp-tailwindcss` 转译失效。
+
+推荐做法是：
+
+1. 新建一个纯 `css` 入口文件，例如 `src/app.css`
+2. 只在这个 `css` 文件里写 `@import "tailwindcss";`
+3. 再让业务里的 `scss` / `less` 去间接引用这个 `css`，或者由主入口文件引入它
+:::
+
 > 插件会自动根据已安装的 Tailwind 版本开启 v4 模式。只有在调试自定义 `tailwindcss` 目录或多版本共存时，才需要在 `tailwindcss` 配置里手动指定 `version`。
 
 ## 使用 @apply

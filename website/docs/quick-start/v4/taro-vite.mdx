@@ -66,6 +66,7 @@ import path from 'node:path'
 ```
 
 > tailwindcss@4 必须配置 `cssEntries` 并且使用绝对路径，否则 `tailwindcss` 生成的类名不会参与转译。
+> `cssEntries` 请指向 `.css` 文件，不要指向 `scss` / `less` / `sass`。`@import "tailwindcss"` 也只应写在纯 `css` 入口里，否则会导致样式生成或转译失效。
 
 > 这里使用 `vite` 插件直接去加载 `tailwindcss`，这是由于 `taro4 vite` 不会自动去加载项目下的 `postcss.config.js`，所以只能定义这个 `postcss-config-loader-plugin`
 

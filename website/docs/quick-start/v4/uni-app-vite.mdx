@@ -65,6 +65,7 @@ export default defineConfig({
 ```
 
 > tailwindcss@4 必须配置 `cssEntries` 并且使用绝对路径，否则 `tailwindcss` 生成的类名不会参与转译。
+> `cssEntries` 必须指向纯 `css` 文件。不要把 `tailwindcss@4` 注册到 `scss`、`less` 等预处理样式文件中，否则样式和转译都可能失效。
 
 ## 3. 添加样式
 
