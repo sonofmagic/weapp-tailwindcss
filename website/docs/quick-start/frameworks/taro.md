@@ -153,6 +153,7 @@ const baseConfig: UserConfigExport<'vite'> = {
 这段代码的意思为，在 `vite` 里注册 `postcss` 插件和 `vite` 插件
 
 > `vite.config.ts` 只有在运行小程序的时候才会加载，`h5` 不会，所以只能通过这种方式进行 `小程序` + `h5` 双端兼容
+> 如果你使用的是 `Taro Vite` + `tailwindcss@4`，更推荐在样式入口里直接写 `@import "weapp-tailwindcss/index.css";`，而不是依赖 `rewriteCssImports` 去把 `@import "tailwindcss";` 二次改写。这样排查样式链路会更直接。
 
 ## 视频演示
 
