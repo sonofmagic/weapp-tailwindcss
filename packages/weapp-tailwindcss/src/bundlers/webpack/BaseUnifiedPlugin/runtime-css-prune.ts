@@ -2,7 +2,7 @@ import type { ITemplateHandlerOptions } from '@/types'
 import postcss from 'postcss'
 import { replaceWxml } from '@/wxml'
 
-const ESCAPED_RUNTIME_CLASS_RE = /(?:^|[_-])[bdqpcmh](?:[_-]|$)/i
+const ESCAPED_RUNTIME_CLASS_RE = /(?:^|[_-])[bdqpcmh](?:[_-]|$)|_[bdqpcmh][a-z0-9]/i
 const SELECTOR_CLASS_RE = /\.([^\s>+~:[.#]+)/g
 
 function resolveEscapedRuntimeSet(
@@ -33,7 +33,7 @@ function isPrunableRuntimeClassName(
     return false
   }
 
-  if (!ESCAPED_RUNTIME_CLASS_RE.test(className) && !className.includes('-')) {
+  if (!ESCAPED_RUNTIME_CLASS_RE.test(className)) {
     return false
   }
 

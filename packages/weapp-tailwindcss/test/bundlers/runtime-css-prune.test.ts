@@ -79,4 +79,16 @@ describe('bundlers/runtime css prune', () => {
     expect(pruned).toContain('wx-root-portal-content')
     expect(pruned).not.toContain('._b_hstale_B')
   })
+
+  it('does not prune ordinary authored hyphenated class names that are outside the escaped runtime namespace', () => {
+    const css = '.foo-bar{color:red}.layout-main{display:flex}._b_hstale_B{color:blue}'
+
+    const pruned = pruneStaleRuntimeCss(css, new Set(['bg-red-500']), {
+      escapeMap: MappingChars2String,
+    })
+
+    expect(pruned).toContain('.foo-bar')
+    expect(pruned).toContain('.layout-main')
+    expect(pruned).not.toContain('._b_hstale_B')
+  })
 })
