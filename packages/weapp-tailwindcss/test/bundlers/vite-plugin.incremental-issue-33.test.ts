@@ -118,7 +118,7 @@ describe('bundlers/vite incremental issue #33 regression', () => {
 
     expectEscaped((secondBundle[htmlFile] as OutputAsset).source.toString(), rawTemplateToken)
     expectEscaped((secondBundle[jsFile] as OutputChunk).code, rawScriptToken)
-  }, TEST_TIMEOUT_MS)
+  }, 8000)
 
   it('does not refresh runtime class set for formatting-only incremental html/js changes', async () => {
     const UnifiedViteWeappTailwindcssPlugin = await loadUnifiedVitePlugin()

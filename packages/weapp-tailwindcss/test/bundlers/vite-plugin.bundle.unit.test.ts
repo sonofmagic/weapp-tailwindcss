@@ -1125,7 +1125,7 @@ const cls = "w-[1.5px]"
     expect(processedOutput).toMatchSnapshot('taro-app-origin-processed-output')
     expect(rawInput).toContain(':not(#\\#)')
     expect(processedOutput).toContain(':not(#n)')
-  }, TEST_TIMEOUT_MS)
+  }, 8000)
 
   it('keeps template transform stable on script-only incremental updates', async () => {
     const UnifiedViteWeappTailwindcssPlugin = await loadUnifiedVitePlugin()
