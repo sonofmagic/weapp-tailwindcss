@@ -46,6 +46,20 @@ npx weapp-tailwindcss vscode-entry --css src/app.css
 
 保存/重载任意文件后 VS Code 会检测到该辅助文件，从而让 `@import 'weapp-tailwindcss';` 的项目享受到完整的补全、悬浮和跳转体验。
 
+如果你希望显式告诉 `Tailwind CSS IntelliSense`“某个 CSS 根文件对应哪些源码目录”，可以继续补充 `tailwindCSS.experimental.configFile`：
+
+```json title=".vscode/settings.json"
+{
+  "tailwindCSS.experimental.configFile": {
+    ".vscode/weapp-tailwindcss.intellisense.css": "src/**"
+  }
+}
+```
+
+- 键名是给 `Tailwind CSS IntelliSense` 使用的 CSS 入口文件路径，它通常需要包含 `@import "tailwindcss";`。
+- 键值是这个入口生效的源码范围，支持 glob；上面的配置表示，当你编辑 `src/**` 下的文件时，扩展会使用 `.vscode/weapp-tailwindcss.intellisense.css` 作为 Tailwind 根文件。
+- 在 monorepo 或一个工作区里有多个 Tailwind 入口时，这种写法比“让扩展自动猜测”更稳定，也适合配合 `npx weapp-tailwindcss vscode-entry` 生成的辅助 CSS 一起使用。
+
 ### wxml 的智能提示
 
 我们知道 `tailwindcss` 最佳实践，是要结合 `vscode`/`webstorm`提示插件一起使用的。
