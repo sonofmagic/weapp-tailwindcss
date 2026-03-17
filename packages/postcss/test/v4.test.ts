@@ -1,5 +1,6 @@
 import fs from 'fs-extra'
 import path from 'pathe'
+import prettier from 'prettier'
 import { createStyleHandler } from '@/index'
 
 const WEBKIT_HYPHENS_RE = /-webkit-hyphens\s*:\s*none/
@@ -131,6 +132,17 @@ describe('v4', () => {
     })
     expect(css).toMatchSnapshot()
     await fs.writeFile(path.resolve(__dirname, './fixtures/css/v4.1.2.out.css'), css, 'utf8')
+  })
+
+  it('taro vite tailwindcss v4 app-origin', async () => {
+    const styleHandler = createStyleHandler({
+      isMainChunk: true,
+    })
+    const code = await fs.readFile(path.resolve(__dirname, './fixtures/css/taro-vite-tailwindcss-v4-app-origin.css'), 'utf8')
+    const { css } = await styleHandler(code, {
+      isMainChunk: true,
+    })
+    expect(await prettier.format(css, { parser: 'css' })).toMatchSnapshot()
   })
 
   it('v4 space-y-*', async () => {
