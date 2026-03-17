@@ -12,7 +12,7 @@ import { createUniAppXAssetTask } from '@/uni-app-x'
 import { processCachedTask } from '../shared/cache'
 import { pushConcurrentTaskFactories } from '../shared/run-tasks'
 import { applyLinkedResults, createBundleModuleGraphOptions } from './bundle-entries'
-import { buildBundleSnapshot, buildBundleSnapshotForBuild, createBundleBuildState, updateBundleBuildState } from './bundle-state'
+import { buildBundleSnapshot, createBundleBuildState, updateBundleBuildState } from './bundle-state'
 import { shouldSkipViteJsTransform } from './js-precheck'
 
 interface GenerateBundleContext {
@@ -150,6 +150,19 @@ function canShareCssTransformResult(rawSource: string) {
   return !rawSource.includes('@import') && !rawSource.includes('url(')
 }
 
+function hasOmittedKnownBundleFiles(
+  currentBundleFiles: string[],
+  previousBundleFiles: Iterable<string>,
+) {
+  const currentFileSet = new Set(currentBundleFiles)
+  for (const file of previousBundleFiles) {
+    if (!currentFileSet.has(file)) {
+      return true
+    }
+  }
+  return false
+}
+
 const MUSTACHE_EXPRESSION_RE = /\{\{[\s\S]*?\}\}/g
 const QUOTED_LITERAL_RE = /'([^']*)'|"([^"]*)"|`([^`]*)`/g
 
@@ -247,14 +260,16 @@ export function createGenerateBundleHook(context: GenerateBundleContext) {
     const disableJsPrecheck = process.env.WEAPP_TW_VITE_DISABLE_JS_PRECHECK === '1'
     const debugCssDiff = process.env.WEAPP_TW_VITE_DEBUG_CSS_DIFF === '1'
     const resolvedConfig = getResolvedConfig()
-    const useIncrementalMode = resolvedConfig?.command !== 'build'
+    const bundleFiles = Object.keys(bundle)
+    const buildCommand = resolvedConfig?.command === 'build'
+    // uni-app vite 的 dev 流程可能以 command=build 驱动 generateBundle，
+    // 但后续轮次只回传脏文件子集；此时需要保留上一轮状态并按增量处理。
+    const useIncrementalMode = !buildCommand || hasOmittedKnownBundleFiles(bundleFiles, state.sourceHashByFile.keys())
     const rootDir = resolvedConfig?.root ? path.resolve(resolvedConfig.root) : process.cwd()
     const outDir = resolvedConfig?.build?.outDir
       ? path.resolve(rootDir, resolvedConfig.build.outDir)
       : rootDir
-    const snapshot = useIncrementalMode
-      ? buildBundleSnapshot(bundle, opts, outDir, state, disableDirtyOptimization)
-      : buildBundleSnapshotForBuild(bundle, opts, outDir)
+    const snapshot = buildBundleSnapshot(bundle, opts, outDir, state, disableDirtyOptimization || !useIncrementalMode)
     const useBundleRuntimeClassSet = useIncrementalMode || runtimeState.twPatcher.majorVersion === 4
     const forceRuntimeRefreshBySource = useIncrementalMode
       && hasRuntimeAffectingSourceChanges(snapshot.runtimeAffectingChangedByType)
@@ -635,9 +650,7 @@ export function createGenerateBundleHook(context: GenerateBundleContext) {
       apply()
     }
 
-    if (useIncrementalMode) {
-      updateBundleBuildState(state, snapshot, linkedByEntry ?? new Map<string, Set<string>>())
-    }
+    updateBundleBuildState(state, snapshot, useIncrementalMode ? (linkedByEntry ?? new Map<string, Set<string>>()) : new Map<string, Set<string>>())
 
     debug(
       'metrics iteration=%d runtime=%sms html(total=%d transform=%d hit=%d rate=%s elapsed=%sms) js(total=%d transform=%d hit=%d rate=%s elapsed=%sms) css(total=%d transform=%d hit=%d rate=%s elapsed=%sms)',

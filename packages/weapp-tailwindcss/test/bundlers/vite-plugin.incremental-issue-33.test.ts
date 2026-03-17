@@ -300,4 +300,76 @@ describe('bundlers/vite incremental issue #33 regression', () => {
     expect(getCurrentContext().twPatcher.extract).toHaveBeenCalled()
     expect(jsHandler).toHaveBeenCalled()
   }, TEST_TIMEOUT_MS)
+
+  it('refreshes runtime class set on build-command watch iterations for changed vue object class keys', async () => {
+    const UnifiedViteWeappTailwindcssPlugin = await loadUnifiedVitePlugin()
+    const htmlFile = 'dist/pages/index/index.wxml'
+    const jsFile = 'dist/pages/index/index.js'
+    const runtimeSets = [
+      new Set(['bg-[#999999]']),
+      new Set(['bg-[#999998]']),
+    ] as const
+    let runtimeIndex = 0
+    const getRuntimeSet = () => runtimeSets[runtimeIndex]
+    const realJsHandler = createJsHandler({
+      staleClassNameFallback: false,
+      jsArbitraryValueFallback: false,
+    })
+
+    setCurrentContext(createContext({
+      jsHandler: vi.fn((code: string, classNameSet?: Set<string>, options?: Record<string, unknown>) =>
+        realJsHandler(code, classNameSet, options as any),
+      ),
+      twPatcher: {
+        patch: vi.fn(async () => {}),
+        getClassSet: vi.fn(async () => getRuntimeSet()),
+        getClassSetSync: vi.fn(() => getRuntimeSet()),
+        extract: vi.fn(async () => ({ classSet: getRuntimeSet() })),
+        majorVersion: 3,
+      },
+    }))
+
+    const currentContext = getCurrentContext()
+    const plugins = UnifiedViteWeappTailwindcssPlugin()
+    const postPlugin = plugins?.find(plugin => plugin.name === 'weapp-tailwindcss:adaptor:post') as Plugin
+    expect(postPlugin).toBeTruthy()
+
+    await (postPlugin.configResolved as any)?.call(postPlugin, {
+      command: 'build',
+      root: process.cwd(),
+      css: { postcss: { plugins: [] } },
+      build: { outDir: 'dist' },
+    } as ResolvedConfig)
+
+    const generateBundle = postPlugin.generateBundle as any
+    const firstBundle = {
+      [htmlFile]: {
+        ...createRollupAsset('<view class="content">{{ bgObj }}</view>'),
+        fileName: htmlFile,
+      },
+      [jsFile]: {
+        ...createRollupChunk('const bgObj = common_vendor.ref({ "bg-[#999999]": true });'),
+        fileName: jsFile,
+      },
+    } as Record<string, OutputAsset | OutputChunk>
+
+    await generateBundle?.call(postPlugin, {} as any, firstBundle)
+    expect((firstBundle[jsFile] as OutputChunk).code).toContain(replaceWxml('bg-[#999999]'))
+    expect((firstBundle[jsFile] as OutputChunk).code).not.toContain('bg-[#999999]')
+
+    runtimeIndex = 1
+    const secondBundle = {
+      [jsFile]: {
+        ...createRollupChunk('const bgObj = common_vendor.ref({ "bg-[#999998]": true });'),
+        fileName: jsFile,
+      },
+    } as Record<string, OutputAsset | OutputChunk>
+
+    await generateBundle?.call(postPlugin, {} as any, secondBundle)
+
+    const transformedCode = (secondBundle[jsFile] as OutputChunk).code
+    expect(transformedCode).toContain(replaceWxml('bg-[#999998]'))
+    expect(transformedCode).not.toContain('bg-[#999998]')
+    expect(currentContext.twPatcher.extract).toHaveBeenCalledTimes(2)
+  }, TEST_TIMEOUT_MS)
 })

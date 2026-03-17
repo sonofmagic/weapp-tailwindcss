@@ -35,6 +35,8 @@ import {
   mutateTsxScriptByReturnAnchor,
   mutateTsxScriptByReturnAnchorWithCommentCarrier,
   mutateVueRefStringLiteral,
+  mutateVueScriptSetupObjectKeyByAnchor,
+  mutateVueScriptSetupObjectKeyByAnchorWithCommentCarrier,
   mutateVueScriptSetupArrayByAnchor,
   mutateVueScriptSetupArrayByAnchorWithCommentCarrier,
   normalizeCssDeclaration,
@@ -273,9 +275,29 @@ const title = ref('demo')
     expect(arrayMutated).toContain(`'${payload.classLiteral}'`)
     expect(arrayMutated).toContain(`'${payload.marker}'`)
 
+    const objectSource = `<template>
+  <view class="content">
+    <view>demo</view>
+  </view>
+</template>
+
+<script setup lang="ts">
+const bgObj = ref({
+  'bg-[#999999]':true
+})
+</script>`
+    const objectMutated = mutateVueScriptSetupObjectKeyByAnchor(objectSource, '\'bg-[#999999]\':true', payload)
+    expect(objectMutated).toContain('\'text-[#123456]\':true')
+    expect(objectMutated).toContain('\'bg-[#0f0f0f]\':true')
+    expect(objectMutated).not.toContain('\'bg-[#999999]\':true')
+
     const commentCarrierMutated = mutateVueScriptSetupArrayByAnchorWithCommentCarrier(vueSource, 'const classArray = [', payload)
     expect(commentCarrierMutated).toContain(`/* ${payload.classLiteral} */`)
     expect(commentCarrierMutated).toContain('<view hidden>{{ __twWatchScriptCommentMarker }}</view>')
+
+    const objectCommentCarrierMutated = mutateVueScriptSetupObjectKeyByAnchorWithCommentCarrier(objectSource, '\'bg-[#999999]\':true', payload)
+    expect(objectCommentCarrierMutated).toContain(`/* ${payload.classLiteral} */`)
+    expect(objectCommentCarrierMutated).toContain('<view hidden>{{ __twWatchScriptCommentMarker }}</view>')
 
     const insertedTemplate = insertIntoVueTemplateRoot(vueSource, '    <view class="tail" />')
     expect(insertedTemplate).toContain('<view class="tail" />')

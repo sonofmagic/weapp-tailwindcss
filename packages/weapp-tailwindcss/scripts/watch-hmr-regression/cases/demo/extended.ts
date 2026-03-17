@@ -12,6 +12,7 @@ import {
   mutateVueRefStringLiteral,
   mutateVueScriptSetupArrayByAnchor,
   mutateVueScriptSetupArrayByAnchorWithCommentCarrier,
+  mutateVueScriptSetupObjectKeyByAnchor,
 } from '../../text'
 
 const NON_DIGIT_RE = /\D/g
@@ -118,6 +119,19 @@ export function buildDemoExtendedCases(baseCwd: string): WatchCase[] {
         return mutateVueScriptSetupArrayByAnchorWithCommentCarrier(
           source,
           'const classArray = [',
+          payload,
+        )
+      },
+    },
+    contentMutation: {
+      sourceFile: path.resolve(baseCwd, 'demo/uni-app-vue3-vite/src/pages/index/index.vue'),
+      verifyEscapedIn: [],
+      verifyClassLiteralIn: ['js'],
+      roundConfigs: buildHexScriptRoundConfigs(),
+      mutate(source, payload) {
+        return mutateVueScriptSetupObjectKeyByAnchor(
+          source,
+          '\'bg-[#999999]\':true',
           payload,
         )
       },

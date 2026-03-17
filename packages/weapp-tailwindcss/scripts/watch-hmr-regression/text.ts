@@ -292,6 +292,27 @@ export function mutateVueScriptSetupArrayByAnchor(
   )
 }
 
+export function mutateVueScriptSetupObjectKeyByAnchor(
+  source: string,
+  objectKeyAnchor: string,
+  payload: ClassMutationPayload,
+) {
+  if (!source.includes(objectKeyAnchor)) {
+    throw new Error(`vue script setup object key anchor not found: ${objectKeyAnchor}`)
+  }
+
+  const nextEntries = payload.classLiteral
+    .split(WHITESPACE_RE)
+    .filter(Boolean)
+    .map(token => `  '${token}':true`)
+    .join(',\n')
+
+  return source.replace(
+    objectKeyAnchor,
+    nextEntries,
+  )
+}
+
 export function insertIntoVueTemplateRoot(source: string, snippet: string) {
   const templateStart = source.indexOf('<template>')
   const templateEnd = source.lastIndexOf('</template>')
@@ -331,6 +352,34 @@ export function mutateVueScriptSetupArrayByAnchorWithCommentCarrier(
   const nextSource = cleanedTemplateSource.replace(
     arrayAnchor,
     `/* ${payload.classLiteral} */\nconst __twWatchScriptCommentMarker = '${payload.marker}'\n${arrayAnchor}`,
+  )
+  return insertIntoVueTemplateRoot(
+    nextSource,
+    '    <view hidden>{{ __twWatchScriptCommentMarker }}</view>',
+  )
+}
+
+export function mutateVueScriptSetupObjectKeyByAnchorWithCommentCarrier(
+  source: string,
+  objectKeyAnchor: string,
+  payload: ClassMutationPayload,
+) {
+  const cleanedSource = source.replace(
+    COMMENT_CARRIER_SCRIPT_MARKER_RE,
+    '',
+  )
+  const cleanedTemplateSource = cleanedSource.replace(
+    COMMENT_CARRIER_TEMPLATE_MARKER_RE,
+    '',
+  )
+
+  if (!cleanedTemplateSource.includes(objectKeyAnchor)) {
+    throw new Error(`vue script setup object key anchor not found: ${objectKeyAnchor}`)
+  }
+
+  const nextSource = cleanedTemplateSource.replace(
+    objectKeyAnchor,
+    `/* ${payload.classLiteral} */\nconst __twWatchScriptCommentMarker = '${payload.marker}'\n${objectKeyAnchor}`,
   )
   return insertIntoVueTemplateRoot(
     nextSource,
