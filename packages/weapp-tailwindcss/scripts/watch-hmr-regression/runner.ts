@@ -50,9 +50,14 @@ export async function runCase(watchCase: WatchCase, options: CliOptions): Promis
     const warmupMs = await waitForInitialWarmup(watchCase, options, session, sessionStartedAt)
     const initialReadyMs = Math.max(outputsReadyMs, warmupMs)
 
+    const styleOutputCandidates = [...new Set([
+      ...watchCase.outputStyleCandidates,
+      ...watchCase.globalStyleCandidates,
+    ])]
+
     const globalStyleOutputs = await resolveOutputFiles(
       watchCase,
-      watchCase.globalStyleCandidates,
+      styleOutputCandidates,
       'global style',
       options,
       session,

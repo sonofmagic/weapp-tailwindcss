@@ -5,7 +5,8 @@ const strictTaroBuild = process.env.TARO_BUILD_STRICT === '1'
 const isInteractive = Boolean(process.stdout.isTTY && process.stderr.isTTY)
 const isWin = process.platform === 'win32'
 const pnpmCmd = isWin ? 'pnpm.cmd' : 'pnpm'
-const args = ['exec', 'taro', 'build', '--type', 'weapp']
+const forwardedArgs = process.argv.slice(2)
+const args = ['exec', 'taro', 'build', '--type', 'weapp', ...forwardedArgs]
 
 if (!strictTaroBuild && !isInteractive) {
   console.warn('[taro-build-guard] 检测到非交互式环境，已跳过 Taro demo/app 的 weapp 构建。')

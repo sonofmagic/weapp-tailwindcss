@@ -182,6 +182,13 @@ export function insertBeforeAnchor(source: string, anchor: string, snippet: stri
   return `${source.slice(0, index)}${snippet}${source.slice(index)}`
 }
 
+export function replaceExactSnippet(source: string, anchor: string, replacement: string, label = 'snippet') {
+  if (!source.includes(anchor)) {
+    throw new Error(`${label} not found: ${anchor}`)
+  }
+  return source.replace(anchor, replacement)
+}
+
 export function appendTrailingSnippet(source: string, snippet: string) {
   if (source.endsWith('\n')) {
     return `${source}${snippet}\n`

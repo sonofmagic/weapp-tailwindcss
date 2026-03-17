@@ -2,10 +2,12 @@
 // 获取应用实例
 
 const defaultAvatarUrl = 'https://mmbiz.qpic.cn/mmbiz/icTdbqWNOwNRna42FI242Lcia07jQodd2FJGIYQfG0LAJGFxM4FbnQP6yfMxBgJ0F3YRqJCJ1aPAK2dQagdusBZg/0'
+const pageClassName = 'bg-[#d72929]'
 
 Component({
   data: {
     motto: 'Hello World',
+    className: pageClassName,
     userInfo: {
       avatarUrl: defaultAvatarUrl,
       nickName: '',

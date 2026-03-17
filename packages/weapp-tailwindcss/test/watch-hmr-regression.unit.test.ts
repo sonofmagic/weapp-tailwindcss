@@ -1,7 +1,13 @@
-import { mkdtemp, readFile, rm } from 'node:fs/promises'
+import { mkdir, mkdtemp, readFile, rm } from 'node:fs/promises'
 import os from 'node:os'
 import path from 'node:path'
 import { afterEach, describe, expect, it, vi } from 'vitest'
+import {
+  buildDemoBaseCases,
+} from '../scripts/watch-hmr-regression/cases/demo/base'
+import {
+  buildDemoExtendedCases,
+} from '../scripts/watch-hmr-regression/cases/demo/extended'
 import {
   buildAppCases,
 } from '../scripts/watch-hmr-regression/cases/apps'
@@ -17,6 +23,10 @@ import {
   summarizeSamples,
   writeReport,
 } from '../scripts/watch-hmr-regression/summary'
+import {
+  expandOutputFileEntries,
+  readJoinedOutputFiles,
+} from '../scripts/watch-hmr-regression/mutations/shared'
 import {
   alignContentEol,
   appendTrailingSnippet,
@@ -40,6 +50,7 @@ import {
   mutateVueScriptSetupArrayByAnchor,
   mutateVueScriptSetupArrayByAnchorWithCommentCarrier,
   normalizeCssDeclaration,
+  replaceExactSnippet,
   readFileIfExists,
   readFileWithRetry,
   waitFor,
@@ -180,6 +191,29 @@ describe('watch-hmr regression text helpers', () => {
     expect(await getMtime(path.join(tempDir, 'missing.txt'))).toBe(0)
   })
 
+  it('expands wildcard output files so hashed style assets can be re-discovered', async () => {
+    const tempDir = await mkdtemp(path.join(os.tmpdir(), 'weapp-tw-watch-glob-'))
+    tempDirs.push(tempDir)
+    const styleDir = path.join(tempDir, 'styles')
+    await mkdir(styleDir, { recursive: true })
+    await writeFilePreserveEol(path.join(styleDir, 'utilities123.wxss'), '.a{}', '.a{}')
+    await writeFilePreserveEol(path.join(styleDir, 'utilities456.wxss'), '.b{}', '.b{}')
+
+    const resolved = await expandOutputFileEntries([
+      path.join(styleDir, 'utilities*.wxss'),
+    ])
+    const joined = await readJoinedOutputFiles([
+      path.join(styleDir, 'utilities*.wxss'),
+    ])
+
+    expect(resolved).toEqual([
+      path.join(styleDir, 'utilities123.wxss'),
+      path.join(styleDir, 'utilities456.wxss'),
+    ])
+    expect(joined).toContain('.a{}')
+    expect(joined).toContain('.b{}')
+  })
+
   it('waits for predicates and reports timeout failures', async () => {
     let attempt = 0
     const elapsed = await waitFor(
@@ -222,6 +256,7 @@ describe('watch-hmr regression text helpers', () => {
 
     expect(insertBeforeClosingTag('<view>\n</view>', '</view>', '<text />')).toContain('<text />')
     expect(insertBeforeAnchor('return ()', '()', '<body>')).toBe('return <body>()')
+    expect(replaceExactSnippet('const foo = 1', 'foo = 1', 'bar = 2')).toBe('const bar = 2')
     expect(appendTrailingSnippet('const a = 1', 'const b = 2')).toBe('const a = 1\nconst b = 2\n')
 
     const styleSnippet = createStyleRuleSnippet({
@@ -419,5 +454,55 @@ describe('watch-hmr regression cases', () => {
     expect(taroWebpackCase?.globalStyleCandidates).toEqual([
       path.resolve('/repo', 'apps/taro-webpack-tailwindcss-v4/dist/app.wxss'),
     ])
+  })
+
+  it('pins taro-based watch cases to strict taro build mode', () => {
+    const cases = [
+      ...buildDemoBaseCases('/repo'),
+      ...buildDemoExtendedCases('/repo'),
+      ...buildAppCases('/repo'),
+    ].filter(watchCase => watchCase.name.includes('taro'))
+
+    expect(cases.length).toBeGreaterThan(0)
+
+    for (const watchCase of cases) {
+      expect(watchCase.env?.TARO_BUILD_STRICT).toBe('1')
+    }
+  })
+
+  it('covers js literal refresh content mutations for every demo and app case', () => {
+    const cases = [
+      ...buildDemoBaseCases('/repo'),
+      ...buildDemoExtendedCases('/repo'),
+      ...buildAppCases('/repo'),
+    ]
+
+    expect(cases.length).toBeGreaterThan(0)
+
+    for (const watchCase of cases) {
+      expect(
+        watchCase.contentMutation,
+        `${watchCase.name} should define content mutation for existing js class literal refresh`,
+      ).toBeDefined()
+
+      const contentMutation = watchCase.contentMutation
+      if (!contentMutation) {
+        continue
+      }
+
+      expect(contentMutation.verifyClassLiteralIn).toContain('js')
+      expect(contentMutation.forbidBgHexTruncationIn).toContain('js')
+      expect(contentMutation.roundConfigs?.length).toBe(1)
+      expect(contentMutation.roundConfigs?.[0]?.name).toBe('issue33-arbitrary')
+      expect(contentMutation.sourceFile).not.toMatch(/index\.html$/)
+      expect(contentMutation.sourceFile).toMatch(/\.(?:js|ts|tsx|vue|mpx)$/)
+    }
+  })
+
+  it('uses wildcard style candidates for mpx utility outputs', () => {
+    const mpxCase = buildDemoBaseCases('/repo').find(watchCase => watchCase.name === 'mpx')
+    expect(mpxCase?.globalStyleCandidates).toContain(
+      path.resolve('/repo', 'demo/mpx-app/dist/wx/styles/utilities*.wxss'),
+    )
   })
 })

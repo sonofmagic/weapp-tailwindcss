@@ -1,5 +1,6 @@
 <!-- index.wxml -->
 <view id="app">
+  <view class="{{className}}">className</view>
   <view class="flex space-x-4">
     <view>1</view>
     <view>2</view>

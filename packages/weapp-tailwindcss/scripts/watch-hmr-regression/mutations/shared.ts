@@ -10,10 +10,65 @@ import type {
   WatchCaseRoundComparison,
   WatchSession,
 } from '../types'
+import { readdir } from 'node:fs/promises'
+import path from 'node:path'
 import { replaceWxml } from '../../../src/wxml/shared'
 import { formatPath } from '../cli'
 import { getMtime, readFileIfExists, waitFor } from '../text'
 import { DEFAULT_STYLE_APPLY_VALIDATION, STYLE_APPLY_UNSUPPORTED_CASES } from '../types'
+
+const GLOB_TOKEN_RE = /[*?]/
+const REGEXP_ESCAPE_RE = /[.*+?^${}()|[\]\\]/g
+
+function escapeRegExp(value: string) {
+  return value.replace(REGEXP_ESCAPE_RE, '\\$&')
+}
+
+function createGlobRegExp(pattern: string) {
+  return new RegExp(`^${pattern.split('*').map(escapeRegExp).join('.*')}$`)
+}
+
+export function isOutputFilePattern(file: string) {
+  return GLOB_TOKEN_RE.test(path.basename(file))
+}
+
+export async function expandOutputFileEntries(files: string[]) {
+  const resolved = new Set<string>()
+
+  for (const file of files) {
+    if (!isOutputFilePattern(file)) {
+      const content = await readFileIfExists(file)
+      if (content != null) {
+        resolved.add(file)
+      }
+      continue
+    }
+
+    const dir = path.dirname(file)
+    const pattern = createGlobRegExp(path.basename(file))
+    let entries: string[] = []
+
+    try {
+      entries = await readdir(dir)
+    }
+    catch {
+      continue
+    }
+
+    for (const entry of entries) {
+      if (!pattern.test(entry)) {
+        continue
+      }
+      const matchedFile = path.join(dir, entry)
+      const content = await readFileIfExists(matchedFile)
+      if (content != null) {
+        resolved.add(matchedFile)
+      }
+    }
+  }
+
+  return [...resolved]
+}
 
 export async function waitForOutputsReady(watchCase: WatchCase, options: CliOptions, session: WatchSession) {
   return waitFor(
@@ -103,10 +158,11 @@ export async function waitForOutputFilesUpdated(
 ) {
   return waitFor(
     async () => {
-      for (const file of files) {
+      const resolvedFiles = await expandOutputFileEntries(files)
+      for (const file of resolvedFiles) {
         const baselineMtime = baselineMtimes.get(file) ?? 0
         const currentMtime = await getMtime(file)
-        if (currentMtime > baselineMtime) {
+        if (baselineMtime === 0 || currentMtime > baselineMtime) {
           return true
         }
       }
@@ -257,14 +313,7 @@ export async function resolveOutputFiles(
 
   await waitFor(
     async () => {
-      const nextResolved: string[] = []
-      for (const file of candidates) {
-        const content = await readFileIfExists(file)
-        if (content != null) {
-          nextResolved.push(file)
-        }
-      }
-      resolved = nextResolved
+      resolved = await expandOutputFileEntries(candidates)
       return resolved.length > 0
     },
     {
@@ -279,11 +328,12 @@ export async function resolveOutputFiles(
     throw new Error(`[${watchCase.label}] no resolved ${label} output`)
   }
 
-  return resolved
+  return [...new Set(candidates)]
 }
 
 export async function readJoinedOutputFiles(files: string[]) {
-  const parts = await Promise.all(files.map(file => readFileIfExists(file)))
+  const resolvedFiles = await expandOutputFileEntries(files)
+  const parts = await Promise.all(resolvedFiles.map(file => readFileIfExists(file)))
   return parts.filter((item): item is string => item != null).join('\n')
 }
 

@@ -1,6 +1,5 @@
 import type { WatchCase } from '../../types'
 import path from 'node:path'
-import { isIssue33RoundEnabled, ISSUE33_ADD_CLASS_TOKENS } from '../../mutations/tokens'
 import {
   appendTrailingSnippet,
   createStyleRuleSnippet,
@@ -13,68 +12,9 @@ import {
   mutateVueScriptSetupArrayByAnchor,
   mutateVueScriptSetupArrayByAnchorWithCommentCarrier,
   mutateVueScriptSetupObjectKeyByAnchor,
+  replaceExactSnippet,
 } from '../../text'
-
-const NON_DIGIT_RE = /\D/g
-
-function buildHexScriptRoundConfigs() {
-  const rounds = [
-    {
-      name: 'baseline-arbitrary' as const,
-      buildClassTokens(seed: string) {
-        const numericSeed = seed.replace(NON_DIGIT_RE, '').padEnd(6, '0')
-        const hex = numericSeed.slice(0, 6)
-        const textPx = Number(numericSeed.slice(0, 2)) + 20
-        const heightPx = Number(numericSeed.slice(2, 4)) + 12
-        return [
-          `bg-[#${hex}]`,
-          `text-[${textPx}px]`,
-          `h-[${heightPx}px]`,
-        ]
-      },
-    },
-    {
-      name: 'complex-corpus' as const,
-      buildClassTokens(seed: string) {
-        const numericSeed = seed.replace(NON_DIGIT_RE, '').padEnd(6, '0')
-        const hex = numericSeed.slice(0, 4)
-        const textPx = Number(numericSeed.slice(0, 2)) + 34
-        const heightPx = Number(numericSeed.slice(2, 4)) + 22
-        return [
-          `bg-[#${hex}]`,
-          `text-[${textPx}px]`,
-          `h-[${heightPx}px]`,
-        ]
-      },
-    },
-    {
-      name: 'hex-arbitrary' as const,
-      buildClassTokens(seed: string) {
-        const numericSeed = seed.replace(NON_DIGIT_RE, '').padEnd(8, '0')
-        const hex = `${numericSeed.slice(0, 2)}00`
-        const textPx = Number(numericSeed.slice(0, 2)) + 46
-        const heightPx = Number(numericSeed.slice(2, 4)) + 28
-        return [
-          `bg-[#${hex}]`,
-          `text-[${textPx}px]`,
-          `h-[${heightPx}px]`,
-        ]
-      },
-    },
-  ]
-  if (!isIssue33RoundEnabled()) {
-    return rounds
-  }
-  return [
-    ...rounds,
-    {
-      name: 'issue33-arbitrary' as const,
-      buildClassTokens() {
-        return [...ISSUE33_ADD_CLASS_TOKENS]
-      },
-    },
-  ]
-}
+import { buildHexScriptRoundConfigs, buildIssue33BgOnlyRoundConfigs } from '../round-configs'
 
 export function buildDemoExtendedCases(baseCwd: string): WatchCase[] {
   const uniAppVue3ViteCase: WatchCase = {
@@ -127,7 +67,8 @@ export function buildDemoExtendedCases(baseCwd: string): WatchCase[] {
       sourceFile: path.resolve(baseCwd, 'demo/uni-app-vue3-vite/src/pages/index/index.vue'),
       verifyEscapedIn: [],
       verifyClassLiteralIn: ['js'],
-      roundConfigs: buildHexScriptRoundConfigs(),
+      forbidBgHexTruncationIn: ['js'],
+      roundConfigs: buildIssue33BgOnlyRoundConfigs(),
       mutate(source, payload) {
         return mutateVueScriptSetupObjectKeyByAnchor(
           source,
@@ -160,6 +101,21 @@ export function buildDemoExtendedCases(baseCwd: string): WatchCase[] {
     globalStyleCandidates: [
       path.resolve(baseCwd, 'demo/uni-app-tailwindcss-v4/dist/dev/mp-weixin/app.wxss'),
     ],
+    contentMutation: {
+      sourceFile: path.resolve(baseCwd, 'demo/uni-app-tailwindcss-v4/src/pages/index/index.vue'),
+      verifyEscapedIn: [],
+      verifyClassLiteralIn: ['js'],
+      forbidBgHexTruncationIn: ['js'],
+      roundConfigs: buildIssue33BgOnlyRoundConfigs(),
+      mutate(source, payload) {
+        return replaceExactSnippet(
+          source,
+          'const className = ref(\'bg-[#0000ff] text-[45rpx] text-white\')',
+          `const className = ref('${payload.classLiteral}')`,
+          'uni-app-tailwindcss-v4 script class anchor',
+        )
+      },
+    },
     templateMutation: {
       sourceFile: path.resolve(baseCwd, 'demo/uni-app-tailwindcss-v4/src/pages/index/index.vue'),
       verifyEscapedIn: ['wxml'],
@@ -196,6 +152,9 @@ export function buildDemoExtendedCases(baseCwd: string): WatchCase[] {
     group: 'demo',
     cwd: path.resolve(baseCwd, 'demo/taro-vite-tailwindcss-v4'),
     devScript: 'dev:weapp',
+    env: {
+      TARO_BUILD_STRICT: '1',
+    },
     outputWxml: path.resolve(baseCwd, 'demo/taro-vite-tailwindcss-v4/dist/pages/index/index.wxml'),
     outputJs: path.resolve(baseCwd, 'demo/taro-vite-tailwindcss-v4/dist/pages/index/index.js'),
     outputStyleCandidates: [
@@ -208,12 +167,18 @@ export function buildDemoExtendedCases(baseCwd: string): WatchCase[] {
       path.resolve(baseCwd, 'demo/taro-vite-tailwindcss-v4/dist/app.wxss'),
     ],
     contentMutation: {
-      sourceFile: path.resolve(baseCwd, 'demo/taro-vite-tailwindcss-v4/src/index.html'),
+      sourceFile: path.resolve(baseCwd, 'demo/taro-vite-tailwindcss-v4/src/pages/index/index.tsx'),
       verifyEscapedIn: [],
-      verifyClassLiteralIn: [],
+      verifyClassLiteralIn: ['js'],
+      forbidBgHexTruncationIn: ['js'],
+      roundConfigs: buildIssue33BgOnlyRoundConfigs(),
       mutate(source, payload) {
-        const snippet = `  <div class="${payload.classLiteral}">${payload.marker}-content</div>`
-        return insertBeforeClosingTag(source, '</body>', snippet)
+        return replaceExactSnippet(
+          source,
+          '      <div className=\'h-[300px] text-[#c31d6b] bg-[#123456]\'>短斤少两快点撒</div>',
+          `      <div className='${payload.classLiteral}'>短斤少两快点撒</div>`,
+          'taro-vite-tailwindcss-v4 jsx class anchor',
+        )
       },
     },
     templateMutation: {
@@ -251,6 +216,9 @@ export function buildDemoExtendedCases(baseCwd: string): WatchCase[] {
     group: 'demo',
     cwd: path.resolve(baseCwd, 'demo/taro-app-vite'),
     devScript: 'dev:weapp',
+    env: {
+      TARO_BUILD_STRICT: '1',
+    },
     outputWxml: path.resolve(baseCwd, 'demo/taro-app-vite/dist/pages/index/index.wxml'),
     outputJs: path.resolve(baseCwd, 'demo/taro-app-vite/dist/pages/index/index.js'),
     outputStyleCandidates: [
@@ -263,12 +231,18 @@ export function buildDemoExtendedCases(baseCwd: string): WatchCase[] {
       path.resolve(baseCwd, 'demo/taro-app-vite/dist/app.wxss'),
     ],
     contentMutation: {
-      sourceFile: path.resolve(baseCwd, 'demo/taro-app-vite/src/index.html'),
+      sourceFile: path.resolve(baseCwd, 'demo/taro-app-vite/src/pages/index/index.tsx'),
       verifyEscapedIn: [],
-      verifyClassLiteralIn: [],
+      verifyClassLiteralIn: ['js'],
+      forbidBgHexTruncationIn: ['js'],
+      roundConfigs: buildIssue33BgOnlyRoundConfigs(),
       mutate(source, payload) {
-        const snippet = `  <div class="${payload.classLiteral}">${payload.marker}-content</div>`
-        return insertBeforeClosingTag(source, '</body>', snippet)
+        return replaceExactSnippet(
+          source,
+          '      <View className=\'bg-[#89ab8d] flex flex-col\'>',
+          `      <View className='${payload.classLiteral}'>`,
+          'taro-app-vite jsx class anchor',
+        )
       },
     },
     templateMutation: {
@@ -306,6 +280,9 @@ export function buildDemoExtendedCases(baseCwd: string): WatchCase[] {
     group: 'demo',
     cwd: path.resolve(baseCwd, 'demo/taro-webpack-tailwindcss-v4'),
     devScript: 'dev:weapp',
+    env: {
+      TARO_BUILD_STRICT: '1',
+    },
     outputWxml: path.resolve(baseCwd, 'demo/taro-webpack-tailwindcss-v4/dist/pages/index/index.wxml'),
     outputJs: path.resolve(baseCwd, 'demo/taro-webpack-tailwindcss-v4/dist/pages/index/index.js'),
     outputStyleCandidates: [
@@ -317,12 +294,18 @@ export function buildDemoExtendedCases(baseCwd: string): WatchCase[] {
       path.resolve(baseCwd, 'demo/taro-webpack-tailwindcss-v4/dist/app.wxss'),
     ],
     contentMutation: {
-      sourceFile: path.resolve(baseCwd, 'demo/taro-webpack-tailwindcss-v4/src/index.html'),
+      sourceFile: path.resolve(baseCwd, 'demo/taro-webpack-tailwindcss-v4/src/pages/index/index.tsx'),
       verifyEscapedIn: [],
-      verifyClassLiteralIn: [],
+      verifyClassLiteralIn: ['js'],
+      forbidBgHexTruncationIn: ['js'],
+      roundConfigs: buildIssue33BgOnlyRoundConfigs(),
       mutate(source, payload) {
-        const snippet = `  <div class="${payload.classLiteral}">${payload.marker}-content</div>`
-        return insertBeforeClosingTag(source, '</body>', snippet)
+        return replaceExactSnippet(
+          source,
+          '      <View className=\'bg-[#534312] text-[#fff] text-[100rpx]\'>',
+          `      <View className='${payload.classLiteral}'>`,
+          'taro-webpack-tailwindcss-v4 jsx class anchor',
+        )
       },
     },
     templateMutation: {
@@ -362,6 +345,9 @@ export function buildDemoExtendedCases(baseCwd: string): WatchCase[] {
     group: 'demo',
     cwd: path.resolve(baseCwd, 'demo/taro-vue3-app'),
     devScript: 'dev:weapp',
+    env: {
+      TARO_BUILD_STRICT: '1',
+    },
     outputWxml: path.resolve(baseCwd, 'demo/taro-vue3-app/dist/pages/index/index.wxml'),
     outputJs: path.resolve(baseCwd, 'demo/taro-vue3-app/dist/pages/index/index.js'),
     outputStyleCandidates: [
@@ -373,12 +359,18 @@ export function buildDemoExtendedCases(baseCwd: string): WatchCase[] {
       path.resolve(baseCwd, 'demo/taro-vue3-app/dist/app.wxss'),
     ],
     contentMutation: {
-      sourceFile: path.resolve(baseCwd, 'demo/taro-vue3-app/src/index.html'),
+      sourceFile: path.resolve(baseCwd, 'demo/taro-vue3-app/src/pages/index/index.vue'),
       verifyEscapedIn: [],
-      verifyClassLiteralIn: [],
+      verifyClassLiteralIn: ['js'],
+      forbidBgHexTruncationIn: ['js'],
+      roundConfigs: buildIssue33BgOnlyRoundConfigs(),
       mutate(source, payload) {
-        const snippet = `  <div class="${payload.classLiteral}">${payload.marker}-content</div>`
-        return insertBeforeClosingTag(source, '</body>', snippet)
+        return replaceExactSnippet(
+          source,
+          'const classArray = [\'bg-[#543254]\', \'h-[100px]\', \'w-[300px]\', "bg-[url(\'https://xxx.com/xx.webp\')]"]',
+          `const classArray = ['${payload.classLiteral}', 'w-[300px]', "bg-[url('https://xxx.com/xx.webp')]"]`,
+          'taro-vue3-app script class anchor',
+        )
       },
     },
     templateMutation: {

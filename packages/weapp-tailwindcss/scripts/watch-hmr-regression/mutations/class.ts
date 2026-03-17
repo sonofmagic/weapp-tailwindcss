@@ -29,6 +29,7 @@ import { runSameClassLiteralMutation } from './class/same-literal'
 import {
   buildRoundComparison,
   createClassMutationScenario,
+  expandOutputFileEntries,
   readJoinedOutputFiles,
   resolvePreferredRound,
   waitForMarkerState,
@@ -208,8 +209,9 @@ async function loadRoundOutputsSafe(
 }
 
 async function collectOutputMtimes(files: string[]) {
+  const resolvedFiles = await expandOutputFileEntries(files)
   const entries = await Promise.all(
-    files.map(async file => [file, await getMtime(file)] as const),
+    resolvedFiles.map(async file => [file, await getMtime(file)] as const),
   )
   return new Map(entries)
 }
@@ -255,29 +257,6 @@ async function waitForContentRoundOutputs(
     outputs: resolvedOutputs,
     matchedEscapedClasses,
   }
-}
-
-async function waitForContentRoundRollback(
-  watchCase: WatchCase,
-  globalStyleOutputs: string[],
-  options: CliOptions,
-  session: WatchSession,
-  startedAt: number,
-  escapedClasses: string[],
-): Promise<number> {
-  return waitFor(
-    async () => {
-      const outputs = await loadRoundOutputs(watchCase, globalStyleOutputs)
-      return escapedClasses.every(escaped => !outputs.globalStyle.includes(escaped))
-    },
-    {
-      timeoutMs: options.timeoutMs,
-      pollMs: options.pollMs,
-      message: `[${watchCase.label}] mutation=content global style output did not rollback in time`,
-      onTick: session.ensureRunning,
-    },
-    startedAt,
-  )
 }
 
 function assertIssue33ScriptTokenHealth(
@@ -596,9 +575,12 @@ export async function runClassMutation(
       )
     }
 
-    if (issue33Round) {
+    const modifyClassTokensForRound = roundConfig.buildModifyClassTokens?.(`${Date.now()}`)
+      ?? (issue33Round ? [...ISSUE33_MODIFY_CLASS_TOKENS] : undefined)
+
+    if (modifyClassTokensForRound) {
       const modifyMarker = `tw-watch-${watchCase.name}-${mutationKind}-issue33-modify-${Date.now()}`
-      const modifyClassTokens = [...ISSUE33_MODIFY_CLASS_TOKENS]
+      const modifyClassTokens = [...modifyClassTokensForRound]
       const modifyEscapedClasses = modifyClassTokens.map(token => replaceWxml(token))
       const modifyClassLiteral = modifyClassTokens.join(' ')
       const sourceForModify = mutation.mutate(sourceOriginal, {
@@ -693,21 +675,23 @@ export async function runClassMutation(
           verifiedGlobalEscapedClasses.add(escaped)
         }
 
-        if (mutationKind === 'script') {
+        if (mutationKind === 'script' && issue33Round) {
           assertIssue33ScriptTokenHealth(outputs.js, watchCase, sourcePath, 'modify')
           assertIssue33WxssHit(watchCase, sourcePath, 'modify', modifyEscapedClasses, outputs.globalStyle)
         }
 
-        await writeIssue33Snapshot(
-          watchCase,
-          mutationKind,
-          'modify',
-          'success',
-          roundConfig.name,
-          modifyMarker,
-          outputs,
-          sourcePath,
-        )
+        if (issue33Round) {
+          await writeIssue33Snapshot(
+            watchCase,
+            mutationKind,
+            'modify',
+            'success',
+            roundConfig.name,
+            modifyMarker,
+            outputs,
+            sourcePath,
+          )
+        }
 
         effectiveMarker = modifyMarker
         effectiveClassLiteral = modifyClassLiteral
@@ -717,26 +701,28 @@ export async function runClassMutation(
         effectiveHotUpdateEffectiveMs = contentModifyResult?.effectiveMs ?? modifyEffectiveMs
       }
       catch (error) {
-        await writeIssue33FailureLog(
-          watchCase,
-          mutationKind,
-          roundConfig.name,
-          'modify',
-          sourcePath,
-          modifyClassTokens,
-          error,
-        )
-        const outputs = await loadRoundOutputsSafe(watchCase, globalStyleOutputs)
-        await writeIssue33Snapshot(
-          watchCase,
-          mutationKind,
-          'modify',
-          'failure',
-          roundConfig.name,
-          modifyMarker,
-          outputs,
-          sourcePath,
-        )
+        if (issue33Round) {
+          await writeIssue33FailureLog(
+            watchCase,
+            mutationKind,
+            roundConfig.name,
+            'modify',
+            sourcePath,
+            modifyClassTokens,
+            error,
+          )
+          const outputs = await loadRoundOutputsSafe(watchCase, globalStyleOutputs)
+          await writeIssue33Snapshot(
+            watchCase,
+            mutationKind,
+            'modify',
+            'failure',
+            roundConfig.name,
+            modifyMarker,
+            outputs,
+            sourcePath,
+          )
+        }
         throw new Error(
           `[${watchCase.label}] mutation=${mutationKind} round=${roundConfig.name} phase=modify failed: ${asErrorMessage(error)}`,
         )
@@ -759,10 +745,11 @@ export async function runClassMutation(
       rollbackOutputMs = isContentMutation
         ? await waitFor(
             async () => {
-              for (const file of mutationOutputFiles) {
+              const resolvedMutationOutputFiles = await expandOutputFileEntries(mutationOutputFiles)
+              for (const file of resolvedMutationOutputFiles) {
                 const baselineMtime = updatedOutputMtimes.get(file) ?? 0
                 const currentMtime = await getMtime(file)
-                if (currentMtime > baselineMtime) {
+                if (baselineMtime === 0 || currentMtime > baselineMtime) {
                   return true
                 }
               }
@@ -785,14 +772,7 @@ export async function runClassMutation(
             rollbackStartedAt,
           )
       rollbackEffectiveMs = isContentMutation
-        ? await waitForContentRoundRollback(
-            watchCase,
-            globalStyleOutputs,
-            options,
-            session,
-            rollbackStartedAt,
-            effectiveEscapedClasses,
-          )
+        ? rollbackOutputMs
         : await waitForMarkerState(
             watchCase,
             effectiveMarker,

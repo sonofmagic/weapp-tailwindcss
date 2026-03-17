@@ -33,6 +33,7 @@ export interface StyleMutationPayload {
 export interface MutationRoundConfig {
   name: MutationRoundName
   buildClassTokens: (seed: string) => string[]
+  buildModifyClassTokens?: (seed: string) => string[]
 }
 
 export interface StyleApplyValidation {

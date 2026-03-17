@@ -7,10 +7,12 @@ import { expect } from 'vitest'
 export type WatchProjectGroup = 'demo' | 'apps'
 export type ConcreteWatchCaseName = 'taro' | 'uni' | 'mpx' | 'rax' | 'mina' | 'weapp-vite' | 'uni-app-vue3-vite' | 'uni-app-tailwindcss-v4' | 'taro-vite-tailwindcss-v4' | 'taro-app-vite' | 'taro-webpack-tailwindcss-v4' | 'taro-vue3-app' | 'taro-webpack' | 'vite-native-ts'
 export type WatchCaseName = ConcreteWatchCaseName | 'both' | 'all' | 'demo' | 'apps'
-type MutationKind = 'template' | 'script' | 'style'
+type MutationKind = 'template' | 'script' | 'style' | 'content'
 type MutationRoundName = 'baseline-arbitrary' | 'complex-corpus' | 'hex-arbitrary' | 'issue33-arbitrary'
 const BASE_REQUIRED_MUTATION_ROUNDS: MutationRoundName[] = ['baseline-arbitrary', 'complex-corpus', 'hex-arbitrary']
 const ISSUE33_REQUIRED_MUTATION_ROUND: MutationRoundName = 'issue33-arbitrary'
+const INDEX_HTML_RE = /index\.html$/
+const SCRIPT_SOURCE_FILE_RE = /\.(?:js|ts|tsx|vue|mpx)$/
 const ISSUE33_MODIFY_CLASS_TOKENS = ['bg-[#0f0f0f]', 'px-[256.25px]'] as const
 const INVALID_BG_HEX_WITH_SPACE_RE = /\bbg-\s+\[#?[0-9a-fA-F]{3,8}\]?/g
 const INVALID_BG_UNTERMINATED_RE = /\bbg-\[[^\]]*$/gm
@@ -51,7 +53,7 @@ interface HotUpdateSummary {
 }
 
 interface TemplateOrScriptMutationMetric {
-  mutationKind: 'template' | 'script'
+  mutationKind: 'template' | 'script' | 'content'
   sourceFile: string
   marker: string
   classLiteral: string
@@ -380,6 +382,7 @@ function assertHotUpdateReport(report: HotUpdateReport, target: WatchCaseName, m
   expect(report.summaryByMutationKind.template?.count).toBe(report.summary.count)
   expect(report.summaryByMutationKind.script?.count).toBe(report.summary.count)
   expect(report.summaryByMutationKind.style?.count).toBe(report.summary.count)
+  expect(report.summaryByMutationKind.content?.count).toBe(report.summary.count)
   expect(Object.keys(report.summaryByProject).length).toBe(report.summary.count)
 
   const expectedGroup = resolveExpectedGroup(target)
@@ -403,13 +406,12 @@ function assertHotUpdateReport(report: HotUpdateReport, target: WatchCaseName, m
     expect(item.escapedClasses.length).toBe(item.classTokens.length)
     expect(item.rounds.length).toBeGreaterThanOrEqual(requiredMutationRounds.length)
     const hasContentMutation = item.mutationMetrics.some(metric => metric.mutationKind === 'content')
-    expect(item.mutationMetrics.length).toBe(hasContentMutation ? 4 : 3)
+    expect(hasContentMutation).toBe(true)
+    expect(item.mutationMetrics.length).toBe(4)
     expect(item.summaryByMutationKind.template?.count).toBe(1)
     expect(item.summaryByMutationKind.script?.count).toBe(1)
     expect(item.summaryByMutationKind.style?.count).toBe(1)
-    if (hasContentMutation) {
-      expect(item.summaryByMutationKind.content?.count).toBe(1)
-    }
+    expect(item.summaryByMutationKind.content?.count).toBe(1)
     assertHasWxssOutput(
       normalizeGlobalStyleOutputs(item.globalStyleOutputs ?? item.globalStyleOutput),
       `[${item.project}] case global style outputs`,
@@ -454,17 +456,37 @@ function assertHotUpdateReport(report: HotUpdateReport, target: WatchCaseName, m
     expect(item.classLiteral).toContain('[mask-type:luminance]')
 
     const templateMetric = item.mutationMetrics.find(mutation => mutation.mutationKind === 'template')
+    const contentMetric = item.mutationMetrics.find(mutation => mutation.mutationKind === 'content')
     const scriptMetric = item.mutationMetrics.find(mutation => mutation.mutationKind === 'script')
     const styleMetric = item.mutationMetrics.find(mutation => mutation.mutationKind === 'style')
 
     expect(templateMetric).toBeDefined()
+    expect(contentMetric).toBeDefined()
     expect(scriptMetric).toBeDefined()
     expect(styleMetric).toBeDefined()
 
     expect(templateMetric?.hotUpdateEffectiveMs).toBeGreaterThan(0)
+    expect(contentMetric?.hotUpdateEffectiveMs).toBeGreaterThan(0)
     expect(scriptMetric?.hotUpdateEffectiveMs).toBeGreaterThan(0)
     expect(templateMetric?.hotUpdateEffectiveMs).toBeLessThanOrEqual(maxHotUpdateMs)
+    expect(contentMetric?.hotUpdateEffectiveMs).toBeLessThanOrEqual(maxHotUpdateMs)
     expect(scriptMetric?.hotUpdateEffectiveMs).toBeLessThanOrEqual(maxHotUpdateMs)
+
+    if (contentMetric && contentMetric.mutationKind !== 'style') {
+      expect(contentMetric.sourceFile).not.toMatch(INDEX_HTML_RE)
+      expect(contentMetric.sourceFile).toMatch(SCRIPT_SOURCE_FILE_RE)
+      expect(contentMetric.verifyClassLiteralIn).toContain('js')
+      expect(contentMetric.rounds.length).toBe(1)
+      expect(contentMetric.rounds[0]?.roundName).toBe(ISSUE33_REQUIRED_MUTATION_ROUND)
+      expect(contentMetric.verifiedGlobalStyleEscapedClasses.length).toBeGreaterThanOrEqual(contentMetric.minRequiredGlobalStyleEscapedClasses)
+      assertHasWxssOutput(
+        normalizeGlobalStyleOutputs(contentMetric.globalStyleOutputs ?? contentMetric.globalStyleOutput),
+        `[${item.project}] content mutation global style outputs`,
+      )
+      const issue33Round = contentMetric.rounds.find(round => round.roundName === ISSUE33_REQUIRED_MUTATION_ROUND)
+      expect(issue33Round).toBeDefined()
+      expect(issue33Round?.classTokens.some(token => token.startsWith('bg-[#'))).toBe(true)
+    }
 
     if (templateMetric && templateMetric.mutationKind !== 'style') {
       expect(templateMetric.rounds.length).toBeGreaterThanOrEqual(requiredMutationRounds.length)
