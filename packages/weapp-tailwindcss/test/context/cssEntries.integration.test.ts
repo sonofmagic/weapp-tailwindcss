@@ -1,3 +1,4 @@
+import fs from 'node:fs/promises'
 import path from 'node:path'
 import { escape } from '@weapp-core/escape'
 import { describe, expect, it } from 'vitest'
@@ -24,5 +25,47 @@ describe('cssEntries integration', () => {
 
     expect(result.code).toContain(expectedClass)
     expect(result.code).not.toContain('bg-[#00aa55]')
+  })
+
+  it('refreshes script arbitrary values for uni-app-vue3-vite', async () => {
+    const repoRoot = path.resolve(process.cwd(), '..', '..')
+    const projectRoot = path.resolve(repoRoot, 'demo/uni-app-vue3-vite')
+    const sourceFile = path.join(projectRoot, 'src/pages/index/index.vue')
+    const original = await fs.readFile(sourceFile, 'utf8')
+    const previousToken = 'bg-[#123456] shadow-blue-100'
+    const nextToken = 'bg-[#4545AB] shadow-blue-100'
+
+    expect(original.includes(previousToken)).toBe(true)
+    expect(original.includes(nextToken)).toBe(false)
+
+    const ctx = getCompilerContext({
+      tailwindcssBasedir: projectRoot,
+      appType: 'uni-app-vite',
+    })
+
+    await ctx.twPatcher.patch()
+    const baseline = await collectRuntimeClassSet(ctx.twPatcher, { force: true, skipRefresh: true })
+    expect(baseline.has('bg-[#123456]')).toBe(true)
+    expect(baseline.has('bg-[#4545AB]')).toBe(false)
+    expect(baseline.has('bg-[#4545ab]')).toBe(false)
+
+    await fs.writeFile(sourceFile, original.replace(previousToken, nextToken), 'utf8')
+
+    try {
+      await ctx.refreshTailwindcssPatcher({ clearCache: true })
+      await ctx.twPatcher.patch()
+
+      const refreshed = await collectRuntimeClassSet(ctx.twPatcher, { force: true, skipRefresh: true })
+      expect(refreshed.has('bg-[#4545AB]') || refreshed.has('bg-[#4545ab]')).toBe(true)
+
+      const source = `import { ref } from 'vue'\nconst cardsColor = ref(['${nextToken}'])`
+      const result = ctx.jsHandler(source, refreshed)
+      expect(result.code).toMatch(/bg-_b_h4545(?:AB|ab)_B/)
+      expect(result.code).not.toContain(`'bg-[#4545AB] shadow-blue-100'`)
+    }
+    finally {
+      await fs.writeFile(sourceFile, original, 'utf8')
+      await ctx.refreshTailwindcssPatcher({ clearCache: true })
+    }
   })
 })

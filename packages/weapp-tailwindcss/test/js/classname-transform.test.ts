@@ -71,6 +71,18 @@ describe('classname transform caching', () => {
     })
   })
 
+  it('matches arbitrary hex candidates case-insensitively against runtime class sets', () => {
+    const result = classNameTransform.resolveClassNameTransformWithResult('bg-[#4268EA]', {
+      classNameSet: new Set(['bg-[#4268ea]']),
+      escapeMap: MappingChars2String,
+    })
+
+    expect(result).toEqual({
+      decision: 'escaped',
+      escapedValue: 'bg-_b_h4268ea_B',
+    })
+  })
+
   it('keeps whitespace-wrapped url-like arbitrary fragments excluded from fallback', () => {
     const result = classNameTransform.resolveClassNameTransformWithResult('  https://foo-bar.com/assets/[token]  ', {
       classContext: true,

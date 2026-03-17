@@ -10,15 +10,20 @@ import * as wxmlShared from '@/wxml/shared'
 
 type LiteralKind = 'StringLiteral' | 'TemplateElement'
 
-function getLiteralPath(code: string, kind: LiteralKind) {
+function getLiteralPath(code: string, kind: LiteralKind, occurrence = 0) {
   const ast = parse(code, {
     sourceType: 'module',
   })
   let result: NodePath<StringLiteral | TemplateElement> | undefined
+  let currentOccurrence = 0
 
   traverse(ast, {
     StringLiteral(path: NodePath<StringLiteral>) {
       if (kind !== 'StringLiteral' || result) {
+        return
+      }
+      if (currentOccurrence !== occurrence) {
+        currentOccurrence += 1
         return
       }
       result = path as NodePath<StringLiteral | TemplateElement>
@@ -26,6 +31,10 @@ function getLiteralPath(code: string, kind: LiteralKind) {
     },
     TemplateElement(path: NodePath<TemplateElement>) {
       if (kind !== 'TemplateElement' || result) {
+        return
+      }
+      if (currentOccurrence !== occurrence) {
+        currentOccurrence += 1
         return
       }
       result = path
@@ -400,6 +409,24 @@ describe('replaceHandleValue branch coverage', () => {
     })
 
     expect(token?.value).toBe('flex gap-_b20px_B')
+  })
+
+  it('transforms matched arbitrary utilities inside ref array literals when runtime set is fresh', () => {
+    const literal = getLiteralPath(
+      `import { ref } from 'vue'; const cardsColor = ref(['bg-[#123456] shadow-blue-100'])`,
+      'StringLiteral',
+      1,
+    )
+    expect(literal.node.value).toBe('bg-[#123456] shadow-blue-100')
+    const token = replaceHandleValue(literal, {
+      escapeMap: MappingChars2String,
+      classNameSet: new Set(['bg-[#123456]', 'shadow-blue-100']),
+      needEscaped: true,
+    })
+
+    expect(token).toBeDefined()
+    expect(token?.value).toContain('bg-_b_h123456_B')
+    expect(token?.value).not.toContain('bg-[#123456]')
   })
 
   it('does not apply controlled arbitrary fallback for non-class strings', () => {

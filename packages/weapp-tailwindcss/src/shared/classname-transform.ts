@@ -8,6 +8,7 @@ const escapedCandidateCacheByEscapeMap = new WeakMap<EscapeMap, Map<string, stri
 const defaultEscapedCandidateCache = new Map<string, string>()
 let lastEscapedCandidateEscapeMap: EscapeMap | undefined
 let lastEscapedCandidateCacheStore: Map<string, string> | undefined
+const ARBITRARY_HEX_COLOR_RE = /#([0-9A-F]{3,8})/gi
 
 /**
  * 决策结果，附带已计算的 escaped 值以避免下游重复计算。
@@ -66,6 +67,14 @@ function isArbitraryValueCandidate(candidate: string) {
   }
 
   return true
+}
+
+function normalizeArbitraryHexColorCandidate(candidate: string) {
+  if (!isArbitraryValueCandidate(candidate) || !candidate.includes('#')) {
+    return candidate
+  }
+
+  return candidate.replace(ARBITRARY_HEX_COLOR_RE, (_, hex: string) => `#${hex.toLowerCase()}`)
 }
 
 function shouldEnableArbitraryValueFallbackByInputs(
@@ -167,6 +176,24 @@ export function resolveClassNameTransformWithResult(
     const escapedCandidate = getEscapedCandidate(candidate, escapeMap)
     if (escapedCandidate !== candidate && classNameSet.has(escapedCandidate)) {
       return { decision: 'escaped', escapedValue: escapedCandidate }
+    }
+
+    const normalizedCandidate = normalizeArbitraryHexColorCandidate(candidate)
+    if (normalizedCandidate !== candidate) {
+      if (classNameSet.has(normalizedCandidate)) {
+        return {
+          decision: 'escaped',
+          escapedValue: getEscapedCandidate(normalizedCandidate, escapeMap),
+        }
+      }
+
+      const normalizedEscapedCandidate = getEscapedCandidate(normalizedCandidate, escapeMap)
+      if (normalizedEscapedCandidate !== normalizedCandidate && classNameSet.has(normalizedEscapedCandidate)) {
+        return {
+          decision: 'escaped',
+          escapedValue: normalizedEscapedCandidate,
+        }
+      }
     }
   }
 
