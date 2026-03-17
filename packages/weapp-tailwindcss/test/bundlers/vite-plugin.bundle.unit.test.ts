@@ -4,7 +4,9 @@ import type { CreateJsHandlerOptions } from '@/types'
 import { readFile } from 'node:fs/promises'
 import path from 'node:path'
 import { MappingChars2String } from '@weapp-core/escape'
+import prettier from 'prettier'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
+import { createStyleHandler } from '../../../postcss/src/handler'
 import { createJsHandler } from '@/js'
 import { replaceWxml } from '@/wxml'
 import { createTemplateHandler } from '@/wxml/utils'
@@ -19,6 +21,9 @@ import {
 
 const TEST_TIMEOUT_MS = 2000
 const SPLIT_WHITESPACE_RE = /\s+/
+async function formatCssSnapshot(css: string) {
+  return prettier.format(css, { parser: 'css' })
+}
 
 async function loadUnifiedVitePlugin() {
   const mod = await import('@/bundlers/vite')
@@ -1057,6 +1062,69 @@ const cls = "w-[1.5px]"
     expect((bundle['pages/a.wxss'] as OutputAsset).source.toString()).toBe(`shared:${duplicatedCss}`)
     expect((bundle['pages/b.wxss'] as OutputAsset).source.toString()).toBe(`shared:${duplicatedCss}`)
     expect(currentContext.styleHandler).toHaveBeenCalledTimes(2)
+  }, TEST_TIMEOUT_MS)
+
+  it('captures taro vite tailwindcss v4 raw app-origin css before and after style handler', async () => {
+    const UnifiedViteWeappTailwindcssPlugin = await loadUnifiedVitePlugin()
+    const rawCss = await readFile(
+      path.resolve(__dirname, '../fixtures/css/taro-vite-tailwindcss-v4-app-origin.raw.css'),
+      'utf8',
+    )
+    const realStyleHandler = createStyleHandler({ isMainChunk: true })
+    const styleHandler = vi.fn((code: string, options?: Record<string, unknown>) => {
+      return realStyleHandler(code, options as any)
+    })
+
+    setCurrentContext(createContext({
+      appType: 'taro',
+      cssMatcher: (file: string) => file.endsWith('.wxss') || file.endsWith('.css'),
+      mainCssChunkMatcher: vi.fn((file: string) => file.startsWith('app')),
+      styleHandler,
+      twPatcher: {
+        patch: vi.fn(),
+        getClassSet: vi.fn(async () => new Set<string>()),
+        getClassSetSync: vi.fn(() => new Set<string>()),
+        extract: vi.fn(async () => ({ classSet: new Set<string>() })),
+        majorVersion: 4,
+      },
+    }))
+
+    const plugins = UnifiedViteWeappTailwindcssPlugin()
+    const postPlugin = plugins?.find(plugin => plugin.name === 'weapp-tailwindcss:adaptor:post') as Plugin
+    expect(postPlugin).toBeTruthy()
+
+    await (postPlugin.configResolved as any)?.call(postPlugin, {
+      command: 'build',
+      root: process.cwd(),
+      css: { postcss: { plugins: [] } },
+      build: { outDir: 'dist' },
+    } as ResolvedConfig)
+
+    const bundle = {
+      'app.wxss': {
+        ...createRollupAsset('@import "app-origin.wxss";'),
+        fileName: 'app.wxss',
+      },
+      'app-origin.wxss': {
+        ...createRollupAsset(rawCss),
+        fileName: 'app-origin.wxss',
+      },
+    }
+
+    const generateBundle = postPlugin.generateBundle as any
+    await generateBundle?.call(postPlugin, {} as any, bundle)
+
+    const appOriginCall = styleHandler.mock.calls.find(([, options]) =>
+      (options as any)?.postcssOptions?.options?.from === 'app-origin.wxss')
+    expect(appOriginCall).toBeTruthy()
+
+    const rawInput = await formatCssSnapshot(appOriginCall?.[0] as string)
+    const processedOutput = await formatCssSnapshot((bundle['app-origin.wxss'] as OutputAsset).source.toString())
+
+    expect(rawInput).toMatchSnapshot('taro-app-origin-raw-input')
+    expect(processedOutput).toMatchSnapshot('taro-app-origin-processed-output')
+    expect(rawInput).toContain(':not(#\\#)')
+    expect(processedOutput).toContain(':not(#n)')
   }, TEST_TIMEOUT_MS)
 
   it('keeps template transform stable on script-only incremental updates', async () => {
