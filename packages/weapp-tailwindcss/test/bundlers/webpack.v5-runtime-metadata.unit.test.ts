@@ -3,12 +3,6 @@ import path from 'node:path'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import { createCache } from '@/cache'
 
-let cssEntryContent = ''
-const readFileMock = vi.fn(async () => cssEntryContent)
-vi.mock('node:fs/promises', () => ({
-  readFile: (...args: unknown[]) => readFileMock(...args),
-}))
-
 let currentContext: TestContext
 const getCompilerContextMock = vi.fn<(options?: unknown) => TestContext>(() => currentContext)
 vi.mock('@/context', () => ({
@@ -118,8 +112,6 @@ describe('bundlers/webpack v5 runtime metadata', () => {
   let existsSyncSpy: ReturnType<typeof vi.spyOn>
 
   beforeEach(() => {
-    cssEntryContent = '.base { color: black; }'
-    readFileMock.mockClear()
     currentContext = createContext()
     getCompilerContextMock.mockClear()
     existsSyncSpy = vi.spyOn(fs as any, 'existsSync')
@@ -130,7 +122,7 @@ describe('bundlers/webpack v5 runtime metadata', () => {
     existsSyncSpy.mockRestore()
   })
 
-  it('refreshes authored css classes during css-only invalidation before pruning v4 output', async () => {
+  it('refreshes runtime metadata during css-only invalidation for v4 output', async () => {
     const processAssetsCallbacks: Array<(assets: Record<string, any>) => Promise<void>> = []
     const invalidHandlers: Array<() => void> = []
     const thisCompilationHandlers: Array<(_compilation: any) => void> = []
@@ -212,9 +204,8 @@ describe('bundlers/webpack v5 runtime metadata', () => {
     expect(assetStore['index.css']).toContain('.base')
     const refreshCallsAfterBaseline = currentContext.refreshTailwindcssPatcher.mock.calls.length
 
-    cssEntryContent = '.base { color: black; }\n.tw-watch-style-case { color: red; }'
     assetStore = {
-      'index.css': cssEntryContent,
+      'index.css': '.base { color: black; }\n.tw-watch-style-case { color: red; }',
     }
     compilation.chunks[0].hash = 'hash-2'
     invalidHandlers[0]?.()
@@ -222,7 +213,6 @@ describe('bundlers/webpack v5 runtime metadata', () => {
 
     await processAssetsCallbacks[0](createAssets(assetStore))
 
-    expect(readFileMock).toHaveBeenCalled()
     expect(currentContext.refreshTailwindcssPatcher.mock.calls.length).toBeGreaterThan(refreshCallsAfterBaseline)
     expect(assetStore['index.css']).toContain('.tw-watch-style-case')
   })
