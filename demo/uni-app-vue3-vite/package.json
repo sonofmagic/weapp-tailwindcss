@@ -83,7 +83,7 @@
     "@dcloudio/types": "^3.4.8",
     "@dcloudio/uni-automator": "3.0.0-5000320260312001",
     "@dcloudio/uni-cli-shared": "3.0.0-5000320260312001",
-    "@dcloudio/uni-mp-vue": "3.0.0-4070620250821001",
+    "@dcloudio/uni-mp-vue": "3.0.0-5000320260312001",
     "@dcloudio/uni-stacktracey": "3.0.0-5000320260312001",
     "@dcloudio/vite-plugin-uni": "3.0.0-5000320260312001",
     "@tailwindcss/aspect-ratio": "^0.4.2",
