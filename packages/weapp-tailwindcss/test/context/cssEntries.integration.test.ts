@@ -5,6 +5,8 @@ import { describe, expect, it } from 'vitest'
 import { getCompilerContext } from '@/context'
 import { collectRuntimeClassSet } from '@/tailwindcss/runtime'
 
+const repoRoot = path.resolve(__dirname, '../../../..')
+
 describe('cssEntries integration', () => {
   it('collects class names from nested css entries and rewrites arbitrary classes', async () => {
     const projectRoot = path.resolve(__dirname, '..', 'fixtures', 'tailwind-v4-app')
@@ -28,7 +30,6 @@ describe('cssEntries integration', () => {
   })
 
   it('refreshes script arbitrary values for uni-app-vue3-vite', async () => {
-    const repoRoot = path.resolve(process.cwd(), '..', '..')
     const projectRoot = path.resolve(repoRoot, 'demo/uni-app-vue3-vite')
     const sourceFile = path.join(projectRoot, 'src/pages/index/index.vue')
     const original = await fs.readFile(sourceFile, 'utf8')
