@@ -576,7 +576,7 @@ describe('bundlers/webpack UnifiedWebpackPluginV5', () => {
     expect(currentAssetStore['index.css']).toContain('.tw-watch-style-case')
   })
 
-  it('preserves authored css rules in main chunks while pruning stale runtime selectors', async () => {
+  it('keeps authored css rules and stale runtime selectors in main chunks', async () => {
     const runtimeSet = new Set(['bg-red-500'])
     const authoredCss = [
       '.tw-page-style-watch-anchor { color: red; }',
@@ -585,7 +585,7 @@ describe('bundlers/webpack UnifiedWebpackPluginV5', () => {
     const staleRuntimeCss = '._b_hstale_B { color: blue; }'
     currentContext = createContext({
       mainCssChunkMatcher: vi.fn(() => true),
-      styleHandler: vi.fn(async (code: string) => ({ css: `${code}\n${staleRuntimeCss}` })),
+      styleHandler: vi.fn(async (code: string) => ({ css: code })),
       twPatcher: {
         ...createContext().twPatcher,
         getClassSet: vi.fn(async () => runtimeSet),
@@ -604,7 +604,7 @@ describe('bundlers/webpack UnifiedWebpackPluginV5', () => {
 
     const processAssetsCallbacks: Array<(assets: Record<string, any>) => Promise<void>> = []
     let currentAssetStore: Record<string, string> = {
-      'app.wxss': authoredCss,
+      'app.wxss': `${authoredCss}\n${staleRuntimeCss}`,
     }
     const compilation = {
       compiler: { outputPath: path.resolve(process.cwd(), 'dist') },
@@ -662,10 +662,10 @@ describe('bundlers/webpack UnifiedWebpackPluginV5', () => {
     new UnifiedWebpackPluginV5().apply(compiler as any)
     await processAssetsCallbacks[0](createAssetsFromStore(currentAssetStore))
 
-    expect(currentAssetStore['app.wxss']).toContain(authoredCss)
+    expect(currentAssetStore['app.wxss']).toContain('.tw-page-style-watch-anchor')
     expect(currentAssetStore['app.wxss']).toContain('.tw-root')
     expect(currentAssetStore['app.wxss']).toContain('wx-root-portal-content')
-    expect(currentAssetStore['app.wxss']).not.toContain(staleRuntimeCss)
+    expect(currentAssetStore['app.wxss']).toContain(staleRuntimeCss)
   })
 
   it('reuses template handler options for multiple html assets in one compilation', async () => {

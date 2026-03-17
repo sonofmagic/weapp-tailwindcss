@@ -1,7 +1,6 @@
 // webpack 5
 import type { Compiler } from 'webpack'
 import type { AppType, IBaseWebpackPlugin, InternalUserDefinedOptions, UserDefinedOptions } from '@/types'
-import { readFile } from 'node:fs/promises'
 import process from 'node:process'
 import { pluginName } from '@/constants'
 import { getCompilerContext } from '@/context'
@@ -20,7 +19,6 @@ import { setupWebpackV5Loaders } from './v5-loaders'
 
 const debug = createDebug()
 export const weappTailwindcssPackageDir = resolvePackageDir('weapp-tailwindcss')
-const AUTHORED_CSS_CLASS_RE = /\.([\w-]+)/g
 
 /**
  * @name UnifiedWebpackPluginV5
@@ -81,26 +79,7 @@ export class UnifiedWebpackPluginV5 implements IBaseWebpackPlugin {
     let runtimeRefreshRequiredForCompilation = false
     const runtimeWatchDependencyFiles = new Set<string>()
     const runtimeWatchDependencyContexts = new Set<string>()
-    const runtimeAuthoredCssClasses = new Set<string>()
     let runtimeMetadataPrepared = false
-
-    const collectAuthoredCssClasses = async (cssEntries: string[]) => {
-      runtimeAuthoredCssClasses.clear()
-      for (const entry of cssEntries) {
-        try {
-          const content = await readFile(entry, 'utf8')
-          for (const match of content.matchAll(AUTHORED_CSS_CLASS_RE)) {
-            const className = match[1]
-            if (className) {
-              runtimeAuthoredCssClasses.add(className)
-            }
-          }
-        }
-        catch (error) {
-          debug('collect authored css classes failed for %s: %O', entry, error)
-        }
-      }
-    }
 
     const updateRuntimeWatchDependencies = async () => {
       runtimeWatchDependencyFiles.clear()
@@ -118,7 +97,6 @@ export class UnifiedWebpackPluginV5 implements IBaseWebpackPlugin {
           runtimeWatchDependencyContexts.add(source.base)
         }
       }
-      await collectAuthoredCssClasses(tailwindOptions?.v4?.cssEntries ?? [])
 
       if (typeof runtimeState.twPatcher.collectContentTokens !== 'function') {
         return
@@ -218,7 +196,6 @@ export class UnifiedWebpackPluginV5 implements IBaseWebpackPlugin {
       appType: this.appType,
       runtimeState,
       getRuntimeRefreshRequirement: () => runtimeRefreshRequiredForCompilation,
-      getRuntimeAuthoredCssClasses: () => runtimeAuthoredCssClasses,
       refreshRuntimeMetadata: ensureRuntimeMetadata,
       consumeRuntimeRefreshRequirement() {
         runtimeRefreshRequiredForCompilation = false

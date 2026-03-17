@@ -1,6 +1,5 @@
 import type { Compiler } from 'webpack'
 import type { AppType, InternalUserDefinedOptions, LinkedJsModuleResult } from '@/types'
-import { createHash } from 'node:crypto'
 import path from 'node:path'
 import process from 'node:process'
 import { pluginName } from '@/constants'
@@ -9,11 +8,7 @@ import { getGroupedEntries } from '@/utils'
 import { processCachedTask } from '../../shared/cache'
 import { resolveOutputSpecifier, toAbsoluteOutputPath } from '../../shared/module-graph'
 import { pushConcurrentTaskFactories } from '../../shared/run-tasks'
-import { pruneStaleRuntimeCss } from './runtime-css-prune'
 import { createAssetHashByChunkMap, getCacheKey } from './shared'
-
-const AUTHORED_CSS_CLASS_RE = /\.([\w-]+)/g
-const ROOT_HELPER_CLASS_RE = /\.([\w-]+)$/
 
 interface SetupWebpackV5ProcessAssetsHookOptions {
   compiler: Compiler
@@ -24,7 +19,6 @@ interface SetupWebpackV5ProcessAssetsHookOptions {
     patchPromise: Promise<void>
   }
   getRuntimeRefreshRequirement: () => boolean
-  getRuntimeAuthoredCssClasses: () => ReadonlySet<string>
   refreshRuntimeMetadata: (force: boolean) => Promise<void>
   consumeRuntimeRefreshRequirement: () => void
   debug: (format: string, ...args: unknown[]) => void
@@ -40,48 +34,6 @@ function resolveWebpackStaleClassNameFallback(
   return false
 }
 
-function createRuntimeSetHash(runtimeSet: Set<string>) {
-  const hash = createHash('sha1')
-  for (const className of [...runtimeSet].sort()) {
-    hash.update(className)
-    hash.update('\0')
-  }
-  return hash.digest('hex')
-}
-
-function collectAuthoredCssClassesFromSource(rawCss: string) {
-  const classNames = new Set<string>()
-  for (const match of rawCss.matchAll(AUTHORED_CSS_CLASS_RE)) {
-    const className = match[1]
-    if (className) {
-      classNames.add(className)
-    }
-  }
-  return classNames
-}
-
-function collectRootHelperClasses(
-  root: string | string[] | false | undefined,
-) {
-  const classNames = new Set<string>()
-  if (!root) {
-    return classNames
-  }
-
-  const selectors = Array.isArray(root) ? root : [root]
-  for (const selector of selectors) {
-    const normalized = selector?.trim()
-    if (!normalized) {
-      continue
-    }
-    const matched = ROOT_HELPER_CLASS_RE.exec(normalized)
-    if (matched?.[1]) {
-      classNames.add(matched[1])
-    }
-  }
-  return classNames
-}
-
 export function setupWebpackV5ProcessAssetsHook(options: SetupWebpackV5ProcessAssetsHookOptions) {
   const {
     compiler,
@@ -89,7 +41,6 @@ export function setupWebpackV5ProcessAssetsHook(options: SetupWebpackV5ProcessAs
     appType,
     runtimeState,
     getRuntimeRefreshRequirement,
-    getRuntimeAuthoredCssClasses,
     refreshRuntimeMetadata,
     consumeRuntimeRefreshRequirement,
     debug,
@@ -219,7 +170,6 @@ export function setupWebpackV5ProcessAssetsHook(options: SetupWebpackV5ProcessAs
         const defaultTemplateHandlerOptions = {
           runtimeSet,
         }
-        const runtimeSetHash = createRuntimeSetHash(runtimeSet)
         debug('get runtimeSet, class count: %d', runtimeSet.size)
         const tasks: Promise<void>[] = []
         if (Array.isArray(groupedEntries.html)) {
@@ -320,18 +270,13 @@ export function setupWebpackV5ProcessAssetsHook(options: SetupWebpackV5ProcessAs
             const rawSource = originalSource.source().toString()
             const cacheKey = file
             const chunkHash = assetHashByChunk.get(file)
-            const { isMainChunk } = getCssHandlerOptions(file)
-            const shouldPruneRuntimeCss = runtimeState.twPatcher.majorVersion === 4 && isMainChunk
-            const cssHash = shouldPruneRuntimeCss
-              ? `${chunkHash ?? file}:runtime:${runtimeSetHash}`
-              : chunkHash
             tasks.push(
               processCachedTask({
                 cache: compilerOptions.cache,
                 cacheKey,
                 hashKey: `${file}:asset`,
                 rawSource,
-                hash: cssHash,
+                hash: chunkHash,
                 applyResult(source) {
                   compilation.updateAsset(file, source)
                 },
@@ -341,19 +286,9 @@ export function setupWebpackV5ProcessAssetsHook(options: SetupWebpackV5ProcessAs
                 transform: async () => {
                   await runtimeState.patchPromise
                   const { css } = await compilerOptions.styleHandler(rawSource, getCssHandlerOptions(file))
-                  const preservedAuthoredClasses = shouldPruneRuntimeCss
-                    ? new Set([
-                        ...getRuntimeAuthoredCssClasses(),
-                        ...collectAuthoredCssClassesFromSource(rawSource),
-                        ...collectRootHelperClasses(compilerOptions.cssSelectorReplacement?.root),
-                      ])
-                    : undefined
-                  const prunedCss = shouldPruneRuntimeCss
-                    ? pruneStaleRuntimeCss(css, runtimeSet, { escapeMap: compilerOptions.escapeMap }, preservedAuthoredClasses)
-                    : css
-                  const source = new ConcatSource(prunedCss)
+                  const source = new ConcatSource(css)
 
-                  compilerOptions.onUpdate(file, rawSource, prunedCss)
+                  compilerOptions.onUpdate(file, rawSource, css)
                   debug('css handle: %s', file)
 
                   return {
