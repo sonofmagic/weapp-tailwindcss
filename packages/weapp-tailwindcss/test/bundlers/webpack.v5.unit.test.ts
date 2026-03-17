@@ -578,7 +578,10 @@ describe('bundlers/webpack UnifiedWebpackPluginV5', () => {
 
   it('preserves authored css rules in main chunks while pruning stale runtime selectors', async () => {
     const runtimeSet = new Set(['bg-red-500'])
-    const authoredCss = '.tw-page-style-watch-anchor { color: red; }'
+    const authoredCss = [
+      '.tw-page-style-watch-anchor { color: red; }',
+      'page,.tw-root,wx-root-portal-content,:host { --test-root: 1; }',
+    ].join('\n')
     const staleRuntimeCss = '._b_hstale_B { color: blue; }'
     currentContext = createContext({
       mainCssChunkMatcher: vi.fn(() => true),
@@ -660,6 +663,8 @@ describe('bundlers/webpack UnifiedWebpackPluginV5', () => {
     await processAssetsCallbacks[0](createAssetsFromStore(currentAssetStore))
 
     expect(currentAssetStore['app.wxss']).toContain(authoredCss)
+    expect(currentAssetStore['app.wxss']).toContain('.tw-root')
+    expect(currentAssetStore['app.wxss']).toContain('wx-root-portal-content')
     expect(currentAssetStore['app.wxss']).not.toContain(staleRuntimeCss)
   })
 

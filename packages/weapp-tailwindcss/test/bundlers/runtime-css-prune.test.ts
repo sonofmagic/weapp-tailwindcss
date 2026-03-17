@@ -67,4 +67,16 @@ describe('bundlers/runtime css prune', () => {
     expect(pruned).toContain(escapedActive)
     expect(pruned).not.toContain(escapedStale)
   })
+
+  it('preserves root helper class selectors such as .tw-root', () => {
+    const css = 'page,.tw-root,wx-root-portal-content,:host{--x:1}._b_hstale_B{color:blue}'
+
+    const pruned = pruneStaleRuntimeCss(css, new Set(['bg-red-500']), {
+      escapeMap: MappingChars2String,
+    }, new Set(['tw-root']))
+
+    expect(pruned).toContain('.tw-root')
+    expect(pruned).toContain('wx-root-portal-content')
+    expect(pruned).not.toContain('._b_hstale_B')
+  })
 })

@@ -13,6 +13,7 @@ import { pruneStaleRuntimeCss } from './runtime-css-prune'
 import { createAssetHashByChunkMap, getCacheKey } from './shared'
 
 const AUTHORED_CSS_CLASS_RE = /\.([\w-]+)/g
+const ROOT_HELPER_CLASS_RE = /\.([\w-]+)$/
 
 interface SetupWebpackV5ProcessAssetsHookOptions {
   compiler: Compiler
@@ -54,6 +55,28 @@ function collectAuthoredCssClassesFromSource(rawCss: string) {
     const className = match[1]
     if (className) {
       classNames.add(className)
+    }
+  }
+  return classNames
+}
+
+function collectRootHelperClasses(
+  root: string | string[] | false | undefined,
+) {
+  const classNames = new Set<string>()
+  if (!root) {
+    return classNames
+  }
+
+  const selectors = Array.isArray(root) ? root : [root]
+  for (const selector of selectors) {
+    const normalized = selector?.trim()
+    if (!normalized) {
+      continue
+    }
+    const matched = ROOT_HELPER_CLASS_RE.exec(normalized)
+    if (matched?.[1]) {
+      classNames.add(matched[1])
     }
   }
   return classNames
@@ -322,6 +345,7 @@ export function setupWebpackV5ProcessAssetsHook(options: SetupWebpackV5ProcessAs
                     ? new Set([
                         ...getRuntimeAuthoredCssClasses(),
                         ...collectAuthoredCssClassesFromSource(rawSource),
+                        ...collectRootHelperClasses(compilerOptions.cssSelectorReplacement?.root),
                       ])
                     : undefined
                   const prunedCss = shouldPruneRuntimeCss
