@@ -22,6 +22,12 @@ import Patch from './patch.mdx'
 
 # Taro vite
 
+:::danger
+`Taro Vite` 目前不稳定，已知 bug 较多，而且依赖链版本较老，不推荐在新项目里使用。
+
+如果没有强依赖，优先选择 `Taro Webpack`、`uni-app`、`weapp-vite` 等更稳定的方案。
+:::
+
 ## 安装
 
 ```bash npm2yarn
@@ -80,6 +86,8 @@ import path from 'node:path'
 > 在 `Taro Vite` 场景下，文档示例统一直接写 `@import "weapp-tailwindcss/index.css";`，不再依赖 `rewriteCssImports` 把 `@import "tailwindcss";` 二次改写。这样配置链路更直接，排查样式问题时也更容易定位。
 
 更改好配置之后，直接运行启动项目，微信开发者工具导入这个项目，即可看到效果。
+
+> 再强调一次：这页内容更适合作为历史接入说明与排障参考，不建议把 `Taro Vite` 作为新的默认技术选型。
 
 ## 参考模板
 

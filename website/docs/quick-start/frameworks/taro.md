@@ -102,11 +102,11 @@ cache: {
 
 ## 使用 Vite 作为打包工具
 
-<!-- :::danger
-Taro Vite 目前存在一些 bug 还没有修复，不推荐使用!
+:::danger
+`Taro Vite` 目前整体稳定性较差，已知问题和样式链路 bug 较多，而且相关版本长期没有明显更新，不推荐在新项目里使用。
 
-下方注册方式会存在部分样式丢失的情况
-::: -->
+如果你没有强依赖 `Taro Vite`，优先选择 `Taro Webpack`、`uni-app`、`weapp-vite` 等更稳定的方案。
+:::
 
 由于 `taro@4` 的 `vite` 版本，目前加载 `postcss.config.js` 配置是失效的，所以我们目前暂时只能使用内联 `postcss` 插件的写法
 
@@ -153,6 +153,7 @@ const baseConfig: UserConfigExport<'vite'> = {
 这段代码的意思为，在 `vite` 里注册 `postcss` 插件和 `vite` 插件
 
 > `vite.config.ts` 只有在运行小程序的时候才会加载，`h5` 不会，所以只能通过这种方式进行 `小程序` + `h5` 双端兼容
+> 但 `Taro Vite` 当前仍然不稳定，这部分内容仅作为历史方案和排障参考，不建议作为新项目默认选型。
 > 如果你使用的是 `Taro Vite` + `tailwindcss@4`，更推荐在样式入口里直接写 `@import "weapp-tailwindcss/index.css";`，而不是依赖 `rewriteCssImports` 去把 `@import "tailwindcss";` 二次改写。这样排查样式链路会更直接。
 
 ## 视频演示
