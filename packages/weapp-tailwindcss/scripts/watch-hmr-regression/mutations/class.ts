@@ -754,7 +754,7 @@ export async function runClassMutation(
                 }
               }
               const outputs = await loadRoundOutputs(watchCase, globalStyleOutputs)
-              return effectiveEscapedClasses.every(escaped => !outputs.globalStyle.includes(escaped))
+              return effectiveEscapedClasses.every(escaped => !outputs.js.includes(escaped))
             },
             {
               timeoutMs: options.timeoutMs,

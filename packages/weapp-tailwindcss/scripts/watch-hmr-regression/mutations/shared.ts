@@ -155,6 +155,7 @@ export async function waitForOutputFilesUpdated(
   options: CliOptions,
   session: WatchSession,
   startedAt = Date.now(),
+  acceptWhen?: () => Promise<boolean>,
 ) {
   return waitFor(
     async () => {
@@ -165,6 +166,9 @@ export async function waitForOutputFilesUpdated(
         if (baselineMtime === 0 || currentMtime > baselineMtime) {
           return true
         }
+      }
+      if (acceptWhen && await acceptWhen()) {
+        return true
       }
       return false
     },

@@ -26,6 +26,7 @@ import {
 import {
   expandOutputFileEntries,
   readJoinedOutputFiles,
+  waitForOutputFilesUpdated,
 } from '../scripts/watch-hmr-regression/mutations/shared'
 import {
   alignContentEol,
@@ -238,6 +239,38 @@ describe('watch-hmr regression text helpers', () => {
         },
       )
     }).rejects.toThrow('timeout message')
+  })
+
+  it('allows output file update waits to pass via semantic fallback when mtimes stay unchanged', async () => {
+    const tempDir = await mkdtemp(path.join(os.tmpdir(), 'weapp-tw-watch-output-update-'))
+    tempDirs.push(tempDir)
+    const outputFile = path.join(tempDir, 'app.wxss')
+    await writeFilePreserveEol(outputFile, '.base{}', '.base{}')
+    const baselineMtime = await getMtime(outputFile)
+    let attempts = 0
+
+    const elapsed = await waitForOutputFilesUpdated(
+      {
+        label: 'demo/native-mina',
+      } as any,
+      [outputFile],
+      new Map([[outputFile, baselineMtime]]),
+      {
+        timeoutMs: 100,
+        pollMs: 1,
+      } as CliOptions,
+      {
+        ensureRunning() {},
+      } as any,
+      Date.now(),
+      async () => {
+        attempts += 1
+        return attempts >= 2
+      },
+    )
+
+    expect(elapsed).toBeGreaterThanOrEqual(0)
+    expect(attempts).toBeGreaterThanOrEqual(2)
   })
 
   it('asserts text presence and absence', () => {
