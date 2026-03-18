@@ -7,6 +7,7 @@ const findNearestPackageRoot = vi.fn()
 const isMpx = vi.fn(() => false)
 const logger = {
   debug: vi.fn(),
+  warn: vi.fn(),
 }
 
 vi.mock('@weapp-tailwindcss/logger', () => ({
@@ -226,6 +227,38 @@ describe('tailwindcss/v4/patcher helpers', () => {
     const packageNames = createTailwindcssPatcher.mock.calls.map(call => call[0].tailwindcss?.packageName)
     expect(packageNames).toContain('@tailwindcss/postcss')
     expect(packageNames).toContain('tailwindcss')
+  })
+
+  it('skips incompatible tailwindcss candidate when fallback v4 package succeeds', async () => {
+    createTailwindcssPatcher.mockImplementation((options) => {
+      if (options.tailwindcss?.packageName === 'tailwindcss') {
+        throw new Error('Configured tailwindcss.version=4, but resolved package "tailwindcss" is version 3.4.19. Update the configuration or resolve the correct package.')
+      }
+      return {
+        packageInfo: { name: options.tailwindcss?.packageName } as any,
+        majorVersion: 4,
+        options,
+        patch: vi.fn(async () => ({})),
+        getClassSet: vi.fn(async () => new Set()),
+        extract: vi.fn(async () => undefined as any),
+      }
+    })
+    const { createPatcherForBase } = await loadModule()
+
+    const patcher = createPatcherForBase('/workspace/app', ['/workspace/app/src/app.css'], {
+      tailwindcss: { version: 4 },
+      tailwindcssPatcherOptions: undefined,
+      supportCustomLengthUnitsPatch: true,
+      appType: 'taro',
+    } as unknown as InternalUserDefinedOptions)
+
+    expect(createTailwindcssPatcher).toHaveBeenCalledTimes(2)
+    expect(logger.warn).toHaveBeenCalledWith(
+      'skip incompatible Tailwind package candidate "%s" for v4 patcher: %s',
+      'tailwindcss',
+      'Configured tailwindcss.version=4, but resolved package "tailwindcss" is version 3.4.19. Update the configuration or resolve the correct package.',
+    )
+    expect((patcher as TailwindcssPatcherLike).packageInfo?.name).toBe('@tailwindcss/postcss')
   })
 
   it('does not inject tailwindcss version when css entries imply v4', async () => {
