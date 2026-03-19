@@ -5,7 +5,15 @@ on:
   #   branches: ['main']
   pull_request:
     types: [opened, synchronize]
+    paths-ignore:
+      - 'website/**'
+      - '**/*.md'
+      - '.changeset/**'
   workflow_dispatch:
+
+concurrency:
+  group: ci-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
 
 permissions:
   contents: read
@@ -17,8 +25,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: [ubuntu-latest, windows-latest, macos-latest]
-        node-version: [20, 22, 24]
+        include: ${{ fromJSON(github.event_name == 'workflow_dispatch' && '[{"os":"ubuntu-latest","node-version":22},{"os":"ubuntu-latest","node-version":20},{"os":"ubuntu-latest","node-version":24},{"os":"windows-latest","node-version":22},{"os":"macos-latest","node-version":22}]' || '[{"os":"ubuntu-latest","node-version":22}]') }}
     runs-on: ${{ matrix.os }}
     # Remote Caching enabled - configure TURBO_TOKEN and TURBO_TEAM in repository settings
     env:
