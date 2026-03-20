@@ -23,7 +23,7 @@
   },
   "devDependencies": {
     "@eslint/js": "^10.0.1",
-    "@tailwindcss/vite": "^4.2.1",
+    "@tailwindcss/vite": "^4.2.2",
     "@types/node": "catalog:typesNode2410",
     "@types/react": "catalog:react19",
     "@types/react-dom": "catalog:react19",

@@ -55,7 +55,7 @@ catalogs:
   sass195:
     sass: ^1.98.0
   stylelint1625:
-    stylelint: ^17.4.0
+    stylelint: ^17.5.0
   tailwindMerge:
     tailwind-merge: ^3.5.0
   tailwindMerge2:
@@ -63,8 +63,8 @@ catalogs:
   tailwindcss3:
     tailwindcss: ^3.4.19
   tailwindcss4:
-    '@tailwindcss/postcss': ^4.2.1
-    '@tailwindcss/vite': ^4.2.1
+    '@tailwindcss/postcss': ^4.2.2
+    '@tailwindcss/vite': ^4.2.2
     tailwindcss: ^4.2.1
     tailwindcss4: npm:tailwindcss@^4.2.1
   tailwindcssPatch:
@@ -124,9 +124,9 @@ catalogs:
   weappIdeCli:
     weapp-ide-cli: ^5.1.1
   weappVite:
-    weapp-vite: ^6.9.1
+    weapp-vite: ^6.10.2
   wrangler4530:
-    wrangler: ^4.74.0
+    wrangler: ^4.75.0
 
 onlyBuiltDependencies:
   - '@tailwindcss/oxide'
