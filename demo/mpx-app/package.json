@@ -62,7 +62,7 @@
     "autoprefixer": "catalog:autoprefixer10",
     "babel-jest": "^30.3.0",
     "cross-env": "catalog:crossEnv",
-    "eslint": "^10.0.3",
+    "eslint": "^10.1.0",
     "jest": "^30.3.0",
     "postcss": "^8.5.8",
     "postcss-loader": "^8.2.1",
