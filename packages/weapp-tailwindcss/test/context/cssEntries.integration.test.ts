@@ -74,7 +74,7 @@ describe('cssEntries integration', () => {
     const projectRoot = path.resolve(repoRoot, 'demo/uni-app-vue3-vite')
     const sourceFile = path.join(projectRoot, 'src/pages/index/index.vue')
     const original = await fs.readFile(sourceFile, 'utf8')
-    const previousToken = '\'bg-[#fff]\':true'
+    const previousToken = '\'bg-[#999999]\':true'
     const nextToken = '\'bg-[#f00]\':true'
 
     expect(original.includes(previousToken)).toBe(true)
@@ -87,7 +87,7 @@ describe('cssEntries integration', () => {
 
     await ctx.twPatcher.patch()
     const baseline = await collectRuntimeClassSet(ctx.twPatcher, { force: true, skipRefresh: true })
-    expect(baseline.has('bg-[#fff]')).toBe(true)
+    expect(baseline.has('bg-[#999999]')).toBe(true)
     expect(baseline.has('bg-[#f00]')).toBe(false)
 
     await fs.writeFile(sourceFile, original.replace(previousToken, nextToken), 'utf8')
