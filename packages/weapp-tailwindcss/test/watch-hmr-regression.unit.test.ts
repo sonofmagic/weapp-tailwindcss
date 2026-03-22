@@ -1,6 +1,7 @@
 import { mkdir, mkdtemp, readFile, rm } from 'node:fs/promises'
 import os from 'node:os'
 import path from 'node:path'
+import { parse } from 'yaml'
 import { afterEach, describe, expect, it, vi } from 'vitest'
 import {
   buildDemoBaseCases,
@@ -580,16 +581,30 @@ describe('watch-hmr regression cases', () => {
       path.resolve(__dirname, '../../../.github/workflows/e2e-watch.yml'),
       'utf8',
     )
+    const workflow = parse(workflowSource) as {
+      jobs?: Record<string, {
+        strategy?: {
+          matrix?: {
+            include?: Array<Record<string, unknown>>
+          }
+        }
+      }>
+    }
+
+    const matrixEntries = [
+      ...(workflow.jobs?.['pr-quick-gate']?.strategy?.matrix?.include ?? []),
+      ...(workflow.jobs?.['nightly-full-regression']?.strategy?.matrix?.include ?? []),
+    ]
 
     const requiredMatrixEntries = [
-      '"os":"macos-latest","runner_label":"macos","watch_case":"uni-app-vue3-vite","round_profile":"issue33"',
-      '"os":"macos-latest","runner_label":"macos","watch_case":"weapp-vite","round_profile":"issue33"',
-      '"os":"windows-latest","runner_label":"windows","watch_case":"uni-app-vue3-vite","round_profile":"issue33"',
-      '"os":"windows-latest","runner_label":"windows","watch_case":"weapp-vite","round_profile":"issue33"',
+      { os: 'macos-latest', runner_label: 'macos', watch_case: 'uni-app-vue3-vite', round_profile: 'issue33' },
+      { os: 'macos-latest', runner_label: 'macos', watch_case: 'weapp-vite', round_profile: 'issue33' },
+      { os: 'windows-latest', runner_label: 'windows', watch_case: 'uni-app-vue3-vite', round_profile: 'issue33' },
+      { os: 'windows-latest', runner_label: 'windows', watch_case: 'weapp-vite', round_profile: 'issue33' },
     ]
 
     for (const entry of requiredMatrixEntries) {
-      expect(workflowSource).toContain(entry)
+      expect(matrixEntries).toContainEqual(expect.objectContaining(entry))
     }
   })
 })
