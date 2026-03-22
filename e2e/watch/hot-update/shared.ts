@@ -13,7 +13,14 @@ const BASE_REQUIRED_MUTATION_ROUNDS: MutationRoundName[] = ['baseline-arbitrary'
 const ISSUE33_REQUIRED_MUTATION_ROUND: MutationRoundName = 'issue33-arbitrary'
 const INDEX_HTML_RE = /index\.html$/
 const SCRIPT_SOURCE_FILE_RE = /\.(?:js|ts|tsx|vue|mpx)$/
-const ISSUE33_MODIFY_CLASS_TOKENS = ['bg-[#0f0f0f]', 'px-[256.25px]'] as const
+const ISSUE33_MODIFY_CLASS_TOKENS = [
+  'bg-[#0f0]',
+  'px-[256.25px]',
+  'w-[calc(100%_-_24px)]',
+  'bg-[rgb(98,12,45)]',
+  'bg-[var(--primary-color-bg)]',
+  'text-[22px]',
+] as const
 const INVALID_BG_HEX_WITH_SPACE_RE = /\bbg-\s+\[#?[0-9a-fA-F]{3,8}\]?/g
 const INVALID_BG_UNTERMINATED_RE = /\bbg-\[[^\]]*$/gm
 const INVALID_PX_UNTERMINATED_RE = /\bpx-\[[^\]]*$/gm
