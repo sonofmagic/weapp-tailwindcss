@@ -4,23 +4,16 @@
 .flex-col {
   flex-direction: column;
 }
+.bg-_b_h123456_B {
+  --tw-bg-opacity: 1;
+  background-color: rgba(18, 52, 86, var(--tw-bg-opacity, 1));
+}
 .bg-_b_h929292_B {
   --tw-bg-opacity: 1;
   background-color: rgba(146, 146, 146, var(--tw-bg-opacity, 1));
 }
-.bg-_b_hfff_B {
-  --tw-bg-opacity: 1;
-  background-color: rgba(255, 255, 255, var(--tw-bg-opacity, 1));
-}
 .bg-_burl_p_ahttps_c_f_fxxx_dcom_fxx_dwebp_a_P_B {
   background-image: url(https://xxx.com/xx.webp);
-}
-.text-_b50px_B {
-  font-size: 50px;
-}
-.text-_b_h123456_B {
-  --tw-text-opacity: 1;
-  color: rgba(18, 52, 86, var(--tw-text-opacity, 1));
 }
 .text-_b_he67240_B {
   --tw-text-opacity: 1;

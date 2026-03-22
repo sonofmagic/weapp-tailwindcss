@@ -1,4 +1,4 @@
-<view class="content content" style="">
+<view class="content content bg-_b_h999999_B bg-_b_h999999_B" style="">
   <view class="odd_cmb-2 odd_cmb-2 text-_bvar_p--text_sec_light_P_B text-_bvar_p--text_sec_light_P_B"></view>
   <view class="ifdef-_bMP-WEIXIN_B_cbg-blue-500 ifdef-_bMP-WEIXIN_B_cbg-blue-500 text-_bvar_p--text_r_sec_r_light_P_B text-_bvar_p--text_r_sec_r_light_P_B">bg-blue-500</view>
   <view class="ifdef-_bH5__o_o_MP-WEIXIN_B_cbg-blue-300 ifdef-_bH5__o_o_MP-WEIXIN_B_cbg-blue-300">bg-blue-300</view>
@@ -13,17 +13,13 @@
     mode="widthFix"
     src="https://pic1.zhimg.com/v2-3ee20468f54bbfefcd0027283b21aaa8_720w.jpg"
     style="width: 374px; height: 155.833px"
-    class="mt-_b96_d3px_B Issue228--mt-_b96_d3px_B w-_b61_d1px_B Issue228--w-_b61_d1px_B h-_b50_d99px_B Issue228--h-_b50_d99px_B"
-    role="img"></image>
+    role="img"
+    class="mt-_b96_d3px_B w-_b61_d1px_B h-_b50_d99px_B"></image>
   <view>*******</view>
   <n-image is="components/NImage" class="mt-_b26_d2px_B mt-_b26_d2px_B w-_b43_d1px_B w-_b43_d1px_B h-_b42_d99px_B h-_b42_d99px_B">
     <image src="https://pic1.zhimg.com/v2-3ee20468f54bbfefcd0027283b21aaa8_720w.jpg" style="" role="img"></image>
   </n-image>
-  <image
-    src="https://pic1.zhimg.com/v2-3ee20468f54bbfefcd0027283b21aaa8_720w.jpg"
-    style=""
-    class="mt-_b96_d3px_B NHostImage--mt-_b96_d3px_B w-_b61_d1px_B NHostImage--w-_b61_d1px_B h-_b50_d99px_B NHostImage--h-_b50_d99px_B"
-    role="img"></image>
+  <image src="https://pic1.zhimg.com/v2-3ee20468f54bbfefcd0027283b21aaa8_720w.jpg" style="" role="img" class="mt-_b96_d3px_B w-_b61_d1px_B h-_b50_d99px_B"></image>
   <view class="_2xl_ctext-base _2xl_ctext-base">2xl:text-base</view>
   <view class="_2xl_ctext-_bred_B _2xl_ctext-_bred_B">2xl:text-[red]</view>
   <view class="space-y-4 space-y-4 flex flex flex-col flex-col bg-red-400 bg-red-400">
