@@ -13,7 +13,7 @@ import {
   buildAppCases,
 } from '../scripts/watch-hmr-regression/cases/apps'
 import {
-  buildIssue33BgOnlyRoundConfigs,
+  buildIssue33HighRiskRoundConfigs,
 } from '../scripts/watch-hmr-regression/cases/round-configs'
 import {
   resolveReportPath,
@@ -484,13 +484,13 @@ describe('watch-hmr regression summary helpers', () => {
 })
 
 describe('watch-hmr regression cases', () => {
-  it('defines issue33 bg-only CRUD rounds for js literal hot updates', () => {
-    const [roundConfig] = buildIssue33BgOnlyRoundConfigs()
+  it('defines issue33 high-risk arbitrary CRUD rounds for js literal hot updates', () => {
+    const [roundConfig] = buildIssue33HighRiskRoundConfigs()
 
     expect(roundConfig).toBeDefined()
     expect(roundConfig?.name).toBe('issue33-arbitrary')
-    expect(roundConfig?.buildClassTokens('seed')).toEqual([ISSUE33_ADD_CLASS_TOKENS[0]])
-    expect(roundConfig?.buildModifyClassTokens?.('seed')).toEqual([ISSUE33_MODIFY_CLASS_TOKENS[0]])
+    expect(roundConfig?.buildClassTokens('seed')).toEqual([...ISSUE33_ADD_CLASS_TOKENS])
+    expect(roundConfig?.buildModifyClassTokens?.('seed')).toEqual([...ISSUE33_MODIFY_CLASS_TOKENS])
   })
 
   it('tracks taro webpack app style outputs in both page and app wxss candidates', () => {
@@ -544,8 +544,8 @@ describe('watch-hmr regression cases', () => {
       expect(contentMutation.forbidBgHexTruncationIn).toContain('js')
       expect(contentMutation.roundConfigs?.length).toBe(1)
       expect(contentMutation.roundConfigs?.[0]?.name).toBe('issue33-arbitrary')
-      expect(contentMutation.roundConfigs?.[0]?.buildClassTokens('seed')).toEqual([ISSUE33_ADD_CLASS_TOKENS[0]])
-      expect(contentMutation.roundConfigs?.[0]?.buildModifyClassTokens?.('seed')).toEqual([ISSUE33_MODIFY_CLASS_TOKENS[0]])
+      expect(contentMutation.roundConfigs?.[0]?.buildClassTokens('seed')).toEqual([...ISSUE33_ADD_CLASS_TOKENS])
+      expect(contentMutation.roundConfigs?.[0]?.buildModifyClassTokens?.('seed')).toEqual([...ISSUE33_MODIFY_CLASS_TOKENS])
       expect(contentMutation.sourceFile).not.toMatch(/index\.html$/)
       expect(contentMutation.sourceFile).toMatch(/\.(?:js|ts|tsx|vue|mpx)$/)
     }

@@ -12,7 +12,7 @@ import {
   mutateVueScriptSetupObjectKeyByAnchor,
   replaceExactSnippet,
 } from '../../text'
-import { buildIssue33BgOnlyRoundConfigs } from '../round-configs'
+import { buildIssue33HighRiskRoundConfigs } from '../round-configs'
 
 export function buildDemoBaseCases(baseCwd: string): WatchCase[] {
   const taroCase: WatchCase = {
@@ -38,7 +38,7 @@ export function buildDemoBaseCases(baseCwd: string): WatchCase[] {
       verifyEscapedIn: [],
       verifyClassLiteralIn: ['js'],
       forbidBgHexTruncationIn: ['js'],
-      roundConfigs: buildIssue33BgOnlyRoundConfigs(),
+      roundConfigs: buildIssue33HighRiskRoundConfigs(),
       mutate(source, payload) {
         return replaceExactSnippet(
           source,
@@ -94,7 +94,7 @@ export function buildDemoBaseCases(baseCwd: string): WatchCase[] {
       verifyEscapedIn: [],
       verifyClassLiteralIn: ['js'],
       forbidBgHexTruncationIn: ['js'],
-      roundConfigs: buildIssue33BgOnlyRoundConfigs(),
+      roundConfigs: buildIssue33HighRiskRoundConfigs(),
       mutate(source, payload) {
         return replaceExactSnippet(
           source,
@@ -160,7 +160,7 @@ export function buildDemoBaseCases(baseCwd: string): WatchCase[] {
       verifyEscapedIn: [],
       verifyClassLiteralIn: ['js'],
       forbidBgHexTruncationIn: ['js'],
-      roundConfigs: buildIssue33BgOnlyRoundConfigs(),
+      roundConfigs: buildIssue33HighRiskRoundConfigs(),
       mutate(source, payload) {
         return replaceExactSnippet(
           source,
@@ -221,7 +221,7 @@ export function buildDemoBaseCases(baseCwd: string): WatchCase[] {
       verifyEscapedIn: [],
       verifyClassLiteralIn: ['js'],
       forbidBgHexTruncationIn: ['js'],
-      roundConfigs: buildIssue33BgOnlyRoundConfigs(),
+      roundConfigs: buildIssue33HighRiskRoundConfigs(),
       mutate(source, payload) {
         return mutateVueScriptSetupObjectKeyByAnchor(
           source,
@@ -275,7 +275,7 @@ export function buildDemoBaseCases(baseCwd: string): WatchCase[] {
       verifyEscapedIn: [],
       verifyClassLiteralIn: ['js'],
       forbidBgHexTruncationIn: ['js'],
-      roundConfigs: buildIssue33BgOnlyRoundConfigs(),
+      roundConfigs: buildIssue33HighRiskRoundConfigs(),
       mutate(source, payload) {
         return replaceExactSnippet(
           source,
@@ -329,7 +329,7 @@ export function buildDemoBaseCases(baseCwd: string): WatchCase[] {
       verifyEscapedIn: [],
       verifyClassLiteralIn: ['js'],
       forbidBgHexTruncationIn: ['js'],
-      roundConfigs: buildIssue33BgOnlyRoundConfigs(),
+      roundConfigs: buildIssue33HighRiskRoundConfigs(),
       mutate(source, payload) {
         return replaceExactSnippet(
           source,

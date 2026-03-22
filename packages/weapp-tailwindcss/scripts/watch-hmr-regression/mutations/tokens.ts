@@ -1,8 +1,22 @@
 import type { MutationRoundConfig } from '../types'
 import process from 'node:process'
 
-export const ISSUE33_ADD_CLASS_TOKENS = ['bg-[#123435]', 'px-[432.43px]'] as const
-export const ISSUE33_MODIFY_CLASS_TOKENS = ['bg-[#0f0f0f]', 'px-[256.25px]'] as const
+export const ISSUE33_ADD_CLASS_TOKENS = [
+  'bg-[#000]',
+  'px-[432.43px]',
+  'w-[calc(100%_-_12px)]',
+  'bg-[rgb(12,34,56)]',
+  'bg-[var(--primary-color-hex)]',
+  'text-[14px]',
+] as const
+export const ISSUE33_MODIFY_CLASS_TOKENS = [
+  'bg-[#0f0]',
+  'px-[256.25px]',
+  'w-[calc(100%_-_24px)]',
+  'bg-[rgb(98,12,45)]',
+  'bg-[var(--primary-color-bg)]',
+  'text-[22px]',
+] as const
 
 export function buildBaselineArbitraryClassTokens(seed: string) {
   const opacitySeed = seed.slice(0, 2)

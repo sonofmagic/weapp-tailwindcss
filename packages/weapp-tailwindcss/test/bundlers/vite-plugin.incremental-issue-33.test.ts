@@ -373,15 +373,26 @@ describe('bundlers/vite incremental issue #33 regression', () => {
     expect(currentContext.twPatcher.extract).toHaveBeenCalledTimes(2)
   }, TEST_TIMEOUT_MS)
 
-  it('keeps shorthand hex object class keys escaped across build-command watch iterations', async () => {
+  it('keeps high-risk arbitrary object class keys escaped across build-command watch iterations', async () => {
     const UnifiedViteWeappTailwindcssPlugin = await loadUnifiedVitePlugin()
     const htmlFile = 'dist/pages/index/index.wxml'
     const jsFile = 'dist/pages/index/index.js'
-    const runtimeSets = [
-      new Set(['bg-[#000]']),
-      new Set(['bg-[#f00]']),
-      new Set(['bg-[#0f0]']),
+    const stageTokens = [
+      'bg-[#000]',
+      'bg-[#f00]',
+      'bg-[#0f0]',
+      'px-[432.43px]',
+      'px-[256.25px]',
+      'w-[calc(100%_-_12px)]',
+      'w-[calc(100%_-_24px)]',
+      'bg-[rgb(12,34,56)]',
+      'bg-[rgb(98,12,45)]',
+      'bg-[var(--primary-color-hex)]',
+      'bg-[var(--primary-color-bg)]',
+      'text-[14px]',
+      'text-[22px]',
     ] as const
+    const runtimeSets = stageTokens.map(token => new Set([token])) as Array<Set<string>>
     let runtimeIndex = 0
     const getRuntimeSet = () => runtimeSets[runtimeIndex]
     const realJsHandler = createJsHandler({
@@ -415,11 +426,7 @@ describe('bundlers/vite incremental issue #33 regression', () => {
     } as ResolvedConfig)
 
     const generateBundle = postPlugin.generateBundle as any
-    const stages = [
-      { raw: 'bg-[#000]' },
-      { raw: 'bg-[#f00]' },
-      { raw: 'bg-[#0f0]' },
-    ] as const
+    const stages = stageTokens.map(raw => ({ raw }))
 
     for (const [index, stage] of stages.entries()) {
       runtimeIndex = index
@@ -450,6 +457,6 @@ describe('bundlers/vite incremental issue #33 regression', () => {
       expect(transformedCode).not.toContain(stage.raw)
     }
 
-    expect(currentContext.twPatcher.extract).toHaveBeenCalledTimes(3)
+    expect(currentContext.twPatcher.extract).toHaveBeenCalledTimes(stages.length)
   }, TEST_TIMEOUT_MS)
 })

@@ -93,6 +93,23 @@ describe('classname transform caching', () => {
     })
   })
 
+  it.each([
+    ['bg-[rgb(12,34,56)]', 'bg-[rgb(12,34,57)]'],
+    ['bg-[var(--primary-color-hex)]', 'bg-[var(--primary-color-bg)]'],
+    ['w-[calc(100%_-_12px)]', 'w-[calc(100%_-_24px)]'],
+    ['text-[14px]', 'text-[22px]'],
+    ['px-[432.43px]', 'px-[256.25px]'],
+  ])('does not match similar arbitrary candidates without exact runtime hits: %s vs %s', (rawToken, runtimeToken) => {
+    const result = classNameTransform.resolveClassNameTransformWithResult(rawToken, {
+      classNameSet: new Set([runtimeToken]),
+      escapeMap: MappingChars2String,
+    })
+
+    expect(result).toEqual({
+      decision: 'skip',
+    })
+  })
+
   it('keeps whitespace-wrapped url-like arbitrary fragments excluded from fallback', () => {
     const result = classNameTransform.resolveClassNameTransformWithResult('  https://foo-bar.com/assets/[token]  ', {
       classContext: true,

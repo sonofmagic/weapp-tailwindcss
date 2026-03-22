@@ -1,4 +1,8 @@
-import { isIssue33RoundEnabled, ISSUE33_ADD_CLASS_TOKENS } from '../mutations/tokens'
+import {
+  isIssue33RoundEnabled,
+  ISSUE33_ADD_CLASS_TOKENS,
+  ISSUE33_MODIFY_CLASS_TOKENS,
+} from '../mutations/tokens'
 
 const NON_DIGIT_RE = /\D/g
 
@@ -74,15 +78,15 @@ export function buildIssue33ScriptRoundConfigs() {
   ]
 }
 
-export function buildIssue33BgOnlyRoundConfigs() {
+export function buildIssue33HighRiskRoundConfigs() {
   return [
     {
       name: 'issue33-arbitrary' as const,
       buildClassTokens() {
-        return [ISSUE33_ADD_CLASS_TOKENS[0]]
+        return [...ISSUE33_ADD_CLASS_TOKENS]
       },
       buildModifyClassTokens() {
-        return ['bg-[#0f0f0f]']
+        return [...ISSUE33_MODIFY_CLASS_TOKENS]
       },
     },
   ]
