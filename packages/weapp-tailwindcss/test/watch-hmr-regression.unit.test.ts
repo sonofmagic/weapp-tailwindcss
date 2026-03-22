@@ -12,6 +12,9 @@ import {
   buildAppCases,
 } from '../scripts/watch-hmr-regression/cases/apps'
 import {
+  buildIssue33BgOnlyRoundConfigs,
+} from '../scripts/watch-hmr-regression/cases/round-configs'
+import {
   resolveReportPath,
   resolveRepositoryRootLabel,
   summarizeMetrics,
@@ -28,6 +31,10 @@ import {
   readJoinedOutputFiles,
   waitForOutputFilesUpdated,
 } from '../scripts/watch-hmr-regression/mutations/shared'
+import {
+  ISSUE33_ADD_CLASS_TOKENS,
+  ISSUE33_MODIFY_CLASS_TOKENS,
+} from '../scripts/watch-hmr-regression/mutations/tokens'
 import {
   alignContentEol,
   appendTrailingSnippet,
@@ -476,6 +483,15 @@ describe('watch-hmr regression summary helpers', () => {
 })
 
 describe('watch-hmr regression cases', () => {
+  it('defines issue33 bg-only CRUD rounds for js literal hot updates', () => {
+    const [roundConfig] = buildIssue33BgOnlyRoundConfigs()
+
+    expect(roundConfig).toBeDefined()
+    expect(roundConfig?.name).toBe('issue33-arbitrary')
+    expect(roundConfig?.buildClassTokens('seed')).toEqual([ISSUE33_ADD_CLASS_TOKENS[0]])
+    expect(roundConfig?.buildModifyClassTokens?.('seed')).toEqual([ISSUE33_MODIFY_CLASS_TOKENS[0]])
+  })
+
   it('tracks taro webpack app style outputs in both page and app wxss candidates', () => {
     const [taroWebpackCase] = buildAppCases('/repo')
 
@@ -527,8 +543,28 @@ describe('watch-hmr regression cases', () => {
       expect(contentMutation.forbidBgHexTruncationIn).toContain('js')
       expect(contentMutation.roundConfigs?.length).toBe(1)
       expect(contentMutation.roundConfigs?.[0]?.name).toBe('issue33-arbitrary')
+      expect(contentMutation.roundConfigs?.[0]?.buildClassTokens('seed')).toEqual([ISSUE33_ADD_CLASS_TOKENS[0]])
+      expect(contentMutation.roundConfigs?.[0]?.buildModifyClassTokens?.('seed')).toEqual([ISSUE33_MODIFY_CLASS_TOKENS[0]])
       expect(contentMutation.sourceFile).not.toMatch(/index\.html$/)
       expect(contentMutation.sourceFile).toMatch(/\.(?:js|ts|tsx|vue|mpx)$/)
+    }
+  })
+
+  it('keeps script read-path HMR checks available for every demo and app case', () => {
+    const cases = [
+      ...buildDemoBaseCases('/repo'),
+      ...buildDemoExtendedCases('/repo'),
+      ...buildAppCases('/repo'),
+    ]
+
+    expect(cases.length).toBeGreaterThan(0)
+
+    for (const watchCase of cases) {
+      expect(
+        watchCase.scriptMutation,
+        `${watchCase.name} should define script mutation for same-class read checks`,
+      ).toBeDefined()
+      expect(typeof watchCase.scriptMutation.mutate).toBe('function')
     }
   })
 
@@ -537,5 +573,23 @@ describe('watch-hmr regression cases', () => {
     expect(mpxCase?.globalStyleCandidates).toContain(
       path.resolve('/repo', 'demo/mpx-app/dist/wx/styles/utilities*.wxss'),
     )
+  })
+
+  it('keeps issue33 watch cases in macOS and Windows CI matrices', async () => {
+    const workflowSource = await readFile(
+      path.resolve(__dirname, '../../../.github/workflows/e2e-watch.yml'),
+      'utf8',
+    )
+
+    const requiredMatrixEntries = [
+      '"os":"macos-latest","runner_label":"macos","watch_case":"uni-app-vue3-vite","round_profile":"issue33"',
+      '"os":"macos-latest","runner_label":"macos","watch_case":"weapp-vite","round_profile":"issue33"',
+      '"os":"windows-latest","runner_label":"windows","watch_case":"uni-app-vue3-vite","round_profile":"issue33"',
+      '"os":"windows-latest","runner_label":"windows","watch_case":"weapp-vite","round_profile":"issue33"',
+    ]
+
+    for (const entry of requiredMatrixEntries) {
+      expect(workflowSource).toContain(entry)
+    }
   })
 })
