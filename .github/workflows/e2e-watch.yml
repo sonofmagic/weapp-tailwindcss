@@ -14,10 +14,9 @@ on:
       - pnpm-lock.yaml
       - pnpm-workspace.yaml
       - .github/workflows/e2e-watch.yml
-    paths-ignore:
-      - 'website/**'
-      - '**/*.md'
-      - '.changeset/**'
+      - '!website/**'
+      - '!**/*.md'
+      - '!.changeset/**'
   workflow_dispatch:
 
 concurrency:
