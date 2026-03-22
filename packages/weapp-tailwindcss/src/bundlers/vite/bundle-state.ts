@@ -40,6 +40,10 @@ export interface BundleBuildState {
   dependentsByLinkedFile: Map<string, Set<string>>
 }
 
+interface UpdateBundleBuildStateOptions {
+  incremental?: boolean
+}
+
 export function createBundleBuildState(): BundleBuildState {
   return {
     iteration: 0,
@@ -256,10 +260,27 @@ export function updateBundleBuildState(
   state: BundleBuildState,
   snapshot: BundleSnapshot,
   linkedByEntry: Map<string, Set<string>>,
+  options: UpdateBundleBuildStateOptions = {},
 ) {
+  const incremental = options.incremental === true
   state.iteration += 1
-  state.sourceHashByFile = snapshot.sourceHashByFile
-  state.runtimeAffectingHashByFile = snapshot.runtimeAffectingHashByFile
-  state.linkedByEntry = linkedByEntry
-  state.dependentsByLinkedFile = invertLinkedByEntry(linkedByEntry)
+  state.sourceHashByFile = incremental
+    ? new Map([
+        ...state.sourceHashByFile,
+        ...snapshot.sourceHashByFile,
+      ])
+    : snapshot.sourceHashByFile
+  state.runtimeAffectingHashByFile = incremental
+    ? new Map([
+        ...state.runtimeAffectingHashByFile,
+        ...snapshot.runtimeAffectingHashByFile,
+      ])
+    : snapshot.runtimeAffectingHashByFile
+  state.linkedByEntry = incremental
+    ? new Map([
+        ...state.linkedByEntry,
+        ...linkedByEntry,
+      ])
+    : linkedByEntry
+  state.dependentsByLinkedFile = invertLinkedByEntry(state.linkedByEntry)
 }

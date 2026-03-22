@@ -210,6 +210,51 @@ describe('bundlers/vite bundle state', () => {
     expect(state.sourceHashByFile.has('assets/entry.js')).toBe(false)
   })
 
+  it('keeps omitted files in build state during incremental bundle updates', () => {
+    const opts = createOptions()
+    const state = createBundleBuildState()
+    const outDir = '/project/dist'
+
+    const firstSnapshot = buildBundleSnapshot({
+      'pages/index/index.wxml': {
+        ...createRollupAsset('<view class="foo" />'),
+        fileName: 'pages/index/index.wxml',
+      },
+      'assets/index.js': {
+        ...createRollupChunk('const cls = "bg-[#000]"'),
+        fileName: 'assets/index.js',
+      },
+    }, opts, outDir, state)
+
+    updateBundleBuildState(state, firstSnapshot, new Map([
+      ['assets/index.js', new Set<string>()],
+    ]))
+
+    const secondSnapshot = buildBundleSnapshot({
+      'assets/index.js': {
+        ...createRollupChunk('const cls = "bg-[#f00]"'),
+        fileName: 'assets/index.js',
+      },
+    }, opts, outDir, state)
+
+    updateBundleBuildState(state, secondSnapshot, new Map([
+      ['assets/index.js', new Set<string>()],
+    ]), { incremental: true })
+
+    expect(state.sourceHashByFile.has('pages/index/index.wxml')).toBe(true)
+    expect(state.sourceHashByFile.has('assets/index.js')).toBe(true)
+
+    const thirdSnapshot = buildBundleSnapshot({
+      'assets/index.js': {
+        ...createRollupChunk('const cls = "bg-[#0f0]"'),
+        fileName: 'assets/index.js',
+      },
+    }, opts, outDir, state)
+
+    expect(thirdSnapshot.processFiles.js.has('assets/index.js')).toBe(true)
+    expect(thirdSnapshot.processFiles.html.has('pages/index/index.wxml')).toBe(false)
+  })
+
   it('build snapshot processes all entries without incremental bookkeeping', () => {
     const opts = createOptions()
     const outDir = '/project/dist'

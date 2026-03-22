@@ -69,4 +69,44 @@ describe('cssEntries integration', () => {
       await ctx.refreshTailwindcssPatcher({ clearCache: true })
     }
   })
+
+  it('keeps shorthand hex script classes refreshable for uni-app-vue3-vite', async () => {
+    const projectRoot = path.resolve(repoRoot, 'demo/uni-app-vue3-vite')
+    const sourceFile = path.join(projectRoot, 'src/pages/index/index.vue')
+    const original = await fs.readFile(sourceFile, 'utf8')
+    const previousToken = '\'bg-[#fff]\':true'
+    const nextToken = '\'bg-[#f00]\':true'
+
+    expect(original.includes(previousToken)).toBe(true)
+    expect(original.includes(nextToken)).toBe(false)
+
+    const ctx = getCompilerContext({
+      tailwindcssBasedir: projectRoot,
+      appType: 'uni-app-vite',
+    })
+
+    await ctx.twPatcher.patch()
+    const baseline = await collectRuntimeClassSet(ctx.twPatcher, { force: true, skipRefresh: true })
+    expect(baseline.has('bg-[#fff]')).toBe(true)
+    expect(baseline.has('bg-[#f00]')).toBe(false)
+
+    await fs.writeFile(sourceFile, original.replace(previousToken, nextToken), 'utf8')
+
+    try {
+      await ctx.refreshTailwindcssPatcher({ clearCache: true })
+      await ctx.twPatcher.patch()
+
+      const refreshed = await collectRuntimeClassSet(ctx.twPatcher, { force: true, skipRefresh: true })
+      expect(refreshed.has('bg-[#f00]')).toBe(true)
+
+      const source = 'import { ref } from \'vue\'\nconst bgObj = ref({ \'bg-[#f00]\': true })'
+      const result = ctx.jsHandler(source, refreshed)
+      expect(result.code).toContain(escape('bg-[#f00]'))
+      expect(result.code).not.toContain('bg-[#f00]')
+    }
+    finally {
+      await fs.writeFile(sourceFile, original, 'utf8')
+      await ctx.refreshTailwindcssPatcher({ clearCache: true })
+    }
+  })
 })

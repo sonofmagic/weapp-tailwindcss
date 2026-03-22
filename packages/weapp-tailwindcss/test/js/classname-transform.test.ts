@@ -71,15 +71,25 @@ describe('classname transform caching', () => {
     })
   })
 
-  it('matches arbitrary hex candidates case-insensitively against runtime class sets', () => {
+  it('does not match arbitrary hex candidates case-insensitively against runtime class sets', () => {
     const result = classNameTransform.resolveClassNameTransformWithResult('bg-[#4268EA]', {
       classNameSet: new Set(['bg-[#4268ea]']),
       escapeMap: MappingChars2String,
     })
 
     expect(result).toEqual({
-      decision: 'escaped',
-      escapedValue: 'bg-_b_h4268ea_B',
+      decision: 'skip',
+    })
+  })
+
+  it('does not match shorthand arbitrary hex candidates against different runtime tokens', () => {
+    const result = classNameTransform.resolveClassNameTransformWithResult('bg-[#f00]', {
+      classNameSet: new Set(['bg-[#ff0000]']),
+      escapeMap: MappingChars2String,
+    })
+
+    expect(result).toEqual({
+      decision: 'skip',
     })
   })
 

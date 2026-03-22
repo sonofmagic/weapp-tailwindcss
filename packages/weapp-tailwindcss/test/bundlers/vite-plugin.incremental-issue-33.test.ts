@@ -372,4 +372,84 @@ describe('bundlers/vite incremental issue #33 regression', () => {
     expect(transformedCode).not.toContain('bg-[#999998]')
     expect(currentContext.twPatcher.extract).toHaveBeenCalledTimes(2)
   }, TEST_TIMEOUT_MS)
+
+  it('keeps shorthand hex object class keys escaped across build-command watch iterations', async () => {
+    const UnifiedViteWeappTailwindcssPlugin = await loadUnifiedVitePlugin()
+    const htmlFile = 'dist/pages/index/index.wxml'
+    const jsFile = 'dist/pages/index/index.js'
+    const runtimeSets = [
+      new Set(['bg-[#000]']),
+      new Set(['bg-[#f00]']),
+      new Set(['bg-[#0f0]']),
+    ] as const
+    let runtimeIndex = 0
+    const getRuntimeSet = () => runtimeSets[runtimeIndex]
+    const realJsHandler = createJsHandler({
+      staleClassNameFallback: false,
+      jsArbitraryValueFallback: false,
+    })
+
+    setCurrentContext(createContext({
+      jsHandler: vi.fn((code: string, classNameSet?: Set<string>, options?: Record<string, unknown>) =>
+        realJsHandler(code, classNameSet, options as any),
+      ),
+      twPatcher: {
+        patch: vi.fn(async () => {}),
+        getClassSet: vi.fn(async () => getRuntimeSet()),
+        getClassSetSync: vi.fn(() => getRuntimeSet()),
+        extract: vi.fn(async () => ({ classSet: getRuntimeSet() })),
+        majorVersion: 3,
+      },
+    }))
+
+    const currentContext = getCurrentContext()
+    const plugins = UnifiedViteWeappTailwindcssPlugin()
+    const postPlugin = plugins?.find(plugin => plugin.name === 'weapp-tailwindcss:adaptor:post') as Plugin
+    expect(postPlugin).toBeTruthy()
+
+    await (postPlugin.configResolved as any)?.call(postPlugin, {
+      command: 'build',
+      root: process.cwd(),
+      css: { postcss: { plugins: [] } },
+      build: { outDir: 'dist' },
+    } as ResolvedConfig)
+
+    const generateBundle = postPlugin.generateBundle as any
+    const stages = [
+      { raw: 'bg-[#000]' },
+      { raw: 'bg-[#f00]' },
+      { raw: 'bg-[#0f0]' },
+    ] as const
+
+    for (const [index, stage] of stages.entries()) {
+      runtimeIndex = index
+      const bundle = (
+        index === 0
+          ? {
+              [htmlFile]: {
+                ...createRollupAsset('<view class="content">{{ bgObj }}</view>'),
+                fileName: htmlFile,
+              },
+              [jsFile]: {
+                ...createRollupChunk(`const bgObj = common_vendor.ref({ "${stage.raw}": true });`),
+                fileName: jsFile,
+              },
+            }
+          : {
+              [jsFile]: {
+                ...createRollupChunk(`const bgObj = common_vendor.ref({ "${stage.raw}": true });`),
+                fileName: jsFile,
+              },
+            }
+      ) as Record<string, OutputAsset | OutputChunk>
+
+      await generateBundle?.call(postPlugin, {} as any, bundle)
+
+      const transformedCode = (bundle[jsFile] as OutputChunk).code
+      expect(transformedCode).toContain(replaceWxml(stage.raw))
+      expect(transformedCode).not.toContain(stage.raw)
+    }
+
+    expect(currentContext.twPatcher.extract).toHaveBeenCalledTimes(3)
+  }, TEST_TIMEOUT_MS)
 })

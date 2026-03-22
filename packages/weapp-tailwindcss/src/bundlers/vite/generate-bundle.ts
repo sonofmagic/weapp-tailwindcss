@@ -650,7 +650,12 @@ export function createGenerateBundleHook(context: GenerateBundleContext) {
       apply()
     }
 
-    updateBundleBuildState(state, snapshot, useIncrementalMode ? (linkedByEntry ?? new Map<string, Set<string>>()) : new Map<string, Set<string>>())
+    updateBundleBuildState(
+      state,
+      snapshot,
+      useIncrementalMode ? (linkedByEntry ?? new Map<string, Set<string>>()) : new Map<string, Set<string>>(),
+      { incremental: useIncrementalMode },
+    )
 
     debug(
       'metrics iteration=%d runtime=%sms html(total=%d transform=%d hit=%d rate=%s elapsed=%sms) js(total=%d transform=%d hit=%d rate=%s elapsed=%sms) css(total=%d transform=%d hit=%d rate=%s elapsed=%sms)',
