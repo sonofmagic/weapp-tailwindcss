@@ -25,12 +25,97 @@
   box-shadow: 0 8px 32px rgb(15 23 42 / 35%);
 }
 
+.navbar__inner {
+  gap: 0.75rem;
+}
+
+.navbar__brand {
+  flex-shrink: 0;
+  min-width: 0;
+  margin-right: 0.5rem;
+}
+
+.navbar__title {
+  max-width: 12rem;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
 .navbar__items {
   align-items: center;
 }
 
+.navbar__items--left {
+  flex: 1 1 auto;
+  gap: 0.25rem;
+  min-width: 0;
+}
+
 .navbar__items--right {
   gap: 0.35rem;
+  flex-shrink: 0;
+}
+
+.navbar__item.navbar__link:not(.navbar__atomgit-link):not(.navbar__github-link) {
+  flex-shrink: 0;
+  padding-right: 0.45rem;
+  padding-left: 0.45rem;
+  font-size: 0.94rem;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.DocSearch-Button {
+  transition:
+    background-color 0.2s ease,
+    border-color 0.2s ease,
+    transform 0.2s ease;
+}
+
+@media (width <= 1200px) and (width > 996px) {
+  .navbar {
+    --ifm-navbar-padding-horizontal: 0.7rem;
+  }
+
+  .navbar__inner {
+    gap: 0.35rem;
+  }
+
+  .navbar__brand {
+    margin-right: 0.15rem;
+  }
+
+  .navbar__title {
+    display: none;
+  }
+
+  .navbar__items--left {
+    gap: 0.05rem;
+  }
+
+  .navbar__item.navbar__link:not(.navbar__atomgit-link):not(.navbar__github-link) {
+    padding-right: 0.3rem;
+    padding-left: 0.3rem;
+    font-size: 0.82rem;
+    letter-spacing: -0.01em;
+  }
+
+  .navbar__items--right {
+    gap: 0.15rem;
+  }
+
+  .DocSearch-Button {
+    min-width: 2.5rem;
+    height: 2.35rem;
+    padding-right: 0.6rem;
+    padding-left: 0.6rem;
+  }
+
+  .DocSearch-Button-Placeholder,
+  .DocSearch-Button-Keys {
+    display: none;
+  }
 }
 
 .navbar__atomgit-link,
