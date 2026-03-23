@@ -69,16 +69,6 @@ export const E2E_PROJECTS = [
     cssFile: 'app.wxss',
     url: '/pages/index',
   },
-  {
-    name: 'native-mina',
-    projectPath: 'native-mina',
-    cssFile: 'dist/app.wxss',
-  },
-  {
-    name: 'rax-app',
-    projectPath: 'rax-app/build/wechat-miniprogram',
-    cssFile: 'bundle.wxss',
-  },
 ] satisfies ProjectEntry[]
 
 export const NATIVE_PROJECTS = [

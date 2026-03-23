@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2025-11-04T04:53:42.109Z",
+  "generatedAt": "2026-03-23T15:36:06.849Z",
   "projectCount": 31,
   "projects": [
     {
@@ -13,6 +13,16 @@
       "hasBuildScript": true
     },
     {
+      "id": "apps/react-app",
+      "type": "app",
+      "typeLabel": "应用",
+      "packageName": "react-app",
+      "displayName": "react-app",
+      "benchmarkKey": "react-app",
+      "buildScript": "build",
+      "hasBuildScript": true
+    },
+    {
       "id": "apps/rsmax-app-ts",
       "type": "app",
       "typeLabel": "应用",
@@ -20,6 +30,16 @@
       "displayName": "rsmax-app-ts",
       "benchmarkKey": "rsmax-app-ts",
       "buildScript": "_build",
+      "hasBuildScript": true
+    },
+    {
+      "id": "apps/tailwindcss-weapp",
+      "type": "app",
+      "typeLabel": "应用",
+      "packageName": "tailwindcss-weapp",
+      "displayName": "tailwindcss-weapp",
+      "benchmarkKey": "tailwindcss-weapp",
+      "buildScript": "build:h5",
       "hasBuildScript": true
     },
     {
@@ -153,32 +173,12 @@
       "hasBuildScript": true
     },
     {
-      "id": "demo/native-mina",
-      "type": "demo",
-      "typeLabel": "示例",
-      "packageName": "@weapp-tailwindcss-demo/native-mina",
-      "displayName": "native-mina",
-      "benchmarkKey": "native-webpack",
-      "buildScript": "build",
-      "hasBuildScript": true
-    },
-    {
       "id": "demo/native-ts",
       "type": "demo",
       "typeLabel": "示例",
       "packageName": "@weapp-tailwindcss-demo/native-ts",
       "displayName": "native-ts",
       "benchmarkKey": "native-ts",
-      "buildScript": "build",
-      "hasBuildScript": true
-    },
-    {
-      "id": "demo/rax-app",
-      "type": "demo",
-      "typeLabel": "示例",
-      "packageName": "@weapp-tailwindcss-demo/rax-app",
-      "displayName": "rax-app",
-      "benchmarkKey": "rax",
       "buildScript": "build",
       "hasBuildScript": true
     },

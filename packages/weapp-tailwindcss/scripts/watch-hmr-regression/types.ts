@@ -5,8 +5,6 @@ export type ConcreteWatchCaseName
   = | 'taro'
     | 'uni'
     | 'mpx'
-    | 'rax'
-    | 'mina'
     | 'weapp-vite'
     | 'uni-app-vue3-vite'
     | 'uni-app-tailwindcss-v4'

@@ -60,8 +60,6 @@ DCloud-HBuilderX团队提供了对应的插件，可以去
 
 [uni-app-vue2-tailwind-vscode-template](https://github.com/sonofmagic/uni-app-vue2-tailwind-vscode-template)
 
-[weapp-native-mina-tailwindcss-template](https://github.com/sonofmagic/weapp-native-mina-tailwindcss-template)
-
 ### 预设 tailwindcss preset
 
 [tailwindcss-miniprogram-preset](https://github.com/sonofmagic/tailwindcss-miniprogram-preset)

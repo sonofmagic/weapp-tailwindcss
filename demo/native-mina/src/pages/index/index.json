@@ -1,7 +1,0 @@
-{
-  "usingComponents": {
-    "user": "../../components/user/user",
-    "van-button": "@vant/weapp/button/index",
-    "ice-avatar": "../../components/avatar/avatar"
-  }
-}

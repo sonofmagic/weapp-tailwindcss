@@ -22,7 +22,7 @@
 
 > `weapp` + `tailwindcss` all-round solution.
 
-\[[Docs deployed in China](https://tw.icebreaker.top)\] \| \[[Github Page](https://sonofmagic.github.io/weapp-tailwindcss/)\] \| \[[1.x Docs]('./v1.md')\]
+\[[Docs deployed in China](https://tw.icebreaker.top)\] \| \[[Github Page](https://sonofmagic.github.io/weapp-tailwindcss/)\]
 
 - [Features](#features)
   - [Plugin Introduction](#plugin-introduction)
@@ -149,8 +149,6 @@ If the key platform of your project is `app`, it is recommended to use the `hbui
 
 [weapp-tailwindcss-gulp-template(gulp打包)](https://github.com/sonofmagic/weapp-tailwindcss/tree/main/demo/gulp-app)
 
-[weapp-native-mina-tailwindcss-template(webpack打包)](https://github.com/sonofmagic/weapp-native-mina-tailwindcss-template)
-
 ### tailwindcss plugin
 
 [weapp-tailwindcss-children](https://github.com/sonofmagic/weapp-tailwindcss-children)
@@ -164,7 +162,7 @@ If the key platform of your project is `app`, it is recommended to use the `hbui
 The repository now includes a dedicated watch-mode E2E chain (separate from build-output snapshot checks) to verify whether hot updates are effective and how long they take in real demo projects.
 
 - Run all cases: `pnpm e2e:watch`
-- Run a single case: `pnpm e2e:watch:taro` / `pnpm e2e:watch:uni` / `pnpm e2e:watch:mpx` / `pnpm e2e:watch:rax` / `pnpm e2e:watch:mina` / `pnpm e2e:watch:weapp-vite`
+- Run a single case: `pnpm e2e:watch:taro` / `pnpm e2e:watch:uni` / `pnpm e2e:watch:mpx` / `pnpm e2e:watch:weapp-vite`
 - Include prebuild path: `pnpm e2e:watch:full`
 
 This chain injects complex Tailwind class combinations (arbitrary values, decimals, `calc()`, pseudo-element variants, etc.) and reports both `hot update` and `rollback` latency.

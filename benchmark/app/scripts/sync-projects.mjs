@@ -17,11 +17,9 @@ const SOURCE_GROUPS = [
 ]
 
 const BENCH_KEY_OVERRIDES = new Map([
-  ['demo/native-mina', 'native-webpack'],
   ['demo/taro-app', 'taro-react'],
   ['demo/uni-app', 'uni-app-webpack-vue2'],
   ['demo/uni-app-webpack5', 'uni-app-webpack5-vue2'],
-  ['demo/rax-app', 'rax'],
   ['demo/taro-vue3-app', 'taro-vue3'],
   ['demo/uni-app-vue3-vite', 'uni-app-vite-vue3'],
   ['demo/mpx-app', 'mpx'],

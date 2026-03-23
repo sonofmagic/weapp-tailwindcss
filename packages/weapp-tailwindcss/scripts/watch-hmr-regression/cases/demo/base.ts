@@ -9,7 +9,6 @@ import {
   mutateScriptByDataAnchorWithCommentCarrier,
   mutateSfcStyleBlock,
   mutateTsxScriptByReturnAnchor,
-  mutateVueScriptSetupObjectKeyByAnchor,
   replaceExactSnippet,
 } from '../../text'
 import { buildIssue33HighRiskRoundConfigs } from '../round-configs'
@@ -198,117 +197,6 @@ export function buildDemoBaseCases(baseCwd: string): WatchCase[] {
     },
   }
 
-  const raxCase: WatchCase = {
-    name: 'rax',
-    label: 'demo/rax-app',
-    project: 'demo/rax-app',
-    group: 'demo',
-    cwd: path.resolve(baseCwd, 'demo/rax-app'),
-    devScript: 'start',
-    env: {
-      PORT: '39333',
-    },
-    outputWxml: path.resolve(baseCwd, 'demo/rax-app/build/wechat-miniprogram/pages/index/index.wxml'),
-    outputJs: path.resolve(baseCwd, 'demo/rax-app/build/wechat-miniprogram/bundle.js'),
-    outputStyleCandidates: [
-      path.resolve(baseCwd, 'demo/rax-app/build/wechat-miniprogram/bundle.wxss'),
-    ],
-    globalStyleCandidates: [
-      path.resolve(baseCwd, 'demo/rax-app/build/wechat-miniprogram/bundle.wxss'),
-    ],
-    contentMutation: {
-      sourceFile: path.resolve(baseCwd, 'demo/rax-app/src/pages/index/index.tsx'),
-      verifyEscapedIn: [],
-      verifyClassLiteralIn: ['js'],
-      forbidBgHexTruncationIn: ['js'],
-      roundConfigs: buildIssue33HighRiskRoundConfigs(),
-      mutate(source, payload) {
-        return mutateVueScriptSetupObjectKeyByAnchor(
-          source,
-          '\'bg-[#123456]\': true,',
-          payload,
-        )
-      },
-    },
-    templateMutation: {
-      sourceFile: path.resolve(baseCwd, 'demo/rax-app/src/pages/index/index.tsx'),
-      verifyEscapedIn: [],
-      verifyClassLiteralIn: ['js'],
-      mutate(source, payload) {
-        const snippet = `      <View className='${payload.classLiteral}'>${payload.marker}-template</View>`
-        return insertBeforeClosingTag(source, '    </>', snippet)
-      },
-    },
-    scriptMutation: {
-      sourceFile: path.resolve(baseCwd, 'demo/rax-app/src/pages/index/index.tsx'),
-      verifyEscapedIn: [],
-      verifyClassLiteralIn: ['js'],
-      mutate(source, payload) {
-        return mutateTsxScriptByReturnAnchor(source, payload)
-      },
-    },
-    styleMutation: {
-      sourceFile: path.resolve(baseCwd, 'demo/rax-app/src/pages/index/index.css'),
-      mutate(source, payload) {
-        return appendTrailingSnippet(source, createStyleRuleSnippet(payload))
-      },
-    },
-  }
-
-  const minaCase: WatchCase = {
-    name: 'mina',
-    label: 'demo/native-mina',
-    project: 'demo/native-mina',
-    group: 'demo',
-    cwd: path.resolve(baseCwd, 'demo/native-mina'),
-    devScript: 'start',
-    outputWxml: path.resolve(baseCwd, 'demo/native-mina/dist/pages/index/index.wxml'),
-    outputJs: path.resolve(baseCwd, 'demo/native-mina/dist/pages/index/index.js'),
-    outputStyleCandidates: [
-      path.resolve(baseCwd, 'demo/native-mina/dist/pages/index/index.wxss'),
-    ],
-    globalStyleCandidates: [
-      path.resolve(baseCwd, 'demo/native-mina/dist/app.wxss'),
-    ],
-    contentMutation: {
-      sourceFile: path.resolve(baseCwd, 'demo/native-mina/src/pages/index/index.js'),
-      verifyEscapedIn: [],
-      verifyClassLiteralIn: ['js'],
-      forbidBgHexTruncationIn: ['js'],
-      roundConfigs: buildIssue33HighRiskRoundConfigs(),
-      mutate(source, payload) {
-        return replaceExactSnippet(
-          source,
-          '    className: \'bg-[#123456]\',//  replaceJs(\'bg-[#123456]\'),',
-          `    className: '${payload.classLiteral}',//  replaceJs('bg-[#123456]'),`,
-          'native mina script class anchor',
-        )
-      },
-    },
-    templateMutation: {
-      sourceFile: path.resolve(baseCwd, 'demo/native-mina/src/pages/index/index.wxml'),
-      verifyEscapedIn: ['wxml'],
-      mutate(source, payload) {
-        const snippet = `  <view class="${payload.classLiteral}">${payload.marker}-template</view>`
-        return insertBeforeClosingTag(source, '</view>', snippet)
-      },
-    },
-    scriptMutation: {
-      sourceFile: path.resolve(baseCwd, 'demo/native-mina/src/pages/index/index.js'),
-      verifyEscapedIn: [],
-      verifyClassLiteralIn: ['js'],
-      mutate(source, payload) {
-        return mutateScriptByDataAnchor(source, '  data: {', payload)
-      },
-    },
-    styleMutation: {
-      sourceFile: path.resolve(baseCwd, 'demo/native-mina/src/pages/index/index.scss'),
-      mutate(source, payload) {
-        return appendTrailingSnippet(source, createStyleRuleSnippet(payload))
-      },
-    },
-  }
-
   const weappViteCase: WatchCase = {
     name: 'weapp-vite',
     label: 'demo/native-ts (weapp-vite)',
@@ -370,8 +258,6 @@ export function buildDemoBaseCases(baseCwd: string): WatchCase[] {
     taroCase,
     uniCase,
     mpxCase,
-    raxCase,
-    minaCase,
     weappViteCase,
   ]
 }

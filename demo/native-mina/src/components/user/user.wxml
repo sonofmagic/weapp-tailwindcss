@@ -1,3 +1,0 @@
-<view class="container">
-  <text class="rounded-full bg-gray-700 w-24 h-24 text-white flex items-center justify-center">{{nickName}}</text>
-</view>

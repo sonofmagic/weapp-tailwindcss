@@ -29,8 +29,6 @@ const miniProgramV3Projects = [
   'demo/taro-app-vite',
   'demo/taro-vue3-app',
   'demo/mpx-app',
-  'demo/rax-app',
-  'demo/native-mina',
   'demo/native-ts',
   'apps/vite-native-ts',
   'apps/vite-native-skyline',

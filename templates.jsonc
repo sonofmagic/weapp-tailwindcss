@@ -15,8 +15,6 @@
   "https://github.com/icebreaker-template/taro-webpack-tailwindcss-v4",
   // mpx
   "https://github.com/icebreaker-template/mpx-tailwindcss-v4",
-  // mina
-  "https://github.com/icebreaker-template/weapp-native-mina-tailwindcss-template",
   // weapp-vite
   "https://github.com/icebreaker-template/vue-mini-tailwindcss-template"
 ]

@@ -22,7 +22,7 @@
 
 > `weapp` + `tailwindcss` all-round solution.
 
-\[[Docs deployed in China](https://tw.icebreaker.top)\] \| \[[Github Page](https://sonofmagic.github.io/weapp-tailwindcss/)\] \| \[[1.x Docs]('./v1.md')\]
+\[[Docs deployed in China](https://tw.icebreaker.top)\] \| \[[Github Page](https://sonofmagic.github.io/weapp-tailwindcss/)\]
 
 - [Features](#features)
   - [Plugin Introduction](#plugin-introduction)
@@ -116,8 +116,6 @@ If the key platform of your project is `app`, it is recommended to use the `hbui
 #### Native applet development template
 
 [weapp-tailwindcss-gulp-template(gulp打包)](https://github.com/sonofmagic/weapp-tailwindcss/tree/main/demo/gulp-app)
-
-[weapp-native-mina-tailwindcss-template(webpack打包)](https://github.com/sonofmagic/weapp-native-mina-tailwindcss-template)
 
 ### tailwindcss plugin
 

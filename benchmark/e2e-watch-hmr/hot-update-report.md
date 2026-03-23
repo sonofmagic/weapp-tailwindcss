@@ -12,9 +12,7 @@
 | apps | apps/taro-webpack-tailwindcss-v4 |            3167 |          2412 |         2413 |                 3167 | 基线数据                                |
 | apps | apps/vite-native-ts              |             243 |           754 |          241 |                  243 | 基线数据                                |
 | demo | demo/mpx-app                     |             482 |           487 |         1246 |                  482 | 基线数据                                |
-| demo | demo/native-mina                 |             512 |           764 |          727 |                  512 | 基线数据                                |
 | demo | demo/native-ts (weapp-vite)      |            3669 |          6967 |         1992 |                 3669 | 基线数据                                |
-| demo | demo/rax-app                     |            1751 |          1954 |          972 |                 1751 | 基线数据                                |
 | demo | demo/taro-app                    |            1213 |          1209 |         1720 |                 1213 | 基线数据                                |
 | demo | demo/uni-app                     |            1280 |           487 |          490 |                 1280 | 基线数据                                |
 | demo | demo/uni-app-vue3-vite           |            2702 |          1448 |          966 |                 2702 | 重点项目，已验证                        |

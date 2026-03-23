@@ -259,7 +259,7 @@ describe('watch-hmr regression text helpers', () => {
 
     const elapsed = await waitForOutputFilesUpdated(
       {
-        label: 'demo/native-mina',
+        label: 'demo/fixture-project',
       } as any,
       [outputFile],
       new Map([[outputFile, baselineMtime]]),

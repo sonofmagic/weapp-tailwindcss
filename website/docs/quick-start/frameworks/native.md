@@ -39,10 +39,6 @@ keywords:
 
 模板项目 [weapp-tailwindcss-gulp-template(gulp打包)](https://github.com/sonofmagic/weapp-tailwindcss-webpack-plugin/tree/main/demo/gulp-app)
 
-## webpack5 模板
-
-模板项目 [weapp-native-mina-tailwindcss-template(webpack打包)](https://github.com/sonofmagic/weapp-native-mina-tailwindcss-template)
-
 ## 组件样式的隔离性
 
 :::tip
