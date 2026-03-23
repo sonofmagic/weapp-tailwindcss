@@ -1,3 +1,20 @@
+---
+title: TailwindCssPatchOptions
+description: Root configuration consumed by the Tailwind CSS patch runner.
+keywords:
+  - weapp-tailwindcss
+  - API
+  - 接口文档
+  - 配置项
+  - 小程序
+  - tailwindcss
+  - 微信小程序
+  - TailwindCssPatchOptions
+  - TailwindCssPatchOptions interface
+  - TailwindCssPatchOptions 类型定义
+  - TypeScript
+---
+
 # TailwindCssPatchOptions
 
 Root configuration consumed by the Tailwind CSS patch runner.

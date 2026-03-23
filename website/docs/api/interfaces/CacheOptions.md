@@ -1,3 +1,20 @@
+---
+title: CacheOptions
+description: Configures how the Tailwind class cache is stored and where it lives on disk.
+keywords:
+  - weapp-tailwindcss
+  - API
+  - 接口文档
+  - 配置项
+  - 小程序
+  - tailwindcss
+  - 微信小程序
+  - CacheOptions
+  - CacheOptions interface
+  - CacheOptions 类型定义
+  - TypeScript
+---
+
 # CacheOptions
 
 Configures how the Tailwind class cache is stored and where it lives on disk.

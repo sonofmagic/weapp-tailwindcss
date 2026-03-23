@@ -1,15 +1,15 @@
 {
   "version": "1.0.0",
-  "generatedAt": "2026-03-16T11:41:09.277Z",
+  "generatedAt": "2026-03-23T11:26:55.676Z",
   "totals": {
     "files": 175,
-    "issues": 32
+    "issues": 0
   },
   "coverage": {
     "docs": {
-      "title": 0.9415204678362573,
-      "description": 0.9064327485380117,
-      "keywords": 0.9064327485380117
+      "title": 1,
+      "description": 1,
+      "keywords": 1
     },
     "blog": {
       "title": 1,
@@ -17,207 +17,11 @@
       "keywords": 1
     },
     "all": {
-      "title": 0.9428571428571428,
-      "description": 0.9085714285714286,
-      "keywords": 0.9085714285714286
+      "title": 1,
+      "description": 1,
+      "keywords": 1
     }
   },
-  "issueTypes": {
-    "weak_description": 16,
-    "few_keywords": 16
-  },
-  "issues": [
-    {
-      "type": "weak_description",
-      "file": "api/index.md",
-      "message": "description 过短或缺失关键信息",
-      "scope": "docs"
-    },
-    {
-      "type": "few_keywords",
-      "file": "api/index.md",
-      "message": "keywords 数量偏少（0）",
-      "scope": "docs"
-    },
-    {
-      "type": "weak_description",
-      "file": "api/interfaces/ApplyOptions.md",
-      "message": "description 过短或缺失关键信息",
-      "scope": "docs"
-    },
-    {
-      "type": "few_keywords",
-      "file": "api/interfaces/ApplyOptions.md",
-      "message": "keywords 数量偏少（0）",
-      "scope": "docs"
-    },
-    {
-      "type": "weak_description",
-      "file": "api/interfaces/CacheOptions.md",
-      "message": "description 过短或缺失关键信息",
-      "scope": "docs"
-    },
-    {
-      "type": "few_keywords",
-      "file": "api/interfaces/CacheOptions.md",
-      "message": "keywords 数量偏少（0）",
-      "scope": "docs"
-    },
-    {
-      "type": "weak_description",
-      "file": "api/interfaces/DisabledOptions.md",
-      "message": "description 过短或缺失关键信息",
-      "scope": "docs"
-    },
-    {
-      "type": "few_keywords",
-      "file": "api/interfaces/DisabledOptions.md",
-      "message": "keywords 数量偏少（0）",
-      "scope": "docs"
-    },
-    {
-      "type": "weak_description",
-      "file": "api/interfaces/ExtractOptions.md",
-      "message": "description 过短或缺失关键信息",
-      "scope": "docs"
-    },
-    {
-      "type": "few_keywords",
-      "file": "api/interfaces/ExtractOptions.md",
-      "message": "keywords 数量偏少（0）",
-      "scope": "docs"
-    },
-    {
-      "type": "weak_description",
-      "file": "api/interfaces/TailwindCssOptions.md",
-      "message": "description 过短或缺失关键信息",
-      "scope": "docs"
-    },
-    {
-      "type": "few_keywords",
-      "file": "api/interfaces/TailwindCssOptions.md",
-      "message": "keywords 数量偏少（0）",
-      "scope": "docs"
-    },
-    {
-      "type": "weak_description",
-      "file": "api/interfaces/TailwindCssPatchOptions.md",
-      "message": "description 过短或缺失关键信息",
-      "scope": "docs"
-    },
-    {
-      "type": "few_keywords",
-      "file": "api/interfaces/TailwindCssPatchOptions.md",
-      "message": "keywords 数量偏少（0）",
-      "scope": "docs"
-    },
-    {
-      "type": "weak_description",
-      "file": "api/interfaces/TailwindV2Options.md",
-      "message": "description 过短或缺失关键信息",
-      "scope": "docs"
-    },
-    {
-      "type": "few_keywords",
-      "file": "api/interfaces/TailwindV2Options.md",
-      "message": "keywords 数量偏少（0）",
-      "scope": "docs"
-    },
-    {
-      "type": "weak_description",
-      "file": "api/interfaces/TailwindV3Options.md",
-      "message": "description 过短或缺失关键信息",
-      "scope": "docs"
-    },
-    {
-      "type": "few_keywords",
-      "file": "api/interfaces/TailwindV3Options.md",
-      "message": "keywords 数量偏少（0）",
-      "scope": "docs"
-    },
-    {
-      "type": "weak_description",
-      "file": "api/interfaces/TailwindV4Options.md",
-      "message": "description 过短或缺失关键信息",
-      "scope": "docs"
-    },
-    {
-      "type": "few_keywords",
-      "file": "api/interfaces/TailwindV4Options.md",
-      "message": "keywords 数量偏少（0）",
-      "scope": "docs"
-    },
-    {
-      "type": "weak_description",
-      "file": "api/interfaces/UserDefinedOptions.md",
-      "message": "description 过短或缺失关键信息",
-      "scope": "docs"
-    },
-    {
-      "type": "few_keywords",
-      "file": "api/interfaces/UserDefinedOptions.md",
-      "message": "keywords 数量偏少（0）",
-      "scope": "docs"
-    },
-    {
-      "type": "weak_description",
-      "file": "api/options/general.md",
-      "message": "description 过短或缺失关键信息",
-      "scope": "docs"
-    },
-    {
-      "type": "few_keywords",
-      "file": "api/options/general.md",
-      "message": "keywords 数量偏少（0）",
-      "scope": "docs"
-    },
-    {
-      "type": "weak_description",
-      "file": "api/options/important.md",
-      "message": "description 过短或缺失关键信息",
-      "scope": "docs"
-    },
-    {
-      "type": "few_keywords",
-      "file": "api/options/important.md",
-      "message": "keywords 数量偏少（0）",
-      "scope": "docs"
-    },
-    {
-      "type": "weak_description",
-      "file": "api/options/lifecycle.md",
-      "message": "description 过短或缺失关键信息",
-      "scope": "docs"
-    },
-    {
-      "type": "few_keywords",
-      "file": "api/options/lifecycle.md",
-      "message": "keywords 数量偏少（0）",
-      "scope": "docs"
-    },
-    {
-      "type": "weak_description",
-      "file": "api/options/matchers.md",
-      "message": "description 过短或缺失关键信息",
-      "scope": "docs"
-    },
-    {
-      "type": "few_keywords",
-      "file": "api/options/matchers.md",
-      "message": "keywords 数量偏少（0）",
-      "scope": "docs"
-    },
-    {
-      "type": "weak_description",
-      "file": "api/other-interfaces.md",
-      "message": "description 过短或缺失关键信息",
-      "scope": "docs"
-    },
-    {
-      "type": "few_keywords",
-      "file": "api/other-interfaces.md",
-      "message": "keywords 数量偏少（0）",
-      "scope": "docs"
-    }
-  ]
+  "issueTypes": {},
+  "issues": []
 }

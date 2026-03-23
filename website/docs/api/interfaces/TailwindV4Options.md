@@ -1,3 +1,20 @@
+---
+title: TailwindV4Options
+description: Additional configuration specific to Tailwind CSS v4 extraction.
+keywords:
+  - weapp-tailwindcss
+  - API
+  - 接口文档
+  - 配置项
+  - 小程序
+  - tailwindcss
+  - 微信小程序
+  - TailwindV4Options
+  - TailwindV4Options interface
+  - TailwindV4Options 类型定义
+  - TypeScript
+---
+
 # TailwindV4Options
 
 Additional configuration specific to Tailwind CSS v4 extraction.

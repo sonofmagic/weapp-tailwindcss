@@ -2,6 +2,19 @@
 title: ✅ 重要配置
 sidebar_label: ✅ 重要配置
 sidebar_position: 1
+description: ✅ 重要配置文档，汇总 17 个 weapp-tailwindcss 配置项的用途、默认值与注意事项。
+keywords:
+  - weapp-tailwindcss
+  - API
+  - 接口文档
+  - 配置项
+  - 小程序
+  - tailwindcss
+  - 微信小程序
+  - 重要配置
+  - ✅ 重要配置
+  - 重要配置 配置
+  - 插件参数
 ---
 
 本页收录 17 个配置项，来源于 `UserDefinedOptions`。

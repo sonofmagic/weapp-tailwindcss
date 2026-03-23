@@ -2,6 +2,19 @@
 title: ⚙️ 一般配置
 sidebar_label: ⚙️ 一般配置
 sidebar_position: 4
+description: ⚙️ 一般配置文档，汇总 17 个 weapp-tailwindcss 配置项的用途、默认值与注意事项。
+keywords:
+  - weapp-tailwindcss
+  - API
+  - 接口文档
+  - 配置项
+  - 小程序
+  - tailwindcss
+  - 微信小程序
+  - 一般配置
+  - ⚙️ 一般配置
+  - 一般配置 配置
+  - 插件参数
 ---
 
 本页收录 17 个配置项，来源于 `UserDefinedOptions`。
@@ -22,7 +35,7 @@ sidebar_position: 4
 | [cache](#cache) | <code>boolean &#124; ICreateCacheReturnType</code> | — | 控制缓存策略。 |
 | [babelParserOptions](#babelparseroptions) | <code>(Partial<Options> & { cache?: boolean; cacheKey?: string; })</code> | — | `@babel/parser` 的配置选项。 |
 | [cssChildCombinatorReplaceValue](#csschildcombinatorreplacevalue) | <code>string &#124; string[]</code> | <code>'view + view'</code> | 自定义 Tailwind 子组合器的替换值。 |
-| [postcssOptions](#postcssoptions) | <code>Partial<Omit<import("/Users/yangqiming/Documents/GitHub/weapp-tailwindcss/node_modules/.pnpm/postcss-load-config@6.0.1_jiti@2.6.1_postcss@8.5.8_tsx@4.21.0_yaml@2.8.2/node_modules/postcss-load-config/src/index").Result, "file">></code> | — | `postcss` 的配置选项。 |
+| [postcssOptions](#postcssoptions) | <code>Partial<Omit<import("/Users/yangqiming/Documents/GitHub/weapp-tailwindcss/node_modules/.pnpm/postcss-load-config@6.0.1_jiti@2.6.1_postcss@8.5.8_tsx@4.21.0_yaml@2.8.3/node_modules/postcss-load-config/src/index").Result, "file">></code> | — | `postcss` 的配置选项。 |
 | [cssRemoveHoverPseudoClass](#cssremovehoverpseudoclass) | <code>boolean</code> | <code>`true`</code> | 是否移除 CSS 中的 `:hover` 选择器。 |
 | [cssRemoveProperty](#cssremoveproperty) | <code>boolean</code> | <code>`true`</code> | 是否移除 `@property` 节点。 |
 | [tailwindcssPatcherOptions](#tailwindcsspatcheroptions) | <code>TailwindCssPatchOptions</code> | — | 自定义 patcher 参数。 |
@@ -199,7 +212,7 @@ false
 
 ### postcssOptions
 
-> 可选 | 类型: `Partial<Omit<import("/Users/yangqiming/Documents/GitHub/weapp-tailwindcss/node_modules/.pnpm/postcss-load-config@6.0.1_jiti@2.6.1_postcss@8.5.8_tsx@4.21.0_yaml@2.8.2/node_modules/postcss-load-config/src/index").Result, "file">>` | 版本: ^3.2.0
+> 可选 | 类型: `Partial<Omit<import("/Users/yangqiming/Documents/GitHub/weapp-tailwindcss/node_modules/.pnpm/postcss-load-config@6.0.1_jiti@2.6.1_postcss@8.5.8_tsx@4.21.0_yaml@2.8.3/node_modules/postcss-load-config/src/index").Result, "file">>` | 版本: ^3.2.0
 
 `postcss` 的配置选项。
 

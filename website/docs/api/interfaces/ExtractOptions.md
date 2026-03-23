@@ -1,3 +1,20 @@
+---
+title: ExtractOptions
+description: Preferred options for extraction output behavior.
+keywords:
+  - weapp-tailwindcss
+  - API
+  - 接口文档
+  - 配置项
+  - 小程序
+  - tailwindcss
+  - 微信小程序
+  - ExtractOptions
+  - ExtractOptions interface
+  - ExtractOptions 类型定义
+  - TypeScript
+---
+
 # ExtractOptions
 
 Preferred options for extraction output behavior.

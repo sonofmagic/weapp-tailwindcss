@@ -11,7 +11,8 @@ import type {
 import { execSync } from 'node:child_process'
 import fs from 'node:fs'
 import path from 'node:path'
-import { fileURLToPath } from 'node:url'
+import process from 'node:process'
+import { fileURLToPath, pathToFileURL } from 'node:url'
 import { Node, Project, ts } from 'ts-morph'
 
 const currentDir = path.dirname(fileURLToPath(import.meta.url))
@@ -49,6 +50,15 @@ const groupEmojiMap: Record<string, string> = {
   一般配置: '⚙️',
 }
 const otherInterfacesEmoji = '🗂️'
+const apiSeoBaseKeywords = [
+  'weapp-tailwindcss',
+  'API',
+  '接口文档',
+  '配置项',
+  '小程序',
+  'tailwindcss',
+  '微信小程序',
+]
 
 interface JsDocInfo {
   description: string
@@ -168,6 +178,117 @@ function truncateText(value: string, maxLength: number): string {
     return value
   }
   return `${value.slice(0, maxLength - 3)}...`
+}
+
+function normalizeSeoText(value: string): string {
+  return value.replace(WHITESPACE_COLLAPSE_RE, ' ').trim()
+}
+
+function uniqKeywords(values: string[]): string[] {
+  const seen = new Set<string>()
+  const normalized: string[] = []
+
+  values.forEach((item) => {
+    const value = normalizeSeoText(item)
+    if (!value) {
+      return
+    }
+    const key = value.toLowerCase()
+    if (seen.has(key)) {
+      return
+    }
+    seen.add(key)
+    normalized.push(value)
+  })
+
+  return normalized
+}
+
+function buildApiSeoKeywords(...values: Array<string | undefined>): string[] {
+  return uniqKeywords([
+    ...apiSeoBaseKeywords,
+    ...values.filter((value): value is string => Boolean(value)),
+  ]).slice(0, 16)
+}
+
+function pushFrontmatter(
+  lines: string[],
+  frontmatter: {
+    title: string
+    sidebarLabel?: string
+    sidebarPosition?: number
+    description: string
+    keywords: string[]
+  },
+): void {
+  lines.push('---')
+  lines.push(`title: ${frontmatter.title}`)
+  if (frontmatter.sidebarLabel) {
+    lines.push(`sidebar_label: ${frontmatter.sidebarLabel}`)
+  }
+  if (typeof frontmatter.sidebarPosition === 'number') {
+    lines.push(`sidebar_position: ${frontmatter.sidebarPosition}`)
+  }
+  lines.push(`description: ${frontmatter.description}`)
+  lines.push('keywords:')
+  frontmatter.keywords.forEach((keyword) => {
+    lines.push(`  - ${keyword}`)
+  })
+  lines.push('---')
+  lines.push('')
+}
+
+export function buildInterfaceSeoFrontmatter(doc: InterfaceDoc) {
+  const fallbackDescription = `${doc.name} 接口文档，包含属性说明、类型定义与使用边界。`
+  const rawDescription = normalizeSeoText(doc.description || '')
+  const description = rawDescription.length >= 16 ? rawDescription : fallbackDescription
+  return {
+    title: doc.name,
+    description,
+    keywords: buildApiSeoKeywords(doc.name, `${doc.name} interface`, `${doc.name} 类型定义`, 'TypeScript'),
+  }
+}
+
+export function buildUserDefinedOptionsOverviewFrontmatter(doc: InterfaceDoc) {
+  const description = normalizeSeoText(doc.description || 'UserDefinedOptions 总览，按分组汇总 weapp-tailwindcss 的核心配置项与跳转入口。')
+  return {
+    title: 'UserDefinedOptions',
+    sidebarLabel: 'UserDefinedOptions 总览',
+    sidebarPosition: 1,
+    description,
+    keywords: buildApiSeoKeywords('UserDefinedOptions', '配置总览', '插件参数', '选项总览'),
+  }
+}
+
+export function buildOptionsGroupSeoFrontmatter(meta: GroupMeta, itemCount: number) {
+  const description = normalizeSeoText(`${meta.sidebarLabel}文档，汇总 ${itemCount} 个 weapp-tailwindcss 配置项的用途、默认值与注意事项。`)
+  return {
+    title: meta.displayTitle,
+    sidebarLabel: meta.sidebarLabel,
+    sidebarPosition: meta.order + 1,
+    description,
+    keywords: buildApiSeoKeywords(meta.title, meta.sidebarLabel, `${meta.title} 配置`, '插件参数'),
+  }
+}
+
+export function buildOtherInterfacesSeoFrontmatter(count: number) {
+  const description = normalizeSeoText(`其他接口索引页，汇总 ${count} 个 weapp-tailwindcss 运行时接口与补充类型定义。`)
+  return {
+    title: `${otherInterfacesEmoji} 其他接口`,
+    sidebarLabel: `${otherInterfacesEmoji} 其他接口`,
+    sidebarPosition: 2,
+    description,
+    keywords: buildApiSeoKeywords('其他接口', '运行时接口', '类型定义', '接口索引'),
+  }
+}
+
+export function buildApiIndexFrontmatter(hasInterfaces: boolean) {
+  const description = normalizeSeoText(`weapp-tailwindcss API 文档首页，汇总配置项分组${hasInterfaces ? '与接口索引' : ''}，便于快速查阅参数定义。`)
+  return {
+    title: 'weapp-tailwindcss',
+    description,
+    keywords: buildApiSeoKeywords('API 首页', '配置项索引', '接口索引', '参数说明'),
+  }
 }
 
 function escapeTableCell(value: string): string {
@@ -762,6 +883,7 @@ function renderOptionsProperty(prop: PropertyDoc, level: number): string {
 
 function renderInterfaceDoc(doc: InterfaceDoc): string {
   const lines: string[] = []
+  pushFrontmatter(lines, buildInterfaceSeoFrontmatter(doc))
   lines.push(`# ${doc.name}`)
   lines.push('')
   if (doc.description) {
@@ -816,12 +938,7 @@ function renderUserDefinedOptionsOverview(
   optionGroups: Array<{ meta: GroupMeta, items: PropertyDoc[] }>,
 ): string {
   const lines: string[] = []
-  lines.push('---')
-  lines.push('title: UserDefinedOptions')
-  lines.push('sidebar_label: UserDefinedOptions 总览')
-  lines.push('sidebar_position: 1')
-  lines.push('---')
-  lines.push('')
+  pushFrontmatter(lines, buildUserDefinedOptionsOverviewFrontmatter(doc))
 
   if (doc.description) {
     lines.push(doc.description)
@@ -847,12 +964,7 @@ function renderOptionsGroupDoc(
   items: PropertyDoc[],
 ): string {
   const lines: string[] = []
-  lines.push('---')
-  lines.push(`title: ${meta.displayTitle}`)
-  lines.push(`sidebar_label: ${meta.sidebarLabel}`)
-  lines.push(`sidebar_position: ${meta.order + 1}`)
-  lines.push('---')
-  lines.push('')
+  pushFrontmatter(lines, buildOptionsGroupSeoFrontmatter(meta, items.length))
 
   lines.push(`本页收录 ${items.length} 个配置项，来源于 \`UserDefinedOptions\`。`)
   lines.push('')
@@ -876,12 +988,7 @@ function renderOptionsGroupDoc(
 
 function renderOtherInterfacesDoc(docs: InterfaceDoc[]): string {
   const lines: string[] = []
-  lines.push('---')
-  lines.push(`title: ${otherInterfacesEmoji} 其他接口`)
-  lines.push(`sidebar_label: ${otherInterfacesEmoji} 其他接口`)
-  lines.push('sidebar_position: 2')
-  lines.push('---')
-  lines.push('')
+  pushFrontmatter(lines, buildOtherInterfacesSeoFrontmatter(docs.length))
 
   if (!docs.length) {
     lines.push('暂无其他接口。')
@@ -908,27 +1015,31 @@ function writeIndex(
   optionGroups: Array<{ meta: GroupMeta, items: PropertyDoc[] }>,
 ) {
   const interfaceDocs = docs.filter(doc => !doc.group && doc.name !== 'UserDefinedOptions')
-
-  let content = '# weapp-tailwindcss\n\n'
+  const lines: string[] = []
+  pushFrontmatter(lines, buildApiIndexFrontmatter(interfaceDocs.length > 0))
+  lines.push('# weapp-tailwindcss')
+  lines.push('')
 
   if (optionGroups.length) {
-    content += '## 配置项\n\n'
-    content += '- [UserDefinedOptions 总览](interfaces/UserDefinedOptions.md)\n'
+    lines.push('## 配置项')
+    lines.push('')
+    lines.push('- [UserDefinedOptions 总览](interfaces/UserDefinedOptions.md)')
     optionGroups
       .sort((a, b) => a.meta.order - b.meta.order)
       .forEach((group) => {
-        content += `- [${group.meta.displayTitle}](options/${group.meta.slug}.md)\n`
+        lines.push(`- [${group.meta.displayTitle}](options/${group.meta.slug}.md)`)
       })
-    content += '\n'
+    lines.push('')
   }
 
   if (interfaceDocs.length) {
-    content += '## 接口\n\n'
-    content += `- [${otherInterfacesEmoji} 其他接口](other-interfaces.md)\n`
-    content += '\n'
+    lines.push('## 接口')
+    lines.push('')
+    lines.push(`- [${otherInterfacesEmoji} 其他接口](other-interfaces.md)`)
+    lines.push('')
   }
 
-  fs.writeFileSync(path.join(apiDir, 'index.md'), `${content.trimEnd()}\n`, 'utf8')
+  fs.writeFileSync(path.join(apiDir, 'index.md'), `${lines.join('\n').trimEnd()}\n`, 'utf8')
 }
 
 function ensureCleanDir(dirPath: string) {
@@ -1070,4 +1181,6 @@ function run(): void {
   console.log(`Generated ${interfaceDocs.length} API docs into ${path.relative(repoRoot, apiDir)}`)
 }
 
-run()
+if (process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href) {
+  run()
+}

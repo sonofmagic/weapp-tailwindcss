@@ -1,3 +1,20 @@
+---
+title: TailwindV2Options
+description: Configuration specific to Tailwind CSS v2 patching flows.
+keywords:
+  - weapp-tailwindcss
+  - API
+  - 接口文档
+  - 配置项
+  - 小程序
+  - tailwindcss
+  - 微信小程序
+  - TailwindV2Options
+  - TailwindV2Options interface
+  - TailwindV2Options 类型定义
+  - TypeScript
+---
+
 # TailwindV2Options
 
 Configuration specific to Tailwind CSS v2 patching flows.

@@ -1,3 +1,20 @@
+---
+title: TailwindCssOptions
+description: High-level Tailwind patch configuration shared across versions.
+keywords:
+  - weapp-tailwindcss
+  - API
+  - 接口文档
+  - 配置项
+  - 小程序
+  - tailwindcss
+  - 微信小程序
+  - TailwindCssOptions
+  - TailwindCssOptions interface
+  - TailwindCssOptions 类型定义
+  - TypeScript
+---
+
 # TailwindCssOptions
 
 High-level Tailwind patch configuration shared across versions.

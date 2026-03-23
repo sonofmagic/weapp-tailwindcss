@@ -2,6 +2,19 @@
 title: 🧩 文件匹配
 sidebar_label: 🧩 文件匹配
 sidebar_position: 2
+description: 🧩 文件匹配文档，汇总 6 个 weapp-tailwindcss 配置项的用途、默认值与注意事项。
+keywords:
+  - weapp-tailwindcss
+  - API
+  - 接口文档
+  - 配置项
+  - 小程序
+  - tailwindcss
+  - 微信小程序
+  - 文件匹配
+  - 🧩 文件匹配
+  - 文件匹配 配置
+  - 插件参数
 ---
 
 本页收录 6 个配置项，来源于 `UserDefinedOptions`。

@@ -2,6 +2,19 @@
 title: UserDefinedOptions
 sidebar_label: UserDefinedOptions 总览
 sidebar_position: 1
+description: UserDefinedOptions 总览，按分组汇总 weapp-tailwindcss 的核心配置项与跳转入口。
+keywords:
+  - weapp-tailwindcss
+  - API
+  - 接口文档
+  - 配置项
+  - 小程序
+  - tailwindcss
+  - 微信小程序
+  - UserDefinedOptions
+  - 配置总览
+  - 插件参数
+  - 选项总览
 ---
 
 ## 分组入口

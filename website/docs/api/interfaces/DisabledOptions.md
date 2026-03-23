@@ -1,3 +1,20 @@
+---
+title: DisabledOptions
+description: DisabledOptions 接口文档，包含属性说明、类型定义与使用边界。
+keywords:
+  - weapp-tailwindcss
+  - API
+  - 接口文档
+  - 配置项
+  - 小程序
+  - tailwindcss
+  - 微信小程序
+  - DisabledOptions
+  - DisabledOptions interface
+  - DisabledOptions 类型定义
+  - TypeScript
+---
+
 # DisabledOptions
 
 禁用插件功能的细粒度选项。

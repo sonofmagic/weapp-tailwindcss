@@ -1,3 +1,20 @@
+---
+title: weapp-tailwindcss
+description: weapp-tailwindcss API 文档首页，汇总配置项分组与接口索引，便于快速查阅参数定义。
+keywords:
+  - weapp-tailwindcss
+  - API
+  - 接口文档
+  - 配置项
+  - 小程序
+  - tailwindcss
+  - 微信小程序
+  - API 首页
+  - 配置项索引
+  - 接口索引
+  - 参数说明
+---
+
 # weapp-tailwindcss
 
 ## 配置项

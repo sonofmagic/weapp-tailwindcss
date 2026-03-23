@@ -2,6 +2,19 @@
 title: 🗂️ 其他接口
 sidebar_label: 🗂️ 其他接口
 sidebar_position: 2
+description: 其他接口索引页，汇总 9 个 weapp-tailwindcss 运行时接口与补充类型定义。
+keywords:
+  - weapp-tailwindcss
+  - API
+  - 接口文档
+  - 配置项
+  - 小程序
+  - tailwindcss
+  - 微信小程序
+  - 其他接口
+  - 运行时接口
+  - 类型定义
+  - 接口索引
 ---
 
 以下接口用于补充配置或运行时能力，本页面仅提供索引。

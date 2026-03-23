@@ -2,6 +2,19 @@
 title: 🧭 生命周期
 sidebar_label: 🧭 生命周期
 sidebar_position: 3
+description: 🧭 生命周期文档，汇总 4 个 weapp-tailwindcss 配置项的用途、默认值与注意事项。
+keywords:
+  - weapp-tailwindcss
+  - API
+  - 接口文档
+  - 配置项
+  - 小程序
+  - tailwindcss
+  - 微信小程序
+  - 生命周期
+  - 🧭 生命周期
+  - 生命周期 配置
+  - 插件参数
 ---
 
 本页收录 4 个配置项，来源于 `UserDefinedOptions`。
