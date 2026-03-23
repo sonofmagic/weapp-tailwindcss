@@ -45,6 +45,17 @@
     "wxml": "html",
     "mpx": "html"
   },
+  "tailwindCSS.experimental.configFile": {
+    "demo/taro-vite-tailwindcss-v4/src/tailwind-intellisense.css": "demo/taro-vite-tailwindcss-v4/src/**",
+    "demo/taro-webpack-tailwindcss-v4/src/tailwind-intellisense.css": "demo/taro-webpack-tailwindcss-v4/src/**",
+    "demo/mpx-tailwindcss-v4/src/tailwind-intellisense.css": "demo/mpx-tailwindcss-v4/src/**",
+    "demo/uni-app-webpack-tailwindcss-v4/src/tailwind-intellisense.css": "demo/uni-app-webpack-tailwindcss-v4/src/**",
+    "demo/uni-app-tailwindcss-v4/src/tailwind-intellisense.css": "demo/uni-app-tailwindcss-v4/src/**",
+    "demo/uni-app-x-hbuilderx-tailwindcss4/tailwind-intellisense.css": "demo/uni-app-x-hbuilderx-tailwindcss4/**",
+    "apps/taro-webpack-tailwindcss-v4/src/tailwind-intellisense.css": "apps/taro-webpack-tailwindcss-v4/src/**",
+    "apps/uni-app-x-hbuilderx-tailwindcss4/tailwind-intellisense.css": "apps/uni-app-x-hbuilderx-tailwindcss4/**",
+    "apps/vite-native/tailwind-intellisense.css": "apps/vite-native/**"
+  },
   // Silent the stylistic rules in you IDE, but still auto fix them
   "eslint.rules.customizations": [
     // close "style/* off"
