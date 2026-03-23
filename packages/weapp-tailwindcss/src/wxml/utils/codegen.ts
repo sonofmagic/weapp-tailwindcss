@@ -1,16 +1,23 @@
-import type { ITemplateHandlerOptions } from '../../types'
+import type { CreateJsHandlerOptions, ITemplateHandlerOptions } from '../../types'
 import { rewriteLegacyExpression } from './codegen/legacy-rewriter'
+
+const WRAP_EXPRESSION_HANDLER_OPTIONS: CreateJsHandlerOptions = Object.freeze({
+  wrapExpression: true,
+})
 
 export function generateCode(match: string, options: ITemplateHandlerOptions = {}) {
   try {
-    const { jsHandler, runtimeSet } = options
+    const { jsHandler, runtimeSet, wrapExpression } = options
     if (jsHandler && runtimeSet) {
-      const runHandler = (wrap?: boolean) => jsHandler(match, runtimeSet, wrap ? { wrapExpression: true } : undefined)
-      const initial = runHandler(options.wrapExpression)
-      if (!initial.error || options.wrapExpression) {
+      const initial = jsHandler(
+        match,
+        runtimeSet,
+        wrapExpression ? WRAP_EXPRESSION_HANDLER_OPTIONS : undefined,
+      )
+      if (!initial.error || wrapExpression) {
         return initial.code
       }
-      const fallback = runHandler(true)
+      const fallback = jsHandler(match, runtimeSet, WRAP_EXPRESSION_HANDLER_OPTIONS)
       return fallback.code
     }
     else {

@@ -28,13 +28,13 @@ export function getPxTransformPlugin(options: IStyleHandlerOptions): AcceptedPlu
     return null
   }
 
-  const userOptions = typeof options.px2rpx === 'object'
-    ? options.px2rpx
-    : {}
+  if (options.px2rpx === true) {
+    return postcssPxtrans(defaultPxTransformOptions)
+  }
 
   return postcssPxtrans(
     defuOverrideArray<PxTransformOptions, PxTransformOptions[]>(
-      userOptions,
+      options.px2rpx,
       defaultPxTransformOptions,
     ),
   )

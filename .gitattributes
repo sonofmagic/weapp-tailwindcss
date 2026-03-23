@@ -14,7 +14,8 @@
 ##   Handle line endings automatically for files detected as
 ##   text and leave all files detected as binary untouched.
 ##   This will handle all files NOT defined below.
-*                 text=auto
+##   强制所有文本文件使用 LF，避免 Windows CI 上 CRLF 导致 prettier 报错
+*                 text=auto eol=lf
 
 # Source code
 *.bash            text eol=lf

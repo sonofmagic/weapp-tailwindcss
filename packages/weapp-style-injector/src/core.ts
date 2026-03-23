@@ -28,8 +28,11 @@ export interface StyleInjector {
 export const PLUGIN_NAME = 'weapp-style-injector'
 export const DEFAULT_INCLUDE = ['**/*.wxss', '**/*.css']
 
+const ESCAPE_REGEXP_RE = /[.*+?^${}()|[\]\\]/g
+const IMPORT_PREFIX_RE = /^@import\s+/i
+
 function escapeRegExp(value: string): string {
-  return value.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
+  return value.replace(ESCAPE_REGEXP_RE, '\\$&')
 }
 
 function createImportStatement(entry: string): string {
@@ -37,7 +40,7 @@ function createImportStatement(entry: string): string {
   if (trimmed.length === 0) {
     return ''
   }
-  if (/^@import\s+/i.test(trimmed)) {
+  if (IMPORT_PREFIX_RE.test(trimmed)) {
     return trimmed.endsWith(';') ? trimmed : `${trimmed};`
   }
   return `@import "${trimmed}";`
@@ -48,7 +51,7 @@ function hasImportStatement(source: string, entry: string): boolean {
   if (trimmed.length === 0) {
     return true
   }
-  if (/^@import\s+/i.test(trimmed)) {
+  if (IMPORT_PREFIX_RE.test(trimmed)) {
     const normalized = trimmed.endsWith(';') ? trimmed : `${trimmed};`
     return source.includes(normalized)
   }
@@ -84,13 +87,11 @@ export function createStyleInjector(options: WeappStyleInjectorOptions = {}): St
     return true
   }
 
-  const normalizedImports = Array.from(
-    new Set(
-      imports
-        .map(createImportStatement)
-        .filter(Boolean),
-    ),
-  )
+  const normalizedImports = [...new Set(
+    imports
+      .map(createImportStatement)
+      .filter(Boolean),
+  )]
 
   const hasImports = normalizedImports.length > 0 || typeof perFileImportsResolver === 'function'
 
@@ -107,7 +108,7 @@ export function createStyleInjector(options: WeappStyleInjectorOptions = {}): St
       .map(createImportStatement)
       .filter(Boolean)
 
-    const unique = Array.from(new Set(resolved))
+    const unique = [...new Set(resolved)]
     perFileCache.set(fileName, unique)
     return unique
   }
@@ -124,7 +125,7 @@ export function createStyleInjector(options: WeappStyleInjectorOptions = {}): St
 
     const perFileImports = resolvePerFileImports(fileName)
     const combinedImports = perFileImports.length > 0
-      ? Array.from(new Set([...normalizedImports, ...perFileImports]))
+      ? [...new Set([...normalizedImports, ...perFileImports])]
       : normalizedImports
 
     const statementsToInject = dedupe

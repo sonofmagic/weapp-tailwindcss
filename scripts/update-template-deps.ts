@@ -199,8 +199,10 @@ async function resolveBaseTargets(): Promise<TargetPackage[]> {
   ]
 }
 
+const INDENT_RE = /\n(\s+)\S/u
+
 function detectIndentation(source: string): string | number {
-  const match = source.match(/\n(\s+)\S/u)
+  const match = source.match(INDENT_RE)
   if (match) {
     const indent = match[1]!
     if (indent.includes('\t')) {
@@ -306,13 +308,11 @@ function ensurePnpmOnlyBuiltDependencies(
     return false
   }
 
-  const required = Array.from(
-    new Set(
-      targets
-        .filter(target => target.ensurePnpmOnlyBuilt)
-        .map(target => target.name),
-    ),
-  )
+  const required = [...new Set(
+    targets
+      .filter(target => target.ensurePnpmOnlyBuilt)
+      .map(target => target.name),
+  )]
 
   const removal = new Set(remove)
   const hasWork = required.length > 0 || removal.size > 0
@@ -815,7 +815,7 @@ async function main(): Promise<void> {
     console.log('所有模板已是最新版本，无需更新。')
   }
   else {
-    const summaryText = summary.size > 0 ? Array.from(summary).join(', ') : '依赖'
+    const summaryText = summary.size > 0 ? [...summary].join(', ') : '依赖'
     console.log(`\n已更新以下模板的 ${summaryText}:`)
     updated.forEach((name) => {
       console.log(` - ${name}`)

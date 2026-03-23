@@ -16,52 +16,75 @@ import { createTaggedTemplateIgnore } from './taggedTemplateIgnore'
 
 const EXPRESSION_WRAPPER_PREFIX = '(\n'
 const EXPRESSION_WRAPPER_SUFFIX = '\n)'
+const EMPTY_IGNORED_PATHS = new WeakSet<NodePath<StringLiteral | TemplateElement>>()
+const EMPTY_IMPORT_DECLARATIONS = new Set<NodePath<ImportDeclaration>>()
+const EMPTY_EXPORT_DECLARATIONS = new Set<NodePath<ExportDeclaration>>()
+const EMPTY_REQUIRE_CALL_PATHS: NodePath<StringLiteral>[] = []
+const ignoredTaggedTemplateMatcherCache = new WeakMap<IJsHandlerOptions, ReturnType<typeof createNameMatcher>>()
+
+function getIgnoredTaggedTemplateMatcher(options: IJsHandlerOptions) {
+  const cached = ignoredTaggedTemplateMatcherCache.get(options)
+  if (cached) {
+    return cached
+  }
+
+  const created = createNameMatcher(options.ignoreTaggedTemplateExpressionIdentifiers, { exact: true })
+  ignoredTaggedTemplateMatcherCache.set(options, created)
+  return created
+}
 
 export function analyzeSource(
   ast: ParseResult<File>,
   options: IJsHandlerOptions,
   handler?: EvalHandler,
+  collectModuleMetadata = true,
 ): SourceAnalysis {
   const jsTokenUpdater = new JsTokenUpdater()
-  const ignoredPaths = new WeakSet<NodePath<StringLiteral | TemplateElement>>()
-  const walker = new NodePathWalker(
-    {
-      ignoreCallExpressionIdentifiers: options.ignoreCallExpressionIdentifiers,
-      callback(path) {
-        if (path.isStringLiteral() || path.isTemplateElement()) {
+  // 仅在需要忽略特定调用参数时记录路径，默认路径复用共享空集合。
+  const needScope = Boolean(options.ignoreCallExpressionIdentifiers && options.ignoreCallExpressionIdentifiers.length > 0)
+  const ignoredPaths = needScope
+    ? new WeakSet<NodePath<StringLiteral | TemplateElement>>()
+    : EMPTY_IGNORED_PATHS
+  const walker = needScope
+    ? new NodePathWalker({
+        ignoreCallExpressionIdentifiers: options.ignoreCallExpressionIdentifiers,
+        callback(path) {
           ignoredPaths.add(path)
-        }
-      },
-    },
+        },
+      })
+    : new NodePathWalker()
+
+  let taggedTemplateIgnore: ReturnType<typeof createTaggedTemplateIgnore> | undefined
+  const hasTaggedTemplateIgnoreIdentifiers = Boolean(
+    options.ignoreTaggedTemplateExpressionIdentifiers
+    && options.ignoreTaggedTemplateExpressionIdentifiers.length > 0,
   )
 
-  const isIgnoredTaggedTemplate = createNameMatcher(options.ignoreTaggedTemplateExpressionIdentifiers, { exact: true })
-  const taggedTemplateIgnore = createTaggedTemplateIgnore({
-    matcher: isIgnoredTaggedTemplate,
-    names: options.ignoreTaggedTemplateExpressionIdentifiers,
-  })
-
-  // 仅在需要时才构建作用域信息（例如需要遍历调用表达式的实参）。
-  const needScope = Boolean(options.ignoreCallExpressionIdentifiers && options.ignoreCallExpressionIdentifiers.length > 0)
+  function getTaggedTemplateIgnore() {
+    if (!taggedTemplateIgnore) {
+      taggedTemplateIgnore = createTaggedTemplateIgnore({
+        matcher: getIgnoredTaggedTemplateMatcher(options),
+        names: options.ignoreTaggedTemplateExpressionIdentifiers,
+      })
+    }
+    return taggedTemplateIgnore
+  }
 
   const targetPaths: NodePath<StringLiteral | TemplateElement>[] = []
-  const importDeclarations = new Set<NodePath<ImportDeclaration>>()
-  const exportDeclarations = new Set<NodePath<ExportDeclaration>>()
-  const requireCallPaths: NodePath<StringLiteral>[] = []
+  const importDeclarations = collectModuleMetadata
+    ? new Set<NodePath<ImportDeclaration>>()
+    : EMPTY_IMPORT_DECLARATIONS
+  const exportDeclarations = collectModuleMetadata
+    ? new Set<NodePath<ExportDeclaration>>()
+    : EMPTY_EXPORT_DECLARATIONS
+  const requireCallPaths: NodePath<StringLiteral>[] = collectModuleMetadata
+    ? []
+    : EMPTY_REQUIRE_CALL_PATHS
   // eslint-disable-next-line ts/no-use-before-define -- default handler references exported jsHandler defined later
   const evalHandler = handler ?? jsHandler
 
-  const traverseOptions: TraverseOptions<Node> = {
-    StringLiteral: {
-      enter(p) {
-        if (isEvalPath(p.parentPath)) {
-          return
-        }
-        targetPaths.push(p)
-      },
-    },
-    TemplateElement: {
-      enter(p) {
+  const templateElementEnter: NonNullable<TraverseOptions<Node>['TemplateElement']>['enter'] = hasTaggedTemplateIgnoreIdentifiers
+    ? (p) => {
         const pp = p.parentPath
         if (pp.isTemplateLiteral()) {
           const ppp = pp.parentPath
@@ -70,16 +93,31 @@ export function analyzeSource(
           }
           if (ppp.isTaggedTemplateExpression()) {
             const tagPath = ppp.get('tag') as NodePath<Node>
-            if (taggedTemplateIgnore.shouldIgnore(tagPath)) {
+            if (getTaggedTemplateIgnore().shouldIgnore(tagPath)) {
               return
             }
           }
         }
         targetPaths.push(p)
-      },
-    },
-    CallExpression: {
-      enter(p) {
+      }
+    : (p) => {
+        const pp = p.parentPath
+        if (pp.isTemplateLiteral()) {
+          const ppp = pp.parentPath
+          if (isEvalPath(ppp)) {
+            return
+          }
+        }
+        targetPaths.push(p)
+      }
+
+  const callExpressionEnter: NonNullable<TraverseOptions<Node>['CallExpression']>['enter'] = (!collectModuleMetadata && !needScope)
+    ? (p) => {
+        if (isEvalPath(p)) {
+          walkEvalExpression(p, options, jsTokenUpdater, evalHandler)
+        }
+      }
+    : (p) => {
         if (isEvalPath(p)) {
           walkEvalExpression(p, options, jsTokenUpdater, evalHandler)
           return
@@ -87,7 +125,8 @@ export function analyzeSource(
 
         const calleePath = p.get('callee')
         if (
-          calleePath.isIdentifier({ name: 'require' })
+          collectModuleMetadata
+          && calleePath.isIdentifier({ name: 'require' })
           // 若 scope 不存在或无法判断绑定，默认认为未被局部绑定，以便在 noScope 下也能收集 require 字面量。
           && !((p as any)?.scope?.hasBinding?.('require'))
         ) {
@@ -104,18 +143,37 @@ export function analyzeSource(
         if (needScope) {
           walker.walkCallExpression(p)
         }
-      },
-    },
-    ImportDeclaration: {
+      }
+
+  const traverseOptions: TraverseOptions<Node> = {
+    StringLiteral: {
       enter(p) {
-        importDeclarations.add(p)
+        if (isEvalPath(p.parentPath)) {
+          return
+        }
+        targetPaths.push(p)
       },
     },
-    ExportDeclaration: {
-      enter(p) {
-        exportDeclarations.add(p)
-      },
+    TemplateElement: {
+      enter: templateElementEnter,
     },
+    CallExpression: {
+      enter: callExpressionEnter,
+    },
+    ...(collectModuleMetadata
+      ? {
+          ImportDeclaration: {
+            enter(p: NodePath<ImportDeclaration>) {
+              importDeclarations.add(p)
+            },
+          },
+          ExportDeclaration: {
+            enter(p: NodePath<ExportDeclaration>) {
+              exportDeclarations.add(p)
+            },
+          },
+        }
+      : {}),
   }
 
   // 使用 `noScope` 避免在常见路径上构建昂贵的作用域数据。
@@ -149,7 +207,8 @@ export function jsHandler(rawSource: string, options: IJsHandlerOptions): JsHand
       error: error as ParseError,
     } as JsHandlerResult
   }
-  const analysis = analyzeSource(ast, options, jsHandler)
+  const needsModuleMetadata = Boolean(options.moduleSpecifierReplacements || (options.moduleGraph && options.filename))
+  const analysis = analyzeSource(ast, options, jsHandler, needsModuleMetadata)
   const ms = processUpdatedSource(source, options, analysis)
   if (shouldWrapExpression) {
     const start = 0
@@ -162,9 +221,16 @@ export function jsHandler(rawSource: string, options: IJsHandlerOptions): JsHand
 
   const result: JsHandlerResult = {
     code: ms.toString(),
-    get map() {
-      return ms.generateMap()
-    },
+  }
+
+  if (options.generateMap) {
+    Object.defineProperty(result, 'map', {
+      configurable: true,
+      enumerable: true,
+      get() {
+        return ms.generateMap()
+      },
+    })
   }
 
   if (options.moduleGraph && options.filename) {
@@ -179,7 +245,7 @@ export function jsHandler(rawSource: string, options: IJsHandlerOptions): JsHand
     )
 
     const linked = graph.build()
-    if (Object.keys(linked).length > 0) {
+    if (linked) {
       result.linked = linked
     }
   }

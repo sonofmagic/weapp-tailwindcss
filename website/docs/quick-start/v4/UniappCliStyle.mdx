@@ -20,18 +20,18 @@ keywords:
 import CssImportReminder from '@site/src/components/CssImportReminder'
 import UniAppUniScss from '../_UniAppUniScss.mdx'
 
-在 `src/app.css` 中引入 `tailwindcss`，这个文件会作为 `cssEntries` 的入口：
+在 `src/app.css` 中引入 `weapp-tailwindcss`，这个文件会作为 `cssEntries` 的入口：
 
 ```css title="src/app.css"
-@import "tailwindcss";
+@import "weapp-tailwindcss";
 ```
 
 <CssImportReminder />
 
-为了解决 IDE 智能提示问题，再额外创建一个 `main.css` 并引入 `tailwindcss/css`。
+为了解决 IDE 智能提示问题，再额外创建一个 `main.css` 并引入 `weapp-tailwindcss/theme.css`。
 
 ```css title="src/main.css"
-@import "tailwindcss/css";
+@import "weapp-tailwindcss/theme.css";
 @source not "dist";
 ```
 

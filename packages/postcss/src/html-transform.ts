@@ -8,6 +8,9 @@ const miniAppTags = ['cover-image', 'cover-view', 'match-media', 'movable-area',
 // tags2Rgx 将标签列表转换为选择器过滤的正则表达式
 const tags2Rgx = (tags: string[] = []) => new RegExp(`(^| |\\+|,|~|>|\\n)(${tags.join('|')})\\b(?=$| |\\.|\\+|,|~|:|\\[)`, 'g')
 
+// 匹配通配符选择器
+const UNIVERSAL_SELECTOR_RE = /(?:^| )\*(?![=/*])/
+
 export interface IOptions {
   /** 当前编译平台 */
   platform?: string
@@ -43,7 +46,7 @@ const postcssHtmlTransform: PluginCreator<IOptions> = (opts: IOptions = {}) => {
       // 小程序平台默认处理
       const selector = tags2Rgx(htmlTags)
       walkRules = (rule: Rule) => {
-        if (options.removeUniversal && /(?:^| )\*(?![=/*])/.test(rule.selector)) {
+        if (options.removeUniversal && UNIVERSAL_SELECTOR_RE.test(rule.selector)) {
           rule.remove()
           return
         }

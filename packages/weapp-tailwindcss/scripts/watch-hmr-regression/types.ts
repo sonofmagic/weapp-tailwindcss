@@ -5,7 +5,7 @@ export type ConcreteWatchCaseName = 'taro' | 'uni' | 'mpx' | 'rax' | 'mina' | 'w
 export type WatchCaseName = ConcreteWatchCaseName | 'both' | 'all' | 'demo' | 'apps'
 export const MUTATION_ROUND_NAMES = ['baseline-arbitrary', 'complex-corpus', 'hex-arbitrary', 'issue33-arbitrary'] as const
 export type MutationRoundName = typeof MUTATION_ROUND_NAMES[number]
-export type MutationKind = 'template' | 'script' | 'style'
+export type MutationKind = 'template' | 'script' | 'style' | 'content'
 
 export interface CliOptions {
   caseName: WatchCaseName
@@ -33,6 +33,7 @@ export interface StyleMutationPayload {
 export interface MutationRoundConfig {
   name: MutationRoundName
   buildClassTokens: (seed: string) => string[]
+  buildModifyClassTokens?: (seed: string) => string[]
 }
 
 export interface StyleApplyValidation {
@@ -55,6 +56,7 @@ export interface ClassMutationConfig {
   forbidBgHexTruncationIn?: Array<'wxml' | 'js'>
   roundConfigs?: MutationRoundConfig[]
   mutate: (source: string, payload: ClassMutationPayload) => string
+  mutateCommentCarrier?: (source: string, payload: ClassMutationPayload) => string
 }
 
 export interface StyleMutationConfig {
@@ -76,6 +78,7 @@ export interface WatchCase {
   outputJs: string
   outputStyleCandidates: string[]
   globalStyleCandidates: string[]
+  contentMutation?: ClassMutationConfig
   templateMutation: ClassMutationConfig
   scriptMutation: ClassMutationConfig
   styleMutation: StyleMutationConfig
@@ -135,6 +138,7 @@ export interface ClassMutationMetrics {
   rollbackOutputMs: number
   rollbackEffectiveMs: number
   sameClassLiteralHmr?: SameClassLiteralHmrMetrics
+  commentCarrierHmr?: CommentCarrierHmrMetrics
 }
 
 export interface SameClassLiteralHmrMetrics {
@@ -147,6 +151,18 @@ export interface SameClassLiteralHmrMetrics {
   stableGlobalStyleRequired: boolean
   stableGlobalStyleOutputs: string[]
   changedGlobalStyleOutputs: string[]
+  hotUpdateOutputMs: number
+  hotUpdateEffectiveMs: number
+  rollbackOutputMs: number
+  rollbackEffectiveMs: number
+}
+
+export interface CommentCarrierHmrMetrics {
+  marker: string
+  classLiteral: string
+  escapedClasses: string[]
+  verifiedEscapedClasses: string[]
+  minRequiredEscapedClasses: number
   hotUpdateOutputMs: number
   hotUpdateEffectiveMs: number
   rollbackOutputMs: number
@@ -224,8 +240,14 @@ export interface WatchReport {
 }
 
 export const DEFAULT_STYLE_APPLY_VALIDATION: StyleApplyValidation = {
-  utilities: ['font-bold', 'text-center'],
-  expectedDeclarations: ['font-weight:700', 'text-align:center'],
+  utilities: ['font-bold', 'text-center', 'bg-[#123456]', 'px-[12px]'],
+  expectedDeclarations: [
+    'font-weight:',
+    'text-align:',
+    'background-color:',
+    'padding-left:',
+    'padding-right:',
+  ],
 }
 
 export const STYLE_APPLY_UNSUPPORTED_CASES = new Set<ConcreteWatchCaseName>([

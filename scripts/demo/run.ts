@@ -115,6 +115,8 @@ async function detectPackageManager(startDir: string): Promise<PackageManager> {
   return 'pnpm'
 }
 
+const WHITESPACE_RE = /\s+/
+
 function normalizeCommand(command: string, packageManager: PackageManager): string {
   const trimmed = command.trim()
   if (!trimmed) {
@@ -126,7 +128,7 @@ function normalizeCommand(command: string, packageManager: PackageManager): stri
   }
 
   const rest = trimmed.slice('yarn'.length).trim()
-  const tokens = rest.split(/\s+/).filter(Boolean)
+  const tokens = rest.split(WHITESPACE_RE).filter(Boolean)
   const filteredTokens = tokens.filter(token => token !== '--ignore-engines')
 
   if (packageManager === 'yarn') {

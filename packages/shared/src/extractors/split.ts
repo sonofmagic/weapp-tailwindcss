@@ -19,6 +19,7 @@ const SPLIT_CACHE_LIMIT = 8192
 /** 预编译的分割正则，避免每次调用都创建 */
 const SPLITTER_DEFAULT = /\s+|"/
 const SPLITTER_ALLOW_QUOTES = /\s+/
+const ESCAPED_WHITESPACE_RE = /\\[nrt]/g
 
 export function splitCode(code: string, allowDoubleQuotes = false) {
   const cache = allowDoubleQuotes ? splitCacheAllowQuotes : splitCacheDefault
@@ -28,7 +29,7 @@ export function splitCode(code: string, allowDoubleQuotes = false) {
   }
 
   // 把压缩产物中的转义空白字符(\n \r \t)先还原成空格，避免被粘连到类名上
-  const normalized = code.includes('\\') ? code.replace(/\\[nrt]/g, ' ') : code
+  const normalized = code.includes('\\') ? code.replace(ESCAPED_WHITESPACE_RE, ' ') : code
 
   const splitter = allowDoubleQuotes ? SPLITTER_ALLOW_QUOTES : SPLITTER_DEFAULT
   const result = normalized.split(splitter).filter(element => isValidSelector(element))

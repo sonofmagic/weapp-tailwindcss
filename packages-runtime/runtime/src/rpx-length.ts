@@ -12,8 +12,10 @@ interface RpxTransformMetadata {
   replacements: ReplacementCounters
 }
 
+const ESCAPE_REGEXP_RE = /[.*+?^${}()|[\]\\]/g
+
 function escapeRegexp(value: string) {
-  return value.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
+  return value.replace(ESCAPE_REGEXP_RE, '\\$&')
 }
 
 export function createRpxLengthTransform(prefixes = DEFAULT_PREFIXES) {

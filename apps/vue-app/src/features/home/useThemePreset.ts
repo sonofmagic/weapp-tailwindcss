@@ -1,8 +1,9 @@
+import type { ThemeMode } from './theme'
+
 import { onMounted, ref, watch } from 'vue'
+import { THEME_STORAGE_KEY, themeOptions } from './theme'
 
-import { THEME_STORAGE_KEY, themeOptions, type ThemeMode } from './theme'
-
-export const useThemePreset = () => {
+export function useThemePreset() {
   const theme = ref<ThemeMode>('light')
 
   const applyTheme = (value: ThemeMode) => {
@@ -21,7 +22,7 @@ export const useThemePreset = () => {
     applyTheme(initial)
   })
 
-  watch(theme, value => {
+  watch(theme, (value) => {
     applyTheme(value)
   })
 

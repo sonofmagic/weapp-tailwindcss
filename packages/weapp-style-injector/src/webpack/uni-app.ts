@@ -55,7 +55,7 @@ export function StyleInjector(options: WebpackUniAppStyleInjectorOptions = {}): 
     }
   }
 
-  const entries = configs.size > 0 ? Array.from(configs.values()) : undefined
+  const entries = configs.size > 0 ? [...configs.values()] : undefined
   const manualEntries = manualStyleScopes.length > 0 ? manualStyleScopes : undefined
 
   const injectorOptions: WebpackWeappStyleInjectorOptions = {

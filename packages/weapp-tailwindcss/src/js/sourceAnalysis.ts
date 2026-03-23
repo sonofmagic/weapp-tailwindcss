@@ -16,6 +16,15 @@ export interface SourceAnalysis {
   ignoredPaths: WeakSet<NodePath<StringLiteral | TemplateElement>>
 }
 
+function hasReplacementEntries(replacements: Record<string, string>) {
+  for (const key in replacements) {
+    if (Object.hasOwn(replacements, key)) {
+      return true
+    }
+  }
+  return false
+}
+
 function createModuleSpecifierReplacementToken(
   path: NodePath<StringLiteral>,
   replacement: string,
@@ -47,6 +56,19 @@ export function collectModuleSpecifierReplacementTokens(
   analysis: SourceAnalysis,
   replacements: Record<string, string>,
 ) {
+  if (!hasReplacementEntries(replacements)) {
+    return []
+  }
+
+  if (
+    analysis.importDeclarations.size === 0
+    && analysis.exportDeclarations.size === 0
+    && analysis.requireCallPaths.length === 0
+    && analysis.walker.imports.size === 0
+  ) {
+    return []
+  }
+
   const tokens: JsToken[] = []
 
   const applyReplacement = (path: NodePath<StringLiteral>) => {

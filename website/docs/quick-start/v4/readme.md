@@ -56,17 +56,13 @@ keywords:
 
 当然，你也完全可以使用 `uni-app vite vue3` + `@tailwindcss/vite` 这种组合。从编译速度出发, `@tailwindcss/vite` 会更快，但是可能需要一些额外的配置，行为也有可能和 `tailwindcss@3.x` 不一致。
 
-## 小程序样式引入 `tailwindcss` 不同点
+## 小程序样式引入 `weapp-tailwindcss` 不同点
 
-:::tip 自动导入转换
-从 v4.7.10 起，`weapp-tailwindcss` 默认会通过 `rewriteCssImports` 选项，将代码中的 `@import "tailwindcss"` 自动改写为 `@import "weapp-tailwindcss/index.css"`。这意味着你可以直接使用官方文档的标准写法，插件会自动处理小程序适配。
-
-如果遇到报错或样式不生效，可以手动改为 `@import "weapp-tailwindcss/index.css"`，或将 `rewriteCssImports` 设置为 `false`。
-:::
+在小程序场景下，`tailwindcss@4` 的文档示例建议直接写成 `@import "weapp-tailwindcss"`，而不是继续使用 `@import "tailwindcss"` 再依赖 `rewriteCssImports` 做二次改写。
 
 ### 有什么区别?
 
-`@import "weapp-tailwindcss/index.css"` 相比 `@import "tailwindcss"` 的主要区别是:
+`@import "weapp-tailwindcss"` 本质上会解析到 `weapp-tailwindcss` 提供的小程序适配入口。相比 `@import "tailwindcss"`，主要区别是:
 
 1. `"weapp-tailwindcss"` 没有 `"tailwindcss"` 中 `h5` `preflight` 的类(这些都是给 `h5` 用的，小程序用不到)
 2. `"weapp-tailwindcss"` 中，不使用 `tailwindcss` 默认的 `@layer` 来控制样式优先级。这是因为小程序本身不支持 `css` `@layer` 这个特性，强行启用会造成一些样式难以覆盖的问题。
@@ -80,7 +76,7 @@ keywords:
 @import "tailwindcss";
 /*  #endif  */
 /*  #ifndef  H5  */
-@import "tailwindcss"; /* weapp-tailwindcss 会自动改写为小程序适配版本 */
+@import "weapp-tailwindcss";
 /*  #endif  */
 ```
 
@@ -92,12 +88,12 @@ keywords:
 
 来让 `weapp-tailwindcss` 和 `tailwindcss` 保持一致的处理模式
 
-> `cssEntries` 为一个数组，就是你 @import "tailwindcss"; 那些文件，可以有多个
+> `cssEntries` 为一个数组，就是你写 `@import "weapp-tailwindcss";` 的那些文件，可以有多个
 
 ```ts
 {
   cssEntries: [
-    // 就是你 @import "tailwindcss"; 那个文件
+    // 就是你 @import "weapp-tailwindcss"; 那个文件
     // 比如 tarojs
     path.resolve(__dirname, '../src/app.css')
     // 比如 uni-app (没有 app.css 需要先创建，然后让 `main` 入口文件引入)
@@ -107,6 +103,18 @@ keywords:
 ```
 
 假如不添加这个，会造成 `tailwindcss` 插件生成的样式，转义不了的问题。
+
+:::warning 只注册到 CSS，不要注册到预处理样式文件
+`tailwindcss@4` 的入口请只放在 `.css` 文件里，例如 `app.css`。
+
+不要把 `@import "weapp-tailwindcss"`、`@tailwindcss/postcss`，或者对应的 `cssEntries` 指向 `scss`、`less`、`sass` 这类预处理样式文件，否则很容易导致最终样式生成失败，或者 `weapp-tailwindcss` 转译失效。
+
+推荐做法是：
+
+1. 新建一个纯 `css` 入口文件，例如 `src/app.css`
+2. 只在这个 `css` 文件里写 `@import "weapp-tailwindcss";`
+3. 再让业务里的 `scss` / `less` 去间接引用这个 `css`，或者由主入口文件引入它
+:::
 
 > 插件会自动根据已安装的 Tailwind 版本开启 v4 模式。只有在调试自定义 `tailwindcss` 目录或多版本共存时，才需要在 `tailwindcss` 配置里手动指定 `version`。
 
@@ -153,26 +161,32 @@ shamefully-hoist=true
 
 ## 智能提示
 
-目前 `tailwindcss@4` 的 `vscode` 插件，会扫描目录下的 `css` 来获取 `tailwindcss` 的配置。
+目前 `tailwindcss@4` 的 VS Code `Tailwind CSS IntelliSense` 插件，会优先从它识别到的 Tailwind 入口里推导配置与候选类名。
 
-但是这里有个非常坑的点是，它不会去自动的扫描 `.vue` 文件里面的 `tailwindcss` 引入
+在小程序项目里，我们现在推荐直接写 `@import "weapp-tailwindcss"`。这样运行时和转译链路更直接，但当前插件还没有把 `weapp-tailwindcss` 当成 Tailwind 4 的标准入口来识别，所以智能提示会失效。
 
-这就导致，我们假如想在 `vue` 项目(比如 `uni-app`) 中获得智能提示，必须再随便创建一个 `main.css`，然后通过 `App.vue` 文件引入它
+相关修复可以关注这个 PR：
+
+- https://github.com/tailwindlabs/tailwindcss-intellisense/pull/1557
+
+在这个问题修复前，解决方案是额外创建一个只给编辑器识别的 `main.css`，然后通过 `App.vue` 文件引入它：
 
 ```css title="main.css"
-@import "tailwindcss/css";
+@import "weapp-tailwindcss/theme.css";
 @source not "dist";
 ```
 
-> **注意**：`weapp-tailwindcss` 的 `rewriteCssImports` 选项会自动将 `@import 'tailwindcss/css'` 改写为 `@import 'weapp-tailwindcss/css'`。如果遇到报错或样式不生效，请手动改为 `@import 'weapp-tailwindcss/css'`。
+这样做的原因是：`theme.css` 会把主题变量和 Tailwind 4 的核心上下文暴露给编辑器，而不会重复注入整套小程序运行时样式；业务真正生效的入口仍然是你的 `app.css` 里的 `@import "weapp-tailwindcss"`。
 
 ```html title="App.vue"
 <style src="./main.css"></style>
 ```
 
+如果你的项目不是 `dist` 目录，而是 `unpackage`、`build` 等其他输出目录，请把 `@source not "dist";` 改成自己的实际产物目录。
+
 ## 如何去除 preflight 样式
 
-在引入 `@import "tailwindcss"` 时，默认会引入 `preflight` 样式。
+在引入 `@import "weapp-tailwindcss"` 时，默认会引入 `preflight` 样式。
 
 ### 什么是 preflight 样式
 
@@ -191,7 +205,7 @@ view,text,::before,::after,::backdrop {
 
 ### 解决方案
 
-`@import "tailwindcss"` (被改写为 `@import "weapp-tailwindcss/index.css"`) 本质上由三个部分组成:
+`@import "weapp-tailwindcss"` 本质上由三个部分组成:
 
 ```css
 @import 'weapp-tailwindcss/theme.css';
@@ -202,7 +216,7 @@ view,text,::before,::after,::backdrop {
 所以想要去除 `preflight` 样式，只需像下面一样写即可
 
 ```diff
-- @import "tailwindcss";
+- @import "weapp-tailwindcss";
 + @import 'weapp-tailwindcss/theme.css';
 + @import 'weapp-tailwindcss/utilities.css';
 ```

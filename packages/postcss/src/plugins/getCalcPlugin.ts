@@ -4,16 +4,18 @@ import type { IStyleHandlerOptions } from '../types'
 import postcssCalc from '@weapp-tailwindcss/postcss-calc'
 import { omit } from 'es-toolkit'
 
+const EMPTY_CALC_OPTIONS = {}
+
 export function getCalcPlugin(options: IStyleHandlerOptions): AcceptedPlugin | null {
   if (!options.cssCalc) {
     return null
   }
 
-  const calcOptions = Array.isArray(options.cssCalc)
-    ? {}
-    : typeof options.cssCalc === 'object'
-      ? omit(options.cssCalc, ['includeCustomProperties'])
-      : {}
+  if (options.cssCalc === true || Array.isArray(options.cssCalc)) {
+    return postcssCalc(EMPTY_CALC_OPTIONS)
+  }
 
-  return postcssCalc(calcOptions)
+  return postcssCalc(
+    omit(options.cssCalc, ['includeCustomProperties']),
+  )
 }

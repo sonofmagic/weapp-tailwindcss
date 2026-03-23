@@ -20,6 +20,10 @@ export default defineConfig({
     },
     coverage: {
       enabled: true,
+      exclude: [
+        // 开发态 watch 回归脚本不属于对外运行时代码，避免拉低 project coverage 门禁。
+        'scripts/watch-hmr-regression/**',
+      ],
       // reportsDirectory: 'coverage/vitest'
     },
     testTimeout: 60_000,

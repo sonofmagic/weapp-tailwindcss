@@ -1,24 +1,4 @@
----
-title: DisabledOptions
-description: '定义于: packages/weapp-tailwindcss/src/types/disabled-options.ts:9'
-keywords:
-  - API
-  - 接口文档
-  - 配置项
-  - DisabledOptions
-  - interfaces
-  - weapp-tailwindcss
-  - tailwindcss
-  - 小程序
-  - 微信小程序
-  - uni-app
-  - taro
-  - rax
-  - mpx
----
 # DisabledOptions
-
-定义于: [packages/weapp-tailwindcss/src/types/disabled-options.ts:9](https://github.com/sonofmagic/weapp-tailwindcss/blob/59073fec6f66bb3fbd1d15468f6e89437dc3f862/packages/weapp-tailwindcss/src/types/disabled-options.ts#L9)
 
 禁用插件功能的细粒度选项。
 
@@ -36,8 +16,6 @@ keywords:
 
 > `optional` **plugin**: `boolean`
 
-定义于: [packages/weapp-tailwindcss/src/types/disabled-options.ts:15](https://github.com/sonofmagic/weapp-tailwindcss/blob/59073fec6f66bb3fbd1d15468f6e89437dc3f862/packages/weapp-tailwindcss/src/types/disabled-options.ts#L15)
-
 禁用主插件流程，等同于 `disabled: true`。
 
 #### 默认值
@@ -51,8 +29,6 @@ false
 ### rewriteCssImports?
 
 > `optional` **rewriteCssImports**: `boolean`
-
-定义于: [packages/weapp-tailwindcss/src/types/disabled-options.ts:21](https://github.com/sonofmagic/weapp-tailwindcss/blob/59073fec6f66bb3fbd1d15468f6e89437dc3f862/packages/weapp-tailwindcss/src/types/disabled-options.ts#L21)
 
 禁用对 `@import "tailwindcss"` 的预处理重写。
 

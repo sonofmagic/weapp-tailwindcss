@@ -11,6 +11,7 @@ interface DebugOptions {
 
 const QUERY_HASH_RE = /[?#].*$/u
 const INVALID_FS_CHARS_RE = /[<>:"|?*\0]/g
+const BACKSLASH_RE = /\\/g
 const VIRTUAL_MODULE_PREFIX = '\u0000'
 
 export function debugX(options?: DebugOptions): Plugin[] {
@@ -41,7 +42,7 @@ export function debugX(options?: DebugOptions): Plugin[] {
     }
 
     const sanitized = candidate
-      .replace(/\\/g, '/')
+      .replace(BACKSLASH_RE, '/')
       .replace(INVALID_FS_CHARS_RE, '_')
     const segments = sanitized
       .split('/')

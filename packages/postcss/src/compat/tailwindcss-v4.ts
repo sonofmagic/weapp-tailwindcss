@@ -8,6 +8,16 @@ const INFINITY_CALC_REGEXP = /calc\(\s*infinity\s*\*\s*(?:\d+(?:\.\d*)?|\.\d+)r?
 const RADIUS_THRESHOLD = 100000
 const CLAMP_PX = 9999
 
+// 用于 isTailwindcssV4ModernCheck 的正则列表
+const MODERN_CHECK_WEBKIT_HYPHENS_RE = /-webkit-hyphens\s*:\s*none/
+const MODERN_CHECK_MARGIN_TRIM_RE = /margin-trim\s*:\s*inline/
+const MODERN_CHECK_MOZ_ORIENT_RE = /-moz-orient\s*:\s*inline/
+const MODERN_CHECK_COLOR_RGB_RE = /color\s*:\s*rgb\(\s*from\s+red\s+r\s+g\s+b\s*\)/
+
+// 用于 normalizeTailwindcssV4Declaration 的正则
+const RADIUS_VALUE_RE = /\b([+-]?(?:\d+(?:\.\d+)?|\.\d+)(?:e[+-]?\d+)?)\s*(r?px)\b/gi
+const SCIENTIFIC_NOTATION_RE = /e/i
+
 export function isTailwindcssV4(options?: { majorVersion?: number }) {
   return options?.majorVersion === 4
 }
@@ -23,10 +33,10 @@ export const cssVarsV4Nodes = createCssVarNodes(cssVarsV4)
 // Tailwind v4 的现代检查语句需要特殊处理以恢复具体规则
 export function isTailwindcssV4ModernCheck(atRule: AtRule) {
   return atRule.name === 'supports' && [
-    /-webkit-hyphens\s*:\s*none/,
-    /margin-trim\s*:\s*inline/,
-    /-moz-orient\s*:\s*inline/,
-    /color\s*:\s*rgb\(\s*from\s+red\s+r\s+g\s+b\s*\)/,
+    MODERN_CHECK_WEBKIT_HYPHENS_RE,
+    MODERN_CHECK_MARGIN_TRIM_RE,
+    MODERN_CHECK_MOZ_ORIENT_RE,
+    MODERN_CHECK_COLOR_RGB_RE,
   ].every(regex => regex.test(atRule.params))
 }
 
@@ -43,14 +53,15 @@ export function normalizeTailwindcssV4Declaration(decl: Declaration): boolean {
   }
 
   if (decl.prop.includes('radius')) {
+    RADIUS_VALUE_RE.lastIndex = 0
     const next = decl.value.replace(
-      /\b([+-]?(?:\d+(?:\.\d+)?|\.\d+)(?:e[+-]?\d+)?)\s*(r?px)\b/gi,
+      RADIUS_VALUE_RE,
       (m, num) => {
         const n = Number(num)
         if (!Number.isFinite(n)) {
           return `${CLAMP_PX}px`
         }
-        if (/e/i.test(String(num)) || n > RADIUS_THRESHOLD) {
+        if (SCIENTIFIC_NOTATION_RE.test(String(num)) || n > RADIUS_THRESHOLD) {
           return `${CLAMP_PX}px`
         }
         return m

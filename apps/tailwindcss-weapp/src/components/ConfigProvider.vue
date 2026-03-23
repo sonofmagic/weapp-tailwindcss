@@ -10,7 +10,7 @@ const props = defineProps({
 })
 
 const styleObj = computed(() => {
-  return Object.assign({}, {}, props.vars)
+  return { ...{}, ...props.vars }
 })
 </script>
 

@@ -18,10 +18,12 @@ function oklch2rgb(value: string) {
   }
 }
 
+const OKLCH_RE = /oklch/
+
 async function main() {
   const x = traverse(colors4).map(function (value) {
     if (this.isLeaf) {
-      if (/oklch/.test(value)) {
+      if (OKLCH_RE.test(value)) {
         const node = oklch2rgb(value)
         if (node) {
           let res = '#'

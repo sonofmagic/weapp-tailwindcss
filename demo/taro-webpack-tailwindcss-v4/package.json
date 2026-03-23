@@ -14,7 +14,7 @@
   },
   "scripts": {
     "build": "pnpm run build:weapp",
-    "build:weapp": "taro build --type weapp",
+    "build:weapp": "node ../../scripts/taro-build-guard.mjs",
     "build:swan": "taro build --type swan",
     "build:alipay": "taro build --type alipay",
     "build:tt": "taro build --type tt",
@@ -49,7 +49,7 @@
   "author": "",
   "dependencies": {
     "@babel/runtime": "catalog:babelRuntime7284",
-    "@nutui/nutui-react-taro": "^3.0.19-cpp-beta.2",
+    "@nutui/nutui-react-taro": "^3.0.19",
     "@tarojs/components": "catalog:taro4",
     "@tarojs/helper": "catalog:taro4",
     "@tarojs/plugin-framework-react": "catalog:taro4",
@@ -84,7 +84,7 @@
     "@weapp-tailwindcss/merge": "workspace:*",
     "@weapp-tailwindcss/variants": "workspace:*",
     "babel-preset-taro": "catalog:taro4",
-    "eslint": "^10.0.2",
+    "eslint": "^10.1.0",
     "eslint-config-taro": "catalog:taro4",
     "eslint-plugin-react": "^7.37.5",
     "eslint-plugin-react-hooks": "^7.0.1",
@@ -97,6 +97,6 @@
     "typescript": "catalog:typescript59",
     "weapp-ide-cli": "catalog:weappIdeCli",
     "weapp-tailwindcss": "workspace:*",
-    "webpack": "5.105.2"
+    "webpack": "5.105.4"
   }
 }

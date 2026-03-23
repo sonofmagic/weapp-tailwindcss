@@ -73,6 +73,8 @@ export function setupMpxTailwindcssRedirect(
   }
 }
 
+const CSS_EXT_RE = /\.css$/i
+
 export function injectMpxCssRewritePreRules(
   compiler: any,
   loader: string | undefined,
@@ -96,7 +98,7 @@ export function injectMpxCssRewritePreRules(
   moduleOptions.rules.unshift(
     createRule({ resourceQuery: (query: string) => isMpxStyleResourceQuery(query) }),
     createRule({
-      test: /\.css$/i,
+      test: CSS_EXT_RE,
       resourceQuery: (query: string) => !isMpxStyleResourceQuery(query),
     }),
   )

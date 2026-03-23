@@ -95,7 +95,7 @@ describe('NodePathWalker', () => {
 
     walker.walkNode(typeImportPath!)
 
-    const importTokens = Array.from(walker.imports)
+    const importTokens = [...walker.imports]
 
     expect(importTokens.some(token => token.type === 'ImportDefaultSpecifier' && token.source === './mod')).toBe(true)
     expect(importTokens.some(token => token.type === 'ImportSpecifier' && token.imported === 'cls')).toBe(true)
@@ -117,5 +117,70 @@ describe('NodePathWalker', () => {
 
     expect(literalPath).toBeDefined()
     expect(() => walker.walkStringLiteral(literalPath!)).not.toThrow()
+  })
+
+  it('reuses a shared empty import token set until imports are discovered', () => {
+    const firstWalker = new NodePathWalker()
+    const secondWalker = new NodePathWalker()
+
+    expect(firstWalker.imports).toBe(secondWalker.imports)
+    expect(firstWalker.imports.size).toBe(0)
+    expect(secondWalker.imports.size).toBe(0)
+  })
+
+  it('tracks visited paths independently after lazy initialisation', () => {
+    const ast = parse('const demo = "noop"', { sourceType: 'module' })
+    let literalPath: NodePath<StringLiteral> | undefined
+
+    traverse(ast, {
+      StringLiteral(path) {
+        literalPath = path
+        path.stop()
+      },
+    })
+
+    const firstVisited: string[] = []
+    const secondVisited: string[] = []
+    const firstWalker = new NodePathWalker({
+      callback(path) {
+        if (path.isStringLiteral()) {
+          firstVisited.push(path.node.value)
+        }
+      },
+    })
+    const secondWalker = new NodePathWalker({
+      callback(path) {
+        if (path.isStringLiteral()) {
+          secondVisited.push(path.node.value)
+        }
+      },
+    })
+
+    firstWalker.walkNode(literalPath!)
+    firstWalker.walkNode(literalPath!)
+    secondWalker.walkNode(literalPath!)
+
+    expect(firstVisited).toEqual(['noop'])
+    expect(secondVisited).toEqual(['noop'])
+  })
+
+  it('skips call expression argument walking when ignore identifiers are omitted', () => {
+    const ast = parse('cn("w-[100px]")', { sourceType: 'module' })
+    const visited: string[] = []
+    const walker = new NodePathWalker({
+      callback(path) {
+        if (path.isStringLiteral()) {
+          visited.push(path.node.value)
+        }
+      },
+    })
+
+    traverse(ast, {
+      CallExpression(path) {
+        walker.walkCallExpression(path)
+      },
+    })
+
+    expect(visited).toEqual([])
   })
 })

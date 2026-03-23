@@ -1,6 +1,6 @@
 {
   "name": "weapp-tailwindcss",
-  "version": "4.10.3",
+  "version": "4.11.0-alpha.2",
   "description": "把 tailwindcss 原子化样式思想，带给小程序开发者们! bring tailwindcss to miniprogram developers!",
   "author": "ice breaker <1324318532@qq.com>",
   "license": "MIT",
@@ -156,7 +156,7 @@
     "with-layer.css"
   ],
   "engines": {
-    "node": "^20.19.0 || >=22.12.0"
+    "node": "^18.17.0 || >=20.5.0"
   },
   "scripts": {
     "dev": "tsup --watch --sourcemap",
@@ -184,7 +184,7 @@
     "lint:fix": "eslint ./src --fix",
     "postinstall": "node bin/weapp-tailwindcss.js patch",
     "bench:vite-dev-hmr": "tsx scripts/vite-dev-hmr-bench.ts",
-    "test:watch-hmr": "tsx scripts/watch-hmr-regression/index.ts"
+    "test:watch-hmr": "node --import tsx scripts/watch-hmr-regression/index.ts"
   },
   "publishConfig": {
     "access": "public",
@@ -192,7 +192,7 @@
   },
   "dependencies": {
     "@ast-core/escape": "~1.0.1",
-    "@babel/parser": "~7.29.0",
+    "@babel/parser": "~7.29.2",
     "@babel/traverse": "~7.29.0",
     "@babel/types": "~7.29.0",
     "@tailwindcss-mangle/config": "^6.1.3",
@@ -203,7 +203,7 @@
     "@weapp-tailwindcss/logger": "workspace:*",
     "@weapp-tailwindcss/postcss": "workspace:*",
     "@weapp-tailwindcss/shared": "workspace:*",
-    "cac": "^6.7.14",
+    "cac": "6.7.14",
     "debug": "~4.4.3",
     "fast-glob": "^3.3.3",
     "htmlparser2": "10.1.0",
@@ -214,6 +214,6 @@
     "semver": "~7.7.4",
     "tailwindcss-patch": "catalog:tailwindcssPatch",
     "webpack-sources": "3.3.4",
-    "yaml": "^2.8.2"
+    "yaml": "^2.8.3"
   }
 }

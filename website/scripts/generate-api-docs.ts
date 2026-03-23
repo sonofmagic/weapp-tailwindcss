@@ -96,6 +96,51 @@ interface GroupMeta {
 
 let apiV2Cache: Record<string, Record<string, ApiV2PropertyInfo>> = {}
 
+/** 匹配一个或多个连续空白字符 */
+const WHITESPACE_RE = /\s+/g
+
+/** 匹配非 slug 允许字符（小写字母、数字、中文、连字符以外的字符） */
+const NON_SLUG_CHARS_RE = /[^a-z0-9\u4E00-\u9FA5-]/g
+
+/** 匹配连续的连字符 */
+const CONSECUTIVE_HYPHENS_RE = /-+/g
+
+/** 匹配首尾连字符 */
+const LEADING_TRAILING_HYPHENS_RE = /^-|-$/g
+
+/** 匹配字符串开头的连续数字 */
+const LEADING_DIGITS_RE = /^(\d+)/
+
+/** 匹配管道符（用于表格单元格转义） */
+const PIPE_RE = /\|/g
+
+/** 匹配换行符（CR 或 CRLF） */
+const NEWLINE_RE = /\r?\n/g
+
+/** 匹配反引号 */
+const BACKTICK_RE = /`/g
+
+/** 匹配空白字符并替换为单个空格 */
+const WHITESPACE_COLLAPSE_RE = /\s+/g
+
+/** 匹配可选类型末尾的 undefined 联合 */
+const OPTIONAL_UNDEFINED_SUFFIX_RE = /\s*\|\s*undefined$/i
+
+/** 匹配反斜杠 */
+const BACKSLASH_RE = /\\/g
+
+/** 匹配分组标题前缀的标点和空白 */
+const GROUP_TITLE_PREFIX_RE = /^[.．、\s-]+/
+
+/** 匹配 API v2 文档中的空白分隔符 */
+const API_V2_WHITESPACE_SPLIT_RE = /\s+/
+
+/** 匹配 Markdown 三级标题分隔符 */
+const MARKDOWN_H3_SPLIT_RE = /\n### /g
+
+/** 匹配 .md 文件扩展名 */
+const MD_EXTENSION_RE = /\.md$/
+
 function isAsciiDigit(value: string): boolean {
   return value >= '0' && value <= '9'
 }
@@ -103,15 +148,15 @@ function isAsciiDigit(value: string): boolean {
 function slugifyTitle(title: string): string {
   const normalized = title
     .toLowerCase()
-    .replace(/\s+/g, '-')
-    .replace(/[^a-z0-9\u4E00-\u9FA5-]/g, '')
-    .replace(/-+/g, '-')
-    .replace(/^-|-$/g, '')
+    .replace(WHITESPACE_RE, '-')
+    .replace(NON_SLUG_CHARS_RE, '')
+    .replace(CONSECUTIVE_HYPHENS_RE, '-')
+    .replace(LEADING_TRAILING_HYPHENS_RE, '')
   return normalized || 'options'
 }
 
 function parseGroupOrder(title: string): { hasNumber: boolean, order: number } {
-  const match = title.match(/^(\d+)/)
+  const match = title.match(LEADING_DIGITS_RE)
   if (!match) {
     return { hasNumber: false, order: Number.MAX_SAFE_INTEGER }
   }
@@ -126,11 +171,11 @@ function truncateText(value: string, maxLength: number): string {
 }
 
 function escapeTableCell(value: string): string {
-  return value.replace(/\|/g, '&#124;').replace(/\r?\n/g, '<br/>')
+  return value.replace(PIPE_RE, '&#124;').replace(NEWLINE_RE, '<br/>')
 }
 
 function renderInlineCode(value: string): string {
-  return `\`${value.replace(/`/g, '\\`')}\``
+  return `\`${value.replace(BACKTICK_RE, '\\`')}\``
 }
 
 function renderTableCode(value: string): string {
@@ -164,23 +209,23 @@ function formatDescriptionCell(prop: PropertyDoc): string {
   if (!raw) {
     return '—'
   }
-  const text = raw.replace(/\s+/g, ' ').trim()
+  const text = raw.replace(WHITESPACE_COLLAPSE_RE, ' ').trim()
   return escapeTableCell(truncateText(text, 120))
 }
 
 function formatTypeText(text: string): string {
-  return text.replace(/\s+/g, ' ')
+  return text.replace(WHITESPACE_COLLAPSE_RE, ' ')
 }
 
 function normalizeOptionalType(typeText: string, optional: boolean): string {
   if (!optional) {
     return typeText
   }
-  return typeText.replace(/\s*\|\s*undefined$/i, '')
+  return typeText.replace(OPTIONAL_UNDEFINED_SUFFIX_RE, '')
 }
 
 function toPosixPath(p: string): string {
-  return p.replace(/\\/g, '/')
+  return p.replace(BACKSLASH_RE, '/')
 }
 
 function getDefinitionLink(node: Node): string | undefined {
@@ -211,14 +256,14 @@ function readJsDoc(node: JSDocableNode): JsDocInfo {
   if (!docs.length) {
     return { description: '', tags: {} }
   }
-  const doc = docs[docs.length - 1]
+  const doc = docs.at(-1)!
   const description = (doc.getComment() ?? '').toString().trim()
   const tags: Record<string, string[]> = {}
   for (const tag of doc.getTags()) {
     const name = tag.getTagName()
     const value = readTagText(tag)
     if (!value) {
-      if (name === 'ignore' || name === 'internal') {
+      if (name === 'ignore' || name === 'internal' || name === 'deprecated') {
         tags[name] = ['true']
       }
       continue
@@ -487,7 +532,7 @@ function parseGroupMeta(rawTitle: string): GroupMeta {
   }
   const hasOrder = index > 0
   const order = hasOrder ? Number.parseInt(trimmed.slice(0, index), 10) : Number.MAX_SAFE_INTEGER
-  const rest = trimmed.slice(index).replace(/^[.．、\s-]+/, '').trim()
+  const rest = trimmed.slice(index).replace(GROUP_TITLE_PREFIX_RE, '').trim()
   const title = rest || trimmed
   const emoji = groupEmojiMap[title] ?? ''
   const displayTitle = emoji ? `${emoji} ${title}` : title
@@ -555,11 +600,6 @@ function renderProperty(prop: PropertyDoc, level: number): string {
   const optionalLabel = prop.optional ? '`optional` ' : ''
   lines.push(`> ${optionalLabel}**${prop.name}${prop.isFunction ? '()' : ''}**: \`${prop.typeText}\``)
   lines.push('')
-
-  if (prop.source) {
-    lines.push(`定义于: ${prop.source}`)
-    lines.push('')
-  }
 
   if (prop.description) {
     lines.push(prop.description)
@@ -655,11 +695,6 @@ function renderOptionsProperty(prop: PropertyDoc, level: number): string {
   lines.push(renderPropertyMetaLine(prop))
   lines.push('')
 
-  if (prop.source) {
-    lines.push(`定义于: ${prop.source}`)
-    lines.push('')
-  }
-
   if (prop.description) {
     lines.push(prop.description)
     lines.push('')
@@ -729,10 +764,6 @@ function renderInterfaceDoc(doc: InterfaceDoc): string {
   const lines: string[] = []
   lines.push(`# ${doc.name}`)
   lines.push('')
-  if (doc.source) {
-    lines.push(`定义于: ${doc.source}`)
-    lines.push('')
-  }
   if (doc.description) {
     lines.push(doc.description)
     lines.push('')
@@ -792,11 +823,6 @@ function renderUserDefinedOptionsOverview(
   lines.push('---')
   lines.push('')
 
-  if (doc.source) {
-    lines.push(`定义于: ${doc.source}`)
-    lines.push('')
-  }
-
   if (doc.description) {
     lines.push(doc.description)
     lines.push('')
@@ -819,7 +845,6 @@ function renderUserDefinedOptionsOverview(
 function renderOptionsGroupDoc(
   meta: GroupMeta,
   items: PropertyDoc[],
-  optionsDoc?: InterfaceDoc,
 ): string {
   const lines: string[] = []
   lines.push('---')
@@ -828,11 +853,6 @@ function renderOptionsGroupDoc(
   lines.push(`sidebar_position: ${meta.order + 1}`)
   lines.push('---')
   lines.push('')
-
-  if (optionsDoc?.source) {
-    lines.push(`定义于: ${optionsDoc.source}`)
-    lines.push('')
-  }
 
   lines.push(`本页收录 ${items.length} 个配置项，来源于 \`UserDefinedOptions\`。`)
   lines.push('')
@@ -942,13 +962,13 @@ function extractApiV2Links(section: string, marker: string): string[] | undefine
   if (!block) {
     return undefined
   }
-  const links = block.split(/\s+/).map(item => item.trim()).filter(Boolean)
+  const links = block.split(API_V2_WHITESPACE_SPLIT_RE).map(item => item.trim()).filter(Boolean)
   return links.length ? links : undefined
 }
 
 function parseApiV2Interface(content: string): Record<string, ApiV2PropertyInfo> {
   const map: Record<string, ApiV2PropertyInfo> = {}
-  const sections = content.split(/\n### /g)
+  const sections = content.split(MARKDOWN_H3_SPLIT_RE)
   sections.shift()
 
   for (const section of sections) {
@@ -979,7 +999,7 @@ function loadApiV2Interfaces(dirPath: string): Record<string, Record<string, Api
     if (!entry.endsWith('.md') || entry.startsWith('_')) {
       continue
     }
-    const name = entry.replace(/\.md$/, '')
+    const name = entry.replace(MD_EXTENSION_RE, '')
     const content = fs.readFileSync(path.join(dirPath, entry), 'utf8')
     result[name] = parseApiV2Interface(content)
   }
@@ -1004,7 +1024,7 @@ function run(): void {
       continue
     }
     const doc = buildInterfaceDoc(name, decl)
-    if (doc) {
+    if (doc && !doc.tags.deprecated) {
       interfaceDocs.push(doc)
     }
   }
@@ -1031,7 +1051,7 @@ function run(): void {
 
   for (const group of optionGroupMetas) {
     const filePath = path.join(apiOptionsDir, `${group.meta.slug}.md`)
-    fs.writeFileSync(filePath, renderOptionsGroupDoc(group.meta, group.items, userDefinedOptionsDoc), 'utf8')
+    fs.writeFileSync(filePath, renderOptionsGroupDoc(group.meta, group.items), 'utf8')
   }
 
   const otherInterfaces = interfaceDocs.filter(item => item.name !== 'UserDefinedOptions')

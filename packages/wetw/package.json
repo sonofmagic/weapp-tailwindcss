@@ -1,7 +1,7 @@
 {
   "name": "wetw",
   "type": "module",
-  "version": "0.1.1",
+  "version": "0.1.2-alpha.1",
   "description": "tsdown bundler template",
   "author": "ice breaker <1324318532@qq.com>",
   "license": "MIT",
@@ -51,7 +51,7 @@
   },
   "publishConfig": {},
   "dependencies": {
-    "@inquirer/prompts": "^8.3.0",
+    "@inquirer/prompts": "^8.3.2",
     "@weapp-tailwindcss/shared": "workspace:*",
     "c12": "^3.3.3",
     "cac": "^6.7.14"

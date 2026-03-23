@@ -2,13 +2,13 @@
 import type { PostCssCalcOptions } from '@weapp-tailwindcss/postcss-calc'
 import type { Result as PostcssResult } from 'postcss'
 import type { Result } from 'postcss-load-config'
-import type { pluginOptions as PresetEnvOptions } from 'postcss-preset-env'
 import type { PxTransformOptions as Px2rpxOptions } from 'postcss-pxtrans'
 import type { UserDefinedOptions as Rem2rpxOptions } from 'postcss-rem-to-responsive-pixel'
 import type { UserDefinedOptions as UnitsToPxOptions } from 'postcss-units-to-px'
 import type { StyleProcessingPipeline } from './pipeline'
 import type { IContext as PostcssContext } from './plugins/ctx'
 import type { InjectPreflight } from './preflight'
+import type { PresetEnvOptions } from './preset-env-options'
 
 export type LoadedPostcssOptions = Partial<Omit<Result, 'file'>>
 

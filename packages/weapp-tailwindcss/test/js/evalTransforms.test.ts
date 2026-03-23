@@ -2,7 +2,7 @@ import type { NodePath } from '@babel/traverse'
 import type { CallExpression, Node } from '@babel/types'
 import type { IJsHandlerOptions, JsHandlerResult } from '@/types'
 import MagicString from 'magic-string'
-import { describe, expect, it } from 'vitest'
+import { describe, expect, it, vi } from 'vitest'
 import { parse, traverse } from '@/babel'
 import { isEvalPath, walkEvalExpression } from '@/js/evalTransforms'
 import { JsTokenUpdater } from '@/js/JsTokenUpdater'
@@ -52,6 +52,21 @@ describe('evalTransforms', () => {
 
     const rewritten = updater.updateMagicString(new MagicString(source)).toString()
     expect(rewritten).toBe('eval(`foo bar`);')
+  })
+
+  it('reuses cached handler options for repeated eval string literals', () => {
+    const source = 'eval("foo", "bar")'
+    const updater = new JsTokenUpdater()
+    const handler = vi.fn((input: string): JsHandlerResult => ({ code: input.toUpperCase() }))
+
+    walkEvalExpression(getEvalCall(source), baseOptions, updater, handler)
+
+    expect(handler).toHaveBeenCalledTimes(2)
+    expect(handler.mock.calls[0]?.[1]).toBe(handler.mock.calls[1]?.[1])
+    expect(handler.mock.calls[0]?.[1]).toMatchObject({
+      needEscaped: false,
+      generateMap: false,
+    })
   })
 
   it('detects eval calls via isEvalPath helper', () => {

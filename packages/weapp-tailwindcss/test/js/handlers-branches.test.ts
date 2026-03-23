@@ -1,21 +1,29 @@
 import type { NodePath } from '@babel/traverse'
 import type { NumericLiteral, StringLiteral, TemplateElement } from '@babel/types'
 import { MappingChars2String } from '@weapp-core/escape'
-import { describe, expect, it } from 'vitest'
+import { describe, expect, it, vi } from 'vitest'
 import { parse, traverse } from '@/babel'
+import * as classContext from '@/js/class-context'
 import { replaceHandleValue } from '@/js/handlers'
+import * as classNameTransform from '@/shared/classname-transform'
+import * as wxmlShared from '@/wxml/shared'
 
 type LiteralKind = 'StringLiteral' | 'TemplateElement'
 
-function getLiteralPath(code: string, kind: LiteralKind) {
+function getLiteralPath(code: string, kind: LiteralKind, occurrence = 0) {
   const ast = parse(code, {
     sourceType: 'module',
   })
   let result: NodePath<StringLiteral | TemplateElement> | undefined
+  let currentOccurrence = 0
 
   traverse(ast, {
     StringLiteral(path: NodePath<StringLiteral>) {
       if (kind !== 'StringLiteral' || result) {
+        return
+      }
+      if (currentOccurrence !== occurrence) {
+        currentOccurrence += 1
         return
       }
       result = path as NodePath<StringLiteral | TemplateElement>
@@ -23,6 +31,10 @@ function getLiteralPath(code: string, kind: LiteralKind) {
     },
     TemplateElement(path: NodePath<TemplateElement>) {
       if (kind !== 'TemplateElement' || result) {
+        return
+      }
+      if (currentOccurrence !== occurrence) {
+        currentOccurrence += 1
         return
       }
       result = path
@@ -95,6 +107,17 @@ describe('replaceHandleValue branch coverage', () => {
     expect(token).toBeUndefined()
   })
 
+  it('does not skip comments that do not contain the weapp-tw marker', () => {
+    const literal = getLiteralPath('const ignored = /* ignore */ \'w-[100px]\'', 'StringLiteral')
+    const token = replaceHandleValue(literal, {
+      escapeMap: MappingChars2String,
+      classNameSet: new Set(['w-[100px]']),
+      needEscaped: true,
+    })
+
+    expect(token?.value).toBe('w-_b100px_B')
+  })
+
   it('respects jsPreserveClass and skips protected candidates', () => {
     const literal = getLiteralPath('const safe = \'w-[100px]\'', 'StringLiteral')
     const token = replaceHandleValue(literal, {
@@ -110,6 +133,18 @@ describe('replaceHandleValue branch coverage', () => {
   it('decodes unicode escape sequences before processing', () => {
     const literal = getLiteralPath('const unicodeCls = \'\\\\u0077-[100px]\'', 'StringLiteral')
     const token = replaceHandleValue(literal, {
+      escapeMap: MappingChars2String,
+      classNameSet: new Set(['w-[100px]']),
+      needEscaped: true,
+      unescapeUnicode: true,
+    })
+
+    expect(token?.value).toBe('w-_b100px_B')
+  })
+
+  it('decodes unicode escape sequences in template raw values before processing', () => {
+    const quasi = getLiteralPath('const tpl = `\\u0077-[100px]`', 'TemplateElement')
+    const token = replaceHandleValue(quasi, {
       escapeMap: MappingChars2String,
       classNameSet: new Set(['w-[100px]']),
       needEscaped: true,
@@ -153,6 +188,80 @@ describe('replaceHandleValue branch coverage', () => {
     expect(token?.value).toBe('w-_b100px_B w-_b100px_B')
   })
 
+  it('keeps repeated escaped runtime-set hits stable in the same literal', () => {
+    const quasi = getLiteralPath('const tpl = `gap-[20px] gap-[20px]`', 'TemplateElement')
+    const token = replaceHandleValue(quasi, {
+      escapeMap: MappingChars2String,
+      classNameSet: new Set(['gap-_b20px_B']),
+      needEscaped: false,
+    })
+
+    expect(token?.value).toBe('gap-_b20px_B gap-_b20px_B')
+  })
+
+  it('reuses the candidate plan for repeated candidates in one literal', () => {
+    const literal = getLiteralPath('const repeated = \'w-[100px] w-[100px]\'', 'StringLiteral')
+    const spy = vi.spyOn(classNameTransform, 'resolveClassNameTransformWithResult')
+    spy.mockClear()
+
+    const token = replaceHandleValue(literal, {
+      escapeMap: MappingChars2String,
+      classNameSet: new Set(['w-[100px]']),
+      needEscaped: true,
+    })
+
+    expect(token?.value).toBe('w-_b100px_B w-_b100px_B')
+    expect(spy).toHaveBeenCalledTimes(1)
+  })
+
+  it('reuses replacement cache entries across separate literals with the same escape map', () => {
+    const firstLiteral = getLiteralPath('const first = \'h-[37px]\'', 'StringLiteral')
+    const secondLiteral = getLiteralPath('const second = \'h-[37px]\'', 'StringLiteral')
+    const spy = vi.spyOn(wxmlShared, 'replaceWxml')
+    spy.mockClear()
+
+    const firstToken = replaceHandleValue(firstLiteral, {
+      escapeMap: MappingChars2String,
+      classNameSet: new Set(['h-[37px]']),
+      needEscaped: true,
+    })
+    const secondToken = replaceHandleValue(secondLiteral, {
+      escapeMap: MappingChars2String,
+      classNameSet: new Set(['h-[37px]']),
+      needEscaped: true,
+    })
+
+    expect(firstToken?.value).toBe('h-_b37px_B')
+    expect(secondToken?.value).toBe('h-_b37px_B')
+    expect(spy).toHaveBeenCalledTimes(1)
+  })
+
+  it('keeps reusing the candidate plan after promoting to a multi-candidate cache', () => {
+    const literal = getLiteralPath('const repeated = \'w-[100px] gap-[20px] w-[100px]\'', 'StringLiteral')
+    const spy = vi.spyOn(classNameTransform, 'resolveClassNameTransformWithResult')
+    spy.mockClear()
+
+    const token = replaceHandleValue(literal, {
+      escapeMap: MappingChars2String,
+      classNameSet: new Set(['w-[100px]', 'gap-[20px]']),
+      needEscaped: true,
+    })
+
+    expect(token?.value).toBe('w-_b100px_B gap-_b20px_B w-_b100px_B')
+    expect(spy).toHaveBeenCalledTimes(2)
+  })
+
+  it('keeps transformed output stable when escaped and skipped candidates coexist', () => {
+    const literal = getLiteralPath('const mixed = \'w-[100px] keep-me\'', 'StringLiteral')
+    const token = replaceHandleValue(literal, {
+      escapeMap: MappingChars2String,
+      classNameSet: new Set(['w-[100px]']),
+      needEscaped: true,
+    })
+
+    expect(token?.value).toBe('w-_b100px_B keep-me')
+  })
+
   it('evaluates unicode decoding guard when no escape is present', () => {
     const literal = getLiteralPath('const plain = \'flex\'', 'StringLiteral')
     const token = replaceHandleValue(literal, {
@@ -184,6 +293,19 @@ describe('replaceHandleValue branch coverage', () => {
     })
 
     expect(token).toBeUndefined()
+  })
+
+  it('skips class context detection when the default fast-return branch applies', () => {
+    const literal = getLiteralPath('const untouched = \'flex\'', 'StringLiteral')
+    const spy = vi.spyOn(classContext, 'isClassContextLiteralPath')
+
+    const token = replaceHandleValue(literal, {
+      escapeMap: MappingChars2String,
+      needEscaped: true,
+    })
+
+    expect(token).toBeUndefined()
+    expect(spy).not.toHaveBeenCalled()
   })
 
   it('keeps arbitrary classes untouched when classNameSet is non-empty but stale', () => {
@@ -287,6 +409,24 @@ describe('replaceHandleValue branch coverage', () => {
     })
 
     expect(token?.value).toBe('flex gap-_b20px_B')
+  })
+
+  it('transforms matched arbitrary utilities inside ref array literals when runtime set is fresh', () => {
+    const literal = getLiteralPath(
+      `import { ref } from 'vue'; const cardsColor = ref(['bg-[#123456] shadow-blue-100'])`,
+      'StringLiteral',
+      1,
+    )
+    expect(literal.node.value).toBe('bg-[#123456] shadow-blue-100')
+    const token = replaceHandleValue(literal, {
+      escapeMap: MappingChars2String,
+      classNameSet: new Set(['bg-[#123456]', 'shadow-blue-100']),
+      needEscaped: true,
+    })
+
+    expect(token).toBeDefined()
+    expect(token?.value).toContain('bg-_b_h123456_B')
+    expect(token?.value).not.toContain('bg-[#123456]')
   })
 
   it('does not apply controlled arbitrary fallback for non-class strings', () => {

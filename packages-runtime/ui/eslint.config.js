@@ -7,7 +7,7 @@ export default icebreaker(
     tailwindcss: {
       entryPoint: 'src/index.css',
     },
-    ignores: ['**/fixtures/**', '**/*.md', '**/scripts/**'],
+    ignores: ['**/fixtures/**', '**/*.md', '**/scripts/**', '**/test/**'],
   },
   {
     rules: {
@@ -15,4 +15,8 @@ export default icebreaker(
       'ts/no-unused-vars': ['error', { argsIgnorePattern: '^_' }],
     },
   },
-)
+).overrideRules({
+  // 降级 better-tailwindcss 规则为 warn（stories 中的 class 顺序不影响功能）
+  'better-tailwindcss/enforce-consistent-class-order': 'warn',
+  'better-tailwindcss/enforce-consistent-line-wrapping': 'warn',
+})

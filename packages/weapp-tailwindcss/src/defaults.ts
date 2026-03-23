@@ -6,11 +6,16 @@ const CSS_FILE_PATTERN = /.+\.(?:wx|ac|jx|tt|q|c|ty)ss$/
 const HTML_FILE_PATTERN = /.+\.(?:(?:wx|ax|jx|ks|tt|q|ty|xhs)ml|swan)$/
 const JS_FILE_PATTERN = /.+\.[cm]?js?$/
 
+const BACKSLASH_RE = /\\/g
+
 function normalizePath(p: string) {
-  return p.replace(/\\/g, '/')
+  return p.replace(BACKSLASH_RE, '/')
 }
 
 const MPX_STYLES_DIR_PATTERN = /(?:^|\/)styles\/.*\.(?:wx|ac|jx|tt|q|c|ty)ss$/i
+
+const KBONE_MAIN_CSS_RE = /^(?:common\/)?miniprogram-app/
+const IMPLICIT_MAIN_CSS_RE = /^(?:app|common\/main|bundle)(?:\.|\/|$)/
 
 const MAIN_CSS_CHUNK_MATCHERS: Partial<Record<AppType, (file: string) => boolean>> = {
   'uni-app': file => file.startsWith('common/main') || file.startsWith('app'),
@@ -26,7 +31,7 @@ const MAIN_CSS_CHUNK_MATCHERS: Partial<Record<AppType, (file: string) => boolean
   'remax': file => file.startsWith('app'),
   'rax': file => file.startsWith('bundle'),
   'native': file => file.startsWith('app'),
-  'kbone': file => /^(?:common\/)?miniprogram-app/.test(file),
+  'kbone': file => KBONE_MAIN_CSS_RE.test(file),
 }
 
 const alwaysFalse = () => false
@@ -34,7 +39,10 @@ const alwaysFalse = () => false
 function createMainCssChunkMatcher() {
   return (file: string, appType?: AppType) => {
     if (!appType) {
-      return true
+      const normalized = normalizePath(file)
+      return IMPLICIT_MAIN_CSS_RE.test(normalized)
+        || MPX_STYLES_DIR_PATTERN.test(normalized)
+        || KBONE_MAIN_CSS_RE.test(normalized)
     }
     const matcher = MAIN_CSS_CHUNK_MATCHERS[appType]
     return matcher ? matcher(file) : true

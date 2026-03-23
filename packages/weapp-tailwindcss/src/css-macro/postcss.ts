@@ -1,6 +1,8 @@
 import type { PluginCreator } from 'postcss'
 import { ifdef, ifndef, matchCustomPropertyFromValue } from './constants'
 
+const IFDEF_ENDIF_RE = /#(?:ifn?def|endif)/
+
 export interface Options {}
 
 const creator: PluginCreator<Options> = () => {
@@ -42,7 +44,7 @@ const creator: PluginCreator<Options> = () => {
           /*  #endif  */
         },
         CommentExit(comment) {
-          if (/#(?:ifn?def|endif)/.test(comment.text)) {
+          if (IFDEF_ENDIF_RE.test(comment.text)) {
             comment.raws.left = ' '
             comment.raws.right = ' '
           }

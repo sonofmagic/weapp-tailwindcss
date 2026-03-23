@@ -33,7 +33,7 @@ export async function getLatestVersionInRange(packageName: string, versionRange:
   // 过滤出符合指定版本范围的版本
   const filteredVersions = versions.filter(version => version.startsWith(versionRange))
   // 找到符合条件的最新版本
-  return filteredVersions[filteredVersions.length - 1]
+  return filteredVersions.at(-1)
 }
 
 // 默认需要安装的开发依赖：tailwindcss、postcss、autoprefixer、weapp-tailwindcss

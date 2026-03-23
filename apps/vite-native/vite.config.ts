@@ -1,5 +1,4 @@
 import path from 'node:path'
-import tailwindcss from '@tailwindcss/vite'
 import { UnifiedViteWeappTailwindcssPlugin as uvwt } from 'weapp-tailwindcss/vite'
 import { defineConfig } from 'weapp-vite/config'
 

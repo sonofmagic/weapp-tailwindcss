@@ -3,9 +3,13 @@ import type { Plugin, ResolvedConfig } from 'vite'
 import type { CreateJsHandlerOptions } from '@/types'
 import { readFile } from 'node:fs/promises'
 import path from 'node:path'
+import { MappingChars2String } from '@weapp-core/escape'
+import prettier from 'prettier'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
+import { createStyleHandler } from '../../../postcss/src/handler'
 import { createJsHandler } from '@/js'
 import { replaceWxml } from '@/wxml'
+import { createTemplateHandler } from '@/wxml/utils'
 import {
   createContext,
   createRollupAsset,
@@ -16,6 +20,10 @@ import {
 } from './vite-plugin.testkit'
 
 const TEST_TIMEOUT_MS = 2000
+const SPLIT_WHITESPACE_RE = /\s+/
+async function formatCssSnapshot(css: string) {
+  return prettier.format(css, { parser: 'css' })
+}
 
 async function loadUnifiedVitePlugin() {
   const mod = await import('@/bundlers/vite')
@@ -40,6 +48,7 @@ async function loadIssue814Fixture() {
 describe('bundlers/vite UnifiedViteWeappTailwindcssPlugin bundle', () => {
   beforeEach(() => {
     vi.resetModules()
+    vi.doUnmock('@/bundlers/vite/incremental-runtime-class-set')
     resetVitePluginTestContext()
   })
 
@@ -127,8 +136,8 @@ describe('bundlers/vite UnifiedViteWeappTailwindcssPlugin bundle', () => {
     const staticClass = 'rounded-[32rpx] border border-slate-100/70 bg-white/90 p-5 shadow-[0_20px_45px_rgba(15,23,42,0.08)]'
     const dynamicClass = 'rounded-[92rpx] border border-slate-100/70 bg-[#213435] p-9 shadow-[0_20px_45px_rgba(15,23,42,0.08)]'
     const runtimeSets = [
-      new Set(staticClass.split(/\s+/)),
-      new Set(dynamicClass.split(/\s+/)),
+      new Set(staticClass.split(SPLIT_WHITESPACE_RE)),
+      new Set(dynamicClass.split(SPLIT_WHITESPACE_RE)),
     ] as const
     let runtimeIndex = 0
     const getRuntimeSet = () => runtimeSets[runtimeIndex]
@@ -184,6 +193,209 @@ const trace = "at App.vue:4"
     expect(transformedCode).not.toContain('bg-[#213435]')
     expect(currentContext.twPatcher.extract).toHaveBeenCalledTimes(2)
     expect(currentContext.twPatcher.getClassSetSync).toHaveBeenCalledTimes(2)
+  }, TEST_TIMEOUT_MS)
+
+  it('warns and falls back to full runtime set when bundle runtime set misses dynamic arbitrary candidates in wxml', async () => {
+    const fallbackRuntimeSet = new Set([
+      'bg-[#68c828]',
+      'text-[100px]',
+      'text-[#123456]',
+      'w-[323px]',
+      'h-[30px]',
+      'h-[45px]',
+    ])
+    const incompleteRuntimeSet = new Set([
+      'bg-[#68c828]',
+      'text-[100px]',
+      'text-[#123456]',
+      'w-[323px]',
+    ])
+    const syncMock = vi.fn(async () => incompleteRuntimeSet)
+    const resetMock = vi.fn(async () => undefined)
+    vi.doMock('@/bundlers/vite/incremental-runtime-class-set', () => ({
+      createBundleRuntimeClassSetManager: () => ({
+        sync: syncMock,
+        reset: resetMock,
+      }),
+    }))
+
+    const jsHandler = createJsHandler({
+      escapeMap: MappingChars2String,
+      staleClassNameFallback: false,
+      tailwindcssMajorVersion: 4,
+    })
+    const templateHandler = createTemplateHandler({
+      escapeMap: MappingChars2String,
+      jsHandler,
+    })
+
+    setCurrentContext(createContext({
+      templateHandler,
+      jsHandler,
+      twPatcher: {
+        patch: vi.fn(),
+        getClassSet: vi.fn(async () => fallbackRuntimeSet),
+        getClassSetSync: vi.fn(() => fallbackRuntimeSet),
+        extract: vi.fn(async () => ({ classSet: fallbackRuntimeSet })),
+        majorVersion: 4,
+      },
+    }))
+
+    const UnifiedViteWeappTailwindcssPlugin = await loadUnifiedVitePlugin()
+    const plugins = UnifiedViteWeappTailwindcssPlugin()
+    const postPlugin = plugins?.find(plugin => plugin.name === 'weapp-tailwindcss:adaptor:post') as Plugin
+    expect(postPlugin).toBeTruthy()
+
+    await (postPlugin.configResolved as any)?.call(postPlugin, {
+      command: 'build',
+      root: process.cwd(),
+      css: { postcss: { plugins: [] } },
+      build: { outDir: 'dist' },
+    } as ResolvedConfig)
+
+    const rawWxml = '<view class="bg-[#68c828] text-[100px] text-[#123456] w-[323px] {{true?\'h-[30px]\':\'h-[45px]\'}}">111</view>'
+    const bundle = {
+      'pages/index/index.wxml': {
+        ...createRollupAsset(rawWxml),
+        fileName: 'pages/index/index.wxml',
+      } satisfies OutputAsset,
+    }
+
+    const generateBundle = postPlugin.generateBundle as any
+    await generateBundle?.call(postPlugin, {} as any, bundle)
+
+    expect(syncMock).toHaveBeenCalledTimes(1)
+    const transformed = (bundle['pages/index/index.wxml'] as OutputAsset).source.toString()
+    expect(transformed).toContain('h-_b30px_B')
+    expect(transformed).toContain('h-_b45px_B')
+    expect(transformed).not.toContain('h-[30px]')
+    expect(transformed).not.toContain('h-[45px]')
+  }, TEST_TIMEOUT_MS)
+
+  it('refreshes runtime class set when only comment-carried class candidates change', async () => {
+    const UnifiedViteWeappTailwindcssPlugin = await loadUnifiedVitePlugin()
+    const runtimeSets = [
+      new Set(['text-[#123456]']),
+      new Set(['text-[#654321]']),
+    ] as const
+    let runtimeIndex = 0
+    const getRuntimeSet = () => runtimeSets[runtimeIndex]
+
+    setCurrentContext(createContext({
+      templateHandler: vi.fn(async (code: string) => code),
+      jsHandler: createJsHandler({
+        staleClassNameFallback: false,
+        jsArbitraryValueFallback: false,
+      }),
+      staleClassNameFallback: false,
+      twPatcher: {
+        patch: vi.fn(),
+        getClassSet: vi.fn(async () => getRuntimeSet()),
+        getClassSetSync: vi.fn(() => getRuntimeSet()),
+        extract: vi.fn(async () => ({ classSet: getRuntimeSet() })),
+        majorVersion: 4,
+      },
+    }))
+
+    const currentContext = getCurrentContext()
+    const plugins = UnifiedViteWeappTailwindcssPlugin()
+    const postPlugin = plugins?.find(plugin => plugin.name === 'weapp-tailwindcss:adaptor:post') as Plugin
+    expect(postPlugin).toBeTruthy()
+
+    await (postPlugin.configResolved as any)?.call(postPlugin, {
+      command: 'serve',
+      root: process.cwd(),
+      css: { postcss: { plugins: [] } },
+      build: { outDir: 'dist' },
+    } as ResolvedConfig)
+
+    const generateBundle = postPlugin.generateBundle as any
+    await generateBundle?.call(postPlugin, {} as any, {
+      'index.wxml': createRollupAsset('<view class="card"></view><!-- text-[#123456] -->'),
+      'index.js': createRollupChunk('const cls = "card"\n/* text-[#123456] */'),
+    })
+
+    currentContext.twPatcher.extract.mockClear()
+    currentContext.twPatcher.getClassSetSync.mockClear()
+    currentContext.twPatcher.getClassSet.mockClear()
+    runtimeIndex = 1
+
+    await generateBundle?.call(postPlugin, {} as any, {
+      'index.wxml': createRollupAsset('<view class="card"></view><!-- text-[#654321] -->'),
+      'index.js': createRollupChunk('const cls = "card"\n/* text-[#654321] */'),
+    })
+
+    expect(currentContext.twPatcher.extract).toHaveBeenCalledTimes(1)
+    expect(currentContext.twPatcher.getClassSetSync).toHaveBeenCalledTimes(1)
+    expect(currentContext.twPatcher.getClassSet).not.toHaveBeenCalled()
+  }, TEST_TIMEOUT_MS)
+
+  it('reuses css handler override objects for the same asset across incremental runs', async () => {
+    const UnifiedViteWeappTailwindcssPlugin = await loadUnifiedVitePlugin()
+    const currentContext = getCurrentContext()
+    const plugins = UnifiedViteWeappTailwindcssPlugin()
+    const postPlugin = plugins?.find(plugin => plugin.name === 'weapp-tailwindcss:adaptor:post') as Plugin
+    expect(postPlugin).toBeTruthy()
+
+    await (postPlugin.configResolved as any)?.call(postPlugin, {
+      command: 'serve',
+      root: process.cwd(),
+      css: { postcss: { plugins: [] } },
+      build: { outDir: 'dist' },
+    } as ResolvedConfig)
+
+    const generateBundle = postPlugin.generateBundle as any
+    const firstBundle = {
+      'pages/index/index.css': {
+        ...createRollupAsset('.foo { color: red; }'),
+        fileName: 'pages/index/index.css',
+      },
+    }
+
+    const secondBundle = {
+      'pages/index/index.css': {
+        ...createRollupAsset('.foo { color: blue; }'),
+        fileName: 'pages/index/index.css',
+      },
+    }
+
+    await generateBundle?.call(postPlugin, {} as any, firstBundle)
+    await generateBundle?.call(postPlugin, {} as any, secondBundle)
+
+    expect(currentContext.styleHandler).toHaveBeenCalledTimes(2)
+    expect(currentContext.styleHandler.mock.calls[0]?.[1]).toBe(currentContext.styleHandler.mock.calls[1]?.[1])
+  }, TEST_TIMEOUT_MS)
+
+  it('reuses template handler options for multiple html assets in one bundle pass', async () => {
+    const UnifiedViteWeappTailwindcssPlugin = await loadUnifiedVitePlugin()
+    const currentContext = getCurrentContext()
+    const plugins = UnifiedViteWeappTailwindcssPlugin()
+    const postPlugin = plugins?.find(plugin => plugin.name === 'weapp-tailwindcss:adaptor:post') as Plugin
+    expect(postPlugin).toBeTruthy()
+
+    await (postPlugin.configResolved as any)?.call(postPlugin, {
+      command: 'serve',
+      root: process.cwd(),
+      css: { postcss: { plugins: [] } },
+      build: { outDir: 'dist' },
+    } as ResolvedConfig)
+
+    const generateBundle = postPlugin.generateBundle as any
+    const bundle = {
+      'pages/index/index.wxml': {
+        ...createRollupAsset('<view class="foo"></view>'),
+        fileName: 'pages/index/index.wxml',
+      },
+      'pages/home/index.wxml': {
+        ...createRollupAsset('<view class="bar"></view>'),
+        fileName: 'pages/home/index.wxml',
+      },
+    }
+
+    await generateBundle?.call(postPlugin, {} as any, bundle)
+
+    expect(currentContext.templateHandler).toHaveBeenCalledTimes(2)
+    expect(currentContext.templateHandler.mock.calls[0]?.[1]).toBe(currentContext.templateHandler.mock.calls[1]?.[1])
   }, TEST_TIMEOUT_MS)
 
   it('fixes issue #814 in tw4 fixture when cwd is app root (escaped runtime set entries should still hit)', async () => {
@@ -382,6 +594,40 @@ const trace = "at App.vue:4"
     expect(refreshTailwindcssPatcher).toHaveBeenCalledTimes(1)
   }, TEST_TIMEOUT_MS)
 
+  it('prefers the nearest tailwind config root when vite root points to a source subdirectory', async () => {
+    const UnifiedViteWeappTailwindcssPlugin = await loadUnifiedVitePlugin()
+    const workspaceRoot = path.resolve(__dirname, '../../..')
+    const fixtureRoot = path.resolve(__dirname, '../fixtures/vite')
+    const viteRoot = path.join(fixtureRoot, 'src')
+    const refreshTailwindcssPatcher = vi.fn(async () => getCurrentContext().twPatcher)
+
+    setCurrentContext(createContext({
+      tailwindcssBasedir: workspaceRoot,
+      refreshTailwindcssPatcher,
+      twPatcher: {
+        patch: vi.fn(async () => {}),
+        getClassSet: vi.fn(async () => new Set<string>()),
+        getClassSetSync: vi.fn(() => new Set<string>()),
+        extract: vi.fn(async () => ({ classSet: new Set<string>() })),
+        majorVersion: 3,
+      },
+    }))
+
+    const plugins = UnifiedViteWeappTailwindcssPlugin()
+    const postPlugin = plugins?.find(plugin => plugin.name === 'weapp-tailwindcss:adaptor:post') as Plugin
+    expect(postPlugin).toBeTruthy()
+
+    await (postPlugin.configResolved as any)?.call(postPlugin, {
+      command: 'build',
+      root: viteRoot,
+      css: { postcss: { plugins: [] } },
+      build: { outDir: 'dist' },
+    } as ResolvedConfig)
+
+    expect(getCurrentContext().tailwindcssBasedir).toBe(fixtureRoot)
+    expect(refreshTailwindcssPatcher).toHaveBeenCalledTimes(1)
+  }, TEST_TIMEOUT_MS)
+
   it('keeps explicit tailwindcss basedir unchanged on configResolved', async () => {
     const UnifiedViteWeappTailwindcssPlugin = await loadUnifiedVitePlugin()
     const workspaceRoot = path.resolve(process.cwd())
@@ -559,6 +805,57 @@ const cls = "w-[1.5px]"
     expect(currentContext.jsHandler).toHaveBeenCalledTimes(5)
   }, TEST_TIMEOUT_MS)
 
+  it('does not keep linked dirty bookkeeping across build mode runs', async () => {
+    const UnifiedViteWeappTailwindcssPlugin = await loadUnifiedVitePlugin()
+    const rootDir = process.cwd()
+    const outDir = path.resolve(rootDir, 'dist')
+    const linkedFile = path.resolve(outDir, 'chunk.js')
+
+    setCurrentContext(createContext({
+      jsHandler: vi.fn((code: string, _runtimeSet: Set<string>, options?: { filename?: string }) => {
+        if (options?.filename?.endsWith('index.js')) {
+          return {
+            code: `js:${code}`,
+            linked: {
+              [linkedFile]: { code: 'linked:chunk' },
+            },
+          }
+        }
+        return { code: `js:${code}` }
+      }),
+    }))
+
+    const currentContext = getCurrentContext()
+    const plugins = UnifiedViteWeappTailwindcssPlugin()
+    const postPlugin = plugins?.find(plugin => plugin.name === 'weapp-tailwindcss:adaptor:post') as Plugin
+    expect(postPlugin).toBeTruthy()
+
+    const config = {
+      command: 'build',
+      root: rootDir,
+      build: { outDir: 'dist' },
+      css: { postcss: { plugins: [] } },
+    } as unknown as ResolvedConfig
+    await (postPlugin.configResolved as any)?.call(postPlugin, config)
+
+    const generateBundle = postPlugin.generateBundle as any
+
+    const firstBundle = {
+      'index.js': createRollupChunk('import "./chunk.js";\nconsole.log("text-[#111111]")'),
+      'chunk.js': createRollupChunk('export const foo = "text-[#121212]";'),
+    }
+    await generateBundle?.call(postPlugin, {} as any, firstBundle)
+    expect(currentContext.jsHandler).toHaveBeenCalledTimes(2)
+
+    const secondBundle = {
+      'index.js': createRollupChunk('import "./chunk.js";\nconsole.log("text-[#111111]")'),
+      'chunk.js': createRollupChunk('export const foo = "text-[#232323]";'),
+    }
+    await generateBundle?.call(postPlugin, {} as any, secondBundle)
+
+    expect(currentContext.jsHandler).toHaveBeenCalledTimes(3)
+  }, TEST_TIMEOUT_MS)
+
   it('keeps dirty state stable when bundle temporarily omits js entries', async () => {
     const UnifiedViteWeappTailwindcssPlugin = await loadUnifiedVitePlugin()
     const currentContext = getCurrentContext()
@@ -665,6 +962,170 @@ const cls = "w-[1.5px]"
     expect(secondCss).not.toContain('border-emerald-200\\/70')
     expect(currentContext.styleHandler).toHaveBeenCalledTimes(1)
   }, TEST_TIMEOUT_MS)
+
+  it('reapplies cached css transform when css formatting changes only', async () => {
+    const UnifiedViteWeappTailwindcssPlugin = await loadUnifiedVitePlugin()
+    setCurrentContext(createContext({
+      styleHandler: vi.fn(async (code: string) => ({
+        css: code
+          .replace('*,::before,::after', 'view,text,::before,::after')
+          .replaceAll('border-emerald-200\\/70', '_f70'),
+      })),
+    }))
+    const currentContext = getCurrentContext()
+    const plugins = UnifiedViteWeappTailwindcssPlugin()
+    const postPlugin = plugins?.find(plugin => plugin.name === 'weapp-tailwindcss:adaptor:post') as Plugin
+    expect(postPlugin).toBeTruthy()
+
+    await (postPlugin.configResolved as any)?.call(postPlugin, {
+      command: 'serve',
+      root: process.cwd(),
+      css: { postcss: { plugins: [] } },
+      build: { outDir: 'dist' },
+    } as ResolvedConfig)
+
+    const generateBundle = postPlugin.generateBundle as any
+    const firstCss = [
+      '*,::before,::after { --tw-content: ""; }',
+      '.border-emerald-200\\/70 { border-color: rgb(167 243 208 / 0.7); }',
+    ].join('\n')
+    const secondCss = [
+      '*, ::before, ::after { --tw-content: ""; }',
+      '/* note */',
+      '.border-emerald-200\\/70 { border-color: rgb(167 243 208 / 0.7); }',
+    ].join('\n')
+
+    const firstBundle = {
+      'index.js': createRollupChunk('const sss = "border-emerald-200/70"'),
+      'index.css': {
+        ...createRollupAsset(firstCss),
+        fileName: 'index.css',
+      },
+    }
+    await generateBundle?.call(postPlugin, {} as any, firstBundle)
+
+    const secondBundle = {
+      'index.js': createRollupChunk('const sss = "border-emerald-200/70"'),
+      'index.css': {
+        ...createRollupAsset(secondCss),
+        fileName: 'index.css',
+      },
+    }
+    await generateBundle?.call(postPlugin, {} as any, secondBundle)
+
+    const transformedCss = (secondBundle['index.css'] as OutputAsset).source.toString()
+    expect(transformedCss).toContain('view,text,::before,::after')
+    expect(transformedCss).toContain('._f70')
+    expect(currentContext.styleHandler).toHaveBeenCalledTimes(1)
+  }, TEST_TIMEOUT_MS)
+
+  it('shares non-main css transform results for identical assets in the same bundle round', async () => {
+    const UnifiedViteWeappTailwindcssPlugin = await loadUnifiedVitePlugin()
+    setCurrentContext(createContext({
+      styleHandler: vi.fn(async (code: string) => ({
+        css: `shared:${code}`,
+      })),
+      mainCssChunkMatcher: vi.fn((file: string) => file === 'app.wxss'),
+      cssMatcher: (file: string) => file.endsWith('.wxss'),
+    }))
+    const currentContext = getCurrentContext()
+    const plugins = UnifiedViteWeappTailwindcssPlugin()
+    const postPlugin = plugins?.find(plugin => plugin.name === 'weapp-tailwindcss:adaptor:post') as Plugin
+    expect(postPlugin).toBeTruthy()
+
+    await (postPlugin.configResolved as any)?.call(postPlugin, {
+      command: 'serve',
+      root: process.cwd(),
+      css: { postcss: { plugins: [] } },
+      build: { outDir: 'dist' },
+    } as ResolvedConfig)
+
+    const generateBundle = postPlugin.generateBundle as any
+    const duplicatedCss = '.card{color:red}'
+    const bundle = {
+      'app.wxss': {
+        ...createRollupAsset('.root{color:blue}'),
+        fileName: 'app.wxss',
+      },
+      'pages/a.wxss': {
+        ...createRollupAsset(duplicatedCss),
+        fileName: 'pages/a.wxss',
+      },
+      'pages/b.wxss': {
+        ...createRollupAsset(duplicatedCss),
+        fileName: 'pages/b.wxss',
+      },
+    }
+
+    await generateBundle?.call(postPlugin, {} as any, bundle)
+
+    expect((bundle['pages/a.wxss'] as OutputAsset).source.toString()).toBe(`shared:${duplicatedCss}`)
+    expect((bundle['pages/b.wxss'] as OutputAsset).source.toString()).toBe(`shared:${duplicatedCss}`)
+    expect(currentContext.styleHandler).toHaveBeenCalledTimes(2)
+  }, TEST_TIMEOUT_MS)
+
+  it('captures taro vite tailwindcss v4 raw app-origin css before and after style handler', async () => {
+    const UnifiedViteWeappTailwindcssPlugin = await loadUnifiedVitePlugin()
+    const rawCss = await readFile(
+      path.resolve(__dirname, '../fixtures/css/taro-vite-tailwindcss-v4-app-origin.raw.css'),
+      'utf8',
+    )
+    const realStyleHandler = createStyleHandler({ isMainChunk: true })
+    const styleHandler = vi.fn((code: string, options?: Record<string, unknown>) => {
+      return realStyleHandler(code, options as any)
+    })
+
+    setCurrentContext(createContext({
+      appType: 'taro',
+      cssMatcher: (file: string) => file.endsWith('.wxss') || file.endsWith('.css'),
+      mainCssChunkMatcher: vi.fn((file: string) => file.startsWith('app')),
+      styleHandler,
+      twPatcher: {
+        patch: vi.fn(),
+        getClassSet: vi.fn(async () => new Set<string>()),
+        getClassSetSync: vi.fn(() => new Set<string>()),
+        extract: vi.fn(async () => ({ classSet: new Set<string>() })),
+        majorVersion: 4,
+      },
+    }))
+
+    const plugins = UnifiedViteWeappTailwindcssPlugin()
+    const postPlugin = plugins?.find(plugin => plugin.name === 'weapp-tailwindcss:adaptor:post') as Plugin
+    expect(postPlugin).toBeTruthy()
+
+    await (postPlugin.configResolved as any)?.call(postPlugin, {
+      command: 'build',
+      root: process.cwd(),
+      css: { postcss: { plugins: [] } },
+      build: { outDir: 'dist' },
+    } as ResolvedConfig)
+
+    const bundle = {
+      'app.wxss': {
+        ...createRollupAsset('@import "app-origin.wxss";'),
+        fileName: 'app.wxss',
+      },
+      'app-origin.wxss': {
+        ...createRollupAsset(rawCss),
+        fileName: 'app-origin.wxss',
+      },
+    }
+
+    const generateBundle = postPlugin.generateBundle as any
+    await generateBundle?.call(postPlugin, {} as any, bundle)
+
+    const appOriginCall = styleHandler.mock.calls.find(([, options]) =>
+      (options as any)?.postcssOptions?.options?.from === 'app-origin.wxss')
+    expect(appOriginCall).toBeTruthy()
+
+    const rawInput = await formatCssSnapshot(appOriginCall?.[0] as string)
+    const processedOutput = await formatCssSnapshot((bundle['app-origin.wxss'] as OutputAsset).source.toString())
+
+    expect(rawInput).toMatchSnapshot('taro-app-origin-raw-input')
+    expect(processedOutput).toMatchSnapshot('taro-app-origin-processed-output')
+    expect(rawInput).toContain(':not(#\\#)')
+    expect(processedOutput).toContain(':not(#n)')
+  }, 8000)
 
   it('keeps template transform stable on script-only incremental updates', async () => {
     const UnifiedViteWeappTailwindcssPlugin = await loadUnifiedVitePlugin()

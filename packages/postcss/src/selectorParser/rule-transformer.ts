@@ -1,7 +1,7 @@
 // selector 规则级处理器，负责重写选择器并规整相关声明
 import type { Rule } from 'postcss'
 import type { Node, Pseudo, Root, Selector, SyncProcessor } from 'postcss-selector-parser'
-import type { IStyleHandlerOptions } from '../types'
+import type { InternalCssSelectorReplacerOptions, IStyleHandlerOptions } from '../types'
 import psp from 'postcss-selector-parser'
 import { isUniAppXEnabled, stripUnsupportedNodeForUniAppX } from '../compat/uni-app-x'
 import { composeIsPseudo, internalCssSelectorReplacer } from '../shared'
@@ -26,6 +26,9 @@ interface TransformContext {
   rule: Rule
   options: IStyleHandlerOptions
   requiresSpacingNormalization: boolean
+  rootReplacement?: string
+  universalReplacement?: string
+  selectorReplacerOptions?: InternalCssSelectorReplacerOptions
 }
 
 interface CachedSelectorTransformResult {
@@ -120,19 +123,17 @@ function handleClassNode(node: Node, context: TransformContext) {
   if (node.type !== 'class') {
     return
   }
-  const { escapeMap } = context.options
-  node.value = escapeMap === undefined
-    ? internalCssSelectorReplacer(node.value, {})
-    : internalCssSelectorReplacer(node.value, { escapeMap })
+  node.value = context.selectorReplacerOptions === undefined
+    ? internalCssSelectorReplacer(node.value)
+    : internalCssSelectorReplacer(node.value, context.selectorReplacerOptions)
 }
 
 function handleUniversalNode(node: Node, context: TransformContext) {
   if (node.type !== 'universal') {
     return
   }
-  const replacement = context.options.cssSelectorReplacement?.universal
-  if (replacement) {
-    node.value = composeIsPseudo(replacement)
+  if (context.universalReplacement) {
+    node.value = context.universalReplacement
   }
 }
 
@@ -214,8 +215,8 @@ function handlePseudoNode(node: Node, index: number, context: TransformContext, 
     return
   }
 
-  if (node.value === ':root' && context.options.cssSelectorReplacement?.root) {
-    node.value = composeIsPseudo(context.options.cssSelectorReplacement.root)
+  if (node.value === ':root' && context.rootReplacement) {
+    node.value = context.rootReplacement
     return
   }
 
@@ -314,6 +315,15 @@ function createRuleTransformer(options: IStyleHandlerOptions): RuleTransformer {
   let context: TransformContext | undefined
   const selectorResultCache = new Map<string, CachedSelectorTransformResult>()
   const selectorResultCacheLimit = 50000
+  const rootReplacement = options.cssSelectorReplacement?.root
+    ? composeIsPseudo(options.cssSelectorReplacement.root)
+    : undefined
+  const universalReplacement = options.cssSelectorReplacement?.universal
+    ? composeIsPseudo(options.cssSelectorReplacement.universal)
+    : undefined
+  const selectorReplacerOptions = options.escapeMap
+    ? { escapeMap: options.escapeMap }
+    : undefined
 
   function writeSelectorResultCache(selector: string, result: CachedSelectorTransformResult) {
     if (selectorResultCache.size >= selectorResultCacheLimit) {
@@ -357,6 +367,9 @@ function createRuleTransformer(options: IStyleHandlerOptions): RuleTransformer {
       options,
       requiresSpacingNormalization: false,
       rule,
+      rootReplacement,
+      universalReplacement,
+      selectorReplacerOptions,
     }
 
     let wasRemoved = false

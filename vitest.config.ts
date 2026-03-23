@@ -15,20 +15,25 @@ const CONFIG_FILENAMES = [
   'vitest.config.mjs',
 ] as const
 
+const BACKSLASH_RE = /\\/g
+const LEADING_DOT_SLASH_RE = /^\.\//
+const GLOB_CHAR_RE = /[*?[{]/
+const TRAILING_SLASHES_RE = /\/+$/
+
 function extractBaseDirFromGlob(pattern: string): string | null {
   if (!pattern) {
     return null
   }
 
   const normalized = pattern
-    .replace(/\\/g, '/')
-    .replace(/^\.\//, '')
-  const globIndex = normalized.search(/[*?[{]/)
+    .replace(BACKSLASH_RE, '/')
+    .replace(LEADING_DOT_SLASH_RE, '')
+  const globIndex = normalized.search(GLOB_CHAR_RE)
   const base = globIndex === -1
     ? normalized
     : normalized.slice(0, globIndex)
 
-  const cleaned = base.replace(/\/+$/, '')
+  const cleaned = base.replace(TRAILING_SLASHES_RE, '')
   return cleaned || null
 }
 
@@ -47,7 +52,7 @@ function loadProjectRootsFromWorkspace(): string[] {
       .map(extractBaseDirFromGlob)
       .filter((entry): entry is string => Boolean(entry))
 
-    return roots.length ? Array.from(new Set(roots)) : []
+    return roots.length ? [...new Set(roots)] : []
   }
   catch (error) {
     console.warn('[vitest] Failed to parse pnpm-workspace.yaml, no project roots will be used.', error)

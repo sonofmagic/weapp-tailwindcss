@@ -185,7 +185,7 @@ function appendClassValue(value: ClassValue | ClassValue[] | null | undefined, a
     }
 
     for (const key in value as Record<string, any>) {
-      if (Object.prototype.hasOwnProperty.call(value, key) && (value as Record<string, any>)[key]) {
+      if (Object.hasOwn(value, key) && (value as Record<string, any>)[key]) {
         acc.push(key)
       }
     }

@@ -89,9 +89,7 @@ describe('all', () => {
     }
 
     for (const [, entry] of Object.entries(sp)) {
-      entry.imports = Array.from(
-        entry.analysis.walker.imports,
-      ).reduce<Record<string, ImportToken[]>>(
+      entry.imports = [...entry.analysis.walker.imports].reduce<Record<string, ImportToken[]>>(
         (acc, token) => {
           // entry.tokens.push(token)
           if (Array.isArray(acc[token.source])) {

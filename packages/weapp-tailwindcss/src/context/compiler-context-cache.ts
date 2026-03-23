@@ -5,6 +5,10 @@ import process from 'node:process'
 import { logger } from '@weapp-tailwindcss/logger'
 import { md5Hash } from '@/cache/md5'
 
+const PAREN_CONTENT_RE = /\(([^)]+)\)/u
+const AT_LOCATION_RE = /at\s+(\S.*)$/u
+const TRAILING_LINE_COL_RE = /:\d+(?::\d+)?$/u
+
 type NormalizedOptionsPrimitive = string | number | boolean | null
 interface NormalizedOptionsArray extends Array<NormalizedOptionsValue> {}
 interface NormalizedOptionsRecord {
@@ -22,12 +26,8 @@ interface GlobalCompilerContextCacheHolder {
 const globalCacheHolder = globalThis as GlobalCompilerContextCacheHolder
 const compilerContextCache: Map<string, InternalUserDefinedOptions> = globalCacheHolder.__WEAPP_TW_COMPILER_CONTEXT_CACHE__
   ?? (globalCacheHolder.__WEAPP_TW_COMPILER_CONTEXT_CACHE__ = new Map())
-
-function compareNormalizedValues(a: NormalizedOptionsValue, b: NormalizedOptionsValue) {
-  const aStr = JSON.stringify(a)
-  const bStr = JSON.stringify(b)
-  return aStr.localeCompare(bStr)
-}
+const compilerContextKeyCacheByOptions = new WeakMap<UserDefinedOptions, Map<string, string | undefined>>()
+const compilerContextKeyCacheWithoutOptions = new Map<string, string | undefined>()
 
 function withCircularGuard<T extends object>(
   value: T,
@@ -54,6 +54,23 @@ function encodeTaggedValue(type: string, value?: NormalizedOptionsValue): Record
   return record
 }
 
+function hasExplicitOptionBasedir(opts?: UserDefinedOptions) {
+  return typeof opts?.tailwindcssBasedir === 'string' && opts.tailwindcssBasedir.length > 0
+}
+
+function shouldProbeCallerLocation(opts?: UserDefinedOptions) {
+  if (hasExplicitOptionBasedir(opts)) {
+    return false
+  }
+
+  return !(
+    process.env.WEAPP_TAILWINDCSS_BASEDIR
+    || process.env.WEAPP_TAILWINDCSS_BASE_DIR
+    || process.env.TAILWINDCSS_BASEDIR
+    || process.env.TAILWINDCSS_BASE_DIR
+  )
+}
+
 function detectCallerLocation() {
   const stack = new Error('compiler-context-cache stack probe').stack
   if (!stack) {
@@ -62,13 +79,13 @@ function detectCallerLocation() {
 
   const lines = stack.split('\n')
   for (const line of lines) {
-    const match = line.match(/\(([^)]+)\)/u) ?? line.match(/at\s+(\S.*)$/u)
+    const match = line.match(PAREN_CONTENT_RE) ?? line.match(AT_LOCATION_RE)
     const location = match?.[1]
     if (!location) {
       continue
     }
 
-    const candidatePath = location.replace(/:\d+(?::\d+)?$/u, '')
+    const candidatePath = location.replace(TRAILING_LINE_COL_RE, '')
     if (!candidatePath || !path.isAbsolute(candidatePath)) {
       continue
     }
@@ -88,28 +105,83 @@ function detectCallerLocation() {
   return undefined
 }
 
-function getRuntimeCacheScope() {
+function getRuntimeCacheScope(opts?: UserDefinedOptions) {
   // 为什么把 runtime scope 纳入 cache key：
   // 在 e2e/watch 场景中，同一个 Node 进程会连续构建多个 demo 项目。
   // 有些调用方依赖隐式 basedir 推导（未显式传 tailwindcssBasedir），
   // 这会依赖 env/cwd/package 语境。如果 cache key 只包含用户 options，
   // 不同项目会误复用同一 context，最终导致 class-set 错配、WXML 转义异常。
-  return {
+  if (hasExplicitOptionBasedir(opts)) {
+    return {
+      caller: undefined as string | undefined,
+    }
+  }
+
+  const runtimeScope = {
+    caller: undefined as string | undefined,
     cwd: process.cwd(),
-    npm_package_json: process.env.npm_package_json,
-    npm_config_local_prefix: process.env.npm_config_local_prefix,
-    pnpm_package_name: process.env.PNPM_PACKAGE_NAME,
     init_cwd: process.env.INIT_CWD,
+    npm_config_local_prefix: process.env.npm_config_local_prefix,
+    npm_package_json: process.env.npm_package_json,
+    pnpm_package_name: process.env.PNPM_PACKAGE_NAME,
     pwd: process.env.PWD,
-    weapp_tailwindcss_basedir: process.env.WEAPP_TAILWINDCSS_BASEDIR,
-    weapp_tailwindcss_base_dir: process.env.WEAPP_TAILWINDCSS_BASE_DIR,
-    tailwindcss_basedir: process.env.TAILWINDCSS_BASEDIR,
     tailwindcss_base_dir: process.env.TAILWINDCSS_BASE_DIR,
+    tailwindcss_basedir: process.env.TAILWINDCSS_BASEDIR,
+    uni_app_input_dir: process.env.UNI_APP_INPUT_DIR,
+    uni_cli_root: process.env.UNI_CLI_ROOT,
     uni_input_dir: process.env.UNI_INPUT_DIR,
     uni_input_root: process.env.UNI_INPUT_ROOT,
-    uni_cli_root: process.env.UNI_CLI_ROOT,
-    uni_app_input_dir: process.env.UNI_APP_INPUT_DIR,
-    caller: detectCallerLocation(),
+    weapp_tailwindcss_base_dir: process.env.WEAPP_TAILWINDCSS_BASE_DIR,
+    weapp_tailwindcss_basedir: process.env.WEAPP_TAILWINDCSS_BASEDIR,
+  }
+  if (shouldProbeCallerLocation(opts)) {
+    runtimeScope.caller = detectCallerLocation()
+  }
+
+  return runtimeScope
+}
+
+function serializeNormalizedValue(value: NormalizedOptionsValue) {
+  return JSON.stringify(value)
+}
+
+function createRuntimeCacheScopeKey(opts?: UserDefinedOptions) {
+  return serializeNormalizedValue(normalizeOptionsValue(getRuntimeCacheScope(opts)))
+}
+
+function getCompilerContextKeyCacheStore(opts?: UserDefinedOptions) {
+  if (!opts) {
+    return compilerContextKeyCacheWithoutOptions
+  }
+
+  let store = compilerContextKeyCacheByOptions.get(opts)
+  if (!store) {
+    store = new Map<string, string | undefined>()
+    compilerContextKeyCacheByOptions.set(opts, store)
+  }
+  return store
+}
+
+interface ComparableNormalizedValue {
+  normalized: NormalizedOptionsValue
+  sortKey: string
+}
+
+function createComparableNormalizedValue(
+  rawValue: unknown,
+  stack: WeakSet<object>,
+): ComparableNormalizedValue {
+  const normalized = normalizeOptionsValue(rawValue, stack)
+  return {
+    normalized,
+    sortKey: serializeNormalizedValue(normalized),
+  }
+}
+
+function getRuntimeCacheScopeValue(opts?: UserDefinedOptions) {
+  return {
+    options: opts ?? {},
+    runtime: getRuntimeCacheScope(opts),
   }
 }
 
@@ -181,21 +253,25 @@ function normalizeOptionsValue(
   }
   if (rawValue instanceof Set) {
     return withCircularGuard(rawValue, stack, () => {
-      const normalizedEntries = Array.from(rawValue, element => normalizeOptionsValue(element, stack))
-      normalizedEntries.sort(compareNormalizedValues)
+      const normalizedEntries = Array.from(rawValue, element => createComparableNormalizedValue(element, stack))
+      normalizedEntries.sort((a, b) => a.sortKey.localeCompare(b.sortKey))
       return {
         __type: 'Set',
-        value: normalizedEntries,
+        value: normalizedEntries.map(entry => entry.normalized),
       }
     }) as Record<string, NormalizedOptionsValue>
   }
   if (rawValue instanceof Map) {
     return withCircularGuard(rawValue, stack, () => {
-      const normalizedEntries = Array.from(rawValue.entries()).map(([key, entryValue]) => ({
-        key: normalizeOptionsValue(key, stack),
-        value: normalizeOptionsValue(entryValue, stack),
-      }))
-      normalizedEntries.sort((a, b) => compareNormalizedValues(a.key, b.key))
+      const normalizedEntries = Array.from(rawValue.entries(), ([key, entryValue]) => {
+        const normalizedKey = createComparableNormalizedValue(key, stack)
+        return {
+          key: normalizedKey.normalized,
+          sortKey: normalizedKey.sortKey,
+          value: normalizeOptionsValue(entryValue, stack),
+        }
+      })
+      normalizedEntries.sort((a, b) => a.sortKey.localeCompare(b.sortKey))
       return {
         __type: 'Map',
         value: normalizedEntries.map(entry => [entry.key, entry.value]),
@@ -239,14 +315,19 @@ function normalizeOptionsValue(
 
 export function createCompilerContextCacheKey(opts?: UserDefinedOptions): string | undefined {
   try {
+    const runtimeCacheScopeKey = createRuntimeCacheScopeKey(opts)
+    const keyStore = getCompilerContextKeyCacheStore(opts)
+    const cached = keyStore.get(runtimeCacheScopeKey)
+    if (cached !== undefined) {
+      return cached
+    }
+
     // 缓存键同时包含「静态 options + 动态 runtime scope」：
     // 即便 options 字面量完全一致，也要避免跨项目命中同一 compiler context。
-    const normalized = normalizeOptionsValue({
-      options: opts ?? {},
-      runtime: getRuntimeCacheScope(),
-    })
-    const serialized = JSON.stringify(normalized)
-    return md5Hash(serialized)
+    const normalized = normalizeOptionsValue(getRuntimeCacheScopeValue(opts))
+    const cacheKey = md5Hash(serializeNormalizedValue(normalized))
+    keyStore.set(runtimeCacheScopeKey, cacheKey)
+    return cacheKey
   }
   catch (error) {
     logger.debug('skip compiler context cache: %O', error)

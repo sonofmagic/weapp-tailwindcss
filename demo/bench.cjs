@@ -7,6 +7,21 @@ const useBabel = process.env.BABEL
 
 console.log('useBabel:', Boolean(useBabel))
 
+const defaultRepoDataDir = path.resolve(__dirname, '../benchmark/app/data')
+const defaultLocalDataDir = path.resolve(__dirname, '../.tmp/benchmark-app/data')
+
+function resolveBenchOutputDir() {
+  if (process.env.WEAPP_TW_BENCH_OUTPUT_DIR) {
+    return path.resolve(process.cwd(), process.env.WEAPP_TW_BENCH_OUTPUT_DIR)
+  }
+
+  if (process.env.WEAPP_TW_BENCH_WRITE_REPO_DATA === '1') {
+    return defaultRepoDataDir
+  }
+
+  return defaultLocalDataDir
+}
+
 class Bench {
   constructor(name) {
     this.name = name
@@ -34,7 +49,7 @@ class Bench {
   dump(key = 'babel') {
     const ts = this.timeSpan()
     const filename = dayjs().format('YYYY-MM-DD') + '.json'
-    const targetDataFile = path.resolve(__dirname, '../benchmark/app/data', filename)
+    const targetDataFile = path.join(resolveBenchOutputDir(), filename)
     const targetDir = path.dirname(targetDataFile)
     try {
       fs.ensureDirSync(targetDir)
@@ -69,3 +84,4 @@ class Bench {
 module.exports = function createBench(name) {
   return new Bench(name)
 }
+module.exports.resolveBenchOutputDir = resolveBenchOutputDir

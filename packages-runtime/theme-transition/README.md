@@ -1,6 +1,6 @@
 # theme-transition
 
-![](https://cdn.jsdelivr.net/gh/sonofmagic/static/v1/theme.gif)
+![theme-transition](https://cdn.jsdelivr.net/gh/sonofmagic/static/v1/theme.gif)
 
 ## Usage
 

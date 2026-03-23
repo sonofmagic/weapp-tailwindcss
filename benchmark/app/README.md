@@ -25,7 +25,9 @@ pnpm --filter benchmark sync:projects
 
 ## 数据结构
 
-- 采集脚本仍然将每日运行结果写入 `benchmark/app/data/YYYY-MM-DD.json`。
+- 基准采集默认将每日运行结果写入仓库根下的 `.tmp/benchmark-app/data/YYYY-MM-DD.json`，避免日常调试污染 Git 工作区。
+- 若确认本次采样需要入库，可显式设置 `WEAPP_TW_BENCH_WRITE_REPO_DATA=1`，继续写入 `benchmark/app/data/YYYY-MM-DD.json`。
+- 也可以通过 `WEAPP_TW_BENCH_OUTPUT_DIR=<dir>` 将采样结果重定向到任意目录。
 - 每个 key 对应一个 `benchmarkKey`，内部可以包含 `build`、`babel` 等不同的指标数组，前端会优先使用 `build`，若不存在则回退到旧字段。
 - 注册信息和采样数据结合后，可以展示所有 demo/app 的历史趋势，并显示哪些项目暂未产生有效样本。
 

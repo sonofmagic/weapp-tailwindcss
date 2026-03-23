@@ -15,8 +15,11 @@ extract all `tailwindcss` `corePlugins`!
 ```js
 // cjs
 const corePlugins = require('tailwindcss-core-plugins-extractor')
-// or esm
-import * as corePlugins from 'tailwindcss-core-plugins-extractor';
+```
+
+```js
+// esm
+import * as corePlugins from 'tailwindcss-core-plugins-extractor'
 
 // get corePlugins
 corePlugins.accentColor

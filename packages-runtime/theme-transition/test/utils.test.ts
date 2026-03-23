@@ -76,7 +76,7 @@ describe('geometry utilities', () => {
   it('creates reversible clip-path keyframes', () => {
     const { clipPath, reverseClipPath } = createClipPathKeyframes({ x: 10, y: 20, endRadius: 30 })
     expect(clipPath).toEqual(['circle(0px at 10px 20px)', 'circle(30px at 10px 20px)'])
-    expect(reverseClipPath).toEqual([...clipPath].reverse())
+    expect(reverseClipPath).toEqual(clipPath.toReversed())
   })
 
   it('reflects viewport dimensions from innerWidth/innerHeight when provided', () => {

@@ -1,3 +1,4 @@
+import type { TailwindCssOptions, TailwindCssPatchOptions } from 'tailwindcss-patch'
 import type {
   AppType,
   CreateJsHandlerOptions,
@@ -117,6 +118,34 @@ const advancedOptions: UserDefinedOptions = {
   inlineWxs: false,
 }
 expectAssignable<UserDefinedOptions>(advancedOptions)
+
+const patcherOptions: TailwindCssPatchOptions = {
+  projectRoot: process.cwd(),
+  tailwindcss: {
+    packageName: 'tailwindcss',
+    v4: {
+      cssEntries: ['/abs/app.css'],
+    },
+  },
+  extract: {
+    write: true,
+    file: 'class-list.json',
+  },
+}
+expectAssignable<TailwindCssPatchOptions>(patcherOptions)
+
+const tailwindOptions: TailwindCssOptions = {
+  packageName: 'tailwindcss',
+  v3: {
+    config: '/abs/tailwind.config.js',
+  },
+}
+expectAssignable<TailwindCssOptions>(tailwindOptions)
+
+expectAssignable<UserDefinedOptions>({
+  tailwindcss: tailwindOptions,
+  tailwindcssPatcherOptions: patcherOptions,
+})
 
 expectError<UserDefinedOptions>({ logLevel: 'verbose' })
 expectError<UserDefinedOptions>({ cssPreflightRange: 'alll' })

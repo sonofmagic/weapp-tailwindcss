@@ -1,4 +1,5 @@
 import fs from 'node:fs'
+import path from 'node:path'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import { UnifiedWebpackPluginV4 } from '@/bundlers/webpack/BaseUnifiedPlugin/v4'
 import { createCache } from '@/cache'
@@ -249,6 +250,122 @@ describe('bundlers/webpack UnifiedWebpackPluginV4', () => {
     expect(currentContext.onUpdate).toHaveBeenCalledTimes(3)
     expect(currentContext.twPatcher.getClassSetSync).toHaveBeenCalledTimes(2)
     expect(currentContext.twPatcher.extract).toHaveBeenCalledTimes(2)
+  })
+
+  it('reuses css handler override objects for repeated asset updates', async () => {
+    const emitHandlers: Array<(compilation: any) => Promise<void>> = []
+    const assets: Record<string, any> = {}
+    const compilation = {
+      chunks: [{ id: 'main', hash: 'hash-1' }],
+      hooks: {
+        normalModuleLoader: {
+          tap: vi.fn(),
+        },
+      },
+      assets,
+      updateAsset: vi.fn((file: string, source: any) => {
+        assets[file] = source
+      }),
+    }
+    const compiler = {
+      hooks: {
+        normalModuleFactory: {
+          tap: (_name: string, handler: (factory: any) => void) => {
+            handler({
+              hooks: {
+                beforeResolve: {
+                  tap: vi.fn(),
+                },
+              },
+            })
+          },
+        },
+        compilation: {
+          tap: (_name: string, handler: (_compilation: any) => void) => {
+            handler(compilation)
+          },
+        },
+        emit: {
+          tapPromise: (_name: string, handler: (_compilation: any) => Promise<void>) => {
+            emitHandlers.push(handler)
+          },
+        },
+      },
+      options: {
+        output: {
+          path: path.resolve(process.cwd(), 'dist'),
+        },
+      },
+    }
+
+    const plugin = new UnifiedWebpackPluginV4()
+    plugin.apply(compiler as any)
+
+    compilation.assets['index.css'] = { source: () => '.foo { color: red; }' }
+    await emitHandlers[0](compilation)
+
+    compilation.assets['index.css'] = { source: () => '.foo { color: blue; }' }
+    await emitHandlers[0](compilation)
+
+    expect(currentContext.styleHandler).toHaveBeenCalledTimes(2)
+    expect(currentContext.styleHandler.mock.calls[0]?.[1]).toBe(currentContext.styleHandler.mock.calls[1]?.[1])
+  })
+
+  it('reuses template handler options for multiple html assets in one emit', async () => {
+    const emitHandlers: Array<(compilation: any) => Promise<void>> = []
+    const assets: Record<string, any> = {}
+    const compilation = {
+      chunks: [{ id: 'main', hash: 'hash-1' }],
+      hooks: {
+        normalModuleLoader: {
+          tap: vi.fn(),
+        },
+      },
+      assets,
+      updateAsset: vi.fn((file: string, source: any) => {
+        assets[file] = source
+      }),
+    }
+    const compiler = {
+      hooks: {
+        normalModuleFactory: {
+          tap: (_name: string, handler: (factory: any) => void) => {
+            handler({
+              hooks: {
+                beforeResolve: {
+                  tap: vi.fn(),
+                },
+              },
+            })
+          },
+        },
+        compilation: {
+          tap: (_name: string, handler: (_compilation: any) => void) => {
+            handler(compilation)
+          },
+        },
+        emit: {
+          tapPromise: (_name: string, handler: (_compilation: any) => Promise<void>) => {
+            emitHandlers.push(handler)
+          },
+        },
+      },
+      options: {
+        output: {
+          path: path.resolve(process.cwd(), 'dist'),
+        },
+      },
+    }
+
+    const plugin = new UnifiedWebpackPluginV4()
+    plugin.apply(compiler as any)
+
+    compilation.assets['pages/index/index.wxml'] = { source: () => '<view class="foo"></view>' }
+    compilation.assets['pages/home/index.wxml'] = { source: () => '<view class="bar"></view>' }
+    await emitHandlers[0](compilation)
+
+    expect(currentContext.templateHandler).toHaveBeenCalledTimes(2)
+    expect(currentContext.templateHandler.mock.calls[0]?.[1]).toBe(currentContext.templateHandler.mock.calls[1]?.[1])
   })
 
   it('keeps precise matching by default and still escapes classes when runtime set is fresh', async () => {

@@ -25,7 +25,7 @@ import { createPage } from '@mpxjs/core'
 
 createPage({
   data: {
-    classNames: 'text-[#123456] text-[50px] bg-[#fff]',
+    classNames: 'bg-[#123456]',
     bgUrl: "bg-[url('https://xxx.com/xx.webp')]",
     custom: 'after:content-["你好啊，我很无聊"] after:ml-0.5 after:text-red-500',
     custom2: "after:content-['你好啊，我这是中文字符串'] after:ml-0.5 after:text-red-500",

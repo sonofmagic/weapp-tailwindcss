@@ -51,7 +51,7 @@ function mergeSlotDefinitions(
   const merged = { ...baseSlots }
 
   for (const key in overrideSlots) {
-    if (!Object.prototype.hasOwnProperty.call(overrideSlots, key)) {
+    if (!Object.hasOwn(overrideSlots, key)) {
       continue
     }
 

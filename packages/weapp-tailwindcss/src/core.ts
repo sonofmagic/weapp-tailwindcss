@@ -5,6 +5,24 @@ import { getCompilerContext } from '@/context'
 import { setupPatchRecorder } from '@/tailwindcss/recorder'
 import { ensureRuntimeClassSet } from '@/tailwindcss/runtime'
 
+type RuntimeJsTransformOptions = { runtimeSet?: Set<string> } & CreateJsHandlerOptions
+
+const DEFAULT_MAIN_CHUNK_STYLE_OPTIONS = Object.freeze({
+  isMainChunk: true,
+}) satisfies Readonly<Partial<IStyleHandlerOptions>>
+
+function resolveTransformWxssOptions(options?: Partial<IStyleHandlerOptions>) {
+  if (!options) {
+    return DEFAULT_MAIN_CHUNK_STYLE_OPTIONS
+  }
+
+  if (options.isMainChunk === true) {
+    return options
+  }
+
+  return defuOverrideArray(options, DEFAULT_MAIN_CHUNK_STYLE_OPTIONS)
+}
+
 /**
  * 创建一个上下文对象，用于处理小程序的模板、样式和脚本转换。
  * @param options - 用户定义的选项对象
@@ -26,26 +44,136 @@ export function createContext(options: UserDefinedOptions = {}) {
     refreshTailwindcssPatcher,
     onPatchCompleted: patchRecorderState.onPatchCompleted,
   }
+  const defaultJsHandlerOptionsCache = new Map<number, CreateJsHandlerOptions>()
 
-  function withRuntimeTailwindMajorVersion(options?: CreateJsHandlerOptions): CreateJsHandlerOptions {
-    const resolvedOptions: CreateJsHandlerOptions = {
-      ...(options ?? {}),
+  function getDefaultJsHandlerOptions(majorVersion = runtimeState.twPatcher.majorVersion) {
+    if (typeof majorVersion !== 'number') {
+      return undefined
     }
-    if (typeof resolvedOptions.tailwindcssMajorVersion === 'number') {
-      return resolvedOptions
+
+    let cached = defaultJsHandlerOptionsCache.get(majorVersion)
+    if (!cached) {
+      cached = {
+        tailwindcssMajorVersion: majorVersion,
+      }
+      defaultJsHandlerOptionsCache.set(majorVersion, cached)
     }
+    return cached
+  }
+
+  function withRuntimeTailwindMajorVersion(options?: CreateJsHandlerOptions) {
+    if (!options) {
+      return getDefaultJsHandlerOptions()
+    }
+
+    if (typeof options.tailwindcssMajorVersion === 'number') {
+      return options
+    }
+
     const majorVersion = runtimeState.twPatcher.majorVersion
-    if (typeof majorVersion === 'number') {
-      resolvedOptions.tailwindcssMajorVersion = majorVersion
+    if (typeof majorVersion !== 'number') {
+      return options
     }
-    return resolvedOptions
+
+    return {
+      ...options,
+      tailwindcssMajorVersion: majorVersion,
+    }
+  }
+
+  function resolveTransformJsOptions(options?: RuntimeJsTransformOptions): CreateJsHandlerOptions | undefined {
+    if (!options) {
+      return getDefaultJsHandlerOptions()
+    }
+
+    let hasHandlerOption = false
+    let runtimeSetProvided = false
+    for (const key in options) {
+      if (key === 'runtimeSet') {
+        runtimeSetProvided = true
+        continue
+      }
+      hasHandlerOption = true
+      break
+    }
+
+    if (!hasHandlerOption) {
+      return getDefaultJsHandlerOptions()
+    }
+
+    if (!runtimeSetProvided && typeof options.tailwindcssMajorVersion === 'number') {
+      return options
+    }
+
+    if (runtimeSetProvided) {
+      const { runtimeSet: _runtimeSet, ...handlerOptions } = options
+      return withRuntimeTailwindMajorVersion(handlerOptions)
+    }
+
+    return withRuntimeTailwindMajorVersion(options)
+  }
+
+  const runtimeAwareTemplateJsHandler = (
+    source: string,
+    runtime?: Set<string>,
+    handlerOptions?: CreateJsHandlerOptions,
+  ) => {
+    return jsHandler(source, runtime, withRuntimeTailwindMajorVersion(handlerOptions))
+  }
+  let cachedDefaultTemplateHandlerOptions: ITemplateHandlerOptions | undefined
+  let cachedDefaultTemplateRuntimeSet: Set<string> | undefined
+  let cachedRuntimeOnlyTemplateHandlerOptions: ITemplateHandlerOptions | undefined
+  let cachedRuntimeOnlyTemplateRuntimeSet: Set<string> | undefined
+
+  function getDefaultTemplateHandlerOptions() {
+    if (cachedDefaultTemplateRuntimeSet !== runtimeSet || !cachedDefaultTemplateHandlerOptions) {
+      cachedDefaultTemplateRuntimeSet = runtimeSet
+      cachedDefaultTemplateHandlerOptions = {
+        runtimeSet,
+        jsHandler: runtimeAwareTemplateJsHandler,
+      }
+    }
+    return cachedDefaultTemplateHandlerOptions
+  }
+
+  function resolveTransformWxmlOptions(options?: ITemplateHandlerOptions) {
+    if (!options) {
+      return getDefaultTemplateHandlerOptions()
+    }
+
+    let hasOverride = false
+    for (const key in options) {
+      if (key !== 'runtimeSet') {
+        hasOverride = true
+        break
+      }
+    }
+
+    if (!hasOverride) {
+      const runtimeOverride = options.runtimeSet
+      if (runtimeOverride === undefined || runtimeOverride === runtimeSet) {
+        return getDefaultTemplateHandlerOptions()
+      }
+
+      if (cachedRuntimeOnlyTemplateRuntimeSet !== runtimeOverride || !cachedRuntimeOnlyTemplateHandlerOptions) {
+        cachedRuntimeOnlyTemplateRuntimeSet = runtimeOverride
+        cachedRuntimeOnlyTemplateHandlerOptions = {
+          runtimeSet: runtimeOverride,
+          jsHandler: runtimeAwareTemplateJsHandler,
+        }
+      }
+      return cachedRuntimeOnlyTemplateHandlerOptions
+    }
+
+    return defuOverrideArray(options, {
+      runtimeSet,
+      jsHandler: runtimeAwareTemplateJsHandler,
+    })
   }
 
   async function transformWxss(rawCss: string, options?: Partial<IStyleHandlerOptions>) {
     await runtimeState.patchPromise
-    const result = await styleHandler(rawCss, defuOverrideArray(options!, {
-      isMainChunk: true,
-    }))
+    const result = await styleHandler(rawCss, resolveTransformWxssOptions(options))
     runtimeSet = await ensureRuntimeClassSet(runtimeState, {
       forceRefresh: true,
       forceCollect: true,
@@ -53,7 +181,7 @@ export function createContext(options: UserDefinedOptions = {}) {
     return result
   }
 
-  async function transformJs(rawJs: string, options: { runtimeSet?: Set<string> } & CreateJsHandlerOptions = {}) {
+  async function transformJs(rawJs: string, options?: RuntimeJsTransformOptions) {
     await runtimeState.patchPromise
     if (options?.runtimeSet) {
       runtimeSet = options.runtimeSet
@@ -63,7 +191,7 @@ export function createContext(options: UserDefinedOptions = {}) {
         forceCollect: true,
       })
     }
-    return await jsHandler(rawJs, runtimeSet, withRuntimeTailwindMajorVersion(options))
+    return await jsHandler(rawJs, runtimeSet, resolveTransformJsOptions(options))
   }
 
   async function transformWxml(rawWxml: string, options?: ITemplateHandlerOptions) {
@@ -73,13 +201,7 @@ export function createContext(options: UserDefinedOptions = {}) {
         forceCollect: true,
       })
     }
-    const runtimeJsHandler = jsHandler
-    return templateHandler(rawWxml, defuOverrideArray(options!, {
-      runtimeSet,
-      jsHandler: (source: string, runtime?: Set<string>, handlerOptions?: CreateJsHandlerOptions) => {
-        return runtimeJsHandler(source, runtime, withRuntimeTailwindMajorVersion(handlerOptions))
-      },
-    }))
+    return templateHandler(rawWxml, resolveTransformWxmlOptions(options))
   }
 
   return {

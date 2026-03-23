@@ -36,10 +36,11 @@ describe('vite utils', () => {
     const result = await formatPostcssSourceMap(map, path.resolve('/project', 'input.css'))
 
     expect(result.file).toBe(path.resolve('/project', 'input.css'))
+    // formatPostcssSourceMap 内部使用 normalizePath(path.resolve(...)) 转为 posix 格式
     expect(result.sources).toEqual([
-      path.resolve('/project', 'index.css'),
+      normalizePath(path.resolve('/project', 'index.css')),
       '\u0000<stdin>',
-      path.resolve('/project', 'nested/one.css'),
+      normalizePath(path.resolve('/project', 'nested/one.css')),
       '\u0000<virtual>',
     ])
     expect(result.sourcesContent).toEqual(map.sourcesContent)

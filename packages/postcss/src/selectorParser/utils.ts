@@ -8,6 +8,8 @@ export type ParserTransformOptions = Partial<{
   updateSelector: boolean
 }>
 
+const combinatorSelectorAstCache = new WeakMap<IStyleHandlerOptions, Node[]>()
+
 // normalizeTransformOptions 确保 parser 在修改选择器时保持必要的副作用
 export function normalizeTransformOptions(options?: ParserTransformOptions): ParserTransformOptions {
   return {
@@ -52,12 +54,17 @@ export function composeIsPseudoAst(strs: string | string[]): Node[] {
 
 // 根据配置生成替换子代选择器的 AST，默认使用 view 标签
 export function getCombinatorSelectorAst(options: IStyleHandlerOptions) {
-  let childCombinatorReplaceValue: Node[] = mklist(psp.tag({ value: 'view' }))
-  const { cssChildCombinatorReplaceValue } = options
-  if (
-    typeof cssChildCombinatorReplaceValue === 'string'
-    || (Array.isArray(cssChildCombinatorReplaceValue) && cssChildCombinatorReplaceValue.length > 0)) {
-    childCombinatorReplaceValue = composeIsPseudoAst(cssChildCombinatorReplaceValue)
+  let template = combinatorSelectorAstCache.get(options)
+  if (!template) {
+    template = mklist(psp.tag({ value: 'view' }))
+    const { cssChildCombinatorReplaceValue } = options
+    if (
+      typeof cssChildCombinatorReplaceValue === 'string'
+      || (Array.isArray(cssChildCombinatorReplaceValue) && cssChildCombinatorReplaceValue.length > 0)
+    ) {
+      template = composeIsPseudoAst(cssChildCombinatorReplaceValue)
+    }
+    combinatorSelectorAstCache.set(options, template)
   }
-  return childCombinatorReplaceValue
+  return template.map(node => node.clone())
 }

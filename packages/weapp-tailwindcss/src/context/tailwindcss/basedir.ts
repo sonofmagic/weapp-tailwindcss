@@ -52,6 +52,10 @@ function pickPackageEnvBasedir(): string | undefined {
   return undefined
 }
 
+// 用于从调用栈中提取文件路径
+const STACK_PAREN_RE = /\(([^)]+)\)/u
+const STACK_AT_RE = /at\s+(\S.*)$/u
+
 function detectCallerBasedir(): string | undefined {
   const stack = new Error('resolveTailwindcssBasedir stack probe').stack
   if (!stack) {
@@ -62,7 +66,7 @@ function detectCallerBasedir(): string | undefined {
   }
   const lines = stack.split('\n')
   for (const line of lines) {
-    const match = line.match(/\(([^)]+)\)/u) ?? line.match(/at\s+(\S.*)$/u)
+    const match = line.match(STACK_PAREN_RE) ?? line.match(STACK_AT_RE)
     const location = match?.[1]
     if (!location) {
       continue

@@ -12,6 +12,8 @@ import {
 
 const createTempDir = () => mkdtemp(path.join(tmpdir(), 'wetw-'))
 
+const ALREADY_EXISTS_RE = /already exists/i
+
 describe('wetw cli core', () => {
   it('loads defaults when no config file is present', async () => {
     const cwd = await createTempDir()
@@ -48,7 +50,7 @@ describe('wetw cli core', () => {
     await mkdir(path.dirname(target), { recursive: true })
     await writeFile(target, '// existing')
 
-    await expect(addComponents(['counter'], { cwd })).rejects.toThrow(/already exists/i)
+    await expect(addComponents(['counter'], { cwd })).rejects.toThrow(ALREADY_EXISTS_RE)
   })
 
   it('supports loading registry from a local json file', async () => {

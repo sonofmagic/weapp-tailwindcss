@@ -1,5 +1,49 @@
 # weapp-tailwindcss
 
+## 4.11.0-alpha.2
+
+### Patch Changes
+
+- 🐛 **升级 `tailwindcss-patch` 到 `8.7.4-alpha.0`，同步消费最新的 alpha 版本依赖。** [#819](https://github.com/sonofmagic/weapp-tailwindcss/pull/819) by @sonofmagic
+- 📦 **Dependencies** [`cbead4c`](https://github.com/sonofmagic/weapp-tailwindcss/commit/cbead4ced4b7cba116488d745d47bf826bc83859)
+  → `@weapp-tailwindcss/postcss@2.1.6-alpha.1`, `@weapp-tailwindcss/shared@1.1.3-alpha.1`
+
+## 4.11.0-alpha.1
+
+### Patch Changes
+
+- 🐛 **完善 `e2e:watch` 热更新回归流程：** [#819](https://github.com/sonofmagic/weapp-tailwindcss/pull/819) by @sonofmagic
+  - 新增 `demo` 与 `apps` 分组测试入口，避免分组执行时重复跑单 case 文件
+  - 将 `test:watch-hmr` 切换为 `node --import tsx` 启动，修复部分环境下 `tsx` IPC `EPERM` 导致的回归无法启动问题
+  - 调整 `apps/taro-webpack-tailwindcss-v4` 的 watch 回归命令，确保 Taro webpack 场景下模板、脚本、样式热更新都能稳定校验
+
+## 4.11.0-alpha.0
+
+### Minor Changes
+
+- ✨ **为所有编译插件入口新增 `weappTailwindcss` 别名导出，方便用户统一简写引用：** [#819](https://github.com/sonofmagic/weapp-tailwindcss/pull/819) by @sonofmagic
+  - `weapp-tailwindcss/webpack` → `UnifiedWebpackPluginV5` 的别名
+  - `weapp-tailwindcss/webpack4` → `UnifiedWebpackPluginV4` 的别名
+  - `weapp-tailwindcss/vite` → `UnifiedViteWeappTailwindcssPlugin` 的别名
+  - `weapp-tailwindcss/gulp` → `createPlugins` 的别名
+
+### Patch Changes
+
+- 🐛 **修复 Vite 集成在 dts 构建阶段替换 postcss 插件时触发的类型递归比较问题，避免 TS2321 与 TS2345 导致构建失败。** [`c8860fa`](https://github.com/sonofmagic/weapp-tailwindcss/commit/c8860fa202e202833f2c503fd7ea53af824a76fe) by @sonofmagic
+  - 同时升级部分依赖与工作区 catalog 版本（包括 postcss、fs-extra、storybook 等），并同步更新锁文件以保持依赖解析一致性。
+
+- 🐛 **增强多平台热更新回归覆盖，补齐 `uni-app`、`uni-app-vue3-vite`、`mpx` 的 comment-carrier 场景，并新增汇总断言校验 same-class 稳定性、comment-carrier 命中数量与热更新时间指标。** [#819](https://github.com/sonofmagic/weapp-tailwindcss/pull/819) by @sonofmagic
+  - 修复 `uni-app-vue3-vite` 在 comment-carrier 场景下 marker 无法进入运行时输出导致 watch-hmr 卡住的问题，同时将关键 HMR 用例接入 `E2E Watch` 工作流，确保 PR 与夜间任务都能持续校验多平台热更新链路。
+
+- 🐛 **性能优化：针对 CSS 选择器转换、JS 处理器、WXML 模板处理等热路径进行多项缓存与计算优化。** [`49e50d8`](https://github.com/sonofmagic/weapp-tailwindcss/commit/49e50d8bde7327d47e9ba649537092ea57bcdf16) by @sonofmagic
+  - JS 处理器：复用 `resolveClassNameTransformWithResult` 返回的 `escapedValue` 避免重复 escape 计算；引入 `getReplacement` 缓存消除重复 `replaceWxml` 调用；移除 `escapeStringRegexp` + `new RegExp` 正则编译开销
+  - `createJsHandler`：预构建默认 `defaults` 对象，无覆盖选项时跳过 `defuOverrideArray` 合并
+  - WXML 模板：`templateReplacer` 支持复用模块级 tokenizer 实例；`createTemplateHandler` 预构建 attribute matcher 并传递给 `customTemplateHandler`
+  - PostCSS fallback 选择器解析：为 `transform` 函数添加 selector 级别缓存，避免重复解析相同选择器
+  - `splitCode`：为默认和 allowDoubleQuotes 两种模式分别添加结果缓存，预编译分割正则
+- 📦 **Dependencies** [`c8860fa`](https://github.com/sonofmagic/weapp-tailwindcss/commit/c8860fa202e202833f2c503fd7ea53af824a76fe)
+  → `@weapp-tailwindcss/postcss@2.1.6-alpha.0`, `@weapp-tailwindcss/shared@1.1.3-alpha.0`
+
 ## 4.10.3
 
 ### Patch Changes

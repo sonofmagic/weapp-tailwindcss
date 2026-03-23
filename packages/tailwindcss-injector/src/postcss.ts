@@ -119,7 +119,7 @@ const creator: PluginCreator<Partial<Options>> = (options) => {
                 contentEntries.push(`${removeFileExtension(dep)}.${extensionsGlob}`)
               }
 
-              const uniqueEntries = Array.from(new Set(contentEntries))
+              const uniqueEntries = [...new Set(contentEntries)]
               const { content: existingContent } = tailwindcssConfig as { content?: Config['content'] }
 
               if (!existingContent || Array.isArray(existingContent)) {
@@ -133,7 +133,7 @@ const creator: PluginCreator<Partial<Options>> = (options) => {
                   : typeof currentFiles === 'string'
                     ? [currentFiles]
                     : []
-                normalizedContent.files = Array.from(new Set([...normalizedFiles, ...uniqueEntries]))
+                normalizedContent.files = [...new Set([...normalizedFiles, ...uniqueEntries])]
                 tailwindcssConfig.content = normalizedContent
               }
               else {

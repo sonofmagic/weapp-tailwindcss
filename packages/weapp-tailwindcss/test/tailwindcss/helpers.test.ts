@@ -86,7 +86,8 @@ describe('tailwindcss helpers', () => {
     expect(callArgs.cache).toMatchObject({ dir: path.resolve('/repo', 'cache') })
     expect(callArgs.cache?.driver).toBe('memory')
     expect(callArgs.apply?.extendLengthUnits).toBe(false)
-    expect(callArgs.projectRoot).toBe('/repo')
+    // 源码使用 path.resolve(basedir) 得到平台原生路径
+    expect(callArgs.projectRoot).toBe(path.resolve('/repo'))
     expect(Array.isArray(callArgs.tailwindcss?.resolve?.paths)).toBe(true)
     expect(patcher.packageInfo.version).toBe('3.4.17')
   })
@@ -98,7 +99,7 @@ describe('tailwindcss helpers', () => {
       cacheDir: '/global/cache',
     })
 
-    const lastCall = tailwindcssPatcherMock.mock.calls[tailwindcssPatcherMock.mock.calls.length - 1]
+    const lastCall = tailwindcssPatcherMock.mock.calls.at(-1)
     const callArgs = lastCall?.[0] as any
     expect(callArgs.cache).toEqual({ dir: '/global/cache', driver: 'memory' })
   })
@@ -108,7 +109,7 @@ describe('tailwindcss helpers', () => {
 
     createTailwindcssPatcher()
 
-    const lastCall = tailwindcssPatcherMock.mock.calls[tailwindcssPatcherMock.mock.calls.length - 1]
+    const lastCall = tailwindcssPatcherMock.mock.calls.at(-1)
     const callArgs = lastCall?.[0] as any
     expect(callArgs.apply?.extendLengthUnits).toEqual({ enabled: true })
   })
@@ -119,7 +120,7 @@ describe('tailwindcss helpers', () => {
 
     createTailwindcssPatcher({ cacheDir: '.cache' })
 
-    const lastCall = tailwindcssPatcherMock.mock.calls[tailwindcssPatcherMock.mock.calls.length - 1]
+    const lastCall = tailwindcssPatcherMock.mock.calls.at(-1)
     const callArgs = lastCall?.[0] as any
     expect(callArgs.cache).toEqual({ dir: path.resolve('/workspace', '.cache'), driver: 'memory' })
     cwdSpy.mockRestore()
@@ -132,7 +133,7 @@ describe('tailwindcss helpers', () => {
 
     createTailwindcssPatcher({ basedir })
 
-    const lastCall = tailwindcssPatcherMock.mock.calls[tailwindcssPatcherMock.mock.calls.length - 1]
+    const lastCall = tailwindcssPatcherMock.mock.calls.at(-1)
     const callArgs = lastCall?.[0] as any
     expect(callArgs.cache?.dir).toBe(
       path.join(repoRoot, 'packages', 'weapp-tailwindcss', 'node_modules', '.cache', 'tailwindcss-patch'),
@@ -165,11 +166,26 @@ describe('tailwindcss helpers', () => {
       basedir: repoRoot,
     })
 
-    const lastCall = tailwindcssPatcherMock.mock.calls[tailwindcssPatcherMock.mock.calls.length - 1]
+    const lastCall = tailwindcssPatcherMock.mock.calls.at(-1)
     const callArgs = lastCall?.[0] as any
     expect(callArgs.tailwindcss?.postcssPlugin).toBeDefined()
     expect(typeof callArgs.tailwindcss?.postcssPlugin).toBe('string')
     expect(path.isAbsolute(callArgs.tailwindcss?.postcssPlugin)).toBe(true)
+  })
+
+  it('uses @tailwindcss/postcss as postcss plugin when packageName points to v4 package without explicit version', async () => {
+    const { createTailwindcssPatcher } = await import('@/tailwindcss')
+
+    createTailwindcssPatcher({
+      basedir: '/repo',
+      tailwindcss: {
+        packageName: '@tailwindcss/postcss',
+      },
+    })
+
+    const lastCall = tailwindcssPatcherMock.mock.calls.at(-1)
+    const callArgs = lastCall?.[0] as any
+    expect(String(callArgs.tailwindcss?.postcssPlugin).replaceAll('\\', '/')).toContain('@tailwindcss/postcss')
   })
 
   it('falls back to default tailwind config when project has none', async () => {
@@ -180,7 +196,7 @@ describe('tailwindcss helpers', () => {
       createTailwindcssPatcher({
         basedir: tempDir,
       })
-      const lastCall = tailwindcssPatcherMock.mock.calls[tailwindcssPatcherMock.mock.calls.length - 1]
+      const lastCall = tailwindcssPatcherMock.mock.calls.at(-1)
       const callArgs = lastCall?.[0] as any
       expect(callArgs.tailwindcss?.config).toBeDefined()
       expect(typeof callArgs.tailwindcss?.config).toBe('string')

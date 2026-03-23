@@ -42,7 +42,7 @@ export function reorderLiteralFirst(
     return
   }
 
-  const anchor = declarations[declarations.length - 1]?.next() ?? undefined
+  const anchor = declarations.at(-1)?.next() ?? undefined
 
   for (const decl of declarations) {
     decl.remove()

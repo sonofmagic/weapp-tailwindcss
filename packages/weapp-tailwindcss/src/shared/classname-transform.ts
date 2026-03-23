@@ -2,6 +2,12 @@ import type { IJsHandlerOptions } from '../types'
 import { replaceWxml } from '../wxml/shared'
 
 export type ClassNameTransformDecision = 'direct' | 'escaped' | 'fallback' | 'skip'
+type EscapeMap = NonNullable<IJsHandlerOptions['escapeMap']>
+
+const escapedCandidateCacheByEscapeMap = new WeakMap<EscapeMap, Map<string, string>>()
+const defaultEscapedCandidateCache = new Map<string, string>()
+let lastEscapedCandidateEscapeMap: EscapeMap | undefined
+let lastEscapedCandidateCacheStore: Map<string, string> | undefined
 
 /**
  * 决策结果，附带已计算的 escaped 值以避免下游重复计算。
@@ -24,26 +30,48 @@ interface ResolveClassNameTransformOptions extends Pick<
   classContext?: boolean
 }
 
+function isUrlLikeCandidate(candidate: string) {
+  return candidate.startsWith('//')
+    || candidate.startsWith('http://')
+    || candidate.startsWith('https://')
+}
+
 function isArbitraryValueCandidate(candidate: string) {
-  const normalized = candidate.trim()
-  if (!normalized.includes('[') || !normalized.includes(']')) {
+  let hasOpenBracket = false
+  let hasCloseBracket = false
+
+  for (let i = 0; i < candidate.length; i++) {
+    const char = candidate[i]
+    if (char === '[') {
+      hasOpenBracket = true
+    }
+    else if (char === ']') {
+      hasCloseBracket = true
+    }
+
+    if (hasOpenBracket && hasCloseBracket) {
+      break
+    }
+  }
+
+  if (!hasOpenBracket || !hasCloseBracket) {
     return false
   }
 
+  const normalized = candidate.trim()
+
   // URL 片段中的 [] 不应作为任意值候选处理。
-  if (/^(?:https?:)?\/\//.test(normalized)) {
+  if (isUrlLikeCandidate(normalized)) {
     return false
   }
 
   return true
 }
 
-export function shouldEnableArbitraryValueFallback(
-  {
-    classNameSet,
-    jsArbitraryValueFallback,
-    tailwindcssMajorVersion,
-  }: Pick<ResolveClassNameTransformOptions, 'classNameSet' | 'jsArbitraryValueFallback' | 'tailwindcssMajorVersion'>,
+function shouldEnableArbitraryValueFallbackByInputs(
+  classNameSet: ResolveClassNameTransformOptions['classNameSet'],
+  jsArbitraryValueFallback: ResolveClassNameTransformOptions['jsArbitraryValueFallback'],
+  tailwindcssMajorVersion: ResolveClassNameTransformOptions['tailwindcssMajorVersion'],
 ) {
   if (jsArbitraryValueFallback === true) {
     return true
@@ -57,9 +85,51 @@ export function shouldEnableArbitraryValueFallback(
   return tailwindcssMajorVersion === 4 && (!classNameSet || classNameSet.size === 0)
 }
 
+export function shouldEnableArbitraryValueFallback(
+  {
+    classNameSet,
+    jsArbitraryValueFallback,
+    tailwindcssMajorVersion,
+  }: Pick<ResolveClassNameTransformOptions, 'classNameSet' | 'jsArbitraryValueFallback' | 'tailwindcssMajorVersion'>,
+) {
+  return shouldEnableArbitraryValueFallbackByInputs(
+    classNameSet,
+    jsArbitraryValueFallback,
+    tailwindcssMajorVersion,
+  )
+}
+
 const SKIP_RESULT: ClassNameTransformResult = { decision: 'skip' }
 const DIRECT_RESULT: ClassNameTransformResult = { decision: 'direct' }
 const FALLBACK_RESULT: ClassNameTransformResult = { decision: 'fallback' }
+
+function getEscapedCandidateCacheStore(escapeMap?: EscapeMap) {
+  if (!escapeMap) {
+    return defaultEscapedCandidateCache
+  }
+
+  if (escapeMap === lastEscapedCandidateEscapeMap && lastEscapedCandidateCacheStore) {
+    return lastEscapedCandidateCacheStore
+  }
+
+  let store = escapedCandidateCacheByEscapeMap.get(escapeMap)
+  if (!store) {
+    store = new Map<string, string>()
+    escapedCandidateCacheByEscapeMap.set(escapeMap, store)
+  }
+  lastEscapedCandidateEscapeMap = escapeMap
+  lastEscapedCandidateCacheStore = store
+  return store
+}
+
+function getEscapedCandidate(candidate: string, escapeMap?: EscapeMap, store = getEscapedCandidateCacheStore(escapeMap)) {
+  let cached = store.get(candidate)
+  if (cached === undefined) {
+    cached = replaceWxml(candidate, { escapeMap })
+    store.set(candidate, cached)
+  }
+  return cached
+}
 
 /**
  * JS 转译严格遵循 runtime class set：
@@ -94,7 +164,7 @@ export function resolveClassNameTransformWithResult(
   }
 
   if (classNameSet && classNameSet.size > 0) {
-    const escapedCandidate = replaceWxml(candidate, { escapeMap })
+    const escapedCandidate = getEscapedCandidate(candidate, escapeMap)
     if (escapedCandidate !== candidate && classNameSet.has(escapedCandidate)) {
       return { decision: 'escaped', escapedValue: escapedCandidate }
     }
@@ -102,12 +172,8 @@ export function resolveClassNameTransformWithResult(
 
   if (
     classContext
+    && shouldEnableArbitraryValueFallbackByInputs(classNameSet, jsArbitraryValueFallback, tailwindcssMajorVersion)
     && isArbitraryValueCandidate(candidate)
-    && shouldEnableArbitraryValueFallback({
-      classNameSet,
-      jsArbitraryValueFallback,
-      tailwindcssMajorVersion,
-    })
   ) {
     return FALLBACK_RESULT
   }

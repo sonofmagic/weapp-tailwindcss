@@ -1,9 +1,9 @@
 import type { PackageResolvingOptions } from 'local-pkg'
-import type { ILengthUnitsPatchOptions, TailwindcssPatchOptions } from 'tailwindcss-patch'
+import type { ILengthUnitsPatchOptions, TailwindCssPatchOptions } from 'tailwindcss-patch'
 
-type TailwindUserOptions = NonNullable<TailwindcssPatchOptions['tailwindcss']>
-type TailwindApplyOptions = NonNullable<TailwindcssPatchOptions['apply']>
-type TailwindExtractOptions = NonNullable<TailwindcssPatchOptions['extract']>
+type TailwindUserOptions = NonNullable<TailwindCssPatchOptions['tailwindcss']>
+type TailwindApplyOptions = NonNullable<TailwindCssPatchOptions['apply']>
+type TailwindExtractOptions = NonNullable<TailwindCssPatchOptions['extract']>
 type TailwindExtendLengthUnitsOption = TailwindApplyOptions['extendLengthUnits']
 
 export interface LegacyTailwindcssPatcherOptions {
@@ -28,6 +28,15 @@ export interface LegacyTailwindcssPatcherOptions {
   }
 }
 
+export function resolveTailwindcssOptions(
+  options?: TailwindCssPatchOptions | LegacyTailwindcssPatcherOptions,
+) {
+  if (!options) {
+    return undefined
+  }
+  return options.tailwindcss ?? (options as TailwindCssPatchOptions & { tailwind?: TailwindUserOptions }).tailwind
+}
+
 export function normalizeExtendLengthUnits(
   value: boolean | ILengthUnitsPatchOptions | undefined,
 ): TailwindExtendLengthUnitsOption | undefined {
@@ -47,15 +56,15 @@ export function normalizeExtendLengthUnits(
 }
 
 export function normalizeTailwindcssPatcherOptions(
-  options?: TailwindcssPatchOptions | LegacyTailwindcssPatcherOptions,
-): TailwindcssPatchOptions | undefined {
+  options?: TailwindCssPatchOptions | LegacyTailwindcssPatcherOptions,
+): TailwindCssPatchOptions | undefined {
   if (!options) {
     return undefined
   }
 
   if ('patch' in options) {
     const { cache, patch } = options
-    const normalized: TailwindcssPatchOptions = {}
+    const normalized: TailwindCssPatchOptions = {}
 
     if (cache !== undefined) {
       normalized.cache = cache
@@ -144,13 +153,13 @@ export function normalizeTailwindcssPatcherOptions(
 }
 
 export function toModernTailwindcssPatchOptions(
-  options?: TailwindcssPatchOptions,
-): TailwindcssPatchOptions | undefined {
+  options?: TailwindCssPatchOptions,
+): TailwindCssPatchOptions | undefined {
   if (!options) {
     return undefined
   }
 
-  const normalized: TailwindcssPatchOptions = {}
+  const normalized: TailwindCssPatchOptions = {}
 
   if (options.cache !== undefined) {
     normalized.cache = options.cache
@@ -164,7 +173,7 @@ export function toModernTailwindcssPatchOptions(
     normalized.projectRoot = projectRoot
   }
 
-  const tailwindcss = options.tailwindcss ?? options.tailwind
+  const tailwindcss = resolveTailwindcssOptions(options)
   if (tailwindcss) {
     normalized.tailwindcss = {
       ...tailwindcss,

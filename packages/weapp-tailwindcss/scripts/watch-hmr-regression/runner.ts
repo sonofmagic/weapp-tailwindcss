@@ -23,13 +23,12 @@ import { summarizeMutationMetricsByKind } from './summary'
 import { writeFilePreserveEol } from './text'
 
 function resolveCaseSourceFiles(watchCase: WatchCase) {
-  return Array.from(
-    new Set([
-      watchCase.templateMutation.sourceFile,
-      watchCase.scriptMutation.sourceFile,
-      watchCase.styleMutation.sourceFile,
-    ]),
-  )
+  return [...new Set([
+    watchCase.contentMutation?.sourceFile,
+    watchCase.templateMutation.sourceFile,
+    watchCase.scriptMutation.sourceFile,
+    watchCase.styleMutation.sourceFile,
+  ].filter((item): item is string => Boolean(item)))]
 }
 
 export async function runCase(watchCase: WatchCase, options: CliOptions): Promise<WatchCaseMetrics> {
@@ -51,9 +50,14 @@ export async function runCase(watchCase: WatchCase, options: CliOptions): Promis
     const warmupMs = await waitForInitialWarmup(watchCase, options, session, sessionStartedAt)
     const initialReadyMs = Math.max(outputsReadyMs, warmupMs)
 
+    const styleOutputCandidates = [...new Set([
+      ...watchCase.outputStyleCandidates,
+      ...watchCase.globalStyleCandidates,
+    ])]
+
     const globalStyleOutputs = await resolveOutputFiles(
       watchCase,
-      watchCase.globalStyleCandidates,
+      styleOutputCandidates,
       'global style',
       options,
       session,
@@ -72,6 +76,24 @@ export async function runCase(watchCase: WatchCase, options: CliOptions): Promis
     const styleSourceOriginal = sourceOriginals.get(watchCase.styleMutation.sourceFile)
     if (styleSourceOriginal == null) {
       throw new Error(`[${watchCase.label}] missing style mutation source original`)
+    }
+
+    let contentMetrics: WatchCaseMutationMetrics | undefined
+    if (watchCase.contentMutation) {
+      const contentSourceOriginal = sourceOriginals.get(watchCase.contentMutation.sourceFile)
+      if (contentSourceOriginal == null) {
+        throw new Error(`[${watchCase.label}] missing content mutation source original`)
+      }
+
+      contentMetrics = await runClassMutation(
+        watchCase,
+        options,
+        session,
+        'content',
+        watchCase.contentMutation,
+        contentSourceOriginal,
+        globalStyleOutputs,
+      )
     }
 
     const templateMetrics = await runClassMutation(
@@ -109,6 +131,7 @@ export async function runCase(watchCase: WatchCase, options: CliOptions): Promis
     }
 
     const mutationMetrics: WatchCaseMutationMetrics[] = [
+      ...(contentMetrics ? [contentMetrics] : []),
       templateMetrics,
       scriptMetrics,
       styleMetrics,
@@ -139,7 +162,7 @@ export async function runCase(watchCase: WatchCase, options: CliOptions): Promis
     }
 
     process.stdout.write(
-      `[watch-hmr] ${watchCase.label} passed (template=${templateMetrics.hotUpdateEffectiveMs}ms, script=${scriptMetrics.hotUpdateEffectiveMs}ms, style=${styleMetrics.hotUpdateEffectiveMs}ms)\n`,
+      `[watch-hmr] ${watchCase.label} passed (${contentMetrics ? `content=${contentMetrics.hotUpdateEffectiveMs}ms, ` : ''}template=${templateMetrics.hotUpdateEffectiveMs}ms, script=${scriptMetrics.hotUpdateEffectiveMs}ms, style=${styleMetrics.hotUpdateEffectiveMs}ms)\n`,
     )
 
     return metrics

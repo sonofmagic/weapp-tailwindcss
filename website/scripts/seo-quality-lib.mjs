@@ -5,12 +5,18 @@ const genericDescriptionPatterns = [
   '相关文档，覆盖安装、配置与常见问题。',
 ]
 
+/** 匹配关键词分隔符（中英文逗号、顿号、竖线、斜杠） */
+const KEYWORD_SEPARATOR_RE = /[，,、|/]/g
+
+/** 匹配反斜杠 */
+const BACKSLASH_RE = /\\/g
+
 function toKeywordArray(keywords) {
   if (Array.isArray(keywords)) {
     return keywords.map(item => String(item).trim()).filter(Boolean)
   }
   if (typeof keywords === 'string' && keywords.trim()) {
-    return keywords.split(/[，,、|/]/g).map(item => item.trim()).filter(Boolean)
+    return keywords.split(KEYWORD_SEPARATOR_RE).map(item => item.trim()).filter(Boolean)
   }
   return []
 }
@@ -83,7 +89,7 @@ export function scanSeoQuality(rootDir, label) {
 
   for (const absPath of files) {
     const { parsed } = readMatterFile(absPath)
-    const relativePath = path.relative(rootDir, absPath).replace(/\\/g, '/')
+    const relativePath = path.relative(rootDir, absPath).replace(BACKSLASH_RE, '/')
 
     coverage.total += 1
     if (typeof parsed.data.title === 'string' && parsed.data.title.trim()) {

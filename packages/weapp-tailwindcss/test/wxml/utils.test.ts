@@ -1,7 +1,12 @@
+import { describe, expect, it, vi } from 'vitest'
 import { getCompilerContext } from '@/context'
 import { replaceWxml } from '@/wxml'
 import { generateCode, isPropsMatch } from '@/wxml/utils'
 import { removeWxmlId } from '../util'
+
+const EXACT_RD_BTN_CLASS_REGEXP = /^rd-btn-class$/
+const RD_WORD_CLASS_REGEXP = /^rd-\w+-class$/
+const RD_ALPHA_CLASS_REGEXP = /^rd-[A-Za-z]+-class$/
 
 describe('utils', () => {
   it('isPropsMatch', () => {
@@ -9,12 +14,12 @@ describe('utils', () => {
     expect(isPropsMatch(['a'], 'a')).toBe(true)
     expect(isPropsMatch('rd-btn-class', 'rd-btn-class')).toBe(true)
     expect(isPropsMatch(['rd-btn-class'], 'rd-btn-class')).toBe(true)
-    expect(isPropsMatch(/^rd-btn-class$/, 'rd-btn-class')).toBe(true)
-    expect(isPropsMatch([/^rd-btn-class$/], 'rd-btn-class')).toBe(true)
-    expect(isPropsMatch(/^rd-\w+-class$/, 'rd-btn-class')).toBe(true)
-    expect(isPropsMatch([/^rd-\w+-class$/], 'rd-btn-class')).toBe(true)
-    expect(isPropsMatch(/^rd-[A-Za-z]+-class$/, 'rd-btn-class')).toBe(true)
-    expect(isPropsMatch([/^rd-[A-Za-z]+-class$/], 'rd-btn-class')).toBe(true)
+    expect(isPropsMatch(EXACT_RD_BTN_CLASS_REGEXP, 'rd-btn-class')).toBe(true)
+    expect(isPropsMatch([EXACT_RD_BTN_CLASS_REGEXP], 'rd-btn-class')).toBe(true)
+    expect(isPropsMatch(RD_WORD_CLASS_REGEXP, 'rd-btn-class')).toBe(true)
+    expect(isPropsMatch([RD_WORD_CLASS_REGEXP], 'rd-btn-class')).toBe(true)
+    expect(isPropsMatch(RD_ALPHA_CLASS_REGEXP, 'rd-btn-class')).toBe(true)
+    expect(isPropsMatch([RD_ALPHA_CLASS_REGEXP], 'rd-btn-class')).toBe(true)
   })
 
   it('remove all id', () => {
@@ -53,5 +58,53 @@ describe('utils', () => {
       runtimeSet,
     })
     expect(code).toContain(replaceWxml('border-[#ff0000] bg-blue-600/50'))
+  })
+
+  it('does not retry when wrapExpression is already enabled', () => {
+    const jsHandler = vi.fn(() => ({
+      code: 'wrapped',
+      error: new Error('already wrapped'),
+    }))
+    const runtimeSet = new Set<string>()
+    const code = generateCode(`{'foo': flag}`, {
+      jsHandler,
+      runtimeSet,
+      wrapExpression: true,
+    })
+
+    expect(code).toBe('wrapped')
+    expect(jsHandler).toHaveBeenCalledTimes(1)
+    expect(jsHandler.mock.calls[0]?.[2]).toEqual({
+      wrapExpression: true,
+    })
+  })
+
+  it('retries once with wrapExpression when the initial parse fails', () => {
+    const jsHandler = vi
+      .fn()
+      .mockReturnValueOnce({
+        code: 'initial',
+        error: new Error('parse error'),
+      })
+      .mockReturnValueOnce({
+        code: 'fallback',
+      })
+    const runtimeSet = new Set<string>()
+    const code = generateCode(`{'foo': flag}`, {
+      jsHandler,
+      runtimeSet,
+    })
+
+    expect(code).toBe('fallback')
+    expect(jsHandler).toHaveBeenCalledTimes(2)
+    expect(jsHandler.mock.calls[0]?.[2]).toBeUndefined()
+    expect(jsHandler.mock.calls[1]?.[2]).toEqual({
+      wrapExpression: true,
+    })
+  })
+
+  it('falls back to legacy expression rewriting when runtime js handler is unavailable', () => {
+    const code = generateCode(`{'w-[100px]': flag}`)
+    expect(code).toContain(`'w-_b100px_B'`)
   })
 })

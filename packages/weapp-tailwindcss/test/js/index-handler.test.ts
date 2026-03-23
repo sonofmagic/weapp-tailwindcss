@@ -3,6 +3,9 @@ import { afterEach, describe, expect, it, vi } from 'vitest'
 import { createJsHandler } from '@/js'
 import * as babel from '@/js/babel'
 
+const STYLED_TAG_REGEXP = /^styled$/
+const OVERRIDE_CALL_REGEXP = /^override$/
+
 function createBaseOptions() {
   return {
     escapeMap: { base: '_' },
@@ -14,7 +17,7 @@ function createBaseOptions() {
     unescapeUnicode: true,
     babelParserOptions: { sourceType: 'module' as const },
     ignoreCallExpressionIdentifiers: ['cn'],
-    ignoreTaggedTemplateExpressionIdentifiers: [/^styled$/],
+    ignoreTaggedTemplateExpressionIdentifiers: [STYLED_TAG_REGEXP],
     uniAppX: true,
   }
 }
@@ -31,7 +34,7 @@ describe('createJsHandler', () => {
     const override = {
       needEscaped: false,
       escapeMap: { override: '_' },
-      ignoreCallExpressionIdentifiers: [/^override$/],
+      ignoreCallExpressionIdentifiers: [OVERRIDE_CALL_REGEXP],
     }
     const classNameSet = new Set(['foo'])
 
@@ -64,17 +67,87 @@ describe('createJsHandler', () => {
     const handler = createJsHandler(base)
 
     const output = handler('another-source')
+    handler('another-source-2')
 
     expect(output.code).toBe('secondary')
-    expect(spy).toHaveBeenCalledTimes(1)
+    expect(spy).toHaveBeenCalledTimes(2)
 
     const [, resolved] = spy.mock.calls[0]
+    const [, resolvedAgain] = spy.mock.calls[1]
+    expect(resolved).toBe(resolvedAgain)
     expect(resolved.classNameSet).toBeUndefined()
     expect(resolved.escapeMap).toBe(base.escapeMap)
     expect(resolved.ignoreCallExpressionIdentifiers).toBe(base.ignoreCallExpressionIdentifiers)
     expect(resolved.needEscaped).toBe(true)
     expect(resolved.alwaysEscape).toBe(true)
     expect(resolved.unescapeUnicode).toBe(true)
+  })
+
+  it('reuses the cached configuration when overrides only contain undefined values', () => {
+    const spy = vi.spyOn(babel, 'jsHandler').mockReturnValue({ code: 'undefined-cache' })
+    const base = createBaseOptions()
+    const handler = createJsHandler(base)
+    const classNameSet = new Set(['foo'])
+
+    handler('source-a', classNameSet)
+    handler('source-b', classNameSet, {
+      needEscaped: undefined,
+      alwaysEscape: undefined,
+    })
+
+    expect(spy).toHaveBeenCalledTimes(2)
+    expect(spy.mock.calls[0][1]).toBe(spy.mock.calls[1][1])
+    expect(spy.mock.calls[1][1].classNameSet).toBe(classNameSet)
+  })
+
+  it('reuses the cached configuration for the same runtime classNameSet when no overrides are supplied', () => {
+    const spy = vi.spyOn(babel, 'jsHandler').mockReturnValue({ code: 'set-cache' })
+    const base = createBaseOptions()
+    const handler = createJsHandler(base)
+    const classNameSet = new Set(['foo'])
+
+    handler('source-a', classNameSet)
+    handler('source-b', classNameSet)
+
+    expect(spy).toHaveBeenCalledTimes(2)
+    expect(spy.mock.calls[0][1]).toBe(spy.mock.calls[1][1])
+    expect(spy.mock.calls[0][1].classNameSet).toBe(classNameSet)
+  })
+
+  it('caches repeated short-source transform results for the same resolved options', () => {
+    const spy = vi.spyOn(babel, 'jsHandler').mockReturnValue({ code: 'cached-result' })
+    const base = createBaseOptions()
+    const handler = createJsHandler(base)
+    const classNameSet = new Set(['foo'])
+    const override = {
+      wrapExpression: true as const,
+    }
+
+    const first = handler('item.checked ? "foo" : ""', classNameSet, override)
+    const second = handler('item.checked ? "foo" : ""', classNameSet, override)
+
+    expect(first.code).toBe('cached-result')
+    expect(second.code).toBe('cached-result')
+    expect(spy).toHaveBeenCalledTimes(1)
+  })
+
+  it('does not cache transform results when moduleGraph is enabled', () => {
+    const spy = vi.spyOn(babel, 'jsHandler').mockReturnValue({ code: 'linked-result' })
+    const base = createBaseOptions()
+    const handler = createJsHandler(base)
+
+    const override = {
+      filename: '/project/dist/index.js',
+      moduleGraph: {
+        resolve: vi.fn(),
+        load: vi.fn(),
+      },
+    }
+
+    handler('import "./chunk.js"', undefined, override)
+    handler('import "./chunk.js"', undefined, override)
+
+    expect(spy).toHaveBeenCalledTimes(2)
   })
 
   it('escapes class names when alwaysEscape is provided at creation time', () => {

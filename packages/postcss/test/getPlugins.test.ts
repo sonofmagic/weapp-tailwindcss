@@ -3,6 +3,8 @@ import type { IStyleHandlerOptions } from '@/types'
 import { describe, expect, it } from 'vitest'
 import { getPlugins } from '@/plugins'
 
+const TW_CUSTOM_PROP_RE = /^--tw-/
+
 function createOptions(partial: Partial<IStyleHandlerOptions>): IStyleHandlerOptions {
   return {
     cssPresetEnv: {
@@ -26,7 +28,7 @@ describe('getPlugins', () => {
       rem2rpx: true,
       unitsToPx: true,
       cssCalc: {
-        includeCustomProperties: [/^--tw-/],
+        includeCustomProperties: [TW_CUSTOM_PROP_RE],
       },
     })
 

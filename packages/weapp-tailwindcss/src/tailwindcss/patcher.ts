@@ -1,4 +1,4 @@
-import type { ILengthUnitsPatchOptions, TailwindcssPatchOptions } from 'tailwindcss-patch'
+import type { ILengthUnitsPatchOptions, TailwindCssPatchOptions } from 'tailwindcss-patch'
 import type { LegacyTailwindcssPatcherOptions } from './patcher-options'
 import type { TailwindcssPatcherLike } from '@/types'
 import path from 'node:path'
@@ -22,16 +22,16 @@ import {
 
 type TailwindcssExtractOptions = Parameters<TailwindcssPatcher['extract']>[0]
 type TailwindcssExtractResult = ReturnType<TailwindcssPatcher['extract']>
-type TailwindUserOptions = NonNullable<TailwindcssPatchOptions['tailwindcss']>
-type TailwindCacheOptions = Exclude<NonNullable<TailwindcssPatchOptions['cache']>, boolean>
-type TailwindApplyOptions = NonNullable<TailwindcssPatchOptions['apply']>
+type TailwindUserOptions = NonNullable<TailwindCssPatchOptions['tailwindcss']>
+type TailwindCacheOptions = Exclude<NonNullable<TailwindCssPatchOptions['cache']>, boolean>
+type TailwindApplyOptions = NonNullable<TailwindCssPatchOptions['apply']>
 
 export interface CreateTailwindcssPatcherOptions {
   basedir?: string
   cacheDir?: string
   supportCustomLengthUnitsPatch?: boolean | ILengthUnitsPatchOptions
   tailwindcss?: TailwindUserOptions
-  tailwindcssPatcherOptions?: TailwindcssPatchOptions | LegacyTailwindcssPatcherOptions
+  tailwindcssPatcherOptions?: TailwindCssPatchOptions | LegacyTailwindcssPatcherOptions
 }
 
 function createFallbackTailwindcssPatcher(): TailwindcssPatcherLike {
@@ -73,6 +73,15 @@ function createFallbackTailwindcssPatcher(): TailwindcssPatcherLike {
 }
 
 let hasLoggedMissingTailwind = false
+
+const TAILWINDCSS_NOT_FOUND_RE = /tailwindcss not found/i
+const UNABLE_TO_LOCATE_TAILWINDCSS_RE = /unable to locate tailwind css package/i
+
+function isTailwindcssV4PackageName(packageName: string | undefined) {
+  return packageName === '@tailwindcss/postcss'
+    || packageName === 'tailwindcss4'
+    || Boolean(packageName && packageName.includes('tailwindcss4'))
+}
 
 export function createTailwindcssPatcher(options?: CreateTailwindcssPatcherOptions): TailwindcssPatcherLike {
   const { basedir, cacheDir, supportCustomLengthUnitsPatch, tailwindcss, tailwindcssPatcherOptions } = options || {}
@@ -132,7 +141,7 @@ export function createTailwindcssPatcher(options?: CreateTailwindcssPatcherOptio
   }
 
   if (!baseTailwindOptions.postcssPlugin) {
-    baseTailwindOptions.postcssPlugin = baseTailwindOptions.version === 4
+    baseTailwindOptions.postcssPlugin = baseTailwindOptions.version === 4 || isTailwindcssV4PackageName(baseTailwindOptions.packageName)
       ? '@tailwindcss/postcss'
       : 'tailwindcss'
   }
@@ -144,7 +153,7 @@ export function createTailwindcssPatcher(options?: CreateTailwindcssPatcherOptio
     }
   }
 
-  const baseOptions: TailwindcssPatchOptions = {
+  const baseOptions: TailwindCssPatchOptions = {
     projectRoot: normalizedBasedir,
     cache,
     tailwindcss: baseTailwindOptions,
@@ -154,8 +163,8 @@ export function createTailwindcssPatcher(options?: CreateTailwindcssPatcherOptio
     } satisfies TailwindApplyOptions,
   }
 
-  const mergedOptions = defuOverrideArray<TailwindcssPatchOptions, TailwindcssPatchOptions[]>(
-    (normalizedUserOptions ?? {}) as TailwindcssPatchOptions,
+  const mergedOptions = defuOverrideArray<TailwindCssPatchOptions, TailwindCssPatchOptions[]>(
+    (normalizedUserOptions ?? {}) as TailwindCssPatchOptions,
     baseOptions,
   )
   const resolvedOptions = toModernTailwindcssPatchOptions(mergedOptions) ?? {}
@@ -167,7 +176,7 @@ export function createTailwindcssPatcher(options?: CreateTailwindcssPatcherOptio
     const sourcePaths = customPaths ? existingResolve.paths : resolvePaths
     resolvedTailwindOptions.resolve = {
       ...existingResolve,
-      paths: Array.from(new Set(sourcePaths)),
+      paths: [...new Set(sourcePaths)],
     }
     logger.debug('Tailwind resolve config %O', {
       packageName: resolvedTailwindOptions.packageName,
@@ -220,14 +229,14 @@ export function createTailwindcssPatcher(options?: CreateTailwindcssPatcherOptio
   }
   catch (error) {
     const searchPaths = resolvedOptions.tailwindcss?.resolve?.paths
-    if (error instanceof Error && /tailwindcss not found/i.test(error.message)) {
+    if (error instanceof Error && TAILWINDCSS_NOT_FOUND_RE.test(error.message)) {
       if (!hasLoggedMissingTailwind) {
         logger.warn('Tailwind CSS 未安装，已跳过 Tailwind 相关补丁。若需使用 Tailwind 能力，请安装 tailwindcss。')
         hasLoggedMissingTailwind = true
       }
       return createFallbackTailwindcssPatcher()
     }
-    if (error instanceof Error && /unable to locate tailwind css package/i.test(error.message)) {
+    if (error instanceof Error && UNABLE_TO_LOCATE_TAILWINDCSS_RE.test(error.message)) {
       logger.error('无法定位 Tailwind CSS 包 "%s"，已尝试路径: %O', resolvedOptions.tailwindcss?.packageName, searchPaths)
     }
     throw error

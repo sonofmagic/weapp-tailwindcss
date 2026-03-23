@@ -81,4 +81,24 @@ describe('compiler context cache', () => {
     expect(ctxA.tailwindcssBasedir).toBe(firstProject)
     expect(ctxB.tailwindcssBasedir).toBe(secondProject)
   })
+
+  it('reuses context across runtime package scope changes when tailwindcssBasedir is explicit', () => {
+    const firstProject = path.resolve(process.cwd(), 'demo/uni-app')
+    const secondProject = path.resolve(process.cwd(), 'demo/uni-app-vue3-vite')
+    const options = {
+      tailwindcssBasedir: firstProject,
+    }
+
+    process.env.npm_package_json = path.join(firstProject, 'package.json')
+    process.env.PNPM_PACKAGE_NAME = '@weapp-tailwindcss-demo/uni-app'
+    const ctxA = getCompilerContext(options)
+
+    process.env.npm_package_json = path.join(secondProject, 'package.json')
+    process.env.PNPM_PACKAGE_NAME = '@weapp-tailwindcss-demo/uni-app-vue3-vite'
+    const ctxB = getCompilerContext(options)
+
+    expect(ctxA).toBe(ctxB)
+    expect(ctxA.tailwindcssBasedir).toBe(firstProject)
+    expect(ctxB.tailwindcssBasedir).toBe(firstProject)
+  })
 })

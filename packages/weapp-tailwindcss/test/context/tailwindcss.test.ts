@@ -23,6 +23,7 @@ describe('resolveTailwindcssBasedir', () => {
 
     const { resolveTailwindcssBasedir } = await import('@/context/tailwindcss')
 
+    // npm_package_json 为绝对路径，取其 dirname 后经 path.normalize 返回
     expect(resolveTailwindcssBasedir()).toBe(path.normalize('/workspace/apps/vite-native-skyline'))
   })
 
@@ -31,7 +32,8 @@ describe('resolveTailwindcssBasedir', () => {
     process.env.INIT_CWD = '/ignored-init-cwd'
     const { resolveTailwindcssBasedir } = await import('@/context/tailwindcss')
 
-    expect(resolveTailwindcssBasedir('./apps/demo')).toBe(path.normalize('/ignored-init-cwd/apps/demo'))
+    // 相对路径基于 INIT_CWD 锚点 resolve，Windows 下会带盘符
+    expect(resolveTailwindcssBasedir('./apps/demo')).toBe(path.resolve('/ignored-init-cwd', './apps/demo'))
   })
 
   it('falls back to PWD when INIT_CWD is absent', async () => {
@@ -39,7 +41,8 @@ describe('resolveTailwindcssBasedir', () => {
     delete process.env.INIT_CWD
     const { resolveTailwindcssBasedir } = await import('@/context/tailwindcss')
 
-    expect(resolveTailwindcssBasedir('./apps/demo')).toBe(path.normalize('/anchor/from-pwd-only/apps/demo'))
+    // 相对路径基于 PWD 锚点 resolve
+    expect(resolveTailwindcssBasedir('./apps/demo')).toBe(path.resolve('/anchor/from-pwd-only', './apps/demo'))
   })
 
   it('prefers specific base env over generic anchors', async () => {
@@ -47,7 +50,8 @@ describe('resolveTailwindcssBasedir', () => {
     process.env.WEAPP_TAILWINDCSS_BASEDIR = '/specific/base'
     const { resolveTailwindcssBasedir } = await import('@/context/tailwindcss')
 
-    expect(resolveTailwindcssBasedir('./tailwind')).toBe(path.normalize('/specific/base/tailwind'))
+    // 相对路径基于 WEAPP_TAILWINDCSS_BASEDIR 锚点 resolve
+    expect(resolveTailwindcssBasedir('./tailwind')).toBe(path.resolve('/specific/base', './tailwind'))
   })
 
   it('falls back to provided fallback when env not set', async () => {
@@ -133,10 +137,10 @@ describe('createTailwindcssPatcherFromContext', () => {
       expect(createdPatchers[1].patch).toHaveBeenCalledTimes(1)
 
       const classSet = await patcher.getClassSet()
-      expect(Array.from(classSet)).toEqual(['foo', 'bar'])
+      expect([...classSet]).toEqual(['foo', 'bar'])
 
       const extracted = await patcher.extract({})
-      expect(Array.from(extracted.classSet)).toEqual(['foo', 'bar'])
+      expect([...extracted.classSet]).toEqual(['foo', 'bar'])
       expect(extracted.classList).toEqual(['foo', 'bar'])
     }
     finally {

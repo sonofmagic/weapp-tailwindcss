@@ -76,6 +76,7 @@ export async function refreshTailwindRuntimeState(
     return false
   }
 
+  debug('refresh runtime state start, clearCache=%s major=%s', clearCache, state.twPatcher.majorVersion ?? 'unknown')
   await state.patchPromise
 
   let refreshed = false
@@ -91,6 +92,7 @@ export async function refreshTailwindRuntimeState(
     state.patchPromise = createTailwindPatchPromise(state.twPatcher, state.onPatchCompleted)
   }
 
+  debug('refresh runtime state end, refreshed=%s major=%s', refreshed, state.twPatcher.majorVersion ?? 'unknown')
   return refreshed
 }
 

@@ -1,10 +1,10 @@
 {
   "version": "1.0.0",
-  "generatedAt": "2026-03-05T13:28:28.390Z",
+  "generatedAt": "2026-03-16T11:44:13.738Z",
   "siteUrl": "https://tw.icebreaker.top",
   "totals": {
-    "all": 168,
-    "docs": 164,
+    "all": 175,
+    "docs": 171,
     "blog": 4
   },
   "documents": [
@@ -929,17 +929,14 @@
       "kind": "doc",
       "id": "doc:api/index",
       "title": "weapp-tailwindcss",
-      "description": "weapp-tailwindcss API 入口，汇总配置项、生命周期、文件匹配与接口说明，便于按场景查阅插件能力。",
-      "summary": "weapp-tailwindcss API 入口，汇总配置项、生命周期、文件匹配与接口说明，便于按场景查阅插件能力。",
+      "description": "weapp-tailwindcss，包含配置项、接口定义与参数说明。",
+      "summary": "weapp-tailwindcss，包含配置项、接口定义与参数说明。",
       "url": "/docs/api",
       "canonical": "https://tw.icebreaker.top/docs/api",
       "keywords": [
         "API",
         "接口文档",
         "配置项",
-        "插件配置",
-        "生命周期",
-        "文件匹配",
         "weapp-tailwindcss",
         "tailwindcss",
         "小程序",
@@ -1434,10 +1431,77 @@
     },
     {
       "kind": "doc",
+      "id": "doc:api/interfaces/ApplyOptions",
+      "title": "ApplyOptions",
+      "description": "Preferred options for runtime patch behavior.",
+      "summary": "Preferred options for runtime patch behavior.",
+      "url": "/docs/api/interfaces/ApplyOptions",
+      "canonical": "https://tw.icebreaker.top/docs/api/interfaces/ApplyOptions",
+      "keywords": [
+        "API",
+        "接口文档",
+        "配置项",
+        "ApplyOptions",
+        "interfaces",
+        "weapp-tailwindcss",
+        "tailwindcss",
+        "小程序",
+        "微信小程序",
+        "uni-app",
+        "taro",
+        "rax",
+        "mpx"
+      ],
+      "headings": [
+        "属性",
+        "# overwrite?",
+        "# exposeContext?",
+        "# extendLengthUnits?"
+      ],
+      "updatedAt": null,
+      "source": "docs/api/interfaces/ApplyOptions.md"
+    },
+    {
+      "kind": "doc",
+      "id": "doc:api/interfaces/CacheOptions",
+      "title": "CacheOptions",
+      "description": "Configures how the Tailwind class cache is stored and where it lives on disk.",
+      "summary": "Configures how the Tailwind class cache is stored and where it lives on disk.",
+      "url": "/docs/api/interfaces/CacheOptions",
+      "canonical": "https://tw.icebreaker.top/docs/api/interfaces/CacheOptions",
+      "keywords": [
+        "API",
+        "接口文档",
+        "配置项",
+        "CacheOptions",
+        "interfaces",
+        "weapp-tailwindcss",
+        "tailwindcss",
+        "小程序",
+        "微信小程序",
+        "uni-app",
+        "taro",
+        "rax",
+        "mpx"
+      ],
+      "headings": [
+        "属性",
+        "# enabled?",
+        "# cwd?",
+        "# dir?",
+        "# file?",
+        "# strategy?",
+        "# driver?"
+      ],
+      "updatedAt": null,
+      "source": "docs/api/interfaces/CacheOptions.md"
+    },
+    {
+      "kind": "doc",
       "id": "doc:api/interfaces/DisabledOptions",
       "title": "DisabledOptions",
-      "description": "定义于: packages/weapp-tailwindcss/src/types/disabled-options.ts:9",
-      "summary": "定义于: packages/weapp-tailwindcss/src/types/disabled-options.ts:9",
+      "description": "禁用插件功能的细粒度选项。",
+      "summary": "禁用插件功能的细粒度选项。",
       "url": "/docs/api/interfaces/DisabledOptions",
       "canonical": "https://tw.icebreaker.top/docs/api/interfaces/DisabledOptions",
       "keywords": [
@@ -1469,17 +1533,17 @@
     },
     {
       "kind": "doc",
-      "id": "doc:api/interfaces/TailwindcssPatchOptions",
-      "title": "TailwindcssPatchOptions",
-      "description": "定义于: node_modules/.pnpm/tailwindcss-patch@8.6.1_magicast@0.5.1_tailwindcss@4.1.18/node_modules/tailwindcss-patch/dist/index.d.ts:117",
-      "summary": "定义于: node_modules/.pnpm/tailwindcss-patch@8.6.1_magicast@0.5.1_tailwindcss@4.1.18/node_modules/tailwindcss-patch/dist/index.d.ts:117",
-      "url": "/docs/api/interfaces/TailwindcssPatchOptions",
-      "canonical": "https://tw.icebreaker.top/docs/api/interfaces/TailwindcssPatchOptions",
+      "id": "doc:api/interfaces/ExtractOptions",
+      "title": "ExtractOptions",
+      "description": "Preferred options for extraction output behavior.",
+      "summary": "Preferred options for extraction output behavior.",
+      "url": "/docs/api/interfaces/ExtractOptions",
+      "canonical": "https://tw.icebreaker.top/docs/api/interfaces/ExtractOptions",
       "keywords": [
         "API",
         "接口文档",
         "配置项",
-        "TailwindcssPatchOptions",
+        "ExtractOptions",
         "interfaces",
         "weapp-tailwindcss",
         "tailwindcss",
@@ -1492,23 +1556,190 @@
       ],
       "headings": [
         "属性",
+        "# write?",
+        "# file?",
+        "# format?",
+        "# pretty?",
+        "# removeUniversalSelector?"
+      ],
+      "updatedAt": null,
+      "source": "docs/api/interfaces/ExtractOptions.md"
+    },
+    {
+      "kind": "doc",
+      "id": "doc:api/interfaces/TailwindCssOptions",
+      "title": "TailwindCssOptions",
+      "description": "High-level Tailwind patch configuration shared across versions.",
+      "summary": "High-level Tailwind patch configuration shared across versions.",
+      "url": "/docs/api/interfaces/TailwindCssOptions",
+      "canonical": "https://tw.icebreaker.top/docs/api/interfaces/TailwindCssOptions",
+      "keywords": [
+        "API",
+        "接口文档",
+        "配置项",
+        "TailwindCssOptions",
+        "interfaces",
+        "weapp-tailwindcss",
+        "tailwindcss",
+        "小程序",
+        "微信小程序",
+        "uni-app",
+        "taro",
+        "rax",
+        "mpx"
+      ],
+      "headings": [
+        "属性",
+        "# config?",
         "# cwd?",
-        "# overwrite?",
-        "# tailwind?",
-        "# features?",
+        "# postcssPlugin?",
+        "# version?",
+        "# packageName?",
+        "# resolve?",
+        "# v2?"
+      ],
+      "updatedAt": null,
+      "source": "docs/api/interfaces/TailwindCssOptions.md"
+    },
+    {
+      "kind": "doc",
+      "id": "doc:api/interfaces/TailwindCssPatchOptions",
+      "title": "TailwindCssPatchOptions",
+      "description": "Root configuration consumed by the Tailwind CSS patch runner.",
+      "summary": "Root configuration consumed by the Tailwind CSS patch runner.",
+      "url": "/docs/api/interfaces/TailwindCssPatchOptions",
+      "canonical": "https://tw.icebreaker.top/docs/api/interfaces/TailwindCssPatchOptions",
+      "keywords": [
+        "API",
+        "接口文档",
+        "配置项",
+        "TailwindCssPatchOptions",
+        "interfaces",
+        "weapp-tailwindcss",
+        "tailwindcss",
+        "小程序",
+        "微信小程序",
+        "uni-app",
+        "taro",
+        "rax",
+        "mpx"
+      ],
+      "headings": [
+        "属性",
+        "# projectRoot?",
+        "# tailwindcss?",
+        "# apply?",
+        "# extract?",
         "# filter()?",
         "## 参数",
         "### className"
       ],
       "updatedAt": null,
-      "source": "docs/api/interfaces/TailwindcssPatchOptions.md"
+      "source": "docs/api/interfaces/TailwindCssPatchOptions.md"
+    },
+    {
+      "kind": "doc",
+      "id": "doc:api/interfaces/TailwindV2Options",
+      "title": "TailwindV2Options",
+      "description": "Configuration specific to Tailwind CSS v2 patching flows.",
+      "summary": "Configuration specific to Tailwind CSS v2 patching flows.",
+      "url": "/docs/api/interfaces/TailwindV2Options",
+      "canonical": "https://tw.icebreaker.top/docs/api/interfaces/TailwindV2Options",
+      "keywords": [
+        "API",
+        "接口文档",
+        "配置项",
+        "TailwindV2Options",
+        "interfaces",
+        "weapp-tailwindcss",
+        "tailwindcss",
+        "小程序",
+        "微信小程序",
+        "uni-app",
+        "taro",
+        "rax",
+        "mpx"
+      ],
+      "headings": [
+        "属性",
+        "# config?",
+        "# cwd?",
+        "# postcssPlugin?"
+      ],
+      "updatedAt": null,
+      "source": "docs/api/interfaces/TailwindV2Options.md"
+    },
+    {
+      "kind": "doc",
+      "id": "doc:api/interfaces/TailwindV3Options",
+      "title": "TailwindV3Options",
+      "description": "Configuration specific to Tailwind CSS v3 patching flows.",
+      "summary": "Configuration specific to Tailwind CSS v3 patching flows.",
+      "url": "/docs/api/interfaces/TailwindV3Options",
+      "canonical": "https://tw.icebreaker.top/docs/api/interfaces/TailwindV3Options",
+      "keywords": [
+        "API",
+        "接口文档",
+        "配置项",
+        "TailwindV3Options",
+        "interfaces",
+        "weapp-tailwindcss",
+        "tailwindcss",
+        "小程序",
+        "微信小程序",
+        "uni-app",
+        "taro",
+        "rax",
+        "mpx"
+      ],
+      "headings": [
+        "属性",
+        "# config?",
+        "# cwd?",
+        "# postcssPlugin?"
+      ],
+      "updatedAt": null,
+      "source": "docs/api/interfaces/TailwindV3Options.md"
+    },
+    {
+      "kind": "doc",
+      "id": "doc:api/interfaces/TailwindV4Options",
+      "title": "TailwindV4Options",
+      "description": "Additional configuration specific to Tailwind CSS v4 extraction.",
+      "summary": "Additional configuration specific to Tailwind CSS v4 extraction.",
+      "url": "/docs/api/interfaces/TailwindV4Options",
+      "canonical": "https://tw.icebreaker.top/docs/api/interfaces/TailwindV4Options",
+      "keywords": [
+        "API",
+        "接口文档",
+        "配置项",
+        "TailwindV4Options",
+        "interfaces",
+        "weapp-tailwindcss",
+        "tailwindcss",
+        "小程序",
+        "微信小程序",
+        "uni-app",
+        "taro",
+        "rax",
+        "mpx"
+      ],
+      "headings": [
+        "属性",
+        "# base?",
+        "# css?",
+        "# cssEntries?",
+        "# sources?"
+      ],
+      "updatedAt": null,
+      "source": "docs/api/interfaces/TailwindV4Options.md"
     },
     {
       "kind": "doc",
       "id": "doc:api/interfaces/UserDefinedOptions",
       "title": "UserDefinedOptions",
-      "description": "定义于: packages/weapp-tailwindcss/src/types/user-defined-options/index.ts:13",
-      "summary": "定义于: packages/weapp-tailwindcss/src/types/user-defined-options/index.ts:13",
+      "description": "UserDefinedOptions，包含配置项、接口定义与参数说明。",
+      "summary": "UserDefinedOptions，包含配置项、接口定义与参数说明。",
       "url": "/docs/api/interfaces/UserDefinedOptions",
       "canonical": "https://tw.icebreaker.top/docs/api/interfaces/UserDefinedOptions",
       "keywords": [
@@ -1536,8 +1767,8 @@
       "kind": "doc",
       "id": "doc:api/options/general",
       "title": "⚙️ 一般配置",
-      "description": "定义于: packages/weapp-tailwindcss/src/types/user-defined-options/index.ts:13",
-      "summary": "定义于: packages/weapp-tailwindcss/src/types/user-defined-options/index.ts:13",
+      "description": "本页收录 17 个配置项，来源于 UserDefinedOptions。",
+      "summary": "本页收录 17 个配置项，来源于 UserDefinedOptions。",
       "url": "/docs/api/options/general",
       "canonical": "https://tw.icebreaker.top/docs/api/options/general",
       "keywords": [
@@ -1558,23 +1789,23 @@
       ],
       "headings": [
         "配置一览",
-        "常用配置模板",
         "详细说明",
+        "# supportCustomLengthUnitsPatch",
+        "## 参阅",
+        "## 备注",
         "# appType",
         "## 备注",
-        "## 默认值",
-        "## 示例",
         "# arbitraryValues"
       ],
       "updatedAt": null,
-      "source": "docs/api/options/general.mdx"
+      "source": "docs/api/options/general.md"
     },
     {
       "kind": "doc",
       "id": "doc:api/options/important",
       "title": "✅ 重要配置",
-      "description": "定义于: packages/weapp-tailwindcss/src/types/user-defined-options/index.ts:13",
-      "summary": "定义于: packages/weapp-tailwindcss/src/types/user-defined-options/index.ts:13",
+      "description": "本页收录 17 个配置项，来源于 UserDefinedOptions。",
+      "summary": "本页收录 17 个配置项，来源于 UserDefinedOptions。",
       "url": "/docs/api/options/important",
       "canonical": "https://tw.icebreaker.top/docs/api/options/important",
       "keywords": [
@@ -1595,23 +1826,23 @@
       ],
       "headings": [
         "配置一览",
-        "常用配置模板",
         "详细说明",
-        "# cssCalc",
+        "# disabled",
         "## 备注",
-        "## 默认值",
         "## 示例",
-        "# cssEntries"
+        "# customAttributes",
+        "## 备注",
+        "## 示例"
       ],
       "updatedAt": null,
-      "source": "docs/api/options/important.mdx"
+      "source": "docs/api/options/important.md"
     },
     {
       "kind": "doc",
       "id": "doc:api/options/lifecycle",
       "title": "🧭 生命周期",
-      "description": "定义于: packages/weapp-tailwindcss/src/types/user-defined-options/index.ts:13",
-      "summary": "定义于: packages/weapp-tailwindcss/src/types/user-defined-options/index.ts:13",
+      "description": "本页收录 4 个配置项，来源于 UserDefinedOptions。",
+      "summary": "本页收录 4 个配置项，来源于 UserDefinedOptions。",
       "url": "/docs/api/options/lifecycle",
       "canonical": "https://tw.icebreaker.top/docs/api/options/lifecycle",
       "keywords": [
@@ -1633,22 +1864,22 @@
       "headings": [
         "配置一览",
         "详细说明",
-        "# onEnd",
-        "## 备注",
-        "## 默认值",
-        "## 示例",
         "# onLoad",
-        "## 备注"
+        "## 返回",
+        "# onStart",
+        "## 返回",
+        "# onUpdate",
+        "## 参数"
       ],
       "updatedAt": null,
-      "source": "docs/api/options/lifecycle.mdx"
+      "source": "docs/api/options/lifecycle.md"
     },
     {
       "kind": "doc",
       "id": "doc:api/options/matchers",
       "title": "🧩 文件匹配",
-      "description": "定义于: packages/weapp-tailwindcss/src/types/user-defined-options/index.ts:13",
-      "summary": "定义于: packages/weapp-tailwindcss/src/types/user-defined-options/index.ts:13",
+      "description": "本页收录 6 个配置项，来源于 UserDefinedOptions。",
+      "summary": "本页收录 6 个配置项，来源于 UserDefinedOptions。",
       "url": "/docs/api/options/matchers",
       "canonical": "https://tw.icebreaker.top/docs/api/options/matchers",
       "keywords": [
@@ -1670,15 +1901,15 @@
       "headings": [
         "配置一览",
         "详细说明",
-        "# cssMatcher",
-        "## 备注",
-        "## 默认值",
-        "## 示例",
         "# htmlMatcher",
-        "## 备注"
+        "## 参数",
+        "### name",
+        "## 返回",
+        "# cssMatcher",
+        "## 参数"
       ],
       "updatedAt": null,
-      "source": "docs/api/options/matchers.mdx"
+      "source": "docs/api/options/matchers.md"
     },
     {
       "kind": "doc",

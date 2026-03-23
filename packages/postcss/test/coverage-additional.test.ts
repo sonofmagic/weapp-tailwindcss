@@ -15,6 +15,11 @@ import * as selectorExports from '../src/selectorParser'
 import { createPlugin, createPlugins } from './plugins/utils'
 import { getFixture } from './utils'
 
+const WHITESPACE_REGEX = /\s+/g
+const MARGIN_RIGHT_LITERAL_REGEX = /margin-right:\s*1px/g
+const COLOR_DECLARATION_REGEX = /color:/g
+const RGBA_COMPACT_REGEX = /rgba\(1,2,3,0\.5\)/
+
 describe('entry exports', () => {
   it('loads core entry points and css vars', async () => {
     expect(Array.isArray(cssVarsV3)).toBe(true)
@@ -53,6 +58,22 @@ describe('spacing helpers', () => {
     const rule = postcss.parse('.a { /*c*/ margin-left: 1px; -webkit-margin-start: 2px }').first as Rule
     normalizeSpacingDeclarations(rule)
     expect(rule.toString()).not.toContain('-webkit-margin-start')
+  })
+
+  it('keeps one literal spacing declaration after mirror normalization', () => {
+    const rule = postcss.parse(`
+      .a {
+        margin-left: 1px;
+        margin-right: 1px;
+        margin-right: var(--gap);
+      }
+    `).first as Rule
+
+    normalizeSpacingDeclarations(rule)
+
+    const css = rule.toString().replace(WHITESPACE_REGEX, ' ')
+    expect(css.match(MARGIN_RIGHT_LITERAL_REGEX)?.length).toBe(1)
+    expect(css).toContain('margin-left: var(--gap)')
   })
 })
 
@@ -98,6 +119,22 @@ describe('post plugin edge cases', () => {
     const result = await postcss([post]).process('.a { /*c*/ margin-left: 1px; margin-inline-start: 1px; }', { from: undefined })
     expect(result.css).toContain('margin-left')
   })
+
+  it('appends host only for default root selector groups', async () => {
+    const post = postcssWeappTailwindcssPostPlugin({
+      cssSelectorReplacement: { root: ['page', '.tw-root', 'wx-root-portal-content'] },
+    })
+    const result = await postcss([post]).process('page,.tw-root,wx-root-portal-content { color: red; }', { from: undefined })
+    expect(result.css).toContain(':host')
+  })
+
+  it('skips host append for customized root selectors', async () => {
+    const post = postcssWeappTailwindcssPostPlugin({
+      cssSelectorReplacement: { root: ['page', '.custom-root', 'wx-root-portal-content'] },
+    })
+    const result = await postcss([post]).process('page,.custom-root,wx-root-portal-content { color: red; }', { from: undefined })
+    expect(result.css).not.toContain(':host')
+  })
 })
 
 describe('custom property cleaner', () => {
@@ -105,7 +142,7 @@ describe('custom property cleaner', () => {
     const cleaner = getCustomPropertyCleaner({ cssCalc: { includeCustomProperties: ['--keep'] } } as any)
     const css = '.demo { color: red; color: blue; }'
     const result = await postcss([cleaner!]).process(css, { from: undefined })
-    expect(result.css.match(/color:/g)?.length).toBe(2)
+    expect(result.css.match(COLOR_DECLARATION_REGEX)?.length).toBe(2)
   })
 })
 
@@ -122,7 +159,7 @@ describe('color fallback edge cases', () => {
     expect(commaSeparated.css).toContain('rgba(1, 2, 3, 0.5)')
 
     const spaced = await postcss([plugin]).process('.d { color: rgb( 1 2 3 / 0.5 ) }', { from: undefined })
-    expect(spaced.css.replace(/\s+/g, '')).toContain('rgba(1,2,3,0.5)')
+    expect(spaced.css.replace(WHITESPACE_REGEX, '')).toMatch(RGBA_COMPACT_REGEX)
   })
 })
 

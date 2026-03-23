@@ -7,6 +7,8 @@ import path from 'pathe'
 import { describe, it } from 'vitest'
 import { collectCssSnapshots, formatWxml, logE2EError, projectFilter, removeWxmlId, resolveSnapshotFile, twExtract, wait } from './shared'
 
+const EPERM_RE = /EPERM/i
+
 interface ProjectTestOptions {
   suite: string
   fixturesDir: string
@@ -45,7 +47,7 @@ async function clearTailwindPatchCaches(root: string) {
   ])
 
   await Promise.all(
-    [...candidates].map(target => safeRm(target)),
+    Array.from(candidates, target => safeRm(target)),
   )
 }
 
@@ -58,21 +60,26 @@ function formatClassListSnapshot(classList: string[]) {
   return `${JSON.stringify(classList, null, 2)}\n`
 }
 
-function countSuspiciousClassFragments(wxml: string) {
-  let count = 0
+const SUSPICIOUS_CLASS_FRAGMENT_RE = /\b[\w-]+-\s+[a-z0-9#]/gi
+const SUSPICIOUS_XL_FRAGMENT_RE = /\b\d+xl\s+\d+xl\b/gi
+
+function collectSuspiciousClassFragments(wxml: string) {
+  const matches: string[] = []
   const patterns = [
-    /\b[\w-]+-\s+[a-z0-9#]/gi,
-    /\b\d+xl\s+\d+xl\b/gi,
+    SUSPICIOUS_CLASS_FRAGMENT_RE,
+    SUSPICIOUS_XL_FRAGMENT_RE,
   ]
 
   for (const pattern of patterns) {
-    const matches = wxml.match(pattern)
-    if (matches) {
-      count += matches.length
-    }
+    pattern.lastIndex = 0
+    matches.push(...(wxml.match(pattern) ?? []))
   }
 
-  return count
+  return [...new Set(matches)]
+}
+
+function countSuspiciousClassFragments(wxml: string) {
+  return collectSuspiciousClassFragments(wxml).length
 }
 
 async function captureStablePageWxml(
@@ -199,7 +206,7 @@ async function runProjectTest(entry: ProjectEntry, options: ProjectTestOptions) 
     })
   }
   catch (error: any) {
-    if (error?.code === 'EPERM' || /EPERM/i.test(error?.message ?? '')) {
+    if (error?.code === 'EPERM' || EPERM_RE.test(error?.message ?? '')) {
       await wait()
       return
     }
@@ -218,6 +225,15 @@ async function runProjectTest(entry: ProjectEntry, options: ProjectTestOptions) 
         }
         catch {
           logE2EError('Failed to format WXML for %s', entry.projectPath)
+        }
+
+        const suspiciousFragments = collectSuspiciousClassFragments(wxml)
+        if (suspiciousFragments.length > 0) {
+          logE2EError(
+            '[e2e] suspicious class fragments detected in %s/page.wxml: %s',
+            entry.name,
+            suspiciousFragments.join(', '),
+          )
         }
 
         await expectProjectSnapshot(options.suite, entry.name, 'page.wxml', wxml)

@@ -1,12 +1,15 @@
 import type { Options as ClassicOptions } from '@docusaurus/preset-classic'
 
+// eslint-disable-next-line ts/no-require-imports -- Docusaurus 配置需要同步 require
+const npm2yarn = require('@docusaurus/remark-plugin-npm2yarn')
+
 function createBlogOptions(): NonNullable<ClassicOptions['blog']> {
   return {
     // Suppress warning logs about missing truncation markers in blog previews during dev/build
     onUntruncatedBlogPosts: 'ignore',
     remarkPlugins: [
       [
-        require('@docusaurus/remark-plugin-npm2yarn'),
+        npm2yarn,
         { converters: ['pnpm'] },
       ],
     ],

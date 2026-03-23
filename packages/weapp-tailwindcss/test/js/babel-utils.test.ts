@@ -64,6 +64,50 @@ describe('babel helpers additional coverage', () => {
     expect(ms.toString()).toBe(code)
   })
 
+  it('reuses an empty ignored path set when call ignore identifiers are disabled', () => {
+    const firstCode = 'const first = "w-[100px]"'
+    const secondCode = 'const second = "w-[200px]"'
+    const firstAnalysis = babel.analyzeSource(parse(firstCode, { sourceType: 'module' as const }), {})
+    const secondAnalysis = babel.analyzeSource(parse(secondCode, { sourceType: 'module' as const }), {})
+
+    const [firstTarget] = firstAnalysis.targetPaths
+    const [secondTarget] = secondAnalysis.targetPaths
+
+    expect(firstAnalysis.ignoredPaths).toBe(secondAnalysis.ignoredPaths)
+    expect(firstAnalysis.ignoredPaths.has(firstTarget)).toBe(false)
+    expect(secondAnalysis.ignoredPaths.has(secondTarget)).toBe(false)
+  })
+
+  it('can skip module metadata collection while keeping target path analysis', () => {
+    const code = `
+      import foo from './foo'
+      export * from './bar'
+      const lib = require('./baz')
+      const cls = "w-[100px]"
+    `
+    const ast = parse(code, { sourceType: 'module' as const })
+    const analysis = babel.analyzeSource(ast, {}, undefined, false)
+
+    expect(analysis.targetPaths.length).toBeGreaterThan(0)
+    expect(analysis.importDeclarations.size).toBe(0)
+    expect(analysis.exportDeclarations.size).toBe(0)
+    expect(analysis.requireCallPaths).toHaveLength(0)
+    expect(analysis.walker.imports.size).toBe(0)
+  })
+
+  it('keeps eval handling when module metadata collection is skipped', () => {
+    const code = 'eval(`const cls = "w-[100px]"`)'
+    const options = {
+      classNameSet: new Set(['w-[100px]']),
+      escapeMap: MappingChars2String,
+      alwaysEscape: true,
+    }
+    const analysis = babel.analyzeSource(parse(code, { sourceType: 'module' as const }), options, undefined, false)
+    const ms = babel.processUpdatedSource(code, options, analysis)
+
+    expect(ms.toString()).toContain('w-_b100px_B')
+  })
+
   it('returns the original source when parsing fails', () => {
     const raw = 'const = 1'
     const result = babel.jsHandler(raw, {})
@@ -102,5 +146,17 @@ describe('babel helpers additional coverage', () => {
     expect(handled.code).toContain('const cls')
     expect(handled.error).toBeUndefined()
     expect(handled.map).toBeDefined()
+  })
+
+  it('does not define a source map getter unless generateMap is enabled', () => {
+    const handled = babel.jsHandler('const cls = "w-[100px]"', {
+      classNameSet: new Set(['w-[100px]']),
+      escapeMap: MappingChars2String,
+      alwaysEscape: true,
+    })
+
+    expect(handled.code).toContain('w-_b100px_B')
+    expect(Object.hasOwn(handled, 'map')).toBe(false)
+    expect(handled.map).toBeUndefined()
   })
 })

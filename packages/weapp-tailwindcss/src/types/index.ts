@@ -1,5 +1,5 @@
 import type { ParseError, ParserOptions } from '@babel/parser'
-import type { CssPreflightOptions, IStyleHandlerOptions } from '@weapp-tailwindcss/postcss'
+import type { CssPreflightOptions, IStyleHandlerOptions } from '@weapp-tailwindcss/postcss/types'
 import type { SourceMap } from 'magic-string'
 import type { Document, Result as PostcssResult, Root } from 'postcss'
 import type { ILengthUnitsPatchOptions, TailwindcssPatcher } from 'tailwindcss-patch'

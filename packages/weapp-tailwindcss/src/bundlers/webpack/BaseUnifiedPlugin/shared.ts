@@ -56,6 +56,11 @@ interface ChunkLike {
   files?: Iterable<string> | Array<string>
 }
 
+interface WebpackWatchChangeLike {
+  modifiedFiles?: Set<string>
+  removedFiles?: Set<string>
+}
+
 function toChunkFiles(files: ChunkLike['files']) {
   if (!files) {
     return []
@@ -63,7 +68,7 @@ function toChunkFiles(files: ChunkLike['files']) {
   if (Array.isArray(files)) {
     return files
   }
-  return Array.from(files)
+  return [...files]
 }
 
 export function createAssetHashByChunkMap(chunks: Iterable<ChunkLike>) {
@@ -96,4 +101,9 @@ export function createAssetHashByChunkMap(chunks: Iterable<ChunkLike>) {
     hashByFile.set(file, parts.sort().join('|'))
   }
   return hashByFile
+}
+
+export function hasWatchChanges(compiler: WebpackWatchChangeLike) {
+  return (compiler.modifiedFiles?.size ?? 0) > 0
+    || (compiler.removedFiles?.size ?? 0) > 0
 }

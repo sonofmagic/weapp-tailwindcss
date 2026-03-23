@@ -36,16 +36,21 @@ interface CreateUniAppXPluginsOptions {
 
 const preprocessorLangs = new Set(['scss', 'sass', 'less', 'styl', 'stylus'])
 
+const INLINE_LANG_RE = /lang\.([a-z]+)/i
+const PREPROCESSOR_EXT_RE = /\.(?:scss|sass|less|styl|stylus)(?:\?|$)/i
+const UVUE_NVUE_QUERY_RE = /\.(?:uvue|nvue)(?:\?.*)?$/
+const UVUE_NVUE_RE = /\.(?:uvue|nvue)$/
+
 function isPreprocessorRequest(id: string, lang?: string): boolean {
   const normalizedLang = lang?.toLowerCase()
   if (normalizedLang && preprocessorLangs.has(normalizedLang)) {
     return true
   }
-  const inlineLangMatch = id.match(/lang\.([a-z]+)/i)
+  const inlineLangMatch = id.match(INLINE_LANG_RE)
   if (inlineLangMatch && preprocessorLangs.has(inlineLangMatch[1].toLowerCase())) {
     return true
   }
-  return /\.(?:scss|sass|less|styl|stylus)(?:\?|$)/i.test(id)
+  return PREPROCESSOR_EXT_RE.test(id)
 }
 
 export function createUniAppXPlugins(options: CreateUniAppXPluginsOptions): Plugin[] {
@@ -62,25 +67,44 @@ export function createUniAppXPlugins(options: CreateUniAppXPluginsOptions): Plug
     getResolvedConfig,
   } = options
   const isIosPlatform = providedIosPlatform ?? resolveUniUtsPlatform().isAppIos
+  const cssHandlerOptionsCache = new Map<string, {
+    isMainChunk: boolean
+    postcssOptions: {
+      options: {
+        from: string
+        map: {
+          inline: false
+          annotation: false
+          sourcesContent: true
+        }
+      }
+    }
+  }>()
 
   async function transformStyle(code: string, id: string, query?: ReturnType<typeof parseVueRequest>['query']) {
     const parsed = query ?? parseVueRequest(id).query
     if (isCSSRequest(id) || (parsed.vue && parsed.type === 'style')) {
-      const postcssResult = await styleHandler(code, {
-        isMainChunk: mainCssChunkMatcher(id, appType),
-        postcssOptions: {
-          options: {
-            from: id,
-            map: {
-              inline: false,
-              annotation: false,
-              // PostCSS 可能返回虚拟文件，因此需要启用这一项以获取源内容
-              sourcesContent: true,
-              // 若上游预处理器已经生成 source map，sources 中可能出现重复条目
+      const cacheKey = `${mainCssChunkMatcher(id, appType) ? '1' : '0'}:${id}`
+      let styleHandlerOptions = cssHandlerOptionsCache.get(cacheKey)
+      if (!styleHandlerOptions) {
+        styleHandlerOptions = {
+          isMainChunk: mainCssChunkMatcher(id, appType),
+          postcssOptions: {
+            options: {
+              from: id,
+              map: {
+                inline: false,
+                annotation: false,
+                // PostCSS 可能返回虚拟文件，因此需要启用这一项以获取源内容
+                sourcesContent: true,
+                // 若上游预处理器已经生成 source map，sources 中可能出现重复条目
+              },
             },
           },
-        },
-      })
+        }
+        cssHandlerOptionsCache.set(cacheKey, styleHandlerOptions)
+      }
+      const postcssResult = await styleHandler(code, styleHandlerOptions)
       const rawPostcssMap = postcssResult.map.toJSON()
       const postcssMap = await formatPostcssSourceMap(
         rawPostcssMap as Omit<RawSourceMap, 'version'> as ExistingRawSourceMap,
@@ -124,7 +148,7 @@ export function createUniAppXPlugins(options: CreateUniAppXPluginsOptions): Plug
       await ensureRuntimeClassSet(true)
     },
     async transform(code, id) {
-      if (!/\.(?:uvue|nvue)(?:\?.*)?$/.test(id)) {
+      if (!UVUE_NVUE_QUERY_RE.test(id)) {
         return
       }
       const resolvedConfig = getResolvedConfig()
@@ -151,7 +175,7 @@ export function createUniAppXPlugins(options: CreateUniAppXPluginsOptions): Plug
       if (resolvedConfig?.command !== 'serve') {
         return
       }
-      if (!/\.(?:uvue|nvue)$/.test(ctx.file)) {
+      if (!UVUE_NVUE_RE.test(ctx.file)) {
         return
       }
       // 热重载新增类名，无需等待完整重建
@@ -162,7 +186,7 @@ export function createUniAppXPlugins(options: CreateUniAppXPluginsOptions): Plug
       if (resolvedConfig?.command !== 'build' || !resolvedConfig.build?.watch) {
         return
       }
-      if (!/\.(?:uvue|nvue)(?:\?.*)?$/.test(id)) {
+      if (!UVUE_NVUE_QUERY_RE.test(id)) {
         return
       }
       // 针对 `vite build --watch` 的增量构建刷新运行时类集

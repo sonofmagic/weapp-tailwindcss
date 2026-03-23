@@ -2,28 +2,11 @@
 title: UserDefinedOptions
 sidebar_label: UserDefinedOptions 总览
 sidebar_position: 1
-description: '定义于: packages/weapp-tailwindcss/src/types/user-defined-options/index.ts:13'
-keywords:
-  - API
-  - 接口文档
-  - 配置项
-  - UserDefinedOptions
-  - interfaces
-  - weapp-tailwindcss
-  - tailwindcss
-  - 小程序
-  - 微信小程序
-  - uni-app
-  - taro
-  - rax
-  - mpx
 ---
-
-定义于: [packages/weapp-tailwindcss/src/types/user-defined-options/index.ts:13](https://github.com/sonofmagic/weapp-tailwindcss/blob/59073fec6f66bb3fbd1d15468f6e89437dc3f862/packages/weapp-tailwindcss/src/types/user-defined-options/index.ts#L13)
 
 ## 分组入口
 
-- [✅ 重要配置](../options/important) (17)
-- [🧩 文件匹配](../options/matchers) (6)
-- [🧭 生命周期](../options/lifecycle) (4)
-- [⚙️ 一般配置](../options/general) (15)
+- [✅ 重要配置](../options/important.md) (17)
+- [🧩 文件匹配](../options/matchers.md) (6)
+- [🧭 生命周期](../options/lifecycle.md) (4)
+- [⚙️ 一般配置](../options/general.md) (17)

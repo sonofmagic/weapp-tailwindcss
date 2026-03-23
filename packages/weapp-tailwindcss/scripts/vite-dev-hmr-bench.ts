@@ -70,6 +70,16 @@ interface ProjectInjectionState {
 const BENCH_PAGES_START_MARKER = '// BENCH_BIG_START'
 const BENCH_PAGES_END_MARKER = '// BENCH_BIG_END'
 
+// 模块级正则，避免函数内重复编译
+const READY_TIME_DIRECT_RE = /ready\s+in\s+([\d.]+)\s*ms/i
+const READY_TIME_FALLBACK_RE = /([\d.]+)\s*ms/i
+const READY_KEYWORD_RE = /ready/i
+const BUILD_COMPLETE_RE = /build complete\.\s*watching for changes/i
+const DONE_BUILD_COMPLETE_RE = /done\s+build complete/i
+const NEWLINE_SPLIT_RE = /\r?\n/g
+const SRC_PREFIX_RE = /^src\//
+const LEADING_SLASH_RE = /^\//
+
 function parseArg(flag: string, argv: string[]) {
   const index = argv.indexOf(flag)
   if (index === -1) {
@@ -178,23 +188,23 @@ function spawnPnpm(args: string[], options: Parameters<typeof spawn>[2]) {
 
 function extractReadyTime(line: string): number | undefined {
   const normalized = line.trim()
-  const direct = normalized.match(/ready\s+in\s+([\d.]+)\s*ms/i)
+  const direct = normalized.match(READY_TIME_DIRECT_RE)
   if (direct) {
     return Number(direct[1])
   }
-  const fallback = normalized.match(/([\d.]+)\s*ms/i)
+  const fallback = normalized.match(READY_TIME_FALLBACK_RE)
   if (!fallback) {
     return undefined
   }
-  if (!/ready/i.test(normalized)) {
+  if (!READY_KEYWORD_RE.test(normalized)) {
     return undefined
   }
   return Number(fallback[1])
 }
 
 function isBuildCompleteLine(line: string) {
-  return /build complete\.\s*watching for changes/i.test(line)
-    || /done\s+build complete/i.test(line)
+  return BUILD_COMPLETE_RE.test(line)
+    || DONE_BUILD_COMPLETE_RE.test(line)
 }
 
 function formatStats(values: number[]): Stats {
@@ -309,7 +319,7 @@ function createDevSession(options: BenchCliOptions, env: NodeJS.ProcessEnv): Dev
     try {
       const text = chunk.toString('utf8')
       const buffer = channel === 'stdout' ? stdoutBuffer : stderrBuffer
-      const lines = (buffer + text).split(/\r?\n/g)
+      const lines = (buffer + text).split(NEWLINE_SPLIT_RE)
       const trailing = lines.pop() ?? ''
       if (channel === 'stdout') {
         stdoutBuffer = trailing
@@ -419,8 +429,8 @@ async function injectLargePagesIfNeeded(options: BenchCliOptions): Promise<Proje
   }
 
   const pagesRoot = options.injectPagesRoot
-    .replace(/^src\//, '')
-    .replace(/^\//, '')
+    .replace(SRC_PREFIX_RE, '')
+    .replace(LEADING_SLASH_RE, '')
 
   const items: string[] = []
   for (let index = 1; index <= options.injectPages; index++) {

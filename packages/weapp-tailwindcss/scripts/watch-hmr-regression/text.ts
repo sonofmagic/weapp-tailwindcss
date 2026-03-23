@@ -2,14 +2,24 @@ import type { ClassMutationPayload, StyleMutationPayload } from './types'
 import { promises as fs } from 'node:fs'
 import { sleep } from './session'
 
+const CRLF_RE = /\r\n/g
+const LF_RE = /(?<!\r)\n/g
+const ANY_EOL_RE = /\r?\n/g
+const WHITESPACE_RE = /\s+/g
+const ESCAPE_REGEXP_RE = /[.*+?^${}()|[\]\\]/g
+const DIGITS_RE = /\D/g
+const COMMENT_CARRIER_SCRIPT_MARKER_RE = /\/\* [\s\S]*? \*\/\nconst __twWatchScriptCommentMarker = 'tw-watch-[^']+'\n/g
+const COMMENT_CARRIER_TEMPLATE_MARKER_RE = /\n {4}<view hidden>\{\{ __twWatchScriptCommentMarker \}\}<\/view>/g
+const VUE_TEMPLATE_ROOT_CLOSING_RE = /\n {2}<\/[a-zA-Z][\w-]*>\s*\n<\/template>/g
+
 function isRetryableFsError(error: unknown) {
   const code = (error as NodeJS.ErrnoException | undefined)?.code
   return code === 'ENOENT' || code === 'EPERM' || code === 'EBUSY' || code === 'EACCES'
 }
 
 function resolvePreferredEol(source: string) {
-  const crlfCount = (source.match(/\r\n/g) ?? []).length
-  const lfCount = (source.match(/(?<!\r)\n/g) ?? []).length
+  const crlfCount = (source.match(CRLF_RE) ?? []).length
+  const lfCount = (source.match(LF_RE) ?? []).length
   if (crlfCount > 0 && crlfCount >= lfCount) {
     return '\r\n'
   }
@@ -18,7 +28,7 @@ function resolvePreferredEol(source: string) {
 
 export function alignContentEol(content: string, source: string) {
   const eol = resolvePreferredEol(source)
-  return content.replace(/\r?\n/g, eol)
+  return content.replace(ANY_EOL_RE, eol)
 }
 
 export async function readFileWithRetry(
@@ -143,7 +153,7 @@ export function assertContainsOneOf(source: string, expected: string[], hint: st
 }
 
 export function escapeRegExp(value: string) {
-  return value.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
+  return value.replace(ESCAPE_REGEXP_RE, '\\$&')
 }
 
 export function findCssRuleBody(source: string, selector: string) {
@@ -153,7 +163,7 @@ export function findCssRuleBody(source: string, selector: string) {
 }
 
 export function normalizeCssDeclaration(value: string) {
-  return value.replace(/\s+/g, '').toLowerCase()
+  return value.replace(WHITESPACE_RE, '').toLowerCase()
 }
 
 export function insertBeforeClosingTag(source: string, closingTag: string, snippet: string) {
@@ -172,6 +182,13 @@ export function insertBeforeAnchor(source: string, anchor: string, snippet: stri
   return `${source.slice(0, index)}${snippet}${source.slice(index)}`
 }
 
+export function replaceExactSnippet(source: string, anchor: string, replacement: string, label = 'snippet') {
+  if (!source.includes(anchor)) {
+    throw new Error(`${label} not found: ${anchor}`)
+  }
+  return source.replace(anchor, replacement)
+}
+
 export function appendTrailingSnippet(source: string, snippet: string) {
   if (source.endsWith('\n')) {
     return `${source}${snippet}\n`
@@ -180,7 +197,7 @@ export function appendTrailingSnippet(source: string, snippet: string) {
 }
 
 export function createStyleRuleSnippet(payload: StyleMutationPayload) {
-  const numericSeed = payload.marker.replace(/\D/g, '')
+  const numericSeed = payload.marker.replace(DIGITS_RE, '')
   const colorSeed = (numericSeed.slice(-6) || '123456').padStart(6, '0').slice(0, 6)
   const applySnippet = payload.applyUtilities.length > 0
     ? ` @apply ${payload.applyUtilities.join(' ')};`
@@ -195,6 +212,21 @@ export function mutateScriptByDataAnchor(source: string, dataAnchor: string, pay
   return source.replace(
     dataAnchor,
     `${dataAnchor}\n${indent}${payload.classVariableName}: '${payload.classLiteral}',\n${indent}__twWatchScriptMarker: '${payload.marker}',`,
+  )
+}
+
+export function mutateScriptByDataAnchorWithCommentCarrier(
+  source: string,
+  dataAnchor: string,
+  payload: ClassMutationPayload,
+  indent = '    ',
+) {
+  if (!source.includes(dataAnchor)) {
+    throw new Error(`script data anchor not found: ${dataAnchor}`)
+  }
+  return source.replace(
+    dataAnchor,
+    `/* ${payload.classLiteral} */\n${dataAnchor}\n${indent}__twWatchScriptCommentMarker: '${payload.marker}',`,
   )
 }
 
@@ -223,6 +255,35 @@ export function mutateTsxScriptByReturnAnchor(source: string, payload: ClassMuta
   throw new Error('tsx closing tag not found for script mutation')
 }
 
+export function mutateTsxScriptByReturnAnchorWithCommentCarrier(
+  source: string,
+  payload: ClassMutationPayload,
+  returnAnchor = '  return (',
+) {
+  const snippet = [
+    `  /* ${payload.classLiteral} */`,
+    `  const __twWatchScriptCommentMarker = '${payload.marker}'`,
+    '',
+  ].join('\n')
+  const withScriptConst = insertBeforeAnchor(source, returnAnchor, snippet)
+  const viewSnippet = `      <View>${payload.marker}-script-comment</View>`
+
+  const closingCandidates = [
+    '    </>',
+    '  </>',
+    '    </View>',
+    '  </View>',
+  ]
+
+  for (const closingTag of closingCandidates) {
+    if (withScriptConst.includes(closingTag)) {
+      return insertBeforeClosingTag(withScriptConst, closingTag, viewSnippet)
+    }
+  }
+
+  throw new Error('tsx closing tag not found for script comment-carrier mutation')
+}
+
 export function mutateVueScriptSetupArrayByAnchor(
   source: string,
   arrayAnchor: string,
@@ -235,6 +296,101 @@ export function mutateVueScriptSetupArrayByAnchor(
   return source.replace(
     arrayAnchor,
     `${arrayAnchor}\n  '${payload.classLiteral}',\n  '${payload.marker}',`,
+  )
+}
+
+export function mutateVueScriptSetupObjectKeyByAnchor(
+  source: string,
+  objectKeyAnchor: string,
+  payload: ClassMutationPayload,
+) {
+  if (!source.includes(objectKeyAnchor)) {
+    throw new Error(`vue script setup object key anchor not found: ${objectKeyAnchor}`)
+  }
+
+  const nextEntries = payload.classLiteral
+    .split(WHITESPACE_RE)
+    .filter(Boolean)
+    .map(token => `  '${token}':true`)
+    .join(',\n')
+
+  return source.replace(
+    objectKeyAnchor,
+    nextEntries,
+  )
+}
+
+export function insertIntoVueTemplateRoot(source: string, snippet: string) {
+  const templateStart = source.indexOf('<template>')
+  const templateEnd = source.lastIndexOf('</template>')
+  if (templateStart === -1 || templateEnd === -1) {
+    throw new Error('template block not found')
+  }
+
+  const templateBlock = source.slice(templateStart, templateEnd + '</template>'.length)
+  const rootClosingTagMatches = [...templateBlock.matchAll(VUE_TEMPLATE_ROOT_CLOSING_RE)]
+  const rootClosingTagMatch = rootClosingTagMatches.at(-1)
+  if (rootClosingTagMatch?.index == null) {
+    throw new Error('vue template root closing tag not found')
+  }
+
+  const insertIndex = templateStart + rootClosingTagMatch.index
+  return `${source.slice(0, insertIndex)}\n${snippet}${source.slice(insertIndex)}`
+}
+
+export function mutateVueScriptSetupArrayByAnchorWithCommentCarrier(
+  source: string,
+  arrayAnchor: string,
+  payload: ClassMutationPayload,
+) {
+  const cleanedSource = source.replace(
+    COMMENT_CARRIER_SCRIPT_MARKER_RE,
+    '',
+  )
+  const cleanedTemplateSource = cleanedSource.replace(
+    COMMENT_CARRIER_TEMPLATE_MARKER_RE,
+    '',
+  )
+
+  if (!cleanedTemplateSource.includes(arrayAnchor)) {
+    throw new Error(`vue script setup array anchor not found: ${arrayAnchor}`)
+  }
+
+  const nextSource = cleanedTemplateSource.replace(
+    arrayAnchor,
+    `/* ${payload.classLiteral} */\nconst __twWatchScriptCommentMarker = '${payload.marker}'\n${arrayAnchor}`,
+  )
+  return insertIntoVueTemplateRoot(
+    nextSource,
+    '    <view hidden>{{ __twWatchScriptCommentMarker }}</view>',
+  )
+}
+
+export function mutateVueScriptSetupObjectKeyByAnchorWithCommentCarrier(
+  source: string,
+  objectKeyAnchor: string,
+  payload: ClassMutationPayload,
+) {
+  const cleanedSource = source.replace(
+    COMMENT_CARRIER_SCRIPT_MARKER_RE,
+    '',
+  )
+  const cleanedTemplateSource = cleanedSource.replace(
+    COMMENT_CARRIER_TEMPLATE_MARKER_RE,
+    '',
+  )
+
+  if (!cleanedTemplateSource.includes(objectKeyAnchor)) {
+    throw new Error(`vue script setup object key anchor not found: ${objectKeyAnchor}`)
+  }
+
+  const nextSource = cleanedTemplateSource.replace(
+    objectKeyAnchor,
+    `/* ${payload.classLiteral} */\nconst __twWatchScriptCommentMarker = '${payload.marker}'\n${objectKeyAnchor}`,
+  )
+  return insertIntoVueTemplateRoot(
+    nextSource,
+    '    <view hidden>{{ __twWatchScriptCommentMarker }}</view>',
   )
 }
 
@@ -261,22 +417,4 @@ export function mutateSfcStyleBlock(source: string, payload: StyleMutationPayloa
     throw new Error('style closing tag </style> not found')
   }
   return insertBeforeClosingTag(source, '</style>', createStyleRuleSnippet(payload))
-}
-
-export function insertIntoVueTemplateRoot(source: string, snippet: string) {
-  const templateStart = source.indexOf('<template>')
-  const templateEnd = source.lastIndexOf('</template>')
-  if (templateStart === -1 || templateEnd === -1) {
-    throw new Error('template block not found')
-  }
-
-  const templateBlock = source.slice(templateStart, templateEnd + '</template>'.length)
-  const rootClosingTagMatches = [...templateBlock.matchAll(/\n {2}<\/[a-zA-Z][\w-]*>\s*\n<\/template>/g)]
-  const rootClosingTagMatch = rootClosingTagMatches.at(-1)
-  if (rootClosingTagMatch?.index == null) {
-    throw new Error('vue template root closing tag not found')
-  }
-
-  const insertIndex = templateStart + rootClosingTagMatch.index
-  return `${source.slice(0, insertIndex)}\n${snippet}${source.slice(insertIndex)}`
 }

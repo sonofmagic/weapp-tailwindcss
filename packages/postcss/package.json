@@ -1,6 +1,6 @@
 {
   "name": "@weapp-tailwindcss/postcss",
-  "version": "2.1.5",
+  "version": "2.1.6-alpha.1",
   "description": "@weapp-tailwindcss/postcss",
   "author": "ice breaker <1324318532@qq.com>",
   "license": "MIT",
@@ -35,6 +35,20 @@
   "main": "./dist/index.js",
   "module": "./dist/index.mjs",
   "types": "./dist/index.d.ts",
+  "typesVersions": {
+    "*": {
+      "html-transform": [
+        "./dist/html-transform.d.ts"
+      ],
+      "types": [
+        "./dist/types.d.ts"
+      ],
+      "*": [
+        "./dist/*",
+        "./dist/index.d.ts"
+      ]
+    }
+  },
   "files": [
     "dist"
   ],

@@ -63,6 +63,6 @@ export function createClipPathKeyframes({ x, y, endRadius }: ToggleCoordinates &
   ]
   return {
     clipPath,
-    reverseClipPath: [...clipPath].reverse(),
+    reverseClipPath: clipPath.toReversed(),
   }
 }

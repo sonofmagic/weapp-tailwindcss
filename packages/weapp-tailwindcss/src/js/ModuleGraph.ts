@@ -46,10 +46,10 @@ export class JsModuleGraph {
     this.queue.push({ filename: entry.filename, depth: 0 })
   }
 
-  build(): Record<string, LinkedJsModuleResult> {
+  build(): Record<string, LinkedJsModuleResult> | undefined {
     this.collectDependencies()
 
-    const linked: Record<string, LinkedJsModuleResult> = {}
+    let linked: Record<string, LinkedJsModuleResult> | undefined
     for (const [filename, state] of this.modules) {
       if (filename === this.rootFilename) {
         continue
@@ -62,6 +62,9 @@ export class JsModuleGraph {
       const ms = processUpdatedSource(state.source, childOptions, state.analysis)
       const code = ms.toString()
       if (code !== state.source) {
+        if (!linked) {
+          linked = {}
+        }
         linked[filename] = { code }
       }
     }

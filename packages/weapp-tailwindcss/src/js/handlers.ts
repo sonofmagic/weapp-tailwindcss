@@ -1,5 +1,6 @@
 import type { NodePath } from '@babel/traverse'
 import type { StringLiteral, TemplateElement } from '@babel/types'
+import type { ClassNameTransformResult } from '../shared/classname-transform'
 import type { IJsHandlerOptions } from '../types'
 import type { JsToken } from './types'
 import { jsStringEscape } from '@ast-core/escape'
@@ -15,15 +16,12 @@ type EscapeMap = NonNullable<IJsHandlerOptions['escapeMap']>
 const debug = createDebug('[js:handlers] ')
 const replacementCacheByEscapeMap = new WeakMap<EscapeMap, Map<string, string>>()
 const defaultReplacementCache = new Map<string, string>()
+const WEAPP_TW_IGNORE_MARKER = 'weapp-tw'
+const IGNORE_MARKER = 'ignore'
 
-function getReplacement(candidate: string, escapeMap?: EscapeMap) {
+function getReplacementCacheStore(escapeMap?: EscapeMap) {
   if (!escapeMap) {
-    let cached = defaultReplacementCache.get(candidate)
-    if (cached === undefined) {
-      cached = replaceWxml(candidate, { escapeMap })
-      defaultReplacementCache.set(candidate, cached)
-    }
-    return cached
+    return defaultReplacementCache
   }
 
   let store = replacementCacheByEscapeMap.get(escapeMap)
@@ -31,7 +29,10 @@ function getReplacement(candidate: string, escapeMap?: EscapeMap) {
     store = new Map<string, string>()
     replacementCacheByEscapeMap.set(escapeMap, store)
   }
+  return store
+}
 
+function getReplacement(candidate: string, escapeMap: EscapeMap | undefined, store = getReplacementCacheStore(escapeMap)) {
   let cached = store.get(candidate)
   if (cached === undefined) {
     cached = replaceWxml(candidate, { escapeMap })
@@ -40,26 +41,20 @@ function getReplacement(candidate: string, escapeMap?: EscapeMap) {
   return cached
 }
 
-/**
- * 将 replacement 写入对应的缓存，供后续 getReplacement 命中。
- */
-function setReplacementCache(candidate: string, replacement: string, escapeMap?: EscapeMap) {
-  if (!escapeMap) {
-    defaultReplacementCache.set(candidate, replacement)
-  }
-  else {
-    let store = replacementCacheByEscapeMap.get(escapeMap)
-    if (!store) {
-      store = new Map<string, string>()
-      replacementCacheByEscapeMap.set(escapeMap, store)
-    }
-    store.set(candidate, replacement)
-  }
-}
-
 function hasIgnoreComment(node: StringLiteral | TemplateElement) {
-  return Array.isArray(node.leadingComments)
-    && node.leadingComments.some(comment => comment.value.includes('weapp-tw') && comment.value.includes('ignore'))
+  const { leadingComments } = node
+  if (!Array.isArray(leadingComments) || leadingComments.length === 0) {
+    return false
+  }
+
+  for (const comment of leadingComments) {
+    const { value } = comment
+    if (value.includes(WEAPP_TW_IGNORE_MARKER) && value.includes(IGNORE_MARKER)) {
+      return true
+    }
+  }
+
+  return false
 }
 
 function extractLiteralValue(
@@ -67,15 +62,16 @@ function extractLiteralValue(
   { unescapeUnicode, arbitraryValues }: Pick<IJsHandlerOptions, 'unescapeUnicode' | 'arbitraryValues'>,
 ) {
   const allowDoubleQuotes = arbitraryValues?.allowDoubleQuotes
+  const { node } = path
 
   let offset = 0
   let original: string
-  if (path.isStringLiteral()) {
+  if (node.type === 'StringLiteral') {
     offset = 1
-    original = path.node.value
+    original = node.value
   }
-  else if (path.isTemplateElement()) {
-    original = path.node.value.raw
+  else if (node.type === 'TemplateElement') {
+    original = node.value.raw
   }
   else {
     original = ''
@@ -94,78 +90,141 @@ function extractLiteralValue(
   }
 }
 
+interface CandidatePlan {
+  result: ClassNameTransformResult
+  replacement?: string
+}
+
+function createCandidatePlanResolver(
+  options: IJsHandlerOptions,
+  classContext: boolean,
+) {
+  const { escapeMap } = options
+  const replacementCache = getReplacementCacheStore(escapeMap)
+  const transformOptions = classContext
+    ? {
+        ...options,
+        classContext,
+      }
+    : options
+  let firstCandidate = ''
+  let firstPlan: CandidatePlan | undefined
+  let cache: Map<string, CandidatePlan> | undefined
+
+  const buildCandidatePlan = (candidate: string): CandidatePlan => {
+    const result = resolveClassNameTransformWithResult(candidate, transformOptions)
+
+    if (result.decision === 'skip') {
+      return { result }
+    }
+
+    let replacement: string
+    if (result.decision === 'escaped' && result.escapedValue) {
+      replacement = result.escapedValue
+      replacementCache.set(candidate, replacement)
+    }
+    else {
+      replacement = getReplacement(candidate, escapeMap, replacementCache)
+    }
+
+    return {
+      result,
+      replacement,
+    }
+  }
+
+  return (candidate: string): CandidatePlan => {
+    if (cache) {
+      const cached = cache.get(candidate)
+      if (cached) {
+        return cached
+      }
+    }
+    else if (firstPlan && candidate === firstCandidate) {
+      return firstPlan
+    }
+
+    const plan = buildCandidatePlan(candidate)
+    if (!firstPlan) {
+      firstCandidate = candidate
+      firstPlan = plan
+      return plan
+    }
+
+    if (!cache) {
+      cache = new Map<string, CandidatePlan>()
+      cache.set(firstCandidate, firstPlan)
+    }
+    cache.set(candidate, plan)
+    return plan
+  }
+}
+
 export function replaceHandleValue(
   path: NodePath<StringLiteral | TemplateElement>,
   options: IJsHandlerOptions,
 ): JsToken | undefined {
-  const {
-    escapeMap,
-    needEscaped = false,
-  } = options
+  const { needEscaped = false } = options
   const { classNameSet, alwaysEscape } = options
   const fallbackEnabled = shouldEnableArbitraryValueFallback(options)
-  const classContext = options.wrapExpression || isClassContextLiteralPath(path)
 
   if (!alwaysEscape && !fallbackEnabled && (!classNameSet || classNameSet.size === 0)) {
     return undefined
   }
 
-  const { literal, original, allowDoubleQuotes, offset } = extractLiteralValue(path, options)
   if (hasIgnoreComment(path.node)) {
     return undefined
   }
 
+  const { literal, original, allowDoubleQuotes, offset } = extractLiteralValue(path, options)
   const candidates = splitCode(literal, allowDoubleQuotes)
   if (candidates.length === 0) {
     return undefined
   }
 
+  const debugEnabled = debug.enabled
+  const classContext = options.wrapExpression || isClassContextLiteralPath(path)
   let transformed = literal
   let mutated = false
   let matchedCandidateCount = 0
   let escapedDecisionCount = 0
   let fallbackDecisionCount = 0
-  const escapedSamples: string[] = []
-  const skippedSamples: string[] = []
+  let escapedSamples: string[] | undefined
+  let skippedSamples: string[] | undefined
+  const resolveCandidatePlan = createCandidatePlanResolver(options, classContext)
 
   for (const candidate of candidates) {
-    const result = resolveClassNameTransformWithResult(candidate, {
-      ...options,
-      classContext,
-    })
-    if (result.decision === 'skip') {
-      if (skippedSamples.length < 6) {
-        skippedSamples.push(candidate)
+    const plan = resolveCandidatePlan(candidate)
+    if (plan.result.decision === 'skip') {
+      if (debugEnabled) {
+        if (!skippedSamples) {
+          skippedSamples = []
+        }
+        if (skippedSamples.length < 6) {
+          skippedSamples.push(candidate)
+        }
       }
       continue
     }
-    matchedCandidateCount += 1
-    if (result.decision === 'escaped') {
-      escapedDecisionCount += 1
-      if (escapedSamples.length < 6) {
-        escapedSamples.push(candidate)
+
+    if (debugEnabled) {
+      matchedCandidateCount += 1
+      if (plan.result.decision === 'escaped') {
+        escapedDecisionCount += 1
+        if (!escapedSamples) {
+          escapedSamples = []
+        }
+        if (escapedSamples.length < 6) {
+          escapedSamples.push(candidate)
+        }
       }
-    }
-    if (result.decision === 'fallback') {
-      fallbackDecisionCount += 1
-    }
-
-    if (!transformed.includes(candidate)) {
-      continue
-    }
-
-    // 复用 escapedValue 或走缓存的 getReplacement，避免重复 escape 计算
-    let replacement: string
-    if (result.decision === 'escaped' && result.escapedValue) {
-      replacement = result.escapedValue
-      setReplacementCache(candidate, replacement, escapeMap)
-    }
-    else {
-      replacement = getReplacement(candidate, escapeMap)
+      if (plan.result.decision === 'fallback') {
+        fallbackDecisionCount += 1
+      }
     }
 
     // 使用 String.replace 仅替换首次出现，与原始行为一致
-    const replaced = transformed.replace(candidate, replacement)
+    const replaced = transformed.replace(candidate, plan.replacement!)
     if (replaced !== transformed) {
       transformed = replaced
       mutated = true
@@ -177,18 +236,20 @@ export function replaceHandleValue(
     return undefined
   }
 
-  debug(
-    'runtimeSet size=%d fallbackTriggered=%s candidates=%d matched=%d escapedHits=%d skipped=%d file=%s escapedSamples=%s skippedSamples=%s',
-    classNameSet?.size ?? 0,
-    fallbackDecisionCount > 0,
-    candidates.length,
-    matchedCandidateCount,
-    escapedDecisionCount,
-    skippedSamples.length,
-    options.filename ?? 'unknown',
-    escapedSamples.join(',') || '-',
-    skippedSamples.join(',') || '-',
-  )
+  if (debugEnabled) {
+    debug(
+      'runtimeSet size=%d fallbackTriggered=%s candidates=%d matched=%d escapedHits=%d skipped=%d file=%s escapedSamples=%s skippedSamples=%s',
+      classNameSet?.size ?? 0,
+      fallbackDecisionCount > 0,
+      candidates.length,
+      matchedCandidateCount,
+      escapedDecisionCount,
+      skippedSamples?.length ?? 0,
+      options.filename ?? 'unknown',
+      escapedSamples?.join(',') || '-',
+      skippedSamples?.join(',') || '-',
+    )
+  }
 
   const start = node.start + offset
   const end = node.end - offset

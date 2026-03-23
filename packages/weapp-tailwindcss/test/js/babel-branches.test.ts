@@ -5,6 +5,8 @@ import { MappingChars2String } from '@weapp-core/escape'
 import { describe, expect, it, vi } from 'vitest'
 import { parse, traverse } from '@/babel'
 import * as babel from '@/js/babel'
+import * as sourceAnalysis from '@/js/sourceAnalysis'
+import * as nameMatcher from '@/utils/nameMatcher'
 
 function prepareEval(code: string) {
   const ast = parse(code, { sourceType: 'module' })
@@ -128,6 +130,21 @@ describe('babel helpers branch coverage', () => {
     spy.mockRestore()
   })
 
+  it('returns early when there are no target paths or replacement sources', () => {
+    const collectSpy = vi.spyOn(sourceAnalysis, 'collectModuleSpecifierReplacementTokens')
+    const rawSource = 'const noop = 1'
+    const ast = parse(rawSource, { sourceType: 'module' })
+    const analysis = {
+      ...babel.analyzeSource(ast, {}),
+      targetPaths: [],
+    }
+
+    const result = babel.processUpdatedSource(rawSource, {}, analysis)
+
+    expect(result.toString()).toBe(rawSource)
+    expect(collectSpy).not.toHaveBeenCalled()
+  })
+
   it('respects ignored tagged template identifiers', () => {
     const ast = parse('styled`w-[100px]`', { sourceType: 'module' })
     const analysis = babel.analyzeSource(ast, {
@@ -151,6 +168,42 @@ describe('babel helpers branch coverage', () => {
     })
 
     expect(analysis.targetPaths).toHaveLength(1)
+  })
+
+  it('does not build ignore matchers when tagged templates are absent', () => {
+    const spy = vi.spyOn(nameMatcher, 'createNameMatcher')
+    const ast = parse('const cls = `w-[100px]`', { sourceType: 'module' })
+
+    const analysis = babel.analyzeSource(ast, {
+      ignoreTaggedTemplateExpressionIdentifiers: ['styled'],
+    })
+
+    expect(analysis.targetPaths).toHaveLength(1)
+    expect(spy).not.toHaveBeenCalled()
+  })
+
+  it('does not build ignore matchers for tagged templates when ignore identifiers are absent', () => {
+    const spy = vi.spyOn(nameMatcher, 'createNameMatcher')
+    const ast = parse('styled`w-[100px]`', { sourceType: 'module' })
+
+    const analysis = babel.analyzeSource(ast, {})
+
+    expect(analysis.targetPaths).toHaveLength(1)
+    expect(spy).not.toHaveBeenCalled()
+  })
+
+  it('reuses ignored tag matchers for the same options object', () => {
+    const spy = vi.spyOn(nameMatcher, 'createNameMatcher')
+    const options = {
+      ignoreTaggedTemplateExpressionIdentifiers: ['styled'],
+    }
+
+    const firstAst = parse('styled`w-[100px]`', { sourceType: 'module' })
+    const secondAst = parse('styled`w-[200px]`', { sourceType: 'module' })
+
+    expect(babel.analyzeSource(firstAst, options).targetPaths).toHaveLength(0)
+    expect(babel.analyzeSource(secondAst, options).targetPaths).toHaveLength(0)
+    expect(spy).toHaveBeenCalledTimes(1)
   })
 
   it('falls back to an empty original value for unexpected eval nodes', () => {

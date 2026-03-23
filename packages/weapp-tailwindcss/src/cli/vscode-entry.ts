@@ -29,8 +29,10 @@ export interface GenerateVscodeEntryResult {
   cssEntryPath: string
 }
 
+const BACKSLASH_RE = /\\/g
+
 function toPosixPath(filepath: string) {
-  return filepath.replace(/\\/g, '/')
+  return filepath.replace(BACKSLASH_RE, '/')
 }
 
 async function assertFileExists(filepath: string) {

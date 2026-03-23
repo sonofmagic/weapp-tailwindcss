@@ -1,0 +1,98 @@
+/*! tailwindcss v4.2.1 | MIT License | https://tailwindcss.com */
+@layer properties;
+:root,
+:host {
+  --color-cyan-500: oklch(71.5% 0.143 215.221);
+  --color-blue-500: oklch(62.3% 0.214 259.815);
+  --color-purple-300: oklch(82.7% 0.119 306.383);
+  --spacing: 0.25rem;
+}
+.static {
+  position: static;
+}
+.h-14 {
+  height: calc(var(--spacing) * 14);
+}
+.h-\[300px\] {
+  height: 300rpx;
+}
+.bg-\[\#123456\] {
+  background-color: #123456;
+}
+.bg-purple-300 {
+  background-color: var(--color-purple-300);
+}
+.bg-gradient-to-r {
+  --tw-gradient-position: to right in oklab;
+  background-image: -webkit-linear-gradient(var(--tw-gradient-stops));
+  background-image: linear-gradient(var(--tw-gradient-stops));
+}
+.from-cyan-500 {
+  --tw-gradient-from: var(--color-cyan-500);
+  --tw-gradient-stops: var(
+    --tw-gradient-via-stops,
+    var(--tw-gradient-position),
+    var(--tw-gradient-from) var(--tw-gradient-from-position),
+    var(--tw-gradient-to) var(--tw-gradient-to-position)
+  );
+}
+.to-blue-500 {
+  --tw-gradient-to: var(--color-blue-500);
+  --tw-gradient-stops: var(
+    --tw-gradient-via-stops,
+    var(--tw-gradient-position),
+    var(--tw-gradient-from) var(--tw-gradient-from-position),
+    var(--tw-gradient-to) var(--tw-gradient-to-position)
+  );
+}
+.text-\[55rpx\] {
+  font-size: 55rpx;
+}
+.text-\[\#c31d6b\] {
+  color: #c31d6b;
+}
+.text-\[\#fff\] {
+  color: #fff;
+}
+@property --tw-gradient-position {
+  syntax: "*";
+  inherits: false;
+}
+@property --tw-gradient-from {
+  syntax: "<color>";
+  inherits: false;
+  initial-value: #0000;
+}
+@property --tw-gradient-via {
+  syntax: "<color>";
+  inherits: false;
+  initial-value: #0000;
+}
+@property --tw-gradient-to {
+  syntax: "<color>";
+  inherits: false;
+  initial-value: #0000;
+}
+@property --tw-gradient-stops {
+  syntax: "*";
+  inherits: false;
+}
+@property --tw-gradient-via-stops {
+  syntax: "*";
+  inherits: false;
+}
+@property --tw-gradient-from-position {
+  syntax: "<length-percentage>";
+  inherits: false;
+  initial-value: 0%;
+}
+@property --tw-gradient-via-position {
+  syntax: "<length-percentage>";
+  inherits: false;
+  initial-value: 50%;
+}
+@property --tw-gradient-to-position {
+  syntax: "<length-percentage>";
+  inherits: false;
+  initial-value: 100%;
+}

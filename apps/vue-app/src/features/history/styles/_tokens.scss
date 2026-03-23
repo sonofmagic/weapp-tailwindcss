@@ -1,4 +1,4 @@
-@use "sass:color";
+@use 'sass:color';
 
 $primary: #111827;
 $primary-glow: rgba(17, 24, 39, 0.09);
@@ -24,7 +24,7 @@ $radius: 16px;
   text-transform: uppercase;
 }
 
-@mixin badge($tone: "primary") {
+@mixin badge($tone: 'primary') {
   display: inline-flex;
   align-items: center;
   gap: 8px;
@@ -32,10 +32,10 @@ $radius: 16px;
   border-radius: 999px;
   font-weight: 600;
   font-size: 12px;
-  @if $tone == "primary" {
+  @if $tone == 'primary' {
     color: $primary;
     background: rgba(17, 24, 39, 0.08);
-  } @else if $tone == "success" {
+  } @else if $tone == 'success' {
     color: #0f766e;
     background: rgba(16, 185, 129, 0.1);
   } @else {

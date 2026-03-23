@@ -5,6 +5,9 @@ import { parseWorkspaceGlobsFromPackageJson, parseWorkspaceGlobsFromWorkspaceFil
 import { tryReadJson } from './workspace-io'
 import { parseImportersFromLock } from './workspace-lock'
 
+const BACKSLASH_RE = /\\/g
+const TRAILING_SLASH_RE = /\/+$/
+
 export async function resolveWorkspacePackageDirs(workspaceRoot: string) {
   const dirs = new Set<string>()
   for (const importerDir of parseImportersFromLock(workspaceRoot)) {
@@ -18,7 +21,7 @@ export async function resolveWorkspacePackageDirs(workspaceRoot: string) {
     }
     if (globs.length > 0) {
       const patterns = globs.map((pattern) => {
-        const normalized = pattern.replace(/\\/g, '/').replace(/\/+$/, '')
+        const normalized = pattern.replace(BACKSLASH_RE, '/').replace(TRAILING_SLASH_RE, '')
         return normalized.endsWith('package.json') ? normalized : `${normalized}/package.json`
       })
       const packageJsonFiles = await fg(patterns, {

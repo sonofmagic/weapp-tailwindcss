@@ -24,6 +24,8 @@ import {
 import { reorderLiteralFirst } from '@/utils/decl-order'
 import { hasTwVars } from '@/utils/tw-vars'
 
+const COLOR_DECLARATION_REGEX = /color:/g
+
 describe('utility coverage helpers', () => {
   it('fingerprintOptions handles anonymous functions', () => {
     const anonResult = fingerprintOptions(() => {})
@@ -170,7 +172,7 @@ describe('plugin behaviours', () => {
     `
     const result = await postcss([cleaner!]).process(css, { from: undefined })
     expect(result.css).not.toContain('var(--keep)')
-    expect(result.css.match(/color:/g)?.length).toBe(2)
+    expect(result.css.match(COLOR_DECLARATION_REGEX)?.length).toBe(2)
 
     expect(getCustomPropertyCleaner({ cssCalc: false } as any)).toBeNull()
   })
@@ -256,10 +258,15 @@ describe('selector parser coverage', () => {
   })
 
   it('mklist and combinator helpers run through getCombinatorSelectorAst', () => {
-    const combinatorAst = getCombinatorSelectorAst({ cssChildCombinatorReplaceValue: ['view'] } as any)
+    const options = { cssChildCombinatorReplaceValue: ['view'] } as any
+    const combinatorAst = getCombinatorSelectorAst(options)
     expect(combinatorAst.length).toBe(3)
     const cloned = mklist(combinatorAst[0])
     expect(cloned[2]).toBeDefined()
+
+    combinatorAst[0].value = 'mutated'
+    const fresh = getCombinatorSelectorAst(options)
+    expect(fresh[0].value).toBe('view')
   })
 })
 

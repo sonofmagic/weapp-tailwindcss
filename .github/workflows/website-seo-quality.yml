@@ -1,0 +1,49 @@
+name: Website SEO Quality
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - .github/workflows/website-seo-quality.yml
+      - 'website/**'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  seo-quality:
+    name: SEO Quality Gate
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    steps:
+      - name: Check out code
+        uses: actions/checkout@v6
+
+      - uses: pnpm/action-setup@v4
+
+      - name: Setup Node.js environment
+        uses: actions/setup-node@v6
+        with:
+          node-version: 22
+          cache: pnpm
+          cache-dependency-path: pnpm-lock.yaml
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: SEO Quality Gate (website)
+        run: pnpm --filter @weapp-tailwindcss/website seo:quality:strict
+
+      - name: SEO Status Note
+        if: always()
+        run: |
+          {
+            echo "## Website SEO Quality"
+            echo "- 本工作流独立执行 website SEO 严格门禁。"
+            echo "- 当前执行命令：\`pnpm --filter @weapp-tailwindcss/website seo:quality:strict\`。"
+            echo "- 触发条件：主分支推送且命中 website 目录变更，或手动触发。"
+            echo "- 该工作流不再参与 PR 检查，避免 SEO 存量问题阻塞主 CI。"
+          } >> "$GITHUB_STEP_SUMMARY"

@@ -29,9 +29,9 @@ export default defineConfig({
       enforce: 'pre',
       resolveId(id) {
         if (
-          id === 'vue' ||
-          id === '@dcloudio/uni-mp-vue' ||
-          id === '@dcloudio/uni-mp-vue/dist/vue.runtime.esm.js'
+          id === 'vue'
+          || id === '@dcloudio/uni-mp-vue'
+          || id === '@dcloudio/uni-mp-vue/dist/vue.runtime.esm.js'
         ) {
           return uniMpVueRuntimePath
         }
@@ -65,7 +65,7 @@ export default defineConfig({
   },
   resolve: {
     alias: {
-      vue: uniMpVueRuntimePath,
+      'vue': uniMpVueRuntimePath,
       // Ensure we always consume the Vue 3 runtime that exposes findComponentPropsData
       '@dcloudio/uni-mp-vue/dist/vue.runtime.esm.js': uniMpVueRuntimePath,
       '@dcloudio/uni-mp-vue': uniMpVueDir,

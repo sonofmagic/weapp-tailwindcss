@@ -1,4 +1,7 @@
 import { getCompilerContext } from '@/context'
+import fs from 'fs-extra'
+import path from 'pathe'
+import prettier from 'prettier'
 import { getCss } from './helpers/getTwCss'
 // import { getClassCacheSet } from 'tailwindcss-patch'
 // import tailwindcss318 from 'tailwindcss318'
@@ -178,6 +181,15 @@ describe('postcss plugin', () => {
     const ctx = getCompilerContext()
     const { css: cssRes } = await ctx.styleHandler(css, { isMainChunk: true })
     expect(cssRes).toMatchSnapshot('css')
+  })
+
+  it('handles taro vite tailwindcss v4 app-origin fixture', async () => {
+    const code = await fs.readFile(path.resolve(__dirname, './fixtures/css/taro-vite-tailwindcss-v4-app-origin.css'), 'utf8')
+    const ctx = getCompilerContext()
+    const { css } = await ctx.styleHandler(code, {
+      isMainChunk: true,
+    })
+    expect(await prettier.format(css, { parser: 'css' })).toMatchSnapshot()
   })
 })
 

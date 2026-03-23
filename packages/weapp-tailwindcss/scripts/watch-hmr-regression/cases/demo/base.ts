@@ -6,9 +6,13 @@ import {
   insertBeforeClosingTag,
   insertIntoVueTemplateRoot,
   mutateScriptByDataAnchor,
+  mutateScriptByDataAnchorWithCommentCarrier,
   mutateSfcStyleBlock,
   mutateTsxScriptByReturnAnchor,
+  mutateVueScriptSetupObjectKeyByAnchor,
+  replaceExactSnippet,
 } from '../../text'
+import { buildIssue33HighRiskRoundConfigs } from '../round-configs'
 
 export function buildDemoBaseCases(baseCwd: string): WatchCase[] {
   const taroCase: WatchCase = {
@@ -18,6 +22,9 @@ export function buildDemoBaseCases(baseCwd: string): WatchCase[] {
     group: 'demo',
     cwd: path.resolve(baseCwd, 'demo/taro-app'),
     devScript: 'dev:weapp',
+    env: {
+      TARO_BUILD_STRICT: '1',
+    },
     outputWxml: path.resolve(baseCwd, 'demo/taro-app/dist/pages/index/index.wxml'),
     outputJs: path.resolve(baseCwd, 'demo/taro-app/dist/pages/index/index.js'),
     outputStyleCandidates: [
@@ -26,6 +33,21 @@ export function buildDemoBaseCases(baseCwd: string): WatchCase[] {
     globalStyleCandidates: [
       path.resolve(baseCwd, 'demo/taro-app/dist/app.wxss'),
     ],
+    contentMutation: {
+      sourceFile: path.resolve(baseCwd, 'demo/taro-app/src/pages/index/index.tsx'),
+      verifyEscapedIn: [],
+      verifyClassLiteralIn: ['js'],
+      forbidBgHexTruncationIn: ['js'],
+      roundConfigs: buildIssue33HighRiskRoundConfigs(),
+      mutate(source, payload) {
+        return replaceExactSnippet(
+          source,
+          '  const className = \'bg-[#123456]\'',
+          `  const className = '${payload.classLiteral}'`,
+          'taro script class anchor',
+        )
+      },
+    },
     templateMutation: {
       sourceFile: path.resolve(baseCwd, 'demo/taro-app/src/pages/index/index.tsx'),
       verifyEscapedIn: [],
@@ -67,6 +89,21 @@ export function buildDemoBaseCases(baseCwd: string): WatchCase[] {
       path.resolve(baseCwd, 'demo/uni-app/dist/dev/mp-weixin/common/main.wxss'),
       path.resolve(baseCwd, 'demo/uni-app/dist/dev/mp-weixin/app.wxss'),
     ],
+    contentMutation: {
+      sourceFile: path.resolve(baseCwd, 'demo/uni-app/src/pages/index/index.vue'),
+      verifyEscapedIn: [],
+      verifyClassLiteralIn: ['js'],
+      forbidBgHexTruncationIn: ['js'],
+      roundConfigs: buildIssue33HighRiskRoundConfigs(),
+      mutate(source, payload) {
+        return replaceExactSnippet(
+          source,
+          '      className: \'bg-[#123456]\',',
+          `      className: '${payload.classLiteral}',`,
+          'uni script class anchor',
+        )
+      },
+    },
     templateMutation: {
       sourceFile: path.resolve(baseCwd, 'demo/uni-app/src/pages/index/index.vue'),
       verifyEscapedIn: ['wxml'],
@@ -82,6 +119,9 @@ export function buildDemoBaseCases(baseCwd: string): WatchCase[] {
       verifyClassLiteralIn: ['js'],
       mutate(source, payload) {
         return mutateScriptByDataAnchor(source, '      className: \'bg-[#123456]\',', payload, '      ')
+      },
+      mutateCommentCarrier(source, payload) {
+        return mutateScriptByDataAnchorWithCommentCarrier(source, '      className: \'bg-[#123456]\',', payload, '      ')
       },
     },
     styleMutation: {
@@ -112,9 +152,24 @@ export function buildDemoBaseCases(baseCwd: string): WatchCase[] {
       path.resolve(baseCwd, 'demo/mpx-app/dist/wx/pages/index.wxss'),
     ],
     globalStyleCandidates: [
-      path.resolve(baseCwd, 'demo/mpx-app/dist/wx/styles/utilities8aaa9530.wxss'),
+      path.resolve(baseCwd, 'demo/mpx-app/dist/wx/styles/utilities*.wxss'),
       path.resolve(baseCwd, 'demo/mpx-app/dist/wx/app.wxss'),
     ],
+    contentMutation: {
+      sourceFile: path.resolve(baseCwd, 'demo/mpx-app/src/pages/index.mpx'),
+      verifyEscapedIn: [],
+      verifyClassLiteralIn: ['js'],
+      forbidBgHexTruncationIn: ['js'],
+      roundConfigs: buildIssue33HighRiskRoundConfigs(),
+      mutate(source, payload) {
+        return replaceExactSnippet(
+          source,
+          '    classNames: \'bg-[#123456]\',',
+          `    classNames: '${payload.classLiteral}',`,
+          'mpx script class anchor',
+        )
+      },
+    },
     templateMutation: {
       sourceFile: path.resolve(baseCwd, 'demo/mpx-app/src/pages/index.mpx'),
       verifyEscapedIn: ['wxml'],
@@ -129,7 +184,10 @@ export function buildDemoBaseCases(baseCwd: string): WatchCase[] {
       verifyEscapedIn: [],
       verifyClassLiteralIn: ['js'],
       mutate(source, payload) {
-        return mutateScriptByDataAnchor(source, '    classNames: \'text-[#123456] text-[50px] bg-[#fff]\',', payload)
+        return mutateScriptByDataAnchor(source, '    classNames: \'bg-[#123456]\',', payload)
+      },
+      mutateCommentCarrier(source, payload) {
+        return mutateScriptByDataAnchorWithCommentCarrier(source, '    classNames: \'bg-[#123456]\',', payload)
       },
     },
     styleMutation: {
@@ -158,6 +216,20 @@ export function buildDemoBaseCases(baseCwd: string): WatchCase[] {
     globalStyleCandidates: [
       path.resolve(baseCwd, 'demo/rax-app/build/wechat-miniprogram/bundle.wxss'),
     ],
+    contentMutation: {
+      sourceFile: path.resolve(baseCwd, 'demo/rax-app/src/pages/index/index.tsx'),
+      verifyEscapedIn: [],
+      verifyClassLiteralIn: ['js'],
+      forbidBgHexTruncationIn: ['js'],
+      roundConfigs: buildIssue33HighRiskRoundConfigs(),
+      mutate(source, payload) {
+        return mutateVueScriptSetupObjectKeyByAnchor(
+          source,
+          '\'bg-[#123456]\': true,',
+          payload,
+        )
+      },
+    },
     templateMutation: {
       sourceFile: path.resolve(baseCwd, 'demo/rax-app/src/pages/index/index.tsx'),
       verifyEscapedIn: [],
@@ -198,6 +270,21 @@ export function buildDemoBaseCases(baseCwd: string): WatchCase[] {
     globalStyleCandidates: [
       path.resolve(baseCwd, 'demo/native-mina/dist/app.wxss'),
     ],
+    contentMutation: {
+      sourceFile: path.resolve(baseCwd, 'demo/native-mina/src/pages/index/index.js'),
+      verifyEscapedIn: [],
+      verifyClassLiteralIn: ['js'],
+      forbidBgHexTruncationIn: ['js'],
+      roundConfigs: buildIssue33HighRiskRoundConfigs(),
+      mutate(source, payload) {
+        return replaceExactSnippet(
+          source,
+          '    className: \'bg-[#123456]\',//  replaceJs(\'bg-[#123456]\'),',
+          `    className: '${payload.classLiteral}',//  replaceJs('bg-[#123456]'),`,
+          'native mina script class anchor',
+        )
+      },
+    },
     templateMutation: {
       sourceFile: path.resolve(baseCwd, 'demo/native-mina/src/pages/index/index.wxml'),
       verifyEscapedIn: ['wxml'],
@@ -237,6 +324,21 @@ export function buildDemoBaseCases(baseCwd: string): WatchCase[] {
     globalStyleCandidates: [
       path.resolve(baseCwd, 'demo/native-ts/dist/app.wxss'),
     ],
+    contentMutation: {
+      sourceFile: path.resolve(baseCwd, 'demo/native-ts/miniprogram/pages/index/index.ts'),
+      verifyEscapedIn: [],
+      verifyClassLiteralIn: ['js'],
+      forbidBgHexTruncationIn: ['js'],
+      roundConfigs: buildIssue33HighRiskRoundConfigs(),
+      mutate(source, payload) {
+        return replaceExactSnippet(
+          source,
+          'const pageClassName = \'bg-[#123456]\'',
+          `const pageClassName = '${payload.classLiteral}'`,
+          'weapp-vite script class anchor',
+        )
+      },
+    },
     templateMutation: {
       sourceFile: path.resolve(baseCwd, 'demo/native-ts/miniprogram/pages/index/index.wxml'),
       verifyEscapedIn: ['wxml'],
@@ -251,6 +353,9 @@ export function buildDemoBaseCases(baseCwd: string): WatchCase[] {
       verifyClassLiteralIn: ['js'],
       mutate(source, payload) {
         return mutateScriptByDataAnchor(source, '  data: {', payload)
+      },
+      mutateCommentCarrier(source, payload) {
+        return mutateScriptByDataAnchorWithCommentCarrier(source, '  data: {', payload)
       },
     },
     styleMutation: {

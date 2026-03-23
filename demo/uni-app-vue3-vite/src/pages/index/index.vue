@@ -1,5 +1,5 @@
 <template>
-  <view class="content">
+  <view class="content" :class="bgObj">
     <view class="odd:mb-2 text-[var(--text_sec_light)]"></view>
     <view class="ifdef-[MP-WEIXIN]:bg-blue-500 text-[var(--text\_sec\_light)]">bg-blue-500</view>
     <view class="ifdef-[H5_||_MP-WEIXIN]:bg-blue-300">bg-blue-300</view>
@@ -125,6 +125,10 @@ const goods = ref([
   },
 
 ])
+
+const bgObj = ref({
+  'bg-[#999999]':true
+})
 
 const cardsColor = ref([
   'bg-[#4268EA] shadow-indigo-100',

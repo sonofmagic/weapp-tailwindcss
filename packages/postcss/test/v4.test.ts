@@ -1,6 +1,12 @@
 import fs from 'fs-extra'
 import path from 'pathe'
+import prettier from 'prettier'
 import { createStyleHandler } from '@/index'
+
+const WEBKIT_HYPHENS_RE = /-webkit-hyphens\s*:\s*none/
+const MARGIN_TRIM_RE = /margin-trim\s*:\s*inline/
+const MOZ_ORIENT_RE = /-moz-orient\s*:\s*inline/
+const COLOR_RGB_FROM_RE = /color\s*:\s*rgb\(\s*from\s+red\s+r\s+g\s+b\s*\)/
 
 function getPropertyDeclarations(css: string, prop: string) {
   const regex = new RegExp(`${prop}:\\s*([^;]+);`, 'g')
@@ -126,6 +132,17 @@ describe('v4', () => {
     })
     expect(css).toMatchSnapshot()
     await fs.writeFile(path.resolve(__dirname, './fixtures/css/v4.1.2.out.css'), css, 'utf8')
+  })
+
+  it('taro vite tailwindcss v4 app-origin', async () => {
+    const styleHandler = createStyleHandler({
+      isMainChunk: true,
+    })
+    const code = await fs.readFile(path.resolve(__dirname, './fixtures/css/taro-vite-tailwindcss-v4-app-origin.css'), 'utf8')
+    const { css } = await styleHandler(code, {
+      isMainChunk: true,
+    })
+    expect(await prettier.format(css, { parser: 'css' })).toMatchSnapshot()
   })
 
   it('v4 space-y-*', async () => {
@@ -386,10 +403,10 @@ page{--status-bar-height:25px;--top-window-height:0px;--window-top:0px;--window-
   it('regex', () => {
     function t(str: string) {
       return [
-        /-webkit-hyphens\s*:\s*none/,
-        /margin-trim\s*:\s*inline/,
-        /-moz-orient\s*:\s*inline/,
-        /color\s*:\s*rgb\(\s*from\s+red\s+r\s+g\s+b\s*\)/,
+        WEBKIT_HYPHENS_RE,
+        MARGIN_TRIM_RE,
+        MOZ_ORIENT_RE,
+        COLOR_RGB_FROM_RE,
       ].every(regex => regex.test(str))
     }
     expect(

@@ -8,8 +8,11 @@ const projectRoot = path.resolve(__dirname, '..')
 const webpackCacheDir = path.resolve(__dirname, '../node_modules/.cache/webpack')
 const INDEX_PACK_FILES = new Set(['index.pack', 'index.pack.old'])
 
+/** 匹配正则表达式中需要转义的特殊字符 */
+const REGEXP_SPECIAL_CHARS = /[.*+?^${}()|[\]\\]/g
+
 function escapeRegExp(value) {
-  return value.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
+  return value.replace(REGEXP_SPECIAL_CHARS, '\\$&')
 }
 
 function listIndexPackFiles(dir) {
@@ -34,9 +37,15 @@ function listIndexPackFiles(dir) {
   return result
 }
 
+/** 匹配 loader 查询分隔符（!、?、|） */
+const QUERY_SEPARATOR_RE = /[!?|]/
+
+/** 匹配路径末尾的多余标点符号 */
+const TRAILING_PUNCTUATION_RE = /[,'"`;]+$/g
+
 function sanitizeCandidatePath(rawPath) {
-  const querySplit = rawPath.split(/[!?|]/, 1)[0]
-  return querySplit.replace(/[,'"`;]+$/g, '')
+  const querySplit = rawPath.split(QUERY_SEPARATOR_RE, 1)[0]
+  return querySplit.replace(TRAILING_PUNCTUATION_RE, '')
 }
 
 function findStalePnpmPath(cacheFile) {

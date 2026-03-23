@@ -6,6 +6,12 @@ import loaderUtils from 'loader-utils'
 
 interface RuntimeClassSetLoaderOptions {
   getClassSet?: () => void | Promise<void>
+  getWatchDependencies?: () => RuntimeLoaderWatchDependencies | Promise<RuntimeLoaderWatchDependencies | void> | void
+}
+
+interface RuntimeLoaderWatchDependencies {
+  files?: Iterable<string>
+  contexts?: Iterable<string>
 }
 
 const WeappTwRuntimeClassSetLoader: webpack.LoaderDefinitionFunction<RuntimeClassSetLoaderOptions> = function (
@@ -18,9 +24,30 @@ const WeappTwRuntimeClassSetLoader: webpack.LoaderDefinitionFunction<RuntimeClas
   }
   const opt = loaderUtils.getOptions(this)
   const maybePromise = opt?.getClassSet?.()
-  if (maybePromise && typeof (maybePromise as PromiseLike<void>).then === 'function') {
-    return Promise.resolve(maybePromise).then(() => source)
+  const applyWatchDependencies = (dependencies: RuntimeLoaderWatchDependencies | void) => {
+    for (const file of dependencies?.files ?? []) {
+      this.addDependency?.(file)
+    }
+    for (const context of dependencies?.contexts ?? []) {
+      this.addContextDependency?.(context)
+    }
   }
+  const resolveWatchDependencies = () => {
+    const dependencies = opt?.getWatchDependencies?.()
+    if (dependencies && typeof (dependencies as PromiseLike<RuntimeLoaderWatchDependencies | void>).then === 'function') {
+      return Promise.resolve(dependencies).then((value) => {
+        applyWatchDependencies(value)
+      })
+    }
+    applyWatchDependencies(dependencies)
+  }
+  if (maybePromise && typeof (maybePromise as PromiseLike<void>).then === 'function') {
+    return Promise.resolve(maybePromise).then(async () => {
+      await resolveWatchDependencies()
+      return source
+    })
+  }
+  resolveWatchDependencies()
   return source
 }
 

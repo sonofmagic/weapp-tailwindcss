@@ -104,22 +104,20 @@ function getScreenVariantValues(
       .filter(Boolean)
       .map(v => `${screen}:${v}`)
 
-    result = result.concat(tokens)
+    result = [...result, ...tokens]
   }
   else if (Array.isArray(screenVariantValue)) {
-    result = result.concat(
-      screenVariantValue.reduce<string[]>((arr, value) => {
-        if (value) {
-          arr.push(`${screen}:${value}`)
-        }
+    result = [...result, ...screenVariantValue.reduce<string[]>((arr, value) => {
+      if (value) {
+        arr.push(`${screen}:${value}`)
+      }
 
-        return arr
-      }, []),
-    )
+      return arr
+    }, [])]
   }
   else if (typeof screenVariantValue === 'object' && typeof slotKey === 'string') {
     for (const key in screenVariantValue) {
-      if (Object.prototype.hasOwnProperty.call(screenVariantValue, key) && key === slotKey) {
+      if (Object.hasOwn(screenVariantValue, key) && key === slotKey) {
         const value = screenVariantValue[key]
 
         if (typeof value === 'string') {
@@ -127,7 +125,7 @@ function getScreenVariantValues(
           const tokens = fixedValue.split(' ').map(v => `${screen}:${v}`)
 
           if (result[slotKey]) {
-            result[slotKey] = result[slotKey].concat(tokens)
+            result[slotKey] = [...result[slotKey], ...tokens]
           }
           else {
             result[slotKey] = tokens
@@ -155,7 +153,7 @@ function mergeSlotRecords(target: Record<string, any>, source: Record<string, an
   }
 
   for (const key in source) {
-    if (!Object.prototype.hasOwnProperty.call(source, key)) {
+    if (!Object.hasOwn(source, key)) {
       continue
     }
 

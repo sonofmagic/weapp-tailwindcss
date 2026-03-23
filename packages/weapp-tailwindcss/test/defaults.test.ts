@@ -44,6 +44,12 @@ describe('defaults getDefaultOptions', () => {
     expect(matcher('common/miniprogram-app.css', 'kbone')).toBe(true)
     expect(matcher('app.css', 'kbone')).toBe(false)
 
+    expect(matcher('app.wxss')).toBe(true)
+    expect(matcher('common/main.wxss')).toBe(true)
+    expect(matcher('bundle.wxss')).toBe(true)
+    expect(matcher('styles/app364cd4a4.wxss')).toBe(true)
+    expect(matcher('pages/index/index.wxss')).toBe(false)
+
     expect(matcher(
       'anything.css',
       // @ts-ignore

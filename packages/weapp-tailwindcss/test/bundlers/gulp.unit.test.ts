@@ -159,6 +159,33 @@ describe('bundlers/gulp createPlugins', () => {
     expect(templateHandler).toHaveBeenCalledTimes(2)
   })
 
+  it('reuses default css handler options across transformWxss invocations', async () => {
+    const plugins = createPlugins()
+
+    await runTransform(plugins.transformWxss(), createFile('/src/app.wxss', '.foo { color: blue; }'))
+    await runTransform(plugins.transformWxss(), createFile('/src/page.wxss', '.bar { color: green; }'))
+
+    expect(styleHandler).toHaveBeenCalledTimes(2)
+    expect(styleHandler.mock.calls[0]?.[1]).toBe(styleHandler.mock.calls[1]?.[1])
+    expect(styleHandler.mock.calls[0]?.[1]).toEqual({
+      isMainChunk: true,
+      majorVersion: 3,
+    })
+  })
+
+  it('reuses default template handler options across transformWxml invocations', async () => {
+    const plugins = createPlugins()
+
+    await runTransform(plugins.transformWxml(), createFile('/src/app.wxml', '<view class="foo"></view>'))
+    await runTransform(plugins.transformWxml(), createFile('/src/page.wxml', '<view class="bar"></view>'))
+
+    expect(templateHandler).toHaveBeenCalledTimes(2)
+    expect(templateHandler.mock.calls[0]?.[1]).toBe(templateHandler.mock.calls[1]?.[1])
+    expect(templateHandler.mock.calls[0]?.[1]).toEqual({
+      runtimeSet,
+    })
+  })
+
   it('resolves directory index files when building module graph', async () => {
     const plugins = createPlugins()
 
@@ -166,7 +193,7 @@ describe('bundlers/gulp createPlugins', () => {
     await runTransform(plugins.transformJs(), jsFile)
 
     const handlerCalls = jsHandler.mock.calls
-    const handlerOptions = handlerCalls[handlerCalls.length - 1]?.[2]
+    const handlerOptions = handlerCalls.at(-1)?.[2]
     expect(handlerOptions?.moduleGraph).toBeDefined()
     const moduleGraph = handlerOptions?.moduleGraph
     const importer = handlerOptions?.filename
@@ -203,5 +230,17 @@ describe('bundlers/gulp createPlugins', () => {
     finally {
       statSpy.mockRestore()
     }
+  })
+
+  it('reuses the default moduleGraph across transformJs invocations', async () => {
+    const plugins = createPlugins()
+
+    await runTransform(plugins.transformJs(), createFile('/src/app.js', 'console.log("a")'))
+    await runTransform(plugins.transformJs(), createFile('/src/page.js', 'console.log("b")'))
+
+    const firstOptions = jsHandler.mock.calls[0]?.[2]
+    const secondOptions = jsHandler.mock.calls[1]?.[2]
+
+    expect(firstOptions?.moduleGraph).toBe(secondOptions?.moduleGraph)
   })
 })

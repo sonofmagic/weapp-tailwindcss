@@ -17,17 +17,17 @@ catalogs:
   babelPresetReact7285:
     '@babel/preset-react': ^7.28.5
   babelRuntime7284:
-    '@babel/runtime': ^7.28.6
+    '@babel/runtime': ^7.29.2
   babelRuntime7284tilde:
-    '@babel/runtime': ^7.28.6
+    '@babel/runtime': ^7.29.2
   crossEnv:
     cross-env: ^10.1.0
   lucideReact0555:
-    lucide-react: ^0.575.0
+    lucide-react: ^0.577.0
   lucideVueNext0555:
-    lucide-vue-next: ^0.575.0
+    lucide-vue-next: ^0.577.0
   miniApiTypings:
-    miniprogram-api-typings: ^5.1.1
+    miniprogram-api-typings: ^5.1.2
   postcss85:
     postcss: ^8.5.8
   postcssComment2:
@@ -53,9 +53,9 @@ catalogs:
   reactRefresh018:
     react-refresh: ^0.18.0
   sass195:
-    sass: ^1.97.3
+    sass: ^1.98.0
   stylelint1625:
-    stylelint: ^17.4.0
+    stylelint: ^17.5.0
   tailwindMerge:
     tailwind-merge: ^3.5.0
   tailwindMerge2:
@@ -63,12 +63,12 @@ catalogs:
   tailwindcss3:
     tailwindcss: ^3.4.19
   tailwindcss4:
-    '@tailwindcss/postcss': ^4.2.1
-    '@tailwindcss/vite': ^4.2.1
-    tailwindcss: ^4.2.1
+    '@tailwindcss/postcss': ^4.2.2
+    '@tailwindcss/vite': ^4.2.2
+    tailwindcss: ^4.2.2
     tailwindcss4: npm:tailwindcss@^4.2.1
   tailwindcssPatch:
-    tailwindcss-patch: ^8.7.3
+    tailwindcss-patch: 9.0.0
   tailwindcssRem:
     tailwindcss-rem2px-preset: ^1.0.3
   taro4:
@@ -96,15 +96,15 @@ catalogs:
     babel-preset-taro: ^4.1.11
     eslint-config-taro: ^4.1.11
   typesNode2410:
-    '@types/node': ^24.11.0
+    '@types/node': ^24.12.0
   typescript59:
     typescript: ^5.9.3
   typescript59tilde:
     typescript: ~5.9.3
   typescriptEslint849:
-    '@typescript-eslint/eslint-plugin': ^8.56.1
-    '@typescript-eslint/parser': ^8.56.1
-    typescript-eslint: ^8.56.1
+    '@typescript-eslint/eslint-plugin': ^8.57.1
+    '@typescript-eslint/parser': ^8.57.1
+    typescript-eslint: ^8.57.1
   vite4:
     vite: ^4.5.14
   vite5421:
@@ -114,19 +114,19 @@ catalogs:
   vitePluginReact4:
     '@vitejs/plugin-react': ^4.7.0
   vue3:
-    '@vue/compiler-dom': ^3.5.29
-    '@vue/compiler-sfc': ^3.5.29
-    vue: ^3.5.29
+    '@vue/compiler-dom': ^3.5.30
+    '@vue/compiler-sfc': ^3.5.30
+    vue: ^3.5.30
   vueTsc318:
-    vue-tsc: ^3.2.5
+    vue-tsc: ^3.2.6
   weappChildren:
     weapp-tailwindcss-children: ^0.1.0
   weappIdeCli:
-    weapp-ide-cli: ^5.1.0
+    weapp-ide-cli: ^5.1.1
   weappVite:
-    weapp-vite: ^6.7.3
+    weapp-vite: ^6.11.3
   wrangler4530:
-    wrangler: ^4.70.0
+    wrangler: ^4.76.0
 
 onlyBuiltDependencies:
   - '@tailwindcss/oxide'

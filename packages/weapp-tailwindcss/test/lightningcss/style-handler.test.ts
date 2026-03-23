@@ -40,4 +40,19 @@ describe('lightningcss style handler', () => {
     expect(code).toContain(':host')
     expect(code).toMatch(/:host\s*\{[^}]*color:/)
   })
+
+  it('keeps output stable when override options are omitted or empty', async () => {
+    const handler = createLightningcssStyleHandler()
+    const source = `
+      .space-x-2>:not([hidden])~:not([hidden]) { margin-left: 16px; }
+      * { box-sizing: border-box; }
+    `
+
+    const base = await handler(source)
+    const withEmptyOverride = await handler(source, {})
+
+    expect(withEmptyOverride.code).toBe(base.code)
+    expect(withEmptyOverride.map).toBe(base.map)
+    expect(withEmptyOverride.warnings).toEqual(base.warnings)
+  })
 })

@@ -26,8 +26,11 @@ type CleanerModule = typeof import('@/plugins/getCustomPropertyCleaner')
 let getPxTransformPlugin: PxModule['getPxTransformPlugin']
 let getRemTransformPlugin: RemModule['getRemTransformPlugin']
 let getCalcPlugin: CalcModule['getCalcPlugin']
+let getCalcDuplicateCleaner: typeof import('@/plugins/getCalcDuplicateCleaner').getCalcDuplicateCleaner
 let getUnitsToPxPlugin: UnitsModule['getUnitsToPxPlugin']
 let getCustomPropertyCleaner: CleanerModule['getCustomPropertyCleaner']
+
+const TW_CUSTOM_PROPERTY_REGEX = /^--tw-/
 
 beforeAll(async () => {
   const pxModule = await import('@/plugins/getPxTransformPlugin')
@@ -38,6 +41,9 @@ beforeAll(async () => {
 
   const calcModule = await import('@/plugins/getCalcPlugin')
   getCalcPlugin = calcModule.getCalcPlugin
+
+  const calcDuplicateCleanerModule = await import('@/plugins/getCalcDuplicateCleaner')
+  getCalcDuplicateCleaner = calcDuplicateCleanerModule.getCalcDuplicateCleaner
 
   const unitsModule = await import('@/plugins/getUnitsToPxPlugin')
   getUnitsToPxPlugin = unitsModule.getUnitsToPxPlugin
@@ -89,6 +95,21 @@ describe('getPxTransformPlugin', () => {
     }))
     expect(plugin?.postcssPlugin).toBe('mock-px')
   })
+
+  it('reuses default px2rpx options when set to true', () => {
+    pxMock.mockImplementation(options => ({ postcssPlugin: 'mock-px', options }))
+
+    getPxTransformPlugin(createOptions({ px2rpx: true }))
+    getPxTransformPlugin(createOptions({ px2rpx: true }))
+
+    expect(pxMock).toHaveBeenCalledTimes(2)
+    expect(pxMock.mock.calls[0]?.[0]).toBe(pxMock.mock.calls[1]?.[0])
+    expect(pxMock.mock.calls[0]?.[0]).toMatchObject({
+      platform: 'weapp',
+      targetUnit: 'rpx',
+      designWidth: 750,
+    })
+  })
 })
 
 describe('getRemTransformPlugin', () => {
@@ -127,6 +148,21 @@ describe('getRemTransformPlugin', () => {
       transformUnit: 'rpx',
     }))
     expect(plugin?.postcssPlugin).toBe('mock-rem')
+  })
+
+  it('reuses default rem2rpx options when set to true', () => {
+    remMock.mockImplementation(options => ({ postcssPlugin: 'mock-rem', options }))
+
+    getRemTransformPlugin(createOptions({ rem2rpx: true }))
+    getRemTransformPlugin(createOptions({ rem2rpx: true }))
+
+    expect(remMock).toHaveBeenCalledTimes(2)
+    expect(remMock.mock.calls[0]?.[0]).toBe(remMock.mock.calls[1]?.[0])
+    expect(remMock.mock.calls[0]?.[0]).toMatchObject({
+      rootValue: 32,
+      transformUnit: 'rpx',
+      processorStage: 'OnceExit',
+    })
   })
 })
 
@@ -191,6 +227,17 @@ describe('getCalcPlugin', () => {
     expect(calcMock).toHaveBeenCalledWith({ precision: 6 })
     expect(plugin?.postcssPlugin).toBe('mock-calc')
   })
+
+  it('reuses empty calc options for boolean and array modes', () => {
+    calcMock.mockImplementation(options => ({ postcssPlugin: 'mock-calc', options }))
+
+    getCalcPlugin(createOptions({ cssCalc: true }))
+    getCalcPlugin(createOptions({ cssCalc: ['--keep'] }))
+
+    expect(calcMock).toHaveBeenCalledTimes(2)
+    expect(calcMock.mock.calls[0]?.[0]).toBe(calcMock.mock.calls[1]?.[0])
+    expect(calcMock.mock.calls[0]?.[0]).toEqual({})
+  })
 })
 
 describe('getCustomPropertyCleaner', () => {
@@ -202,7 +249,7 @@ describe('getCustomPropertyCleaner', () => {
   it('removes duplicate declarations containing matched custom properties', () => {
     const plugin = getCustomPropertyCleaner(createOptions({
       cssCalc: {
-        includeCustomProperties: [/^--tw-/],
+        includeCustomProperties: [TW_CUSTOM_PROPERTY_REGEX],
       },
     })) as Plugin | null
     expect(plugin).not.toBeNull()
@@ -210,5 +257,15 @@ describe('getCustomPropertyCleaner', () => {
     const root = postcss.parse(':root{--foo:var(--other);--foo:var(--tw-color);}')
     plugin!.OnceExit?.(root, {} as any)
     expect(root.toString()).toBe(':root{--foo:var(--other);}')
+  })
+})
+
+describe('getCalcDuplicateCleaner', () => {
+  it('reuses the shared duplicate cleaner plugin when cssCalc enabled', () => {
+    const first = getCalcDuplicateCleaner(createOptions({ cssCalc: true }))
+    const second = getCalcDuplicateCleaner(createOptions({ cssCalc: ['--keep'] }))
+
+    expect(first).toBe(second)
+    expect(first?.postcssPlugin).toBe('postcss-calc-duplicate-cleaner')
   })
 })

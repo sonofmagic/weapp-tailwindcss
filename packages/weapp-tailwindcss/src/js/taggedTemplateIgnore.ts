@@ -17,22 +17,58 @@ export function createTaggedTemplateIgnore(
 ): TaggedTemplateIgnore {
   const bindingIgnoreCache = new Map<Binding, boolean>()
   const taggedTemplateIgnoreCache = new WeakMap<Node, boolean>()
-  const canonicalIgnoreNames = new Set(
-    (names ?? [])
-      .filter((item): item is string => typeof item === 'string'),
-  )
+  const seenBindings = new Set<Binding>()
+  let singleCanonicalIgnoreName: string | undefined
+  let canonicalIgnoreNames: Set<string> | undefined
+
+  for (const item of names ?? []) {
+    if (typeof item !== 'string') {
+      continue
+    }
+
+    if (singleCanonicalIgnoreName === undefined) {
+      singleCanonicalIgnoreName = item
+      continue
+    }
+
+    if (item === singleCanonicalIgnoreName) {
+      continue
+    }
+
+    if (!canonicalIgnoreNames) {
+      canonicalIgnoreNames = new Set([singleCanonicalIgnoreName, item])
+      continue
+    }
+
+    canonicalIgnoreNames.add(item)
+  }
+
+  const hasCanonicalIgnoreNames = singleCanonicalIgnoreName !== undefined
+
+  const matchesIgnoreName = (value: string): boolean => {
+    if (hasCanonicalIgnoreNames) {
+      if (canonicalIgnoreNames) {
+        if (canonicalIgnoreNames.has(value)) {
+          return true
+        }
+      }
+      else if (value === singleCanonicalIgnoreName) {
+        return true
+      }
+    }
+
+    return matcher(value)
+  }
 
   const propertyMatches = (propertyPath: NodePath<Node> | undefined): boolean => {
     if (!propertyPath) {
       return false
     }
     if (propertyPath.isIdentifier()) {
-      const { name } = propertyPath.node
-      return canonicalIgnoreNames.has(name) || matcher(name)
+      return matchesIgnoreName(propertyPath.node.name)
     }
     if (propertyPath.isStringLiteral()) {
-      const { value } = propertyPath.node
-      return canonicalIgnoreNames.has(value) || matcher(value)
+      return matchesIgnoreName(propertyPath.node.value)
     }
     return false
   }
@@ -72,10 +108,10 @@ export function createTaggedTemplateIgnore(
 
     if (bindingPath.isImportSpecifier()) {
       const imported = bindingPath.node.imported
-      if (imported.type === 'Identifier' && (canonicalIgnoreNames.has(imported.name) || matcher(imported.name))) {
+      if (imported.type === 'Identifier' && matchesIgnoreName(imported.name)) {
         result = true
       }
-      else if (imported.type === 'StringLiteral' && (canonicalIgnoreNames.has(imported.value) || matcher(imported.value))) {
+      else if (imported.type === 'StringLiteral' && matchesIgnoreName(imported.value)) {
         result = true
       }
     }
@@ -120,7 +156,7 @@ export function createTaggedTemplateIgnore(
       }
       if (current.isSequenceExpression()) {
         const expressions = current.get('expressions') as NodePath<Node>[]
-        const last = expressions[expressions.length - 1]
+        const last = expressions.at(-1)
         if (last) {
           current = last
           continue
@@ -136,25 +172,25 @@ export function createTaggedTemplateIgnore(
     return current
   }
 
-  const evaluateTagPath = (tagPath: NodePath<Node>): boolean => {
+  const evaluateTagPath = (tagPath: NodePath<Node>, seen: Set<Binding>): boolean => {
     if (tagPath.isCallExpression?.() || tagPath.node.type === 'CallExpression') {
       const calleePath = tagPath.get('callee') as NodePath<Node>
-      return evaluateTagPath(calleePath)
+      return evaluateTagPath(calleePath, seen)
     }
 
     if (tagPath.isIdentifier()) {
-      if (matcher(tagPath.node.name)) {
+      if (matchesIgnoreName(tagPath.node.name)) {
         return true
       }
       const binding = (tagPath as any)?.scope?.getBinding?.(tagPath.node.name)
       if (binding) {
-        return resolvesToWeappTwIgnore(binding, new Set())
+        return resolvesToWeappTwIgnore(binding, seen)
       }
       return false
     }
 
     if (tagPath.isMemberExpression()) {
-      return resolvesMemberExpressionToIgnore(tagPath as NodePath<MemberExpression>, new Set())
+      return resolvesMemberExpressionToIgnore(tagPath as NodePath<MemberExpression>, seen)
     }
 
     return false
@@ -173,7 +209,8 @@ export function createTaggedTemplateIgnore(
       return effectiveCached
     }
 
-    const result = evaluateTagPath(effectiveTagPath)
+    seenBindings.clear()
+    const result = evaluateTagPath(effectiveTagPath, seenBindings)
     taggedTemplateIgnoreCache.set(effectiveTagPath.node, result)
     taggedTemplateIgnoreCache.set(tagPath.node, result)
     return result

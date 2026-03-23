@@ -1,6 +1,6 @@
 import type { ParserOptions } from '@babel/parser'
-import type { LoadedPostcssOptions } from '@weapp-tailwindcss/postcss'
-import type { ILengthUnitsPatchOptions, TailwindcssPatchOptions } from 'tailwindcss-patch'
+import type { LoadedPostcssOptions } from '@weapp-tailwindcss/postcss/types'
+import type { ILengthUnitsPatchOptions, TailwindCssPatchOptions } from 'tailwindcss-patch'
 import type { ICreateCacheReturnType } from '../../cache'
 import type { AppType, IArbitraryValues } from '../shared'
 
@@ -92,7 +92,7 @@ export interface UserDefinedOptionsGeneralPart {
    * @group 3.一般配置
    * @since ^2.6.2
    * @remarks
-   * 启用后模板匹配完全交由 [`customAttributes`](/docs/api/interfaces/UserDefinedOptions#customattributes) 管理，需要自行覆盖默认的 `class` / `hover-class` 等匹配规则。
+   * 启用后模板匹配完全交由 [`customAttributes`](/docs/api/options/important#customattributes) 管理，需要自行覆盖默认的 `class` / `hover-class` 等匹配规则。
    * @default false
    */
   disabledDefaultTemplateHandler?: boolean
@@ -190,7 +190,7 @@ export interface UserDefinedOptionsGeneralPart {
    *
    * @group 3.一般配置
    */
-  tailwindcssPatcherOptions?: TailwindcssPatchOptions
+  tailwindcssPatcherOptions?: TailwindCssPatchOptions
   /**
    * 控制命令行日志输出级别。
    *

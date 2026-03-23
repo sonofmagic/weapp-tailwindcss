@@ -26,39 +26,53 @@ interface LightningcssStyleHandler {
   (rawSource: string, overrideOptions?: Partial<IStyleHandlerOptions>): Promise<LightningcssStyleHandlerResult>
 }
 
+interface PreparedLightningcssRuntime {
+  options: IStyleHandlerOptions
+  replaceSpecificity?: (code: string) => string
+  visitor: TransformOptions<CustomAtRules>['visitor']
+}
+
+function createPreparedRuntime(options?: Partial<IStyleHandlerOptions>): PreparedLightningcssRuntime {
+  const resolvedOptions = prepareStyleOptions(options)
+  const ctx: SelectorTransformContext = {
+    options: resolvedOptions,
+    childCombinatorReplacement: buildChildCombinatorReplacement(resolvedOptions),
+  }
+
+  return {
+    options: resolvedOptions,
+    replaceSpecificity: createRootSpecificityReplacer(resolvedOptions),
+    visitor: createVisitor(ctx),
+  }
+}
+
 export function createLightningcssStyleHandler(
   options?: Partial<IStyleHandlerOptions>,
   config: LightningcssTransformConfig = {},
 ): LightningcssStyleHandler {
-  const cachedOptions = prepareStyleOptions(options)
+  const baseRuntime = createPreparedRuntime(options)
   const { transformOptions, filename } = config
   const transformOverrides = transformOptions ?? {}
 
   return async (rawSource, overrideOptions) => {
-    const resolvedOptions = prepareStyleOptions(
-      defuOverrideArray<IStyleHandlerOptions, Partial<IStyleHandlerOptions>[]>(
-        overrideOptions as IStyleHandlerOptions,
-        cachedOptions,
-      ),
-    )
-
-    const ctx: SelectorTransformContext = {
-      options: resolvedOptions,
-      childCombinatorReplacement: buildChildCombinatorReplacement(resolvedOptions),
-    }
-
-    const visitor = createVisitor(ctx)
+    const runtime = !overrideOptions || Object.keys(overrideOptions).length === 0
+      ? baseRuntime
+      : createPreparedRuntime(
+          defuOverrideArray<IStyleHandlerOptions, Partial<IStyleHandlerOptions>[]>(
+            overrideOptions as IStyleHandlerOptions,
+            baseRuntime.options,
+          ),
+        )
     const lightningResult = transform({
       filename: filename ?? defaultLightningFilename,
       code: Buffer.from(rawSource),
-      visitor,
+      visitor: runtime.visitor,
       minify: false,
       ...transformOverrides,
     })
 
-    const replaceSpecificity = createRootSpecificityReplacer(resolvedOptions)
     const decodedCode = textDecoder.decode(lightningResult.code)
-    const code = replaceSpecificity ? replaceSpecificity(decodedCode) : decodedCode
+    const code = runtime.replaceSpecificity ? runtime.replaceSpecificity(decodedCode) : decodedCode
 
     return {
       code,

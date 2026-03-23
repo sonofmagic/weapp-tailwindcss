@@ -129,3 +129,5 @@ website/tests/index.spec.ts-snapshots
 # Local Playwright artifacts
 /.playwright/
 /.playwright-cli/
+.tmp/
+**/.weapp-vite/

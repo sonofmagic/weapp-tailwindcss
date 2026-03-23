@@ -1,3 +1,4 @@
+import path from 'node:path'
 import { afterEach, describe, expect, it, vi } from 'vitest'
 
 import { taro } from '@/presets/taro'
@@ -20,7 +21,8 @@ describe('taro preset', () => {
       cssEntries: ['src/app.css'],
     })
 
-    expect(result.tailwindcssBasedir).toBe('/Users/foo/taro-app')
+    // 相对 base 基于 INIT_CWD resolve，Windows 下会带盘符
+    expect(result.tailwindcssBasedir).toBe(path.resolve('/Users/foo/taro-app', '.'))
     expect(result.tailwindcss?.v4?.cssEntries).toEqual(['src/app.css'])
     expect(result.tailwindcss?.version).toBe(4)
   })

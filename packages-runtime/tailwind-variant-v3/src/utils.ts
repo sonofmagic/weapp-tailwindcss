@@ -74,10 +74,12 @@ export function mergeObjects(
   return result
 }
 
+const EXTRA_SPACES_RE = /\s+/g
+
 export function removeExtraSpaces(str: string | undefined): string {
   if (!str || typeof str !== 'string') {
     return ''
   }
 
-  return str.replace(/\s+/g, ' ').trim()
+  return str.replace(EXTRA_SPACES_RE, ' ').trim()
 }

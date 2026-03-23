@@ -1,6 +1,8 @@
 import postcss from 'postcss'
 import postcssCustomProperties from 'postcss-custom-properties'
 
+const HAS_VAR_FUNCTION_REGEX = /\bvar\(/i
+
 describe('custom-properties', () => {
   const baseCss = `:root {
 --color-blue-dark: rgb(0, 61, 184);
@@ -33,7 +35,6 @@ color: var(--text-color);
   })
 
   it('should case 1', () => {
-    const HAS_VAR_FUNCTION_REGEX = /\bvar\(/i
     const { css } = postcss([
       // {
 

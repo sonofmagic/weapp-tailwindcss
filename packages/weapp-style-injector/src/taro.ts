@@ -23,16 +23,25 @@ interface ResolvedSubPackage {
 
 const DEFAULT_STYLE_FILENAMES = ['index.scss', 'index.css', 'index.less', 'index.sass', 'index.styl']
 
+const IMPORT_LINE_RE = /^\s*import[\s\S]*?;$/gm
+const AS_CONST_RE = /\s+as\s+const/g
+const DECLARE_LINE_RE = /^\s*declare\s+[^\n]*\n?/gm
+const EXPORT_DEFAULT_DEFINE_APP_CONFIG_RE = /export\s+default\s+defineAppConfig\s*\(/
+const EXPORT_DEFAULT_RE = /export\s+default\s+/
+
 function stripImports(source: string): string {
-  return source.replace(/^\s*import[\s\S]*?;$/gm, '')
+  IMPORT_LINE_RE.lastIndex = 0
+  return source.replace(IMPORT_LINE_RE, '')
 }
 
 function stripTypeAssertions(source: string): string {
-  return source.replace(/\s+as\s+const/g, '')
+  AS_CONST_RE.lastIndex = 0
+  return source.replace(AS_CONST_RE, '')
 }
 
 function stripTypeDeclarations(source: string): string {
-  return source.replace(/^\s*declare\s+[^\n]*\n?/gm, '')
+  DECLARE_LINE_RE.lastIndex = 0
+  return source.replace(DECLARE_LINE_RE, '')
 }
 
 function loadAppConfigModule(filePath: string): Record<string, unknown> | null {
@@ -58,8 +67,8 @@ function loadAppConfigModule(filePath: string): Record<string, unknown> | null {
     const withoutImports = stripImports(raw)
     const withoutDeclarations = stripTypeDeclarations(withoutImports)
     const sanitized = stripTypeAssertions(withoutDeclarations)
-      .replace(/export\s+default\s+defineAppConfig\s*\(/, 'module.exports = defineAppConfig(')
-      .replace(/export\s+default\s+/, 'module.exports = ')
+      .replace(EXPORT_DEFAULT_DEFINE_APP_CONFIG_RE, 'module.exports = defineAppConfig(')
+      .replace(EXPORT_DEFAULT_RE, 'module.exports = ')
 
     const context = {
       module: { exports: {} as unknown },
@@ -103,9 +112,8 @@ function resolveSubPackages(config: TaroSubPackageConfig): ResolvedSubPackage[] 
     return []
   }
 
-  // eslint-disable-next-line dot-notation
   const primary = ensureArray((appConfig as Record<string, unknown>)['subPackages'] as Array<{ root?: string }> | undefined)
-  // eslint-disable-next-line dot-notation
+
   const secondary = ensureArray((appConfig as Record<string, unknown>)['subpackages'] as Array<{ root?: string }> | undefined)
   const subPackagesInput = [...primary, ...secondary]
 

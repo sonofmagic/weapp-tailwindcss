@@ -1,3 +1,4 @@
+import path from 'node:path'
 import { afterEach, describe, expect, it, vi } from 'vitest'
 
 import { hbuilderx } from '@/presets/hbuilderx'
@@ -18,13 +19,14 @@ describe('hbuilderx preset', () => {
       cssEntries: 'tailwind.css',
     })
 
-    expect(result.tailwindcssBasedir).toBe('/Users/foo/uni-project')
-    expect(result.tailwindcss?.v3?.cwd).toBe('/Users/foo/uni-project')
-    expect(result.tailwindcss?.v4?.base).toBe('/Users/foo/uni-project')
+    // 环境变量中的绝对路径经 path.normalize 返回平台原生格式
+    expect(result.tailwindcssBasedir).toBe(path.normalize('/Users/foo/uni-project'))
+    expect(result.tailwindcss?.v3?.cwd).toBe(path.normalize('/Users/foo/uni-project'))
+    expect(result.tailwindcss?.v4?.base).toBe(path.normalize('/Users/foo/uni-project'))
     expect(result.tailwindcss?.v4?.cssEntries).toEqual(['tailwind.css'])
     expect(result.tailwindcss?.version).toBe(4)
-    expect(result.tailwindcssPatcherOptions?.projectRoot).toBe('/Users/foo/uni-project')
-    expect(result.tailwindcssPatcherOptions?.tailwindcss?.v4?.base).toBe('/Users/foo/uni-project')
+    expect(result.tailwindcssPatcherOptions?.projectRoot).toBe(path.normalize('/Users/foo/uni-project'))
+    expect(result.tailwindcssPatcherOptions?.tailwindcss?.v4?.base).toBe(path.normalize('/Users/foo/uni-project'))
   })
 
   it('resolves relative base against overridden working directory hints', () => {
@@ -36,8 +38,10 @@ describe('hbuilderx preset', () => {
       cssEntries: ['tailwind.css'],
     })
 
-    expect(result.tailwindcssBasedir).toBe('/Applications/HBuilderX.app/Contents/HBuilderX')
+    // 相对 base 基于 INIT_CWD resolve，Windows 下会带盘符
+    const expectedBase = path.resolve('/Applications/HBuilderX.app/Contents/HBuilderX', './')
+    expect(result.tailwindcssBasedir).toBe(expectedBase)
     expect(result.tailwindcss?.v4?.cssEntries).toEqual(['tailwind.css'])
-    expect(result.tailwindcssPatcherOptions?.tailwindcss?.v3?.cwd).toBe('/Applications/HBuilderX.app/Contents/HBuilderX')
+    expect(result.tailwindcssPatcherOptions?.tailwindcss?.v3?.cwd).toBe(expectedBase)
   })
 })

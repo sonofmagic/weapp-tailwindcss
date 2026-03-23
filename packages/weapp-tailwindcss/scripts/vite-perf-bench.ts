@@ -4,6 +4,12 @@ import { existsSync, promises as fs } from 'node:fs'
 import path from 'node:path'
 import process from 'node:process'
 
+// 模块级正则，避免函数内重复编译
+const READY_TIME_DIRECT_RE = /ready\s+in\s+([\d.]+)\s*ms/i
+const READY_TIME_FALLBACK_RE = /([\d.]+)\s*ms/i
+const READY_KEYWORD_RE = /ready/i
+const NEWLINE_SPLIT_RE = /\r?\n/g
+
 interface BenchCliOptions {
   cwd: string
   script: string
@@ -162,15 +168,15 @@ function spawnPnpm(args: string[], options: Parameters<typeof spawn>[2]) {
 
 function extractReadyTime(line: string): number | undefined {
   const normalized = line.trim()
-  const direct = normalized.match(/ready\s+in\s+([\d.]+)\s*ms/i)
+  const direct = normalized.match(READY_TIME_DIRECT_RE)
   if (direct) {
     return Number(direct[1])
   }
-  const fallback = normalized.match(/([\d.]+)\s*ms/i)
+  const fallback = normalized.match(READY_TIME_FALLBACK_RE)
   if (!fallback) {
     return undefined
   }
-  if (!/ready/i.test(normalized)) {
+  if (!READY_KEYWORD_RE.test(normalized)) {
     return undefined
   }
   return Number(fallback[1])
@@ -238,7 +244,7 @@ async function collectReadyTime(options: BenchCliOptions, env: NodeJS.ProcessEnv
   child.stdout.on('data', (chunk: StringableChunk) => {
     try {
       const text = chunk.toString('utf8')
-      for (const line of text.split(/\r?\n/g)) {
+      for (const line of text.split(NEWLINE_SPLIT_RE)) {
         const value = extractReadyTime(line)
         if (value && value > 0) {
           readyMs = value

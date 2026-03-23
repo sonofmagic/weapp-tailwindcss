@@ -50,7 +50,7 @@ export function StyleInjector(options: ViteTaroStyleInjectorOptions = {}) {
     }
   }
 
-  const taroResolver = createTaroSubPackageImportResolver(Array.from(configs.values()))
+  const taroResolver = createTaroSubPackageImportResolver([...configs.values()])
 
   const injectorOptions: ViteWeappStyleInjectorOptions = {
     ...rest,

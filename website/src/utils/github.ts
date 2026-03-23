@@ -35,6 +35,11 @@ export function buildStarCacheKey(owner: string, repo: string): string {
   return `${GITHUB_CACHE_PREFIX}:${buildRepoSlug(owner, repo)}`
 }
 
+const DIGITS_COMMAS_RE = /^[\d,]+$/
+const COMMA_RE = /,/g
+const STAR_UNIT_RE = /^([\d.]+)\s*([kmb])$/
+const REGEX_SPECIAL_CHARS_RE = /[-/\\^$*+?.()|[\]{}]/g
+
 function parseStarMessage(message?: string): number | null {
   if (!message) {
     return null
@@ -43,10 +48,10 @@ function parseStarMessage(message?: string): number | null {
   if (!normalized) {
     return null
   }
-  if (/^[\d,]+$/.test(normalized)) {
-    return Number(normalized.replace(/,/g, ''))
+  if (DIGITS_COMMAS_RE.test(normalized)) {
+    return Number(normalized.replace(COMMA_RE, ''))
   }
-  const match = normalized.match(/^([\d.]+)\s*([kmb])$/)
+  const match = normalized.match(STAR_UNIT_RE)
   if (!match) {
     return null
   }
@@ -64,7 +69,7 @@ function parseStarMessage(message?: string): number | null {
 }
 
 function escapeForRegex(value: string): string {
-  return value.replace(/[-/\\^$*+?.()|[\]{}]/g, '\\$&')
+  return value.replace(REGEX_SPECIAL_CHARS_RE, '\\$&')
 }
 
 function parseStarsFromGitHubPage(markdown: string, owner: string, repo: string): number | null {

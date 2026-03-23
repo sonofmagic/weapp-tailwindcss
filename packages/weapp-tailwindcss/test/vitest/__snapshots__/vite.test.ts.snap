@@ -52,11 +52,7 @@ exports[`vite test > vite common build 1`] = `
 `;
 
 exports[`vite test > vite common build 2`] = `
-"::before,
-::after {
-  --tw-content: "";
-}
-view,
+"view,
 text,
 :before,
 :after {
@@ -111,10 +107,6 @@ text,
   --tw-contain-layout: ;
   --tw-contain-paint: ;
   --tw-contain-style: ;
-  box-sizing: border-box;
-  border-width: 0;
-  border-style: solid;
-  border-color: currentColor;
 }
 .flex {
   display: flex;
@@ -203,11 +195,7 @@ exports[`vite test > vite common build twice for cache 1`] = `
 `;
 
 exports[`vite test > vite common build twice for cache 2`] = `
-"::before,
-::after {
-  --tw-content: "";
-}
-view,
+"view,
 text,
 :before,
 :after {
@@ -262,10 +250,6 @@ text,
   --tw-contain-layout: ;
   --tw-contain-paint: ;
   --tw-contain-style: ;
-  box-sizing: border-box;
-  border-width: 0;
-  border-style: solid;
-  border-color: currentColor;
 }
 .flex {
   display: flex;
@@ -354,11 +338,7 @@ exports[`vite test > vite common build twice for cache 4`] = `
 `;
 
 exports[`vite test > vite common build twice for cache 5`] = `
-"::before,
-::after {
-  --tw-content: "";
-}
-view,
+"view,
 text,
 :before,
 :after {
@@ -413,10 +393,6 @@ text,
   --tw-contain-layout: ;
   --tw-contain-paint: ;
   --tw-contain-style: ;
-  box-sizing: border-box;
-  border-width: 0;
-  border-style: solid;
-  border-color: currentColor;
 }
 .flex {
   display: flex;
@@ -1525,11 +1501,7 @@ exports[`vite test > vite common build with rem2rpx 1`] = `
 `;
 
 exports[`vite test > vite common build with rem2rpx 2`] = `
-"::before,
-::after {
-  --tw-content: "";
-}
-view,
+"view,
 text,
 :before,
 :after {
@@ -1584,10 +1556,6 @@ text,
   --tw-contain-layout: ;
   --tw-contain-paint: ;
   --tw-contain-style: ;
-  box-sizing: border-box;
-  border-width: 0;
-  border-style: solid;
-  border-color: currentColor;
 }
 .flex {
   display: flex;

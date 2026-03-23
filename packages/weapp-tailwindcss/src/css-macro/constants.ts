@@ -39,9 +39,13 @@ export function createNegativeMediaQuery(value: string) {
   return `@media not screen and (${queryKey}:"${value}"){&}`
 }
 
+const UNESCAPED_UNDERSCORE_RE = /(?<!\\)_/g
+const WHITESPACE_RE = /\s+/g
+const LOGICAL_OPERATOR_RE = /\s*(\|\||&&)\s*/g
+
 export function normalComment(text: string) {
   if (typeof text === 'string') {
-    const normalized = text.replaceAll(/(?<!\\)_/g, ' ').replaceAll(/\s+/g, ' ').trim()
+    const normalized = text.replaceAll(UNESCAPED_UNDERSCORE_RE, ' ').replaceAll(WHITESPACE_RE, ' ').trim()
     // Keep escaped expressions untouched (e.g. H5\\_||\\_MP-WEIXIN).
     // They are intentionally literal and should not be rewritten.
     if (normalized.includes('\\')) {
@@ -49,7 +53,7 @@ export function normalComment(text: string) {
     }
     // Normalize logical operators to the style supported by uni-app conditional comments:
     // #ifdef H5 || APP
-    return normalized.replaceAll(/\s*(\|\||&&)\s*/g, ' $1 ').replaceAll(/\s+/g, ' ').trim()
+    return normalized.replaceAll(LOGICAL_OPERATOR_RE, ' $1 ').replaceAll(WHITESPACE_RE, ' ').trim()
   }
   return text
 }
@@ -71,13 +75,16 @@ export function ifndef(text: string) {
 // uniVersion > 3.9
 // H5 || MP-WEIXIN
 // not screen and (weapp-tw-platform:MP-WEIXIN)
+const QUERY_KEY_REGEX = new RegExp(`\\(\\s*${queryKey}\\s*:\\s*"([^)]*)"\\)`, 'g')
+
 export function matchCustomPropertyFromValue(str: string, cb: (arr: RegExpExecArray, index: number) => void) {
   let arr: RegExpExecArray | null
   let index = 0
 
-  const regex = new RegExp(`\\(\\s*${queryKey}\\s*:\\s*"([^)]*)"\\)`, 'g')
+  // 重置 lastIndex 以确保每次调用从头匹配
+  QUERY_KEY_REGEX.lastIndex = 0
   // eslint-disable-next-line no-cond-assign
-  while ((arr = regex.exec(str)) !== null) {
+  while ((arr = QUERY_KEY_REGEX.exec(str)) !== null) {
     cb(arr, index)
     index++
   }

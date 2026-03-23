@@ -26,10 +26,13 @@ function parseArgs(argv) {
   return options
 }
 
+/** 匹配反斜杠 */
+const BACKSLASH_RE = /\\/g
+
 function normalizeFile(filePath, rootDir, options) {
   const { parsed } = readMatterFile(filePath)
   const data = { ...parsed.data }
-  const relativePath = filePath.replace(`${rootDir}/`, '').replace(/\\/g, '/')
+  const relativePath = filePath.replace(`${rootDir}/`, '').replace(BACKSLASH_RE, '/')
 
   const existing = data.keywords
   const normalized = normalizeKeywords(existing, {

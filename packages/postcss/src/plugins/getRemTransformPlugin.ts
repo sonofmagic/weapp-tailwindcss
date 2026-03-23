@@ -15,17 +15,22 @@ const defaultStage: Pick<Rem2rpxOptions, 'processorStage'> = {
   processorStage: 'OnceExit',
 }
 
+const defaultRemTransformOptions: Rem2rpxOptions = {
+  ...defaultRemOptions,
+  ...defaultStage,
+}
+
 export function getRemTransformPlugin(options: IStyleHandlerOptions): AcceptedPlugin | null {
   if (!options.rem2rpx) {
     return null
   }
 
-  const userOptions = typeof options.rem2rpx === 'object'
-    ? options.rem2rpx
-    : defaultRemOptions
+  if (options.rem2rpx === true) {
+    return postcssRem2rpx(defaultRemTransformOptions)
+  }
 
   const merged = defuOverrideArray<Rem2rpxOptions, Rem2rpxOptions[]>(
-    userOptions,
+    options.rem2rpx,
     defaultStage,
   )
 

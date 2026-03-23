@@ -22,7 +22,8 @@ describe('generateVscodeIntellisenseEntry', () => {
 
     const result = await generateVscodeIntellisenseEntry({ baseDir: root, cssEntry })
 
-    expect(path.relative(root, result.outputPath)).toBe(DEFAULT_VSCODE_ENTRY_OUTPUT)
+    // Windows 下 path.relative 返回反斜杠，需统一为平台原生格式比较
+    expect(path.relative(root, result.outputPath)).toBe(path.normalize(DEFAULT_VSCODE_ENTRY_OUTPUT))
     const content = await readFile(result.outputPath, 'utf8')
     expect(content).toContain('@import \'tailwindcss\';')
     expect(content).toContain('@import \'../src/app.css\';')

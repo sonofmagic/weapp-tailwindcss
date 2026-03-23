@@ -74,6 +74,8 @@ const defaultCreateJsHandlerOptions: CreateJsHandlerOptions = {
     ],
   },
 }
+const UVUE_NVUE_RE = /\.(?:uvue|nvue)(?:\?.*)?$/
+
 export function transformUVue(
   code: string,
   id: string,
@@ -81,7 +83,7 @@ export function transformUVue(
   runtimeSet?: Set<string>,
   options: TransformUVueOptions = {},
 ): undefined | TransformResult {
-  if (!/\.(?:uvue|nvue)(?:\?.*)?$/.test(id)) {
+  if (!UVUE_NVUE_RE.test(id)) {
     return
   }
   const { customAttributesEntities, disabledDefaultTemplateHandler = false } = options

@@ -6,6 +6,37 @@ const fs = require('node:fs')
 const path = require('node:path')
 const process = require('node:process')
 
+/** 匹配换行符（兼容 CRLF） */
+const CRLF_RE = /\r?\n/
+/** 替换换行为转义表示 */
+const NEWLINE_REPLACE_RE = /\n/g
+/** 匹配 rollback 阶段（不区分大小写） */
+const ROLLBACK_RE = /rollback/i
+/** 按管道符分隔 token */
+const TOKEN_SEPARATOR_RE = /\s+\|\s+/
+/** 匹配截断的 bg hex / 未闭合 bg / 未闭合 px token（多行） */
+const BG_PX_FALLBACK_RE = /\bbg-\s+\[#?[0-9a-fA-F]{3,8}\]?|\bbg-\[[^\]]*$|\bpx-\[[^\]]*$/m
+/** 截断的 bg hex token */
+const TRUNCATED_BG_HEX_RE = /\bbg-\s+\[#?[0-9a-fA-F]{3,8}\]?/g
+/** 未闭合 bg token */
+const UNTERMINATED_BG_RE = /\bbg-\[[^\]]*$/gm
+/** 未闭合 px token */
+const UNTERMINATED_PX_RE = /\bpx-\[[^\]]*$/gm
+/** bg token 内含空白 */
+const BG_WHITESPACE_INSIDE_RE = /\bbg-\[[^\]\s]*\s[^\]\s]*\]/g
+/** px token 内含空白 */
+const PX_WHITESPACE_INSIDE_RE = /\bpx-\[[^\]\s]*\s[^\]\s]*\]/g
+/** 缓存失效相关关键词 */
+const CACHE_INVALIDATION_RE = /invalidation|context-not-found|cache/
+/** 文件系统竞态相关关键词 */
+const FS_RACE_RE = /enoent|eperm|ebusy|eacces|crlf|lf|rename|path/
+/** 进程/超时相关关键词 */
+const PROCESS_TIMEOUT_RE = /timeout|exceeded|watch process exited|sigkill|fatal|killed/
+/** 匹配 mutation kind */
+const MUTATION_KIND_RE = /mutation=(template|script|style)/g
+/** 匹配 round 名称 */
+const ROUND_NAME_RE = /round=([a-z0-9-]+)/g
+
 const ROOT_DIR = path.resolve(process.cwd(), 'e2e/benchmark/e2e-watch-hmr')
 const SNAPSHOTS_DIR = path.join(ROOT_DIR, 'snapshots')
 const FAILURES_DIR = path.join(ROOT_DIR, 'failures')
@@ -35,7 +66,7 @@ function listFilesSafe(dir, filter) {
 
 function parseKvContent(content) {
   const out = {}
-  for (const line of content.split(/\r?\n/)) {
+  for (const line of content.split(CRLF_RE)) {
     const index = line.indexOf('=')
     if (index <= 0) {
       continue
@@ -61,10 +92,10 @@ function summarizeDiff(before, after) {
   }
   const beforeContext = before
     .slice(Math.max(0, index - 40), Math.min(before.length, index + 120))
-    .replace(/\n/g, '\\n')
+    .replace(NEWLINE_REPLACE_RE, '\\n')
   const afterContext = after
     .slice(Math.max(0, index - 40), Math.min(after.length, index + 120))
-    .replace(/\n/g, '\\n')
+    .replace(NEWLINE_REPLACE_RE, '\\n')
   return `firstDiff=${index}, len=${before.length}->${after.length}\n  before=${beforeContext}\n  after=${afterContext}`
 }
 
@@ -99,7 +130,7 @@ function resolvePhase(rawPhase, errorText) {
   if (rawPhase === 'add' || rawPhase === 'modify') {
     return 'hot-update'
   }
-  if (/rollback/i.test(errorText)) {
+  if (ROLLBACK_RE.test(errorText)) {
     return 'rollback'
   }
   return 'hot-update'
@@ -118,13 +149,13 @@ function pickPrimaryFailure(failureLogs, failureSnapshots) {
       phase: resolvePhase(kv.phase || '', kv.error || ''),
       project: kv.project || 'unknown',
       sourceFile: kv.source || 'unknown',
-      tokens: (kv.tokens || '').split(/\s+\|\s+/).filter(Boolean),
+      tokens: (kv.tokens || '').split(TOKEN_SEPARATOR_RE).filter(Boolean),
       error: kv.error || '',
     }
   }
 
   if (failureSnapshots.length > 0) {
-    const item = failureSnapshots[failureSnapshots.length - 1]
+    const item = failureSnapshots.at(-1)
     return {
       source: 'snapshot',
       file: item.dir,
@@ -164,7 +195,7 @@ function pickFailureSnapshot(primary, snapshots) {
       && item.meta.roundName === primary.round
       && item.meta.phase === primary.phaseRaw,
   )
-  return exact || candidates[candidates.length - 1]
+  return exact || candidates.at(-1)
 }
 
 function pickMetricFromReport(report, primary) {
@@ -218,9 +249,7 @@ function pickSnippet(source, probes) {
   }
 
   if (hitIndex < 0) {
-    const fallback = source.match(
-      /\bbg-\s+\[#?[0-9a-fA-F]{3,8}\]?|\bbg-\[[^\]]*$|\bpx-\[[^\]]*$/m,
-    )
+    const fallback = source.match(BG_PX_FALLBACK_RE)
     if (fallback?.index != null) {
       hitIndex = fallback.index
     }
@@ -237,11 +266,11 @@ function pickSnippet(source, probes) {
 
 function detectTokenAnomalies(source) {
   const patterns = [
-    { name: 'truncated-bg-hex', re: /\bbg-\s+\[#?[0-9a-fA-F]{3,8}\]?/g },
-    { name: 'unterminated-bg-token', re: /\bbg-\[[^\]]*$/gm },
-    { name: 'unterminated-px-token', re: /\bpx-\[[^\]]*$/gm },
-    { name: 'bg-whitespace-inside-token', re: /\bbg-\[[^\]\s]*\s[^\]\s]*\]/g },
-    { name: 'px-whitespace-inside-token', re: /\bpx-\[[^\]\s]*\s[^\]\s]*\]/g },
+    { name: 'truncated-bg-hex', re: TRUNCATED_BG_HEX_RE },
+    { name: 'unterminated-bg-token', re: UNTERMINATED_BG_RE },
+    { name: 'unterminated-px-token', re: UNTERMINATED_PX_RE },
+    { name: 'bg-whitespace-inside-token', re: BG_WHITESPACE_INSIDE_RE },
+    { name: 'px-whitespace-inside-token', re: PX_WHITESPACE_INSIDE_RE },
   ]
 
   const findings = []
@@ -267,7 +296,7 @@ function scoreAttribution(primary, evidence) {
     ['进程/超时问题', 0],
   ])
 
-  if (/invalidation|context-not-found|cache/.test(text)) {
+  if (CACHE_INVALIDATION_RE.test(text)) {
     scores.set(
       'cache key/invalidation',
       scores.get('cache key/invalidation') + 2,
@@ -286,13 +315,13 @@ function scoreAttribution(primary, evidence) {
       scores.get('transform emit mismatch') + 3,
     )
   }
-  if (/enoent|eperm|ebusy|eacces|crlf|lf|rename|path/.test(text)) {
+  if (FS_RACE_RE.test(text)) {
     scores.set(
       '文件系统竞态/路径换行差异',
       scores.get('文件系统竞态/路径换行差异') + 3,
     )
   }
-  if (/timeout|exceeded|watch process exited|sigkill|fatal|killed/.test(text)) {
+  if (PROCESS_TIMEOUT_RE.test(text)) {
     scores.set('进程/超时问题', scores.get('进程/超时问题') + 3)
   }
   if (primary.phase === 'rollback') {
@@ -393,7 +422,7 @@ function generateDiffSummary() {
       lines.push(`- ${path.basename(file)}`)
       const content = readUtf8(file).trim()
       if (content) {
-        for (const line of content.split(/\r?\n/)) {
+        for (const line of content.split(CRLF_RE)) {
           lines.push(`  ${line}`)
         }
       }
@@ -619,8 +648,8 @@ function publishJobSummary() {
     for (const log of logs) {
       const content = fs.readFileSync(path.join(FAILURES_DIR, log), 'utf8')
       const kindMatches
-        = content.match(/mutation=(template|script|style)/g) || []
-      const roundMatches = content.match(/round=([a-z0-9-]+)/g) || []
+        = content.match(MUTATION_KIND_RE) || []
+      const roundMatches = content.match(ROUND_NAME_RE) || []
       for (const matched of kindMatches) {
         failedKinds.add(matched.replace('mutation=', ''))
       }

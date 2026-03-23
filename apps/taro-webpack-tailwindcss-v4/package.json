@@ -15,7 +15,7 @@
   },
   "scripts": {
     "build": "pnpm build:weapp",
-    "build:weapp": "taro build --type weapp",
+    "build:weapp": "node ../../scripts/taro-build-guard.mjs",
     "build:swan": "taro build --type swan",
     "build:alipay": "taro build --type alipay",
     "build:tt": "taro build --type tt",
@@ -93,6 +93,6 @@
     "typescript": "catalog:typescript59",
     "weapp-ide-cli": "catalog:weappIdeCli",
     "weapp-tailwindcss": "workspace:*",
-    "webpack": "5.105.2"
+    "webpack": "5.105.4"
   }
 }

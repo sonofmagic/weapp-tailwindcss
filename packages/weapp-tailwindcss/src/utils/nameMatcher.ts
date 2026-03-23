@@ -1,6 +1,8 @@
 import { escapeStringRegexp } from '@weapp-core/regex'
 
 export type NameMatcher = (value: string) => boolean
+const NEVER_MATCH_NAME: NameMatcher = () => false
+const GLOBAL_FLAG_REGEXP = /g/g
 
 function buildFuzzyMatcher(fuzzyStrings: string[]): ((value: string) => boolean) | undefined {
   if (fuzzyStrings.length === 0) {
@@ -20,7 +22,7 @@ function normaliseRegex(regex: RegExp) {
   if (!flags.includes('g')) {
     return regex
   }
-  return new RegExp(source, flags.replace(/g/g, ''))
+  return new RegExp(source, flags.replace(GLOBAL_FLAG_REGEXP, ''))
 }
 
 export function createNameMatcher(
@@ -28,7 +30,7 @@ export function createNameMatcher(
   { exact = false }: { exact?: boolean } = {},
 ): NameMatcher {
   if (!list || list.length === 0) {
-    return () => false
+    return NEVER_MATCH_NAME
   }
 
   const exactStrings = exact ? new Set<string>() : undefined
@@ -49,13 +51,43 @@ export function createNameMatcher(
     }
   }
 
+  if (exact) {
+    const exactStringCount = exactStrings?.size ?? 0
+    if (exactStringCount === 1 && regexList.length === 0) {
+      const [needle] = exactStrings!
+      return value => value === needle
+    }
+
+    if (regexList.length === 0) {
+      return value => exactStrings!.has(value)
+    }
+
+    if (exactStringCount === 0 && regexList.length === 1) {
+      const [regex] = regexList
+      return value => regex.test(value)
+    }
+
+    return (value: string) => {
+      if (exactStrings?.has(value)) {
+        return true
+      }
+      return regexList.some(regex => regex.test(value))
+    }
+  }
+
   const fuzzyMatcher = exact ? undefined : buildFuzzyMatcher(fuzzyStrings)
   const hasRegex = regexList.length > 0
 
+  if (fuzzyMatcher && !hasRegex) {
+    return fuzzyMatcher
+  }
+
+  if (!fuzzyMatcher && regexList.length === 1) {
+    const [regex] = regexList
+    return value => regex.test(value)
+  }
+
   return (value: string) => {
-    if (exact && exactStrings?.has(value)) {
-      return true
-    }
     if (fuzzyMatcher?.(value)) {
       return true
     }

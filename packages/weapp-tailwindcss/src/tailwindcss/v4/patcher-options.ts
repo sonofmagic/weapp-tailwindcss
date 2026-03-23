@@ -1,6 +1,6 @@
-import type { TailwindcssPatchOptions } from 'tailwindcss-patch'
+import type { TailwindCssPatchOptions } from 'tailwindcss-patch'
 
-type TailwindUserOptions = NonNullable<TailwindcssPatchOptions['tailwindcss']>
+type TailwindUserOptions = NonNullable<TailwindCssPatchOptions['tailwindcss']>
 
 export interface LegacyTailwindcssPatcherOptionsLike {
   patch?: {
@@ -17,8 +17,8 @@ export interface LegacyTailwindcssPatcherOptionsLike {
   [key: string]: unknown
 }
 
-type ModernTailwindcssPatchOptionsLike = TailwindcssPatchOptions
-type TailwindcssPatcherOptionsForBase = TailwindcssPatchOptions | LegacyTailwindcssPatcherOptionsLike | undefined
+type ModernTailwindcssPatchOptionsLike = TailwindCssPatchOptions
+type TailwindcssPatcherOptionsForBase = TailwindCssPatchOptions | LegacyTailwindcssPatcherOptionsLike | undefined
 
 function isLegacyTailwindcssPatcherOptions(
   options: TailwindcssPatcherOptionsForBase,
@@ -88,7 +88,7 @@ export function overrideTailwindcssPatcherOptionsForBase(
     return options
   }
 
-  const { tailwind: _legacyTailwind, ...rest } = options as TailwindcssPatchOptions & { tailwind?: TailwindUserOptions }
+  const { tailwind: _legacyTailwind, ...rest } = options as TailwindCssPatchOptions & { tailwind?: TailwindUserOptions }
 
   return {
     ...rest,
