@@ -510,6 +510,7 @@ describe('watch-hmr regression cases', () => {
     const extendedCases = buildDemoExtendedCases('/repo')
     const appCases = buildAppCases('/repo')
     const uniWebpackCase = extendedCases.find(item => item.name === 'uni-app-webpack-tailwindcss-v4')
+    const uniWebpack5Case = extendedCases.find(item => item.name === 'uni-app-webpack5')
     const mpxV4Case = extendedCases.find(item => item.name === 'mpx-tailwindcss-v4')
     const viteNativeCase = appCases.find(item => item.name === 'vite-native')
     const viteNativeSkylineCase = appCases.find(item => item.name === 'vite-native-skyline')
@@ -521,6 +522,14 @@ describe('watch-hmr regression cases', () => {
     expect(uniWebpackCase?.outputStyleCandidates).toContain(
       path.resolve('/repo', 'demo/uni-app-webpack-tailwindcss-v4/dist/dev/mp-weixin/common/main.wxss'),
     )
+
+    expect(uniWebpack5Case?.outputWxml).toBe(
+      path.resolve('/repo', 'demo/uni-app-webpack5/dist/dev/mp-weixin/pages/index/index.wxml'),
+    )
+    expect(uniWebpack5Case?.globalStyleCandidates).toEqual([
+      path.resolve('/repo', 'demo/uni-app-webpack5/dist/dev/mp-weixin/common/main.wxss'),
+      path.resolve('/repo', 'demo/uni-app-webpack5/dist/dev/mp-weixin/app.wxss'),
+    ])
 
     expect(mpxV4Case?.outputWxml).toBe(
       path.resolve('/repo', 'demo/mpx-tailwindcss-v4/dist/wx/custom-tab-bar/index.wxml'),

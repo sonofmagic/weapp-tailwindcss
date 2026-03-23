@@ -216,6 +216,77 @@ export function buildDemoExtendedCases(baseCwd: string): WatchCase[] {
     },
   }
 
+  const uniAppWebpack5Case: WatchCase = {
+    name: 'uni-app-webpack5',
+    label: 'demo/uni-app-webpack5',
+    project: 'demo/uni-app-webpack5',
+    group: 'demo',
+    cwd: path.resolve(baseCwd, 'demo/uni-app-webpack5'),
+    devScript: 'dev:mp-weixin',
+    outputWxml: path.resolve(baseCwd, 'demo/uni-app-webpack5/dist/dev/mp-weixin/pages/index/index.wxml'),
+    outputJs: path.resolve(baseCwd, 'demo/uni-app-webpack5/dist/dev/mp-weixin/pages/index/index.js'),
+    outputStyleCandidates: [
+      path.resolve(baseCwd, 'demo/uni-app-webpack5/dist/dev/mp-weixin/pages/index/index.wxss'),
+      path.resolve(baseCwd, 'demo/uni-app-webpack5/dist/dev/mp-weixin/common/main.wxss'),
+      path.resolve(baseCwd, 'demo/uni-app-webpack5/dist/dev/mp-weixin/app.wxss'),
+    ],
+    globalStyleCandidates: [
+      path.resolve(baseCwd, 'demo/uni-app-webpack5/dist/dev/mp-weixin/common/main.wxss'),
+      path.resolve(baseCwd, 'demo/uni-app-webpack5/dist/dev/mp-weixin/app.wxss'),
+    ],
+    contentMutation: {
+      sourceFile: path.resolve(baseCwd, 'demo/uni-app-webpack5/src/pages/index/index.vue'),
+      verifyEscapedIn: [],
+      verifyClassLiteralIn: ['js'],
+      forbidBgHexTruncationIn: ['js'],
+      roundConfigs: buildIssue33HighRiskRoundConfigs(),
+      mutate(source, payload) {
+        return replaceExactSnippet(
+          source,
+          '      aaa: \'bg-[#ff0000]\',',
+          `      aaa: '${payload.classLiteral}',`,
+          'uni-app-webpack5 script class anchor',
+        )
+      },
+    },
+    templateMutation: {
+      sourceFile: path.resolve(baseCwd, 'demo/uni-app-webpack5/src/pages/index/index.vue'),
+      verifyEscapedIn: ['wxml'],
+      verifyClassLiteralIn: [],
+      mutate(source, payload) {
+        const snippet = `    <view class="${payload.classLiteral}">${payload.marker}-template</view>`
+        return insertIntoVueTemplateRoot(source, snippet)
+      },
+    },
+    scriptMutation: {
+      sourceFile: path.resolve(baseCwd, 'demo/uni-app-webpack5/src/pages/index/index.vue'),
+      verifyEscapedIn: [],
+      verifyClassLiteralIn: ['js'],
+      mutate(source, payload) {
+        return mutateScriptByDataAnchor(
+          source,
+          '      aaa: \'bg-[#ff0000]\',',
+          payload,
+          '      ',
+        )
+      },
+      mutateCommentCarrier(source, payload) {
+        return mutateScriptByDataAnchorWithCommentCarrier(
+          source,
+          '      aaa: \'bg-[#ff0000]\',',
+          payload,
+          '      ',
+        )
+      },
+    },
+    styleMutation: {
+      sourceFile: path.resolve(baseCwd, 'demo/uni-app-webpack5/src/pages/index/index.vue'),
+      mutate(source, payload) {
+        return mutateSfcStyleBlock(source, payload)
+      },
+    },
+  }
+
   const mpxTailwindcssV4Case: WatchCase = {
     name: 'mpx-tailwindcss-v4',
     label: 'demo/mpx-tailwindcss-v4',
@@ -536,6 +607,7 @@ export function buildDemoExtendedCases(baseCwd: string): WatchCase[] {
     uniAppVue3ViteCase,
     uniAppTailwindcssV4Case,
     uniAppWebpackTailwindcssV4Case,
+    uniAppWebpack5Case,
     mpxTailwindcssV4Case,
     taroViteTailwindcssV4Case,
     taroAppViteCase,

@@ -11,6 +11,7 @@ export type ConcreteWatchCaseName
     | 'uni-app-vue3-vite'
     | 'uni-app-tailwindcss-v4'
     | 'uni-app-webpack-tailwindcss-v4'
+    | 'uni-app-webpack5'
     | 'mpx-tailwindcss-v4'
     | 'taro-vite-tailwindcss-v4'
     | 'taro-app-vite'
