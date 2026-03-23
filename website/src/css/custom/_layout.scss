@@ -119,29 +119,36 @@
 }
 
 .navbar__atomgit-link,
-.navbar__github-link {
+.navbar__github-link,
+.navbar__weapp-vite-link {
   display: inline-flex;
   align-items: center;
+  color: var(--ifm-navbar-link-color);
+  transition:
+    color 0.2s ease,
+    transform 0.2s ease;
+}
+
+.navbar__atomgit-link,
+.navbar__github-link {
   justify-content: center;
   width: 2.5rem;
   height: 2.5rem;
   padding: 0;
   font-size: 0;
   line-height: 1;
-  color: var(--ifm-navbar-link-color);
   border-radius: 9999px;
-  transition:
-    color 0.2s ease,
-    transform 0.2s ease;
 }
 
 [data-theme='light'] .navbar__atomgit-link,
-[data-theme='light'] .navbar__github-link {
+[data-theme='light'] .navbar__github-link,
+[data-theme='light'] .navbar__weapp-vite-link {
   color: rgb(0 0 0);
 }
 
 [data-theme='dark'] .navbar__atomgit-link,
-[data-theme='dark'] .navbar__github-link {
+[data-theme='dark'] .navbar__github-link,
+[data-theme='dark'] .navbar__weapp-vite-link {
   color: rgb(255 255 255);
 }
 
@@ -167,19 +174,36 @@
     center / contain no-repeat;
 }
 
+.navbar__weapp-vite-link {
+  gap: 0.4rem;
+}
+
+.navbar__weapp-vite-link::before {
+  display: inline-block;
+  width: 1.125rem;
+  height: 1.125rem;
+  flex-shrink: 0;
+  content: '';
+  background: url('/img/weapp-vite.svg') center / contain no-repeat;
+  transform: translateY(-1px);
+}
+
 .navbar__atomgit-link:hover,
-.navbar__github-link:hover {
+.navbar__github-link:hover,
+.navbar__weapp-vite-link:hover {
   color: var(--ifm-color-primary);
   transform: translateY(-1px);
 }
 
 .navbar__atomgit-link:active,
-.navbar__github-link:active {
+.navbar__github-link:active,
+.navbar__weapp-vite-link:active {
   transform: translateY(0);
 }
 
 .navbar__atomgit-link svg[class*='iconExternalLink'],
-.navbar__github-link svg[class*='iconExternalLink'] {
+.navbar__github-link svg[class*='iconExternalLink'],
+.navbar__weapp-vite-link svg[class*='iconExternalLink'] {
   display: none;
 }
 
@@ -189,7 +213,8 @@
   }
 
   .navbar-sidebar .navbar__atomgit-link,
-  .navbar-sidebar .navbar__github-link {
+  .navbar-sidebar .navbar__github-link,
+  .navbar-sidebar .navbar__weapp-vite-link {
     gap: 0.5rem;
     justify-content: flex-start;
     width: 100%;
@@ -200,7 +225,8 @@
   }
 
   .navbar-sidebar .navbar__atomgit-link::before,
-  .navbar-sidebar .navbar__github-link::before {
+  .navbar-sidebar .navbar__github-link::before,
+  .navbar-sidebar .navbar__weapp-vite-link::before {
     flex-shrink: 0;
     width: 1.125rem;
     height: 1.125rem;
@@ -223,8 +249,10 @@
 
   .navbar-sidebar .navbar__atomgit-link:hover,
   .navbar-sidebar .navbar__github-link:hover,
+  .navbar-sidebar .navbar__weapp-vite-link:hover,
   .navbar-sidebar .navbar__atomgit-link:active,
-  .navbar-sidebar .navbar__github-link:active {
+  .navbar-sidebar .navbar__github-link:active,
+  .navbar-sidebar .navbar__weapp-vite-link:active {
     transform: none;
   }
 }

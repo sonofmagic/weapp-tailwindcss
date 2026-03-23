@@ -56,7 +56,8 @@ const navbar: NonNullable<ThemeConfig['navbar']> = {
     {
       href: 'https://vite.icebreaker.top/',
       position: 'left',
-      label: '🔥Weapp-vite',
+      label: 'Weapp-vite',
+      className: 'navbar__weapp-vite-link',
     },
 
     {
