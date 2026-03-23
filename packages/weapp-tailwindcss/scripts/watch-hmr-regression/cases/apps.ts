@@ -134,8 +134,67 @@ export function buildAppCases(baseCwd: string): WatchCase[] {
     },
   }
 
+  const viteNativeCase: WatchCase = {
+    name: 'vite-native',
+    label: 'apps/vite-native',
+    project: 'apps/vite-native',
+    group: 'apps',
+    cwd: path.resolve(baseCwd, 'apps/vite-native'),
+    devScript: 'dev',
+    outputWxml: path.resolve(baseCwd, 'apps/vite-native/dist/pages/index/index.wxml'),
+    outputJs: path.resolve(baseCwd, 'apps/vite-native/dist/pages/index/index.js'),
+    outputStyleCandidates: [
+      path.resolve(baseCwd, 'apps/vite-native/dist/pages/index/index.wxss'),
+      path.resolve(baseCwd, 'apps/vite-native/dist/app.wxss'),
+    ],
+    globalStyleCandidates: [
+      path.resolve(baseCwd, 'apps/vite-native/dist/app.wxss'),
+    ],
+    contentMutation: {
+      sourceFile: path.resolve(baseCwd, 'apps/vite-native/pages/index/index.ts'),
+      verifyEscapedIn: [],
+      verifyClassLiteralIn: ['js'],
+      forbidBgHexTruncationIn: ['js'],
+      roundConfigs: buildIssue33HighRiskRoundConfigs(),
+      mutate(source, payload) {
+        return replaceExactSnippet(
+          source,
+          '    message: \'Hello MINA!\',',
+          `    message: '${payload.classLiteral}',`,
+          'apps vite-native script class anchor',
+        )
+      },
+    },
+    templateMutation: {
+      sourceFile: path.resolve(baseCwd, 'apps/vite-native/pages/index/index.wxml'),
+      verifyEscapedIn: ['wxml'],
+      mutate(source, payload) {
+        const snippet = `  <view class="${payload.classLiteral}">${payload.marker}-template</view>`
+        return insertBeforeClosingTag(source, '</scroll-view>', snippet)
+      },
+    },
+    scriptMutation: {
+      sourceFile: path.resolve(baseCwd, 'apps/vite-native/pages/index/index.ts'),
+      verifyEscapedIn: [],
+      verifyClassLiteralIn: ['js'],
+      mutate(source, payload) {
+        return mutateScriptByDataAnchor(source, '  data: {', payload)
+      },
+      mutateCommentCarrier(source, payload) {
+        return mutateScriptByDataAnchorWithCommentCarrier(source, '  data: {', payload)
+      },
+    },
+    styleMutation: {
+      sourceFile: path.resolve(baseCwd, 'apps/vite-native/app.css'),
+      mutate(source, payload) {
+        return appendTrailingSnippet(source, createStyleRuleSnippet(payload))
+      },
+    },
+  }
+
   return [
     taroWebpackCase,
+    viteNativeCase,
     viteNativeTsCase,
   ]
 }

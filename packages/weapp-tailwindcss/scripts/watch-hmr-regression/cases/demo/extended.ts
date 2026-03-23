@@ -5,12 +5,12 @@ import {
   createStyleRuleSnippet,
   insertBeforeClosingTag,
   insertIntoVueTemplateRoot,
+  mutateScriptByDataAnchor,
+  mutateScriptByDataAnchorWithCommentCarrier,
   mutateSfcStyleBlock,
   mutateTsxScriptByReturnAnchor,
   mutateTsxScriptByReturnAnchorWithCommentCarrier,
   mutateVueRefStringLiteral,
-  mutateVueScriptSetupArrayByAnchor,
-  mutateVueScriptSetupArrayByAnchorWithCommentCarrier,
   mutateVueScriptSetupObjectKeyByAnchor,
   replaceExactSnippet,
 } from '../../text'
@@ -139,6 +139,136 @@ export function buildDemoExtendedCases(baseCwd: string): WatchCase[] {
     },
     styleMutation: {
       sourceFile: path.resolve(baseCwd, 'demo/uni-app-tailwindcss-v4/src/main.css'),
+      mutate(source, payload) {
+        return appendTrailingSnippet(source, createStyleRuleSnippet(payload))
+      },
+    },
+  }
+
+  const uniAppWebpackTailwindcssV4Case: WatchCase = {
+    name: 'uni-app-webpack-tailwindcss-v4',
+    label: 'demo/uni-app-webpack-tailwindcss-v4',
+    project: 'demo/uni-app-webpack-tailwindcss-v4',
+    group: 'demo',
+    cwd: path.resolve(baseCwd, 'demo/uni-app-webpack-tailwindcss-v4'),
+    devScript: 'dev:mp-weixin',
+    outputWxml: path.resolve(baseCwd, 'demo/uni-app-webpack-tailwindcss-v4/dist/dev/mp-weixin/pages/index/index.wxml'),
+    outputJs: path.resolve(baseCwd, 'demo/uni-app-webpack-tailwindcss-v4/dist/dev/mp-weixin/pages/index/index.js'),
+    outputStyleCandidates: [
+      path.resolve(baseCwd, 'demo/uni-app-webpack-tailwindcss-v4/dist/dev/mp-weixin/pages/index/index.wxss'),
+      path.resolve(baseCwd, 'demo/uni-app-webpack-tailwindcss-v4/dist/dev/mp-weixin/common/main.wxss'),
+      path.resolve(baseCwd, 'demo/uni-app-webpack-tailwindcss-v4/dist/dev/mp-weixin/app.wxss'),
+    ],
+    globalStyleCandidates: [
+      path.resolve(baseCwd, 'demo/uni-app-webpack-tailwindcss-v4/dist/dev/mp-weixin/common/main.wxss'),
+      path.resolve(baseCwd, 'demo/uni-app-webpack-tailwindcss-v4/dist/dev/mp-weixin/app.wxss'),
+    ],
+    contentMutation: {
+      sourceFile: path.resolve(baseCwd, 'demo/uni-app-webpack-tailwindcss-v4/src/pages/index/index.vue'),
+      verifyEscapedIn: [],
+      verifyClassLiteralIn: ['js'],
+      forbidBgHexTruncationIn: ['js'],
+      roundConfigs: buildIssue33HighRiskRoundConfigs(),
+      mutate(source, payload) {
+        return replaceExactSnippet(
+          source,
+          '\t\t\tclassName: \'bg-[#877878]\'',
+          `\t\t\tclassName: '${payload.classLiteral}'`,
+          'uni-app-webpack-tailwindcss-v4 script class anchor',
+        )
+      },
+    },
+    templateMutation: {
+      sourceFile: path.resolve(baseCwd, 'demo/uni-app-webpack-tailwindcss-v4/src/pages/index/index.vue'),
+      verifyEscapedIn: ['wxml'],
+      verifyClassLiteralIn: [],
+      mutate(source, payload) {
+        const snippet = `\t\t<view class="${payload.classLiteral}">${payload.marker}-template</view>`
+        return insertIntoVueTemplateRoot(source, snippet)
+      },
+    },
+    scriptMutation: {
+      sourceFile: path.resolve(baseCwd, 'demo/uni-app-webpack-tailwindcss-v4/src/pages/index/index.vue'),
+      verifyEscapedIn: [],
+      verifyClassLiteralIn: ['js'],
+      mutate(source, payload) {
+        return mutateScriptByDataAnchor(
+          source,
+          '\t\treturn {',
+          payload,
+          '\t\t\t',
+        )
+      },
+      mutateCommentCarrier(source, payload) {
+        return mutateScriptByDataAnchorWithCommentCarrier(
+          source,
+          '\t\treturn {',
+          payload,
+          '\t\t\t',
+        )
+      },
+    },
+    styleMutation: {
+      sourceFile: path.resolve(baseCwd, 'demo/uni-app-webpack-tailwindcss-v4/src/pages/index/index.vue'),
+      mutate(source, payload) {
+        return mutateSfcStyleBlock(source, payload)
+      },
+    },
+  }
+
+  const mpxTailwindcssV4Case: WatchCase = {
+    name: 'mpx-tailwindcss-v4',
+    label: 'demo/mpx-tailwindcss-v4',
+    project: 'demo/mpx-tailwindcss-v4',
+    group: 'demo',
+    cwd: path.resolve(baseCwd, 'demo/mpx-tailwindcss-v4'),
+    devScript: 'dev',
+    outputWxml: path.resolve(baseCwd, 'demo/mpx-tailwindcss-v4/dist/wx/custom-tab-bar/index.wxml'),
+    outputJs: path.resolve(baseCwd, 'demo/mpx-tailwindcss-v4/dist/wx/custom-tab-bar/index.js'),
+    outputStyleCandidates: [
+      path.resolve(baseCwd, 'demo/mpx-tailwindcss-v4/dist/wx/custom-tab-bar/index.wxss'),
+      path.resolve(baseCwd, 'demo/mpx-tailwindcss-v4/dist/wx/app.wxss'),
+    ],
+    globalStyleCandidates: [
+      path.resolve(baseCwd, 'demo/mpx-tailwindcss-v4/dist/wx/app.wxss'),
+    ],
+    contentMutation: {
+      sourceFile: path.resolve(baseCwd, 'demo/mpx-tailwindcss-v4/src/custom-tab-bar/index.mpx'),
+      verifyEscapedIn: [],
+      verifyClassLiteralIn: ['js'],
+      forbidBgHexTruncationIn: ['js'],
+      roundConfigs: buildIssue33HighRiskRoundConfigs(),
+      mutate(source, payload) {
+        return replaceExactSnippet(
+          source,
+          '    clsnm: \'bg-[#010101] active:bg-[#989898]\'',
+          `    clsnm: '${payload.classLiteral}'`,
+          'mpx-tailwindcss-v4 script class anchor',
+        )
+      },
+    },
+    templateMutation: {
+      sourceFile: path.resolve(baseCwd, 'demo/mpx-tailwindcss-v4/src/custom-tab-bar/index.mpx'),
+      verifyEscapedIn: ['wxml'],
+      verifyClassLiteralIn: [],
+      mutate(source, payload) {
+        const snippet = `  <view class="${payload.classLiteral}">${payload.marker}-template</view>`
+        return insertBeforeClosingTag(source, '</template>', snippet)
+      },
+    },
+    scriptMutation: {
+      sourceFile: path.resolve(baseCwd, 'demo/mpx-tailwindcss-v4/src/custom-tab-bar/index.mpx'),
+      verifyEscapedIn: [],
+      verifyClassLiteralIn: ['js'],
+      mutate(source, payload) {
+        return mutateScriptByDataAnchor(source, '  data: {', payload)
+      },
+      mutateCommentCarrier(source, payload) {
+        return mutateScriptByDataAnchorWithCommentCarrier(source, '  data: {', payload)
+      },
+    },
+    styleMutation: {
+      sourceFile: path.resolve(baseCwd, 'demo/mpx-tailwindcss-v4/src/app.css'),
       mutate(source, payload) {
         return appendTrailingSnippet(source, createStyleRuleSnippet(payload))
       },
@@ -405,6 +535,8 @@ export function buildDemoExtendedCases(baseCwd: string): WatchCase[] {
   return [
     uniAppVue3ViteCase,
     uniAppTailwindcssV4Case,
+    uniAppWebpackTailwindcssV4Case,
+    mpxTailwindcssV4Case,
     taroViteTailwindcssV4Case,
     taroAppViteCase,
     taroWebpackTailwindcssV4DemoCase,

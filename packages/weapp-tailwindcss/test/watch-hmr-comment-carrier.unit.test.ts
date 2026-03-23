@@ -1,4 +1,5 @@
 import { describe, expect, it } from 'vitest'
+import { buildAppCases } from '../scripts/watch-hmr-regression/cases/apps'
 import { buildDemoBaseCases } from '../scripts/watch-hmr-regression/cases/demo/base'
 import { buildDemoExtendedCases } from '../scripts/watch-hmr-regression/cases/demo/extended'
 import {
@@ -104,5 +105,14 @@ const classArray = [
     expect(baseCases.find(item => item.name === 'uni')?.scriptMutation.mutateCommentCarrier).toBeTypeOf('function')
     expect(baseCases.find(item => item.name === 'mpx')?.scriptMutation.mutateCommentCarrier).toBeTypeOf('function')
     expect(extendedCases.find(item => item.name === 'uni-app-vue3-vite')?.scriptMutation.mutateCommentCarrier).toBeTypeOf('function')
+  })
+
+  it('enables comment-carrier mutation for the new v4 demo and app cases', () => {
+    const extendedCases = buildDemoExtendedCases('/virtual/workspace')
+    const appCases = buildAppCases('/virtual/workspace')
+
+    expect(extendedCases.find(item => item.name === 'uni-app-webpack-tailwindcss-v4')?.scriptMutation.mutateCommentCarrier).toBeTypeOf('function')
+    expect(extendedCases.find(item => item.name === 'mpx-tailwindcss-v4')?.scriptMutation.mutateCommentCarrier).toBeTypeOf('function')
+    expect(appCases.find(item => item.name === 'vite-native')?.scriptMutation.mutateCommentCarrier).toBeTypeOf('function')
   })
 })

@@ -494,7 +494,7 @@ describe('watch-hmr regression cases', () => {
   })
 
   it('tracks taro webpack app style outputs in both page and app wxss candidates', () => {
-    const [taroWebpackCase] = buildAppCases('/repo')
+    const taroWebpackCase = buildAppCases('/repo').find(item => item.name === 'taro-webpack')
 
     expect(taroWebpackCase?.name).toBe('taro-webpack')
     expect(taroWebpackCase?.outputStyleCandidates).toEqual([
@@ -503,6 +503,36 @@ describe('watch-hmr regression cases', () => {
     ])
     expect(taroWebpackCase?.globalStyleCandidates).toEqual([
       path.resolve('/repo', 'apps/taro-webpack-tailwindcss-v4/dist/app.wxss'),
+    ])
+  })
+
+  it('registers the new tailwindcss v4 watch cases with expected outputs', () => {
+    const extendedCases = buildDemoExtendedCases('/repo')
+    const appCases = buildAppCases('/repo')
+    const uniWebpackCase = extendedCases.find(item => item.name === 'uni-app-webpack-tailwindcss-v4')
+    const mpxV4Case = extendedCases.find(item => item.name === 'mpx-tailwindcss-v4')
+    const viteNativeCase = appCases.find(item => item.name === 'vite-native')
+
+    expect(uniWebpackCase?.outputWxml).toBe(
+      path.resolve('/repo', 'demo/uni-app-webpack-tailwindcss-v4/dist/dev/mp-weixin/pages/index/index.wxml'),
+    )
+    expect(uniWebpackCase?.outputStyleCandidates).toContain(
+      path.resolve('/repo', 'demo/uni-app-webpack-tailwindcss-v4/dist/dev/mp-weixin/common/main.wxss'),
+    )
+
+    expect(mpxV4Case?.outputWxml).toBe(
+      path.resolve('/repo', 'demo/mpx-tailwindcss-v4/dist/wx/custom-tab-bar/index.wxml'),
+    )
+    expect(mpxV4Case?.globalStyleCandidates).toEqual([
+      path.resolve('/repo', 'demo/mpx-tailwindcss-v4/dist/wx/app.wxss'),
+    ])
+
+    expect(viteNativeCase?.outputJs).toBe(
+      path.resolve('/repo', 'apps/vite-native/dist/pages/index/index.js'),
+    )
+    expect(viteNativeCase?.outputStyleCandidates).toEqual([
+      path.resolve('/repo', 'apps/vite-native/dist/pages/index/index.wxss'),
+      path.resolve('/repo', 'apps/vite-native/dist/app.wxss'),
     ])
   })
 

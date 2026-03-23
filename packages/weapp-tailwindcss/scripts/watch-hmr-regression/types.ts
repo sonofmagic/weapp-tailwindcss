@@ -1,7 +1,24 @@
 import type { ChildProcessWithoutNullStreams } from 'node:child_process'
 
 export type WatchProjectGroup = 'demo' | 'apps'
-export type ConcreteWatchCaseName = 'taro' | 'uni' | 'mpx' | 'rax' | 'mina' | 'weapp-vite' | 'uni-app-vue3-vite' | 'uni-app-tailwindcss-v4' | 'taro-vite-tailwindcss-v4' | 'taro-app-vite' | 'taro-webpack-tailwindcss-v4' | 'taro-vue3-app' | 'taro-webpack' | 'vite-native-ts'
+export type ConcreteWatchCaseName
+  = | 'taro'
+    | 'uni'
+    | 'mpx'
+    | 'rax'
+    | 'mina'
+    | 'weapp-vite'
+    | 'uni-app-vue3-vite'
+    | 'uni-app-tailwindcss-v4'
+    | 'uni-app-webpack-tailwindcss-v4'
+    | 'mpx-tailwindcss-v4'
+    | 'taro-vite-tailwindcss-v4'
+    | 'taro-app-vite'
+    | 'taro-webpack-tailwindcss-v4'
+    | 'taro-vue3-app'
+    | 'taro-webpack'
+    | 'vite-native'
+    | 'vite-native-ts'
 export type WatchCaseName = ConcreteWatchCaseName | 'both' | 'all' | 'demo' | 'apps'
 export const MUTATION_ROUND_NAMES = ['baseline-arbitrary', 'complex-corpus', 'hex-arbitrary', 'issue33-arbitrary'] as const
 export type MutationRoundName = typeof MUTATION_ROUND_NAMES[number]
