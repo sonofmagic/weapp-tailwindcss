@@ -18,7 +18,9 @@ export type ConcreteWatchCaseName
     | 'taro-vue3-app'
     | 'taro-webpack'
     | 'vite-native'
+    | 'vite-native-skyline'
     | 'vite-native-ts'
+    | 'vite-native-ts-skyline'
 export type WatchCaseName = ConcreteWatchCaseName | 'both' | 'all' | 'demo' | 'apps'
 export const MUTATION_ROUND_NAMES = ['baseline-arbitrary', 'complex-corpus', 'hex-arbitrary', 'issue33-arbitrary'] as const
 export type MutationRoundName = typeof MUTATION_ROUND_NAMES[number]

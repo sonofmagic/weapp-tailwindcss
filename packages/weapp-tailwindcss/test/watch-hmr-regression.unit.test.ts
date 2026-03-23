@@ -512,6 +512,8 @@ describe('watch-hmr regression cases', () => {
     const uniWebpackCase = extendedCases.find(item => item.name === 'uni-app-webpack-tailwindcss-v4')
     const mpxV4Case = extendedCases.find(item => item.name === 'mpx-tailwindcss-v4')
     const viteNativeCase = appCases.find(item => item.name === 'vite-native')
+    const viteNativeSkylineCase = appCases.find(item => item.name === 'vite-native-skyline')
+    const viteNativeTsSkylineCase = appCases.find(item => item.name === 'vite-native-ts-skyline')
 
     expect(uniWebpackCase?.outputWxml).toBe(
       path.resolve('/repo', 'demo/uni-app-webpack-tailwindcss-v4/dist/dev/mp-weixin/pages/index/index.wxml'),
@@ -533,6 +535,22 @@ describe('watch-hmr regression cases', () => {
     expect(viteNativeCase?.outputStyleCandidates).toEqual([
       path.resolve('/repo', 'apps/vite-native/dist/pages/index/index.wxss'),
       path.resolve('/repo', 'apps/vite-native/dist/app.wxss'),
+    ])
+
+    expect(viteNativeSkylineCase?.outputWxml).toBe(
+      path.resolve('/repo', 'apps/vite-native-skyline/dist/pages/index/index.wxml'),
+    )
+    expect(viteNativeSkylineCase?.outputStyleCandidates).toEqual([
+      path.resolve('/repo', 'apps/vite-native-skyline/dist/pages/index/index.wxss'),
+      path.resolve('/repo', 'apps/vite-native-skyline/dist/app.wxss'),
+    ])
+
+    expect(viteNativeTsSkylineCase?.outputJs).toBe(
+      path.resolve('/repo', 'apps/vite-native-ts-skyline/dist/pages/index/index.js'),
+    )
+    expect(viteNativeTsSkylineCase?.globalStyleCandidates).toEqual([
+      path.resolve('/repo', 'apps/vite-native-ts-skyline/dist/pages/index/index.wxss'),
+      path.resolve('/repo', 'apps/vite-native-ts-skyline/dist/app.wxss'),
     ])
   })
 

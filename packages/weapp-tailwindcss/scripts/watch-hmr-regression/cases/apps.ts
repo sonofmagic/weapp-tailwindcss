@@ -192,9 +192,131 @@ export function buildAppCases(baseCwd: string): WatchCase[] {
     },
   }
 
+  const viteNativeSkylineCase: WatchCase = {
+    name: 'vite-native-skyline',
+    label: 'apps/vite-native-skyline',
+    project: 'apps/vite-native-skyline',
+    group: 'apps',
+    cwd: path.resolve(baseCwd, 'apps/vite-native-skyline'),
+    devScript: 'dev',
+    outputWxml: path.resolve(baseCwd, 'apps/vite-native-skyline/dist/pages/index/index.wxml'),
+    outputJs: path.resolve(baseCwd, 'apps/vite-native-skyline/dist/pages/index/index.js'),
+    outputStyleCandidates: [
+      path.resolve(baseCwd, 'apps/vite-native-skyline/dist/pages/index/index.wxss'),
+      path.resolve(baseCwd, 'apps/vite-native-skyline/dist/app.wxss'),
+    ],
+    globalStyleCandidates: [
+      path.resolve(baseCwd, 'apps/vite-native-skyline/dist/pages/index/index.wxss'),
+      path.resolve(baseCwd, 'apps/vite-native-skyline/dist/app.wxss'),
+    ],
+    contentMutation: {
+      sourceFile: path.resolve(baseCwd, 'apps/vite-native-skyline/pages/index/index.js'),
+      verifyEscapedIn: [],
+      verifyClassLiteralIn: ['js'],
+      forbidBgHexTruncationIn: ['js'],
+      roundConfigs: buildIssue33HighRiskRoundConfigs(),
+      mutate(source, payload) {
+        return replaceExactSnippet(
+          source,
+          '    motto: \'Hello World\',',
+          `    motto: '${payload.classLiteral}',`,
+          'apps vite-native-skyline script class anchor',
+        )
+      },
+    },
+    templateMutation: {
+      sourceFile: path.resolve(baseCwd, 'apps/vite-native-skyline/pages/index/index.wxml'),
+      verifyEscapedIn: ['wxml'],
+      mutate(source, payload) {
+        const snippet = `    <view class="${payload.classLiteral}">${payload.marker}-template</view>`
+        return insertBeforeClosingTag(source, '</scroll-view>', snippet)
+      },
+    },
+    scriptMutation: {
+      sourceFile: path.resolve(baseCwd, 'apps/vite-native-skyline/pages/index/index.js'),
+      verifyEscapedIn: [],
+      verifyClassLiteralIn: ['js'],
+      mutate(source, payload) {
+        return mutateScriptByDataAnchor(source, '  data: {', payload)
+      },
+      mutateCommentCarrier(source, payload) {
+        return mutateScriptByDataAnchorWithCommentCarrier(source, '  data: {', payload)
+      },
+    },
+    styleMutation: {
+      sourceFile: path.resolve(baseCwd, 'apps/vite-native-skyline/pages/index/index.wxss'),
+      mutate(source, payload) {
+        return appendTrailingSnippet(source, createStyleRuleSnippet(payload))
+      },
+    },
+  }
+
+  const viteNativeTsSkylineCase: WatchCase = {
+    name: 'vite-native-ts-skyline',
+    label: 'apps/vite-native-ts-skyline',
+    project: 'apps/vite-native-ts-skyline',
+    group: 'apps',
+    cwd: path.resolve(baseCwd, 'apps/vite-native-ts-skyline'),
+    devScript: 'dev',
+    outputWxml: path.resolve(baseCwd, 'apps/vite-native-ts-skyline/dist/pages/index/index.wxml'),
+    outputJs: path.resolve(baseCwd, 'apps/vite-native-ts-skyline/dist/pages/index/index.js'),
+    outputStyleCandidates: [
+      path.resolve(baseCwd, 'apps/vite-native-ts-skyline/dist/pages/index/index.wxss'),
+      path.resolve(baseCwd, 'apps/vite-native-ts-skyline/dist/app.wxss'),
+    ],
+    globalStyleCandidates: [
+      path.resolve(baseCwd, 'apps/vite-native-ts-skyline/dist/pages/index/index.wxss'),
+      path.resolve(baseCwd, 'apps/vite-native-ts-skyline/dist/app.wxss'),
+    ],
+    contentMutation: {
+      sourceFile: path.resolve(baseCwd, 'apps/vite-native-ts-skyline/miniprogram/pages/index/index.ts'),
+      verifyEscapedIn: [],
+      verifyClassLiteralIn: ['js'],
+      forbidBgHexTruncationIn: ['js'],
+      roundConfigs: buildIssue33HighRiskRoundConfigs(),
+      mutate(source, payload) {
+        return replaceExactSnippet(
+          source,
+          '    const statusMessage = ref(\'夜间流量平稳，适合补货热门商品。\')',
+          `    const statusMessage = ref('${payload.classLiteral}')`,
+          'apps vite-native-ts-skyline script class anchor',
+        )
+      },
+    },
+    templateMutation: {
+      sourceFile: path.resolve(baseCwd, 'apps/vite-native-ts-skyline/miniprogram/pages/index/index.wxml'),
+      verifyEscapedIn: ['wxml'],
+      mutate(source, payload) {
+        const snippet = `  <view class="${payload.classLiteral}">${payload.marker}-template</view>`
+        return insertBeforeClosingTag(source, '</view>', snippet)
+      },
+    },
+    scriptMutation: {
+      sourceFile: path.resolve(baseCwd, 'apps/vite-native-ts-skyline/miniprogram/pages/index/index.ts'),
+      verifyEscapedIn: [],
+      verifyClassLiteralIn: ['js'],
+      mutate(source, payload) {
+        return replaceExactSnippet(
+          source,
+          '      statusMessage,',
+          `      statusMessage,\n      ${payload.classVariableName}: '${payload.classLiteral}',`,
+          'apps vite-native-ts-skyline return anchor',
+        )
+      },
+    },
+    styleMutation: {
+      sourceFile: path.resolve(baseCwd, 'apps/vite-native-ts-skyline/miniprogram/pages/index/index.wxss'),
+      mutate(source, payload) {
+        return appendTrailingSnippet(source, createStyleRuleSnippet(payload))
+      },
+    },
+  }
+
   return [
     taroWebpackCase,
     viteNativeCase,
+    viteNativeSkylineCase,
     viteNativeTsCase,
+    viteNativeTsSkylineCase,
   ]
 }

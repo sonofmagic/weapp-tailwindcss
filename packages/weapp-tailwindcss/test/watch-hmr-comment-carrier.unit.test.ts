@@ -114,5 +114,6 @@ const classArray = [
     expect(extendedCases.find(item => item.name === 'uni-app-webpack-tailwindcss-v4')?.scriptMutation.mutateCommentCarrier).toBeTypeOf('function')
     expect(extendedCases.find(item => item.name === 'mpx-tailwindcss-v4')?.scriptMutation.mutateCommentCarrier).toBeTypeOf('function')
     expect(appCases.find(item => item.name === 'vite-native')?.scriptMutation.mutateCommentCarrier).toBeTypeOf('function')
+    expect(appCases.find(item => item.name === 'vite-native-skyline')?.scriptMutation.mutateCommentCarrier).toBeTypeOf('function')
   })
 })
