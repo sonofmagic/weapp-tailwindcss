@@ -11,6 +11,8 @@ import {
   mutateTsxScriptByReturnAnchor,
   mutateTsxScriptByReturnAnchorWithCommentCarrier,
   mutateVueRefStringLiteral,
+  mutateVueScriptSetupArrayByAnchor,
+  mutateVueScriptSetupArrayByAnchorWithCommentCarrier,
   mutateVueScriptSetupObjectKeyByAnchor,
   replaceExactSnippet,
 } from '../../text'
