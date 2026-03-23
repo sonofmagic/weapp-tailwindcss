@@ -69,7 +69,7 @@ module.exports = defineConfig({
         appType: 'mpx',
         rem2rpx: true,
         cssEntries: [
-          // 你 @import "tailwindcss"; 那个文件绝对路径
+          // 你 @import "weapp-tailwindcss"; 那个文件绝对路径
           path.resolve(__dirname, './src/app.css'),
         ],
       })
@@ -88,7 +88,7 @@ module.exports = defineConfig({
 在 `src/app.css` 中引入 `weapp-tailwindcss`：
 
 ```css title="src/app.css"
-@import "tailwindcss";
+@import "weapp-tailwindcss";
 ```
 
 <CssImportReminder />
