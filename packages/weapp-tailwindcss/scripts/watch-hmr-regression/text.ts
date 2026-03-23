@@ -10,7 +10,7 @@ const ESCAPE_REGEXP_RE = /[.*+?^${}()|[\]\\]/g
 const DIGITS_RE = /\D/g
 const COMMENT_CARRIER_SCRIPT_MARKER_RE = /\/\* [\s\S]*? \*\/\nconst __twWatchScriptCommentMarker = 'tw-watch-[^']+'\n/g
 const COMMENT_CARRIER_TEMPLATE_MARKER_RE = /\n {4}<view hidden>\{\{ __twWatchScriptCommentMarker \}\}<\/view>/g
-const VUE_TEMPLATE_ROOT_CLOSING_RE = /\n {2}<\/[a-zA-Z][\w-]*>\s*\n<\/template>/g
+const VUE_TEMPLATE_ROOT_CLOSING_RE = /\n[ \t]*<\/[a-zA-Z][\w-]*>\s*\n<\/template>/g
 
 function isRetryableFsError(error: unknown) {
   const code = (error as NodeJS.ErrnoException | undefined)?.code

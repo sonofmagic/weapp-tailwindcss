@@ -1,7 +1,8 @@
 #!/usr/bin/env node
 
-const { resolve } = require('path')
+const { resolve, basename, join } = require('path')
 const Module = require('module')
+const { cpSync, existsSync } = require('fs')
 
 const projectRequire = Module.createRequire(resolve(__dirname, '../package.json'))
 const babelCoreRequire = Module.createRequire(projectRequire.resolve('@babel/core/package.json'))
@@ -47,7 +48,66 @@ function createCopyWebpackPluginCompat() {
     return cachedCopyWebpackPluginCompat
   }
 
-  const ActualCopyWebpackPlugin = originalRequire.call(module, projectRequire.resolve('copy-webpack-plugin'))
+  let ActualCopyWebpackPlugin
+  try {
+    ActualCopyWebpackPlugin = originalRequire.call(module, projectRequire.resolve('copy-webpack-plugin'))
+  }
+  catch {
+  }
+
+  if (!ActualCopyWebpackPlugin) {
+    class CopyWebpackPluginCompat {
+      constructor(options = {}) {
+        this.options = options
+      }
+
+      apply(compiler) {
+        const options = this.options
+        const patterns = Array.isArray(options?.patterns) ? options.patterns : []
+        if (patterns.length === 0) {
+          return
+        }
+
+        const copyPatterns = () => {
+          const outputPath = compiler.options?.output?.path
+          if (!outputPath) {
+            return
+          }
+
+          for (const pattern of patterns) {
+            const from = pattern?.from
+            if (!from) {
+              continue
+            }
+            if (!existsSync(from)) {
+              if (pattern?.noErrorOnMissing) {
+                continue
+              }
+              throw new Error(`copy-webpack-plugin compat missing source: ${from}`)
+            }
+            const targetName = typeof pattern?.to === 'string' && pattern.to.length > 0
+              ? pattern.to
+              : basename(from)
+            cpSync(from, join(outputPath, targetName), {
+              recursive: true,
+              force: true,
+            })
+          }
+        }
+
+        if (compiler.hooks?.afterEmit?.tap) {
+          compiler.hooks.afterEmit.tap('CopyWebpackPluginCompat', copyPatterns)
+          return
+        }
+        if (compiler.hooks?.done?.tap) {
+          compiler.hooks.done.tap('CopyWebpackPluginCompat', copyPatterns)
+        }
+      }
+    }
+
+    cachedCopyWebpackPluginCompat = CopyWebpackPluginCompat
+    return CopyWebpackPluginCompat
+  }
 
   class CopyWebpackPluginCompat {
     constructor(options = {}) {

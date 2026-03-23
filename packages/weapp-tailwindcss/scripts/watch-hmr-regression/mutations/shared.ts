@@ -95,10 +95,12 @@ export async function waitForInitialWarmup(
   sessionStartedAt: number,
 ) {
   const warmupGraceMs = Math.min(5000, options.timeoutMs)
+  const warmupStableWindowMs = Math.min(Math.max(options.pollMs * 3, 900), 1800)
   return waitFor(
     async () => {
-      if (session.lastCompileSuccessAt() > sessionStartedAt) {
-        return true
+      const lastCompileSuccessAt = session.lastCompileSuccessAt()
+      if (lastCompileSuccessAt > sessionStartedAt) {
+        return Date.now() - lastCompileSuccessAt >= warmupStableWindowMs
       }
 
       const [wxmlMtime, jsMtime] = await Promise.all([

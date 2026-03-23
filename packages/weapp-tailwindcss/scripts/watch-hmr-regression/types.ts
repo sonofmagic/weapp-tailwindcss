@@ -270,6 +270,7 @@ export const DEFAULT_STYLE_APPLY_VALIDATION: StyleApplyValidation = {
 
 export const STYLE_APPLY_UNSUPPORTED_CASES = new Set<ConcreteWatchCaseName>([
   'uni-app-tailwindcss-v4',
+  'uni-app-webpack-tailwindcss-v4',
   'taro-vite-tailwindcss-v4',
   'taro-webpack-tailwindcss-v4',
   'taro-webpack',
