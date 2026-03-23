@@ -28,18 +28,32 @@ import UniAppUniScss from '../_UniAppUniScss.mdx'
 
 <CssImportReminder />
 
-为了 IDE 智能提示，再额外创建一个 `main.css` 并引入 `weapp-tailwindcss/theme.css`。
+为了 IDE 智能提示，需要在 VS Code 里显式告诉 `Tailwind CSS IntelliSense` 哪个文件是 Tailwind 4 的 CSS 入口。最直接的做法是把它指向真实生效的 `src/app.css`：
+
+```json title=".vscode/settings.json"
+{
+  "tailwindCSS.experimental.configFile": "src/app.css"
+}
+```
+
+如果你更想单独放一个“只给编辑器识别”的文件，也可以额外创建 `src/main.css`：
 
 ```css title="src/main.css"
-@import "weapp-tailwindcss/theme.css";
+@import "tailwindcss";
 @source not "unpackage";
 ```
 
-在项目目录下的 `App.vue` / `App.uvue`(uni-app x 项目) 然后添加以下内容：
+然后把 `experimental.configFile` 指向它：
 
-```html title="App.vue"
-<style src="./main.css"></style>
+```json title=".vscode/settings.json"
+{
+  "tailwindCSS.experimental.configFile": "src/main.css"
+}
 ```
+
+这个 `src/main.css` 只用于 IntelliSense，不要在 `App.vue` / `App.uvue` 里实际引入。应用运行时仍然使用 `src/app.css` 里的 `@import "weapp-tailwindcss"`。
+
+这里要写 `@import "tailwindcss"`，因为 `tailwindcss-intellisense` 当前用于触发 v4 设计系统加载的判断只认 `@import "tailwindcss"` 或 `@theme {}`，并不认 `@import "weapp-tailwindcss"`。
 
 > 添加 `@source not "unpackage";` 是为了避免 `HBuilderX` 差量编译死循环问题
 

@@ -163,26 +163,66 @@ shamefully-hoist=true
 
 目前 `tailwindcss@4` 的 VS Code `Tailwind CSS IntelliSense` 插件，会优先从它识别到的 Tailwind 入口里推导配置与候选类名。
 
-在小程序项目里，我们现在推荐直接写 `@import "weapp-tailwindcss"`。这样运行时和转译链路更直接，但当前插件还没有把 `weapp-tailwindcss` 当成 Tailwind 4 的标准入口来识别，所以智能提示会失效。
+在小程序项目里，我们现在推荐直接写 `@import "weapp-tailwindcss"`。这样运行时和转译链路更直接，但当前插件自动扫描时并不会把它稳定识别为 Tailwind 4 的显式入口，所以经常出现智能提示失效。
 
 相关修复可以关注这个 PR：
 
 - https://github.com/tailwindlabs/tailwindcss-intellisense/pull/1557
 
-在这个问题修复前，解决方案是额外创建一个只给编辑器识别的 `main.css`，然后通过 `App.vue` 文件引入它：
+根据 `tailwindcss-intellisense` 当前实现，真正生效的做法是显式配置 `tailwindCSS.experimental.configFile`。对于 `tailwindcss@4`，这里传入的不是 `tailwind.config.js`，而是你的 **CSS 入口文件**。
+
+如果项目只有一个入口，直接把它指向实际在 `cssEntries` 里使用的那个 `app.css` 即可：
+
+```json title=".vscode/settings.json"
+{
+  "tailwindCSS.experimental.configFile": "src/app.css"
+}
+```
+
+这样配置后，扩展会直接把 `src/app.css` 当成 Tailwind 4 项目入口来加载，即使它里面写的是 `@import "weapp-tailwindcss"`，也能恢复补全、悬浮提示和诊断。
+
+如果你的项目有多个 Tailwind 入口，则改用对象写法，把每个 CSS 入口映射到对应的文件范围：
+
+```json title=".vscode/settings.json"
+{
+  "tailwindCSS.experimental.configFile": {
+    "packages/a/src/app.css": "packages/a/src/**",
+    "packages/b/src/app.css": "packages/b/src/**"
+  }
+}
+```
+
+如果你仍然想额外创建一个只给编辑器使用的 CSS 文件，也必须把这个文件写进 `tailwindCSS.experimental.configFile`，仅仅在 `App.vue` 里引入它并不会让 IntelliSense 绑定到该入口。
+
+下面是一个编辑器专用入口的可选写法：
 
 ```css title="main.css"
-@import "weapp-tailwindcss/theme.css";
+@import "tailwindcss";
 @source not "dist";
 ```
 
-这样做的原因是：`theme.css` 会把主题变量和 Tailwind 4 的核心上下文暴露给编辑器，而不会重复注入整套小程序运行时样式；业务真正生效的入口仍然是你的 `app.css` 里的 `@import "weapp-tailwindcss"`。
-
-```html title="App.vue"
-<style src="./main.css"></style>
+```json title=".vscode/settings.json"
+{
+  "tailwindCSS.experimental.configFile": "src/main.css"
+}
 ```
 
+这个 `main.css` 只用于 IntelliSense，不需要也不应该在实际应用入口里引入。业务真正生效的入口仍然是你的 `app.css` 里的 `@import "weapp-tailwindcss"`。
+
+这里必须使用 `@import "tailwindcss"`，而不是 `@import "weapp-tailwindcss"` 或 `@import "weapp-tailwindcss/theme.css"`。原因是 `tailwindcss-intellisense` 当前源码里，真正决定是否按 v4 设计系统加载的是 `packages/tailwindcss-language-server/src/util/v4/design-system.ts` 里的 `isMaybeV4()`，它只检查：
+
+- `@import "tailwindcss"`
+- `@theme {}`
+
+也就是说：
+
+- `@import "weapp-tailwindcss"`：不会触发这段 v4 识别
+- `@import "weapp-tailwindcss/theme.css"`：同样不会触发
+- `@import "tailwindcss"`：可以稳定触发 v4 IntelliSense
+
 如果你的项目不是 `dist` 目录，而是 `unpackage`、`build` 等其他输出目录，请把 `@source not "dist";` 改成自己的实际产物目录。
+
+> **注意**：从 `tailwindcss-intellisense` 的源码来看，`experimental.configFile` 在 v4 下支持 `string` 和 `object` 两种形式，路径会相对于工作区或 `.code-workspace` 文件解析。关键是“显式声明 CSS 入口”，并且这个入口本身要满足它的 v4 识别条件。
 
 ## 如何去除 preflight 样式
 
