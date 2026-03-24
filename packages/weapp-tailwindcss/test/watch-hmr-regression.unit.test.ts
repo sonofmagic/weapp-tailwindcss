@@ -30,6 +30,7 @@ import {
 import {
   expandOutputFileEntries,
   readJoinedOutputFiles,
+  waitForCompileSettled,
   waitForOutputFilesUpdated,
 } from '../scripts/watch-hmr-regression/mutations/shared'
 import {
@@ -279,6 +280,32 @@ describe('watch-hmr regression text helpers', () => {
 
     expect(elapsed).toBeGreaterThanOrEqual(0)
     expect(attempts).toBeGreaterThanOrEqual(2)
+  })
+
+  it('waits for watch compile success to settle before advancing', async () => {
+    let lastCompileSuccessAt = 0
+    const phaseStartedAt = Date.now()
+    setTimeout(() => {
+      lastCompileSuccessAt = Date.now()
+    }, 5)
+
+    const elapsed = await waitForCompileSettled(
+      {
+        label: 'demo/taro-app-vite',
+      } as any,
+      {
+        timeoutMs: 1_200,
+        pollMs: 5,
+      } as CliOptions,
+      {
+        ensureRunning() {},
+        lastCompileSuccessAt: () => lastCompileSuccessAt,
+      } as any,
+      phaseStartedAt,
+    )
+
+    expect(elapsed).toBeGreaterThanOrEqual(0)
+    expect(lastCompileSuccessAt).toBeGreaterThan(phaseStartedAt)
   })
 
   it('asserts text presence and absence', () => {

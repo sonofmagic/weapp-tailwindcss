@@ -32,6 +32,7 @@ import {
   expandOutputFileEntries,
   readJoinedOutputFiles,
   resolvePreferredRound,
+  waitForCompileSettled,
   waitForMarkerState,
   waitForOutputFilesUpdated,
   waitForOutputsUpdated,
@@ -546,6 +547,7 @@ export async function runClassMutation(
 
       effectiveHotUpdateOutputMs = hotUpdateOutputMs
       effectiveHotUpdateEffectiveMs = contentAddResult?.effectiveMs ?? hotUpdateEffectiveMs
+      await waitForCompileSettled(watchCase, options, session, hotUpdateStartedAt)
     }
     catch (error) {
       if (issue33Round) {
@@ -699,6 +701,7 @@ export async function runClassMutation(
         effectiveEscapedClasses = modifyEscapedClasses
         effectiveHotUpdateOutputMs = modifyOutputMs
         effectiveHotUpdateEffectiveMs = contentModifyResult?.effectiveMs ?? modifyEffectiveMs
+        await waitForCompileSettled(watchCase, options, session, modifyStartedAt)
       }
       catch (error) {
         if (issue33Round) {
@@ -795,6 +798,7 @@ export async function runClassMutation(
           sourcePath,
         )
       }
+      await waitForCompileSettled(watchCase, options, session, rollbackStartedAt)
     }
     catch (error) {
       if (issue33Round) {

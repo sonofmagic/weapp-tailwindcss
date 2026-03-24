@@ -125,6 +125,29 @@ export async function waitForInitialWarmup(
   )
 }
 
+export async function waitForCompileSettled(
+  watchCase: WatchCase,
+  options: CliOptions,
+  session: WatchSession,
+  phaseStartedAt: number,
+) {
+  const stableWindowMs = Math.min(Math.max(options.pollMs * 2, 600), 1500)
+  const timeoutMs = Math.min(options.timeoutMs, 30_000)
+  return waitFor(
+    async () => {
+      const lastCompileSuccessAt = session.lastCompileSuccessAt()
+      return lastCompileSuccessAt > phaseStartedAt
+        && Date.now() - lastCompileSuccessAt >= stableWindowMs
+    },
+    {
+      timeoutMs,
+      pollMs: options.pollMs,
+      message: `[${watchCase.label}] watch compile did not settle in time`,
+      onTick: session.ensureRunning,
+    },
+  )
+}
+
 export async function waitForOutputsUpdated(
   watchCase: WatchCase,
   baseline: OutputMtime,
