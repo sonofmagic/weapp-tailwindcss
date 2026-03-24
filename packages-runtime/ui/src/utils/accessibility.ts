@@ -4,22 +4,22 @@
  */
 
 export interface AriaAttributes {
-  'role'?: string
-  'aria-label'?: string
-  'aria-labelledby'?: string
-  'aria-describedby'?: string
-  'aria-checked'?: boolean | 'mixed'
-  'aria-disabled'?: boolean
-  'aria-expanded'?: boolean
-  'aria-hidden'?: boolean
-  'aria-selected'?: boolean
-  'aria-pressed'?: boolean | 'mixed'
-  'aria-readonly'?: boolean
-  'aria-required'?: boolean
-  'aria-invalid'?: boolean
-  'aria-live'?: 'off' | 'polite' | 'assertive'
-  'aria-modal'?: boolean
-  'aria-current'?: boolean | 'page' | 'step' | 'location' | 'date' | 'time'
+  'role'?: string | undefined
+  'aria-label'?: string | undefined
+  'aria-labelledby'?: string | undefined
+  'aria-describedby'?: string | undefined
+  'aria-checked'?: boolean | 'mixed' | undefined
+  'aria-disabled'?: boolean | undefined
+  'aria-expanded'?: boolean | undefined
+  'aria-hidden'?: boolean | undefined
+  'aria-selected'?: boolean | undefined
+  'aria-pressed'?: boolean | 'mixed' | undefined
+  'aria-readonly'?: boolean | undefined
+  'aria-required'?: boolean | undefined
+  'aria-invalid'?: boolean | undefined
+  'aria-live'?: 'off' | 'polite' | 'assertive' | undefined
+  'aria-modal'?: boolean | undefined
+  'aria-current'?: boolean | 'page' | 'step' | 'location' | 'date' | 'time' | undefined
 }
 
 /**
@@ -43,9 +43,9 @@ export function getAriaProps(attrs: AriaAttributes): Record<string, any> {
  * 按钮类组件的 ARIA 属性
  */
 export function getButtonAriaProps(options: {
-  label?: string
-  disabled?: boolean
-  pressed?: boolean | 'mixed'
+  label?: string | undefined
+  disabled?: boolean | undefined
+  pressed?: boolean | 'mixed' | undefined
 }): AriaAttributes {
   return {
     'role': 'button',
@@ -59,12 +59,12 @@ export function getButtonAriaProps(options: {
  * 输入框类组件的 ARIA 属性
  */
 export function getInputAriaProps(options: {
-  label?: string
-  disabled?: boolean
-  readonly?: boolean
-  required?: boolean
-  invalid?: boolean
-  describedby?: string
+  label?: string | undefined
+  disabled?: boolean | undefined
+  readonly?: boolean | undefined
+  required?: boolean | undefined
+  invalid?: boolean | undefined
+  describedby?: string | undefined
 }): AriaAttributes {
   return {
     'aria-label': options.label,
@@ -81,10 +81,10 @@ export function getInputAriaProps(options: {
  */
 export function getCheckableAriaProps(options: {
   type: 'checkbox' | 'radio'
-  label?: string
-  checked?: boolean
-  disabled?: boolean
-  indeterminate?: boolean
+  label?: string | undefined
+  checked?: boolean | undefined
+  disabled?: boolean | undefined
+  indeterminate?: boolean | undefined
 }): AriaAttributes {
   return {
     'role': options.type,
@@ -98,9 +98,9 @@ export function getCheckableAriaProps(options: {
  * 开关组件的 ARIA 属性
  */
 export function getSwitchAriaProps(options: {
-  label?: string
-  checked?: boolean
-  disabled?: boolean
+  label?: string | undefined
+  checked?: boolean | undefined
+  disabled?: boolean | undefined
 }): AriaAttributes {
   return {
     'role': 'switch',
@@ -114,9 +114,9 @@ export function getSwitchAriaProps(options: {
  * 标签页的 ARIA 属性
  */
 export function getTabAriaProps(options: {
-  selected?: boolean
-  controls?: string
-  disabled?: boolean
+  selected?: boolean | undefined
+  controls?: string | undefined
+  disabled?: boolean | undefined
 }): Record<string, any> {
   return {
     'role': 'tab',
@@ -130,8 +130,8 @@ export function getTabAriaProps(options: {
  * 模态框的 ARIA 属性
  */
 export function getModalAriaProps(options: {
-  labelledby?: string
-  describedby?: string
+  labelledby?: string | undefined
+  describedby?: string | undefined
 }): AriaAttributes {
   return {
     'role': 'dialog',

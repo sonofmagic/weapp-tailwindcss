@@ -44,10 +44,11 @@ export function useSwitch(options: UseSwitchOptions): UseSwitchReturn {
   } = options
 
   // 使用受控状态 Hook
-  const [checked, setChecked] = useControllableState({
+  const [checkedState, setChecked] = useControllableState({
     value: checkedProp,
     defaultValue: defaultChecked,
   })
+  const checked = checkedState ?? false
 
   // 切换处理
   const handleToggle = useCallback(

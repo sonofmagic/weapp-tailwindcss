@@ -42,6 +42,10 @@ export interface ButtonProps extends Partial<ButtonVariants> {
    */
   onClick?: (event: any) => void
   /**
+   * 防重复点击延迟（毫秒）
+   */
+  debounceDelay?: number
+  /**
    * 长按事件
    */
   onLongPress?: (event: any) => void

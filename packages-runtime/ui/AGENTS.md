@@ -21,6 +21,7 @@
 ## 推荐验证命令
 - `pnpm --filter @weapp-tailwindcss/ui build`
 - `pnpm --filter @weapp-tailwindcss/ui test`
+- `pnpm --filter @weapp-tailwindcss/ui tsd`
 - 若改动适配层：`pnpm --filter @weapp-tailwindcss/ui vitest run test/adapters/adapter.test.ts`
 
 ## 提交前检查

@@ -83,7 +83,7 @@ export function useTextarea(options: UseTextareaOptions): UseTextareaReturn {
   // 生成 ARIA 属性
   const ariaProps = useMemo(() => {
     return getInputAriaProps({
-      label: ariaLabel,
+      ...(ariaLabel ? { label: ariaLabel } : {}),
       disabled,
       readonly: readOnly,
       required,

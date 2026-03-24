@@ -1,6 +1,13 @@
 {
   "extends": "../../tsconfig.json",
   "compilerOptions": {
+    "jsx": "react-jsx",
+    "baseUrl": ".",
+    "paths": {
+      "@tarojs/components": [
+        "./src/taro-components.d.ts"
+      ]
+    },
     "types": [],
     "declaration": true,
     "declarationMap": false,
@@ -10,6 +17,8 @@
     "stripInternal": true
   },
   "include": [
-    "src/**/*.ts"
+    "src/**/*.d.ts",
+    "src/**/*.ts",
+    "src/**/*.tsx"
   ]
 }

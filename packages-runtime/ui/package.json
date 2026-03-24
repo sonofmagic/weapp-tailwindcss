@@ -75,6 +75,7 @@
     "build:watch": "vite build --watch",
     "test": "vitest run",
     "test:dev": "vitest",
+    "tsd": "tsd --typings dist/variants.d.ts --files test-d/variants.test-d.ts && tsd --typings dist/preset.d.ts --files test-d/preset.test-d.ts && tsd --typings dist/components/index.d.ts --files test-d/components.test-d.ts && tsd --typings dist/hooks/index.d.ts --files test-d/hooks.test-d.ts && tsd --typings dist/utils/index.d.ts --files test-d/utils.test-d.ts && tsd --typings dist/adapters/index.d.ts --files test-d/adapters.test-d.ts",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
     "gen:component": "tsx scripts/generate-component.ts",

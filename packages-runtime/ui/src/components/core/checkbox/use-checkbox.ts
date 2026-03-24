@@ -48,10 +48,11 @@ export function useCheckbox(options: UseCheckboxOptions): UseCheckboxReturn {
   } = options
 
   // 使用受控状态 Hook
-  const [checked, setChecked] = useControllableState({
+  const [checkedState, setChecked] = useControllableState({
     value: checkedProp,
     defaultValue: defaultChecked,
   })
+  const checked = checkedState ?? false
 
   // 点击处理
   const handleClick = useCallback(

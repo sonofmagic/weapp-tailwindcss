@@ -225,6 +225,9 @@ export function createComponentVariant<T extends Record<string, any>>(config: {
 
     // 应用变体
     Object.entries(variants).forEach(([key, variantMap]) => {
+      if (!variantMap) {
+        return
+      }
       const value = props[key as keyof T] ?? defaults[key as keyof T]
       const variantClass = variantMap[value as string]
       if (variantClass) {

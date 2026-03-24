@@ -65,9 +65,9 @@ export function useButton(options: UseButtonOptions): UseButtonReturn {
   const { isDisabled, handleClick, handleLongPress } = useButtonLike({
     disabled,
     loading,
-    onClick,
-    onLongPress,
-    debounceDelay,
+    ...(onClick ? { onClick } : {}),
+    ...(onLongPress ? { onLongPress } : {}),
+    ...(debounceDelay === undefined ? {} : { debounceDelay }),
   })
 
   // 生成类名
@@ -84,7 +84,7 @@ export function useButton(options: UseButtonOptions): UseButtonReturn {
   // 生成 ARIA 属性
   const ariaProps = useMemo(() => {
     return getButtonAriaProps({
-      label: ariaLabel,
+      ...(ariaLabel ? { label: ariaLabel } : {}),
       disabled: isDisabled,
     })
   }, [ariaLabel, isDisabled])

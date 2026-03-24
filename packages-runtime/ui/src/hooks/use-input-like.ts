@@ -122,10 +122,11 @@ export function useInputLike(options: UseInputLikeOptions = {}): UseInputLikeRet
     readOnly = false,
   } = options
 
-  const [value, setValue] = useControllableState({
+  const [valueState, setValue] = useControllableState({
     value: valueProp,
     defaultValue,
   })
+  const value = valueState ?? ''
 
   const [focused, setFocused] = useState(false)
 

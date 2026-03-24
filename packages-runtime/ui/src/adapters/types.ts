@@ -345,7 +345,7 @@ export function createPlatformAdapter(
     styleConfig: mergedStyleConfig,
     capabilities: mergedCapabilities,
     getEventPropName(eventName) {
-      return this.events[eventName]
+      return this.events[eventName] ?? eventName
     },
     getEventProps(eventNames, handlers) {
       const props: Record<string, EventHandler> = {}
