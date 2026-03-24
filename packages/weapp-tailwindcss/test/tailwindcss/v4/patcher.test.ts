@@ -355,6 +355,26 @@ describe('tailwindcss/v4/patcher helpers', () => {
     expect(patcher.tailwindcss?.v4?.cssEntries).toEqual([])
   })
 
+  it('keeps explicit tailwindcss v3 projects on the v3 package even when v4 config exists', async () => {
+    createTailwindcssPatcher.mockImplementation(options => options)
+    const { createPatcherForBase } = await loadModule()
+
+    const patcher = createPatcherForBase('/workspace/app', undefined, {
+      tailwindcss: {
+        version: 3,
+        v4: {
+          base: '/workspace/app',
+        },
+      },
+      tailwindcssPatcherOptions: undefined,
+      supportCustomLengthUnitsPatch: true,
+      appType: 'taro',
+    } as unknown as InternalUserDefinedOptions) as any
+
+    expect(createTailwindcssPatcher).toHaveBeenCalledTimes(1)
+    expect(patcher.tailwindcss?.packageName).toBe('tailwindcss')
+  })
+
   it('repairs null v4 configs', async () => {
     createTailwindcssPatcher.mockImplementation(options => options)
     const { createPatcherForBase } = await loadModule()

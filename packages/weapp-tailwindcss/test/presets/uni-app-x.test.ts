@@ -1,7 +1,11 @@
-import { afterEach, describe, expect, it } from 'vitest'
-
-import { uniAppX } from '@/presets'
+import { afterEach, describe, expect, it, vi } from 'vitest'
 import { setupEnvSandbox } from './helpers'
+
+const getTailwindcssPackageInfoMock = vi.fn()
+
+vi.mock('@/tailwindcss', () => ({
+  getTailwindcssPackageInfo: getTailwindcssPackageInfoMock,
+}))
 
 describe('uni-app-x preset', () => {
   const env = setupEnvSandbox()
@@ -10,6 +14,7 @@ describe('uni-app-x preset', () => {
 
   afterEach(() => {
     env.restore()
+    getTailwindcssPackageInfoMock.mockReset()
     if (originalUtsPlatform === undefined) {
       delete process.env.UNI_UTS_PLATFORM
     }
@@ -24,9 +29,11 @@ describe('uni-app-x preset', () => {
     }
   })
 
-  it('exposes unitsToPx config', () => {
+  it('exposes unitsToPx config', async () => {
     env.clearBaseEnv()
     process.env.UNI_UTS_PLATFORM = 'app-android'
+    getTailwindcssPackageInfoMock.mockReturnValue(undefined)
+    const { uniAppX } = await import('@/presets')
     const result = uniAppX({
       base: '/Users/foo/uni-app-x',
       unitsToPx: {
@@ -36,6 +43,57 @@ describe('uni-app-x preset', () => {
 
     expect(result.unitsToPx).toEqual({
       unitPrecision: 4,
+    })
+  })
+
+  it('records installed tailwind major version into patcher options', async () => {
+    env.clearBaseEnv()
+    getTailwindcssPackageInfoMock.mockReturnValue({
+      version: '3.4.19',
+    })
+    const { uniAppX } = await import('@/presets')
+
+    const result = uniAppX({
+      base: '/repo/uni-app-x',
+      resolve: { paths: ['/repo/uni-app-x'] },
+    })
+
+    expect(result.tailwindcssPatcherOptions?.tailwindcss).toMatchObject({
+      version: 3,
+      packageName: 'tailwindcss',
+      postcssPlugin: 'tailwindcss',
+      resolve: {
+        paths: ['/repo/uni-app-x'],
+      },
+    })
+    expect(result.tailwindcss).toMatchObject({
+      version: 3,
+      packageName: 'tailwindcss',
+      postcssPlugin: 'tailwindcss',
+      resolve: {
+        paths: ['/repo/uni-app-x'],
+      },
+    })
+  })
+
+  it('uses base dir as default resolve path and tailwind v4 postcss plugin', async () => {
+    env.clearBaseEnv()
+    getTailwindcssPackageInfoMock.mockReturnValue({
+      version: '4.2.2',
+    })
+    const { uniAppX } = await import('@/presets')
+
+    const result = uniAppX({
+      base: '/repo/uni-app-x',
+    })
+
+    expect(result.tailwindcssPatcherOptions?.tailwindcss).toMatchObject({
+      version: 4,
+      packageName: 'tailwindcss',
+      postcssPlugin: '@tailwindcss/postcss',
+      resolve: {
+        paths: ['/repo/uni-app-x'],
+      },
     })
   })
 })

@@ -1,6 +1,6 @@
 {
 	"name": "aaa",
-	"appid": "",
+	"appid": "wxb3d842a4a7e3440d",
 	"description": "",
 	"versionName": "1.0.0",
 	"versionCode": "100",
@@ -9,7 +9,7 @@
 	"quickapp": {},
 	/* 小程序特有相关 */
 	"mp-weixin": {
-		"appid": "",
+		"appid": "wxb3d842a4a7e3440d",
 		"libVersion": "3.10.3",
 		"setting": {
 			"urlCheck": false

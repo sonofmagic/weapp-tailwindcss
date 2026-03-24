@@ -21,6 +21,25 @@ function isTailwindcss4Package(packageName: string | undefined) {
   )
 }
 
+function resolveExplicitTailwindVersion(
+  configuredVersion: number | undefined,
+  configuredPackageName: string | undefined,
+) {
+  if (typeof configuredVersion === 'number') {
+    return configuredVersion
+  }
+
+  if (configuredPackageName === 'tailwindcss') {
+    return 3
+  }
+
+  if (isTailwindcss4Package(configuredPackageName)) {
+    return 4
+  }
+
+  return undefined
+}
+
 function hasOwnV4Signal(value: unknown) {
   return typeof value === 'object' && value !== null && 'v4' in value
 }
@@ -113,6 +132,7 @@ export function createPatcherForBase(
     || (tailwindcssPatcherOptions as any)?.tailwind?.version
     || (tailwindcssPatcherOptions as any)?.patch?.tailwindcss?.version
     || mergedTailwindOptions.version
+  const explicitTailwindVersion = resolveExplicitTailwindVersion(configuredVersion, configuredPackageName)
 
   const hasExplicitV4Signals = hasCssEntries
     || hasOwnV4Signal(tailwindcss)
@@ -120,10 +140,14 @@ export function createPatcherForBase(
     || hasOwnV4Signal((tailwindcssPatcherOptions as any)?.tailwind)
     || hasOwnV4Signal((tailwindcssPatcherOptions as any)?.patch?.tailwindcss)
 
-  const isV4 = configuredVersion === 4
-    || mergedTailwindOptions.version === 4
-    || isTailwindcss4Package(configuredPackageName ?? mergedTailwindOptions.packageName)
-    || hasExplicitV4Signals
+  const isV4 = explicitTailwindVersion === 3
+    ? false
+    : explicitTailwindVersion === 4
+      || (explicitTailwindVersion === undefined && (
+        mergedTailwindOptions.version === 4
+        || isTailwindcss4Package(configuredPackageName ?? mergedTailwindOptions.packageName)
+        || hasExplicitV4Signals
+      ))
 
   const tailwindPackageConfigured = Boolean(configuredPackageName)
   const shouldPatchV4PostcssPackage = isV4 && !tailwindPackageConfigured
