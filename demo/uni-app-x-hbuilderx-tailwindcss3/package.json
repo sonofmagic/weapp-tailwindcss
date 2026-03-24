@@ -11,11 +11,13 @@
     "build": "echo uni-app-x-hbuilderx-tailwindcss3"
   },
   "devDependencies": {
+    "@dcloudio/vite-plugin-uni": "3.0.0-5000320260312001",
     "@weapp-tailwindcss/debug-uni-app-x": "workspace:*",
     "@weapp-tailwindcss/merge-v3": "workspace:*",
     "@weapp-tailwindcss/variants-v3": "workspace:*",
     "tailwindcss": "catalog:tailwindcss3",
     "tailwindcss-patch": "catalog:tailwindcssPatch",
+    "vue": "^3.5.30",
     "weapp-ide-cli": "catalog:weappIdeCli",
     "weapp-tailwindcss": "workspace:*"
   }
