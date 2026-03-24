@@ -31,6 +31,7 @@ export default () => {
       ...extraPlugins,
       debugX({
         cwd: __dirname,
+        enabled: true,
       }),
     ],
     css: {

@@ -19,6 +19,7 @@ export default defineConfig({
     ),
     debugX({
       cwd: __dirname,
+      enabled: true,
     }),
   ],
   css: {

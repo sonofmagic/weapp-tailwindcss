@@ -16,7 +16,9 @@ export default defineConfig({
         cssEntries: [path.resolve(__dirname, 'main.css')],
       }),
     ),
-    debugX()
+    debugX({
+      enabled: true,
+    }),
   ],
   css: {
     postcss: {
