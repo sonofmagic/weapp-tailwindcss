@@ -11,7 +11,7 @@ import {
   waitFor,
   writeFilePreserveEol,
 } from '../text'
-import { createStyleMutationPayload } from './shared'
+import { createStyleMutationPayload, expandOutputFileEntries } from './shared'
 
 export async function runStyleMutation(
   watchCase: WatchCase,
@@ -30,11 +30,9 @@ export async function runStyleMutation(
   }
 
   const collectOutputCandidateMtimes = async () => {
-    const entries = await Promise.all(
-      outputStyleCandidates.map(async (candidate) => {
-        return [candidate, await getMtime(candidate)] as const
-      }),
-    )
+    const resolvedCandidates = await expandOutputFileEntries(outputStyleCandidates)
+    const targetCandidates = resolvedCandidates.length > 0 ? resolvedCandidates : outputStyleCandidates
+    const entries = await Promise.all(targetCandidates.map(async candidate => [candidate, await getMtime(candidate)] as const))
     return new Map(entries)
   }
 
@@ -45,7 +43,9 @@ export async function runStyleMutation(
   ) => {
     return waitFor(
       async () => {
-        for (const candidate of outputStyleCandidates) {
+        const resolvedCandidates = await expandOutputFileEntries(outputStyleCandidates)
+        const targetCandidates = resolvedCandidates.length > 0 ? resolvedCandidates : outputStyleCandidates
+        for (const candidate of targetCandidates) {
           const baselineMtime = baselineMtimes.get(candidate) ?? 0
           const currentMtime = await getMtime(candidate)
           if (currentMtime > baselineMtime) {
@@ -75,7 +75,9 @@ export async function runStyleMutation(
   let resolvedOutputStyle: string | undefined
   const hotUpdateEffectiveMs = await waitFor(
     async () => {
-      for (const candidate of outputStyleCandidates) {
+      const resolvedCandidates = await expandOutputFileEntries(outputStyleCandidates)
+      const targetCandidates = resolvedCandidates.length > 0 ? resolvedCandidates : outputStyleCandidates
+      for (const candidate of targetCandidates) {
         const content = await readFileIfExists(candidate)
         if (content?.includes(payload.styleNeedle)) {
           resolvedOutputStyle = candidate
@@ -131,7 +133,9 @@ export async function runStyleMutation(
     )
     rollbackEffectiveMs = await waitFor(
       async () => {
-        for (const candidate of outputStyleCandidates) {
+        const resolvedCandidates = await expandOutputFileEntries(outputStyleCandidates)
+        const targetCandidates = resolvedCandidates.length > 0 ? resolvedCandidates : outputStyleCandidates
+        for (const candidate of targetCandidates) {
           const content = await readFileIfExists(candidate)
           if (content?.includes(payload.styleNeedle)) {
             return false
