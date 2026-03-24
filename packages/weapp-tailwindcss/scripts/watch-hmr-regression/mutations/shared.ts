@@ -108,8 +108,9 @@ export async function waitForInitialWarmup(
         getMtime(watchCase.outputWxml),
         getMtime(watchCase.outputJs),
       ])
-      if (wxmlMtime > sessionStartedAt || jsMtime > sessionStartedAt) {
-        return true
+      const latestOutputMtime = Math.max(wxmlMtime, jsMtime)
+      if (latestOutputMtime > sessionStartedAt) {
+        return Date.now() - latestOutputMtime >= warmupStableWindowMs
       }
 
       if (requireInitialCompileSuccess) {
@@ -141,8 +142,17 @@ export async function waitForCompileSettled(
   return waitFor(
     async () => {
       const lastCompileSuccessAt = session.lastCompileSuccessAt()
-      return lastCompileSuccessAt > phaseStartedAt
-        && Date.now() - lastCompileSuccessAt >= stableWindowMs
+      if (lastCompileSuccessAt > phaseStartedAt) {
+        return Date.now() - lastCompileSuccessAt >= stableWindowMs
+      }
+
+      const [wxmlMtime, jsMtime] = await Promise.all([
+        getMtime(watchCase.outputWxml),
+        getMtime(watchCase.outputJs),
+      ])
+      const latestOutputMtime = Math.max(wxmlMtime, jsMtime)
+      return latestOutputMtime > phaseStartedAt
+        && Date.now() - latestOutputMtime >= stableWindowMs
     },
     {
       timeoutMs,

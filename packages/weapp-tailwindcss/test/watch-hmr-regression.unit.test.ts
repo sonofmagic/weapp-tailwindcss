@@ -31,6 +31,7 @@ import {
   expandOutputFileEntries,
   readJoinedOutputFiles,
   waitForCompileSettled,
+  waitForInitialWarmup,
   waitForOutputFilesUpdated,
 } from '../scripts/watch-hmr-regression/mutations/shared'
 import {
@@ -306,6 +307,73 @@ describe('watch-hmr regression text helpers', () => {
 
     expect(elapsed).toBeGreaterThanOrEqual(0)
     expect(lastCompileSuccessAt).toBeGreaterThan(phaseStartedAt)
+  })
+
+  it('allows compile settle to fall back to stable output mtimes when success logs are missing', async () => {
+    const tempDir = await mkdtemp(path.join(os.tmpdir(), 'weapp-tw-watch-compile-settle-'))
+    tempDirs.push(tempDir)
+    const wxmlFile = path.join(tempDir, 'index.wxml')
+    const jsFile = path.join(tempDir, 'index.js')
+    await writeFilePreserveEol(wxmlFile, '<view />', '<view />')
+    await writeFilePreserveEol(jsFile, 'Page({})', 'Page({})')
+    const phaseStartedAt = Date.now()
+
+    await new Promise(resolve => setTimeout(resolve, 20))
+    await writeFilePreserveEol(wxmlFile, '<view>ready</view>', '<view />')
+    await writeFilePreserveEol(jsFile, 'Page({ data: 1 })', 'Page({})')
+
+    const elapsed = await waitForCompileSettled(
+      {
+        label: 'demo/native-ts (weapp-vite)',
+        outputWxml: wxmlFile,
+        outputJs: jsFile,
+      } as any,
+      {
+        timeoutMs: 2_000,
+        pollMs: 20,
+      } as CliOptions,
+      {
+        ensureRunning() {},
+        lastCompileSuccessAt: () => 0,
+      } as any,
+      phaseStartedAt,
+    )
+
+    expect(elapsed).toBeGreaterThanOrEqual(0)
+  })
+
+  it('requires a stable post-start output update during warmup when compile success is mandatory', async () => {
+    const tempDir = await mkdtemp(path.join(os.tmpdir(), 'weapp-tw-watch-warmup-'))
+    tempDirs.push(tempDir)
+    const wxmlFile = path.join(tempDir, 'index.wxml')
+    const jsFile = path.join(tempDir, 'index.js')
+    await writeFilePreserveEol(wxmlFile, '<view />', '<view />')
+    await writeFilePreserveEol(jsFile, 'Page({})', 'Page({})')
+    const sessionStartedAt = Date.now()
+
+    await new Promise(resolve => setTimeout(resolve, 20))
+    await writeFilePreserveEol(wxmlFile, '<view>ready</view>', '<view />')
+    await writeFilePreserveEol(jsFile, 'Page({ data: 1 })', 'Page({})')
+
+    const elapsed = await waitForInitialWarmup(
+      {
+        label: 'demo/native-ts (weapp-vite)',
+        requireInitialCompileSuccess: true,
+        outputWxml: wxmlFile,
+        outputJs: jsFile,
+      } as any,
+      {
+        timeoutMs: 2_000,
+        pollMs: 20,
+      } as CliOptions,
+      {
+        ensureRunning() {},
+        lastCompileSuccessAt: () => 0,
+      } as any,
+      sessionStartedAt,
+    )
+
+    expect(elapsed).toBeGreaterThanOrEqual(0)
   })
 
   it('asserts text presence and absence', () => {
