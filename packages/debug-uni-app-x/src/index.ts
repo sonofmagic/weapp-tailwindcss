@@ -1,116 +1,37 @@
 import type { Plugin } from 'vite'
+import type { DebugManifest, DebugOptions, DebugStage, MatchRule } from './types'
 import process from 'node:process'
 import defu from 'defu'
-import fs from 'fs-extra'
 import path from 'pathe'
+import { DebugMetaWriter } from './meta'
+import { toSafeRelativePath } from './path'
 
-/**
- * 调试插件支持的构建阶段。
- */
-export type DebugStage = 'pre' | 'normal' | 'post'
+export type {
+  DebugErrorContext,
+  DebugManifest,
+  DebugMetaEntry,
+  DebugOptions,
+  DebugStage,
+  DebugWriteType,
+  MatchRule,
+} from './types'
 
-/**
- * 模块匹配规则。
- *
- * - `string`：按子串包含匹配。
- * - `RegExp`：按正则匹配。
- * - `function`：按自定义逻辑匹配。
- */
-export type MatchRule = string | RegExp | ((id: string) => boolean)
-
-/**
- * 调试输出的来源类型。
- */
-export type DebugWriteType = 'transform' | 'bundle'
-
-/**
- * 单个调试产物的索引信息。
- */
-export interface DebugMetaEntry {
-  file: string
-  id: string
-  stage: DebugStage
-  type: DebugWriteType
+function toRules(value?: MatchRule | MatchRule[]) {
+  if (value === undefined) {
+    return []
+  }
+  return Array.isArray(value) ? value : [value]
 }
 
-/**
- * 调试根目录 `_manifest.json` 的结构。
- */
-export interface DebugManifest {
-  'pre': DebugMetaEntry[]
-  'normal': DebugMetaEntry[]
-  'post': DebugMetaEntry[]
-  'bundle-pre': DebugMetaEntry[]
-  'bundle-normal': DebugMetaEntry[]
-  'bundle-post': DebugMetaEntry[]
+function matchesRule(id: string, rule: MatchRule) {
+  if (typeof rule === 'string') {
+    return id.includes(rule)
+  }
+  if (rule instanceof RegExp) {
+    return rule.test(id)
+  }
+  return rule(id)
 }
-
-/**
- * `debugX` 的配置项。
- */
-export interface DebugOptions {
-  /**
-   * 调试产物输出时使用的基准目录。
-   *
-   * 默认值为 `process.cwd()`。
-   */
-  cwd?: string
-  /**
-   * 是否输出 bundle keys 的控制台日志。
-   *
-   * 默认读取环境变量 `DEBUG_UNI_APP_X_LOG`。
-   */
-  log?: boolean
-  /**
-   * 是否启用调试插件。
-   *
-   * 默认值为 `true`。
-   */
-  enabled?: boolean
-  /**
-   * 调试产物输出目录名。
-   *
-   * 默认值为 `.debug`。
-   */
-  targetDir?: string
-  /**
-   * 需要启用的调试阶段。
-   *
-   * 默认启用 `pre`、`normal`、`post` 三个阶段。
-   */
-  stages?: DebugStage[]
-  /**
-   * 需要保留的模块匹配规则。
-   *
-   * 传入后，仅命中的模块会被写入调试目录。
-   */
-  include?: MatchRule | MatchRule[]
-  /**
-   * 需要排除的模块匹配规则。
-   */
-  exclude?: MatchRule | MatchRule[]
-  /**
-   * 需要跳过的目标平台。
-   *
-   * 默认不跳过任何平台。
-   */
-  skipPlatforms?: string[]
-  /**
-   * 写盘失败时的回调。
-   *
-   * 插件本身不会因为写盘失败而中断构建。
-   */
-  onError?: (error: unknown, context: { stage: DebugStage, type: DebugWriteType, id: string }) => void
-}
-
-const HASH_RE = /#.*$/u
-const INVALID_FS_CHARS_RE = /[<>:"|?*\0]/g
-const BACKSLASH_RE = /\\/g
-const VIRTUAL_MODULE_PREFIX = '\u0000'
-const QUERY_SPLIT_RE = /\?/u
-const NON_WORD_RE = /[^\w.-]+/g
-const DUPLICATE_UNDERSCORE_RE = /_+/g
-const TRIM_UNDERSCORE_RE = /^_+|_+$/g
 
 /**
  * 输出 `uni-app x` 多阶段构建产物到磁盘，便于排查 transform 与 bundle 过程。
@@ -138,72 +59,10 @@ export function debugX(options?: DebugOptions): Plugin[] {
   const enabledStages = new Set(stages)
   const includes = toRules(include)
   const excludes = toRules(exclude)
-  const stageMeta = new Map<string, Map<string, DebugMetaEntry>>()
-
-  function splitId(id: string) {
-    const withoutHash = id.replace(HASH_RE, '')
-    const [filename, query = ''] = withoutHash.split(QUERY_SPLIT_RE)
-    return { filename, query }
-  }
-
-  function replaceVirtualPrefix(id: string) {
-    return id.split(VIRTUAL_MODULE_PREFIX).join('virtual/')
-  }
-
-  function toSafeRelativePath(id: string) {
-    const { filename, query } = splitId(id)
-    const devirtualized = replaceVirtualPrefix(filename)
-    const normalized = path.normalize(devirtualized)
-    const nodeModulesIndex = normalized.indexOf('node_modules')
-    let candidate: string
-    if (nodeModulesIndex > -1) {
-      candidate = normalized.slice(nodeModulesIndex)
-    }
-    else if (path.isAbsolute(normalized)) {
-      candidate = path.relative(cwd, normalized)
-    }
-    else {
-      candidate = normalized
-    }
-
-    const sanitized = candidate
-      .replace(BACKSLASH_RE, '/')
-      .replace(INVALID_FS_CHARS_RE, '_')
-    const segments = sanitized
-      .split('/')
-      .filter(segment => segment && segment !== '.' && segment !== '..')
-    const basePath = segments.join('/') || 'virtual-module'
-    if (!query) {
-      return basePath
-    }
-
-    const querySuffix = query
-      .replace(NON_WORD_RE, '_')
-      .replace(DUPLICATE_UNDERSCORE_RE, '_')
-      .replace(TRIM_UNDERSCORE_RE, '')
-
-    return querySuffix ? `${basePath}__${querySuffix}` : basePath
-  }
+  const metaWriter = new DebugMetaWriter(cwd, targetDir, onError)
 
   function n(id: string) {
-    return toSafeRelativePath(id)
-  }
-
-  function toRules(value?: MatchRule | MatchRule[]) {
-    if (value === undefined) {
-      return []
-    }
-    return Array.isArray(value) ? value : [value]
-  }
-
-  function matchesRule(id: string, rule: MatchRule) {
-    if (typeof rule === 'string') {
-      return id.includes(rule)
-    }
-    if (rule instanceof RegExp) {
-      return rule.test(id)
-    }
-    return rule(id)
+    return toSafeRelativePath(id, cwd)
   }
 
   function shouldWrite(id: string, stage: DebugStage) {
@@ -222,75 +81,6 @@ export function debugX(options?: DebugOptions): Plugin[] {
     return true
   }
 
-  async function writeDebugFile(
-    filePath: string,
-    content: string | Uint8Array,
-    context: { stage: DebugStage, type: DebugWriteType, id: string },
-  ) {
-    try {
-      await fs.outputFile(filePath, content, 'utf8')
-    }
-    catch (error) {
-      onError?.(error, context)
-    }
-  }
-
-  function getMetaEntries(metaFilePath: string) {
-    return [...(stageMeta.get(metaFilePath)?.values() ?? [])]
-  }
-
-  function createManifest(): DebugManifest {
-    return {
-      'pre': [],
-      'normal': [],
-      'post': [],
-      'bundle-pre': [],
-      'bundle-normal': [],
-      'bundle-post': [],
-    }
-  }
-
-  function pushMeta(metaFilePath: string, manifestKey: keyof DebugManifest, entry: DebugMetaEntry) {
-    const list = stageMeta.get(metaFilePath) ?? new Map<string, DebugMetaEntry>()
-    list.set(entry.file, entry)
-    stageMeta.set(metaFilePath, list)
-
-    const manifestFilePath = path.join(cwd, targetDir, '_manifest.json')
-    const manifestEntries = stageMeta.get(manifestFilePath) ?? new Map<string, DebugMetaEntry>()
-    manifestEntries.set(`${manifestKey}:${entry.file}`, entry)
-    stageMeta.set(manifestFilePath, manifestEntries)
-  }
-
-  async function flushMeta(metaFilePath: string, stage: DebugStage, manifestKey?: keyof DebugManifest) {
-    const entries = getMetaEntries(metaFilePath)
-    if (entries.length === 0) {
-      return
-    }
-
-    await writeDebugFile(
-      metaFilePath,
-      `${JSON.stringify(entries, null, 2)}\n`,
-      { stage, type: 'bundle', id: '_meta.json' },
-    )
-
-    if (!manifestKey) {
-      return
-    }
-
-    const manifest = createManifest()
-    for (const [scopeKey, entry] of stageMeta.get(path.join(cwd, targetDir, '_manifest.json'))?.entries() ?? []) {
-      const separatorIndex = scopeKey.indexOf(':')
-      const scope = scopeKey.slice(0, separatorIndex) as keyof DebugManifest
-      manifest[scope].push(entry)
-    }
-
-    await writeDebugFile(
-      path.join(cwd, targetDir, '_manifest.json'),
-      `${JSON.stringify(manifest, null, 2)}\n`,
-      { stage, type: 'bundle', id: '_manifest.json' },
-    )
-  }
-
   function createPlugin(options?: { enforce?: 'pre' | 'post' }): Plugin {
     const { enforce } = defu(options, {})
     const prefix = enforce === undefined ? 'normal' : enforce
@@ -304,12 +94,12 @@ export function debugX(options?: DebugOptions): Plugin[] {
         }
 
         const relativeFile = n(id)
-        await writeDebugFile(
+        await metaWriter.writeDebugFile(
           path.join(cwd, targetDir, prefix, relativeFile),
           code,
           { stage: prefix, type: 'transform', id },
         )
-        pushMeta(
+        metaWriter.pushMeta(
           path.join(cwd, targetDir, prefix, '_meta.json'),
           prefix,
           {
@@ -319,7 +109,7 @@ export function debugX(options?: DebugOptions): Plugin[] {
             type: 'transform',
           },
         )
-        await flushMeta(path.join(cwd, targetDir, prefix, '_meta.json'), prefix, prefix)
+        await metaWriter.flushMeta(path.join(cwd, targetDir, prefix, '_meta.json'), prefix, prefix)
       },
       async generateBundle(_options, bundle) {
         if (!isEnabled || !enabledStages.has(prefix)) {
@@ -337,7 +127,7 @@ export function debugX(options?: DebugOptions): Plugin[] {
         }
 
         const metaFilePath = path.join(cwd, targetDir, dir, '_meta.json')
-        await writeDebugFile(
+        await metaWriter.writeDebugFile(
           path.join(cwd, targetDir, dir, '_keys.txt'),
           matchedBundleKeys.sort().join('\n'),
           { stage: prefix, type: 'bundle', id: '_keys.txt' },
@@ -348,13 +138,13 @@ export function debugX(options?: DebugOptions): Plugin[] {
           if (item.type === 'asset') {
             const relativeFile = path.join('asset', n(file))
             tasks.push(
-              writeDebugFile(
+              metaWriter.writeDebugFile(
                 path.join(cwd, targetDir, dir, relativeFile),
                 item.source,
                 { stage: prefix, type: 'bundle', id: file },
               ),
             )
-            pushMeta(metaFilePath, dir as keyof DebugManifest, {
+            metaWriter.pushMeta(metaFilePath, dir as keyof DebugManifest, {
               file: relativeFile,
               id: file,
               stage: prefix,
@@ -364,13 +154,13 @@ export function debugX(options?: DebugOptions): Plugin[] {
           else if (item.type === 'chunk') {
             const relativeFile = path.join('chunk', n(file))
             tasks.push(
-              writeDebugFile(
+              metaWriter.writeDebugFile(
                 path.join(cwd, targetDir, dir, relativeFile),
                 item.code,
                 { stage: prefix, type: 'bundle', id: file },
               ),
             )
-            pushMeta(metaFilePath, dir as keyof DebugManifest, {
+            metaWriter.pushMeta(metaFilePath, dir as keyof DebugManifest, {
               file: relativeFile,
               id: file,
               stage: prefix,
@@ -379,7 +169,7 @@ export function debugX(options?: DebugOptions): Plugin[] {
           }
         }
         await Promise.all(tasks)
-        await flushMeta(metaFilePath, prefix, dir as keyof DebugManifest)
+        await metaWriter.flushMeta(metaFilePath, prefix, dir as keyof DebugManifest)
       },
     }
   }
