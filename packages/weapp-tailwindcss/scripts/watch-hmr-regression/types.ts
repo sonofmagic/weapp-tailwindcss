@@ -87,6 +87,7 @@ export interface WatchCase {
   label: string
   project: string
   group: WatchProjectGroup
+  requireInitialCompileSuccess?: boolean
   minGlobalStyleEscapedClasses?: number
   requireStableGlobalStyleOnSameClassLiteral?: boolean
   cwd: string

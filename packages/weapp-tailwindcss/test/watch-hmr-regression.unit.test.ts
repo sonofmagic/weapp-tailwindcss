@@ -670,6 +670,16 @@ describe('watch-hmr regression cases', () => {
     expect(uniAppVue3ViteCase?.requireStableGlobalStyleOnSameClassLiteral).toBe(false)
   })
 
+  it('requires initial compile success for weapp-vite powered watch cases', () => {
+    const demoBaseCases = buildDemoBaseCases('/repo')
+    const appCases = buildAppCases('/repo')
+
+    expect(demoBaseCases.find(watchCase => watchCase.name === 'weapp-vite')?.requireInitialCompileSuccess).toBe(true)
+    expect(appCases.find(watchCase => watchCase.name === 'vite-native')?.requireInitialCompileSuccess).toBe(true)
+    expect(appCases.find(watchCase => watchCase.name === 'vite-native-ts')?.requireInitialCompileSuccess).toBe(true)
+    expect(appCases.find(watchCase => watchCase.name === 'vite-native-skyline')?.requireInitialCompileSuccess).toBe(true)
+  })
+
   it('keeps issue33 watch cases in macOS and Windows CI matrices', async () => {
     const workflowSource = await readFile(
       path.resolve(__dirname, '../../../.github/workflows/e2e-watch.yml'),

@@ -202,6 +202,7 @@ export function buildDemoBaseCases(baseCwd: string): WatchCase[] {
     label: 'demo/native-ts (weapp-vite)',
     project: 'demo/native-ts',
     group: 'demo',
+    requireInitialCompileSuccess: true,
     requireStableGlobalStyleOnSameClassLiteral: false,
     cwd: path.resolve(baseCwd, 'demo/native-ts'),
     devScript: 'dev',

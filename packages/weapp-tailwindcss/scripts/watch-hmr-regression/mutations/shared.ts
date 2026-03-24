@@ -96,6 +96,7 @@ export async function waitForInitialWarmup(
 ) {
   const warmupGraceMs = Math.min(5000, options.timeoutMs)
   const warmupStableWindowMs = Math.min(Math.max(options.pollMs * 3, 900), 1800)
+  const requireInitialCompileSuccess = watchCase.requireInitialCompileSuccess === true
   return waitFor(
     async () => {
       const lastCompileSuccessAt = session.lastCompileSuccessAt()
@@ -109,6 +110,10 @@ export async function waitForInitialWarmup(
       ])
       if (wxmlMtime > sessionStartedAt || jsMtime > sessionStartedAt) {
         return true
+      }
+
+      if (requireInitialCompileSuccess) {
+        return false
       }
 
       // Some watch toolchains reuse existing outputs without touching mtimes on initial attach.
