@@ -1,5 +1,14 @@
 # weapp-tailwindcss
 
+## 4.11.0-alpha.3
+
+### Patch Changes
+
+- 🐛 **修复 `watch-hmr` 回归校验在多场景下的稳定性问题：** [`c8a694c`](https://github.com/sonofmagic/weapp-tailwindcss/commit/c8a694c333866158501af6edc9733fe399bcc680) by @sonofmagic
+  - 修正 `uni-app` 与 `skyline` 场景下的回归脚本行为，减少误判与漏判
+  - 调整 warmup、settle 与 mutation sequencing 判定逻辑，避免编译未成功或内容变更时过早结束校验
+  - 放宽部分同类样式与 `skyline` 样式热更断言，并跳过 `Windows` 下不稳定的 `skyline` watch 用例
+
 ## 4.11.0-alpha.2
 
 ### Patch Changes
