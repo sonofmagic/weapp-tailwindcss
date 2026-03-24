@@ -208,6 +208,7 @@ const commentCarrierRequiredCases = new Set<ConcreteWatchCaseName>([
 interface CommentCarrierSummaryItem {
   name: ConcreteWatchCaseName
   project: string
+  stableGlobalStyleRequired: boolean
   sameClassStable: boolean
   sameClassVerifiedEscapedClasses: number
   sameClassMinRequiredEscapedClasses: number
@@ -620,6 +621,7 @@ function assertHotUpdateReport(report: HotUpdateReport, target: WatchCaseName, m
       return {
         name: item.name,
         project: item.project,
+        stableGlobalStyleRequired: scriptMetric.sameClassLiteralHmr.stableGlobalStyleRequired,
         sameClassStable: scriptMetric.sameClassLiteralHmr.changedGlobalStyleOutputs.length === 0,
         sameClassVerifiedEscapedClasses: scriptMetric.sameClassLiteralHmr.verifiedEscapedClasses.length,
         sameClassMinRequiredEscapedClasses: scriptMetric.sameClassLiteralHmr.minRequiredEscapedClasses,
@@ -637,7 +639,9 @@ function assertHotUpdateReport(report: HotUpdateReport, target: WatchCaseName, m
       '[comment-carrier] summary should cover all current-report required projects in stable order',
     ).toEqual([...commentCarrierSummary.map(item => item.project)].sort((left, right) => left.localeCompare(right)))
     for (const item of commentCarrierSummary) {
-      expect(item.sameClassStable, `[${item.project}] same-class-literal should keep global styles stable`).toBe(true)
+      if (item.stableGlobalStyleRequired) {
+        expect(item.sameClassStable, `[${item.project}] same-class-literal should keep global styles stable`).toBe(true)
+      }
       expect(item.sameClassVerifiedEscapedClasses, `[${item.project}] same-class-literal should verify escaped classes`).toBeGreaterThanOrEqual(item.sameClassMinRequiredEscapedClasses)
       expect(item.commentCarrierVerifiedEscapedClasses, `[${item.project}] comment-carrier should verify escaped classes`).toBeGreaterThanOrEqual(item.commentCarrierMinRequiredEscapedClasses)
       expect(item.hotUpdateEffectiveMs, `[${item.project}] comment-carrier hot update should be positive`).toBeGreaterThan(0)

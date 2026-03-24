@@ -80,6 +80,7 @@ const compileSuccessLinePatterns = [
   /watching for changes/i,
   /ready in \d+/i,
   /built in \d+/i,
+  /构建完成/u,
 ] as const
 
 const compileFailureLinePatterns = [

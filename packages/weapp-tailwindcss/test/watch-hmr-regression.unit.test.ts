@@ -660,6 +660,16 @@ describe('watch-hmr regression cases', () => {
     )
   })
 
+  it('opts out same-class global-style stability for platform-variant watch cases', () => {
+    const demoBaseCases = buildDemoBaseCases('/repo')
+    const demoExtendedCases = buildDemoExtendedCases('/repo')
+    const weappViteCase = demoBaseCases.find(watchCase => watchCase.name === 'weapp-vite')
+    const uniAppVue3ViteCase = demoExtendedCases.find(watchCase => watchCase.name === 'uni-app-vue3-vite')
+
+    expect(weappViteCase?.requireStableGlobalStyleOnSameClassLiteral).toBe(false)
+    expect(uniAppVue3ViteCase?.requireStableGlobalStyleOnSameClassLiteral).toBe(false)
+  })
+
   it('keeps issue33 watch cases in macOS and Windows CI matrices', async () => {
     const workflowSource = await readFile(
       path.resolve(__dirname, '../../../.github/workflows/e2e-watch.yml'),

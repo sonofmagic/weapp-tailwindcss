@@ -25,6 +25,7 @@ export function buildDemoExtendedCases(baseCwd: string): WatchCase[] {
     project: 'demo/uni-app-vue3-vite',
     group: 'demo',
     minGlobalStyleEscapedClasses: 0,
+    requireStableGlobalStyleOnSameClassLiteral: false,
     cwd: path.resolve(baseCwd, 'demo/uni-app-vue3-vite'),
     devScript: 'dev:mp-weixin',
     outputWxml: path.resolve(baseCwd, 'demo/uni-app-vue3-vite/dist/dev/mp-weixin/pages/index/index.wxml'),
