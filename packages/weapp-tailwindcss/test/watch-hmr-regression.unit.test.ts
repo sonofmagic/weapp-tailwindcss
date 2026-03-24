@@ -535,7 +535,7 @@ describe('watch-hmr regression cases', () => {
       path.resolve('/repo', 'demo/mpx-tailwindcss-v4/dist/wx/custom-tab-bar/index.wxml'),
     )
     expect(mpxV4Case?.globalStyleCandidates).toEqual([
-      path.resolve('/repo', 'demo/mpx-tailwindcss-v4/dist/wx/app.wxss'),
+      path.resolve('/repo', 'demo/mpx-tailwindcss-v4/dist/wx/styles/app*.wxss'),
     ])
 
     expect(viteNativeCase?.outputJs).toBe(
