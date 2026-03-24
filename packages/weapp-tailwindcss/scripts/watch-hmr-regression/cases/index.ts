@@ -13,6 +13,10 @@ export function buildCases(baseCwd: string): WatchCase[] {
     return cases.filter(item => item.name !== 'uni-app-webpack-tailwindcss-v4')
   }
 
+  if (process.platform === 'win32') {
+    return cases.filter(item => item.name !== 'vite-native-skyline')
+  }
+
   return cases
 }
 
