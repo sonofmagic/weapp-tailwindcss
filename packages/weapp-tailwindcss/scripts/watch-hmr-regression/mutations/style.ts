@@ -40,6 +40,7 @@ export async function runStyleMutation(
     baselineMtimes: Map<string, number>,
     startedAt: number,
     phase: 'hot-update' | 'rollback',
+    acceptWhen?: (candidate: string) => Promise<boolean>,
   ) => {
     return waitFor(
       async () => {
@@ -49,6 +50,9 @@ export async function runStyleMutation(
           const baselineMtime = baselineMtimes.get(candidate) ?? 0
           const currentMtime = await getMtime(candidate)
           if (currentMtime > baselineMtime) {
+            return true
+          }
+          if (acceptWhen && await acceptWhen(candidate)) {
             return true
           }
         }
@@ -71,6 +75,10 @@ export async function runStyleMutation(
     baselineOutputCandidateMtimes,
     hotUpdateStartedAt,
     'hot-update',
+    async (candidate) => {
+      const content = await readFileIfExists(candidate)
+      return content?.includes(payload.styleNeedle) === true
+    },
   )
   let resolvedOutputStyle: string | undefined
   const hotUpdateEffectiveMs = await waitFor(
@@ -123,6 +131,10 @@ export async function runStyleMutation(
     outputCandidateMtimesAfterHotUpdate,
     rollbackStartedAt,
     'rollback',
+    async (candidate) => {
+      const content = await readFileIfExists(candidate)
+      return content != null && !content.includes(payload.styleNeedle)
+    },
   )
   let rollbackEffectiveMs = rollbackOutputMs
   let rollbackNeedleCleared = false
