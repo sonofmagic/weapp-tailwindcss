@@ -4,18 +4,39 @@ import defu from 'defu'
 import fs from 'fs-extra'
 import path from 'pathe'
 
-type DebugStage = 'pre' | 'normal' | 'post'
-type MatchRule = string | RegExp | ((id: string) => boolean)
-type DebugWriteType = 'transform' | 'bundle'
+/**
+ * 调试插件支持的构建阶段。
+ */
+export type DebugStage = 'pre' | 'normal' | 'post'
 
-interface DebugMetaEntry {
+/**
+ * 模块匹配规则。
+ *
+ * - `string`：按子串包含匹配。
+ * - `RegExp`：按正则匹配。
+ * - `function`：按自定义逻辑匹配。
+ */
+export type MatchRule = string | RegExp | ((id: string) => boolean)
+
+/**
+ * 调试输出的来源类型。
+ */
+export type DebugWriteType = 'transform' | 'bundle'
+
+/**
+ * 单个调试产物的索引信息。
+ */
+export interface DebugMetaEntry {
   file: string
   id: string
   stage: DebugStage
   type: DebugWriteType
 }
 
-interface DebugManifest {
+/**
+ * 调试根目录 `_manifest.json` 的结构。
+ */
+export interface DebugManifest {
   'pre': DebugMetaEntry[]
   'normal': DebugMetaEntry[]
   'post': DebugMetaEntry[]
@@ -24,15 +45,61 @@ interface DebugManifest {
   'bundle-post': DebugMetaEntry[]
 }
 
-interface DebugOptions {
+/**
+ * `debugX` 的配置项。
+ */
+export interface DebugOptions {
+  /**
+   * 调试产物输出时使用的基准目录。
+   *
+   * 默认值为 `process.cwd()`。
+   */
   cwd?: string
+  /**
+   * 是否输出 bundle keys 的控制台日志。
+   *
+   * 默认读取环境变量 `DEBUG_UNI_APP_X_LOG`。
+   */
   log?: boolean
+  /**
+   * 是否启用调试插件。
+   *
+   * 默认值为 `true`。
+   */
   enabled?: boolean
+  /**
+   * 调试产物输出目录名。
+   *
+   * 默认值为 `.debug`。
+   */
   targetDir?: string
+  /**
+   * 需要启用的调试阶段。
+   *
+   * 默认启用 `pre`、`normal`、`post` 三个阶段。
+   */
   stages?: DebugStage[]
+  /**
+   * 需要保留的模块匹配规则。
+   *
+   * 传入后，仅命中的模块会被写入调试目录。
+   */
   include?: MatchRule | MatchRule[]
+  /**
+   * 需要排除的模块匹配规则。
+   */
   exclude?: MatchRule | MatchRule[]
+  /**
+   * 需要跳过的目标平台。
+   *
+   * 默认不跳过任何平台。
+   */
   skipPlatforms?: string[]
+  /**
+   * 写盘失败时的回调。
+   *
+   * 插件本身不会因为写盘失败而中断构建。
+   */
   onError?: (error: unknown, context: { stage: DebugStage, type: DebugWriteType, id: string }) => void
 }
 
@@ -45,11 +112,19 @@ const NON_WORD_RE = /[^\w.-]+/g
 const DUPLICATE_UNDERSCORE_RE = /_+/g
 const TRIM_UNDERSCORE_RE = /^_+|_+$/g
 
+/**
+ * 输出 `uni-app x` 多阶段构建产物到磁盘，便于排查 transform 与 bundle 过程。
+ *
+ * 插件会同时生成：
+ * - 分阶段目录下的源码快照；
+ * - 对应目录的 `_meta.json`；
+ * - 根目录聚合索引 `_manifest.json`。
+ */
 export function debugX(options?: DebugOptions): Plugin[] {
   const {
     cwd = process.cwd(),
     log = process.env.DEBUG_UNI_APP_X_LOG === 'true',
-    enabled = process.env.DEBUG_UNI_APP_X === 'true',
+    enabled = process.env.DEBUG_UNI_APP_X !== 'false',
     targetDir = '.debug',
     stages = ['pre', 'normal', 'post'],
     include,
