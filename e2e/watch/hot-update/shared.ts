@@ -5,7 +5,22 @@ import path from 'pathe'
 import { expect } from 'vitest'
 
 export type WatchProjectGroup = 'demo' | 'apps'
-export type ConcreteWatchCaseName = 'taro' | 'uni' | 'mpx' | 'weapp-vite' | 'uni-app-vue3-vite' | 'uni-app-tailwindcss-v4' | 'taro-vite-tailwindcss-v4' | 'taro-app-vite' | 'taro-webpack-tailwindcss-v4' | 'taro-vue3-app' | 'taro-webpack' | 'vite-native-ts'
+export type ConcreteWatchCaseName
+  = | 'taro'
+    | 'uni'
+    | 'mpx'
+    | 'weapp-vite'
+    | 'uni-app-vue3-vite'
+    | 'uni-app-tailwindcss-v4'
+    | 'uni-app-webpack-tailwindcss-v4'
+    | 'uni-app-webpack5'
+    | 'mpx-tailwindcss-v4'
+    | 'taro-vite-tailwindcss-v4'
+    | 'taro-app-vite'
+    | 'taro-webpack-tailwindcss-v4'
+    | 'taro-vue3-app'
+    | 'taro-webpack'
+    | 'vite-native-ts'
 export type WatchCaseName = ConcreteWatchCaseName | 'both' | 'all' | 'demo' | 'apps'
 type MutationKind = 'template' | 'script' | 'style' | 'content'
 type MutationRoundName = 'baseline-arbitrary' | 'complex-corpus' | 'hex-arbitrary' | 'issue33-arbitrary'
@@ -173,6 +188,7 @@ const criticalDemoProjects = [
 const bothCases = new Set<ConcreteWatchCaseName>(['taro', 'uni'])
 const noApplyValidationCases = new Set<ConcreteWatchCaseName>([
   'uni-app-tailwindcss-v4',
+  'uni-app-webpack-tailwindcss-v4',
   'taro-vite-tailwindcss-v4',
   'taro-webpack-tailwindcss-v4',
   'taro-webpack',
