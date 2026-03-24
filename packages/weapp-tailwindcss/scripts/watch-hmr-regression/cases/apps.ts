@@ -299,7 +299,15 @@ export function buildAppCases(baseCwd: string): WatchCase[] {
         return replaceExactSnippet(
           source,
           '      statusMessage,',
-          `      statusMessage,\n      ${payload.classVariableName}: '${payload.classLiteral}',`,
+          `      statusMessage,\n      ${payload.classVariableName}: '${payload.classLiteral}',\n      __twWatchScriptMarker: '${payload.marker}',`,
+          'apps vite-native-ts-skyline return anchor',
+        )
+      },
+      mutateCommentCarrier(source, payload) {
+        return replaceExactSnippet(
+          source,
+          '      statusMessage,',
+          `      statusMessage,\n      /* ${payload.classLiteral} */\n      __twWatchScriptCommentMarker: '${payload.marker}',`,
           'apps vite-native-ts-skyline return anchor',
         )
       },
