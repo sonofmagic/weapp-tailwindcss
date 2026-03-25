@@ -66,7 +66,7 @@ catalogs:
     '@tailwindcss/postcss': ^4.2.2
     '@tailwindcss/vite': ^4.2.2
     tailwindcss: ^4.2.2
-    tailwindcss4: npm:tailwindcss@^4.2.1
+    tailwindcss4: npm:tailwindcss@^4.2.2
   tailwindcssPatch:
     tailwindcss-patch: 9.0.0
   tailwindcssRem:
@@ -114,9 +114,9 @@ catalogs:
   vitePluginReact4:
     '@vitejs/plugin-react': ^4.7.0
   vue3:
-    '@vue/compiler-dom': ^3.5.30
-    '@vue/compiler-sfc': ^3.5.30
-    vue: ^3.5.30
+    '@vue/compiler-dom': ^3.5.31
+    '@vue/compiler-sfc': ^3.5.31
+    vue: ^3.5.31
   vueTsc318:
     vue-tsc: ^3.2.6
   weappChildren:
