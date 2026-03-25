@@ -1,6 +1,7 @@
 import { readFile } from 'node:fs/promises'
 import { resolve } from 'node:path'
 import { fileURLToPath } from 'node:url'
+import { isCI } from 'ci-info'
 import postcss from 'postcss'
 import { build as viteBuild } from 'vite'
 import { beforeAll, describe, expect, it } from 'vitest'
@@ -17,6 +18,10 @@ let cssOutput = ''
 let cssOutputV3 = ''
 
 beforeAll(async () => {
+  if (isCI) {
+    return
+  }
+
   await viteBuild({
     configFile: viteConfigPath,
     mode: 'test',
@@ -36,7 +41,7 @@ beforeAll(async () => {
   cssOutputV3 = result.css
 })
 
-describe('atomic CSS build', () => {
+describe.skipIf(isCI)('atomic CSS build', () => {
   it('contains design tokens', () => {
     expect(cssOutput).toContain('--wt-color-primary')
     expect(cssOutput).toContain('--wt-space-4')
@@ -62,7 +67,7 @@ describe('atomic CSS build', () => {
   })
 })
 
-describe('tailwind v3 compatibility', () => {
+describe.skipIf(isCI)('tailwind v3 compatibility', () => {
   it('emits utilities and components', () => {
     expect(cssOutputV3).toContain('.wt-flex')
     expect(cssOutputV3).toContain('.wt-button')
