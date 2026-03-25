@@ -87,6 +87,35 @@ describe('uni-app-x', () => {
         uniAppX: true,
       },
     )
-    expect(css).toMatchSnapshot('css')
+    expect(css).toContain('* {')
+    expect(css).toContain('--tw-border-spacing-x: 0;')
+    expect(css).toContain('.mt-_b32_d43rpx_B')
+    expect(css).toContain('.bg-_b_h322323_B')
+    expect(css).not.toContain('::before')
+    expect(css).not.toContain('::after')
+    expect(css).not.toContain('::backdrop')
+  })
+
+  it.each(['app-android', 'app-ios'])('keeps @tailwind base usable on %s without pseudo-element selectors', async (platform) => {
+    process.env.UNI_UTS_PLATFORM = platform
+    const { styleHandler } = getCompilerContext({
+      uniAppX: true,
+    })
+
+    const { css } = await styleHandler(
+      await getCase('uni-app-x/App.uvue.css'),
+      {
+        uniAppX: true,
+      },
+    )
+
+    expect(css).not.toContain('::before')
+    expect(css).not.toContain('::after')
+    expect(css).not.toContain(':before')
+    expect(css).not.toContain(':after')
+    expect(css).not.toContain('::backdrop')
+    expect(css).toContain('--tw-border-spacing-x: 0;')
+    expect(css).toContain('.mt-_b32_d43rpx_B')
+    expect(css).toContain('.bg-_b_h322323_B')
   })
 })

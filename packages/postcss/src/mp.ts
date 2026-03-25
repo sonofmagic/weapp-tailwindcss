@@ -2,6 +2,7 @@
 import type { IStyleHandlerOptions } from './types'
 import { Declaration, Rule } from 'postcss'
 import { cssVarsV4Nodes, isTailwindcssV4, testIfRootHostForV4 } from './compat/tailwindcss-v4'
+import { isUniAppXEnabled } from './compat/uni-app-x'
 import cssVarsV3 from './cssVarsV3'
 import { isOnlyBeforeAndAfterPseudoElement } from './selectorParser'
 import { createCssVarNodes } from './utils/css-vars'
@@ -104,6 +105,7 @@ export function remakeCssVarSelector(selectors: string[], options: IStyleHandler
 // 在通用预处理节点中注入变量、预设声明，并标记上下文状态
 export function commonChunkPreflight(node: Rule, options: IStyleHandlerOptions) {
   const { ctx, cssInjectPreflight, injectAdditionalCssVarScope } = options
+  const uniAppXEnabled = isUniAppXEnabled(options)
   const rootOption = options.cssSelectorReplacement?.root
   const rootSelectors = rootOption === false || rootOption === undefined
     ? []
@@ -131,10 +133,15 @@ export function commonChunkPreflight(node: Rule, options: IStyleHandlerOptions) 
   // node.selector = remakeCombinatorSelector(node.selector, options)
 
   // 变量注入和 preflight
-  if (testIfVariablesScope(node)) {
+  if (
+    testIfVariablesScope(node)
+    || (uniAppXEnabled && node.selectors.includes('*') && hasTwVars(node, 2))
+  ) {
     ctx?.markVariablesScope(node)
     node.selectors = remakeCssVarSelector(node.selectors, options)
-    node.before(makePseudoVarRule())
+    if (!uniAppXEnabled) {
+      node.before(makePseudoVarRule())
+    }
     if (typeof cssInjectPreflight === 'function') {
       node.append(...cssInjectPreflight())
     }
@@ -142,12 +149,14 @@ export function commonChunkPreflight(node: Rule, options: IStyleHandlerOptions) 
   const isTailwindcss4 = isTailwindcssV4(options)
   if (injectAdditionalCssVarScope && (isTailwindcss4 ? testIfRootHostForV4(node) : testIfTwBackdrop(node))) {
     const syntheticRule = new Rule({
-      selectors: ['*', '::after', '::before'],
+      selectors: uniAppXEnabled ? ['*'] : ['*', '::after', '::before'],
       nodes: isTailwindcss4 ? cssVarsV4Nodes : cssVarsV3Nodes,
     })
     syntheticRule.selectors = remakeCssVarSelector(syntheticRule.selectors, options)
     node.before(syntheticRule)
-    node.before(makePseudoVarRule())
+    if (!uniAppXEnabled) {
+      node.before(makePseudoVarRule())
+    }
     if (typeof cssInjectPreflight === 'function') {
       syntheticRule.append(...cssInjectPreflight())
     }

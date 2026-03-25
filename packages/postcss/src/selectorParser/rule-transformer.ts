@@ -132,6 +132,9 @@ function handleUniversalNode(node: Node, context: TransformContext) {
   if (node.type !== 'universal') {
     return
   }
+  if (isUniAppXEnabled(context.options)) {
+    return
+  }
   if (context.universalReplacement) {
     node.value = context.universalReplacement
   }
@@ -145,11 +148,20 @@ function shouldRemoveHoverSelector(selector: Selector, options: IStyleHandlerOpt
 }
 
 const UNSUPPORTED_PSEUDO_ELEMENT_SELECTOR_SET = new Set([
+  ':after',
+  ':before',
+  '::after',
+  '::before',
   '::backdrop',
   '::file-selector-button',
 ])
 
-function shouldRemoveUnsupportedPseudoElementSelector(selector: Selector) {
+function shouldRemoveUnsupportedPseudoElementSelector(selector: Selector, options: IStyleHandlerOptions) {
+  if (!isUniAppXEnabled(options)) {
+    return selector.nodes.some(node =>
+      node.type === 'pseudo' && (node.value === '::backdrop' || node.value === '::file-selector-button'))
+  }
+
   return selector.nodes.some(node => node.type === 'pseudo' && UNSUPPORTED_PSEUDO_ELEMENT_SELECTOR_SET.has(node.value))
 }
 
@@ -230,7 +242,7 @@ function handleTagOrAttribute(node: Node, context: TransformContext) {
 }
 
 function handleSelectorNode(selector: Selector, context: TransformContext) {
-  if (shouldRemoveUnsupportedPseudoElementSelector(selector)) {
+  if (shouldRemoveUnsupportedPseudoElementSelector(selector, context.options)) {
     selector.remove()
     return
   }

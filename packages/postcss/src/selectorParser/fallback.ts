@@ -50,7 +50,9 @@ export function getFallbackRemove(_rule?: Rule, options?: IStyleHandlerOptions) 
           maybeImportantId = true
         }
         if (selector.type === 'universal') {
-          selector.parent?.remove()
+          if (!uniAppX) {
+            selector.parent?.remove()
+          }
         }
         else if (selector.type === 'pseudo') {
           if (selector.value === ':is') {
