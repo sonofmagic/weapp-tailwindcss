@@ -20,6 +20,7 @@ jobs:
   release:
     name: Release
     runs-on: ubuntu-latest
+    timeout-minutes: 30
     steps:
       - name: Checkout Repo
         uses: actions/checkout@v6
@@ -72,11 +73,9 @@ jobs:
           # This expects you to have a script called release which does a build for your packages and calls changeset publish
           publish: pnpm publish-packages
         env:
-          # this doesn't work but semantic-release works
-          # see https://github.com/sonofmagic/npm-lib-rollup-template/blob/main/.github/workflows/release.yml#L46
-          # NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          # NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
           npm_config_registry: https://registry.npmjs.org
           # https://github.com/changesets/changesets/pull/1659
           NPM_CONFIG_PROVENANCE: true
