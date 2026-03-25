@@ -853,7 +853,7 @@ button,input {
 exports[`v4 > postcss uni-app x 1`] = `
 "/*! tailwindcss v4.0.3 | MIT License | https://tailwindcss.com */
 
-.tw-root, {
+page,.tw-root,wx-root-portal-content,:host {
     --font-sans: ui-sans-serif,system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,Cantarell,Noto Sans, sans-serif, "Apple Color Emoji",
       "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
     --font-serif: ui-serif, georgia, cambria, "Times New Roman", times, serif;
@@ -1232,7 +1232,7 @@ exports[`v4 > postcss uni-app x 1`] = `
   }
 
 @supports (color: color(display-p3 0 0 0%)) {
-.tw-root, {
+page,.tw-root,wx-root-portal-content,:host {
     --color-red-200: rgb(255, 202, 202);
     --color-red-300: rgb(255, 163, 164);
     --color-red-400: rgb(255, 101, 104);
@@ -1331,7 +1331,7 @@ exports[`v4 > postcss uni-app x 1`] = `
   }
 
 @media (color-gamut: p3) {
-.tw-root, {
+page,.tw-root,wx-root-portal-content,:host {
     --color-red-200: color(display-p3 0.96956 0.79815 0.7943);
     --color-red-300: color(display-p3 0.95692 0.65189 0.64512);
     --color-red-400: color(display-p3 0.93353 0.43168 0.42349);
@@ -1431,11 +1431,118 @@ exports[`v4 > postcss uni-app x 1`] = `
 }
 }
 
-* {
+view,text {
     box-sizing: border-box;
     padding: 0;
     margin: 0;
     border: 0 solid;
+  }
+
+html,:host {
+    font-family: var( --default-font-family, ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji" );
+    font-variation-settings: var( --default-font-variation-settings, normal );
+    font-feature-settings: var(--default-font-feature-settings, normal);
+    line-height: 1.5;
+    tab-size: 4;
+    text-size-adjust: 100%;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+body {
+    line-height: inherit;
+  }
+
+hr {
+    height: 0;
+    color: inherit;
+    border-top-width: 1px;
+  }
+
+h1,h2,h3,h4,h5,h6 {
+    font-size: inherit;
+    font-weight: inherit;
+  }
+
+a {
+    color: inherit;
+    text-decoration: inherit;
+  }
+
+b,strong {
+    font-weight: bolder;
+  }
+
+code,kbd,samp,pre {
+    font-family: var( --default-mono-font-family, ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace );
+    font-size: 1em;
+    font-variation-settings: var( --default-mono-font-variation-settings, normal );
+    font-feature-settings: var( --default-mono-font-feature-settings, normal );
+  }
+
+small {
+    font-size: 80%;
+  }
+
+sub,sup {
+    position: relative;
+    font-size: 75%;
+    line-height: 0;
+    vertical-align: baseline;
+  }
+
+sub {
+    bottom: -0.25em;
+  }
+
+sup {
+    top: -0.5em;
+  }
+
+table {
+    text-indent: 0;
+    border-collapse: collapse;
+    border-color: inherit;
+  }
+
+progress {
+    vertical-align: baseline;
+  }
+
+summary {
+    display: list-item;
+  }
+
+ol,ul,menu {
+    list-style: none;
+  }
+
+img,svg,video,canvas,audio,iframe,embed,object {
+    display: block;
+    vertical-align: middle;
+  }
+
+img,video {
+    max-width: 100%;
+    height: auto;
+  }
+
+button,input,select,optgroup,textarea {
+    font: inherit;
+    font-variation-settings: inherit;
+    font-feature-settings: inherit;
+    color: inherit;
+    letter-spacing: inherit;
+    background-color: transparent;
+    border-radius: 0;
+    opacity: 1;
+  }
+
+textarea {
+    resize: vertical;
+  }
+
+button {
+    appearance: button;
   }
 
 .container {
@@ -1492,7 +1599,38 @@ exports[`v4 > postcss uni-app x 1`] = `
 
 .p-_b12_d34px_B {
     padding: 12.34px;
-  }"
+  }
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes ping {
+  75%,100% {
+    opacity: 0;
+    transform: scale(2);
+  }
+}
+
+@keyframes pulse {
+  50% {
+    opacity: 0.5;
+  }
+}
+
+@keyframes bounce {
+  0%,100% {
+    transform: translateY(-25%);
+    animation-timing-function: cubic-bezier(0.8, 0, 1, 1);
+  }
+
+  50% {
+    transform: none;
+    animation-timing-function: cubic-bezier(0, 0, 0.2, 1);
+  }
+}"
 `;
 
 exports[`v4 > taro vite tailwindcss v4 app-origin 1`] = `

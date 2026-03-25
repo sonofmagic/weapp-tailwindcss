@@ -47,6 +47,7 @@ export function createRootSpecificityCleaner(options: IStyleHandlerOptions) {
       return
     }
 
+    let changed = false
     const next = rule.selectors.map((selector) => {
       let updated = selector
       for (const target of targets) {
@@ -57,9 +58,14 @@ export function createRootSpecificityCleaner(options: IStyleHandlerOptions) {
           updated = updated.split(target.spacedMatch).join(target.replacement)
         }
       }
+      if (updated !== selector) {
+        changed = true
+      }
       return updated
     })
 
-    rule.selectors = next
+    if (changed) {
+      rule.selectors = next
+    }
   }
 }

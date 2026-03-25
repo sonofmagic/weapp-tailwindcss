@@ -11,6 +11,10 @@ export function stripUnsupportedPseudoForUniAppX(node: Pseudo, enabled: boolean)
   if (!enabled) {
     return
   }
+  // :host 仍需保留给 root 变量作用域，避免在 post 阶段被重复移除/追加导致死循环。
+  if (node.value === ':host') {
+    return
+  }
   node.remove()
 }
 
