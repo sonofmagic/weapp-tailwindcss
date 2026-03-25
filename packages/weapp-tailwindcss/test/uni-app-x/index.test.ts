@@ -1,5 +1,7 @@
 import type { ICustomAttributesEntities, JsHandler } from '@/types'
 import { createGetCase, fixturesRootPath } from '#test/util'
+import process from 'node:process'
+import { beforeEach, afterEach } from 'vitest'
 import { vi } from 'vitest'
 import { getCompilerContext } from '@/context'
 import { transformUVue } from '@/uni-app-x'
@@ -7,7 +9,28 @@ import { replaceWxml } from '@/wxml'
 
 const getCase = createGetCase(fixturesRootPath)
 
+function extractInjectedStyle(code: string) {
+  const matches = [...code.matchAll(/<style scoped>\n([\s\S]*?)\n<\/style>/g)]
+  const last = matches.at(-1)
+  return last?.[1] ?? ''
+}
+
+function extractAliasByUtility(styleBlock: string) {
+  const entries = [...styleBlock.matchAll(/\.([A-Za-z0-9-]+) \{\n  @apply ([^;]+);/g)]
+  return new Map(entries.map(match => [match[2], match[1]]))
+}
+
 describe('uni-app-x', () => {
+  const originalUtsPlatform = process.env.UNI_UTS_PLATFORM
+
+  beforeEach(() => {
+    process.env.UNI_UTS_PLATFORM = originalUtsPlatform
+  })
+
+  afterEach(() => {
+    process.env.UNI_UTS_PLATFORM = originalUtsPlatform
+  })
+
   it('index.uvue', async () => {
     const { jsHandler } = getCompilerContext()
     const vueRawCode = await getCase('uni-app-x/index.uvue')
@@ -177,4 +200,59 @@ const condition = true
     expect(result).toBeUndefined()
     expect(jsHandler).not.toHaveBeenCalled()
   })
+
+  it.each(['app-android', 'app-ios', 'web'])(
+    'supports issue 822 component local styles on %s',
+    async (platform) => {
+      process.env.UNI_UTS_PLATFORM = platform
+      const { jsHandler } = getCompilerContext({
+        uniAppX: true,
+      })
+      const runtimeSet = new Set<string>([
+        'border',
+        'border-solid',
+        'border-[#999]',
+        'p-4',
+        'w-full',
+        'h-[200px]',
+        'bg-[#87add3]',
+        'text-[#111]',
+        'p-[20.32px]',
+        'border-[#111111]',
+        'bg-[#123456]',
+        'mb-[12.32px]',
+        'bg-[#d7700a]',
+        'text-[93.54rpx]',
+        'bg-[#d2e252]',
+        'text-[#ff0000]',
+        'bg-[#f205f6]',
+        'text-[#70ed0a]',
+      ])
+      const source = await getCase('uni-app-x/issue-822/components/ScopedChild.uvue')
+      const result = transformUVue(
+        source,
+        '/src/components/ScopedChild.uvue',
+        jsHandler,
+        runtimeSet,
+        { enableComponentLocalStyle: true },
+      )
+
+      expect(result?.code).toContain('<style scoped>')
+      const styleBlock = extractInjectedStyle(result!.code)
+      const aliasByUtility = extractAliasByUtility(styleBlock)
+      expect(aliasByUtility.get('bg-[#87add3]')).toBeTruthy()
+      expect(aliasByUtility.get('text-[93.54rpx]')).toBeTruthy()
+      expect(aliasByUtility.get('bg-[#123456]')).toBeTruthy()
+      expect(result?.code).toContain(`class="${aliasByUtility.get('border')} ${aliasByUtility.get('border-solid')} ${aliasByUtility.get('border-[#999]')} ${aliasByUtility.get('p-4')}"`)
+      expect(result?.code).toContain(aliasByUtility.get('text-[#111]')!)
+      expect(result?.code).toContain(aliasByUtility.get('bg-[#123456]')!)
+      expect(result?.code).toContain(aliasByUtility.get('text-[93.54rpx]')!)
+      expect(result?.code).not.toContain(replaceWxml('bg-[#123456]'))
+
+      expect(styleBlock).toContain(`.${aliasByUtility.get('bg-[#87add3]')} {`)
+      expect(styleBlock).toContain('@apply bg-[#87add3];')
+      expect(styleBlock).toContain('@apply text-[93.54rpx];')
+      expect(styleBlock).toContain('@apply bg-[#123456];')
+    },
+  )
 })

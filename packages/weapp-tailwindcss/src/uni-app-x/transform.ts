@@ -6,6 +6,7 @@ import { parse } from '@vue/compiler-sfc'
 import MagicString from 'magic-string'
 import { generateCode, replaceWxml } from '@/wxml'
 import { createAttributeMatcher } from '@/wxml/custom-attributes'
+import { shouldEnableComponentLocalStyle, UniAppXComponentLocalStyleCollector } from './component-local-style'
 
 function traverse(node: ParentNode, visitor: (node: ParentNode) => void): void {
   visitor(node)
@@ -29,6 +30,21 @@ function updateStaticAttribute(ms: MagicString, prop: AttributeNode) {
   }
 }
 
+function updateStaticAttributeWithLocalStyle(
+  ms: MagicString,
+  prop: AttributeNode,
+  collector: UniAppXComponentLocalStyleCollector,
+) {
+  if (!prop.value) {
+    return
+  }
+  const start = prop.value.loc.start.offset + 1
+  const end = prop.value.loc.end.offset - 1
+  if (start < end) {
+    ms.update(start, end, collector.collectAndRewriteStaticClass(prop.value.content))
+  }
+}
+
 function updateDirectiveExpression(ms: MagicString, prop: DirectiveNode, jsHandler: JsHandler, runtimeSet?: Set<string>) {
   if (prop.exp?.type !== NodeTypes.SIMPLE_EXPRESSION) {
     return
@@ -46,9 +62,36 @@ function updateDirectiveExpression(ms: MagicString, prop: DirectiveNode, jsHandl
   ms.update(start, end, generated)
 }
 
+function updateDirectiveExpressionWithLocalStyle(
+  ms: MagicString,
+  prop: DirectiveNode,
+  jsHandler: JsHandler,
+  collector: UniAppXComponentLocalStyleCollector,
+  runtimeSet?: Set<string>,
+) {
+  if (prop.exp?.type !== NodeTypes.SIMPLE_EXPRESSION) {
+    return
+  }
+  const start = prop.exp.loc.start.offset
+  const end = prop.exp.loc.end.offset
+  if (start >= end) {
+    return
+  }
+  collector.collectRuntimeClasses(prop.exp.content, {
+    wrapExpression: true,
+  })
+  const generated = generateCode(prop.exp.content, {
+    jsHandler,
+    runtimeSet,
+    wrapExpression: true,
+  })
+  ms.update(start, end, collector.rewriteTransformedCode(generated, { wrapExpression: true }))
+}
+
 interface TransformUVueOptions {
   customAttributesEntities?: ICustomAttributesEntities
   disabledDefaultTemplateHandler?: boolean
+  enableComponentLocalStyle?: boolean
 }
 
 function shouldHandleAttribute(
@@ -90,6 +133,9 @@ export function transformUVue(
   const matchCustomAttribute = createAttributeMatcher(customAttributesEntities)
   const ms = new MagicString(code)
   const { descriptor, errors } = parse(code)
+  const localStyleCollector = options.enableComponentLocalStyle && shouldEnableComponentLocalStyle(id)
+    ? new UniAppXComponentLocalStyleCollector(id, runtimeSet)
+    : undefined
   if (errors.length === 0) {
     if (descriptor.template?.ast) {
       traverse(descriptor.template.ast, (node) => {
@@ -108,7 +154,12 @@ export function transformUVue(
             if (!shouldHandle) {
               continue
             }
-            updateStaticAttribute(ms, prop)
+            if (shouldHandleDefault && localStyleCollector) {
+              updateStaticAttributeWithLocalStyle(ms, prop, localStyleCollector)
+            }
+            else {
+              updateStaticAttribute(ms, prop)
+            }
             if (shouldHandleDefault) {
               continue
             }
@@ -129,19 +180,38 @@ export function transformUVue(
             if (!shouldHandle) {
               continue
             }
-            updateDirectiveExpression(ms, prop, jsHandler, runtimeSet)
+            if (attrName.toLowerCase() === 'class' && localStyleCollector) {
+              updateDirectiveExpressionWithLocalStyle(ms, prop, jsHandler, localStyleCollector, runtimeSet)
+            }
+            else {
+              updateDirectiveExpression(ms, prop, jsHandler, runtimeSet)
+            }
           }
         }
       })
     }
 
     if (descriptor.script) {
+      localStyleCollector?.collectRuntimeClasses(descriptor.script.content)
       const { code } = jsHandler(descriptor.script.content, runtimeSet ?? new Set(), defaultCreateJsHandlerOptions)
-      ms.update(descriptor.script.loc.start.offset, descriptor.script.loc.end.offset, code)
+      ms.update(
+        descriptor.script.loc.start.offset,
+        descriptor.script.loc.end.offset,
+        localStyleCollector ? localStyleCollector.rewriteTransformedCode(code) : code,
+      )
     }
     if (descriptor.scriptSetup) {
+      localStyleCollector?.collectRuntimeClasses(descriptor.scriptSetup.content)
       const { code } = jsHandler(descriptor.scriptSetup.content, runtimeSet ?? new Set(), defaultCreateJsHandlerOptions)
-      ms.update(descriptor.scriptSetup.loc.start.offset, descriptor.scriptSetup.loc.end.offset, code)
+      ms.update(
+        descriptor.scriptSetup.loc.start.offset,
+        descriptor.scriptSetup.loc.end.offset,
+        localStyleCollector ? localStyleCollector.rewriteTransformedCode(code) : code,
+      )
+    }
+
+    if (localStyleCollector?.hasStyles()) {
+      ms.append(`\n${localStyleCollector.toStyleBlock()}`)
     }
   }
   return {

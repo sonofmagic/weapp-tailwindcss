@@ -6,6 +6,8 @@
 
 - 🐛 **修复 `uni-app x` 在 `HBuilderX` 小程序运行场景下的 Tailwind 目标绑定问题，并收敛 preset 默认配置：** [`dfc2ab2`](https://github.com/sonofmagic/weapp-tailwindcss/commit/dfc2ab2d702d3892bbddbb6bd3808fb0b6f9bcd3) by @sonofmagic
   - `uniAppX` preset 现在会自动补齐 `resolve.paths`，并根据当前工程已安装的 Tailwind 版本推断默认 patcher 配置
+  - `uniAppX` 现支持对象配置；preset 默认开启 `componentLocalStyles`，并默认仅在 `manifest.json` 的 `styleIsolationVersion=2` 时生效
+  - 新增 `uniAppX.componentLocalStyles.enabled` 与 `uniAppX.componentLocalStyles.onlyWhenStyleIsolationVersion2` 细粒度开关，用于控制 issue #822 所需的组件局部样式注入
   - 修复显式 `tailwindcss@3` 工程被 `v4` 配置对象误判的问题，避免运行时类名集合绑定到错误的 Tailwind 目标
   - `demo/uni-app-x-hbuilderx-tailwindcss3` 可在更少用户配置下直接运行到微信小程序端，并正确转译 `text-[50px]`、`border-[#ff0000]` 等动态类名
 

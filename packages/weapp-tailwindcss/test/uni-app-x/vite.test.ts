@@ -1,10 +1,13 @@
 import type { OutputAsset } from 'rollup'
 import type { HmrContext, Plugin, ResolvedConfig, TransformResult } from 'vite'
 import type { CreateJsHandlerOptions } from '@/types'
+import fs from 'node:fs/promises'
+import os from 'node:os'
 import path from 'node:path'
 import { describe, expect, it, vi } from 'vitest'
 import { createCache } from '@/cache'
 import { createUniAppXAssetTask, createUniAppXPlugins } from '@/uni-app-x/vite'
+import { clearUniAppXStyleIsolationCache } from '@/uni-app-x/style-isolation'
 
 /** 将平台路径转为 posix 格式，与源码 normalizePath 行为一致 */
 function toPosix(p: string): string {
@@ -202,6 +205,7 @@ describe('uni-app-x vite plugins', () => {
       {
         customAttributesEntities,
         disabledDefaultTemplateHandler: true,
+        enableComponentLocalStyle: false,
       },
     )
     expect(transformResult).toEqual({ code: 'transformed', map: null })
@@ -212,6 +216,107 @@ describe('uni-app-x vite plugins', () => {
     currentConfig = { command: 'build', build: { watch: true } } as ResolvedConfig
     await nvuePlugin!.watchChange?.('/foo.uvue?vue&type=template')
     expect(ensureRuntimeClassSet).toHaveBeenCalledWith(true)
+  })
+
+  it('enables component local style transform when manifest.json sets styleIsolationVersion=2', async () => {
+    const root = await fs.mkdtemp(path.join(os.tmpdir(), 'weapp-tw-issue-822-'))
+    try {
+      await fs.writeFile(path.join(root, 'manifest.json'), `{
+  // HBuilderX manifest.json allows comments
+  "uni-app-x": {
+    /* issue 822 regression */
+    "styleIsolationVersion": "2"
+  }
+}
+`, 'utf8')
+      clearUniAppXStyleIsolationCache()
+      const runtimeSet = new Set(['alpha'])
+      const ensureRuntimeClassSet = vi.fn(async () => runtimeSet)
+      const jsHandler = vi.fn()
+      const plugins = createUniAppXPlugins({
+        appType: 'uni-app',
+        customAttributesEntities: [],
+        disabledDefaultTemplateHandler: false,
+        mainCssChunkMatcher: vi.fn(() => true),
+        runtimeState: { patchPromise: Promise.resolve() },
+        styleHandler: vi.fn(),
+        jsHandler,
+        ensureRuntimeClassSet,
+        getResolvedConfig: () => ({ command: 'build', build: { watch: false }, root } as ResolvedConfig),
+        uniAppX: {
+          enabled: true,
+          componentLocalStyles: true,
+        },
+      })
+      const nvuePlugin = plugins.find((p): p is Plugin => p.name === 'weapp-tailwindcss:uni-app-x:nvue')
+      expect(nvuePlugin).toBeDefined()
+      transformUVueMock.mockClear()
+      transformUVueMock.mockReturnValue({ code: 'transformed', map: null } as TransformResult)
+
+      await nvuePlugin!.transform?.('<template/>', '/src/components/foo.uvue')
+
+      expect(transformUVueMock).toHaveBeenLastCalledWith(
+        '<template/>',
+        '/src/components/foo.uvue',
+        jsHandler,
+        runtimeSet,
+        {
+          enableComponentLocalStyle: true,
+        },
+      )
+    }
+    finally {
+      clearUniAppXStyleIsolationCache()
+      await fs.rm(root, { recursive: true, force: true })
+    }
+  })
+
+  it('allows disabling component local style transform from uniAppX options', async () => {
+    const root = await fs.mkdtemp(path.join(os.tmpdir(), 'weapp-tw-issue-822-disabled-'))
+    try {
+      await fs.writeFile(path.join(root, 'manifest.json'), `{
+  "uni-app-x": {
+    "styleIsolationVersion": "2"
+  }
+}
+`, 'utf8')
+      clearUniAppXStyleIsolationCache()
+      const runtimeSet = new Set(['alpha'])
+      const ensureRuntimeClassSet = vi.fn(async () => runtimeSet)
+      const jsHandler = vi.fn()
+      const plugins = createUniAppXPlugins({
+        appType: 'uni-app',
+        customAttributesEntities: [],
+        disabledDefaultTemplateHandler: false,
+        mainCssChunkMatcher: vi.fn(() => true),
+        runtimeState: { patchPromise: Promise.resolve() },
+        styleHandler: vi.fn(),
+        jsHandler,
+        ensureRuntimeClassSet,
+        getResolvedConfig: () => ({ command: 'build', build: { watch: false }, root } as ResolvedConfig),
+        uniAppX: {
+          enabled: true,
+          componentLocalStyles: false,
+        },
+      })
+      const nvuePlugin = plugins.find((p): p is Plugin => p.name === 'weapp-tailwindcss:uni-app-x:nvue')
+      expect(nvuePlugin).toBeDefined()
+      transformUVueMock.mockClear()
+      transformUVueMock.mockReturnValue({ code: 'transformed', map: null } as TransformResult)
+
+      await nvuePlugin!.transform?.('<template/>', '/src/components/foo.uvue')
+
+      expect(transformUVueMock).toHaveBeenLastCalledWith(
+        '<template/>',
+        '/src/components/foo.uvue',
+        jsHandler,
+        runtimeSet,
+      )
+    }
+    finally {
+      clearUniAppXStyleIsolationCache()
+      await fs.rm(root, { recursive: true, force: true })
+    }
   })
 })
 

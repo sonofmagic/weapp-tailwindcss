@@ -2,6 +2,7 @@ import type { ICustomAttributesEntities, InternalUserDefinedOptions } from '@/ty
 import { createStyleHandler } from '@weapp-tailwindcss/postcss'
 import { DEFAULT_RUNTIME_PACKAGE_REPLACEMENTS } from '@/constants'
 import { createJsHandler } from '@/js'
+import { isUniAppXEnabled } from '@/uni-app-x/options'
 import { createTemplateHandler } from '@/wxml'
 
 function resolveRuntimePackageReplacements(
@@ -58,6 +59,7 @@ export function createHandlersFromContext(
     disabledDefaultTemplateHandler,
     replaceRuntimePackages,
   } = ctx
+  const uniAppXEnabled = isUniAppXEnabled(uniAppX)
 
   const moduleSpecifierReplacements = resolveRuntimePackageReplacements(replaceRuntimePackages)
 
@@ -73,7 +75,7 @@ export function createHandlersFromContext(
     cssRemoveProperty,
     cssRemoveHoverPseudoClass,
     cssPresetEnv,
-    uniAppX,
+    uniAppX: uniAppXEnabled,
     cssCalc: cssCalcOptions,
     px2rpx,
     unitsToPx,
@@ -90,7 +92,7 @@ export function createHandlersFromContext(
     babelParserOptions,
     ignoreCallExpressionIdentifiers,
     ignoreTaggedTemplateExpressionIdentifiers,
-    uniAppX,
+    uniAppX: uniAppXEnabled,
     moduleSpecifierReplacements,
   })
 

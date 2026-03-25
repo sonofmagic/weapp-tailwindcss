@@ -16,6 +16,7 @@ import { setupPatchRecorder } from '@/tailwindcss/recorder'
 import { collectRuntimeClassSet, refreshTailwindRuntimeState } from '@/tailwindcss/runtime'
 import { getRuntimeClassSetSignature } from '@/tailwindcss/runtime/cache'
 import { createUniAppXPlugins } from '@/uni-app-x'
+import { isUniAppXEnabled } from '@/uni-app-x/options'
 import { resolveUniUtsPlatform } from '@/utils'
 import { resolveDisabledOptions } from '@/utils/disabled'
 import { resolvePackageDir } from '@/utils/resolve-package'
@@ -82,6 +83,7 @@ export function UnifiedViteWeappTailwindcssPlugin(options: UserDefinedOptions = 
     uniAppX,
     disabledDefaultTemplateHandler,
   } = opts
+  const uniAppXEnabled = isUniAppXEnabled(uniAppX)
 
   const disabledOptions = resolveDisabledOptions(disabled)
   const tailwindcssMajorVersion = initialTwPatcher.majorVersion ?? 0
@@ -123,7 +125,7 @@ export function UnifiedViteWeappTailwindcssPlugin(options: UserDefinedOptions = 
     const signature = getRuntimeClassSetSignature(runtimeState.twPatcher)
     const optionsKey = JSON.stringify({
       appType,
-      uniAppX: Boolean(uniAppX),
+      uniAppX: uniAppXEnabled,
       customAttributesEntities,
       disabledDefaultTemplateHandler,
       configPath,
@@ -238,7 +240,7 @@ export function UnifiedViteWeappTailwindcssPlugin(options: UserDefinedOptions = 
   const getResolvedConfig = () => resolvedConfig
   const utsPlatform = resolveUniUtsPlatform()
   const isIosPlatform = utsPlatform.isAppIos
-  const uniAppXPlugins = uniAppX
+  const uniAppXPlugins = uniAppXEnabled
     ? createUniAppXPlugins({
         appType,
         customAttributesEntities,
@@ -250,6 +252,7 @@ export function UnifiedViteWeappTailwindcssPlugin(options: UserDefinedOptions = 
         jsHandler,
         ensureRuntimeClassSet,
         getResolvedConfig,
+        uniAppX,
       })
     : undefined
 

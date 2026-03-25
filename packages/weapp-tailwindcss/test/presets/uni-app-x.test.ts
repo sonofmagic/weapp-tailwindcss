@@ -96,4 +96,67 @@ describe('uni-app-x preset', () => {
       },
     })
   })
+
+  it('enables component local styles by default in preset output', async () => {
+    env.clearBaseEnv()
+    process.env.UNI_UTS_PLATFORM = 'app-android'
+    getTailwindcssPackageInfoMock.mockReturnValue(undefined)
+    const { uniAppX } = await import('@/presets')
+
+    const result = uniAppX({
+      base: '/repo/uni-app-x',
+    })
+
+    expect(result.uniAppX).toEqual({
+      enabled: true,
+      componentLocalStyles: {
+        enabled: true,
+        onlyWhenStyleIsolationVersion2: true,
+      },
+    })
+  })
+
+  it('allows disabling component local styles from preset options', async () => {
+    env.clearBaseEnv()
+    process.env.UNI_UTS_PLATFORM = 'app-android'
+    getTailwindcssPackageInfoMock.mockReturnValue(undefined)
+    const { uniAppX } = await import('@/presets')
+
+    const result = uniAppX({
+      base: '/repo/uni-app-x',
+      componentLocalStyles: false,
+    })
+
+    expect(result.uniAppX).toEqual({
+      enabled: true,
+      componentLocalStyles: {
+        enabled: false,
+        onlyWhenStyleIsolationVersion2: true,
+      },
+    })
+  })
+
+  it('allows fine-grained uniAppX preset overrides', async () => {
+    env.clearBaseEnv()
+    process.env.UNI_UTS_PLATFORM = 'app-android'
+    getTailwindcssPackageInfoMock.mockReturnValue(undefined)
+    const { uniAppX } = await import('@/presets')
+
+    const result = uniAppX({
+      base: '/repo/uni-app-x',
+      uniAppX: {
+        componentLocalStyles: {
+          onlyWhenStyleIsolationVersion2: false,
+        },
+      },
+    })
+
+    expect(result.uniAppX).toEqual({
+      enabled: true,
+      componentLocalStyles: {
+        enabled: true,
+        onlyWhenStyleIsolationVersion2: false,
+      },
+    })
+  })
 })

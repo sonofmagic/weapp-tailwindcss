@@ -204,6 +204,7 @@
     "@weapp-tailwindcss/postcss": "workspace:*",
     "@weapp-tailwindcss/shared": "workspace:*",
     "cac": "6.7.14",
+    "comment-json": "^4.6.2",
     "debug": "~4.4.3",
     "fast-glob": "^3.3.3",
     "htmlparser2": "10.1.0",

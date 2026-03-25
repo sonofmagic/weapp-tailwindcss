@@ -15,6 +15,8 @@ import { toAbsoluteOutputPath } from '@/bundlers/shared/module-graph'
 import { parseVueRequest } from '@/bundlers/vite/query'
 import { cleanUrl, formatPostcssSourceMap, isCSSRequest } from '@/bundlers/vite/utils'
 import { resolveUniUtsPlatform } from '@/utils'
+import { resolveUniAppXOptions } from './options'
+import { resolveUniAppXStyleIsolationEnabled } from './style-isolation'
 import { transformUVue } from './transform'
 
 interface UniAppXRuntimeState {
@@ -32,6 +34,7 @@ interface CreateUniAppXPluginsOptions {
   ensureRuntimeClassSet: (force?: boolean) => Promise<Set<string>>
   getResolvedConfig: () => ResolvedConfig | undefined
   isIosPlatform?: boolean
+  uniAppX?: InternalUserDefinedOptions['uniAppX']
 }
 
 const preprocessorLangs = new Set(['scss', 'sass', 'less', 'styl', 'stylus'])
@@ -65,7 +68,9 @@ export function createUniAppXPlugins(options: CreateUniAppXPluginsOptions): Plug
     jsHandler,
     ensureRuntimeClassSet,
     getResolvedConfig,
+    uniAppX,
   } = options
+  const resolvedUniAppXOptions = resolveUniAppXOptions(uniAppX)
   const isIosPlatform = providedIosPlatform ?? resolveUniUtsPlatform().isAppIos
   const cssHandlerOptionsCache = new Map<string, {
     isMainChunk: boolean
@@ -80,6 +85,24 @@ export function createUniAppXPlugins(options: CreateUniAppXPluginsOptions): Plug
       }
     }
   }>()
+  let componentLocalStyleEnabled: boolean | undefined
+
+  function shouldEnableComponentLocalStyle() {
+    if (!resolvedUniAppXOptions.componentLocalStyles.enabled) {
+      componentLocalStyleEnabled = false
+      return false
+    }
+    if (!resolvedUniAppXOptions.componentLocalStyles.onlyWhenStyleIsolationVersion2) {
+      componentLocalStyleEnabled = true
+      return true
+    }
+    if (componentLocalStyleEnabled !== undefined) {
+      return componentLocalStyleEnabled
+    }
+    const root = getResolvedConfig()?.root
+    componentLocalStyleEnabled = resolveUniAppXStyleIsolationEnabled(root)
+    return componentLocalStyleEnabled
+  }
 
   async function transformStyle(code: string, id: string, query?: ReturnType<typeof parseVueRequest>['query']) {
     const parsed = query ?? parseVueRequest(id).query
@@ -163,10 +186,16 @@ export function createUniAppXPlugins(options: CreateUniAppXPluginsOptions): Plug
         ? {
             customAttributesEntities,
             disabledDefaultTemplateHandler,
+            enableComponentLocalStyle: shouldEnableComponentLocalStyle(),
           }
         : undefined
       if (extraOptions) {
         return transformUVue(code, id, jsHandler, currentRuntimeSet, extraOptions)
+      }
+      if (shouldEnableComponentLocalStyle()) {
+        return transformUVue(code, id, jsHandler, currentRuntimeSet, {
+          enableComponentLocalStyle: true,
+        })
       }
       return transformUVue(code, id, jsHandler, currentRuntimeSet)
     },

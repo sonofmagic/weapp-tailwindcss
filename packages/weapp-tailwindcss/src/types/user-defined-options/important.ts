@@ -10,6 +10,34 @@ import type { TailwindCssPatchOptions } from 'tailwindcss-patch'
 import type { DisabledOptions } from '../disabled-options'
 import type { ICustomAttributes } from '../shared'
 
+export interface UniAppXComponentLocalStylesOptions {
+  /**
+   * 是否开启组件级局部 Tailwind 样式注入。
+   *
+   * @default true
+   */
+  enabled?: boolean
+  /**
+   * 是否仅在 `manifest.json` 的 `styleIsolationVersion=2` 时启用。
+   *
+   * @default true
+   */
+  onlyWhenStyleIsolationVersion2?: boolean
+}
+
+export interface UniAppXOptions {
+  /**
+   * 是否启用 uni-app x 适配链路。
+   *
+   * @default true
+   */
+  enabled?: boolean
+  /**
+   * 配置 issue 822 所需的组件级局部样式能力。
+   */
+  componentLocalStyles?: boolean | UniAppXComponentLocalStylesOptions
+}
+
 export interface UserDefinedOptionsImportantPart {
 
   /**
@@ -272,5 +300,5 @@ export interface UserDefinedOptionsImportantPart {
    * @group 0.重要配置
    * @ignore
    */
-  uniAppX?: boolean
+  uniAppX?: boolean | UniAppXOptions
 }

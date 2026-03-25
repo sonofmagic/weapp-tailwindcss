@@ -7,7 +7,11 @@ import type { ICreateCacheReturnType } from '../cache'
 import type { ItemOrItemArray } from './base'
 import type { DisabledOptions } from './disabled-options'
 import type { AppType, IArbitraryValues, ICustomAttributesEntities } from './shared'
-import type { UserDefinedOptions } from './user-defined-options'
+import type {
+  UniAppXComponentLocalStylesOptions,
+  UniAppXOptions as UniAppXUserDefinedOptions,
+  UserDefinedOptions,
+} from './user-defined-options'
 
 type AsyncableMethod<T> = T extends (...args: infer A) => infer R
   ? (...args: A) => Promise<Awaited<R>> | Awaited<R>
@@ -15,6 +19,8 @@ type AsyncableMethod<T> = T extends (...args: infer A) => infer R
 
 export type {
   DisabledOptions,
+  UniAppXComponentLocalStylesOptions,
+  UniAppXUserDefinedOptions,
   UserDefinedOptions,
 }
 
