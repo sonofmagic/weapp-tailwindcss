@@ -87,7 +87,7 @@ describe('uni-app-x', () => {
         uniAppX: true,
       },
     )
-    expect(css).toContain('* {')
+    expect(css).toContain('view,text {')
     expect(css).toContain('--tw-border-spacing-x: 0;')
     expect(css).toContain('.mt-_b32_d43rpx_B')
     expect(css).toContain('.bg-_b_h322323_B')

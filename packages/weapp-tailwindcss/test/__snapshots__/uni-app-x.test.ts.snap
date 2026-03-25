@@ -1,24 +1,5 @@
 // Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
-exports[`uni-app-x > tailwindcss3 index.uvue.ts case 1 > css 1`] = `
-".mt-_b32_d43rpx_B {
-    margin-top: 32.43rpx
-}
-.bg-_b_h322323_B {
-    --tw-bg-opacity: 1;
-    background-color: rgba(50, 35, 35, var(--tw-bg-opacity, 1))
-}
-.px-4 {
-    padding-left: 1rem;
-    padding-right: 1rem
-}
-.text-_b_h844343_B {
-    --tw-text-opacity: 1;
-    color: rgba(132, 67, 67, var(--tw-text-opacity, 1))
-}
-"
-`;
-
 exports[`uni-app-x > tailwindcss3 index.uvue.ts case 1 1`] = `
 "
 	const __sfc__ = defineComponent({
@@ -83,7 +64,7 @@ const GenPagesIndexIndexStyles = [utsMapOf([["icebreaker", padStyleMapOf(utsMapO
 
 exports[`uni-app-x > uvue.ts case 1 > css 1`] = `
 "/*! tailwindcss v4.1.4 | MIT License | https://tailwindcss.com */
-.tw-root, {
+page,.tw-root,wx-root-portal-content,:host {
   --spacing: .25rem;
 }
 .mt-_b32_d43rpx_B {
