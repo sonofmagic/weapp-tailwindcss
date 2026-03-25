@@ -72,6 +72,7 @@
   "changesets": [
     "bright-horses-clean",
     "e2e-watch-group-entry",
+    "fair-taxis-support",
     "green-beds-march",
     "honest-hounds-hug",
     "perf-hot-path-caching",
