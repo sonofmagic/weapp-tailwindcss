@@ -1,5 +1,14 @@
 # weapp-tailwindcss
 
+## 4.11.0-alpha.6
+
+### Patch Changes
+
+- 🐛 **修复 `uni-app x` 组件局部样式中的静态 class 回归问题：** [`0590c21`](https://github.com/sonofmagic/weapp-tailwindcss/commit/0590c2119d82ecbc2097eecd9e67a12dc9151320) by @sonofmagic
+  - 修复 `styleIsolationVersion=2` 下普通自定义 scoped class 被错误当成 Tailwind utility 本地化，并生成非法 `@apply` 的问题
+  - 保持 issue #822 的组件局部 Tailwind 样式注入能力不回退，静态与动态 Tailwind class 仍然会正确进入组件局部样式作用域
+  - 补充混合 `Tailwind class + scoped custom class` 的 regression fixture 与测试，覆盖 `app-android` 场景
+
 ## 4.11.0-alpha.5
 
 ### Patch Changes
