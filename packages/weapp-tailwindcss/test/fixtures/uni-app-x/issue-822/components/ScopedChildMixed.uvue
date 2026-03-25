@@ -1,0 +1,22 @@
+<template>
+  <view class="border border-solid border-[#999] p-4">
+    <view class="w-full h-[200px] bg-[#87add3]">
+      <text class="text-[#111]">scoped child node test</text>
+    </view>
+    <view class="manual-child"></view>
+    <text :class="flag ? 'bg-[#123456] mb-[12.32px]' : 'bg-[#d7700a]'">
+      simple
+    </text>
+  </view>
+</template>
+
+<script setup lang="ts">
+const flag = true
+</script>
+
+<style scoped>
+.manual-child {
+  width: 123px;
+  height: 18px;
+}
+</style>

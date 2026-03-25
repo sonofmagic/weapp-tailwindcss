@@ -255,4 +255,47 @@ const condition = true
       expect(styleBlock).toContain('@apply bg-[#123456];')
     },
   )
+
+  it('keeps custom scoped classes out of component local @apply output on app-android', async () => {
+    process.env.UNI_UTS_PLATFORM = 'app-android'
+    const { jsHandler } = getCompilerContext({
+      uniAppX: true,
+    })
+    const runtimeSet = new Set<string>([
+      'border',
+      'border-solid',
+      'border-[#999]',
+      'p-4',
+      'w-full',
+      'h-[200px]',
+      'bg-[#87add3]',
+      'text-[#111]',
+      'bg-[#123456]',
+      'mb-[12.32px]',
+      'bg-[#d7700a]',
+    ])
+    const source = await getCase('uni-app-x/issue-822/components/ScopedChildMixed.uvue')
+    const result = transformUVue(
+      source,
+      '/src/components/ScopedChildMixed.uvue',
+      jsHandler,
+      runtimeSet,
+      { enableComponentLocalStyle: true },
+    )
+
+    expect(result?.code).toContain('<style scoped>')
+    expect(result?.code).toContain('class="manual-child"')
+    const styleBlock = extractInjectedStyle(result!.code)
+    const aliasByUtility = extractAliasByUtility(styleBlock)
+    expect(aliasByUtility.get('bg-[#87add3]')).toBeTruthy()
+    expect(aliasByUtility.get('bg-[#123456]')).toBeTruthy()
+    expect(result?.code).toContain(aliasByUtility.get('text-[#111]')!)
+    expect(result?.code).toContain(aliasByUtility.get('bg-[#123456]')!)
+    expect(result?.code).toContain('.manual-child {')
+    expect(result?.code).toContain('width: 123px;')
+    expect(styleBlock).not.toContain('@apply manual-child;')
+    expect(result?.code).not.toContain('@apply manual-child;')
+    expect(styleBlock).toContain('@apply bg-[#87add3];')
+    expect(styleBlock).toContain('@apply bg-[#123456];')
+  })
 })

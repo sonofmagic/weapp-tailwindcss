@@ -92,7 +92,7 @@ export class UniAppXComponentLocalStyleCollector {
   }
 
   collectAndRewriteStaticClass(literal: string) {
-    return this.rewriteLiteral(literal, candidate => candidate.length > 0)
+    return this.rewriteLiteral(literal, candidate => isRuntimeCandidate(candidate, this.runtimeSet))
   }
 
   collectRuntimeClasses(rawSource: string, options: RewriteCodeOptions = {}) {
