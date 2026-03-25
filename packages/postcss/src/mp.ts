@@ -6,6 +6,7 @@ import { isUniAppXEnabled } from './compat/uni-app-x'
 import cssVarsV3 from './cssVarsV3'
 import { isOnlyBeforeAndAfterPseudoElement } from './selectorParser'
 import { createCssVarNodes } from './utils/css-vars'
+import { appendRuleSelector, assignRuleSelectors } from './utils/selector-guard'
 import { hasTwVars } from './utils/tw-vars'
 
 // v3 变量集合在运行时转换为 Declaration 以便快速插入
@@ -138,7 +139,10 @@ export function commonChunkPreflight(node: Rule, options: IStyleHandlerOptions) 
       )
     )
   ) {
-    node.selectors = [...node.selectors, ':host']
+    appendRuleSelector(node, ':host', {
+      phase: 'pre',
+      reason: 'append-host-selector',
+    })
   }
   // 标记 CSS 变量作用域
   // node.selector = remakeCombinatorSelector(node.selector, options)
@@ -149,9 +153,12 @@ export function commonChunkPreflight(node: Rule, options: IStyleHandlerOptions) 
     || (uniAppXEnabled && node.selectors.includes('*') && hasTwVars(node, 2))
   ) {
     ctx?.markVariablesScope(node)
-    node.selectors = uniAppXEnabled
+    assignRuleSelectors(node, uniAppXEnabled
       ? resolveUniAppXVariableScopeSelectors(options)
-      : remakeCssVarSelector(node.selectors, options)
+      : remakeCssVarSelector(node.selectors, options), {
+      phase: 'pre',
+      reason: 'rewrite-variable-scope',
+    })
     if (!uniAppXEnabled) {
       node.before(makePseudoVarRule())
     }
@@ -166,7 +173,10 @@ export function commonChunkPreflight(node: Rule, options: IStyleHandlerOptions) 
       nodes: isTailwindcss4 ? cssVarsV4Nodes : cssVarsV3Nodes,
     })
     if (!uniAppXEnabled) {
-      syntheticRule.selectors = remakeCssVarSelector(syntheticRule.selectors, options)
+      assignRuleSelectors(syntheticRule, remakeCssVarSelector(syntheticRule.selectors, options), {
+        phase: 'pre',
+        reason: 'rewrite-synthetic-variable-scope',
+      })
     }
     node.before(syntheticRule)
     if (!uniAppXEnabled) {

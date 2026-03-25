@@ -9,6 +9,7 @@ import { postcssWeappTailwindcssPostPlugin, reorderVariableDeclarations } from '
 import { createRootSpecificityCleaner } from '@/plugins/post/specificity-cleaner'
 import { postcssWeappTailwindcssPrePlugin } from '@/plugins/pre'
 import { isNotLastChildPseudo, normalizeSpacingDeclarations } from '@/selectorParser/spacing'
+import { appendRuleSelector, assignRuleSelectors } from '@/utils/selector-guard'
 import cssVarsV3 from '../src/cssVarsV3'
 import * as entry from '../src/index'
 import * as selectorExports from '../src/selectorParser'
@@ -96,6 +97,35 @@ describe('specificity cleaner', () => {
     const emptyRule = { selectors: [] } as Rule
     cleaner?.(emptyRule)
     expect(emptyRule.selectors).toEqual([])
+  })
+})
+
+describe('selector guard', () => {
+  it('skips no-op selector writes', () => {
+    const rule = postcss.parse('.a,.b { color: red }').first as Rule
+    expect(assignRuleSelectors(rule, ['.a', '.b'], {
+      phase: 'test',
+      reason: 'noop',
+    })).toBe(false)
+    expect(rule.selector).toBe('.a,.b')
+  })
+
+  it('throws when selector mutations fall back to a previous state', () => {
+    const rule = postcss.parse('.a { color: red }').first as Rule
+    expect(() => {
+      assignRuleSelectors(rule, ['.b'], {
+        phase: 'test',
+        reason: 'step-1',
+      })
+      appendRuleSelector(rule, ':host', {
+        phase: 'test',
+        reason: 'step-2',
+      })
+      assignRuleSelectors(rule, ['.a'], {
+        phase: 'test',
+        reason: 'cycle',
+      })
+    }).toThrow(/postcss-selector-guard/)
   })
 })
 

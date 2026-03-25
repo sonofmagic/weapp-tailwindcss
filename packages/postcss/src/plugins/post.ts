@@ -7,6 +7,7 @@ import { normalizeTailwindcssV4Declaration } from '../compat/tailwindcss-v4'
 import { shouldRemoveEmptyRuleForUniAppX } from '../compat/uni-app-x'
 import { postcssPlugin } from '../constants'
 import { getFallbackRemove } from '../selectorParser'
+import { appendRuleSelector } from '../utils/selector-guard'
 import { dedupeDeclarations } from './post/decl-dedupe'
 import { createRootSpecificityCleaner } from './post/specificity-cleaner'
 // 可选依赖：import valueParser from 'postcss-value-parser'
@@ -70,7 +71,10 @@ const postcssWeappTailwindcssPostPlugin: PostcssWeappTailwindcssRenamePlugin = (
 
       if (enableMainChunkTransforms) {
         if (shouldAppendHostSelector?.(rule)) {
-          rule.selectors = [...rule.selectors, ':host']
+          appendRuleSelector(rule, ':host', {
+            phase: 'post',
+            reason: 'append-host-selector',
+          })
         }
 
         dedupeDeclarations(rule)

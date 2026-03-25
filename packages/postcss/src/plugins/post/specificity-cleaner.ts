@@ -1,5 +1,6 @@
 import type { Rule } from 'postcss'
 import type { IStyleHandlerOptions } from '../../types'
+import { assignRuleSelectors } from '../../utils/selector-guard'
 
 // normalizeSelectorList 将 root/universal 替换配置规范化为数组
 function normalizeSelectorList(value?: string | string[] | false) {
@@ -64,8 +65,9 @@ export function createRootSpecificityCleaner(options: IStyleHandlerOptions) {
       return updated
     })
 
-    if (changed) {
-      rule.selectors = next
-    }
+    changed && assignRuleSelectors(rule, next, {
+      phase: 'post',
+      reason: 'clean-root-specificity',
+    })
   }
 }
