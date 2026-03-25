@@ -22,7 +22,7 @@
   "devDependencies": {
     "@tailwindcss/postcss": "catalog:tailwindcss4",
     "@vitejs/plugin-vue": "^6.0.5",
-    "@vue/tsconfig": "^0.9.0",
+    "@vue/tsconfig": "^0.9.1",
     "@weapp-tailwindcss/variants": "workspace:*",
     "postcss": "catalog:postcss85",
     "tailwindcss": "catalog:tailwindcss4",

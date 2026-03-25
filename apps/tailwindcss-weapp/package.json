@@ -109,7 +109,7 @@
     "unplugin-auto-import": "^19.1.1",
     "vite": "5.2.8",
     "vue-eslint-parser": "^10.4.0",
-    "weapp-ide-cli": "^5.1.1",
+    "weapp-ide-cli": "^5.1.2",
     "weapp-tailwindcss": "workspace:*"
   }
 }

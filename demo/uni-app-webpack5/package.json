@@ -116,7 +116,7 @@
     "postcss-rem-to-responsive-pixel": "catalog:postcssRem602",
     "postcss-rpx-transform": "catalog:postcssRpx",
     "sass": "catalog:sass195",
-    "speed-measure-webpack-plugin": "^1.5.0",
+    "speed-measure-webpack-plugin": "^1.6.0",
     "tailwindcss": "catalog:tailwindcss3",
     "tailwindcss-patch": "catalog:tailwindcssPatch",
     "tailwindcss-rem2px-preset": "catalog:tailwindcssRem",
