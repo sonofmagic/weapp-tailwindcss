@@ -21,7 +21,7 @@ export function stripUnsupportedNodeForUniAppX(
   if (!isUniAppXEnabled(options)) {
     return false
   }
-  if (node.type === 'tag' || node.type === 'attribute' || node.type === 'pseudo') {
+  if (node.type === 'attribute' || node.type === 'pseudo') {
     node.remove()
     return true
   }

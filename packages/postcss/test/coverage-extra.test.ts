@@ -144,7 +144,7 @@ describe('compat helpers', () => {
 
   it('handles uni-app-x unsupported nodes', () => {
     const removed = stripUnsupportedNodeForUniAppX({ type: 'tag', value: 'view', remove: vi.fn() } as any, { uniAppX: true })
-    expect(removed).toBe(true)
+    expect(removed).toBe(false)
     const untouched = stripUnsupportedNodeForUniAppX({ type: 'class', value: 'x' } as any, { uniAppX: true })
     expect(untouched).toBe(false)
   })

@@ -32,7 +32,7 @@ describe('uni-app-x', () => {
         isMainChunk: true,
       },
     )
-    expect(css).toContain('* {')
+    expect(css).toContain('view,text {')
     expect(css).toContain('--tw-border-spacing-x: 0;')
     expect(css).toContain('.mt-_b32_d43rpx_B')
     expect(css).toContain('.bg-_b_h322323_B')
@@ -70,7 +70,7 @@ describe('uni-app-x', () => {
     expect(css).not.toContain(':before')
     expect(css).not.toContain(':after')
     expect(css).not.toContain('::backdrop')
-    expect(css).toContain('* {')
+    expect(css).toContain('view,text {')
     expect(css).toContain('--tw-border-spacing-x: 0;')
     expect(css).toContain('.border-_b_h999_B')
   })

@@ -132,9 +132,6 @@ function handleUniversalNode(node: Node, context: TransformContext) {
   if (node.type !== 'universal') {
     return
   }
-  if (isUniAppXEnabled(context.options)) {
-    return
-  }
   if (context.universalReplacement) {
     node.value = context.universalReplacement
   }

@@ -102,6 +102,17 @@ export function remakeCssVarSelector(selectors: string[], options: IStyleHandler
   return selectors
 }
 
+function resolveUniAppXVariableScopeSelectors(options: IStyleHandlerOptions) {
+  const universal = options.cssSelectorReplacement?.universal
+  if (Array.isArray(universal) && universal.length > 0) {
+    return [...universal]
+  }
+  if (typeof universal === 'string' && universal.length > 0) {
+    return [universal]
+  }
+  return ['view', 'text']
+}
+
 // 在通用预处理节点中注入变量、预设声明，并标记上下文状态
 export function commonChunkPreflight(node: Rule, options: IStyleHandlerOptions) {
   const { ctx, cssInjectPreflight, injectAdditionalCssVarScope } = options
@@ -138,7 +149,9 @@ export function commonChunkPreflight(node: Rule, options: IStyleHandlerOptions) 
     || (uniAppXEnabled && node.selectors.includes('*') && hasTwVars(node, 2))
   ) {
     ctx?.markVariablesScope(node)
-    node.selectors = remakeCssVarSelector(node.selectors, options)
+    node.selectors = uniAppXEnabled
+      ? resolveUniAppXVariableScopeSelectors(options)
+      : remakeCssVarSelector(node.selectors, options)
     if (!uniAppXEnabled) {
       node.before(makePseudoVarRule())
     }
@@ -149,10 +162,12 @@ export function commonChunkPreflight(node: Rule, options: IStyleHandlerOptions) 
   const isTailwindcss4 = isTailwindcssV4(options)
   if (injectAdditionalCssVarScope && (isTailwindcss4 ? testIfRootHostForV4(node) : testIfTwBackdrop(node))) {
     const syntheticRule = new Rule({
-      selectors: uniAppXEnabled ? ['*'] : ['*', '::after', '::before'],
+      selectors: uniAppXEnabled ? resolveUniAppXVariableScopeSelectors(options) : ['*', '::after', '::before'],
       nodes: isTailwindcss4 ? cssVarsV4Nodes : cssVarsV3Nodes,
     })
-    syntheticRule.selectors = remakeCssVarSelector(syntheticRule.selectors, options)
+    if (!uniAppXEnabled) {
+      syntheticRule.selectors = remakeCssVarSelector(syntheticRule.selectors, options)
+    }
     node.before(syntheticRule)
     if (!uniAppXEnabled) {
       node.before(makePseudoVarRule())

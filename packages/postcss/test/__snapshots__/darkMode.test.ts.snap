@@ -17,7 +17,7 @@ exports[`darkMode > darkMode: 'class', 1`] = `
 `;
 
 exports[`darkMode > darkMode: 'class', uni-app x 1`] = `
-".dark .dark_cbg-black,.dark .dark_cbg-black {
+".dark view.dark_cbg-black,.dark text.dark_cbg-black {
     --tw-bg-opacity: 1;
     background-color: rgba(0, 0, 0, var(--tw-bg-opacity, 1)) ;
 }"
@@ -35,7 +35,7 @@ exports[`darkMode > darkMode: 'selector', 1`] = `
 `;
 
 exports[`darkMode > darkMode: 'selector', uni-app x 1`] = `
-".dark_cbg-black.dark,.dark .dark_cbg-black,.dark .dark_cbg-black {
+".dark_cbg-black.dark,.dark view.dark_cbg-black,.dark text.dark_cbg-black {
     --tw-bg-opacity: 1;
     background-color: rgba(0, 0, 0, var(--tw-bg-opacity, 1)) ;
 }"
@@ -53,7 +53,7 @@ exports[`darkMode > darkMode: ['selector', '[data-mode="dark"]'], 1`] = `
 `;
 
 exports[`darkMode > darkMode: ['selector', '[data-mode="dark"]'], uni-app x 1`] = `
-".dark_cbg-black,.dark_cbg-black {
+"view.dark_cbg-black,text.dark_cbg-black {
     --tw-bg-opacity: 1;
     background-color: rgba(0, 0, 0, var(--tw-bg-opacity, 1)) ;
 }"
