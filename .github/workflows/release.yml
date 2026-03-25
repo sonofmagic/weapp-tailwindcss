@@ -74,8 +74,6 @@ jobs:
           publish: pnpm publish-packages
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
-          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
           npm_config_registry: https://registry.npmjs.org
           # https://github.com/changesets/changesets/pull/1659
           NPM_CONFIG_PROVENANCE: true
