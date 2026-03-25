@@ -71,6 +71,7 @@
   },
   "changesets": [
     "bright-horses-clean",
+    "cyan-cars-wave",
     "e2e-watch-group-entry",
     "fair-taxis-support",
     "green-beds-march",
