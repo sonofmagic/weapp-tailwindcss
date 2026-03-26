@@ -353,7 +353,7 @@ export function shouldRunGroupedTarget(caseName: WatchCaseName, target: WatchPro
 }
 
 async function runWatchHmrCommand(cwd: string, args: string[], commandTimeoutMs: number) {
-  const maxAttempts = 2
+  const maxAttempts = Math.max(1, toNumberEnv('E2E_WATCH_MAX_ATTEMPTS', 2))
   const env = { ...process.env }
 
   for (const key of Object.keys(env)) {
@@ -382,6 +382,13 @@ async function runWatchHmrCommand(cwd: string, args: string[], commandTimeoutMs:
       return
     }
     catch (error) {
+      const timedOut = typeof error === 'object' && error !== null && 'timedOut' in error
+        ? Boolean((error as { timedOut?: boolean }).timedOut)
+        : false
+      // 命令级超时通常意味着预算不足，直接重试只会重复消耗整段 CI 时间。
+      if (timedOut) {
+        throw error
+      }
       if (attempt >= maxAttempts) {
         throw error
       }

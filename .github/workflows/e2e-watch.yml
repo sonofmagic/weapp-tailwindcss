@@ -220,10 +220,11 @@ jobs:
             watch_case: all
             round_profile: default
             watch_save_snapshots: '1'
-            timeout_minutes: 95
+            timeout_minutes: 110
             watch_timeout_ms: '720000'
             watch_poll_ms: '400'
-            watch_command_timeout_ms: '1800000'
+            watch_command_timeout_ms: '2700000'
+            watch_max_attempts: '1'
           - os: macos-latest
             runner_label: macos
             watch_case: uni-app-vue3-vite
@@ -274,10 +275,11 @@ jobs:
             watch_case: demo
             round_profile: default
             watch_save_snapshots: '1'
-            timeout_minutes: 80
+            timeout_minutes: 95
             watch_timeout_ms: '540000'
             watch_poll_ms: '360'
-            watch_command_timeout_ms: '1500000'
+            watch_command_timeout_ms: '2400000'
+            watch_max_attempts: '1'
           - os: macos-latest
             runner_label: macos
             watch_case: apps
@@ -344,6 +346,7 @@ jobs:
           E2E_WATCH_TIMEOUT_MS: ${{ matrix.watch_timeout_ms }}
           E2E_WATCH_POLL_MS: ${{ matrix.watch_poll_ms }}
           E2E_WATCH_COMMAND_TIMEOUT_MS: ${{ matrix.watch_command_timeout_ms }}
+          E2E_WATCH_MAX_ATTEMPTS: ${{ matrix.watch_max_attempts || '2' }}
           E2E_WATCH_ROUND_PROFILE: ${{ matrix.round_profile }}
           E2E_WATCH_SAVE_SNAPSHOTS: ${{ matrix.watch_save_snapshots }}
         run: pnpm e2e:watch
