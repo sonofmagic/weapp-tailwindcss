@@ -1,5 +1,16 @@
 # @weapp-tailwindcss/build-all
 
+## 0.0.22
+
+### Patch Changes
+
+- 📦 Updated 10 dependencies [`c8860fa`](https://github.com/sonofmagic/weapp-tailwindcss/commit/c8860fa202e202833f2c503fd7ea53af824a76fe)
+  <details><summary>Details</summary>
+
+  `weapp-tailwindcss@4.11.0`, `@weapp-tailwindcss/init@1.0.11`, `@weapp-tailwindcss/postcss@2.1.6`, `tailwindcss-injector@1.0.11`, `@weapp-tailwindcss/shared@1.1.3`, `@weapp-tailwindcss/debug-uni-app-x@0.0.4`, `weapp-tw@0.0.1`, `wetw@0.1.2`, `tailwindcss-config@1.1.5`, `weapp-style-injector@0.0.2`
+
+  </details>
+
 ## 0.0.22-alpha.8
 
 ### Patch Changes

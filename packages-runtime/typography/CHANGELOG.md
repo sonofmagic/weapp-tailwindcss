@@ -1,5 +1,11 @@
 # @weapp-tailwindcss/typography
 
+## 0.2.7
+
+### Patch Changes
+
+- 🐛 **升级 `tailwindcss-patch` 到 `9` 系列最新版本，并同步更新相关依赖。** [`38c11e7`](https://github.com/sonofmagic/weapp-tailwindcss/commit/38c11e78a0c1f31d7635a98c95fbfe624723c4c3) by @sonofmagic
+
 ## 0.2.7-alpha.0
 
 ### Patch Changes

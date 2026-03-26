@@ -1,5 +1,70 @@
 # weapp-tailwindcss
 
+## 4.11.0
+
+### Minor Changes
+
+- ✨ **为所有编译插件入口新增 `weappTailwindcss` 别名导出，方便用户统一简写引用：** [#819](https://github.com/sonofmagic/weapp-tailwindcss/pull/819) by @sonofmagic
+  - `weapp-tailwindcss/webpack` → `UnifiedWebpackPluginV5` 的别名
+  - `weapp-tailwindcss/webpack4` → `UnifiedWebpackPluginV4` 的别名
+  - `weapp-tailwindcss/vite` → `UnifiedViteWeappTailwindcssPlugin` 的别名
+  - `weapp-tailwindcss/gulp` → `createPlugins` 的别名
+
+### Patch Changes
+
+- 🐛 **修复 Vite 集成在 dts 构建阶段替换 postcss 插件时触发的类型递归比较问题，避免 TS2321 与 TS2345 导致构建失败。** [`c8860fa`](https://github.com/sonofmagic/weapp-tailwindcss/commit/c8860fa202e202833f2c503fd7ea53af824a76fe) by @sonofmagic
+  - 同时升级部分依赖与工作区 catalog 版本（包括 postcss、fs-extra、storybook 等），并同步更新锁文件以保持依赖解析一致性。
+
+- 🐛 **修复 `uni-app x / uvue` 下 `@tailwind base` 的伪元素选择器兼容问题：** [`577f2b7`](https://github.com/sonofmagic/weapp-tailwindcss/commit/577f2b7a4ab20f9d819e5a8826a535a4895cf712) by @sonofmagic
+  - 在 `uni-app x` 模式下移除 `::before`、`::after`、`:before`、`:after`、`::backdrop` 等 `uvue` 不支持的选择器，避免 `App.uvue` 保留 `@tailwind base` 时编译报错
+  - 保留 `*` 上的 Tailwind CSS 变量初始化与有效基础规则，确保基础 reset 与 utility 依赖的 CSS 变量不回退
+  - 补充 `uni-app x + @tailwind base + styleIsolationVersion=2` 的 regression test，并验证 issue #822 相关组件局部样式能力不回退
+
+- 🐛 **完善 `e2e:watch` 热更新回归流程：** [#819](https://github.com/sonofmagic/weapp-tailwindcss/pull/819) by @sonofmagic
+  - 新增 `demo` 与 `apps` 分组测试入口，避免分组执行时重复跑单 case 文件
+  - 将 `test:watch-hmr` 切换为 `node --import tsx` 启动，修复部分环境下 `tsx` IPC `EPERM` 导致的回归无法启动问题
+  - 调整 `apps/taro-webpack-tailwindcss-v4` 的 watch 回归命令，确保 Taro webpack 场景下模板、脚本、样式热更新都能稳定校验
+
+- 🐛 **Miscellaneous improvements** [`534e817`](https://github.com/sonofmagic/weapp-tailwindcss/commit/534e8175cb430405f833489543cdd4eec3dd6ebd) by @sonofmagic
+  - 正式支持 `uni-app x + HBuilderX 5 + styleIsolationVersion=2` 下组件级 Tailwind 局部样式注入，修复 `components/**/*.uvue` 内部子节点 class 在组件隔离模式下不生效的问题
+  - 在 `uniAppX` 配置中新增对象形态与 `componentLocalStyles` 细粒度控制，preset 默认开启该能力，并默认仅在 `manifest.json` 的 `styleIsolationVersion=2` 时生效
+  - `manifest.json` 改为使用 `comment-json` 解析，兼容 HBuilderX 常见的注释写法，并补充 issue #822 回归测试覆盖静态与动态 class 场景
+
+- 🐛 **修复 `watch-hmr` 回归校验在多场景下的稳定性问题：** [`c8a694c`](https://github.com/sonofmagic/weapp-tailwindcss/commit/c8a694c333866158501af6edc9733fe399bcc680) by @sonofmagic
+  - 修正 `uni-app` 与 `skyline` 场景下的回归脚本行为，减少误判与漏判
+  - 调整 warmup、settle 与 mutation sequencing 判定逻辑，避免编译未成功或内容变更时过早结束校验
+  - 放宽部分同类样式与 `skyline` 样式热更断言，并跳过 `Windows` 下不稳定的 `skyline` watch 用例
+
+- 🐛 **增强多平台热更新回归覆盖，补齐 `uni-app`、`uni-app-vue3-vite`、`mpx` 的 comment-carrier 场景，并新增汇总断言校验 same-class 稳定性、comment-carrier 命中数量与热更新时间指标。** [#819](https://github.com/sonofmagic/weapp-tailwindcss/pull/819) by @sonofmagic
+  - 修复 `uni-app-vue3-vite` 在 comment-carrier 场景下 marker 无法进入运行时输出导致 watch-hmr 卡住的问题，同时将关键 HMR 用例接入 `E2E Watch` 工作流，确保 PR 与夜间任务都能持续校验多平台热更新链路。
+
+- 🐛 **修复 `uni-app x / uvue` 下 `@tailwind base` 的默认兼容行为，并同步稳定相关测试：** [`699dfe2`](https://github.com/sonofmagic/weapp-tailwindcss/commit/699dfe21ddbb41dcb8f5e401800767a2098c3707) by @sonofmagic
+  - 将 `uni-app x` 的 base 兼容后处理收敛到 `@weapp-tailwindcss/postcss`，不再由 `weapp-tailwindcss` 额外持有私有样式后处理
+  - 在 `uni-app x` 模式下移除对 `view`、`text`、`*`、`::before`、`::after`、`:before`、`:after`、`::backdrop` 等全局 carrier selector 的依赖
+  - 将 utility 运行所需的 `--tw-*` 默认变量按需下沉到具体 class selector，保证保留 `@tailwind base` 时仍可正常编译和运行
+  - 更新 `uni-app x`、bundler、tailwindcss 全量大用例的回归断言与超时设置，避免在完整测试中因旧预期或默认超时导致误报失败
+
+- 🐛 **性能优化：针对 CSS 选择器转换、JS 处理器、WXML 模板处理等热路径进行多项缓存与计算优化。** [`49e50d8`](https://github.com/sonofmagic/weapp-tailwindcss/commit/49e50d8bde7327d47e9ba649537092ea57bcdf16) by @sonofmagic
+  - JS 处理器：复用 `resolveClassNameTransformWithResult` 返回的 `escapedValue` 避免重复 escape 计算；引入 `getReplacement` 缓存消除重复 `replaceWxml` 调用；移除 `escapeStringRegexp` + `new RegExp` 正则编译开销
+  - `createJsHandler`：预构建默认 `defaults` 对象，无覆盖选项时跳过 `defuOverrideArray` 合并
+  - WXML 模板：`templateReplacer` 支持复用模块级 tokenizer 实例；`createTemplateHandler` 预构建 attribute matcher 并传递给 `customTemplateHandler`
+  - PostCSS fallback 选择器解析：为 `transform` 函数添加 selector 级别缓存，避免重复解析相同选择器
+  - `splitCode`：为默认和 allowDoubleQuotes 两种模式分别添加结果缓存，预编译分割正则
+
+- 🐛 **升级 `tailwindcss-patch` 到 `9` 系列最新版本，并同步更新相关依赖。** [`38c11e7`](https://github.com/sonofmagic/weapp-tailwindcss/commit/38c11e78a0c1f31d7635a98c95fbfe624723c4c3) by @sonofmagic
+
+- 🐛 **修复 `uni-app x` 在 `HBuilderX` 小程序运行场景下的 Tailwind 目标绑定问题，并收敛 preset 默认配置：** [`dfc2ab2`](https://github.com/sonofmagic/weapp-tailwindcss/commit/dfc2ab2d702d3892bbddbb6bd3808fb0b6f9bcd3) by @sonofmagic
+  - `uniAppX` preset 现在会自动补齐 `resolve.paths`，并根据当前工程已安装的 Tailwind 版本推断默认 patcher 配置
+  - 修复显式 `tailwindcss@3` 工程被 `v4` 配置对象误判的问题，避免运行时类名集合绑定到错误的 Tailwind 目标
+  - `demo/uni-app-x-hbuilderx-tailwindcss3` 可在更少用户配置下直接运行到微信小程序端，并正确转译 `text-[50px]`、`border-[#ff0000]` 等动态类名
+
+- 🐛 **修复 `uni-app x` 组件局部样式中的静态 class 回归问题：** [`0590c21`](https://github.com/sonofmagic/weapp-tailwindcss/commit/0590c2119d82ecbc2097eecd9e67a12dc9151320) by @sonofmagic
+  - 修复 `styleIsolationVersion=2` 下普通自定义 scoped class 被错误当成 Tailwind utility 本地化，并生成非法 `@apply` 的问题
+  - 保持 issue #822 的组件局部 Tailwind 样式注入能力不回退，静态与动态 Tailwind class 仍然会正确进入组件局部样式作用域
+  - 补充混合 `Tailwind class + scoped custom class` 的 regression fixture 与测试，覆盖 `app-android` 场景
+- 📦 **Dependencies** [`c8860fa`](https://github.com/sonofmagic/weapp-tailwindcss/commit/c8860fa202e202833f2c503fd7ea53af824a76fe)
+  → `@weapp-tailwindcss/postcss@2.1.6`, `@weapp-tailwindcss/shared@1.1.3`
+
 ## 4.11.0-alpha.8
 
 ### Patch Changes
