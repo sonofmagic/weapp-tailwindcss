@@ -3,21 +3,28 @@ import process from 'node:process'
 import { buildAppCases } from './apps'
 import { buildDemoCases } from './demo'
 
+export function filterCasesForPlatform(cases: WatchCase[], platform: NodeJS.Platform): WatchCase[] {
+  if (platform === 'darwin') {
+    return cases.filter(item => item.name !== 'uni-app-webpack-tailwindcss-v4')
+  }
+
+  if (platform === 'win32') {
+    return cases.filter(item =>
+      item.name !== 'vite-native-skyline'
+      && item.name !== 'uni-app-webpack-tailwindcss-v4',
+    )
+  }
+
+  return cases
+}
+
 export function buildCases(baseCwd: string): WatchCase[] {
   const cases = [
     ...buildDemoCases(baseCwd),
     ...buildAppCases(baseCwd),
   ]
 
-  if (process.platform === 'darwin') {
-    return cases.filter(item => item.name !== 'uni-app-webpack-tailwindcss-v4')
-  }
-
-  if (process.platform === 'win32') {
-    return cases.filter(item => item.name !== 'vite-native-skyline')
-  }
-
-  return cases
+  return filterCasesForPlatform(cases, process.platform)
 }
 
 export function pickCases(allCases: WatchCase[], caseName: CliOptions['caseName']) {

@@ -13,6 +13,11 @@ import {
   buildAppCases,
 } from '../scripts/watch-hmr-regression/cases/apps'
 import {
+  buildCases,
+  filterCasesForPlatform,
+  pickCases,
+} from '../scripts/watch-hmr-regression/cases'
+import {
   buildIssue33HighRiskRoundConfigs,
 } from '../scripts/watch-hmr-regression/cases/round-configs'
 import {
@@ -746,6 +751,21 @@ describe('watch-hmr regression cases', () => {
     expect(appCases.find(watchCase => watchCase.name === 'vite-native')?.requireInitialCompileSuccess).toBe(true)
     expect(appCases.find(watchCase => watchCase.name === 'vite-native-ts')?.requireInitialCompileSuccess).toBe(true)
     expect(appCases.find(watchCase => watchCase.name === 'vite-native-skyline')?.requireInitialCompileSuccess).toBe(true)
+  })
+
+  it('filters platform-specific unstable watch cases from grouped runs', () => {
+    const cases = buildCases('/repo')
+
+    const darwinCases = filterCasesForPlatform(cases, 'darwin')
+    expect(darwinCases.find(watchCase => watchCase.name === 'uni-app-webpack-tailwindcss-v4')).toBeUndefined()
+
+    const win32Cases = filterCasesForPlatform(cases, 'win32')
+    expect(win32Cases.find(watchCase => watchCase.name === 'vite-native-skyline')).toBeUndefined()
+    expect(win32Cases.find(watchCase => watchCase.name === 'uni-app-webpack-tailwindcss-v4')).toBeUndefined()
+
+    const win32DemoCases = pickCases(win32Cases, 'demo')
+    expect(win32DemoCases.every(watchCase => watchCase.group === 'demo')).toBe(true)
+    expect(win32DemoCases.find(watchCase => watchCase.name === 'uni-app-webpack-tailwindcss-v4')).toBeUndefined()
   })
 
   it('keeps issue33 watch cases in macOS and Windows CI matrices', async () => {
