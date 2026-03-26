@@ -68,7 +68,7 @@
     "@babel/core": "^7.28.5",
     "@babel/preset-react": "^7.28.5",
     "@pmmmwh/react-refresh-webpack-plugin": "^0.6.2",
-    "@tailwindcss/postcss": "^4.2.1",
+    "@tailwindcss/postcss": "^4.2.2",
     "@tarojs/cli": "4.1.9",
     "@tarojs/taro-loader": "4.1.9",
     "@tarojs/webpack5-runner": "4.1.9",
@@ -83,11 +83,11 @@
     "postcss": "^8.5.6",
     "react-refresh": "^0.18.0",
     "stylelint": "^16.26.1",
-    "tailwindcss": "^4.2.1",
+    "tailwindcss": "^4.2.2",
     "tsconfig-paths-webpack-plugin": "^4.1.0",
-    "typescript": "^5.9.3",
-    "weapp-ide-cli": "^5.0.4",
-    "weapp-tailwindcss": "^4.10.3",
+    "typescript": "^6.0.2",
+    "weapp-ide-cli": "^5.1.2",
+    "weapp-tailwindcss": "^4.11.0",
     "webpack": "5.104.1"
   },
   "pnpm": {
@@ -96,5 +96,5 @@
       "weapp-tailwindcss"
     ]
   },
-  "packageManager": "pnpm@10.29.3"
+  "packageManager": "pnpm@10.33.0"
 }

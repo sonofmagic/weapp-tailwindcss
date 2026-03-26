@@ -2,7 +2,7 @@
   "name": "mpx-tailwindcss-v4",
   "version": "0.1.0",
   "private": true,
-  "packageManager": "pnpm@10.29.3",
+  "packageManager": "pnpm@10.33.0",
   "scripts": {
     "serve": "mpx-cli-service serve",
     "build": "mpx-cli-service build",
@@ -37,7 +37,7 @@
     "@mpxjs/vue-cli-plugin-mpx": "^2.2.2",
     "@mpxjs/vue-cli-plugin-mpx-typescript": "^2.2.2",
     "@mpxjs/webpack-plugin": "^2.10.14",
-    "@tailwindcss/postcss": "^4.2.1",
+    "@tailwindcss/postcss": "^4.2.2",
     "@vue/cli-service": "~5.0.9",
     "autoprefixer": "^10.4.21",
     "eslint": "^9.34.0",
@@ -45,10 +45,10 @@
     "process": "^0.11.10",
     "stylus": "^0.64.0",
     "stylus-loader": "^8.1.2",
-    "tailwindcss": "^4.2.1",
-    "typescript": "^5.9.3",
-    "weapp-ide-cli": "^5.0.4",
-    "weapp-tailwindcss": "^4.10.3",
+    "tailwindcss": "^4.2.2",
+    "typescript": "^6.0.2",
+    "weapp-ide-cli": "^5.1.2",
+    "weapp-tailwindcss": "^4.11.0",
     "webpack": "^5.101.3"
   },
   "browserslist": [

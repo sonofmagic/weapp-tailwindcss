@@ -18,8 +18,8 @@ importers:
         specifier: ^3.4.19
         version: 3.4.19
       weapp-tailwindcss:
-        specifier: 4.11.0-alpha.8
-        version: 4.11.0-alpha.8(tailwindcss@3.4.19)
+        specifier: 4.11.0
+        version: 4.11.0(tailwindcss@3.4.19)
 
 packages:
 
@@ -454,16 +454,16 @@ packages:
     peerDependencies:
       postcss: ^8.4.38
 
-  '@weapp-tailwindcss/postcss@2.1.6-alpha.3':
-    resolution: {integrity: sha512-bORCDUpedk56VFPzqhVZ2g6ge8u7pjlMf9RJQ1iaEnb2F0H8WjwCHf8KC8xrZ1udSK/xjZLmY2kEC7bmcjOq7A==}
+  '@weapp-tailwindcss/postcss@2.1.6':
+    resolution: {integrity: sha512-sKrayrLlpOMhim91xsNTzpJeEwIinZvvc3E7Lxy8LhNDjS+mST534A1hy0MtxtOFY+8/jGFKsiCD1DnGyhqkEQ==}
     engines: {node: ^20.19.0 || >=22.12.0}
 
   '@weapp-tailwindcss/shared@1.1.2':
     resolution: {integrity: sha512-n3RPB6D4hrKzg7SncNB0POqhdLfYV+qPY5e+cDUCsqr0QrzwDYj6uugA3GhBt72krAzVWmktJUUM5ZM9URCiYw==}
     engines: {node: ^20.19.0 || >=22.12.0}
 
-  '@weapp-tailwindcss/shared@1.1.3-alpha.1':
-    resolution: {integrity: sha512-4XR6exJciE9TNqwyRktE2gPhRqrc8p/ven93IxLpUL54LxAT6uRYpcLWPGas13Z3NbRjwt/scHu1547iI/FCZA==}
+  '@weapp-tailwindcss/shared@1.1.3':
+    resolution: {integrity: sha512-UXABvDZerj5goxh8bE6fhOJwQpgTrv/J2M3aJM8l69xs9WMKILlZ9A88i/oYxIxN5xX+pOMmOkz73dQ5Z8YtfA==}
     engines: {node: ^20.19.0 || >=22.12.0}
 
   acorn@8.15.0:
@@ -1368,8 +1368,8 @@ packages:
   util-deprecate@1.0.2:
     resolution: {integrity: sha512-EPD5q1uXyFxJpCrLnCc1nHnq3gOa6DZBocAIiI2TaSCA7VCJ1UJDMagCzIkXNsUYfD1daK//LTEQ8xiIbrHtcw==}
 
-  weapp-tailwindcss@4.11.0-alpha.8:
-    resolution: {integrity: sha512-APhemC/QJFVzEdNyQhyaTEHnJiX6gpjXsuZaut0+NfgCS12KRrc2R5qHJa47CW7K9/flDsBNGh9qB5QAO8vz/w==}
+  weapp-tailwindcss@4.11.0:
+    resolution: {integrity: sha512-zEWqK3YR7WtLwi9Ki+aWgyyUh3sru6yadC2HYWHVDiMPLf+hPksTZX26JDDyJqTu61biK/Npfnr0oa9oF6AGIQ==}
     engines: {node: ^18.17.0 || >=20.5.0}
     hasBin: true
 
@@ -1892,11 +1892,11 @@ snapshots:
       postcss-selector-parser: 7.1.1
       postcss-value-parser: 4.2.0
 
-  '@weapp-tailwindcss/postcss@2.1.6-alpha.3':
+  '@weapp-tailwindcss/postcss@2.1.6':
     dependencies:
       '@weapp-core/escape': 7.0.0
       '@weapp-tailwindcss/postcss-calc': 1.0.0(postcss@8.5.8)
-      '@weapp-tailwindcss/shared': 1.1.3-alpha.1
+      '@weapp-tailwindcss/shared': 1.1.3
       postcss: 8.5.8
       postcss-preset-env: 10.6.1(postcss@8.5.8)
       postcss-pxtrans: 1.0.1(postcss@8.5.8)
@@ -1909,7 +1909,7 @@ snapshots:
     dependencies:
       pathe: 2.0.3
 
-  '@weapp-tailwindcss/shared@1.1.3-alpha.1':
+  '@weapp-tailwindcss/shared@1.1.3':
     dependencies:
       pathe: 2.0.3
 
@@ -2839,7 +2839,7 @@ snapshots:
 
   util-deprecate@1.0.2: {}
 
-  weapp-tailwindcss@4.11.0-alpha.8(tailwindcss@3.4.19):
+  weapp-tailwindcss@4.11.0(tailwindcss@3.4.19):
     dependencies:
       '@ast-core/escape': 1.0.1
       '@babel/parser': 7.29.2
@@ -2851,8 +2851,8 @@ snapshots:
       '@weapp-core/escape': 7.0.0
       '@weapp-core/regex': 1.0.1
       '@weapp-tailwindcss/logger': 1.1.0
-      '@weapp-tailwindcss/postcss': 2.1.6-alpha.3
-      '@weapp-tailwindcss/shared': 1.1.3-alpha.1
+      '@weapp-tailwindcss/postcss': 2.1.6
+      '@weapp-tailwindcss/shared': 1.1.3
       cac: 6.7.14
       comment-json: 4.6.2
       debug: 4.4.3
