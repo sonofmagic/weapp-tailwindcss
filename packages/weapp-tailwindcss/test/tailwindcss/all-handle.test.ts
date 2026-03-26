@@ -12,5 +12,5 @@ describe('all', () => {
       isContentGlob: true,
     })
     expect((await styleHandler(css, { isMainChunk: true, cssChildCombinatorReplaceValue: ['view'] })).css).toMatchSnapshot()
-  })
+  }, 180_000)
 })

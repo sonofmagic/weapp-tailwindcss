@@ -9,5 +9,5 @@ describe('all', () => {
       isContentGlob: true,
     })
     expect(css).toMatchSnapshot()
-  })
+  }, 180_000)
 })

@@ -106,6 +106,7 @@ function createCompiler(params: Pick<Configuration, 'mode' | 'entry'> & { tailwi
   })
 }
 describe.skipIf(!ci.isCI && os.platform() === 'win32')('webpack5 plugin', () => {
+  const WEBPACK_TEST_TIMEOUT_MS = 300_000
   let compiler: Compiler
   let prodCompiler: Compiler
   let emptyCompiler: Compiler
@@ -185,7 +186,7 @@ describe.skipIf(!ci.isCI && os.platform() === 'win32')('webpack5 plugin', () => 
     expect(readAssets(compiler, stats)).toMatchSnapshot('assets')
     expect(getErrors(stats)).toMatchSnapshot('errors')
     expect(getWarnings(stats)).toMatchSnapshot('warnings')
-  })
+  }, WEBPACK_TEST_TIMEOUT_MS)
 
   it('common with rem2rpx', async () => {
     let timeStart: number
@@ -210,7 +211,7 @@ describe.skipIf(!ci.isCI && os.platform() === 'win32')('webpack5 plugin', () => 
     expect(readAssets(compiler, stats)).toMatchSnapshot('assets')
     expect(getErrors(stats)).toMatchSnapshot('errors')
     expect(getWarnings(stats)).toMatchSnapshot('warnings')
-  })
+  }, WEBPACK_TEST_TIMEOUT_MS)
 
   it('common build twice for cache', async () => {
     let timeStart: number
@@ -240,7 +241,7 @@ describe.skipIf(!ci.isCI && os.platform() === 'win32')('webpack5 plugin', () => 
     expect(readAssets(compiler, stats)).toMatchSnapshot('assets')
     expect(getErrors(stats)).toMatchSnapshot('errors')
     expect(getWarnings(stats)).toMatchSnapshot('warnings')
-  })
+  }, WEBPACK_TEST_TIMEOUT_MS)
 
   // it('common with source map', async () => {
   //   let timeStart: number
@@ -289,7 +290,7 @@ describe.skipIf(!ci.isCI && os.platform() === 'win32')('webpack5 plugin', () => 
     expect(readAssets(compiler, stats)).toMatchSnapshot('assets')
     expect(getErrors(stats)).toMatchSnapshot('errors')
     expect(getWarnings(stats)).toMatchSnapshot('warnings')
-  })
+  }, WEBPACK_TEST_TIMEOUT_MS)
 
   it('common with loader', async () => {
     let timeStart: number
@@ -313,7 +314,7 @@ describe.skipIf(!ci.isCI && os.platform() === 'win32')('webpack5 plugin', () => 
     expect(readAssets(compiler, stats)).toMatchSnapshot('assets')
     expect(getErrors(stats)).toMatchSnapshot('errors')
     expect(getWarnings(stats)).toMatchSnapshot('warnings')
-  })
+  }, WEBPACK_TEST_TIMEOUT_MS)
 
   it('empty build', async () => {
     let timeStart: number

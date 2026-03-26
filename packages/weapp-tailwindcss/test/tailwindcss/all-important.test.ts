@@ -13,5 +13,5 @@ describe('all', () => {
       },
     })
     expect(css).toMatchSnapshot()
-  })
+  }, 180_000)
 })

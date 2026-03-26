@@ -812,8 +812,8 @@ describe('styleHandler', () => {
     expect(css).not.toContain(':before')
     expect(css).not.toContain(':after')
     expect(css).not.toContain('::backdrop')
-    expect(css).toContain('view,text {')
-    expect(css).toContain('--tw-border-spacing-x: 0;')
+    expect(css).not.toContain('view,text {')
+    expect(css).not.toContain('--tw-border-spacing-x: 0;')
     expect(css).toContain('.border-_b_h999_B')
   })
 

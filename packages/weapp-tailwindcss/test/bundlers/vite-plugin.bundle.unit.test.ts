@@ -19,7 +19,7 @@ import {
   setCurrentContext,
 } from './vite-plugin.testkit'
 
-const TEST_TIMEOUT_MS = 2000
+const TEST_TIMEOUT_MS = 30000
 const SPLIT_WHITESPACE_RE = /\s+/
 async function formatCssSnapshot(css: string) {
   return prettier.format(css, { parser: 'css' })

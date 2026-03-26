@@ -1,6 +1,7 @@
 // 样式处理入口，负责构建和复用 PostCSS 管线
 import type { IStyleHandlerOptions, StyleHandler } from './types'
 import { defuOverrideArray } from '@weapp-tailwindcss/shared'
+import { applyUniAppXBaseCompatibility } from './compat/uni-app-x'
 import { getDefaultOptions } from './defaults'
 import { createOptionsResolver } from './options-resolver'
 import { createInjectPreflight } from './preflight'
@@ -31,7 +32,7 @@ export function createStyleHandler(options?: Partial<IStyleHandlerOptions>): Sty
     return processor.process(
       rawSource,
       processOptions,
-    ).async()
+    ).async().then(result => applyUniAppXBaseCompatibility(result, resolvedOptions))
   }) as StyleHandler
 
   handler.getPipeline = (opt?: Partial<IStyleHandlerOptions>) => {

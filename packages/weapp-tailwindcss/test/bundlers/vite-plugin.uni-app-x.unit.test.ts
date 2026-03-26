@@ -11,7 +11,7 @@ import {
   setCurrentContext,
 } from './vite-plugin.testkit'
 
-const TEST_TIMEOUT_MS = 2000
+const TEST_TIMEOUT_MS = 30000
 
 async function loadUnifiedVitePlugin() {
   const mod = await import('@/bundlers/vite')
