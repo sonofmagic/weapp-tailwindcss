@@ -1,27 +1,59 @@
-# vue-mini-tailwindcss-app
+# vue-mini-tailwindcss-template
 
-`vue-mini` 集成 `weapp-vite` 和 `tailwindcss` 的示例
+`vue-mini + weapp-vite + Tailwind CSS` 示例模板，当前已过时。
 
-## 使用方式
+## 当前状态
 
-### 开发
+> 该模板已过时，不建议继续作为新项目模板使用。
+>
+> 如果你需要基于 `weapp-vite` 的现代方案，并且希望直接使用 `Vue SFC`，请优先查看：<https://vite.icebreaker.top/>
 
-`pnpm dev`
+## 适用场景
 
-### 构建
+- 使用 `vue-mini` 开发微信小程序
+- 希望用更轻量的 `weapp-vite` 工作流
+- 需要生成页面 / 组件并快速验证样式转换
 
-`pnpm build`
+## 技术栈
 
-### 打开微信开发者工具
+- `vue-mini`
+- `weapp-vite`
+- `Tailwind CSS v3`
+- `weapp-tailwindcss`
+- `pnpm`
 
-`pnpm open`
+## 使用前提
 
-### 生成组件/页面
+- Node.js `>=18.19.1 <19` 或 `>=20.6.1`
+- `pnpm`
+- 微信开发者工具
 
-`pnpm g path/to/your/component`
+## 快速开始
 
-## 文档地址
+```bash
+pnpm install
+pnpm dev
+```
 
-1. `vue-mini`: https://vuemini.org/
-2. `weapp-tailwindcss`: https://tw.icebreaker.top/
-3. `weapp-vite`: https://ice-vite.netlify.app/
+## 常用命令
+
+```bash
+pnpm dev        # 启动开发
+pnpm dev:open   # 启动并尝试打开开发者工具
+pnpm build      # 构建
+pnpm open       # 打开开发者工具
+pnpm g path/to/component
+```
+
+## 模板说明
+
+- 安装依赖后会自动执行 `weapp-tw patch`
+- 通过 `weapp-vite generate` 生成页面或组件
+- 适合验证 `vue-mini` 与 `weapp-tailwindcss` 的协作效果
+- 新项目更推荐迁移到 `weapp-vite` 的 `Vue SFC` 方案：<https://vite.icebreaker.top/>
+
+## 相关文档
+
+- `vue-mini`：<https://vuemini.org/>
+- `weapp-vite`：<https://ice-vite.netlify.app/>
+- `weapp-tailwindcss`：<https://tw.icebreaker.top/>

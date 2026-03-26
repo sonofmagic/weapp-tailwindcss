@@ -1,29 +1,40 @@
-# uni-app x 集成 weapp-tailwindcss 模板
+# uni-app-x-hbuilderx
 
-## 使用方法
+`uni-app x + HBuilderX + weapp-tailwindcss` 模板。
 
-1. 使用 `pnpm@10` ，在项目目录执行 `pnpm i` 安装包
-2. 导入到 `Hbuilderx` 中，运行到各个端，进行开发
+## 适用场景
 
-## 更换包管理器
+- 使用 `uni-app x`
+- 主要在 `HBuilderX` 中开发和运行
+- 想快速验证 `uvue / uts` 场景下的样式转换
 
-如果你使用 `npm` / `yarn` 当然也是可以的，只需移除项目中的 `pnpm-lock.yaml`
+## 技术栈
 
-然后重新执行 `npm i` / `yarn` 安装包即可。
+- `uni-app x`
+- `weapp-tailwindcss`
+- `pnpm`
 
-## 添加提取 css 的目录和文件
+## 使用前提
 
-目前在 `tailwind.config.js` 默认只提取 `pages` 和 `components` 下的 `uts` 和 `uvue` 文件
+- Node.js `20.19+`
+- `pnpm`
+- `HBuilderX`
 
-你可以根据你的需求添加新的目录和文件
+## 快速开始
 
-## 参考文档
+```bash
+pnpm install
+```
 
-[uni-app x 官方文档](https://doc.dcloud.net.cn/uni-app-x/)
+安装完成后，将项目导入 `HBuilderX` 运行。
 
-[weapp-tailwindcss官网](https://tw.icebreaker.top/)
+## 模板说明
 
-[uni-app-x专题](https://tw.icebreaker.top/docs/uni-app-x)
+- 安装依赖后会自动执行 `weapp-tw patch`
+- 模板默认覆盖 `pages`、`components` 等常见目录
+- 如果你新增了 `uts` / `uvue` 目录结构，记得同步调整 `tailwind` 提取范围
 
+## 相关文档
 
-
+- `weapp-tailwindcss`：<https://tw.icebreaker.top/>
+- `uni-app x`：<https://doc.dcloud.net.cn/uni-app-x/>

@@ -1,47 +1,42 @@
 # uni-app-vue3-tailwind-hbuilder-template
 
-- [uni-app-vue3-tailwind-hbuilder-template](#uni-app-vue3-tailwind-hbuilder-template)
-  - [使用方式](#使用方式)
-  - [官方文档](#官方文档)
-  - [HbuilderX 智能提示工具](#hbuilderx-智能提示工具)
-  - [Related projects](#related-projects)
-    - [插件核心](#插件核心)
-    - [模板 template](#模板-template)
-    - [CLI 工具](#cli-工具)
-  - [Bugs \& Issues](#bugs--issues)
+`uni-app + Vue 3 + Tailwind CSS` 的 HBuilderX 模板。
 
-这是一个使用 `hbuilderx` + `uni-app` + `vue3` + `tailwind` 构建的小程序模板。可以直接在 `hbuilderx` 中导入运行。
+## 适用场景
 
-## 使用方式
+- 使用 `HBuilderX` 作为主要开发环境
+- 需要一个轻量的 `Vue 3` 小程序模板
+- 希望保留 `weapp-tailwindcss` 的自动补丁流程
 
-先在根目录下执行 `yarn` 安装包，然后导入 `HBuilderX` 运行
+## 技术栈
 
-## 官方文档
+- `uni-app`
+- `Vue 3`
+- `Tailwind CSS v3`
+- `weapp-tailwindcss`
+- `pnpm`
 
-<https://weapp-tw.icebreaker.top/>
+## 使用前提
 
-## HbuilderX 智能提示工具
+- Node.js `20.19+`
+- `pnpm`
+- `HBuilderX`
 
-DCloud-HBuilderX团队提供了对应的插件，可以去
+## 快速开始
 
-<https://ext.dcloud.net.cn/plugin?id=8560> 进行下载，即可产生智能提示。
+```bash
+pnpm install
+```
 
-## Related projects
+安装完成后，直接用 `HBuilderX` 导入项目并运行。
 
-### 插件核心
+## 模板说明
 
-[weapp-tailwindcss](https://github.com/sonofmagic/weapp-tailwindcss) 提供转义功能，欢迎 `fork`/`star`
+- 安装依赖后会自动执行 `weapp-tw patch`
+- 该模板主要面向 `HBuilderX` 使用场景，所以命令行脚本较少
+- 如果你更偏向 VS Code 工作流，优先考虑 `uni-app-vite-vue3-tailwind-vscode-template`
 
-### 模板 template
+## 相关文档
 
-<https://weapp-tw.icebreaker.top/docs/community/templates>
-
-### CLI 工具
-
-[weapp-ide-cli](https://github.com/sonofmagic/utils/tree/main/packages/weapp-ide-cli): 一个微信开发者工具命令行，快速方便的直接启动 ide 进行登录，开发，预览，上传代码等等功能。
-
-## Bugs & Issues
-
-目前这个插件正在快速的开发中，如果遇到 `Bug` 或者想提出 `Issue`
-
-[欢迎提交到此处](https://github.com/sonofmagic/weapp-tailwindcss-webpack-plugin/issues)
+- `weapp-tailwindcss`：<https://tw.icebreaker.top/>
+- `uni-app`：<https://uniapp.dcloud.net.cn/>
