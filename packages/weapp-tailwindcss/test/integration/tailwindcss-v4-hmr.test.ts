@@ -314,31 +314,6 @@ const cases: SourceMutationCase[] = [
       },
     },
   },
-  {
-    title: 'apps/uni-app-x-hbuilderx-tailwindcss4',
-    projectRoot: path.resolve(repositoryRoot, 'apps/uni-app-x-hbuilderx-tailwindcss4'),
-    appType: 'uni-app-vite',
-    resolveOptions: root => ({
-      uniAppX: true,
-      cssEntries: [path.resolve(root, 'main.css')],
-    }),
-    template: {
-      entry: 'pages/index/index.uvue',
-      closingTag: '</template>',
-      makeSnippet: (classLiteral, marker) => `\t<text class="${classLiteral}">${marker}</text>\n`,
-    },
-    script: {
-      entry: 'pages/index/index.uvue',
-      applyClassLiteral(source, classLiteral) {
-        return replaceExact(
-          source,
-          "\t\t\t\taaa:'text-[90px]'",
-          `\t\t\t\taaa:'${classLiteral}'`,
-          'apps/uni-app-x-hbuilderx-tailwindcss4 script anchor',
-        )
-      },
-    },
-  },
 ]
 
 describe.sequential('tailwindcss v4 source hmr regression', () => {

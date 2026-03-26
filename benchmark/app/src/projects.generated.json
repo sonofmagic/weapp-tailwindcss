@@ -53,26 +53,6 @@
       "hasBuildScript": true
     },
     {
-      "id": "apps/uni-app-x-hbuilderx-tailwindcss3",
-      "type": "app",
-      "typeLabel": "应用",
-      "packageName": "uni-app-x-hbuilderx-tailwindcss3",
-      "displayName": "uni-app-x-hbuilderx-tailwindcss3",
-      "benchmarkKey": "uni-app-x-hbuilderx-tailwindcss3",
-      "buildScript": null,
-      "hasBuildScript": false
-    },
-    {
-      "id": "apps/uni-app-x-hbuilderx-tailwindcss4",
-      "type": "app",
-      "typeLabel": "应用",
-      "packageName": "uni-app-x-hbuilderx-tailwindcss4",
-      "displayName": "uni-app-x-hbuilderx-tailwindcss4",
-      "benchmarkKey": "uni-app-x-hbuilderx-tailwindcss4",
-      "buildScript": null,
-      "hasBuildScript": false
-    },
-    {
       "id": "apps/vite-native",
       "type": "app",
       "typeLabel": "应用",

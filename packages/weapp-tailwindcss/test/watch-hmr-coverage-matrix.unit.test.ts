@@ -18,7 +18,6 @@ const sourceCoveredProjects = new Set([
   'demo/mpx-tailwindcss-v4',
   'apps/vite-native',
   'apps/taro-webpack-tailwindcss-v4',
-  'apps/uni-app-x-hbuilderx-tailwindcss4',
 ])
 
 const miniProgramV3Projects = [
@@ -44,14 +43,12 @@ const miniProgramV4Projects = [
   'demo/mpx-tailwindcss-v4',
   'apps/vite-native',
   'apps/taro-webpack-tailwindcss-v4',
-  'apps/uni-app-x-hbuilderx-tailwindcss4',
 ]
 
 const manualBoundaryProjects = [
   'demo/native',
   'demo/gulp-app',
   'demo/uni-app-x-hbuilderx-tailwindcss3',
-  'apps/uni-app-x-hbuilderx-tailwindcss3',
 ]
 
 describe('watch-hmr coverage matrix', () => {
@@ -86,7 +83,6 @@ describe('watch-hmr coverage matrix', () => {
       'demo/native',
       'demo/gulp-app',
       'demo/uni-app-x-hbuilderx-tailwindcss3',
-      'apps/uni-app-x-hbuilderx-tailwindcss3',
     ])
   })
 })

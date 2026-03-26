@@ -71,31 +71,6 @@ const cases: DemoCase[] = [
     makeSnippet: marker => `  <view class="${marker}">hmr-test</view>\n`,
   },
   {
-    title: 'uni-app-x-hbuilderx-tailwindcss4',
-    project: 'uni-app-x-hbuilderx-tailwindcss4',
-    entry: 'pages/index/index.uvue',
-    marker: 'text-[#aa1105]',
-    closingTag: '</template>',
-    appType: 'uni-app-vite',
-    resolveOptions: root => ({
-      uniAppX: true,
-      cssEntries: [path.resolve(root, 'main.css')],
-    }),
-    makeSnippet: marker => `  <view class="${marker}">hmr-test</view>\n`,
-  },
-  {
-    title: 'uni-app-x-hbuilderx-tailwindcss3',
-    project: 'uni-app-x-hbuilderx-tailwindcss3',
-    entry: 'pages/index/index.uvue',
-    marker: 'text-[#aa1106]',
-    closingTag: '</template>',
-    appType: 'uni-app-vite',
-    resolveOptions: () => ({
-      uniAppX: true,
-    }),
-    makeSnippet: marker => `  <view class="${marker}">hmr-test</view>\n`,
-  },
-  {
     title: 'taro-app',
     project: 'taro-app',
     entry: 'src/pages/index/index.tsx',
