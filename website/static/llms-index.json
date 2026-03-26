@@ -1,6 +1,6 @@
 {
   "version": "1.0.0",
-  "generatedAt": "2026-03-23T11:26:55.592Z",
+  "generatedAt": "2026-03-26T03:12:01.620Z",
   "siteUrl": "https://tw.icebreaker.top",
   "totals": {
     "all": 175,
@@ -4021,7 +4021,6 @@
       ],
       "headings": [
         "gulp 模板",
-        "webpack5 模板",
         "组件样式的隔离性",
         "vscode tailwindcss 智能提示设置"
       ],
