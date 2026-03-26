@@ -10,4 +10,4 @@
 'wetw': patch
 ---
 
-升级 `tailwindcss-patch` 到 `8.7.4-alpha.0`，同步消费最新的 alpha 版本依赖。
+升级 `tailwindcss-patch` 到 `9` 系列最新版本，并同步更新相关依赖。
