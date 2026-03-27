@@ -109,7 +109,7 @@
     "babel-plugin-import": "^1.11.0",
     "cross-env": "^7.0.2",
     "jest": "^25.4.0",
-    "mini-css-extract-plugin": "^2.10.1",
+    "mini-css-extract-plugin": "^2.10.2",
     "mini-types": "*",
     "miniprogram-api-typings": "catalog:miniApiTypings",
     "postcss-comment": "catalog:postcssComment2",

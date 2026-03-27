@@ -5,6 +5,7 @@ import { fileURLToPath } from 'node:url'
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
 const projectRoot = path.resolve(__dirname, '..')
+const workspaceRoot = path.resolve(projectRoot, '..')
 const webpackCacheDir = path.resolve(__dirname, '../node_modules/.cache/webpack')
 const INDEX_PACK_FILES = new Set(['index.pack', 'index.pack.old'])
 
@@ -50,19 +51,23 @@ function sanitizeCandidatePath(rawPath) {
 
 function findStalePnpmPath(cacheFile) {
   const content = readFileSync(cacheFile, 'latin1').replaceAll('\\', '/')
-  const escapedRoot = escapeRegExp(projectRoot.replaceAll('\\', '/'))
-  const markerPattern = new RegExp(
-    `${escapedRoot}/node_modules/\\.pnpm/[\\x21-\\x7E]+?(?=[\\x00-\\x20]|$)`,
-    'g',
-  )
+  const roots = [projectRoot, workspaceRoot]
 
-  let match = markerPattern.exec(content)
-  while (match) {
-    const candidatePath = sanitizeCandidatePath(match[0])
-    if (candidatePath.includes('/node_modules/.pnpm/') && !existsSync(candidatePath)) {
-      return candidatePath
+  for (const root of roots) {
+    const escapedRoot = escapeRegExp(root.replaceAll('\\', '/'))
+    const markerPattern = new RegExp(
+      `${escapedRoot}/node_modules/\\.pnpm/[\\x21-\\x7E]+?(?=[\\x00-\\x20]|$)`,
+      'g',
+    )
+
+    let match = markerPattern.exec(content)
+    while (match) {
+      const candidatePath = sanitizeCandidatePath(match[0])
+      if (candidatePath.includes('/node_modules/.pnpm/') && !existsSync(candidatePath)) {
+        return candidatePath
+      }
+      match = markerPattern.exec(content)
     }
-    match = markerPattern.exec(content)
   }
   return null
 }
