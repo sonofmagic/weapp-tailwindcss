@@ -1,5 +1,24 @@
 import type { Config } from '@docusaurus/types'
+import { navbarUiControls, navbarUiStorageKey } from '../src/features/ui-management/navbar'
 import { geoMeta, organizationJsonLd, siteLanguage, siteName, siteUrl, websiteJsonLd } from './siteMetadata'
+
+const navbarUiBootstrapScript = `
+(() => {
+  try {
+    const rawValue = window.localStorage.getItem(${JSON.stringify(navbarUiStorageKey)});
+    if (!rawValue) {
+      return;
+    }
+    const parsed = JSON.parse(rawValue);
+    const html = document.documentElement;
+    ${navbarUiControls.map((control) => {
+      const key = JSON.stringify(control.key)
+      const attr = JSON.stringify(control.htmlAttribute)
+      return `if (parsed[${key}] === false) { html.setAttribute(${attr}, 'hidden'); } else { html.removeAttribute(${attr}); }`
+    }).join('\n    ')}
+  } catch {}
+})();
+`.trim()
 
 const headTags: NonNullable<Config['headTags']> = [
   {
@@ -11,6 +30,14 @@ const headTags: NonNullable<Config['headTags']> = [
     },
     innerHTML:
       'window.dataLayer = window.dataLayer || []; window.gtag = window.gtag || function(){ window.dataLayer.push(arguments); };',
+  },
+  {
+    tagName: 'script',
+    attributes: {
+      type: 'text/javascript',
+      id: 'ui-navbar-bootstrap',
+    },
+    innerHTML: navbarUiBootstrapScript,
   },
   {
     tagName: 'meta',

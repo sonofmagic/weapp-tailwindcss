@@ -207,6 +207,12 @@
   display: none;
 }
 
+html[data-ui-navbar-atomgit='hidden'] .navbar__atomgit-link,
+html[data-ui-navbar-github='hidden'] .navbar__github-link,
+html[data-ui-navbar-weapp-vite='hidden'] .navbar__weapp-vite-link {
+  display: none !important;
+}
+
 @media (width <= 996px) {
   .navbar .navbar__items--right .navbar__atomgit-link {
     display: none;
