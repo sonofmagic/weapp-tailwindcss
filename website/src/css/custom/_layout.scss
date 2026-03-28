@@ -213,6 +213,25 @@ html[data-ui-navbar-weapp-vite='hidden'] .navbar__weapp-vite-link {
   display: none !important;
 }
 
+html[data-ui-homepage-hero-content='hidden'] .ui-homepage-hero-content,
+html[data-ui-homepage-hero-feature-grid='hidden'] .ui-homepage-hero-feature-grid,
+html[data-ui-homepage-primary-cta='hidden'] .ui-homepage-primary-cta,
+html[data-ui-homepage-gstar-badge='hidden'] .ui-homepage-gstar-badge,
+html[data-ui-homepage-hero-badge='hidden'] .ui-homepage-hero-badge,
+html[data-ui-homepage-hero-title='hidden'] .ui-homepage-hero-title,
+html[data-ui-homepage-hero-subtitle-primary='hidden'] .ui-homepage-hero-subtitle-primary,
+html[data-ui-homepage-hero-subtitle-secondary='hidden'] .ui-homepage-hero-subtitle-secondary,
+html[data-ui-homepage-ai-entry='hidden'] .ui-homepage-ai-entry,
+html[data-ui-homepage-community-entry='hidden'] .ui-homepage-community-entry,
+html[data-ui-homepage-github-badge='hidden'] .ui-homepage-github-badge,
+html[data-ui-homepage-npm-version-badge='hidden'] .ui-homepage-npm-version-badge,
+html[data-ui-homepage-platform-tags='hidden'] .ui-homepage-platform-tags,
+html[data-ui-homepage-build-tools-card='hidden'] .ui-homepage-build-tools-card,
+html[data-ui-homepage-versions-card='hidden'] .ui-homepage-versions-card,
+html[data-ui-homepage-frameworks-card='hidden'] .ui-homepage-frameworks-card {
+  display: none !important;
+}
+
 @media (width <= 996px) {
   .navbar .navbar__items--right .navbar__atomgit-link {
     display: none;

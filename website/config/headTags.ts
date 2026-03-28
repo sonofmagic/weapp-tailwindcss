@@ -1,4 +1,5 @@
 import type { Config } from '@docusaurus/types'
+import { homepageUiControls } from '../src/features/ui-management/homepage'
 import { navbarUiControls, navbarUiStorageKey } from '../src/features/ui-management/navbar'
 import { geoMeta, organizationJsonLd, siteLanguage, siteName, siteUrl, websiteJsonLd } from './siteMetadata'
 
@@ -11,10 +12,17 @@ const navbarUiBootstrapScript = `
     }
     const parsed = JSON.parse(rawValue);
     const html = document.documentElement;
+    const navbar = parsed && typeof parsed === 'object' && 'navbar' in parsed ? parsed.navbar : parsed;
+    const homepage = parsed && typeof parsed === 'object' && 'homepage' in parsed ? parsed.homepage : null;
     ${navbarUiControls.map((control) => {
       const key = JSON.stringify(control.key)
       const attr = JSON.stringify(control.htmlAttribute)
-      return `if (parsed[${key}] === false) { html.setAttribute(${attr}, 'hidden'); } else { html.removeAttribute(${attr}); }`
+      return `if (navbar && navbar[${key}] === false) { html.setAttribute(${attr}, 'hidden'); } else { html.removeAttribute(${attr}); }`
+    }).join('\n    ')}
+    ${homepageUiControls.map((control) => {
+      const key = JSON.stringify(control.key)
+      const attr = JSON.stringify(control.htmlAttribute)
+      return `if (homepage && homepage[${key}] === false) { html.setAttribute(${attr}, 'hidden'); } else { html.removeAttribute(${attr}); }`
     }).join('\n    ')}
   } catch {}
 })();

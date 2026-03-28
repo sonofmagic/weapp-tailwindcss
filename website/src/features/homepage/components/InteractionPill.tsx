@@ -3,14 +3,15 @@ import Link from '@docusaurus/Link'
 import { interactionPill, interactionPillIcon, interactionPillLabel, interactionPillLink } from '../variants'
 
 export interface InteractionPillProps {
+  className?: string
   href: string
   label: string
   icon?: ReactNode
 }
 
-export const InteractionPill: FC<InteractionPillProps> = ({ href, label, icon = '🚀' }) => {
+export const InteractionPill: FC<InteractionPillProps> = ({ className, href, label, icon = '🚀' }) => {
   return (
-    <div className={interactionPill()}>
+    <div className={[interactionPill(), className ?? ''].filter(Boolean).join(' ')}>
       <Link className={interactionPillLink()} to={href}>
         <span className={interactionPillIcon()}>{icon}</span>
         <span className={interactionPillLabel()}>{label}</span>

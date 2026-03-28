@@ -5,7 +5,11 @@ import { formatGitHubStarCount, useGitHubStars } from '../utils/github'
 const GITHUB_OWNER = 'sonofmagic'
 const GITHUB_REPO = 'weapp-tailwindcss'
 
-export default function HeroGithubBadge(): JSX.Element {
+interface HeroGithubBadgeProps {
+  className?: string
+}
+
+export default function HeroGithubBadge({ className }: HeroGithubBadgeProps = {}): JSX.Element {
   const { stars } = useGitHubStars(GITHUB_OWNER, GITHUB_REPO)
   const displayStars = formatGitHubStarCount(stars)
 
@@ -27,6 +31,7 @@ export default function HeroGithubBadge(): JSX.Element {
         dark:shadow-[0_20px_44px_rgba(15,23,42,0.36),inset_0_1px_0_rgba(255,255,255,0.14)]
         dark:hover:text-slate-100
         dark:hover:shadow-[0_26px_58px_rgba(56,189,248,0.32),inset_0_1px_0_rgba(255,255,255,0.18)]
+        ${className ?? ''}
       `}
       href="https://github.com/sonofmagic/weapp-tailwindcss"
       target="_blank"

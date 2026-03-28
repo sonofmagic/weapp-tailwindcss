@@ -6,6 +6,7 @@ import type {
 } from '../features/homepage/components'
 import useDocusaurusContext from '@docusaurus/useDocusaurusContext'
 import HomeLogo from '@site/src/components/HomeLogo'
+import { useUiManagement } from '@site/src/features/ui-management/context'
 import Layout from '@theme/Layout'
 import GulpLogo from '../assets/gulp.svg'
 import NodejsLogo from '../assets/nodejs.svg'
@@ -137,6 +138,8 @@ const frameworkSupportItems: FrameworkSupportItem[] = [
 ]
 
 function HomepageHeader() {
+  const { homepage } = useUiManagement()
+
   return (
     <header className="relative overflow-hidden">
       <div className="pointer-events-none absolute inset-0">
@@ -180,192 +183,246 @@ function HomepageHeader() {
             <span className="home-hero__orb"></span>
             <span className="home-hero__orb"></span>
           </div>
-          <div className="mb-8 flex flex-col items-center text-center">
-            <div className="mb-6 flex items-center gap-4">
-              <div className="relative inline-flex items-center justify-center">
-                <HomeLogo></HomeLogo>
+          {homepage.heroContent && (
+            <div className="
+              ui-homepage-hero-content mb-8 flex flex-col items-center
+              text-center
+            "
+            >
+              <div className="mb-6 flex items-center gap-4">
+                <div className="
+                  relative inline-flex items-center justify-center
+                "
+                >
+                  <HomeLogo></HomeLogo>
+                </div>
+                {homepage.heroBadge && (
+                  <span className={`
+                    ui-homepage-hero-badge inline-flex items-center gap-2
+                    rounded-[18px] border border-slate-300/25
+                    bg-[linear-gradient(140deg,rgba(14,165,233,0.1),rgba(14,165,233,0.04))]
+                    px-4 py-2 text-[0.85rem] font-semibold uppercase
+                    tracking-[0.08em] text-sky-500 transition-transform
+                    duration-500
+                    hover:-translate-y-1
+                    dark:border-slate-600/40
+                    dark:bg-[linear-gradient(140deg,rgba(14,165,233,0.18),rgba(14,165,233,0.08))]
+                    dark:text-sky-300
+                  `}
+                  >
+                    <i className="icon-[mdi--sparkles]"></i>
+                    小程序 · Tailwind 精准适配
+                  </span>
+                )}
               </div>
-              <span className={`
-                inline-flex items-center gap-2 rounded-[18px] border
-                border-slate-300/25
-                bg-[linear-gradient(140deg,rgba(14,165,233,0.1),rgba(14,165,233,0.04))]
-                px-4 py-2 text-[0.85rem] font-semibold uppercase
-                tracking-[0.08em] text-sky-500 transition-transform duration-500
-                hover:-translate-y-1
-                dark:border-slate-600/40
-                dark:bg-[linear-gradient(140deg,rgba(14,165,233,0.18),rgba(14,165,233,0.08))]
-                dark:text-sky-300
-              `}
-              >
-                <i className="icon-[mdi--sparkles]"></i>
-                小程序 · Tailwind 精准适配
-              </span>
-            </div>
-            <div className="home-hero__title-wrap">
-              <h1 className={`
-                text-4xl font-semibold tracking-tight text-slate-900
-                sm:text-5xl
-                lg:text-6xl
-                dark:text-slate-50
-              `}
-              >
-                <span className="text-[#07c160]">weapp</span>
-                <span className="from-weapp-to-tailwindcss">-</span>
-                <span className="text-sky-500">tailwindcss</span>
-              </h1>
-              <a
-                aria-label="查看版权与证书页面"
-                className="home-hero__gstar-corner"
-                href="/copyright"
-                title="G-Star 毕业项目认证"
-              >
-                <img
-                  alt="AtomGit G-Star 毕业项目认证徽章"
-                  className="home-hero__gstar-corner-image"
-                  loading="lazy"
-                  src="/img/gstar-tag-twinkle.gif"
-                />
-              </a>
-            </div>
-            <h3 className={`
-              mt-5 text-xl font-medium text-slate-700
-              sm:text-2xl
-              dark:text-slate-200
-            `}
-            >
-              <b className="text-[#07c160]">降低</b>
-              团队维护成本，
-              <b className="text-sky-500">加速</b>
-              交付节奏的
-            </h3>
-            <h3 className={`
-              text-lg text-slate-600
-              sm:text-xl
-              dark:text-slate-200
-            `}
-            >
-              <span className="text-[#07c160]">小程序</span>
-              {' '}
-              使用
-              {' '}
-              <span className="text-sky-500">tailwindcss</span>
-              {' '}
-              一站式解决方案
-            </h3>
-            <div className={`
-              mt-8 flex w-full flex-col gap-4
-              sm:w-auto sm:flex-row sm:items-center sm:justify-center
-            `}
-            >
-              <a
-                className={`
-                  ${ctaButton()}
-                  home-cta w-full justify-center text-center
-                  sm:w-auto
-                `}
-                href="/docs/intro"
-              >
-                <span className={`
-                  inline-flex items-center gap-1 text-[0.95rem]
-                  tracking-[0.02em]
+              <div className="home-hero__title-wrap">
+                {homepage.heroTitle && (
+                  <h1 className={`
+                    ui-homepage-hero-title text-4xl font-semibold tracking-tight
+                    text-slate-900
+                    sm:text-5xl
+                    lg:text-6xl
+                    dark:text-slate-50
+                  `}
+                  >
+                    <span className="text-[#07c160]">weapp</span>
+                    <span className="from-weapp-to-tailwindcss">-</span>
+                    <span className="text-sky-500">tailwindcss</span>
+                  </h1>
+                )}
+                {homepage.gstarBadge && (
+                  <a
+                    aria-label="查看版权与证书页面"
+                    className="home-hero__gstar-corner ui-homepage-gstar-badge"
+                    href="/copyright"
+                    title="G-Star 毕业项目认证"
+                  >
+                    <img
+                      alt="AtomGit G-Star 毕业项目认证徽章"
+                      className="home-hero__gstar-corner-image"
+                      loading="lazy"
+                      src="/img/gstar-tag-twinkle.gif"
+                    />
+                  </a>
+                )}
+              </div>
+              {homepage.heroSubtitlePrimary && (
+                <h3 className={`
+                  ui-homepage-hero-subtitle-primary mt-5 text-xl font-medium
+                  text-slate-700
+                  sm:text-2xl
+                  dark:text-slate-200
                 `}
                 >
-                  立即开始体验
-                  <svg
-                    aria-hidden="true"
-                    className="size-5"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    xmlns="http://www.w3.org/2000/svg"
-                  >
-                    <path d="M6 12h12m0 0l-4-4m4 4l-4 4" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" />
-                  </svg>
-                </span>
-              </a>
+                  <b className="text-[#07c160]">降低</b>
+                  团队维护成本，
+                  <b className="text-sky-500">加速</b>
+                  交付节奏的
+                </h3>
+              )}
+              {homepage.heroSubtitleSecondary && (
+                <h3 className={`
+                  ui-homepage-hero-subtitle-secondary text-lg text-slate-600
+                  sm:text-xl
+                  dark:text-slate-200
+                `}
+                >
+                  <span className="text-[#07c160]">小程序</span>
+                  {' '}
+                  使用
+                  {' '}
+                  <span className="text-sky-500">tailwindcss</span>
+                  {' '}
+                  一站式解决方案
+                </h3>
+              )}
               <div className={`
-                flex w-full flex-col gap-2
-                sm:w-auto sm:flex-row sm:items-center
+                mt-8 flex w-full flex-col gap-4
+                sm:w-auto sm:flex-row sm:items-center sm:justify-center
               `}
               >
-                <InteractionPill
-                  href="/llms"
-                  icon={(
-                    <i
-                      aria-hidden="true"
-                      className={`
-                        icon-[logos--openai-icon] text-[18px] leading-none
-                        text-emerald-600
-                        dark:text-white dark:invert dark:brightness-200 dark:contrast-200
-                      `}
+                {homepage.primaryCta && (
+                  <a
+                    className={`
+                      ${ctaButton()}
+                      home-cta ui-homepage-primary-cta w-full justify-center
+                      text-center
+                      sm:w-auto
+                    `}
+                    href="/docs/intro"
+                  >
+                    <span className={`
+                      inline-flex items-center gap-1 text-[0.95rem]
+                      tracking-[0.02em]
+                    `}
+                    >
+                      立即开始体验
+                      <svg
+                        aria-hidden="true"
+                        className="size-5"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        xmlns="http://www.w3.org/2000/svg"
+                      >
+                        <path d="M6 12h12m0 0l-4-4m4 4l-4 4" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" />
+                      </svg>
+                    </span>
+                  </a>
+                )}
+                <div className={`
+                  flex w-full flex-col gap-2
+                  sm:w-auto sm:flex-row sm:items-center
+                `}
+                >
+                  {homepage.aiEntry && (
+                    <InteractionPill
+                      className="ui-homepage-ai-entry"
+                      href="/llms"
+                      icon={(
+                        <i
+                          aria-hidden="true"
+                          className={`
+                            icon-[logos--openai-icon] text-[18px] leading-none
+                            text-emerald-600
+                            dark:text-white dark:brightness-200
+                            dark:contrast-200 dark:invert
+                          `}
+                        />
+                      )}
+                      label="AI 学习入口"
                     />
                   )}
-                  label="AI 学习入口"
-                />
-                <InteractionPill href="/docs/community/group" icon="🚀" label="加入技术交流群" />
-              </div>
-            </div>
-            <div className={`
-              mt-6 flex flex-wrap items-center justify-center gap-2.5
-            `}
-            >
-              <HeroGithubBadge />
-              <HeroVersionBadge className="mr-1.5" />
-            </div>
-            <div className={`
-              mt-8 flex flex-wrap items-center justify-center gap-3
-              sm:gap-4
-            `}
-            >
-              {platformTags.map(({ id, label, content }) => (
-                <div
-                  aria-label={label}
-                  className={`
-                    flex size-12 items-center justify-center rounded-2xl border
-                    border-white/80 bg-white/85 text-2xl
-                    shadow-[0_12px_40px_rgba(15,23,42,0.16)]
-                    dark:border-white/10 dark:bg-slate-900/70
-                  `}
-                  key={id}
-                  role="img"
-                  title={label}
-                >
-                  <span className="sr-only">{label}</span>
-                  {content}
+                  {homepage.communityEntry && (
+                    <InteractionPill
+                      className="ui-homepage-community-entry"
+                      href="/docs/community/group"
+                      icon="🚀"
+                      label="加入技术交流群"
+                    />
+                  )}
                 </div>
-              ))}
-            </div>
-          </div>
-
-          <div className={`
-            grid w-full gap-7
-            md:grid-cols-2 md:items-stretch
-            lg:grid-cols-3
-          `}
-          >
-            <FeatureCard eyebrow="Build Flow" subtitle="Webpack、Vite、Gulp 等多场景集成" title="多构建工具适配" variant="tools">
-              <ToolOrbit items={toolOrbitItems} />
-            </FeatureCard>
-            <FeatureCard eyebrow="Version Matrix" subtitle="3.x 正式版、4.x 预览版及 2.x JIT 模式" title="Tailwind 多版本无缝支持" variant="versions">
+              </div>
               <div className={`
-                flex w-full flex-col gap-3
-                sm:gap-4
+                mt-6 flex flex-wrap items-center justify-center gap-2.5
               `}
               >
-                <p className={`
-                  text-sm text-slate-600
-                  sm:text-left
-                  dark:text-slate-300
+                {homepage.githubBadge && (
+                  <HeroGithubBadge className="ui-homepage-github-badge" />
+                )}
+                {homepage.npmVersionBadge && (
+                  <HeroVersionBadge className="
+                    ui-homepage-npm-version-badge mr-1.5
+                  "
+                  />
+                )}
+              </div>
+              {homepage.platformTags && (
+                <div className={`
+                  ui-homepage-platform-tags mt-8 flex flex-wrap items-center
+                  justify-center gap-3
+                  sm:gap-4
                 `}
                 >
-                  覆盖稳定、预览与 JIT 管道，升级与回滚都能一键切换。
-                </p>
-                <VersionsStack Logo={TailwindcssLogo} links={versionLinks} />
-              </div>
-            </FeatureCard>
-            <FeatureCard eyebrow="Ecosystem" subtitle="taro、uni-app、原生小程序、Vite 多生态落地" title="主流框架与原生开发支持" variant="frameworks">
-              <FrameworkSupport items={frameworkSupportItems} />
-            </FeatureCard>
-          </div>
+                  {platformTags.map(({ id, label, content }) => (
+                    <div
+                      aria-label={label}
+                      className={`
+                        flex size-12 items-center justify-center rounded-2xl
+                        border border-white/80 bg-white/85 text-2xl
+                        shadow-[0_12px_40px_rgba(15,23,42,0.16)]
+                        dark:border-white/10 dark:bg-slate-900/70
+                      `}
+                      key={id}
+                      role="img"
+                      title={label}
+                    >
+                      <span className="sr-only">{label}</span>
+                      {content}
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+          )}
+
+          {homepage.heroFeatureGrid && (
+            <div className={`
+              ui-homepage-hero-feature-grid grid w-full gap-7
+              md:grid-cols-2 md:items-stretch
+              lg:grid-cols-3
+            `}
+            >
+              {homepage.buildToolsCard && (
+                <FeatureCard className="ui-homepage-build-tools-card" eyebrow="Build Flow" subtitle="Webpack、Vite、Gulp 等多场景集成" title="多构建工具适配" variant="tools">
+                  <ToolOrbit items={toolOrbitItems} />
+                </FeatureCard>
+              )}
+              {homepage.versionsCard && (
+                <FeatureCard className="ui-homepage-versions-card" eyebrow="Version Matrix" subtitle="3.x 正式版、4.x 预览版及 2.x JIT 模式" title="Tailwind 多版本无缝支持" variant="versions">
+                  <div className={`
+                    flex w-full flex-col gap-3
+                    sm:gap-4
+                  `}
+                  >
+                    <p className={`
+                      text-sm text-slate-600
+                      sm:text-left
+                      dark:text-slate-300
+                    `}
+                    >
+                      覆盖稳定、预览与 JIT 管道，升级与回滚都能一键切换。
+                    </p>
+                    <VersionsStack Logo={TailwindcssLogo} links={versionLinks} />
+                  </div>
+                </FeatureCard>
+              )}
+              {homepage.frameworksCard && (
+                <FeatureCard className="ui-homepage-frameworks-card" eyebrow="Ecosystem" subtitle="taro、uni-app、原生小程序、Vite 多生态落地" title="主流框架与原生开发支持" variant="frameworks">
+                  <FrameworkSupport items={frameworkSupportItems} />
+                </FeatureCard>
+              )}
+            </div>
+          )}
         </div>
       </div>
     </header>

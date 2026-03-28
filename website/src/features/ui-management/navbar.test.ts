@@ -1,5 +1,10 @@
 import { describe, expect, it } from 'vitest'
 import {
+  defaultHomepageUiSettings,
+  isHomepageItemVisible,
+  mergeHomepageUiSettings,
+} from './homepage'
+import {
   defaultNavbarUiSettings,
   getNavbarUiControlKey,
   isNavbarItemVisible,
@@ -35,5 +40,34 @@ describe('navbar ui management', () => {
     })
 
     expect(mergeNavbarUiSettings(null)).toEqual(defaultNavbarUiSettings)
+  })
+
+  it('首页控制项支持独立开关并回退缺失字段', () => {
+    expect(mergeHomepageUiSettings({
+      githubBadge: false,
+      aiEntry: 'hidden',
+    })).toEqual({
+      heroContent: true,
+      heroFeatureGrid: true,
+      gstarBadge: true,
+      heroBadge: true,
+      heroTitle: true,
+      heroSubtitlePrimary: true,
+      heroSubtitleSecondary: true,
+      primaryCta: true,
+      aiEntry: true,
+      communityEntry: true,
+      githubBadge: false,
+      npmVersionBadge: true,
+      platformTags: true,
+      buildToolsCard: true,
+      versionsCard: true,
+      frameworksCard: true,
+    })
+
+    expect(isHomepageItemVisible('githubBadge', {
+      ...defaultHomepageUiSettings,
+      githubBadge: false,
+    })).toBe(false)
   })
 })
