@@ -25,10 +25,7 @@ const BENCH_KEY_OVERRIDES = new Map([
   ['demo/mpx-app', 'mpx'],
 ])
 
-const SCRIPT_OVERRIDES = new Map([
-  // projectId -> script name override
-  ['apps/rsmax-app-ts', '_build'],
-])
+const SCRIPT_OVERRIDES = new Map([])
 
 const SCRIPT_PRIORITY = [
   'benchmark',

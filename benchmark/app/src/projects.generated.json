@@ -1,6 +1,6 @@
 {
-  "generatedAt": "2026-03-23T15:36:06.849Z",
-  "projectCount": 31,
+  "generatedAt": "2026-03-29T06:57:43.699Z",
+  "projectCount": 28,
   "projects": [
     {
       "id": "apps/web-postcss7-compat",
@@ -20,16 +20,6 @@
       "displayName": "react-app",
       "benchmarkKey": "react-app",
       "buildScript": "build",
-      "hasBuildScript": true
-    },
-    {
-      "id": "apps/rsmax-app-ts",
-      "type": "app",
-      "typeLabel": "应用",
-      "packageName": "rsmax-app-ts",
-      "displayName": "rsmax-app-ts",
-      "benchmarkKey": "rsmax-app-ts",
-      "buildScript": "_build",
       "hasBuildScript": true
     },
     {
