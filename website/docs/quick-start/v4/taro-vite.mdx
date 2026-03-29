@@ -60,6 +60,7 @@ import path from 'node:path'
       },
       UnifiedViteWeappTailwindcssPlugin({
         rem2rpx: true,
+        appType: 'taro',
         cssEntries: [
           // 你 @import "weapp-tailwindcss/index.css"; 那个文件绝对路径
           path.resolve(__dirname, '../src/app.css'),
