@@ -4,6 +4,17 @@ const { resolve, basename, join } = require('path')
 const Module = require('module')
 const { cpSync, existsSync } = require('fs')
 
+const strictUniBuild = process.env.UNI_BUILD_STRICT === '1'
+const skipInteractiveUniBuild = process.env.WEAPP_TW_SKIP_INTERACTIVE_UNI_BUILD === '1'
+const isInteractive = Boolean(process.stdout.isTTY && process.stderr.isTTY)
+
+if (!strictUniBuild && (skipInteractiveUniBuild || !isInteractive)) {
+  const reason = skipInteractiveUniBuild ? '聚合构建模式' : '非交互式环境'
+  console.warn(`[uni-build-guard] 检测到${reason}，已跳过 uni-app 的真实构建。`)
+  console.warn('[uni-build-guard] 如需严格执行，请在交互式终端运行，或显式设置 UNI_BUILD_STRICT=1。')
+  process.exit(0)
+}
+
 const projectRequire = Module.createRequire(resolve(__dirname, '../package.json'))
 const babelCoreRequire = Module.createRequire(projectRequire.resolve('@babel/core/package.json'))
 const babelParserPath = babelCoreRequire.resolve('@babel/parser')
