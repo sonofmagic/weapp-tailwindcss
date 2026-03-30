@@ -44,6 +44,9 @@ describe('defaults getDefaultOptions', () => {
     expect(matcher('app.css', 'native')).toBe(true)
     expect(matcher('main.css', 'native')).toBe(false)
 
+    expect(matcher('app.css', 'weapp-vite')).toBe(true)
+    expect(matcher('main.css', 'weapp-vite')).toBe(false)
+
     expect(matcher('miniprogram-app.css', 'kbone')).toBe(true)
     expect(matcher('common/miniprogram-app.css', 'kbone')).toBe(true)
     expect(matcher('app.css', 'kbone')).toBe(false)

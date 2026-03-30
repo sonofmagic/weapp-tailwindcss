@@ -42,6 +42,16 @@ describe('resolveImplicitAppTypeFromViteRoot', () => {
     expect(resolveImplicitAppTypeFromViteRoot(rootDir)).toBe('taro')
   })
 
+  it('detects weapp-vite from package dependencies', async () => {
+    const rootDir = await createProjectRoot({
+      dependencies: {
+        'weapp-vite': '^6.0.0',
+      },
+    })
+
+    expect(resolveImplicitAppTypeFromViteRoot(rootDir)).toBe('weapp-vite')
+  })
+
   it('detects uni-app vite from vite plugin dependency', async () => {
     const rootDir = await createProjectRoot({
       dependencies: {

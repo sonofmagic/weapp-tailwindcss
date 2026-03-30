@@ -46,9 +46,9 @@
   },
   "scripts": {
     "build": "cross-env WEAPP_TW_SKIP_INTERACTIVE_TARO_BUILD=1 turbo run build",
-    "prebuild": "pnpm run clean:build-cache",
     "postbuild": "pnpm run e2e:update-snapshots",
     "clean:build-cache": "rimraf .turbo node_modules/.cache/turbo",
+    "build:clean-cache": "pnpm run clean:build-cache",
     "build:nocache": "cross-env TURBO_FORCE=1 WEAPP_TW_SKIP_INTERACTIVE_TARO_BUILD=1 turbo run build",
     "build:docs": "turbo run build --filter=./website/",
     "build:apps": "cross-env WEAPP_TW_SKIP_INTERACTIVE_TARO_BUILD=1 turbo run build --filter=./apps/*",

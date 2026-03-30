@@ -32,6 +32,7 @@ const MAIN_CSS_CHUNK_MATCHERS: Partial<Record<AppType, (file: string) => boolean
   'remax': file => file.startsWith('app'),
   'rax': file => file.startsWith('bundle'),
   'native': file => file.startsWith('app'),
+  'weapp-vite': file => file.startsWith('app'),
   'kbone': file => KBONE_MAIN_CSS_RE.test(file),
 }
 

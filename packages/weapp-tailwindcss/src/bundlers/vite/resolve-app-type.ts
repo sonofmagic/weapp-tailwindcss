@@ -40,6 +40,13 @@ function resolveAppTypeFromPackageJson(pkg: PackageJsonLike): AppType | undefine
   const dependencyNames = resolveDependencyNames(pkg)
 
   if (
+    dependencyNames.has('weapp-vite')
+    || [...dependencyNames].some(name => name.startsWith('@weapp-vite/'))
+  ) {
+    return 'weapp-vite'
+  }
+
+  if (
     [...dependencyNames].some(name => name.startsWith('@mpxjs/'))
     || hasScriptMatch(pkg, MPX_SCRIPT_RE)
   ) {
