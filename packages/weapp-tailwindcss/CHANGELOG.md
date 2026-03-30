@@ -1,5 +1,16 @@
 # weapp-tailwindcss
 
+## 4.11.1
+
+### Patch Changes
+
+- 🐛 **修复 taro weapp 场景下 `app-origin.wxss` 仍可能残留 `:not(#n)` 占位选择器的问题，并补充 `#834` 的回归测试，确保最终输出不再包含 `@layer`、`:not(#\\#)` 与 `:not(#n)`。** [`7942ef4`](https://github.com/sonofmagic/weapp-tailwindcss/commit/7942ef486a1990e113c0e54a665ceb278cfb7bce) by @sonofmagic
+
+- 🐛 **修复 Taro Vite Tailwind CSS v4 构建时最终样式产物仍残留 `:not(#\#)` / `:not(#n)` 的问题。** [`f972c34`](https://github.com/sonofmagic/weapp-tailwindcss/commit/f972c34fd64954ef15992d0a3d203300f1ccb2ed) by @sonofmagic
+  - 同时为 Taro demo 的构建守卫增加对 `@tarojs/plugin-doctor` 原生检查的安全绕过，避免当前环境下其 Rust 模块 panic 导致 demo 无法完成真实构建验证。
+- 📦 **Dependencies** [`7942ef4`](https://github.com/sonofmagic/weapp-tailwindcss/commit/7942ef486a1990e113c0e54a665ceb278cfb7bce)
+  → `@weapp-tailwindcss/postcss@2.1.7`
+
 ## 4.11.0
 
 ### Minor Changes
