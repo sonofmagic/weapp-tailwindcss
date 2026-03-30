@@ -1,6 +1,6 @@
 {
   "version": "1.0.0",
-  "generatedAt": "2026-03-30T08:15:55.833Z",
+  "generatedAt": "2026-03-30T08:34:35.986Z",
   "siteUrl": "https://tw.icebreaker.top",
   "totals": {
     "all": 175,
@@ -5443,10 +5443,10 @@
         "建议怎么读这页",
         "<span className=\"mr-2 inline-block align-middle text-primary dark:text-primary-200 icon-[mdi--calendar-month]\"></span> 样式方案时间轴",
         "# 几段常见的「升级理由」",
+        "常见误解",
         "各阶段优势 / 劣势 / 适用场景",
         "# Raw CSS + BEM/OOCSS",
-        "# 预处理器（Sass / Less）",
-        "# CSS Modules"
+        "# 预处理器（Sass / Less）"
       ],
       "updatedAt": null,
       "source": "docs/tailwindcss/history/index.mdx"
@@ -5769,12 +5769,12 @@
       "headings": [
         "要点",
         "如果你只想先看结论",
+        "常见误解",
         "tailwind-merge：去重与边界",
         "# 为什么它是「基石」",
         "# 没有 tailwind-merge 时",
         "## 示例：生成产物的「顺序陷阱」",
-        "# 引入 tailwind-merge 之后",
-        "## 示例：merge 后的产物"
+        "# 引入 tailwind-merge 之后"
       ],
       "updatedAt": null,
       "source": "docs/tailwindcss/merge-and-variants.mdx"
@@ -5917,8 +5917,9 @@
         "# 这一页建议怎么读",
         "入口：设计语义的单一来源",
         "中段：Tailwind 的生成逻辑",
-        "出口：组件重新长出语义",
-        "# 什么时候说明你已经走偏了"
+        "# 生成机制",
+        "# 约束机制",
+        "常见误解"
       ],
       "updatedAt": null,
       "source": "docs/tailwindcss/tailwind-core.mdx"

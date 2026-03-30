@@ -33,6 +33,12 @@ keywords:
 - 单槽组件优先用 `cva`，多槽组件再考虑 `tailwind-variants`。
 - 不要把 variants 散落在业务组件里，应该集中在 builder 文件里。
 
+## 常见误解
+
+- 不要把 `cva` 或 `tailwind-variants` 误解成 Tailwind 官方自带能力。它们是社区里非常常见、但并非唯一的组件变体组织方式。
+- 不要把 `tailwind-merge` 理解成“可有可无的小优化”。只要组件允许外部传 `className` 覆盖，它通常就是稳定性的基础设施。
+- 不要把“用了 builder”理解成“从此不需要评审类名”。builder 只是在集中表达变体，不会自动替你建立设计约束。
+
 ## tailwind-merge：去重与边界
 
 - 可以把它理解成一个“Tailwind 类名裁判”。
