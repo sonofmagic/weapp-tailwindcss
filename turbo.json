@@ -1,5 +1,9 @@
 {
   "$schema": "https://turborepo.com/schema.json",
+  "globalPassThroughEnv": [
+    "WEAPP_TW_SKIP_INTERACTIVE_TARO_BUILD",
+    "WEAPP_TW_SKIP_INTERACTIVE_UNI_BUILD"
+  ],
   "tasks": {
     "build": {
       "dependsOn": [
