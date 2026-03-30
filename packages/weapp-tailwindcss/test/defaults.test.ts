@@ -22,6 +22,10 @@ describe('defaults getDefaultOptions', () => {
     expect(matcher('common/main.css', 'uni-app-vite')).toBe(true)
     expect(matcher('main.css', 'uni-app-vite')).toBe(false)
 
+    expect(matcher('app.css', 'uni-app-x')).toBe(true)
+    expect(matcher('common/main.css', 'uni-app-x')).toBe(true)
+    expect(matcher('main.css', 'uni-app-x')).toBe(false)
+
     expect(matcher('app.css', 'taro')).toBe(true)
     expect(matcher('main.css', 'taro')).toBe(false)
 

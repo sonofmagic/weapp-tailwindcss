@@ -53,6 +53,32 @@ const cases: DemoCase[] = [
     makeSnippet: marker => `  <view class="${marker}">hmr-test</view>\n`,
   },
   {
+    title: 'uni-app-x-hbuilderx-tailwindcss4',
+    project: 'uni-app-x-hbuilderx-tailwindcss4',
+    entry: 'pages/index/index.uvue',
+    marker: 'text-[#0f835d]',
+    closingTag: '</template>',
+    appType: 'uni-app-x',
+    resolveOptions: root => ({
+      uniAppX: true,
+      cssEntries: [path.resolve(root, 'main.css')],
+    }),
+    makeSnippet: marker => `\t<text class="${marker}">hmr-test</text>\n`,
+  },
+  {
+    title: 'uni-app-x-hbuilderx-tailwindcss3',
+    project: 'uni-app-x-hbuilderx-tailwindcss3',
+    entry: 'pages/index/index.uvue',
+    marker: 'text-[#0f835e]',
+    closingTag: '</template>',
+    appType: 'uni-app-x',
+    resolveOptions: root => ({
+      uniAppX: true,
+      tailwindcssBasedir: root,
+    }),
+    makeSnippet: marker => `\t<text class="${marker}">hmr-test</text>\n`,
+  },
+  {
     title: 'uni-app-webpack-tailwindcss-v4',
     project: 'uni-app-webpack-tailwindcss-v4',
     entry: 'src/pages/index/index.vue',

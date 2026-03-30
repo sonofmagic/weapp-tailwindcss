@@ -187,7 +187,7 @@ const cases: SourceMutationCase[] = [
   {
     title: 'demo/uni-app-x-hbuilderx-tailwindcss4',
     projectRoot: path.resolve(repositoryRoot, 'demo/uni-app-x-hbuilderx-tailwindcss4'),
-    appType: 'uni-app-vite',
+    appType: 'uni-app-x',
     resolveOptions: root => ({
       uniAppX: true,
       cssEntries: [path.resolve(root, 'main.css')],

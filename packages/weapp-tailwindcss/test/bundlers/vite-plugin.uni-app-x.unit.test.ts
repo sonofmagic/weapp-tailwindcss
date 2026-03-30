@@ -141,6 +141,25 @@ describe('bundlers/vite UnifiedViteWeappTailwindcssPlugin uni-app-x', () => {
     expect(currentContext.styleHandler.mock.calls[0]?.[1]).toBe(currentContext.styleHandler.mock.calls[1]?.[1])
   }, TEST_TIMEOUT_MS)
 
+  it('defaults uni-app-x plugin appType to uni-app-x when explicit appType is absent', async () => {
+    const UnifiedViteWeappTailwindcssPlugin = await loadUnifiedVitePlugin()
+    const mainCssChunkMatcher = vi.fn(() => true)
+    setCurrentContext(createContext({
+      appType: undefined,
+      uniAppX: { enabled: true },
+      mainCssChunkMatcher,
+    }))
+
+    const plugins = UnifiedViteWeappTailwindcssPlugin()
+    const cssPlugin = plugins?.find(plugin => plugin.name === 'weapp-tailwindcss:uni-app-x:css') as Plugin
+    expect(cssPlugin).toBeTruthy()
+
+    const cssTransform = cssPlugin.transform as any
+    await cssTransform?.call(cssPlugin, '.foo { color: red; }', 'App.uvue?vue&type=style&index=0')
+
+    expect(mainCssChunkMatcher).toHaveBeenCalledWith('App.uvue?vue&type=style&index=0', 'uni-app-x')
+  }, TEST_TIMEOUT_MS)
+
   it('forces runtime refresh for every uni-app-x transform when serving', async () => {
     const UnifiedViteWeappTailwindcssPlugin = await loadUnifiedVitePlugin()
     const transformUVueMock = getTransformUVueMock()

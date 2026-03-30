@@ -1,6 +1,6 @@
 import type { ItemOrItemArray } from './base'
 
-export type AppType = 'uni-app' | 'uni-app-vite' | 'taro' | 'remax' | 'rax' | 'native' | 'kbone' | 'mpx' | 'weapp-vite'
+export type AppType = 'uni-app' | 'uni-app-vite' | 'uni-app-x' | 'taro' | 'remax' | 'rax' | 'native' | 'kbone' | 'mpx' | 'weapp-vite'
 
 export type ICustomAttributes
   = | Record<string, ItemOrItemArray<string | RegExp>>

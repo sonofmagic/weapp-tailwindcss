@@ -20,6 +20,7 @@ const IMPLICIT_MAIN_CSS_RE = /^(?:app|common\/main|bundle)(?:\.|\/|$)/
 const MAIN_CSS_CHUNK_MATCHERS: Partial<Record<AppType, (file: string) => boolean>> = {
   'uni-app': file => file.startsWith('common/main') || file.startsWith('app'),
   'uni-app-vite': file => file.startsWith('app') || file.startsWith('common/main'),
+  'uni-app-x': file => file.startsWith('app') || file.startsWith('common/main'),
   'mpx': (file) => {
     const normalized = normalizePath(file)
     if (normalized.startsWith('app')) {

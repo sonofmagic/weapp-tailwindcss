@@ -21,8 +21,8 @@ import { resolveUniUtsPlatform } from '@/utils'
 import { resolveDisabledOptions } from '@/utils/disabled'
 import { resolvePackageDir } from '@/utils/resolve-package'
 import { createGenerateBundleHook } from './generate-bundle'
-import { cleanFinalWrittenCssAssets } from './finalize-written-css'
 import { createBundleRuntimeClassSetManager } from './incremental-runtime-class-set'
+import { resolveImplicitAppTypeFromViteRoot } from './resolve-app-type'
 import { createRewriteCssImportsPlugins } from './rewrite-css-imports'
 import { slash } from './utils'
 
@@ -63,10 +63,11 @@ function resolveImplicitTailwindcssBasedirFromViteRoot(root: string) {
 
 /**
  * @name UnifiedViteWeappTailwindcssPlugin
- * @description uni-app vite vue3 版本插件
+ * @description uni-app vite / uni-app-x 版本插件
  * @link https://tw.icebreaker.top/docs/quick-start/frameworks/uni-app-vite
  */
 export function UnifiedViteWeappTailwindcssPlugin(options: UserDefinedOptions = {}): Plugin[] | undefined {
+  const hasExplicitAppType = typeof options.appType === 'string' && options.appType.trim().length > 0
   const rewriteCssImportsSpecified = Object.hasOwn(options, 'rewriteCssImports')
   const hasExplicitTailwindcssBasedir = typeof options.tailwindcssBasedir === 'string'
     && options.tailwindcssBasedir.trim().length > 0
@@ -76,7 +77,6 @@ export function UnifiedViteWeappTailwindcssPlugin(options: UserDefinedOptions = 
     customAttributes,
     onLoad,
     mainCssChunkMatcher,
-    appType,
     styleHandler,
     jsHandler,
     twPatcher: initialTwPatcher,
@@ -92,7 +92,7 @@ export function UnifiedViteWeappTailwindcssPlugin(options: UserDefinedOptions = 
     && !disabledOptions.rewriteCssImports
     && (rewriteCssImportsSpecified || tailwindcssMajorVersion >= 4)
   const rewritePlugins = createRewriteCssImportsPlugins({
-    appType,
+    getAppType: () => opts.appType,
     shouldRewrite: shouldRewriteCssImports,
     weappTailwindcssDirPosix,
   })
@@ -125,7 +125,7 @@ export function UnifiedViteWeappTailwindcssPlugin(options: UserDefinedOptions = 
     const configPath = resolveTailwindcssOptions(runtimeState.twPatcher.options)?.config
     const signature = getRuntimeClassSetSignature(runtimeState.twPatcher)
     const optionsKey = JSON.stringify({
-      appType,
+      appType: opts.appType,
       uniAppX: uniAppXEnabled,
       customAttributesEntities,
       disabledDefaultTemplateHandler,
@@ -243,7 +243,7 @@ export function UnifiedViteWeappTailwindcssPlugin(options: UserDefinedOptions = 
   const isIosPlatform = utsPlatform.isAppIos
   const uniAppXPlugins = uniAppXEnabled
     ? createUniAppXPlugins({
-        appType,
+        appType: opts.appType ?? 'uni-app-x',
         customAttributesEntities,
         disabledDefaultTemplateHandler,
         isIosPlatform,
@@ -265,6 +265,7 @@ export function UnifiedViteWeappTailwindcssPlugin(options: UserDefinedOptions = 
       async configResolved(config) {
         resolvedConfig = config
         const resolvedRoot = config.root ? path.resolve(config.root) : undefined
+        let shouldRefreshRuntime = false
         if (
           !hasExplicitTailwindcssBasedir
           && resolvedRoot
@@ -278,8 +279,27 @@ export function UnifiedViteWeappTailwindcssPlugin(options: UserDefinedOptions = 
               previousBasedir ?? 'undefined',
               nextTailwindcssBasedir,
             )
-            await refreshRuntimeState(true)
+            shouldRefreshRuntime = true
           }
+        }
+        if (
+          !hasExplicitAppType
+          && resolvedRoot
+        ) {
+          const nextAppType = resolveImplicitAppTypeFromViteRoot(resolvedRoot)
+          if (nextAppType && opts.appType !== nextAppType) {
+            const previousAppType = opts.appType
+            opts.appType = nextAppType
+            debug(
+              'align appType with vite root: %s -> %s',
+              previousAppType ?? 'undefined',
+              nextAppType,
+            )
+            shouldRefreshRuntime = true
+          }
+        }
+        if (shouldRefreshRuntime) {
+          await refreshRuntimeState(true)
         }
         if (typeof config.css.postcss === 'object' && Array.isArray(config.css.postcss.plugins)) {
           const postcssPlugins = config.css.postcss.plugins as unknown[]
@@ -300,9 +320,6 @@ export function UnifiedViteWeappTailwindcssPlugin(options: UserDefinedOptions = 
         debug,
         getResolvedConfig,
       }),
-      async closeBundle() {
-        await cleanFinalWrittenCssAssets(getResolvedConfig(), debug)
-      },
     },
   ]
   if (uniAppXPlugins) {

@@ -52,7 +52,7 @@ describe('uni-app-x vite plugins', () => {
       },
     }))
     const plugins = createUniAppXPlugins({
-      appType: 'uni-app',
+      appType: 'uni-app-x',
       customAttributesEntities: [],
       disabledDefaultTemplateHandler: false,
       isIosPlatform: true,
@@ -104,7 +104,7 @@ describe('uni-app-x vite plugins', () => {
         },
       }))
       const plugins = createUniAppXPlugins({
-        appType: 'uni-app',
+        appType: 'uni-app-x',
         customAttributesEntities: [],
         disabledDefaultTemplateHandler: false,
         isIosPlatform: true,
@@ -153,7 +153,7 @@ describe('uni-app-x vite plugins', () => {
       },
     }))
     const plugins = createUniAppXPlugins({
-      appType: 'uni-app',
+      appType: 'uni-app-x',
       customAttributesEntities: [],
       disabledDefaultTemplateHandler: false,
       isIosPlatform: false,
@@ -179,7 +179,7 @@ describe('uni-app-x vite plugins', () => {
     const customAttributesEntities = [['*', ['foo']]]
     let currentConfig: ResolvedConfig = { command: 'serve', build: { watch: false } } as ResolvedConfig
     const plugins = createUniAppXPlugins({
-      appType: 'uni-app',
+      appType: 'uni-app-x',
       customAttributesEntities,
       disabledDefaultTemplateHandler: true,
       mainCssChunkMatcher: vi.fn(() => true),
@@ -234,7 +234,7 @@ describe('uni-app-x vite plugins', () => {
       const ensureRuntimeClassSet = vi.fn(async () => runtimeSet)
       const jsHandler = vi.fn()
       const plugins = createUniAppXPlugins({
-        appType: 'uni-app',
+        appType: 'uni-app-x',
         customAttributesEntities: [],
         disabledDefaultTemplateHandler: false,
         mainCssChunkMatcher: vi.fn(() => true),
@@ -285,7 +285,7 @@ describe('uni-app-x vite plugins', () => {
       const ensureRuntimeClassSet = vi.fn(async () => runtimeSet)
       const jsHandler = vi.fn()
       const plugins = createUniAppXPlugins({
-        appType: 'uni-app',
+        appType: 'uni-app-x',
         customAttributesEntities: [],
         disabledDefaultTemplateHandler: false,
         mainCssChunkMatcher: vi.fn(() => true),

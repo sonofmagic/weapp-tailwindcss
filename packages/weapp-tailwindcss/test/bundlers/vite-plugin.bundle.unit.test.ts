@@ -1,11 +1,12 @@
 import type { OutputAsset, OutputChunk } from 'rollup'
 import type { Plugin, ResolvedConfig } from 'vite'
 import type { CreateJsHandlerOptions } from '@/types'
-import { readFile } from 'node:fs/promises'
+import { mkdtemp, readFile, rm, writeFile } from 'node:fs/promises'
+import os from 'node:os'
 import path from 'node:path'
 import { MappingChars2String } from '@weapp-core/escape'
 import prettier from 'prettier'
-import { beforeEach, describe, expect, it, vi } from 'vitest'
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import { createStyleHandler } from '../../../postcss/src/handler'
 import { createJsHandler } from '@/js'
 import { replaceWxml } from '@/wxml'
@@ -21,6 +22,7 @@ import {
 
 const TEST_TIMEOUT_MS = 30000
 const SPLIT_WHITESPACE_RE = /\s+/
+const createdDirs: string[] = []
 async function formatCssSnapshot(css: string) {
   return prettier.format(css, { parser: 'css' })
 }
@@ -50,6 +52,12 @@ describe('bundlers/vite UnifiedViteWeappTailwindcssPlugin bundle', () => {
     vi.resetModules()
     vi.doUnmock('@/bundlers/vite/incremental-runtime-class-set')
     resetVitePluginTestContext()
+  })
+
+  afterEach(async () => {
+    await Promise.all(
+      createdDirs.splice(0).map(dir => rm(dir, { recursive: true, force: true })),
+    )
   })
 
   it('generates bundle assets and leverages cache', async () => {
@@ -1063,6 +1071,48 @@ const cls = "w-[1.5px]"
     expect((bundle['pages/b.wxss'] as OutputAsset).source.toString()).toBe(`shared:${duplicatedCss}`)
     expect(currentContext.styleHandler).toHaveBeenCalledTimes(2)
   }, TEST_TIMEOUT_MS)
+
+  it('infers appType from vite root before generateBundle runs', async () => {
+    const projectRoot = await mkdtemp(path.join(os.tmpdir(), 'weapp-tw-vite-root-'))
+    createdDirs.push(projectRoot)
+    await writeFile(path.join(projectRoot, 'package.json'), JSON.stringify({
+      dependencies: {
+        '@tarojs/runtime': '^4.0.0',
+      },
+    }, null, 2))
+
+    const UnifiedViteWeappTailwindcssPlugin = await loadUnifiedVitePlugin()
+    setCurrentContext(createContext({
+      appType: undefined,
+      styleHandler: vi.fn(async (code: string) => ({ css: code })),
+      mainCssChunkMatcher: vi.fn(() => true),
+      cssMatcher: (file: string) => file.endsWith('.wxss'),
+    }))
+    const currentContext = getCurrentContext()
+    const plugins = UnifiedViteWeappTailwindcssPlugin()
+    const postPlugin = plugins?.find(plugin => plugin.name === 'weapp-tailwindcss:adaptor:post') as Plugin
+    expect(postPlugin).toBeTruthy()
+
+    await (postPlugin.configResolved as any)?.call(postPlugin, {
+      command: 'build',
+      root: projectRoot,
+      css: { postcss: { plugins: [] } },
+      build: { outDir: 'dist' },
+    } as ResolvedConfig)
+
+    expect(currentContext.appType).toBe('taro')
+
+    const bundle = {
+      'app.wxss': {
+        ...createRollupAsset('.root{color:red}'),
+        fileName: 'app.wxss',
+      },
+    }
+    const generateBundle = postPlugin.generateBundle as any
+    await generateBundle?.call(postPlugin, {} as any, bundle)
+
+    expect(currentContext.mainCssChunkMatcher).toHaveBeenCalledWith('app.wxss', 'taro')
+  })
 
   it('fixes issue #834 by emitting taro app-origin wxss without layer or specificity placeholders', async () => {
     const UnifiedViteWeappTailwindcssPlugin = await loadUnifiedVitePlugin()

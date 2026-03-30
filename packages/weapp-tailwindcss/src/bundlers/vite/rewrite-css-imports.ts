@@ -21,6 +21,7 @@ function isCssLikeImporter(importer?: string | null) {
 
 interface RewriteCssImportsOptions {
   appType?: AppType
+  getAppType?: () => AppType | undefined
   shouldRewrite: boolean
   weappTailwindcssDirPosix: string
 }
@@ -29,7 +30,8 @@ export function createRewriteCssImportsPlugins(options: RewriteCssImportsOptions
   if (!options.shouldRewrite) {
     return []
   }
-  const { appType, weappTailwindcssDirPosix } = options
+  const { appType, getAppType, weappTailwindcssDirPosix } = options
+  const resolveAppType = () => getAppType?.() ?? appType
   return [
     {
       name: `${vitePluginName}:rewrite-css-imports`,
@@ -39,7 +41,7 @@ export function createRewriteCssImportsPlugins(options: RewriteCssImportsOptions
         handler(id, importer) {
           const replacement = resolveTailwindcssImport(id, weappTailwindcssDirPosix, {
             join: joinPosixPath,
-            appType,
+            appType: resolveAppType(),
           })
           if (!replacement) {
             return null
@@ -58,7 +60,7 @@ export function createRewriteCssImportsPlugins(options: RewriteCssImportsOptions
           }
           const rewritten = rewriteTailwindcssImportsInCode(code, weappTailwindcssDirPosix, {
             join: joinPosixPath,
-            appType,
+            appType: resolveAppType(),
           })
           if (!rewritten) {
             return null
