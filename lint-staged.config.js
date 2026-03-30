@@ -1,9 +1,8 @@
 export default {
-  '!(apps|demo)/**/*.{js,jsx,mjs,ts,tsx,mts,vue}': [
+  '**/*.{js,jsx,mjs,ts,tsx,mts,vue}': [
     'eslint --fix',
   ],
-  '!(apps|demo)/**/*.{json,md,mdx,css,html,yml,yaml,scss}': [
-    // 'prettier --with-node-modules --ignore-path .prettierignore --write',
+  '**/*.{json,md,mdx,css,html,yml,yaml,scss}': [
     'eslint --fix',
   ],
   // for rust
