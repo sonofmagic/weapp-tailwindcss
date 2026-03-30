@@ -23,18 +23,41 @@ import TabItem from '@theme/TabItem'
 
 ## 为什么读这份专题
 
-- 原子化 CSS 是工程化的折衷：用小而精的类名替代组件级样式，降低认知和维护成本，同时配合设计 token、variants 与摇树优化。
-- Tailwind 的强项在生态：JIT、variants、插件、`tailwind-merge`/`clsx`/`cva`/`tailwind-variants` 组合，以及可直接复用的社区资产（预设、主题、UI 套件）。
-- 它不是银弹：缺少约束时会 class 爆炸、可读性差、设计漂移。本专题会给出「少走弯路」的做法。
-- AI 友好：原子类是可组合的语料，配合提示模板和 lint/merge 校验，可以让模型安全地产出 UI，并且可被人类审阅。
+- 如果你刚接触原子化 CSS，这组文档会帮你先建立判断标准，再看工具细节，不会一上来就陷进类名和术语里。
+- 如果你已经在用 Tailwind，这里重点回答三个实际问题：为什么团队会选它、怎样避免写乱、怎样让 AI 生成的代码还能被人读懂。
+- 如果你正在维护多端或组件库项目，这里的内容会把 tokens、variants、merge、样式隔离这些概念串成一条完整链路，而不是零散技巧。
 
 ## 你会获得什么
 
-- 历史与生态：从 Raw CSS → 预处理器 → CSS-in-JS → Utility-first 的关键转折，以及组件库从 Element/AntD 走向 Headless UI/shadcn/ui/reka-ui。
-- 方法论：Tailwind 设计理念、与 UnoCSS 的取舍、`tailwind-merge`、`cva`、`tailwind-variants` 的封装策略。
-- 最佳实践：设计 token、`data-*` 驱动的 variants、`group/peer/aria` 组合、性能/体积验证、代码评审清单。
-- AI 友好工作流：可直接复用的提示模板、常见错误与防护、自动化校验建议。
-- Demo：React（shadcn/ui 风格）与 Vue（shadcn-vue/reka-ui 风格）的小型页面，含主题切换、响应式卡片、表单/数据块示例，可作为「让 AI 续写」的基准。
+- 一条完整脉络：从样式方案为什么会一路演进到原子化，再到 Tailwind 为什么会成为今天最常见的落地方案。
+- 一套落地方法：怎么建立 tokens、怎么组织 variants、什么时候该用 `cva`/`tailwind-variants`、什么时候该停下来做约束。
+- 一份可执行清单：如何评审 class、如何避免动态类失控、如何验证产物体积、如何把 AI 输出纳入可交付流程。
+- 一组可直接参考的示例：React/Vue 的写法、组件封装方式，以及团队内部分享时能直接复用的对照材料。
+
+## 这组文档适合谁
+
+- 正在评估 Tailwind、UnoCSS、CSS Modules 等方案，想先看清取舍再决定的人。
+- 已经在用 Tailwind，但发现代码开始变长、变乱、变难审阅，希望建立团队规范的人。
+- 要做多端、小程序、组件库或 AI 辅助开发，想把“类名写法”升级成“工程工作流”的人。
+
+## 建议阅读方式
+
+### 第一次看
+
+按这个顺序读：
+
+1. [样式方案的演化](/docs/tailwindcss/history)
+2. [Tailwind 设计理念](/docs/tailwindcss/tailwind-core)
+3. [原子化 CSS 最佳实践](/docs/tailwindcss/best-practices)
+
+先把“为什么会走到这一步”和“什么时候值得用”看明白，再进入具体技巧。
+
+### 带着问题看
+
+- 你在做技术选型：先看 [样式方案的演化](/docs/tailwindcss/history) 和 [Tailwind 设计理念](/docs/tailwindcss/tailwind-core)。
+- 你在改现有项目：先看 [原子化 CSS 最佳实践](/docs/tailwindcss/best-practices) 和 [tailwind-merge、cva、tailwind-variants 精要](/docs/tailwindcss/merge-and-variants)。
+- 你在处理隔离或嵌入场景：直接看 [样式隔离方案与原理](/docs/tailwindcss/style-isolation)。
+- 你在做 AI 辅助开发：直接看 [AI 友好提示与 Demo 运行指南](/docs/tailwindcss/ai-friendly-and-demos)。
 
 {/* ## 快速命令与讲稿提纲
 
@@ -51,16 +74,19 @@ import TabItem from '@theme/TabItem'
 - AI 友好（10m）：提示模板、校验链，React/Vue 代码演示。
 - Demo & Q&A（10-15m）：React/Vue 实机运行与对照代码。 */}
 
-> 阅读顺序建议：如果你正在做迁移或评审代码，先看「最佳实践」；如果你要说服团队或输出分享，先看「历史与演进」「设计理念与对比」。
+> 阅读建议：第一次读，优先把前 3 篇读完；已经在项目里踩过坑的人，可以直接从「最佳实践」和「merge / variants」开始。
 
-## 导航
+## 导航总览
 
-1. [历史与组件库演进](tailwindcss/history)
-2. [Tailwind 设计理念与对比](tailwindcss/tailwind-core)
-3. [原子化 CSS 最佳实践](tailwindcss/best-practices)
-4. [样式隔离方案与原理](tailwindcss/style-isolation)
-5. [AI 友好提示与 Demo 运行指南](tailwindcss/ai-friendly-and-demos)
-6. [各样式方案 Demo 与产物对照](tailwindcss/demos)
+| 章节 | 适合什么时候看 | 你会带走什么 |
+| --- | --- | --- |
+| [样式方案的演化](/docs/tailwindcss/history) | 需要选型、做分享、统一团队认知时 | 明白原子化 CSS 不是潮流口号，而是样式工程不断抽象后的结果 |
+| [Tailwind 设计理念](/docs/tailwindcss/tailwind-core) | 想理解 Tailwind 本质时 | 看清 tokens、JIT、variants、组件 API 是怎样串起来的 |
+| [原子化 CSS 最佳实践](/docs/tailwindcss/best-practices) | 要把 Tailwind 用稳时 | 建立一套可执行的约束、评审标准和常见场景写法 |
+| [tailwind-merge、cva、tailwind-variants 精要](/docs/tailwindcss/merge-and-variants) | 组件开始出现变体和扩展点时 | 理解 merge、变体工厂和组件封装的边界 |
+| [样式隔离方案与原理](/docs/tailwindcss/style-isolation) | 微前端、组件库、嵌入场景 | 判断什么时候该用 prefix、Modules、Shadow DOM 等方案 |
+| [AI 友好提示与 Demo 运行指南](/docs/tailwindcss/ai-friendly-and-demos) | 想让 AI 参与产出 UI 时 | 把提示模板、校验链和运行示例接到工程里 |
+| [各样式方案 Demo 与产物对照](/docs/tailwindcss/demos) | 需要演示或做对照实验时 | 直接看不同方案的代码、产物和差异 |
 
 ## 代码示例链接
 

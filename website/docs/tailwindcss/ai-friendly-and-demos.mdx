@@ -26,8 +26,24 @@ import TabItem from '@theme/TabItem'
 
 ## 让模型写得像人
 
-- 原子类的可组合性降低了 AI 生成的复杂度，但要给足「轨道」：提示模板、黑名单/白名单、`tailwind-merge`/lint 校验链、固定的 tokens/variants。
-- React/Vue Demo 在 `apps/react-app`、`apps/vue-app`，包含主题切换、卡片/表单/数据块，`cva`/`tailwind-variants` 思路都能直接看到。
+- 原子类天然适合 AI 生成，因为它们是稳定、可组合、低歧义的语料。
+- 但“适合生成”不等于“适合交付”。如果没有边界，模型会很快产出看起来能跑、实际上很难维护的代码。
+- 所以这页真正讨论的是：怎样给 AI 足够明确的轨道，让输出既快，又还能被人接手。
+- React/Vue Demo 在 `apps/react-app`、`apps/vue-app`，可以直接拿来做提示实验、人工复核和类名对照。
+
+## 先抓住 4 个原则
+
+- 给模型上下文，不要只给结果要求。它需要知道你有哪些 token、哪些组件、哪些工具。
+- 给模型边界，不要只说“用 Tailwind 写一个组件”。要明确哪些能做，哪些不能做。
+- 给模型示范，不要期待它自己猜出你们团队的风格。1 到 2 段高质量示例往往比长篇说明更有效。
+- 给模型校验链，不要把“看起来差不多”当作通过。merge、lint、构建和人工抽查都要接上。
+
+如果你准备马上把这套方法用起来，最小可行版本其实很简单：
+
+1. 给模型一段结构化提示。
+2. 附一段你认可的组件示例。
+3. 明确黑名单和边界。
+4. 最后用 `cn`、lint 和构建做一次兜底。
 
 ## 提示模板（示例）
 
@@ -41,7 +57,7 @@ import TabItem from '@theme/TabItem'
 输出：React/Vue 代码块 + 关键 class 解释。
 ```
 
-> 小技巧：附上 1-2 段「示范类名」，模型会按节奏输出；再给一段「不要做什么」黑名单（例如：不要输出内联 style，不要写随机 16 进制色）。
+> 小技巧：给 1 到 2 段你认可的“示范类名”，通常比补充一大段抽象原则更有效；再补一个黑名单，能明显降低跑偏概率。
 
 ## 结构化提示（即贴即用）
 
@@ -129,11 +145,11 @@ const banner = cva('flex items-center justify-between rounded-xl border px-4 py-
 
 ## 常见错误与防护
 
-- 类冲突：使用 `cn` 包装 `tailwind-merge`，避免 `p-2 p-4` 并存；检查自定义色/尺寸是否在 merge 规则里。
-- 断点缺失：Mobile-first 书写，必要时添加 `sm:/md:/lg:`，并自检核心段；提示里明确「默认是 mobile」。
-- 未注册色值：统一从 tokens 取色，禁止 `text-[#123456]`；在提示里声明「禁用 hex/rgb」。
-- 动态类膨胀：在后端/渲染层避免字符串拼接类名；若必须动态，改用 `cva`/`tv` 参数化，并限制枚举值。
-- 关系类过深：`group/peer` 不要超过两层；提示里写「最多两层关系类」。
+- 类冲突：统一通过 `cn` 包装 `tailwind-merge`，避免 `p-2 p-4` 这类冲突类残留；自定义尺寸和色板也要补 merge 规则。
+- 断点缺失：明确 mobile-first，必要时补 `sm:`、`md:`、`lg:`，并把“默认按移动端先写”写进提示里。
+- 未注册色值：统一从 token 取值，明确禁止 `text-[#123456]` 或任意 `rgb(...)`。
+- 动态类膨胀：避免字符串拼类；如果确实需要动态，改成 `cva` / `tv` 的枚举参数。
+- 关系类过深：`group` / `peer` 超过两层后可读性会明显下降，最好直接写进提示约束。
 
 ## React/Vue 运行与查看
 
@@ -148,6 +164,13 @@ const banner = cva('flex items-center justify-between rounded-xl border px-4 py-
 - 主题切换：通过 `.dark` 切换 tokens，组件自动继承，观感差异明显。
 - 变体封装：Button/Badge/Input 使用 `cva`，可观察 `tailwind-merge` 去重；可在 UI 中切换 variant/size 看类名组合效果。
 - 交互：表单验证态（aria-invalid）、数据卡片、清单列表、小型表格/统计。可按提示模板让模型补充新卡片，验证 merge/lint 是否兜底。
+
+如果你只是想快速验证一遍，不需要全看完：
+
+- 先运行一个 Demo。
+- 用上面的提示模板让 AI 生成一个小组件。
+- 检查有没有裸色、字符串拼类、过深的关系类。
+- 最后跑一次构建，确认结果能进工程。
 
 ## 关键代码片段
 
@@ -194,10 +217,10 @@ const banner = cva('flex items-center justify-between rounded-xl border px-4 py-
 
 ## 校验链建议（让 AI 结果可交付）
 
-- 静态校验：ESLint + Tailwind IntelliSense + `tailwind-merge` 包装的 `cn`；对 `content` 目录有 lint 或脚本检查，避免通配符。
-- 人工 spot-check：每个 PR 至少抽查 1-2 个组件，确认类名来自 tokens，没有裸色/裸间距。
-- 产物验证：构建后记录 CSS 体积、主色板是否命中 tokens（可用简单脚本扫描 CSS 中的裸色值）。
-- 回归用例：为按钮/表单等高频组件加一两个 Story/截图，用来对比后续 AI 产出是否偏离风格。
+- 静态校验：ESLint、Tailwind IntelliSense、`cn` 包装的 `tailwind-merge`，以及对 `content` 目录的规则检查。
+- 人工抽查：每个 PR 至少抽查 1 到 2 个组件，确认没有裸色、裸间距和失控的关系类。
+- 产物验证：构建后记录 CSS 体积，并检查主色板是否真的来自 tokens。
+- 回归基线：对按钮、表单、卡片等高频组件保留 Story 或截图，方便判断 AI 输出是否开始漂移。
 
 ### <span className="mr-2 inline-block align-middle text-primary dark:text-primary-200 icon-[mdi--chart-timeline]" aria-hidden="true" /> 流程示意
 

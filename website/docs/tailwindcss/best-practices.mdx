@@ -19,17 +19,29 @@ keywords:
   - mpx
 ---
 
-## 更接地气的用法
+## 先给结论
 
-- 先建设计体系（tokens、间距/字号/色板），再落类名；禁止就地写 `#123` 或 `18px`。
-- 组件层用 `cva`/`tailwind-variants` 集中声明 variants，`cn` 兜底合并；`@layer`/`@apply` 只做基础复用，避免藏逻辑。
-- 性能 = 精准 content + 少动态类；交付 = 体积验证 + 检查清单 + 可复制命令，不靠感觉。
+- 如果你只打算记住这一页的 3 件事，就记下面这 3 条：
+- 先建设计体系，再写类名。不要让每个组件自己发明颜色、间距和尺寸。
+- 先收敛组件变体，再谈复用。不要把 `className` 拼接当作唯一扩展方式。
+- 先验证产物，再相信感觉。包体、扫描范围、动态类都应该有检查手段。
+
+## 为什么很多团队会把 Tailwind 用乱
+
+- 因为它上手太快，容易直接跳过“设计约束”这一步。
+- 因为它试验成本低，组件在早期很顺手，但随着状态增多，类名会在业务代码里蔓延。
+- 因为很多问题不是马上爆炸，而是等到评审、迁移、换主题、接 AI 时才暴露。
+
+所以这一页不是教你“还能再写哪些类”，而是帮你建立一套不容易失控的使用方式。
 
 ## 设计体系与 tokens
 
-- 定义色板、间距、圆角、阴影、字号等 tokens，并映射到 CSS 变量或 `@theme inline`。保留「设计稿 → token 名称」映射表，方便新人接入。
-- 主题切换：通过 `data-theme` 或 `.dark` 切换 tokens，避免在 class 中直接写颜色值。多品牌时，把品牌变量与暗色变量分开管理。
-- 布局 primitives：约定 Stack/Cluster/Sidebar/Grid 的原子组合，减少重复记忆。示例：
+- 先把色板、间距、圆角、阴影、字号这些核心值定成 tokens，并映射到 CSS 变量或 `@theme inline`。
+- 最好保留一份“设计稿值 -> token 名称”的对照表。它看起来像文档工作，实际上能显著降低新人理解成本。
+- 主题切换建议通过 `data-theme` 或 `.dark` 改 token，不要在 class 里直接写颜色值。
+- 如果有多品牌需求，优先把“品牌变量”和“暗色变量”拆开管理，不然很容易相互污染。
+
+除了视觉 token，布局也值得抽成一层稳定组合。这样团队记住的是模式，而不是每次从头拼字符串。
 
 ```ts
 // Stack（竖向间距统一）
@@ -40,7 +52,9 @@ const cluster = 'flex flex-wrap items-center gap-2'
 const sidebar = 'grid gap-4 lg:grid-cols-[1fr,360px]'
 ```
 
-## 组件与变体（把状态写全、默认值写死）
+## 组件与变体
+
+这部分的核心原则是：把变化集中，把默认值写死。
 
 - 用 `cva`/`tv` 描述 variants/defaultVariants/compoundVariants，示例：
 
@@ -54,24 +68,27 @@ const card = cva('rounded-2xl border bg-card/80 shadow-sm transition-all', {
 })
 ```
 
-- 组合技巧：
-  - `group`/`peer` 触发的状态组合：`group-data-[state=open]:rotate-90`；列表项 hover 驱动子元素。
-  - `aria-*` 状态：`aria-invalid:border-destructive`，`aria-busy:opacity-60`；表单状态不用写 JS。
-  - `data-*` 驱动主题：`data-theme=brand` 切换色板；`data-state=open` 切换动画方向。
-  - `tv` slots：适合「卡片/模态」这类多槽位组件，可一次定义 header/body/footer 的类，保持一致性。
+常见组合方式：
+
+- `group`/`peer`：适合父子联动或兄弟联动，例如 hover 某一项时带动图标或描述文案变化。
+- `aria-*`：适合表单和交互状态，例如 `aria-invalid`、`aria-busy`，能减少很多额外 JS 判断。
+- `data-*`：适合主题和业务状态，例如 `data-theme`、`data-state`，语义通常比自造类名更清楚。
+- `tv` slots：适合卡片、弹窗、菜单这类多槽组件，可以把 header/body/footer 的类一起收敛。
+
+这里最常见的坏味道是：状态很多，但状态逻辑分散在不同组件里。只要出现这种情况，后续维护成本一定会上升。
 
 ### 业务场景范式
 
-- 表单：输入框 `focus:ring` + `aria-invalid` 组合，错误文案用 `text-destructive`；Submit 按钮禁用态用 `disabled:`，避免内联 style。
-- 数据表/列表：`grid` + `gap` + `minmax` 控制列宽；hover/selected 用 `data-selected` 组合，保持视觉一致。
-- 空状态：`flex flex-col items-center gap-3 text-center text-muted-foreground` 作为基类，图标尺寸约定 `size-10`。
+- 表单：输入框用 `focus:ring` 加 `aria-invalid`，错误文案统一走 `text-destructive`，按钮禁用态走 `disabled:`，不要回到内联样式。
+- 数据表或列表：优先用 `grid`、`gap`、`minmax` 管列宽，选中态和 hover 态统一收敛到 `data-selected` 之类的状态属性。
+- 空状态：给它一套固定骨架，例如 `flex flex-col items-center gap-3 text-center text-muted-foreground`，避免每个页面都重新拼。
 
 ## 布局与响应式
 
-- 提前定义容器宽度与栅格：`max-w-screen-xl mx-auto px-4 sm:px-6 lg:px-8`；后台/文档常用。
-- `clamp()` + container queries：`text-[clamp(1rem,1.2vw,1.1rem)]` 控制标题，`@container` 让子栅格随父容器宽度变化。
-- 避免过度嵌套的 flex/grid；使用 `gap` 代替 margin 互推。
-- 栅格优先：比起到处写 `md:flex-row`，用 `grid-cols-1 md:grid-cols-2 lg:grid-cols-3` 更直观。
+- 优先先定容器，再定内容。像 `max-w-screen-xl mx-auto px-4 sm:px-6 lg:px-8` 这种基础容器，应该尽早统一。
+- `clamp()` 和 container queries 很适合做“更自然的响应式”，尤其是标题字号和面板栅格。
+- 尽量减少 flex/grid 的层层嵌套，能用 `gap` 解决的，不要再靠 margin 互推。
+- 对大多数内容区布局，栅格通常比一层层 `md:flex-row` 更直观、更容易审阅。
 
 示例（容器查询 + clamp）：
 
@@ -90,12 +107,14 @@ const card = cva('rounded-2xl border bg-card/80 shadow-sm transition-all', {
 
 ## 性能与体积
 
-- 精准 `content`：覆盖到模板文件但不要使用通配符目录；避免字符串拼 class。SSR 要确保 server、client 模板都被扫描。
-- 产物验证：构建后检查 CSS 体积/源映射；如需，开启分析或使用浏览器 Coverage。记录基线（如首页 CSS < 10KB）放进 CI 报告。
-- 动态类回退：必要时用 `@apply`/`cva` 固化，避免在运行时拼接任意值。对「自定义颜色/尺寸」场景，提供有限选项而不是自由输入。
-- 慢路径监控：Tailwind v4 JIT 已够快，但 content 过宽或自定义插件过多会拖慢冷启动，可用 `DEBUG=tailwindcss` 检查耗时。
+- 先盯 `content`，再谈优化。很多 CSS 膨胀问题，根源其实是扫描范围太宽或者存在字符串拼类。
+- 构建后要看体积，不要只看页面“似乎能跑”。最好给关键页面留一个基线，比如首页 CSS 不超过多少 KB。
+- 必要的动态类，尽量回退到 `@apply`、`cva` 或受限枚举，而不是让运行时自由拼接任意值。
+- Tailwind v4 的 JIT 已经很快，真正拖慢冷启动的往往是 content 失控和插件堆太多。
 
 ## 代码评审清单（示例）
+
+下面这张清单更适合在评审时直接过一遍，而不是等到出问题再回头补规范。
 
 - 类名是否只使用预设 token？有无裸写色值/字号？
 - 是否使用了 `cn`/`tailwind-merge` 处理动态组合？有无同类冲突（`p-4` vs `p-2`）？

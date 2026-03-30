@@ -27,11 +27,18 @@ keywords:
 - `cva`/`tailwind-variants` 把 variants/default/compound 集中声明，输出 class builder，避免状态散落；`tv` 内置 merge + slots，适合多槽组件。
 - 闭环：tokens → 原子类/variants → builder → 组件 → content 扫描 → JIT → merge → 产物。
 
+## 如果你只想先看结论
+
+- 需要让组件接受 `className` 覆盖时，先把 `tailwind-merge` 接好。
+- 单槽组件优先用 `cva`，多槽组件再考虑 `tailwind-variants`。
+- 不要把 variants 散落在业务组件里，应该集中在 builder 文件里。
+
 ## tailwind-merge：去重与边界
 
-- 定义：一段针对 Tailwind 类名的「冲突解析器」，根据官方生成顺序和自定义配置判断哪些类互斥、保留最后一条有效值。
-- 意义：让「后写覆盖前写」成为可预测规则，避免动态组合时出现 `p-4 p-2` 这类冲突导致的随机样式；类名越多越需要去重。也是 shadcn/ui 这类组件库能安全暴露 `className` 扩展点的基石。
-- 典型用法：封装 `cn = twMerge(clsx(...))`，组件内部先写好「官方默认」，调用方传入的 `className`/`slot` 覆盖时，`tailwind-merge` 会清理掉冲突类，只留下最后的意图。
+- 可以把它理解成一个“Tailwind 类名裁判”。
+- 它会根据 Tailwind 的冲突规则，决定哪些类应该保留、哪些类应该被删掉。
+- 这样你才能真正做到“调用方最后传入的意图生效”，而不是把结果交给 Tailwind 内部排序碰运气。
+- 最常见的用法就是封装 `cn = twMerge(clsx(...))`，然后把它作为所有 class 拼接的统一入口。
 
 ### 为什么它是「基石」
 
@@ -41,6 +48,8 @@ keywords:
 - 作用：`p-4 p-2` → `p-2`；自定义 tokens/尺寸时需同步规则。
 - 建议：在所有 class 拼接入口统一用 `cn`；对常见自定义（色板、spacing、radius）写额外 merge config 并加用例验证。
 - 快测：在 Demo 按钮里故意写 `p-4 p-2`，观察输出；对自定义色板 class 也做覆盖测试。
+
+如果你在手机上只扫一眼，这一节的核心其实就是一句话：没有 `tailwind-merge`，组件开放 `className` 往往就不够可靠。
 
 ### 没有 tailwind-merge 时
 
@@ -192,6 +201,11 @@ export const card = tv({
 | 多槽 | 不支持 slots | 支持 slots/recipes |
 | 心智负担 | 轻，语法简单 | 略重，类型更严格 |
 | 适用 | 按钮/Badge 等单槽 | 卡片/模态/多槽组件，设计系统 |
+
+不想记表格的话，可以直接记这条：
+
+- `cva`：更轻，更适合按钮、徽标、输入框这类单槽组件。
+- `tailwind-variants`：更完整，更适合卡片、弹窗、菜单这类多槽组件。
 
 ## <span className="mr-2 inline-block align-middle text-primary dark:text-primary-200 icon-[mdi--chart-timeline]" aria-hidden="true" /> 从设计到产物（示意图）
 

@@ -1,6 +1,6 @@
 {
   "version": "1.0.0",
-  "generatedAt": "2026-03-26T03:12:01.620Z",
+  "generatedAt": "2026-03-30T08:08:16.914Z",
   "siteUrl": "https://tw.icebreaker.top",
   "totals": {
     "all": 175,
@@ -5175,7 +5175,7 @@
       "id": "doc:tailwindcss/index",
       "title": "原子化 CSS 专题导览",
       "description": "从历史演进到 Tailwind 实战与 AI 友好工作流的技术分享索引",
-      "summary": "{/* ## 快速命令与讲稿提纲",
+      "summary": "2. Tailwind 设计理念",
       "url": "/docs/tailwindcss",
       "canonical": "https://tw.icebreaker.top/docs/tailwindcss",
       "keywords": [
@@ -5195,9 +5195,12 @@
       "headings": [
         "为什么读这份专题",
         "你会获得什么",
-        "导航",
-        "代码示例链接",
-        "React/Vue 代码快速预览"
+        "这组文档适合谁",
+        "建议阅读方式",
+        "# 第一次看",
+        "# 带着问题看",
+        "导航总览",
+        "代码示例链接"
       ],
       "updatedAt": null,
       "source": "docs/tailwindcss/index.mdx"
@@ -5240,7 +5243,7 @@
       "id": "doc:tailwindcss/ai-friendly-and-demos",
       "title": "AI 友好提示与 Demo 运行指南",
       "description": "提示模板、校验链与 React/Vue 示例运行方式",
-      "summary": "Prompt/Gen：给出结构化提示，产出 React/Vue 代码。",
+      "summary": "如果你准备马上把这套方法用起来，最小可行版本其实很简单：",
       "url": "/docs/tailwindcss/ai-friendly-and-demos",
       "canonical": "https://tw.icebreaker.top/docs/tailwindcss/ai-friendly-and-demos",
       "keywords": [
@@ -5262,13 +5265,13 @@
       ],
       "headings": [
         "让模型写得像人",
+        "先抓住 4 个原则",
         "提示模板（示例）",
         "结构化提示（即贴即用）",
         "示例输出（React/Vue，对应提示）",
         "常见错误与防护",
         "React/Vue 运行与查看",
-        "Demo 内容速览",
-        "关键代码片段"
+        "Demo 内容速览"
       ],
       "updatedAt": null,
       "source": "docs/tailwindcss/ai-friendly-and-demos.mdx"
@@ -5311,7 +5314,7 @@
       "id": "doc:tailwindcss/best-practices",
       "title": "原子化 CSS 最佳实践",
       "description": "设计 token、variants、性能与代码评审清单",
-      "summary": "示例（容器查询 + clamp）：",
+      "summary": "所以这一页不是教你“还能再写哪些类”，而是帮你建立一套不容易失控的使用方式。",
       "url": "/docs/tailwindcss/best-practices",
       "canonical": "https://tw.icebreaker.top/docs/tailwindcss/best-practices",
       "keywords": [
@@ -5330,14 +5333,14 @@
         "mpx"
       ],
       "headings": [
-        "更接地气的用法",
+        "先给结论",
+        "为什么很多团队会把 Tailwind 用乱",
         "设计体系与 tokens",
-        "组件与变体（把状态写全、默认值写死）",
+        "组件与变体",
         "# 业务场景范式",
         "布局与响应式",
         "性能与体积",
-        "代码评审清单（示例）",
-        "常见坑与对策"
+        "代码评审清单（示例）"
       ],
       "updatedAt": null,
       "source": "docs/tailwindcss/best-practices.mdx"
@@ -5437,13 +5440,13 @@
       ],
       "headings": [
         "要点",
+        "建议怎么读这页",
         "<span className=\"mr-2 inline-block align-middle text-primary dark:text-primary-200 icon-[mdi--calendar-month]\"></span> 样式方案时间轴",
-        "# 现场感：几段常见的「升级理由」",
+        "# 几段常见的「升级理由」",
         "各阶段优势 / 劣势 / 适用场景",
-        "深入阅读（按阶段拆分）",
-        "阶段代表性包速览与跳转",
-        "阶段 Demo：把「方式」落到机制",
-        "# Raw CSS / BEM：零构建 + 约定"
+        "# Raw CSS + BEM/OOCSS",
+        "# 预处理器（Sass / Less）",
+        "# CSS Modules"
       ],
       "updatedAt": null,
       "source": "docs/tailwindcss/history/index.mdx"
@@ -5743,7 +5746,7 @@
       "id": "doc:tailwindcss/merge-and-variants",
       "title": "tailwind-merge、cva、tailwind-variants 精要",
       "description": "去重、变体工厂与从设计到产物的闭环",
-      "summary": "Tailwind 会按内部规则排序候选（如 p-0 → p-1 → p-2 → p-4 ...），与 class 字符串的顺序无关：",
+      "summary": "如果你在手机上只扫一眼，这一节的核心其实就是一句话：没有 tailwind-merge，组件开放 className 往往就不够可靠。",
       "url": "/docs/tailwindcss/merge-and-variants",
       "canonical": "https://tw.icebreaker.top/docs/tailwindcss/merge-and-variants",
       "keywords": [
@@ -5765,13 +5768,13 @@
       ],
       "headings": [
         "要点",
+        "如果你只想先看结论",
         "tailwind-merge：去重与边界",
         "# 为什么它是「基石」",
         "# 没有 tailwind-merge 时",
         "## 示例：生成产物的「顺序陷阱」",
         "# 引入 tailwind-merge 之后",
-        "## 示例：merge 后的产物",
-        "# shadcn 风格组件的常见模式"
+        "## 示例：merge 后的产物"
       ],
       "updatedAt": null,
       "source": "docs/tailwindcss/merge-and-variants.mdx"
@@ -5890,7 +5893,7 @@
       "id": "doc:tailwindcss/tailwind-core",
       "title": "Tailwind 设计理念",
       "description": "Tailwind 本质是把设计 token 压成原子类，再让组件接口重新长出语义",
-      "summary": "Tailwind 本质是把设计 token 压成原子类，再让组件接口重新长出语义",
+      "summary": "换句话说，入口阶段最重要的目标只有一个：让“设计稿里的值”和“代码里的值”能一一对上。",
       "url": "/docs/tailwindcss/tailwind-core",
       "canonical": "https://tw.icebreaker.top/docs/tailwindcss/tailwind-core",
       "keywords": [
@@ -5910,9 +5913,12 @@
       ],
       "headings": [
         "Tailwind 本质是什么",
+        "# 先记住这一句话",
+        "# 这一页建议怎么读",
         "入口：设计语义的单一来源",
         "中段：Tailwind 的生成逻辑",
-        "出口：组件重新长出语义"
+        "出口：组件重新长出语义",
+        "# 什么时候说明你已经走偏了"
       ],
       "updatedAt": null,
       "source": "docs/tailwindcss/tailwind-core.mdx"
