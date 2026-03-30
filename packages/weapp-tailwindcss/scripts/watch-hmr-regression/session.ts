@@ -16,6 +16,15 @@ const NEWLINE_SPLIT_RE = /\r?\n/
 const PNPM_RE = /pnpm/i
 const ERROR_RE = /error/i
 const EMFILE_RE = /emfile/i
+const WHITESPACE_RE = /\s+/
+const FIRST_WHITESPACE_RE = /\s/
+const WATCH_COMMAND_PATTERNS = [
+  /weapp-vite(?:\.js)?\s+dev/i,
+  /taro-build-guard\.mjs\s+--watch/i,
+  /run-mpx-cli-service\.js\s+serve/i,
+  /webpack(?:\.js)?\s+--watch/i,
+  /\bnpm\b[\s\S]+build:weapp[\s\S]+--watch/i,
+] as const
 
 const sassDeprecationLinePatterns = [
   /^DEPRECATION WARNING \[/,
@@ -79,6 +88,8 @@ const compileSuccessLinePatterns = [
   /build complete/i,
   /watching for changes/i,
   /ready in \d+/i,
+  /dev(?:elopment)? server ready/i,
+  /开发服务已就绪/u,
   /built in \d+/i,
   /构建完成/u,
 ] as const
@@ -211,6 +222,152 @@ function killProcessTreeOnWindows(pid: number) {
   }
 }
 
+function listDescendantPidsOnPosix(rootPid: number) {
+  const result = spawnSync('ps', ['-Ao', 'pid=,ppid='], {
+    encoding: 'utf8',
+    stdio: ['ignore', 'pipe', 'ignore'],
+  })
+
+  if (result.status !== 0 || typeof result.stdout !== 'string') {
+    return []
+  }
+
+  const childrenByParent = new Map<number, number[]>()
+  for (const line of result.stdout.split(NEWLINE_SPLIT_RE)) {
+    const normalized = line.trim()
+    if (!normalized) {
+      continue
+    }
+
+    const [pidText, ppidText] = normalized.split(WHITESPACE_RE)
+    const pid = Number(pidText)
+    const ppid = Number(ppidText)
+    if (!Number.isInteger(pid) || !Number.isInteger(ppid)) {
+      continue
+    }
+
+    const siblings = childrenByParent.get(ppid)
+    if (siblings) {
+      siblings.push(pid)
+    }
+    else {
+      childrenByParent.set(ppid, [pid])
+    }
+  }
+
+  const descendants: number[] = []
+  const stack = [...(childrenByParent.get(rootPid) ?? [])]
+  while (stack.length > 0) {
+    const current = stack.pop()
+    if (current == null) {
+      continue
+    }
+    descendants.push(current)
+    const children = childrenByParent.get(current)
+    if (children?.length) {
+      stack.push(...children)
+    }
+  }
+
+  return descendants
+}
+
+function killProcessTreeOnPosix(pid: number, signal: NodeJS.Signals) {
+  const descendants = listDescendantPidsOnPosix(pid)
+
+  for (const childPid of descendants.reverse()) {
+    try {
+      process.kill(childPid, signal)
+    }
+    catch {
+    }
+  }
+
+  for (const childPid of descendants) {
+    try {
+      process.kill(-childPid, signal)
+    }
+    catch {
+    }
+  }
+
+  try {
+    process.kill(-pid, signal)
+    return
+  }
+  catch {
+  }
+
+  try {
+    process.kill(pid, signal)
+  }
+  catch {
+  }
+}
+
+function listMatchingWatchPidsByCwd(cwd: string) {
+  const result = spawnSync('ps', ['-Ao', 'pid=,command='], {
+    encoding: 'utf8',
+    stdio: ['ignore', 'pipe', 'ignore'],
+  })
+
+  if (result.status !== 0 || typeof result.stdout !== 'string') {
+    return []
+  }
+
+  const normalizedCwd = path.resolve(cwd)
+  const matched = new Set<number>()
+
+  for (const line of result.stdout.split(NEWLINE_SPLIT_RE)) {
+    const normalized = line.trim()
+    if (!normalized) {
+      continue
+    }
+
+    const firstWhitespace = normalized.search(FIRST_WHITESPACE_RE)
+    if (firstWhitespace <= 0) {
+      continue
+    }
+
+    const pid = Number(normalized.slice(0, firstWhitespace))
+    const command = normalized.slice(firstWhitespace).trim()
+    if (!Number.isInteger(pid) || pid <= 0) {
+      continue
+    }
+    if (pid === process.pid) {
+      continue
+    }
+    if (!command.includes(normalizedCwd)) {
+      continue
+    }
+    if (!WATCH_COMMAND_PATTERNS.some(pattern => pattern.test(command))) {
+      continue
+    }
+    matched.add(pid)
+  }
+
+  return [...matched]
+}
+
+function cleanupExistingWatchProcesses(cwd: string) {
+  const pids = listMatchingWatchPidsByCwd(cwd)
+  if (pids.length === 0) {
+    return
+  }
+
+  process.stdout.write(
+    `[watch-hmr] cleanup stale watch processes for ${path.relative(process.cwd(), cwd) || '.'}: ${pids.join(', ')}\n`,
+  )
+
+  for (const pid of pids) {
+    if (process.platform === 'win32') {
+      killProcessTreeOnWindows(pid)
+      continue
+    }
+    killProcessTreeOnPosix(pid, 'SIGKILL')
+  }
+}
+
 async function runCommand(cwd: string, args: string[], label: string) {
   const lines: string[] = []
   const child = spawnPnpm(args, {
@@ -246,6 +403,7 @@ export function createWatchSession(
   options: Pick<CliOptions, 'quietSass'>,
   env: Record<string, string> = {},
 ): WatchSession {
+  cleanupExistingWatchProcesses(cwd)
   const lines: string[] = []
   let lastCompileSuccessAt = 0
   let compileFatalError: string | undefined
@@ -253,6 +411,13 @@ export function createWatchSession(
     cwd,
     env: createSpawnEnv(process.env, {
       WEAPP_TW_WATCH_REGRESSION: '1',
+      // 回归模式优先稳定性。
+      // 宿主机上 Webpack/Taro 的 fs.watch 很容易触发 EMFILE，
+      // 这里统一切到 polling watcher，必要时仍允许外部环境覆盖。
+      WATCHPACK_POLLING: process.env.WATCHPACK_POLLING ?? 'true',
+      WATCHPACK_POLLING_INTERVAL: process.env.WATCHPACK_POLLING_INTERVAL ?? '1000',
+      CHOKIDAR_USEPOLLING: process.env.CHOKIDAR_USEPOLLING ?? '1',
+      CHOKIDAR_INTERVAL: process.env.CHOKIDAR_INTERVAL ?? '1000',
       ...env,
     }),
     detached: process.platform !== 'win32',
@@ -267,12 +432,8 @@ export function createWatchSession(
     }
 
     if (childPid != null && process.platform !== 'win32') {
-      try {
-        process.kill(-childPid, signal)
-        return
-      }
-      catch {
-      }
+      killProcessTreeOnPosix(childPid, signal)
+      return
     }
 
     try {

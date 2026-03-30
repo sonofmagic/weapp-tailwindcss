@@ -1,6 +1,6 @@
 {
   "version": "1.0.0",
-  "generatedAt": "2026-03-30T08:58:39.597Z",
+  "generatedAt": "2026-03-30T12:51:11.367Z",
   "siteUrl": "https://tw.icebreaker.top",
   "totals": {
     "all": 175,
@@ -4892,7 +4892,7 @@
         "# 创建 `vue.config.js`",
         "配置 `postcss.config.js`",
         "添加样式",
-        "参考模板"
+        "说明"
       ],
       "updatedAt": null,
       "source": "docs/quick-start/v4/uni-app-webpack.mdx"

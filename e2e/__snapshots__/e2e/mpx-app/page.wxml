@@ -26,6 +26,7 @@
     lang=""
     need-show-entrance=""
     open-type=""
+    phone-number-no-quota-toast=""
     send-message-img="截图"
     send-message-path="当前分享路径"
     send-message-title="当前标题"

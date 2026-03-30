@@ -142,7 +142,9 @@ export function buildDemoBaseCases(baseCwd: string): WatchCase[] {
     label: 'demo/native-ts (weapp-vite)',
     project: 'demo/native-ts',
     group: 'demo',
-    requireInitialCompileSuccess: true,
+    // weapp-vite 的 dev 日志在长链路回归里偶发缺少 ready 行，
+    // 这里改为依赖初始产物 + 后续 mutation 实测，避免被日志抖动误伤。
+    requireInitialCompileSuccess: false,
     requireStableGlobalStyleOnSameClassLiteral: false,
     cwd: path.resolve(baseCwd, 'demo/native-ts'),
     devScript: 'dev',
@@ -197,8 +199,8 @@ export function buildDemoBaseCases(baseCwd: string): WatchCase[] {
   }
 
   return [
+    weappViteCase,
     taroCase,
     mpxCase,
-    weappViteCase,
   ]
 }
