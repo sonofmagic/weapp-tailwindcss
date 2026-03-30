@@ -1,6 +1,6 @@
 {
   "version": "1.0.0",
-  "generatedAt": "2026-03-30T08:08:16.914Z",
+  "generatedAt": "2026-03-30T08:15:55.833Z",
   "siteUrl": "https://tw.icebreaker.top",
   "totals": {
     "all": 175,
@@ -5893,7 +5893,7 @@
       "id": "doc:tailwindcss/tailwind-core",
       "title": "Tailwind 设计理念",
       "description": "Tailwind 本质是把设计 token 压成原子类，再让组件接口重新长出语义",
-      "summary": "换句话说，入口阶段最重要的目标只有一个：让“设计稿里的值”和“代码里的值”能一一对上。",
+      "summary": "换句话说，这里的“入口”更适合作为推荐工程实践来理解，而不是 Tailwind 唯一正确的使用方式。",
       "url": "/docs/tailwindcss/tailwind-core",
       "canonical": "https://tw.icebreaker.top/docs/tailwindcss/tailwind-core",
       "keywords": [

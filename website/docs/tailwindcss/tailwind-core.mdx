@@ -22,18 +22,24 @@ keywords:
 ## Tailwind 本质是什么
 
 - 可以把 Tailwind 理解成一条“压缩再展开”的流水线。
-- 它先把设计系统拆成最小可复用单位，例如颜色、间距、圆角、字号；这些值会变成一组原子类。
+- 它会把很多常见视觉决策映射成可复用的 utility classes，例如颜色、间距、圆角、字号等。
 - 然后在组件层重新把这些原子类组织起来，长成 `Button`、`Badge`、`Card` 这样的可读接口。
-- 所以 Tailwind 真正解决的，不只是“少写 CSS”，而是让设计值、类名和组件 API 尽量指向同一份事实。
+- 所以 Tailwind 真正解决的，不只是“少写 CSS”，而是让样式约束、类名组合和组件封装更容易对齐。
 
 ### 先记住这一句话
 
-> Tailwind 不是为了让你到处堆类名，而是为了让设计 token 更容易被复用、约束和审阅。
+> 在团队工程化里，Tailwind 最有价值的地方通常不是“少写 CSS”，而是更容易建立约束、复用和审阅机制。
 
 ### 这一页建议怎么读
 
 - 如果你是第一次看 Tailwind，重点看“入口、中段、出口”这 3 个部分，先把整体链路建立起来。
 - 如果你已经在项目里使用 Tailwind，重点看“出口：组件重新长出语义”，因为大多数可维护性问题都出在这里。
+
+:::info 资料参考
+- [Tailwind CSS: Utility-first](https://tailwindcss.com/docs/utility-first)
+- [Tailwind CSS: Detecting classes in source files](https://tailwindcss.com/docs/detecting-classes-in-source-files)
+- [UnoCSS Guide](https://unocss.dev/guide/)
+:::
 
 **Demo（整体串联）**
 
@@ -75,11 +81,13 @@ export function Button({ tone, size, className, ...props }) {
 
 ## 入口：设计语义的单一来源
 
-- 先把设计值收敛成 token，再写类名。这一步看起来慢，实际上是在给后面所有组件减负。
-- class 里最好引用 token，而不是直接写裸值。这样换品牌、换主题、做暗色模式时，改的是一层映射，不是全项目搜字符串。
+- 在团队实践里，最好先把设计值收敛成 token，再写类名。这一步看起来慢，实际上是在给后面所有组件减负。
+- class 里优先引用 token，而不是直接写裸值。这样换品牌、换主题、做暗色模式时，改的是一层映射，不是全项目搜字符串。
 - 团队要重点约束的不是“有没有用 Tailwind”，而是“是不是每个人都在随手发明新值”。
 
-换句话说，入口阶段最重要的目标只有一个：让“设计稿里的值”和“代码里的值”能一一对上。
+换句话说，这里的“入口”更适合作为推荐工程实践来理解，而不是 Tailwind 唯一正确的使用方式。
+
+> 说明：Tailwind 官方既支持通过 theme、design tokens 与自定义 utilities 建立约束，也保留 arbitrary values、自定义 CSS 等逃生口；这里给出的写法是偏团队工程化的推荐路径。
 
 **Demo：token 定义**
 
