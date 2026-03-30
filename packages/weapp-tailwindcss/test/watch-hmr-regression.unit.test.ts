@@ -735,14 +735,14 @@ describe('watch-hmr regression cases', () => {
     expect(uniAppVue3ViteCase?.requireStableGlobalStyleOnSameClassLiteral).toBe(false)
   })
 
-  it('requires initial compile success for weapp-vite powered watch cases', () => {
+  it('does not require initial compile success for weapp-vite powered watch cases with unstable ready logs', () => {
     const demoBaseCases = buildDemoBaseCases('/repo')
     const appCases = buildAppCases('/repo')
 
-    expect(demoBaseCases.find(watchCase => watchCase.name === 'weapp-vite')?.requireInitialCompileSuccess).toBe(true)
-    expect(appCases.find(watchCase => watchCase.name === 'vite-native')?.requireInitialCompileSuccess).toBe(true)
-    expect(appCases.find(watchCase => watchCase.name === 'vite-native-ts')?.requireInitialCompileSuccess).toBe(true)
-    expect(appCases.find(watchCase => watchCase.name === 'vite-native-skyline')?.requireInitialCompileSuccess).toBe(true)
+    expect(demoBaseCases.find(watchCase => watchCase.name === 'weapp-vite')?.requireInitialCompileSuccess).toBe(false)
+    expect(appCases.find(watchCase => watchCase.name === 'vite-native')?.requireInitialCompileSuccess).toBe(false)
+    expect(appCases.find(watchCase => watchCase.name === 'vite-native-ts')?.requireInitialCompileSuccess).toBe(false)
+    expect(appCases.find(watchCase => watchCase.name === 'vite-native-skyline')?.requireInitialCompileSuccess).toBe(false)
   })
 
   it('filters platform-specific unstable watch cases from grouped runs', () => {
