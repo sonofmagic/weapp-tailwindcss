@@ -59,6 +59,7 @@
     "@tarojs/plugin-framework-react": "catalog:taro4",
     "@tarojs/plugin-platform-h5": "catalog:taro4",
     "@tarojs/plugin-platform-weapp": "catalog:taro4",
+    "@tarojs/taro-loader": "catalog:taro4",
     "@tarojs/webpack5-runner": "catalog:taro4",
     "@types/react": "catalog:react18",
     "@types/webpack-env": "^1.18.8",

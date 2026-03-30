@@ -1,6 +1,5 @@
 const path = require('node:path')
 const fs = require('fs-extra')
-const dayjs = require('dayjs')
 const { set, get } = require('lodash')
 
 const useBabel = process.env.BABEL
@@ -20,6 +19,13 @@ function resolveBenchOutputDir() {
   }
 
   return defaultLocalDataDir
+}
+
+function formatBenchDate(date = new Date()) {
+  const year = date.getFullYear()
+  const month = String(date.getMonth() + 1).padStart(2, '0')
+  const day = String(date.getDate()).padStart(2, '0')
+  return `${year}-${month}-${day}`
 }
 
 class Bench {
@@ -48,7 +54,7 @@ class Bench {
 
   dump(key = 'babel') {
     const ts = this.timeSpan()
-    const filename = dayjs().format('YYYY-MM-DD') + '.json'
+    const filename = `${formatBenchDate()}.json`
     const targetDataFile = path.join(resolveBenchOutputDir(), filename)
     const targetDir = path.dirname(targetDataFile)
     try {

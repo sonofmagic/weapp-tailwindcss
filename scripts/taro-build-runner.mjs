@@ -1,8 +1,8 @@
-import Module from 'node:module'
+import Module, { createRequire } from 'node:module'
 import process from 'node:process'
-import { createRequire } from 'node:module'
 
 const require = createRequire(import.meta.url)
+const projectRequire = createRequire(`${process.cwd()}/package.json`)
 const originalLoad = Module._load
 
 function createDoctorStub() {
@@ -30,6 +30,10 @@ function createDoctorStub() {
 Module._load = function patchedModuleLoad(request, parent, isMain) {
   if (request === '@tarojs/plugin-doctor') {
     return createDoctorStub()
+  }
+  if (request === '@tarojs/taro-loader' || request.startsWith('@tarojs/taro-loader/')) {
+    const resolvedRequest = projectRequire.resolve(request)
+    return originalLoad.call(this, resolvedRequest, parent, isMain)
   }
   return originalLoad.call(this, request, parent, isMain)
 }
