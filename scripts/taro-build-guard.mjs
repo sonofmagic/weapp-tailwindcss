@@ -1,12 +1,12 @@
 import { spawn } from 'node:child_process'
+import path from 'node:path'
 import process from 'node:process'
 
 const strictTaroBuild = process.env.TARO_BUILD_STRICT === '1'
 const isInteractive = Boolean(process.stdout.isTTY && process.stderr.isTTY)
-const isWin = process.platform === 'win32'
-const pnpmCmd = isWin ? 'pnpm.cmd' : 'pnpm'
 const forwardedArgs = process.argv.slice(2)
-const args = ['exec', 'taro', 'build', '--type', 'weapp', ...forwardedArgs]
+const runnerPath = path.resolve(import.meta.dirname, './taro-build-runner.mjs')
+const args = [runnerPath, 'build', '--type', 'weapp', ...forwardedArgs]
 
 if (!strictTaroBuild && !isInteractive) {
   console.warn('[taro-build-guard] 检测到非交互式环境，已跳过 Taro demo/app 的 weapp 构建。')
@@ -16,10 +16,9 @@ if (!strictTaroBuild && !isInteractive) {
 
 let output = ''
 
-const child = spawn(pnpmCmd, args, {
+const child = spawn(process.execPath, args, {
   stdio: ['ignore', 'pipe', 'pipe'],
   env: process.env,
-  shell: isWin,
 })
 
 child.stdout.on('data', (chunk) => {

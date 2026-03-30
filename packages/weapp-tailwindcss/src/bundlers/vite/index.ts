@@ -21,6 +21,7 @@ import { resolveUniUtsPlatform } from '@/utils'
 import { resolveDisabledOptions } from '@/utils/disabled'
 import { resolvePackageDir } from '@/utils/resolve-package'
 import { createGenerateBundleHook } from './generate-bundle'
+import { cleanFinalWrittenCssAssets } from './finalize-written-css'
 import { createBundleRuntimeClassSetManager } from './incremental-runtime-class-set'
 import { createRewriteCssImportsPlugins } from './rewrite-css-imports'
 import { slash } from './utils'
@@ -299,6 +300,9 @@ export function UnifiedViteWeappTailwindcssPlugin(options: UserDefinedOptions = 
         debug,
         getResolvedConfig,
       }),
+      async closeBundle() {
+        await cleanFinalWrittenCssAssets(getResolvedConfig(), debug)
+      },
     },
   ]
   if (uniAppXPlugins) {

@@ -105,8 +105,13 @@ describe('specificity cleaner', () => {
     cleaner(rule)
     expect(rule.selector).toBe('page,view,.demo')
 
+    const escapedRule = postcss.parse('page:not(#\\#),view:not(#\\#),.demo:not(#\\#) { color: red }').first as Rule
+    cleaner(escapedRule)
+    expect(escapedRule.selector).toBe('page,view,.demo')
+
     const replace = createFallbackPlaceholderReplacer()
     expect(replace('page:not(#n),.demo:not(#n){color:red;}')).toBe('page,.demo{color:red;}')
+    expect(replace('page:not(#\\#),.demo:not(#\\#){color:red;}')).toBe('page,.demo{color:red;}')
   })
 })
 
@@ -157,6 +162,9 @@ describe('post plugin edge cases', () => {
     })
     const res = await postcss([post]).process('page:not(#n),view:not(#n),.demo:not(#n) { color: red }', { from: undefined })
     expect(res.css).toBe('page,view,.demo { color: red }')
+
+    const escaped = await postcss([post]).process('page:not(#\\#),view:not(#\\#),.demo:not(#\\#) { color: red }', { from: undefined })
+    expect(escaped.css).toBe('page,view,.demo { color: red }')
   })
 
   it('skips non-declarations in dedupe flows', async () => {

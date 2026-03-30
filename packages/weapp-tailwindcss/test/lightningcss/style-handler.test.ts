@@ -73,4 +73,22 @@ describe('lightningcss style handler', () => {
     expect(code).toContain('view')
     expect(code).toContain('.demo')
   })
+
+  it('removes escaped fallback placeholder selectors from final code', async () => {
+    const handler = createLightningcssStyleHandler()
+    const { code } = await handler(`
+      page:not(#\\#),
+      .tw-root:not(#\\#),
+      view:not(#\\#),
+      .demo:not(#\\#) {
+        color: red;
+      }
+    `)
+
+    expect(code).not.toContain(':not(#\\#)')
+    expect(code).toContain('page')
+    expect(code).toContain('.tw-root')
+    expect(code).toContain('view')
+    expect(code).toContain('.demo')
+  })
 })

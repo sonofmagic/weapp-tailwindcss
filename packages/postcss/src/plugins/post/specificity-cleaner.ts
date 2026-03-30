@@ -2,7 +2,7 @@ import type { Rule } from 'postcss'
 import type { IStyleHandlerOptions } from '../../types'
 import { assignRuleSelectors } from '../../utils/selector-guard'
 
-const FALLBACK_PLACEHOLDER_SUFFIX = ':not(#n)'
+const FALLBACK_PLACEHOLDER_SUFFIXES = [':not(#n)', ':not(#\\#)']
 
 // normalizeSelectorList 将 root/universal 替换配置规范化为数组
 function normalizeSelectorList(value?: string | string[] | false) {
@@ -23,16 +23,24 @@ function getSpecificityMatchingName(options: IStyleHandlerOptions) {
 }
 
 function replaceFallbackPlaceholder(selector: string) {
-  return selector.includes(FALLBACK_PLACEHOLDER_SUFFIX)
-    ? selector.split(FALLBACK_PLACEHOLDER_SUFFIX).join('')
-    : selector
+  let output = selector
+  for (const suffix of FALLBACK_PLACEHOLDER_SUFFIXES) {
+    if (output.includes(suffix)) {
+      output = output.split(suffix).join('')
+    }
+  }
+  return output
 }
 
 export function createFallbackPlaceholderReplacer() {
   return (code: string) => {
-    return code.includes(FALLBACK_PLACEHOLDER_SUFFIX)
-      ? code.split(FALLBACK_PLACEHOLDER_SUFFIX).join('')
-      : code
+    let output = code
+    for (const suffix of FALLBACK_PLACEHOLDER_SUFFIXES) {
+      if (output.includes(suffix)) {
+        output = output.split(suffix).join('')
+      }
+    }
+    return output
   }
 }
 
