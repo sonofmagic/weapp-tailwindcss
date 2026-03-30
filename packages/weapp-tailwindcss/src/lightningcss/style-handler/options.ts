@@ -2,6 +2,8 @@ import type { IStyleHandlerOptions } from '@weapp-tailwindcss/postcss'
 import { createInjectPreflight } from '@weapp-tailwindcss/postcss'
 import { defuOverrideArray } from '@weapp-tailwindcss/shared'
 
+const FALLBACK_PLACEHOLDER_SUFFIX = ':not(#n)'
+
 function normalizeSelectorList(value?: string | string[] | false) {
   if (value === undefined || value === false) {
     return []
@@ -21,8 +23,13 @@ function getSpecificityMatchingName(options: IStyleHandlerOptions) {
 export function createRootSpecificityReplacer(options: IStyleHandlerOptions) {
   const specificityMatchingName = getSpecificityMatchingName(options)
   const selectors = normalizeSelectorList(options.cssSelectorReplacement?.root)
+  const replaceFallbackPlaceholder = (code: string) => {
+    return code.includes(FALLBACK_PLACEHOLDER_SUFFIX)
+      ? code.split(FALLBACK_PLACEHOLDER_SUFFIX).join('')
+      : code
+  }
   if (!specificityMatchingName || selectors.length === 0) {
-    return undefined
+    return replaceFallbackPlaceholder
   }
 
   const suffix = `:not(.${specificityMatchingName})`
@@ -40,7 +47,7 @@ export function createRootSpecificityReplacer(options: IStyleHandlerOptions) {
   }
 
   return (code: string) => {
-    let output = code
+    let output = replaceFallbackPlaceholder(code)
     for (const target of targets) {
       if (output.includes(target.match)) {
         output = output.split(target.match).join(target.replacement)

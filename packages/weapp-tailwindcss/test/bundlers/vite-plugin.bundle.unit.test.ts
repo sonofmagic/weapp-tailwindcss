@@ -1064,7 +1064,7 @@ const cls = "w-[1.5px]"
     expect(currentContext.styleHandler).toHaveBeenCalledTimes(2)
   }, TEST_TIMEOUT_MS)
 
-  it('captures taro vite tailwindcss v4 raw app-origin css before and after style handler', async () => {
+  it('fixes issue #834 by emitting taro app-origin wxss without layer or specificity placeholders', async () => {
     const UnifiedViteWeappTailwindcssPlugin = await loadUnifiedVitePlugin()
     const rawCss = await readFile(
       path.resolve(__dirname, '../fixtures/css/taro-vite-tailwindcss-v4-app-origin.raw.css'),
@@ -1124,7 +1124,9 @@ const cls = "w-[1.5px]"
     expect(rawInput).toMatchSnapshot('taro-app-origin-raw-input')
     expect(processedOutput).toMatchSnapshot('taro-app-origin-processed-output')
     expect(rawInput).toContain(':not(#\\#)')
-    expect(processedOutput).toContain(':not(#n)')
+    expect(processedOutput).not.toContain('@layer')
+    expect(processedOutput).not.toContain(':not(#n)')
+    expect(processedOutput).not.toContain(':not(#\\#)')
   }, 8000)
 
   it('keeps template transform stable on script-only incremental updates', async () => {

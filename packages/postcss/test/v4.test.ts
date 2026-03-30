@@ -142,6 +142,9 @@ describe('v4', () => {
     const { css } = await styleHandler(code, {
       isMainChunk: true,
     })
+    expect(css).not.toContain('@layer')
+    expect(css).not.toContain(':not(#\\#)')
+    expect(css).not.toContain(':not(#n)')
     expect(await prettier.format(css, { parser: 'css' })).toMatchSnapshot()
   })
 

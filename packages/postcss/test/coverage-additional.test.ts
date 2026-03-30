@@ -6,7 +6,7 @@ import { commonChunkPreflight, remakeCssVarSelector, testIfVariablesScope } from
 import { createColorFunctionalFallback } from '@/plugins/colorFunctionalFallback'
 import { getCustomPropertyCleaner } from '@/plugins/getCustomPropertyCleaner'
 import { postcssWeappTailwindcssPostPlugin, reorderVariableDeclarations } from '@/plugins/post'
-import { createRootSpecificityCleaner } from '@/plugins/post/specificity-cleaner'
+import { createFallbackPlaceholderCleaner, createFallbackPlaceholderReplacer, createRootSpecificityCleaner } from '@/plugins/post/specificity-cleaner'
 import { postcssWeappTailwindcssPrePlugin } from '@/plugins/pre'
 import { isNotLastChildPseudo, normalizeSpacingDeclarations } from '@/selectorParser/spacing'
 import { appendRuleSelector, assignRuleSelectors } from '@/utils/selector-guard'
@@ -98,6 +98,16 @@ describe('specificity cleaner', () => {
     cleaner?.(emptyRule)
     expect(emptyRule.selectors).toEqual([])
   })
+
+  it('cleans fallback placeholder selectors in rules and raw code', () => {
+    const cleaner = createFallbackPlaceholderCleaner()
+    const rule = postcss.parse('page:not(#n),view:not(#n),.demo:not(#n) { color: red }').first as Rule
+    cleaner(rule)
+    expect(rule.selector).toBe('page,view,.demo')
+
+    const replace = createFallbackPlaceholderReplacer()
+    expect(replace('page:not(#n),.demo:not(#n){color:red;}')).toBe('page,.demo{color:red;}')
+  })
 })
 
 describe('selector guard', () => {
@@ -139,6 +149,14 @@ describe('post plugin edge cases', () => {
     const res = await postcss([post]).process('page:not(.tw) { color: red }', { from: undefined })
     expect(res.css).toContain('page')
     expect(res.css).not.toContain(':not(.tw)')
+  })
+
+  it('cleans fallback placeholders before final output', async () => {
+    const post = postcssWeappTailwindcssPostPlugin({
+      isMainChunk: true,
+    })
+    const res = await postcss([post]).process('page:not(#n),view:not(#n),.demo:not(#n) { color: red }', { from: undefined })
+    expect(res.css).toBe('page,view,.demo { color: red }')
   })
 
   it('skips non-declarations in dedupe flows', async () => {

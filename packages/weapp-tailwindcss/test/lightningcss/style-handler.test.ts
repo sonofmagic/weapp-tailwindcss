@@ -55,4 +55,22 @@ describe('lightningcss style handler', () => {
     expect(withEmptyOverride.map).toBe(base.map)
     expect(withEmptyOverride.warnings).toEqual(base.warnings)
   })
+
+  it('removes fallback placeholder selectors from final code', async () => {
+    const handler = createLightningcssStyleHandler()
+    const { code } = await handler(`
+      page:not(#n),
+      .tw-root:not(#n),
+      view:not(#n),
+      .demo:not(#n) {
+        color: red;
+      }
+    `)
+
+    expect(code).not.toContain(':not(#n)')
+    expect(code).toContain('page')
+    expect(code).toContain('.tw-root')
+    expect(code).toContain('view')
+    expect(code).toContain('.demo')
+  })
 })

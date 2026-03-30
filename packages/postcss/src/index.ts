@@ -8,6 +8,7 @@ export {
   type ResolvedPipelineNode,
   type StyleProcessingPipeline,
 } from './pipeline'
+export { createFallbackPlaceholderReplacer } from './plugins/post/specificity-cleaner'
 export { createInjectPreflight } from './preflight'
 export { internalCssSelectorReplacer } from './shared'
 export * from './types'

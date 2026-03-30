@@ -9,7 +9,7 @@ import { postcssPlugin } from '../constants'
 import { getFallbackRemove } from '../selectorParser'
 import { appendRuleSelector } from '../utils/selector-guard'
 import { dedupeDeclarations } from './post/decl-dedupe'
-import { createRootSpecificityCleaner } from './post/specificity-cleaner'
+import { createFallbackPlaceholderCleaner, createRootSpecificityCleaner } from './post/specificity-cleaner'
 // 可选依赖：import valueParser from 'postcss-value-parser'
 
 export type PostcssWeappTailwindcssRenamePlugin = PluginCreator<IStyleHandlerOptions>
@@ -56,6 +56,7 @@ const postcssWeappTailwindcssPostPlugin: PostcssWeappTailwindcssRenamePlugin = (
     postcssPlugin,
   }
   const cleanRootSpecificity = createRootSpecificityCleaner(opts)
+  const cleanFallbackPlaceholder = createFallbackPlaceholderCleaner()
   const shouldAppendHostSelector = createHostSelectorAppender(opts)
 
   const enableMainChunkTransforms = opts.isMainChunk !== false
@@ -67,6 +68,7 @@ const postcssWeappTailwindcssPostPlugin: PostcssWeappTailwindcssRenamePlugin = (
       if (enableMainChunkTransforms) {
         fallbackRemove?.transformSync(rule)
       }
+      cleanFallbackPlaceholder(rule)
       cleanRootSpecificity?.(rule)
 
       if (enableMainChunkTransforms) {

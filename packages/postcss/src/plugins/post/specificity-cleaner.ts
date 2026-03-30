@@ -2,6 +2,8 @@ import type { Rule } from 'postcss'
 import type { IStyleHandlerOptions } from '../../types'
 import { assignRuleSelectors } from '../../utils/selector-guard'
 
+const FALLBACK_PLACEHOLDER_SUFFIX = ':not(#n)'
+
 // normalizeSelectorList 将 root/universal 替换配置规范化为数组
 function normalizeSelectorList(value?: string | string[] | false) {
   if (value === undefined || value === false) {
@@ -18,6 +20,42 @@ function getSpecificityMatchingName(options: IStyleHandlerOptions) {
     return typeof specificityName === 'string' && specificityName.length > 0 ? specificityName : undefined
   }
   return undefined
+}
+
+function replaceFallbackPlaceholder(selector: string) {
+  return selector.includes(FALLBACK_PLACEHOLDER_SUFFIX)
+    ? selector.split(FALLBACK_PLACEHOLDER_SUFFIX).join('')
+    : selector
+}
+
+export function createFallbackPlaceholderReplacer() {
+  return (code: string) => {
+    return code.includes(FALLBACK_PLACEHOLDER_SUFFIX)
+      ? code.split(FALLBACK_PLACEHOLDER_SUFFIX).join('')
+      : code
+  }
+}
+
+export function createFallbackPlaceholderCleaner() {
+  return (rule: Rule) => {
+    if (!rule.selectors || rule.selectors.length === 0) {
+      return
+    }
+
+    let changed = false
+    const next = rule.selectors.map((selector) => {
+      const updated = replaceFallbackPlaceholder(selector)
+      if (updated !== selector) {
+        changed = true
+      }
+      return updated
+    })
+
+    changed && assignRuleSelectors(rule, next, {
+      phase: 'post',
+      reason: 'clean-fallback-placeholder',
+    })
+  }
 }
 
 // createRootSpecificityCleaner 用于删除 root 选择器上多余的 :not() 包裹
