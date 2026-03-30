@@ -1,6 +1,6 @@
 {
   "version": "1.0.0",
-  "generatedAt": "2026-03-30T08:34:35.986Z",
+  "generatedAt": "2026-03-30T08:44:18.131Z",
   "siteUrl": "https://tw.icebreaker.top",
   "totals": {
     "all": 175,
@@ -5270,8 +5270,8 @@
         "结构化提示（即贴即用）",
         "示例输出（React/Vue，对应提示）",
         "常见错误与防护",
-        "React/Vue 运行与查看",
-        "Demo 内容速览"
+        "失败案例长什么样",
+        "React/Vue 运行与查看"
       ],
       "updatedAt": null,
       "source": "docs/tailwindcss/ai-friendly-and-demos.mdx"
@@ -5336,11 +5336,11 @@
         "先给结论",
         "为什么很多团队会把 Tailwind 用乱",
         "设计体系与 tokens",
+        "# 反例对照：不要让值散落在组件里",
         "组件与变体",
+        "# 反例对照：不要在业务组件里反复拼大串 class",
         "# 业务场景范式",
-        "布局与响应式",
-        "性能与体积",
-        "代码评审清单（示例）"
+        "布局与响应式"
       ],
       "updatedAt": null,
       "source": "docs/tailwindcss/best-practices.mdx"

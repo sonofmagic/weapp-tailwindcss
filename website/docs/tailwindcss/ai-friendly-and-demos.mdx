@@ -151,6 +151,38 @@ const banner = cva('flex items-center justify-between rounded-xl border px-4 py-
 - 动态类膨胀：避免字符串拼类；如果确实需要动态，改成 `cva` / `tv` 的枚举参数。
 - 关系类过深：`group` / `peer` 超过两层后可读性会明显下降，最好直接写进提示约束。
 
+## 失败案例长什么样
+
+下面这类输出，通常看起来“像是完成了任务”，但很难进入正式工程：
+
+```tsx title="失败示例：常见的 AI 跑偏写法"
+export function Banner({ type, active }: { type: string; active: boolean }) {
+  return (
+    <div
+      className={`rounded-[17px] bg-[#4f46e5] px-[17px] py-[11px] text-[15px] text-white ${
+        active ? 'group hover:bg-[#4338ca]' : ''
+      } ${type === 'warn' ? 'bg-[#f59e0b]' : ''} ${type === 'danger' ? 'bg-[#ef4444]' : ''}`}
+    >
+      <span className="group-hover:peer-hover:text-white">状态提示</span>
+    </div>
+  )
+}
+```
+
+这段代码的问题通常包括：
+
+- 随机 hex 色值，脱离 token 体系。
+- 任意值过多，缺少复用空间。
+- 运行时字符串拼类，构建和审查都不稳定。
+- `group` / `peer` 关系乱用，读者很难判断真实意图。
+
+更稳的做法通常是：
+
+- 先给模型 token 和 builder 的上下文。
+- 限制动态空间，只允许枚举值。
+- 明确禁止随机色值和超过两层的关系类。
+- 最后让 `cn`、lint 和构建做兜底。
+
 ## React/Vue 运行与查看
 
 - 安装依赖（首次）：`pnpm install`

@@ -43,6 +43,30 @@ keywords:
 
 除了视觉 token，布局也值得抽成一层稳定组合。这样团队记住的是模式，而不是每次从头拼字符串。
 
+### 反例对照：不要让值散落在组件里
+
+```tsx title="不推荐：裸值直接写进业务组件"
+export function PromoCard() {
+  return (
+    <section className="rounded-[18px] bg-[#3b82f6] px-[18px] py-[14px] text-[15px] text-white shadow-[0_8px_30px_rgba(59,130,246,0.22)]">
+      限时活动
+    </section>
+  )
+}
+```
+
+```tsx title="推荐：先对齐 token，再消费 token"
+export function PromoCard() {
+  return (
+    <section className="rounded-card bg-brand-500 px-4 py-3 text-sm text-white shadow-brand">
+      限时活动
+    </section>
+  )
+}
+```
+
+前一种写法短期看更快，长期的问题是换主题、统一视觉、做评审时都很难收敛。
+
 ```ts
 // Stack（竖向间距统一）
 const stack = 'flex flex-col gap-4'
@@ -76,6 +100,46 @@ const card = cva('rounded-2xl border bg-card/80 shadow-sm transition-all', {
 - `tv` slots：适合卡片、弹窗、菜单这类多槽组件，可以把 header/body/footer 的类一起收敛。
 
 这里最常见的坏味道是：状态很多，但状态逻辑分散在不同组件里。只要出现这种情况，后续维护成本一定会上升。
+
+### 反例对照：不要在业务组件里反复拼大串 class
+
+```tsx title="不推荐：状态散落在业务组件里"
+export function Notice({ tone = 'info', dense = false }) {
+  return (
+    <div
+      className={[
+        'rounded-xl border text-sm',
+        tone === 'info' ? 'border-sky-200 bg-sky-50 text-sky-900' : '',
+        tone === 'danger' ? 'border-red-200 bg-red-50 text-red-900' : '',
+        dense ? 'px-2 py-1' : 'px-4 py-3',
+      ].join(' ')}
+    >
+      内容
+    </div>
+  )
+}
+```
+
+```tsx title="推荐：把变化集中到 builder"
+const notice = cva('rounded-xl border text-sm', {
+  variants: {
+    tone: {
+      info: 'border-sky-200 bg-sky-50 text-sky-900',
+      danger: 'border-red-200 bg-red-50 text-red-900',
+    },
+    dense: {
+      true: 'px-2 py-1',
+      false: 'px-4 py-3',
+    },
+  },
+  defaultVariants: {
+    tone: 'info',
+    dense: false,
+  },
+})
+```
+
+这里不是为了“必须上工具”，而是为了让状态和默认值集中在一个地方。
 
 ### 业务场景范式
 
@@ -111,6 +175,29 @@ const card = cva('rounded-2xl border bg-card/80 shadow-sm transition-all', {
 - 构建后要看体积，不要只看页面“似乎能跑”。最好给关键页面留一个基线，比如首页 CSS 不超过多少 KB。
 - 必要的动态类，尽量回退到 `@apply`、`cva` 或受限枚举，而不是让运行时自由拼接任意值。
 - Tailwind v4 的 JIT 已经很快，真正拖慢冷启动的往往是 content 失控和插件堆太多。
+
+### 反例对照：避免运行时拼接任意类
+
+```ts title="不推荐：运行时拼接任意类"
+const cls = `bg-${color}-${level} px-${size}`
+```
+
+```ts title="推荐：把动态空间收敛成枚举"
+const badge = cva('inline-flex items-center rounded-full', {
+  variants: {
+    color: {
+      brand: 'bg-brand-500 text-white',
+      neutral: 'bg-muted text-foreground',
+    },
+    size: {
+      sm: 'px-2 py-1 text-xs',
+      md: 'px-3 py-1.5 text-sm',
+    },
+  },
+})
+```
+
+后一种写法不只是更稳，也更容易让构建工具、审查者和 AI 都读懂。
 
 ## 代码评审清单（示例）
 
