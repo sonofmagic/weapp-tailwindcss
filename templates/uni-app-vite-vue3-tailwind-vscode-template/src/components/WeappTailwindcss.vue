@@ -18,8 +18,7 @@ function copy(data) {
         class="
           aspect-[100/16.1]
           bg-[url(https://pic4.zhimg.com/80/v2-63755eaa318858e33445862d72581207.png)]
-          bg-[length:100%_100%]
-          bg-no-repeat
+          bg-[length:100%_100%] bg-no-repeat
         "
       />
     </view>
