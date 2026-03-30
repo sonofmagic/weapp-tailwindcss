@@ -1,5 +1,7 @@
-import { describe, it } from 'vitest'
+import { getE2EProject } from './projectEntries'
+import { defineProjectTest } from './projectTest'
 
-describe('e2e', () => {
-  it.skip('taro-vite-tailwindcss-v4', () => {})
+defineProjectTest(getE2EProject('taro-vite-tailwindcss-v4'), {
+  suite: 'e2e',
+  fixturesDir: '../demo',
 })

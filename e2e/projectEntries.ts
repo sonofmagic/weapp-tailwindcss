@@ -41,12 +41,11 @@ export const E2E_PROJECTS = [
     projectPath: 'taro-app-vite',
     cssFile: 'dist/app.wxss',
   },
-  // Taro Vite + tailwindcss v4 当前链路不稳定，暂时不参与 pnpm e2e / 快照更新流程
-  // {
-  //   name: 'taro-vite-tailwindcss-v4',
-  //   projectPath: 'taro-vite-tailwindcss-v4',
-  //   cssFile: 'dist/app.wxss',
-  // },
+  {
+    name: 'taro-vite-tailwindcss-v4',
+    projectPath: 'taro-vite-tailwindcss-v4',
+    cssFile: 'dist/app.wxss',
+  },
   {
     name: 'taro-vue3-app',
     projectPath: 'taro-vue3-app',
