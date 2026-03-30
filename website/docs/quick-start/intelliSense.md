@@ -31,7 +31,7 @@ keywords:
 
 ### 让 `Tailwind CSS IntelliSense` 识别 weapp-tailwindcss v4
 
-`tailwindcss-intellisense` 在 v4 中必须看到 `@import "tailwindcss"` 才会将工作区视为 Tailwind 根文件。从 v4.7.10 起，`weapp-tailwindcss` 默认会在构建阶段把这些 `@import 'tailwindcss'` 自动改写成 `@import 'weapp-tailwindcss'`（可通过 `rewriteCssImports: false` 关闭）。这意味着你可以直接在项目入口写 `@import 'tailwindcss';` 以获得 IntelliSense，而插件会在最早的 PostCSS 流程中替换成小程序可用的样式。
+`tailwindcss-intellisense` 在 v4 中必须看到 `@import "tailwindcss"` 才会将工作区视为 Tailwind 根文件。从 v4.7.10 起，`weapp-tailwindcss` 默认会在构建阶段把这些 `@import 'tailwindcss'` 自动改写成 `@import 'weapp-tailwindcss/index.css'`（可通过 `rewriteCssImports: false` 关闭）。这意味着你可以直接在 IntelliSense 辅助入口写 `@import 'tailwindcss';` 以获得智能提示，而插件会在最早的 PostCSS 流程中替换成小程序可用的样式。
 
 如果仍希望与源码解耦，也可以使用 CLI 为 VS Code 生成一个仅供扩展使用的辅助 CSS：
 
@@ -42,9 +42,9 @@ npx weapp-tailwindcss vscode-entry --css src/app.css
 - 默认输出在 `.vscode/weapp-tailwindcss.intellisense.css`，其中包含 `@import 'tailwindcss';`、常见的 `@source` globs 以及你传入的 CSS 入口（例如 `src/app.css`）。
 - 该文件只用于激活 IntelliSense，不需要、也不应该被打包流程引用。
 - 若需自定义文件名或额外的 `@source`，可通过 `--output`、`--source`、`--force` 等参数调整，运行 `npx weapp-tailwindcss vscode-entry --help` 查看全部选项。
-- 如果不想生成独立文件，可以直接在真实入口写 `@import 'tailwindcss';`，默认启用的 `rewriteCssImports` 会让 webpack/vite 在 CSS 解析阶段把它映射到 `weapp-tailwindcss`（只影响样式导入，JS/TS `import 'tailwindcss'` 不会被修改）。
+- 如果不想生成独立文件，可以直接在真实入口写 `@import 'tailwindcss';`，默认启用的 `rewriteCssImports` 会让 webpack/vite 在 CSS 解析阶段把它映射到 `weapp-tailwindcss/index.css`（只影响样式导入，JS/TS `import 'tailwindcss'` 不会被修改）。
 
-保存/重载任意文件后 VS Code 会检测到该辅助文件，从而让 `@import 'weapp-tailwindcss';` 的项目享受到完整的补全、悬浮和跳转体验。
+保存/重载任意文件后 VS Code 会检测到该辅助文件，从而让 `@import 'weapp-tailwindcss/index.css';` 的项目享受到完整的补全、悬浮和跳转体验。
 
 如果你希望显式告诉 `Tailwind CSS IntelliSense`“某个 CSS 根文件对应哪些源码目录”，可以继续补充 `tailwindCSS.experimental.configFile`：
 

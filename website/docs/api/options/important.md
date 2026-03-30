@@ -238,11 +238,11 @@ false
 
 > 可选 | 类型: `boolean` | 默认值: `true`
 
-是否在 webpack/vite 阶段自动把 CSS 中的 `@import 'tailwindcss'` 映射为 `weapp-tailwindcss`。
+是否在 webpack/vite 阶段自动把 CSS 中的 `@import 'tailwindcss'` 映射为 `weapp-tailwindcss/index.css`。
 
 #### 备注
 
-开启后打包链路只会在处理样式时拦截 `tailwindcss` 的导入路径（JS/TS `import 'tailwindcss'` 不会被修改），让源码可以继续写 `@import 'tailwindcss';`，同时输出 weapp-tailwindcss 的样式。传入 `false` 可完全关闭该行为。
+开启后打包链路只会在处理样式时拦截 `tailwindcss` 的导入路径（JS/TS `import 'tailwindcss'` 不会被修改），让源码可以继续写 `@import 'tailwindcss';`，同时输出 `weapp-tailwindcss/index.css` 的样式。传入 `false` 可完全关闭该行为。
 
 #### 默认值
 

@@ -2,7 +2,7 @@ import Admonition from '@theme/Admonition'
 import React from 'react'
 
 /**
- * 可复用组件：说明 @import 'tailwindcss' 自动转换为 @import 'weapp-tailwindcss' 的机制
+ * 可复用组件：说明 @import 'tailwindcss' 自动转换为 @import 'weapp-tailwindcss/index.css' 的机制
  *
  * 使用方法：
  * import CssImportReminder from '@site/src/components/CssImportReminder';
@@ -28,7 +28,7 @@ export default function CssImportReminder(): React.JSX.Element {
         。
       </p>
       <p>
-        这意味着你可以直接在项目中使用官方文档的写法
+        这意味着你可以继续在 IntelliSense 辅助入口中使用官方文档的写法
         {' '}
         <code>@import &apos;tailwindcss&apos;</code>
         ，以获得更好的
@@ -38,7 +38,13 @@ export default function CssImportReminder(): React.JSX.Element {
         支持。
       </p>
       <p>
-        如果遇到报错或样式不生效，请手动改为
+        如果是实际运行时入口，推荐直接写
+        {' '}
+        <code>@import &apos;weapp-tailwindcss/index.css&apos;</code>
+        。
+      </p>
+      <p>
+        如果遇到报错或样式不生效，也请优先手动改为
         {' '}
         <code>@import &apos;weapp-tailwindcss/index.css&apos;</code>
         ，

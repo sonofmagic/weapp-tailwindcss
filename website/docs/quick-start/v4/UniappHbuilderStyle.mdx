@@ -20,10 +20,10 @@ keywords:
 import CssImportReminder from '@site/src/components/CssImportReminder'
 import UniAppUniScss from '../_UniAppUniScss.mdx'
 
-在 `src/app.css` 中引入 `weapp-tailwindcss`，这个文件会作为 `cssEntries` 的入口：
+在 `src/app.css` 中引入 `weapp-tailwindcss/index.css`，这个文件会作为 `cssEntries` 的入口：
 
 ```css title="src/app.css"
-@import "weapp-tailwindcss";
+@import "weapp-tailwindcss/index.css";
 ```
 
 <CssImportReminder />
@@ -51,9 +51,9 @@ import UniAppUniScss from '../_UniAppUniScss.mdx'
 }
 ```
 
-这个 `src/main.css` 只用于 IntelliSense，不要在 `App.vue` / `App.uvue` 里实际引入。应用运行时仍然使用 `src/app.css` 里的 `@import "weapp-tailwindcss"`。
+这个 `src/main.css` 只用于 IntelliSense，不要在 `App.vue` / `App.uvue` 里实际引入。应用运行时仍然使用 `src/app.css` 里的 `@import "weapp-tailwindcss/index.css"`。
 
-这里要写 `@import "tailwindcss"`，因为 `tailwindcss-intellisense` 当前用于触发 v4 设计系统加载的判断只认 `@import "tailwindcss"` 或 `@theme {}`，并不认 `@import "weapp-tailwindcss"`。
+这里要写 `@import "tailwindcss"`，因为 `tailwindcss-intellisense` 当前用于触发 v4 设计系统加载的判断只认 `@import "tailwindcss"` 或 `@theme {}`，并不认 `@import "weapp-tailwindcss/index.css"`。
 
 > 添加 `@source not "unpackage";` 是为了避免 `HBuilderX` 差量编译死循环问题
 

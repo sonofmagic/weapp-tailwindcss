@@ -58,11 +58,11 @@ keywords:
 
 ## 小程序样式引入 `weapp-tailwindcss` 不同点
 
-在小程序场景下，`tailwindcss@4` 的文档示例建议直接写成 `@import "weapp-tailwindcss"`，而不是继续使用 `@import "tailwindcss"` 再依赖 `rewriteCssImports` 做二次改写。
+在小程序场景下，`tailwindcss@4` 的文档示例建议直接写成 `@import "weapp-tailwindcss/index.css"`，而不是继续使用 `@import "tailwindcss"` 再依赖 `rewriteCssImports` 做二次改写。
 
 ### 有什么区别?
 
-`@import "weapp-tailwindcss"` 本质上会解析到 `weapp-tailwindcss` 提供的小程序适配入口。相比 `@import "tailwindcss"`，主要区别是:
+`@import "weapp-tailwindcss/index.css"` 本质上会解析到 `weapp-tailwindcss` 提供的小程序适配入口。相比 `@import "tailwindcss"`，主要区别是:
 
 1. `"weapp-tailwindcss"` 没有 `"tailwindcss"` 中 `h5` `preflight` 的类(这些都是给 `h5` 用的，小程序用不到)
 2. `"weapp-tailwindcss"` 中，不使用 `tailwindcss` 默认的 `@layer` 来控制样式优先级。这是因为小程序本身不支持 `css` `@layer` 这个特性，强行启用会造成一些样式难以覆盖的问题。
@@ -76,7 +76,7 @@ keywords:
 @import "tailwindcss";
 /*  #endif  */
 /*  #ifndef  H5  */
-@import "weapp-tailwindcss";
+@import "weapp-tailwindcss/index.css";
 /*  #endif  */
 ```
 
@@ -88,12 +88,12 @@ keywords:
 
 来让 `weapp-tailwindcss` 和 `tailwindcss` 保持一致的处理模式
 
-> `cssEntries` 为一个数组，就是你写 `@import "weapp-tailwindcss";` 的那些文件，可以有多个
+> `cssEntries` 为一个数组，就是你写 `@import "weapp-tailwindcss/index.css";` 的那些文件，可以有多个
 
 ```ts
 {
   cssEntries: [
-    // 就是你 @import "weapp-tailwindcss"; 那个文件
+    // 就是你 @import "weapp-tailwindcss/index.css"; 那个文件
     // 比如 tarojs
     path.resolve(__dirname, '../src/app.css')
     // 比如 uni-app (没有 app.css 需要先创建，然后让 `main` 入口文件引入)
@@ -107,12 +107,12 @@ keywords:
 :::warning 只注册到 CSS，不要注册到预处理样式文件
 `tailwindcss@4` 的入口请只放在 `.css` 文件里，例如 `app.css`。
 
-不要把 `@import "weapp-tailwindcss"`、`@tailwindcss/postcss`，或者对应的 `cssEntries` 指向 `scss`、`less`、`sass` 这类预处理样式文件，否则很容易导致最终样式生成失败，或者 `weapp-tailwindcss` 转译失效。
+不要把 `@import "weapp-tailwindcss/index.css"`、`@tailwindcss/postcss`，或者对应的 `cssEntries` 指向 `scss`、`less`、`sass` 这类预处理样式文件，否则很容易导致最终样式生成失败，或者 `weapp-tailwindcss` 转译失效。
 
 推荐做法是：
 
 1. 新建一个纯 `css` 入口文件，例如 `src/app.css`
-2. 只在这个 `css` 文件里写 `@import "weapp-tailwindcss";`
+2. 只在这个 `css` 文件里写 `@import "weapp-tailwindcss/index.css";`
 3. 再让业务里的 `scss` / `less` 去间接引用这个 `css`，或者由主入口文件引入它
 :::
 
@@ -163,7 +163,7 @@ shamefully-hoist=true
 
 目前 `tailwindcss@4` 的 VS Code `Tailwind CSS IntelliSense` 插件，会优先从它识别到的 Tailwind 入口里推导配置与候选类名。
 
-在小程序项目里，我们现在推荐直接写 `@import "weapp-tailwindcss"`。这样运行时和转译链路更直接，但当前插件自动扫描时并不会把它稳定识别为 Tailwind 4 的显式入口，所以经常出现智能提示失效。
+在小程序项目里，我们现在推荐直接写 `@import "weapp-tailwindcss/index.css";`。这样运行时和转译链路更直接，但当前插件自动扫描时并不会把它稳定识别为 Tailwind 4 的显式入口，所以经常出现智能提示失效。
 
 相关修复可以关注这个 PR：
 
@@ -179,7 +179,7 @@ shamefully-hoist=true
 }
 ```
 
-这样配置后，扩展会直接把 `src/app.css` 当成 Tailwind 4 项目入口来加载，即使它里面写的是 `@import "weapp-tailwindcss"`，也能恢复补全、悬浮提示和诊断。
+这样配置后，扩展会直接把 `src/app.css` 当成 Tailwind 4 项目入口来加载，即使它里面写的是 `@import "weapp-tailwindcss/index.css"`，也能恢复补全、悬浮提示和诊断。
 
 如果你的项目有多个 Tailwind 入口，则改用对象写法，把每个 CSS 入口映射到对应的文件范围：
 
@@ -207,16 +207,16 @@ shamefully-hoist=true
 }
 ```
 
-这个 `main.css` 只用于 IntelliSense，不需要也不应该在实际应用入口里引入。业务真正生效的入口仍然是你的 `app.css` 里的 `@import "weapp-tailwindcss"`。
+这个 `main.css` 只用于 IntelliSense，不需要也不应该在实际应用入口里引入。业务真正生效的入口仍然是你的 `app.css` 里的 `@import "weapp-tailwindcss/index.css"`。
 
-这里必须使用 `@import "tailwindcss"`，而不是 `@import "weapp-tailwindcss"` 或 `@import "weapp-tailwindcss/theme.css"`。原因是 `tailwindcss-intellisense` 当前源码里，真正决定是否按 v4 设计系统加载的是 `packages/tailwindcss-language-server/src/util/v4/design-system.ts` 里的 `isMaybeV4()`，它只检查：
+这里必须使用 `@import "tailwindcss"`，而不是 `@import "weapp-tailwindcss/index.css"` 或 `@import "weapp-tailwindcss/theme.css"`。原因是 `tailwindcss-intellisense` 当前源码里，真正决定是否按 v4 设计系统加载的是 `packages/tailwindcss-language-server/src/util/v4/design-system.ts` 里的 `isMaybeV4()`，它只检查：
 
 - `@import "tailwindcss"`
 - `@theme {}`
 
 也就是说：
 
-- `@import "weapp-tailwindcss"`：不会触发这段 v4 识别
+- `@import "weapp-tailwindcss/index.css"`：不会触发这段 v4 识别
 - `@import "weapp-tailwindcss/theme.css"`：同样不会触发
 - `@import "tailwindcss"`：可以稳定触发 v4 IntelliSense
 
@@ -226,7 +226,7 @@ shamefully-hoist=true
 
 ## 如何去除 preflight 样式
 
-在引入 `@import "weapp-tailwindcss"` 时，默认会引入 `preflight` 样式。
+在引入 `@import "weapp-tailwindcss/index.css"` 时，默认会引入 `preflight` 样式。
 
 ### 什么是 preflight 样式
 
@@ -245,7 +245,7 @@ view,text,::before,::after,::backdrop {
 
 ### 解决方案
 
-`@import "weapp-tailwindcss"` 本质上由三个部分组成:
+`@import "weapp-tailwindcss/index.css"` 本质上由三个部分组成:
 
 ```css
 @import 'weapp-tailwindcss/theme.css';
@@ -256,7 +256,7 @@ view,text,::before,::after,::backdrop {
 所以想要去除 `preflight` 样式，只需像下面一样写即可
 
 ```diff
-- @import "weapp-tailwindcss";
+- @import "weapp-tailwindcss/index.css";
 + @import 'weapp-tailwindcss/theme.css';
 + @import 'weapp-tailwindcss/utilities.css';
 ```

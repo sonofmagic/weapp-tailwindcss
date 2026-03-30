@@ -79,7 +79,7 @@ module.exports = {
 @config "../tailwind.config.js";
 ```
 
-> **注意**：`weapp-tailwindcss` 的 `rewriteCssImports` 选项会自动将 `@import 'tailwindcss'` 改写为 `@import 'weapp-tailwindcss/index.css'`。如果遇到报错或样式不生效，请手动改为 `@import 'weapp-tailwindcss/index.css'`。
+> **注意**：实际运行时入口更推荐直接写 `@import 'weapp-tailwindcss/index.css'`。如果这里继续写 `@import 'tailwindcss'`，则依赖 `rewriteCssImports` 在构建阶段自动改写。
 
 这样在 `tailwindcss@4` 中才能起效果
 

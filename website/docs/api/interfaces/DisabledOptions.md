@@ -25,7 +25,7 @@ keywords:
 
 ## 备注
 
-适用于需要仅关闭部分行为（例如主插件流程），但保留其他预处理能力（如 Tailwind v4 的 `@import "tailwindcss"` 重写）。
+适用于需要仅关闭部分行为（例如主插件流程），但保留其他预处理能力（如 Tailwind v4 的 `@import "tailwindcss"` 到 `@import "weapp-tailwindcss/index.css"` 的重写）。
 
 ## 属性
 
@@ -47,7 +47,7 @@ false
 
 > `optional` **rewriteCssImports**: `boolean`
 
-禁用对 `@import "tailwindcss"` 的预处理重写。
+禁用对 `@import "tailwindcss"` 到 `@import "weapp-tailwindcss/index.css"` 的预处理重写。
 
 #### 默认值
 

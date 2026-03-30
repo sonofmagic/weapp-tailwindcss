@@ -1,6 +1,6 @@
 {
   "version": "1.0.0",
-  "generatedAt": "2026-03-30T08:44:18.131Z",
+  "generatedAt": "2026-03-30T08:58:39.597Z",
   "siteUrl": "https://tw.icebreaker.top",
   "totals": {
     "all": 175,
@@ -4265,7 +4265,7 @@
       "id": "doc:quick-start/intelliSense",
       "title": "IDE 智能提示设置",
       "description": "tailwindcss-intellisense 在 v4 中必须看到 @import \"tailwindcss\" 才会将工作区视为 Tailwind 根文件。从 v4.7.10 起，weapp-tailwindcss 默认会在构建阶段把这些 @import 'tailwind…",
-      "summary": "tailwindcss-intellisense 在 v4 中必须看到 @import \"tailwindcss\" 才会将工作区视为 Tailwind 根文件。从 v4.7.10 起，weapp-tailwindcss 默认会在构建阶段把这些 @import 'tailwindcss' 自动改写成 @import 'weapp-tailwindcss'（可…",
+      "summary": "tailwindcss-intellisense 在 v4 中必须看到 @import \"tailwindcss\" 才会将工作区视为 Tailwind 根文件。从 v4.7.10 起，weapp-tailwindcss 默认会在构建阶段把这些 @import 'tailwindcss' 自动改写成 @import 'weapp-tailwindcss/in…",
       "url": "/docs/quick-start/intelliSense",
       "canonical": "https://tw.icebreaker.top/docs/quick-start/intelliSense",
       "keywords": [
@@ -4932,7 +4932,7 @@
       "id": "doc:quick-start/v4/UniappCliStyle",
       "title": "UniappCliStyle",
       "description": "在 src/app.css 中引入 tailwindcss，这个文件会作为 cssEntries 的入口：",
-      "summary": "在 src/app.css 中引入 weapp-tailwindcss，这个文件会作为 cssEntries 的入口：",
+      "summary": "在 src/app.css 中引入 weapp-tailwindcss/index.css，这个文件会作为 cssEntries 的入口：",
       "url": "/docs/quick-start/v4/UniappCliStyle",
       "canonical": "https://tw.icebreaker.top/docs/quick-start/v4/UniappCliStyle",
       "keywords": [
@@ -4995,7 +4995,7 @@
       "id": "doc:quick-start/v4/UniappHbuilderStyle",
       "title": "UniappHbuilderStyle",
       "description": "在 src/app.css 中引入 tailwindcss，这个文件会作为 cssEntries 的入口：",
-      "summary": "在 src/app.css 中引入 weapp-tailwindcss，这个文件会作为 cssEntries 的入口：",
+      "summary": "在 src/app.css 中引入 weapp-tailwindcss/index.css，这个文件会作为 cssEntries 的入口：",
       "url": "/docs/quick-start/v4/UniappHbuilderStyle",
       "canonical": "https://tw.icebreaker.top/docs/quick-start/v4/UniappHbuilderStyle",
       "keywords": [
