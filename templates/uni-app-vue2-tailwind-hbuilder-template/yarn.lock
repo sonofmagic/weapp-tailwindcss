@@ -675,7 +675,7 @@
     "@nodelib/fs.scandir" "2.1.5"
     fastq "^1.6.0"
 
-"@tailwindcss-mangle/config@7.0.0":
+"@tailwindcss-mangle/config@7.0.0", "@tailwindcss-mangle/config@^7.0.0":
   version "7.0.0"
   resolved "https://registry.yarnpkg.com/@tailwindcss-mangle/config/-/config-7.0.0.tgz#aaa5bf9526c3c27533ae9245025e89cf2f9bdce1"
   integrity sha512-84hj89cUXzmnAlWLe7gEfYDwptbMDVjjj1s1NWoGIZfucADayh/DI1pcxdcoLKRF8caKj21NglnGxrvo1wZTfw==
@@ -685,22 +685,6 @@
     fs-extra "^11.3.4"
     is-css-request "^1.0.1"
     pathe "^2.0.3"
-
-"@tailwindcss-mangle/config@^6.1.3":
-  version "6.1.3"
-  resolved "https://registry.yarnpkg.com/@tailwindcss-mangle/config/-/config-6.1.3.tgz#92b19a27e29d0d921145d73b0f15d43c9451a3fd"
-  integrity sha512-e0wj/R582uyrqMLYDDyfl0BfysybOA1PiP0ChxQVch1JWxkLxM0SB7Nb6Cq0jiSYugX5hGfSV1UEqLhM0Q9PTQ==
-  dependencies:
-    "@tailwindcss-mangle/shared" "^4.1.3"
-    c12 "^3.3.3"
-    fs-extra "^11.3.3"
-    is-css-request "^1.0.1"
-    pathe "^2.0.3"
-
-"@tailwindcss-mangle/shared@^4.1.3":
-  version "4.1.3"
-  resolved "https://registry.yarnpkg.com/@tailwindcss-mangle/shared/-/shared-4.1.3.tgz#14125aff3950a3f08dc52e2f541e942cf1606da8"
-  integrity sha512-u7TSrR0PwEHUwP/gEE+yIy8QrkCnyVkN245uyn74aYWK73ksJAY2bb27OStzlMdfQADGf7xpBLshISM9UpDJEQ==
 
 "@tailwindcss-mangle/shared@^4.1.4":
   version "4.1.4"
@@ -798,10 +782,10 @@
     postcss-selector-parser "^7.1.0"
     postcss-value-parser "^4.2.0"
 
-"@weapp-tailwindcss/postcss@2.1.6":
-  version "2.1.6"
-  resolved "https://registry.yarnpkg.com/@weapp-tailwindcss/postcss/-/postcss-2.1.6.tgz#2bd88a9caaec88a4de354309452b1e5c4ffcb4b7"
-  integrity sha512-sKrayrLlpOMhim91xsNTzpJeEwIinZvvc3E7Lxy8LhNDjS+mST534A1hy0MtxtOFY+8/jGFKsiCD1DnGyhqkEQ==
+"@weapp-tailwindcss/postcss@2.1.7":
+  version "2.1.7"
+  resolved "https://registry.yarnpkg.com/@weapp-tailwindcss/postcss/-/postcss-2.1.7.tgz#8d37b9263b7a020108bb9bee00bb8a0f5b20c037"
+  integrity sha512-r8ryufKDxIaovYyq/gE2VOsjlBDPfcNCuwNuAl8+8R+JSTXZdPv+BGs8a5caUEciE8Lg/cil7VUTSSxgJA5ofQ==
   dependencies:
     "@weapp-core/escape" "~7.0.0"
     "@weapp-tailwindcss/postcss-calc" "^1.0.0"
@@ -2353,15 +2337,6 @@ fs-extra@^10.0.0:
   version "10.1.0"
   resolved "https://registry.npmmirror.com/fs-extra/-/fs-extra-10.1.0.tgz#02873cfbc4084dde127eaa5f9905eef2325d1abf"
   integrity sha512-oRXApq54ETRj4eMiFzGnHWGy+zo5raudjuxN0b8H7s/RU2oW0Wvsx9O0ACRN/kRq9E8Vu/ReskGB5o3ji+FzHQ==
-  dependencies:
-    graceful-fs "^4.2.0"
-    jsonfile "^6.0.1"
-    universalify "^2.0.0"
-
-fs-extra@^11.3.3:
-  version "11.3.3"
-  resolved "https://registry.yarnpkg.com/fs-extra/-/fs-extra-11.3.3.tgz#a27da23b72524e81ac6c3815cc0179b8c74c59ee"
-  integrity sha512-VWSRii4t0AFm6ixFFmLLx1t7wS1gh+ckoa84aOeapGum0h+EZd1EhEumSB+ZdDLnEPuucsVB9oB7cxJHap6Afg==
   dependencies:
     graceful-fs "^4.2.0"
     jsonfile "^6.0.1"
@@ -5090,22 +5065,22 @@ watchpack@^1.7.4:
     chokidar "^3.4.1"
     watchpack-chokidar2 "^2.0.1"
 
-weapp-tailwindcss@^4.11.0:
-  version "4.11.0"
-  resolved "https://registry.yarnpkg.com/weapp-tailwindcss/-/weapp-tailwindcss-4.11.0.tgz#fd535a542244675919d5e51a75403ed6b69ee637"
-  integrity sha512-zEWqK3YR7WtLwi9Ki+aWgyyUh3sru6yadC2HYWHVDiMPLf+hPksTZX26JDDyJqTu61biK/Npfnr0oa9oF6AGIQ==
+weapp-tailwindcss@^4.11.1:
+  version "4.11.1"
+  resolved "https://registry.yarnpkg.com/weapp-tailwindcss/-/weapp-tailwindcss-4.11.1.tgz#969e0e4655c0d1b7c1753b287be112f01969db92"
+  integrity sha512-PYKZZS7OpYzxj1V9u0gLtTuVdDAj8tL+GwO8oLwP3KTyub3EfpHjwNBKdUXHLs/irP+DIlccWfwRg+377qExHg==
   dependencies:
     "@ast-core/escape" "~1.0.1"
     "@babel/parser" "~7.29.2"
     "@babel/traverse" "~7.29.0"
     "@babel/types" "~7.29.0"
-    "@tailwindcss-mangle/config" "^6.1.3"
+    "@tailwindcss-mangle/config" "^7.0.0"
     "@vue/compiler-dom" "^3.5.31"
     "@vue/compiler-sfc" "^3.5.31"
     "@weapp-core/escape" "~7.0.0"
     "@weapp-core/regex" "~1.0.1"
     "@weapp-tailwindcss/logger" "1.1.0"
-    "@weapp-tailwindcss/postcss" "2.1.6"
+    "@weapp-tailwindcss/postcss" "2.1.7"
     "@weapp-tailwindcss/shared" "1.1.3"
     cac "6.7.14"
     comment-json "^4.6.2"

@@ -48,7 +48,7 @@
     "tailwindcss": "^4.2.2",
     "typescript": "^6.0.2",
     "weapp-ide-cli": "^5.1.2",
-    "weapp-tailwindcss": "^4.11.0",
+    "weapp-tailwindcss": "^4.11.1",
     "webpack": "^5.101.3"
   },
   "browserslist": [
