@@ -4,6 +4,7 @@ import type { UserDefinedOptions } from '@/types'
 import { existsSync } from 'node:fs'
 import path from 'node:path'
 import process from 'node:process'
+import { logger } from '@weapp-tailwindcss/logger'
 import postcssHtmlTransform from '@weapp-tailwindcss/postcss/html-transform'
 import { vitePluginName } from '@/constants'
 import { getCompilerContext } from '@/context'
@@ -290,6 +291,7 @@ export function UnifiedViteWeappTailwindcssPlugin(options: UserDefinedOptions = 
           if (nextAppType && opts.appType !== nextAppType) {
             const previousAppType = opts.appType
             opts.appType = nextAppType
+            logger.info('根据 Vite 项目根目录自动推断 appType -> %s', nextAppType)
             debug(
               'align appType with vite root: %s -> %s',
               previousAppType ?? 'undefined',

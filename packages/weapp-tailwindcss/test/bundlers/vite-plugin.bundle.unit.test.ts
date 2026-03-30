@@ -52,6 +52,7 @@ describe('bundlers/vite UnifiedViteWeappTailwindcssPlugin bundle', () => {
     vi.resetModules()
     vi.doUnmock('@/bundlers/vite/incremental-runtime-class-set')
     resetVitePluginTestContext()
+    vi.restoreAllMocks()
   })
 
   afterEach(async () => {
@@ -1073,6 +1074,7 @@ const cls = "w-[1.5px]"
   }, TEST_TIMEOUT_MS)
 
   it('infers appType from vite root before generateBundle runs', async () => {
+    const loggerModule = await import('@weapp-tailwindcss/logger')
     const projectRoot = await mkdtemp(path.join(os.tmpdir(), 'weapp-tw-vite-root-'))
     createdDirs.push(projectRoot)
     await writeFile(path.join(projectRoot, 'package.json'), JSON.stringify({
@@ -1092,6 +1094,7 @@ const cls = "w-[1.5px]"
     const plugins = UnifiedViteWeappTailwindcssPlugin()
     const postPlugin = plugins?.find(plugin => plugin.name === 'weapp-tailwindcss:adaptor:post') as Plugin
     expect(postPlugin).toBeTruthy()
+    const loggerInfoSpy = vi.spyOn(loggerModule.logger, 'info').mockImplementation(() => {})
 
     await (postPlugin.configResolved as any)?.call(postPlugin, {
       command: 'build',
@@ -1101,6 +1104,7 @@ const cls = "w-[1.5px]"
     } as ResolvedConfig)
 
     expect(currentContext.appType).toBe('taro')
+    expect(loggerInfoSpy).toHaveBeenCalledWith('根据 Vite 项目根目录自动推断 appType -> %s', 'taro')
 
     const bundle = {
       'app.wxss': {
