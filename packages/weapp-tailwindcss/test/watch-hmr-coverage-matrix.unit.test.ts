@@ -11,7 +11,6 @@ const watchCoveredProjects = new Set([
 
 const sourceCoveredProjects = new Set([
   'demo/uni-app-tailwindcss-v4',
-  'demo/uni-app-webpack-tailwindcss-v4',
   'demo/uni-app-x-hbuilderx-tailwindcss4',
   'demo/taro-vite-tailwindcss-v4',
   'demo/taro-webpack-tailwindcss-v4',
@@ -21,9 +20,7 @@ const sourceCoveredProjects = new Set([
 ])
 
 const miniProgramV3Projects = [
-  'demo/uni-app',
   'demo/uni-app-vue3-vite',
-  'demo/uni-app-webpack5',
   'demo/taro-app',
   'demo/taro-app-vite',
   'demo/taro-vue3-app',
@@ -36,7 +33,6 @@ const miniProgramV3Projects = [
 
 const miniProgramV4Projects = [
   'demo/uni-app-tailwindcss-v4',
-  'demo/uni-app-webpack-tailwindcss-v4',
   'demo/uni-app-x-hbuilderx-tailwindcss4',
   'demo/taro-vite-tailwindcss-v4',
   'demo/taro-webpack-tailwindcss-v4',

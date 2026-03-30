@@ -20,15 +20,6 @@ const demoRoot = path.resolve(__dirname, '../../../../demo')
 
 const cases: DemoCase[] = [
   {
-    title: 'uni-app',
-    project: 'uni-app',
-    entry: 'src/pages/index/index.vue',
-    marker: 'text-[#aa1101]',
-    closingTag: '</template>',
-    appType: 'uni-app',
-    makeSnippet: marker => `  <view class="${marker}">hmr-test</view>\n`,
-  },
-  {
     title: 'uni-app-tailwindcss-v4',
     project: 'uni-app-tailwindcss-v4',
     entry: 'src/pages/index/index.vue',
@@ -77,24 +68,6 @@ const cases: DemoCase[] = [
       tailwindcssBasedir: root,
     }),
     makeSnippet: marker => `\t<text class="${marker}">hmr-test</text>\n`,
-  },
-  {
-    title: 'uni-app-webpack-tailwindcss-v4',
-    project: 'uni-app-webpack-tailwindcss-v4',
-    entry: 'src/pages/index/index.vue',
-    marker: 'text-[#aa1103]',
-    closingTag: '</template>',
-    appType: 'uni-app',
-    makeSnippet: marker => `  <view class="${marker}">hmr-test</view>\n`,
-  },
-  {
-    title: 'uni-app-webpack5',
-    project: 'uni-app-webpack5',
-    entry: 'src/pages/index/index.vue',
-    marker: 'text-[#aa1104]',
-    closingTag: '</template>',
-    appType: 'uni-app',
-    makeSnippet: marker => `  <view class="${marker}">hmr-test</view>\n`,
   },
   {
     title: 'taro-app',

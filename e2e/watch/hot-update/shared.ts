@@ -7,13 +7,10 @@ import { expect } from 'vitest'
 export type WatchProjectGroup = 'demo' | 'apps'
 export type ConcreteWatchCaseName
   = | 'taro'
-    | 'uni'
     | 'mpx'
     | 'weapp-vite'
     | 'uni-app-vue3-vite'
     | 'uni-app-tailwindcss-v4'
-    | 'uni-app-webpack-tailwindcss-v4'
-    | 'uni-app-webpack5'
     | 'mpx-tailwindcss-v4'
     | 'taro-vite-tailwindcss-v4'
     | 'taro-app-vite'
@@ -185,10 +182,9 @@ const criticalDemoProjects = [
   'demo/taro-vue3-app',
 ] as const
 
-const bothCases = new Set<ConcreteWatchCaseName>(['taro', 'uni'])
+const bothCases = new Set<ConcreteWatchCaseName>(['taro', 'uni-app-vue3-vite'])
 const noApplyValidationCases = new Set<ConcreteWatchCaseName>([
   'uni-app-tailwindcss-v4',
-  'uni-app-webpack-tailwindcss-v4',
   'taro-vite-tailwindcss-v4',
   'taro-webpack-tailwindcss-v4',
   'taro-webpack',
@@ -199,7 +195,6 @@ const commentCarrierRequiredCases = new Set<ConcreteWatchCaseName>([
   'taro-app-vite',
   'taro-vite-tailwindcss-v4',
   'taro-webpack-tailwindcss-v4',
-  'uni',
   'uni-app-vue3-vite',
   'vite-native-ts',
   'weapp-vite',
@@ -274,7 +269,6 @@ export function resolveCaseName() {
   const value = process.env.E2E_WATCH_CASE
   if (
     value === 'taro'
-    || value === 'uni'
     || value === 'mpx'
     || value === 'weapp-vite'
     || value === 'uni-app-vue3-vite'
@@ -314,7 +308,6 @@ export function resolveExpectedGroup(target: WatchCaseName): WatchProjectGroup |
 
   if (
     target === 'taro'
-    || target === 'uni'
     || target === 'mpx'
     || target === 'weapp-vite'
     || target === 'uni-app-vue3-vite'

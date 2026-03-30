@@ -164,27 +164,6 @@ const cases: SourceMutationCase[] = [
     },
   },
   {
-    title: 'demo/uni-app-webpack-tailwindcss-v4',
-    projectRoot: path.resolve(repositoryRoot, 'demo/uni-app-webpack-tailwindcss-v4'),
-    appType: 'uni-app',
-    template: {
-      entry: 'src/pages/index/index.vue',
-      closingTag: '</template>',
-      makeSnippet: (classLiteral, marker) => `\t\t<view class="${classLiteral}">${marker}</view>\n`,
-    },
-    script: {
-      entry: 'src/pages/index/index.vue',
-      applyClassLiteral(source, classLiteral) {
-        return replaceExact(
-          source,
-          "\t\t\tclassName: 'bg-[#877878]'",
-          `\t\t\tclassName: '${classLiteral}'`,
-          'demo/uni-app-webpack-tailwindcss-v4 script anchor',
-        )
-      },
-    },
-  },
-  {
     title: 'demo/uni-app-x-hbuilderx-tailwindcss4',
     projectRoot: path.resolve(repositoryRoot, 'demo/uni-app-x-hbuilderx-tailwindcss4'),
     appType: 'uni-app-x',

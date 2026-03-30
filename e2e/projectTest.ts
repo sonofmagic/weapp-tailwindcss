@@ -279,11 +279,16 @@ export async function ensureProjectBuilt(root: string) {
       // Vitest workers set NODE_ENV=test; Taro + Vite builds are not stable in that mode.
       NODE_ENV: 'production',
       BROWSERSLIST_ENV: 'production',
+      TARO_BUILD_STRICT: '1',
+      UNI_BUILD_STRICT: '1',
       RUST_BACKTRACE: process.env.RUST_BACKTRACE ?? '1',
       npm_package_json: pkgPath,
       PNPM_PACKAGE_NAME: pkg?.name ?? process.env.PNPM_PACKAGE_NAME,
       INIT_CWD: root,
     }
+
+    delete childEnv.WEAPP_TW_SKIP_INTERACTIVE_TARO_BUILD
+    delete childEnv.WEAPP_TW_SKIP_INTERACTIVE_UNI_BUILD
 
     delete childEnv.VITEST
     for (const key of Object.keys(childEnv)) {

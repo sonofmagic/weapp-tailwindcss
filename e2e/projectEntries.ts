@@ -2,21 +2,6 @@ import type { ProjectEntry } from './shared.ts'
 
 export const E2E_PROJECTS = [
   {
-    name: 'uni-app',
-    projectPath: 'uni-app/dist/build/mp-weixin',
-    cssFile: 'common/main.wxss',
-  },
-  {
-    name: 'uni-app-webpack5',
-    projectPath: 'uni-app-webpack5/dist/build/mp-weixin',
-    cssFile: 'common/main.wxss',
-  },
-  {
-    name: 'uni-app-webpack-tailwindcss-v4',
-    projectPath: 'uni-app-webpack-tailwindcss-v4/dist/build/mp-weixin',
-    cssFile: 'common/main.wxss',
-  },
-  {
     name: 'uni-app-vue3-vite',
     projectPath: 'uni-app-vue3-vite/dist/build/mp-weixin',
     cssFile: 'app.wxss',

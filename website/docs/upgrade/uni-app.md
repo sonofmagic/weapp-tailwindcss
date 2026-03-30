@@ -19,7 +19,7 @@ keywords:
 :::caution
 目前 `uni-app` 默认创建的 `vue2` 项目,已经全面使用 `@vue/cli-service@5` 了(2023-10)，所以目前正常升级即可，本指南废弃! 留作归档处理
 
-使用 uni-app vite vue3 的开发者可以忽略此指南
+仓库中的 classic `uni-app vue2/webpack` demo 也已经移除。使用 `uni-app vite vue3` 的开发者可以忽略此指南。
 :::
 
 由于目前 `uni-app` `hbuilderx`和`cli`默认创建的 `vue2` 项目，还是使用的 `@vue/cli-service@4`
@@ -65,9 +65,7 @@ npx @dcloudio/uvm alpha
 
 ### 4. 配置文件升级
 
-比如 `babel.config.js` 这个就需要修改，[参考代码](https://github.com/sonofmagic/weapp-tailwindcss-webpack-plugin/blob/main/demo/uni-app-webpack5/babel.config.js)
-
-比如 `postcss.config.js` 这个，也需要更新一下，[参考代码](https://github.com/sonofmagic/weapp-tailwindcss-webpack-plugin/blob/main/demo/uni-app-webpack5/postcss.config.js)
+比如 `babel.config.js`、`postcss.config.js` 这类配置文件，都需要按你当前项目实际依赖链路同步升级。
 
 诸如这种类似的，都可以新创建一个的 `uni-app alpha` 的项目，然后把里面的配置直接复制过来，再改改 `postcss.config.js` 把 `tailwindcss` 注册进去即可。
 

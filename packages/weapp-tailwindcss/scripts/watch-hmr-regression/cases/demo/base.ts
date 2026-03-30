@@ -4,7 +4,6 @@ import {
   appendTrailingSnippet,
   createStyleRuleSnippet,
   insertBeforeClosingTag,
-  insertIntoVueTemplateRoot,
   mutateScriptByDataAnchor,
   mutateScriptByDataAnchorWithCommentCarrier,
   mutateSfcStyleBlock,
@@ -68,65 +67,6 @@ export function buildDemoBaseCases(baseCwd: string): WatchCase[] {
       sourceFile: path.resolve(baseCwd, 'demo/taro-app/src/pages/index/index.scss'),
       mutate(source, payload) {
         return appendTrailingSnippet(source, createStyleRuleSnippet(payload))
-      },
-    },
-  }
-
-  const uniCase: WatchCase = {
-    name: 'uni',
-    label: 'demo/uni-app',
-    project: 'demo/uni-app',
-    group: 'demo',
-    cwd: path.resolve(baseCwd, 'demo/uni-app'),
-    devScript: 'dev:mp-weixin',
-    outputWxml: path.resolve(baseCwd, 'demo/uni-app/dist/dev/mp-weixin/pages/index/index.wxml'),
-    outputJs: path.resolve(baseCwd, 'demo/uni-app/dist/dev/mp-weixin/pages/index/index.js'),
-    outputStyleCandidates: [
-      path.resolve(baseCwd, 'demo/uni-app/dist/dev/mp-weixin/pages/index/index.wxss'),
-    ],
-    globalStyleCandidates: [
-      path.resolve(baseCwd, 'demo/uni-app/dist/dev/mp-weixin/common/main.wxss'),
-      path.resolve(baseCwd, 'demo/uni-app/dist/dev/mp-weixin/app.wxss'),
-    ],
-    contentMutation: {
-      sourceFile: path.resolve(baseCwd, 'demo/uni-app/src/pages/index/index.vue'),
-      verifyEscapedIn: [],
-      verifyClassLiteralIn: ['js'],
-      forbidBgHexTruncationIn: ['js'],
-      roundConfigs: buildIssue33HighRiskRoundConfigs(),
-      mutate(source, payload) {
-        return replaceExactSnippet(
-          source,
-          '      className: \'bg-[#123456]\',',
-          `      className: '${payload.classLiteral}',`,
-          'uni script class anchor',
-        )
-      },
-    },
-    templateMutation: {
-      sourceFile: path.resolve(baseCwd, 'demo/uni-app/src/pages/index/index.vue'),
-      verifyEscapedIn: ['wxml'],
-      verifyClassLiteralIn: [],
-      mutate(source, payload) {
-        const snippet = `    <view class="${payload.classLiteral}">${payload.marker}-template</view>`
-        return insertIntoVueTemplateRoot(source, snippet)
-      },
-    },
-    scriptMutation: {
-      sourceFile: path.resolve(baseCwd, 'demo/uni-app/src/pages/index/index.vue'),
-      verifyEscapedIn: [],
-      verifyClassLiteralIn: ['js'],
-      mutate(source, payload) {
-        return mutateScriptByDataAnchor(source, '      className: \'bg-[#123456]\',', payload, '      ')
-      },
-      mutateCommentCarrier(source, payload) {
-        return mutateScriptByDataAnchorWithCommentCarrier(source, '      className: \'bg-[#123456]\',', payload, '      ')
-      },
-    },
-    styleMutation: {
-      sourceFile: path.resolve(baseCwd, 'demo/uni-app/src/pages/index/index.vue'),
-      mutate(source, payload) {
-        return mutateSfcStyleBlock(source, payload)
       },
     },
   }
@@ -258,7 +198,6 @@ export function buildDemoBaseCases(baseCwd: string): WatchCase[] {
 
   return [
     taroCase,
-    uniCase,
     mpxCase,
     weappViteCase,
   ]

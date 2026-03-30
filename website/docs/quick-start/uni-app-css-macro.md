@@ -156,7 +156,13 @@ export default defineConfig({
 
 #### uni-app vue2
 
-vue2 cli 项目默认会带一个 `postcss.config.js` 我们之间直接在里面注册即可:
+:::warning
+`uni-app vue2 / webpack` 已经不推荐，仓库中的对应 classic demo 也已移除。
+
+如果你仍在维护存量项目，可以继续按这个思路注册；新项目请直接参考 `demo/uni-app-vue3-vite`。
+:::
+
+vue2 cli 项目默认会带一个 `postcss.config.js`，我们直接在里面注册即可:
 
 ```diff
 const webpack = require('webpack')
@@ -180,7 +186,7 @@ if (webpack.version[0] > 4) {
 module.exports = config
 ```
 
-> 可以参考这个项目的配置 [demo/uni-app](https://github.com/sonofmagic/weapp-tailwindcss/tree/main/demo/uni-app)
+> 仓库已不再保留 `demo/uni-app`，新项目请参考 [demo/uni-app-vue3-vite](https://github.com/sonofmagic/weapp-tailwindcss/tree/main/demo/uni-app-vue3-vite)
 
 ### 配置完成
 

@@ -19,8 +19,8 @@
   - `typeLoaderProcessInfo.styles` 定义了 `css-loader → @mpxjs/wxss/loader → @mpxjs/style-compiler` 的串联，并在 `injectStyleStripLoader` 里确保条件编译 loader 紧跟在 `stylus/sass/less/css/wxss` 之后。
   - 对 `.mpx` 模块的样式来说，整体顺序为：`MiniCssExtractPlugin.loader → css-loader（被替换为 wxss-loader）→ @mpxjs/wxss/loader → @mpxjs/style-compiler → postcss-loader → 预处理器`。
 
-## Uni-app（uni-app / uni-app-webpack5 / uni-app-webpack-tailwindcss-v4）
-- **链路**：`demo/uni-app/node_modules/@dcloudio/vue-cli-plugin-uni/lib/chain-webpack.js:40-146`
+## Uni-app（classic vue2 / webpack，已不推荐）
+- **链路**：`node_modules/@dcloudio/vue-cli-plugin-uni/lib/chain-webpack.js:40-146`
   - 每个 `cssLang` 的 `oneOf` 均执行 `css-loader → extract-css-loader（非 H5 平台）→ uniapp-preprocess → postcss-loader → 预处理器`。
   - 若启用了缓存，则在 `css-loader` 之前自动插入 `cache-loader`；`uniapp-preprocess` 会在 `css-loader`、预处理器前后各执行一次条件编译。
 - H5 进一步在 `lib/h5/cssnano-options.js` 中为每种 `rule(oneOf)` 加上 `postcss-loader(cssnano)`，次序保持不变。

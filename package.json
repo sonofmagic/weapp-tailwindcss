@@ -79,7 +79,7 @@
     "e2e:watch:demo": "cross-env E2E_WATCH_CASE=demo pnpm e2e:watch",
     "e2e:watch:apps": "cross-env E2E_WATCH_CASE=apps pnpm e2e:watch",
     "e2e:watch:taro": "cross-env E2E_WATCH_CASE=taro pnpm e2e:watch",
-    "e2e:watch:uni": "cross-env E2E_WATCH_CASE=uni pnpm e2e:watch",
+    "e2e:watch:uni": "cross-env E2E_WATCH_CASE=uni-app-vue3-vite pnpm e2e:watch",
     "e2e:watch:mpx": "cross-env E2E_WATCH_CASE=mpx pnpm e2e:watch",
     "e2e:watch:weapp-vite": "cross-env E2E_WATCH_CASE=weapp-vite pnpm e2e:watch",
     "e2e:update-snapshots": "node scripts/e2e-update-snapshots-runner.mjs",
@@ -293,12 +293,6 @@
     "overrides": {
       "postcss-urlrewrite": "0.3.0"
     },
-    "packageExtensions": {
-      "@dcloudio/vue-cli-plugin-hbuilderx@*": {
-        "dependencies": {
-          "@dcloudio/uni-cli-shared": "2.0.2-4080520251106001"
-        }
-      }
-    }
+    "packageExtensions": {}
   }
 }

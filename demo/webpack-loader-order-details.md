@@ -14,8 +14,8 @@
 - 执行序（含 Mpx 注入后）：`preprocessor → runtimeCssImportRewriteLoader → postcss-loader → runtimeClassSetLoader → css-loader (被 wxss-loader 取代) → @mpxjs/wxss/loader → @mpxjs/style-compiler → MiniCssExtractPlugin.loader`
   - rewrite 依旧在 `postcss-loader` 之前，class-set 在之后；Mpx 自身的 `wxss/style compiler` 仍保持在 css-loader 之后。
 
-## Uni-app (uni-app / uni-app-webpack5 / uni-app-webpack-tailwindcss-v4)
-- 路径：`demo/uni-app/node_modules/@dcloudio/vue-cli-plugin-uni/lib/chain-webpack.js`
+## Uni-app（classic vue2 / webpack，已不推荐）
+- 路径：`node_modules/@dcloudio/vue-cli-plugin-uni/lib/chain-webpack.js`
 - 执行序：`preprocessor → runtimeCssImportRewriteLoader → postcss-loader → runtimeClassSetLoader → uniapp-preprocess (postcss 后再次注入) → css-loader → extract-css-loader / vue-style-loader`
   - 在原链路中 `uniapp-preprocess` 会在 `css-loader` 前插入一次；rewrite/class-set 的插入仍然围绕 `postcss-loader` 对称。
 

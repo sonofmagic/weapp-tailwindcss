@@ -609,26 +609,18 @@ describe('watch-hmr regression cases', () => {
   it('registers the new tailwindcss v4 watch cases with expected outputs', () => {
     const extendedCases = buildDemoExtendedCases('/repo')
     const appCases = buildAppCases('/repo')
-    const uniWebpackCase = extendedCases.find(item => item.name === 'uni-app-webpack-tailwindcss-v4')
-    const uniWebpack5Case = extendedCases.find(item => item.name === 'uni-app-webpack5')
+    const uniViteCase = extendedCases.find(item => item.name === 'uni-app-vue3-vite')
     const mpxV4Case = extendedCases.find(item => item.name === 'mpx-tailwindcss-v4')
     const viteNativeCase = appCases.find(item => item.name === 'vite-native')
     const viteNativeSkylineCase = appCases.find(item => item.name === 'vite-native-skyline')
     const viteNativeTsSkylineCase = appCases.find(item => item.name === 'vite-native-ts-skyline')
 
-    expect(uniWebpackCase?.outputWxml).toBe(
-      path.resolve('/repo', 'demo/uni-app-webpack-tailwindcss-v4/dist/dev/mp-weixin/pages/index/index.wxml'),
+    expect(uniViteCase?.outputWxml).toBe(
+      path.resolve('/repo', 'demo/uni-app-vue3-vite/dist/dev/mp-weixin/pages/index/index.wxml'),
     )
-    expect(uniWebpackCase?.outputStyleCandidates).toContain(
-      path.resolve('/repo', 'demo/uni-app-webpack-tailwindcss-v4/dist/dev/mp-weixin/common/main.wxss'),
-    )
-
-    expect(uniWebpack5Case?.outputWxml).toBe(
-      path.resolve('/repo', 'demo/uni-app-webpack5/dist/dev/mp-weixin/pages/index/index.wxml'),
-    )
-    expect(uniWebpack5Case?.globalStyleCandidates).toEqual([
-      path.resolve('/repo', 'demo/uni-app-webpack5/dist/dev/mp-weixin/common/main.wxss'),
-      path.resolve('/repo', 'demo/uni-app-webpack5/dist/dev/mp-weixin/app.wxss'),
+    expect(uniViteCase?.globalStyleCandidates).toEqual([
+      path.resolve('/repo', 'demo/uni-app-vue3-vite/dist/dev/mp-weixin/pages/index/index.wxss'),
+      path.resolve('/repo', 'demo/uni-app-vue3-vite/dist/dev/mp-weixin/app.wxss'),
     ])
 
     expect(mpxV4Case?.outputWxml).toBe(
@@ -757,15 +749,14 @@ describe('watch-hmr regression cases', () => {
     const cases = buildCases('/repo')
 
     const darwinCases = filterCasesForPlatform(cases, 'darwin')
-    expect(darwinCases.find(watchCase => watchCase.name === 'uni-app-webpack-tailwindcss-v4')).toBeUndefined()
+    expect(darwinCases).toEqual(cases)
 
     const win32Cases = filterCasesForPlatform(cases, 'win32')
     expect(win32Cases.find(watchCase => watchCase.name === 'vite-native-skyline')).toBeUndefined()
-    expect(win32Cases.find(watchCase => watchCase.name === 'uni-app-webpack-tailwindcss-v4')).toBeUndefined()
 
     const win32DemoCases = pickCases(win32Cases, 'demo')
     expect(win32DemoCases.every(watchCase => watchCase.group === 'demo')).toBe(true)
-    expect(win32DemoCases.find(watchCase => watchCase.name === 'uni-app-webpack-tailwindcss-v4')).toBeUndefined()
+    expect(win32DemoCases.find(watchCase => watchCase.name === 'uni-app-vue3-vite')).toBeDefined()
   })
 
   it('keeps issue33 watch cases in macOS and Windows CI matrices', async () => {

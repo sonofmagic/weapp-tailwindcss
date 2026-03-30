@@ -9,13 +9,13 @@ const __dirname = path.dirname(__filename)
 const repoRoot = path.resolve(__dirname, '../../..')
 
 const taroRoot = path.resolve(repoRoot, 'demo/taro-app')
-const uniRoot = path.resolve(repoRoot, 'demo/uni-app')
+const uniRoot = path.resolve(repoRoot, 'demo/uni-app-vue3-vite')
 
 const taroCssPath = path.resolve(taroRoot, 'dist/app.wxss')
 const taroJsPath = path.resolve(taroRoot, 'dist/pages/index/index.js')
 const taroWxmlPath = path.resolve(taroRoot, 'dist/pages/index/index.wxml')
 
-const uniCssPath = path.resolve(uniRoot, 'dist/dev/mp-weixin/common/main.wxss')
+const uniCssPath = path.resolve(uniRoot, 'dist/dev/mp-weixin/app.wxss')
 const uniJsPath = path.resolve(uniRoot, 'dist/dev/mp-weixin/pages/index/index.js')
 const uniWxmlPath = path.resolve(uniRoot, 'dist/dev/mp-weixin/pages/index/index.wxml')
 
@@ -32,7 +32,7 @@ const benchOptions = { time: 260, iterations: 3, minSamples: 3 }
 let taroHotCounter = 0
 let uniHotCounter = 0
 
-async function prepareWarmContext(appType: 'taro' | 'uni-app', basedir: string, mainCss: string) {
+async function prepareWarmContext(appType: 'taro' | 'uni-app-vite', basedir: string, mainCss: string) {
   const ctx = createContext({
     appType,
     tailwindcssBasedir: basedir,
@@ -43,7 +43,7 @@ async function prepareWarmContext(appType: 'taro' | 'uni-app', basedir: string, 
 }
 
 const taroContextPromise = prepareWarmContext('taro', taroRoot, taroCss)
-const uniContextPromise = prepareWarmContext('uni-app', uniRoot, uniCss)
+const uniContextPromise = prepareWarmContext('uni-app-vite', uniRoot, uniCss)
 
 function createHotJsSource(source: string, prefix: string, index: number) {
   return `${source}\n/* ${prefix}:${index} */`

@@ -216,3 +216,5 @@ cn(a, 'xx', 'yy')
 - [Tailwindcss@4 各个框架集成方式](https://tw.icebreaker.top/docs/quick-start/v4)
 - [Tailwindcss@4 升级指南](https://tailwindcss.com/docs/upgrade-guide)
 - [uni-app-tailwindcss-v4 参考模板](https://github.com/icebreaker-template/uni-app-tailwindcss-v4)
+
+> 补充：classic `uni-app vue2 / webpack` 路线已经不再推荐，新项目请优先选择 `uni-app vue3 vite`。

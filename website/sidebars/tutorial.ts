@@ -28,7 +28,7 @@ const tutorialSidebar: SidebarConfig = [
               {
                 type: 'category',
                 label: 'uni-app',
-                items: ['uni-app', 'uni-app-vite', 'hbuilderx', 'uni-app-x'].map(x => `quick-start/frameworks/${x}`),
+                items: ['uni-app-vite', 'uni-app-x'].map(x => `quick-start/frameworks/${x}`),
               },
               ...['taro', 'rax', 'mpx', 'native', 'api'].map(x => `quick-start/frameworks/${x}`),
             ],
@@ -80,18 +80,8 @@ const tutorialSidebar: SidebarConfig = [
             items: [
               {
                 type: 'doc',
-                label: 'Vite Vue3 CLI',
+                label: 'Vite Vue3 CLI（推荐）',
                 id: 'quick-start/v4/uni-app-vite',
-              },
-              {
-                type: 'doc',
-                label: 'Webpack Vue2 CLI',
-                id: 'quick-start/v4/uni-app-webpack',
-              },
-              {
-                type: 'doc',
-                label: 'HBuilderX',
-                id: 'quick-start/v4/uni-app-vite-hbuilder',
               },
               {
                 type: 'doc',

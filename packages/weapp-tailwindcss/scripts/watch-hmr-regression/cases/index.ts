@@ -4,15 +4,8 @@ import { buildAppCases } from './apps'
 import { buildDemoCases } from './demo'
 
 export function filterCasesForPlatform(cases: WatchCase[], platform: NodeJS.Platform): WatchCase[] {
-  if (platform === 'darwin') {
-    return cases.filter(item => item.name !== 'uni-app-webpack-tailwindcss-v4')
-  }
-
   if (platform === 'win32') {
-    return cases.filter(item =>
-      item.name !== 'vite-native-skyline'
-      && item.name !== 'uni-app-webpack-tailwindcss-v4',
-    )
+    return cases.filter(item => item.name !== 'vite-native-skyline')
   }
 
   return cases
@@ -37,7 +30,7 @@ export function pickCases(allCases: WatchCase[], caseName: CliOptions['caseName'
   }
 
   if (caseName === 'both') {
-    return allCases.filter(item => item.name === 'taro' || item.name === 'uni')
+    return allCases.filter(item => item.name === 'taro' || item.name === 'uni-app-vue3-vite')
   }
 
   return allCases.filter(item => item.name === caseName)

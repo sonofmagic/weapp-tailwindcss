@@ -166,7 +166,7 @@ pnpm 8 这个版本改变了一些默认值，其中 `resolution-mode` 默认值
 
 需要添加并配置 `postcss-import`，参见 [issues/75](https://github.com/sonofmagic/weapp-tailwindcss/issues/75#issuecomment-1574592907)。
 
-你可以查看源码中 `demo/uni-app` 相关的示例来进行配置。
+你可以参考仓库中的 `demo/uni-app-vue3-vite` 来进行配置。
 
 ## 为什么使用 taro 写 jsx，js 时候，转义不生效？
 
