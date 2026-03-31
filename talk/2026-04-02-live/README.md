@@ -40,6 +40,14 @@
 - [逐段口播稿](/Users/icebreaker/Documents/GitHub/weapp-tailwindcss/talk/2026-04-02-live/script.md)
 - [完整版逐字口播台本](/Users/icebreaker/Documents/GitHub/weapp-tailwindcss/talk/2026-04-02-live/full-read-script.md)
 - [40-45 分钟精简口播版](/Users/icebreaker/Documents/GitHub/weapp-tailwindcss/talk/2026-04-02-live/short-read-script.md)
+- [40 分钟纯口播稿](/Users/icebreaker/Documents/GitHub/weapp-tailwindcss/talk/2026-04-02-live/read-aloud-40min.md)
+- [40 分钟纯口播稿·更口语化版](/Users/icebreaker/Documents/GitHub/weapp-tailwindcss/talk/2026-04-02-live/read-aloud-40min-colloquial.md)
+- [40 分钟纯口播稿·贴近你语气版](/Users/icebreaker/Documents/GitHub/weapp-tailwindcss/talk/2026-04-02-live/read-aloud-40min-personal.md)
+- [40 分钟纯口播稿·最终上播版](/Users/icebreaker/Documents/GitHub/weapp-tailwindcss/talk/2026-04-02-live/read-aloud-40min-final.md)
+- [40 分钟纯口播稿·最终上播版·朗读标记版](/Users/icebreaker/Documents/GitHub/weapp-tailwindcss/talk/2026-04-02-live/read-aloud-40min-final-performance.md)
+- [40 分钟纯口播稿·最终上播版·呼吸节奏版](/Users/icebreaker/Documents/GitHub/weapp-tailwindcss/talk/2026-04-02-live/read-aloud-40min-final-breath.md)
+- [25 分钟纯口播稿·应急版](/Users/icebreaker/Documents/GitHub/weapp-tailwindcss/talk/2026-04-02-live/read-aloud-25min-emergency.md)
+- [主持人口播卡片版](/Users/icebreaker/Documents/GitHub/weapp-tailwindcss/talk/2026-04-02-live/host-cue-cards.md)
 - [PPT 页码对应讲稿](/Users/icebreaker/Documents/GitHub/weapp-tailwindcss/talk/2026-04-02-live/slide-script.md)
 
 ### PPT
