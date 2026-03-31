@@ -1,6 +1,7 @@
 import type { TailwindcssPatcherLike } from '@/types'
 import process from 'node:process'
 import { logger } from '@weapp-tailwindcss/logger'
+import { logRuntimeTailwindcssTarget } from './runtime-logs'
 import { formatRelativeToBase } from './targets/paths'
 import { __resetPatchTargetRecordWarningsForTests, saveCliPatchTargetRecord } from './targets/record-io'
 import { createPatchTargetRecorder } from './targets/recorder'
@@ -25,9 +26,13 @@ export function logTailwindcssTarget(
   const displayPath = formatRelativeToBase(packageInfo.rootPath, baseDir)
   const version = packageInfo.version ? ` (v${packageInfo.version})` : ''
   if (kind === 'runtime') {
-    logger.info('%s 使用 Tailwind CSS%s', label, version)
+    logRuntimeTailwindcssTarget(baseDir, packageInfo.rootPath, packageInfo.version)
     return
   }
   logger.info('%s 绑定 Tailwind CSS -> %s%s', label, displayPath, version)
 }
-export { __resetPatchTargetRecordWarningsForTests, createPatchTargetRecorder, saveCliPatchTargetRecord }
+export {
+  __resetPatchTargetRecordWarningsForTests,
+  createPatchTargetRecorder,
+  saveCliPatchTargetRecord,
+}

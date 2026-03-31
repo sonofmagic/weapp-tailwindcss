@@ -1,9 +1,10 @@
 import type { InternalUserDefinedOptions, RefreshTailwindcssPatcherOptions, TailwindcssPatcherLike, UserDefinedOptions } from '@/types'
 import { rm } from 'node:fs/promises'
-import { logger, pc } from '@weapp-tailwindcss/logger'
+import { logger } from '@weapp-tailwindcss/logger'
 import { initializeCache } from '@/cache'
 import { getDefaultOptions } from '@/defaults'
 import { invalidateRuntimeClassSet, refreshTailwindcssPatcherSymbol } from '@/tailwindcss/runtime'
+import { logRuntimeTailwindcssVersion } from '@/tailwindcss/runtime-logs'
 import { logTailwindcssTarget } from '@/tailwindcss/targets'
 import { applyV4CssCalcDefaults, warnMissingCssEntries } from '@/tailwindcss/v4'
 import { defuOverrideArray } from '@/utils'
@@ -88,13 +89,11 @@ function createInternalCompilerContext(opts?: UserDefinedOptions): InternalUserD
 
   const twPatcher = createTailwindcssPatcherFromContext(ctx)
   logTailwindcssTarget('runtime', twPatcher, ctx.tailwindcssBasedir)
-
-  if (twPatcher.packageInfo?.version) {
-    logger.success(`当前使用 ${pc.cyanBright('Tailwind CSS')} 版本为: ${pc.underline(pc.bold(pc.green(twPatcher.packageInfo.version)))}`)
-  }
-  else {
-    logger.warn(`${pc.cyanBright('Tailwind CSS')} 未安装，已跳过版本检测与补丁应用。`)
-  }
+  logRuntimeTailwindcssVersion(
+    ctx.tailwindcssBasedir,
+    twPatcher.packageInfo?.rootPath,
+    twPatcher.packageInfo?.version,
+  )
 
   warnMissingCssEntries(ctx, twPatcher)
 
