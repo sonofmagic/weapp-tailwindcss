@@ -1,5 +1,15 @@
 # weapp-tailwindcss
 
+## 4.11.2
+
+### Patch Changes
+
+- 🐛 **修复 `weapp-vite dev` 启动时 `weapp-tailwindcss` 运行时 Tailwind CSS 日志重复输出的问题。** [`5264907`](https://github.com/sonofmagic/weapp-tailwindcss/commit/526490725b1143a03af90a23eb69f43ad9eb684d) by @sonofmagic
+  - 现在同一进程内针对相同 Tailwind CSS 目标与版本的运行时日志会自动去重，仅输出一次，同时保留 CLI 场景的目标路径日志不变。
+
+- 🐛 **精简运行时 Tailwind CSS 绑定日志，避免输出冗长的依赖绝对路径。** [`d2586fa`](https://github.com/sonofmagic/weapp-tailwindcss/commit/d2586fae685a0cf3d96f76d963660940215d42e2) by @sonofmagic
+  - 现在运行时会输出 `Weapp-tailwindcss 使用 Tailwind CSS (vX.Y.Z)`，同时保留 CLI `weapp-tw patch` 场景的详细目标路径日志，便于排查补丁绑定目标。
+
 ## 4.11.1
 
 ### Patch Changes
