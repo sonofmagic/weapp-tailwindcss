@@ -40,6 +40,8 @@ const steps = [
   'talk/2026-04-02-live/ppt/enhance-google-slides.mjs',
   'talk/2026-04-02-live/ppt/augment-google-slides-release.mjs',
   'talk/2026-04-02-live/ppt/apply-google-slides-backgrounds.mjs',
+  'talk/2026-04-02-live/ppt/apply-google-slides-skill-polish.mjs',
+  'talk/2026-04-02-live/ppt/apply-google-slides-keynote-pass.mjs',
 ]
 
 for (const step of steps) {
