@@ -132,3 +132,7 @@ website/tests/index.spec.ts-snapshots
 /.playwright-mcp/
 .tmp/
 **/.weapp-vite/
+
+# Python cache
+__pycache__/
+*.pyc
