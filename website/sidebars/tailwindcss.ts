@@ -4,11 +4,11 @@ const tailwindcssSidebar: SidebarConfig = [
   {
     type: 'doc',
     id: 'tailwindcss/index',
-    label: '◉ 专题导览',
+    label: '[总览] 专题导览',
   },
   {
     type: 'category',
-    label: '◫ 样式方案与组件库演进',
+    label: '[演进] 样式方案与组件库演进',
     collapsed: false,
     link: { type: 'doc', id: 'tailwindcss/history/history-style-evolution' },
     items: [
@@ -16,7 +16,7 @@ const tailwindcssSidebar: SidebarConfig = [
       'tailwindcss/history/history-component-evolution',
       {
         type: 'category',
-        label: '◌ Raw CSS / BEM / OOCSS',
+        label: '[基础] Raw CSS / BEM / OOCSS',
         collapsed: false,
         link: { type: 'doc', id: 'tailwindcss/history/history-raw-css' },
         items: [
@@ -34,7 +34,7 @@ const tailwindcssSidebar: SidebarConfig = [
   },
   {
     type: 'category',
-    label: '◭ Tailwind 设计、生态与对比',
+    label: '[核心] Tailwind 设计、生态与对比',
     collapsed: false,
     link: { type: 'doc', id: 'tailwindcss/tailwind-core' },
     items: [
@@ -45,7 +45,7 @@ const tailwindcssSidebar: SidebarConfig = [
   },
   {
     type: 'category',
-    label: '◪ 工程约束与样式边界',
+    label: '[工程] 约束、隔离与落地边界',
     collapsed: false,
     items: [
       'tailwindcss/best-practices',
@@ -54,7 +54,7 @@ const tailwindcssSidebar: SidebarConfig = [
   },
   {
     type: 'category',
-    label: '◬ AI 与对照实验',
+    label: '[实验] AI 工作流与对照实验',
     collapsed: false,
     items: [
       'tailwindcss/ai-friendly-and-demos',
