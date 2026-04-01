@@ -113,6 +113,7 @@ describe('uni-app-x preset', () => {
         enabled: true,
         onlyWhenStyleIsolationVersion2: true,
       },
+      uvueUnsupported: 'warn',
     })
   })
 
@@ -133,6 +134,7 @@ describe('uni-app-x preset', () => {
         enabled: false,
         onlyWhenStyleIsolationVersion2: true,
       },
+      uvueUnsupported: 'warn',
     })
   })
 
@@ -148,6 +150,7 @@ describe('uni-app-x preset', () => {
         componentLocalStyles: {
           onlyWhenStyleIsolationVersion2: false,
         },
+        uvueUnsupported: 'silent',
       },
     })
 
@@ -157,6 +160,7 @@ describe('uni-app-x preset', () => {
         enabled: true,
         onlyWhenStyleIsolationVersion2: false,
       },
+      uvueUnsupported: 'silent',
     })
   })
 })

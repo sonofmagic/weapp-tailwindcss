@@ -15,3 +15,11 @@ expectAssignable<Partial<UserDefinedOptions>>(uniApp())
 const uniAppXOptions: UniAppXOptions = { base: '.', cssEntries: ['src/app.css'] }
 expectAssignable<UniAppXOptions>(uniAppXOptions)
 expectAssignable<Partial<UserDefinedOptions>>(uniAppX(uniAppXOptions))
+
+const uniAppXStrictOptions: UniAppXOptions = {
+  base: '.',
+  uniAppX: {
+    uvueUnsupported: 'error',
+  },
+}
+expectAssignable<UniAppXOptions>(uniAppXStrictOptions)

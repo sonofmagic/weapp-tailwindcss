@@ -84,4 +84,109 @@ describe('uni-app-x', () => {
     expect(css).not.toContain('--tw-text-opacity:')
     expect(css).toContain('.border-_b_h999_B')
   })
+
+  it('filters unsupported uvue selectors and declarations with warnings', async () => {
+    const styleHandler = createStyleHandler({
+      uniAppX: true,
+      uniAppXCssTarget: 'uvue',
+      uniAppXUnsupported: 'warn',
+    })
+    const result = await styleHandler(
+      `
+      .space-y-4 > view + view {
+        margin-top: 1rem;
+      }
+      .block {
+        display: block;
+      }
+      .inline-flex {
+        display: inline-flex;
+      }
+      .grid {
+        display: grid;
+      }
+      .grid-cols-2 {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+      .gap-4 {
+        gap: 1rem;
+      }
+      .min-h-screen {
+        min-height: 100vh;
+      }
+      .flex {
+        display: flex;
+      }
+      `,
+      {
+        isMainChunk: true,
+        postcssOptions: {
+          options: {
+            from: '/src/App.uvue',
+          },
+        },
+      },
+    )
+
+    expect(result.css).not.toContain('.space-y-4')
+    expect(result.css).not.toContain('display: block')
+    expect(result.css).not.toContain('display: inline-flex')
+    expect(result.css).not.toContain('display: grid')
+    expect(result.css).not.toContain('grid-template-columns')
+    expect(result.css).not.toContain('gap: 1rem')
+    expect(result.css).not.toContain('min-height: 100vh')
+    expect(result.css).toContain('.flex')
+    expect(result.css).toContain('display: flex')
+
+    const warningTexts = result.warnings().map(item => item.text)
+    expect(warningTexts).toEqual(expect.arrayContaining([
+      expect.stringContaining('space-y-4'),
+      expect.stringContaining('block'),
+      expect.stringContaining('inline-flex'),
+      expect.stringContaining('grid'),
+      expect.stringContaining('grid-cols-2'),
+      expect.stringContaining('gap-4'),
+      expect.stringContaining('min-h-screen'),
+    ]))
+    expect(warningTexts.every(item => item.includes('/src/App.uvue'))).toBe(true)
+  })
+
+  it('throws for unsupported uvue utility when mode is error', async () => {
+    const styleHandler = createStyleHandler({
+      uniAppX: true,
+      uniAppXCssTarget: 'uvue',
+      uniAppXUnsupported: 'error',
+    })
+
+    await expect(styleHandler('.block { display: block; }', {
+      isMainChunk: true,
+      postcssOptions: {
+        options: {
+          from: '/src/pages/index.uvue',
+        },
+      },
+    })).rejects.toThrow(/uni-app x uvue unsupported utility: block/)
+  })
+
+  it('keeps original behaviour for non-uvue uni-app-x targets', async () => {
+    const styleHandler = createStyleHandler({
+      uniAppX: true,
+    })
+    const result = await styleHandler(
+      `
+      .space-y-4 > :not([hidden]) ~ :not([hidden]) {
+        margin-top: 1rem;
+      }
+      .block {
+        display: block;
+      }
+      `,
+      {
+        isMainChunk: true,
+      },
+    )
+
+    expect(result.css).toContain('.space-y-4>view+view')
+    expect(result.css).toContain('display: block')
+  })
 })

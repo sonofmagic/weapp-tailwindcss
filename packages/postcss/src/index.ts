@@ -1,5 +1,6 @@
 // 统一导出入口，供外部调用端按需引用核心能力
 export * from './handler'
+export { default as postcssHtmlTransform, type IOptions as PostcssHtmlTransformOptions } from './html-transform'
 export {
   createStylePipeline,
   type PipelineNodeContext,

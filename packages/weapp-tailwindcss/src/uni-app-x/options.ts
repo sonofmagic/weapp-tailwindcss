@@ -8,6 +8,7 @@ export interface ResolvedUniAppXComponentLocalStylesOptions {
 export interface ResolvedUniAppXOptions {
   enabled: boolean
   componentLocalStyles: ResolvedUniAppXComponentLocalStylesOptions
+  uvueUnsupported: 'error' | 'warn' | 'silent'
 }
 
 function resolveComponentLocalStyles(
@@ -53,12 +54,14 @@ export function resolveUniAppXOptions(option: UserDefinedOptions['uniAppX']): Re
     return {
       enabled: option.enabled !== false,
       componentLocalStyles: resolveComponentLocalStyles(option),
+      uvueUnsupported: option.uvueUnsupported ?? 'warn',
     }
   }
 
   return {
     enabled: Boolean(option),
     componentLocalStyles: resolveComponentLocalStyles(option),
+    uvueUnsupported: 'warn',
   }
 }
 

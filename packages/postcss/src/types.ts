@@ -17,6 +17,10 @@ export interface IPropValue {
   value: string
 }
 
+export type UniAppXCssTarget = 'uvue'
+
+export type UniAppXUnsupportedMode = 'error' | 'warn' | 'silent'
+
 export type CssPreflightOptions
   = | {
     [key: string]: string | number | boolean
@@ -65,6 +69,8 @@ export type IStyleHandlerOptions = {
     media?: boolean
   }
   uniAppX?: boolean
+  uniAppXCssTarget?: UniAppXCssTarget
+  uniAppXUnsupported?: UniAppXUnsupportedMode
   majorVersion?: number
 } & RequiredStyleHandlerOptions
 
@@ -85,6 +91,8 @@ export interface UserDefinedPostcssOptions {
   cssRemoveHoverPseudoClass?: boolean
   cssRemoveProperty?: boolean
   uniAppX?: boolean
+  uniAppXCssTarget?: UniAppXCssTarget
+  uniAppXUnsupported?: UniAppXUnsupportedMode
 }
 
 export type {

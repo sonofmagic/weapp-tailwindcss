@@ -50,6 +50,13 @@ export interface UniAppXOptions {
    * 等价于设置 `uniAppX.componentLocalStyles`。
    */
   componentLocalStyles?: boolean | UniAppXComponentLocalStylesOptions
+  /**
+   * uvue 不兼容 utility 的处理策略。
+   *
+   * @remarks
+   * 等价于设置 `uniAppX.uvueUnsupported`。
+   */
+  uvueUnsupported?: 'error' | 'warn' | 'silent'
 }
 
 function resolveTailwindResolveOptions(base: string, resolve?: PackageResolvingOptions): PackageResolvingOptions {
@@ -105,6 +112,7 @@ export function uniAppX(options: UniAppXOptions) {
   const resolvedUniAppX = resolveUniAppXOptions({
     enabled: isApp,
     componentLocalStyles: options.componentLocalStyles ?? true,
+    uvueUnsupported: options.uvueUnsupported,
     ...(typeof options.uniAppX === 'object' ? options.uniAppX : {}),
   })
   if (typeof options.uniAppX === 'boolean') {

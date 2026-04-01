@@ -4,6 +4,7 @@ import type {
   PresetEnvOptions,
   Px2rpxOptions,
   Rem2rpxOptions,
+  UniAppXUnsupportedMode,
   UnitsToPxOptions,
 } from '@weapp-tailwindcss/postcss/types'
 import type { TailwindCssPatchOptions } from 'tailwindcss-patch'
@@ -36,6 +37,17 @@ export interface UniAppXOptions {
    * 配置 issue 822 所需的组件级局部样式能力。
    */
   componentLocalStyles?: boolean | UniAppXComponentLocalStylesOptions
+  /**
+   * 配置 uvue 不兼容 utility 的处理策略。
+   *
+   * @default 'warn'
+   * @remarks
+   * 仅在 `uni-app x` 的 `uvue/nvue` 样式目标下生效。
+   * - `error`：遇到不兼容 utility 直接报错。
+   * - `warn`：跳过并打印警告。
+   * - `silent`：跳过但不打印警告。
+   */
+  uvueUnsupported?: UniAppXUnsupportedMode
 }
 
 export interface UserDefinedOptionsImportantPart {

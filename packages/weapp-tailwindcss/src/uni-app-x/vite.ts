@@ -14,6 +14,7 @@ import { processCachedTask } from '@/bundlers/shared/cache'
 import { toAbsoluteOutputPath } from '@/bundlers/shared/module-graph'
 import { parseVueRequest } from '@/bundlers/vite/query'
 import { cleanUrl, formatPostcssSourceMap, isCSSRequest } from '@/bundlers/vite/utils'
+import { logger } from '@/logger'
 import { resolveUniUtsPlatform } from '@/utils'
 import { resolveUniAppXOptions } from './options'
 import { resolveUniAppXStyleIsolationEnabled } from './style-isolation'
@@ -56,6 +57,10 @@ function isPreprocessorRequest(id: string, lang?: string): boolean {
   return PREPROCESSOR_EXT_RE.test(id)
 }
 
+function resolveUniAppXCssTarget(id: string) {
+  return UVUE_NVUE_RE.test(cleanUrl(id)) ? 'uvue' : undefined
+}
+
 export function createUniAppXPlugins(options: CreateUniAppXPluginsOptions): Plugin[] {
   const {
     appType,
@@ -74,6 +79,8 @@ export function createUniAppXPlugins(options: CreateUniAppXPluginsOptions): Plug
   const isIosPlatform = providedIosPlatform ?? resolveUniUtsPlatform().isAppIos
   const cssHandlerOptionsCache = new Map<string, {
     isMainChunk: boolean
+    uniAppXCssTarget?: 'uvue'
+    uniAppXUnsupported: 'error' | 'warn' | 'silent'
     postcssOptions: {
       options: {
         from: string
@@ -112,6 +119,8 @@ export function createUniAppXPlugins(options: CreateUniAppXPluginsOptions): Plug
       if (!styleHandlerOptions) {
         styleHandlerOptions = {
           isMainChunk: mainCssChunkMatcher(id, appType),
+          uniAppXCssTarget: resolveUniAppXCssTarget(id),
+          uniAppXUnsupported: resolvedUniAppXOptions.uvueUnsupported,
           postcssOptions: {
             options: {
               from: id,
@@ -128,6 +137,10 @@ export function createUniAppXPlugins(options: CreateUniAppXPluginsOptions): Plug
         cssHandlerOptionsCache.set(cacheKey, styleHandlerOptions)
       }
       const postcssResult = await styleHandler(code, styleHandlerOptions)
+      const warnings = typeof postcssResult.warnings === 'function' ? postcssResult.warnings() : []
+      for (const warning of warnings) {
+        logger.warn(warning.toString())
+      }
       const rawPostcssMap = postcssResult.map.toJSON()
       const postcssMap = await formatPostcssSourceMap(
         rawPostcssMap as Omit<RawSourceMap, 'version'> as ExistingRawSourceMap,

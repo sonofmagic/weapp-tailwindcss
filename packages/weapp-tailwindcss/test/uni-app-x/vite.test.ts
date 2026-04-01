@@ -72,6 +72,7 @@ describe('uni-app-x vite plugins', () => {
       'body { color: red; }',
       expect.objectContaining({
         isMainChunk: true,
+        uniAppXUnsupported: 'warn',
         postcssOptions: expect.objectContaining({
           options: expect.objectContaining({
             from: '/foo.css',
@@ -128,6 +129,13 @@ describe('uni-app-x vite plugins', () => {
 
       const result = await cssPlugin!.transform?.('body { color: red; }', scssId)
       expect(styleHandler).toHaveBeenCalledTimes(1)
+      expect(styleHandler).toHaveBeenCalledWith(
+        'body { color: red; }',
+        expect.objectContaining({
+          uniAppXCssTarget: 'uvue',
+          uniAppXUnsupported: 'warn',
+        }),
+      )
       expect(result?.code).toBe('css:body { color: red; }')
       // cleanUrl 去除 query 后为 /pages/index/index.uvue，sources 经 path.resolve 后转 posix
       const expectedUvue = toPosix(path.resolve(path.dirname('/pages/index/index.uvue'), '/pages/index/index.uvue'))
@@ -170,6 +178,13 @@ describe('uni-app-x vite plugins', () => {
     const scssId = '/pages/index/index.uvue?vue&type=style&index=0&lang.scss'
     await preCssPlugin!.transform?.('$color: red;', scssId)
     expect(styleHandler).toHaveBeenCalledTimes(1)
+    expect(styleHandler).toHaveBeenCalledWith(
+      '$color: red;',
+      expect.objectContaining({
+        uniAppXCssTarget: 'uvue',
+        uniAppXUnsupported: 'warn',
+      }),
+    )
   })
 
   it('runs nvue transform with runtime set and custom options', async () => {

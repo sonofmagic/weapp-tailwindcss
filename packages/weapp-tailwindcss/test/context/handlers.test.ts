@@ -81,6 +81,7 @@ describe('createHandlersFromContext', () => {
       px2rpx: ctx.px2rpx,
       unitsToPx: ctx.unitsToPx,
       cssPresetEnv: ctx.cssPresetEnv,
+      uniAppXUnsupported: 'warn',
     }))
 
     expect(jsHandlerFactory).toHaveBeenCalledWith(expect.objectContaining({

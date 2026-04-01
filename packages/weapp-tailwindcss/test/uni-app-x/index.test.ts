@@ -201,6 +201,73 @@ const condition = true
     expect(jsHandler).not.toHaveBeenCalled()
   })
 
+  it('expands static space-y utility to direct child classes in uvue template', () => {
+    const { jsHandler } = getCompilerContext()
+    const code = `
+<template>
+  <view class="space-y-4 px-4">
+    <view />
+    <view class="text-[#123456]" />
+    <text :class="dynamicCls">hello</text>
+    text
+  </view>
+</template>
+`
+    const result = transformUVue(code, '/src/pages/index.uvue', jsHandler, new Set([
+      'px-4',
+      'text-[#123456]',
+    ]))
+
+    expect(result?.code).toContain('class="px-4"')
+    expect(result?.code).not.toContain('space-y-4 px-4')
+    const aliasMatch = result?.code.match(/\.((?:wts-[^\s{]+)) \{/)
+    expect(aliasMatch?.[1]).toBeTruthy()
+    const alias = aliasMatch![1]
+    expect(result?.code).toContain(`class="text-_b_h123456_B ${alias}"`)
+    expect(result?.code).toContain(`:class="[dynamicCls, '${alias}']"`)
+    expect(result?.code).toContain(`.${alias} {`)
+    expect(result?.code).toContain('@apply mt-4;')
+  })
+
+  it('expands static space-x utility to direct child classes in uvue template', () => {
+    const { jsHandler } = getCompilerContext()
+    const code = `
+<template>
+  <view class="space-x-[12px]">
+    <view />
+    <view />
+  </view>
+</template>
+`
+    const result = transformUVue(code, '/src/pages/space-x.uvue', jsHandler, new Set())
+    const aliasMatches = [...(result?.code.matchAll(/class="(wts-[^"]+)"/g) ?? [])]
+    expect(aliasMatches).toHaveLength(1)
+    const alias = aliasMatches[0]![1]
+    expect(result?.code).toContain(`.${alias} {`)
+    expect(result?.code).toContain('@apply ml-[12px];')
+  })
+
+  it('expands static reversed space utilities to reverse margins in uvue template', () => {
+    const { jsHandler } = getCompilerContext()
+    const code = `
+<template>
+  <view class="space-y-4 space-y-reverse space-x-2 space-x-reverse px-4">
+    <view />
+    <view />
+  </view>
+</template>
+`
+    const result = transformUVue(code, '/src/pages/space-reverse.uvue', jsHandler, new Set([
+      'px-4',
+    ]))
+
+    expect(result?.code).toContain('class="px-4"')
+    expect(result?.code).not.toContain('space-y-reverse')
+    expect(result?.code).not.toContain('space-x-reverse')
+    expect(result?.code).toContain('@apply mb-4;')
+    expect(result?.code).toContain('@apply mr-2;')
+  })
+
   it.each(['app-android', 'app-ios', 'web'])(
     'supports issue 822 component local styles on %s',
     async (platform) => {

@@ -1,4 +1,4 @@
-import type { AttributeNode, DirectiveNode, ParentNode } from '@vue/compiler-dom'
+import type { AttributeNode, DirectiveNode, ElementNode, ParentNode } from '@vue/compiler-dom'
 import type { TransformResult } from 'vite'
 import type { CreateJsHandlerOptions, ICustomAttributesEntities, JsHandler } from '@/types'
 import { NodeTypes } from '@vue/compiler-dom'
@@ -7,6 +7,7 @@ import MagicString from 'magic-string'
 import { generateCode, replaceWxml } from '@/wxml'
 import { createAttributeMatcher } from '@/wxml/custom-attributes'
 import { shouldEnableComponentLocalStyle, UniAppXComponentLocalStyleCollector } from './component-local-style'
+import { UniAppXSpaceStyleCollector } from './space-style'
 
 function traverse(node: ParentNode, visitor: (node: ParentNode) => void): void {
   visitor(node)
@@ -19,14 +20,14 @@ function traverse(node: ParentNode, visitor: (node: ParentNode) => void): void {
   }
 }
 
-function updateStaticAttribute(ms: MagicString, prop: AttributeNode) {
+function updateStaticAttribute(ms: MagicString, prop: AttributeNode, content = prop.value?.content) {
   if (!prop.value) {
     return
   }
   const start = prop.value.loc.start.offset + 1
   const end = prop.value.loc.end.offset - 1
   if (start < end) {
-    ms.update(start, end, replaceWxml(prop.value.content))
+    ms.update(start, end, replaceWxml(content ?? ''))
   }
 }
 
@@ -34,6 +35,7 @@ function updateStaticAttributeWithLocalStyle(
   ms: MagicString,
   prop: AttributeNode,
   collector: UniAppXComponentLocalStyleCollector,
+  content = prop.value?.content,
 ) {
   if (!prop.value) {
     return
@@ -41,12 +43,18 @@ function updateStaticAttributeWithLocalStyle(
   const start = prop.value.loc.start.offset + 1
   const end = prop.value.loc.end.offset - 1
   if (start < end) {
-    ms.update(start, end, collector.collectAndRewriteStaticClass(prop.value.content))
+    ms.update(start, end, collector.collectAndRewriteStaticClass(content ?? ''))
   }
 }
 
-function updateDirectiveExpression(ms: MagicString, prop: DirectiveNode, jsHandler: JsHandler, runtimeSet?: Set<string>) {
-  if (prop.exp?.type !== NodeTypes.SIMPLE_EXPRESSION) {
+function updateDirectiveExpression(
+  ms: MagicString,
+  prop: DirectiveNode,
+  jsHandler: JsHandler,
+  runtimeSet?: Set<string>,
+  expression = prop.exp?.content,
+) {
+  if (prop.exp?.type !== NodeTypes.SIMPLE_EXPRESSION || expression === undefined) {
     return
   }
   const start = prop.exp.loc.start.offset
@@ -54,7 +62,7 @@ function updateDirectiveExpression(ms: MagicString, prop: DirectiveNode, jsHandl
   if (start >= end) {
     return
   }
-  const generated = generateCode(prop.exp.content, {
+  const generated = generateCode(expression, {
     jsHandler,
     runtimeSet,
     wrapExpression: true,
@@ -68,8 +76,9 @@ function updateDirectiveExpressionWithLocalStyle(
   jsHandler: JsHandler,
   collector: UniAppXComponentLocalStyleCollector,
   runtimeSet?: Set<string>,
+  expression = prop.exp?.content,
 ) {
-  if (prop.exp?.type !== NodeTypes.SIMPLE_EXPRESSION) {
+  if (prop.exp?.type !== NodeTypes.SIMPLE_EXPRESSION || expression === undefined) {
     return
   }
   const start = prop.exp.loc.start.offset
@@ -77,10 +86,10 @@ function updateDirectiveExpressionWithLocalStyle(
   if (start >= end) {
     return
   }
-  collector.collectRuntimeClasses(prop.exp.content, {
+  collector.collectRuntimeClasses(expression, {
     wrapExpression: true,
   })
-  const generated = generateCode(prop.exp.content, {
+  const generated = generateCode(expression, {
     jsHandler,
     runtimeSet,
     wrapExpression: true,
@@ -119,6 +128,11 @@ const defaultCreateJsHandlerOptions: CreateJsHandlerOptions = {
 }
 const UVUE_NVUE_RE = /\.(?:uvue|nvue)(?:\?.*)?$/
 
+function insertClassAttribute(ms: MagicString, node: ElementNode, className: string) {
+  const insertOffset = node.loc.start.offset + 1 + node.tag.length
+  ms.appendLeft(insertOffset, ` class="${className}"`)
+}
+
 export function transformUVue(
   code: string,
   id: string,
@@ -133,11 +147,18 @@ export function transformUVue(
   const matchCustomAttribute = createAttributeMatcher(customAttributesEntities)
   const ms = new MagicString(code)
   const { descriptor, errors } = parse(code)
+  const spaceStyleCollector = new UniAppXSpaceStyleCollector(id)
   const localStyleCollector = options.enableComponentLocalStyle && shouldEnableComponentLocalStyle(id)
     ? new UniAppXComponentLocalStyleCollector(id, runtimeSet)
     : undefined
   if (errors.length === 0) {
     if (descriptor.template?.ast) {
+      traverse(descriptor.template.ast, (node) => {
+        if (node.type === NodeTypes.ELEMENT) {
+          spaceStyleCollector.collect(node)
+        }
+      })
+
       traverse(descriptor.template.ast, (node) => {
         if (node.type !== NodeTypes.ELEMENT) {
           return
@@ -154,11 +175,14 @@ export function transformUVue(
             if (!shouldHandle) {
               continue
             }
+            const staticClassRewrite = shouldHandleDefault
+              ? spaceStyleCollector.getStaticClassRewrite(prop)
+              : undefined
             if (shouldHandleDefault && localStyleCollector) {
-              updateStaticAttributeWithLocalStyle(ms, prop, localStyleCollector)
+              updateStaticAttributeWithLocalStyle(ms, prop, localStyleCollector, staticClassRewrite)
             }
             else {
-              updateStaticAttribute(ms, prop)
+              updateStaticAttribute(ms, prop, staticClassRewrite)
             }
             if (shouldHandleDefault) {
               continue
@@ -180,13 +204,28 @@ export function transformUVue(
             if (!shouldHandle) {
               continue
             }
+            const directiveExpressionRewrite = attrName.toLowerCase() === 'class'
+              ? spaceStyleCollector.getDirectiveExpressionRewrite(prop)
+              : undefined
             if (attrName.toLowerCase() === 'class' && localStyleCollector) {
-              updateDirectiveExpressionWithLocalStyle(ms, prop, jsHandler, localStyleCollector, runtimeSet)
+              updateDirectiveExpressionWithLocalStyle(
+                ms,
+                prop,
+                jsHandler,
+                localStyleCollector,
+                runtimeSet,
+                directiveExpressionRewrite,
+              )
             }
             else {
-              updateDirectiveExpression(ms, prop, jsHandler, runtimeSet)
+              updateDirectiveExpression(ms, prop, jsHandler, runtimeSet, directiveExpressionRewrite)
             }
           }
+        }
+
+        const insertedClass = spaceStyleCollector.getInsertedClass(node)
+        if (insertedClass) {
+          insertClassAttribute(ms, node, insertedClass)
         }
       })
     }
@@ -212,6 +251,9 @@ export function transformUVue(
 
     if (localStyleCollector?.hasStyles()) {
       ms.append(`\n${localStyleCollector.toStyleBlock()}`)
+    }
+    if (spaceStyleCollector.hasStyles()) {
+      ms.append(`\n${spaceStyleCollector.toStyleBlock()}`)
     }
   }
   return {

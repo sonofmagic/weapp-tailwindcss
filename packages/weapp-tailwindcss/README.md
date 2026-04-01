@@ -74,6 +74,32 @@
 
 ## [配置项参考](https://tw.icebreaker.top/docs/api/interfaces/UserDefinedOptions)
 
+### uni-app x uvue 兼容提示
+
+从当前版本开始，`uni-app x` 的 `uvue/nvue` 样式目标会额外过滤宿主不支持的 CSS selector 与 utility 声明，避免把非法 CSS 直接注入到 `App.uvue` 或页面样式中。
+
+可通过 `uniAppX.uvueUnsupported` 控制行为：
+
+- `warn`：默认值。跳过不兼容 utility，并输出 `uni-app x uvue unsupported utility` 警告。
+- `error`：遇到不兼容 utility 直接报错，适合 CI 或严格校验场景。
+- `silent`：跳过不兼容 utility，但不输出提示。
+
+其中 `space-x-*` / `space-y-*` 不再继续输出非法兄弟组合器选择器，而是在 `uvue` 模板转换阶段对静态直接子节点展开为额外 class，并通过 `@apply ml-* / mt-*` 注入兼容样式。若同一静态容器 class 中同时出现 `space-x-reverse` / `space-y-reverse`，则会展开为 `mr-*` / `mb-*`。
+
+示例：
+
+```ts
+import { uniAppX } from 'weapp-tailwindcss/presets'
+
+export default uniAppX({
+  base: __dirname,
+  rem2rpx: true,
+  uniAppX: {
+    uvueUnsupported: 'warn',
+  },
+})
+```
+
 ## Contribute
 
 我们邀请你来贡献和帮助改进 `weapp-tailwindcss` 💚💚💚

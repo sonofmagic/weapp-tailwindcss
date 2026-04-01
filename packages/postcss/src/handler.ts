@@ -2,6 +2,7 @@
 import type { IStyleHandlerOptions, StyleHandler } from './types'
 import { defuOverrideArray } from '@weapp-tailwindcss/shared'
 import { applyUniAppXBaseCompatibility } from './compat/uni-app-x'
+import { applyUniAppXUvueCompatibility } from './compat/uni-app-x-uvue'
 import { getDefaultOptions } from './defaults'
 import { createOptionsResolver } from './options-resolver'
 import { createInjectPreflight } from './preflight'
@@ -32,7 +33,10 @@ export function createStyleHandler(options?: Partial<IStyleHandlerOptions>): Sty
     return processor.process(
       rawSource,
       processOptions,
-    ).async().then(result => applyUniAppXBaseCompatibility(result, resolvedOptions))
+    ).async().then((result) => {
+      const baseCompatible = applyUniAppXBaseCompatibility(result, resolvedOptions)
+      return applyUniAppXUvueCompatibility(baseCompatible, resolvedOptions)
+    })
   }) as StyleHandler
 
   handler.getPipeline = (opt?: Partial<IStyleHandlerOptions>) => {
