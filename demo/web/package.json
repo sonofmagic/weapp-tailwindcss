@@ -13,7 +13,7 @@
     "postinstall": "weapp-tw patch"
   },
   "dependencies": {
-    "defu": "^6.1.4",
+    "defu": "^6.1.6",
     "postcss": "^8.5.8"
   },
   "devDependencies": {

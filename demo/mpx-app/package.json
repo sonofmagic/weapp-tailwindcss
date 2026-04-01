@@ -73,7 +73,7 @@
     "tailwindcss": "catalog:tailwindcss3",
     "tailwindcss-patch": "catalog:tailwindcssPatch",
     "tailwindcss-rem2px-preset": "catalog:tailwindcssRem",
-    "ts-jest": "^29.4.6",
+    "ts-jest": "^29.4.9",
     "typescript": "catalog:typescript59",
     "vue-template-compiler": "^2.7.16",
     "weapp-ide-cli": "catalog:weappIdeCli",
