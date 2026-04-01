@@ -69,6 +69,14 @@ function createShape(requests, { pageObjectId, objectId, shapeType, x, y, w, h }
   })
 }
 
+function deleteObject(requests, objectId) {
+  requests.push({
+    deleteObject: {
+      objectId,
+    },
+  })
+}
+
 function updateShapeFill(requests, objectId, rgbColor, alpha = 1, outlineColor = null, outlineAlpha = 1) {
   const fields = [
     'shapeBackgroundFill.solidFill.color',
@@ -243,13 +251,13 @@ function addHighlightCard(requests, slideId, objectId, text, accentKey) {
     pageObjectId: slideId,
     objectId,
     shapeType: 'ROUND_RECTANGLE',
-    x: 8.42,
-    y: 0.78,
-    w: 3.72,
-    h: 1.54,
+    x: 6.92,
+    y: 1.18,
+    w: 3.02,
+    h: 1.22,
   })
   updateShapeFill(requests, objectId, colors.panel, 0.9, colors[accentKey], 0.72)
-  insertShapeText(requests, objectId, text, 12, colors.text)
+  insertShapeText(requests, objectId, text, 11, colors.text)
   requests.push({
     updateParagraphStyle: {
       objectId,
@@ -271,7 +279,7 @@ const presentation = runGws([
   '--params',
   JSON.stringify({
     presentationId: outputInfo.presentationId,
-    fields: 'slides(objectId)',
+    fields: 'slides(objectId,pageElements(objectId))',
   }),
 ])
 
@@ -282,6 +290,20 @@ for (const [index, slide] of (presentation.slides ?? []).entries()) {
   const slideMeta = slideDefinitions[index]
   const sectionMeta = getSectionMeta(pageIndex)
   const idBase = `skill_v1_${String(pageIndex).padStart(2, '0')}`
+  const elementIds = new Set((slide.pageElements ?? []).map(element => element.objectId))
+
+  for (const objectId of [
+    `${idBase}_section`,
+    `${idBase}_page`,
+    `${idBase}_progress_track`,
+    `${idBase}_progress_fill`,
+    `${idBase}_progress_edge`,
+    `${idBase}_highlight`,
+  ]) {
+    if (elementIds.has(objectId)) {
+      deleteObject(requests, objectId)
+    }
+  }
 
   addSectionBadge(requests, slide.objectId, `${idBase}_section`, sectionMeta.label, sectionMeta.accent)
   addPageChip(requests, slide.objectId, `${idBase}_page`, pageIndex)

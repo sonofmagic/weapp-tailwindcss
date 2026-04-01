@@ -126,6 +126,14 @@ function createCard(requests, { slideId, idBase, x, y, w, h, title, value, accen
   })
 }
 
+function deleteObject(requests, objectId) {
+  requests.push({
+    deleteObject: {
+      objectId,
+    },
+  })
+}
+
 const outputInfo = JSON.parse(fs.readFileSync(outputInfoPath, 'utf8'))
 
 const presentation = runGws([
@@ -135,13 +143,32 @@ const presentation = runGws([
   '--params',
   JSON.stringify({
     presentationId: outputInfo.presentationId,
-    fields: 'slides(objectId)',
+    fields: 'slides(objectId,pageElements(objectId))',
   }),
 ])
 
 const slides = presentation.slides ?? []
 const slideByIndex = new Map(slides.map((slide, idx) => [idx + 1, slide.objectId]))
 const requests = []
+const ownedObjectIds = [
+  'release2_tailwind_card_bg',
+  'release2_matrix_card1_bg',
+  'release2_matrix_card2_bg',
+  'release2_bench_build_bg',
+  'release2_bench_hmr_bg',
+  'release2_bench_runtime_bg',
+  'release2_bench_caption',
+  'release2_patch_card_bg',
+]
+
+for (const slide of slides) {
+  const elementIds = new Set((slide.pageElements ?? []).map(element => element.objectId))
+  for (const objectId of ownedObjectIds) {
+    if (elementIds.has(objectId)) {
+      deleteObject(requests, objectId)
+    }
+  }
+}
 
 createCard(requests, {
   slideId: slideByIndex.get(6),
@@ -184,7 +211,7 @@ createCard(requests, {
   slideId: slideByIndex.get(19),
   idBase: 'release2_bench_build',
   x: 6.2,
-  y: 4.86,
+  y: 4.18,
   w: 1.08,
   h: 1.06,
   title: 'Build',
@@ -195,7 +222,7 @@ createCard(requests, {
   slideId: slideByIndex.get(19),
   idBase: 'release2_bench_hmr',
   x: 7.45,
-  y: 4.86,
+  y: 4.18,
   w: 1.08,
   h: 1.06,
   title: 'HMR',
@@ -207,7 +234,7 @@ createCard(requests, {
   slideId: slideByIndex.get(19),
   idBase: 'release2_bench_runtime',
   x: 8.7,
-  y: 4.86,
+  y: 4.18,
   w: 1.08,
   h: 1.06,
   title: 'Runtime',
@@ -228,7 +255,7 @@ requests.push({
         scaleX: 1,
         scaleY: 1,
         translateX: emu(6.18),
-        translateY: emu(5.98),
+        translateY: emu(5.32),
         unit: 'EMU',
       },
     },
@@ -259,7 +286,7 @@ createCard(requests, {
   slideId: slideByIndex.get(12),
   idBase: 'release2_patch_card',
   x: 6.25,
-  y: 4.7,
+  y: 4.12,
   w: 3.2,
   h: 1.02,
   title: 'Patch Rule',
