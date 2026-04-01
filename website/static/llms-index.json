@@ -1,6 +1,6 @@
 {
   "version": "1.0.0",
-  "generatedAt": "2026-03-30T12:51:11.367Z",
+  "generatedAt": "2026-04-01T16:03:32.865Z",
   "siteUrl": "https://tw.icebreaker.top",
   "totals": {
     "all": 175,
@@ -3949,11 +3949,11 @@
         "mpx"
       ],
       "headings": [
-        "默认使用方式",
+        "HBuilderX Vue3 Vite（推荐）",
         "# tailwind.config.js",
         "# vite.config.[tj]s",
-        "Hbuilderx 与 uni-app cli 环境汇总",
-        "hbuilderx vue2 webpack4 postcss7 版本模板",
+        "HBuilderX 与 uni-app cli 环境汇总",
+        "HBuilderX Vue2 Webpack（存量项目） {#hbuilderx-vue2-webpack}",
         "Hack hbuilderx vue2 Way",
         "视频演示"
       ],

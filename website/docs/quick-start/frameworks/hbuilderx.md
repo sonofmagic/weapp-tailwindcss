@@ -18,9 +18,16 @@ keywords:
   - rax
   - mpx
 ---
-# uni-app HbuilderX 使用方式
+# uni-app HBuilderX 使用方式
 
-## 默认使用方式
+:::caution
+本文同时包含两条 `HBuilderX` 路线：
+
+- `HBuilderX Vue3 Vite`：推荐
+- `HBuilderX Vue2 Webpack`：仅供存量项目维护
+:::
+
+## HBuilderX Vue3 Vite（推荐）
 
 > 配置会稍微复杂一些，这里推荐直接使用或者参考模板: [uni-app-vue3-tailwind-hbuilder-template](https://github.com/sonofmagic/uni-app-vue3-tailwind-hbuilder-template) 或者 [若依移动端 (Gitee 地址)](https://gitee.com/sonofmagic/RuoYi-App)
 
@@ -95,7 +102,7 @@ export default defineConfig({
 
 <!-- 另外出于开发体验的角度，还是推荐使用 `vscode` 作为你的开发工具，`hbuilderx` 只用于进行原生发布调试与 `ucloud` 部署用。 -->
 
-## Hbuilderx 与 uni-app cli 环境汇总
+## HBuilderX 与 uni-app cli 环境汇总
 
 首先，你需要知道你的项目究竟使用的是什么打包工具，截止今天 `2023/12/18` 目前如下所示:
 
@@ -108,7 +115,7 @@ export default defineConfig({
 
 也就是说，目前 `hbuilderx vue2` 的项目是最老的，无法使用最新版本的 `tailwindcss`，其他都可以使用。
 
-## hbuilderx vue2 webpack4 postcss7 版本模板
+## HBuilderX Vue2 Webpack（存量项目） {#hbuilderx-vue2-webpack}
 
 如果你实在必须在 `hbuilderx vue2` 的项目中使用 `tailwindcss`，那么你可以使用下面的方法来使用 `tailwindcss`
 

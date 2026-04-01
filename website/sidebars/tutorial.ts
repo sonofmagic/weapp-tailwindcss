@@ -28,7 +28,33 @@ const tutorialSidebar: SidebarConfig = [
               {
                 type: 'category',
                 label: 'uni-app',
-                items: ['uni-app-vite', 'uni-app-x'].map(x => `quick-start/frameworks/${x}`),
+                items: [
+                  {
+                    type: 'doc',
+                    label: 'CLI Vue3 Vite（推荐）',
+                    id: 'quick-start/frameworks/uni-app-vite',
+                  },
+                  {
+                    type: 'doc',
+                    label: 'HBuilderX Vue3 Vite（推荐）',
+                    id: 'quick-start/frameworks/hbuilderx',
+                  },
+                  {
+                    type: 'link',
+                    label: 'HBuilderX Vue2 Webpack（存量项目）',
+                    href: '/docs/quick-start/frameworks/hbuilderx#hbuilderx-vue2-webpack',
+                  },
+                  {
+                    type: 'doc',
+                    label: 'CLI Vue2 Webpack（存量项目）',
+                    id: 'quick-start/frameworks/uni-app',
+                  },
+                  {
+                    type: 'doc',
+                    label: 'uni-app x',
+                    id: 'quick-start/frameworks/uni-app-x',
+                  },
+                ],
               },
               ...['taro', 'rax', 'mpx', 'native', 'api'].map(x => `quick-start/frameworks/${x}`),
             ],
@@ -82,6 +108,16 @@ const tutorialSidebar: SidebarConfig = [
                 type: 'doc',
                 label: 'Vite Vue3 CLI（推荐）',
                 id: 'quick-start/v4/uni-app-vite',
+              },
+              {
+                type: 'doc',
+                label: 'HBuilderX Vue3 Vite（推荐）',
+                id: 'quick-start/v4/uni-app-vite-hbuilder',
+              },
+              {
+                type: 'doc',
+                label: 'CLI Vue2 Webpack（存量项目）',
+                id: 'quick-start/v4/uni-app-webpack',
               },
               {
                 type: 'doc',
