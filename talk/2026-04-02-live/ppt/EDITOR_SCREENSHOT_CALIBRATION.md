@@ -50,12 +50,20 @@
   存放单页校准参数，优先改这里
 - `print-google-slides-calibration-links.mjs`
   输出需要逐页校准的编辑器链接
+- `prepare-google-slides-calibration.mjs`
+  按页号输出单页校准上下文、当前 override 和下一步命令
 - `inspect-google-slides-layout.mjs`
   用于读回对象结构，排查重复元素或残留图层
 
 ## 标准校准步骤
 
-1. 输出待校准链接
+1. 先准备单页校准上下文
+
+```bash
+node talk/2026-04-02-live/ppt/prepare-google-slides-calibration.mjs 18
+```
+
+需要一次看多页时，再用：
 
 ```bash
 node talk/2026-04-02-live/ppt/print-google-slides-calibration-links.mjs
