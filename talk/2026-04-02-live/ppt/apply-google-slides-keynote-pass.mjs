@@ -8,6 +8,7 @@ const __filename = fileURLToPath(import.meta.url)
 const __dirname = path.dirname(__filename)
 const talkDir = path.resolve(__dirname, '..')
 const outputInfoPath = path.resolve(talkDir, 'google-slides-output.json')
+const keynoteLayoutOverridesPath = path.resolve(__dirname, 'keynote-layout-overrides.json')
 
 const EMU = 914400
 const colors = {
@@ -27,7 +28,7 @@ const keynotePages = new Map([
     {
       accent: 'red',
       kicker: 'FRICTION',
-      headline: '样式开发\n不该吃掉\n业务时间',
+      headline: '样式开发不该\n吃掉业务时间',
       subline: '把像素劳动，换成意图表达。',
       metric: 'TIME',
     },
@@ -47,7 +48,7 @@ const keynotePages = new Map([
     {
       accent: 'cyan',
       kicker: 'MODEL',
-      headline: 'AI 先写\nTailwind\n再去小程序',
+      headline: 'AI 先写 Tailwind\n再去小程序',
       subline: '职责拆开，链路才稳定。',
       metric: '3-LAYER',
     },
@@ -57,7 +58,7 @@ const keynotePages = new Map([
     {
       accent: 'amber',
       kicker: 'SIGNAL',
-      headline: '能跑\n不等于\n可验证',
+      headline: '能跑不等于\n可验证',
       subline: '真正的工程信号，是反馈速度和可比较性。',
       metric: 'VERIFY',
     },
@@ -207,6 +208,7 @@ function createTextBox(requests, pageObjectId, objectId, x, y, w, h, text, style
 }
 
 const outputInfo = JSON.parse(fs.readFileSync(outputInfoPath, 'utf8'))
+const keynoteLayoutOverrides = JSON.parse(fs.readFileSync(keynoteLayoutOverridesPath, 'utf8'))
 const presentationId = process.argv[2] ?? outputInfo.presentationId
 const presentation = runGws([
   'slides',
@@ -230,9 +232,14 @@ for (const [index, slide] of (presentation.slides ?? []).entries()) {
 
   const accent = colors[meta.accent]
   const pageId = String(pageIndex).padStart(2, '0')
-  const idBase = `keynote_v2_${pageId}`
+  const idBase = `keynote_v5_${pageId}`
   const pageElements = slide.pageElements ?? []
   const elementIds = new Set(pageElements.map(element => element.objectId))
+  const layout = keynoteLayoutOverrides[String(pageIndex)] ?? {
+    kicker: { x: 0.6, y: 1.88, w: 12.1, h: 0.4 },
+    headline: { x: 0.85, y: 2.42, w: 11.6, h: 1.78 },
+    subline: { x: 1.4, y: 5.18, w: 10.5, h: 0.62 },
+  }
 
   for (const objectId of [
     `keynote_v1_${pageId}_panel`,
@@ -242,6 +249,32 @@ for (const [index, slide] of (presentation.slides ?? []).entries()) {
     `keynote_v1_${pageId}_subline`,
     `keynote_v1_${pageId}_metric_bg`,
     `keynote_v1_${pageId}_metric`,
+    `keynote_v2_${pageId}_panel`,
+    `keynote_v2_${pageId}_beam`,
+    `keynote_v2_${pageId}_kicker`,
+    `keynote_v2_${pageId}_headline`,
+    `keynote_v2_${pageId}_subline`,
+    `keynote_v2_${pageId}_metric_bg`,
+    `keynote_v2_${pageId}_metric`,
+    `keynote_v3_${pageId}_panel`,
+    `keynote_v3_${pageId}_beam`,
+    `keynote_v3_${pageId}_kicker`,
+    `keynote_v3_${pageId}_headline`,
+    `keynote_v3_${pageId}_subline`,
+    `keynote_v3_${pageId}_metric_bg`,
+    `keynote_v3_${pageId}_metric`,
+    `keynote_v4_${pageId}_panel`,
+    `keynote_v4_${pageId}_beam`,
+    `keynote_v4_${pageId}_kicker`,
+    `keynote_v4_${pageId}_headline`,
+    `keynote_v4_${pageId}_subline`,
+    `keynote_v4_${pageId}_metric_bg`,
+    `keynote_v4_${pageId}_metric`,
+    `keynote_v5_${pageId}_kicker`,
+    `keynote_v5_${pageId}_headline`,
+    `keynote_v5_${pageId}_subline`,
+    `repo_image_${pageId}`,
+    `repo_tag_${pageId}`,
     `skill_v1_${pageId}_section`,
     `skill_v1_${pageId}_highlight`,
   ]) {
@@ -257,38 +290,14 @@ for (const [index, slide] of (presentation.slides ?? []).entries()) {
     }
   }
 
-  createShape(requests, {
-    pageObjectId: slide.objectId,
-    objectId: `${idBase}_panel`,
-    shapeType: 'ROUND_RECTANGLE',
-    x: 7.4,
-    y: 0.72,
-    w: 5.0,
-    h: 5.86,
-  })
-  styleShape(requests, `${idBase}_panel`, colors.panel, 0.9, accent, 0.45)
-  sendToFront(requests, `${idBase}_panel`)
-
-  createShape(requests, {
-    pageObjectId: slide.objectId,
-    objectId: `${idBase}_beam`,
-    shapeType: 'RECTANGLE',
-    x: 6.96,
-    y: 1.06,
-    w: 0.08,
-    h: 4.8,
-  })
-  styleShape(requests, `${idBase}_beam`, accent, 0.9)
-  sendToFront(requests, `${idBase}_beam`)
-
   createTextBox(
     requests,
     slide.objectId,
     `${idBase}_kicker`,
-    7.72,
-    1.02,
-    2.0,
-    0.4,
+    layout.kicker.x,
+    layout.kicker.y,
+    layout.kicker.w,
+    layout.kicker.h,
     meta.kicker,
     {
       foregroundColor: { opaqueColor: { rgbColor: accent } },
@@ -296,27 +305,28 @@ for (const [index, slide] of (presentation.slides ?? []).entries()) {
       fontSize: { magnitude: 10, unit: 'PT' },
       bold: true,
     },
-    { spacingMode: 'NEVER_COLLAPSE' },
+    { alignment: 'CENTER', spacingMode: 'NEVER_COLLAPSE' },
   )
 
   createTextBox(
     requests,
     slide.objectId,
     `${idBase}_headline`,
-    7.68,
-    1.46,
-    4.18,
-    2.56,
-    meta.headline,
+    layout.headline.x,
+    layout.headline.y,
+    layout.headline.w,
+    layout.headline.h,
+    layout.headlineText ?? meta.headline,
     {
       foregroundColor: { opaqueColor: { rgbColor: colors.text } },
       fontFamily: 'Aptos Display',
-      fontSize: { magnitude: 24, unit: 'PT' },
+      fontSize: { magnitude: 30, unit: 'PT' },
       bold: true,
     },
     {
-      lineSpacing: 92,
-      spaceBelow: { magnitude: 4, unit: 'PT' },
+      alignment: 'CENTER',
+      lineSpacing: 98,
+      spaceBelow: { magnitude: 2, unit: 'PT' },
     },
   )
 
@@ -324,10 +334,10 @@ for (const [index, slide] of (presentation.slides ?? []).entries()) {
     requests,
     slide.objectId,
     `${idBase}_subline`,
-    7.72,
-    4.35,
-    3.84,
-    0.78,
+    layout.subline.x,
+    layout.subline.y,
+    layout.subline.w,
+    layout.subline.h,
     meta.subline,
     {
       foregroundColor: { opaqueColor: { rgbColor: colors.muted } },
@@ -336,38 +346,9 @@ for (const [index, slide] of (presentation.slides ?? []).entries()) {
       bold: false,
     },
     {
+      alignment: 'CENTER',
       lineSpacing: 110,
     },
-  )
-
-  createShape(requests, {
-    pageObjectId: slide.objectId,
-    objectId: `${idBase}_metric_bg`,
-    shapeType: 'ROUND_RECTANGLE',
-    x: 7.72,
-    y: 5.42,
-    w: 2.1,
-    h: 0.52,
-  })
-  styleShape(requests, `${idBase}_metric_bg`, colors.panelAlt, 0.96, accent, 0.7)
-  sendToFront(requests, `${idBase}_metric_bg`)
-
-  createTextBox(
-    requests,
-    slide.objectId,
-    `${idBase}_metric`,
-    7.88,
-    5.5,
-    1.8,
-    0.28,
-    meta.metric,
-    {
-      foregroundColor: { opaqueColor: { rgbColor: colors.text } },
-      fontFamily: 'Aptos',
-      fontSize: { magnitude: 9, unit: 'PT' },
-      bold: true,
-    },
-    null,
   )
 }
 
@@ -386,7 +367,7 @@ process.stdout.write(`${JSON.stringify(
     presentationId,
     url: `https://docs.google.com/presentation/d/${presentationId}/edit`,
     keynotePages: [...keynotePages.keys()],
-    keynoteStyle: 'bold-statement-panel-clean',
+    keynoteStyle: 'minimal-centered-statement',
   },
   null,
   2,
