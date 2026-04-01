@@ -1,0 +1,10 @@
+{
+  "version": 1,
+  "skills": {
+    "uni-app": {
+      "source": "uni-helper/skills",
+      "sourceType": "github",
+      "computedHash": "7fc7ec0b7e578553db961eda533a82193ccb59553f97b0fc0134f9e0a75703bb"
+    }
+  }
+}

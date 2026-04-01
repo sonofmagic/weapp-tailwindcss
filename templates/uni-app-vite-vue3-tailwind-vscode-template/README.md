@@ -19,7 +19,7 @@
 
 ## 使用前提
 
-- Node.js `20.19+`
+- Node.js `22+`
 - `pnpm`
 - 微信开发者工具
 
@@ -53,6 +53,16 @@ pnpm open:build
 - 请先把 `src/manifest.json` 中的 `appid` 改成你自己的
 - 模板内保留了 `up:pkg` 和 `up:uniapp`，用于分别升级通用依赖和 `uni-app` 依赖
 - 推荐在 VS Code 中安装 `Tailwind CSS IntelliSense`、`ESLint`、`Stylelint`
+
+## 项目级技能
+
+仓库已内置项目级 `uni-app` skill，供 Codex 等 agent 在当前项目内直接复用：
+
+- 技能目录：`.agents/skills/uni-app`
+- 锁文件：`skills-lock.json`
+- 技能入口：`.agents/skills/uni-app/SKILL.md`
+
+这个仓库只保留最小集合，不提交 `.claude/`、`.continue/`、`skills/` 这类兼容性符号链接目录。
 
 ## 相关文档
 

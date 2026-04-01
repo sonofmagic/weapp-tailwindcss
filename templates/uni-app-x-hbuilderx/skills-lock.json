@@ -1,0 +1,10 @@
+{
+  "version": 1,
+  "skills": {
+    "uniappx-project": {
+      "source": "teachingai/full-stack-skills",
+      "sourceType": "github",
+      "computedHash": "51c7b93176a1dd278684ce266d97eebe8f57d23bff765f56a294a3f7122be7d7"
+    }
+  }
+}

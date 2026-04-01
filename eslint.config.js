@@ -25,6 +25,8 @@ export default icebreaker(
       '**/test-*/**',
       'benchmark/**',
       '.claude/**',
+      '.agents/**',
+      '**/.agents/**',
       '.codex/**',
       'skills/**',
       // 忽略 apps 中生成的 CSS 和类型声明

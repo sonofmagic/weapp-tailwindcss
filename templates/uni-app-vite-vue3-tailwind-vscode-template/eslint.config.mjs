@@ -7,9 +7,9 @@ export default icebreaker(
       tailwindConfig: './tailwind.config.ts',
     },
     weapp: true,
-
   },
   {
+    ignores: ['.agents/**', '.claude/**', '.continue/**', 'skills/**'],
     // 规则可以在这里禁用
     rules: {
       'better-tailwindcss/no-unknown-classes': 'off',
