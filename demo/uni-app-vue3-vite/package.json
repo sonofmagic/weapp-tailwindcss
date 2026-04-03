@@ -70,7 +70,7 @@
     "htmlparser2": "^10.1.0",
     "magic-string": "^0.30.21",
     "miniprogram-computed": "^7.1.0",
-    "p-queue": "9.1.0",
+    "p-queue": "9.1.1",
     "tailwind-merge": "catalog:tailwindMerge",
     "tailwind-merge-v2": "npm:tailwind-merge@^2.6.1",
     "uview-plus": "^3.7.30",

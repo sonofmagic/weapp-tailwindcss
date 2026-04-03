@@ -26,9 +26,6 @@
     "build-npm": "weapp-vite build-npm",
     "postinstall": "weapp-tw patch"
   },
-  "dependencies": {
-    "wevu": "^6.12.4"
-  },
   "devDependencies": {
     "@egoist/tailwindcss-icons": "^1.9.2",
     "@iconify-json/mdi": "^1.2.3",
@@ -40,6 +37,7 @@
     "tailwindcss": "catalog:tailwindcss3",
     "typescript": "catalog:typescript59",
     "weapp-tailwindcss": "workspace:*",
-    "weapp-vite": "catalog:weappVite"
+    "weapp-vite": "catalog:weappVite",
+    "wevu": "^6.13.0"
   }
 }
