@@ -21,6 +21,12 @@ keywords:
 
 目前 `weapp-tailwindcss` 从 `4.2.0` 版本开始，插件已经支持 `uni-app-x` 同时构建包括 `web`,`小程序`, `安卓`,`IOS`,`鸿蒙` 五端项目
 
+:::warning 能力边界
+`uvue` 原生 App 端不要依赖 `gap`、`gap-x-*`、`gap-y-*`，这些布局能力当前都不支持。
+
+`space-x-*`、`space-y-*` 也不要在 `uni-app x` 中使用。请直接改用子项显式 `mt-*` / `ml-*`，或封装固定结构的间距组件。
+:::
+
 ## 创建工具类
 
 在项目中创建 `shared.js` 文件，用于存放一些工具函数：

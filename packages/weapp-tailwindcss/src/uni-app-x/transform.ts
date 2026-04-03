@@ -1,4 +1,4 @@
-import type { AttributeNode, DirectiveNode, ElementNode, ParentNode } from '@vue/compiler-dom'
+import type { AttributeNode, DirectiveNode, ParentNode } from '@vue/compiler-dom'
 import type { TransformResult } from 'vite'
 import type { CreateJsHandlerOptions, ICustomAttributesEntities, JsHandler } from '@/types'
 import { NodeTypes } from '@vue/compiler-dom'
@@ -7,7 +7,6 @@ import MagicString from 'magic-string'
 import { generateCode, replaceWxml } from '@/wxml'
 import { createAttributeMatcher } from '@/wxml/custom-attributes'
 import { shouldEnableComponentLocalStyle, UniAppXComponentLocalStyleCollector } from './component-local-style'
-import { UniAppXSpaceStyleCollector } from './space-style'
 
 function traverse(node: ParentNode, visitor: (node: ParentNode) => void): void {
   visitor(node)
@@ -128,11 +127,6 @@ const defaultCreateJsHandlerOptions: CreateJsHandlerOptions = {
 }
 const UVUE_NVUE_RE = /\.(?:uvue|nvue)(?:\?.*)?$/
 
-function insertClassAttribute(ms: MagicString, node: ElementNode, className: string) {
-  const insertOffset = node.loc.start.offset + 1 + node.tag.length
-  ms.appendLeft(insertOffset, ` class="${className}"`)
-}
-
 export function transformUVue(
   code: string,
   id: string,
@@ -147,18 +141,11 @@ export function transformUVue(
   const matchCustomAttribute = createAttributeMatcher(customAttributesEntities)
   const ms = new MagicString(code)
   const { descriptor, errors } = parse(code)
-  const spaceStyleCollector = new UniAppXSpaceStyleCollector(id)
   const localStyleCollector = options.enableComponentLocalStyle && shouldEnableComponentLocalStyle(id)
     ? new UniAppXComponentLocalStyleCollector(id, runtimeSet)
     : undefined
   if (errors.length === 0) {
     if (descriptor.template?.ast) {
-      traverse(descriptor.template.ast, (node) => {
-        if (node.type === NodeTypes.ELEMENT) {
-          spaceStyleCollector.collect(node)
-        }
-      })
-
       traverse(descriptor.template.ast, (node) => {
         if (node.type !== NodeTypes.ELEMENT) {
           return
@@ -175,14 +162,11 @@ export function transformUVue(
             if (!shouldHandle) {
               continue
             }
-            const staticClassRewrite = shouldHandleDefault
-              ? spaceStyleCollector.getStaticClassRewrite(prop)
-              : undefined
             if (shouldHandleDefault && localStyleCollector) {
-              updateStaticAttributeWithLocalStyle(ms, prop, localStyleCollector, staticClassRewrite)
+              updateStaticAttributeWithLocalStyle(ms, prop, localStyleCollector)
             }
             else {
-              updateStaticAttribute(ms, prop, staticClassRewrite)
+              updateStaticAttribute(ms, prop)
             }
             if (shouldHandleDefault) {
               continue
@@ -204,9 +188,6 @@ export function transformUVue(
             if (!shouldHandle) {
               continue
             }
-            const directiveExpressionRewrite = attrName.toLowerCase() === 'class'
-              ? spaceStyleCollector.getDirectiveExpressionRewrite(prop)
-              : undefined
             if (attrName.toLowerCase() === 'class' && localStyleCollector) {
               updateDirectiveExpressionWithLocalStyle(
                 ms,
@@ -214,18 +195,12 @@ export function transformUVue(
                 jsHandler,
                 localStyleCollector,
                 runtimeSet,
-                directiveExpressionRewrite,
               )
             }
             else {
-              updateDirectiveExpression(ms, prop, jsHandler, runtimeSet, directiveExpressionRewrite)
+              updateDirectiveExpression(ms, prop, jsHandler, runtimeSet)
             }
           }
-        }
-
-        const insertedClass = spaceStyleCollector.getInsertedClass(node)
-        if (insertedClass) {
-          insertClassAttribute(ms, node, insertedClass)
         }
       })
     }
@@ -251,9 +226,6 @@ export function transformUVue(
 
     if (localStyleCollector?.hasStyles()) {
       ms.append(`\n${localStyleCollector.toStyleBlock()}`)
-    }
-    if (spaceStyleCollector.hasStyles()) {
-      ms.append(`\n${spaceStyleCollector.toStyleBlock()}`)
     }
   }
   return {

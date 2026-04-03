@@ -111,6 +111,12 @@ describe('uni-app-x', () => {
       .gap-4 {
         gap: 1rem;
       }
+      .gap-x-3 {
+        column-gap: 0.75rem;
+      }
+      .gap-y-2 {
+        row-gap: 0.5rem;
+      }
       .min-h-screen {
         min-height: 100vh;
       }
@@ -134,6 +140,8 @@ describe('uni-app-x', () => {
     expect(result.css).not.toContain('display: grid')
     expect(result.css).not.toContain('grid-template-columns')
     expect(result.css).not.toContain('gap: 1rem')
+    expect(result.css).not.toContain('column-gap: 0.75rem')
+    expect(result.css).not.toContain('row-gap: 0.5rem')
     expect(result.css).not.toContain('min-height: 100vh')
     expect(result.css).toContain('.flex')
     expect(result.css).toContain('display: flex')
@@ -146,6 +154,8 @@ describe('uni-app-x', () => {
       expect.stringContaining('grid'),
       expect.stringContaining('grid-cols-2'),
       expect.stringContaining('gap-4'),
+      expect.stringContaining('gap-x-3'),
+      expect.stringContaining('gap-y-2'),
       expect.stringContaining('min-h-screen'),
     ]))
     expect(warningTexts.every(item => item.includes('/src/App.uvue'))).toBe(true)

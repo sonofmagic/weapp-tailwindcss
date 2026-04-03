@@ -77,6 +77,12 @@ import TailwindcssLogo from '../../../assets/logo.png'
 - 组件语义注意：原生 App 端文字需放在 `<text>` 标签，且文本样式需要直接作用在该元素上
 - 渐进增强：若某些样式在 App 端受限，优先保证 Android 端体验，再按需做条件编译适配小程序/Web
 
+## 布局能力边界
+
+- `uvue` 原生 App 端不支持 `gap`、`gap-x-*`、`gap-y-*`，包括所有 grid gap 与 flex gap 场景
+- `space-x-*`、`space-y-*` 在 `uni-app x` 中也不再支持，请不要使用
+- 需要稳妥跨端时，优先改为对子项显式写 `mt-*` / `ml-*`，或封装 `Stack` 一类组件统一处理间距
+
 ## 为什么推荐先用 Android
 
 1) 原生端样式约束更严格，例如文本必须使用 `<text>`，许多 CSS 特性仍在补齐中  
