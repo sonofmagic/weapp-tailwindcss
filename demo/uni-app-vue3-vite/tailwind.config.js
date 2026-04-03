@@ -12,7 +12,11 @@ const cssMacro = require('weapp-tailwindcss/css-macro');
 const { plugin: tailwindcssChildrenPlugin } = require('weapp-tailwindcss-children');
 /** @type {import('tailwindcss').Config} */
 module.exports = {
-  content: ['./index.html', './src/**/*.{html,js,ts,jsx,tsx,vue}'].map((x) => r(x)), // ,
+  content: [
+    './index.html',
+    './src/**/*.{html,js,ts,jsx,tsx,vue}',
+    '!./src/uni_modules/**/*',
+  ].map((x) => x.startsWith('!') ? `!${r(x.slice(1))}` : r(x)), // ,
   darkMode: 'class',
   // important: '.app',
   theme: {

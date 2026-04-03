@@ -4,6 +4,7 @@ const { r } = require('./shared')
 module.exports = {
   content: [
     r('./pages/**/*.{uts,uvue}'),
+    `!${r('./uni_modules/**/*')}`,
   ],
   theme: {
     extend: {},

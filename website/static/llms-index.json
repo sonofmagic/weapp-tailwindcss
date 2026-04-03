@@ -1,6 +1,6 @@
 {
   "version": "1.0.0",
-  "generatedAt": "2026-04-01T16:03:32.865Z",
+  "generatedAt": "2026-04-03T08:06:18.764Z",
   "siteUrl": "https://tw.icebreaker.top",
   "totals": {
     "all": 175,
@@ -2869,10 +2869,10 @@
         "`disabled:opacity-50` 这类的 `tailwindcss` 工具类不生效?",
         "`background-image` 为什么不能使用本地路径？",
         "和原生组件一起使用注意事项",
-        "编译到 h5 / app 注意事项",
-        "报错 TypeError: Cannot use 'in' operator to search for 'CallExpression' in undefined",
-        "taro webpack5 环境下，这个插件和外置额外安装的 `terser-webpack-plugin` 一起使用，会导致插件转义功能失效",
-        "为什么 space-y-1 这类写法不起作用?"
+        "uni-app + Tailwind CSS v3 扫描 `src/uni_modules` 后生成异常 CSS",
+        "# 问题现象",
+        "# 根因",
+        "# 推荐配置"
       ],
       "updatedAt": null,
       "source": "docs/issues/index.md"
@@ -4147,6 +4147,11 @@
       ],
       "headings": [
         "注册插件",
+        "`tailwind.config` 扫描范围提醒",
+        "# 问题现象",
+        "# 根因",
+        "# 推荐配置",
+        "# 最佳实践",
         "创建项目参考",
         "视频演示"
       ],
@@ -4252,10 +4257,11 @@
         "1. 使用包管理器安装 `tailwindcss`",
         "2. 在项目目录下创建 `postcss.config.js` 并注册 `tailwindcss`",
         "3. 配置 `tailwind.config.js`",
-        "4. 引入 `tailwindcss`",
-        "# uni-app",
-        "# Taro",
-        "参考链接"
+        "# `content` 扫描范围排障",
+        "## 问题现象",
+        "## 根因",
+        "## 推荐配置",
+        "## 最佳实践"
       ],
       "updatedAt": null,
       "source": "docs/quick-start/install.mdx"
@@ -4951,7 +4957,13 @@
         "rax",
         "mpx"
       ],
-      "headings": [],
+      "headings": [
+        "`@source` 扫描范围排障",
+        "# 问题现象",
+        "# 根因",
+        "# 推荐配置",
+        "# 最佳实践"
+      ],
       "updatedAt": null,
       "source": "docs/quick-start/v4/UniappCliStyle.mdx"
     },
@@ -4985,6 +4997,7 @@
         "1. 安装",
         "2. 添加 `vite.config.ts`",
         "3. 添加样式",
+        "布局限制",
         "参考模板"
       ],
       "updatedAt": null,
@@ -5014,7 +5027,13 @@
         "rax",
         "mpx"
       ],
-      "headings": [],
+      "headings": [
+        "`@source` 扫描范围排障",
+        "# 问题现象",
+        "# 根因",
+        "# 推荐配置",
+        "# 最佳实践"
+      ],
       "updatedAt": null,
       "source": "docs/quick-start/v4/UniappHbuilderStyle.mdx"
     },
@@ -6022,10 +6041,10 @@
         "你将收获什么",
         "最快开始",
         "开发建议（从用户出发）",
+        "布局能力边界",
         "为什么推荐先用 Android",
         "常见问题",
-        "# VS Code 对 uvue/uts 的高亮与跳转",
-        "# Tailwind CSS 智能提示"
+        "# VS Code 对 uvue/uts 的高亮与跳转"
       ],
       "updatedAt": null,
       "source": "docs/uni-app-x/index.mdx"

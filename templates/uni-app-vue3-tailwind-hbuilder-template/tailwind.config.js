@@ -2,7 +2,11 @@ const { resolve, isMp } = require('./shared')
 const cssMacro = require('weapp-tailwindcss/css-macro')
 /** @type {import('tailwindcss').Config} */
 module.exports = {
-  content: ["./index.html", "pages/**/*.{vue,ts,js,wxml}"].map(resolve),
+  content: [
+    "./index.html",
+    "pages/**/*.{vue,ts,js,wxml}",
+    "!./uni_modules/**/*",
+  ].map((x) => x.startsWith('!') ? `!${resolve(x.slice(1))}` : resolve(x)),
   theme: {
     extend: {
       colors: {

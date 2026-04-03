@@ -3,7 +3,11 @@ const cssMacro = require('weapp-tailwindcss/css-macro')
 // https://github.com/sonofmagic/weapp-tailwindcss-webpack-plugin/blob/main/demo/uni-app/tailwind.config.js
 /** @type {import('@types/tailwindcss/tailwind-config').TailwindConfig} */
 module.exports = {
-  content: ['public/index.html', './src/**/*.{vue,js,ts,jsx,tsx,wxml}'],
+  content: [
+    'public/index.html',
+    './src/**/*.{vue,js,ts,jsx,tsx,wxml}',
+    '!./src/uni_modules/**/*',
+  ],
   theme: {
     extend: {}
   },

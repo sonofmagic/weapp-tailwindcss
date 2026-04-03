@@ -1,6 +1,7 @@
 /* stylelint-disable custom-property-pattern */
 @import "weapp-tailwindcss";
 @config "../tailwind.config.js";
+@source not "../src/uni_modules";
 
 @theme {
   --color-neutral-1B: #1b1b1b;

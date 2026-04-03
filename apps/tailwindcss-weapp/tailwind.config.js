@@ -5,7 +5,11 @@ const { isMp } = require('./platform')
 
 /** @type {import('tailwindcss').Config} */
 module.exports = {
-  content: ['./index.html', './src/**/*.{html,js,ts,jsx,tsx,vue}'],
+  content: [
+    './index.html',
+    './src/**/*.{html,js,ts,jsx,tsx,vue}',
+    '!./src/uni_modules/**/*',
+  ],
   // https://tailwindcss.com/docs/dark-mode
   // darkMode: 'class',
   // darkMode: ['variant', ['&:is(.dark *)']],

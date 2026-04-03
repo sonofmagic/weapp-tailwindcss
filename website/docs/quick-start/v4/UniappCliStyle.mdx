@@ -41,6 +41,7 @@ import UniAppUniScss from '../_UniAppUniScss.mdx'
 ```css title="src/main.css"
 @import "tailwindcss";
 @source not "dist";
+@source not "../src/uni_modules";
 ```
 
 然后把 `experimental.configFile` 指向它：
@@ -52,6 +53,32 @@ import UniAppUniScss from '../_UniAppUniScss.mdx'
 ```
 
 这个 `src/main.css` 只用于 IntelliSense，不要在 `App.vue` 里实际引入。应用运行时仍然使用 `src/app.css` 里的 `@import "weapp-tailwindcss/index.css"`。
+
+## `@source` 扫描范围排障
+
+### 问题现象
+
+如果你的 `uni-app` 项目把第三方插件或依赖放在 `src/uni_modules` 下，同时 Tailwind 4 的 CSS 入口又没有显式排除这个目录，那么扫描源码时也可能把依赖里的正则片段、README 示例文本或构建产物误当成候选，最终生成无意义样式。
+
+### 根因
+
+根因和 Tailwind v3 的 `content` 误扫描类似，本质上都是扫描范围过宽，把业务源码以外的第三方内容也纳入了提取范围。
+
+### 推荐配置
+
+对于 `uni-app cli` 项目，推荐在 Tailwind 4 的 CSS 入口里显式排除：
+
+```css title="src/main.css"
+@import "tailwindcss";
+@source not "dist";
+@source not "../src/uni_modules";
+```
+
+### 最佳实践
+
+- `@source` 应尽量只覆盖业务源码目录
+- 默认排除 `src/uni_modules`、`node_modules`、`dist`、`unpackage`、文档和生成产物
+- 如果必须扫描某个 `uni_modules` 包，只精确包含真正承载模板类名的文件，不要全量扫描整个目录
 
 这里要写 `@import "tailwindcss"`，因为 `tailwindcss-intellisense` 当前用于触发 v4 设计系统加载的判断只认 `@import "tailwindcss"` 或 `@theme {}`，并不认 `@import "weapp-tailwindcss/index.css"`。
 

@@ -4,7 +4,11 @@ import cssMacro from 'weapp-tailwindcss/css-macro'
 import { isMp } from './platform'
 
 export default <Config>{
-  content: ['./index.html', './src/**/*.{html,js,ts,jsx,tsx,vue}'],
+  content: [
+    './index.html',
+    './src/**/*.{html,js,ts,jsx,tsx,vue}',
+    '!./src/uni_modules/**/*',
+  ],
   theme: {
     extend: {
       // colors: {

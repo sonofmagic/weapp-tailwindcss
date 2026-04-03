@@ -5,6 +5,7 @@ module.exports = {
   content: [
     r('./pages/**/*.{uts,uvue}'),
     r('./components/**/*.{uts,uvue}'),
+    `!${r('./uni_modules/**/*')}`,
   ],
   theme: {
     extend: {},

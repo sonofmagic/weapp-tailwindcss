@@ -11,6 +11,7 @@ module.exports = {
       resolve("./pages/**/*.{vue,js,ts,jsx,tsx,wxml}"),
       resolve("./pagesA/**/*.{vue,js,ts,jsx,tsx,wxml}"),
       resolve("./pagesB/**/*.{vue,js,ts,jsx,tsx,wxml}"),
+      `!${resolve("./uni_modules/**/*")}`,
     ],
   },
   darkMode: false, // or 'media' or 'class'

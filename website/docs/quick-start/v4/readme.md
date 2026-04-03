@@ -199,6 +199,7 @@ shamefully-hoist=true
 ```css title="main.css"
 @import "tailwindcss";
 @source not "dist";
+@source not "../src/uni_modules";
 ```
 
 ```json title=".vscode/settings.json"
@@ -221,6 +222,50 @@ shamefully-hoist=true
 - `@import "tailwindcss"`：可以稳定触发 v4 IntelliSense
 
 如果你的项目不是 `dist` 目录，而是 `unpackage`、`build` 等其他输出目录，请把 `@source not "dist";` 改成自己的实际产物目录。
+
+## `uni-app` / `uni-app x` 项目里的 `@source` 扫描范围排障
+
+### 问题现象
+
+当 `uni-app` 项目把第三方插件或依赖放在 `src/uni_modules` 下，或者 `HBuilderX` / `uni-app x` 项目把依赖放在根目录 `uni_modules` 下时，如果 Tailwind 4 的 CSS 入口没有显式排除这些目录，扫描阶段就可能把依赖源码中的正则片段、README 示例文本或构建产物误识别为候选。
+
+最终表现通常不是业务代码真的写了这些类名，而是产物里平白多出很多无意义样式，增加排查成本。
+
+### 根因
+
+根因和 Tailwind v3 的 `content` 误扫描一致，都是因为扫描范围过宽，把第三方源码、README 示例文本或构建产物误当成候选。
+
+### 推荐配置
+
+命令行 `uni-app` 项目推荐：
+
+```css
+@source not "../src/uni_modules";
+```
+
+`HBuilderX` / `uni-app x` 项目推荐：
+
+```css
+@source not "uni_modules";
+```
+
+同时保留对实际构建产物目录的排除，例如：
+
+```css
+@source not "dist";
+```
+
+或：
+
+```css
+@source not "unpackage";
+```
+
+### 最佳实践
+
+- `@source` 应尽量只覆盖业务源码目录
+- 默认排除 `uni_modules`、`node_modules`、`dist`、`unpackage`、文档和生成产物
+- 如果必须扫描某个 `uni_modules` 包，应只精确包含真正承载模板类名的文件，而不是全量扫描整个目录
 
 > **注意**：从 `tailwindcss-intellisense` 的源码来看，`experimental.configFile` 在 v4 下支持 `string` 和 `object` 两种形式，路径会相对于工作区或 `.code-workspace` 文件解析。关键是“显式声明 CSS 入口”，并且这个入口本身要满足它的 v4 识别条件。
 
