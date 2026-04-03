@@ -49,6 +49,52 @@ keywords:
 
 如何更改？在传入的配置项 `cssMatcher`，`htmlMatcher` 这类配置，来过滤指定目录或文件。
 
+## uni-app + Tailwind CSS v3 扫描 `src/uni_modules` 后生成异常 CSS
+
+### 问题现象
+
+当 `tailwind.config` 使用下面这种过宽的 `content` 配置：
+
+```ts
+content: ['./src/**/*.{html,js,ts,jsx,tsx,vue}']
+```
+
+并且项目里存在 `src/uni_modules/**/*` 第三方包时，Tailwind 可能扫描到依赖源码中的正则片段或示例文本，例如 `[a-zA-Z:_]`，并把它当成 arbitrary property class 提取。
+
+在小程序场景下，再经过 `weapp-tailwindcss` 转译后，最终可能出现类似：
+
+```css
+._ba-zA-Z_c__B {
+  a-z-a--z:;
+}
+```
+
+这样的异常产物。
+
+### 根因
+
+这类问题的根因不是业务代码真的写了这个 class，而是 Tailwind v3 的内容提取器误扫了第三方目录中的源码、文档或构建产物。
+
+### 推荐配置
+
+请显式排除 `src/uni_modules`：
+
+```ts title="tailwind.config.ts"
+export default {
+  content: [
+    './index.html',
+    './src/**/*.{html,js,ts,jsx,tsx,vue}',
+    '!./src/uni_modules/**/*',
+  ],
+}
+```
+
+### 最佳实践
+
+- `content` 应尽量只覆盖业务源码目录
+- 默认应排除 `uni_modules`、`node_modules`、`dist`、`unpackage`、文档和生成产物
+- 如果必须扫描某个 `uni_modules` 包，应只精确包含其中真正承载模板类名的文件，而不是整个目录全量扫描
+
 ## 编译到 h5 / app 注意事项
 
 有些用户通过 `uni-app` 等跨端框架，不止开发成各种小程序，也开发为 `H5`，然而 `tailwindcss` 本身就兼容 `H5` 了。此时你需要更改配置，我们以 `uni-app` 为例:

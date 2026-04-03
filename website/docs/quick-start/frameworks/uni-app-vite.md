@@ -53,6 +53,42 @@ export default defineConfig({
 
 这里只列举了插件的注册，包括`postcss`配置完整的注册方式，参考配置项文件链接: <https://github.com/sonofmagic/uni-app-vite-vue3-tailwind-vscode-template>
 
+## `tailwind.config` 扫描范围提醒
+
+### 问题现象
+
+如果你的 `uni-app` 项目把第三方插件或依赖放进了 `src/uni_modules`，同时又在 `tailwind.config` 中直接扫描整个 `src/**/*.{html,js,ts,jsx,tsx,vue}`，Tailwind v3 可能会把依赖源码里的正则表达式、README 示例文本误识别为 class，最终生成异常 CSS。
+
+在小程序产物中，可能会看到类似：
+
+```css
+._ba-zA-Z_c__B {
+  a-z-a--z:;
+}
+```
+
+### 根因
+
+这不是业务代码真的写了这样的类名，而是 Tailwind v3 的内容提取器误扫了 `src/uni_modules` 里的第三方源码或文档。
+
+### 推荐配置
+
+```ts title="tailwind.config.ts"
+export default {
+  content: [
+    './index.html',
+    './src/**/*.{html,js,ts,jsx,tsx,vue}',
+    '!./src/uni_modules/**/*',
+  ],
+}
+```
+
+### 最佳实践
+
+- `content` 只扫业务源码，不要无差别扫整个 `src`
+- 默认排除 `uni_modules`、`node_modules`、`dist`、`unpackage`
+- 如果必须包含某个 `uni_modules` 包，只精确包含其中真正承载模板类名的文件
+
 ## 创建项目参考
 
 `uni-app vite` 版本是 `uni-app` 最新的升级，它使用 `vue3` 的语法。
