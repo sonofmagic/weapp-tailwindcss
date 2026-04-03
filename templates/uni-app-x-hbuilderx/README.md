@@ -58,8 +58,6 @@ pnpm dev:ios:simulator
 - 安装依赖后会自动执行 `weapp-tw patch`
 - 模板默认覆盖 `pages`、`components` 等常见目录
 - 如果你新增了 `uts` / `uvue` 目录结构，记得同步调整 `tailwind` 提取范围
-- `uni-app x` 下不要使用 `gap`、`gap-x-*`、`gap-y-*`
-- `uni-app x` 下也不要使用 `space-x-*`、`space-y-*`，请直接改用子项显式 `mt-*` / `ml-*`
 
 ## 相关文档
 

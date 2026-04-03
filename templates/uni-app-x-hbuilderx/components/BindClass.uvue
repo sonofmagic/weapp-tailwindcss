@@ -14,7 +14,7 @@
     </text>
   </view>
 </template>
-<script setup lang="ts">
+<script setup lang="uts">
   const flag = true
   const extra = 'text-[93.54rpx] bg-[#d2e252]'
   const toggled = true

@@ -1,16 +1,13 @@
-<script setup>
-	function copy(data : string) {
-		uni.setClipboardData({
-			data,
-		})
-	}
+<script setup lang="uts">
+
+
 </script>
 
 <template>
 	<view class="px-4">
 		<image src="/static/logo-text-colorful.png" class="w-[300px] h-[48.3px]"></image>
 		<view
-			@click="copy('https://tw.icebreaker.top/')">
+			>
 			<text class="text-2xl underline text-center">
 				tw.icebreaker.top
 			</text>
