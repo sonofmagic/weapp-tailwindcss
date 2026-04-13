@@ -144,12 +144,12 @@
     "@tailwindcss/vite": "catalog:tailwindcss4",
     "@types/react": "^19.2.14",
     "@types/react-dom": "^19.0.0",
-    "react": "^18.3.1",
-    "react-dom": "^18.3.1",
+    "react": "catalog:react18",
+    "react-dom": "catalog:react18",
     "storybook": "^10.3.4",
     "tailwindcss": "catalog:tailwindcss4",
     "typescript": "catalog:typescript59",
-    "vite": "^7.3.1",
+    "vite": "catalog:vite724",
     "vite-plugin-dts": "^4.5.4"
   }
 }

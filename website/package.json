@@ -49,7 +49,7 @@
     "@weapp-tailwindcss/cva": "workspace:*",
     "@weapp-tailwindcss/merge": "workspace:*",
     "@weapp-tailwindcss/variants": "workspace:*",
-    "clsx": "^2.1.1",
+    "clsx": "catalog:clsx",
     "file-saver": "^2.0.5",
     "pako": "^2.1.0",
     "prism-react-renderer": "^2.4.1",

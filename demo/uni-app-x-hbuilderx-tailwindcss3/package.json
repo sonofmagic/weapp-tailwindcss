@@ -17,7 +17,7 @@
     "@weapp-tailwindcss/variants-v3": "workspace:*",
     "tailwindcss": "catalog:tailwindcss3",
     "tailwindcss-patch": "catalog:tailwindcssPatch",
-    "vue": "^3.5.31",
+    "vue": "catalog:vue3",
     "weapp-ide-cli": "catalog:weappIdeCli",
     "weapp-tailwindcss": "workspace:*"
   }

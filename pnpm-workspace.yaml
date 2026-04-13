@@ -20,8 +20,20 @@ catalogs:
     '@babel/runtime': ^7.29.2
   babelRuntime7284tilde:
     '@babel/runtime': ^7.29.2
+  classVarianceAuthority:
+    class-variance-authority: ^0.7.1
+  clsx:
+    clsx: ^2.1.1
   crossEnv:
     cross-env: ^10.1.0
+  egoistTailwindcssIcons:
+    '@egoist/tailwindcss-icons': ^1.9.2
+  eslint10:
+    eslint: ^10.1.0
+  eslintPluginReact:
+    eslint-plugin-react: ^7.37.5
+  eslintPluginReactHooks:
+    eslint-plugin-react-hooks: ^7.0.1
   lucideReact0555:
     lucide-react: ^1.7.0
   lucideVueNext0555:
@@ -30,11 +42,11 @@ catalogs:
     miniprogram-api-typings: ^5.1.2
   postcss85:
     postcss: ^8.5.8
+  postcss85tilde:
+    postcss: ~8.5.8
   postcssComment2:
     postcss-comment: ^2.0.0
-  postcssRem602:
-    postcss-rem-to-responsive-pixel: ^7.0.1
-  postcssRem610:
+  postcssRem:
     postcss-rem-to-responsive-pixel: ^7.0.1
   postcssRpx:
     postcss-rpx-transform: ^1.0.1
@@ -109,14 +121,24 @@ catalogs:
     vite: ^4.5.14
   vite5421:
     vite: ^5.4.21
+  vite528:
+    vite: 5.2.8
   vite724:
     vite: ^7.3.1
+  vitePluginInspect:
+    vite-plugin-inspect: ^11.3.3
+  vitest412:
+    vitest: ~4.1.2
   vitePluginReact4:
     '@vitejs/plugin-react': ^4.7.0
+  vue2:
+    vue: ^2.7.16
   vue3:
     '@vue/compiler-dom': ^3.5.31
     '@vue/compiler-sfc': ^3.5.31
     vue: ^3.5.31
+  vueRuntimeCore:
+    '@vue/runtime-core': ^3.5.31
   vueTsc318:
     vue-tsc: ^3.2.6
   weappChildren:
@@ -136,8 +158,3 @@ onlyBuiltDependencies:
   - esbuild
   - sharp
   - workerd
-
-packageExtensions:
-  '@dcloudio/vue-cli-plugin-hbuilderx@*':
-    dependencies:
-      '@dcloudio/uni-cli-shared': 2.0.2-4080520251106001

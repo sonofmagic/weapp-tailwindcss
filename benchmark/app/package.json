@@ -36,8 +36,8 @@
     "postcss": "catalog:postcss85",
     "tailwindcss": "catalog:tailwindcss4",
     "unplugin-vue-router": "^0.19.2",
-    "vite": "^7.3.1",
-    "vite-plugin-inspect": "^11.3.3",
+    "vite": "catalog:vite724",
+    "vite-plugin-inspect": "catalog:vitePluginInspect",
     "vue-echarts": "^8.0.1",
     "vue-tsc": "catalog:vueTsc318",
     "weapp-tailwindcss": "workspace:*"

@@ -27,7 +27,7 @@
     "postinstall": "weapp-tw patch"
   },
   "devDependencies": {
-    "@egoist/tailwindcss-icons": "^1.9.2",
+    "@egoist/tailwindcss-icons": "catalog:egoistTailwindcssIcons",
     "@iconify-json/mdi": "^1.2.3",
     "@weapp-tailwindcss/merge-v3": "workspace:*",
     "@weapp-tailwindcss/variants-v3": "workspace:*",

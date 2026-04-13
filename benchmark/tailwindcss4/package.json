@@ -13,12 +13,12 @@
     "@weapp-tailwindcss/cva": "workspace:*",
     "@weapp-tailwindcss/merge": "workspace:*",
     "@weapp-tailwindcss/variants": "workspace:*",
-    "class-variance-authority": "^0.7.1",
+    "class-variance-authority": "catalog:classVarianceAuthority",
     "tailwind-merge": "catalog:tailwindMerge",
     "tailwind-variants": "^3.2.2",
     "tailwindcss": "catalog:tailwindcss4"
   },
   "devDependencies": {
-    "vitest": "~4.1.2"
+    "vitest": "catalog:vitest412"
   }
 }

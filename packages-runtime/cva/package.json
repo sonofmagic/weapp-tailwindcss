@@ -57,6 +57,6 @@
   },
   "dependencies": {
     "@weapp-tailwindcss/runtime": "workspace:*",
-    "class-variance-authority": "^0.7.1"
+    "class-variance-authority": "catalog:classVarianceAuthority"
   }
 }

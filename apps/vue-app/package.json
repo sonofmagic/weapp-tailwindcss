@@ -12,8 +12,8 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "class-variance-authority": "^0.7.1",
-    "clsx": "^2.1.1",
+    "class-variance-authority": "catalog:classVarianceAuthority",
+    "clsx": "catalog:clsx",
     "lucide-vue-next": "catalog:lucideVueNext0555",
     "reka-ui": "^2.9.3",
     "tailwind-merge": "catalog:tailwindMerge",

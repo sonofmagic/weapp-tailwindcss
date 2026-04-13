@@ -34,7 +34,7 @@
     "lodash": "^4.18.1"
   },
   "devDependencies": {
-    "@egoist/tailwindcss-icons": "^1.9.2",
+    "@egoist/tailwindcss-icons": "catalog:egoistTailwindcssIcons",
     "@iconify-json/lucide": "^1.2.101",
     "@iconify-json/mdi": "^1.2.3",
     "@tailwindcss/postcss": "catalog:tailwindcss4",
