@@ -30,6 +30,6 @@
     "typescript": "catalog:typescript59tilde",
     "vite": "catalog:vite724",
     "vue-tsc": "catalog:vueTsc318",
-    "wrangler": "catalog:wrangler4530"
+    "wrangler": "catalog:wrangler"
   }
 }

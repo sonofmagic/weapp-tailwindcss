@@ -113,7 +113,7 @@ catalogs:
     typescript: ^5.9.3
   typescript59tilde:
     typescript: ~5.9.3
-  typescriptEslint849:
+  typescriptEslint:
     '@typescript-eslint/eslint-plugin': ^8.58.0
     '@typescript-eslint/parser': ^8.58.0
     typescript-eslint: ^8.58.0
@@ -121,13 +121,13 @@ catalogs:
     vite: ^4.5.14
   vite5421:
     vite: ^5.4.21
-  vite528:
+  vite52:
     vite: 5.2.8
   vite724:
     vite: ^7.3.1
   vitePluginInspect:
     vite-plugin-inspect: ^11.3.3
-  vitest412:
+  vitest:
     vitest: ~4.1.2
   vitePluginReact4:
     '@vitejs/plugin-react': ^4.7.0
@@ -147,7 +147,7 @@ catalogs:
     weapp-ide-cli: ^5.1.4
   weappVite:
     weapp-vite: ^6.13.0
-  wrangler4530:
+  wrangler:
     wrangler: ^4.80.0
 
 onlyBuiltDependencies:

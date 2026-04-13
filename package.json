@@ -289,12 +289,12 @@
     "vinyl-fs": "^4.0.2",
     "vite": "catalog:vite724",
     "vite-plugin-inspect": "catalog:vitePluginInspect",
-    "vitest": "catalog:vitest412",
+    "vitest": "catalog:vitest",
     "weapp-tailwindcss": "workspace:*",
     "weapp-tailwindcss-children": "catalog:weappChildren",
     "webpack": "5.105.4",
     "webpack-build-utils": "^0.0.7",
-    "wrangler": "catalog:wrangler4530",
+    "wrangler": "catalog:wrangler",
     "yaml": "^2.8.3"
   },
   "pnpm": {

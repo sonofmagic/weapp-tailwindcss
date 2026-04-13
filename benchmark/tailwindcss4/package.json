@@ -19,6 +19,6 @@
     "tailwindcss": "catalog:tailwindcss4"
   },
   "devDependencies": {
-    "vitest": "catalog:vitest412"
+    "vitest": "catalog:vitest"
   }
 }

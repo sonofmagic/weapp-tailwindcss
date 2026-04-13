@@ -107,7 +107,7 @@
     "strip-indent": "^4.1.1",
     "tailwindcss": "catalog:tailwindcss3",
     "unplugin-auto-import": "^19.1.1",
-    "vite": "catalog:vite528",
+    "vite": "catalog:vite52",
     "vue-eslint-parser": "^10.4.0",
     "weapp-ide-cli": "catalog:weappIdeCli",
     "weapp-tailwindcss": "workspace:*"
