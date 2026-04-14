@@ -91,17 +91,18 @@ describe('content-probe integration', () => {
     postcssProcess.mockClear()
   })
 
-  it('auto-skips plugins when CSS has no modern features', async () => {
+  it('auto-skips color-functional-fallback when CSS has no modern color functions', async () => {
     const handler = createStyleHandler()
 
     // 初始化时 createStyleHandler 内部会调用 cache.getProcessor(base)（无 signal）
     const initCallCount = postcssFactory.mock.calls.length
 
-    // 简单 CSS 不含现代特征，probeFeatures 应返回全 false 信号
+    // 简单 CSS 不含现代颜色函数，probeFeatures 应返回 hasModernColorFunction: false
+    // 但 hasPresetEnvFeatures 始终为 true（autoprefixer 需要）
     const simpleCSS = '.box { color: red; }'
     const signal = probeFeatures(simpleCSS)
     expect(signal.hasModernColorFunction).toBe(false)
-    expect(signal.hasPresetEnvFeatures).toBe(false)
+    expect(signal.hasPresetEnvFeatures).toBe(true)
 
     await handler(simpleCSS)
 
@@ -116,7 +117,7 @@ describe('content-probe integration', () => {
     const basePipeline = handler.getPipeline()
     const basePluginCount = basePipeline.plugins.length
 
-    // 裁剪后的插件数量应少于基线（跳过了 preset-env 和 color-functional-fallback）
+    // 裁剪后的插件数量应少于基线（跳过了 color-functional-fallback）
     expect(pluginsForSimple.length).toBeLessThan(basePluginCount)
   })
 

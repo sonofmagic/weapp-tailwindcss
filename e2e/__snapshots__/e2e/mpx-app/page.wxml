@@ -7,11 +7,11 @@
   <view>*****</view>
   <view style="color: red; font-size: 16px; font-weight: bold"><view class="bg-_b_h929292_B bg-_b_h929292_B" style="color: blue; font-size: 14px">111112222</view></view>
   <view style="color: blue; font-size: 14px; background-color: red">222222</view>
-  <list is="components/listb85648da/index">
-    <view class="flex listb85648da-index--flex flex-col listb85648da-index--flex-col">
-      <view class="text-_bblue_B listb85648da-index--text-_bblue_B">手机</view>
-      <view class="text-_b_he67240_B listb85648da-index--text-_b_he67240_B">电视</view>
-      <view class="text-_bblue_B listb85648da-index--text-_bblue_B">电脑</view>
+  <list is="components/liste824c5b4/index">
+    <view class="flex liste824c5b4-index--flex flex-col liste824c5b4-index--flex-col">
+      <view class="text-_bblue_B liste824c5b4-index--text-_bblue_B">手机</view>
+      <view class="text-_b_he67240_B liste824c5b4-index--text-_b_he67240_B">电视</view>
+      <view class="text-_bblue_B liste824c5b4-index--text-_bblue_B">电脑</view>
     </view>
   </list>
   <button
@@ -37,7 +37,7 @@
     class="t-button button--t-button t-button--base button--t-button--base t-button--default button--t-button--default t-button--rectangle button--t-button--rectangle t-button--size-medium button--t-button--size-medium">
     <view class="t-button__content button--t-button__content">111</view>
   </button>
-  <van-button is="components/vant/weapp0735eb19/lib/button/index">
+  <van-button is="components/vant/weappef07ea28/lib/button/index">
     <button
       app-parameter=""
       business-id="0"

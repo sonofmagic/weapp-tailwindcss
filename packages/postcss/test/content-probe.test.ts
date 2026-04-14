@@ -16,12 +16,12 @@ describe('content probe', () => {
       })
     })
 
-    it('不包含任何特征的简单 CSS 返回全 false', () => {
+    it('不包含任何特征的简单 CSS 返回 hasPresetEnvFeatures: true（autoprefixer 需要）', () => {
       const css = '.container { color: red; font-size: 14px; }'
       const signal = probeFeatures(css)
       expect(signal).toEqual({
         hasModernColorFunction: false,
-        hasPresetEnvFeatures: false,
+        hasPresetEnvFeatures: true,
       })
     })
 

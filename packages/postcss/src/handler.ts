@@ -1,5 +1,4 @@
 // 样式处理入口，负责构建和复用 PostCSS 管线
-import type { createHash } from 'node:crypto'
 import type { Result as PostcssResult } from 'postcss'
 import type { FeatureSignal } from './content-probe'
 import type { IStyleHandlerOptions, StyleHandler } from './types'
@@ -66,14 +65,27 @@ export function createStyleHandler(options?: Partial<IStyleHandlerOptions>): Sty
   /** CSS 处理结果 LRU 缓存 */
   const resultCache = new LRUCache<string, PostcssResult>({ max: CSS_RESULT_CACHE_MAX })
 
+  /** 检测是否配置了用户 postcss 插件（如 tailwindcss），有用户插件时不做内容探测 */
+  const hasUserPlugins = Boolean(
+    cachedOptions.postcssOptions?.plugins
+    && (Array.isArray(cachedOptions.postcssOptions.plugins)
+      ? cachedOptions.postcssOptions.plugins.length > 0
+      : typeof cachedOptions.postcssOptions.plugins === 'object'
+        && Object.keys(cachedOptions.postcssOptions.plugins).length > 0),
+  )
+
   const handler = ((rawSource: string, opt?: Partial<IStyleHandlerOptions>) => {
     const resolvedOptions = resolver.resolve(opt)
+    // 当有用户插件时跳过内容探测，因为用户插件（如 tailwindcss）可能在 pre 阶段
+    // 生成新的 CSS 特征（如现代颜色函数、:is() 伪类等），而 probeFeatures 只看原始输入
     let signal: FeatureSignal | undefined
-    try {
-      signal = probeFeatures(rawSource)
-    }
-    catch {
-      signal = undefined
+    if (!hasUserPlugins) {
+      try {
+        signal = probeFeatures(rawSource)
+      }
+      catch {
+        signal = undefined
+      }
     }
 
     // 构建缓存键：选项指纹 + 信号 + 内容哈希

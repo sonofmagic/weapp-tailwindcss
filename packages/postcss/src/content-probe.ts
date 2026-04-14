@@ -104,13 +104,10 @@ export function probeFeatures(css: string): FeatureSignal {
   }
 
   const hasModernColorFunction = MODERN_COLOR_RE.test(css)
-  // 现代颜色函数语法同时需要 preset-env 的 color-functional-notation 特性处理，
-  // 因此 hasModernColorFunction 为 true 时 hasPresetEnvFeatures 也必须为 true
-  const hasPresetEnvFeatures = hasModernColorFunction
-    || PRESET_ENV_KEYWORDS.some(keyword => css.includes(keyword))
-    || NESTING_RE.test(css)
-    || UNIVERSAL_SELECTOR_RE.test(css)
-    || HEX_ALPHA_RE.test(css)
+  // postcss-preset-env 包含 autoprefixer，几乎所有 CSS 都可能需要它添加厂商前缀，
+  // 因此 hasPresetEnvFeatures 始终为 true，仅通过 hasModernColorFunction 控制
+  // color-functional-fallback 插件的裁剪。
+  const hasPresetEnvFeatures = true
 
   return {
     hasModernColorFunction,

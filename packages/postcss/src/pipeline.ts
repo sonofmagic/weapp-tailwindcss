@@ -1,6 +1,5 @@
 // 按阶段构建 PostCSS 插件流水线，并提供状态机式上下文信息
 import type { AcceptedPlugin } from 'postcss'
-import type { FeatureSignal } from './content-probe'
 import type { IStyleHandlerOptions } from './types'
 import postcssPresetEnv from 'postcss-preset-env'
 import { createColorFunctionalFallback } from './plugins/colorFunctionalFallback'
@@ -93,7 +92,7 @@ function createPreparedNode(
 }
 
 // createPreparedNodes 直接按最终顺序生成可实例化节点，避免 definition 二次中转
-function createPreparedNodes(options: IStyleHandlerOptions, signal?: FeatureSignal): PipelinePreparedNode[] {
+function createPreparedNodes(options: IStyleHandlerOptions): PipelinePreparedNode[] {
   const preparedNodes: PipelinePreparedNode[] = []
   const userPlugins = normalizeUserPlugins(options.postcssOptions?.plugins)
   const presetEnvOptions = options.cssPresetEnv as Parameters<typeof postcssPresetEnv>[0]
@@ -102,13 +101,8 @@ function createPreparedNodes(options: IStyleHandlerOptions, signal?: FeatureSign
   })
 
   preparedNodes.push(createPreparedNode('pre:core', 'pre', () => postcssWeappTailwindcssPrePlugin(options)))
-
-  if (!signal || signal.hasPresetEnvFeatures) {
-    preparedNodes.push(createPreparedNode('normal:preset-env', 'normal', () => postcssPresetEnv(presetEnvOptions)))
-  }
-  if (!signal || signal.hasModernColorFunction) {
-    preparedNodes.push(createPreparedNode('normal:color-functional-fallback', 'normal', () => createColorFunctionalFallback()))
-  }
+  preparedNodes.push(createPreparedNode('normal:preset-env', 'normal', () => postcssPresetEnv(presetEnvOptions)))
+  preparedNodes.push(createPreparedNode('normal:color-functional-fallback', 'normal', () => createColorFunctionalFallback()))
 
   const unitsToPxPlugin = getUnitsToPxPlugin(options)
   if (unitsToPxPlugin) {
@@ -146,11 +140,11 @@ function createPreparedNodes(options: IStyleHandlerOptions, signal?: FeatureSign
 }
 
 // createStylePipeline 会实例化上下文、串联各个节点并提供邻接信息
-export function createStylePipeline(options: IStyleHandlerOptions, signal?: FeatureSignal): StyleProcessingPipeline {
+export function createStylePipeline(options: IStyleHandlerOptions): StyleProcessingPipeline {
   // 管线创建前先初始化上下文，以便各插件共享状态
   options.ctx = createContext()
 
-  const preparedNodes = createPreparedNodes(options, signal)
+  const preparedNodes = createPreparedNodes(options)
 
   if (preparedNodes.length === 0) {
     return {
