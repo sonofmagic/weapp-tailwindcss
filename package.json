@@ -224,6 +224,7 @@
     "eslint": "catalog:eslint10",
     "execa": "^9.6.1",
     "express": "^5.2.1",
+    "fast-check": "^4.6.0",
     "fast-glob": "^3.3.3",
     "fs-extra": "^11.3.4",
     "get-value": "^4.0.1",

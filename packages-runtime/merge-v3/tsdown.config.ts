@@ -1,9 +1,12 @@
 import { defineConfig } from 'tsdown'
 
-export default defineConfig({
-  entry: ['./src/index.ts'],
-  format: ['esm', 'cjs'],
-  dts: true,
-  clean: true,
-  target: 'node18',
-})
+export default defineConfig([
+  {
+    entry: ['src/index.ts', 'src/slim.ts', 'src/lite.ts'],
+    format: ['cjs', 'esm'],
+    clean: true,
+    dts: true,
+    target: 'node18',
+    failOnWarn: false,
+  },
+])

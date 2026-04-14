@@ -23,7 +23,9 @@
   ],
   "sideEffects": false,
   "_exports": {
-    ".": "./src/index.ts"
+    ".": "./src/index.ts",
+    "./slim": "./src/slim.ts",
+    "./lite": "./src/lite.ts"
   },
   "exports": {
     ".": {
@@ -34,6 +36,26 @@
       "require": {
         "types": "./dist/index.d.cts",
         "default": "./dist/index.cjs"
+      }
+    },
+    "./slim": {
+      "import": {
+        "types": "./dist/slim.d.mts",
+        "default": "./dist/slim.mjs"
+      },
+      "require": {
+        "types": "./dist/slim.d.cts",
+        "default": "./dist/slim.cjs"
+      }
+    },
+    "./lite": {
+      "import": {
+        "types": "./dist/lite.d.mts",
+        "default": "./dist/lite.mjs"
+      },
+      "require": {
+        "types": "./dist/lite.d.cts",
+        "default": "./dist/lite.cjs"
       }
     }
   },
@@ -67,6 +89,26 @@
           "types": "./dist/index.d.cts",
           "default": "./dist/index.cjs"
         }
+      },
+      "./slim": {
+        "import": {
+          "types": "./dist/slim.d.mts",
+          "default": "./dist/slim.mjs"
+        },
+        "require": {
+          "types": "./dist/slim.d.cts",
+          "default": "./dist/slim.cjs"
+        }
+      },
+      "./lite": {
+        "import": {
+          "types": "./dist/lite.d.mts",
+          "default": "./dist/lite.mjs"
+        },
+        "require": {
+          "types": "./dist/lite.d.cts",
+          "default": "./dist/lite.cjs"
+        }
       }
     },
     "access": "public",
@@ -78,5 +120,8 @@
     "@weapp-core/escape": "^7.0.0",
     "@weapp-tailwindcss/runtime": "workspace:*",
     "tailwind-merge": "catalog:tailwindMerge"
+  },
+  "devDependencies": {
+    "fast-check": "^4.6.0"
   }
 }

@@ -22,6 +22,11 @@
     "v3"
   ],
   "sideEffects": false,
+  "_exports": {
+    ".": "./src/index.ts",
+    "./slim": "./src/slim.ts",
+    "./lite": "./src/lite.ts"
+  },
   "exports": {
     ".": {
       "import": {
@@ -31,6 +36,26 @@
       "require": {
         "types": "./dist/index.d.cts",
         "default": "./dist/index.cjs"
+      }
+    },
+    "./slim": {
+      "import": {
+        "types": "./dist/slim.d.mts",
+        "default": "./dist/slim.mjs"
+      },
+      "require": {
+        "types": "./dist/slim.d.cts",
+        "default": "./dist/slim.cjs"
+      }
+    },
+    "./lite": {
+      "import": {
+        "types": "./dist/lite.d.mts",
+        "default": "./dist/lite.mjs"
+      },
+      "require": {
+        "types": "./dist/lite.d.cts",
+        "default": "./dist/lite.cjs"
       }
     }
   },
@@ -54,10 +79,45 @@
     "lint:fix": "eslint . --fix"
   },
   "publishConfig": {
+    "exports": {
+      ".": {
+        "import": {
+          "types": "./dist/index.d.mts",
+          "default": "./dist/index.mjs"
+        },
+        "require": {
+          "types": "./dist/index.d.cts",
+          "default": "./dist/index.cjs"
+        }
+      },
+      "./slim": {
+        "import": {
+          "types": "./dist/slim.d.mts",
+          "default": "./dist/slim.mjs"
+        },
+        "require": {
+          "types": "./dist/slim.d.cts",
+          "default": "./dist/slim.cjs"
+        }
+      },
+      "./lite": {
+        "import": {
+          "types": "./dist/lite.d.mts",
+          "default": "./dist/lite.mjs"
+        },
+        "require": {
+          "types": "./dist/lite.d.cts",
+          "default": "./dist/lite.cjs"
+        }
+      }
+    },
     "access": "public"
   },
   "dependencies": {
     "@weapp-tailwindcss/runtime": "workspace:*",
     "tailwind-merge": "catalog:tailwindMerge2"
+  },
+  "devDependencies": {
+    "fast-check": "^4.6.0"
   }
 }
