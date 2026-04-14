@@ -1,4 +1,6 @@
+import type { FeatureSignal } from '@/content-probe'
 import type { IStyleHandlerOptions } from '@/types'
+import { EMPTY_SIGNAL, FULL_SIGNAL } from '@/content-probe'
 import { describe, expect, it } from 'vitest'
 import { createStyleHandler } from '@/handler'
 import { createStylePipeline } from '@/pipeline'
@@ -124,5 +126,126 @@ describe('style processing pipeline', () => {
 
     expect(overridePipeline.nodes.some(node => node.id === 'normal:px-transform')).toBe(true)
     expect(overridePipeline.nodes.some(node => node.id === 'normal:custom-property-cleaner')).toBe(true)
+  })
+})
+
+describe('signal-driven pipeline pruning', () => {
+  it('excludes preset-env and color-functional-fallback when signal is all false', () => {
+    const options = createOptions({
+      px2rpx: false,
+      rem2rpx: false,
+      cssCalc: false,
+    })
+
+    const pipeline = createStylePipeline(options, EMPTY_SIGNAL)
+    const ids = pipeline.nodes.map(node => node.id)
+
+    expect(ids).not.toContain('normal:preset-env')
+    expect(ids).not.toContain('normal:color-functional-fallback')
+    expect(ids).toContain('pre:core')
+    expect(ids).toContain('post:core')
+  })
+
+  it('includes all plugins when signal is all true', () => {
+    const options = createOptions({
+      px2rpx: false,
+      rem2rpx: false,
+      cssCalc: false,
+    })
+
+    const pipeline = createStylePipeline(options, FULL_SIGNAL)
+    const ids = pipeline.nodes.map(node => node.id)
+
+    expect(ids).toContain('normal:preset-env')
+    expect(ids).toContain('normal:color-functional-fallback')
+    expect(ids).toContain('pre:core')
+    expect(ids).toContain('post:core')
+  })
+
+  it('behaves the same as current when signal is undefined', () => {
+    const options = createOptions({
+      px2rpx: false,
+      rem2rpx: false,
+      cssCalc: false,
+    })
+
+    const withSignal = createStylePipeline(options, FULL_SIGNAL)
+    const withoutSignal = createStylePipeline(options)
+
+    const idsWithSignal = withSignal.nodes.map(node => node.id)
+    const idsWithoutSignal = withoutSignal.nodes.map(node => node.id)
+
+    expect(idsWithoutSignal).toEqual(idsWithSignal)
+  })
+
+  it('prunes correctly with mixed signal (one true, one false)', () => {
+    const options = createOptions({
+      px2rpx: false,
+      rem2rpx: false,
+      cssCalc: false,
+    })
+
+    const onlyPresetEnv: FeatureSignal = {
+      hasPresetEnvFeatures: true,
+      hasModernColorFunction: false,
+    }
+    const pipeline1 = createStylePipeline(options, onlyPresetEnv)
+    const ids1 = pipeline1.nodes.map(node => node.id)
+    expect(ids1).toContain('normal:preset-env')
+    expect(ids1).not.toContain('normal:color-functional-fallback')
+
+    const onlyColor: FeatureSignal = {
+      hasPresetEnvFeatures: false,
+      hasModernColorFunction: true,
+    }
+    const pipeline2 = createStylePipeline(options, onlyColor)
+    const ids2 = pipeline2.nodes.map(node => node.id)
+    expect(ids2).not.toContain('normal:preset-env')
+    expect(ids2).toContain('normal:color-functional-fallback')
+  })
+
+  it('pre/post stage plugins are not affected by signal', () => {
+    const userPlugin = { postcssPlugin: 'user-plugin' }
+    const options = createOptions({
+      postcssOptions: { plugins: [userPlugin] },
+      px2rpx: false,
+      rem2rpx: false,
+      cssCalc: false,
+    })
+
+    const pipeline = createStylePipeline(options, EMPTY_SIGNAL)
+    const ids = pipeline.nodes.map(node => node.id)
+
+    expect(ids).toContain('pre:user-0')
+    expect(ids).toContain('pre:core')
+    expect(ids).toContain('post:core')
+  })
+
+  it('option-controlled plugins are not affected by signal', () => {
+    const options = createOptions({
+      unitsToPx: true,
+      px2rpx: true,
+      rem2rpx: true,
+      cssCalc: {
+        includeCustomProperties: [/^--tw-/],
+      },
+    })
+
+    const pipeline = createStylePipeline(options, EMPTY_SIGNAL)
+    const ids = pipeline.nodes.map(node => node.id)
+
+    // 信号为全 false，preset-env 和 color-functional-fallback 被裁剪
+    expect(ids).not.toContain('normal:preset-env')
+    expect(ids).not.toContain('normal:color-functional-fallback')
+
+    // 基于选项控制的插件不受信号影响
+    expect(ids).toContain('normal:units-to-px')
+    expect(ids).toContain('normal:px-transform')
+    expect(ids).toContain('normal:rem-transform')
+    expect(ids).toContain('normal:calc')
+    expect(ids).toContain('normal:calc-duplicate-cleaner')
+    expect(ids).toContain('normal:custom-property-cleaner')
+    expect(ids).toContain('pre:core')
+    expect(ids).toContain('post:core')
   })
 })

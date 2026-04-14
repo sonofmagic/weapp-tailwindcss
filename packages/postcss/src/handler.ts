@@ -1,8 +1,10 @@
 // 样式处理入口，负责构建和复用 PostCSS 管线
+import type { FeatureSignal } from './content-probe'
 import type { IStyleHandlerOptions, StyleHandler } from './types'
 import { defuOverrideArray } from '@weapp-tailwindcss/shared'
 import { applyUniAppXBaseCompatibility } from './compat/uni-app-x'
 import { applyUniAppXUvueCompatibility } from './compat/uni-app-x-uvue'
+import { probeFeatures } from './content-probe'
 import { getDefaultOptions } from './defaults'
 import { createOptionsResolver } from './options-resolver'
 import { createInjectPreflight } from './preflight'
@@ -27,7 +29,14 @@ export function createStyleHandler(options?: Partial<IStyleHandlerOptions>): Sty
 
   const handler = ((rawSource: string, opt?: Partial<IStyleHandlerOptions>) => {
     const resolvedOptions = resolver.resolve(opt)
-    const processor = cache.getProcessor(resolvedOptions)
+    let signal: FeatureSignal | undefined
+    try {
+      signal = probeFeatures(rawSource)
+    }
+    catch {
+      signal = undefined
+    }
+    const processor = cache.getProcessor(resolvedOptions, signal)
     const processOptions = cache.getProcessOptions(resolvedOptions)
 
     return processor.process(

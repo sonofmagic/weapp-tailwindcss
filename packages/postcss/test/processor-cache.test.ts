@@ -1,4 +1,6 @@
+import type { FeatureSignal } from '@/content-probe'
 import type { IStyleHandlerOptions } from '@/types'
+import { EMPTY_SIGNAL, FULL_SIGNAL } from '@/content-probe'
 import { describe, expect, it } from 'vitest'
 import { StyleProcessorCache } from '@/processor-cache'
 
@@ -68,5 +70,81 @@ describe('style processor cache', () => {
       inline: true,
     })
     expect(second).not.toBe(first)
+  })
+})
+
+
+describe('signal-aware caching', () => {
+  it('returns different Processor for same options but different signals', () => {
+    const cache = new StyleProcessorCache()
+    const options = createBaseOptions()
+
+    const processorFull = cache.getProcessor(options, FULL_SIGNAL)
+    const processorEmpty = cache.getProcessor(options, EMPTY_SIGNAL)
+
+    expect(processorFull).not.toBe(processorEmpty)
+  })
+
+  it('returns the same Processor for same options and same signal', () => {
+    const cache = new StyleProcessorCache()
+    const options = createBaseOptions()
+
+    const first = cache.getProcessor(options, FULL_SIGNAL)
+    const second = cache.getProcessor(options, FULL_SIGNAL)
+
+    expect(first).toBe(second)
+  })
+
+  it('returns the same Processor for same options and equivalent signal object', () => {
+    const cache = new StyleProcessorCache()
+    const options = createBaseOptions()
+
+    const signalA: FeatureSignal = { hasModernColorFunction: true, hasPresetEnvFeatures: false }
+    const signalB: FeatureSignal = { hasModernColorFunction: true, hasPresetEnvFeatures: false }
+
+    const first = cache.getProcessor(options, signalA)
+    const second = cache.getProcessor(options, signalB)
+
+    expect(first).toBe(second)
+  })
+
+  it('caching behavior is unchanged when no signal is passed', () => {
+    const cache = new StyleProcessorCache()
+    const options = createBaseOptions()
+
+    const first = cache.getProcessor(options)
+    const second = cache.getProcessor(options)
+
+    expect(first).toBe(second)
+  })
+
+  it('returns different Processor for no signal vs explicit signal', () => {
+    const cache = new StyleProcessorCache()
+    const options = createBaseOptions()
+
+    const withoutSignal = cache.getProcessor(options)
+    const withSignal = cache.getProcessor(options, FULL_SIGNAL)
+
+    expect(withoutSignal).not.toBe(withSignal)
+  })
+
+  it('returns different Pipeline for same options but different signals', () => {
+    const cache = new StyleProcessorCache()
+    const options = createBaseOptions()
+
+    const pipelineFull = cache.getPipeline(options, FULL_SIGNAL)
+    const pipelineEmpty = cache.getPipeline(options, EMPTY_SIGNAL)
+
+    expect(pipelineFull).not.toBe(pipelineEmpty)
+  })
+
+  it('returns the same Pipeline for same options and same signal', () => {
+    const cache = new StyleProcessorCache()
+    const options = createBaseOptions()
+
+    const first = cache.getPipeline(options, FULL_SIGNAL)
+    const second = cache.getPipeline(options, FULL_SIGNAL)
+
+    expect(first).toBe(second)
   })
 })
