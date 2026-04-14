@@ -131,8 +131,30 @@ describe('createJsHandler', () => {
     expect(spy).toHaveBeenCalledTimes(1)
   })
 
-  it('does not cache transform results when moduleGraph is enabled', () => {
-    const spy = vi.spyOn(babel, 'jsHandler').mockReturnValue({ code: 'linked-result' })
+  it('caches bundler path results when no linked field is present', () => {
+    const spy = vi.spyOn(babel, 'jsHandler').mockReturnValue({ code: 'bundler-result' })
+    const base = createBaseOptions()
+    const handler = createJsHandler(base)
+
+    const override = {
+      filename: '/project/dist/index.js',
+      moduleGraph: {
+        resolve: vi.fn(),
+        load: vi.fn(),
+      },
+    }
+
+    handler('import "./chunk.js"', undefined, override)
+    handler('import "./chunk.js"', undefined, override)
+
+    expect(spy).toHaveBeenCalledTimes(1)
+  })
+
+  it('does not cache transform results when linked field is present', () => {
+    const spy = vi.spyOn(babel, 'jsHandler').mockReturnValue({
+      code: 'linked-result',
+      linked: { '/project/dist/chunk.js': { code: 'chunk' } },
+    })
     const base = createBaseOptions()
     const handler = createJsHandler(base)
 

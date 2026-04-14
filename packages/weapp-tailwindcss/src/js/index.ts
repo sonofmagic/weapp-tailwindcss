@@ -1,9 +1,72 @@
-import type { CreateJsHandlerOptions, IJsHandlerOptions, JsHandler } from '../types'
+import type { CreateJsHandlerOptions, IJsHandlerOptions, JsHandler, JsHandlerResult } from '../types'
+import { LRUCache } from 'lru-cache'
+import { md5Hash } from '../cache/md5'
 import { defuOverrideArray } from '../utils'
 import { jsHandler } from './babel'
 
 export {
   jsHandler,
+}
+
+/** 默认 LRU 缓存最大条目数 */
+const RESULT_CACHE_MAX = 512
+
+/** 为每个 ClassNameSet 实例分配递增 ID */
+const classNameSetIds = new WeakMap<Set<string>, number>()
+let nextClassNameSetId = 0
+
+/**
+ * 获取 ClassNameSet 的唯一身份 ID。
+ * 每个 Set 引用分配一个递增整数，用于指纹计算。
+ */
+function getClassNameSetId(set?: Set<string>): string {
+  if (!set) {
+    return 'none'
+  }
+  const existing = classNameSetIds.get(set)
+  if (existing !== undefined) {
+    return String(existing)
+  }
+  const id = nextClassNameSetId++
+  classNameSetIds.set(set, id)
+  return String(id)
+}
+
+/** 缓存 IJsHandlerOptions -> fingerprint 的映射 */
+const fingerprintCache = new WeakMap<IJsHandlerOptions, string>()
+
+/**
+ * 计算选项指纹，包含所有影响转译结果的字段。
+ * 不包含 filename、moduleGraph、jsPreserveClass。
+ */
+function getOptionsFingerprint(options: IJsHandlerOptions): string {
+  const cached = fingerprintCache.get(options)
+  if (cached) {
+    return cached
+  }
+
+  const parts = [
+    getClassNameSetId(options.classNameSet),
+    JSON.stringify(options.escapeMap ?? null),
+    options.needEscaped ? '1' : '0',
+    options.alwaysEscape ? '1' : '0',
+    options.unescapeUnicode ? '1' : '0',
+    options.generateMap ? '1' : '0',
+    options.uniAppX ? '1' : '0',
+    options.wrapExpression ? '1' : '0',
+    String(options.tailwindcssMajorVersion ?? ''),
+    String(options.staleClassNameFallback ?? ''),
+    String(options.jsArbitraryValueFallback ?? ''),
+    JSON.stringify(options.arbitraryValues ?? null),
+    JSON.stringify(options.ignoreCallExpressionIdentifiers ?? null),
+    JSON.stringify(options.ignoreTaggedTemplateExpressionIdentifiers?.map(v => v instanceof RegExp ? v.source : v) ?? null),
+    JSON.stringify(options.moduleSpecifierReplacements ?? null),
+    JSON.stringify(options.babelParserOptions ?? null),
+  ]
+
+  const fingerprint = parts.join('|')
+  fingerprintCache.set(options, fingerprint)
+  return fingerprint
 }
 
 function hasDefinedOverrides(options?: CreateJsHandlerOptions) {
@@ -18,19 +81,6 @@ function hasDefinedOverrides(options?: CreateJsHandlerOptions) {
   }
 
   return false
-}
-
-const CACHEABLE_SOURCE_MAX_LENGTH = 512
-const RESULT_CACHE_LIMIT = 256
-
-function shouldCacheJsResult(rawSource: string, options: IJsHandlerOptions) {
-  if (rawSource.length === 0 || rawSource.length > CACHEABLE_SOURCE_MAX_LENGTH) {
-    return false
-  }
-  if (options.moduleGraph || options.filename) {
-    return false
-  }
-  return true
 }
 
 export function createJsHandler(options: CreateJsHandlerOptions): JsHandler {
@@ -52,11 +102,18 @@ export function createJsHandler(options: CreateJsHandlerOptions): JsHandler {
     uniAppX: options.uniAppX,
     moduleSpecifierReplacements: options.moduleSpecifierReplacements,
   } as IJsHandlerOptions
-  const resolvedOptionsByClassNameSet = new WeakMap<Set<string>, IJsHandlerOptions>()
+
+  /** 层1: 无 override 时，classNameSet -> resolvedOptions */
+  const defaultOptionsCache = new WeakMap<Set<string>, IJsHandlerOptions>()
   let resolvedOptionsWithoutClassNameSet: IJsHandlerOptions | undefined
-  const resolvedOverrideOptions = new WeakMap<CreateJsHandlerOptions, IJsHandlerOptions>()
-  const resolvedOverrideOptionsByClassNameSet = new WeakMap<CreateJsHandlerOptions, WeakMap<Set<string>, IJsHandlerOptions>>()
-  const resultCache = new WeakMap<IJsHandlerOptions, Map<string, ReturnType<typeof jsHandler>>>()
+
+  /** 层2: 有 override 时，overrideOptions -> { bySet, noSet } */
+  const overrideOptionsCache = new WeakMap<
+    CreateJsHandlerOptions,
+    { bySet: WeakMap<Set<string>, IJsHandlerOptions>, noSet?: IJsHandlerOptions }
+  >()
+
+  const resultCache = new LRUCache<string, JsHandlerResult>({ max: RESULT_CACHE_MAX })
 
   function resolveDefaultOptions(classNameSet?: Set<string>) {
     if (!classNameSet) {
@@ -69,7 +126,7 @@ export function createJsHandler(options: CreateJsHandlerOptions): JsHandler {
       return resolvedOptionsWithoutClassNameSet
     }
 
-    const cached = resolvedOptionsByClassNameSet.get(classNameSet)
+    const cached = defaultOptionsCache.get(classNameSet)
     if (cached) {
       return cached
     }
@@ -78,42 +135,30 @@ export function createJsHandler(options: CreateJsHandlerOptions): JsHandler {
       ...defaults,
       classNameSet,
     }
-    resolvedOptionsByClassNameSet.set(classNameSet, created)
+    defaultOptionsCache.set(classNameSet, created)
     return created
   }
 
-  function getCachedJsResult(rawSource: string, resolvedOptions: IJsHandlerOptions) {
-    if (!shouldCacheJsResult(rawSource, resolvedOptions)) {
+  function getCachedJsResult(rawSource: string, resolvedOptions: IJsHandlerOptions): JsHandlerResult | undefined {
+    if (rawSource.length === 0) {
       return undefined
     }
 
-    const cache = resultCache.get(resolvedOptions)
-    return cache?.get(rawSource)
+    const key = `${getOptionsFingerprint(resolvedOptions)}:${md5Hash(rawSource)}`
+    return resultCache.get(key)
   }
 
   function setCachedJsResult(
     rawSource: string,
     resolvedOptions: IJsHandlerOptions,
-    result: ReturnType<typeof jsHandler>,
-  ) {
-    if (!shouldCacheJsResult(rawSource, resolvedOptions) || result.error || result.linked) {
+    result: JsHandlerResult,
+  ): JsHandlerResult {
+    if (rawSource.length === 0 || result.error || result.linked) {
       return result
     }
 
-    let cache = resultCache.get(resolvedOptions)
-    if (!cache) {
-      cache = new Map<string, ReturnType<typeof jsHandler>>()
-      resultCache.set(resolvedOptions, cache)
-    }
-
-    cache.set(rawSource, result)
-    if (cache.size > RESULT_CACHE_LIMIT) {
-      const firstKey = cache.keys().next().value
-      if (typeof firstKey === 'string') {
-        cache.delete(firstKey)
-      }
-    }
-
+    const key = `${getOptionsFingerprint(resolvedOptions)}:${md5Hash(rawSource)}`
+    resultCache.set(key, result)
     return result
   }
 
@@ -125,12 +170,16 @@ export function createJsHandler(options: CreateJsHandlerOptions): JsHandler {
       return resolveDefaultOptions(classNameSet)
     }
 
-    if (!classNameSet) {
-      const cached = resolvedOverrideOptions.get(overrideOptions!)
-      if (cached) {
-        return cached
-      }
+    let entry = overrideOptionsCache.get(overrideOptions!)
+    if (!entry) {
+      entry = { bySet: new WeakMap<Set<string>, IJsHandlerOptions>() }
+      overrideOptionsCache.set(overrideOptions!, entry)
+    }
 
+    if (!classNameSet) {
+      if (entry.noSet) {
+        return entry.noSet
+      }
       const created = defuOverrideArray<IJsHandlerOptions, IJsHandlerOptions[]>(
         {
           ...(overrideOptions as IJsHandlerOptions),
@@ -138,17 +187,11 @@ export function createJsHandler(options: CreateJsHandlerOptions): JsHandler {
         },
         defaults,
       )
-      resolvedOverrideOptions.set(overrideOptions!, created)
+      entry.noSet = created
       return created
     }
 
-    let cache = resolvedOverrideOptionsByClassNameSet.get(overrideOptions!)
-    if (!cache) {
-      cache = new WeakMap<Set<string>, IJsHandlerOptions>()
-      resolvedOverrideOptionsByClassNameSet.set(overrideOptions!, cache)
-    }
-
-    const cached = cache.get(classNameSet)
+    const cached = entry.bySet.get(classNameSet)
     if (cached) {
       return cached
     }
@@ -160,7 +203,7 @@ export function createJsHandler(options: CreateJsHandlerOptions): JsHandler {
       },
       defaults,
     )
-    cache.set(classNameSet, created)
+    entry.bySet.set(classNameSet, created)
     return created
   }
 
