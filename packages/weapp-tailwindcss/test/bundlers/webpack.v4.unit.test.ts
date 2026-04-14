@@ -202,7 +202,7 @@ describe('bundlers/webpack UnifiedWebpackPluginV4', () => {
     expect(rewriteLoaderEntry).toBeUndefined()
 
     const html = '<view class="foo"></view>'
-    const js = 'const foo = 1'
+    const js = 'import { foo } from "./lib"'
     const css = '.foo { color: red; }'
 
     compilation.assets = {
@@ -930,8 +930,8 @@ describe('bundlers/webpack UnifiedWebpackPluginV4', () => {
     loaderHandler?.({}, module)
 
     const html = '<view class="foo"></view>'
-    const js = 'const foo = 1'
-    const wxs = 'module.exports = {}'
+    const js = 'import { foo } from "./lib"'
+    const wxs = 'const x = require("./lib")'
     const css = '.foo { color: red; }'
 
     compilation.assets = {

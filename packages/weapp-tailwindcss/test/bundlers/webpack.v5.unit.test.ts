@@ -278,7 +278,7 @@ describe('bundlers/webpack UnifiedWebpackPluginV5', () => {
     expect(rewriteLoaderEntry).toBeUndefined()
 
     const html = '<view class="foo"></view>'
-    const js = 'const foo = 1'
+    const js = 'import { foo } from "./lib"'
     const css = '.foo { color: red; }'
 
     const assetStore = {
@@ -1404,8 +1404,8 @@ describe('bundlers/webpack UnifiedWebpackPluginV5', () => {
     plugin.apply(compiler as any)
 
     const html = '<view class="foo"></view>'
-    const js = 'const foo = 1'
-    const wxs = 'module.exports = {}'
+    const js = 'import { foo } from "./lib"'
+    const wxs = 'const x = require("./lib")'
     const css = '.foo { color: red; }'
 
     const assetStore = {
@@ -1528,7 +1528,7 @@ describe('bundlers/webpack UnifiedWebpackPluginV5', () => {
 
     const assetStore = {
       'index.js': 'import "./chunk.js";',
-      'chunk.js': 'export const foo = 1;',
+      'chunk.js': 'import { bar } from "./dep"; export const foo = bar;',
     }
     currentAssetStore = assetStore
     const assetsRun = createAssetsFromStore(assetStore)

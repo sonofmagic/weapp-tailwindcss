@@ -17,11 +17,11 @@ describe('core', () => {
       margin-left: 0.125rem;
     }`)
     expect(cssMap).toMatchSnapshot()
-    const content = `const classNames = ['mb-[1.5rem]']`
+    const content = `const className = 'mb-[1.5rem]'`
     await getCss(content)
 
     const { code, map } = await ctx.transformJs(content)
-    expect(code).toBe(`const classNames = ['mb-_b1_d5rem_B']`)
+    expect(code).toBe(`const className = 'mb-_b1_d5rem_B'`)
     expect(map).toMatchSnapshot()
   })
 
@@ -38,11 +38,11 @@ describe('core', () => {
       margin-left: 0.125rem;
     }`)
     expect(cssMap).toMatchSnapshot()
-    const content = `const classNames = ['mb-[1.5rem]']`
+    const content = `const className = 'mb-[1.5rem]'`
     await getCss(content)
     const runtimeSet = new Set<string>()
     const { code, map } = await ctx.transformJs(content, { runtimeSet })
-    expect(code).toBe(`const classNames = ['mb-[1.5rem]']`)
+    expect(code).toBe(`const className = 'mb-[1.5rem]'`)
     expect(map).toMatchSnapshot()
   })
 
@@ -59,11 +59,11 @@ describe('core', () => {
       },
     })
     expect(wxss).toBe(`/* xx*/`)
-    const content = `const classNames = ['mb-[1.5rem]']`
+    const content = `const className = 'mb-[1.5rem]'`
     await getCss(content)
     const runtimeSet = new Set<string>()
     const { code, map } = await ctx.transformJs(content, { runtimeSet })
-    expect(code).toBe(`const classNames = ['mb-[1.5rem]']`)
+    expect(code).toBe(`const className = 'mb-[1.5rem]'`)
     expect(map).toMatchSnapshot()
   })
 })
@@ -80,11 +80,11 @@ describe('core transform functions', () => {
 
   it('should transform JS with runtimeSet', async () => {
     const ctx = createContext()
-    const rawJs = `const classNames = ['mb-[1.5rem]']`
+    const rawJs = `const className = 'mb-[1.5rem]'`
     const runtimeSet = new Set(['mb-[1.5rem]'])
     const options = { runtimeSet }
     const { code } = await ctx.transformJs(rawJs, options)
-    expect(code).toBe(`const classNames = ['mb-_b1_d5rem_B']`)
+    expect(code).toBe(`const className = 'mb-_b1_d5rem_B'`)
   })
 
   it('should handle empty runtimeSet', async () => {

@@ -101,12 +101,12 @@ describe('bundlers/gulp createPlugins', () => {
     expect(twPatcher.extract).not.toHaveBeenCalled()
 
     // Ensure runtime set is reused for JS handler
-    const jsFile = createFile('/src/app.js', 'console.log("hi")')
+    const jsFile = createFile('/src/app.js', 'import "./init"; console.log("hi")')
     const processedJs = await runTransform(plugins.transformJs(), jsFile)
     expect(jsHandler).toHaveBeenCalledTimes(1)
     expect(twPatcher.getClassSetSync).toHaveBeenCalledTimes(1)
     expect(jsHandler).toHaveBeenCalledWith(
-      'console.log("hi")',
+      'import "./init"; console.log("hi")',
       runtimeSet,
       expect.objectContaining({
         filename: expect.stringContaining('app.js'),
@@ -119,9 +119,9 @@ describe('bundlers/gulp createPlugins', () => {
         }),
       }),
     )
-    expect(processedJs.contents?.toString()).toBe('js:console.log("hi")')
+    expect(processedJs.contents?.toString()).toBe('js:import "./init"; console.log("hi")')
 
-    const cachedJsFile = createFile('/src/app.js', 'console.log("hi")')
+    const cachedJsFile = createFile('/src/app.js', 'import "./init"; console.log("hi")')
     await runTransform(plugins.transformJs(), cachedJsFile)
     expect(jsHandler).toHaveBeenCalledTimes(1)
 
@@ -146,9 +146,9 @@ describe('bundlers/gulp createPlugins', () => {
     await runTransform(plugins.transformWxss(), cssFileSecond)
     expect(styleHandler).toHaveBeenCalledTimes(2)
 
-    const jsFile = createFile('/src/app.js', 'console.log("cache-off")')
+    const jsFile = createFile('/src/app.js', 'import "./init"; console.log("cache-off")')
     await runTransform(plugins.transformJs(), jsFile)
-    const jsFileSecond = createFile('/src/app.js', 'console.log("cache-off")')
+    const jsFileSecond = createFile('/src/app.js', 'import "./init"; console.log("cache-off")')
     await runTransform(plugins.transformJs(), jsFileSecond)
     expect(jsHandler).toHaveBeenCalledTimes(2)
 
@@ -189,7 +189,7 @@ describe('bundlers/gulp createPlugins', () => {
   it('resolves directory index files when building module graph', async () => {
     const plugins = createPlugins()
 
-    const jsFile = createFile('/src/app.js', 'console.log("graph")')
+    const jsFile = createFile('/src/app.js', 'import "./init"; console.log("graph")')
     await runTransform(plugins.transformJs(), jsFile)
 
     const handlerCalls = jsHandler.mock.calls
@@ -235,8 +235,8 @@ describe('bundlers/gulp createPlugins', () => {
   it('reuses the default moduleGraph across transformJs invocations', async () => {
     const plugins = createPlugins()
 
-    await runTransform(plugins.transformJs(), createFile('/src/app.js', 'console.log("a")'))
-    await runTransform(plugins.transformJs(), createFile('/src/page.js', 'console.log("b")'))
+    await runTransform(plugins.transformJs(), createFile('/src/app.js', 'import "./init"; console.log("a")'))
+    await runTransform(plugins.transformJs(), createFile('/src/page.js', 'import "./init"; console.log("b")'))
 
     const firstOptions = jsHandler.mock.calls[0]?.[2]
     const secondOptions = jsHandler.mock.calls[1]?.[2]

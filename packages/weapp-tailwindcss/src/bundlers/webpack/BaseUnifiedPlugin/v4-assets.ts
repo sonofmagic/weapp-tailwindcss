@@ -4,6 +4,7 @@ import path from 'node:path'
 import process from 'node:process'
 import { ConcatSource } from 'webpack-sources'
 import { pluginName } from '@/constants'
+import { shouldSkipJsTransform } from '@/js/precheck'
 import { ensureRuntimeClassSet } from '@/tailwindcss/runtime'
 import { getGroupedEntries } from '@/utils'
 import { processCachedTask } from '../../shared/cache'
@@ -227,7 +228,7 @@ export function setupWebpackV4EmitHook(options: SetupWebpackV4EmitHookOptions) {
               const currentSource = typeof currentValue === 'string'
                 ? currentValue
                 : currentValue?.toString() ?? ''
-              const { code, linked } = await compilerOptions.jsHandler(currentSource, runtimeSet, {
+              const handlerOptions = {
                 staleClassNameFallback,
                 tailwindcssMajorVersion: runtimeState.twPatcher.majorVersion,
                 filename: absoluteFile,
@@ -235,7 +236,11 @@ export function setupWebpackV4EmitHook(options: SetupWebpackV4EmitHookOptions) {
                 babelParserOptions: {
                   sourceFilename: absoluteFile,
                 },
-              })
+              }
+              if (shouldSkipJsTransform(currentSource, handlerOptions)) {
+                return { result: new ConcatSource(currentSource) }
+              }
+              const { code, linked } = await compilerOptions.jsHandler(currentSource, runtimeSet, handlerOptions)
               const source = new ConcatSource(code)
               compilerOptions.onUpdate(file, currentSource, code)
               debug('js handle: %s', file)

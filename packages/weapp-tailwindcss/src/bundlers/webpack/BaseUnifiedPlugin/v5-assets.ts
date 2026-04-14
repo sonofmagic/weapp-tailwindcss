@@ -3,6 +3,7 @@ import type { AppType, InternalUserDefinedOptions, LinkedJsModuleResult } from '
 import path from 'node:path'
 import process from 'node:process'
 import { pluginName } from '@/constants'
+import { shouldSkipJsTransform } from '@/js/precheck'
 import { ensureRuntimeClassSet } from '@/tailwindcss/runtime'
 import { getGroupedEntries } from '@/utils'
 import { processCachedTask } from '../../shared/cache'
@@ -241,7 +242,7 @@ export function setupWebpackV5ProcessAssetsHook(options: SetupWebpackV5ProcessAs
                   const currentSource = typeof currentSourceValue === 'string'
                     ? currentSourceValue
                     : currentSourceValue?.toString() ?? ''
-                  const { code, linked } = await compilerOptions.jsHandler(currentSource, runtimeSet, {
+                  const handlerOptions = {
                     staleClassNameFallback,
                     tailwindcssMajorVersion: runtimeState.twPatcher.majorVersion,
                     filename: absoluteFile,
@@ -249,7 +250,11 @@ export function setupWebpackV5ProcessAssetsHook(options: SetupWebpackV5ProcessAs
                     babelParserOptions: {
                       sourceFilename: absoluteFile,
                     },
-                  })
+                  }
+                  if (shouldSkipJsTransform(currentSource, handlerOptions)) {
+                    return { result: new ConcatSource(currentSource) }
+                  }
+                  const { code, linked } = await compilerOptions.jsHandler(currentSource, runtimeSet, handlerOptions)
                   const source = new ConcatSource(code)
                   compilerOptions.onUpdate(file, currentSource, code)
                   debug('js handle: %s', file)

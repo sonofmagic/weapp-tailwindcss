@@ -1,6 +1,7 @@
 import type { CreateJsHandlerOptions, IStyleHandlerOptions, ITemplateHandlerOptions, UserDefinedOptions } from './types'
 import process from 'node:process'
 import { defuOverrideArray } from '@weapp-tailwindcss/shared'
+import { shouldSkipJsTransform } from '@/js/precheck'
 import { getCompilerContext } from '@/context'
 import { setupPatchRecorder } from '@/tailwindcss/recorder'
 import { ensureRuntimeClassSet } from '@/tailwindcss/runtime'
@@ -191,7 +192,11 @@ export function createContext(options: UserDefinedOptions = {}) {
         forceCollect: true,
       })
     }
-    return await jsHandler(rawJs, runtimeSet, resolveTransformJsOptions(options))
+    const resolvedOptions = resolveTransformJsOptions(options)
+    if (shouldSkipJsTransform(rawJs, resolvedOptions)) {
+      return { code: rawJs }
+    }
+    return await jsHandler(rawJs, runtimeSet, resolvedOptions)
   }
 
   async function transformWxml(rawWxml: string, options?: ITemplateHandlerOptions) {

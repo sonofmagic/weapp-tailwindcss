@@ -7,6 +7,7 @@ import process from 'node:process'
 import stream from 'node:stream'
 import { getCompilerContext } from '@/context'
 import { createDebug } from '@/debug'
+import { shouldSkipJsTransform } from '@/js/precheck'
 import { setupPatchRecorder } from '@/tailwindcss/recorder'
 import { ensureRuntimeClassSet, refreshTailwindRuntimeState } from '@/tailwindcss/runtime'
 import { processCachedTask } from '../shared/cache'
@@ -254,6 +255,9 @@ export function createPlugins(options: UserDefinedOptions = {}) {
         async transform() {
           await runtimeState.patchPromise
           const currentSource = file.contents?.toString() ?? rawSource
+          if (shouldSkipJsTransform(currentSource, handlerOptions)) {
+            return { result: currentSource }
+          }
           const { code } = await jsHandler(currentSource, runtimeSet, handlerOptions)
           debug('js handle: %s', file.path)
           return {
