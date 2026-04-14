@@ -3497,6 +3497,9 @@ importers:
       '@weapp-tailwindcss/shared':
         specifier: workspace:*
         version: link:../shared
+      lru-cache:
+        specifier: 10.4.3
+        version: 10.4.3
       postcss:
         specifier: catalog:postcss85tilde
         version: 8.5.8
