@@ -5,7 +5,7 @@ import process from 'node:process'
 import { buildCases, pickCases } from './cases'
 import { formatPath, resolveBaseCwd, resolveOptions } from './cli'
 import { assertHotUpdateBudget, logSummary, runCase } from './runner'
-import { ensureLocalPackageBuild } from './session'
+import { ensureLocalPackageBuild, sleep } from './session'
 import {
   summarizeMetrics,
   summarizeMetricsByGroup,
@@ -37,6 +37,11 @@ export async function main() {
 
   if (!options.skipBuild) {
     await ensureLocalPackageBuild(baseCwd)
+    // 本地包刚 build 完时，大量 dist 改动会让部分 watch 工具链的首次订阅不稳定。
+    // 这里统一给一个短暂冷却窗口，避免首个 mutation 被吞掉。
+    const postBuildSettleMs = 5_000
+    process.stdout.write(`[watch-hmr] post-build settle ${postBuildSettleMs}ms\n`)
+    await sleep(postBuildSettleMs)
   }
 
   const allCases = buildCases(baseCwd)

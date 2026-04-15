@@ -242,7 +242,7 @@ describe('watch-hmr regression text helpers', () => {
     )
 
     expect(attempt).toBe(3)
-    expect(elapsed).toBeGreaterThanOrEqual(0)
+    expect(elapsed).toBeGreaterThanOrEqual(1_400)
 
     await expect(() => {
       return waitFor(

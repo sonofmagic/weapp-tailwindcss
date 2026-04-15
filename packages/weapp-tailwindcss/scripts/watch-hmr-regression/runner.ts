@@ -18,7 +18,7 @@ import {
   waitForOutputsReady,
 } from './mutations'
 import { resolvePreferredRound } from './mutations/shared'
-import { createWatchSession } from './session'
+import { createWatchSession, sleep } from './session'
 import { summarizeMutationMetricsByKind } from './summary'
 import { writeFilePreserveEol } from './text'
 
@@ -49,6 +49,14 @@ export async function runCase(watchCase: WatchCase, options: CliOptions): Promis
     const outputsReadyMs = await waitForOutputsReady(watchCase, options, session)
     const warmupMs = await waitForInitialWarmup(watchCase, options, session, sessionStartedAt)
     const initialReadyMs = Math.max(outputsReadyMs, warmupMs)
+
+    if ((watchCase.initialMutationDelayMs ?? 0) > 0) {
+      process.stdout.write(
+        `[watch-hmr] ${watchCase.label} extra startup settle ${watchCase.initialMutationDelayMs}ms\n`,
+      )
+      await sleep(watchCase.initialMutationDelayMs!)
+      session.ensureRunning()
+    }
 
     const styleOutputCandidates = [...new Set([
       ...watchCase.outputStyleCandidates,

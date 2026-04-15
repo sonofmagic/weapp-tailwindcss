@@ -95,7 +95,9 @@ export async function waitForInitialWarmup(
   sessionStartedAt: number,
 ) {
   const warmupGraceMs = Math.min(5000, options.timeoutMs)
-  const warmupStableWindowMs = Math.min(Math.max(options.pollMs * 3, 900), 1800)
+  // Taro/Vite watch 在输出首轮 built 日志后，文件监听器偶发还没完全挂好。
+  // 这里把稳定窗口放宽到至少 1.5s，避免过早注入 mutation 导致首次改动丢失。
+  const warmupStableWindowMs = Math.min(Math.max(options.pollMs * 4, 1500), 3000)
   const requireInitialCompileSuccess = watchCase.requireInitialCompileSuccess === true
   return waitFor(
     async () => {

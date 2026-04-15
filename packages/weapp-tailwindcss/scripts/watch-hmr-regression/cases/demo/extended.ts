@@ -212,6 +212,7 @@ export function buildDemoExtendedCases(baseCwd: string): WatchCase[] {
     label: 'demo/taro-vite-tailwindcss-v4',
     project: 'demo/taro-vite-tailwindcss-v4',
     group: 'demo',
+    initialMutationDelayMs: 5_000,
     cwd: path.resolve(baseCwd, 'demo/taro-vite-tailwindcss-v4'),
     devScript: 'dev:weapp',
     env: {
@@ -276,6 +277,7 @@ export function buildDemoExtendedCases(baseCwd: string): WatchCase[] {
     label: 'demo/taro-app-vite',
     project: 'demo/taro-app-vite',
     group: 'demo',
+    initialMutationDelayMs: 5_000,
     cwd: path.resolve(baseCwd, 'demo/taro-app-vite'),
     devScript: 'dev:weapp',
     env: {
