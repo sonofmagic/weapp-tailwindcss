@@ -100,6 +100,6 @@
     "weapp-ide-cli": "catalog:weappIdeCli",
     "weapp-tailwindcss": "workspace:*",
     "weapp-tailwindcss-children": "catalog:weappChildren",
-    "webpack": "^5.105.4"
+    "webpack": "^5.106.2"
   }
 }

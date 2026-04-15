@@ -19,6 +19,11 @@ async function loadUnifiedVitePlugin() {
   return mod.UnifiedViteWeappTailwindcssPlugin
 }
 
+function getGenerateBundleHandler(plugin: Plugin) {
+  const hook = plugin.generateBundle as any
+  return typeof hook === 'object' ? hook.handler : hook
+}
+
 function createEscaper(tokens: string[]) {
   return (code: string) => {
     let result = code
@@ -80,7 +85,7 @@ describe('bundlers/vite incremental issue #33 regression', () => {
       build: { outDir: 'dist' },
     } as ResolvedConfig)
 
-    const generateBundle = postPlugin.generateBundle as any
+    const generateBundle = getGenerateBundleHandler(postPlugin)
 
     const firstBundle = {
       [htmlFile]: {
@@ -161,7 +166,7 @@ describe('bundlers/vite incremental issue #33 regression', () => {
       build: { outDir: 'dist' },
     } as ResolvedConfig)
 
-    const generateBundle = postPlugin.generateBundle as any
+    const generateBundle = getGenerateBundleHandler(postPlugin)
 
     const firstBundle = {
       [htmlFile]: {
@@ -246,7 +251,7 @@ describe('bundlers/vite incremental issue #33 regression', () => {
       build: { outDir: 'dist' },
     } as ResolvedConfig)
 
-    const generateBundle = postPlugin.generateBundle as any
+    const generateBundle = getGenerateBundleHandler(postPlugin)
 
     const addBundle = {
       [htmlFile]: {
@@ -341,7 +346,7 @@ describe('bundlers/vite incremental issue #33 regression', () => {
       build: { outDir: 'dist' },
     } as ResolvedConfig)
 
-    const generateBundle = postPlugin.generateBundle as any
+    const generateBundle = getGenerateBundleHandler(postPlugin)
     const firstBundle = {
       [htmlFile]: {
         ...createRollupAsset('<view class="content">{{ bgObj }}</view>'),
@@ -425,7 +430,7 @@ describe('bundlers/vite incremental issue #33 regression', () => {
       build: { outDir: 'dist' },
     } as ResolvedConfig)
 
-    const generateBundle = postPlugin.generateBundle as any
+    const generateBundle = getGenerateBundleHandler(postPlugin)
     const stages = stageTokens.map(raw => ({ raw }))
 
     for (const [index, stage] of stages.entries()) {

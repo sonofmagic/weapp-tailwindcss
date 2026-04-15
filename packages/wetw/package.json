@@ -51,9 +51,9 @@
   },
   "publishConfig": {},
   "dependencies": {
-    "@inquirer/prompts": "^8.3.2",
+    "@inquirer/prompts": "^8.4.1",
     "@weapp-tailwindcss/shared": "workspace:*",
-    "c12": "^3.3.3",
+    "c12": "^3.3.4",
     "cac": "^6.7.14"
   }
 }

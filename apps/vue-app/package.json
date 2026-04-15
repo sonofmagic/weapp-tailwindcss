@@ -15,13 +15,13 @@
     "class-variance-authority": "catalog:classVarianceAuthority",
     "clsx": "catalog:clsx",
     "lucide-vue-next": "catalog:lucideVueNext0555",
-    "reka-ui": "^2.9.3",
+    "reka-ui": "^2.9.6",
     "tailwind-merge": "catalog:tailwindMerge",
     "vue": "catalog:vue3"
   },
   "devDependencies": {
     "@tailwindcss/postcss": "catalog:tailwindcss4",
-    "@vitejs/plugin-vue": "^6.0.5",
+    "@vitejs/plugin-vue": "^6.0.6",
     "@vue/tsconfig": "^0.9.1",
     "@weapp-tailwindcss/variants": "workspace:*",
     "postcss": "catalog:postcss85",

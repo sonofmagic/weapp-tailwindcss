@@ -18,6 +18,11 @@ async function loadUnifiedVitePlugin() {
   return mod.UnifiedViteWeappTailwindcssPlugin
 }
 
+function getGenerateBundleHandler(plugin: Plugin) {
+  const hook = plugin.generateBundle as any
+  return typeof hook === 'object' ? hook.handler : hook
+}
+
 describe('bundlers/vite UnifiedViteWeappTailwindcssPlugin uni-app-x', () => {
   beforeEach(() => {
     vi.resetModules()
@@ -82,7 +87,7 @@ describe('bundlers/vite UnifiedViteWeappTailwindcssPlugin uni-app-x', () => {
       } satisfies OutputAsset,
     }
 
-    const generateBundle = postPlugin.generateBundle as any
+    const generateBundle = getGenerateBundleHandler(postPlugin)
     await generateBundle?.call(postPlugin, {} as any, bundle)
     expect(currentContext.twPatcher.extract).toHaveBeenCalledTimes(2)
     expect(currentContext.twPatcher.getClassSetSync).toHaveBeenCalledTimes(2)

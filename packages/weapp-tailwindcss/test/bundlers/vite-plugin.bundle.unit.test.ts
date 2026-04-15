@@ -32,6 +32,11 @@ async function loadUnifiedVitePlugin() {
   return mod.UnifiedViteWeappTailwindcssPlugin
 }
 
+function getGenerateBundleHandler(plugin: Plugin) {
+  const hook = plugin.generateBundle as any
+  return typeof hook === 'object' ? hook.handler : hook
+}
+
 async function loadIssue814Fixture() {
   const fixtureRoot = path.resolve(
     __dirname,
@@ -100,7 +105,7 @@ describe('bundlers/vite UnifiedViteWeappTailwindcssPlugin bundle', () => {
       },
     }
 
-    const generateBundle = postPlugin.generateBundle as any
+    const generateBundle = getGenerateBundleHandler(postPlugin)
     await generateBundle?.call(postPlugin, {} as any, bundle)
 
     expect(currentContext.onStart).toHaveBeenCalledTimes(1)
@@ -178,7 +183,7 @@ describe('bundlers/vite UnifiedViteWeappTailwindcssPlugin bundle', () => {
       build: { outDir: 'dist' },
     } as ResolvedConfig)
 
-    const generateBundle = postPlugin.generateBundle as any
+    const generateBundle = getGenerateBundleHandler(postPlugin)
     await generateBundle?.call(postPlugin, {} as any, {
       'index.wxml': createRollupAsset(`<view class="${staticClass}" />`),
       'index.js': createRollupChunk(`const sss = '${staticClass}'`),
@@ -270,7 +275,7 @@ const trace = "at App.vue:4"
       } satisfies OutputAsset,
     }
 
-    const generateBundle = postPlugin.generateBundle as any
+    const generateBundle = getGenerateBundleHandler(postPlugin)
     await generateBundle?.call(postPlugin, {} as any, bundle)
 
     expect(syncMock).toHaveBeenCalledTimes(1)
@@ -318,7 +323,7 @@ const trace = "at App.vue:4"
       build: { outDir: 'dist' },
     } as ResolvedConfig)
 
-    const generateBundle = postPlugin.generateBundle as any
+    const generateBundle = getGenerateBundleHandler(postPlugin)
     await generateBundle?.call(postPlugin, {} as any, {
       'index.wxml': createRollupAsset('<view class="card"></view><!-- text-[#123456] -->'),
       'index.js': createRollupChunk('const cls = "card"\n/* text-[#123456] */'),
@@ -353,7 +358,7 @@ const trace = "at App.vue:4"
       build: { outDir: 'dist' },
     } as ResolvedConfig)
 
-    const generateBundle = postPlugin.generateBundle as any
+    const generateBundle = getGenerateBundleHandler(postPlugin)
     const firstBundle = {
       'pages/index/index.css': {
         ...createRollupAsset('.foo { color: red; }'),
@@ -389,7 +394,7 @@ const trace = "at App.vue:4"
       build: { outDir: 'dist' },
     } as ResolvedConfig)
 
-    const generateBundle = postPlugin.generateBundle as any
+    const generateBundle = getGenerateBundleHandler(postPlugin)
     const bundle = {
       'pages/index/index.wxml': {
         ...createRollupAsset('<view class="foo"></view>'),
@@ -439,7 +444,7 @@ const trace = "at App.vue:4"
       build: { outDir: 'dist' },
     } as ResolvedConfig)
 
-    const generateBundle = postPlugin.generateBundle as any
+    const generateBundle = getGenerateBundleHandler(postPlugin)
     const bundle = {
       'dist/pages/index/index.wxml': createRollupAsset(wxml),
       'dist/pages/index/index.js': createRollupChunk(js),
@@ -502,7 +507,7 @@ const trace = "at App.vue:4"
       build: { outDir: 'dist' },
     } as ResolvedConfig)
 
-    const generateBundle = postPlugin.generateBundle as any
+    const generateBundle = getGenerateBundleHandler(postPlugin)
     const bundle = {
       'dist/pages/index/index.wxml': createRollupAsset(wxml),
       'dist/pages/index/index.js': createRollupChunk(js),
@@ -550,7 +555,7 @@ const trace = "at App.vue:4"
       build: { outDir: 'dist' },
     } as ResolvedConfig)
 
-    const generateBundle = postPlugin.generateBundle as any
+    const generateBundle = getGenerateBundleHandler(postPlugin)
     const bundle = {
       'dist/pages/index/index.wxml': createRollupAsset(wxml),
       'dist/pages/index/index.js': createRollupChunk(js),
@@ -700,7 +705,7 @@ const trace = "at App.vue:4"
       build: { outDir: 'dist' },
     } as ResolvedConfig)
 
-    const generateBundle = postPlugin.generateBundle as any
+    const generateBundle = getGenerateBundleHandler(postPlugin)
     const bundle = {
       'index.js': createRollupChunk(`
 const safe = "biz-token-[alpha]"
@@ -742,7 +747,7 @@ const cls = "rounded-[92rpx]"
       build: { outDir: 'dist' },
     } as ResolvedConfig)
 
-    const generateBundle = postPlugin.generateBundle as any
+    const generateBundle = getGenerateBundleHandler(postPlugin)
     const bundle = {
       'index.js': createRollupChunk(`
 const trace = "at App.vue:4"
@@ -789,7 +794,7 @@ const cls = "w-[1.5px]"
     } as unknown as ResolvedConfig
     await (postPlugin.configResolved as any)?.call(postPlugin, config)
 
-    const generateBundle = postPlugin.generateBundle as any
+    const generateBundle = getGenerateBundleHandler(postPlugin)
 
     const firstBundle = {
       'index.js': createRollupChunk('import "./chunk.js";\nconsole.log("text-[#111111]")'),
@@ -847,7 +852,7 @@ const cls = "w-[1.5px]"
     } as unknown as ResolvedConfig
     await (postPlugin.configResolved as any)?.call(postPlugin, config)
 
-    const generateBundle = postPlugin.generateBundle as any
+    const generateBundle = getGenerateBundleHandler(postPlugin)
 
     const firstBundle = {
       'index.js': createRollupChunk('import "./chunk.js";\nconsole.log("text-[#111111]")'),
@@ -872,7 +877,7 @@ const cls = "w-[1.5px]"
     const postPlugin = plugins?.find(plugin => plugin.name === 'weapp-tailwindcss:adaptor:post') as Plugin
     expect(postPlugin).toBeTruthy()
 
-    const generateBundle = postPlugin.generateBundle as any
+    const generateBundle = getGenerateBundleHandler(postPlugin)
 
     const firstFullBundle = {
       'index.wxml': createRollupAsset('<view class="foo">a</view>'),
@@ -935,7 +940,7 @@ const cls = "w-[1.5px]"
     const postPlugin = plugins?.find(plugin => plugin.name === 'weapp-tailwindcss:adaptor:post') as Plugin
     expect(postPlugin).toBeTruthy()
 
-    const generateBundle = postPlugin.generateBundle as any
+    const generateBundle = getGenerateBundleHandler(postPlugin)
     const rawCss = [
       '*,::before,::after { --tw-content: ""; }',
       '.border-emerald-200\\/70 { border-color: rgb(167 243 208 / 0.7); }',
@@ -993,7 +998,7 @@ const cls = "w-[1.5px]"
       build: { outDir: 'dist' },
     } as ResolvedConfig)
 
-    const generateBundle = postPlugin.generateBundle as any
+    const generateBundle = getGenerateBundleHandler(postPlugin)
     const firstCss = [
       '*,::before,::after { --tw-content: ""; }',
       '.border-emerald-200\\/70 { border-color: rgb(167 243 208 / 0.7); }',
@@ -1049,7 +1054,7 @@ const cls = "w-[1.5px]"
       build: { outDir: 'dist' },
     } as ResolvedConfig)
 
-    const generateBundle = postPlugin.generateBundle as any
+    const generateBundle = getGenerateBundleHandler(postPlugin)
     const duplicatedCss = '.card{color:red}'
     const bundle = {
       'app.wxss': {
@@ -1112,7 +1117,7 @@ const cls = "w-[1.5px]"
         fileName: 'app.wxss',
       },
     }
-    const generateBundle = postPlugin.generateBundle as any
+    const generateBundle = getGenerateBundleHandler(postPlugin)
     await generateBundle?.call(postPlugin, {} as any, bundle)
 
     expect(currentContext.mainCssChunkMatcher).toHaveBeenCalledWith('app.wxss', 'taro')
@@ -1165,7 +1170,7 @@ const cls = "w-[1.5px]"
       },
     }
 
-    const generateBundle = postPlugin.generateBundle as any
+    const generateBundle = getGenerateBundleHandler(postPlugin)
     await generateBundle?.call(postPlugin, {} as any, bundle)
 
     const appOriginCall = styleHandler.mock.calls.find(([, options]) =>
@@ -1217,7 +1222,7 @@ const cls = "w-[1.5px]"
       build: { outDir: 'dist' },
     } as ResolvedConfig)
 
-    const generateBundle = postPlugin.generateBundle as any
+    const generateBundle = getGenerateBundleHandler(postPlugin)
     const wxmlSource = `<view class="after:content-['A'] h-[20px]">{{ cardsColor }}</view>`
     const wxssSource = [
       '.a { @apply after:content-[\'A\'] h-[20px]; }',
@@ -1340,7 +1345,7 @@ const fallback = "bg-[#434332] px-[32px]"
 `),
     }
 
-    const generateBundle = postPlugin.generateBundle as any
+    const generateBundle = getGenerateBundleHandler(postPlugin)
     await generateBundle?.call(postPlugin, {} as any, bundle)
 
     expect(patchMock).toHaveBeenCalledTimes(1)
@@ -1391,7 +1396,7 @@ const fallback = "bg-[#434332] px-[32px]"
       'chunk.js': createRollupChunk('export const foo = 1;'),
     }
 
-    const generateBundle = postPlugin.generateBundle as any
+    const generateBundle = getGenerateBundleHandler(postPlugin)
     await generateBundle?.call(postPlugin, {} as any, bundle)
 
     expect((bundle['chunk.js'] as OutputChunk).code).toBe('linked:chunk')

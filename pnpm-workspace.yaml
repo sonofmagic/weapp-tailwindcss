@@ -11,7 +11,7 @@ packages:
 
 catalogs:
   autoprefixer10:
-    autoprefixer: ^10.4.27
+    autoprefixer: ^10.5.0
   babelCore7285:
     '@babel/core': ^7.29.0
   babelPresetReact7285:
@@ -29,21 +29,21 @@ catalogs:
   egoistTailwindcssIcons:
     '@egoist/tailwindcss-icons': ^1.9.2
   eslint10:
-    eslint: ^10.1.0
+    eslint: ^10.2.0
   eslintPluginReact:
     eslint-plugin-react: ^7.37.5
   eslintPluginReactHooks:
     eslint-plugin-react-hooks: ^7.0.1
   lucideReact0555:
-    lucide-react: ^1.7.0
+    lucide-react: ^1.8.0
   lucideVueNext0555:
     lucide-vue-next: ^1.0.0
   miniApiTypings:
     miniprogram-api-typings: ^5.1.2
   postcss85:
-    postcss: ^8.5.8
+    postcss: ^8.5.9
   postcss85tilde:
-    postcss: ~8.5.8
+    postcss: ^8.5.9
   postcssComment2:
     postcss-comment: ^2.0.0
   postcssRem:
@@ -51,7 +51,7 @@ catalogs:
   postcssRpx:
     postcss-rpx-transform: ^1.0.1
   prettier371:
-    prettier: ^3.8.1
+    prettier: ^3.8.3
   react18:
     '@types/react': ^19.2.14
     '@types/react-dom': 18.2.7
@@ -60,14 +60,14 @@ catalogs:
   react19:
     '@types/react': ^19.2.14
     '@types/react-dom': 19.2.3
-    react: ^19.2.4
-    react-dom: ^19.2.4
+    react: ^19.2.5
+    react-dom: ^19.2.5
   reactRefresh018:
     react-refresh: ^0.18.0
   sass195:
     sass: ^1.99.0
   stylelint1625:
-    stylelint: ^17.6.0
+    stylelint: ^17.8.0
   tailwindMerge:
     tailwind-merge: ^3.5.0
   tailwindMerge2:
@@ -84,71 +84,71 @@ catalogs:
   tailwindcssRem:
     tailwindcss-rem2px-preset: ^1.0.3
   taro4:
-    '@tarojs/cli': ^4.1.11
-    '@tarojs/components': ^4.1.11
-    '@tarojs/helper': ^4.1.11
-    '@tarojs/plugin-framework-react': ^4.1.11
-    '@tarojs/plugin-framework-vue3': ^4.1.11
-    '@tarojs/plugin-html': ^4.1.11
-    '@tarojs/plugin-platform-alipay': ^4.1.11
-    '@tarojs/plugin-platform-h5': ^4.1.11
-    '@tarojs/plugin-platform-harmony-hybrid': ^4.1.11
-    '@tarojs/plugin-platform-jd': ^4.1.11
-    '@tarojs/plugin-platform-qq': ^4.1.11
-    '@tarojs/plugin-platform-swan': ^4.1.11
-    '@tarojs/plugin-platform-tt': ^4.1.11
-    '@tarojs/plugin-platform-weapp': ^4.1.11
-    '@tarojs/react': ^4.1.11
-    '@tarojs/runtime': ^4.1.11
-    '@tarojs/shared': ^4.1.11
-    '@tarojs/taro': ^4.1.11
-    '@tarojs/taro-loader': ^4.1.11
-    '@tarojs/vite-runner': ^4.1.11
-    '@tarojs/webpack5-runner': ^4.1.11
-    babel-preset-taro: ^4.1.11
-    eslint-config-taro: ^4.1.11
+    '@tarojs/cli': ^4.2.0
+    '@tarojs/components': ^4.2.0
+    '@tarojs/helper': ^4.2.0
+    '@tarojs/plugin-framework-react': ^4.2.0
+    '@tarojs/plugin-framework-vue3': ^4.2.0
+    '@tarojs/plugin-html': ^4.2.0
+    '@tarojs/plugin-platform-alipay': ^4.2.0
+    '@tarojs/plugin-platform-h5': ^4.2.0
+    '@tarojs/plugin-platform-harmony-hybrid': ^4.2.0
+    '@tarojs/plugin-platform-jd': ^4.2.0
+    '@tarojs/plugin-platform-qq': ^4.2.0
+    '@tarojs/plugin-platform-swan': ^4.2.0
+    '@tarojs/plugin-platform-tt': ^4.2.0
+    '@tarojs/plugin-platform-weapp': ^4.2.0
+    '@tarojs/react': ^4.2.0
+    '@tarojs/runtime': ^4.2.0
+    '@tarojs/shared': ^4.2.0
+    '@tarojs/taro': ^4.2.0
+    '@tarojs/taro-loader': ^4.2.0
+    '@tarojs/vite-runner': ^4.2.0
+    '@tarojs/webpack5-runner': ^4.2.0
+    babel-preset-taro: ^4.2.0
+    eslint-config-taro: ^4.2.0
   typesNode2410:
-    '@types/node': ^24.12.0
+    '@types/node': ^24.12.2
   typescript59:
     typescript: ^5.9.3
   typescript59tilde:
     typescript: ~5.9.3
   typescriptEslint:
-    '@typescript-eslint/eslint-plugin': ^8.58.0
-    '@typescript-eslint/parser': ^8.58.0
-    typescript-eslint: ^8.58.0
+    '@typescript-eslint/eslint-plugin': ^8.58.2
+    '@typescript-eslint/parser': ^8.58.2
+    typescript-eslint: ^8.58.2
   vite4:
     vite: ^4.5.14
+  vite52:
+    vite: ^5.2.8
   vite5421:
     vite: ^5.4.21
-  vite52:
-    vite: 5.2.8
   vite724:
-    vite: ^7.3.1
+    vite: ^7.3.2
   vitePluginInspect:
     vite-plugin-inspect: ^11.3.3
-  vitest:
-    vitest: ~4.1.2
   vitePluginReact4:
     '@vitejs/plugin-react': ^4.7.0
+  vitest:
+    vitest: ~4.1.4
   vue2:
     vue: ^2.7.16
   vue3:
-    '@vue/compiler-dom': ^3.5.31
-    '@vue/compiler-sfc': ^3.5.31
-    vue: ^3.5.31
+    '@vue/compiler-dom': ^3.5.32
+    '@vue/compiler-sfc': ^3.5.32
+    vue: ^3.5.32
   vueRuntimeCore:
-    '@vue/runtime-core': ^3.5.31
+    '@vue/runtime-core': ^3.5.32
   vueTsc318:
     vue-tsc: ^3.2.6
   weappChildren:
     weapp-tailwindcss-children: ^0.1.0
   weappIdeCli:
-    weapp-ide-cli: ^5.1.4
+    weapp-ide-cli: ^5.2.2
   weappVite:
-    weapp-vite: ^6.13.0
+    weapp-vite: ^6.15.5
   wrangler:
-    wrangler: ^4.80.0
+    wrangler: ^4.83.0
 
 onlyBuiltDependencies:
   - '@tailwindcss/oxide'

@@ -314,14 +314,17 @@ export function UnifiedViteWeappTailwindcssPlugin(options: UserDefinedOptions = 
           }
         }
       },
-      generateBundle: createGenerateBundleHook({
-        opts,
-        runtimeState,
-        ensureRuntimeClassSet,
-        ensureBundleRuntimeClassSet,
-        debug,
-        getResolvedConfig,
-      }),
+      generateBundle: {
+        order: 'post',
+        handler: createGenerateBundleHook({
+          opts,
+          runtimeState,
+          ensureRuntimeClassSet,
+          ensureBundleRuntimeClassSet,
+          debug,
+          getResolvedConfig,
+        }),
+      },
     },
   ]
   if (uniAppXPlugins) {

@@ -74,7 +74,7 @@
     "@dcloudio/uni-stacktracey": "3.0.0-5000320260312001",
     "@dcloudio/vite-plugin-uni": "3.0.0-5000320260312001",
     "@egoist/tailwindcss-icons": "catalog:egoistTailwindcssIcons",
-    "@iconify-json/lucide": "^1.2.101",
+    "@iconify-json/lucide": "^1.2.102",
     "@iconify-json/mdi": "^1.2.3",
     "@tailwindcss/vite": "catalog:tailwindcss4",
     "@vue/runtime-core": "catalog:vueRuntimeCore",
