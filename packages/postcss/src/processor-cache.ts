@@ -1,7 +1,9 @@
 import type { ProcessOptions, Processor } from 'postcss'
+import type { FeatureSignal } from './content-probe'
 import type { StyleProcessingPipeline } from './pipeline'
 import type { IStyleHandlerOptions } from './types'
 import postcss from 'postcss'
+import { signalToCacheKey } from './content-probe'
 import { fingerprintOptions } from './fingerprint'
 import { createStylePipeline } from './pipeline'
 
@@ -45,9 +47,8 @@ function getSimpleProcessOptionsCacheKey(options: Record<string, unknown>) {
 }
 
 export class StyleProcessorCache {
-  private readonly pipelineCache = new WeakMap<IStyleHandlerOptions, StyleProcessingPipeline>()
+  private readonly pipelineCacheByKey = new Map<string, StyleProcessingPipeline>()
   private readonly processOptionsCache = new WeakMap<IStyleHandlerOptions, { value: ProcessOptions, cacheKey?: string | undefined }>()
-  private readonly processorCache = new WeakMap<IStyleHandlerOptions, Processor>()
   private readonly processorCacheByKey = new Map<string, Processor>()
   private readonly processorKeyCache = new WeakMap<IStyleHandlerOptions, string>()
 
@@ -69,11 +70,27 @@ export class StyleProcessorCache {
     })
   }
 
-  getPipeline(options: IStyleHandlerOptions) {
-    let pipeline = this.pipelineCache.get(options)
+  /**
+   * 构建包含信号的复合缓存键
+   */
+  private createCompositeCacheKey(optionsFingerprint: string, signal?: FeatureSignal): string {
+    if (!signal) {
+      return optionsFingerprint
+    }
+    return `${optionsFingerprint}|${signalToCacheKey(signal)}`
+  }
+
+  getPipeline(options: IStyleHandlerOptions, signal?: FeatureSignal) {
+    let optionsKey = this.processorKeyCache.get(options)
+    if (!optionsKey) {
+      optionsKey = this.createProcessorCacheKey(options)
+      this.processorKeyCache.set(options, optionsKey)
+    }
+    const compositeKey = this.createCompositeCacheKey(optionsKey, signal)
+    let pipeline = this.pipelineCacheByKey.get(compositeKey)
     if (!pipeline) {
-      pipeline = createStylePipeline(options)
-      this.pipelineCache.set(options, pipeline)
+      pipeline = createStylePipeline(options, signal)
+      this.pipelineCacheByKey.set(compositeKey, pipeline)
     }
     return pipeline
   }
@@ -94,22 +111,19 @@ export class StyleProcessorCache {
     return { ...cached.value }
   }
 
-  getProcessor(options: IStyleHandlerOptions) {
-    let processor = this.processorCache.get(options)
-    if (!processor) {
-      let cacheKey = this.processorKeyCache.get(options)
-      if (!cacheKey) {
-        cacheKey = this.createProcessorCacheKey(options)
-        this.processorKeyCache.set(options, cacheKey)
-      }
+  getProcessor(options: IStyleHandlerOptions, signal?: FeatureSignal) {
+    let optionsKey = this.processorKeyCache.get(options)
+    if (!optionsKey) {
+      optionsKey = this.createProcessorCacheKey(options)
+      this.processorKeyCache.set(options, optionsKey)
+    }
+    const compositeKey = this.createCompositeCacheKey(optionsKey, signal)
 
-      processor = this.processorCacheByKey.get(cacheKey)
-      if (!processor) {
-        const pipeline = this.getPipeline(options)
-        processor = postcss(pipeline.plugins)
-        this.processorCacheByKey.set(cacheKey, processor)
-      }
-      this.processorCache.set(options, processor)
+    let processor = this.processorCacheByKey.get(compositeKey)
+    if (!processor) {
+      const pipeline = this.getPipeline(options, signal)
+      processor = postcss(pipeline.plugins)
+      this.processorCacheByKey.set(compositeKey, processor)
     }
     return processor
   }
