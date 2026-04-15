@@ -44,7 +44,7 @@
     - 将当前资产的 `CreateJsHandlerOptions`（含 `staleClassNameFallback`、`tailwindcssMajorVersion`、`filename`、`moduleGraph`）传递给预检查函数
     - _Requirements: 3.1, 3.2, 3.3, 3.4_
 
-  - [~]* 3.2 扩展 Webpack v5 测试 `packages/weapp-tailwindcss/test/bundlers/webpack.v5.unit.test.ts`
+  - [ ]* 3.2 扩展 Webpack v5 测试 `packages/weapp-tailwindcss/test/bundlers/webpack.v5.unit.test.ts`
     - 验证不含类名模式的 JS 资产不调用 `jsHandler`
     - 验证含类名模式的 JS 资产正常调用 `jsHandler`
     - _Requirements: 3.1, 3.2, 3.3_

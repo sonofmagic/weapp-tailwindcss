@@ -41,7 +41,7 @@
   - Ensure all tests pass, ask the user if questions arise.
 
 - [ ] 3. 编写单元测试
-  - [~]* 3.1 创建 `packages/weapp-tailwindcss/test/js-cache.test.ts` 单元测试
+  - [ ]* 3.1 创建 `packages/weapp-tailwindcss/test/js-cache.test.ts` 单元测试
     - 测试空源码跳过缓存（直接执行转译）
     - 测试含 `error` 的结果不缓存（解析失败后再次调用仍重新解析）
     - 测试含 `linked` 的结果不缓存
@@ -54,32 +54,32 @@
     - _Requirements: 1.1, 1.3, 1.4, 2.4, 3.1, 3.2, 3.3, 3.4, 5.4, 6.1_
 
 - [ ] 4. 编写属性测试
-  - [~]* 4.1 创建 `packages/weapp-tailwindcss/test/js-cache.property.test.ts` 并编写 Property 1
+  - [ ]* 4.1 创建 `packages/weapp-tailwindcss/test/js-cache.property.test.ts` 并编写 Property 1
     - **Property 1: Content hash caching works for any source length**
     - 使用 fast-check 随机生成任意长度的非空 JS 源码字符串，调用 handler 两次，验证第二次返回与第一次相同的 `code` 输出
     - **Validates: Requirements 1.1, 1.3**
 
-  - [~]* 4.2 编写 Property 2 属性测试
+  - [ ]* 4.2 编写 Property 2 属性测试
     - **Property 2: LRU eviction preserves recently accessed entries**
     - 创建 max=4 的小缓存，插入 4 个不同源码，访问前 2 个，再插入第 5 个，验证前 2 个仍命中缓存而第 3 或第 4 个被淘汰
     - **Validates: Requirements 2.1, 2.2, 2.3**
 
-  - [~]* 4.3 编写 Property 3 属性测试
+  - [ ]* 4.3 编写 Property 3 属性测试
     - **Property 3: Bundler path calls are cacheable**
     - 随机生成非空源码，使用含 `filename` 的选项调用 handler 两次，验证第二次命中缓存（前提是第一次未产生 `linked` 或 `error`）
     - **Validates: Requirements 3.1, 3.2**
 
-  - [~]* 4.4 编写 Property 4 属性测试
+  - [ ]* 4.4 编写 Property 4 属性测试
     - **Property 4: Options resolution reference stability**
     - 随机生成 `classNameSet` 和 `overrideOptions`，调用 `resolveOptions` 两次，验证返回同一对象引用（`===`）
     - **Validates: Requirements 4.2**
 
-  - [~]* 4.5 编写 Property 5 属性测试
+  - [ ]* 4.5 编写 Property 5 属性测试
     - **Property 5: Backward-compatible output**
     - 随机生成有效 JS 源码和 classNameSet，验证优化后 handler 的 `code` 输出与直接调用 `jsHandler(rawSource, resolvedOptions)` 一致
     - **Validates: Requirements 5.1**
 
-  - [~]* 4.6 编写 Property 6 属性测试
+  - [ ]* 4.6 编写 Property 6 属性测试
     - **Property 6: ClassNameSet identity isolation**
     - 随机生成源码，创建两个内容相同但引用不同的 `Set<string>`，分别调用 handler，验证第二个 Set 不命中第一个 Set 的缓存
     - **Validates: Requirements 6.1, 6.2**
