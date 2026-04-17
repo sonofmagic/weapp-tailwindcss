@@ -7,6 +7,7 @@ const pkgs = await getWorkspacePackages(cwd)
 for (const pkg of pkgs) {
   if (!pkg.manifest.name || ![
     'weapp-tailwindcss',
+    '@weapp-tailwindcss/reset',
     'tailwindcss-core-plugins-extractor',
     '@weapp-tailwindcss/typography',
   ].includes(pkg.manifest.name)) {

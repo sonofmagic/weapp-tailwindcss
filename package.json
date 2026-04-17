@@ -94,7 +94,7 @@
     "demo:install": "tsx scripts/demo/install.ts",
     "demo:install:beta": "tsx scripts/demo/install.ts --beta",
     "demo:install:alpha": "tsx scripts/demo/install.ts --alpha",
-    "sync": "cnpm sync weapp-tailwindcss-webpack-plugin weapp-tailwindcss weapp-tw @weapp-tailwindcss/cli @weapp-tailwindcss/typography",
+    "sync": "cnpm sync weapp-tailwindcss-webpack-plugin weapp-tailwindcss weapp-tw @weapp-tailwindcss/cli @weapp-tailwindcss/reset @weapp-tailwindcss/typography",
     "sync:all": "turbo run sync",
     "templates:sync": "tsx scripts/sync-templates.ts",
     "templates:push": "tsx scripts/push-templates.ts",
