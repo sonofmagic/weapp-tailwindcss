@@ -1,0 +1,99 @@
+---
+title: '@weapp-tailwindcss/reset'
+description: 面向 uni-app 与 Taro 的静态 reset 样式资源包，提供 normalize、modern-normalize、sanitize 与 Tailwind preflight 等可直接导入的 CSS 文件。
+keywords:
+  - 社区
+  - reset
+  - preflight
+  - normalize
+  - sanitize
+  - weapp-tailwindcss
+  - tailwindcss
+  - 小程序
+  - 微信小程序
+  - uni-app
+  - taro
+---
+# @weapp-tailwindcss/reset
+
+`@weapp-tailwindcss/reset` 是一个独立的静态 CSS 资源包，适合在 `uni-app` / `Taro` 项目的入口样式中直接导入。
+
+它和 [`weapp-tailwindcss/reset`](/docs/options/reset) 不是同一个东西：
+
+- `@weapp-tailwindcss/reset`：静态样式文件集合，直接 `import '@weapp-tailwindcss/reset/xxx.css'`
+- `weapp-tailwindcss/reset`：Tailwind 插件入口，通过 `reset({...})` 或 `@plugin` 注入 base 规则
+
+如果你只想快速引入一套现成 reset，用这个包更直接；如果你需要自定义选择器、声明或追加额外 reset，请改用 `weapp-tailwindcss/reset`。
+
+## 安装
+
+```bash
+pnpm add -D @weapp-tailwindcss/reset
+```
+
+## 当前提供的 reset
+
+| 路径 | 说明 | 适用场景 |
+| --- | --- | --- |
+| `button-after.css` | 清理 `button::after` 默认样式 | 需要更自由地改按钮边框时优先引入 |
+| `normalize.css` | `normalize.css` 的跨端静态版本 | 偏保守、接近浏览器默认行为 |
+| `modern-normalize.css` | `modern-normalize` 的跨端静态版本 | 想要更现代、轻量的基线 |
+| `eric-meyer.css` | 经典 Eric Meyer reset | 需要强 reset、自己完全接管基础样式 |
+| `sanitize/sanitize.css` | `sanitize.css` 主体规则 | 更强调可访问性与默认安全值 |
+| `sanitize/assets.css` | `sanitize.css` 的资源尺寸约束补充 | 与上面配套使用 |
+| `tailwind.css` | 静态版 Tailwind preflight | 想直接拿 Tailwind 风格 reset |
+| `tailwind-compat.css` | 移除按钮背景色重置的 Tailwind preflight | 和组件库一起使用时更稳妥 |
+
+## uni-app 用法
+
+通常在 `src/main.ts`、`App.vue` 或全局入口样式中导入：
+
+```ts
+import '@weapp-tailwindcss/reset/uni-app/button-after.css'
+import '@weapp-tailwindcss/reset/uni-app/tailwind-compat.css'
+```
+
+如果你使用 `sanitize.css`，通常要把两个文件一起引入：
+
+```ts
+import '@weapp-tailwindcss/reset/uni-app/sanitize/sanitize.css'
+import '@weapp-tailwindcss/reset/uni-app/sanitize/assets.css'
+```
+
+## Taro 用法
+
+通常在 `src/app.tsx` 或入口样式中导入：
+
+```ts
+import '@weapp-tailwindcss/reset/taro/button-after.css'
+import '@weapp-tailwindcss/reset/taro/tailwind-compat.css'
+```
+
+## 选择建议
+
+- 项目里已经用了组件库，优先 `button-after.css + tailwind-compat.css`
+- 想接近 Tailwind 默认 preflight，选 `tailwind.css`
+- 想保守一点，选 `modern-normalize.css` 或 `normalize.css`
+- 想强力清空默认样式，选 `eric-meyer.css`
+- 想要更完整的默认安全值和资源约束，选 `sanitize/sanitize.css + sanitize/assets.css`
+
+## 典型组合
+
+```ts
+import '@weapp-tailwindcss/reset/uni-app/button-after.css'
+import '@weapp-tailwindcss/reset/uni-app/tailwind-compat.css'
+```
+
+上面这组通常适合有组件库的项目。
+
+```ts
+import '@weapp-tailwindcss/reset/taro/modern-normalize.css'
+```
+
+上面这组通常适合只想补一个轻量全局基线的项目。
+
+## 与主包样式的关系
+
+`@weapp-tailwindcss/reset` 不会替代 `weapp-tailwindcss/index.css`、`preflight.css` 这些主包产物。它更像一个“可选 reset 仓库”，让你在入口处自行决定要引哪一套基线样式。
+
+如果你已经在用 `weapp-tailwindcss/index.css`，是否还要额外引入这里的 reset，需要根据你的项目基线和组件库兼容性决定，不建议无脑叠加多套 reset。

@@ -1,0 +1,46 @@
+{
+  "name": "@weapp-tailwindcss/reset",
+  "version": "0.0.0",
+  "description": "weapp-tailwindcss 的静态 reset 样式资源集合",
+  "author": "ice breaker <1324318532@qq.com>",
+  "license": "MIT",
+  "homepage": "https://tw.icebreaker.top",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/sonofmagic/weapp-tailwindcss.git",
+    "directory": "packages/reset"
+  },
+  "bugs": {
+    "url": "https://github.com/sonofmagic/weapp-tailwindcss/issues"
+  },
+  "keywords": [
+    "weapp-tailwindcss",
+    "tailwindcss",
+    "reset",
+    "preflight",
+    "uni-app",
+    "taro",
+    "miniprogram"
+  ],
+  "sideEffects": false,
+  "exports": {
+    "./*": "./*",
+    "./package.json": "./package.json"
+  },
+  "files": [
+    "README.md",
+    "taro",
+    "uni-app"
+  ],
+  "engines": {
+    "node": ">=20.19.0"
+  },
+  "scripts": {
+    "test": "vitest run",
+    "test:dev": "vitest"
+  },
+  "publishConfig": {
+    "access": "public",
+    "registry": "https://registry.npmjs.org"
+  }
+}

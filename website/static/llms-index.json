@@ -1,10 +1,10 @@
 {
   "version": "1.0.0",
-  "generatedAt": "2026-04-03T08:06:18.764Z",
+  "generatedAt": "2026-04-17T03:54:04.031Z",
   "siteUrl": "https://tw.icebreaker.top",
   "totals": {
-    "all": 175,
-    "docs": 171,
+    "all": 176,
+    "docs": 172,
     "blog": 4
   },
   "documents": [
@@ -2043,12 +2043,12 @@
       "headings": [
         "插件",
         "# [@weapp-tailwindcss/typography](./community/typography)",
+        "# [@weapp-tailwindcss/reset](./community/reset)",
         "# [开箱即用的小程序icon解决方案](./icons)",
         "# [uni-app 条件编译语法糖插件](./quick-start/uni-app-css-macro)",
         "模板",
         "# [各个框架的模板](./community/templates)",
-        "解决方案",
-        "# [小程序多主题方案](./quick-start/apply-themes)"
+        "解决方案"
       ],
       "updatedAt": null,
       "source": "docs/community.md"
@@ -2612,6 +2612,44 @@
       "headings": [],
       "updatedAt": null,
       "source": "docs/community/plugins.md"
+    },
+    {
+      "kind": "doc",
+      "id": "doc:community/reset",
+      "title": "@weapp-tailwindcss/reset",
+      "description": "面向 uni-app 与 Taro 的静态 reset 样式资源包，提供 normalize、modern-normalize、sanitize 与 Tailwind preflight 等可直接导入的 CSS 文件。",
+      "summary": "@weapp-tailwindcss/reset 是一个独立的静态 CSS 资源包，适合在 uni-app / Taro 项目的入口样式中直接导入。",
+      "url": "/docs/community/reset",
+      "canonical": "https://tw.icebreaker.top/docs/community/reset",
+      "keywords": [
+        "社区",
+        "reset",
+        "preflight",
+        "normalize",
+        "sanitize",
+        "weapp-tailwindcss",
+        "tailwindcss",
+        "小程序",
+        "微信小程序",
+        "uni-app",
+        "taro",
+        "模板",
+        "案例",
+        "community",
+        "rax",
+        "mpx"
+      ],
+      "headings": [
+        "安装",
+        "当前提供的 reset",
+        "uni-app 用法",
+        "Taro 用法",
+        "选择建议",
+        "典型组合",
+        "与主包样式的关系"
+      ],
+      "updatedAt": null,
+      "source": "docs/community/reset.mdx"
     },
     {
       "kind": "doc",

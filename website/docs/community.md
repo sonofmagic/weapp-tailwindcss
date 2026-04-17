@@ -22,6 +22,8 @@ keywords:
 
 ### [@weapp-tailwindcss/typography](./community/typography)
 
+### [@weapp-tailwindcss/reset](./community/reset)
+
 ### [开箱即用的小程序icon解决方案](./icons)
 
 ### [uni-app 条件编译语法糖插件](./quick-start/uni-app-css-macro)
