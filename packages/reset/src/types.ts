@@ -1,4 +1,12 @@
 export type ResetPreset = 'minimal' | 'form' | 'content' | 'media' | 'all'
+export type BuiltInResetName
+  = | 'buttonReset'
+    | 'imageReset'
+    | 'inputReset'
+    | 'textareaReset'
+    | 'listReset'
+    | 'navigatorReset'
+    | 'videoReset'
 
 export interface ResetOptions {
   /**

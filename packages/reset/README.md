@@ -77,6 +77,19 @@ reset({ preset: 'all', listReset: false })
 - `navigatorReset`
 - `videoReset`
 
+如果你直接传入这些内置项的配置对象，也会自动启用对应 reset；不必强制先写 `preset`：
+
+```ts
+reset({
+  inputReset: {
+    selectors: ['.wx-reset-input'],
+  },
+  videoReset: {
+    selectors: ['.wx-reset-video'],
+  },
+})
+```
+
 ### 2. 作为静态 CSS 资源使用
 
 `uni-app` 通常在 `src/main.ts` 或入口样式中导入：

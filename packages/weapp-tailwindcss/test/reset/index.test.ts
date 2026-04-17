@@ -111,6 +111,39 @@ describe('reset plugin', () => {
     expect(normalized).toMatch(/\[class~="wx-reset-image"\]\{[^}]*display:inline-block;[^}]*border-width:0[^}]*\}/)
   })
 
+  it('auto-enables built-in resets from direct config through the compatibility export', async () => {
+    const { css } = await renderBaseCss('compat-direct-config-enable', [
+      reset({
+        inputReset: {
+          selectors: ['.wx-reset-input'],
+          declarations: {
+            padding: '0',
+            borderWidth: '0',
+            backgroundColor: 'transparent',
+          },
+        },
+        videoReset: {
+          selectors: ['.wx-reset-video'],
+          declarations: {
+            display: 'block',
+            maxWidth: '100%',
+          },
+        },
+      }),
+    ])
+
+    const normalized = css.replace(/\s+/g, '')
+    expect(normalized).toMatch(BUTTON_REGEX)
+    expect(normalized).toMatch(IMAGE_REGEX)
+    expect(normalized).toContain('[class~="wx-reset-input"]{')
+    expect(normalized).toContain('padding:0')
+    expect(normalized).toContain('background-color:transparent')
+    expect(normalized).toContain('border-width:0')
+    expect(normalized).toContain('[class~="wx-reset-video"]{display:block;max-width:100%;height:auto}')
+    expect(normalized).not.toMatch(INPUT_REGEX)
+    expect(normalized).not.toMatch(VIDEO_REGEX)
+  })
+
   it('supports presets through the compatibility export', async () => {
     const { css } = await renderBaseCss('compat-preset-all-disable-partial', [
       reset({

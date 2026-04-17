@@ -69,6 +69,39 @@ describe('@weapp-tailwindcss/reset plugin', () => {
     expect(normalized).toMatch(TEXTAREA_REGEX)
   })
 
+  it('auto-enables a built-in reset when its config object is provided directly', async () => {
+    const { css } = await renderBaseCss('direct-input-config', [
+      reset({
+        inputReset: {
+          selectors: ['.wx-reset-input'],
+          declarations: {
+            padding: '0',
+            borderWidth: '0',
+            backgroundColor: 'transparent',
+          },
+        },
+        navigatorReset: {
+          selectors: ['.wx-reset-link'],
+          declarations: {
+            color: 'inherit',
+            textDecoration: 'none',
+          },
+        },
+      }),
+    ])
+
+    const normalized = css.replace(/\s+/g, '')
+    expect(normalized).toMatch(BUTTON_REGEX)
+    expect(normalized).toMatch(IMAGE_REGEX)
+    expect(normalized).toContain('[class~="wx-reset-input"]{')
+    expect(normalized).toContain('padding:0')
+    expect(normalized).toContain('background-color:transparent')
+    expect(normalized).toContain('border-width:0')
+    expect(normalized).toContain('[class~="wx-reset-link"]{color:inherit;text-decoration:none}')
+    expect(normalized).not.toMatch(INPUT_REGEX)
+    expect(normalized).not.toMatch(NAVIGATOR_REGEX)
+  })
+
   it('supports combined presets and keeps default compatibility', async () => {
     const { css } = await renderBaseCss('preset-content-media', [
       reset({ preset: ['content', 'media'] }),

@@ -1,5 +1,5 @@
 import type { NormalizedResetRule } from './normalize'
-import type { ResetOptions, ResetPreset } from './types'
+import type { BuiltInResetName, ResetOptions, ResetPreset } from './types'
 import plugin from 'tailwindcss/plugin'
 import { createResetRule } from './normalize'
 
@@ -94,6 +94,22 @@ interface PresetResolvedFlags {
   videoReset: boolean
 }
 
+const builtInResetKeys = [
+  'buttonReset',
+  'imageReset',
+  'inputReset',
+  'textareaReset',
+  'listReset',
+  'navigatorReset',
+  'videoReset',
+] as const satisfies BuiltInResetName[]
+
+function hasCustomResetConfig(
+  value: ResetOptions[BuiltInResetName],
+): value is Exclude<ResetOptions[BuiltInResetName], false | undefined> {
+  return value !== undefined && value !== false
+}
+
 function resolvePresetFlags(options?: ResetOptions): PresetResolvedFlags {
   const resolved: PresetResolvedFlags = {
     buttonReset: true,
@@ -106,16 +122,22 @@ function resolvePresetFlags(options?: ResetOptions): PresetResolvedFlags {
   }
 
   const presets = options?.preset
-  if (!presets) {
-    return resolved
+  if (presets) {
+    const normalizedPresets = Array.isArray(presets) ? presets : [presets]
+    for (const preset of normalizedPresets) {
+      for (const key of presetMap[preset]) {
+        resolved[key] = true
+      }
+    }
   }
 
-  const normalizedPresets = Array.isArray(presets) ? presets : [presets]
-  for (const preset of normalizedPresets) {
-    for (const key of presetMap[preset]) {
+  // 直接传入内置 reset 配置对象时，视为显式启用对应规则。
+  for (const key of builtInResetKeys) {
+    if (hasCustomResetConfig(options?.[key])) {
       resolved[key] = true
     }
   }
+
   return resolved
 }
 
@@ -206,5 +228,5 @@ export const reset = plugin.withOptions<ResetOptions>(
   },
 )
 
-export type { ResetConfig, ResetOptions, ResetPreset } from './types'
+export type { BuiltInResetName, ResetConfig, ResetOptions, ResetPreset } from './types'
 export default reset

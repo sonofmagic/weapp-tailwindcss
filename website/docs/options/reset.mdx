@@ -51,6 +51,19 @@ interface ResetConfig {
 
 设置为 `false` 即可关闭对应默认 reset；当提供类名 / ID 时会自动转换为 `[class~="foo"]` / `[id="bar"]`。
 
+对于 `inputReset`、`textareaReset`、`listReset`、`navigatorReset`、`videoReset` 这类默认未开启的内置项，如果你直接传入配置对象，插件也会自动启用对应 reset，不必先额外声明 `preset`。
+
+```ts
+reset({
+  inputReset: {
+    selectors: ['.wx-reset-input'],
+  },
+  videoReset: {
+    selectors: ['.wx-reset-video'],
+  },
+})
+```
+
 ## preset
 
 `preset` 用来快速启用一组内置 reset。默认不传时等价于 `minimal`，保持和旧版本一致，只注入 `button` 与 `image`。
