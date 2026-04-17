@@ -232,17 +232,24 @@ describe('watch-hmr regression text helpers', () => {
 
   it('waits for predicates and reports timeout failures', async () => {
     let attempt = 0
+    let tickCount = 0
+    const timeoutMs = 200
     const elapsed = await waitFor(
       () => ++attempt > 2,
       {
-        timeoutMs: 200,
+        timeoutMs,
         pollMs: 1,
         message: 'waited too long',
+        onTick: () => {
+          tickCount += 1
+        },
       },
     )
 
     expect(attempt).toBe(3)
-    expect(elapsed).toBeGreaterThanOrEqual(1_400)
+    expect(tickCount).toBe(2)
+    expect(elapsed).toBeGreaterThanOrEqual(0)
+    expect(elapsed).toBeLessThan(timeoutMs)
 
     await expect(() => {
       return waitFor(
