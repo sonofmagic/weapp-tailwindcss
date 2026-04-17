@@ -24,11 +24,20 @@
   ],
   "sideEffects": false,
   "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.mjs",
+      "require": "./dist/index.cjs"
+    },
     "./*": "./*",
     "./package.json": "./package.json"
   },
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.mjs",
+  "types": "./dist/index.d.ts",
   "files": [
     "README.md",
+    "dist",
     "taro",
     "uni-app"
   ],
@@ -36,8 +45,15 @@
     "node": ">=20.19.0"
   },
   "scripts": {
+    "build": "tsup",
     "test": "vitest run",
     "test:dev": "vitest"
+  },
+  "peerDependencies": {
+    "tailwindcss": "^3.0.0 || ^4.0.0"
+  },
+  "devDependencies": {
+    "@weapp-tailwindcss/test-helper": "workspace:*"
   },
   "publishConfig": {
     "access": "public",

@@ -1,6 +1,9 @@
 # @weapp-tailwindcss/reset
 
-`@weapp-tailwindcss/reset` 提供了一组可直接导入的静态 reset 样式，适用于 `uni-app` 与 `taro` 小程序项目。
+`@weapp-tailwindcss/reset` 同时提供两类能力：
+
+- 可直接导入的静态 reset CSS 资源，适用于 `uni-app` 与 `taro`
+- 可注册到 Tailwind 的 `reset()` 插件入口
 
 当前提供：
 
@@ -20,6 +23,37 @@ pnpm add -D @weapp-tailwindcss/reset
 ```
 
 ## 用法
+
+### 1. 作为 Tailwind 插件使用
+
+```ts
+import reset from '@weapp-tailwindcss/reset'
+
+export default {
+  plugins: [reset()],
+}
+```
+
+它支持和原先 `weapp-tailwindcss/reset` 相同的选项：
+
+```ts
+reset({
+  buttonReset: false,
+  imageReset: {
+    selectors: ['.wx-reset-image'],
+  },
+  extraResets: [
+    {
+      selectors: ['.wx-reset-view'],
+      declarations: {
+        display: 'block',
+      },
+    },
+  ],
+})
+```
+
+### 2. 作为静态 CSS 资源使用
 
 `uni-app` 通常在 `src/main.ts` 或入口样式中导入：
 
@@ -45,4 +79,4 @@ import "@weapp-tailwindcss/reset/taro/tailwind-compat.css";
 
 如果你要更轻量、更传统的 reset，可以按需改用 `normalize.css`、`modern-normalize.css` 或 `eric-meyer.css`，它们都支持 `uni-app` / `taro` 两套路径。
 
-如果你需要更强的可配置能力，而不是静态 CSS 文件，请使用主包中的 `weapp-tailwindcss/reset` Tailwind 插件入口。
+为了兼容旧项目，`weapp-tailwindcss/reset` 仍然保留导出入口；但新的实际实现已经迁到 `@weapp-tailwindcss/reset`。

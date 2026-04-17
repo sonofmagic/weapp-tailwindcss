@@ -202,6 +202,7 @@
     "@weapp-core/regex": "~1.0.1",
     "@weapp-tailwindcss/logger": "workspace:*",
     "@weapp-tailwindcss/postcss": "workspace:*",
+    "@weapp-tailwindcss/reset": "workspace:*",
     "@weapp-tailwindcss/shared": "workspace:*",
     "cac": "6.7.14",
     "comment-json": "^4.6.2",

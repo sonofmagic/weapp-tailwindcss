@@ -13,6 +13,10 @@ export default defineConfig({
         find: '#test',
         replacement: path.resolve(__dirname, './test'),
       },
+      {
+        find: '@weapp-tailwindcss/reset',
+        replacement: path.resolve(__dirname, '../reset/src/index.ts'),
+      },
     ],
     include: ['test/**/*.{test,spec}.?(c|m)[jt]s?(x)'],
     benchmark: {
