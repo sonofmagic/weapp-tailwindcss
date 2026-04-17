@@ -53,6 +53,30 @@ reset({
 })
 ```
 
+现在还支持 `preset`，用来快速启用一组内置 reset：
+
+```ts
+reset({ preset: 'form' })
+reset({ preset: ['content', 'media'] })
+reset({ preset: 'all', listReset: false })
+```
+
+可选预设：
+
+- `minimal`：默认值，仅 `button` + `image`
+- `form`：`minimal` + `input` + `textarea`
+- `content`：`minimal` + `ul/ol` + `navigator/a`
+- `media`：`minimal` + `video`
+- `all`：启用全部内置 reset
+
+新增内置 reset 项：
+
+- `inputReset`
+- `textareaReset`
+- `listReset`
+- `navigatorReset`
+- `videoReset`
+
 ### 2. 作为静态 CSS 资源使用
 
 `uni-app` 通常在 `src/main.ts` 或入口样式中导入：

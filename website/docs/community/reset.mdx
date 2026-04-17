@@ -1,6 +1,6 @@
 ---
 title: '@weapp-tailwindcss/reset'
-description: 面向 uni-app 与 Taro 的静态 reset 样式资源包，提供 normalize、modern-normalize、sanitize 与 Tailwind preflight 等可直接导入的 CSS 文件。
+description: 面向 uni-app 与 Taro 的 reset 资源包，同时提供静态 CSS 资源与 Tailwind reset 插件实现。
 keywords:
   - 社区
   - reset
@@ -16,14 +16,14 @@ keywords:
 ---
 # @weapp-tailwindcss/reset
 
-`@weapp-tailwindcss/reset` 是一个独立的静态 CSS 资源包，适合在 `uni-app` / `Taro` 项目的入口样式中直接导入。
+`@weapp-tailwindcss/reset` 是一个独立的 reset 资源包，适合在 `uni-app` / `Taro` 项目的入口样式中直接导入，也可以直接作为 Tailwind 插件使用。
 
-它和 [`weapp-tailwindcss/reset`](/docs/options/reset) 不是同一个东西：
+它现在同时提供两类能力：
 
-- `@weapp-tailwindcss/reset`：静态样式文件集合，直接 `import '@weapp-tailwindcss/reset/xxx.css'`
-- `weapp-tailwindcss/reset`：Tailwind 插件入口，通过 `reset({...})` 或 `@plugin` 注入 base 规则
+- 静态样式文件集合，直接 `import '@weapp-tailwindcss/reset/xxx.css'`
+- Tailwind 插件入口，通过 `reset({...})` 或 `@plugin` 注入 base 规则
 
-如果你只想快速引入一套现成 reset，用这个包更直接；如果你需要自定义选择器、声明或追加额外 reset，请改用 `weapp-tailwindcss/reset`。
+为了兼容旧项目，[`weapp-tailwindcss/reset`](/docs/options/reset) 仍然保留导出；但新的插件实现本体已经迁到 `@weapp-tailwindcss/reset`。
 
 ## 安装
 
@@ -43,6 +43,38 @@ pnpm add -D @weapp-tailwindcss/reset
 | `sanitize/assets.css` | `sanitize.css` 的资源尺寸约束补充 | 与上面配套使用 |
 | `tailwind.css` | 静态版 Tailwind preflight | 想直接拿 Tailwind 风格 reset |
 | `tailwind-compat.css` | 移除按钮背景色重置的 Tailwind preflight | 和组件库一起使用时更稳妥 |
+
+## 作为 Tailwind 插件使用
+
+```ts
+import reset from '@weapp-tailwindcss/reset'
+
+export default {
+  plugins: [
+    reset({
+      preset: 'all',
+      listReset: false,
+    }),
+  ],
+}
+```
+
+插件默认保持兼容旧行为，只注入 `button` 和 `image`。如果你希望批量打开更多内置 reset，可以使用：
+
+- `preset: 'form'`
+- `preset: 'content'`
+- `preset: 'media'`
+- `preset: 'all'`
+
+可额外控制的内置 reset 包括：
+
+- `inputReset`
+- `textareaReset`
+- `listReset`
+- `navigatorReset`
+- `videoReset`
+
+如果你已经在项目里使用 `weapp-tailwindcss/reset`，无需迁移；两者行为保持一致，只是实际实现现在归属到这个包。
 
 ## uni-app 用法
 
