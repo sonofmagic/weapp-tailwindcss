@@ -29,11 +29,11 @@ catalogs:
   egoistTailwindcssIcons:
     '@egoist/tailwindcss-icons': ^1.9.2
   eslint10:
-    eslint: ^10.2.0
+    eslint: ^10.2.1
   eslintPluginReact:
     eslint-plugin-react: ^7.37.5
   eslintPluginReactHooks:
-    eslint-plugin-react-hooks: ^7.0.1
+    eslint-plugin-react-hooks: ^7.1.1
   lucideReact0555:
     lucide-react: ^1.8.0
   lucideVueNext0555:
@@ -41,13 +41,13 @@ catalogs:
   miniApiTypings:
     miniprogram-api-typings: ^5.1.2
   postcss85:
-    postcss: ^8.5.9
+    postcss: ^8.5.10
   postcss85tilde:
-    postcss: ^8.5.9
+    postcss: ^8.5.10
   postcssComment2:
     postcss-comment: ^2.0.0
   postcssRem:
-    postcss-rem-to-responsive-pixel: ^7.0.1
+    postcss-rem-to-responsive-pixel: ^7.0.3
   postcssRpx:
     postcss-rpx-transform: ^1.0.1
   prettier371:
@@ -120,7 +120,7 @@ catalogs:
   vite4:
     vite: ^4.5.14
   vite52:
-    vite: ^5.2.8
+    vite: ^5.4.21
   vite5421:
     vite: ^5.4.21
   vite724:
@@ -144,9 +144,9 @@ catalogs:
   weappChildren:
     weapp-tailwindcss-children: ^0.1.0
   weappIdeCli:
-    weapp-ide-cli: ^5.2.2
+    weapp-ide-cli: ^5.2.4
   weappVite:
-    weapp-vite: ^6.15.5
+    weapp-vite: ^6.15.8
   wrangler:
     wrangler: ^4.83.0
 

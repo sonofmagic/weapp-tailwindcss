@@ -38,6 +38,6 @@
     "typescript": "catalog:typescript59",
     "weapp-tailwindcss": "workspace:*",
     "weapp-vite": "catalog:weappVite",
-    "wevu": "^6.15.5"
+    "wevu": "^6.15.8"
   }
 }

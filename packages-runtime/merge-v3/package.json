@@ -118,6 +118,6 @@
     "tailwind-merge": "catalog:tailwindMerge2"
   },
   "devDependencies": {
-    "fast-check": "^4.6.0"
+    "fast-check": "^4.7.0"
   }
 }
