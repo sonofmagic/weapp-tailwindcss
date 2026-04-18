@@ -1,5 +1,34 @@
 # weapp-tailwindcss
 
+## 4.12.0-next.0
+
+### Minor Changes
+
+- ✨ **优化 JS Handler 结果缓存策略，提升 HMR 和 Bundler 场景下的缓存命中率。** [`790bc9f`](https://github.com/sonofmagic/weapp-tailwindcss/commit/790bc9f56383cf0330b8ad76a8b8c0a3f85ac05c) by @sonofmagic
+  - 将缓存淘汰策略从 FIFO 替换为 LRU（复用已有 `lru-cache` 依赖），缓存上限从 256 提升到 512，确保高频访问的文件不被低频文件驱逐。
+  - 使用内容哈希（MD5）替代原始源码字符串作为缓存键，移除 512 字符的源码长度限制，大文件也能被缓存。
+  - 移除 Bundler 路径（含 `filename`/`moduleGraph`）的缓存排除逻辑，Webpack/Vite/Gulp 调用也能命中结果缓存。
+  - 新增选项指纹（Options Fingerprint）机制，将影响转译结果的 16 个字段序列化为唯一标识符，确保不同配置下的缓存正确隔离。
+  - 简化选项解析缓存从 4 层 WeakMap 嵌套到 2 层结构，保持引用稳定性。
+  - 含 `linked`（跨文件分析）或 `error`（解析失败）的结果不缓存，确保数据一致性。
+
+- ✨ **将 JS 快速预检查机制扩展到所有构建器路径（Webpack v5、Webpack v4、Gulp、核心 API）。** [`ac76d03`](https://github.com/sonofmagic/weapp-tailwindcss/commit/ac76d03ab63ffc4f67ef1a2874a2cf330605575b) by @sonofmagic
+  - 新增共享预检查模块 `src/js/precheck.ts`，通过正则快速判断 JS 文件是否需要转译，跳过不必要的 Babel AST 解析。
+  - 原 Vite 专属的 `shouldSkipViteJsTransform` 改为从共享模块 re-export，保持向后兼容。
+  - Webpack v5 的 `processAssets` 钩子、Webpack v4 的 `emit` 钩子、Gulp 的 `transformJs` 流、核心 `createContext().transformJs()` 均已集成预检查。
+  - 新增环境变量 `WEAPP_TW_DISABLE_JS_PRECHECK`，设置为 `'1'` 时可禁用预检查，强制所有文件走完整转译流程。
+  - 预检查开销极低：211KB 大文件仅需 ~171μs，小文件 <1μs，对需要转译的文件无性能影响。
+
+### Patch Changes
+
+- 🐛 **修复 `uni-app x` 的 `uvue/nvue` 样式目标会输出宿主不支持 CSS 的问题。** [`a835a94`](https://github.com/sonofmagic/weapp-tailwindcss/commit/a835a94ae0780610dcb4da8439cdb8f5a44bb36c) by @sonofmagic
+  - 在 `uvue` 目标下过滤非 class selector，避免继续输出 `space-x-*`、`space-y-*` 这类组合器选择器。
+  - 在 `uvue` 目标下过滤不兼容声明，例如 `display: block`、`display: inline-flex`、`display: grid`、`grid-template-columns`、`gap`、`min-height: 100vh`。
+  - 新增 `uniAppX.uvueUnsupported` 配置，支持 `error | warn | silent`，默认 `warn`。
+  - 当策略为 `warn` 时，跳过不兼容 utility 并输出包含 class 名与来源文件的警告，避免 HBuilderX 因非法 CSS 直接报错。
+- 📦 **Dependencies** [`a835a94`](https://github.com/sonofmagic/weapp-tailwindcss/commit/a835a94ae0780610dcb4da8439cdb8f5a44bb36c)
+  → `@weapp-tailwindcss/postcss@2.2.0-next.0`, `@weapp-tailwindcss/reset@0.1.0-next.0`
+
 ## 4.11.2
 
 ### Patch Changes
