@@ -1,5 +1,29 @@
 # @weapp-tailwindcss/postcss
 
+## 2.2.0-next.0
+
+### Minor Changes
+
+- ✨ **新增 CSS 处理结果 LRU 缓存，对相同内容和配置的 CSS 直接返回缓存结果，跳过 PostCSS 处理流程。** [`e6d7e8c`](https://github.com/sonofmagic/weapp-tailwindcss/commit/e6d7e8c123545d279b434b0c237ea59a3f62a6fe) by @sonofmagic
+  - 在 `createStyleHandler` 内部新增基于 LRU 的结果缓存（最大 256 条目），缓存键由选项指纹 + 内容探测信号 + 内容哈希组成。
+  - 使用 FNV-1a 哈希算法计算内容哈希，开销极低（不依赖 crypto 模块）。
+  - HMR 场景下相同 CSS 文件的重复处理直接命中缓存，端到端处理速度提升 18~55 倍。
+
+- ✨ **新增 PostCSS 流水线按需裁剪能力，通过轻量级 CSS 内容探测自动跳过不必要的插件。** [`9a4a836`](https://github.com/sonofmagic/weapp-tailwindcss/commit/9a4a836aa97c87b67cbb88bcd40b83f0bf1d52d6) by @sonofmagic
+  - 新增 `content-probe` 模块，使用正则/字符串匹配快速探测 CSS 内容特征（现代颜色函数、preset-env 特征等）。
+  - `createStylePipeline` 支持可选的 `FeatureSignal` 参数，根据信号按需跳过 `postcss-preset-env` 和 `color-functional-fallback` 插件。
+  - `StyleProcessorCache` 将特征信号纳入缓存键计算，确保不同内容特征组合使用正确的处理器。
+  - `createStyleHandler` 自动执行内容探测并传递信号，对外 API 签名不变，零配置即可获得优化。
+  - 探测策略采用宽松匹配：宁可误报（多加载插件），不可漏报（遗漏需要的插件），确保处理结果等价。
+
+### Patch Changes
+
+- 🐛 **修复 `uni-app x` 的 `uvue/nvue` 样式目标会输出宿主不支持 CSS 的问题。** [`a835a94`](https://github.com/sonofmagic/weapp-tailwindcss/commit/a835a94ae0780610dcb4da8439cdb8f5a44bb36c) by @sonofmagic
+  - 在 `uvue` 目标下过滤非 class selector，避免继续输出 `space-x-*`、`space-y-*` 这类组合器选择器。
+  - 在 `uvue` 目标下过滤不兼容声明，例如 `display: block`、`display: inline-flex`、`display: grid`、`grid-template-columns`、`gap`、`min-height: 100vh`。
+  - 新增 `uniAppX.uvueUnsupported` 配置，支持 `error | warn | silent`，默认 `warn`。
+  - 当策略为 `warn` 时，跳过不兼容 utility 并输出包含 class 名与来源文件的警告，避免 HBuilderX 因非法 CSS 直接报错。
+
 ## 2.1.7
 
 ### Patch Changes

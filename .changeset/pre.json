@@ -59,7 +59,16 @@
     "weapp-tw": "0.0.1",
     "weapptw": "0.0.0",
     "wetw": "0.1.2",
-    "@weapp-tailwindcss/website": "1.0.17"
+    "@weapp-tailwindcss/website": "1.0.17",
+    "@weapp-tailwindcss/reset": "0.0.0"
   },
-  "changesets": []
+  "changesets": [
+    "blue-spoons-unite",
+    "calm-reset-package",
+    "css-result-cache",
+    "js-handler-cache-optimization",
+    "js-precheck-universal",
+    "postcss-pipeline-pruning",
+    "slim-lite-merge-entries"
+  ]
 }
