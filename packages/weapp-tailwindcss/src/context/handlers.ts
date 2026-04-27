@@ -45,6 +45,7 @@ export function createHandlersFromContext(
     cssRemoveProperty,
     cssRemoveHoverPseudoClass,
     cssPresetEnv,
+    autoprefixer,
     uniAppX,
     px2rpx,
     unitsToPx,
@@ -76,11 +77,13 @@ export function createHandlersFromContext(
     cssRemoveProperty,
     cssRemoveHoverPseudoClass,
     cssPresetEnv,
+    autoprefixer,
     uniAppX: uniAppXEnabled,
     uniAppXUnsupported: resolvedUniAppXOptions.uvueUnsupported,
     cssCalc: cssCalcOptions,
     px2rpx,
     unitsToPx,
+    majorVersion: tailwindcssMajorVersion,
   })
 
   const jsHandler = createJsHandler({

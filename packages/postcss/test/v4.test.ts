@@ -501,4 +501,45 @@ page{--status-bar-height:25px;--top-window-height:0px;--window-top:0px;--window-
     expect(v2jit.css).toContain('border-width: 10rpx')
     expect(v2jit.css).toContain('font-size: 32rpx')
   })
+
+  it('adds webkit background clip for Tailwind CSS v4 bg-clip-text', async () => {
+    const styleHandler = createStyleHandler({
+      isMainChunk: true,
+    })
+    const { css } = await styleHandler('.bg-clip-text { background-clip: text; }', {
+      isMainChunk: true,
+      majorVersion: 4,
+    })
+
+    expect(css).toContain('-webkit-background-clip: text')
+    expect(css).toContain('background-clip: text')
+    expect(css).toMatch(/-webkit-background-clip:\s*text;\s*background-clip:\s*text/)
+  })
+
+  it('does not add webkit background clip when autoprefixer is disabled', async () => {
+    const styleHandler = createStyleHandler({
+      isMainChunk: true,
+    })
+    const { css } = await styleHandler('.bg-clip-text { background-clip: text; }', {
+      autoprefixer: false,
+      isMainChunk: true,
+      majorVersion: 4,
+    })
+
+    expect(css).not.toContain('-webkit-background-clip: text')
+    expect(css).toContain('background-clip: text')
+  })
+
+  it('keeps Tailwind CSS v3 autoprefixer disabled by default', async () => {
+    const styleHandler = createStyleHandler({
+      isMainChunk: true,
+    })
+    const { css } = await styleHandler('.bg-clip-text { background-clip: text; }', {
+      isMainChunk: true,
+      majorVersion: 3,
+    })
+
+    expect(css).not.toContain('-webkit-background-clip: text')
+    expect(css).toContain('background-clip: text')
+  })
 })

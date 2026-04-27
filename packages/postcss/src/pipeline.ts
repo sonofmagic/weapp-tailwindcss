@@ -3,6 +3,7 @@ import type { AcceptedPlugin } from 'postcss'
 import type { FeatureSignal } from './content-probe'
 import type { IStyleHandlerOptions } from './types'
 import postcssPresetEnv from 'postcss-preset-env'
+import { isAutoprefixerPlugin, resolveAutoprefixerPlugin } from './autoprefixer'
 import { createColorFunctionalFallback } from './plugins/colorFunctionalFallback'
 import { createContext } from './plugins/ctx'
 import { getCalcDuplicateCleaner } from './plugins/getCalcDuplicateCleaner'
@@ -92,6 +93,30 @@ function createPreparedNode(
   }
 }
 
+function hasUserAutoprefixerPlugin(rawPlugins: unknown, plugins: AcceptedPlugin[]): boolean {
+  if (plugins.some(plugin => isAutoprefixerPlugin(plugin))) {
+    return true
+  }
+  if (rawPlugins && !Array.isArray(rawPlugins) && typeof rawPlugins === 'object') {
+    const autoprefixerEntry = (rawPlugins as Record<string, unknown>)['autoprefixer']
+    return Boolean(autoprefixerEntry)
+  }
+  return false
+}
+
+function shouldUseDefaultAutoprefixer(options: IStyleHandlerOptions, userPlugins: AcceptedPlugin[]) {
+  if (options.autoprefixer === false) {
+    return false
+  }
+  if (hasUserAutoprefixerPlugin(options.postcssOptions?.plugins, userPlugins)) {
+    return false
+  }
+  if (options.autoprefixer === true || typeof options.autoprefixer === 'object') {
+    return true
+  }
+  return options.majorVersion === 4
+}
+
 // createPreparedNodes 直接按最终顺序生成可实例化节点，避免 definition 二次中转
 function createPreparedNodes(options: IStyleHandlerOptions, signal?: FeatureSignal): PipelinePreparedNode[] {
   const preparedNodes: PipelinePreparedNode[] = []
@@ -138,6 +163,13 @@ function createPreparedNodes(options: IStyleHandlerOptions, signal?: FeatureSign
   const customPropertyCleaner = getCustomPropertyCleaner(options)
   if (customPropertyCleaner) {
     preparedNodes.push(createPreparedNode('normal:custom-property-cleaner', 'normal', () => customPropertyCleaner))
+  }
+
+  if (shouldUseDefaultAutoprefixer(options, userPlugins)) {
+    const plugin = resolveAutoprefixerPlugin(options.autoprefixer)
+    if (plugin) {
+      preparedNodes.push(createPreparedNode('normal:autoprefixer', 'normal', () => plugin))
+    }
   }
 
   preparedNodes.push(createPreparedNode('post:core', 'post', () => postcssWeappTailwindcssPostPlugin(options)))

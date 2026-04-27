@@ -106,6 +106,44 @@ describe('style processing pipeline', () => {
     ])
   })
 
+  it('adds autoprefixer by default for Tailwind CSS v4', () => {
+    const options = createOptions({
+      majorVersion: 4,
+      px2rpx: false,
+      rem2rpx: false,
+      cssCalc: false,
+    })
+
+    const pipeline = createStylePipeline(options)
+    const ids = pipeline.nodes.map(node => node.id)
+
+    expect(ids).toEqual([
+      'pre:core',
+      'normal:preset-env',
+      'normal:color-functional-fallback',
+      'normal:autoprefixer',
+      'post:core',
+    ])
+  })
+
+  it('skips default autoprefixer when user configured autoprefixer', () => {
+    const options = createOptions({
+      majorVersion: 4,
+      postcssOptions: {
+        plugins: [{ postcssPlugin: 'autoprefixer' }],
+      },
+      px2rpx: false,
+      rem2rpx: false,
+      cssCalc: false,
+    })
+
+    const pipeline = createStylePipeline(options)
+    const ids = pipeline.nodes.map(node => node.id)
+
+    expect(ids).toContain('pre:user-0')
+    expect(ids).not.toContain('normal:autoprefixer')
+  })
+
   it('exposes cached pipeline through the style handler API', () => {
     const handler = createStyleHandler({
       cssPresetEnv: {

@@ -5,6 +5,7 @@ import type { Result } from 'postcss-load-config'
 import type { PxTransformOptions as Px2rpxOptions } from 'postcss-pxtrans'
 import type { UserDefinedOptions as Rem2rpxOptions } from 'postcss-rem-to-responsive-pixel'
 import type { UserDefinedOptions as UnitsToPxOptions } from 'postcss-units-to-px'
+import type { WeappAutoprefixerOptions } from './autoprefixer'
 import type { StyleProcessingPipeline } from './pipeline'
 import type { IContext as PostcssContext } from './plugins/ctx'
 import type { InjectPreflight } from './preflight'
@@ -60,6 +61,7 @@ export type IStyleHandlerOptions = {
   cssRemoveProperty?: boolean
   cssRemoveHoverPseudoClass?: boolean
   cssPresetEnv?: PresetEnvOptions
+  autoprefixer?: WeappAutoprefixerOptions
   cssCalc?: boolean | CssCalcOptions | (string | RegExp)[]
   atRules?: {
     property?: boolean
@@ -79,6 +81,7 @@ export interface UserDefinedPostcssOptions {
   cssPreflightRange?: 'all'
   cssChildCombinatorReplaceValue?: string | string[]
   cssPresetEnv?: PresetEnvOptions
+  autoprefixer?: WeappAutoprefixerOptions
   injectAdditionalCssVarScope?: boolean
   cssSelectorReplacement?: {
     root?: string | string[] | false
@@ -101,6 +104,7 @@ export type {
   Px2rpxOptions,
   Rem2rpxOptions,
   UnitsToPxOptions,
+  WeappAutoprefixerOptions,
 }
 
 export interface StyleHandler {

@@ -44,6 +44,7 @@ describe('options resolver', () => {
       cssChildCombinatorReplaceValue: 'view',
       injectAdditionalCssVarScope: true,
       cssPreflight: false,
+      autoprefixer: false,
     })
     const second = resolver.resolve({
       rem2rpx: true,
@@ -53,6 +54,7 @@ describe('options resolver', () => {
       cssChildCombinatorReplaceValue: 'view',
       injectAdditionalCssVarScope: true,
       cssPreflight: false,
+      autoprefixer: false,
     })
 
     expect(first).toBe(second)
@@ -64,6 +66,7 @@ describe('options resolver', () => {
       cssChildCombinatorReplaceValue: 'view',
       injectAdditionalCssVarScope: true,
       cssPreflight: false,
+      autoprefixer: false,
     })
   })
 

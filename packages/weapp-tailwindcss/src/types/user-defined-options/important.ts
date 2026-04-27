@@ -6,6 +6,7 @@ import type {
   Rem2rpxOptions,
   UniAppXUnsupportedMode,
   UnitsToPxOptions,
+  WeappAutoprefixerOptions,
 } from '@weapp-tailwindcss/postcss/types'
 import type { TailwindCssPatchOptions } from 'tailwindcss-patch'
 import type { DisabledOptions } from '../disabled-options'
@@ -287,6 +288,24 @@ export interface UserDefinedOptionsImportantPart {
    * @see https://github.com/csstools/postcss-plugins/tree/main/plugin-packs/postcss-preset-env#readme
    */
   cssPresetEnv?: PresetEnvOptions
+
+  /**
+   * 控制内置 autoprefixer 后处理。
+   *
+   * @since ^4.11.3
+   * @group 0.重要配置
+   * @remarks
+   * Tailwind CSS v4 下默认启用，用于为小程序 WebView 补齐 `-webkit-` 等兼容前缀，例如让 `bg-clip-text` 输出 `-webkit-background-clip: text`。
+   * Tailwind CSS v3 默认保持关闭。传入 `false` 可显式关闭，传入 `true` 或对象可手动启用或自定义 autoprefixer 参数。
+   * @default Tailwind CSS v4 为 `true`，其他版本为 `false`
+   * @example
+   * ```ts
+   * weappTailwindcss({
+   *   autoprefixer: false,
+   * })
+   * ```
+   */
+  autoprefixer?: WeappAutoprefixerOptions
 
   /**
    * 为不同版本的 Tailwind 配置行为。

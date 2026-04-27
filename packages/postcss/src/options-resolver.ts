@@ -19,6 +19,7 @@ function getSimpleOverrideCacheKey(options: Partial<IStyleHandlerOptions>) {
   let cssCalc = SIMPLE_OVERRIDE_UNSET
   let cssChildCombinatorReplaceValue = SIMPLE_OVERRIDE_UNSET
   let cssPreflight = SIMPLE_OVERRIDE_UNSET
+  let autoprefixer = SIMPLE_OVERRIDE_UNSET
 
   for (const key of Object.keys(options) as Array<keyof IStyleHandlerOptions>) {
     const value = options[key]
@@ -101,6 +102,12 @@ function getSimpleOverrideCacheKey(options: Partial<IStyleHandlerOptions>) {
         }
         cssPreflight = '0'
         break
+      case 'autoprefixer':
+        if (typeof value !== 'boolean') {
+          return undefined
+        }
+        autoprefixer = value ? '1' : '0'
+        break
       default:
         return undefined
     }
@@ -121,6 +128,7 @@ function getSimpleOverrideCacheKey(options: Partial<IStyleHandlerOptions>) {
     cssCalc,
     cssChildCombinatorReplaceValue,
     cssPreflight,
+    autoprefixer,
   ].join(':')
 }
 

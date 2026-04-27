@@ -3352,7 +3352,7 @@ importers:
         version: link:../runtime
       tailwind-variants:
         specifier: ^3.2.2
-        version: 3.2.2(tailwind-merge@3.5.0)(tailwindcss@3.4.19(tsx@4.21.0)(yaml@2.8.3))
+        version: 3.2.2(tailwind-merge@3.5.0)(tailwindcss@4.2.4)
 
   packages-runtime/variants-v3:
     dependencies:
@@ -3497,6 +3497,9 @@ importers:
       '@weapp-tailwindcss/shared':
         specifier: workspace:*
         version: link:../shared
+      autoprefixer:
+        specifier: catalog:autoprefixer10
+        version: 10.5.0(postcss@8.5.12)
       lru-cache:
         specifier: 10.4.3
         version: 10.4.3
@@ -41366,8 +41369,8 @@ snapshots:
 
   '@typescript-eslint/project-service@8.56.1(typescript@5.9.3)':
     dependencies:
-      '@typescript-eslint/tsconfig-utils': 8.56.1(typescript@5.9.3)
-      '@typescript-eslint/types': 8.56.1
+      '@typescript-eslint/tsconfig-utils': 8.59.0(typescript@5.9.3)
+      '@typescript-eslint/types': 8.59.0
       debug: 4.4.3
       typescript: 5.9.3
     transitivePeerDependencies:

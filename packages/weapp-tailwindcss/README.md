@@ -74,6 +74,18 @@
 
 ## [配置项参考](https://tw.icebreaker.top/docs/api/interfaces/UserDefinedOptions)
 
+### Tailwind CSS v4 自动前缀
+
+在 Tailwind CSS v4 场景下，`weapp-tailwindcss` 会默认对生成后的小程序 CSS 执行内置 `autoprefixer` 后处理，用于补齐小程序 WebView 需要的兼容前缀。例如 `bg-clip-text` 会输出 `-webkit-background-clip: text`，从而支持渐变文字。
+
+通常不再需要在业务项目的 `postcss.config.js` 中手动配置 `autoprefixer`。如果项目已经显式配置了 `autoprefixer`，内置后处理会避免重复追加。需要关闭时可配置：
+
+```ts
+weappTailwindcss({
+  autoprefixer: false,
+})
+```
+
 ### uni-app x uvue 兼容提示
 
 从当前版本开始，`uni-app x` 的 `uvue/nvue` 样式目标会额外过滤宿主不支持的 CSS selector 与 utility 声明，避免把非法 CSS 直接注入到 `App.uvue` 或页面样式中。

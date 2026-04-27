@@ -37,6 +37,7 @@ function createContext(px2rpx?: Px2rpxOption, unitsToPx?: UnitsToPxOption): Inte
     cssRemoveProperty: true,
     cssRemoveHoverPseudoClass: false,
     cssPresetEnv: { stage: 0 },
+    autoprefixer: false,
     uniAppX: true,
     px2rpx,
     unitsToPx,
@@ -81,6 +82,7 @@ describe('createHandlersFromContext', () => {
       px2rpx: ctx.px2rpx,
       unitsToPx: ctx.unitsToPx,
       cssPresetEnv: ctx.cssPresetEnv,
+      autoprefixer: false,
       uniAppXUnsupported: 'warn',
     }))
 
@@ -145,6 +147,25 @@ describe('createHandlersFromContext', () => {
 
     expect(styleHandlerFactory).toHaveBeenCalledWith(expect.objectContaining({
       unitsToPx,
+    }))
+  })
+
+  it('forwards Tailwind major version to the style handler', async () => {
+    const { createHandlersFromContext } = await import('@/context/handlers')
+
+    styleHandlerFactory.mockReturnValueOnce(vi.fn())
+    jsHandlerFactory.mockReturnValueOnce(vi.fn())
+    templateHandlerFactory.mockReturnValueOnce(vi.fn())
+
+    createHandlersFromContext(
+      createContext(),
+      customAttributesEntities,
+      true,
+      4,
+    )
+
+    expect(styleHandlerFactory).toHaveBeenCalledWith(expect.objectContaining({
+      majorVersion: 4,
     }))
   })
 })
