@@ -361,14 +361,14 @@ importers:
         specifier: ^2.0.0
         version: 2.0.0(conventional-changelog-conventionalcommits@9.3.1)
       '@icebreakers/eslint-config':
-        specifier: ^4.0.8
-        version: 4.0.8(@typescript-eslint/rule-tester@8.56.1(eslint@10.2.1(jiti@2.6.1))(typescript@5.9.3))(@typescript-eslint/typescript-estree@8.59.0(typescript@5.9.3))(@vue/compiler-sfc@3.5.33)(eslint-plugin-pnpm@1.6.0(eslint@10.2.1(jiti@2.6.1)))(eslint@10.2.1(jiti@2.6.1))(globals@17.5.0)(postcss@8.5.12)(stylelint-order@7.0.0(stylelint@17.9.1(typescript@5.9.3)))(stylelint@17.9.1(typescript@5.9.3))(tailwindcss@3.4.19(tsx@4.21.0)(yaml@2.8.3))(typescript@5.9.3)(vitest@4.1.5)
+        specifier: ^4.0.9
+        version: 4.0.9(@typescript-eslint/rule-tester@8.56.1(eslint@10.2.1(jiti@2.6.1))(typescript@5.9.3))(@typescript-eslint/typescript-estree@8.59.0(typescript@5.9.3))(@vue/compiler-sfc@3.5.33)(eslint-plugin-pnpm@1.6.0(eslint@10.2.1(jiti@2.6.1)))(eslint@10.2.1(jiti@2.6.1))(globals@17.5.0)(postcss@8.5.12)(stylelint-order@7.0.0(stylelint@17.9.1(typescript@5.9.3)))(stylelint@17.9.1(typescript@5.9.3))(tailwindcss@3.4.19(tsx@4.21.0)(yaml@2.8.3))(typescript@5.9.3)(vitest@4.1.5)
       '@icebreakers/monorepo':
         specifier: ^3.2.18
         version: 3.2.18(@types/node@24.12.2)(magicast@0.5.2)(typanion@3.14.0)
       '@icebreakers/stylelint-config':
-        specifier: ^3.0.5
-        version: 3.0.5(postcss@8.5.12)(stylelint-order@7.0.0(stylelint@17.9.1(typescript@5.9.3)))(stylelint@17.9.1(typescript@5.9.3))(tailwindcss@3.4.19(tsx@4.21.0)(yaml@2.8.3))
+        specifier: ^3.0.6
+        version: 3.0.6(postcss@8.5.12)(stylelint-order@7.0.0(stylelint@17.9.1(typescript@5.9.3)))(stylelint@17.9.1(typescript@5.9.3))(tailwindcss@3.4.19(tsx@4.21.0)(yaml@2.8.3))
       '@swc/core':
         specifier: ^1.15.32
         version: 1.15.32(@swc/helpers@0.5.19)
@@ -1209,7 +1209,7 @@ importers:
         version: link:../../packages/weapp-tailwindcss
       weapp-vite:
         specifier: catalog:weappVite
-        version: 6.15.17(@types/node@25.6.0)(esbuild@0.28.0)(jiti@2.6.1)(less@4.6.4)(miniprogram-api-typings@5.1.3)(oxc-resolver@11.16.0(@emnapi/core@1.10.0)(@emnapi/runtime@1.10.0))(rollup@4.60.2)(sass-embedded@1.99.0)(sass@1.99.0)(stylus@0.57.0)(terser@5.46.2)(tsx@4.21.0)(yaml@2.8.3)
+        version: 6.15.17(@types/node@25.6.0)(esbuild@0.28.0)(jiti@2.6.1)(less@4.6.4)(miniprogram-api-typings@5.1.3)(oxc-resolver@11.16.0(@emnapi/core@1.9.2)(@emnapi/runtime@1.9.2))(rollup@4.60.2)(sass-embedded@1.99.0)(sass@1.99.0)(stylus@0.57.0)(terser@5.46.2)(tsx@4.21.0)(yaml@2.8.3)
 
   apps/vite-native-skyline:
     devDependencies:
@@ -1239,7 +1239,7 @@ importers:
         version: link:../../packages/weapp-tailwindcss
       weapp-vite:
         specifier: catalog:weappVite
-        version: 6.15.17(@types/node@25.6.0)(esbuild@0.28.0)(jiti@2.6.1)(less@4.6.4)(miniprogram-api-typings@5.1.3)(oxc-resolver@11.16.0(@emnapi/core@1.9.2)(@emnapi/runtime@1.9.2))(rollup@4.60.2)(sass-embedded@1.99.0)(sass@1.99.0)(stylus@0.57.0)(terser@5.46.2)(tsx@4.21.0)(yaml@2.8.3)
+        version: 6.15.17(@types/node@25.6.0)(esbuild@0.28.0)(jiti@2.6.1)(less@4.6.4)(miniprogram-api-typings@5.1.3)(oxc-resolver@11.16.0(@emnapi/core@1.10.0)(@emnapi/runtime@1.10.0))(rollup@4.60.2)(sass-embedded@1.99.0)(sass@1.99.0)(stylus@0.57.0)(terser@5.46.2)(tsx@4.21.0)(yaml@2.8.3)
 
   apps/vite-native-ts:
     devDependencies:
@@ -7620,8 +7620,8 @@ packages:
     resolution: {integrity: sha512-jVJF46TwU21hlaxBFcZlzT5fAedl4tUajGITTWBMt13ai2DtqTVsrWjkXk1VVV2JZ27eZ6VTKWaMmNc6TZZJJQ==}
     hasBin: true
 
-  '@icebreakers/eslint-config@4.0.8':
-    resolution: {integrity: sha512-gqGoryTvgsnXxfxOEf+3jEfTAyl4KWGAC7qAFhX60LjPrseJrgcUn2AntdxjGC0w+SNhCks6s1toeD/fHcDCwA==}
+  '@icebreakers/eslint-config@4.0.9':
+    resolution: {integrity: sha512-T3aLz23lN7rYV1yeSp+VkHcdWQOat+xXWFkwYvdxcY6bXC1cuWuE0UgP3jmGg5ha5Hu/S+2EwxTpNHkeL9Bxgw==}
     engines: {node: ^20.19.0 || >=22.12.0}
     peerDependencies:
       eslint-plugin-pnpm: ^1.4.3
@@ -7638,8 +7638,8 @@ packages:
     engines: {node: '>=23.5.0 || ^22.13.0 || ^21.7.0 || ^20.12.0'}
     hasBin: true
 
-  '@icebreakers/stylelint-config@3.0.5':
-    resolution: {integrity: sha512-rrs+vhb070YFuNKrx7dfcUYY5mZHhjTStSTPs7DRkEFNJK1NAnpZC4eSWheH8DcLeKgYHVIAH56sM3IyaMSwCA==}
+  '@icebreakers/stylelint-config@3.0.6':
+    resolution: {integrity: sha512-x2uIzg8mEKW3BGucic7aMiWqfZhR/FEhrKq6Dz5OAV+qPqpAsS1jCCqYi4OvUaP1PwmXPWzR6cp7AIK5fhGWWw==}
     engines: {node: ^20.19.0 || >=22.12.0}
     hasBin: true
 
@@ -17256,8 +17256,8 @@ packages:
     peerDependencies:
       eslint: '*'
 
-  eslint-plugin-better-stylelint@1.0.2:
-    resolution: {integrity: sha512-grjLuEB9JI4CUC/qu5PLQYpGip7RustrvFUOfZGWW3esl0Zo+ECGT+kZGH/yxZTcWQfscoxIahBru40uyC5Wlw==}
+  eslint-plugin-better-stylelint@1.0.3:
+    resolution: {integrity: sha512-m60m0JjZegCVaJV4Ro44oY+b20eEe7ntws4gfVuvq7JBbn5imH4nQPzWsocjj7URifv+bP3JGvXcXDlQrHb07w==}
     engines: {node: ^20.19.0 || >=22.12.0}
     peerDependencies:
       eslint: ^9.0.0
@@ -23756,8 +23756,8 @@ packages:
     peerDependencies:
       postcss: ^8.4.32
 
-  postcss-tailwindcss@2.0.2:
-    resolution: {integrity: sha512-yJ+1XENO2pJf4SAIwdhtOAR8a6mdc2+XLBO0nT//WCuszRsKnO5dRUTp14P9GMz0eL8t6EZB7Oks4sXPZnGPOQ==}
+  postcss-tailwindcss@2.0.3:
+    resolution: {integrity: sha512-h897iGSjcDAndWdRFZD24lmN0Fj/zsf8xJKxO382Y55WvtWzl/Pf5UVCwnmaTv5GC3+FarDFii6irNSSEew4+w==}
     engines: {node: ^20.19.0 || >=22.12.0}
 
   postcss-unique-selectors@5.1.1:
@@ -25984,8 +25984,8 @@ packages:
     peerDependencies:
       stylelint: ^16.18.0
 
-  stylelint-plugin-tailwindcss@2.0.2:
-    resolution: {integrity: sha512-DyW11G3EYVbMKVEwwObca4t7GrknH3Bz5V223PETx1X8qnhoZDCmD8T26nYMsZZC3Gi/DPzjoLiBAImWdfrz9w==}
+  stylelint-plugin-tailwindcss@2.0.3:
+    resolution: {integrity: sha512-tqbr8i7+4fsKilMO9rZivS6l2/yjmZekc1BPGaP7hZ53v3lc7/c8YCRJonEhAjzF3CPCO8BBx9VkXBMm5OPRqQ==}
     engines: {node: ^20.19.0 || >=22.12.0}
     peerDependencies:
       stylelint: ^17.4.0
@@ -33956,13 +33956,13 @@ snapshots:
       - encoding
       - supports-color
 
-  '@icebreakers/eslint-config@4.0.8(@typescript-eslint/rule-tester@8.56.1(eslint@10.2.1(jiti@2.6.1))(typescript@5.9.3))(@typescript-eslint/typescript-estree@8.59.0(typescript@5.9.3))(@vue/compiler-sfc@3.5.33)(eslint-plugin-pnpm@1.6.0(eslint@10.2.1(jiti@2.6.1)))(eslint@10.2.1(jiti@2.6.1))(globals@17.5.0)(postcss@8.5.12)(stylelint-order@7.0.0(stylelint@17.9.1(typescript@5.9.3)))(stylelint@17.9.1(typescript@5.9.3))(tailwindcss@3.4.19(tsx@4.21.0)(yaml@2.8.3))(typescript@5.9.3)(vitest@4.1.5)':
+  '@icebreakers/eslint-config@4.0.9(@typescript-eslint/rule-tester@8.56.1(eslint@10.2.1(jiti@2.6.1))(typescript@5.9.3))(@typescript-eslint/typescript-estree@8.59.0(typescript@5.9.3))(@vue/compiler-sfc@3.5.33)(eslint-plugin-pnpm@1.6.0(eslint@10.2.1(jiti@2.6.1)))(eslint@10.2.1(jiti@2.6.1))(globals@17.5.0)(postcss@8.5.12)(stylelint-order@7.0.0(stylelint@17.9.1(typescript@5.9.3)))(stylelint@17.9.1(typescript@5.9.3))(tailwindcss@3.4.19(tsx@4.21.0)(yaml@2.8.3))(typescript@5.9.3)(vitest@4.1.5)':
     dependencies:
       '@antfu/eslint-config': 8.2.0(@eslint-react/eslint-plugin@3.0.0(eslint@10.2.1(jiti@2.6.1))(typescript@5.9.3))(@next/eslint-plugin-next@16.2.4)(@typescript-eslint/rule-tester@8.56.1(eslint@10.2.1(jiti@2.6.1))(typescript@5.9.3))(@typescript-eslint/typescript-estree@8.59.0(typescript@5.9.3))(@typescript-eslint/utils@8.59.0(eslint@10.2.1(jiti@2.6.1))(typescript@5.9.3))(@unocss/eslint-plugin@66.6.8(eslint@10.2.1(jiti@2.6.1))(typescript@5.9.3))(@vue/compiler-sfc@3.5.33)(eslint-plugin-format@2.0.1(eslint@10.2.1(jiti@2.6.1)))(eslint-plugin-jsx-a11y@6.10.2(eslint@10.2.1(jiti@2.6.1)))(eslint-plugin-react-refresh@0.5.2(eslint@10.2.1(jiti@2.6.1)))(eslint-plugin-vuejs-accessibility@2.5.0(eslint@10.2.1(jiti@2.6.1))(globals@17.5.0))(eslint@10.2.1(jiti@2.6.1))(typescript@5.9.3)(vitest@4.1.5)
       '@eslint-react/eslint-plugin': 3.0.0(eslint@10.2.1(jiti@2.6.1))(typescript@5.9.3)
-      '@icebreakers/stylelint-config': 3.0.5(postcss@8.5.12)(stylelint-order@7.0.0(stylelint@17.9.1(typescript@5.9.3)))(stylelint@17.9.1(typescript@5.9.3))(tailwindcss@3.4.19(tsx@4.21.0)(yaml@2.8.3))
+      '@icebreakers/stylelint-config': 3.0.6(postcss@8.5.12)(stylelint-order@7.0.0(stylelint@17.9.1(typescript@5.9.3)))(stylelint@17.9.1(typescript@5.9.3))(tailwindcss@3.4.19(tsx@4.21.0)(yaml@2.8.3))
       '@typescript-eslint/utils': 8.59.0(eslint@10.2.1(jiti@2.6.1))(typescript@5.9.3)
-      eslint-plugin-better-stylelint: 1.0.2(eslint@10.2.1(jiti@2.6.1))(stylelint@17.9.1(typescript@5.9.3))
+      eslint-plugin-better-stylelint: 1.0.3(eslint@10.2.1(jiti@2.6.1))(stylelint@17.9.1(typescript@5.9.3))
       eslint-plugin-better-tailwindcss: 4.4.1(eslint@10.2.1(jiti@2.6.1))(tailwindcss@3.4.19(tsx@4.21.0)(yaml@2.8.3))(typescript@5.9.3)
       eslint-plugin-format: 2.0.1(eslint@10.2.1(jiti@2.6.1))
       eslint-plugin-jsx-a11y: 6.10.2(eslint@10.2.1(jiti@2.6.1))
@@ -34043,7 +34043,7 @@ snapshots:
       - supports-color
       - typanion
 
-  '@icebreakers/stylelint-config@3.0.5(postcss@8.5.12)(stylelint-order@7.0.0(stylelint@17.9.1(typescript@5.9.3)))(stylelint@17.9.1(typescript@5.9.3))(tailwindcss@3.4.19(tsx@4.21.0)(yaml@2.8.3))':
+  '@icebreakers/stylelint-config@3.0.6(postcss@8.5.12)(stylelint-order@7.0.0(stylelint@17.9.1(typescript@5.9.3)))(stylelint@17.9.1(typescript@5.9.3))(tailwindcss@3.4.19(tsx@4.21.0)(yaml@2.8.3))':
     dependencies:
       comment-json: 5.0.0
       postcss-html: 1.8.1
@@ -34051,7 +34051,7 @@ snapshots:
       stylelint-config-recommended-scss: 17.0.1(postcss@8.5.12)(stylelint@17.9.1(typescript@5.9.3))
       stylelint-config-recommended-vue: 1.6.1(postcss-html@1.8.1)(stylelint@17.9.1(typescript@5.9.3))
       stylelint-config-standard-scss: 17.0.0(postcss@8.5.12)(stylelint@17.9.1(typescript@5.9.3))
-      stylelint-plugin-tailwindcss: 2.0.2(stylelint@17.9.1(typescript@5.9.3))(tailwindcss@3.4.19(tsx@4.21.0)(yaml@2.8.3))
+      stylelint-plugin-tailwindcss: 2.0.3(stylelint@17.9.1(typescript@5.9.3))(tailwindcss@3.4.19(tsx@4.21.0)(yaml@2.8.3))
     transitivePeerDependencies:
       - postcss
       - stylelint
@@ -47213,7 +47213,7 @@ snapshots:
     dependencies:
       eslint: 10.2.1(jiti@2.6.1)
 
-  eslint-plugin-better-stylelint@1.0.2(eslint@10.2.1(jiti@2.6.1))(stylelint@17.9.1(typescript@5.9.3)):
+  eslint-plugin-better-stylelint@1.0.3(eslint@10.2.1(jiti@2.6.1))(stylelint@17.9.1(typescript@5.9.3)):
     dependencies:
       eslint: 10.2.1(jiti@2.6.1)
     optionalDependencies:
@@ -55732,9 +55732,9 @@ snapshots:
       postcss-value-parser: 4.2.0
       svgo: 4.0.0
 
-  postcss-tailwindcss@2.0.2:
+  postcss-tailwindcss@2.0.3:
     dependencies:
-      enhanced-resolve: 5.20.1
+      enhanced-resolve: 5.21.0
       get-tsconfig: 4.14.0
       postcss: 8.5.12
       postcss-selector-parser: 7.1.1
@@ -58395,9 +58395,9 @@ snapshots:
       postcss-sorting: 9.1.0(postcss@8.5.12)
       stylelint: 17.9.1(typescript@5.9.3)
 
-  stylelint-plugin-tailwindcss@2.0.2(stylelint@17.9.1(typescript@5.9.3))(tailwindcss@3.4.19(tsx@4.21.0)(yaml@2.8.3)):
+  stylelint-plugin-tailwindcss@2.0.3(stylelint@17.9.1(typescript@5.9.3))(tailwindcss@3.4.19(tsx@4.21.0)(yaml@2.8.3)):
     dependencies:
-      postcss-tailwindcss: 2.0.2
+      postcss-tailwindcss: 2.0.3
       stylelint: 17.9.1(typescript@5.9.3)
     optionalDependencies:
       tailwindcss: 3.4.19(tsx@4.21.0)(yaml@2.8.3)
