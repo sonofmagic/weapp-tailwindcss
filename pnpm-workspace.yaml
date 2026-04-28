@@ -114,9 +114,9 @@ catalogs:
   typescript59tilde:
     typescript: ~5.9.3
   typescriptEslint:
-    '@typescript-eslint/eslint-plugin': ^8.59.0
-    '@typescript-eslint/parser': ^8.59.0
-    typescript-eslint: ^8.59.0
+    '@typescript-eslint/eslint-plugin': ^8.59.1
+    '@typescript-eslint/parser': ^8.59.1
+    typescript-eslint: ^8.59.1
   vite4:
     vite: ^4.5.14
   vite52:
@@ -146,9 +146,9 @@ catalogs:
   weappIdeCli:
     weapp-ide-cli: ^5.2.6
   weappVite:
-    weapp-vite: ^6.15.17
+    weapp-vite: ^6.15.18
   wrangler:
-    wrangler: ^4.85.0
+    wrangler: ^4.86.0
 
 onlyBuiltDependencies:
   - '@tailwindcss/oxide'
