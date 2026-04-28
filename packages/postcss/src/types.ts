@@ -4,7 +4,7 @@ import type { Result as PostcssResult } from 'postcss'
 import type { Result } from 'postcss-load-config'
 import type { PxTransformOptions as Px2rpxOptions } from 'postcss-pxtrans'
 import type { UserDefinedOptions as Rem2rpxOptions } from 'postcss-rem-to-responsive-pixel'
-import type { UserDefinedOptions as UnitConverterOptions, UnitMapPresetOptions } from 'postcss-rule-unit-converter'
+import type { GlobalUnitTransform, UserDefinedOptions as UnitConverterOptions, UnitMap } from 'postcss-rule-unit-converter'
 import type { WeappAutoprefixerOptions } from './autoprefixer'
 import type { StyleProcessingPipeline } from './pipeline'
 import type { IContext as PostcssContext } from './plugins/ctx'
@@ -55,18 +55,21 @@ interface CssCalcOptions extends PostCssCalcOptions {
   includeCustomProperties?: (string | RegExp)[]
 }
 
-export interface UnitsToPxOptions
-  extends UnitMapPresetOptions,
-  Pick<
-    UnitConverterOptions,
-    | 'disabled'
-    | 'exclude'
-    | 'mediaQuery'
-    | 'propList'
-    | 'replace'
-    | 'selectorBlackList'
-    | 'unitPrecision'
-  > {}
+export interface UnitsToPxOptions extends Pick<
+  UnitConverterOptions,
+  | 'disabled'
+  | 'exclude'
+  | 'mediaQuery'
+  | 'propList'
+  | 'replace'
+  | 'selectorBlackList'
+  | 'unitPrecision'
+> {
+  minValue?: number
+  to?: string
+  unitMap?: UnitMap
+  transform?: GlobalUnitTransform | false
+}
 
 export type IStyleHandlerOptions = {
   ctx?: PostcssContext
