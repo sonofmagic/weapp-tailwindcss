@@ -75,8 +75,8 @@
     "postcss-preset-env": "^10.6.1",
     "postcss-pxtrans": "^1.0.4",
     "postcss-rem-to-responsive-pixel": "catalog:postcssRem",
+    "postcss-rule-unit-converter": "^0.2.2",
     "postcss-selector-parser": "~7.1.1",
-    "postcss-units-to-px": "^0.2.2",
     "postcss-value-parser": "^4.2.0"
   },
   "devDependencies": {

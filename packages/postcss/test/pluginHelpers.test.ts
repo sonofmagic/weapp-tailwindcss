@@ -3,19 +3,26 @@ import type { IStyleHandlerOptions } from '@/types'
 import postcss from 'postcss'
 import { afterEach, beforeAll, describe, expect, it, vi } from 'vitest'
 
-const { pxMock, remMock, calcMock, unitsMock } = vi.hoisted(() => {
+const { pxMock, remMock, calcMock, unitConverterMock, unitsToPxPresetMock } = vi.hoisted(() => {
   return {
     pxMock: vi.fn(),
     remMock: vi.fn(),
     calcMock: vi.fn(),
-    unitsMock: vi.fn(),
+    unitConverterMock: vi.fn(),
+    unitsToPxPresetMock: vi.fn(),
   }
 })
 
 vi.mock('postcss-pxtrans', () => ({ __esModule: true, default: pxMock }))
 vi.mock('postcss-rem-to-responsive-pixel', () => ({ __esModule: true, default: remMock }))
 vi.mock('@weapp-tailwindcss/postcss-calc', () => ({ __esModule: true, default: calcMock }))
-vi.mock('postcss-units-to-px', () => ({ __esModule: true, default: unitsMock }))
+vi.mock('postcss-rule-unit-converter', () => ({
+  __esModule: true,
+  default: unitConverterMock,
+  presets: {
+    unitsToPx: unitsToPxPresetMock,
+  },
+}))
 
 type PxModule = typeof import('@/plugins/getPxTransformPlugin')
 type RemModule = typeof import('@/plugins/getRemTransformPlugin')
@@ -66,7 +73,8 @@ afterEach(() => {
   pxMock.mockReset()
   remMock.mockReset()
   calcMock.mockReset()
-  unitsMock.mockReset()
+  unitConverterMock.mockReset()
+  unitsToPxPresetMock.mockReset()
 })
 
 describe('getPxTransformPlugin', () => {
@@ -170,11 +178,15 @@ describe('getUnitsToPxPlugin', () => {
   it('returns null when unitsToPx disabled', () => {
     const plugin = getUnitsToPxPlugin(createOptions({ unitsToPx: false }))
     expect(plugin).toBeNull()
-    expect(unitsMock).not.toHaveBeenCalled()
+    expect(unitConverterMock).not.toHaveBeenCalled()
   })
 
-  it('forwards options when enabled', () => {
-    unitsMock.mockImplementation(options => ({ postcssPlugin: 'mock-units', options }))
+  it('maps options to rule-unit-converter when enabled', () => {
+    unitConverterMock.mockImplementation(options => ({ postcssPlugin: 'mock-units', options }))
+    unitsToPxPresetMock.mockReturnValue([
+      { from: 'rem', factor: 10, to: 'px' },
+      { from: 'em', factor: 16, to: 'px' },
+    ])
 
     const plugin = getUnitsToPxPlugin(createOptions({
       unitsToPx: {
@@ -185,23 +197,39 @@ describe('getUnitsToPxPlugin', () => {
       },
     })) as Plugin | null
 
-    expect(unitsMock).toHaveBeenCalledTimes(1)
-    expect(unitsMock).toHaveBeenCalledWith(expect.objectContaining({
-      unitPrecision: 2,
+    expect(unitConverterMock).toHaveBeenCalledTimes(1)
+    expect(unitsToPxPresetMock).toHaveBeenCalledWith({
       unitMap: {
         rem: 10,
       },
+    })
+    expect(unitConverterMock).toHaveBeenCalledWith(expect.objectContaining({
+      unitPrecision: 2,
+      rules: expect.arrayContaining([
+        expect.objectContaining({ from: 'rem', factor: 10, to: 'px' }),
+        expect.objectContaining({ from: 'em', factor: 16, to: 'px' }),
+      ]),
     }))
     expect(plugin?.postcssPlugin).toBe('mock-units')
   })
 
   it('uses defaults when set to true', () => {
-    unitsMock.mockImplementation(options => ({ postcssPlugin: 'mock-units', options }))
+    unitConverterMock.mockImplementation(options => ({ postcssPlugin: 'mock-units', options }))
+    unitsToPxPresetMock.mockReturnValue([
+      { from: 'rem', factor: 16, to: 'px' },
+      { from: 'rpx', factor: 0.5, to: 'px' },
+    ])
 
     const plugin = getUnitsToPxPlugin(createOptions({ unitsToPx: true })) as Plugin | null
 
-    expect(unitsMock).toHaveBeenCalledTimes(1)
-    expect(unitsMock).toHaveBeenCalledWith(undefined)
+    expect(unitConverterMock).toHaveBeenCalledTimes(1)
+    expect(unitsToPxPresetMock).toHaveBeenCalledWith({})
+    expect(unitConverterMock).toHaveBeenCalledWith(expect.objectContaining({
+      rules: expect.arrayContaining([
+        expect.objectContaining({ from: 'rem', factor: 16, to: 'px' }),
+        expect.objectContaining({ from: 'rpx', factor: 0.5, to: 'px' }),
+      ]),
+    }))
     expect(plugin?.postcssPlugin).toBe('mock-units')
   })
 })

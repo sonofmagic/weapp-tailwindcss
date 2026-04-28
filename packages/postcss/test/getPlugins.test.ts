@@ -37,7 +37,7 @@ describe('getPlugins', () => {
     expect(pluginNames(plugins)).toEqual(expect.arrayContaining([
       'postcss-weapp-tailwindcss-rename-plugin',
       'postcss-preset-env',
-      'postcss-units-to-px',
+      'postcss-rule-unit-converter',
       'postcss-pxtrans',
       'postcss-rem-to-responsive-pixel',
       'postcss-calc',
@@ -63,6 +63,7 @@ describe('getPlugins', () => {
     expect(names).not.toContain('postcss-pxtrans')
     expect(names).not.toContain('postcss-rem-to-responsive-pixel')
     expect(names).not.toContain('postcss-units-to-px')
+    expect(names).not.toContain('postcss-rule-unit-converter')
     expect(names).not.toContain('postcss-calc')
     expect(names).not.toContain('postcss-remove-include-custom-properties')
   })

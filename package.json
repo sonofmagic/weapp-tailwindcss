@@ -152,7 +152,7 @@
     "@eslint/config-inspector": "^1.5.0",
     "@icebreakers/changelog-github": "^1.0.2",
     "@icebreakers/commitlint-config": "^2.0.0",
-    "@icebreakers/eslint-config": "^4.0.9",
+    "@icebreakers/eslint-config": "^4.0.10",
     "@icebreakers/monorepo": "^3.2.18",
     "@icebreakers/stylelint-config": "^3.0.6",
     "@swc/core": "^1.15.32",
