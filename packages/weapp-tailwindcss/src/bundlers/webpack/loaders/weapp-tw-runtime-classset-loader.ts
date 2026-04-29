@@ -1,4 +1,3 @@
-// @ts-nocheck
 import type { Buffer } from 'node:buffer'
 import type webpack from 'webpack'
 import process from 'node:process'
@@ -14,15 +13,23 @@ interface RuntimeLoaderWatchDependencies {
   contexts?: Iterable<string>
 }
 
+function isPromiseLike<T>(value: unknown): value is PromiseLike<T> {
+  return Boolean(value && typeof (value as PromiseLike<T>).then === 'function')
+}
+
+const getLoaderOptions = (loaderUtils as unknown as {
+  getOptions: (context: webpack.LoaderContext<RuntimeClassSetLoaderOptions>) => RuntimeClassSetLoaderOptions | undefined
+}).getOptions
+
 const WeappTwRuntimeClassSetLoader: webpack.LoaderDefinitionFunction<RuntimeClassSetLoaderOptions> = function (
-  this: webpack.LoaderContext<any>,
+  this: webpack.LoaderContext<RuntimeClassSetLoaderOptions>,
   source: string | Buffer,
 ) {
   if (process.env.WEAPP_TW_LOADER_DEBUG) {
     // eslint-disable-next-line no-console
     console.log('[weapp-tw-runtime-classset-loader] executing for', this.resourcePath)
   }
-  const opt = loaderUtils.getOptions(this)
+  const opt = getLoaderOptions(this)
   const maybePromise = opt?.getClassSet?.()
   const applyWatchDependencies = (dependencies: RuntimeLoaderWatchDependencies | void) => {
     for (const file of dependencies?.files ?? []) {
@@ -34,14 +41,14 @@ const WeappTwRuntimeClassSetLoader: webpack.LoaderDefinitionFunction<RuntimeClas
   }
   const resolveWatchDependencies = () => {
     const dependencies = opt?.getWatchDependencies?.()
-    if (dependencies && typeof (dependencies as PromiseLike<RuntimeLoaderWatchDependencies | void>).then === 'function') {
+    if (isPromiseLike<RuntimeLoaderWatchDependencies | void>(dependencies)) {
       return Promise.resolve(dependencies).then((value) => {
         applyWatchDependencies(value)
       })
     }
     applyWatchDependencies(dependencies)
   }
-  if (maybePromise && typeof (maybePromise as PromiseLike<void>).then === 'function') {
+  if (isPromiseLike<void>(maybePromise)) {
     return Promise.resolve(maybePromise).then(async () => {
       await resolveWatchDependencies()
       return source

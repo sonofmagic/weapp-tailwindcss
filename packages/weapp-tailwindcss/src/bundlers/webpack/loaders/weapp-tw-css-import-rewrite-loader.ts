@@ -1,7 +1,6 @@
-// @ts-nocheck
-import type { Buffer } from 'node:buffer'
 import type webpack from 'webpack'
 import type { AppType } from '@/types'
+import { Buffer } from 'node:buffer'
 import process from 'node:process'
 import { ensurePosix } from '@weapp-tailwindcss/shared'
 import loaderUtils from 'loader-utils'
@@ -13,6 +12,10 @@ interface CssImportRewriteLoaderOptions {
     appType?: AppType
   }
 }
+
+const getLoaderOptions = (loaderUtils as unknown as {
+  getOptions: (context: webpack.LoaderContext<CssImportRewriteLoaderOptions>) => CssImportRewriteLoaderOptions | undefined
+}).getOptions
 
 function joinPosixPath(base: string, subpath: string) {
   if (base.endsWith('/')) {
@@ -60,14 +63,14 @@ export function transformCssImportRewriteSource(
 }
 
 const WeappTwCssImportRewriteLoader: webpack.LoaderDefinitionFunction<CssImportRewriteLoaderOptions> = function (
-  this: webpack.LoaderContext<any>,
+  this: webpack.LoaderContext<CssImportRewriteLoaderOptions>,
   source: string | Buffer,
 ) {
   if (process.env.WEAPP_TW_LOADER_DEBUG) {
     // eslint-disable-next-line no-console
     console.log('[weapp-tw-css-import-rewrite-loader] executing for', this.resourcePath)
   }
-  const opt = loaderUtils.getOptions(this)
+  const opt = getLoaderOptions(this)
   return transformCssImportRewriteSource(source, opt)
 }
 
