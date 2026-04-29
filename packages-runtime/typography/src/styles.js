@@ -1,15 +1,19 @@
 /* eslint-disable ts/no-require-imports */
 const colors = require('tailwindcss/colors')
 
-// eslint-disable-next-line regexp/no-super-linear-backtracking
-const TRAILING_ZEROS_RE = /(\.\d+?)0+$/
-const TRAILING_DOT_ZERO_RE = /\.0$/
+function trimTrailingZeros(value) {
+  let end = value.length
+  while (end > 0 && value.charCodeAt(end - 1) === 48) {
+    end--
+  }
+  if (value.charCodeAt(end - 1) === 46) {
+    end--
+  }
+  return value.slice(0, end)
+}
 
 function round(num) {
-  return num
-    .toFixed(7)
-    .replace(TRAILING_ZEROS_RE, '$1')
-    .replace(TRAILING_DOT_ZERO_RE, '')
+  return trimTrailingZeros(num.toFixed(7))
 }
 const rem = px => `${round(px / 16)}rem`
 const em = (px, base) => `${round(px / base)}em`
