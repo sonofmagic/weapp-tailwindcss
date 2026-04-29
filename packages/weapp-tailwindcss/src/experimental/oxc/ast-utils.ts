@@ -1,11 +1,14 @@
+import { createRequire } from 'node:module'
+
 export interface Oxcast {
   [key: string]: any
 }
 
+const requireOptional = createRequire(import.meta.url)
+
 function tryRequire<T = any>(id: string): T | undefined {
   try {
-    // eslint-disable-next-line ts/no-require-imports
-    return require(id)
+    return requireOptional(id)
   }
   catch {
     return undefined

@@ -1,11 +1,14 @@
+import { createRequire } from 'node:module'
+
 export interface SwcAst {
   [key: string]: any
 }
 
+const requireOptional = createRequire(import.meta.url)
+
 export function parseWithSwc(code: string): SwcAst {
   // Lazy require to keep this file "optional" for consumers.
-  // eslint-disable-next-line ts/no-require-imports
-  const swc = require('@swc/core') as any
+  const swc = requireOptional('@swc/core') as any
   // Parse as a module with broad feature flags; consumers may tailor later.
   return swc.parseSync(code, {
     syntax: 'typescript',
