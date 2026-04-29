@@ -1,4 +1,3 @@
-/* eslint-disable ts/no-unused-vars */
 import type { TVConfig, TWMConfig } from './config'
 import type { TVGeneratedScreens } from './generated'
 
