@@ -4,6 +4,11 @@ import semver from 'semver'
 import { createTailwindcssPatchCli } from 'tailwindcss-patch'
 import { formatOutputPath } from './cli/context'
 import {
+  createDoctorReport,
+  formatDoctorReport,
+  hasDoctorFailure,
+} from './cli/doctor'
+import {
   commandAction,
   readStringArrayOption,
   readStringOption,
@@ -23,6 +28,11 @@ type VscodeEntryCommandOptions = CommonCommandOptions & {
   force?: boolean | string
   output?: string | boolean
   source?: string | string[]
+}
+
+type DoctorCommandOptions = CommonCommandOptions & {
+  json?: boolean | string
+  strict?: boolean | string
 }
 
 process.title = 'node (weapp-tailwindcss)'
@@ -69,6 +79,28 @@ cli
       logger.success(
         `VS Code helper generated -> ${formatOutputPath(result.outputPath, resolvedCwd)}`,
       )
+    }),
+  )
+
+cli
+  .command('doctor', 'Check project setup for weapp-tailwindcss')
+  .option('--cwd <dir>', 'Working directory')
+  .option('--json', 'Print a JSON report')
+  .option('--strict', 'Exit with code 1 when warnings are found')
+  .action(
+    commandAction(async (options: DoctorCommandOptions) => {
+      const resolvedCwd = resolveCliCwd(options.cwd)
+      const report = createDoctorReport({ cwd: resolvedCwd })
+      if (toBoolean((options as any).json, false)) {
+        logger.log(JSON.stringify(report, null, 2))
+      }
+      else {
+        logger.log(formatDoctorReport(report))
+      }
+
+      if (hasDoctorFailure(report, toBoolean((options as any).strict, false))) {
+        process.exitCode = 1
+      }
     }),
   )
 
