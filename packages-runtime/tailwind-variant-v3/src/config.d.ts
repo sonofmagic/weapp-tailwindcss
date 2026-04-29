@@ -1,5 +1,6 @@
 import type { TVGeneratedScreens } from './generated'
-import type { TVVariants } from './types'
+
+type TVConfigVariants = Record<string, Record<string, any>>
 
 interface MergeConfig {
   [key: string]: any
@@ -44,10 +45,8 @@ export interface TWMConfig {
 }
 
 export type TVConfig<
-  // @ts-expect-error
-  V extends TVVariants | undefined = undefined,
-  // @ts-expect-error
-  EV extends TVVariants | undefined = undefined,
+  V extends TVConfigVariants | undefined = undefined,
+  EV extends TVConfigVariants | undefined = undefined,
 > = {
   /**
    * Whether to enable responsive variant transform.
