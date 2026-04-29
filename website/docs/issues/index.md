@@ -23,6 +23,10 @@ keywords:
 自定义组件使用 `externalClasses` 时样式被拆分？请先查看《[组件外部样式类（externalClasses）的支持](/docs/issues/externalClasses)》，按照文档里的 `customAttributes` 配置即可解决。
 :::
 
+:::tip 先运行诊断命令
+接入失败、样式未生成、Tailwind CSS v4 PostCSS 报错或 JS 字符串 class 未转义时，可以先运行 `pnpm exec weapp-tailwindcss doctor`。详见《[使用 doctor 命令诊断项目配置](/docs/issues/doctor)》。
+:::
+
 ## 为什么我更改了 class 保存重新打包的时候热更新失效？
 
 [[#93](https://github.com/sonofmagic/weapp-tailwindcss-webpack-plugin/issues/93)]

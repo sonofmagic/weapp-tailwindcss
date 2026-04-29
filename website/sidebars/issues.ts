@@ -10,6 +10,10 @@ const issuesSidebar: SidebarConfig = [
   },
   {
     type: 'doc',
+    id: 'issues/doctor',
+  },
+  {
+    type: 'doc',
     id: 'issues/box-sizing',
   },
   {

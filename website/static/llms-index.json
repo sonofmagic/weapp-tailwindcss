@@ -1,10 +1,10 @@
 {
   "version": "1.0.0",
-  "generatedAt": "2026-04-17T06:34:57.309Z",
+  "generatedAt": "2026-04-29T16:22:32.583Z",
   "siteUrl": "https://tw.icebreaker.top",
   "totals": {
-    "all": 176,
-    "docs": 172,
+    "all": 177,
+    "docs": 173,
     "blog": 4
   },
   "documents": [
@@ -3014,6 +3014,45 @@
       ],
       "updatedAt": null,
       "source": "docs/issues/css-vars.md"
+    },
+    {
+      "kind": "doc",
+      "id": "doc:issues/doctor",
+      "title": "使用 doctor 命令诊断项目配置",
+      "description": "使用 weapp-tailwindcss doctor 快速检查 Node.js、Tailwind CSS、PostCSS、框架依赖和构建器配置。",
+      "summary": "当项目出现样式未生成、JS 中的 class 未转义、Tailwind CSS v4 PostCSS 报错、插件没有在目标端生效等问题时，可以先运行 doctor 命令收集项目配置状态。",
+      "url": "/docs/issues/doctor",
+      "canonical": "https://tw.icebreaker.top/docs/issues/doctor",
+      "keywords": [
+        "常见问题",
+        "故障排查",
+        "doctor",
+        "诊断命令",
+        "weapp-tailwindcss",
+        "tailwindcss",
+        "postcss",
+        "小程序",
+        "微信小程序",
+        "uni-app",
+        "taro",
+        "mpx",
+        "兼容性",
+        "使用",
+        "命令诊断项目配置",
+        "issues"
+      ],
+      "headings": [
+        "检查内容",
+        "输出说明",
+        "常见诊断结果",
+        "# 未检测到 package.json",
+        "# 未检测到 tailwindcss",
+        "# Tailwind CSS v4 项目缺少 @tailwindcss/postcss",
+        "# 未检测到 tailwind.config.*",
+        "issue 反馈建议"
+      ],
+      "updatedAt": null,
+      "source": "docs/issues/doctor.md"
     },
     {
       "kind": "doc",
