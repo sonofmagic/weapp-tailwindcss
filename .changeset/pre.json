@@ -1,6 +1,6 @@
 {
   "mode": "pre",
-  "tag": "next",
+  "tag": "alpha",
   "initialVersions": {
     "react-app": "0.0.0",
     "tailwindcss-weapp": "0.0.1",
