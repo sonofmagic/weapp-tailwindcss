@@ -367,7 +367,7 @@ function readTagText(tag: JSDocTag): string {
     return ''
   }
   if (Array.isArray(comment)) {
-    return comment.map(node => node.getText()).join('').trim()
+    return comment.map(node => node?.getText() ?? '').join('').trim()
   }
   return comment.toString().trim()
 }

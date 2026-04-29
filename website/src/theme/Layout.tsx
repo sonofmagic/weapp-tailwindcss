@@ -1,9 +1,12 @@
+import type { ComponentProps } from 'react'
 // import { useLocation } from '@docusaurus/router'
 import { UiManagementProvider } from '@site/src/features/ui-management/context'
 import Layout from '@theme-original/Layout'
 import React from 'react'
 
-export default function LayoutWrapper(props) {
+type LayoutWrapperProps = ComponentProps<typeof Layout>
+
+export default function LayoutWrapper(props: LayoutWrapperProps) {
   // const location = useLocation()
 
   return (

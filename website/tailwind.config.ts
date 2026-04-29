@@ -8,6 +8,9 @@ import svgToDataUri from 'mini-svg-data-uri'
 import defaultTheme from 'tailwindcss/defaultTheme'
 import themeTransitionPlugin from 'theme-transition/tailwindcss'
 
+type ThemeResolver = (path: string) => any
+type TailwindPlugin = NonNullable<Config['plugins']>[number]
+
 const logosIcons = logosIconsRaw as IconifyJSON
 const mdiIcons = mdiIconsRaw as IconifyJSON
 const bxlIcons = {
@@ -21,7 +24,6 @@ const bxlIcons = {
   },
   aliases: {},
   categories: {},
-  characters: {},
 } satisfies IconifyJSON
 
 const config = {
@@ -33,7 +35,7 @@ const config = {
   darkMode: ['selector', '[data-theme="dark"]'],
   theme: {
     extend: {
-      typography: theme => ({
+      typography: (theme: ThemeResolver) => ({
         DEFAULT: {
           css: {
             'maxWidth': 'none',
@@ -272,7 +274,7 @@ const config = {
         'flash-code': 'flash-code 1s forwards',
         'flash-code-slow': 'flash-code 2s forwards',
       },
-      backgroundImage: ({ theme }) => ({
+      backgroundImage: ({ theme }: { theme: ThemeResolver }) => ({
         squiggle: `url("${svgToDataUri(
           `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 6 3" enable-background="new 0 0 6 3" width="6" height="3" fill="${theme(
             'colors.yellow.400',
@@ -282,7 +284,7 @@ const config = {
     },
   },
   plugins: [
-    themeTransitionPlugin(),
+    themeTransitionPlugin() as unknown as TailwindPlugin,
     typography,
     addDynamicIconSelectors({
       mode: 'mask',
@@ -291,7 +293,7 @@ const config = {
         logos: logosIcons,
         bxl: bxlIcons,
       },
-    }),
+    } as unknown as Parameters<typeof addDynamicIconSelectors>[0]),
   ],
   corePlugins: {
     preflight: false,

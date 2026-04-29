@@ -4,7 +4,13 @@ import routes from '../routes.json'
 
 const baseURL = process.env.PLAYWRIGHT_BASE_URL ?? 'https://tw.icebreaker.top/'
 
-const viewports = [
+interface ViewportCase {
+  name: string
+  onlyBrowser?: 'chromium' | 'firefox' | 'webkit'
+  use: Parameters<typeof test.use>[0]
+}
+
+const viewports: ViewportCase[] = [
   {
     name: 'desktop',
     use: {

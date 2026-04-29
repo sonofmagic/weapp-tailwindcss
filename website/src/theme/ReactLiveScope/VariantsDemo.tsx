@@ -17,15 +17,15 @@ const badgeConfig = {
   },
   compoundVariants: [
     {
-      tone: 'danger',
+      tone: 'danger' as const,
       soft: true,
       class: 'bg-[#F87171] text-white',
     },
   ],
   defaultVariants: {
-    tone: 'neutral',
+    tone: 'neutral' as const,
   },
-} as const
+}
 
 type Tone = keyof typeof badgeConfig.variants.tone
 
@@ -46,8 +46,8 @@ export function VariantsDemo() {
     return create()
   }, [disableEscape])
 
-  const tv = useMemo(() => runtime.tv(badgeConfig), [runtime])
-  const badgeClassName = tv({ tone, soft, twMerge: mergeEnabled })
+  const tv = useMemo(() => runtime.tv(badgeConfig, { twMerge: mergeEnabled }), [mergeEnabled, runtime])
+  const badgeClassName = tv({ tone, soft })
 
   const cnAggregator = useMemo(
     () => runtime.cn('text-[#ececec]', 'text-[#ECECEC]'),

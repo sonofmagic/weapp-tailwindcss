@@ -4,7 +4,7 @@ export function useHighlight<T>(value: T, duration = 900) {
   const [highlighted, setHighlighted] = useState(false)
   const timeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null)
   const isFirstRender = useRef(true)
-  const previousValue = useRef<T>()
+  const previousValue = useRef<T | undefined>(undefined)
 
   useEffect(() => {
     if (isFirstRender.current) {

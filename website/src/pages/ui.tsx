@@ -1,29 +1,27 @@
-import type { HomepageUiControlKey } from '@site/src/features/ui-management/homepage'
-import type { NavbarUiControlKey } from '@site/src/features/ui-management/navbar'
 import { useUiManagement } from '@site/src/features/ui-management/context'
 import { homepageUiControls } from '@site/src/features/ui-management/homepage'
 import { navbarUiControls, navbarUiStorageKey } from '@site/src/features/ui-management/navbar'
 import Layout from '@theme/Layout'
 
-interface ControlMeta {
+interface ControlMeta<TKey extends string> {
   className: string
   description: string
-  key: string
+  key: TKey
   label: string
 }
 
-function ControlSection({
+function ControlSection<TKey extends string>({
   controls,
   onReset,
   onToggle,
   title,
   values,
 }: {
-  controls: ControlMeta[]
+  controls: Array<ControlMeta<TKey>>
   onReset: () => void
-  onToggle: (key: string, visible: boolean) => void
+  onToggle: (key: TKey, visible: boolean) => void
   title: string
-  values: Record<string, boolean>
+  values: Record<TKey, boolean>
 }) {
   return (
     <section className="
@@ -198,14 +196,14 @@ function UiManagementPageContent() {
           title="Navbar"
           values={navbar}
           onReset={resetNavbarSettings}
-          onToggle={(key, visible) => setNavbarVisibility(key as NavbarUiControlKey, visible)}
+          onToggle={(key, visible) => setNavbarVisibility(key, visible)}
         />
         <ControlSection
           controls={homepageUiControls}
           title="Homepage Hero"
           values={homepage}
           onReset={resetHomepageSettings}
-          onToggle={(key, visible) => setHomepageVisibility(key as HomepageUiControlKey, visible)}
+          onToggle={(key, visible) => setHomepageVisibility(key, visible)}
         />
       </section>
     </main>

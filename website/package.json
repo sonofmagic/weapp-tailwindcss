@@ -60,6 +60,8 @@
     "tailwind-variants": "^3.2.2"
   },
   "devDependencies": {
+    "@babel/parser": "~7.29.2",
+    "@babel/traverse": "~7.29.0",
     "@docusaurus/module-type-aliases": "3.9.2",
     "@docusaurus/remark-plugin-npm2yarn": "3.9.2",
     "@docusaurus/theme-mermaid": "3.9.2",
