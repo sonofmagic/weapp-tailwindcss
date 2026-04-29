@@ -1,5 +1,12 @@
 # @weapp-tailwindcss/postcss
 
+## 2.2.0-alpha.1
+
+### Patch Changes
+
+- 🐛 **将 `unitsToPx` 转换链路切换为基于 `postcss-rule-unit-converter` 的规则转换实现，移除对 `postcss-units-to-px` 的直接运行时依赖。** [`8d4131f`](https://github.com/sonofmagic/weapp-tailwindcss/commit/8d4131fc0832f9db9c631a1c7f2964094a77b8a6) by @sonofmagic
+  - 保留 `unitMap`、`transform`、`transform: false`、`propList`、`selectorBlackList` 等兼容配置行为，并补充对应回归测试，确保多单位转 `px` 的默认输出不变。
+
 ## 2.2.0-next.0
 
 ### Minor Changes
