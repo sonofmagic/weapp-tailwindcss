@@ -21,6 +21,7 @@ const EMPTY_IMPORT_DECLARATIONS = new Set<NodePath<ImportDeclaration>>()
 const EMPTY_EXPORT_DECLARATIONS = new Set<NodePath<ExportDeclaration>>()
 const EMPTY_REQUIRE_CALL_PATHS: NodePath<StringLiteral>[] = []
 const ignoredTaggedTemplateMatcherCache = new WeakMap<IJsHandlerOptions, ReturnType<typeof createNameMatcher>>()
+let defaultEvalHandler: EvalHandler | undefined
 
 function getIgnoredTaggedTemplateMatcher(options: IJsHandlerOptions) {
   const cached = ignoredTaggedTemplateMatcherCache.get(options)
@@ -31,6 +32,13 @@ function getIgnoredTaggedTemplateMatcher(options: IJsHandlerOptions) {
   const created = createNameMatcher(options.ignoreTaggedTemplateExpressionIdentifiers, { exact: true })
   ignoredTaggedTemplateMatcherCache.set(options, created)
   return created
+}
+
+function getDefaultEvalHandler(): EvalHandler {
+  if (!defaultEvalHandler) {
+    throw new Error('Default JS eval handler is not initialized.')
+  }
+  return defaultEvalHandler
 }
 
 export function analyzeSource(
@@ -80,8 +88,7 @@ export function analyzeSource(
   const requireCallPaths: NodePath<StringLiteral>[] = collectModuleMetadata
     ? []
     : EMPTY_REQUIRE_CALL_PATHS
-  // eslint-disable-next-line ts/no-use-before-define -- default handler references exported jsHandler defined later
-  const evalHandler = handler ?? jsHandler
+  const evalHandler = handler ?? getDefaultEvalHandler()
 
   const templateElementEnter: NonNullable<TraverseOptions<Node>['TemplateElement']>['enter'] = hasTaggedTemplateIgnoreIdentifiers
     ? (p) => {
@@ -252,6 +259,8 @@ export function jsHandler(rawSource: string, options: IJsHandlerOptions): JsHand
 
   return result
 }
+
+defaultEvalHandler = jsHandler
 
 export { babelParse, processUpdatedSource }
 export { genCacheKey, parseCache } from './babel/parse'
