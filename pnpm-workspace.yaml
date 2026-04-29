@@ -35,7 +35,7 @@ catalogs:
   eslintPluginReactHooks:
     eslint-plugin-react-hooks: ^7.1.1
   lucideReact0555:
-    lucide-react: ^1.11.0
+    lucide-react: ^1.14.0
   lucideVueNext0555:
     lucide-vue-next: ^1.0.0
   miniApiTypings:
@@ -144,9 +144,9 @@ catalogs:
   weappChildren:
     weapp-tailwindcss-children: ^0.1.0
   weappIdeCli:
-    weapp-ide-cli: ^5.2.6
+    weapp-ide-cli: ^5.2.7
   weappVite:
-    weapp-vite: ^6.15.18
+    weapp-vite: ^6.16.1
   wrangler:
     wrangler: ^4.86.0
 

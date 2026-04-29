@@ -80,7 +80,7 @@
     "pinia": "~2.3.1",
     "tailwindcss-core-plugins-extractor": "workspace:*",
     "uni-app-mp-html": "^2.5.0",
-    "uview-plus": "^3.7.36",
+    "uview-plus": "^3.8.18",
     "vue": "catalog:vue3",
     "vue-i18n": "^9.14.5"
   },
