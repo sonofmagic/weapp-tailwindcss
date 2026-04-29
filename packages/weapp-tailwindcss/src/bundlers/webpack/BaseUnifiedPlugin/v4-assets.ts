@@ -1,3 +1,4 @@
+import type { Buffer } from 'node:buffer'
 import type { Compiler } from 'webpack4'
 import type { AppType, InternalUserDefinedOptions, LinkedJsModuleResult } from '@/types'
 import path from 'node:path'
@@ -23,6 +24,15 @@ interface SetupWebpackV4EmitHookOptions {
   debug: (format: string, ...args: unknown[]) => void
 }
 
+interface WebpackV4AssetSource {
+  source: () => string | Buffer | ArrayBuffer
+}
+
+interface WebpackV4AssetCompilation {
+  assets: Record<string, WebpackV4AssetSource>
+  updateAsset: (file: string, source: WebpackV4AssetSource) => void
+}
+
 function resolveWebpackStaleClassNameFallback(
   option: InternalUserDefinedOptions['staleClassNameFallback'],
   _compiler: Compiler,
@@ -31,6 +41,15 @@ function resolveWebpackStaleClassNameFallback(
     return option
   }
   return false
+}
+
+function toWebpackV4AssetCompilation(compilation: unknown): WebpackV4AssetCompilation {
+  return compilation as WebpackV4AssetCompilation
+}
+
+function readWebpackV4AssetSource(asset: WebpackV4AssetSource): string {
+  const source = asset.source()
+  return typeof source === 'string' ? source : source.toString()
 }
 
 export function setupWebpackV4EmitHook(options: SetupWebpackV4EmitHookOptions) {
@@ -62,8 +81,9 @@ export function setupWebpackV4EmitHook(options: SetupWebpackV4EmitHookOptions) {
         compilerOptions.cache.calcHashValueChanged(chunk.id, chunk.hash)
       }
     }
+    const assetCompilation = toWebpackV4AssetCompilation(compilation)
     const assetHashByChunk = createAssetHashByChunkMap(compilation.chunks as any)
-    const assets = compilation.assets
+    const assets = assetCompilation.assets
     const entries = Object.entries(assets)
     const outputDir = compiler.options?.output?.path
       ? path.resolve(compiler.options.output.path)
@@ -84,12 +104,11 @@ export function setupWebpackV4EmitHook(options: SetupWebpackV4EmitHookOptions) {
         if (!assetName) {
           return undefined
         }
-        const assetSource = compilation.assets[assetName]
+        const assetSource = assetCompilation.assets[assetName]
         if (!assetSource) {
           return undefined
         }
-        const source = assetSource.source()
-        return typeof source === 'string' ? source : source.toString()
+        return readWebpackV4AssetSource(assetSource)
       },
       filter(id: string) {
         return jsAssets.has(id)
@@ -104,18 +123,16 @@ export function setupWebpackV4EmitHook(options: SetupWebpackV4EmitHookOptions) {
         if (!assetName) {
           continue
         }
-        const assetSource = compilation.assets[assetName]
+        const assetSource = assetCompilation.assets[assetName]
         if (!assetSource) {
           continue
         }
-        const previousSource = assetSource.source()
-        const previous = typeof previousSource === 'string' ? previousSource : previousSource.toString()
+        const previous = readWebpackV4AssetSource(assetSource)
         if (previous === code) {
           continue
         }
         const source = new ConcatSource(code)
-        // @ts-ignore
-        compilation.updateAsset(assetName, source)
+        assetCompilation.updateAsset(assetName, source)
         compilerOptions.onUpdate(assetName, previous, code)
         debug('js linked handle: %s', assetName)
       }
@@ -157,8 +174,7 @@ export function setupWebpackV4EmitHook(options: SetupWebpackV4EmitHookOptions) {
     if (Array.isArray(groupedEntries.html)) {
       for (const element of groupedEntries.html) {
         const [file, originalSource] = element
-        // @ts-ignore
-        const rawSource = originalSource.source().toString()
+        const rawSource = readWebpackV4AssetSource(originalSource)
 
         const cacheKey = file
         const chunkHash = assetHashByChunk.get(file)
@@ -170,8 +186,7 @@ export function setupWebpackV4EmitHook(options: SetupWebpackV4EmitHookOptions) {
             rawSource,
             hash: chunkHash,
             applyResult(source) {
-              // @ts-ignore
-              compilation.updateAsset(file, source)
+              assetCompilation.updateAsset(file, source)
             },
             onCacheHit() {
               debug('html cache hit: %s', file)
@@ -197,12 +212,11 @@ export function setupWebpackV4EmitHook(options: SetupWebpackV4EmitHookOptions) {
     if (Array.isArray(groupedEntries.js)) {
       for (const [file] of groupedEntries.js) {
         const cacheKey = getCacheKey(file)
-        const assetSource = compilation.assets[file]
+        const assetSource = assetCompilation.assets[file]
         if (!assetSource) {
           continue
         }
-        const initialValue = assetSource.source()
-        const initialRawSource = typeof initialValue === 'string' ? initialValue : initialValue.toString()
+        const initialRawSource = readWebpackV4AssetSource(assetSource)
         const absoluteFile = toAbsoluteOutputPath(file, outputDir)
         const chunkHash = assetHashByChunk.get(file)
         const sourceAwareHash = chunkHash
@@ -216,18 +230,14 @@ export function setupWebpackV4EmitHook(options: SetupWebpackV4EmitHookOptions) {
             rawSource: initialRawSource,
             hash: sourceAwareHash,
             applyResult(source) {
-              // @ts-ignore
-              compilation.updateAsset(file, source)
+              assetCompilation.updateAsset(file, source)
             },
             onCacheHit() {
               debug('js cache hit: %s', file)
             },
             transform: async () => {
-              const currentAsset = compilation.assets[file]
-              const currentValue = currentAsset?.source()
-              const currentSource = typeof currentValue === 'string'
-                ? currentValue
-                : currentValue?.toString() ?? ''
+              const currentAsset = assetCompilation.assets[file]
+              const currentSource = currentAsset ? readWebpackV4AssetSource(currentAsset) : ''
               const handlerOptions = {
                 staleClassNameFallback,
                 tailwindcssMajorVersion: runtimeState.twPatcher.majorVersion,
@@ -257,8 +267,7 @@ export function setupWebpackV4EmitHook(options: SetupWebpackV4EmitHookOptions) {
     if (Array.isArray(groupedEntries.css)) {
       for (const element of groupedEntries.css) {
         const [file, originalSource] = element
-        // @ts-ignore
-        const rawSource = originalSource.source().toString()
+        const rawSource = readWebpackV4AssetSource(originalSource)
         const cacheKey = file
         const chunkHash = assetHashByChunk.get(file)
         tasks.push(
@@ -269,8 +278,7 @@ export function setupWebpackV4EmitHook(options: SetupWebpackV4EmitHookOptions) {
             rawSource,
             hash: chunkHash,
             applyResult(source) {
-              // @ts-ignore
-              compilation.updateAsset(file, source)
+              assetCompilation.updateAsset(file, source)
             },
             onCacheHit() {
               debug('css cache hit: %s', file)
