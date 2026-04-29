@@ -32,6 +32,14 @@ const weappTailwindcssPackageDir = resolvePackageDir('weapp-tailwindcss')
 const weappTailwindcssDirPosix = slash(weappTailwindcssPackageDir)
 const PACKAGE_JSON_FILE = 'package.json'
 
+function getPostcssPluginName(plugin: unknown): string | undefined {
+  if (!plugin || typeof plugin !== 'object' || !('postcssPlugin' in plugin)) {
+    return
+  }
+  const { postcssPlugin } = plugin as { postcssPlugin?: unknown }
+  return typeof postcssPlugin === 'string' ? postcssPlugin : undefined
+}
+
 function resolveImplicitTailwindcssBasedirFromViteRoot(root: string) {
   const resolvedRoot = path.resolve(root)
   if (!existsSync(resolvedRoot)) {
@@ -306,8 +314,7 @@ export function UnifiedViteWeappTailwindcssPlugin(options: UserDefinedOptions = 
         if (typeof config.css.postcss === 'object' && Array.isArray(config.css.postcss.plugins)) {
           const postcssPlugins = config.css.postcss.plugins as unknown[]
           const idx = postcssPlugins.findIndex(x =>
-            // @ts-ignore
-            x.postcssPlugin === 'postcss-html-transform')
+            getPostcssPluginName(x) === 'postcss-html-transform')
           if (idx > -1) {
             postcssPlugins.splice(idx, 1, postcssHtmlTransform())
             debug('remove postcss-html-transform plugin from vite config')

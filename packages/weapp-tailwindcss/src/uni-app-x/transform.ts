@@ -1,4 +1,5 @@
 import type { AttributeNode, DirectiveNode, ParentNode } from '@vue/compiler-dom'
+import type { SourceMapInput } from 'rollup'
 import type { TransformResult } from 'vite'
 import type { CreateJsHandlerOptions, ICustomAttributesEntities, JsHandler } from '@/types'
 import { NodeTypes } from '@vue/compiler-dom'
@@ -228,11 +229,16 @@ export function transformUVue(
       ms.append(`\n${localStyleCollector.toStyleBlock()}`)
     }
   }
-  return {
+  const result: TransformResult = {
     code: ms.toString(),
-    // @ts-ignore
-    get map() {
-      return ms.generateMap()
-    },
   }
+
+  Object.defineProperty(result, 'map', {
+    configurable: true,
+    enumerable: true,
+    get() {
+      return ms.generateMap() as SourceMapInput
+    },
+  })
+  return result
 }
