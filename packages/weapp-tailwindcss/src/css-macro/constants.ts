@@ -78,14 +78,14 @@ export function ifndef(text: string) {
 const QUERY_KEY_REGEX = new RegExp(`\\(\\s*${queryKey}\\s*:\\s*"([^)]*)"\\)`, 'g')
 
 export function matchCustomPropertyFromValue(str: string, cb: (arr: RegExpExecArray, index: number) => void) {
-  let arr: RegExpExecArray | null
   let index = 0
 
   // 重置 lastIndex 以确保每次调用从头匹配
   QUERY_KEY_REGEX.lastIndex = 0
-  // eslint-disable-next-line no-cond-assign
-  while ((arr = QUERY_KEY_REGEX.exec(str)) !== null) {
+  let arr = QUERY_KEY_REGEX.exec(str)
+  while (arr !== null) {
     cb(arr, index)
     index++
+    arr = QUERY_KEY_REGEX.exec(str)
   }
 }
