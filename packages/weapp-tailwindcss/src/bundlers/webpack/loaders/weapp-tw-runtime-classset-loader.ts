@@ -26,8 +26,7 @@ const WeappTwRuntimeClassSetLoader: webpack.LoaderDefinitionFunction<RuntimeClas
   source: string | Buffer,
 ) {
   if (process.env.WEAPP_TW_LOADER_DEBUG) {
-    // eslint-disable-next-line no-console
-    console.log('[weapp-tw-runtime-classset-loader] executing for', this.resourcePath)
+    process.stdout.write(`[weapp-tw-runtime-classset-loader] executing for ${this.resourcePath}\n`)
   }
   const opt = getLoaderOptions(this)
   const maybePromise = opt?.getClassSet?.()

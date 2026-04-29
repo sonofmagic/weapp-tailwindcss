@@ -2,6 +2,7 @@ import type webpack from 'webpack'
 import type { AppType } from '@/types'
 import { Buffer } from 'node:buffer'
 import process from 'node:process'
+import { inspect } from 'node:util'
 import { ensurePosix } from '@weapp-tailwindcss/shared'
 import loaderUtils from 'loader-utils'
 import { rewriteTailwindcssImportsInCode } from '@/bundlers/shared/css-imports'
@@ -53,11 +54,10 @@ export function transformCssImportRewriteSource(
     return source
   }
   if (process.env.WEAPP_TW_LOADER_DEBUG) {
-    // eslint-disable-next-line no-console
-    console.log('[weapp-tw-css-import-rewrite-loader] rewritten import', {
+    process.stdout.write(`[weapp-tw-css-import-rewrite-loader] rewritten import ${inspect({
       before: input.slice(0, 80),
       after: rewritten.slice(0, 80),
-    })
+    })}\n`)
   }
   return rewritten
 }
@@ -67,8 +67,7 @@ const WeappTwCssImportRewriteLoader: webpack.LoaderDefinitionFunction<CssImportR
   source: string | Buffer,
 ) {
   if (process.env.WEAPP_TW_LOADER_DEBUG) {
-    // eslint-disable-next-line no-console
-    console.log('[weapp-tw-css-import-rewrite-loader] executing for', this.resourcePath)
+    process.stdout.write(`[weapp-tw-css-import-rewrite-loader] executing for ${this.resourcePath}\n`)
   }
   const opt = getLoaderOptions(this)
   return transformCssImportRewriteSource(source, opt)
