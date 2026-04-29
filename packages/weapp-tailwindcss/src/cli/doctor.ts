@@ -4,7 +4,7 @@ import { createRequire } from 'node:module'
 import path from 'node:path'
 import process from 'node:process'
 import semver from 'semver'
-import { WEAPP_TW_REQUIRED_NODE_VERSION } from '@/constants'
+import { WEAPP_TW_REQUIRED_NODE_VERSION_RANGE } from '@/constants'
 import { CONFIG_FILES, FRAMEWORK_DEPS } from './doctor/constants'
 
 function tryReadJson<T>(file: string): T | undefined {
@@ -124,18 +124,18 @@ export function createDoctorReport(options: DoctorOptions = {}): DoctorReport {
         suggestion: '请在项目根目录运行 doctor，或通过 --cwd 指向项目根目录。',
       })
 
-  addCheck(checks, semver.gte(nodeVersion, WEAPP_TW_REQUIRED_NODE_VERSION)
+  addCheck(checks, semver.satisfies(nodeVersion, WEAPP_TW_REQUIRED_NODE_VERSION_RANGE)
     ? {
         id: 'node-version',
         title: 'Node.js',
         status: 'ok',
-        message: `当前 Node.js ${nodeVersion} 满足最低要求 >= ${WEAPP_TW_REQUIRED_NODE_VERSION}。`,
+        message: `当前 Node.js ${nodeVersion} 满足版本要求 ${WEAPP_TW_REQUIRED_NODE_VERSION_RANGE}。`,
       }
     : {
         id: 'node-version',
         title: 'Node.js',
         status: 'error',
-        message: `当前 Node.js ${nodeVersion} 低于最低要求 ${WEAPP_TW_REQUIRED_NODE_VERSION}。`,
+        message: `当前 Node.js ${nodeVersion} 不满足版本要求 ${WEAPP_TW_REQUIRED_NODE_VERSION_RANGE}。`,
         suggestion: '请升级 Node.js 后再安装或构建 weapp-tailwindcss 项目。',
       })
 

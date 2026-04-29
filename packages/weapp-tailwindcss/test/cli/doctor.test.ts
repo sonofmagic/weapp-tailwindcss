@@ -90,4 +90,23 @@ describe('createDoctorReport', () => {
     expect(hasDoctorFailure(report)).toBe(true)
     expect(formatDoctorReport(report)).toContain('weapp-tailwindcss doctor')
   })
+
+  it('uses the published Node.js version range', async () => {
+    const root = await createTempWorkspace()
+    await writeJson(path.join(root, 'package.json'), {
+      dependencies: {
+        tailwindcss: '^4.0.0',
+        'weapp-tailwindcss': '^4.0.0',
+      },
+    })
+
+    expect(findCheck(
+      createDoctorReport({ cwd: root, nodeVersion: '22.0.0' }),
+      'node-version',
+    ).status).toBe('error')
+    expect(findCheck(
+      createDoctorReport({ cwd: root, nodeVersion: '22.12.0' }),
+      'node-version',
+    ).status).toBe('ok')
+  })
 })

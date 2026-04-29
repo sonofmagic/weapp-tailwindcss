@@ -20,7 +20,7 @@ import {
   DEFAULT_VSCODE_ENTRY_OUTPUT,
   generateVscodeIntellisenseEntry,
 } from './cli/vscode-entry'
-import { WEAPP_TW_REQUIRED_NODE_VERSION } from './constants'
+import { WEAPP_TW_REQUIRED_NODE_VERSION_RANGE } from './constants'
 import { logger } from './logger'
 
 type VscodeEntryCommandOptions = CommonCommandOptions & {
@@ -37,9 +37,9 @@ type DoctorCommandOptions = CommonCommandOptions & {
 
 process.title = 'node (weapp-tailwindcss)'
 
-if (semver.lt(process.versions.node, WEAPP_TW_REQUIRED_NODE_VERSION)) {
+if (!semver.satisfies(process.versions.node, WEAPP_TW_REQUIRED_NODE_VERSION_RANGE)) {
   logger.warn(
-    `You are using Node.js ${process.versions.node}. For weapp-tailwindcss, Node.js version >= v${WEAPP_TW_REQUIRED_NODE_VERSION} is required.`,
+    `You are using Node.js ${process.versions.node}. For weapp-tailwindcss, Node.js version ${WEAPP_TW_REQUIRED_NODE_VERSION_RANGE} is required.`,
   )
 }
 
