@@ -1,5 +1,11 @@
 # theme-transition
 
+## 2.0.2-alpha.0
+
+### Patch Changes
+
+- 🐛 **将反向 clip-path 关键帧生成逻辑从 `Array.prototype.toReversed` 改为兼容性更高的数组复制后反转写法，避免在较低 `lib` 目标的 TypeScript 检查中报错。** [`ebbbe84`](https://github.com/sonofmagic/weapp-tailwindcss/commit/ebbbe84650ae8fa6f3671a1e141c872ad91115c4) by @sonofmagic
+
 ## 2.0.1
 
 ### Patch Changes
