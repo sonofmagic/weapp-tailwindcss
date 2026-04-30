@@ -1,5 +1,16 @@
 # weapp-tailwindcss
 
+## 4.12.0-alpha.2
+
+### Patch Changes
+
+- 🐛 **新增 `weapp-tailwindcss doctor` 诊断命令，用于检查项目根目录、Node.js 版本、包管理器、Tailwind CSS、PostCSS、常见小程序框架和构建器配置，并支持 `--json` 与 `--strict` 输出模式。** [`b67c6d9`](https://github.com/sonofmagic/weapp-tailwindcss/commit/b67c6d9a522ce0a38d99b754b77f27f22eb22557) by @sonofmagic
+
+- 🐛 **统一 CLI 与 `doctor` 诊断命令的 Node.js 版本判断，按文档和包声明使用 `^20.19.0 || >=22.12.0` 范围，避免较低的 Node.js 22 版本被误判为可用。** [`41160e3`](https://github.com/sonofmagic/weapp-tailwindcss/commit/41160e3538f752fd79348366a708edcb2e726b3e) by @sonofmagic
+
+- 🐛 **调整 `postinstall` 补丁脚本：安装阶段遇到运行时模块缺失时不再中断 `pnpm install`，并保留 `cli:patch` 作为严格校验入口。** [`81dfa54`](https://github.com/sonofmagic/weapp-tailwindcss/commit/81dfa543e977ec42423465def752795bdbb50081) by @sonofmagic
+  - 同时将包内测试脚本改为使用 `pnpm run cli:patch`，避免继续通过 `npm run postinstall` 复用安装生命周期。
+
 ## 4.12.0-alpha.1
 
 ### Patch Changes

@@ -66,11 +66,15 @@
     "blue-spoons-unite",
     "calm-reset-package",
     "css-result-cache",
+    "doctor-command",
     "fresh-units-convert",
     "js-handler-cache-optimization",
     "js-precheck-universal",
+    "node-version-range",
     "postcss-pipeline-pruning",
     "slim-lite-merge-entries",
+    "soft-postinstall-patch",
+    "theme-transition-clip-path-compat",
     "tidy-bg-clip-autoprefixer"
   ]
 }
