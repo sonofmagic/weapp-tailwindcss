@@ -97,6 +97,29 @@ describe('uni-app-x preset', () => {
     })
   })
 
+  it('skips installed tailwind defaults for unparsable or unsupported versions', async () => {
+    env.clearBaseEnv()
+    const { uniAppX } = await import('@/presets')
+
+    getTailwindcssPackageInfoMock.mockReturnValueOnce({
+      version: 'next',
+    })
+    const unparsable = uniAppX({
+      base: '/repo/uni-app-x',
+    })
+    expect(unparsable.tailwindcssPatcherOptions?.tailwindcss?.version).toBeUndefined()
+    expect(unparsable.tailwindcss?.version).toBeUndefined()
+
+    getTailwindcssPackageInfoMock.mockReturnValueOnce({
+      version: '5.0.0',
+    })
+    const unsupported = uniAppX({
+      base: '/repo/uni-app-x',
+    })
+    expect(unsupported.tailwindcssPatcherOptions?.tailwindcss?.version).toBeUndefined()
+    expect(unsupported.tailwindcss?.version).toBeUndefined()
+  })
+
   it('enables component local styles by default in preset output', async () => {
     env.clearBaseEnv()
     process.env.UNI_UTS_PLATFORM = 'app-android'
@@ -114,6 +137,24 @@ describe('uni-app-x preset', () => {
         onlyWhenStyleIsolationVersion2: true,
       },
       uvueUnsupported: 'warn',
+    })
+  })
+
+  it('allows boolean uniAppX shortcut to override resolved enabled state', async () => {
+    env.clearBaseEnv()
+    process.env.UNI_UTS_PLATFORM = 'app-android'
+    getTailwindcssPackageInfoMock.mockReturnValue(undefined)
+    const { uniAppX } = await import('@/presets')
+
+    const result = uniAppX({
+      base: '/repo/uni-app-x',
+      uniAppX: false,
+    })
+
+    expect(result.uniAppX?.enabled).toBe(false)
+    expect(result.uniAppX?.componentLocalStyles).toEqual({
+      enabled: true,
+      onlyWhenStyleIsolationVersion2: true,
     })
   })
 
