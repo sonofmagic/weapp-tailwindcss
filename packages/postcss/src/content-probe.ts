@@ -39,60 +39,6 @@ export const EMPTY_SIGNAL: FeatureSignal = {
 const MODERN_COLOR_RE = /rgb\w*\s*\([^),][^\s),]*\s[^),][^\s),]*\s[^),][^),/]*\/[^)]+\)/i
 
 /**
- * 需要 postcss-preset-env 处理的特征关键字列表
- * 采用宽松匹配策略：宁可误报，不可漏报
- *
- * 包含以下类别：
- * - 伪类选择器：:is()、:where()、:not()（复杂参数需要 preset-env 展开）
- * - :root 选择器（pre 插件会包裹为 :is()，需要 preset-env 展平）
- * - 现代颜色函数：oklab()、oklch()、color-mix()、color()
- * - Cascade Layers：@layer
- * - 逻辑属性：margin-block、margin-inline、padding-inline、padding-block、
- *   border-inline、border-block、border-start-*-radius、border-end-*-radius、
- *   inset-inline、inset-block
- * - CSS 嵌套：& 选择器
- * - 通配符选择器 *（pre 插件会包裹为 :is(view,text)，需要 preset-env 展平）
- */
-const PRESET_ENV_KEYWORDS = [
-  ':is(',
-  ':where(',
-  ':not(',
-  ':root',
-  'oklab(',
-  'oklch(',
-  'color-mix(',
-  '@layer ',
-  'color(',
-  'padding-inline',
-  'padding-block',
-  'margin-inline',
-  'margin-block',
-  'border-inline',
-  'border-block',
-  'border-start-start-radius',
-  'border-start-end-radius',
-  'border-end-start-radius',
-  'border-end-end-radius',
-  'inset-inline',
-  'inset-block',
-] as const
-
-/**
- * 检测 CSS 嵌套语法的正则（& 后跟选择器字符）
- */
-const NESTING_RE = /&\s*[>+~.:[\w]/
-
-/**
- * 检测通配符选择器的正则（独立的 * 选择器，非属性选择器中的 *）
- */
-const UNIVERSAL_SELECTOR_RE = /(?:^|[,{\s])\*\s*[,{:]/
-
-/**
- * 检测 4 位或 8 位十六进制颜色值（带 alpha 通道，需要 preset-env 转换为 rgba）
- */
-const HEX_ALPHA_RE = /#[\da-f]{4}(?:[\da-f]{4})?(?=[;\s,)}])/i
-
-/**
  * 探测 CSS 内容特征，返回 FeatureSignal
  *
  * @param css - 待探测的 CSS 字符串

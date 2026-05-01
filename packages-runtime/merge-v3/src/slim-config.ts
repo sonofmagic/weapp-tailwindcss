@@ -11,7 +11,6 @@ const {
   isInteger,
   isLength,
   isNumber,
-  isPercent,
   isTshirtSize,
 } = validators
 

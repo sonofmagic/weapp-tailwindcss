@@ -1,4 +1,5 @@
 import type { CreateJsHandlerOptions } from '../types'
+import process from 'node:process'
 
 /** 用于检测源码中是否包含类名相关模式的正则表达式 */
 const FAST_JS_TRANSFORM_HINT_RE = /className\b|class\s*=|classList\.|\b(?:twMerge|clsx|classnames|cn|cva)\b|\[["'`]class["'`]\]|text-\[|bg-\[|\b(?:[whpm]|px|py|mx|my|rounded|flex|grid|gap)-/

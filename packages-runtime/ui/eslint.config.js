@@ -7,7 +7,7 @@ export default icebreaker(
     tailwindcss: {
       entryPoint: 'src/index.css',
     },
-    ignores: ['**/fixtures/**', '**/*.md', '**/scripts/**', '**/test/**'],
+    ignores: ['**/fixtures/**', '**/*.md', '**/*.mdx', '**/scripts/**', '**/storybook-static/**', '**/test/**'],
   },
   {
     rules: {

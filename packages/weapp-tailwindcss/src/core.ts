@@ -1,8 +1,8 @@
 import type { CreateJsHandlerOptions, IStyleHandlerOptions, ITemplateHandlerOptions, UserDefinedOptions } from './types'
 import process from 'node:process'
 import { defuOverrideArray } from '@weapp-tailwindcss/shared'
-import { shouldSkipJsTransform } from '@/js/precheck'
 import { getCompilerContext } from '@/context'
+import { shouldSkipJsTransform } from '@/js/precheck'
 import { setupPatchRecorder } from '@/tailwindcss/recorder'
 import { ensureRuntimeClassSet } from '@/tailwindcss/runtime'
 

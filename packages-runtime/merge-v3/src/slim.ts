@@ -6,8 +6,8 @@ import {
 } from '@weapp-tailwindcss/runtime'
 import {
   createTailwindMerge as _createTailwindMerge,
-  mergeConfigs,
   twJoin as _twJoin,
+  mergeConfigs,
 } from 'tailwind-merge'
 import { getSlimConfig } from './slim-config'
 
