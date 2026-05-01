@@ -1,7 +1,7 @@
 import type { OutputAsset, OutputChunk } from 'rollup'
 import type { LinkedJsModuleResult } from '@/types'
 import { Buffer } from 'node:buffer'
-import { resolveOutputSpecifier } from '../shared/module-graph'
+import { normalizeOutputPathKey, resolveOutputSpecifier } from '../shared/module-graph'
 
 export interface OutputEntry {
   fileName: string
@@ -40,19 +40,25 @@ export function createBundleModuleGraphOptions(
   outputDir: string,
   entries: Map<string, OutputEntry>,
 ) {
+  const normalizedEntries = new Map<string, OutputEntry>()
+  for (const [id, entry] of entries) {
+    normalizedEntries.set(normalizeOutputPathKey(id), entry)
+  }
+  const getEntry = (id: string) => entries.get(id) ?? normalizedEntries.get(normalizeOutputPathKey(id))
+
   return {
     resolve(specifier: string, importer: string) {
-      return resolveOutputSpecifier(specifier, importer, outputDir, candidate => entries.has(candidate))
+      return resolveOutputSpecifier(specifier, importer, outputDir, candidate => Boolean(getEntry(candidate)))
     },
     load(id: string) {
-      const entry = entries.get(id)
+      const entry = getEntry(id)
       if (!entry) {
         return undefined
       }
       return readOutputEntry(entry)
     },
     filter(id: string) {
-      return entries.has(id)
+      return Boolean(getEntry(id))
     },
   }
 }
@@ -66,9 +72,13 @@ export function applyLinkedResults(
   if (!linked) {
     return
   }
+  const normalizedEntries = new Map<string, OutputEntry>()
+  for (const [entryId, entry] of entries) {
+    normalizedEntries.set(normalizeOutputPathKey(entryId), entry)
+  }
 
   for (const [id, { code }] of Object.entries(linked)) {
-    const entry = entries.get(id)
+    const entry = entries.get(id) ?? normalizedEntries.get(normalizeOutputPathKey(id))
     if (!entry) {
       continue
     }

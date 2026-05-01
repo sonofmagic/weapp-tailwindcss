@@ -35,11 +35,16 @@ describe('tailwindcss patcher resolve helpers', () => {
     return realpath(packageRoot)
   }
 
+  async function expectSameRealPath(actual: string | undefined, expected: string) {
+    expect(actual).toBeTruthy()
+    await expect(realpath(actual!)).resolves.toBe(await realpath(expected))
+  }
+
   it('resolves package specifiers from custom lookup paths', async () => {
     const packageRoot = await createFakeTailwindPackage()
 
-    expect(resolveModuleFromPaths('fake-tailwindcss', [tempRoot])).toBe(path.join(packageRoot, 'index.js'))
-    expect(resolveModuleFromPaths('fake-tailwindcss', [path.join(tempRoot, 'node_modules')])).toBe(path.join(packageRoot, 'index.js'))
+    await expectSameRealPath(resolveModuleFromPaths('fake-tailwindcss', [tempRoot]), path.join(packageRoot, 'index.js'))
+    await expectSameRealPath(resolveModuleFromPaths('fake-tailwindcss', [path.join(tempRoot, 'node_modules')]), path.join(packageRoot, 'index.js'))
   })
 
   it('ignores empty, path-like, and unresolved specifiers', () => {
@@ -57,7 +62,7 @@ describe('tailwindcss patcher resolve helpers', () => {
     const packageRoot = await createFakeTailwindPackage()
 
     expect(resolveTailwindConfigFallback(undefined, [tempRoot])).toBeUndefined()
-    expect(resolveTailwindConfigFallback('fake-tailwindcss', [tempRoot])).toBe(path.join(packageRoot, 'stubs', 'config.full.js'))
+    await expectSameRealPath(resolveTailwindConfigFallback('fake-tailwindcss', [tempRoot]), path.join(packageRoot, 'stubs', 'config.full.js'))
     expect(resolveTailwindConfigFallback('missing-tailwindcss', [tempRoot])).toBeUndefined()
   })
 

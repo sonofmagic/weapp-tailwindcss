@@ -7,18 +7,22 @@ export const PATCH_INFO_FILENAME = 'tailwindcss-target.json'
 export const PATCH_INFO_CACHE_RELATIVE_PATH = path.join('node_modules', '.cache', 'weapp-tailwindcss', PATCH_INFO_FILENAME)
 export const PATCH_INFO_LEGACY_RELATIVE_PATH = path.join('.tw-patch', PATCH_INFO_FILENAME)
 
+function toDisplayPath(value: string) {
+  return path.normalize(value).replace(/\\/g, '/')
+}
+
 export function formatRelativeToBase(targetPath: string, baseDir?: string) {
   if (!baseDir) {
-    return path.normalize(targetPath)
+    return toDisplayPath(targetPath)
   }
   const relative = path.relative(baseDir, targetPath)
   if (!relative || relative === '.') {
     return '.'
   }
   if (relative.startsWith('..')) {
-    return path.normalize(targetPath)
+    return toDisplayPath(targetPath)
   }
-  return path.join('.', relative)
+  return toDisplayPath(path.join('.', relative))
 }
 
 export function resolveRecordLocation(baseDir: string) {

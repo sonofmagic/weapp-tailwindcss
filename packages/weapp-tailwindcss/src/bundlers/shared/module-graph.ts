@@ -2,8 +2,13 @@ import path from 'node:path'
 
 const QUERY_HASH_RE = /[?#].*$/u
 const PROTOCOL_RE = /^[a-z][a-z+.-]*:/iu
+const WINDOWS_ABSOLUTE_RE = /^[a-z]:[\\/]/iu
 const VIRTUAL_PREFIX = '\u0000'
 const JS_EXTENSIONS = ['.js', '.mjs', '.cjs']
+
+export function normalizeOutputPathKey(value: string): string {
+  return path.normalize(value).replace(/\\/g, '/')
+}
 
 export function stripQueryAndHash(specifier: string): string {
   return specifier.replace(QUERY_HASH_RE, '')
@@ -17,12 +22,15 @@ export function isResolvableSpecifier(specifier: string): boolean {
   if (normalized.startsWith(VIRTUAL_PREFIX)) {
     return false
   }
+  if (path.isAbsolute(normalized) || WINDOWS_ABSOLUTE_RE.test(normalized)) {
+    return true
+  }
   return !PROTOCOL_RE.test(normalized)
 }
 
 export function toAbsoluteOutputPath(fileName: string, outDir: string): string {
-  if (path.isAbsolute(fileName)) {
-    return fileName
+  if (path.isAbsolute(fileName) || WINDOWS_ABSOLUTE_RE.test(fileName)) {
+    return path.normalize(fileName)
   }
   return path.resolve(outDir, fileName)
 }
@@ -55,8 +63,8 @@ export function resolveOutputSpecifier(
   const normalized = stripQueryAndHash(specifier)
 
   let candidate: string
-  if (path.isAbsolute(normalized)) {
-    candidate = normalized
+  if (path.isAbsolute(normalized) || WINDOWS_ABSOLUTE_RE.test(normalized)) {
+    candidate = path.normalize(normalized)
   }
   else if (normalized.startsWith('/')) {
     candidate = path.resolve(outDir, normalized.slice(1))

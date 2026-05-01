@@ -11,7 +11,6 @@ const {
 
 const packageRoot = path.resolve(__dirname, '../..')
 const binPath = path.join(packageRoot, 'bin/weapp-tailwindcss.js')
-const distCliPath = path.join(packageRoot, 'dist/cli.js')
 
 function createMissingModulePreload() {
   const tempDir = fs.mkdtempSync(path.join(os.tmpdir(), 'weapp-tw-bin-'))
@@ -21,7 +20,7 @@ const Module = require('node:module')
 const originalLoad = Module._load
 Module._load = function patchedLoad(request, parent, isMain) {
   const resolved = Module._resolveFilename(request, parent, isMain)
-  if (resolved === ${JSON.stringify(distCliPath)}) {
+  if (resolved.replace(/\\\\/g, '/').endsWith('/dist/cli.js')) {
     const error = new Error("Cannot find module 'postcss-units-to-px'")
     error.code = 'MODULE_NOT_FOUND'
     throw error
@@ -92,12 +91,11 @@ describe('postinstall patch script', () => {
     try {
       runPostinstallPatch()
 
-      expect(spawnSyncMock).toHaveBeenCalledWith(process.execPath, [
-        expect.stringContaining('bin/weapp-tailwindcss.js'),
-        'patch',
-      ], {
-        encoding: 'utf8',
-      })
+      expect(spawnSyncMock).toHaveBeenCalledTimes(1)
+      const [command, args, options] = spawnSyncMock.mock.calls[0]
+      expect(command).toBe(process.execPath)
+      expect(args).toEqual([binPath, 'patch'])
+      expect(options).toEqual({ encoding: 'utf8' })
       expect(stdoutWrite).toHaveBeenCalledWith('out')
       expect(stderrWrite).toHaveBeenCalledWith("Cannot find module 'postcss-units-to-px'")
       expect(stderrWrite).toHaveBeenCalledWith(expect.stringContaining('runtime module is missing'))

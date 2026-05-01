@@ -15,6 +15,7 @@ describe('bundlers shared module graph utilities', () => {
     expect(isResolvableSpecifier('node:fs')).toBe(false)
     expect(isResolvableSpecifier('https://example.com/app.js')).toBe(false)
     expect(isResolvableSpecifier('./app.js?raw')).toBe(true)
+    expect(isResolvableSpecifier('D:\\project\\dist\\app.js')).toBe(true)
   })
 
   it('resolves relative and absolute output specifiers with extension fallback', () => {
@@ -32,8 +33,21 @@ describe('bundlers shared module graph utilities', () => {
     expect(resolveOutputSpecifier('./missing', importer, outDir, hasOutput)).toBeUndefined()
   })
 
+  it('resolves Windows absolute output specifiers before protocol filtering', () => {
+    const outDir = 'D:\\project\\dist'
+    const importer = 'D:\\project\\dist\\pages\\index\\index.js'
+    const absoluteOutput = 'D:\\project\\dist\\absolute.js'
+    const outputs = new Set([absoluteOutput])
+    const hasOutput = (value: string) => outputs.has(value)
+
+    expect(resolveOutputSpecifier('D:\\project\\dist\\absolute', importer, outDir, hasOutput)).toBe(absoluteOutput)
+  })
+
   it('normalizes relative output filenames against outDir', () => {
-    expect(toAbsoluteOutputPath('/already/app.js', '/project/dist')).toBe('/already/app.js')
-    expect(toAbsoluteOutputPath('pages/index.js', '/project/dist')).toBe(path.resolve('/project/dist/pages/index.js'))
+    const outDir = path.resolve('/project/dist')
+    const absoluteOutputPath = path.resolve('/already/app.js')
+
+    expect(toAbsoluteOutputPath(absoluteOutputPath, outDir)).toBe(path.normalize(absoluteOutputPath))
+    expect(toAbsoluteOutputPath('pages/index.js', outDir)).toBe(path.resolve(outDir, 'pages/index.js'))
   })
 })

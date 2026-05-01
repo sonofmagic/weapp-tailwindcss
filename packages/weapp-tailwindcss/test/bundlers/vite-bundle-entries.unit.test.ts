@@ -1,3 +1,4 @@
+import path from 'node:path'
 import { describe, expect, it, vi } from 'vitest'
 import {
   applyLinkedResults,
@@ -37,19 +38,22 @@ describe('vite bundle entries', () => {
   })
 
   it('creates module graph options over bundle outputs', () => {
-    const outputDir = '/project/dist'
+    const outputDir = path.resolve('/project/dist')
+    const appId = path.join(outputDir, 'app.js')
+    const depId = path.join(outputDir, 'dep.js')
+    const missingId = path.join(outputDir, 'missing.js')
     const entries = new Map([
-      ['/project/dist/app.js', { fileName: 'app.js', output: chunk('import "./dep"') }],
-      ['/project/dist/dep.js', { fileName: 'dep.js', output: chunk('export {}') }],
+      [appId, { fileName: 'app.js', output: chunk('import "./dep"') }],
+      [depId, { fileName: 'dep.js', output: chunk('export {}') }],
     ])
     const options = createBundleModuleGraphOptions(outputDir, entries)
 
-    expect(options.filter('/project/dist/app.js')).toBe(true)
-    expect(options.filter('/project/dist/missing.js')).toBe(false)
-    expect(options.load('/project/dist/app.js')).toBe('import "./dep"')
-    expect(options.load('/project/dist/missing.js')).toBeUndefined()
-    expect(options.resolve('./dep?x=1', '/project/dist/app.js')).toBe('/project/dist/dep.js')
-    expect(options.resolve('node:fs', '/project/dist/app.js')).toBeUndefined()
+    expect(options.filter(appId)).toBe(true)
+    expect(options.filter(missingId)).toBe(false)
+    expect(options.load(appId)).toBe('import "./dep"')
+    expect(options.load(missingId)).toBeUndefined()
+    expect(options.resolve('./dep?x=1', appId)).toBe(depId)
+    expect(options.resolve('node:fs', appId)).toBeUndefined()
   })
 
   it('applies linked code to chunks and assets only when content changed', () => {
@@ -79,5 +83,21 @@ describe('vite bundle entries', () => {
     expect(onLinkedUpdate).toHaveBeenCalledTimes(2)
     expect(onLinkedUpdate).toHaveBeenNthCalledWith(1, 'app.js', 'old', 'new')
     expect(onLinkedUpdate).toHaveBeenNthCalledWith(2, 'app.sjs', 'asset-old', 'asset-new')
+  })
+
+  it('applies linked code when output ids use different path separators', () => {
+    const onLinkedUpdate = vi.fn()
+    const chunkFile = 'D:\\project\\dist\\chunk.js'
+    const chunkEntry = { fileName: 'chunk.js', output: chunk('old') }
+    const entries = new Map([
+      [chunkFile, chunkEntry],
+    ])
+
+    applyLinkedResults({
+      'D:/project/dist/chunk.js': { code: 'new' } as never,
+    }, entries, onLinkedUpdate)
+
+    expect(chunkEntry.output.code).toBe('new')
+    expect(onLinkedUpdate).toHaveBeenCalledWith('chunk.js', 'old', 'new')
   })
 })
