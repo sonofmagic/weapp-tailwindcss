@@ -48,6 +48,33 @@ describe('selectorParser', () => {
     expect(rule.toString()).toMatchSnapshot()
   })
 
+  it('fallbackRemove caches keep, update and remove results for repeated rule selectors', () => {
+    const fallback = getFallbackRemove(undefined, {} as IStyleHandlerOptions)
+
+    const keepRule = postcss.parse('.keep{}').first as Rule
+    fallback.transformSync(keepRule)
+    expect(keepRule.selector).toBe('.keep')
+    const cachedKeepRule = postcss.parse('.keep{}').first as Rule
+    fallback.transformSync(cachedKeepRule)
+    expect(cachedKeepRule.selector).toBe('.keep')
+
+    const updateRule = postcss.parse('#app :is(.space-x-4>view+view){}').first as Rule
+    fallback.transformSync(updateRule)
+    expect(updateRule.selector).toBe('#app .space-x-4>view+view')
+    const cachedUpdateRule = postcss.parse('#app :is(.space-x-4>view+view){}').first as Rule
+    fallback.transformSync(cachedUpdateRule)
+    expect(cachedUpdateRule.selector).toBe('#app .space-x-4>view+view')
+
+    const removeRoot = postcss.parse('[hidden]{}')
+    const removeRule = removeRoot.first as Rule
+    fallback.transformSync(removeRule)
+    expect(removeRule.parent).toBeUndefined()
+    const cachedRemoveRoot = postcss.parse('[hidden]{}')
+    const cachedRemoveRule = cachedRemoveRoot.first as Rule
+    fallback.transformSync(cachedRemoveRule)
+    expect(cachedRemoveRule.parent).toBeUndefined()
+  })
+
   it('ruleTransformSync caches parser per options instance', () => {
     const options: IStyleHandlerOptions = {
       cssSelectorReplacement: {

@@ -29,6 +29,12 @@ describe('utils/createNameMatcher', () => {
     expect(matcher('no-hit')).toBe(false)
   })
 
+  it('performs single-string fuzzy matches through the fast path', () => {
+    const matcher = createNameMatcher(['needle'])
+    expect(matcher('has needle inside')).toBe(true)
+    expect(matcher('missing')).toBe(false)
+  })
+
   it('handles regular expressions with global flag safely', () => {
     const matcher = createNameMatcher([GLOBAL_FOO_REGEXP])
     expect(matcher('foo foo')).toBe(true)
@@ -40,5 +46,23 @@ describe('utils/createNameMatcher', () => {
     const matcher = createNameMatcher([EXACT_STYLED_REGEXP], { exact: true })
     expect(matcher('styled')).toBe(true)
     expect(matcher('styled.div')).toBe(false)
+  })
+
+  it('supports exact mode with mixed strings and regex patterns', () => {
+    const matcher = createNameMatcher(['weappTwIgnore', /^tw[A-Z]/], { exact: true })
+    expect(matcher('weappTwIgnore')).toBe(true)
+    expect(matcher('twIgnore')).toBe(true)
+    expect(matcher('other')).toBe(false)
+  })
+
+  it('supports fuzzy mode with regex-only and mixed matchers', () => {
+    const regexOnly = createNameMatcher([/^tw[A-Z]/])
+    const mixed = createNameMatcher(['ignore', /^tw[A-Z]/])
+
+    expect(regexOnly('twIgnore')).toBe(true)
+    expect(regexOnly('other')).toBe(false)
+    expect(mixed('should-ignore')).toBe(true)
+    expect(mixed('twIgnore')).toBe(true)
+    expect(mixed('other')).toBe(false)
   })
 })

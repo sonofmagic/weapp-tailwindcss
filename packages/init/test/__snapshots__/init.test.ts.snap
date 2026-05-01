@@ -1,19 +1,5 @@
 // Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
-exports[`init > common > pkgJson 1`] = `
-{
-  "devDependencies": {
-    "autoprefixer": "^10.4.21",
-    "postcss": "^8.5.3",
-    "tailwindcss": "^3.4.18",
-    "weapp-tailwindcss": "^3.8.0-alpha.2",
-  },
-  "scripts": {
-    "postinstall": "weapp-tw patch",
-  },
-}
-`;
-
 exports[`init > common > postcssConfig 1`] = `
 "module.exports = {
   plugins: {
@@ -40,21 +26,6 @@ module.exports = {
   },
 }
 "
-`;
-
-exports[`init > esm > pkgJson 1`] = `
-{
-  "devDependencies": {
-    "autoprefixer": "^10.4.21",
-    "postcss": "^8.5.3",
-    "tailwindcss": "^3.4.18",
-    "weapp-tailwindcss": "^3.8.0-alpha.2",
-  },
-  "scripts": {
-    "postinstall": "weapp-tw patch",
-  },
-  "type": "module",
-}
 `;
 
 exports[`init > esm > postcssConfig 1`] = `

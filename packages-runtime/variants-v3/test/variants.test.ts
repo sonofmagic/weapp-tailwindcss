@@ -189,4 +189,60 @@ describe('variants-v3 runtime', () => {
 
     expect(button()).toBe('text-_b_hececec_B')
   })
+
+  it('returns nullish cn and cnBase results unchanged', () => {
+    expect(cn(null)()).toBeUndefined()
+    expect(cnBase(null)).toBeUndefined()
+  })
+
+  it('wraps slot components and preserves non-function slot metadata', () => {
+    const card = tv({
+      slots: {
+        root: 'text-[#ececec]',
+        label: 'text-[#101010]',
+      },
+      variants: {
+        tone: {
+          danger: {
+            root: 'bg-[#ff0000]',
+            label: 'text-[#ff0000]',
+          },
+        },
+      },
+    })
+
+    const slots = card({ tone: 'danger' })
+
+    expect(slots.root()).toBe('text-_b_hececec_B bg-_b_hff0000_B')
+    expect(slots.label()).toBe('text-_b_hff0000_B')
+  })
+
+  it('lets per-call createTV config override runtime twMergeConfig', () => {
+    const runtime = create({ escape: false }, {
+      twMergeConfig: {
+        extend: {
+          classGroups: {
+            'font-size': [{ text: ['32'] }],
+          },
+        },
+      },
+    })
+    const makeTv = runtime.createTV({
+      twMerge: true,
+    })
+    const badge = makeTv(
+      { base: 'text-32 text-surface-700' },
+      {
+        twMergeConfig: {
+          extend: {
+            classGroups: {
+              shadow: [{ shadow: ['card'] }],
+            },
+          },
+        },
+      },
+    )
+
+    expect(badge()).toBe('text-surface-700')
+  })
 })

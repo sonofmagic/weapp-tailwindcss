@@ -206,6 +206,7 @@ export function walkEvalExpression(
         for (const q of n.quasis as any[]) {
           const stub = {
             node: q as TemplateElement,
+            isStringLiteral: () => false,
             isTemplateElement: () => true,
           } as unknown as NodePath<TemplateElement>
           handleEvalTemplateElement(stub, templateHandlerOptions, updater, handler)

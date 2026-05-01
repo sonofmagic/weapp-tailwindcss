@@ -26,6 +26,7 @@ function getGenerateBundleHandler(plugin: Plugin) {
 describe('bundlers/vite UnifiedViteWeappTailwindcssPlugin uni-app-x', () => {
   beforeEach(() => {
     vi.resetModules()
+    vi.doUnmock('@/bundlers/vite/incremental-runtime-class-set')
     resetVitePluginTestContext()
   })
 
@@ -125,6 +126,122 @@ describe('bundlers/vite UnifiedViteWeappTailwindcssPlugin uni-app-x', () => {
       }),
     )
     expect((bundle['index.asset.js'] as OutputAsset).source).toBe('js:console.log("text-[#565656]")')
+  }, TEST_TIMEOUT_MS)
+
+  it('skips clean uni-app-x js assets during generateBundle precheck', async () => {
+    const runtimeSet = new Set(['text-[#424242]'])
+    const syncMock = vi.fn(async () => runtimeSet)
+    vi.doMock('@/bundlers/vite/incremental-runtime-class-set', () => ({
+      createBundleRuntimeClassSetManager: () => ({
+        sync: syncMock,
+        reset: vi.fn(async () => undefined),
+      }),
+    }))
+
+    const UnifiedViteWeappTailwindcssPlugin = await loadUnifiedVitePlugin()
+    setCurrentContext(createContext({
+      uniAppX: { enabled: true },
+      twPatcher: {
+        patch: vi.fn(),
+        getClassSet: vi.fn(async () => runtimeSet),
+        getClassSetSync: vi.fn(() => runtimeSet),
+        extract: vi.fn(async () => ({ classSet: runtimeSet })),
+        majorVersion: 4,
+      },
+    }))
+    const currentContext = getCurrentContext()
+    const plugins = UnifiedViteWeappTailwindcssPlugin()
+    const postPlugin = plugins?.find(plugin => plugin.name === 'weapp-tailwindcss:adaptor:post') as Plugin
+    expect(postPlugin).toBeTruthy()
+
+    await (postPlugin.configResolved as any)?.call(postPlugin, {
+      command: 'build',
+      css: { postcss: { plugins: [] } },
+      build: { outDir: 'dist' },
+      root: process.cwd(),
+    } as unknown as ResolvedConfig)
+
+    const bundle = {
+      'index.asset.js': {
+        type: 'asset',
+        fileName: 'index.asset.js',
+        source: 'console.log(1)',
+        name: undefined,
+        needsCodeReference: false,
+        names: [] as string[],
+        originalFileName: null,
+        originalFileNames: [] as string[],
+      } satisfies OutputAsset,
+    }
+
+    const generateBundle = getGenerateBundleHandler(postPlugin)
+    await generateBundle?.call(postPlugin, {} as any, bundle)
+
+    expect(syncMock).toHaveBeenCalledTimes(1)
+    expect(currentContext.jsHandler).not.toHaveBeenCalled()
+    expect((bundle['index.asset.js'] as OutputAsset).source).toBe('console.log(1)')
+  }, TEST_TIMEOUT_MS)
+
+  it('replays cached uni-app-x js asset output on clean incremental bundle rounds', async () => {
+    const runtimeSet = new Set(['text-[#424242]'])
+    vi.doMock('@/bundlers/vite/incremental-runtime-class-set', () => ({
+      createBundleRuntimeClassSetManager: () => ({
+        sync: vi.fn(async () => runtimeSet),
+        reset: vi.fn(async () => undefined),
+      }),
+    }))
+
+    const UnifiedViteWeappTailwindcssPlugin = await loadUnifiedVitePlugin()
+    setCurrentContext(createContext({
+      uniAppX: { enabled: true },
+      jsHandler: vi.fn((code: string) => ({ code: `asset:${code}` })),
+      twPatcher: {
+        patch: vi.fn(),
+        getClassSet: vi.fn(async () => runtimeSet),
+        getClassSetSync: vi.fn(() => runtimeSet),
+        extract: vi.fn(async () => ({ classSet: runtimeSet })),
+        majorVersion: 4,
+      },
+    }))
+    const currentContext = getCurrentContext()
+    const plugins = UnifiedViteWeappTailwindcssPlugin()
+    const postPlugin = plugins?.find(plugin => plugin.name === 'weapp-tailwindcss:adaptor:post') as Plugin
+    expect(postPlugin).toBeTruthy()
+
+    await (postPlugin.configResolved as any)?.call(postPlugin, {
+      command: 'serve',
+      css: { postcss: { plugins: [] } },
+      build: { outDir: 'dist' },
+      root: process.cwd(),
+    } as unknown as ResolvedConfig)
+
+    const createAsset = () => ({
+      type: 'asset' as const,
+      fileName: 'index.asset.js',
+      source: 'const cls = "text-[#424242]"',
+      name: undefined,
+      needsCodeReference: false,
+      names: [] as string[],
+      originalFileName: null,
+      originalFileNames: [] as string[],
+    }) satisfies OutputAsset
+
+    const generateBundle = getGenerateBundleHandler(postPlugin)
+    const firstBundle = {
+      'index.asset.js': createAsset(),
+    }
+    await generateBundle?.call(postPlugin, {} as any, firstBundle)
+    expect((firstBundle['index.asset.js'] as OutputAsset).source).toBe('asset:const cls = "text-[#424242]"')
+
+    currentContext.jsHandler.mockClear()
+
+    const secondBundle = {
+      'index.asset.js': createAsset(),
+    }
+    await generateBundle?.call(postPlugin, {} as any, secondBundle)
+
+    expect(currentContext.jsHandler).not.toHaveBeenCalled()
+    expect((secondBundle['index.asset.js'] as OutputAsset).source).toBe('asset:const cls = "text-[#424242]"')
   }, TEST_TIMEOUT_MS)
 
   it('reuses css handler override objects for repeated uni-app-x style transforms', async () => {

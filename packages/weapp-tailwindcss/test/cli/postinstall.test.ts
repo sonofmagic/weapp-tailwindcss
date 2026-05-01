@@ -2,7 +2,7 @@ import { spawnSync } from 'node:child_process'
 import fs from 'node:fs'
 import os from 'node:os'
 import path from 'node:path'
-import { describe, expect, it } from 'vitest'
+import { afterEach, describe, expect, it, vi } from 'vitest'
 
 const {
   isMissingRuntimeModuleOutput,
@@ -36,6 +36,12 @@ Module._load = function patchedLoad(request, parent, isMain) {
 }
 
 describe('postinstall patch script', () => {
+  afterEach(() => {
+    vi.restoreAllMocks()
+    vi.resetModules()
+    vi.doUnmock('node:child_process')
+  })
+
   it('skips missing runtime module failures during install', () => {
     const stderr = "Error: Cannot find module 'postcss-units-to-px'\ncode: 'MODULE_NOT_FOUND'"
     const result = resolvePostinstallPatchExitCode({
@@ -56,6 +62,52 @@ describe('postinstall patch script', () => {
       stderr: 'patch failed',
     }).code).toBe(1)
   })
+
+  it('returns a successful skip result when spawn reports an execution error', () => {
+    expect(resolvePostinstallPatchExitCode({
+      error: new Error('spawn failed'),
+    }).code).toBe(0)
+    expect(resolvePostinstallPatchExitCode({
+      error: new Error('spawn failed'),
+    }).message).toContain('spawn failed')
+  })
+
+  it('runs the patch command and forwards output streams', async () => {
+    const stdoutWrite = vi.spyOn(process.stdout, 'write').mockImplementation(() => true)
+    const stderrWrite = vi.spyOn(process.stderr, 'write').mockImplementation(() => true)
+    const spawnSyncMock = vi.fn(() => ({
+      status: 1,
+      stdout: 'out',
+      stderr: "Cannot find module 'postcss-units-to-px'",
+    }))
+
+    vi.resetModules()
+    vi.doMock('node:child_process', () => ({
+      spawnSync: spawnSyncMock,
+    }))
+
+    const { runPostinstallPatch } = await import('../../scripts/postinstall.mjs')
+    const previousExitCode = process.exitCode
+
+    try {
+      runPostinstallPatch()
+
+      expect(spawnSyncMock).toHaveBeenCalledWith(process.execPath, [
+        expect.stringContaining('bin/weapp-tailwindcss.js'),
+        'patch',
+      ], {
+        encoding: 'utf8',
+      })
+      expect(stdoutWrite).toHaveBeenCalledWith('out')
+      expect(stderrWrite).toHaveBeenCalledWith("Cannot find module 'postcss-units-to-px'")
+      expect(stderrWrite).toHaveBeenCalledWith(expect.stringContaining('runtime module is missing'))
+      expect(process.exitCode).toBe(0)
+    }
+    finally {
+      process.exitCode = previousExitCode
+    }
+  })
+
 
   it('lets bin skip missing module failures only during install lifecycle', () => {
     const preload = createMissingModulePreload()

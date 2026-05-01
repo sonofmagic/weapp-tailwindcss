@@ -199,7 +199,9 @@ describe('bundlers/webpack UnifiedWebpackPluginV5', () => {
         }
         return {
           source: {
-            source: () => content,
+            source: () => file === 'same.js'
+              ? { toString: () => content }
+              : content,
           },
         }
       },
@@ -421,6 +423,111 @@ describe('bundlers/webpack UnifiedWebpackPluginV5', () => {
     await processAssetsCallbacks[0](createAssetsFromStore(currentAssetStore))
 
     expect(currentContext.refreshTailwindcssPatcher).toHaveBeenCalledTimes(1)
+  })
+
+  it('prepares runtime metadata from the injected loader and tolerates token collection failures', async () => {
+    currentContext.twPatcher.options = {
+      tailwindcss: {
+        config: '/workspace/tailwind.config.ts',
+        v4: {
+          cssEntries: ['/workspace/src/app.css'],
+          sources: [
+            { base: '/workspace/src' },
+            {},
+          ],
+        },
+      },
+    } as any
+    currentContext.twPatcher.collectContentTokens = vi.fn(async () => {
+      throw new Error('collect failed')
+    })
+    const { compiler, getLoaderHandler } = createCompilerWithLoaderTracking()
+    const plugin = new UnifiedWebpackPluginV5()
+    plugin.apply(compiler as any)
+
+    const module: LoaderModule = {
+      resource: '/workspace/src/app.css',
+      loaders: [{ loader: '/path/postcss-loader.js' }],
+    }
+    getLoaderHandler()?.({}, module)
+
+    const classSetLoaderEntry = module.loaders.find(entry => entry.loader === currentContext.runtimeLoaderPath)
+    expect(classSetLoaderEntry?.options?.getClassSet).toEqual(expect.any(Function))
+    expect(classSetLoaderEntry?.options?.getWatchDependencies).toEqual(expect.any(Function))
+
+    await classSetLoaderEntry?.options?.getClassSet()
+    await classSetLoaderEntry?.options?.getClassSet()
+
+    expect(currentContext.twPatcher.collectContentTokens).toHaveBeenCalledTimes(1)
+    expect(currentContext.twPatcher.extract).toHaveBeenCalledTimes(1)
+
+    const dependencies = classSetLoaderEntry?.options?.getWatchDependencies()
+    expect([...dependencies.files]).toEqual([
+      '/workspace/tailwind.config.ts',
+      '/workspace/src/app.css',
+    ])
+    expect([...dependencies.contexts]).toEqual(['/workspace/src'])
+  })
+
+  it('skips webpack hooks when the plugin is disabled', () => {
+    currentContext = createContext({ disabled: true })
+    const { compiler } = createCompilerWithLoaderTracking()
+
+    const plugin = new UnifiedWebpackPluginV5()
+    plugin.apply(compiler as any)
+
+    expect(currentContext.twPatcher.patch).not.toHaveBeenCalled()
+    expect(currentContext.onLoad).not.toHaveBeenCalled()
+    expect(compiler.webpack.NormalModule.getCompilationHooks).not.toHaveBeenCalled()
+  })
+
+  it('adds content token report entries and sources to runtime watch dependencies', async () => {
+    currentContext.twPatcher.options = {
+      tailwindcss: {
+        config: '/workspace/tailwind.config.ts',
+        v4: {
+          cssEntries: ['/workspace/src/app.css'],
+          sources: [
+            { base: '/workspace/src' },
+            {},
+          ],
+        },
+      },
+    } as any
+    currentContext.twPatcher.collectContentTokens = vi.fn(async () => ({
+      entries: [
+        { file: '/workspace/src/pages/home.wxml' },
+        {},
+      ],
+      sources: [
+        { base: '/workspace/src/components' },
+        {},
+      ],
+    }))
+    const { compiler, getLoaderHandler } = createCompilerWithLoaderTracking()
+    const plugin = new UnifiedWebpackPluginV5()
+    plugin.apply(compiler as any)
+
+    const module: LoaderModule = {
+      resource: '/workspace/src/app.css',
+      loaders: [{ loader: '/path/postcss-loader.js' }],
+    }
+    getLoaderHandler()?.({}, module)
+
+    const classSetLoaderEntry = module.loaders.find(entry => entry.loader === currentContext.runtimeLoaderPath)
+    await classSetLoaderEntry?.options?.getClassSet()
+
+    expect(currentContext.twPatcher.collectContentTokens).toHaveBeenCalledTimes(1)
+    const dependencies = classSetLoaderEntry?.options?.getWatchDependencies()
+    expect([...dependencies.files]).toEqual([
+      '/workspace/tailwind.config.ts',
+      '/workspace/src/app.css',
+      '/workspace/src/pages/home.wxml',
+    ])
+    expect([...dependencies.contexts]).toEqual([
+      '/workspace/src',
+      '/workspace/src/components',
+    ])
   })
 
   it('reuses css handler override objects for repeated asset updates', async () => {
@@ -1515,6 +1622,9 @@ describe('bundlers/webpack UnifiedWebpackPluginV5', () => {
             code: `js:${code}`,
             linked: {
               [path.resolve(outDir, 'chunk.js')]: { code: 'linked:chunk' },
+              [path.resolve(outDir, 'external.js')]: { code: 'linked:external' },
+              [path.resolve(outDir, 'missing.js')]: { code: 'linked:missing' },
+              [path.resolve(outDir, 'same.js')]: { code: 'const same = "beta";' },
             },
           }
         }
@@ -1529,9 +1639,14 @@ describe('bundlers/webpack UnifiedWebpackPluginV5', () => {
     const assetStore = {
       'index.js': 'import "./chunk.js";',
       'chunk.js': 'import { bar } from "./dep"; export const foo = bar;',
+      'same.js': 'const same = "beta";',
     }
     currentAssetStore = assetStore
-    const assetsRun = createAssetsFromStore(assetStore)
+    const assetsRun = createAssetsFromStore({
+      ...assetStore,
+      'missing.js': 'missing',
+      'orphan.js': 'orphan',
+    })
     await processAssetsCallbacks[0](assetsRun)
 
     expect(currentContext.jsHandler).toHaveBeenCalledTimes(2)
@@ -1539,10 +1654,17 @@ describe('bundlers/webpack UnifiedWebpackPluginV5', () => {
     expect(chunkUpdate?.[1].toString()).toBe('linked:chunk')
     const onUpdateCalls = currentContext.onUpdate.mock.calls.filter(([file]) => file === 'chunk.js')
     expect(onUpdateCalls.some(([, , updated]) => updated === 'linked:chunk')).toBe(true)
+    expect(currentContext.onUpdate.mock.calls.some(([file]) => file === 'same.js')).toBe(false)
+    expect(updateAsset.mock.calls.some(([file]) => file === 'missing.js')).toBe(false)
+    expect(updateAsset.mock.calls.some(([file]) => file === 'orphan.js')).toBe(false)
 
     const [firstCall] = currentContext.jsHandler.mock.calls
     const options = firstCall?.[2]
     expect(options?.moduleGraph?.resolve?.('./chunk.js', options.filename ?? '')).toBe(path.resolve(outDir, 'chunk.js'))
+    expect(options?.moduleGraph?.load?.(path.resolve(outDir, 'chunk.js'))).toContain('bar')
+    expect(options?.moduleGraph?.load?.(path.resolve(outDir, 'missing.js'))).toBeUndefined()
+    expect(options?.moduleGraph?.filter?.(path.resolve(outDir, 'orphan.js'))).toBe(true)
+    expect(options?.moduleGraph?.filter?.(path.resolve(outDir, 'external.js'))).toBe(false)
   })
 
   it('only applies css import rewrite for tailwindcss v4 projects', () => {

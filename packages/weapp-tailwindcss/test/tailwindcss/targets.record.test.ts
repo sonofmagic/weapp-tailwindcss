@@ -6,7 +6,12 @@ import path from 'node:path'
 import { logger } from '@weapp-tailwindcss/logger'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import { md5Hash } from '@/cache/md5'
-import { __resetPatchTargetRecordWarningsForTests, createPatchTargetRecorder } from '@/tailwindcss/targets'
+import {
+  __resetPatchTargetRecordWarningsForTests,
+  createPatchTargetRecorder,
+  saveCliPatchTargetRecord,
+} from '@/tailwindcss/targets'
+import { readPatchTargetRecord } from '@/tailwindcss/targets/record-io'
 
 describe('tailwindcss target records', () => {
   let workspaceRoot: string
@@ -115,5 +120,101 @@ describe('tailwindcss target records', () => {
     expect(warnSpy).toHaveBeenCalledTimes(1)
     expect(warnSpy.mock.calls[0][0]).toContain('损坏的 Tailwind CSS 目标记录')
     expect(recorder).toBeTruthy()
+  })
+
+  it('reads valid records and ignores missing base directories', async () => {
+    const recordFile = path.join(workspaceRoot, 'node_modules/.cache/weapp-tailwindcss/tailwindcss-target.json')
+    await mkdir(path.dirname(recordFile), { recursive: true })
+    await writeFile(recordFile, `${JSON.stringify({
+      tailwindPackagePath: path.join(workspaceRoot, 'node_modules/tailwindcss'),
+      packageVersion: '4.0.0',
+    })}\n`, 'utf8')
+
+    expect(readPatchTargetRecord()).toBeUndefined()
+    const result = readPatchTargetRecord(workspaceRoot)
+
+    expect(result?.baseDir).toBe(path.normalize(workspaceRoot))
+    expect(result?.path).toBe(recordFile)
+    expect(result?.record.tailwindPackagePath).toBe(path.join(workspaceRoot, 'node_modules/tailwindcss'))
+  })
+
+  it('warns once for invalid records missing tailwindPackagePath', async () => {
+    const recordFile = path.join(workspaceRoot, 'node_modules/.cache/weapp-tailwindcss/tailwindcss-target.json')
+    await mkdir(path.dirname(recordFile), { recursive: true })
+    await writeFile(recordFile, `${JSON.stringify({
+      packageVersion: '4.0.0',
+    })}\n`, 'utf8')
+    const warnSpy = vi.spyOn(logger, 'warn').mockImplementation(() => {})
+
+    expect(readPatchTargetRecord(workspaceRoot)).toBeUndefined()
+    expect(readPatchTargetRecord(workspaceRoot)).toBeUndefined()
+
+    expect(warnSpy).toHaveBeenCalledTimes(1)
+    expect(warnSpy.mock.calls[0][0]).toContain('缺少 tailwindPackagePath 字段')
+  })
+
+  it('saves cli patch target records with custom metadata', async () => {
+    const recordPath = path.join(workspaceRoot, 'custom', 'tailwindcss-target.json')
+    const patcher = {
+      packageInfo: {
+        rootPath: path.join(workspaceRoot, 'node_modules/tailwindcss'),
+        version: '4.0.0',
+      },
+    } as TailwindcssPatcherLike
+
+    const savedPath = await saveCliPatchTargetRecord(workspaceRoot, patcher, {
+      cwd: path.join(workspaceRoot, 'apps/demo'),
+      packageJsonPath: path.join(workspaceRoot, 'package.json'),
+      recordKey: 'custom-key',
+      recordPath,
+      source: 'runtime',
+    })
+    const record = JSON.parse(await readFile(recordPath, 'utf8'))
+
+    expect(savedPath).toBe(recordPath)
+    expect(record).toMatchObject({
+      tailwindPackagePath: path.normalize(patcher.packageInfo!.rootPath!),
+      packageVersion: '4.0.0',
+      source: 'runtime',
+      tailwindcssBasedir: path.normalize(workspaceRoot),
+      cwd: path.normalize(path.join(workspaceRoot, 'apps/demo')),
+      packageJsonPath: path.join(workspaceRoot, 'package.json'),
+      recordKey: 'custom-key',
+    })
+    expect(record.recordedAt).toEqual(expect.any(String))
+    expect(record.patchVersion).toEqual(expect.any(String))
+  })
+
+  it('skips saving when required inputs are missing and warns on write failures', async () => {
+    const patcher = {
+      packageInfo: {
+        rootPath: path.join(workspaceRoot, 'node_modules/tailwindcss'),
+        version: '4.0.0',
+      },
+    } as TailwindcssPatcherLike
+    const warnSpy = vi.spyOn(logger, 'warn').mockImplementation(() => {})
+    const debugSpy = vi.spyOn(logger, 'debug').mockImplementation(() => {})
+    const recordDirectory = path.join(workspaceRoot, 'record-as-directory')
+    await mkdir(recordDirectory, { recursive: true })
+
+    await expect(saveCliPatchTargetRecord(undefined, patcher)).resolves.toBeUndefined()
+    await expect(saveCliPatchTargetRecord(workspaceRoot, undefined)).resolves.toBeUndefined()
+    await expect(saveCliPatchTargetRecord(workspaceRoot, {
+      packageInfo: {},
+    } as TailwindcssPatcherLike)).resolves.toBeUndefined()
+    await expect(saveCliPatchTargetRecord(workspaceRoot, patcher, {
+      recordPath: recordDirectory,
+    })).resolves.toBeUndefined()
+
+    expect(warnSpy).toHaveBeenCalledWith(
+      '自动更新 Tailwind CSS 补丁记录失败，请在 %s 运行 "weapp-tw patch --cwd %s"。',
+      expect.any(String),
+      path.normalize(workspaceRoot),
+    )
+    expect(debugSpy).toHaveBeenCalledWith(
+      'failed to persist patch target record %s: %O',
+      path.normalize(recordDirectory),
+      expect.any(Error),
+    )
   })
 })

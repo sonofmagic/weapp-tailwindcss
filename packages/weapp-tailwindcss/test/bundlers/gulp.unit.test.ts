@@ -2,6 +2,7 @@ import type { Transform } from 'node:stream'
 import { Buffer } from 'node:buffer'
 import fs from 'node:fs'
 import path from 'node:path'
+import process from 'node:process'
 import Vinyl from 'vinyl'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 import { createPlugins } from '@/bundlers/gulp'
@@ -12,6 +13,8 @@ interface InternalContext {
   styleHandler: ReturnType<typeof vi.fn>
   jsHandler: ReturnType<typeof vi.fn>
   cache: ReturnType<typeof createCache>
+  jsMatcher?: ReturnType<typeof vi.fn>
+  wxsMatcher?: ReturnType<typeof vi.fn>
   twPatcher: {
     patch: ReturnType<typeof vi.fn>
     getClassSet: ReturnType<typeof vi.fn>
@@ -34,6 +37,15 @@ function createFile(path: string, contents: string) {
     base: '/src',
     path,
     contents: Buffer.from(contents),
+  })
+}
+
+function createNullFile(path: string) {
+  return new Vinyl({
+    cwd: '/',
+    base: '/src',
+    path,
+    contents: null,
   })
 }
 
@@ -75,6 +87,8 @@ describe('bundlers/gulp createPlugins', () => {
       styleHandler,
       jsHandler,
       cache,
+      jsMatcher: vi.fn((id: string) => id.endsWith('.js')),
+      wxsMatcher: vi.fn((id: string) => id.endsWith('.wxs')),
       twPatcher,
     }
 
@@ -242,5 +256,141 @@ describe('bundlers/gulp createPlugins', () => {
     const secondOptions = jsHandler.mock.calls[1]?.[2]
 
     expect(firstOptions?.moduleGraph).toBe(secondOptions?.moduleGraph)
+  })
+
+  it('passes through empty vinyl files without invoking handlers', async () => {
+    const plugins = createPlugins()
+
+    await runTransform(plugins.transformWxss(), createNullFile('/src/app.wxss'))
+    await runTransform(plugins.transformJs(), createNullFile('/src/app.js'))
+    await runTransform(plugins.transformWxml(), createNullFile('/src/app.wxml'))
+
+    expect(styleHandler).not.toHaveBeenCalled()
+    expect(jsHandler).not.toHaveBeenCalled()
+    expect(templateHandler).not.toHaveBeenCalled()
+  })
+
+  it('forwards handler errors through the vinyl transform stream', async () => {
+    const plugins = createPlugins()
+    styleHandler.mockRejectedValueOnce(new Error('css failed'))
+
+    await expect(runTransform(
+      plugins.transformWxss(),
+      createFile('/src/error.wxss', '.bad{}'),
+    )).rejects.toThrow('css failed')
+  })
+
+  it('merges explicit css and template handler options', async () => {
+    const plugins = createPlugins()
+    const customRuntimeSet = new Set(['custom'])
+
+    await runTransform(plugins.transformWxss({
+      isMainChunk: false,
+      cssRemoveProperty: false,
+    }), createFile('/src/custom.wxss', '.foo{}'))
+    await runTransform(plugins.transformWxml({
+      runtimeSet: customRuntimeSet,
+      customAttributesEntities: [],
+    }), createFile('/src/custom.wxml', '<view />'))
+
+    expect(styleHandler.mock.calls[0]?.[1]).toMatchObject({
+      isMainChunk: false,
+      majorVersion: 3,
+      cssRemoveProperty: false,
+    })
+    expect(templateHandler.mock.calls[0]?.[1]).toMatchObject({
+      runtimeSet: customRuntimeSet,
+      customAttributesEntities: [],
+    })
+  })
+
+  it('keeps js unchanged when precheck skips transformation', async () => {
+    const plugins = createPlugins()
+
+    const processed = await runTransform(
+      plugins.transformJs(),
+      createFile('/src/plain.js', 'const value = 1'),
+    )
+
+    expect(processed.contents?.toString()).toBe('const value = 1')
+    expect(jsHandler).not.toHaveBeenCalled()
+  })
+
+  it('uses custom module graph options when provided', async () => {
+    const plugins = createPlugins()
+    const moduleGraph = {
+      resolve: vi.fn(),
+      load: vi.fn(),
+      filter: vi.fn(),
+    }
+
+    await runTransform(plugins.transformJs({
+      moduleGraph,
+      babelParserOptions: {
+        plugins: ['typescript'],
+      },
+    }), createFile('/src/custom.ts', 'import "./dep"; const cls = "w-[1px]"'))
+
+    expect(jsHandler.mock.calls[0]?.[2]).toMatchObject({
+      moduleGraph,
+      babelParserOptions: {
+        plugins: ['typescript'],
+        sourceFilename: expect.stringContaining('custom.ts'),
+      },
+    })
+  })
+
+  it('resolves module graph files, extension fallbacks, loads and filters ids', async () => {
+    const plugins = createPlugins()
+
+    await runTransform(plugins.transformJs(), createFile('/src/app.js', 'import "./init"; console.log("graph")'))
+
+    const handlerOptions = jsHandler.mock.calls.at(-1)?.[2]
+    const moduleGraph = handlerOptions?.moduleGraph
+    const importer = handlerOptions?.filename
+    expect(moduleGraph).toBeDefined()
+    expect(importer).toBeTruthy()
+
+    const directFile = path.resolve(path.dirname(importer!), './direct.js')
+    const extBase = path.resolve(path.dirname(importer!), './with-ext')
+    const extFile = `${extBase}.tsx`
+    const statSpy = vi.spyOn(fs, 'statSync')
+    const readSpy = vi.spyOn(fs, 'readFileSync')
+    const fileStats = {
+      isFile: () => true,
+      isDirectory: () => false,
+    } as unknown as fs.Stats
+
+    statSpy.mockImplementation((target: fs.PathLike) => {
+      if (target === directFile || target === extFile) {
+        return fileStats
+      }
+      const error = new Error(`ENOENT: no such file or directory, stat '${target.toString()}'`) as NodeJS.ErrnoException
+      error.code = 'ENOENT'
+      throw error
+    })
+    readSpy.mockImplementation((target: fs.PathOrFileDescriptor) => {
+      if (target === directFile) {
+        return 'export const value = 1'
+      }
+      throw new Error('read failed')
+    })
+
+    try {
+      expect(moduleGraph?.resolve?.('', importer!)).toBeUndefined()
+      expect(moduleGraph?.resolve?.('pkg', importer!)).toBeUndefined()
+      expect(moduleGraph?.resolve?.('./direct.js', importer!)).toBe(directFile)
+      expect(moduleGraph?.resolve?.('./with-ext', importer!)).toBe(extFile)
+      expect(moduleGraph?.resolve?.('./missing.css', importer!)).toBeUndefined()
+      expect(moduleGraph?.load?.(directFile)).toBe('export const value = 1')
+      expect(moduleGraph?.load?.('/missing.js')).toBeUndefined()
+      expect(moduleGraph?.filter?.(path.join(process.cwd(), 'src/app.js'))).toBe(true)
+      expect(moduleGraph?.filter?.(path.join(process.cwd(), 'src/app.wxs'))).toBe(true)
+      expect(moduleGraph?.filter?.(path.join(process.cwd(), 'src/app.css'))).toBe(false)
+    }
+    finally {
+      statSpy.mockRestore()
+      readSpy.mockRestore()
+    }
   })
 })

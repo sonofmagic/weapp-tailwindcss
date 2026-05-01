@@ -54,6 +54,22 @@ describe('resolveTailwindcssBasedir', () => {
     expect(resolveTailwindcssBasedir('./tailwind')).toBe(path.resolve('/specific/base', './tailwind'))
   })
 
+  it('returns a specific env basedir when no explicit basedir is provided', async () => {
+    process.env.WEAPP_TAILWINDCSS_BASE_DIR = '/specific/base-dir'
+    process.env.PWD = '/generic/pwd'
+    const { resolveTailwindcssBasedir } = await import('@/context/tailwindcss')
+
+    expect(resolveTailwindcssBasedir()).toBe(path.normalize('/specific/base-dir'))
+  })
+
+  it('resolves explicit relative basedir against the selected anchor', async () => {
+    process.env.TAILWINDCSS_BASEDIR = '/tailwind/env-base'
+    const { resolveTailwindcssBasedir } = await import('@/context/tailwindcss')
+
+    expect(resolveTailwindcssBasedir('packages/app')).toBe(path.resolve('/tailwind/env-base', 'packages/app'))
+    expect(resolveTailwindcssBasedir('/absolute/app')).toBe(path.normalize('/absolute/app'))
+  })
+
   it('falls back to provided fallback when env not set', async () => {
     delete process.env.PWD
     delete process.env.INIT_CWD
@@ -61,6 +77,37 @@ describe('resolveTailwindcssBasedir', () => {
 
     expect(resolveTailwindcssBasedir(undefined, '/custom/fallback')).toBe(path.normalize('/custom/fallback'))
   })
+
+  it('uses npm_config_local_prefix when npm_package_json is absent', async () => {
+    delete process.env.PWD
+    delete process.env.INIT_CWD
+    delete process.env.npm_package_json
+    process.env.npm_config_local_prefix = '/workspace/local-prefix'
+    const { resolveTailwindcssBasedir } = await import('@/context/tailwindcss')
+
+    expect(resolveTailwindcssBasedir()).toBe(path.normalize('/workspace/local-prefix'))
+  })
+
+  it('ignores blank explicit basedir and resolves fallback from package env anchor', async () => {
+    delete process.env.PWD
+    delete process.env.INIT_CWD
+    process.env.npm_package_json = '/workspace/app/package.json'
+    const { resolveTailwindcssBasedir } = await import('@/context/tailwindcss')
+
+    expect(resolveTailwindcssBasedir('  ', './fallback')).toBe(path.resolve('/workspace/app', './fallback'))
+  })
+
+  it('ignores relative package env paths and falls back to cwd', async () => {
+    delete process.env.PWD
+    delete process.env.INIT_CWD
+    process.env.npm_package_json = 'relative/package.json'
+    process.env.npm_config_local_prefix = 'relative'
+
+    const { resolveTailwindcssBasedir } = await import('@/context/tailwindcss')
+
+    expect(resolveTailwindcssBasedir()).toBe(path.normalize(process.cwd()))
+  })
+
 })
 
 describe('createTailwindcssPatcherFromContext', () => {

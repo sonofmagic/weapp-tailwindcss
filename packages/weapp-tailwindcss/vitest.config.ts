@@ -26,8 +26,12 @@ export default defineConfig({
     coverage: {
       enabled: true,
       exclude: [
+        // 测试辅助代码由测试自身覆盖，不计入生产代码覆盖率门禁。
+        'test/**',
+        'packages/weapp-tailwindcss/test/**',
         // 开发态 watch 回归脚本不属于对外运行时代码，避免拉低 project coverage 门禁。
         'scripts/watch-hmr-regression/**',
+        'packages/weapp-tailwindcss/scripts/watch-hmr-regression/**',
       ],
       // reportsDirectory: 'coverage/vitest'
     },

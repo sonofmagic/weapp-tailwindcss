@@ -1,3 +1,6 @@
+import { mkdtemp, stat } from 'node:fs/promises'
+import os from 'node:os'
+import path from 'node:path'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 
 const createHandlersFromContext = vi.fn(() => ({
@@ -10,6 +13,7 @@ const createTailwindcssPatcherFromContext = vi.fn()
 
 vi.mock('@weapp-tailwindcss/logger', () => ({
   logger: {
+    debug: vi.fn(),
     info: vi.fn(),
     success: vi.fn(),
     warn: vi.fn(),
@@ -150,5 +154,86 @@ describe('getCompilerContext', () => {
     })
 
     expect(logger.warn).not.toHaveBeenCalled()
+  })
+})
+
+describe('clearTailwindcssPatcherCache', () => {
+  it('skips missing and disabled patchers', async () => {
+    const { clearTailwindcssPatcherCache } = await import('@/context')
+    const clearCache = vi.fn()
+
+    await expect(clearTailwindcssPatcherCache(undefined)).resolves.toBeUndefined()
+    await expect(clearTailwindcssPatcherCache({
+      clearCache,
+      options: {
+        cache: {
+          enabled: false,
+        },
+      },
+    } as never)).resolves.toBeUndefined()
+    await expect(clearTailwindcssPatcherCache({
+      clearCache,
+      options: {
+        cache: null,
+      },
+    } as never)).resolves.toBeUndefined()
+
+    expect(clearCache).not.toHaveBeenCalled()
+  })
+
+  it('clears patcher cache and removes configured cache paths', async () => {
+    const { clearTailwindcssPatcherCache } = await import('@/context')
+    const root = await mkdtemp(path.join(os.tmpdir(), 'weapp-tw-clear-cache-'))
+    const cacheFile = path.join(root, 'cache.json')
+    const privateCacheFile = path.join(root, 'private.json')
+    const cacheDir = path.join(root, 'dir')
+
+    await import('node:fs/promises').then(async fs => Promise.all([
+      fs.writeFile(cacheFile, '{}'),
+      fs.writeFile(privateCacheFile, '{}'),
+      fs.mkdir(cacheDir),
+    ]))
+
+    const clearCache = vi.fn(async () => {})
+    await clearTailwindcssPatcherCache({
+      clearCache,
+      options: {
+        cache: {
+          path: cacheFile,
+          dir: cacheDir,
+        },
+      },
+      cacheStore: {
+        options: {
+          path: privateCacheFile,
+        },
+      },
+    } as never, {
+      removeDirectory: true,
+    })
+
+    await expect(stat(cacheFile)).rejects.toMatchObject({ code: 'ENOENT' })
+    await expect(stat(privateCacheFile)).rejects.toMatchObject({ code: 'ENOENT' })
+    await expect(stat(cacheDir)).rejects.toMatchObject({ code: 'ENOENT' })
+    expect(clearCache).toHaveBeenCalledWith({ scope: 'all' })
+  })
+
+  it('continues when patcher clearCache throws', async () => {
+    const { clearTailwindcssPatcherCache } = await import('@/context')
+    const { logger } = await import('@weapp-tailwindcss/logger')
+
+    await expect(clearTailwindcssPatcherCache({
+      clearCache: vi.fn(async () => {
+        throw new Error('clear failed')
+      }),
+      options: {
+        cache: true,
+      },
+    } as never)).resolves.toBeUndefined()
+
+    expect(logger.debug).toHaveBeenCalledWith(
+      'failed to clear tailwindcss patcher cache via clearCache(): %O',
+      expect.any(Error),
+    )
   })
 })

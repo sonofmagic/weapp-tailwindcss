@@ -8,6 +8,10 @@ export default defineProject({
         find: '@',
         replacement: path.resolve(__dirname, './src'),
       },
+      {
+        find: 'npm-registry-fetch',
+        replacement: path.resolve(__dirname, './test/mocks/npm-registry-fetch.ts'),
+      },
     ],
     globals: true,
     testTimeout: 60_000,

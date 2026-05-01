@@ -1,4 +1,4 @@
-import { mkdtemp, rm } from 'node:fs/promises'
+import { mkdtemp, rm, writeFile } from 'node:fs/promises'
 import os from 'node:os'
 import path from 'node:path'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
@@ -10,13 +10,14 @@ const tailwindcssPatcherMock = vi.fn(function TailwindcssPatcher(this: any, opti
   this.majorVersion = 4
 })
 const loggerWarnMock = vi.fn()
+const loggerErrorMock = vi.fn()
 
 vi.mock('@weapp-tailwindcss/logger', () => ({
   logger: {
     warn: loggerWarnMock,
     success: vi.fn(),
     info: vi.fn(),
-    error: vi.fn(),
+    error: loggerErrorMock,
     debug: vi.fn(),
   },
   pc: new Proxy(() => '', {
@@ -42,6 +43,7 @@ describe('tailwindcss helpers', () => {
     getPackageInfoMock.mockReset()
     tailwindcssPatcherMock.mockClear()
     loggerWarnMock.mockClear()
+    loggerErrorMock.mockClear()
     vi.resetModules()
   })
 
@@ -144,18 +146,33 @@ describe('tailwindcss helpers', () => {
     tailwindcssPatcherMock.mockImplementationOnce(() => {
       throw new Error('tailwindcss not found')
     })
+    tailwindcssPatcherMock.mockImplementationOnce(() => {
+      throw new Error('tailwindcss not found')
+    })
 
     const { createTailwindcssPatcher } = await import('@/tailwindcss')
 
     const patcher = createTailwindcssPatcher()
+    const secondPatcher = createTailwindcssPatcher()
 
-    expect(loggerWarnMock).toHaveBeenCalled()
+    expect(loggerWarnMock).toHaveBeenCalledTimes(1)
     expect(patcher.packageInfo.version).toBeUndefined()
+    await expect(patcher.patch()).resolves.toEqual({
+      exposeContext: undefined,
+      extendLengthUnits: undefined,
+    })
     await expect(patcher.getClassSet()).resolves.toEqual(new Set())
     await expect(patcher.extract()).resolves.toEqual({
       classList: [],
       classSet: new Set<string>(),
     })
+    await expect(patcher.collectContentTokens?.()).resolves.toEqual({
+      entries: [],
+      filesScanned: 0,
+      sources: [],
+      skippedFiles: [],
+    })
+    expect(secondPatcher.packageInfo.version).toBeUndefined()
   })
 
   it('resolves tailwindcss postcss plugin from basedir node_modules', async () => {
@@ -188,6 +205,39 @@ describe('tailwindcss helpers', () => {
     expect(String(callArgs.tailwindcss?.postcssPlugin).replaceAll('\\', '/')).toContain('@tailwindcss/postcss')
   })
 
+  it('uses postcss7 compat defaults for Tailwind CSS v2', async () => {
+    const { createTailwindcssPatcher } = await import('@/tailwindcss')
+
+    createTailwindcssPatcher({
+      basedir: '/repo',
+      tailwindcss: {
+        version: 2,
+      },
+    })
+
+    const lastCall = tailwindcssPatcherMock.mock.calls.at(-1)
+    const callArgs = lastCall?.[0] as any
+    expect(callArgs.tailwindcss?.packageName).toBe('@tailwindcss/postcss7-compat')
+    expect(callArgs.tailwindcss?.postcssPlugin).toBe('@tailwindcss/postcss7-compat')
+  })
+
+  it('resolves postcss plugin strings after legacy patcher options merge', async () => {
+    const { createTailwindcssPatcher } = await import('@/tailwindcss')
+
+    createTailwindcssPatcher({
+      basedir: path.resolve(__dirname, '../../../..'),
+      tailwindcssPatcherOptions: {
+        tailwindcss: {
+          postcssPlugin: 'tailwindcss',
+        },
+      },
+    })
+
+    const lastCall = tailwindcssPatcherMock.mock.calls.at(-1)
+    const callArgs = lastCall?.[0] as any
+    expect(path.isAbsolute(callArgs.tailwindcss?.postcssPlugin)).toBe(true)
+  })
+
   it('falls back to default tailwind config when project has none', async () => {
     const tempDir = await mkdtemp(path.join(os.tmpdir(), 'wtw-tailwind-no-config-'))
     const { createTailwindcssPatcher } = await import('@/tailwindcss')
@@ -205,5 +255,46 @@ describe('tailwindcss helpers', () => {
     finally {
       await rm(tempDir, { recursive: true, force: true })
     }
+  })
+
+  it('sets cwd from discovered tailwind config when cwd is not provided', async () => {
+    const tempDir = await mkdtemp(path.join(os.tmpdir(), 'wtw-tailwind-config-cwd-'))
+    const { createTailwindcssPatcher } = await import('@/tailwindcss')
+
+    try {
+      await writeFile(path.join(tempDir, 'tailwind.config.js'), 'export default {}')
+      createTailwindcssPatcher({
+        tailwindcss: {
+          resolve: {
+            paths: [path.join(tempDir, 'node_modules')],
+          },
+        },
+      })
+      const lastCall = tailwindcssPatcherMock.mock.calls.at(-1)
+      const callArgs = lastCall?.[0] as any
+      expect(callArgs.tailwindcss?.config).toBe(path.join(tempDir, 'tailwind.config.js'))
+      expect(callArgs.tailwindcss?.cwd).toBe(tempDir)
+    }
+    finally {
+      await rm(tempDir, { recursive: true, force: true })
+    }
+  })
+
+  it('logs locate errors and rethrows non-recoverable patcher failures', async () => {
+    tailwindcssPatcherMock.mockImplementationOnce(() => {
+      throw new Error('Unable to locate Tailwind CSS package')
+    })
+    const { createTailwindcssPatcher } = await import('@/tailwindcss')
+
+    expect(() => createTailwindcssPatcher({
+      tailwindcss: {
+        packageName: 'missing-tailwindcss',
+      },
+    })).toThrow('Unable to locate Tailwind CSS package')
+    expect(loggerErrorMock).toHaveBeenCalledWith(
+      '无法定位 Tailwind CSS 包 "%s"，已尝试路径: %O',
+      'missing-tailwindcss',
+      expect.any(Array),
+    )
   })
 })

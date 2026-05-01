@@ -118,6 +118,11 @@ export default defineConfig(() => {
         skipFull: true,
         exclude: [
           '**/dist/**',
+          '**/test/**',
+          '**/tests/**',
+          '**/__tests__/**',
+          'website/**',
+          'packages/weapp-tailwindcss/scripts/watch-hmr-regression/**',
         ],
       },
       forceRerunTriggers: [

@@ -32,11 +32,11 @@ const tailwindcssImportRE = /^tailwindcss(?:\/.*)?$/
 const tailwindcssCssImportStatementRE = /(@import\s+(?:url\(\s*)?)(["'])(tailwindcss(?:\/[^"']*)?\$?)(\2\s*\)?)/gi
 
 function resolveTailwindcssImport(id: string) {
-  if (!tailwindcssImportRE.test(id)) {
+  const normalized = id === 'tailwindcss$' ? 'tailwindcss' : id
+  if (!tailwindcssImportRE.test(normalized)) {
     return null
   }
 
-  const normalized = id === 'tailwindcss$' ? 'tailwindcss' : id
   if (normalized === 'tailwindcss') {
     return require.resolve('weapp-tailwindcss/index.css')
   }

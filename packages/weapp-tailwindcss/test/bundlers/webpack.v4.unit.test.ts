@@ -148,9 +148,9 @@ describe('bundlers/webpack UnifiedWebpackPluginV4', () => {
       chunks: [{ id: 'main', hash: 'hash-1' }],
       hooks: {
         normalModuleLoader: {
-          tap: (_name: string, handler: (loaderContext: any, module: LoaderModule) => void) => {
+          tap: vi.fn((_name: string, handler: (loaderContext: any, module: LoaderModule) => void) => {
             loaderHandler = handler
-          },
+          }),
         },
       },
       assets,
@@ -966,6 +966,102 @@ describe('bundlers/webpack UnifiedWebpackPluginV4', () => {
     expect(wxsUpdates[1][1].source()).toBe(`js:${wxs}`)
   })
 
+  it('propagates linked js asset updates and skips missing or unchanged linked outputs', async () => {
+    const emitHandlers: Array<(compilation: any) => Promise<void>> = []
+    const outDir = path.resolve(process.cwd(), 'dist')
+    const assets: Record<string, any> = {
+      'index.js': { source: () => 'import "./chunk.js";' },
+      'chunk.js': { source: () => 'import { bar } from "./dep"; export const foo = bar;' },
+      'same.js': { source: () => ({ toString: () => 'const same = "gamma";' }) },
+      'missing.js': undefined,
+      'orphan.js': undefined,
+    }
+    const compilation = {
+      chunks: [{
+        id: 'main',
+        hash: 'hash-1',
+        files: ['index.js', 'chunk.js', 'same.js', 'missing.js', 'orphan.js'],
+      }],
+      hooks: {
+        normalModuleLoader: {
+          tap: vi.fn(),
+        },
+      },
+      assets,
+      updateAsset: vi.fn((file: string, source: any) => {
+        compilation.assets[file] = source
+      }),
+    }
+    const compiler = {
+      options: {
+        output: {
+          path: outDir,
+        },
+      },
+      hooks: {
+        normalModuleFactory: {
+          tap: (_name: string, handler: (factory: any) => void) => {
+            handler({
+              hooks: {
+                beforeResolve: {
+                  tap: vi.fn(),
+                },
+              },
+            })
+          },
+        },
+        compilation: {
+          tap: (_name: string, handler: (_compilation: any) => void) => {
+            handler(compilation)
+          },
+        },
+        emit: {
+          tapPromise: (_name: string, handler: (_compilation: any) => Promise<void>) => {
+            emitHandlers.push(handler)
+          },
+        },
+      },
+    }
+
+    currentContext = createContext({
+      jsHandler: vi.fn(async (code: string, _runtime: Set<string>, options?: { filename?: string }) => {
+        if (options?.filename?.endsWith('index.js')) {
+          return {
+            code: `js:${code}`,
+            linked: {
+              [path.resolve(outDir, 'chunk.js')]: { code: 'linked:chunk' },
+              [path.resolve(outDir, 'external.js')]: { code: 'linked:external' },
+              [path.resolve(outDir, 'missing.js')]: { code: 'linked:missing' },
+              [path.resolve(outDir, 'same.js')]: { code: 'const same = "gamma";' },
+            },
+          }
+        }
+        return { code }
+      }),
+    })
+    getCompilerContextMock.mockImplementation(() => currentContext)
+
+    const plugin = new UnifiedWebpackPluginV4()
+    plugin.apply(compiler as any)
+    await emitHandlers[0](compilation)
+
+    expect(currentContext.jsHandler).toHaveBeenCalledTimes(2)
+    const chunkUpdate = compilation.updateAsset.mock.calls.find((call: [string, any]) => call[0] === 'chunk.js')
+    expect(chunkUpdate?.[1].source()).toBe('linked:chunk')
+    expect(currentContext.onUpdate.mock.calls.some(([file, , updated]) => file === 'chunk.js' && updated === 'linked:chunk')).toBe(true)
+    expect(currentContext.onUpdate.mock.calls.some(([file]) => file === 'same.js')).toBe(false)
+    expect(compilation.updateAsset.mock.calls.some((call: [string]) => call[0] === 'missing.js')).toBe(false)
+    expect(compilation.updateAsset.mock.calls.some((call: [string]) => call[0] === 'orphan.js')).toBe(false)
+
+    const [firstCall] = currentContext.jsHandler.mock.calls
+    const options = firstCall?.[2]
+    expect(options?.moduleGraph?.resolve?.('./chunk.js', options.filename ?? '')).toBe(path.resolve(outDir, 'chunk.js'))
+    expect(options?.moduleGraph?.load?.(path.resolve(outDir, 'chunk.js'))).toContain('bar')
+    expect(options?.moduleGraph?.load?.(path.resolve(outDir, 'missing.js'))).toBeUndefined()
+    expect(options?.moduleGraph?.filter?.(path.resolve(outDir, 'orphan.js'))).toBe(true)
+    expect(options?.moduleGraph?.filter?.(path.resolve(outDir, 'external.js'))).toBe(false)
+  })
+
   it('only applies css import rewrite for tailwindcss v4 projects', () => {
     const normalModuleFactoryTap = vi.fn()
     const compiler = {
@@ -988,5 +1084,65 @@ describe('bundlers/webpack UnifiedWebpackPluginV4', () => {
     plugin = new UnifiedWebpackPluginV4()
     plugin.apply(compiler as any)
     expect(normalModuleFactoryTap).not.toHaveBeenCalled()
+  })
+
+  it('prepares runtime class set once per compilation from the injected loader', async () => {
+    const compilationHandlers: Array<() => void> = []
+    let loaderHandler: ((loaderContext: any, module: LoaderModule) => void) | undefined
+    const compilation = {
+      hooks: {
+        normalModuleLoader: {
+          tap: vi.fn((_name: string, handler: (loaderContext: any, module: LoaderModule) => void) => {
+            loaderHandler = handler
+          }),
+        },
+      },
+    }
+    const compiler = {
+      options: {},
+      hooks: {
+        normalModuleFactory: {
+          tap: vi.fn((_name: string, handler: (factory: any) => void) => {
+            handler({
+              hooks: {
+                beforeResolve: {
+                  tap: vi.fn(),
+                },
+              },
+            })
+          }),
+        },
+        compilation: {
+          tap: vi.fn((_name: string, handler: (_compilation: any) => void) => {
+            compilationHandlers.push(handler)
+            handler(compilation)
+          }),
+        },
+        emit: {
+          tapPromise: vi.fn(),
+        },
+      },
+    }
+
+    const plugin = new UnifiedWebpackPluginV4()
+    plugin.apply(compiler as any)
+
+    const module: LoaderModule = {
+      loaders: [{ loader: '/path/postcss-loader.js' }],
+    }
+    loaderHandler?.({}, module)
+
+    const classSetLoaderEntry = module.loaders.find(entry => entry.loader === currentContext.runtimeLoaderPath)
+    const getClassSet = classSetLoaderEntry?.options?.getClassSet
+    expect(getClassSet).toEqual(expect.any(Function))
+
+    await getClassSet()
+    await getClassSet()
+    expect(currentContext.twPatcher.extract).toHaveBeenCalledTimes(1)
+
+    compilationHandlers[0]?.(compilation)
+    await getClassSet()
+    expect(currentContext.twPatcher.extract).toHaveBeenCalledTimes(2)
+    expect(compilation.hooks.normalModuleLoader.tap).toHaveBeenCalledTimes(1)
   })
 })

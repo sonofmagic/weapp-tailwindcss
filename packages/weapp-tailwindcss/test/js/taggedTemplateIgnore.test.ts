@@ -118,6 +118,33 @@ describe('taggedTemplateIgnore', () => {
     expect(helper.shouldIgnore(effectiveTag)).toBe(true)
   })
 
+  it('unwraps sequence and call tag expressions', () => {
+    const helper = createTaggedTemplateIgnore({ matcher: () => false, names: ['imported'] })
+    const [sequence, call] = getTagPaths([
+      'import { weappTwIgnore as imported } from "weapp-tailwindcss/escape"',
+      '(0, imported)`sequence`',
+      'imported()`call`',
+    ].join('\n'))
+
+    expect([sequence, call].map(tag => helper.shouldIgnore(tag))).toEqual([
+      true,
+      true,
+    ])
+  })
+
+  it('resolves string-literal import specifiers and member aliases', () => {
+    const helper = createTaggedTemplateIgnore({ matcher: () => false, names: ['weappTwIgnore'] })
+    const [importedLiteral, memberAlias] = getTagPaths([
+      'import { "weappTwIgnore" as imported } from "weapp-tailwindcss/escape"',
+      'const helper = registry.weappTwIgnore',
+      'imported`literal`',
+      'helper`member`',
+    ].join('\n'))
+
+    expect(helper.shouldIgnore(importedLiteral)).toBe(true)
+    expect(helper.shouldIgnore(memberAlias)).toBe(true)
+  })
+
   it('returns false when identifiers are not recognised', () => {
     const helper = createTaggedTemplateIgnore({ matcher: () => false })
     const [unknownTag] = getTagPaths('unknown`foo`')

@@ -173,4 +173,118 @@ describe('evalTransforms', () => {
     walkEvalExpression(callPath, baseOptions, updater, () => ({ code: 'updated' }))
     expect(updater.updateMagicString(new MagicString(source)).toString()).toBe(source)
   })
+
+  it('falls back to manual argument traversal when NodePath traversal has no scope', () => {
+    const source = 'eval("foo", `bar`);'
+    const updater = new JsTokenUpdater()
+    const callPath = {
+      traverse() {
+        throw new Error('You must pass a scope and parentPath unless traversing a Program/File')
+      },
+      get(key: string) {
+        if (key !== 'arguments') {
+          return undefined
+        }
+        return [
+          {
+            node: {
+              type: 'StringLiteral',
+              value: 'foo',
+              start: 5,
+              end: 10,
+            },
+            isStringLiteral: () => true,
+            isTemplateLiteral: () => false,
+          },
+          {
+            node: {
+              type: 'TemplateLiteral',
+            },
+            isStringLiteral: () => false,
+            isTemplateLiteral: () => true,
+            get(quasiKey: string) {
+              if (quasiKey !== 'quasis') {
+                return []
+              }
+              return [
+                {
+                  node: {
+                    type: 'TemplateElement',
+                    value: { raw: 'bar' },
+                    start: 13,
+                    end: 16,
+                  },
+                  isStringLiteral: () => false,
+                  isTemplateElement: () => true,
+                },
+              ]
+            },
+          },
+        ]
+      },
+    } as unknown as NodePath<CallExpression>
+
+    walkEvalExpression(callPath, baseOptions, updater, input => ({ code: input.toUpperCase() }))
+
+    expect(updater.updateMagicString(new MagicString(source)).toString()).toBe('eval("FOO", `BAR`);')
+  })
+
+  it('rethrows traversal errors that are not scope related', () => {
+    const callPath = {
+      traverse() {
+        throw new Error('unexpected traversal failure')
+      },
+    } as unknown as NodePath<CallExpression>
+
+    expect(() => walkEvalExpression(callPath, baseOptions, new JsTokenUpdater(), input => ({ code: input })))
+      .toThrow('unexpected traversal failure')
+  })
+
+  it('handles node-only eval call stubs', () => {
+    const source = 'eval("foo", `bar`);'
+    const updater = new JsTokenUpdater()
+    const callPath = {
+      node: {
+        arguments: [
+          {
+            type: 'StringLiteral',
+            value: 'foo',
+            start: 5,
+            end: 10,
+          },
+          {
+            type: 'TemplateLiteral',
+            quasis: [
+              {
+                type: 'TemplateElement',
+                value: { raw: 'bar' },
+                start: 13,
+                end: 16,
+              },
+            ],
+          },
+        ],
+      },
+    } as unknown as NodePath<CallExpression>
+
+    walkEvalExpression(callPath, baseOptions, updater, input => ({ code: input.toUpperCase() }))
+
+    expect(updater.updateMagicString(new MagicString(source)).toString()).toBe('eval("FOO", `BAR`);')
+  })
+
+  it('keeps template handler options untouched when source maps are already disabled', () => {
+    const source = 'eval(`foo`, `bar`);'
+    const updater = new JsTokenUpdater()
+    const handler = vi.fn((input: string): JsHandlerResult => ({ code: input.toUpperCase() }))
+    const options: IJsHandlerOptions = {
+      generateMap: false,
+    }
+
+    walkEvalExpression(getEvalCall(source), options, updater, handler)
+
+    expect(handler).toHaveBeenCalledTimes(2)
+    expect(handler.mock.calls[0]?.[1]).toBe(options)
+    expect(handler.mock.calls[1]?.[1]).toBe(options)
+    expect(updater.updateMagicString(new MagicString(source)).toString()).toBe('eval(`FOO`, `BAR`);')
+  })
 })

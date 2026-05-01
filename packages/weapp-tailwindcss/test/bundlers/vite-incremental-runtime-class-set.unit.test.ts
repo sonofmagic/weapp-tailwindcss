@@ -173,6 +173,79 @@ describe('bundlers/vite incremental runtime class set', () => {
     expect(extractCandidates).not.toHaveBeenCalled()
   })
 
+  it('drops candidates when changed runtime files become empty or invalid', async () => {
+    const opts = createOptions()
+    const outDir = '/project/dist'
+    const state = createBundleBuildState()
+    const patcher = createPatcher('/project')
+    const extractCandidates = vi.fn(async () => {
+      const source = await readFile(validationFile, 'utf8')
+      return source.split(/\s+/).filter(candidate => candidate === 'bar')
+    })
+    const extractRawCandidates = vi.fn(async (content: string) => {
+      if (content.includes('"foo"')) {
+        return [{ rawCandidate: 'foo' }]
+      }
+      if (content.includes('"bar"')) {
+        return [{ rawCandidate: 'bar' }]
+      }
+      if (content.includes('"unknown"')) {
+        return [{ rawCandidate: 'unknown' }]
+      }
+      return []
+    })
+    const manager = createBundleRuntimeClassSetManager({
+      extractCandidates,
+      extractRawCandidates,
+      tempRoot,
+    })
+
+    const firstSnapshot = buildBundleSnapshot({
+      'pages/index/index.wxml': {
+        ...createRollupAsset('<view class="foo" />'),
+        fileName: 'pages/index/index.wxml',
+      },
+      'assets/index.js': {
+        ...createRollupChunk('const cls = "bar"'),
+        fileName: 'assets/index.js',
+      },
+    }, opts, outDir, state)
+
+    await manager.sync(patcher, firstSnapshot)
+    updateBundleBuildState(state, firstSnapshot, new Map([
+      ['assets/index.js', new Set<string>()],
+    ]), { incremental: true })
+
+    const emptyHtmlSnapshot = buildBundleSnapshot({
+      'pages/index/index.wxml': {
+        ...createRollupAsset('<view />'),
+        fileName: 'pages/index/index.wxml',
+      },
+      'assets/index.js': {
+        ...createRollupChunk('const cls = "bar"'),
+        fileName: 'assets/index.js',
+      },
+    }, opts, outDir, state)
+
+    await expect(manager.sync(patcher, emptyHtmlSnapshot)).resolves.toEqual(new Set(['bar']))
+    updateBundleBuildState(state, emptyHtmlSnapshot, new Map([
+      ['assets/index.js', new Set<string>()],
+    ]), { incremental: true })
+
+    const invalidJsSnapshot = buildBundleSnapshot({
+      'pages/index/index.wxml': {
+        ...createRollupAsset('<view />'),
+        fileName: 'pages/index/index.wxml',
+      },
+      'assets/index.js': {
+        ...createRollupChunk('const cls = "unknown"'),
+        fileName: 'assets/index.js',
+      },
+    }, opts, outDir, state)
+
+    await expect(manager.sync(patcher, invalidJsSnapshot)).resolves.toEqual(new Set<string>())
+  })
+
   it('prefers cssEntries when building extract options for tailwind v4', async () => {
     const opts = createOptions()
     const projectRoot = path.join(tempRoot, 'css-entry-project')

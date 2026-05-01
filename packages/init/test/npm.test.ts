@@ -1,22 +1,27 @@
 import { getDevDepsVersions, getLatestVersion, getLatestVersionInRange } from '@/npm'
-// import CI from 'ci-info'
+import { describe, expect, it } from 'vitest'
 import { fetchOptions } from './util'
 
-describe.skip('getLatestVersion', () => {
-  it.skip('tailwindcss', async () => {
+describe('getLatestVersion', () => {
+  it('resolves latest versions without touching the network', async () => {
     let version = await getLatestVersion('tailwindcss', fetchOptions)
-    expect(version).toBe('3.4.13')
+    expect(version).toBe('4.2.4')
     version = await getLatestVersionInRange('tailwindcss', '3', fetchOptions)
-    expect(version).toBe('3.4.13')
+    expect(version).toBe('3.4.19')
     version = await getLatestVersionInRange('tailwindcss', '2', fetchOptions)
     expect(version).toBe('2.2.19')
-    // const version2 = await getLatestVersion2('tailwindcss')
-    // expect(version2).toBe('3.4.12')
   })
 
   it('getDevDepsVersions', async () => {
     const res = await getDevDepsVersions(fetchOptions)
-    console.log(res)
+    for (const [packageName, majorVersion] of Object.entries({
+      tailwindcss: '3',
+      postcss: '8',
+      autoprefixer: '10',
+      'weapp-tailwindcss': '3',
+    })) {
+      expect(res[packageName as keyof typeof res].startsWith(`^${majorVersion}.`)).toBe(true)
+    }
   })
 
   it('tailwindcss@2', async () => {
@@ -26,11 +31,11 @@ describe.skip('getLatestVersion', () => {
 
   it('tailwindcss@3', async () => {
     const version = await getLatestVersionInRange('tailwindcss', '3', fetchOptions)
-    expect(version).toMatchSnapshot()
+    expect(version?.startsWith('3.')).toBe(true)
   })
 
   it('tailwindcss@latest', async () => {
     const version = await getLatestVersion('tailwindcss', fetchOptions)
-    expect(version).toMatchSnapshot()
+    expect(version).toMatch(/^\d+\.\d+\.\d+/u)
   })
 })

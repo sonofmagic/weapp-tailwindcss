@@ -1,7 +1,6 @@
 // 针对小程序不支持的选择器语法提供兜底清理能力
 import type { Rule } from 'postcss'
 import type { IStyleHandlerOptions } from '../types'
-import type { RuleTransformer } from './rule-transformer'
 import type { ParserTransformOptions } from './utils'
 import psp from 'postcss-selector-parser'
 import { isUniAppXEnabled, stripUnsupportedPseudoForUniAppX } from '../compat/uni-app-x'
@@ -14,7 +13,6 @@ interface CachedFallbackResult {
 
 const fallbackRemoveCache = new WeakMap<object, {
   parser: ReturnType<typeof psp>
-  transform: RuleTransformer
 }>()
 const fallbackDefaultKey: object = {}
 const FALLBACK_TRANSFORM_OPTIONS = normalizeTransformOptions()
@@ -109,22 +107,24 @@ export function getFallbackRemove(_rule?: Rule, options?: IStyleHandlerOptions) 
 
     const rawTransformSync = parser.transformSync.bind(parser)
 
-    const transform: RuleTransformer = (targetRule: Rule) => {
+    const transformRule = (targetRule: Rule, transformOptions = FALLBACK_TRANSFORM_OPTIONS) => {
       const sourceSelector = targetRule.selector
       if (!sourceSelector) {
         return
       }
 
       // 查询选择器字符串级缓存
-      const cached = selectorCache.get(sourceSelector)
-      if (cached) {
-        if (cached.action === 'remove') {
-          targetRule.remove()
+      if (transformOptions === FALLBACK_TRANSFORM_OPTIONS) {
+        const cached = selectorCache.get(sourceSelector)
+        if (cached) {
+          if (cached.action === 'remove') {
+            targetRule.remove()
+          }
+          else if (cached.action === 'update' && cached.selector && cached.selector !== sourceSelector) {
+            targetRule.selector = cached.selector
+          }
+          return
         }
-        else if (cached.action === 'update' && cached.selector && cached.selector !== sourceSelector) {
-          targetRule.selector = cached.selector
-        }
-        return
       }
 
       currentRule = targetRule
@@ -136,15 +136,17 @@ export function getFallbackRemove(_rule?: Rule, options?: IStyleHandlerOptions) 
       }
 
       // 写入缓存
-      const wasRemoved = targetRule.parent == null
-      if (wasRemoved) {
-        writeSelectorCache(sourceSelector, { action: 'remove' })
-      }
-      else if (targetRule.selector === sourceSelector) {
-        writeSelectorCache(sourceSelector, { action: 'keep' })
-      }
-      else {
-        writeSelectorCache(sourceSelector, { action: 'update', selector: targetRule.selector })
+      if (transformOptions === FALLBACK_TRANSFORM_OPTIONS) {
+        const wasRemoved = targetRule.parent == null
+        if (wasRemoved) {
+          writeSelectorCache(sourceSelector, { action: 'remove' })
+        }
+        else if (targetRule.selector === sourceSelector) {
+          writeSelectorCache(sourceSelector, { action: 'keep' })
+        }
+        else {
+          writeSelectorCache(sourceSelector, { action: 'update', selector: targetRule.selector })
+        }
       }
     }
 
@@ -154,13 +156,8 @@ export function getFallbackRemove(_rule?: Rule, options?: IStyleHandlerOptions) 
       if (input && typeof input === 'object' && 'type' in (input as Record<string, unknown>)) {
         const maybeRule = input as Record<string, unknown>
         if (maybeRule.type === 'rule') {
-          currentRule = input as Rule
-          try {
-            return rawTransformSync(input as string | Rule, transformOptions)
-          }
-          finally {
-            currentRule = undefined
-          }
+          transformRule(input as Rule, transformOptions)
+          return undefined
         }
       }
       return rawTransformSync(input as string | Rule, transformOptions)
@@ -168,7 +165,6 @@ export function getFallbackRemove(_rule?: Rule, options?: IStyleHandlerOptions) 
 
     entry = {
       parser,
-      transform,
     }
     fallbackRemoveCache.set(cacheKey, entry)
   }

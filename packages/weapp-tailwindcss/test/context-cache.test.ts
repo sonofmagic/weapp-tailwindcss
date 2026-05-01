@@ -1,6 +1,7 @@
 import path from 'node:path'
 import { afterEach, beforeEach, describe, expect, it } from 'vitest'
 import { getCompilerContext } from '@/context'
+import { createCompilerContextCacheKey, withCompilerContextCache } from '@/context/compiler-context-cache'
 
 const originalEnv = process.env
 
@@ -100,5 +101,94 @@ describe('compiler context cache', () => {
     expect(ctxA).toBe(ctxB)
     expect(ctxA.tailwindcssBasedir).toBe(firstProject)
     expect(ctxB.tailwindcssBasedir).toBe(firstProject)
+  })
+
+  it('creates stable keys for complex serializable option values', () => {
+    const fn = () => 'stable'
+    const baseOptions = {
+      tailwindcssBasedir: process.cwd(),
+      values: {
+        arrayBuffer: new Uint8Array([1, 2, 3]).buffer,
+        bigint: BigInt(42),
+        buffer: Buffer.from('hello'),
+        date: new Date('2026-01-01T00:00:00.000Z'),
+        fn,
+        map: new Map<unknown, unknown>([
+          ['b', 2],
+          ['a', 1],
+        ]),
+        nan: Number.NaN,
+        negativeInfinity: Number.NEGATIVE_INFINITY,
+        negativeZero: -0,
+        positiveInfinity: Number.POSITIVE_INFINITY,
+        promise: Promise.resolve('ignored'),
+        regexp: /foo/gi,
+        set: new Set(['b', 'a']),
+        symbol: Symbol('token'),
+        typedArray: new Uint16Array([10, 20]),
+        undefinedValue: undefined,
+        url: new URL('https://example.com/demo'),
+        weakMap: new WeakMap(),
+        weakSet: new WeakSet(),
+      },
+    }
+    const sameOptionsDifferentOrder = {
+      values: {
+        weakSet: new WeakSet(),
+        weakMap: new WeakMap(),
+        url: new URL('https://example.com/demo'),
+        undefinedValue: undefined,
+        typedArray: new Uint16Array([10, 20]),
+        symbol: Symbol('token'),
+        set: new Set(['a', 'b']),
+        regexp: /foo/gi,
+        promise: Promise.resolve('ignored'),
+        positiveInfinity: Number.POSITIVE_INFINITY,
+        negativeZero: -0,
+        negativeInfinity: Number.NEGATIVE_INFINITY,
+        nan: Number.NaN,
+        map: new Map<unknown, unknown>([
+          ['a', 1],
+          ['b', 2],
+        ]),
+        fn,
+        date: new Date('2026-01-01T00:00:00.000Z'),
+        buffer: Buffer.from('hello'),
+        bigint: BigInt(42),
+        arrayBuffer: new Uint8Array([1, 2, 3]).buffer,
+      },
+      tailwindcssBasedir: process.cwd(),
+    }
+
+    expect(createCompilerContextCacheKey(baseOptions)).toBe(createCompilerContextCacheKey(sameOptionsDifferentOrder))
+  })
+
+  it('returns undefined for circular options instead of throwing', () => {
+    const circular: Record<string, unknown> = {}
+    circular.self = circular
+
+    expect(createCompilerContextCacheKey(circular)).toBeUndefined()
+  })
+
+  it('caches factory results when a key can be created', () => {
+    const factory = () => ({ value: Symbol('ctx') } as never)
+    const options = {
+      tailwindcssBasedir: process.cwd(),
+      cssEntries: ['src/app.css'],
+    }
+
+    const first = withCompilerContextCache(options, factory)
+    const second = withCompilerContextCache(options, factory)
+
+    expect(first).toBe(second)
+  })
+
+  it('does not cache factory results when options cannot be keyed', () => {
+    const circular: Record<string, unknown> = {}
+    circular.self = circular
+    const first = withCompilerContextCache(circular, () => ({ value: 1 } as never))
+    const second = withCompilerContextCache(circular, () => ({ value: 2 } as never))
+
+    expect(first).not.toBe(second)
   })
 })
