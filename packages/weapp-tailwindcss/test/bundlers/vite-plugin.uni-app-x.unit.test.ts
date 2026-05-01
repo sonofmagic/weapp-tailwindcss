@@ -1,4 +1,4 @@
-import type { OutputAsset } from 'rollup'
+import type { OutputAsset, OutputChunk } from 'rollup'
 import type { HmrContext, Plugin, ResolvedConfig, TransformResult } from 'vite'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 import { replaceWxml } from '@/wxml'
@@ -242,6 +242,86 @@ describe('bundlers/vite UnifiedViteWeappTailwindcssPlugin uni-app-x', () => {
 
     expect(currentContext.jsHandler).not.toHaveBeenCalled()
     expect((secondBundle['index.asset.js'] as OutputAsset).source).toBe('asset:const cls = "text-[#424242]"')
+  }, TEST_TIMEOUT_MS)
+
+  it('reprocesses uni-app-x js assets when linked chunk dependencies change', async () => {
+    const rootDir = process.cwd()
+    const outDir = `${rootDir}/dist`
+    const linkedFile = `${outDir}/chunk.js`
+    const runtimeSet = new Set(['text-[#424242]', 'text-[#111111]', 'text-[#222222]'])
+    vi.doMock('@/bundlers/vite/incremental-runtime-class-set', () => ({
+      createBundleRuntimeClassSetManager: () => ({
+        sync: vi.fn(async () => runtimeSet),
+        reset: vi.fn(async () => undefined),
+      }),
+    }))
+
+    const UnifiedViteWeappTailwindcssPlugin = await loadUnifiedVitePlugin()
+    setCurrentContext(createContext({
+      uniAppX: { enabled: true },
+      jsHandler: vi.fn((code: string, _runtimeSet: Set<string>, options?: { filename?: string }) => {
+        if (options?.filename?.endsWith('index.asset.js')) {
+          return {
+            code: `asset:${code}`,
+            linked: {
+              [linkedFile]: { code: `linked:${code}` },
+            },
+          }
+        }
+        return { code: `chunk:${code}` }
+      }),
+      twPatcher: {
+        patch: vi.fn(),
+        getClassSet: vi.fn(async () => runtimeSet),
+        getClassSetSync: vi.fn(() => runtimeSet),
+        extract: vi.fn(async () => ({ classSet: runtimeSet })),
+        majorVersion: 4,
+      },
+    }))
+    const currentContext = getCurrentContext()
+    const plugins = UnifiedViteWeappTailwindcssPlugin()
+    const postPlugin = plugins?.find(plugin => plugin.name === 'weapp-tailwindcss:adaptor:post') as Plugin
+    expect(postPlugin).toBeTruthy()
+
+    await (postPlugin.configResolved as any)?.call(postPlugin, {
+      command: 'serve',
+      css: { postcss: { plugins: [] } },
+      build: { outDir: 'dist' },
+      root: rootDir,
+    } as unknown as ResolvedConfig)
+
+    const createAsset = () => ({
+      type: 'asset' as const,
+      fileName: 'index.asset.js',
+      source: 'const cls = "text-[#424242]"',
+      name: undefined,
+      needsCodeReference: false,
+      names: [] as string[],
+      originalFileName: null,
+      originalFileNames: [] as string[],
+    }) satisfies OutputAsset
+    const generateBundle = getGenerateBundleHandler(postPlugin)
+
+    const firstBundle = {
+      'index.asset.js': createAsset(),
+      'chunk.js': createRollupChunk('export const dep = "text-[#111111]"'),
+    }
+    await generateBundle?.call(postPlugin, {} as any, firstBundle)
+    expect((firstBundle['chunk.js'] as OutputChunk).code).toBe('linked:const cls = "text-[#424242]"')
+
+    currentContext.jsHandler.mockClear()
+
+    const secondBundle = {
+      'index.asset.js': createAsset(),
+      'chunk.js': createRollupChunk('export const dep = "text-[#222222]"'),
+    }
+    await generateBundle?.call(postPlugin, {} as any, secondBundle)
+
+    const assetCalls = currentContext.jsHandler.mock.calls.filter(([, , options]) =>
+      (options as any)?.filename?.endsWith('index.asset.js'))
+    expect(assetCalls).toHaveLength(1)
+    expect((secondBundle['index.asset.js'] as OutputAsset).source).toBe('asset:const cls = "text-[#424242]"')
+    expect((secondBundle['chunk.js'] as OutputChunk).code).toBe('linked:const cls = "text-[#424242]"')
   }, TEST_TIMEOUT_MS)
 
   it('reuses css handler override objects for repeated uni-app-x style transforms', async () => {

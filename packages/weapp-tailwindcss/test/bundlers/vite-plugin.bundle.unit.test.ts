@@ -286,6 +286,57 @@ const trace = "at App.vue:4"
     expect(transformed).not.toContain('h-[45px]')
   }, TEST_TIMEOUT_MS)
 
+  it('warns again when full runtime fallback still leaves dynamic arbitrary candidates unresolved', async () => {
+    const loggerModule = await import('@weapp-tailwindcss/logger')
+    const warnSpy = vi.spyOn(loggerModule.logger, 'warn').mockImplementation(() => {})
+    const runtimeSet = new Set(['h-[30px]', 'h-[45px]'])
+    vi.doMock('@/bundlers/vite/incremental-runtime-class-set', () => ({
+      createBundleRuntimeClassSetManager: () => ({
+        sync: vi.fn(async () => new Set<string>()),
+        reset: vi.fn(async () => undefined),
+      }),
+    }))
+
+    setCurrentContext(createContext({
+      templateHandler: vi.fn(async (code: string) => code),
+      twPatcher: {
+        patch: vi.fn(),
+        getClassSet: vi.fn(async () => runtimeSet),
+        getClassSetSync: vi.fn(() => runtimeSet),
+        extract: vi.fn(async () => ({ classSet: runtimeSet })),
+        majorVersion: 4,
+      },
+    }))
+
+    const UnifiedViteWeappTailwindcssPlugin = await loadUnifiedVitePlugin()
+    const plugins = UnifiedViteWeappTailwindcssPlugin()
+    const postPlugin = plugins?.find(plugin => plugin.name === 'weapp-tailwindcss:adaptor:post') as Plugin
+    expect(postPlugin).toBeTruthy()
+
+    await (postPlugin.configResolved as any)?.call(postPlugin, {
+      command: 'build',
+      root: process.cwd(),
+      css: { postcss: { plugins: [] } },
+      build: { outDir: 'dist' },
+    } as ResolvedConfig)
+
+    const rawWxml = '<view class="{{active?\'h-[30px]\':\'h-[45px]\'}}">111</view>'
+    const bundle = {
+      'pages/index/index.wxml': {
+        ...createRollupAsset(rawWxml),
+        fileName: 'pages/index/index.wxml',
+      } satisfies OutputAsset,
+    }
+
+    const generateBundle = getGenerateBundleHandler(postPlugin)
+    await generateBundle?.call(postPlugin, {} as any, bundle)
+
+    expect(warnSpy).toHaveBeenCalledTimes(2)
+    expect(warnSpy.mock.calls[0]?.[0]).toContain('已回退到完整 runtimeSet 重试')
+    expect(warnSpy.mock.calls[1]?.[0]).toContain('完整 runtimeSet 重试后仍未完成转译')
+    expect((bundle['pages/index/index.wxml'] as OutputAsset).source.toString()).toBe(rawWxml)
+  }, TEST_TIMEOUT_MS)
+
   it('refreshes runtime class set when only comment-carried class candidates change', async () => {
     const UnifiedViteWeappTailwindcssPlugin = await loadUnifiedVitePlugin()
     const runtimeSets = [
