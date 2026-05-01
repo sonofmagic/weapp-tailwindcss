@@ -12,10 +12,10 @@ const {
 const packageRoot = path.resolve(__dirname, '../..')
 const binPath = path.join(packageRoot, 'bin/weapp-tailwindcss.js')
 
-function createMissingModulePreload() {
+function createMissingModuleRunner() {
   const tempDir = fs.mkdtempSync(path.join(os.tmpdir(), 'weapp-tw-bin-'))
-  const preloadPath = path.join(tempDir, 'preload.cjs')
-  fs.writeFileSync(preloadPath, `
+  const runnerPath = path.join(tempDir, 'runner.cjs')
+  fs.writeFileSync(runnerPath, `
 const Module = require('node:module')
 const originalLoad = Module._load
 Module._load = function patchedLoad(request, parent, isMain) {
@@ -32,10 +32,13 @@ Module._load = function patchedLoad(request, parent, isMain) {
   }
   return originalLoad.apply(this, arguments)
 }
+const binPath = ${JSON.stringify(binPath)}
+process.argv = [process.execPath, binPath, 'patch']
+require(binPath)
 `)
   return {
     cleanup: () => fs.rmSync(tempDir, { force: true, recursive: true }),
-    preloadPath,
+    runnerPath,
   }
 }
 
@@ -113,9 +116,9 @@ describe('postinstall patch script', () => {
 
 
   it('lets bin skip missing module failures only during install lifecycle', () => {
-    const preload = createMissingModulePreload()
+    const runner = createMissingModuleRunner()
     try {
-      const installResult = spawnSync(process.execPath, ['--require', preload.preloadPath, binPath, 'patch'], {
+      const installResult = spawnSync(process.execPath, [runner.runnerPath], {
         encoding: 'utf8',
         env: {
           ...process.env,
@@ -126,7 +129,7 @@ describe('postinstall patch script', () => {
       expect(installResult.status).toBe(0)
       expect(installResult.stderr).toContain('install lifecycle patch skipped')
 
-      const strictResult = spawnSync(process.execPath, ['--require', preload.preloadPath, binPath, 'patch'], {
+      const strictResult = spawnSync(process.execPath, [runner.runnerPath], {
         encoding: 'utf8',
         env: {
           ...process.env,
@@ -138,7 +141,7 @@ describe('postinstall patch script', () => {
       expect(strictResult.stderr).toContain('postcss-units-to-px')
     }
     finally {
-      preload.cleanup()
+      runner.cleanup()
     }
   })
 })
