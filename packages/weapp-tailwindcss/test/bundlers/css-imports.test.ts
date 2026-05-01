@@ -71,6 +71,15 @@ describe('bundlers/shared css-imports', () => {
     expect(rewritten).toBe(`@import url("${pkgDir}/theme.css");`)
   })
 
+  it('preserves original import when custom resolver returns empty', () => {
+    const code = '@import "tailwindcss/base";'
+    const rewritten = rewriteTailwindcssImportsInCode(code, pkgDir, {
+      join: () => null as unknown as string,
+    })
+
+    expect(rewritten).toBeUndefined()
+  })
+
   it('emits debug output and runs as a webpack loader', () => {
     process.env.WEAPP_TW_LOADER_DEBUG = '1'
     const write = vi.spyOn(process.stdout, 'write').mockImplementation(() => true)

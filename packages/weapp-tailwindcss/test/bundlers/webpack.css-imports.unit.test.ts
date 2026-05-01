@@ -1,5 +1,5 @@
 import path from 'node:path'
-import { describe, expect, it, vi } from 'vitest'
+import { afterEach, describe, expect, it, vi } from 'vitest'
 import { applyTailwindcssCssImportRewrite } from '@/bundlers/webpack/shared/css-imports'
 
 function createCompiler() {
@@ -29,6 +29,11 @@ function createCompiler() {
 }
 
 describe('bundlers/webpack css-imports rewrite', () => {
+  afterEach(() => {
+    vi.doUnmock('@/bundlers/shared/css-imports')
+    vi.resetModules()
+  })
+
   it('rewrites root tailwindcss imports in css issuers', () => {
     const { compiler, beforeResolveHandlers } = createCompiler()
     applyTailwindcssCssImportRewrite(compiler as any, {
@@ -101,6 +106,53 @@ describe('bundlers/webpack css-imports rewrite', () => {
     }
     handler(unrelated)
     expect(unrelated.request).toBe('tailwindcss-forms')
+  })
+
+  it('ignores missing resolver data, request, and issuer', () => {
+    const { compiler, beforeResolveHandlers } = createCompiler()
+    applyTailwindcssCssImportRewrite(compiler as any, {
+      pkgDir: '/virtual/weapp-tailwindcss',
+      enabled: true,
+    })
+
+    const handler = beforeResolveHandlers[0]!
+    expect(() => handler(undefined)).not.toThrow()
+
+    const missingRequest = {
+      contextInfo: { issuer: '/src/app.css' },
+    }
+    handler(missingRequest)
+    expect(missingRequest).toEqual({
+      contextInfo: { issuer: '/src/app.css' },
+    })
+
+    const missingIssuer = {
+      request: 'tailwindcss',
+      contextInfo: {},
+    }
+    handler(missingIssuer)
+    expect(missingIssuer.request).toBe('tailwindcss')
+  })
+
+  it('keeps request when shared resolver returns empty', async () => {
+    vi.resetModules()
+    vi.doMock('@/bundlers/shared/css-imports', () => ({
+      resolveTailwindcssImport: () => null,
+    }))
+    const { applyTailwindcssCssImportRewrite } = await import('@/bundlers/webpack/shared/css-imports')
+    const { compiler, beforeResolveHandlers } = createCompiler()
+    applyTailwindcssCssImportRewrite(compiler as any, {
+      pkgDir: '/virtual/weapp-tailwindcss',
+      enabled: true,
+    })
+
+    const data = {
+      request: 'tailwindcss',
+      contextInfo: { issuer: '/src/app.css' },
+    }
+    beforeResolveHandlers[0]!(data)
+
+    expect(data.request).toBe('tailwindcss')
   })
 
   it('skips hook registration when disabled', () => {
