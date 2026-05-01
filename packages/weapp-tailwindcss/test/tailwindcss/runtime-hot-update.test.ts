@@ -8,6 +8,7 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import {
   collectRuntimeClassSet,
   createTailwindPatchPromise,
+  ensureRuntimeClassSet,
   invalidateRuntimeClassSet,
   refreshTailwindcssPatcherSymbol,
   refreshTailwindRuntimeState,
@@ -506,6 +507,122 @@ describe('Runtime Hot Update', () => {
 
     it('should handle undefined patcher', () => {
       expect(() => invalidateRuntimeClassSet(undefined)).not.toThrow()
+    })
+  })
+
+  describe('ensureRuntimeClassSet', () => {
+    it('returns cached runtime set when signature is unchanged', async () => {
+      const runtimeSet = new Set(['text-red-500'])
+      const patcher: TailwindcssPatcherLike = {
+        packageInfo: { version: '4.0.0' } as any,
+        majorVersion: 4,
+        options: undefined,
+        patch: vi.fn().mockResolvedValue(undefined),
+        extract: vi.fn().mockResolvedValue({ classSet: runtimeSet }),
+        getClassSet: vi.fn().mockResolvedValue(runtimeSet),
+      }
+      const state: TailwindRuntimeState = {
+        twPatcher: patcher,
+        patchPromise: Promise.resolve(),
+      }
+
+      const first = await ensureRuntimeClassSet(state)
+      const second = await ensureRuntimeClassSet(state)
+
+      expect(first).toBe(runtimeSet)
+      expect(second).toBe(runtimeSet)
+      expect(patcher.extract).toHaveBeenCalledTimes(1)
+    })
+
+    it('returns empty runtime set without refresh when allowEmpty is true', async () => {
+      const emptySet = new Set<string>()
+      const refreshTailwindcssPatcher = vi.fn()
+      const patcher: TailwindcssPatcherLike = {
+        packageInfo: { version: '4.0.0' } as any,
+        majorVersion: 4,
+        options: undefined,
+        patch: vi.fn().mockResolvedValue(undefined),
+        extract: vi.fn().mockResolvedValue({ classSet: emptySet }),
+        getClassSet: vi.fn().mockResolvedValue(emptySet),
+      }
+      const state: TailwindRuntimeState = {
+        twPatcher: patcher,
+        patchPromise: Promise.resolve(),
+        refreshTailwindcssPatcher,
+      }
+
+      const result = await ensureRuntimeClassSet(state, {
+        allowEmpty: true,
+      })
+
+      expect(result).toBe(emptySet)
+      expect(refreshTailwindcssPatcher).not.toHaveBeenCalled()
+    })
+
+    it('refreshes and recollects when collected runtime set is empty', async () => {
+      const emptySet = new Set<string>()
+      const refreshedSet = new Set(['bg-blue-500'])
+      const patcher: TailwindcssPatcherLike = {
+        packageInfo: { version: '4.0.0' } as any,
+        majorVersion: 4,
+        options: undefined,
+        patch: vi.fn().mockResolvedValue(undefined),
+        extract: vi.fn()
+          .mockResolvedValueOnce({ classSet: emptySet })
+          .mockResolvedValueOnce({ classSet: refreshedSet }),
+        getClassSet: vi.fn()
+          .mockResolvedValueOnce(emptySet)
+          .mockResolvedValueOnce(refreshedSet),
+      }
+      const refreshTailwindcssPatcher = vi.fn().mockResolvedValue(patcher)
+      const state: TailwindRuntimeState = {
+        twPatcher: patcher,
+        patchPromise: Promise.resolve(),
+        refreshTailwindcssPatcher,
+      }
+
+      const result = await ensureRuntimeClassSet(state)
+
+      expect(result).toBe(refreshedSet)
+      expect(refreshTailwindcssPatcher).toHaveBeenCalledWith({ clearCache: true })
+      expect(patcher.patch).toHaveBeenCalledTimes(1)
+      expect(patcher.extract).toHaveBeenCalledTimes(2)
+    })
+
+    it('runs forced refresh before collecting when requested', async () => {
+      const refreshedSet = new Set(['grid'])
+      const initialPatcher: TailwindcssPatcherLike = {
+        packageInfo: { version: '4.0.0' } as any,
+        majorVersion: 4,
+        options: undefined,
+        patch: vi.fn().mockResolvedValue(undefined),
+        extract: vi.fn().mockResolvedValue({ classSet: new Set(['stale']) }),
+        getClassSet: vi.fn().mockResolvedValue(new Set(['stale'])),
+      }
+      const refreshedPatcher: TailwindcssPatcherLike = {
+        packageInfo: { version: '4.0.0' } as any,
+        majorVersion: 4,
+        options: undefined,
+        patch: vi.fn().mockResolvedValue(undefined),
+        extract: vi.fn().mockResolvedValue({ classSet: refreshedSet }),
+        getClassSet: vi.fn().mockResolvedValue(refreshedSet),
+      }
+      const refreshTailwindcssPatcher = vi.fn().mockResolvedValue(refreshedPatcher)
+      const state: TailwindRuntimeState = {
+        twPatcher: initialPatcher,
+        patchPromise: Promise.resolve(),
+        refreshTailwindcssPatcher,
+      }
+
+      const result = await ensureRuntimeClassSet(state, {
+        forceRefresh: true,
+        clearCache: true,
+      })
+
+      expect(result).toBe(refreshedSet)
+      expect(state.twPatcher).toBe(refreshedPatcher)
+      expect(refreshTailwindcssPatcher).toHaveBeenCalledWith({ clearCache: true })
+      expect(refreshedPatcher.patch).toHaveBeenCalledTimes(1)
     })
   })
 

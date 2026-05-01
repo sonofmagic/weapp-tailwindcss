@@ -870,6 +870,40 @@ const cls = "w-[1.5px]"
     expect(currentContext.jsHandler).toHaveBeenCalledTimes(5)
   }, TEST_TIMEOUT_MS)
 
+  it('falls back to transforming clean js chunks when replay cache is missing', async () => {
+    const UnifiedViteWeappTailwindcssPlugin = await loadUnifiedVitePlugin()
+    setCurrentContext(createContext({
+      jsHandler: vi.fn((code: string) => ({ code: `js:${code}` })),
+    }))
+    const currentContext = getCurrentContext()
+    const plugins = UnifiedViteWeappTailwindcssPlugin()
+    const postPlugin = plugins?.find(plugin => plugin.name === 'weapp-tailwindcss:adaptor:post') as Plugin
+    expect(postPlugin).toBeTruthy()
+
+    await (postPlugin.configResolved as any)?.call(postPlugin, {
+      command: 'serve',
+      root: process.cwd(),
+      css: { postcss: { plugins: [] } },
+      build: { outDir: 'dist' },
+    } as ResolvedConfig)
+
+    const generateBundle = getGenerateBundleHandler(postPlugin)
+    const createBundle = () => ({
+      'index.js': createRollupChunk('console.log("text-[#111111]")'),
+    })
+
+    await generateBundle?.call(postPlugin, {} as any, createBundle())
+    expect(currentContext.jsHandler).toHaveBeenCalledTimes(1)
+
+    currentContext.cache.instance.delete('index.js')
+    currentContext.jsHandler.mockClear()
+    const replayBundle = createBundle()
+    await generateBundle?.call(postPlugin, {} as any, replayBundle)
+
+    expect(currentContext.jsHandler).toHaveBeenCalledTimes(1)
+    expect((replayBundle['index.js'] as OutputChunk).code).toBe('js:console.log("text-[#111111]")')
+  }, TEST_TIMEOUT_MS)
+
   it('does not keep linked dirty bookkeeping across build mode runs', async () => {
     const UnifiedViteWeappTailwindcssPlugin = await loadUnifiedVitePlugin()
     const rootDir = process.cwd()
@@ -1127,6 +1161,56 @@ const cls = "w-[1.5px]"
     expect((bundle['pages/a.wxss'] as OutputAsset).source.toString()).toBe(`shared:${duplicatedCss}`)
     expect((bundle['pages/b.wxss'] as OutputAsset).source.toString()).toBe(`shared:${duplicatedCss}`)
     expect(currentContext.styleHandler).toHaveBeenCalledTimes(2)
+  }, TEST_TIMEOUT_MS)
+
+  it('logs css diffs when vite css diff debugging is enabled', async () => {
+    const previousDebugCssDiff = process.env.WEAPP_TW_VITE_DEBUG_CSS_DIFF
+    process.env.WEAPP_TW_VITE_DEBUG_CSS_DIFF = '1'
+    try {
+      const debug = vi.fn()
+      vi.doMock('@/debug', () => ({
+        createDebug: () => debug,
+      }))
+      const UnifiedViteWeappTailwindcssPlugin = await loadUnifiedVitePlugin()
+      setCurrentContext(createContext({
+        styleHandler: vi.fn(async () => ({
+          css: '.card{color:blue}',
+        })),
+      }))
+      const plugins = UnifiedViteWeappTailwindcssPlugin({ debug })
+      const postPlugin = plugins?.find(plugin => plugin.name === 'weapp-tailwindcss:adaptor:post') as Plugin
+      expect(postPlugin).toBeTruthy()
+
+      await (postPlugin.configResolved as any)?.call(postPlugin, {
+        command: 'serve',
+        root: process.cwd(),
+        css: { postcss: { plugins: [] } },
+        build: { outDir: 'dist' },
+      } as ResolvedConfig)
+
+      const bundle = {
+        'index.css': {
+          ...createRollupAsset('.card{color:red}'),
+          fileName: 'index.css',
+        },
+      }
+      const generateBundle = getGenerateBundleHandler(postPlugin)
+      await generateBundle?.call(postPlugin, {} as any, bundle)
+
+      expect(debug).toHaveBeenCalledWith(
+        'css diff %s: %s',
+        'index.css',
+        expect.stringContaining('changed@'),
+      )
+    }
+    finally {
+      if (previousDebugCssDiff === undefined) {
+        delete process.env.WEAPP_TW_VITE_DEBUG_CSS_DIFF
+      }
+      else {
+        process.env.WEAPP_TW_VITE_DEBUG_CSS_DIFF = previousDebugCssDiff
+      }
+    }
   }, TEST_TIMEOUT_MS)
 
   it('infers appType from vite root before generateBundle runs', async () => {
@@ -1458,5 +1542,50 @@ const fallback = "bg-[#434332] px-[32px]"
     const firstCall = currentContext.jsHandler.mock.calls[0] as unknown as [string, Set<string>, CreateJsHandlerOptions] | undefined
     const linkedOptions = firstCall?.[2]
     expect(linkedOptions?.moduleGraph?.resolve?.('./chunk.js', linkedOptions.filename ?? '')).toBe(linkedFile)
+  }, TEST_TIMEOUT_MS)
+
+  it('propagates linked js updates to asset entries', async () => {
+    const UnifiedViteWeappTailwindcssPlugin = await loadUnifiedVitePlugin()
+    const rootDir = process.cwd()
+    const outDir = path.resolve(rootDir, 'dist')
+    const linkedFile = path.resolve(outDir, 'asset.js')
+    setCurrentContext(createContext({
+      jsHandler: vi.fn(async (code: string, _runtimeSet: Set<string>, options?: { filename?: string }) => {
+        if (options?.filename?.endsWith('index.js')) {
+          return {
+            code: `js:${code}`,
+            linked: {
+              [linkedFile]: { code: 'linked:asset' },
+            },
+          }
+        }
+        return { code }
+      }),
+    }))
+    const currentContext = getCurrentContext()
+    const plugins = UnifiedViteWeappTailwindcssPlugin()
+    const postPlugin = plugins?.find(plugin => plugin.name === 'weapp-tailwindcss:adaptor:post') as Plugin
+    expect(postPlugin).toBeTruthy()
+
+    await (postPlugin.configResolved as any)?.call(postPlugin, {
+      root: rootDir,
+      build: { outDir: 'dist' },
+      css: { postcss: { plugins: [] } },
+    } as unknown as ResolvedConfig)
+
+    const bundle = {
+      'index.js': createRollupChunk('import "./asset.js";'),
+      'asset.js': {
+        ...createRollupAsset('export const foo = 1;'),
+        fileName: 'asset.js',
+      } satisfies OutputAsset,
+    }
+
+    const generateBundle = getGenerateBundleHandler(postPlugin)
+    await generateBundle?.call(postPlugin, {} as any, bundle)
+
+    expect((bundle['asset.js'] as OutputAsset).source).toBe('linked:asset')
+    const assetUpdates = currentContext.onUpdate.mock.calls.filter(([file]) => file === 'asset.js')
+    expect(assetUpdates.some(([, , updated]) => updated === 'linked:asset')).toBe(true)
   }, TEST_TIMEOUT_MS)
 })

@@ -814,6 +814,42 @@ describe('bundlers/webpack UnifiedWebpackPluginV4', () => {
     expect(classSetLoaderEntry).toBeDefined()
   })
 
+  it('walks loader debug branches for app and page css modules', () => {
+    const previousDebug = process.env.WEAPP_TW_LOADER_DEBUG
+    process.env.WEAPP_TW_LOADER_DEBUG = '1'
+    try {
+      currentContext = createContext()
+      getCompilerContextMock.mockImplementation(() => currentContext)
+      const { compiler, getLoaderHandler } = createCompilerWithLoaderTracking()
+      const plugin = new UnifiedWebpackPluginV4()
+      plugin.apply(compiler as any)
+
+      const handler = getLoaderHandler()
+      const appModule: LoaderModule = {
+        loaders: [{ loader: '/path/postcss-loader.js' }],
+        resource: '/abs/src/app.css',
+      }
+      const pageModule: LoaderModule = {
+        loaders: [{ loader: '/path/postcss-loader.js' }],
+        resource: '/abs/src/page.css',
+      }
+
+      handler?.({}, appModule)
+      handler?.({}, pageModule)
+
+      expect(appModule.loaders.some(entry => entry.loader === currentContext.runtimeLoaderPath)).toBe(true)
+      expect(pageModule.loaders.some(entry => entry.loader === currentContext.runtimeLoaderPath)).toBe(true)
+    }
+    finally {
+      if (previousDebug === undefined) {
+        delete process.env.WEAPP_TW_LOADER_DEBUG
+      }
+      else {
+        process.env.WEAPP_TW_LOADER_DEBUG = previousDebug
+      }
+    }
+  })
+
   it('detects mpx style blocks via resource query when anchors missing', () => {
     currentContext = createContext({ appType: 'mpx' })
     currentContext.twPatcher.majorVersion = 4
