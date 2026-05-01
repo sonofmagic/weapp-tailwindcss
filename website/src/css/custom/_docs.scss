@@ -1,5 +1,69 @@
 /* Docs page tweaks focused for uni-app x pages */
 
+html.docs-wrapper {
+  --ifm-background-color: #f8fafc;
+  --ifm-background-surface-color: #ffffff;
+
+  background: linear-gradient(180deg, rgb(248 250 252) 0%, rgb(241 245 249) 100%), #f8fafc;
+}
+
+html.docs-wrapper[data-theme='dark'] {
+  --ifm-background-color: #101827;
+  --ifm-background-surface-color: #111c2e;
+  --ifm-navbar-background-color: rgb(16 24 39 / 94%);
+
+  background: #101827;
+}
+
+html.docs-wrapper .main-wrapper,
+html.docs-wrapper .main-wrapper main {
+  background: transparent;
+}
+
+html.docs-wrapper[data-theme='light'] .navbar,
+html.docs-wrapper[data-theme='light'] .footer {
+  background: rgb(255 255 255 / 94%);
+}
+
+html.docs-wrapper[data-theme='dark'] .navbar,
+html.docs-wrapper[data-theme='dark'] .footer {
+  background: rgb(16 24 39 / 94%);
+}
+
+html.docs-wrapper .theme-doc-sidebar-container {
+  border-right-color: rgb(148 163 184 / 18%);
+  background: rgb(255 255 255 / 68%);
+  backdrop-filter: blur(18px);
+}
+
+html.docs-wrapper[data-theme='dark'] .theme-doc-sidebar-container {
+  border-right-color: rgb(148 163 184 / 12%);
+  background: rgb(15 23 42 / 64%);
+}
+
+html.docs-wrapper .theme-doc-markdown {
+  padding-bottom: 2rem;
+}
+
+html.docs-wrapper article {
+  max-width: 82ch;
+}
+
+html.docs-wrapper .pagination-nav__link {
+  border-radius: 0.75rem;
+  background: rgb(255 255 255 / 72%);
+}
+
+html.docs-wrapper[data-theme='dark'] .pagination-nav__link {
+  background: rgb(15 23 42 / 64%);
+}
+
+@media (width <= 996px) {
+  html.docs-wrapper .navbar:not(.navbar-sidebar) .navbar__weapp-vite-link {
+    display: none;
+  }
+}
+
 /* Gentle typography rhythm only on uni-app x pages */
 .docs-doc-id-uni-app-x\/index .theme-doc-markdown,
 .docs-doc-id-uni-app-x\/install .theme-doc-markdown {
@@ -638,4 +702,334 @@ html[data-theme='dark'] .tailwind-topic-card__badge {
   border: 1px solid var(--doc-table-border);
   border-radius: 999px;
   font-size: 0.9em;
+}
+
+html.docs-wrapper .theme-doc-sidebar-menu {
+  --tw-sidebar-item-hover: rgb(14 165 233 / 6%);
+  --tw-sidebar-item-active: rgb(224 242 254 / 72%);
+}
+
+html.docs-wrapper[data-theme='dark'] .theme-doc-sidebar-menu {
+  --tw-sidebar-item-hover: rgb(56 189 248 / 7%);
+  --tw-sidebar-item-active: rgb(8 47 73 / 64%);
+}
+
+html.docs-wrapper .theme-doc-sidebar-menu .theme-doc-sidebar-item-link-level-1 > .menu__link,
+html.docs-wrapper .theme-doc-sidebar-menu .menu__link--active:not(.menu__link--sublist) {
+  box-shadow: none;
+}
+
+html.docs-wrapper .theme-doc-sidebar-menu .theme-doc-sidebar-item-link-level-1 > .menu__link {
+  background: transparent;
+}
+
+html.docs-wrapper .theme-doc-sidebar-menu .menu__list .menu__list {
+  border-left-style: solid;
+}
+
+html.docs-doc-id-showcase\/index .theme-doc-toc-desktop,
+html.docs-doc-id-showcase\/index .theme-doc-toc-mobile {
+  display: none;
+}
+
+html.docs-doc-id-showcase\/index {
+  --showcase-card-min: 22rem;
+  --showcase-gap: clamp(0.95rem, 1.25vw, 1.35rem);
+  --showcase-card-padding: clamp(1rem, 1.35vw, 1.25rem);
+  --showcase-main-image-height: clamp(14.5rem, 18vw, 18rem);
+  --showcase-extra-image-height: clamp(9.5rem, 12vw, 12rem);
+  --showcase-card-border: rgb(148 163 184 / 22%);
+  --showcase-card-bg: rgb(255 255 255 / 86%);
+  --showcase-card-bg-soft: rgb(248 250 252 / 82%);
+  --showcase-card-text-muted: rgb(71 85 105);
+  --showcase-card-accent: rgb(14 165 233);
+  --showcase-card-accent-2: rgb(20 184 166);
+  --showcase-card-shadow: 0 18px 45px rgb(15 23 42 / 7%);
+}
+
+html.docs-doc-id-showcase\/index main .row > .col--3 {
+  display: none;
+}
+
+html.docs-doc-id-showcase\/index main .row > [class*='docItemCol'] {
+  flex: 0 0 100%;
+  max-width: 100% !important;
+}
+
+html.docs-doc-id-showcase\/index .container {
+  max-width: 1480px;
+}
+
+html.docs-doc-id-showcase\/index article,
+html.docs-doc-id-showcase\/index .theme-doc-markdown {
+  max-width: none;
+}
+
+html.docs-doc-id-showcase\/index .theme-doc-markdown > header + p {
+  max-width: 54rem;
+  margin-top: 0.5rem;
+  color: rgb(71 85 105);
+  font-size: 1.02rem;
+}
+
+html.docs-doc-id-showcase\/index .theme-doc-markdown > header + p a {
+  white-space: nowrap;
+}
+
+html.docs-doc-id-showcase\/index[data-theme='dark'] .theme-doc-markdown > header + p {
+  color: rgb(203 213 225);
+}
+
+html.docs-doc-id-showcase\/index .theme-doc-markdown > h1:first-child,
+html.docs-doc-id-showcase\/index .theme-doc-markdown h1 {
+  max-width: none;
+  margin-bottom: 1rem;
+  font-size: clamp(2.4rem, 5vw, 4.4rem);
+}
+
+html.docs-doc-id-showcase\/index .theme-doc-markdown > blockquote {
+  display: inline-flex;
+  width: auto;
+  margin: 0.6rem 0 1.8rem;
+  padding: 0.55rem 0.9rem;
+  border: 1px solid rgb(14 165 233 / 18%);
+  border-left: 3px solid rgb(14 165 233 / 70%);
+  border-radius: 0.75rem;
+  background: rgb(255 255 255 / 72%);
+  box-shadow: 0 8px 22px rgb(15 23 42 / 5%);
+}
+
+html.docs-doc-id-showcase\/index .theme-doc-markdown > blockquote p {
+  margin: 0;
+  font-size: 0.92rem;
+}
+
+html.docs-doc-id-showcase\/index[data-theme='dark'] .theme-doc-markdown > blockquote {
+  border-color: rgb(56 189 248 / 18%);
+  border-left-color: rgb(56 189 248 / 70%);
+  background: rgb(15 23 42 / 58%);
+  box-shadow: none;
+}
+
+html.docs-doc-id-showcase\/index[data-theme='dark'] {
+  --showcase-card-border: rgb(148 163 184 / 16%);
+  --showcase-card-bg: rgb(15 23 42 / 66%);
+  --showcase-card-bg-soft: rgb(2 6 23 / 24%);
+  --showcase-card-text-muted: rgb(148 163 184);
+  --showcase-card-accent: rgb(56 189 248);
+  --showcase-card-accent-2: rgb(45 212 191);
+  --showcase-card-shadow: 0 16px 42px rgb(2 6 23 / 24%);
+}
+
+html.docs-doc-id-showcase\/index .theme-doc-markdown > div.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, var(--showcase-card-min)), 1fr));
+  gap: var(--showcase-gap);
+  align-items: start;
+}
+
+html.docs-doc-id-showcase\/index .theme-doc-markdown > div.grid > div {
+  position: relative;
+  min-width: 0;
+  overflow: hidden;
+  border: 1px solid var(--showcase-card-border);
+  border-radius: 0.5rem;
+  padding: var(--showcase-card-padding);
+  background: linear-gradient(180deg, rgb(255 255 255 / 7%), transparent 38%), var(--showcase-card-bg);
+  box-shadow: var(--showcase-card-shadow);
+  transition:
+    border-color 0.2s ease,
+    box-shadow 0.2s ease,
+    transform 0.2s ease;
+}
+
+html.docs-doc-id-showcase\/index .theme-doc-markdown > div.grid > div::before {
+  position: absolute;
+  inset: 0 0 auto;
+  height: 3px;
+  background: linear-gradient(90deg, var(--showcase-card-accent), var(--showcase-card-accent-2));
+  content: '';
+}
+
+@media (hover: hover) {
+  html.docs-doc-id-showcase\/index .theme-doc-markdown > div.grid > div:hover {
+    border-color: rgb(14 165 233 / 38%);
+    box-shadow: 0 20px 52px rgb(14 165 233 / 12%);
+    transform: translateY(-2px);
+  }
+}
+
+html.docs-doc-id-showcase\/index[data-theme='dark'] .theme-doc-markdown > div.grid > div {
+  border-color: var(--showcase-card-border);
+  background: linear-gradient(180deg, rgb(255 255 255 / 4%), transparent 42%), var(--showcase-card-bg);
+  box-shadow: var(--showcase-card-shadow);
+}
+
+html.docs-doc-id-showcase\/index[data-theme='dark'] .theme-doc-markdown > div.grid > div:hover {
+  border-color: rgb(56 189 248 / 32%);
+  box-shadow: 0 18px 42px rgb(14 165 233 / 12%);
+}
+
+html.docs-doc-id-showcase\/index .theme-doc-markdown > div.grid > div h3 {
+  display: flex;
+  gap: 0.55rem;
+  align-items: center;
+  margin: 0 0 0.8rem;
+  padding-bottom: 0.7rem;
+  border-bottom: 1px solid rgb(148 163 184 / 16%);
+  font-size: 1.28rem;
+  line-height: 1.32;
+  overflow-wrap: anywhere;
+}
+
+html.docs-doc-id-showcase\/index .theme-doc-markdown > div.grid > div h3::before {
+  flex: 0 0 auto;
+  width: 0.28rem;
+  height: 1.15rem;
+  border-radius: 999px;
+  background: linear-gradient(180deg, var(--showcase-card-accent), var(--showcase-card-accent-2));
+  content: '';
+}
+
+html.docs-doc-id-showcase\/index[data-theme='dark'] .theme-doc-markdown > div.grid > div h3 {
+  border-bottom-color: rgb(148 163 184 / 14%);
+}
+
+html.docs-doc-id-showcase\/index .theme-doc-markdown > div.grid > div > p {
+  margin: 0.55rem 0;
+  font-size: 0.94rem;
+  line-height: 1.68;
+  overflow-wrap: anywhere;
+}
+
+html.docs-doc-id-showcase\/index .theme-doc-markdown > div.grid > div > p:first-of-type {
+  padding: 0.55rem 0.65rem;
+  border: 1px solid rgb(148 163 184 / 14%);
+  border-radius: 0.5rem;
+  color: var(--showcase-card-text-muted);
+  background: var(--showcase-card-bg-soft);
+  font-size: 0.88rem;
+  line-height: 1.55;
+}
+
+html.docs-doc-id-showcase\/index[data-theme='dark'] .theme-doc-markdown > div.grid > div > p:first-of-type {
+  border-color: rgb(148 163 184 / 12%);
+  color: var(--showcase-card-text-muted);
+}
+
+html.docs-doc-id-showcase\/index .theme-doc-markdown > div.grid > div > div.grid {
+  margin-top: 1rem;
+}
+
+html.docs-doc-id-showcase\/index .theme-doc-markdown img[src*='/img/showcase/'] {
+  display: block;
+  width: 100%;
+  max-width: 100%;
+  height: var(--showcase-main-image-height) !important;
+  padding: 0.75rem;
+  border: 1px solid rgb(148 163 184 / 18%) !important;
+  border-radius: 0.5rem !important;
+  background: linear-gradient(180deg, rgb(255 255 255), rgb(248 250 252));
+  box-shadow: inset 0 1px 0 rgb(255 255 255 / 90%);
+  object-fit: contain;
+}
+
+html.docs-doc-id-showcase\/index[data-theme='dark'] .theme-doc-markdown img[src*='/img/showcase/'] {
+  border-color: rgb(148 163 184 / 14%) !important;
+  background: linear-gradient(180deg, rgb(248 250 252), rgb(226 232 240));
+}
+
+html.docs-doc-id-showcase\/index .theme-doc-markdown details {
+  margin-top: 0.85rem !important;
+  padding: 0 !important;
+  border: 1px solid rgb(14 165 233 / 20%) !important;
+  border-radius: 0.5rem !important;
+  background: rgb(14 165 233 / 6%) !important;
+  box-shadow: none !important;
+}
+
+html.docs-doc-id-showcase\/index[data-theme='dark'] .theme-doc-markdown details {
+  border-color: rgb(56 189 248 / 16%) !important;
+  background: rgb(8 47 73 / 22%) !important;
+}
+
+html.docs-doc-id-showcase\/index .theme-doc-markdown details summary {
+  display: flex;
+  gap: 0.45rem;
+  align-items: center;
+  justify-content: space-between;
+  list-style: none;
+  padding: 0.7rem 0.85rem;
+  color: rgb(51 65 85) !important;
+  font-size: 0.88rem;
+  font-weight: 600;
+  line-height: 1.45;
+  overflow-wrap: anywhere;
+}
+
+html.docs-doc-id-showcase\/index .theme-doc-markdown details summary::after {
+  flex: 0 0 auto;
+  color: var(--showcase-card-accent);
+  content: '+';
+  font-size: 1rem;
+  line-height: 1;
+}
+
+html.docs-doc-id-showcase\/index .theme-doc-markdown details[open] summary::after {
+  content: '-';
+}
+
+html.docs-doc-id-showcase\/index .theme-doc-markdown details summary::marker,
+html.docs-doc-id-showcase\/index .theme-doc-markdown details summary::-webkit-details-marker {
+  display: none;
+  content: '';
+}
+
+html.docs-doc-id-showcase\/index[data-theme='dark'] .theme-doc-markdown details summary {
+  color: rgb(203 213 225) !important;
+}
+
+html.docs-doc-id-showcase\/index .theme-doc-markdown details > div {
+  padding: 0 0.9rem 0.9rem;
+}
+
+html.docs-doc-id-showcase\/index .theme-doc-markdown details img[src*='/img/showcase/'] {
+  height: var(--showcase-extra-image-height) !important;
+}
+
+@media (720px <= width <= 996px) {
+  html.docs-doc-id-showcase\/index {
+    --showcase-card-min: 0;
+    --showcase-gap: 1rem;
+    --showcase-card-padding: 1rem;
+    --showcase-main-image-height: 13.5rem;
+    --showcase-extra-image-height: 8.75rem;
+  }
+
+  html.docs-doc-id-showcase\/index .theme-doc-markdown > div.grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  html.docs-doc-id-showcase\/index .theme-doc-markdown > div.grid > div h3 {
+    font-size: 1.15rem;
+  }
+
+  html.docs-doc-id-showcase\/index .theme-doc-markdown > div.grid > div > p {
+    font-size: 0.9rem;
+    line-height: 1.62;
+  }
+}
+
+@media (width <= 640px) {
+  html.docs-doc-id-showcase\/index {
+    --showcase-gap: 1rem;
+    --showcase-card-padding: 1rem;
+    --showcase-main-image-height: 14rem;
+    --showcase-extra-image-height: 9.5rem;
+  }
+
+  html.docs-doc-id-showcase\/index .theme-doc-markdown > h1:first-child,
+  html.docs-doc-id-showcase\/index .theme-doc-markdown h1 {
+    font-size: 2.15rem;
+  }
 }

@@ -1,5 +1,5 @@
 import type { ComponentProps } from 'react'
-// import { useLocation } from '@docusaurus/router'
+import { useLocation } from '@docusaurus/router'
 import { UiManagementProvider } from '@site/src/features/ui-management/context'
 import Layout from '@theme-original/Layout'
 import React from 'react'
@@ -7,7 +7,8 @@ import React from 'react'
 type LayoutWrapperProps = ComponentProps<typeof Layout>
 
 export default function LayoutWrapper(props: LayoutWrapperProps) {
-  // const location = useLocation()
+  const location = useLocation()
+  const isHomepage = location.pathname === '/'
 
   return (
     <UiManagementProvider>
@@ -18,14 +19,19 @@ export default function LayoutWrapper(props: LayoutWrapperProps) {
           </div>
         )} */}
         <Layout {...props} />
-        <div className="pointer-events-none absolute inset-0 z-[202] flex-none">
-          <div className={`
-            size-full rounded-none bg-[url(/img/framer.png)] bg-[length:128px]
-            bg-repeat opacity-5
-          `}
+        {isHomepage && (
+          <div className="
+            pointer-events-none absolute inset-0 z-[202] flex-none
+          "
           >
+            <div className={`
+              size-full rounded-none bg-[url(/img/framer.png)] bg-[length:128px]
+              bg-repeat opacity-5
+            `}
+            >
+            </div>
           </div>
-        </div>
+        )}
       </div>
     </UiManagementProvider>
   )
