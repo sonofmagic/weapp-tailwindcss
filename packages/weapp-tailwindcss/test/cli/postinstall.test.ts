@@ -12,6 +12,14 @@ const {
 const packageRoot = path.resolve(__dirname, '../..')
 const binPath = path.join(packageRoot, 'bin/weapp-tailwindcss.js')
 
+function createEnvWithLifecycle(lifecycle: string) {
+  return Object.fromEntries(
+    Object.entries(process.env)
+      .filter(([key]) => key.toLowerCase() !== 'npm_lifecycle_event')
+      .concat([['npm_lifecycle_event', lifecycle]]),
+  )
+}
+
 function createMissingModuleRunner() {
   const tempDir = fs.mkdtempSync(path.join(os.tmpdir(), 'weapp-tw-bin-'))
   const runnerPath = path.join(tempDir, 'runner.cjs')
@@ -120,24 +128,18 @@ describe('postinstall patch script', () => {
     try {
       const installResult = spawnSync(process.execPath, [runner.runnerPath], {
         encoding: 'utf8',
-        env: {
-          ...process.env,
-          npm_lifecycle_event: 'postinstall',
-        },
+        env: createEnvWithLifecycle('postinstall'),
       })
 
-      expect(installResult.status).toBe(0)
+      expect(installResult.status, installResult.stderr || installResult.stdout).toBe(0)
       expect(installResult.stderr).toContain('install lifecycle patch skipped')
 
       const strictResult = spawnSync(process.execPath, [runner.runnerPath], {
         encoding: 'utf8',
-        env: {
-          ...process.env,
-          npm_lifecycle_event: '',
-        },
+        env: createEnvWithLifecycle(''),
       })
 
-      expect(strictResult.status).toBe(1)
+      expect(strictResult.status, strictResult.stderr || strictResult.stdout).toBe(1)
       expect(strictResult.stderr).toContain('postcss-units-to-px')
     }
     finally {
