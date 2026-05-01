@@ -10,6 +10,7 @@ import { splitCode } from '@weapp-tailwindcss/shared/extractors'
 import { getRuntimeClassSetSignature } from '@/tailwindcss/runtime/cache'
 import { createUniAppXAssetTask } from '@/uni-app-x'
 import { processCachedTask } from '../shared/cache'
+import { normalizeOutputPathKey } from '../shared/module-graph'
 import { pushConcurrentTaskFactories } from '../shared/run-tasks'
 import { applyLinkedResults, createBundleModuleGraphOptions } from './bundle-entries'
 import { buildBundleSnapshot, createBundleBuildState, updateBundleBuildState } from './bundle-state'
@@ -310,6 +311,11 @@ export function createGenerateBundleHook(context: GenerateBundleContext) {
       )
     }
     const jsEntries = snapshot.jsEntries
+    const normalizedJsEntries = new Map<string, OutputEntry>()
+    for (const [id, entry] of jsEntries) {
+      normalizedJsEntries.set(normalizeOutputPathKey(id), entry)
+    }
+    const getJsEntry = (id: string) => jsEntries.get(id) ?? normalizedJsEntries.get(normalizeOutputPathKey(id))
     const moduleGraphOptions = createBundleModuleGraphOptions(outDir, jsEntries)
     const runtimeStart = performance.now()
     const runtime = useBundleRuntimeClassSet
@@ -553,7 +559,7 @@ export function createGenerateBundleHook(context: GenerateBundleContext) {
               debug('js handle: %s', file)
               if (linked) {
                 for (const id of Object.keys(linked)) {
-                  const linkedEntry = jsEntries.get(id)
+                  const linkedEntry = getJsEntry(id)
                   if (linkedEntry && linkedSet) {
                     linkedSet.add(linkedEntry.fileName)
                   }
@@ -577,7 +583,7 @@ export function createGenerateBundleHook(context: GenerateBundleContext) {
         const wrappedApplyLinkedUpdates = (linked?: Record<string, LinkedJsModuleResult>) => {
           if (linked) {
             for (const id of Object.keys(linked)) {
-              const linkedEntry = jsEntries.get(id)
+              const linkedEntry = getJsEntry(id)
               if (linkedEntry && linkedSet) {
                 linkedSet.add(linkedEntry.fileName)
               }

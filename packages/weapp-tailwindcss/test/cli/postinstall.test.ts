@@ -19,6 +19,11 @@ function createMissingModulePreload() {
 const Module = require('node:module')
 const originalLoad = Module._load
 Module._load = function patchedLoad(request, parent, isMain) {
+  if (String(request).replace(/\\\\/g, '/').endsWith('/dist/cli.js')) {
+    const error = new Error("Cannot find module 'postcss-units-to-px'")
+    error.code = 'MODULE_NOT_FOUND'
+    throw error
+  }
   const resolved = Module._resolveFilename(request, parent, isMain)
   if (resolved.replace(/\\\\/g, '/').endsWith('/dist/cli.js')) {
     const error = new Error("Cannot find module 'postcss-units-to-px'")
