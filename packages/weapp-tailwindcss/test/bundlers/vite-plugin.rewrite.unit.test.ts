@@ -1,6 +1,7 @@
 import type { Plugin, TransformResult } from 'vite'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 import { slash } from '@/bundlers/vite/utils'
+import { createRewriteCssImportsPlugins } from '@/bundlers/vite/rewrite-css-imports'
 import { vitePluginName } from '@/constants'
 import { resolvePackageDir } from '@/utils/resolve-package'
 import {
@@ -17,6 +18,18 @@ async function loadUnifiedVitePlugin() {
   return mod.UnifiedViteWeappTailwindcssPlugin
 }
 
+function getResolveIdHandler(plugin: Plugin) {
+  return typeof plugin.resolveId === 'function'
+    ? plugin.resolveId.bind(plugin)
+    : plugin.resolveId?.handler?.bind(plugin)
+}
+
+function getTransformHandler(plugin: Plugin) {
+  return typeof plugin.transform === 'function'
+    ? plugin.transform.bind(plugin)
+    : plugin.transform?.handler?.bind(plugin)
+}
+
 describe('bundlers/vite UnifiedViteWeappTailwindcssPlugin rewrite', () => {
   beforeEach(() => {
     vi.resetModules()
@@ -31,9 +44,7 @@ describe('bundlers/vite UnifiedViteWeappTailwindcssPlugin rewrite', () => {
     const rewritePlugin = plugins?.find(plugin => plugin.name === `${vitePluginName}:rewrite-css-imports`)
     expect(rewritePlugin).toBeTruthy()
 
-    const resolveId = typeof rewritePlugin?.resolveId === 'function'
-      ? rewritePlugin.resolveId.bind(rewritePlugin)
-      : rewritePlugin?.resolveId?.handler?.bind(rewritePlugin)
+    const resolveId = getResolveIdHandler(rewritePlugin as Plugin)
     expect(resolveId).toBeTypeOf('function')
     expect((rewritePlugin as Plugin).resolveId).toMatchObject({ order: 'pre' })
 
@@ -62,9 +73,7 @@ describe('bundlers/vite UnifiedViteWeappTailwindcssPlugin rewrite', () => {
     const rewritePlugin = plugins?.find(plugin => plugin.name === `${vitePluginName}:rewrite-css-imports`)
     expect(rewritePlugin).toBeTruthy()
 
-    const transform = typeof rewritePlugin?.transform === 'function'
-      ? rewritePlugin.transform.bind(rewritePlugin)
-      : rewritePlugin?.transform?.handler?.bind(rewritePlugin)
+    const transform = getTransformHandler(rewritePlugin as Plugin)
     expect(transform).toBeTypeOf('function')
     expect((rewritePlugin as Plugin).transform).toMatchObject({ order: 'pre' })
 
@@ -165,14 +174,46 @@ describe('bundlers/vite UnifiedViteWeappTailwindcssPlugin rewrite', () => {
     expect(rewritePlugin?.name).toBe(`${vitePluginName}:rewrite-css-imports`)
     expect(currentContext.twPatcher.patch).not.toHaveBeenCalled()
 
-    const transform = typeof rewritePlugin?.transform === 'function'
-      ? rewritePlugin.transform.bind(rewritePlugin)
-      : rewritePlugin?.transform?.handler?.bind(rewritePlugin)
+    const transform = getTransformHandler(rewritePlugin as Plugin)
     expect(transform).toBeTypeOf('function')
 
     const result = await transform?.('@import "tailwindcss";', '/src/app.css') as TransformResult
     expect(result?.code).toContain('@import "weapp-tailwindcss/index.css";')
   }, TEST_TIMEOUT_MS)
+
+  it('supports trailing package directories and importer-less resolution in rewrite factory', async () => {
+    const [rewritePlugin] = createRewriteCssImportsPlugins({
+      shouldRewrite: true,
+      weappTailwindcssDirPosix: '/virtual/weapp-tailwindcss/',
+    })
+    const resolveId = getResolveIdHandler(rewritePlugin!)
+    expect(resolveId).toBeTypeOf('function')
+
+    expect(resolveId?.('tailwindcss/base', undefined)).toBe('/virtual/weapp-tailwindcss/base')
+  })
+
+  it('returns null for css transforms without tailwindcss imports', async () => {
+    const [rewritePlugin] = createRewriteCssImportsPlugins({
+      shouldRewrite: true,
+      weappTailwindcssDirPosix: '/virtual/weapp-tailwindcss',
+      getAppType: () => 'taro',
+    })
+    const transform = getTransformHandler(rewritePlugin!)
+    expect(transform).toBeTypeOf('function')
+
+    expect(transform?.('.foo { color: red; }', '/src/app.css')).toBeNull()
+  })
+
+  it('returns null for non-css transform requests', async () => {
+    const [rewritePlugin] = createRewriteCssImportsPlugins({
+      shouldRewrite: true,
+      weappTailwindcssDirPosix: '/virtual/weapp-tailwindcss',
+    })
+    const transform = getTransformHandler(rewritePlugin!)
+    expect(transform).toBeTypeOf('function')
+
+    expect(transform?.('@import "tailwindcss";', '/src/main.ts')).toBeNull()
+  })
 
   it('can disable css import rewriting through options', async () => {
     const UnifiedViteWeappTailwindcssPlugin = await loadUnifiedVitePlugin()
