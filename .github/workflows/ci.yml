@@ -105,8 +105,8 @@ jobs:
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
-      - name: Build core package
-        run: pnpm --filter weapp-tailwindcss run build
+      - name: Build core package dependency closure
+        run: pnpm --filter weapp-tailwindcss... run build
 
       - name: Run core compatibility regression tests
         run: >
