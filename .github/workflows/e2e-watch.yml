@@ -210,6 +210,7 @@ jobs:
           E2E_WATCH_CASE: ${{ matrix.watch_case }}
           E2E_WATCH_TIMEOUT_MS: ${{ matrix.watch_timeout_ms }}
           E2E_WATCH_POLL_MS: ${{ matrix.watch_poll_ms }}
+          E2E_WATCH_MAX_HOT_UPDATE_MS: ${{ matrix.watch_max_hot_update_ms || (matrix.runner_label == 'windows' && '30000' || '15000') }}
           E2E_WATCH_COMMAND_TIMEOUT_MS: ${{ matrix.watch_command_timeout_ms }}
           E2E_WATCH_ROUND_PROFILE: ${{ matrix.round_profile }}
           E2E_WATCH_SAVE_SNAPSHOTS: ${{ matrix.watch_save_snapshots }}
@@ -281,7 +282,6 @@ jobs:
             watch_timeout_ms: '720000'
             watch_poll_ms: '400'
             watch_command_timeout_ms: '2700000'
-            watch_max_attempts: '1'
           - os: macos-latest
             runner_label: macos
             watch_case: uni-app-vue3-vite
@@ -336,7 +336,6 @@ jobs:
             watch_timeout_ms: '540000'
             watch_poll_ms: '360'
             watch_command_timeout_ms: '2400000'
-            watch_max_attempts: '1'
           - os: macos-latest
             runner_label: macos
             watch_case: apps
@@ -423,6 +422,7 @@ jobs:
           E2E_WATCH_CASE: ${{ matrix.watch_case }}
           E2E_WATCH_TIMEOUT_MS: ${{ matrix.watch_timeout_ms }}
           E2E_WATCH_POLL_MS: ${{ matrix.watch_poll_ms }}
+          E2E_WATCH_MAX_HOT_UPDATE_MS: ${{ matrix.watch_max_hot_update_ms || (matrix.runner_label == 'windows' && '30000' || '15000') }}
           E2E_WATCH_COMMAND_TIMEOUT_MS: ${{ matrix.watch_command_timeout_ms }}
           E2E_WATCH_MAX_ATTEMPTS: ${{ matrix.watch_max_attempts || '2' }}
           E2E_WATCH_ROUND_PROFILE: ${{ matrix.round_profile }}

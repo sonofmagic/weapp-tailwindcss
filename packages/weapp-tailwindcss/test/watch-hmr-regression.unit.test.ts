@@ -18,6 +18,7 @@ import {
   pickCases,
 } from '../scripts/watch-hmr-regression/cases'
 import {
+  buildHexScriptRoundConfigs,
   buildIssue33HighRiskRoundConfigs,
 } from '../scripts/watch-hmr-regression/cases/round-configs'
 import {
@@ -34,6 +35,7 @@ import {
 } from '../scripts/watch-hmr-regression/summary'
 import {
   expandOutputFileEntries,
+  createClassMutationScenario,
   readJoinedOutputFiles,
   waitForCompileSettled,
   waitForInitialWarmup,
@@ -72,9 +74,11 @@ import {
   waitFor,
   writeFilePreserveEol,
 } from '../scripts/watch-hmr-regression/text'
+import { replaceWxml } from '../src/wxml/shared'
 import type {
   CliOptions,
   MutationRoundMetrics,
+  WatchCase,
   WatchCaseMetrics,
   WatchCaseMutationMetrics,
 } from '../scripts/watch-hmr-regression/types'
@@ -600,6 +604,48 @@ describe('watch-hmr regression cases', () => {
     expect(roundConfig?.buildModifyClassTokens?.('seed')).toEqual([...ISSUE33_MODIFY_CLASS_TOKENS])
   })
 
+  it('keeps enough fresh class candidates after watch mode accumulates earlier classes', () => {
+    const [roundConfig] = buildHexScriptRoundConfigs()
+    if (!roundConfig) {
+      throw new Error('missing hex script round config')
+    }
+
+    const nowSpy = vi.spyOn(Date, 'now').mockReturnValue(1234567890)
+    try {
+      const staleEscapedClasses: string[] = []
+      for (let attempt = 0; attempt < 24; attempt += 1) {
+        const seed = `${attempt.toString().padStart(2, '0')}${((attempt * 7) % 100).toString().padStart(2, '0')}90`
+        staleEscapedClasses.push(...roundConfig.buildClassTokens(seed).map(token => replaceWxml(token)))
+      }
+
+      const scenario = createClassMutationScenario(
+        {
+          name: 'taro-webpack',
+          label: 'apps/taro-webpack-tailwindcss-v4',
+        } as WatchCase,
+        'script',
+        {
+          sourceFile: 'index.tsx',
+          verifyEscapedIn: ['js'],
+          mutate(source, payload) {
+            return `${source}\nconst ${payload.classVariableName} = '${payload.classLiteral}'\n`
+          },
+        },
+        'export default function Page() {}',
+        '',
+        '',
+        staleEscapedClasses.join('\n'),
+        '__twWatchClass',
+        roundConfig,
+      )
+
+      expect(scenario.classTokens).toEqual(roundConfig.buildClassTokens('246890'))
+    }
+    finally {
+      nowSpy.mockRestore()
+    }
+  })
+
   it('tracks taro webpack app style outputs in both page and app wxss candidates', () => {
     const taroWebpackCase = buildAppCases('/repo').find(item => item.name === 'taro-webpack')
 
@@ -795,6 +841,31 @@ describe('watch-hmr regression cases', () => {
 
     for (const entry of requiredMatrixEntries) {
       expect(matrixEntries).toContainEqual(expect.objectContaining(entry))
+    }
+  })
+
+  it('sets a Windows-specific watch hot-update budget without relaxing macOS', async () => {
+    const workflowSource = await readFile(
+      path.resolve(__dirname, '../../../.github/workflows/e2e-watch.yml'),
+      'utf8',
+    )
+    const workflow = parse(workflowSource) as {
+      jobs?: Record<string, {
+        steps?: Array<Record<string, unknown>>
+      }>
+    }
+
+    const runSteps = [
+      ...(workflow.jobs?.['pr-quick-gate']?.steps ?? []),
+      ...(workflow.jobs?.['nightly-full-regression']?.steps ?? []),
+    ].filter(step => typeof step.name === 'string' && step.name.startsWith('Run e2e watch suite'))
+
+    expect(runSteps.length).toBe(2)
+    for (const step of runSteps) {
+      const env = step.env as Record<string, string> | undefined
+      expect(env?.E2E_WATCH_MAX_HOT_UPDATE_MS).toBe(
+        "${{ matrix.watch_max_hot_update_ms || (matrix.runner_label == 'windows' && '30000' || '15000') }}",
+      )
     }
   })
 })
