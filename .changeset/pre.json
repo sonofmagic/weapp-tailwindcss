@@ -74,6 +74,7 @@
     "postcss-pipeline-pruning",
     "slim-lite-merge-entries",
     "soft-postinstall-patch",
+    "stable-watch-windows",
     "theme-transition-clip-path-compat",
     "tidy-bg-clip-autoprefixer"
   ]
