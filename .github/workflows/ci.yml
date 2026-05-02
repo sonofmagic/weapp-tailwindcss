@@ -19,14 +19,10 @@ permissions:
   contents: read
 
 jobs:
-  build:
-    name: Build and Test
+  quality:
+    name: Quality Gate (ubuntu-latest, 22)
     timeout-minutes: 15
-    strategy:
-      fail-fast: false
-      matrix:
-        include: ${{ fromJSON(github.event_name == 'workflow_dispatch' && '[{"os":"ubuntu-latest","node-version":22},{"os":"ubuntu-latest","node-version":20},{"os":"ubuntu-latest","node-version":24},{"os":"windows-latest","node-version":22},{"os":"macos-latest","node-version":22}]' || '[{"os":"ubuntu-latest","node-version":22}]') }}
-    runs-on: ${{ matrix.os }}
+    runs-on: ubuntu-latest
     # Remote Caching enabled - configure TURBO_TOKEN and TURBO_TEAM in repository settings
     env:
       TURBO_TOKEN: ${{ secrets.TURBO_TOKEN }}
@@ -43,7 +39,7 @@ jobs:
       - name: Setup Node.js environment
         uses: actions/setup-node@v6
         with:
-          node-version: ${{ matrix.node-version }}
+          node-version: 22
           cache: pnpm
           cache-dependency-path: pnpm-lock.yaml
 
@@ -69,12 +65,67 @@ jobs:
           {
             echo "## CI 状态说明"
             echo "- 本工作流负责：lint、build、unit/integration tests、coverage 上传。"
+            echo "- \`Compatibility Gate\` 负责跨系统/多 Node 的核心回归，避免把全仓 lint/build 在每个矩阵里重复执行。"
             echo "- \`pnpm e2e:watch\` 已拆分到独立工作流：\`E2E Watch\`（.github/workflows/e2e-watch.yml）。"
             echo "- website SEO 质量门禁已拆分到独立工作流：\`Website SEO Quality\`（.github/workflows/website-seo-quality.yml）。"
           } >> "$GITHUB_STEP_SUMMARY"
 
       - name: Upload coverage reports to Codecov
-        if: matrix.os == 'ubuntu-latest' && matrix.node-version == 22
         uses: codecov/codecov-action@v5
         env:
           CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
+
+  compatibility:
+    name: Compatibility Gate (${{ matrix.os }}, ${{ matrix.node-version }}, ${{ matrix.scenario }})
+    timeout-minutes: 15
+    strategy:
+      fail-fast: false
+      matrix:
+        include: ${{ fromJSON(github.event_name == 'workflow_dispatch' && '[{"os":"ubuntu-latest","node-version":20,"scenario":"node20-core"},{"os":"ubuntu-latest","node-version":24,"scenario":"node24-core"},{"os":"windows-latest","node-version":20,"scenario":"windows-node20-core"},{"os":"windows-latest","node-version":22,"scenario":"windows-node22-core"},{"os":"windows-latest","node-version":24,"scenario":"windows-node24-core"},{"os":"macos-latest","node-version":22,"scenario":"macos-node22-core"}]' || '[{"os":"windows-latest","node-version":22,"scenario":"windows-node22-core"}]') }}
+    runs-on: ${{ matrix.os }}
+    env:
+      TURBO_TOKEN: ${{ secrets.TURBO_TOKEN }}
+      TURBO_TEAM: ${{ vars.TURBO_TEAM }}
+
+    steps:
+      - name: Check out code
+        uses: actions/checkout@v6
+        with:
+          fetch-depth: 2
+
+      - uses: pnpm/action-setup@v4
+
+      - name: Setup Node.js environment
+        uses: actions/setup-node@v6
+        with:
+          node-version: ${{ matrix.node-version }}
+          cache: pnpm
+          cache-dependency-path: pnpm-lock.yaml
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Build core package
+        run: pnpm --filter weapp-tailwindcss run build
+
+      - name: Run core compatibility regression tests
+        run: >
+          pnpm --filter weapp-tailwindcss exec vitest run
+          test/cli/postinstall.test.ts
+          test/bundlers/module-graph.unit.test.ts
+          test/bundlers/vite-bundle-entries.unit.test.ts
+          test/bundlers/vite-plugin.uni-app-x.unit.test.ts
+          test/tailwindcss/patcher-resolve.test.ts
+          test/tailwindcss/targets.log.test.ts
+          test/watch-hmr-coverage-matrix.unit.test.ts
+
+      - name: Compatibility Status Note
+        if: always()
+        run: |
+          {
+            echo "## Compatibility Gate"
+            echo "- os: ${{ matrix.os }}"
+            echo "- node: ${{ matrix.node-version }}"
+            echo "- scenario: ${{ matrix.scenario }}"
+            echo "- 覆盖重点：CLI postinstall、Windows/跨平台路径归一、Vite bundle graph、Tailwind patch resolve、watch HMR 覆盖矩阵。"
+          } >> "$GITHUB_STEP_SUMMARY"
