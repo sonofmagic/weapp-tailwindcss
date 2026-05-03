@@ -1,4 +1,4 @@
-import { useId, useState, type ReactNode } from 'react'
+import { useEffect, useId, useState, type ReactNode } from 'react'
 
 type ShowcaseImage = {
   src: string
@@ -32,6 +32,32 @@ function ShowcaseExternalLink({ value }: { value: ShowcaseLink }) {
   return <>{value.text}</>
 }
 
+function ShowcaseImageButton({
+  image,
+  label,
+  className,
+  onOpen,
+}: {
+  image: ShowcaseImage
+  label: string
+  className?: string
+  onOpen: (image: ShowcaseImage) => void
+}) {
+  const alt = image.alt || label
+
+  return (
+    <button
+      type="button"
+      className="showcase-card__image-button"
+      onClick={() => onOpen({ ...image, alt })}
+      aria-label={`放大查看：${alt}`}
+    >
+      <img className={className} loading="lazy" src={image.src} alt={alt} />
+      <span className="showcase-card__zoom-hint" aria-hidden="true" />
+    </button>
+  )
+}
+
 export default function ShowcaseCard({
   title,
   titleHref,
@@ -46,9 +72,30 @@ export default function ShowcaseCard({
   children,
 }: ShowcaseCardProps) {
   const [expanded, setExpanded] = useState(true)
+  const [previewImage, setPreviewImage] = useState<ShowcaseImage | null>(null)
   const panelId = useId()
   const hasScreenshots = screenshots.length > 0
   const titleContent = titleHref ? <a href={titleHref}>{title}</a> : title
+
+  useEffect(() => {
+    if (!previewImage) {
+      return undefined
+    }
+
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key === 'Escape') {
+        setPreviewImage(null)
+      }
+    }
+
+    const { overflow } = document.body.style
+    document.body.style.overflow = 'hidden'
+    document.addEventListener('keydown', handleKeyDown)
+    return () => {
+      document.body.style.overflow = overflow
+      document.removeEventListener('keydown', handleKeyDown)
+    }
+  }, [previewImage])
 
   return (
     <article className={`showcase-card${hasScreenshots ? ' showcase-card--with-screenshots' : ''}`}>
@@ -90,7 +137,12 @@ export default function ShowcaseCard({
       <div className="showcase-card__media">
         <figure className="showcase-card__primary">
           {hasScreenshots ? <figcaption>小程序码</figcaption> : null}
-          <img className="showcase-card__image" loading="lazy" src={primaryImage.src} alt={primaryImage.alt || title} />
+          <ShowcaseImageButton
+            image={primaryImage}
+            label={title}
+            className="showcase-card__image"
+            onOpen={setPreviewImage}
+          />
         </figure>
 
         {hasScreenshots ? (
@@ -111,12 +163,12 @@ export default function ShowcaseCard({
             <div id={panelId} className="showcase-card__shot-panel" hidden={!expanded}>
               <div className="showcase-card__shot-grid">
                 {screenshots.map((image, index) => (
-                  <img
+                  <ShowcaseImageButton
                     key={`${image.src}-${index}`}
+                    image={image}
+                    label={`${title} 截图 ${index + 1}`}
                     className="showcase-card__image showcase-card__shot"
-                    loading="lazy"
-                    src={image.src}
-                    alt={image.alt || `${title} 截图 ${index + 1}`}
+                    onOpen={setPreviewImage}
                   />
                 ))}
               </div>
@@ -124,6 +176,28 @@ export default function ShowcaseCard({
           </section>
         ) : null}
       </div>
+
+      {previewImage ? (
+        <div
+          className="showcase-card__lightbox"
+          role="dialog"
+          aria-modal="true"
+          aria-label={`图片预览：${previewImage.alt || title}`}
+          onClick={() => setPreviewImage(null)}
+        >
+          <button
+            type="button"
+            className="showcase-card__lightbox-close"
+            onClick={() => setPreviewImage(null)}
+            aria-label="关闭图片预览"
+          >
+            ×
+          </button>
+          <div className="showcase-card__lightbox-frame" onClick={event => event.stopPropagation()}>
+            <img src={previewImage.src} alt={previewImage.alt || title} />
+          </div>
+        </div>
+      ) : null}
     </article>
   )
 }
