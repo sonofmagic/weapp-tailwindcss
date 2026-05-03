@@ -121,6 +121,7 @@ text,
   mask-repeat: no-repeat;
 }
 .flex {
+  display: -webkit-flex;
   display: flex;
 }
 .aspect-_p--my-aspect-ratio_P {
@@ -138,12 +139,15 @@ text,
   width: calc(var(--spacing) * 20);
 }
 .flex-col {
+  -webkit-flex-direction: column;
   flex-direction: column;
 }
 .flex-col-reverse {
+  -webkit-flex-direction: column-reverse;
   flex-direction: column-reverse;
 }
 .flex-row-reverse {
+  -webkit-flex-direction: row-reverse;
   flex-direction: row-reverse;
 }
 .space-y-4 > view + view,
@@ -300,6 +304,7 @@ text,
   color: var(--color-white);
 }
 .underline {
+  -webkit-text-decoration-line: underline;
   text-decoration-line: underline;
 }
 .shadow-sm {

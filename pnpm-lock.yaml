@@ -498,6 +498,9 @@ importers:
       '@weapp-tailwindcss/test-helper':
         specifier: workspace:*
         version: link:packages/test-helper
+      '@weapp-vite/miniprogram-automator':
+        specifier: ^1.0.4
+        version: 1.0.4
       anymatch:
         specifier: ^3.1.3
         version: 3.1.3
@@ -636,9 +639,6 @@ importers:
       minimatch:
         specifier: ^10.2.5
         version: 10.2.5
-      miniprogram-automator:
-        specifier: ^0.12.1
-        version: 0.12.1
       normalize-newline:
         specifier: ^5.0.0
         version: 5.0.0
@@ -21736,9 +21736,6 @@ packages:
   miniprogram-automator@0.10.0:
     resolution: {integrity: sha512-MsP4k5eQmCwcsII5vmL0DwAXYcqbz6OEYeGIaa6SD9C3Ox/eA6RsHlmtynL/39C7yviZ08nqy51UmwuOEjGeeQ==}
 
-  miniprogram-automator@0.12.1:
-    resolution: {integrity: sha512-HIzpx9FuDJZjRCi8dx39E2IWNiSD6mAPEnZ3yC8ahl31o+2uphPINWhWSGN03CReb9ZvcNBuBGNjnwRBhVm4NQ==}
-
   miniprogram-compiler@0.2.3:
     resolution: {integrity: sha512-/MfFiXTBUwYxnrTbj1hgwk1+qGkMCTL1zi8IReOq/0SPVkUxpx19E89w+ohYCELFXkMfVbD+6ejrHh3Y1u5sVg==}
 
@@ -41574,8 +41571,8 @@ snapshots:
 
   '@typescript-eslint/project-service@8.56.1(typescript@5.9.3)':
     dependencies:
-      '@typescript-eslint/tsconfig-utils': 8.56.1(typescript@5.9.3)
-      '@typescript-eslint/types': 8.56.1
+      '@typescript-eslint/tsconfig-utils': 8.59.1(typescript@5.9.3)
+      '@typescript-eslint/types': 8.59.1
       debug: 4.4.3
       typescript: 5.9.3
     transitivePeerDependencies:
@@ -53609,19 +53606,6 @@ snapshots:
   miniprogram-api-typings@5.1.3: {}
 
   miniprogram-automator@0.10.0:
-    dependencies:
-      debug: 4.4.3
-      jimp: 0.6.8(debug@4.4.3)
-      licia: 1.48.0
-      qrcode-reader: 1.0.4
-      qrcode-terminal: 0.12.0
-      ws: 6.2.3
-    transitivePeerDependencies:
-      - bufferutil
-      - supports-color
-      - utf-8-validate
-
-  miniprogram-automator@0.12.1:
     dependencies:
       debug: 4.4.3
       jimp: 0.6.8(debug@4.4.3)

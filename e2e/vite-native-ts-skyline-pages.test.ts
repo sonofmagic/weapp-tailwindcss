@@ -1,5 +1,5 @@
 import fs from 'node:fs/promises'
-import automator from 'miniprogram-automator'
+import { Launcher } from '@weapp-vite/miniprogram-automator'
 import path from 'pathe'
 import { describe, it } from 'vitest'
 import { ensureProjectBuilt } from './projectTest'
@@ -32,6 +32,7 @@ const EPERM_RE = /EPERM/i
 const ECONNREFUSED_RE = /ECONNREFUSED/i
 const TIMEOUT_RE = /timeout/i
 const LAUNCH_TIMEOUT_RE = /LAUNCH_TIMEOUT/i
+const automator = new Launcher()
 
 function canSkipLaunchError(error: any) {
   const message = String(error?.message ?? '')

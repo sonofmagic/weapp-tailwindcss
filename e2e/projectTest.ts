@@ -1,13 +1,14 @@
 import type { ProjectEntry } from './shared'
 import fs from 'node:fs/promises'
 import process from 'node:process'
+import { Launcher } from '@weapp-vite/miniprogram-automator'
 import { execa } from 'execa'
-import automator from 'miniprogram-automator'
 import path from 'pathe'
 import { describe, it } from 'vitest'
 import { collectCssSnapshots, formatWxml, logE2EError, projectFilter, removeWxmlId, resolveSnapshotFile, twExtract, wait } from './shared'
 
 const EPERM_RE = /EPERM/i
+const automator = new Launcher()
 
 interface ProjectTestOptions {
   suite: string

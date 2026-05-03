@@ -102,6 +102,7 @@ text,
   margin-bottom: -20px;
 }
 .flex {
+  display: -webkit-flex;
   display: flex;
 }
 .grid {
@@ -176,12 +177,15 @@ text,
   grid-template-columns: repeat(3, minmax(0, 1fr));
 }
 .flex-col {
+  -webkit-flex-direction: column;
   flex-direction: column;
 }
 .items-center {
+  -webkit-align-items: center;
   align-items: center;
 }
 .justify-center {
+  -webkit-justify-content: center;
   justify-content: center;
 }
 .space-y-4 > view + view,
@@ -385,6 +389,7 @@ text,
   color: var(--color-white);
 }
 .underline {
+  -webkit-text-decoration-line: underline;
   text-decoration-line: underline;
 }
 .opacity-50 {

@@ -59,7 +59,7 @@
   </view>
   <button
     app-parameter=""
-    class="u-button button--u-button u-reset-button button--u-reset-button data-v-24289a9d button--data-v-24289a9d u-button--primary button--u-button--primary u-button--square button--u-button--square u-button--normal button--u-button--normal"
+    class="u-button button--u-button u-reset-button button--u-reset-button data-v-921e5271 button--data-v-921e5271 u-button--primary button--u-button--primary u-button--square button--u-button--square u-button--normal button--u-button--normal"
     data-name=""
     form-type=""
     hover-class="u-button--active"
@@ -71,7 +71,7 @@
     send-message-path=""
     send-message-title=""
     session-from=""
-    style=" ;"
+    style="border-width: 1px; border-style: solid; color: #ffffff; background-color: #3c9cff; border-color: #3c9cff ;"
     role="button"
     aria-disabled="false"
     hover-stop-propagation="">
