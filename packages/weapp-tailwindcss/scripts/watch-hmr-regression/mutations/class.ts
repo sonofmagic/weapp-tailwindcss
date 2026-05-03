@@ -1,4 +1,5 @@
 import type {
+  AddedClassHmrMetrics,
   ClassMutationConfig,
   ClassMutationMetrics,
   CliOptions,
@@ -24,6 +25,7 @@ import {
   waitFor,
   writeFilePreserveEol,
 } from '../text'
+import { runAddedClassMutation } from './class/added-class'
 import { runCommentCarrierMutation } from './class/comment-carrier'
 import { runSameClassLiteralMutation } from './class/same-literal'
 import {
@@ -870,6 +872,27 @@ export async function runClassMutation(
     throw new Error(`[${watchCase.label}] no round metrics produced for mutation=${mutationKind}`)
   }
 
+  let addedClassHmr: AddedClassHmrMetrics | undefined
+  if (mutationKind === 'template' || mutationKind === 'script') {
+    const result = await runAddedClassMutation({
+      watchCase,
+      options,
+      session,
+      mutationKind,
+      mutation,
+      sourceOriginal,
+      sourcePath,
+      classVariableName,
+      globalStyleOutputs,
+      minRequiredGlobalStyleEscapedClasses,
+      roundConfig: roundConfigs[0],
+      baselineMtime,
+      verifyClassLiteralIn,
+    })
+    baselineMtime = result.baselineMtime
+    addedClassHmr = result.addedClassHmr
+  }
+
   let sameClassLiteralHmr: SameClassLiteralHmrMetrics | undefined
   let commentCarrierHmr: CommentCarrierHmrMetrics | undefined
   if (mutationKind === 'script') {
@@ -929,6 +952,7 @@ export async function runClassMutation(
     hotUpdateEffectiveMs: preferredRound.hotUpdateEffectiveMs,
     rollbackOutputMs: preferredRound.rollbackOutputMs,
     rollbackEffectiveMs: preferredRound.rollbackEffectiveMs,
+    addedClassHmr,
     sameClassLiteralHmr,
     commentCarrierHmr,
   }

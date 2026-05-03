@@ -70,6 +70,25 @@ export function buildHexArbitraryClassTokens(seed: string) {
   ]
 }
 
+export function buildAddedTailwindClassTokens(seed: string) {
+  const numericSeed = seed.replace(NON_DIGIT_RE, '').padEnd(8, '0')
+  const hex6 = numericSeed.slice(0, 6)
+  const borderHex = `${numericSeed.slice(2, 8)}`.padEnd(6, '0').slice(0, 6)
+  const spacingPx = Number(numericSeed.slice(0, 2)) + 11
+  const textPx = Number(numericSeed.slice(2, 4)) + 17
+  const radiusPx = Number(numericSeed.slice(4, 6)) + 3
+  const minHeightRpx = Number(numericSeed.slice(6, 8)) + 24
+
+  return [
+    `p-[${spacingPx}px]`,
+    `bg-[#${hex6}]`,
+    `text-[${textPx}px]`,
+    `rounded-[${radiusPx}px]`,
+    `border-[#${borderHex}]`,
+    `min-h-[${minHeightRpx}rpx]`,
+  ]
+}
+
 export function buildIssue33ArbitraryClassTokens() {
   return [...ISSUE33_ADD_CLASS_TOKENS]
 }

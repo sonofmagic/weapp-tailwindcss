@@ -90,8 +90,25 @@ interface TemplateOrScriptMutationMetric {
   hotUpdateEffectiveMs: number
   rollbackOutputMs: number
   rollbackEffectiveMs: number
+  addedClassHmr?: AddedClassHmrMetric
   sameClassLiteralHmr?: SameClassLiteralHmrMetric
   commentCarrierHmr?: CommentCarrierHmrMetric
+}
+
+interface AddedClassHmrMetric {
+  markerBefore: string
+  markerAfter: string
+  classLiteralBefore: string
+  classLiteralAfter: string
+  addedClassLiteral: string
+  addedClassTokens: string[]
+  addedEscapedClasses: string[]
+  verifiedAddedEscapedClasses: string[]
+  minRequiredEscapedClasses: number
+  hotUpdateOutputMs: number
+  hotUpdateEffectiveMs: number
+  rollbackOutputMs: number
+  rollbackEffectiveMs: number
 }
 
 interface SameClassLiteralHmrMetric {
@@ -518,6 +535,18 @@ function assertHotUpdateReport(report: HotUpdateReport, target: WatchCaseName, m
         normalizeGlobalStyleOutputs(templateMetric.globalStyleOutputs ?? templateMetric.globalStyleOutput),
         `[${item.project}] template mutation global style outputs`,
       )
+      const addedClassHmr = templateMetric.addedClassHmr
+      expect(addedClassHmr).toBeDefined()
+      if (!addedClassHmr) {
+        throw new Error(`[${item.project}] missing addedClassHmr metric in template mutation`)
+      }
+      expect(addedClassHmr.addedClassTokens.length).toBeGreaterThanOrEqual(6)
+      expect(addedClassHmr.addedEscapedClasses.length).toBe(addedClassHmr.addedClassTokens.length)
+      expect(addedClassHmr.classLiteralAfter).toContain(addedClassHmr.classLiteralBefore)
+      expect(addedClassHmr.classLiteralAfter).toContain(addedClassHmr.addedClassLiteral)
+      expect(addedClassHmr.hotUpdateEffectiveMs).toBeGreaterThan(0)
+      expect(addedClassHmr.rollbackEffectiveMs).toBeGreaterThan(0)
+      expect(addedClassHmr.verifiedAddedEscapedClasses.length).toBeGreaterThanOrEqual(addedClassHmr.minRequiredEscapedClasses)
     }
 
     if (scriptMetric && scriptMetric.mutationKind !== 'style') {
@@ -530,6 +559,18 @@ function assertHotUpdateReport(report: HotUpdateReport, target: WatchCaseName, m
         normalizeGlobalStyleOutputs(scriptMetric.globalStyleOutputs ?? scriptMetric.globalStyleOutput),
         `[${item.project}] script mutation global style outputs`,
       )
+      const addedClassHmr = scriptMetric.addedClassHmr
+      expect(addedClassHmr).toBeDefined()
+      if (!addedClassHmr) {
+        throw new Error(`[${item.project}] missing addedClassHmr metric in script mutation`)
+      }
+      expect(addedClassHmr.addedClassTokens.length).toBeGreaterThanOrEqual(6)
+      expect(addedClassHmr.addedEscapedClasses.length).toBe(addedClassHmr.addedClassTokens.length)
+      expect(addedClassHmr.classLiteralAfter).toContain(addedClassHmr.classLiteralBefore)
+      expect(addedClassHmr.classLiteralAfter).toContain(addedClassHmr.addedClassLiteral)
+      expect(addedClassHmr.hotUpdateEffectiveMs).toBeGreaterThan(0)
+      expect(addedClassHmr.rollbackEffectiveMs).toBeGreaterThan(0)
+      expect(addedClassHmr.verifiedAddedEscapedClasses.length).toBeGreaterThanOrEqual(addedClassHmr.minRequiredEscapedClasses)
       const sameClassLiteralHmr = scriptMetric.sameClassLiteralHmr
       expect(sameClassLiteralHmr).toBeDefined()
       if (!sameClassLiteralHmr) {

@@ -154,8 +154,25 @@ export interface ClassMutationMetrics {
   hotUpdateEffectiveMs: number
   rollbackOutputMs: number
   rollbackEffectiveMs: number
+  addedClassHmr?: AddedClassHmrMetrics
   sameClassLiteralHmr?: SameClassLiteralHmrMetrics
   commentCarrierHmr?: CommentCarrierHmrMetrics
+}
+
+export interface AddedClassHmrMetrics {
+  markerBefore: string
+  markerAfter: string
+  classLiteralBefore: string
+  classLiteralAfter: string
+  addedClassLiteral: string
+  addedClassTokens: string[]
+  addedEscapedClasses: string[]
+  verifiedAddedEscapedClasses: string[]
+  minRequiredEscapedClasses: number
+  hotUpdateOutputMs: number
+  hotUpdateEffectiveMs: number
+  rollbackOutputMs: number
+  rollbackEffectiveMs: number
 }
 
 export interface SameClassLiteralHmrMetrics {
