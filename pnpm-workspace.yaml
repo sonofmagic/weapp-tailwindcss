@@ -67,7 +67,7 @@ catalogs:
   sass195:
     sass: ^1.99.0
   stylelint1625:
-    stylelint: ^17.9.1
+    stylelint: ^17.10.0
   tailwindMerge:
     tailwind-merge: ^3.5.0
   tailwindMerge2:
