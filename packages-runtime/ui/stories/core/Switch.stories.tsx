@@ -19,7 +19,7 @@ const Switch: React.FC<SwitchProps> = ({ checked = false, disabled = false }) =>
       peer-focus:ring-blue-300 peer-focus:ring-4 peer-focus:outline-none
       peer-checked:after:border-white peer-checked:after:translate-x-full
       after:bg-white after:border-gray-300 after:absolute after:top-[2px]
-      after:left-[2px] after:h-5 after:w-5 after:rounded-full after:border
+      after:left-[2px] after:size-5 after:rounded-full after:border
       after:transition-all after:content-['']
       peer-checked:bg-blue-600
     `}

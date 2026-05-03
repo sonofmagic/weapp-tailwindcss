@@ -1,4 +1,3 @@
-/* eslint-disable ts/no-require-imports */
 const castArray = require('lodash.castarray')
 const merge = require('lodash.merge')
 const parser = require('postcss-selector-parser')

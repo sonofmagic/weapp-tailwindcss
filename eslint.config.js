@@ -1,7 +1,8 @@
 import { icebreaker } from '@icebreakers/eslint-config'
 
-export default icebreaker(
+const config = icebreaker(
   {
+    tailwindcss: false,
     markdown: false,
     ignores: [
       '**/fixtures/**',
@@ -44,7 +45,17 @@ export default icebreaker(
   },
   {
     rules: {
-      'ts/no-require-imports': 'warn',
+      'ts/no-require-imports': 'off',
+      'ts/no-use-before-define': 'off',
+    },
+  },
+  {
+    files: [
+      'packages/debug-uni-app-x/**',
+      'packages/weapp-tailwindcss/bin/**',
+    ],
+    rules: {
+      'no-console': 'off',
     },
   },
   {
@@ -57,6 +68,9 @@ export default icebreaker(
         getApp: true,
         Component: true,
       },
+    },
+    rules: {
+      'no-console': 'off',
     },
   },
   {
@@ -72,3 +86,18 @@ export default icebreaker(
   //   },
   // },
 )
+
+export default config.append({
+  rules: {
+    'better-tailwindcss/enforce-canonical-classes': 'off',
+    'better-tailwindcss/enforce-consistent-class-order': 'off',
+    'better-tailwindcss/enforce-consistent-line-wrapping': 'off',
+    'better-tailwindcss/no-conflicting-classes': 'off',
+    'better-tailwindcss/no-deprecated-classes': 'off',
+    'better-tailwindcss/no-duplicate-classes': 'off',
+    'better-tailwindcss/no-unknown-classes': 'off',
+    'better-tailwindcss/no-unnecessary-whitespace': 'off',
+    'e18e/ban-dependencies': 'off',
+    'ts/no-use-before-define': 'off',
+  },
+})

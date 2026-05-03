@@ -1,4 +1,3 @@
-/* eslint-disable ts/no-require-imports */
 const isPlainObject = require('lodash.isplainobject')
 
 const parser = require('postcss-selector-parser')

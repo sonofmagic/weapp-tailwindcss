@@ -118,19 +118,16 @@ function makeBaseOptions(): IJsHandlerOptions {
 }
 
 function useBabel() {
-  // eslint-disable-next-line ts/no-require-imports
   const { jsHandler } = require('../src/js/babel') as typeof import('../src/js/babel')
   return jsHandler
 }
 
 function useSwc() {
-  // eslint-disable-next-line ts/no-require-imports
   const { swcJsHandler } = require('../src/experimental/swc') as typeof import('../src/experimental/swc')
   return swcJsHandler
 }
 
 function useOxc() {
-  // eslint-disable-next-line ts/no-require-imports
   const { oxcJsHandler } = require('../src/experimental/oxc') as typeof import('../src/experimental/oxc')
   return oxcJsHandler
 }

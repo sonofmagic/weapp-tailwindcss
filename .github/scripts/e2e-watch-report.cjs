@@ -1,7 +1,5 @@
 #!/usr/bin/env node
 
-/* eslint-disable ts/no-require-imports */
-
 const fs = require('node:fs')
 const path = require('node:path')
 const process = require('node:process')
