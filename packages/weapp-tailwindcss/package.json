@@ -193,10 +193,10 @@
   },
   "dependencies": {
     "@ast-core/escape": "~1.0.1",
-    "@babel/parser": "~7.29.2",
+    "@babel/parser": "~7.29.3",
     "@babel/traverse": "~7.29.0",
     "@babel/types": "~7.29.0",
-    "@tailwindcss-mangle/config": "^7.0.0",
+    "@tailwindcss-mangle/config": "^7.0.1",
     "@vue/compiler-dom": "catalog:vue3",
     "@vue/compiler-sfc": "catalog:vue3",
     "@weapp-core/escape": "~7.0.0",
@@ -217,7 +217,7 @@
     "semver": "~7.7.4",
     "tailwindcss-patch": "catalog:tailwindcssPatch",
     "webpack-sources": "3.3.4",
-    "yaml": "^2.8.3"
+    "yaml": "^2.8.4"
   },
   "devDependencies": {
     "fast-check": "^4.7.0"

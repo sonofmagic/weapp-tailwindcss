@@ -28,12 +28,12 @@
     "postinstall": "weapp-tw patch"
   },
   "dependencies": {
-    "@mpxjs/api-proxy": "^2.10.19",
-    "@mpxjs/core": "^2.10.19",
-    "@mpxjs/fetch": "^2.10.19",
-    "@mpxjs/pinia": "^2.10.18",
-    "@mpxjs/store": "^2.10.18",
-    "@mpxjs/utils": "^2.10.18",
+    "@mpxjs/api-proxy": "^2.10.20",
+    "@mpxjs/core": "^2.10.20",
+    "@mpxjs/fetch": "^2.10.20",
+    "@mpxjs/pinia": "^2.10.20",
+    "@mpxjs/store": "^2.10.20",
+    "@mpxjs/utils": "^2.10.20",
     "@vant/weapp": "^1.11.6",
     "pinia": "^2.3.1",
     "tdesign-miniprogram": "^1.14.0",

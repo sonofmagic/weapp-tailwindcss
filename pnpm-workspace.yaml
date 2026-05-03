@@ -29,7 +29,7 @@ catalogs:
   egoistTailwindcssIcons:
     '@egoist/tailwindcss-icons': ^1.9.2
   eslint10:
-    eslint: ^10.2.1
+    eslint: ^10.3.0
   eslintPluginReact:
     eslint-plugin-react: ^7.37.5
   eslintPluginReactHooks:
@@ -41,9 +41,9 @@ catalogs:
   miniApiTypings:
     miniprogram-api-typings: ^5.1.3
   postcss85:
-    postcss: ^8.5.12
+    postcss: ^8.5.13
   postcss85tilde:
-    postcss: ^8.5.12
+    postcss: ^8.5.13
   postcssComment2:
     postcss-comment: ^2.0.0
   postcssRem:
@@ -78,9 +78,9 @@ catalogs:
     '@tailwindcss/postcss': ^4.2.4
     '@tailwindcss/vite': ^4.2.4
     tailwindcss: ^4.2.4
-    tailwindcss4: npm:tailwindcss@^4.2.2
+    tailwindcss4: npm:tailwindcss@^4.2.4
   tailwindcssPatch:
-    tailwindcss-patch: 9.0.0
+    tailwindcss-patch: 9.0.1
   tailwindcssRem:
     tailwindcss-rem2px-preset: ^1.0.3
   taro4:
@@ -146,9 +146,9 @@ catalogs:
   weappIdeCli:
     weapp-ide-cli: ^5.2.7
   weappVite:
-    weapp-vite: ^6.16.1
+    weapp-vite: ^6.16.2
   wrangler:
-    wrangler: ^4.86.0
+    wrangler: ^4.87.0
 
 onlyBuiltDependencies:
   - '@tailwindcss/oxide'

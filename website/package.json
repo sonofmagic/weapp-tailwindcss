@@ -60,7 +60,7 @@
     "tailwind-variants": "^3.2.2"
   },
   "devDependencies": {
-    "@babel/parser": "~7.29.2",
+    "@babel/parser": "~7.29.3",
     "@babel/traverse": "~7.29.0",
     "@docusaurus/module-type-aliases": "3.9.2",
     "@docusaurus/remark-plugin-npm2yarn": "3.9.2",
@@ -82,7 +82,7 @@
     "@types/react": "catalog:react19",
     "@types/react-dom": "catalog:react19",
     "autoprefixer": "catalog:autoprefixer10",
-    "baseline-browser-mapping": "^2.10.24",
+    "baseline-browser-mapping": "^2.10.25",
     "cross-env": "catalog:crossEnv",
     "docusaurus-plugin-llms": "^0.3.1",
     "docusaurus-plugin-sass": "^0.2.6",
