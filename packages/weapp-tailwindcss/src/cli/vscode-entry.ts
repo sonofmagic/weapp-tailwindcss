@@ -9,8 +9,8 @@ export const DEFAULT_VSCODE_SOURCES = [
   'not "./dist"',
   'not "./unpackage"',
   './src/**/*.{wxml,axml,swan,qml,ttml,ux,uts}',
-  './src/**/*.{js,jsx,ts,tsx}',
-  './src/**/*.{vue,svelte,html,md,mdx}',
+  './src/**/*.{js,jsx,ts,tsx,mjs,cjs,wxs,sjs}',
+  './src/**/*.{vue,svelte,mpx,html,md,mdx}',
 ]
 
 const SINGLE_QUOTE = '\''

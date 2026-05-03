@@ -4,6 +4,7 @@ import path from 'node:path'
 import { describe, expect } from 'vitest'
 import {
   DEFAULT_VSCODE_ENTRY_OUTPUT,
+  DEFAULT_VSCODE_SOURCES,
   generateVscodeIntellisenseEntry,
 } from '@/cli/vscode-entry'
 
@@ -28,6 +29,9 @@ describe('generateVscodeIntellisenseEntry', () => {
     expect(content).toContain('@import \'tailwindcss\';')
     expect(content).toContain('@import \'../src/app.css\';')
     expect(content).toContain('@source not "./dist";')
+    expect(DEFAULT_VSCODE_SOURCES).toContain('./src/**/*.{vue,svelte,mpx,html,md,mdx}')
+    expect(content).toContain('@source "./src/**/*.{vue,svelte,mpx,html,md,mdx}";')
+    expect(content).toContain('@source "./src/**/*.{js,jsx,ts,tsx,mjs,cjs,wxs,sjs}";')
   })
 
   it('supports custom output, sources and force overwrite', async () => {

@@ -9,6 +9,12 @@ const watchCoveredProjects = new Set([
   ...buildAppCases('/repo').map(item => item.project),
 ])
 
+const automatedWatchCases = [
+  ...buildDemoBaseCases('/repo'),
+  ...buildDemoExtendedCases('/repo'),
+  ...buildAppCases('/repo'),
+]
+
 const sourceCoveredProjects = new Set([
   'demo/uni-app-tailwindcss-v4',
   'demo/uni-app-x-hbuilderx-tailwindcss4',
@@ -63,6 +69,20 @@ describe('watch-hmr coverage matrix', () => {
         watchCoveredProjects.has(project) || sourceCoveredProjects.has(project),
         `${project} should be covered by watch cases or source lifecycle tests`,
       ).toBe(true)
+    }
+  })
+
+  it('keeps every automated watch case covering developer-facing HMR surfaces', () => {
+    expect(automatedWatchCases.length).toBeGreaterThan(0)
+
+    for (const watchCase of automatedWatchCases) {
+      expect(watchCase.templateMutation, `${watchCase.project} should cover template class HMR`).toBeDefined()
+      expect(watchCase.scriptMutation, `${watchCase.project} should cover script class HMR`).toBeDefined()
+      expect(watchCase.contentMutation, `${watchCase.project} should cover JS content scanning HMR`).toBeDefined()
+      expect(watchCase.styleMutation, `${watchCase.project} should cover style @apply HMR`).toBeDefined()
+      expect(watchCase.templateMutation.verifyEscapedIn.length + (watchCase.templateMutation.verifyClassLiteralIn?.length ?? 0)).toBeGreaterThan(0)
+      expect(watchCase.scriptMutation.verifyEscapedIn.length + (watchCase.scriptMutation.verifyClassLiteralIn?.length ?? 0)).toBeGreaterThan(0)
+      expect(watchCase.contentMutation?.verifyClassLiteralIn).toContain('js')
     }
   })
 
