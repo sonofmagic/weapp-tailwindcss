@@ -84,16 +84,6 @@ const RE_MULTIPLE_HYPHENS = /-+/g
 /** slugifySegment：首尾连字符 */
 const RE_EDGE_HYPHENS = /^-|-$/g
 
-/** escapeMarkdown：需要转义的 Markdown 特殊字符 */
-const RE_MARKDOWN_SPECIAL = /([\\`*_{}[\]()#+.!|-])/g
-
-/** escapeHtml：HTML 特殊字符 */
-const RE_AMPERSAND = /&/g
-const RE_LESS_THAN = /</g
-const RE_GREATER_THAN = />/g
-const RE_DOUBLE_QUOTE = /"/g
-const RE_SINGLE_QUOTE = /'/g
-
 /** resolveImageExtension：文件扩展名 */
 const RE_FILE_EXTENSION = /\.([a-z0-9]+)$/i
 
@@ -610,29 +600,43 @@ function slugifySegment(value: string, fallback: string): string {
   return normalized || fallback
 }
 
-function escapeMarkdown(value: string): string {
-  return value.replace(RE_MARKDOWN_SPECIAL, '\\$1')
+function renderJsxValue(value: string | undefined): string {
+  return JSON.stringify(value ?? '')
 }
 
-function escapeHtml(value: string): string {
-  return value
-    .replace(RE_AMPERSAND, '&amp;')
-    .replace(RE_LESS_THAN, '&lt;')
-    .replace(RE_GREATER_THAN, '&gt;')
-    .replace(RE_DOUBLE_QUOTE, '&quot;')
-    .replace(RE_SINGLE_QUOTE, '&#39;')
-}
-
-function formatDisplay(display?: DisplayValue): string {
+function renderDisplayProp(name: string, display?: DisplayValue): string[] {
   if (!display) {
-    return ''
+    return []
   }
 
-  const text = escapeMarkdown(display.text)
+  const lines = [`  ${name}={{`]
+  lines.push(`    text: ${renderJsxValue(display.text)},`)
   if (display.url) {
-    return `[${text}](${display.url})`
+    lines.push(`    url: ${renderJsxValue(display.url)},`)
   }
-  return text
+  lines.push('  }}')
+  return lines
+}
+
+function renderImageObject(image: ShowcaseImage, altFallback = ''): string[] {
+  return [
+    '{',
+    `    src: ${renderJsxValue(image.src)},`,
+    `    alt: ${renderJsxValue(image.alt || altFallback)},`,
+    '  }',
+  ]
+}
+
+function renderImageArrayProp(name: string, images: ShowcaseImage[], altFallback = ''): string[] {
+  const lines = [`  ${name}={[`]
+  for (const image of images) {
+    lines.push('    {')
+    lines.push(`      src: ${renderJsxValue(image.src)},`)
+    lines.push(`      alt: ${renderJsxValue(image.alt || altFallback)},`)
+    lines.push('    },')
+  }
+  lines.push('  ]}')
+  return lines
 }
 
 function resolveImageExtension(contentType: string | null, url: string): string {
@@ -722,95 +726,43 @@ async function downloadImageWithRetry(
   return null
 }
 
-function renderImageGrid(
-  images: ShowcaseImage[],
-  className = 'grid grid-cols-2 sm:grid-cols-3 gap-3 mt-4',
-  indent = 0,
-  altFallback = '',
-  imageClass = 'rounded-xl border border-gray-100 dark:border-gray-800',
-): string[] {
-  const pad = ' '.repeat(indent)
-  const lines: string[] = []
-  lines.push(`${pad}<div className="${className}">`)
-  for (const image of images) {
-    const alt = escapeHtml(image.alt || altFallback)
-    const source = image.src
-    lines.push(
-      `${pad}  <img loading="lazy" src="${source}" alt="${alt}" className="${imageClass}" />`,
-    )
-  }
-  lines.push(`${pad}</div>`)
-  return lines
-}
-
 function renderEntry(entry: GeneratedEntry): string {
   const lines: string[] = []
-  lines.push('<div className="rounded-2xl border border-gray-200 dark:border-gray-700 bg-white/70 dark:bg-gray-900/40 p-4 shadow-sm hover:shadow-md transition-shadow">')
-  lines.push('')
   const titleText = entry.name
-  const headingLabel = escapeMarkdown(titleText)
-  const heading = entry.link?.url ? `[${headingLabel}](${entry.link.url})` : headingLabel
-  lines.push(`### ${heading}`)
-  lines.push('')
-  const login = entry.author?.login ? `[@${entry.author.login}](${entry.author.html_url})` : '匿名'
-  lines.push(`**提交者**：${login} · ${dateFormatter.format(new Date(entry.createdAt))} · [查看评论](${entry.commentUrl})  `)
+  const [primary, ...others] = entry.images
 
-  const metaLines: string[] = []
-  if (entry.link) {
-    metaLines.push(`**链接**：${formatDisplay(entry.link)}`)
-  }
-  if (entry.github) {
-    metaLines.push(`**GitHub**：${formatDisplay(entry.github)}`)
+  if (!primary) {
+    return ''
   }
 
-  if (metaLines.length) {
-    lines.push(metaLines.join('  \n'))
-    lines.push('')
+  lines.push('<ShowcaseCard')
+  lines.push(`  title={${renderJsxValue(titleText)}}`)
+  if (entry.link?.url) {
+    lines.push(`  titleHref={${renderJsxValue(entry.link.url)}}`)
   }
+  if (entry.author?.login && entry.author.html_url) {
+    lines.push(`  authorLogin={${renderJsxValue(entry.author.login)}}`)
+    lines.push(`  authorUrl={${renderJsxValue(entry.author.html_url)}}`)
+  }
+  lines.push(`  createdAt={${renderJsxValue(dateFormatter.format(new Date(entry.createdAt)))}}`)
+  lines.push(`  commentUrl={${renderJsxValue(entry.commentUrl)}}`)
+  lines.push(...renderDisplayProp('link', entry.link))
+  lines.push(...renderDisplayProp('github', entry.github))
+  lines.push('  primaryImage={{')
+  lines.push(...renderImageObject(primary, titleText).slice(1, -1))
+  lines.push('  }}')
+  lines.push(...renderImageArrayProp('screenshots', others, titleText))
 
   if (entry.description) {
+    lines.push('>')
+    lines.push('')
     lines.push(entry.description)
     lines.push('')
-  }
-
-  if (entry.images.length === 0) {
-    lines.push('</div>')
+    lines.push('</ShowcaseCard>')
     return lines.join('\n')
   }
 
-  const [primary, ...others] = entry.images
-  if (primary) {
-    lines.push(
-      ...renderImageGrid(
-        [primary],
-        'grid grid-cols-1 sm:grid-cols-1 gap-3 mt-4',
-        0,
-        titleText,
-        'h-64 w-full object-contain rounded-xl border border-gray-100 dark:border-gray-800',
-      ),
-    )
-  }
-
-  if (others.length) {
-    lines.push('<details className="mt-4 rounded-xl border border-gray-100 dark:border-gray-800 bg-gray-50/70 dark:bg-gray-900/30 p-3">')
-    lines.push(
-      `  <summary className="cursor-pointer list-none font-medium text-sm text-gray-600 dark:text-gray-300">📸 展开查看其余 ${others.length} 张图片</summary>`,
-    )
-    lines.push('  <div className="pt-3">')
-    lines.push(
-      ...renderImageGrid(
-        others,
-        'grid grid-cols-2 sm:grid-cols-3 gap-3',
-        4,
-        titleText,
-        'h-48 w-full object-contain rounded-xl border border-gray-100 dark:border-gray-800',
-      ),
-    )
-    lines.push('  </div>')
-    lines.push('</details>')
-  }
-
-  lines.push('</div>')
+  lines.push('/>')
   return lines.join('\n')
 }
 
@@ -818,13 +770,15 @@ function renderMdx(issue: GitHubIssue, entries: GeneratedEntry[]): string {
   const generatedAt = dateTimeFormatter.format(new Date())
   const header = `<!-- ⚠️ 该文件由 scripts/update-showcase.ts 自动生成。请运行 \`pnpm showcase:update\` 以刷新数据。 -->`
   const intro = [
+    `import ShowcaseCard from '@site/src/components/docs/ShowcaseCard'`,
+    '',
     '# 优秀案例展示',
     '',
     `以下内容来自 [${issue.title}](${issue.html_url})，列表顺序按照提交时间排序。`,
     '',
     `> 最近同步：${generatedAt}`,
     '',
-    '<div className="grid grid-cols-1 gap-6 lg:grid-cols-2">',
+    '<div className="showcase-grid">',
   ]
 
   const cards = entries.map(renderEntry)
