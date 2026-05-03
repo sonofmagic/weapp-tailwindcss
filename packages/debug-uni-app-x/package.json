@@ -40,7 +40,7 @@
     "lint:fix": "eslint . --fix"
   },
   "dependencies": {
-    "defu": "6.1.6",
+    "defu": "6.1.7",
     "fs-extra": "11.3.4",
     "pathe": "2.0.3"
   },

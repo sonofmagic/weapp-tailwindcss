@@ -102,7 +102,7 @@
     "miniprogram-api-typings": "catalog:miniApiTypings",
     "postcss": "catalog:postcss85",
     "prettier": "catalog:prettier371",
-    "prettier-plugin-tailwindcss": "^0.7.4",
+    "prettier-plugin-tailwindcss": "^0.8.0",
     "redent": "^4.0.0",
     "strip-indent": "^4.1.1",
     "tailwindcss": "catalog:tailwindcss3",
