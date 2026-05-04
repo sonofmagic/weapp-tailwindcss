@@ -17,14 +17,7 @@ type PackageJson = Record<string, unknown> & {
   pnpm?: PnpmConfig
 }
 
-type Manager = 'pnpm' | 'yarn' | 'npm'
-
 type CommandEnv = Record<string, string | undefined>
-
-interface ManagerInfo {
-  name: Manager
-  version?: string | null
-}
 
 interface TargetPackage {
   name: string
@@ -43,8 +36,8 @@ interface TailwindResolution {
 const TEMPLATES_DIR = path.join(ROOT, 'templates')
 const TEMP_LOCK_ROOT = path.join(os.tmpdir(), 'weapp-tailwindcss-template-locks')
 const LOCK_UPDATE_TIMEOUT_MS = 30 * 60_000
-const DEFAULT_YARN_VERSION = '1.22.22'
 const COPY_IGNORE_DIRS = new Set(['node_modules', '.git', '.idea', '.turbo', 'dist'])
+const LEGACY_LOCKFILES = ['yarn.lock', 'package-lock.json', 'npm-shrinkwrap.json']
 const tailwindVersionCache = new Map<string, string>()
 const latestVersionCache = new Map<string, string>()
 const ROOT_PNPM_PACKAGE_MANAGER = readRootPnpmPackageManager()
@@ -301,13 +294,8 @@ function arraysShallowEqual(a: string[], b: string[]): boolean {
 function ensurePnpmOnlyBuiltDependencies(
   pkg: PackageJson,
   targets: TargetPackage[],
-  manager: ManagerInfo,
   remove: string[] = [],
 ): boolean {
-  if (manager.name !== 'pnpm') {
-    return false
-  }
-
   const required = [...new Set(
     targets
       .filter(target => target.ensurePnpmOnlyBuilt)
@@ -420,32 +408,6 @@ function updateDependencyRange(
     changed: updated,
     touched: [...touched.values()],
   }
-}
-
-function detectManager(templateDir: string, pkg: PackageJson): ManagerInfo {
-  if (typeof pkg.packageManager === 'string') {
-    if (pkg.packageManager.startsWith('pnpm')) {
-      return { name: 'pnpm' }
-    }
-    if (pkg.packageManager.startsWith('yarn')) {
-      const [, version] = pkg.packageManager.split('@')
-      const cleanVersion = version?.split('+')[0] ?? null
-      return { name: 'yarn', version: cleanVersion }
-    }
-    if (pkg.packageManager.startsWith('npm')) {
-      return { name: 'npm' }
-    }
-  }
-  if (existsSync(path.join(templateDir, 'pnpm-lock.yaml'))) {
-    return { name: 'pnpm' }
-  }
-  if (existsSync(path.join(templateDir, 'yarn.lock'))) {
-    return { name: 'yarn' }
-  }
-  if (existsSync(path.join(templateDir, 'package-lock.json'))) {
-    return { name: 'npm' }
-  }
-  return { name: 'pnpm' }
 }
 
 function filterTargetsForPackage(pkg: PackageJson, targets: TargetPackage[]): TargetPackage[] {
@@ -597,21 +559,15 @@ async function runCommand(
   }
 }
 
-function getLockfileName(manager: ManagerInfo): string {
-  if (manager.name === 'pnpm') {
-    return 'pnpm-lock.yaml'
-  }
-  if (manager.name === 'yarn') {
-    return 'yarn.lock'
-  }
-  return 'package-lock.json'
+function getLockfileName(): string {
+  return 'pnpm-lock.yaml'
 }
 
-function shouldUpdateLockfile(templateDir: string, manager: ManagerInfo, depsChanged: boolean): boolean {
+function shouldUpdateLockfile(templateDir: string, depsChanged: boolean): boolean {
   if (depsChanged) {
     return true
   }
-  const lockPath = path.join(templateDir, getLockfileName(manager))
+  const lockPath = path.join(templateDir, getLockfileName())
   return !existsSync(lockPath)
 }
 
@@ -644,66 +600,23 @@ function createTemplateSandbox(templateDir: string): { directory: string, cleanu
   }
 }
 
-async function regenerateLockfile(templateDir: string, manager: ManagerInfo): Promise<boolean> {
+async function regenerateLockfile(templateDir: string): Promise<boolean> {
   const { directory, cleanup } = createTemplateSandbox(templateDir)
   const relative = path.relative(ROOT, templateDir) || templateDir
   try {
-    let success = false
-    if (manager.name === 'pnpm') {
-      success = await runCommand(
-        'pnpm',
-        ['install', '--lockfile-only', '--ignore-scripts'],
-        directory,
-        { allowFailure: true, timeoutMs: LOCK_UPDATE_TIMEOUT_MS },
-      )
-    }
-    else if (manager.name === 'npm') {
-      success = await runCommand(
-        'npm',
-        ['install', '--package-lock-only', '--ignore-scripts'],
-        directory,
-        { allowFailure: true, timeoutMs: LOCK_UPDATE_TIMEOUT_MS },
-      )
-    }
-    else {
-      const yarnVersion = manager.version ?? DEFAULT_YARN_VERSION
-      const yarnMajor = Number.parseInt((yarnVersion.split('.')[0] ?? '1') as string, 10)
-      const yarnCacheDir = path.join(directory, '.yarn-cache')
-      ensureDir(yarnCacheDir)
-      const args = [
-        'dlx',
-        `yarn@${yarnVersion}`,
-        'install',
-        '--ignore-scripts',
-        '--non-interactive',
-      ]
-      if (Number.isFinite(yarnMajor) && yarnMajor >= 2) {
-        args.push('--mode=update-lockfile')
-      }
-      else {
-        args.push('--prefer-offline', '--no-progress')
-      }
-      args.push('--cache-folder', yarnCacheDir)
-      success = await runCommand(
-        'pnpm',
-        args,
-        directory,
-        {
-          allowFailure: true,
-          timeoutMs: LOCK_UPDATE_TIMEOUT_MS,
-          env: {
-            YARN_CACHE_FOLDER: yarnCacheDir,
-          },
-        },
-      )
-    }
+    const success = await runCommand(
+      'pnpm',
+      ['install', '--lockfile-only', '--ignore-scripts', '--ignore-workspace'],
+      directory,
+      { allowFailure: true, timeoutMs: LOCK_UPDATE_TIMEOUT_MS },
+    )
 
     if (!success) {
-      console.warn(`跳过为 ${relative} 更新 ${getLockfileName(manager)}，请在联网环境中手动刷新锁文件。`)
+      console.warn(`跳过为 ${relative} 更新 ${getLockfileName()}，请在联网环境中手动刷新锁文件。`)
       return false
     }
 
-    const lockName = getLockfileName(manager)
+    const lockName = getLockfileName()
     const generated = path.join(directory, lockName)
     if (!existsSync(generated)) {
       console.warn(`未能在隔离环境中生成 ${lockName}，请在 ${relative} 内手动运行包管理器更新锁文件。`)
@@ -717,6 +630,18 @@ async function regenerateLockfile(templateDir: string, manager: ManagerInfo): Pr
   finally {
     cleanup()
   }
+}
+
+function removeLegacyLockfiles(templateDir: string): boolean {
+  let changed = false
+  for (const lockName of LEGACY_LOCKFILES) {
+    const lockPath = path.join(templateDir, lockName)
+    if (existsSync(lockPath)) {
+      rmSync(lockPath, { force: true })
+      changed = true
+    }
+  }
+  return changed
 }
 
 async function processTemplate(
@@ -745,14 +670,10 @@ async function processTemplate(
     ...filterTargetsForPackage(pkg, baseTargets),
     ...tailwindResolution.targets,
   ])
-  const manager = detectManager(templateDir, pkg)
-
   let packageManagerChanged = false
-  if (manager.name === 'pnpm' && ROOT_PNPM_PACKAGE_MANAGER) {
-    if (pkg.packageManager !== ROOT_PNPM_PACKAGE_MANAGER) {
-      pkg.packageManager = ROOT_PNPM_PACKAGE_MANAGER
-      packageManagerChanged = true
-    }
+  if (ROOT_PNPM_PACKAGE_MANAGER && pkg.packageManager !== ROOT_PNPM_PACKAGE_MANAGER) {
+    pkg.packageManager = ROOT_PNPM_PACKAGE_MANAGER
+    packageManagerChanged = true
   }
 
   const removalChanged = removePackageReferences(pkg, tailwindResolution.removePackages)
@@ -761,7 +682,6 @@ async function processTemplate(
   const pnpmChanged = ensurePnpmOnlyBuiltDependencies(
     pkg,
     relevantTargets,
-    manager,
     tailwindResolution.removePackages,
   )
 
@@ -770,16 +690,18 @@ async function processTemplate(
   }
 
   let lockUpdated = false
-  if (shouldUpdateLockfile(templateDir, manager, depsChanged)) {
-    console.log(`更新 ${templateName} 的锁文件（${manager.name}）...`)
-    lockUpdated = await regenerateLockfile(templateDir, manager)
+  const legacyLockRemoved = removeLegacyLockfiles(templateDir)
+
+  if (shouldUpdateLockfile(templateDir, depsChanged)) {
+    console.log(`更新 ${templateName} 的锁文件（pnpm）...`)
+    lockUpdated = await regenerateLockfile(templateDir)
   }
 
   if (rangeChanged) {
     changedTargets.forEach(target => summary.add(`${target.name}@${target.range}`))
   }
 
-  return depsChanged || pnpmChanged || lockUpdated
+  return depsChanged || pnpmChanged || lockUpdated || legacyLockRemoved || packageManagerChanged
 }
 
 async function main(): Promise<void> {

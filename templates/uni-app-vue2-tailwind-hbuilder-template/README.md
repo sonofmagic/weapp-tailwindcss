@@ -21,12 +21,12 @@
 - `Vue 2`
 - `Tailwind CSS postcss7 compat`
 - `weapp-tailwindcss`
-- `yarn`
+- `pnpm`
 
 ## 使用方式
 
 ```bash
-yarn
+pnpm install
 ```
 
 安装完成后，直接用 `HBuilderX` 导入项目并运行。

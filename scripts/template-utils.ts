@@ -6,6 +6,9 @@ import { execa } from 'execa'
 export const ROOT = process.cwd()
 export const DEFAULT_TEMPLATES_JSONC = path.join(ROOT, 'templates.jsonc')
 export const TEMPLATE_CACHE_ROOT = path.join(ROOT, '.cache', 'template-repos')
+export const REMOVED_TEMPLATE_NAMES = new Set([
+  'vue-mini-tailwindcss-template',
+])
 
 const NEWLINE_RE = /\r?\n/u
 const LEADING_SLASHES_RE = /^\/+/u
@@ -53,6 +56,10 @@ export function repoFolderName(url: string): string {
   const target = new URL(url)
   const segments = target.pathname.split('/').filter(Boolean)
   return segments.at(-1)?.replace(TRAILING_GIT_RE, '') ?? ''
+}
+
+export function isRemovedTemplateName(name: string): boolean {
+  return REMOVED_TEMPLATE_NAMES.has(name)
 }
 
 async function ensureCacheRepoRemote(repoDir: string, sshUrl: string): Promise<void> {

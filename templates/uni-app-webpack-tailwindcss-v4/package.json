@@ -2,9 +2,10 @@
   "name": "my-project",
   "version": "0.1.0",
   "private": true,
+  "packageManager": "pnpm@10.33.2",
   "scripts": {
-    "serve": "npm run dev:h5",
-    "build": "npm run build:h5",
+    "serve": "pnpm dev:h5",
+    "build": "pnpm build:h5",
     "build:app-plus": "cross-env NODE_ENV=production UNI_PLATFORM=app-plus vue-cli-service uni-build",
     "build:custom": "cross-env NODE_ENV=production uniapp-cli custom",
     "build:h5": "cross-env NODE_ENV=production UNI_PLATFORM=h5 vue-cli-service uni-build",
@@ -77,7 +78,7 @@
     "vue-class-component": "^6.3.2",
     "vue-property-decorator": "^8.0.0",
     "vuex": "^3.2.0",
-    "@weapp-tailwindcss/merge": "^2.1.6"
+    "@weapp-tailwindcss/merge": "^2.2.0"
   },
   "devDependencies": {
     "@babel/plugin-syntax-typescript": "^7.27.1",
@@ -93,7 +94,7 @@
     "@dcloudio/vue-cli-plugin-uni-optimize": "2.0.2-4070620250821001",
     "@dcloudio/webpack-uni-mp-loader": "2.0.2-4070620250821001",
     "@dcloudio/webpack-uni-pages-loader": "2.0.2-4070620250821001",
-    "@tailwindcss/postcss": "^4.2.2",
+    "@tailwindcss/postcss": "^4.2.4",
     "@vue/cli-plugin-babel": "~5.0.9",
     "@vue/cli-plugin-typescript": "~5.0.9",
     "@vue/cli-service": "~5.0.9",
@@ -103,11 +104,11 @@
     "postcss": "^8.5.6",
     "postcss-comment": "^2.0.0",
     "postcss-loader": "^8.1.1",
-    "tailwindcss": "^4.2.2",
-    "typescript": "~6.0.2",
+    "tailwindcss": "^4.2.4",
+    "typescript": "~6.0.3",
     "vue-template-compiler": ">= 2.6.14 < 2.7",
-    "weapp-ide-cli": "^5.1.4",
-    "weapp-tailwindcss": "^4.11.2"
+    "weapp-ide-cli": "^5.2.8",
+    "weapp-tailwindcss": "^4.12.0"
   },
   "browserslist": [
     "Android >= 4.4",
@@ -115,5 +116,11 @@
   ],
   "uni-app": {
     "scripts": {}
+  },
+  "pnpm": {
+    "onlyBuiltDependencies": [
+      "weapp-tailwindcss",
+      "@weapp-tailwindcss/merge"
+    ]
   }
 }

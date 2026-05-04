@@ -4,6 +4,7 @@ import process from 'node:process'
 import { execa } from 'execa'
 import {
   ensureConfigExists,
+  isRemovedTemplateName,
   prepareTemplateCacheRepo,
   readTemplateUrls,
   repoFolderName,
@@ -16,6 +17,10 @@ async function syncTemplate(url: string): Promise<void> {
   const repoName = repoFolderName(url)
   if (!repoName) {
     console.warn(`无法从 ${url} 解析仓库名，跳过。`)
+    return
+  }
+  if (isRemovedTemplateName(repoName)) {
+    console.log(`跳过已移除模板 ${repoName}。`)
     return
   }
   const localDir = path.join(ROOT, 'templates', repoName)

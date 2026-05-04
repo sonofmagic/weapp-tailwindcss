@@ -2,10 +2,10 @@
   "name": "uni-app-vue2-tailwind-vscode-template",
   "version": "0.1.0",
   "private": true,
-  "packageManager": "yarn@1.22.22",
+  "packageManager": "pnpm@10.33.2",
   "scripts": {
-    "serve": "npm run dev:h5",
-    "build": "npm run build:h5",
+    "serve": "pnpm dev:h5",
+    "build": "pnpm build:h5",
     "build:app-plus": "cross-env NODE_ENV=production UNI_PLATFORM=app-plus vue-cli-service uni-build",
     "build:custom": "cross-env NODE_ENV=production uniapp-cli custom",
     "build:h5": "cross-env NODE_ENV=production UNI_PLATFORM=h5 vue-cli-service uni-build",
@@ -47,7 +47,7 @@
     "upload:dev": "weapp upload -p dist/dev/mp-weixin -v 1.0.0 -d \"dev version\"",
     "upload:build": "weapp upload -p dist/build/mp-weixin -v 1.0.0 -d \"release version\"",
     "postinstall": "weapp-tw patch",
-    "up:uni-app": "npx @dcloudio/uvm@latest"
+    "up:uni-app": "pnpm dlx @dcloudio/uvm@latest"
   },
   "dependencies": {
     "@dcloudio/uni-app": "2.0.2-4060620250520001",
@@ -78,7 +78,7 @@
     "uview-ui": "^2.0.38",
     "vue": "~2.6.14",
     "vuex": "^3.2.0",
-    "@weapp-tailwindcss/merge-v3": "^0.1.6"
+    "@weapp-tailwindcss/merge-v3": "^0.2.0"
   },
   "devDependencies": {
     "@babel/plugin-syntax-typescript": "^7.27.1",
@@ -106,14 +106,14 @@
     "postcss-comment": "^2.0.0",
     "postcss-loader": "^8.1.1",
     "postcss-rem-to-responsive-pixel": "^6.0.2",
-    "sass": "^1.98.0",
+    "sass": "^1.99.0",
     "sass-loader": "~14.2.1",
     "tailwindcss": "^3.4.19",
     "tailwindcss-miniprogram-preset": "^2.0.0",
-    "typescript": "^6.0.2",
+    "typescript": "^6.0.3",
     "vue-template-compiler": "^2.7.16",
-    "weapp-ide-cli": "^5.1.4",
-    "weapp-tailwindcss": "^4.11.2"
+    "weapp-ide-cli": "^5.2.8",
+    "weapp-tailwindcss": "^4.12.0"
   },
   "browserslist": [
     "Android >= 4",
@@ -121,5 +121,11 @@
   ],
   "uni-app": {
     "scripts": {}
+  },
+  "pnpm": {
+    "onlyBuiltDependencies": [
+      "weapp-tailwindcss",
+      "@weapp-tailwindcss/merge-v3"
+    ]
   }
 }

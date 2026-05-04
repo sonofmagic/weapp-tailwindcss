@@ -31,15 +31,15 @@
     "build:qq": "taro build --type qq",
     "build:jd": "taro build --type jd",
     "build:harmony-hybrid": "taro build --type harmony-hybrid",
-    "dev:weapp": "npm run build:weapp -- --watch",
-    "dev:swan": "npm run build:swan -- --watch",
-    "dev:alipay": "npm run build:alipay -- --watch",
-    "dev:tt": "npm run build:tt -- --watch",
-    "dev:h5": "npm run build:h5 -- --watch",
-    "dev:rn": "npm run build:rn -- --watch",
-    "dev:qq": "npm run build:qq -- --watch",
-    "dev:jd": "npm run build:jd -- --watch",
-    "dev:harmony-hybrid": "npm run build:harmony-hybrid -- --watch",
+    "dev:weapp": "pnpm build:weapp -- --watch",
+    "dev:swan": "pnpm build:swan -- --watch",
+    "dev:alipay": "pnpm build:alipay -- --watch",
+    "dev:tt": "pnpm build:tt -- --watch",
+    "dev:h5": "pnpm build:h5 -- --watch",
+    "dev:rn": "pnpm build:rn -- --watch",
+    "dev:qq": "pnpm build:qq -- --watch",
+    "dev:jd": "pnpm build:jd -- --watch",
+    "dev:harmony-hybrid": "pnpm build:harmony-hybrid -- --watch",
     "open": "weapp open -p",
     "postinstall": "weapp-tw patch"
   },
@@ -62,13 +62,13 @@
     "@tarojs/taro": "4.1.6",
     "react": "^18.0.0",
     "react-dom": "^18.0.0",
-    "@weapp-tailwindcss/merge": "^2.1.6"
+    "@weapp-tailwindcss/merge": "^2.2.0"
   },
   "devDependencies": {
     "@babel/core": "^7.28.3",
     "@babel/preset-react": "^7.27.1",
-    "@tailwindcss/postcss": "^4.2.2",
-    "@tailwindcss/vite": "^4.2.2",
+    "@tailwindcss/postcss": "^4.2.4",
+    "@tailwindcss/vite": "^4.2.4",
     "@tarojs/cli": "4.1.6",
     "@tarojs/vite-runner": "4.1.6",
     "@types/react": "^19.1.12",
@@ -81,12 +81,12 @@
     "postcss": "^8.5.6",
     "react-refresh": "^0.17.0",
     "stylelint": "^16.23.1",
-    "tailwindcss": "^4.2.2",
+    "tailwindcss": "^4.2.4",
     "terser": "^5.43.1",
-    "typescript": "^6.0.2",
+    "typescript": "^6.0.3",
     "vite": "^4.5.14",
-    "weapp-ide-cli": "^5.1.4",
-    "weapp-tailwindcss": "^4.11.2"
+    "weapp-ide-cli": "^5.2.8",
+    "weapp-tailwindcss": "^4.12.0"
   },
   "pnpm": {
     "onlyBuiltDependencies": [
@@ -94,5 +94,5 @@
       "@weapp-tailwindcss/merge"
     ]
   },
-  "packageManager": "pnpm@10.33.0"
+  "packageManager": "pnpm@10.33.2"
 }

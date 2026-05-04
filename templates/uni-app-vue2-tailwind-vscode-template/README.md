@@ -24,41 +24,41 @@
 - `Vue 2`
 - `Tailwind CSS v3`
 - `weapp-tailwindcss`
-- `yarn`
+- `pnpm`
 
 ## 使用前提
 
 - Node.js `20.19+`
-- `yarn`
+- `pnpm`
 - 微信开发者工具
 
 ## 快速开始
 
 ```bash
-yarn
-yarn dev:mp-weixin
+pnpm install
+pnpm dev:mp-weixin
 ```
 
 如果需要直接打开微信开发者工具：
 
 ```bash
-yarn open:dev
+pnpm open:dev
 ```
 
 ## 常用命令
 
 ```bash
-yarn dev:mp-weixin
-yarn build:mp-weixin
-yarn open:dev
-yarn open:build
+pnpm dev:mp-weixin
+pnpm build:mp-weixin
+pnpm open:dev
+pnpm open:build
 ```
 
 ## 模板说明
 
 - 安装依赖后会自动执行 `weapp-tw patch`
 - 该模板面向 `Vue 2` 存量项目，不建议作为新项目默认起点
-- `uni-app` 依赖升级可使用 `yarn up:uni-app`
+- `uni-app` 依赖升级可使用 `pnpm up:uni-app`
 
 ## 相关文档
 

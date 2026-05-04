@@ -25,14 +25,14 @@
     "build:rn": "taro build --type rn",
     "build:qq": "taro build --type qq",
     "build:quickapp": "taro build --type quickapp",
-    "dev:weapp": "npm run build:weapp -- --watch",
-    "dev:swan": "npm run build:swan -- --watch",
-    "dev:alipay": "npm run build:alipay -- --watch",
-    "dev:tt": "npm run build:tt -- --watch",
-    "dev:h5": "npm run build:h5 -- --watch",
-    "dev:rn": "npm run build:rn -- --watch",
-    "dev:qq": "npm run build:qq -- --watch",
-    "dev:quickapp": "npm run build:quickapp -- --watch",
+    "dev:weapp": "pnpm build:weapp -- --watch",
+    "dev:swan": "pnpm build:swan -- --watch",
+    "dev:alipay": "pnpm build:alipay -- --watch",
+    "dev:tt": "pnpm build:tt -- --watch",
+    "dev:h5": "pnpm build:h5 -- --watch",
+    "dev:rn": "pnpm build:rn -- --watch",
+    "dev:qq": "pnpm build:qq -- --watch",
+    "dev:quickapp": "pnpm build:quickapp -- --watch",
     "open": "weapp open -p",
     "postinstall": "weapp-tw patch"
   },
@@ -55,7 +55,7 @@
     "@tarojs/shared": "4.0.5",
     "@tarojs/taro": "4.0.5",
     "vue": "^3.5.6",
-    "@weapp-tailwindcss/merge-v3": "^0.1.6"
+    "@weapp-tailwindcss/merge-v3": "^0.2.0"
   },
   "devDependencies": {
     "@babel/core": "^7.8.0",
@@ -73,16 +73,16 @@
     "eslint-config-taro": "4.0.5",
     "eslint-plugin-vue": "^9.28.0",
     "postcss": "^8.4.47",
-    "sass": "^1.98.0",
+    "sass": "^1.99.0",
     "stylelint": "^14.4.0",
     "tailwindcss": "^3.4.19",
     "terser": "^5.16.8",
     "tsconfig-paths-webpack-plugin": "^4.0.1",
-    "typescript": "^6.0.2",
+    "typescript": "^6.0.3",
     "unplugin-vue-components": "^0.27.4",
     "vite": "^5.4.5",
-    "weapp-ide-cli": "^5.1.4",
-    "weapp-tailwindcss": "^4.11.2"
+    "weapp-ide-cli": "^5.2.8",
+    "weapp-tailwindcss": "^4.12.0"
   },
   "pnpm": {
     "onlyBuiltDependencies": [
@@ -90,5 +90,5 @@
       "weapp-tailwindcss"
     ]
   },
-  "packageManager": "pnpm@10.33.0"
+  "packageManager": "pnpm@10.33.2"
 }

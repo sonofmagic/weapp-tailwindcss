@@ -5,6 +5,7 @@ import { execa } from 'execa'
 import {
   ensureCleanWorkingTree,
   ensureConfigExists,
+  isRemovedTemplateName,
   prepareTemplateCacheRepo,
   readTemplateUrls,
   repoFolderName,
@@ -44,6 +45,10 @@ async function syncTemplate(url: string): Promise<void> {
   const repoName = repoFolderName(url)
   if (!repoName) {
     throw new Error(`无法从 ${url} 解析仓库名。`)
+  }
+  if (isRemovedTemplateName(repoName)) {
+    console.log(`跳过已移除模板 ${repoName}。`)
+    return
   }
 
   const sshUrl = toSshUrl(url)
