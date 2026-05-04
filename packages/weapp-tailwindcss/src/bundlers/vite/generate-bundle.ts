@@ -7,8 +7,8 @@ import path from 'node:path'
 import process from 'node:process'
 import { logger } from '@weapp-tailwindcss/logger'
 import { splitCode } from '@weapp-tailwindcss/shared/extractors'
+import { createWeappTailwindcssGenerator, resolveTailwindV4SourceFromPatcher } from '@/generator'
 import { getRuntimeClassSetSignature } from '@/tailwindcss/runtime/cache'
-import { createTailwindV4Engine, resolveTailwindV4SourceFromPatcher } from '@/tailwindcss/v4-engine'
 import { createUniAppXAssetTask } from '@/uni-app-x'
 import { isUniAppXEnabled } from '@/uni-app-x/options'
 import { processCachedTask } from '../shared/cache'
@@ -535,8 +535,8 @@ export function createGenerateBundleHook(context: GenerateBundleContext) {
                 ) {
                   try {
                     const source = await resolveTailwindV4SourceFromPatcher(runtimeState.twPatcher)
-                    const engine = createTailwindV4Engine(source)
-                    const generated = await engine.generate({
+                    const generator = createWeappTailwindcssGenerator(source)
+                    const generated = await generator.generate({
                       candidates: runtime,
                       styleOptions: cssHandlerOptions,
                     })

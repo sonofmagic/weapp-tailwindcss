@@ -14,6 +14,8 @@ describe('tsup build layout', () => {
     expect(runtimeConfig.entry).toEqual(runtimeEntries)
     expect(runtimeConfig.splitting).toBe(true)
     expect(runtimeConfig.entry).not.toHaveProperty('cli')
+    expect(runtimeConfig.entry).toHaveProperty('generator')
+    expect(runtimeConfig.entry).toHaveProperty('postcss')
 
     expect(cliConfig.entry).toEqual(cliEntries)
     expect(cliConfig.splitting).toBe(false)

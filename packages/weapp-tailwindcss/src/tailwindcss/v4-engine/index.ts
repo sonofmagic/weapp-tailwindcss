@@ -3,7 +3,7 @@ export {
   resolveValidTailwindV4Candidates,
 } from './design-system'
 export { createTailwindV4Engine } from './generator'
-export { transformTailwindV4CssToWeapp } from './miniprogram'
+export { transformTailwindV4CssByTarget, transformTailwindV4CssToWeapp } from './miniprogram'
 export {
   resolveTailwindV4Source,
   resolveTailwindV4SourceFromPatcher,

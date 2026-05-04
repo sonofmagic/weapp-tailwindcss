@@ -9,7 +9,7 @@ import type {
   TailwindV4SourceOptions,
 } from 'tailwindcss-patch'
 
-export type TailwindV4GenerateTarget = 'weapp' | 'tailwind'
+export type TailwindV4GenerateTarget = 'weapp' | 'h5' | 'tailwind'
 
 export interface TailwindV4GenerateOptions extends PatchTailwindV4GenerateOptions {
   target?: TailwindV4GenerateTarget

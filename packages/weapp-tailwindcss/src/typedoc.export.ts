@@ -1,3 +1,10 @@
+export type {
+  WeappTailwindcssGenerateOptions,
+  WeappTailwindcssGenerateResult,
+  WeappTailwindcssGenerator,
+  WeappTailwindcssGeneratorTarget,
+  WeappTailwindcssPostcssPluginOptions,
+} from './index'
 export type { DisabledOptions } from './types/disabled-options'
 export type { UserDefinedOptions } from './types/user-defined-options'
 export type {

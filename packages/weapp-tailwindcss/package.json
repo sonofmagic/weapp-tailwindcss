@@ -76,6 +76,16 @@
       "import": "./dist/gulp.mjs",
       "require": "./dist/gulp.js"
     },
+    "./generator": {
+      "types": "./dist/generator.d.ts",
+      "import": "./dist/generator.mjs",
+      "require": "./dist/generator.js"
+    },
+    "./postcss": {
+      "types": "./dist/postcss.d.ts",
+      "import": "./dist/postcss.mjs",
+      "require": "./dist/postcss.js"
+    },
     "./defaults": {
       "types": "./dist/defaults.d.ts",
       "import": "./dist/defaults.mjs",

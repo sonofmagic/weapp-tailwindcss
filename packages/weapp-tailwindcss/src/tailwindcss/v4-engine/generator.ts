@@ -1,6 +1,6 @@
 import type { TailwindV4Engine, TailwindV4GenerateOptions, TailwindV4ResolvedSource } from './types'
 import { createTailwindV4Engine as createPatchTailwindV4Engine } from 'tailwindcss-patch'
-import { transformTailwindV4CssToWeapp } from './miniprogram'
+import { transformTailwindV4CssByTarget } from './miniprogram'
 
 export function createTailwindV4Engine(source: TailwindV4ResolvedSource): TailwindV4Engine {
   const engine = createPatchTailwindV4Engine(source)
@@ -13,9 +13,7 @@ export function createTailwindV4Engine(source: TailwindV4ResolvedSource): Tailwi
     } = options
     const result = await engine.generate(patchOptions)
     const rawCss = result.css
-    const css = target === 'weapp'
-      ? await transformTailwindV4CssToWeapp(rawCss, styleOptions)
-      : rawCss
+    const css = await transformTailwindV4CssByTarget(rawCss, target, styleOptions)
 
     return {
       ...result,

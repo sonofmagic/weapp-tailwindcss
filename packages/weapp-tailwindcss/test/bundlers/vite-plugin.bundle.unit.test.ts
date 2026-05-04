@@ -56,6 +56,7 @@ describe('bundlers/vite UnifiedViteWeappTailwindcssPlugin bundle', () => {
   beforeEach(() => {
     vi.resetModules()
     vi.doUnmock('@/bundlers/vite/incremental-runtime-class-set')
+    vi.doUnmock('@/generator')
     resetVitePluginTestContext()
     vi.restoreAllMocks()
   })
@@ -523,8 +524,8 @@ const trace = "at App.vue:4"
         reset: resetMock,
       }),
     }))
-    vi.doMock('@/tailwindcss/v4-engine', () => ({
-      createTailwindV4Engine: createEngineMock,
+    vi.doMock('@/generator', () => ({
+      createWeappTailwindcssGenerator: createEngineMock,
       resolveTailwindV4SourceFromPatcher: resolveSourceMock,
     }))
 
@@ -590,8 +591,8 @@ const trace = "at App.vue:4"
         reset: vi.fn(async () => undefined),
       }),
     }))
-    vi.doMock('@/tailwindcss/v4-engine', () => ({
-      createTailwindV4Engine: vi.fn(() => ({
+    vi.doMock('@/generator', () => ({
+      createWeappTailwindcssGenerator: vi.fn(() => ({
         generate: generateMock,
       })),
       resolveTailwindV4SourceFromPatcher: vi.fn(async () => ({

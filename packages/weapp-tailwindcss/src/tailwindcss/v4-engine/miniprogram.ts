@@ -1,4 +1,5 @@
 import type { IStyleHandlerOptions } from '@weapp-tailwindcss/postcss/types'
+import type { TailwindV4GenerateTarget } from './types'
 import { createStyleHandler } from '@weapp-tailwindcss/postcss'
 import postcss from 'postcss'
 
@@ -27,4 +28,14 @@ export async function transformTailwindV4CssToWeapp(
     ...options,
   })
   return removeAtSupports(result.css)
+}
+
+export async function transformTailwindV4CssByTarget(
+  css: string,
+  target: TailwindV4GenerateTarget,
+  options?: Partial<IStyleHandlerOptions>,
+) {
+  return target === 'weapp'
+    ? transformTailwindV4CssToWeapp(css, options)
+    : css
 }
