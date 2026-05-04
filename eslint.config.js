@@ -15,6 +15,8 @@ const config = icebreaker(
       'apps/weapp-library',
       'packages/tailwindcss-injector/*.md',
       'packages/weapp-tailwindcss/*.css',
+      // 忽略构建分析生成的 HTML 报告
+      'packages/weapp-tailwindcss/stats/**',
       'e2e/__snapshots__/**/*',
       'templates/**',
       // 排除文档和quest文件
