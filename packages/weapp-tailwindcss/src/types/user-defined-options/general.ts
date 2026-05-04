@@ -2,6 +2,7 @@ import type { ParserOptions } from '@babel/parser'
 import type { LoadedPostcssOptions } from '@weapp-tailwindcss/postcss/types'
 import type { ILengthUnitsPatchOptions, TailwindCssPatchOptions } from 'tailwindcss-patch'
 import type { ICreateCacheReturnType } from '../../cache'
+import type { WeappTailwindcssGeneratorUserOptions } from '../../generator'
 import type { AppType, IArbitraryValues } from '../shared'
 
 export interface UserDefinedOptionsGeneralPart {
@@ -85,6 +86,19 @@ export interface UserDefinedOptionsGeneralPart {
    * ```
    */
   replaceRuntimePackages?: boolean | Record<string, string>
+
+  /**
+   * 控制 Tailwind CSS v4 直接生成目标端 CSS 的策略。
+   *
+   * @group 3.一般配置
+   * @remarks
+   * 默认值为 `{ mode: 'auto', target: 'weapp' }`，会在不改变 v4 既有 Vite/webpack/gulp 用法的前提下，优先尝试直接生成小程序 CSS；当无法安全生成时回退到原来的 Tailwind 产物后处理链路。
+   *
+   * - `false`：关闭生成器，完全使用旧链路。
+   * - `true`：等价于默认 `auto`。
+   * - `{ mode: 'force' }`：强制使用生成器，失败时直接抛错，适合 CI 中验证新链路。
+   */
+  generator?: WeappTailwindcssGeneratorUserOptions
 
   /**
    * 禁用默认的 `wxml` 模板替换器。

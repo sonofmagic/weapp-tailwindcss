@@ -17,6 +17,10 @@ export function createWeappTailwindcssGenerator(source: TailwindV4ResolvedSource
 }
 
 export {
+  normalizeWeappTailwindcssGeneratorOptions,
+} from './options'
+
+export {
   resolveTailwindV4Source,
   resolveTailwindV4SourceFromPatcher,
   resolveTailwindV4SourceFromPatchOptions,
@@ -24,6 +28,13 @@ export {
   transformTailwindV4CssByTarget,
   transformTailwindV4CssToWeapp,
 }
+
+export type {
+  NormalizedWeappTailwindcssGeneratorOptions,
+  WeappTailwindcssGeneratorMode,
+  WeappTailwindcssGeneratorOptions,
+  WeappTailwindcssGeneratorUserOptions,
+} from './options'
 
 export type {
   TailwindV4CandidateSource,

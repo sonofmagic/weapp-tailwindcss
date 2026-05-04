@@ -37,6 +37,20 @@ function getGenerateBundleHandler(plugin: Plugin) {
   return typeof hook === 'object' ? hook.handler : hook
 }
 
+function normalizeGeneratorOptions(options: any) {
+  if (options === false) {
+    return { mode: 'off', target: 'weapp' }
+  }
+  if (options === true || options == null) {
+    return { mode: 'auto', target: 'weapp' }
+  }
+  return {
+    mode: options.mode ?? 'auto',
+    target: options.target ?? 'weapp',
+    styleOptions: options.styleOptions,
+  }
+}
+
 async function loadIssue814Fixture() {
   const fixtureRoot = path.resolve(
     __dirname,
@@ -526,6 +540,7 @@ const trace = "at App.vue:4"
     }))
     vi.doMock('@/generator', () => ({
       createWeappTailwindcssGenerator: createEngineMock,
+      normalizeWeappTailwindcssGeneratorOptions: normalizeGeneratorOptions,
       resolveTailwindV4SourceFromPatcher: resolveSourceMock,
     }))
 
@@ -595,6 +610,7 @@ const trace = "at App.vue:4"
       createWeappTailwindcssGenerator: vi.fn(() => ({
         generate: generateMock,
       })),
+      normalizeWeappTailwindcssGeneratorOptions: normalizeGeneratorOptions,
       resolveTailwindV4SourceFromPatcher: vi.fn(async () => ({
         projectRoot: process.cwd(),
         base: process.cwd(),
@@ -645,6 +661,224 @@ const trace = "at App.vue:4"
       isMainChunk: false,
       majorVersion: 4,
     })
+  }, TEST_TIMEOUT_MS)
+
+  it('keeps legacy css handling when tailwind v4 generator is disabled', async () => {
+    const runtimeSet = new Set(['w-[100px]'])
+    const rawTailwindCss = '/*! tailwindcss v4.2.4 | MIT License | https://tailwindcss.com */\n.w-\\[100px\\]{width:100px}'
+    const generateMock = vi.fn(async () => ({
+      css: '.w-_b100px_B{width:100px}',
+      rawCss: rawTailwindCss,
+      target: 'weapp',
+      classSet: runtimeSet,
+      dependencies: [],
+      sources: [],
+      root: null,
+    }))
+
+    vi.doMock('@/bundlers/vite/incremental-runtime-class-set', () => ({
+      createBundleRuntimeClassSetManager: () => ({
+        sync: vi.fn(async () => runtimeSet),
+        reset: vi.fn(async () => undefined),
+      }),
+    }))
+    vi.doMock('@/generator', () => ({
+      createWeappTailwindcssGenerator: vi.fn(() => ({
+        generate: generateMock,
+      })),
+      normalizeWeappTailwindcssGeneratorOptions: normalizeGeneratorOptions,
+      resolveTailwindV4SourceFromPatcher: vi.fn(async () => ({
+        projectRoot: process.cwd(),
+        base: process.cwd(),
+        baseFallbacks: [],
+        css: '@import "tailwindcss";',
+        dependencies: [],
+      })),
+    }))
+
+    const styleHandler = vi.fn(async (code: string) => ({ css: `legacy:${code}` }))
+    setCurrentContext(createContext({
+      generator: false,
+      styleHandler,
+      twPatcher: {
+        patch: vi.fn(),
+        getClassSet: vi.fn(async () => runtimeSet),
+        getClassSetSync: vi.fn(() => runtimeSet),
+        extract: vi.fn(async () => ({ classSet: runtimeSet })),
+        majorVersion: 4,
+      },
+    }))
+
+    const UnifiedViteWeappTailwindcssPlugin = await loadUnifiedVitePlugin()
+    const plugins = UnifiedViteWeappTailwindcssPlugin()
+    const postPlugin = plugins?.find(plugin => plugin.name === 'weapp-tailwindcss:adaptor:post') as Plugin
+    expect(postPlugin).toBeTruthy()
+
+    await (postPlugin.configResolved as any)?.call(postPlugin, {
+      command: 'serve',
+      root: process.cwd(),
+      css: { postcss: { plugins: [] } },
+      build: { outDir: 'dist' },
+    } as ResolvedConfig)
+
+    const bundle = {
+      'app.css': {
+        ...createRollupAsset(rawTailwindCss),
+        fileName: 'app.css',
+      },
+    }
+
+    const generateBundle = getGenerateBundleHandler(postPlugin)
+    await generateBundle?.call(postPlugin, {} as any, bundle)
+
+    expect((bundle['app.css'] as OutputAsset).source).toBe(`legacy:${rawTailwindCss}`)
+    expect(generateMock).not.toHaveBeenCalled()
+    expect(styleHandler).toHaveBeenCalledTimes(1)
+  }, TEST_TIMEOUT_MS)
+
+  it('throws instead of falling back when tailwind v4 generator is forced', async () => {
+    const runtimeSet = new Set(['w-[100px]'])
+    const rawTailwindCss = '/*! tailwindcss v4.2.4 | MIT License | https://tailwindcss.com */\n.w-\\[100px\\]{width:100px}'
+    const generateMock = vi.fn(async () => {
+      throw new Error('generator failed')
+    })
+
+    vi.doMock('@/bundlers/vite/incremental-runtime-class-set', () => ({
+      createBundleRuntimeClassSetManager: () => ({
+        sync: vi.fn(async () => runtimeSet),
+        reset: vi.fn(async () => undefined),
+      }),
+    }))
+    vi.doMock('@/generator', () => ({
+      createWeappTailwindcssGenerator: vi.fn(() => ({
+        generate: generateMock,
+      })),
+      normalizeWeappTailwindcssGeneratorOptions: normalizeGeneratorOptions,
+      resolveTailwindV4SourceFromPatcher: vi.fn(async () => ({
+        projectRoot: process.cwd(),
+        base: process.cwd(),
+        baseFallbacks: [],
+        css: '@import "tailwindcss";',
+        dependencies: [],
+      })),
+    }))
+
+    const styleHandler = vi.fn(async (code: string) => ({ css: `legacy:${code}` }))
+    setCurrentContext(createContext({
+      generator: {
+        mode: 'force',
+      },
+      styleHandler,
+      twPatcher: {
+        patch: vi.fn(),
+        getClassSet: vi.fn(async () => runtimeSet),
+        getClassSetSync: vi.fn(() => runtimeSet),
+        extract: vi.fn(async () => ({ classSet: runtimeSet })),
+        majorVersion: 4,
+      },
+    }))
+
+    const UnifiedViteWeappTailwindcssPlugin = await loadUnifiedVitePlugin()
+    const plugins = UnifiedViteWeappTailwindcssPlugin()
+    const postPlugin = plugins?.find(plugin => plugin.name === 'weapp-tailwindcss:adaptor:post') as Plugin
+    expect(postPlugin).toBeTruthy()
+
+    await (postPlugin.configResolved as any)?.call(postPlugin, {
+      command: 'serve',
+      root: process.cwd(),
+      css: { postcss: { plugins: [] } },
+      build: { outDir: 'dist' },
+    } as ResolvedConfig)
+
+    const bundle = {
+      'app.css': {
+        ...createRollupAsset(rawTailwindCss),
+        fileName: 'app.css',
+      },
+    }
+
+    const generateBundle = getGenerateBundleHandler(postPlugin)
+    await expect(generateBundle?.call(postPlugin, {} as any, bundle)).rejects.toThrow('generator failed')
+    expect(styleHandler).not.toHaveBeenCalled()
+  }, TEST_TIMEOUT_MS)
+
+  it('can keep web css from tailwind v4 generator without mini-program post processing', async () => {
+    const runtimeSet = new Set(['hover:bg-blue-500'])
+    const rawTailwindCss = '/*! tailwindcss v4.2.4 | MIT License | https://tailwindcss.com */\n.hover\\:bg-blue-500:hover{color:blue}'
+    const userCss = '\n.card:hover{color:red}'
+    const webCss = '.hover\\:bg-blue-500:hover{color:blue}'
+    const generateMock = vi.fn(async () => ({
+      css: webCss,
+      rawCss: rawTailwindCss,
+      target: 'web',
+      classSet: runtimeSet,
+      dependencies: [],
+      sources: [],
+      root: null,
+    }))
+
+    vi.doMock('@/bundlers/vite/incremental-runtime-class-set', () => ({
+      createBundleRuntimeClassSetManager: () => ({
+        sync: vi.fn(async () => runtimeSet),
+        reset: vi.fn(async () => undefined),
+      }),
+    }))
+    vi.doMock('@/generator', () => ({
+      createWeappTailwindcssGenerator: vi.fn(() => ({
+        generate: generateMock,
+      })),
+      normalizeWeappTailwindcssGeneratorOptions: normalizeGeneratorOptions,
+      resolveTailwindV4SourceFromPatcher: vi.fn(async () => ({
+        projectRoot: process.cwd(),
+        base: process.cwd(),
+        baseFallbacks: [],
+        css: '@import "tailwindcss";',
+        dependencies: [],
+      })),
+    }))
+
+    const styleHandler = vi.fn(async (code: string) => ({ css: `mini:${code}` }))
+    setCurrentContext(createContext({
+      generator: {
+        target: 'web',
+      },
+      styleHandler,
+      twPatcher: {
+        patch: vi.fn(),
+        getClassSet: vi.fn(async () => runtimeSet),
+        getClassSetSync: vi.fn(() => runtimeSet),
+        extract: vi.fn(async () => ({ classSet: runtimeSet })),
+        majorVersion: 4,
+      },
+    }))
+
+    const UnifiedViteWeappTailwindcssPlugin = await loadUnifiedVitePlugin()
+    const plugins = UnifiedViteWeappTailwindcssPlugin()
+    const postPlugin = plugins?.find(plugin => plugin.name === 'weapp-tailwindcss:adaptor:post') as Plugin
+    expect(postPlugin).toBeTruthy()
+
+    await (postPlugin.configResolved as any)?.call(postPlugin, {
+      command: 'serve',
+      root: process.cwd(),
+      css: { postcss: { plugins: [] } },
+      build: { outDir: 'dist' },
+    } as ResolvedConfig)
+
+    const bundle = {
+      'app.css': {
+        ...createRollupAsset(`${rawTailwindCss}${userCss}`),
+        fileName: 'app.css',
+      },
+    }
+
+    const generateBundle = getGenerateBundleHandler(postPlugin)
+    await generateBundle?.call(postPlugin, {} as any, bundle)
+
+    expect((bundle['app.css'] as OutputAsset).source).toBe(`${webCss}\n${userCss}`)
+    expect(generateMock).toHaveBeenCalledWith(expect.objectContaining({
+      target: 'web',
+    }))
+    expect(styleHandler).not.toHaveBeenCalled()
   }, TEST_TIMEOUT_MS)
 
   it('does not share css transform results for identical assets with relative urls', async () => {

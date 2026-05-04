@@ -132,6 +132,10 @@ exports[`get options > default options 1`] = `
     "}": "_K",
     "~": "_w",
   },
+  "generator": {
+    "mode": "auto",
+    "target": "weapp",
+  },
   "htmlMatcher": [Function],
   "ignoreCallExpressionIdentifiers": [],
   "ignoreTaggedTemplateExpressionIdentifiers": [
