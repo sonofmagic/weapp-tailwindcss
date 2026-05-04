@@ -6,8 +6,10 @@ export default defineConfig({
   format: ['cjs', 'esm'],
   clean: true,
   dts: true,
-  external: [/^tailwindcss(\/|$)/],
-  inlineOnly: ['defu', /^tailwindcss(\/|$)/],
+  deps: {
+    neverBundle: [/^tailwindcss(\/|$)/],
+    onlyBundle: ['defu'],
+  },
   outputOptions: {
     exports: 'named',
   },

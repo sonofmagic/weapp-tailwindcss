@@ -1,4 +1,4 @@
-import { defineConfig } from 'tsup'
+import { defineConfig } from 'tsdown'
 
 export default defineConfig({
   entry: [
@@ -15,15 +15,14 @@ export default defineConfig({
   shims: true,
   format: ['cjs', 'esm'],
   clean: true,
-  dts: true,
-  external: ['vite'],
-  // https://github.com/egoist/tsup/pull/1056
-  // https://github.com/egoist/tsup/issues?q=cjsInterop
-  cjsInterop: true,
-  splitting: true,
-  outExtension({ format }) {
+  dts: false,
+  deps: {
+    neverBundle: ['vite'],
+  },
+  outExtensions({ format }) {
     return {
-      js: `.${format === 'esm' ? 'mjs' : 'cjs'}`,
+      js: format === 'es' ? '.mjs' : '.cjs',
+      dts: '.d.ts',
     }
   },
 })

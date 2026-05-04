@@ -35,54 +35,73 @@ export const webpackLoaderEntries = {
   'weapp-tw-css-import-rewrite-loader': 'src/bundlers/webpack/loaders/weapp-tw-css-import-rewrite-loader.ts',
 } as const
 
-export function createTsupConfigs(options: WatchAwareOptions = {}) {
+function externalizeRuntimeDeps(id: string) {
+  return id === 'webpack'
+    || id === 'tailwindcss/plugin'
+    || id === 'postcss'
+    || /[\\/]node_modules[\\/]\.pnpm[\\/]postcss@/.test(id)
+    || /[\\/]node_modules[\\/]postcss[\\/]/.test(id)
+}
+
+function preserveJsExports({ format }: { format: string }) {
+  return {
+    js: format === 'es' ? '.mjs' : '.js',
+    dts: '.d.ts',
+  }
+}
+
+export function createTsdownConfigs(options: WatchAwareOptions = {}) {
   const isWatching = Boolean(options.watch)
   const shouldClean = !isWatching
 
   return [
     {
       entry: runtimeEntries,
-      dts: true,
+      dts: false,
       clean: shouldClean,
-      cjsInterop: true,
-      splitting: true,
       shims: true,
       format: ['cjs', 'esm'],
-      external: ['webpack', 'tailwindcss/plugin'],
+      deps: {
+        neverBundle: externalizeRuntimeDeps,
+        skipNodeModulesBundle: true,
+      },
       target: ['es2020'],
+      outExtensions: preserveJsExports,
     },
     {
       // CLI 单独构建，避免未来引入 ESM-only 依赖时污染 runtime 入口共享 chunk。
       entry: cliEntries,
-      dts: true,
+      dts: false,
       clean: false,
-      cjsInterop: true,
-      splitting: false,
       shims: true,
       format: ['cjs', 'esm'],
-      external: ['webpack', 'tailwindcss/plugin'],
+      deps: {
+        neverBundle: externalizeRuntimeDeps,
+        skipNodeModulesBundle: true,
+      },
       target: ['es2020'],
+      outExtensions: preserveJsExports,
     },
     {
       entry: escapeEntries,
-      // Keep the escape runtime free of Node-only shims so bundlers can import it in-browser.
-      dts: true,
+      // escape 运行时不能注入 Node 专属 shim，方便浏览器侧 bundler 直接导入。
+      dts: false,
       clean: false,
-      cjsInterop: true,
-      splitting: false,
       shims: false,
       format: ['cjs', 'esm'],
       target: ['es2020'],
+      outExtensions: preserveJsExports,
     },
     {
       entry: webpackLoaderEntries,
-      dts: true,
+      dts: false,
       clean: false,
-      cjsInterop: true,
-      splitting: true,
       shims: true,
       format: ['cjs'],
-      external: ['webpack', 'loader-utils'],
+      deps: {
+        neverBundle: ['webpack', 'loader-utils'],
+      },
+      outExtensions: preserveJsExports,
     },
   ]
 }

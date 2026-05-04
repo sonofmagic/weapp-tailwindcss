@@ -4,13 +4,13 @@ export default defineConfig({
   entry: [
     './src/index.ts',
   ],
-  format: ['esm', 'cjs'],
   dts: true,
   clean: true,
-  target: 'node18',
-  deps: {
-    neverBundle: [
-      'tailwind-merge',
-    ],
+  format: ['cjs', 'esm'],
+  outExtensions({ format }) {
+    return {
+      js: format === 'es' ? '.js' : '.cjs',
+      dts: '.d.ts',
+    }
   },
 })

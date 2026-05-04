@@ -45,7 +45,7 @@
     "node": ">=20.19.0"
   },
   "scripts": {
-    "build": "tsup",
+    "build": "tsdown",
     "test": "vitest run",
     "test:dev": "vitest"
   },

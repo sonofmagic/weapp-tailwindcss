@@ -3,7 +3,8 @@
   "compilerOptions": {
     "rootDir": "src",
     "removeComments": true,
-    "sourceMap": false
+    "sourceMap": false,
+    "noCheck": true
   },
   "include": [
     "src/**/*",
