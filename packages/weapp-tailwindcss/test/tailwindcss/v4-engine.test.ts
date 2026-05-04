@@ -144,7 +144,7 @@ describe('tailwindcss v4 engine', () => {
     expect(result.css).not.toContain('.w-_b100px_B')
   })
 
-  it('can generate h5 css without mini-program selector transforms', async () => {
+  it('can generate web css without mini-program selector transforms', async () => {
     const source = await resolveTailwindV4Source({
       css: MINIMAL_THEME_CSS,
       base: process.cwd(),
@@ -152,11 +152,11 @@ describe('tailwindcss v4 engine', () => {
     const engine = createTailwindV4Engine(source)
 
     const result = await engine.generate({
-      target: 'h5',
+      target: 'web',
       candidates: ['hover:bg-blue-500', 'w-[100px]'],
     })
 
-    expect(result.target).toBe('h5')
+    expect(result.target).toBe('web')
     expect(result.css).toBe(result.rawCss)
     expect(result.css).toContain('.hover\\:bg-blue-500')
     expect(result.css).toContain('@media (hover: hover)')

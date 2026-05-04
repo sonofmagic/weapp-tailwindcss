@@ -29,10 +29,10 @@ describe('weapp-tailwindcss postcss generator', () => {
     }))
   })
 
-  it('can generate h5 css from the same postcss entry', async () => {
+  it('can generate web css from the same postcss entry', async () => {
     const result = await postcss([
       weappTailwindcss({
-        target: 'h5',
+        target: 'web',
         candidates: ['hover:bg-blue-500', 'w-[100px]'],
       }),
     ]).process(MINIMAL_THEME_CSS, {
@@ -45,7 +45,7 @@ describe('weapp-tailwindcss postcss generator', () => {
     expect(result.css).not.toContain('.w-_b100px_B')
     expect(result.messages).toContainEqual(expect.objectContaining({
       type: 'weapp-tailwindcss:generated',
-      target: 'h5',
+      target: 'web',
     }))
   })
 })

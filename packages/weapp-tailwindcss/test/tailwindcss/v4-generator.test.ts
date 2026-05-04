@@ -27,7 +27,7 @@ describe('weapp-tailwindcss generator', () => {
     expect(result.rawCss).toContain('.w-\\[100px\\]')
   })
 
-  it('keeps h5 output as Tailwind v4 browser css', async () => {
+  it('keeps web output as Tailwind v4 browser css', async () => {
     const source = await resolveTailwindV4Source({
       css: MINIMAL_THEME_CSS,
       base: process.cwd(),
@@ -35,11 +35,11 @@ describe('weapp-tailwindcss generator', () => {
     const generator = createWeappTailwindcssGenerator(source)
 
     const result = await generator.generate({
-      target: 'h5',
+      target: 'web',
       candidates: ['hover:bg-blue-500', 'w-[100px]'],
     })
 
-    expect(result.target).toBe('h5')
+    expect(result.target).toBe('web')
     expect(result.css).toBe(result.rawCss)
     expect(result.css).toContain('.hover\\:bg-blue-500')
     expect(result.css).toContain('@media (hover: hover)')
