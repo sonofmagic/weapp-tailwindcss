@@ -1,82 +1,35 @@
 import type { IStyleHandlerOptions } from '@weapp-tailwindcss/postcss/types'
+import type {
+  TailwindV4Engine as PatchTailwindV4Engine,
+  TailwindV4GenerateOptions as PatchTailwindV4GenerateOptions,
+  TailwindV4GenerateResult as PatchTailwindV4GenerateResult,
+  TailwindV4CandidateSource,
+  TailwindV4DesignSystem,
+  TailwindV4ResolvedSource,
+  TailwindV4SourceOptions,
+} from 'tailwindcss-patch'
 
 export type TailwindV4GenerateTarget = 'weapp' | 'tailwind'
 
-export interface TailwindV4SourceOptions {
-  projectRoot?: string
-  base?: string
-  baseFallbacks?: string[]
-  css?: string
-  cssEntries?: string[]
-  packageName?: string
-}
-
-export interface TailwindV4ResolvedSource {
-  projectRoot: string
-  base: string
-  baseFallbacks: string[]
-  css: string
-  dependencies: string[]
-}
-
-export interface TailwindV4CandidateSource {
-  content: string
-  extension?: string
-}
-
-export interface TailwindV4GenerateOptions {
-  candidates?: Iterable<string>
-  sources?: TailwindV4CandidateSource[]
+export interface TailwindV4GenerateOptions extends PatchTailwindV4GenerateOptions {
   target?: TailwindV4GenerateTarget
   styleOptions?: Partial<IStyleHandlerOptions>
 }
 
-export interface TailwindV4GenerateResult {
+export interface TailwindV4GenerateResult extends Omit<PatchTailwindV4GenerateResult, 'css'> {
   css: string
   rawCss: string
   target: TailwindV4GenerateTarget
-  classSet: Set<string>
-  dependencies: string[]
-  sources: {
-    base: string
-    pattern: string
-    negated: boolean
-  }[]
-  root: 'none' | {
-    base: string
-    pattern: string
-  } | null
 }
 
-export interface TailwindV4Engine {
+export interface TailwindV4Engine extends Omit<PatchTailwindV4Engine, 'generate'> {
   source: TailwindV4ResolvedSource
   generate: (options?: TailwindV4GenerateOptions) => Promise<TailwindV4GenerateResult>
 }
 
-export interface TailwindV4DesignSystem {
-  parseCandidate: (candidate: string) => unknown[]
-  candidatesToCss: (candidates: string[]) => Array<string | null | undefined>
-}
-
-export interface TailwindV4CompiledStylesheet {
-  sources: TailwindV4GenerateResult['sources']
-  root: TailwindV4GenerateResult['root']
-  build: (candidates: string[]) => string
-}
-
-export interface TailwindV4NodeModule {
-  compile: (
-    css: string,
-    options: {
-      base: string
-      from?: string
-      onDependency: (path: string) => void
-    },
-  ) => Promise<TailwindV4CompiledStylesheet>
-  __unstable__loadDesignSystem: (
-    css: string,
-    options: {
-      base: string
-    },
-  ) => Promise<TailwindV4DesignSystem>
+export type {
+  TailwindV4CandidateSource,
+  TailwindV4DesignSystem,
+  TailwindV4ResolvedSource,
+  TailwindV4SourceOptions,
 }

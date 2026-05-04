@@ -103,7 +103,7 @@ describe('tailwindcss v4 engine', () => {
     })
 
     expect(source.dependencies).toEqual([cssEntry])
-    expect(source.css).toBe(`@import "${cssEntry}";`)
+    expect(source.css).toBe('@import "missing.css";')
   })
 
   it('uses mini-program css as the default output', async () => {
