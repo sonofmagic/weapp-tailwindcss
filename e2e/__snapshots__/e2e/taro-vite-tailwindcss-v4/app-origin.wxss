@@ -111,6 +111,12 @@ text,
   background-color: color(display-p3 0.82939 0.70374 0.99608);
   background-color: var(--color-purple-300);
 }
+.bg-linear-to-r {
+  --tw-gradient-position: to right;
+}
+.bg-linear-to-r {
+  background-image: linear-gradient(var(--tw-gradient-stops));
+}
 .bg-gradient-to-r {
   --tw-gradient-position: to right;
   background-image: linear-gradient(var(--tw-gradient-stops));

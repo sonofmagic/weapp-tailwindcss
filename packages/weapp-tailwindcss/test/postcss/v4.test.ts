@@ -1,5 +1,5 @@
 import tailwindcss from '@tailwindcss/postcss'
-import { postcssRemoveComment } from '@weapp-tailwindcss/test-helper'
+import { generateCss4, postcssRemoveComment } from '@weapp-tailwindcss/test-helper'
 import fs from 'fs-extra'
 import path from 'pathe'
 import postcss from 'postcss'
@@ -26,6 +26,40 @@ function getCtx(options?: CompilerOptions) {
 }
 
 describe('tailwindcss v4', () => {
+  it('generates linear background direction css with v4 source directive', async () => {
+    const className = ['bg', 'linear', 'to', 'r'].join('-')
+    const sourceFunction = ['in', 'line'].join('')
+    const selector = `.${className}`
+    const { css: tailwindCss } = await generateCss4(rootPath, {
+      css: `
+        @import "tailwindcss/utilities" source(none);
+        @source ${sourceFunction}("${className}");
+      `,
+    })
+    expect(tailwindCss.trim()).toBe([
+      `${selector} {`,
+      '  --tw-gradient-position: to right;',
+      '  @supports (background-image: linear-gradient(in lab, red, red)) {',
+      '    --tw-gradient-position: to right in oklab;',
+      '  }',
+      '  background-image: linear-gradient(var(--tw-gradient-stops));',
+      '}',
+    ].join('\n'))
+
+    const { styleHandler } = getCtx()
+    const { css } = await styleHandler(tailwindCss)
+    expect(css.trim()).toBe([
+      `${selector} {`,
+      '  --tw-gradient-position: to right;',
+      '}',
+      `${selector} {`,
+      '  background-image: linear-gradient(var(--tw-gradient-stops));',
+      '}',
+    ].join('\n'))
+    expect(css).not.toContain('@supports')
+    expect(css).not.toContain('in oklab')
+  })
+
   it('v4-default.css', async () => {
     const rawCss = await getCase('v4-default.css')
     const { styleHandler } = getCtx()

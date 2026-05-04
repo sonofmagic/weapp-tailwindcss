@@ -284,6 +284,32 @@ describe('v4', () => {
     expect(css).toMatchSnapshot()
   })
 
+  it('removes Tailwind CSS v4 lab linear-gradient supports guard', async () => {
+    const styleHandler = createStyleHandler({
+      isMainChunk: true,
+    })
+    const code = `.bg-linear-to-r {
+  --tw-gradient-position: to right;
+  @supports (background-image: linear-gradient(in lab, red, red)) {
+    --tw-gradient-position: to right in oklab;
+  }
+  background-image: linear-gradient(var(--tw-gradient-stops));
+}`
+    const { css } = await styleHandler(code, {
+      isMainChunk: true,
+      majorVersion: 4,
+    })
+
+    expect(css).toBe(`.bg-linear-to-r {
+  --tw-gradient-position: to right;
+}
+.bg-linear-to-r {
+  background-image: linear-gradient(var(--tw-gradient-stops));
+}`)
+    expect(css).not.toContain('@supports')
+    expect(css).not.toContain('in oklab')
+  })
+
   it('v4.1.1 uni-app vue 3', async () => {
     const styleHandler = createStyleHandler({
       isMainChunk: true,

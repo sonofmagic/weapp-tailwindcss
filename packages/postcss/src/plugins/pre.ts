@@ -2,7 +2,7 @@
 import type { AtRule, Plugin, PluginCreator } from 'postcss'
 import type { IStyleHandlerOptions } from '../types'
 import { defu } from '@weapp-tailwindcss/shared'
-import { isTailwindcssV4ModernCheck } from '../compat/tailwindcss-v4'
+import { isTailwindcssV4LinearGradientSupports, isTailwindcssV4ModernCheck } from '../compat/tailwindcss-v4'
 import { postcssPlugin } from '../constants'
 import { commonChunkPreflight } from '../mp'
 import { ruleTransformSync } from '../selectorParser'
@@ -89,6 +89,9 @@ const postcssWeappTailwindcssPrePlugin: PostcssWeappTailwindcssRenamePlugin = (
       // 参考：https://developer.mozilla.org/zh-CN/docs/Web/CSS/color_value/color-mix
       else if (atRule.name === 'supports') {
         if (COLOR_MIX_RE.test(atRule.params)) {
+          atRule.remove()
+        }
+        else if (isTailwindcssV4LinearGradientSupports(atRule)) {
           atRule.remove()
         }
       }
