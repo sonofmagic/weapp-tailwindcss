@@ -1,25 +1,20 @@
 import type { BundleSnapshot, BundleStateEntry } from './bundle-state'
+import type { TailwindV4DesignSystem, TailwindV4ResolvedSource } from '@/tailwindcss/v4-engine'
 import type { TailwindcssPatcherLike } from '@/types'
-import { mkdir, readFile, rm, writeFile } from 'node:fs/promises'
-import { createRequire } from 'node:module'
+import { mkdir, rm, writeFile } from 'node:fs/promises'
 import path from 'node:path'
 import process from 'node:process'
 import { extractRawCandidatesWithPositions, extractValidCandidates } from 'tailwindcss-patch'
 import { createDebug } from '@/debug'
-import { resolveTailwindcssOptions } from '@/tailwindcss/patcher-options'
 import { getRuntimeClassSetSignature } from '@/tailwindcss/runtime/cache'
+import { loadTailwindV4DesignSystem, resolveTailwindV4SourceFromPatcher } from '@/tailwindcss/v4-engine'
 
 const debug = createDebug('[vite:runtime-set] ')
-const require = createRequire(import.meta.url)
 
 type ExtractValidCandidatesOptions = Parameters<typeof extractValidCandidates>[0]
 type ExtractValidCandidatesFn = (options?: ExtractValidCandidatesOptions) => Promise<string[]>
 type ExtractRawCandidateResult = Awaited<ReturnType<typeof extractRawCandidatesWithPositions>>
 type ExtractRawCandidatesFn = (content: string, extension?: string) => Promise<ExtractRawCandidateResult>
-interface TailwindDesignSystem {
-  parseCandidate: (candidate: string) => unknown[]
-  candidatesToCss: (candidates: string[]) => Array<string | undefined>
-}
 
 export interface BundleRuntimeClassSetManager {
   sync: (patcher: TailwindcssPatcherLike, snapshot: BundleSnapshot) => Promise<Set<string>>
@@ -32,152 +27,15 @@ interface CreateBundleRuntimeClassSetManagerOptions {
   tempRoot?: string
 }
 
-interface RuntimeValidationContext {
-  base: string
-  baseFallbacks: string[]
-  css: string
-  projectRoot: string
-}
-
 const EXTENSION_DOT_PREFIX_RE = /^\./
 const VALIDATION_FILE_NAME = 'runtime-candidates.html'
-
-let tailwindNodeModulePromise: Promise<{
-  __unstable__loadDesignSystem: (css: string, options: { base: string }) => Promise<TailwindDesignSystem>
-}> | undefined
-
-function toPosixPath(value: string) {
-  return value.replaceAll('\\', '/')
-}
-
-function createCssImportSource(imports: string[]) {
-  return imports.map(value => `@import "${toPosixPath(value)}";`).join('\n')
-}
-
-function isPostcssPluginImportTarget(value: string | undefined) {
-  if (!value) {
-    return false
-  }
-  return value === '@tailwindcss/postcss'
-    || value === '@tailwindcss/postcss7-compat'
-    || value.includes('/postcss')
-}
-
-function resolveTailwindCssImportTarget(patcher: TailwindcssPatcherLike) {
-  const tailwindOptions = resolveTailwindcssOptions(patcher.options)
-  const cssEntries = tailwindOptions?.v4?.cssEntries?.filter((item): item is string => typeof item === 'string' && item.length > 0)
-  if (cssEntries && cssEntries.length > 0) {
-    return createCssImportSource(cssEntries)
-  }
-
-  const configuredPackageName = tailwindOptions?.packageName
-  if (typeof configuredPackageName === 'string' && configuredPackageName.length > 0 && !isPostcssPluginImportTarget(configuredPackageName)) {
-    return createCssImportSource([configuredPackageName])
-  }
-
-  const packageName = patcher.packageInfo?.name
-  if (typeof packageName === 'string' && packageName.length > 0 && !isPostcssPluginImportTarget(packageName)) {
-    return createCssImportSource([packageName])
-  }
-
-  return createCssImportSource(['tailwindcss'])
-}
 
 function getProjectRoot(patcher: TailwindcssPatcherLike) {
   return patcher.options?.projectRoot ?? process.cwd()
 }
 
-async function importTailwindNodeModule() {
-  if (!tailwindNodeModulePromise) {
-    tailwindNodeModulePromise = (async () => {
-      try {
-        const resolved = require.resolve('@tailwindcss/node')
-        return await import(resolved)
-      }
-      catch {
-        const tailwindcssPatchEntry = require.resolve('tailwindcss-patch')
-        const resolved = require.resolve('@tailwindcss/node', {
-          paths: [path.dirname(tailwindcssPatchEntry)],
-        })
-        return await import(resolved)
-      }
-    })()
-  }
-  return tailwindNodeModulePromise
-}
-
-function resolveMaybeAbsolute(base: string, value: string | undefined) {
-  if (!value) {
-    return undefined
-  }
-  return path.isAbsolute(value) ? value : path.resolve(base, value)
-}
-
-async function resolveTailwindCssSource(
-  patcher: TailwindcssPatcherLike,
-): Promise<RuntimeValidationContext> {
-  const projectRoot = getProjectRoot(patcher)
-  const tailwindOptions = resolveTailwindcssOptions(patcher.options)
-  const configuredBase = resolveMaybeAbsolute(projectRoot, tailwindOptions?.v4?.base)
-  const configDir = tailwindOptions?.config ? path.dirname(tailwindOptions.config) : undefined
-  const sharedFallbacks = [
-    configuredBase,
-    projectRoot,
-    tailwindOptions?.cwd,
-    configDir,
-  ].filter((item): item is string => typeof item === 'string' && item.length > 0)
-
-  if (tailwindOptions?.v4?.css) {
-    return {
-      projectRoot,
-      base: configuredBase ?? projectRoot,
-      baseFallbacks: [...new Set(sharedFallbacks)],
-      css: tailwindOptions.v4.css,
-    }
-  }
-
-  const cssEntries = tailwindOptions?.v4?.cssEntries?.filter((item): item is string => typeof item === 'string' && item.length > 0) ?? []
-  if (cssEntries.length > 0) {
-    const resolvedEntries = cssEntries.map(entry => resolveMaybeAbsolute(projectRoot, entry) ?? entry)
-    const cssChunks: string[] = []
-    const entryDirs: string[] = []
-
-    for (const entry of resolvedEntries) {
-      try {
-        cssChunks.push(await readFile(entry, 'utf8'))
-        entryDirs.push(path.dirname(entry))
-      }
-      catch {
-        // 忽略缺失 css entry，回退到其他 entry 或 import 方案。
-      }
-    }
-
-    if (cssChunks.length > 0) {
-      const base = entryDirs[0] ?? configuredBase ?? projectRoot
-      const baseFallbacks = [...new Set([
-        ...entryDirs.slice(1),
-        ...sharedFallbacks,
-      ].filter((item): item is string => typeof item === 'string' && item.length > 0 && item !== base))]
-
-      return {
-        projectRoot,
-        base,
-        baseFallbacks,
-        css: cssChunks.join('\n'),
-      }
-    }
-  }
-
-  return {
-    projectRoot,
-    base: configuredBase ?? projectRoot,
-    baseFallbacks: [...new Set(sharedFallbacks)],
-    css: resolveTailwindCssImportTarget(patcher),
-  }
-}
-
 function createExtractOptions(
-  context: RuntimeValidationContext,
+  context: TailwindV4ResolvedSource,
   tempRoot: string,
   pattern: string,
 ): ExtractValidCandidatesOptions {
@@ -271,8 +129,8 @@ export function createBundleRuntimeClassSetManager(
   const candidateValidityCache = new Map<string, boolean>()
   let runtimeSignature: string | undefined
   let resolvedTempRoot: string | undefined
-  let validationContext: RuntimeValidationContext | undefined
-  let designSystemPromise: Promise<TailwindDesignSystem> | undefined
+  let validationContext: TailwindV4ResolvedSource | undefined
+  let designSystemPromise: Promise<TailwindV4DesignSystem> | undefined
 
   async function reset() {
     runtimeSet.clear()
@@ -290,34 +148,20 @@ export function createBundleRuntimeClassSetManager(
 
   async function resolveValidationContextCached(patcher: TailwindcssPatcherLike) {
     if (!validationContext) {
-      validationContext = await resolveTailwindCssSource(patcher)
+      validationContext = await resolveTailwindV4SourceFromPatcher(patcher)
     }
     return validationContext
   }
 
-  async function loadDesignSystem(context: RuntimeValidationContext) {
+  async function loadDesignSystem(context: TailwindV4ResolvedSource) {
     if (!designSystemPromise) {
-      designSystemPromise = (async () => {
-        const { __unstable__loadDesignSystem } = await importTailwindNodeModule()
-        let lastError: unknown
-        for (const base of [context.base, ...context.baseFallbacks]) {
-          try {
-            return await __unstable__loadDesignSystem(context.css, { base })
-          }
-          catch (error) {
-            lastError = error
-          }
-        }
-        throw lastError instanceof Error
-          ? lastError
-          : new Error('Failed to load Tailwind CSS design system for incremental runtime validation.')
-      })()
+      designSystemPromise = loadTailwindV4DesignSystem(context)
     }
     return designSystemPromise
   }
 
   function populateCandidateValidityCacheFromDesignSystem(
-    designSystem: TailwindDesignSystem,
+    designSystem: TailwindV4DesignSystem,
     unknownCandidates: Set<string>,
   ) {
     const parsedCandidates = [...unknownCandidates].filter(candidate => designSystem.parseCandidate(candidate).length > 0)
