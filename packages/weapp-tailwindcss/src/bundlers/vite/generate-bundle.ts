@@ -151,8 +151,33 @@ function hasRuntimeAffectingSourceChanges(changedByType: Record<EntryType, Set<s
   return changedByType.html.size > 0 || changedByType.js.size > 0
 }
 
-function canShareCssTransformResult(rawSource: string) {
-  return !rawSource.includes('@import') && !rawSource.includes('url(')
+const CSS_URL_FUNCTION_RE = /url\((?:"([^"]*)"|'([^']*)'|([^)]*))\)/gi
+const CSS_PATH_INDEPENDENT_URL_RE = /^(?:[a-z][a-z\d+.-]*:|\/\/|\/|#)/i
+const CSS_IMPORT_RE = /@import\b/i
+
+function isPathIndependentCssUrl(value: string) {
+  const normalized = value.trim()
+  return normalized.length > 0 && CSS_PATH_INDEPENDENT_URL_RE.test(normalized)
+}
+
+function hasPathDependentCssUrl(rawSource: string) {
+  CSS_URL_FUNCTION_RE.lastIndex = 0
+  let match = CSS_URL_FUNCTION_RE.exec(rawSource)
+  while (match !== null) {
+    const value = match[1] ?? match[2] ?? match[3] ?? ''
+    if (!isPathIndependentCssUrl(value)) {
+      return true
+    }
+    match = CSS_URL_FUNCTION_RE.exec(rawSource)
+  }
+  return false
+}
+
+function createCssTransformShareScope(file: string, rawSource: string) {
+  if (CSS_IMPORT_RE.test(rawSource) || hasPathDependentCssUrl(rawSource)) {
+    return `dir:${normalizeOutputPathKey(path.dirname(file))}`
+  }
+  return 'global'
 }
 
 function hasOmittedKnownBundleFiles(
@@ -439,10 +464,9 @@ export function createGenerateBundleHook(context: GenerateBundleContext) {
         // 否则会退回未转译内容并与同轮 JS/WXML 的 class 改写失配。
         const rawSource = originalEntrySource
         const cssRuntimeAffectingSignature = snapshot.runtimeAffectingSignatureByFile.get(file) ?? rawSource
-        const shareCssResult = canShareCssTransformResult(rawSource)
-        const cssSharedCacheKey = shareCssResult
-          ? `${runtimeSignature}:${runtimeState.twPatcher.majorVersion ?? 'unknown'}:${getCssHandlerOptions(file).isMainChunk ? '1' : '0'}:${cssRuntimeAffectingSignature}`
-          : undefined
+        const cssShareScope = createCssTransformShareScope(file, rawSource)
+        const cssHandlerOptions = getCssHandlerOptions(file)
+        const cssSharedCacheKey = `${cssShareScope}:${runtimeSignature}:${runtimeState.twPatcher.majorVersion ?? 'unknown'}:${cssHandlerOptions.isMainChunk ? '1' : '0'}:${cssRuntimeAffectingSignature}`
         tasks.push(
           processCachedTask<string>({
             cache,

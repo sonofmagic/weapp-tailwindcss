@@ -457,6 +457,108 @@ const trace = "at App.vue:4"
     expect(currentContext.styleHandler.mock.calls[0]?.[1]).toBe(currentContext.styleHandler.mock.calls[1]?.[1])
   }, TEST_TIMEOUT_MS)
 
+  it('shares css transform results for identical assets with path-independent urls', async () => {
+    const UnifiedViteWeappTailwindcssPlugin = await loadUnifiedVitePlugin()
+    const currentContext = getCurrentContext()
+    const plugins = UnifiedViteWeappTailwindcssPlugin()
+    const postPlugin = plugins?.find(plugin => plugin.name === 'weapp-tailwindcss:adaptor:post') as Plugin
+    expect(postPlugin).toBeTruthy()
+
+    await (postPlugin.configResolved as any)?.call(postPlugin, {
+      command: 'serve',
+      root: process.cwd(),
+      css: { postcss: { plugins: [] } },
+      build: { outDir: 'dist' },
+    } as ResolvedConfig)
+
+    const css = '.hero { background-image: url("https://cdn.example.com/a.png"); }'
+    const bundle = {
+      'pages/a/index.css': {
+        ...createRollupAsset(css),
+        fileName: 'pages/a/index.css',
+      },
+      'pages/b/index.css': {
+        ...createRollupAsset(css),
+        fileName: 'pages/b/index.css',
+      },
+    }
+
+    const generateBundle = getGenerateBundleHandler(postPlugin)
+    await generateBundle?.call(postPlugin, {} as any, bundle)
+
+    expect(currentContext.styleHandler).toHaveBeenCalledTimes(1)
+    expect((bundle['pages/a/index.css'] as OutputAsset).source).toBe(`css:${css}`)
+    expect((bundle['pages/b/index.css'] as OutputAsset).source).toBe(`css:${css}`)
+  }, TEST_TIMEOUT_MS)
+
+  it('does not share css transform results for identical assets with relative urls', async () => {
+    const UnifiedViteWeappTailwindcssPlugin = await loadUnifiedVitePlugin()
+    const currentContext = getCurrentContext()
+    const plugins = UnifiedViteWeappTailwindcssPlugin()
+    const postPlugin = plugins?.find(plugin => plugin.name === 'weapp-tailwindcss:adaptor:post') as Plugin
+    expect(postPlugin).toBeTruthy()
+
+    await (postPlugin.configResolved as any)?.call(postPlugin, {
+      command: 'serve',
+      root: process.cwd(),
+      css: { postcss: { plugins: [] } },
+      build: { outDir: 'dist' },
+    } as ResolvedConfig)
+
+    const css = '.hero { background-image: url("./a.png"); }'
+    const bundle = {
+      'pages/a/index.css': {
+        ...createRollupAsset(css),
+        fileName: 'pages/a/index.css',
+      },
+      'pages/b/index.css': {
+        ...createRollupAsset(css),
+        fileName: 'pages/b/index.css',
+      },
+    }
+
+    const generateBundle = getGenerateBundleHandler(postPlugin)
+    await generateBundle?.call(postPlugin, {} as any, bundle)
+
+    expect(currentContext.styleHandler).toHaveBeenCalledTimes(2)
+    expect((bundle['pages/a/index.css'] as OutputAsset).source).toBe(`css:${css}`)
+    expect((bundle['pages/b/index.css'] as OutputAsset).source).toBe(`css:${css}`)
+  }, TEST_TIMEOUT_MS)
+
+  it('shares css transform results for identical relative-url assets in the same output directory', async () => {
+    const UnifiedViteWeappTailwindcssPlugin = await loadUnifiedVitePlugin()
+    const currentContext = getCurrentContext()
+    const plugins = UnifiedViteWeappTailwindcssPlugin()
+    const postPlugin = plugins?.find(plugin => plugin.name === 'weapp-tailwindcss:adaptor:post') as Plugin
+    expect(postPlugin).toBeTruthy()
+
+    await (postPlugin.configResolved as any)?.call(postPlugin, {
+      command: 'serve',
+      root: process.cwd(),
+      css: { postcss: { plugins: [] } },
+      build: { outDir: 'dist' },
+    } as ResolvedConfig)
+
+    const css = '.hero { background-image: url("./a.png"); }'
+    const bundle = {
+      'pages/a/index.css': {
+        ...createRollupAsset(css),
+        fileName: 'pages/a/index.css',
+      },
+      'pages/a/detail.css': {
+        ...createRollupAsset(css),
+        fileName: 'pages/a/detail.css',
+      },
+    }
+
+    const generateBundle = getGenerateBundleHandler(postPlugin)
+    await generateBundle?.call(postPlugin, {} as any, bundle)
+
+    expect(currentContext.styleHandler).toHaveBeenCalledTimes(1)
+    expect((bundle['pages/a/index.css'] as OutputAsset).source).toBe(`css:${css}`)
+    expect((bundle['pages/a/detail.css'] as OutputAsset).source).toBe(`css:${css}`)
+  }, TEST_TIMEOUT_MS)
+
   it('reuses template handler options for multiple html assets in one bundle pass', async () => {
     const UnifiedViteWeappTailwindcssPlugin = await loadUnifiedVitePlugin()
     const currentContext = getCurrentContext()
