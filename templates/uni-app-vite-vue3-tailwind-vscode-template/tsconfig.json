@@ -7,12 +7,11 @@
       "dom"
     ],
     "useDefineForClassFields": true,
-    "baseUrl": ".",
     "module": "esnext",
-    "moduleResolution": "node",
+    "moduleResolution": "bundler",
     "paths": {
       "@/*": [
-        "src/*"
+        "./src/*"
       ]
     },
     "resolveJsonModule": true,
@@ -22,7 +21,8 @@
     "allowJs": true,
     "strict": true,
     "sourceMap": true,
-    "esModuleInterop": true
+    "esModuleInterop": true,
+    "skipLibCheck": true
   },
   "include": [
     "src/**/*.ts",

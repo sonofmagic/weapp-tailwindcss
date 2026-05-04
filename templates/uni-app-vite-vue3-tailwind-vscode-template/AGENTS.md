@@ -24,6 +24,12 @@ Follow `.editorconfig`: 2-space indentation, LF line endings, UTF-8. Prefer Vue 
 
 No automated test runner is configured yet. For now, treat `pnpm lint` as the minimum quality gate and verify changes manually in the target platform, usually `pnpm dev:mp-weixin` plus WeChat DevTools. If you add tests, keep them near the feature or under a future `tests/` directory and use `*.spec.ts` naming.
 
+### HMR Verification Notes
+
+When verifying `weapp-tailwindcss` HMR, run `pnpm dev:mp-weixin` in a normal, non-sandboxed shell. Codex/tool sandboxes can prevent the uni-app mini-program watcher from receiving file events, which makes `dist/dev/mp-weixin` appear stale even though the project HMR path is healthy.
+
+For a reliable check, edit a real source SFC such as `src/components/sections/CapabilityShowcase.vue` and verify both template classes and script-side Tailwind class strings. Expected mini-program evidence includes `Incremental Compiling...` in the dev log plus transformed class names in `dist/dev/mp-weixin/**/*.wxml`, `*.js`, and `app.wxss` (for example arbitrary values converted to `*_b_*` selectors). For H5, confirm the Vite `hmr update` log and, when possible, inspect the browser computed style.
+
 ## Commit & Pull Request Guidelines
 
 Recent history uses short Conventional Commit style prefixes such as `chore:` and `chore(deps):`. Keep that pattern for new work, for example `feat: add profile page` or `fix: correct tailwind class merge`. PRs should include a concise description, linked issue when applicable, screenshots or DevTools captures for UI changes, and the commands you used to verify the change.
