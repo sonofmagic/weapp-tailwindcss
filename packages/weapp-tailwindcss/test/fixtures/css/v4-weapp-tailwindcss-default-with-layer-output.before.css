@@ -1,7 +1,9 @@
 @layer properties;
 @layer theme {
   :root, :host {
+    --color-blue-500: oklch(62.3% .214 259.815);
     --color-zinc-800: oklch(27.4% .006 286.033);
+    --spacing: .25rem;
   }
 }
 @layer base {
@@ -14,6 +16,9 @@
 }
 @layer components;
 @layer utilities {
+  .w-\[100px\] {
+    width: 100px;
+  }
   .shadow {
     --tw-shadow: 0 1px 3px 0 var(--tw-shadow-color, #0000001a), 0 1px 2px -1px var(--tw-shadow-color, #0000001a);
     box-shadow: var(--tw-inset-shadow), var(--tw-inset-ring-shadow), var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow);
@@ -32,6 +37,13 @@
     &::before {
       --tw-content: \'hello\';
       content: var(--tw-content);
+    }
+  }
+  .hover\:bg-blue-500 {
+    &:hover {
+      @media (hover: hover) {
+        background-color: var(--color-blue-500);
+      }
     }
   }
   .dark\:bg-zinc-800 {

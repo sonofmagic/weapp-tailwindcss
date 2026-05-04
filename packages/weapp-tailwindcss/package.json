@@ -172,7 +172,7 @@
   "scripts": {
     "dev": "tsdown --watch --sourcemap",
     "build": "tsdown && pnpm run build:types && node scripts/ensure-escape-dts.mjs",
-    "build:types": "tsc -p tsconfig.build.json --declaration --emitDeclarationOnly --declarationDir dist --noEmit false && node scripts/create-entry-dts.mjs",
+    "build:types": "tsc -p tsconfig.build.json --declaration --emitDeclarationOnly --declarationDir dist --noEmit false && node scripts/rewrite-dts-aliases.mjs && node scripts/create-entry-dts.mjs",
     "build:tsc": "cross-env NODE_ENV=development tsc --build tsconfig.json",
     "build:cli": "cd plugins/cli && pnpm run build",
     "build:css": "tsx scripts/build-css.ts",

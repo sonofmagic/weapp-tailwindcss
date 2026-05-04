@@ -36,13 +36,29 @@ view,text,::before,::after {
       border-color: currentColor;
     }
 page,.tw-root,wx-root-portal-content,:host {
+  --color-blue-500: rgb(50, 128, 255);
   --color-zinc-800: rgb(39, 39, 42);
+  --spacing: .25rem;
+}
+@supports (color: color(display-p3 0 0 0%)) {
+page,.tw-root,wx-root-portal-content,:host {
+  --color-blue-500: rgb(50, 128, 255);
+}
+
+@media (color-gamut: p3) {
+page,.tw-root,wx-root-portal-content,:host {
+  --color-blue-500: color(display-p3 0.26642 0.49122 0.98862);
+}
+}
 }
 view,text,:after,:before {
   box-sizing: border-box;
   border: 0 solid;
   margin: 0;
   padding: 0;
+}
+.w-_b100px_B {
+  width: 100px;
 }
 .shadow {
   --tw-shadow: 0 1px 3px 0 var(--tw-shadow-color, rgba(0,0,0,0.10196)), 0 1px 2px -1px var(--tw-shadow-color, rgba(0,0,0,0.10196));
