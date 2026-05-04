@@ -3,7 +3,7 @@ import { defineMonorepoConfig } from '@icebreakers/monorepo'
 export default defineMonorepoConfig({
   commands: {
     create: {
-      defaultTemplate: 'unbuild',
+      defaultTemplate: 'tsdown',
       renameJson: false,
     },
     clean: {
