@@ -139,7 +139,7 @@ function isClassLikeCallExpression(path: NodePath<Node>, valuePath: NodePath<Nod
     return false
   }
 
-  return path.get('arguments').includes(valuePath)
+  return path.get('arguments').some(argumentPath => argumentPath.node === valuePath.node)
 }
 
 /**

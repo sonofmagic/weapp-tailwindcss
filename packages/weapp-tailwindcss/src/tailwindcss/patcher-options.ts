@@ -1,7 +1,8 @@
 import type { PackageResolvingOptions } from 'local-pkg'
-import type { ILengthUnitsPatchOptions, TailwindCssPatchOptions } from 'tailwindcss-patch'
+import type { ILengthUnitsPatchOptions, NormalizedTailwindCssPatchOptions, TailwindCssPatchOptions } from 'tailwindcss-patch'
 
 type TailwindUserOptions = NonNullable<TailwindCssPatchOptions['tailwindcss']>
+type ResolvedTailwindUserOptions = TailwindUserOptions | NormalizedTailwindCssPatchOptions['tailwind']
 type TailwindApplyOptions = NonNullable<TailwindCssPatchOptions['apply']>
 type TailwindExtractOptions = NonNullable<TailwindCssPatchOptions['extract']>
 type TailwindExtendLengthUnitsOption = TailwindApplyOptions['extendLengthUnits']
@@ -25,16 +26,43 @@ export interface LegacyTailwindcssPatcherOptions {
       exportContext?: boolean
       extendLengthUnits?: boolean | ILengthUnitsPatchOptions
     }
+    output?: {
+      filename?: string
+      loose?: boolean
+      removeUniversalSelector?: boolean
+    }
   }
 }
 
+export interface LegacyTailwindcssOutputOptions {
+  enabled?: boolean
+  file?: string
+  format?: TailwindExtractOptions['format']
+  pretty?: TailwindExtractOptions['pretty']
+  removeUniversalSelector?: boolean
+}
+
+export interface LegacyTailwindcssFeatureOptions {
+  exposeContext?: TailwindApplyOptions['exposeContext']
+  extendLengthUnits?: boolean | ILengthUnitsPatchOptions | TailwindExtendLengthUnitsOption
+}
+
+export type CompatTailwindCssPatchOptions = TailwindCssPatchOptions & {
+  cwd?: string
+  overwrite?: boolean
+  features?: LegacyTailwindcssFeatureOptions
+  output?: LegacyTailwindcssOutputOptions
+  tailwind?: ResolvedTailwindUserOptions
+}
+
 export function resolveTailwindcssOptions(
-  options?: TailwindCssPatchOptions | LegacyTailwindcssPatcherOptions,
-) {
+  options?: CompatTailwindCssPatchOptions | LegacyTailwindcssPatcherOptions,
+): ResolvedTailwindUserOptions | undefined {
   if (!options) {
     return undefined
   }
-  return options.tailwindcss ?? (options as TailwindCssPatchOptions & { tailwind?: TailwindUserOptions }).tailwind
+  const compatOptions = options as CompatTailwindCssPatchOptions
+  return compatOptions.tailwindcss ?? compatOptions.tailwind
 }
 
 export function normalizeExtendLengthUnits(
@@ -56,7 +84,7 @@ export function normalizeExtendLengthUnits(
 }
 
 export function normalizeTailwindcssPatcherOptions(
-  options?: TailwindCssPatchOptions | LegacyTailwindcssPatcherOptions,
+  options?: CompatTailwindCssPatchOptions | LegacyTailwindcssPatcherOptions,
 ): TailwindCssPatchOptions | undefined {
   if (!options) {
     return undefined
@@ -149,11 +177,11 @@ export function normalizeTailwindcssPatcherOptions(
     return toModernTailwindcssPatchOptions(normalized)
   }
 
-  return toModernTailwindcssPatchOptions(options)
+  return toModernTailwindcssPatchOptions(options as CompatTailwindCssPatchOptions)
 }
 
 export function toModernTailwindcssPatchOptions(
-  options?: TailwindCssPatchOptions,
+  options?: CompatTailwindCssPatchOptions,
 ): TailwindCssPatchOptions | undefined {
   if (!options) {
     return undefined

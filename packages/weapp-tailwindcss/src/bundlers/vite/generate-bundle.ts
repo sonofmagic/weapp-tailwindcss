@@ -9,6 +9,7 @@ import { logger } from '@weapp-tailwindcss/logger'
 import { splitCode } from '@weapp-tailwindcss/shared/extractors'
 import { getRuntimeClassSetSignature } from '@/tailwindcss/runtime/cache'
 import { createUniAppXAssetTask } from '@/uni-app-x'
+import { isUniAppXEnabled } from '@/uni-app-x/options'
 import { processCachedTask } from '../shared/cache'
 import { normalizeOutputPathKey } from '../shared/module-graph'
 import { pushConcurrentTaskFactories } from '../shared/run-tasks'
@@ -73,6 +74,10 @@ function createEmptyMetrics(): BundleMetrics {
 
 function measureElapsed(start: number) {
   return performance.now() - start
+}
+
+function resolveUniAppXJsTransformEnabled(uniAppX: InternalUserDefinedOptions['uniAppX'] | undefined) {
+  return uniAppX === undefined ? true : isUniAppXEnabled(uniAppX)
 }
 
 function formatCacheHitRate(metric: BundleMetric) {
@@ -659,7 +664,7 @@ export function createGenerateBundleHook(context: GenerateBundleContext) {
           const currentSource = originalEntrySource
           const absoluteFile = path.resolve(outDir, file)
           const precheckOptions = createHandlerOptions(absoluteFile, {
-            uniAppX: uniAppX ?? true,
+            uniAppX: resolveUniAppXJsTransformEnabled(uniAppX),
             babelParserOptions: {
               plugins: ['typescript'],
               sourceType: 'unambiguous',

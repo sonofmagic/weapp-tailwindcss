@@ -1,6 +1,6 @@
 import type { ParseError, ParseResult } from '@babel/parser'
 import type { NodePath, TraverseOptions } from '@babel/traverse'
-import type { ExportDeclaration, File, ImportDeclaration, Node, StringLiteral, TemplateElement } from '@babel/types'
+import type { CallExpression, ExportDeclaration, File, ImportDeclaration, Node, StringLiteral, TemplateElement } from '@babel/types'
 import type { IJsHandlerOptions, JsHandlerResult } from '../types'
 import type { EvalHandler } from './evalTransforms'
 import type { SourceAnalysis } from './sourceAnalysis'
@@ -90,8 +90,8 @@ export function analyzeSource(
     : EMPTY_REQUIRE_CALL_PATHS
   const evalHandler = handler ?? getDefaultEvalHandler()
 
-  const templateElementEnter: NonNullable<TraverseOptions<Node>['TemplateElement']>['enter'] = hasTaggedTemplateIgnoreIdentifiers
-    ? (p) => {
+  const templateElementEnter = hasTaggedTemplateIgnoreIdentifiers
+    ? (p: NodePath<TemplateElement>) => {
         const pp = p.parentPath
         if (pp.isTemplateLiteral()) {
           const ppp = pp.parentPath
@@ -107,7 +107,7 @@ export function analyzeSource(
         }
         targetPaths.push(p)
       }
-    : (p) => {
+    : (p: NodePath<TemplateElement>) => {
         const pp = p.parentPath
         if (pp.isTemplateLiteral()) {
           const ppp = pp.parentPath
@@ -118,13 +118,13 @@ export function analyzeSource(
         targetPaths.push(p)
       }
 
-  const callExpressionEnter: NonNullable<TraverseOptions<Node>['CallExpression']>['enter'] = (!collectModuleMetadata && !needScope)
-    ? (p) => {
+  const callExpressionEnter = (!collectModuleMetadata && !needScope)
+    ? (p: NodePath<CallExpression>) => {
         if (isEvalPath(p)) {
           walkEvalExpression(p, options, jsTokenUpdater, evalHandler)
         }
       }
-    : (p) => {
+    : (p: NodePath<CallExpression>) => {
         if (isEvalPath(p)) {
           walkEvalExpression(p, options, jsTokenUpdater, evalHandler)
           return

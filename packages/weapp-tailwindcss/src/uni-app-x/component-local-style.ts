@@ -35,7 +35,7 @@ function extractLiteralValue(path: NodePath<StringLiteral | TemplateElement>) {
   }
   return {
     allowDoubleQuotes,
-    literal: path.node.value.raw,
+    literal: typeof path.node.value === 'string' ? path.node.value : path.node.value.raw,
     offset: 0,
   }
 }

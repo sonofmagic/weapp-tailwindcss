@@ -52,11 +52,11 @@ function updateDirectiveExpression(
   prop: DirectiveNode,
   jsHandler: JsHandler,
   runtimeSet?: Set<string>,
-  expression = prop.exp?.content,
 ) {
-  if (prop.exp?.type !== NodeTypes.SIMPLE_EXPRESSION || expression === undefined) {
+  if (prop.exp?.type !== NodeTypes.SIMPLE_EXPRESSION) {
     return
   }
+  const expression = prop.exp.content
   const start = prop.exp.loc.start.offset
   const end = prop.exp.loc.end.offset
   if (start >= end) {
@@ -76,11 +76,11 @@ function updateDirectiveExpressionWithLocalStyle(
   jsHandler: JsHandler,
   collector: UniAppXComponentLocalStyleCollector,
   runtimeSet?: Set<string>,
-  expression = prop.exp?.content,
 ) {
-  if (prop.exp?.type !== NodeTypes.SIMPLE_EXPRESSION || expression === undefined) {
+  if (prop.exp?.type !== NodeTypes.SIMPLE_EXPRESSION) {
     return
   }
+  const expression = prop.exp.content
   const start = prop.exp.loc.start.offset
   const end = prop.exp.loc.end.offset
   if (start >= end) {
@@ -231,6 +231,7 @@ export function transformUVue(
   }
   const result: TransformResult = {
     code: ms.toString(),
+    map: null,
   }
 
   Object.defineProperty(result, 'map', {

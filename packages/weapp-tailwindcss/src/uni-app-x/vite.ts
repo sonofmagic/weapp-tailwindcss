@@ -16,7 +16,7 @@ import { parseVueRequest } from '@/bundlers/vite/query'
 import { cleanUrl, formatPostcssSourceMap, isCSSRequest } from '@/bundlers/vite/utils'
 import { logger } from '@/logger'
 import { resolveUniUtsPlatform } from '@/utils'
-import { resolveUniAppXOptions } from './options'
+import { isUniAppXEnabled, resolveUniAppXOptions } from './options'
 import { resolveUniAppXStyleIsolationEnabled } from './style-isolation'
 import { transformUVue } from './transform'
 
@@ -59,6 +59,10 @@ function isPreprocessorRequest(id: string, lang?: string): boolean {
 
 function resolveUniAppXCssTarget(id: string) {
   return UVUE_NVUE_RE.test(cleanUrl(id)) ? 'uvue' : undefined
+}
+
+function resolveUniAppXJsTransformEnabled(uniAppX: InternalUserDefinedOptions['uniAppX'] | undefined) {
+  return uniAppX === undefined ? true : isUniAppXEnabled(uniAppX)
 }
 
 export function createUniAppXPlugins(options: CreateUniAppXPluginsOptions): Plugin[] {
@@ -293,7 +297,7 @@ export function createUniAppXAssetTask(
       async transform() {
         const currentSource = originalSource.source.toString()
         const { code, linked } = await jsHandler(currentSource, runtimeSet, createHandlerOptions(absoluteFile, {
-          uniAppX: options.uniAppX ?? true,
+          uniAppX: resolveUniAppXJsTransformEnabled(options.uniAppX),
           babelParserOptions: {
             plugins: [
               'typescript',

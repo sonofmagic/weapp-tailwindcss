@@ -1,3 +1,4 @@
+import type { NormalizedTailwindCssPatchOptions } from 'tailwindcss-patch'
 import { describe, expect, it } from 'vitest'
 import {
   normalizeExtendLengthUnits,
@@ -39,6 +40,25 @@ describe('tailwindcss patcher option normalization', () => {
     } as never)).toEqual({
       config: 'tailwind.legacy.js',
     })
+  })
+
+  it('preserves normalized tailwind options from patcher runtime options', () => {
+    const tailwind = {
+      packageName: 'tailwindcss',
+      versionHint: 4,
+      cwd: '/project',
+      v4: {
+        base: '/project',
+        configuredBase: '/project/src',
+        cssEntries: ['app.css'],
+        sources: [],
+        hasUserDefinedSources: true,
+      },
+    } as unknown as NormalizedTailwindCssPatchOptions['tailwind']
+
+    expect(resolveTailwindcssOptions({
+      tailwind,
+    })).toBe(tailwind)
   })
 
   it('converts legacy patch options into modern patch options', () => {

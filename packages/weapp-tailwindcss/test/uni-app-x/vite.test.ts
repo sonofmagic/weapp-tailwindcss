@@ -388,4 +388,43 @@ describe('createUniAppXAssetTask', () => {
     )
     expect(onUpdate).toHaveBeenCalledWith('assets/app.js', 'const a = 1', 'processed')
   })
+
+  it('forwards disabled uni-app-x object options as a boolean to js handler', async () => {
+    const asset = createAsset('const a = 1')
+    const runtimeSet = new Set(['alpha'])
+    const jsHandler = vi.fn(() => ({
+      code: 'processed',
+    }))
+    const createHandlerOptions = vi.fn((filename: string, extra?: CreateJsHandlerOptions) => ({
+      filename,
+      ...extra,
+    }))
+    const task = createUniAppXAssetTask(
+      'assets/app.js',
+      asset,
+      '/project/dist',
+      {
+        cache: createCache(),
+        createHandlerOptions,
+        debug: vi.fn(),
+        jsHandler,
+        onUpdate: vi.fn(),
+        runtimeSet,
+        applyLinkedResults: vi.fn(),
+        uniAppX: {
+          enabled: false,
+        },
+      },
+    )
+
+    await task()
+
+    expect(jsHandler).toHaveBeenCalledWith(
+      'const a = 1',
+      runtimeSet,
+      expect.objectContaining({
+        uniAppX: false,
+      }),
+    )
+  })
 })

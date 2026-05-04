@@ -44,7 +44,7 @@ function hasOwnV4Signal(value: unknown) {
   return typeof value === 'object' && value !== null && 'v4' in value
 }
 
-function isTailwindVersionMismatchError(error: unknown) {
+function isTailwindVersionMismatchError(error: unknown): error is Error {
   return error instanceof Error
     && CONFIGURED_TAILWIND_VERSION_RE.test(error.message)
     && RESOLVED_TAILWIND_VERSION_RE.test(error.message)

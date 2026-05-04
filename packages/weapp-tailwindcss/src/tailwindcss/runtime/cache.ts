@@ -93,23 +93,30 @@ function normalizeSignatureValue(value: unknown): string {
   return String(value)
 }
 
+function readOptionalProperty(value: unknown, key: string) {
+  if (typeof value !== 'object' || value === null || !(key in value)) {
+    return undefined
+  }
+  return (value as Record<string, unknown>)[key]
+}
+
 function getTailwindOptionsSignature(twPatcher: TailwindcssPatcherLike) {
   const options = twPatcher.options
   const tailwindOptions = resolveTailwindcssOptions(options)
   return normalizeSignatureValue({
     projectRoot: options?.projectRoot,
     packageName: tailwindOptions?.packageName,
-    versionHint: tailwindOptions?.versionHint,
+    versionHint: readOptionalProperty(tailwindOptions, 'versionHint'),
     cwd: tailwindOptions?.cwd,
     config: tailwindOptions?.config,
     v2: tailwindOptions?.v2,
     v3: tailwindOptions?.v3,
     v4: {
       base: tailwindOptions?.v4?.base,
-      configuredBase: tailwindOptions?.v4?.configuredBase,
+      configuredBase: readOptionalProperty(tailwindOptions?.v4, 'configuredBase'),
       css: tailwindOptions?.v4?.css,
       cssEntries: tailwindOptions?.v4?.cssEntries,
-      hasUserDefinedSources: tailwindOptions?.v4?.hasUserDefinedSources,
+      hasUserDefinedSources: readOptionalProperty(tailwindOptions?.v4, 'hasUserDefinedSources'),
       sources: tailwindOptions?.v4?.sources,
     },
   })

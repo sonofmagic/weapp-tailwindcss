@@ -122,7 +122,7 @@ describe('bundlers/vite UnifiedViteWeappTailwindcssPlugin uni-app-x', () => {
           sourceType: 'unambiguous',
           sourceFilename: expect.stringContaining('index.asset.js'),
         }),
-        uniAppX: currentContext.uniAppX,
+        uniAppX: true,
       }),
     )
     expect((bundle['index.asset.js'] as OutputAsset).source).toBe('js:console.log("text-[#565656]")')
