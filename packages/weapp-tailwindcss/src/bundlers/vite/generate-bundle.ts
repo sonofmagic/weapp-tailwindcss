@@ -143,6 +143,10 @@ function createJsHashSalt(runtimeSignature: string, linkedImpactSignature?: stri
   return `${runtimeSignature}:linked:${linkedImpactSignature}`
 }
 
+function getSnapshotHash(snapshotMap: Map<string, string>, file: string, fallback: string) {
+  return snapshotMap.get(file) ?? fallback
+}
+
 function hasRuntimeAffectingSourceChanges(changedByType: Record<EntryType, Set<string>>) {
   return changedByType.html.size > 0 || changedByType.js.size > 0
 }
@@ -382,8 +386,8 @@ export function createGenerateBundleHook(context: GenerateBundleContext) {
           processCachedTask<string>({
             cache,
             cacheKey: file,
-            rawSource,
             hashKey: `${file}:html:${runtimeSignature}`,
+            hash: getSnapshotHash(snapshot.sourceHashByFile, file, rawSource),
             applyResult(source) {
               originalSource.source = source
             },
@@ -444,7 +448,7 @@ export function createGenerateBundleHook(context: GenerateBundleContext) {
             cache,
             cacheKey: file,
             hashKey: `${file}:css:${runtimeSignature}:${runtimeState.twPatcher.majorVersion ?? 'unknown'}`,
-            rawSource: cssRuntimeAffectingSignature,
+            hash: getSnapshotHash(snapshot.runtimeAffectingHashByFile, file, cssRuntimeAffectingSignature),
             applyResult(source) {
               originalSource.source = source
             },
@@ -529,7 +533,7 @@ export function createGenerateBundleHook(context: GenerateBundleContext) {
             cache,
             cacheKey: file,
             hashKey: `${file}:js`,
-            rawSource: `${initialRawSource}\n/*${hashSalt}*/`,
+            hash: `${getSnapshotHash(snapshot.sourceHashByFile, file, initialRawSource)}:${hashSalt}`,
             applyResult(source) {
               originalSource.code = source
             },

@@ -35,6 +35,7 @@ export interface BundleSnapshot {
 export interface BundleBuildState {
   iteration: number
   sourceHashByFile: Map<string, string>
+  runtimeAffectingSignatureByFile: Map<string, string>
   runtimeAffectingHashByFile: Map<string, string>
   linkedByEntry: Map<string, Set<string>>
   dependentsByLinkedFile: Map<string, Set<string>>
@@ -48,6 +49,7 @@ export function createBundleBuildState(): BundleBuildState {
   return {
     iteration: 0,
     sourceHashByFile: new Map<string, string>(),
+    runtimeAffectingSignatureByFile: new Map<string, string>(),
     runtimeAffectingHashByFile: new Map<string, string>(),
     linkedByEntry: new Map<string, Set<string>>(),
     dependentsByLinkedFile: new Map<string, Set<string>>(),
@@ -138,17 +140,26 @@ export function buildBundleSnapshot(
     const source = readEntrySource(output)
     const hash = opts.cache.computeHash(source)
     sourceHashByFile.set(file, hash)
-    const runtimeAffectingSignature = createRuntimeAffectingSourceSignature(source, type)
-    runtimeAffectingSignatureByFile.set(file, runtimeAffectingSignature)
-    const runtimeAffectingHash = opts.cache.computeHash(runtimeAffectingSignature)
-    runtimeAffectingHashByFile.set(file, runtimeAffectingHash)
 
     const previousHash = state.sourceHashByFile.get(file)
     const changed = previousHash == null || previousHash !== hash
+    const previousRuntimeAffectingSignature = state.runtimeAffectingSignatureByFile.get(file)
+    const previousRuntimeAffectingHash = state.runtimeAffectingHashByFile.get(file)
+    const canReuseRuntimeAffectingSignature = !changed
+      && previousRuntimeAffectingSignature != null
+      && previousRuntimeAffectingHash != null
+    const runtimeAffectingSignature = canReuseRuntimeAffectingSignature
+      ? previousRuntimeAffectingSignature
+      : createRuntimeAffectingSourceSignature(source, type)
+    const runtimeAffectingHash = canReuseRuntimeAffectingSignature
+      ? previousRuntimeAffectingHash
+      : opts.cache.computeHash(runtimeAffectingSignature)
+    runtimeAffectingSignatureByFile.set(file, runtimeAffectingSignature)
+    runtimeAffectingHashByFile.set(file, runtimeAffectingHash)
+
     if (changed) {
       changedByType[type].add(file)
     }
-    const previousRuntimeAffectingHash = state.runtimeAffectingHashByFile.get(file)
     const runtimeAffectingChanged
       = previousRuntimeAffectingHash == null || previousRuntimeAffectingHash !== runtimeAffectingHash
     if (runtimeAffectingChanged) {
@@ -270,6 +281,9 @@ export function updateBundleBuildState(
         ...snapshot.sourceHashByFile,
       ])
     : snapshot.sourceHashByFile
+  state.runtimeAffectingSignatureByFile = incremental
+    ? new Map([...state.runtimeAffectingSignatureByFile, ...snapshot.runtimeAffectingSignatureByFile])
+    : snapshot.runtimeAffectingSignatureByFile
   state.runtimeAffectingHashByFile = incremental
     ? new Map([
         ...state.runtimeAffectingHashByFile,

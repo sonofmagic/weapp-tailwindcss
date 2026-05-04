@@ -10,6 +10,8 @@ export {
 
 /** 默认 LRU 缓存最大条目数 */
 const RESULT_CACHE_MAX = 512
+/** 仅对短片段做内层结果缓存，避免 bundler 热路径重复 hash 大块 JS。 */
+const CACHEABLE_SOURCE_MAX_LENGTH = 512
 
 /** 为每个 ClassNameSet 实例分配递增 ID */
 const classNameSetIds = new WeakMap<Set<string>, number>()
@@ -83,6 +85,16 @@ function hasDefinedOverrides(options?: CreateJsHandlerOptions) {
   return false
 }
 
+function shouldCacheJsResult(rawSource: string, options: IJsHandlerOptions) {
+  if (rawSource.length === 0 || rawSource.length > CACHEABLE_SOURCE_MAX_LENGTH) {
+    return false
+  }
+  if (options.moduleGraph || options.filename) {
+    return false
+  }
+  return true
+}
+
 export function createJsHandler(options: CreateJsHandlerOptions): JsHandler {
   // 预构建不可变的默认选项对象，避免每次调用都重新创建字面量。
   const defaults: IJsHandlerOptions = {
@@ -140,7 +152,7 @@ export function createJsHandler(options: CreateJsHandlerOptions): JsHandler {
   }
 
   function getCachedJsResult(rawSource: string, resolvedOptions: IJsHandlerOptions): JsHandlerResult | undefined {
-    if (rawSource.length === 0) {
+    if (!shouldCacheJsResult(rawSource, resolvedOptions)) {
       return undefined
     }
 
@@ -153,7 +165,7 @@ export function createJsHandler(options: CreateJsHandlerOptions): JsHandler {
     resolvedOptions: IJsHandlerOptions,
     result: JsHandlerResult,
   ): JsHandlerResult {
-    if (rawSource.length === 0 || result.error || result.linked) {
+    if (!shouldCacheJsResult(rawSource, resolvedOptions) || result.error || result.linked) {
       return result
     }
 

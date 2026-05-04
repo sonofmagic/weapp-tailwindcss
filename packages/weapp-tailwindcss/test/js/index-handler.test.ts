@@ -131,7 +131,7 @@ describe('createJsHandler', () => {
     expect(spy).toHaveBeenCalledTimes(1)
   })
 
-  it('caches bundler path results when no linked field is present', () => {
+  it('does not cache bundler path results because outer file caches own them', () => {
     const spy = vi.spyOn(babel, 'jsHandler').mockReturnValue({ code: 'bundler-result' })
     const base = createBaseOptions()
     const handler = createJsHandler(base)
@@ -147,7 +147,7 @@ describe('createJsHandler', () => {
     handler('import "./chunk.js"', undefined, override)
     handler('import "./chunk.js"', undefined, override)
 
-    expect(spy).toHaveBeenCalledTimes(1)
+    expect(spy).toHaveBeenCalledTimes(2)
   })
 
   it('does not cache transform results when linked field is present', () => {

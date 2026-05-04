@@ -145,6 +145,32 @@ describe('bundlers/vite UnifiedViteWeappTailwindcssPlugin bundle', () => {
     expect(currentContext.twPatcher.getClassSetSync).toHaveBeenCalledTimes(1)
   }, TEST_TIMEOUT_MS)
 
+  it('reuses snapshot hashes for unchanged js process cache checks', async () => {
+    const UnifiedViteWeappTailwindcssPlugin = await loadUnifiedVitePlugin()
+    const currentContext = getCurrentContext()
+    const hashSpy = vi.spyOn(currentContext.cache, 'computeHash')
+    const plugins = UnifiedViteWeappTailwindcssPlugin()
+    const postPlugin = plugins?.find(plugin => plugin.name === 'weapp-tailwindcss:adaptor:post') as Plugin
+    expect(postPlugin).toBeTruthy()
+
+    await (postPlugin.configResolved as any)?.call(postPlugin, {
+      command: 'serve',
+      root: process.cwd(),
+      css: { postcss: { plugins: [] } },
+      build: { outDir: 'dist' },
+    } as ResolvedConfig)
+
+    const generateBundle = getGenerateBundleHandler(postPlugin)
+    const createBundle = () => ({
+      'index.js': createRollupChunk('const cls = "alpha"'),
+    })
+
+    await generateBundle?.call(postPlugin, {} as any, createBundle())
+    await generateBundle?.call(postPlugin, {} as any, createBundle())
+
+    expect(hashSpy).toHaveBeenCalledTimes(3)
+  }, TEST_TIMEOUT_MS)
+
   it('refreshes runtime class set on source changes so new arbitrary classes in :class strings are escaped', async () => {
     const UnifiedViteWeappTailwindcssPlugin = await loadUnifiedVitePlugin()
     const staticClass = 'rounded-[32rpx] border border-slate-100/70 bg-white/90 p-5 shadow-[0_20px_45px_rgba(15,23,42,0.08)]'
