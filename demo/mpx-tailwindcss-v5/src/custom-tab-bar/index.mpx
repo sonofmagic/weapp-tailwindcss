@@ -1,0 +1,19 @@
+<template>
+  <view class="bg-[#e90505] text-purple-600 tw-root">
+    111
+  </view>
+</template>
+
+<script lang="ts">
+import { createComponent } from '@mpxjs/core'
+
+createComponent({
+  data: {
+    listData: ['手机', '电视', '电脑'],
+    clsnm: 'bg-[#010101] active:bg-[#989898]'
+  },
+  options: {
+    addGlobalClass: true
+  }
+})
+</script>

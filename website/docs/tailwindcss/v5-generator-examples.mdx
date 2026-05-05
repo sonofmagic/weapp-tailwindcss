@@ -39,7 +39,7 @@ v5 推荐把 Tailwind CSS v4 当作标准 CSS-first 入口使用，再由 `weapp
 
 ## uni-app Vue Vite
 
-仓库示例：`demo/uni-app-tailwindcss-v4`。
+仓库示例：`demo/uni-app-tailwindcss-v5`。
 
 ```ts title="vite.config.ts"
 import { createRequire } from 'node:module'
@@ -116,11 +116,11 @@ const className = ref(twMerge('bg-[#0000ff] text-[45rpx]', 'text-white rounded-l
 </script>
 ```
 
-验证命令：`pnpm --filter @weapp-tailwindcss-demo/uni-app-tailwindcss-v4 build`
+验证命令：`pnpm --filter @weapp-tailwindcss-demo/uni-app-tailwindcss-v5 build`
 
 ## Taro Vite
 
-仓库示例：`demo/taro-vite-tailwindcss-v4`。
+仓库示例：`demo/taro-vite-tailwindcss-v5`。
 
 ```ts title="config/index.ts"
 import { defineConfig, type UserConfigExport } from '@tarojs/cli'
@@ -130,7 +130,7 @@ import { UnifiedViteWeappTailwindcssPlugin } from 'weapp-tailwindcss/vite'
 
 export default defineConfig<'vite'>(() => {
   const baseConfig: UserConfigExport<'vite'> = {
-    projectName: 'taro-vite-tailwindcss-v4',
+    projectName: 'taro-vite-tailwindcss-v5',
     sourceRoot: 'src',
     outputRoot: 'dist',
     framework: 'react',
@@ -192,11 +192,11 @@ export default function Index() {
 }
 ```
 
-验证命令：`pnpm --filter @weapp-tailwindcss-demo/taro-vite-tailwindcss-v4 build`
+验证命令：`pnpm --filter @weapp-tailwindcss-demo/taro-vite-tailwindcss-v5 build`
 
 ## Mpx
 
-仓库示例：`demo/mpx-tailwindcss-v4`。
+仓库示例：`demo/mpx-tailwindcss-v5`。
 
 Mpx 仍由 Webpack 负责模板与 JS 转译，但 CSS 可以走 v5 PostCSS generator。这样它不依赖 Vite，也能直接生成小程序需要的样式。
 
@@ -275,7 +275,7 @@ createPage({
 </script>
 ```
 
-验证命令：`pnpm --filter @weapp-tailwindcss-demo/mpx-tailwindcss-v4 build`
+验证命令：`pnpm --filter @weapp-tailwindcss-demo/mpx-tailwindcss-v5 build`
 
 ## Web 目标调试
 
@@ -287,7 +287,7 @@ createPage({
 
 ```bash
 pnpm --filter weapp-tailwindcss test
-pnpm --filter @weapp-tailwindcss-demo/mpx-tailwindcss-v4 build
+pnpm --filter @weapp-tailwindcss-demo/mpx-tailwindcss-v5 build
 pnpm build:apps
 pnpm build:demo
 ```

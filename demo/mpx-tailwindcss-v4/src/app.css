@@ -1,6 +1,2 @@
-@import "tailwindcss";
+@import "weapp-tailwindcss";
 @source "../src";
-
-@theme {
-  --color-primary: #155dfc;
-}

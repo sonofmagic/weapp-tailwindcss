@@ -1,6 +1,6 @@
 const { defineConfig } = require('@vue/cli-service')
 const { UnifiedWebpackPluginV5 } = require('weapp-tailwindcss/webpack')
-const { default: weappTailwindcss } = require('weapp-tailwindcss/postcss')
+const tailwindPostcss = require('@tailwindcss/postcss')
 const path = require('path')
 
 // 修复 @mpxjs/webpack-plugin 序列化器重复注册导致的构建失败
@@ -27,12 +27,7 @@ module.exports = defineConfig({
         postcssInlineConfig: {
           ignoreConfigFile: true,
           plugins: [
-            weappTailwindcss({
-              generator: {
-                mode: 'force',
-                target: 'weapp'
-              }
-            })
+            tailwindPostcss()
           ]
         },
         srcMode: 'wx',
@@ -56,7 +51,6 @@ module.exports = defineConfig({
       new UnifiedWebpackPluginV5({
         rem2rpx: true,
         appType: 'mpx',
-        generator: false,
         cssEntries: [
           path.resolve(__dirname, 'src/app.css')
         ]

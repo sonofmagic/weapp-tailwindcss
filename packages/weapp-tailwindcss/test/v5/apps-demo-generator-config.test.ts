@@ -14,12 +14,12 @@ describe('v5 apps and demos generator config', () => {
       css: 'apps/vite-native/app.css',
     },
     {
-      config: 'demo/uni-app-tailwindcss-v4/vite.config.ts',
-      css: 'demo/uni-app-tailwindcss-v4/src/main.css',
+      config: 'demo/uni-app-tailwindcss-v5/vite.config.ts',
+      css: 'demo/uni-app-tailwindcss-v5/src/main.css',
     },
     {
-      config: 'demo/taro-vite-tailwindcss-v4/config/index.ts',
-      css: 'demo/taro-vite-tailwindcss-v4/src/app.css',
+      config: 'demo/taro-vite-tailwindcss-v5/config/index.ts',
+      css: 'demo/taro-vite-tailwindcss-v5/src/app.css',
     },
   ])('uses tailwind v4 standard css entry with forced mini-program generator in $config', async ({ config, css }) => {
     const [configSource, cssSource] = await Promise.all([
@@ -66,11 +66,11 @@ describe('v5 apps and demos generator config', () => {
 
   it('keeps the runnable framework demos covering v5 generator features', async () => {
     const [uniPageSource, taroCssSource, taroPageSource, mpxCssSource, mpxPageSource] = await Promise.all([
-      readProjectFile('demo/uni-app-tailwindcss-v4/src/pages/index/index.vue'),
-      readProjectFile('demo/taro-vite-tailwindcss-v4/src/app.css'),
-      readProjectFile('demo/taro-vite-tailwindcss-v4/src/pages/index/index.tsx'),
-      readProjectFile('demo/mpx-tailwindcss-v4/src/app.css'),
-      readProjectFile('demo/mpx-tailwindcss-v4/src/pages/index.mpx'),
+      readProjectFile('demo/uni-app-tailwindcss-v5/src/pages/index/index.vue'),
+      readProjectFile('demo/taro-vite-tailwindcss-v5/src/app.css'),
+      readProjectFile('demo/taro-vite-tailwindcss-v5/src/pages/index/index.tsx'),
+      readProjectFile('demo/mpx-tailwindcss-v5/src/app.css'),
+      readProjectFile('demo/mpx-tailwindcss-v5/src/pages/index.mpx'),
     ])
 
     expect(uniPageSource).toContain("twMerge('bg-[#0000ff] text-[45rpx]'")
@@ -86,11 +86,11 @@ describe('v5 apps and demos generator config', () => {
     expect(mpxPageSource).toContain(':class="mergedClass"')
   })
 
-  it('uses the postcss generator path for the mpx tailwind v4 demo', async () => {
+  it('uses the postcss generator path for the mpx tailwind v5 demo', async () => {
     const [configSource, postcssConfigSource, cssSource] = await Promise.all([
-      readProjectFile('demo/mpx-tailwindcss-v4/mpx.config.js'),
-      readProjectFile('demo/mpx-tailwindcss-v4/postcss.config.js'),
-      readProjectFile('demo/mpx-tailwindcss-v4/src/app.css'),
+      readProjectFile('demo/mpx-tailwindcss-v5/mpx.config.js'),
+      readProjectFile('demo/mpx-tailwindcss-v5/postcss.config.js'),
+      readProjectFile('demo/mpx-tailwindcss-v5/src/app.css'),
     ])
 
     expect(configSource).toContain("require('weapp-tailwindcss/postcss')")

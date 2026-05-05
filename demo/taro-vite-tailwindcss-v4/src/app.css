@@ -1,6 +1,1 @@
 @import "tailwindcss";
-@source "./pages/**/*.{ts,tsx,jsx,js}";
-
-@theme {
-  --color-brand: #155dfc;
-}

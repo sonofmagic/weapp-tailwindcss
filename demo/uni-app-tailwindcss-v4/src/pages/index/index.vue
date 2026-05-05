@@ -63,7 +63,7 @@ import { weappTwIgnore } from "weapp-tailwindcss/escape"
 import HelloWorld from "@/components/HelloWorld.vue"
 import { ref } from 'vue'
 const title = ref('Hello')
-const className = ref(twMerge('bg-[#0000ff] text-[45rpx]', 'text-white rounded-lg p-4'))
+const className = ref('bg-[#0000ff] text-[45rpx] text-white')
 const reverseFlag = ref(false)
 
 const aaa = ref('111')
