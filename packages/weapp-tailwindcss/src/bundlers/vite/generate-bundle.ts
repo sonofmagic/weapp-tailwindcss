@@ -10,6 +10,7 @@ import { splitCode } from '@weapp-tailwindcss/shared/extractors'
 import {
   createWeappTailwindcssGenerator,
   normalizeWeappTailwindcssGeneratorOptions,
+  resolveTailwindV3SourceFromPatcher,
   resolveTailwindV4SourceFromPatcher,
 } from '@/generator'
 import { getRuntimeClassSetSignature } from '@/tailwindcss/runtime/cache'
@@ -165,6 +166,7 @@ const CSS_URL_FUNCTION_RE = /url\((?:"([^"]*)"|'([^']*)'|([^)]*))\)/gi
 const CSS_PATH_INDEPENDENT_URL_RE = /^(?:[a-z][a-z\d+.-]*:|\/\/|\/|#)/i
 const CSS_IMPORT_RE = /@import\b/i
 const TAILWIND_V4_BANNER_RE = /\/\*!\s*tailwindcss v4\./
+const SUPPORTED_GENERATOR_MAJOR_VERSIONS = new Set([3, 4])
 
 function isPathIndependentCssUrl(value: string) {
   const normalized = value.trim()
@@ -271,6 +273,15 @@ export function createGenerateBundleHook(context: GenerateBundleContext) {
     }
     majorVersion: number | undefined
   }>()
+  const cssUserHandlerOptionsCache = new Map<string, {
+    isMainChunk: boolean
+    postcssOptions: {
+      options: {
+        from: string
+      }
+    }
+    majorVersion: number | undefined
+  }>()
 
   return async function generateBundle(_opt: unknown, bundle: Record<string, OutputAsset | OutputChunk>) {
     const {
@@ -313,6 +324,22 @@ export function createGenerateBundleHook(context: GenerateBundleContext) {
         majorVersion,
       }
       cssHandlerOptionsCache.set(cacheKey, created)
+      return created
+    }
+
+    const getCssUserHandlerOptions = (file: string) => {
+      const majorVersion = runtimeState.twPatcher.majorVersion
+      const cacheKey = `${majorVersion ?? 'unknown'}:${file}`
+      const cached = cssUserHandlerOptionsCache.get(cacheKey)
+      if (cached) {
+        return cached
+      }
+
+      const created = {
+        ...getCssHandlerOptions(file),
+        isMainChunk: false,
+      }
+      cssUserHandlerOptionsCache.set(cacheKey, created)
       return created
     }
 
@@ -535,12 +562,18 @@ export function createGenerateBundleHook(context: GenerateBundleContext) {
                 await runtimeState.patchPromise
                 if (
                   generatorOptions.mode !== 'off'
-                  && runtimeState.twPatcher.majorVersion === 4
+                  && SUPPORTED_GENERATOR_MAJOR_VERSIONS.has(runtimeState.twPatcher.majorVersion ?? 0)
                   && cssHandlerOptions.isMainChunk
-                  && (generatorOptions.mode === 'force' || TAILWIND_V4_BANNER_RE.test(rawSource))
+                  && (
+                    generatorOptions.mode === 'force'
+                    || runtimeState.twPatcher.majorVersion === 3
+                    || TAILWIND_V4_BANNER_RE.test(rawSource)
+                  )
                 ) {
                   try {
-                    const source = await resolveTailwindV4SourceFromPatcher(runtimeState.twPatcher)
+                    const source = runtimeState.twPatcher.majorVersion === 3
+                      ? await resolveTailwindV3SourceFromPatcher(runtimeState.twPatcher)
+                      : await resolveTailwindV4SourceFromPatcher(runtimeState.twPatcher)
                     const generator = createWeappTailwindcssGenerator(source)
                     const generated = await generator.generate({
                       candidates: runtime,
@@ -556,9 +589,8 @@ export function createGenerateBundleHook(context: GenerateBundleContext) {
                       if (extraCss.trim().length > 0) {
                         if (generated.target === 'weapp') {
                           const userCssOptions = {
-                            ...cssHandlerOptions,
+                            ...getCssUserHandlerOptions(file),
                             ...generatorOptions.styleOptions,
-                            isMainChunk: false,
                           }
                           const { css: userCss } = await styleHandler(extraCss, userCssOptions)
                           css = createCssAppend(css, userCss)
@@ -572,12 +604,12 @@ export function createGenerateBundleHook(context: GenerateBundleContext) {
                       }
                       metrics.css.elapsed += measureElapsed(start)
                       metrics.css.transformed++
-                      debug('css handle via tailwind v4 engine(%s): %s', generated.target, file)
+                      debug('css handle via tailwind v%s engine(%s): %s', runtimeState.twPatcher.majorVersion, generated.target, file)
                       return css
                     }
                     if (generatorOptions.mode === 'force') {
                       debug(
-                        'tailwind v4 direct css generation prefix mismatch, use generator css as source of truth %s: %s',
+                        'tailwind direct css generation prefix mismatch, use generator css as source of truth %s: %s',
                         file,
                         summarizeStringDiff(rawSource, generated.rawCss),
                       )
@@ -593,7 +625,7 @@ export function createGenerateBundleHook(context: GenerateBundleContext) {
                     if (generatorOptions.mode === 'force') {
                       throw error
                     }
-                    debug('tailwind v4 direct css generation failed, fallback to styleHandler: %s %O', file, error)
+                    debug('tailwind direct css generation failed, fallback to styleHandler: %s %O', file, error)
                   }
                 }
                 const { css } = await styleHandler(rawSource, getCssHandlerOptions(file))

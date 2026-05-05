@@ -272,4 +272,92 @@ describe('v5 vite generator bundle', () => {
     }))
     expect(currentContext.styleHandler).not.toHaveBeenCalled()
   }, TEST_TIMEOUT_MS)
+
+  it('uses generator mode for tailwind v3 main css without changing existing registration', async () => {
+    const runtimeSet = new Set(['w-[300.31rpx]', 'hover:bg-blue-500'])
+    const rawTailwindCss = '.w-\\[300\\.31rpx\\]{width:300.31rpx}.hover\\:bg-blue-500:hover{color:blue}'
+    const userCss = '\n.card:hover{color:red}'
+    const weappCss = '.w-_b300_d31rpx_B{width:300.31rpx}'
+    const generateMock = vi.fn(async () => ({
+      css: weappCss,
+      rawCss: rawTailwindCss,
+      target: 'weapp',
+      classSet: runtimeSet,
+      dependencies: [],
+      sources: [],
+      root: null,
+      version: 3,
+    }))
+    const resolveV3SourceMock = vi.fn(async () => ({
+      version: 3,
+      projectRoot: process.cwd(),
+      cwd: process.cwd(),
+      base: process.cwd(),
+      css: '@tailwind utilities;',
+      dependencies: [],
+      packageName: 'tailwindcss',
+      postcssPlugin: 'tailwindcss',
+    }))
+    const resolveV4SourceMock = vi.fn()
+
+    vi.doMock('@/bundlers/vite/incremental-runtime-class-set', () => ({
+      createBundleRuntimeClassSetManager: () => ({
+        sync: vi.fn(async () => runtimeSet),
+        reset: vi.fn(async () => undefined),
+      }),
+    }))
+    vi.doMock('@/generator', async (importOriginal) => {
+      const actual = await importOriginal<typeof import('@/generator')>()
+      return {
+        ...actual,
+        createWeappTailwindcssGenerator: vi.fn(() => ({
+          generate: generateMock,
+        })),
+        resolveTailwindV3SourceFromPatcher: resolveV3SourceMock,
+        resolveTailwindV4SourceFromPatcher: resolveV4SourceMock,
+      }
+    })
+
+    const styleHandler = vi.fn(async (code: string) => ({ css: `user:${code}` }))
+    setCurrentContext(createContext({
+      generator: true,
+      styleHandler,
+      twPatcher: {
+        patch: vi.fn(),
+        getClassSet: vi.fn(async () => runtimeSet),
+        getClassSetSync: vi.fn(() => runtimeSet),
+        extract: vi.fn(async () => ({ classSet: runtimeSet })),
+        majorVersion: 3,
+      },
+    }))
+
+    const postPlugin = await resolvePostPlugin()
+    const bundle = {
+      'app.css': {
+        ...createRollupAsset(`${rawTailwindCss}${userCss}`),
+        fileName: 'app.css',
+      },
+    }
+
+    const generateBundle = getGenerateBundleHandler(postPlugin)
+    await generateBundle?.call(postPlugin, {} as any, bundle)
+
+    expect((bundle['app.css'] as OutputAsset).source).toBe(`${weappCss}\nuser:${userCss}`)
+    expect(resolveV3SourceMock).toHaveBeenCalled()
+    expect(resolveV4SourceMock).not.toHaveBeenCalled()
+    expect(generateMock).toHaveBeenCalledWith(expect.objectContaining({
+      candidates: runtimeSet,
+      target: 'weapp',
+      styleOptions: expect.objectContaining({
+        isMainChunk: true,
+        majorVersion: 3,
+      }),
+    }))
+    expect(styleHandler).toHaveBeenCalledTimes(1)
+    expect(styleHandler.mock.calls[0]?.[0]).toBe(userCss)
+    expect(styleHandler.mock.calls[0]?.[1]).toMatchObject({
+      isMainChunk: false,
+      majorVersion: 3,
+    })
+  }, TEST_TIMEOUT_MS)
 })

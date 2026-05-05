@@ -9,6 +9,7 @@ import type {
   WeappTailwindcssGeneratorUserOptions,
 } from './generator'
 import { readFile, stat } from 'node:fs/promises'
+import { createRequire } from 'node:module'
 import path from 'node:path'
 import process from 'node:process'
 import fg from 'fast-glob'
@@ -18,6 +19,7 @@ import { extractValidCandidates } from 'tailwindcss-patch'
 import {
   createWeappTailwindcssGenerator,
   normalizeWeappTailwindcssGeneratorOptions,
+  resolveTailwindV3Source,
   resolveTailwindV4Source,
 } from './generator'
 
@@ -63,6 +65,9 @@ type LegacyContentConfig
 export interface WeappTailwindcssPostcssPluginOptions extends TailwindV4SourceOptions {
   generator?: WeappTailwindcssGeneratorUserOptions
   target?: WeappTailwindcssGeneratorTarget
+  version?: 3 | 4
+  config?: string
+  postcssPlugin?: string
   candidates?: Iterable<string>
   sources?: TailwindV4CandidateSource[]
   styleOptions?: Partial<IStyleHandlerOptions>
@@ -137,6 +142,52 @@ function parseSourceFileParam(params: string) {
         sourcePath: match[2],
       }
     : undefined
+}
+
+function hasTailwindV4CssSyntax(root: Root) {
+  let hasV4Syntax = false
+  root.walkAtRules((rule) => {
+    if (rule.name === 'theme' || rule.name === 'source' || rule.name === 'custom-variant') {
+      hasV4Syntax = true
+    }
+    if (rule.name === 'import' && /(['"])tailwindcss\1/.test(rule.params)) {
+      hasV4Syntax = true
+    }
+  })
+  return hasV4Syntax
+}
+
+function readPackageMajorVersion(packageName: string, base: string) {
+  try {
+    const require = createRequire(`${base}/package.json`)
+    const pkg = require(`${packageName}/package.json`) as { version?: string }
+    const major = Number(pkg.version?.split('.')[0])
+    return major === 3 || major === 4 ? major : undefined
+  }
+  catch {
+    return undefined
+  }
+}
+
+function resolvePostcssTailwindVersion(
+  root: Root,
+  result: Result,
+  options: WeappTailwindcssPostcssPluginOptions,
+) {
+  if (options.version) {
+    return options.version
+  }
+  if (hasTailwindV4CssSyntax(root)) {
+    return 4
+  }
+  const packageName = options.packageName ?? 'tailwindcss'
+  if (packageName === '@tailwindcss/postcss' || packageName.includes('tailwindcss4')) {
+    return 4
+  }
+  if (packageName.includes('tailwindcss3')) {
+    return 3
+  }
+  return readPackageMajorVersion(packageName, resolvePostcssProjectRoot(result, options)) ?? 4
 }
 
 function getSourceExtension(file: string) {
@@ -343,17 +394,28 @@ export const weappTailwindcssPostcssPlugin: PluginCreator<WeappTailwindcssPostcs
       if (generatorOptions.mode === 'off') {
         return
       }
+      const tailwindVersion = resolvePostcssTailwindVersion(root, result, options)
 
       const [collectedSources, autoCandidates] = await Promise.all([
         collectPostcssLocalSources(root, result, options),
         collectAutoTailwindCandidates(root, result, options),
       ])
-      const source = await resolveTailwindV4Source({
-        ...sourceOptions,
-        css: sourceOptions.css ?? root.toString(),
-        base: resolvePostcssBase(result, options),
-        projectRoot: resolvePostcssProjectRoot(result, options),
-      })
+      const source = tailwindVersion === 3
+        ? await resolveTailwindV3Source({
+            config: options.config,
+            css: sourceOptions.css ?? root.toString(),
+            base: resolvePostcssBase(result, options),
+            cwd: resolvePostcssProjectRoot(result, options),
+            projectRoot: resolvePostcssProjectRoot(result, options),
+            packageName: options.packageName,
+            postcssPlugin: options.postcssPlugin,
+          })
+        : await resolveTailwindV4Source({
+            ...sourceOptions,
+            css: sourceOptions.css ?? root.toString(),
+            base: resolvePostcssBase(result, options),
+            projectRoot: resolvePostcssProjectRoot(result, options),
+          })
       const generator = createWeappTailwindcssGenerator(source)
       const generateOptions: WeappTailwindcssGenerateOptions = {
         candidates: new Set([

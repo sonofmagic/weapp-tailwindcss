@@ -159,6 +159,71 @@ describe('v5 postcss generator', () => {
     expect(result.css).toContain('#123456')
   })
 
+  it('generates mini-program css from tailwind v3 config content without v4 @source', async () => {
+    const root = await mkdtemp(path.join(tmpdir(), 'weapp-tw-v5-postcss-v3-'))
+    const sourceDir = path.join(root, 'src')
+    const cssEntry = path.join(root, 'app.css')
+    const configFile = path.join(root, 'tailwind.config.js')
+    const pageEntry = path.join(sourceDir, 'page.wxml')
+    await mkdir(sourceDir)
+    await writeFile(configFile, 'module.exports = { content: ["./src/**/*.{wxml,js}"], theme: { extend: { colors: { brand: "#123456" } } } }', 'utf8')
+    await writeFile(pageEntry, '<view class="w-[300.31rpx] bg-brand hover:bg-blue-500"></view>', 'utf8')
+
+    const cwd = process.cwd()
+    process.chdir(root)
+    try {
+      const result = await postcss([
+        weappTailwindcss({
+          version: 3,
+          config: configFile,
+        }),
+      ]).process('@tailwind utilities;', {
+        from: cssEntry,
+      })
+
+      expect(result.css).toContain('.w-_b300_d31rpx_B')
+      expect(result.css).toContain('width: 300.31rpx')
+      expect(result.css).toContain('.bg-brand')
+      expect(result.css).not.toContain(':hover')
+      expect(result.messages).toContainEqual(expect.objectContaining({
+        type: 'weapp-tailwindcss:generated',
+        target: 'weapp',
+      }))
+      expect(result.messages).toContainEqual(expect.objectContaining({
+        type: 'dependency',
+        file: configFile,
+      }))
+    }
+    finally {
+      process.chdir(cwd)
+    }
+  })
+
+  it('resolves tailwind v3 @config paths relative to the current postcss input file', async () => {
+    const root = await mkdtemp(path.join(tmpdir(), 'weapp-tw-v5-postcss-v3-config-'))
+    const sourceDir = path.join(root, 'src')
+    const cssEntry = path.join(sourceDir, 'app.css')
+    const configFile = path.join(root, 'tailwind.config.js')
+    await mkdir(sourceDir)
+    await writeFile(configFile, 'module.exports = { theme: { extend: { colors: { brand: "#123456" } } } }', 'utf8')
+
+    const result = await postcss([
+      weappTailwindcss({
+        version: 3,
+        candidates: ['bg-brand', 'w-[100px]'],
+      }),
+    ]).process(`
+      @config "../tailwind.config.js";
+      @tailwind utilities;
+    `, {
+      from: cssEntry,
+    })
+
+    expect(result.css).toContain('.bg-brand')
+    expect(result.css).toContain('18, 52, 86')
+    expect(result.css).toContain('.w-_b100px_B')
+  })
+
   it('skips generation when generator is disabled', async () => {
     const css = '.card { color: red; }'
     const result = await postcss([

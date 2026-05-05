@@ -437,6 +437,9 @@ const trace = "at App.vue:4"
   }, TEST_TIMEOUT_MS)
 
   it('reuses css handler override objects for the same asset across incremental runs', async () => {
+    setCurrentContext(createContext({
+      generator: false,
+    }))
     const UnifiedViteWeappTailwindcssPlugin = await loadUnifiedVitePlugin()
     const currentContext = getCurrentContext()
     const plugins = UnifiedViteWeappTailwindcssPlugin()
