@@ -4076,6 +4076,9 @@ importers:
       semver:
         specifier: ~7.7.4
         version: 7.7.4
+      tailwindcss-config:
+        specifier: workspace:*
+        version: link:../tailwindcss-config
       tailwindcss-patch:
         specifier: catalog:tailwindcssPatch
         version: 9.1.0(magicast@0.5.2)(tailwindcss@4.2.4)

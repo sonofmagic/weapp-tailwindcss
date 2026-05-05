@@ -13,6 +13,7 @@ import path from 'node:path'
 import process from 'node:process'
 import fg from 'fast-glob'
 import postcss from 'postcss'
+import { loadConfig } from 'tailwindcss-config'
 import {
   createWeappTailwindcssGenerator,
   normalizeWeappTailwindcssGeneratorOptions,
@@ -38,6 +39,19 @@ const POSTCSS_SOURCE_EXTENSIONS = [
   'ts',
   'tsx',
 ]
+
+type LegacyContentFilePattern = string
+
+interface LegacyContentObject {
+  files?: LegacyContentConfig
+  relative?: boolean
+}
+
+type LegacyContentConfig
+  = | LegacyContentFilePattern
+    | LegacyContentFilePattern[]
+    | LegacyContentObject
+    | Array<LegacyContentFilePattern | LegacyContentObject>
 
 export interface WeappTailwindcssPostcssPluginOptions extends TailwindV4SourceOptions {
   generator?: WeappTailwindcssGeneratorUserOptions
@@ -95,6 +109,12 @@ function parseLocalSourceParam(params: string) {
   return match?.[2]
 }
 
+function parseConfigParam(params: string) {
+  const value = params.trim()
+  const match = /^(['"])(.+)\1$/.exec(value)
+  return match?.[2]
+}
+
 function getSourceExtension(file: string) {
   const extension = path.extname(file).slice(1)
   return extension || undefined
@@ -126,6 +146,49 @@ async function expandLocalSourceFiles(sourcePath: string, base: string) {
   })
 }
 
+function collectConfigPaths(root: Root, base: string) {
+  const configPaths: string[] = []
+  root.walkAtRules('config', (rule) => {
+    const configPath = parseConfigParam(rule.params)
+    if (configPath) {
+      configPaths.push(path.isAbsolute(configPath) ? configPath : path.resolve(base, configPath))
+    }
+  })
+  return [...new Set(configPaths)]
+}
+
+function normalizeContentFiles(content: unknown): string[] {
+  if (typeof content === 'string') {
+    return [content]
+  }
+  if (Array.isArray(content)) {
+    return content.flatMap(item => normalizeContentFiles(item))
+  }
+  if (typeof content === 'object' && content !== null && 'files' in content) {
+    return normalizeContentFiles((content as LegacyContentObject).files)
+  }
+  return []
+}
+
+async function collectConfigContentFiles(root: Root, base: string) {
+  const configPaths = collectConfigPaths(root, base)
+  const files: string[] = []
+  for (const configPath of configPaths) {
+    const result = await loadConfig({
+      config: configPath,
+      cwd: path.dirname(configPath),
+    })
+    const contentFiles = normalizeContentFiles(result?.config.content)
+    for (const contentFile of contentFiles) {
+      files.push(...await expandLocalSourceFiles(contentFile, path.dirname(configPath)))
+    }
+  }
+  return {
+    configPaths,
+    files: [...new Set(files)],
+  }
+}
+
 async function collectPostcssLocalSources(
   root: Root,
   result: Result,
@@ -140,16 +203,20 @@ async function collectPostcssLocalSources(
     }
   })
 
+  const configContentFiles = await collectConfigContentFiles(root, base)
   const files = [...new Set((await Promise.all(
     sourcePaths.map(sourcePath => expandLocalSourceFiles(sourcePath, base)),
-  )).flat())]
+  )).flat().concat(configContentFiles.files))]
   const sources = await Promise.all(files.map(async file => ({
     content: await readFile(file, 'utf8'),
     extension: getSourceExtension(file),
   })))
 
   return {
-    files,
+    files: [
+      ...files,
+      ...configContentFiles.configPaths,
+    ],
     sources,
   }
 }
