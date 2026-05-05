@@ -7,6 +7,7 @@ const tailwindcssCssImportStatementRE = /(@import\s+(?:url\(\s*)?)(["'])(tailwin
 export interface ResolveTailwindcssImportOptions {
   join?: (base: string, subpath: string) => string
   appType?: AppType
+  rootImport?: string
 }
 
 function normalizeTailwindcssSpecifier(specifier: string) {
@@ -33,7 +34,7 @@ export function resolveTailwindcssImport(
     return null
   }
   if (normalized === 'tailwindcss') {
-    return 'weapp-tailwindcss/index.css'
+    return options?.rootImport ?? 'weapp-tailwindcss/index.css'
   }
   const join = options?.join ?? path.join
   const subpath = getTailwindcssSubpath(normalized)

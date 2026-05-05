@@ -4073,6 +4073,9 @@ importers:
       magic-string:
         specifier: 0.30.21
         version: 0.30.21
+      postcss-load-config:
+        specifier: ^6.0.1
+        version: 6.0.1(jiti@2.6.1)(postcss@8.5.13)(tsx@4.21.0)(yaml@2.8.4)
       semver:
         specifier: ~7.7.4
         version: 7.7.4

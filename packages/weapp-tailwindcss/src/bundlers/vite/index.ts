@@ -6,11 +6,13 @@ import path from 'node:path'
 import process from 'node:process'
 import { logger } from '@weapp-tailwindcss/logger'
 import postcssHtmlTransform from '@weapp-tailwindcss/postcss/html-transform'
+import postcssrc from 'postcss-load-config'
 import { vitePluginName } from '@/constants'
 import { getCompilerContext } from '@/context'
 import { toCustomAttributesEntities } from '@/context/custom-attributes'
 import { findNearestPackageRoot } from '@/context/workspace'
 import { createDebug } from '@/debug'
+import { normalizeWeappTailwindcssGeneratorOptions } from '@/generator'
 import { resolveTailwindcssOptions } from '@/tailwindcss/patcher-options'
 import { findTailwindConfig } from '@/tailwindcss/patcher-resolve'
 import { setupPatchRecorder } from '@/tailwindcss/recorder'
@@ -32,13 +34,114 @@ const debug = createDebug()
 const weappTailwindcssPackageDir = resolvePackageDir('weapp-tailwindcss')
 const weappTailwindcssDirPosix = slash(weappTailwindcssPackageDir)
 const PACKAGE_JSON_FILE = 'package.json'
+const tailwindPostcssPluginNames = new Set(['tailwindcss', '@tailwindcss/postcss'])
 
 function getPostcssPluginName(plugin: unknown): string | undefined {
-  if (!plugin || typeof plugin !== 'object' || !('postcssPlugin' in plugin)) {
+  if (!plugin) {
+    return
+  }
+  if (typeof plugin === 'function' && 'postcss' in plugin) {
+    try {
+      return getPostcssPluginName(plugin())
+    }
+    catch {
+      return
+    }
+  }
+  if (typeof plugin !== 'object' || !('postcssPlugin' in plugin)) {
     return
   }
   const { postcssPlugin } = plugin as { postcssPlugin?: unknown }
   return typeof postcssPlugin === 'string' ? postcssPlugin : undefined
+}
+
+function isTailwindPostcssPlugin(plugin: unknown) {
+  const name = getPostcssPluginName(plugin)
+  return typeof name === 'string' && tailwindPostcssPluginNames.has(name)
+}
+
+function removeTailwindPostcssPlugins(plugins: unknown[]) {
+  let removed = 0
+  for (let i = plugins.length - 1; i >= 0; i--) {
+    if (isTailwindPostcssPlugin(plugins[i])) {
+      plugins.splice(i, 1)
+      removed++
+    }
+  }
+  return removed
+}
+
+async function resolveFilteredPostcssConfig(root: string) {
+  try {
+    const loaded = await postcssrc({}, root)
+    const plugins = Array.isArray(loaded.plugins) ? [...loaded.plugins] : []
+    const removed = removeTailwindPostcssPlugins(plugins)
+    if (removed === 0) {
+      return
+    }
+    return {
+      options: loaded.options,
+      plugins,
+      removed,
+    }
+  }
+  catch (error) {
+    const message = error instanceof Error ? error.message : String(error)
+    if (message.includes('No PostCSS Config found')) {
+      return
+    }
+    throw error
+  }
+}
+
+function isTailwindVitePlugin(plugin: unknown) {
+  if (!plugin || typeof plugin !== 'object' || !('name' in plugin)) {
+    return false
+  }
+  const { name } = plugin as { name?: unknown }
+  return typeof name === 'string' && name.startsWith('@tailwindcss/vite')
+}
+
+function removeTailwindVitePlugins(plugins: Plugin[]) {
+  let removed = 0
+  for (let i = plugins.length - 1; i >= 0; i--) {
+    if (isTailwindVitePlugin(plugins[i])) {
+      plugins.splice(i, 1)
+      removed++
+    }
+  }
+  return removed
+}
+
+function disableTailwindVitePlugin(plugin: unknown) {
+  if (!isTailwindVitePlugin(plugin)) {
+    return false
+  }
+
+  const mutablePlugin = plugin as Record<string, unknown>
+  for (const hook of ['configResolved', 'configureServer', 'transform', 'hotUpdate', 'handleHotUpdate']) {
+    delete mutablePlugin[hook]
+  }
+  return true
+}
+
+function disableAndRemoveTailwindVitePlugins(plugins: unknown[]) {
+  let removed = 0
+  for (let i = plugins.length - 1; i >= 0; i--) {
+    const plugin = plugins[i]
+    if (Array.isArray(plugin)) {
+      removed += disableAndRemoveTailwindVitePlugins(plugin)
+      if (plugin.length === 0) {
+        plugins.splice(i, 1)
+      }
+      continue
+    }
+    if (disableTailwindVitePlugin(plugin)) {
+      plugins.splice(i, 1)
+      removed++
+    }
+  }
+  return removed
 }
 
 function resolveImplicitTailwindcssBasedirFromViteRoot(root: string) {
@@ -98,11 +201,16 @@ export function UnifiedViteWeappTailwindcssPlugin(options: UserDefinedOptions = 
 
   const disabledOptions = resolveDisabledOptions(disabled)
   const tailwindcssMajorVersion = initialTwPatcher.majorVersion ?? 0
+  const generatorOptions = normalizeWeappTailwindcssGeneratorOptions(opts.generator)
+  const shouldOwnTailwindGeneration = generatorOptions.mode === 'force'
   const shouldRewriteCssImports = opts.rewriteCssImports !== false
     && !disabledOptions.rewriteCssImports
     && (rewriteCssImportsSpecified || tailwindcssMajorVersion >= 4)
   const rewritePlugins = createRewriteCssImportsPlugins({
     getAppType: () => opts.appType,
+    rootImport: shouldOwnTailwindGeneration
+      ? `${weappTailwindcssDirPosix}/generator-placeholder.css`
+      : undefined,
     shouldRewrite: shouldRewriteCssImports,
     weappTailwindcssDirPosix,
   })
@@ -130,7 +238,7 @@ export function UnifiedViteWeappTailwindcssPlugin(options: UserDefinedOptions = 
   let runtimeRefreshSignature: string | undefined
   let runtimeRefreshOptionsKey: string | undefined
   const bundleRuntimeClassSetManager = createBundleRuntimeClassSetManager()
-  const processedCssAssets = new WeakMap<object, string>()
+  const processedCssAssets = new WeakSet<object>()
 
   function resolveRuntimeRefreshOptions() {
     const configPath = resolveTailwindcssOptions(runtimeState.twPatcher.options)?.config
@@ -251,10 +359,10 @@ export function UnifiedViteWeappTailwindcssPlugin(options: UserDefinedOptions = 
   onLoad()
   const getResolvedConfig = () => resolvedConfig
   const markCssAssetProcessed = (asset: { source: unknown }) => {
-    processedCssAssets.set(asset, asset.source?.toString() ?? '')
+    processedCssAssets.add(asset)
   }
   const isCssAssetProcessed = (asset: { source: unknown }) => {
-    return processedCssAssets.get(asset) === (asset.source?.toString() ?? '')
+    return processedCssAssets.has(asset)
   }
   const cssFinalizerOutputPlugin = createViteCssFinalizerOutputPlugin({
     opts,
@@ -288,8 +396,56 @@ export function UnifiedViteWeappTailwindcssPlugin(options: UserDefinedOptions = 
     {
       name: `${vitePluginName}:post`,
       enforce: 'post',
+      config(config) {
+        if (!shouldOwnTailwindGeneration) {
+          return
+        }
+        if (Array.isArray(config.plugins)) {
+          const removed = disableAndRemoveTailwindVitePlugins(config.plugins)
+          if (removed > 0) {
+            debug('disable official tailwind vite plugins in generator mode: %d', removed)
+          }
+        }
+        const root = config.root ? path.resolve(config.root) : process.cwd()
+        const baseConfig = {
+          resolve: {
+            alias: [
+              {
+                find: /^tailwindcss$/,
+                replacement: path.join(weappTailwindcssPackageDir, 'generator-placeholder.css'),
+              },
+            ],
+          },
+        }
+        if (config.css?.postcss !== undefined) {
+          return baseConfig
+        }
+        return resolveFilteredPostcssConfig(root).then((postcssConfig) => {
+          if (!postcssConfig) {
+            return baseConfig
+          }
+          debug('inline filtered postcss config without official tailwind plugins in generator mode: %d', postcssConfig.removed)
+          return {
+            ...baseConfig,
+            css: {
+              postcss: {
+                ...postcssConfig.options,
+                plugins: postcssConfig.plugins,
+              },
+            },
+          }
+        })
+      },
       async configResolved(config) {
         resolvedConfig = config
+        if (shouldOwnTailwindGeneration) {
+          const removed = Array.isArray(config.plugins)
+            ? removeTailwindVitePlugins(config.plugins)
+            : 0
+          if (removed > 0) {
+            debug('remove official tailwind vite plugins in generator mode: %d', removed)
+          }
+        }
         const resolvedRoot = config.root ? path.resolve(config.root) : undefined
         let shouldRefreshRuntime = false
         if (
@@ -330,6 +486,12 @@ export function UnifiedViteWeappTailwindcssPlugin(options: UserDefinedOptions = 
         }
         if (typeof config.css.postcss === 'object' && Array.isArray(config.css.postcss.plugins)) {
           const postcssPlugins = config.css.postcss.plugins as unknown[]
+          if (shouldOwnTailwindGeneration) {
+            const removed = removeTailwindPostcssPlugins(postcssPlugins)
+            if (removed > 0) {
+              debug('remove official tailwind postcss plugins in generator mode: %d', removed)
+            }
+          }
           const idx = postcssPlugins.findIndex(x =>
             getPostcssPluginName(x) === 'postcss-html-transform')
           if (idx > -1) {

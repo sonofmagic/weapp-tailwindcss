@@ -15,6 +15,19 @@ const TAILWIND_BANNER_RE = /\/\*!\s*tailwindcss v[^*]*\*\//i
 const VITE_MARKER_RE = /\/\*\$vite\$:[^*]*\*\//g
 const SUPPORTED_GENERATOR_MAJOR_VERSIONS = new Set([3, 4])
 const REMOTE_IMPORT_RE = /^(?:https?:)?\/\//i
+const TAILWIND_SOURCE_DIRECTIVE_NAMES = new Set([
+  'config',
+  'custom-variant',
+  'import',
+  'layer',
+  'plugin',
+  'reference',
+  'source',
+  'tailwind',
+  'theme',
+  'utility',
+  'variant',
+])
 
 export interface GenerateCssByGeneratorOptions {
   opts: InternalUserDefinedOptions
@@ -51,6 +64,9 @@ export function splitTailwindV4GeneratedCss(rawSource: string, rawTailwindCss: s
   const trimmedRaw = rawSource.trim()
   const trimmedTailwind = rawTailwindCss.trim()
   if (trimmedRaw === trimmedTailwind) {
+    return ''
+  }
+  if (trimmedTailwind.startsWith(trimmedRaw)) {
     return ''
   }
 
@@ -93,6 +109,64 @@ export function hasTailwindGeneratedCssMarkers(rawSource: string) {
 function parseImportRequest(params: string) {
   const match = /^(?:url\(\s*)?(["']?)([^"')\s]+)\1\s*\)?/.exec(params.trim())
   return match?.[2]
+}
+
+function isTailwindImportAtRule(node: postcss.AtRule) {
+  if (node.name === 'tailwind') {
+    return true
+  }
+  if (node.name !== 'import') {
+    return false
+  }
+  const request = parseImportRequest(node.params)
+  return request === 'tailwindcss'
+    || request === 'tailwindcss4'
+    || request?.startsWith('tailwindcss/')
+    || request?.startsWith('tailwindcss4/')
+}
+
+function isTailwindSourceDirective(node: postcss.Node) {
+  if (node.type !== 'atrule') {
+    return false
+  }
+  if (isTailwindImportAtRule(node)) {
+    return true
+  }
+  return TAILWIND_SOURCE_DIRECTIVE_NAMES.has(node.name)
+}
+
+export function removeTailwindSourceDirectives(rawSource: string) {
+  try {
+    const root = postcss.parse(rawSource)
+    let removed = false
+    root.walk((node) => {
+      if (isTailwindSourceDirective(node)) {
+        node.remove()
+        removed = true
+      }
+    })
+    return removed ? root.toString() : rawSource
+  }
+  catch {
+    return rawSource
+  }
+}
+
+export function hasTailwindSourceDirectives(rawSource: string) {
+  try {
+    const root = postcss.parse(rawSource)
+    let found = false
+    root.walk((node) => {
+      if (isTailwindSourceDirective(node)) {
+        found = true
+        return false
+      }
+    })
+    return found
+  }
+  catch {
+    return false
+  }
 }
 
 function isLocalImportRequest(request: string) {
@@ -148,18 +222,32 @@ export async function generateCssByGenerator(
     return undefined
   }
 
+  const hasGeneratedCss = hasTailwindGeneratedCss(rawSource)
+  const hasSourceDirectives = hasTailwindSourceDirectives(rawSource)
+  const hasGeneratedMarkers = hasTailwindGeneratedCssMarkers(rawSource)
+  const shouldForceGenerateCurrentCss = cssHandlerOptions.isMainChunk
+    || hasGeneratedCss
+    || hasGeneratedMarkers
+    || hasSourceDirectives
+
   if (
     generatorOptions.mode === 'off'
     || !SUPPORTED_GENERATOR_MAJOR_VERSIONS.has(majorVersion ?? 0)
     || (
+      generatorOptions.mode === 'force'
+      && majorVersion !== 3
+      && !shouldForceGenerateCurrentCss
+    )
+    || (
       generatorOptions.mode !== 'force'
       && majorVersion !== 3
-      && !hasTailwindGeneratedCss(rawSource)
+      && !hasGeneratedCss
     )
     || (
       !cssHandlerOptions.isMainChunk
       && majorVersion !== 3
-      && !hasTailwindGeneratedCss(rawSource)
+      && generatorOptions.mode !== 'force'
+      && !hasGeneratedCss
     )
   ) {
     return undefined
@@ -208,7 +296,12 @@ export async function generateCssByGenerator(
       )
       let css = stripTailwindBanner(generated.css)
       const cleanedRawSource = removeTailwindGeneratedCssByBanner(rawSource)
-      if (cleanedRawSource === undefined) {
+      const extraCss = cleanedRawSource === undefined
+        ? hasGeneratedCss
+          ? ''
+          : removeTailwindSourceDirectives(rawSource)
+        : cleanedRawSource
+      if (extraCss.trim().length === 0) {
         return {
           css,
           target: generated.target,
@@ -216,14 +309,14 @@ export async function generateCssByGenerator(
         }
       }
       if (generated.target === 'weapp') {
-        const { css: userCss } = await styleHandler(cleanedRawSource, {
+        const { css: userCss } = await styleHandler(extraCss, {
           ...cssUserHandlerOptions,
           ...generatorOptions.styleOptions,
         })
         css = createCssAppend(css, userCss)
       }
       else {
-        css = createCssAppend(css, cleanedRawSource)
+        css = createCssAppend(css, extraCss)
       }
       return {
         css,

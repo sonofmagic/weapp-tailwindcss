@@ -58,6 +58,9 @@ describe('bundlers/vite UnifiedViteWeappTailwindcssPlugin rewrite', () => {
     const resolvedBase = await resolveId?.('tailwindcss/base', subpathImporter)
     expect(resolvedBase).toBe(`${pkgDir}/base`)
 
+    const resolvedFromPostcssImport = await resolveId?.('tailwindcss', '/src/*')
+    expect(resolvedFromPostcssImport).toBe('weapp-tailwindcss/index.css')
+
     const ignoredJs = await resolveId?.('tailwindcss', '/src/main.ts')
     expect(ignoredJs).toBeNull()
 
@@ -86,6 +89,32 @@ describe('bundlers/vite UnifiedViteWeappTailwindcssPlugin rewrite', () => {
     const result = await transform?.(source, '/src/app.css') as TransformResult
     expect(result?.code).toContain(`@import 'weapp-tailwindcss/index.css' layer(base);`)
     expect(result?.code).toContain(`@import url("${pkgDir}/utilities");`)
+  }, TEST_TIMEOUT_MS)
+
+  it('rewrites tailwindcss root imports to generator placeholder in force generator mode', async () => {
+    const UnifiedViteWeappTailwindcssPlugin = await loadUnifiedVitePlugin()
+    const currentContext = createContext({
+      generator: {
+        mode: 'force',
+        target: 'weapp',
+      },
+    })
+    setCurrentContext(currentContext)
+    currentContext.twPatcher.majorVersion = 4
+    const plugins = UnifiedViteWeappTailwindcssPlugin({
+      generator: {
+        mode: 'force',
+        target: 'weapp',
+      },
+    })
+    const rewritePlugin = plugins?.find(plugin => plugin.name === `${vitePluginName}:rewrite-css-imports`)
+    expect(rewritePlugin).toBeTruthy()
+
+    const transform = getTransformHandler(rewritePlugin as Plugin)
+    const result = await transform?.('@import "tailwindcss";\n@import "tailwindcss/theme.css";', '/src/app.css') as TransformResult
+    const pkgDir = slash(resolvePackageDir('weapp-tailwindcss'))
+    expect(result?.code).toContain(`@import "${pkgDir}/generator-placeholder.css";`)
+    expect(result?.code).toContain(`@import "${pkgDir}/theme.css";`)
   }, TEST_TIMEOUT_MS)
 
   it('runs rewrite transform ahead of other pre plugins so tailwindcss imports are replaced first', async () => {

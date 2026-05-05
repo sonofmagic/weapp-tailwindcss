@@ -2,7 +2,7 @@ import type { IStyleHandlerOptions } from '@weapp-tailwindcss/postcss/types'
 import type { OutputAsset, OutputBundle } from 'rollup'
 import type { Plugin, ResolvedConfig } from 'vite'
 import type { InternalUserDefinedOptions } from '@/types'
-import { generateCssByGenerator, hasTailwindGeneratedCssMarkers } from '../shared/generator-css'
+import { generateCssByGenerator, hasTailwindGeneratedCssMarkers, hasTailwindSourceDirectives } from '../shared/generator-css'
 
 interface CssFinalizerContext {
   opts: InternalUserDefinedOptions
@@ -78,7 +78,7 @@ export function createViteCssFinalizerOutputPlugin(context: CssFinalizerContext)
             ...cssHandlerOptions,
             isMainChunk: false,
           }
-          const generated = hasTailwindGeneratedCssMarkers(rawSource)
+          const generated = hasTailwindGeneratedCssMarkers(rawSource) || hasTailwindSourceDirectives(rawSource)
             ? await generateCssByGenerator({
                 opts,
                 runtimeState,

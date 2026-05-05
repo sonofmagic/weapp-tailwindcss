@@ -16,13 +16,14 @@ function isCssLikeImporter(importer?: string | null) {
     return false
   }
   const normalized = cleanUrl(importer)
-  return isCSSRequest(normalized)
+  return isCSSRequest(normalized) || normalized.endsWith('/*')
 }
 
 interface RewriteCssImportsOptions {
   appType?: AppType
   getAppType?: () => AppType | undefined
   shouldRewrite: boolean
+  rootImport?: string
   weappTailwindcssDirPosix: string
 }
 
@@ -30,7 +31,7 @@ export function createRewriteCssImportsPlugins(options: RewriteCssImportsOptions
   if (!options.shouldRewrite) {
     return []
   }
-  const { appType, getAppType, weappTailwindcssDirPosix } = options
+  const { appType, getAppType, rootImport, weappTailwindcssDirPosix } = options
   const resolveAppType = () => getAppType?.() ?? appType
   return [
     {
@@ -42,6 +43,7 @@ export function createRewriteCssImportsPlugins(options: RewriteCssImportsOptions
           const replacement = resolveTailwindcssImport(id, weappTailwindcssDirPosix, {
             join: joinPosixPath,
             appType: resolveAppType(),
+            rootImport,
           })
           if (!replacement) {
             return null
@@ -61,6 +63,7 @@ export function createRewriteCssImportsPlugins(options: RewriteCssImportsOptions
           const rewritten = rewriteTailwindcssImportsInCode(code, weappTailwindcssDirPosix, {
             join: joinPosixPath,
             appType: resolveAppType(),
+            rootImport,
           })
           if (!rewritten) {
             return null

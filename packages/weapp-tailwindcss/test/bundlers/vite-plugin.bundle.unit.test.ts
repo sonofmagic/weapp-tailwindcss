@@ -88,7 +88,13 @@ describe('bundlers/vite UnifiedViteWeappTailwindcssPlugin bundle', () => {
 
   it('generates bundle assets and leverages cache', async () => {
     const UnifiedViteWeappTailwindcssPlugin = await loadUnifiedVitePlugin()
-    const currentContext = getCurrentContext()
+    const currentContext = createContext({
+      generator: {
+        mode: 'force',
+        target: 'weapp',
+      },
+    })
+    setCurrentContext(currentContext)
     const plugins = UnifiedViteWeappTailwindcssPlugin()
     expect(plugins).toBeDefined()
     const postPlugin = plugins?.find(plugin => plugin.name === 'weapp-tailwindcss:adaptor:post') as Plugin
@@ -97,9 +103,16 @@ describe('bundlers/vite UnifiedViteWeappTailwindcssPlugin bundle', () => {
     expect(currentContext.twPatcher.patch).toHaveBeenCalledTimes(1)
 
     const config = {
+      plugins: [
+        { name: '@tailwindcss/vite:scan' },
+        { name: '@tailwindcss/vite:generate:build' },
+        { name: 'other-vite-plugin' },
+      ],
       css: {
         postcss: {
           plugins: [
+            { postcssPlugin: '@tailwindcss/postcss' },
+            { postcssPlugin: 'tailwindcss' },
             { postcssPlugin: 'postcss-html-transform' },
             { postcssPlugin: 'other' },
           ],
@@ -109,8 +122,13 @@ describe('bundlers/vite UnifiedViteWeappTailwindcssPlugin bundle', () => {
 
     const configResolved = postPlugin.configResolved as any
     await configResolved?.call(postPlugin, config)
+    expect(config.plugins.map(plugin => plugin.name)).toEqual([
+      'other-vite-plugin',
+    ])
     const postcssPlugins = (config.css?.postcss as any)?.plugins
     expect(postcssPlugins?.[0]).toEqual({ postcssPlugin: 'mocked-html-transform' })
+    expect(postcssPlugins).not.toContainEqual(expect.objectContaining({ postcssPlugin: '@tailwindcss/postcss' }))
+    expect(postcssPlugins).not.toContainEqual(expect.objectContaining({ postcssPlugin: 'tailwindcss' }))
 
     const html = '<view class="foo">bar</view>'
     const js = 'const demo = "text-[#123456]"'
@@ -163,6 +181,94 @@ describe('bundlers/vite UnifiedViteWeappTailwindcssPlugin bundle', () => {
     expect(currentContext.onUpdate).toHaveBeenCalledTimes(3)
     expect(currentContext.twPatcher.extract).toHaveBeenCalledTimes(1)
     expect(currentContext.twPatcher.getClassSetSync).toHaveBeenCalledTimes(1)
+  }, TEST_TIMEOUT_MS)
+
+  it('inlines external postcss config without official Tailwind plugins in force generator mode', async () => {
+    const UnifiedViteWeappTailwindcssPlugin = await loadUnifiedVitePlugin()
+    const tempDir = await mkdtemp(path.join(os.tmpdir(), 'weapp-tw-vite-postcss-'))
+    createdDirs.push(tempDir)
+    await writeFile(
+      path.join(tempDir, 'postcss.config.js'),
+      [
+        'export default {',
+        '  plugins: [',
+        '    { postcssPlugin: "@tailwindcss/postcss" },',
+        '    { postcssPlugin: "autoprefixer" },',
+        '  ],',
+        '}',
+        '',
+      ].join('\n'),
+      'utf8',
+    )
+
+    setCurrentContext(createContext({
+      generator: {
+        mode: 'force',
+        target: 'weapp',
+      },
+    }))
+    const plugins = UnifiedViteWeappTailwindcssPlugin()
+    const postPlugin = plugins?.find(plugin => plugin.name === 'weapp-tailwindcss:adaptor:post') as Plugin
+    expect(postPlugin).toBeTruthy()
+
+    const configResult = await (postPlugin.config as any)?.call(postPlugin, {
+      root: tempDir,
+      plugins: [
+        { name: '@tailwindcss/vite:scan' },
+        { name: 'other-vite-plugin' },
+      ],
+    })
+
+    expect(configResult?.resolve?.alias?.[0]?.replacement).toContain('generator-placeholder.css')
+    expect(configResult?.css?.postcss?.plugins).toHaveLength(1)
+    expect(configResult?.css?.postcss?.plugins[0]?.postcssPlugin).toBe('autoprefixer')
+  }, TEST_TIMEOUT_MS)
+
+  it('keeps official Tailwind plugins registered outside force generator mode', async () => {
+    const UnifiedViteWeappTailwindcssPlugin = await loadUnifiedVitePlugin()
+    const currentContext = createContext({
+      generator: {
+        mode: 'auto',
+        target: 'weapp',
+      },
+    })
+    setCurrentContext(currentContext)
+    currentContext.twPatcher.majorVersion = 4
+
+    const plugins = UnifiedViteWeappTailwindcssPlugin({
+      generator: {
+        mode: 'auto',
+        target: 'weapp',
+      },
+    })
+    const postPlugin = plugins?.find(plugin => plugin.name === 'weapp-tailwindcss:adaptor:post') as Plugin
+    expect(postPlugin).toBeTruthy()
+
+    const config = {
+      plugins: [
+        { name: '@tailwindcss/vite:scan' },
+        { name: '@tailwindcss/vite:generate:build' },
+      ],
+      css: {
+        postcss: {
+          plugins: [
+            { postcssPlugin: '@tailwindcss/postcss' },
+            { postcssPlugin: 'tailwindcss' },
+          ],
+        },
+      },
+    } as unknown as ResolvedConfig
+
+    await (postPlugin.configResolved as any)?.call(postPlugin, config)
+
+    expect(config.plugins.map(plugin => plugin.name)).toEqual([
+      '@tailwindcss/vite:scan',
+      '@tailwindcss/vite:generate:build',
+    ])
+    expect((config.css.postcss as any).plugins).toEqual([
+      { postcssPlugin: '@tailwindcss/postcss' },
+      { postcssPlugin: 'tailwindcss' },
+    ])
   }, TEST_TIMEOUT_MS)
 
   it('reuses snapshot hashes for unchanged js process cache checks', async () => {
