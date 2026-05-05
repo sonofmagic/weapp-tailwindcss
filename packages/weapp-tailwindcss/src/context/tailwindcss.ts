@@ -35,19 +35,8 @@ export function createTailwindcssPatcherFromContext(ctx: InternalUserDefinedOpti
     ctx.cssEntries = normalizedCssEntries
   }
 
-  const shouldAttachBase = Boolean(ctx.tailwindcssBasedir && normalizedCssEntries?.length)
-  const tailwindcssWithBase = shouldAttachBase && tailwindcss?.v4 !== null
-    ? {
-        ...(tailwindcss ?? {}),
-        v4: {
-          ...(tailwindcss?.v4 ?? {}),
-          base: tailwindcss?.v4?.base ?? resolvedTailwindcssBasedir,
-        },
-      }
-    : tailwindcss
-
   const patcherOptions: TailwindcssPatcherFactoryOptions = {
-    tailwindcss: tailwindcssWithBase,
+    tailwindcss,
     tailwindcssPatcherOptions,
     supportCustomLengthUnitsPatch,
     appType,

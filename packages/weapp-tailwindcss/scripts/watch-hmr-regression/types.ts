@@ -7,8 +7,11 @@ export type ConcreteWatchCaseName
     | 'weapp-vite'
     | 'uni-app-vue3-vite'
     | 'uni-app-tailwindcss-v4'
+    | 'uni-app-tailwindcss-v5'
     | 'mpx-tailwindcss-v4'
+    | 'mpx-tailwindcss-v5'
     | 'taro-vite-tailwindcss-v4'
+    | 'taro-vite-tailwindcss-v5'
     | 'taro-app-vite'
     | 'taro-webpack-tailwindcss-v4'
     | 'taro-vue3-app'
@@ -287,6 +290,7 @@ export const DEFAULT_STYLE_APPLY_VALIDATION: StyleApplyValidation = {
 export const STYLE_APPLY_UNSUPPORTED_CASES = new Set<ConcreteWatchCaseName>([
   'uni-app-tailwindcss-v4',
   'taro-vite-tailwindcss-v4',
+  'taro-vite-tailwindcss-v5',
   'taro-webpack-tailwindcss-v4',
   'taro-webpack',
 ])

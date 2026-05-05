@@ -12,6 +12,12 @@ export const E2E_PROJECTS = [
     cssFile: 'app.wxss',
   },
   {
+    name: 'uni-app-tailwindcss-v5',
+    projectPath: 'uni-app-tailwindcss-v5/dist/build/mp-weixin',
+    cssFile: 'app.wxss',
+    skipOpenAutomator: true,
+  },
+  {
     name: 'taro-app',
     projectPath: 'taro-app',
     cssFile: 'dist/app.wxss',
@@ -30,6 +36,12 @@ export const E2E_PROJECTS = [
     name: 'taro-vite-tailwindcss-v4',
     projectPath: 'taro-vite-tailwindcss-v4',
     cssFile: 'dist/app.wxss',
+  },
+  {
+    name: 'taro-vite-tailwindcss-v5',
+    projectPath: 'taro-vite-tailwindcss-v5',
+    cssFile: 'dist/app.wxss',
+    skipOpenAutomator: true,
   },
   {
     name: 'taro-vue3-app',
@@ -52,6 +64,13 @@ export const E2E_PROJECTS = [
     projectPath: 'mpx-tailwindcss-v4/dist/wx',
     cssFile: 'app.wxss',
     url: '/pages/index',
+  },
+  {
+    name: 'mpx-tailwindcss-v5',
+    projectPath: 'mpx-tailwindcss-v5/dist/wx',
+    cssFile: 'app.wxss',
+    url: '/pages/index',
+    skipOpenAutomator: true,
   },
 ] satisfies ProjectEntry[]
 

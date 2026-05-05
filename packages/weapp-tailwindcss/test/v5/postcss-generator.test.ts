@@ -11,6 +11,7 @@ const MINIMAL_THEME_CSS = `
 }
 @tailwind utilities;
 `
+const repositoryRoot = path.resolve(__dirname, '../../../..')
 
 describe('v5 postcss generator', () => {
   it('generates mini-program css from tailwind v4 input by default', async () => {
@@ -100,6 +101,31 @@ describe('v5 postcss generator', () => {
       type: 'dependency',
       file: pageEntry,
     }))
+  })
+
+  it('resolves @config paths relative to the current postcss input file', async () => {
+    const root = await mkdtemp(path.join(tmpdir(), 'weapp-tw-v5-postcss-config-'))
+    const sourceDir = path.join(root, 'src')
+    const cssEntry = path.join(sourceDir, 'app.css')
+    const configFile = path.join(root, 'tailwind.config.js')
+    await mkdir(sourceDir)
+    await writeFile(configFile, 'export default { theme: { extend: { colors: { brand: "#123456" } } } }', 'utf8')
+
+    const result = await postcss([
+      weappTailwindcss({
+        projectRoot: repositoryRoot,
+        packageName: 'tailwindcss4',
+        candidates: ['bg-brand'],
+      }),
+    ]).process(`
+      @config "../tailwind.config.js";
+      @tailwind utilities;
+    `, {
+      from: cssEntry,
+    })
+
+    expect(result.css).toContain('.bg-brand')
+    expect(result.css).toContain('#123456')
   })
 
   it('skips generation when generator is disabled', async () => {

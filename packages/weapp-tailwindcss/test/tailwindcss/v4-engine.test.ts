@@ -1,7 +1,7 @@
 import { mkdtemp, writeFile } from 'node:fs/promises'
 import { tmpdir } from 'node:os'
 import path from 'node:path'
-import { createTailwindV4Engine, resolveTailwindV4Source } from '@/tailwindcss/v4-engine'
+import { createTailwindV4Engine, resolveTailwindV4Source, resolveTailwindV4SourceOptionsFromPatcher } from '@/tailwindcss/v4-engine'
 
 const MINIMAL_THEME_CSS = `
 @theme default {
@@ -91,6 +91,39 @@ describe('tailwindcss v4 engine', () => {
     expect(result.dependencies).toContain(cssEntry)
     expect(result.classSet).toEqual(new Set(['w-4']))
     expect(result.css).toContain('.w-4')
+  })
+
+  it('keeps cssEntries relative to the css file unless v4 base is explicitly configured', () => {
+    const implicitBaseOptions = resolveTailwindV4SourceOptionsFromPatcher({
+      options: {
+        projectRoot: '/workspace/app',
+        tailwind: {
+          cwd: '/workspace/app',
+          v4: {
+            base: '/workspace/app',
+            cssEntries: ['/workspace/app/src/app.css'],
+          },
+        },
+      },
+      packageInfo: { name: 'tailwindcss', version: '4.2.4' },
+    } as any)
+    const explicitBaseOptions = resolveTailwindV4SourceOptionsFromPatcher({
+      options: {
+        projectRoot: '/workspace/app',
+        tailwind: {
+          cwd: '/workspace/app',
+          v4: {
+            base: '/workspace/app',
+            configuredBase: '/custom/base',
+            cssEntries: ['/workspace/app/src/app.css'],
+          },
+        },
+      },
+      packageInfo: { name: 'tailwindcss', version: '4.2.4' },
+    } as any)
+
+    expect(implicitBaseOptions.base).toBeUndefined()
+    expect(explicitBaseOptions.base).toBe('/custom/base')
   })
 
   it('keeps missing cssEntries as imports for Tailwind resolution', async () => {

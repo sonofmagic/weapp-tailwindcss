@@ -11,8 +11,11 @@ export type ConcreteWatchCaseName
     | 'weapp-vite'
     | 'uni-app-vue3-vite'
     | 'uni-app-tailwindcss-v4'
+    | 'uni-app-tailwindcss-v5'
     | 'mpx-tailwindcss-v4'
+    | 'mpx-tailwindcss-v5'
     | 'taro-vite-tailwindcss-v4'
+    | 'taro-vite-tailwindcss-v5'
     | 'taro-app-vite'
     | 'taro-webpack-tailwindcss-v4'
     | 'taro-vue3-app'
@@ -193,7 +196,9 @@ interface HotUpdateReport {
 const criticalDemoProjects = [
   'demo/uni-app-vue3-vite',
   'demo/uni-app-tailwindcss-v4',
+  'demo/uni-app-tailwindcss-v5',
   'demo/taro-vite-tailwindcss-v4',
+  'demo/taro-vite-tailwindcss-v5',
   'demo/taro-app-vite',
   'demo/taro-webpack-tailwindcss-v4',
   'demo/taro-vue3-app',
@@ -203,6 +208,7 @@ const bothCases = new Set<ConcreteWatchCaseName>(['taro', 'uni-app-vue3-vite'])
 const noApplyValidationCases = new Set<ConcreteWatchCaseName>([
   'uni-app-tailwindcss-v4',
   'taro-vite-tailwindcss-v4',
+  'taro-vite-tailwindcss-v5',
   'taro-webpack-tailwindcss-v4',
   'taro-webpack',
 ])
@@ -290,7 +296,10 @@ export function resolveCaseName() {
     || value === 'weapp-vite'
     || value === 'uni-app-vue3-vite'
     || value === 'uni-app-tailwindcss-v4'
+    || value === 'uni-app-tailwindcss-v5'
+    || value === 'mpx-tailwindcss-v5'
     || value === 'taro-vite-tailwindcss-v4'
+    || value === 'taro-vite-tailwindcss-v5'
     || value === 'taro-app-vite'
     || value === 'taro-webpack-tailwindcss-v4'
     || value === 'taro-vue3-app'
@@ -329,7 +338,10 @@ export function resolveExpectedGroup(target: WatchCaseName): WatchProjectGroup |
     || target === 'weapp-vite'
     || target === 'uni-app-vue3-vite'
     || target === 'uni-app-tailwindcss-v4'
+    || target === 'uni-app-tailwindcss-v5'
+    || target === 'mpx-tailwindcss-v5'
     || target === 'taro-vite-tailwindcss-v4'
+    || target === 'taro-vite-tailwindcss-v5'
     || target === 'taro-app-vite'
     || target === 'taro-webpack-tailwindcss-v4'
     || target === 'taro-vue3-app'

@@ -47,6 +47,12 @@ const miniProgramV4Projects = [
   'apps/taro-webpack-tailwindcss-v4',
 ]
 
+const miniProgramV5Projects = [
+  'demo/uni-app-tailwindcss-v5',
+  'demo/taro-vite-tailwindcss-v5',
+  'demo/mpx-tailwindcss-v5',
+]
+
 const manualBoundaryProjects = [
   'demo/native',
   'demo/gulp-app',
@@ -68,6 +74,15 @@ describe('watch-hmr coverage matrix', () => {
       expect(
         watchCoveredProjects.has(project) || sourceCoveredProjects.has(project),
         `${project} should be covered by watch cases or source lifecycle tests`,
+      ).toBe(true)
+    }
+  })
+
+  it('covers standalone v5 mini-program demos through watch regression cases', () => {
+    for (const project of miniProgramV5Projects) {
+      expect(
+        watchCoveredProjects.has(project),
+        `${project} should be covered by watch regression cases`,
       ).toBe(true)
     }
   })

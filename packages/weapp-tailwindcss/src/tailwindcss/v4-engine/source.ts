@@ -25,6 +25,14 @@ function getProjectRoot(patcher: TailwindcssPatcherLike) {
   return patcher.options?.projectRoot ?? process.cwd()
 }
 
+function readConfiguredV4Base(tailwindOptions: ReturnType<typeof resolveTailwindcssOptions>) {
+  const v4 = tailwindOptions?.v4
+  if (typeof v4 !== 'object' || v4 === null) {
+    return undefined
+  }
+  return (v4 as { configuredBase?: string }).configuredBase
+}
+
 function resolveTailwindCssImportTarget(patcher: TailwindcssPatcherLike) {
   const tailwindOptions = resolveTailwindcssOptions(patcher.options)
   const configuredPackageName = tailwindOptions?.packageName
@@ -54,9 +62,11 @@ export function resolveTailwindV4SourceOptionsFromPatcher(
   const projectRoot = getProjectRoot(patcher)
   const tailwindOptions = resolveTailwindcssOptions(patcher.options)
   const configDir = tailwindOptions?.config ? path.dirname(tailwindOptions.config) : undefined
+  const configuredBase = readConfiguredV4Base(tailwindOptions)
+  const hasCssEntries = Boolean(tailwindOptions?.v4?.cssEntries?.length)
   return {
     projectRoot,
-    base: tailwindOptions?.v4?.base,
+    base: configuredBase ?? (hasCssEntries ? undefined : tailwindOptions?.v4?.base),
     baseFallbacks: uniqueDefined([
       tailwindOptions?.cwd,
       configDir,

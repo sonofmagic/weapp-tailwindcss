@@ -7,7 +7,27 @@ async function readProjectFile(relativePath: string) {
   return readFile(path.resolve(repositoryRoot, relativePath), 'utf8')
 }
 
+async function readProjectJson<T>(relativePath: string) {
+  return JSON.parse(await readProjectFile(relativePath)) as T
+}
+
 describe('v5 apps and demos generator config', () => {
+  it('keeps v5 generator demos as standalone workspace packages', async () => {
+    const packages = await Promise.all([
+      readProjectJson<{ name: string, scripts?: Record<string, string>, private?: boolean }>('demo/uni-app-tailwindcss-v5/package.json'),
+      readProjectJson<{ name: string, scripts?: Record<string, string>, private?: boolean }>('demo/taro-vite-tailwindcss-v5/package.json'),
+      readProjectJson<{ name: string, scripts?: Record<string, string>, private?: boolean }>('demo/mpx-tailwindcss-v5/package.json'),
+    ])
+
+    expect(packages.map(item => item.name)).toEqual([
+      '@weapp-tailwindcss-demo/uni-app-tailwindcss-v5',
+      '@weapp-tailwindcss-demo/taro-vite-tailwindcss-v5',
+      '@weapp-tailwindcss-demo/mpx-tailwindcss-v5',
+    ])
+    expect(packages.every(item => item.private)).toBe(true)
+    expect(packages.every(item => typeof item.scripts?.build === 'string')).toBe(true)
+  })
+
   it.each([
     {
       config: 'apps/vite-native/vite.config.ts',
@@ -32,6 +52,16 @@ describe('v5 apps and demos generator config', () => {
     expect(configSource).toContain("target: 'weapp'")
     expect(cssSource).toContain('tailwindcss')
     expect(cssSource).not.toContain('weapp-tailwindcss')
+  })
+
+  it('keeps uni-app v5 css entries using @config relative to the css file', async () => {
+    const [mainCss, commonCss] = await Promise.all([
+      readProjectFile('demo/uni-app-tailwindcss-v5/src/main.css'),
+      readProjectFile('demo/uni-app-tailwindcss-v5/src/common.css'),
+    ])
+
+    expect(mainCss).toContain('@config "../tailwind.config.js";')
+    expect(commonCss).toContain('@config "../tailwind.config.order.js";')
   })
 
   it('passes generator options through the uni-app-x preset demo', async () => {
@@ -102,5 +132,40 @@ describe('v5 apps and demos generator config', () => {
     expect(cssSource).toContain('@import "tailwindcss";')
     expect(cssSource).toContain('@source "../src";')
     expect(cssSource).not.toContain('@import "weapp-tailwindcss";')
+  })
+
+  it('keeps the historical v4 demos free of v5 generator-only changes', async () => {
+    const [
+      uniPageSource,
+      taroCssSource,
+      taroPageSource,
+      mpxConfigSource,
+      mpxPostcssSource,
+      mpxCssSource,
+      mpxPageSource,
+    ] = await Promise.all([
+      readProjectFile('demo/uni-app-tailwindcss-v4/src/pages/index/index.vue'),
+      readProjectFile('demo/taro-vite-tailwindcss-v4/src/app.css'),
+      readProjectFile('demo/taro-vite-tailwindcss-v4/src/pages/index/index.tsx'),
+      readProjectFile('demo/mpx-tailwindcss-v4/mpx.config.js'),
+      readProjectFile('demo/mpx-tailwindcss-v4/postcss.config.js'),
+      readProjectFile('demo/mpx-tailwindcss-v4/src/app.css'),
+      readProjectFile('demo/mpx-tailwindcss-v4/src/pages/index.mpx'),
+    ])
+
+    expect(uniPageSource).toContain("const className = ref('bg-[#0000ff] text-[45rpx] text-white')")
+    expect(uniPageSource).not.toContain("twMerge('bg-[#0000ff] text-[45rpx]'")
+    expect(taroCssSource).toBe('@import "tailwindcss";\n')
+    expect(taroPageSource).not.toContain('@weapp-tailwindcss/merge')
+    expect(taroPageSource).not.toContain('hoverClass=')
+    expect(mpxConfigSource).toContain("require('@tailwindcss/postcss')")
+    expect(mpxConfigSource).not.toContain("require('weapp-tailwindcss/postcss')")
+    expect(mpxConfigSource).not.toContain('generator: false')
+    expect(mpxPostcssSource).toContain("require('@tailwindcss/postcss')()")
+    expect(mpxPostcssSource).not.toContain("require('weapp-tailwindcss/postcss')")
+    expect(mpxCssSource).toContain('@import "weapp-tailwindcss";')
+    expect(mpxCssSource).not.toContain('@import "tailwindcss";')
+    expect(mpxPageSource).not.toContain('mergedClass')
+    expect(mpxPageSource).not.toContain('@weapp-tailwindcss/merge')
   })
 })

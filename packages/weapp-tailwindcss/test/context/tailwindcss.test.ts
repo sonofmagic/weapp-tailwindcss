@@ -246,7 +246,7 @@ describe('createTailwindcssPatcherFromContext', () => {
 
       expect(createTailwindcssPatcher).toHaveBeenCalledTimes(2)
       expect(new Set(calls.map(call => call.basedir))).toEqual(new Set([workspace]))
-      expect(calls[0].tailwindcss?.v4?.base).toBe(workspace)
+      expect(calls[0].tailwindcss?.v4?.base).toBeUndefined()
       expect(calls[0].tailwindcss?.v4?.cssEntries).toEqual([
         entryA,
         entryB,

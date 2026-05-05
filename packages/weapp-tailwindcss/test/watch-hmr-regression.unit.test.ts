@@ -36,6 +36,7 @@ import {
 import {
   expandOutputFileEntries,
   createClassMutationScenario,
+  createStyleMutationPayload,
   readJoinedOutputFiles,
   waitForCompileSettled,
   waitForInitialWarmup,
@@ -706,6 +707,58 @@ describe('watch-hmr regression cases', () => {
       path.resolve('/repo', 'apps/vite-native-ts-skyline/dist/pages/index/index.wxss'),
       path.resolve('/repo', 'apps/vite-native-ts-skyline/dist/app.wxss'),
     ])
+  })
+
+  it('registers standalone v5 generator demo watch cases with expected outputs', () => {
+    const extendedCases = buildDemoExtendedCases('/repo')
+    const uniV5Case = extendedCases.find(item => item.name === 'uni-app-tailwindcss-v5')
+    const taroV5Case = extendedCases.find(item => item.name === 'taro-vite-tailwindcss-v5')
+    const mpxV5Case = extendedCases.find(item => item.name === 'mpx-tailwindcss-v5')
+
+    expect(uniV5Case?.outputWxml).toBe(
+      path.resolve('/repo', 'demo/uni-app-tailwindcss-v5/dist/dev/mp-weixin/pages/index/index.wxml'),
+    )
+    expect(uniV5Case?.outputStyleCandidates).toEqual([
+      path.resolve('/repo', 'demo/uni-app-tailwindcss-v5/dist/dev/mp-weixin/app.wxss'),
+    ])
+    expect(uniV5Case?.contentMutation?.sourceFile).toBe(
+      path.resolve('/repo', 'demo/uni-app-tailwindcss-v5/src/pages/index/index.vue'),
+    )
+    expect(uniV5Case?.styleMutation.sourceFile).toBe(
+      path.resolve('/repo', 'demo/uni-app-tailwindcss-v5/src/main.css'),
+    )
+
+    expect(taroV5Case?.outputWxml).toBe(
+      path.resolve('/repo', 'demo/taro-vite-tailwindcss-v5/dist/pages/index/index.wxml'),
+    )
+    expect(taroV5Case?.globalStyleCandidates).toEqual([
+      path.resolve('/repo', 'demo/taro-vite-tailwindcss-v5/dist/app-origin.wxss'),
+      path.resolve('/repo', 'demo/taro-vite-tailwindcss-v5/dist/app.wxss'),
+    ])
+    expect(taroV5Case?.env?.TARO_BUILD_STRICT).toBe('1')
+    expect(taroV5Case?.contentMutation?.sourceFile).toBe(
+      path.resolve('/repo', 'demo/taro-vite-tailwindcss-v5/src/pages/index/index.tsx'),
+    )
+    expect(taroV5Case?.scriptMutation.mutateCommentCarrier).toBeUndefined()
+    expect(taroV5Case).toBeDefined()
+    if (taroV5Case) {
+      const stylePayload = createStyleMutationPayload(taroV5Case)
+      expect(stylePayload.applyUtilities).toEqual([])
+      expect(stylePayload.expectedApplyDeclarations).toEqual([])
+    }
+
+    expect(mpxV5Case?.outputWxml).toBe(
+      path.resolve('/repo', 'demo/mpx-tailwindcss-v5/dist/wx/custom-tab-bar/index.wxml'),
+    )
+    expect(mpxV5Case?.globalStyleCandidates).toEqual([
+      path.resolve('/repo', 'demo/mpx-tailwindcss-v5/dist/wx/styles/app*.wxss'),
+    ])
+    expect(mpxV5Case?.contentMutation?.sourceFile).toBe(
+      path.resolve('/repo', 'demo/mpx-tailwindcss-v5/src/custom-tab-bar/index.mpx'),
+    )
+    expect(mpxV5Case?.styleMutation.sourceFile).toBe(
+      path.resolve('/repo', 'demo/mpx-tailwindcss-v5/src/app.css'),
+    )
   })
 
   it('pins taro-based watch cases to strict taro build mode', () => {
