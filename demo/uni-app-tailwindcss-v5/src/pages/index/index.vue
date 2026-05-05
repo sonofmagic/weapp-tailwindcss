@@ -4,6 +4,7 @@
     <view class="text-area aspect-(--my-aspect-ratio)">
       <text class="text-[#00f285] text-[88rpx] font-bold underline">{{ title }}</text>
     </view>
+    <view class="bg-gradient-to-r from-cyan-500 to-blue-500 h-14"></view>
     <view :class="className" class="aspect-[calc(4*3+1)/3]">
       {{ className }}
     </view>

@@ -22,6 +22,15 @@ text,
   --tw-divide-x-reverse: 0;
   --tw-border-style: solid;
   --tw-divide-y-reverse: 0;
+  --tw-gradient-position: initial;
+  --tw-gradient-from: rgba(0, 0, 0, 0);
+  --tw-gradient-via: rgba(0, 0, 0, 0);
+  --tw-gradient-to: rgba(0, 0, 0, 0);
+  --tw-gradient-stops: initial;
+  --tw-gradient-via-stops: initial;
+  --tw-gradient-from-position: 0%;
+  --tw-gradient-via-position: 50%;
+  --tw-gradient-to-position: 100%;
   --tw-leading: initial;
   --tw-font-weight: initial;
   --tw-ordinal: initial;
@@ -79,6 +88,9 @@ wx-root-portal-content,
   --color-emerald-100: rgb(208, 250, 229);
   --color-emerald-500: rgb(0, 185, 129);
   --color-emerald-600: rgb(0, 150, 105);
+  --color-cyan-500: rgb(0, 182, 212);
+  --color-blue-500: rgb(50, 128, 255);
+  --color-indigo-500: rgb(98, 96, 255);
   --color-slate-50: rgb(248, 250, 252);
   --color-slate-200: rgb(226, 232, 240);
   --color-slate-500: rgb(98, 116, 142);
@@ -467,8 +479,14 @@ input {
 .aspect-_bcalc_p4_x3_u1_P_f3_B {
   aspect-ratio: calc(4 * 3 + 1) / 3;
 }
+.h-10 {
+  height: calc(var(--spacing) * 10);
+}
 .h-12 {
   height: calc(var(--spacing) * 12);
+}
+.h-14 {
+  height: calc(var(--spacing) * 14);
 }
 .h-20 {
   height: calc(var(--spacing) * 20);
@@ -730,6 +748,64 @@ input {
 }
 .bg-white {
   background-color: var(--color-white);
+}
+.bg-gradient-to-r {
+  --tw-gradient-position: to right;
+  background-image: linear-gradient(var(--tw-gradient-stops));
+}
+.from-blue-500 {
+  --tw-gradient-from: var(--color-blue-500);
+  --tw-gradient-stops: var(
+    --tw-gradient-via-stops,
+    var(--tw-gradient-position),
+    var(--tw-gradient-from) var(--tw-gradient-from-position),
+    var(--tw-gradient-to) var(--tw-gradient-to-position)
+  );
+}
+.from-cyan-500 {
+  --tw-gradient-from: var(--color-cyan-500);
+  --tw-gradient-stops: var(
+    --tw-gradient-via-stops,
+    var(--tw-gradient-position),
+    var(--tw-gradient-from) var(--tw-gradient-from-position),
+    var(--tw-gradient-to) var(--tw-gradient-to-position)
+  );
+}
+.from-emerald-500 {
+  --tw-gradient-from: var(--color-emerald-500);
+  --tw-gradient-stops: var(
+    --tw-gradient-via-stops,
+    var(--tw-gradient-position),
+    var(--tw-gradient-from) var(--tw-gradient-from-position),
+    var(--tw-gradient-to) var(--tw-gradient-to-position)
+  );
+}
+.to-blue-500 {
+  --tw-gradient-to: var(--color-blue-500);
+  --tw-gradient-stops: var(
+    --tw-gradient-via-stops,
+    var(--tw-gradient-position),
+    var(--tw-gradient-from) var(--tw-gradient-from-position),
+    var(--tw-gradient-to) var(--tw-gradient-to-position)
+  );
+}
+.to-cyan-500 {
+  --tw-gradient-to: var(--color-cyan-500);
+  --tw-gradient-stops: var(
+    --tw-gradient-via-stops,
+    var(--tw-gradient-position),
+    var(--tw-gradient-from) var(--tw-gradient-from-position),
+    var(--tw-gradient-to) var(--tw-gradient-to-position)
+  );
+}
+.to-indigo-500 {
+  --tw-gradient-to: var(--color-indigo-500);
+  --tw-gradient-stops: var(
+    --tw-gradient-via-stops,
+    var(--tw-gradient-position),
+    var(--tw-gradient-from) var(--tw-gradient-from-position),
+    var(--tw-gradient-to) var(--tw-gradient-to-position)
+  );
 }
 .bg-repeat {
   background-repeat: repeat;

@@ -6,6 +6,7 @@
         <text class="text-sm text-[#929292]">
           这里演示如何在分包中独立使用 Tailwind CSS。
         </text>
+        <view class="bg-gradient-to-r from-emerald-500 to-cyan-500 h-12 rounded-xl"></view>
         <button
           class="rounded-xl bg-emerald-500 py-2 text-center text-white shadow-sm active:bg-emerald-600"
           @tap="goUser"

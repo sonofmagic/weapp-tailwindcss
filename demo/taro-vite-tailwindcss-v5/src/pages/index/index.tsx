@@ -16,7 +16,9 @@ export default function Index() {
       <View className={`h-[300px] rotate-[10deg] ${stateClass}`}>动态模板字符串 + twMerge</View>
       <Text className='text-[55rpx] text-[#fff] bg-brand'>@theme token</Text>
       <View className='h-14 bg-gradient-to-r from-cyan-500 to-blue-500'></View>
+      <View className='h-14 bg-gradient-to-b from-fuchsia-500 to-rose-500'></View>
       <View className='h-14 bg-linear-to-r from-cyan-500 to-blue-500'></View>
+      <View className='rounded-xl bg-[#123456] p-4 text-white'>静态 class + 任意值</View>
       <View
         className={`dark:bg-zinc-800 bg-gray-100 text-[32rpx] ${actionClass}`}
         hoverClass='bg-red-500 dark:bg-green-500'

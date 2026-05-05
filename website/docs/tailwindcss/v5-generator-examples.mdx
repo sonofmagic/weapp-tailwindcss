@@ -118,6 +118,8 @@ const className = ref(twMerge('bg-[#0000ff] text-[45rpx]', 'text-white rounded-l
 
 验证命令：`pnpm --filter @weapp-tailwindcss-demo/uni-app-tailwindcss-v5 build`
 
+这些示例会同时被仓库的 `packages/weapp-tailwindcss/test/v5/apps-demo-generator-config.test.ts` 和 `pnpm e2e:static` 约束，避免文档、demo 与 CI 发生分叉。
+
 ## Taro Vite
 
 仓库示例：`demo/taro-vite-tailwindcss-v5`。
@@ -194,11 +196,15 @@ export default function Index() {
 
 验证命令：`pnpm --filter @weapp-tailwindcss-demo/taro-vite-tailwindcss-v5 build`
 
+这些示例也会进入静态 E2E 和 v5 配置契约测试，确保 CI 里看到的就是这里展示的写法。
+
 ## Mpx
 
 仓库示例：`demo/mpx-tailwindcss-v5`。
 
 Mpx 仍由 Webpack 负责模板与 JS 转译，但 CSS 可以走 v5 PostCSS generator。这样它不依赖 Vite，也能直接生成小程序需要的样式。
+
+Mpx 示例同样纳入静态 E2E 与 v5 demo 契约测试。
 
 ```js title="mpx.config.js"
 const { defineConfig } = require('@vue/cli-service')

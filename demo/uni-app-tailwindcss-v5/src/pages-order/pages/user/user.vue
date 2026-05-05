@@ -5,6 +5,7 @@
       <text class="mt-2 block text-sm leading-6 text-slate-500">
         分包单独引入的 Tailwind 配置可以控制扫描范围与产物大小。
       </text>
+      <view class="mt-4 bg-gradient-to-r from-blue-500 to-indigo-500 h-10 rounded-xl"></view>
       <view class="mt-6 flex gap-3">
         <view class="flex h-12 w-12 items-center justify-center rounded-xl bg-emerald-100 text-emerald-600">
           <text class="text-xl font-bold">U</text>

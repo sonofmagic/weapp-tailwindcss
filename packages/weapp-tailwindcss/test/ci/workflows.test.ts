@@ -46,11 +46,11 @@ describe('ci workflows', () => {
   it('keeps the core CI quality gate on package changes', () => {
     const { workflow } = readWorkflow('ci.yml')
 
-    expect(workflow.on.pull_request['paths-ignore']).toEqual(expect.arrayContaining([
-      'website/**',
+    expect(workflow.on.pull_request['paths-ignore']).toEqual([
       '**/*.md',
       '.changeset/**',
-    ]))
+    ])
+    expect(workflow.jobs.quality.steps.some((step: Record<string, unknown>) => step.name === 'E2E Static')).toBe(true)
 
     expect(stepRuns(workflow, 'quality')).toEqual(expect.arrayContaining([
       'pnpm install --frozen-lockfile',

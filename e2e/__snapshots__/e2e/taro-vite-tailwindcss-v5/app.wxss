@@ -88,6 +88,8 @@ wx-root-portal-content,
   --color-emerald-600: rgb(0, 150, 105);
   --color-cyan-500: rgb(0, 182, 212);
   --color-blue-500: rgb(50, 128, 255);
+  --color-fuchsia-500: rgb(225, 42, 251);
+  --color-rose-500: rgb(255, 35, 87);
   --color-gray-100: rgb(243, 244, 246);
   --color-zinc-800: rgb(39, 39, 42);
   --color-white: #fff;
@@ -618,6 +620,10 @@ input {
 .bg-linear-to-r {
   background-image: linear-gradient(var(--tw-gradient-stops));
 }
+.bg-gradient-to-b {
+  --tw-gradient-position: to bottom;
+  background-image: linear-gradient(var(--tw-gradient-stops));
+}
 .bg-gradient-to-r {
   --tw-gradient-position: to right;
   background-image: linear-gradient(var(--tw-gradient-stops));
@@ -631,8 +637,26 @@ input {
     var(--tw-gradient-to) var(--tw-gradient-to-position)
   );
 }
+.from-fuchsia-500 {
+  --tw-gradient-from: var(--color-fuchsia-500);
+  --tw-gradient-stops: var(
+    --tw-gradient-via-stops,
+    var(--tw-gradient-position),
+    var(--tw-gradient-from) var(--tw-gradient-from-position),
+    var(--tw-gradient-to) var(--tw-gradient-to-position)
+  );
+}
 .to-blue-500 {
   --tw-gradient-to: var(--color-blue-500);
+  --tw-gradient-stops: var(
+    --tw-gradient-via-stops,
+    var(--tw-gradient-position),
+    var(--tw-gradient-from) var(--tw-gradient-from-position),
+    var(--tw-gradient-to) var(--tw-gradient-to-position)
+  );
+}
+.to-rose-500 {
+  --tw-gradient-to: var(--color-rose-500);
   --tw-gradient-stops: var(
     --tw-gradient-via-stops,
     var(--tw-gradient-position),

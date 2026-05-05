@@ -95,8 +95,24 @@ describe('v5 apps and demos generator config', () => {
   })
 
   it('keeps the runnable framework demos covering v5 generator features', async () => {
-    const [uniPageSource, taroCssSource, taroPageSource, mpxCssSource, mpxPageSource] = await Promise.all([
+    const [
+      uniPageSource,
+      uniPagesJsonSource,
+      uniMainCssSource,
+      uniCommonCssSource,
+      uniOrderHomeSource,
+      uniOrderUserSource,
+      taroCssSource,
+      taroPageSource,
+      mpxCssSource,
+      mpxPageSource,
+    ] = await Promise.all([
       readProjectFile('demo/uni-app-tailwindcss-v5/src/pages/index/index.vue'),
+      readProjectFile('demo/uni-app-tailwindcss-v5/src/pages.json'),
+      readProjectFile('demo/uni-app-tailwindcss-v5/src/main.css'),
+      readProjectFile('demo/uni-app-tailwindcss-v5/src/common.css'),
+      readProjectFile('demo/uni-app-tailwindcss-v5/src/pages-order/pages/home/home.vue'),
+      readProjectFile('demo/uni-app-tailwindcss-v5/src/pages-order/pages/user/user.vue'),
       readProjectFile('demo/taro-vite-tailwindcss-v5/src/app.css'),
       readProjectFile('demo/taro-vite-tailwindcss-v5/src/pages/index/index.tsx'),
       readProjectFile('demo/mpx-tailwindcss-v5/src/app.css'),
@@ -104,6 +120,14 @@ describe('v5 apps and demos generator config', () => {
     ])
 
     expect(uniPageSource).toContain("twMerge('bg-[#0000ff] text-[45rpx]'")
+    expect(uniPageSource).toContain('bg-gradient-to-r from-cyan-500 to-blue-500')
+    expect(uniPageSource).toContain('aspect-[calc(4*3+1)/3]')
+    expect(uniPageSource).toContain('weappTwIgnore`bg-[#123498]`')
+    expect(uniPagesJsonSource).toContain('"subPackages"')
+    expect(uniMainCssSource).toContain('@config "../tailwind.config.js";')
+    expect(uniCommonCssSource).toContain('@config "../tailwind.config.order.js";')
+    expect(uniOrderHomeSource).toContain('bg-gradient-to-r from-emerald-500 to-cyan-500')
+    expect(uniOrderUserSource).toContain('bg-gradient-to-r from-blue-500 to-indigo-500')
     expect(taroCssSource).toContain('@source "./pages/**/*.{ts,tsx,jsx,js}";')
     expect(taroCssSource).toContain('@theme')
     expect(taroPageSource).toContain('@weapp-tailwindcss/merge')
@@ -111,9 +135,16 @@ describe('v5 apps and demos generator config', () => {
     expect(taroPageSource).toContain('hoverClass=')
     expect(taroPageSource).toContain('dark:bg-zinc-800')
     expect(taroPageSource).toContain('!border-brand')
+    expect(taroPageSource).toContain('bg-gradient-to-r from-cyan-500 to-blue-500')
+    expect(taroPageSource).toContain('bg-gradient-to-b from-fuchsia-500 to-rose-500')
+    expect(taroPageSource).toContain('bg-linear-to-r from-cyan-500 to-blue-500')
+    expect(taroPageSource).toContain('rounded-xl bg-[#123456] p-4 text-white')
     expect(mpxCssSource).toContain('@theme')
     expect(mpxPageSource).toContain('@weapp-tailwindcss/merge')
     expect(mpxPageSource).toContain(':class="mergedClass"')
+    expect(mpxPageSource).toContain('space-y-4 flex flex-col bg-red-400')
+    expect(mpxPageSource).toContain('border-[10px] border-[#098765] border-solid border-opacity-[0.44]')
+    expect(mpxPageSource).toContain('bg-gradient-to-r from-cyan-500 to-blue-500')
   })
 
   it('uses the postcss generator path for the mpx tailwind v5 demo', async () => {

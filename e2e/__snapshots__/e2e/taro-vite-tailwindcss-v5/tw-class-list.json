@@ -1,6 +1,7 @@
 [
   "active:bg-emerald-600",
   "bg-[#123456]",
+  "bg-gradient-to-b",
   "bg-gradient-to-r",
   "bg-gray-100",
   "bg-linear-to-r",
@@ -9,6 +10,7 @@
   "dark:bg-green-500",
   "dark:bg-zinc-800",
   "from-cyan-500",
+  "from-fuchsia-500",
   "h-14",
   "h-[300px]",
   "p-4",
@@ -22,5 +24,6 @@
   "text-[32rpx]",
   "text-[55rpx]",
   "text-white",
-  "to-blue-500"
+  "to-blue-500",
+  "to-rose-500"
 ]
