@@ -28,6 +28,7 @@ interface GenerateBundleContext {
   ensureBundleRuntimeClassSet: (snapshot: BundleSnapshot, forceRefresh?: boolean) => Promise<Set<string>>
   debug: (format: string, ...args: unknown[]) => void
   getResolvedConfig: () => ResolvedConfig | undefined
+  markCssAssetProcessed?: (asset: OutputAsset) => void
 }
 
 interface BundleMetric {
@@ -257,6 +258,7 @@ export function createGenerateBundleHook(context: GenerateBundleContext) {
       ensureBundleRuntimeClassSet,
       debug,
       getResolvedConfig,
+      markCssAssetProcessed,
     } = context
     const {
       appType,
@@ -504,6 +506,7 @@ export function createGenerateBundleHook(context: GenerateBundleContext) {
             hash: getSnapshotHash(snapshot.runtimeAffectingHashByFile, file, cssRuntimeAffectingSignature),
             applyResult(source) {
               originalSource.source = source
+              markCssAssetProcessed?.(originalSource)
             },
             onCacheHit() {
               metrics.css.cacheHits++

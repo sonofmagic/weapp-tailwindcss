@@ -1,7 +1,7 @@
 import type { OutputAsset, OutputChunk } from 'rollup'
 import type { Plugin, ResolvedConfig } from 'vite'
 import type { CreateJsHandlerOptions } from '@/types'
-import { mkdir, mkdtemp, readFile, rm, writeFile } from 'node:fs/promises'
+import { mkdtemp, readFile, rm, writeFile } from 'node:fs/promises'
 import os from 'node:os'
 import path from 'node:path'
 import { MappingChars2String } from '@weapp-core/escape'
@@ -37,8 +37,8 @@ function getGenerateBundleHandler(plugin: Plugin) {
   return typeof hook === 'object' ? hook.handler : hook
 }
 
-function getWriteBundleHandler(plugin: Plugin) {
-  const hook = plugin.writeBundle as any
+function getOutputOptionsHandler(plugin: Plugin) {
+  const hook = plugin.outputOptions as any
   return typeof hook === 'object' ? hook.handler : hook
 }
 
@@ -671,11 +671,7 @@ const trace = "at App.vue:4"
     })
   }, TEST_TIMEOUT_MS)
 
-  it('rewrites tailwind css files emitted after generateBundle in writeBundle', async () => {
-    const projectRoot = await mkdtemp(path.join(os.tmpdir(), 'weapp-tw-vite-write-bundle-'))
-    createdDirs.push(projectRoot)
-    const outDir = path.join(projectRoot, 'dist')
-    const pageCssFile = path.join(outDir, 'pages-order/pages/home/home.wxss')
+  it('finalizes css assets emitted after the main generateBundle pass through Rollup output plugins', async () => {
     const runtimeSet = new Set(['w-[100px]'])
     const rawTailwindCss = '/*! tailwindcss v4.2.4 | MIT License | https://tailwindcss.com */\n.w-\\[100px\\]{width:100px}\n@property --tw-leading{syntax:"*";inherits:false}'
     const weappCss = '.w-_b100px_B{width:100px}'
@@ -701,8 +697,8 @@ const trace = "at App.vue:4"
       })),
       normalizeWeappTailwindcssGeneratorOptions: normalizeGeneratorOptions,
       resolveTailwindV4SourceFromPatcher: vi.fn(async () => ({
-        projectRoot,
-        base: projectRoot,
+        projectRoot: process.cwd(),
+        base: process.cwd(),
         baseFallbacks: [],
         css: '@import "tailwindcss";',
         dependencies: [],
@@ -732,31 +728,51 @@ const trace = "at App.vue:4"
     const postPlugin = plugins?.find(plugin => plugin.name === 'weapp-tailwindcss:adaptor:post') as Plugin
     expect(postPlugin).toBeTruthy()
 
-    await mkdir(path.dirname(pageCssFile), { recursive: true })
-    await writeFile(pageCssFile, rawTailwindCss, 'utf8')
-    await writeFile(path.join(outDir, 'pages-order/pages/home/plain.wxss'), '.plain{color:red}', 'utf8')
     await (postPlugin.configResolved as any)?.call(postPlugin, {
       command: 'build',
-      root: projectRoot,
+      root: process.cwd(),
       css: { postcss: { plugins: [] } },
       build: { outDir: 'dist' },
     } as ResolvedConfig)
 
-    const writeBundle = getWriteBundleHandler(postPlugin)
-    await writeBundle?.call(postPlugin, {} as any, {})
+    const outputOptions = getOutputOptionsHandler(postPlugin)
+    const nextOptions = outputOptions?.call(postPlugin, { plugins: [] })
+    const finalizer = nextOptions?.plugins?.find((plugin: Plugin) =>
+      plugin.name === 'weapp-tailwindcss:adaptor:css-finalizer')
+    expect(finalizer).toBeTruthy()
 
-    const css = await readFile(pageCssFile, 'utf8')
+    const bundle = {
+      'pages-order/pages/home/home.wxss': {
+        ...createRollupAsset(rawTailwindCss),
+        fileName: 'pages-order/pages/home/home.wxss',
+      },
+      'pages-order/pages/home/plain.wxss': {
+        ...createRollupAsset('.plain{color:red}'),
+        fileName: 'pages-order/pages/home/plain.wxss',
+      },
+    }
+    const generateBundle = getGenerateBundleHandler(finalizer)
+    await generateBundle?.call(finalizer, {} as any, bundle)
+
+    const css = (bundle['pages-order/pages/home/home.wxss'] as OutputAsset).source.toString()
     expect(css).toBe(weappCss)
     expect(css).not.toContain('@property')
     expect(css).not.toContain('tailwindcss v')
     expect(generateMock).toHaveBeenCalledTimes(1)
-    expect(styleHandler).not.toHaveBeenCalled()
+    expect(styleHandler).toHaveBeenCalledTimes(1)
+    expect(styleHandler).toHaveBeenCalledWith('.plain{color:red}', expect.objectContaining({
+      postcssOptions: {
+        options: {
+          from: 'pages-order/pages/home/plain.wxss',
+        },
+      },
+    }))
     expect(currentContext.onUpdate).toHaveBeenCalledWith(
       'pages-order/pages/home/home.wxss',
       rawTailwindCss,
       weappCss,
     )
-    expect(await readFile(path.join(outDir, 'pages-order/pages/home/plain.wxss'), 'utf8')).toBe('.plain{color:red}')
+    expect((bundle['pages-order/pages/home/plain.wxss'] as OutputAsset).source).toBe('legacy:.plain{color:red}')
   }, TEST_TIMEOUT_MS)
 
   it('keeps legacy css handling when tailwind v4 generator is disabled', async () => {

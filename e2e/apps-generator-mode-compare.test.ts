@@ -90,6 +90,10 @@ async function cleanProject(root: string) {
     fs.rm(path.resolve(root, 'unpackage'), { recursive: true, force: true }),
     fs.rm(path.resolve(root, 'node_modules/.vite'), { recursive: true, force: true }),
     fs.rm(path.resolve(root, 'node_modules/.cache/tailwindcss-patch'), { recursive: true, force: true }),
+    fs.rm(path.resolve(root, 'node_modules/.cache/weapp-tailwindcss'), { recursive: true, force: true }),
+    fs.rm(path.resolve(root, 'src/node_modules/.cache/tailwindcss-patch'), { recursive: true, force: true }),
+    fs.rm(path.resolve(root, 'src/node_modules/.cache/weapp-tailwindcss'), { recursive: true, force: true }),
+    fs.rm(path.resolve(root, '.tw-patch/tailwindcss-target.json'), { force: true }),
   ])
 }
 

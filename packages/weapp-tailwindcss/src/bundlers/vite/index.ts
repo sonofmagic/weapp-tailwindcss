@@ -21,12 +21,12 @@ import { isUniAppXEnabled } from '@/uni-app-x/options'
 import { resolveUniUtsPlatform } from '@/utils'
 import { resolveDisabledOptions } from '@/utils/disabled'
 import { resolvePackageDir } from '@/utils/resolve-package'
+import { createViteCssFinalizerOutputPlugin } from './css-finalizer'
 import { createGenerateBundleHook } from './generate-bundle'
 import { createBundleRuntimeClassSetManager } from './incremental-runtime-class-set'
 import { resolveImplicitAppTypeFromViteRoot } from './resolve-app-type'
 import { createRewriteCssImportsPlugins } from './rewrite-css-imports'
 import { slash } from './utils'
-import { createWriteBundleHook } from './write-bundle'
 
 const debug = createDebug()
 const weappTailwindcssPackageDir = resolvePackageDir('weapp-tailwindcss')
@@ -130,6 +130,7 @@ export function UnifiedViteWeappTailwindcssPlugin(options: UserDefinedOptions = 
   let runtimeRefreshSignature: string | undefined
   let runtimeRefreshOptionsKey: string | undefined
   const bundleRuntimeClassSetManager = createBundleRuntimeClassSetManager()
+  const processedCssAssets = new WeakMap<object, string>()
 
   function resolveRuntimeRefreshOptions() {
     const configPath = resolveTailwindcssOptions(runtimeState.twPatcher.options)?.config
@@ -249,12 +250,20 @@ export function UnifiedViteWeappTailwindcssPlugin(options: UserDefinedOptions = 
   }
   onLoad()
   const getResolvedConfig = () => resolvedConfig
-  const handleDiskCssFallback = createWriteBundleHook({
+  const markCssAssetProcessed = (asset: { source: unknown }) => {
+    processedCssAssets.set(asset, asset.source?.toString() ?? '')
+  }
+  const isCssAssetProcessed = (asset: { source: unknown }) => {
+    return processedCssAssets.get(asset) === (asset.source?.toString() ?? '')
+  }
+  const cssFinalizerOutputPlugin = createViteCssFinalizerOutputPlugin({
     opts,
     runtimeState,
     ensureRuntimeClassSet,
     debug,
     getResolvedConfig,
+    markCssAssetProcessed,
+    isCssAssetProcessed,
   })
   const utsPlatform = resolveUniUtsPlatform()
   const isIosPlatform = utsPlatform.isAppIos
@@ -338,15 +347,17 @@ export function UnifiedViteWeappTailwindcssPlugin(options: UserDefinedOptions = 
           ensureBundleRuntimeClassSet,
           debug,
           getResolvedConfig,
+          markCssAssetProcessed,
         }),
       },
-      writeBundle: {
-        order: 'post',
-        handler: handleDiskCssFallback,
-      },
-      closeBundle: {
-        order: 'post',
-        handler: handleDiskCssFallback,
+      outputOptions(options) {
+        const plugins = options.plugins
+        return {
+          ...options,
+          plugins: Array.isArray(plugins)
+            ? [...plugins, cssFinalizerOutputPlugin]
+            : [cssFinalizerOutputPlugin],
+        }
       },
     },
   ]
