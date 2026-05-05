@@ -126,6 +126,36 @@ describe('tailwindcss v4 engine', () => {
     expect(explicitBaseOptions.base).toBe('/custom/base')
   })
 
+  it('passes configured v4 source entries through for bundler generation', () => {
+    const sourceEntries = [
+      {
+        base: '/workspace/app',
+        pattern: 'src/**/*.{vue,tsx,wxml}',
+        negated: false,
+      },
+      {
+        base: '/workspace/app',
+        pattern: 'dist',
+        negated: true,
+      },
+    ]
+    const options = resolveTailwindV4SourceOptionsFromPatcher({
+      options: {
+        projectRoot: '/workspace/app',
+        tailwind: {
+          cwd: '/workspace/app',
+          v4: {
+            cssEntries: ['/workspace/app/src/app.css'],
+            sources: sourceEntries,
+          },
+        },
+      },
+      packageInfo: { name: 'tailwindcss', version: '4.2.4' },
+    } as any)
+
+    expect(options.sources).toBe(sourceEntries)
+  })
+
   it('keeps missing cssEntries as imports for Tailwind resolution', async () => {
     const root = await mkdtemp(path.join(tmpdir(), 'weapp-tw-v4-engine-'))
     const cssEntry = path.join(root, 'missing.css')

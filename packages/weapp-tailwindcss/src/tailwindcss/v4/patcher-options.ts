@@ -10,6 +10,11 @@ export interface LegacyTailwindcssPatcherOptionsLike {
       v4?: {
         base?: string
         cssEntries?: string[]
+        sources?: Array<{
+          base?: string
+          pattern: string
+          negated?: boolean
+        }>
       }
     }
     [key: string]: unknown

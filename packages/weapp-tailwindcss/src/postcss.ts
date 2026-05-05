@@ -14,6 +14,7 @@ import process from 'node:process'
 import fg from 'fast-glob'
 import postcss from 'postcss'
 import { loadConfig } from 'tailwindcss-config'
+import { extractValidCandidates } from 'tailwindcss-patch'
 import {
   createWeappTailwindcssGenerator,
   normalizeWeappTailwindcssGeneratorOptions,
@@ -45,6 +46,12 @@ type LegacyContentFilePattern = string
 interface LegacyContentObject {
   files?: LegacyContentConfig
   relative?: boolean
+}
+
+interface TailwindSourceEntry {
+  base: string
+  pattern: string
+  negated: boolean
 }
 
 type LegacyContentConfig
@@ -115,6 +122,23 @@ function parseConfigParam(params: string) {
   return match?.[2]
 }
 
+function parseSourceFileParam(params: string) {
+  const value = params.trim()
+  if (!value || value === 'none' || value.startsWith('inline(')) {
+    return undefined
+  }
+
+  const negated = value.startsWith('not ')
+  const sourceValue = negated ? value.slice(4).trim() : value
+  const match = /^(['"])(.+)\1$/.exec(sourceValue)
+  return match?.[2]
+    ? {
+        negated,
+        sourcePath: match[2],
+      }
+    : undefined
+}
+
 function getSourceExtension(file: string) {
   const extension = path.extname(file).slice(1)
   return extension || undefined
@@ -144,6 +168,35 @@ async function expandLocalSourceFiles(sourcePath: string, base: string) {
     cwd: base,
     onlyFiles: true,
   })
+}
+
+async function resolveTailwindSourceEntry(
+  sourcePath: string,
+  base: string,
+  negated: boolean,
+): Promise<TailwindSourceEntry> {
+  const absoluteSource = path.isAbsolute(sourcePath) ? path.resolve(sourcePath) : path.resolve(base, sourcePath)
+  if (await pathExistsAsDirectory(absoluteSource)) {
+    return {
+      base: absoluteSource,
+      negated,
+      pattern: '**/*',
+    }
+  }
+
+  if (path.isAbsolute(sourcePath)) {
+    return {
+      base: path.dirname(absoluteSource),
+      negated,
+      pattern: path.basename(absoluteSource),
+    }
+  }
+
+  return {
+    base,
+    negated,
+    pattern: sourcePath,
+  }
 }
 
 function collectConfigPaths(root: Root, base: string) {
@@ -187,6 +240,49 @@ async function collectConfigContentFiles(root: Root, base: string) {
     configPaths,
     files: [...new Set(files)],
   }
+}
+
+async function collectAutoTailwindCandidates(
+  root: Root,
+  result: Result,
+  options: WeappTailwindcssPostcssPluginOptions,
+) {
+  const base = resolvePostcssBase(result, options)
+  const projectRoot = resolvePostcssProjectRoot(result, options)
+  const sourceEntryTasks: Array<Promise<TailwindSourceEntry>> = []
+  const hasSourceNone = root.toString().includes('source(none)')
+
+  if (!hasSourceNone) {
+    sourceEntryTasks.push(Promise.resolve({
+      base,
+      negated: false,
+      pattern: '**/*',
+    }))
+  }
+
+  root.walkAtRules('source', (rule) => {
+    const parsed = parseSourceFileParam(rule.params)
+    if (!parsed) {
+      return
+    }
+    sourceEntryTasks.push(
+      resolveTailwindSourceEntry(parsed.sourcePath, base, parsed.negated),
+    )
+  })
+
+  const sourceEntries = await Promise.all(sourceEntryTasks)
+  if (sourceEntries.length === 0) {
+    return new Set<string>()
+  }
+
+  const candidates = await extractValidCandidates({
+    base,
+    css: root.toString(),
+    cwd: projectRoot,
+    sources: sourceEntries,
+  })
+
+  return new Set(candidates)
 }
 
 async function collectPostcssLocalSources(
@@ -248,7 +344,10 @@ export const weappTailwindcssPostcssPlugin: PluginCreator<WeappTailwindcssPostcs
         return
       }
 
-      const collectedSources = await collectPostcssLocalSources(root, result, options)
+      const [collectedSources, autoCandidates] = await Promise.all([
+        collectPostcssLocalSources(root, result, options),
+        collectAutoTailwindCandidates(root, result, options),
+      ])
       const source = await resolveTailwindV4Source({
         ...sourceOptions,
         css: sourceOptions.css ?? root.toString(),
@@ -257,7 +356,10 @@ export const weappTailwindcssPostcssPlugin: PluginCreator<WeappTailwindcssPostcs
       })
       const generator = createWeappTailwindcssGenerator(source)
       const generateOptions: WeappTailwindcssGenerateOptions = {
-        candidates,
+        candidates: new Set([
+          ...autoCandidates,
+          ...(candidates ?? []),
+        ]),
         sources: [
           ...collectedSources.sources,
           ...(sources ?? []),

@@ -103,6 +103,37 @@ describe('v5 postcss generator', () => {
     }))
   })
 
+  it('discovers default source files relative to the current postcss input file', async () => {
+    const root = await mkdtemp(path.join(tmpdir(), 'weapp-tw-v5-postcss-auto-'))
+    const cssEntry = path.join(root, 'app.css')
+    const sourceDir = path.join(root, 'src')
+    const pageEntry = path.join(sourceDir, 'page.wxml')
+    const ignoredEntry = path.join(sourceDir, 'ignored.wxml')
+    await mkdir(sourceDir)
+    await writeFile(pageEntry, '<view class="bg-blue-500 w-[100px]"></view>', 'utf8')
+    await writeFile(ignoredEntry, '<view class="text-[55rpx]"></view>', 'utf8')
+
+    const result = await postcss([
+      weappTailwindcss(),
+    ]).process(`
+      @theme default {
+        --color-blue-500: oklch(62.3% 0.214 259.815);
+      }
+      @source not "./src/ignored.wxml";
+      @tailwind utilities;
+    `, {
+      from: cssEntry,
+    })
+
+    expect(result.css).toContain('.bg-blue-500')
+    expect(result.css).toContain('.w-_b100px_B')
+    expect(result.css).not.toContain('.text-_b55rpx_B')
+    expect(result.messages).toContainEqual(expect.objectContaining({
+      type: 'weapp-tailwindcss:generated',
+      target: 'weapp',
+    }))
+  })
+
   it('resolves @config paths relative to the current postcss input file', async () => {
     const root = await mkdtemp(path.join(tmpdir(), 'weapp-tw-v5-postcss-config-'))
     const sourceDir = path.join(root, 'src')

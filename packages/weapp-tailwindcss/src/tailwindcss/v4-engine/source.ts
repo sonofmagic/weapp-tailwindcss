@@ -73,6 +73,7 @@ export function resolveTailwindV4SourceOptionsFromPatcher(
     ]),
     css: tailwindOptions?.v4?.css,
     cssEntries: tailwindOptions?.v4?.cssEntries,
+    sources: tailwindOptions?.v4?.sources,
     packageName: resolveTailwindCssImportTarget(patcher),
   }
 }
