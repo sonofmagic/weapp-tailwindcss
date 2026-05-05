@@ -1,0 +1,295 @@
+---
+id: v5-generator-examples
+title: v5 Tailwind CSS v4 生成器示例
+description: 使用 weapp-tailwindcss v5 生成器接入 uni-app Vue Vite、Taro Vite 与 Mpx 的完整示例
+sidebar_position: 6
+keywords:
+  - weapp-tailwindcss
+  - tailwindcss v4
+  - generator
+  - uni-app
+  - taro
+  - mpx
+  - 小程序
+---
+
+# v5 Tailwind CSS v4 生成器示例
+
+v5 推荐把 Tailwind CSS v4 当作标准 CSS-first 入口使用，再由 `weapp-tailwindcss` 控制最终样式生成。核心变化是：入口 CSS 写 `@import "tailwindcss"`，构建插件或 PostCSS 插件开启 `generator`，最终产物直接面向小程序，而不是先生成浏览器 CSS 再做大量兜底兼容。
+
+## 功能覆盖清单
+
+| 能力 | uni-app Vue Vite | Taro Vite | Mpx |
+| --- | --- | --- | --- |
+| 标准 `@import "tailwindcss"` | 是 | 是 | 是 |
+| Tailwind CSS v4 `@source` | 是 | 是 | 是 |
+| `@theme` / `@config` | 是 | 是 | 是 |
+| `generator.mode = "force"` | Vite 插件 | Vite 插件 | PostCSS 插件 |
+| `target = "weapp"` 小程序产物 | 是 | 是 | 是 |
+| `target = "web"` 多端调试 | 支持 | 支持 | 支持 |
+| `rem2rpx` / `rpx` 任意值 | 是 | 是 | 是 |
+| hover / active / dark / important / arbitrary value | 是 | 是 | 是 |
+| JS / 模板动态类精确转译 | 是 | 是 | 是 |
+| `@weapp-tailwindcss/merge` 运行时合并 | 是 | 可用 | 可用 |
+| CSS dependency / HMR 依赖追踪 | 是 | 是 | 是 |
+
+:::tip 生产建议
+小程序目标使用 `generator: { mode: 'force', target: 'weapp' }`。这样 CI 会在生成失败时直接失败，不会悄悄回退到旧 CSS 后处理链路。
+:::
+
+## uni-app Vue Vite
+
+仓库示例：`demo/uni-app-tailwindcss-v4`。
+
+```ts title="vite.config.ts"
+import { createRequire } from 'node:module'
+import path from 'node:path'
+import uni from '@dcloudio/vite-plugin-uni'
+import { defineConfig } from 'vite'
+import { UnifiedViteWeappTailwindcssPlugin } from 'weapp-tailwindcss/vite'
+
+const require = createRequire(import.meta.url)
+const uniMpVueRuntimePath = require.resolve('@dcloudio/uni-mp-vue/dist/vue.runtime.esm.js')
+
+export default defineConfig(async () => {
+  const { default: tailwindcss } = await import('@tailwindcss/vite')
+
+  return {
+    plugins: [
+      uni(),
+      tailwindcss(),
+      UnifiedViteWeappTailwindcssPlugin({
+        rem2rpx: true,
+        generator: {
+          mode: 'force',
+          target: 'weapp',
+          styleOptions: {
+            cssChildCombinatorReplaceValue: ['view', 'text'],
+          },
+        },
+        cssEntries: [
+          path.resolve(__dirname, 'src/main.css'),
+          path.resolve(__dirname, 'src/common.css'),
+        ],
+      }),
+    ],
+    resolve: {
+      alias: {
+        '@dcloudio/uni-mp-vue/dist/vue.runtime.esm.js': uniMpVueRuntimePath,
+      },
+    },
+  }
+})
+```
+
+```css title="src/main.css"
+@import "tailwindcss";
+@config "../tailwind.config.js";
+@source not "../src/uni_modules";
+
+@theme {
+  --color-midnight: #121063;
+  --color-tahiti: #3ab7bf;
+  --color-bermuda: #78dcca;
+}
+```
+
+```vue title="src/pages/index/index.vue"
+<template>
+  <view class="flex flex-col gap-4 p-6">
+    <text class="text-[88rpx] font-bold text-[#00f285] underline">{{ title }}</text>
+    <view class="rounded-xl bg-midnight p-4 text-tahiti shadow-[0_8rpx_24rpx_rgba(0,0,0,0.18)]">
+      @theme token + arbitrary shadow
+    </view>
+    <view :class="className" class="active:bg-emerald-600">
+      classNameSet 精确命中的动态类
+    </view>
+  </view>
+</template>
+
+<script setup lang="ts">
+import { twMerge } from '@weapp-tailwindcss/merge'
+import { ref } from 'vue'
+
+const title = ref('v5 generator')
+const className = ref(twMerge('bg-[#0000ff] text-[45rpx]', 'text-white rounded-lg p-4'))
+</script>
+```
+
+验证命令：`pnpm --filter @weapp-tailwindcss-demo/uni-app-tailwindcss-v4 build`
+
+## Taro Vite
+
+仓库示例：`demo/taro-vite-tailwindcss-v4`。
+
+```ts title="config/index.ts"
+import { defineConfig, type UserConfigExport } from '@tarojs/cli'
+import tailwindcss from '@tailwindcss/postcss'
+import path from 'node:path'
+import { UnifiedViteWeappTailwindcssPlugin } from 'weapp-tailwindcss/vite'
+
+export default defineConfig<'vite'>(() => {
+  const baseConfig: UserConfigExport<'vite'> = {
+    projectName: 'taro-vite-tailwindcss-v4',
+    sourceRoot: 'src',
+    outputRoot: 'dist',
+    framework: 'react',
+    compiler: {
+      type: 'vite',
+      vitePlugins: [
+        {
+          name: 'postcss-config-loader-plugin',
+          config(config) {
+            if (typeof config.css?.postcss === 'object') {
+              config.css.postcss.plugins?.unshift(tailwindcss())
+            }
+          },
+        },
+        UnifiedViteWeappTailwindcssPlugin({
+          rem2rpx: true,
+          generator: {
+            mode: 'force',
+            target: 'weapp',
+          },
+          cssEntries: [
+            path.resolve(__dirname, '../src/app.css'),
+          ],
+        }),
+      ],
+    },
+  }
+
+  return baseConfig
+})
+```
+
+```css title="src/app.css"
+@import "tailwindcss";
+@source "./pages/**/*.{ts,tsx,jsx,js}";
+```
+
+```tsx title="src/pages/index/index.tsx"
+import { Text, View } from '@tarojs/components'
+import { twJoin, twMerge } from '@weapp-tailwindcss/merge'
+
+export default function Index() {
+  const stateClass = twMerge('bg-[#123456] text-[#c31d6b]', 'text-white rounded-xl p-4')
+  const actionClass = twJoin('border-[10rpx] !border-brand', 'active:bg-emerald-600')
+
+  return (
+    <View className="space-y-4 p-[32rpx]">
+      <View className={`h-[300px] rotate-[10deg] ${stateClass}`}>动态模板字符串 + twMerge</View>
+      <Text className="bg-brand text-[55rpx] text-[#fff]">@theme token</Text>
+      <View className="h-14 bg-linear-to-r from-cyan-500 to-blue-500" />
+      <View
+        className={`dark:bg-zinc-800 bg-gray-100 text-[32rpx] ${actionClass}`}
+        hoverClass="bg-red-500 dark:bg-green-500"
+      >
+        hoverClass + dark + important + arbitrary value
+      </View>
+    </View>
+  )
+}
+```
+
+验证命令：`pnpm --filter @weapp-tailwindcss-demo/taro-vite-tailwindcss-v4 build`
+
+## Mpx
+
+仓库示例：`demo/mpx-tailwindcss-v4`。
+
+Mpx 仍由 Webpack 负责模板与 JS 转译，但 CSS 可以走 v5 PostCSS generator。这样它不依赖 Vite，也能直接生成小程序需要的样式。
+
+```js title="mpx.config.js"
+const { defineConfig } = require('@vue/cli-service')
+const { default: weappTailwindcss } = require('weapp-tailwindcss/postcss')
+const { UnifiedWebpackPluginV5 } = require('weapp-tailwindcss/webpack')
+const path = require('node:path')
+
+module.exports = defineConfig({
+  pluginOptions: {
+    mpx: {
+      plugin: {
+        postcssInlineConfig: {
+          ignoreConfigFile: true,
+          plugins: [
+            weappTailwindcss({
+              generator: {
+                mode: 'force',
+                target: 'weapp',
+              },
+            }),
+          ],
+        },
+        srcMode: 'wx',
+      },
+      loader: {},
+    },
+  },
+  configureWebpack(config) {
+    config.plugins.push(
+      new UnifiedWebpackPluginV5({
+        rem2rpx: true,
+        appType: 'mpx',
+        generator: false,
+        cssEntries: [
+          path.resolve(__dirname, 'src/app.css'),
+        ],
+      }),
+    )
+  },
+})
+```
+
+```css title="src/app.css"
+@import "tailwindcss";
+@source "../src";
+
+@theme {
+  --color-primary: #155dfc;
+}
+```
+
+```html title="src/pages/index.mpx"
+<template>
+  <view class="space-y-4 p-[32rpx]">
+    <view class="2xl:text-base">响应式类会进入 classNameSet</view>
+    <view class="rotate-[10deg] text-[32rpx] border-[10rpx]">任意值</view>
+    <view class="dark:bg-zinc-800 bg-gray-100" hover-class="bg-red-500">
+      hover-class 同步转译
+    </view>
+    <view :class="numClassObj">动态类对象</view>
+    <view :class="mergedClass">twMerge 动态类</view>
+  </view>
+</template>
+
+<script lang="ts">
+import { createPage } from '@mpxjs/core'
+import { twMerge } from '@weapp-tailwindcss/merge'
+
+createPage({
+  data: {
+    mergedClass: twMerge('bg-[#0000ff] text-[45rpx]', 'text-white rounded-lg p-4'),
+  },
+})
+</script>
+```
+
+验证命令：`pnpm --filter @weapp-tailwindcss-demo/mpx-tailwindcss-v4 build`
+
+## Web 目标调试
+
+同一入口也可以设置 `generator: { mode: 'force', target: 'web' }` 生成浏览器 CSS，用于多端调试或对比 Tailwind 原始产物。`target: 'web'` 不做小程序选择器转义，也不会移除浏览器需要的 hover media；小程序生产构建应使用 `target: 'weapp'`。
+
+## 验证矩阵
+
+建议在合并 v5 示例时至少跑：
+
+```bash
+pnpm --filter weapp-tailwindcss test
+pnpm --filter @weapp-tailwindcss-demo/mpx-tailwindcss-v4 build
+pnpm build:apps
+pnpm build:demo
+```
+
+其中 Taro 与 uni-app 的聚合构建可能被 guard 跳过；需要严格验证时，在交互式终端显式设置 `TARO_BUILD_STRICT=1` 或 `UNI_BUILD_STRICT=1`。

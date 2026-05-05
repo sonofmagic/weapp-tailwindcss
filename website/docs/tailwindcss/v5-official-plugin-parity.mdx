@@ -1,0 +1,121 @@
+---
+id: v5-official-plugin-parity
+title: v5 与官方 Tailwind 插件对照
+description: 对比 weapp-tailwindcss v5 generator 与 @tailwindcss/postcss、@tailwindcss/vite 的能力映射
+sidebar_position: 7
+keywords:
+  - weapp-tailwindcss
+  - tailwindcss v4
+  - '@tailwindcss/postcss'
+  - '@tailwindcss/vite'
+  - generator
+---
+
+# v5 与官方 Tailwind 插件对照
+
+v5 generator 的目标不是替代 Tailwind CSS v4 的 CSS-first 语义，而是在同一份 Tailwind 输入上增加小程序专用输出能力。`target: 'web'` 应与官方 Tailwind 浏览器产物保持同源；`target: 'weapp'` 则在同一 classSet 基础上生成小程序需要且兼容的 CSS。
+
+## 一一对应矩阵
+
+| 能力 | `@tailwindcss/postcss` | `@tailwindcss/vite` | `weapp-tailwindcss/postcss` | `weapp-tailwindcss/vite` |
+| --- | --- | --- | --- | --- |
+| CSS-first 入口 | `@import "tailwindcss"` | `@import "tailwindcss"` | 同一入口 | 同一入口 |
+| `@source` 扫描 | 扫描模板和脚本 | 扫描模板和脚本 | 扫描并补充 PostCSS dependency | 通过 `cssEntries` 绑定入口并复用 v4 source |
+| `@theme` / `@config` | 生成 Tailwind token | 生成 Tailwind token | 复用同一 token | 复用同一 token |
+| 候选类生成 | Scanner candidates | Scanner candidates | classSet 精确命中 candidates | runtime classSet 精确命中 candidates |
+| Web 产物 | 浏览器 CSS | 浏览器 CSS | `target: 'web'` | `target: 'web'` |
+| 小程序产物 | 不支持 | 不支持 | `target: 'weapp'` | `target: 'weapp'` |
+| 强制失败 | 编译失败即失败 | 编译失败即失败 | `mode: 'force'` | `mode: 'force'` |
+| 依赖追踪 / HMR | `dependency` / `dir-dependency` | `addWatchFile` / `hotUpdate` | `dependency` | `cssEntries` / dependencies / HMR |
+
+## PostCSS 对照
+
+官方写法：
+
+```js title="postcss.config.js"
+const tailwindcss = require('@tailwindcss/postcss')
+
+module.exports = {
+  plugins: [
+    tailwindcss(),
+  ],
+}
+```
+
+v5 小程序写法：
+
+```js title="postcss.config.js"
+const { default: weappTailwindcss } = require('weapp-tailwindcss/postcss')
+
+module.exports = {
+  plugins: [
+    weappTailwindcss({
+      generator: {
+        mode: 'force',
+        target: 'weapp',
+      },
+    }),
+  ],
+}
+```
+
+v5 Web 对照写法：
+
+```js title="postcss.config.js"
+weappTailwindcss({
+  generator: {
+    mode: 'force',
+    target: 'web',
+  },
+})
+```
+
+## Vite 对照
+
+官方写法：
+
+```ts title="vite.config.ts"
+import tailwindcss from '@tailwindcss/vite'
+import { defineConfig } from 'vite'
+
+export default defineConfig({
+  plugins: [
+    tailwindcss(),
+  ],
+})
+```
+
+v5 小程序写法：
+
+```ts title="vite.config.ts"
+import path from 'node:path'
+import tailwindcss from '@tailwindcss/vite'
+import { defineConfig } from 'vite'
+import { UnifiedViteWeappTailwindcssPlugin } from 'weapp-tailwindcss/vite'
+
+export default defineConfig({
+  plugins: [
+    tailwindcss(),
+    UnifiedViteWeappTailwindcssPlugin({
+      rem2rpx: true,
+      cssEntries: [
+        path.resolve(__dirname, 'src/app.css'),
+      ],
+      generator: {
+        mode: 'force',
+        target: 'weapp',
+      },
+    }),
+  ],
+})
+```
+
+v5 Web 对照写法只需要把 `target` 切到 `web`。此时 generator 产物保留浏览器选择器、hover media 和原始 Tailwind 转义；小程序生产构建必须切回 `weapp`。
+
+## 回归测试
+
+仓库使用 `packages/weapp-tailwindcss/test/v5/official-tailwind-plugin-parity.test.ts` 覆盖这张矩阵：
+
+- 同一 CSS-first 输入分别经过 `@tailwindcss/postcss` 和 `weapp-tailwindcss/postcss` 的 `target: 'web'`，核心 utility selector 与声明必须一一对应。
+- 矩阵中的 `@tailwindcss/postcss`、`@tailwindcss/vite`、PostCSS generator、Vite generator 四列必须全部有对应项。
+- v5 示例页继续覆盖 uni-app Vue Vite、Taro Vite 与 Mpx 的真实 demo 配置。

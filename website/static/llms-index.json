@@ -1,10 +1,10 @@
 {
   "version": "1.0.0",
-  "generatedAt": "2026-05-03T16:11:30.765Z",
+  "generatedAt": "2026-05-05T04:04:07.931Z",
   "siteUrl": "https://tw.icebreaker.top",
   "totals": {
-    "all": 177,
-    "docs": 173,
+    "all": 179,
+    "docs": 175,
     "blog": 4
   },
   "documents": [
@@ -6049,6 +6049,78 @@
       ],
       "updatedAt": null,
       "source": "docs/tailwindcss/tailwind-vs-unocss.mdx"
+    },
+    {
+      "kind": "doc",
+      "id": "doc:tailwindcss/v5-generator-examples",
+      "title": "v5 Tailwind CSS v4 生成器示例",
+      "description": "使用 weapp-tailwindcss v5 生成器接入 uni-app Vue Vite、Taro Vite 与 Mpx 的完整示例",
+      "summary": "v5 推荐把 Tailwind CSS v4 当作标准 CSS-first 入口使用，再由 weapp-tailwindcss 控制最终样式生成。核心变化是：入口 CSS 写 @import \"tailwindcss\"，构建插件或 PostCSS 插件开启 generator，最终产物直接面向小程序，而不是先生成浏览器 CSS 再做大量兜底兼容。",
+      "url": "/docs/tailwindcss/v5-generator-examples",
+      "canonical": "https://tw.icebreaker.top/docs/tailwindcss/v5-generator-examples",
+      "keywords": [
+        "weapp-tailwindcss",
+        "tailwindcss v4",
+        "generator",
+        "uni-app",
+        "taro",
+        "mpx",
+        "小程序",
+        "tailwindcss",
+        "教程",
+        "原子化",
+        "v5",
+        "Tailwind",
+        "CSS",
+        "v4",
+        "生成器示例",
+        "v5 generator examples"
+      ],
+      "headings": [
+        "功能覆盖清单",
+        "uni-app Vue Vite",
+        "Taro Vite",
+        "Mpx",
+        "Web 目标调试",
+        "验证矩阵"
+      ],
+      "updatedAt": null,
+      "source": "docs/tailwindcss/v5-generator-examples.mdx"
+    },
+    {
+      "kind": "doc",
+      "id": "doc:tailwindcss/v5-official-plugin-parity",
+      "title": "v5 与官方 Tailwind 插件对照",
+      "description": "对比 weapp-tailwindcss v5 generator 与 @tailwindcss/postcss、@tailwindcss/vite 的能力映射",
+      "summary": "v5 generator 的目标不是替代 Tailwind CSS v4 的 CSS-first 语义，而是在同一份 Tailwind 输入上增加小程序专用输出能力。target: 'web' 应与官方 Tailwind 浏览器产物保持同源；target: 'weapp' 则在同一 classSet 基础上生成小程序需要且兼容的 CSS。",
+      "url": "/docs/tailwindcss/v5-official-plugin-parity",
+      "canonical": "https://tw.icebreaker.top/docs/tailwindcss/v5-official-plugin-parity",
+      "keywords": [
+        "weapp-tailwindcss",
+        "tailwindcss v4",
+        "@tailwindcss/postcss",
+        "@tailwindcss/vite",
+        "generator",
+        "tailwindcss",
+        "教程",
+        "原子化",
+        "v5",
+        "与官方",
+        "Tailwind",
+        "插件对照",
+        "v5 official plugin parity",
+        "小程序",
+        "微信小程序",
+        "uni-app"
+      ],
+      "headings": [
+        "一一对应矩阵",
+        "PostCSS 对照",
+        "Vite 对照",
+        "回归测试"
+      ],
+      "updatedAt": null,
+      "source": "docs/tailwindcss/v5-official-plugin-parity.mdx"
     },
     {
       "kind": "doc",

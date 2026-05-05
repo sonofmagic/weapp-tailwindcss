@@ -1,6 +1,13 @@
+const { default: weappTailwindcss } = require('weapp-tailwindcss/postcss')
+
 module.exports = {
   plugins: [
-    require('@tailwindcss/postcss')()
+    weappTailwindcss({
+      generator: {
+        mode: 'force',
+        target: 'weapp'
+      }
+    })
     // require('autoprefixer')({ remove: false })
   ]
 }

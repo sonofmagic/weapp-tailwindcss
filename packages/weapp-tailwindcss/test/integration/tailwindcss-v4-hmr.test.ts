@@ -156,8 +156,8 @@ const cases: SourceMutationCase[] = [
       applyClassLiteral(source, classLiteral) {
         return replaceExact(
           source,
-          'const className = ref(\'bg-[#0000ff] text-[45rpx] text-white\')',
-          `const className = ref('${classLiteral}')`,
+          'const className = ref(twMerge(\'bg-[#0000ff] text-[45rpx]\', \'text-white rounded-lg p-4\'))',
+          `const className = ref(twMerge('${classLiteral}', 'text-white rounded-lg p-4'))`,
           'demo/uni-app-tailwindcss-v4 script anchor',
         )
       },
@@ -202,8 +202,8 @@ const cases: SourceMutationCase[] = [
       applyClassLiteral(source, classLiteral) {
         return replaceExact(
           source,
-          "<Text className='text-[55rpx] text-[#fff] bg-purple-300'>Hello world!</Text>",
-          `<Text className='${classLiteral}'>Hello world!</Text>`,
+          "<Text className='text-[55rpx] text-[#fff] bg-brand'>@theme token</Text>",
+          `<Text className='${classLiteral}'>@theme token</Text>`,
           'demo/taro-vite-tailwindcss-v4 script anchor',
         )
       },

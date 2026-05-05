@@ -49,6 +49,8 @@ const tailwindcssSidebar: SidebarConfig = [
     collapsed: false,
     items: [
       'tailwindcss/best-practices',
+      'tailwindcss/v5-generator-examples',
+      'tailwindcss/v5-official-plugin-parity',
       'tailwindcss/style-isolation',
     ],
   },

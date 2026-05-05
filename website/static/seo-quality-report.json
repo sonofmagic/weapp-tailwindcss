@@ -1,9 +1,9 @@
 {
   "version": "1.0.0",
-  "generatedAt": "2026-04-29T16:22:32.711Z",
+  "generatedAt": "2026-05-05T04:04:08.060Z",
   "totals": {
-    "files": 177,
-    "issues": 0
+    "files": 179,
+    "issues": 2
   },
   "coverage": {
     "docs": {
@@ -22,6 +22,21 @@
       "keywords": 1
     }
   },
-  "issueTypes": {},
-  "issues": []
+  "issueTypes": {
+    "few_keywords": 2
+  },
+  "issues": [
+    {
+      "type": "few_keywords",
+      "file": "tailwindcss/v5-generator-examples.mdx",
+      "message": "keywords 数量偏少（7）",
+      "scope": "docs"
+    },
+    {
+      "type": "few_keywords",
+      "file": "tailwindcss/v5-official-plugin-parity.mdx",
+      "message": "keywords 数量偏少（5）",
+      "scope": "docs"
+    }
+  ]
 }

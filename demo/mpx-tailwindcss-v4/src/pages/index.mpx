@@ -1,6 +1,7 @@
 <template>
   <view class="2xl:text-base">2xl:text-base</view>
   <view :class="numClassObj">2xl:text-[red]</view>
+  <view :class="mergedClass">twMerge 动态类</view>
   <view class="space-y-4 flex flex-col bg-red-400">
     <view class="bg-sky-500">view space-y-4</view>
     <view class="bg-sky-500">view space-y-4</view>
@@ -100,8 +101,12 @@
 
 <script lang="ts">
   import { createPage } from '@mpxjs/core'
+  import { twMerge } from '@weapp-tailwindcss/merge'
 
   createPage({
+    data: {
+      mergedClass: twMerge('bg-[#0000ff] text-[45rpx]', 'text-white rounded-lg p-4')
+    },
     onLoad() {
       //
     }
