@@ -3,7 +3,7 @@ import path from 'node:path'
 import process from 'node:process'
 import { createJiti } from 'jiti'
 import { lilconfig } from 'lilconfig'
-import { defuOverrideArray } from './utils'
+import { defuOverrideArray } from './utils.ts'
 
 const jiti = createJiti(import.meta.url)
 
