@@ -9,6 +9,7 @@ import { shouldSkipJsTransform } from '@/js/precheck'
 import { ensureRuntimeClassSet } from '@/tailwindcss/runtime'
 import { getGroupedEntries } from '@/utils'
 import { processCachedTask } from '../../shared/cache'
+import { generateCssByGenerator } from '../../shared/generator-css'
 import { resolveOutputSpecifier, toAbsoluteOutputPath } from '../../shared/module-graph'
 import { pushConcurrentTaskFactories } from '../../shared/run-tasks'
 import { createAssetHashByChunkMap, getCacheKey } from './shared'
@@ -61,6 +62,15 @@ export function setupWebpackV4EmitHook(options: SetupWebpackV4EmitHookOptions) {
     debug,
   } = options
   const cssHandlerOptionsCache = new Map<string, {
+    isMainChunk: boolean
+    postcssOptions: {
+      options: {
+        from: string
+      }
+    }
+    majorVersion: number | undefined
+  }>()
+  const cssUserHandlerOptionsCache = new Map<string, {
     isMainChunk: boolean
     postcssOptions: {
       options: {
@@ -157,6 +167,21 @@ export function setupWebpackV4EmitHook(options: SetupWebpackV4EmitHookOptions) {
         majorVersion,
       }
       cssHandlerOptionsCache.set(cacheKey, created)
+      return created
+    }
+    const getCssUserHandlerOptions = (file: string) => {
+      const majorVersion = runtimeState.twPatcher.majorVersion
+      const cacheKey = `${majorVersion ?? 'unknown'}:${file}`
+      const cached = cssUserHandlerOptionsCache.get(cacheKey)
+      if (cached) {
+        return cached
+      }
+
+      const created = {
+        ...getCssHandlerOptions(file),
+        isMainChunk: false,
+      }
+      cssUserHandlerOptionsCache.set(cacheKey, created)
       return created
     }
     const staleClassNameFallback = resolveWebpackStaleClassNameFallback(compilerOptions.staleClassNameFallback, compiler)
@@ -285,11 +310,28 @@ export function setupWebpackV4EmitHook(options: SetupWebpackV4EmitHookOptions) {
             },
             transform: async () => {
               await runtimeState.patchPromise
-              const { css } = await compilerOptions.styleHandler(rawSource, getCssHandlerOptions(file))
+              const cssHandlerOptions = getCssHandlerOptions(file)
+              const generated = await generateCssByGenerator({
+                opts: compilerOptions,
+                runtimeState,
+                runtime: runtimeSet,
+                rawSource,
+                file,
+                cssHandlerOptions,
+                cssUserHandlerOptions: getCssUserHandlerOptions(file),
+                styleHandler: compilerOptions.styleHandler,
+                debug,
+              })
+              const css = generated?.css ?? (await compilerOptions.styleHandler(rawSource, cssHandlerOptions)).css
               const source = new ConcatSource(css)
 
               compilerOptions.onUpdate(file, rawSource, css)
-              debug('css handle: %s', file)
+              if (generated) {
+                debug('css handle via tailwind v%s engine(%s): %s', runtimeState.twPatcher.majorVersion, generated.target, file)
+              }
+              else {
+                debug('css handle: %s', file)
+              }
 
               return {
                 result: source,

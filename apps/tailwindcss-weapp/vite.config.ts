@@ -6,6 +6,7 @@ import uni from '@dcloudio/vite-plugin-uni'
 import AutoImport from 'unplugin-auto-import/vite'
 import { defineConfig } from 'vite'
 import { UnifiedViteWeappTailwindcssPlugin as uvtw } from 'weapp-tailwindcss/vite'
+import { resolveAppGeneratorMode } from '../shared/weapp-tailwind-generator-mode'
 import { WeappTailwindcssDisabled } from './platform'
 import postcssPlugins from './postcss.config.cjs'
 
@@ -19,6 +20,7 @@ const uniMpVueRuntimePath = require.resolve('@dcloudio/uni-mp-vue/dist/vue.runti
   paths: [mpWeixinDir, here],
 })
 const uniMpVueDir = dirname(uniMpVueRuntimePath)
+const generator = resolveAppGeneratorMode()
 
 // https://vitejs.dev/config/
 export default defineConfig({
@@ -41,6 +43,7 @@ export default defineConfig({
     uvtw({
       rem2rpx: true,
       disabled: WeappTailwindcssDisabled,
+      ...(generator !== undefined ? { generator } : {}),
     }),
     AutoImport({
       imports: ['vue', 'uni-app', 'pinia'],

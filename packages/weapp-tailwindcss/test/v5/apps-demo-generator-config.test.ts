@@ -47,7 +47,8 @@ describe('v5 apps and demos generator config', () => {
       readProjectFile(css),
     ])
 
-    expect(configSource).toContain('generator:')
+    expect(configSource).toContain('generator')
+    expect(configSource).toContain('resolve')
     expect(configSource).toContain("mode: 'force'")
     expect(configSource).toContain("target: 'weapp'")
     expect(cssSource).toContain('tailwindcss')
@@ -156,6 +157,8 @@ describe('v5 apps and demos generator config', () => {
 
     expect(configSource).toContain("require('weapp-tailwindcss/postcss')")
     expect(configSource).toContain('weappTailwindcss({')
+    expect(configSource).toContain("require('@tailwindcss/postcss')")
+    expect(configSource).toContain("WEAPP_TW_GENERATOR_MODE === 'legacy'")
     expect(configSource).toContain("mode: 'force'")
     expect(configSource).toContain("target: 'weapp'")
     expect(configSource).toContain('generator: false')

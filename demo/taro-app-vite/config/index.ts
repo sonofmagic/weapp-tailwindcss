@@ -5,6 +5,8 @@ import prodConfig from './prod'
 import type { Plugin } from 'vite'
 import tailwindcss from 'tailwindcss'
 import { UnifiedViteWeappTailwindcssPlugin as uvtw } from 'weapp-tailwindcss/vite'
+import { resolveDemoGeneratorMode } from '../../shared/weapp-tailwind-generator-mode'
+const generator = resolveDemoGeneratorMode()
 console.log(process.env.TARO_ENV)
 // https://taro-docs.jd.com/docs/next/config#defineconfig-辅助函数
 export default defineConfig<'vite'>(async (merge, { command, mode }) => {
@@ -63,6 +65,7 @@ export default defineConfig<'vite'>(async (merge, { command, mode }) => {
         },
         uvtw({
           rem2rpx: true,
+          ...(generator !== undefined ? { generator } : {}),
           // 除了小程序这些，其他平台都 disabled
           disabled: process.env.TARO_ENV === 'h5' || process.env.TARO_ENV === 'harmony' || process.env.TARO_ENV === 'rn',
           injectAdditionalCssVarScope: true,

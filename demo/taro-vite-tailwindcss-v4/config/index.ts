@@ -5,7 +5,13 @@ import prodConfig from './prod'
 import { UnifiedViteWeappTailwindcssPlugin } from 'weapp-tailwindcss/vite'
 import tailwindcss from '@tailwindcss/postcss'
 import path from 'path'
+import { resolveDemoGeneratorMode } from '../../shared/weapp-tailwind-generator-mode'
 // import tailwindcss from '@tailwindcss/vite'
+
+const generator = resolveDemoGeneratorMode({
+  mode: 'force',
+  target: 'weapp',
+})
 
 // https://taro-docs.jd.com/docs/next/config#defineconfig-辅助函数
 export default defineConfig<'vite'>(async (merge, { command, mode }) => {
@@ -66,10 +72,7 @@ export default defineConfig<'vite'>(async (merge, { command, mode }) => {
         },
         UnifiedViteWeappTailwindcssPlugin({
           rem2rpx: true,
-          generator: {
-            mode: 'force',
-            target: 'weapp',
-          },
+          generator,
           cssEntries:[
             // 对应 src/app.css 中 @import "tailwindcss"; 的入口文件
             path.resolve(__dirname, '../src/app.css')

@@ -7,16 +7,11 @@ import path from 'node:path'
 import process from 'node:process'
 import { logger } from '@weapp-tailwindcss/logger'
 import { splitCode } from '@weapp-tailwindcss/shared/extractors'
-import {
-  createWeappTailwindcssGenerator,
-  normalizeWeappTailwindcssGeneratorOptions,
-  resolveTailwindV3SourceFromPatcher,
-  resolveTailwindV4SourceFromPatcher,
-} from '@/generator'
 import { getRuntimeClassSetSignature } from '@/tailwindcss/runtime/cache'
 import { createUniAppXAssetTask } from '@/uni-app-x'
 import { isUniAppXEnabled } from '@/uni-app-x/options'
 import { processCachedTask } from '../shared/cache'
+import { generateCssByGenerator } from '../shared/generator-css'
 import { normalizeOutputPathKey } from '../shared/module-graph'
 import { pushConcurrentTaskFactories } from '../shared/run-tasks'
 import { applyLinkedResults, createBundleModuleGraphOptions } from './bundle-entries'
@@ -165,9 +160,6 @@ function hasRuntimeAffectingSourceChanges(changedByType: Record<EntryType, Set<s
 const CSS_URL_FUNCTION_RE = /url\((?:"([^"]*)"|'([^']*)'|([^)]*))\)/gi
 const CSS_PATH_INDEPENDENT_URL_RE = /^(?:[a-z][a-z\d+.-]*:|\/\/|\/|#)/i
 const CSS_IMPORT_RE = /@import\b/i
-const TAILWIND_V4_BANNER_RE = /\/\*!\s*tailwindcss v4\./
-const SUPPORTED_GENERATOR_MAJOR_VERSIONS = new Set([3, 4])
-
 function isPathIndependentCssUrl(value: string) {
   const normalized = value.trim()
   return normalized.length > 0 && CSS_PATH_INDEPENDENT_URL_RE.test(normalized)
@@ -191,31 +183,6 @@ function createCssTransformShareScope(file: string, rawSource: string) {
     return `dir:${normalizeOutputPathKey(path.dirname(file))}`
   }
   return 'global'
-}
-
-function createCssAppend(base: string, extra: string) {
-  if (!base) {
-    return extra
-  }
-  if (!extra) {
-    return base
-  }
-  return `${base}\n${extra}`
-}
-
-function splitTailwindV4GeneratedCss(rawSource: string, rawTailwindCss: string) {
-  const trimmedRaw = rawSource.trim()
-  const trimmedTailwind = rawTailwindCss.trim()
-  if (trimmedRaw === trimmedTailwind) {
-    return ''
-  }
-
-  const start = rawSource.indexOf(rawTailwindCss)
-  if (start === -1 || rawSource.slice(0, start).trim().length > 0) {
-    return
-  }
-
-  return rawSource.slice(start + rawTailwindCss.length)
 }
 
 function hasOmittedKnownBundleFiles(
@@ -426,8 +393,6 @@ export function createGenerateBundleHook(context: GenerateBundleContext) {
     }
     debug('get runtimeSet, class count: %d', runtime.size)
     const runtimeSignature = getRuntimeClassSetSignature(runtimeState.twPatcher) ?? 'runtime:missing'
-    const generatorOptions = normalizeWeappTailwindcssGeneratorOptions(opts.generator)
-
     const handleLinkedUpdate = (fileName: string, previous: string, next: string) => {
       onUpdate(fileName, previous, next)
       debug('js linked handle: %s', fileName)
@@ -560,73 +525,25 @@ export function createGenerateBundleHook(context: GenerateBundleContext) {
               const runTransform = async () => {
                 const start = performance.now()
                 await runtimeState.patchPromise
-                if (
-                  generatorOptions.mode !== 'off'
-                  && SUPPORTED_GENERATOR_MAJOR_VERSIONS.has(runtimeState.twPatcher.majorVersion ?? 0)
-                  && cssHandlerOptions.isMainChunk
-                  && (
-                    generatorOptions.mode === 'force'
-                    || runtimeState.twPatcher.majorVersion === 3
-                    || TAILWIND_V4_BANNER_RE.test(rawSource)
-                  )
-                ) {
-                  try {
-                    const source = runtimeState.twPatcher.majorVersion === 3
-                      ? await resolveTailwindV3SourceFromPatcher(runtimeState.twPatcher)
-                      : await resolveTailwindV4SourceFromPatcher(runtimeState.twPatcher)
-                    const generator = createWeappTailwindcssGenerator(source)
-                    const generated = await generator.generate({
-                      candidates: runtime,
-                      styleOptions: {
-                        ...cssHandlerOptions,
-                        ...generatorOptions.styleOptions,
-                      },
-                      target: generatorOptions.target,
-                    })
-                    const extraCss = splitTailwindV4GeneratedCss(rawSource, generated.rawCss)
-                    if (typeof extraCss === 'string') {
-                      let css = generated.css
-                      if (extraCss.trim().length > 0) {
-                        if (generated.target === 'weapp') {
-                          const userCssOptions = {
-                            ...getCssUserHandlerOptions(file),
-                            ...generatorOptions.styleOptions,
-                          }
-                          const { css: userCss } = await styleHandler(extraCss, userCssOptions)
-                          css = createCssAppend(css, userCss)
-                        }
-                        else {
-                          css = createCssAppend(css, extraCss)
-                        }
-                      }
-                      if (debugCssDiff) {
-                        debug('css diff %s: %s', file, summarizeStringDiff(rawSource, css))
-                      }
-                      metrics.css.elapsed += measureElapsed(start)
-                      metrics.css.transformed++
-                      debug('css handle via tailwind v%s engine(%s): %s', runtimeState.twPatcher.majorVersion, generated.target, file)
-                      return css
-                    }
-                    if (generatorOptions.mode === 'force') {
-                      debug(
-                        'tailwind direct css generation prefix mismatch, use generator css as source of truth %s: %s',
-                        file,
-                        summarizeStringDiff(rawSource, generated.rawCss),
-                      )
-                      if (debugCssDiff) {
-                        debug('css diff %s: %s', file, summarizeStringDiff(rawSource, generated.css))
-                      }
-                      metrics.css.elapsed += measureElapsed(start)
-                      metrics.css.transformed++
-                      return generated.css
-                    }
+                const generated = await generateCssByGenerator({
+                  opts,
+                  runtimeState,
+                  runtime,
+                  rawSource,
+                  file,
+                  cssHandlerOptions,
+                  cssUserHandlerOptions: getCssUserHandlerOptions(file),
+                  styleHandler,
+                  debug,
+                })
+                if (generated) {
+                  if (debugCssDiff) {
+                    debug('css diff %s: %s', file, summarizeStringDiff(rawSource, generated.css))
                   }
-                  catch (error) {
-                    if (generatorOptions.mode === 'force') {
-                      throw error
-                    }
-                    debug('tailwind direct css generation failed, fallback to styleHandler: %s %O', file, error)
-                  }
+                  metrics.css.elapsed += measureElapsed(start)
+                  metrics.css.transformed++
+                  debug('css handle via tailwind v%s engine(%s): %s', runtimeState.twPatcher.majorVersion, generated.target, file)
+                  return generated.css
                 }
                 const { css } = await styleHandler(rawSource, getCssHandlerOptions(file))
                 if (debugCssDiff) {

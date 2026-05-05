@@ -1,6 +1,12 @@
 import path from 'node:path'
 import { UnifiedViteWeappTailwindcssPlugin as uvwt } from 'weapp-tailwindcss/vite'
 import { defineConfig } from 'weapp-vite/config'
+import { resolveAppGeneratorMode } from '../shared/weapp-tailwind-generator-mode'
+
+const generator = resolveAppGeneratorMode({
+  mode: 'force',
+  target: 'weapp',
+})
 
 export default defineConfig({
   // root: './packageA',
@@ -19,10 +25,7 @@ export default defineConfig({
     // @ts-ignore
     uvwt({
       rem2rpx: true,
-      generator: {
-        mode: 'force',
-        target: 'weapp',
-      },
+      generator,
       cssEntries: [
         path.resolve(import.meta.dirname, './app.css'),
       ],

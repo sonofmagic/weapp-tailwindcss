@@ -2,6 +2,7 @@ import { defineConfig } from 'vite';
 import uni from '@dcloudio/vite-plugin-uni';
 import { UnifiedViteWeappTailwindcssPlugin } from 'weapp-tailwindcss/vite';
 import { StyleInjector } from 'weapp-style-injector/vite/uni-app';
+import { resolveDemoGeneratorMode } from '../shared/weapp-tailwind-generator-mode';
 
 type WeappTwUpdateKind = 'wxss' | 'wxml' | 'js' | 'other';
 
@@ -75,6 +76,7 @@ let weappTwLoadTime = 0;
 let weappTwStartTime = 0;
 let weappTwUpdateCount = 0;
 let weappTwLoggedUpdateCount = 0;
+const generator = resolveDemoGeneratorMode();
 // https://vitejs.dev/config/
 export default defineConfig(async () => {
   // const { default: Inspect } = await import('vite-plugin-inspect');
@@ -83,6 +85,7 @@ export default defineConfig(async () => {
       uni(),
       UnifiedViteWeappTailwindcssPlugin({
         px2rpx: true,
+        ...(generator !== undefined ? { generator } : {}),
         wxsMatcher() {
           return false;
         },

@@ -1,7 +1,9 @@
 const { defineConfig } = require('@vue/cli-service')
 const { UnifiedWebpackPluginV5 } = require('weapp-tailwindcss/webpack')
 const tailwindPostcss = require('@tailwindcss/postcss')
+const { resolveDemoGeneratorMode } = require('../shared/weapp-tailwind-generator-mode.cjs')
 const path = require('path')
+const generator = resolveDemoGeneratorMode()
 
 // 修复 @mpxjs/webpack-plugin 序列化器重复注册导致的构建失败
 // 该问题在 pnpm + webpack5 环境下，模块从不同路径被加载两次时触发
@@ -51,6 +53,7 @@ module.exports = defineConfig({
       new UnifiedWebpackPluginV5({
         rem2rpx: true,
         appType: 'mpx',
+        ...(generator !== undefined ? { generator } : {}),
         cssEntries: [
           path.resolve(__dirname, 'src/app.css')
         ]

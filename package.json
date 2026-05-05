@@ -76,6 +76,8 @@
     "e2e:static": "vitest run -c ./e2e/vitest.e2e.config.ts",
     "e2e:static:dev": "vitest -c ./e2e/vitest.e2e.config.ts",
     "e2e:static:u": "vitest run -u -c ./e2e/vitest.e2e.config.ts",
+    "e2e:apps-generator": "vitest run -c ./e2e/vitest.e2e.config.ts e2e/apps-generator-mode-compare.test.ts",
+    "e2e:apps-generator:u": "vitest run -u -c ./e2e/vitest.e2e.config.ts e2e/apps-generator-mode-compare.test.ts",
     "e2e:hot-update": "pnpm exec tsx ./e2e/run-hot-update.ts",
     "e2e:hot-update:dev": "pnpm e2e:hot-update",
     "e2e:hot-update:demo": "cross-env E2E_HOT_UPDATE_TARGET=demo pnpm e2e:hot-update",

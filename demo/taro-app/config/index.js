@@ -1,7 +1,9 @@
 const path = require('path')
 const bench = require('../../bench.cjs')('taro-react')
+const { resolveDemoGeneratorMode } = require('../../shared/weapp-tailwind-generator-mode.cjs')
 const isLocal = process.env.LOCAL
 const isWrite = process.env.WRITE
+const generator = resolveDemoGeneratorMode()
 
 const { UnifiedWebpackPluginV5 } = require('weapp-tailwindcss/webpack')
 const config = {
@@ -102,6 +104,7 @@ const config = {
                     bench.dump();
                   },
                   rem2rpx: true,
+                  ...(generator !== undefined ? { generator } : {}),
                 }
               ]
               // args: [opt, 'taro']

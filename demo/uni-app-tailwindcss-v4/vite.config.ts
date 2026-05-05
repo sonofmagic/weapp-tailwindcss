@@ -6,11 +6,16 @@ import path, { dirname } from "node:path";
 import uni from "@dcloudio/vite-plugin-uni";
 import { UnifiedViteWeappTailwindcssPlugin } from 'weapp-tailwindcss/vite'
 import { StyleInjector } from 'weapp-style-injector/vite/uni-app'
+import { resolveDemoGeneratorMode } from '../shared/weapp-tailwind-generator-mode'
 // import tailwindcss from '@tailwindcss/vite'
 
 const require = createRequire(import.meta.url);
 const uniMpVueRuntimePath = require.resolve("@dcloudio/uni-mp-vue/dist/vue.runtime.esm.js");
 const uniMpVueDir = dirname(uniMpVueRuntimePath);
+const generator = resolveDemoGeneratorMode({
+  mode: 'force',
+  target: 'weapp',
+});
 
 // https://vitejs.dev/config/
 export default defineConfig(async () => {
@@ -24,10 +29,7 @@ export default defineConfig(async () => {
       tailwindcss(),
       UnifiedViteWeappTailwindcssPlugin({
         rem2rpx: true,
-        generator: {
-          mode: 'force',
-          target: 'weapp',
-        },
+        generator,
         cssEntries: [
           path.resolve(__dirname, "src/main.css"),
           path.resolve(__dirname, "src/common.css"),

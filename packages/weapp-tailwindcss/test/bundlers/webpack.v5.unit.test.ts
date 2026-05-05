@@ -30,6 +30,7 @@ interface LoaderModule {
 
 interface TestContext {
   disabled: boolean
+  generator?: unknown
   onLoad: ReturnType<typeof vi.fn>
   onStart: ReturnType<typeof vi.fn>
   onEnd: ReturnType<typeof vi.fn>
@@ -172,6 +173,8 @@ describe('bundlers/webpack UnifiedWebpackPluginV5', () => {
 
   afterEach(() => {
     existsSyncSpy.mockRestore()
+    vi.doUnmock('@/generator')
+    vi.resetModules()
   })
 
   it('wires runtime loader, processes assets and caches results', async () => {
@@ -531,6 +534,9 @@ describe('bundlers/webpack UnifiedWebpackPluginV5', () => {
   })
 
   it('reuses css handler override objects for repeated asset updates', async () => {
+    currentContext = createContext({
+      generator: false,
+    })
     const processAssetsCallbacks: Array<(assets: Record<string, any>) => Promise<void>> = []
     let currentAssetStore: Record<string, string> = {}
     const compilation = {

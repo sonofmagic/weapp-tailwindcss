@@ -13,6 +13,7 @@ interface LoaderModule {
 
 interface TestContext {
   disabled: boolean
+  generator?: unknown
   onLoad: ReturnType<typeof vi.fn>
   onStart: ReturnType<typeof vi.fn>
   onEnd: ReturnType<typeof vi.fn>
@@ -253,6 +254,9 @@ describe('bundlers/webpack UnifiedWebpackPluginV4', () => {
   })
 
   it('reuses css handler override objects for repeated asset updates', async () => {
+    currentContext = createContext({
+      generator: false,
+    })
     const emitHandlers: Array<(compilation: any) => Promise<void>> = []
     const assets: Record<string, any> = {}
     const compilation = {

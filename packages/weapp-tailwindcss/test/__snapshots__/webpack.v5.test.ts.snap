@@ -2391,9 +2391,7 @@ exports[`webpack5 plugin > disabled true > warnings 1`] = `[]`;
 
 exports[`webpack5 plugin > empty build > assets 1`] = `
 {
-  "index.css": "::before,::after {
-    --tw-content: ""}
-view,text,::before,::after {
+  "index.css": "view,text,::before,::after {
     --tw-border-spacing-x: 0;
     --tw-border-spacing-y: 0;
     --tw-translate-x: 0;
@@ -2445,11 +2443,7 @@ view,text,::before,::after {
     --tw-contain-layout:  ;
     --tw-contain-paint:  ;
     --tw-contain-style:  
-;
-    box-sizing: border-box;
-    border-width: 0;
-    border-style: solid;
-    border-color: currentColor}",
+}",
   "index.wxml": "<view>e</view>",
   "wxml.js": "console.log("i'am empty !");",
 }
