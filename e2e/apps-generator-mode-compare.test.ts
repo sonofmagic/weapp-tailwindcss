@@ -1,59 +1,34 @@
-import type { CompareReportItem, CssSummary } from './apps-generator-report'
+import type { AppsGeneratorCompareReportItem, CompareReportItem, CssSummary } from './apps-generator-report'
+import type { ProjectEntry } from './shared'
 import { Buffer } from 'node:buffer'
 import fs from 'node:fs/promises'
 import process from 'node:process'
 import { execa } from 'execa'
+import fg from 'fast-glob'
 import path from 'pathe'
 import { describe, expect, it } from 'vitest'
 import { createChineseMarkdownReport, createMarkdownReport } from './apps-generator-report'
-import { resolveSnapshotFile } from './shared'
+import { E2E_PROJECTS, NATIVE_PROJECTS } from './projectEntries'
+import { collectCssSnapshots, resolveSnapshotFile } from './shared'
 
 type GeneratorBuildMode = 'generator' | 'legacy'
 
 interface CompareProject {
   name: string
   fixturesDir: '../apps' | '../demo'
-  root: string
+  rootDir: string
   cssFile: string
-  clean: string[]
+  cssPath: string
 }
 
+const nativeComparisonProjects = new Set(['vite-native', 'vite-native-ts'])
+const MINI_PROGRAM_CSS_PATTERN = '**/*.{wx,ac,jx,tt,q,c,ty}ss'
+
 const projects: CompareProject[] = [
-  {
-    name: 'vite-native',
-    fixturesDir: '../apps',
-    root: 'vite-native',
-    cssFile: 'dist/app.wxss',
-    clean: ['dist', '.tw-patch'],
-  },
-  {
-    name: 'vite-native-ts',
-    fixturesDir: '../apps',
-    root: 'vite-native-ts',
-    cssFile: 'dist/app.wxss',
-    clean: ['dist', '.tw-patch'],
-  },
-  {
-    name: 'uni-app-tailwindcss-v5',
-    fixturesDir: '../demo',
-    root: 'uni-app-tailwindcss-v5',
-    cssFile: 'dist/build/mp-weixin/app.wxss',
-    clean: ['dist', '.tw-patch'],
-  },
-  {
-    name: 'taro-vite-tailwindcss-v5',
-    fixturesDir: '../demo',
-    root: 'taro-vite-tailwindcss-v5',
-    cssFile: 'dist/app.wxss',
-    clean: ['dist', '.tw-patch'],
-  },
-  {
-    name: 'mpx-tailwindcss-v5',
-    fixturesDir: '../demo',
-    root: 'mpx-tailwindcss-v5',
-    cssFile: 'dist/wx/app.wxss',
-    clean: ['dist', '.tw-patch'],
-  },
+  ...NATIVE_PROJECTS
+    .filter(entry => nativeComparisonProjects.has(entry.name))
+    .map(entry => createCompareProject(entry, '../apps')),
+  ...E2E_PROJECTS.map(entry => createCompareProject(entry, '../demo')),
 ]
 
 const SELECTOR_RE = /(^|\})([^{@}]*)\{/g
@@ -93,14 +68,36 @@ function summarizeCss(css: string): CssSummary {
   }
 }
 
-async function cleanProject(root: string, entries: string[]) {
-  await Promise.all(entries.map(entry => fs.rm(path.resolve(root, entry), { recursive: true, force: true })))
+function createCompareProject(entry: ProjectEntry, fixturesDir: '../apps' | '../demo'): CompareProject {
+  const outputCssPath = path.join(entry.projectPath, entry.cssFile)
+  const rootPrefix = `${entry.name}${path.sep}`
+  const cssPath = outputCssPath.startsWith(rootPrefix)
+    ? outputCssPath.slice(rootPrefix.length)
+    : entry.cssFile
+
+  return {
+    name: entry.name,
+    fixturesDir,
+    rootDir: entry.name,
+    cssFile: outputCssPath,
+    cssPath,
+  }
+}
+
+async function cleanProject(root: string) {
+  await Promise.all([
+    fs.rm(path.resolve(root, 'dist'), { recursive: true, force: true }),
+    fs.rm(path.resolve(root, 'unpackage'), { recursive: true, force: true }),
+    fs.rm(path.resolve(root, 'node_modules/.vite'), { recursive: true, force: true }),
+    fs.rm(path.resolve(root, 'node_modules/.cache/tailwindcss-patch'), { recursive: true, force: true }),
+  ])
 }
 
 async function buildProject(project: CompareProject, mode: GeneratorBuildMode) {
   const projectBase = path.resolve(__dirname, project.fixturesDir)
-  const root = path.resolve(projectBase, project.root)
-  await cleanProject(root, project.clean)
+  const root = path.resolve(projectBase, project.rootDir)
+  const projectRoot = path.resolve(projectBase, project.rootDir)
+  await cleanProject(root)
 
   await execa('pnpm', ['run', 'build'], {
     cwd: root,
@@ -118,11 +115,42 @@ async function buildProject(project: CompareProject, mode: GeneratorBuildMode) {
     },
   })
 
-  const cssPath = path.resolve(root, project.cssFile)
-  return fs.readFile(cssPath, 'utf8')
+  const snapshots = await collectOutputCssSnapshots(projectRoot, project.cssPath)
+  return {
+    css: snapshots.map(snapshot => snapshot.content).join('\n'),
+    cssFiles: snapshots.map(snapshot => snapshot.fileName),
+  }
 }
 
-function createReportItem(project: CompareProject, legacyCss: string, generatorCss: string): CompareReportItem {
+async function collectOutputCssSnapshots(projectRoot: string, cssPath: string) {
+  const entrySnapshots = await collectCssSnapshots(projectRoot, cssPath)
+  const outputRoot = path.dirname(path.resolve(projectRoot, cssPath))
+  const allCssFiles = await fg(MINI_PROGRAM_CSS_PATTERN, {
+    absolute: false,
+    cwd: outputRoot,
+    onlyFiles: true,
+  })
+  const entryFileNames = new Set(entrySnapshots.map(snapshot => path.normalize(snapshot.fileName)))
+  const extraSnapshots = await Promise.all(
+    allCssFiles
+      .sort()
+      .filter(file => !entryFileNames.has(path.normalize(file)))
+      .map(file => collectCssSnapshots(outputRoot, file)),
+  )
+
+  return [
+    ...entrySnapshots,
+    ...extraSnapshots.flat(),
+  ]
+}
+
+function createReportItem(
+  project: CompareProject,
+  legacyResult: { css: string, cssFiles: string[] },
+  generatorResult: { css: string, cssFiles: string[] },
+): CompareReportItem {
+  const legacyCss = legacyResult.css
+  const generatorCss = generatorResult.css
   const legacy = summarizeCss(legacyCss)
   const generator = summarizeCss(generatorCss)
   const legacySelectorSet = new Set(legacy.selectors)
@@ -135,6 +163,8 @@ function createReportItem(project: CompareProject, legacyCss: string, generatorC
     name: project.name,
     fixture: project.fixturesDir === '../apps' ? 'apps' : 'demo',
     cssFile: project.cssFile,
+    cssFiles: generatorResult.cssFiles.length > 0 ? generatorResult.cssFiles : legacyResult.cssFiles,
+    status: 'passed',
     legacy,
     generator,
     deltaBytes: generator.bytes - legacy.bytes,
@@ -145,7 +175,60 @@ function createReportItem(project: CompareProject, legacyCss: string, generatorC
   }
 }
 
-async function expectReportSnapshot(report: CompareReportItem[]) {
+function normalizeError(error: unknown) {
+  if (error && typeof error === 'object') {
+    const maybeError = error as {
+      shortMessage?: string
+      message?: string
+      stderr?: string
+      stdout?: string
+    }
+    return maybeError.shortMessage
+      ?? maybeError.message
+      ?? maybeError.stderr
+      ?? maybeError.stdout
+      ?? String(error)
+  }
+  return String(error)
+}
+
+async function createProjectReport(project: CompareProject): Promise<AppsGeneratorCompareReportItem> {
+  let legacyResult: { css: string, cssFiles: string[] }
+  try {
+    legacyResult = await buildProject(project, 'legacy')
+  }
+  catch (error) {
+    return {
+      name: project.name,
+      fixture: project.fixturesDir === '../apps' ? 'apps' : 'demo',
+      cssFile: project.cssFile,
+      cssFiles: [project.cssFile],
+      status: 'failed',
+      failedMode: 'legacy',
+      error: normalizeError(error),
+    }
+  }
+
+  let generatorResult: { css: string, cssFiles: string[] }
+  try {
+    generatorResult = await buildProject(project, 'generator')
+  }
+  catch (error) {
+    return {
+      name: project.name,
+      fixture: project.fixturesDir === '../apps' ? 'apps' : 'demo',
+      cssFile: project.cssFile,
+      cssFiles: legacyResult.cssFiles.length > 0 ? legacyResult.cssFiles : [project.cssFile],
+      status: 'failed',
+      failedMode: 'generator',
+      error: normalizeError(error),
+    }
+  }
+
+  return createReportItem(project, legacyResult, generatorResult)
+}
+
+async function expectReportSnapshot(report: AppsGeneratorCompareReportItem[]) {
   const jsonSnapshotPath = await resolveSnapshotFile(__dirname, 'apps-generator-mode', 'compare', 'report.json')
   const markdownSnapshotPath = await resolveSnapshotFile(__dirname, 'apps-generator-mode', 'compare', 'report.md')
   const chineseMarkdownSnapshotPath = await resolveSnapshotFile(__dirname, 'apps-generator-mode', 'compare', 'report.zh-CN.md')
@@ -156,13 +239,14 @@ async function expectReportSnapshot(report: CompareReportItem[]) {
 
 describe('apps demo generator mode comparison', () => {
   it('builds apps and demos in legacy and generator modes with comparable mini-program css output', async () => {
-    const report: CompareReportItem[] = []
+    const report: AppsGeneratorCompareReportItem[] = []
 
     for (const project of projects) {
-      const legacyCss = await buildProject(project, 'legacy')
-      const generatorCss = await buildProject(project, 'generator')
-      const item = createReportItem(project, legacyCss, generatorCss)
+      const item = await createProjectReport(project)
       report.push(item)
+      if (item.status === 'failed') {
+        continue
+      }
 
       expect(item.generator.bytes, `${project.name} generator css should not be empty`).toBeGreaterThan(0)
       expect(item.generator.hasSupports, `${project.name} generator css should remove unsupported @supports`).toBe(false)
@@ -171,6 +255,7 @@ describe('apps demo generator mode comparison', () => {
       expect(item.generator.hasWeappEscapedArbitrarySelector || !item.generator.hasRawArbitrarySelector).toBe(true)
     }
 
+    expect(report.filter(item => item.status === 'failed')).toEqual([])
     await expectReportSnapshot(report)
-  }, 600_000)
+  }, 1_800_000)
 })

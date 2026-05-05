@@ -12,6 +12,8 @@ export interface CompareReportItem {
   name: string
   fixture: 'apps' | 'demo'
   cssFile: string
+  cssFiles: string[]
+  status: 'passed'
   legacy: CssSummary
   generator: CssSummary
   deltaBytes: number
@@ -20,6 +22,18 @@ export interface CompareReportItem {
   generatorOnlySelectors: string[]
   legacyOnlySelectors: string[]
 }
+
+export interface FailedCompareReportItem {
+  name: string
+  fixture: 'apps' | 'demo'
+  cssFile: string
+  cssFiles: string[]
+  status: 'failed'
+  failedMode: 'legacy' | 'generator'
+  error: string
+}
+
+export type AppsGeneratorCompareReportItem = CompareReportItem | FailedCompareReportItem
 
 function formatBoolean(value: boolean) {
   return value ? 'yes' : 'no'
@@ -40,7 +54,14 @@ function formatSelectorList(selectors: string[]) {
   return selectors.map(selector => `\`${selector.replaceAll('|', '\\|')}\``).join(', ')
 }
 
-export function createMarkdownReport(report: CompareReportItem[]) {
+function formatCssFiles(item: AppsGeneratorCompareReportItem) {
+  if (item.cssFiles.length <= 1) {
+    return `\`${item.cssFile}\``
+  }
+  return `\`${item.cssFile}\` (+${item.cssFiles.length - 1})`
+}
+
+export function createMarkdownReport(report: AppsGeneratorCompareReportItem[]) {
   const lines: string[] = [
     '# Apps Generator Mode CSS Comparison',
     '',
@@ -48,16 +69,36 @@ export function createMarkdownReport(report: CompareReportItem[]) {
     '',
     '## Summary',
     '',
-    '| Project | Fixture | CSS | Legacy bytes | Generator bytes | Delta | Ratio | @supports | :hover | Tailwind banner |',
-    '| --- | --- | --- | ---: | ---: | ---: | ---: | --- | --- | --- |',
+    '| Project | Fixture | Status | CSS | Legacy bytes | Generator bytes | Delta | Ratio | @supports | :hover | Tailwind banner |',
+    '| --- | --- | --- | --- | ---: | ---: | ---: | ---: | --- | --- | --- |',
   ]
 
   for (const item of report) {
+    if (item.status === 'failed') {
+      lines.push(
+        [
+          item.name,
+          item.fixture,
+          `failed (${item.failedMode})`,
+          formatCssFiles(item),
+          '-',
+          '-',
+          '-',
+          '-',
+          '-',
+          '-',
+          '-',
+        ].join(' | ').replace(/^/, '| ').replace(/$/, ' |'),
+      )
+      continue
+    }
+
     lines.push(
       [
         item.name,
         item.fixture,
-        `\`${item.cssFile}\``,
+        item.status,
+        formatCssFiles(item),
         item.legacy.bytes,
         item.generator.bytes,
         formatSigned(item.deltaBytes),
@@ -73,18 +114,28 @@ export function createMarkdownReport(report: CompareReportItem[]) {
     '',
     '## Notes',
     '',
+    '- CSS column shows the entry stylesheet. `(+N)` means the report also aggregates `@import`-linked stylesheets, such as Taro `app-origin.wxss` or Mpx hashed `styles/app*.wxss`.',
     '- `@supports`, `:hover`, and Tailwind banner columns describe the generator output. They should stay `no` for mini-program compatibility.',
     '- `Delta` is `generator bytes - legacy bytes`. Positive values mean the generator output is currently larger; the selector samples below make that difference visible for follow-up optimization.',
     '- Selector lists are truncated to the first 20 entries to keep the report stable and readable.',
+    '- Failed rows keep the first failing mode and error message in the failure section so migration blockers stay visible.',
+    '',
+    '## Failures',
+    '',
+    ...formatFailures(report, false),
     '',
     '## Selector Samples',
     '',
   )
 
   for (const item of report) {
+    if (item.status === 'failed') {
+      continue
+    }
     lines.push(
       `### ${item.name}`,
       '',
+      `- CSS files: ${item.cssFiles.map(file => `\`${file.replaceAll('|', '\\|')}\``).join(', ')}`,
       `- Shared selectors: ${formatSelectorList(item.sharedSelectors)}`,
       `- Generator only: ${formatSelectorList(item.generatorOnlySelectors)}`,
       `- Legacy only: ${formatSelectorList(item.legacyOnlySelectors)}`,
@@ -95,7 +146,20 @@ export function createMarkdownReport(report: CompareReportItem[]) {
   return `${lines.join('\n').trimEnd()}\n`
 }
 
-export function createChineseMarkdownReport(report: CompareReportItem[]) {
+function formatFailures(report: AppsGeneratorCompareReportItem[], chinese: boolean) {
+  const failures = report.filter((item): item is FailedCompareReportItem => item.status === 'failed')
+  if (failures.length === 0) {
+    return [chinese ? '- 无' : '- None']
+  }
+  return failures.map((item) => {
+    const message = item.error.replace(/\s+/g, ' ').trim()
+    return chinese
+      ? `- \`${item.name}\` 在 \`${item.failedMode}\` 模式失败：${message}`
+      : `- \`${item.name}\` failed in \`${item.failedMode}\` mode: ${message}`
+  })
+}
+
+export function createChineseMarkdownReport(report: AppsGeneratorCompareReportItem[]) {
   const lines: string[] = [
     '# Apps 生成模式 CSS 对比报告',
     '',
@@ -103,16 +167,36 @@ export function createChineseMarkdownReport(report: CompareReportItem[]) {
     '',
     '## 汇总',
     '',
-    '| 项目 | 来源 | CSS 文件 | 旧链路字节数 | 生成模式字节数 | 差值 | 比例 | @supports | :hover | Tailwind banner |',
-    '| --- | --- | --- | ---: | ---: | ---: | ---: | --- | --- | --- |',
+    '| 项目 | 来源 | 状态 | CSS 文件 | 旧链路字节数 | 生成模式字节数 | 差值 | 比例 | @supports | :hover | Tailwind banner |',
+    '| --- | --- | --- | --- | ---: | ---: | ---: | ---: | --- | --- | --- |',
   ]
 
   for (const item of report) {
+    if (item.status === 'failed') {
+      lines.push(
+        [
+          item.name,
+          item.fixture,
+          `失败（${item.failedMode}）`,
+          formatCssFiles(item),
+          '-',
+          '-',
+          '-',
+          '-',
+          '-',
+          '-',
+          '-',
+        ].join(' | ').replace(/^/, '| ').replace(/$/, ' |'),
+      )
+      continue
+    }
+
     lines.push(
       [
         item.name,
         item.fixture,
-        `\`${item.cssFile}\``,
+        item.status === 'passed' ? '通过' : item.status,
+        formatCssFiles(item),
         item.legacy.bytes,
         item.generator.bytes,
         formatSigned(item.deltaBytes),
@@ -128,18 +212,28 @@ export function createChineseMarkdownReport(report: CompareReportItem[]) {
     '',
     '## 说明',
     '',
+    '- CSS 文件列展示入口样式；`(+N)` 表示报告还会聚合 `@import` 关联样式，例如 Taro 的 `app-origin.wxss` 或 Mpx 的 hash 化 `styles/app*.wxss`。',
     '- `@supports`、`:hover` 和 Tailwind banner 三列描述的是生成模式产物。面向小程序时这些值应保持为 `否`。',
     '- `差值` 等于 `生成模式字节数 - 旧链路字节数`。正数表示当前生成模式产物更大；下面的选择器样本可用于定位后续需要裁剪的部分。',
     '- 选择器列表只保留前 20 项，保证报告稳定且便于阅读。',
+    '- 失败行会在失败详情中保留首个失败模式和错误信息，便于持续消除迁移阻塞。',
+    '',
+    '## 失败详情',
+    '',
+    ...formatFailures(report, true),
     '',
     '## 选择器样本',
     '',
   )
 
   for (const item of report) {
+    if (item.status === 'failed') {
+      continue
+    }
     lines.push(
       `### ${item.name}`,
       '',
+      `- CSS 文件：${item.cssFiles.map(file => `\`${file.replaceAll('|', '\\|')}\``).join(', ')}`,
       `- 两边共有：${formatSelectorList(item.sharedSelectors)}`,
       `- 仅生成模式：${formatSelectorList(item.generatorOnlySelectors)}`,
       `- 仅旧链路：${formatSelectorList(item.legacyOnlySelectors)}`,

@@ -11,6 +11,7 @@ import { shouldSkipJsTransform } from '@/js/precheck'
 import { setupPatchRecorder } from '@/tailwindcss/recorder'
 import { ensureRuntimeClassSet, refreshTailwindRuntimeState } from '@/tailwindcss/runtime'
 import { processCachedTask } from '../shared/cache'
+import { generateCssByGenerator } from '../shared/generator-css'
 
 const debug = createDebug()
 
@@ -23,6 +24,7 @@ const Transform = stream.Transform
  */
 export function createPlugins(options: UserDefinedOptions = {}) {
   const opts = getCompilerContext(options)
+  const hasExplicitGeneratorOptions = options.generator !== undefined
 
   const { templateHandler, styleHandler, jsHandler, cache, twPatcher: initialTwPatcher, refreshTailwindcssPatcher } = opts
 
@@ -176,6 +178,13 @@ export function createPlugins(options: UserDefinedOptions = {}) {
     }
   }
 
+  function resolveWxssUserHandlerOptions(options?: Partial<IStyleHandlerOptions>) {
+    return {
+      ...resolveWxssHandlerOptions(options),
+      isMainChunk: false,
+    }
+  }
+
   function resolveWxmlHandlerOptions(options?: Partial<ITemplateHandlerOptions>) {
     if (!options || Object.keys(options).length === 0) {
       if (cachedDefaultTemplateRuntimeSet !== runtimeSet || !cachedDefaultTemplateHandlerOptions) {
@@ -213,7 +222,21 @@ export function createPlugins(options: UserDefinedOptions = {}) {
         },
         async transform() {
           await runtimeState.patchPromise
-          const { css } = await styleHandler(rawSource, resolveWxssHandlerOptions(options))
+          const cssHandlerOptions = resolveWxssHandlerOptions(options)
+          const generated = hasExplicitGeneratorOptions
+            ? await generateCssByGenerator({
+                opts,
+                runtimeState,
+                runtime: await refreshRuntimeSet(false),
+                rawSource,
+                file: file.path,
+                cssHandlerOptions,
+                cssUserHandlerOptions: resolveWxssUserHandlerOptions(options),
+                styleHandler,
+                debug,
+              })
+            : undefined
+          const css = generated?.css ?? (await styleHandler(rawSource, cssHandlerOptions)).css
           debug('css handle: %s', file.path)
           return {
             result: css,

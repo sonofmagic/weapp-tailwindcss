@@ -26,6 +26,7 @@ import { createBundleRuntimeClassSetManager } from './incremental-runtime-class-
 import { resolveImplicitAppTypeFromViteRoot } from './resolve-app-type'
 import { createRewriteCssImportsPlugins } from './rewrite-css-imports'
 import { slash } from './utils'
+import { createWriteBundleHook } from './write-bundle'
 
 const debug = createDebug()
 const weappTailwindcssPackageDir = resolvePackageDir('weapp-tailwindcss')
@@ -248,6 +249,13 @@ export function UnifiedViteWeappTailwindcssPlugin(options: UserDefinedOptions = 
   }
   onLoad()
   const getResolvedConfig = () => resolvedConfig
+  const handleDiskCssFallback = createWriteBundleHook({
+    opts,
+    runtimeState,
+    ensureRuntimeClassSet,
+    debug,
+    getResolvedConfig,
+  })
   const utsPlatform = resolveUniUtsPlatform()
   const isIosPlatform = utsPlatform.isAppIos
   const uniAppXPlugins = uniAppXEnabled
@@ -331,6 +339,14 @@ export function UnifiedViteWeappTailwindcssPlugin(options: UserDefinedOptions = 
           debug,
           getResolvedConfig,
         }),
+      },
+      writeBundle: {
+        order: 'post',
+        handler: handleDiskCssFallback,
+      },
+      closeBundle: {
+        order: 'post',
+        handler: handleDiskCssFallback,
       },
     },
   ]

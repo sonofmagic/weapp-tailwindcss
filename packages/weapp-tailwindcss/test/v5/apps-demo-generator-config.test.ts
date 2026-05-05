@@ -148,20 +148,18 @@ describe('v5 apps and demos generator config', () => {
     expect(mpxPageSource).toContain('bg-gradient-to-r from-cyan-500 to-blue-500')
   })
 
-  it('uses the postcss generator path for the mpx tailwind v5 demo', async () => {
+  it('uses the webpack generator path for the mpx tailwind v5 demo', async () => {
     const [configSource, postcssConfigSource, cssSource] = await Promise.all([
       readProjectFile('demo/mpx-tailwindcss-v5/mpx.config.js'),
       readProjectFile('demo/mpx-tailwindcss-v5/postcss.config.js'),
       readProjectFile('demo/mpx-tailwindcss-v5/src/app.css'),
     ])
 
-    expect(configSource).toContain("require('weapp-tailwindcss/postcss')")
-    expect(configSource).toContain('weappTailwindcss({')
     expect(configSource).toContain("require('@tailwindcss/postcss')")
-    expect(configSource).toContain("WEAPP_TW_GENERATOR_MODE === 'legacy'")
+    expect(configSource).toContain("WEAPP_TW_GENERATOR_MODE !== 'legacy'")
     expect(configSource).toContain("mode: 'force'")
     expect(configSource).toContain("target: 'weapp'")
-    expect(configSource).toContain('generator: false')
+    expect(configSource).toContain('generator: isGeneratorMode ? generator : false')
     expect(postcssConfigSource).toContain("require('weapp-tailwindcss/postcss')")
     expect(cssSource).toContain('@import "tailwindcss";')
     expect(cssSource).toContain('@source "../src";')

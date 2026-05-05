@@ -2,6 +2,7 @@ import type { IStyleHandlerOptions } from '@weapp-tailwindcss/postcss/types'
 import type { TailwindV4GenerateTarget } from './types'
 import { createStyleHandler } from '@weapp-tailwindcss/postcss'
 import postcss from 'postcss'
+import { pruneMiniProgramGeneratedCss } from '../miniprogram'
 
 const defaultStyleHandler = createStyleHandler({
   cssRemoveHoverPseudoClass: true,
@@ -27,7 +28,7 @@ export async function transformTailwindV4CssToWeapp(
     majorVersion: 4,
     ...options,
   })
-  return removeAtSupports(result.css)
+  return pruneMiniProgramGeneratedCss(removeAtSupports(result.css))
 }
 
 export async function transformTailwindV4CssByTarget(

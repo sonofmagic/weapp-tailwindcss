@@ -189,6 +189,34 @@ describe('tailwindcss v4 engine', () => {
     expect(result.css).not.toContain('@supports')
   })
 
+  it('removes browser preflight while keeping utility variables for mini-program output', async () => {
+    const source = await resolveTailwindV4Source({
+      css: `
+        @theme default {
+          --spacing: 0.25rem;
+        }
+        @tailwind base;
+        @tailwind utilities;
+      `,
+      base: process.cwd(),
+    })
+    const engine = createTailwindV4Engine(source)
+
+    const result = await engine.generate({
+      candidates: ['transform', 'before:content-["x"]', 'w-4'],
+    })
+
+    expect(result.rawCss).toContain('::before')
+    expect(result.css).toContain('.transform')
+    expect(result.css).toContain('.w-4')
+    expect(result.css).toContain('--tw-rotate-x')
+    expect(result.css).toContain('--tw-content')
+    expect(result.css).not.toContain('::-webkit')
+    expect(result.css).not.toContain(':-moz')
+    expect(result.css).not.toMatch(/^::(?:before|after)/m)
+    expect(result.css).not.toContain('@supports')
+  })
+
   it('can return raw Tailwind css for diagnostics', async () => {
     const source = await resolveTailwindV4Source({
       css: MINIMAL_THEME_CSS,

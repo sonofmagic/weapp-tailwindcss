@@ -1,6 +1,7 @@
 import type { IStyleHandlerOptions } from '@weapp-tailwindcss/postcss/types'
 import type { TailwindV3GenerateTarget } from './types'
 import { createStyleHandler } from '@weapp-tailwindcss/postcss'
+import { pruneMiniProgramGeneratedCss } from '../miniprogram'
 
 const defaultStyleHandler = createStyleHandler({
   cssRemoveHoverPseudoClass: true,
@@ -18,7 +19,7 @@ export async function transformTailwindV3CssToWeapp(
     majorVersion: 3,
     ...options,
   })
-  return result.css
+  return pruneMiniProgramGeneratedCss(result.css)
 }
 
 export async function transformTailwindV3CssByTarget(
