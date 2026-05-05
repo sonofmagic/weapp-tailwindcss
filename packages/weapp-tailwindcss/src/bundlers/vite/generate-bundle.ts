@@ -216,10 +216,6 @@ function splitTailwindV4GeneratedCss(rawSource: string, rawTailwindCss: string) 
   return rawSource.slice(start + rawTailwindCss.length)
 }
 
-function createTailwindV4GeneratorError(file: string) {
-  return new Error(`Tailwind CSS v4 generator 无法匹配主 CSS 产物前缀: ${file}`)
-}
-
 function hasOmittedKnownBundleFiles(
   currentBundleFiles: string[],
   previousBundleFiles: Iterable<string>,
@@ -580,7 +576,17 @@ export function createGenerateBundleHook(context: GenerateBundleContext) {
                       return css
                     }
                     if (generatorOptions.mode === 'force') {
-                      throw createTailwindV4GeneratorError(file)
+                      debug(
+                        'tailwind v4 direct css generation prefix mismatch, use generator css as source of truth %s: %s',
+                        file,
+                        summarizeStringDiff(rawSource, generated.rawCss),
+                      )
+                      if (debugCssDiff) {
+                        debug('css diff %s: %s', file, summarizeStringDiff(rawSource, generated.css))
+                      }
+                      metrics.css.elapsed += measureElapsed(start)
+                      metrics.css.transformed++
+                      return generated.css
                     }
                   }
                   catch (error) {

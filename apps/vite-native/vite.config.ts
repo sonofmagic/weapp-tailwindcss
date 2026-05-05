@@ -19,6 +19,10 @@ export default defineConfig({
     // @ts-ignore
     uvwt({
       rem2rpx: true,
+      generator: {
+        mode: 'force',
+        target: 'weapp',
+      },
       cssEntries: [
         path.resolve(import.meta.dirname, './app.css'),
       ],

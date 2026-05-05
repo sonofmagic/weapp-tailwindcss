@@ -21,6 +21,10 @@ export interface UniAppXOptions {
    */
   rem2rpx?: UserDefinedOptions['rem2rpx']
   /**
+   * Tailwind CSS v4 generator 配置。
+   */
+  generator?: UserDefinedOptions['generator']
+  /**
    * 长度单位转 px 配置。
    */
   unitsToPx?: UserDefinedOptions['unitsToPx']
@@ -125,6 +129,7 @@ export function uniAppX(options: UniAppXOptions) {
     options.rawOptions ?? {},
     {
       uniAppX: resolvedUniAppX,
+      ...(options.generator !== undefined ? { generator: options.generator } : {}),
       rem2rpx: options.rem2rpx,
       unitsToPx: options.unitsToPx,
       tailwindcssBasedir: options.base,

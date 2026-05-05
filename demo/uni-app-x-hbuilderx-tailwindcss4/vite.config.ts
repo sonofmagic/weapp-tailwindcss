@@ -13,6 +13,10 @@ export default defineConfig({
       uniAppX({
         base: __dirname,
         rem2rpx: true,
+        generator: {
+          mode: 'force',
+          target: 'weapp',
+        },
         cssEntries: [path.resolve(__dirname, 'main.css')],
       }),
     ),

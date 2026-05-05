@@ -66,10 +66,14 @@ export default defineConfig<'vite'>(async (merge, { command, mode }) => {
         },
         UnifiedViteWeappTailwindcssPlugin({
           rem2rpx: true,
+          generator: {
+            mode: 'force',
+            target: 'weapp',
+          },
           cssEntries:[
-            // 对应 src/app.css 中 @import "weapp-tailwindcss"; 的入口文件
+            // 对应 src/app.css 中 @import "tailwindcss"; 的入口文件
             path.resolve(__dirname, '../src/app.css')
-          ]
+          ],
           // injectAdditionalCssVarScope: true,
         })
       ]

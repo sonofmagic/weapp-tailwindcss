@@ -24,6 +24,10 @@ export default defineConfig(async () => {
       tailwindcss(),
       UnifiedViteWeappTailwindcssPlugin({
         rem2rpx: true,
+        generator: {
+          mode: 'force',
+          target: 'weapp',
+        },
         cssEntries: [
           path.resolve(__dirname, "src/main.css"),
           path.resolve(__dirname, "src/common.css"),

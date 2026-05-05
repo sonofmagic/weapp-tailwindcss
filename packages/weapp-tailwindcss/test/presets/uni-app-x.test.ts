@@ -46,6 +46,26 @@ describe('uni-app-x preset', () => {
     })
   })
 
+  it('exposes generator config for tailwind v4 output control', async () => {
+    env.clearBaseEnv()
+    getTailwindcssPackageInfoMock.mockReturnValue({
+      version: '4.2.2',
+    })
+    const { uniAppX } = await import('@/presets')
+    const result = uniAppX({
+      base: '/repo/uni-app-x',
+      generator: {
+        mode: 'force',
+        target: 'weapp',
+      },
+    })
+
+    expect(result.generator).toEqual({
+      mode: 'force',
+      target: 'weapp',
+    })
+  })
+
   it('records installed tailwind major version into patcher options', async () => {
     env.clearBaseEnv()
     getTailwindcssPackageInfoMock.mockReturnValue({
