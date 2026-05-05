@@ -55,8 +55,7 @@
         "page",
         "text",
         "view",
-        "wx-root-portal-content",
-        "} }view"
+        "wx-root-portal-content"
       ],
       "hasSupports": true,
       "hasHoverPseudo": false,
@@ -76,6 +75,7 @@
         ".bg-gradient-to-b",
         ".bg-gradient-to-t",
         ".bg-gradient-to-tr",
+        ".bg-zinc-50",
         ".border-4",
         ".capitalize",
         ".end",
@@ -179,8 +179,7 @@
         "ul",
         "video",
         "view",
-        "wx-root-portal-content",
-        "} .bg-zinc-50"
+        "wx-root-portal-content"
       ],
       "hasSupports": false,
       "hasHoverPseudo": false,
@@ -198,6 +197,7 @@
       ".bg-gradient-to-b",
       ".bg-gradient-to-t",
       ".bg-gradient-to-tr",
+      ".bg-zinc-50",
       ".border-4",
       ".flex",
       ".flex-col",
@@ -209,8 +209,7 @@
       ".inline-block",
       ".min-h-screen",
       ".p-4",
-      ".size-12",
-      ".space-x-2_d5>view+view"
+      ".size-12"
     ],
     "generatorOnlySelectors": [
       ".-start",
@@ -235,7 +234,6 @@
       "::-webkit-datetime-edit-fields-wrapper"
     ],
     "legacyOnlySelectors": [
-      ".bg-zinc-50",
       ".container",
       ".h-_b29_d292px_B",
       ".space-x-2_d5>text+text",
@@ -246,8 +244,7 @@
       ".space-y-2_d5>view+text",
       "/*! tailwindcss v4.2.4 | MIT License | https://tailwindcss.com */ ::before",
       ":after",
-      ":before",
-      "} }view"
+      ":before"
     ]
   },
   {
@@ -260,6 +257,7 @@
         ".-inset-1",
         ".-inset-_b1rpx_B",
         "._b--scroll-offset_c56px_B",
+        "._b_n_cnth-child_p3_P_B_cpy-0:nth-child(3)",
         "._b_n_cnth-child_p3_P_B_cpy-4:nth-child(3)",
         "._b_n_view_B_cp-_b12rpx_B view",
         "._bmask-type_calpha_B",
@@ -377,10 +375,7 @@
         "::after",
         "::before",
         "text",
-        "view",
-        "} ._b_n_cnth-child_p3_P_B_cpy-0:nth-child(3)",
-        "} @media (min-width: 1024px)",
-        "} @media (prefers-color-scheme: dark)"
+        "view"
       ],
       "hasSupports": false,
       "hasHoverPseudo": false,
@@ -393,6 +388,7 @@
       "selectors": [
         ".-inset-_b1rpx_B",
         "._b--scroll-offset_c56px_B",
+        "._b_n_cnth-child_p3_P_B_cpy-0:nth-child(3)",
         "._b_n_cnth-child_p3_P_B_cpy-4:nth-child(3)",
         "._b_n_view_B_cp-_b12rpx_B view",
         "._bmask-type_calpha_B",
@@ -444,10 +440,7 @@
         ".text-lg_f7",
         ".w-_b10rpx_B",
         ".w-_b12rpx_B",
-        ".w-_b24rpx_B",
-        "} ._b_n_cnth-child_p3_P_B_cpy-0:nth-child(3)",
-        "} @media (min-width: 1024px)",
-        "} @media (prefers-color-scheme: dark)"
+        ".w-_b24rpx_B"
       ],
       "hasSupports": false,
       "hasHoverPseudo": false,
@@ -460,6 +453,7 @@
     "sharedSelectors": [
       ".-inset-_b1rpx_B",
       "._b--scroll-offset_c56px_B",
+      "._b_n_cnth-child_p3_P_B_cpy-0:nth-child(3)",
       "._b_n_cnth-child_p3_P_B_cpy-4:nth-child(3)",
       "._b_n_view_B_cp-_b12rpx_B view",
       "._bmask-type_calpha_B",
@@ -476,8 +470,7 @@
       ".bg-_borange_B",
       ".bg-_bpink_B",
       ".border-_b_h94a3b8_B",
-      ".dark_cbg-gray-900",
-      ".dark_cborder-gray-700"
+      ".dark_cbg-gray-900"
     ],
     "generatorOnlySelectors": [],
     "legacyOnlySelectors": [
@@ -605,8 +598,7 @@
         "page",
         "text",
         "view",
-        "wx-root-portal-content",
-        "} }view"
+        "wx-root-portal-content"
       ],
       "hasSupports": true,
       "hasHoverPseudo": false,
@@ -713,6 +705,7 @@
         ".mask-no-clip",
         ".mask-repeat",
         ".min-h-screen",
+        ".mt-2",
         ".mt-4",
         ".mt-6",
         ".mt-8",
@@ -875,12 +868,7 @@
         "ul",
         "video",
         "view",
-        "wx-root-portal-content",
-        "} .mt-2",
-        "} @media (min-width: 48rem)",
-        "} @media (min-width: 64rem)",
-        "} @media (min-width: 80rem)",
-        "} @media (min-width: 96rem)"
+        "wx-root-portal-content"
       ],
       "hasSupports": false,
       "hasHoverPseudo": false,
@@ -990,6 +978,7 @@
         ".bg-linear-to-r",
         ".bg-red-500",
         ".bg-repeat",
+        ".block",
         ".blur",
         ".border",
         ".border-_b10rpx_B",
@@ -1181,13 +1170,7 @@
         "ul",
         "video",
         "view",
-        "wx-root-portal-content",
-        "} .block",
-        "} @media (min-width: 48rem)",
-        "} @media (min-width: 64rem)",
-        "} @media (min-width: 80rem)",
-        "} @media (min-width: 96rem)",
-        "} @media (prefers-color-scheme: dark)"
+        "wx-root-portal-content"
       ],
       "hasSupports": false,
       "hasHoverPseudo": false,
@@ -1216,9 +1199,9 @@
       ".bg-linear-to-r",
       ".bg-red-500",
       ".bg-repeat",
+      ".block",
       ".blur",
-      ".border",
-      ".border-_b10rpx_B"
+      ".border"
     ],
     "legacyOnlySelectors": []
   },
