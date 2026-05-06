@@ -514,3 +514,14 @@ pnpm build:demo
 ```
 
 其中 Taro 与 uni-app 的聚合构建可能被 guard 跳过；需要严格验证时，在交互式终端显式设置 `TARO_BUILD_STRICT=1` 或 `UNI_BUILD_STRICT=1`。
+
+## 部署后验证
+
+如果文档站使用预览域名或 Cloudflare Pages 预览构建，建议在部署完成后直接检查新路由和旧入口是否符合预期：
+
+```bash
+curl -I https://next.tw.icebreaker.top/docs/quick-start/v4/v5-generator-examples
+curl -I https://next.tw.icebreaker.top/docs/tailwindcss/v5-generator-examples
+```
+
+新路由应返回 `200`；如果旧路由仍然返回 `200`，通常说明线上还没有切到包含本页迁移的构建。此时优先检查 Cloudflare 的构建分支、构建命令和输出目录是否与仓库配置一致。
