@@ -170,6 +170,86 @@ describe('bundlers/shared generator css', () => {
     }))
   })
 
+  it('removes Tailwind display-p3 supports from exact split user css', async () => {
+    const runtimeSet = new Set(['bg-blue-500'])
+    const rawTailwindCss = '/*! tailwindcss v4.2.4 | MIT License | https://tailwindcss.com */\n.bg-blue-500{background-color:var(--color-blue-500)}'
+    const displayP3Css = [
+      '',
+      ':host,page,.tw-root,wx-root-portal-content{--color-blue-500:rgb(50, 128, 255)}',
+      '@supports (color: color(display-p3 0 0 0%)){',
+      ':host,page,.tw-root,wx-root-portal-content{--color-blue-500:color(display-p3 0.26642 0.49122 0.98862)}',
+      '}',
+      '.card{color:var(--color-blue-500)}',
+    ].join('\n')
+    const generateMock = vi.fn(async () => ({
+      css: '.bg-blue-500{background-color:var(--color-blue-500)}',
+      rawCss: rawTailwindCss,
+      target: 'weapp',
+      classSet: runtimeSet,
+      dependencies: [],
+      sources: [],
+      root: null,
+    }))
+
+    vi.doMock('@/generator', () => ({
+      createWeappTailwindcssGenerator: vi.fn(() => ({
+        generate: generateMock,
+      })),
+      normalizeWeappTailwindcssGeneratorOptions: normalizeGeneratorOptions,
+      resolveTailwindV4SourceFromPatcher: vi.fn(async () => ({
+        projectRoot: process.cwd(),
+        base: process.cwd(),
+        baseFallbacks: [],
+        css: '@import "tailwindcss";',
+        dependencies: [],
+      })),
+    }))
+
+    const { generateCssByGenerator } = await import('@/bundlers/shared/generator-css')
+    const styleHandler = vi.fn(async (code: string) => ({ css: `user:${code}` }))
+    const result = await generateCssByGenerator({
+      opts: {
+        generator: true,
+        styleHandler,
+      } as any,
+      runtimeState: {
+        twPatcher: {
+          majorVersion: 4,
+        } as any,
+        patchPromise: Promise.resolve(),
+      },
+      runtime: runtimeSet,
+      rawSource: `${rawTailwindCss}${displayP3Css}`,
+      file: 'app.wxss',
+      cssHandlerOptions: {
+        isMainChunk: true,
+        postcssOptions: {
+          options: {
+            from: 'app.wxss',
+          },
+        },
+        majorVersion: 4,
+      } as any,
+      cssUserHandlerOptions: {
+        isMainChunk: false,
+        postcssOptions: {
+          options: {
+            from: 'app.wxss',
+          },
+        },
+        majorVersion: 4,
+      } as any,
+      styleHandler,
+      debug: vi.fn(),
+    })
+
+    expect(result?.css).toContain('.card{color:var(--color-blue-500)}')
+    expect(result?.css).not.toContain('@supports')
+    expect(result?.css).not.toContain('display-p3')
+    expect(styleHandler.mock.calls[0]?.[0]).not.toContain('@supports')
+    expect(styleHandler.mock.calls[0]?.[0]).not.toContain('display-p3')
+  })
+
   it('does not append official tailwind css prefix as user css in forced generation', async () => {
     const runtimeSet = new Set(['w-[100px]', 'text-red-500'])
     const rawSource = '.w-\\[100px\\]{width:100px}'
@@ -444,7 +524,7 @@ describe('bundlers/shared generator css', () => {
 
     expect(result?.css).toBe(`${weappCss}\nlegacy:${rawSource}`)
     expect(styleHandler).toHaveBeenCalledWith(rawSource, expect.objectContaining({
-      isMainChunk: false,
+      isMainChunk: true,
     }))
   })
 
@@ -666,12 +746,97 @@ describe('bundlers/shared generator css', () => {
       debug: vi.fn(),
     })
 
-    expect(result?.css).toBe(`${weappCss}\nuser:.existing{color:red}\n\n/*$vite$:1*/`)
+    expect(result?.css).toBe(`${weappCss}\nuser:.existing{color:red}\n/*$vite$:1*/`)
     expect(result?.css).not.toContain('@supports')
     expect(result?.css).not.toContain('tailwindcss v')
-    expect(styleHandler).toHaveBeenCalledWith('.existing{color:red}\n\n/*$vite$:1*/', expect.objectContaining({
-      isMainChunk: false,
+    expect(styleHandler).toHaveBeenCalledWith(expect.stringContaining('.existing{color:red}'), expect.objectContaining({
+      isMainChunk: true,
     }))
+    expect(styleHandler.mock.calls[0]?.[0]).toContain('/*$vite$:1*/')
+    expect(styleHandler.mock.calls[0]?.[0]).not.toContain('@supports')
+    expect(styleHandler.mock.calls[0]?.[0]).not.toContain('tailwindcss v')
+  })
+
+  it('removes Tailwind display-p3 supports from forced legacy compat css', async () => {
+    const runtimeSet = new Set(['bg-blue-500'])
+    const rawSource = [
+      '.existing{color:red}',
+      '@supports (color: color(display-p3 0 0 0%)){',
+      ':host,page,.tw-root,wx-root-portal-content{--color-blue-500:color(display-p3 0.26642 0.49122 0.98862)}',
+      '}',
+    ].join('\n')
+    const rawTailwindCss = '.bg-blue-500{background-color:var(--color-blue-500)}'
+    const weappCss = '.bg-blue-500{background-color:var(--color-blue-500)}'
+    const generateMock = vi.fn(async () => ({
+      css: weappCss,
+      rawCss: rawTailwindCss,
+      target: 'weapp',
+      classSet: runtimeSet,
+      dependencies: [],
+      sources: [],
+      root: null,
+    }))
+
+    vi.doMock('@/generator', () => ({
+      createWeappTailwindcssGenerator: vi.fn(() => ({
+        generate: generateMock,
+      })),
+      normalizeWeappTailwindcssGeneratorOptions: normalizeGeneratorOptions,
+      resolveTailwindV4SourceFromPatcher: vi.fn(async () => ({
+        projectRoot: process.cwd(),
+        base: process.cwd(),
+        baseFallbacks: [],
+        css: '@import "tailwindcss";',
+        dependencies: [],
+      })),
+    }))
+
+    const { generateCssByGenerator } = await import('@/bundlers/shared/generator-css')
+    const styleHandler = vi.fn(async (code: string) => ({ css: `legacy:${code}` }))
+    const result = await generateCssByGenerator({
+      opts: {
+        generator: {
+          mode: 'force',
+          target: 'weapp',
+        },
+        styleHandler,
+      } as any,
+      runtimeState: {
+        twPatcher: {
+          majorVersion: 4,
+        } as any,
+        patchPromise: Promise.resolve(),
+      },
+      runtime: runtimeSet,
+      rawSource,
+      file: 'app.wxss',
+      cssHandlerOptions: {
+        isMainChunk: true,
+        postcssOptions: {
+          options: {
+            from: 'app.wxss',
+          },
+        },
+        majorVersion: 4,
+      } as any,
+      cssUserHandlerOptions: {
+        isMainChunk: false,
+        postcssOptions: {
+          options: {
+            from: 'app.wxss',
+          },
+        },
+        majorVersion: 4,
+      } as any,
+      styleHandler,
+      debug: vi.fn(),
+    })
+
+    expect(result?.css).toContain('.existing{color:red}')
+    expect(result?.css).not.toContain('@supports')
+    expect(result?.css).not.toContain('display-p3')
+    expect(styleHandler.mock.calls[0]?.[0]).not.toContain('@supports')
+    expect(styleHandler.mock.calls[0]?.[0]).not.toContain('display-p3')
   })
 
   it('generates scoped tailwind css assets outside the main chunk', async () => {

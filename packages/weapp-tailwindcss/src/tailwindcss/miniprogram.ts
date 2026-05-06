@@ -34,6 +34,10 @@ export function pruneMiniProgramGeneratedCss(css: string) {
     comment.remove()
   })
 
+  root.walkAtRules('supports', (atRule) => {
+    atRule.remove()
+  })
+
   root.walkRules((rule) => {
     if (hasClassSelector(rule.selector)) {
       return

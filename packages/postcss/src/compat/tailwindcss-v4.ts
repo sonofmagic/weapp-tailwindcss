@@ -14,6 +14,7 @@ const MODERN_CHECK_MARGIN_TRIM_RE = /margin-trim\s*:\s*inline/
 const MODERN_CHECK_MOZ_ORIENT_RE = /-moz-orient\s*:\s*inline/
 const MODERN_CHECK_COLOR_RGB_RE = /color\s*:\s*rgb\(\s*from\s+red\s+r\s+g\s+b\s*\)/
 const LINEAR_GRADIENT_LAB_RE = /background-image\s*:\s*linear-gradient\(\s*in\s+lab\s*,\s*red\s*,\s*red\s*\)/
+const DISPLAY_P3_COLOR_RE = /color\s*:\s*color\(\s*display-p3\s+0\s+0\s+0%\s*\)/
 
 // 用于 normalizeTailwindcssV4Declaration 的正则
 const RADIUS_VALUE_RE = /\b([+-]?(?:\d+(?:\.\d+)?|\.\d+)(?:e[+-]?\d+)?)\s*(r?px)\b/gi
@@ -44,6 +45,11 @@ export function isTailwindcssV4ModernCheck(atRule: AtRule) {
 // Tailwind v4 的 lab 渐变能力检测在小程序中没有收益，保留基础声明即可
 export function isTailwindcssV4LinearGradientSupports(atRule: AtRule) {
   return atRule.name === 'supports' && LINEAR_GRADIENT_LAB_RE.test(atRule.params)
+}
+
+// Tailwind v4 的 display-p3 变量分支是浏览器增强，小程序生成产物保留普通 fallback 即可
+export function isTailwindcssV4DisplayP3Supports(atRule: AtRule) {
+  return atRule.name === 'supports' && DISPLAY_P3_COLOR_RE.test(atRule.params)
 }
 
 // 对 Tailwind v4 生成的声明做兼容处理，返回是否发生变更

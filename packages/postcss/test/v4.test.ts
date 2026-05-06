@@ -310,6 +310,28 @@ describe('v4', () => {
     expect(css).not.toContain('in oklab')
   })
 
+  it('removes Tailwind CSS v4 display-p3 variable supports guard', async () => {
+    const styleHandler = createStyleHandler({
+      isMainChunk: true,
+    })
+    const code = `:root,:host {
+  --color-blue-500: rgb(50, 128, 255);
+}
+@supports (color: color(display-p3 0 0 0%)) {
+  :root,:host {
+    --color-blue-500: color(display-p3 0.26642 0.49122 0.98862);
+  }
+}`
+    const { css } = await styleHandler(code, {
+      isMainChunk: true,
+      majorVersion: 4,
+    })
+
+    expect(css).toContain('--color-blue-500: rgb(50, 128, 255);')
+    expect(css).not.toContain('@supports')
+    expect(css).not.toContain('display-p3')
+  })
+
   it('v4.1.1 uni-app vue 3', async () => {
     const styleHandler = createStyleHandler({
       isMainChunk: true,

@@ -6,21 +6,21 @@
 
 | 项目 | 来源 | 状态 | CSS 文件 | 旧链路字节数 | 生成模式字节数 | 差值 | 比例 | @supports | :hover | Tailwind banner |
 | --- | --- | --- | --- | ---: | ---: | ---: | ---: | --- | --- | --- |
-| vite-native | apps | 通过 | `vite-native/dist/app.wxss` (+2) | 6910 | 15189 | +8279 | 2.1981 | 否 | 否 | 否 |
+| vite-native | apps | 通过 | `vite-native/dist/app.wxss` (+2) | 6158 | 15189 | +9031 | 2.4665 | 否 | 否 | 否 |
 | vite-native-ts | apps | 通过 | `vite-native-ts/dist/app.wxss` (+3) | 12485 | 40881 | +28396 | 3.2744 | 否 | 否 | 否 |
-| uni-app-vue3-vite | demo | 通过 | `uni-app-vue3-vite/dist/build/mp-weixin/app.wxss` (+10) | 401919 | 517083 | +115164 | 1.2865 | 否 | 否 | 否 |
-| uni-app-tailwindcss-v4 | demo | 通过 | `uni-app-tailwindcss-v4/dist/build/mp-weixin/app.wxss` (+2) | 55257 | 88859 | +33602 | 1.6081 | 否 | 否 | 否 |
-| uni-app-tailwindcss-v5 | demo | 通过 | `uni-app-tailwindcss-v5/dist/build/mp-weixin/app.wxss` (+2) | 64862 | 97706 | +32844 | 1.5064 | 否 | 否 | 否 |
-| taro-app | demo | 通过 | `taro-app/dist/app.wxss` (+5) | 48553 | 122339 | +73786 | 2.5197 | 否 | 否 | 否 |
-| taro-webpack-tailwindcss-v4 | demo | 通过 | `taro-webpack-tailwindcss-v4/dist/app.wxss` (+1) | 383463 | 10654 | -372809 | 0.0278 | 否 | 否 | 否 |
+| uni-app-vue3-vite | demo | 通过 | `uni-app-vue3-vite/dist/build/mp-weixin/app.wxss` (+10) | 401919 | 516881 | +114962 | 1.286 | 否 | 否 | 否 |
+| uni-app-tailwindcss-v4 | demo | 通过 | `uni-app-tailwindcss-v4/dist/build/mp-weixin/app.wxss` (+2) | 55257 | 89748 | +34491 | 1.6242 | 否 | 否 | 否 |
+| uni-app-tailwindcss-v5 | demo | 通过 | `uni-app-tailwindcss-v5/dist/build/mp-weixin/app.wxss` (+2) | 64862 | 98595 | +33733 | 1.5201 | 否 | 否 | 否 |
+| taro-app | demo | 通过 | `taro-app/dist/app.wxss` (+5) | 48553 | 122479 | +73926 | 2.5226 | 否 | 否 | 否 |
+| taro-webpack-tailwindcss-v4 | demo | 通过 | `taro-webpack-tailwindcss-v4/dist/app.wxss` (+1) | 383463 | 382042 | -1421 | 0.9963 | 否 | 否 | 否 |
 | taro-app-vite | demo | 通过 | `taro-app-vite/dist/app.wxss` (+2) | 4530 | 2575 | -1955 | 0.5684 | 否 | 否 | 否 |
-| taro-vite-tailwindcss-v4 | demo | 通过 | `taro-vite-tailwindcss-v4/dist/app.wxss` (+2) | 3562 | 5601 | +2039 | 1.5724 | 否 | 否 | 否 |
-| taro-vite-tailwindcss-v5 | demo | 通过 | `taro-vite-tailwindcss-v5/dist/app.wxss` (+2) | 6375 | 23241 | +16866 | 3.6456 | 否 | 否 | 否 |
-| taro-vue3-app | demo | 通过 | `taro-vue3-app/dist/app.wxss` (+1) | 118508 | 129522 | +11014 | 1.0929 | 否 | 否 | 否 |
-| gulp-app | demo | 通过 | `gulp-app/dist/app.wxss` (+2) | 6578 | 12564 | +5986 | 1.91 | 否 | 否 | 否 |
-| mpx-app | demo | 通过 | `mpx-app/dist/wx/app.wxss` (+16) | 189931 | 202476 | +12545 | 1.0661 | 否 | 否 | 否 |
-| mpx-tailwindcss-v4 | demo | 通过 | `mpx-tailwindcss-v4/dist/wx/app.wxss` (+3) | 21126 | 10498 | -10628 | 0.4969 | 否 | 否 | 否 |
-| mpx-tailwindcss-v5 | demo | 通过 | `mpx-tailwindcss-v5/dist/wx/app.wxss` (+3) | 25140 | 11586 | -13554 | 0.4609 | 否 | 否 | 否 |
+| taro-vite-tailwindcss-v4 | demo | 通过 | `taro-vite-tailwindcss-v4/dist/app.wxss` (+2) | 3562 | 5670 | +2108 | 1.5918 | 否 | 否 | 否 |
+| taro-vite-tailwindcss-v5 | demo | 通过 | `taro-vite-tailwindcss-v5/dist/app.wxss` (+2) | 6375 | 23524 | +17149 | 3.69 | 否 | 否 | 否 |
+| taro-vue3-app | demo | 通过 | `taro-vue3-app/dist/app.wxss` (+1) | 118508 | 131014 | +12506 | 1.1055 | 否 | 否 | 否 |
+| gulp-app | demo | 通过 | `gulp-app/dist/app.wxss` (+2) | 6578 | 12575 | +5997 | 1.9117 | 否 | 否 | 否 |
+| mpx-app | demo | 通过 | `mpx-app/dist/wx/app.wxss` (+16) | 189931 | 202756 | +12825 | 1.0675 | 否 | 否 | 否 |
+| mpx-tailwindcss-v4 | demo | 通过 | `mpx-tailwindcss-v4/dist/wx/app.wxss` (+3) | 21126 | 28438 | +7312 | 1.3461 | 否 | 否 | 否 |
+| mpx-tailwindcss-v5 | demo | 通过 | `mpx-tailwindcss-v5/dist/wx/app.wxss` (+3) | 25140 | 32454 | +7314 | 1.2909 | 否 | 否 | 否 |
 
 ## 说明
 
@@ -81,9 +81,9 @@
 ### taro-webpack-tailwindcss-v4
 
 - CSS 文件：`app.wxss`, `index.wxss`
-- 两边共有：`._bchunkhash_c8_B`, `._bhash_c8_B`, `.bg-_b_h534312_B`, `.nut-icon`, `.nut-icon-Loading`, `.nut-icon-Loading1`, `.nut-icon-am-blink`, `.nut-icon-am-bounce`, `.nut-icon-am-bounce.nut-icon-am-infinite`, `.nut-icon-am-breathe`, `.nut-icon-am-flash`, `.nut-icon-am-infinite`, `.nut-icon-am-jump`, `.nut-icon-am-jump.nut-icon-am-infinite`, `.nut-icon-am-rotate`, `.nut-icon-am-rotate.nut-icon-am-infinite`, `.nut-icon-am-shake`, `.nut-icon-img`, `.nut-icon-loading`, `.nut-icon-loading1`
+- 两边共有：`._bchunkhash_c8_B`, `._bhash_c8_B`, `.bg-_b_h534312_B`, `.bg-gradient-to-r`, `.bg-purple-800`, `.fade-appear`, `.fade-appear-active`, `.fade-enter`, `.fade-enter-active`, `.fade-enter-done`, `.fade-exit`, `.fade-exit-active`, `.fade-exit-done`, `.from-cyan-500`, `.h-14`, `.nut-actionsheet`, `.nut-actionsheet .nut-popup-title`, `.nut-actionsheet-cancel`, `.nut-actionsheet-cancel-danger`, `.nut-actionsheet-cancel-description`
 - 仅生成模式：-
-- 仅旧链路：`.bg-gradient-to-r`, `.bg-purple-800`, `.fade-appear`, `.fade-appear-active`, `.fade-enter`, `.fade-enter-active`, `.fade-enter-done`, `.fade-exit`, `.fade-exit-active`, `.fade-exit-done`, `.from-cyan-500`, `.h-14`, `.nut-actionsheet`, `.nut-actionsheet .nut-popup-title`, `.nut-actionsheet-cancel`, `.nut-actionsheet-cancel-danger`, `.nut-actionsheet-cancel-description`, `.nut-actionsheet-cancel-disabled`, `.nut-actionsheet-cancel-name`, `.nut-actionsheet-item`
+- 仅旧链路：`::after`, `::before`
 
 ### taro-app-vite
 
@@ -96,14 +96,14 @@
 
 - CSS 文件：`app.wxss`, `app-origin.wxss`, `index.wxss`
 - 两边共有：`.bg-_b_h123456_B`, `.bg-gradient-to-r`, `.bg-linear-to-r`, `.bg-purple-300`, `.from-cyan-500`, `.h-14`, `.h-_b300px_B`, `.static`, `.text-_b55rpx_B`, `.text-_b_hc31d6b_B`, `.text-_b_hfff_B`, `.to-blue-500`, `.tw-page-style-watch-anchor`, `.tw-root`, `:host`, `page`, `wx-root-portal-content`
-- 仅生成模式：`.block`, `.blur`, `.border`, `.container`, `.ease-out`, `.filter`, `.fixed`, `.flex`, `.grid`, `.hidden`, `.inline`, `.outline`, `.resize`, `.table`, `.transform`, `.transition`, `.visible`
+- 仅生成模式：`.block`, `.blur`, `.border`, `.container`, `.ease-out`, `.end`, `.filter`, `.fixed`, `.flex`, `.grid`, `.hidden`, `.inline`, `.outline`, `.resize`, `.start`, `.table`, `.transform`, `.transition`, `.visible`
 - 仅旧链路：`::-ms-backdrop`, `::-webkit-backdrop`, `::after`, `::before`, `:after`, `:before`, `text`, `view`
 
 ### taro-vite-tailwindcss-v5
 
 - CSS 文件：`app.wxss`, `app-origin.wxss`, `index.wxss`
 - 两边共有：`._eborder-brand`, `.active_cbg-emerald-600:active`, `.bg-_b_h123456_B`, `.bg-brand`, `.bg-gradient-to-b`, `.bg-gradient-to-r`, `.bg-gray-100`, `.bg-linear-to-r`, `.bg-red-500`, `.border-_b10rpx_B`, `.from-cyan-500`, `.from-fuchsia-500`, `.h-14`, `.h-_b300px_B`, `.p-4`, `.p-_b32rpx_B`, `.rotate-_b10deg_B`, `.rounded-xl`, `.space-y-4 > view + view`, `.static`
-- 仅生成模式：`.absolute`, `.antialiased`, `.backdrop-blur`, `.backdrop-filter`, `.backdrop-grayscale`, `.backdrop-invert`, `.backdrop-sepia`, `.bg-repeat`, `.block`, `.blur`, `.border`, `.border-b`, `.border-collapse`, `.border-e`, `.border-l`, `.border-r`, `.border-s`, `.border-t`, `.border-x`, `.border-y`
+- 仅生成模式：`.absolute`, `.antialiased`, `.backdrop-blur`, `.backdrop-filter`, `.backdrop-grayscale`, `.backdrop-invert`, `.backdrop-sepia`, `.bg-repeat`, `.block`, `.blur`, `.border`, `.border-b`, `.border-be`, `.border-bs`, `.border-collapse`, `.border-e`, `.border-l`, `.border-r`, `.border-s`, `.border-t`
 - 仅旧链路：`.dark_cbg-zinc-800`, `.space-y-4 > text + text`, `.space-y-4 > text + view`, `.space-y-4 > view + text`, `::-ms-backdrop`, `::-webkit-backdrop`, `::after`, `::before`, `:after`, `:before`, `text`, `view`
 
 ### taro-vue3-app
@@ -111,7 +111,7 @@
 - CSS 文件：`app.wxss`, `index.wxss`
 - 两边共有：`.-m-_b20px_B`, `.-mt-2`, `.after_ccontent-_b_au_x6211_u_x77e5_u_x9053_u_x6211_u_x5fc3__mu_x6c38_u_x6052_12we_ds_a_B::after`, `.bg-_b_h098765_B`, `.bg-_b_h123456_B`, `.bg-_b_h543254_B`, `.bg-_b_h654123_B`, `.bg-_b_h654321_B`, `.bg-_b_hdbdada_B`, `.bg-_b_hfafa00_B`, `.bg-_b_hfafafa_B`, `.bg-_burl_p_ahttps_c_f_fxxx_dcom_fxx_dwebp_a_P_B`, `.bg-gradient-to-r`, `.bg-gray-100`, `.bg-opacity-_b0_d54_B`, `.bg-pink-500`, `.bg-red-500`, `.bg-red-900`, `.block`, `.border-_b10px_B`
 - 仅生成模式：-
-- 仅旧链路：`::after`, `::before`, `text`, `view`
+- 仅旧链路：-
 
 ### gulp-app
 
@@ -122,21 +122,21 @@
 
 ### mpx-app
 
-- CSS 文件：`app.wxss`, `styles/base.wxss`, `styles/components.wxss`, `styles/utilities.wxss`, `index.wxss`, `button.wxss`, `icon.wxss`, `loading.wxss`, `index.wxss`, `index.wxss`, `index.wxss`, `index.wxss`, `base5c682eff.wxss`, `components1e38aa04.wxss`, `indexd323f158.wxss`, `indexfcda771e.wxss`, `utilities68e69726.wxss`
+- CSS 文件：`app.wxss`, `styles/base.wxss`, `styles/components.wxss`, `styles/utilities.wxss`, `index.wxss`, `button.wxss`, `icon.wxss`, `loading.wxss`, `index.wxss`, `index.wxss`, `index.wxss`, `index.wxss`, `base487e0d61.wxss`, `components63da9234.wxss`, `index0af78c53.wxss`, `index9a27da9c.wxss`, `utilities3d066604.wxss`
 - 两边共有：`.after_ccontent-_b_au_x4f60_u_x597d_u_x554a_u_xff0c_u_x6211_u_x8fd9_u_x662f_u_x4e2d_u_x6587_u_x5b57_u_x7b26_u_x4e32__a_B:after`, `.after_ccontent-_b_qu_x4f60_u_x597d_u_x554a_u_xff0c_u_x6211_u_x5f88_u_x65e0_u_x804a__q_B:after`, `.after_cml-0_d5:after`, `.after_ctext-red-500:after`, `.bg-_b_h123456_B`, `.bg-_b_h929292_B`, `.bg-_burl_p_ahttps_c_f_fxxx_dcom_fxx_dwebp_a_P_B`, `.flex`, `.flex-col`, `.hotspot-expanded.relative`, `.hotspot-expanded:after`, `.t-button`, `.t-button--block`, `.t-button--circle`, `.t-button--circle.t-button--size-extra-small`, `.t-button--circle.t-button--size-extra-small:after`, `.t-button--circle.t-button--size-large`, `.t-button--circle.t-button--size-large:after`, `.t-button--circle.t-button--size-medium`, `.t-button--circle.t-button--size-medium:after`
 - 仅生成模式：`.after_ccontent-_b_au_x4f60_u_x597d_u_x554a_u_xff0c_u_x6211_u_x8fd9_u_x662f_u_x4e2d_u_x6587_u_x5b57_u_x7b26_u_x4e32__a_B::after`, `.after_ccontent-_b_qu_x4f60_u_x597d_u_x554a_u_xff0c_u_x6211_u_x5f88_u_x65e0_u_x804a__q_B::after`, `.after_cml-0_d5::after`, `.after_ctext-red-500::after`, `.t-button--size-extra-small`, `.van-button`, `.van-info`
-- 仅旧链路：`::after`, `::before`
+- 仅旧链路：-
 
 ### mpx-tailwindcss-v4
 
-- CSS 文件：`app.wxss`, `styles/app.wxss`, `index.wxss`, `app36a8d5bb.wxss`
-- 两边共有：`.-m-_b20px_B`, `._ebg-green-500`, `._efont-bold`, `._etext-_b_h990000_B`, `.active_cbg-_b_h543210_B:active`, `.active_cbg-_b_h989898_B:active`, `.bg-_b_h010101_B`, `.bg-_b_h123456_B`, `.bg-_b_h434344_B`, `.bg-_b_he90505_B`, `.bg-blue-500_f50`, `.border-_b10px_B`, `.border-_b10rpx_B`, `.border-_b_h098765_B`, `.border-_bred_B`, `.border-b-_b4rpx_B`, `.border-t-_b4px_B`, `.divide-_b_h010101_B > view + view`, `.divide-x-_b10px_B > view + view`, `.h-_b200_v_B`
+- CSS 文件：`app.wxss`, `styles/app.wxss`, `index.wxss`, `app3b4a1ac6.wxss`
+- 两边共有：`.-m-_b20px_B`, `.-mt-2`, `._2xl_ctext-_bred_B`, `._ebg-green-500`, `._efont-bold`, `._etext-_b_h990000_B`, `.active_cbg-_b_h543210_B:active`, `.active_cbg-_b_h989898_B:active`, `.after_cborder-none:after`, `.before_ccontent-_b_aFestivus_a_B:before`, `.bg-_b_h010101_B`, `.bg-_b_h123456_B`, `.bg-_b_h434344_B`, `.bg-_b_he90505_B`, `.bg-blue-500_f50`, `.bg-gray-100`, `.bg-pink-500`, `.bg-red-400`, `.bg-red-500`, `.bg-sky-500`
 - 仅生成模式：`.after_cborder-none::after`, `.before_ccontent-_b_aFestivus_a_B::before`
-- 仅旧链路：`.-mt-2`, `._2xl_ctext-_bred_B`, `.after_cborder-none:after`, `.before_ccontent-_b_aFestivus_a_B:before`, `.bg-gray-100`, `.bg-pink-500`, `.bg-red-400`, `.bg-red-500`, `.bg-sky-500`, `.border`, `.border-solid`, `.dark_cbg-zinc-800`, `.dark_ctext-yellow-400`, `.divide-_b_h010101_B > text + text`, `.divide-_b_h010101_B > text + view`, `.divide-_b_h010101_B > view + text`, `.divide-solid > text + text`, `.divide-solid > text + view`, `.divide-solid > view + text`, `.divide-solid > view + view`
+- 仅旧链路：`::after`, `::before`
 
 ### mpx-tailwindcss-v5
 
-- CSS 文件：`app.wxss`, `styles/app.wxss`, `index.wxss`, `app252bdc3c.wxss`
-- 两边共有：`.-m-_b20px_B`, `._ebg-green-500`, `._eborder-primary`, `._efont-bold`, `._etext-_b_h990000_B`, `._etext-primary`, `.active_cbg-_b_h543210_B:active`, `.active_cbg-_b_h989898_B:active`, `.bg-_b_h0000ff_B`, `.bg-_b_h010101_B`, `.bg-_b_h123456_B`, `.bg-_b_h434344_B`, `.bg-_b_he90505_B`, `.bg-blue-500_f50`, `.border-_b10px_B`, `.border-_b10rpx_B`, `.border-_b_h098765_B`, `.border-_bred_B`, `.border-b-_b4rpx_B`, `.border-t-_b4px_B`
+- CSS 文件：`app.wxss`, `styles/app.wxss`, `index.wxss`, `app5e440dc4.wxss`
+- 两边共有：`.-m-_b20px_B`, `.-mt-2`, `._2xl_ctext-_bred_B`, `._ebg-green-500`, `._eborder-primary`, `._efont-bold`, `._etext-_b_h990000_B`, `._etext-primary`, `.active_cbg-_b_h543210_B:active`, `.active_cbg-_b_h989898_B:active`, `.after_cborder-none:after`, `.before_ccontent-_b_aFestivus_a_B:before`, `.bg-_b_h0000ff_B`, `.bg-_b_h010101_B`, `.bg-_b_h123456_B`, `.bg-_b_h434344_B`, `.bg-_b_he90505_B`, `.bg-blue-500_f50`, `.bg-emerald-500`, `.bg-gradient-to-r`
 - 仅生成模式：`.after_cborder-none::after`, `.before_ccontent-_b_aFestivus_a_B::before`
-- 仅旧链路：`.-mt-2`, `._2xl_ctext-_bred_B`, `.after_cborder-none:after`, `.before_ccontent-_b_aFestivus_a_B:before`, `.bg-emerald-500`, `.bg-gradient-to-r`, `.bg-gray-100`, `.bg-pink-500`, `.bg-red-400`, `.bg-red-500`, `.bg-sky-500`, `.border`, `.border-solid`, `.dark_cbg-zinc-800`, `.dark_ctext-yellow-400`, `.divide-_b_h010101_B > text + text`, `.divide-_b_h010101_B > text + view`, `.divide-_b_h010101_B > view + text`, `.divide-solid > text + text`, `.divide-solid > text + view`
+- 仅旧链路：`::after`, `::before`

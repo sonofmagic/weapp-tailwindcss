@@ -7,11 +7,13 @@ import {
   resolveTailwindV3SourceFromPatcher,
   resolveTailwindV4SourceFromPatcher,
 } from '@/generator'
+import { removeUnsupportedAtSupports } from './css-cleanup'
 
 const TAILWIND_V4_BANNER_RE = /\/\*!\s*tailwindcss v4\./
 const TAILWIND_GENERATED_CSS_MARKER_RE = /\/\*!\s*tailwindcss v|@property\s+--tw-|--tw-|:not\(#\\#\)|\.[^,{]*\\:/
 const TAILWIND_BANNER_PREFIX_RE = /^\/\*!\s*tailwindcss v[^*]*\*\/\s*/i
 const TAILWIND_BANNER_RE = /\/\*!\s*tailwindcss v[^*]*\*\//i
+const TAILWIND_BANNER_GLOBAL_RE = /\/\*!\s*tailwindcss v[^*]*\*\/\s*/gi
 const VITE_MARKER_RE = /\/\*\$vite\$:[^*]*\*\//g
 const SUPPORTED_GENERATOR_MAJOR_VERSIONS = new Set([3, 4])
 const REMOTE_IMPORT_RE = /^(?:https?:)?\/\//i
@@ -96,6 +98,10 @@ export function removeTailwindGeneratedCssByBanner(rawSource: string) {
 
 export function stripTailwindBanner(css: string) {
   return css.replace(TAILWIND_BANNER_PREFIX_RE, '')
+}
+
+export function stripTailwindBanners(css: string) {
+  return css.replace(TAILWIND_BANNER_GLOBAL_RE, '')
 }
 
 export function hasTailwindGeneratedCss(rawSource: string) {
@@ -201,6 +207,34 @@ export function isPureLocalCssImportWrapper(css: string) {
   return hasImport
 }
 
+function resolveLegacyCompatCssSource(rawSource: string) {
+  const source = removeTailwindSourceDirectives(stripTailwindBanners(rawSource))
+  return removeUnsupportedAtSupports(source)
+}
+
+async function appendLegacyCompatCss(
+  css: string,
+  rawSource: string,
+  generatorTarget: string,
+  styleHandler: InternalUserDefinedOptions['styleHandler'],
+  cssHandlerOptions: IStyleHandlerOptions,
+  generatorStyleOptions: IStyleHandlerOptions | undefined,
+) {
+  const compatSource = resolveLegacyCompatCssSource(rawSource)
+  if (compatSource.trim().length === 0) {
+    return css
+  }
+  if (generatorTarget !== 'weapp') {
+    return createCssAppend(css, compatSource)
+  }
+
+  const { css: compatCss } = await styleHandler(compatSource, {
+    ...cssHandlerOptions,
+    ...generatorStyleOptions,
+  })
+  return createCssAppend(css, removeUnsupportedAtSupports(compatCss))
+}
+
 export async function generateCssByGenerator(
   options: GenerateCssByGeneratorOptions,
 ): Promise<GenerateCssByGeneratorResult | undefined> {
@@ -271,19 +305,32 @@ export async function generateCssByGenerator(
     if (typeof extraCss === 'string') {
       let css = stripTailwindBanner(generated.css)
       if (extraCss.trim().length > 0) {
-        if (generated.target === 'weapp') {
-          const { css: userCss } = await styleHandler(extraCss, {
-            ...cssUserHandlerOptions,
-            ...generatorOptions.styleOptions,
-          })
-          css = createCssAppend(css, userCss)
-        }
-        else {
-          css = createCssAppend(css, extraCss)
+        const cleanedExtraCss = removeTailwindSourceDirectives(extraCss)
+        if (cleanedExtraCss.trim().length > 0) {
+          const extraSource = generated.target === 'weapp'
+            ? removeUnsupportedAtSupports(cleanedExtraCss)
+            : cleanedExtraCss
+          if (extraSource.trim().length === 0) {
+            return {
+              css: generated.target === 'weapp' ? removeUnsupportedAtSupports(css) : css,
+              target: generated.target,
+              source: 'generator',
+            }
+          }
+          if (generated.target === 'weapp') {
+            const { css: userCss } = await styleHandler(extraSource, {
+              ...cssUserHandlerOptions,
+              ...generatorOptions.styleOptions,
+            })
+            css = createCssAppend(css, removeUnsupportedAtSupports(userCss))
+          }
+          else {
+            css = createCssAppend(css, extraSource)
+          }
         }
       }
       return {
-        css,
+        css: generated.target === 'weapp' ? removeUnsupportedAtSupports(css) : css,
         target: generated.target,
         source: 'generator',
       }
@@ -295,31 +342,16 @@ export async function generateCssByGenerator(
         file,
       )
       let css = stripTailwindBanner(generated.css)
-      const cleanedRawSource = removeTailwindGeneratedCssByBanner(rawSource)
-      const extraCss = cleanedRawSource === undefined
-        ? hasGeneratedCss
-          ? ''
-          : removeTailwindSourceDirectives(rawSource)
-        : cleanedRawSource
-      if (extraCss.trim().length === 0) {
-        return {
-          css,
-          target: generated.target,
-          source: 'generator-forced',
-        }
-      }
-      if (generated.target === 'weapp') {
-        const { css: userCss } = await styleHandler(extraCss, {
-          ...cssUserHandlerOptions,
-          ...generatorOptions.styleOptions,
-        })
-        css = createCssAppend(css, userCss)
-      }
-      else {
-        css = createCssAppend(css, extraCss)
-      }
-      return {
+      css = await appendLegacyCompatCss(
         css,
+        rawSource,
+        generated.target,
+        styleHandler,
+        cssHandlerOptions,
+        generatorOptions.styleOptions as IStyleHandlerOptions | undefined,
+      )
+      return {
+        css: generated.target === 'weapp' ? removeUnsupportedAtSupports(css) : css,
         target: generated.target,
         source: 'generator-forced',
       }

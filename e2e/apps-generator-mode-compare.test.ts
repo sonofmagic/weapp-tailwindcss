@@ -21,6 +21,13 @@ interface CompareProject {
   cssPath: string
 }
 
+interface CreateProjectReportOptions {
+  onPassed?: (result: {
+    legacyResult: { css: string, cssFiles: string[] }
+    generatorResult: { css: string, cssFiles: string[] }
+  }) => void | Promise<void>
+}
+
 const nativeComparisonProjects = new Set(['vite-native', 'vite-native-ts'])
 const MINI_PROGRAM_CSS_PATTERN = '**/*.{wx,ac,jx,tt,q,c,ty}ss'
 
@@ -196,7 +203,10 @@ function normalizeError(error: unknown) {
   return String(error)
 }
 
-async function createProjectReport(project: CompareProject): Promise<AppsGeneratorCompareReportItem> {
+async function createProjectReport(
+  project: CompareProject,
+  options: CreateProjectReportOptions = {},
+): Promise<AppsGeneratorCompareReportItem> {
   let legacyResult: { css: string, cssFiles: string[] }
   try {
     legacyResult = await buildProject(project, 'legacy')
@@ -229,6 +239,11 @@ async function createProjectReport(project: CompareProject): Promise<AppsGenerat
     }
   }
 
+  await options.onPassed?.({
+    legacyResult,
+    generatorResult,
+  })
+
   return createReportItem(project, legacyResult, generatorResult)
 }
 
@@ -241,12 +256,63 @@ async function expectReportSnapshot(report: AppsGeneratorCompareReportItem[]) {
   await expect(createChineseMarkdownReport(report)).toMatchFileSnapshot(chineseMarkdownSnapshotPath)
 }
 
+function createCssOutputComparisonSnapshot(
+  project: CompareProject,
+  legacyResult: { css: string, cssFiles: string[] },
+  generatorResult: { css: string, cssFiles: string[] },
+) {
+  const legacy = summarizeCss(legacyResult.css)
+  const generator = summarizeCss(generatorResult.css)
+  return [
+    `# ${project.name} CSS Output Comparison`,
+    '',
+    `Fixture: ${project.fixturesDir === '../apps' ? 'apps' : 'demo'}`,
+    `Entry: ${project.cssFile}`,
+    `Legacy CSS files: ${legacyResult.cssFiles.join(', ')}`,
+    `Generator CSS files: ${generatorResult.cssFiles.join(', ')}`,
+    '',
+    '| Mode | Bytes | Selectors | @supports | :hover | Tailwind banner | Raw arbitrary selector | Weapp escaped arbitrary selector |',
+    '| --- | ---: | ---: | --- | --- | --- | --- | --- |',
+    `| legacy | ${legacy.bytes} | ${legacy.selectors.length} | ${legacy.hasSupports} | ${legacy.hasHoverPseudo} | ${legacy.hasTailwindBanner} | ${legacy.hasRawArbitrarySelector} | ${legacy.hasWeappEscapedArbitrarySelector} |`,
+    `| generator | ${generator.bytes} | ${generator.selectors.length} | ${generator.hasSupports} | ${generator.hasHoverPseudo} | ${generator.hasTailwindBanner} | ${generator.hasRawArbitrarySelector} | ${generator.hasWeappEscapedArbitrarySelector} |`,
+    '',
+    '## Legacy CSS',
+    '',
+    '```css',
+    legacyResult.css.trimEnd(),
+    '```',
+    '',
+    '## Generator CSS',
+    '',
+    '```css',
+    generatorResult.css.trimEnd(),
+    '```',
+    '',
+  ].join('\n')
+}
+
+async function expectCssOutputComparisonSnapshot(
+  project: CompareProject,
+  legacyResult: { css: string, cssFiles: string[] },
+  generatorResult: { css: string, cssFiles: string[] },
+) {
+  const snapshotPath = await resolveSnapshotFile(__dirname, 'apps-generator-mode', 'css-output', `${project.name}.md`)
+  await expect(createCssOutputComparisonSnapshot(project, legacyResult, generatorResult)).toMatchFileSnapshot(snapshotPath)
+}
+
 describe('apps demo generator mode comparison', () => {
   it('builds apps and demos in legacy and generator modes with comparable mini-program css output', async () => {
     const report: AppsGeneratorCompareReportItem[] = []
 
     for (const project of projects) {
-      const item = await createProjectReport(project)
+      let legacyResult: { css: string, cssFiles: string[] } | undefined
+      let generatorResult: { css: string, cssFiles: string[] } | undefined
+      const item = await createProjectReport(project, {
+        onPassed(result) {
+          legacyResult = result.legacyResult
+          generatorResult = result.generatorResult
+        },
+      })
       report.push(item)
       if (item.status === 'failed') {
         continue
@@ -257,6 +323,10 @@ describe('apps demo generator mode comparison', () => {
       expect(item.generator.hasHoverPseudo, `${project.name} generator css should remove unsupported :hover`).toBe(false)
       expect(item.generator.hasTailwindBanner, `${project.name} generator css should not keep raw Tailwind banner`).toBe(false)
       expect(item.generator.hasWeappEscapedArbitrarySelector || !item.generator.hasRawArbitrarySelector).toBe(true)
+
+      if (legacyResult && generatorResult) {
+        await expectCssOutputComparisonSnapshot(project, legacyResult, generatorResult)
+      }
     }
 
     expect(report.filter(item => item.status === 'failed')).toEqual([])

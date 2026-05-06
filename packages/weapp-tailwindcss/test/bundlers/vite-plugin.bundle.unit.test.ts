@@ -2076,6 +2076,7 @@ const cls = "w-[1.5px]"
         .replaceAll('bg-[#0000]', escapedColorB)
 
     setCurrentContext(createContext({
+      generator: false,
       cssMatcher: (file: string) => file.endsWith('.css') || file.endsWith('.wxss'),
       templateHandler: vi.fn(async (code: string) => replaceKnownClasses(code)),
       jsHandler: vi.fn((code: string) => ({ code: replaceKnownClasses(code) })),

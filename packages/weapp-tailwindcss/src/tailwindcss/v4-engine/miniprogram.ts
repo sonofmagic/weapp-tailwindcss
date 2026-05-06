@@ -1,7 +1,6 @@
 import type { IStyleHandlerOptions } from '@weapp-tailwindcss/postcss/types'
 import type { TailwindV4GenerateTarget } from './types'
 import { createStyleHandler } from '@weapp-tailwindcss/postcss'
-import postcss from 'postcss'
 import { pruneMiniProgramGeneratedCss } from '../miniprogram'
 
 const defaultStyleHandler = createStyleHandler({
@@ -9,14 +8,6 @@ const defaultStyleHandler = createStyleHandler({
   isMainChunk: true,
   majorVersion: 4,
 })
-
-function removeAtSupports(css: string) {
-  const root = postcss.parse(css)
-  root.walkAtRules('supports', (atRule) => {
-    atRule.remove()
-  })
-  return root.toString()
-}
 
 export async function transformTailwindV4CssToWeapp(
   css: string,
@@ -28,7 +19,7 @@ export async function transformTailwindV4CssToWeapp(
     majorVersion: 4,
     ...options,
   })
-  return pruneMiniProgramGeneratedCss(removeAtSupports(result.css))
+  return pruneMiniProgramGeneratedCss(result.css)
 }
 
 export async function transformTailwindV4CssByTarget(
