@@ -1,8 +1,8 @@
 /* stylelint-disable custom-property-pattern */
 @import "tailwindcss" source(none);
 @config "../tailwind.config.js";
-@source "./**/*.{vue,js,ts,jsx,tsx,html}";
-@source not "../src/uni_modules";
+@source "../src/**/*.{vue,js,ts,jsx,tsx,html}";
+@source not "../src/uni_modules/**/*";
 
 @theme {
   --color-neutral-1B: #1b1b1b;
