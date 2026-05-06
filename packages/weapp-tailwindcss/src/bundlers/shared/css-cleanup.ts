@@ -1,4 +1,5 @@
 import postcss from 'postcss'
+import { removeUnsupportedCascadeLayers } from '@/tailwindcss/remove-unsupported-css'
 
 const MINI_PROGRAM_PREFLIGHT_SELECTORS = new Set([
   '*',
@@ -349,6 +350,7 @@ function insertHoistedRules(root: postcss.Root, rules: postcss.Rule[]) {
 }
 
 function finalizeMiniProgramCssRoot(root: postcss.Root) {
+  removeUnsupportedCascadeLayers(root)
   removeDisplayP3AndUnsupportedFontDeclarations(root)
 
   const preflightRules = collectPreflightRules(root)

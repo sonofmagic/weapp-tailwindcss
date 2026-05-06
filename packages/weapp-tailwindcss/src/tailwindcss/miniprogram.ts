@@ -1,4 +1,5 @@
 import postcss from 'postcss'
+import { removeUnsupportedCascadeLayers } from './remove-unsupported-css'
 
 const DEFAULT_WEAPP_VARIABLE_SCOPE = 'page,.tw-root,wx-root-portal-content,:host'
 const CLASS_SELECTOR_RE = /(?:^|[^\w-])\.[_a-z\u00A0-\uFFFF\\-]/i
@@ -52,6 +53,8 @@ export function pruneMiniProgramGeneratedCss(css: string) {
   root.walkComments((comment) => {
     comment.remove()
   })
+
+  removeUnsupportedCascadeLayers(root)
 
   root.walkAtRules('supports', (atRule) => {
     atRule.remove()
