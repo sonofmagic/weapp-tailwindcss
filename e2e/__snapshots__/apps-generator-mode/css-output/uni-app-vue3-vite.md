@@ -7,8 +7,8 @@ Generator CSS files: app.wxss, index.wxss, a.wxss, b.wxss, index.wxss, u-button.
 
 | Mode | Bytes | Selectors | @supports | :hover | Tailwind banner | Raw arbitrary selector | Weapp escaped arbitrary selector |
 | --- | ---: | ---: | --- | --- | --- | --- | --- |
-| legacy | 401919 | 2820 | false | false | false | false | true |
-| generator | 397612 | 2559 | false | false | false | false | true |
+| legacy | 401919 | 2818 | false | false | false | false | true |
+| generator | 402814 | 2597 | false | false | false | false | true |
 
 ## Legacy CSS
 
@@ -12694,44 +12694,71 @@ wx-root-portal-content {
 .justify-center {
   justify-content: center;
 }
-.space-x-2_d5 > view + view {
+.space-x-2_d5 > view + view,
+.space-x-2_d5 > view + text,
+.space-x-2_d5 > text + view,
+.space-x-2_d5 > text + text {
   --tw-space-x-reverse: 0;
   margin-right: calc(20rpx * var(--tw-space-x-reverse));
   margin-left: calc(20rpx * (1 - var(--tw-space-x-reverse)));
 }
-.space-y-4 > view + view {
+.space-y-4 > view + view,
+.space-y-4 > view + text,
+.space-y-4 > text + view,
+.space-y-4 > text + text {
   --tw-space-y-reverse: 0;
   margin-top: calc(32rpx * (1 - var(--tw-space-y-reverse)));
   margin-bottom: calc(32rpx * var(--tw-space-y-reverse));
 }
-.space-y-_b1_d6rem_B > view + view {
+.space-y-_b1_d6rem_B > view + view,
+.space-y-_b1_d6rem_B > view + text,
+.space-y-_b1_d6rem_B > text + view,
+.space-y-_b1_d6rem_B > text + text {
   --tw-space-y-reverse: 0;
   margin-top: calc(1.6rem * (1 - var(--tw-space-y-reverse)));
   margin-bottom: calc(1.6rem * var(--tw-space-y-reverse));
 }
-.space-y-_b11rpx_B > view + view {
+.space-y-_b11rpx_B > view + view,
+.space-y-_b11rpx_B > view + text,
+.space-y-_b11rpx_B > text + view,
+.space-y-_b11rpx_B > text + text {
   --tw-space-y-reverse: 0;
   margin-top: calc(11rpx * (1 - var(--tw-space-y-reverse)));
   margin-bottom: calc(11rpx * var(--tw-space-y-reverse));
 }
-.divide-x-_b10px_B > view + view {
+.divide-x-_b10px_B > view + view,
+.divide-x-_b10px_B > view + text,
+.divide-x-_b10px_B > text + view,
+.divide-x-_b10px_B > text + text {
   --tw-divide-x-reverse: 0;
   border-right-width: calc(10px * var(--tw-divide-x-reverse));
   border-left-width: calc(10px * (1 - var(--tw-divide-x-reverse)));
 }
-.divide-x-_b3px_B > view + view {
+.divide-x-_b3px_B > view + view,
+.divide-x-_b3px_B > view + text,
+.divide-x-_b3px_B > text + view,
+.divide-x-_b3px_B > text + text {
   --tw-divide-x-reverse: 0;
   border-right-width: calc(3px * var(--tw-divide-x-reverse));
   border-left-width: calc(3px * (1 - var(--tw-divide-x-reverse)));
 }
-.divide-solid > view + view {
+.divide-solid > view + view,
+.divide-solid > view + text,
+.divide-solid > text + view,
+.divide-solid > text + text {
   border-style: solid;
 }
-.divide-_b_h010101_B > view + view {
+.divide-_b_h010101_B > view + view,
+.divide-_b_h010101_B > view + text,
+.divide-_b_h010101_B > text + view,
+.divide-_b_h010101_B > text + text {
   --tw-divide-opacity: 1;
   border-color: rgba(1, 1, 1, var(--tw-divide-opacity, 1));
 }
-.divide-_b3rpx_B > view + view {
+.divide-_b3rpx_B > view + view,
+.divide-_b3rpx_B > view + text,
+.divide-_b3rpx_B > text + view,
+.divide-_b3rpx_B > text + text {
   border-width: 3rpx;
 }
 .overflow-hidden {
@@ -18410,50 +18437,77 @@ wx-root-portal-content {
 .justify-center {
   justify-content: center;
 }
-.space-x-2_d5 > view + view {
+.space-x-2_d5 > view + view,
+.space-x-2_d5 > view + text,
+.space-x-2_d5 > text + view,
+.space-x-2_d5 > text + text {
   --tw-space-x-reverse: 0;
   margin-right: calc(20rpx * var(--tw-space-x-reverse));
   margin-left: calc(20rpx * (1 - var(--tw-space-x-reverse)));
   margin-left: calc(20rpx * calc(1 - var(--tw-space-x-reverse)));
 }
-.space-y-4 > view + view {
+.space-y-4 > view + view,
+.space-y-4 > view + text,
+.space-y-4 > text + view,
+.space-y-4 > text + text {
   --tw-space-y-reverse: 0;
   margin-top: calc(32rpx * (1 - var(--tw-space-y-reverse)));
   margin-top: calc(32rpx * calc(1 - var(--tw-space-y-reverse)));
   margin-bottom: calc(32rpx * var(--tw-space-y-reverse));
 }
-.space-y-_b1_d6rem_B > view + view {
+.space-y-_b1_d6rem_B > view + view,
+.space-y-_b1_d6rem_B > view + text,
+.space-y-_b1_d6rem_B > text + view,
+.space-y-_b1_d6rem_B > text + text {
   --tw-space-y-reverse: 0;
   margin-top: calc(1.6rem * (1 - var(--tw-space-y-reverse)));
   margin-top: calc(1.6rem * calc(1 - var(--tw-space-y-reverse)));
   margin-bottom: calc(1.6rem * var(--tw-space-y-reverse));
 }
-.space-y-_b11rpx_B > view + view {
+.space-y-_b11rpx_B > view + view,
+.space-y-_b11rpx_B > view + text,
+.space-y-_b11rpx_B > text + view,
+.space-y-_b11rpx_B > text + text {
   --tw-space-y-reverse: 0;
   margin-top: calc(11rpx * (1 - var(--tw-space-y-reverse)));
   margin-top: calc(11rpx * calc(1 - var(--tw-space-y-reverse)));
   margin-bottom: calc(11rpx * var(--tw-space-y-reverse));
 }
-.divide-x-_b10px_B > view + view {
+.divide-x-_b10px_B > view + view,
+.divide-x-_b10px_B > view + text,
+.divide-x-_b10px_B > text + view,
+.divide-x-_b10px_B > text + text {
   --tw-divide-x-reverse: 0;
   border-right-width: calc(10px * var(--tw-divide-x-reverse));
   border-left-width: calc(10px * (1 - var(--tw-divide-x-reverse)));
   border-left-width: calc(10px * calc(1 - var(--tw-divide-x-reverse)));
 }
-.divide-x-_b3px_B > view + view {
+.divide-x-_b3px_B > view + view,
+.divide-x-_b3px_B > view + text,
+.divide-x-_b3px_B > text + view,
+.divide-x-_b3px_B > text + text {
   --tw-divide-x-reverse: 0;
   border-right-width: calc(3px * var(--tw-divide-x-reverse));
   border-left-width: calc(3px * (1 - var(--tw-divide-x-reverse)));
   border-left-width: calc(3px * calc(1 - var(--tw-divide-x-reverse)));
 }
-.divide-solid > view + view {
+.divide-solid > view + view,
+.divide-solid > view + text,
+.divide-solid > text + view,
+.divide-solid > text + text {
   border-style: solid;
 }
-.divide-_b_h010101_B > view + view {
+.divide-_b_h010101_B > view + view,
+.divide-_b_h010101_B > view + text,
+.divide-_b_h010101_B > text + view,
+.divide-_b_h010101_B > text + text {
   --tw-divide-opacity: 1;
   border-color: rgba(1, 1, 1, var(--tw-divide-opacity, 1));
 }
-.divide-_b3rpx_B > view + view {
+.divide-_b3rpx_B > view + view,
+.divide-_b3rpx_B > view + text,
+.divide-_b3rpx_B > text + view,
+.divide-_b3rpx_B > text + text {
   border-color: 3rpx;
 }
 .overflow-hidden {
@@ -19543,50 +19597,77 @@ wx-root-portal-content {
 .justify-center {
   justify-content: center;
 }
-.space-x-2_d5 > view + view {
+.space-x-2_d5 > view + view,
+.space-x-2_d5 > view + text,
+.space-x-2_d5 > text + view,
+.space-x-2_d5 > text + text {
   --tw-space-x-reverse: 0;
   margin-right: calc(20rpx * var(--tw-space-x-reverse));
   margin-left: calc(20rpx * (1 - var(--tw-space-x-reverse)));
   margin-left: calc(20rpx * calc(1 - var(--tw-space-x-reverse)));
 }
-.space-y-4 > view + view {
+.space-y-4 > view + view,
+.space-y-4 > view + text,
+.space-y-4 > text + view,
+.space-y-4 > text + text {
   --tw-space-y-reverse: 0;
   margin-top: calc(32rpx * (1 - var(--tw-space-y-reverse)));
   margin-top: calc(32rpx * calc(1 - var(--tw-space-y-reverse)));
   margin-bottom: calc(32rpx * var(--tw-space-y-reverse));
 }
-.space-y-_b1_d6rem_B > view + view {
+.space-y-_b1_d6rem_B > view + view,
+.space-y-_b1_d6rem_B > view + text,
+.space-y-_b1_d6rem_B > text + view,
+.space-y-_b1_d6rem_B > text + text {
   --tw-space-y-reverse: 0;
   margin-top: calc(1.6rem * (1 - var(--tw-space-y-reverse)));
   margin-top: calc(1.6rem * calc(1 - var(--tw-space-y-reverse)));
   margin-bottom: calc(1.6rem * var(--tw-space-y-reverse));
 }
-.space-y-_b11rpx_B > view + view {
+.space-y-_b11rpx_B > view + view,
+.space-y-_b11rpx_B > view + text,
+.space-y-_b11rpx_B > text + view,
+.space-y-_b11rpx_B > text + text {
   --tw-space-y-reverse: 0;
   margin-top: calc(11rpx * (1 - var(--tw-space-y-reverse)));
   margin-top: calc(11rpx * calc(1 - var(--tw-space-y-reverse)));
   margin-bottom: calc(11rpx * var(--tw-space-y-reverse));
 }
-.divide-x-_b10px_B > view + view {
+.divide-x-_b10px_B > view + view,
+.divide-x-_b10px_B > view + text,
+.divide-x-_b10px_B > text + view,
+.divide-x-_b10px_B > text + text {
   --tw-divide-x-reverse: 0;
   border-right-width: calc(10px * var(--tw-divide-x-reverse));
   border-left-width: calc(10px * (1 - var(--tw-divide-x-reverse)));
   border-left-width: calc(10px * calc(1 - var(--tw-divide-x-reverse)));
 }
-.divide-x-_b3px_B > view + view {
+.divide-x-_b3px_B > view + view,
+.divide-x-_b3px_B > view + text,
+.divide-x-_b3px_B > text + view,
+.divide-x-_b3px_B > text + text {
   --tw-divide-x-reverse: 0;
   border-right-width: calc(3px * var(--tw-divide-x-reverse));
   border-left-width: calc(3px * (1 - var(--tw-divide-x-reverse)));
   border-left-width: calc(3px * calc(1 - var(--tw-divide-x-reverse)));
 }
-.divide-solid > view + view {
+.divide-solid > view + view,
+.divide-solid > view + text,
+.divide-solid > text + view,
+.divide-solid > text + text {
   border-style: solid;
 }
-.divide-_b_h010101_B > view + view {
+.divide-_b_h010101_B > view + view,
+.divide-_b_h010101_B > view + text,
+.divide-_b_h010101_B > text + view,
+.divide-_b_h010101_B > text + text {
   --tw-divide-opacity: 1;
   border-color: rgba(1, 1, 1, var(--tw-divide-opacity, 1));
 }
-.divide-_b3rpx_B > view + view {
+.divide-_b3rpx_B > view + view,
+.divide-_b3rpx_B > view + text,
+.divide-_b3rpx_B > text + view,
+.divide-_b3rpx_B > text + text {
   border-color: 3rpx;
 }
 .overflow-hidden {
@@ -20676,50 +20757,77 @@ wx-root-portal-content {
 .justify-center {
   justify-content: center;
 }
-.space-x-2_d5 > view + view {
+.space-x-2_d5 > view + view,
+.space-x-2_d5 > view + text,
+.space-x-2_d5 > text + view,
+.space-x-2_d5 > text + text {
   --tw-space-x-reverse: 0;
   margin-right: calc(20rpx * var(--tw-space-x-reverse));
   margin-left: calc(20rpx * (1 - var(--tw-space-x-reverse)));
   margin-left: calc(20rpx * calc(1 - var(--tw-space-x-reverse)));
 }
-.space-y-4 > view + view {
+.space-y-4 > view + view,
+.space-y-4 > view + text,
+.space-y-4 > text + view,
+.space-y-4 > text + text {
   --tw-space-y-reverse: 0;
   margin-top: calc(32rpx * (1 - var(--tw-space-y-reverse)));
   margin-top: calc(32rpx * calc(1 - var(--tw-space-y-reverse)));
   margin-bottom: calc(32rpx * var(--tw-space-y-reverse));
 }
-.space-y-_b1_d6rem_B > view + view {
+.space-y-_b1_d6rem_B > view + view,
+.space-y-_b1_d6rem_B > view + text,
+.space-y-_b1_d6rem_B > text + view,
+.space-y-_b1_d6rem_B > text + text {
   --tw-space-y-reverse: 0;
   margin-top: calc(1.6rem * (1 - var(--tw-space-y-reverse)));
   margin-top: calc(1.6rem * calc(1 - var(--tw-space-y-reverse)));
   margin-bottom: calc(1.6rem * var(--tw-space-y-reverse));
 }
-.space-y-_b11rpx_B > view + view {
+.space-y-_b11rpx_B > view + view,
+.space-y-_b11rpx_B > view + text,
+.space-y-_b11rpx_B > text + view,
+.space-y-_b11rpx_B > text + text {
   --tw-space-y-reverse: 0;
   margin-top: calc(11rpx * (1 - var(--tw-space-y-reverse)));
   margin-top: calc(11rpx * calc(1 - var(--tw-space-y-reverse)));
   margin-bottom: calc(11rpx * var(--tw-space-y-reverse));
 }
-.divide-x-_b10px_B > view + view {
+.divide-x-_b10px_B > view + view,
+.divide-x-_b10px_B > view + text,
+.divide-x-_b10px_B > text + view,
+.divide-x-_b10px_B > text + text {
   --tw-divide-x-reverse: 0;
   border-right-width: calc(10px * var(--tw-divide-x-reverse));
   border-left-width: calc(10px * (1 - var(--tw-divide-x-reverse)));
   border-left-width: calc(10px * calc(1 - var(--tw-divide-x-reverse)));
 }
-.divide-x-_b3px_B > view + view {
+.divide-x-_b3px_B > view + view,
+.divide-x-_b3px_B > view + text,
+.divide-x-_b3px_B > text + view,
+.divide-x-_b3px_B > text + text {
   --tw-divide-x-reverse: 0;
   border-right-width: calc(3px * var(--tw-divide-x-reverse));
   border-left-width: calc(3px * (1 - var(--tw-divide-x-reverse)));
   border-left-width: calc(3px * calc(1 - var(--tw-divide-x-reverse)));
 }
-.divide-solid > view + view {
+.divide-solid > view + view,
+.divide-solid > view + text,
+.divide-solid > text + view,
+.divide-solid > text + text {
   border-style: solid;
 }
-.divide-_b_h010101_B > view + view {
+.divide-_b_h010101_B > view + view,
+.divide-_b_h010101_B > view + text,
+.divide-_b_h010101_B > text + view,
+.divide-_b_h010101_B > text + text {
   --tw-divide-opacity: 1;
   border-color: rgba(1, 1, 1, var(--tw-divide-opacity, 1));
 }
-.divide-_b3rpx_B > view + view {
+.divide-_b3rpx_B > view + view,
+.divide-_b3rpx_B > view + text,
+.divide-_b3rpx_B > text + view,
+.divide-_b3rpx_B > text + text {
   border-color: 3rpx;
 }
 .overflow-hidden {
@@ -23013,50 +23121,77 @@ wx-root-portal-content {
 .justify-center {
   justify-content: center;
 }
-.space-x-2_d5 > view + view {
+.space-x-2_d5 > view + view,
+.space-x-2_d5 > view + text,
+.space-x-2_d5 > text + view,
+.space-x-2_d5 > text + text {
   --tw-space-x-reverse: 0;
   margin-right: calc(20rpx * var(--tw-space-x-reverse));
   margin-left: calc(20rpx * (1 - var(--tw-space-x-reverse)));
   margin-left: calc(20rpx * calc(1 - var(--tw-space-x-reverse)));
 }
-.space-y-4 > view + view {
+.space-y-4 > view + view,
+.space-y-4 > view + text,
+.space-y-4 > text + view,
+.space-y-4 > text + text {
   --tw-space-y-reverse: 0;
   margin-top: calc(32rpx * (1 - var(--tw-space-y-reverse)));
   margin-top: calc(32rpx * calc(1 - var(--tw-space-y-reverse)));
   margin-bottom: calc(32rpx * var(--tw-space-y-reverse));
 }
-.space-y-_b1_d6rem_B > view + view {
+.space-y-_b1_d6rem_B > view + view,
+.space-y-_b1_d6rem_B > view + text,
+.space-y-_b1_d6rem_B > text + view,
+.space-y-_b1_d6rem_B > text + text {
   --tw-space-y-reverse: 0;
   margin-top: calc(1.6rem * (1 - var(--tw-space-y-reverse)));
   margin-top: calc(1.6rem * calc(1 - var(--tw-space-y-reverse)));
   margin-bottom: calc(1.6rem * var(--tw-space-y-reverse));
 }
-.space-y-_b11rpx_B > view + view {
+.space-y-_b11rpx_B > view + view,
+.space-y-_b11rpx_B > view + text,
+.space-y-_b11rpx_B > text + view,
+.space-y-_b11rpx_B > text + text {
   --tw-space-y-reverse: 0;
   margin-top: calc(11rpx * (1 - var(--tw-space-y-reverse)));
   margin-top: calc(11rpx * calc(1 - var(--tw-space-y-reverse)));
   margin-bottom: calc(11rpx * var(--tw-space-y-reverse));
 }
-.divide-x-_b10px_B > view + view {
+.divide-x-_b10px_B > view + view,
+.divide-x-_b10px_B > view + text,
+.divide-x-_b10px_B > text + view,
+.divide-x-_b10px_B > text + text {
   --tw-divide-x-reverse: 0;
   border-right-width: calc(10px * var(--tw-divide-x-reverse));
   border-left-width: calc(10px * (1 - var(--tw-divide-x-reverse)));
   border-left-width: calc(10px * calc(1 - var(--tw-divide-x-reverse)));
 }
-.divide-x-_b3px_B > view + view {
+.divide-x-_b3px_B > view + view,
+.divide-x-_b3px_B > view + text,
+.divide-x-_b3px_B > text + view,
+.divide-x-_b3px_B > text + text {
   --tw-divide-x-reverse: 0;
   border-right-width: calc(3px * var(--tw-divide-x-reverse));
   border-left-width: calc(3px * (1 - var(--tw-divide-x-reverse)));
   border-left-width: calc(3px * calc(1 - var(--tw-divide-x-reverse)));
 }
-.divide-solid > view + view {
+.divide-solid > view + view,
+.divide-solid > view + text,
+.divide-solid > text + view,
+.divide-solid > text + text {
   border-style: solid;
 }
-.divide-_b_h010101_B > view + view {
+.divide-_b_h010101_B > view + view,
+.divide-_b_h010101_B > view + text,
+.divide-_b_h010101_B > text + view,
+.divide-_b_h010101_B > text + text {
   --tw-divide-opacity: 1;
   border-color: rgba(1, 1, 1, var(--tw-divide-opacity, 1));
 }
-.divide-_b3rpx_B > view + view {
+.divide-_b3rpx_B > view + view,
+.divide-_b3rpx_B > view + text,
+.divide-_b3rpx_B > text + view,
+.divide-_b3rpx_B > text + text {
   border-color: 3rpx;
 }
 .overflow-hidden {
@@ -24383,50 +24518,77 @@ wx-root-portal-content {
 .justify-center {
   justify-content: center;
 }
-.space-x-2_d5 > view + view {
+.space-x-2_d5 > view + view,
+.space-x-2_d5 > view + text,
+.space-x-2_d5 > text + view,
+.space-x-2_d5 > text + text {
   --tw-space-x-reverse: 0;
   margin-right: calc(20rpx * var(--tw-space-x-reverse));
   margin-left: calc(20rpx * (1 - var(--tw-space-x-reverse)));
   margin-left: calc(20rpx * calc(1 - var(--tw-space-x-reverse)));
 }
-.space-y-4 > view + view {
+.space-y-4 > view + view,
+.space-y-4 > view + text,
+.space-y-4 > text + view,
+.space-y-4 > text + text {
   --tw-space-y-reverse: 0;
   margin-top: calc(32rpx * (1 - var(--tw-space-y-reverse)));
   margin-top: calc(32rpx * calc(1 - var(--tw-space-y-reverse)));
   margin-bottom: calc(32rpx * var(--tw-space-y-reverse));
 }
-.space-y-_b1_d6rem_B > view + view {
+.space-y-_b1_d6rem_B > view + view,
+.space-y-_b1_d6rem_B > view + text,
+.space-y-_b1_d6rem_B > text + view,
+.space-y-_b1_d6rem_B > text + text {
   --tw-space-y-reverse: 0;
   margin-top: calc(1.6rem * (1 - var(--tw-space-y-reverse)));
   margin-top: calc(1.6rem * calc(1 - var(--tw-space-y-reverse)));
   margin-bottom: calc(1.6rem * var(--tw-space-y-reverse));
 }
-.space-y-_b11rpx_B > view + view {
+.space-y-_b11rpx_B > view + view,
+.space-y-_b11rpx_B > view + text,
+.space-y-_b11rpx_B > text + view,
+.space-y-_b11rpx_B > text + text {
   --tw-space-y-reverse: 0;
   margin-top: calc(11rpx * (1 - var(--tw-space-y-reverse)));
   margin-top: calc(11rpx * calc(1 - var(--tw-space-y-reverse)));
   margin-bottom: calc(11rpx * var(--tw-space-y-reverse));
 }
-.divide-x-_b10px_B > view + view {
+.divide-x-_b10px_B > view + view,
+.divide-x-_b10px_B > view + text,
+.divide-x-_b10px_B > text + view,
+.divide-x-_b10px_B > text + text {
   --tw-divide-x-reverse: 0;
   border-right-width: calc(10px * var(--tw-divide-x-reverse));
   border-left-width: calc(10px * (1 - var(--tw-divide-x-reverse)));
   border-left-width: calc(10px * calc(1 - var(--tw-divide-x-reverse)));
 }
-.divide-x-_b3px_B > view + view {
+.divide-x-_b3px_B > view + view,
+.divide-x-_b3px_B > view + text,
+.divide-x-_b3px_B > text + view,
+.divide-x-_b3px_B > text + text {
   --tw-divide-x-reverse: 0;
   border-right-width: calc(3px * var(--tw-divide-x-reverse));
   border-left-width: calc(3px * (1 - var(--tw-divide-x-reverse)));
   border-left-width: calc(3px * calc(1 - var(--tw-divide-x-reverse)));
 }
-.divide-solid > view + view {
+.divide-solid > view + view,
+.divide-solid > view + text,
+.divide-solid > text + view,
+.divide-solid > text + text {
   border-style: solid;
 }
-.divide-_b_h010101_B > view + view {
+.divide-_b_h010101_B > view + view,
+.divide-_b_h010101_B > view + text,
+.divide-_b_h010101_B > text + view,
+.divide-_b_h010101_B > text + text {
   --tw-divide-opacity: 1;
   border-color: rgba(1, 1, 1, var(--tw-divide-opacity, 1));
 }
-.divide-_b3rpx_B > view + view {
+.divide-_b3rpx_B > view + view,
+.divide-_b3rpx_B > view + text,
+.divide-_b3rpx_B > text + view,
+.divide-_b3rpx_B > text + text {
   border-color: 3rpx;
 }
 .overflow-hidden {

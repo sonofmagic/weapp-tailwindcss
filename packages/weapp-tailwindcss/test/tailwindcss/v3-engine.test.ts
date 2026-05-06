@@ -1,5 +1,9 @@
 import { createTailwindV3Engine, resolveTailwindV3Source } from '@/tailwindcss/v3-engine'
 
+function compactCss(css: string) {
+  return css.replace(/\s+/g, '')
+}
+
 describe('tailwindcss v3 engine', () => {
   it('removes browser preflight while keeping utility variables for mini-program output', async () => {
     const source = await resolveTailwindV3Source({
@@ -22,6 +26,27 @@ describe('tailwindcss v3 engine', () => {
     expect(result.css).not.toContain('button')
     expect(result.css).not.toContain('::-webkit')
     expect(result.css).toMatch(/^::before,\s*::after\s*\{\s*--tw-content:/m)
+  })
+
+  it('expands divide child combinators for view and text in mini-program output', async () => {
+    const source = await resolveTailwindV3Source({
+      css: '@tailwind utilities;',
+      base: process.cwd(),
+      config: undefined,
+    })
+    const engine = createTailwindV3Engine(source)
+
+    const result = await engine.generate({
+      candidates: ['divide-x-8', 'divide-solid', 'divide-[#60d256]'],
+    })
+    const css = compactCss(result.css)
+
+    expect(css).toContain('.divide-x-8>view+view')
+    expect(css).toContain('.divide-x-8>view+text')
+    expect(css).toContain('.divide-x-8>text+view')
+    expect(css).toContain('.divide-x-8>text+text')
+    expect(css).toContain('.divide-solid>text+text')
+    expect(css).toContain('.divide-_b_h60d256_B>text+view')
   })
 
   it('removes browser-only supports rules from mini-program output', async () => {

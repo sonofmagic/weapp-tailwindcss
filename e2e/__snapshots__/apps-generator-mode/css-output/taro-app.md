@@ -7,8 +7,8 @@ Generator CSS files: app.wxss, index.wxss, index.wxss, index.wxss, index.wxss, i
 
 | Mode | Bytes | Selectors | @supports | :hover | Tailwind banner | Raw arbitrary selector | Weapp escaped arbitrary selector |
 | --- | ---: | ---: | --- | --- | --- | --- | --- |
-| legacy | 40513 | 144 | false | false | false | false | true |
-| generator | 60894 | 144 | false | false | false | false | true |
+| legacy | 40513 | 140 | false | false | false | false | true |
+| generator | 60003 | 140 | false | false | false | false | true |
 
 ## Legacy CSS
 
@@ -1768,20 +1768,32 @@ text,
 .justify-center {
   justify-content: center;
 }
-.space-y-_b1_d6rem_B > view + view {
+.space-y-_b1_d6rem_B > view + view,
+.space-y-_b1_d6rem_B > view + text,
+.space-y-_b1_d6rem_B > text + view,
+.space-y-_b1_d6rem_B > text + text {
   --tw-space-y-reverse: 0;
   margin-top: calc(1.6rem * (1 - var(--tw-space-y-reverse)));
   margin-bottom: calc(1.6rem * var(--tw-space-y-reverse));
 }
-.divide-x-_b10px_B > view + view {
+.divide-x-_b10px_B > view + view,
+.divide-x-_b10px_B > view + text,
+.divide-x-_b10px_B > text + view,
+.divide-x-_b10px_B > text + text {
   --tw-divide-x-reverse: 0;
   border-right-width: calc(10px * var(--tw-divide-x-reverse));
   border-left-width: calc(10px * (1 - var(--tw-divide-x-reverse)));
 }
-.divide-solid > view + view {
+.divide-solid > view + view,
+.divide-solid > view + text,
+.divide-solid > text + view,
+.divide-solid > text + text {
   border-style: solid;
 }
-.divide-_b_h010101_B > view + view {
+.divide-_b_h010101_B > view + view,
+.divide-_b_h010101_B > view + text,
+.divide-_b_h010101_B > text + view,
+.divide-_b_h010101_B > text + text {
   --tw-divide-opacity: 1;
   border-color: rgba(1, 1, 1, var(--tw-divide-opacity, 1));
 }
@@ -2104,35 +2116,6 @@ text,
 ._b_n__du-count-down_r__r_text_B_c_etext-red-400 .u-count-down__text {
   --tw-text-opacity: 1 !important;
   color: rgba(248, 113, 113, var(--tw-text-opacity, 1)) !important;
-}
-.space-y-_b1_d6rem_B > view + view,
-.space-y-_b1_d6rem_B > view + text,
-.space-y-_b1_d6rem_B > text + view,
-.space-y-_b1_d6rem_B > text + text {
-  --tw-space-y-reverse: 0;
-  margin-bottom: calc(51.2rpx * var(--tw-space-y-reverse));
-  margin-top: calc(51.2rpx * (1 - var(--tw-space-y-reverse)));
-}
-.divide-x-_b10px_B > view + view,
-.divide-x-_b10px_B > view + text,
-.divide-x-_b10px_B > text + view,
-.divide-x-_b10px_B > text + text {
-  --tw-divide-x-reverse: 0;
-  border-left-width: calc(10rpx * (1 - var(--tw-divide-x-reverse)));
-  border-right-width: calc(10rpx * var(--tw-divide-x-reverse));
-}
-.divide-solid > view + view,
-.divide-solid > view + text,
-.divide-solid > text + view,
-.divide-solid > text + text {
-  border-style: solid;
-}
-.divide-_b_h010101_B > view + view,
-.divide-_b_h010101_B > view + text,
-.divide-_b_h010101_B > text + view,
-.divide-_b_h010101_B > text + text {
-  --tw-divide-opacity: 1;
-  border-color: rgba(1, 1, 1, var(--tw-divide-opacity, 1));
 }
 
 
@@ -2291,22 +2274,34 @@ text,
 .justify-center {
   justify-content: center;
 }
-.space-y-_b1_d6rem_B > view + view {
+.space-y-_b1_d6rem_B > view + view,
+.space-y-_b1_d6rem_B > view + text,
+.space-y-_b1_d6rem_B > text + view,
+.space-y-_b1_d6rem_B > text + text {
   --tw-space-y-reverse: 0;
   margin-top: calc(1.6rem * (1 - var(--tw-space-y-reverse)));
   margin-top: calc(1.6rem * calc(1 - var(--tw-space-y-reverse)));
   margin-bottom: calc(1.6rem * var(--tw-space-y-reverse));
 }
-.divide-x-_b10px_B > view + view {
+.divide-x-_b10px_B > view + view,
+.divide-x-_b10px_B > view + text,
+.divide-x-_b10px_B > text + view,
+.divide-x-_b10px_B > text + text {
   --tw-divide-x-reverse: 0;
   border-right-width: calc(10px * var(--tw-divide-x-reverse));
   border-left-width: calc(10px * (1 - var(--tw-divide-x-reverse)));
   border-left-width: calc(10px * calc(1 - var(--tw-divide-x-reverse)));
 }
-.divide-solid > view + view {
+.divide-solid > view + view,
+.divide-solid > view + text,
+.divide-solid > text + view,
+.divide-solid > text + text {
   border-style: solid;
 }
-.divide-_b_h010101_B > view + view {
+.divide-_b_h010101_B > view + view,
+.divide-_b_h010101_B > view + text,
+.divide-_b_h010101_B > text + view,
+.divide-_b_h010101_B > text + text {
   --tw-divide-opacity: 1;
   border-color: rgba(1, 1, 1, var(--tw-divide-opacity, 1));
 }
@@ -2629,35 +2624,6 @@ text,
 ._b_n__du-count-down_r__r_text_B_c_etext-red-400 .u-count-down__text {
   --tw-text-opacity: 1 !important;
   color: rgba(248, 113, 113, var(--tw-text-opacity, 1)) !important;
-}
-.space-y-_b1_d6rem_B > view + view,
-.space-y-_b1_d6rem_B > view + text,
-.space-y-_b1_d6rem_B > text + view,
-.space-y-_b1_d6rem_B > text + text {
-  --tw-space-y-reverse: 0;
-  margin-bottom: calc(51.2rpx * var(--tw-space-y-reverse));
-  margin-top: calc(51.2rpx * (1 - var(--tw-space-y-reverse)));
-}
-.divide-x-_b10px_B > view + view,
-.divide-x-_b10px_B > view + text,
-.divide-x-_b10px_B > text + view,
-.divide-x-_b10px_B > text + text {
-  --tw-divide-x-reverse: 0;
-  border-left-width: calc(10rpx * (1 - var(--tw-divide-x-reverse)));
-  border-right-width: calc(10rpx * var(--tw-divide-x-reverse));
-}
-.divide-solid > view + view,
-.divide-solid > view + text,
-.divide-solid > text + view,
-.divide-solid > text + text {
-  border-style: solid;
-}
-.divide-_b_h010101_B > view + view,
-.divide-_b_h010101_B > view + text,
-.divide-_b_h010101_B > text + view,
-.divide-_b_h010101_B > text + text {
-  --tw-divide-opacity: 1;
-  border-color: rgba(1, 1, 1, var(--tw-divide-opacity, 1));
 }
 
 ::before,
@@ -2815,22 +2781,34 @@ text,
 .justify-center {
   justify-content: center;
 }
-.space-y-_b1_d6rem_B > view + view {
+.space-y-_b1_d6rem_B > view + view,
+.space-y-_b1_d6rem_B > view + text,
+.space-y-_b1_d6rem_B > text + view,
+.space-y-_b1_d6rem_B > text + text {
   --tw-space-y-reverse: 0;
   margin-top: calc(1.6rem * (1 - var(--tw-space-y-reverse)));
   margin-top: calc(1.6rem * calc(1 - var(--tw-space-y-reverse)));
   margin-bottom: calc(1.6rem * var(--tw-space-y-reverse));
 }
-.divide-x-_b10px_B > view + view {
+.divide-x-_b10px_B > view + view,
+.divide-x-_b10px_B > view + text,
+.divide-x-_b10px_B > text + view,
+.divide-x-_b10px_B > text + text {
   --tw-divide-x-reverse: 0;
   border-right-width: calc(10px * var(--tw-divide-x-reverse));
   border-left-width: calc(10px * (1 - var(--tw-divide-x-reverse)));
   border-left-width: calc(10px * calc(1 - var(--tw-divide-x-reverse)));
 }
-.divide-solid > view + view {
+.divide-solid > view + view,
+.divide-solid > view + text,
+.divide-solid > text + view,
+.divide-solid > text + text {
   border-style: solid;
 }
-.divide-_b_h010101_B > view + view {
+.divide-_b_h010101_B > view + view,
+.divide-_b_h010101_B > view + text,
+.divide-_b_h010101_B > text + view,
+.divide-_b_h010101_B > text + text {
   --tw-divide-opacity: 1;
   border-color: rgba(1, 1, 1, var(--tw-divide-opacity, 1));
 }
@@ -3154,35 +3132,6 @@ text,
   --tw-text-opacity: 1 !important;
   color: rgba(248, 113, 113, var(--tw-text-opacity, 1)) !important;
 }
-.space-y-_b1_d6rem_B > view + view,
-.space-y-_b1_d6rem_B > view + text,
-.space-y-_b1_d6rem_B > text + view,
-.space-y-_b1_d6rem_B > text + text {
-  --tw-space-y-reverse: 0;
-  margin-bottom: calc(51.2rpx * var(--tw-space-y-reverse));
-  margin-top: calc(51.2rpx * (1 - var(--tw-space-y-reverse)));
-}
-.divide-x-_b10px_B > view + view,
-.divide-x-_b10px_B > view + text,
-.divide-x-_b10px_B > text + view,
-.divide-x-_b10px_B > text + text {
-  --tw-divide-x-reverse: 0;
-  border-left-width: calc(10rpx * (1 - var(--tw-divide-x-reverse)));
-  border-right-width: calc(10rpx * var(--tw-divide-x-reverse));
-}
-.divide-solid > view + view,
-.divide-solid > view + text,
-.divide-solid > text + view,
-.divide-solid > text + text {
-  border-style: solid;
-}
-.divide-_b_h010101_B > view + view,
-.divide-_b_h010101_B > view + text,
-.divide-_b_h010101_B > text + view,
-.divide-_b_h010101_B > text + text {
-  --tw-divide-opacity: 1;
-  border-color: rgba(1, 1, 1, var(--tw-divide-opacity, 1));
-}
 
 .relative {
   position: relative;
@@ -3279,22 +3228,34 @@ text,
 .justify-center {
   justify-content: center;
 }
-.space-y-_b1_d6rem_B > view + view {
+.space-y-_b1_d6rem_B > view + view,
+.space-y-_b1_d6rem_B > view + text,
+.space-y-_b1_d6rem_B > text + view,
+.space-y-_b1_d6rem_B > text + text {
   --tw-space-y-reverse: 0;
   margin-top: calc(1.6rem * (1 - var(--tw-space-y-reverse)));
   margin-top: calc(1.6rem * calc(1 - var(--tw-space-y-reverse)));
   margin-bottom: calc(1.6rem * var(--tw-space-y-reverse));
 }
-.divide-x-_b10px_B > view + view {
+.divide-x-_b10px_B > view + view,
+.divide-x-_b10px_B > view + text,
+.divide-x-_b10px_B > text + view,
+.divide-x-_b10px_B > text + text {
   --tw-divide-x-reverse: 0;
   border-right-width: calc(10px * var(--tw-divide-x-reverse));
   border-left-width: calc(10px * (1 - var(--tw-divide-x-reverse)));
   border-left-width: calc(10px * calc(1 - var(--tw-divide-x-reverse)));
 }
-.divide-solid > view + view {
+.divide-solid > view + view,
+.divide-solid > view + text,
+.divide-solid > text + view,
+.divide-solid > text + text {
   border-style: solid;
 }
-.divide-_b_h010101_B > view + view {
+.divide-_b_h010101_B > view + view,
+.divide-_b_h010101_B > view + text,
+.divide-_b_h010101_B > text + view,
+.divide-_b_h010101_B > text + text {
   --tw-divide-opacity: 1;
   border-color: rgba(1, 1, 1, var(--tw-divide-opacity, 1));
 }
@@ -3721,22 +3682,34 @@ text,
 .justify-center {
   justify-content: center;
 }
-.space-y-_b1_d6rem_B > view + view {
+.space-y-_b1_d6rem_B > view + view,
+.space-y-_b1_d6rem_B > view + text,
+.space-y-_b1_d6rem_B > text + view,
+.space-y-_b1_d6rem_B > text + text {
   --tw-space-y-reverse: 0;
   margin-top: calc(1.6rem * (1 - var(--tw-space-y-reverse)));
   margin-top: calc(1.6rem * calc(1 - var(--tw-space-y-reverse)));
   margin-bottom: calc(1.6rem * var(--tw-space-y-reverse));
 }
-.divide-x-_b10px_B > view + view {
+.divide-x-_b10px_B > view + view,
+.divide-x-_b10px_B > view + text,
+.divide-x-_b10px_B > text + view,
+.divide-x-_b10px_B > text + text {
   --tw-divide-x-reverse: 0;
   border-right-width: calc(10px * var(--tw-divide-x-reverse));
   border-left-width: calc(10px * (1 - var(--tw-divide-x-reverse)));
   border-left-width: calc(10px * calc(1 - var(--tw-divide-x-reverse)));
 }
-.divide-solid > view + view {
+.divide-solid > view + view,
+.divide-solid > view + text,
+.divide-solid > text + view,
+.divide-solid > text + text {
   border-style: solid;
 }
-.divide-_b_h010101_B > view + view {
+.divide-_b_h010101_B > view + view,
+.divide-_b_h010101_B > view + text,
+.divide-_b_h010101_B > text + view,
+.divide-_b_h010101_B > text + text {
   --tw-divide-opacity: 1;
   border-color: rgba(1, 1, 1, var(--tw-divide-opacity, 1));
 }

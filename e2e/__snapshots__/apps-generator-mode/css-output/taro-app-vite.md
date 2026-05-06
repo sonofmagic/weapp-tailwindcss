@@ -7,8 +7,8 @@ Generator CSS files: app.wxss, app-origin.wxss, index.wxss
 
 | Mode | Bytes | Selectors | @supports | :hover | Tailwind banner | Raw arbitrary selector | Weapp escaped arbitrary selector |
 | --- | ---: | ---: | --- | --- | --- | --- | --- |
-| legacy | 4530 | 28 | false | false | false | false | true |
-| generator | 1325 | 12 | false | false | false | false | true |
+| legacy | 4530 | 23 | false | false | false | false | true |
+| generator | 1601 | 23 | false | false | false | false | true |
 
 ## Legacy CSS
 
@@ -220,15 +220,24 @@ text,
 .flex-col {
   flex-direction: column;
 }
-.divide-x-8 > view + view {
+.divide-x-8 > view + view,
+.divide-x-8 > view + text,
+.divide-x-8 > text + view,
+.divide-x-8 > text + text {
   --tw-divide-x-reverse: 0;
   border-right-width: calc(8px * var(--tw-divide-x-reverse));
   border-left-width: calc(8px * (1 - var(--tw-divide-x-reverse)));
 }
-.divide-solid > view + view {
+.divide-solid > view + view,
+.divide-solid > view + text,
+.divide-solid > text + view,
+.divide-solid > text + text {
   border-style: solid;
 }
-.divide-_b_h60d256_B > view + view {
+.divide-_b_h60d256_B > view + view,
+.divide-_b_h60d256_B > view + text,
+.divide-_b_h60d256_B > text + view,
+.divide-_b_h60d256_B > text + text {
   --tw-divide-opacity: 1;
   border-color: rgba(96, 210, 86, var(--tw-divide-opacity, 1));
 }

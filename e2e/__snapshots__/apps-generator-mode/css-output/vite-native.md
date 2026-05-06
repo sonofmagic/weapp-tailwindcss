@@ -7,8 +7,8 @@ Generator CSS files: app.wxss, apple.wxss, index.wxss
 
 | Mode | Bytes | Selectors | @supports | :hover | Tailwind banner | Raw arbitrary selector | Weapp escaped arbitrary selector |
 | --- | ---: | ---: | --- | --- | --- | --- | --- |
-| legacy | 5991 | 52 | false | false | false | false | true |
-| generator | 6707 | 53 | false | false | false | false | true |
+| legacy | 5991 | 47 | false | false | false | false | true |
+| generator | 6881 | 58 | false | false | false | false | true |
 
 ## Legacy CSS
 
@@ -393,12 +393,18 @@ wx-root-portal-content {
   -webkit-flex-direction: column;
   flex-direction: column;
 }
-.space-y-2_d5 > view + view {
+.space-y-2_d5 > view + view,
+.space-y-2_d5 > view + text,
+.space-y-2_d5 > text + view,
+.space-y-2_d5 > text + text {
   --tw-space-y-reverse: 0;
   margin-bottom: calc((var(--spacing) * 2.5) * var(--tw-space-y-reverse));
   margin-top: calc((var(--spacing) * 2.5) * (1 - var(--tw-space-y-reverse)));
 }
-.space-x-2_d5 > view + view {
+.space-x-2_d5 > view + view,
+.space-x-2_d5 > view + text,
+.space-x-2_d5 > text + view,
+.space-x-2_d5 > text + text {
   --tw-space-x-reverse: 0;
   margin-right: calc((var(--spacing) * 2.5) * var(--tw-space-x-reverse));
   margin-left: calc((var(--spacing) * 2.5) * (1 - var(--tw-space-x-reverse)));

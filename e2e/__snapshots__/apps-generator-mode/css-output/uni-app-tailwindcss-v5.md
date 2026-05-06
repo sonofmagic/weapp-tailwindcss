@@ -7,8 +7,8 @@ Generator CSS files: app.wxss, home.wxss, user.wxss
 
 | Mode | Bytes | Selectors | @supports | :hover | Tailwind banner | Raw arbitrary selector | Weapp escaped arbitrary selector |
 | --- | ---: | ---: | --- | --- | --- | --- | --- |
-| legacy | 58430 | 291 | true | false | false | false | true |
-| generator | 97283 | 397 | false | false | false | false | true |
+| legacy | 58430 | 283 | true | false | false | false | true |
+| generator | 102557 | 479 | false | false | false | false | true |
 
 ## Legacy CSS
 
@@ -2543,65 +2543,104 @@ wx-root-portal-content {
 .gap-3 {
   gap: calc(var(--spacing) * 3);
 }
-.space-y-4 > view + view {
+.space-y-4 > view + view,
+.space-y-4 > view + text,
+.space-y-4 > text + view,
+.space-y-4 > text + text {
   --tw-space-y-reverse: 0;
   margin-bottom: calc((var(--spacing) * 4) * var(--tw-space-y-reverse));
   margin-top: calc((var(--spacing) * 4) * (1 - var(--tw-space-y-reverse)));
 }
-.space-y-reverse > view + view {
+.space-y-reverse > view + view,
+.space-y-reverse > view + text,
+.space-y-reverse > text + view,
+.space-y-reverse > text + text {
   --tw-space-y-reverse: 1;
 }
-.space-x-4 > view + view {
+.space-x-4 > view + view,
+.space-x-4 > view + text,
+.space-x-4 > text + view,
+.space-x-4 > text + text {
   --tw-space-x-reverse: 0;
   margin-right: calc((var(--spacing) * 4) * var(--tw-space-x-reverse));
   margin-left: calc((var(--spacing) * 4) * (1 - var(--tw-space-x-reverse)));
 }
-.space-x-reverse > view + view {
+.space-x-reverse > view + view,
+.space-x-reverse > view + text,
+.space-x-reverse > text + view,
+.space-x-reverse > text + text {
   --tw-space-x-reverse: 1;
 }
-.divide-x > view + view {
+.divide-x > view + view,
+.divide-x > view + text,
+.divide-x > text + view,
+.divide-x > text + text {
   --tw-divide-x-reverse: 0;
   border-left-style: var(--tw-border-style);
   border-right-style: var(--tw-border-style);
   border-right-width: calc(1px * var(--tw-divide-x-reverse));
   border-left-width: calc(1px * (1 - var(--tw-divide-x-reverse)));
 }
-.divide-x-4 > view + view {
+.divide-x-4 > view + view,
+.divide-x-4 > view + text,
+.divide-x-4 > text + view,
+.divide-x-4 > text + text {
   --tw-divide-x-reverse: 0;
   border-left-style: var(--tw-border-style);
   border-right-style: var(--tw-border-style);
   border-right-width: calc(4px * var(--tw-divide-x-reverse));
   border-left-width: calc(4px * (1 - var(--tw-divide-x-reverse)));
 }
-.divide-y > view + view {
+.divide-y > view + view,
+.divide-y > view + text,
+.divide-y > text + view,
+.divide-y > text + text {
   --tw-divide-y-reverse: 0;
   border-bottom-style: var(--tw-border-style);
   border-top-style: var(--tw-border-style);
   border-bottom-width: calc(1px * var(--tw-divide-y-reverse));
   border-top-width: calc(1px * (1 - var(--tw-divide-y-reverse)));
 }
-.divide-y-4 > view + view {
+.divide-y-4 > view + view,
+.divide-y-4 > view + text,
+.divide-y-4 > text + view,
+.divide-y-4 > text + text {
   --tw-divide-y-reverse: 0;
   border-bottom-style: var(--tw-border-style);
   border-top-style: var(--tw-border-style);
   border-bottom-width: calc(4px * var(--tw-divide-y-reverse));
   border-top-width: calc(4px * (1 - var(--tw-divide-y-reverse)));
 }
-.divide-y-reverse > view + view {
+.divide-y-reverse > view + view,
+.divide-y-reverse > view + text,
+.divide-y-reverse > text + view,
+.divide-y-reverse > text + text {
   --tw-divide-y-reverse: 1;
 }
-.divide-dotted > view + view {
+.divide-dotted > view + view,
+.divide-dotted > view + text,
+.divide-dotted > text + view,
+.divide-dotted > text + text {
   --tw-border-style: dotted;
   border-style: dotted;
 }
-.divide-double > view + view {
+.divide-double > view + view,
+.divide-double > view + text,
+.divide-double > text + view,
+.divide-double > text + text {
   --tw-border-style: double;
   border-style: double;
 }
-.divide-_b_h41eb04_B > view + view {
+.divide-_b_h41eb04_B > view + view,
+.divide-_b_h41eb04_B > view + text,
+.divide-_b_h41eb04_B > text + view,
+.divide-_b_h41eb04_B > text + text {
   border-color: #41eb04;
 }
-.divide-_b_hd80c0c_B > view + view {
+.divide-_b_hd80c0c_B > view + view,
+.divide-_b_hd80c0c_B > view + text,
+.divide-_b_hd80c0c_B > text + view,
+.divide-_b_hd80c0c_B > text + text {
   border-color: #d80c0c;
 }
 .truncate {
@@ -3080,7 +3119,10 @@ wx-root-portal-content {
   backdrop-filter: var(--tw-backdrop-blur,) var(--tw-backdrop-brightness,) var(--tw-backdrop-contrast,) var(--tw-backdrop-grayscale,) var(--tw-backdrop-hue-rotate,)
     var(--tw-backdrop-invert,) var(--tw-backdrop-opacity,) var(--tw-backdrop-saturate,) var(--tw-backdrop-sepia,);
 }
-.divide-x-reverse > view + view {
+.divide-x-reverse > view + view,
+.divide-x-reverse > view + text,
+.divide-x-reverse > text + view,
+.divide-x-reverse > text + text {
   --tw-divide-x-reverse: 1;
 }
 .ring-inset {
@@ -3397,27 +3439,42 @@ wx-root-portal-content {
 .gap-3:not(#\#):not(#\#) {
   gap: calc(var(--spacing) * 3);
 }
-.space-y-4:not(#\#):not(#\#) > view + view {
+.space-y-4:not(#\#):not(#\#) > view + view,
+.space-y-4:not(#\#):not(#\#) > view + text,
+.space-y-4:not(#\#):not(#\#) > text + view,
+.space-y-4:not(#\#):not(#\#) > text + text {
   --tw-space-y-reverse: 0;
   margin-bottom: calc((var(--spacing) * 4) * var(--tw-space-y-reverse));
   margin-bottom: calc(calc(var(--spacing) * 4) * var(--tw-space-y-reverse));
   margin-top: calc((var(--spacing) * 4) * (1 - var(--tw-space-y-reverse)));
   margin-top: calc(calc(var(--spacing) * 4) * calc(1 - var(--tw-space-y-reverse)));
 }
-.space-y-reverse:not(#\#):not(#\#) > view + view {
+.space-y-reverse:not(#\#):not(#\#) > view + view,
+.space-y-reverse:not(#\#):not(#\#) > view + text,
+.space-y-reverse:not(#\#):not(#\#) > text + view,
+.space-y-reverse:not(#\#):not(#\#) > text + text {
   --tw-space-y-reverse: 1;
 }
-.space-x-4:not(#\#):not(#\#) > view + view {
+.space-x-4:not(#\#):not(#\#) > view + view,
+.space-x-4:not(#\#):not(#\#) > view + text,
+.space-x-4:not(#\#):not(#\#) > text + view,
+.space-x-4:not(#\#):not(#\#) > text + text {
   --tw-space-x-reverse: 0;
   margin-right: calc((var(--spacing) * 4) * var(--tw-space-x-reverse));
   margin-right: calc(calc(var(--spacing) * 4) * var(--tw-space-x-reverse));
   margin-left: calc((var(--spacing) * 4) * (1 - var(--tw-space-x-reverse)));
   margin-left: calc(calc(var(--spacing) * 4) * calc(1 - var(--tw-space-x-reverse)));
 }
-.space-x-reverse:not(#\#):not(#\#) > view + view {
+.space-x-reverse:not(#\#):not(#\#) > view + view,
+.space-x-reverse:not(#\#):not(#\#) > view + text,
+.space-x-reverse:not(#\#):not(#\#) > text + view,
+.space-x-reverse:not(#\#):not(#\#) > text + text {
   --tw-space-x-reverse: 1;
 }
-.divide-x:not(#\#):not(#\#) > view + view {
+.divide-x:not(#\#):not(#\#) > view + view,
+.divide-x:not(#\#):not(#\#) > view + text,
+.divide-x:not(#\#):not(#\#) > text + view,
+.divide-x:not(#\#):not(#\#) > text + text {
   --tw-divide-x-reverse: 0;
   border-left-style: var(--tw-border-style);
   border-right-style: var(--tw-border-style);
@@ -3425,7 +3482,10 @@ wx-root-portal-content {
   border-left-width: calc(1px * (1 - var(--tw-divide-x-reverse)));
   border-left-width: calc(1px * calc(1 - var(--tw-divide-x-reverse)));
 }
-.divide-x-4:not(#\#):not(#\#) > view + view {
+.divide-x-4:not(#\#):not(#\#) > view + view,
+.divide-x-4:not(#\#):not(#\#) > view + text,
+.divide-x-4:not(#\#):not(#\#) > text + view,
+.divide-x-4:not(#\#):not(#\#) > text + text {
   --tw-divide-x-reverse: 0;
   border-left-style: var(--tw-border-style);
   border-right-style: var(--tw-border-style);
@@ -3433,7 +3493,10 @@ wx-root-portal-content {
   border-left-width: calc(4px * (1 - var(--tw-divide-x-reverse)));
   border-left-width: calc(4px * calc(1 - var(--tw-divide-x-reverse)));
 }
-.divide-y:not(#\#):not(#\#) > view + view {
+.divide-y:not(#\#):not(#\#) > view + view,
+.divide-y:not(#\#):not(#\#) > view + text,
+.divide-y:not(#\#):not(#\#) > text + view,
+.divide-y:not(#\#):not(#\#) > text + text {
   --tw-divide-y-reverse: 0;
   border-bottom-style: var(--tw-border-style);
   border-top-style: var(--tw-border-style);
@@ -3441,7 +3504,10 @@ wx-root-portal-content {
   border-top-width: calc(1px * (1 - var(--tw-divide-y-reverse)));
   border-top-width: calc(1px * calc(1 - var(--tw-divide-y-reverse)));
 }
-.divide-y-4:not(#\#):not(#\#) > view + view {
+.divide-y-4:not(#\#):not(#\#) > view + view,
+.divide-y-4:not(#\#):not(#\#) > view + text,
+.divide-y-4:not(#\#):not(#\#) > text + view,
+.divide-y-4:not(#\#):not(#\#) > text + text {
   --tw-divide-y-reverse: 0;
   border-bottom-style: var(--tw-border-style);
   border-top-style: var(--tw-border-style);
@@ -3449,21 +3515,36 @@ wx-root-portal-content {
   border-top-width: calc(4px * (1 - var(--tw-divide-y-reverse)));
   border-top-width: calc(4px * calc(1 - var(--tw-divide-y-reverse)));
 }
-.divide-y-reverse:not(#\#):not(#\#) > view + view {
+.divide-y-reverse:not(#\#):not(#\#) > view + view,
+.divide-y-reverse:not(#\#):not(#\#) > view + text,
+.divide-y-reverse:not(#\#):not(#\#) > text + view,
+.divide-y-reverse:not(#\#):not(#\#) > text + text {
   --tw-divide-y-reverse: 1;
 }
-.divide-dotted:not(#\#):not(#\#) > view + view {
+.divide-dotted:not(#\#):not(#\#) > view + view,
+.divide-dotted:not(#\#):not(#\#) > view + text,
+.divide-dotted:not(#\#):not(#\#) > text + view,
+.divide-dotted:not(#\#):not(#\#) > text + text {
   --tw-border-style: dotted;
   border-style: dotted;
 }
-.divide-double:not(#\#):not(#\#) > view + view {
+.divide-double:not(#\#):not(#\#) > view + view,
+.divide-double:not(#\#):not(#\#) > view + text,
+.divide-double:not(#\#):not(#\#) > text + view,
+.divide-double:not(#\#):not(#\#) > text + text {
   --tw-border-style: double;
   border-style: double;
 }
-.divide-_b_h41eb04_B:not(#\#):not(#\#) > view + view {
+.divide-_b_h41eb04_B:not(#\#):not(#\#) > view + view,
+.divide-_b_h41eb04_B:not(#\#):not(#\#) > view + text,
+.divide-_b_h41eb04_B:not(#\#):not(#\#) > text + view,
+.divide-_b_h41eb04_B:not(#\#):not(#\#) > text + text {
   border-color: #41eb04;
 }
-.divide-_b_hd80c0c_B:not(#\#):not(#\#) > view + view {
+.divide-_b_hd80c0c_B:not(#\#):not(#\#) > view + view,
+.divide-_b_hd80c0c_B:not(#\#):not(#\#) > view + text,
+.divide-_b_hd80c0c_B:not(#\#):not(#\#) > text + view,
+.divide-_b_hd80c0c_B:not(#\#):not(#\#) > text + text {
   border-color: #d80c0c;
 }
 .truncate:not(#\#):not(#\#) {
@@ -3942,7 +4023,10 @@ wx-root-portal-content {
   backdrop-filter: var(--tw-backdrop-blur,) var(--tw-backdrop-brightness,) var(--tw-backdrop-contrast,) var(--tw-backdrop-grayscale,) var(--tw-backdrop-hue-rotate,)
     var(--tw-backdrop-invert,) var(--tw-backdrop-opacity,) var(--tw-backdrop-saturate,) var(--tw-backdrop-sepia,);
 }
-.divide-x-reverse:not(#\#):not(#\#) > view + view {
+.divide-x-reverse:not(#\#):not(#\#) > view + view,
+.divide-x-reverse:not(#\#):not(#\#) > view + text,
+.divide-x-reverse:not(#\#):not(#\#) > text + view,
+.divide-x-reverse:not(#\#):not(#\#) > text + text {
   --tw-divide-x-reverse: 1;
 }
 .ring-inset:not(#\#):not(#\#) {
@@ -4557,27 +4641,42 @@ wx-root-portal-content {
 .gap-3:not(#\#):not(#\#) {
   gap: calc(var(--spacing) * 3);
 }
-.space-y-4:not(#\#):not(#\#) > view + view {
+.space-y-4:not(#\#):not(#\#) > view + view,
+.space-y-4:not(#\#):not(#\#) > view + text,
+.space-y-4:not(#\#):not(#\#) > text + view,
+.space-y-4:not(#\#):not(#\#) > text + text {
   --tw-space-y-reverse: 0;
   margin-bottom: calc((var(--spacing) * 4) * var(--tw-space-y-reverse));
   margin-bottom: calc(calc(var(--spacing) * 4) * var(--tw-space-y-reverse));
   margin-top: calc((var(--spacing) * 4) * (1 - var(--tw-space-y-reverse)));
   margin-top: calc(calc(var(--spacing) * 4) * calc(1 - var(--tw-space-y-reverse)));
 }
-.space-y-reverse:not(#\#):not(#\#) > view + view {
+.space-y-reverse:not(#\#):not(#\#) > view + view,
+.space-y-reverse:not(#\#):not(#\#) > view + text,
+.space-y-reverse:not(#\#):not(#\#) > text + view,
+.space-y-reverse:not(#\#):not(#\#) > text + text {
   --tw-space-y-reverse: 1;
 }
-.space-x-4:not(#\#):not(#\#) > view + view {
+.space-x-4:not(#\#):not(#\#) > view + view,
+.space-x-4:not(#\#):not(#\#) > view + text,
+.space-x-4:not(#\#):not(#\#) > text + view,
+.space-x-4:not(#\#):not(#\#) > text + text {
   --tw-space-x-reverse: 0;
   margin-right: calc((var(--spacing) * 4) * var(--tw-space-x-reverse));
   margin-right: calc(calc(var(--spacing) * 4) * var(--tw-space-x-reverse));
   margin-left: calc((var(--spacing) * 4) * (1 - var(--tw-space-x-reverse)));
   margin-left: calc(calc(var(--spacing) * 4) * calc(1 - var(--tw-space-x-reverse)));
 }
-.space-x-reverse:not(#\#):not(#\#) > view + view {
+.space-x-reverse:not(#\#):not(#\#) > view + view,
+.space-x-reverse:not(#\#):not(#\#) > view + text,
+.space-x-reverse:not(#\#):not(#\#) > text + view,
+.space-x-reverse:not(#\#):not(#\#) > text + text {
   --tw-space-x-reverse: 1;
 }
-.divide-x:not(#\#):not(#\#) > view + view {
+.divide-x:not(#\#):not(#\#) > view + view,
+.divide-x:not(#\#):not(#\#) > view + text,
+.divide-x:not(#\#):not(#\#) > text + view,
+.divide-x:not(#\#):not(#\#) > text + text {
   --tw-divide-x-reverse: 0;
   border-left-style: var(--tw-border-style);
   border-right-style: var(--tw-border-style);
@@ -4585,7 +4684,10 @@ wx-root-portal-content {
   border-left-width: calc(1px * (1 - var(--tw-divide-x-reverse)));
   border-left-width: calc(1px * calc(1 - var(--tw-divide-x-reverse)));
 }
-.divide-x-4:not(#\#):not(#\#) > view + view {
+.divide-x-4:not(#\#):not(#\#) > view + view,
+.divide-x-4:not(#\#):not(#\#) > view + text,
+.divide-x-4:not(#\#):not(#\#) > text + view,
+.divide-x-4:not(#\#):not(#\#) > text + text {
   --tw-divide-x-reverse: 0;
   border-left-style: var(--tw-border-style);
   border-right-style: var(--tw-border-style);
@@ -4593,7 +4695,10 @@ wx-root-portal-content {
   border-left-width: calc(4px * (1 - var(--tw-divide-x-reverse)));
   border-left-width: calc(4px * calc(1 - var(--tw-divide-x-reverse)));
 }
-.divide-y:not(#\#):not(#\#) > view + view {
+.divide-y:not(#\#):not(#\#) > view + view,
+.divide-y:not(#\#):not(#\#) > view + text,
+.divide-y:not(#\#):not(#\#) > text + view,
+.divide-y:not(#\#):not(#\#) > text + text {
   --tw-divide-y-reverse: 0;
   border-bottom-style: var(--tw-border-style);
   border-top-style: var(--tw-border-style);
@@ -4601,7 +4706,10 @@ wx-root-portal-content {
   border-top-width: calc(1px * (1 - var(--tw-divide-y-reverse)));
   border-top-width: calc(1px * calc(1 - var(--tw-divide-y-reverse)));
 }
-.divide-y-4:not(#\#):not(#\#) > view + view {
+.divide-y-4:not(#\#):not(#\#) > view + view,
+.divide-y-4:not(#\#):not(#\#) > view + text,
+.divide-y-4:not(#\#):not(#\#) > text + view,
+.divide-y-4:not(#\#):not(#\#) > text + text {
   --tw-divide-y-reverse: 0;
   border-bottom-style: var(--tw-border-style);
   border-top-style: var(--tw-border-style);
@@ -4609,21 +4717,36 @@ wx-root-portal-content {
   border-top-width: calc(4px * (1 - var(--tw-divide-y-reverse)));
   border-top-width: calc(4px * calc(1 - var(--tw-divide-y-reverse)));
 }
-.divide-y-reverse:not(#\#):not(#\#) > view + view {
+.divide-y-reverse:not(#\#):not(#\#) > view + view,
+.divide-y-reverse:not(#\#):not(#\#) > view + text,
+.divide-y-reverse:not(#\#):not(#\#) > text + view,
+.divide-y-reverse:not(#\#):not(#\#) > text + text {
   --tw-divide-y-reverse: 1;
 }
-.divide-dotted:not(#\#):not(#\#) > view + view {
+.divide-dotted:not(#\#):not(#\#) > view + view,
+.divide-dotted:not(#\#):not(#\#) > view + text,
+.divide-dotted:not(#\#):not(#\#) > text + view,
+.divide-dotted:not(#\#):not(#\#) > text + text {
   --tw-border-style: dotted;
   border-style: dotted;
 }
-.divide-double:not(#\#):not(#\#) > view + view {
+.divide-double:not(#\#):not(#\#) > view + view,
+.divide-double:not(#\#):not(#\#) > view + text,
+.divide-double:not(#\#):not(#\#) > text + view,
+.divide-double:not(#\#):not(#\#) > text + text {
   --tw-border-style: double;
   border-style: double;
 }
-.divide-_b_h41eb04_B:not(#\#):not(#\#) > view + view {
+.divide-_b_h41eb04_B:not(#\#):not(#\#) > view + view,
+.divide-_b_h41eb04_B:not(#\#):not(#\#) > view + text,
+.divide-_b_h41eb04_B:not(#\#):not(#\#) > text + view,
+.divide-_b_h41eb04_B:not(#\#):not(#\#) > text + text {
   border-color: #41eb04;
 }
-.divide-_b_hd80c0c_B:not(#\#):not(#\#) > view + view {
+.divide-_b_hd80c0c_B:not(#\#):not(#\#) > view + view,
+.divide-_b_hd80c0c_B:not(#\#):not(#\#) > view + text,
+.divide-_b_hd80c0c_B:not(#\#):not(#\#) > text + view,
+.divide-_b_hd80c0c_B:not(#\#):not(#\#) > text + text {
   border-color: #d80c0c;
 }
 .truncate:not(#\#):not(#\#) {
@@ -5102,7 +5225,10 @@ wx-root-portal-content {
   backdrop-filter: var(--tw-backdrop-blur,) var(--tw-backdrop-brightness,) var(--tw-backdrop-contrast,) var(--tw-backdrop-grayscale,) var(--tw-backdrop-hue-rotate,)
     var(--tw-backdrop-invert,) var(--tw-backdrop-opacity,) var(--tw-backdrop-saturate,) var(--tw-backdrop-sepia,);
 }
-.divide-x-reverse:not(#\#):not(#\#) > view + view {
+.divide-x-reverse:not(#\#):not(#\#) > view + view,
+.divide-x-reverse:not(#\#):not(#\#) > view + text,
+.divide-x-reverse:not(#\#):not(#\#) > text + view,
+.divide-x-reverse:not(#\#):not(#\#) > text + text {
   --tw-divide-x-reverse: 1;
 }
 .ring-inset:not(#\#):not(#\#) {

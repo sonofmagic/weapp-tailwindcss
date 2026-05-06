@@ -4,6 +4,7 @@ import { createStyleHandler } from '@weapp-tailwindcss/postcss'
 import { pruneMiniProgramGeneratedCss } from '../miniprogram'
 
 const defaultStyleHandler = createStyleHandler({
+  cssChildCombinatorReplaceValue: ['view', 'text'],
   cssRemoveHoverPseudoClass: true,
   isMainChunk: true,
   majorVersion: 3,
@@ -14,6 +15,7 @@ export async function transformTailwindV3CssToWeapp(
   options?: Partial<IStyleHandlerOptions>,
 ) {
   const result = await defaultStyleHandler(css, {
+    cssChildCombinatorReplaceValue: ['view', 'text'],
     cssRemoveHoverPseudoClass: true,
     isMainChunk: true,
     majorVersion: 3,

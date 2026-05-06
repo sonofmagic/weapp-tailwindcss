@@ -7,8 +7,8 @@ Generator CSS files: app.wxss, styles/app.wxss, index.wxss, app5e440dc4.wxss
 
 | Mode | Bytes | Selectors | @supports | :hover | Tailwind banner | Raw arbitrary selector | Weapp escaped arbitrary selector |
 | --- | ---: | ---: | --- | --- | --- | --- | --- |
-| legacy | 22440 | 122 | false | false | false | false | true |
-| generator | 24452 | 124 | false | false | false | false | true |
+| legacy | 22440 | 118 | false | false | false | false | true |
+| generator | 23172 | 118 | false | false | false | false | true |
 
 ## Legacy CSS
 
@@ -1095,19 +1095,28 @@ wx-root-portal-content {
 .rotate-_b10deg_B {
   rotate: 10deg;
 }
-.space-y-_b1_d6rem_B > view + view {
+.space-y-_b1_d6rem_B > view + view,
+.space-y-_b1_d6rem_B > view + text,
+.space-y-_b1_d6rem_B > text + view,
+.space-y-_b1_d6rem_B > text + text {
   --tw-space-y-reverse: 0;
   margin-bottom: calc(1.6rem * var(--tw-space-y-reverse));
   margin-top: calc(1.6rem * (1 - var(--tw-space-y-reverse)));
 }
-.divide-x-_b10px_B > view + view {
+.divide-x-_b10px_B > view + view,
+.divide-x-_b10px_B > view + text,
+.divide-x-_b10px_B > text + view,
+.divide-x-_b10px_B > text + text {
   --tw-divide-x-reverse: 0;
   border-left-style: var(--tw-border-style);
   border-right-style: var(--tw-border-style);
   border-right-width: calc(10px * var(--tw-divide-x-reverse));
   border-left-width: calc(10px * (1 - var(--tw-divide-x-reverse)));
 }
-.divide-_b_h010101_B > view + view {
+.divide-_b_h010101_B > view + view,
+.divide-_b_h010101_B > view + text,
+.divide-_b_h010101_B > text + view,
+.divide-_b_h010101_B > text + text {
   border-color: #010101;
 }
 .border-_b10px_B {
@@ -1337,40 +1346,12 @@ wx-root-portal-content {
   margin-bottom: 0rpx;
   margin-bottom: calc(var(--spacing) * 4 * var(--tw-space-y-reverse));
 }
-.space-y-_b1_d6rem_B > view + view,
-.space-y-_b1_d6rem_B > view + text,
-.space-y-_b1_d6rem_B > text + view,
-.space-y-_b1_d6rem_B > text + text {
-  --tw-space-y-reverse: 0;
-  margin-top: 51.2rpx;
-  margin-top: calc(51.2rpx * (1 - var(--tw-space-y-reverse)));
-  margin-bottom: 0rpx;
-  margin-bottom: calc(51.2rpx * var(--tw-space-y-reverse));
-}
-.divide-x-_b10px_B > view + view,
-.divide-x-_b10px_B > view + text,
-.divide-x-_b10px_B > text + view,
-.divide-x-_b10px_B > text + text {
-  --tw-divide-x-reverse: 0;
-  border-left-width: 10px;
-  border-left-width: calc(10px * (1 - var(--tw-divide-x-reverse)));
-  border-right-width: 0px;
-  border-right-width: calc(10px * var(--tw-divide-x-reverse));
-  border-left-style: var(--tw-border-style);
-  border-right-style: var(--tw-border-style);
-}
 .divide-solid > view + view,
 .divide-solid > view + text,
 .divide-solid > text + view,
 .divide-solid > text + text {
   --tw-border-style: solid;
   border-style: solid;
-}
-.divide-_b_h010101_B > view + view,
-.divide-_b_h010101_B > view + text,
-.divide-_b_h010101_B > text + view,
-.divide-_b_h010101_B > text + text {
-  border-color: #010101;
 }
 .rounded-lg {
   border-radius: 16rpx;
@@ -1617,19 +1598,28 @@ wx-root-portal-content {
 .rotate-_b10deg_B {
   rotate: 10deg;
 }
-.space-y-_b1_d6rem_B > view + view {
+.space-y-_b1_d6rem_B > view + view,
+.space-y-_b1_d6rem_B > view + text,
+.space-y-_b1_d6rem_B > text + view,
+.space-y-_b1_d6rem_B > text + text {
   --tw-space-y-reverse: 0;
   margin-bottom: calc(1.6rem * var(--tw-space-y-reverse));
   margin-top: calc(1.6rem * (1 - var(--tw-space-y-reverse)));
 }
-.divide-x-_b10px_B > view + view {
+.divide-x-_b10px_B > view + view,
+.divide-x-_b10px_B > view + text,
+.divide-x-_b10px_B > text + view,
+.divide-x-_b10px_B > text + text {
   --tw-divide-x-reverse: 0;
   border-left-style: var(--tw-border-style);
   border-right-style: var(--tw-border-style);
   border-right-width: calc(10px * var(--tw-divide-x-reverse));
   border-left-width: calc(10px * (1 - var(--tw-divide-x-reverse)));
 }
-.divide-_b_h010101_B > view + view {
+.divide-_b_h010101_B > view + view,
+.divide-_b_h010101_B > view + text,
+.divide-_b_h010101_B > text + view,
+.divide-_b_h010101_B > text + text {
   border-color: #010101;
 }
 .border-_b10px_B {
@@ -1859,40 +1849,12 @@ wx-root-portal-content {
   margin-bottom: 0rpx;
   margin-bottom: calc(var(--spacing) * 4 * var(--tw-space-y-reverse));
 }
-.space-y-_b1_d6rem_B > view + view,
-.space-y-_b1_d6rem_B > view + text,
-.space-y-_b1_d6rem_B > text + view,
-.space-y-_b1_d6rem_B > text + text {
-  --tw-space-y-reverse: 0;
-  margin-top: 51.2rpx;
-  margin-top: calc(51.2rpx * (1 - var(--tw-space-y-reverse)));
-  margin-bottom: 0rpx;
-  margin-bottom: calc(51.2rpx * var(--tw-space-y-reverse));
-}
-.divide-x-_b10px_B > view + view,
-.divide-x-_b10px_B > view + text,
-.divide-x-_b10px_B > text + view,
-.divide-x-_b10px_B > text + text {
-  --tw-divide-x-reverse: 0;
-  border-left-width: 10px;
-  border-left-width: calc(10px * (1 - var(--tw-divide-x-reverse)));
-  border-right-width: 0px;
-  border-right-width: calc(10px * var(--tw-divide-x-reverse));
-  border-left-style: var(--tw-border-style);
-  border-right-style: var(--tw-border-style);
-}
 .divide-solid > view + view,
 .divide-solid > view + text,
 .divide-solid > text + view,
 .divide-solid > text + text {
   --tw-border-style: solid;
   border-style: solid;
-}
-.divide-_b_h010101_B > view + view,
-.divide-_b_h010101_B > view + text,
-.divide-_b_h010101_B > text + view,
-.divide-_b_h010101_B > text + text {
-  border-color: #010101;
 }
 .rounded-lg {
   border-radius: 16rpx;

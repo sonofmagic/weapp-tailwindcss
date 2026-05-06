@@ -7,8 +7,8 @@ Generator CSS files: app.wxss, app-origin.wxss, index.wxss
 
 | Mode | Bytes | Selectors | @supports | :hover | Tailwind banner | Raw arbitrary selector | Weapp escaped arbitrary selector |
 | --- | ---: | ---: | --- | --- | --- | --- | --- |
-| legacy | 4505 | 40 | false | false | false | false | true |
-| generator | 23038 | 150 | false | false | false | false | true |
+| legacy | 4505 | 37 | false | false | false | false | true |
+| generator | 23656 | 173 | false | false | false | false | true |
 
 ## Legacy CSS
 
@@ -501,32 +501,50 @@ wx-root-portal-content {
   -webkit-flex-wrap: wrap;
   flex-wrap: wrap;
 }
-.space-y-4 > view + view {
+.space-y-4 > view + view,
+.space-y-4 > view + text,
+.space-y-4 > text + view,
+.space-y-4 > text + text {
   --tw-space-y-reverse: 0;
   margin-bottom: calc((var(--spacing) * 4) * var(--tw-space-y-reverse));
   margin-top: calc((var(--spacing) * 4) * (1 - var(--tw-space-y-reverse)));
 }
-.space-y-reverse > view + view {
+.space-y-reverse > view + view,
+.space-y-reverse > view + text,
+.space-y-reverse > text + view,
+.space-y-reverse > text + text {
   --tw-space-y-reverse: 1;
 }
-.space-x-reverse > view + view {
+.space-x-reverse > view + view,
+.space-x-reverse > view + text,
+.space-x-reverse > text + view,
+.space-x-reverse > text + text {
   --tw-space-x-reverse: 1;
 }
-.divide-x > view + view {
+.divide-x > view + view,
+.divide-x > view + text,
+.divide-x > text + view,
+.divide-x > text + text {
   --tw-divide-x-reverse: 0;
   border-left-style: var(--tw-border-style);
   border-right-style: var(--tw-border-style);
   border-right-width: calc(1px * var(--tw-divide-x-reverse));
   border-left-width: calc(1px * (1 - var(--tw-divide-x-reverse)));
 }
-.divide-y > view + view {
+.divide-y > view + view,
+.divide-y > view + text,
+.divide-y > text + view,
+.divide-y > text + text {
   --tw-divide-y-reverse: 0;
   border-bottom-style: var(--tw-border-style);
   border-top-style: var(--tw-border-style);
   border-bottom-width: calc(1px * var(--tw-divide-y-reverse));
   border-top-width: calc(1px * (1 - var(--tw-divide-y-reverse)));
 }
-.divide-y-reverse > view + view {
+.divide-y-reverse > view + view,
+.divide-y-reverse > view + text,
+.divide-y-reverse > text + view,
+.divide-y-reverse > text + text {
   --tw-divide-y-reverse: 1;
 }
 .truncate {
@@ -941,7 +959,10 @@ wx-root-portal-content {
   --tw-ease: var(--ease-out);
   transition-timing-function: var(--ease-out);
 }
-.divide-x-reverse > view + view {
+.divide-x-reverse > view + view,
+.divide-x-reverse > view + text,
+.divide-x-reverse > text + view,
+.divide-x-reverse > text + text {
   --tw-divide-x-reverse: 1;
 }
 .ring-inset {

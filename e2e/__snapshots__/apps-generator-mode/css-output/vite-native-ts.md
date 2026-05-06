@@ -7,8 +7,8 @@ Generator CSS files: app.wxss, index.wxss, index.wxss, index.wxss
 
 | Mode | Bytes | Selectors | @supports | :hover | Tailwind banner | Raw arbitrary selector | Weapp escaped arbitrary selector |
 | --- | ---: | ---: | --- | --- | --- | --- | --- |
-| legacy | 12485 | 138 | false | false | false | false | true |
-| generator | 7061 | 71 | false | false | false | false | true |
+| legacy | 12485 | 140 | false | false | false | false | true |
+| generator | 7181 | 77 | false | false | false | false | true |
 
 ## Legacy CSS
 
@@ -829,7 +829,10 @@ text,
   }
 }
 @media (prefers-color-scheme: dark) {
-  .dark_cdivide-gray-700 > view + view {
+  .dark_cdivide-gray-700 > view + view,
+  .dark_cdivide-gray-700 > view + text,
+  .dark_cdivide-gray-700 > text + view,
+  .dark_cdivide-gray-700 > text + text {
     --tw-divide-opacity: 1;
     border-color: rgba(55, 65, 81, var(--tw-divide-opacity, 1));
   }

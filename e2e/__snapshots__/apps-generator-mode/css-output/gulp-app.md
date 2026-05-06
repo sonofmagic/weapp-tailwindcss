@@ -7,8 +7,8 @@ Generator CSS files: app.wxss, index.wxss, more.wxss
 
 | Mode | Bytes | Selectors | @supports | :hover | Tailwind banner | Raw arbitrary selector | Weapp escaped arbitrary selector |
 | --- | ---: | ---: | --- | --- | --- | --- | --- |
-| legacy | 6567 | 47 | false | false | false | false | true |
-| generator | 7087 | 47 | false | false | false | false | true |
+| legacy | 6567 | 43 | false | false | false | false | true |
+| generator | 6610 | 43 | false | false | false | false | true |
 
 ## Legacy CSS
 
@@ -337,13 +337,19 @@ text,
 .w-screen {
   width: 100vw;
 }
-.space-y-1 > view + view {
+.space-y-1 > view + view,
+.space-y-1 > view + text,
+.space-y-1 > text + view,
+.space-y-1 > text + text {
   --tw-space-y-reverse: 0;
   margin-top: calc(0.25rem * (1 - var(--tw-space-y-reverse)));
   margin-top: calc(0.25rem * calc(1 - var(--tw-space-y-reverse)));
   margin-bottom: calc(0.25rem * var(--tw-space-y-reverse));
 }
-.space-y-4 > view + view {
+.space-y-4 > view + view,
+.space-y-4 > view + text,
+.space-y-4 > text + view,
+.space-y-4 > text + text {
   --tw-space-y-reverse: 0;
   margin-top: calc(1rem * (1 - var(--tw-space-y-reverse)));
   margin-top: calc(1rem * calc(1 - var(--tw-space-y-reverse)));
@@ -470,24 +476,6 @@ text,
   -webkit-mask-size: 100% 100%;
   mask-size: 100% 100%;
   --svg: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' width='24' height='24'%3E%3Cpath fill='black' d='M20 13h-4c0 1.1-.9 2-2 2h-4c-1.1 0-2-.9-2-2H4l-2 5v2c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2v-2M6 20c-.89 0-1.34-1.08-.71-1.71S7 18.11 7 19c0 .55-.45 1-1 1m4 0c-.89 0-1.34-1.08-.71-1.71S11 18.11 11 19c0 .55-.45 1-1 1m4 0c-.89 0-1.34-1.08-.71-1.71S15 18.11 15 19c0 .55-.45 1-1 1m4 0c-.89 0-1.34-1.08-.71-1.71S19 18.11 19 19c0 .55-.45 1-1 1m0-10V3H6v7H3v2h18v-2M8 5h8v1H8m0 1h6v1H8'/%3E%3C/svg%3E");
-}
-.space-y-1 > view + view,
-.space-y-1 > view + text,
-.space-y-1 > text + view,
-.space-y-1 > text + text {
-  --tw-space-y-reverse: 0;
-  margin-top: calc(8rpx * (1 - var(--tw-space-y-reverse)));
-  margin-top: calc(8rpx * calc(1 - var(--tw-space-y-reverse)));
-  margin-bottom: calc(8rpx * var(--tw-space-y-reverse));
-}
-.space-y-4 > view + view,
-.space-y-4 > view + text,
-.space-y-4 > text + view,
-.space-y-4 > text + text {
-  --tw-space-y-reverse: 0;
-  margin-top: calc(32rpx * (1 - var(--tw-space-y-reverse)));
-  margin-top: calc(32rpx * calc(1 - var(--tw-space-y-reverse)));
-  margin-bottom: calc(32rpx * var(--tw-space-y-reverse));
 }
 
 

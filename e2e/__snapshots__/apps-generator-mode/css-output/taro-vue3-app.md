@@ -8,7 +8,7 @@ Generator CSS files: app.wxss, index.wxss
 | Mode | Bytes | Selectors | @supports | :hover | Tailwind banner | Raw arbitrary selector | Weapp escaped arbitrary selector |
 | --- | ---: | ---: | --- | --- | --- | --- | --- |
 | legacy | 115828 | 296 | false | false | false | false | true |
-| generator | 122660 | 297 | false | false | false | false | true |
+| generator | 122498 | 297 | false | false | false | false | true |
 
 ## Legacy CSS
 
@@ -1404,20 +1404,32 @@ text,
 .justify-between {
   justify-content: space-between;
 }
-.space-y-_b1_d6rem_B > view + view {
+.space-y-_b1_d6rem_B > view + view,
+.space-y-_b1_d6rem_B > view + text,
+.space-y-_b1_d6rem_B > text + view,
+.space-y-_b1_d6rem_B > text + text {
   --tw-space-y-reverse: 0;
   margin-top: calc(1.6rem * (1 - var(--tw-space-y-reverse)));
   margin-bottom: calc(1.6rem * var(--tw-space-y-reverse));
 }
-.divide-x-_b10px_B > view + view {
+.divide-x-_b10px_B > view + view,
+.divide-x-_b10px_B > view + text,
+.divide-x-_b10px_B > text + view,
+.divide-x-_b10px_B > text + text {
   --tw-divide-x-reverse: 0;
   border-right-width: calc(10px * var(--tw-divide-x-reverse));
   border-left-width: calc(10px * (1 - var(--tw-divide-x-reverse)));
 }
-.divide-solid > view + view {
+.divide-solid > view + view,
+.divide-solid > view + text,
+.divide-solid > text + view,
+.divide-solid > text + text {
   border-style: solid;
 }
-.divide-_b_h010101_B > view + view {
+.divide-_b_h010101_B > view + view,
+.divide-_b_h010101_B > view + text,
+.divide-_b_h010101_B > text + view,
+.divide-_b_h010101_B > text + text {
   --tw-divide-opacity: 1;
   border-color: rgba(1, 1, 1, var(--tw-divide-opacity, 1));
 }
@@ -1629,35 +1641,6 @@ text,
     max-width: 1536rpx;
   }
 }
-.space-y-_b1_d6rem_B > view + view,
-.space-y-_b1_d6rem_B > view + text,
-.space-y-_b1_d6rem_B > text + view,
-.space-y-_b1_d6rem_B > text + text {
-  --tw-space-y-reverse: 0;
-  margin-bottom: calc(51.2rpx * var(--tw-space-y-reverse));
-  margin-top: calc(51.2rpx * (1 - var(--tw-space-y-reverse)));
-}
-.divide-x-_b10px_B > view + view,
-.divide-x-_b10px_B > view + text,
-.divide-x-_b10px_B > text + view,
-.divide-x-_b10px_B > text + text {
-  --tw-divide-x-reverse: 0;
-  border-left-width: calc(10rpx * (1 - var(--tw-divide-x-reverse)));
-  border-right-width: calc(10rpx * var(--tw-divide-x-reverse));
-}
-.divide-solid > view + view,
-.divide-solid > view + text,
-.divide-solid > text + view,
-.divide-solid > text + text {
-  border-style: solid;
-}
-.divide-_b_h010101_B > view + view,
-.divide-_b_h010101_B > view + text,
-.divide-_b_h010101_B > text + view,
-.divide-_b_h010101_B > text + text {
-  --tw-divide-opacity: 1;
-  border-color: rgba(1, 1, 1, var(--tw-divide-opacity, 1));
-}
 @media (prefers-color-scheme: dark) {
   .dark_cbg-_b_h487512_B {
     --tw-bg-opacity: 1;
@@ -1761,22 +1744,34 @@ wx-root-portal-content {
 .justify-between {
   justify-content: space-between;
 }
-.space-y-_b1_d6rem_B > view + view {
+.space-y-_b1_d6rem_B > view + view,
+.space-y-_b1_d6rem_B > view + text,
+.space-y-_b1_d6rem_B > text + view,
+.space-y-_b1_d6rem_B > text + text {
   --tw-space-y-reverse: 0;
   margin-top: calc(1.6rem * (1 - var(--tw-space-y-reverse)));
   margin-top: calc(1.6rem * calc(1 - var(--tw-space-y-reverse)));
   margin-bottom: calc(1.6rem * var(--tw-space-y-reverse));
 }
-.divide-x-_b10px_B > view + view {
+.divide-x-_b10px_B > view + view,
+.divide-x-_b10px_B > view + text,
+.divide-x-_b10px_B > text + view,
+.divide-x-_b10px_B > text + text {
   --tw-divide-x-reverse: 0;
   border-right-width: calc(10px * var(--tw-divide-x-reverse));
   border-left-width: calc(10px * (1 - var(--tw-divide-x-reverse)));
   border-left-width: calc(10px * calc(1 - var(--tw-divide-x-reverse)));
 }
-.divide-solid > view + view {
+.divide-solid > view + view,
+.divide-solid > view + text,
+.divide-solid > text + view,
+.divide-solid > text + text {
   border-style: solid;
 }
-.divide-_b_h010101_B > view + view {
+.divide-_b_h010101_B > view + view,
+.divide-_b_h010101_B > view + text,
+.divide-_b_h010101_B > text + view,
+.divide-_b_h010101_B > text + text {
   --tw-divide-opacity: 1;
   border-color: rgba(1, 1, 1, var(--tw-divide-opacity, 1));
 }

@@ -6,6 +6,7 @@ import process from 'node:process'
 import { execa } from 'execa'
 import fg from 'fast-glob'
 import path from 'pathe'
+import postcss from 'postcss'
 import { describe, expect, it } from 'vitest'
 import { createChineseMarkdownReport, createMarkdownReport } from './apps-generator-report'
 import { E2E_PROJECTS, NATIVE_PROJECTS } from './projectEntries'
@@ -38,28 +39,35 @@ const projects: CompareProject[] = [
   ...E2E_PROJECTS.map(entry => createCompareProject(entry, '../demo')),
 ]
 
-const SELECTOR_RE = /(^|\})([^{@}]*)\{/g
+const CLASSLESS_LEGACY_SELECTOR_SET = new Set([
+  ':after',
+  ':before',
+  '::after',
+  '::before',
+  'text',
+  'view',
+])
 
 function normalizeSelector(selector: string) {
   return selector
+    .replaceAll('::before', ':before')
+    .replaceAll('::after', ':after')
     .replace(/\s+/g, ' ')
     .trim()
 }
 
 function collectSelectors(css: string) {
   const selectors = new Set<string>()
-  SELECTOR_RE.lastIndex = 0
-  let match = SELECTOR_RE.exec(css)
-  while (match !== null) {
-    const raw = match[2] ?? ''
-    for (const item of raw.split(',')) {
+
+  postcss.parse(css).walkRules((rule) => {
+    for (const item of rule.selectors) {
       const selector = normalizeSelector(item)
-      if (selector && !selector.startsWith('@')) {
+      if (selector && !CLASSLESS_LEGACY_SELECTOR_SET.has(selector)) {
         selectors.add(selector)
       }
     }
-    match = SELECTOR_RE.exec(css)
-  }
+  })
+
   return [...selectors].sort()
 }
 
@@ -309,6 +317,19 @@ async function expectCssOutputComparisonSnapshot(
 }
 
 describe('apps demo generator mode comparison', () => {
+  it('collects nested selectors and normalizes legacy pseudo aliases', () => {
+    expect(collectSelectors([
+      '@media (prefers-color-scheme: dark) {',
+      '  .dark_cbg-zinc-800 { color: black; }',
+      '  .before_ccontent-_b_qx_q_B::before { content: "x"; }',
+      '}',
+      'view,text,:before,:after { box-sizing: border-box; }',
+    ].join('\n'))).toEqual([
+      '.before_ccontent-_b_qx_q_B:before',
+      '.dark_cbg-zinc-800',
+    ])
+  })
+
   it('builds apps and demos in legacy and generator modes with comparable mini-program css output', async () => {
     const report: AppsGeneratorCompareReportItem[] = []
 

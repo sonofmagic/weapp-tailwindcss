@@ -12,6 +12,10 @@ const MINIMAL_THEME_CSS = `
 @tailwind utilities;
 `
 
+function compactCss(css: string) {
+  return css.replace(/\s+/g, '')
+}
+
 describe('tailwindcss v4 engine', () => {
   it('generates css and class set from explicit candidates', async () => {
     const source = await resolveTailwindV4Source({
@@ -187,6 +191,29 @@ describe('tailwindcss v4 engine', () => {
     expect(result.css).toContain('width: 100px')
     expect(result.css).not.toContain(':hover')
     expect(result.css).not.toContain('@supports')
+  })
+
+  it('expands spacing child combinators for view and text in mini-program output', async () => {
+    const source = await resolveTailwindV4Source({
+      css: `
+        @theme default {
+          --spacing: 0.25rem;
+        }
+        @tailwind utilities;
+      `,
+      base: process.cwd(),
+    })
+    const engine = createTailwindV4Engine(source)
+
+    const result = await engine.generate({
+      candidates: ['space-y-4'],
+    })
+    const css = compactCss(result.css)
+
+    expect(css).toContain('.space-y-4>view+view')
+    expect(css).toContain('.space-y-4>view+text')
+    expect(css).toContain('.space-y-4>text+view')
+    expect(css).toContain('.space-y-4>text+text')
   })
 
   it('removes browser preflight while keeping utility variables for mini-program output', async () => {

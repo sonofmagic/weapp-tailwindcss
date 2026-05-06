@@ -7,8 +7,8 @@ Generator CSS files: app.wxss, index.wxss
 
 | Mode | Bytes | Selectors | @supports | :hover | Tailwind banner | Raw arbitrary selector | Weapp escaped arbitrary selector |
 | --- | ---: | ---: | --- | --- | --- | --- | --- |
-| legacy | 382159 | 2156 | false | false | false | false | true |
-| generator | 381648 | 2156 | false | false | false | false | true |
+| legacy | 382159 | 2152 | false | false | false | false | true |
+| generator | 381648 | 2152 | false | false | false | false | true |
 
 ## Legacy CSS
 
