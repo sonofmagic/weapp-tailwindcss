@@ -1,3 +1,5 @@
+const process = require('node:process')
+
 function resolveAppGeneratorMode(fallback) {
   const mode = process.env.WEAPP_TW_GENERATOR_MODE
   const fallbackObject = typeof fallback === 'object' && fallback !== null ? fallback : {}
