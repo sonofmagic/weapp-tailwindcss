@@ -11,7 +11,10 @@ export function createTailwindV4Engine(source: TailwindV4ResolvedSource): Tailwi
       target = 'weapp',
       ...patchOptions
     } = options
-    const result = await engine.generate(patchOptions)
+    const result = await engine.generate({
+      scanSources: true,
+      ...patchOptions,
+    })
     const rawCss = result.css
     const css = await transformTailwindV4CssByTarget(rawCss, target, styleOptions)
 

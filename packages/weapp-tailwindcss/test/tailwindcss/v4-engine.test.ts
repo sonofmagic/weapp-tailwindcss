@@ -1,4 +1,4 @@
-import { mkdtemp, writeFile } from 'node:fs/promises'
+import { mkdir, mkdtemp, writeFile } from 'node:fs/promises'
 import { tmpdir } from 'node:os'
 import path from 'node:path'
 import { createTailwindV4Engine, resolveTailwindV4Source, resolveTailwindV4SourceOptionsFromPatcher } from '@/tailwindcss/v4-engine'
@@ -77,6 +77,42 @@ describe('tailwindcss v4 engine', () => {
     expect(result.rawCss).toContain('.w-4')
     expect(result.rawCss).toContain('width: calc(var(--spacing) * 4)')
     expect(result.css).toContain('.w-4')
+  })
+
+  it('scans compiled @source entries by default', async () => {
+    const root = await mkdtemp(path.join(tmpdir(), 'weapp-tw-v4-engine-'))
+    const srcDir = path.join(root, 'src')
+    await writeFile(path.join(root, 'ignored.html'), '<view class="bg-blue-500"></view>', 'utf8')
+    await mkdir(srcDir, { recursive: true })
+    await writeFile(path.join(srcDir, 'index.html'), '<view class="bg-red-500"></view>', 'utf8')
+    const source = await resolveTailwindV4Source({
+      projectRoot: root,
+      base: root,
+      css: `
+        @theme default {
+          --color-red-500: oklch(63.7% 0.237 25.331);
+          --color-blue-500: oklch(62.3% 0.214 259.815);
+        }
+        @source "./src/**/*.html";
+        @tailwind utilities;
+      `,
+    })
+    const engine = createTailwindV4Engine(source)
+
+    const result = await engine.generate()
+
+    expect(result.classSet).toEqual(new Set(['bg-red-500']))
+    expect(result.sources).toEqual([
+      {
+        base: root,
+        pattern: './src/**/*.html',
+        negated: false,
+      },
+    ])
+    expect(result.rawCss).toContain('.bg-red-500')
+    expect(result.rawCss).not.toContain('.bg-blue-500')
+    expect(result.css).toContain('.bg-red-500')
+    expect(result.css).not.toContain('.bg-blue-500')
   })
 
   it('resolves cssEntries and tracks the entry dependency', async () => {
