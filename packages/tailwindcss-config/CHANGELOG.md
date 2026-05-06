@@ -1,5 +1,11 @@
 # tailwindcss-config
 
+## 1.1.6-next.0
+
+### Patch Changes
+
+- 🐛 **修复 workspace 源码入口在 CommonJS 构建环境中加载时的 ESM 相对导入解析问题。** [#846](https://github.com/sonofmagic/weapp-tailwindcss/pull/846) by @sonofmagic
+
 ## 1.1.5
 
 ### Patch Changes
