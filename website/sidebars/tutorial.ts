@@ -50,8 +50,8 @@ const tutorialSidebar: SidebarConfig = [
   },
   {
     type: 'category',
-    label: '🔥Tailwind CSS @3.x',
-    collapsed: false,
+    label: '旧版：Tailwind CSS @3.x',
+    collapsed: true,
     items: [
       {
         type: 'category',
@@ -135,8 +135,8 @@ const tutorialSidebar: SidebarConfig = [
   },
   {
     type: 'category',
-    label: '🧪Tailwind CSS @4.x',
-    collapsed: false,
+    label: '旧版：Tailwind CSS @4.x',
+    collapsed: true,
     items: [
       {
         type: 'category',
