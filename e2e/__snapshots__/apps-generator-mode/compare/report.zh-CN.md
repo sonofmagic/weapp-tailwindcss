@@ -62,14 +62,14 @@
 - CSS 文件：`app.wxss`, `home.wxss`, `user.wxss`
 - 两边共有：`.active_cbg-emerald-50:active`, `.active_cbg-emerald-600:active`, `.aspect-_bcalc_p4_x3_u1_P_f3_B`, `.aspect-_p--my-aspect-ratio_P`, `.bg-_b_h0000ff_B`, `.bg-_b_h123498_B`, `.bg-emerald-100`, `.bg-emerald-500`, `.bg-midnight`, `.bg-neutral-1B`, `.bg-slate-50`, `.bg-white`, `.block`, `.border`, `.border-emerald-500`, `.border-slate-200`, `.container`, `.divide-_b_h41eb04_B > text + text`, `.divide-_b_h41eb04_B > text + view`, `.divide-_b_h41eb04_B > view + text`
 - 仅生成模式：`.absolute`, `.antialiased`, `.backdrop-blur`, `.backdrop-filter`, `.backdrop-grayscale`, `.backdrop-invert`, `.backdrop-sepia`, `.bg-repeat`, `.blur`, `.border-b`, `.border-be`, `.border-bs`, `.border-collapse`, `.border-e`, `.border-l`, `.border-r`, `.border-s`, `.border-t`, `.border-x`, `.border-y`
-- 仅旧链路：`textarea`, `ul`, `video`
+- 仅旧链路：-
 
 ### uni-app-tailwindcss-v5
 
 - CSS 文件：`app.wxss`, `home.wxss`, `user.wxss`
 - 两边共有：`.active_cbg-emerald-50:active`, `.active_cbg-emerald-600:active`, `.aspect-_bcalc_p4_x3_u1_P_f3_B`, `.aspect-_p--my-aspect-ratio_P`, `.bg-_b_h0000ff_B`, `.bg-_b_h123498_B`, `.bg-emerald-100`, `.bg-emerald-500`, `.bg-gradient-to-r`, `.bg-midnight`, `.bg-neutral-1B`, `.bg-slate-50`, `.bg-white`, `.block`, `.border`, `.border-emerald-500`, `.border-slate-200`, `.container`, `.divide-_b_h41eb04_B > text + text`, `.divide-_b_h41eb04_B > text + view`
 - 仅生成模式：`.absolute`, `.antialiased`, `.backdrop-blur`, `.backdrop-filter`, `.backdrop-grayscale`, `.backdrop-invert`, `.backdrop-sepia`, `.bg-repeat`, `.blur`, `.border-b`, `.border-be`, `.border-bs`, `.border-collapse`, `.border-e`, `.border-l`, `.border-r`, `.border-s`, `.border-t`, `.border-x`, `.border-y`
-- 仅旧链路：`textarea`, `ul`, `video`
+- 仅旧链路：-
 
 ### taro-app
 

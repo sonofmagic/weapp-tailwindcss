@@ -57,8 +57,10 @@ describe('tailwindcss/remove unsupported css', () => {
       ':-moz-focusring{outline:auto}',
       '[hidden]:where(:not([hidden=\'until-found\'])){display:none}',
       'a,button,input:where([type=\'button\'], [type=\'reset\'], [type=\'submit\']){font:inherit}',
+      'ul,textarea,video{display:block}',
       '.text-red-500,::-webkit-search-decoration{color:red}',
       '.nut-input .weui-input::placeholder{color:#999}',
+      '.nut-video video{width:100%}',
       '.prose .a{color:inherit}',
     ].join('\n'))
 
@@ -68,8 +70,12 @@ describe('tailwindcss/remove unsupported css', () => {
     expect(css).not.toContain(':-moz-focusring')
     expect(css).not.toContain('[hidden]:where(:not([hidden=\'until-found\']))')
     expect(css).not.toContain('input:where([type=\'button\'], [type=\'reset\'], [type=\'submit\'])')
+    expect(css).not.toContain('ul{display:block}')
+    expect(css).not.toContain('textarea{display:block}')
+    expect(css).not.toContain('video{display:block}')
     expect(css).not.toContain('::-webkit-search-decoration')
     expect(css).toContain('.nut-input .weui-input::placeholder{color:#999}')
+    expect(css).toContain('.nut-video video{width:100%}')
     expect(css).toContain('.prose .a{color:inherit}')
     expect(css).toContain('.text-red-500{color:red}')
   })

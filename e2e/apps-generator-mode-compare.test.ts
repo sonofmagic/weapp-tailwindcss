@@ -104,6 +104,9 @@ const UNSUPPORTED_LEGACY_SELECTOR_SET = new Set([
   'sup',
   'svg',
   'table',
+  'textarea',
+  'ul',
+  'video',
   'text',
   'view',
 ])
@@ -391,12 +394,15 @@ describe('apps demo generator mode comparison', () => {
       '[hidden]:where(:not([hidden=\'until-found\'])) { display: none; }',
       '.nut-input .weui-input::placeholder { color: gray; }',
       'a,button,input:where([type=\'button\'], [type=\'reset\'], [type=\'submit\']) { font: inherit; }',
+      'ul,textarea,video { display: block; }',
       '.prose .a { color: inherit; }',
+      '.nut-video video { width: 100%; }',
     ].join('\n'))).toEqual([
       '.before_ccontent-_b_qx_q_B:before',
       '.bg-red-500',
       '.dark_cbg-zinc-800',
       '.nut-input .weui-input::placeholder',
+      '.nut-video video',
       '.prose .a',
     ])
   })

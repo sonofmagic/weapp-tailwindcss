@@ -83,6 +83,9 @@ const MINI_PROGRAM_UNSUPPORTED_BROWSER_TAG_SELECTORS = new Set([
   'sup',
   'svg',
   'table',
+  'textarea',
+  'ul',
+  'video',
 ])
 
 const PREFLIGHT_RESET_PROPS = new Set([

@@ -6112,9 +6112,6 @@
         ":host",
         "[data-c-h='true']",
         "page",
-        "textarea",
-        "ul",
-        "video",
         "wx-root-portal-content"
       ],
       "hasSupports": true,
@@ -6410,11 +6407,7 @@
       ".border-x",
       ".border-y"
     ],
-    "legacyOnlySelectors": [
-      "textarea",
-      "ul",
-      "video"
-    ]
+    "legacyOnlySelectors": []
   },
   {
     "name": "uni-app-tailwindcss-v5",
@@ -6559,9 +6552,6 @@
         ":host",
         "[data-c-h='true']",
         "page",
-        "textarea",
-        "ul",
-        "video",
         "wx-root-portal-content"
       ],
       "hasSupports": true,
@@ -6868,11 +6858,7 @@
       ".border-x",
       ".border-y"
     ],
-    "legacyOnlySelectors": [
-      "textarea",
-      "ul",
-      "video"
-    ]
+    "legacyOnlySelectors": []
   },
   {
     "name": "taro-app",
