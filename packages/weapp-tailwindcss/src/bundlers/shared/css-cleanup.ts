@@ -19,6 +19,7 @@ const MINI_PROGRAM_THEME_SCOPE_SELECTORS = new Set([
   '.tw-root',
   'wx-root-portal-content',
 ])
+const SPECIFICITY_PLACEHOLDER_SUFFIXES = [':not(#n)', ':not(#\\#)']
 
 const PREFLIGHT_RESET_PROPS = new Set([
   'box-sizing',
@@ -219,6 +220,32 @@ function isUnsupportedFontDeclaration(decl: postcss.Declaration) {
     && UNSUPPORTED_FONT_VALUE_RE.test(decl.value)
 }
 
+function removeSpecificityPlaceholders(root: postcss.Root) {
+  root.walkRules((rule) => {
+    if (!rule.selectors || rule.selectors.length === 0) {
+      return
+    }
+
+    let changed = false
+    const selectors = rule.selectors.map((selector) => {
+      let next = selector
+      for (const suffix of SPECIFICITY_PLACEHOLDER_SUFFIXES) {
+        if (next.includes(suffix)) {
+          next = next.split(suffix).join('')
+        }
+      }
+      if (next !== selector) {
+        changed = true
+      }
+      return next
+    })
+
+    if (changed) {
+      rule.selectors = selectors
+    }
+  })
+}
+
 function removeEmptyAtRuleAncestors(parent: postcss.Container | undefined) {
   while (parent?.type === 'atrule' && (!parent.nodes || parent.nodes.length === 0)) {
     const nextParent = parent.parent
@@ -351,6 +378,7 @@ function insertHoistedRules(root: postcss.Root, rules: postcss.Rule[]) {
 
 function finalizeMiniProgramCssRoot(root: postcss.Root) {
   removeUnsupportedCascadeLayers(root)
+  removeSpecificityPlaceholders(root)
   removeDisplayP3AndUnsupportedFontDeclarations(root)
 
   const preflightRules = collectPreflightRules(root)

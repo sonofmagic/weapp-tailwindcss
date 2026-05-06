@@ -37,4 +37,16 @@ describe('tailwindcss/remove unsupported css', () => {
     expect(css).toContain('page,.tw-root,wx-root-portal-content,:host{--color-red-500:red}')
     expect(css).toContain('.text-red-500{color:var(--color-red-500)}')
   })
+
+  it('removes specificity placeholder selectors from final generator css', () => {
+    const css = finalizeMiniProgramCss([
+      '.bg-red-500:not(#\\#):not(#\\#){color:red}',
+      '.space-y-4:not(#n):not(#\\#)>view+text{margin-top:1rem}',
+    ].join('\n'))
+
+    expect(css).not.toContain(':not(#\\#)')
+    expect(css).not.toContain(':not(#n)')
+    expect(css).toContain('.bg-red-500{color:red}')
+    expect(css).toContain('.space-y-4>view+text{margin-top:1rem}')
+  })
 })

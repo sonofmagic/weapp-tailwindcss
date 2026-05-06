@@ -50,6 +50,8 @@ const CLASSLESS_LEGACY_SELECTOR_SET = new Set([
 
 function normalizeSelector(selector: string) {
   return selector
+    .replaceAll(':not(#\\#)', '')
+    .replaceAll(':not(#n)', '')
     .replaceAll('::before', ':before')
     .replaceAll('::after', ':after')
     .replace(/\s+/g, ' ')
@@ -324,8 +326,10 @@ describe('apps demo generator mode comparison', () => {
       '  .before_ccontent-_b_qx_q_B::before { content: "x"; }',
       '}',
       'view,text,:before,:after { box-sizing: border-box; }',
+      '.bg-red-500:not(#\\#):not(#n) { color: red; }',
     ].join('\n'))).toEqual([
       '.before_ccontent-_b_qx_q_B:before',
+      '.bg-red-500',
       '.dark_cbg-zinc-800',
     ])
   })
