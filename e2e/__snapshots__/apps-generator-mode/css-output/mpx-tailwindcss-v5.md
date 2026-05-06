@@ -2,8 +2,8 @@
 
 Fixture: demo
 Entry: mpx-tailwindcss-v5/dist/wx/app.wxss
-Legacy CSS files: app.wxss, styles/app.wxss, index.wxss, app5e440dc4.wxss
-Generator CSS files: app.wxss, styles/app.wxss, index.wxss, app5e440dc4.wxss
+Legacy CSS files: app.wxss, styles/app.wxss, index.wxss, app252bdc3c.wxss
+Generator CSS files: app.wxss, styles/app.wxss, index.wxss, app252bdc3c.wxss
 
 | Mode | Bytes | Selectors | @supports | :hover | Tailwind banner | Raw arbitrary selector | Weapp escaped arbitrary selector |
 | --- | ---: | ---: | --- | --- | --- | --- | --- |

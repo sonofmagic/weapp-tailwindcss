@@ -67,7 +67,7 @@
       "hasRawArbitrarySelector": false
     },
     "generator": {
-      "bytes": 7314,
+      "bytes": 7722,
       "selectors": [
         ".-start",
         "._estart",
@@ -136,8 +136,8 @@
       "hasWeappEscapedArbitrarySelector": true,
       "hasRawArbitrarySelector": false
     },
-    "deltaBytes": 1563,
-    "generatorBytesRatio": 1.2718,
+    "deltaBytes": 1971,
+    "generatorBytesRatio": 1.3427,
     "sharedSelectors": [
       ".bg-_b_h3a32d1_B",
       ".bg-_b_h68c828_B",
@@ -6559,7 +6559,7 @@
     ],
     "status": "passed",
     "legacy": {
-      "bytes": 49689,
+      "bytes": 53207,
       "selectors": [
         ".active_cbg-emerald-50:active",
         ".active_cbg-emerald-600:active",
@@ -6689,7 +6689,7 @@
       "hasRawArbitrarySelector": false
     },
     "generator": {
-      "bytes": 49767,
+      "bytes": 49689,
       "selectors": [
         ".absolute",
         ".active_cbg-emerald-50:active",
@@ -6715,8 +6715,6 @@
         ".blur",
         ".border",
         ".border-b",
-        ".border-be",
-        ".border-bs",
         ".border-collapse",
         ".border-e",
         ".border-emerald-500",
@@ -6773,7 +6771,6 @@
         ".divide-y-reverse > view + text",
         ".divide-y-reverse > view + view",
         ".drop-shadow",
-        ".end",
         ".fill-bermuda",
         ".fixed",
         ".flex",
@@ -6875,7 +6872,6 @@
         ".space-y-reverse > view + view",
         ".sr-only",
         ".stacked-fractions",
-        ".start",
         ".static",
         ".sticky",
         ".subpixel-antialiased",
@@ -6929,8 +6925,8 @@
       "hasWeappEscapedArbitrarySelector": true,
       "hasRawArbitrarySelector": false
     },
-    "deltaBytes": 78,
-    "generatorBytesRatio": 1.0016,
+    "deltaBytes": -3518,
+    "generatorBytesRatio": 0.9339,
     "sharedSelectors": [
       ".active_cbg-emerald-50:active",
       ".active_cbg-emerald-600:active",
@@ -6964,8 +6960,6 @@
       ".bg-repeat",
       ".blur",
       ".border-b",
-      ".border-be",
-      ".border-bs",
       ".border-collapse",
       ".border-e",
       ".border-l",
@@ -6973,7 +6967,9 @@
       ".border-s",
       ".border-t",
       ".border-x",
-      ".border-y"
+      ".border-y",
+      ".capitalize",
+      ".collapse"
     ],
     "legacyOnlySelectors": []
   },
@@ -6988,7 +6984,7 @@
     ],
     "status": "passed",
     "legacy": {
-      "bytes": 58430,
+      "bytes": 61948,
       "selectors": [
         ".active_cbg-emerald-50:active",
         ".active_cbg-emerald-600:active",
@@ -7129,7 +7125,7 @@
       "hasRawArbitrarySelector": false
     },
     "generator": {
-      "bytes": 54187,
+      "bytes": 54109,
       "selectors": [
         ".absolute",
         ".active_cbg-emerald-50:active",
@@ -7156,8 +7152,6 @@
         ".blur",
         ".border",
         ".border-b",
-        ".border-be",
-        ".border-bs",
         ".border-collapse",
         ".border-e",
         ".border-emerald-500",
@@ -7214,7 +7208,6 @@
         ".divide-y-reverse > view + text",
         ".divide-y-reverse > view + view",
         ".drop-shadow",
-        ".end",
         ".fill-bermuda",
         ".fixed",
         ".flex",
@@ -7323,7 +7316,6 @@
         ".space-y-reverse > view + view",
         ".sr-only",
         ".stacked-fractions",
-        ".start",
         ".static",
         ".sticky",
         ".subpixel-antialiased",
@@ -7380,8 +7372,8 @@
       "hasWeappEscapedArbitrarySelector": true,
       "hasRawArbitrarySelector": false
     },
-    "deltaBytes": -4243,
-    "generatorBytesRatio": 0.9274,
+    "deltaBytes": -7839,
+    "generatorBytesRatio": 0.8735,
     "sharedSelectors": [
       ".active_cbg-emerald-50:active",
       ".active_cbg-emerald-600:active",
@@ -7415,8 +7407,6 @@
       ".bg-repeat",
       ".blur",
       ".border-b",
-      ".border-be",
-      ".border-bs",
       ".border-collapse",
       ".border-e",
       ".border-l",
@@ -7424,7 +7414,9 @@
       ".border-s",
       ".border-t",
       ".border-x",
-      ".border-y"
+      ".border-y",
+      ".capitalize",
+      ".collapse"
     ],
     "legacyOnlySelectors": []
   },
@@ -12329,7 +12321,7 @@
       "hasRawArbitrarySelector": false
     },
     "generator": {
-      "bytes": 5195,
+      "bytes": 5534,
       "selectors": [
         ".bg-_b_h123456_B",
         ".bg-gradient-to-r",
@@ -12340,7 +12332,6 @@
         ".border",
         ".container",
         ".ease-out",
-        ".end",
         ".filter",
         ".fixed",
         ".flex",
@@ -12352,7 +12343,6 @@
         ".inline",
         ".outline",
         ".resize",
-        ".start",
         ".static",
         ".table",
         ".text-_b55rpx_B",
@@ -12374,8 +12364,8 @@
       "hasWeappEscapedArbitrarySelector": true,
       "hasRawArbitrarySelector": false
     },
-    "deltaBytes": 3113,
-    "generatorBytesRatio": 2.4952,
+    "deltaBytes": 3452,
+    "generatorBytesRatio": 2.658,
     "sharedSelectors": [
       ".bg-_b_h123456_B",
       ".bg-gradient-to-r",
@@ -12401,7 +12391,6 @@
       ".border",
       ".container",
       ".ease-out",
-      ".end",
       ".filter",
       ".fixed",
       ".flex",
@@ -12410,7 +12399,6 @@
       ".inline",
       ".outline",
       ".resize",
-      ".start",
       ".table",
       ".transform",
       ".transition",
@@ -12476,7 +12464,7 @@
       "hasRawArbitrarySelector": false
     },
     "generator": {
-      "bytes": 23641,
+      "bytes": 23764,
       "selectors": [
         "._eborder-brand",
         ".absolute",
@@ -12500,8 +12488,6 @@
         ".border",
         ".border-_b10rpx_B",
         ".border-b",
-        ".border-be",
-        ".border-bs",
         ".border-collapse",
         ".border-e",
         ".border-l",
@@ -12535,7 +12521,6 @@
         ".divide-y-reverse > view + view",
         ".drop-shadow",
         ".ease-out",
-        ".end",
         ".filter",
         ".fixed",
         ".flex",
@@ -12614,7 +12599,6 @@
         ".space-y-reverse > view + view",
         ".sr-only",
         ".stacked-fractions",
-        ".start",
         ".static",
         ".sticky",
         ".subpixel-antialiased",
@@ -12658,8 +12642,8 @@
       "hasWeappEscapedArbitrarySelector": true,
       "hasRawArbitrarySelector": false
     },
-    "deltaBytes": 19136,
-    "generatorBytesRatio": 5.2477,
+    "deltaBytes": 19259,
+    "generatorBytesRatio": 5.275,
     "sharedSelectors": [
       "._eborder-brand",
       ".active_cbg-emerald-600:active",
@@ -12695,14 +12679,14 @@
       ".blur",
       ".border",
       ".border-b",
-      ".border-be",
-      ".border-bs",
       ".border-collapse",
       ".border-e",
       ".border-l",
       ".border-r",
       ".border-s",
-      ".border-t"
+      ".border-t",
+      ".border-x",
+      ".border-y"
     ],
     "legacyOnlySelectors": []
   },
@@ -13368,7 +13352,7 @@
     ],
     "status": "passed",
     "legacy": {
-      "bytes": 6567,
+      "bytes": 6578,
       "selectors": [
         ".bg-_b_hfff_B",
         ".bg-_blength_c100_v_100_v_B",
@@ -13421,7 +13405,7 @@
       "hasRawArbitrarySelector": false
     },
     "generator": {
-      "bytes": 8014,
+      "bytes": 6496,
       "selectors": [
         ".bg-_b_hfff_B",
         ".bg-_blength_c100_v_100_v_B",
@@ -13477,8 +13461,8 @@
       "hasWeappEscapedArbitrarySelector": true,
       "hasRawArbitrarySelector": false
     },
-    "deltaBytes": 1447,
-    "generatorBytesRatio": 1.2203,
+    "deltaBytes": -82,
+    "generatorBytesRatio": 0.9875,
     "sharedSelectors": [
       ".bg-_b_hfff_B",
       ".bg-_blength_c100_v_100_v_B",
@@ -13533,11 +13517,11 @@
       "styles/index.wxss",
       "index.wxss",
       "styles/index.wxss",
-      "base487e0d61.wxss",
-      "components63da9234.wxss",
-      "index0af78c53.wxss",
-      "index9a27da9c.wxss",
-      "utilities3d066604.wxss"
+      "base5c682eff.wxss",
+      "components1e38aa04.wxss",
+      "indexd323f158.wxss",
+      "indexfcda771e.wxss",
+      "utilities68e69726.wxss"
     ],
     "status": "passed",
     "legacy": {
@@ -19356,7 +19340,7 @@
       "app.wxss",
       "styles/app.wxss",
       "index.wxss",
-      "app3b4a1ac6.wxss"
+      "app36a8d5bb.wxss"
     ],
     "status": "passed",
     "legacy": {
@@ -19632,7 +19616,7 @@
       "app.wxss",
       "styles/app.wxss",
       "index.wxss",
-      "app5e440dc4.wxss"
+      "app252bdc3c.wxss"
     ],
     "status": "passed",
     "legacy": {

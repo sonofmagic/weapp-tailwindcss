@@ -1,22 +1,27 @@
-:after,
-:before {
-  --tw-content: '';
-}
 ::before,
 ::after {
   --tw-content: '';
 }
-:after,
-:before,
+view,
 text,
-view {
+:after,
+:before {
+  border: 0 solid;
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+:host,
+page,
+.tw-root,
+wx-root-portal-content {
   --tw-space-y-reverse: 0;
   --tw-divide-x-reverse: 0;
   --tw-border-style: solid;
   --tw-gradient-position: initial;
-  --tw-gradient-from: transparent;
-  --tw-gradient-via: transparent;
-  --tw-gradient-to: transparent;
+  --tw-gradient-from: rgba(0, 0, 0, 0);
+  --tw-gradient-via: rgba(0, 0, 0, 0);
+  --tw-gradient-to: rgba(0, 0, 0, 0);
   --tw-gradient-stops: initial;
   --tw-gradient-via-stops: initial;
   --tw-gradient-from-position: 0%;
@@ -24,43 +29,34 @@ view {
   --tw-gradient-to-position: 100%;
   --tw-leading: initial;
   --tw-font-weight: initial;
-  --tw-shadow: 0 0 transparent;
+  --tw-shadow: 0 0 rgba(0, 0, 0, 0);
   --tw-shadow-color: initial;
   --tw-shadow-alpha: 100%;
-  --tw-inset-shadow: 0 0 transparent;
+  --tw-inset-shadow: 0 0 rgba(0, 0, 0, 0);
   --tw-inset-shadow-color: initial;
   --tw-inset-shadow-alpha: 100%;
   --tw-ring-color: initial;
-  --tw-ring-shadow: 0 0 transparent;
+  --tw-ring-shadow: 0 0 rgba(0, 0, 0, 0);
   --tw-inset-ring-color: initial;
-  --tw-inset-ring-shadow: 0 0 transparent;
+  --tw-inset-ring-shadow: 0 0 rgba(0, 0, 0, 0);
   --tw-ring-inset: initial;
   --tw-ring-offset-width: 0px;
   --tw-ring-offset-color: #fff;
-  --tw-ring-offset-shadow: 0 0 transparent;
+  --tw-ring-offset-shadow: 0 0 rgba(0, 0, 0, 0);
   --tw-content: '';
-  box-sizing: border-box;
-  border-width: 0;
-  border-style: solid;
-  border-color: currentColor;
-}
-.tw-root,
-:host,
-page,
-wx-root-portal-content {
-  --color-red-400: #ff6568;
-  --color-red-500: #fb2c36;
-  --color-yellow-400: #f7c900;
-  --color-green-500: #00c65a;
-  --color-emerald-500: #00b981;
-  --color-cyan-500: #00b6d4;
-  --color-sky-500: #00a5ea;
-  --color-blue-500: #3280ff;
-  --color-purple-600: #9810fa;
-  --color-pink-300: #fda5d5;
-  --color-pink-500: #f6339a;
-  --color-gray-100: #f3f4f6;
-  --color-zinc-800: #27272a;
+  --color-red-400: rgb(255, 101, 104);
+  --color-red-500: rgb(251, 44, 54);
+  --color-yellow-400: rgb(247, 201, 0);
+  --color-green-500: rgb(0, 198, 90);
+  --color-emerald-500: rgb(0, 185, 129);
+  --color-cyan-500: rgb(0, 182, 212);
+  --color-sky-500: rgb(0, 165, 234);
+  --color-blue-500: rgb(50, 128, 255);
+  --color-purple-600: rgb(152, 16, 250);
+  --color-pink-300: rgb(253, 165, 213);
+  --color-pink-500: rgb(246, 51, 154);
+  --color-gray-100: rgb(243, 244, 246);
+  --color-zinc-800: rgb(39, 39, 42);
   --color-black: #000;
   --color-white: #fff;
   --spacing: 8rpx;
@@ -74,15 +70,6 @@ wx-root-portal-content {
   --radius-lg: 16rpx;
   --radius-xl: 24rpx;
   --color-primary: #155dfc;
-}
-:after,
-:before,
-text,
-view {
-  border: 0 solid;
-  box-sizing: border-box;
-  margin: 0;
-  padding: 0;
 }
 .-m-_b20px_B {
   margin: -20px;
@@ -169,34 +156,43 @@ view {
   -webkit-justify-content: center;
   justify-content: center;
 }
-.space-y-4 > view + view {
+.space-y-4 > view + view,
+.space-y-4 > view + text,
+.space-y-4 > text + view,
+.space-y-4 > text + text {
   --tw-space-y-reverse: 0;
-  margin-bottom: calc((var(--spacing) * 4) * 0);
-  margin-bottom: calc((var(--spacing) * 4) * var(--tw-space-y-reverse));
-  margin-top: calc((var(--spacing) * 4) * 1);
-  margin-top: calc((var(--spacing) * 4) * (1 - var(--tw-space-y-reverse)));
+  margin-top: calc(var(--spacing) * 4 * (1 - var(--tw-space-y-reverse)));
+  margin-bottom: calc(var(--spacing) * 4 * var(--tw-space-y-reverse));
 }
-.space-y-_b1_d6rem_B > view + view {
+.space-y-_b1_d6rem_B > view + view,
+.space-y-_b1_d6rem_B > view + text,
+.space-y-_b1_d6rem_B > text + view,
+.space-y-_b1_d6rem_B > text + text {
   --tw-space-y-reverse: 0;
-  margin-bottom: 0rpx;
-  margin-bottom: calc(51.2rpx * var(--tw-space-y-reverse));
-  margin-top: 51.2rpx;
   margin-top: calc(51.2rpx * (1 - var(--tw-space-y-reverse)));
+  margin-bottom: calc(51.2rpx * var(--tw-space-y-reverse));
 }
-.divide-x-_b10px_B > view + view {
+.divide-x-_b10px_B > view + view,
+.divide-x-_b10px_B > view + text,
+.divide-x-_b10px_B > text + view,
+.divide-x-_b10px_B > text + text {
   --tw-divide-x-reverse: 0;
-  border-left-style: var(--tw-border-style);
-  border-left-width: 10px;
   border-left-width: calc(10px * (1 - var(--tw-divide-x-reverse)));
-  border-right-style: var(--tw-border-style);
-  border-right-width: 0px;
   border-right-width: calc(10px * var(--tw-divide-x-reverse));
+  border-left-style: var(--tw-border-style);
+  border-right-style: var(--tw-border-style);
 }
-.divide-solid > view + view {
+.divide-solid > view + view,
+.divide-solid > view + text,
+.divide-solid > text + view,
+.divide-solid > text + text {
   --tw-border-style: solid;
   border-style: solid;
 }
-.divide-_b_h010101_B > view + view {
+.divide-_b_h010101_B > view + view,
+.divide-_b_h010101_B > view + text,
+.divide-_b_h010101_B > text + view,
+.divide-_b_h010101_B > text + text {
   border-color: #010101;
 }
 .rounded-lg {
@@ -260,12 +256,7 @@ view {
   background-color: #e90505;
 }
 .bg-blue-500_f50 {
-  background-color: rgba(50, 128, 255, 0.5);
-}
-@media (color-gamut: p3) {
-  .bg-blue-500_f50 {
-    background-color: rgba(50, 128, 255, 0.5);
-  }
+  background-color: rgba(48, 128, 255, 0.50196);
 }
 .bg-emerald-500 {
   background-color: var(--color-emerald-500);
@@ -318,8 +309,8 @@ view {
   padding-right: 34.54rpx;
 }
 .py-2 {
-  padding-bottom: calc(var(--spacing) * 2);
   padding-top: calc(var(--spacing) * 2);
+  padding-bottom: calc(var(--spacing) * 2);
 }
 .text-2xl {
   font-size: var(--text-2xl);
@@ -411,7 +402,6 @@ view {
 }
 .before_ccontent-_b_aFestivus_a_B:before {
   --tw-content: 'Festivus';
-  content: 'Festivus';
   content: var(--tw-content);
 }
 .after_cborder-none:after {
@@ -443,5 +433,16 @@ view {
   }
   .dark_ctext-yellow-400 {
     color: var(--color-yellow-400);
+  }
+}
+@media (min-width: 96rem) {
+  ._2xl_ctext-base {
+    font-size: 32rpx;
+    font-size: var(--text-base);
+    line-height: 1.5;
+    line-height: var(--tw-leading, var(--text-base--line-height));
+  }
+  ._2xl_ctext-_bred_B {
+    color: red;
   }
 }

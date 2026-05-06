@@ -6,18 +6,18 @@
 
 | 项目 | 来源 | 状态 | CSS 文件 | 旧链路字节数 | 生成模式字节数 | 差值 | 比例 | 旧链路独有 | @supports | :hover | Tailwind banner |
 | --- | --- | --- | --- | ---: | ---: | ---: | ---: | --- | --- | --- | --- |
-| vite-native | apps | 通过 | `vite-native/dist/app.wxss` (+2) | 5751 | 7314 | +1563 | 1.2718 | 无 | 否 | 否 | 否 |
+| vite-native | apps | 通过 | `vite-native/dist/app.wxss` (+2) | 5751 | 7722 | +1971 | 1.3427 | 无 | 否 | 否 | 否 |
 | vite-native-ts | apps | 通过 | `vite-native-ts/dist/app.wxss` (+3) | 12443 | 24236 | +11793 | 1.9478 | 无 | 否 | 否 | 否 |
 | uni-app-vue3-vite | demo | 通过 | `uni-app-vue3-vite/dist/build/mp-weixin/app.wxss` (+10) | 401919 | 502633 | +100714 | 1.2506 | 无 | 否 | 否 | 否 |
-| uni-app-tailwindcss-v4 | demo | 通过 | `uni-app-tailwindcss-v4/dist/build/mp-weixin/app.wxss` (+2) | 49689 | 49767 | +78 | 1.0016 | 无 | 否 | 否 | 否 |
-| uni-app-tailwindcss-v5 | demo | 通过 | `uni-app-tailwindcss-v5/dist/build/mp-weixin/app.wxss` (+2) | 58430 | 54187 | -4243 | 0.9274 | 无 | 否 | 否 | 否 |
+| uni-app-tailwindcss-v4 | demo | 通过 | `uni-app-tailwindcss-v4/dist/build/mp-weixin/app.wxss` (+2) | 53207 | 49689 | -3518 | 0.9339 | 无 | 否 | 否 | 否 |
+| uni-app-tailwindcss-v5 | demo | 通过 | `uni-app-tailwindcss-v5/dist/build/mp-weixin/app.wxss` (+2) | 61948 | 54109 | -7839 | 0.8735 | 无 | 否 | 否 | 否 |
 | taro-app | demo | 通过 | `taro-app/dist/app.wxss` (+5) | 40513 | 65762 | +25249 | 1.6232 | 无 | 否 | 否 | 否 |
 | taro-webpack-tailwindcss-v4 | demo | 通过 | `taro-webpack-tailwindcss-v4/dist/app.wxss` (+1) | 382159 | 366436 | -15723 | 0.9589 | 无 | 否 | 否 | 否 |
 | taro-app-vite | demo | 通过 | `taro-app-vite/dist/app.wxss` (+2) | 4530 | 4701 | +171 | 1.0377 | 无 | 否 | 否 | 否 |
-| taro-vite-tailwindcss-v4 | demo | 通过 | `taro-vite-tailwindcss-v4/dist/app.wxss` (+2) | 2082 | 5195 | +3113 | 2.4952 | 无 | 否 | 否 | 否 |
-| taro-vite-tailwindcss-v5 | demo | 通过 | `taro-vite-tailwindcss-v5/dist/app.wxss` (+2) | 4505 | 23641 | +19136 | 5.2477 | 无 | 否 | 否 | 否 |
+| taro-vite-tailwindcss-v4 | demo | 通过 | `taro-vite-tailwindcss-v4/dist/app.wxss` (+2) | 2082 | 5534 | +3452 | 2.658 | 无 | 否 | 否 | 否 |
+| taro-vite-tailwindcss-v5 | demo | 通过 | `taro-vite-tailwindcss-v5/dist/app.wxss` (+2) | 4505 | 23764 | +19259 | 5.275 | 无 | 否 | 否 | 否 |
 | taro-vue3-app | demo | 通过 | `taro-vue3-app/dist/app.wxss` (+1) | 115828 | 123826 | +7998 | 1.0691 | 无 | 否 | 否 | 否 |
-| gulp-app | demo | 通过 | `gulp-app/dist/app.wxss` (+2) | 6567 | 8014 | +1447 | 1.2203 | 无 | 否 | 否 | 否 |
+| gulp-app | demo | 通过 | `gulp-app/dist/app.wxss` (+2) | 6578 | 6496 | -82 | 0.9875 | 无 | 否 | 否 | 否 |
 | mpx-app | demo | 通过 | `mpx-app/dist/wx/app.wxss` (+23) | 189931 | 199251 | +9320 | 1.0491 | 无 | 否 | 否 | 否 |
 | mpx-tailwindcss-v4 | demo | 通过 | `mpx-tailwindcss-v4/dist/wx/app.wxss` (+3) | 18986 | 17332 | -1654 | 0.9129 | 无 | 否 | 否 | 否 |
 | mpx-tailwindcss-v5 | demo | 通过 | `mpx-tailwindcss-v5/dist/wx/app.wxss` (+3) | 22440 | 20412 | -2028 | 0.9096 | 无 | 否 | 否 | 否 |
@@ -62,14 +62,14 @@
 
 - CSS 文件：`app.wxss`, `home.wxss`, `user.wxss`
 - 两边共有：`.active_cbg-emerald-50:active`, `.active_cbg-emerald-600:active`, `.aspect-_bcalc_p4_x3_u1_P_f3_B`, `.aspect-_p--my-aspect-ratio_P`, `.bg-_b_h0000ff_B`, `.bg-_b_h123498_B`, `.bg-emerald-100`, `.bg-emerald-500`, `.bg-midnight`, `.bg-neutral-1B`, `.bg-slate-50`, `.bg-white`, `.block`, `.border`, `.border-emerald-500`, `.border-slate-200`, `.container`, `.divide-_b_h41eb04_B > text + text`, `.divide-_b_h41eb04_B > text + view`, `.divide-_b_h41eb04_B > view + text`
-- 仅生成模式：`.absolute`, `.antialiased`, `.backdrop-blur`, `.backdrop-filter`, `.backdrop-grayscale`, `.backdrop-invert`, `.backdrop-sepia`, `.bg-repeat`, `.blur`, `.border-b`, `.border-be`, `.border-bs`, `.border-collapse`, `.border-e`, `.border-l`, `.border-r`, `.border-s`, `.border-t`, `.border-x`, `.border-y`
+- 仅生成模式：`.absolute`, `.antialiased`, `.backdrop-blur`, `.backdrop-filter`, `.backdrop-grayscale`, `.backdrop-invert`, `.backdrop-sepia`, `.bg-repeat`, `.blur`, `.border-b`, `.border-collapse`, `.border-e`, `.border-l`, `.border-r`, `.border-s`, `.border-t`, `.border-x`, `.border-y`, `.capitalize`, `.collapse`
 - 仅旧链路：-
 
 ### uni-app-tailwindcss-v5
 
 - CSS 文件：`app.wxss`, `home.wxss`, `user.wxss`
 - 两边共有：`.active_cbg-emerald-50:active`, `.active_cbg-emerald-600:active`, `.aspect-_bcalc_p4_x3_u1_P_f3_B`, `.aspect-_p--my-aspect-ratio_P`, `.bg-_b_h0000ff_B`, `.bg-_b_h123498_B`, `.bg-emerald-100`, `.bg-emerald-500`, `.bg-gradient-to-r`, `.bg-midnight`, `.bg-neutral-1B`, `.bg-slate-50`, `.bg-white`, `.block`, `.border`, `.border-emerald-500`, `.border-slate-200`, `.container`, `.divide-_b_h41eb04_B > text + text`, `.divide-_b_h41eb04_B > text + view`
-- 仅生成模式：`.absolute`, `.antialiased`, `.backdrop-blur`, `.backdrop-filter`, `.backdrop-grayscale`, `.backdrop-invert`, `.backdrop-sepia`, `.bg-repeat`, `.blur`, `.border-b`, `.border-be`, `.border-bs`, `.border-collapse`, `.border-e`, `.border-l`, `.border-r`, `.border-s`, `.border-t`, `.border-x`, `.border-y`
+- 仅生成模式：`.absolute`, `.antialiased`, `.backdrop-blur`, `.backdrop-filter`, `.backdrop-grayscale`, `.backdrop-invert`, `.backdrop-sepia`, `.bg-repeat`, `.blur`, `.border-b`, `.border-collapse`, `.border-e`, `.border-l`, `.border-r`, `.border-s`, `.border-t`, `.border-x`, `.border-y`, `.capitalize`, `.collapse`
 - 仅旧链路：-
 
 ### taro-app
@@ -97,14 +97,14 @@
 
 - CSS 文件：`app.wxss`, `app-origin.wxss`, `index.wxss`
 - 两边共有：`.bg-_b_h123456_B`, `.bg-gradient-to-r`, `.bg-linear-to-r`, `.bg-purple-300`, `.from-cyan-500`, `.h-14`, `.h-_b300px_B`, `.static`, `.text-_b55rpx_B`, `.text-_b_hc31d6b_B`, `.text-_b_hfff_B`, `.to-blue-500`, `.tw-page-style-watch-anchor`, `.tw-root`, `:host`, `page`, `wx-root-portal-content`
-- 仅生成模式：`.block`, `.blur`, `.border`, `.container`, `.ease-out`, `.end`, `.filter`, `.fixed`, `.flex`, `.grid`, `.hidden`, `.inline`, `.outline`, `.resize`, `.start`, `.table`, `.transform`, `.transition`, `.visible`
+- 仅生成模式：`.block`, `.blur`, `.border`, `.container`, `.ease-out`, `.filter`, `.fixed`, `.flex`, `.grid`, `.hidden`, `.inline`, `.outline`, `.resize`, `.table`, `.transform`, `.transition`, `.visible`
 - 仅旧链路：-
 
 ### taro-vite-tailwindcss-v5
 
 - CSS 文件：`app.wxss`, `app-origin.wxss`, `index.wxss`
 - 两边共有：`._eborder-brand`, `.active_cbg-emerald-600:active`, `.bg-_b_h123456_B`, `.bg-brand`, `.bg-gradient-to-b`, `.bg-gradient-to-r`, `.bg-gray-100`, `.bg-linear-to-r`, `.bg-red-500`, `.border-_b10rpx_B`, `.dark_cbg-green-500`, `.dark_cbg-zinc-800`, `.from-cyan-500`, `.from-fuchsia-500`, `.h-14`, `.h-_b300px_B`, `.p-4`, `.p-_b32rpx_B`, `.rotate-_b10deg_B`, `.rounded-xl`
-- 仅生成模式：`.absolute`, `.antialiased`, `.backdrop-blur`, `.backdrop-filter`, `.backdrop-grayscale`, `.backdrop-invert`, `.backdrop-sepia`, `.bg-repeat`, `.block`, `.blur`, `.border`, `.border-b`, `.border-be`, `.border-bs`, `.border-collapse`, `.border-e`, `.border-l`, `.border-r`, `.border-s`, `.border-t`
+- 仅生成模式：`.absolute`, `.antialiased`, `.backdrop-blur`, `.backdrop-filter`, `.backdrop-grayscale`, `.backdrop-invert`, `.backdrop-sepia`, `.bg-repeat`, `.block`, `.blur`, `.border`, `.border-b`, `.border-collapse`, `.border-e`, `.border-l`, `.border-r`, `.border-s`, `.border-t`, `.border-x`, `.border-y`
 - 仅旧链路：-
 
 ### taro-vue3-app
@@ -123,21 +123,21 @@
 
 ### mpx-app
 
-- CSS 文件：`app.wxss`, `styles/base.wxss`, `styles/components.wxss`, `styles/utilities.wxss`, `index.wxss`, `button.wxss`, `styles/index.wxss`, `icon.wxss`, `styles/index.wxss`, `loading.wxss`, `styles/index.wxss`, `index.wxss`, `styles/index.wxss`, `index.wxss`, `styles/index.wxss`, `index.wxss`, `styles/index.wxss`, `index.wxss`, `styles/index.wxss`, `base487e0d61.wxss`, `components63da9234.wxss`, `index0af78c53.wxss`, `index9a27da9c.wxss`, `utilities3d066604.wxss`
+- CSS 文件：`app.wxss`, `styles/base.wxss`, `styles/components.wxss`, `styles/utilities.wxss`, `index.wxss`, `button.wxss`, `styles/index.wxss`, `icon.wxss`, `styles/index.wxss`, `loading.wxss`, `styles/index.wxss`, `index.wxss`, `styles/index.wxss`, `index.wxss`, `styles/index.wxss`, `index.wxss`, `styles/index.wxss`, `index.wxss`, `styles/index.wxss`, `base5c682eff.wxss`, `components1e38aa04.wxss`, `indexd323f158.wxss`, `indexfcda771e.wxss`, `utilities68e69726.wxss`
 - 两边共有：`.after_ccontent-_b_au_x4f60_u_x597d_u_x554a_u_xff0c_u_x6211_u_x8fd9_u_x662f_u_x4e2d_u_x6587_u_x5b57_u_x7b26_u_x4e32__a_B:after`, `.after_ccontent-_b_qu_x4f60_u_x597d_u_x554a_u_xff0c_u_x6211_u_x5f88_u_x65e0_u_x804a__q_B:after`, `.after_cml-0_d5:after`, `.after_ctext-red-500:after`, `.bg-_b_h123456_B`, `.bg-_b_h929292_B`, `.bg-_burl_p_ahttps_c_f_fxxx_dcom_fxx_dwebp_a_P_B`, `.flex`, `.flex-col`, `.hotspot-expanded.relative`, `.hotspot-expanded:after`, `.t-button`, `.t-button--block`, `.t-button--circle`, `.t-button--circle.t-button--size-extra-small`, `.t-button--circle.t-button--size-extra-small:after`, `.t-button--circle.t-button--size-large`, `.t-button--circle.t-button--size-large:after`, `.t-button--circle.t-button--size-medium`, `.t-button--circle.t-button--size-medium:after`
 - 仅生成模式：`.tw-root`, `page`, `wx-root-portal-content`
 - 仅旧链路：-
 
 ### mpx-tailwindcss-v4
 
-- CSS 文件：`app.wxss`, `styles/app.wxss`, `index.wxss`, `app3b4a1ac6.wxss`
+- CSS 文件：`app.wxss`, `styles/app.wxss`, `index.wxss`, `app36a8d5bb.wxss`
 - 两边共有：`.-m-_b20px_B`, `.-mt-2`, `._2xl_ctext-_bred_B`, `._2xl_ctext-base`, `._ebg-green-500`, `._efont-bold`, `._etext-_b_h990000_B`, `.active_cbg-_b_h543210_B:active`, `.active_cbg-_b_h989898_B:active`, `.after_cborder-none:after`, `.before_ccontent-_b_aFestivus_a_B:before`, `.bg-_b_h010101_B`, `.bg-_b_h123456_B`, `.bg-_b_h434344_B`, `.bg-_b_he90505_B`, `.bg-blue-500_f50`, `.bg-gray-100`, `.bg-pink-500`, `.bg-red-400`, `.bg-red-500`
 - 仅生成模式：-
 - 仅旧链路：-
 
 ### mpx-tailwindcss-v5
 
-- CSS 文件：`app.wxss`, `styles/app.wxss`, `index.wxss`, `app5e440dc4.wxss`
+- CSS 文件：`app.wxss`, `styles/app.wxss`, `index.wxss`, `app252bdc3c.wxss`
 - 两边共有：`.-m-_b20px_B`, `.-mt-2`, `._2xl_ctext-_bred_B`, `._2xl_ctext-base`, `._ebg-green-500`, `._eborder-primary`, `._efont-bold`, `._etext-_b_h990000_B`, `._etext-primary`, `.active_cbg-_b_h543210_B:active`, `.active_cbg-_b_h989898_B:active`, `.after_cborder-none:after`, `.before_ccontent-_b_aFestivus_a_B:before`, `.bg-_b_h0000ff_B`, `.bg-_b_h010101_B`, `.bg-_b_h123456_B`, `.bg-_b_h434344_B`, `.bg-_b_he90505_B`, `.bg-blue-500_f50`, `.bg-emerald-500`
 - 仅生成模式：-
 - 仅旧链路：-

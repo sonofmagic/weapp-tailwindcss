@@ -8,7 +8,7 @@ Generator CSS files: app.wxss, app-origin.wxss, index.wxss
 | Mode | Bytes | Selectors | @supports | :hover | Tailwind banner | Raw arbitrary selector | Weapp escaped arbitrary selector |
 | --- | ---: | ---: | --- | --- | --- | --- | --- |
 | legacy | 4505 | 37 | false | false | false | false | true |
-| generator | 23641 | 173 | false | false | false | false | true |
+| generator | 23764 | 169 | false | false | false | false | true |
 
 ## Diff
 
@@ -47,7 +47,7 @@ Generator CSS files: app.wxss, app-origin.wxss, index.wxss
    --tw-gradient-position: initial;
    --tw-gradient-from: rgba(0, 0, 0, 0);
    --tw-gradient-via: rgba(0, 0, 0, 0);
-@@ -19,15 +33,49 @@
+@@ -19,15 +33,53 @@
    --tw-gradient-from-position: 0%;
    --tw-gradient-via-position: 50%;
    --tw-gradient-to-position: 100%;
@@ -103,16 +103,22 @@ Generator CSS files: app.wxss, app-origin.wxss, index.wxss
 +  --tw-backdrop-saturate: initial;
 +  --tw-backdrop-sepia: initial;
 +  --tw-ease: initial;
++  --font-sans:
++    ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, Cantarell, Noto Sans, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol',
++    'Noto Color Emoji';
++  --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New', monospace;
    --color-red-500: rgb(251, 44, 54);
    --color-green-500: rgb(0, 198, 90);
    --color-emerald-600: rgb(0, 150, 105);
-@@ -40,65 +88,372 @@
+@@ -40,65 +92,359 @@
    --color-white: #fff;
    --spacing: 8rpx;
    --radius-xl: 24rpx;
 +  --ease-out: cubic-bezier(0, 0, 0.2, 1);
 +  --default-transition-duration: 150ms;
 +  --default-transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
++  --default-font-family: var(--font-sans);
++  --default-mono-font-family: var(--font-mono);
    --color-brand: #155dfc;
  }
 -view,
@@ -169,12 +175,6 @@ Generator CSS files: app.wxss, app-origin.wxss, index.wxss
 +.sticky {
 +  position: -webkit-sticky;
 +  position: sticky;
-+}
-+.start {
-+  left: var(--spacing);
-+}
-+.end {
-+  right: var(--spacing);
 +}
 +.isolate {
 +  isolation: isolate;
@@ -374,6 +374,7 @@ Generator CSS files: app.wxss, app-origin.wxss, index.wxss
 -  border-radius: 24rpx;
    border-radius: var(--radius-xl);
  }
+-.border-_b10rpx_B {
 +.rounded-s {
 +  border-top-left-radius: 8rpx;
 +  border-bottom-left-radius: 8rpx;
@@ -423,12 +424,9 @@ Generator CSS files: app.wxss, app-origin.wxss, index.wxss
 +  border-bottom-left-radius: 8rpx;
 +}
 +.border {
-+  border-style: var(--tw-border-style);
-+  border-width: 1rpx;
-+}
- .border-_b10rpx_B {
    border-style: var(--tw-border-style);
-   border-width: 10rpx;
+-  border-width: 10rpx;
++  border-width: 1rpx;
  }
 +.border-x {
 +  border-left-style: var(--tw-border-style);
@@ -450,14 +448,6 @@ Generator CSS files: app.wxss, app-origin.wxss, index.wxss
 +  border-right-style: var(--tw-border-style);
 +  border-right-width: 1rpx;
 +}
-+.border-bs {
-+  border-top-style: var(--tw-border-style);
-+  border-top-width: 1rpx;
-+}
-+.border-be {
-+  border-bottom-style: var(--tw-border-style);
-+  border-bottom-width: 1rpx;
-+}
 +.border-t {
 +  border-top-style: var(--tw-border-style);
 +  border-top-width: 1rpx;
@@ -478,6 +468,9 @@ Generator CSS files: app.wxss, app-origin.wxss, index.wxss
 -  border-color: #155dfc !important;
    border-color: var(--color-brand) !important;
  }
++.border-_b10rpx_B {
++  border-width: 10rpx;
++}
  .bg-_b_h123456_B {
    background-color: #123456;
  }
@@ -494,7 +487,7 @@ Generator CSS files: app.wxss, app-origin.wxss, index.wxss
    background-color: var(--color-red-500);
  }
  .bg-linear-to-r {
-@@ -151,8 +506,18 @@
+@@ -151,40 +497,264 @@
      var(--tw-gradient-to) var(--tw-gradient-to-position)
    );
  }
@@ -514,25 +507,33 @@ Generator CSS files: app.wxss, app-origin.wxss, index.wxss
    padding: calc(var(--spacing) * 4);
  }
  .p-_b32rpx_B {
-@@ -164,6 +529,15 @@
- .text-_b55rpx_B {
-   font-size: 55rpx;
+   padding: 32rpx;
  }
+-.text-_b32rpx_B {
+-  font-size: 32rpx;
 +.text-wrap {
 +  text-wrap: wrap;
-+}
+ }
+-.text-_b55rpx_B {
+-  font-size: 55rpx;
 +.text-clip {
 +  text-overflow: clip;
-+}
+ }
 +.text-ellipsis {
 +  text-overflow: ellipsis;
 +}
  .text-_b_hc31d6b_B {
    color: #c31d6b;
  }
-@@ -171,20 +545,225 @@
+ .text-_b_hfff_B {
    color: #fff;
  }
++.text-_b32rpx_B {
++  font-size: 32rpx;
++}
++.text-_b55rpx_B {
++  font-size: 55rpx;
++}
  .text-white {
 -  color: #fff;
    color: var(--color-white);
@@ -1042,6 +1043,10 @@ wx-root-portal-content {
   --tw-backdrop-saturate: initial;
   --tw-backdrop-sepia: initial;
   --tw-ease: initial;
+  --font-sans:
+    ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, Cantarell, Noto Sans, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol',
+    'Noto Color Emoji';
+  --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New', monospace;
   --color-red-500: rgb(251, 44, 54);
   --color-green-500: rgb(0, 198, 90);
   --color-emerald-600: rgb(0, 150, 105);
@@ -1057,6 +1062,8 @@ wx-root-portal-content {
   --ease-out: cubic-bezier(0, 0, 0.2, 1);
   --default-transition-duration: 150ms;
   --default-transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+  --default-font-family: var(--font-sans);
+  --default-mono-font-family: var(--font-mono);
   --color-brand: #155dfc;
 }
 .collapse {
@@ -1106,12 +1113,6 @@ wx-root-portal-content {
 .sticky {
   position: -webkit-sticky;
   position: sticky;
-}
-.start {
-  left: var(--spacing);
-}
-.end {
-  right: var(--spacing);
 }
 .isolate {
   isolation: isolate;
@@ -1359,10 +1360,6 @@ wx-root-portal-content {
   border-style: var(--tw-border-style);
   border-width: 1rpx;
 }
-.border-_b10rpx_B {
-  border-style: var(--tw-border-style);
-  border-width: 10rpx;
-}
 .border-x {
   border-left-style: var(--tw-border-style);
   border-right-style: var(--tw-border-style);
@@ -1383,14 +1380,6 @@ wx-root-portal-content {
   border-right-style: var(--tw-border-style);
   border-right-width: 1rpx;
 }
-.border-bs {
-  border-top-style: var(--tw-border-style);
-  border-top-width: 1rpx;
-}
-.border-be {
-  border-bottom-style: var(--tw-border-style);
-  border-bottom-width: 1rpx;
-}
 .border-t {
   border-top-style: var(--tw-border-style);
   border-top-width: 1rpx;
@@ -1409,6 +1398,9 @@ wx-root-portal-content {
 }
 ._eborder-brand {
   border-color: var(--color-brand) !important;
+}
+.border-_b10rpx_B {
+  border-width: 10rpx;
 }
 .bg-_b_h123456_B {
   background-color: #123456;
@@ -1489,12 +1481,6 @@ wx-root-portal-content {
 .p-_b32rpx_B {
   padding: 32rpx;
 }
-.text-_b32rpx_B {
-  font-size: 32rpx;
-}
-.text-_b55rpx_B {
-  font-size: 55rpx;
-}
 .text-wrap {
   text-wrap: wrap;
 }
@@ -1509,6 +1495,12 @@ wx-root-portal-content {
 }
 .text-_b_hfff_B {
   color: #fff;
+}
+.text-_b32rpx_B {
+  font-size: 32rpx;
+}
+.text-_b55rpx_B {
+  font-size: 55rpx;
 }
 .text-white {
   color: var(--color-white);

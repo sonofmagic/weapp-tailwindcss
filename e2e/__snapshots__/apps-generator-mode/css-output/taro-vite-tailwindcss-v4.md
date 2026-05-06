@@ -8,7 +8,7 @@ Generator CSS files: app.wxss, app-origin.wxss, index.wxss
 | Mode | Bytes | Selectors | @supports | :hover | Tailwind banner | Raw arbitrary selector | Weapp escaped arbitrary selector |
 | --- | ---: | ---: | --- | --- | --- | --- | --- |
 | legacy | 2082 | 17 | false | false | false | false | true |
-| generator | 5195 | 36 | false | false | false | false | true |
+| generator | 5534 | 34 | false | false | false | false | true |
 
 ## Diff
 
@@ -65,6 +65,10 @@ Generator CSS files: app.wxss, app-origin.wxss, index.wxss
 +  --tw-drop-shadow-alpha: 100%;
 +  --tw-drop-shadow-size: initial;
 +  --tw-ease: initial;
++  --font-sans:
++    ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, Cantarell, Noto Sans, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol',
++    'Noto Color Emoji';
++  --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New', monospace;
    --color-cyan-500: rgb(0, 182, 212);
    --color-blue-500: rgb(50, 128, 255);
    --color-purple-300: rgb(216, 180, 255);
@@ -72,6 +76,8 @@ Generator CSS files: app.wxss, app-origin.wxss, index.wxss
 +  --ease-out: cubic-bezier(0, 0, 0.2, 1);
 +  --default-transition-duration: 150ms;
 +  --default-transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
++  --default-font-family: var(--font-sans);
++  --default-mono-font-family: var(--font-mono);
  }
 -view,
 -text,
@@ -90,12 +96,6 @@ Generator CSS files: app.wxss, app-origin.wxss, index.wxss
  .static {
    position: static;
  }
-+.start {
-+  left: var(--spacing);
-+}
-+.end {
-+  right: var(--spacing);
-+}
 +.container {
 +  width: 100%;
 +}
@@ -169,10 +169,22 @@ Generator CSS files: app.wxss, app-origin.wxss, index.wxss
    background-color: var(--color-purple-300);
  }
  .bg-linear-to-r {
-@@ -94,6 +168,55 @@
+@@ -85,15 +159,64 @@
+     var(--tw-gradient-to) var(--tw-gradient-to-position)
+   );
+ }
+-.text-_b55rpx_B {
+-  font-size: 55rpx;
+-}
+ .text-_b_hc31d6b_B {
+   color: #c31d6b;
+ }
  .text-_b_hfff_B {
    color: #fff;
  }
++.text-_b55rpx_B {
++  font-size: 55rpx;
++}
 +.outline {
 +  outline-style: var(--tw-outline-style);
 +  outline-width: 1rpx;
@@ -375,6 +387,10 @@ wx-root-portal-content {
   --tw-drop-shadow-alpha: 100%;
   --tw-drop-shadow-size: initial;
   --tw-ease: initial;
+  --font-sans:
+    ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, Cantarell, Noto Sans, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol',
+    'Noto Color Emoji';
+  --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New', monospace;
   --color-cyan-500: rgb(0, 182, 212);
   --color-blue-500: rgb(50, 128, 255);
   --color-purple-300: rgb(216, 180, 255);
@@ -382,6 +398,8 @@ wx-root-portal-content {
   --ease-out: cubic-bezier(0, 0, 0.2, 1);
   --default-transition-duration: 150ms;
   --default-transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+  --default-font-family: var(--font-sans);
+  --default-mono-font-family: var(--font-mono);
 }
 .visible {
   visibility: visible;
@@ -391,12 +409,6 @@ wx-root-portal-content {
 }
 .static {
   position: static;
-}
-.start {
-  left: var(--spacing);
-}
-.end {
-  right: var(--spacing);
 }
 .container {
   width: 100%;
@@ -496,14 +508,14 @@ wx-root-portal-content {
     var(--tw-gradient-to) var(--tw-gradient-to-position)
   );
 }
-.text-_b55rpx_B {
-  font-size: 55rpx;
-}
 .text-_b_hc31d6b_B {
   color: #c31d6b;
 }
 .text-_b_hfff_B {
   color: #fff;
+}
+.text-_b55rpx_B {
+  font-size: 55rpx;
 }
 .outline {
   outline-style: var(--tw-outline-style);

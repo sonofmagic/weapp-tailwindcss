@@ -7,8 +7,8 @@ Generator CSS files: app.wxss, index.wxss, more.wxss
 
 | Mode | Bytes | Selectors | @supports | :hover | Tailwind banner | Raw arbitrary selector | Weapp escaped arbitrary selector |
 | --- | ---: | ---: | --- | --- | --- | --- | --- |
-| legacy | 6567 | 43 | false | false | false | false | true |
-| generator | 8014 | 47 | false | false | false | false | true |
+| legacy | 6578 | 43 | false | false | false | false | true |
+| generator | 6496 | 47 | false | false | false | false | true |
 
 ## Diff
 
@@ -16,83 +16,41 @@ Generator CSS files: app.wxss, index.wxss, more.wxss
 ===================================================================
 --- gulp-app/legacy.css
 +++ gulp-app/generator.css
-@@ -1,3 +1,7 @@
-+::before,
-+::after {
-+  --tw-content: '';
-+}
- view,
- text,
- ::before,
-@@ -55,6 +59,63 @@
-   --tw-contain-style:
- ;
+@@ -2,10 +2,10 @@
+ ::after {
+   --tw-content: '';
  }
+-view,
+-text,
+-::before,
+-::after {
 +:host,
 +page,
 +.tw-root,
 +wx-root-portal-content {
-+  --tw-border-spacing-x: 0;
-+  --tw-border-spacing-y: 0;
-+  --tw-translate-x: 0;
-+  --tw-translate-y: 0;
-+  --tw-rotate: 0;
-+  --tw-skew-x: 0;
-+  --tw-skew-y: 0;
-+  --tw-scale-x: 1;
-+  --tw-scale-y: 1;
-+  --tw-pan-x:  ;
-+  --tw-pan-y:  ;
-+  --tw-pinch-zoom:  ;
-+  --tw-scroll-snap-strictness: proximity;
-+  --tw-gradient-from-position:  ;
-+  --tw-gradient-via-position:  ;
-+  --tw-gradient-to-position:  ;
-+  --tw-ordinal:  ;
-+  --tw-slashed-zero:  ;
-+  --tw-numeric-figure:  ;
-+  --tw-numeric-spacing:  ;
-+  --tw-numeric-fraction:  ;
-+  --tw-ring-inset:  ;
-+  --tw-ring-offset-width: 0rpx;
-+  --tw-ring-offset-color: #fff;
-+  --tw-ring-color: rgba(59, 130, 246, 0.5);
-+  --tw-ring-offset-shadow: 0 0 rgba(0, 0, 0, 0);
-+  --tw-ring-shadow: 0 0 rgba(0, 0, 0, 0);
-+  --tw-shadow: 0 0 rgba(0, 0, 0, 0);
-+  --tw-shadow-colored: 0 0 rgba(0, 0, 0, 0);
-+  --tw-blur:  ;
-+  --tw-brightness:  ;
-+  --tw-contrast:  ;
-+  --tw-grayscale:  ;
-+  --tw-hue-rotate:  ;
-+  --tw-invert:  ;
-+  --tw-saturate:  ;
-+  --tw-sepia:  ;
-+  --tw-drop-shadow:  ;
-+  --tw-backdrop-blur:  ;
-+  --tw-backdrop-brightness:  ;
-+  --tw-backdrop-contrast:  ;
-+  --tw-backdrop-grayscale:  ;
-+  --tw-backdrop-hue-rotate:  ;
-+  --tw-backdrop-invert:  ;
-+  --tw-backdrop-opacity:  ;
-+  --tw-backdrop-saturate:  ;
-+  --tw-backdrop-sepia:  ;
-+  --tw-contain-size:  ;
-+  --tw-contain-layout:  ;
-+  --tw-contain-paint:  ;
-+  --tw-contain-style:
-+;
-+}
+   --tw-border-spacing-x: 0;
+   --tw-border-spacing-y: 0;
+   --tw-translate-x: 0;
+@@ -58,10 +58,6 @@
+   --tw-contain-paint:  ;
+   --tw-contain-style:
+ ;
+-  box-sizing: border-box;
+-  border-width: 0;
+-  border-style: solid;
+-  border-color: currentColor;
+ }
  .i-mdi-123 {
    display: inline-block;
-   width: 1em;
 ```
 
 ## Legacy CSS
 
 ```css
+::before,
+::after {
+  --tw-content: '';
+}
 view,
 text,
 ::before,
@@ -149,6 +107,10 @@ text,
   --tw-contain-paint:  ;
   --tw-contain-style:
 ;
+  box-sizing: border-box;
+  border-width: 0;
+  border-style: solid;
+  border-color: currentColor;
 }
 .i-mdi-123 {
   display: inline-block;
@@ -232,7 +194,6 @@ text,
 .space-y-1 > text + text {
   --tw-space-y-reverse: 0;
   margin-top: calc(8rpx * (1 - var(--tw-space-y-reverse)));
-  margin-top: calc(8rpx * calc(1 - var(--tw-space-y-reverse)));
   margin-bottom: calc(8rpx * var(--tw-space-y-reverse));
 }
 .space-y-4 > view + view,
@@ -241,7 +202,6 @@ text,
 .space-y-4 > text + text {
   --tw-space-y-reverse: 0;
   margin-top: calc(32rpx * (1 - var(--tw-space-y-reverse)));
-  margin-top: calc(32rpx * calc(1 - var(--tw-space-y-reverse)));
   margin-bottom: calc(32rpx * var(--tw-space-y-reverse));
 }
 .border-b {
@@ -335,63 +295,6 @@ text,
 ::before,
 ::after {
   --tw-content: '';
-}
-view,
-text,
-::before,
-::after {
-  --tw-border-spacing-x: 0;
-  --tw-border-spacing-y: 0;
-  --tw-translate-x: 0;
-  --tw-translate-y: 0;
-  --tw-rotate: 0;
-  --tw-skew-x: 0;
-  --tw-skew-y: 0;
-  --tw-scale-x: 1;
-  --tw-scale-y: 1;
-  --tw-pan-x:  ;
-  --tw-pan-y:  ;
-  --tw-pinch-zoom:  ;
-  --tw-scroll-snap-strictness: proximity;
-  --tw-gradient-from-position:  ;
-  --tw-gradient-via-position:  ;
-  --tw-gradient-to-position:  ;
-  --tw-ordinal:  ;
-  --tw-slashed-zero:  ;
-  --tw-numeric-figure:  ;
-  --tw-numeric-spacing:  ;
-  --tw-numeric-fraction:  ;
-  --tw-ring-inset:  ;
-  --tw-ring-offset-width: 0rpx;
-  --tw-ring-offset-color: #fff;
-  --tw-ring-color: rgba(59, 130, 246, 0.5);
-  --tw-ring-offset-shadow: 0 0 rgba(0, 0, 0, 0);
-  --tw-ring-shadow: 0 0 rgba(0, 0, 0, 0);
-  --tw-shadow: 0 0 rgba(0, 0, 0, 0);
-  --tw-shadow-colored: 0 0 rgba(0, 0, 0, 0);
-  --tw-blur:  ;
-  --tw-brightness:  ;
-  --tw-contrast:  ;
-  --tw-grayscale:  ;
-  --tw-hue-rotate:  ;
-  --tw-invert:  ;
-  --tw-saturate:  ;
-  --tw-sepia:  ;
-  --tw-drop-shadow:  ;
-  --tw-backdrop-blur:  ;
-  --tw-backdrop-brightness:  ;
-  --tw-backdrop-contrast:  ;
-  --tw-backdrop-grayscale:  ;
-  --tw-backdrop-hue-rotate:  ;
-  --tw-backdrop-invert:  ;
-  --tw-backdrop-opacity:  ;
-  --tw-backdrop-saturate:  ;
-  --tw-backdrop-sepia:  ;
-  --tw-contain-size:  ;
-  --tw-contain-layout:  ;
-  --tw-contain-paint:  ;
-  --tw-contain-style:
-;
 }
 :host,
 page,
@@ -532,7 +435,6 @@ wx-root-portal-content {
 .space-y-1 > text + text {
   --tw-space-y-reverse: 0;
   margin-top: calc(8rpx * (1 - var(--tw-space-y-reverse)));
-  margin-top: calc(8rpx * calc(1 - var(--tw-space-y-reverse)));
   margin-bottom: calc(8rpx * var(--tw-space-y-reverse));
 }
 .space-y-4 > view + view,
@@ -541,7 +443,6 @@ wx-root-portal-content {
 .space-y-4 > text + text {
   --tw-space-y-reverse: 0;
   margin-top: calc(32rpx * (1 - var(--tw-space-y-reverse)));
-  margin-top: calc(32rpx * calc(1 - var(--tw-space-y-reverse)));
   margin-bottom: calc(32rpx * var(--tw-space-y-reverse));
 }
 .border-b {

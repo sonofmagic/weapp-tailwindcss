@@ -8,7 +8,7 @@ Generator CSS files: app.wxss, apple.wxss, index.wxss
 | Mode | Bytes | Selectors | @supports | :hover | Tailwind banner | Raw arbitrary selector | Weapp escaped arbitrary selector |
 | --- | ---: | ---: | --- | --- | --- | --- | --- |
 | legacy | 5751 | 47 | false | false | false | false | true |
-| generator | 7314 | 60 | false | false | false | false | true |
+| generator | 7722 | 60 | false | false | false | false | true |
 
 ## Diff
 
@@ -36,7 +36,7 @@ Generator CSS files: app.wxss, apple.wxss, index.wxss
    --tw-space-y-reverse: 0;
    --tw-space-x-reverse: 0;
    --tw-border-style: solid;
-@@ -18,15 +23,19 @@
+@@ -18,15 +23,23 @@
    --tw-gradient-from-position: 0%;
    --tw-gradient-via-position: 50%;
    --tw-gradient-to-position: 100%;
@@ -62,15 +62,21 @@ Generator CSS files: app.wxss, apple.wxss, index.wxss
 +  --tw-drop-shadow-color: initial;
 +  --tw-drop-shadow-alpha: 100%;
 +  --tw-drop-shadow-size: initial;
++  --font-sans:
++    ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, Cantarell, Noto Sans, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol',
++    'Noto Color Emoji';
++  --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New', monospace;
    --color-red-700: rgb(191, 0, 15);
    --color-amber-300: rgb(255, 210, 55);
    --color-green-300: rgb(123, 241, 168);
-@@ -37,74 +46,49 @@
+@@ -37,74 +50,51 @@
    --color-zinc-50: rgb(250, 250, 250);
    --color-zinc-900: rgb(24, 24, 27);
    --spacing: 8rpx;
 +  --default-transition-duration: 150ms;
 +  --default-transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
++  --default-font-family: var(--font-sans);
++  --default-mono-font-family: var(--font-mono);
  }
 -view,
 -text,
@@ -158,7 +164,7 @@ Generator CSS files: app.wxss, apple.wxss, index.wxss
    height: calc(var(--spacing) * 10);
  }
  .h-_b29_d292px_B {
-@@ -125,6 +109,13 @@
+@@ -125,6 +115,13 @@
  .w-_b323px_B {
    width: 323px;
  }
@@ -172,7 +178,7 @@ Generator CSS files: app.wxss, apple.wxss, index.wxss
  .flex-col {
    -webkit-flex-direction: column;
    flex-direction: column;
-@@ -134,9 +125,7 @@
+@@ -134,9 +131,7 @@
  .space-y-2_d5 > text + view,
  .space-y-2_d5 > text + text {
    --tw-space-y-reverse: 0;
@@ -182,7 +188,7 @@ Generator CSS files: app.wxss, apple.wxss, index.wxss
    margin-top: calc((var(--spacing) * 2.5) * (1 - var(--tw-space-y-reverse)));
  }
  .space-x-2_d5 > view + view,
-@@ -144,11 +133,17 @@
+@@ -144,11 +139,17 @@
  .space-x-2_d5 > text + view,
  .space-x-2_d5 > text + text {
    --tw-space-x-reverse: 0;
@@ -202,7 +208,7 @@ Generator CSS files: app.wxss, apple.wxss, index.wxss
  .border-4 {
    border-style: var(--tw-border-style);
    border-width: 4px;
-@@ -160,14 +155,12 @@
+@@ -160,14 +161,12 @@
    background-color: #68c828;
  }
  .bg-amber-300 {
@@ -218,7 +224,7 @@ Generator CSS files: app.wxss, apple.wxss, index.wxss
    background-color: var(--color-zinc-50);
  }
  .bg-gradient-to-b {
-@@ -201,7 +194,6 @@
+@@ -201,7 +200,6 @@
    );
  }
  .p-4 {
@@ -226,7 +232,7 @@ Generator CSS files: app.wxss, apple.wxss, index.wxss
    padding: calc(var(--spacing) * 4);
  }
  .text-_b100px_B {
-@@ -217,24 +209,72 @@
+@@ -217,24 +215,72 @@
    color: #123456;
  }
  .text-blue-300 {
@@ -598,6 +604,10 @@ wx-root-portal-content {
   --tw-drop-shadow-color: initial;
   --tw-drop-shadow-alpha: 100%;
   --tw-drop-shadow-size: initial;
+  --font-sans:
+    ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, Cantarell, Noto Sans, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol',
+    'Noto Color Emoji';
+  --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New', monospace;
   --color-red-700: rgb(191, 0, 15);
   --color-amber-300: rgb(255, 210, 55);
   --color-green-300: rgb(123, 241, 168);
@@ -610,6 +620,8 @@ wx-root-portal-content {
   --spacing: 8rpx;
   --default-transition-duration: 150ms;
   --default-transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+  --default-font-family: var(--font-sans);
+  --default-mono-font-family: var(--font-mono);
 }
 ._estart {
   left: var(--spacing) !important;

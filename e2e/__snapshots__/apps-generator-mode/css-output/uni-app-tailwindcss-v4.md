@@ -7,8 +7,8 @@ Generator CSS files: app.wxss, home.wxss, user.wxss
 
 | Mode | Bytes | Selectors | @supports | :hover | Tailwind banner | Raw arbitrary selector | Weapp escaped arbitrary selector |
 | --- | ---: | ---: | --- | --- | --- | --- | --- |
-| legacy | 49689 | 120 | true | false | false | false | true |
-| generator | 49767 | 231 | false | false | false | false | true |
+| legacy | 53207 | 120 | true | false | false | false | true |
+| generator | 49689 | 227 | false | false | false | false | true |
 
 ## Diff
 
@@ -94,6 +94,10 @@ Generator CSS files: app.wxss, home.wxss, user.wxss
 +  --tw-backdrop-opacity: initial;
 +  --tw-backdrop-saturate: initial;
 +  --tw-backdrop-sepia: initial;
++  --font-sans:
++    ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, Cantarell, Noto Sans, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol',
++    'Noto Color Emoji';
++  --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New', monospace;
 +  --color-emerald-50: rgb(236, 253, 245);
 +  --color-emerald-100: rgb(208, 250, 229);
    --color-emerald-500: rgb(0, 185, 129);
@@ -118,6 +122,8 @@ Generator CSS files: app.wxss, home.wxss, user.wxss
 +  --font-weight-medium: 500;
 +  --font-weight-semibold: 600;
    --font-weight-bold: 700;
++  --default-font-family: var(--font-sans);
++  --default-mono-font-family: var(--font-mono);
    --color-neutral-1B: #1b1b1b;
    --color-midnight: #121063;
    --color-tahiti: #3ab7bf;
@@ -184,12 +190,6 @@ Generator CSS files: app.wxss, home.wxss, user.wxss
 +.sticky {
 +  position: -webkit-sticky;
 +  position: sticky;
-+}
-+.start {
-+  left: var(--spacing);
-+}
-+.end {
-+  right: var(--spacing);
 +}
 +.isolate {
 +  isolation: isolate;
@@ -449,7 +449,7 @@ Generator CSS files: app.wxss, home.wxss, user.wxss
    border-top-width: calc(4px * (1 - var(--tw-divide-y-reverse)));
  }
  .divide-y-reverse > view + view,
-@@ -219,1622 +464,1251 @@
+@@ -219,1692 +464,1229 @@
  .divide-_b_hd80c0c_B > text + text {
    border-color: #d80c0c;
  }
@@ -599,10 +599,7 @@ Generator CSS files: app.wxss, home.wxss, user.wxss
 -.active_cbg-emerald-600:active {
 -  background-color: rgb(0, 150, 105);
 -  background-color: var(--color-emerald-600);
-+.border-bs {
-+  border-top-style: var(--tw-border-style);
-+  border-top-width: 1px;
- }
+-}
 -page {
 -  --status-bar-height: 25px;
 -  --top-window-height: 0px;
@@ -611,10 +608,7 @@ Generator CSS files: app.wxss, home.wxss, user.wxss
 -  --window-left: 0px;
 -  --window-right: 0px;
 -  --window-magin: 0px;
-+.border-be {
-+  border-bottom-style: var(--tw-border-style);
-+  border-bottom-width: 1px;
- }
+-}
 -[data-c-h='true'] {
 -  display: none !important;
 -}
@@ -651,6 +645,10 @@ Generator CSS files: app.wxss, home.wxss, user.wxss
 -.tw-root:not(#\#),
 -wx-root-portal-content:not(#\#),
 -:host:not(#\#) {
+-  --font-sans:
+-    ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, Cantarell, Noto Sans, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol',
+-    'Noto Color Emoji';
+-  --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New', monospace;
 -  --color-emerald-50: rgb(236, 253, 245);
 -  --color-emerald-100: rgb(208, 250, 229);
 -  --color-emerald-500: rgb(0, 185, 129);
@@ -675,6 +673,8 @@ Generator CSS files: app.wxss, home.wxss, user.wxss
 -  --font-weight-medium: 500;
 -  --font-weight-semibold: 600;
 -  --font-weight-bold: 700;
+-  --default-font-family: var(--font-sans);
+-  --default-mono-font-family: var(--font-mono);
 -}
 -view:not(#\#):not(#\#),
 -text:not(#\#):not(#\#),
@@ -690,6 +690,27 @@ Generator CSS files: app.wxss, home.wxss, user.wxss
 -  -webkit-text-size-adjust: 100%;
 -  tab-size: 4;
 -  line-height: 1.5;
+-  font-family:
+-    ui-sans-serif,
+-    system-ui,
+-    -apple-system,
+-    Segoe UI,
+-    Roboto,
+-    Ubuntu,
+-    Cantarell,
+-    Noto Sans,
+-    sans-serif,
+-    'Apple Color Emoji',
+-    'Segoe UI Emoji',
+-    'Segoe UI Symbol',
+-    'Noto Color Emoji';
+-  font-family: var(--default-font-family, ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji');
+-  -webkit-font-feature-settings: normal;
+-  font-feature-settings: normal;
+-  -webkit-font-feature-settings: var(--default-font-feature-settings, normal);
+-  font-feature-settings: var(--default-font-feature-settings, normal);
+-  font-variation-settings: normal;
+-  font-variation-settings: var(--default-font-variation-settings, normal);
 -  -webkit-tap-highlight-color: transparent;
 -}
 -hr:not(#\#):not(#\#) {
@@ -726,6 +747,14 @@ Generator CSS files: app.wxss, home.wxss, user.wxss
 -kbd:not(#\#):not(#\#),
 -samp:not(#\#):not(#\#),
 -pre:not(#\#):not(#\#) {
+-  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New', monospace;
+-  font-family: var(--default-mono-font-family, ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New', monospace);
+-  -webkit-font-feature-settings: normal;
+-  font-feature-settings: normal;
+-  -webkit-font-feature-settings: var(--default-mono-font-feature-settings, normal);
+-  font-feature-settings: var(--default-mono-font-feature-settings, normal);
+-  font-variation-settings: normal;
+-  font-variation-settings: var(--default-mono-font-variation-settings, normal);
 -  font-size: 1em;
 -}
 -small:not(#\#):not(#\#) {
@@ -1248,13 +1277,11 @@ Generator CSS files: app.wxss, home.wxss, user.wxss
    line-height: var(--tw-leading, var(--text-xs--line-height));
  }
 -.text-_b45rpx_B:not(#\#):not(#\#):not(#\#) {
-+.text-_b45rpx_B {
-   font-size: 45rpx;
- }
+-  font-size: 45rpx;
+-}
 -.text-_b88rpx_B:not(#\#):not(#\#):not(#\#) {
-+.text-_b88rpx_B {
-   font-size: 88rpx;
- }
+-  font-size: 88rpx;
+-}
 -.leading-6:not(#\#):not(#\#):not(#\#) {
 +.leading-6 {
    --tw-leading: calc(var(--spacing) * 6);
@@ -1298,6 +1325,12 @@ Generator CSS files: app.wxss, home.wxss, user.wxss
  }
 -.text-emerald-600:not(#\#):not(#\#):not(#\#) {
 -  color: rgb(0, 150, 105);
++.text-_b45rpx_B {
++  font-size: 45rpx;
++}
++.text-_b88rpx_B {
++  font-size: 88rpx;
++}
 +.text-emerald-600 {
    color: var(--color-emerald-600);
  }
@@ -1452,95 +1485,58 @@ Generator CSS files: app.wxss, home.wxss, user.wxss
 -  syntax: '<percentage>';
 -  inherits: false;
 -  initial-value: 100%;
-+.normal-nums {
-+  -webkit-font-feature-settings: normal;
-+  font-feature-settings: normal;
-+  font-variant-numeric: normal;
- }
+-}
 -@property --tw-inset-shadow {
 -  syntax: '*';
 -  inherits: false;
 -  initial-value: 0 0 rgba(0, 0, 0, 0);
-+.line-through {
-+  -webkit-text-decoration-line: line-through;
-+  text-decoration-line: line-through;
- }
+-}
 -@property --tw-inset-shadow-color {
 -  syntax: '*';
 -  inherits: false;
-+.no-underline {
-+  -webkit-text-decoration-line: none;
-+  text-decoration-line: none;
- }
+-}
 -@property --tw-inset-shadow-alpha {
 -  syntax: '<percentage>';
 -  inherits: false;
 -  initial-value: 100%;
-+.overline {
-+  -webkit-text-decoration-line: overline;
-+  text-decoration-line: overline;
- }
+-}
 -@property --tw-ring-color {
 -  syntax: '*';
 -  inherits: false;
-+.underline {
-+  -webkit-text-decoration-line: underline;
-+  text-decoration-line: underline;
- }
+-}
 -@property --tw-ring-shadow {
 -  syntax: '*';
 -  inherits: false;
 -  initial-value: 0 0 rgba(0, 0, 0, 0);
-+.antialiased {
-+  -webkit-font-smoothing: antialiased;
-+  -moz-osx-font-smoothing: grayscale;
- }
+-}
 -@property --tw-inset-ring-color {
 -  syntax: '*';
 -  inherits: false;
-+.subpixel-antialiased {
-+  -webkit-font-smoothing: auto;
-+  -moz-osx-font-smoothing: auto;
- }
+-}
 -@property --tw-inset-ring-shadow {
 -  syntax: '*';
 -  inherits: false;
 -  initial-value: 0 0 rgba(0, 0, 0, 0);
-+.shadow {
-+  --tw-shadow: 0 1px 3px 0 var(--tw-shadow-color, rgba(0, 0, 0, 0.1)), 0 1px 2px -1px var(--tw-shadow-color, rgba(0, 0, 0, 0.1));
-+  box-shadow: var(--tw-inset-shadow), var(--tw-inset-ring-shadow), var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow);
- }
+-}
 -@property --tw-ring-inset {
 -  syntax: '*';
 -  inherits: false;
-+.shadow-sm {
-+  --tw-shadow: 0 1px 3px 0 var(--tw-shadow-color, rgba(0, 0, 0, 0.1)), 0 1px 2px -1px var(--tw-shadow-color, rgba(0, 0, 0, 0.1));
-+  box-shadow: var(--tw-inset-shadow), var(--tw-inset-ring-shadow), var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow);
- }
+-}
 -@property --tw-ring-offset-width {
 -  syntax: '<length>';
 -  inherits: false;
 -  initial-value: 0;
-+.ring {
-+  --tw-ring-shadow: var(--tw-ring-inset,) 0 0 0 calc(1px + var(--tw-ring-offset-width)) var(--tw-ring-color, currentcolor);
-+  box-shadow: var(--tw-inset-shadow), var(--tw-inset-ring-shadow), var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow);
- }
+-}
 -@property --tw-ring-offset-color {
 -  syntax: '*';
 -  inherits: false;
 -  initial-value: #fff;
-+.inset-ring {
-+  --tw-inset-ring-shadow: inset 0 0 0 1px var(--tw-inset-ring-color, currentcolor);
-+  box-shadow: var(--tw-inset-shadow), var(--tw-inset-ring-shadow), var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow);
- }
+-}
 -@property --tw-ring-offset-shadow {
 -  syntax: '*';
 -  inherits: false;
 -  initial-value: 0 0 rgba(0, 0, 0, 0);
-+.outline {
-+  outline-style: var(--tw-outline-style);
-+  outline-width: 1px;
- }
+-}
 -
 -@supports ((-webkit-hyphens: none) and (not (margin-trim: inline))) or ((-moz-orient: inline) and (not (color: rgb(from red r g b)))) {
 -  view,
@@ -1569,17 +1565,15 @@ Generator CSS files: app.wxss, home.wxss, user.wxss
 -    --tw-ring-offset-color: #fff;
 -    --tw-ring-offset-shadow: 0 0 rgba(0, 0, 0, 0);
 -  }
-+.blur {
-+  --tw-blur: blur(8px);
-+  -webkit-filter: var(--tw-blur,) var(--tw-brightness,) var(--tw-contrast,) var(--tw-grayscale,) var(--tw-hue-rotate,) var(--tw-invert,) var(--tw-saturate,) var(--tw-sepia,)
-+    var(--tw-drop-shadow,);
-+  filter: var(--tw-blur,) var(--tw-brightness,) var(--tw-contrast,) var(--tw-grayscale,) var(--tw-hue-rotate,) var(--tw-invert,) var(--tw-saturate,) var(--tw-sepia,)
-+    var(--tw-drop-shadow,);
- }
+-}
 -page:not(#\#),
 -.tw-root:not(#\#),
 -wx-root-portal-content:not(#\#),
 -:host:not(#\#) {
+-  --font-sans:
+-    ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, Cantarell, Noto Sans, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol',
+-    'Noto Color Emoji';
+-  --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New', monospace;
 -  --color-emerald-50: rgb(236, 253, 245);
 -  --color-emerald-100: rgb(208, 250, 229);
 -  --color-emerald-500: rgb(0, 185, 129);
@@ -1604,14 +1598,9 @@ Generator CSS files: app.wxss, home.wxss, user.wxss
 -  --font-weight-medium: 500;
 -  --font-weight-semibold: 600;
 -  --font-weight-bold: 700;
-+.drop-shadow {
-+  --tw-drop-shadow-size: drop-shadow(0 1px 2px var(--tw-drop-shadow-color, rgba(0, 0, 0, 0.1))) drop-shadow(0 1px 1px var(--tw-drop-shadow-color, rgba(0, 0, 0, 0.06)));
-+  --tw-drop-shadow: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.1)) drop-shadow(0 1px 1px rgba(0, 0, 0, 0.06));
-+  -webkit-filter: var(--tw-blur,) var(--tw-brightness,) var(--tw-contrast,) var(--tw-grayscale,) var(--tw-hue-rotate,) var(--tw-invert,) var(--tw-saturate,) var(--tw-sepia,)
-+    var(--tw-drop-shadow,);
-+  filter: var(--tw-blur,) var(--tw-brightness,) var(--tw-contrast,) var(--tw-grayscale,) var(--tw-hue-rotate,) var(--tw-invert,) var(--tw-saturate,) var(--tw-sepia,)
-+    var(--tw-drop-shadow,);
- }
+-  --default-font-family: var(--font-sans);
+-  --default-mono-font-family: var(--font-mono);
+-}
 -view:not(#\#):not(#\#),
 -text:not(#\#):not(#\#),
 -:not(#\#):not(#\#):after,
@@ -1620,47 +1609,52 @@ Generator CSS files: app.wxss, home.wxss, user.wxss
 -  border: 0 solid;
 -  margin: 0;
 -  padding: 0;
-+.backdrop-blur {
-+  --tw-backdrop-blur: blur(8px);
-+  -webkit-backdrop-filter: var(--tw-backdrop-blur,) var(--tw-backdrop-brightness,) var(--tw-backdrop-contrast,) var(--tw-backdrop-grayscale,) var(--tw-backdrop-hue-rotate,)
-+    var(--tw-backdrop-invert,) var(--tw-backdrop-opacity,) var(--tw-backdrop-saturate,) var(--tw-backdrop-sepia,);
-+  backdrop-filter: var(--tw-backdrop-blur,) var(--tw-backdrop-brightness,) var(--tw-backdrop-contrast,) var(--tw-backdrop-grayscale,) var(--tw-backdrop-hue-rotate,)
-+    var(--tw-backdrop-invert,) var(--tw-backdrop-opacity,) var(--tw-backdrop-saturate,) var(--tw-backdrop-sepia,);
- }
+-}
 -html:not(#\#):not(#\#),
 -:host:not(#\#):not(#\#) {
 -  -webkit-text-size-adjust: 100%;
 -  tab-size: 4;
 -  line-height: 1.5;
+-  font-family:
+-    ui-sans-serif,
+-    system-ui,
+-    -apple-system,
+-    Segoe UI,
+-    Roboto,
+-    Ubuntu,
+-    Cantarell,
+-    Noto Sans,
+-    sans-serif,
+-    'Apple Color Emoji',
+-    'Segoe UI Emoji',
+-    'Segoe UI Symbol',
+-    'Noto Color Emoji';
+-  font-family: var(--default-font-family, ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji');
++.normal-nums {
+   -webkit-font-feature-settings: normal;
+   font-feature-settings: normal;
+-  -webkit-font-feature-settings: var(--default-font-feature-settings, normal);
+-  font-feature-settings: var(--default-font-feature-settings, normal);
+-  font-variation-settings: normal;
+-  font-variation-settings: var(--default-font-variation-settings, normal);
 -  -webkit-tap-highlight-color: transparent;
-+.backdrop-grayscale {
-+  --tw-backdrop-grayscale: grayscale(100%);
-+  -webkit-backdrop-filter: var(--tw-backdrop-blur,) var(--tw-backdrop-brightness,) var(--tw-backdrop-contrast,) var(--tw-backdrop-grayscale,) var(--tw-backdrop-hue-rotate,)
-+    var(--tw-backdrop-invert,) var(--tw-backdrop-opacity,) var(--tw-backdrop-saturate,) var(--tw-backdrop-sepia,);
-+  backdrop-filter: var(--tw-backdrop-blur,) var(--tw-backdrop-brightness,) var(--tw-backdrop-contrast,) var(--tw-backdrop-grayscale,) var(--tw-backdrop-hue-rotate,)
-+    var(--tw-backdrop-invert,) var(--tw-backdrop-opacity,) var(--tw-backdrop-saturate,) var(--tw-backdrop-sepia,);
++  font-variant-numeric: normal;
  }
 -hr:not(#\#):not(#\#) {
 -  height: 0;
 -  color: inherit;
 -  border-top-width: 1px;
-+.backdrop-invert {
-+  --tw-backdrop-invert: invert(100%);
-+  -webkit-backdrop-filter: var(--tw-backdrop-blur,) var(--tw-backdrop-brightness,) var(--tw-backdrop-contrast,) var(--tw-backdrop-grayscale,) var(--tw-backdrop-hue-rotate,)
-+    var(--tw-backdrop-invert,) var(--tw-backdrop-opacity,) var(--tw-backdrop-saturate,) var(--tw-backdrop-sepia,);
-+  backdrop-filter: var(--tw-backdrop-blur,) var(--tw-backdrop-brightness,) var(--tw-backdrop-contrast,) var(--tw-backdrop-grayscale,) var(--tw-backdrop-hue-rotate,)
-+    var(--tw-backdrop-invert,) var(--tw-backdrop-opacity,) var(--tw-backdrop-saturate,) var(--tw-backdrop-sepia,);
++.line-through {
++  -webkit-text-decoration-line: line-through;
++  text-decoration-line: line-through;
  }
 -abbr:where([title]):not(#\#):not(#\#) {
 -  -webkit-text-decoration: underline dotted;
 -  text-decoration: underline;
 -  text-decoration: underline dotted;
-+.backdrop-sepia {
-+  --tw-backdrop-sepia: sepia(100%);
-+  -webkit-backdrop-filter: var(--tw-backdrop-blur,) var(--tw-backdrop-brightness,) var(--tw-backdrop-contrast,) var(--tw-backdrop-grayscale,) var(--tw-backdrop-hue-rotate,)
-+    var(--tw-backdrop-invert,) var(--tw-backdrop-opacity,) var(--tw-backdrop-saturate,) var(--tw-backdrop-sepia,);
-+  backdrop-filter: var(--tw-backdrop-blur,) var(--tw-backdrop-brightness,) var(--tw-backdrop-contrast,) var(--tw-backdrop-grayscale,) var(--tw-backdrop-hue-rotate,)
-+    var(--tw-backdrop-invert,) var(--tw-backdrop-opacity,) var(--tw-backdrop-saturate,) var(--tw-backdrop-sepia,);
++.no-underline {
++  -webkit-text-decoration-line: none;
++  text-decoration-line: none;
  }
 -h1:not(#\#):not(#\#),
 -h2:not(#\#):not(#\#),
@@ -1670,40 +1664,47 @@ Generator CSS files: app.wxss, home.wxss, user.wxss
 -h6:not(#\#):not(#\#) {
 -  font-size: inherit;
 -  font-weight: inherit;
-+.backdrop-filter {
-+  -webkit-backdrop-filter: var(--tw-backdrop-blur,) var(--tw-backdrop-brightness,) var(--tw-backdrop-contrast,) var(--tw-backdrop-grayscale,) var(--tw-backdrop-hue-rotate,)
-+    var(--tw-backdrop-invert,) var(--tw-backdrop-opacity,) var(--tw-backdrop-saturate,) var(--tw-backdrop-sepia,);
-+  backdrop-filter: var(--tw-backdrop-blur,) var(--tw-backdrop-brightness,) var(--tw-backdrop-contrast,) var(--tw-backdrop-grayscale,) var(--tw-backdrop-hue-rotate,)
-+    var(--tw-backdrop-invert,) var(--tw-backdrop-opacity,) var(--tw-backdrop-saturate,) var(--tw-backdrop-sepia,);
++.overline {
++  -webkit-text-decoration-line: overline;
++  text-decoration-line: overline;
  }
 -a:not(#\#):not(#\#) {
 -  color: inherit;
 -  -webkit-text-decoration: inherit;
 -  text-decoration: inherit;
-+.divide-x-reverse > view + view,
-+.divide-x-reverse > view + text,
-+.divide-x-reverse > text + view,
-+.divide-x-reverse > text + text {
-+  --tw-divide-x-reverse: 1;
++.underline {
++  -webkit-text-decoration-line: underline;
++  text-decoration-line: underline;
  }
 -b:not(#\#):not(#\#),
 -strong:not(#\#):not(#\#) {
 -  font-weight: bolder;
-+.ring-inset {
-+  --tw-ring-inset: inset;
++.antialiased {
++  -webkit-font-smoothing: antialiased;
++  -moz-osx-font-smoothing: grayscale;
  }
 -code:not(#\#):not(#\#),
 -kbd:not(#\#):not(#\#),
 -samp:not(#\#):not(#\#),
 -pre:not(#\#):not(#\#) {
+-  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New', monospace;
+-  font-family: var(--default-mono-font-family, ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New', monospace);
+-  -webkit-font-feature-settings: normal;
+-  font-feature-settings: normal;
+-  -webkit-font-feature-settings: var(--default-mono-font-feature-settings, normal);
+-  font-feature-settings: var(--default-mono-font-feature-settings, normal);
+-  font-variation-settings: normal;
+-  font-variation-settings: var(--default-mono-font-variation-settings, normal);
 -  font-size: 1em;
-+.active_cbg-emerald-50:active {
-+  background-color: var(--color-emerald-50);
++.subpixel-antialiased {
++  -webkit-font-smoothing: auto;
++  -moz-osx-font-smoothing: auto;
  }
 -small:not(#\#):not(#\#) {
 -  font-size: 80%;
-+.active_cbg-emerald-600:active {
-+  background-color: var(--color-emerald-600);
++.shadow {
++  --tw-shadow: 0 1px 3px 0 var(--tw-shadow-color, rgba(0, 0, 0, 0.1)), 0 1px 2px -1px var(--tw-shadow-color, rgba(0, 0, 0, 0.1));
++  box-shadow: var(--tw-inset-shadow), var(--tw-inset-ring-shadow), var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow);
  }
 -sub:not(#\#):not(#\#),
 -sup:not(#\#):not(#\#) {
@@ -1711,49 +1712,69 @@ Generator CSS files: app.wxss, home.wxss, user.wxss
 -  font-size: 75%;
 -  line-height: 0;
 -  position: relative;
-+.collapse {
-+  visibility: collapse;
++.shadow-sm {
++  --tw-shadow: 0 1px 3px 0 var(--tw-shadow-color, rgba(0, 0, 0, 0.1)), 0 1px 2px -1px var(--tw-shadow-color, rgba(0, 0, 0, 0.1));
++  box-shadow: var(--tw-inset-shadow), var(--tw-inset-ring-shadow), var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow);
  }
 -sub:not(#\#):not(#\#) {
 -  bottom: -0.25em;
-+.invisible {
-+  visibility: hidden;
++.ring {
++  --tw-ring-shadow: var(--tw-ring-inset,) 0 0 0 calc(1px + var(--tw-ring-offset-width)) var(--tw-ring-color, currentcolor);
++  box-shadow: var(--tw-inset-shadow), var(--tw-inset-ring-shadow), var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow);
  }
 -sup:not(#\#):not(#\#) {
 -  top: -0.5em;
-+.visible {
-+  visibility: visible;
++.inset-ring {
++  --tw-inset-ring-shadow: inset 0 0 0 1px var(--tw-inset-ring-color, currentcolor);
++  box-shadow: var(--tw-inset-shadow), var(--tw-inset-ring-shadow), var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow);
  }
 -table:not(#\#):not(#\#) {
 -  text-indent: 0;
 -  border-color: inherit;
 -  border-collapse: collapse;
-+.sr-only {
-+  position: absolute;
-+  width: 1px;
-+  height: 1px;
-+  padding: 0;
-+  margin: -1px;
-+  overflow: hidden;
-+  -webkit-clip-path: inset(50%);
-+  clip-path: inset(50%);
-+  white-space: nowrap;
-+  border-width: 0;
++.outline {
++  outline-style: var(--tw-outline-style);
++  outline-width: 1px;
  }
 -:-moz-focusring:not(#\#):not(#\#) {
 -  outline: auto;
--}
++.blur {
++  --tw-blur: blur(8px);
++  -webkit-filter: var(--tw-blur,) var(--tw-brightness,) var(--tw-contrast,) var(--tw-grayscale,) var(--tw-hue-rotate,) var(--tw-invert,) var(--tw-saturate,) var(--tw-sepia,)
++    var(--tw-drop-shadow,);
++  filter: var(--tw-blur,) var(--tw-brightness,) var(--tw-contrast,) var(--tw-grayscale,) var(--tw-hue-rotate,) var(--tw-invert,) var(--tw-saturate,) var(--tw-sepia,)
++    var(--tw-drop-shadow,);
+ }
 -progress:not(#\#):not(#\#) {
 -  vertical-align: baseline;
--}
++.drop-shadow {
++  --tw-drop-shadow-size: drop-shadow(0 1px 2px var(--tw-drop-shadow-color, rgba(0, 0, 0, 0.1))) drop-shadow(0 1px 1px var(--tw-drop-shadow-color, rgba(0, 0, 0, 0.06)));
++  --tw-drop-shadow: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.1)) drop-shadow(0 1px 1px rgba(0, 0, 0, 0.06));
++  -webkit-filter: var(--tw-blur,) var(--tw-brightness,) var(--tw-contrast,) var(--tw-grayscale,) var(--tw-hue-rotate,) var(--tw-invert,) var(--tw-saturate,) var(--tw-sepia,)
++    var(--tw-drop-shadow,);
++  filter: var(--tw-blur,) var(--tw-brightness,) var(--tw-contrast,) var(--tw-grayscale,) var(--tw-hue-rotate,) var(--tw-invert,) var(--tw-saturate,) var(--tw-sepia,)
++    var(--tw-drop-shadow,);
+ }
 -summary:not(#\#):not(#\#) {
 -  display: list-item;
--}
++.backdrop-blur {
++  --tw-backdrop-blur: blur(8px);
++  -webkit-backdrop-filter: var(--tw-backdrop-blur,) var(--tw-backdrop-brightness,) var(--tw-backdrop-contrast,) var(--tw-backdrop-grayscale,) var(--tw-backdrop-hue-rotate,)
++    var(--tw-backdrop-invert,) var(--tw-backdrop-opacity,) var(--tw-backdrop-saturate,) var(--tw-backdrop-sepia,);
++  backdrop-filter: var(--tw-backdrop-blur,) var(--tw-backdrop-brightness,) var(--tw-backdrop-contrast,) var(--tw-backdrop-grayscale,) var(--tw-backdrop-hue-rotate,)
++    var(--tw-backdrop-invert,) var(--tw-backdrop-opacity,) var(--tw-backdrop-saturate,) var(--tw-backdrop-sepia,);
+ }
 -ol:not(#\#):not(#\#),
 -ul:not(#\#):not(#\#),
 -menu:not(#\#):not(#\#) {
 -  list-style: none;
--}
++.backdrop-grayscale {
++  --tw-backdrop-grayscale: grayscale(100%);
++  -webkit-backdrop-filter: var(--tw-backdrop-blur,) var(--tw-backdrop-brightness,) var(--tw-backdrop-contrast,) var(--tw-backdrop-grayscale,) var(--tw-backdrop-hue-rotate,)
++    var(--tw-backdrop-invert,) var(--tw-backdrop-opacity,) var(--tw-backdrop-saturate,) var(--tw-backdrop-sepia,);
++  backdrop-filter: var(--tw-backdrop-blur,) var(--tw-backdrop-brightness,) var(--tw-backdrop-contrast,) var(--tw-backdrop-grayscale,) var(--tw-backdrop-hue-rotate,)
++    var(--tw-backdrop-invert,) var(--tw-backdrop-opacity,) var(--tw-backdrop-saturate,) var(--tw-backdrop-sepia,);
+ }
 -img:not(#\#):not(#\#),
 -svg:not(#\#):not(#\#),
 -video:not(#\#):not(#\#),
@@ -1764,15 +1785,24 @@ Generator CSS files: app.wxss, home.wxss, user.wxss
 -object:not(#\#):not(#\#) {
 -  vertical-align: middle;
 -  display: block;
--}
++.backdrop-invert {
++  --tw-backdrop-invert: invert(100%);
++  -webkit-backdrop-filter: var(--tw-backdrop-blur,) var(--tw-backdrop-brightness,) var(--tw-backdrop-contrast,) var(--tw-backdrop-grayscale,) var(--tw-backdrop-hue-rotate,)
++    var(--tw-backdrop-invert,) var(--tw-backdrop-opacity,) var(--tw-backdrop-saturate,) var(--tw-backdrop-sepia,);
++  backdrop-filter: var(--tw-backdrop-blur,) var(--tw-backdrop-brightness,) var(--tw-backdrop-contrast,) var(--tw-backdrop-grayscale,) var(--tw-backdrop-hue-rotate,)
++    var(--tw-backdrop-invert,) var(--tw-backdrop-opacity,) var(--tw-backdrop-saturate,) var(--tw-backdrop-sepia,);
+ }
 -img:not(#\#):not(#\#),
 -video:not(#\#):not(#\#) {
 -  max-width: 100%;
-+.not-sr-only {
-+  position: static;
-+  width: auto;
-   height: auto;
--}
+-  height: auto;
++.backdrop-sepia {
++  --tw-backdrop-sepia: sepia(100%);
++  -webkit-backdrop-filter: var(--tw-backdrop-blur,) var(--tw-backdrop-brightness,) var(--tw-backdrop-contrast,) var(--tw-backdrop-grayscale,) var(--tw-backdrop-hue-rotate,)
++    var(--tw-backdrop-invert,) var(--tw-backdrop-opacity,) var(--tw-backdrop-saturate,) var(--tw-backdrop-sepia,);
++  backdrop-filter: var(--tw-backdrop-blur,) var(--tw-backdrop-brightness,) var(--tw-backdrop-contrast,) var(--tw-backdrop-grayscale,) var(--tw-backdrop-hue-rotate,)
++    var(--tw-backdrop-invert,) var(--tw-backdrop-opacity,) var(--tw-backdrop-saturate,) var(--tw-backdrop-sepia,);
+ }
 -button:not(#\#):not(#\#),
 -input:not(#\#):not(#\#),
 -select:not(#\#):not(#\#),
@@ -1787,21 +1817,37 @@ Generator CSS files: app.wxss, home.wxss, user.wxss
 -  opacity: 1;
 -  background-color: rgba(0, 0, 0, 0);
 -  border-radius: 0;
--}
++.backdrop-filter {
++  -webkit-backdrop-filter: var(--tw-backdrop-blur,) var(--tw-backdrop-brightness,) var(--tw-backdrop-contrast,) var(--tw-backdrop-grayscale,) var(--tw-backdrop-hue-rotate,)
++    var(--tw-backdrop-invert,) var(--tw-backdrop-opacity,) var(--tw-backdrop-saturate,) var(--tw-backdrop-sepia,);
++  backdrop-filter: var(--tw-backdrop-blur,) var(--tw-backdrop-brightness,) var(--tw-backdrop-contrast,) var(--tw-backdrop-grayscale,) var(--tw-backdrop-hue-rotate,)
++    var(--tw-backdrop-invert,) var(--tw-backdrop-opacity,) var(--tw-backdrop-saturate,) var(--tw-backdrop-sepia,);
+ }
 -select[multiple]:not(#\#):not(#\#) optgroup,
 -select[size]:not(#\#):not(#\#) optgroup {
 -  font-weight: bolder;
--}
++.divide-x-reverse > view + view,
++.divide-x-reverse > view + text,
++.divide-x-reverse > text + view,
++.divide-x-reverse > text + text {
++  --tw-divide-x-reverse: 1;
+ }
 -select[multiple]:not(#\#):not(#\#) optgroup option,
 -select[size]:not(#\#):not(#\#) optgroup option {
 -  padding-left: 20px;
--}
++.ring-inset {
++  --tw-ring-inset: inset;
+ }
 -:not(#\#):not(#\#)::-webkit-input-placeholder {
 -  opacity: 1;
--}
++.active_cbg-emerald-50:active {
++  background-color: var(--color-emerald-50);
+ }
 -:not(#\#):not(#\#)::placeholder {
 -  opacity: 1;
--}
++.active_cbg-emerald-600:active {
++  background-color: var(--color-emerald-600);
+ }
 -@supports (not (-webkit-appearance: -apple-pay-button)) or (contain-intrinsic-size: 1px) {
 -  :not(#\#):not(#\#)::-webkit-input-placeholder {
 -    color: currentColor;
@@ -1809,22 +1855,43 @@ Generator CSS files: app.wxss, home.wxss, user.wxss
 -  :not(#\#):not(#\#)::placeholder {
 -    color: currentColor;
 -  }
--}
++.collapse {
++  visibility: collapse;
+ }
 -textarea:not(#\#):not(#\#) {
 -  resize: vertical;
--}
++.invisible {
++  visibility: hidden;
+ }
 -:not(#\#):not(#\#)::-webkit-search-decoration {
 -  -webkit-appearance: none;
--}
++.visible {
++  visibility: visible;
+ }
 -:not(#\#):not(#\#)::-webkit-date-and-time-value {
 -  min-height: 1lh;
 -  text-align: inherit;
--}
++.sr-only {
++  position: absolute;
++  width: 1px;
++  height: 1px;
++  padding: 0;
++  margin: -1px;
++  overflow: hidden;
++  -webkit-clip-path: inset(50%);
++  clip-path: inset(50%);
++  white-space: nowrap;
++  border-width: 0;
+ }
 -:not(#\#):not(#\#)::-webkit-datetime-edit {
 -  display: -webkit-inline-flex;
 -  display: inline-flex;
 -}
 -:not(#\#):not(#\#)::-webkit-datetime-edit-fields-wrapper {
++.not-sr-only {
++  position: static;
++  width: auto;
++  height: auto;
    padding: 0;
 +  margin: 0;
 +  overflow: visible;
@@ -1866,27 +1933,23 @@ Generator CSS files: app.wxss, home.wxss, user.wxss
 -:not(#\#):not(#\#)::-webkit-datetime-edit-minute-field {
 -  padding-top: 0;
 -  padding-bottom: 0;
-+.start {
-+  left: var(--spacing);
- }
--:not(#\#):not(#\#)::-webkit-datetime-edit-second-field {
--  padding-top: 0;
--  padding-bottom: 0;
-+.end {
-+  right: var(--spacing);
- }
--:not(#\#):not(#\#)::-webkit-datetime-edit-millisecond-field {
--  padding-top: 0;
--  padding-bottom: 0;
 +.isolate {
 +  isolation: isolate;
  }
--:not(#\#):not(#\#)::-webkit-datetime-edit-meridiem-field {
+-:not(#\#):not(#\#)::-webkit-datetime-edit-second-field {
 -  padding-top: 0;
 -  padding-bottom: 0;
 +.isolation-auto {
 +  isolation: auto;
  }
+-:not(#\#):not(#\#)::-webkit-datetime-edit-millisecond-field {
+-  padding-top: 0;
+-  padding-bottom: 0;
+-}
+-:not(#\#):not(#\#)::-webkit-datetime-edit-meridiem-field {
+-  padding-top: 0;
+-  padding-bottom: 0;
+-}
 -:not(#\#):not(#\#)::-webkit-calendar-picker-indicator {
 -  line-height: 1;
 -}
@@ -2377,14 +2440,6 @@ Generator CSS files: app.wxss, home.wxss, user.wxss
 +  border-right-style: var(--tw-border-style);
 +  border-right-width: 1px;
 +}
-+.border-bs {
-+  border-top-style: var(--tw-border-style);
-+  border-top-width: 1px;
-+}
-+.border-be {
-+  border-bottom-style: var(--tw-border-style);
-+  border-bottom-width: 1px;
-+}
 +.border-t {
 +  border-top-style: var(--tw-border-style);
 +  border-top-width: 1px;
@@ -2527,13 +2582,11 @@ Generator CSS files: app.wxss, home.wxss, user.wxss
    line-height: var(--tw-leading, var(--text-xs--line-height));
  }
 -.text-_b45rpx_B:not(#\#):not(#\#):not(#\#) {
-+.text-_b45rpx_B {
-   font-size: 45rpx;
- }
+-  font-size: 45rpx;
+-}
 -.text-_b88rpx_B:not(#\#):not(#\#):not(#\#) {
-+.text-_b88rpx_B {
-   font-size: 88rpx;
- }
+-  font-size: 88rpx;
+-}
 -.leading-6:not(#\#):not(#\#):not(#\#) {
 +.leading-6 {
    --tw-leading: calc(var(--spacing) * 6);
@@ -2577,6 +2630,12 @@ Generator CSS files: app.wxss, home.wxss, user.wxss
  }
 -.text-emerald-600:not(#\#):not(#\#):not(#\#) {
 -  color: rgb(0, 150, 105);
++.text-_b45rpx_B {
++  font-size: 45rpx;
++}
++.text-_b88rpx_B {
++  font-size: 88rpx;
++}
 +.text-emerald-600 {
    color: var(--color-emerald-600);
  }
@@ -3300,6 +3359,10 @@ page:not(#\#),
 .tw-root:not(#\#),
 wx-root-portal-content:not(#\#),
 :host:not(#\#) {
+  --font-sans:
+    ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, Cantarell, Noto Sans, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol',
+    'Noto Color Emoji';
+  --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New', monospace;
   --color-emerald-50: rgb(236, 253, 245);
   --color-emerald-100: rgb(208, 250, 229);
   --color-emerald-500: rgb(0, 185, 129);
@@ -3324,6 +3387,8 @@ wx-root-portal-content:not(#\#),
   --font-weight-medium: 500;
   --font-weight-semibold: 600;
   --font-weight-bold: 700;
+  --default-font-family: var(--font-sans);
+  --default-mono-font-family: var(--font-mono);
 }
 view:not(#\#):not(#\#),
 text:not(#\#):not(#\#),
@@ -3339,6 +3404,27 @@ html:not(#\#):not(#\#),
   -webkit-text-size-adjust: 100%;
   tab-size: 4;
   line-height: 1.5;
+  font-family:
+    ui-sans-serif,
+    system-ui,
+    -apple-system,
+    Segoe UI,
+    Roboto,
+    Ubuntu,
+    Cantarell,
+    Noto Sans,
+    sans-serif,
+    'Apple Color Emoji',
+    'Segoe UI Emoji',
+    'Segoe UI Symbol',
+    'Noto Color Emoji';
+  font-family: var(--default-font-family, ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji');
+  -webkit-font-feature-settings: normal;
+  font-feature-settings: normal;
+  -webkit-font-feature-settings: var(--default-font-feature-settings, normal);
+  font-feature-settings: var(--default-font-feature-settings, normal);
+  font-variation-settings: normal;
+  font-variation-settings: var(--default-font-variation-settings, normal);
   -webkit-tap-highlight-color: transparent;
 }
 hr:not(#\#):not(#\#) {
@@ -3373,6 +3459,14 @@ code:not(#\#):not(#\#),
 kbd:not(#\#):not(#\#),
 samp:not(#\#):not(#\#),
 pre:not(#\#):not(#\#) {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New', monospace;
+  font-family: var(--default-mono-font-family, ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New', monospace);
+  -webkit-font-feature-settings: normal;
+  font-feature-settings: normal;
+  -webkit-font-feature-settings: var(--default-mono-font-feature-settings, normal);
+  font-feature-settings: var(--default-mono-font-feature-settings, normal);
+  font-variation-settings: normal;
+  font-variation-settings: var(--default-mono-font-variation-settings, normal);
   font-size: 1em;
 }
 small:not(#\#):not(#\#) {
@@ -4059,6 +4153,10 @@ page:not(#\#),
 .tw-root:not(#\#),
 wx-root-portal-content:not(#\#),
 :host:not(#\#) {
+  --font-sans:
+    ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, Cantarell, Noto Sans, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol',
+    'Noto Color Emoji';
+  --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New', monospace;
   --color-emerald-50: rgb(236, 253, 245);
   --color-emerald-100: rgb(208, 250, 229);
   --color-emerald-500: rgb(0, 185, 129);
@@ -4083,6 +4181,8 @@ wx-root-portal-content:not(#\#),
   --font-weight-medium: 500;
   --font-weight-semibold: 600;
   --font-weight-bold: 700;
+  --default-font-family: var(--font-sans);
+  --default-mono-font-family: var(--font-mono);
 }
 view:not(#\#):not(#\#),
 text:not(#\#):not(#\#),
@@ -4098,6 +4198,27 @@ html:not(#\#):not(#\#),
   -webkit-text-size-adjust: 100%;
   tab-size: 4;
   line-height: 1.5;
+  font-family:
+    ui-sans-serif,
+    system-ui,
+    -apple-system,
+    Segoe UI,
+    Roboto,
+    Ubuntu,
+    Cantarell,
+    Noto Sans,
+    sans-serif,
+    'Apple Color Emoji',
+    'Segoe UI Emoji',
+    'Segoe UI Symbol',
+    'Noto Color Emoji';
+  font-family: var(--default-font-family, ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji');
+  -webkit-font-feature-settings: normal;
+  font-feature-settings: normal;
+  -webkit-font-feature-settings: var(--default-font-feature-settings, normal);
+  font-feature-settings: var(--default-font-feature-settings, normal);
+  font-variation-settings: normal;
+  font-variation-settings: var(--default-font-variation-settings, normal);
   -webkit-tap-highlight-color: transparent;
 }
 hr:not(#\#):not(#\#) {
@@ -4132,6 +4253,14 @@ code:not(#\#):not(#\#),
 kbd:not(#\#):not(#\#),
 samp:not(#\#):not(#\#),
 pre:not(#\#):not(#\#) {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New', monospace;
+  font-family: var(--default-mono-font-family, ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New', monospace);
+  -webkit-font-feature-settings: normal;
+  font-feature-settings: normal;
+  -webkit-font-feature-settings: var(--default-mono-font-feature-settings, normal);
+  font-feature-settings: var(--default-mono-font-feature-settings, normal);
+  font-variation-settings: normal;
+  font-variation-settings: var(--default-mono-font-variation-settings, normal);
   font-size: 1em;
 }
 small:not(#\#):not(#\#) {
@@ -4862,6 +4991,10 @@ wx-root-portal-content {
   --tw-backdrop-opacity: initial;
   --tw-backdrop-saturate: initial;
   --tw-backdrop-sepia: initial;
+  --font-sans:
+    ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, Cantarell, Noto Sans, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol',
+    'Noto Color Emoji';
+  --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New', monospace;
   --color-emerald-50: rgb(236, 253, 245);
   --color-emerald-100: rgb(208, 250, 229);
   --color-emerald-500: rgb(0, 185, 129);
@@ -4886,6 +5019,8 @@ wx-root-portal-content {
   --font-weight-medium: 500;
   --font-weight-semibold: 600;
   --font-weight-bold: 700;
+  --default-font-family: var(--font-sans);
+  --default-mono-font-family: var(--font-mono);
   --color-neutral-1B: #1b1b1b;
   --color-midnight: #121063;
   --color-tahiti: #3ab7bf;
@@ -4945,12 +5080,6 @@ wx-root-portal-content {
 .sticky {
   position: -webkit-sticky;
   position: sticky;
-}
-.start {
-  left: var(--spacing);
-}
-.end {
-  right: var(--spacing);
 }
 .isolate {
   isolation: isolate;
@@ -5336,14 +5465,6 @@ wx-root-portal-content {
   border-right-style: var(--tw-border-style);
   border-right-width: 1px;
 }
-.border-bs {
-  border-top-style: var(--tw-border-style);
-  border-top-width: 1px;
-}
-.border-be {
-  border-bottom-style: var(--tw-border-style);
-  border-bottom-width: 1px;
-}
 .border-t {
   border-top-style: var(--tw-border-style);
   border-top-width: 1px;
@@ -5449,12 +5570,6 @@ wx-root-portal-content {
   font-size: var(--text-xs);
   line-height: var(--tw-leading, var(--text-xs--line-height));
 }
-.text-_b45rpx_B {
-  font-size: 45rpx;
-}
-.text-_b88rpx_B {
-  font-size: 88rpx;
-}
 .leading-6 {
   --tw-leading: calc(var(--spacing) * 6);
   line-height: calc(var(--spacing) * 6);
@@ -5485,6 +5600,12 @@ wx-root-portal-content {
 }
 .text-_b_h929292_B {
   color: #929292;
+}
+.text-_b45rpx_B {
+  font-size: 45rpx;
+}
+.text-_b88rpx_B {
+  font-size: 88rpx;
 }
 .text-emerald-600 {
   color: var(--color-emerald-600);
@@ -5730,12 +5851,6 @@ wx-root-portal-content {
 .sticky {
   position: -webkit-sticky;
   position: sticky;
-}
-.start {
-  left: var(--spacing);
-}
-.end {
-  right: var(--spacing);
 }
 .isolate {
   isolation: isolate;
@@ -6108,14 +6223,6 @@ wx-root-portal-content {
   border-right-style: var(--tw-border-style);
   border-right-width: 1px;
 }
-.border-bs {
-  border-top-style: var(--tw-border-style);
-  border-top-width: 1px;
-}
-.border-be {
-  border-bottom-style: var(--tw-border-style);
-  border-bottom-width: 1px;
-}
 .border-t {
   border-top-style: var(--tw-border-style);
   border-top-width: 1px;
@@ -6212,12 +6319,6 @@ wx-root-portal-content {
   font-size: var(--text-xs);
   line-height: var(--tw-leading, var(--text-xs--line-height));
 }
-.text-_b45rpx_B {
-  font-size: 45rpx;
-}
-.text-_b88rpx_B {
-  font-size: 88rpx;
-}
 .leading-6 {
   --tw-leading: calc(var(--spacing) * 6);
   line-height: calc(var(--spacing) * 6);
@@ -6248,6 +6349,12 @@ wx-root-portal-content {
 }
 .text-_b_h929292_B {
   color: #929292;
+}
+.text-_b45rpx_B {
+  font-size: 45rpx;
+}
+.text-_b88rpx_B {
+  font-size: 88rpx;
 }
 .text-emerald-600 {
   color: var(--color-emerald-600);

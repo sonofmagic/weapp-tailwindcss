@@ -2,8 +2,8 @@
 
 Fixture: demo
 Entry: mpx-app/dist/wx/app.wxss
-Legacy CSS files: app.wxss, styles/base.wxss, styles/components.wxss, styles/utilities.wxss, index.wxss, button.wxss, styles/index.wxss, icon.wxss, styles/index.wxss, loading.wxss, styles/index.wxss, index.wxss, styles/index.wxss, index.wxss, styles/index.wxss, index.wxss, styles/index.wxss, index.wxss, styles/index.wxss, base487e0d61.wxss, components63da9234.wxss, index0af78c53.wxss, index9a27da9c.wxss, utilities3d066604.wxss
-Generator CSS files: app.wxss, styles/base.wxss, styles/components.wxss, styles/utilities.wxss, index.wxss, button.wxss, styles/index.wxss, icon.wxss, styles/index.wxss, loading.wxss, styles/index.wxss, index.wxss, styles/index.wxss, index.wxss, styles/index.wxss, index.wxss, styles/index.wxss, index.wxss, styles/index.wxss, base487e0d61.wxss, components63da9234.wxss, index0af78c53.wxss, index9a27da9c.wxss, utilities3d066604.wxss
+Legacy CSS files: app.wxss, styles/base.wxss, styles/components.wxss, styles/utilities.wxss, index.wxss, button.wxss, styles/index.wxss, icon.wxss, styles/index.wxss, loading.wxss, styles/index.wxss, index.wxss, styles/index.wxss, index.wxss, styles/index.wxss, index.wxss, styles/index.wxss, index.wxss, styles/index.wxss, base5c682eff.wxss, components1e38aa04.wxss, indexd323f158.wxss, indexfcda771e.wxss, utilities68e69726.wxss
+Generator CSS files: app.wxss, styles/base.wxss, styles/components.wxss, styles/utilities.wxss, index.wxss, button.wxss, styles/index.wxss, icon.wxss, styles/index.wxss, loading.wxss, styles/index.wxss, index.wxss, styles/index.wxss, index.wxss, styles/index.wxss, index.wxss, styles/index.wxss, index.wxss, styles/index.wxss, base5c682eff.wxss, components1e38aa04.wxss, indexd323f158.wxss, indexfcda771e.wxss, utilities68e69726.wxss
 
 | Mode | Bytes | Selectors | @supports | :hover | Tailwind banner | Raw arbitrary selector | Weapp escaped arbitrary selector |
 | --- | ---: | ---: | --- | --- | --- | --- | --- |
@@ -323,9 +323,9 @@ Generator CSS files: app.wxss, styles/base.wxss, styles/components.wxss, styles/
 +}
 
 
- .hotspot-expanded.relative {
+ .van-ellipsis {
 @@ -9499,6 +9775,67 @@
-   border-width: 1px;
+   transform: scale(1.5);
  }
 
 +::before,
@@ -9847,20 +9847,6 @@ text,
 }
 
 
-.hotspot-expanded.relative {
-  position: relative;
-}
-.hotspot-expanded:after {
-  bottom: 0;
-  content: '';
-  display: block;
-  left: 0;
-  position: absolute;
-  right: 0;
-  top: 0;
-  transform: scale(1.5);
-}
-
 .van-ellipsis {
   overflow: hidden;
   text-overflow: ellipsis;
@@ -9929,6 +9915,20 @@ text,
 }
 .van-hairline--surround:after {
   border-width: 1px;
+}
+
+.hotspot-expanded.relative {
+  position: relative;
+}
+.hotspot-expanded:after {
+  bottom: 0;
+  content: '';
+  display: block;
+  left: 0;
+  position: absolute;
+  right: 0;
+  top: 0;
+  transform: scale(1.5);
 }
 
 .flex {
@@ -19671,20 +19671,6 @@ wx-root-portal-content {
 }
 
 
-.hotspot-expanded.relative {
-  position: relative;
-}
-.hotspot-expanded:after {
-  bottom: 0;
-  content: '';
-  display: block;
-  left: 0;
-  position: absolute;
-  right: 0;
-  top: 0;
-  transform: scale(1.5);
-}
-
 .van-ellipsis {
   overflow: hidden;
   text-overflow: ellipsis;
@@ -19753,6 +19739,20 @@ wx-root-portal-content {
 }
 .van-hairline--surround:after {
   border-width: 1px;
+}
+
+.hotspot-expanded.relative {
+  position: relative;
+}
+.hotspot-expanded:after {
+  bottom: 0;
+  content: '';
+  display: block;
+  left: 0;
+  position: absolute;
+  right: 0;
+  top: 0;
+  transform: scale(1.5);
 }
 
 ::before,
