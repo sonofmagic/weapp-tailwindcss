@@ -7,6 +7,7 @@ import {
   resolveTailwindV3SourceFromPatcher,
   resolveTailwindV4SourceFromPatcher,
 } from '@/generator'
+import { replaceWxml } from '@/wxml'
 import { finalizeMiniProgramCss, removeUnsupportedAtSupports } from './css-cleanup'
 
 const TAILWIND_V4_BANNER_RE = /\/\*!\s*tailwindcss v4\./
@@ -21,6 +22,9 @@ const CLASS_SELECTOR_RE = /(?:^|[^\w-])\.[_a-z\u00A0-\uFFFF\\-]/i
 const MINI_PROGRAM_THEME_SCOPE_SELECTORS = new Set([':host', 'page', '.tw-root', 'wx-root-portal-content'])
 const SUPPORTED_GENERATOR_MAJOR_VERSIONS = new Set([3, 4])
 const REMOTE_IMPORT_RE = /^(?:https?:)?\/\//i
+const SPECIFICITY_PLACEHOLDER_RE = /:not\(#(?:\\#|n)\)/g
+const CSS_LENGTH_UNIT_RE = /(?:^|[\s(,])[-+]?(?:\d+|\d*\.\d+)(?:px|rem)\b/i
+const RPX_UNIT_RE = /(?:^|[\s(,])[-+]?(?:\d+|\d*\.\d+)rpx\b/i
 const TAILWIND_REMOVABLE_SOURCE_DIRECTIVE_NAMES = new Set([
   'config',
   'custom-variant',
@@ -125,6 +129,161 @@ function finalizeMiniProgramGeneratorCss(css: string, target: string) {
     return css
   }
   return finalizeMiniProgramCss(css)
+}
+
+function normalizeCompatSelector(selector: string) {
+  return selector
+    .replace(SPECIFICITY_PLACEHOLDER_RE, '')
+    .replace(/\s+/g, ' ')
+    .trim()
+}
+
+function isClassSelectorTerminator(char: string) {
+  return /[\s>+~#,.:()[\]]/.test(char)
+}
+
+function unescapeSimpleCssIdent(value: string) {
+  return value.replaceAll(/\\(.)/g, '$1')
+}
+
+function escapeCompatSelectorClasses(selector: string) {
+  let result = ''
+  let index = 0
+  let changed = false
+  while (index < selector.length) {
+    const char = selector[index]
+    if (char !== '.') {
+      result += char
+      index += 1
+      continue
+    }
+
+    let end = index + 1
+    let className = ''
+    while (end < selector.length) {
+      const current = selector[end]
+      if (current === '\\' && end + 1 < selector.length) {
+        className += current + selector[end + 1]
+        end += 2
+        continue
+      }
+      if (isClassSelectorTerminator(current)) {
+        break
+      }
+      className += current
+      end += 1
+    }
+
+    if (className.includes('\\')) {
+      result += `.${replaceWxml(unescapeSimpleCssIdent(className))}`
+      changed = true
+    }
+    else {
+      result += `.${className}`
+    }
+    index = end
+  }
+  return changed ? result : selector
+}
+
+function normalizeCompatSelectors(selector: string) {
+  const normalized = normalizeCompatSelector(selector)
+  if (!normalized) {
+    return []
+  }
+  const selectors = new Set([normalized])
+  const escaped = normalizeCompatSelector(escapeCompatSelectorClasses(normalized))
+  if (escaped) {
+    selectors.add(escaped)
+  }
+  return [...selectors]
+}
+
+function createLegacyDeclarationValueMap(css: string) {
+  const values = new Map<string, string>()
+  const root = postcss.parse(css)
+  root.walkRules((rule) => {
+    if (!rule.selectors || rule.selectors.length === 0) {
+      return
+    }
+    for (const selector of rule.selectors) {
+      const normalizedSelectors = normalizeCompatSelectors(selector)
+      rule.walkDecls((decl) => {
+        if (RPX_UNIT_RE.test(decl.value)) {
+          for (const normalizedSelector of normalizedSelectors) {
+            values.set(`${normalizedSelector}\n${decl.prop}`, decl.value)
+          }
+        }
+      })
+    }
+  })
+  return values
+}
+
+export function inheritLegacyUnitConvertedDeclarations(css: string, legacyCss: string) {
+  try {
+    const legacyValues = createLegacyDeclarationValueMap(legacyCss)
+    if (legacyValues.size === 0) {
+      return css
+    }
+
+    const root = postcss.parse(css)
+    let changed = false
+    root.walkRules((rule) => {
+      if (!rule.selectors || rule.selectors.length === 0) {
+        return
+      }
+      const selectors = rule.selectors
+        .flatMap(selector => normalizeCompatSelectors(selector))
+      if (selectors.length === 0) {
+        return
+      }
+
+      rule.walkDecls((decl) => {
+        if (!CSS_LENGTH_UNIT_RE.test(decl.value)) {
+          return
+        }
+        for (const selector of selectors) {
+          const legacyValue = legacyValues.get(`${selector}\n${decl.prop}`)
+          if (legacyValue && legacyValue !== decl.value) {
+            decl.value = legacyValue
+            changed = true
+            return
+          }
+        }
+      })
+    })
+
+    return changed ? root.toString() : css
+  }
+  catch {
+    return css
+  }
+}
+
+function resolveGeneratorStyleOptions(
+  opts: InternalUserDefinedOptions,
+  cssHandlerOptions: IStyleHandlerOptions,
+  generatorStyleOptions: Partial<IStyleHandlerOptions> | undefined,
+): Partial<IStyleHandlerOptions> {
+  return {
+    cssChildCombinatorReplaceValue: opts.cssChildCombinatorReplaceValue,
+    cssSelectorReplacement: opts.cssSelectorReplacement,
+    rem2rpx: opts.rem2rpx,
+    px2rpx: opts.px2rpx,
+    unitsToPx: opts.unitsToPx,
+    cssRemoveProperty: opts.cssRemoveProperty,
+    cssRemoveHoverPseudoClass: opts.cssRemoveHoverPseudoClass,
+    cssPresetEnv: opts.cssPresetEnv,
+    autoprefixer: opts.autoprefixer,
+    cssCalc: opts.cssCalc,
+    atRules: opts.atRules,
+    uniAppX: opts.uniAppX,
+    uniAppXCssTarget: opts.uniAppXCssTarget,
+    uniAppXUnsupported: opts.uniAppXUnsupported,
+    ...cssHandlerOptions,
+    ...generatorStyleOptions,
+  }
 }
 
 function parseImportRequest(params: string) {
@@ -482,15 +641,15 @@ export async function generateCssByGenerator(
     const generator = createWeappTailwindcssGenerator(source)
     const generated = await generator.generate({
       candidates: runtime,
-      styleOptions: {
-        ...cssHandlerOptions,
-        ...generatorOptions.styleOptions,
-      },
+      styleOptions: resolveGeneratorStyleOptions(opts, cssHandlerOptions, generatorOptions.styleOptions),
       target: generatorOptions.target,
     })
     const extraCss = splitTailwindV4GeneratedCss(rawSource, generated.rawCss)
     if (typeof extraCss === 'string') {
       let css = stripTailwindBanner(generated.css)
+      if (generated.target === 'weapp') {
+        css = inheritLegacyUnitConvertedDeclarations(css, rawSource)
+      }
       if (extraCss.trim().length > 0) {
         const cleanedExtraCss = removeTailwindSourceDirectives(extraCss)
         if (cleanedExtraCss.trim().length > 0) {
@@ -529,6 +688,9 @@ export async function generateCssByGenerator(
         file,
       )
       let css = stripTailwindBanner(generated.css)
+      if (generated.target === 'weapp') {
+        css = inheritLegacyUnitConvertedDeclarations(css, rawSource)
+      }
       css = await appendLegacyCompatCss(
         css,
         rawSource,

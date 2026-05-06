@@ -8,7 +8,11 @@ import { resolveAppGeneratorMode } from '../../shared/weapp-tailwind-generator-m
 import devConfig from './dev'
 import prodConfig from './prod'
 
-const generator = resolveAppGeneratorMode()
+const generator = resolveAppGeneratorMode({
+  styleOptions: {
+    px2rpx: true,
+  },
+})
 
 // https://taro-docs.jd.com/docs/next/config#defineconfig-辅助函数
 export default defineConfig<'webpack5'>(async (merge, { command, mode }) => {

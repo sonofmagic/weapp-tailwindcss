@@ -8,7 +8,7 @@ Generator CSS files: app.wxss, styles/app.wxss, index.wxss, app5e440dc4.wxss
 | Mode | Bytes | Selectors | @supports | :hover | Tailwind banner | Raw arbitrary selector | Weapp escaped arbitrary selector |
 | --- | ---: | ---: | --- | --- | --- | --- | --- |
 | legacy | 22440 | 118 | false | false | false | false | true |
-| generator | 23172 | 118 | false | false | false | false | true |
+| generator | 23156 | 118 | false | false | false | false | true |
 
 ## Diff
 
@@ -102,8 +102,7 @@ Generator CSS files: app.wxss, styles/app.wxss, index.wxss, app5e440dc4.wxss
 -  padding: 0;
 -}
  .-m-_b20px_B {
--  margin: -20px;
-+  margin: calc(20px * -1);
+   margin: -20px;
  }
 +.mb-_b-20px_B {
 +  margin-bottom: -20px;
@@ -134,8 +133,8 @@ Generator CSS files: app.wxss, styles/app.wxss, index.wxss, app5e440dc4.wxss
 +.space-y-_b1_d6rem_B > text + view,
 +.space-y-_b1_d6rem_B > text + text {
 +  --tw-space-y-reverse: 0;
-+  margin-bottom: calc(1.6rem * var(--tw-space-y-reverse));
-+  margin-top: calc(1.6rem * (1 - var(--tw-space-y-reverse)));
++  margin-bottom: calc(51.2rpx * var(--tw-space-y-reverse));
++  margin-top: calc(51.2rpx * (1 - var(--tw-space-y-reverse)));
 +}
 +.divide-x-_b10px_B > view + view,
 +.divide-x-_b10px_B > view + text,
@@ -645,8 +644,7 @@ Generator CSS files: app.wxss, styles/app.wxss, index.wxss, app5e440dc4.wxss
 -  padding: 0;
 -}
  .-m-_b20px_B {
--  margin: -20px;
-+  margin: calc(20px * -1);
+   margin: -20px;
  }
 +.mb-_b-20px_B {
 +  margin-bottom: -20px;
@@ -677,8 +675,8 @@ Generator CSS files: app.wxss, styles/app.wxss, index.wxss, app5e440dc4.wxss
 +.space-y-_b1_d6rem_B > text + view,
 +.space-y-_b1_d6rem_B > text + text {
 +  --tw-space-y-reverse: 0;
-+  margin-bottom: calc(1.6rem * var(--tw-space-y-reverse));
-+  margin-top: calc(1.6rem * (1 - var(--tw-space-y-reverse)));
++  margin-bottom: calc(51.2rpx * var(--tw-space-y-reverse));
++  margin-top: calc(51.2rpx * (1 - var(--tw-space-y-reverse)));
 +}
 +.divide-x-_b10px_B > view + view,
 +.divide-x-_b10px_B > view + text,
@@ -2163,7 +2161,7 @@ wx-root-portal-content {
   --radius-xl: 24rpx;
 }
 .-m-_b20px_B {
-  margin: calc(20px * -1);
+  margin: -20px;
 }
 .mb-_b-20px_B {
   margin-bottom: -20px;
@@ -2194,8 +2192,8 @@ wx-root-portal-content {
 .space-y-_b1_d6rem_B > text + view,
 .space-y-_b1_d6rem_B > text + text {
   --tw-space-y-reverse: 0;
-  margin-bottom: calc(1.6rem * var(--tw-space-y-reverse));
-  margin-top: calc(1.6rem * (1 - var(--tw-space-y-reverse)));
+  margin-bottom: calc(51.2rpx * var(--tw-space-y-reverse));
+  margin-top: calc(51.2rpx * (1 - var(--tw-space-y-reverse)));
 }
 .divide-x-_b10px_B > view + view,
 .divide-x-_b10px_B > view + text,
@@ -2666,7 +2664,7 @@ wx-root-portal-content {
   --radius-xl: 24rpx;
 }
 .-m-_b20px_B {
-  margin: calc(20px * -1);
+  margin: -20px;
 }
 .mb-_b-20px_B {
   margin-bottom: -20px;
@@ -2697,8 +2695,8 @@ wx-root-portal-content {
 .space-y-_b1_d6rem_B > text + view,
 .space-y-_b1_d6rem_B > text + text {
   --tw-space-y-reverse: 0;
-  margin-bottom: calc(1.6rem * var(--tw-space-y-reverse));
-  margin-top: calc(1.6rem * (1 - var(--tw-space-y-reverse)));
+  margin-bottom: calc(51.2rpx * var(--tw-space-y-reverse));
+  margin-top: calc(51.2rpx * (1 - var(--tw-space-y-reverse)));
 }
 .divide-x-_b10px_B > view + view,
 .divide-x-_b10px_B > view + text,

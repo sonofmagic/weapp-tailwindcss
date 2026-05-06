@@ -11,6 +11,9 @@ import { resolveDemoGeneratorMode } from '../../shared/weapp-tailwind-generator-
 const generator = resolveDemoGeneratorMode({
   mode: 'force',
   target: 'weapp',
+  styleOptions: {
+    px2rpx: true,
+  },
 })
 
 // https://taro-docs.jd.com/docs/next/config#defineconfig-辅助函数

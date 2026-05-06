@@ -8,7 +8,7 @@ Generator CSS files: app.wxss, index.wxss, index.wxss, index.wxss
 | Mode | Bytes | Selectors | @supports | :hover | Tailwind banner | Raw arbitrary selector | Weapp escaped arbitrary selector |
 | --- | ---: | ---: | --- | --- | --- | --- | --- |
 | legacy | 12485 | 140 | false | false | false | false | true |
-| generator | 7181 | 77 | false | false | false | false | true |
+| generator | 7173 | 77 | false | false | false | false | true |
 
 ## Diff
 
@@ -232,8 +232,7 @@ Generator CSS files: app.wxss, index.wxss, index.wxss, index.wxss
 -  background-color: rgba(255, 255, 255, var(--tw-bg-opacity, 1));
 -}
  .p-0_d5 {
--  padding: 4rpx;
-+  padding: 0.125rem;
+   padding: 4rpx;
  }
 -.p-1 {
 -  padding: 8rpx;
@@ -306,10 +305,8 @@ Generator CSS files: app.wxss, index.wxss, index.wxss, index.wxss
 -  line-height: 48rpx;
 -}
  .text-lg_f7 {
--  font-size: 36rpx;
--  line-height: 56rpx;
-+  font-size: 1.125rem;
-+  line-height: 1.75rem;
+   font-size: 36rpx;
+   line-height: 56rpx;
  }
 -.text-sm {
 -  font-size: 28rpx;
@@ -372,39 +369,11 @@ Generator CSS files: app.wxss, index.wxss, index.wxss, index.wxss
  ._b--scroll-offset_c56px_B {
    --scroll-offset: 56px;
  }
-@@ -457,12 +173,12 @@
- }
- @media (min-width: 640px) {
-   .sm_cpx-6 {
--    padding-left: 48rpx;
--    padding-right: 48rpx;
-+    padding-left: 1.5rem;
-+    padding-right: 1.5rem;
-   }
-   .sm_ctext-base {
--    font-size: 32rpx;
--    line-height: 48rpx;
-+    font-size: 1rem;
-+    line-height: 1.5rem;
-   }
- }
- @media (min-width: 1024px) {
-@@ -496,15 +212,16 @@
-   padding-bottom: 0px;
- }
- ._b_n_cnth-child_p3_P_B_cpy-4:nth-child(3) {
--  padding-top: 32rpx;
--  padding-bottom: 32rpx;
-+  padding-top: 1rem;
-+  padding-bottom: 1rem;
- }
- ._b_n_view_B_cp-_b12rpx_B view {
-   padding: 12rpx;
+@@ -504,7 +220,8 @@
  }
  .focus_c_b_n_view_B_cp-4 view:focus {
--  padding: 32rpx;
+   padding: 32rpx;
 -} /*$vite$:1*/
-+  padding: 1rem;
 +}
 +/*$vite$:1*/
 
@@ -1107,7 +1076,7 @@ text,
   background-color: rgba(255, 192, 203, var(--tw-bg-opacity, 1));
 }
 .p-0_d5 {
-  padding: 0.125rem;
+  padding: 4rpx;
 }
 .p-_b12rpx_B {
   padding: 12rpx;
@@ -1155,8 +1124,8 @@ text,
   font-size: 32rpx;
 }
 .text-lg_f7 {
-  font-size: 1.125rem;
-  line-height: 1.75rem;
+  font-size: 36rpx;
+  line-height: 56rpx;
 }
 .text-_b_h0000ff_B {
   --tw-text-opacity: 1;
@@ -1216,12 +1185,12 @@ text,
 }
 @media (min-width: 640px) {
   .sm_cpx-6 {
-    padding-left: 1.5rem;
-    padding-right: 1.5rem;
+    padding-left: 48rpx;
+    padding-right: 48rpx;
   }
   .sm_ctext-base {
-    font-size: 1rem;
-    line-height: 1.5rem;
+    font-size: 32rpx;
+    line-height: 48rpx;
   }
 }
 @media (min-width: 1024px) {
@@ -1255,14 +1224,14 @@ text,
   padding-bottom: 0px;
 }
 ._b_n_cnth-child_p3_P_B_cpy-4:nth-child(3) {
-  padding-top: 1rem;
-  padding-bottom: 1rem;
+  padding-top: 32rpx;
+  padding-bottom: 32rpx;
 }
 ._b_n_view_B_cp-_b12rpx_B view {
   padding: 12rpx;
 }
 .focus_c_b_n_view_B_cp-4 view:focus {
-  padding: 1rem;
+  padding: 32rpx;
 }
 /*$vite$:1*/
 

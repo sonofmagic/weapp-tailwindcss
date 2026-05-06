@@ -98,6 +98,169 @@ describe('bundlers/shared generator css', () => {
     expect(styleHandler).not.toHaveBeenCalled()
   })
 
+  it('forwards top-level unit transform options to generator css handling', async () => {
+    const runtimeSet = new Set(['m-5', 'p-4'])
+    const rawTailwindCss = '/*! tailwindcss v4.2.4 | MIT License | https://tailwindcss.com */\n.m-5{margin:20px}.p-4{padding:1rem}'
+    const generateMock = vi.fn(async () => ({
+      css: '.m-5{margin:40rpx}.p-4{padding:32rpx}',
+      rawCss: rawTailwindCss,
+      target: 'weapp',
+      classSet: runtimeSet,
+      dependencies: [],
+      sources: [],
+      root: null,
+    }))
+
+    vi.doMock('@/generator', () => ({
+      createWeappTailwindcssGenerator: vi.fn(() => ({
+        generate: generateMock,
+      })),
+      normalizeWeappTailwindcssGeneratorOptions: normalizeGeneratorOptions,
+      resolveTailwindV4SourceFromPatcher: vi.fn(async () => ({
+        projectRoot: process.cwd(),
+        base: process.cwd(),
+        baseFallbacks: [],
+        css: '@import "tailwindcss";',
+        dependencies: [],
+      })),
+    }))
+
+    const { generateCssByGenerator } = await import('@/bundlers/shared/generator-css')
+    const styleHandler = vi.fn(async (code: string) => ({ css: `legacy:${code}` }))
+    const result = await generateCssByGenerator({
+      opts: {
+        generator: true,
+        rem2rpx: true,
+        px2rpx: {
+          designWidth: 750,
+          platform: 'weapp',
+        },
+        cssChildCombinatorReplaceValue: ['view', 'text'],
+        cssRemoveHoverPseudoClass: true,
+        styleHandler,
+      } as any,
+      runtimeState: {
+        twPatcher: {
+          majorVersion: 4,
+        } as any,
+        patchPromise: Promise.resolve(),
+      },
+      runtime: runtimeSet,
+      rawSource: rawTailwindCss,
+      file: 'app.wxss',
+      cssHandlerOptions: {
+        isMainChunk: true,
+        postcssOptions: {
+          options: {
+            from: 'app.wxss',
+          },
+        },
+        majorVersion: 4,
+      } as any,
+      cssUserHandlerOptions: {
+        isMainChunk: false,
+        postcssOptions: {
+          options: {
+            from: 'app.wxss',
+          },
+        },
+        majorVersion: 4,
+      } as any,
+      styleHandler,
+      debug: vi.fn(),
+    })
+
+    expect(result?.css).toBe('.m-5{margin:40rpx}.p-4{padding:32rpx}')
+    expect(generateMock).toHaveBeenCalledWith(expect.objectContaining({
+      styleOptions: expect.objectContaining({
+        rem2rpx: true,
+        px2rpx: expect.objectContaining({
+          designWidth: 750,
+          platform: 'weapp',
+        }),
+        cssChildCombinatorReplaceValue: ['view', 'text'],
+        cssRemoveHoverPseudoClass: true,
+        isMainChunk: true,
+        majorVersion: 4,
+      }),
+    }))
+  })
+
+  it('inherits legacy rpx declarations for generated selectors', async () => {
+    const runtimeSet = new Set(['m-[20px]', 'mt-2'])
+    const rawTailwindCss = '/*! tailwindcss v4.2.4 | MIT License | https://tailwindcss.com */\n.m-\\[20px\\]{margin:20px}.-mt-2{margin-top:-0.5rem}'
+    const legacyCss = '/*! tailwindcss v4.2.4 | MIT License | https://tailwindcss.com */\n.m-\\[20px\\]{margin:40rpx}.-mt-2{margin-top:-16rpx}'
+    const generateMock = vi.fn(async () => ({
+      css: '.m-_b20px_B{margin:20px}.-mt-2{margin-top:-0.5rem}',
+      rawCss: rawTailwindCss,
+      target: 'weapp',
+      classSet: runtimeSet,
+      dependencies: [],
+      sources: [],
+      root: null,
+    }))
+
+    vi.doMock('@/generator', () => ({
+      createWeappTailwindcssGenerator: vi.fn(() => ({
+        generate: generateMock,
+      })),
+      normalizeWeappTailwindcssGeneratorOptions: normalizeGeneratorOptions,
+      resolveTailwindV4SourceFromPatcher: vi.fn(async () => ({
+        projectRoot: process.cwd(),
+        base: process.cwd(),
+        baseFallbacks: [],
+        css: '@import "tailwindcss";',
+        dependencies: [],
+      })),
+    }))
+
+    const { generateCssByGenerator } = await import('@/bundlers/shared/generator-css')
+    const styleHandler = vi.fn(async (code: string) => ({ css: code }))
+    const result = await generateCssByGenerator({
+      opts: {
+        generator: {
+          mode: 'force',
+          target: 'weapp',
+        },
+        styleHandler,
+      } as any,
+      runtimeState: {
+        twPatcher: {
+          majorVersion: 4,
+        } as any,
+        patchPromise: Promise.resolve(),
+      },
+      runtime: runtimeSet,
+      rawSource: legacyCss,
+      file: 'app.wxss',
+      cssHandlerOptions: {
+        isMainChunk: true,
+        postcssOptions: {
+          options: {
+            from: 'app.wxss',
+          },
+        },
+        majorVersion: 4,
+      } as any,
+      cssUserHandlerOptions: {
+        isMainChunk: false,
+        postcssOptions: {
+          options: {
+            from: 'app.wxss',
+          },
+        },
+        majorVersion: 4,
+      } as any,
+      styleHandler,
+      debug: vi.fn(),
+    })
+
+    expect(result?.css).toContain('.m-_b20px_B{margin:40rpx}')
+    expect(result?.css).toContain('.-mt-2{margin-top:-16rpx}')
+    expect(result?.css).not.toContain('margin:20px')
+    expect(result?.css).not.toContain('margin-top:-0.5rem')
+  })
+
   it('passes appended user css through the mini-program style handler', async () => {
     const runtimeSet = new Set(['w-[100px]'])
     const rawTailwindCss = '/*! tailwindcss v4.2.4 | MIT License | https://tailwindcss.com */\n.w-\\[100px\\]{width:100px}'

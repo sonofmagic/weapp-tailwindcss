@@ -5,7 +5,11 @@ const bench = require('../../bench.cjs')('taro-vue3')
 const isLocal = process.env.LOCAL
 const isWrite = process.env.WRITE
 const { resolveDemoGeneratorMode } = require('../../shared/weapp-tailwind-generator-mode.cjs')
-const generator = resolveDemoGeneratorMode()
+const generator = resolveDemoGeneratorMode({
+  styleOptions: {
+    px2rpx: true,
+  },
+})
 import ComponentsPlugin from 'unplugin-vue-components/webpack'
 import NutUIResolver from '@nutui/nutui-taro/dist/resolver'
 const { UnifiedWebpackPluginV5 } = require('weapp-tailwindcss/webpack')

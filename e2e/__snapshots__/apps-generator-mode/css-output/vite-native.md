@@ -8,7 +8,7 @@ Generator CSS files: app.wxss, apple.wxss, index.wxss
 | Mode | Bytes | Selectors | @supports | :hover | Tailwind banner | Raw arbitrary selector | Weapp escaped arbitrary selector |
 | --- | ---: | ---: | --- | --- | --- | --- | --- |
 | legacy | 5991 | 47 | false | false | false | false | true |
-| generator | 6881 | 58 | false | false | false | false | true |
+| generator | 6878 | 58 | false | false | false | false | true |
 
 ## Diff
 
@@ -210,7 +210,7 @@ Generator CSS files: app.wxss, apple.wxss, index.wxss
 +  white-space: nowrap;
 +}
 +.rounded {
-+  border-radius: 0.25rem;
++  border-radius: 8rpx;
 +}
  .border-4 {
    border-style: var(--tw-border-style);
@@ -694,7 +694,7 @@ wx-root-portal-content {
   white-space: nowrap;
 }
 .rounded {
-  border-radius: 0.25rem;
+  border-radius: 8rpx;
 }
 .border-4 {
   border-style: var(--tw-border-style);

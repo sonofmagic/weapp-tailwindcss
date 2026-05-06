@@ -8,7 +8,7 @@ Generator CSS files: app.wxss, app-origin.wxss, index.wxss
 | Mode | Bytes | Selectors | @supports | :hover | Tailwind banner | Raw arbitrary selector | Weapp escaped arbitrary selector |
 | --- | ---: | ---: | --- | --- | --- | --- | --- |
 | legacy | 2082 | 17 | false | false | false | false | true |
-| generator | 5184 | 36 | false | false | false | false | true |
+| generator | 5195 | 36 | false | false | false | false | true |
 
 ## Diff
 
@@ -68,8 +68,7 @@ Generator CSS files: app.wxss, app-origin.wxss, index.wxss
    --color-cyan-500: rgb(0, 182, 212);
    --color-blue-500: rgb(50, 128, 255);
    --color-purple-300: rgb(216, 180, 255);
--  --spacing: 8rpx;
-+  --spacing: 0.25rem;
+   --spacing: 8rpx;
 +  --ease-out: cubic-bezier(0, 0, 0.2, 1);
 +  --default-transition-duration: 150ms;
 +  --default-transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
@@ -102,27 +101,27 @@ Generator CSS files: app.wxss, app-origin.wxss, index.wxss
 +}
 +@media (min-width: 40rem) {
 +  .container {
-+    max-width: 40rem;
++    max-width: 1280rpx;
 +  }
 +}
 +@media (min-width: 48rem) {
 +  .container {
-+    max-width: 48rem;
++    max-width: 1536rpx;
 +  }
 +}
 +@media (min-width: 64rem) {
 +  .container {
-+    max-width: 64rem;
++    max-width: 2048rpx;
 +  }
 +}
 +@media (min-width: 80rem) {
 +  .container {
-+    max-width: 80rem;
++    max-width: 2560rpx;
 +  }
 +}
 +@media (min-width: 96rem) {
 +  .container {
-+    max-width: 96rem;
++    max-width: 3072rpx;
 +  }
 +}
 +.block {
@@ -149,8 +148,7 @@ Generator CSS files: app.wxss, app-origin.wxss, index.wxss
    height: calc(var(--spacing) * 14);
  }
  .h-_b300px_B {
--  height: 300rpx;
-+  height: 300px;
+   height: 300rpx;
  }
 +.transform {
 +  -webkit-transform: var(--tw-rotate-x,) var(--tw-rotate-y,) var(--tw-rotate-z,) var(--tw-skew-x,) var(--tw-skew-y,);
@@ -161,7 +159,7 @@ Generator CSS files: app.wxss, app-origin.wxss, index.wxss
 +}
 +.border {
 +  border-style: var(--tw-border-style);
-+  border-width: 1px;
++  border-width: 1rpx;
 +}
  .bg-_b_h123456_B {
    background-color: #123456;
@@ -177,10 +175,10 @@ Generator CSS files: app.wxss, app-origin.wxss, index.wxss
  }
 +.outline {
 +  outline-style: var(--tw-outline-style);
-+  outline-width: 1px;
++  outline-width: 1rpx;
 +}
 +.blur {
-+  --tw-blur: blur(8px);
++  --tw-blur: blur(8rpx);
 +  -webkit-filter: var(--tw-blur,) var(--tw-brightness,) var(--tw-contrast,) var(--tw-grayscale,) var(--tw-hue-rotate,) var(--tw-invert,) var(--tw-saturate,) var(--tw-sepia,)
 +    var(--tw-drop-shadow,);
 +  filter: var(--tw-blur,) var(--tw-brightness,) var(--tw-contrast,) var(--tw-grayscale,) var(--tw-hue-rotate,) var(--tw-invert,) var(--tw-saturate,) var(--tw-sepia,)
@@ -380,7 +378,7 @@ wx-root-portal-content {
   --color-cyan-500: rgb(0, 182, 212);
   --color-blue-500: rgb(50, 128, 255);
   --color-purple-300: rgb(216, 180, 255);
-  --spacing: 0.25rem;
+  --spacing: 8rpx;
   --ease-out: cubic-bezier(0, 0, 0.2, 1);
   --default-transition-duration: 150ms;
   --default-transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
@@ -405,27 +403,27 @@ wx-root-portal-content {
 }
 @media (min-width: 40rem) {
   .container {
-    max-width: 40rem;
+    max-width: 1280rpx;
   }
 }
 @media (min-width: 48rem) {
   .container {
-    max-width: 48rem;
+    max-width: 1536rpx;
   }
 }
 @media (min-width: 64rem) {
   .container {
-    max-width: 64rem;
+    max-width: 2048rpx;
   }
 }
 @media (min-width: 80rem) {
   .container {
-    max-width: 80rem;
+    max-width: 2560rpx;
   }
 }
 @media (min-width: 96rem) {
   .container {
-    max-width: 96rem;
+    max-width: 3072rpx;
   }
 }
 .block {
@@ -451,7 +449,7 @@ wx-root-portal-content {
   height: calc(var(--spacing) * 14);
 }
 .h-_b300px_B {
-  height: 300px;
+  height: 300rpx;
 }
 .transform {
   -webkit-transform: var(--tw-rotate-x,) var(--tw-rotate-y,) var(--tw-rotate-z,) var(--tw-skew-x,) var(--tw-skew-y,);
@@ -462,7 +460,7 @@ wx-root-portal-content {
 }
 .border {
   border-style: var(--tw-border-style);
-  border-width: 1px;
+  border-width: 1rpx;
 }
 .bg-_b_h123456_B {
   background-color: #123456;
@@ -509,10 +507,10 @@ wx-root-portal-content {
 }
 .outline {
   outline-style: var(--tw-outline-style);
-  outline-width: 1px;
+  outline-width: 1rpx;
 }
 .blur {
-  --tw-blur: blur(8px);
+  --tw-blur: blur(8rpx);
   -webkit-filter: var(--tw-blur,) var(--tw-brightness,) var(--tw-contrast,) var(--tw-grayscale,) var(--tw-hue-rotate,) var(--tw-invert,) var(--tw-saturate,) var(--tw-sepia,)
     var(--tw-drop-shadow,);
   filter: var(--tw-blur,) var(--tw-brightness,) var(--tw-contrast,) var(--tw-grayscale,) var(--tw-hue-rotate,) var(--tw-invert,) var(--tw-saturate,) var(--tw-sepia,)

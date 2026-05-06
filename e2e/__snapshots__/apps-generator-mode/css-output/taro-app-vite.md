@@ -8,7 +8,7 @@ Generator CSS files: app.wxss, app-origin.wxss, index.wxss
 | Mode | Bytes | Selectors | @supports | :hover | Tailwind banner | Raw arbitrary selector | Weapp escaped arbitrary selector |
 | --- | ---: | ---: | --- | --- | --- | --- | --- |
 | legacy | 4530 | 23 | false | false | false | false | true |
-| generator | 1601 | 23 | false | false | false | false | true |
+| generator | 1603 | 23 | false | false | false | false | true |
 
 ## Diff
 
@@ -150,17 +150,6 @@ Generator CSS files: app.wxss, app-origin.wxss, index.wxss
  .flex {
    display: flex;
  }
-@@ -139,8 +11,8 @@
- .divide-x-8 > text + view,
- .divide-x-8 > text + text {
-   --tw-divide-x-reverse: 0;
--  border-right-width: calc(8rpx * var(--tw-divide-x-reverse));
--  border-left-width: calc(8rpx * (1 - var(--tw-divide-x-reverse)));
-+  border-right-width: calc(8px * var(--tw-divide-x-reverse));
-+  border-left-width: calc(8px * (1 - var(--tw-divide-x-reverse)));
- }
- .divide-solid > view + view,
- .divide-solid > view + text,
 @@ -174,11 +46,11 @@
    --tw-text-opacity: 1;
    color: rgba(67, 136, 33, var(--tw-text-opacity, 1));
@@ -392,8 +381,8 @@ text,
 .divide-x-8 > text + view,
 .divide-x-8 > text + text {
   --tw-divide-x-reverse: 0;
-  border-right-width: calc(8px * var(--tw-divide-x-reverse));
-  border-left-width: calc(8px * (1 - var(--tw-divide-x-reverse)));
+  border-right-width: calc(8rpx * var(--tw-divide-x-reverse));
+  border-left-width: calc(8rpx * (1 - var(--tw-divide-x-reverse)));
 }
 .divide-solid > view + view,
 .divide-solid > view + text,

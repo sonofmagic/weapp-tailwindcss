@@ -8,7 +8,7 @@ Generator CSS files: app.wxss, app-origin.wxss, index.wxss
 | Mode | Bytes | Selectors | @supports | :hover | Tailwind banner | Raw arbitrary selector | Weapp escaped arbitrary selector |
 | --- | ---: | ---: | --- | --- | --- | --- | --- |
 | legacy | 4505 | 37 | false | false | false | false | true |
-| generator | 23656 | 173 | false | false | false | false | true |
+| generator | 23641 | 173 | false | false | false | false | true |
 
 ## Diff
 
@@ -76,7 +76,7 @@ Generator CSS files: app.wxss, app-origin.wxss, index.wxss
 +  --tw-inset-ring-color: initial;
 +  --tw-inset-ring-shadow: 0 0 rgba(0, 0, 0, 0);
 +  --tw-ring-inset: initial;
-+  --tw-ring-offset-width: 0px;
++  --tw-ring-offset-width: 0rpx;
 +  --tw-ring-offset-color: #fff;
 +  --tw-ring-offset-shadow: 0 0 rgba(0, 0, 0, 0);
 +  --tw-outline-style: solid;
@@ -106,14 +106,10 @@ Generator CSS files: app.wxss, app-origin.wxss, index.wxss
    --color-red-500: rgb(251, 44, 54);
    --color-green-500: rgb(0, 198, 90);
    --color-emerald-600: rgb(0, 150, 105);
-@@ -38,67 +86,374 @@
-   --color-gray-100: rgb(243, 244, 246);
-   --color-zinc-800: rgb(39, 39, 42);
+@@ -40,65 +88,372 @@
    --color-white: #fff;
--  --spacing: 8rpx;
--  --radius-xl: 24rpx;
-+  --spacing: 0.25rem;
-+  --radius-xl: 0.75rem;
+   --spacing: 8rpx;
+   --radius-xl: 24rpx;
 +  --ease-out: cubic-bezier(0, 0, 0.2, 1);
 +  --default-transition-duration: 150ms;
 +  --default-transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
@@ -137,10 +133,10 @@ Generator CSS files: app.wxss, app-origin.wxss, index.wxss
 +}
 +.sr-only {
 +  position: absolute;
-+  width: 1px;
-+  height: 1px;
++  width: 1rpx;
++  height: 1rpx;
    padding: 0;
-+  margin: -1px;
++  margin: -1rpx;
 +  overflow: hidden;
 +  -webkit-clip-path: inset(50%);
 +  clip-path: inset(50%);
@@ -191,27 +187,27 @@ Generator CSS files: app.wxss, app-origin.wxss, index.wxss
 +}
 +@media (min-width: 40rem) {
 +  .container {
-+    max-width: 40rem;
++    max-width: 1280rpx;
 +  }
 +}
 +@media (min-width: 48rem) {
 +  .container {
-+    max-width: 48rem;
++    max-width: 1536rpx;
 +  }
 +}
 +@media (min-width: 64rem) {
 +  .container {
-+    max-width: 64rem;
++    max-width: 2048rpx;
 +  }
 +}
 +@media (min-width: 80rem) {
 +  .container {
-+    max-width: 80rem;
++    max-width: 2560rpx;
 +  }
 +}
 +@media (min-width: 96rem) {
 +  .container {
-+    max-width: 96rem;
++    max-width: 3072rpx;
 +  }
 +}
 +.block {
@@ -284,8 +280,7 @@ Generator CSS files: app.wxss, app-origin.wxss, index.wxss
    height: calc(var(--spacing) * 14);
  }
  .h-_b300px_B {
--  height: 300rpx;
-+  height: 300px;
+   height: 300rpx;
  }
 +.shrink {
 +  -webkit-flex-shrink: 1;
@@ -351,8 +346,8 @@ Generator CSS files: app.wxss, app-origin.wxss, index.wxss
 +  --tw-divide-x-reverse: 0;
 +  border-left-style: var(--tw-border-style);
 +  border-right-style: var(--tw-border-style);
-+  border-right-width: calc(1px * var(--tw-divide-x-reverse));
-+  border-left-width: calc(1px * (1 - var(--tw-divide-x-reverse)));
++  border-right-width: calc(1rpx * var(--tw-divide-x-reverse));
++  border-left-width: calc(1rpx * (1 - var(--tw-divide-x-reverse)));
 +}
 +.divide-y > view + view,
 +.divide-y > view + text,
@@ -361,8 +356,8 @@ Generator CSS files: app.wxss, app-origin.wxss, index.wxss
 +  --tw-divide-y-reverse: 0;
 +  border-bottom-style: var(--tw-border-style);
 +  border-top-style: var(--tw-border-style);
-+  border-bottom-width: calc(1px * var(--tw-divide-y-reverse));
-+  border-top-width: calc(1px * (1 - var(--tw-divide-y-reverse)));
++  border-bottom-width: calc(1rpx * var(--tw-divide-y-reverse));
++  border-top-width: calc(1rpx * (1 - var(--tw-divide-y-reverse)));
 +}
 +.divide-y-reverse > view + view,
 +.divide-y-reverse > view + text,
@@ -380,56 +375,56 @@ Generator CSS files: app.wxss, app-origin.wxss, index.wxss
    border-radius: var(--radius-xl);
  }
 +.rounded-s {
-+  border-top-left-radius: 0.25rem;
-+  border-bottom-left-radius: 0.25rem;
++  border-top-left-radius: 8rpx;
++  border-bottom-left-radius: 8rpx;
 +}
 +.rounded-ss {
-+  border-top-left-radius: 0.25rem;
++  border-top-left-radius: 8rpx;
 +}
 +.rounded-e {
-+  border-top-right-radius: 0.25rem;
-+  border-bottom-right-radius: 0.25rem;
++  border-top-right-radius: 8rpx;
++  border-bottom-right-radius: 8rpx;
 +}
 +.rounded-se {
-+  border-top-right-radius: 0.25rem;
++  border-top-right-radius: 8rpx;
 +}
 +.rounded-ee {
-+  border-bottom-right-radius: 0.25rem;
++  border-bottom-right-radius: 8rpx;
 +}
 +.rounded-es {
-+  border-bottom-left-radius: 0.25rem;
++  border-bottom-left-radius: 8rpx;
 +}
 +.rounded-t {
-+  border-top-left-radius: 0.25rem;
-+  border-top-right-radius: 0.25rem;
++  border-top-left-radius: 8rpx;
++  border-top-right-radius: 8rpx;
 +}
 +.rounded-l {
-+  border-top-left-radius: 0.25rem;
-+  border-bottom-left-radius: 0.25rem;
++  border-top-left-radius: 8rpx;
++  border-bottom-left-radius: 8rpx;
 +}
 +.rounded-tl {
-+  border-top-left-radius: 0.25rem;
++  border-top-left-radius: 8rpx;
 +}
 +.rounded-r {
-+  border-top-right-radius: 0.25rem;
-+  border-bottom-right-radius: 0.25rem;
++  border-top-right-radius: 8rpx;
++  border-bottom-right-radius: 8rpx;
 +}
 +.rounded-tr {
-+  border-top-right-radius: 0.25rem;
++  border-top-right-radius: 8rpx;
 +}
 +.rounded-b {
-+  border-bottom-right-radius: 0.25rem;
-+  border-bottom-left-radius: 0.25rem;
++  border-bottom-right-radius: 8rpx;
++  border-bottom-left-radius: 8rpx;
 +}
 +.rounded-br {
-+  border-bottom-right-radius: 0.25rem;
++  border-bottom-right-radius: 8rpx;
 +}
 +.rounded-bl {
-+  border-bottom-left-radius: 0.25rem;
++  border-bottom-left-radius: 8rpx;
 +}
 +.border {
 +  border-style: var(--tw-border-style);
-+  border-width: 1px;
++  border-width: 1rpx;
 +}
  .border-_b10rpx_B {
    border-style: var(--tw-border-style);
@@ -438,46 +433,46 @@ Generator CSS files: app.wxss, app-origin.wxss, index.wxss
 +.border-x {
 +  border-left-style: var(--tw-border-style);
 +  border-right-style: var(--tw-border-style);
-+  border-left-width: 1px;
-+  border-right-width: 1px;
++  border-left-width: 1rpx;
++  border-right-width: 1rpx;
 +}
 +.border-y {
 +  border-top-style: var(--tw-border-style);
 +  border-bottom-style: var(--tw-border-style);
-+  border-top-width: 1px;
-+  border-bottom-width: 1px;
++  border-top-width: 1rpx;
++  border-bottom-width: 1rpx;
 +}
 +.border-s {
 +  border-left-style: var(--tw-border-style);
-+  border-left-width: 1px;
++  border-left-width: 1rpx;
 +}
 +.border-e {
 +  border-right-style: var(--tw-border-style);
-+  border-right-width: 1px;
++  border-right-width: 1rpx;
 +}
 +.border-bs {
 +  border-top-style: var(--tw-border-style);
-+  border-top-width: 1px;
++  border-top-width: 1rpx;
 +}
 +.border-be {
 +  border-bottom-style: var(--tw-border-style);
-+  border-bottom-width: 1px;
++  border-bottom-width: 1rpx;
 +}
 +.border-t {
 +  border-top-style: var(--tw-border-style);
-+  border-top-width: 1px;
++  border-top-width: 1rpx;
 +}
 +.border-r {
 +  border-right-style: var(--tw-border-style);
-+  border-right-width: 1px;
++  border-right-width: 1rpx;
 +}
 +.border-b {
 +  border-bottom-style: var(--tw-border-style);
-+  border-bottom-width: 1px;
++  border-bottom-width: 1rpx;
 +}
 +.border-l {
 +  border-left-style: var(--tw-border-style);
-+  border-left-width: 1px;
++  border-left-width: 1rpx;
 +}
  ._eborder-brand {
 -  border-color: #155dfc !important;
@@ -638,31 +633,31 @@ Generator CSS files: app.wxss, app-origin.wxss, index.wxss
 +  -moz-osx-font-smoothing: auto;
 +}
 +.shadow {
-+  --tw-shadow: 0 1px 3px 0 var(--tw-shadow-color, rgba(0, 0, 0, 0.1)), 0 1px 2px -1px var(--tw-shadow-color, rgba(0, 0, 0, 0.1));
++  --tw-shadow: 0 1rpx 3rpx 0 var(--tw-shadow-color, rgba(0, 0, 0, 0.1)), 0 1rpx 2rpx -1rpx var(--tw-shadow-color, rgba(0, 0, 0, 0.1));
 +  box-shadow: var(--tw-inset-shadow), var(--tw-inset-ring-shadow), var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow);
 +}
 +.ring {
-+  --tw-ring-shadow: var(--tw-ring-inset,) 0 0 0 calc(1px + var(--tw-ring-offset-width)) var(--tw-ring-color, currentcolor);
++  --tw-ring-shadow: var(--tw-ring-inset,) 0 0 0 calc(1rpx + var(--tw-ring-offset-width)) var(--tw-ring-color, currentcolor);
 +  box-shadow: var(--tw-inset-shadow), var(--tw-inset-ring-shadow), var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow);
 +}
 +.inset-ring {
-+  --tw-inset-ring-shadow: inset 0 0 0 1px var(--tw-inset-ring-color, currentcolor);
++  --tw-inset-ring-shadow: inset 0 0 0 1rpx var(--tw-inset-ring-color, currentcolor);
 +  box-shadow: var(--tw-inset-shadow), var(--tw-inset-ring-shadow), var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow);
 +}
 +.outline {
 +  outline-style: var(--tw-outline-style);
-+  outline-width: 1px;
++  outline-width: 1rpx;
 +}
 +.blur {
-+  --tw-blur: blur(8px);
++  --tw-blur: blur(8rpx);
 +  -webkit-filter: var(--tw-blur,) var(--tw-brightness,) var(--tw-contrast,) var(--tw-grayscale,) var(--tw-hue-rotate,) var(--tw-invert,) var(--tw-saturate,) var(--tw-sepia,)
 +    var(--tw-drop-shadow,);
 +  filter: var(--tw-blur,) var(--tw-brightness,) var(--tw-contrast,) var(--tw-grayscale,) var(--tw-hue-rotate,) var(--tw-invert,) var(--tw-saturate,) var(--tw-sepia,)
 +    var(--tw-drop-shadow,);
 +}
 +.drop-shadow {
-+  --tw-drop-shadow-size: drop-shadow(0 1px 2px var(--tw-drop-shadow-color, rgba(0, 0, 0, 0.1))) drop-shadow(0 1px 1px var(--tw-drop-shadow-color, rgba(0, 0, 0, 0.06)));
-+  --tw-drop-shadow: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.1)) drop-shadow(0 1px 1px rgba(0, 0, 0, 0.06));
++  --tw-drop-shadow-size: drop-shadow(0 1rpx 2rpx var(--tw-drop-shadow-color, rgba(0, 0, 0, 0.1))) drop-shadow(0 1rpx 1rpx var(--tw-drop-shadow-color, rgba(0, 0, 0, 0.06)));
++  --tw-drop-shadow: drop-shadow(0 1rpx 2rpx rgba(0, 0, 0, 0.1)) drop-shadow(0 1rpx 1rpx rgba(0, 0, 0, 0.06));
 +  -webkit-filter: var(--tw-blur,) var(--tw-brightness,) var(--tw-contrast,) var(--tw-grayscale,) var(--tw-hue-rotate,) var(--tw-invert,) var(--tw-saturate,) var(--tw-sepia,)
 +    var(--tw-drop-shadow,);
 +  filter: var(--tw-blur,) var(--tw-brightness,) var(--tw-contrast,) var(--tw-grayscale,) var(--tw-hue-rotate,) var(--tw-invert,) var(--tw-saturate,) var(--tw-sepia,)
@@ -675,7 +670,7 @@ Generator CSS files: app.wxss, app-origin.wxss, index.wxss
 +    var(--tw-drop-shadow,);
 +}
 +.backdrop-blur {
-+  --tw-backdrop-blur: blur(8px);
++  --tw-backdrop-blur: blur(8rpx);
 +  -webkit-backdrop-filter: var(--tw-backdrop-blur,) var(--tw-backdrop-brightness,) var(--tw-backdrop-contrast,) var(--tw-backdrop-grayscale,) var(--tw-backdrop-hue-rotate,)
 +    var(--tw-backdrop-invert,) var(--tw-backdrop-opacity,) var(--tw-backdrop-saturate,) var(--tw-backdrop-sepia,);
 +  backdrop-filter: var(--tw-backdrop-blur,) var(--tw-backdrop-brightness,) var(--tw-backdrop-contrast,) var(--tw-backdrop-grayscale,) var(--tw-backdrop-hue-rotate,)
@@ -1020,7 +1015,7 @@ wx-root-portal-content {
   --tw-inset-ring-color: initial;
   --tw-inset-ring-shadow: 0 0 rgba(0, 0, 0, 0);
   --tw-ring-inset: initial;
-  --tw-ring-offset-width: 0px;
+  --tw-ring-offset-width: 0rpx;
   --tw-ring-offset-color: #fff;
   --tw-ring-offset-shadow: 0 0 rgba(0, 0, 0, 0);
   --tw-outline-style: solid;
@@ -1057,8 +1052,8 @@ wx-root-portal-content {
   --color-gray-100: rgb(243, 244, 246);
   --color-zinc-800: rgb(39, 39, 42);
   --color-white: #fff;
-  --spacing: 0.25rem;
-  --radius-xl: 0.75rem;
+  --spacing: 8rpx;
+  --radius-xl: 24rpx;
   --ease-out: cubic-bezier(0, 0, 0.2, 1);
   --default-transition-duration: 150ms;
   --default-transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
@@ -1075,10 +1070,10 @@ wx-root-portal-content {
 }
 .sr-only {
   position: absolute;
-  width: 1px;
-  height: 1px;
+  width: 1rpx;
+  height: 1rpx;
   padding: 0;
-  margin: -1px;
+  margin: -1rpx;
   overflow: hidden;
   -webkit-clip-path: inset(50%);
   clip-path: inset(50%);
@@ -1129,27 +1124,27 @@ wx-root-portal-content {
 }
 @media (min-width: 40rem) {
   .container {
-    max-width: 40rem;
+    max-width: 1280rpx;
   }
 }
 @media (min-width: 48rem) {
   .container {
-    max-width: 48rem;
+    max-width: 1536rpx;
   }
 }
 @media (min-width: 64rem) {
   .container {
-    max-width: 64rem;
+    max-width: 2048rpx;
   }
 }
 @media (min-width: 80rem) {
   .container {
-    max-width: 80rem;
+    max-width: 2560rpx;
   }
 }
 @media (min-width: 96rem) {
   .container {
-    max-width: 96rem;
+    max-width: 3072rpx;
   }
 }
 .block {
@@ -1221,7 +1216,7 @@ wx-root-portal-content {
   height: calc(var(--spacing) * 14);
 }
 .h-_b300px_B {
-  height: 300px;
+  height: 300rpx;
 }
 .shrink {
   -webkit-flex-shrink: 1;
@@ -1285,8 +1280,8 @@ wx-root-portal-content {
   --tw-divide-x-reverse: 0;
   border-left-style: var(--tw-border-style);
   border-right-style: var(--tw-border-style);
-  border-right-width: calc(1px * var(--tw-divide-x-reverse));
-  border-left-width: calc(1px * (1 - var(--tw-divide-x-reverse)));
+  border-right-width: calc(1rpx * var(--tw-divide-x-reverse));
+  border-left-width: calc(1rpx * (1 - var(--tw-divide-x-reverse)));
 }
 .divide-y > view + view,
 .divide-y > view + text,
@@ -1295,8 +1290,8 @@ wx-root-portal-content {
   --tw-divide-y-reverse: 0;
   border-bottom-style: var(--tw-border-style);
   border-top-style: var(--tw-border-style);
-  border-bottom-width: calc(1px * var(--tw-divide-y-reverse));
-  border-top-width: calc(1px * (1 - var(--tw-divide-y-reverse)));
+  border-bottom-width: calc(1rpx * var(--tw-divide-y-reverse));
+  border-top-width: calc(1rpx * (1 - var(--tw-divide-y-reverse)));
 }
 .divide-y-reverse > view + view,
 .divide-y-reverse > view + text,
@@ -1313,56 +1308,56 @@ wx-root-portal-content {
   border-radius: var(--radius-xl);
 }
 .rounded-s {
-  border-top-left-radius: 0.25rem;
-  border-bottom-left-radius: 0.25rem;
+  border-top-left-radius: 8rpx;
+  border-bottom-left-radius: 8rpx;
 }
 .rounded-ss {
-  border-top-left-radius: 0.25rem;
+  border-top-left-radius: 8rpx;
 }
 .rounded-e {
-  border-top-right-radius: 0.25rem;
-  border-bottom-right-radius: 0.25rem;
+  border-top-right-radius: 8rpx;
+  border-bottom-right-radius: 8rpx;
 }
 .rounded-se {
-  border-top-right-radius: 0.25rem;
+  border-top-right-radius: 8rpx;
 }
 .rounded-ee {
-  border-bottom-right-radius: 0.25rem;
+  border-bottom-right-radius: 8rpx;
 }
 .rounded-es {
-  border-bottom-left-radius: 0.25rem;
+  border-bottom-left-radius: 8rpx;
 }
 .rounded-t {
-  border-top-left-radius: 0.25rem;
-  border-top-right-radius: 0.25rem;
+  border-top-left-radius: 8rpx;
+  border-top-right-radius: 8rpx;
 }
 .rounded-l {
-  border-top-left-radius: 0.25rem;
-  border-bottom-left-radius: 0.25rem;
+  border-top-left-radius: 8rpx;
+  border-bottom-left-radius: 8rpx;
 }
 .rounded-tl {
-  border-top-left-radius: 0.25rem;
+  border-top-left-radius: 8rpx;
 }
 .rounded-r {
-  border-top-right-radius: 0.25rem;
-  border-bottom-right-radius: 0.25rem;
+  border-top-right-radius: 8rpx;
+  border-bottom-right-radius: 8rpx;
 }
 .rounded-tr {
-  border-top-right-radius: 0.25rem;
+  border-top-right-radius: 8rpx;
 }
 .rounded-b {
-  border-bottom-right-radius: 0.25rem;
-  border-bottom-left-radius: 0.25rem;
+  border-bottom-right-radius: 8rpx;
+  border-bottom-left-radius: 8rpx;
 }
 .rounded-br {
-  border-bottom-right-radius: 0.25rem;
+  border-bottom-right-radius: 8rpx;
 }
 .rounded-bl {
-  border-bottom-left-radius: 0.25rem;
+  border-bottom-left-radius: 8rpx;
 }
 .border {
   border-style: var(--tw-border-style);
-  border-width: 1px;
+  border-width: 1rpx;
 }
 .border-_b10rpx_B {
   border-style: var(--tw-border-style);
@@ -1371,46 +1366,46 @@ wx-root-portal-content {
 .border-x {
   border-left-style: var(--tw-border-style);
   border-right-style: var(--tw-border-style);
-  border-left-width: 1px;
-  border-right-width: 1px;
+  border-left-width: 1rpx;
+  border-right-width: 1rpx;
 }
 .border-y {
   border-top-style: var(--tw-border-style);
   border-bottom-style: var(--tw-border-style);
-  border-top-width: 1px;
-  border-bottom-width: 1px;
+  border-top-width: 1rpx;
+  border-bottom-width: 1rpx;
 }
 .border-s {
   border-left-style: var(--tw-border-style);
-  border-left-width: 1px;
+  border-left-width: 1rpx;
 }
 .border-e {
   border-right-style: var(--tw-border-style);
-  border-right-width: 1px;
+  border-right-width: 1rpx;
 }
 .border-bs {
   border-top-style: var(--tw-border-style);
-  border-top-width: 1px;
+  border-top-width: 1rpx;
 }
 .border-be {
   border-bottom-style: var(--tw-border-style);
-  border-bottom-width: 1px;
+  border-bottom-width: 1rpx;
 }
 .border-t {
   border-top-style: var(--tw-border-style);
-  border-top-width: 1px;
+  border-top-width: 1rpx;
 }
 .border-r {
   border-right-style: var(--tw-border-style);
-  border-right-width: 1px;
+  border-right-width: 1rpx;
 }
 .border-b {
   border-bottom-style: var(--tw-border-style);
-  border-bottom-width: 1px;
+  border-bottom-width: 1rpx;
 }
 .border-l {
   border-left-style: var(--tw-border-style);
-  border-left-width: 1px;
+  border-left-width: 1rpx;
 }
 ._eborder-brand {
   border-color: var(--color-brand) !important;
@@ -1614,31 +1609,31 @@ wx-root-portal-content {
   -moz-osx-font-smoothing: auto;
 }
 .shadow {
-  --tw-shadow: 0 1px 3px 0 var(--tw-shadow-color, rgba(0, 0, 0, 0.1)), 0 1px 2px -1px var(--tw-shadow-color, rgba(0, 0, 0, 0.1));
+  --tw-shadow: 0 1rpx 3rpx 0 var(--tw-shadow-color, rgba(0, 0, 0, 0.1)), 0 1rpx 2rpx -1rpx var(--tw-shadow-color, rgba(0, 0, 0, 0.1));
   box-shadow: var(--tw-inset-shadow), var(--tw-inset-ring-shadow), var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow);
 }
 .ring {
-  --tw-ring-shadow: var(--tw-ring-inset,) 0 0 0 calc(1px + var(--tw-ring-offset-width)) var(--tw-ring-color, currentcolor);
+  --tw-ring-shadow: var(--tw-ring-inset,) 0 0 0 calc(1rpx + var(--tw-ring-offset-width)) var(--tw-ring-color, currentcolor);
   box-shadow: var(--tw-inset-shadow), var(--tw-inset-ring-shadow), var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow);
 }
 .inset-ring {
-  --tw-inset-ring-shadow: inset 0 0 0 1px var(--tw-inset-ring-color, currentcolor);
+  --tw-inset-ring-shadow: inset 0 0 0 1rpx var(--tw-inset-ring-color, currentcolor);
   box-shadow: var(--tw-inset-shadow), var(--tw-inset-ring-shadow), var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow);
 }
 .outline {
   outline-style: var(--tw-outline-style);
-  outline-width: 1px;
+  outline-width: 1rpx;
 }
 .blur {
-  --tw-blur: blur(8px);
+  --tw-blur: blur(8rpx);
   -webkit-filter: var(--tw-blur,) var(--tw-brightness,) var(--tw-contrast,) var(--tw-grayscale,) var(--tw-hue-rotate,) var(--tw-invert,) var(--tw-saturate,) var(--tw-sepia,)
     var(--tw-drop-shadow,);
   filter: var(--tw-blur,) var(--tw-brightness,) var(--tw-contrast,) var(--tw-grayscale,) var(--tw-hue-rotate,) var(--tw-invert,) var(--tw-saturate,) var(--tw-sepia,)
     var(--tw-drop-shadow,);
 }
 .drop-shadow {
-  --tw-drop-shadow-size: drop-shadow(0 1px 2px var(--tw-drop-shadow-color, rgba(0, 0, 0, 0.1))) drop-shadow(0 1px 1px var(--tw-drop-shadow-color, rgba(0, 0, 0, 0.06)));
-  --tw-drop-shadow: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.1)) drop-shadow(0 1px 1px rgba(0, 0, 0, 0.06));
+  --tw-drop-shadow-size: drop-shadow(0 1rpx 2rpx var(--tw-drop-shadow-color, rgba(0, 0, 0, 0.1))) drop-shadow(0 1rpx 1rpx var(--tw-drop-shadow-color, rgba(0, 0, 0, 0.06)));
+  --tw-drop-shadow: drop-shadow(0 1rpx 2rpx rgba(0, 0, 0, 0.1)) drop-shadow(0 1rpx 1rpx rgba(0, 0, 0, 0.06));
   -webkit-filter: var(--tw-blur,) var(--tw-brightness,) var(--tw-contrast,) var(--tw-grayscale,) var(--tw-hue-rotate,) var(--tw-invert,) var(--tw-saturate,) var(--tw-sepia,)
     var(--tw-drop-shadow,);
   filter: var(--tw-blur,) var(--tw-brightness,) var(--tw-contrast,) var(--tw-grayscale,) var(--tw-hue-rotate,) var(--tw-invert,) var(--tw-saturate,) var(--tw-sepia,)
@@ -1651,7 +1646,7 @@ wx-root-portal-content {
     var(--tw-drop-shadow,);
 }
 .backdrop-blur {
-  --tw-backdrop-blur: blur(8px);
+  --tw-backdrop-blur: blur(8rpx);
   -webkit-backdrop-filter: var(--tw-backdrop-blur,) var(--tw-backdrop-brightness,) var(--tw-backdrop-contrast,) var(--tw-backdrop-grayscale,) var(--tw-backdrop-hue-rotate,)
     var(--tw-backdrop-invert,) var(--tw-backdrop-opacity,) var(--tw-backdrop-saturate,) var(--tw-backdrop-sepia,);
   backdrop-filter: var(--tw-backdrop-blur,) var(--tw-backdrop-brightness,) var(--tw-backdrop-contrast,) var(--tw-backdrop-grayscale,) var(--tw-backdrop-hue-rotate,)

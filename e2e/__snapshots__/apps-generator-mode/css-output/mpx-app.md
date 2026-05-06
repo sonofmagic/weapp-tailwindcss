@@ -8,7 +8,7 @@ Generator CSS files: app.wxss, styles/base.wxss, styles/components.wxss, styles/
 | Mode | Bytes | Selectors | @supports | :hover | Tailwind banner | Raw arbitrary selector | Weapp escaped arbitrary selector |
 | --- | ---: | ---: | --- | --- | --- | --- | --- |
 | legacy | 189931 | 2877 | false | false | false | false | true |
-| generator | 193567 | 2877 | false | false | false | false | true |
+| generator | 193551 | 2877 | false | false | false | false | true |
 
 ## Diff
 
@@ -47,7 +47,7 @@ Generator CSS files: app.wxss, styles/base.wxss, styles/components.wxss, styles/
 +}
 +.after_cml-0_d5::after {
 +  content: var(--tw-content);
-+  margin-left: 0.125rem;
++  margin-left: 4rpx;
 +}
 +.after_ctext-red-500::after {
 +  content: var(--tw-content);
@@ -80,7 +80,7 @@ Generator CSS files: app.wxss, styles/base.wxss, styles/components.wxss, styles/
  }
 +.after_cml-0_d5::after {
 +  content: var(--tw-content);
-+  margin-left: 0.125rem;
++  margin-left: 4rpx;
 +}
 +.after_ctext-red-500::after {
 +  content: var(--tw-content);
@@ -129,7 +129,7 @@ Generator CSS files: app.wxss, styles/base.wxss, styles/components.wxss, styles/
 +}
 +.after_cml-0_d5::after {
 +  content: var(--tw-content);
-+  margin-left: 0.125rem;
++  margin-left: 4rpx;
 +}
 +.after_ctext-red-500::after {
 +  content: var(--tw-content);
@@ -162,7 +162,7 @@ Generator CSS files: app.wxss, styles/base.wxss, styles/components.wxss, styles/
  }
 +.after_cml-0_d5::after {
 +  content: var(--tw-content);
-+  margin-left: 0.125rem;
++  margin-left: 4rpx;
 +}
 +.after_ctext-red-500::after {
 +  content: var(--tw-content);
@@ -9828,7 +9828,7 @@ text,
 }
 .after_cml-0_d5::after {
   content: var(--tw-content);
-  margin-left: 0.125rem;
+  margin-left: 4rpx;
 }
 .after_ctext-red-500::after {
   content: var(--tw-content);
@@ -9872,7 +9872,7 @@ text,
 }
 .after_cml-0_d5::after {
   content: var(--tw-content);
-  margin-left: 0.125rem;
+  margin-left: 4rpx;
 }
 .after_ctext-red-500::after {
   content: var(--tw-content);
@@ -19234,7 +19234,7 @@ text,
 }
 .after_cml-0_d5::after {
   content: var(--tw-content);
-  margin-left: 0.125rem;
+  margin-left: 4rpx;
 }
 .after_ctext-red-500::after {
   content: var(--tw-content);
@@ -19362,7 +19362,7 @@ text,
 }
 .after_cml-0_d5::after {
   content: var(--tw-content);
-  margin-left: 0.125rem;
+  margin-left: 4rpx;
 }
 .after_ctext-red-500::after {
   content: var(--tw-content);

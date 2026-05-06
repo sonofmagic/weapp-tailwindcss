@@ -6,7 +6,11 @@ import type { Plugin } from 'vite'
 import tailwindcss from 'tailwindcss'
 import { UnifiedViteWeappTailwindcssPlugin as uvtw } from 'weapp-tailwindcss/vite'
 import { resolveDemoGeneratorMode } from '../../shared/weapp-tailwind-generator-mode'
-const generator = resolveDemoGeneratorMode()
+const generator = resolveDemoGeneratorMode({
+  styleOptions: {
+    px2rpx: true,
+  },
+})
 console.log(process.env.TARO_ENV)
 // https://taro-docs.jd.com/docs/next/config#defineconfig-辅助函数
 export default defineConfig<'vite'>(async (merge, { command, mode }) => {

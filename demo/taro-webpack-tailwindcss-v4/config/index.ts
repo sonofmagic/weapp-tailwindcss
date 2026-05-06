@@ -6,7 +6,11 @@ import { UnifiedWebpackPluginV5, UserDefinedOptions } from 'weapp-tailwindcss/we
 import path from 'path'
 import { resolveDemoGeneratorMode } from '../../shared/weapp-tailwind-generator-mode'
 
-const generator = resolveDemoGeneratorMode()
+const generator = resolveDemoGeneratorMode({
+  styleOptions: {
+    px2rpx: true,
+  },
+})
 
 // https://taro-docs.jd.com/docs/next/config#defineconfig-辅助函数
 export default defineConfig<'webpack5'>(async (merge, { command, mode }) => {
