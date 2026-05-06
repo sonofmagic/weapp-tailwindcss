@@ -7,6 +7,59 @@ const tutorialSidebar: SidebarConfig = [
   'intro',
   {
     type: 'category',
+    label: '🔥生成模式（推荐）',
+    collapsed: false,
+    link: {
+      type: 'doc',
+      id: 'quick-start/v4/v5-generator-examples',
+    },
+    items: [
+      {
+        type: 'doc',
+        label: '使用方式总览',
+        id: 'quick-start/v4/v5-generator-examples',
+      },
+      {
+        type: 'category',
+        label: '各个框架的注册方式',
+        collapsed: false,
+        items: [
+          {
+            type: 'link',
+            label: 'uni-app Vue Vite',
+            href: '/docs/quick-start/v4/v5-generator-examples#uni-app-vue-vite',
+          },
+          {
+            type: 'link',
+            label: 'uni-app Vue2 Webpack',
+            href: '/docs/quick-start/v4/v5-generator-examples#uni-app-vue2-webpack',
+          },
+          {
+            type: 'link',
+            label: 'Taro Vite',
+            href: '/docs/quick-start/v4/v5-generator-examples#taro-vite',
+          },
+          {
+            type: 'link',
+            label: 'Taro Webpack',
+            href: '/docs/quick-start/v4/v5-generator-examples#taro-webpack',
+          },
+          {
+            type: 'link',
+            label: 'weapp-vite',
+            href: '/docs/quick-start/v4/v5-generator-examples#weapp-vite',
+          },
+          {
+            type: 'link',
+            label: 'Mpx',
+            href: '/docs/quick-start/v4/v5-generator-examples#mpx',
+          },
+        ],
+      },
+    ],
+  },
+  {
+    type: 'category',
     label: '🔥Tailwind CSS @3.x',
     collapsed: false,
     items: [
@@ -95,11 +148,6 @@ const tutorialSidebar: SidebarConfig = [
     label: '🧪Tailwind CSS @4.x',
     collapsed: false,
     items: [
-      {
-        type: 'doc',
-        label: '🔥 v5 生成模式使用方式（推荐）',
-        id: 'quick-start/v4/v5-generator-examples',
-      },
       {
         type: 'category',
         label: '各个框架的注册方式',

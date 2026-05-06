@@ -1,5 +1,5 @@
 ---
-title: v5 生成模式使用方式（推荐）
+title: 生成模式使用方式（推荐）
 description: 使用 weapp-tailwindcss v5 生成模式接入 uni-app、Taro、weapp-vite 与 Mpx 的常用示例
 sidebar_position: 6
 keywords:
@@ -14,13 +14,27 @@ keywords:
   - 小程序
 ---
 
-# v5 生成模式使用方式（推荐）
+# 生成模式使用方式（推荐）
 
 v5 推荐把 Tailwind CSS v4 当作标准 CSS-first 入口使用，再由 `weapp-tailwindcss` 控制最终样式生成。核心变化是：入口 CSS 写 `@import "tailwindcss"`，构建插件或 PostCSS 插件开启 `generator`，最终产物直接面向小程序，而不是先生成浏览器 CSS 再做大量兜底兼容。
 
 :::tip 新项目优先选择生成模式
 如果你正在接入 Tailwind CSS v4 或准备升级到 v5，优先从本页开始。生成模式会直接生成小程序目标 CSS，并用 `classSet` 精确约束 JS / 模板转译范围。
 :::
+
+## 安装
+
+生成模式只需要安装 `tailwindcss`、对应的 Tailwind 官方构建插件和 `weapp-tailwindcss`，不需要再配置 `postinstall` 脚本。
+
+```bash npm2yarn
+npm install -D tailwindcss @tailwindcss/vite weapp-tailwindcss
+```
+
+如果当前框架只能通过 PostCSS 接入 Tailwind CSS v4，再安装 `@tailwindcss/postcss`：
+
+```bash npm2yarn
+npm install -D tailwindcss @tailwindcss/postcss postcss weapp-tailwindcss
+```
 
 ## 常用场景速查
 
@@ -517,7 +531,7 @@ pnpm build:demo
 
 ## 部署后验证
 
-如果文档站使用预览域名或 Cloudflare Pages 预览构建，建议在部署完成后直接检查新路由和旧入口是否符合预期：
+如果文档站使用预览域名或 Cloudflare Git 部署，建议在部署完成后直接检查新路由和旧入口是否符合预期：
 
 ```bash
 curl -I https://next.tw.icebreaker.top/docs/quick-start/v4/v5-generator-examples
