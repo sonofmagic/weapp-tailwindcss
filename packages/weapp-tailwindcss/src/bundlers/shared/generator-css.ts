@@ -7,7 +7,7 @@ import {
   resolveTailwindV3SourceFromPatcher,
   resolveTailwindV4SourceFromPatcher,
 } from '@/generator'
-import { removeUnsupportedAtSupports } from './css-cleanup'
+import { hoistTailwindPreflightBase, removeUnsupportedAtSupports } from './css-cleanup'
 
 const TAILWIND_V4_BANNER_RE = /\/\*!\s*tailwindcss v4\./
 const TAILWIND_GENERATED_CSS_MARKER_RE = /\/\*!\s*tailwindcss v|@property\s+--tw-|--tw-|:not\(#\\#\)|\.[^,{]*\\:/
@@ -110,6 +110,13 @@ export function hasTailwindGeneratedCss(rawSource: string) {
 
 export function hasTailwindGeneratedCssMarkers(rawSource: string) {
   return TAILWIND_GENERATED_CSS_MARKER_RE.test(rawSource)
+}
+
+function finalizeMiniProgramGeneratorCss(css: string, target: string) {
+  if (target !== 'weapp') {
+    return css
+  }
+  return hoistTailwindPreflightBase(removeUnsupportedAtSupports(css))
 }
 
 function parseImportRequest(params: string) {
@@ -312,7 +319,7 @@ export async function generateCssByGenerator(
             : cleanedExtraCss
           if (extraSource.trim().length === 0) {
             return {
-              css: generated.target === 'weapp' ? removeUnsupportedAtSupports(css) : css,
+              css: finalizeMiniProgramGeneratorCss(css, generated.target),
               target: generated.target,
               source: 'generator',
             }
@@ -330,7 +337,7 @@ export async function generateCssByGenerator(
         }
       }
       return {
-        css: generated.target === 'weapp' ? removeUnsupportedAtSupports(css) : css,
+        css: finalizeMiniProgramGeneratorCss(css, generated.target),
         target: generated.target,
         source: 'generator',
       }
@@ -351,7 +358,7 @@ export async function generateCssByGenerator(
         generatorOptions.styleOptions as IStyleHandlerOptions | undefined,
       )
       return {
-        css: generated.target === 'weapp' ? removeUnsupportedAtSupports(css) : css,
+        css: finalizeMiniProgramGeneratorCss(css, generated.target),
         target: generated.target,
         source: 'generator-forced',
       }

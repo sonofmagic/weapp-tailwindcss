@@ -839,6 +839,93 @@ describe('bundlers/shared generator css', () => {
     expect(styleHandler.mock.calls[0]?.[0]).not.toContain('display-p3')
   })
 
+  it('hoists forced legacy Tailwind preflight before generated utilities', async () => {
+    const runtimeSet = new Set(['bg-[#534312]'])
+    const rawSource = [
+      '.card{color:red}',
+      'view,text,::before,::after{--tw-border-spacing-x:0;box-sizing:border-box;border-width:0;border-style:solid}',
+      '::before,::after{--tw-content:""}',
+    ].join('\n')
+    const rawTailwindCss = '.bg-\\[\\#534312\\]{background-color:#534312}'
+    const weappCss = '.bg-_b_h534312_B{background-color:#534312}'
+    const legacyCss = [
+      '.card{color:red}',
+      'view,text,::before,::after{--tw-border-spacing-x:0;box-sizing:border-box;border-width:0;border-style:solid}',
+      '::before,::after{--tw-content:""}',
+    ].join('\n')
+    const generateMock = vi.fn(async () => ({
+      css: weappCss,
+      rawCss: rawTailwindCss,
+      target: 'weapp',
+      classSet: runtimeSet,
+      dependencies: [],
+      sources: [],
+      root: null,
+    }))
+
+    vi.doMock('@/generator', () => ({
+      createWeappTailwindcssGenerator: vi.fn(() => ({
+        generate: generateMock,
+      })),
+      normalizeWeappTailwindcssGeneratorOptions: normalizeGeneratorOptions,
+      resolveTailwindV4SourceFromPatcher: vi.fn(async () => ({
+        projectRoot: process.cwd(),
+        base: process.cwd(),
+        baseFallbacks: [],
+        css: '@import "tailwindcss";',
+        dependencies: [],
+      })),
+    }))
+
+    const { generateCssByGenerator } = await import('@/bundlers/shared/generator-css')
+    const styleHandler = vi.fn(async () => ({ css: legacyCss }))
+    const result = await generateCssByGenerator({
+      opts: {
+        generator: {
+          mode: 'force',
+          target: 'weapp',
+        },
+        styleHandler,
+      } as any,
+      runtimeState: {
+        twPatcher: {
+          majorVersion: 4,
+        } as any,
+        patchPromise: Promise.resolve(),
+      },
+      runtime: runtimeSet,
+      rawSource,
+      file: 'app.wxss',
+      cssHandlerOptions: {
+        isMainChunk: true,
+        postcssOptions: {
+          options: {
+            from: 'app.wxss',
+          },
+        },
+        majorVersion: 4,
+      } as any,
+      cssUserHandlerOptions: {
+        isMainChunk: false,
+        postcssOptions: {
+          options: {
+            from: 'app.wxss',
+          },
+        },
+        majorVersion: 4,
+      } as any,
+      styleHandler,
+      debug: vi.fn(),
+    })
+
+    expect(result?.css).toBe([
+      '::before,::after{--tw-content:""}',
+      'view,text,::before,::after{--tw-border-spacing-x:0;box-sizing:border-box;border-width:0;border-style:solid}',
+      `${weappCss}`,
+      '.card{color:red}',
+    ].join('\n'))
+  })
+
   it('generates scoped tailwind css assets outside the main chunk', async () => {
     const runtimeSet = new Set(['bg-emerald-500'])
     const rawTailwindCss = '/*! tailwindcss v4.2.4 | MIT License | https://tailwindcss.com */\n.bg-emerald-500:not(#\\#){background-color:rgb(0,185,129)}'

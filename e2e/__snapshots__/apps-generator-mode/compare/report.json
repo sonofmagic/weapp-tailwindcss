@@ -72,7 +72,7 @@
       "hasRawArbitrarySelector": false
     },
     "generator": {
-      "bytes": 15189,
+      "bytes": 15132,
       "selectors": [
         ".-start",
         "._estart",
@@ -122,6 +122,8 @@
         ".w-_b323px_B",
         ".w-_b50px_B",
         "/*$vite$:1*/ /*$vite$:1*/ /* stylelint-disable-next-line import-notation */ .s .a",
+        "::after",
+        "::before",
         ":host",
         "page",
         "wx-root-portal-content"
@@ -132,8 +134,8 @@
       "hasWeappEscapedArbitrarySelector": true,
       "hasRawArbitrarySelector": false
     },
-    "deltaBytes": 9031,
-    "generatorBytesRatio": 2.4665,
+    "deltaBytes": 8974,
+    "generatorBytesRatio": 2.4573,
     "sharedSelectors": [
       ".bg-_b_h3a32d1_B",
       ".bg-_b_h68c828_B",
@@ -180,8 +182,6 @@
       ".space-y-2_d5 > text + text",
       ".space-y-2_d5 > text + view",
       ".space-y-2_d5 > view + text",
-      "::after",
-      "::before",
       ":after",
       ":before",
       "text",
@@ -6240,7 +6240,7 @@
       "hasRawArbitrarySelector": false
     },
     "generator": {
-      "bytes": 89748,
+      "bytes": 89720,
       "selectors": [
         ".absolute",
         ".absolute:not(#\\#):not(#\\#)",
@@ -6611,6 +6611,8 @@
         ".w-12:not(#\\#):not(#\\#)",
         ".w-20",
         ".w-20:not(#\\#):not(#\\#)",
+        "::after",
+        "::before",
         ":host",
         "[data-c-h='true']",
         "page",
@@ -6622,8 +6624,8 @@
       "hasWeappEscapedArbitrarySelector": true,
       "hasRawArbitrarySelector": false
     },
-    "deltaBytes": 34491,
-    "generatorBytesRatio": 1.6242,
+    "deltaBytes": 34463,
+    "generatorBytesRatio": 1.6237,
     "sharedSelectors": [
       ".active_cbg-emerald-600:active",
       ".aspect-_bcalc_p4_x3_u1_P_f3_B",
@@ -7003,7 +7005,7 @@
       "hasRawArbitrarySelector": false
     },
     "generator": {
-      "bytes": 98595,
+      "bytes": 98567,
       "selectors": [
         ".absolute",
         ".absolute:not(#\\#):not(#\\#)",
@@ -7396,6 +7398,8 @@
         ".w-12:not(#\\#):not(#\\#)",
         ".w-20",
         ".w-20:not(#\\#):not(#\\#)",
+        "::after",
+        "::before",
         ":host",
         "[data-c-h='true']",
         "page",
@@ -7407,8 +7411,8 @@
       "hasWeappEscapedArbitrarySelector": true,
       "hasRawArbitrarySelector": false
     },
-    "deltaBytes": 33733,
-    "generatorBytesRatio": 1.5201,
+    "deltaBytes": 33705,
+    "generatorBytesRatio": 1.5196,
     "sharedSelectors": [
       ".active_cbg-emerald-600:active",
       ".aspect-_bcalc_p4_x3_u1_P_f3_B",
@@ -7490,7 +7494,7 @@
     ],
     "status": "passed",
     "legacy": {
-      "bytes": 48553,
+      "bytes": 40513,
       "selectors": [
         ".-m-_b20px_B",
         ".-mt-2",
@@ -7632,8 +7636,6 @@
         ".w-_b300rpx_B",
         ".w-_b404px_B",
         ".w-full",
-        "::-ms-backdrop",
-        "::-webkit-backdrop",
         "::after",
         "::before",
         "text",
@@ -7646,7 +7648,7 @@
       "hasRawArbitrarySelector": false
     },
     "generator": {
-      "bytes": 122479,
+      "bytes": 114523,
       "selectors": [
         ".-m-_b20px_B",
         ".-mt-2",
@@ -7788,8 +7790,6 @@
         ".w-_b300rpx_B",
         ".w-_b404px_B",
         ".w-full",
-        "::-ms-backdrop",
-        "::-webkit-backdrop",
         "::after",
         "::before",
         "text",
@@ -7801,8 +7801,8 @@
       "hasWeappEscapedArbitrarySelector": true,
       "hasRawArbitrarySelector": false
     },
-    "deltaBytes": 73926,
-    "generatorBytesRatio": 2.5226,
+    "deltaBytes": 74010,
+    "generatorBytesRatio": 2.8268,
     "sharedSelectors": [
       ".-m-_b20px_B",
       ".-mt-2",
@@ -7838,7 +7838,7 @@
     ],
     "status": "passed",
     "legacy": {
-      "bytes": 383463,
+      "bytes": 382585,
       "selectors": [
         "._bchunkhash_c8_B",
         "._bhash_c8_B",
@@ -9727,8 +9727,6 @@
         "75%",
         "80%",
         "90%",
-        "::-ms-backdrop",
-        "::-webkit-backdrop",
         "::after",
         "::before",
         ":after",
@@ -10006,7 +10004,7 @@
       "hasRawArbitrarySelector": false
     },
     "generator": {
-      "bytes": 382042,
+      "bytes": 381898,
       "selectors": [
         "._bchunkhash_c8_B",
         "._bhash_c8_B",
@@ -11895,8 +11893,8 @@
         "75%",
         "80%",
         "90%",
-        "::-ms-backdrop",
-        "::-webkit-backdrop",
+        "::after",
+        "::before",
         ":after",
         ":before",
         ":host",
@@ -12171,8 +12169,8 @@
       "hasWeappEscapedArbitrarySelector": true,
       "hasRawArbitrarySelector": false
     },
-    "deltaBytes": -1421,
-    "generatorBytesRatio": 0.9963,
+    "deltaBytes": -687,
+    "generatorBytesRatio": 0.9982,
     "sharedSelectors": [
       "._bchunkhash_c8_B",
       "._bhash_c8_B",
@@ -12196,10 +12194,7 @@
       ".nut-actionsheet-cancel-description"
     ],
     "generatorOnlySelectors": [],
-    "legacyOnlySelectors": [
-      "::after",
-      "::before"
-    ]
+    "legacyOnlySelectors": []
   },
   {
     "name": "taro-app-vite",
@@ -12322,7 +12317,7 @@
     ],
     "status": "passed",
     "legacy": {
-      "bytes": 3562,
+      "bytes": 2684,
       "selectors": [
         ".bg-_b_h123456_B",
         ".bg-gradient-to-r",
@@ -12338,10 +12333,6 @@
         ".to-blue-500",
         ".tw-page-style-watch-anchor",
         ".tw-root",
-        "::-ms-backdrop",
-        "::-webkit-backdrop",
-        "::after",
-        "::before",
         ":after",
         ":before",
         ":host",
@@ -12357,7 +12348,7 @@
       "hasRawArbitrarySelector": false
     },
     "generator": {
-      "bytes": 5670,
+      "bytes": 5642,
       "selectors": [
         ".bg-_b_h123456_B",
         ".bg-gradient-to-r",
@@ -12402,8 +12393,8 @@
       "hasWeappEscapedArbitrarySelector": true,
       "hasRawArbitrarySelector": false
     },
-    "deltaBytes": 2108,
-    "generatorBytesRatio": 1.5918,
+    "deltaBytes": 2958,
+    "generatorBytesRatio": 2.1021,
     "sharedSelectors": [
       ".bg-_b_h123456_B",
       ".bg-gradient-to-r",
@@ -12445,10 +12436,6 @@
       ".visible"
     ],
     "legacyOnlySelectors": [
-      "::-ms-backdrop",
-      "::-webkit-backdrop",
-      "::after",
-      "::before",
       ":after",
       ":before",
       "text",
@@ -12466,7 +12453,7 @@
     ],
     "status": "passed",
     "legacy": {
-      "bytes": 6375,
+      "bytes": 5387,
       "selectors": [
         "._eborder-brand",
         ".active_cbg-emerald-600:active",
@@ -12501,10 +12488,6 @@
         ".to-rose-500",
         ".tw-page-style-watch-anchor",
         ".tw-root",
-        "::-ms-backdrop",
-        "::-webkit-backdrop",
-        "::after",
-        "::before",
         ":after",
         ":before",
         ":host",
@@ -12520,7 +12503,7 @@
       "hasRawArbitrarySelector": false
     },
     "generator": {
-      "bytes": 23524,
+      "bytes": 23496,
       "selectors": [
         "._eborder-brand",
         ".absolute",
@@ -12679,8 +12662,8 @@
       "hasWeappEscapedArbitrarySelector": true,
       "hasRawArbitrarySelector": false
     },
-    "deltaBytes": 17149,
-    "generatorBytesRatio": 3.69,
+    "deltaBytes": 18109,
+    "generatorBytesRatio": 4.3616,
     "sharedSelectors": [
       "._eborder-brand",
       ".active_cbg-emerald-600:active",
@@ -12730,10 +12713,6 @@
       ".space-y-4 > text + text",
       ".space-y-4 > text + view",
       ".space-y-4 > view + text",
-      "::-ms-backdrop",
-      "::-webkit-backdrop",
-      "::after",
-      "::before",
       ":after",
       ":before",
       "text",
@@ -12750,7 +12729,7 @@
     ],
     "status": "passed",
     "legacy": {
-      "bytes": 118508,
+      "bytes": 115828,
       "selectors": [
         ".-m-_b20px_B",
         ".-mt-2",
@@ -13041,8 +13020,6 @@
         "75%",
         "80%",
         "90%",
-        "::-ms-backdrop",
-        "::-webkit-backdrop",
         "::after",
         "::before",
         "page",
@@ -13058,7 +13035,7 @@
       "hasRawArbitrarySelector": false
     },
     "generator": {
-      "bytes": 131014,
+      "bytes": 128334,
       "selectors": [
         ".-m-_b20px_B",
         ".-mt-2",
@@ -13349,8 +13326,6 @@
         "75%",
         "80%",
         "90%",
-        "::-ms-backdrop",
-        "::-webkit-backdrop",
         "::after",
         "::before",
         "page",
@@ -13366,7 +13341,7 @@
       "hasRawArbitrarySelector": false
     },
     "deltaBytes": 12506,
-    "generatorBytesRatio": 1.1055,
+    "generatorBytesRatio": 1.108,
     "sharedSelectors": [
       ".-m-_b20px_B",
       ".-mt-2",
@@ -19522,7 +19497,7 @@
       "hasRawArbitrarySelector": false
     },
     "generator": {
-      "bytes": 28438,
+      "bytes": 28382,
       "selectors": [
         ".-m-_b20px_B",
         ".-mt-2",
@@ -19630,6 +19605,8 @@
         ".w-_b20px_B",
         ".w-_b300rpx_B",
         ".w-screen",
+        "::after",
+        "::before",
         ":after",
         ":before",
         ":host",
@@ -19644,8 +19621,8 @@
       "hasWeappEscapedArbitrarySelector": true,
       "hasRawArbitrarySelector": false
     },
-    "deltaBytes": 7312,
-    "generatorBytesRatio": 1.3461,
+    "deltaBytes": 7256,
+    "generatorBytesRatio": 1.3435,
     "sharedSelectors": [
       ".-m-_b20px_B",
       ".-mt-2",
@@ -19672,10 +19649,7 @@
       ".after_cborder-none::after",
       ".before_ccontent-_b_aFestivus_a_B::before"
     ],
-    "legacyOnlySelectors": [
-      "::after",
-      "::before"
-    ]
+    "legacyOnlySelectors": []
   },
   {
     "name": "mpx-tailwindcss-v5",
@@ -19821,7 +19795,7 @@
       "hasRawArbitrarySelector": false
     },
     "generator": {
-      "bytes": 32454,
+      "bytes": 32398,
       "selectors": [
         ".-m-_b20px_B",
         ".-mt-2",
@@ -19938,6 +19912,8 @@
         ".w-5",
         ".w-_b300rpx_B",
         ".w-screen",
+        "::after",
+        "::before",
         ":after",
         ":before",
         ":host",
@@ -19952,8 +19928,8 @@
       "hasWeappEscapedArbitrarySelector": true,
       "hasRawArbitrarySelector": false
     },
-    "deltaBytes": 7314,
-    "generatorBytesRatio": 1.2909,
+    "deltaBytes": 7258,
+    "generatorBytesRatio": 1.2887,
     "sharedSelectors": [
       ".-m-_b20px_B",
       ".-mt-2",
@@ -19980,9 +19956,6 @@
       ".after_cborder-none::after",
       ".before_ccontent-_b_aFestivus_a_B::before"
     ],
-    "legacyOnlySelectors": [
-      "::after",
-      "::before"
-    ]
+    "legacyOnlySelectors": []
   }
 ]

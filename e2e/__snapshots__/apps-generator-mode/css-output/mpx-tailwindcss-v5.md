@@ -8,7 +8,7 @@ Generator CSS files: app.wxss, styles/app.wxss, index.wxss, app5e440dc4.wxss
 | Mode | Bytes | Selectors | @supports | :hover | Tailwind banner | Raw arbitrary selector | Weapp escaped arbitrary selector |
 | --- | ---: | ---: | --- | --- | --- | --- | --- |
 | legacy | 25140 | 122 | true | false | false | false | true |
-| generator | 32454 | 122 | false | false | false | false | true |
+| generator | 32398 | 124 | false | false | false | false | true |
 
 ## Legacy CSS
 
@@ -1074,11 +1074,18 @@ text,
 ```css
 @import './styles/app.wxss';
 
-page,
-.tw-root,
-wx-root-portal-content,
-:host {
+::before,
+::after {
   --tw-content: '';
+}
+view,
+text,
+:after,
+:before {
+  border: 0 solid;
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
 }
 page,
 .tw-root,
@@ -1351,15 +1358,6 @@ wx-root-portal-content {
   --radius-lg: 16rpx;
   --radius-xl: 24rpx;
   --color-primary: #155dfc;
-}
-view,
-text,
-:after,
-:before {
-  border: 0 solid;
-  box-sizing: border-box;
-  margin: 0;
-  padding: 0;
 }
 .-m-_b20px_B {
   margin: -20px;
@@ -1777,11 +1775,18 @@ text,
 }
 
 
-page,
-.tw-root,
-wx-root-portal-content,
-:host {
+::before,
+::after {
   --tw-content: '';
+}
+view,
+text,
+:after,
+:before {
+  border: 0 solid;
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
 }
 page,
 .tw-root,
@@ -2054,15 +2059,6 @@ wx-root-portal-content {
   --radius-lg: 16rpx;
   --radius-xl: 24rpx;
   --color-primary: #155dfc;
-}
-view,
-text,
-:after,
-:before {
-  border: 0 solid;
-  box-sizing: border-box;
-  margin: 0;
-  padding: 0;
 }
 .-m-_b20px_B {
   margin: -20px;

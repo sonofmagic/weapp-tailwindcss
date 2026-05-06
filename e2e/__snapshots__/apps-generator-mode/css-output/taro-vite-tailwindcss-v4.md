@@ -7,36 +7,14 @@ Generator CSS files: app.wxss, app-origin.wxss, index.wxss
 
 | Mode | Bytes | Selectors | @supports | :hover | Tailwind banner | Raw arbitrary selector | Weapp escaped arbitrary selector |
 | --- | ---: | ---: | --- | --- | --- | --- | --- |
-| legacy | 3562 | 25 | true | false | false | false | true |
-| generator | 5670 | 36 | false | false | false | false | true |
+| legacy | 2684 | 21 | true | false | false | false | true |
+| generator | 5642 | 36 | false | false | false | false | true |
 
 ## Legacy CSS
 
 ```css
 @import 'app-origin.wxss';
 
-::-webkit-backdrop {
-  --tw-gradient-position: initial;
-  --tw-gradient-from: rgba(0, 0, 0, 0);
-  --tw-gradient-via: rgba(0, 0, 0, 0);
-  --tw-gradient-to: rgba(0, 0, 0, 0);
-  --tw-gradient-stops: initial;
-  --tw-gradient-via-stops: initial;
-  --tw-gradient-from-position: 0%;
-  --tw-gradient-via-position: 50%;
-  --tw-gradient-to-position: 100%;
-}
-::-ms-backdrop {
-  --tw-gradient-position: initial;
-  --tw-gradient-from: rgba(0, 0, 0, 0);
-  --tw-gradient-via: rgba(0, 0, 0, 0);
-  --tw-gradient-to: rgba(0, 0, 0, 0);
-  --tw-gradient-stops: initial;
-  --tw-gradient-via-stops: initial;
-  --tw-gradient-from-position: 0%;
-  --tw-gradient-via-position: 50%;
-  --tw-gradient-to-position: 100%;
-}
 ::before,
 ::after {
   --tw-content: '';
@@ -88,18 +66,6 @@ wx-root-portal-content,
       --color-purple-300: color(display-p3 0.82939 0.70374 0.99608);
     }
   }
-}
-::-webkit-backdrop {
-  box-sizing: border-box;
-  border: 0 solid;
-  margin: 0;
-  padding: 0;
-}
-::-ms-backdrop {
-  box-sizing: border-box;
-  border: 0 solid;
-  margin: 0;
-  padding: 0;
 }
 view,
 text,
@@ -176,10 +142,8 @@ text,
 ```css
 @import 'app-origin.wxss';
 
-page,
-.tw-root,
-wx-root-portal-content,
-:host {
+::before,
+::after {
   --tw-content: '';
 }
 page,

@@ -8,7 +8,7 @@ Generator CSS files: app.wxss, home.wxss, user.wxss
 | Mode | Bytes | Selectors | @supports | :hover | Tailwind banner | Raw arbitrary selector | Weapp escaped arbitrary selector |
 | --- | ---: | ---: | --- | --- | --- | --- | --- |
 | legacy | 55257 | 274 | true | false | false | false | true |
-| generator | 89748 | 373 | false | false | false | false | true |
+| generator | 89720 | 375 | false | false | false | false | true |
 
 ## Legacy CSS
 
@@ -1995,10 +1995,8 @@ input:where([type='button'], [type='reset'], [type='submit']):not(#\#):not(#\#) 
 ## Generator CSS
 
 ```css
-page,
-.tw-root,
-wx-root-portal-content,
-:host {
+::before,
+::after {
   --tw-content: '';
 }
 page,

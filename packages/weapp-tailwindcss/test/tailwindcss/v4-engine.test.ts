@@ -213,7 +213,7 @@ describe('tailwindcss v4 engine', () => {
     expect(result.css).toContain('--tw-content')
     expect(result.css).not.toContain('::-webkit')
     expect(result.css).not.toContain(':-moz')
-    expect(result.css).not.toMatch(/^::(?:before|after)/m)
+    expect(result.css).toMatch(/^::before,\s*::after\s*\{\s*--tw-content:/m)
     expect(result.css).not.toContain('@supports')
   })
 

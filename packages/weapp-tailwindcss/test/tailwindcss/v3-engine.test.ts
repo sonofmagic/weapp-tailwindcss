@@ -21,7 +21,7 @@ describe('tailwindcss v3 engine', () => {
     expect(result.css).toContain('--tw-content')
     expect(result.css).not.toContain('button')
     expect(result.css).not.toContain('::-webkit')
-    expect(result.css).not.toMatch(/^::(?:before|after)/m)
+    expect(result.css).toMatch(/^::before,\s*::after\s*\{\s*--tw-content:/m)
   })
 
   it('removes browser-only supports rules from mini-program output', async () => {

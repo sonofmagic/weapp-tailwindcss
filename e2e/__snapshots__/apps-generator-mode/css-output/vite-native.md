@@ -8,7 +8,7 @@ Generator CSS files: app.wxss, apple.wxss, index.wxss
 | Mode | Bytes | Selectors | @supports | :hover | Tailwind banner | Raw arbitrary selector | Weapp escaped arbitrary selector |
 | --- | ---: | ---: | --- | --- | --- | --- | --- |
 | legacy | 6158 | 52 | false | false | false | false | true |
-| generator | 15189 | 51 | false | false | false | false | true |
+| generator | 15132 | 53 | false | false | false | false | true |
 
 ## Legacy CSS
 
@@ -277,10 +277,12 @@ text,
 ## Generator CSS
 
 ```css
-page,
-.tw-root,
-wx-root-portal-content,
-:host {
+::before,
+::after {
+  --tw-content: '';
+}
+::before,
+::after {
   --tw-content: '';
 }
 page,
@@ -532,13 +534,6 @@ wx-root-portal-content,
   .dark_cbg-zinc-900 {
     background-color: var(--color-zinc-900);
   }
-}
-
-page,
-.tw-root,
-wx-root-portal-content,
-:host {
-  --tw-content: '';
 }
 page,
 .tw-root,

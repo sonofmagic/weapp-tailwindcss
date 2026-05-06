@@ -7,34 +7,12 @@ Generator CSS files: app.wxss, index.wxss
 
 | Mode | Bytes | Selectors | @supports | :hover | Tailwind banner | Raw arbitrary selector | Weapp escaped arbitrary selector |
 | --- | ---: | ---: | --- | --- | --- | --- | --- |
-| legacy | 383463 | 2158 | true | false | false | false | true |
-| generator | 382042 | 2156 | false | false | false | false | true |
+| legacy | 382585 | 2156 | true | false | false | false | true |
+| generator | 381898 | 2156 | false | false | false | false | true |
 
 ## Legacy CSS
 
 ```css
-::-webkit-backdrop {
-  --tw-gradient-position: initial;
-  --tw-gradient-from: rgba(0, 0, 0, 0);
-  --tw-gradient-via: rgba(0, 0, 0, 0);
-  --tw-gradient-to: rgba(0, 0, 0, 0);
-  --tw-gradient-stops: initial;
-  --tw-gradient-via-stops: initial;
-  --tw-gradient-from-position: 0%;
-  --tw-gradient-via-position: 50%;
-  --tw-gradient-to-position: 100%;
-}
-::-ms-backdrop {
-  --tw-gradient-position: initial;
-  --tw-gradient-from: rgba(0, 0, 0, 0);
-  --tw-gradient-via: rgba(0, 0, 0, 0);
-  --tw-gradient-to: rgba(0, 0, 0, 0);
-  --tw-gradient-stops: initial;
-  --tw-gradient-via-stops: initial;
-  --tw-gradient-from-position: 0%;
-  --tw-gradient-via-position: 50%;
-  --tw-gradient-to-position: 100%;
-}
 ::before,
 ::after {
   --tw-content: '';
@@ -85,18 +63,6 @@ wx-root-portal-content {
       --color-blue-500: color(display-p3 0.26642 0.49122 0.98862);
     }
   }
-}
-::-webkit-backdrop {
-  border: 0 solid;
-  box-sizing: border-box;
-  margin: 0;
-  padding: 0;
-}
-::-ms-backdrop {
-  border: 0 solid;
-  box-sizing: border-box;
-  margin: 0;
-  padding: 0;
 }
 view,
 text,
@@ -13139,6 +13105,19 @@ page {
 ## Generator CSS
 
 ```css
+::before,
+::after {
+  --tw-content: '';
+}
+view,
+text,
+:after,
+:before {
+  border: 0 solid;
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
 .bg-_b_h534312_B {
   background-color: #534312;
 }
@@ -13164,27 +13143,6 @@ wx-root-portal-content {
   --color-purple-800: rgb(110, 17, 176);
   --color-pink-200: rgb(252, 206, 232);
   --spacing: 8rpx;
-}
-::-webkit-backdrop {
-  border: 0 solid;
-  box-sizing: border-box;
-  margin: 0;
-  padding: 0;
-}
-::-ms-backdrop {
-  border: 0 solid;
-  box-sizing: border-box;
-  margin: 0;
-  padding: 0;
-}
-view,
-text,
-:after,
-:before {
-  border: 0 solid;
-  box-sizing: border-box;
-  margin: 0;
-  padding: 0;
 }
 .static {
   position: static;

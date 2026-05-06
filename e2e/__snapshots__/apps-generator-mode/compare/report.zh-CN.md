@@ -6,21 +6,21 @@
 
 | 项目 | 来源 | 状态 | CSS 文件 | 旧链路字节数 | 生成模式字节数 | 差值 | 比例 | @supports | :hover | Tailwind banner |
 | --- | --- | --- | --- | ---: | ---: | ---: | ---: | --- | --- | --- |
-| vite-native | apps | 通过 | `vite-native/dist/app.wxss` (+2) | 6158 | 15189 | +9031 | 2.4665 | 否 | 否 | 否 |
+| vite-native | apps | 通过 | `vite-native/dist/app.wxss` (+2) | 6158 | 15132 | +8974 | 2.4573 | 否 | 否 | 否 |
 | vite-native-ts | apps | 通过 | `vite-native-ts/dist/app.wxss` (+3) | 12485 | 40881 | +28396 | 3.2744 | 否 | 否 | 否 |
 | uni-app-vue3-vite | demo | 通过 | `uni-app-vue3-vite/dist/build/mp-weixin/app.wxss` (+10) | 401919 | 516881 | +114962 | 1.286 | 否 | 否 | 否 |
-| uni-app-tailwindcss-v4 | demo | 通过 | `uni-app-tailwindcss-v4/dist/build/mp-weixin/app.wxss` (+2) | 55257 | 89748 | +34491 | 1.6242 | 否 | 否 | 否 |
-| uni-app-tailwindcss-v5 | demo | 通过 | `uni-app-tailwindcss-v5/dist/build/mp-weixin/app.wxss` (+2) | 64862 | 98595 | +33733 | 1.5201 | 否 | 否 | 否 |
-| taro-app | demo | 通过 | `taro-app/dist/app.wxss` (+5) | 48553 | 122479 | +73926 | 2.5226 | 否 | 否 | 否 |
-| taro-webpack-tailwindcss-v4 | demo | 通过 | `taro-webpack-tailwindcss-v4/dist/app.wxss` (+1) | 383463 | 382042 | -1421 | 0.9963 | 否 | 否 | 否 |
+| uni-app-tailwindcss-v4 | demo | 通过 | `uni-app-tailwindcss-v4/dist/build/mp-weixin/app.wxss` (+2) | 55257 | 89720 | +34463 | 1.6237 | 否 | 否 | 否 |
+| uni-app-tailwindcss-v5 | demo | 通过 | `uni-app-tailwindcss-v5/dist/build/mp-weixin/app.wxss` (+2) | 64862 | 98567 | +33705 | 1.5196 | 否 | 否 | 否 |
+| taro-app | demo | 通过 | `taro-app/dist/app.wxss` (+5) | 40513 | 114523 | +74010 | 2.8268 | 否 | 否 | 否 |
+| taro-webpack-tailwindcss-v4 | demo | 通过 | `taro-webpack-tailwindcss-v4/dist/app.wxss` (+1) | 382585 | 381898 | -687 | 0.9982 | 否 | 否 | 否 |
 | taro-app-vite | demo | 通过 | `taro-app-vite/dist/app.wxss` (+2) | 4530 | 2575 | -1955 | 0.5684 | 否 | 否 | 否 |
-| taro-vite-tailwindcss-v4 | demo | 通过 | `taro-vite-tailwindcss-v4/dist/app.wxss` (+2) | 3562 | 5670 | +2108 | 1.5918 | 否 | 否 | 否 |
-| taro-vite-tailwindcss-v5 | demo | 通过 | `taro-vite-tailwindcss-v5/dist/app.wxss` (+2) | 6375 | 23524 | +17149 | 3.69 | 否 | 否 | 否 |
-| taro-vue3-app | demo | 通过 | `taro-vue3-app/dist/app.wxss` (+1) | 118508 | 131014 | +12506 | 1.1055 | 否 | 否 | 否 |
+| taro-vite-tailwindcss-v4 | demo | 通过 | `taro-vite-tailwindcss-v4/dist/app.wxss` (+2) | 2684 | 5642 | +2958 | 2.1021 | 否 | 否 | 否 |
+| taro-vite-tailwindcss-v5 | demo | 通过 | `taro-vite-tailwindcss-v5/dist/app.wxss` (+2) | 5387 | 23496 | +18109 | 4.3616 | 否 | 否 | 否 |
+| taro-vue3-app | demo | 通过 | `taro-vue3-app/dist/app.wxss` (+1) | 115828 | 128334 | +12506 | 1.108 | 否 | 否 | 否 |
 | gulp-app | demo | 通过 | `gulp-app/dist/app.wxss` (+2) | 6578 | 12575 | +5997 | 1.9117 | 否 | 否 | 否 |
 | mpx-app | demo | 通过 | `mpx-app/dist/wx/app.wxss` (+16) | 189931 | 202756 | +12825 | 1.0675 | 否 | 否 | 否 |
-| mpx-tailwindcss-v4 | demo | 通过 | `mpx-tailwindcss-v4/dist/wx/app.wxss` (+3) | 21126 | 28438 | +7312 | 1.3461 | 否 | 否 | 否 |
-| mpx-tailwindcss-v5 | demo | 通过 | `mpx-tailwindcss-v5/dist/wx/app.wxss` (+3) | 25140 | 32454 | +7314 | 1.2909 | 否 | 否 | 否 |
+| mpx-tailwindcss-v4 | demo | 通过 | `mpx-tailwindcss-v4/dist/wx/app.wxss` (+3) | 21126 | 28382 | +7256 | 1.3435 | 否 | 否 | 否 |
+| mpx-tailwindcss-v5 | demo | 通过 | `mpx-tailwindcss-v5/dist/wx/app.wxss` (+3) | 25140 | 32398 | +7258 | 1.2887 | 否 | 否 | 否 |
 
 ## 说明
 
@@ -41,7 +41,7 @@
 - CSS 文件：`app.wxss`, `apple.wxss`, `index.wxss`
 - 两边共有：`.bg-_b_h3a32d1_B`, `.bg-_b_h68c828_B`, `.bg-amber-300`, `.bg-blue-500_f30`, `.bg-gradient-to-b`, `.bg-gradient-to-t`, `.bg-gradient-to-tr`, `.bg-zinc-50`, `.border-4`, `.flex`, `.flex-col`, `.from-_b_h2f73f1_B`, `.h-10`, `.h-_b30px_B`, `.h-_b45px_B`, `.i-mdi-home`, `.inline-block`, `.min-h-screen`, `.p-4`, `.size-12`
 - 仅生成模式：`.-start`, `._estart`, `.capitalize`, `.end`, `.filter`, `.inline`, `.invert`, `.resize`, `.rounded`, `.start`, `.transform`, `.transition`, `.truncate`
-- 仅旧链路：`.container`, `.h-_b29_d292px_B`, `.space-x-2_d5 > text + text`, `.space-x-2_d5 > text + view`, `.space-x-2_d5 > view + text`, `.space-y-2_d5 > text + text`, `.space-y-2_d5 > text + view`, `.space-y-2_d5 > view + text`, `::after`, `::before`, `:after`, `:before`, `text`, `view`
+- 仅旧链路：`.container`, `.h-_b29_d292px_B`, `.space-x-2_d5 > text + text`, `.space-x-2_d5 > text + view`, `.space-x-2_d5 > view + text`, `.space-y-2_d5 > text + text`, `.space-y-2_d5 > text + view`, `.space-y-2_d5 > view + text`, `:after`, `:before`, `text`, `view`
 
 ### vite-native-ts
 
@@ -83,7 +83,7 @@
 - CSS 文件：`app.wxss`, `index.wxss`
 - 两边共有：`._bchunkhash_c8_B`, `._bhash_c8_B`, `.bg-_b_h534312_B`, `.bg-gradient-to-r`, `.bg-purple-800`, `.fade-appear`, `.fade-appear-active`, `.fade-enter`, `.fade-enter-active`, `.fade-enter-done`, `.fade-exit`, `.fade-exit-active`, `.fade-exit-done`, `.from-cyan-500`, `.h-14`, `.nut-actionsheet`, `.nut-actionsheet .nut-popup-title`, `.nut-actionsheet-cancel`, `.nut-actionsheet-cancel-danger`, `.nut-actionsheet-cancel-description`
 - 仅生成模式：-
-- 仅旧链路：`::after`, `::before`
+- 仅旧链路：-
 
 ### taro-app-vite
 
@@ -97,14 +97,14 @@
 - CSS 文件：`app.wxss`, `app-origin.wxss`, `index.wxss`
 - 两边共有：`.bg-_b_h123456_B`, `.bg-gradient-to-r`, `.bg-linear-to-r`, `.bg-purple-300`, `.from-cyan-500`, `.h-14`, `.h-_b300px_B`, `.static`, `.text-_b55rpx_B`, `.text-_b_hc31d6b_B`, `.text-_b_hfff_B`, `.to-blue-500`, `.tw-page-style-watch-anchor`, `.tw-root`, `:host`, `page`, `wx-root-portal-content`
 - 仅生成模式：`.block`, `.blur`, `.border`, `.container`, `.ease-out`, `.end`, `.filter`, `.fixed`, `.flex`, `.grid`, `.hidden`, `.inline`, `.outline`, `.resize`, `.start`, `.table`, `.transform`, `.transition`, `.visible`
-- 仅旧链路：`::-ms-backdrop`, `::-webkit-backdrop`, `::after`, `::before`, `:after`, `:before`, `text`, `view`
+- 仅旧链路：`:after`, `:before`, `text`, `view`
 
 ### taro-vite-tailwindcss-v5
 
 - CSS 文件：`app.wxss`, `app-origin.wxss`, `index.wxss`
 - 两边共有：`._eborder-brand`, `.active_cbg-emerald-600:active`, `.bg-_b_h123456_B`, `.bg-brand`, `.bg-gradient-to-b`, `.bg-gradient-to-r`, `.bg-gray-100`, `.bg-linear-to-r`, `.bg-red-500`, `.border-_b10rpx_B`, `.from-cyan-500`, `.from-fuchsia-500`, `.h-14`, `.h-_b300px_B`, `.p-4`, `.p-_b32rpx_B`, `.rotate-_b10deg_B`, `.rounded-xl`, `.space-y-4 > view + view`, `.static`
 - 仅生成模式：`.absolute`, `.antialiased`, `.backdrop-blur`, `.backdrop-filter`, `.backdrop-grayscale`, `.backdrop-invert`, `.backdrop-sepia`, `.bg-repeat`, `.block`, `.blur`, `.border`, `.border-b`, `.border-be`, `.border-bs`, `.border-collapse`, `.border-e`, `.border-l`, `.border-r`, `.border-s`, `.border-t`
-- 仅旧链路：`.dark_cbg-zinc-800`, `.space-y-4 > text + text`, `.space-y-4 > text + view`, `.space-y-4 > view + text`, `::-ms-backdrop`, `::-webkit-backdrop`, `::after`, `::before`, `:after`, `:before`, `text`, `view`
+- 仅旧链路：`.dark_cbg-zinc-800`, `.space-y-4 > text + text`, `.space-y-4 > text + view`, `.space-y-4 > view + text`, `:after`, `:before`, `text`, `view`
 
 ### taro-vue3-app
 
@@ -132,11 +132,11 @@
 - CSS 文件：`app.wxss`, `styles/app.wxss`, `index.wxss`, `app3b4a1ac6.wxss`
 - 两边共有：`.-m-_b20px_B`, `.-mt-2`, `._2xl_ctext-_bred_B`, `._ebg-green-500`, `._efont-bold`, `._etext-_b_h990000_B`, `.active_cbg-_b_h543210_B:active`, `.active_cbg-_b_h989898_B:active`, `.after_cborder-none:after`, `.before_ccontent-_b_aFestivus_a_B:before`, `.bg-_b_h010101_B`, `.bg-_b_h123456_B`, `.bg-_b_h434344_B`, `.bg-_b_he90505_B`, `.bg-blue-500_f50`, `.bg-gray-100`, `.bg-pink-500`, `.bg-red-400`, `.bg-red-500`, `.bg-sky-500`
 - 仅生成模式：`.after_cborder-none::after`, `.before_ccontent-_b_aFestivus_a_B::before`
-- 仅旧链路：`::after`, `::before`
+- 仅旧链路：-
 
 ### mpx-tailwindcss-v5
 
 - CSS 文件：`app.wxss`, `styles/app.wxss`, `index.wxss`, `app5e440dc4.wxss`
 - 两边共有：`.-m-_b20px_B`, `.-mt-2`, `._2xl_ctext-_bred_B`, `._ebg-green-500`, `._eborder-primary`, `._efont-bold`, `._etext-_b_h990000_B`, `._etext-primary`, `.active_cbg-_b_h543210_B:active`, `.active_cbg-_b_h989898_B:active`, `.after_cborder-none:after`, `.before_ccontent-_b_aFestivus_a_B:before`, `.bg-_b_h0000ff_B`, `.bg-_b_h010101_B`, `.bg-_b_h123456_B`, `.bg-_b_h434344_B`, `.bg-_b_he90505_B`, `.bg-blue-500_f50`, `.bg-emerald-500`, `.bg-gradient-to-r`
 - 仅生成模式：`.after_cborder-none::after`, `.before_ccontent-_b_aFestivus_a_B::before`
-- 仅旧链路：`::after`, `::before`
+- 仅旧链路：-

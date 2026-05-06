@@ -2,6 +2,7 @@ import postcss from 'postcss'
 
 const DEFAULT_WEAPP_VARIABLE_SCOPE = 'page,.tw-root,wx-root-portal-content,:host'
 const CLASS_SELECTOR_RE = /(?:^|[^\w-])\.[_a-z\u00A0-\uFFFF\\-]/i
+const PSEUDO_CONTENT_SELECTOR_RE = /^(?:::before|::after|:before|:after)(?:,(?:::before|::after|:before|:after))*$/
 
 function hasClassSelector(selector: string) {
   return CLASS_SELECTOR_RE.test(selector)
@@ -19,6 +20,24 @@ function isCustomPropertyRule(rule: postcss.Rule) {
   })
 
   return hasDeclaration && allCustomProperties
+}
+
+function isPseudoContentInitRule(rule: postcss.Rule) {
+  const selector = rule.selector.replace(/\s+/g, '')
+  if (!PSEUDO_CONTENT_SELECTOR_RE.test(selector)) {
+    return false
+  }
+
+  let hasDeclaration = false
+  let onlyContentVariable = true
+  rule.walkDecls((decl) => {
+    hasDeclaration = true
+    if (decl.prop !== '--tw-content') {
+      onlyContentVariable = false
+    }
+  })
+
+  return hasDeclaration && onlyContentVariable
 }
 
 /**
@@ -40,6 +59,10 @@ export function pruneMiniProgramGeneratedCss(css: string) {
 
   root.walkRules((rule) => {
     if (hasClassSelector(rule.selector)) {
+      return
+    }
+
+    if (isPseudoContentInitRule(rule)) {
       return
     }
 

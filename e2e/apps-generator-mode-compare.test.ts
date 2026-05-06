@@ -256,6 +256,14 @@ async function expectReportSnapshot(report: AppsGeneratorCompareReportItem[]) {
   await expect(createChineseMarkdownReport(report)).toMatchFileSnapshot(chineseMarkdownSnapshotPath)
 }
 
+function normalizeCssSnapshot(css: string) {
+  return css
+    .trimEnd()
+    .split('\n')
+    .map(line => line.trimEnd())
+    .join('\n')
+}
+
 function createCssOutputComparisonSnapshot(
   project: CompareProject,
   legacyResult: { css: string, cssFiles: string[] },
@@ -279,13 +287,13 @@ function createCssOutputComparisonSnapshot(
     '## Legacy CSS',
     '',
     '```css',
-    legacyResult.css.trimEnd(),
+    normalizeCssSnapshot(legacyResult.css),
     '```',
     '',
     '## Generator CSS',
     '',
     '```css',
-    generatorResult.css.trimEnd(),
+    normalizeCssSnapshot(generatorResult.css),
     '```',
     '',
   ].join('\n')
