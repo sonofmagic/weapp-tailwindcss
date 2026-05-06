@@ -10,10 +10,6 @@ on:
         description: Expected weapp-tailwindcss version to publish
         required: true
         default: 5.0.0-next.0
-      npm-tag:
-        description: npm dist-tag
-        required: true
-        default: next
       prerelease-tag:
         description: changeset prerelease tag
         required: true
@@ -87,7 +83,7 @@ jobs:
         run: pnpm run build
 
       - name: Publish to NPM
-        run: pnpm changeset publish --tag "${{ inputs.npm-tag }}"
+        run: pnpm changeset publish
 
         env:
           NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
