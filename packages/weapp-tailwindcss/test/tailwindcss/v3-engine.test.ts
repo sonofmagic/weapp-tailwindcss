@@ -1,4 +1,5 @@
 import { createTailwindV3Engine, resolveTailwindV3Source } from '@/tailwindcss/v3-engine'
+import plugin from 'tailwindcss/plugin'
 
 function compactCss(css: string) {
   return css.replace(/\s+/g, '')
@@ -88,5 +89,35 @@ describe('tailwindcss v3 engine', () => {
     expect(result.css).toBe(result.rawCss)
     expect(result.css).toContain('button')
     expect(result.css).toContain('.w-4')
+  })
+
+  it('normalizes default export configs before generating plugin components', async () => {
+    const source = await resolveTailwindV3Source({
+      css: '@tailwind components;',
+      base: process.cwd(),
+      config: undefined,
+    })
+    source.configObject = {
+      default: {
+        content: [],
+        plugins: [
+          plugin(({ addComponents }) => {
+            addComponents({
+              '.weapp-reset-button': {
+                padding: '0',
+              },
+            })
+          }),
+        ],
+      },
+    } as never
+    const engine = createTailwindV3Engine(source)
+
+    const result = await engine.generate({
+      candidates: ['weapp-reset-button'],
+    })
+
+    expect(result.css).toContain('.weapp-reset-button')
+    expect(result.css).toContain('padding: 0')
   })
 })

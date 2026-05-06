@@ -7,6 +7,12 @@ import postcss from 'postcss'
 import { loadConfig } from 'tailwindcss-config'
 import { resolveTailwindcssOptions } from '@/tailwindcss/patcher-options'
 
+const DEFAULT_TAILWIND_V3_CSS = [
+  '@tailwind base;',
+  '@tailwind components;',
+  '@tailwind utilities;',
+].join('\n')
+
 function parseConfigParam(params: string) {
   const value = params.trim()
   const match = /^(['"])(.+)\1$/.exec(value)
@@ -51,6 +57,17 @@ function getProjectRoot(patcher: TailwindcssPatcherLike) {
   return patcher.options?.projectRoot ?? process.cwd()
 }
 
+function normalizeLoadedConfig(config: Config | undefined) {
+  if (!config || typeof config !== 'object') {
+    return config
+  }
+  const maybeDefault = (config as { default?: unknown }).default
+  if (maybeDefault && typeof maybeDefault === 'object') {
+    return maybeDefault as Config
+  }
+  return config
+}
+
 function resolveTailwindCssPackageName(patcher: TailwindcssPatcherLike) {
   const tailwindOptions = resolveTailwindcssOptions(patcher.options)
   return tailwindOptions?.packageName ?? patcher.packageInfo?.name ?? 'tailwindcss'
@@ -74,9 +91,9 @@ export async function resolveTailwindV3Source(
     projectRoot,
     cwd,
     base,
-    css: cssConfig.css ?? options.css ?? '@tailwind utilities;',
+    css: cssConfig.css ?? options.css ?? DEFAULT_TAILWIND_V3_CSS,
     config: loaded?.filepath ?? config,
-    configObject: loaded?.config as Config | undefined,
+    configObject: normalizeLoadedConfig(loaded?.config as Config | undefined),
     dependencies: loaded?.filepath ? [loaded.filepath] : [],
     packageName: options.packageName ?? 'tailwindcss',
     postcssPlugin: options.postcssPlugin ?? options.packageName ?? 'tailwindcss',

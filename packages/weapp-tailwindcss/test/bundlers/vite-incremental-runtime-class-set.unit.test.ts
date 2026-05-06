@@ -1,7 +1,7 @@
 import os from 'node:os'
 import path from 'node:path'
 import { mkdtempSync, rmSync } from 'node:fs'
-import { mkdir, readFile, writeFile } from 'node:fs/promises'
+import { mkdir, writeFile } from 'node:fs/promises'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import { buildBundleSnapshot, createBundleBuildState, updateBundleBuildState } from '@/bundlers/vite/bundle-state'
 import { createBundleRuntimeClassSetManager } from '@/bundlers/vite/incremental-runtime-class-set'
@@ -37,15 +37,13 @@ function createPatcher(projectRoot: string) {
 
 describe('bundlers/vite incremental runtime class set', () => {
   let tempRoot = ''
-  let validationFile = ''
 
   beforeEach(() => {
     tempRoot = mkdtempSync(path.join(os.tmpdir(), 'weapp-tw-runtime-set-'))
-    validationFile = path.join(tempRoot, 'runtime-candidates.html')
   })
 
   afterEach(async () => {
-    const manager = createBundleRuntimeClassSetManager({ tempRoot })
+    const manager = createBundleRuntimeClassSetManager({})
     await manager.reset()
     rmSync(tempRoot, { recursive: true, force: true })
     vi.restoreAllMocks()
@@ -56,8 +54,8 @@ describe('bundlers/vite incremental runtime class set', () => {
     const outDir = '/project/dist'
     const state = createBundleBuildState()
     const patcher = createPatcher('/project')
-    const extractCandidates = vi.fn(async () => {
-      const source = await readFile(validationFile, 'utf8')
+    const extractCandidates = vi.fn(async (options) => {
+      const source = options?.content ?? ''
       return source.split(/\s+/).filter(Boolean)
     })
     const extractRawCandidates = vi.fn(async (content: string) => {
@@ -75,7 +73,6 @@ describe('bundlers/vite incremental runtime class set', () => {
     const manager = createBundleRuntimeClassSetManager({
       extractCandidates,
       extractRawCandidates,
-      tempRoot,
     })
 
     const firstSnapshot = buildBundleSnapshot({
@@ -115,7 +112,8 @@ describe('bundlers/vite incremental runtime class set', () => {
 
     expect(secondRuntimeSet).toEqual(new Set(['bar', 'baz', 'qux']))
     expect(extractCandidates).toHaveBeenCalledTimes(1)
-    expect(extractCandidates.mock.calls[0]?.[0]?.sources?.[0]?.pattern).toBe('runtime-candidates.html')
+    expect(extractCandidates.mock.calls[0]?.[0]?.content).toBe('qux')
+    expect(extractCandidates.mock.calls[0]?.[0]?.sources).toBeUndefined()
   })
 
   it('removes stale candidates when runtime files disappear from the bundle', async () => {
@@ -123,8 +121,8 @@ describe('bundlers/vite incremental runtime class set', () => {
     const outDir = '/project/dist'
     const state = createBundleBuildState()
     const patcher = createPatcher('/project')
-    const extractCandidates = vi.fn(async () => {
-      const source = await readFile(validationFile, 'utf8')
+    const extractCandidates = vi.fn(async (options) => {
+      const source = options?.content ?? ''
       return source.split(/\s+/).filter(Boolean)
     })
     const extractRawCandidates = vi.fn(async (content: string) => {
@@ -139,7 +137,6 @@ describe('bundlers/vite incremental runtime class set', () => {
     const manager = createBundleRuntimeClassSetManager({
       extractCandidates,
       extractRawCandidates,
-      tempRoot,
     })
 
     const firstSnapshot = buildBundleSnapshot({
@@ -178,8 +175,8 @@ describe('bundlers/vite incremental runtime class set', () => {
     const outDir = '/project/dist'
     const state = createBundleBuildState()
     const patcher = createPatcher('/project')
-    const extractCandidates = vi.fn(async () => {
-      const source = await readFile(validationFile, 'utf8')
+    const extractCandidates = vi.fn(async (options) => {
+      const source = options?.content ?? ''
       return source.split(/\s+/).filter(candidate => candidate === 'bar')
     })
     const extractRawCandidates = vi.fn(async (content: string) => {
@@ -197,7 +194,6 @@ describe('bundlers/vite incremental runtime class set', () => {
     const manager = createBundleRuntimeClassSetManager({
       extractCandidates,
       extractRawCandidates,
-      tempRoot,
     })
 
     const firstSnapshot = buildBundleSnapshot({
@@ -266,7 +262,6 @@ describe('bundlers/vite incremental runtime class set', () => {
     const manager = createBundleRuntimeClassSetManager({
       extractCandidates,
       extractRawCandidates,
-      tempRoot,
     })
 
     const snapshot = buildBundleSnapshot({
@@ -298,7 +293,6 @@ describe('bundlers/vite incremental runtime class set', () => {
     const manager = createBundleRuntimeClassSetManager({
       extractCandidates,
       extractRawCandidates,
-      tempRoot,
     })
 
     const snapshot = buildBundleSnapshot({
@@ -333,7 +327,6 @@ describe('bundlers/vite incremental runtime class set', () => {
     const manager = createBundleRuntimeClassSetManager({
       extractCandidates,
       extractRawCandidates,
-      tempRoot,
     })
 
     const snapshot = buildBundleSnapshot({
@@ -367,7 +360,6 @@ describe('bundlers/vite incremental runtime class set', () => {
     const manager = createBundleRuntimeClassSetManager({
       extractCandidates,
       extractRawCandidates,
-      tempRoot,
     })
 
     const firstSnapshot = buildBundleSnapshot({

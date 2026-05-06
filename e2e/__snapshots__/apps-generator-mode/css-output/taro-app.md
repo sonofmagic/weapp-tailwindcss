@@ -8,7 +8,7 @@ Generator CSS files: app.wxss, index.wxss, index.wxss, index.wxss, index.wxss, i
 | Mode | Bytes | Selectors | @supports | :hover | Tailwind banner | Raw arbitrary selector | Weapp escaped arbitrary selector |
 | --- | ---: | ---: | --- | --- | --- | --- | --- |
 | legacy | 40513 | 140 | false | false | false | false | true |
-| generator | 60186 | 140 | false | false | false | false | true |
+| generator | 65762 | 144 | false | false | false | false | true |
 
 ## Diff
 
@@ -16,7 +16,110 @@ Generator CSS files: app.wxss, index.wxss, index.wxss, index.wxss, index.wxss, i
 ===================================================================
 --- taro-app/legacy.css
 +++ taro-app/generator.css
-@@ -75,9 +75,6 @@
+@@ -2,10 +2,10 @@
+ ::after {
+   --tw-content: '';
+ }
+-view,
+-text,
+-::after,
+-::before {
++:host,
++page,
++.tw-root,
++wx-root-portal-content {
+   --tw-border-spacing-x: 0;
+   --tw-border-spacing-y: 0;
+   --tw-translate-x: 0;
+@@ -15,19 +15,19 @@
+   --tw-skew-y: 0;
+   --tw-scale-x: 1;
+   --tw-scale-y: 1;
+-  --tw-pan-x: ;
+-  --tw-pan-y: ;
+-  --tw-pinch-zoom: ;
++  --tw-pan-x:  ;
++  --tw-pan-y:  ;
++  --tw-pinch-zoom:  ;
+   --tw-scroll-snap-strictness: proximity;
+-  --tw-gradient-from-position: ;
+-  --tw-gradient-via-position: ;
+-  --tw-gradient-to-position: ;
+-  --tw-ordinal: ;
+-  --tw-slashed-zero: ;
+-  --tw-numeric-figure: ;
+-  --tw-numeric-spacing: ;
+-  --tw-numeric-fraction: ;
+-  --tw-ring-inset: ;
++  --tw-gradient-from-position:  ;
++  --tw-gradient-via-position:  ;
++  --tw-gradient-to-position:  ;
++  --tw-ordinal:  ;
++  --tw-slashed-zero:  ;
++  --tw-numeric-figure:  ;
++  --tw-numeric-spacing:  ;
++  --tw-numeric-fraction:  ;
++  --tw-ring-inset:  ;
+   --tw-ring-offset-width: 0rpx;
+   --tw-ring-offset-color: #fff;
+   --tw-ring-color: rgba(59, 130, 246, 0.5);
+@@ -35,32 +35,29 @@
+   --tw-ring-shadow: 0 0 rgba(0, 0, 0, 0);
+   --tw-shadow: 0 0 rgba(0, 0, 0, 0);
+   --tw-shadow-colored: 0 0 rgba(0, 0, 0, 0);
+-  --tw-blur: ;
+-  --tw-brightness: ;
+-  --tw-contrast: ;
+-  --tw-grayscale: ;
+-  --tw-hue-rotate: ;
+-  --tw-invert: ;
+-  --tw-saturate: ;
+-  --tw-sepia: ;
+-  --tw-drop-shadow: ;
+-  --tw-backdrop-blur: ;
+-  --tw-backdrop-brightness: ;
+-  --tw-backdrop-contrast: ;
+-  --tw-backdrop-grayscale: ;
+-  --tw-backdrop-hue-rotate: ;
+-  --tw-backdrop-invert: ;
+-  --tw-backdrop-opacity: ;
+-  --tw-backdrop-saturate: ;
+-  --tw-backdrop-sepia: ;
+-  --tw-contain-size: ;
+-  --tw-contain-layout: ;
+-  --tw-contain-paint: ;
+-  --tw-contain-style: ;
+-  box-sizing: border-box;
+-  border-width: 0;
+-  border-style: solid;
+-  border-color: currentColor;
++  --tw-blur:  ;
++  --tw-brightness:  ;
++  --tw-contrast:  ;
++  --tw-grayscale:  ;
++  --tw-hue-rotate:  ;
++  --tw-invert:  ;
++  --tw-saturate:  ;
++  --tw-sepia:  ;
++  --tw-drop-shadow:  ;
++  --tw-backdrop-blur:  ;
++  --tw-backdrop-brightness:  ;
++  --tw-backdrop-contrast:  ;
++  --tw-backdrop-grayscale:  ;
++  --tw-backdrop-hue-rotate:  ;
++  --tw-backdrop-invert:  ;
++  --tw-backdrop-opacity:  ;
++  --tw-backdrop-saturate:  ;
++  --tw-backdrop-sepia:  ;
++  --tw-contain-size:  ;
++  --tw-contain-layout:  ;
++  --tw-contain-paint:  ;
++  --tw-contain-style:
++;
+ }
+ .relative {
+   position: relative;
+@@ -75,9 +72,6 @@
    margin-bottom: -20rpx;
  }
  .flex {
@@ -26,7 +129,7 @@ Generator CSS files: app.wxss, index.wxss, index.wxss, index.wxss, index.wxss, i
    display: flex;
  }
  .grid {
-@@ -145,10 +142,6 @@
+@@ -145,10 +139,6 @@
  }
  .rotate-45 {
    --tw-rotate: 45deg;
@@ -37,7 +140,7 @@ Generator CSS files: app.wxss, index.wxss, index.wxss, index.wxss, index.wxss, i
    transform: translate(var(--tw-translate-x), var(--tw-translate-y)) rotate(var(--tw-rotate)) skewX(var(--tw-skew-x)) skewY(var(--tw-skew-y)) scaleX(var(--tw-scale-x))
      scaleY(var(--tw-scale-y));
  }
-@@ -159,13 +152,9 @@
+@@ -159,13 +149,9 @@
    grid-template-columns: repeat(3, minmax(0, 1fr));
  }
  .items-center {
@@ -51,7 +154,7 @@ Generator CSS files: app.wxss, index.wxss, index.wxss, index.wxss, index.wxss, i
    justify-content: center;
  }
  .space-y-_b1_d6rem_B > view + view,
-@@ -173,16 +162,16 @@
+@@ -173,16 +159,16 @@
  .space-y-_b1_d6rem_B > text + view,
  .space-y-_b1_d6rem_B > text + text {
    --tw-space-y-reverse: 0;
@@ -70,7 +173,7 @@ Generator CSS files: app.wxss, index.wxss, index.wxss, index.wxss, index.wxss, i
  }
  .divide-solid > view + view,
  .divide-solid > view + text,
-@@ -276,13 +265,12 @@
+@@ -276,13 +262,12 @@
    --tw-bg-opacity: 0.54;
  }
  .bg-_burl_p_ahttps_c_f_fxxx_dcom_fxx_dwebp_a_P_B {
@@ -86,7 +189,7 @@ Generator CSS files: app.wxss, index.wxss, index.wxss, index.wxss, index.wxss, i
    background-image: linear-gradient(to right, var(--tw-gradient-stops));
  }
  .from-cyan-500 {
-@@ -338,16 +326,16 @@
+@@ -338,16 +323,16 @@
    padding-right: 95rpx;
  }
  .py-2 {
@@ -106,7 +209,7 @@ Generator CSS files: app.wxss, index.wxss, index.wxss, index.wxss, index.wxss, i
  }
  .text-_b16px_B {
    font-size: 16rpx;
-@@ -408,15 +396,13 @@
+@@ -408,15 +393,13 @@
    --tw-text-opacity: 0.19;
  }
  .shadow-md {
@@ -124,7 +227,7 @@ Generator CSS files: app.wxss, index.wxss, index.wxss, index.wxss, index.wxss, i
    box-shadow: var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow, 0 0 rgba(0, 0, 0, 0));
  }
  .ring-pink-300 {
-@@ -435,12 +421,12 @@
+@@ -435,12 +418,12 @@
    left: 0rpx;
  }
  .before_crounded-_b20rpx_B::before {
@@ -139,7 +242,7 @@ Generator CSS files: app.wxss, index.wxss, index.wxss, index.wxss, index.wxss, i
  }
  .before_cborder-_b_h0000ff_B::before {
    content: var(--tw-content);
-@@ -469,8 +455,8 @@
+@@ -469,8 +452,8 @@
    margin-left: 4rpx;
  }
  .after_cborder-none::after {
@@ -149,7 +252,7 @@ Generator CSS files: app.wxss, index.wxss, index.wxss, index.wxss, index.wxss, i
  }
  .after_ctext-red-500::after {
    content: var(--tw-content);
-@@ -522,6 +508,10 @@
+@@ -522,6 +505,10 @@
  }
 
 
@@ -160,7 +263,71 @@ Generator CSS files: app.wxss, index.wxss, index.wxss, index.wxss, index.wxss, i
  view,
  text,
  ::after,
-@@ -591,9 +581,6 @@
+@@ -578,6 +565,63 @@
+   --tw-contain-paint: ;
+   --tw-contain-style: ;
+ }
++:host,
++page,
++.tw-root,
++wx-root-portal-content {
++  --tw-border-spacing-x: 0;
++  --tw-border-spacing-y: 0;
++  --tw-translate-x: 0;
++  --tw-translate-y: 0;
++  --tw-rotate: 0;
++  --tw-skew-x: 0;
++  --tw-skew-y: 0;
++  --tw-scale-x: 1;
++  --tw-scale-y: 1;
++  --tw-pan-x:  ;
++  --tw-pan-y:  ;
++  --tw-pinch-zoom:  ;
++  --tw-scroll-snap-strictness: proximity;
++  --tw-gradient-from-position:  ;
++  --tw-gradient-via-position:  ;
++  --tw-gradient-to-position:  ;
++  --tw-ordinal:  ;
++  --tw-slashed-zero:  ;
++  --tw-numeric-figure:  ;
++  --tw-numeric-spacing:  ;
++  --tw-numeric-fraction:  ;
++  --tw-ring-inset:  ;
++  --tw-ring-offset-width: 0rpx;
++  --tw-ring-offset-color: #fff;
++  --tw-ring-color: rgba(59, 130, 246, 0.5);
++  --tw-ring-offset-shadow: 0 0 rgba(0, 0, 0, 0);
++  --tw-ring-shadow: 0 0 rgba(0, 0, 0, 0);
++  --tw-shadow: 0 0 rgba(0, 0, 0, 0);
++  --tw-shadow-colored: 0 0 rgba(0, 0, 0, 0);
++  --tw-blur:  ;
++  --tw-brightness:  ;
++  --tw-contrast:  ;
++  --tw-grayscale:  ;
++  --tw-hue-rotate:  ;
++  --tw-invert:  ;
++  --tw-saturate:  ;
++  --tw-sepia:  ;
++  --tw-drop-shadow:  ;
++  --tw-backdrop-blur:  ;
++  --tw-backdrop-brightness:  ;
++  --tw-backdrop-contrast:  ;
++  --tw-backdrop-grayscale:  ;
++  --tw-backdrop-hue-rotate:  ;
++  --tw-backdrop-invert:  ;
++  --tw-backdrop-opacity:  ;
++  --tw-backdrop-saturate:  ;
++  --tw-backdrop-sepia:  ;
++  --tw-contain-size:  ;
++  --tw-contain-layout:  ;
++  --tw-contain-paint:  ;
++  --tw-contain-style:
++;
++}
+ .relative {
+   position: relative;
+ }
+@@ -591,9 +635,6 @@
    margin-bottom: -20rpx;
  }
  .flex {
@@ -170,7 +337,7 @@ Generator CSS files: app.wxss, index.wxss, index.wxss, index.wxss, index.wxss, i
    display: flex;
  }
  .grid {
-@@ -661,10 +648,6 @@
+@@ -661,10 +702,6 @@
  }
  .rotate-45 {
    --tw-rotate: 45deg;
@@ -181,7 +348,7 @@ Generator CSS files: app.wxss, index.wxss, index.wxss, index.wxss, index.wxss, i
    transform: translate(var(--tw-translate-x), var(--tw-translate-y)) rotate(var(--tw-rotate)) skewX(var(--tw-skew-x)) skewY(var(--tw-skew-y)) scaleX(var(--tw-scale-x))
      scaleY(var(--tw-scale-y));
  }
-@@ -675,13 +658,9 @@
+@@ -675,13 +712,9 @@
    grid-template-columns: repeat(3, minmax(0, 1fr));
  }
  .items-center {
@@ -195,7 +362,7 @@ Generator CSS files: app.wxss, index.wxss, index.wxss, index.wxss, index.wxss, i
    justify-content: center;
  }
  .space-y-_b1_d6rem_B > view + view,
-@@ -689,16 +668,18 @@
+@@ -689,16 +722,18 @@
  .space-y-_b1_d6rem_B > text + view,
  .space-y-_b1_d6rem_B > text + text {
    --tw-space-y-reverse: 0;
@@ -216,7 +383,7 @@ Generator CSS files: app.wxss, index.wxss, index.wxss, index.wxss, index.wxss, i
  }
  .divide-solid > view + view,
  .divide-solid > view + text,
-@@ -792,13 +773,12 @@
+@@ -792,13 +827,12 @@
    --tw-bg-opacity: 0.54;
  }
  .bg-_burl_p_ahttps_c_f_fxxx_dcom_fxx_dwebp_a_P_B {
@@ -232,7 +399,7 @@ Generator CSS files: app.wxss, index.wxss, index.wxss, index.wxss, index.wxss, i
    background-image: linear-gradient(to right, var(--tw-gradient-stops));
  }
  .from-cyan-500 {
-@@ -854,16 +834,16 @@
+@@ -854,16 +888,16 @@
    padding-right: 95rpx;
  }
  .py-2 {
@@ -252,7 +419,7 @@ Generator CSS files: app.wxss, index.wxss, index.wxss, index.wxss, index.wxss, i
  }
  .text-_b16px_B {
    font-size: 16rpx;
-@@ -924,15 +904,13 @@
+@@ -924,15 +958,13 @@
    --tw-text-opacity: 0.19;
  }
  .shadow-md {
@@ -270,7 +437,7 @@ Generator CSS files: app.wxss, index.wxss, index.wxss, index.wxss, index.wxss, i
    box-shadow: var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow, 0 0 rgba(0, 0, 0, 0));
  }
  .ring-pink-300 {
-@@ -951,12 +929,12 @@
+@@ -951,12 +983,12 @@
    left: 0rpx;
  }
  .before_crounded-_b20rpx_B::before {
@@ -285,7 +452,7 @@ Generator CSS files: app.wxss, index.wxss, index.wxss, index.wxss, index.wxss, i
  }
  .before_cborder-_b_h0000ff_B::before {
    content: var(--tw-content);
-@@ -985,8 +963,8 @@
+@@ -985,8 +1017,8 @@
    margin-left: 4rpx;
  }
  .after_cborder-none::after {
@@ -295,7 +462,7 @@ Generator CSS files: app.wxss, index.wxss, index.wxss, index.wxss, index.wxss, i
  }
  .after_ctext-red-500::after {
    content: var(--tw-content);
-@@ -1037,6 +1015,10 @@
+@@ -1037,6 +1069,10 @@
    color: rgba(248, 113, 113, var(--tw-text-opacity, 1)) !important;
  }
 
@@ -306,7 +473,71 @@ Generator CSS files: app.wxss, index.wxss, index.wxss, index.wxss, index.wxss, i
  view,
  text,
  ::after,
-@@ -1106,9 +1088,6 @@
+@@ -1093,6 +1129,63 @@
+   --tw-contain-paint: ;
+   --tw-contain-style: ;
+ }
++:host,
++page,
++.tw-root,
++wx-root-portal-content {
++  --tw-border-spacing-x: 0;
++  --tw-border-spacing-y: 0;
++  --tw-translate-x: 0;
++  --tw-translate-y: 0;
++  --tw-rotate: 0;
++  --tw-skew-x: 0;
++  --tw-skew-y: 0;
++  --tw-scale-x: 1;
++  --tw-scale-y: 1;
++  --tw-pan-x:  ;
++  --tw-pan-y:  ;
++  --tw-pinch-zoom:  ;
++  --tw-scroll-snap-strictness: proximity;
++  --tw-gradient-from-position:  ;
++  --tw-gradient-via-position:  ;
++  --tw-gradient-to-position:  ;
++  --tw-ordinal:  ;
++  --tw-slashed-zero:  ;
++  --tw-numeric-figure:  ;
++  --tw-numeric-spacing:  ;
++  --tw-numeric-fraction:  ;
++  --tw-ring-inset:  ;
++  --tw-ring-offset-width: 0rpx;
++  --tw-ring-offset-color: #fff;
++  --tw-ring-color: rgba(59, 130, 246, 0.5);
++  --tw-ring-offset-shadow: 0 0 rgba(0, 0, 0, 0);
++  --tw-ring-shadow: 0 0 rgba(0, 0, 0, 0);
++  --tw-shadow: 0 0 rgba(0, 0, 0, 0);
++  --tw-shadow-colored: 0 0 rgba(0, 0, 0, 0);
++  --tw-blur:  ;
++  --tw-brightness:  ;
++  --tw-contrast:  ;
++  --tw-grayscale:  ;
++  --tw-hue-rotate:  ;
++  --tw-invert:  ;
++  --tw-saturate:  ;
++  --tw-sepia:  ;
++  --tw-drop-shadow:  ;
++  --tw-backdrop-blur:  ;
++  --tw-backdrop-brightness:  ;
++  --tw-backdrop-contrast:  ;
++  --tw-backdrop-grayscale:  ;
++  --tw-backdrop-hue-rotate:  ;
++  --tw-backdrop-invert:  ;
++  --tw-backdrop-opacity:  ;
++  --tw-backdrop-saturate:  ;
++  --tw-backdrop-sepia:  ;
++  --tw-contain-size:  ;
++  --tw-contain-layout:  ;
++  --tw-contain-paint:  ;
++  --tw-contain-style:
++;
++}
+ .relative {
+   position: relative;
+ }
+@@ -1106,9 +1199,6 @@
    margin-bottom: -20rpx;
  }
  .flex {
@@ -316,7 +547,7 @@ Generator CSS files: app.wxss, index.wxss, index.wxss, index.wxss, index.wxss, i
    display: flex;
  }
  .grid {
-@@ -1176,10 +1155,6 @@
+@@ -1176,10 +1266,6 @@
  }
  .rotate-45 {
    --tw-rotate: 45deg;
@@ -327,7 +558,7 @@ Generator CSS files: app.wxss, index.wxss, index.wxss, index.wxss, index.wxss, i
    transform: translate(var(--tw-translate-x), var(--tw-translate-y)) rotate(var(--tw-rotate)) skewX(var(--tw-skew-x)) skewY(var(--tw-skew-y)) scaleX(var(--tw-scale-x))
      scaleY(var(--tw-scale-y));
  }
-@@ -1190,13 +1165,9 @@
+@@ -1190,13 +1276,9 @@
    grid-template-columns: repeat(3, minmax(0, 1fr));
  }
  .items-center {
@@ -341,7 +572,7 @@ Generator CSS files: app.wxss, index.wxss, index.wxss, index.wxss, index.wxss, i
    justify-content: center;
  }
  .space-y-_b1_d6rem_B > view + view,
-@@ -1204,16 +1175,18 @@
+@@ -1204,16 +1286,18 @@
  .space-y-_b1_d6rem_B > text + view,
  .space-y-_b1_d6rem_B > text + text {
    --tw-space-y-reverse: 0;
@@ -362,7 +593,7 @@ Generator CSS files: app.wxss, index.wxss, index.wxss, index.wxss, index.wxss, i
  }
  .divide-solid > view + view,
  .divide-solid > view + text,
-@@ -1307,13 +1280,12 @@
+@@ -1307,13 +1391,12 @@
    --tw-bg-opacity: 0.54;
  }
  .bg-_burl_p_ahttps_c_f_fxxx_dcom_fxx_dwebp_a_P_B {
@@ -378,7 +609,7 @@ Generator CSS files: app.wxss, index.wxss, index.wxss, index.wxss, index.wxss, i
    background-image: linear-gradient(to right, var(--tw-gradient-stops));
  }
  .from-cyan-500 {
-@@ -1369,16 +1341,16 @@
+@@ -1369,16 +1452,16 @@
    padding-right: 95rpx;
  }
  .py-2 {
@@ -398,7 +629,7 @@ Generator CSS files: app.wxss, index.wxss, index.wxss, index.wxss, index.wxss, i
  }
  .text-_b16px_B {
    font-size: 16rpx;
-@@ -1439,15 +1411,13 @@
+@@ -1439,15 +1522,13 @@
    --tw-text-opacity: 0.19;
  }
  .shadow-md {
@@ -416,7 +647,7 @@ Generator CSS files: app.wxss, index.wxss, index.wxss, index.wxss, index.wxss, i
    box-shadow: var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow, 0 0 rgba(0, 0, 0, 0));
  }
  .ring-pink-300 {
-@@ -1466,12 +1436,12 @@
+@@ -1466,12 +1547,12 @@
    left: 0rpx;
  }
  .before_crounded-_b20rpx_B::before {
@@ -431,7 +662,7 @@ Generator CSS files: app.wxss, index.wxss, index.wxss, index.wxss, index.wxss, i
  }
  .before_cborder-_b_h0000ff_B::before {
    content: var(--tw-content);
-@@ -1500,8 +1470,8 @@
+@@ -1500,8 +1581,8 @@
    margin-left: 4rpx;
  }
  .after_cborder-none::after {
@@ -441,10 +672,68 @@ Generator CSS files: app.wxss, index.wxss, index.wxss, index.wxss, index.wxss, i
  }
  .after_ctext-red-500::after {
    content: var(--tw-content);
-@@ -1552,6 +1522,452 @@
+@@ -1552,6 +1633,510 @@
    color: rgba(248, 113, 113, var(--tw-text-opacity, 1)) !important;
  }
 
++:host,
++page,
++.tw-root,
++wx-root-portal-content {
++  --tw-border-spacing-x: 0;
++  --tw-border-spacing-y: 0;
++  --tw-translate-x: 0;
++  --tw-translate-y: 0;
++  --tw-rotate: 0;
++  --tw-skew-x: 0;
++  --tw-skew-y: 0;
++  --tw-scale-x: 1;
++  --tw-scale-y: 1;
++  --tw-pan-x:  ;
++  --tw-pan-y:  ;
++  --tw-pinch-zoom:  ;
++  --tw-scroll-snap-strictness: proximity;
++  --tw-gradient-from-position:  ;
++  --tw-gradient-via-position:  ;
++  --tw-gradient-to-position:  ;
++  --tw-ordinal:  ;
++  --tw-slashed-zero:  ;
++  --tw-numeric-figure:  ;
++  --tw-numeric-spacing:  ;
++  --tw-numeric-fraction:  ;
++  --tw-ring-inset:  ;
++  --tw-ring-offset-width: 0rpx;
++  --tw-ring-offset-color: #fff;
++  --tw-ring-color: rgba(59, 130, 246, 0.5);
++  --tw-ring-offset-shadow: 0 0 rgba(0, 0, 0, 0);
++  --tw-ring-shadow: 0 0 rgba(0, 0, 0, 0);
++  --tw-shadow: 0 0 rgba(0, 0, 0, 0);
++  --tw-shadow-colored: 0 0 rgba(0, 0, 0, 0);
++  --tw-blur:  ;
++  --tw-brightness:  ;
++  --tw-contrast:  ;
++  --tw-grayscale:  ;
++  --tw-hue-rotate:  ;
++  --tw-invert:  ;
++  --tw-saturate:  ;
++  --tw-sepia:  ;
++  --tw-drop-shadow:  ;
++  --tw-backdrop-blur:  ;
++  --tw-backdrop-brightness:  ;
++  --tw-backdrop-contrast:  ;
++  --tw-backdrop-grayscale:  ;
++  --tw-backdrop-hue-rotate:  ;
++  --tw-backdrop-invert:  ;
++  --tw-backdrop-opacity:  ;
++  --tw-backdrop-saturate:  ;
++  --tw-backdrop-sepia:  ;
++  --tw-contain-size:  ;
++  --tw-contain-layout:  ;
++  --tw-contain-paint:  ;
++  --tw-contain-style:
++
++;
++}
 +.relative {
 +  position: relative;
 +}
@@ -894,10 +1183,68 @@ Generator CSS files: app.wxss, index.wxss, index.wxss, index.wxss, index.wxss, i
  .my-text-_b_h11e331_B {
    --tw-text-opacity: 1;
    color: rgba(17, 227, 49, var(--tw-text-opacity, 1));
-@@ -1560,6 +1976,452 @@
+@@ -1560,6 +2145,510 @@
    color: red;
  }
 
++:host,
++page,
++.tw-root,
++wx-root-portal-content {
++  --tw-border-spacing-x: 0;
++  --tw-border-spacing-y: 0;
++  --tw-translate-x: 0;
++  --tw-translate-y: 0;
++  --tw-rotate: 0;
++  --tw-skew-x: 0;
++  --tw-skew-y: 0;
++  --tw-scale-x: 1;
++  --tw-scale-y: 1;
++  --tw-pan-x:  ;
++  --tw-pan-y:  ;
++  --tw-pinch-zoom:  ;
++  --tw-scroll-snap-strictness: proximity;
++  --tw-gradient-from-position:  ;
++  --tw-gradient-via-position:  ;
++  --tw-gradient-to-position:  ;
++  --tw-ordinal:  ;
++  --tw-slashed-zero:  ;
++  --tw-numeric-figure:  ;
++  --tw-numeric-spacing:  ;
++  --tw-numeric-fraction:  ;
++  --tw-ring-inset:  ;
++  --tw-ring-offset-width: 0rpx;
++  --tw-ring-offset-color: #fff;
++  --tw-ring-color: rgba(59, 130, 246, 0.5);
++  --tw-ring-offset-shadow: 0 0 rgba(0, 0, 0, 0);
++  --tw-ring-shadow: 0 0 rgba(0, 0, 0, 0);
++  --tw-shadow: 0 0 rgba(0, 0, 0, 0);
++  --tw-shadow-colored: 0 0 rgba(0, 0, 0, 0);
++  --tw-blur:  ;
++  --tw-brightness:  ;
++  --tw-contrast:  ;
++  --tw-grayscale:  ;
++  --tw-hue-rotate:  ;
++  --tw-invert:  ;
++  --tw-saturate:  ;
++  --tw-sepia:  ;
++  --tw-drop-shadow:  ;
++  --tw-backdrop-blur:  ;
++  --tw-backdrop-brightness:  ;
++  --tw-backdrop-contrast:  ;
++  --tw-backdrop-grayscale:  ;
++  --tw-backdrop-hue-rotate:  ;
++  --tw-backdrop-invert:  ;
++  --tw-backdrop-opacity:  ;
++  --tw-backdrop-saturate:  ;
++  --tw-backdrop-sepia:  ;
++  --tw-contain-size:  ;
++  --tw-contain-layout:  ;
++  --tw-contain-paint:  ;
++  --tw-contain-style:
++
++;
++}
 +.relative {
 +  position: relative;
 +}
@@ -2952,10 +3299,10 @@ text,
 ::after {
   --tw-content: '';
 }
-view,
-text,
-::after,
-::before {
+:host,
+page,
+.tw-root,
+wx-root-portal-content {
   --tw-border-spacing-x: 0;
   --tw-border-spacing-y: 0;
   --tw-translate-x: 0;
@@ -2965,19 +3312,19 @@ text,
   --tw-skew-y: 0;
   --tw-scale-x: 1;
   --tw-scale-y: 1;
-  --tw-pan-x: ;
-  --tw-pan-y: ;
-  --tw-pinch-zoom: ;
+  --tw-pan-x:  ;
+  --tw-pan-y:  ;
+  --tw-pinch-zoom:  ;
   --tw-scroll-snap-strictness: proximity;
-  --tw-gradient-from-position: ;
-  --tw-gradient-via-position: ;
-  --tw-gradient-to-position: ;
-  --tw-ordinal: ;
-  --tw-slashed-zero: ;
-  --tw-numeric-figure: ;
-  --tw-numeric-spacing: ;
-  --tw-numeric-fraction: ;
-  --tw-ring-inset: ;
+  --tw-gradient-from-position:  ;
+  --tw-gradient-via-position:  ;
+  --tw-gradient-to-position:  ;
+  --tw-ordinal:  ;
+  --tw-slashed-zero:  ;
+  --tw-numeric-figure:  ;
+  --tw-numeric-spacing:  ;
+  --tw-numeric-fraction:  ;
+  --tw-ring-inset:  ;
   --tw-ring-offset-width: 0rpx;
   --tw-ring-offset-color: #fff;
   --tw-ring-color: rgba(59, 130, 246, 0.5);
@@ -2985,32 +3332,29 @@ text,
   --tw-ring-shadow: 0 0 rgba(0, 0, 0, 0);
   --tw-shadow: 0 0 rgba(0, 0, 0, 0);
   --tw-shadow-colored: 0 0 rgba(0, 0, 0, 0);
-  --tw-blur: ;
-  --tw-brightness: ;
-  --tw-contrast: ;
-  --tw-grayscale: ;
-  --tw-hue-rotate: ;
-  --tw-invert: ;
-  --tw-saturate: ;
-  --tw-sepia: ;
-  --tw-drop-shadow: ;
-  --tw-backdrop-blur: ;
-  --tw-backdrop-brightness: ;
-  --tw-backdrop-contrast: ;
-  --tw-backdrop-grayscale: ;
-  --tw-backdrop-hue-rotate: ;
-  --tw-backdrop-invert: ;
-  --tw-backdrop-opacity: ;
-  --tw-backdrop-saturate: ;
-  --tw-backdrop-sepia: ;
-  --tw-contain-size: ;
-  --tw-contain-layout: ;
-  --tw-contain-paint: ;
-  --tw-contain-style: ;
-  box-sizing: border-box;
-  border-width: 0;
-  border-style: solid;
-  border-color: currentColor;
+  --tw-blur:  ;
+  --tw-brightness:  ;
+  --tw-contrast:  ;
+  --tw-grayscale:  ;
+  --tw-hue-rotate:  ;
+  --tw-invert:  ;
+  --tw-saturate:  ;
+  --tw-sepia:  ;
+  --tw-drop-shadow:  ;
+  --tw-backdrop-blur:  ;
+  --tw-backdrop-brightness:  ;
+  --tw-backdrop-contrast:  ;
+  --tw-backdrop-grayscale:  ;
+  --tw-backdrop-hue-rotate:  ;
+  --tw-backdrop-invert:  ;
+  --tw-backdrop-opacity:  ;
+  --tw-backdrop-saturate:  ;
+  --tw-backdrop-sepia:  ;
+  --tw-contain-size:  ;
+  --tw-contain-layout:  ;
+  --tw-contain-paint:  ;
+  --tw-contain-style:
+;
 }
 .relative {
   position: relative;
@@ -3517,6 +3861,63 @@ text,
   --tw-contain-layout: ;
   --tw-contain-paint: ;
   --tw-contain-style: ;
+}
+:host,
+page,
+.tw-root,
+wx-root-portal-content {
+  --tw-border-spacing-x: 0;
+  --tw-border-spacing-y: 0;
+  --tw-translate-x: 0;
+  --tw-translate-y: 0;
+  --tw-rotate: 0;
+  --tw-skew-x: 0;
+  --tw-skew-y: 0;
+  --tw-scale-x: 1;
+  --tw-scale-y: 1;
+  --tw-pan-x:  ;
+  --tw-pan-y:  ;
+  --tw-pinch-zoom:  ;
+  --tw-scroll-snap-strictness: proximity;
+  --tw-gradient-from-position:  ;
+  --tw-gradient-via-position:  ;
+  --tw-gradient-to-position:  ;
+  --tw-ordinal:  ;
+  --tw-slashed-zero:  ;
+  --tw-numeric-figure:  ;
+  --tw-numeric-spacing:  ;
+  --tw-numeric-fraction:  ;
+  --tw-ring-inset:  ;
+  --tw-ring-offset-width: 0rpx;
+  --tw-ring-offset-color: #fff;
+  --tw-ring-color: rgba(59, 130, 246, 0.5);
+  --tw-ring-offset-shadow: 0 0 rgba(0, 0, 0, 0);
+  --tw-ring-shadow: 0 0 rgba(0, 0, 0, 0);
+  --tw-shadow: 0 0 rgba(0, 0, 0, 0);
+  --tw-shadow-colored: 0 0 rgba(0, 0, 0, 0);
+  --tw-blur:  ;
+  --tw-brightness:  ;
+  --tw-contrast:  ;
+  --tw-grayscale:  ;
+  --tw-hue-rotate:  ;
+  --tw-invert:  ;
+  --tw-saturate:  ;
+  --tw-sepia:  ;
+  --tw-drop-shadow:  ;
+  --tw-backdrop-blur:  ;
+  --tw-backdrop-brightness:  ;
+  --tw-backdrop-contrast:  ;
+  --tw-backdrop-grayscale:  ;
+  --tw-backdrop-hue-rotate:  ;
+  --tw-backdrop-invert:  ;
+  --tw-backdrop-opacity:  ;
+  --tw-backdrop-saturate:  ;
+  --tw-backdrop-sepia:  ;
+  --tw-contain-size:  ;
+  --tw-contain-layout:  ;
+  --tw-contain-paint:  ;
+  --tw-contain-style:
+;
 }
 .relative {
   position: relative;
@@ -4025,6 +4426,63 @@ text,
   --tw-contain-paint: ;
   --tw-contain-style: ;
 }
+:host,
+page,
+.tw-root,
+wx-root-portal-content {
+  --tw-border-spacing-x: 0;
+  --tw-border-spacing-y: 0;
+  --tw-translate-x: 0;
+  --tw-translate-y: 0;
+  --tw-rotate: 0;
+  --tw-skew-x: 0;
+  --tw-skew-y: 0;
+  --tw-scale-x: 1;
+  --tw-scale-y: 1;
+  --tw-pan-x:  ;
+  --tw-pan-y:  ;
+  --tw-pinch-zoom:  ;
+  --tw-scroll-snap-strictness: proximity;
+  --tw-gradient-from-position:  ;
+  --tw-gradient-via-position:  ;
+  --tw-gradient-to-position:  ;
+  --tw-ordinal:  ;
+  --tw-slashed-zero:  ;
+  --tw-numeric-figure:  ;
+  --tw-numeric-spacing:  ;
+  --tw-numeric-fraction:  ;
+  --tw-ring-inset:  ;
+  --tw-ring-offset-width: 0rpx;
+  --tw-ring-offset-color: #fff;
+  --tw-ring-color: rgba(59, 130, 246, 0.5);
+  --tw-ring-offset-shadow: 0 0 rgba(0, 0, 0, 0);
+  --tw-ring-shadow: 0 0 rgba(0, 0, 0, 0);
+  --tw-shadow: 0 0 rgba(0, 0, 0, 0);
+  --tw-shadow-colored: 0 0 rgba(0, 0, 0, 0);
+  --tw-blur:  ;
+  --tw-brightness:  ;
+  --tw-contrast:  ;
+  --tw-grayscale:  ;
+  --tw-hue-rotate:  ;
+  --tw-invert:  ;
+  --tw-saturate:  ;
+  --tw-sepia:  ;
+  --tw-drop-shadow:  ;
+  --tw-backdrop-blur:  ;
+  --tw-backdrop-brightness:  ;
+  --tw-backdrop-contrast:  ;
+  --tw-backdrop-grayscale:  ;
+  --tw-backdrop-hue-rotate:  ;
+  --tw-backdrop-invert:  ;
+  --tw-backdrop-opacity:  ;
+  --tw-backdrop-saturate:  ;
+  --tw-backdrop-sepia:  ;
+  --tw-contain-size:  ;
+  --tw-contain-layout:  ;
+  --tw-contain-paint:  ;
+  --tw-contain-style:
+;
+}
 .relative {
   position: relative;
 }
@@ -4472,6 +4930,64 @@ text,
   color: rgba(248, 113, 113, var(--tw-text-opacity, 1)) !important;
 }
 
+:host,
+page,
+.tw-root,
+wx-root-portal-content {
+  --tw-border-spacing-x: 0;
+  --tw-border-spacing-y: 0;
+  --tw-translate-x: 0;
+  --tw-translate-y: 0;
+  --tw-rotate: 0;
+  --tw-skew-x: 0;
+  --tw-skew-y: 0;
+  --tw-scale-x: 1;
+  --tw-scale-y: 1;
+  --tw-pan-x:  ;
+  --tw-pan-y:  ;
+  --tw-pinch-zoom:  ;
+  --tw-scroll-snap-strictness: proximity;
+  --tw-gradient-from-position:  ;
+  --tw-gradient-via-position:  ;
+  --tw-gradient-to-position:  ;
+  --tw-ordinal:  ;
+  --tw-slashed-zero:  ;
+  --tw-numeric-figure:  ;
+  --tw-numeric-spacing:  ;
+  --tw-numeric-fraction:  ;
+  --tw-ring-inset:  ;
+  --tw-ring-offset-width: 0rpx;
+  --tw-ring-offset-color: #fff;
+  --tw-ring-color: rgba(59, 130, 246, 0.5);
+  --tw-ring-offset-shadow: 0 0 rgba(0, 0, 0, 0);
+  --tw-ring-shadow: 0 0 rgba(0, 0, 0, 0);
+  --tw-shadow: 0 0 rgba(0, 0, 0, 0);
+  --tw-shadow-colored: 0 0 rgba(0, 0, 0, 0);
+  --tw-blur:  ;
+  --tw-brightness:  ;
+  --tw-contrast:  ;
+  --tw-grayscale:  ;
+  --tw-hue-rotate:  ;
+  --tw-invert:  ;
+  --tw-saturate:  ;
+  --tw-sepia:  ;
+  --tw-drop-shadow:  ;
+  --tw-backdrop-blur:  ;
+  --tw-backdrop-brightness:  ;
+  --tw-backdrop-contrast:  ;
+  --tw-backdrop-grayscale:  ;
+  --tw-backdrop-hue-rotate:  ;
+  --tw-backdrop-invert:  ;
+  --tw-backdrop-opacity:  ;
+  --tw-backdrop-saturate:  ;
+  --tw-backdrop-sepia:  ;
+  --tw-contain-size:  ;
+  --tw-contain-layout:  ;
+  --tw-contain-paint:  ;
+  --tw-contain-style:
+
+;
+}
 .relative {
   position: relative;
 }
@@ -4926,6 +5442,64 @@ text,
   color: red;
 }
 
+:host,
+page,
+.tw-root,
+wx-root-portal-content {
+  --tw-border-spacing-x: 0;
+  --tw-border-spacing-y: 0;
+  --tw-translate-x: 0;
+  --tw-translate-y: 0;
+  --tw-rotate: 0;
+  --tw-skew-x: 0;
+  --tw-skew-y: 0;
+  --tw-scale-x: 1;
+  --tw-scale-y: 1;
+  --tw-pan-x:  ;
+  --tw-pan-y:  ;
+  --tw-pinch-zoom:  ;
+  --tw-scroll-snap-strictness: proximity;
+  --tw-gradient-from-position:  ;
+  --tw-gradient-via-position:  ;
+  --tw-gradient-to-position:  ;
+  --tw-ordinal:  ;
+  --tw-slashed-zero:  ;
+  --tw-numeric-figure:  ;
+  --tw-numeric-spacing:  ;
+  --tw-numeric-fraction:  ;
+  --tw-ring-inset:  ;
+  --tw-ring-offset-width: 0rpx;
+  --tw-ring-offset-color: #fff;
+  --tw-ring-color: rgba(59, 130, 246, 0.5);
+  --tw-ring-offset-shadow: 0 0 rgba(0, 0, 0, 0);
+  --tw-ring-shadow: 0 0 rgba(0, 0, 0, 0);
+  --tw-shadow: 0 0 rgba(0, 0, 0, 0);
+  --tw-shadow-colored: 0 0 rgba(0, 0, 0, 0);
+  --tw-blur:  ;
+  --tw-brightness:  ;
+  --tw-contrast:  ;
+  --tw-grayscale:  ;
+  --tw-hue-rotate:  ;
+  --tw-invert:  ;
+  --tw-saturate:  ;
+  --tw-sepia:  ;
+  --tw-drop-shadow:  ;
+  --tw-backdrop-blur:  ;
+  --tw-backdrop-brightness:  ;
+  --tw-backdrop-contrast:  ;
+  --tw-backdrop-grayscale:  ;
+  --tw-backdrop-hue-rotate:  ;
+  --tw-backdrop-invert:  ;
+  --tw-backdrop-opacity:  ;
+  --tw-backdrop-saturate:  ;
+  --tw-backdrop-sepia:  ;
+  --tw-contain-size:  ;
+  --tw-contain-layout:  ;
+  --tw-contain-paint:  ;
+  --tw-contain-style:
+
+;
+}
 .relative {
   position: relative;
 }

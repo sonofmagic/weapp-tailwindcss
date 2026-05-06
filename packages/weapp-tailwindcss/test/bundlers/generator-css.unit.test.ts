@@ -1,3 +1,4 @@
+import path from 'node:path'
 import { afterEach, describe, expect, it, vi } from 'vitest'
 
 function normalizeGeneratorOptions(options: any) {
@@ -14,9 +15,58 @@ function normalizeGeneratorOptions(options: any) {
   }
 }
 
+function createDefaultGeneratorMock(overrides: Record<string, any> = {}) {
+  return {
+    normalizeWeappTailwindcssGeneratorOptions: normalizeGeneratorOptions,
+    resolveTailwindV3Source: vi.fn(async (options: any) => ({
+      projectRoot: process.cwd(),
+      base: process.cwd(),
+      baseFallbacks: [],
+      css: options.css,
+      dependencies: [],
+      config: options.config,
+      sources: [],
+      version: 3,
+    })),
+    resolveTailwindV3SourceFromPatcher: vi.fn(async () => ({
+      projectRoot: process.cwd(),
+      base: process.cwd(),
+      baseFallbacks: [],
+      css: '@tailwind base;\n@tailwind components;\n@tailwind utilities;',
+      dependencies: [],
+      sources: [],
+      version: 3,
+    })),
+    resolveTailwindV3SourceOptionsFromPatcher: vi.fn(() => ({
+      projectRoot: process.cwd(),
+      baseFallbacks: [],
+    })),
+    resolveTailwindV4Source: vi.fn(async (options: any = {}) => ({
+      projectRoot: process.cwd(),
+      base: process.cwd(),
+      baseFallbacks: [],
+      css: options.css ?? '@import "tailwindcss";',
+      dependencies: options.cssEntries ?? [],
+    })),
+    resolveTailwindV4SourceFromPatcher: vi.fn(async () => ({
+      projectRoot: process.cwd(),
+      base: process.cwd(),
+      baseFallbacks: [],
+      css: '@import "tailwindcss";',
+      dependencies: [],
+    })),
+    resolveTailwindV4SourceOptionsFromPatcher: vi.fn(() => ({
+      projectRoot: process.cwd(),
+      baseFallbacks: [],
+    })),
+    ...overrides,
+  }
+}
+
 describe('bundlers/shared generator css', () => {
   afterEach(() => {
     vi.doUnmock('@/generator')
+    vi.doUnmock('node:fs')
     vi.resetModules()
   })
 
@@ -39,12 +89,23 @@ describe('bundlers/shared generator css', () => {
         generate: generateMock,
       })),
       normalizeWeappTailwindcssGeneratorOptions: normalizeGeneratorOptions,
+      resolveTailwindV4Source: vi.fn(async (options: any) => ({
+        projectRoot: process.cwd(),
+        base: process.cwd(),
+        baseFallbacks: [],
+        css: options.css,
+        dependencies: [],
+      })),
       resolveTailwindV4SourceFromPatcher: vi.fn(async () => ({
         projectRoot: process.cwd(),
         base: process.cwd(),
         baseFallbacks: [],
         css: '@import "tailwindcss";',
         dependencies: [],
+      })),
+      resolveTailwindV4SourceOptionsFromPatcher: vi.fn(() => ({
+        projectRoot: process.cwd(),
+        baseFallbacks: [],
       })),
     }))
 
@@ -98,6 +159,280 @@ describe('bundlers/shared generator css', () => {
     expect(styleHandler).not.toHaveBeenCalled()
   })
 
+  it('collects css generator candidates from bundle sources in addition to runtime set', async () => {
+    const { collectGeneratorCandidatesFromSources } = await import('@/bundlers/shared/generator-candidates')
+    const candidates = await collectGeneratorCandidatesFromSources([
+      {
+        content: '<view class="mt-4 flex overflow-hidden border divide-x rounded-lg"></view>',
+        extension: 'wxml',
+      },
+      {
+        content: 'const defaultClass = `weapp-reset-button px-6 py-2 bg-blue-600 hover:bg-blue-500`',
+        extension: 'js',
+      },
+    ], new Set(['bg-[#123456]']))
+
+    expect([...candidates]).toEqual(expect.arrayContaining([
+      'bg-[#123456]',
+      'mt-4',
+      'flex',
+      'overflow-hidden',
+      'border',
+      'divide-x',
+      'rounded-lg',
+      'weapp-reset-button',
+      'px-6',
+      'py-2',
+      'bg-blue-600',
+      'hover:bg-blue-500',
+    ]))
+  })
+
+  it('appends legacy-only selectors for force mode even when raw css matches', async () => {
+    const runtimeSet = new Set(['w-[100px]'])
+    const rawTailwindCss = '/*! tailwindcss v4.2.4 | MIT License | https://tailwindcss.com */\n.container{width:100%}.w-\\[100px\\]{width:100px}'
+    const generateMock = vi.fn(async () => ({
+      css: '.w-_b100px_B{width:100px}',
+      rawCss: rawTailwindCss,
+      target: 'weapp',
+      classSet: runtimeSet,
+      dependencies: [],
+      sources: [],
+      root: null,
+    }))
+
+    vi.doMock('@/generator', () => ({
+      createWeappTailwindcssGenerator: vi.fn(() => ({
+        generate: generateMock,
+      })),
+      normalizeWeappTailwindcssGeneratorOptions: normalizeGeneratorOptions,
+      resolveTailwindV4Source: vi.fn(async (options: any) => ({
+        projectRoot: process.cwd(),
+        base: process.cwd(),
+        baseFallbacks: [],
+        css: options.css,
+        dependencies: [],
+      })),
+      resolveTailwindV4SourceFromPatcher: vi.fn(async () => ({
+        projectRoot: process.cwd(),
+        base: process.cwd(),
+        baseFallbacks: [],
+        css: '@import "tailwindcss";',
+        dependencies: [],
+      })),
+      resolveTailwindV4SourceOptionsFromPatcher: vi.fn(() => ({
+        projectRoot: process.cwd(),
+        baseFallbacks: [],
+      })),
+    }))
+
+    const { generateCssByGenerator } = await import('@/bundlers/shared/generator-css')
+    const styleHandler = vi.fn(async (code: string) => ({
+      css: code.replace('/*! tailwindcss v4.2.4 | MIT License | https://tailwindcss.com */\n', ''),
+    }))
+    const result = await generateCssByGenerator({
+      opts: {
+        generator: {
+          mode: 'force',
+          target: 'weapp',
+        },
+        styleHandler,
+      } as any,
+      runtimeState: {
+        twPatcher: {
+          majorVersion: 4,
+        } as any,
+        patchPromise: Promise.resolve(),
+      },
+      runtime: runtimeSet,
+      rawSource: rawTailwindCss,
+      file: 'app.wxss',
+      cssHandlerOptions: {
+        isMainChunk: true,
+        postcssOptions: {
+          options: {
+            from: 'app.wxss',
+          },
+        },
+        majorVersion: 4,
+      } as any,
+      cssUserHandlerOptions: {
+        isMainChunk: false,
+        postcssOptions: {
+          options: {
+            from: 'app.wxss',
+          },
+        },
+        majorVersion: 4,
+      } as any,
+      styleHandler,
+      debug: vi.fn(),
+    })
+
+    expect(result?.css).toBe('.w-_b100px_B{width:100px}\n.container{width:100%}')
+    expect(styleHandler).toHaveBeenCalledWith(
+      expect.stringContaining('.container{width:100%}'),
+      expect.objectContaining({
+        isMainChunk: true,
+      }),
+    )
+  })
+
+  it('appends v3 container compatibility when @config disables container in an external config file', async () => {
+    const runtimeSet = new Set(['w-[100px]'])
+    const projectRoot = path.resolve(__dirname, '../fixtures/generator-css-container-config')
+    const cssFile = path.join(projectRoot, 'app.wxss')
+    const configFile = path.join(projectRoot, 'tailwind.config.js')
+    const rawTailwindCss = '@import "tailwindcss";\n@config "./tailwind.config.js";\n.w-\\[100px\\]{width:100px}'
+    const generateMock = vi.fn(async () => ({
+      css: '.w-_b100px_B{width:100px}',
+      rawCss: rawTailwindCss,
+      target: 'weapp',
+      classSet: runtimeSet,
+      dependencies: [],
+      sources: [],
+      root: null,
+    }))
+
+    vi.doMock('node:fs', async (importOriginal) => ({
+      ...await importOriginal<typeof import('node:fs')>(),
+      existsSync: vi.fn((file: string) => file === configFile),
+      readFileSync: vi.fn((file: string) => {
+        if (file === configFile) {
+          return 'export default { corePlugins: { container: false } }'
+        }
+        throw new Error(`unexpected readFileSync: ${file}`)
+      }),
+    }))
+    vi.doMock('@/generator', () => createDefaultGeneratorMock({
+      createWeappTailwindcssGenerator: vi.fn(() => ({
+        generate: generateMock,
+      })),
+      resolveTailwindV4SourceOptionsFromPatcher: vi.fn(() => ({
+        projectRoot,
+        cwd: projectRoot,
+        baseFallbacks: [],
+      })),
+    }))
+
+    const { generateCssByGenerator } = await import('@/bundlers/shared/generator-css')
+    const styleHandler = vi.fn(async (code: string) => ({ css: code.replaceAll('rem', 'rpx') }))
+    const result = await generateCssByGenerator({
+      opts: {
+        generator: {
+          mode: 'force',
+          target: 'weapp',
+        },
+        styleHandler,
+      } as any,
+      runtimeState: {
+        twPatcher: {
+          majorVersion: 4,
+        } as any,
+        patchPromise: Promise.resolve(),
+      },
+      runtime: runtimeSet,
+      rawSource: rawTailwindCss,
+      file: cssFile,
+      cssHandlerOptions: {
+        isMainChunk: true,
+        postcssOptions: {
+          options: {
+            from: cssFile,
+          },
+        },
+        majorVersion: 4,
+      } as any,
+      cssUserHandlerOptions: {
+        isMainChunk: false,
+        postcssOptions: {
+          options: {
+            from: cssFile,
+          },
+        },
+        majorVersion: 4,
+      } as any,
+      styleHandler,
+      debug: vi.fn(),
+    })
+
+    expect(result?.css).toContain('.w-_b100px_B{width:100px}')
+    expect(result?.css).toContain('.container')
+    expect(result?.css).toContain('max-width: 40rpx')
+  })
+
+  it('appends v3 container compatibility in force fallback branch', async () => {
+    const runtimeSet = new Set(['w-[100px]'])
+    const rawTailwindCss = '.other{color:red}.w-\\[100px\\]{width:100px}'
+    const generateMock = vi.fn(async () => ({
+        css: '.w-_b100px_B{width:100px}',
+        rawCss: '.unknown{color:blue}.w-\\[100px\\]{width:100px}',
+      target: 'weapp',
+      classSet: runtimeSet,
+      dependencies: [],
+      sources: [],
+      root: null,
+    }))
+
+    vi.doMock('@/generator', () => createDefaultGeneratorMock({
+      createWeappTailwindcssGenerator: vi.fn(() => ({
+        generate: generateMock,
+      })),
+      resolveTailwindV4SourceFromPatcher: vi.fn(async () => ({
+        projectRoot: process.cwd(),
+        base: process.cwd(),
+        baseFallbacks: [],
+        css: '@import "tailwindcss";\n@config "./container.config.js";',
+        dependencies: [],
+      })),
+    }))
+
+    const { generateCssByGenerator } = await import('@/bundlers/shared/generator-css')
+    const styleHandler = vi.fn(async (code: string) => ({ css: code }))
+    const result = await generateCssByGenerator({
+      opts: {
+        generator: {
+          mode: 'force',
+          target: 'weapp',
+        },
+        styleHandler,
+      } as any,
+      runtimeState: {
+        twPatcher: {
+          majorVersion: 4,
+        } as any,
+        patchPromise: Promise.resolve(),
+      },
+      runtime: runtimeSet,
+      rawSource: rawTailwindCss,
+      file: 'app.wxss',
+      cssHandlerOptions: {
+        isMainChunk: true,
+        postcssOptions: {
+          options: {
+            from: 'app.wxss',
+          },
+        },
+        majorVersion: 4,
+      } as any,
+      cssUserHandlerOptions: {
+        isMainChunk: false,
+        postcssOptions: {
+          options: {
+            from: 'app.wxss',
+          },
+        },
+        majorVersion: 4,
+      } as any,
+      styleHandler,
+      debug: vi.fn(),
+    })
+
+    expect(result?.source).toBe('generator-forced')
+    expect(result?.css).toContain('.container')
+    expect(result?.css).toContain('.other{color:red}')
+  })
+
   it('forwards top-level unit transform options to generator css handling', async () => {
     const runtimeSet = new Set(['m-5', 'p-4'])
     const rawTailwindCss = '/*! tailwindcss v4.2.4 | MIT License | https://tailwindcss.com */\n.m-5{margin:20px}.p-4{padding:1rem}'
@@ -116,12 +451,23 @@ describe('bundlers/shared generator css', () => {
         generate: generateMock,
       })),
       normalizeWeappTailwindcssGeneratorOptions: normalizeGeneratorOptions,
+      resolveTailwindV4Source: vi.fn(async (options: any) => ({
+        projectRoot: process.cwd(),
+        base: process.cwd(),
+        baseFallbacks: [],
+        css: options.css,
+        dependencies: [],
+      })),
       resolveTailwindV4SourceFromPatcher: vi.fn(async () => ({
         projectRoot: process.cwd(),
         base: process.cwd(),
         baseFallbacks: [],
         css: '@import "tailwindcss";',
         dependencies: [],
+      })),
+      resolveTailwindV4SourceOptionsFromPatcher: vi.fn(() => ({
+        projectRoot: process.cwd(),
+        baseFallbacks: [],
       })),
     }))
 
@@ -205,12 +551,23 @@ describe('bundlers/shared generator css', () => {
         generate: generateMock,
       })),
       normalizeWeappTailwindcssGeneratorOptions: normalizeGeneratorOptions,
+      resolveTailwindV4Source: vi.fn(async (options: any) => ({
+        projectRoot: process.cwd(),
+        base: process.cwd(),
+        baseFallbacks: [],
+        css: options.css,
+        dependencies: [],
+      })),
       resolveTailwindV4SourceFromPatcher: vi.fn(async () => ({
         projectRoot: process.cwd(),
         base: process.cwd(),
         baseFallbacks: [],
         css: '@import "tailwindcss";',
         dependencies: [],
+      })),
+      resolveTailwindV4SourceOptionsFromPatcher: vi.fn(() => ({
+        projectRoot: process.cwd(),
+        baseFallbacks: [],
       })),
     }))
 
@@ -511,12 +868,23 @@ describe('bundlers/shared generator css', () => {
         generate: generateMock,
       })),
       normalizeWeappTailwindcssGeneratorOptions: normalizeGeneratorOptions,
+      resolveTailwindV4Source: vi.fn(async (options: any) => ({
+        projectRoot: process.cwd(),
+        base: process.cwd(),
+        baseFallbacks: [],
+        css: options.css,
+        dependencies: [],
+      })),
       resolveTailwindV4SourceFromPatcher: vi.fn(async () => ({
         projectRoot: process.cwd(),
         base: process.cwd(),
         baseFallbacks: [],
         css: '@import "tailwindcss";',
         dependencies: [],
+      })),
+      resolveTailwindV4SourceOptionsFromPatcher: vi.fn(() => ({
+        projectRoot: process.cwd(),
+        baseFallbacks: [],
       })),
     }))
 
@@ -615,7 +983,7 @@ describe('bundlers/shared generator css', () => {
     expect(styleHandler).not.toHaveBeenCalled()
   })
 
-  it('skips forced generator for ordinary main css assets without Tailwind entry directives', async () => {
+  it('uses forced generator for ordinary main css assets backed by configured Tailwind source', async () => {
     const runtimeSet = new Set(['w-[100px]'])
     const rawSource = '.third-party:hover{color:red}'
     const rawTailwindCss = '.w-\\[100px\\]{width:100px}'
@@ -685,9 +1053,11 @@ describe('bundlers/shared generator css', () => {
       debug: vi.fn(),
     })
 
-    expect(result).toBeUndefined()
-    expect(generateMock).not.toHaveBeenCalled()
-    expect(styleHandler).not.toHaveBeenCalled()
+    expect(result?.css).toBe(`${weappCss}\nlegacy:.third-party:hover{color:red}`)
+    expect(generateMock).toHaveBeenCalledTimes(1)
+    expect(styleHandler).toHaveBeenCalledWith(rawSource, expect.objectContaining({
+      isMainChunk: true,
+    }))
   })
 
   it('generates forced Tailwind v3 css when @tailwind utilities is present', async () => {
@@ -714,6 +1084,16 @@ describe('bundlers/shared generator css', () => {
         projectRoot: process.cwd(),
         base: process.cwd(),
         css: '@tailwind utilities;',
+        dependencies: [],
+      })),
+      resolveTailwindV3SourceOptionsFromPatcher: vi.fn(() => ({
+        projectRoot: process.cwd(),
+        cwd: process.cwd(),
+      })),
+      resolveTailwindV3Source: vi.fn(async (options: any) => ({
+        projectRoot: process.cwd(),
+        base: process.cwd(),
+        css: options.css,
         dependencies: [],
       })),
     }))
@@ -766,6 +1146,25 @@ describe('bundlers/shared generator css', () => {
     }))
   })
 
+  it('resolves current css asset directives for generator source', async () => {
+    const rawSource = [
+      '@config "./generator-css.unit.test.ts";',
+      '@tailwind base;',
+      '@tailwind components;',
+      '@tailwind utilities;',
+    ].join('\n')
+    const { resolveCssEntrySource } = await import('@/bundlers/shared/generator-css')
+    const source = resolveCssEntrySource(rawSource, __dirname)
+    expect(source).toEqual(expect.objectContaining({
+      css: [
+        '@tailwind base;',
+        '@tailwind components;',
+        '@tailwind utilities;',
+      ].join('\n'),
+      config: path.resolve(__dirname, 'generator-css.unit.test.ts'),
+      base: __dirname,
+    }))
+  })
   it('skips forced generator for ordinary non-main css assets', async () => {
     const runtimeSet = new Set(['w-[100px]'])
     const rawSource = '.page{color:red}'
@@ -1410,6 +1809,121 @@ describe('bundlers/shared generator css', () => {
     expect(css).not.toContain('--font-mono')
     expect(css.indexOf('::before,::after{--tw-content:""}')).toBeLessThan(css.indexOf(':host,page,.tw-root,wx-root-portal-content'))
     expect(css.indexOf(':host,page,.tw-root,wx-root-portal-content')).toBeLessThan(css.indexOf('.bg-blue-500'))
+  })
+
+  it('generates Tailwind v4 css entries independently in force mode', async () => {
+    const runtimeSet = new Set(['bg-emerald-500', 'bg-slate-50'])
+    const generateMock = vi.fn(async () => {
+      const callIndex = generateMock.mock.calls.length
+      return callIndex === 1
+        ? {
+            css: '.bg-emerald-500{background-color:rgb(0,185,129)}',
+            rawCss: '.bg-emerald-500{background-color:rgb(0,185,129)}',
+            target: 'weapp',
+            classSet: new Set(['bg-emerald-500']),
+            dependencies: ['main.css'],
+            sources: [],
+            root: null,
+          }
+        : {
+            css: '.bg-slate-50{background-color:rgb(248,250,252)}',
+            rawCss: '.bg-slate-50{background-color:rgb(248,250,252)}',
+            target: 'weapp',
+            classSet: new Set(['bg-slate-50']),
+            dependencies: ['common.css'],
+            sources: [],
+            root: null,
+          }
+    })
+
+    const createGeneratorMock = vi.fn(() => ({
+      generate: generateMock,
+    }))
+    const resolveTailwindV4SourceMock = vi.fn(async (options: any) => ({
+      projectRoot: process.cwd(),
+      base: process.cwd(),
+      baseFallbacks: [],
+      css: `@import "tailwindcss"; /* ${options.cssEntries[0]} */`,
+      dependencies: options.cssEntries,
+    }))
+
+    vi.doMock('@/generator', () => ({
+      createWeappTailwindcssGenerator: createGeneratorMock,
+      normalizeWeappTailwindcssGeneratorOptions: normalizeGeneratorOptions,
+      resolveTailwindV4Source: resolveTailwindV4SourceMock,
+      resolveTailwindV4SourceFromPatcher: vi.fn(async () => ({
+        projectRoot: process.cwd(),
+        base: process.cwd(),
+        baseFallbacks: [],
+        css: '@import "tailwindcss";',
+        dependencies: [],
+      })),
+      resolveTailwindV4SourceOptionsFromPatcher: vi.fn(() => ({
+        projectRoot: process.cwd(),
+        baseFallbacks: [],
+        cssEntries: ['main.css', 'common.css'],
+      })),
+    }))
+
+    const { generateCssByGenerator } = await import('@/bundlers/shared/generator-css')
+    const styleHandler = vi.fn(async (code: string) => ({ css: code }))
+    const result = await generateCssByGenerator({
+      opts: {
+        generator: {
+          mode: 'force',
+          target: 'weapp',
+        },
+        styleHandler,
+      } as any,
+      runtimeState: {
+        twPatcher: {
+          majorVersion: 4,
+          options: {
+            tailwindcss: {
+              v4: {
+                cssEntries: ['main.css', 'common.css'],
+              },
+            },
+          },
+        } as any,
+        patchPromise: Promise.resolve(),
+      },
+      runtime: runtimeSet,
+      rawSource: '/*! weapp-tailwindcss generator-placeholder */',
+      file: 'app.wxss',
+      cssHandlerOptions: {
+        isMainChunk: true,
+        postcssOptions: {
+          options: {
+            from: 'app.wxss',
+          },
+        },
+        majorVersion: 4,
+      } as any,
+      cssUserHandlerOptions: {
+        isMainChunk: false,
+        postcssOptions: {
+          options: {
+            from: 'app.wxss',
+          },
+        },
+        majorVersion: 4,
+      } as any,
+      styleHandler,
+      debug: vi.fn(),
+    })
+
+    expect(resolveTailwindV4SourceMock).toHaveBeenCalledTimes(2)
+    expect(resolveTailwindV4SourceMock).toHaveBeenNthCalledWith(1, expect.objectContaining({
+      cssEntries: ['main.css'],
+    }))
+    expect(resolveTailwindV4SourceMock).toHaveBeenNthCalledWith(2, expect.objectContaining({
+      cssEntries: ['common.css'],
+    }))
+    expect(createGeneratorMock).toHaveBeenCalledTimes(2)
+    expect(generateMock).toHaveBeenCalledTimes(2)
+    expect(result?.css).toContain('.bg-emerald-500{background-color:rgb(0,185,129)}')
+    expect(result?.css).toContain('.bg-slate-50{background-color:rgb(248,250,252)}')
   })
 
   it('generates scoped tailwind css assets outside the main chunk', async () => {

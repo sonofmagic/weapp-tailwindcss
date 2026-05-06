@@ -7,10 +7,13 @@ import path from 'node:path'
 import process from 'node:process'
 import { logger } from '@weapp-tailwindcss/logger'
 import { splitCode } from '@weapp-tailwindcss/shared/extractors'
+import { createWeappTailwindcssGenerator, normalizeWeappTailwindcssGeneratorOptions } from '@/generator'
 import { getRuntimeClassSetSignature } from '@/tailwindcss/runtime/cache'
+import { resolveTailwindV4SourceFromPatcher } from '@/tailwindcss/v4-engine'
 import { createUniAppXAssetTask } from '@/uni-app-x'
 import { isUniAppXEnabled } from '@/uni-app-x/options'
 import { processCachedTask } from '../shared/cache'
+import { collectGeneratorCandidatesFromSources } from '../shared/generator-candidates'
 import { generateCssByGenerator } from '../shared/generator-css'
 import { normalizeOutputPathKey } from '../shared/module-graph'
 import { pushConcurrentTaskFactories } from '../shared/run-tasks'
@@ -28,7 +31,9 @@ interface GenerateBundleContext {
   ensureBundleRuntimeClassSet: (snapshot: BundleSnapshot, forceRefresh?: boolean) => Promise<Set<string>>
   debug: (format: string, ...args: unknown[]) => void
   getResolvedConfig: () => ResolvedConfig | undefined
-  markCssAssetProcessed?: (asset: OutputAsset) => void
+  markCssAssetProcessed?: (asset: OutputAsset, file?: string) => void
+  recordCssAssetResult?: (file: string, css: string) => void
+  recordGeneratorCandidates?: (candidates: Set<string>) => void
 }
 
 interface BundleMetric {
@@ -186,6 +191,18 @@ function createCssTransformShareScope(file: string, rawSource: string) {
   return 'global'
 }
 
+function createCssTransformShareScopeKey(
+  opts: InternalUserDefinedOptions,
+  file: string,
+  rawSource: string,
+) {
+  const generatorOptions = normalizeWeappTailwindcssGeneratorOptions(opts.generator)
+  if (generatorOptions.mode === 'force' && opts.mainCssChunkMatcher(file, opts.appType)) {
+    return `main:${normalizeOutputPathKey(file)}`
+  }
+  return createCssTransformShareScope(file, rawSource)
+}
+
 function hasOmittedKnownBundleFiles(
   currentBundleFiles: string[],
   previousBundleFiles: Iterable<string>,
@@ -230,6 +247,54 @@ function collectUnescapedDynamicCandidates(
   return [...matches]
 }
 
+function collectLegacyContainerCompatCandidates(
+  sources: GeneratorCandidateSource[],
+  runtime: Set<string>,
+) {
+  if (runtime.has('container')) {
+    return runtime
+  }
+  if (!sources.some(source => /\bcontainer\b/.test(source.content))) {
+    return runtime
+  }
+  return new Set([
+    ...runtime,
+    'container',
+  ])
+}
+
+async function collectTailwindV4ContentCandidates(
+  runtimeState: GenerateBundleContext['runtimeState'],
+  runtime: Set<string>,
+  generatorMode: ReturnType<typeof normalizeWeappTailwindcssGeneratorOptions>['mode'],
+  debug: GenerateBundleContext['debug'],
+) {
+  const collectContentTokens = runtimeState.twPatcher.collectContentTokens
+  if (generatorMode !== 'force' || runtimeState.twPatcher.majorVersion !== 4 || typeof collectContentTokens !== 'function') {
+    return runtime
+  }
+
+  try {
+    const source = await resolveTailwindV4SourceFromPatcher(runtimeState.twPatcher)
+    const generator = createWeappTailwindcssGenerator(source)
+    const report = await collectContentTokens.call(runtimeState.twPatcher)
+    const rawCandidates = new Set(report.entries.map(entry => entry.rawCandidate))
+    const validCandidates = await generator.validateCandidates(rawCandidates)
+    if (rawCandidates.size === 0 && validCandidates.size === 0) {
+      return runtime
+    }
+    return new Set([
+      ...runtime,
+      ...rawCandidates,
+      ...validCandidates,
+    ])
+  }
+  catch (error) {
+    debug('collect Tailwind v4 content candidates for generator failed: %O', error)
+    return runtime
+  }
+}
+
 export function createGenerateBundleHook(context: GenerateBundleContext) {
   const state = createBundleBuildState()
   const cssHandlerOptionsCache = new Map<string, {
@@ -259,6 +324,8 @@ export function createGenerateBundleHook(context: GenerateBundleContext) {
       debug,
       getResolvedConfig,
       markCssAssetProcessed,
+      recordCssAssetResult,
+      recordGeneratorCandidates,
     } = context
     const {
       appType,
@@ -272,6 +339,7 @@ export function createGenerateBundleHook(context: GenerateBundleContext) {
       jsHandler,
       uniAppX,
     } = opts
+    const generatorOptions = normalizeWeappTailwindcssGeneratorOptions(opts.generator)
 
     // 按文件缓存 CSS handler 的 override 对象，减少 watch/incremental 轮次的重复构造与下游 fingerprint 开销。
     const getCssHandlerOptions = (file: string) => {
@@ -382,6 +450,21 @@ export function createGenerateBundleHook(context: GenerateBundleContext) {
     const runtime = useBundleRuntimeClassSet
       ? await ensureBundleRuntimeClassSet(snapshot, forceRuntimeRefreshByEnv)
       : await context.ensureRuntimeClassSet(forceRuntimeRefreshByEnv)
+    const generatorBaseRuntime = await collectTailwindV4ContentCandidates(runtimeState, runtime, generatorOptions.mode, debug)
+    const generatorCandidateSources = snapshot.entries
+      .filter(entry => entry.type === 'html' || entry.type === 'js')
+      .map(entry => ({
+        content: entry.source,
+        extension: path.extname(entry.file).replace(/^\./, '') || (entry.type === 'html' ? 'html' : 'js'),
+      }))
+    const generatorRuntime = collectLegacyContainerCompatCandidates(
+      generatorCandidateSources,
+      await collectGeneratorCandidatesFromSources(
+        generatorCandidateSources,
+        generatorBaseRuntime,
+      ),
+    )
+    recordGeneratorCandidates?.(generatorRuntime)
     const defaultTemplateHandlerOptions = {
       runtimeSet: runtime,
     }
@@ -495,7 +578,7 @@ export function createGenerateBundleHook(context: GenerateBundleContext) {
         // 否则会退回未转译内容并与同轮 JS/WXML 的 class 改写失配。
         const rawSource = originalEntrySource
         const cssRuntimeAffectingSignature = snapshot.runtimeAffectingSignatureByFile.get(file) ?? rawSource
-        const cssShareScope = createCssTransformShareScope(file, rawSource)
+        const cssShareScope = createCssTransformShareScopeKey(opts, file, rawSource)
         const cssHandlerOptions = getCssHandlerOptions(file)
         const cssSharedCacheKey = `${cssShareScope}:${runtimeSignature}:${runtimeState.twPatcher.majorVersion ?? 'unknown'}:${cssHandlerOptions.isMainChunk ? '1' : '0'}:${cssRuntimeAffectingSignature}`
         tasks.push(
@@ -506,7 +589,7 @@ export function createGenerateBundleHook(context: GenerateBundleContext) {
             hash: getSnapshotHash(snapshot.runtimeAffectingHashByFile, file, cssRuntimeAffectingSignature),
             applyResult(source) {
               originalSource.source = source
-              markCssAssetProcessed?.(originalSource)
+              markCssAssetProcessed?.(originalSource, file)
             },
             onCacheHit() {
               metrics.css.cacheHits++
@@ -531,7 +614,7 @@ export function createGenerateBundleHook(context: GenerateBundleContext) {
                 const generated = await generateCssByGenerator({
                   opts,
                   runtimeState,
-                  runtime,
+                  runtime: generatorRuntime,
                   rawSource,
                   file,
                   cssHandlerOptions,
@@ -543,6 +626,8 @@ export function createGenerateBundleHook(context: GenerateBundleContext) {
                   if (debugCssDiff) {
                     debug('css diff %s: %s', file, summarizeStringDiff(rawSource, generated.css))
                   }
+                  debug('css generated result: %s bytes=%d', file, generated.css.length)
+                  recordCssAssetResult?.(file, generated.css)
                   metrics.css.elapsed += measureElapsed(start)
                   metrics.css.transformed++
                   debug('css handle via tailwind v%s engine(%s): %s', runtimeState.twPatcher.majorVersion, generated.target, file)

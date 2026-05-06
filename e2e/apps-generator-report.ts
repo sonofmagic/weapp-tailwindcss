@@ -51,7 +51,14 @@ function formatSelectorList(selectors: string[]) {
   if (selectors.length === 0) {
     return '-'
   }
-  return selectors.map(selector => `\`${selector.replaceAll('|', '\\|')}\``).join(', ')
+  return selectors.slice(0, 20).map(selector => `\`${selector.replaceAll('|', '\\|')}\``).join(', ')
+}
+
+function formatSelectorCount(selectors: string[], chinese: boolean) {
+  if (selectors.length === 0) {
+    return chinese ? '无' : 'none'
+  }
+  return chinese ? `需要兼容（${selectors.length}）` : `needs compat (${selectors.length})`
 }
 
 function formatCssFiles(item: AppsGeneratorCompareReportItem) {
@@ -69,8 +76,8 @@ export function createMarkdownReport(report: AppsGeneratorCompareReportItem[]) {
     '',
     '## Summary',
     '',
-    '| Project | Fixture | Status | CSS | Legacy bytes | Generator bytes | Delta | Ratio | @supports | :hover | Tailwind banner |',
-    '| --- | --- | --- | --- | ---: | ---: | ---: | ---: | --- | --- | --- |',
+    '| Project | Fixture | Status | CSS | Legacy bytes | Generator bytes | Delta | Ratio | Legacy only | @supports | :hover | Tailwind banner |',
+    '| --- | --- | --- | --- | ---: | ---: | ---: | ---: | --- | --- | --- | --- |',
   ]
 
   for (const item of report) {
@@ -81,6 +88,7 @@ export function createMarkdownReport(report: AppsGeneratorCompareReportItem[]) {
           item.fixture,
           `failed (${item.failedMode})`,
           formatCssFiles(item),
+          '-',
           '-',
           '-',
           '-',
@@ -103,6 +111,7 @@ export function createMarkdownReport(report: AppsGeneratorCompareReportItem[]) {
         item.generator.bytes,
         formatSigned(item.deltaBytes),
         item.generatorBytesRatio,
+        formatSelectorCount(item.legacyOnlySelectors, false),
         formatBoolean(item.generator.hasSupports),
         formatBoolean(item.generator.hasHoverPseudo),
         formatBoolean(item.generator.hasTailwindBanner),
@@ -117,7 +126,8 @@ export function createMarkdownReport(report: AppsGeneratorCompareReportItem[]) {
     '- CSS column shows the entry stylesheet. `(+N)` means the report also aggregates `@import`-linked stylesheets, such as Taro `app-origin.wxss` or Mpx hashed `styles/app*.wxss`.',
     '- `@supports`, `:hover`, and Tailwind banner columns describe the generator output. They should stay `no` for mini-program compatibility.',
     '- `Delta` is `generator bytes - legacy bytes`. Positive values mean the generator output is currently larger; the selector samples below make that difference visible for follow-up optimization.',
-    '- Selector lists are truncated to the first 20 entries to keep the report stable and readable.',
+    '- `Legacy only` must stay `none`. Non-zero values mean legacy CSS selectors still need generator output or compat CSS coverage.',
+    '- Selector lists show the first 20 entries to keep the report stable and readable.',
     '- Failed rows keep the first failing mode and error message in the failure section so migration blockers stay visible.',
     '',
     '## Failures',
@@ -167,8 +177,8 @@ export function createChineseMarkdownReport(report: AppsGeneratorCompareReportIt
     '',
     '## 汇总',
     '',
-    '| 项目 | 来源 | 状态 | CSS 文件 | 旧链路字节数 | 生成模式字节数 | 差值 | 比例 | @supports | :hover | Tailwind banner |',
-    '| --- | --- | --- | --- | ---: | ---: | ---: | ---: | --- | --- | --- |',
+    '| 项目 | 来源 | 状态 | CSS 文件 | 旧链路字节数 | 生成模式字节数 | 差值 | 比例 | 旧链路独有 | @supports | :hover | Tailwind banner |',
+    '| --- | --- | --- | --- | ---: | ---: | ---: | ---: | --- | --- | --- | --- |',
   ]
 
   for (const item of report) {
@@ -179,6 +189,7 @@ export function createChineseMarkdownReport(report: AppsGeneratorCompareReportIt
           item.fixture,
           `失败（${item.failedMode}）`,
           formatCssFiles(item),
+          '-',
           '-',
           '-',
           '-',
@@ -201,6 +212,7 @@ export function createChineseMarkdownReport(report: AppsGeneratorCompareReportIt
         item.generator.bytes,
         formatSigned(item.deltaBytes),
         item.generatorBytesRatio,
+        formatSelectorCount(item.legacyOnlySelectors, true),
         formatChineseBoolean(item.generator.hasSupports),
         formatChineseBoolean(item.generator.hasHoverPseudo),
         formatChineseBoolean(item.generator.hasTailwindBanner),
@@ -215,7 +227,8 @@ export function createChineseMarkdownReport(report: AppsGeneratorCompareReportIt
     '- CSS 文件列展示入口样式；`(+N)` 表示报告还会聚合 `@import` 关联样式，例如 Taro 的 `app-origin.wxss` 或 Mpx 的 hash 化 `styles/app*.wxss`。',
     '- `@supports`、`:hover` 和 Tailwind banner 三列描述的是生成模式产物。面向小程序时这些值应保持为 `否`。',
     '- `差值` 等于 `生成模式字节数 - 旧链路字节数`。正数表示当前生成模式产物更大；下面的选择器样本可用于定位后续需要裁剪的部分。',
-    '- 选择器列表只保留前 20 项，保证报告稳定且便于阅读。',
+    '- `旧链路独有` 必须保持为 `无`。非零值表示旧链路选择器仍需要生成模式产出或兼容 CSS 覆盖。',
+    '- 选择器列表会展示前 20 项；`仅旧链路` 的完整数量会在汇总表标出，便于持续清零。',
     '- 失败行会在失败详情中保留首个失败模式和错误信息，便于持续消除迁移阻塞。',
     '',
     '## 失败详情',

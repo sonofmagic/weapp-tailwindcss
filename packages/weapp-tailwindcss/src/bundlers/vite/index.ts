@@ -23,6 +23,7 @@ import { isUniAppXEnabled } from '@/uni-app-x/options'
 import { resolveUniUtsPlatform } from '@/utils'
 import { resolveDisabledOptions } from '@/utils/disabled'
 import { resolvePackageDir } from '@/utils/resolve-package'
+import { normalizeOutputPathKey } from '../shared/module-graph'
 import { createViteCssFinalizerOutputPlugin } from './css-finalizer'
 import { createGenerateBundleHook } from './generate-bundle'
 import { createBundleRuntimeClassSetManager } from './incremental-runtime-class-set'
@@ -237,8 +238,10 @@ export function UnifiedViteWeappTailwindcssPlugin(options: UserDefinedOptions = 
   let resolvedConfig: ResolvedConfig | undefined
   let runtimeRefreshSignature: string | undefined
   let runtimeRefreshOptionsKey: string | undefined
+  let recordedGeneratorCandidates: Set<string> | undefined
   const bundleRuntimeClassSetManager = createBundleRuntimeClassSetManager()
   const processedCssAssets = new WeakSet<object>()
+  const processedCssAssetFiles = new Set<string>()
 
   function resolveRuntimeRefreshOptions() {
     const configPath = resolveTailwindcssOptions(runtimeState.twPatcher.options)?.config
@@ -326,8 +329,20 @@ export function UnifiedViteWeappTailwindcssPlugin(options: UserDefinedOptions = 
     if (runtimeState.twPatcher.majorVersion === 4 && !forceRuntimeRefresh) {
       try {
         const nextRuntimeSet = await bundleRuntimeClassSetManager.sync(runtimeState.twPatcher, snapshot)
-        runtimeSet = nextRuntimeSet
-        return nextRuntimeSet
+        const shouldForceFullRuntimeSet = forceRuntimeRefresh || invalidation.changed || forceCollectBySource
+        const fullRuntimeSet = !shouldForceFullRuntimeSet && runtimeSet
+          ? runtimeSet
+          : await collectRuntimeClassSet(runtimeState.twPatcher, {
+              force: shouldForceFullRuntimeSet,
+              skipRefresh: forceRuntimeRefresh,
+              clearCache: forceRuntimeRefresh || invalidation.changed,
+            })
+        const mergedRuntimeSet = new Set([
+          ...fullRuntimeSet,
+          ...nextRuntimeSet,
+        ])
+        runtimeSet = mergedRuntimeSet
+        return mergedRuntimeSet
       }
       catch (error) {
         debug('incremental runtime set sync failed, fallback to full collect: %O', error)
@@ -358,12 +373,26 @@ export function UnifiedViteWeappTailwindcssPlugin(options: UserDefinedOptions = 
   }
   onLoad()
   const getResolvedConfig = () => resolvedConfig
-  const markCssAssetProcessed = (asset: { source: unknown }) => {
+  const markCssAssetProcessed = (asset: { source: unknown }, file?: string) => {
     processedCssAssets.add(asset)
+    if (file) {
+      processedCssAssetFiles.add(normalizeOutputPathKey(file))
+    }
   }
-  const isCssAssetProcessed = (asset: { source: unknown }) => {
+  const isCssAssetProcessed = (asset: { source: unknown }, file?: string) => {
     return processedCssAssets.has(asset)
+      || (file ? processedCssAssetFiles.has(normalizeOutputPathKey(file)) : false)
   }
+  const recordGeneratorCandidates = (candidates: Set<string>) => {
+    if (!recordedGeneratorCandidates) {
+      recordedGeneratorCandidates = new Set(candidates)
+      return
+    }
+    for (const candidate of candidates) {
+      recordedGeneratorCandidates.add(candidate)
+    }
+  }
+  const getRecordedGeneratorCandidates = () => recordedGeneratorCandidates
   const cssFinalizerOutputPlugin = createViteCssFinalizerOutputPlugin({
     opts,
     runtimeState,
@@ -372,6 +401,7 @@ export function UnifiedViteWeappTailwindcssPlugin(options: UserDefinedOptions = 
     getResolvedConfig,
     markCssAssetProcessed,
     isCssAssetProcessed,
+    getRecordedGeneratorCandidates,
   })
   const utsPlatform = resolveUniUtsPlatform()
   const isIosPlatform = utsPlatform.isAppIos
@@ -510,6 +540,7 @@ export function UnifiedViteWeappTailwindcssPlugin(options: UserDefinedOptions = 
           debug,
           getResolvedConfig,
           markCssAssetProcessed,
+          recordGeneratorCandidates,
         }),
       },
       outputOptions(options) {

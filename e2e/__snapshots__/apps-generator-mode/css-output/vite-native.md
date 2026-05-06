@@ -7,8 +7,8 @@ Generator CSS files: app.wxss, apple.wxss, index.wxss
 
 | Mode | Bytes | Selectors | @supports | :hover | Tailwind banner | Raw arbitrary selector | Weapp escaped arbitrary selector |
 | --- | ---: | ---: | --- | --- | --- | --- | --- |
-| legacy | 5991 | 47 | false | false | false | false | true |
-| generator | 6878 | 58 | false | false | false | false | true |
+| legacy | 5751 | 47 | false | false | false | false | true |
+| generator | 7314 | 60 | false | false | false | false | true |
 
 ## Diff
 
@@ -16,14 +16,10 @@ Generator CSS files: app.wxss, apple.wxss, index.wxss
 ===================================================================
 --- vite-native/legacy.css
 +++ vite-native/generator.css
-@@ -2,14 +2,15 @@
+@@ -2,10 +2,15 @@
  ::after {
    --tw-content: '';
  }
--::before,
--::after {
--  --tw-content: '';
--}
 -view,
 -text,
 -:before,
@@ -40,7 +36,7 @@ Generator CSS files: app.wxss, apple.wxss, index.wxss
    --tw-space-y-reverse: 0;
    --tw-space-x-reverse: 0;
    --tw-border-style: solid;
-@@ -22,15 +23,19 @@
+@@ -18,15 +23,19 @@
    --tw-gradient-from-position: 0%;
    --tw-gradient-via-position: 50%;
    --tw-gradient-to-position: 100%;
@@ -69,7 +65,7 @@ Generator CSS files: app.wxss, apple.wxss, index.wxss
    --color-red-700: rgb(191, 0, 15);
    --color-amber-300: rgb(255, 210, 55);
    --color-green-300: rgb(123, 241, 168);
-@@ -41,79 +46,51 @@
+@@ -37,74 +46,49 @@
    --color-zinc-50: rgb(250, 250, 250);
    --color-zinc-900: rgb(24, 24, 27);
    --spacing: 8rpx;
@@ -161,13 +157,8 @@ Generator CSS files: app.wxss, apple.wxss, index.wxss
 -  height: 80rpx;
    height: calc(var(--spacing) * 10);
  }
--.h-_b29_d292px_B {
--  height: 29.292px;
--}
- .h-_b30px_B {
-   height: 30px;
- }
-@@ -129,6 +106,13 @@
+ .h-_b29_d292px_B {
+@@ -125,6 +109,13 @@
  .w-_b323px_B {
    width: 323px;
  }
@@ -181,27 +172,23 @@ Generator CSS files: app.wxss, apple.wxss, index.wxss
  .flex-col {
    -webkit-flex-direction: column;
    flex-direction: column;
-@@ -138,11 +122,7 @@
+@@ -134,9 +125,7 @@
  .space-y-2_d5 > text + view,
  .space-y-2_d5 > text + text {
    --tw-space-y-reverse: 0;
 -  margin-bottom: 0rpx;
--  margin-bottom: calc((var(--spacing) * 2.5) * 0);
    margin-bottom: calc((var(--spacing) * 2.5) * var(--tw-space-y-reverse));
 -  margin-top: 20rpx;
--  margin-top: calc((var(--spacing) * 2.5) * 1);
    margin-top: calc((var(--spacing) * 2.5) * (1 - var(--tw-space-y-reverse)));
  }
  .space-x-2_d5 > view + view,
-@@ -150,13 +130,17 @@
+@@ -144,11 +133,17 @@
  .space-x-2_d5 > text + view,
  .space-x-2_d5 > text + text {
    --tw-space-x-reverse: 0;
 -  margin-right: 0rpx;
--  margin-right: calc((var(--spacing) * 2.5) * 0);
    margin-right: calc((var(--spacing) * 2.5) * var(--tw-space-x-reverse));
 -  margin-left: 20rpx;
--  margin-left: calc((var(--spacing) * 2.5) * 1);
    margin-left: calc((var(--spacing) * 2.5) * (1 - var(--tw-space-x-reverse)));
  }
 +.truncate {
@@ -215,7 +202,7 @@ Generator CSS files: app.wxss, apple.wxss, index.wxss
  .border-4 {
    border-style: var(--tw-border-style);
    border-width: 4px;
-@@ -168,14 +152,12 @@
+@@ -160,14 +155,12 @@
    background-color: #68c828;
  }
  .bg-amber-300 {
@@ -231,7 +218,7 @@ Generator CSS files: app.wxss, apple.wxss, index.wxss
    background-color: var(--color-zinc-50);
  }
  .bg-gradient-to-b {
-@@ -209,7 +191,6 @@
+@@ -201,7 +194,6 @@
    );
  }
  .p-4 {
@@ -239,7 +226,7 @@ Generator CSS files: app.wxss, apple.wxss, index.wxss
    padding: calc(var(--spacing) * 4);
  }
  .text-_b100px_B {
-@@ -225,23 +206,43 @@
+@@ -217,24 +209,72 @@
    color: #123456;
  }
  .text-blue-300 {
@@ -285,6 +272,34 @@ Generator CSS files: app.wxss, apple.wxss, index.wxss
  }
 +
  /*$vite$:1*/
++.container {
++  width: 100%;
++}
++@media (min-width: 40rem) {
++  .container {
++    max-width: 1280rpx;
++  }
++}
++@media (min-width: 48rem) {
++  .container {
++    max-width: 1536rpx;
++  }
++}
++@media (min-width: 64rem) {
++  .container {
++    max-width: 2048rpx;
++  }
++}
++@media (min-width: 80rem) {
++  .container {
++    max-width: 2560rpx;
++  }
++}
++@media (min-width: 96rem) {
++  .container {
++    max-width: 3072rpx;
++  }
++}
 
  /*$vite$:1*/
 ```
@@ -292,10 +307,6 @@ Generator CSS files: app.wxss, apple.wxss, index.wxss
 ## Legacy CSS
 
 ```css
-::before,
-::after {
-  --tw-content: '';
-}
 ::before,
 ::after {
   --tw-content: '';
@@ -433,10 +444,8 @@ text,
 .space-y-2_d5 > text + text {
   --tw-space-y-reverse: 0;
   margin-bottom: 0rpx;
-  margin-bottom: calc((var(--spacing) * 2.5) * 0);
   margin-bottom: calc((var(--spacing) * 2.5) * var(--tw-space-y-reverse));
   margin-top: 20rpx;
-  margin-top: calc((var(--spacing) * 2.5) * 1);
   margin-top: calc((var(--spacing) * 2.5) * (1 - var(--tw-space-y-reverse)));
 }
 .space-x-2_d5 > view + view,
@@ -445,10 +454,8 @@ text,
 .space-x-2_d5 > text + text {
   --tw-space-x-reverse: 0;
   margin-right: 0rpx;
-  margin-right: calc((var(--spacing) * 2.5) * 0);
   margin-right: calc((var(--spacing) * 2.5) * var(--tw-space-x-reverse));
   margin-left: 20rpx;
-  margin-left: calc((var(--spacing) * 2.5) * 1);
   margin-left: calc((var(--spacing) * 2.5) * (1 - var(--tw-space-x-reverse)));
 }
 .border-4 {
@@ -646,6 +653,9 @@ wx-root-portal-content {
 .h-10 {
   height: calc(var(--spacing) * 10);
 }
+.h-_b29_d292px_B {
+  height: 29.292px;
+}
 .h-_b30px_B {
   height: 30px;
 }
@@ -799,6 +809,34 @@ wx-root-portal-content {
 }
 
 /*$vite$:1*/
+.container {
+  width: 100%;
+}
+@media (min-width: 40rem) {
+  .container {
+    max-width: 1280rpx;
+  }
+}
+@media (min-width: 48rem) {
+  .container {
+    max-width: 1536rpx;
+  }
+}
+@media (min-width: 64rem) {
+  .container {
+    max-width: 2048rpx;
+  }
+}
+@media (min-width: 80rem) {
+  .container {
+    max-width: 2560rpx;
+  }
+}
+@media (min-width: 96rem) {
+  .container {
+    max-width: 3072rpx;
+  }
+}
 
 /*$vite$:1*/
 

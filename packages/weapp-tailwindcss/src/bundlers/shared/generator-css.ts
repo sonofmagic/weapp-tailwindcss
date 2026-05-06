@@ -1,14 +1,22 @@
 import type { IStyleHandlerOptions } from '@weapp-tailwindcss/postcss/types'
+import type { TailwindResolvedSource } from '@/generator'
 import type { InternalUserDefinedOptions } from '@/types'
+import { existsSync, readFileSync } from 'node:fs'
+import path from 'node:path'
+import process from 'node:process'
 import postcss from 'postcss'
 import {
   createWeappTailwindcssGenerator,
   normalizeWeappTailwindcssGeneratorOptions,
+  resolveTailwindV3Source,
   resolveTailwindV3SourceFromPatcher,
+  resolveTailwindV3SourceOptionsFromPatcher,
+  resolveTailwindV4Source,
   resolveTailwindV4SourceFromPatcher,
+  resolveTailwindV4SourceOptionsFromPatcher,
 } from '@/generator'
 import { replaceWxml } from '@/wxml'
-import { finalizeMiniProgramCss, removeUnsupportedAtSupports } from './css-cleanup'
+import { finalizeMiniProgramCss, removeUnsupportedMiniProgramAtRules } from './css-cleanup'
 
 const TAILWIND_V4_BANNER_RE = /\/\*!\s*tailwindcss v4\./
 const TAILWIND_GENERATED_CSS_MARKER_RE = /\/\*!\s*tailwindcss v|@property\s+--tw-|--tw-|:not\(#\\#\)|\.[^,{]*(?:\\:|\\\[|\\#)|(?::host|page|\.tw-root|wx-root-portal-content)[^{]*\{[^}]*--(?:color|spacing|text|font-weight|radius)-/
@@ -37,6 +45,53 @@ const TAILWIND_REMOVABLE_SOURCE_DIRECTIVE_NAMES = new Set([
   'utility',
   'variant',
 ])
+const LEGACY_CONTAINER_COMPAT_CSS = [
+  '.container {',
+  '  width: 100%;',
+  '}',
+  '@media (min-width: 40rem) {',
+  '  .container {',
+  '    max-width: 40rem;',
+  '  }',
+  '}',
+  '@media (min-width: 48rem) {',
+  '  .container {',
+  '    max-width: 48rem;',
+  '  }',
+  '}',
+  '@media (min-width: 64rem) {',
+  '  .container {',
+  '    max-width: 64rem;',
+  '  }',
+  '}',
+  '@media (min-width: 80rem) {',
+  '  .container {',
+  '    max-width: 80rem;',
+  '  }',
+  '}',
+  '@media (min-width: 96rem) {',
+  '  .container {',
+  '    max-width: 96rem;',
+  '  }',
+  '}',
+].join('\n')
+const SOURCE_STYLE_EXTENSIONS = [
+  '.vue',
+  '.uvue',
+  '.nvue',
+  '.css',
+  '.scss',
+  '.sass',
+  '.less',
+  '.styl',
+  '.stylus',
+  '.wxss',
+  '.acss',
+  '.jxss',
+  '.ttss',
+  '.qss',
+]
+const SFC_STYLE_BLOCK_RE = /<style\b[^>]*>([\s\S]*?)<\/style>/gi
 
 export interface GenerateCssByGeneratorOptions {
   opts: InternalUserDefinedOptions
@@ -291,6 +346,23 @@ function parseImportRequest(params: string) {
   return match?.[2]
 }
 
+function parseConfigRequest(params: string) {
+  const match = /^(["'])(.+)\1\s*;?$/.exec(params.trim())
+  return match?.[2]
+}
+
+function resolvePostcssFromOption(cssHandlerOptions: IStyleHandlerOptions) {
+  const from = cssHandlerOptions.postcssOptions?.options?.from
+  return typeof from === 'string' && from.length > 0 ? from : undefined
+}
+
+function resolveCssSourceBase(file: string, cssHandlerOptions: IStyleHandlerOptions) {
+  const from = resolvePostcssFromOption(cssHandlerOptions)
+  const baseFile = from ?? file
+  const normalized = baseFile.replace(/[?#].*$/, '')
+  return path.dirname(path.resolve(normalized))
+}
+
 function isTailwindImportAtRule(node: postcss.AtRule) {
   if (node.name === 'tailwind') {
     return true
@@ -319,7 +391,9 @@ function isTailwindGenerationDirective(node: postcss.Node) {
   if (node.type !== 'atrule') {
     return false
   }
-  return node.name === 'tailwind' || isTailwindImportAtRule(node)
+  return isTailwindImportAtRule(node)
+    || node.name === 'layer'
+    || node.name === 'config'
 }
 
 export function removeTailwindSourceDirectives(rawSource: string) {
@@ -360,6 +434,244 @@ export function hasTailwindSourceDirectives(rawSource: string) {
   }
 }
 
+export function resolveCssEntrySource(rawSource: string, base: string) {
+  try {
+    const root = postcss.parse(rawSource)
+    let found = false
+    let config: string | undefined
+    let configRequest: string | undefined
+    let removedConfig = false
+    root.walk((node) => {
+      if (isTailwindGenerationDirective(node)) {
+        found = true
+      }
+      if (node.type === 'atrule' && node.name === 'config') {
+        const configPath = parseConfigRequest(node.params)
+        if (configPath && !config) {
+          configRequest = configPath
+          config = path.isAbsolute(configPath) ? configPath : path.resolve(base, configPath)
+        }
+        node.remove()
+        removedConfig = true
+      }
+    })
+    if (!found) {
+      return undefined
+    }
+    return {
+      css: removedConfig ? root.toString() : rawSource,
+      config,
+      configRequest,
+      base,
+    }
+  }
+  catch {
+    return undefined
+  }
+}
+
+function resolveExistingConfigPath(
+  config: string | undefined,
+  configRequest: string | undefined,
+  file: string,
+  sourceOptions: {
+    projectRoot?: string
+    cwd?: string
+    config?: string
+  },
+) {
+  if (config && existsSync(config)) {
+    return config
+  }
+  if (!configRequest || path.isAbsolute(configRequest)) {
+    return sourceOptions.config
+  }
+
+  const outputDir = path.dirname(file.replace(/[?#].*$/, ''))
+  const baseCandidates = [
+    sourceOptions.projectRoot,
+    sourceOptions.cwd,
+    process.cwd(),
+  ].filter((item): item is string => typeof item === 'string' && item.length > 0)
+
+  for (const base of baseCandidates) {
+    const candidates = [
+      path.resolve(base, configRequest),
+      path.resolve(base, 'src', configRequest),
+      path.resolve(base, outputDir, configRequest),
+      path.resolve(base, 'src', outputDir, configRequest),
+    ]
+    for (const candidate of candidates) {
+      if (existsSync(candidate)) {
+        return candidate
+      }
+    }
+  }
+
+  return sourceOptions.config
+}
+
+function stripStyleExtension(file: string) {
+  const normalized = file.replace(/[?#].*$/, '')
+  return normalized.replace(/\.(?:wx|ac|jx|tt|q|c|ty)?ss$/i, '')
+}
+
+function createSourceStylePathCandidates(
+  file: string,
+  sourceOptions: {
+    projectRoot?: string
+    cwd?: string
+  },
+) {
+  const relativeFile = stripStyleExtension(file)
+  if (path.isAbsolute(relativeFile)) {
+    return []
+  }
+
+  const bases = [
+    sourceOptions.projectRoot,
+    sourceOptions.cwd,
+    process.cwd(),
+  ].filter((item): item is string => typeof item === 'string' && item.length > 0)
+  const candidates = new Set<string>()
+
+  for (const base of bases) {
+    for (const sourceRoot of ['', 'src']) {
+      const prefix = sourceRoot ? path.resolve(base, sourceRoot, relativeFile) : path.resolve(base, relativeFile)
+      for (const extension of SOURCE_STYLE_EXTENSIONS) {
+        candidates.add(`${prefix}${extension}`)
+      }
+    }
+  }
+
+  return [...candidates]
+}
+
+function extractStyleDirectiveSources(source: string) {
+  const styleSources: string[] = []
+  SFC_STYLE_BLOCK_RE.lastIndex = 0
+  let match = SFC_STYLE_BLOCK_RE.exec(source)
+  while (match !== null) {
+    const styleSource = match[1] ?? ''
+    if (hasTailwindSourceDirectives(styleSource)) {
+      styleSources.push(styleSource)
+    }
+    match = SFC_STYLE_BLOCK_RE.exec(source)
+  }
+  if (styleSources.length > 0) {
+    return styleSources
+  }
+  return hasTailwindSourceDirectives(source) ? [source] : []
+}
+
+function resolveSourceSideCssEntrySource(
+  file: string,
+  sourceOptions: {
+    projectRoot?: string
+    cwd?: string
+  },
+) {
+  for (const sourceFile of createSourceStylePathCandidates(file, sourceOptions)) {
+    if (!existsSync(sourceFile)) {
+      continue
+    }
+    try {
+      const source = readFileSync(sourceFile, 'utf8')
+      for (const styleSource of extractStyleDirectiveSources(source)) {
+        const cssEntrySource = resolveCssEntrySource(styleSource, path.dirname(sourceFile))
+        if (cssEntrySource) {
+          return cssEntrySource
+        }
+      }
+    }
+    catch {
+      continue
+    }
+  }
+}
+
+export async function resolveGeneratorSource(
+  majorVersion: number | undefined,
+  runtimeState: GenerateCssByGeneratorOptions['runtimeState'],
+  rawSource: string,
+  file: string,
+  cssHandlerOptions: IStyleHandlerOptions,
+) {
+  const base = resolveCssSourceBase(file, cssHandlerOptions)
+  const cssEntrySource = resolveCssEntrySource(rawSource, base)
+  if (majorVersion === 3) {
+    const sourceOptions = resolveTailwindV3SourceOptionsFromPatcher(runtimeState.twPatcher)
+    const sourceSideEntrySource = resolveSourceSideCssEntrySource(file, sourceOptions)
+    const resolvedEntrySource = cssEntrySource ?? sourceSideEntrySource
+    if (!resolvedEntrySource) {
+      return resolveTailwindV3SourceFromPatcher(runtimeState.twPatcher)
+    }
+    const config = resolveExistingConfigPath(
+      resolvedEntrySource.config,
+      resolvedEntrySource.configRequest,
+      file,
+      sourceOptions,
+    )
+    return resolveTailwindV3Source({
+      ...sourceOptions,
+      base: resolvedEntrySource.base,
+      css: resolvedEntrySource.css,
+      ...(config ? { config } : {}),
+    })
+  }
+
+  if (!cssEntrySource) {
+    return resolveTailwindV4SourceFromPatcher(runtimeState.twPatcher)
+  }
+  const sourceOptions = resolveTailwindV4SourceOptionsFromPatcher(runtimeState.twPatcher)
+  return resolveTailwindV4Source({
+    ...sourceOptions,
+    base: cssEntrySource.base,
+    css: cssEntrySource.css,
+  })
+}
+
+async function resolveGeneratorSources(
+  majorVersion: number | undefined,
+  runtimeState: GenerateCssByGeneratorOptions['runtimeState'],
+  rawSource: string,
+  file: string,
+  cssHandlerOptions: IStyleHandlerOptions,
+): Promise<TailwindResolvedSource[]> {
+  const base = resolveCssSourceBase(file, cssHandlerOptions)
+  const cssEntrySource = resolveCssEntrySource(rawSource, base)
+  if (majorVersion !== 4 || (cssEntrySource && !cssHandlerOptions.isMainChunk)) {
+    return [
+      await resolveGeneratorSource(majorVersion, runtimeState, rawSource, file, cssHandlerOptions),
+    ]
+  }
+
+  let sourceOptions: ReturnType<typeof resolveTailwindV4SourceOptionsFromPatcher>
+  try {
+    sourceOptions = resolveTailwindV4SourceOptionsFromPatcher(runtimeState.twPatcher)
+  }
+  catch {
+    return [
+      await resolveGeneratorSource(majorVersion, runtimeState, rawSource, file, cssHandlerOptions),
+    ]
+  }
+
+  if (!sourceOptions.cssEntries || sourceOptions.cssEntries.length <= 1) {
+    return [
+      await resolveGeneratorSource(majorVersion, runtimeState, rawSource, file, cssHandlerOptions),
+    ]
+  }
+
+  const sources = await Promise.all(sourceOptions.cssEntries.map(cssEntry =>
+    resolveTailwindV4Source({
+      ...sourceOptions,
+      css: undefined,
+      cssEntries: [cssEntry],
+    }),
+  ))
+  return sources
+}
+
 function isLocalImportRequest(request: string) {
   return request.length > 0
     && !request.startsWith('tailwindcss')
@@ -394,11 +706,86 @@ export function isPureLocalCssImportWrapper(css: string) {
 
 function resolveLegacyCompatCssSource(rawSource: string) {
   const source = removeTailwindSourceDirectives(stripTailwindBanners(rawSource))
-  return removeUnsupportedAtSupports(source)
+  return removeUnsupportedMiniProgramAtRules(source)
+}
+
+function hasContainerConfigToken(rawSource: string) {
+  return rawSource.includes('@config') && /\bcontainer\b/.test(rawSource)
+}
+
+function hasConfiguredContainerCompat(rawSource: string, file: string, cssHandlerOptions: IStyleHandlerOptions) {
+  if (hasContainerConfigToken(rawSource)) {
+    return true
+  }
+
+  const base = resolveCssSourceBase(file, cssHandlerOptions)
+  const cssEntrySource = resolveCssEntrySource(rawSource, base)
+  if (!cssEntrySource?.config) {
+    return false
+  }
+
+  try {
+    return /\bcontainer\b/.test(readFileSync(cssEntrySource.config, 'utf8'))
+  }
+  catch {
+    return false
+  }
+}
+
+function hasConfiguredContainerCompatSource(source: TailwindResolvedSource) {
+  if (hasContainerConfigToken(source.css)) {
+    return true
+  }
+
+  const cssEntrySource = resolveCssEntrySource(source.css, source.base)
+  if (cssEntrySource?.config) {
+    try {
+      if (/\bcontainer\b/.test(readFileSync(cssEntrySource.config, 'utf8'))) {
+        return true
+      }
+    }
+    catch {
+      // 可选配置不可读时忽略，继续走其他兼容判断。
+    }
+  }
+
+  if ('config' in source && source.config) {
+    try {
+      if (/\bcontainer\b/.test(readFileSync(source.config, 'utf8'))) {
+        return true
+      }
+    }
+    catch {
+      // 可选配置不可读时忽略，继续走其他兼容判断。
+    }
+  }
+
+  return false
+}
+
+function hasConfiguredContainerCompatSources(sources: TailwindResolvedSource[]) {
+  return sources.some(source => hasConfiguredContainerCompatSource(source))
+}
+
+function removeDuplicatedViteMarkers(css: string, baseCss: string) {
+  if (!VITE_MARKER_RE.test(baseCss)) {
+    return css
+  }
+  VITE_MARKER_RE.lastIndex = 0
+  return css.replace(VITE_MARKER_RE, '')
 }
 
 function normalizeCssSelector(selector: string) {
   return selector.trim().replace(/\s+/g, '')
+}
+
+function getCompatSelectorKeys(selector: string) {
+  return normalizeCompatSelectors(selector).map(normalizeCssSelector)
+}
+
+function getRuleCompatSelectorKeys(rule: postcss.Rule) {
+  return (rule.selectors?.length ? rule.selectors : [rule.selector])
+    .flatMap(selector => getCompatSelectorKeys(selector))
 }
 
 function hasClassSelector(selector: string) {
@@ -461,7 +848,9 @@ function collectGeneratedSelectors(css: string) {
       if (isCustomPropertyOnlyRule(rule) && !isPseudoContentInitRule(rule) && !hasUtilityClassSelector(rule.selector)) {
         return
       }
-      selectors.add(normalizeCssSelector(rule.selector))
+      for (const selector of getRuleCompatSelectorKeys(rule)) {
+        selectors.add(selector)
+      }
     })
   }
   catch {
@@ -488,7 +877,7 @@ function removeGeneratedSelectorCompatCss(css: string, generatedCss: string) {
       if (isCustomPropertyOnlyRule(rule) && !isPseudoContentInitRule(rule) && !hasUtilityClassSelector(rule.selector)) {
         return
       }
-      if (generatedSelectors.has(normalizeCssSelector(rule.selector))) {
+      if (getRuleCompatSelectorKeys(rule).some(selector => generatedSelectors.has(selector))) {
         rule.remove()
         removed = true
       }
@@ -515,7 +904,7 @@ function collectDedupedPostTransformCompatCss(css: string, generatedCss: string)
   try {
     const root = postcss.parse(css)
     root.each((node) => {
-      if (node.type === 'rule' && generatedSelectors.has(normalizeCssSelector(node.selector))) {
+      if (node.type === 'rule' && getRuleCompatSelectorKeys(node).some(selector => generatedSelectors.has(selector))) {
         if (isCustomPropertyOnlyRule(node) && !isPseudoContentInitRule(node) && !hasUtilityClassSelector(node.selector)) {
           const declarationProps = new Set<string>()
           node.walkDecls((decl) => {
@@ -523,7 +912,8 @@ function collectDedupedPostTransformCompatCss(css: string, generatedCss: string)
           })
           const generatedRoot = postcss.parse(generatedCss)
           generatedRoot.walkRules((rule) => {
-            if (normalizeCssSelector(rule.selector) !== normalizeCssSelector(node.selector)) {
+            const nodeSelectors = new Set(getRuleCompatSelectorKeys(node))
+            if (!getRuleCompatSelectorKeys(rule).some(selector => nodeSelectors.has(selector))) {
               return
             }
             rule.walkDecls((decl) => {
@@ -562,7 +952,7 @@ async function appendLegacyCompatCss(
   generatorTarget: string,
   styleHandler: InternalUserDefinedOptions['styleHandler'],
   cssHandlerOptions: IStyleHandlerOptions,
-  generatorStyleOptions: IStyleHandlerOptions | undefined,
+  generatorStyleOptions: Partial<IStyleHandlerOptions> | undefined,
 ) {
   const compatSource = removeGeneratedSelectorCompatCss(resolveLegacyCompatCssSource(rawSource), css)
   if (compatSource.trim().length === 0) {
@@ -576,7 +966,48 @@ async function appendLegacyCompatCss(
     ...cssHandlerOptions,
     ...generatorStyleOptions,
   })
-  const cleanedCompatCss = collectDedupedPostTransformCompatCss(removeUnsupportedAtSupports(compatCss), css)
+  const cleanedCompatCss = collectDedupedPostTransformCompatCss(
+    removeDuplicatedViteMarkers(removeUnsupportedMiniProgramAtRules(compatCss), css),
+    css,
+  )
+  if (cleanedCompatCss.trim().length === 0) {
+    return css
+  }
+  return createCssAppend(css, cleanedCompatCss)
+}
+
+async function appendLegacyContainerCompatCss(
+  css: string,
+  rawSource: string,
+  file: string,
+  runtime: Set<string>,
+  configuredContainerCompat: boolean,
+  generatorTarget: string,
+  styleHandler: InternalUserDefinedOptions['styleHandler'],
+  cssHandlerOptions: IStyleHandlerOptions,
+  generatorStyleOptions: Partial<IStyleHandlerOptions> | undefined,
+) {
+  const compatSource = resolveLegacyCompatCssSource(rawSource)
+  const shouldAppendContainer = runtime.has('container')
+    || hasConfiguredContainerCompat(rawSource, file, cssHandlerOptions)
+    || configuredContainerCompat
+    || collectGeneratedSelectors(compatSource).has('.container')
+  if (
+    generatorTarget !== 'weapp'
+    || !shouldAppendContainer
+    || collectGeneratedSelectors(css).has('.container')
+  ) {
+    return css
+  }
+
+  const { css: compatCss } = await styleHandler(LEGACY_CONTAINER_COMPAT_CSS, {
+    ...cssHandlerOptions,
+    ...generatorStyleOptions,
+  })
+  const cleanedCompatCss = collectDedupedPostTransformCompatCss(
+    removeUnsupportedMiniProgramAtRules(compatCss),
+    css,
+  )
   if (cleanedCompatCss.trim().length === 0) {
     return css
   }
@@ -610,13 +1041,22 @@ export async function generateCssByGenerator(
   const shouldForceGenerateCurrentCss = hasGeneratedCss
     || hasGeneratedMarkers
     || hasSourceDirectives
+    || cssHandlerOptions.isMainChunk
 
   if (
     generatorOptions.mode === 'off'
     || !SUPPORTED_GENERATOR_MAJOR_VERSIONS.has(majorVersion ?? 0)
     || (
       generatorOptions.mode === 'force'
-      && !shouldForceGenerateCurrentCss
+      && (
+        !shouldForceGenerateCurrentCss
+        || (
+          majorVersion === 3
+          && !hasSourceDirectives
+          && !hasGeneratedCss
+          && !hasGeneratedMarkers
+        )
+      )
     )
     || (
       generatorOptions.mode !== 'force'
@@ -635,15 +1075,44 @@ export async function generateCssByGenerator(
 
   try {
     await runtimeState.patchPromise
-    const source = majorVersion === 3
-      ? await resolveTailwindV3SourceFromPatcher(runtimeState.twPatcher)
-      : await resolveTailwindV4SourceFromPatcher(runtimeState.twPatcher)
-    const generator = createWeappTailwindcssGenerator(source)
-    const generated = await generator.generate({
-      candidates: runtime,
-      styleOptions: resolveGeneratorStyleOptions(opts, cssHandlerOptions, generatorOptions.styleOptions),
-      target: generatorOptions.target,
-    })
+    const sources = await resolveGeneratorSources(
+      majorVersion,
+      runtimeState,
+      rawSource,
+      file,
+      cssHandlerOptions,
+    )
+    const generatorStyleOptions = resolveGeneratorStyleOptions(opts, cssHandlerOptions, generatorOptions.styleOptions)
+    const configuredContainerCompat = hasConfiguredContainerCompatSources(sources)
+    const generatedResults = await Promise.all(sources.map(async (source) => {
+      const generator = createWeappTailwindcssGenerator(source)
+      return generator.generate({
+        candidates: runtime,
+        styleOptions: generatorStyleOptions,
+        target: generatorOptions.target,
+      })
+    }))
+    const firstGenerated = generatedResults[0]
+    if (!firstGenerated) {
+      return undefined
+    }
+    const generated = generatedResults.length === 1
+      ? firstGenerated
+      : {
+          ...firstGenerated,
+          css: generatedResults.map(item => item.css).join('\n'),
+          rawCss: generatedResults.map(item => item.rawCss).join('\n'),
+          classSet: new Set(generatedResults.flatMap(item => [...item.classSet])),
+          dependencies: [...new Set(generatedResults.flatMap(item => item.dependencies))],
+          sources: generatedResults.flatMap(item => item.sources),
+        }
+    debug(
+      'tailwind generator result: %s rawBytes=%d cssBytes=%d candidates=%d',
+      file,
+      generated.rawCss.length,
+      generated.css.length,
+      generated.classSet.size,
+    )
     const extraCss = splitTailwindV4GeneratedCss(rawSource, generated.rawCss)
     if (typeof extraCss === 'string') {
       let css = stripTailwindBanner(generated.css)
@@ -654,7 +1123,7 @@ export async function generateCssByGenerator(
         const cleanedExtraCss = removeTailwindSourceDirectives(extraCss)
         if (cleanedExtraCss.trim().length > 0) {
           const extraSource = generated.target === 'weapp'
-            ? removeUnsupportedAtSupports(cleanedExtraCss)
+            ? removeUnsupportedMiniProgramAtRules(cleanedExtraCss)
             : cleanedExtraCss
           if (extraSource.trim().length === 0) {
             return {
@@ -665,15 +1134,36 @@ export async function generateCssByGenerator(
           }
           if (generated.target === 'weapp') {
             const { css: userCss } = await styleHandler(extraSource, {
+              ...generatorStyleOptions,
               ...cssUserHandlerOptions,
-              ...generatorOptions.styleOptions,
             })
-            css = createCssAppend(css, removeUnsupportedAtSupports(userCss))
+            css = createCssAppend(css, removeUnsupportedMiniProgramAtRules(userCss))
           }
           else {
             css = createCssAppend(css, extraSource)
           }
         }
+      }
+      if (generated.target === 'weapp' && generatorOptions.mode === 'force') {
+        css = await appendLegacyCompatCss(
+          css,
+          rawSource,
+          generated.target,
+          styleHandler,
+          cssHandlerOptions,
+          generatorStyleOptions,
+        )
+        css = await appendLegacyContainerCompatCss(
+          css,
+          rawSource,
+          file,
+          runtime,
+          configuredContainerCompat,
+          generated.target,
+          styleHandler,
+          cssHandlerOptions,
+          generatorStyleOptions,
+        )
       }
       return {
         css: finalizeMiniProgramGeneratorCss(css, generated.target),
@@ -697,7 +1187,18 @@ export async function generateCssByGenerator(
         generated.target,
         styleHandler,
         cssHandlerOptions,
-        generatorOptions.styleOptions as IStyleHandlerOptions | undefined,
+        generatorStyleOptions,
+      )
+      css = await appendLegacyContainerCompatCss(
+        css,
+        rawSource,
+        file,
+        runtime,
+        configuredContainerCompat,
+        generated.target,
+        styleHandler,
+        cssHandlerOptions,
+        generatorStyleOptions,
       )
       return {
         css: finalizeMiniProgramGeneratorCss(css, generated.target),

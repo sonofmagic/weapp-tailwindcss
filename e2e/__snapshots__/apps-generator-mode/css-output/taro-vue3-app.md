@@ -8,7 +8,7 @@ Generator CSS files: app.wxss, index.wxss
 | Mode | Bytes | Selectors | @supports | :hover | Tailwind banner | Raw arbitrary selector | Weapp escaped arbitrary selector |
 | --- | ---: | ---: | --- | --- | --- | --- | --- |
 | legacy | 115828 | 296 | false | false | false | false | true |
-| generator | 122521 | 297 | false | false | false | false | true |
+| generator | 123826 | 297 | false | false | false | false | true |
 
 ## Diff
 
@@ -16,33 +16,138 @@ Generator CSS files: app.wxss, index.wxss
 ===================================================================
 --- taro-vue3-app/legacy.css
 +++ taro-vue3-app/generator.css
-@@ -1,3 +1,7 @@
+@@ -1,7 +1,11 @@
+-view,
+-text,
+-::after,
+-::before {
 +::before,
 +::after {
 +  --tw-content: '';
 +}
- view,
- text,
- ::after,
-@@ -24,7 +28,7 @@
-   --tw-numeric-spacing: ;
-   --tw-numeric-fraction: ;
-   --tw-ring-inset: ;
++:host,
++page,
++.tw-root,
++wx-root-portal-content {
+   --tw-border-spacing-x: 0;
+   --tw-border-spacing-y: 0;
+   --tw-translate-x: 0;
+@@ -11,57 +15,428 @@
+   --tw-skew-y: 0;
+   --tw-scale-x: 1;
+   --tw-scale-y: 1;
+-  --tw-pan-x: ;
+-  --tw-pan-y: ;
+-  --tw-pinch-zoom: ;
++  --tw-pan-x:  ;
++  --tw-pan-y:  ;
++  --tw-pinch-zoom:  ;
+   --tw-scroll-snap-strictness: proximity;
+-  --tw-gradient-from-position: ;
+-  --tw-gradient-via-position: ;
+-  --tw-gradient-to-position: ;
+-  --tw-ordinal: ;
+-  --tw-slashed-zero: ;
+-  --tw-numeric-figure: ;
+-  --tw-numeric-spacing: ;
+-  --tw-numeric-fraction: ;
+-  --tw-ring-inset: ;
 -  --tw-ring-offset-width: 0px;
++  --tw-gradient-from-position:  ;
++  --tw-gradient-via-position:  ;
++  --tw-gradient-to-position:  ;
++  --tw-ordinal:  ;
++  --tw-slashed-zero:  ;
++  --tw-numeric-figure:  ;
++  --tw-numeric-spacing:  ;
++  --tw-numeric-fraction:  ;
++  --tw-ring-inset:  ;
 +  --tw-ring-offset-width: 0rpx;
    --tw-ring-offset-color: #fff;
    --tw-ring-color: rgba(59, 130, 246, 0.5);
    --tw-ring-offset-shadow: 0 0 rgba(0, 0, 0, 0);
-@@ -58,10 +62,293 @@
-   border-style: solid;
-   border-color: currentColor;
- }
--::before,
--::after {
--  --tw-content: '';
+   --tw-ring-shadow: 0 0 rgba(0, 0, 0, 0);
+   --tw-shadow: 0 0 rgba(0, 0, 0, 0);
+   --tw-shadow-colored: 0 0 rgba(0, 0, 0, 0);
+-  --tw-blur: ;
+-  --tw-brightness: ;
+-  --tw-contrast: ;
+-  --tw-grayscale: ;
+-  --tw-hue-rotate: ;
+-  --tw-invert: ;
+-  --tw-saturate: ;
+-  --tw-sepia: ;
+-  --tw-drop-shadow: ;
+-  --tw-backdrop-blur: ;
+-  --tw-backdrop-brightness: ;
+-  --tw-backdrop-contrast: ;
+-  --tw-backdrop-grayscale: ;
+-  --tw-backdrop-hue-rotate: ;
+-  --tw-backdrop-invert: ;
+-  --tw-backdrop-opacity: ;
+-  --tw-backdrop-saturate: ;
+-  --tw-backdrop-sepia: ;
+-  --tw-contain-size: ;
+-  --tw-contain-layout: ;
+-  --tw-contain-paint: ;
+-  --tw-contain-style: ;
+-  box-sizing: border-box;
+-  border-width: 0;
++  --tw-blur:  ;
++  --tw-brightness:  ;
++  --tw-contrast:  ;
++  --tw-grayscale:  ;
++  --tw-hue-rotate:  ;
++  --tw-invert:  ;
++  --tw-saturate:  ;
++  --tw-sepia:  ;
++  --tw-drop-shadow:  ;
++  --tw-backdrop-blur:  ;
++  --tw-backdrop-brightness:  ;
++  --tw-backdrop-contrast:  ;
++  --tw-backdrop-grayscale:  ;
++  --tw-backdrop-hue-rotate:  ;
++  --tw-backdrop-invert:  ;
++  --tw-backdrop-opacity:  ;
++  --tw-backdrop-saturate:  ;
++  --tw-backdrop-sepia:  ;
++  --tw-contain-size:  ;
++  --tw-contain-layout:  ;
++  --tw-contain-paint:  ;
++  --tw-contain-style:
++;
++}
++.container {
++  width: 100%;
++}
++@media (min-width: 640px) {
++  .container {
++    max-width: 640rpx;
++  }
++}
++@media (min-width: 768px) {
++  .container {
++    max-width: 768rpx;
++  }
++}
++@media (min-width: 1024px) {
++  .container {
++    max-width: 1024rpx;
++  }
++}
++@media (min-width: 1280px) {
++  .container {
++    max-width: 1280rpx;
++  }
++}
++@media (min-width: 1536px) {
++  .container {
++    max-width: 1536rpx;
++  }
++}
 +.-m-_b20px_B {
 +  margin: -20rpx;
- }
++}
 +.-mt-2 {
 +  margin-top: -16rpx;
 +}
@@ -138,15 +243,19 @@ Generator CSS files: app.wxss, index.wxss
 +.divide-solid > view + text,
 +.divide-solid > text + view,
 +.divide-solid > text + text {
-+  border-style: solid;
-+}
+   border-style: solid;
+-  border-color: currentColor;
+ }
+-::before,
+-::after {
+-  --tw-content: '';
 +.divide-_b_h010101_B > view + view,
 +.divide-_b_h010101_B > view + text,
 +.divide-_b_h010101_B > text + view,
 +.divide-_b_h010101_B > text + text {
 +  --tw-divide-opacity: 1;
 +  border-color: rgba(1, 1, 1, var(--tw-divide-opacity, 1));
-+}
+ }
 +.rounded-_b40px_B {
 +  border-radius: 40rpx;
 +}
@@ -327,42 +436,73 @@ Generator CSS files: app.wxss, index.wxss
 +    background-color: rgba(39, 39, 42, var(--tw-bg-opacity, 1));
 +  }
 +}
- .container {
-   width: 100%;
- }
-@@ -90,6 +377,31 @@
-     max-width: 1536rpx;
-   }
- }
-+@media (prefers-color-scheme: dark) {
-+  .dark_cbg-_b_h487512_B {
-+    --tw-bg-opacity: 1;
-+    background-color: rgba(72, 117, 18, var(--tw-bg-opacity, 1));
-+  }
-+  .dark_cbg-_b_habcdef_B {
-+    --tw-bg-opacity: 1;
-+    background-color: rgba(171, 205, 239, var(--tw-bg-opacity, 1));
-+  }
-+  .dark_cbg-zinc-800 {
-+    --tw-bg-opacity: 1;
-+    background-color: rgba(39, 39, 42, var(--tw-bg-opacity, 1));
-+  }
-+}
 +
 +:host,
 +page,
 +.tw-root,
 +wx-root-portal-content {
++  --tw-border-spacing-x: 0;
++  --tw-border-spacing-y: 0;
++  --tw-translate-x: 0;
++  --tw-translate-y: 0;
++  --tw-rotate: 0;
++  --tw-skew-x: 0;
++  --tw-skew-y: 0;
++  --tw-scale-x: 1;
++  --tw-scale-y: 1;
++  --tw-pan-x:  ;
++  --tw-pan-y:  ;
++  --tw-pinch-zoom:  ;
++  --tw-scroll-snap-strictness: proximity;
++  --tw-gradient-from-position:  ;
++  --tw-gradient-via-position:  ;
++  --tw-gradient-to-position:  ;
++  --tw-ordinal:  ;
++  --tw-slashed-zero:  ;
++  --tw-numeric-figure:  ;
++  --tw-numeric-spacing:  ;
++  --tw-numeric-fraction:  ;
++  --tw-ring-inset:  ;
++  --tw-ring-offset-width: 0rpx;
++  --tw-ring-offset-color: #fff;
++  --tw-ring-color: rgba(59, 130, 246, 0.5);
++  --tw-ring-offset-shadow: 0 0 rgba(0, 0, 0, 0);
++  --tw-ring-shadow: 0 0 rgba(0, 0, 0, 0);
++  --tw-shadow: 0 0 rgba(0, 0, 0, 0);
++  --tw-shadow-colored: 0 0 rgba(0, 0, 0, 0);
++  --tw-blur:  ;
++  --tw-brightness:  ;
++  --tw-contrast:  ;
++  --tw-grayscale:  ;
++  --tw-hue-rotate:  ;
++  --tw-invert:  ;
++  --tw-saturate:  ;
++  --tw-sepia:  ;
++  --tw-drop-shadow:  ;
++  --tw-backdrop-blur:  ;
++  --tw-backdrop-brightness:  ;
++  --tw-backdrop-contrast:  ;
++  --tw-backdrop-grayscale:  ;
++  --tw-backdrop-hue-rotate:  ;
++  --tw-backdrop-invert:  ;
++  --tw-backdrop-opacity:  ;
++  --tw-backdrop-saturate:  ;
++  --tw-backdrop-sepia:  ;
++  --tw-contain-size:  ;
++  --tw-contain-layout:  ;
++  --tw-contain-paint:  ;
++  --tw-contain-style:
++;
 +  --nut-icon-height: 40rpx;
 +  --nut-icon-width: 40rpx;
 +  --nut-icon-line-height: 40rpx;
 +  --animate-duration: 1s;
 +  --animate-delay: 0s;
 +}
- .-m-_b20px_B {
-   margin: -20rpx;
+ .container {
+   width: 100%;
  }
-@@ -106,9 +418,6 @@
+@@ -106,9 +481,6 @@
    display: block;
  }
  .flex {
@@ -372,7 +512,7 @@ Generator CSS files: app.wxss, index.wxss
    display: flex;
  }
  .grid {
-@@ -163,18 +472,12 @@
+@@ -163,18 +535,12 @@
    grid-template-columns: repeat(3, minmax(0, 1fr));
  }
  .items-center {
@@ -391,7 +531,7 @@ Generator CSS files: app.wxss, index.wxss
    justify-content: space-between;
  }
  .space-y-_b1_d6rem_B > view + view,
-@@ -182,16 +485,18 @@
+@@ -182,16 +548,18 @@
  .space-y-_b1_d6rem_B > text + view,
  .space-y-_b1_d6rem_B > text + text {
    --tw-space-y-reverse: 0;
@@ -412,7 +552,7 @@ Generator CSS files: app.wxss, index.wxss
  }
  .divide-solid > view + view,
  .divide-solid > view + text,
-@@ -277,10 +582,9 @@
+@@ -277,10 +645,9 @@
    --tw-bg-opacity: 0.54;
  }
  .bg-_burl_p_ahttps_c_f_fxxx_dcom_fxx_dwebp_a_P_B {
@@ -424,7 +564,7 @@ Generator CSS files: app.wxss, index.wxss
    background-image: linear-gradient(to right, var(--tw-gradient-stops));
  }
  .from-_b_h123456_B {
-@@ -295,8 +599,8 @@
+@@ -295,8 +662,8 @@
    padding: 20rpx;
  }
  .py-2 {
@@ -434,7 +574,7 @@ Generator CSS files: app.wxss, index.wxss
  }
  .text-center {
    text-align: center;
-@@ -363,7 +667,6 @@
+@@ -363,7 +730,6 @@
  .ring-4 {
    --tw-ring-offset-shadow: var(--tw-ring-inset) 0 0 0 var(--tw-ring-offset-width) var(--tw-ring-offset-color);
    --tw-ring-shadow: var(--tw-ring-inset) 0 0 0 calc(4rpx + var(--tw-ring-offset-width)) var(--tw-ring-color);
@@ -442,7 +582,7 @@ Generator CSS files: app.wxss, index.wxss
    box-shadow: var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow, 0 0 rgba(0, 0, 0, 0));
  }
  .ring-pink-300 {
-@@ -388,7 +691,6 @@
+@@ -388,7 +754,6 @@
      background-color: rgba(39, 39, 42, var(--tw-bg-opacity, 1));
    }
  }
@@ -450,7 +590,7 @@ Generator CSS files: app.wxss, index.wxss
  @font-face {
    font-family: nutui-iconfont;
    src:
-@@ -781,16 +1083,6 @@
+@@ -781,16 +1146,6 @@
  .nut-icon-footprint:before {
    content: '\e65d';
  }
@@ -1725,10 +1865,10 @@ page {
 ::after {
   --tw-content: '';
 }
-view,
-text,
-::after,
-::before {
+:host,
+page,
+.tw-root,
+wx-root-portal-content {
   --tw-border-spacing-x: 0;
   --tw-border-spacing-y: 0;
   --tw-translate-x: 0;
@@ -1738,19 +1878,19 @@ text,
   --tw-skew-y: 0;
   --tw-scale-x: 1;
   --tw-scale-y: 1;
-  --tw-pan-x: ;
-  --tw-pan-y: ;
-  --tw-pinch-zoom: ;
+  --tw-pan-x:  ;
+  --tw-pan-y:  ;
+  --tw-pinch-zoom:  ;
   --tw-scroll-snap-strictness: proximity;
-  --tw-gradient-from-position: ;
-  --tw-gradient-via-position: ;
-  --tw-gradient-to-position: ;
-  --tw-ordinal: ;
-  --tw-slashed-zero: ;
-  --tw-numeric-figure: ;
-  --tw-numeric-spacing: ;
-  --tw-numeric-fraction: ;
-  --tw-ring-inset: ;
+  --tw-gradient-from-position:  ;
+  --tw-gradient-via-position:  ;
+  --tw-gradient-to-position:  ;
+  --tw-ordinal:  ;
+  --tw-slashed-zero:  ;
+  --tw-numeric-figure:  ;
+  --tw-numeric-spacing:  ;
+  --tw-numeric-fraction:  ;
+  --tw-ring-inset:  ;
   --tw-ring-offset-width: 0rpx;
   --tw-ring-offset-color: #fff;
   --tw-ring-color: rgba(59, 130, 246, 0.5);
@@ -1758,32 +1898,57 @@ text,
   --tw-ring-shadow: 0 0 rgba(0, 0, 0, 0);
   --tw-shadow: 0 0 rgba(0, 0, 0, 0);
   --tw-shadow-colored: 0 0 rgba(0, 0, 0, 0);
-  --tw-blur: ;
-  --tw-brightness: ;
-  --tw-contrast: ;
-  --tw-grayscale: ;
-  --tw-hue-rotate: ;
-  --tw-invert: ;
-  --tw-saturate: ;
-  --tw-sepia: ;
-  --tw-drop-shadow: ;
-  --tw-backdrop-blur: ;
-  --tw-backdrop-brightness: ;
-  --tw-backdrop-contrast: ;
-  --tw-backdrop-grayscale: ;
-  --tw-backdrop-hue-rotate: ;
-  --tw-backdrop-invert: ;
-  --tw-backdrop-opacity: ;
-  --tw-backdrop-saturate: ;
-  --tw-backdrop-sepia: ;
-  --tw-contain-size: ;
-  --tw-contain-layout: ;
-  --tw-contain-paint: ;
-  --tw-contain-style: ;
-  box-sizing: border-box;
-  border-width: 0;
-  border-style: solid;
-  border-color: currentColor;
+  --tw-blur:  ;
+  --tw-brightness:  ;
+  --tw-contrast:  ;
+  --tw-grayscale:  ;
+  --tw-hue-rotate:  ;
+  --tw-invert:  ;
+  --tw-saturate:  ;
+  --tw-sepia:  ;
+  --tw-drop-shadow:  ;
+  --tw-backdrop-blur:  ;
+  --tw-backdrop-brightness:  ;
+  --tw-backdrop-contrast:  ;
+  --tw-backdrop-grayscale:  ;
+  --tw-backdrop-hue-rotate:  ;
+  --tw-backdrop-invert:  ;
+  --tw-backdrop-opacity:  ;
+  --tw-backdrop-saturate:  ;
+  --tw-backdrop-sepia:  ;
+  --tw-contain-size:  ;
+  --tw-contain-layout:  ;
+  --tw-contain-paint:  ;
+  --tw-contain-style:
+;
+}
+.container {
+  width: 100%;
+}
+@media (min-width: 640px) {
+  .container {
+    max-width: 640rpx;
+  }
+}
+@media (min-width: 768px) {
+  .container {
+    max-width: 768rpx;
+  }
+}
+@media (min-width: 1024px) {
+  .container {
+    max-width: 1024rpx;
+  }
+}
+@media (min-width: 1280px) {
+  .container {
+    max-width: 1280rpx;
+  }
+}
+@media (min-width: 1536px) {
+  .container {
+    max-width: 1536rpx;
+  }
 }
 .-m-_b20px_B {
   margin: -20rpx;
@@ -2072,6 +2237,69 @@ text,
     background-color: rgba(39, 39, 42, var(--tw-bg-opacity, 1));
   }
 }
+
+:host,
+page,
+.tw-root,
+wx-root-portal-content {
+  --tw-border-spacing-x: 0;
+  --tw-border-spacing-y: 0;
+  --tw-translate-x: 0;
+  --tw-translate-y: 0;
+  --tw-rotate: 0;
+  --tw-skew-x: 0;
+  --tw-skew-y: 0;
+  --tw-scale-x: 1;
+  --tw-scale-y: 1;
+  --tw-pan-x:  ;
+  --tw-pan-y:  ;
+  --tw-pinch-zoom:  ;
+  --tw-scroll-snap-strictness: proximity;
+  --tw-gradient-from-position:  ;
+  --tw-gradient-via-position:  ;
+  --tw-gradient-to-position:  ;
+  --tw-ordinal:  ;
+  --tw-slashed-zero:  ;
+  --tw-numeric-figure:  ;
+  --tw-numeric-spacing:  ;
+  --tw-numeric-fraction:  ;
+  --tw-ring-inset:  ;
+  --tw-ring-offset-width: 0rpx;
+  --tw-ring-offset-color: #fff;
+  --tw-ring-color: rgba(59, 130, 246, 0.5);
+  --tw-ring-offset-shadow: 0 0 rgba(0, 0, 0, 0);
+  --tw-ring-shadow: 0 0 rgba(0, 0, 0, 0);
+  --tw-shadow: 0 0 rgba(0, 0, 0, 0);
+  --tw-shadow-colored: 0 0 rgba(0, 0, 0, 0);
+  --tw-blur:  ;
+  --tw-brightness:  ;
+  --tw-contrast:  ;
+  --tw-grayscale:  ;
+  --tw-hue-rotate:  ;
+  --tw-invert:  ;
+  --tw-saturate:  ;
+  --tw-sepia:  ;
+  --tw-drop-shadow:  ;
+  --tw-backdrop-blur:  ;
+  --tw-backdrop-brightness:  ;
+  --tw-backdrop-contrast:  ;
+  --tw-backdrop-grayscale:  ;
+  --tw-backdrop-hue-rotate:  ;
+  --tw-backdrop-invert:  ;
+  --tw-backdrop-opacity:  ;
+  --tw-backdrop-saturate:  ;
+  --tw-backdrop-sepia:  ;
+  --tw-contain-size:  ;
+  --tw-contain-layout:  ;
+  --tw-contain-paint:  ;
+  --tw-contain-style:
+;
+  --nut-icon-height: 40rpx;
+  --nut-icon-width: 40rpx;
+  --nut-icon-line-height: 40rpx;
+  --animate-duration: 1s;
+  --animate-delay: 0s;
+}
 .container {
   width: 100%;
 }
@@ -2099,31 +2327,6 @@ text,
   .container {
     max-width: 1536rpx;
   }
-}
-@media (prefers-color-scheme: dark) {
-  .dark_cbg-_b_h487512_B {
-    --tw-bg-opacity: 1;
-    background-color: rgba(72, 117, 18, var(--tw-bg-opacity, 1));
-  }
-  .dark_cbg-_b_habcdef_B {
-    --tw-bg-opacity: 1;
-    background-color: rgba(171, 205, 239, var(--tw-bg-opacity, 1));
-  }
-  .dark_cbg-zinc-800 {
-    --tw-bg-opacity: 1;
-    background-color: rgba(39, 39, 42, var(--tw-bg-opacity, 1));
-  }
-}
-
-:host,
-page,
-.tw-root,
-wx-root-portal-content {
-  --nut-icon-height: 40rpx;
-  --nut-icon-width: 40rpx;
-  --nut-icon-line-height: 40rpx;
-  --animate-duration: 1s;
-  --animate-delay: 0s;
 }
 .-m-_b20px_B {
   margin: -20rpx;

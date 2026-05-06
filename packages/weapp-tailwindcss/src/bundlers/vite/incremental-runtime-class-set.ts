@@ -1,9 +1,6 @@
 import type { BundleSnapshot, BundleStateEntry } from './bundle-state'
 import type { TailwindV4DesignSystem, TailwindV4ResolvedSource } from '@/tailwindcss/v4-engine'
 import type { TailwindcssPatcherLike } from '@/types'
-import { mkdir, rm, writeFile } from 'node:fs/promises'
-import path from 'node:path'
-import process from 'node:process'
 import { extractRawCandidatesWithPositions, extractValidCandidates } from 'tailwindcss-patch'
 import { createDebug } from '@/debug'
 import { getRuntimeClassSetSignature } from '@/tailwindcss/runtime/cache'
@@ -12,7 +9,11 @@ import { loadTailwindV4DesignSystem, resolveTailwindV4SourceFromPatcher } from '
 const debug = createDebug('[vite:runtime-set] ')
 
 type ExtractValidCandidatesOptions = Parameters<typeof extractValidCandidates>[0]
-type ExtractValidCandidatesFn = (options?: ExtractValidCandidatesOptions) => Promise<string[]>
+type MemoryExtractValidCandidatesOptions = ExtractValidCandidatesOptions & {
+  content?: string
+  extension?: string
+}
+type ExtractValidCandidatesFn = (options?: MemoryExtractValidCandidatesOptions) => Promise<string[]>
 type ExtractRawCandidateResult = Awaited<ReturnType<typeof extractRawCandidatesWithPositions>>
 type ExtractRawCandidatesFn = (content: string, extension?: string) => Promise<ExtractRawCandidateResult>
 
@@ -24,31 +25,21 @@ export interface BundleRuntimeClassSetManager {
 interface CreateBundleRuntimeClassSetManagerOptions {
   extractCandidates?: ExtractValidCandidatesFn
   extractRawCandidates?: ExtractRawCandidatesFn
-  tempRoot?: string
 }
 
 const EXTENSION_DOT_PREFIX_RE = /^\./
-const VALIDATION_FILE_NAME = 'runtime-candidates.html'
-
-function getProjectRoot(patcher: TailwindcssPatcherLike) {
-  return patcher.options?.projectRoot ?? process.cwd()
-}
 
 function createExtractOptions(
   context: TailwindV4ResolvedSource,
-  tempRoot: string,
-  pattern: string,
-): ExtractValidCandidatesOptions {
+  source: string,
+): MemoryExtractValidCandidatesOptions {
   return {
     cwd: context.projectRoot,
     base: context.base,
     baseFallbacks: context.baseFallbacks,
     css: context.css,
-    sources: [{
-      base: tempRoot,
-      pattern,
-      negated: false,
-    }],
+    content: source,
+    extension: 'html',
   }
 }
 
@@ -63,19 +54,8 @@ function collectChangedRuntimeFiles(snapshot: BundleSnapshot) {
   ])
 }
 
-async function writeTempEntryFile(
-  tempRoot: string,
-  file: string,
-  source: string,
-) {
-  const absoluteFile = path.join(tempRoot, file)
-  await mkdir(path.dirname(absoluteFile), { recursive: true })
-  await writeFile(absoluteFile, source, 'utf8')
-  return file
-}
-
 function resolveEntryExtension(entry: BundleStateEntry) {
-  const ext = path.extname(entry.file).replace(EXTENSION_DOT_PREFIX_RE, '')
+  const ext = entry.file.split(/[?#]/, 1)[0]?.split('.').pop()?.replace(EXTENSION_DOT_PREFIX_RE, '') ?? ''
   if (ext.length > 0) {
     return ext
   }
@@ -128,7 +108,6 @@ export function createBundleRuntimeClassSetManager(
   const candidatesByFile = new Map<string, Set<string>>()
   const candidateValidityCache = new Map<string, boolean>()
   let runtimeSignature: string | undefined
-  let resolvedTempRoot: string | undefined
   let validationContext: TailwindV4ResolvedSource | undefined
   let designSystemPromise: Promise<TailwindV4DesignSystem> | undefined
 
@@ -140,10 +119,6 @@ export function createBundleRuntimeClassSetManager(
     runtimeSignature = undefined
     validationContext = undefined
     designSystemPromise = undefined
-    if (resolvedTempRoot) {
-      await rm(resolvedTempRoot, { recursive: true, force: true })
-      resolvedTempRoot = undefined
-    }
   }
 
   async function resolveValidationContextCached(patcher: TailwindcssPatcherLike) {
@@ -185,7 +160,6 @@ export function createBundleRuntimeClassSetManager(
 
   async function validateUnknownCandidates(
     patcher: TailwindcssPatcherLike,
-    tempRoot: string,
     unknownCandidates: Set<string>,
   ) {
     if (unknownCandidates.size === 0) {
@@ -200,14 +174,14 @@ export function createBundleRuntimeClassSetManager(
         return
       }
       catch (error) {
-        debug('incremental design-system validation failed, fallback to extractValidCandidates: %O', error)
+        debug('incremental design-system validation failed: %O', error)
         designSystemPromise = undefined
+        throw error
       }
     }
 
     const source = createCandidateValidationSource(unknownCandidates)
-    const pattern = await writeTempEntryFile(tempRoot, VALIDATION_FILE_NAME, source)
-    const validCandidates = new Set(await extractCandidates(createExtractOptions(context, tempRoot, pattern)))
+    const validCandidates = new Set(await extractCandidates(createExtractOptions(context, source)))
 
     for (const candidate of unknownCandidates) {
       candidateValidityCache.set(candidate, validCandidates.has(candidate))
@@ -243,15 +217,6 @@ export function createBundleRuntimeClassSetManager(
 
     runtimeSignature = nextSignature
 
-    const projectRoot = getProjectRoot(patcher)
-    resolvedTempRoot = options.tempRoot ?? path.join(
-      projectRoot,
-      'node_modules',
-      '.cache',
-      'weapp-tailwindcss',
-      'vite-runtime-set',
-    )
-
     for (const [file, previousCandidates] of candidatesByFile) {
       if (currentRuntimeFiles.has(file)) {
         continue
@@ -285,7 +250,7 @@ export function createBundleRuntimeClassSetManager(
       }
     }))
 
-    await validateUnknownCandidates(patcher, resolvedTempRoot!, unknownCandidates)
+    await validateUnknownCandidates(patcher, unknownCandidates)
 
     let rawCandidateCount = 0
 

@@ -256,7 +256,7 @@ function createReportItem(
     generatorBytesRatio: Number((generator.bytes / Math.max(legacy.bytes, 1)).toFixed(4)),
     sharedSelectors: sharedSelectors.slice(0, 20),
     generatorOnlySelectors: generatorOnlySelectors.slice(0, 20),
-    legacyOnlySelectors: legacyOnlySelectors.slice(0, 20),
+    legacyOnlySelectors,
   }
 }
 
@@ -477,6 +477,7 @@ describe('apps demo generator mode comparison', () => {
       expect(item.generator.hasHoverPseudo, `${project.name} generator css should remove unsupported :hover`).toBe(false)
       expect(item.generator.hasTailwindBanner, `${project.name} generator css should not keep raw Tailwind banner`).toBe(false)
       expect(item.generator.hasWeappEscapedArbitrarySelector || !item.generator.hasRawArbitrarySelector).toBe(true)
+      expect(item.legacyOnlySelectors, `${project.name} generator css should cover legacy-only selectors`).toEqual([])
 
       if (legacyResult && generatorResult) {
         await expectCssOutputComparisonSnapshot(project, legacyResult, generatorResult)

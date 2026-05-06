@@ -68,9 +68,20 @@ function mergeContent(content: unknown, rawEntries: Array<{ raw: string, extensi
   }
 }
 
+function normalizeConfigObject(config: Config | undefined) {
+  if (!config || typeof config !== 'object') {
+    return config
+  }
+  const maybeDefault = (config as { default?: unknown }).default
+  if (maybeDefault && typeof maybeDefault === 'object') {
+    return maybeDefault as Config
+  }
+  return config
+}
+
 function createTailwindConfig(source: TailwindV3ResolvedSource, options: TailwindV3GenerateOptions) {
   const config = {
-    ...(source.configObject ?? {}),
+    ...(normalizeConfigObject(source.configObject) ?? {}),
   } as Config
   const rawEntries = createRawContentEntries(options.candidates ?? [], options.sources ?? [])
   config.content = mergeContent(config.content, rawEntries) as Config['content']
