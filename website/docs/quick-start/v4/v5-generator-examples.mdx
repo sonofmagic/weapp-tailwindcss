@@ -1,6 +1,5 @@
 ---
-id: v5-generator-examples
-title: v5 生成模式常用接入方式（推荐）
+title: v5 生成模式使用方式（推荐）
 description: 使用 weapp-tailwindcss v5 生成模式接入 uni-app、Taro、weapp-vite 与 Mpx 的常用示例
 sidebar_position: 6
 keywords:
@@ -15,7 +14,7 @@ keywords:
   - 小程序
 ---
 
-# v5 生成模式常用接入方式（推荐）
+# v5 生成模式使用方式（推荐）
 
 v5 推荐把 Tailwind CSS v4 当作标准 CSS-first 入口使用，再由 `weapp-tailwindcss` 控制最终样式生成。核心变化是：入口 CSS 写 `@import "tailwindcss"`，构建插件或 PostCSS 插件开启 `generator`，最终产物直接面向小程序，而不是先生成浏览器 CSS 再做大量兜底兼容。
 

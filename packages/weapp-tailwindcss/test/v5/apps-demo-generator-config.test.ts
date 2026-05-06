@@ -76,7 +76,7 @@ describe('v5 apps and demos generator config', () => {
 
   it('documents the v5 generator examples for uni-app, taro and mpx', async () => {
     const [docsSource, parityDocsSource] = await Promise.all([
-      readProjectFile('website/docs/tailwindcss/v5-generator-examples.mdx'),
+      readProjectFile('website/docs/quick-start/v4/v5-generator-examples.mdx'),
       readProjectFile('website/docs/tailwindcss/v5-official-plugin-parity.mdx'),
     ])
 

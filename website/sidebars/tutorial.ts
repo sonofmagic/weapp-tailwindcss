@@ -98,7 +98,7 @@ const tutorialSidebar: SidebarConfig = [
       {
         type: 'doc',
         label: '🔥 v5 生成模式使用方式（推荐）',
-        id: 'tailwindcss/v5-generator-examples',
+        id: 'quick-start/v4/v5-generator-examples',
       },
       {
         type: 'category',

@@ -289,7 +289,7 @@ function HomepageHeader() {
                       text-center
                       sm:w-auto
                     `}
-                    href="/docs/tailwindcss/v5-generator-examples"
+                    href="/docs/quick-start/v4/v5-generator-examples"
                   >
                     <span className={`
                       inline-flex items-center gap-1 text-[0.95rem]
