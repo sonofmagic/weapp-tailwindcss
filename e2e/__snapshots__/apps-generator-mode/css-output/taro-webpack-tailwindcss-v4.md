@@ -8,7 +8,7 @@ Generator CSS files: app.wxss, index.wxss
 | Mode | Bytes | Selectors | @supports | :hover | Tailwind banner | Raw arbitrary selector | Weapp escaped arbitrary selector |
 | --- | ---: | ---: | --- | --- | --- | --- | --- |
 | legacy | 382159 | 2156 | false | false | false | false | true |
-| generator | 381841 | 2156 | false | false | false | false | true |
+| generator | 381648 | 2156 | false | false | false | false | true |
 
 ## Legacy CSS
 
@@ -13356,9 +13356,6 @@ wx-root-portal-content {
   height: 112rpx;
   height: calc(var(--spacing) * 14);
 }
-.bg-_b_h534312_B {
-  background-color: #534312;
-}
 .bg-purple-800 {
   background-color: rgb(110, 17, 176);
   background-color: var(--color-purple-800);
@@ -13385,21 +13382,9 @@ wx-root-portal-content {
     var(--tw-gradient-to) var(--tw-gradient-to-position)
   );
 }
-.text-_b100rpx_B {
-  font-size: 100rpx;
-}
-.text-_b_hfff_B {
-  color: #fff;
-}
 .text-pink-200 {
   color: rgb(252, 206, 232);
   color: var(--color-pink-200);
-}
-._bchunkhash_c8_B {
-  chunkhash: 8;
-}
-._bhash_c8_B {
-  hash: 8;
 }
 @font-face {
   font-display: swap;

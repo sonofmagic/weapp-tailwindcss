@@ -4,28 +4,6 @@ exports[`bundlers/vite UnifiedViteWeappTailwindcssPlugin bundle > fixes issue #8
 "/*! tailwindcss v4.2.1 | MIT License | https://tailwindcss.com */
 @supports ((-webkit-hyphens: none) and (not (margin-trim: inline))) or
   ((-moz-orient: inline) and (not (color: rgb(from red r g b)))) {
-  ::-webkit-backdrop {
-    --tw-gradient-position: initial;
-    --tw-gradient-from: rgba(0, 0, 0, 0);
-    --tw-gradient-via: rgba(0, 0, 0, 0);
-    --tw-gradient-to: rgba(0, 0, 0, 0);
-    --tw-gradient-stops: initial;
-    --tw-gradient-via-stops: initial;
-    --tw-gradient-from-position: 0%;
-    --tw-gradient-via-position: 50%;
-    --tw-gradient-to-position: 100%;
-  }
-  ::-ms-backdrop {
-    --tw-gradient-position: initial;
-    --tw-gradient-from: rgba(0, 0, 0, 0);
-    --tw-gradient-via: rgba(0, 0, 0, 0);
-    --tw-gradient-to: rgba(0, 0, 0, 0);
-    --tw-gradient-stops: initial;
-    --tw-gradient-via-stops: initial;
-    --tw-gradient-from-position: 0%;
-    --tw-gradient-via-position: 50%;
-    --tw-gradient-to-position: 100%;
-  }
   ::before,
   ::after {
     --tw-content: "";
@@ -54,18 +32,6 @@ wx-root-portal-content,
   --color-purple-300: rgb(216, 180, 255);
   --spacing: 8rpx;
 }
-::-webkit-backdrop {
-  box-sizing: border-box;
-  border: 0 solid;
-  margin: 0;
-  padding: 0;
-}
-::-ms-backdrop {
-  box-sizing: border-box;
-  border: 0 solid;
-  margin: 0;
-  padding: 0;
-}
 view,
 text,
 :after,
@@ -90,7 +56,6 @@ text,
 }
 .bg-purple-300 {
   background-color: rgb(216, 180, 255);
-  background-color: color(display-p3 0.82939 0.70374 0.99608);
   background-color: var(--color-purple-300);
 }
 .bg-gradient-to-r {

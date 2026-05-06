@@ -8,7 +8,7 @@ Generator CSS files: app.wxss, index.wxss
 | Mode | Bytes | Selectors | @supports | :hover | Tailwind banner | Raw arbitrary selector | Weapp escaped arbitrary selector |
 | --- | ---: | ---: | --- | --- | --- | --- | --- |
 | legacy | 115828 | 296 | false | false | false | false | true |
-| generator | 125971 | 297 | false | false | false | false | true |
+| generator | 122660 | 297 | false | false | false | false | true |
 
 ## Legacy CSS
 
@@ -1629,45 +1629,6 @@ text,
     max-width: 1536rpx;
   }
 }
-.-m-_b20px_B {
-  margin: -20rpx;
-}
-.mb-_b-20px_B {
-  margin-bottom: -20rpx;
-}
-.mt-_b22px_B {
-  margin-top: 22rpx;
-}
-.h-_b100px_B {
-  height: 100rpx;
-}
-.h-_bcalc_p100vh-100px_P_B {
-  height: calc(100vh - 100rpx);
-}
-.max-h-_b100px_B {
-  max-height: 100rpx;
-}
-.min-h-_b100px_B {
-  min-height: 100rpx;
-}
-.w-1_d5 {
-  width: 12rpx;
-}
-.w-_b100px_B {
-  width: 100rpx;
-}
-.w-_b300px_B {
-  width: 300rpx;
-}
-.w-_b300rpx_B {
-  width: 300rpx;
-}
-.min-w-_b300rpx_B {
-  min-width: 300rpx;
-}
-.max-w-_b300rpx_B {
-  max-width: 300rpx;
-}
 .space-y-_b1_d6rem_B > view + view,
 .space-y-_b1_d6rem_B > view + text,
 .space-y-_b1_d6rem_B > text + view,
@@ -1696,116 +1657,6 @@ text,
 .divide-_b_h010101_B > text + text {
   --tw-divide-opacity: 1;
   border-color: rgba(1, 1, 1, var(--tw-divide-opacity, 1));
-}
-.rounded-_b40px_B {
-  border-radius: 40rpx;
-}
-.border-_b10px_B {
-  border-width: 10rpx;
-}
-.border-_b_h098765_B {
-  --tw-border-opacity: 1;
-  border-color: rgba(9, 135, 101, var(--tw-border-opacity, 1));
-}
-.border-opacity-_b0_d44_B {
-  --tw-border-opacity: 0.44;
-}
-.bg-_b_h098765_B {
-  --tw-bg-opacity: 1;
-  background-color: rgba(9, 135, 101, var(--tw-bg-opacity, 1));
-}
-.bg-_b_h123456_B {
-  --tw-bg-opacity: 1;
-  background-color: rgba(18, 52, 86, var(--tw-bg-opacity, 1));
-}
-.bg-_b_h543254_B {
-  --tw-bg-opacity: 1;
-  background-color: rgba(84, 50, 84, var(--tw-bg-opacity, 1));
-}
-.bg-_b_h654123_B {
-  --tw-bg-opacity: 1;
-  background-color: rgba(101, 65, 35, var(--tw-bg-opacity, 1));
-}
-.bg-_b_h654321_B {
-  --tw-bg-opacity: 1;
-  background-color: rgba(101, 67, 33, var(--tw-bg-opacity, 1));
-}
-.bg-_b_hdbdada_B {
-  --tw-bg-opacity: 1;
-  background-color: rgba(219, 218, 218, var(--tw-bg-opacity, 1));
-}
-.bg-_b_hfafa00_B {
-  --tw-bg-opacity: 1;
-  background-color: rgba(250, 250, 0, var(--tw-bg-opacity, 1));
-}
-.bg-_b_hfafafa_B {
-  --tw-bg-opacity: 1;
-  background-color: rgba(250, 250, 250, var(--tw-bg-opacity, 1));
-}
-.bg-opacity-_b0_d54_B {
-  --tw-bg-opacity: 0.54;
-}
-.bg-_burl_p_ahttps_c_f_fxxx_dcom_fxx_dwebp_a_P_B {
-  background-image: url(https://xxx.com/xx.webp);
-}
-.from-_b_h123456_B {
-  --tw-gradient-from: #123456 var(--tw-gradient-from-position);
-  --tw-gradient-to: rgba(18, 52, 86, 0) var(--tw-gradient-to-position);
-  --tw-gradient-stops: var(--tw-gradient-from), var(--tw-gradient-to);
-}
-.to-_b_h654321_B {
-  --tw-gradient-to: #654321 var(--tw-gradient-to-position);
-}
-.p-_b20px_B {
-  padding: 20rpx;
-}
-.text-_b20px_B {
-  font-size: 20rpx;
-}
-.text-_b50px_B {
-  font-size: 50rpx;
-}
-.leading-_b0_d9_B {
-  line-height: 0.9;
-}
-.text-_b_h123456_B {
-  --tw-text-opacity: 1;
-  color: rgba(18, 52, 86, var(--tw-text-opacity, 1));
-}
-.text-_b_haaaaaa_B {
-  --tw-text-opacity: 1;
-  color: rgba(170, 170, 170, var(--tw-text-opacity, 1));
-}
-.text-_b_hdddddd_B {
-  --tw-text-opacity: 1;
-  color: rgba(221, 221, 221, var(--tw-text-opacity, 1));
-}
-.text-_b_hfafafa_B {
-  --tw-text-opacity: 1;
-  color: rgba(250, 250, 250, var(--tw-text-opacity, 1));
-}
-.text-_b_hffffff_B {
-  --tw-text-opacity: 1;
-  color: rgba(255, 255, 255, var(--tw-text-opacity, 1));
-}
-.text-_bblue_B {
-  --tw-text-opacity: 1;
-  color: rgba(0, 0, 255, var(--tw-text-opacity, 1));
-}
-.text-_bred_B {
-  --tw-text-opacity: 1;
-  color: rgba(255, 0, 0, var(--tw-text-opacity, 1));
-}
-.text-opacity-_b0_d19_B {
-  --tw-text-opacity: 0.19;
-}
-.ring-pink-300 {
-  --tw-ring-opacity: 1;
-  --tw-ring-color: rgba(249, 168, 212, var(--tw-ring-opacity, 1));
-}
-.after_ccontent-_b_au_x6211_u_x77e5_u_x9053_u_x6211_u_x5fc3__mu_x6c38_u_x6052_12we_ds_a_B::after {
-  --tw-content: '我知道我心,永恒12we ds';
-  content: var(--tw-content);
 }
 @media (prefers-color-scheme: dark) {
   .dark_cbg-_b_h487512_B {

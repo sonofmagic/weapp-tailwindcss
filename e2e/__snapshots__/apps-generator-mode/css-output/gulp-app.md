@@ -8,7 +8,7 @@ Generator CSS files: app.wxss, index.wxss, more.wxss
 | Mode | Bytes | Selectors | @supports | :hover | Tailwind banner | Raw arbitrary selector | Weapp escaped arbitrary selector |
 | --- | ---: | ---: | --- | --- | --- | --- | --- |
 | legacy | 6567 | 47 | false | false | false | false | true |
-| generator | 8219 | 47 | false | false | false | false | true |
+| generator | 7087 | 47 | false | false | false | false | true |
 
 ## Legacy CSS
 
@@ -471,21 +471,6 @@ text,
   mask-size: 100% 100%;
   --svg: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' width='24' height='24'%3E%3Cpath fill='black' d='M20 13h-4c0 1.1-.9 2-2 2h-4c-1.1 0-2-.9-2-2H4l-2 5v2c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2v-2M6 20c-.89 0-1.34-1.08-.71-1.71S7 18.11 7 19c0 .55-.45 1-1 1m4 0c-.89 0-1.34-1.08-.71-1.71S11 18.11 11 19c0 .55-.45 1-1 1m4 0c-.89 0-1.34-1.08-.71-1.71S15 18.11 15 19c0 .55-.45 1-1 1m4 0c-.89 0-1.34-1.08-.71-1.71S19 18.11 19 19c0 .55-.45 1-1 1m0-10V3H6v7H3v2h18v-2M8 5h8v1H8m0 1h6v1H8'/%3E%3C/svg%3E");
 }
-.m-_b20px_B {
-  margin: 40rpx;
-}
-.mb-_b20px_B {
-  margin-bottom: 40rpx;
-}
-.mt-_b24px_B {
-  margin-top: 48rpx;
-}
-.mt-_b33px_B {
-  margin-top: 66rpx;
-}
-.h-_b41_d54vw_B {
-  height: 41.54vw;
-}
 .space-y-1 > view + view,
 .space-y-1 > view + text,
 .space-y-1 > text + view,
@@ -503,43 +488,6 @@ text,
   margin-top: calc(32rpx * (1 - var(--tw-space-y-reverse)));
   margin-top: calc(32rpx * calc(1 - var(--tw-space-y-reverse)));
   margin-bottom: calc(32rpx * var(--tw-space-y-reverse));
-}
-.border-_b_hEEEEEE_B {
-  --tw-border-opacity: 1;
-  border-color: rgba(238, 238, 238, var(--tw-border-opacity, 1));
-}
-.bg-_b_hfff_B {
-  --tw-bg-opacity: 1;
-  background-color: rgba(255, 255, 255, var(--tw-bg-opacity, 1));
-}
-.bg-_burl_p_ahttps_c_f_fxxx_dcom_fxx_dwebp_a_P_B {
-  background-image: url('https://xxx.com/xx.webp');
-}
-.bg-_burl_phttps_c_f_fpic1_dzhimg_dcom_fv2-3ee20468f54bbfefcd0027283b21aaa8_720w_djpg_P_B {
-  background-image: url(https://pic1.zhimg.com/v2-3ee20468f54bbfefcd0027283b21aaa8_720w.jpg);
-}
-.bg-_blength_c100_v_100_v_B {
-  background-size: 100% 100%;
-}
-.pb-_b10px_B {
-  padding-bottom: 20rpx;
-}
-.pl-_b15px_B {
-  padding-left: 30rpx;
-}
-.text-_b14px_B {
-  font-size: 28rpx;
-}
-.text-_b50px_B {
-  font-size: 100rpx;
-}
-.text-_b_h123456_B {
-  --tw-text-opacity: 1;
-  color: rgba(18, 52, 86, var(--tw-text-opacity, 1));
-}
-.text-_b_h5ba4e5_B {
-  --tw-text-opacity: 1;
-  color: rgba(91, 164, 229, var(--tw-text-opacity, 1));
 }
 
 

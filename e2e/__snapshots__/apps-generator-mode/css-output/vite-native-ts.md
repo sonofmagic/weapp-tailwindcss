@@ -8,7 +8,7 @@ Generator CSS files: app.wxss, index.wxss, index.wxss, index.wxss
 | Mode | Bytes | Selectors | @supports | :hover | Tailwind banner | Raw arbitrary selector | Weapp escaped arbitrary selector |
 | --- | ---: | ---: | --- | --- | --- | --- | --- |
 | legacy | 12485 | 138 | false | false | false | false | true |
-| generator | 7397 | 71 | false | false | false | false | true |
+| generator | 7061 | 71 | false | false | false | false | true |
 
 ## Legacy CSS
 
@@ -859,21 +859,6 @@ text,
 }
 .focus_c_b_n_view_B_cp-4 view:focus {
   padding: 1rem;
-}
-._b--scroll-offset_c56px_B {
-  --scroll-offset: 56px;
-}
-.focus_cring-blue-300:focus {
-  --tw-ring-opacity: 1;
-  --tw-ring-color: rgba(147, 197, 253, var(--tw-ring-opacity, 1));
-}
-.focus_cring-opacity-80:focus {
-  --tw-ring-opacity: 0.8;
-}
-@media (min-width: 1024px) {
-  .lg_c_b--scroll-offset_c44px_B {
-    --scroll-offset: 44px;
-  }
 }
 /*$vite$:1*/
 

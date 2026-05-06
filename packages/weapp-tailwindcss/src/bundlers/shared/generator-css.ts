@@ -11,10 +11,14 @@ import { finalizeMiniProgramCss, removeUnsupportedAtSupports } from './css-clean
 
 const TAILWIND_V4_BANNER_RE = /\/\*!\s*tailwindcss v4\./
 const TAILWIND_GENERATED_CSS_MARKER_RE = /\/\*!\s*tailwindcss v|@property\s+--tw-|--tw-|:not\(#\\#\)|\.[^,{]*(?:\\:|\\\[|\\#)|(?::host|page|\.tw-root|wx-root-portal-content)[^{]*\{[^}]*--(?:color|spacing|text|font-weight|radius)-/
+const GENERATOR_PLACEHOLDER_MARKER_RE = /\/\*!\s*weapp-tailwindcss generator-placeholder\s*\*\//i
+const GENERATOR_PLACEHOLDER_MARKER_GLOBAL_RE = /\/\*!\s*weapp-tailwindcss generator-placeholder\s*\*\/\s*/gi
 const TAILWIND_BANNER_PREFIX_RE = /^\/\*!\s*tailwindcss v[^*]*\*\/\s*/i
 const TAILWIND_BANNER_RE = /\/\*!\s*tailwindcss v[^*]*\*\//i
 const TAILWIND_BANNER_GLOBAL_RE = /\/\*!\s*tailwindcss v[^*]*\*\/\s*/gi
 const VITE_MARKER_RE = /\/\*\$vite\$:[^*]*\*\//g
+const CLASS_SELECTOR_RE = /(?:^|[^\w-])\.[_a-z\u00A0-\uFFFF\\-]/i
+const MINI_PROGRAM_THEME_SCOPE_SELECTORS = new Set([':host', 'page', '.tw-root', 'wx-root-portal-content'])
 const SUPPORTED_GENERATOR_MAJOR_VERSIONS = new Set([3, 4])
 const REMOTE_IMPORT_RE = /^(?:https?:)?\/\//i
 const TAILWIND_REMOVABLE_SOURCE_DIRECTIVE_NAMES = new Set([
@@ -103,12 +107,17 @@ export function stripTailwindBanners(css: string) {
   return css.replace(TAILWIND_BANNER_GLOBAL_RE, '')
 }
 
+export function stripGeneratorPlaceholderMarkers(css: string) {
+  return css.replace(GENERATOR_PLACEHOLDER_MARKER_GLOBAL_RE, '')
+}
+
 export function hasTailwindGeneratedCss(rawSource: string) {
   return TAILWIND_V4_BANNER_RE.test(rawSource)
 }
 
 export function hasTailwindGeneratedCssMarkers(rawSource: string) {
   return TAILWIND_GENERATED_CSS_MARKER_RE.test(rawSource)
+    || GENERATOR_PLACEHOLDER_MARKER_RE.test(rawSource)
 }
 
 function finalizeMiniProgramGeneratorCss(css: string, target: string) {
@@ -156,7 +165,8 @@ function isTailwindGenerationDirective(node: postcss.Node) {
 
 export function removeTailwindSourceDirectives(rawSource: string) {
   try {
-    const root = postcss.parse(rawSource)
+    const source = stripGeneratorPlaceholderMarkers(rawSource)
+    const root = postcss.parse(source)
     let removed = false
     root.walk((node) => {
       if (isTailwindSourceDirective(node)) {
@@ -164,15 +174,18 @@ export function removeTailwindSourceDirectives(rawSource: string) {
         removed = true
       }
     })
-    return removed ? root.toString() : rawSource
+    return removed ? root.toString() : source
   }
   catch {
-    return rawSource
+    return stripGeneratorPlaceholderMarkers(rawSource)
   }
 }
 
 export function hasTailwindSourceDirectives(rawSource: string) {
   try {
+    if (GENERATOR_PLACEHOLDER_MARKER_RE.test(rawSource)) {
+      return true
+    }
     const root = postcss.parse(rawSource)
     let found = false
     root.walk((node) => {
@@ -229,6 +242,24 @@ function normalizeCssSelector(selector: string) {
   return selector.trim().replace(/\s+/g, '')
 }
 
+function hasClassSelector(selector: string) {
+  return CLASS_SELECTOR_RE.test(selector)
+}
+
+function getNormalizedSelectorList(selector: string) {
+  return selector.split(',').map(normalizeCssSelector).filter(Boolean)
+}
+
+function isMiniProgramThemeScopeSelector(selector: string) {
+  const selectors = getNormalizedSelectorList(selector)
+  return selectors.length > 0
+    && selectors.every(item => MINI_PROGRAM_THEME_SCOPE_SELECTORS.has(item))
+}
+
+function hasUtilityClassSelector(selector: string) {
+  return hasClassSelector(selector) && !isMiniProgramThemeScopeSelector(selector)
+}
+
 function isCustomPropertyOnlyRule(rule: postcss.Rule) {
   let hasDeclaration = false
   let allCustomProperties = true
@@ -268,7 +299,7 @@ function collectGeneratedSelectors(css: string) {
   try {
     const root = postcss.parse(css)
     root.walkRules((rule) => {
-      if (isCustomPropertyOnlyRule(rule) && !isPseudoContentInitRule(rule)) {
+      if (isCustomPropertyOnlyRule(rule) && !isPseudoContentInitRule(rule) && !hasUtilityClassSelector(rule.selector)) {
         return
       }
       selectors.add(normalizeCssSelector(rule.selector))
@@ -295,7 +326,7 @@ function removeGeneratedSelectorCompatCss(css: string, generatedCss: string) {
         removed = true
         return
       }
-      if (isCustomPropertyOnlyRule(rule) && !isPseudoContentInitRule(rule)) {
+      if (isCustomPropertyOnlyRule(rule) && !isPseudoContentInitRule(rule) && !hasUtilityClassSelector(rule.selector)) {
         return
       }
       if (generatedSelectors.has(normalizeCssSelector(rule.selector))) {
@@ -309,6 +340,57 @@ function removeGeneratedSelectorCompatCss(css: string, generatedCss: string) {
       }
     })
     return removed ? root.toString() : css
+  }
+  catch {
+    return css
+  }
+}
+
+function collectDedupedPostTransformCompatCss(css: string, generatedCss: string) {
+  const generatedSelectors = collectGeneratedSelectors(generatedCss)
+  if (generatedSelectors.size === 0) {
+    return css
+  }
+
+  const preservedNodes: postcss.Node[] = []
+  try {
+    const root = postcss.parse(css)
+    root.each((node) => {
+      if (node.type === 'rule' && generatedSelectors.has(normalizeCssSelector(node.selector))) {
+        if (isCustomPropertyOnlyRule(node) && !isPseudoContentInitRule(node) && !hasUtilityClassSelector(node.selector)) {
+          const declarationProps = new Set<string>()
+          node.walkDecls((decl) => {
+            declarationProps.add(decl.prop)
+          })
+          const generatedRoot = postcss.parse(generatedCss)
+          generatedRoot.walkRules((rule) => {
+            if (normalizeCssSelector(rule.selector) !== normalizeCssSelector(node.selector)) {
+              return
+            }
+            rule.walkDecls((decl) => {
+              declarationProps.delete(decl.prop)
+            })
+          })
+          const nextRule = node.clone()
+          nextRule.walkDecls((decl) => {
+            if (!declarationProps.has(decl.prop)) {
+              decl.remove()
+            }
+          })
+          if (nextRule.nodes.length > 0) {
+            preservedNodes.push(nextRule)
+          }
+        }
+        return
+      }
+      preservedNodes.push(node.clone())
+    })
+    if (preservedNodes.length === root.nodes.length) {
+      return css
+    }
+    const nextRoot = postcss.root()
+    nextRoot.append(preservedNodes)
+    return nextRoot.toString()
   }
   catch {
     return css
@@ -335,7 +417,11 @@ async function appendLegacyCompatCss(
     ...cssHandlerOptions,
     ...generatorStyleOptions,
   })
-  return createCssAppend(css, removeUnsupportedAtSupports(compatCss))
+  const cleanedCompatCss = collectDedupedPostTransformCompatCss(removeUnsupportedAtSupports(compatCss), css)
+  if (cleanedCompatCss.trim().length === 0) {
+    return css
+  }
+  return createCssAppend(css, cleanedCompatCss)
 }
 
 export async function generateCssByGenerator(
