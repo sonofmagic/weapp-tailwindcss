@@ -1,6 +1,6 @@
 {
   "version": "1.0.0",
-  "generatedAt": "2026-05-06T15:30:38.326Z",
+  "generatedAt": "2026-05-06T15:36:29.975Z",
   "siteUrl": "https://tw.icebreaker.top",
   "totals": {
     "all": 179,
@@ -5121,11 +5121,12 @@
       "id": "doc:quick-start/v4/v5-generator-examples",
       "title": "生成模式使用方式（推荐）",
       "description": "使用 weapp-tailwindcss v5 生成模式接入 uni-app、Taro、weapp-vite 与 Mpx 的常用示例",
-      "summary": "v5 推荐把 Tailwind CSS v4 当作标准 CSS-first 入口使用，再由 weapp-tailwindcss 控制最终样式生成。核心变化是：入口 CSS 写 @import \"tailwindcss\"，构建插件或 PostCSS 插件开启 generator，最终产物直接面向小程序，而不是先生成浏览器 CSS 再做大量兜底兼容。",
+      "summary": "生成模式推荐把 weapp-tailwindcss 作为项目里唯一负责 Tailwind CSS 样式生成的入口。你可以按项目需要安装 tailwindcss@3 或 tailwindcss@4，weapp-tailwindcss 会读取当前安装的 Tailwind 主版本，并按对应策略代理整个项目的样式生成。",
       "url": "/docs/quick-start/v4/v5-generator-examples",
       "canonical": "https://tw.icebreaker.top/docs/quick-start/v4/v5-generator-examples",
       "keywords": [
         "weapp-tailwindcss",
+        "tailwindcss v3",
         "tailwindcss v4",
         "generator",
         "uni-app",
@@ -5139,8 +5140,7 @@
         "配置",
         "生成模式使用方式",
         "推荐",
-        "quick start",
-        "v4"
+        "quick start"
       ],
       "headings": [
         "安装",
