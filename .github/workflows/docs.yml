@@ -59,6 +59,8 @@ jobs:
           cache: pnpm
       - name: Install dependencies
         run: pnpm install
+      - name: Build workspace dependencies
+        run: pnpm --filter @weapp-tailwindcss/website... --filter '!@weapp-tailwindcss/website' build
       - name: Build next docs
         run: pnpm --filter @weapp-tailwindcss/website build:next
       - name: Deploy next docs
