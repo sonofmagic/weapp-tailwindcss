@@ -248,7 +248,7 @@ describe('v4', () => {
     assertLiteralBeforeVariable(css, 'border-right-width')
   })
 
-  it('removes v4 display-p3 media and unsupported font theme variables', async () => {
+  it('removes v4 display-p3 media and keeps default font declarations', async () => {
     const styleHandler = createStyleHandler({
       isMainChunk: true,
     })
@@ -286,11 +286,11 @@ describe('v4', () => {
     expect(css).toContain('background-color: rgba(50, 128, 255, 0.5)')
     expect(css).not.toContain('color-gamut')
     expect(css).not.toContain('display-p3')
-    expect(css).not.toContain('ui-sans-serif')
-    expect(css).not.toContain('font-family: var(--font-sans)')
-    expect(css).not.toContain('--font-sans')
-    expect(css).not.toContain('--font-mono')
-    expect(css).not.toContain('--default-font-family')
+    expect(css).toContain('ui-sans-serif')
+    expect(css).toContain('font-family: var(--font-sans)')
+    expect(css).toContain('--font-sans')
+    expect(css).toContain('--font-mono')
+    expect(css).toContain('--default-font-family')
   })
 
   it('v4 space-y-* case 2', async () => {

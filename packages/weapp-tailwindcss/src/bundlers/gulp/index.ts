@@ -176,15 +176,19 @@ export function createPlugins(options: UserDefinedOptions = {}) {
     }
   }
 
-  function resolveWxssFileHandlerOptions(filePath: string, options?: Partial<IStyleHandlerOptions>) {
+  function resolveGulpMatcherName(file: File) {
+    const relative = file.relative || path.basename(file.path)
+    return relative.replaceAll(path.sep, '/')
+  }
+
+  function resolveWxssFileHandlerOptions(file: File, options?: Partial<IStyleHandlerOptions>) {
     const resolved = resolveWxssHandlerOptions(options)
     if (resolved.isMainChunk !== undefined) {
       return resolved
     }
-    const cssExt = opts.cssMatcher?.ext ?? 'wxss'
     return {
       ...resolved,
-      isMainChunk: path.basename(filePath) === `app.${cssExt}`,
+      isMainChunk: opts.mainCssChunkMatcher(resolveGulpMatcherName(file), opts.appType),
     }
   }
 
@@ -232,7 +236,7 @@ export function createPlugins(options: UserDefinedOptions = {}) {
         },
         async transform() {
           await runtimeState.patchPromise
-          const cssHandlerOptions = resolveWxssFileHandlerOptions(file.path, options)
+          const cssHandlerOptions = resolveWxssFileHandlerOptions(file, options)
           const generated = hasExplicitGeneratorOptions
             ? await generateCssByGenerator({
                 opts,

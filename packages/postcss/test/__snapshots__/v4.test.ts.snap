@@ -19,6 +19,11 @@ exports[`v4 > postcss 1`] = `
 "/*! tailwindcss v4.0.3 | MIT License | https://tailwindcss.com */
 
 page,.tw-root,wx-root-portal-content,:host {
+    --font-sans: ui-sans-serif,system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,Cantarell,Noto Sans, sans-serif, "Apple Color Emoji",
+      "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+    --font-serif: ui-serif, georgia, cambria, "Times New Roman", times, serif;
+    --font-mono: ui-monospace, sfmono-regular, menlo, monaco, consolas,
+      "Liberation Mono", "Courier New", monospace;
     --color-red-50: rgb(254, 242, 242);
     --color-red-100: rgb(255, 226, 226);
     --color-red-200: rgb(255, 202, 202);
@@ -377,6 +382,18 @@ page,.tw-root,wx-root-portal-content,:host {
     --aspect-video: 16 / 9;
     --default-transition-duration: 150ms;
     --default-transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+    --default-font-family: var(--font-sans);
+    --default-font-feature-settings: var(--font-sans--font-feature-settings);
+    --default-font-variation-settings: var(
+      --font-sans--font-variation-settings
+    );
+    --default-mono-font-family: var(--font-mono);
+    --default-mono-font-feature-settings: var(
+      --font-mono--font-feature-settings
+    );
+    --default-mono-font-variation-settings: var(
+      --font-mono--font-variation-settings
+    );
   }
 
 view,text,::after,::before {
@@ -387,6 +404,9 @@ view,text,::after,::before {
   }
 
 html,:host {
+    font-family: var( --default-font-family, ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji" );
+    font-variation-settings: var( --default-font-variation-settings, normal );
+    font-feature-settings: var(--default-font-feature-settings, normal);
     line-height: 1.5;
     tab-size: 4;
     text-size-adjust: 100%;
@@ -423,7 +443,10 @@ b,strong {
   }
 
 code,kbd,samp,pre {
+    font-family: var( --default-mono-font-family, ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace );
     font-size: 1em;
+    font-variation-settings: var( --default-mono-font-variation-settings, normal );
+    font-feature-settings: var( --default-mono-font-feature-settings, normal );
   }
 
 small {
@@ -631,6 +654,11 @@ exports[`v4 > postcss uni-app x 1`] = `
 "/*! tailwindcss v4.0.3 | MIT License | https://tailwindcss.com */
 
 page,.tw-root,wx-root-portal-content,:host {
+    --font-sans: ui-sans-serif,system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,Cantarell,Noto Sans, sans-serif, "Apple Color Emoji",
+      "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+    --font-serif: ui-serif, georgia, cambria, "Times New Roman", times, serif;
+    --font-mono: ui-monospace, sfmono-regular, menlo, monaco, consolas,
+      "Liberation Mono", "Courier New", monospace;
     --color-red-50: rgb(254, 242, 242);
     --color-red-100: rgb(255, 226, 226);
     --color-red-200: rgb(255, 202, 202);
@@ -989,6 +1017,18 @@ page,.tw-root,wx-root-portal-content,:host {
     --aspect-video: 16 / 9;
     --default-transition-duration: 150ms;
     --default-transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+    --default-font-family: var(--font-sans);
+    --default-font-feature-settings: var(--font-sans--font-feature-settings);
+    --default-font-variation-settings: var(
+      --font-sans--font-variation-settings
+    );
+    --default-mono-font-family: var(--font-mono);
+    --default-mono-font-feature-settings: var(
+      --font-mono--font-feature-settings
+    );
+    --default-mono-font-variation-settings: var(
+      --font-mono--font-variation-settings
+    );
   }
 
 view,text {
@@ -999,6 +1039,9 @@ view,text {
   }
 
 html,:host {
+    font-family: var( --default-font-family, ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji" );
+    font-variation-settings: var( --default-font-variation-settings, normal );
+    font-feature-settings: var(--default-font-feature-settings, normal);
     line-height: 1.5;
     tab-size: 4;
     text-size-adjust: 100%;
@@ -1030,7 +1073,10 @@ b,strong {
   }
 
 code,kbd,samp,pre {
+    font-family: var( --default-mono-font-family, ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace );
     font-size: 1em;
+    font-variation-settings: var( --default-mono-font-variation-settings, normal );
+    font-feature-settings: var( --default-mono-font-feature-settings, normal );
   }
 
 small {
@@ -1250,6 +1296,9 @@ wx-root-portal-content,
 exports[`v4 > v4 1`] = `
 "/*! tailwindcss v4.0.9 | MIT License | https://tailwindcss.com */
 page,.tw-root,wx-root-portal-content,:host {
+    --font-sans: ui-sans-serif,system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,Cantarell,Noto Sans, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol",
+      "Noto Color Emoji";
+    --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
     --color-red-50: rgb(254, 242, 242);
     --color-red-300: rgb(255, 163, 164);
     --color-red-400: rgb(255, 101, 104);
@@ -1278,6 +1327,12 @@ page,.tw-root,wx-root-portal-content,:host {
     --ease-in-out: cubic-bezier(0.4, 0, 0.2, 1);
     --default-transition-duration: 0.15s;
     --default-transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+    --default-font-family: var(--font-sans);
+    --default-font-feature-settings: var(--font-sans--font-feature-settings);
+    --default-font-variation-settings: var(--font-sans--font-variation-settings);
+    --default-mono-font-family: var(--font-mono);
+    --default-mono-font-feature-settings: var(--font-mono--font-feature-settings);
+    --default-mono-font-variation-settings: var(--font-mono--font-variation-settings);
   }
 view,text,:after,:before {
     box-sizing: border-box;
@@ -1290,6 +1345,18 @@ html,:host {
     -moz-tab-size: 4;
     tab-size: 4;
     line-height: 1.5;
+    font-family: var(
+      --default-font-family,
+      ui-sans-serif,
+      system-ui,
+      sans-serif,
+      "Apple Color Emoji",
+      "Segoe UI Emoji",
+      "Segoe UI Symbol",
+      "Noto Color Emoji"
+    );
+    font-feature-settings: var(--default-font-feature-settings, normal);
+    font-variation-settings: var(--default-font-variation-settings, normal);
     -webkit-tap-highlight-color: transparent;
   }
 body {
@@ -1318,6 +1385,19 @@ b,strong {
     font-weight: bolder;
   }
 code,kbd,samp,pre {
+    font-family: var(
+      --default-mono-font-family,
+      ui-monospace,
+      SFMono-Regular,
+      Menlo,
+      Monaco,
+      Consolas,
+      "Liberation Mono",
+      "Courier New",
+      monospace
+    );
+    font-feature-settings: var(--default-mono-font-feature-settings, normal);
+    font-variation-settings: var(--default-mono-font-variation-settings, normal);
     font-size: 1em;
   }
 small {
@@ -3240,6 +3320,9 @@ page image {
 exports[`v4 > vite 1`] = `
 "/*! tailwindcss v4.0.3 | MIT License | https://tailwindcss.com */
 page,.tw-root,wx-root-portal-content,:host {
+    --font-sans: ui-sans-serif,system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,Cantarell,Noto Sans, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+    --font-serif: ui-serif, georgia, cambria, "Times New Roman", times, serif;
+    --font-mono: ui-monospace, sfmono-regular, menlo, monaco, consolas, "Liberation Mono", "Courier New", monospace;
     --color-red-50: rgb(254, 242, 242);
     --color-red-100: rgb(255, 228, 228);
     --color-red-200: rgb(255, 204, 204);
@@ -3595,6 +3678,12 @@ page,.tw-root,wx-root-portal-content,:host {
     --aspect-video: 16 / 9;
     --default-transition-duration: .15s;
     --default-transition-timing-function: cubic-bezier(.4, 0, .2, 1);
+    --default-font-family: var(--font-sans);
+    --default-font-feature-settings: var(--font-sans--font-feature-settings);
+    --default-font-variation-settings: var(--font-sans--font-variation-settings);
+    --default-mono-font-family: var(--font-mono);
+    --default-mono-font-feature-settings: var(--font-mono--font-feature-settings);
+    --default-mono-font-variation-settings: var(--font-mono--font-variation-settings);
   }
 
 view,text,::after,::before {
@@ -3605,6 +3694,9 @@ view,text,::after,::before {
   }
 
 html,:host {
+    font-family: var(--default-font-family, ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji");
+    font-variation-settings: var(--default-font-variation-settings, normal);
+    font-feature-settings: var(--default-font-feature-settings, normal);
     line-height: 1.5;
     tab-size: 4;
     text-size-adjust: 100%;
@@ -3641,7 +3733,10 @@ b,strong {
   }
 
 code,kbd,samp,pre {
+    font-family: var(--default-mono-font-family, ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace);
     font-size: 1em;
+    font-variation-settings: var(--default-mono-font-variation-settings, normal);
+    font-feature-settings: var(--default-mono-font-feature-settings, normal);
   }
 
 small {

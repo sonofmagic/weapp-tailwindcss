@@ -67,6 +67,10 @@ async function matchSnap(plugins: ReturnType<typeof createPlugins>) {
 }
 describe('gulp', () => {
   it('common build', async () => {
-    await matchSnap(createPlugins())
+    await matchSnap(createPlugins({
+      mainCssChunkMatcher(name) {
+        return path.basename(name) === 'index.css'
+      },
+    }))
   })
 })

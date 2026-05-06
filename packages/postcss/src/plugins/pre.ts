@@ -8,8 +8,6 @@ import {
   isTailwindcssV4DisplayP3Supports,
   isTailwindcssV4LinearGradientSupports,
   isTailwindcssV4ModernCheck,
-  isTailwindcssV4UnsupportedFontDeclaration,
-  isTailwindcssV4UnsupportedFontThemeDeclaration,
 } from '../compat/tailwindcss-v4'
 import { postcssPlugin } from '../constants'
 import { commonChunkPreflight } from '../mp'
@@ -146,11 +144,7 @@ const postcssWeappTailwindcssPrePlugin: PostcssWeappTailwindcssRenamePlugin = (
       }
     },
     Declaration(decl) {
-      if (
-        isTailwindcssV4DisplayP3Declaration(decl)
-        || isTailwindcssV4UnsupportedFontDeclaration(decl)
-        || isTailwindcssV4UnsupportedFontThemeDeclaration(decl)
-      ) {
+      if (isTailwindcssV4DisplayP3Declaration(decl)) {
         removeDeclarationAndEmptyRule(decl)
       }
     },

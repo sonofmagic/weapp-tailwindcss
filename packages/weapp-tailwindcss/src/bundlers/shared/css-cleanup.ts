@@ -100,24 +100,6 @@ const PREFLIGHT_RESET_PROPS = new Set([
 
 const DISPLAY_P3_VALUE_RE = /color\(\s*display-p3\b/i
 const COLOR_GAMUT_P3_RE = /\(\s*color-gamut\s*:\s*p3\s*\)/i
-const UNSUPPORTED_FONT_VALUE_RE = /\bui-(?:sans-serif|monospace)\b|var\(\s*--(?:font-(?:sans|serif|mono)|default-(?:mono-)?font-(?:family|feature-settings|variation-settings))\b/i
-const UNSUPPORTED_FONT_DECLARATION_PROPS = new Set([
-  'font-family',
-  'font-feature-settings',
-  '-webkit-font-feature-settings',
-  'font-variation-settings',
-])
-const UNSUPPORTED_FONT_THEME_PROPS = new Set([
-  '--font-sans',
-  '--font-serif',
-  '--font-mono',
-  '--default-font-family',
-  '--default-font-feature-settings',
-  '--default-font-variation-settings',
-  '--default-mono-font-family',
-  '--default-mono-font-feature-settings',
-  '--default-mono-font-variation-settings',
-])
 
 function removeAtRulesByScan(css: string, names: Set<string>) {
   let index = 0
@@ -288,18 +270,6 @@ function isDisplayP3Declaration(decl: postcss.Declaration) {
   return DISPLAY_P3_VALUE_RE.test(decl.value)
 }
 
-function isUnsupportedFontThemeDeclaration(decl: postcss.Declaration) {
-  return UNSUPPORTED_FONT_THEME_PROPS.has(decl.prop)
-    || decl.prop.startsWith('--font-sans--')
-    || decl.prop.startsWith('--font-serif--')
-    || decl.prop.startsWith('--font-mono--')
-}
-
-function isUnsupportedFontDeclaration(decl: postcss.Declaration) {
-  return UNSUPPORTED_FONT_DECLARATION_PROPS.has(decl.prop)
-    && UNSUPPORTED_FONT_VALUE_RE.test(decl.value)
-}
-
 function removeSpecificityPlaceholders(root: postcss.Root) {
   root.walkRules((rule) => {
     if (!rule.selectors || rule.selectors.length === 0) {
@@ -372,7 +342,7 @@ function removeDeclarationAndEmptyRule(decl: postcss.Declaration) {
   }
 }
 
-function removeDisplayP3AndUnsupportedFontDeclarations(root: postcss.Root) {
+function removeDisplayP3Declarations(root: postcss.Root) {
   root.walkAtRules((atRule) => {
     if (isDisplayP3MediaRule(atRule)) {
       const parent = atRule.parent
@@ -382,11 +352,7 @@ function removeDisplayP3AndUnsupportedFontDeclarations(root: postcss.Root) {
   })
 
   root.walkDecls((decl) => {
-    if (
-      isDisplayP3Declaration(decl)
-      || isUnsupportedFontDeclaration(decl)
-      || isUnsupportedFontThemeDeclaration(decl)
-    ) {
+    if (isDisplayP3Declaration(decl)) {
       removeDeclarationAndEmptyRule(decl)
     }
   })
@@ -433,7 +399,7 @@ function collectThemeVariableRule(root: postcss.Root) {
 
     themeRules.push(node)
     node.walkDecls((decl) => {
-      if (isDisplayP3Declaration(decl) || isUnsupportedFontThemeDeclaration(decl)) {
+      if (isDisplayP3Declaration(decl)) {
         return
       }
       declarations.set(decl.prop, decl.clone())
@@ -491,7 +457,7 @@ function finalizeMiniProgramCssRoot(root: postcss.Root) {
   })
   removeSpecificityPlaceholders(root)
   removeUnsupportedBrowserSelectors(root)
-  removeDisplayP3AndUnsupportedFontDeclarations(root)
+  removeDisplayP3Declarations(root)
 
   const preflightRules = collectPreflightRules(root)
   const themeRule = collectThemeVariableRule(root)

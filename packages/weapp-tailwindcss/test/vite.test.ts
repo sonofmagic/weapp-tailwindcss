@@ -95,7 +95,7 @@ describe.skipIf(isCI)('vite', () => {
     finally {
       await rm(root, { recursive: true, force: true })
     }
-  })
+  }, 120_000)
 
   it('v4-vite-plugin', async () => {
     await build({

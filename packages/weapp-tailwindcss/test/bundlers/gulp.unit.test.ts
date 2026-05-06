@@ -15,6 +15,7 @@ interface InternalContext {
   cache: ReturnType<typeof createCache>
   jsMatcher?: ReturnType<typeof vi.fn>
   wxsMatcher?: ReturnType<typeof vi.fn>
+  mainCssChunkMatcher: ReturnType<typeof vi.fn>
   twPatcher: {
     patch: ReturnType<typeof vi.fn>
     getClassSet: ReturnType<typeof vi.fn>
@@ -89,6 +90,7 @@ describe('bundlers/gulp createPlugins', () => {
       cache,
       jsMatcher: vi.fn((id: string) => id.endsWith('.js')),
       wxsMatcher: vi.fn((id: string) => id.endsWith('.wxs')),
+      mainCssChunkMatcher: vi.fn((name: string) => path.basename(name) === 'app.wxss'),
       twPatcher,
     }
 
@@ -186,6 +188,28 @@ describe('bundlers/gulp createPlugins', () => {
     })
     expect(styleHandler.mock.calls[1]?.[1]).toEqual({
       isMainChunk: false,
+      majorVersion: 3,
+    })
+  })
+
+  it('uses mainCssChunkMatcher to resolve css main chunk', async () => {
+    const mainCssChunkMatcher = vi.fn((name: string) => name === 'styles/index.css')
+    currentContext.mainCssChunkMatcher = mainCssChunkMatcher
+    const plugins = createPlugins()
+
+    await runTransform(
+      plugins.transformWxss(),
+      new Vinyl({
+        cwd: '/',
+        base: '/src',
+        path: '/src/styles/index.css',
+        contents: Buffer.from('.foo { color: red; }'),
+      }),
+    )
+
+    expect(mainCssChunkMatcher).toHaveBeenCalledWith('styles/index.css', undefined)
+    expect(styleHandler.mock.calls[0]?.[1]).toEqual({
+      isMainChunk: true,
       majorVersion: 3,
     })
   })

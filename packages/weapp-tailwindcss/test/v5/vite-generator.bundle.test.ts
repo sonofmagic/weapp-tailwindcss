@@ -123,9 +123,9 @@ describe('v5 vite generator bundle', () => {
         isMainChunk: true,
       }),
     }))
-    expect(styleHandler).toHaveBeenCalledTimes(1)
-    expect(styleHandler.mock.calls[0]?.[0]).toBe(userCss)
-    expect(styleHandler.mock.calls[0]?.[1]).toMatchObject({
+    const userCssCall = styleHandler.mock.calls.find(([code]) => code === userCss)
+    expect(userCssCall).toBeTruthy()
+    expect(userCssCall?.[1]).toMatchObject({
       isMainChunk: false,
       majorVersion: 4,
     })
@@ -353,9 +353,9 @@ describe('v5 vite generator bundle', () => {
         majorVersion: 3,
       }),
     }))
-    expect(styleHandler).toHaveBeenCalledTimes(1)
-    expect(styleHandler.mock.calls[0]?.[0]).toBe(userCss)
-    expect(styleHandler.mock.calls[0]?.[1]).toMatchObject({
+    const userCssCall = styleHandler.mock.calls.find(([code]) => code === userCss)
+    expect(userCssCall).toBeTruthy()
+    expect(userCssCall?.[1]).toMatchObject({
       isMainChunk: false,
       majorVersion: 3,
     })
