@@ -20,6 +20,28 @@ const MINI_PROGRAM_THEME_SCOPE_SELECTORS = new Set([
   'wx-root-portal-content',
 ])
 const SPECIFICITY_PLACEHOLDER_SUFFIXES = [':not(#n)', ':not(#\\#)']
+const MINI_PROGRAM_UNSUPPORTED_BROWSER_SELECTORS = new Set([
+  ':-moz-focusring',
+  ':-moz-ui-invalid',
+  '::-webkit-calendar-picker-indicator',
+  '::-webkit-date-and-time-value',
+  '::-webkit-datetime-edit',
+  '::-webkit-datetime-edit-day-field',
+  '::-webkit-datetime-edit-fields-wrapper',
+  '::-webkit-datetime-edit-hour-field',
+  '::-webkit-datetime-edit-meridiem-field',
+  '::-webkit-datetime-edit-millisecond-field',
+  '::-webkit-datetime-edit-minute-field',
+  '::-webkit-datetime-edit-month-field',
+  '::-webkit-datetime-edit-second-field',
+  '::-webkit-datetime-edit-year-field',
+  '::-webkit-inner-spin-button',
+  '::-webkit-input-placeholder',
+  '::-webkit-outer-spin-button',
+  '::-webkit-search-decoration',
+  '::placeholder',
+  '[hidden]:where(:not([hidden=\'until-found\']))',
+])
 
 const PREFLIGHT_RESET_PROPS = new Set([
   'box-sizing',
@@ -246,6 +268,33 @@ function removeSpecificityPlaceholders(root: postcss.Root) {
   })
 }
 
+function isUnsupportedBrowserSelector(selector: string) {
+  const normalized = normalizeSelector(selector)
+  return MINI_PROGRAM_UNSUPPORTED_BROWSER_SELECTORS.has(normalized)
+}
+
+function removeUnsupportedBrowserSelectors(root: postcss.Root) {
+  root.walkRules((rule) => {
+    if (!rule.selectors || rule.selectors.length === 0) {
+      return
+    }
+
+    const selectors = rule.selectors.filter(selector => !isUnsupportedBrowserSelector(selector))
+    if (selectors.length === rule.selectors.length) {
+      return
+    }
+
+    if (selectors.length === 0) {
+      const parent = rule.parent
+      rule.remove()
+      removeEmptyAtRuleAncestors(parent)
+      return
+    }
+
+    rule.selectors = selectors
+  })
+}
+
 function removeEmptyAtRuleAncestors(parent: postcss.Container | undefined) {
   while (parent?.type === 'atrule' && (!parent.nodes || parent.nodes.length === 0)) {
     const nextParent = parent.parent
@@ -379,6 +428,7 @@ function insertHoistedRules(root: postcss.Root, rules: postcss.Rule[]) {
 function finalizeMiniProgramCssRoot(root: postcss.Root) {
   removeUnsupportedCascadeLayers(root)
   removeSpecificityPlaceholders(root)
+  removeUnsupportedBrowserSelectors(root)
   removeDisplayP3AndUnsupportedFontDeclarations(root)
 
   const preflightRules = collectPreflightRules(root)

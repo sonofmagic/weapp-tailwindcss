@@ -49,4 +49,24 @@ describe('tailwindcss/remove unsupported css', () => {
     expect(css).toContain('.bg-red-500{color:red}')
     expect(css).toContain('.space-y-4>view+text{margin-top:1rem}')
   })
+
+  it('removes browser-only pseudo selectors from final generator css', () => {
+    const css = finalizeMiniProgramCss([
+      '::-webkit-calendar-picker-indicator{display:none}',
+      '::placeholder,::-webkit-input-placeholder{opacity:1}',
+      ':-moz-focusring{outline:auto}',
+      '[hidden]:where(:not([hidden=\'until-found\'])){display:none}',
+      '.text-red-500,::-webkit-search-decoration{color:red}',
+      '.nut-input .weui-input::placeholder{color:#999}',
+    ].join('\n'))
+
+    expect(css).not.toContain('::-webkit-calendar-picker-indicator')
+    expect(css).not.toContain('::-webkit-input-placeholder')
+    expect(css).not.toContain('::placeholder{opacity:1}')
+    expect(css).not.toContain(':-moz-focusring')
+    expect(css).not.toContain('[hidden]:where(:not([hidden=\'until-found\']))')
+    expect(css).not.toContain('::-webkit-search-decoration')
+    expect(css).toContain('.nut-input .weui-input::placeholder{color:#999}')
+    expect(css).toContain('.text-red-500{color:red}')
+  })
 })

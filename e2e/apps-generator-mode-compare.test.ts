@@ -39,11 +39,31 @@ const projects: CompareProject[] = [
   ...E2E_PROJECTS.map(entry => createCompareProject(entry, '../demo')),
 ]
 
-const CLASSLESS_LEGACY_SELECTOR_SET = new Set([
+const UNSUPPORTED_LEGACY_SELECTOR_SET = new Set([
   ':after',
   ':before',
   '::after',
   '::before',
+  ':-moz-focusring',
+  ':-moz-ui-invalid',
+  '::-webkit-calendar-picker-indicator',
+  '::-webkit-date-and-time-value',
+  '::-webkit-datetime-edit',
+  '::-webkit-datetime-edit-day-field',
+  '::-webkit-datetime-edit-fields-wrapper',
+  '::-webkit-datetime-edit-hour-field',
+  '::-webkit-datetime-edit-meridiem-field',
+  '::-webkit-datetime-edit-millisecond-field',
+  '::-webkit-datetime-edit-minute-field',
+  '::-webkit-datetime-edit-month-field',
+  '::-webkit-datetime-edit-second-field',
+  '::-webkit-datetime-edit-year-field',
+  '::-webkit-inner-spin-button',
+  '::-webkit-input-placeholder',
+  '::-webkit-outer-spin-button',
+  '::-webkit-search-decoration',
+  '::placeholder',
+  '[hidden]:where(:not([hidden=\'until-found\']))',
   'text',
   'view',
 ])
@@ -64,7 +84,7 @@ function collectSelectors(css: string) {
   postcss.parse(css).walkRules((rule) => {
     for (const item of rule.selectors) {
       const selector = normalizeSelector(item)
-      if (selector && !CLASSLESS_LEGACY_SELECTOR_SET.has(selector)) {
+      if (selector && !UNSUPPORTED_LEGACY_SELECTOR_SET.has(selector)) {
         selectors.add(selector)
       }
     }
@@ -327,10 +347,14 @@ describe('apps demo generator mode comparison', () => {
       '}',
       'view,text,:before,:after { box-sizing: border-box; }',
       '.bg-red-500:not(#\\#):not(#n) { color: red; }',
+      '::-webkit-calendar-picker-indicator { display: none; }',
+      '[hidden]:where(:not([hidden=\'until-found\'])) { display: none; }',
+      '.nut-input .weui-input::placeholder { color: gray; }',
     ].join('\n'))).toEqual([
       '.before_ccontent-_b_qx_q_B:before',
       '.bg-red-500',
       '.dark_cbg-zinc-800',
+      '.nut-input .weui-input::placeholder',
     ])
   })
 
