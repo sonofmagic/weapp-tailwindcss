@@ -10,6 +10,178 @@ Generator CSS files: app.wxss, styles/base.wxss, styles/components.wxss, styles/
 | legacy | 189931 | 2877 | false | false | false | false | true |
 | generator | 193567 | 2877 | false | false | false | false | true |
 
+## Diff
+
+```diff
+===================================================================
+--- mpx-app/legacy.css
++++ mpx-app/generator.css
+@@ -66,6 +66,48 @@
+   border-style: solid;
+   border-color: currentColor;
+ }
++.flex {
++  display: flex;
++}
++.flex-col {
++  flex-direction: column;
++}
++.bg-_b_h123456_B {
++  --tw-bg-opacity: 1;
++  background-color: rgba(18, 52, 86, var(--tw-bg-opacity, 1));
++}
++.bg-_b_h929292_B {
++  --tw-bg-opacity: 1;
++  background-color: rgba(146, 146, 146, var(--tw-bg-opacity, 1));
++}
++.bg-_burl_p_ahttps_c_f_fxxx_dcom_fxx_dwebp_a_P_B {
++  background-image: url('https://xxx.com/xx.webp');
++}
++.text-_b_he67240_B {
++  --tw-text-opacity: 1;
++  color: rgba(230, 114, 64, var(--tw-text-opacity, 1));
++}
++.text-_bblue_B {
++  --tw-text-opacity: 1;
++  color: rgba(0, 0, 255, var(--tw-text-opacity, 1));
++}
++.after_cml-0_d5::after {
++  content: var(--tw-content);
++  margin-left: 0.125rem;
++}
++.after_ctext-red-500::after {
++  content: var(--tw-content);
++  --tw-text-opacity: 1;
++  color: rgba(239, 68, 68, var(--tw-text-opacity, 1));
++}
++.after_ccontent-_b_qu_x4f60_u_x597d_u_x554a_u_xff0c_u_x6211_u_x5f88_u_x65e0_u_x804a__q_B::after {
++  --tw-content: '你好啊，我很无聊';
++  content: var(--tw-content);
++}
++.after_ccontent-_b_au_x4f60_u_x597d_u_x554a_u_xff0c_u_x6211_u_x8fd9_u_x662f_u_x4e2d_u_x6587_u_x5b57_u_x7b26_u_x4e32__a_B::after {
++  --tw-content: '你好啊，我这是中文字符串';
++  content: var(--tw-content);
++}
+
+
+ .flex {
+@@ -83,7 +125,7 @@
+   background-color: rgba(146, 146, 146, var(--tw-bg-opacity, 1));
+ }
+ .bg-_burl_p_ahttps_c_f_fxxx_dcom_fxx_dwebp_a_P_B {
+-  background-image: url(https://xxx.com/xx.webp);
++  background-image: url('https://xxx.com/xx.webp');
+ }
+ .text-_b_he67240_B {
+   --tw-text-opacity: 1;
+@@ -93,6 +135,23 @@
+   --tw-text-opacity: 1;
+   color: rgba(0, 0, 255, var(--tw-text-opacity, 1));
+ }
++.after_cml-0_d5::after {
++  content: var(--tw-content);
++  margin-left: 0.125rem;
++}
++.after_ctext-red-500::after {
++  content: var(--tw-content);
++  --tw-text-opacity: 1;
++  color: rgba(239, 68, 68, var(--tw-text-opacity, 1));
++}
++.after_ccontent-_b_qu_x4f60_u_x597d_u_x554a_u_xff0c_u_x6211_u_x5f88_u_x65e0_u_x804a__q_B::after {
++  --tw-content: '你好啊，我很无聊';
++  content: var(--tw-content);
++}
++.after_ccontent-_b_au_x4f60_u_x597d_u_x554a_u_xff0c_u_x6211_u_x8fd9_u_x662f_u_x4e2d_u_x6587_u_x5b57_u_x7b26_u_x4e32__a_B::after {
++  --tw-content: '你好啊，我这是中文字符串';
++  content: var(--tw-content);
++}
+ .after_cml-0_d5:after {
+   content: var(--tw-content);
+   margin-left: 4rpx;
+@@ -9413,6 +9472,48 @@
+   border-style: solid;
+   border-color: currentColor;
+ }
++.flex {
++  display: flex;
++}
++.flex-col {
++  flex-direction: column;
++}
++.bg-_b_h123456_B {
++  --tw-bg-opacity: 1;
++  background-color: rgba(18, 52, 86, var(--tw-bg-opacity, 1));
++}
++.bg-_b_h929292_B {
++  --tw-bg-opacity: 1;
++  background-color: rgba(146, 146, 146, var(--tw-bg-opacity, 1));
++}
++.bg-_burl_p_ahttps_c_f_fxxx_dcom_fxx_dwebp_a_P_B {
++  background-image: url('https://xxx.com/xx.webp');
++}
++.text-_b_he67240_B {
++  --tw-text-opacity: 1;
++  color: rgba(230, 114, 64, var(--tw-text-opacity, 1));
++}
++.text-_bblue_B {
++  --tw-text-opacity: 1;
++  color: rgba(0, 0, 255, var(--tw-text-opacity, 1));
++}
++.after_cml-0_d5::after {
++  content: var(--tw-content);
++  margin-left: 0.125rem;
++}
++.after_ctext-red-500::after {
++  content: var(--tw-content);
++  --tw-text-opacity: 1;
++  color: rgba(239, 68, 68, var(--tw-text-opacity, 1));
++}
++.after_ccontent-_b_qu_x4f60_u_x597d_u_x554a_u_xff0c_u_x6211_u_x5f88_u_x65e0_u_x804a__q_B::after {
++  --tw-content: '你好啊，我很无聊';
++  content: var(--tw-content);
++}
++.after_ccontent-_b_au_x4f60_u_x597d_u_x554a_u_xff0c_u_x6211_u_x8fd9_u_x662f_u_x4e2d_u_x6587_u_x5b57_u_x7b26_u_x4e32__a_B::after {
++  --tw-content: '你好啊，我这是中文字符串';
++  content: var(--tw-content);
++}
+
+
+ .hotspot-expanded.relative {
+@@ -9514,7 +9615,7 @@
+   background-color: rgba(146, 146, 146, var(--tw-bg-opacity, 1));
+ }
+ .bg-_burl_p_ahttps_c_f_fxxx_dcom_fxx_dwebp_a_P_B {
+-  background-image: url(https://xxx.com/xx.webp);
++  background-image: url('https://xxx.com/xx.webp');
+ }
+ .text-_b_he67240_B {
+   --tw-text-opacity: 1;
+@@ -9524,6 +9625,23 @@
+   --tw-text-opacity: 1;
+   color: rgba(0, 0, 255, var(--tw-text-opacity, 1));
+ }
++.after_cml-0_d5::after {
++  content: var(--tw-content);
++  margin-left: 0.125rem;
++}
++.after_ctext-red-500::after {
++  content: var(--tw-content);
++  --tw-text-opacity: 1;
++  color: rgba(239, 68, 68, var(--tw-text-opacity, 1));
++}
++.after_ccontent-_b_qu_x4f60_u_x597d_u_x554a_u_xff0c_u_x6211_u_x5f88_u_x65e0_u_x804a__q_B::after {
++  --tw-content: '你好啊，我很无聊';
++  content: var(--tw-content);
++}
++.after_ccontent-_b_au_x4f60_u_x597d_u_x554a_u_xff0c_u_x6211_u_x8fd9_u_x662f_u_x4e2d_u_x6587_u_x5b57_u_x7b26_u_x4e32__a_B::after {
++  --tw-content: '你好啊，我这是中文字符串';
++  content: var(--tw-content);
++}
+ .after_cml-0_d5:after {
+   content: var(--tw-content);
+   margin-left: 4rpx;
+```
+
 ## Legacy CSS
 
 ```css

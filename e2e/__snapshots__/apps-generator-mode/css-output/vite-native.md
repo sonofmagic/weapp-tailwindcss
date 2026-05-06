@@ -10,6 +10,285 @@ Generator CSS files: app.wxss, apple.wxss, index.wxss
 | legacy | 5991 | 47 | false | false | false | false | true |
 | generator | 6881 | 58 | false | false | false | false | true |
 
+## Diff
+
+```diff
+===================================================================
+--- vite-native/legacy.css
++++ vite-native/generator.css
+@@ -2,14 +2,15 @@
+ ::after {
+   --tw-content: '';
+ }
+-::before,
+-::after {
+-  --tw-content: '';
+-}
+-view,
+-text,
+-:before,
+-:after {
++:host,
++page,
++.tw-root,
++wx-root-portal-content {
++  --tw-rotate-x: initial;
++  --tw-rotate-y: initial;
++  --tw-rotate-z: initial;
++  --tw-skew-x: initial;
++  --tw-skew-y: initial;
+   --tw-space-y-reverse: 0;
+   --tw-space-x-reverse: 0;
+   --tw-border-style: solid;
+@@ -22,15 +23,19 @@
+   --tw-gradient-from-position: 0%;
+   --tw-gradient-via-position: 50%;
+   --tw-gradient-to-position: 100%;
+-  box-sizing: border-box;
+-  border-width: 0;
+-  border-style: solid;
+-  border-color: currentColor;
+-}
+-page,
+-.tw-root,
+-wx-root-portal-content,
+-:host {
++  --tw-blur: initial;
++  --tw-brightness: initial;
++  --tw-contrast: initial;
++  --tw-grayscale: initial;
++  --tw-hue-rotate: initial;
++  --tw-invert: initial;
++  --tw-opacity: initial;
++  --tw-saturate: initial;
++  --tw-sepia: initial;
++  --tw-drop-shadow: initial;
++  --tw-drop-shadow-color: initial;
++  --tw-drop-shadow-alpha: 100%;
++  --tw-drop-shadow-size: initial;
+   --color-red-700: rgb(191, 0, 15);
+   --color-amber-300: rgb(255, 210, 55);
+   --color-green-300: rgb(123, 241, 168);
+@@ -41,79 +46,51 @@
+   --color-zinc-50: rgb(250, 250, 250);
+   --color-zinc-900: rgb(24, 24, 27);
+   --spacing: 8rpx;
++  --default-transition-duration: 150ms;
++  --default-transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+ }
+-view,
+-text,
+-:after,
+-:before {
+-  box-sizing: border-box;
+-  border: 0 solid;
+-  margin: 0;
+-  padding: 0;
++._estart {
++  left: var(--spacing) !important;
+ }
+-.container {
+-  width: 100%;
++.-start {
++  left: calc(var(--spacing) * -1);
+ }
+-@media (min-width: 40rem) {
+-  .container {
+-    max-width: 1280rpx;
+-  }
++.start {
++  left: var(--spacing);
+ }
+-@media (min-width: 48rem) {
+-  .container {
+-    max-width: 1536rpx;
+-  }
++.end {
++  right: var(--spacing);
+ }
+-@media (min-width: 64rem) {
+-  .container {
+-    max-width: 2048rpx;
+-  }
+-}
+-@media (min-width: 80rem) {
+-  .container {
+-    max-width: 2560rpx;
+-  }
+-}
+-@media (min-width: 96rem) {
+-  .container {
+-    max-width: 3072rpx;
+-  }
+-}
+ .i-mdi-home {
++  display: inline-block;
+   width: 1em;
+   height: 1em;
+-  -webkit-mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' width='24' height='24'%3E%3Cpath fill='black' d='M10 20v-6h4v6h5v-8h3L12 3L2 12h3v8z'/%3E%3C/svg%3E");
++  background-color: currentColor;
+   -webkit-mask-image: var(--svg);
+-  mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' width='24' height='24'%3E%3Cpath fill='black' d='M10 20v-6h4v6h5v-8h3L12 3L2 12h3v8z'/%3E%3C/svg%3E");
+   mask-image: var(--svg);
+-  --svg: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' width='24' height='24'%3E%3Cpath fill='black' d='M10 20v-6h4v6h5v-8h3L12 3L2 12h3v8z'/%3E%3C/svg%3E");
+-  background-color: currentColor;
+-  display: inline-block;
+-  -webkit-mask-size: 100% 100%;
+-  mask-size: 100% 100%;
+   -webkit-mask-repeat: no-repeat;
+   mask-repeat: no-repeat;
++  -webkit-mask-size: 100% 100%;
++  mask-size: 100% 100%;
++  --svg: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' width='24' height='24'%3E%3Cpath fill='black' d='M10 20v-6h4v6h5v-8h3L12 3L2 12h3v8z'/%3E%3C/svg%3E");
+ }
+ .flex {
+   display: -webkit-flex;
+   display: flex;
+ }
++.inline {
++  display: inline;
++}
+ .inline-block {
+   display: inline-block;
+ }
+ .size-12 {
+-  width: 96rpx;
+   width: calc(var(--spacing) * 12);
+-  height: 96rpx;
+   height: calc(var(--spacing) * 12);
+ }
+ .h-10 {
+-  height: 80rpx;
+   height: calc(var(--spacing) * 10);
+ }
+-.h-_b29_d292px_B {
+-  height: 29.292px;
+-}
+ .h-_b30px_B {
+   height: 30px;
+ }
+@@ -129,6 +106,13 @@
+ .w-_b323px_B {
+   width: 323px;
+ }
++.transform {
++  -webkit-transform: var(--tw-rotate-x,) var(--tw-rotate-y,) var(--tw-rotate-z,) var(--tw-skew-x,) var(--tw-skew-y,);
++  transform: var(--tw-rotate-x,) var(--tw-rotate-y,) var(--tw-rotate-z,) var(--tw-skew-x,) var(--tw-skew-y,);
++}
++.resize {
++  resize: both;
++}
+ .flex-col {
+   -webkit-flex-direction: column;
+   flex-direction: column;
+@@ -138,11 +122,7 @@
+ .space-y-2_d5 > text + view,
+ .space-y-2_d5 > text + text {
+   --tw-space-y-reverse: 0;
+-  margin-bottom: 0rpx;
+-  margin-bottom: calc((var(--spacing) * 2.5) * 0);
+   margin-bottom: calc((var(--spacing) * 2.5) * var(--tw-space-y-reverse));
+-  margin-top: 20rpx;
+-  margin-top: calc((var(--spacing) * 2.5) * 1);
+   margin-top: calc((var(--spacing) * 2.5) * (1 - var(--tw-space-y-reverse)));
+ }
+ .space-x-2_d5 > view + view,
+@@ -150,13 +130,17 @@
+ .space-x-2_d5 > text + view,
+ .space-x-2_d5 > text + text {
+   --tw-space-x-reverse: 0;
+-  margin-right: 0rpx;
+-  margin-right: calc((var(--spacing) * 2.5) * 0);
+   margin-right: calc((var(--spacing) * 2.5) * var(--tw-space-x-reverse));
+-  margin-left: 20rpx;
+-  margin-left: calc((var(--spacing) * 2.5) * 1);
+   margin-left: calc((var(--spacing) * 2.5) * (1 - var(--tw-space-x-reverse)));
+ }
++.truncate {
++  overflow: hidden;
++  text-overflow: ellipsis;
++  white-space: nowrap;
++}
++.rounded {
++  border-radius: 0.25rem;
++}
+ .border-4 {
+   border-style: var(--tw-border-style);
+   border-width: 4px;
+@@ -168,14 +152,12 @@
+   background-color: #68c828;
+ }
+ .bg-amber-300 {
+-  background-color: rgb(255, 210, 55);
+   background-color: var(--color-amber-300);
+ }
+ .bg-blue-500_f30 {
+-  background-color: rgba(48, 128, 255, 0.30196);
++  background-color: rgba(50, 128, 255, 0.3);
+ }
+ .bg-zinc-50 {
+-  background-color: rgb(250, 250, 250);
+   background-color: var(--color-zinc-50);
+ }
+ .bg-gradient-to-b {
+@@ -209,7 +191,6 @@
+   );
+ }
+ .p-4 {
+-  padding: 32rpx;
+   padding: calc(var(--spacing) * 4);
+ }
+ .text-_b100px_B {
+@@ -225,23 +206,43 @@
+   color: #123456;
+ }
+ .text-blue-300 {
+-  color: rgb(145, 197, 255);
+   color: var(--color-blue-300);
+ }
+ .text-pink-300 {
+-  color: rgb(253, 165, 213);
+   color: var(--color-pink-300);
+ }
+ .text-red-700 {
+-  color: rgb(191, 0, 15);
+   color: var(--color-red-700);
+ }
++.capitalize {
++  text-transform: capitalize;
++}
++.invert {
++  --tw-invert: invert(100%);
++  -webkit-filter: var(--tw-blur,) var(--tw-brightness,) var(--tw-contrast,) var(--tw-grayscale,) var(--tw-hue-rotate,) var(--tw-invert,) var(--tw-saturate,) var(--tw-sepia,)
++    var(--tw-drop-shadow,);
++  filter: var(--tw-blur,) var(--tw-brightness,) var(--tw-contrast,) var(--tw-grayscale,) var(--tw-hue-rotate,) var(--tw-invert,) var(--tw-saturate,) var(--tw-sepia,)
++    var(--tw-drop-shadow,);
++}
++.filter {
++  -webkit-filter: var(--tw-blur,) var(--tw-brightness,) var(--tw-contrast,) var(--tw-grayscale,) var(--tw-hue-rotate,) var(--tw-invert,) var(--tw-saturate,) var(--tw-sepia,)
++    var(--tw-drop-shadow,);
++  filter: var(--tw-blur,) var(--tw-brightness,) var(--tw-contrast,) var(--tw-grayscale,) var(--tw-hue-rotate,) var(--tw-invert,) var(--tw-saturate,) var(--tw-sepia,)
++    var(--tw-drop-shadow,);
++}
++.transition {
++  transition-property:
++    color, background-color, border-color, outline-color, text-decoration-color, fill, stroke, --tw-gradient-from, --tw-gradient-via, --tw-gradient-to, opacity, box-shadow,
++    transform, translate, scale, rotate, filter, backdrop-filter, display, content-visibility, overlay, pointer-events;
++  transition-timing-function: var(--tw-ease, var(--default-transition-timing-function));
++  transition-duration: var(--tw-duration, var(--default-transition-duration));
++}
+ @media (prefers-color-scheme: dark) {
+   .dark_cbg-zinc-900 {
+-    background-color: rgb(24, 24, 27);
+     background-color: var(--color-zinc-900);
+   }
+ }
++
+ /*$vite$:1*/
+
+ /*$vite$:1*/
+```
+
 ## Legacy CSS
 
 ```css

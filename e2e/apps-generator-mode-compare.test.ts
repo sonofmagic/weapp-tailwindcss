@@ -3,6 +3,7 @@ import type { ProjectEntry } from './shared'
 import { Buffer } from 'node:buffer'
 import fs from 'node:fs/promises'
 import process from 'node:process'
+import { createTwoFilesPatch } from 'diff'
 import { execa } from 'execa'
 import fg from 'fast-glob'
 import path from 'pathe'
@@ -337,6 +338,22 @@ function normalizeCssSnapshot(css: string) {
     .join('\n')
 }
 
+function createCssOutputDiffSnapshot(project: CompareProject, legacyCss: string, generatorCss: string) {
+  return createTwoFilesPatch(
+    `${project.name}/legacy.css`,
+    `${project.name}/generator.css`,
+    legacyCss,
+    generatorCss,
+    undefined,
+    undefined,
+    { context: 3 },
+  )
+    .trimEnd()
+    .split('\n')
+    .map(line => line.trimEnd())
+    .join('\n')
+}
+
 function createCssOutputComparisonSnapshot(
   project: CompareProject,
   legacyResult: { css: string, cssFiles: string[] },
@@ -344,6 +361,9 @@ function createCssOutputComparisonSnapshot(
 ) {
   const legacy = summarizeCss(legacyResult.css)
   const generator = summarizeCss(generatorResult.css)
+  const legacyCss = normalizeCssSnapshot(legacyResult.css)
+  const generatorCss = normalizeCssSnapshot(generatorResult.css)
+  const diff = createCssOutputDiffSnapshot(project, legacyCss, generatorCss)
   return [
     `# ${project.name} CSS Output Comparison`,
     '',
@@ -357,16 +377,22 @@ function createCssOutputComparisonSnapshot(
     `| legacy | ${legacy.bytes} | ${legacy.selectors.length} | ${legacy.hasSupports} | ${legacy.hasHoverPseudo} | ${legacy.hasTailwindBanner} | ${legacy.hasRawArbitrarySelector} | ${legacy.hasWeappEscapedArbitrarySelector} |`,
     `| generator | ${generator.bytes} | ${generator.selectors.length} | ${generator.hasSupports} | ${generator.hasHoverPseudo} | ${generator.hasTailwindBanner} | ${generator.hasRawArbitrarySelector} | ${generator.hasWeappEscapedArbitrarySelector} |`,
     '',
+    '## Diff',
+    '',
+    '```diff',
+    diff,
+    '```',
+    '',
     '## Legacy CSS',
     '',
     '```css',
-    normalizeCssSnapshot(legacyResult.css),
+    legacyCss,
     '```',
     '',
     '## Generator CSS',
     '',
     '```css',
-    normalizeCssSnapshot(generatorResult.css),
+    generatorCss,
     '```',
     '',
   ].join('\n')
@@ -405,6 +431,28 @@ describe('apps demo generator mode comparison', () => {
       '.nut-video video',
       '.prose .a',
     ])
+  })
+
+  it('prints css diff before raw css output blocks', () => {
+    const snapshot = createCssOutputComparisonSnapshot({
+      name: 'fixture-app',
+      fixturesDir: '../demo',
+      rootDir: 'fixture-app',
+      cssFile: 'fixture-app/dist/app.wxss',
+      cssPath: 'dist/app.wxss',
+    }, {
+      css: '.legacy { color: red; }\n.shared { display: block; }\n',
+      cssFiles: ['app.wxss'],
+    }, {
+      css: '.generator { color: blue; }\n.shared { display: block; }\n',
+      cssFiles: ['app.wxss'],
+    })
+
+    expect(snapshot.indexOf('## Diff')).toBeLessThan(snapshot.indexOf('## Legacy CSS'))
+    expect(snapshot).toContain('--- fixture-app/legacy.css')
+    expect(snapshot).toContain('+++ fixture-app/generator.css')
+    expect(snapshot).toContain('-.legacy { color: red; }')
+    expect(snapshot).toContain('+.generator { color: blue; }')
   })
 
   it('builds apps and demos in legacy and generator modes with comparable mini-program css output', async () => {

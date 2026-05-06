@@ -10,6 +10,173 @@ Generator CSS files: app.wxss, app-origin.wxss, index.wxss
 | legacy | 4530 | 23 | false | false | false | false | true |
 | generator | 1601 | 23 | false | false | false | false | true |
 
+## Diff
+
+```diff
+===================================================================
+--- taro-app-vite/legacy.css
++++ taro-app-vite/generator.css
+@@ -1,133 +1,5 @@
+ @import 'app-origin.wxss';
+
+-::before,
+-::after {
+-  --tw-content: '';
+-}
+-view,
+-text,
+-:before,
+-:after {
+-  --tw-border-spacing-x: 0;
+-  --tw-border-spacing-y: 0;
+-  --tw-translate-x: 0;
+-  --tw-translate-y: 0;
+-  --tw-rotate: 0;
+-  --tw-skew-x: 0;
+-  --tw-skew-y: 0;
+-  --tw-scale-x: 1;
+-  --tw-scale-y: 1;
+-  --tw-pan-x: ;
+-  --tw-pan-y: ;
+-  --tw-pinch-zoom: ;
+-  --tw-scroll-snap-strictness: proximity;
+-  --tw-gradient-from-position: ;
+-  --tw-gradient-via-position: ;
+-  --tw-gradient-to-position: ;
+-  --tw-ordinal: ;
+-  --tw-slashed-zero: ;
+-  --tw-numeric-figure: ;
+-  --tw-numeric-spacing: ;
+-  --tw-numeric-fraction: ;
+-  --tw-ring-inset: ;
+-  --tw-ring-offset-width: 0rpx;
+-  --tw-ring-offset-color: #fff;
+-  --tw-ring-color: rgba(59, 130, 246, 0.5);
+-  --tw-ring-offset-shadow: 0 0 #0000;
+-  --tw-ring-shadow: 0 0 #0000;
+-  --tw-shadow: 0 0 #0000;
+-  --tw-shadow-colored: 0 0 #0000;
+-  --tw-blur: ;
+-  --tw-brightness: ;
+-  --tw-contrast: ;
+-  --tw-grayscale: ;
+-  --tw-hue-rotate: ;
+-  --tw-invert: ;
+-  --tw-saturate: ;
+-  --tw-sepia: ;
+-  --tw-drop-shadow: ;
+-  --tw-backdrop-blur: ;
+-  --tw-backdrop-brightness: ;
+-  --tw-backdrop-contrast: ;
+-  --tw-backdrop-grayscale: ;
+-  --tw-backdrop-hue-rotate: ;
+-  --tw-backdrop-invert: ;
+-  --tw-backdrop-opacity: ;
+-  --tw-backdrop-saturate: ;
+-  --tw-backdrop-sepia: ;
+-  --tw-contain-size: ;
+-  --tw-contain-layout: ;
+-  --tw-contain-paint: ;
+-  --tw-contain-style: ;
+-  box-sizing: border-box;
+-  border-width: 0;
+-  border-style: solid;
+-  border-color: currentColor;
+-}
+-view,
+-text,
+-::after,
+-::before {
+-  --tw-border-spacing-x: 0;
+-  --tw-border-spacing-y: 0;
+-  --tw-translate-x: 0;
+-  --tw-translate-y: 0;
+-  --tw-rotate: 0;
+-  --tw-skew-x: 0;
+-  --tw-skew-y: 0;
+-  --tw-scale-x: 1;
+-  --tw-scale-y: 1;
+-  --tw-pan-x:  ;
+-  --tw-pan-y:  ;
+-  --tw-pinch-zoom:  ;
+-  --tw-scroll-snap-strictness: proximity;
+-  --tw-gradient-from-position:  ;
+-  --tw-gradient-via-position:  ;
+-  --tw-gradient-to-position:  ;
+-  --tw-ordinal:  ;
+-  --tw-slashed-zero:  ;
+-  --tw-numeric-figure:  ;
+-  --tw-numeric-spacing:  ;
+-  --tw-numeric-fraction:  ;
+-  --tw-ring-inset:  ;
+-  --tw-ring-offset-width: 0px;
+-  --tw-ring-offset-color: #fff;
+-  --tw-ring-color: rgba(59, 130, 246, 0.5);
+-  --tw-ring-offset-shadow: 0 0 #0000;
+-  --tw-ring-shadow: 0 0 #0000;
+-  --tw-shadow: 0 0 #0000;
+-  --tw-shadow-colored: 0 0 #0000;
+-  --tw-blur:  ;
+-  --tw-brightness:  ;
+-  --tw-contrast:  ;
+-  --tw-grayscale:  ;
+-  --tw-hue-rotate:  ;
+-  --tw-invert:  ;
+-  --tw-saturate:  ;
+-  --tw-sepia:  ;
+-  --tw-drop-shadow:  ;
+-  --tw-backdrop-blur:  ;
+-  --tw-backdrop-brightness:  ;
+-  --tw-backdrop-contrast:  ;
+-  --tw-backdrop-grayscale:  ;
+-  --tw-backdrop-hue-rotate:  ;
+-  --tw-backdrop-invert:  ;
+-  --tw-backdrop-opacity:  ;
+-  --tw-backdrop-saturate:  ;
+-  --tw-backdrop-sepia:  ;
+-  --tw-contain-size:  ;
+-  --tw-contain-layout:  ;
+-  --tw-contain-paint:  ;
+-  --tw-contain-style:  ;
+-  box-sizing: border-box;
+-  border-width: 0;
+-  border-style: solid;
+-  border-color: currentColor;
+-}
+-::before,
+-::after {
+-  --tw-content: '';
+-}
+ .flex {
+   display: flex;
+ }
+@@ -139,8 +11,8 @@
+ .divide-x-8 > text + view,
+ .divide-x-8 > text + text {
+   --tw-divide-x-reverse: 0;
+-  border-right-width: calc(8rpx * var(--tw-divide-x-reverse));
+-  border-left-width: calc(8rpx * (1 - var(--tw-divide-x-reverse)));
++  border-right-width: calc(8px * var(--tw-divide-x-reverse));
++  border-left-width: calc(8px * (1 - var(--tw-divide-x-reverse)));
+ }
+ .divide-solid > view + view,
+ .divide-solid > view + text,
+@@ -174,11 +46,11 @@
+   --tw-text-opacity: 1;
+   color: rgba(67, 136, 33, var(--tw-text-opacity, 1));
+ }
+-.before_ccontent-_b_q11111_q_B:before {
++.before_ccontent-_b_q11111_q_B::before {
+   --tw-content: '11111';
+   content: var(--tw-content);
+ }
+-.before_ccontent-_b_q222_q_B:before {
++.before_ccontent-_b_q222_q_B::before {
+   --tw-content: '222';
+   content: var(--tw-content);
+ }
+```
+
 ## Legacy CSS
 
 ```css

@@ -10,6 +10,407 @@ Generator CSS files: app.wxss, index.wxss, index.wxss, index.wxss
 | legacy | 12485 | 140 | false | false | false | false | true |
 | generator | 7181 | 77 | false | false | false | false | true |
 
+## Diff
+
+```diff
+===================================================================
+--- vite-native-ts/legacy.css
++++ vite-native-ts/generator.css
+@@ -1,128 +1,13 @@
+-::before,
+-::after {
+-  --tw-content: '';
+-}
+-::before,
+-::after {
+-  --tw-content: '';
+-}
+-view,
+-text,
+-::before,
+-::after {
+-  --tw-border-spacing-x: 0;
+-  --tw-border-spacing-y: 0;
+-  --tw-translate-x: 0;
+-  --tw-translate-y: 0;
+-  --tw-rotate: 0;
+-  --tw-skew-x: 0;
+-  --tw-skew-y: 0;
+-  --tw-scale-x: 1;
+-  --tw-scale-y: 1;
+-  --tw-pan-x:  ;
+-  --tw-pan-y:  ;
+-  --tw-pinch-zoom:  ;
+-  --tw-scroll-snap-strictness: proximity;
+-  --tw-gradient-from-position:  ;
+-  --tw-gradient-via-position:  ;
+-  --tw-gradient-to-position:  ;
+-  --tw-ordinal:  ;
+-  --tw-slashed-zero:  ;
+-  --tw-numeric-figure:  ;
+-  --tw-numeric-spacing:  ;
+-  --tw-numeric-fraction:  ;
+-  --tw-ring-inset:  ;
+-  --tw-ring-offset-width: 0px;
+-  --tw-ring-offset-color: #fff;
+-  --tw-ring-color: rgba(59, 130, 246, 0.5);
+-  --tw-ring-offset-shadow: 0 0 rgba(0, 0, 0, 0);
+-  --tw-ring-shadow: 0 0 rgba(0, 0, 0, 0);
+-  --tw-shadow: 0 0 rgba(0, 0, 0, 0);
+-  --tw-shadow-colored: 0 0 rgba(0, 0, 0, 0);
+-  --tw-blur:  ;
+-  --tw-brightness:  ;
+-  --tw-contrast:  ;
+-  --tw-grayscale:  ;
+-  --tw-hue-rotate:  ;
+-  --tw-invert:  ;
+-  --tw-saturate:  ;
+-  --tw-sepia:  ;
+-  --tw-drop-shadow:  ;
+-  --tw-backdrop-blur:  ;
+-  --tw-backdrop-brightness:  ;
+-  --tw-backdrop-contrast:  ;
+-  --tw-backdrop-grayscale:  ;
+-  --tw-backdrop-hue-rotate:  ;
+-  --tw-backdrop-invert:  ;
+-  --tw-backdrop-opacity:  ;
+-  --tw-backdrop-saturate:  ;
+-  --tw-backdrop-sepia:  ;
+-  --tw-contain-size:  ;
+-  --tw-contain-layout:  ;
+-  --tw-contain-paint:  ;
+-  --tw-contain-style:  ;
+-  box-sizing: border-box;
+-  border-width: 0;
+-  border-style: solid;
+-  border-color: currentColor;
+-}
+-.weapp-reset-button {
+-  padding: 0;
+-  background-color: transparent;
+-  background-color: initial;
+-  font-size: inherit;
+-  line-height: inherit;
+-  color: inherit;
+-}
+-.weapp-reset-button::after {
+-  border: none;
+-}
+-.-inset-1 {
+-  top: -8rpx;
+-  right: -8rpx;
+-  bottom: -8rpx;
+-  left: -8rpx;
+-}
+ .-inset-_b1rpx_B {
+   top: -1rpx;
+   right: -1rpx;
+   bottom: -1rpx;
+   left: -1rpx;
+ }
+-.inset-x-4 {
+-  left: 32rpx;
+-  right: 32rpx;
+-}
+ .inset-x-_b12rpx_B {
+   left: 12rpx;
+   right: 12rpx;
+ }
+-.inset-x-px {
+-  left: 1px;
+-  right: 1px;
+-}
+-.inset-y-6 {
+-  top: 48rpx;
+-  bottom: 48rpx;
+-}
+-.bottom-auto {
+-  bottom: auto;
+-}
+-.right-4 {
+-  right: 32rpx;
+-}
+-.mt-4 {
+-  margin-top: 32rpx;
+-}
+-.block {
+-  display: block;
+-}
+-.flex {
+-  display: flex;
+-}
+-.inline-flex {
+-  display: inline-flex;
+-}
+ .w-_b10rpx_B {
+   width: 10rpx;
+ }
+@@ -132,62 +17,13 @@
+ .w-_b24rpx_B {
+   width: 24rpx;
+ }
+-.transform {
+-  transform: translate(var(--tw-translate-x), var(--tw-translate-y)) rotate(var(--tw-rotate)) skewX(var(--tw-skew-x)) skewY(var(--tw-skew-y)) scaleX(var(--tw-scale-x))
+-    scaleY(var(--tw-scale-y));
+-}
+-.cursor-not-allowed {
+-  cursor: not-allowed;
+-}
+-.grid-cols-2 {
+-  grid-template-columns: repeat(2, minmax(0, 1fr));
+-}
+ .grid-cols-_b1fr_mauto_B {
+   grid-template-columns: 1fr auto;
+ }
+-.items-center {
+-  align-items: center;
+-}
+-.justify-center {
+-  justify-content: center;
+-}
+-.divide-x > view + view,
+-.divide-x > view + text,
+-.divide-x > text + view,
+-.divide-x > text + text {
+-  --tw-divide-x-reverse: 0;
+-  border-right-width: calc(1px * var(--tw-divide-x-reverse));
+-  border-left-width: calc(1px * (1 - var(--tw-divide-x-reverse)));
+-}
+-.overflow-hidden {
+-  overflow: hidden;
+-}
+-.rounded {
+-  border-radius: 8rpx;
+-}
+-.rounded-full {
+-  border-radius: 9999px;
+-}
+-.rounded-lg {
+-  border-radius: 16rpx;
+-}
+-.border {
+-  border-width: 1px;
+-}
+ .border-_b_h94a3b8_B {
+   --tw-border-opacity: 1;
+   border-color: rgba(148, 163, 184, var(--tw-border-opacity, 1));
+ }
+-.border-current {
+-  border-color: currentColor;
+-}
+-.border-gray-400 {
+-  --tw-border-opacity: 1;
+-  border-color: rgba(156, 163, 175, var(--tw-border-opacity, 1));
+-}
+-.border-transparent {
+-  border-color: transparent;
+-}
+ .bg-_b_h123456_B {
+   --tw-bg-opacity: 1;
+   background-color: rgba(18, 52, 86, var(--tw-bg-opacity, 1));
+@@ -227,68 +63,15 @@
+   --tw-bg-opacity: 1;
+   background-color: rgba(255, 192, 203, var(--tw-bg-opacity, 1));
+ }
+-.bg-black {
+-  --tw-bg-opacity: 1;
+-  background-color: rgba(0, 0, 0, var(--tw-bg-opacity, 1));
+-}
+-.bg-blue-500 {
+-  --tw-bg-opacity: 1;
+-  background-color: rgba(59, 130, 246, var(--tw-bg-opacity, 1));
+-}
+-.bg-blue-600 {
+-  --tw-bg-opacity: 1;
+-  background-color: rgba(37, 99, 235, var(--tw-bg-opacity, 1));
+-}
+-.bg-transparent {
+-  background-color: transparent;
+-}
+-.bg-white {
+-  --tw-bg-opacity: 1;
+-  background-color: rgba(255, 255, 255, var(--tw-bg-opacity, 1));
+-}
+ .p-0_d5 {
+-  padding: 4rpx;
++  padding: 0.125rem;
+ }
+-.p-1 {
+-  padding: 8rpx;
+-}
+-.p-2 {
+-  padding: 16rpx;
+-}
+-.p-3 {
+-  padding: 24rpx;
+-}
+-.p-4 {
+-  padding: 32rpx;
+-}
+-.p-5 {
+-  padding: 40rpx;
+-}
+-.p-8 {
+-  padding: 64rpx;
+-}
+ .p-_b12rpx_B {
+   padding: 12rpx;
+ }
+ .p-_b16rpx_B {
+   padding: 16rpx;
+ }
+-.px-2 {
+-  padding-left: 16rpx;
+-  padding-right: 16rpx;
+-}
+-.px-4 {
+-  padding-left: 32rpx;
+-  padding-right: 32rpx;
+-}
+-.px-5 {
+-  padding-left: 40rpx;
+-  padding-right: 40rpx;
+-}
+-.px-6 {
+-  padding-left: 48rpx;
+-  padding-right: 48rpx;
+-}
+ .px-_b16rpx_B {
+   padding-left: 16rpx;
+   padding-right: 16rpx;
+@@ -297,18 +80,6 @@
+   padding-left: 20rpx;
+   padding-right: 20rpx;
+ }
+-.py-1 {
+-  padding-top: 8rpx;
+-  padding-bottom: 8rpx;
+-}
+-.py-2 {
+-  padding-top: 16rpx;
+-  padding-bottom: 16rpx;
+-}
+-.py-6 {
+-  padding-top: 48rpx;
+-  padding-bottom: 48rpx;
+-}
+ .py-_b10rpx_B {
+   padding-top: 10rpx;
+   padding-bottom: 10rpx;
+@@ -340,36 +111,10 @@
+ .text-_blength_c32rpx_B {
+   font-size: 32rpx;
+ }
+-.text-base {
+-  font-size: 32rpx;
+-  line-height: 48rpx;
+-}
+ .text-lg_f7 {
+-  font-size: 36rpx;
+-  line-height: 56rpx;
++  font-size: 1.125rem;
++  line-height: 1.75rem;
+ }
+-.text-sm {
+-  font-size: 28rpx;
+-  line-height: 40rpx;
+-}
+-.font-medium {
+-  font-weight: 500;
+-}
+-.font-semibold {
+-  font-weight: 600;
+-}
+-.uppercase {
+-  text-transform: uppercase;
+-}
+-.capitalize {
+-  text-transform: capitalize;
+-}
+-.leading-6 {
+-  line-height: 48rpx;
+-}
+-.tracking-wide {
+-  letter-spacing: 0.025em;
+-}
+ .text-_b_h0000ff_B {
+   --tw-text-opacity: 1;
+   color: rgba(0, 0, 255, var(--tw-text-opacity, 1));
+@@ -398,35 +143,6 @@
+   --tw-text-opacity: 1;
+   color: rgba(236, 236, 236, var(--tw-text-opacity, 1));
+ }
+-.text-gray-600 {
+-  --tw-text-opacity: 1;
+-  color: rgba(75, 85, 99, var(--tw-text-opacity, 1));
+-}
+-.text-gray-800 {
+-  --tw-text-opacity: 1;
+-  color: rgba(31, 41, 55, var(--tw-text-opacity, 1));
+-}
+-.text-white {
+-  --tw-text-opacity: 1;
+-  color: rgba(255, 255, 255, var(--tw-text-opacity, 1));
+-}
+-.opacity-50 {
+-  opacity: 0.5;
+-}
+-.outline {
+-  outline-style: solid;
+-}
+-.transition-colors {
+-  transition-property: color, background-color, border-color, text-decoration-color, fill, stroke;
+-  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+-  transition-duration: 150ms;
+-}
+-.duration-200 {
+-  transition-duration: 200ms;
+-}
+-.duration-300 {
+-  transition-duration: 300ms;
+-}
+ ._b--scroll-offset_c56px_B {
+   --scroll-offset: 56px;
+ }
+@@ -457,12 +173,12 @@
+ }
+ @media (min-width: 640px) {
+   .sm_cpx-6 {
+-    padding-left: 48rpx;
+-    padding-right: 48rpx;
++    padding-left: 1.5rem;
++    padding-right: 1.5rem;
+   }
+   .sm_ctext-base {
+-    font-size: 32rpx;
+-    line-height: 48rpx;
++    font-size: 1rem;
++    line-height: 1.5rem;
+   }
+ }
+ @media (min-width: 1024px) {
+@@ -496,15 +212,16 @@
+   padding-bottom: 0px;
+ }
+ ._b_n_cnth-child_p3_P_B_cpy-4:nth-child(3) {
+-  padding-top: 32rpx;
+-  padding-bottom: 32rpx;
++  padding-top: 1rem;
++  padding-bottom: 1rem;
+ }
+ ._b_n_view_B_cp-_b12rpx_B view {
+   padding: 12rpx;
+ }
+ .focus_c_b_n_view_B_cp-4 view:focus {
+-  padding: 32rpx;
+-} /*$vite$:1*/
++  padding: 1rem;
++}
++/*$vite$:1*/
+
+ /*$vite$:1*/
+```
+
 ## Legacy CSS
 
 ```css
