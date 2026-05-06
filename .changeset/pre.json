@@ -65,5 +65,9 @@
     "wetw": "0.1.2",
     "@weapp-tailwindcss/website": "1.0.18"
   },
-  "changesets": []
+  "changesets": [
+    "tailwindcss-config-ts-source",
+    "tiny-cycles-draw",
+    "v5-source-discovery"
+  ]
 }

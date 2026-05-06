@@ -1,5 +1,12 @@
 # tailwindcss-injector
 
+## 1.0.12-next.0
+
+### Patch Changes
+
+- 📦 **Dependencies** [`f38313a`](https://github.com/sonofmagic/weapp-tailwindcss/commit/f38313a61c673cf3658eba0e29cf3c8c844f6798)
+  → `tailwindcss-config@1.1.6-next.0`
+
 ## 1.0.11
 
 ### Patch Changes
