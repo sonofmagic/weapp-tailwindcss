@@ -7,7 +7,7 @@ Generator CSS files: app.wxss, app-origin.wxss, index.wxss
 
 | Mode | Bytes | Selectors | @supports | :hover | Tailwind banner | Raw arbitrary selector | Weapp escaped arbitrary selector |
 | --- | ---: | ---: | --- | --- | --- | --- | --- |
-| legacy | 2082 | 17 | false | false | false | false | true |
+| legacy | 2050 | 16 | false | false | false | false | true |
 | generator | 5534 | 34 | false | false | false | false | true |
 
 ## Diff
@@ -37,7 +37,7 @@ Generator CSS files: app.wxss, app-origin.wxss, index.wxss
    --tw-gradient-position: initial;
    --tw-gradient-from: rgba(0, 0, 0, 0);
    --tw-gradient-via: rgba(0, 0, 0, 0);
-@@ -17,44 +23,112 @@
+@@ -17,41 +23,112 @@
    --tw-gradient-from-position: 0%;
    --tw-gradient-via-position: 50%;
    --tw-gradient-to-position: 100%;
@@ -93,9 +93,9 @@ Generator CSS files: app.wxss, app-origin.wxss, index.wxss
 +.fixed {
 +  position: fixed;
 +}
- .static {
-   position: static;
- }
++.static {
++  position: static;
++}
 +.container {
 +  width: 100%;
 +}
@@ -169,7 +169,7 @@ Generator CSS files: app.wxss, app-origin.wxss, index.wxss
    background-color: var(--color-purple-300);
  }
  .bg-linear-to-r {
-@@ -85,15 +159,64 @@
+@@ -82,15 +159,64 @@
      var(--tw-gradient-to) var(--tw-gradient-to-position)
    );
  }
@@ -283,9 +283,6 @@ text,
   border: 0 solid;
   margin: 0;
   padding: 0;
-}
-.static {
-  position: static;
 }
 .h-14 {
   height: 112rpx;

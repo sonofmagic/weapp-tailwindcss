@@ -7,7 +7,7 @@ Generator CSS files: app.wxss, home.wxss, user.wxss
 
 | Mode | Bytes | Selectors | @supports | :hover | Tailwind banner | Raw arbitrary selector | Weapp escaped arbitrary selector |
 | --- | ---: | ---: | --- | --- | --- | --- | --- |
-| legacy | 53207 | 120 | true | false | false | false | true |
+| legacy | 52812 | 120 | true | false | false | false | true |
 | generator | 49689 | 227 | false | false | false | false | true |
 
 ## Diff
@@ -58,7 +58,7 @@ Generator CSS files: app.wxss, home.wxss, user.wxss
    --tw-shadow: 0 0 rgba(0, 0, 0, 0);
    --tw-shadow-color: initial;
    --tw-shadow-alpha: 100%;
-@@ -26,34 +47,125 @@
+@@ -26,71 +47,293 @@
    --tw-ring-offset-width: 0px;
    --tw-ring-offset-color: #fff;
    --tw-ring-offset-shadow: 0 0 rgba(0, 0, 0, 0);
@@ -197,13 +197,34 @@ Generator CSS files: app.wxss, home.wxss, user.wxss
 +.isolation-auto {
 +  isolation: auto;
 +}
- .container {
-   width: 100%;
- }
-@@ -82,43 +194,146 @@
-     max-width: 3072rpx;
-   }
- }
++.container {
++  width: 100%;
++}
++@media (min-width: 40rem) {
++  .container {
++    max-width: 1280rpx;
++  }
++}
++@media (min-width: 48rem) {
++  .container {
++    max-width: 1536rpx;
++  }
++}
++@media (min-width: 64rem) {
++  .container {
++    max-width: 2048rpx;
++  }
++}
++@media (min-width: 80rem) {
++  .container {
++    max-width: 2560rpx;
++  }
++}
++@media (min-width: 96rem) {
++  .container {
++    max-width: 3072rpx;
++  }
++}
 +.mt-2 {
 +  margin-top: calc(var(--spacing) * 2);
 +}
@@ -357,7 +378,7 @@ Generator CSS files: app.wxss, home.wxss, user.wxss
  .flex-col {
    -webkit-flex-direction: column;
    flex-direction: column;
-@@ -131,14 +346,30 @@
+@@ -103,14 +346,30 @@
    -webkit-flex-direction: row-reverse;
    flex-direction: row-reverse;
  }
@@ -390,7 +411,7 @@ Generator CSS files: app.wxss, home.wxss, user.wxss
    margin-top: calc((var(--spacing) * 4) * (1 - var(--tw-space-y-reverse)));
  }
  .space-y-reverse > view + view,
-@@ -152,9 +383,7 @@
+@@ -124,9 +383,7 @@
  .space-x-4 > text + view,
  .space-x-4 > text + text {
    --tw-space-x-reverse: 0;
@@ -400,7 +421,7 @@ Generator CSS files: app.wxss, home.wxss, user.wxss
    margin-left: calc((var(--spacing) * 4) * (1 - var(--tw-space-x-reverse)));
  }
  .space-x-reverse > view + view,
-@@ -163,6 +392,16 @@
+@@ -135,6 +392,16 @@
  .space-x-reverse > text + text {
    --tw-space-x-reverse: 1;
  }
@@ -417,7 +438,7 @@ Generator CSS files: app.wxss, home.wxss, user.wxss
  .divide-x-4 > view + view,
  .divide-x-4 > view + text,
  .divide-x-4 > text + view,
-@@ -170,11 +409,19 @@
+@@ -142,11 +409,19 @@
    --tw-divide-x-reverse: 0;
    border-left-style: var(--tw-border-style);
    border-right-style: var(--tw-border-style);
@@ -439,7 +460,7 @@ Generator CSS files: app.wxss, home.wxss, user.wxss
  .divide-y-4 > view + view,
  .divide-y-4 > view + text,
  .divide-y-4 > text + view,
-@@ -182,9 +429,7 @@
+@@ -154,9 +429,7 @@
    --tw-divide-y-reverse: 0;
    border-bottom-style: var(--tw-border-style);
    border-top-style: var(--tw-border-style);
@@ -449,7 +470,7 @@ Generator CSS files: app.wxss, home.wxss, user.wxss
    border-top-width: calc(4px * (1 - var(--tw-divide-y-reverse)));
  }
  .divide-y-reverse > view + view,
-@@ -219,1692 +464,1229 @@
+@@ -191,1692 +464,1229 @@
  .divide-_b_hd80c0c_B > text + text {
    border-color: #d80c0c;
  }
@@ -3059,34 +3080,6 @@ text,
   border: 0 solid;
   margin: 0;
   padding: 0;
-}
-.container {
-  width: 100%;
-}
-@media (min-width: 40rem) {
-  .container {
-    max-width: 1280rpx;
-  }
-}
-@media (min-width: 48rem) {
-  .container {
-    max-width: 1536rpx;
-  }
-}
-@media (min-width: 64rem) {
-  .container {
-    max-width: 2048rpx;
-  }
-}
-@media (min-width: 80rem) {
-  .container {
-    max-width: 2560rpx;
-  }
-}
-@media (min-width: 96rem) {
-  .container {
-    max-width: 3072rpx;
-  }
 }
 .mt-6 {
   margin-top: 48rpx;

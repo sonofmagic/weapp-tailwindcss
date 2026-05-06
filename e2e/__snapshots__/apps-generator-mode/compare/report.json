@@ -6559,7 +6559,7 @@
     ],
     "status": "passed",
     "legacy": {
-      "bytes": 53207,
+      "bytes": 52812,
       "selectors": [
         ".active_cbg-emerald-50:active",
         ".active_cbg-emerald-600:active",
@@ -6925,8 +6925,8 @@
       "hasWeappEscapedArbitrarySelector": true,
       "hasRawArbitrarySelector": false
     },
-    "deltaBytes": -3518,
-    "generatorBytesRatio": 0.9339,
+    "deltaBytes": -3123,
+    "generatorBytesRatio": 0.9409,
     "sharedSelectors": [
       ".active_cbg-emerald-50:active",
       ".active_cbg-emerald-600:active",
@@ -12294,7 +12294,7 @@
     ],
     "status": "passed",
     "legacy": {
-      "bytes": 2082,
+      "bytes": 2050,
       "selectors": [
         ".bg-_b_h123456_B",
         ".bg-gradient-to-r",
@@ -12303,7 +12303,6 @@
         ".from-cyan-500",
         ".h-14",
         ".h-_b300px_B",
-        ".static",
         ".text-_b55rpx_B",
         ".text-_b_hc31d6b_B",
         ".text-_b_hfff_B",
@@ -12364,8 +12363,8 @@
       "hasWeappEscapedArbitrarySelector": true,
       "hasRawArbitrarySelector": false
     },
-    "deltaBytes": 3452,
-    "generatorBytesRatio": 2.658,
+    "deltaBytes": 3484,
+    "generatorBytesRatio": 2.6995,
     "sharedSelectors": [
       ".bg-_b_h123456_B",
       ".bg-gradient-to-r",
@@ -12374,7 +12373,6 @@
       ".from-cyan-500",
       ".h-14",
       ".h-_b300px_B",
-      ".static",
       ".text-_b55rpx_B",
       ".text-_b_hc31d6b_B",
       ".text-_b_hfff_B",
@@ -12399,6 +12397,7 @@
       ".inline",
       ".outline",
       ".resize",
+      ".static",
       ".table",
       ".transform",
       ".transition",
@@ -12417,7 +12416,7 @@
     ],
     "status": "passed",
     "legacy": {
-      "bytes": 4505,
+      "bytes": 4473,
       "selectors": [
         "._eborder-brand",
         ".active_cbg-emerald-600:active",
@@ -12443,7 +12442,6 @@
         ".space-y-4 > text + view",
         ".space-y-4 > view + text",
         ".space-y-4 > view + view",
-        ".static",
         ".text-_b32rpx_B",
         ".text-_b55rpx_B",
         ".text-_b_hc31d6b_B",
@@ -12642,8 +12640,8 @@
       "hasWeappEscapedArbitrarySelector": true,
       "hasRawArbitrarySelector": false
     },
-    "deltaBytes": 19259,
-    "generatorBytesRatio": 5.275,
+    "deltaBytes": 19291,
+    "generatorBytesRatio": 5.3128,
     "sharedSelectors": [
       "._eborder-brand",
       ".active_cbg-emerald-600:active",

@@ -1,6 +1,7 @@
 /* stylelint-disable custom-property-pattern */
-@import "tailwindcss";
+@import "tailwindcss" source(none);
 @config "../tailwind.config.js";
+@source "./**/*.{vue,js,ts,jsx,tsx,html}";
 @source not "../src/uni_modules";
 
 @theme {
