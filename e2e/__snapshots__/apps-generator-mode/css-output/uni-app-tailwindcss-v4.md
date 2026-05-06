@@ -1259,11 +1259,13 @@ Generator CSS files: app.wxss, home.wxss, user.wxss
    padding-bottom: calc(var(--spacing) * 6);
  }
 -.text-_b45rpx_B:not(#\#):not(#\#):not(#\#) {
--  font-size: 45rpx;
--}
++.text-_b45rpx_B {
+   font-size: 45rpx;
+ }
 -.text-_b88rpx_B:not(#\#):not(#\#):not(#\#) {
--  font-size: 88rpx;
--}
++.text-_b88rpx_B {
+   font-size: 88rpx;
+ }
 -.text-base:not(#\#):not(#\#):not(#\#) {
 -  font-size: 32rpx;
 +.text-base {
@@ -1328,12 +1330,6 @@ Generator CSS files: app.wxss, home.wxss, user.wxss
    font-weight: var(--font-weight-semibold);
  }
 -.text-_b_h00f285_B:not(#\#):not(#\#):not(#\#) {
-+.text-_b45rpx_B {
-+  font-size: 45rpx;
-+}
-+.text-_b88rpx_B {
-+  font-size: 88rpx;
-+}
 +.text-_b_h00f285_B {
    color: #00f285;
  }
@@ -2563,11 +2559,13 @@ Generator CSS files: app.wxss, home.wxss, user.wxss
    padding-bottom: calc(var(--spacing) * 6);
  }
 -.text-_b45rpx_B:not(#\#):not(#\#):not(#\#) {
--  font-size: 45rpx;
--}
++.text-_b45rpx_B {
+   font-size: 45rpx;
+ }
 -.text-_b88rpx_B:not(#\#):not(#\#):not(#\#) {
--  font-size: 88rpx;
--}
++.text-_b88rpx_B {
+   font-size: 88rpx;
+ }
 -.text-base:not(#\#):not(#\#):not(#\#) {
 -  font-size: 32rpx;
 +.text-base {
@@ -2632,12 +2630,6 @@ Generator CSS files: app.wxss, home.wxss, user.wxss
    font-weight: var(--font-weight-semibold);
  }
 -.text-_b_h00f285_B:not(#\#):not(#\#):not(#\#) {
-+.text-_b45rpx_B {
-+  font-size: 45rpx;
-+}
-+.text-_b88rpx_B {
-+  font-size: 88rpx;
-+}
 +.text-_b_h00f285_B {
    color: #00f285;
  }
@@ -5539,6 +5531,12 @@ wx-root-portal-content {
   padding-top: calc(var(--spacing) * 6);
   padding-bottom: calc(var(--spacing) * 6);
 }
+.text-_b45rpx_B {
+  font-size: 45rpx;
+}
+.text-_b88rpx_B {
+  font-size: 88rpx;
+}
 .text-base {
   font-size: var(--text-base);
   line-height: var(--tw-leading, var(--text-base--line-height));
@@ -5577,12 +5575,6 @@ wx-root-portal-content {
 .font-semibold {
   --tw-font-weight: var(--font-weight-semibold);
   font-weight: var(--font-weight-semibold);
-}
-.text-_b45rpx_B {
-  font-size: 45rpx;
-}
-.text-_b88rpx_B {
-  font-size: 88rpx;
 }
 .text-_b_h00f285_B {
   color: #00f285;
@@ -6288,6 +6280,12 @@ wx-root-portal-content {
   padding-top: calc(var(--spacing) * 6);
   padding-bottom: calc(var(--spacing) * 6);
 }
+.text-_b45rpx_B {
+  font-size: 45rpx;
+}
+.text-_b88rpx_B {
+  font-size: 88rpx;
+}
 .text-base {
   font-size: var(--text-base);
   line-height: var(--tw-leading, var(--text-base--line-height));
@@ -6326,12 +6324,6 @@ wx-root-portal-content {
 .font-semibold {
   --tw-font-weight: var(--font-weight-semibold);
   font-weight: var(--font-weight-semibold);
-}
-.text-_b45rpx_B {
-  font-size: 45rpx;
-}
-.text-_b88rpx_B {
-  font-size: 88rpx;
 }
 .text-_b_h00f285_B {
   color: #00f285;

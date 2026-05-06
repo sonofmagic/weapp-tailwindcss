@@ -182,11 +182,46 @@ function isTailwindV4Css(root: postcss.Root) {
 
 function getUtilityGroup(selector: string) {
   if (/^\.text(?:-|_)/.test(selector)) {
-    return 'text'
+    return 'typography'
+  }
+  if (/^\.leading(?:-|_)/.test(selector)) {
+    return 'typography'
+  }
+  if (/^\.font(?:-|_)/.test(selector)) {
+    return 'typography'
   }
   if (/^(?:\.border(?:-|$)|\._eborder)/.test(selector)) {
     return 'border'
   }
+}
+
+function getTypographyRank(rule: postcss.Rule) {
+  if (/^\.text(?:-|_)/.test(rule.selector)) {
+    let rank = 40
+    rule.walkDecls((decl) => {
+      if (decl.prop === 'font-size' || decl.prop === 'text-align') {
+        rank = Math.min(rank, 10)
+      }
+    })
+    return rank
+  }
+  if (/^\.leading(?:-|_)/.test(rule.selector)) {
+    return 20
+  }
+  if (/^\.font(?:-|_)/.test(rule.selector)) {
+    return 30
+  }
+  return 50
+}
+
+function compareUtilityRules(a: postcss.ChildNode, b: postcss.ChildNode) {
+  const selectorA = a.type === 'rule' ? a.selector : ''
+  const selectorB = b.type === 'rule' ? b.selector : ''
+  const group = getUtilityGroup(selectorA)
+  if (group === 'typography' && a.type === 'rule' && b.type === 'rule') {
+    return getTypographyRank(a) - getTypographyRank(b) || compareText(selectorA, selectorB) || compareText(a.toString(), b.toString())
+  }
+  return compareText(selectorA, selectorB) || compareText(a.toString(), b.toString())
 }
 
 function compareText(a: string, b: string) {
@@ -237,11 +272,7 @@ function sortUtilityRuleRuns(container: postcss.Container) {
     if (end - index > 1) {
       const sorted = nodes
         .slice(index, end)
-        .sort((a, b) => {
-          const selectorA = a.type === 'rule' ? a.selector : ''
-          const selectorB = b.type === 'rule' ? b.selector : ''
-          return compareText(selectorA, selectorB) || compareText(a.toString(), b.toString())
-        })
+        .sort(compareUtilityRules)
       nodes.splice(index, end - index, ...sorted)
     }
 
