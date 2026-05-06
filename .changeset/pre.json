@@ -68,6 +68,7 @@
   "changesets": [
     "tailwindcss-config-ts-source",
     "tiny-cycles-draw",
-    "v5-source-discovery"
+    "v5-source-discovery",
+    "weapp-tailwindcss-plugin-alias"
   ]
 }
