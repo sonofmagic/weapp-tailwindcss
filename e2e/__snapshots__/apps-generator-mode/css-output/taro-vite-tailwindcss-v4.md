@@ -169,22 +169,10 @@ Generator CSS files: app.wxss, app-origin.wxss, index.wxss
    background-color: var(--color-purple-300);
  }
  .bg-linear-to-r {
-@@ -82,15 +159,64 @@
-     var(--tw-gradient-to) var(--tw-gradient-to-position)
-   );
- }
--.text-_b55rpx_B {
--  font-size: 55rpx;
--}
- .text-_b_hc31d6b_B {
-   color: #c31d6b;
- }
+@@ -91,6 +168,55 @@
  .text-_b_hfff_B {
    color: #fff;
  }
-+.text-_b55rpx_B {
-+  font-size: 55rpx;
-+}
 +.outline {
 +  outline-style: var(--tw-outline-style);
 +  outline-width: 1rpx;
@@ -505,14 +493,14 @@ wx-root-portal-content {
     var(--tw-gradient-to) var(--tw-gradient-to-position)
   );
 }
+.text-_b55rpx_B {
+  font-size: 55rpx;
+}
 .text-_b_hc31d6b_B {
   color: #c31d6b;
 }
 .text-_b_hfff_B {
   color: #fff;
-}
-.text-_b55rpx_B {
-  font-size: 55rpx;
 }
 .outline {
   outline-style: var(--tw-outline-style);

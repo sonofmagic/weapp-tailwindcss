@@ -6,7 +6,7 @@
 
 | 项目 | 来源 | 状态 | CSS 文件 | 旧链路字节数 | 生成模式字节数 | 差值 | 比例 | 旧链路独有 | @supports | :hover | Tailwind banner |
 | --- | --- | --- | --- | ---: | ---: | ---: | ---: | --- | --- | --- | --- |
-| vite-native | apps | 通过 | `vite-native/dist/app.wxss` (+2) | 5751 | 7722 | +1971 | 1.3427 | 无 | 否 | 否 | 否 |
+| vite-native | apps | 通过 | `vite-native/dist/app.wxss` (+2) | 5751 | 7653 | +1902 | 1.3307 | 无 | 否 | 否 | 否 |
 | vite-native-ts | apps | 通过 | `vite-native-ts/dist/app.wxss` (+3) | 12443 | 24236 | +11793 | 1.9478 | 无 | 否 | 否 | 否 |
 | uni-app-vue3-vite | demo | 通过 | `uni-app-vue3-vite/dist/build/mp-weixin/app.wxss` (+10) | 401919 | 502633 | +100714 | 1.2506 | 无 | 否 | 否 | 否 |
 | uni-app-tailwindcss-v4 | demo | 通过 | `uni-app-tailwindcss-v4/dist/build/mp-weixin/app.wxss` (+2) | 52812 | 49689 | -3123 | 0.9409 | 无 | 否 | 否 | 否 |
@@ -19,7 +19,7 @@
 | taro-vue3-app | demo | 通过 | `taro-vue3-app/dist/app.wxss` (+1) | 115828 | 123826 | +7998 | 1.0691 | 无 | 否 | 否 | 否 |
 | gulp-app | demo | 通过 | `gulp-app/dist/app.wxss` (+2) | 6578 | 6496 | -82 | 0.9875 | 无 | 否 | 否 | 否 |
 | mpx-app | demo | 通过 | `mpx-app/dist/wx/app.wxss` (+23) | 189931 | 199251 | +9320 | 1.0491 | 无 | 否 | 否 | 否 |
-| mpx-tailwindcss-v4 | demo | 通过 | `mpx-tailwindcss-v4/dist/wx/app.wxss` (+3) | 18986 | 17332 | -1654 | 0.9129 | 无 | 否 | 否 | 否 |
+| mpx-tailwindcss-v4 | demo | 通过 | `mpx-tailwindcss-v4/dist/wx/app.wxss` (+3) | 18826 | 17172 | -1654 | 0.9121 | 无 | 否 | 否 | 否 |
 | mpx-tailwindcss-v5 | demo | 通过 | `mpx-tailwindcss-v5/dist/wx/app.wxss` (+3) | 22440 | 20412 | -2028 | 0.9096 | 无 | 否 | 否 | 否 |
 
 ## 说明
@@ -41,7 +41,7 @@
 
 - CSS 文件：`app.wxss`, `apple.wxss`, `index.wxss`
 - 两边共有：`.bg-_b_h3a32d1_B`, `.bg-_b_h68c828_B`, `.bg-amber-300`, `.bg-blue-500_f30`, `.bg-gradient-to-b`, `.bg-gradient-to-t`, `.bg-gradient-to-tr`, `.bg-zinc-50`, `.border-4`, `.container`, `.dark_cbg-zinc-900`, `.flex`, `.flex-col`, `.from-_b_h2f73f1_B`, `.h-10`, `.h-_b29_d292px_B`, `.h-_b30px_B`, `.h-_b45px_B`, `.i-mdi-home`, `.inline-block`
-- 仅生成模式：`.-start`, `._estart`, `.capitalize`, `.end`, `.filter`, `.inline`, `.invert`, `.resize`, `.rounded`, `.start`, `.transform`, `.transition`, `.truncate`
+- 仅生成模式：`.-start`, `._estart`, `.capitalize`, `.filter`, `.inline`, `.invert`, `.resize`, `.rounded`, `.transform`, `.transition`, `.truncate`
 - 仅旧链路：-
 
 ### vite-native-ts

@@ -540,19 +540,19 @@ Generator CSS files: app.wxss, home.wxss, user.wxss
 +.rounded-tl {
 +  border-top-left-radius: 8rpx;
  }
--.text-center {
--  text-align: center;
+-.text-_b45rpx_B {
+-  font-size: 45rpx;
 +.rounded-r {
 +  border-top-right-radius: 8rpx;
 +  border-bottom-right-radius: 8rpx;
  }
--.text-_b45rpx_B {
--  font-size: 45rpx;
+-.text-_b88rpx_B {
+-  font-size: 88rpx;
 +.rounded-tr {
 +  border-top-right-radius: 8rpx;
  }
--.text-_b88rpx_B {
--  font-size: 88rpx;
+-.text-center {
+-  text-align: center;
 +.rounded-b {
 +  border-bottom-right-radius: 8rpx;
 +  border-bottom-left-radius: 8rpx;
@@ -579,20 +579,16 @@ Generator CSS files: app.wxss, home.wxss, user.wxss
 -.text-white {
 -  color: #fff;
 -  color: var(--color-white);
-+.border-x {
-+  border-left-style: var(--tw-border-style);
-+  border-right-style: var(--tw-border-style);
-+  border-left-width: 1px;
-+  border-right-width: 1px;
++.border-b {
++  border-bottom-style: var(--tw-border-style);
++  border-bottom-width: 1px;
  }
 -.underline {
 -  -webkit-text-decoration-line: underline;
 -  text-decoration-line: underline;
-+.border-y {
-+  border-top-style: var(--tw-border-style);
-+  border-bottom-style: var(--tw-border-style);
-+  border-top-width: 1px;
-+  border-bottom-width: 1px;
++.border-e {
++  border-right-style: var(--tw-border-style);
++  border-right-width: 1px;
  }
 -.shadow-sm {
 -  --tw-shadow: 0 1px 3px 0 var(--tw-shadow-color, rgba(0, 0, 0, 0.10196)), 0 1px 2px -1px var(--tw-shadow-color, rgba(0, 0, 0, 0.10196));
@@ -604,23 +600,25 @@ Generator CSS files: app.wxss, home.wxss, user.wxss
 -    0 1px 3px 0 rgba(0, 0, 0, 0.10196),
 -    0 1px 2px -1px rgba(0, 0, 0, 0.10196);
 -  box-shadow: var(--tw-inset-shadow), var(--tw-inset-ring-shadow), var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow);
-+.border-s {
-+  border-left-style: var(--tw-border-style);
-+  border-left-width: 1px;
++.border-emerald-500 {
++  border-color: var(--color-emerald-500);
  }
 -.divide-x-reverse > view + view,
 -.divide-x-reverse > view + text,
 -.divide-x-reverse > text + view,
 -.divide-x-reverse > text + text {
 -  --tw-divide-x-reverse: 1;
-+.border-e {
-+  border-right-style: var(--tw-border-style);
-+  border-right-width: 1px;
++.border-l {
++  border-left-style: var(--tw-border-style);
++  border-left-width: 1px;
  }
 -.active_cbg-emerald-600:active {
 -  background-color: rgb(0, 150, 105);
 -  background-color: var(--color-emerald-600);
--}
++.border-r {
++  border-right-style: var(--tw-border-style);
++  border-right-width: 1px;
+ }
 -page {
 -  --status-bar-height: 25px;
 -  --top-window-height: 0px;
@@ -629,10 +627,15 @@ Generator CSS files: app.wxss, home.wxss, user.wxss
 -  --window-left: 0px;
 -  --window-right: 0px;
 -  --window-magin: 0px;
--}
++.border-s {
++  border-left-style: var(--tw-border-style);
++  border-left-width: 1px;
+ }
 -[data-c-h='true'] {
 -  display: none !important;
--}
++.border-slate-200 {
++  border-color: var(--color-slate-200);
+ }
 -
 -@supports ((-webkit-hyphens: none) and (not (margin-trim: inline))) or ((-moz-orient: inline) and (not (color: rgb(from red r g b)))) {
 -  view,
@@ -1092,8 +1095,8 @@ Generator CSS files: app.wxss, home.wxss, user.wxss
 -.divide-x-4:not(#\#):not(#\#):not(#\#) > text + view,
 -.divide-x-4:not(#\#):not(#\#):not(#\#) > text + text {
 -  --tw-divide-x-reverse: 0;
--  border-left-style: var(--tw-border-style);
-+.border-r {
++.border-x {
+   border-left-style: var(--tw-border-style);
    border-right-style: var(--tw-border-style);
 -  border-right-width: 0px;
 -  border-right-width: calc(4px * var(--tw-divide-x-reverse));
@@ -1101,6 +1104,7 @@ Generator CSS files: app.wxss, home.wxss, user.wxss
 -  border-left-width: calc(4px * (1 - var(--tw-divide-x-reverse)));
 -  border-left-width: 4px;
 -  border-left-width: calc(4px * (1 - var(--tw-divide-x-reverse)));
++  border-left-width: 1px;
 +  border-right-width: 1px;
  }
 -.divide-y-4:not(#\#):not(#\#):not(#\#) > view + view,
@@ -1108,15 +1112,17 @@ Generator CSS files: app.wxss, home.wxss, user.wxss
 -.divide-y-4:not(#\#):not(#\#):not(#\#) > text + view,
 -.divide-y-4:not(#\#):not(#\#):not(#\#) > text + text {
 -  --tw-divide-y-reverse: 0;
-+.border-b {
-   border-bottom-style: var(--tw-border-style);
--  border-top-style: var(--tw-border-style);
+-  border-bottom-style: var(--tw-border-style);
++.border-y {
+   border-top-style: var(--tw-border-style);
 -  border-bottom-width: 0px;
 -  border-bottom-width: calc(4px * var(--tw-divide-y-reverse));
 -  border-top-width: 4px;
 -  border-top-width: calc(4px * (1 - var(--tw-divide-y-reverse)));
 -  border-top-width: 4px;
 -  border-top-width: calc(4px * (1 - var(--tw-divide-y-reverse)));
++  border-bottom-style: var(--tw-border-style);
++  border-top-width: 1px;
 +  border-bottom-width: 1px;
  }
 -.divide-y-reverse:not(#\#):not(#\#):not(#\#) > view + view,
@@ -1124,9 +1130,8 @@ Generator CSS files: app.wxss, home.wxss, user.wxss
 -.divide-y-reverse:not(#\#):not(#\#):not(#\#) > text + view,
 -.divide-y-reverse:not(#\#):not(#\#):not(#\#) > text + text {
 -  --tw-divide-y-reverse: 1;
-+.border-l {
-+  border-left-style: var(--tw-border-style);
-+  border-left-width: 1px;
++.bg-_b_h0000ff_B {
++  background-color: #0000ff;
  }
 -.divide-dotted:not(#\#):not(#\#):not(#\#) > view + view,
 -.divide-dotted:not(#\#):not(#\#):not(#\#) > view + text,
@@ -1134,94 +1139,89 @@ Generator CSS files: app.wxss, home.wxss, user.wxss
 -.divide-dotted:not(#\#):not(#\#):not(#\#) > text + text {
 -  --tw-border-style: dotted;
 -  border-style: dotted;
--}
++.bg-_b_h123498_B {
++  background-color: #123498;
+ }
 -.divide-double:not(#\#):not(#\#):not(#\#) > view + view,
 -.divide-double:not(#\#):not(#\#):not(#\#) > view + text,
 -.divide-double:not(#\#):not(#\#):not(#\#) > text + view,
 -.divide-double:not(#\#):not(#\#):not(#\#) > text + text {
 -  --tw-border-style: double;
 -  border-style: double;
--}
++.bg-emerald-100 {
++  background-color: var(--color-emerald-100);
+ }
 -.divide-_b_h41eb04_B:not(#\#):not(#\#):not(#\#) > view + view,
 -.divide-_b_h41eb04_B:not(#\#):not(#\#):not(#\#) > view + text,
 -.divide-_b_h41eb04_B:not(#\#):not(#\#):not(#\#) > text + view,
 -.divide-_b_h41eb04_B:not(#\#):not(#\#):not(#\#) > text + text {
 -  border-color: #41eb04;
--}
++.bg-emerald-500 {
++  background-color: var(--color-emerald-500);
+ }
 -.divide-_b_hd80c0c_B:not(#\#):not(#\#):not(#\#) > view + view,
 -.divide-_b_hd80c0c_B:not(#\#):not(#\#):not(#\#) > view + text,
 -.divide-_b_hd80c0c_B:not(#\#):not(#\#):not(#\#) > text + view,
 -.divide-_b_hd80c0c_B:not(#\#):not(#\#):not(#\#) > text + text {
 -  border-color: #d80c0c;
--}
++.bg-midnight {
++  background-color: var(--color-midnight);
+ }
 -.rounded-xl:not(#\#):not(#\#):not(#\#) {
 -  border-radius: 16rpx;
--}
++.bg-neutral-1B {
++  background-color: var(--color-neutral-1B);
+ }
 -.border:not(#\#):not(#\#):not(#\#) {
 -  border-style: var(--tw-border-style);
 -  border-width: 1px;
--}
++.bg-slate-50 {
++  background-color: var(--color-slate-50);
+ }
 -.border-emerald-500:not(#\#):not(#\#):not(#\#) {
 -  border-color: rgb(0, 185, 129);
-+.border-emerald-500 {
-   border-color: var(--color-emerald-500);
+-  border-color: var(--color-emerald-500);
++.bg-white {
++  background-color: var(--color-white);
  }
 -.border-slate-200:not(#\#):not(#\#):not(#\#) {
 -  border-color: rgb(226, 232, 240);
-+.border-slate-200 {
-   border-color: var(--color-slate-200);
+-  border-color: var(--color-slate-200);
++.bg-repeat {
++  background-repeat: repeat;
  }
 -.bg-_b_h0000ff_B:not(#\#):not(#\#):not(#\#) {
 -  background-color: #00f;
-+.bg-_b_h0000ff_B {
-+  background-color: #0000ff;
- }
--.bg-_b_h123498_B:not(#\#):not(#\#):not(#\#) {
-+.bg-_b_h123498_B {
-   background-color: #123498;
- }
--.bg-emerald-100:not(#\#):not(#\#):not(#\#) {
--  background-color: rgb(208, 250, 229);
-+.bg-emerald-100 {
-   background-color: var(--color-emerald-100);
- }
--.bg-emerald-500:not(#\#):not(#\#):not(#\#) {
--  background-color: rgb(0, 185, 129);
-+.bg-emerald-500 {
-   background-color: var(--color-emerald-500);
- }
--.bg-slate-50:not(#\#):not(#\#):not(#\#) {
--  background-color: rgb(248, 250, 252);
-+.bg-midnight {
-+  background-color: var(--color-midnight);
-+}
-+.bg-neutral-1B {
-+  background-color: var(--color-neutral-1B);
-+}
-+.bg-slate-50 {
-   background-color: var(--color-slate-50);
- }
--.bg-white:not(#\#):not(#\#):not(#\#) {
--  background-color: #fff;
-+.bg-white {
-   background-color: var(--color-white);
- }
--.p-2:not(#\#):not(#\#):not(#\#) {
--  padding: 16rpx;
-+.bg-repeat {
-+  background-repeat: repeat;
-+}
 +.mask-no-clip {
 +  -webkit-mask-clip: no-clip;
 +  mask-clip: no-clip;
-+}
+ }
+-.bg-_b_h123498_B:not(#\#):not(#\#):not(#\#) {
+-  background-color: #123498;
 +.mask-repeat {
 +  -webkit-mask-repeat: repeat;
 +  mask-repeat: repeat;
-+}
+ }
+-.bg-emerald-100:not(#\#):not(#\#):not(#\#) {
+-  background-color: rgb(208, 250, 229);
+-  background-color: var(--color-emerald-100);
 +.fill-bermuda {
 +  fill: var(--color-bermuda);
-+}
+ }
+-.bg-emerald-500:not(#\#):not(#\#):not(#\#) {
+-  background-color: rgb(0, 185, 129);
+-  background-color: var(--color-emerald-500);
+-}
+-.bg-slate-50:not(#\#):not(#\#):not(#\#) {
+-  background-color: rgb(248, 250, 252);
+-  background-color: var(--color-slate-50);
+-}
+-.bg-white:not(#\#):not(#\#):not(#\#) {
+-  background-color: #fff;
+-  background-color: var(--color-white);
+-}
+-.p-2:not(#\#):not(#\#):not(#\#) {
+-  padding: 16rpx;
 +.p-2 {
    padding: calc(var(--spacing) * 2);
  }
@@ -1258,16 +1258,22 @@ Generator CSS files: app.wxss, home.wxss, user.wxss
    padding-top: calc(var(--spacing) * 6);
    padding-bottom: calc(var(--spacing) * 6);
  }
--.text-center:not(#\#):not(#\#):not(#\#) {
-+.text-center {
-   text-align: center;
- }
+-.text-_b45rpx_B:not(#\#):not(#\#):not(#\#) {
+-  font-size: 45rpx;
+-}
+-.text-_b88rpx_B:not(#\#):not(#\#):not(#\#) {
+-  font-size: 88rpx;
+-}
 -.text-base:not(#\#):not(#\#):not(#\#) {
 -  font-size: 32rpx;
 +.text-base {
    font-size: var(--text-base);
 -  line-height: 1.5;
    line-height: var(--tw-leading, var(--text-base--line-height));
+ }
+-.text-center:not(#\#):not(#\#):not(#\#) {
++.text-center {
+   text-align: center;
  }
 -.text-lg:not(#\#):not(#\#):not(#\#) {
 -  font-size: 36rpx;
@@ -1297,12 +1303,6 @@ Generator CSS files: app.wxss, home.wxss, user.wxss
 -  line-height: 1.33333;
    line-height: var(--tw-leading, var(--text-xs--line-height));
  }
--.text-_b45rpx_B:not(#\#):not(#\#):not(#\#) {
--  font-size: 45rpx;
--}
--.text-_b88rpx_B:not(#\#):not(#\#):not(#\#) {
--  font-size: 88rpx;
--}
 -.leading-6:not(#\#):not(#\#):not(#\#) {
 +.leading-6 {
    --tw-leading: calc(var(--spacing) * 6);
@@ -1328,14 +1328,11 @@ Generator CSS files: app.wxss, home.wxss, user.wxss
    font-weight: var(--font-weight-semibold);
  }
 -.text-_b_h00f285_B:not(#\#):not(#\#):not(#\#) {
-+.text-wrap {
-+  text-wrap: wrap;
++.text-_b45rpx_B {
++  font-size: 45rpx;
 +}
-+.text-clip {
-+  text-overflow: clip;
-+}
-+.text-ellipsis {
-+  text-overflow: ellipsis;
++.text-_b88rpx_B {
++  font-size: 88rpx;
 +}
 +.text-_b_h00f285_B {
    color: #00f285;
@@ -1346,11 +1343,11 @@ Generator CSS files: app.wxss, home.wxss, user.wxss
  }
 -.text-emerald-600:not(#\#):not(#\#):not(#\#) {
 -  color: rgb(0, 150, 105);
-+.text-_b45rpx_B {
-+  font-size: 45rpx;
++.text-clip {
++  text-overflow: clip;
 +}
-+.text-_b88rpx_B {
-+  font-size: 88rpx;
++.text-ellipsis {
++  text-overflow: ellipsis;
 +}
 +.text-emerald-600 {
    color: var(--color-emerald-600);
@@ -1381,8 +1378,8 @@ Generator CSS files: app.wxss, home.wxss, user.wxss
 -.underline:not(#\#):not(#\#):not(#\#) {
 -  -webkit-text-decoration-line: underline;
 -  text-decoration-line: underline;
-+.capitalize {
-+  text-transform: capitalize;
++.text-wrap {
++  text-wrap: wrap;
  }
 -.shadow:not(#\#):not(#\#):not(#\#),
 -.shadow-sm:not(#\#):not(#\#):not(#\#) {
@@ -1395,37 +1392,44 @@ Generator CSS files: app.wxss, home.wxss, user.wxss
 -    0 1px 3px 0 rgba(0, 0, 0, 0.10196),
 -    0 1px 2px -1px rgba(0, 0, 0, 0.10196);
 -  box-shadow: var(--tw-inset-shadow), var(--tw-inset-ring-shadow), var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow);
-+.lowercase {
-+  text-transform: lowercase;
++.capitalize {
++  text-transform: capitalize;
  }
 -.divide-x-reverse:not(#\#):not(#\#):not(#\#) > view + view,
 -.divide-x-reverse:not(#\#):not(#\#):not(#\#) > view + text,
 -.divide-x-reverse:not(#\#):not(#\#):not(#\#) > text + view,
 -.divide-x-reverse:not(#\#):not(#\#):not(#\#) > text + text {
 -  --tw-divide-x-reverse: 1;
-+.normal-case {
-+  text-transform: none;
++.lowercase {
++  text-transform: lowercase;
  }
 -.active_cbg-emerald-50:active:not(#\#):not(#\#):not(#\#) {
 -  background-color: rgb(236, 253, 245);
 -  background-color: var(--color-emerald-50);
-+.uppercase {
-+  text-transform: uppercase;
++.normal-case {
++  text-transform: none;
  }
 -.active_cbg-emerald-600:active:not(#\#):not(#\#):not(#\#) {
 -  background-color: rgb(0, 150, 105);
 -  background-color: var(--color-emerald-600);
++.uppercase {
++  text-transform: uppercase;
+ }
+-@property --tw-space-y-reverse {
+-  syntax: '*';
+-  inherits: false;
+-  initial-value: 0;
 +.italic {
 +  font-style: italic;
  }
--@property --tw-space-y-reverse {
+-@property --tw-space-x-reverse {
 -  syntax: '*';
 -  inherits: false;
 -  initial-value: 0;
 +.not-italic {
 +  font-style: normal;
  }
--@property --tw-space-x-reverse {
+-@property --tw-divide-x-reverse {
 -  syntax: '*';
 -  inherits: false;
 -  initial-value: 0;
@@ -1435,22 +1439,12 @@ Generator CSS files: app.wxss, home.wxss, user.wxss
 +  font-feature-settings: var(--tw-ordinal,) var(--tw-slashed-zero,) var(--tw-numeric-figure,) var(--tw-numeric-spacing,) var(--tw-numeric-fraction,);
 +  font-variant-numeric: var(--tw-ordinal,) var(--tw-slashed-zero,) var(--tw-numeric-figure,) var(--tw-numeric-spacing,) var(--tw-numeric-fraction,);
  }
--@property --tw-divide-x-reverse {
--  syntax: '*';
--  inherits: false;
--  initial-value: 0;
-+.lining-nums {
-+  --tw-numeric-figure: lining-nums;
-+  -webkit-font-feature-settings: var(--tw-ordinal,) var(--tw-slashed-zero,) var(--tw-numeric-figure,) var(--tw-numeric-spacing,) var(--tw-numeric-fraction,);
-+  font-feature-settings: var(--tw-ordinal,) var(--tw-slashed-zero,) var(--tw-numeric-figure,) var(--tw-numeric-spacing,) var(--tw-numeric-fraction,);
-+  font-variant-numeric: var(--tw-ordinal,) var(--tw-slashed-zero,) var(--tw-numeric-figure,) var(--tw-numeric-spacing,) var(--tw-numeric-fraction,);
- }
 -@property --tw-border-style {
 -  syntax: '*';
 -  inherits: false;
 -  initial-value: solid;
-+.oldstyle-nums {
-+  --tw-numeric-figure: oldstyle-nums;
++.lining-nums {
++  --tw-numeric-figure: lining-nums;
 +  -webkit-font-feature-settings: var(--tw-ordinal,) var(--tw-slashed-zero,) var(--tw-numeric-figure,) var(--tw-numeric-spacing,) var(--tw-numeric-fraction,);
 +  font-feature-settings: var(--tw-ordinal,) var(--tw-slashed-zero,) var(--tw-numeric-figure,) var(--tw-numeric-spacing,) var(--tw-numeric-fraction,);
 +  font-variant-numeric: var(--tw-ordinal,) var(--tw-slashed-zero,) var(--tw-numeric-figure,) var(--tw-numeric-spacing,) var(--tw-numeric-fraction,);
@@ -1459,13 +1453,22 @@ Generator CSS files: app.wxss, home.wxss, user.wxss
 -  syntax: '*';
 -  inherits: false;
 -  initial-value: 0;
++.oldstyle-nums {
++  --tw-numeric-figure: oldstyle-nums;
++  -webkit-font-feature-settings: var(--tw-ordinal,) var(--tw-slashed-zero,) var(--tw-numeric-figure,) var(--tw-numeric-spacing,) var(--tw-numeric-fraction,);
++  font-feature-settings: var(--tw-ordinal,) var(--tw-slashed-zero,) var(--tw-numeric-figure,) var(--tw-numeric-spacing,) var(--tw-numeric-fraction,);
++  font-variant-numeric: var(--tw-ordinal,) var(--tw-slashed-zero,) var(--tw-numeric-figure,) var(--tw-numeric-spacing,) var(--tw-numeric-fraction,);
+ }
+-@property --tw-leading {
+-  syntax: '*';
+-  inherits: false;
 +.ordinal {
 +  --tw-ordinal: ordinal;
 +  -webkit-font-feature-settings: var(--tw-ordinal,) var(--tw-slashed-zero,) var(--tw-numeric-figure,) var(--tw-numeric-spacing,) var(--tw-numeric-fraction,);
 +  font-feature-settings: var(--tw-ordinal,) var(--tw-slashed-zero,) var(--tw-numeric-figure,) var(--tw-numeric-spacing,) var(--tw-numeric-fraction,);
 +  font-variant-numeric: var(--tw-ordinal,) var(--tw-slashed-zero,) var(--tw-numeric-figure,) var(--tw-numeric-spacing,) var(--tw-numeric-fraction,);
  }
--@property --tw-leading {
+-@property --tw-font-weight {
 -  syntax: '*';
 -  inherits: false;
 +.proportional-nums {
@@ -1474,21 +1477,12 @@ Generator CSS files: app.wxss, home.wxss, user.wxss
 +  font-feature-settings: var(--tw-ordinal,) var(--tw-slashed-zero,) var(--tw-numeric-figure,) var(--tw-numeric-spacing,) var(--tw-numeric-fraction,);
 +  font-variant-numeric: var(--tw-ordinal,) var(--tw-slashed-zero,) var(--tw-numeric-figure,) var(--tw-numeric-spacing,) var(--tw-numeric-fraction,);
  }
--@property --tw-font-weight {
--  syntax: '*';
--  inherits: false;
-+.slashed-zero {
-+  --tw-slashed-zero: slashed-zero;
-+  -webkit-font-feature-settings: var(--tw-ordinal,) var(--tw-slashed-zero,) var(--tw-numeric-figure,) var(--tw-numeric-spacing,) var(--tw-numeric-fraction,);
-+  font-feature-settings: var(--tw-ordinal,) var(--tw-slashed-zero,) var(--tw-numeric-figure,) var(--tw-numeric-spacing,) var(--tw-numeric-fraction,);
-+  font-variant-numeric: var(--tw-ordinal,) var(--tw-slashed-zero,) var(--tw-numeric-figure,) var(--tw-numeric-spacing,) var(--tw-numeric-fraction,);
- }
 -@property --tw-shadow {
 -  syntax: '*';
 -  inherits: false;
 -  initial-value: 0 0 rgba(0, 0, 0, 0);
-+.stacked-fractions {
-+  --tw-numeric-fraction: stacked-fractions;
++.slashed-zero {
++  --tw-slashed-zero: slashed-zero;
 +  -webkit-font-feature-settings: var(--tw-ordinal,) var(--tw-slashed-zero,) var(--tw-numeric-figure,) var(--tw-numeric-spacing,) var(--tw-numeric-fraction,);
 +  font-feature-settings: var(--tw-ordinal,) var(--tw-slashed-zero,) var(--tw-numeric-figure,) var(--tw-numeric-spacing,) var(--tw-numeric-fraction,);
 +  font-variant-numeric: var(--tw-ordinal,) var(--tw-slashed-zero,) var(--tw-numeric-figure,) var(--tw-numeric-spacing,) var(--tw-numeric-fraction,);
@@ -1496,8 +1490,8 @@ Generator CSS files: app.wxss, home.wxss, user.wxss
 -@property --tw-shadow-color {
 -  syntax: '*';
 -  inherits: false;
-+.tabular-nums {
-+  --tw-numeric-spacing: tabular-nums;
++.stacked-fractions {
++  --tw-numeric-fraction: stacked-fractions;
 +  -webkit-font-feature-settings: var(--tw-ordinal,) var(--tw-slashed-zero,) var(--tw-numeric-figure,) var(--tw-numeric-spacing,) var(--tw-numeric-fraction,);
 +  font-feature-settings: var(--tw-ordinal,) var(--tw-slashed-zero,) var(--tw-numeric-figure,) var(--tw-numeric-spacing,) var(--tw-numeric-fraction,);
 +  font-variant-numeric: var(--tw-ordinal,) var(--tw-slashed-zero,) var(--tw-numeric-figure,) var(--tw-numeric-spacing,) var(--tw-numeric-fraction,);
@@ -1506,7 +1500,12 @@ Generator CSS files: app.wxss, home.wxss, user.wxss
 -  syntax: '<percentage>';
 -  inherits: false;
 -  initial-value: 100%;
--}
++.tabular-nums {
++  --tw-numeric-spacing: tabular-nums;
++  -webkit-font-feature-settings: var(--tw-ordinal,) var(--tw-slashed-zero,) var(--tw-numeric-figure,) var(--tw-numeric-spacing,) var(--tw-numeric-fraction,);
++  font-feature-settings: var(--tw-ordinal,) var(--tw-slashed-zero,) var(--tw-numeric-figure,) var(--tw-numeric-spacing,) var(--tw-numeric-fraction,);
++  font-variant-numeric: var(--tw-ordinal,) var(--tw-slashed-zero,) var(--tw-numeric-figure,) var(--tw-numeric-spacing,) var(--tw-numeric-fraction,);
+ }
 -@property --tw-inset-shadow {
 -  syntax: '*';
 -  inherits: false;
@@ -2441,6 +2440,41 @@ Generator CSS files: app.wxss, home.wxss, user.wxss
  }
 -.border-emerald-500:not(#\#):not(#\#):not(#\#) {
 -  border-color: rgb(0, 185, 129);
++.border-b {
++  border-bottom-style: var(--tw-border-style);
++  border-bottom-width: 1px;
++}
++.border-e {
++  border-right-style: var(--tw-border-style);
++  border-right-width: 1px;
++}
++.border-emerald-500 {
+   border-color: var(--color-emerald-500);
+ }
+-.border-slate-200:not(#\#):not(#\#):not(#\#) {
+-  border-color: rgb(226, 232, 240);
++.border-l {
++  border-left-style: var(--tw-border-style);
++  border-left-width: 1px;
++}
++.border-r {
++  border-right-style: var(--tw-border-style);
++  border-right-width: 1px;
++}
++.border-s {
++  border-left-style: var(--tw-border-style);
++  border-left-width: 1px;
++}
++.border-slate-200 {
+   border-color: var(--color-slate-200);
+ }
+-.bg-_b_h0000ff_B:not(#\#):not(#\#):not(#\#) {
+-  background-color: #00f;
++.border-t {
++  border-top-style: var(--tw-border-style);
++  border-top-width: 1px;
+ }
+-.bg-_b_h123498_B:not(#\#):not(#\#):not(#\#) {
 +.border-x {
 +  border-left-style: var(--tw-border-style);
 +  border-right-style: var(--tw-border-style);
@@ -2453,44 +2487,9 @@ Generator CSS files: app.wxss, home.wxss, user.wxss
 +  border-top-width: 1px;
 +  border-bottom-width: 1px;
 +}
-+.border-s {
-+  border-left-style: var(--tw-border-style);
-+  border-left-width: 1px;
-+}
-+.border-e {
-+  border-right-style: var(--tw-border-style);
-+  border-right-width: 1px;
-+}
-+.border-t {
-+  border-top-style: var(--tw-border-style);
-+  border-top-width: 1px;
-+}
-+.border-r {
-+  border-right-style: var(--tw-border-style);
-+  border-right-width: 1px;
-+}
-+.border-b {
-+  border-bottom-style: var(--tw-border-style);
-+  border-bottom-width: 1px;
-+}
-+.border-l {
-+  border-left-style: var(--tw-border-style);
-+  border-left-width: 1px;
-+}
-+.border-emerald-500 {
-   border-color: var(--color-emerald-500);
- }
--.border-slate-200:not(#\#):not(#\#):not(#\#) {
--  border-color: rgb(226, 232, 240);
-+.border-slate-200 {
-   border-color: var(--color-slate-200);
- }
--.bg-_b_h0000ff_B:not(#\#):not(#\#):not(#\#) {
--  background-color: #00f;
 +.bg-_b_h0000ff_B {
 +  background-color: #0000ff;
- }
--.bg-_b_h123498_B:not(#\#):not(#\#):not(#\#) {
++}
 +.bg-_b_h123498_B {
    background-color: #123498;
  }
@@ -2563,16 +2562,22 @@ Generator CSS files: app.wxss, home.wxss, user.wxss
    padding-top: calc(var(--spacing) * 6);
    padding-bottom: calc(var(--spacing) * 6);
  }
--.text-center:not(#\#):not(#\#):not(#\#) {
-+.text-center {
-   text-align: center;
- }
+-.text-_b45rpx_B:not(#\#):not(#\#):not(#\#) {
+-  font-size: 45rpx;
+-}
+-.text-_b88rpx_B:not(#\#):not(#\#):not(#\#) {
+-  font-size: 88rpx;
+-}
 -.text-base:not(#\#):not(#\#):not(#\#) {
 -  font-size: 32rpx;
 +.text-base {
    font-size: var(--text-base);
 -  line-height: 1.5;
    line-height: var(--tw-leading, var(--text-base--line-height));
+ }
+-.text-center:not(#\#):not(#\#):not(#\#) {
++.text-center {
+   text-align: center;
  }
 -.text-lg:not(#\#):not(#\#):not(#\#) {
 -  font-size: 36rpx;
@@ -2602,12 +2607,6 @@ Generator CSS files: app.wxss, home.wxss, user.wxss
 -  line-height: 1.33333;
    line-height: var(--tw-leading, var(--text-xs--line-height));
  }
--.text-_b45rpx_B:not(#\#):not(#\#):not(#\#) {
--  font-size: 45rpx;
--}
--.text-_b88rpx_B:not(#\#):not(#\#):not(#\#) {
--  font-size: 88rpx;
--}
 -.leading-6:not(#\#):not(#\#):not(#\#) {
 +.leading-6 {
    --tw-leading: calc(var(--spacing) * 6);
@@ -2633,14 +2632,11 @@ Generator CSS files: app.wxss, home.wxss, user.wxss
    font-weight: var(--font-weight-semibold);
  }
 -.text-_b_h00f285_B:not(#\#):not(#\#):not(#\#) {
-+.text-wrap {
-+  text-wrap: wrap;
++.text-_b45rpx_B {
++  font-size: 45rpx;
 +}
-+.text-clip {
-+  text-overflow: clip;
-+}
-+.text-ellipsis {
-+  text-overflow: ellipsis;
++.text-_b88rpx_B {
++  font-size: 88rpx;
 +}
 +.text-_b_h00f285_B {
    color: #00f285;
@@ -2651,11 +2647,11 @@ Generator CSS files: app.wxss, home.wxss, user.wxss
  }
 -.text-emerald-600:not(#\#):not(#\#):not(#\#) {
 -  color: rgb(0, 150, 105);
-+.text-_b45rpx_B {
-+  font-size: 45rpx;
++.text-clip {
++  text-overflow: clip;
 +}
-+.text-_b88rpx_B {
-+  font-size: 88rpx;
++.text-ellipsis {
++  text-overflow: ellipsis;
 +}
 +.text-emerald-600 {
    color: var(--color-emerald-600);
@@ -2681,6 +2677,9 @@ Generator CSS files: app.wxss, home.wxss, user.wxss
    color: var(--color-white);
  }
 -.underline:not(#\#):not(#\#):not(#\#) {
++.text-wrap {
++  text-wrap: wrap;
++}
 +.capitalize {
 +  text-transform: capitalize;
 +}
@@ -3257,14 +3256,14 @@ text,
   padding-top: calc(var(--spacing) * 3);
   padding-bottom: calc(var(--spacing) * 3);
 }
-.text-center {
-  text-align: center;
-}
 .text-_b45rpx_B {
   font-size: 45rpx;
 }
 .text-_b88rpx_B {
   font-size: 88rpx;
+}
+.text-center {
+  text-align: center;
 }
 .font-bold {
   --tw-font-weight: var(--font-weight-bold);
@@ -3900,14 +3899,20 @@ input:where([type='button'], [type='reset'], [type='submit']):not(#\#):not(#\#) 
   padding-top: calc(var(--spacing) * 6);
   padding-bottom: calc(var(--spacing) * 6);
 }
-.text-center:not(#\#):not(#\#):not(#\#) {
-  text-align: center;
+.text-_b45rpx_B:not(#\#):not(#\#):not(#\#) {
+  font-size: 45rpx;
+}
+.text-_b88rpx_B:not(#\#):not(#\#):not(#\#) {
+  font-size: 88rpx;
 }
 .text-base:not(#\#):not(#\#):not(#\#) {
   font-size: 32rpx;
   font-size: var(--text-base);
   line-height: 1.5;
   line-height: var(--tw-leading, var(--text-base--line-height));
+}
+.text-center:not(#\#):not(#\#):not(#\#) {
+  text-align: center;
 }
 .text-lg:not(#\#):not(#\#):not(#\#) {
   font-size: 36rpx;
@@ -3932,12 +3937,6 @@ input:where([type='button'], [type='reset'], [type='submit']):not(#\#):not(#\#) 
   font-size: var(--text-xs);
   line-height: 1.33333;
   line-height: var(--tw-leading, var(--text-xs--line-height));
-}
-.text-_b45rpx_B:not(#\#):not(#\#):not(#\#) {
-  font-size: 45rpx;
-}
-.text-_b88rpx_B:not(#\#):not(#\#):not(#\#) {
-  font-size: 88rpx;
 }
 .leading-6:not(#\#):not(#\#):not(#\#) {
   --tw-leading: calc(var(--spacing) * 6);
@@ -4694,14 +4693,20 @@ input:where([type='button'], [type='reset'], [type='submit']):not(#\#):not(#\#) 
   padding-top: calc(var(--spacing) * 6);
   padding-bottom: calc(var(--spacing) * 6);
 }
-.text-center:not(#\#):not(#\#):not(#\#) {
-  text-align: center;
+.text-_b45rpx_B:not(#\#):not(#\#):not(#\#) {
+  font-size: 45rpx;
+}
+.text-_b88rpx_B:not(#\#):not(#\#):not(#\#) {
+  font-size: 88rpx;
 }
 .text-base:not(#\#):not(#\#):not(#\#) {
   font-size: 32rpx;
   font-size: var(--text-base);
   line-height: 1.5;
   line-height: var(--tw-leading, var(--text-base--line-height));
+}
+.text-center:not(#\#):not(#\#):not(#\#) {
+  text-align: center;
 }
 .text-lg:not(#\#):not(#\#):not(#\#) {
   font-size: 36rpx;
@@ -4726,12 +4731,6 @@ input:where([type='button'], [type='reset'], [type='submit']):not(#\#):not(#\#) 
   font-size: var(--text-xs);
   line-height: 1.33333;
   line-height: var(--tw-leading, var(--text-xs--line-height));
-}
-.text-_b45rpx_B:not(#\#):not(#\#):not(#\#) {
-  font-size: 45rpx;
-}
-.text-_b88rpx_B:not(#\#):not(#\#):not(#\#) {
-  font-size: 88rpx;
 }
 .leading-6:not(#\#):not(#\#):not(#\#) {
   --tw-leading: calc(var(--spacing) * 6);
@@ -5438,6 +5437,36 @@ wx-root-portal-content {
   border-style: var(--tw-border-style);
   border-width: 1px;
 }
+.border-b {
+  border-bottom-style: var(--tw-border-style);
+  border-bottom-width: 1px;
+}
+.border-e {
+  border-right-style: var(--tw-border-style);
+  border-right-width: 1px;
+}
+.border-emerald-500 {
+  border-color: var(--color-emerald-500);
+}
+.border-l {
+  border-left-style: var(--tw-border-style);
+  border-left-width: 1px;
+}
+.border-r {
+  border-right-style: var(--tw-border-style);
+  border-right-width: 1px;
+}
+.border-s {
+  border-left-style: var(--tw-border-style);
+  border-left-width: 1px;
+}
+.border-slate-200 {
+  border-color: var(--color-slate-200);
+}
+.border-t {
+  border-top-style: var(--tw-border-style);
+  border-top-width: 1px;
+}
 .border-x {
   border-left-style: var(--tw-border-style);
   border-right-style: var(--tw-border-style);
@@ -5449,36 +5478,6 @@ wx-root-portal-content {
   border-bottom-style: var(--tw-border-style);
   border-top-width: 1px;
   border-bottom-width: 1px;
-}
-.border-s {
-  border-left-style: var(--tw-border-style);
-  border-left-width: 1px;
-}
-.border-e {
-  border-right-style: var(--tw-border-style);
-  border-right-width: 1px;
-}
-.border-t {
-  border-top-style: var(--tw-border-style);
-  border-top-width: 1px;
-}
-.border-r {
-  border-right-style: var(--tw-border-style);
-  border-right-width: 1px;
-}
-.border-b {
-  border-bottom-style: var(--tw-border-style);
-  border-bottom-width: 1px;
-}
-.border-l {
-  border-left-style: var(--tw-border-style);
-  border-left-width: 1px;
-}
-.border-emerald-500 {
-  border-color: var(--color-emerald-500);
-}
-.border-slate-200 {
-  border-color: var(--color-slate-200);
 }
 .bg-_b_h0000ff_B {
   background-color: #0000ff;
@@ -5540,12 +5539,12 @@ wx-root-portal-content {
   padding-top: calc(var(--spacing) * 6);
   padding-bottom: calc(var(--spacing) * 6);
 }
-.text-center {
-  text-align: center;
-}
 .text-base {
   font-size: var(--text-base);
   line-height: var(--tw-leading, var(--text-base--line-height));
+}
+.text-center {
+  text-align: center;
 }
 .text-lg {
   font-size: var(--text-lg);
@@ -5579,14 +5578,11 @@ wx-root-portal-content {
   --tw-font-weight: var(--font-weight-semibold);
   font-weight: var(--font-weight-semibold);
 }
-.text-wrap {
-  text-wrap: wrap;
+.text-_b45rpx_B {
+  font-size: 45rpx;
 }
-.text-clip {
-  text-overflow: clip;
-}
-.text-ellipsis {
-  text-overflow: ellipsis;
+.text-_b88rpx_B {
+  font-size: 88rpx;
 }
 .text-_b_h00f285_B {
   color: #00f285;
@@ -5594,11 +5590,11 @@ wx-root-portal-content {
 .text-_b_h929292_B {
   color: #929292;
 }
-.text-_b45rpx_B {
-  font-size: 45rpx;
+.text-clip {
+  text-overflow: clip;
 }
-.text-_b88rpx_B {
-  font-size: 88rpx;
+.text-ellipsis {
+  text-overflow: ellipsis;
 }
 .text-emerald-600 {
   color: var(--color-emerald-600);
@@ -5617,6 +5613,9 @@ wx-root-portal-content {
 }
 .text-white {
   color: var(--color-white);
+}
+.text-wrap {
+  text-wrap: wrap;
 }
 .capitalize {
   text-transform: capitalize;
@@ -6196,6 +6195,36 @@ wx-root-portal-content {
   border-style: var(--tw-border-style);
   border-width: 1px;
 }
+.border-b {
+  border-bottom-style: var(--tw-border-style);
+  border-bottom-width: 1px;
+}
+.border-e {
+  border-right-style: var(--tw-border-style);
+  border-right-width: 1px;
+}
+.border-emerald-500 {
+  border-color: var(--color-emerald-500);
+}
+.border-l {
+  border-left-style: var(--tw-border-style);
+  border-left-width: 1px;
+}
+.border-r {
+  border-right-style: var(--tw-border-style);
+  border-right-width: 1px;
+}
+.border-s {
+  border-left-style: var(--tw-border-style);
+  border-left-width: 1px;
+}
+.border-slate-200 {
+  border-color: var(--color-slate-200);
+}
+.border-t {
+  border-top-style: var(--tw-border-style);
+  border-top-width: 1px;
+}
 .border-x {
   border-left-style: var(--tw-border-style);
   border-right-style: var(--tw-border-style);
@@ -6207,36 +6236,6 @@ wx-root-portal-content {
   border-bottom-style: var(--tw-border-style);
   border-top-width: 1px;
   border-bottom-width: 1px;
-}
-.border-s {
-  border-left-style: var(--tw-border-style);
-  border-left-width: 1px;
-}
-.border-e {
-  border-right-style: var(--tw-border-style);
-  border-right-width: 1px;
-}
-.border-t {
-  border-top-style: var(--tw-border-style);
-  border-top-width: 1px;
-}
-.border-r {
-  border-right-style: var(--tw-border-style);
-  border-right-width: 1px;
-}
-.border-b {
-  border-bottom-style: var(--tw-border-style);
-  border-bottom-width: 1px;
-}
-.border-l {
-  border-left-style: var(--tw-border-style);
-  border-left-width: 1px;
-}
-.border-emerald-500 {
-  border-color: var(--color-emerald-500);
-}
-.border-slate-200 {
-  border-color: var(--color-slate-200);
 }
 .bg-_b_h0000ff_B {
   background-color: #0000ff;
@@ -6289,12 +6288,12 @@ wx-root-portal-content {
   padding-top: calc(var(--spacing) * 6);
   padding-bottom: calc(var(--spacing) * 6);
 }
-.text-center {
-  text-align: center;
-}
 .text-base {
   font-size: var(--text-base);
   line-height: var(--tw-leading, var(--text-base--line-height));
+}
+.text-center {
+  text-align: center;
 }
 .text-lg {
   font-size: var(--text-lg);
@@ -6328,14 +6327,11 @@ wx-root-portal-content {
   --tw-font-weight: var(--font-weight-semibold);
   font-weight: var(--font-weight-semibold);
 }
-.text-wrap {
-  text-wrap: wrap;
+.text-_b45rpx_B {
+  font-size: 45rpx;
 }
-.text-clip {
-  text-overflow: clip;
-}
-.text-ellipsis {
-  text-overflow: ellipsis;
+.text-_b88rpx_B {
+  font-size: 88rpx;
 }
 .text-_b_h00f285_B {
   color: #00f285;
@@ -6343,11 +6339,11 @@ wx-root-portal-content {
 .text-_b_h929292_B {
   color: #929292;
 }
-.text-_b45rpx_B {
-  font-size: 45rpx;
+.text-clip {
+  text-overflow: clip;
 }
-.text-_b88rpx_B {
-  font-size: 88rpx;
+.text-ellipsis {
+  text-overflow: ellipsis;
 }
 .text-emerald-600 {
   color: var(--color-emerald-600);
@@ -6363,6 +6359,9 @@ wx-root-portal-content {
 }
 .text-white {
   color: var(--color-white);
+}
+.text-wrap {
+  text-wrap: wrap;
 }
 .capitalize {
   text-transform: capitalize;

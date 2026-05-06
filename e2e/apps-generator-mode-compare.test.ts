@@ -202,15 +202,30 @@ async function buildProject(project: CompareProject, mode: GeneratorBuildMode) {
     },
   })
 
-  const snapshots = await collectOutputCssSnapshots(projectRoot, project.cssPath)
+  const classList = await readBuildClassList(root)
+  const snapshots = await collectOutputCssSnapshots(projectRoot, project.cssPath, classList)
   return {
     css: snapshots.map(snapshot => snapshot.content).join('\n'),
     cssFiles: snapshots.map(snapshot => snapshot.fileName),
   }
 }
 
-async function collectOutputCssSnapshots(projectRoot: string, cssPath: string) {
-  const entrySnapshots = await collectCssSnapshots(projectRoot, cssPath)
+async function readBuildClassList(root: string) {
+  try {
+    const source = await fs.readFile(path.resolve(root, '.tw-patch/tw-class-list.json'), 'utf8')
+    const parsed = JSON.parse(source)
+    return Array.isArray(parsed) ? parsed.filter((item): item is string => typeof item === 'string') : undefined
+  }
+  catch (error: any) {
+    if (error?.code === 'ENOENT' || error?.code === 'EPERM') {
+      return undefined
+    }
+    throw error
+  }
+}
+
+async function collectOutputCssSnapshots(projectRoot: string, cssPath: string, classList?: string[]) {
+  const entrySnapshots = await collectCssSnapshots(projectRoot, cssPath, { classList })
   const outputRoot = path.dirname(path.resolve(projectRoot, cssPath))
   const allCssFiles = await fg(MINI_PROGRAM_CSS_PATTERN, {
     absolute: false,
@@ -222,7 +237,7 @@ async function collectOutputCssSnapshots(projectRoot: string, cssPath: string) {
     allCssFiles
       .sort()
       .filter(file => !entryFileNames.has(path.normalize(file)))
-      .map(file => collectCssSnapshots(outputRoot, file)),
+      .map(file => collectCssSnapshots(outputRoot, file, { classList })),
   )
 
   return [

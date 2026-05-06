@@ -8,7 +8,7 @@ Generator CSS files: app.wxss, apple.wxss, index.wxss
 | Mode | Bytes | Selectors | @supports | :hover | Tailwind banner | Raw arbitrary selector | Weapp escaped arbitrary selector |
 | --- | ---: | ---: | --- | --- | --- | --- | --- |
 | legacy | 5751 | 47 | false | false | false | false | true |
-| generator | 7722 | 60 | false | false | false | false | true |
+| generator | 7653 | 58 | false | false | false | false | true |
 
 ## Diff
 
@@ -69,7 +69,7 @@ Generator CSS files: app.wxss, apple.wxss, index.wxss
    --color-red-700: rgb(191, 0, 15);
    --color-amber-300: rgb(255, 210, 55);
    --color-green-300: rgb(123, 241, 168);
-@@ -37,74 +50,51 @@
+@@ -37,74 +50,45 @@
    --color-zinc-50: rgb(250, 250, 250);
    --color-zinc-900: rgb(24, 24, 27);
    --spacing: 8rpx;
@@ -98,16 +98,12 @@ Generator CSS files: app.wxss, apple.wxss, index.wxss
 -  .container {
 -    max-width: 1280rpx;
 -  }
-+.start {
-+  left: var(--spacing);
- }
+-}
 -@media (min-width: 48rem) {
 -  .container {
 -    max-width: 1536rpx;
 -  }
-+.end {
-+  right: var(--spacing);
- }
+-}
 -@media (min-width: 64rem) {
 -  .container {
 -    max-width: 2048rpx;
@@ -164,7 +160,7 @@ Generator CSS files: app.wxss, apple.wxss, index.wxss
    height: calc(var(--spacing) * 10);
  }
  .h-_b29_d292px_B {
-@@ -125,6 +115,13 @@
+@@ -125,6 +109,13 @@
  .w-_b323px_B {
    width: 323px;
  }
@@ -178,7 +174,7 @@ Generator CSS files: app.wxss, apple.wxss, index.wxss
  .flex-col {
    -webkit-flex-direction: column;
    flex-direction: column;
-@@ -134,9 +131,7 @@
+@@ -134,9 +125,7 @@
  .space-y-2_d5 > text + view,
  .space-y-2_d5 > text + text {
    --tw-space-y-reverse: 0;
@@ -188,7 +184,7 @@ Generator CSS files: app.wxss, apple.wxss, index.wxss
    margin-top: calc((var(--spacing) * 2.5) * (1 - var(--tw-space-y-reverse)));
  }
  .space-x-2_d5 > view + view,
-@@ -144,11 +139,17 @@
+@@ -144,11 +133,17 @@
  .space-x-2_d5 > text + view,
  .space-x-2_d5 > text + text {
    --tw-space-x-reverse: 0;
@@ -208,7 +204,7 @@ Generator CSS files: app.wxss, apple.wxss, index.wxss
  .border-4 {
    border-style: var(--tw-border-style);
    border-width: 4px;
-@@ -160,14 +161,12 @@
+@@ -160,14 +155,12 @@
    background-color: #68c828;
  }
  .bg-amber-300 {
@@ -224,7 +220,7 @@ Generator CSS files: app.wxss, apple.wxss, index.wxss
    background-color: var(--color-zinc-50);
  }
  .bg-gradient-to-b {
-@@ -201,7 +200,6 @@
+@@ -201,7 +194,6 @@
    );
  }
  .p-4 {
@@ -232,7 +228,7 @@ Generator CSS files: app.wxss, apple.wxss, index.wxss
    padding: calc(var(--spacing) * 4);
  }
  .text-_b100px_B {
-@@ -217,24 +215,72 @@
+@@ -217,24 +209,72 @@
    color: #123456;
  }
  .text-blue-300 {
@@ -628,12 +624,6 @@ wx-root-portal-content {
 }
 .-start {
   left: calc(var(--spacing) * -1);
-}
-.start {
-  left: var(--spacing);
-}
-.end {
-  right: var(--spacing);
 }
 .i-mdi-home {
   display: inline-block;

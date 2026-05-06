@@ -67,7 +67,7 @@
       "hasRawArbitrarySelector": false
     },
     "generator": {
-      "bytes": 7722,
+      "bytes": 7653,
       "selectors": [
         ".-start",
         "._estart",
@@ -83,7 +83,6 @@
         ".capitalize",
         ".container",
         ".dark_cbg-zinc-900",
-        ".end",
         ".filter",
         ".flex",
         ".flex-col",
@@ -110,7 +109,6 @@
         ".space-y-2_d5 > text + view",
         ".space-y-2_d5 > view + text",
         ".space-y-2_d5 > view + view",
-        ".start",
         ".text-_b100px_B",
         ".text-_b100rpx_B",
         ".text-_b_h123322_B",
@@ -136,8 +134,8 @@
       "hasWeappEscapedArbitrarySelector": true,
       "hasRawArbitrarySelector": false
     },
-    "deltaBytes": 1971,
-    "generatorBytesRatio": 1.3427,
+    "deltaBytes": 1902,
+    "generatorBytesRatio": 1.3307,
     "sharedSelectors": [
       ".bg-_b_h3a32d1_B",
       ".bg-_b_h68c828_B",
@@ -164,13 +162,11 @@
       ".-start",
       "._estart",
       ".capitalize",
-      ".end",
       ".filter",
       ".inline",
       ".invert",
       ".resize",
       ".rounded",
-      ".start",
       ".transform",
       ".transition",
       ".truncate"
@@ -19342,7 +19338,7 @@
     ],
     "status": "passed",
     "legacy": {
-      "bytes": 18986,
+      "bytes": 18826,
       "selectors": [
         ".-m-_b20px_B",
         ".-mt-2",
@@ -19461,7 +19457,7 @@
       "hasRawArbitrarySelector": false
     },
     "generator": {
-      "bytes": 17332,
+      "bytes": 17172,
       "selectors": [
         ".-m-_b20px_B",
         ".-mt-2",
@@ -19580,7 +19576,7 @@
       "hasRawArbitrarySelector": false
     },
     "deltaBytes": -1654,
-    "generatorBytesRatio": 0.9129,
+    "generatorBytesRatio": 0.9121,
     "sharedSelectors": [
       ".-m-_b20px_B",
       ".-mt-2",
