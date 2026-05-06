@@ -1,7 +1,7 @@
 ---
 id: v5-generator-examples
-title: v5 生成模式使用方式（推荐）
-description: 使用 weapp-tailwindcss v5 生成模式接入 uni-app Vue Vite、Taro Vite 与 Mpx 的完整示例
+title: v5 生成模式常用接入方式（推荐）
+description: 使用 weapp-tailwindcss v5 生成模式接入 uni-app、Taro、weapp-vite 与 Mpx 的常用示例
 sidebar_position: 6
 keywords:
   - weapp-tailwindcss
@@ -9,11 +9,13 @@ keywords:
   - generator
   - uni-app
   - taro
+  - weapp-vite
+  - webpack
   - mpx
   - 小程序
 ---
 
-# v5 生成模式使用方式（推荐）
+# v5 生成模式常用接入方式（推荐）
 
 v5 推荐把 Tailwind CSS v4 当作标准 CSS-first 入口使用，再由 `weapp-tailwindcss` 控制最终样式生成。核心变化是：入口 CSS 写 `@import "tailwindcss"`，构建插件或 PostCSS 插件开启 `generator`，最终产物直接面向小程序，而不是先生成浏览器 CSS 再做大量兜底兼容。
 
@@ -21,21 +23,51 @@ v5 推荐把 Tailwind CSS v4 当作标准 CSS-first 入口使用，再由 `weapp
 如果你正在接入 Tailwind CSS v4 或准备升级到 v5，优先从本页开始。生成模式会直接生成小程序目标 CSS，并用 `classSet` 精确约束 JS / 模板转译范围。
 :::
 
+## 常用场景速查
+
+| 场景 | 推荐入口 | 注册位置 | CSS 入口 | 备注 |
+| --- | --- | --- | --- | --- |
+| uni-app Vue Vite | `UnifiedViteWeappTailwindcssPlugin` | `vite.config.ts` | `src/main.css` | 新项目优先选择，Tailwind CSS v4 也挂在 Vite plugins |
+| uni-app Vue2 Webpack | `UnifiedWebpackPluginV5` | `vue.config.js` 的 `configureWebpack` | `src/app.css` | HBuilderX / Vue CLI 链路常见，CSS 入口要显式传给 `cssEntries` |
+| Taro Vite | `UnifiedViteWeappTailwindcssPlugin` | `config/index.ts` 的 `compiler.vitePlugins` | `src/app.css` | Tailwind CSS v4 可通过 PostCSS 插件注入到 Taro Vite 配置 |
+| Taro Webpack | `UnifiedWebpackPluginV5` | `config/index.ts` 的 `mini.webpackChain` | `src/app.css` | 适合仍在 Webpack 编译器上的 Taro 小程序项目 |
+| weapp-vite | `UnifiedViteWeappTailwindcssPlugin` | `vite.config.ts` | `app.css` 或项目全局样式 | 原生小程序 / Vue SFC 小程序项目直接走 weapp-vite 插件 |
+| Mpx | PostCSS generator + `UnifiedWebpackPluginV5` | `mpx.config.js` | `src/app.css` | CSS 由 PostCSS generator 生成，Webpack 插件只负责模板与 JS 转译 |
+
+每个场景的 CSS 入口都建议使用 Tailwind CSS v4 写法：
+
+```css title="app.css"
+@import "tailwindcss";
+@source "./src/**/*.{vue,js,ts,wxml,tsx,jsx}";
+@source not "./dist";
+```
+
+生产构建统一建议开启强制生成：
+
+```js
+generator: {
+  mode: 'force',
+  target: 'weapp',
+}
+```
+
+如果 CI 或本地构建无法生成小程序目标 CSS，`mode: 'force'` 会直接失败，避免静默回退到旧 CSS 后处理链路。
+
 ## 功能覆盖清单
 
-| 能力 | uni-app Vue Vite | Taro Vite | Mpx |
-| --- | --- | --- | --- |
-| 标准 `@import "tailwindcss"` | 是 | 是 | 是 |
-| Tailwind CSS v4 `@source` | 是 | 是 | 是 |
-| `@theme` / `@config` | 是 | 是 | 是 |
-| `generator.mode = "force"` | Vite 插件 | Vite 插件 | PostCSS 插件 |
-| `target = "weapp"` 小程序产物 | 是 | 是 | 是 |
-| `target = "web"` 多端调试 | 支持 | 支持 | 支持 |
-| `rem2rpx` / `rpx` 任意值 | 是 | 是 | 是 |
-| hover / active / dark / important / arbitrary value | 是 | 是 | 是 |
-| JS / 模板动态类精确转译 | 是 | 是 | 是 |
-| `@weapp-tailwindcss/merge` 运行时合并 | 是 | 可用 | 可用 |
-| CSS dependency / HMR 依赖追踪 | 是 | 是 | 是 |
+| 能力 | uni-app Vite | uni-app Webpack | Taro Vite | Taro Webpack | weapp-vite | Mpx |
+| --- | --- | --- | --- | --- | --- | --- |
+| 标准 `@import "tailwindcss"` | 是 | 是 | 是 | 是 | 是 | 是 |
+| Tailwind CSS v4 `@source` | 是 | 是 | 是 | 是 | 是 | 是 |
+| `@theme` / `@config` | 是 | 是 | 是 | 是 | 是 | 是 |
+| `generator.mode = "force"` | Vite 插件 | Webpack 插件 | Vite 插件 | Webpack 插件 | Vite 插件 | PostCSS 插件 |
+| `target = "weapp"` 小程序产物 | 是 | 是 | 是 | 是 | 是 | 是 |
+| `target = "web"` 多端调试 | 支持 | 支持 | 支持 | 支持 | 支持 | 支持 |
+| `rem2rpx` / `rpx` 任意值 | 是 | 是 | 是 | 是 | 是 | 是 |
+| hover / active / dark / important / arbitrary value | 是 | 是 | 是 | 是 | 是 | 是 |
+| JS / 模板动态类精确转译 | 是 | 是 | 是 | 是 | 是 | 是 |
+| `@weapp-tailwindcss/merge` 运行时合并 | 是 | 可用 | 可用 | 可用 | 可用 | 可用 |
+| CSS dependency / HMR 依赖追踪 | 是 | 是 | 是 | 是 | 是 | 是 |
 
 :::tip 生产建议
 小程序目标使用 `generator: { mode: 'force', target: 'weapp' }`。这样 CI 会在生成失败时直接失败，不会悄悄回退到旧 CSS 后处理链路。
@@ -124,6 +156,67 @@ const className = ref(twMerge('bg-[#0000ff] text-[45rpx]', 'text-white rounded-l
 
 这些示例会同时被仓库的 `packages/weapp-tailwindcss/test/v5/apps-demo-generator-config.test.ts` 和 `pnpm e2e:static` 约束，避免文档、demo 与 CI 发生分叉。
 
+## uni-app Vue2 Webpack
+
+适合仍使用 Vue CLI / Webpack 编译的 uni-app Vue2 小程序项目。CSS 入口同样写 Tailwind CSS v4，Webpack 插件负责生成小程序 CSS，并同步处理模板与 JS 中的类名。
+
+```js title="vue.config.js"
+const path = require('node:path')
+const { UnifiedWebpackPluginV5 } = require('weapp-tailwindcss/webpack')
+
+module.exports = {
+  configureWebpack(config) {
+    config.plugins.push(
+      new UnifiedWebpackPluginV5({
+        rem2rpx: true,
+        generator: {
+          mode: 'force',
+          target: 'weapp',
+        },
+        cssEntries: [
+          path.resolve(__dirname, './src/app.css'),
+        ],
+      }),
+    )
+  },
+}
+```
+
+```css title="src/app.css"
+@import "tailwindcss";
+@config "../tailwind.config.js";
+@source "./**/*.{vue,js,ts}";
+@source not "../dist";
+@source not "../unpackage";
+```
+
+```vue title="src/pages/index/index.vue"
+<template>
+  <view class="space-y-4 p-[32rpx]">
+    <view class="rounded-lg bg-[#123456] p-4 text-[32rpx] text-white">
+      uni-app Vue2 Webpack generator
+    </view>
+    <view :class="stateClass" hover-class="bg-emerald-600">
+      动态类 + hover-class 精确转译
+    </view>
+  </view>
+</template>
+
+<script>
+import { twMerge } from '@weapp-tailwindcss/merge'
+
+export default {
+  data() {
+    return {
+      stateClass: twMerge('bg-[#0000ff] text-[45rpx]', 'rounded-xl p-4 text-white'),
+    }
+  },
+}
+</script>
+```
+
+验证命令：`pnpm build:apps` 或当前 uni-app 项目的构建命令。
+
 ## Taro Vite
 
 仓库示例：`demo/taro-vite-tailwindcss-v5`。
@@ -201,6 +294,137 @@ export default function Index() {
 验证命令：`pnpm --filter @weapp-tailwindcss-demo/taro-vite-tailwindcss-v5 build`
 
 这些示例也会进入静态 E2E 和 v5 配置契约测试，确保 CI 里看到的就是这里展示的写法。
+
+## Taro Webpack
+
+Taro Webpack 项目把 `UnifiedWebpackPluginV5` 注册到 `mini.webpackChain`。Tailwind CSS v4 入口仍由 `cssEntries` 指向全局样式文件，`generator.mode = 'force'` 用来保证 CI 中生成失败时立刻暴露。
+
+```ts title="config/index.ts"
+import path from 'node:path'
+import { defineConfig, type UserConfigExport } from '@tarojs/cli'
+import { UnifiedWebpackPluginV5 } from 'weapp-tailwindcss/webpack'
+
+export default defineConfig<'webpack5'>(() => {
+  const config: UserConfigExport<'webpack5'> = {
+    projectName: 'taro-webpack-tailwindcss-v5',
+    sourceRoot: 'src',
+    outputRoot: 'dist',
+    framework: 'react',
+    compiler: 'webpack5',
+    mini: {
+      webpackChain(chain) {
+        chain.merge({
+          plugin: {
+            install: {
+              plugin: UnifiedWebpackPluginV5,
+              args: [
+                {
+                  rem2rpx: true,
+                  generator: {
+                    mode: 'force',
+                    target: 'weapp',
+                  },
+                  cssEntries: [
+                    path.resolve(__dirname, '../src/app.css'),
+                  ],
+                },
+              ],
+            },
+          },
+        })
+      },
+    },
+  }
+
+  return config
+})
+```
+
+```css title="src/app.css"
+@import "tailwindcss";
+@source "./pages/**/*.{ts,tsx,jsx,js}";
+@source "./components/**/*.{ts,tsx,jsx,js}";
+@source not "../dist";
+```
+
+```tsx title="src/pages/index/index.tsx"
+import { View } from '@tarojs/components'
+import { twMerge } from '@weapp-tailwindcss/merge'
+
+export default function Index() {
+  const className = twMerge('bg-[#0055ff] text-[42rpx]', 'rounded-lg p-4 text-white')
+
+  return (
+    <View className="space-y-4 p-[32rpx]">
+      <View className="border-[6rpx] border-solid border-[#123456] p-4">
+        Taro Webpack generator
+      </View>
+      <View className={className} hoverClass="bg-emerald-600">
+        className + hoverClass
+      </View>
+    </View>
+  )
+}
+```
+
+验证命令：当前 Taro Webpack 项目的 `pnpm build:weapp` 或等价构建命令。
+
+## weapp-vite
+
+`weapp-vite` 项目直接使用 `UnifiedViteWeappTailwindcssPlugin`。如果项目同时使用 `@tailwindcss/vite`，需要把 Tailwind CSS 插件放在前面，让 `weapp-tailwindcss` 在后续阶段接管小程序目标生成与转译。
+
+```ts title="vite.config.ts"
+import path from 'node:path'
+import tailwindcss from '@tailwindcss/vite'
+import { defineConfig } from 'weapp-vite/config'
+import { UnifiedViteWeappTailwindcssPlugin } from 'weapp-tailwindcss/vite'
+
+export default defineConfig({
+  plugins: [
+    tailwindcss(),
+    UnifiedViteWeappTailwindcssPlugin({
+      rem2rpx: true,
+      generator: {
+        mode: 'force',
+        target: 'weapp',
+      },
+      cssEntries: [
+        path.resolve(import.meta.dirname, './app.css'),
+      ],
+    }),
+  ],
+})
+```
+
+```css title="app.css"
+@import "tailwindcss";
+@source "./src/**/*.{wxml,js,ts,vue}";
+@source "./app.{js,ts,json}";
+@source not "./dist";
+```
+
+```xml title="src/pages/index/index.wxml"
+<view class="space-y-4 p-[32rpx]">
+  <view class="rounded-lg bg-[#123456] p-4 text-[32rpx] text-white">
+    weapp-vite generator
+  </view>
+  <view class="{{ stateClass }}" hover-class="bg-emerald-600">
+    WXML 动态类 + hover-class
+  </view>
+</view>
+```
+
+```ts title="src/pages/index/index.ts"
+import { twMerge } from '@weapp-tailwindcss/merge'
+
+Page({
+  data: {
+    stateClass: twMerge('bg-[#0000ff] text-[45rpx]', 'rounded-xl p-4 text-white'),
+  },
+})
+```
+
+验证命令：当前 weapp-vite 项目的 `pnpm build`。
 
 ## Mpx
 
