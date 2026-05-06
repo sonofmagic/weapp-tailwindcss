@@ -16,6 +16,13 @@ const navbar: NonNullable<ThemeConfig['navbar']> = {
 
     {
       type: 'doc',
+      label: '生成模式',
+      docId: 'tailwindcss/v5-generator-examples',
+      position: 'left',
+      className: 'navbar__generator-link',
+    },
+    {
+      type: 'doc',
       label: '生态及解决方案',
       docId: 'community/templates',
     },

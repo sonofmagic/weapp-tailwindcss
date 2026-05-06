@@ -1,7 +1,7 @@
 ---
 id: v5-generator-examples
-title: v5 Tailwind CSS v4 生成器示例
-description: 使用 weapp-tailwindcss v5 生成器接入 uni-app Vue Vite、Taro Vite 与 Mpx 的完整示例
+title: v5 生成模式使用方式（推荐）
+description: 使用 weapp-tailwindcss v5 生成模式接入 uni-app Vue Vite、Taro Vite 与 Mpx 的完整示例
 sidebar_position: 6
 keywords:
   - weapp-tailwindcss
@@ -13,9 +13,13 @@ keywords:
   - 小程序
 ---
 
-# v5 Tailwind CSS v4 生成器示例
+# v5 生成模式使用方式（推荐）
 
 v5 推荐把 Tailwind CSS v4 当作标准 CSS-first 入口使用，再由 `weapp-tailwindcss` 控制最终样式生成。核心变化是：入口 CSS 写 `@import "tailwindcss"`，构建插件或 PostCSS 插件开启 `generator`，最终产物直接面向小程序，而不是先生成浏览器 CSS 再做大量兜底兼容。
+
+:::tip 新项目优先选择生成模式
+如果你正在接入 Tailwind CSS v4 或准备升级到 v5，优先从本页开始。生成模式会直接生成小程序目标 CSS，并用 `classSet` 精确约束 JS / 模板转译范围。
+:::
 
 ## 功能覆盖清单
 

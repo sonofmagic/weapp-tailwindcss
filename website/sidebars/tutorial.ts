@@ -96,6 +96,11 @@ const tutorialSidebar: SidebarConfig = [
     collapsed: false,
     items: [
       {
+        type: 'doc',
+        label: '🔥 v5 生成模式使用方式（推荐）',
+        id: 'tailwindcss/v5-generator-examples',
+      },
+      {
         type: 'category',
         label: '各个框架的注册方式',
         items: [

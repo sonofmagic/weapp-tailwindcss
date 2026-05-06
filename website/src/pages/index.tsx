@@ -289,14 +289,14 @@ function HomepageHeader() {
                       text-center
                       sm:w-auto
                     `}
-                    href="/docs/intro"
+                    href="/docs/tailwindcss/v5-generator-examples"
                   >
                     <span className={`
                       inline-flex items-center gap-1 text-[0.95rem]
                       tracking-[0.02em]
                     `}
                     >
-                      立即开始体验
+                      查看生成模式
                       <svg
                         aria-hidden="true"
                         className="size-5"
