@@ -5,6 +5,19 @@ permissions:
 
 on:
   workflow_dispatch:
+    inputs:
+      version:
+        description: Expected weapp-tailwindcss version to publish
+        required: true
+        default: 5.0.0-next.0
+      npm-tag:
+        description: npm dist-tag
+        required: true
+        default: next
+      prerelease-tag:
+        description: changeset prerelease tag
+        required: true
+        default: next
   # push:
   #   tags:
   #     - 'v*'
@@ -15,6 +28,7 @@ jobs:
   release:
     permissions:
       id-token: write
+      contents: write
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -41,13 +55,43 @@ jobs:
       - name: Install Dependencies
         run: pnpm i
 
+      - name: Enter changeset prerelease mode
+        run: |
+          if [ -f .changeset/pre.json ]; then
+            node -e 'const pre=require("./.changeset/pre.json"); const expected=process.env.EXPECTED_PRERELEASE_TAG; if (pre.tag !== expected) { throw new Error("Expected changeset prerelease tag " + expected + ", got " + pre.tag) }'
+          else
+            pnpm changeset pre enter "${{ inputs.prerelease-tag }}"
+          fi
+        env:
+          EXPECTED_PRERELEASE_TAG: ${{ inputs.prerelease-tag }}
+
+      - name: Version packages
+        run: pnpm changeset version
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Verify generated release version
+        run: |
+          node -e 'const pkg=require("./packages/weapp-tailwindcss/package.json"); const expected=process.env.EXPECTED_VERSION; if (pkg.version !== expected) { throw new Error("Expected weapp-tailwindcss@" + expected + ", got " + pkg.version) }'
+        env:
+          EXPECTED_VERSION: ${{ inputs.version }}
+
+      - name: Commit release version
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add .
+          git commit -m "chore: version weapp-tailwindcss ${{ inputs.version }}"
+
       - name: PNPM build
         run: pnpm run build
 
       - name: Publish to NPM
-        working-directory: ./packages/weapp-tailwindcss
-        run: pnpm release
+        run: pnpm changeset publish --tag "${{ inputs.npm-tag }}"
 
         env:
           NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
           NPM_CONFIG_PROVENANCE: true
+
+      - name: Push release commit and tags
+        run: git push origin HEAD:${{ github.ref_name }} --follow-tags

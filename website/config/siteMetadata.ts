@@ -1,4 +1,6 @@
-export const siteUrl = 'https://tw.icebreaker.top'
+import process from 'node:process'
+
+export const siteUrl = process.env.SITE_URL || 'https://tw.icebreaker.top'
 export const siteName = 'weapp-tailwindcss'
 export const siteLanguage = 'zh-CN'
 export const defaultMetaTitle = 'weapp-tailwindcss | Tailwind CSS 小程序与多端适配方案'

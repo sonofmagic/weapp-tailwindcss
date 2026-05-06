@@ -12,6 +12,8 @@ on:
 
 jobs:
   build:
+    name: Deploy production docs
+    if: github.ref != 'refs/heads/next'
     runs-on: ubuntu-latest
     strategy:
       matrix:
@@ -29,7 +31,7 @@ jobs:
       - name: Build
         run: pnpm run build:docs
       - name: Deploy
-        run: pnpm run deploy
+        run: pnpm exec wrangler deploy --config wrangler.jsonc
         working-directory: ./website
         env:
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
@@ -39,3 +41,27 @@ jobs:
         #   accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
         #   workingDirectory: ./website
         #   command: pages deploy .vitepress/dist --project-name=host-docs
+
+  next:
+    name: Deploy next docs
+    if: github.ref == 'refs/heads/next'
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node-version: [22]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node-version }}
+          cache: pnpm
+      - name: Install dependencies
+        run: pnpm install
+      - name: Build next docs
+        run: pnpm --filter @weapp-tailwindcss/website build:next
+      - name: Deploy next docs
+        run: pnpm --filter @weapp-tailwindcss/website deploy:next
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
