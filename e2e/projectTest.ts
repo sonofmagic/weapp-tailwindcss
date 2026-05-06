@@ -209,7 +209,9 @@ async function runProjectTest(entry: ProjectEntry, options: ProjectTestOptions) 
 
   await expectProjectSnapshot(options.suite, entry.name, 'tw-class-list.json', json)
 
-  const cssSnapshots = await collectCssSnapshots(projectPath, entry.cssFile)
+  const cssSnapshots = await collectCssSnapshots(projectPath, entry.cssFile, {
+    classList: extraction?.classList,
+  })
   for (const snapshot of cssSnapshots) {
     await expectProjectSnapshot(options.suite, entry.name, snapshot.fileName, snapshot.content)
   }

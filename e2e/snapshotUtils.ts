@@ -1,10 +1,15 @@
 import fs from 'node:fs/promises'
 import path from 'pathe'
+import postcss from 'postcss'
 import prettier from 'prettier'
 
 export interface CssSnapshotEntry {
   fileName: string
   content: string
+}
+
+export interface CssSnapshotOptions {
+  classList?: string[]
 }
 
 async function exists(target: string) {
@@ -159,7 +164,122 @@ export async function formatCss(css: string) {
   })
 }
 
-export async function collectCssSnapshots(projectRoot: string, cssRelativePath: string): Promise<CssSnapshotEntry[]> {
+const SCANNER_NOISE_SELECTOR_TO_CLASS = new Map([
+  ['.start', 'start'],
+  ['.end', 'end'],
+  ['.border-bs', 'border-bs'],
+  ['.border-be', 'border-be'],
+])
+
+function isTailwindV4Css(root: postcss.Root) {
+  let matched = false
+  root.walkDecls('--spacing', () => {
+    matched = true
+    return false
+  })
+  return matched
+}
+
+function getUtilityGroup(selector: string) {
+  if (/^\.text(?:-|_)/.test(selector)) {
+    return 'text'
+  }
+  if (/^(?:\.border(?:-|$)|\._eborder)/.test(selector)) {
+    return 'border'
+  }
+}
+
+function compareText(a: string, b: string) {
+  if (a < b) {
+    return -1
+  }
+  if (a > b) {
+    return 1
+  }
+  return 0
+}
+
+function sortUtilityRuleRuns(container: postcss.Container) {
+  const nodes = container.nodes
+  if (!nodes) {
+    return
+  }
+
+  for (const node of nodes) {
+    if ('nodes' in node) {
+      sortUtilityRuleRuns(node as postcss.Container)
+    }
+  }
+
+  let index = 0
+  while (index < nodes.length) {
+    const node = nodes[index]
+    if (node?.type !== 'rule') {
+      index += 1
+      continue
+    }
+
+    const group = getUtilityGroup(node.selector)
+    if (!group) {
+      index += 1
+      continue
+    }
+
+    let end = index + 1
+    while (end < nodes.length) {
+      const next = nodes[end]
+      if (next?.type !== 'rule' || getUtilityGroup(next.selector) !== group) {
+        break
+      }
+      end += 1
+    }
+
+    if (end - index > 1) {
+      const sorted = nodes
+        .slice(index, end)
+        .sort((a, b) => {
+          const selectorA = a.type === 'rule' ? a.selector : ''
+          const selectorB = b.type === 'rule' ? b.selector : ''
+          return compareText(selectorA, selectorB) || compareText(a.toString(), b.toString())
+        })
+      nodes.splice(index, end - index, ...sorted)
+    }
+
+    index = end
+  }
+}
+
+export function normalizeCssSnapshot(source: string, options: CssSnapshotOptions = {}) {
+  if (!options.classList) {
+    return source
+  }
+
+  const classNameSet = options.classList ? new Set(options.classList) : undefined
+  const root = postcss.parse(source)
+
+  root.walkRules((rule) => {
+    const expectedClass = SCANNER_NOISE_SELECTOR_TO_CLASS.get(rule.selector)
+    if (expectedClass && classNameSet && !classNameSet.has(expectedClass)) {
+      rule.remove()
+      return
+    }
+
+    if (/^\.border-_b.+_B$/.test(rule.selector)) {
+      rule.walkDecls('border-style', (decl) => {
+        if (decl.value === 'var(--tw-border-style)') {
+          decl.remove()
+        }
+      })
+    }
+  })
+
+  if (isTailwindV4Css(root)) {
+    sortUtilityRuleRuns(root)
+  }
+  return root.toString()
+}
+
+export async function collectCssSnapshots(projectRoot: string, cssRelativePath: string, options: CssSnapshotOptions = {}): Promise<CssSnapshotEntry[]> {
   const rootCssPath = path.resolve(projectRoot, cssRelativePath)
   const visited = new Set<string>()
   const snapshots: CssSnapshotEntry[] = []
@@ -179,7 +299,8 @@ export async function collectCssSnapshots(projectRoot: string, cssRelativePath: 
     const source = await fs.readFile(normalizedPath, 'utf8')
     const withoutBanner = stripTailwindBanner(source)
     const normalizedImports = normalizeCssImports(withoutBanner)
-    const formatted = await formatCss(normalizedImports)
+    const normalizedCss = normalizeCssSnapshot(normalizedImports, options)
+    const formatted = await formatCss(normalizedCss)
 
     snapshots.push({
       fileName: snapshotName,

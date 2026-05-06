@@ -387,9 +387,39 @@ wx-root-portal-content {
 .rounded-bl {
   border-bottom-left-radius: 8rpx;
 }
+._eborder-brand {
+  border-color: var(--color-brand) !important;
+}
 .border {
   border-style: var(--tw-border-style);
   border-width: 1rpx;
+}
+.border-_b10rpx_B {
+  border-width: 10rpx;
+}
+.border-b {
+  border-bottom-style: var(--tw-border-style);
+  border-bottom-width: 1rpx;
+}
+.border-e {
+  border-right-style: var(--tw-border-style);
+  border-right-width: 1rpx;
+}
+.border-l {
+  border-left-style: var(--tw-border-style);
+  border-left-width: 1rpx;
+}
+.border-r {
+  border-right-style: var(--tw-border-style);
+  border-right-width: 1rpx;
+}
+.border-s {
+  border-left-style: var(--tw-border-style);
+  border-left-width: 1rpx;
+}
+.border-t {
+  border-top-style: var(--tw-border-style);
+  border-top-width: 1rpx;
 }
 .border-x {
   border-left-style: var(--tw-border-style);
@@ -402,36 +432,6 @@ wx-root-portal-content {
   border-bottom-style: var(--tw-border-style);
   border-top-width: 1rpx;
   border-bottom-width: 1rpx;
-}
-.border-s {
-  border-left-style: var(--tw-border-style);
-  border-left-width: 1rpx;
-}
-.border-e {
-  border-right-style: var(--tw-border-style);
-  border-right-width: 1rpx;
-}
-.border-t {
-  border-top-style: var(--tw-border-style);
-  border-top-width: 1rpx;
-}
-.border-r {
-  border-right-style: var(--tw-border-style);
-  border-right-width: 1rpx;
-}
-.border-b {
-  border-bottom-style: var(--tw-border-style);
-  border-bottom-width: 1rpx;
-}
-.border-l {
-  border-left-style: var(--tw-border-style);
-  border-left-width: 1rpx;
-}
-._eborder-brand {
-  border-color: var(--color-brand) !important;
-}
-.border-_b10rpx_B {
-  border-width: 10rpx;
 }
 .bg-_b_h123456_B {
   background-color: #123456;
@@ -512,14 +512,11 @@ wx-root-portal-content {
 .p-_b32rpx_B {
   padding: 32rpx;
 }
-.text-wrap {
-  text-wrap: wrap;
+.text-_b32rpx_B {
+  font-size: 32rpx;
 }
-.text-clip {
-  text-overflow: clip;
-}
-.text-ellipsis {
-  text-overflow: ellipsis;
+.text-_b55rpx_B {
+  font-size: 55rpx;
 }
 .text-_b_hc31d6b_B {
   color: #c31d6b;
@@ -527,14 +524,17 @@ wx-root-portal-content {
 .text-_b_hfff_B {
   color: #fff;
 }
-.text-_b32rpx_B {
-  font-size: 32rpx;
+.text-clip {
+  text-overflow: clip;
 }
-.text-_b55rpx_B {
-  font-size: 55rpx;
+.text-ellipsis {
+  text-overflow: ellipsis;
 }
 .text-white {
   color: var(--color-white);
+}
+.text-wrap {
+  text-wrap: wrap;
 }
 .capitalize {
   text-transform: capitalize;
