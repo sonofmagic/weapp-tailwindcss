@@ -72,7 +72,7 @@ const config = {
 chain.merge({
   plugin: {
     install: {
-      plugin: UnifiedWebpackPluginV5,
+      plugin: WeappTailwindcss,
       args: [{
         // 方法1: 不要传 appType
         // 注释掉 appType : 'taro'

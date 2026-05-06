@@ -31,7 +31,7 @@ const config = {
     chain.merge({
       plugin: {
         install: {
-          plugin: UnifiedWebpackPluginV5,
+          plugin: WeappTailwindcss,
           args: [
             {
               rem2rpx: true,
@@ -54,7 +54,7 @@ const config = {
     chain.merge({
       plugin: {
         install: {
-          plugin: UnifiedWebpackPluginV5,
+          plugin: WeappTailwindcss,
           args: [
             {
               rem2rpx: true,

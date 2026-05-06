@@ -32,10 +32,10 @@ keywords:
 回到 `build.plugin.js`
 
 ```js title="build.plugin.js"
-const { UnifiedWebpackPluginV5 } = require('weapp-tailwindcss/webpack')
+const { WeappTailwindcss } = require('weapp-tailwindcss/webpack')
 module.exports = ({ context, onGetWebpackConfig }) => {
   onGetWebpackConfig((config) => {
-    config.plugin('UnifiedWebpackPluginV5').use(UnifiedWebpackPluginV5, [
+    config.plugin('WeappTailwindcss').use(WeappTailwindcss, [
       {
         rem2rpx: true,
       },

@@ -67,11 +67,11 @@ pnpm add -D tailwindcss@latest @tailwindcss/postcss postcss weapp-tailwindcss
 ```ts title="vite.config.ts"
 import path from 'node:path'
 import { defineConfig } from 'weapp-vite/config'
-import { UnifiedViteWeappTailwindcssPlugin } from 'weapp-tailwindcss/vite'
+import { WeappTailwindcss } from 'weapp-tailwindcss/vite'
 
 export default defineConfig({
   plugins: [
-    UnifiedViteWeappTailwindcssPlugin({
+    WeappTailwindcss({
       // 常用内置能力：开启 px 自动转换
       rem2rpx: true,
       cssEntries: [

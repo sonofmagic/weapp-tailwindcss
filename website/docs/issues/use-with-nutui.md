@@ -31,7 +31,7 @@ keywords:
 按照初始的配置，只需要添加一行即可，示例如下：
 
 ```diff
-const { UnifiedWebpackPluginV5 } = require('weapp-tailwindcss/webpack')
+const { WeappTailwindcss } = require('weapp-tailwindcss/webpack')
 
 {
   mini: {
@@ -39,7 +39,7 @@ const { UnifiedWebpackPluginV5 } = require('weapp-tailwindcss/webpack')
       chain.merge({
         plugin: {
           install: {
-            plugin: UnifiedWebpackPluginV5,
+            plugin: WeappTailwindcss,
             args: [{
               rem2rpx: true,
 +             injectAdditionalCssVarScope: true

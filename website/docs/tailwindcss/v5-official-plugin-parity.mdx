@@ -91,12 +91,12 @@ v5 小程序写法：
 import path from 'node:path'
 import tailwindcss from '@tailwindcss/vite'
 import { defineConfig } from 'vite'
-import { UnifiedViteWeappTailwindcssPlugin } from 'weapp-tailwindcss/vite'
+import { WeappTailwindcss } from 'weapp-tailwindcss/vite'
 
 export default defineConfig({
   plugins: [
     tailwindcss(),
-    UnifiedViteWeappTailwindcssPlugin({
+    WeappTailwindcss({
       rem2rpx: true,
       cssEntries: [
         path.resolve(__dirname, 'src/app.css'),

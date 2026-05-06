@@ -35,7 +35,7 @@ npm install -D tailwindcss @tailwindcss/postcss postcss weapp-tailwindcss
 
 ```js title="mpx.config.js"
 const { defineConfig } = require('@vue/cli-service')
-const { UnifiedWebpackPluginV5 } = require('weapp-tailwindcss/webpack')
+const { WeappTailwindcss } = require('weapp-tailwindcss/webpack')
 const path = require('node:path')
 const tailwindPostcss = require('@tailwindcss/postcss')
 module.exports = defineConfig({
@@ -65,7 +65,7 @@ module.exports = defineConfig({
     // 添加的代码在这里
     // highlight-start
     config.plugins.push(
-      new UnifiedWebpackPluginV5({
+      new WeappTailwindcss({
         appType: 'mpx',
         rem2rpx: true,
         cssEntries: [

@@ -56,10 +56,10 @@ export default {
 在项目的配置文件 `config/index` 中注册:
 
 ```js title="config/index.[jt]s"
-import { UnifiedWebpackPluginV5 } from 'weapp-tailwindcss/webpack'
+import { WeappTailwindcss } from 'weapp-tailwindcss/webpack'
 import path from 'node:path'
 // 假如你使用 js 配置，则使用下方 require 的写法
-// const { UnifiedWebpackPluginV5 } = require('weapp-tailwindcss/webpack')
+// const { WeappTailwindcss } = require('weapp-tailwindcss/webpack')
 // const path = require('node:path')
 
 {
@@ -73,7 +73,7 @@ import path from 'node:path'
       chain.merge({
         plugin: {
           install: {
-            plugin: UnifiedWebpackPluginV5,
+            plugin: WeappTailwindcss,
             args: [{
               // 这里可以传参数
               rem2rpx: true,

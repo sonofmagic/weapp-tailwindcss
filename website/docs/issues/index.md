@@ -115,9 +115,9 @@ const WeappTailwindcssDisabled = isH5 || isApp;
 // vite.config.ts
 import { defineConfig } from 'vite';
 import uni from '@dcloudio/vite-plugin-uni';
-import { UnifiedViteWeappTailwindcssPlugin as uvtw } from "weapp-tailwindcss-webpack-plugin/vite";
+import { WeappTailwindcss } from "weapp-tailwindcss/vite";
 // vite 插件配置
-const vitePlugins = [uni(),uvtw({
+const vitePlugins = [uni(),WeappTailwindcss({
   disabled: WeappTailwindcssDisabled
 })];
 
@@ -189,7 +189,8 @@ const isH5 = process.env.UNI_PLATFORM === "h5";
 // vue2 版本为 app-plus
 const isApp = process.env.UNI_PLATFORM === "app-plus";
 const WeappTailwindcssDisabled = isH5 || isApp;
-const vitePlugins = [uni(), uvwt({
+import { WeappTailwindcss } from "weapp-tailwindcss/vite";
+const vitePlugins = [uni(), WeappTailwindcss({
   disabled: WeappTailwindcssDisabled
 })];
 ```

@@ -63,9 +63,9 @@ const isH5 = process.env.UNI_PLATFORM === 'h5'
 const isApp = process.env.UNI_PLATFORM === 'app'
 const disabled = isH5 || isApp
 
-import { UnifiedViteWeappTailwindcssPlugin as uvtw } from 'weapp-tailwindcss/vite'
+import { WeappTailwindcss } from 'weapp-tailwindcss/vite'
 
-uvtw({
+WeappTailwindcss({
   disabled,
 })
 ```

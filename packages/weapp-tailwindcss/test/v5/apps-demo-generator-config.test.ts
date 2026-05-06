@@ -83,7 +83,7 @@ describe('v5 apps and demos generator config', () => {
     expect(docsSource).toContain('uni-app Vue Vite')
     expect(docsSource).toContain('Taro Vite')
     expect(docsSource).toContain('Mpx')
-    expect(docsSource).toContain('UnifiedViteWeappTailwindcssPlugin')
+    expect(docsSource).toContain('WeappTailwindcss')
     expect(docsSource).toContain('weapp-tailwindcss/postcss')
     expect(docsSource).toContain("target: 'web'")
     expect(docsSource).toContain('@weapp-tailwindcss/merge')

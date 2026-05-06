@@ -47,15 +47,15 @@ keywords:
 
 ```js
 // vite.config.js
-import { UnifiedViteWeappTailwindcssPlugin } from 'weapp-tailwindcss/vite'
-UnifiedViteWeappTailwindcssPlugin({
+import { WeappTailwindcss } from 'weapp-tailwindcss/vite'
+WeappTailwindcss({
   // ...other-options
   // highlight-next-line
   rem2rpx: true
 })
 // webpack
-const { UnifiedWebpackPluginV5 } = require('weapp-tailwindcss/webpack')
-new UnifiedWebpackPluginV5({
+const { WeappTailwindcss } = require('weapp-tailwindcss/webpack')
+new WeappTailwindcss({
   // ...other-options
   // highlight-next-line
   rem2rpx: true

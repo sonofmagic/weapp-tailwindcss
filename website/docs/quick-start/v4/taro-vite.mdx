@@ -41,7 +41,7 @@ npm install -D tailwindcss @tailwindcss/postcss postcss weapp-tailwindcss
 ## 配置
 
 ```js title="config/index.ts"
-import { UnifiedViteWeappTailwindcssPlugin } from 'weapp-tailwindcss/vite'
+import { WeappTailwindcss } from 'weapp-tailwindcss/vite'
 import tailwindcss from '@tailwindcss/postcss'
 import path from 'node:path'
 
@@ -58,7 +58,7 @@ import path from 'node:path'
           }
         },
       },
-      UnifiedViteWeappTailwindcssPlugin({
+      WeappTailwindcss({
         rem2rpx: true,
         appType: 'taro',
         cssEntries: [

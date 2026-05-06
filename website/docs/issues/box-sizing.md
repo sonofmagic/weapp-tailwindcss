@@ -30,7 +30,7 @@ keywords:
 假如你要从插件层面解决问题，只要做出如下修改:
 
 ```js
-uvtw({
+WeappTailwindcss({
   // 添加这一行配置即可
   cssPreflight: {
     'box-sizing': false,

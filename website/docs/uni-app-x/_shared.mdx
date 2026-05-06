@@ -96,7 +96,7 @@ module.exports = { r }
 ```js title="vite.config.ts"
 import { defineConfig } from 'vite'
 import uni from '@dcloudio/vite-plugin-uni'
-import { UnifiedViteWeappTailwindcssPlugin } from 'weapp-tailwindcss/vite'
+import { WeappTailwindcss } from 'weapp-tailwindcss/vite'
 import { r } from './shared'
 import { uniAppX } from 'weapp-tailwindcss/presets'
 import tailwindcss from 'tailwindcss'
@@ -104,7 +104,7 @@ import tailwindcss from 'tailwindcss'
 export default defineConfig({
   plugins: [
     uni(),
-    UnifiedViteWeappTailwindcssPlugin(
+    WeappTailwindcss(
       uniAppX({
         base: __dirname,
         // uni-app x 官方推荐使用 px 作为单位
@@ -129,7 +129,7 @@ export default defineConfig({
 `uni-app x` 官方推荐使用 `px` 作为长度单位，开启 `unitsToPx` 后会将 `rem/em/vw/vh/vmin/vmax/rpx` 统一转换为 `px`：
 
 ```js title="vite.config.ts"
-UnifiedViteWeappTailwindcssPlugin(
+WeappTailwindcss(
   uniAppX({
     base: __dirname,
     unitsToPx: true,
@@ -140,7 +140,7 @@ UnifiedViteWeappTailwindcssPlugin(
 需要自定义转换规则时可以传入对象，例如调整精度或覆盖单位映射：
 
 ```js title="vite.config.ts"
-UnifiedViteWeappTailwindcssPlugin(
+WeappTailwindcss(
   uniAppX({
     base: __dirname,
     unitsToPx: {

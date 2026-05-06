@@ -38,14 +38,14 @@ keywords:
 
 ```js
 // vite
-import { UnifiedViteWeappTailwindcssPlugin } from 'weapp-tailwindcss/vite'
-UnifiedViteWeappTailwindcssPlugin({
+import { WeappTailwindcss } from 'weapp-tailwindcss/vite'
+WeappTailwindcss({
   // ...other-options
   px2rpx: true
 })
 // webpack
-const { UnifiedWebpackPluginV5 } = require('weapp-tailwindcss/webpack')
-new UnifiedWebpackPluginV5({
+const { WeappTailwindcss } = require('weapp-tailwindcss/webpack')
+new WeappTailwindcss({
   // ...other-options
   px2rpx: true
 })
@@ -59,8 +59,8 @@ new UnifiedWebpackPluginV5({
 
 ```js
 // vite
-import { UnifiedViteWeappTailwindcssPlugin } from 'weapp-tailwindcss/vite'
-UnifiedViteWeappTailwindcssPlugin({
+import { WeappTailwindcss } from 'weapp-tailwindcss/vite'
+WeappTailwindcss({
   // ...other-options
   px2rpx: {
     designWidth: 375,
@@ -130,8 +130,8 @@ module.exports = {
 
 ```js
 // vite
-import { UnifiedViteWeappTailwindcssPlugin } from 'weapp-tailwindcss/vite'
-UnifiedViteWeappTailwindcssPlugin({
+import { WeappTailwindcss } from 'weapp-tailwindcss/vite'
+WeappTailwindcss({
   // ...other-options
   unitsToPx: true,
 })
@@ -139,8 +139,8 @@ UnifiedViteWeappTailwindcssPlugin({
 
 ```js
 // webpack
-const { UnifiedWebpackPluginV5 } = require('weapp-tailwindcss/webpack')
-new UnifiedWebpackPluginV5({
+const { WeappTailwindcss } = require('weapp-tailwindcss/webpack')
+new WeappTailwindcss({
   // ...other-options
   unitsToPx: {
     unitPrecision: 2,

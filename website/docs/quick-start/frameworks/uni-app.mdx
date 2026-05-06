@@ -36,7 +36,7 @@ import ExternalClassesReminder from '@site/fragments/ExternalClassesReminder.mdx
 :::
 
 ```js title="vue.config.js"
-const { UnifiedWebpackPluginV5 } = require('weapp-tailwindcss/webpack')
+const { WeappTailwindcss } = require('weapp-tailwindcss/webpack')
 /**
  * @type {import('@vue/cli-service').ProjectOptions}
  */
@@ -45,7 +45,7 @@ const config = {
   // highlight-start
   configureWebpack: (config) => {
     config.plugins.push(
-      new UnifiedWebpackPluginV5({
+      new WeappTailwindcss({
         rem2rpx: true,
       })
     )

@@ -39,9 +39,9 @@ keywords:
 在项目的配置文件 `config/index` 中注册:
 
 ```js title="config/index.[jt]s"
-const { UnifiedWebpackPluginV5 } = require('weapp-tailwindcss/webpack')
+const { WeappTailwindcss } = require('weapp-tailwindcss/webpack')
 // 假如你使用 ts 配置，则使用下方 import 的写法
-// import { UnifiedWebpackPluginV5 } from 'weapp-tailwindcss/webpack'
+// import { WeappTailwindcss } from 'weapp-tailwindcss/webpack'
 
 {
   // 找到 mini 这个配置
@@ -54,7 +54,7 @@ const { UnifiedWebpackPluginV5 } = require('weapp-tailwindcss/webpack')
       chain.merge({
         plugin: {
           install: {
-            plugin: UnifiedWebpackPluginV5,
+            plugin: WeappTailwindcss,
             args: [{
               // 这里可以传参数
               rem2rpx: true,
@@ -72,9 +72,9 @@ const { UnifiedWebpackPluginV5 } = require('weapp-tailwindcss/webpack')
 然后正常运行项目即可，相关的配置可以参考模板 [taro-react-tailwind-vscode-template](https://github.com/sonofmagic/taro-react-tailwind-vscode-template)
 
 :::info
-`weapp-tailwindcss/webpack` 对应的插件 `UnifiedWebpackPluginV5` 对应 `webpack@5`
+`weapp-tailwindcss/webpack` 对应的推荐插件名 `WeappTailwindcss` 适用于 `webpack@5`
 
-`weapp-tailwindcss/webpack4` 对应的插件 `UnifiedWebpackPluginV4` 对应 `webpack@4`
+`weapp-tailwindcss/webpack4` 对应的推荐插件名 `WeappTailwindcss` 适用于 `webpack@4`
 
 在使用 `Taro` 时，检查一下 `config/index` 文件的配置项 `compiler`，来确认你的 `webpack` 版本，推荐使用 `'webpack5'`
 
@@ -115,7 +115,7 @@ cache: {
 ```ts title="config/index.[jt]s"
 import type { Plugin } from 'vite'
 import tailwindcss from 'tailwindcss'
-import { UnifiedViteWeappTailwindcssPlugin as uvtw } from 'weapp-tailwindcss/vite'
+import { WeappTailwindcss } from 'weapp-tailwindcss/vite'
 
 const baseConfig: UserConfigExport<'vite'> = {
   // ... 其他配置
@@ -133,7 +133,7 @@ const baseConfig: UserConfigExport<'vite'> = {
           }
         },
       },
-      uvtw({
+      WeappTailwindcss({
         // rem转rpx
         rem2rpx: true,
         // 除了小程序这些，其他平台都 disable

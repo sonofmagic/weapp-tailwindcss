@@ -72,12 +72,12 @@ npm i
 
 ```ts title="vite.config.ts"
 import { defineConfig } from 'weapp-vite/config'
-import { UnifiedViteWeappTailwindcssPlugin as uvwt } from 'weapp-tailwindcss/vite'
+import { WeappTailwindcss } from 'weapp-tailwindcss/vite'
 
 export default defineConfig({
   // highlight-start
   plugins: [
-    uvwt({
+    WeappTailwindcss({
       rem2rpx: true,
     }),
   ],

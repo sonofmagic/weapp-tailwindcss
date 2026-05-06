@@ -62,7 +62,7 @@ module.exports = {
 import path from "path";
 import { defineConfig } from "vite";
 import uni from "@dcloudio/vite-plugin-uni";
-import { UnifiedViteWeappTailwindcssPlugin as uvwt } from "weapp-tailwindcss/vite";
+import { WeappTailwindcss } from "weapp-tailwindcss/vite";
 // 注意： 打包成 h5 和 app 都不需要开启插件配置
 const isH5 = process.env.UNI_PLATFORM === "h5";
 const isApp = process.env.UNI_PLATFORM === "app";
@@ -75,7 +75,7 @@ const resolve = (p) => {
 export default defineConfig({
   plugins: [
     uni(),
-    uvwt({
+    WeappTailwindcss({
       rem2rpx: true,
       disabled: WeappTailwindcssDisabled,
       // 由于 hbuilderx 会改变 process.cwd 所以这里必须传入当前目录的绝对路径

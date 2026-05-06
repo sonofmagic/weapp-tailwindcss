@@ -41,12 +41,12 @@ npm install -D tailwindcss @tailwindcss/postcss postcss weapp-tailwindcss
 ```js title="vite.config.ts"
 import path from 'node:path'
 import tailwindcss from '@tailwindcss/vite'
-import { UnifiedViteWeappTailwindcssPlugin } from 'weapp-tailwindcss/vite'
+import { WeappTailwindcss } from 'weapp-tailwindcss/vite'
 import { defineConfig } from 'weapp-vite/config'
 
 export default defineConfig({
   plugins: [
-    UnifiedViteWeappTailwindcssPlugin({
+    WeappTailwindcss({
       rem2rpx: true,
       cssEntries: [
         // app.css 的路径
