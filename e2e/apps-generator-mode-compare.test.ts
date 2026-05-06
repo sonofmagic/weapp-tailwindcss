@@ -11,6 +11,7 @@ import postcss from 'postcss'
 import { describe, expect, it } from 'vitest'
 import { createChineseMarkdownReport, createMarkdownReport } from './apps-generator-report'
 import { E2E_PROJECTS, NATIVE_PROJECTS } from './projectEntries'
+import { clearProjectBuildState } from './projectTest'
 import { collectCssSnapshots, resolveSnapshotFile } from './shared'
 
 type GeneratorBuildMode = 'generator' | 'legacy'
@@ -176,6 +177,7 @@ async function cleanProject(root: string) {
     fs.rm(path.resolve(root, 'src/node_modules/.cache/weapp-tailwindcss'), { recursive: true, force: true }),
     fs.rm(path.resolve(root, '.tw-patch/tailwindcss-target.json'), { force: true }),
   ])
+  await clearProjectBuildState(root)
 }
 
 async function buildProject(project: CompareProject, mode: GeneratorBuildMode) {

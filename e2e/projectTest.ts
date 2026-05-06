@@ -39,17 +39,39 @@ async function safeRm(target: string) {
 async function clearTailwindPatchCaches(root: string) {
   const workspaceRoot = path.resolve(root, '..', '..')
   const candidates = new Set<string>([
+    path.resolve(root, 'dist'),
+    path.resolve(root, 'unpackage'),
     path.resolve(root, 'node_modules/.cache/tailwindcss-patch'),
+    path.resolve(root, 'node_modules/.cache/weapp-tailwindcss'),
     path.resolve(root, 'src/node_modules/.cache/tailwindcss-patch'),
+    path.resolve(root, 'src/node_modules/.cache/weapp-tailwindcss'),
     path.resolve(root, 'config/node_modules/.cache/tailwindcss-patch'),
+    path.resolve(root, 'config/node_modules/.cache/weapp-tailwindcss'),
+    path.resolve(root, '.tw-patch/tailwindcss-target.json'),
     path.resolve(root, 'node_modules/.vite'),
     path.resolve(workspaceRoot, 'node_modules/.cache/tailwindcss-patch'),
+    path.resolve(workspaceRoot, 'node_modules/.cache/weapp-tailwindcss'),
     path.resolve(workspaceRoot, 'packages/weapp-tailwindcss/node_modules/.cache/tailwindcss-patch'),
+    path.resolve(workspaceRoot, 'packages/weapp-tailwindcss/node_modules/.cache/weapp-tailwindcss'),
   ])
 
   await Promise.all(
     Array.from(candidates, target => safeRm(target)),
   )
+}
+
+export async function clearProjectBuildState(root: string) {
+  await clearTailwindPatchCaches(root)
+}
+
+function shouldSkipAutomator(entry: ProjectEntry) {
+  if (entry.skipOpenAutomator) {
+    return true
+  }
+  if (process.env.E2E_OPEN_AUTOMATOR === '1') {
+    return false
+  }
+  return process.env.CI === 'true' || process.env.CI === '1'
 }
 
 async function expectProjectSnapshot(suite: string, projectName: string, fileName: string, content: string) {
@@ -140,16 +162,14 @@ async function runProjectTest(entry: ProjectEntry, options: ProjectTestOptions) 
   const root = path.resolve(projectBase, entry.name)
   const shouldResetPatchCaches = !entry.name.startsWith('taro-')
 
-  if (shouldResetPatchCaches) {
-    await clearTailwindPatchCaches(root)
-  }
+  await clearProjectBuildState(root)
 
   if (process.env.E2E_SKIP_BUILD !== '1') {
     await ensureProjectBuilt(root)
   }
 
   if (shouldResetPatchCaches) {
-    await clearTailwindPatchCaches(root)
+    await clearProjectBuildState(root)
   }
 
   let extraction
@@ -194,7 +214,7 @@ async function runProjectTest(entry: ProjectEntry, options: ProjectTestOptions) 
     await expectProjectSnapshot(options.suite, entry.name, snapshot.fileName, snapshot.content)
   }
 
-  if (entry.skipOpenAutomator) {
+  if (shouldSkipAutomator(entry)) {
     await wait()
     return
   }
