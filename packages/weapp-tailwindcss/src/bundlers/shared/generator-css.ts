@@ -10,17 +10,16 @@ import {
 import { finalizeMiniProgramCss, removeUnsupportedAtSupports } from './css-cleanup'
 
 const TAILWIND_V4_BANNER_RE = /\/\*!\s*tailwindcss v4\./
-const TAILWIND_GENERATED_CSS_MARKER_RE = /\/\*!\s*tailwindcss v|@property\s+--tw-|--tw-|:not\(#\\#\)|\.[^,{]*\\:/
+const TAILWIND_GENERATED_CSS_MARKER_RE = /\/\*!\s*tailwindcss v|@property\s+--tw-|--tw-|:not\(#\\#\)|\.[^,{]*(?:\\:|\\\[|\\#)|(?::host|page|\.tw-root|wx-root-portal-content)[^{]*\{[^}]*--(?:color|spacing|text|font-weight|radius)-/
 const TAILWIND_BANNER_PREFIX_RE = /^\/\*!\s*tailwindcss v[^*]*\*\/\s*/i
 const TAILWIND_BANNER_RE = /\/\*!\s*tailwindcss v[^*]*\*\//i
 const TAILWIND_BANNER_GLOBAL_RE = /\/\*!\s*tailwindcss v[^*]*\*\/\s*/gi
 const VITE_MARKER_RE = /\/\*\$vite\$:[^*]*\*\//g
 const SUPPORTED_GENERATOR_MAJOR_VERSIONS = new Set([3, 4])
 const REMOTE_IMPORT_RE = /^(?:https?:)?\/\//i
-const TAILWIND_SOURCE_DIRECTIVE_NAMES = new Set([
+const TAILWIND_REMOVABLE_SOURCE_DIRECTIVE_NAMES = new Set([
   'config',
   'custom-variant',
-  'import',
   'layer',
   'plugin',
   'reference',
@@ -145,7 +144,14 @@ function isTailwindSourceDirective(node: postcss.Node) {
   if (isTailwindImportAtRule(node)) {
     return true
   }
-  return TAILWIND_SOURCE_DIRECTIVE_NAMES.has(node.name)
+  return TAILWIND_REMOVABLE_SOURCE_DIRECTIVE_NAMES.has(node.name)
+}
+
+function isTailwindGenerationDirective(node: postcss.Node) {
+  if (node.type !== 'atrule') {
+    return false
+  }
+  return node.name === 'tailwind' || isTailwindImportAtRule(node)
 }
 
 export function removeTailwindSourceDirectives(rawSource: string) {
@@ -170,7 +176,7 @@ export function hasTailwindSourceDirectives(rawSource: string) {
     const root = postcss.parse(rawSource)
     let found = false
     root.walk((node) => {
-      if (isTailwindSourceDirective(node)) {
+      if (isTailwindGenerationDirective(node)) {
         found = true
         return false
       }
@@ -219,6 +225,96 @@ function resolveLegacyCompatCssSource(rawSource: string) {
   return removeUnsupportedAtSupports(source)
 }
 
+function normalizeCssSelector(selector: string) {
+  return selector.trim().replace(/\s+/g, '')
+}
+
+function isCustomPropertyOnlyRule(rule: postcss.Rule) {
+  let hasDeclaration = false
+  let allCustomProperties = true
+
+  rule.each((node) => {
+    if (node.type !== 'decl') {
+      return
+    }
+    hasDeclaration = true
+    if (!node.prop.startsWith('--')) {
+      allCustomProperties = false
+    }
+  })
+
+  return hasDeclaration && allCustomProperties
+}
+
+function isPseudoContentInitRule(rule: postcss.Rule) {
+  let hasDeclaration = false
+  let onlyContentVariable = true
+
+  rule.each((node) => {
+    if (node.type !== 'decl') {
+      return
+    }
+    hasDeclaration = true
+    if (node.prop !== '--tw-content') {
+      onlyContentVariable = false
+    }
+  })
+
+  return hasDeclaration && onlyContentVariable
+}
+
+function collectGeneratedSelectors(css: string) {
+  const selectors = new Set<string>()
+  try {
+    const root = postcss.parse(css)
+    root.walkRules((rule) => {
+      if (isCustomPropertyOnlyRule(rule) && !isPseudoContentInitRule(rule)) {
+        return
+      }
+      selectors.add(normalizeCssSelector(rule.selector))
+    })
+  }
+  catch {
+    return selectors
+  }
+  return selectors
+}
+
+function removeGeneratedSelectorCompatCss(css: string, generatedCss: string) {
+  const generatedSelectors = collectGeneratedSelectors(generatedCss)
+  if (generatedSelectors.size === 0) {
+    return css
+  }
+
+  try {
+    const root = postcss.parse(css)
+    let removed = false
+    root.walkRules((rule) => {
+      if (isPseudoContentInitRule(rule)) {
+        rule.remove()
+        removed = true
+        return
+      }
+      if (isCustomPropertyOnlyRule(rule) && !isPseudoContentInitRule(rule)) {
+        return
+      }
+      if (generatedSelectors.has(normalizeCssSelector(rule.selector))) {
+        rule.remove()
+        removed = true
+      }
+    })
+    root.walkAtRules((atRule) => {
+      if (!atRule.nodes || atRule.nodes.length === 0) {
+        atRule.remove()
+      }
+    })
+    return removed ? root.toString() : css
+  }
+  catch {
+    return css
+  }
+}
+
 async function appendLegacyCompatCss(
   css: string,
   rawSource: string,
@@ -227,7 +323,7 @@ async function appendLegacyCompatCss(
   cssHandlerOptions: IStyleHandlerOptions,
   generatorStyleOptions: IStyleHandlerOptions | undefined,
 ) {
-  const compatSource = resolveLegacyCompatCssSource(rawSource)
+  const compatSource = removeGeneratedSelectorCompatCss(resolveLegacyCompatCssSource(rawSource), css)
   if (compatSource.trim().length === 0) {
     return css
   }
@@ -266,8 +362,7 @@ export async function generateCssByGenerator(
   const hasGeneratedCss = hasTailwindGeneratedCss(rawSource)
   const hasSourceDirectives = hasTailwindSourceDirectives(rawSource)
   const hasGeneratedMarkers = hasTailwindGeneratedCssMarkers(rawSource)
-  const shouldForceGenerateCurrentCss = cssHandlerOptions.isMainChunk
-    || hasGeneratedCss
+  const shouldForceGenerateCurrentCss = hasGeneratedCss
     || hasGeneratedMarkers
     || hasSourceDirectives
 
@@ -276,7 +371,6 @@ export async function generateCssByGenerator(
     || !SUPPORTED_GENERATOR_MAJOR_VERSIONS.has(majorVersion ?? 0)
     || (
       generatorOptions.mode === 'force'
-      && majorVersion !== 3
       && !shouldForceGenerateCurrentCss
     )
     || (

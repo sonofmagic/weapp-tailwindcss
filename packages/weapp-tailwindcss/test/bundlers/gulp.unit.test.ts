@@ -180,9 +180,12 @@ describe('bundlers/gulp createPlugins', () => {
     await runTransform(plugins.transformWxss(), createFile('/src/page.wxss', '.bar { color: green; }'))
 
     expect(styleHandler).toHaveBeenCalledTimes(2)
-    expect(styleHandler.mock.calls[0]?.[1]).toBe(styleHandler.mock.calls[1]?.[1])
     expect(styleHandler.mock.calls[0]?.[1]).toEqual({
       isMainChunk: true,
+      majorVersion: 3,
+    })
+    expect(styleHandler.mock.calls[1]?.[1]).toEqual({
+      isMainChunk: false,
       majorVersion: 3,
     })
   })

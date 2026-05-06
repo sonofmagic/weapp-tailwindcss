@@ -163,7 +163,6 @@ export function createPlugins(options: UserDefinedOptions = {}) {
       let cached = defaultStyleHandlerOptionsCache.get(majorVersion)
       if (!cached) {
         cached = {
-          isMainChunk: true,
           majorVersion: runtimeState.twPatcher.majorVersion,
         }
         defaultStyleHandlerOptionsCache.set(majorVersion, cached)
@@ -172,9 +171,20 @@ export function createPlugins(options: UserDefinedOptions = {}) {
     }
 
     return {
-      isMainChunk: true,
       majorVersion: runtimeState.twPatcher.majorVersion,
       ...options,
+    }
+  }
+
+  function resolveWxssFileHandlerOptions(filePath: string, options?: Partial<IStyleHandlerOptions>) {
+    const resolved = resolveWxssHandlerOptions(options)
+    if (resolved.isMainChunk !== undefined) {
+      return resolved
+    }
+    const cssExt = opts.cssMatcher?.ext ?? 'wxss'
+    return {
+      ...resolved,
+      isMainChunk: path.basename(filePath) === `app.${cssExt}`,
     }
   }
 
@@ -222,7 +232,7 @@ export function createPlugins(options: UserDefinedOptions = {}) {
         },
         async transform() {
           await runtimeState.patchPromise
-          const cssHandlerOptions = resolveWxssHandlerOptions(options)
+          const cssHandlerOptions = resolveWxssFileHandlerOptions(file.path, options)
           const generated = hasExplicitGeneratorOptions
             ? await generateCssByGenerator({
                 opts,

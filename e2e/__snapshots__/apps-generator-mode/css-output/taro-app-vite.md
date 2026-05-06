@@ -8,7 +8,7 @@ Generator CSS files: app.wxss, app-origin.wxss, index.wxss
 | Mode | Bytes | Selectors | @supports | :hover | Tailwind banner | Raw arbitrary selector | Weapp escaped arbitrary selector |
 | --- | ---: | ---: | --- | --- | --- | --- | --- |
 | legacy | 4530 | 28 | false | false | false | false | true |
-| generator | 2575 | 13 | false | false | false | false | true |
+| generator | 1325 | 12 | false | false | false | false | true |
 
 ## Legacy CSS
 
@@ -266,57 +266,6 @@ text,
   }
 }
 
-.flex {
-  display: flex;
-}
-.flex-col {
-  flex-direction: column;
-}
-.divide-x-8 > view + view {
-  --tw-divide-x-reverse: 0;
-  border-right-width: calc(8px * var(--tw-divide-x-reverse));
-  border-left-width: calc(8px * calc(1 - var(--tw-divide-x-reverse)));
-}
-.divide-solid > view + view {
-  border-style: solid;
-}
-.divide-_b_h60d256_B > view + view {
-  --tw-divide-opacity: 1;
-  border-color: rgba(96, 210, 86, var(--tw-divide-opacity, 1));
-}
-.bg-_b_h89ab8d_B {
-  --tw-bg-opacity: 1;
-  background-color: rgba(137, 171, 141, var(--tw-bg-opacity, 1));
-}
-.bg-_b_he24826_B {
-  --tw-bg-opacity: 1;
-  background-color: rgba(226, 72, 38, var(--tw-bg-opacity, 1));
-}
-.text-_b66rpx_B {
-  font-size: 66rpx;
-}
-.text-_b_h3d31a4_B {
-  --tw-text-opacity: 1;
-  color: rgba(61, 49, 164, var(--tw-text-opacity, 1));
-}
-.text-_b_h438821_B {
-  --tw-text-opacity: 1;
-  color: rgba(67, 136, 33, var(--tw-text-opacity, 1));
-}
-.before_ccontent-_b_q11111_q_B::before {
-  --tw-content: '11111';
-  content: var(--tw-content);
-}
-.before_ccontent-_b_q222_q_B::before {
-  --tw-content: '222';
-  content: var(--tw-content);
-}
-@media (prefers-color-scheme: dark) {
-  .dark_ctext-_b_hec4f4f_B {
-    --tw-text-opacity: 1;
-    color: rgba(236, 79, 79, var(--tw-text-opacity, 1));
-  }
-}
 .tw-page-style-watch-anchor {
   color: inherit;
 }

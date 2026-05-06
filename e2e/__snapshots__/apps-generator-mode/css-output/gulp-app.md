@@ -7,16 +7,12 @@ Generator CSS files: app.wxss, index.wxss, more.wxss
 
 | Mode | Bytes | Selectors | @supports | :hover | Tailwind banner | Raw arbitrary selector | Weapp escaped arbitrary selector |
 | --- | ---: | ---: | --- | --- | --- | --- | --- |
-| legacy | 6578 | 47 | false | false | false | false | true |
-| generator | 12575 | 47 | false | false | false | false | true |
+| legacy | 6567 | 47 | false | false | false | false | true |
+| generator | 8219 | 47 | false | false | false | false | true |
 
 ## Legacy CSS
 
 ```css
-::before,
-::after {
-  --tw-content: '';
-}
 view,
 text,
 ::before,
@@ -73,10 +69,6 @@ text,
   --tw-contain-paint:  ;
   --tw-contain-style:
 ;
-  box-sizing: border-box;
-  border-width: 0;
-  border-style: solid;
-  border-color: currentColor;
 }
 .i-mdi-123 {
   display: inline-block;
@@ -160,6 +152,7 @@ text,
 .space-y-1 > text + text {
   --tw-space-y-reverse: 0;
   margin-top: calc(8rpx * (1 - var(--tw-space-y-reverse)));
+  margin-top: calc(8rpx * calc(1 - var(--tw-space-y-reverse)));
   margin-bottom: calc(8rpx * var(--tw-space-y-reverse));
 }
 .space-y-4 > view + view,
@@ -168,6 +161,7 @@ text,
 .space-y-4 > text + text {
   --tw-space-y-reverse: 0;
   margin-top: calc(32rpx * (1 - var(--tw-space-y-reverse)));
+  margin-top: calc(32rpx * calc(1 - var(--tw-space-y-reverse)));
   margin-bottom: calc(32rpx * var(--tw-space-y-reverse));
 }
 .border-b {
@@ -318,10 +312,6 @@ text,
   --tw-contain-paint:  ;
   --tw-contain-style:
 ;
-  box-sizing: border-box;
-  border-width: 0;
-  border-style: solid;
-  border-color: currentColor;
 }
 .m-_b20px_B {
   margin: 20px;
@@ -350,11 +340,13 @@ text,
 .space-y-1 > view + view {
   --tw-space-y-reverse: 0;
   margin-top: calc(0.25rem * (1 - var(--tw-space-y-reverse)));
+  margin-top: calc(0.25rem * calc(1 - var(--tw-space-y-reverse)));
   margin-bottom: calc(0.25rem * var(--tw-space-y-reverse));
 }
 .space-y-4 > view + view {
   --tw-space-y-reverse: 0;
   margin-top: calc(1rem * (1 - var(--tw-space-y-reverse)));
+  margin-top: calc(1rem * calc(1 - var(--tw-space-y-reverse)));
   margin-bottom: calc(1rem * var(--tw-space-y-reverse));
 }
 .border-b {
@@ -491,17 +483,8 @@ text,
 .mt-_b33px_B {
   margin-top: 66rpx;
 }
-.block {
-  display: block;
-}
 .h-_b41_d54vw_B {
   height: 41.54vw;
-}
-.h-full {
-  height: 100%;
-}
-.w-screen {
-  width: 100vw;
 }
 .space-y-1 > view + view,
 .space-y-1 > view + text,
@@ -509,6 +492,7 @@ text,
 .space-y-1 > text + text {
   --tw-space-y-reverse: 0;
   margin-top: calc(8rpx * (1 - var(--tw-space-y-reverse)));
+  margin-top: calc(8rpx * calc(1 - var(--tw-space-y-reverse)));
   margin-bottom: calc(8rpx * var(--tw-space-y-reverse));
 }
 .space-y-4 > view + view,
@@ -517,10 +501,8 @@ text,
 .space-y-4 > text + text {
   --tw-space-y-reverse: 0;
   margin-top: calc(32rpx * (1 - var(--tw-space-y-reverse)));
+  margin-top: calc(32rpx * calc(1 - var(--tw-space-y-reverse)));
   margin-bottom: calc(32rpx * var(--tw-space-y-reverse));
-}
-.border-b {
-  border-bottom-width: 2rpx;
 }
 .border-_b_hEEEEEE_B {
   --tw-border-opacity: 1;
@@ -538,12 +520,6 @@ text,
 }
 .bg-_blength_c100_v_100_v_B {
   background-size: 100% 100%;
-}
-.bg-no-repeat {
-  background-repeat: no-repeat;
-}
-.p-4 {
-  padding: 32rpx;
 }
 .pb-_b10px_B {
   padding-bottom: 20rpx;
@@ -551,36 +527,12 @@ text,
 .pl-_b15px_B {
   padding-left: 30rpx;
 }
-.text-left {
-  text-align: left;
-}
-.text-center {
-  text-align: center;
-}
 .text-_b14px_B {
   font-size: 28rpx;
 }
 .text-_b50px_B {
   font-size: 100rpx;
 }
-.text-base {
-  font-size: 32rpx;
-  line-height: 48rpx;
-}
-.text-lg {
-  font-size: 36rpx;
-  line-height: 56rpx;
-}
-.text-xs {
-  font-size: 24rpx;
-  line-height: 32rpx;
-}
-.font-bold {
-  font-weight: 700;
-}
-.font-medium {
-  font-weight: 500;
-}
 .text-_b_h123456_B {
   --tw-text-opacity: 1;
   color: rgba(18, 52, 86, var(--tw-text-opacity, 1));
@@ -590,215 +542,7 @@ text,
   color: rgba(91, 164, 229, var(--tw-text-opacity, 1));
 }
 
-.m-_b20px_B {
-  margin: 20px;
-}
-.mb-_b20px_B {
-  margin-bottom: 20px;
-}
-.mt-_b24px_B {
-  margin-top: 24px;
-}
-.mt-_b33px_B {
-  margin-top: 33px;
-}
-.block {
-  display: block;
-}
-.h-_b41_d54vw_B {
-  height: 41.54vw;
-}
-.h-full {
-  height: 100%;
-}
-.w-screen {
-  width: 100vw;
-}
-.space-y-1 > view + view {
-  --tw-space-y-reverse: 0;
-  margin-top: calc(0.25rem * (1 - var(--tw-space-y-reverse)));
-  margin-bottom: calc(0.25rem * var(--tw-space-y-reverse));
-}
-.space-y-4 > view + view {
-  --tw-space-y-reverse: 0;
-  margin-top: calc(1rem * (1 - var(--tw-space-y-reverse)));
-  margin-bottom: calc(1rem * var(--tw-space-y-reverse));
-}
-.border-b {
-  border-bottom-width: 1px;
-}
-.border-_b_hEEEEEE_B {
-  --tw-border-opacity: 1;
-  border-color: rgba(238, 238, 238, var(--tw-border-opacity, 1));
-}
-.bg-_b_hfff_B {
-  --tw-bg-opacity: 1;
-  background-color: rgba(255, 255, 255, var(--tw-bg-opacity, 1));
-}
-.bg-_burl_p_ahttps_c_f_fxxx_dcom_fxx_dwebp_a_P_B {
-  background-image: url('https://xxx.com/xx.webp');
-}
-.bg-_burl_phttps_c_f_fpic1_dzhimg_dcom_fv2-3ee20468f54bbfefcd0027283b21aaa8_720w_djpg_P_B {
-  background-image: url(https://pic1.zhimg.com/v2-3ee20468f54bbfefcd0027283b21aaa8_720w.jpg);
-}
-.bg-_blength_c100_v_100_v_B {
-  background-size: 100% 100%;
-}
-.bg-no-repeat {
-  background-repeat: no-repeat;
-}
-.p-4 {
-  padding: 1rem;
-}
-.pb-_b10px_B {
-  padding-bottom: 10px;
-}
-.pl-_b15px_B {
-  padding-left: 15px;
-}
-.text-left {
-  text-align: left;
-}
-.text-center {
-  text-align: center;
-}
-.text-_b14px_B {
-  font-size: 14px;
-}
-.text-_b50px_B {
-  font-size: 50px;
-}
-.text-base {
-  font-size: 1rem;
-  line-height: 1.5rem;
-}
-.text-lg {
-  font-size: 1.125rem;
-  line-height: 1.75rem;
-}
-.text-xs {
-  font-size: 0.75rem;
-  line-height: 1rem;
-}
-.font-bold {
-  font-weight: 700;
-}
-.font-medium {
-  font-weight: 500;
-}
-.text-_b_h123456_B {
-  --tw-text-opacity: 1;
-  color: rgba(18, 52, 86, var(--tw-text-opacity, 1));
-}
-.text-_b_h5ba4e5_B {
-  --tw-text-opacity: 1;
-  color: rgba(91, 164, 229, var(--tw-text-opacity, 1));
-}
 
-.m-_b20px_B {
-  margin: 20px;
-}
-.mb-_b20px_B {
-  margin-bottom: 20px;
-}
-.mt-_b24px_B {
-  margin-top: 24px;
-}
-.mt-_b33px_B {
-  margin-top: 33px;
-}
-.block {
-  display: block;
-}
-.h-_b41_d54vw_B {
-  height: 41.54vw;
-}
-.h-full {
-  height: 100%;
-}
-.w-screen {
-  width: 100vw;
-}
-.space-y-1 > view + view {
-  --tw-space-y-reverse: 0;
-  margin-top: calc(0.25rem * (1 - var(--tw-space-y-reverse)));
-  margin-bottom: calc(0.25rem * var(--tw-space-y-reverse));
-}
-.space-y-4 > view + view {
-  --tw-space-y-reverse: 0;
-  margin-top: calc(1rem * (1 - var(--tw-space-y-reverse)));
-  margin-bottom: calc(1rem * var(--tw-space-y-reverse));
-}
-.border-b {
-  border-bottom-width: 1px;
-}
-.border-_b_hEEEEEE_B {
-  --tw-border-opacity: 1;
-  border-color: rgba(238, 238, 238, var(--tw-border-opacity, 1));
-}
-.bg-_b_hfff_B {
-  --tw-bg-opacity: 1;
-  background-color: rgba(255, 255, 255, var(--tw-bg-opacity, 1));
-}
-.bg-_burl_p_ahttps_c_f_fxxx_dcom_fxx_dwebp_a_P_B {
-  background-image: url('https://xxx.com/xx.webp');
-}
-.bg-_burl_phttps_c_f_fpic1_dzhimg_dcom_fv2-3ee20468f54bbfefcd0027283b21aaa8_720w_djpg_P_B {
-  background-image: url(https://pic1.zhimg.com/v2-3ee20468f54bbfefcd0027283b21aaa8_720w.jpg);
-}
-.bg-_blength_c100_v_100_v_B {
-  background-size: 100% 100%;
-}
-.bg-no-repeat {
-  background-repeat: no-repeat;
-}
-.p-4 {
-  padding: 1rem;
-}
-.pb-_b10px_B {
-  padding-bottom: 10px;
-}
-.pl-_b15px_B {
-  padding-left: 15px;
-}
-.text-left {
-  text-align: left;
-}
-.text-center {
-  text-align: center;
-}
-.text-_b14px_B {
-  font-size: 14px;
-}
-.text-_b50px_B {
-  font-size: 50px;
-}
-.text-base {
-  font-size: 1rem;
-  line-height: 1.5rem;
-}
-.text-lg {
-  font-size: 1.125rem;
-  line-height: 1.75rem;
-}
-.text-xs {
-  font-size: 0.75rem;
-  line-height: 1rem;
-}
-.font-bold {
-  font-weight: 700;
-}
-.font-medium {
-  font-weight: 500;
-}
-.text-_b_h123456_B {
-  --tw-text-opacity: 1;
-  color: rgba(18, 52, 86, var(--tw-text-opacity, 1));
-}
-.text-_b_h5ba4e5_B {
-  --tw-text-opacity: 1;
-  color: rgba(91, 164, 229, var(--tw-text-opacity, 1));
-}
 .more__pre {
   white-space: pre;
   text-align: left;

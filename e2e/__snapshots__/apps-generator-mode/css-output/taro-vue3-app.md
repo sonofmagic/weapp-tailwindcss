@@ -8,7 +8,7 @@ Generator CSS files: app.wxss, index.wxss
 | Mode | Bytes | Selectors | @supports | :hover | Tailwind banner | Raw arbitrary selector | Weapp escaped arbitrary selector |
 | --- | ---: | ---: | --- | --- | --- | --- | --- |
 | legacy | 115828 | 296 | false | false | false | false | true |
-| generator | 128335 | 297 | false | false | false | false | true |
+| generator | 125971 | 297 | false | false | false | false | true |
 
 ## Legacy CSS
 
@@ -1632,29 +1632,11 @@ text,
 .-m-_b20px_B {
   margin: -20rpx;
 }
-.-mt-2 {
-  margin-top: -16rpx;
-}
 .mb-_b-20px_B {
   margin-bottom: -20rpx;
 }
 .mt-_b22px_B {
   margin-top: 22rpx;
-}
-.block {
-  display: block;
-}
-.flex {
-  display: -webkit-flex;
-  display: -ms-flexbox;
-  display: -webkit-box;
-  display: flex;
-}
-.grid {
-  display: grid;
-}
-.h-10 {
-  height: 80rpx;
 }
 .h-_b100px_B {
   height: 100rpx;
@@ -1671,12 +1653,6 @@ text,
 .w-1_d5 {
   width: 12rpx;
 }
-.w-10 {
-  width: 80rpx;
-}
-.w-32 {
-  width: 256rpx;
-}
 .w-_b100px_B {
   width: 100rpx;
 }
@@ -1686,35 +1662,11 @@ text,
 .w-_b300rpx_B {
   width: 300rpx;
 }
-.w-full {
-  width: 100%;
-}
 .min-w-_b300rpx_B {
   min-width: 300rpx;
 }
 .max-w-_b300rpx_B {
   max-width: 300rpx;
-}
-.resize {
-  resize: both;
-}
-.grid-cols-3 {
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-}
-.items-center {
-  -webkit-align-items: center;
-  -ms-flex-align: center;
-  align-items: center;
-}
-.justify-center {
-  -webkit-justify-content: center;
-  -ms-flex-pack: center;
-  justify-content: center;
-}
-.justify-between {
-  -webkit-justify-content: space-between;
-  -ms-flex-pack: justify;
-  justify-content: space-between;
 }
 .space-y-_b1_d6rem_B > view + view,
 .space-y-_b1_d6rem_B > view + text,
@@ -1748,14 +1700,8 @@ text,
 .rounded-_b40px_B {
   border-radius: 40rpx;
 }
-.rounded-md {
-  border-radius: 12rpx;
-}
 .border-_b10px_B {
   border-width: 10rpx;
-}
-.border-solid {
-  border-style: solid;
 }
 .border-_b_h098765_B {
   --tw-border-opacity: 1;
@@ -1796,31 +1742,11 @@ text,
   --tw-bg-opacity: 1;
   background-color: rgba(250, 250, 250, var(--tw-bg-opacity, 1));
 }
-.bg-gray-100 {
-  --tw-bg-opacity: 1;
-  background-color: rgba(243, 244, 246, var(--tw-bg-opacity, 1));
-}
-.bg-pink-500 {
-  --tw-bg-opacity: 1;
-  background-color: rgba(236, 72, 153, var(--tw-bg-opacity, 1));
-}
-.bg-red-500 {
-  --tw-bg-opacity: 1;
-  background-color: rgba(239, 68, 68, var(--tw-bg-opacity, 1));
-}
-.bg-red-900 {
-  --tw-bg-opacity: 1;
-  background-color: rgba(127, 29, 29, var(--tw-bg-opacity, 1));
-}
 .bg-opacity-_b0_d54_B {
   --tw-bg-opacity: 0.54;
 }
 .bg-_burl_p_ahttps_c_f_fxxx_dcom_fxx_dwebp_a_P_B {
   background-image: url(https://xxx.com/xx.webp);
-}
-.bg-gradient-to-r {
-  background-image: -webkit-linear-gradient(left, var(--tw-gradient-stops));
-  background-image: linear-gradient(to right, var(--tw-gradient-stops));
 }
 .from-_b_h123456_B {
   --tw-gradient-from: #123456 var(--tw-gradient-from-position);
@@ -1833,21 +1759,11 @@ text,
 .p-_b20px_B {
   padding: 20rpx;
 }
-.py-2 {
-  padding-bottom: 16rpx;
-  padding-top: 16rpx;
-}
-.text-center {
-  text-align: center;
-}
 .text-_b20px_B {
   font-size: 20rpx;
 }
 .text-_b50px_B {
   font-size: 50rpx;
-}
-.font-semibold {
-  font-weight: 600;
 }
 .leading-_b0_d9_B {
   line-height: 0.9;
@@ -1880,30 +1796,8 @@ text,
   --tw-text-opacity: 1;
   color: rgba(255, 0, 0, var(--tw-text-opacity, 1));
 }
-.text-amber-300 {
-  --tw-text-opacity: 1;
-  color: rgba(252, 211, 77, var(--tw-text-opacity, 1));
-}
-.text-black {
-  --tw-text-opacity: 1;
-  color: rgba(0, 0, 0, var(--tw-text-opacity, 1));
-}
-.text-red-400 {
-  --tw-text-opacity: 1;
-  color: rgba(248, 113, 113, var(--tw-text-opacity, 1));
-}
-.text-white {
-  --tw-text-opacity: 1;
-  color: rgba(255, 255, 255, var(--tw-text-opacity, 1));
-}
 .text-opacity-_b0_d19_B {
   --tw-text-opacity: 0.19;
-}
-.ring-4 {
-  --tw-ring-offset-shadow: var(--tw-ring-inset) 0 0 0 var(--tw-ring-offset-width) var(--tw-ring-offset-color);
-  --tw-ring-shadow: var(--tw-ring-inset) 0 0 0 calc(4rpx + var(--tw-ring-offset-width)) var(--tw-ring-color);
-  -webkit-box-shadow: var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow, 0 0 rgba(0, 0, 0, 0));
-  box-shadow: var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow, 0 0 rgba(0, 0, 0, 0));
 }
 .ring-pink-300 {
   --tw-ring-opacity: 1;

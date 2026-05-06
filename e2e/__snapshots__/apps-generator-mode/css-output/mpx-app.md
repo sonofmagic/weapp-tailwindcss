@@ -3,12 +3,12 @@
 Fixture: demo
 Entry: mpx-app/dist/wx/app.wxss
 Legacy CSS files: app.wxss, styles/base.wxss, styles/components.wxss, styles/utilities.wxss, index.wxss, button.wxss, styles/index.wxss, icon.wxss, styles/index.wxss, loading.wxss, styles/index.wxss, index.wxss, styles/index.wxss, index.wxss, styles/index.wxss, index.wxss, styles/index.wxss, index.wxss, styles/index.wxss, base487e0d61.wxss, components63da9234.wxss, index0af78c53.wxss, index9a27da9c.wxss, utilities3d066604.wxss
-Generator CSS files: app.wxss, styles/base.wxss, styles/components.wxss, styles/utilities.wxss, index.wxss, button.wxss, icon.wxss, loading.wxss, index.wxss, index.wxss, index.wxss, index.wxss, base487e0d61.wxss, components63da9234.wxss, index0af78c53.wxss, index9a27da9c.wxss, utilities3d066604.wxss
+Generator CSS files: app.wxss, styles/base.wxss, styles/components.wxss, styles/utilities.wxss, index.wxss, button.wxss, styles/index.wxss, icon.wxss, styles/index.wxss, loading.wxss, styles/index.wxss, index.wxss, styles/index.wxss, index.wxss, styles/index.wxss, index.wxss, styles/index.wxss, index.wxss, styles/index.wxss, base487e0d61.wxss, components63da9234.wxss, index0af78c53.wxss, index9a27da9c.wxss, utilities3d066604.wxss
 
 | Mode | Bytes | Selectors | @supports | :hover | Tailwind banner | Raw arbitrary selector | Weapp escaped arbitrary selector |
 | --- | ---: | ---: | --- | --- | --- | --- | --- |
 | legacy | 189931 | 2879 | false | false | false | false | true |
-| generator | 202756 | 2886 | false | false | false | false | true |
+| generator | 194601 | 2883 | false | false | false | false | true |
 
 ## Legacy CSS
 
@@ -9672,48 +9672,6 @@ text,
   content: var(--tw-content);
 }
 
-.flex {
-  display: flex;
-}
-.flex-col {
-  flex-direction: column;
-}
-.bg-_b_h123456_B {
-  --tw-bg-opacity: 1;
-  background-color: rgba(18, 52, 86, var(--tw-bg-opacity, 1));
-}
-.bg-_b_h929292_B {
-  --tw-bg-opacity: 1;
-  background-color: rgba(146, 146, 146, var(--tw-bg-opacity, 1));
-}
-.bg-_burl_p_ahttps_c_f_fxxx_dcom_fxx_dwebp_a_P_B {
-  background-image: url('https://xxx.com/xx.webp');
-}
-.text-_b_he67240_B {
-  --tw-text-opacity: 1;
-  color: rgba(230, 114, 64, var(--tw-text-opacity, 1));
-}
-.text-_bblue_B {
-  --tw-text-opacity: 1;
-  color: rgba(0, 0, 255, var(--tw-text-opacity, 1));
-}
-.after_cml-0_d5::after {
-  content: var(--tw-content);
-  margin-left: 0.125rem;
-}
-.after_ctext-red-500::after {
-  content: var(--tw-content);
-  --tw-text-opacity: 1;
-  color: rgba(239, 68, 68, var(--tw-text-opacity, 1));
-}
-.after_ccontent-_b_qu_x4f60_u_x597d_u_x554a_u_xff0c_u_x6211_u_x5f88_u_x65e0_u_x804a__q_B::after {
-  --tw-content: '你好啊，我很无聊';
-  content: var(--tw-content);
-}
-.after_ccontent-_b_au_x4f60_u_x597d_u_x554a_u_xff0c_u_x6211_u_x8fd9_u_x662f_u_x4e2d_u_x6587_u_x5b57_u_x7b26_u_x4e32__a_B::after {
-  --tw-content: '你好啊，我这是中文字符串';
-  content: var(--tw-content);
-}
 
 .flex {
   display: flex;
@@ -9756,12 +9714,6 @@ text,
 .after_ccontent-_b_au_x4f60_u_x597d_u_x554a_u_xff0c_u_x6211_u_x8fd9_u_x662f_u_x4e2d_u_x6587_u_x5b57_u_x7b26_u_x4e32__a_B::after {
   --tw-content: '你好啊，我这是中文字符串';
   content: var(--tw-content);
-}
-.flex {
-  display: flex;
-}
-.flex-col {
-  flex-direction: column;
 }
 .bg-_b_h123456_B {
   --tw-bg-opacity: 1;
@@ -9800,91 +9752,8 @@ text,
   content: var(--tw-content);
 }
 
-.flex {
-  display: flex;
-}
-.flex-col {
-  flex-direction: column;
-}
-.bg-_b_h123456_B {
-  --tw-bg-opacity: 1;
-  background-color: rgba(18, 52, 86, var(--tw-bg-opacity, 1));
-}
-.bg-_b_h929292_B {
-  --tw-bg-opacity: 1;
-  background-color: rgba(146, 146, 146, var(--tw-bg-opacity, 1));
-}
-.bg-_burl_p_ahttps_c_f_fxxx_dcom_fxx_dwebp_a_P_B {
-  background-image: url('https://xxx.com/xx.webp');
-}
-.text-_b_he67240_B {
-  --tw-text-opacity: 1;
-  color: rgba(230, 114, 64, var(--tw-text-opacity, 1));
-}
-.text-_bblue_B {
-  --tw-text-opacity: 1;
-  color: rgba(0, 0, 255, var(--tw-text-opacity, 1));
-}
-.after_cml-0_d5::after {
-  content: var(--tw-content);
-  margin-left: 0.125rem;
-}
-.after_ctext-red-500::after {
-  content: var(--tw-content);
-  --tw-text-opacity: 1;
-  color: rgba(239, 68, 68, var(--tw-text-opacity, 1));
-}
-.after_ccontent-_b_qu_x4f60_u_x597d_u_x554a_u_xff0c_u_x6211_u_x5f88_u_x65e0_u_x804a__q_B::after {
-  --tw-content: '你好啊，我很无聊';
-  content: var(--tw-content);
-}
-.after_ccontent-_b_au_x4f60_u_x597d_u_x554a_u_xff0c_u_x6211_u_x8fd9_u_x662f_u_x4e2d_u_x6587_u_x5b57_u_x7b26_u_x4e32__a_B::after {
-  --tw-content: '你好啊，我这是中文字符串';
-  content: var(--tw-content);
-}
 
-.flex {
-  display: flex;
-}
-.flex-col {
-  flex-direction: column;
-}
-.bg-_b_h123456_B {
-  --tw-bg-opacity: 1;
-  background-color: rgba(18, 52, 86, var(--tw-bg-opacity, 1));
-}
-.bg-_b_h929292_B {
-  --tw-bg-opacity: 1;
-  background-color: rgba(146, 146, 146, var(--tw-bg-opacity, 1));
-}
-.bg-_burl_p_ahttps_c_f_fxxx_dcom_fxx_dwebp_a_P_B {
-  background-image: url('https://xxx.com/xx.webp');
-}
-.text-_b_he67240_B {
-  --tw-text-opacity: 1;
-  color: rgba(230, 114, 64, var(--tw-text-opacity, 1));
-}
-.text-_bblue_B {
-  --tw-text-opacity: 1;
-  color: rgba(0, 0, 255, var(--tw-text-opacity, 1));
-}
-.after_cml-0_d5::after {
-  content: var(--tw-content);
-  margin-left: 0.125rem;
-}
-.after_ctext-red-500::after {
-  content: var(--tw-content);
-  --tw-text-opacity: 1;
-  color: rgba(239, 68, 68, var(--tw-text-opacity, 1));
-}
-.after_ccontent-_b_qu_x4f60_u_x597d_u_x554a_u_xff0c_u_x6211_u_x5f88_u_x65e0_u_x804a__q_B::after {
-  --tw-content: '你好啊，我很无聊';
-  content: var(--tw-content);
-}
-.after_ccontent-_b_au_x4f60_u_x597d_u_x554a_u_xff0c_u_x6211_u_x8fd9_u_x662f_u_x4e2d_u_x6587_u_x5b57_u_x7b26_u_x4e32__a_B::after {
-  --tw-content: '你好啊，我这是中文字符串';
-  content: var(--tw-content);
-}
+@import '../../../../styles/index.wxss';
 .t-button--size-extra-small {
   font-size: var(--td-button-extra-small-font-size, var(--td-font-size-base, 28rpx));
   height: var(--td-button-extra-small-height, 56rpx);
@@ -10402,48 +10271,21 @@ text,
   z-index: -1;
 }
 
-.flex {
-  display: flex;
+.hotspot-expanded.relative {
+  position: relative;
 }
-.flex-col {
-  flex-direction: column;
+.hotspot-expanded:after {
+  bottom: 0;
+  content: '';
+  display: block;
+  left: 0;
+  position: absolute;
+  right: 0;
+  top: 0;
+  transform: scale(1.5);
 }
-.bg-_b_h123456_B {
-  --tw-bg-opacity: 1;
-  background-color: rgba(18, 52, 86, var(--tw-bg-opacity, 1));
-}
-.bg-_b_h929292_B {
-  --tw-bg-opacity: 1;
-  background-color: rgba(146, 146, 146, var(--tw-bg-opacity, 1));
-}
-.bg-_burl_p_ahttps_c_f_fxxx_dcom_fxx_dwebp_a_P_B {
-  background-image: url('https://xxx.com/xx.webp');
-}
-.text-_b_he67240_B {
-  --tw-text-opacity: 1;
-  color: rgba(230, 114, 64, var(--tw-text-opacity, 1));
-}
-.text-_bblue_B {
-  --tw-text-opacity: 1;
-  color: rgba(0, 0, 255, var(--tw-text-opacity, 1));
-}
-.after_cml-0_d5::after {
-  content: var(--tw-content);
-  margin-left: 0.125rem;
-}
-.after_ctext-red-500::after {
-  content: var(--tw-content);
-  --tw-text-opacity: 1;
-  color: rgba(239, 68, 68, var(--tw-text-opacity, 1));
-}
-.after_ccontent-_b_qu_x4f60_u_x597d_u_x554a_u_xff0c_u_x6211_u_x5f88_u_x65e0_u_x804a__q_B::after {
-  --tw-content: '你好啊，我很无聊';
-  content: var(--tw-content);
-}
-.after_ccontent-_b_au_x4f60_u_x597d_u_x554a_u_xff0c_u_x6211_u_x8fd9_u_x662f_u_x4e2d_u_x6587_u_x5b57_u_x7b26_u_x4e32__a_B::after {
-  --tw-content: '你好啊，我这是中文字符串';
-  content: var(--tw-content);
-}
+
+@import '../../../../styles/index.wxss';
 @font-face {
   font-family: t;
   font-style: normal;
@@ -17529,48 +17371,21 @@ text,
   content: '\E92E';
 }
 
-.flex {
-  display: flex;
+.hotspot-expanded.relative {
+  position: relative;
 }
-.flex-col {
-  flex-direction: column;
+.hotspot-expanded:after {
+  bottom: 0;
+  content: '';
+  display: block;
+  left: 0;
+  position: absolute;
+  right: 0;
+  top: 0;
+  transform: scale(1.5);
 }
-.bg-_b_h123456_B {
-  --tw-bg-opacity: 1;
-  background-color: rgba(18, 52, 86, var(--tw-bg-opacity, 1));
-}
-.bg-_b_h929292_B {
-  --tw-bg-opacity: 1;
-  background-color: rgba(146, 146, 146, var(--tw-bg-opacity, 1));
-}
-.bg-_burl_p_ahttps_c_f_fxxx_dcom_fxx_dwebp_a_P_B {
-  background-image: url('https://xxx.com/xx.webp');
-}
-.text-_b_he67240_B {
-  --tw-text-opacity: 1;
-  color: rgba(230, 114, 64, var(--tw-text-opacity, 1));
-}
-.text-_bblue_B {
-  --tw-text-opacity: 1;
-  color: rgba(0, 0, 255, var(--tw-text-opacity, 1));
-}
-.after_cml-0_d5::after {
-  content: var(--tw-content);
-  margin-left: 0.125rem;
-}
-.after_ctext-red-500::after {
-  content: var(--tw-content);
-  --tw-text-opacity: 1;
-  color: rgba(239, 68, 68, var(--tw-text-opacity, 1));
-}
-.after_ccontent-_b_qu_x4f60_u_x597d_u_x554a_u_xff0c_u_x6211_u_x5f88_u_x65e0_u_x804a__q_B::after {
-  --tw-content: '你好啊，我很无聊';
-  content: var(--tw-content);
-}
-.after_ccontent-_b_au_x4f60_u_x597d_u_x554a_u_xff0c_u_x6211_u_x8fd9_u_x662f_u_x4e2d_u_x6587_u_x5b57_u_x7b26_u_x4e32__a_B::after {
-  --tw-content: '你好啊，我这是中文字符串';
-  content: var(--tw-content);
-}
+
+@import '../../../../styles/index.wxss';
 .t-loading {
   display: inline-flex;
 }
@@ -17775,48 +17590,21 @@ text,
   }
 }
 
-.flex {
-  display: flex;
+.hotspot-expanded.relative {
+  position: relative;
 }
-.flex-col {
-  flex-direction: column;
+.hotspot-expanded:after {
+  bottom: 0;
+  content: '';
+  display: block;
+  left: 0;
+  position: absolute;
+  right: 0;
+  top: 0;
+  transform: scale(1.5);
 }
-.bg-_b_h123456_B {
-  --tw-bg-opacity: 1;
-  background-color: rgba(18, 52, 86, var(--tw-bg-opacity, 1));
-}
-.bg-_b_h929292_B {
-  --tw-bg-opacity: 1;
-  background-color: rgba(146, 146, 146, var(--tw-bg-opacity, 1));
-}
-.bg-_burl_p_ahttps_c_f_fxxx_dcom_fxx_dwebp_a_P_B {
-  background-image: url('https://xxx.com/xx.webp');
-}
-.text-_b_he67240_B {
-  --tw-text-opacity: 1;
-  color: rgba(230, 114, 64, var(--tw-text-opacity, 1));
-}
-.text-_bblue_B {
-  --tw-text-opacity: 1;
-  color: rgba(0, 0, 255, var(--tw-text-opacity, 1));
-}
-.after_cml-0_d5::after {
-  content: var(--tw-content);
-  margin-left: 0.125rem;
-}
-.after_ctext-red-500::after {
-  content: var(--tw-content);
-  --tw-text-opacity: 1;
-  color: rgba(239, 68, 68, var(--tw-text-opacity, 1));
-}
-.after_ccontent-_b_qu_x4f60_u_x597d_u_x554a_u_xff0c_u_x6211_u_x5f88_u_x65e0_u_x804a__q_B::after {
-  --tw-content: '你好啊，我很无聊';
-  content: var(--tw-content);
-}
-.after_ccontent-_b_au_x4f60_u_x597d_u_x554a_u_xff0c_u_x6211_u_x8fd9_u_x662f_u_x4e2d_u_x6587_u_x5b57_u_x7b26_u_x4e32__a_B::after {
-  --tw-content: '你好啊，我这是中文字符串';
-  content: var(--tw-content);
-}
+
+@import '../../../../../styles/index.wxss';
 .van-button {
   -webkit-text-size-adjust: 100%;
   align-items: center;
@@ -17961,48 +17749,77 @@ text,
   border-radius: 0;
 }
 
-.flex {
-  display: flex;
+.van-ellipsis {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
-.flex-col {
-  flex-direction: column;
+.van-multi-ellipsis--l2 {
+  -webkit-line-clamp: 2;
 }
-.bg-_b_h123456_B {
-  --tw-bg-opacity: 1;
-  background-color: rgba(18, 52, 86, var(--tw-bg-opacity, 1));
+.van-multi-ellipsis--l2,
+.van-multi-ellipsis--l3 {
+  -webkit-box-orient: vertical;
+  display: -webkit-box;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
-.bg-_b_h929292_B {
-  --tw-bg-opacity: 1;
-  background-color: rgba(146, 146, 146, var(--tw-bg-opacity, 1));
+.van-multi-ellipsis--l3 {
+  -webkit-line-clamp: 3;
 }
-.bg-_burl_p_ahttps_c_f_fxxx_dcom_fxx_dwebp_a_P_B {
-  background-image: url('https://xxx.com/xx.webp');
+.van-clearfix:after {
+  clear: both;
+  content: '';
+  display: table;
 }
-.text-_b_he67240_B {
-  --tw-text-opacity: 1;
-  color: rgba(230, 114, 64, var(--tw-text-opacity, 1));
+.van-hairline,
+.van-hairline--bottom,
+.van-hairline--left,
+.van-hairline--right,
+.van-hairline--surround,
+.van-hairline--top,
+.van-hairline--top-bottom {
+  position: relative;
 }
-.text-_bblue_B {
-  --tw-text-opacity: 1;
-  color: rgba(0, 0, 255, var(--tw-text-opacity, 1));
+.van-hairline--bottom:after,
+.van-hairline--left:after,
+.van-hairline--right:after,
+.van-hairline--surround:after,
+.van-hairline--top-bottom:after,
+.van-hairline--top:after,
+.van-hairline:after {
+  border: 0 solid #ebedf0;
+  bottom: -50%;
+  box-sizing: border-box;
+  content: ' ';
+  left: -50%;
+  pointer-events: none;
+  position: absolute;
+  right: -50%;
+  top: -50%;
+  transform: scale(0.5);
+  transform-origin: center;
 }
-.after_cml-0_d5::after {
-  content: var(--tw-content);
-  margin-left: 0.125rem;
+.van-hairline--top:after {
+  border-top-width: 1px;
 }
-.after_ctext-red-500::after {
-  content: var(--tw-content);
-  --tw-text-opacity: 1;
-  color: rgba(239, 68, 68, var(--tw-text-opacity, 1));
+.van-hairline--left:after {
+  border-left-width: 1px;
 }
-.after_ccontent-_b_qu_x4f60_u_x597d_u_x554a_u_xff0c_u_x6211_u_x5f88_u_x65e0_u_x804a__q_B::after {
-  --tw-content: '你好啊，我很无聊';
-  content: var(--tw-content);
+.van-hairline--right:after {
+  border-right-width: 1px;
 }
-.after_ccontent-_b_au_x4f60_u_x597d_u_x554a_u_xff0c_u_x6211_u_x8fd9_u_x662f_u_x4e2d_u_x6587_u_x5b57_u_x7b26_u_x4e32__a_B::after {
-  --tw-content: '你好啊，我这是中文字符串';
-  content: var(--tw-content);
+.van-hairline--bottom:after {
+  border-bottom-width: 1px;
 }
+.van-hairline--top-bottom:after {
+  border-width: 1px 0;
+}
+.van-hairline--surround:after {
+  border-width: 1px;
+}
+
+@import '../../../../../styles/index.wxss';
 .van-icon {
   -webkit-font-smoothing: antialiased;
   font: normal normal normal 14px/1 vant-icon;
@@ -18815,48 +18632,77 @@ text,
   z-index: 1;
 }
 
-.flex {
-  display: flex;
+.van-ellipsis {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
-.flex-col {
-  flex-direction: column;
+.van-multi-ellipsis--l2 {
+  -webkit-line-clamp: 2;
 }
-.bg-_b_h123456_B {
-  --tw-bg-opacity: 1;
-  background-color: rgba(18, 52, 86, var(--tw-bg-opacity, 1));
+.van-multi-ellipsis--l2,
+.van-multi-ellipsis--l3 {
+  -webkit-box-orient: vertical;
+  display: -webkit-box;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
-.bg-_b_h929292_B {
-  --tw-bg-opacity: 1;
-  background-color: rgba(146, 146, 146, var(--tw-bg-opacity, 1));
+.van-multi-ellipsis--l3 {
+  -webkit-line-clamp: 3;
 }
-.bg-_burl_p_ahttps_c_f_fxxx_dcom_fxx_dwebp_a_P_B {
-  background-image: url('https://xxx.com/xx.webp');
+.van-clearfix:after {
+  clear: both;
+  content: '';
+  display: table;
 }
-.text-_b_he67240_B {
-  --tw-text-opacity: 1;
-  color: rgba(230, 114, 64, var(--tw-text-opacity, 1));
+.van-hairline,
+.van-hairline--bottom,
+.van-hairline--left,
+.van-hairline--right,
+.van-hairline--surround,
+.van-hairline--top,
+.van-hairline--top-bottom {
+  position: relative;
 }
-.text-_bblue_B {
-  --tw-text-opacity: 1;
-  color: rgba(0, 0, 255, var(--tw-text-opacity, 1));
+.van-hairline--bottom:after,
+.van-hairline--left:after,
+.van-hairline--right:after,
+.van-hairline--surround:after,
+.van-hairline--top-bottom:after,
+.van-hairline--top:after,
+.van-hairline:after {
+  border: 0 solid #ebedf0;
+  bottom: -50%;
+  box-sizing: border-box;
+  content: ' ';
+  left: -50%;
+  pointer-events: none;
+  position: absolute;
+  right: -50%;
+  top: -50%;
+  transform: scale(0.5);
+  transform-origin: center;
 }
-.after_cml-0_d5::after {
-  content: var(--tw-content);
-  margin-left: 0.125rem;
+.van-hairline--top:after {
+  border-top-width: 1px;
 }
-.after_ctext-red-500::after {
-  content: var(--tw-content);
-  --tw-text-opacity: 1;
-  color: rgba(239, 68, 68, var(--tw-text-opacity, 1));
+.van-hairline--left:after {
+  border-left-width: 1px;
 }
-.after_ccontent-_b_qu_x4f60_u_x597d_u_x554a_u_xff0c_u_x6211_u_x5f88_u_x65e0_u_x804a__q_B::after {
-  --tw-content: '你好啊，我很无聊';
-  content: var(--tw-content);
+.van-hairline--right:after {
+  border-right-width: 1px;
 }
-.after_ccontent-_b_au_x4f60_u_x597d_u_x554a_u_xff0c_u_x6211_u_x8fd9_u_x662f_u_x4e2d_u_x6587_u_x5b57_u_x7b26_u_x4e32__a_B::after {
-  --tw-content: '你好啊，我这是中文字符串';
-  content: var(--tw-content);
+.van-hairline--bottom:after {
+  border-bottom-width: 1px;
 }
+.van-hairline--top-bottom:after {
+  border-width: 1px 0;
+}
+.van-hairline--surround:after {
+  border-width: 1px;
+}
+
+@import '../../../../../styles/index.wxss';
 .van-info {
   align-items: center;
   background-color: var(--info-background-color, #ee0a24);
@@ -18887,48 +18733,77 @@ text,
   width: var(--info-dot-size, 8px);
 }
 
-.flex {
-  display: flex;
+.van-ellipsis {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
-.flex-col {
-  flex-direction: column;
+.van-multi-ellipsis--l2 {
+  -webkit-line-clamp: 2;
 }
-.bg-_b_h123456_B {
-  --tw-bg-opacity: 1;
-  background-color: rgba(18, 52, 86, var(--tw-bg-opacity, 1));
+.van-multi-ellipsis--l2,
+.van-multi-ellipsis--l3 {
+  -webkit-box-orient: vertical;
+  display: -webkit-box;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
-.bg-_b_h929292_B {
-  --tw-bg-opacity: 1;
-  background-color: rgba(146, 146, 146, var(--tw-bg-opacity, 1));
+.van-multi-ellipsis--l3 {
+  -webkit-line-clamp: 3;
 }
-.bg-_burl_p_ahttps_c_f_fxxx_dcom_fxx_dwebp_a_P_B {
-  background-image: url('https://xxx.com/xx.webp');
+.van-clearfix:after {
+  clear: both;
+  content: '';
+  display: table;
 }
-.text-_b_he67240_B {
-  --tw-text-opacity: 1;
-  color: rgba(230, 114, 64, var(--tw-text-opacity, 1));
+.van-hairline,
+.van-hairline--bottom,
+.van-hairline--left,
+.van-hairline--right,
+.van-hairline--surround,
+.van-hairline--top,
+.van-hairline--top-bottom {
+  position: relative;
 }
-.text-_bblue_B {
-  --tw-text-opacity: 1;
-  color: rgba(0, 0, 255, var(--tw-text-opacity, 1));
+.van-hairline--bottom:after,
+.van-hairline--left:after,
+.van-hairline--right:after,
+.van-hairline--surround:after,
+.van-hairline--top-bottom:after,
+.van-hairline--top:after,
+.van-hairline:after {
+  border: 0 solid #ebedf0;
+  bottom: -50%;
+  box-sizing: border-box;
+  content: ' ';
+  left: -50%;
+  pointer-events: none;
+  position: absolute;
+  right: -50%;
+  top: -50%;
+  transform: scale(0.5);
+  transform-origin: center;
 }
-.after_cml-0_d5::after {
-  content: var(--tw-content);
-  margin-left: 0.125rem;
+.van-hairline--top:after {
+  border-top-width: 1px;
 }
-.after_ctext-red-500::after {
-  content: var(--tw-content);
-  --tw-text-opacity: 1;
-  color: rgba(239, 68, 68, var(--tw-text-opacity, 1));
+.van-hairline--left:after {
+  border-left-width: 1px;
 }
-.after_ccontent-_b_qu_x4f60_u_x597d_u_x554a_u_xff0c_u_x6211_u_x5f88_u_x65e0_u_x804a__q_B::after {
-  --tw-content: '你好啊，我很无聊';
-  content: var(--tw-content);
+.van-hairline--right:after {
+  border-right-width: 1px;
 }
-.after_ccontent-_b_au_x4f60_u_x597d_u_x554a_u_xff0c_u_x6211_u_x8fd9_u_x662f_u_x4e2d_u_x6587_u_x5b57_u_x7b26_u_x4e32__a_B::after {
-  --tw-content: '你好啊，我这是中文字符串';
-  content: var(--tw-content);
+.van-hairline--bottom:after {
+  border-bottom-width: 1px;
 }
+.van-hairline--top-bottom:after {
+  border-width: 1px 0;
+}
+.van-hairline--surround:after {
+  border-width: 1px;
+}
+
+@import '../../../../../styles/index.wxss';
 :host {
   font-size: 0;
   line-height: 1;
@@ -19045,6 +18920,76 @@ text,
   }
 }
 
+.van-ellipsis {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.van-multi-ellipsis--l2 {
+  -webkit-line-clamp: 2;
+}
+.van-multi-ellipsis--l2,
+.van-multi-ellipsis--l3 {
+  -webkit-box-orient: vertical;
+  display: -webkit-box;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.van-multi-ellipsis--l3 {
+  -webkit-line-clamp: 3;
+}
+.van-clearfix:after {
+  clear: both;
+  content: '';
+  display: table;
+}
+.van-hairline,
+.van-hairline--bottom,
+.van-hairline--left,
+.van-hairline--right,
+.van-hairline--surround,
+.van-hairline--top,
+.van-hairline--top-bottom {
+  position: relative;
+}
+.van-hairline--bottom:after,
+.van-hairline--left:after,
+.van-hairline--right:after,
+.van-hairline--surround:after,
+.van-hairline--top-bottom:after,
+.van-hairline--top:after,
+.van-hairline:after {
+  border: 0 solid #ebedf0;
+  bottom: -50%;
+  box-sizing: border-box;
+  content: ' ';
+  left: -50%;
+  pointer-events: none;
+  position: absolute;
+  right: -50%;
+  top: -50%;
+  transform: scale(0.5);
+  transform-origin: center;
+}
+.van-hairline--top:after {
+  border-top-width: 1px;
+}
+.van-hairline--left:after {
+  border-left-width: 1px;
+}
+.van-hairline--right:after {
+  border-right-width: 1px;
+}
+.van-hairline--bottom:after {
+  border-bottom-width: 1px;
+}
+.van-hairline--top-bottom:after {
+  border-width: 1px 0;
+}
+.van-hairline--surround:after {
+  border-width: 1px;
+}
+
 ::before,
 ::after {
   --tw-content: '';
@@ -19152,91 +19097,7 @@ text,
   content: var(--tw-content);
 }
 
-.flex {
-  display: flex;
-}
-.flex-col {
-  flex-direction: column;
-}
-.bg-_b_h123456_B {
-  --tw-bg-opacity: 1;
-  background-color: rgba(18, 52, 86, var(--tw-bg-opacity, 1));
-}
-.bg-_b_h929292_B {
-  --tw-bg-opacity: 1;
-  background-color: rgba(146, 146, 146, var(--tw-bg-opacity, 1));
-}
-.bg-_burl_p_ahttps_c_f_fxxx_dcom_fxx_dwebp_a_P_B {
-  background-image: url('https://xxx.com/xx.webp');
-}
-.text-_b_he67240_B {
-  --tw-text-opacity: 1;
-  color: rgba(230, 114, 64, var(--tw-text-opacity, 1));
-}
-.text-_bblue_B {
-  --tw-text-opacity: 1;
-  color: rgba(0, 0, 255, var(--tw-text-opacity, 1));
-}
-.after_cml-0_d5::after {
-  content: var(--tw-content);
-  margin-left: 0.125rem;
-}
-.after_ctext-red-500::after {
-  content: var(--tw-content);
-  --tw-text-opacity: 1;
-  color: rgba(239, 68, 68, var(--tw-text-opacity, 1));
-}
-.after_ccontent-_b_qu_x4f60_u_x597d_u_x554a_u_xff0c_u_x6211_u_x5f88_u_x65e0_u_x804a__q_B::after {
-  --tw-content: '你好啊，我很无聊';
-  content: var(--tw-content);
-}
-.after_ccontent-_b_au_x4f60_u_x597d_u_x554a_u_xff0c_u_x6211_u_x8fd9_u_x662f_u_x4e2d_u_x6587_u_x5b57_u_x7b26_u_x4e32__a_B::after {
-  --tw-content: '你好啊，我这是中文字符串';
-  content: var(--tw-content);
-}
 
-.flex {
-  display: flex;
-}
-.flex-col {
-  flex-direction: column;
-}
-.bg-_b_h123456_B {
-  --tw-bg-opacity: 1;
-  background-color: rgba(18, 52, 86, var(--tw-bg-opacity, 1));
-}
-.bg-_b_h929292_B {
-  --tw-bg-opacity: 1;
-  background-color: rgba(146, 146, 146, var(--tw-bg-opacity, 1));
-}
-.bg-_burl_p_ahttps_c_f_fxxx_dcom_fxx_dwebp_a_P_B {
-  background-image: url('https://xxx.com/xx.webp');
-}
-.text-_b_he67240_B {
-  --tw-text-opacity: 1;
-  color: rgba(230, 114, 64, var(--tw-text-opacity, 1));
-}
-.text-_bblue_B {
-  --tw-text-opacity: 1;
-  color: rgba(0, 0, 255, var(--tw-text-opacity, 1));
-}
-.after_cml-0_d5::after {
-  content: var(--tw-content);
-  margin-left: 0.125rem;
-}
-.after_ctext-red-500::after {
-  content: var(--tw-content);
-  --tw-text-opacity: 1;
-  color: rgba(239, 68, 68, var(--tw-text-opacity, 1));
-}
-.after_ccontent-_b_qu_x4f60_u_x597d_u_x554a_u_xff0c_u_x6211_u_x5f88_u_x65e0_u_x804a__q_B::after {
-  --tw-content: '你好啊，我很无聊';
-  content: var(--tw-content);
-}
-.after_ccontent-_b_au_x4f60_u_x597d_u_x554a_u_xff0c_u_x6211_u_x8fd9_u_x662f_u_x4e2d_u_x6587_u_x5b57_u_x7b26_u_x4e32__a_B::after {
-  --tw-content: '你好啊，我这是中文字符串';
-  content: var(--tw-content);
-}
 .hotspot-expanded.relative {
   position: relative;
 }
@@ -19251,48 +19112,6 @@ text,
   transform: scale(1.5);
 }
 
-.flex {
-  display: flex;
-}
-.flex-col {
-  flex-direction: column;
-}
-.bg-_b_h123456_B {
-  --tw-bg-opacity: 1;
-  background-color: rgba(18, 52, 86, var(--tw-bg-opacity, 1));
-}
-.bg-_b_h929292_B {
-  --tw-bg-opacity: 1;
-  background-color: rgba(146, 146, 146, var(--tw-bg-opacity, 1));
-}
-.bg-_burl_p_ahttps_c_f_fxxx_dcom_fxx_dwebp_a_P_B {
-  background-image: url('https://xxx.com/xx.webp');
-}
-.text-_b_he67240_B {
-  --tw-text-opacity: 1;
-  color: rgba(230, 114, 64, var(--tw-text-opacity, 1));
-}
-.text-_bblue_B {
-  --tw-text-opacity: 1;
-  color: rgba(0, 0, 255, var(--tw-text-opacity, 1));
-}
-.after_cml-0_d5::after {
-  content: var(--tw-content);
-  margin-left: 0.125rem;
-}
-.after_ctext-red-500::after {
-  content: var(--tw-content);
-  --tw-text-opacity: 1;
-  color: rgba(239, 68, 68, var(--tw-text-opacity, 1));
-}
-.after_ccontent-_b_qu_x4f60_u_x597d_u_x554a_u_xff0c_u_x6211_u_x5f88_u_x65e0_u_x804a__q_B::after {
-  --tw-content: '你好啊，我很无聊';
-  content: var(--tw-content);
-}
-.after_ccontent-_b_au_x4f60_u_x597d_u_x554a_u_xff0c_u_x6211_u_x8fd9_u_x662f_u_x4e2d_u_x6587_u_x5b57_u_x7b26_u_x4e32__a_B::after {
-  --tw-content: '你好啊，我这是中文字符串';
-  content: var(--tw-content);
-}
 .van-ellipsis {
   overflow: hidden;
   text-overflow: ellipsis;
@@ -19404,12 +19223,6 @@ text,
 .after_ccontent-_b_au_x4f60_u_x597d_u_x554a_u_xff0c_u_x6211_u_x8fd9_u_x662f_u_x4e2d_u_x6587_u_x5b57_u_x7b26_u_x4e32__a_B::after {
   --tw-content: '你好啊，我这是中文字符串';
   content: var(--tw-content);
-}
-.flex {
-  display: flex;
-}
-.flex-col {
-  flex-direction: column;
 }
 .bg-_b_h123456_B {
   --tw-bg-opacity: 1;
