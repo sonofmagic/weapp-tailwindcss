@@ -7,8 +7,8 @@ Generator CSS files: app.wxss, apple.wxss, index.wxss
 
 | Mode | Bytes | Selectors | @supports | :hover | Tailwind banner | Raw arbitrary selector | Weapp escaped arbitrary selector |
 | --- | ---: | ---: | --- | --- | --- | --- | --- |
-| legacy | 6158 | 52 | false | false | false | false | true |
-| generator | 15132 | 53 | false | false | false | false | true |
+| legacy | 5991 | 52 | false | false | false | false | true |
+| generator | 12564 | 53 | false | false | false | false | true |
 
 ## Legacy CSS
 
@@ -184,7 +184,6 @@ text,
 }
 .bg-amber-300 {
   background-color: rgb(255, 210, 55);
-  background-color: color(display-p3 0.97433 0.83063 0.33298);
   background-color: var(--color-amber-300);
 }
 .bg-blue-500_f30 {
@@ -242,7 +241,6 @@ text,
 }
 .text-blue-300 {
   color: rgb(145, 197, 255);
-  color: color(display-p3 0.60256 0.76721 0.99394);
   color: var(--color-blue-300);
 }
 .text-pink-300 {
@@ -251,7 +249,6 @@ text,
 }
 .text-red-700 {
   color: rgb(191, 0, 15);
-  color: color(display-p3 0.69274 0.11623 0.10468);
   color: var(--color-red-700);
 }
 @media (prefers-color-scheme: dark) {
@@ -285,10 +282,10 @@ text,
 ::after {
   --tw-content: '';
 }
+:host,
 page,
 .tw-root,
-wx-root-portal-content,
-:host {
+wx-root-portal-content {
   --tw-rotate-x: initial;
   --tw-rotate-y: initial;
   --tw-rotate-z: initial;
@@ -319,15 +316,6 @@ wx-root-portal-content,
   --tw-drop-shadow-color: initial;
   --tw-drop-shadow-alpha: 100%;
   --tw-drop-shadow-size: initial;
-}
-page,
-.tw-root,
-wx-root-portal-content,
-:host {
-  --font-sans:
-    ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, Cantarell, Noto Sans, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol',
-    'Noto Color Emoji';
-  --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New', monospace;
   --color-red-700: rgb(191, 0, 15);
   --color-amber-300: rgb(255, 210, 55);
   --color-green-300: rgb(123, 241, 168);
@@ -337,11 +325,9 @@ wx-root-portal-content,
   --color-pink-300: rgb(253, 165, 213);
   --color-zinc-50: rgb(250, 250, 250);
   --color-zinc-900: rgb(24, 24, 27);
-  --spacing: 0.25rem;
+  --spacing: 8rpx;
   --default-transition-duration: 150ms;
   --default-transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
-  --default-font-family: var(--font-sans);
-  --default-mono-font-family: var(--font-mono);
 }
 ._estart {
   left: var(--spacing) !important;
@@ -445,11 +431,6 @@ wx-root-portal-content,
 .bg-blue-500_f30 {
   background-color: rgba(50, 128, 255, 0.3);
 }
-@media (color-gamut: p3) {
-  .bg-blue-500_f30 {
-    background-color: color(display-p3 0.26642 0.49122 0.98862 / 0.3);
-  }
-}
 .bg-zinc-50 {
   background-color: var(--color-zinc-50);
 }
@@ -534,64 +515,6 @@ wx-root-portal-content,
   .dark_cbg-zinc-900 {
     background-color: var(--color-zinc-900);
   }
-}
-page,
-.tw-root,
-wx-root-portal-content,
-:host {
-  --tw-rotate-x: initial;
-  --tw-rotate-y: initial;
-  --tw-rotate-z: initial;
-  --tw-skew-x: initial;
-  --tw-skew-y: initial;
-  --tw-space-y-reverse: 0;
-  --tw-space-x-reverse: 0;
-  --tw-border-style: solid;
-  --tw-gradient-position: initial;
-  --tw-gradient-from: rgba(0, 0, 0, 0);
-  --tw-gradient-via: rgba(0, 0, 0, 0);
-  --tw-gradient-to: rgba(0, 0, 0, 0);
-  --tw-gradient-stops: initial;
-  --tw-gradient-via-stops: initial;
-  --tw-gradient-from-position: 0%;
-  --tw-gradient-via-position: 50%;
-  --tw-gradient-to-position: 100%;
-  --tw-blur: initial;
-  --tw-brightness: initial;
-  --tw-contrast: initial;
-  --tw-grayscale: initial;
-  --tw-hue-rotate: initial;
-  --tw-invert: initial;
-  --tw-opacity: initial;
-  --tw-saturate: initial;
-  --tw-sepia: initial;
-  --tw-drop-shadow: initial;
-  --tw-drop-shadow-color: initial;
-  --tw-drop-shadow-alpha: 100%;
-  --tw-drop-shadow-size: initial;
-}
-page,
-.tw-root,
-wx-root-portal-content,
-:host {
-  --font-sans:
-    ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, Cantarell, Noto Sans, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol',
-    'Noto Color Emoji';
-  --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New', monospace;
-  --color-red-700: rgb(191, 0, 15);
-  --color-amber-300: rgb(255, 210, 55);
-  --color-green-300: rgb(123, 241, 168);
-  --color-blue-200: rgb(190, 219, 255);
-  --color-blue-300: rgb(145, 197, 255);
-  --color-blue-500: rgb(50, 128, 255);
-  --color-pink-300: rgb(253, 165, 213);
-  --color-zinc-50: rgb(250, 250, 250);
-  --color-zinc-900: rgb(24, 24, 27);
-  --spacing: 8rpx;
-  --default-transition-duration: 150ms;
-  --default-transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
-  --default-font-family: var(--font-sans);
-  --default-mono-font-family: var(--font-mono);
 }
 ._estart {
   left: var(--spacing) !important;
@@ -702,11 +625,6 @@ wx-root-portal-content,
 }
 .bg-blue-500_f30 {
   background-color: rgba(50, 128, 255, 0.3);
-}
-@media (color-gamut: p3) {
-  .bg-blue-500_f30 {
-    background-color: rgba(50, 128, 255, 0.3);
-  }
 }
 .bg-zinc-50 {
   background-color: var(--color-zinc-50);

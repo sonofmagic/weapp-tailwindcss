@@ -7,8 +7,8 @@ Generator CSS files: app.wxss, app-origin.wxss, index.wxss
 
 | Mode | Bytes | Selectors | @supports | :hover | Tailwind banner | Raw arbitrary selector | Weapp escaped arbitrary selector |
 | --- | ---: | ---: | --- | --- | --- | --- | --- |
-| legacy | 2684 | 21 | true | false | false | false | true |
-| generator | 5642 | 36 | false | false | false | false | true |
+| legacy | 2082 | 21 | false | false | false | false | true |
+| generator | 5184 | 36 | false | false | false | false | true |
 
 ## Legacy CSS
 
@@ -46,27 +46,6 @@ wx-root-portal-content,
   --color-purple-300: rgb(216, 180, 255);
   --spacing: 8rpx;
 }
-@supports (color: color(display-p3 0 0 0%)) {
-  page,
-  .tw-root,
-  wx-root-portal-content,
-  :host {
-    --color-cyan-500: rgb(0, 182, 212);
-    --color-blue-500: rgb(50, 128, 255);
-    --color-purple-300: rgb(216, 180, 255);
-  }
-
-  @media (color-gamut: p3) {
-    page,
-    .tw-root,
-    wx-root-portal-content,
-    :host {
-      --color-cyan-500: color(display-p3 0.2467 0.71003 0.84144);
-      --color-blue-500: color(display-p3 0.26642 0.49122 0.98862);
-      --color-purple-300: color(display-p3 0.82939 0.70374 0.99608);
-    }
-  }
-}
 view,
 text,
 :after,
@@ -91,7 +70,6 @@ text,
 }
 .bg-purple-300 {
   background-color: rgb(216, 180, 255);
-  background-color: color(display-p3 0.82939 0.70374 0.99608);
   background-color: var(--color-purple-300);
 }
 .bg-linear-to-r {
@@ -146,10 +124,10 @@ text,
 ::after {
   --tw-content: '';
 }
+:host,
 page,
 .tw-root,
-wx-root-portal-content,
-:host {
+wx-root-portal-content {
   --tw-rotate-x: initial;
   --tw-rotate-y: initial;
   --tw-rotate-z: initial;
@@ -180,15 +158,6 @@ wx-root-portal-content,
   --tw-drop-shadow-alpha: 100%;
   --tw-drop-shadow-size: initial;
   --tw-ease: initial;
-}
-page,
-.tw-root,
-wx-root-portal-content,
-:host {
-  --font-sans:
-    ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, Cantarell, Noto Sans, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol',
-    'Noto Color Emoji';
-  --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New', monospace;
   --color-cyan-500: rgb(0, 182, 212);
   --color-blue-500: rgb(50, 128, 255);
   --color-purple-300: rgb(216, 180, 255);
@@ -196,8 +165,6 @@ wx-root-portal-content,
   --ease-out: cubic-bezier(0, 0, 0.2, 1);
   --default-transition-duration: 150ms;
   --default-transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
-  --default-font-family: var(--font-sans);
-  --default-mono-font-family: var(--font-mono);
 }
 .visible {
   visibility: visible;

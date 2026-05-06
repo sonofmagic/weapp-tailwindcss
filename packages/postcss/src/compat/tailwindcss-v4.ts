@@ -15,6 +15,26 @@ const MODERN_CHECK_MOZ_ORIENT_RE = /-moz-orient\s*:\s*inline/
 const MODERN_CHECK_COLOR_RGB_RE = /color\s*:\s*rgb\(\s*from\s+red\s+r\s+g\s+b\s*\)/
 const LINEAR_GRADIENT_LAB_RE = /background-image\s*:\s*linear-gradient\(\s*in\s+lab\s*,\s*red\s*,\s*red\s*\)/
 const DISPLAY_P3_COLOR_RE = /color\s*:\s*color\(\s*display-p3\s+0\s+0\s+0%\s*\)/
+const DISPLAY_P3_VALUE_RE = /color\(\s*display-p3\b/i
+const COLOR_GAMUT_P3_RE = /\(\s*color-gamut\s*:\s*p3\s*\)/i
+const UNSUPPORTED_FONT_VALUE_RE = /\bui-(?:sans-serif|monospace)\b|var\(\s*--(?:font-(?:sans|serif|mono)|default-(?:mono-)?font-(?:family|feature-settings|variation-settings))\b/i
+const UNSUPPORTED_FONT_DECLARATION_PROPS = new Set([
+  'font-family',
+  'font-feature-settings',
+  '-webkit-font-feature-settings',
+  'font-variation-settings',
+])
+const UNSUPPORTED_FONT_THEME_PROPS = new Set([
+  '--font-sans',
+  '--font-serif',
+  '--font-mono',
+  '--default-font-family',
+  '--default-font-feature-settings',
+  '--default-font-variation-settings',
+  '--default-mono-font-family',
+  '--default-mono-font-feature-settings',
+  '--default-mono-font-variation-settings',
+])
 
 // 用于 normalizeTailwindcssV4Declaration 的正则
 const RADIUS_VALUE_RE = /\b([+-]?(?:\d+(?:\.\d+)?|\.\d+)(?:e[+-]?\d+)?)\s*(r?px)\b/gi
@@ -50,6 +70,30 @@ export function isTailwindcssV4LinearGradientSupports(atRule: AtRule) {
 // Tailwind v4 的 display-p3 变量分支是浏览器增强，小程序生成产物保留普通 fallback 即可
 export function isTailwindcssV4DisplayP3Supports(atRule: AtRule) {
   return atRule.name === 'supports' && DISPLAY_P3_COLOR_RE.test(atRule.params)
+}
+
+// 小程序不支持 display-p3 媒体增强分支，保留普通 rgb fallback 即可
+export function isTailwindcssV4DisplayP3Media(atRule: AtRule) {
+  return atRule.name === 'media' && COLOR_GAMUT_P3_RE.test(atRule.params)
+}
+
+// 小程序不支持 display-p3 颜色函数，删除对应声明以回退到前面的 rgb/var 声明
+export function isTailwindcssV4DisplayP3Declaration(decl: Declaration) {
+  return DISPLAY_P3_VALUE_RE.test(decl.value)
+}
+
+// 小程序端不消费浏览器字体栈变量，删除可减少无效 theme 变量输出
+export function isTailwindcssV4UnsupportedFontThemeDeclaration(decl: Declaration) {
+  return UNSUPPORTED_FONT_THEME_PROPS.has(decl.prop)
+    || decl.prop.startsWith('--font-sans--')
+    || decl.prop.startsWith('--font-serif--')
+    || decl.prop.startsWith('--font-mono--')
+}
+
+// 删除 Tailwind 默认字体栈及其变量引用，避免保留无法在小程序端生效的字体声明
+export function isTailwindcssV4UnsupportedFontDeclaration(decl: Declaration) {
+  return UNSUPPORTED_FONT_DECLARATION_PROPS.has(decl.prop)
+    && UNSUPPORTED_FONT_VALUE_RE.test(decl.value)
 }
 
 // 对 Tailwind v4 生成的声明做兼容处理，返回是否发生变更

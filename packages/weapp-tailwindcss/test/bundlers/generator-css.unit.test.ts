@@ -926,6 +926,106 @@ describe('bundlers/shared generator css', () => {
     ].join('\n'))
   })
 
+  it('hoists and dedupes Tailwind v4 theme variables before generated utilities', async () => {
+    const runtimeSet = new Set(['bg-blue-500', 'bg-blue-500/50'])
+    const rawSource = [
+      '.card{color:red}',
+      ':host,page,.tw-root,wx-root-portal-content{--spacing:8rpx;--color-blue-500:rgb(50,128,255);--color-primary:#155dfc;--font-mono:ui-monospace}',
+      'view,text,::before,::after{--tw-border-spacing-x:0;box-sizing:border-box;border-width:0;border-style:solid}',
+      '::before,::after{--tw-content:""}',
+    ].join('\n')
+    const rawTailwindCss = '.bg-blue-500{background-color:var(--color-blue-500)}'
+    const weappCss = [
+      '.bg-blue-500{background-color:var(--color-blue-500)}',
+      '.font-sans{font-family:var(--font-sans)}',
+      ':host,page,.tw-root,wx-root-portal-content{--color-blue-500:rgb(50,128,255);--spacing:8rpx;--font-sans:ui-sans-serif}',
+      '@media (color-gamut: p3){.bg-blue-500_f50{background-color:color(display-p3 0.26642 0.49122 0.98862 / 0.5)}}',
+    ].join('\n')
+    const legacyCss = [
+      '.card{color:red}',
+      ':host,page,.tw-root,wx-root-portal-content{--spacing:8rpx;--color-blue-500:rgb(50,128,255);--color-primary:#155dfc;--font-mono:ui-monospace}',
+      'view,text,::before,::after{--tw-border-spacing-x:0;box-sizing:border-box;border-width:0;border-style:solid}',
+      '::before,::after{--tw-content:""}',
+    ].join('\n')
+    const generateMock = vi.fn(async () => ({
+      css: weappCss,
+      rawCss: rawTailwindCss,
+      target: 'weapp',
+      classSet: runtimeSet,
+      dependencies: [],
+      sources: [],
+      root: null,
+    }))
+
+    vi.doMock('@/generator', () => ({
+      createWeappTailwindcssGenerator: vi.fn(() => ({
+        generate: generateMock,
+      })),
+      normalizeWeappTailwindcssGeneratorOptions: normalizeGeneratorOptions,
+      resolveTailwindV4SourceFromPatcher: vi.fn(async () => ({
+        projectRoot: process.cwd(),
+        base: process.cwd(),
+        baseFallbacks: [],
+        css: '@import "tailwindcss";',
+        dependencies: [],
+      })),
+    }))
+
+    const { generateCssByGenerator } = await import('@/bundlers/shared/generator-css')
+    const styleHandler = vi.fn(async () => ({ css: legacyCss }))
+    const result = await generateCssByGenerator({
+      opts: {
+        generator: {
+          mode: 'force',
+          target: 'weapp',
+        },
+        styleHandler,
+      } as any,
+      runtimeState: {
+        twPatcher: {
+          majorVersion: 4,
+        } as any,
+        patchPromise: Promise.resolve(),
+      },
+      runtime: runtimeSet,
+      rawSource,
+      file: 'app.wxss',
+      cssHandlerOptions: {
+        isMainChunk: true,
+        postcssOptions: {
+          options: {
+            from: 'app.wxss',
+          },
+        },
+        majorVersion: 4,
+      } as any,
+      cssUserHandlerOptions: {
+        isMainChunk: false,
+        postcssOptions: {
+          options: {
+            from: 'app.wxss',
+          },
+        },
+        majorVersion: 4,
+      } as any,
+      styleHandler,
+      debug: vi.fn(),
+    })
+
+    const css = result?.css ?? ''
+    expect(css.split(':host,page,.tw-root,wx-root-portal-content')).toHaveLength(2)
+    expect(css).toContain('--color-blue-500:rgb(50,128,255)')
+    expect(css).toContain('--spacing:8rpx')
+    expect(css).toContain('--color-primary:#155dfc')
+    expect(css).not.toContain('color-gamut')
+    expect(css).not.toContain('display-p3')
+    expect(css).not.toContain('font-family:var(--font-sans)')
+    expect(css).not.toContain('--font-sans')
+    expect(css).not.toContain('--font-mono')
+    expect(css.indexOf('::before,::after{--tw-content:""}')).toBeLessThan(css.indexOf(':host,page,.tw-root,wx-root-portal-content'))
+    expect(css.indexOf(':host,page,.tw-root,wx-root-portal-content')).toBeLessThan(css.indexOf('.bg-blue-500'))
+  })
+
   it('generates scoped tailwind css assets outside the main chunk', async () => {
     const runtimeSet = new Set(['bg-emerald-500'])
     const rawTailwindCss = '/*! tailwindcss v4.2.4 | MIT License | https://tailwindcss.com */\n.bg-emerald-500:not(#\\#){background-color:rgb(0,185,129)}'

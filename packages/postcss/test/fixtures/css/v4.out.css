@@ -1,8 +1,5 @@
 /*! tailwindcss v4.0.9 | MIT License | https://tailwindcss.com */
 page,.tw-root,wx-root-portal-content,:host {
-    --font-sans: ui-sans-serif,system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,Cantarell,Noto Sans, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol",
-      "Noto Color Emoji";
-    --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
     --color-red-50: rgb(254, 242, 242);
     --color-red-300: rgb(255, 163, 164);
     --color-red-400: rgb(255, 101, 104);
@@ -31,28 +28,7 @@ page,.tw-root,wx-root-portal-content,:host {
     --ease-in-out: cubic-bezier(0.4, 0, 0.2, 1);
     --default-transition-duration: 0.15s;
     --default-transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
-    --default-font-family: var(--font-sans);
-    --default-font-feature-settings: var(--font-sans--font-feature-settings);
-    --default-font-variation-settings: var(--font-sans--font-variation-settings);
-    --default-mono-font-family: var(--font-mono);
-    --default-mono-font-feature-settings: var(--font-mono--font-feature-settings);
-    --default-mono-font-variation-settings: var(--font-mono--font-variation-settings);
   }
-@supports (color: color(display-p3 0 0 0%)) {
-page,.tw-root,wx-root-portal-content,:host {
-    --color-red-300: rgb(255, 163, 164);
-    --color-red-400: rgb(255, 101, 104);
-    --color-red-600: rgb(228, 0, 22);
-  }
-
-@media (color-gamut: p3) {
-page,.tw-root,wx-root-portal-content,:host {
-    --color-red-300: color(display-p3 0.95692 0.65189 0.64512);
-    --color-red-400: color(display-p3 0.93353 0.43168 0.42349);
-    --color-red-600: color(display-p3 0.83032 0.14038 0.1332);
-  }
-}
-}
 view,text,:after,:before {
     box-sizing: border-box;
     border: 0 solid;
@@ -64,18 +40,6 @@ html,:host {
     -moz-tab-size: 4;
     tab-size: 4;
     line-height: 1.5;
-    font-family: var(
-      --default-font-family,
-      ui-sans-serif,
-      system-ui,
-      sans-serif,
-      "Apple Color Emoji",
-      "Segoe UI Emoji",
-      "Segoe UI Symbol",
-      "Noto Color Emoji"
-    );
-    font-feature-settings: var(--default-font-feature-settings, normal);
-    font-variation-settings: var(--default-font-variation-settings, normal);
     -webkit-tap-highlight-color: transparent;
   }
 body {
@@ -104,19 +68,6 @@ b,strong {
     font-weight: bolder;
   }
 code,kbd,samp,pre {
-    font-family: var(
-      --default-mono-font-family,
-      ui-monospace,
-      SFMono-Regular,
-      Menlo,
-      Monaco,
-      Consolas,
-      "Liberation Mono",
-      "Courier New",
-      monospace
-    );
-    font-feature-settings: var(--default-mono-font-feature-settings, normal);
-    font-variation-settings: var(--default-mono-font-variation-settings, normal);
     font-size: 1em;
   }
 small {

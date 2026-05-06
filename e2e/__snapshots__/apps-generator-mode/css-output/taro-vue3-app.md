@@ -8,7 +8,7 @@ Generator CSS files: app.wxss, index.wxss
 | Mode | Bytes | Selectors | @supports | :hover | Tailwind banner | Raw arbitrary selector | Weapp escaped arbitrary selector |
 | --- | ---: | ---: | --- | --- | --- | --- | --- |
 | legacy | 115828 | 296 | false | false | false | false | true |
-| generator | 128334 | 296 | false | false | false | false | true |
+| generator | 128335 | 297 | false | false | false | false | true |
 
 ## Legacy CSS
 
@@ -1928,6 +1928,16 @@ text,
   }
 }
 
+:host,
+page,
+.tw-root,
+wx-root-portal-content {
+  --nut-icon-height: 40rpx;
+  --nut-icon-width: 40rpx;
+  --nut-icon-line-height: 40rpx;
+  --animate-duration: 1s;
+  --animate-delay: 0s;
+}
 .-m-_b20px_B {
   margin: -20px;
 }
@@ -2596,16 +2606,6 @@ text,
 }
 .nut-icon-footprint:before {
   content: '\e65d';
-}
-page,
-.tw-root,
-wx-root-portal-content,
-page {
-  --nut-icon-height: 40rpx;
-  --nut-icon-width: 40rpx;
-  --nut-icon-line-height: 40rpx;
-  --animate-duration: 1s;
-  --animate-delay: 0s;
 }
 .nut-icon {
   display: inline-block;

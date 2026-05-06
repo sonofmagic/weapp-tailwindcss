@@ -46,7 +46,6 @@ exports[`compose > components 0 2`] = `
       --tw-font-weight: initial;
     }
 page,.tw-root,wx-root-portal-content,:host {
-  --font-sans: ui-sans-serif,system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,Cantarell,Noto Sans,sans-serif,"Apple Color Emoji","Segoe UI Emoji","Segoe UI Symbol","Noto Color Emoji";
   --color-white: #fff;
   --spacing: .25rem;
   --font-weight-medium: 500;
@@ -63,7 +62,6 @@ view,text,:after,:before {
     padding-top: calc(var(--spacing) * 4);
     padding-bottom: calc(var(--spacing) * 4);
     text-align: center;
-    font-family: var(--font-sans);
     --tw-font-weight: var(--font-weight-medium);
     font-weight: var(--font-weight-medium);
     color: var(--color-white);
@@ -115,7 +113,6 @@ exports[`compose > no components 0 2`] = `
       --tw-font-weight: initial;
     }
 page,.tw-root,wx-root-portal-content,:host {
-  --font-sans: ui-sans-serif,system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,Cantarell,Noto Sans,sans-serif,"Apple Color Emoji","Segoe UI Emoji","Segoe UI Symbol","Noto Color Emoji";
   --color-white: #fff;
   --spacing: .25rem;
   --font-weight-medium: 500;
@@ -132,7 +129,6 @@ view,text,:after,:before {
   padding-top: calc(var(--spacing) * 4);
   padding-bottom: calc(var(--spacing) * 4);
   text-align: center;
-  font-family: var(--font-sans);
   --tw-font-weight: var(--font-weight-medium);
   font-weight: var(--font-weight-medium);
   color: var(--color-white);

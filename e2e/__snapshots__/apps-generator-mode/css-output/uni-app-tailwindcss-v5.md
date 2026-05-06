@@ -7,8 +7,8 @@ Generator CSS files: app.wxss, home.wxss, user.wxss
 
 | Mode | Bytes | Selectors | @supports | :hover | Tailwind banner | Raw arbitrary selector | Weapp escaped arbitrary selector |
 | --- | ---: | ---: | --- | --- | --- | --- | --- |
-| legacy | 64862 | 291 | true | false | false | false | true |
-| generator | 98567 | 397 | false | false | false | false | true |
+| legacy | 58430 | 291 | true | false | false | false | true |
+| generator | 97283 | 397 | false | false | false | false | true |
 
 ## Legacy CSS
 
@@ -71,29 +71,6 @@ wx-root-portal-content,
   --color-midnight: #121063;
   --color-tahiti: #3ab7bf;
   --color-bermuda: #78dcca;
-}
-@supports (color: color(display-p3 0 0 0%)) {
-  page,
-  .tw-root,
-  wx-root-portal-content,
-  :host {
-    --color-emerald-500: rgb(0, 185, 129);
-    --color-emerald-600: rgb(0, 150, 105);
-    --color-cyan-500: rgb(0, 182, 212);
-    --color-blue-500: rgb(50, 128, 255);
-  }
-
-  @media (color-gamut: p3) {
-    page,
-    .tw-root,
-    wx-root-portal-content,
-    :host {
-      --color-emerald-500: color(display-p3 0.26711 0.72685 0.5084);
-      --color-emerald-600: color(display-p3 0.20656 0.58906 0.41396);
-      --color-cyan-500: color(display-p3 0.2467 0.71003 0.84144);
-      --color-blue-500: color(display-p3 0.26642 0.49122 0.98862);
-    }
-  }
 }
 view,
 text,
@@ -292,7 +269,6 @@ text,
 }
 .bg-emerald-500 {
   background-color: rgb(0, 185, 129);
-  background-color: color(display-p3 0.26711 0.72685 0.5084);
   background-color: var(--color-emerald-500);
 }
 .bg-midnight {
@@ -391,7 +367,6 @@ text,
 }
 .active_cbg-emerald-600:active {
   background-color: rgb(0, 150, 105);
-  background-color: color(display-p3 0.20656 0.58906 0.41396);
   background-color: var(--color-emerald-600);
 }
 page {
@@ -448,10 +423,6 @@ page:not(#\#),
 .tw-root:not(#\#),
 wx-root-portal-content:not(#\#),
 :host:not(#\#) {
-  --font-sans:
-    ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, Cantarell, Noto Sans, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol',
-    'Noto Color Emoji';
-  --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New', monospace;
   --color-emerald-50: rgb(236, 253, 245);
   --color-emerald-100: rgb(208, 250, 229);
   --color-emerald-500: rgb(0, 185, 129);
@@ -480,33 +451,6 @@ wx-root-portal-content:not(#\#),
   --font-weight-semibold: 600;
   --font-weight-bold: 700;
   --radius-lg: 16rpx;
-  --default-font-family: var(--font-sans);
-  --default-mono-font-family: var(--font-mono);
-}
-@supports (color: color(display-p3 0 0 0%)) {
-  page:not(#\#),
-  .tw-root:not(#\#),
-  wx-root-portal-content:not(#\#),
-  :host:not(#\#) {
-    --color-emerald-500: rgb(0, 185, 129);
-    --color-emerald-600: rgb(0, 150, 105);
-    --color-cyan-500: rgb(0, 182, 212);
-    --color-blue-500: rgb(50, 128, 255);
-    --color-indigo-500: rgb(98, 96, 255);
-  }
-
-  @media (color-gamut: p3) {
-    page:not(#\#),
-    .tw-root:not(#\#),
-    wx-root-portal-content:not(#\#),
-    :host:not(#\#) {
-      --color-emerald-500: color(display-p3 0.26711 0.72685 0.5084);
-      --color-emerald-600: color(display-p3 0.20656 0.58906 0.41396);
-      --color-cyan-500: color(display-p3 0.2467 0.71003 0.84144);
-      --color-blue-500: color(display-p3 0.26642 0.49122 0.98862);
-      --color-indigo-500: color(display-p3 0.38037 0.37224 0.97171);
-    }
-  }
 }
 view:not(#\#):not(#\#),
 text:not(#\#):not(#\#),
@@ -522,27 +466,6 @@ html:not(#\#):not(#\#),
   -webkit-text-size-adjust: 100%;
   tab-size: 4;
   line-height: 1.5;
-  font-family:
-    ui-sans-serif,
-    system-ui,
-    -apple-system,
-    Segoe UI,
-    Roboto,
-    Ubuntu,
-    Cantarell,
-    Noto Sans,
-    sans-serif,
-    'Apple Color Emoji',
-    'Segoe UI Emoji',
-    'Segoe UI Symbol',
-    'Noto Color Emoji';
-  font-family: var(--default-font-family, ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji');
-  -webkit-font-feature-settings: normal;
-  font-feature-settings: normal;
-  -webkit-font-feature-settings: var(--default-font-feature-settings, normal);
-  font-feature-settings: var(--default-font-feature-settings, normal);
-  font-variation-settings: normal;
-  font-variation-settings: var(--default-font-variation-settings, normal);
   -webkit-tap-highlight-color: transparent;
 }
 hr:not(#\#):not(#\#) {
@@ -577,14 +500,6 @@ code:not(#\#):not(#\#),
 kbd:not(#\#):not(#\#),
 samp:not(#\#):not(#\#),
 pre:not(#\#):not(#\#) {
-  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New', monospace;
-  font-family: var(--default-mono-font-family, ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New', monospace);
-  -webkit-font-feature-settings: normal;
-  font-feature-settings: normal;
-  -webkit-font-feature-settings: var(--default-mono-font-feature-settings, normal);
-  font-feature-settings: var(--default-mono-font-feature-settings, normal);
-  font-variation-settings: normal;
-  font-variation-settings: var(--default-mono-font-variation-settings, normal);
   font-size: 1em;
 }
 small:not(#\#):not(#\#) {
@@ -977,7 +892,6 @@ input:where([type='button'], [type='reset'], [type='submit']):not(#\#):not(#\#) 
 }
 .border-emerald-500:not(#\#):not(#\#):not(#\#) {
   border-color: rgb(0, 185, 129);
-  border-color: color(display-p3 0.26711 0.72685 0.5084);
   border-color: var(--color-emerald-500);
 }
 .border-slate-200:not(#\#):not(#\#):not(#\#) {
@@ -996,7 +910,6 @@ input:where([type='button'], [type='reset'], [type='submit']):not(#\#):not(#\#) 
 }
 .bg-emerald-500:not(#\#):not(#\#):not(#\#) {
   background-color: rgb(0, 185, 129);
-  background-color: color(display-p3 0.26711 0.72685 0.5084);
   background-color: var(--color-emerald-500);
 }
 .bg-slate-50:not(#\#):not(#\#):not(#\#) {
@@ -1168,7 +1081,6 @@ input:where([type='button'], [type='reset'], [type='submit']):not(#\#):not(#\#) 
 }
 .text-emerald-600:not(#\#):not(#\#):not(#\#) {
   color: rgb(0, 150, 105);
-  color: color(display-p3 0.20656 0.58906 0.41396);
   color: var(--color-emerald-600);
 }
 .text-slate-500:not(#\#):not(#\#):not(#\#) {
@@ -1215,7 +1127,6 @@ input:where([type='button'], [type='reset'], [type='submit']):not(#\#):not(#\#) 
 }
 .active_cbg-emerald-600:active:not(#\#):not(#\#):not(#\#) {
   background-color: rgb(0, 150, 105);
-  background-color: color(display-p3 0.20656 0.58906 0.41396);
   background-color: var(--color-emerald-600);
 }
 @property --tw-space-y-reverse {
@@ -1400,10 +1311,6 @@ page:not(#\#),
 .tw-root:not(#\#),
 wx-root-portal-content:not(#\#),
 :host:not(#\#) {
-  --font-sans:
-    ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, Cantarell, Noto Sans, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol',
-    'Noto Color Emoji';
-  --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New', monospace;
   --color-emerald-50: rgb(236, 253, 245);
   --color-emerald-100: rgb(208, 250, 229);
   --color-emerald-500: rgb(0, 185, 129);
@@ -1432,33 +1339,6 @@ wx-root-portal-content:not(#\#),
   --font-weight-semibold: 600;
   --font-weight-bold: 700;
   --radius-lg: 16rpx;
-  --default-font-family: var(--font-sans);
-  --default-mono-font-family: var(--font-mono);
-}
-@supports (color: color(display-p3 0 0 0%)) {
-  page:not(#\#),
-  .tw-root:not(#\#),
-  wx-root-portal-content:not(#\#),
-  :host:not(#\#) {
-    --color-emerald-500: rgb(0, 185, 129);
-    --color-emerald-600: rgb(0, 150, 105);
-    --color-cyan-500: rgb(0, 182, 212);
-    --color-blue-500: rgb(50, 128, 255);
-    --color-indigo-500: rgb(98, 96, 255);
-  }
-
-  @media (color-gamut: p3) {
-    page:not(#\#),
-    .tw-root:not(#\#),
-    wx-root-portal-content:not(#\#),
-    :host:not(#\#) {
-      --color-emerald-500: color(display-p3 0.26711 0.72685 0.5084);
-      --color-emerald-600: color(display-p3 0.20656 0.58906 0.41396);
-      --color-cyan-500: color(display-p3 0.2467 0.71003 0.84144);
-      --color-blue-500: color(display-p3 0.26642 0.49122 0.98862);
-      --color-indigo-500: color(display-p3 0.38037 0.37224 0.97171);
-    }
-  }
 }
 view:not(#\#):not(#\#),
 text:not(#\#):not(#\#),
@@ -1474,27 +1354,6 @@ html:not(#\#):not(#\#),
   -webkit-text-size-adjust: 100%;
   tab-size: 4;
   line-height: 1.5;
-  font-family:
-    ui-sans-serif,
-    system-ui,
-    -apple-system,
-    Segoe UI,
-    Roboto,
-    Ubuntu,
-    Cantarell,
-    Noto Sans,
-    sans-serif,
-    'Apple Color Emoji',
-    'Segoe UI Emoji',
-    'Segoe UI Symbol',
-    'Noto Color Emoji';
-  font-family: var(--default-font-family, ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji');
-  -webkit-font-feature-settings: normal;
-  font-feature-settings: normal;
-  -webkit-font-feature-settings: var(--default-font-feature-settings, normal);
-  font-feature-settings: var(--default-font-feature-settings, normal);
-  font-variation-settings: normal;
-  font-variation-settings: var(--default-font-variation-settings, normal);
   -webkit-tap-highlight-color: transparent;
 }
 hr:not(#\#):not(#\#) {
@@ -1529,14 +1388,6 @@ code:not(#\#):not(#\#),
 kbd:not(#\#):not(#\#),
 samp:not(#\#):not(#\#),
 pre:not(#\#):not(#\#) {
-  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New', monospace;
-  font-family: var(--default-mono-font-family, ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New', monospace);
-  -webkit-font-feature-settings: normal;
-  font-feature-settings: normal;
-  -webkit-font-feature-settings: var(--default-mono-font-feature-settings, normal);
-  font-feature-settings: var(--default-mono-font-feature-settings, normal);
-  font-variation-settings: normal;
-  font-variation-settings: var(--default-mono-font-variation-settings, normal);
   font-size: 1em;
 }
 small:not(#\#):not(#\#) {
@@ -1929,7 +1780,6 @@ input:where([type='button'], [type='reset'], [type='submit']):not(#\#):not(#\#) 
 }
 .border-emerald-500:not(#\#):not(#\#):not(#\#) {
   border-color: rgb(0, 185, 129);
-  border-color: color(display-p3 0.26711 0.72685 0.5084);
   border-color: var(--color-emerald-500);
 }
 .border-slate-200:not(#\#):not(#\#):not(#\#) {
@@ -1948,7 +1798,6 @@ input:where([type='button'], [type='reset'], [type='submit']):not(#\#):not(#\#) 
 }
 .bg-emerald-500:not(#\#):not(#\#):not(#\#) {
   background-color: rgb(0, 185, 129);
-  background-color: color(display-p3 0.26711 0.72685 0.5084);
   background-color: var(--color-emerald-500);
 }
 .bg-slate-50:not(#\#):not(#\#):not(#\#) {
@@ -2120,7 +1969,6 @@ input:where([type='button'], [type='reset'], [type='submit']):not(#\#):not(#\#) 
 }
 .text-emerald-600:not(#\#):not(#\#):not(#\#) {
   color: rgb(0, 150, 105);
-  color: color(display-p3 0.20656 0.58906 0.41396);
   color: var(--color-emerald-600);
 }
 .text-slate-500:not(#\#):not(#\#):not(#\#) {
@@ -2167,7 +2015,6 @@ input:where([type='button'], [type='reset'], [type='submit']):not(#\#):not(#\#) 
 }
 .active_cbg-emerald-600:active:not(#\#):not(#\#):not(#\#) {
   background-color: rgb(0, 150, 105);
-  background-color: color(display-p3 0.20656 0.58906 0.41396);
   background-color: var(--color-emerald-600);
 }
 @property --tw-space-y-reverse {
@@ -2319,10 +2166,10 @@ input:where([type='button'], [type='reset'], [type='submit']):not(#\#):not(#\#) 
 ::after {
   --tw-content: '';
 }
+:host,
 page,
 .tw-root,
-wx-root-portal-content,
-:host {
+wx-root-portal-content {
   --tw-scale-x: 1;
   --tw-scale-y: 1;
   --tw-scale-z: 1;
@@ -2392,15 +2239,6 @@ wx-root-portal-content,
   --tw-backdrop-opacity: initial;
   --tw-backdrop-saturate: initial;
   --tw-backdrop-sepia: initial;
-}
-page,
-.tw-root,
-wx-root-portal-content,
-:host {
-  --font-sans:
-    ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, Cantarell, Noto Sans, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol',
-    'Noto Color Emoji';
-  --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New', monospace;
   --color-emerald-50: rgb(236, 253, 245);
   --color-emerald-100: rgb(208, 250, 229);
   --color-emerald-500: rgb(0, 185, 129);
@@ -2429,12 +2267,17 @@ wx-root-portal-content,
   --font-weight-semibold: 600;
   --font-weight-bold: 700;
   --radius-lg: 0.5rem;
-  --default-font-family: var(--font-sans);
-  --default-mono-font-family: var(--font-mono);
   --color-neutral-1B: #1b1b1b;
   --color-midnight: #121063;
   --color-tahiti: #3ab7bf;
   --color-bermuda: #78dcca;
+  --status-bar-height: 25px;
+  --top-window-height: 0px;
+  --window-top: 0px;
+  --window-bottom: 0px;
+  --window-left: 0px;
+  --window-right: 0px;
+  --window-magin: 0px;
 }
 .collapse {
   visibility: collapse;
@@ -3249,28 +3092,14 @@ wx-root-portal-content,
 .active_cbg-emerald-600:active {
   background-color: var(--color-emerald-600);
 }
-
-page {
-  --status-bar-height: 25px;
-  --top-window-height: 0px;
-  --window-top: 0px;
-  --window-bottom: 0px;
-  --window-left: 0px;
-  --window-right: 0px;
-  --window-magin: 0px;
-}
 [data-c-h='true'] {
   display: none !important;
 }
 
+:host,
 page,
 .tw-root,
-wx-root-portal-content,
-:host {
-  --font-sans:
-    ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, Cantarell, Noto Sans, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol',
-    'Noto Color Emoji';
-  --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New', monospace;
+wx-root-portal-content {
   --color-emerald-50: rgb(236, 253, 245);
   --color-emerald-100: rgb(208, 250, 229);
   --color-emerald-500: rgb(0, 185, 129);
@@ -3299,8 +3128,6 @@ wx-root-portal-content,
   --font-weight-semibold: 600;
   --font-weight-bold: 700;
   --radius-lg: 0.5rem;
-  --default-font-family: var(--font-sans);
-  --default-mono-font-family: var(--font-mono);
   --color-neutral-1B: #1b1b1b;
   --color-midnight: #121063;
   --color-tahiti: #3ab7bf;
@@ -4429,14 +4256,10 @@ wx-root-portal-content,
   inherits: false;
 }
 
+:host,
 page,
 .tw-root,
-wx-root-portal-content,
-:host {
-  --font-sans:
-    ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, Cantarell, Noto Sans, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol',
-    'Noto Color Emoji';
-  --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New', monospace;
+wx-root-portal-content {
   --color-emerald-50: rgb(236, 253, 245);
   --color-emerald-100: rgb(208, 250, 229);
   --color-emerald-500: rgb(0, 185, 129);
@@ -4465,8 +4288,6 @@ wx-root-portal-content,
   --font-weight-semibold: 600;
   --font-weight-bold: 700;
   --radius-lg: 0.5rem;
-  --default-font-family: var(--font-sans);
-  --default-mono-font-family: var(--font-mono);
   --color-neutral-1B: #1b1b1b;
   --color-midnight: #121063;
   --color-tahiti: #3ab7bf;

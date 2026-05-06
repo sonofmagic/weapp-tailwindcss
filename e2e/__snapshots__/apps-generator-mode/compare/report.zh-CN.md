@@ -6,21 +6,21 @@
 
 | 项目 | 来源 | 状态 | CSS 文件 | 旧链路字节数 | 生成模式字节数 | 差值 | 比例 | @supports | :hover | Tailwind banner |
 | --- | --- | --- | --- | ---: | ---: | ---: | ---: | --- | --- | --- |
-| vite-native | apps | 通过 | `vite-native/dist/app.wxss` (+2) | 6158 | 15132 | +8974 | 2.4573 | 否 | 否 | 否 |
+| vite-native | apps | 通过 | `vite-native/dist/app.wxss` (+2) | 5991 | 12564 | +6573 | 2.0971 | 否 | 否 | 否 |
 | vite-native-ts | apps | 通过 | `vite-native-ts/dist/app.wxss` (+3) | 12485 | 40881 | +28396 | 3.2744 | 否 | 否 | 否 |
-| uni-app-vue3-vite | demo | 通过 | `uni-app-vue3-vite/dist/build/mp-weixin/app.wxss` (+10) | 401919 | 516881 | +114962 | 1.286 | 否 | 否 | 否 |
-| uni-app-tailwindcss-v4 | demo | 通过 | `uni-app-tailwindcss-v4/dist/build/mp-weixin/app.wxss` (+2) | 55257 | 89720 | +34463 | 1.6237 | 否 | 否 | 否 |
-| uni-app-tailwindcss-v5 | demo | 通过 | `uni-app-tailwindcss-v5/dist/build/mp-weixin/app.wxss` (+2) | 64862 | 98567 | +33705 | 1.5196 | 否 | 否 | 否 |
+| uni-app-vue3-vite | demo | 通过 | `uni-app-vue3-vite/dist/build/mp-weixin/app.wxss` (+10) | 401919 | 478099 | +76180 | 1.1895 | 否 | 否 | 否 |
+| uni-app-tailwindcss-v4 | demo | 通过 | `uni-app-tailwindcss-v4/dist/build/mp-weixin/app.wxss` (+2) | 49689 | 88436 | +38747 | 1.7798 | 否 | 否 | 否 |
+| uni-app-tailwindcss-v5 | demo | 通过 | `uni-app-tailwindcss-v5/dist/build/mp-weixin/app.wxss` (+2) | 58430 | 97283 | +38853 | 1.6649 | 否 | 否 | 否 |
 | taro-app | demo | 通过 | `taro-app/dist/app.wxss` (+5) | 40513 | 114523 | +74010 | 2.8268 | 否 | 否 | 否 |
-| taro-webpack-tailwindcss-v4 | demo | 通过 | `taro-webpack-tailwindcss-v4/dist/app.wxss` (+1) | 382585 | 381898 | -687 | 0.9982 | 否 | 否 | 否 |
+| taro-webpack-tailwindcss-v4 | demo | 通过 | `taro-webpack-tailwindcss-v4/dist/app.wxss` (+1) | 382159 | 381841 | -318 | 0.9992 | 否 | 否 | 否 |
 | taro-app-vite | demo | 通过 | `taro-app-vite/dist/app.wxss` (+2) | 4530 | 2575 | -1955 | 0.5684 | 否 | 否 | 否 |
-| taro-vite-tailwindcss-v4 | demo | 通过 | `taro-vite-tailwindcss-v4/dist/app.wxss` (+2) | 2684 | 5642 | +2958 | 2.1021 | 否 | 否 | 否 |
-| taro-vite-tailwindcss-v5 | demo | 通过 | `taro-vite-tailwindcss-v5/dist/app.wxss` (+2) | 5387 | 23496 | +18109 | 4.3616 | 否 | 否 | 否 |
-| taro-vue3-app | demo | 通过 | `taro-vue3-app/dist/app.wxss` (+1) | 115828 | 128334 | +12506 | 1.108 | 否 | 否 | 否 |
+| taro-vite-tailwindcss-v4 | demo | 通过 | `taro-vite-tailwindcss-v4/dist/app.wxss` (+2) | 2082 | 5184 | +3102 | 2.4899 | 否 | 否 | 否 |
+| taro-vite-tailwindcss-v5 | demo | 通过 | `taro-vite-tailwindcss-v5/dist/app.wxss` (+2) | 4505 | 23038 | +18533 | 5.1139 | 否 | 否 | 否 |
+| taro-vue3-app | demo | 通过 | `taro-vue3-app/dist/app.wxss` (+1) | 115828 | 128335 | +12507 | 1.108 | 否 | 否 | 否 |
 | gulp-app | demo | 通过 | `gulp-app/dist/app.wxss` (+2) | 6578 | 12575 | +5997 | 1.9117 | 否 | 否 | 否 |
 | mpx-app | demo | 通过 | `mpx-app/dist/wx/app.wxss` (+16) | 189931 | 202756 | +12825 | 1.0675 | 否 | 否 | 否 |
-| mpx-tailwindcss-v4 | demo | 通过 | `mpx-tailwindcss-v4/dist/wx/app.wxss` (+3) | 21126 | 28382 | +7256 | 1.3435 | 否 | 否 | 否 |
-| mpx-tailwindcss-v5 | demo | 通过 | `mpx-tailwindcss-v5/dist/wx/app.wxss` (+3) | 25140 | 32398 | +7258 | 1.2887 | 否 | 否 | 否 |
+| mpx-tailwindcss-v4 | demo | 通过 | `mpx-tailwindcss-v4/dist/wx/app.wxss` (+3) | 18986 | 26806 | +7820 | 1.4119 | 否 | 否 | 否 |
+| mpx-tailwindcss-v5 | demo | 通过 | `mpx-tailwindcss-v5/dist/wx/app.wxss` (+3) | 22440 | 29822 | +7382 | 1.329 | 否 | 否 | 否 |
 
 ## 说明
 
@@ -110,7 +110,7 @@
 
 - CSS 文件：`app.wxss`, `index.wxss`
 - 两边共有：`.-m-_b20px_B`, `.-mt-2`, `.after_ccontent-_b_au_x6211_u_x77e5_u_x9053_u_x6211_u_x5fc3__mu_x6c38_u_x6052_12we_ds_a_B::after`, `.bg-_b_h098765_B`, `.bg-_b_h123456_B`, `.bg-_b_h543254_B`, `.bg-_b_h654123_B`, `.bg-_b_h654321_B`, `.bg-_b_hdbdada_B`, `.bg-_b_hfafa00_B`, `.bg-_b_hfafafa_B`, `.bg-_burl_p_ahttps_c_f_fxxx_dcom_fxx_dwebp_a_P_B`, `.bg-gradient-to-r`, `.bg-gray-100`, `.bg-opacity-_b0_d54_B`, `.bg-pink-500`, `.bg-red-500`, `.bg-red-900`, `.block`, `.border-_b10px_B`
-- 仅生成模式：-
+- 仅生成模式：`:host`
 - 仅旧链路：-
 
 ### gulp-app

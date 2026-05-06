@@ -94,18 +94,6 @@ exports[`utilities > utilities + theme 2`] = `
   --color-blue-500: rgb(50, 128, 255);
   --spacing: .25rem;
 }
-
-@supports (color: color(display-p3 0 0 0%)) {
-page,.tw-root,wx-root-portal-content,:host {
-  --color-blue-500: rgb(50, 128, 255);
-}
-
-@media (color-gamut: p3) {
-page,.tw-root,wx-root-portal-content,:host {
-  --color-blue-500: color(display-p3 0.26642 0.49122 0.98862);
-}
-}
-}
 .size-12 {
   width: calc(var(--spacing) * 12);
   height: calc(var(--spacing) * 12);

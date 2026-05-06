@@ -7,8 +7,8 @@ Generator CSS files: app.wxss, app-origin.wxss, index.wxss
 
 | Mode | Bytes | Selectors | @supports | :hover | Tailwind banner | Raw arbitrary selector | Weapp escaped arbitrary selector |
 | --- | ---: | ---: | --- | --- | --- | --- | --- |
-| legacy | 5387 | 40 | true | false | false | false | true |
-| generator | 23496 | 150 | false | false | false | false | true |
+| legacy | 4505 | 40 | false | false | false | false | true |
+| generator | 23038 | 150 | false | false | false | false | true |
 
 ## Legacy CSS
 
@@ -56,31 +56,6 @@ wx-root-portal-content,
   --spacing: 8rpx;
   --radius-xl: 24rpx;
   --color-brand: #155dfc;
-}
-@supports (color: color(display-p3 0 0 0%)) {
-  page,
-  .tw-root,
-  wx-root-portal-content,
-  :host {
-    --color-green-500: rgb(0, 198, 90);
-    --color-emerald-600: rgb(0, 150, 105);
-    --color-cyan-500: rgb(0, 182, 212);
-    --color-blue-500: rgb(50, 128, 255);
-    --color-rose-500: rgb(255, 35, 87);
-  }
-
-  @media (color-gamut: p3) {
-    page,
-    .tw-root,
-    wx-root-portal-content,
-    :host {
-      --color-green-500: color(display-p3 0.30873 0.77475 0.37431);
-      --color-emerald-600: color(display-p3 0.20656 0.58906 0.41396);
-      --color-cyan-500: color(display-p3 0.2467 0.71003 0.84144);
-      --color-blue-500: color(display-p3 0.26642 0.49122 0.98862);
-      --color-rose-500: color(display-p3 0.92182 0.24075 0.35567);
-    }
-  }
 }
 view,
 text,
@@ -216,13 +191,11 @@ text,
 }
 .active_cbg-emerald-600:active {
   background-color: rgb(0, 150, 105);
-  background-color: color(display-p3 0.20656 0.58906 0.41396);
   background-color: var(--color-emerald-600);
 }
 @media (prefers-color-scheme: dark) {
   .dark_cbg-green-500 {
     background-color: rgb(0, 198, 90);
-    background-color: color(display-p3 0.30873 0.77475 0.37431);
     background-color: var(--color-green-500);
   }
   .dark_cbg-zinc-800 {
@@ -245,10 +218,10 @@ text,
 ::after {
   --tw-content: '';
 }
+:host,
 page,
 .tw-root,
-wx-root-portal-content,
-:host {
+wx-root-portal-content {
   --tw-scale-x: 1;
   --tw-scale-y: 1;
   --tw-scale-z: 1;
@@ -317,15 +290,6 @@ wx-root-portal-content,
   --tw-backdrop-saturate: initial;
   --tw-backdrop-sepia: initial;
   --tw-ease: initial;
-}
-page,
-.tw-root,
-wx-root-portal-content,
-:host {
-  --font-sans:
-    ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, Cantarell, Noto Sans, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol',
-    'Noto Color Emoji';
-  --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New', monospace;
   --color-red-500: rgb(251, 44, 54);
   --color-green-500: rgb(0, 198, 90);
   --color-emerald-600: rgb(0, 150, 105);
@@ -341,8 +305,6 @@ wx-root-portal-content,
   --ease-out: cubic-bezier(0, 0, 0.2, 1);
   --default-transition-duration: 150ms;
   --default-transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
-  --default-font-family: var(--font-sans);
-  --default-mono-font-family: var(--font-mono);
   --color-brand: #155dfc;
 }
 .collapse {

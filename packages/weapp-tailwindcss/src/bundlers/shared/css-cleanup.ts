@@ -10,6 +10,15 @@ const MINI_PROGRAM_PREFLIGHT_SELECTORS = new Set([
   '::after',
 ])
 
+const MINI_PROGRAM_THEME_SCOPE_SELECTOR = ':host,page,.tw-root,wx-root-portal-content'
+const MINI_PROGRAM_THEME_SCOPE_SELECTORS = new Set([
+  ':host',
+  ':root',
+  'page',
+  '.tw-root',
+  'wx-root-portal-content',
+])
+
 const PREFLIGHT_RESET_PROPS = new Set([
   'box-sizing',
   'border',
@@ -18,6 +27,27 @@ const PREFLIGHT_RESET_PROPS = new Set([
   'border-color',
   'margin',
   'padding',
+])
+
+const DISPLAY_P3_VALUE_RE = /color\(\s*display-p3\b/i
+const COLOR_GAMUT_P3_RE = /\(\s*color-gamut\s*:\s*p3\s*\)/i
+const UNSUPPORTED_FONT_VALUE_RE = /\bui-(?:sans-serif|monospace)\b|var\(\s*--(?:font-(?:sans|serif|mono)|default-(?:mono-)?font-(?:family|feature-settings|variation-settings))\b/i
+const UNSUPPORTED_FONT_DECLARATION_PROPS = new Set([
+  'font-family',
+  'font-feature-settings',
+  '-webkit-font-feature-settings',
+  'font-variation-settings',
+])
+const UNSUPPORTED_FONT_THEME_PROPS = new Set([
+  '--font-sans',
+  '--font-serif',
+  '--font-mono',
+  '--default-font-family',
+  '--default-font-feature-settings',
+  '--default-font-variation-settings',
+  '--default-mono-font-family',
+  '--default-mono-font-feature-settings',
+  '--default-mono-font-variation-settings',
 ])
 
 function removeAtSupportsByScan(css: string) {
@@ -89,6 +119,11 @@ function getRuleSelectors(rule: postcss.Rule) {
     .filter(Boolean)
 }
 
+function isMiniProgramThemeScopeSelector(selectors: string[]) {
+  return selectors.length > 0
+    && selectors.every(selector => MINI_PROGRAM_THEME_SCOPE_SELECTORS.has(selector))
+}
+
 function isMiniProgramPreflightSelector(selectors: string[]) {
   return selectors.length > 0
     && selectors.every(selector => MINI_PROGRAM_PREFLIGHT_SELECTORS.has(selector))
@@ -111,6 +146,23 @@ function hasTailwindPreflightDeclaration(rule: postcss.Rule) {
   return hasTailwindVar || hasResetProp
 }
 
+function isCustomPropertyOnlyRule(rule: postcss.Rule) {
+  let hasDeclaration = false
+  let allCustomProperties = true
+
+  rule.each((node) => {
+    if (node.type !== 'decl') {
+      return
+    }
+    hasDeclaration = true
+    if (!node.prop.startsWith('--')) {
+      allCustomProperties = false
+    }
+  })
+
+  return hasDeclaration && allCustomProperties
+}
+
 function hasContentInitDeclaration(rule: postcss.Rule) {
   let hasContentInit = false
   rule.walkDecls('--tw-content', () => {
@@ -127,6 +179,14 @@ function isTailwindPreflightRule(node: postcss.Node): node is postcss.Rule {
   return isMiniProgramPreflightSelector(selectors) && hasTailwindPreflightDeclaration(node)
 }
 
+function isMiniProgramThemeVariableRule(node: postcss.Node): node is postcss.Rule {
+  if (node.type !== 'rule' || node.parent?.type !== 'root') {
+    return false
+  }
+  const selectors = getRuleSelectors(node)
+  return isMiniProgramThemeScopeSelector(selectors) && isCustomPropertyOnlyRule(node)
+}
+
 function createPseudoContentInitRule() {
   const rule = postcss.rule({
     selector: '::before,\n::after',
@@ -138,40 +198,185 @@ function createPseudoContentInitRule() {
   return rule
 }
 
+function isDisplayP3MediaRule(atRule: postcss.AtRule) {
+  return atRule.name === 'media' && COLOR_GAMUT_P3_RE.test(atRule.params)
+}
+
+function isDisplayP3Declaration(decl: postcss.Declaration) {
+  return DISPLAY_P3_VALUE_RE.test(decl.value)
+}
+
+function isUnsupportedFontThemeDeclaration(decl: postcss.Declaration) {
+  return UNSUPPORTED_FONT_THEME_PROPS.has(decl.prop)
+    || decl.prop.startsWith('--font-sans--')
+    || decl.prop.startsWith('--font-serif--')
+    || decl.prop.startsWith('--font-mono--')
+}
+
+function isUnsupportedFontDeclaration(decl: postcss.Declaration) {
+  return UNSUPPORTED_FONT_DECLARATION_PROPS.has(decl.prop)
+    && UNSUPPORTED_FONT_VALUE_RE.test(decl.value)
+}
+
+function removeEmptyAtRuleAncestors(parent: postcss.Container | undefined) {
+  while (parent?.type === 'atrule' && (!parent.nodes || parent.nodes.length === 0)) {
+    const nextParent = parent.parent
+    parent.remove()
+    parent = nextParent
+  }
+}
+
+function removeDeclarationAndEmptyRule(decl: postcss.Declaration) {
+  const parent = decl.parent
+  decl.remove()
+  if (parent?.type === 'rule' && parent.nodes.length === 0) {
+    const ruleParent = parent.parent
+    parent.remove()
+    removeEmptyAtRuleAncestors(ruleParent)
+  }
+}
+
+function removeDisplayP3AndUnsupportedFontDeclarations(root: postcss.Root) {
+  root.walkAtRules((atRule) => {
+    if (isDisplayP3MediaRule(atRule)) {
+      const parent = atRule.parent
+      atRule.remove()
+      removeEmptyAtRuleAncestors(parent)
+    }
+  })
+
+  root.walkDecls((decl) => {
+    if (
+      isDisplayP3Declaration(decl)
+      || isUnsupportedFontDeclaration(decl)
+      || isUnsupportedFontThemeDeclaration(decl)
+    ) {
+      removeDeclarationAndEmptyRule(decl)
+    }
+  })
+}
+
+function collectPreflightRules(root: postcss.Root) {
+  const preflightNodes: postcss.Rule[] = []
+  let hasContentInit = false
+
+  for (const node of root.nodes ?? []) {
+    if (isTailwindPreflightRule(node)) {
+      preflightNodes.push(node)
+      if (hasContentInitDeclaration(node)) {
+        hasContentInit = true
+      }
+    }
+  }
+
+  if (preflightNodes.length === 0) {
+    return []
+  }
+
+  const clonedPreflightRules = preflightNodes.map(node => node.clone())
+  const contentInitRules = clonedPreflightRules.filter(rule => hasContentInitDeclaration(rule))
+  const otherPreflightRules = clonedPreflightRules.filter(rule => !hasContentInitDeclaration(rule))
+  const preflightRules = hasContentInit
+    ? [...contentInitRules, ...otherPreflightRules]
+    : [createPseudoContentInitRule(), ...otherPreflightRules]
+  for (const node of preflightNodes) {
+    node.remove()
+  }
+
+  return preflightRules
+}
+
+function collectThemeVariableRule(root: postcss.Root) {
+  const themeRules: postcss.Rule[] = []
+  const declarations = new Map<string, postcss.Declaration>()
+
+  for (const node of root.nodes ?? []) {
+    if (!isMiniProgramThemeVariableRule(node)) {
+      continue
+    }
+
+    themeRules.push(node)
+    node.walkDecls((decl) => {
+      if (isDisplayP3Declaration(decl) || isUnsupportedFontThemeDeclaration(decl)) {
+        return
+      }
+      declarations.set(decl.prop, decl.clone())
+    })
+  }
+
+  for (const rule of themeRules) {
+    rule.remove()
+  }
+
+  if (declarations.size === 0) {
+    return
+  }
+
+  const rule = postcss.rule({
+    selector: MINI_PROGRAM_THEME_SCOPE_SELECTOR,
+  })
+  for (const decl of declarations.values()) {
+    rule.append(decl)
+  }
+  return rule
+}
+
+function getTopDirectiveTail(root: postcss.Root) {
+  let tail: postcss.Node | undefined
+  for (const node of root.nodes ?? []) {
+    if (node.type === 'atrule' && (node.name === 'charset' || node.name === 'import')) {
+      tail = node
+      continue
+    }
+    break
+  }
+  return tail
+}
+
+function insertHoistedRules(root: postcss.Root, rules: postcss.Rule[]) {
+  if (rules.length === 0) {
+    return
+  }
+
+  const topDirectiveTail = getTopDirectiveTail(root)
+  rules[0]!.raws.before = topDirectiveTail ? '\n' : ''
+  if (topDirectiveTail) {
+    topDirectiveTail.after(...rules)
+  }
+  else {
+    root.prepend(...rules)
+  }
+}
+
+function finalizeMiniProgramCssRoot(root: postcss.Root) {
+  removeDisplayP3AndUnsupportedFontDeclarations(root)
+
+  const preflightRules = collectPreflightRules(root)
+  const themeRule = collectThemeVariableRule(root)
+  const hoistedRules = themeRule ? [...preflightRules, themeRule] : preflightRules
+  insertHoistedRules(root, hoistedRules)
+}
+
 export function hoistTailwindPreflightBase(css: string) {
   try {
     const root = postcss.parse(css)
-    const preflightNodes: postcss.Rule[] = []
-    let hasContentInit = false
-
-    for (const node of root.nodes ?? []) {
-      if (isTailwindPreflightRule(node)) {
-        preflightNodes.push(node)
-        if (hasContentInitDeclaration(node)) {
-          hasContentInit = true
-        }
-      }
-    }
-
-    if (preflightNodes.length === 0) {
-      return css
-    }
-
-    const clonedPreflightRules = preflightNodes.map(node => node.clone())
-    const contentInitRules = clonedPreflightRules.filter(rule => hasContentInitDeclaration(rule))
-    const otherPreflightRules = clonedPreflightRules.filter(rule => !hasContentInitDeclaration(rule))
-    const preflightRules = hasContentInit
-      ? [...contentInitRules, ...otherPreflightRules]
-      : [createPseudoContentInitRule(), ...otherPreflightRules]
-    for (const node of preflightNodes) {
-      node.remove()
-    }
-
-    preflightRules[0]!.raws.before = ''
-    root.prepend(...preflightRules)
+    const preflightRules = collectPreflightRules(root)
+    insertHoistedRules(root, preflightRules)
     return root.toString()
   }
   catch {
     return css
+  }
+}
+
+export function finalizeMiniProgramCss(css: string) {
+  const cleanedCss = removeUnsupportedAtSupports(css)
+  try {
+    const root = postcss.parse(cleanedCss)
+    finalizeMiniProgramCssRoot(root)
+    return root.toString()
+  }
+  catch {
+    return cleanedCss
   }
 }

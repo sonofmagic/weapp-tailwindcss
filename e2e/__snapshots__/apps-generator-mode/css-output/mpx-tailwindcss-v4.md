@@ -7,8 +7,8 @@ Generator CSS files: app.wxss, styles/app.wxss, index.wxss, app3b4a1ac6.wxss
 
 | Mode | Bytes | Selectors | @supports | :hover | Tailwind banner | Raw arbitrary selector | Weapp escaped arbitrary selector |
 | --- | ---: | ---: | --- | --- | --- | --- | --- |
-| legacy | 21126 | 113 | true | false | false | false | true |
-| generator | 28382 | 115 | false | false | false | false | true |
+| legacy | 18986 | 113 | false | false | false | false | true |
+| generator | 26806 | 115 | false | false | false | false | true |
 
 ## Legacy CSS
 
@@ -74,31 +74,6 @@ wx-root-portal-content {
   --font-weight-bold: 700;
   --radius-md: 12rpx;
 }
-@supports (color: color(display-p3 0 0 0%)) {
-  :host,
-  page,
-  .tw-root,
-  wx-root-portal-content {
-    --color-red-400: rgb(255, 101, 104);
-    --color-yellow-400: rgb(247, 201, 0);
-    --color-green-500: rgb(0, 198, 90);
-    --color-sky-500: rgb(0, 165, 234);
-    --color-blue-500: rgb(50, 128, 255);
-  }
-
-  @media (color-gamut: p3) {
-    :host,
-    page,
-    .tw-root,
-    wx-root-portal-content {
-      --color-red-400: color(display-p3 0.93353 0.43168 0.42349);
-      --color-yellow-400: color(display-p3 0.95994 0.79017 0.05852);
-      --color-green-500: color(display-p3 0.30873 0.77475 0.37431);
-      --color-sky-500: color(display-p3 0.21911 0.63903 0.93148);
-      --color-blue-500: color(display-p3 0.26642 0.49122 0.98862);
-    }
-  }
-}
 view,
 text,
 :after,
@@ -286,7 +261,6 @@ text,
 }
 ._ebg-green-500 {
   background-color: rgb(0, 198, 90) !important;
-  background-color: color(display-p3 0.30873 0.77475 0.37431) !important;
   background-color: var(--color-green-500) !important;
 }
 .bg-_b_h010101_B {
@@ -314,7 +288,6 @@ text,
 }
 .bg-red-400 {
   background-color: rgb(255, 101, 104);
-  background-color: color(display-p3 0.93353 0.43168 0.42349);
   background-color: var(--color-red-400);
 }
 .bg-red-500 {
@@ -323,7 +296,6 @@ text,
 }
 .bg-sky-500 {
   background-color: rgb(0, 165, 234);
-  background-color: color(display-p3 0.21911 0.63903 0.93148);
   background-color: var(--color-sky-500);
 }
 .p-_b20px_B {
@@ -459,7 +431,6 @@ text,
 @media (prefers-color-scheme: dark) {
   .dark_cbg-green-500 {
     background-color: rgb(0, 198, 90);
-    background-color: color(display-p3 0.30873 0.77475 0.37431);
     background-color: var(--color-green-500);
   }
   .dark_cbg-zinc-800 {
@@ -468,7 +439,6 @@ text,
   }
   .dark_ctext-yellow-400 {
     color: rgb(247, 201, 0);
-    color: color(display-p3 0.95994 0.79017 0.05852);
     color: var(--color-yellow-400);
   }
 }
@@ -533,31 +503,6 @@ wx-root-portal-content {
   --font-weight-bold: 700;
   --radius-md: 12rpx;
 }
-@supports (color: color(display-p3 0 0 0%)) {
-  :host,
-  page,
-  .tw-root,
-  wx-root-portal-content {
-    --color-red-400: rgb(255, 101, 104);
-    --color-yellow-400: rgb(247, 201, 0);
-    --color-green-500: rgb(0, 198, 90);
-    --color-sky-500: rgb(0, 165, 234);
-    --color-blue-500: rgb(50, 128, 255);
-  }
-
-  @media (color-gamut: p3) {
-    :host,
-    page,
-    .tw-root,
-    wx-root-portal-content {
-      --color-red-400: color(display-p3 0.93353 0.43168 0.42349);
-      --color-yellow-400: color(display-p3 0.95994 0.79017 0.05852);
-      --color-green-500: color(display-p3 0.30873 0.77475 0.37431);
-      --color-sky-500: color(display-p3 0.21911 0.63903 0.93148);
-      --color-blue-500: color(display-p3 0.26642 0.49122 0.98862);
-    }
-  }
-}
 view,
 text,
 :after,
@@ -745,7 +690,6 @@ text,
 }
 ._ebg-green-500 {
   background-color: rgb(0, 198, 90) !important;
-  background-color: color(display-p3 0.30873 0.77475 0.37431) !important;
   background-color: var(--color-green-500) !important;
 }
 .bg-_b_h010101_B {
@@ -773,7 +717,6 @@ text,
 }
 .bg-red-400 {
   background-color: rgb(255, 101, 104);
-  background-color: color(display-p3 0.93353 0.43168 0.42349);
   background-color: var(--color-red-400);
 }
 .bg-red-500 {
@@ -782,7 +725,6 @@ text,
 }
 .bg-sky-500 {
   background-color: rgb(0, 165, 234);
-  background-color: color(display-p3 0.21911 0.63903 0.93148);
   background-color: var(--color-sky-500);
 }
 .p-_b20px_B {
@@ -918,7 +860,6 @@ text,
 @media (prefers-color-scheme: dark) {
   .dark_cbg-green-500 {
     background-color: rgb(0, 198, 90);
-    background-color: color(display-p3 0.30873 0.77475 0.37431);
     background-color: var(--color-green-500);
   }
   .dark_cbg-zinc-800 {
@@ -927,7 +868,6 @@ text,
   }
   .dark_ctext-yellow-400 {
     color: rgb(247, 201, 0);
-    color: color(display-p3 0.95994 0.79017 0.05852);
     color: var(--color-yellow-400);
   }
 }
@@ -951,10 +891,10 @@ text,
   margin: 0;
   padding: 0;
 }
+:host,
 page,
 .tw-root,
-wx-root-portal-content,
-:host {
+wx-root-portal-content {
   --tw-space-y-reverse: 0;
   --tw-divide-x-reverse: 0;
   --tw-border-style: solid;
@@ -975,18 +915,27 @@ wx-root-portal-content,
   --tw-ring-offset-color: #fff;
   --tw-ring-offset-shadow: 0 0 rgba(0, 0, 0, 0);
   --tw-content: '';
-}
-page,
-.tw-root,
-wx-root-portal-content,
-:host {
   --color-yellow-400: rgb(247, 201, 0);
   --color-green-500: rgb(0, 198, 90);
   --color-blue-500: rgb(50, 128, 255);
   --color-zinc-800: rgb(39, 39, 42);
-  --text-base: 1rem;
-  --text-base--line-height: calc(1.5/1);
+  --text-base: 32rpx;
+  --text-base--line-height: 1.5;
   --font-weight-bold: 700;
+  --color-red-400: rgb(255, 101, 104);
+  --color-red-500: rgb(251, 44, 54);
+  --color-sky-500: rgb(0, 165, 234);
+  --color-purple-600: rgb(152, 16, 250);
+  --color-pink-300: rgb(253, 165, 213);
+  --color-pink-500: rgb(246, 51, 154);
+  --color-gray-100: rgb(243, 244, 246);
+  --color-black: #000;
+  --color-white: #fff;
+  --spacing: 8rpx;
+  --text-2xl: 48rpx;
+  --text-2xl--line-height: 1.33333;
+  --font-weight-semibold: 600;
+  --radius-md: 12rpx;
 }
 .-m-_b20px_B {
   margin: calc(20px * -1);
@@ -1075,11 +1024,6 @@ wx-root-portal-content,
 }
 .bg-blue-500_f50 {
   background-color: rgba(50, 128, 255, 0.5);
-}
-@media (color-gamut: p3) {
-  .bg-blue-500_f50 {
-    background-color: color(display-p3 0.26642 0.49122 0.98862 / 0.5);
-  }
 }
 .p-_b20px_B {
   padding: 20px;
@@ -1180,33 +1124,6 @@ wx-root-portal-content,
   .dark_ctext-yellow-400 {
     color: var(--color-yellow-400);
   }
-}
-
-:host,
-page,
-.tw-root,
-wx-root-portal-content {
-  --color-red-400: rgb(255, 101, 104);
-  --color-red-500: rgb(251, 44, 54);
-  --color-yellow-400: rgb(247, 201, 0);
-  --color-green-500: rgb(0, 198, 90);
-  --color-sky-500: rgb(0, 165, 234);
-  --color-blue-500: rgb(50, 128, 255);
-  --color-purple-600: rgb(152, 16, 250);
-  --color-pink-300: rgb(253, 165, 213);
-  --color-pink-500: rgb(246, 51, 154);
-  --color-gray-100: rgb(243, 244, 246);
-  --color-zinc-800: rgb(39, 39, 42);
-  --color-black: #000;
-  --color-white: #fff;
-  --spacing: 8rpx;
-  --text-base: 32rpx;
-  --text-base--line-height: 1.5;
-  --text-2xl: 48rpx;
-  --text-2xl--line-height: 1.33333;
-  --font-weight-semibold: 600;
-  --font-weight-bold: 700;
-  --radius-md: 12rpx;
 }
 .-m-_b20px_B {
   margin: -20px;
@@ -1386,7 +1303,6 @@ wx-root-portal-content {
 }
 ._ebg-green-500 {
   background-color: rgb(0, 198, 90) !important;
-  background-color: color(display-p3 0.30873 0.77475 0.37431) !important;
   background-color: var(--color-green-500) !important;
 }
 .bg-_b_h010101_B {
@@ -1414,7 +1330,6 @@ wx-root-portal-content {
 }
 .bg-red-400 {
   background-color: rgb(255, 101, 104);
-  background-color: color(display-p3 0.93353 0.43168 0.42349);
   background-color: var(--color-red-400);
 }
 .bg-red-500 {
@@ -1423,7 +1338,6 @@ wx-root-portal-content {
 }
 .bg-sky-500 {
   background-color: rgb(0, 165, 234);
-  background-color: color(display-p3 0.21911 0.63903 0.93148);
   background-color: var(--color-sky-500);
 }
 .p-_b20px_B {
@@ -1559,7 +1473,6 @@ wx-root-portal-content {
 @media (prefers-color-scheme: dark) {
   .dark_cbg-green-500 {
     background-color: rgb(0, 198, 90);
-    background-color: color(display-p3 0.30873 0.77475 0.37431);
     background-color: var(--color-green-500);
   }
   .dark_cbg-zinc-800 {
@@ -1568,7 +1481,6 @@ wx-root-portal-content {
   }
   .dark_ctext-yellow-400 {
     color: rgb(247, 201, 0);
-    color: color(display-p3 0.95994 0.79017 0.05852);
     color: var(--color-yellow-400);
   }
 }
@@ -1587,10 +1499,10 @@ text,
   margin: 0;
   padding: 0;
 }
+:host,
 page,
 .tw-root,
-wx-root-portal-content,
-:host {
+wx-root-portal-content {
   --tw-space-y-reverse: 0;
   --tw-divide-x-reverse: 0;
   --tw-border-style: solid;
@@ -1611,18 +1523,27 @@ wx-root-portal-content,
   --tw-ring-offset-color: #fff;
   --tw-ring-offset-shadow: 0 0 rgba(0, 0, 0, 0);
   --tw-content: '';
-}
-page,
-.tw-root,
-wx-root-portal-content,
-:host {
   --color-yellow-400: rgb(247, 201, 0);
   --color-green-500: rgb(0, 198, 90);
   --color-blue-500: rgb(50, 128, 255);
   --color-zinc-800: rgb(39, 39, 42);
-  --text-base: 1rem;
-  --text-base--line-height: calc(1.5/1);
+  --text-base: 32rpx;
+  --text-base--line-height: 1.5;
   --font-weight-bold: 700;
+  --color-red-400: rgb(255, 101, 104);
+  --color-red-500: rgb(251, 44, 54);
+  --color-sky-500: rgb(0, 165, 234);
+  --color-purple-600: rgb(152, 16, 250);
+  --color-pink-300: rgb(253, 165, 213);
+  --color-pink-500: rgb(246, 51, 154);
+  --color-gray-100: rgb(243, 244, 246);
+  --color-black: #000;
+  --color-white: #fff;
+  --spacing: 8rpx;
+  --text-2xl: 48rpx;
+  --text-2xl--line-height: 1.33333;
+  --font-weight-semibold: 600;
+  --radius-md: 12rpx;
 }
 .-m-_b20px_B {
   margin: calc(20px * -1);
@@ -1711,11 +1632,6 @@ wx-root-portal-content,
 }
 .bg-blue-500_f50 {
   background-color: rgba(50, 128, 255, 0.5);
-}
-@media (color-gamut: p3) {
-  .bg-blue-500_f50 {
-    background-color: color(display-p3 0.26642 0.49122 0.98862 / 0.5);
-  }
 }
 .p-_b20px_B {
   padding: 20px;
@@ -1816,33 +1732,6 @@ wx-root-portal-content,
   .dark_ctext-yellow-400 {
     color: var(--color-yellow-400);
   }
-}
-
-:host,
-page,
-.tw-root,
-wx-root-portal-content {
-  --color-red-400: rgb(255, 101, 104);
-  --color-red-500: rgb(251, 44, 54);
-  --color-yellow-400: rgb(247, 201, 0);
-  --color-green-500: rgb(0, 198, 90);
-  --color-sky-500: rgb(0, 165, 234);
-  --color-blue-500: rgb(50, 128, 255);
-  --color-purple-600: rgb(152, 16, 250);
-  --color-pink-300: rgb(253, 165, 213);
-  --color-pink-500: rgb(246, 51, 154);
-  --color-gray-100: rgb(243, 244, 246);
-  --color-zinc-800: rgb(39, 39, 42);
-  --color-black: #000;
-  --color-white: #fff;
-  --spacing: 8rpx;
-  --text-base: 32rpx;
-  --text-base--line-height: 1.5;
-  --text-2xl: 48rpx;
-  --text-2xl--line-height: 1.33333;
-  --font-weight-semibold: 600;
-  --font-weight-bold: 700;
-  --radius-md: 12rpx;
 }
 .-m-_b20px_B {
   margin: -20px;
@@ -2022,7 +1911,6 @@ wx-root-portal-content {
 }
 ._ebg-green-500 {
   background-color: rgb(0, 198, 90) !important;
-  background-color: color(display-p3 0.30873 0.77475 0.37431) !important;
   background-color: var(--color-green-500) !important;
 }
 .bg-_b_h010101_B {
@@ -2050,7 +1938,6 @@ wx-root-portal-content {
 }
 .bg-red-400 {
   background-color: rgb(255, 101, 104);
-  background-color: color(display-p3 0.93353 0.43168 0.42349);
   background-color: var(--color-red-400);
 }
 .bg-red-500 {
@@ -2059,7 +1946,6 @@ wx-root-portal-content {
 }
 .bg-sky-500 {
   background-color: rgb(0, 165, 234);
-  background-color: color(display-p3 0.21911 0.63903 0.93148);
   background-color: var(--color-sky-500);
 }
 .p-_b20px_B {
@@ -2195,7 +2081,6 @@ wx-root-portal-content {
 @media (prefers-color-scheme: dark) {
   .dark_cbg-green-500 {
     background-color: rgb(0, 198, 90);
-    background-color: color(display-p3 0.30873 0.77475 0.37431);
     background-color: var(--color-green-500);
   }
   .dark_cbg-zinc-800 {
@@ -2204,7 +2089,6 @@ wx-root-portal-content {
   }
   .dark_ctext-yellow-400 {
     color: rgb(247, 201, 0);
-    color: color(display-p3 0.95994 0.79017 0.05852);
     color: var(--color-yellow-400);
   }
 }

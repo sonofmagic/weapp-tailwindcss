@@ -248,6 +248,51 @@ describe('v4', () => {
     assertLiteralBeforeVariable(css, 'border-right-width')
   })
 
+  it('removes v4 display-p3 media and unsupported font theme variables', async () => {
+    const styleHandler = createStyleHandler({
+      isMainChunk: true,
+    })
+    const code = `
+:host,page,.tw-root,wx-root-portal-content {
+  --font-sans: ui-sans-serif, system-ui, sans-serif;
+  --font-mono: ui-monospace, monospace;
+  --default-font-family: var(--font-sans);
+  --font-weight-bold: 700;
+  --color-blue-500: rgb(50, 128, 255);
+}
+@media (color-gamut: p3) {
+  .bg-blue-500_f50 {
+    background-color: color(display-p3 0.26642 0.49122 0.98862 / 0.5);
+  }
+}
+.bg-blue-500_f50 {
+  background-color: rgb(50 128 255 / 0.5);
+  background-color: color(display-p3 0.26642 0.49122 0.98862 / 0.5);
+}
+.font-sans {
+  font-family: var(--font-sans);
+}
+.default-font {
+  font-family: ui-sans-serif, system-ui, sans-serif;
+}
+`
+
+    const { css } = await styleHandler(code, {
+      isMainChunk: true,
+    })
+
+    expect(css).toContain('--font-weight-bold: 700')
+    expect(css).toContain('--color-blue-500: rgb(50, 128, 255)')
+    expect(css).toContain('background-color: rgba(50, 128, 255, 0.5)')
+    expect(css).not.toContain('color-gamut')
+    expect(css).not.toContain('display-p3')
+    expect(css).not.toContain('ui-sans-serif')
+    expect(css).not.toContain('font-family: var(--font-sans)')
+    expect(css).not.toContain('--font-sans')
+    expect(css).not.toContain('--font-mono')
+    expect(css).not.toContain('--default-font-family')
+  })
+
   it('v4 space-y-* case 2', async () => {
     const styleHandler = createStyleHandler({
       isMainChunk: true,

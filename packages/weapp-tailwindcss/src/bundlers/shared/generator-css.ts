@@ -7,7 +7,7 @@ import {
   resolveTailwindV3SourceFromPatcher,
   resolveTailwindV4SourceFromPatcher,
 } from '@/generator'
-import { hoistTailwindPreflightBase, removeUnsupportedAtSupports } from './css-cleanup'
+import { finalizeMiniProgramCss, removeUnsupportedAtSupports } from './css-cleanup'
 
 const TAILWIND_V4_BANNER_RE = /\/\*!\s*tailwindcss v4\./
 const TAILWIND_GENERATED_CSS_MARKER_RE = /\/\*!\s*tailwindcss v|@property\s+--tw-|--tw-|:not\(#\\#\)|\.[^,{]*\\:/
@@ -116,7 +116,7 @@ function finalizeMiniProgramGeneratorCss(css: string, target: string) {
   if (target !== 'weapp') {
     return css
   }
-  return hoistTailwindPreflightBase(removeUnsupportedAtSupports(css))
+  return finalizeMiniProgramCss(css)
 }
 
 function parseImportRequest(params: string) {

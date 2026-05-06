@@ -1,8 +1,16 @@
 // 预处理阶段插件：重写选择器、清理不兼容规则并注入变量
-import type { AtRule, Plugin, PluginCreator } from 'postcss'
+import type { AtRule, Declaration, Plugin, PluginCreator, Rule } from 'postcss'
 import type { IStyleHandlerOptions } from '../types'
 import { defu } from '@weapp-tailwindcss/shared'
-import { isTailwindcssV4DisplayP3Supports, isTailwindcssV4LinearGradientSupports, isTailwindcssV4ModernCheck } from '../compat/tailwindcss-v4'
+import {
+  isTailwindcssV4DisplayP3Declaration,
+  isTailwindcssV4DisplayP3Media,
+  isTailwindcssV4DisplayP3Supports,
+  isTailwindcssV4LinearGradientSupports,
+  isTailwindcssV4ModernCheck,
+  isTailwindcssV4UnsupportedFontDeclaration,
+  isTailwindcssV4UnsupportedFontThemeDeclaration,
+} from '../compat/tailwindcss-v4'
 import { postcssPlugin } from '../constants'
 import { commonChunkPreflight } from '../mp'
 import { ruleTransformSync } from '../selectorParser'
@@ -24,6 +32,25 @@ function isAtMediaHover(atRule: AtRule) {
 function removeAtRuleAndEmptyAncestors(atRule: AtRule) {
   let parent = atRule.parent
   atRule.remove()
+
+  while (parent?.type === 'atrule' && (!parent.nodes || parent.nodes.length === 0)) {
+    const nextParent = parent.parent
+    parent.remove()
+    parent = nextParent
+  }
+}
+
+function removeDeclarationAndEmptyRule(decl: Declaration) {
+  const parent = decl.parent
+  decl.remove()
+  if (parent?.type === 'rule' && parent.nodes.length === 0) {
+    removeRuleAndEmptyAncestors(parent)
+  }
+}
+
+function removeRuleAndEmptyAncestors(rule: Rule) {
+  let parent = rule.parent
+  rule.remove()
 
   while (parent?.type === 'atrule' && (!parent.nodes || parent.nodes.length === 0)) {
     const nextParent = parent.parent
@@ -109,10 +136,22 @@ const postcssWeappTailwindcssPrePlugin: PostcssWeappTailwindcssRenamePlugin = (
           removeAtRuleAndEmptyAncestors(atRule)
         }
       }
+      else if (isTailwindcssV4DisplayP3Media(atRule)) {
+        removeAtRuleAndEmptyAncestors(atRule)
+      }
       else if (atRule.name === 'layer') {
         if (atRule.nodes === undefined || (Array.isArray(atRule.nodes) && atRule.nodes.length === 0)) {
           atRule.remove()
         }
+      }
+    },
+    Declaration(decl) {
+      if (
+        isTailwindcssV4DisplayP3Declaration(decl)
+        || isTailwindcssV4UnsupportedFontDeclaration(decl)
+        || isTailwindcssV4UnsupportedFontThemeDeclaration(decl)
+      ) {
+        removeDeclarationAndEmptyRule(decl)
       }
     },
   }
