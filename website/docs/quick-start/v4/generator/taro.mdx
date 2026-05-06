@@ -1,0 +1,155 @@
+---
+title: Taro 生成模式
+description: 使用 weapp-tailwindcss v5 生成模式接入 Taro Vite 与 Taro Webpack
+keywords:
+  - weapp-tailwindcss
+  - generator
+  - taro
+  - vite
+  - webpack
+  - tailwindcss v4
+  - tailwindcss v5
+  - cssEntries
+  - classSet
+  - rem2rpx
+  - 小程序
+---
+
+# Taro 生成模式
+
+Taro 项目根据编译器选择 Vite 或 Webpack 入口即可。生成模式下不需要额外注入 Tailwind 官方 PostCSS 插件，CSS 入口由 `cssEntries` 指向项目全局样式。
+
+## Taro Vite
+
+仓库示例：`demo/taro-vite-tailwindcss-v5`。
+
+```ts title="config/index.ts"
+import { defineConfig, type UserConfigExport } from '@tarojs/cli'
+import path from 'node:path'
+import { WeappTailwindcss } from 'weapp-tailwindcss/vite'
+
+export default defineConfig<'vite'>(() => {
+  const baseConfig: UserConfigExport<'vite'> = {
+    projectName: 'taro-vite-tailwindcss-v5',
+    sourceRoot: 'src',
+    outputRoot: 'dist',
+    framework: 'react',
+    compiler: {
+      type: 'vite',
+      vitePlugins: [
+        WeappTailwindcss({
+          rem2rpx: true,
+          generator: true,
+          cssEntries: [
+            path.resolve(__dirname, '../src/app.css'),
+          ],
+        }),
+      ],
+    },
+  }
+
+  return baseConfig
+})
+```
+
+```css title="src/app.css"
+@import "tailwindcss";
+@source "./pages/**/*.{ts,tsx,jsx,js}";
+```
+
+```tsx title="src/pages/index/index.tsx"
+import { Text, View } from '@tarojs/components'
+import { twJoin, twMerge } from '@weapp-tailwindcss/merge'
+
+export default function Index() {
+  const stateClass = twMerge('bg-[#123456] text-[#c31d6b]', 'text-white rounded-xl p-4')
+  const actionClass = twJoin('border-[10rpx] !border-brand', 'active:bg-emerald-600')
+
+  return (
+    <View className="space-y-4 p-[32rpx]">
+      <View className={`h-[300px] rotate-[10deg] ${stateClass}`}>动态模板字符串 + twMerge</View>
+      <Text className="bg-brand text-[55rpx] text-[#fff]">@theme token</Text>
+      <View className="h-14 bg-linear-to-r from-cyan-500 to-blue-500" />
+      <View
+        className={`dark:bg-zinc-800 bg-gray-100 text-[32rpx] ${actionClass}`}
+        hoverClass="bg-red-500 dark:bg-green-500"
+      >
+        hoverClass + dark + important + arbitrary value
+      </View>
+    </View>
+  )
+}
+```
+
+验证命令：`pnpm --filter @weapp-tailwindcss-demo/taro-vite-tailwindcss-v5 build`
+
+## Taro Webpack
+
+Taro Webpack 项目把 `WeappTailwindcss` 注册到 `mini.webpackChain`。CSS 入口由 `cssEntries` 指向全局样式文件，CI 严格校验时可以额外使用 `generator.mode = 'force'`。
+
+```ts title="config/index.ts"
+import path from 'node:path'
+import { defineConfig, type UserConfigExport } from '@tarojs/cli'
+import { WeappTailwindcss } from 'weapp-tailwindcss/webpack'
+
+export default defineConfig<'webpack5'>(() => {
+  const config: UserConfigExport<'webpack5'> = {
+    projectName: 'taro-webpack-tailwindcss-v5',
+    sourceRoot: 'src',
+    outputRoot: 'dist',
+    framework: 'react',
+    compiler: 'webpack5',
+    mini: {
+      webpackChain(chain) {
+        chain.merge({
+          plugin: {
+            install: {
+              plugin: WeappTailwindcss,
+              args: [
+                {
+                  rem2rpx: true,
+                  generator: true,
+                  cssEntries: [
+                    path.resolve(__dirname, '../src/app.css'),
+                  ],
+                },
+              ],
+            },
+          },
+        })
+      },
+    },
+  }
+
+  return config
+})
+```
+
+```css title="src/app.css"
+@import "tailwindcss";
+@source "./pages/**/*.{ts,tsx,jsx,js}";
+@source "./components/**/*.{ts,tsx,jsx,js}";
+@source not "../dist";
+```
+
+```tsx title="src/pages/index/index.tsx"
+import { View } from '@tarojs/components'
+import { twMerge } from '@weapp-tailwindcss/merge'
+
+export default function Index() {
+  const className = twMerge('bg-[#0055ff] text-[42rpx]', 'rounded-lg p-4 text-white')
+
+  return (
+    <View className="space-y-4 p-[32rpx]">
+      <View className="border-[6rpx] border-solid border-[#123456] p-4">
+        Taro Webpack generator
+      </View>
+      <View className={className} hoverClass="bg-emerald-600">
+        className + hoverClass
+      </View>
+    </View>
+  )
+}
+```
+
+验证命令：当前 Taro Webpack 项目的 `pnpm build:weapp` 或等价构建命令。

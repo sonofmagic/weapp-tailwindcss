@@ -1,0 +1,96 @@
+---
+title: Mpx 生成模式
+description: 使用 weapp-tailwindcss v5 PostCSS generator 与 Webpack 插件接入 Mpx
+keywords:
+  - weapp-tailwindcss
+  - generator
+  - mpx
+  - postcss
+  - webpack
+  - tailwindcss v4
+  - tailwindcss v5
+  - cssEntries
+  - classSet
+  - rem2rpx
+  - 小程序
+---
+
+# Mpx 生成模式
+
+仓库示例：`demo/mpx-tailwindcss-v5`。
+
+Mpx 仍由 Webpack 负责模板与 JS 转译，但 CSS 可以走 v5 PostCSS generator。这样它不依赖 Vite，也能直接生成小程序需要的样式。
+
+```js title="mpx.config.js"
+const { defineConfig } = require('@vue/cli-service')
+const { default: weappTailwindcss } = require('weapp-tailwindcss/postcss')
+const { WeappTailwindcss } = require('weapp-tailwindcss/webpack')
+const path = require('node:path')
+
+module.exports = defineConfig({
+  pluginOptions: {
+    mpx: {
+      plugin: {
+        postcssInlineConfig: {
+          ignoreConfigFile: true,
+          plugins: [
+            weappTailwindcss({
+              generator: true,
+            }),
+          ],
+        },
+        srcMode: 'wx',
+      },
+      loader: {},
+    },
+  },
+  configureWebpack(config) {
+    config.plugins.push(
+      new WeappTailwindcss({
+        rem2rpx: true,
+        appType: 'mpx',
+        generator: false,
+        cssEntries: [
+          path.resolve(__dirname, 'src/app.css'),
+        ],
+      }),
+    )
+  },
+})
+```
+
+```css title="src/app.css"
+@import "tailwindcss";
+@source "../src";
+
+@theme {
+  --color-primary: #155dfc;
+}
+```
+
+```html title="src/pages/index.mpx"
+<template>
+  <view class="space-y-4 p-[32rpx]">
+    <view class="2xl:text-base">响应式类会进入 classNameSet</view>
+    <view class="rotate-[10deg] text-[32rpx] border-[10rpx]">任意值</view>
+    <view class="dark:bg-zinc-800 bg-gray-100" hover-class="bg-red-500">
+      hover-class 同步转译
+    </view>
+    <view :class="numClassObj">动态类对象</view>
+    <view :class="mergedClass">twMerge 动态类</view>
+  </view>
+</template>
+
+<script lang="ts">
+import { createPage } from '@mpxjs/core'
+import { twMerge } from '@weapp-tailwindcss/merge'
+
+createPage({
+  data: {
+    mergedClass: twMerge('bg-[#0000ff] text-[45rpx]', 'text-white rounded-lg p-4'),
+  },
+})
+</script>
+```
+
+验证命令：`pnpm --filter @weapp-tailwindcss-demo/mpx-tailwindcss-v5 build`

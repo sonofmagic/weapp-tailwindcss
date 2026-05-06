@@ -75,13 +75,32 @@ describe('v5 apps and demos generator config', () => {
   })
 
   it('documents the v5 generator examples for uni-app, taro and mpx', async () => {
-    const [docsSource, parityDocsSource] = await Promise.all([
+    const [
+      overviewDocsSource,
+      uniAppDocsSource,
+      taroDocsSource,
+      weappViteDocsSource,
+      mpxDocsSource,
+      parityDocsSource,
+    ] = await Promise.all([
       readProjectFile('website/docs/quick-start/v4/v5-generator-examples.mdx'),
+      readProjectFile('website/docs/quick-start/v4/generator/uni-app.mdx'),
+      readProjectFile('website/docs/quick-start/v4/generator/taro.mdx'),
+      readProjectFile('website/docs/quick-start/v4/generator/weapp-vite.mdx'),
+      readProjectFile('website/docs/quick-start/v4/generator/mpx.mdx'),
       readProjectFile('website/docs/tailwindcss/v5-official-plugin-parity.mdx'),
     ])
+    const docsSource = [
+      overviewDocsSource,
+      uniAppDocsSource,
+      taroDocsSource,
+      weappViteDocsSource,
+      mpxDocsSource,
+    ].join('\n')
 
     expect(docsSource).toContain('uni-app Vue Vite')
     expect(docsSource).toContain('Taro Vite')
+    expect(docsSource).toContain('weapp-vite')
     expect(docsSource).toContain('Mpx')
     expect(docsSource).toContain('WeappTailwindcss')
     expect(docsSource).toContain('weapp-tailwindcss/postcss')
@@ -91,6 +110,10 @@ describe('v5 apps and demos generator config', () => {
     expect(docsSource).toContain('tailwindcss@4')
     expect(docsSource).toContain('不需要再配置 `postinstall` 脚本')
     expect(docsSource).toContain('不要再把 `@tailwindcss/vite` 或 `@tailwindcss/postcss` 注册到实际项目里')
+    expect(overviewDocsSource).toContain('./generator/uni-app')
+    expect(overviewDocsSource).toContain('./generator/taro')
+    expect(overviewDocsSource).toContain('./generator/weapp-vite')
+    expect(overviewDocsSource).toContain('./generator/mpx')
     expect(docsSource).not.toContain('tailwindcss()')
     expect(docsSource).not.toContain('postcss-config-loader-plugin')
     expect(parityDocsSource).toContain('@tailwindcss/postcss')
