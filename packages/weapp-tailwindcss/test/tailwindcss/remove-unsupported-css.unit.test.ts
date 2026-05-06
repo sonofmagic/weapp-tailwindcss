@@ -56,8 +56,10 @@ describe('tailwindcss/remove unsupported css', () => {
       '::placeholder,::-webkit-input-placeholder{opacity:1}',
       ':-moz-focusring{outline:auto}',
       '[hidden]:where(:not([hidden=\'until-found\'])){display:none}',
+      'a,button,input:where([type=\'button\'], [type=\'reset\'], [type=\'submit\']){font:inherit}',
       '.text-red-500,::-webkit-search-decoration{color:red}',
       '.nut-input .weui-input::placeholder{color:#999}',
+      '.prose .a{color:inherit}',
     ].join('\n'))
 
     expect(css).not.toContain('::-webkit-calendar-picker-indicator')
@@ -65,8 +67,10 @@ describe('tailwindcss/remove unsupported css', () => {
     expect(css).not.toContain('::placeholder{opacity:1}')
     expect(css).not.toContain(':-moz-focusring')
     expect(css).not.toContain('[hidden]:where(:not([hidden=\'until-found\']))')
+    expect(css).not.toContain('input:where([type=\'button\'], [type=\'reset\'], [type=\'submit\'])')
     expect(css).not.toContain('::-webkit-search-decoration')
     expect(css).toContain('.nut-input .weui-input::placeholder{color:#999}')
+    expect(css).toContain('.prose .a{color:inherit}')
     expect(css).toContain('.text-red-500{color:red}')
   })
 })

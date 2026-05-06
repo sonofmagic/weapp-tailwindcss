@@ -42,6 +42,48 @@ const MINI_PROGRAM_UNSUPPORTED_BROWSER_SELECTORS = new Set([
   '::placeholder',
   '[hidden]:where(:not([hidden=\'until-found\']))',
 ])
+const MINI_PROGRAM_UNSUPPORTED_BROWSER_TAG_SELECTORS = new Set([
+  'a',
+  'abbr:where([title])',
+  'audio',
+  'b',
+  'button',
+  'canvas',
+  'code',
+  'embed',
+  'h1',
+  'h2',
+  'h3',
+  'h4',
+  'h5',
+  'h6',
+  'hr',
+  'html',
+  'iframe',
+  'img',
+  'input',
+  'input:where([type=\'button\'],[type=\'reset\'],[type=\'submit\'])',
+  'kbd',
+  'menu',
+  'object',
+  'ol',
+  'optgroup',
+  'pre',
+  'progress',
+  'samp',
+  'select',
+  'select[multiple]optgroup',
+  'select[multiple]optgroupoption',
+  'select[size]optgroup',
+  'select[size]optgroupoption',
+  'small',
+  'strong',
+  'sub',
+  'summary',
+  'sup',
+  'svg',
+  'table',
+])
 
 const PREFLIGHT_RESET_PROPS = new Set([
   'box-sizing',
@@ -271,6 +313,7 @@ function removeSpecificityPlaceholders(root: postcss.Root) {
 function isUnsupportedBrowserSelector(selector: string) {
   const normalized = normalizeSelector(selector)
   return MINI_PROGRAM_UNSUPPORTED_BROWSER_SELECTORS.has(normalized)
+    || MINI_PROGRAM_UNSUPPORTED_BROWSER_TAG_SELECTORS.has(normalized)
 }
 
 function removeUnsupportedBrowserSelectors(root: postcss.Root) {
