@@ -7,8 +7,8 @@ Generator CSS files: app.wxss, styles/app.wxss, app.wxss, index.wxss
 
 | Mode | Bytes | Selectors | @supports | :hover | Tailwind banner | Raw arbitrary selector | Weapp escaped arbitrary selector |
 | --- | ---: | ---: | --- | --- | --- | --- | --- |
-| legacy | 16858 | 109 | false | false | false | false | true |
-| generator | 16902 | 109 | false | false | false | false | true |
+| legacy | 16699 | 109 | false | false | false | false | true |
+| generator | 16743 | 109 | false | false | false | false | true |
 
 ## Diff
 
@@ -48,7 +48,7 @@ Generator CSS files: app.wxss, styles/app.wxss, app.wxss, index.wxss
    --color-red-400: rgb(255, 101, 104);
    --color-red-500: rgb(251, 44, 54);
    --color-yellow-400: rgb(247, 201, 0);
-@@ -59,15 +59,6 @@
+@@ -57,15 +57,6 @@
    --font-weight-bold: 700;
    --radius-md: 12rpx;
  }
@@ -64,7 +64,7 @@ Generator CSS files: app.wxss, styles/app.wxss, app.wxss, index.wxss
  .-m-_b20px_B {
    margin: -20px;
  }
-@@ -265,8 +256,6 @@
+@@ -263,8 +254,6 @@
    padding-right: 34.54rpx;
  }
  .py-2 {
@@ -73,7 +73,7 @@ Generator CSS files: app.wxss, styles/app.wxss, app.wxss, index.wxss
    padding-top: calc(var(--spacing) * 2);
    padding-bottom: calc(var(--spacing) * 2);
  }
-@@ -388,6 +377,15 @@
+@@ -386,6 +375,15 @@
      color: var(--color-yellow-400);
    }
  }
@@ -89,7 +89,7 @@ Generator CSS files: app.wxss, styles/app.wxss, app.wxss, index.wxss
 
  ::before,
  ::after {
-@@ -397,6 +395,15 @@
+@@ -395,6 +393,15 @@
  text,
  :after,
  :before {
@@ -105,7 +105,7 @@ Generator CSS files: app.wxss, styles/app.wxss, app.wxss, index.wxss
    --tw-space-y-reverse: 0;
    --tw-divide-x-reverse: 0;
    --tw-border-style: solid;
-@@ -417,15 +424,6 @@
+@@ -415,15 +422,6 @@
    --tw-ring-offset-color: #fff;
    --tw-ring-offset-shadow: 0 0 rgba(0, 0, 0, 0);
    --tw-content: '';
@@ -121,7 +121,7 @@ Generator CSS files: app.wxss, styles/app.wxss, app.wxss, index.wxss
    --color-red-400: rgb(255, 101, 104);
    --color-red-500: rgb(251, 44, 54);
    --color-yellow-400: rgb(247, 201, 0);
-@@ -448,15 +446,6 @@
+@@ -444,15 +442,6 @@
    --font-weight-bold: 700;
    --radius-md: 12rpx;
  }
@@ -137,7 +137,7 @@ Generator CSS files: app.wxss, styles/app.wxss, app.wxss, index.wxss
  .-m-_b20px_B {
    margin: -20px;
  }
-@@ -654,8 +643,6 @@
+@@ -650,8 +639,6 @@
    padding-right: 34.54rpx;
  }
  .py-2 {
@@ -146,7 +146,7 @@ Generator CSS files: app.wxss, styles/app.wxss, app.wxss, index.wxss
    padding-top: calc(var(--spacing) * 2);
    padding-bottom: calc(var(--spacing) * 2);
  }
-@@ -776,4 +763,13 @@
+@@ -772,4 +759,13 @@
    .dark_ctext-yellow-400 {
      color: var(--color-yellow-400);
    }
@@ -210,9 +210,7 @@ wx-root-portal-content {
   --color-yellow-400: rgb(247, 201, 0);
   --color-green-500: rgb(0, 198, 90);
   --color-sky-500: rgb(0, 165, 234);
-  --color-blue-500: rgb(50, 128, 255);
   --color-purple-600: rgb(152, 16, 250);
-  --color-pink-300: rgb(253, 165, 213);
   --color-pink-500: rgb(246, 51, 154);
   --color-gray-100: rgb(243, 244, 246);
   --color-zinc-800: rgb(39, 39, 42);
@@ -599,9 +597,7 @@ wx-root-portal-content {
   --color-yellow-400: rgb(247, 201, 0);
   --color-green-500: rgb(0, 198, 90);
   --color-sky-500: rgb(0, 165, 234);
-  --color-blue-500: rgb(50, 128, 255);
   --color-purple-600: rgb(152, 16, 250);
-  --color-pink-300: rgb(253, 165, 213);
   --color-pink-500: rgb(246, 51, 154);
   --color-gray-100: rgb(243, 244, 246);
   --color-zinc-800: rgb(39, 39, 42);
@@ -994,9 +990,7 @@ wx-root-portal-content {
   --color-yellow-400: rgb(247, 201, 0);
   --color-green-500: rgb(0, 198, 90);
   --color-sky-500: rgb(0, 165, 234);
-  --color-blue-500: rgb(50, 128, 255);
   --color-purple-600: rgb(152, 16, 250);
-  --color-pink-300: rgb(253, 165, 213);
   --color-pink-500: rgb(246, 51, 154);
   --color-gray-100: rgb(243, 244, 246);
   --color-zinc-800: rgb(39, 39, 42);
@@ -1381,9 +1375,7 @@ wx-root-portal-content {
   --color-yellow-400: rgb(247, 201, 0);
   --color-green-500: rgb(0, 198, 90);
   --color-sky-500: rgb(0, 165, 234);
-  --color-blue-500: rgb(50, 128, 255);
   --color-purple-600: rgb(152, 16, 250);
-  --color-pink-300: rgb(253, 165, 213);
   --color-pink-500: rgb(246, 51, 154);
   --color-gray-100: rgb(243, 244, 246);
   --color-zinc-800: rgb(39, 39, 42);

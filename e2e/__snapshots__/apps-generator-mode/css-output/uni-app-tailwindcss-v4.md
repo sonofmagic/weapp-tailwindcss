@@ -7,7 +7,7 @@ Generator CSS files: app.wxss, home.wxss, user.wxss
 
 | Mode | Bytes | Selectors | @supports | :hover | Tailwind banner | Raw arbitrary selector | Weapp escaped arbitrary selector |
 | --- | ---: | ---: | --- | --- | --- | --- | --- |
-| legacy | 48552 | 120 | true | false | false | false | true |
+| legacy | 48504 | 120 | true | false | false | false | true |
 | generator | 49689 | 227 | false | false | false | false | true |
 
 ## Diff
@@ -545,14 +545,14 @@ Generator CSS files: app.wxss, home.wxss, user.wxss
 +  border-right-width: 1px;
  }
 -.shadow-sm {
--  --tw-shadow: 0 1px 3px 0 var(--tw-shadow-color, rgba(0, 0, 0, 0.10196)), 0 1px 2px -1px var(--tw-shadow-color, rgba(0, 0, 0, 0.10196));
+-  --tw-shadow: 0 1px 3px 0 var(--tw-shadow-color, rgba(0, 0, 0, 0.1)), 0 1px 2px -1px var(--tw-shadow-color, rgba(0, 0, 0, 0.1));
 -  box-shadow:
 -    var(--tw-inset-shadow),
 -    var(--tw-inset-ring-shadow),
 -    var(--tw-ring-offset-shadow),
 -    var(--tw-ring-shadow),
--    0 1px 3px 0 rgba(0, 0, 0, 0.10196),
--    0 1px 2px -1px rgba(0, 0, 0, 0.10196);
+-    0 1px 3px 0 rgba(0, 0, 0, 0.1),
+-    0 1px 2px -1px rgba(0, 0, 0, 0.1);
 -  box-shadow: var(--tw-inset-shadow), var(--tw-inset-ring-shadow), var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow);
 +.border-emerald-500 {
 +  border-color: var(--color-emerald-500);
@@ -1264,14 +1264,14 @@ Generator CSS files: app.wxss, home.wxss, user.wxss
  }
 -.shadow:not(#\#):not(#\#):not(#\#),
 -.shadow-sm:not(#\#):not(#\#):not(#\#) {
--  --tw-shadow: 0 1px 3px 0 var(--tw-shadow-color, rgba(0, 0, 0, 0.10196)), 0 1px 2px -1px var(--tw-shadow-color, rgba(0, 0, 0, 0.10196));
+-  --tw-shadow: 0 1px 3px 0 var(--tw-shadow-color, rgba(0, 0, 0, 0.1)), 0 1px 2px -1px var(--tw-shadow-color, rgba(0, 0, 0, 0.1));
 -  box-shadow:
 -    var(--tw-inset-shadow),
 -    var(--tw-inset-ring-shadow),
 -    var(--tw-ring-offset-shadow),
 -    var(--tw-ring-shadow),
--    0 1px 3px 0 rgba(0, 0, 0, 0.10196),
--    0 1px 2px -1px rgba(0, 0, 0, 0.10196);
+-    0 1px 3px 0 rgba(0, 0, 0, 0.1),
+-    0 1px 2px -1px rgba(0, 0, 0, 0.1);
 -  box-shadow: var(--tw-inset-shadow), var(--tw-inset-ring-shadow), var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow);
 +.capitalize {
 +  text-transform: capitalize;
@@ -2576,14 +2576,6 @@ Generator CSS files: app.wxss, home.wxss, user.wxss
  }
 -.shadow:not(#\#):not(#\#):not(#\#),
 -.shadow-sm:not(#\#):not(#\#):not(#\#) {
--  --tw-shadow: 0 1px 3px 0 var(--tw-shadow-color, rgba(0, 0, 0, 0.10196)), 0 1px 2px -1px var(--tw-shadow-color, rgba(0, 0, 0, 0.10196));
--  box-shadow:
--    var(--tw-inset-shadow),
--    var(--tw-inset-ring-shadow),
--    var(--tw-ring-offset-shadow),
--    var(--tw-ring-shadow),
--    0 1px 3px 0 rgba(0, 0, 0, 0.10196),
--    0 1px 2px -1px rgba(0, 0, 0, 0.10196);
 +.antialiased {
 +  -webkit-font-smoothing: antialiased;
 +  -moz-osx-font-smoothing: grayscale;
@@ -2593,7 +2585,14 @@ Generator CSS files: app.wxss, home.wxss, user.wxss
 +  -moz-osx-font-smoothing: auto;
 +}
 +.shadow {
-+  --tw-shadow: 0 1px 3px 0 var(--tw-shadow-color, rgba(0, 0, 0, 0.1)), 0 1px 2px -1px var(--tw-shadow-color, rgba(0, 0, 0, 0.1));
+   --tw-shadow: 0 1px 3px 0 var(--tw-shadow-color, rgba(0, 0, 0, 0.1)), 0 1px 2px -1px var(--tw-shadow-color, rgba(0, 0, 0, 0.1));
+-  box-shadow:
+-    var(--tw-inset-shadow),
+-    var(--tw-inset-ring-shadow),
+-    var(--tw-ring-offset-shadow),
+-    var(--tw-ring-shadow),
+-    0 1px 3px 0 rgba(0, 0, 0, 0.1),
+-    0 1px 2px -1px rgba(0, 0, 0, 0.1);
    box-shadow: var(--tw-inset-shadow), var(--tw-inset-ring-shadow), var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow);
  }
 -.divide-x-reverse:not(#\#):not(#\#):not(#\#) > view + view,
@@ -3070,14 +3069,14 @@ text,
   text-decoration-line: underline;
 }
 .shadow-sm {
-  --tw-shadow: 0 1px 3px 0 var(--tw-shadow-color, rgba(0, 0, 0, 0.10196)), 0 1px 2px -1px var(--tw-shadow-color, rgba(0, 0, 0, 0.10196));
+  --tw-shadow: 0 1px 3px 0 var(--tw-shadow-color, rgba(0, 0, 0, 0.1)), 0 1px 2px -1px var(--tw-shadow-color, rgba(0, 0, 0, 0.1));
   box-shadow:
     var(--tw-inset-shadow),
     var(--tw-inset-ring-shadow),
     var(--tw-ring-offset-shadow),
     var(--tw-ring-shadow),
-    0 1px 3px 0 rgba(0, 0, 0, 0.10196),
-    0 1px 2px -1px rgba(0, 0, 0, 0.10196);
+    0 1px 3px 0 rgba(0, 0, 0, 0.1),
+    0 1px 2px -1px rgba(0, 0, 0, 0.1);
   box-shadow: var(--tw-inset-shadow), var(--tw-inset-ring-shadow), var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow);
 }
 .divide-x-reverse > view + view,
@@ -3705,14 +3704,14 @@ input:where([type='button'], [type='reset'], [type='submit']):not(#\#):not(#\#) 
 }
 .shadow:not(#\#):not(#\#):not(#\#),
 .shadow-sm:not(#\#):not(#\#):not(#\#) {
-  --tw-shadow: 0 1px 3px 0 var(--tw-shadow-color, rgba(0, 0, 0, 0.10196)), 0 1px 2px -1px var(--tw-shadow-color, rgba(0, 0, 0, 0.10196));
+  --tw-shadow: 0 1px 3px 0 var(--tw-shadow-color, rgba(0, 0, 0, 0.1)), 0 1px 2px -1px var(--tw-shadow-color, rgba(0, 0, 0, 0.1));
   box-shadow:
     var(--tw-inset-shadow),
     var(--tw-inset-ring-shadow),
     var(--tw-ring-offset-shadow),
     var(--tw-ring-shadow),
-    0 1px 3px 0 rgba(0, 0, 0, 0.10196),
-    0 1px 2px -1px rgba(0, 0, 0, 0.10196);
+    0 1px 3px 0 rgba(0, 0, 0, 0.1),
+    0 1px 2px -1px rgba(0, 0, 0, 0.1);
   box-shadow: var(--tw-inset-shadow), var(--tw-inset-ring-shadow), var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow);
 }
 .divide-x-reverse:not(#\#):not(#\#):not(#\#) > view + view,
@@ -4429,14 +4428,14 @@ input:where([type='button'], [type='reset'], [type='submit']):not(#\#):not(#\#) 
 }
 .shadow:not(#\#):not(#\#):not(#\#),
 .shadow-sm:not(#\#):not(#\#):not(#\#) {
-  --tw-shadow: 0 1px 3px 0 var(--tw-shadow-color, rgba(0, 0, 0, 0.10196)), 0 1px 2px -1px var(--tw-shadow-color, rgba(0, 0, 0, 0.10196));
+  --tw-shadow: 0 1px 3px 0 var(--tw-shadow-color, rgba(0, 0, 0, 0.1)), 0 1px 2px -1px var(--tw-shadow-color, rgba(0, 0, 0, 0.1));
   box-shadow:
     var(--tw-inset-shadow),
     var(--tw-inset-ring-shadow),
     var(--tw-ring-offset-shadow),
     var(--tw-ring-shadow),
-    0 1px 3px 0 rgba(0, 0, 0, 0.10196),
-    0 1px 2px -1px rgba(0, 0, 0, 0.10196);
+    0 1px 3px 0 rgba(0, 0, 0, 0.1),
+    0 1px 2px -1px rgba(0, 0, 0, 0.1);
   box-shadow: var(--tw-inset-shadow), var(--tw-inset-ring-shadow), var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow);
 }
 .divide-x-reverse:not(#\#):not(#\#):not(#\#) > view + view,

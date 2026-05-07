@@ -7,8 +7,8 @@ Generator CSS files: app.wxss, apple.wxss, index.wxss
 
 | Mode | Bytes | Selectors | @supports | :hover | Tailwind banner | Raw arbitrary selector | Weapp escaped arbitrary selector |
 | --- | ---: | ---: | --- | --- | --- | --- | --- |
-| legacy | 4940 | 47 | false | false | false | false | true |
-| generator | 7613 | 58 | false | false | false | false | true |
+| legacy | 4820 | 47 | false | false | false | false | true |
+| generator | 7493 | 58 | false | false | false | false | true |
 
 ## Diff
 
@@ -68,8 +68,8 @@ Generator CSS files: app.wxss, apple.wxss, index.wxss
 +  --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New', monospace;
    --color-red-700: rgb(191, 0, 15);
    --color-amber-300: rgb(255, 210, 55);
-   --color-green-300: rgb(123, 241, 168);
-@@ -37,61 +50,37 @@
+   --color-blue-300: rgb(145, 197, 255);
+@@ -34,61 +47,37 @@
    --color-zinc-50: rgb(250, 250, 250);
    --color-zinc-900: rgb(24, 24, 27);
    --spacing: 8rpx;
@@ -147,7 +147,7 @@ Generator CSS files: app.wxss, apple.wxss, index.wxss
  .inline-block {
    display: inline-block;
  }
-@@ -120,6 +109,13 @@
+@@ -117,6 +106,13 @@
  .w-_b323px_B {
    width: 323px;
  }
@@ -161,7 +161,7 @@ Generator CSS files: app.wxss, apple.wxss, index.wxss
  .flex-col {
    -webkit-flex-direction: column;
    flex-direction: column;
-@@ -140,6 +136,14 @@
+@@ -137,6 +133,14 @@
    margin-right: calc((var(--spacing) * 2.5) * var(--tw-space-x-reverse));
    margin-left: calc((var(--spacing) * 2.5) * (1 - var(--tw-space-x-reverse)));
  }
@@ -176,7 +176,7 @@ Generator CSS files: app.wxss, apple.wxss, index.wxss
  .border-4 {
    border-style: var(--tw-border-style);
    border-width: 4px;
-@@ -154,7 +158,7 @@
+@@ -151,7 +155,7 @@
    background-color: var(--color-amber-300);
  }
  .bg-blue-500_f30 {
@@ -185,7 +185,7 @@ Generator CSS files: app.wxss, apple.wxss, index.wxss
  }
  .bg-zinc-50 {
    background-color: var(--color-zinc-50);
-@@ -213,11 +217,62 @@
+@@ -210,11 +214,62 @@
  .text-red-700 {
    color: var(--color-red-700);
  }
@@ -284,10 +284,7 @@ wx-root-portal-content,
 :host {
   --color-red-700: rgb(191, 0, 15);
   --color-amber-300: rgb(255, 210, 55);
-  --color-green-300: rgb(123, 241, 168);
-  --color-blue-200: rgb(190, 219, 255);
   --color-blue-300: rgb(145, 197, 255);
-  --color-blue-500: rgb(50, 128, 255);
   --color-pink-300: rgb(253, 165, 213);
   --color-zinc-50: rgb(250, 250, 250);
   --color-zinc-900: rgb(24, 24, 27);
@@ -532,10 +529,7 @@ wx-root-portal-content {
   --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New', monospace;
   --color-red-700: rgb(191, 0, 15);
   --color-amber-300: rgb(255, 210, 55);
-  --color-green-300: rgb(123, 241, 168);
-  --color-blue-200: rgb(190, 219, 255);
   --color-blue-300: rgb(145, 197, 255);
-  --color-blue-500: rgb(50, 128, 255);
   --color-pink-300: rgb(253, 165, 213);
   --color-zinc-50: rgb(250, 250, 250);
   --color-zinc-900: rgb(24, 24, 27);

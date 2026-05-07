@@ -10,7 +10,7 @@
     ],
     "status": "passed",
     "legacy": {
-      "bytes": 4940,
+      "bytes": 4820,
       "selectors": [
         ".bg-_b_h3a32d1_B",
         ".bg-_b_h68c828_B",
@@ -67,7 +67,7 @@
       "hasRawArbitrarySelector": false
     },
     "generator": {
-      "bytes": 7613,
+      "bytes": 7493,
       "selectors": [
         ".-start",
         "._estart",
@@ -135,7 +135,7 @@
       "hasRawArbitrarySelector": false
     },
     "deltaBytes": 2673,
-    "generatorBytesRatio": 1.5411,
+    "generatorBytesRatio": 1.5546,
     "sharedSelectors": [
       ".bg-_b_h3a32d1_B",
       ".bg-_b_h68c828_B",
@@ -3501,7 +3501,7 @@
       "hasRawArbitrarySelector": false
     },
     "generator": {
-      "bytes": 502633,
+      "bytes": 502630,
       "selectors": [
         ".-m-_b20px_B",
         ".-mt-2",
@@ -6496,7 +6496,7 @@
       "hasWeappEscapedArbitrarySelector": true,
       "hasRawArbitrarySelector": false
     },
-    "deltaBytes": 100714,
+    "deltaBytes": 100711,
     "generatorBytesRatio": 1.2506,
     "sharedSelectors": [
       ".-m-_b20px_B",
@@ -6555,7 +6555,7 @@
     ],
     "status": "passed",
     "legacy": {
-      "bytes": 48552,
+      "bytes": 48504,
       "selectors": [
         ".active_cbg-emerald-50:active",
         ".active_cbg-emerald-600:active",
@@ -6921,8 +6921,8 @@
       "hasWeappEscapedArbitrarySelector": true,
       "hasRawArbitrarySelector": false
     },
-    "deltaBytes": 1137,
-    "generatorBytesRatio": 1.0234,
+    "deltaBytes": 1185,
+    "generatorBytesRatio": 1.0244,
     "sharedSelectors": [
       ".active_cbg-emerald-50:active",
       ".active_cbg-emerald-600:active",
@@ -6980,7 +6980,7 @@
     ],
     "status": "passed",
     "legacy": {
-      "bytes": 57474,
+      "bytes": 57195,
       "selectors": [
         ".active_cbg-emerald-50:active",
         ".active_cbg-emerald-600:active",
@@ -7121,7 +7121,7 @@
       "hasRawArbitrarySelector": false
     },
     "generator": {
-      "bytes": 54109,
+      "bytes": 54032,
       "selectors": [
         ".absolute",
         ".active_cbg-emerald-50:active",
@@ -7368,8 +7368,8 @@
       "hasWeappEscapedArbitrarySelector": true,
       "hasRawArbitrarySelector": false
     },
-    "deltaBytes": -3365,
-    "generatorBytesRatio": 0.9415,
+    "deltaBytes": -3163,
+    "generatorBytesRatio": 0.9447,
     "sharedSelectors": [
       ".active_cbg-emerald-50:active",
       ".active_cbg-emerald-600:active",
@@ -7580,7 +7580,7 @@
       "hasRawArbitrarySelector": false
     },
     "generator": {
-      "bytes": 65762,
+      "bytes": 65747,
       "selectors": [
         ".-m-_b20px_B",
         ".-mt-2",
@@ -7733,8 +7733,8 @@
       "hasWeappEscapedArbitrarySelector": true,
       "hasRawArbitrarySelector": false
     },
-    "deltaBytes": 25249,
-    "generatorBytesRatio": 1.6232,
+    "deltaBytes": 25234,
+    "generatorBytesRatio": 1.6229,
     "sharedSelectors": [
       ".-m-_b20px_B",
       ".-mt-2",
@@ -7775,7 +7775,7 @@
     ],
     "status": "passed",
     "legacy": {
-      "bytes": 349563,
+      "bytes": 349424,
       "selectors": [
         "._bchunkhash_c8_B",
         "._bhash_c8_B",
@@ -9937,7 +9937,7 @@
       "hasRawArbitrarySelector": false
     },
     "generator": {
-      "bytes": 365438,
+      "bytes": 365357,
       "selectors": [
         "._bchunkhash_c8_B",
         "._bhash_c8_B",
@@ -12102,8 +12102,8 @@
       "hasWeappEscapedArbitrarySelector": true,
       "hasRawArbitrarySelector": false
     },
-    "deltaBytes": 15875,
-    "generatorBytesRatio": 1.0454,
+    "deltaBytes": 15933,
+    "generatorBytesRatio": 1.0456,
     "sharedSelectors": [
       "._bchunkhash_c8_B",
       "._bhash_c8_B",
@@ -12178,7 +12178,7 @@
       "hasRawArbitrarySelector": false
     },
     "generator": {
-      "bytes": 4701,
+      "bytes": 4698,
       "selectors": [
         ".before_ccontent-_b_q11111_q_B:before",
         ".before_ccontent-_b_q222_q_B:before",
@@ -12231,8 +12231,8 @@
       "hasWeappEscapedArbitrarySelector": true,
       "hasRawArbitrarySelector": false
     },
-    "deltaBytes": 171,
-    "generatorBytesRatio": 1.0377,
+    "deltaBytes": 168,
+    "generatorBytesRatio": 1.0371,
     "sharedSelectors": [
       ".before_ccontent-_b_q11111_q_B:before",
       ".before_ccontent-_b_q222_q_B:before",
@@ -12290,7 +12290,7 @@
     ],
     "status": "passed",
     "legacy": {
-      "bytes": 1992,
+      "bytes": 1915,
       "selectors": [
         ".bg-_b_h123456_B",
         ".bg-gradient-to-r",
@@ -12316,7 +12316,7 @@
       "hasRawArbitrarySelector": false
     },
     "generator": {
-      "bytes": 5534,
+      "bytes": 5455,
       "selectors": [
         ".bg-_b_h123456_B",
         ".bg-gradient-to-r",
@@ -12359,8 +12359,8 @@
       "hasWeappEscapedArbitrarySelector": true,
       "hasRawArbitrarySelector": false
     },
-    "deltaBytes": 3542,
-    "generatorBytesRatio": 2.7781,
+    "deltaBytes": 3540,
+    "generatorBytesRatio": 2.8486,
     "sharedSelectors": [
       ".bg-_b_h123456_B",
       ".bg-gradient-to-r",
@@ -12412,7 +12412,7 @@
     ],
     "status": "passed",
     "legacy": {
-      "bytes": 4055,
+      "bytes": 3898,
       "selectors": [
         "._eborder-brand",
         ".active_cbg-emerald-600:active",
@@ -12458,7 +12458,7 @@
       "hasRawArbitrarySelector": false
     },
     "generator": {
-      "bytes": 23764,
+      "bytes": 23594,
       "selectors": [
         "._eborder-brand",
         ".absolute",
@@ -12636,8 +12636,8 @@
       "hasWeappEscapedArbitrarySelector": true,
       "hasRawArbitrarySelector": false
     },
-    "deltaBytes": 19709,
-    "generatorBytesRatio": 5.8604,
+    "deltaBytes": 19696,
+    "generatorBytesRatio": 6.0528,
     "sharedSelectors": [
       "._eborder-brand",
       ".active_cbg-emerald-600:active",
@@ -13000,7 +13000,7 @@
       "hasRawArbitrarySelector": false
     },
     "generator": {
-      "bytes": 123826,
+      "bytes": 123820,
       "selectors": [
         ".-m-_b20px_B",
         ".-mt-2",
@@ -13306,8 +13306,8 @@
       "hasWeappEscapedArbitrarySelector": true,
       "hasRawArbitrarySelector": false
     },
-    "deltaBytes": 7998,
-    "generatorBytesRatio": 1.0691,
+    "deltaBytes": 7992,
+    "generatorBytesRatio": 1.069,
     "sharedSelectors": [
       ".-m-_b20px_B",
       ".-mt-2",
@@ -13346,7 +13346,7 @@
     ],
     "status": "passed",
     "legacy": {
-      "bytes": 6578,
+      "bytes": 6575,
       "selectors": [
         ".bg-_b_hfff_B",
         ".bg-_blength_c100_v_100_v_B",
@@ -13399,7 +13399,7 @@
       "hasRawArbitrarySelector": false
     },
     "generator": {
-      "bytes": 6496,
+      "bytes": 6493,
       "selectors": [
         ".bg-_b_hfff_B",
         ".bg-_blength_c100_v_100_v_B",
@@ -16406,7 +16406,7 @@
       "hasRawArbitrarySelector": false
     },
     "generator": {
-      "bytes": 199204,
+      "bytes": 199192,
       "selectors": [
         ".after_ccontent-_b_au_x4f60_u_x597d_u_x554a_u_xff0c_u_x6211_u_x8fd9_u_x662f_u_x4e2d_u_x6587_u_x5b57_u_x7b26_u_x4e32__a_B:after",
         ".after_ccontent-_b_qu_x4f60_u_x597d_u_x554a_u_xff0c_u_x6211_u_x5f88_u_x65e0_u_x804a__q_B:after",
@@ -19295,8 +19295,8 @@
       "hasWeappEscapedArbitrarySelector": true,
       "hasRawArbitrarySelector": false
     },
-    "deltaBytes": 9320,
-    "generatorBytesRatio": 1.0491,
+    "deltaBytes": 9308,
+    "generatorBytesRatio": 1.049,
     "sharedSelectors": [
       ".after_ccontent-_b_au_x4f60_u_x597d_u_x554a_u_xff0c_u_x6211_u_x8fd9_u_x662f_u_x4e2d_u_x6587_u_x5b57_u_x7b26_u_x4e32__a_B:after",
       ".after_ccontent-_b_qu_x4f60_u_x597d_u_x554a_u_xff0c_u_x6211_u_x5f88_u_x65e0_u_x804a__q_B:after",
@@ -19338,7 +19338,7 @@
     ],
     "status": "passed",
     "legacy": {
-      "bytes": 16858,
+      "bytes": 16699,
       "selectors": [
         ".-m-_b20px_B",
         ".-mt-2",
@@ -19457,7 +19457,7 @@
       "hasRawArbitrarySelector": false
     },
     "generator": {
-      "bytes": 16902,
+      "bytes": 16743,
       "selectors": [
         ".-m-_b20px_B",
         ".-mt-2",
@@ -19614,7 +19614,7 @@
     ],
     "status": "passed",
     "legacy": {
-      "bytes": 19938,
+      "bytes": 19703,
       "selectors": [
         ".-m-_b20px_B",
         ".-mt-2",
@@ -19742,7 +19742,7 @@
       "hasRawArbitrarySelector": false
     },
     "generator": {
-      "bytes": 19982,
+      "bytes": 19747,
       "selectors": [
         ".-m-_b20px_B",
         ".-mt-2",

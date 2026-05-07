@@ -7,8 +7,8 @@ Generator CSS files: app.wxss, home.wxss, user.wxss
 
 | Mode | Bytes | Selectors | @supports | :hover | Tailwind banner | Raw arbitrary selector | Weapp escaped arbitrary selector |
 | --- | ---: | ---: | --- | --- | --- | --- | --- |
-| legacy | 57474 | 131 | true | false | false | false | true |
-| generator | 54109 | 238 | false | false | false | false | true |
+| legacy | 57195 | 131 | true | false | false | false | true |
+| generator | 54032 | 238 | false | false | false | false | true |
 
 ## Diff
 
@@ -60,7 +60,7 @@ Generator CSS files: app.wxss, home.wxss, user.wxss
    --tw-shadow: 0 0 rgba(0, 0, 0, 0);
    --tw-shadow-color: initial;
    --tw-shadow-alpha: 100%;
-@@ -35,37 +56,129 @@
+@@ -35,35 +56,127 @@
    --tw-ring-offset-width: 0px;
    --tw-ring-offset-color: #fff;
    --tw-ring-offset-shadow: 0 0 rgba(0, 0, 0, 0);
@@ -104,8 +104,6 @@ Generator CSS files: app.wxss, home.wxss, user.wxss
 +  --color-emerald-100: rgb(208, 250, 229);
    --color-emerald-500: rgb(0, 185, 129);
    --color-emerald-600: rgb(0, 150, 105);
-   --color-cyan-500: rgb(0, 182, 212);
-   --color-blue-500: rgb(50, 128, 255);
 +  --color-indigo-500: rgb(98, 96, 255);
 +  --color-slate-50: rgb(248, 250, 252);
 +  --color-slate-200: rgb(226, 232, 240);
@@ -206,7 +204,7 @@ Generator CSS files: app.wxss, home.wxss, user.wxss
  .container {
    width: 100%;
  }
-@@ -94,41 +207,152 @@
+@@ -92,41 +205,152 @@
      max-width: 3072rpx;
    }
  }
@@ -364,7 +362,7 @@ Generator CSS files: app.wxss, home.wxss, user.wxss
  .flex-col {
    -webkit-flex-direction: column;
    flex-direction: column;
-@@ -141,6 +365,24 @@
+@@ -139,6 +363,24 @@
    -webkit-flex-direction: row-reverse;
    flex-direction: row-reverse;
  }
@@ -389,7 +387,7 @@ Generator CSS files: app.wxss, home.wxss, user.wxss
  .space-y-4 > view + view,
  .space-y-4 > view + text,
  .space-y-4 > text + view,
-@@ -169,6 +411,16 @@
+@@ -167,6 +409,16 @@
  .space-x-reverse > text + text {
    --tw-space-x-reverse: 1;
  }
@@ -406,7 +404,7 @@ Generator CSS files: app.wxss, home.wxss, user.wxss
  .divide-x-4 > view + view,
  .divide-x-4 > view + text,
  .divide-x-4 > text + view,
-@@ -179,6 +431,16 @@
+@@ -177,6 +429,16 @@
    border-right-width: calc(4px * var(--tw-divide-x-reverse));
    border-left-width: calc(4px * (1 - var(--tw-divide-x-reverse)));
  }
@@ -423,7 +421,7 @@ Generator CSS files: app.wxss, home.wxss, user.wxss
  .divide-y-4 > view + view,
  .divide-y-4 > view + text,
  .divide-y-4 > text + view,
-@@ -221,655 +483,140 @@
+@@ -219,653 +481,140 @@
  .divide-_b_hd80c0c_B > text + text {
    border-color: #d80c0c;
  }
@@ -575,14 +573,14 @@ Generator CSS files: app.wxss, home.wxss, user.wxss
 +  border-left-width: 1px;
  }
 -.shadow-sm {
--  --tw-shadow: 0 1px 3px 0 var(--tw-shadow-color, rgba(0, 0, 0, 0.10196)), 0 1px 2px -1px var(--tw-shadow-color, rgba(0, 0, 0, 0.10196));
+-  --tw-shadow: 0 1px 3px 0 var(--tw-shadow-color, rgba(0, 0, 0, 0.1)), 0 1px 2px -1px var(--tw-shadow-color, rgba(0, 0, 0, 0.1));
 -  box-shadow:
 -    var(--tw-inset-shadow),
 -    var(--tw-inset-ring-shadow),
 -    var(--tw-ring-offset-shadow),
 -    var(--tw-ring-shadow),
--    0 1px 3px 0 rgba(0, 0, 0, 0.10196),
--    0 1px 2px -1px rgba(0, 0, 0, 0.10196);
+-    0 1px 3px 0 rgba(0, 0, 0, 0.1),
+-    0 1px 2px -1px rgba(0, 0, 0, 0.1);
 -  box-shadow: var(--tw-inset-shadow), var(--tw-inset-ring-shadow), var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow);
 +.border-slate-200 {
 +  border-color: var(--color-slate-200);
@@ -658,8 +656,6 @@ Generator CSS files: app.wxss, home.wxss, user.wxss
 -  --color-emerald-100: rgb(208, 250, 229);
 -  --color-emerald-500: rgb(0, 185, 129);
 -  --color-emerald-600: rgb(0, 150, 105);
--  --color-cyan-500: rgb(0, 182, 212);
--  --color-blue-500: rgb(50, 128, 255);
 -  --color-indigo-500: rgb(98, 96, 255);
 -  --color-slate-50: rgb(248, 250, 252);
 -  --color-slate-200: rgb(226, 232, 240);
@@ -1165,7 +1161,7 @@ Generator CSS files: app.wxss, home.wxss, user.wxss
    --tw-gradient-from: var(--color-blue-500);
    --tw-gradient-stops: var(
      --tw-gradient-via-stops,
-@@ -878,7 +625,7 @@
+@@ -874,7 +623,7 @@
      var(--tw-gradient-to) var(--tw-gradient-to-position)
    );
  }
@@ -1174,7 +1170,7 @@ Generator CSS files: app.wxss, home.wxss, user.wxss
    --tw-gradient-from: var(--color-cyan-500);
    --tw-gradient-stops: var(
      --tw-gradient-via-stops,
-@@ -887,7 +634,7 @@
+@@ -883,7 +632,7 @@
      var(--tw-gradient-to) var(--tw-gradient-to-position)
    );
  }
@@ -1183,7 +1179,7 @@ Generator CSS files: app.wxss, home.wxss, user.wxss
    --tw-gradient-from: var(--color-emerald-500);
    --tw-gradient-stops: var(
      --tw-gradient-via-stops,
-@@ -896,7 +643,7 @@
+@@ -892,7 +641,7 @@
      var(--tw-gradient-to) var(--tw-gradient-to-position)
    );
  }
@@ -1192,7 +1188,7 @@ Generator CSS files: app.wxss, home.wxss, user.wxss
    --tw-gradient-to: var(--color-blue-500);
    --tw-gradient-stops: var(
      --tw-gradient-via-stops,
-@@ -905,7 +652,7 @@
+@@ -901,7 +650,7 @@
      var(--tw-gradient-to) var(--tw-gradient-to-position)
    );
  }
@@ -1201,7 +1197,7 @@ Generator CSS files: app.wxss, home.wxss, user.wxss
    --tw-gradient-to: var(--color-cyan-500);
    --tw-gradient-stops: var(
      --tw-gradient-via-stops,
-@@ -914,7 +661,7 @@
+@@ -910,7 +659,7 @@
      var(--tw-gradient-to) var(--tw-gradient-to-position)
    );
  }
@@ -1210,7 +1206,7 @@ Generator CSS files: app.wxss, home.wxss, user.wxss
    --tw-gradient-to: var(--color-indigo-500);
    --tw-gradient-stops: var(
      --tw-gradient-via-stops,
-@@ -923,802 +670,775 @@
+@@ -919,800 +668,775 @@
      var(--tw-gradient-to) var(--tw-gradient-to-position)
    );
  }
@@ -1370,14 +1366,14 @@ Generator CSS files: app.wxss, home.wxss, user.wxss
  }
 -.shadow:not(#\#):not(#\#):not(#\#),
 -.shadow-sm:not(#\#):not(#\#):not(#\#) {
--  --tw-shadow: 0 1px 3px 0 var(--tw-shadow-color, rgba(0, 0, 0, 0.10196)), 0 1px 2px -1px var(--tw-shadow-color, rgba(0, 0, 0, 0.10196));
+-  --tw-shadow: 0 1px 3px 0 var(--tw-shadow-color, rgba(0, 0, 0, 0.1)), 0 1px 2px -1px var(--tw-shadow-color, rgba(0, 0, 0, 0.1));
 -  box-shadow:
 -    var(--tw-inset-shadow),
 -    var(--tw-inset-ring-shadow),
 -    var(--tw-ring-offset-shadow),
 -    var(--tw-ring-shadow),
--    0 1px 3px 0 rgba(0, 0, 0, 0.10196),
--    0 1px 2px -1px rgba(0, 0, 0, 0.10196);
+-    0 1px 3px 0 rgba(0, 0, 0, 0.1),
+-    0 1px 2px -1px rgba(0, 0, 0, 0.1);
 -  box-shadow: var(--tw-inset-shadow), var(--tw-inset-ring-shadow), var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow);
 +.capitalize {
 +  text-transform: capitalize;
@@ -1634,8 +1630,6 @@ Generator CSS files: app.wxss, home.wxss, user.wxss
 -  --color-emerald-100: rgb(208, 250, 229);
 -  --color-emerald-500: rgb(0, 185, 129);
 -  --color-emerald-600: rgb(0, 150, 105);
--  --color-cyan-500: rgb(0, 182, 212);
--  --color-blue-500: rgb(50, 128, 255);
 -  --color-indigo-500: rgb(98, 96, 255);
 -  --color-slate-50: rgb(248, 250, 252);
 -  --color-slate-200: rgb(226, 232, 240);
@@ -2529,7 +2523,7 @@ Generator CSS files: app.wxss, home.wxss, user.wxss
    --tw-gradient-from: var(--color-blue-500);
    --tw-gradient-stops: var(
      --tw-gradient-via-stops,
-@@ -1727,7 +1447,7 @@
+@@ -1721,7 +1445,7 @@
      var(--tw-gradient-to) var(--tw-gradient-to-position)
    );
  }
@@ -2538,7 +2532,7 @@ Generator CSS files: app.wxss, home.wxss, user.wxss
    --tw-gradient-from: var(--color-cyan-500);
    --tw-gradient-stops: var(
      --tw-gradient-via-stops,
-@@ -1736,7 +1456,7 @@
+@@ -1730,7 +1454,7 @@
      var(--tw-gradient-to) var(--tw-gradient-to-position)
    );
  }
@@ -2547,7 +2541,7 @@ Generator CSS files: app.wxss, home.wxss, user.wxss
    --tw-gradient-from: var(--color-emerald-500);
    --tw-gradient-stops: var(
      --tw-gradient-via-stops,
-@@ -1745,7 +1465,7 @@
+@@ -1739,7 +1463,7 @@
      var(--tw-gradient-to) var(--tw-gradient-to-position)
    );
  }
@@ -2556,7 +2550,7 @@ Generator CSS files: app.wxss, home.wxss, user.wxss
    --tw-gradient-to: var(--color-blue-500);
    --tw-gradient-stops: var(
      --tw-gradient-via-stops,
-@@ -1754,7 +1474,7 @@
+@@ -1748,7 +1472,7 @@
      var(--tw-gradient-to) var(--tw-gradient-to-position)
    );
  }
@@ -2565,7 +2559,7 @@ Generator CSS files: app.wxss, home.wxss, user.wxss
    --tw-gradient-to: var(--color-cyan-500);
    --tw-gradient-stops: var(
      --tw-gradient-via-stops,
-@@ -1763,7 +1483,7 @@
+@@ -1757,7 +1481,7 @@
      var(--tw-gradient-to) var(--tw-gradient-to-position)
    );
  }
@@ -2574,7 +2568,7 @@ Generator CSS files: app.wxss, home.wxss, user.wxss
    --tw-gradient-to: var(--color-indigo-500);
    --tw-gradient-stops: var(
      --tw-gradient-via-stops,
-@@ -1772,270 +1492,354 @@
+@@ -1766,270 +1490,354 @@
      var(--tw-gradient-to) var(--tw-gradient-to-position)
    );
  }
@@ -2728,14 +2722,14 @@ Generator CSS files: app.wxss, home.wxss, user.wxss
  }
 -.shadow:not(#\#):not(#\#):not(#\#),
 -.shadow-sm:not(#\#):not(#\#):not(#\#) {
--  --tw-shadow: 0 1px 3px 0 var(--tw-shadow-color, rgba(0, 0, 0, 0.10196)), 0 1px 2px -1px var(--tw-shadow-color, rgba(0, 0, 0, 0.10196));
+-  --tw-shadow: 0 1px 3px 0 var(--tw-shadow-color, rgba(0, 0, 0, 0.1)), 0 1px 2px -1px var(--tw-shadow-color, rgba(0, 0, 0, 0.1));
 -  box-shadow:
 -    var(--tw-inset-shadow),
 -    var(--tw-inset-ring-shadow),
 -    var(--tw-ring-offset-shadow),
 -    var(--tw-ring-shadow),
--    0 1px 3px 0 rgba(0, 0, 0, 0.10196),
--    0 1px 2px -1px rgba(0, 0, 0, 0.10196);
+-    0 1px 3px 0 rgba(0, 0, 0, 0.1),
+-    0 1px 2px -1px rgba(0, 0, 0, 0.1);
 -  box-shadow: var(--tw-inset-shadow), var(--tw-inset-ring-shadow), var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow);
 +.capitalize {
 +  text-transform: capitalize;
@@ -3150,8 +3144,6 @@ wx-root-portal-content,
 :host {
   --color-emerald-500: rgb(0, 185, 129);
   --color-emerald-600: rgb(0, 150, 105);
-  --color-cyan-500: rgb(0, 182, 212);
-  --color-blue-500: rgb(50, 128, 255);
   --color-white: #fff;
   --spacing: 8rpx;
   --font-weight-bold: 700;
@@ -3414,14 +3406,14 @@ text,
   text-decoration-line: underline;
 }
 .shadow-sm {
-  --tw-shadow: 0 1px 3px 0 var(--tw-shadow-color, rgba(0, 0, 0, 0.10196)), 0 1px 2px -1px var(--tw-shadow-color, rgba(0, 0, 0, 0.10196));
+  --tw-shadow: 0 1px 3px 0 var(--tw-shadow-color, rgba(0, 0, 0, 0.1)), 0 1px 2px -1px var(--tw-shadow-color, rgba(0, 0, 0, 0.1));
   box-shadow:
     var(--tw-inset-shadow),
     var(--tw-inset-ring-shadow),
     var(--tw-ring-offset-shadow),
     var(--tw-ring-shadow),
-    0 1px 3px 0 rgba(0, 0, 0, 0.10196),
-    0 1px 2px -1px rgba(0, 0, 0, 0.10196);
+    0 1px 3px 0 rgba(0, 0, 0, 0.1),
+    0 1px 2px -1px rgba(0, 0, 0, 0.1);
   box-shadow: var(--tw-inset-shadow), var(--tw-inset-ring-shadow), var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow);
 }
 .divide-x-reverse > view + view,
@@ -3495,8 +3487,6 @@ wx-root-portal-content:not(#\#),
   --color-emerald-100: rgb(208, 250, 229);
   --color-emerald-500: rgb(0, 185, 129);
   --color-emerald-600: rgb(0, 150, 105);
-  --color-cyan-500: rgb(0, 182, 212);
-  --color-blue-500: rgb(50, 128, 255);
   --color-indigo-500: rgb(98, 96, 255);
   --color-slate-50: rgb(248, 250, 252);
   --color-slate-200: rgb(226, 232, 240);
@@ -4132,14 +4122,14 @@ input:where([type='button'], [type='reset'], [type='submit']):not(#\#):not(#\#) 
 }
 .shadow:not(#\#):not(#\#):not(#\#),
 .shadow-sm:not(#\#):not(#\#):not(#\#) {
-  --tw-shadow: 0 1px 3px 0 var(--tw-shadow-color, rgba(0, 0, 0, 0.10196)), 0 1px 2px -1px var(--tw-shadow-color, rgba(0, 0, 0, 0.10196));
+  --tw-shadow: 0 1px 3px 0 var(--tw-shadow-color, rgba(0, 0, 0, 0.1)), 0 1px 2px -1px var(--tw-shadow-color, rgba(0, 0, 0, 0.1));
   box-shadow:
     var(--tw-inset-shadow),
     var(--tw-inset-ring-shadow),
     var(--tw-ring-offset-shadow),
     var(--tw-ring-shadow),
-    0 1px 3px 0 rgba(0, 0, 0, 0.10196),
-    0 1px 2px -1px rgba(0, 0, 0, 0.10196);
+    0 1px 3px 0 rgba(0, 0, 0, 0.1),
+    0 1px 2px -1px rgba(0, 0, 0, 0.1);
   box-shadow: var(--tw-inset-shadow), var(--tw-inset-ring-shadow), var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow);
 }
 .divide-x-reverse:not(#\#):not(#\#):not(#\#) > view + view,
@@ -4344,8 +4334,6 @@ wx-root-portal-content:not(#\#),
   --color-emerald-100: rgb(208, 250, 229);
   --color-emerald-500: rgb(0, 185, 129);
   --color-emerald-600: rgb(0, 150, 105);
-  --color-cyan-500: rgb(0, 182, 212);
-  --color-blue-500: rgb(50, 128, 255);
   --color-indigo-500: rgb(98, 96, 255);
   --color-slate-50: rgb(248, 250, 252);
   --color-slate-200: rgb(226, 232, 240);
@@ -4981,14 +4969,14 @@ input:where([type='button'], [type='reset'], [type='submit']):not(#\#):not(#\#) 
 }
 .shadow:not(#\#):not(#\#):not(#\#),
 .shadow-sm:not(#\#):not(#\#):not(#\#) {
-  --tw-shadow: 0 1px 3px 0 var(--tw-shadow-color, rgba(0, 0, 0, 0.10196)), 0 1px 2px -1px var(--tw-shadow-color, rgba(0, 0, 0, 0.10196));
+  --tw-shadow: 0 1px 3px 0 var(--tw-shadow-color, rgba(0, 0, 0, 0.1)), 0 1px 2px -1px var(--tw-shadow-color, rgba(0, 0, 0, 0.1));
   box-shadow:
     var(--tw-inset-shadow),
     var(--tw-inset-ring-shadow),
     var(--tw-ring-offset-shadow),
     var(--tw-ring-shadow),
-    0 1px 3px 0 rgba(0, 0, 0, 0.10196),
-    0 1px 2px -1px rgba(0, 0, 0, 0.10196);
+    0 1px 3px 0 rgba(0, 0, 0, 0.1),
+    0 1px 2px -1px rgba(0, 0, 0, 0.1);
   box-shadow: var(--tw-inset-shadow), var(--tw-inset-ring-shadow), var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow);
 }
 .divide-x-reverse:not(#\#):not(#\#):not(#\#) > view + view,
@@ -5237,8 +5225,6 @@ wx-root-portal-content {
   --color-emerald-100: rgb(208, 250, 229);
   --color-emerald-500: rgb(0, 185, 129);
   --color-emerald-600: rgb(0, 150, 105);
-  --color-cyan-500: rgb(0, 182, 212);
-  --color-blue-500: rgb(50, 128, 255);
   --color-indigo-500: rgb(98, 96, 255);
   --color-slate-50: rgb(248, 250, 252);
   --color-slate-200: rgb(226, 232, 240);

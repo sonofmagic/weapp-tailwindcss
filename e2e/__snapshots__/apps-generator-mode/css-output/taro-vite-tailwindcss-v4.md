@@ -7,8 +7,8 @@ Generator CSS files: app.wxss, app-origin.wxss, index.wxss
 
 | Mode | Bytes | Selectors | @supports | :hover | Tailwind banner | Raw arbitrary selector | Weapp escaped arbitrary selector |
 | --- | ---: | ---: | --- | --- | --- | --- | --- |
-| legacy | 1992 | 16 | false | false | false | false | true |
-| generator | 5534 | 34 | false | false | false | false | true |
+| legacy | 1915 | 16 | false | false | false | false | true |
+| generator | 5455 | 34 | false | false | false | false | true |
 
 ## Diff
 
@@ -37,7 +37,7 @@ Generator CSS files: app.wxss, app-origin.wxss, index.wxss
    --tw-gradient-position: initial;
    --tw-gradient-from: rgba(0, 0, 0, 0);
    --tw-gradient-via: rgba(0, 0, 0, 0);
-@@ -17,35 +23,108 @@
+@@ -17,33 +23,106 @@
    --tw-gradient-from-position: 0%;
    --tw-gradient-via-position: 50%;
    --tw-gradient-to-position: 100%;
@@ -69,8 +69,6 @@ Generator CSS files: app.wxss, app-origin.wxss, index.wxss
 +    ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, Cantarell, Noto Sans, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol',
 +    'Noto Color Emoji';
 +  --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New', monospace;
-   --color-cyan-500: rgb(0, 182, 212);
-   --color-blue-500: rgb(50, 128, 255);
    --color-purple-300: rgb(216, 180, 255);
    --spacing: 8rpx;
 +  --ease-out: cubic-bezier(0, 0, 0.2, 1);
@@ -163,16 +161,16 @@ Generator CSS files: app.wxss, app-origin.wxss, index.wxss
  .bg-_b_h123456_B {
    background-color: #123456;
  }
-@@ -89,6 +168,55 @@
+@@ -87,6 +166,55 @@
  .text-_b_hfff_B {
    color: #fff;
  }
 +.outline {
 +  outline-style: var(--tw-outline-style);
-+  outline-width: 1rpx;
++  outline-width: 1px;
 +}
 +.blur {
-+  --tw-blur: blur(8rpx);
++  --tw-blur: blur(8px);
 +  -webkit-filter: var(--tw-blur,) var(--tw-brightness,) var(--tw-contrast,) var(--tw-grayscale,) var(--tw-hue-rotate,) var(--tw-invert,) var(--tw-saturate,) var(--tw-sepia,)
 +    var(--tw-drop-shadow,);
 +  filter: var(--tw-blur,) var(--tw-brightness,) var(--tw-contrast,) var(--tw-grayscale,) var(--tw-hue-rotate,) var(--tw-invert,) var(--tw-saturate,) var(--tw-sepia,)
@@ -252,8 +250,6 @@ page,
 .tw-root,
 wx-root-portal-content,
 :host {
-  --color-cyan-500: rgb(0, 182, 212);
-  --color-blue-500: rgb(50, 128, 255);
   --color-purple-300: rgb(216, 180, 255);
   --spacing: 8rpx;
 }
@@ -368,8 +364,6 @@ wx-root-portal-content {
     ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, Cantarell, Noto Sans, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol',
     'Noto Color Emoji';
   --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New', monospace;
-  --color-cyan-500: rgb(0, 182, 212);
-  --color-blue-500: rgb(50, 128, 255);
   --color-purple-300: rgb(216, 180, 255);
   --spacing: 8rpx;
   --ease-out: cubic-bezier(0, 0, 0.2, 1);
@@ -496,10 +490,10 @@ wx-root-portal-content {
 }
 .outline {
   outline-style: var(--tw-outline-style);
-  outline-width: 1rpx;
+  outline-width: 1px;
 }
 .blur {
-  --tw-blur: blur(8rpx);
+  --tw-blur: blur(8px);
   -webkit-filter: var(--tw-blur,) var(--tw-brightness,) var(--tw-contrast,) var(--tw-grayscale,) var(--tw-hue-rotate,) var(--tw-invert,) var(--tw-saturate,) var(--tw-sepia,)
     var(--tw-drop-shadow,);
   filter: var(--tw-blur,) var(--tw-brightness,) var(--tw-contrast,) var(--tw-grayscale,) var(--tw-hue-rotate,) var(--tw-invert,) var(--tw-saturate,) var(--tw-sepia,)

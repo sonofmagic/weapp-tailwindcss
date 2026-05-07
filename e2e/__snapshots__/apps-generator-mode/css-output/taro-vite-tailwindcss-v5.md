@@ -7,8 +7,8 @@ Generator CSS files: app.wxss, app-origin.wxss, index.wxss
 
 | Mode | Bytes | Selectors | @supports | :hover | Tailwind banner | Raw arbitrary selector | Weapp escaped arbitrary selector |
 | --- | ---: | ---: | --- | --- | --- | --- | --- |
-| legacy | 4055 | 36 | false | false | false | false | true |
-| generator | 23764 | 169 | false | false | false | false | true |
+| legacy | 3898 | 36 | false | false | false | false | true |
+| generator | 23594 | 169 | false | false | false | false | true |
 
 ## Diff
 
@@ -110,7 +110,7 @@ Generator CSS files: app.wxss, app-origin.wxss, index.wxss
    --color-red-500: rgb(251, 44, 54);
    --color-green-500: rgb(0, 198, 90);
    --color-emerald-600: rgb(0, 150, 105);
-@@ -40,26 +92,201 @@
+@@ -36,26 +88,201 @@
    --color-white: #fff;
    --spacing: 8rpx;
    --radius-xl: 24rpx;
@@ -319,7 +319,7 @@ Generator CSS files: app.wxss, app-origin.wxss, index.wxss
  .space-y-4 > view + view,
  .space-y-4 > view + text,
  .space-y-4 > text + view,
-@@ -68,15 +295,146 @@
+@@ -64,15 +291,146 @@
    margin-bottom: calc((var(--spacing) * 4) * var(--tw-space-y-reverse));
    margin-top: calc((var(--spacing) * 4) * (1 - var(--tw-space-y-reverse)));
  }
@@ -466,7 +466,7 @@ Generator CSS files: app.wxss, app-origin.wxss, index.wxss
  .bg-_b_h123456_B {
    background-color: #123456;
  }
-@@ -139,6 +497,17 @@
+@@ -135,6 +493,17 @@
      var(--tw-gradient-to) var(--tw-gradient-to-position)
    );
  }
@@ -484,7 +484,7 @@ Generator CSS files: app.wxss, app-origin.wxss, index.wxss
  .p-4 {
    padding: calc(var(--spacing) * 4);
  }
-@@ -157,9 +526,225 @@
+@@ -153,9 +522,225 @@
  .text-_b_hfff_B {
    color: #fff;
  }
@@ -596,11 +596,11 @@ Generator CSS files: app.wxss, app-origin.wxss, index.wxss
 +  -moz-osx-font-smoothing: auto;
 +}
 +.shadow {
-+  --tw-shadow: 0 1rpx 3rpx 0 var(--tw-shadow-color, rgba(0, 0, 0, 0.1)), 0 1rpx 2rpx -1rpx var(--tw-shadow-color, rgba(0, 0, 0, 0.1));
++  --tw-shadow: 0 1px 3px 0 var(--tw-shadow-color, rgba(0, 0, 0, 0.1)), 0 1px 2px -1px var(--tw-shadow-color, rgba(0, 0, 0, 0.1));
 +  box-shadow: var(--tw-inset-shadow), var(--tw-inset-ring-shadow), var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow);
 +}
 +.ring {
-+  --tw-ring-shadow: var(--tw-ring-inset,) 0 0 0 calc(1rpx + var(--tw-ring-offset-width)) var(--tw-ring-color, currentcolor);
++  --tw-ring-shadow: var(--tw-ring-inset,) 0 0 0 calc(1px + var(--tw-ring-offset-width)) var(--tw-ring-color, currentcolor);
 +  box-shadow: var(--tw-inset-shadow), var(--tw-inset-ring-shadow), var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow);
 +}
 +.inset-ring {
@@ -609,10 +609,10 @@ Generator CSS files: app.wxss, app-origin.wxss, index.wxss
 +}
 +.outline {
 +  outline-style: var(--tw-outline-style);
-+  outline-width: 1rpx;
++  outline-width: 1px;
 +}
 +.blur {
-+  --tw-blur: blur(8rpx);
++  --tw-blur: blur(8px);
 +  -webkit-filter: var(--tw-blur,) var(--tw-brightness,) var(--tw-contrast,) var(--tw-grayscale,) var(--tw-hue-rotate,) var(--tw-invert,) var(--tw-saturate,) var(--tw-sepia,)
 +    var(--tw-drop-shadow,);
 +  filter: var(--tw-blur,) var(--tw-brightness,) var(--tw-contrast,) var(--tw-grayscale,) var(--tw-hue-rotate,) var(--tw-invert,) var(--tw-saturate,) var(--tw-sepia,)
@@ -620,7 +620,7 @@ Generator CSS files: app.wxss, app-origin.wxss, index.wxss
 +}
 +.drop-shadow {
 +  --tw-drop-shadow-size: drop-shadow(0 1rpx 2rpx var(--tw-drop-shadow-color, rgba(0, 0, 0, 0.1))) drop-shadow(0 1rpx 1rpx var(--tw-drop-shadow-color, rgba(0, 0, 0, 0.06)));
-+  --tw-drop-shadow: drop-shadow(0 1rpx 2rpx rgba(0, 0, 0, 0.1)) drop-shadow(0 1rpx 1rpx rgba(0, 0, 0, 0.06));
++  --tw-drop-shadow: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.1)) drop-shadow(0 1px 1px rgba(0, 0, 0, 0.06));
 +  -webkit-filter: var(--tw-blur,) var(--tw-brightness,) var(--tw-contrast,) var(--tw-grayscale,) var(--tw-hue-rotate,) var(--tw-invert,) var(--tw-saturate,) var(--tw-sepia,)
 +    var(--tw-drop-shadow,);
 +  filter: var(--tw-blur,) var(--tw-brightness,) var(--tw-contrast,) var(--tw-grayscale,) var(--tw-hue-rotate,) var(--tw-invert,) var(--tw-saturate,) var(--tw-sepia,)
@@ -633,7 +633,7 @@ Generator CSS files: app.wxss, app-origin.wxss, index.wxss
 +    var(--tw-drop-shadow,);
 +}
 +.backdrop-blur {
-+  --tw-backdrop-blur: blur(8rpx);
++  --tw-backdrop-blur: blur(8px);
 +  -webkit-backdrop-filter: var(--tw-backdrop-blur,) var(--tw-backdrop-brightness,) var(--tw-backdrop-contrast,) var(--tw-backdrop-grayscale,) var(--tw-backdrop-hue-rotate,)
 +    var(--tw-backdrop-invert,) var(--tw-backdrop-opacity,) var(--tw-backdrop-saturate,) var(--tw-backdrop-sepia,);
 +  backdrop-filter: var(--tw-backdrop-blur,) var(--tw-backdrop-brightness,) var(--tw-backdrop-contrast,) var(--tw-backdrop-grayscale,) var(--tw-backdrop-hue-rotate,)
@@ -710,7 +710,7 @@ Generator CSS files: app.wxss, app-origin.wxss, index.wxss
  .active_cbg-emerald-600:active {
    background-color: var(--color-emerald-600);
  }
-@@ -167,6 +752,8 @@
+@@ -163,6 +748,8 @@
    .dark_cbg-green-500 {
      background-color: var(--color-green-500);
    }
@@ -757,10 +757,6 @@ wx-root-portal-content,
   --color-red-500: rgb(251, 44, 54);
   --color-green-500: rgb(0, 198, 90);
   --color-emerald-600: rgb(0, 150, 105);
-  --color-cyan-500: rgb(0, 182, 212);
-  --color-blue-500: rgb(50, 128, 255);
-  --color-fuchsia-500: rgb(225, 42, 251);
-  --color-rose-500: rgb(255, 35, 87);
   --color-gray-100: rgb(243, 244, 246);
   --color-zinc-800: rgb(39, 39, 42);
   --color-white: #fff;
@@ -991,10 +987,6 @@ wx-root-portal-content {
   --color-red-500: rgb(251, 44, 54);
   --color-green-500: rgb(0, 198, 90);
   --color-emerald-600: rgb(0, 150, 105);
-  --color-cyan-500: rgb(0, 182, 212);
-  --color-blue-500: rgb(50, 128, 255);
-  --color-fuchsia-500: rgb(225, 42, 251);
-  --color-rose-500: rgb(255, 35, 87);
   --color-gray-100: rgb(243, 244, 246);
   --color-zinc-800: rgb(39, 39, 42);
   --color-white: #fff;
@@ -1542,11 +1534,11 @@ wx-root-portal-content {
   -moz-osx-font-smoothing: auto;
 }
 .shadow {
-  --tw-shadow: 0 1rpx 3rpx 0 var(--tw-shadow-color, rgba(0, 0, 0, 0.1)), 0 1rpx 2rpx -1rpx var(--tw-shadow-color, rgba(0, 0, 0, 0.1));
+  --tw-shadow: 0 1px 3px 0 var(--tw-shadow-color, rgba(0, 0, 0, 0.1)), 0 1px 2px -1px var(--tw-shadow-color, rgba(0, 0, 0, 0.1));
   box-shadow: var(--tw-inset-shadow), var(--tw-inset-ring-shadow), var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow);
 }
 .ring {
-  --tw-ring-shadow: var(--tw-ring-inset,) 0 0 0 calc(1rpx + var(--tw-ring-offset-width)) var(--tw-ring-color, currentcolor);
+  --tw-ring-shadow: var(--tw-ring-inset,) 0 0 0 calc(1px + var(--tw-ring-offset-width)) var(--tw-ring-color, currentcolor);
   box-shadow: var(--tw-inset-shadow), var(--tw-inset-ring-shadow), var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow);
 }
 .inset-ring {
@@ -1555,10 +1547,10 @@ wx-root-portal-content {
 }
 .outline {
   outline-style: var(--tw-outline-style);
-  outline-width: 1rpx;
+  outline-width: 1px;
 }
 .blur {
-  --tw-blur: blur(8rpx);
+  --tw-blur: blur(8px);
   -webkit-filter: var(--tw-blur,) var(--tw-brightness,) var(--tw-contrast,) var(--tw-grayscale,) var(--tw-hue-rotate,) var(--tw-invert,) var(--tw-saturate,) var(--tw-sepia,)
     var(--tw-drop-shadow,);
   filter: var(--tw-blur,) var(--tw-brightness,) var(--tw-contrast,) var(--tw-grayscale,) var(--tw-hue-rotate,) var(--tw-invert,) var(--tw-saturate,) var(--tw-sepia,)
@@ -1566,7 +1558,7 @@ wx-root-portal-content {
 }
 .drop-shadow {
   --tw-drop-shadow-size: drop-shadow(0 1rpx 2rpx var(--tw-drop-shadow-color, rgba(0, 0, 0, 0.1))) drop-shadow(0 1rpx 1rpx var(--tw-drop-shadow-color, rgba(0, 0, 0, 0.06)));
-  --tw-drop-shadow: drop-shadow(0 1rpx 2rpx rgba(0, 0, 0, 0.1)) drop-shadow(0 1rpx 1rpx rgba(0, 0, 0, 0.06));
+  --tw-drop-shadow: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.1)) drop-shadow(0 1px 1px rgba(0, 0, 0, 0.06));
   -webkit-filter: var(--tw-blur,) var(--tw-brightness,) var(--tw-contrast,) var(--tw-grayscale,) var(--tw-hue-rotate,) var(--tw-invert,) var(--tw-saturate,) var(--tw-sepia,)
     var(--tw-drop-shadow,);
   filter: var(--tw-blur,) var(--tw-brightness,) var(--tw-contrast,) var(--tw-grayscale,) var(--tw-hue-rotate,) var(--tw-invert,) var(--tw-saturate,) var(--tw-sepia,)
@@ -1579,7 +1571,7 @@ wx-root-portal-content {
     var(--tw-drop-shadow,);
 }
 .backdrop-blur {
-  --tw-backdrop-blur: blur(8rpx);
+  --tw-backdrop-blur: blur(8px);
   -webkit-backdrop-filter: var(--tw-backdrop-blur,) var(--tw-backdrop-brightness,) var(--tw-backdrop-contrast,) var(--tw-backdrop-grayscale,) var(--tw-backdrop-hue-rotate,)
     var(--tw-backdrop-invert,) var(--tw-backdrop-opacity,) var(--tw-backdrop-saturate,) var(--tw-backdrop-sepia,);
   backdrop-filter: var(--tw-backdrop-blur,) var(--tw-backdrop-brightness,) var(--tw-backdrop-contrast,) var(--tw-backdrop-grayscale,) var(--tw-backdrop-hue-rotate,)

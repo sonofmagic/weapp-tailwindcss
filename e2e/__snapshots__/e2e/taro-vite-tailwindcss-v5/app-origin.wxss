@@ -81,10 +81,6 @@ wx-root-portal-content {
   --color-red-500: rgb(251, 44, 54);
   --color-green-500: rgb(0, 198, 90);
   --color-emerald-600: rgb(0, 150, 105);
-  --color-cyan-500: rgb(0, 182, 212);
-  --color-blue-500: rgb(50, 128, 255);
-  --color-fuchsia-500: rgb(225, 42, 251);
-  --color-rose-500: rgb(255, 35, 87);
   --color-gray-100: rgb(243, 244, 246);
   --color-zinc-800: rgb(39, 39, 42);
   --color-white: #fff;
@@ -632,11 +628,11 @@ wx-root-portal-content {
   -moz-osx-font-smoothing: auto;
 }
 .shadow {
-  --tw-shadow: 0 1rpx 3rpx 0 var(--tw-shadow-color, rgba(0, 0, 0, 0.1)), 0 1rpx 2rpx -1rpx var(--tw-shadow-color, rgba(0, 0, 0, 0.1));
+  --tw-shadow: 0 1px 3px 0 var(--tw-shadow-color, rgba(0, 0, 0, 0.1)), 0 1px 2px -1px var(--tw-shadow-color, rgba(0, 0, 0, 0.1));
   box-shadow: var(--tw-inset-shadow), var(--tw-inset-ring-shadow), var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow);
 }
 .ring {
-  --tw-ring-shadow: var(--tw-ring-inset,) 0 0 0 calc(1rpx + var(--tw-ring-offset-width)) var(--tw-ring-color, currentcolor);
+  --tw-ring-shadow: var(--tw-ring-inset,) 0 0 0 calc(1px + var(--tw-ring-offset-width)) var(--tw-ring-color, currentcolor);
   box-shadow: var(--tw-inset-shadow), var(--tw-inset-ring-shadow), var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow);
 }
 .inset-ring {
@@ -645,10 +641,10 @@ wx-root-portal-content {
 }
 .outline {
   outline-style: var(--tw-outline-style);
-  outline-width: 1rpx;
+  outline-width: 1px;
 }
 .blur {
-  --tw-blur: blur(8rpx);
+  --tw-blur: blur(8px);
   -webkit-filter: var(--tw-blur,) var(--tw-brightness,) var(--tw-contrast,) var(--tw-grayscale,) var(--tw-hue-rotate,) var(--tw-invert,) var(--tw-saturate,) var(--tw-sepia,)
     var(--tw-drop-shadow,);
   filter: var(--tw-blur,) var(--tw-brightness,) var(--tw-contrast,) var(--tw-grayscale,) var(--tw-hue-rotate,) var(--tw-invert,) var(--tw-saturate,) var(--tw-sepia,)
@@ -669,7 +665,7 @@ wx-root-portal-content {
     var(--tw-drop-shadow,);
 }
 .backdrop-blur {
-  --tw-backdrop-blur: blur(8rpx);
+  --tw-backdrop-blur: blur(8px);
   -webkit-backdrop-filter: var(--tw-backdrop-blur,) var(--tw-backdrop-brightness,) var(--tw-backdrop-contrast,) var(--tw-backdrop-grayscale,) var(--tw-backdrop-hue-rotate,)
     var(--tw-backdrop-invert,) var(--tw-backdrop-opacity,) var(--tw-backdrop-saturate,) var(--tw-backdrop-sepia,);
   backdrop-filter: var(--tw-backdrop-blur,) var(--tw-backdrop-brightness,) var(--tw-backdrop-contrast,) var(--tw-backdrop-grayscale,) var(--tw-backdrop-hue-rotate,)

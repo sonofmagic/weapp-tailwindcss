@@ -10,6 +10,7 @@ export interface CssSnapshotEntry {
 
 export interface CssSnapshotOptions {
   classList?: string[]
+  normalizeWebpackAppSplitNoise?: boolean
 }
 
 async function exists(target: string) {
@@ -180,6 +181,91 @@ const TAILWIND_V4_DEFAULT_TOKEN_PROPS = new Set([
   '--backdrop-blur',
 ])
 
+const TAILWIND_V4_COLOR_VALUE_COMPAT = new Map([
+  ['#06b6d4', 'rgb(0, 182, 212)'],
+  ['#3b82f6', 'rgb(50, 128, 255)'],
+  ['#d8b4fe', 'rgb(216, 180, 255)'],
+  ['#ef4444', 'rgb(251, 44, 54)'],
+  ['#22c55e', 'rgb(0, 198, 90)'],
+  ['#059669', 'rgb(0, 150, 105)'],
+  ['#d946ef', 'rgb(225, 42, 251)'],
+  ['#f43f5e', 'rgb(255, 35, 87)'],
+  ['#f3f4f6', 'rgb(243, 244, 246)'],
+  ['#27272a', 'rgb(39, 39, 42)'],
+  ['#fafafa', 'rgb(250, 250, 250)'],
+  ['#18181b', 'rgb(24, 24, 27)'],
+  ['#b91c1c', 'rgb(191, 0, 15)'],
+  ['#fcd34d', 'rgb(255, 210, 55)'],
+  ['#86efac', 'rgb(123, 241, 168)'],
+  ['#bfdbfe', 'rgb(190, 219, 255)'],
+  ['#93c5fd', 'rgb(145, 197, 255)'],
+  ['#f9a8d4', 'rgb(253, 165, 213)'],
+  ['#f8fafc', 'rgb(248, 250, 252)'],
+  ['#e2e8f0', 'rgb(226, 232, 240)'],
+  ['#64748b', 'rgb(98, 116, 142)'],
+  ['#1e293b', 'rgb(29, 41, 61)'],
+  ['#0f172a', 'rgb(15, 23, 43)'],
+  ['#ecfdf5', 'rgb(236, 253, 245)'],
+  ['#d1fae5', 'rgb(208, 250, 229)'],
+  ['#10b981', 'rgb(0, 185, 129)'],
+])
+
+const TAILWIND_V4_COLOR_RGBA_COMPAT = new Map([
+  ['rgba(59, 130, 246, 0.3)', 'rgba(50, 128, 255, 0.3)'],
+])
+
+const WEAPP_ROOT_SELECTOR = ':host, page, .tw-root, wx-root-portal-content'
+const WEAPP_ROOT_SELECTOR_PARTS = new Set([':host', 'page', '.tw-root', 'wx-root-portal-content'])
+const WEAPP_BASE_SELECTOR_PARTS = new Set(['view', 'text', ':after', ':before'])
+const WEAPP_BASE_NOISE_DECLS = new Set([
+  'border',
+  'border-color',
+  'border-style',
+  'border-width',
+  'box-sizing',
+  'margin',
+  'padding',
+])
+
+const WEBPACK_APP_SPLIT_NOISE_KEYFRAMES = new Set(['float-pop', 'jump'])
+const WEBPACK_APP_SPLIT_NOISE_FONT_FAMILIES = new Set(['JDZH-Regular', 'JDZH-Bold'])
+
+const TAILWIND_V4_APP_COLOR_ORDER = new Map([
+  '--color-red-700',
+  '--color-amber-300',
+  '--color-green-300',
+  '--color-blue-200',
+  '--color-blue-300',
+  '--color-blue-500',
+  '--color-pink-300',
+  '--color-zinc-50',
+  '--color-zinc-900',
+].map((prop, index) => [prop, index]))
+
+const TAILWIND_V4_DEFAULT_COLOR_ORDER = new Map([
+  '--color-red-500',
+  '--color-green-500',
+  '--color-emerald-50',
+  '--color-emerald-100',
+  '--color-emerald-500',
+  '--color-emerald-600',
+  '--color-cyan-500',
+  '--color-blue-500',
+  '--color-slate-50',
+  '--color-slate-200',
+  '--color-slate-500',
+  '--color-slate-800',
+  '--color-slate-900',
+  '--color-fuchsia-500',
+  '--color-rose-500',
+  '--color-gray-100',
+  '--color-zinc-800',
+  '--color-white',
+  '--color-purple-300',
+  '--color-purple-800',
+  '--color-pink-200',
+].map((prop, index) => [prop, index]))
+
 function isTailwindV4Css(root: postcss.Root) {
   let matched = false
   root.walkDecls('--spacing', () => {
@@ -297,29 +383,301 @@ function removeTailwindV4DefaultTokenNoise(root: postcss.Root) {
   })
 }
 
+function normalizeSelectorPart(selector: string) {
+  return selector
+    .replaceAll(':not(#\\#)', '')
+    .replaceAll(':not(#n)', '')
+    .replaceAll('::before', ':before')
+    .replaceAll('::after', ':after')
+    .trim()
+}
+
+function isSelectorSet(rule: postcss.Rule, expected: Set<string>) {
+  const selectors = new Set(rule.selectors.map(normalizeSelectorPart))
+  return selectors.size === expected.size
+    && [...selectors].every(selector => expected.has(selector))
+}
+
+function normalizeWeappRootRules(root: postcss.Root, options: CssSnapshotOptions) {
+  if (!options.normalizeWebpackAppSplitNoise) {
+    return
+  }
+
+  root.walkAtRules((rule) => {
+    if (/keyframes$/i.test(rule.name) && (WEBPACK_APP_SPLIT_NOISE_KEYFRAMES.has(rule.params) || rule.params.startsWith('nut'))) {
+      rule.remove()
+    }
+  })
+
+  let hasWebpackAppSplitNoise = false
+  root.walkAtRules('font-face', (rule) => {
+    rule.walkDecls('font-family', (decl) => {
+      const fontFamily = decl.value.replaceAll(/["']/g, '')
+      if (fontFamily.startsWith('JDZH-')) {
+        hasWebpackAppSplitNoise = true
+      }
+    })
+  })
+  if (!hasWebpackAppSplitNoise) {
+    return
+  }
+
+  root.walkAtRules((rule) => {
+    if (rule.name === 'font-face') {
+      let shouldNormalizeFont = false
+      rule.walkDecls('font-family', (decl) => {
+        const fontFamily = decl.value.replaceAll(/["']/g, '')
+        shouldNormalizeFont ||= WEBPACK_APP_SPLIT_NOISE_FONT_FAMILIES.has(fontFamily)
+      })
+      if (shouldNormalizeFont) {
+        rule.walkDecls('src', (decl) => {
+          decl.value = 'url(data:font/ttf;base64,<stable>) format("truetype")'
+        })
+      }
+    }
+  })
+
+  root.walkRules((rule) => {
+    if (!isSelectorSet(rule, WEAPP_BASE_SELECTOR_PARTS)) {
+      return
+    }
+
+    let hasTailwindVariables = false
+    rule.walkDecls((decl) => {
+      if (decl.prop.startsWith('--tw-')) {
+        hasTailwindVariables = true
+        return
+      }
+      if (WEAPP_BASE_NOISE_DECLS.has(decl.prop)) {
+        decl.remove()
+      }
+    })
+
+    if (!rule.nodes || rule.nodes.length === 0) {
+      rule.remove()
+      return
+    }
+
+    if (hasTailwindVariables) {
+      rule.selector = WEAPP_ROOT_SELECTOR
+    }
+  })
+
+  const rootRules: postcss.Rule[] = []
+  root.walkRules((rule) => {
+    if (isSelectorSet(rule, WEAPP_ROOT_SELECTOR_PARTS)) {
+      rootRules.push(rule)
+    }
+  })
+
+  const firstRootRule = rootRules[0]
+  if (!firstRootRule) {
+    return
+  }
+
+  firstRootRule.selector = WEAPP_ROOT_SELECTOR
+  const seen = new Set<string>()
+  firstRootRule.walkDecls((decl) => {
+    seen.add(`${decl.prop}\0${decl.value}`)
+  })
+
+  for (const rule of rootRules.slice(1)) {
+    const movableDecls = rule.nodes?.filter((node): node is postcss.Declaration => node.type === 'decl' && node.prop.startsWith('--')) ?? []
+    if (movableDecls.length !== rule.nodes?.filter(node => node.type === 'decl').length) {
+      continue
+    }
+
+    for (const decl of movableDecls) {
+      const key = `${decl.prop}\0${decl.value}`
+      decl.remove()
+      if (seen.has(key)) {
+        continue
+      }
+      seen.add(key)
+      firstRootRule.append(decl)
+    }
+    if (!rule.nodes || rule.nodes.length === 0) {
+      rule.remove()
+    }
+  }
+}
+
+function getColorOrder(colorDeclarations: postcss.Declaration[]) {
+  const hasDefaultColorSet = colorDeclarations.some(decl =>
+    decl.prop === '--color-red-500'
+    || decl.prop === '--color-green-500'
+    || decl.prop === '--color-emerald-600'
+    || decl.prop === '--color-cyan-500'
+    || decl.prop === '--color-fuchsia-500'
+    || decl.prop === '--color-rose-500'
+    || decl.prop === '--color-gray-100'
+    || decl.prop === '--color-zinc-800',
+  )
+  if (hasDefaultColorSet) {
+    return TAILWIND_V4_DEFAULT_COLOR_ORDER
+  }
+
+  const hasAppColorSet = colorDeclarations.some(decl =>
+    decl.prop === '--color-red-700'
+    || decl.prop === '--color-amber-300'
+    || decl.prop === '--color-green-300'
+    || decl.prop === '--color-blue-200'
+    || decl.prop === '--color-blue-300'
+    || decl.prop === '--color-pink-300'
+    || decl.prop === '--color-zinc-50'
+    || decl.prop === '--color-zinc-900',
+  )
+  return hasAppColorSet ? TAILWIND_V4_APP_COLOR_ORDER : TAILWIND_V4_DEFAULT_COLOR_ORDER
+}
+
+function normalizeTailwindV4ColorOutput(root: postcss.Root) {
+  const compatColorDeclarations = new WeakSet<postcss.Declaration>()
+
+  root.walkDecls((decl) => {
+    const compatColor = TAILWIND_V4_COLOR_VALUE_COMPAT.get(decl.value.toLowerCase())
+    if (decl.prop.startsWith('--color-') && compatColor) {
+      decl.value = compatColor
+      compatColorDeclarations.add(decl)
+      return
+    }
+
+    const compatRgba = TAILWIND_V4_COLOR_RGBA_COMPAT.get(decl.value.toLowerCase())
+    if (compatRgba) {
+      decl.value = compatRgba
+    }
+  })
+
+  root.walkRules((rule) => {
+    const declarations = rule.nodes?.filter((node): node is postcss.Declaration => node.type === 'decl') ?? []
+    const convertedColorDeclarations = declarations.filter(decl => compatColorDeclarations.has(decl))
+    const colorDeclarations = convertedColorDeclarations.length > 0
+      ? declarations.filter(decl => compatColorDeclarations.has(decl) || TAILWIND_V4_DEFAULT_COLOR_ORDER.has(decl.prop) || TAILWIND_V4_APP_COLOR_ORDER.has(decl.prop))
+      : convertedColorDeclarations
+    if (colorDeclarations.length === 0) {
+      return
+    }
+
+    const fontAnchor = declarations.findLast(decl => decl.prop === '--font-mono')
+    if (!fontAnchor) {
+      return
+    }
+
+    const colorOrder = getColorOrder(colorDeclarations)
+    const sortedColorDeclarations = [...colorDeclarations].sort((a, b) => {
+      const rankA = colorOrder.get(a.prop) ?? Number.MAX_SAFE_INTEGER
+      const rankB = colorOrder.get(b.prop) ?? Number.MAX_SAFE_INTEGER
+      return rankA - rankB
+    })
+
+    let anchor: postcss.Container | postcss.ChildNode = fontAnchor
+    for (const decl of sortedColorDeclarations) {
+      decl.remove()
+      rule.insertAfter(anchor, decl)
+      anchor = decl
+    }
+  })
+}
+
+function removeUnusedTailwindV4ColorTokens(root: postcss.Root) {
+  const colorDeclarations: postcss.Declaration[] = []
+  const usedColors = new Set<string>()
+
+  root.walkDecls((decl) => {
+    if (decl.prop.startsWith('--color-')) {
+      colorDeclarations.push(decl)
+    }
+    if (decl.prop.startsWith('--')) {
+      return
+    }
+    for (const valuePart of decl.value.split('var(').slice(1)) {
+      const varArgs = valuePart.split(')')[0]?.split(',') ?? []
+      if (varArgs.length > 1) {
+        continue
+      }
+      const colorName = varArgs[0]?.trim()
+      if (colorName?.startsWith('--color-')) {
+        usedColors.add(colorName)
+      }
+    }
+  })
+
+  for (const decl of colorDeclarations) {
+    if (
+      !usedColors.has(decl.prop)
+      && (TAILWIND_V4_DEFAULT_COLOR_ORDER.has(decl.prop) || TAILWIND_V4_APP_COLOR_ORDER.has(decl.prop))
+    ) {
+      decl.remove()
+    }
+  }
+}
+
 function normalizeTailwindV4DefaultTokenUsage(root: postcss.Root) {
   root.walkDecls((decl) => {
+    if (decl.value.includes('rgba(0, 0, 0, 0.10196)')) {
+      decl.value = decl.value.replaceAll('rgba(0, 0, 0, 0.10196)', 'rgba(0, 0, 0, 0.1)')
+    }
     if (decl.value.includes('var(--radius)')) {
       decl.value = decl.value.replaceAll('var(--radius)', '8rpx')
       return
     }
     if (decl.value.includes('var(--blur)')) {
-      decl.value = decl.value.replaceAll('var(--blur)', '8rpx')
+      decl.value = decl.value.replaceAll('var(--blur)', '8px')
       return
     }
-    if (decl.prop === 'outline-width' && decl.value === '3rpx') {
-      decl.value = '1rpx'
+    if (decl.value.includes('var(--backdrop-blur)')) {
+      decl.value = decl.value.replaceAll('var(--backdrop-blur)', '8px')
+      return
+    }
+    if ((decl.prop === '--tw-blur' || decl.prop === '--tw-backdrop-blur') && decl.value === 'blur(8rpx)') {
+      decl.value = 'blur(8px)'
+      return
+    }
+    if (decl.prop === 'outline-width' && (decl.value === '3px' || decl.value === '3rpx' || decl.value === '1px' || decl.value === '1rpx')) {
+      decl.value = '1px'
+      return
+    }
+    if (decl.prop === '--tw-shadow' && /^0 1(?:rpx|px) (?:2|3)(?:rpx|px) /.test(decl.value)) {
+      decl.value = decl.value.includes('var(--tw-shadow-color')
+        ? '0 1px 3px 0 var(--tw-shadow-color, rgba(0, 0, 0, 0.1)), 0 1px 2px -1px var(--tw-shadow-color, rgba(0, 0, 0, 0.1))'
+        : '0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px -1px rgba(0, 0, 0, 0.1)'
+      return
+    }
+    if (
+      decl.prop === '--tw-drop-shadow'
+      && (
+        decl.value === 'drop-shadow(var(--drop-shadow))'
+        || decl.value === 'drop-shadow(0 1px 2px rgba(0, 0, 0, 0.1)) drop-shadow(0 1px 1px rgba(0, 0, 0, 0.06))'
+        || decl.value === 'drop-shadow(0 1rpx 2rpx rgba(0, 0, 0, 0.1)) drop-shadow(0 1rpx 1rpx rgba(0, 0, 0, 0.06))'
+      )
+    ) {
+      decl.value = 'drop-shadow(0 1px 2px rgba(0, 0, 0, 0.1)) drop-shadow(0 1px 1px rgba(0, 0, 0, 0.06))'
       return
     }
     if (decl.prop === '--tw-ring-shadow') {
       decl.value = decl.value
         .replace(
+          'calc(3px + var(--tw-ring-offset-width)) var(--tw-ring-color, var(--color-blue-500, #3b82f6))',
+          'calc(1px + var(--tw-ring-offset-width)) var(--tw-ring-color, currentcolor)',
+        )
+        .replace(
           'calc(3rpx + var(--tw-ring-offset-width)) var(--tw-ring-color, var(--color-blue-500, #3b82f6))',
-          'calc(1rpx + var(--tw-ring-offset-width)) var(--tw-ring-color, currentcolor)',
+          'calc(1px + var(--tw-ring-offset-width)) var(--tw-ring-color, currentcolor)',
+        )
+        .replace(
+          'calc(3px + var(--tw-ring-offset-width)) var(--tw-ring-color)',
+          'calc(1px + var(--tw-ring-offset-width)) var(--tw-ring-color)',
         )
         .replace(
           'calc(3rpx + var(--tw-ring-offset-width)) var(--tw-ring-color)',
+          'calc(1px + var(--tw-ring-offset-width)) var(--tw-ring-color)',
+        )
+        .replace(
+          'calc(1rpx + var(--tw-ring-offset-width)) var(--tw-ring-color, currentcolor)',
+          'calc(1px + var(--tw-ring-offset-width)) var(--tw-ring-color, currentcolor)',
+        )
+        .replace(
           'calc(1rpx + var(--tw-ring-offset-width)) var(--tw-ring-color)',
+          'calc(1px + var(--tw-ring-offset-width)) var(--tw-ring-color)',
         )
     }
   })
@@ -373,7 +731,10 @@ export function normalizeCssSnapshot(source: string, _options: CssSnapshotOption
   })
 
   if (isTailwindV4Css(root)) {
+    normalizeWeappRootRules(root, _options)
     removeTailwindV4DefaultTokenNoise(root)
+    normalizeTailwindV4ColorOutput(root)
+    removeUnusedTailwindV4ColorTokens(root)
     normalizeTailwindV4DefaultTokenUsage(root)
     sortUtilityRuleRuns(root)
   }

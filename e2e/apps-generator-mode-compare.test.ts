@@ -273,8 +273,8 @@ function createReportItem(
   legacyResult: { css: string, cssFiles: string[] },
   generatorResult: { css: string, cssFiles: string[] },
 ): CompareReportItem {
-  const legacyCss = legacyResult.css
-  const generatorCss = generatorResult.css
+  const legacyCss = normalizeCssForSummary(legacyResult.css)
+  const generatorCss = normalizeCssForSummary(generatorResult.css)
   const legacy = summarizeCss(legacyCss)
   const generator = summarizeCss(generatorCss)
   const legacySelectorSet = new Set(legacy.selectors)
@@ -377,6 +377,10 @@ function normalizeCssSnapshot(css: string) {
     .join('\n')
 }
 
+function normalizeCssForSummary(css: string) {
+  return `${normalizeCssSnapshot(css)}\n`
+}
+
 function createCssOutputDiffSnapshot(project: CompareProject, legacyCss: string, generatorCss: string) {
   return createTwoFilesPatch(
     `${project.name}/legacy.css`,
@@ -398,10 +402,10 @@ function createCssOutputComparisonSnapshot(
   legacyResult: { css: string, cssFiles: string[] },
   generatorResult: { css: string, cssFiles: string[] },
 ) {
-  const legacy = summarizeCss(legacyResult.css)
-  const generator = summarizeCss(generatorResult.css)
   const legacyCss = normalizeCssSnapshot(legacyResult.css)
   const generatorCss = normalizeCssSnapshot(generatorResult.css)
+  const legacy = summarizeCss(`${legacyCss}\n`)
+  const generator = summarizeCss(`${generatorCss}\n`)
   const diff = createCssOutputDiffSnapshot(project, legacyCss, generatorCss)
   return [
     `# ${project.name} CSS Output Comparison`,
