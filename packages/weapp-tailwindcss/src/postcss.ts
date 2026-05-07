@@ -42,6 +42,7 @@ const POSTCSS_SOURCE_EXTENSIONS = [
   'ts',
   'tsx',
 ]
+const POSTCSS_SOURCE_PATTERN = `**/*.{${POSTCSS_SOURCE_EXTENSIONS.join(',')}}`
 
 type LegacyContentFilePattern = string
 
@@ -207,7 +208,7 @@ async function pathExistsAsDirectory(file: string) {
 async function expandLocalSourceFiles(sourcePath: string, base: string) {
   const absoluteSource = path.isAbsolute(sourcePath) ? sourcePath : path.resolve(base, sourcePath)
   if (await pathExistsAsDirectory(absoluteSource)) {
-    return fg(`**/*.{${POSTCSS_SOURCE_EXTENSIONS.join(',')}}`, {
+    return fg(POSTCSS_SOURCE_PATTERN, {
       absolute: true,
       cwd: absoluteSource,
       onlyFiles: true,
@@ -231,7 +232,7 @@ async function resolveTailwindSourceEntry(
     return {
       base: absoluteSource,
       negated,
-      pattern: '**/*',
+      pattern: POSTCSS_SOURCE_PATTERN,
     }
   }
 
@@ -307,7 +308,7 @@ async function collectAutoTailwindCandidates(
     sourceEntryTasks.push(Promise.resolve({
       base,
       negated: false,
-      pattern: '**/*',
+      pattern: POSTCSS_SOURCE_PATTERN,
     }))
   }
 
@@ -422,7 +423,7 @@ export const weappTailwindcssPostcssPlugin: PluginCreator<WeappTailwindcssPostcs
           ...autoCandidates,
           ...(candidates ?? []),
         ]),
-        scanSources: tailwindVersion === 4,
+        scanSources: false,
         sources: [
           ...collectedSources.sources,
           ...(sources ?? []),

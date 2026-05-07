@@ -8,6 +8,7 @@ import { applyTailwindV3CompatibilityCss } from './tailwind-v3-compatibility'
 import { createTailwindV4DefaultColorThemeCss } from './tailwind-v4-default-colors'
 
 type TailwindV4ScanSourcePatterns = Exclude<NonNullable<TailwindV4GenerateOptions['scanSources']>, boolean>
+type TailwindV4ResolvedScanSources = TailwindV4GenerateOptions['scanSources']
 
 function findLeadingImportInsertionIndex(css: string) {
   const importPattern = /(?:^|\n)\s*@import\b[^;]*;/g
@@ -29,9 +30,15 @@ function applyMiniProgramTailwindV4DefaultColorCss(css: string) {
   return `${css.slice(0, insertionIndex)}\n${themeCss}\n${css.slice(insertionIndex)}`
 }
 
-function parseImportSourcePath(params: string) {
-  const match = /\bsource\(\s*(['"])(.*?)\1\s*\)/.exec(params)
-  return match?.[2]
+function parseImportSourceParam(params: string) {
+  const match = /\bsource\(\s*(none|(['"])(.*?)\2)\s*\)/.exec(params)
+  if (!match) {
+    return undefined
+  }
+  return {
+    none: match[1] === 'none',
+    sourcePath: match[3],
+  }
 }
 
 function isTailwindCssImport(params: string) {
@@ -63,8 +70,9 @@ function resolveSourceBase(base: string, sourcePath: string) {
   return path.isAbsolute(sourcePath) ? sourcePath : path.resolve(base, sourcePath)
 }
 
-function resolveImportSourceScanSources(source: TailwindV4ResolvedSource): TailwindV4ScanSourcePatterns | undefined {
+function resolveCssDefinedScanSources(source: TailwindV4ResolvedSource): TailwindV4ResolvedScanSources | undefined {
   let importSourceBase: string | undefined
+  let hasSourceNone = false
   const sourcePatterns: TailwindV4ScanSourcePatterns = []
   const from = source.dependencies[0]
   let root: postcss.Root
@@ -80,9 +88,12 @@ function resolveImportSourceScanSources(source: TailwindV4ResolvedSource): Tailw
       if (!isTailwindCssImport(rule.params)) {
         return
       }
-      const sourcePath = parseImportSourcePath(rule.params)
-      if (sourcePath) {
-        importSourceBase = resolveSourceBase(source.base, sourcePath)
+      const sourceParam = parseImportSourceParam(rule.params)
+      if (sourceParam?.none) {
+        hasSourceNone = true
+      }
+      if (sourceParam?.sourcePath) {
+        importSourceBase = resolveSourceBase(source.base, sourceParam.sourcePath)
       }
       return
     }
@@ -104,6 +115,9 @@ function resolveImportSourceScanSources(source: TailwindV4ResolvedSource): Tailw
   })
 
   if (!importSourceBase) {
+    if (hasSourceNone) {
+      return sourcePatterns.length > 0 ? sourcePatterns : false
+    }
     return undefined
   }
 
@@ -124,7 +138,7 @@ function resolveScanSources(
   if (scanSources !== true) {
     return scanSources
   }
-  return resolveImportSourceScanSources(source) ?? scanSources
+  return resolveCssDefinedScanSources(source) ?? scanSources
 }
 
 export function createTailwindV4Engine(source: TailwindV4ResolvedSource): TailwindV4Engine {

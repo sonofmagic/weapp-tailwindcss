@@ -108,6 +108,97 @@ async function createTailwindV4DirectiveFixture() {
   }
 }
 
+async function createTailwindV4AddingCustomStylesFixture() {
+  const root = await mkdtemp(path.join(tmpdir(), 'weapp-tw-v5-custom-styles-'))
+  const nodeModulesDir = path.join(root, 'node_modules')
+  const cssEntry = path.join(root, 'app.css')
+
+  await mkdir(nodeModulesDir, { recursive: true })
+  await symlink(tailwindcss4Root, path.join(nodeModulesDir, 'tailwindcss'), 'dir')
+
+  const css = [
+    '@import "tailwindcss" source(none);',
+    '@theme {',
+    '  --color-avocado-500: #84cc16;',
+    '  --tab-size-github: 8;',
+    '  --opacity-soft: 65%;',
+    '  --aspect-ratio-retro: 4 / 3;',
+    '  --text-fluid: 20px;',
+    '  --leading-tightish: 1.1;',
+    '}',
+    '@source inline("top-[117px] lg:top-[344px] bg-[#bada55] text-[22px] before:content-[\'Festivus\'] fill-(--my-brand-color) [mask-type:luminance] hover:[mask-type:alpha] [--scroll-offset:56px] lg:[--scroll-offset:44px] grid grid-cols-[1fr_500px_2fr] bg-[url(\'/what_a_rush.png\')] before:content-[\'hello\\_world\'] text-(length:--my-var) text-(color:--my-color) card rounded-none content-auto hover:content-auto scrollbar-hidden tab-github tab-76 tab-inherit tab-[12] opacity-42 opacity-[33%] opacity-soft inset-4 -inset-4 inset-[12px] -inset-[5%] text-fluid/tightish aspect-retro aspect-3/4 aspect-[7/9] theme-midnight:bg-avocado-500 any-hover:content-auto lg:[&:nth-child(-n+3)]:hover:underline");',
+    '@layer base {',
+    '  h1 {',
+    '    font-size: var(--text-2xl);',
+    '  }',
+    '}',
+    '@layer components {',
+    '  .card {',
+    '    background-color: var(--color-white);',
+    '    border-radius: var(--radius-lg);',
+    '    padding: --spacing(6);',
+    '    box-shadow: var(--shadow-xl);',
+    '  }',
+    '  .select2-dropdown {',
+    '    color: var(--color-avocado-500);',
+    '  }',
+    '}',
+    '.my-element {',
+    '  background: white;',
+    '  @variant dark {',
+    '    @variant hover {',
+    '      background: black;',
+    '    }',
+    '  }',
+    '}',
+    '@utility content-auto {',
+    '  content-visibility: auto;',
+    '}',
+    '@utility scrollbar-hidden {',
+    '  &::-webkit-scrollbar {',
+    '    display: none;',
+    '  }',
+    '}',
+    '@utility tab-* {',
+    '  tab-size: --value(--tab-size-*, integer, [integer]);',
+    '  tab-size: --value("inherit", "initial", "unset");',
+    '}',
+    '@utility opacity-* {',
+    '  opacity: calc(--value(integer) * 1%);',
+    '  opacity: --value(--opacity-*, [percentage]);',
+    '}',
+    '@utility inset-* {',
+    '  inset: --spacing(--value(integer));',
+    '  inset: --value([percentage], [length]);',
+    '}',
+    '@utility -inset-* {',
+    '  inset: --spacing(--value(integer) * -1);',
+    '  inset: calc(--value([percentage], [length]) * -1);',
+    '}',
+    '@utility text-* {',
+    '  font-size: --value(--text-*, [length]);',
+    '  line-height: --modifier(--leading-*, [length], [*]);',
+    '}',
+    '@utility aspect-* {',
+    '  aspect-ratio: --value(--aspect-ratio-*, ratio, [ratio]);',
+    '}',
+    '@custom-variant theme-midnight (&:where([data-theme="midnight"] *));',
+    '@custom-variant any-hover {',
+    '  @media (any-hover: hover) {',
+    '    &:hover {',
+    '      @slot;',
+    '    }',
+    '  }',
+    '}',
+    '',
+  ].join('\n')
+
+  return {
+    css,
+    cssEntry,
+  }
+}
+
 async function createTailwindV4ConfigFixture(
   configSource: string,
   css: string,
@@ -255,6 +346,90 @@ describe('v5 Tailwind CSS v4 directives parity', () => {
       target: 'tailwind',
       rawCss: result.css,
     }))
+  })
+
+  it('supports official adding-custom-styles features in v4 generator mode', async () => {
+    const fixture = await createTailwindV4AddingCustomStylesFixture()
+    const [officialResult, webResult, weappResult] = await Promise.all([
+      postcss([tailwindcssPostcss({ optimize: false })]).process(fixture.css, {
+        from: fixture.cssEntry,
+      }),
+      postcss([
+        weappTailwindcss({
+          generator: {
+            mode: 'force',
+            target: 'web',
+          },
+        }),
+      ]).process(fixture.css, {
+        from: fixture.cssEntry,
+      }),
+      postcss([
+        weappTailwindcss({
+          generator: {
+            mode: 'force',
+            target: 'weapp',
+          },
+        }),
+      ]).process(fixture.css, {
+        from: fixture.cssEntry,
+      }),
+    ])
+    const normalized = normalizeCss(weappResult.css)
+
+    expect(officialResult.css).toContain("--tw-content: 'hello_world'")
+    expect(webResult.css).toContain("--tw-content: 'hello_world'")
+    expect(webResult.css).toContain('.theme-midnight\\:bg-avocado-500')
+    expect(webResult.css).toContain('aspect-ratio: 7/9')
+    expect(webResult.css).not.toContain('@source')
+    expect(webResult.css).not.toContain('@utility')
+    expect(webResult.css).not.toContain('@custom-variant')
+    expect(webResult.css).not.toContain('@variant')
+    expect(weappResult.css).toContain('top: 117px')
+    expect(weappResult.css).toContain('top: 344px')
+    expect(weappResult.css).toContain('background-color: #bada55')
+    expect(weappResult.css).toContain('font-size: 22px')
+    expect(weappResult.css).toContain('--tw-content: \'Festivus\'')
+    expect(weappResult.css).toContain('fill: var(--my-brand-color)')
+    expect(weappResult.css).toContain('mask-type: luminance')
+    expect(weappResult.css).toContain('--scroll-offset: 56px')
+    expect(weappResult.css).toContain('--scroll-offset: 44px')
+    expect(weappResult.css).toContain('grid-template-columns: 1fr 500px 2fr')
+    expect(weappResult.css).toContain('/what_a_rush.png')
+    expect(weappResult.css).toContain('--tw-content: \'hello_world\'')
+    expect(weappResult.css).toContain('font-size: var(--my-var)')
+    expect(weappResult.css).toContain('color: var(--my-color)')
+    expect(weappResult.css).toContain('.card')
+    expect(weappResult.css).toContain('padding: calc(var(--spacing) * 6)')
+    expect(weappResult.css).toContain('.rounded-none')
+    expect(weappResult.css).toContain('content-visibility: auto')
+    expect(weappResult.css).toContain('display: none')
+    expect(weappResult.css).toContain('tab-size: var(--tab-size-github)')
+    expect(weappResult.css).toContain('tab-size: 76')
+    expect(weappResult.css).toContain('tab-size: inherit')
+    expect(weappResult.css).toContain('tab-size: 12')
+    expect(weappResult.css).toContain('opacity: calc(42 * 1%)')
+    expect(weappResult.css).toContain('opacity: 0.33')
+    expect(weappResult.css).toContain('opacity: var(--opacity-soft)')
+    expect(weappResult.css).toContain('top: calc(var(--spacing) * 4)')
+    expect(weappResult.css).toContain('top: calc(var(--spacing) * -4)')
+    expect(weappResult.css).toContain('top: 12px')
+    expect(weappResult.css).toContain('top: calc(5% * -1)')
+    expect(weappResult.css).toContain('font-size: var(--text-fluid)')
+    expect(weappResult.css).toContain('line-height: var(--leading-tightish)')
+    expect(weappResult.css).toContain('aspect-ratio: var(--aspect-ratio-retro)')
+    expect(weappResult.css).toContain('aspect-ratio: 3/4')
+    expect(weappResult.css).toContain('aspect-ratio: 7/9')
+    expect(weappResult.css).toContain('.theme-midnight_cbg-avocado-500')
+    expect(weappResult.css).toContain('background-color: var(--color-avocado-500)')
+    expect(weappResult.css).toContain('.my-element')
+    expect(weappResult.css).not.toContain('@source')
+    expect(weappResult.css).not.toContain('@utility')
+    expect(weappResult.css).not.toContain('@custom-variant')
+    expect(weappResult.css).not.toContain('@variant')
+    expect(normalized).not.toContain('@media (hover: hover)')
+    expect(normalized).not.toContain('@media (any-hover: hover)')
+    expect(normalized).not.toContain(':hover')
   })
 
   it('covers supported @config legacy configuration options against the official postcss plugin', async () => {
