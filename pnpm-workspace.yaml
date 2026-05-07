@@ -9,6 +9,21 @@ packages:
   - '!**/test/**'
   - demo/*
 
+allowBuilds:
+  '@dcloudio/hbuilderx-cli': false
+  '@parcel/watcher': false
+  '@swc/core': false
+  '@tarojs/binding': false
+  '@tarojs/cli': false
+  core-js: false
+  core-js-pure: false
+  esbuild: true
+  sharp: true
+  taro-hooks: false
+  unrs-resolver: false
+  vue-demi: false
+  workerd: true
+
 catalogs:
   autoprefixer10:
     autoprefixer: ^10.5.0
@@ -39,11 +54,11 @@ catalogs:
   lucideVueNext0555:
     lucide-vue-next: ^1.0.0
   miniApiTypings:
-    miniprogram-api-typings: ^5.1.3
+    miniprogram-api-typings: ^5.2.0
   postcss85:
-    postcss: ^8.5.13
+    postcss: ^8.5.14
   postcss85tilde:
-    postcss: ^8.5.13
+    postcss: ^8.5.14
   postcssComment2:
     postcss-comment: ^2.0.0
   postcssRem:
@@ -60,14 +75,14 @@ catalogs:
   react19:
     '@types/react': ^19.2.14
     '@types/react-dom': 19.2.3
-    react: ^19.2.5
-    react-dom: ^19.2.5
+    react: ^19.2.6
+    react-dom: ^19.2.6
   reactRefresh018:
     react-refresh: ^0.18.0
   sass195:
     sass: ^1.99.0
   stylelint1625:
-    stylelint: ^17.10.0
+    stylelint: ^17.11.0
   tailwindMerge:
     tailwind-merge: ^3.5.0
   tailwindMerge2:
@@ -114,9 +129,9 @@ catalogs:
   typescript59tilde:
     typescript: ~5.9.3
   typescriptEslint:
-    '@typescript-eslint/eslint-plugin': ^8.59.1
-    '@typescript-eslint/parser': ^8.59.1
-    typescript-eslint: ^8.59.1
+    '@typescript-eslint/eslint-plugin': ^8.59.2
+    '@typescript-eslint/parser': ^8.59.2
+    typescript-eslint: ^8.59.2
   vite4:
     vite: ^4.5.14
   vite52:
@@ -124,7 +139,7 @@ catalogs:
   vite5421:
     vite: ^5.4.21
   vite724:
-    vite: ^7.3.2
+    vite: ^7.3.3
   vitePluginInspect:
     vite-plugin-inspect: ^11.3.3
   vitePluginReact4:
@@ -134,21 +149,21 @@ catalogs:
   vue2:
     vue: ^2.7.16
   vue3:
-    '@vue/compiler-dom': ^3.5.33
-    '@vue/compiler-sfc': ^3.5.33
-    vue: ^3.5.33
+    '@vue/compiler-dom': ^3.5.34
+    '@vue/compiler-sfc': ^3.5.34
+    vue: ^3.5.34
   vueRuntimeCore:
-    '@vue/runtime-core': ^3.5.33
+    '@vue/runtime-core': ^3.5.34
   vueTsc318:
-    vue-tsc: ^3.2.7
+    vue-tsc: ^3.2.8
   weappChildren:
     weapp-tailwindcss-children: ^0.1.0
   weappIdeCli:
-    weapp-ide-cli: ^5.2.7
+    weapp-ide-cli: ^5.2.9
   weappVite:
-    weapp-vite: ^6.16.2
+    weapp-vite: ^6.16.6
   wrangler:
-    wrangler: ^4.87.0
+    wrangler: ^4.88.0
 
 onlyBuiltDependencies:
   - '@tailwindcss/oxide'
