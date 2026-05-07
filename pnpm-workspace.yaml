@@ -95,7 +95,7 @@ catalogs:
     tailwindcss: ^4.2.4
     tailwindcss4: npm:tailwindcss@^4.2.4
   tailwindcssPatch:
-    tailwindcss-patch: 9.2.0
+    tailwindcss-patch: 9.2.1
   tailwindcssRem:
     tailwindcss-rem2px-preset: ^1.0.3
   taro4:
