@@ -81,7 +81,7 @@ async function assertSnap(
       const r = await prettier.format(output[1].source.toString(), {
         parser: 'css',
       })
-      expect(r).toMatchSnapshot()
+      expect(r.replace(/[ \t]+$/gm, '')).toMatchSnapshot()
     }
     expect(/\.html$/.test(output[2].fileName)).toBe(true)
     expect(output[2].type).toBe('asset')

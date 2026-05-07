@@ -1131,10 +1131,6 @@ export async function generateCssByGenerator(
         && !hasGeneratedMarkers
       )
     )
-    || (
-      generatorOptions.mode !== 'force'
-      && majorVersion === 3
-    )
   ) {
     return undefined
   }

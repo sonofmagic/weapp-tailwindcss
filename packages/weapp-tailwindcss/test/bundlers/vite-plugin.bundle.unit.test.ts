@@ -273,7 +273,7 @@ describe('bundlers/vite UnifiedViteWeappTailwindcssPlugin bundle', () => {
     expect((config.css.postcss as any).plugins).toEqual([])
   }, TEST_TIMEOUT_MS)
 
-  it('keeps Tailwind v3 official PostCSS plugins in default auto mode', async () => {
+  it('removes Tailwind v3 official PostCSS plugins in default auto mode', async () => {
     const UnifiedViteWeappTailwindcssPlugin = await loadUnifiedVitePlugin()
     const currentContext = createContext({
       generator: {
@@ -294,7 +294,7 @@ describe('bundlers/vite UnifiedViteWeappTailwindcssPlugin bundle', () => {
         { name: 'other-vite-plugin' },
       ],
     })
-    expect(configResult?.resolve?.alias).toBeUndefined()
+    expect(configResult?.resolve?.alias?.[0]?.replacement).toContain('generator-placeholder.css')
 
     const config = {
       plugins: [
@@ -314,11 +314,9 @@ describe('bundlers/vite UnifiedViteWeappTailwindcssPlugin bundle', () => {
     await (postPlugin.configResolved as any)?.call(postPlugin, config)
 
     expect(config.plugins.map(plugin => plugin.name)).toEqual([
-      '@tailwindcss/vite:scan',
       'other-vite-plugin',
     ])
     expect((config.css.postcss as any).plugins).toEqual([
-      { postcssPlugin: 'tailwindcss' },
       { postcssPlugin: 'autoprefixer' },
     ])
   }, TEST_TIMEOUT_MS)

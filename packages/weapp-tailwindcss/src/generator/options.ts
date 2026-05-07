@@ -7,7 +7,7 @@ export interface WeappTailwindcssGeneratorOptions {
   /**
    * 控制 Tailwind CSS 直接生成 CSS 的启用策略。
    *
-   * - `auto`：默认，Tailwind CSS v4 接管样式生成；Tailwind CSS v3 保持旧链路。
+   * - `auto`：默认，Tailwind CSS v3 和 v4 都接管样式生成；生成失败时回退到旧的 CSS 后处理链路。
    * - `force`：强制使用生成器，无法生成时直接抛错。
    * - `off`：关闭生成器，完全使用旧的 CSS 后处理链路。
    */

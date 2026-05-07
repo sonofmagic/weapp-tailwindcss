@@ -92,12 +92,13 @@ const className = ref(twMerge('bg-[#0000ff] text-[45rpx]', 'text-white rounded-l
 
 验证命令：`pnpm --filter @weapp-tailwindcss-demo/uni-app-tailwindcss-v5 build`
 
-## Tailwind CSS v3：保留旧链路
+## Tailwind CSS v3：默认接管生成
 
-Tailwind CSS v3 旧项目继续使用 `tailwind.config.js` 的 `content` 和原来的 `tailwindcss` PostCSS 插件。默认 `auto` 会保留旧链路；如果希望把边界写得更明确，可以显式关闭 generator，只让 `weapp-tailwindcss` 做小程序转译。
+Tailwind CSS v3 项目继续使用 `tailwind.config.js` 的 `content`，但样式生成也默认由 `weapp-tailwindcss` 接管。迁移后不要再注册原来的 `tailwindcss` PostCSS 插件。
 
 ```ts title="vite.config.ts"
 import uni from '@dcloudio/vite-plugin-uni'
+import path from 'node:path'
 import { defineConfig } from 'vite'
 import { WeappTailwindcss } from 'weapp-tailwindcss/vite'
 
@@ -106,18 +107,18 @@ export default defineConfig({
     uni(),
     WeappTailwindcss({
       rem2rpx: true,
-      generator: false,
+      cssEntries: [
+        path.resolve(__dirname, 'src/main.css'),
+      ],
     }),
   ],
 })
 ```
 
-```js title="postcss.config.js"
-export default {
-  plugins: {
-    tailwindcss: {},
-  },
-}
+```css title="src/main.css"
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
 ```
 
 ```js title="tailwind.config.js"
@@ -128,8 +129,6 @@ export default {
   },
 }
 ```
-
-如果要在 Tailwind CSS v3 项目里试验直出生成，单独把 `generator` 改成 `{ mode: 'force' }`，并先用构建产物对比确认样式没有回退。
 
 ## uni-app Vue2 Webpack（Tailwind CSS v4） {#uni-app-vue2-webpack}
 

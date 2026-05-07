@@ -1129,7 +1129,7 @@ describe('bundlers/shared generator css', () => {
     }))
   })
 
-  it('generates forced Tailwind v3 css when @tailwind utilities is present', async () => {
+  it('generates Tailwind v3 css in auto mode when @tailwind utilities is present', async () => {
     const rawSource = [
       '@tailwind utilities;',
       '.card{color:red}',
@@ -1172,7 +1172,7 @@ describe('bundlers/shared generator css', () => {
     const result = await generateCssByGenerator({
       opts: {
         generator: {
-          mode: 'force',
+          mode: 'auto',
           target: 'weapp',
         },
         styleHandler,

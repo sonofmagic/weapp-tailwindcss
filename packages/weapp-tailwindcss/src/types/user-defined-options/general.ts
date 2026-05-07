@@ -92,7 +92,7 @@ export interface UserDefinedOptionsGeneralPart {
    *
    * @group 3.一般配置
    * @remarks
-   * 默认值为 `{ mode: 'auto', target: 'weapp' }`。在 Tailwind CSS v4 项目中会接管样式生成并直接输出小程序 CSS；在 Tailwind CSS v3 项目中默认保持旧的 Tailwind PostCSS + weapp-tailwindcss 后处理链路，除非显式使用 `force`。
+   * 默认值为 `{ mode: 'auto', target: 'weapp' }`。Tailwind CSS v3 和 v4 项目都会默认接管样式生成并直接输出小程序 CSS；当生成失败时回退到原来的 Tailwind 产物后处理链路。
    *
    * - `false`：关闭生成器，完全使用旧链路。
    * - `true`：等价于默认 `auto`，通常无需显式传入。

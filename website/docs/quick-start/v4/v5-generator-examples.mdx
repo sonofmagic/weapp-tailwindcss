@@ -17,9 +17,9 @@ keywords:
 
 # 生成模式使用方式（推荐）
 
-生成模式必须先区分 Tailwind CSS 主版本。`tailwindcss@4` 是 CSS-first 引擎，`weapp-tailwindcss@5` 默认接管它的样式生成，并直接输出小程序目标 CSS；`tailwindcss@3` 仍是 PostCSS / `tailwind.config.js` 链路，默认保持旧项目的后处理兼容方式，避免升级 `weapp-tailwindcss` 时被迫改造 Tailwind 配置。
+生成模式必须先区分 Tailwind CSS 主版本。`tailwindcss@4` 是 CSS-first 引擎，扫描范围写在 CSS 入口的 `@source`；`tailwindcss@3` 仍使用 `tailwind.config.js` 的 `content`。两个版本都会默认由 `weapp-tailwindcss@5` 接管 Tailwind 样式生成，并直接输出小程序目标 CSS。
 
-核心变化是：Tailwind CSS v4 项目不需要再注册 `@tailwindcss/vite`、`@tailwindcss/postcss` 或其他 Tailwind 官方构建插件；Tailwind CSS v3 项目继续保留原来的 `tailwindcss` PostCSS 插件和 `content` 扫描配置，只让 `weapp-tailwindcss` 负责小程序转译。
+核心变化是：实际项目中不需要再注册 `@tailwindcss/vite`、`@tailwindcss/postcss`、`tailwindcss` PostCSS 插件或其他 Tailwind 官方构建插件；`weapp-tailwindcss` 会按当前 Tailwind 主版本读取配置并接管样式生成。
 
 :::tip 新项目优先选择生成模式
 如果你正在接入 Tailwind CSS 或准备升级到 v5，优先从生成模式开始。它会直接生成小程序目标 CSS，并用 `classSet` 精确约束 JS / 模板转译范围。
@@ -27,7 +27,7 @@ keywords:
 
 ## 安装
 
-Tailwind CSS v4 直出生成路径只需要安装 `tailwindcss` 和 `weapp-tailwindcss`，不需要安装 Tailwind 官方构建插件，也不需要再配置 `postinstall` 脚本。
+生成模式只需要安装 `tailwindcss` 和 `weapp-tailwindcss`，不需要安装 Tailwind 官方构建插件，也不需要再配置 `postinstall` 脚本。
 
 选择 Tailwind CSS v4：
 
@@ -41,15 +41,14 @@ npm install -D tailwindcss@4 weapp-tailwindcss
 npm install -D tailwindcss@3 weapp-tailwindcss
 ```
 
-Tailwind CSS v4 项目使用 CSS-first 入口和 `@source`，默认由 v5 生成模式直接输出目标端样式；Tailwind CSS v3 项目继续使用 `tailwind.config.js` 的 `content` 和 `theme`，并保持旧链路兼容。
+Tailwind CSS v4 项目使用 CSS-first 入口和 `@source`，Tailwind CSS v3 项目继续使用 `tailwind.config.js` 的 `content` 和 `theme`；两者都会默认由 v5 生成模式直接输出目标端样式。
 
 ## 版本行为差异
 
 | Tailwind 主版本 | 默认行为 | 扫描配置 | Tailwind 官方插件 | 迁移建议 |
 | --- | --- | --- | --- | --- |
 | `tailwindcss@4` | `generator.mode = 'auto'` 默认直出小程序 CSS | CSS 入口里的 `@source` | 移除 `@tailwindcss/vite` / `@tailwindcss/postcss` | 推荐用于新项目或准备升级 Tailwind v4 的项目 |
-| `tailwindcss@3` | `auto` 下保持旧 CSS 后处理链路 | `tailwind.config.js` 的 `content` | 保留 `tailwindcss` PostCSS 插件 | 旧项目只升级 `weapp-tailwindcss` 时优先选择 |
-| `tailwindcss@3` + `force` | 强制尝试 v3 generator | `tailwind.config.js` / `@config` | 可按试验链路移除 | 只建议在单独分支验证，CI 通过后再合并 |
+| `tailwindcss@3` | `generator.mode = 'auto'` 默认直出小程序 CSS | `tailwind.config.js` 的 `content` | 移除 `tailwindcss` PostCSS 插件 | 继续沿用 v3 配置心智 |
 
 ## 按框架选择入口
 
@@ -63,7 +62,7 @@ Tailwind CSS v4 项目使用 CSS-first 入口和 `@source`，默认由 v5 生成
 | Mpx | [Mpx 生成模式](./generator/mpx) | PostCSS 默认导出 + Webpack `WeappTailwindcss` | `mpx.config.js` | `src/app.css` |
 
 :::tip 配置建议
-Tailwind CSS v4 生成路径下不要再把 `@tailwindcss/vite` 或 `@tailwindcss/postcss` 注册到实际项目里，否则会形成两套 Tailwind 生成链路。Tailwind CSS v3 旧项目不要照搬这一条，需要保留原有 `tailwindcss` PostCSS 插件。Vite、Webpack、Webpack4 与 Gulp 入口推荐导入大写 `WeappTailwindcss`；小写 `weappTailwindcss` 也可用，适合偏函数式命名的项目。PostCSS 入口继续使用默认导出。
+生成模式下不要再把 `@tailwindcss/vite`、`@tailwindcss/postcss` 或 `tailwindcss` PostCSS 插件注册到实际项目里，否则会形成两套 Tailwind 生成链路。Vite、Webpack、Webpack4 与 Gulp 入口推荐导入大写 `WeappTailwindcss`；小写 `weappTailwindcss` 也可用，适合偏函数式命名的项目。PostCSS 入口继续使用默认导出。
 :::
 
 ## CSS 入口
@@ -76,21 +75,19 @@ Tailwind CSS v4 项目的 CSS 入口建议使用 CSS-first 写法：
 @source not "./dist";
 ```
 
-Tailwind CSS v3 项目继续把扫描范围写在 `tailwind.config.js`，并保留原有 PostCSS 中的 `tailwindcss` 插件：
+Tailwind CSS v3 项目继续把扫描范围写在 `tailwind.config.js`，CSS 入口继续使用 v3 的 `@tailwind` 指令：
+
+```css title="app.css"
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+```
 
 ```js title="tailwind.config.js"
 export default {
   content: ['./src/**/*.{vue,js,ts,wxml,tsx,jsx}'],
   theme: {
     extend: {},
-  },
-}
-```
-
-```js title="postcss.config.js"
-export default {
-  plugins: {
-    tailwindcss: {},
   },
 }
 ```
@@ -103,9 +100,9 @@ generator: {
 }
 ```
 
-不传 `generator` 时会使用默认的 `mode: 'auto'` 和 `target: 'weapp'`。对 Tailwind CSS v4 来说这会接管样式生成；对 Tailwind CSS v3 来说，`auto` 不会主动替换旧链路。小程序选择器兼容配置也有默认值，`cssChildCombinatorReplaceValue` 默认就是 `['view', 'text']`，只有项目需要改成自定义组件标签时才需要传 `styleOptions`。
+不传 `generator` 时会使用默认的 `mode: 'auto'` 和 `target: 'weapp'`。Tailwind CSS v3 和 v4 都会接管样式生成；小程序选择器兼容配置也有默认值，`cssChildCombinatorReplaceValue` 默认就是 `['view', 'text']`，只有项目需要改成自定义组件标签时才需要传 `styleOptions`。
 
-CI 严格校验 Tailwind CSS v4 生成路径时可以额外传 `mode: 'force'`。这样生成失败会直接让构建失败，避免静默回退到旧 CSS 后处理链路。Tailwind CSS v3 项目只有在明确要试验 v3 generator 时才使用 `force`。
+CI 严格校验生成路径时可以额外传 `mode: 'force'`。这样生成失败会直接让构建失败，避免静默回退到旧 CSS 后处理链路。
 
 ## 功能覆盖清单
 

@@ -17,7 +17,7 @@ keywords:
 
 # Taro 生成模式
 
-Taro 项目根据编译器选择 Vite 或 Webpack 入口，同时需要先区分 Tailwind CSS 主版本。Tailwind CSS v4 走默认直出生成；Tailwind CSS v3 旧项目继续保留原来的 PostCSS 链路。
+Taro 项目根据编译器选择 Vite 或 Webpack 入口，同时需要先区分 Tailwind CSS 主版本。Tailwind CSS v3 和 v4 都会默认由 `weapp-tailwindcss` 接管样式生成。
 
 ## Tailwind CSS v4：Taro Vite
 
@@ -84,12 +84,13 @@ export default function Index() {
 
 验证命令：`pnpm --filter @weapp-tailwindcss-demo/taro-vite-tailwindcss-v5 build`
 
-## Tailwind CSS v3：保留旧链路
+## Tailwind CSS v3：默认接管生成
 
-Tailwind CSS v3 旧项目继续使用 `tailwind.config.js` 的 `content` 和原来的 `tailwindcss` PostCSS 插件。默认 `auto` 会保留旧链路；如果希望把边界写得更明确，可以显式关闭 generator，避免改动 Taro 旧项目的 Tailwind 生成方式。
+Tailwind CSS v3 项目继续使用 `tailwind.config.js` 的 `content`，但不要再注册原来的 `tailwindcss` PostCSS 插件。CSS 入口由 `cssEntries` 指向项目全局样式。
 
 ```ts title="config/index.ts"
 import { defineConfig, type UserConfigExport } from '@tarojs/cli'
+import path from 'node:path'
 import { WeappTailwindcss } from 'weapp-tailwindcss/vite'
 
 export default defineConfig<'vite'>(() => {
@@ -102,7 +103,9 @@ export default defineConfig<'vite'>(() => {
       vitePlugins: [
         WeappTailwindcss({
           rem2rpx: true,
-          generator: false,
+          cssEntries: [
+            path.resolve(__dirname, '../src/app.css'),
+          ],
         }),
       ],
     },
@@ -112,12 +115,10 @@ export default defineConfig<'vite'>(() => {
 })
 ```
 
-```js title="postcss.config.js"
-export default {
-  plugins: {
-    tailwindcss: {},
-  },
-}
+```css title="src/app.css"
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
 ```
 
 ```js title="tailwind.config.js"
@@ -128,8 +129,6 @@ export default {
   },
 }
 ```
-
-Tailwind CSS v3 项目只有在明确要试验直出生成时才设置 `generator: { mode: 'force' }`，不要把这个配置作为老项目常规迁移步骤。
 
 ## Tailwind CSS v4：Taro Webpack {#taro-webpack}
 
