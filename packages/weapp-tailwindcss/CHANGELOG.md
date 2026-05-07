@@ -1,5 +1,11 @@
 # weapp-tailwindcss
 
+## 5.0.0-next.3
+
+### Minor Changes
+
+- ✨ **默认启用 v5 样式生成模式，让 Vite、Webpack、Gulp 与 PostCSS 入口在未显式关闭 `generator` 时由 weapp-tailwindcss 接管 Tailwind CSS 样式生成。** [`25124cc`](https://github.com/sonofmagic/weapp-tailwindcss/commit/25124cc2877b6a903381fc0c708477a87138904a) by @sonofmagic
+
 ## 5.0.0-next.2
 
 ### Patch Changes
