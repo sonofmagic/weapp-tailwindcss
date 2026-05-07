@@ -14,7 +14,7 @@ export type TailwindV4GenerateTarget = 'weapp' | 'web' | 'tailwind'
 export interface TailwindV4GenerateOptions extends PatchTailwindV4GenerateOptions {
   target?: TailwindV4GenerateTarget
   styleOptions?: Partial<IStyleHandlerOptions>
-  legacyDefaults?: boolean
+  tailwindcssV3Compatibility?: boolean
 }
 
 export interface TailwindV4GenerateResult extends Omit<PatchTailwindV4GenerateResult, 'css'> {

@@ -1088,8 +1088,8 @@ export async function generateCssByGenerator(
       const generator = createWeappTailwindcssGenerator(source)
       return generator.generate({
         candidates: runtime,
-        legacyDefaults: generatorOptions.legacyDefaults,
         styleOptions: generatorStyleOptions,
+        tailwindcssV3Compatibility: generatorOptions.tailwindcssV3Compatibility,
         target: generatorOptions.target,
       })
     }))

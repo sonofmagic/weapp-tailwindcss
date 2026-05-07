@@ -1,6 +1,6 @@
-import { createTailwindV3ColorThemeCss } from './legacy-colors'
+import { createTailwindV3DefaultColorThemeCss } from './tailwind-v3-default-colors'
 
-const TAILWIND_V4_LEGACY_THEME_CSS = [
+const TAILWIND_V3_COMPATIBILITY_THEME_CSS = [
   '@theme {',
   '  --default-ring-width: 3px;',
   '  --default-ring-color: var(--color-blue-500, #3b82f6);',
@@ -24,10 +24,10 @@ const TAILWIND_V4_LEGACY_THEME_CSS = [
   '  --radius-sm: 0.125rem;',
   '  --radius: 0.25rem;',
   '}',
-  createTailwindV3ColorThemeCss(),
+  createTailwindV3DefaultColorThemeCss(),
 ].join('\n')
 
-const TAILWIND_V4_LEGACY_BASE_CSS = [
+const TAILWIND_V3_COMPATIBILITY_BASE_CSS = [
   '@layer base {',
   '  *,',
   '  ::after,',
@@ -54,6 +54,6 @@ const TAILWIND_V4_LEGACY_BASE_CSS = [
   '}',
 ].join('\n')
 
-export function appendTailwindV4LegacyDefaultsCss(css: string) {
-  return `${TAILWIND_V4_LEGACY_THEME_CSS}\n${css}\n${TAILWIND_V4_LEGACY_BASE_CSS}`
+export function applyTailwindV3CompatibilityCss(css: string) {
+  return `${TAILWIND_V3_COMPATIBILITY_THEME_CSS}\n${css}\n${TAILWIND_V3_COMPATIBILITY_BASE_CSS}`
 }

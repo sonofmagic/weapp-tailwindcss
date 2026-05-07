@@ -246,7 +246,7 @@ describe('tailwindcss v4 engine', () => {
     const engine = createTailwindV4Engine(source)
 
     const result = await engine.generate({
-      legacyDefaults: true,
+      tailwindcssV3Compatibility: true,
       target: 'web',
       candidates: ['ring', 'border', 'shadow-sm', 'rounded-sm', 'blur-sm', 'outline'],
     })
@@ -260,7 +260,7 @@ describe('tailwindcss v4 engine', () => {
     expect(result.css).toContain('outline-width: 3px')
   })
 
-  it('uses legacy default values for mini-program output by default', async () => {
+  it('uses Tailwind v3 compatibility default values for mini-program output by default', async () => {
     const source = await resolveTailwindV4Source({
       css: `
         @theme default {
@@ -282,7 +282,7 @@ describe('tailwindcss v4 engine', () => {
     expect(result.css).toContain('--tw-shadow: 0 1px 2px 0 var(--tw-shadow-color, rgba(0, 0, 0, 0.05))')
   })
 
-  it('can opt out of legacy default values for native Tailwind v4 output', async () => {
+  it('can opt out of Tailwind v3 compatibility default values for native Tailwind v4 output', async () => {
     const source = await resolveTailwindV4Source({
       css: `
         @theme default {
@@ -299,7 +299,7 @@ describe('tailwindcss v4 engine', () => {
     const engine = createTailwindV4Engine(source)
 
     const result = await engine.generate({
-      legacyDefaults: false,
+      tailwindcssV3Compatibility: false,
       target: 'web',
       candidates: ['ring', 'border', 'shadow-sm', 'rounded-sm', 'blur-sm', 'outline'],
     })

@@ -46,7 +46,7 @@ const UPGRADE_DEFAULTS_CANDIDATES = [
 
 const UPGRADE_DEFAULTS_SOURCE_CSS = `${UPGRADE_DEFAULTS_CSS}@source inline("${UPGRADE_DEFAULTS_CANDIDATES.join(' ')}");`
 
-const LEGACY_COLOR_CASES = [
+const TAILWIND_V3_COLOR_CASES = [
   ['bg-slate-50', '--color-slate-50: #f8fafc'],
   ['bg-gray-950', '--color-gray-950: #030712'],
   ['bg-zinc-500', '--color-zinc-500: #71717a'],
@@ -97,7 +97,7 @@ async function generate(css: string, generator: NonNullable<Parameters<typeof we
 }
 
 describe('v5 Tailwind CSS v4 upgrade generator coverage', () => {
-  it('keeps target web aligned with native Tailwind v4 defaults unless legacy defaults are explicitly enabled', async () => {
+  it('keeps target web aligned with native Tailwind v4 defaults unless Tailwind v3 compatibility is explicitly enabled', async () => {
     const fixture = await createFixtureBase()
     const [officialResult, generatorResult] = await Promise.all([
       postcss([
@@ -143,10 +143,10 @@ describe('v5 Tailwind CSS v4 upgrade generator coverage', () => {
     expect(result.css).not.toContain('.w-\\[100px\\]')
   })
 
-  it('restores Tailwind v3 default values for explicit legacy web generator output', async () => {
+  it('restores Tailwind v3 default values for explicit web generator compatibility output', async () => {
     const result = await generate(UPGRADE_DEFAULTS_SOURCE_CSS, {
       mode: 'force',
-      legacyDefaults: true,
+      tailwindcssV3Compatibility: true,
       target: 'web',
     })
 
@@ -176,7 +176,7 @@ describe('v5 Tailwind CSS v4 upgrade generator coverage', () => {
     expect(result.css).not.toContain('oklch(')
   })
 
-  it('uses legacy defaults and Tailwind v3 colors for mini-program generator output by default', async () => {
+  it('uses Tailwind v3 compatibility defaults and colors for mini-program generator output by default', async () => {
     const result = await generate(UPGRADE_DEFAULTS_SOURCE_CSS, {
       mode: 'force',
       target: 'weapp',
@@ -210,13 +210,13 @@ describe('v5 Tailwind CSS v4 upgrade generator coverage', () => {
   it('emits mini-program-safe Tailwind v3 default colors across the default palette', async () => {
     const result = await generate(`
       @import "tailwindcss" source(none);
-      @source inline("${LEGACY_COLOR_CASES.map(([candidate]) => candidate).join(' ')}");
+      @source inline("${TAILWIND_V3_COLOR_CASES.map(([candidate]) => candidate).join(' ')}");
     `, {
       mode: 'force',
       target: 'weapp',
     })
 
-    for (const [candidate, declaration] of LEGACY_COLOR_CASES) {
+    for (const [candidate, declaration] of TAILWIND_V3_COLOR_CASES) {
       const className = candidate.replace('bg-', '.bg-')
       expect(result.css).toContain(declaration)
       expect(result.css).toContain(className)
@@ -227,7 +227,7 @@ describe('v5 Tailwind CSS v4 upgrade generator coverage', () => {
   it('can opt mini-program generator output into native Tailwind v4 defaults', async () => {
     const result = await generate(UPGRADE_DEFAULTS_SOURCE_CSS, {
       mode: 'force',
-      legacyDefaults: false,
+      tailwindcssV3Compatibility: false,
       target: 'weapp',
     })
 
@@ -242,7 +242,7 @@ describe('v5 Tailwind CSS v4 upgrade generator coverage', () => {
     expect(result.css).not.toContain('.shadow-sm {\n    --tw-shadow: 0 1px 2px 0 var(--tw-shadow-color, rgba(0, 0, 0, 0.05))')
   })
 
-  it('keeps user-defined theme colors ahead of legacy Tailwind v3 color defaults', async () => {
+  it('keeps user-defined theme colors ahead of Tailwind v3 compatibility color defaults', async () => {
     const result = await generate(`
       @import "tailwindcss" source(none);
       @theme {

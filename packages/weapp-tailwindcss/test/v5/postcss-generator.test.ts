@@ -79,11 +79,11 @@ describe('v5 postcss generator', () => {
     expect(result.css).toContain('--tw-shadow: 0 1px 3px 0 var(--tw-shadow-color, rgb(0 0 0 / 0.1)), 0 1px 2px -1px var(--tw-shadow-color, rgb(0 0 0 / 0.1))')
   })
 
-  it('passes explicit legacy default opt-in through postcss generator options', async () => {
+  it('passes explicit Tailwind v3 compatibility opt-in through postcss generator options', async () => {
     const result = await postcss([
       weappTailwindcss({
         generator: {
-          legacyDefaults: true,
+          tailwindcssV3Compatibility: true,
           target: 'web',
         },
         candidates: ['ring', 'border', 'shadow-sm'],
