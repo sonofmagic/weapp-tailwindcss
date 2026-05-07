@@ -234,12 +234,15 @@ describe('v5 Tailwind CSS v4 upgrade generator coverage', () => {
     expect(result.css).toContain('calc(1px + var(--tw-ring-offset-width))')
     expect(result.css).toContain('var(--tw-ring-color, currentcolor)')
     expect(result.css).toContain('outline-width: 1px')
+    expect(result.css).toContain('--color-red-500: #fb2c36')
+    expect(result.css).toContain('--color-slate-700: #314158')
     expect(result.css).toContain('--tw-shadow: 0 1px 3px 0 var(--tw-shadow-color, rgba(0, 0, 0, 0.1)), 0 1px 2px -1px var(--tw-shadow-color, rgba(0, 0, 0, 0.1))')
     expect(result.css).toContain('border-radius: var(--radius-sm)')
     expect(result.css).toContain('--tw-blur: blur(var(--blur-sm))')
     expect(result.css).not.toContain('border-color: var(--color-gray-200, currentcolor)')
     expect(result.css).not.toContain('calc(3px + var(--tw-ring-offset-width))')
     expect(result.css).not.toContain('.shadow-sm {\n    --tw-shadow: 0 1px 2px 0 var(--tw-shadow-color, rgba(0, 0, 0, 0.05))')
+    expect(result.css).not.toContain('oklch(')
   })
 
   it('keeps user-defined theme colors ahead of Tailwind v3 compatibility color defaults', async () => {
