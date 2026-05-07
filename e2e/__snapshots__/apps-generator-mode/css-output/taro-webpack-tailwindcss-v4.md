@@ -725,15 +725,7 @@ Generator CSS files: app.wxss, index.wxss
  .nut-rtl .nut-progress-text,
  [dir='rtl'] .nut-progress-text {
    -webkit-transform: translate(50%);
-@@ -4627,7 +4144,6 @@
- }
- .nut-price-line {
-   -webkit-text-decoration: line-through var(--nutui-price-line-color, var(--nutui-color-text-help));
--  text-decoration: line-through;
-   text-decoration: line-through var(--nutui-price-line-color, var(--nutui-color-text-help));
- }
- .nut-popup {
-@@ -4753,57 +4269,7 @@
+@@ -4752,57 +4269,7 @@
  .nut-popup-top.nut-popup-round {
    border-radius: 0 0 var(--nutui-popup-border-radius, var(--nutui-radius-xl, 24rpx)) var(--nutui-popup-border-radius, var(--nutui-radius-xl, 24rpx));
  }
@@ -791,7 +783,7 @@ Generator CSS files: app.wxss, index.wxss
    -webkit-animation-duration: var(--nutui-popup-animation-duration, 0.3s);
    animation-duration: var(--nutui-popup-animation-duration, 0.3s);
    -webkit-animation-fill-mode: both;
-@@ -4812,8 +4278,6 @@
+@@ -4811,8 +4278,6 @@
    animation-name: popup-scale-fade-in;
  }
  .nut-popup-slide-none-exit-active {
@@ -800,7 +792,7 @@ Generator CSS files: app.wxss, index.wxss
    -webkit-animation-duration: var(--nutui-popup-animation-duration, 0.3s);
    animation-duration: var(--nutui-popup-animation-duration, 0.3s);
    -webkit-animation-fill-mode: both;
-@@ -4821,41 +4285,7 @@
+@@ -4820,41 +4285,7 @@
    -webkit-animation-name: popup-scale-fade-out;
    animation-name: popup-scale-fade-out;
  }
@@ -842,7 +834,7 @@ Generator CSS files: app.wxss, index.wxss
    -webkit-animation-duration: var(--nutui-popup-animation-duration, 0.3s);
    animation-duration: var(--nutui-popup-animation-duration, 0.3s);
    -webkit-animation-fill-mode: both;
-@@ -4864,8 +4294,6 @@
+@@ -4863,8 +4294,6 @@
    animation-name: popup-fade-in;
  }
  .nut-popup-slide-center-exit-active {
@@ -851,7 +843,7 @@ Generator CSS files: app.wxss, index.wxss
    -webkit-animation-duration: var(--nutui-popup-animation-duration, 0.3s);
    animation-duration: var(--nutui-popup-animation-duration, 0.3s);
    -webkit-animation-fill-mode: both;
-@@ -4873,42 +4301,8 @@
+@@ -4872,42 +4301,8 @@
    -webkit-animation-name: popup-fade-out;
    animation-name: popup-fade-out;
  }
@@ -894,7 +886,7 @@ Generator CSS files: app.wxss, index.wxss
    -webkit-animation-duration: var(--nutui-popup-animation-duration, 0.3s);
    animation-duration: var(--nutui-popup-animation-duration, 0.3s);
    -webkit-animation-fill-mode: both;
-@@ -4919,8 +4313,6 @@
+@@ -4918,8 +4313,6 @@
    transform: translateZ(0);
  }
  .nut-popup-slide-top-exit-active {
@@ -903,7 +895,7 @@ Generator CSS files: app.wxss, index.wxss
    -webkit-animation-duration: var(--nutui-popup-animation-duration, 0.3s);
    animation-duration: var(--nutui-popup-animation-duration, 0.3s);
    -webkit-animation-fill-mode: both;
-@@ -4928,42 +4320,8 @@
+@@ -4927,42 +4320,8 @@
    -webkit-animation-name: popup-slide-top-exit;
    animation-name: popup-slide-top-exit;
  }
@@ -946,7 +938,7 @@ Generator CSS files: app.wxss, index.wxss
    -webkit-animation-duration: var(--nutui-popup-animation-duration, 0.3s);
    animation-duration: var(--nutui-popup-animation-duration, 0.3s);
    -webkit-animation-fill-mode: both;
-@@ -4974,8 +4332,6 @@
+@@ -4973,8 +4332,6 @@
    transform: translateZ(0);
  }
  .nut-popup-slide-right-exit {
@@ -955,7 +947,7 @@ Generator CSS files: app.wxss, index.wxss
    -webkit-animation-duration: var(--nutui-popup-animation-duration, 0.3s);
    animation-duration: var(--nutui-popup-animation-duration, 0.3s);
    -webkit-animation-fill-mode: both;
-@@ -4983,42 +4339,8 @@
+@@ -4982,42 +4339,8 @@
    -webkit-animation-name: popup-slide-right-exit;
    animation-name: popup-slide-right-exit;
  }
@@ -998,7 +990,7 @@ Generator CSS files: app.wxss, index.wxss
    -webkit-animation-duration: var(--nutui-popup-animation-duration, 0.3s);
    animation-duration: var(--nutui-popup-animation-duration, 0.3s);
    -webkit-animation-fill-mode: both;
-@@ -5029,8 +4351,6 @@
+@@ -5028,8 +4351,6 @@
    transform: translate(0);
  }
  .nut-popup-slide-bottom-exit {
@@ -1007,7 +999,7 @@ Generator CSS files: app.wxss, index.wxss
    -webkit-animation-duration: var(--nutui-popup-animation-duration, 0.3s);
    animation-duration: var(--nutui-popup-animation-duration, 0.3s);
    -webkit-animation-fill-mode: both;
-@@ -5038,42 +4358,8 @@
+@@ -5037,42 +4358,8 @@
    -webkit-animation-name: slide-bottom-exit;
    animation-name: slide-bottom-exit;
  }
@@ -1050,7 +1042,7 @@ Generator CSS files: app.wxss, index.wxss
    -webkit-animation-duration: var(--nutui-popup-animation-duration, 0.3s);
    animation-duration: var(--nutui-popup-animation-duration, 0.3s);
    -webkit-animation-fill-mode: both;
-@@ -5085,8 +4371,6 @@
+@@ -5084,8 +4371,6 @@
  }
  .nut-popup-slide-left-exit-active,
  .nut-popup-slide-left-exit-done {
@@ -1059,7 +1051,7 @@ Generator CSS files: app.wxss, index.wxss
    -webkit-animation-duration: var(--nutui-popup-animation-duration, 0.3s);
    animation-duration: var(--nutui-popup-animation-duration, 0.3s);
    -webkit-animation-fill-mode: both;
-@@ -5664,54 +4948,8 @@
+@@ -5663,54 +4948,8 @@
  .nut-overflow-hidden {
    overflow: hidden !important;
  }
@@ -1114,7 +1106,7 @@ Generator CSS files: app.wxss, index.wxss
    -webkit-animation-duration: var(--nutui-overlay-animation-duration, 0.3s);
    animation-duration: var(--nutui-overlay-animation-duration, 0.3s);
    -webkit-animation-fill-mode: both;
-@@ -5720,8 +4958,6 @@
+@@ -5719,8 +4958,6 @@
    animation-name: nut-fade-in;
  }
  .nut-overlay-slide-exit-active {
@@ -1123,7 +1115,7 @@ Generator CSS files: app.wxss, index.wxss
    -webkit-animation-duration: var(--nutui-overlay-animation-duration, 0.3s);
    animation-duration: var(--nutui-overlay-animation-duration, 0.3s);
    -webkit-animation-fill-mode: both;
-@@ -6110,46 +5346,6 @@
+@@ -6109,46 +5346,6 @@
    margin-left: var(--nutui-noticebar-icon-gap, 8rpx);
    width: var(--nutui-noticebar-right-icon-width, 32rpx);
  }
@@ -1170,7 +1162,7 @@ Generator CSS files: app.wxss, index.wxss
  .nut-rtl .nut-noticebar .nut-noticebar-box-left-icon,
  [dir='rtl'] .nut-noticebar .nut-noticebar-box-left-icon {
    margin-left: var(--nutui-noticebar-icon-gap, 8rpx);
-@@ -6170,30 +5366,6 @@
+@@ -6169,30 +5366,6 @@
    -webkit-animation: nut-notice-bar-play-infinite-rtl linear infinite both running;
    animation: nut-notice-bar-play-infinite-rtl linear infinite both running;
  }
@@ -1201,7 +1193,7 @@ Generator CSS files: app.wxss, index.wxss
  .nut-rtl .nut-noticebar .nut-noticebar-vertical .nut-noticebar-box-right-icon,
  [dir='rtl'] .nut-noticebar .nut-noticebar-vertical .nut-noticebar-box-right-icon {
    margin-left: 0;
-@@ -6527,22 +5699,6 @@
+@@ -6526,22 +5699,6 @@
  .nut-loading-vertical .nut-loading-text {
    padding-top: var(--nutui-spacing-base, 16rpx);
  }
@@ -1224,7 +1216,7 @@ Generator CSS files: app.wxss, index.wxss
  .nut-inputnumber {
    -webkit-align-items: center;
    align-items: center;
-@@ -7724,8 +6880,6 @@
+@@ -7723,8 +6880,6 @@
    position: absolute;
    right: var(--nutui-elevator-list-item-code-current-right, 120rpx);
    top: var(--nutui-elevator-list-item-code-current-top, 50%);
@@ -1233,7 +1225,7 @@ Generator CSS files: app.wxss, index.wxss
    -webkit-transform: var(--nutui-elevator-bars-transform, translateY(-50%));
    transform: var(--nutui-elevator-bars-transform, translateY(-50%));
    width: var(--nutui-elevator-list-item-code-current-width, 90rpx);
-@@ -7734,8 +6888,6 @@
+@@ -7733,8 +6888,6 @@
    position: absolute;
    right: var(--nutui-elevator-bars-right, 32rpx);
    top: var(--nutui-elevator-bars-top, 50%);
@@ -1242,15 +1234,7 @@ Generator CSS files: app.wxss, index.wxss
    -webkit-transform: var(--nutui-elevator-bars-transform, translateY(-50%));
    transform: var(--nutui-elevator-bars-transform, translateY(-50%));
    z-index: var(--nutui-elevator-bars-z-index, 1);
-@@ -8236,7 +7388,6 @@
-   -webkit-align-items: center;
-   align-items: center;
-   color: var(--nutui-countdown-color, var(--nutui-color-primary, #ff0f23));
--  display: -webkit-flex;
-   display: var(--nutui-countdown-display, flex);
-   -webkit-flex-direction: row;
-   flex-direction: row;
-@@ -10097,26 +9248,6 @@
+@@ -10095,26 +9248,6 @@
    animation-timing-function: linear;
    will-change: transform;
  }
@@ -1277,7 +1261,7 @@ Generator CSS files: app.wxss, index.wxss
  .nut-rtl .nut-barrage,
  [dir='rtl'] .nut-barrage {
    left: auto;
-@@ -10133,26 +9264,6 @@
+@@ -10131,26 +9264,6 @@
    -webkit-animation-name: moving-rtl;
    animation-name: moving-rtl;
  }
@@ -1304,7 +1288,7 @@ Generator CSS files: app.wxss, index.wxss
  .nut-badge {
    box-sizing: content-box;
    display: -webkit-flex;
-@@ -10227,8 +9338,6 @@
+@@ -10225,8 +9338,6 @@
  }
  .nut-badge-content {
    position: absolute;
@@ -1313,7 +1297,7 @@ Generator CSS files: app.wxss, index.wxss
    -webkit-transform: var(--nutui-badge-content-transform, translate(50%, -50%));
    transform: var(--nutui-badge-content-transform, translate(50%, -50%));
  }
-@@ -10581,6 +9690,1183 @@
+@@ -10579,6 +9690,1183 @@
    -webkit-animation-timing-function: ease-out;
    animation-timing-function: ease-out;
  }
@@ -2497,7 +2481,7 @@ Generator CSS files: app.wxss, index.wxss
  @-webkit-keyframes slide-right {
    0% {
      opacity: 0;
-@@ -10677,22 +10963,6 @@
+@@ -10675,22 +10963,6 @@
      transform: translateY(0);
    }
  }
@@ -2520,7 +2504,7 @@ Generator CSS files: app.wxss, index.wxss
  @-webkit-keyframes shake {
    0%,
    to {
-@@ -10779,10 +11049,6 @@
+@@ -10777,10 +11049,6 @@
      transform: translate(-2rpx);
    }
  }
@@ -2531,7 +2515,7 @@ Generator CSS files: app.wxss, index.wxss
  @-webkit-keyframes ripple {
    0% {
      -webkit-transform: scale(1);
-@@ -10803,10 +11069,6 @@
+@@ -10801,10 +11069,6 @@
      transform: scale(1.1);
    }
  }
@@ -2542,7 +2526,7 @@ Generator CSS files: app.wxss, index.wxss
  @-webkit-keyframes breath {
    0%,
    to {
-@@ -10829,41 +11091,6 @@
+@@ -10827,41 +11091,6 @@
      transform: scale(1.1);
    }
  }
@@ -2584,7 +2568,7 @@ Generator CSS files: app.wxss, index.wxss
  @-webkit-keyframes twinkle {
    0% {
      -webkit-transform: scale(0);
-@@ -10894,26 +11121,6 @@
+@@ -10892,26 +11121,6 @@
      transform: scale(1.4);
    }
  }
@@ -2611,7 +2595,7 @@ Generator CSS files: app.wxss, index.wxss
  @-webkit-keyframes flicker {
    0% {
      -webkit-transform: translate(-200rpx) skew(-20deg);
-@@ -10980,12 +11187,6 @@
+@@ -10978,12 +11187,6 @@
      transform: rotate(0) translateY(0);
    }
  }
@@ -2624,7 +2608,7 @@ Generator CSS files: app.wxss, index.wxss
  @-webkit-keyframes float-pop {
    0% {
      top: 0;
-@@ -11020,229 +11221,6 @@
+@@ -11018,229 +11221,6 @@
      top: 0;
    }
  }
@@ -7488,7 +7472,6 @@ page,
 }
 .nut-price-line {
   -webkit-text-decoration: line-through var(--nutui-price-line-color, var(--nutui-color-text-help));
-  text-decoration: line-through;
   text-decoration: line-through var(--nutui-price-line-color, var(--nutui-color-text-help));
 }
 .nut-popup {
@@ -11097,7 +11080,6 @@ page,
   -webkit-align-items: center;
   align-items: center;
   color: var(--nutui-countdown-color, var(--nutui-color-primary, #ff0f23));
-  display: -webkit-flex;
   display: var(--nutui-countdown-display, flex);
   -webkit-flex-direction: row;
   flex-direction: row;

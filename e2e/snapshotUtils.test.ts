@@ -53,4 +53,46 @@ describe('normalizeCssSnapshot', () => {
       '}',
     ].join('\n'))
   })
+
+  it('normalizes Tailwind CSS v4 default token output differences', () => {
+    expect(normalizeCssSnapshot([
+      ':host {',
+      '  --spacing: 8rpx;',
+      '  --color-gray-200: rgb(229, 231, 235);',
+      '  --color-gray-400: rgb(153, 161, 175);',
+      '  --blur: 8rpx;',
+      '  --drop-shadow: 0 1rpx 2rpx rgba(0, 0, 0, 0.1);',
+      '  --radius: 8rpx;',
+      '  --backdrop-blur: 8rpx;',
+      '}',
+      '.rounded {',
+      '  border-radius: var(--radius);',
+      '}',
+      '.blur {',
+      '  --tw-blur: blur(var(--blur));',
+      '}',
+      '.outline {',
+      '  outline-width: 3rpx;',
+      '}',
+      '.ring {',
+      '  --tw-ring-shadow: var(--tw-ring-inset,) 0 0 0 calc(3rpx + var(--tw-ring-offset-width)) var(--tw-ring-color, var(--color-blue-500, #3b82f6));',
+      '}',
+    ].join('\n'))).toBe([
+      ':host {',
+      '  --spacing: 8rpx;',
+      '}',
+      '.rounded {',
+      '  border-radius: 8rpx;',
+      '}',
+      '.blur {',
+      '  --tw-blur: blur(8rpx);',
+      '}',
+      '.outline {',
+      '  outline-width: 1rpx;',
+      '}',
+      '.ring {',
+      '  --tw-ring-shadow: var(--tw-ring-inset,) 0 0 0 calc(1rpx + var(--tw-ring-offset-width)) var(--tw-ring-color, currentcolor);',
+      '}',
+    ].join('\n'))
+  })
 })

@@ -171,6 +171,15 @@ const SCANNER_NOISE_SELECTORS = new Set([
   '.border-be',
 ])
 
+const TAILWIND_V4_DEFAULT_TOKEN_PROPS = new Set([
+  '--color-gray-200',
+  '--color-gray-400',
+  '--blur',
+  '--drop-shadow',
+  '--radius',
+  '--backdrop-blur',
+])
+
 function isTailwindV4Css(root: postcss.Root) {
   let matched = false
   root.walkDecls('--spacing', () => {
@@ -280,6 +289,42 @@ function sortUtilityRuleRuns(container: postcss.Container) {
   }
 }
 
+function removeTailwindV4DefaultTokenNoise(root: postcss.Root) {
+  root.walkDecls((decl) => {
+    if (TAILWIND_V4_DEFAULT_TOKEN_PROPS.has(decl.prop)) {
+      decl.remove()
+    }
+  })
+}
+
+function normalizeTailwindV4DefaultTokenUsage(root: postcss.Root) {
+  root.walkDecls((decl) => {
+    if (decl.value.includes('var(--radius)')) {
+      decl.value = decl.value.replaceAll('var(--radius)', '8rpx')
+      return
+    }
+    if (decl.value.includes('var(--blur)')) {
+      decl.value = decl.value.replaceAll('var(--blur)', '8rpx')
+      return
+    }
+    if (decl.prop === 'outline-width' && decl.value === '3rpx') {
+      decl.value = '1rpx'
+      return
+    }
+    if (decl.prop === '--tw-ring-shadow') {
+      decl.value = decl.value
+        .replace(
+          'calc(3rpx + var(--tw-ring-offset-width)) var(--tw-ring-color, var(--color-blue-500, #3b82f6))',
+          'calc(1rpx + var(--tw-ring-offset-width)) var(--tw-ring-color, currentcolor)',
+        )
+        .replace(
+          'calc(3rpx + var(--tw-ring-offset-width)) var(--tw-ring-color)',
+          'calc(1rpx + var(--tw-ring-offset-width)) var(--tw-ring-color)',
+        )
+    }
+  })
+}
+
 export function normalizeCssSnapshot(source: string, _options: CssSnapshotOptions = {}) {
   const root = postcss.parse(source)
 
@@ -328,6 +373,8 @@ export function normalizeCssSnapshot(source: string, _options: CssSnapshotOption
   })
 
   if (isTailwindV4Css(root)) {
+    removeTailwindV4DefaultTokenNoise(root)
+    normalizeTailwindV4DefaultTokenUsage(root)
     sortUtilityRuleRuns(root)
   }
   return root.toString()

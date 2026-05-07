@@ -13,7 +13,7 @@ import { createChineseMarkdownReport, createMarkdownReport } from './apps-genera
 import { E2E_PROJECTS, NATIVE_PROJECTS } from './projectEntries'
 import { clearProjectBuildState } from './projectTest'
 import { collectCssSnapshots, resolveSnapshotFile } from './shared'
-import { normalizeSnapshotName } from './snapshotUtils'
+import { normalizeCssSnapshot as normalizeProjectCssSnapshot, normalizeSnapshotName } from './snapshotUtils'
 
 type GeneratorBuildMode = 'generator' | 'legacy'
 
@@ -370,7 +370,7 @@ async function expectReportSnapshot(report: AppsGeneratorCompareReportItem[]) {
 }
 
 function normalizeCssSnapshot(css: string) {
-  return css
+  return normalizeProjectCssSnapshot(css)
     .trimEnd()
     .split('\n')
     .map(line => line.trimEnd())
