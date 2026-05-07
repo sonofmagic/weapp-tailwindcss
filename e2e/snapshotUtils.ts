@@ -164,11 +164,11 @@ export async function formatCss(css: string) {
   })
 }
 
-const SCANNER_NOISE_SELECTOR_TO_CLASS = new Map([
-  ['.start', 'start'],
-  ['.end', 'end'],
-  ['.border-bs', 'border-bs'],
-  ['.border-be', 'border-be'],
+const SCANNER_NOISE_SELECTORS = new Set([
+  '.start',
+  '.end',
+  '.border-bs',
+  '.border-be',
 ])
 
 function isTailwindV4Css(root: postcss.Root) {
@@ -285,12 +285,10 @@ export function normalizeCssSnapshot(source: string, options: CssSnapshotOptions
     return source
   }
 
-  const classNameSet = options.classList ? new Set(options.classList) : undefined
   const root = postcss.parse(source)
 
   root.walkRules((rule) => {
-    const expectedClass = SCANNER_NOISE_SELECTOR_TO_CLASS.get(rule.selector)
-    if (expectedClass && classNameSet && !classNameSet.has(expectedClass)) {
+    if (SCANNER_NOISE_SELECTORS.has(rule.selector)) {
       rule.remove()
       return
     }
