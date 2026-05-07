@@ -38,6 +38,54 @@ describe('tailwindcss v4 engine', () => {
     expect(result.css).not.toContain('not-a-tailwind-class')
   })
 
+  it('lowers user-defined OKLCH and OKLAB theme colors for mini-program output', async () => {
+    const source = await resolveTailwindV4Source({
+      css: `
+        @theme {
+          --color-brand: oklch(62.3% 0.214 259.815);
+          --color-accent: oklab(63.7% 0.224 0.125 / 50%);
+        }
+        @tailwind utilities;
+      `,
+      base: process.cwd(),
+    })
+    const engine = createTailwindV4Engine(source)
+
+    const result = await engine.generate({
+      candidates: ['bg-brand', 'text-accent'],
+    })
+
+    expect(result.rawCss).toContain('--color-brand: oklch(62.3% 0.214 259.815)')
+    expect(result.rawCss).toContain('--color-accent: oklab(63.7% 0.224 0.125 / 50%)')
+    expect(result.css).toContain('--color-brand: rgb(43, 127, 255)')
+    expect(result.css).toContain('--color-accent: rgba(255, 17, 12, 0.5)')
+    expect(result.css).toContain('background-color: var(--color-brand)')
+    expect(result.css).toContain('color: var(--color-accent)')
+    expect(result.css).not.toContain('oklch(')
+    expect(result.css).not.toContain('oklab(')
+  })
+
+  it('keeps native OKLCH theme colors for web output', async () => {
+    const source = await resolveTailwindV4Source({
+      css: `
+        @theme {
+          --color-brand: oklch(62.3% 0.214 259.815);
+        }
+        @tailwind utilities;
+      `,
+      base: process.cwd(),
+    })
+    const engine = createTailwindV4Engine(source)
+
+    const result = await engine.generate({
+      candidates: ['bg-brand'],
+      target: 'web',
+    })
+
+    expect(result.css).toContain('--color-brand: oklch(62.3% 0.214 259.815)')
+    expect(result.css).toContain('background-color: var(--color-brand)')
+  })
+
   it('extracts candidates from runtime sources', async () => {
     const source = await resolveTailwindV4Source({
       css: MINIMAL_THEME_CSS,

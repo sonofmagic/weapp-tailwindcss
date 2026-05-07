@@ -111,7 +111,7 @@ function collectClassSet(plugin: TailwindcssPlugin) {
   const classSet = new Set<string>()
   for (const context of plugin.contextRef?.value ?? []) {
     for (const candidate of context.classCache?.keys() ?? []) {
-      if (candidate !== '*') {
+      if (String(candidate) !== '*') {
         classSet.add(candidate)
       }
     }
