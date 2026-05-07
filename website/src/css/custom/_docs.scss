@@ -42,11 +42,36 @@ html.docs-wrapper[data-theme='dark'] .theme-doc-sidebar-container {
 }
 
 html.docs-wrapper .theme-doc-markdown {
+  max-width: none;
   padding-bottom: 2rem;
 }
 
 html.docs-wrapper article {
+  max-width: none;
+}
+
+html.docs-wrapper .main-wrapper > .container {
+  max-width: min(100%, 1800px);
+}
+
+html.docs-wrapper .theme-doc-markdown > h1:first-child,
+html.docs-wrapper .theme-doc-markdown > h2,
+html.docs-wrapper .theme-doc-markdown > h3,
+html.docs-wrapper .theme-doc-markdown > h4,
+html.docs-wrapper .theme-doc-markdown > h5,
+html.docs-wrapper .theme-doc-markdown > h6,
+html.docs-wrapper .theme-doc-markdown > p,
+html.docs-wrapper .theme-doc-markdown > ul,
+html.docs-wrapper .theme-doc-markdown > ol,
+html.docs-wrapper .theme-doc-markdown > blockquote,
+html.docs-wrapper .theme-doc-markdown > .theme-admonition,
+html.docs-wrapper .theme-doc-markdown > details,
+html.docs-wrapper .theme-doc-markdown > hr {
   max-width: 82ch;
+}
+
+html.docs-wrapper .theme-doc-markdown > h1:first-child {
+  max-width: 24ch;
 }
 
 html.docs-wrapper .pagination-nav__link {
