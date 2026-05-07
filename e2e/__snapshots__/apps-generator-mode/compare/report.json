@@ -12412,7 +12412,7 @@
     ],
     "status": "passed",
     "legacy": {
-      "bytes": 4473,
+      "bytes": 4433,
       "selectors": [
         "._eborder-brand",
         ".active_cbg-emerald-600:active",
@@ -12636,8 +12636,8 @@
       "hasWeappEscapedArbitrarySelector": true,
       "hasRawArbitrarySelector": false
     },
-    "deltaBytes": 19291,
-    "generatorBytesRatio": 5.3128,
+    "deltaBytes": 19331,
+    "generatorBytesRatio": 5.3607,
     "sharedSelectors": [
       "._eborder-brand",
       ".active_cbg-emerald-600:active",
@@ -19614,7 +19614,7 @@
     ],
     "status": "passed",
     "legacy": {
-      "bytes": 22440,
+      "bytes": 22280,
       "selectors": [
         ".-m-_b20px_B",
         ".-mt-2",
@@ -19742,7 +19742,7 @@
       "hasRawArbitrarySelector": false
     },
     "generator": {
-      "bytes": 20412,
+      "bytes": 20252,
       "selectors": [
         ".-m-_b20px_B",
         ".-mt-2",
@@ -19870,7 +19870,7 @@
       "hasRawArbitrarySelector": false
     },
     "deltaBytes": -2028,
-    "generatorBytesRatio": 0.9096,
+    "generatorBytesRatio": 0.909,
     "sharedSelectors": [
       ".-m-_b20px_B",
       ".-mt-2",

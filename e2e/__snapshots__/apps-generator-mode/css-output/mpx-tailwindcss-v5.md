@@ -7,8 +7,8 @@ Generator CSS files: app.wxss, styles/app.wxss, index.wxss, app252bdc3c.wxss
 
 | Mode | Bytes | Selectors | @supports | :hover | Tailwind banner | Raw arbitrary selector | Weapp escaped arbitrary selector |
 | --- | ---: | ---: | --- | --- | --- | --- | --- |
-| legacy | 22440 | 118 | false | false | false | false | true |
-| generator | 20412 | 118 | false | false | false | false | true |
+| legacy | 22280 | 118 | false | false | false | false | true |
+| generator | 20252 | 118 | false | false | false | false | true |
 
 ## Diff
 
@@ -143,7 +143,7 @@ Generator CSS files: app.wxss, styles/app.wxss, index.wxss, app252bdc3c.wxss
    border-right-width: calc(10px * var(--tw-divide-x-reverse));
    border-left-style: var(--tw-border-style);
    border-right-style: var(--tw-border-style);
-@@ -223,15 +198,12 @@
+@@ -223,19 +198,15 @@
    border-color: #010101;
  }
  .rounded-lg {
@@ -158,24 +158,20 @@ Generator CSS files: app.wxss, styles/app.wxss, index.wxss, app252bdc3c.wxss
 -  border-radius: 24rpx;
    border-radius: var(--radius-xl);
  }
- .border {
-@@ -259,7 +231,6 @@
-   border-style: solid;
- }
  ._eborder-primary {
 -  border-color: #155dfc !important;
    border-color: var(--color-primary) !important;
  }
- .border-_b_h098765_B {
-@@ -269,7 +240,6 @@
-   border-color: red;
+ .border {
+@@ -267,7 +238,6 @@
+   border-top-width: 4px;
  }
  ._ebg-green-500 {
 -  background-color: rgb(0, 198, 90) !important;
    background-color: var(--color-green-500) !important;
  }
  .bg-_b_h0000ff_B {
-@@ -291,27 +261,21 @@
+@@ -289,27 +259,21 @@
    background-color: rgba(48, 128, 255, 0.50196);
  }
  .bg-emerald-500 {
@@ -203,7 +199,7 @@ Generator CSS files: app.wxss, styles/app.wxss, index.wxss, app252bdc3c.wxss
    background-color: var(--color-sky-500);
  }
  .bg-gradient-to-r {
-@@ -337,7 +301,6 @@
+@@ -335,7 +299,6 @@
    );
  }
  .p-4 {
@@ -211,7 +207,7 @@ Generator CSS files: app.wxss, styles/app.wxss, index.wxss, app252bdc3c.wxss
    padding: calc(var(--spacing) * 4);
  }
  .p-_b20px_B {
-@@ -348,15 +311,11 @@
+@@ -346,15 +309,11 @@
    padding-right: 34.54rpx;
  }
  .py-2 {
@@ -227,7 +223,7 @@ Generator CSS files: app.wxss, styles/app.wxss, index.wxss, app252bdc3c.wxss
    line-height: var(--tw-leading, var(--text-2xl--line-height));
  }
  .text-_b20px_B {
-@@ -386,19 +345,16 @@
+@@ -384,19 +343,16 @@
  }
  ._efont-bold {
    --tw-font-weight: var(--font-weight-bold) !important;
@@ -247,7 +243,7 @@ Generator CSS files: app.wxss, styles/app.wxss, index.wxss, app252bdc3c.wxss
    color: var(--color-primary) !important;
  }
  .text-_b_h5cdc34_B {
-@@ -414,15 +370,12 @@
+@@ -412,15 +368,12 @@
    color: var(--my-var);
  }
  .text-black {
@@ -263,7 +259,7 @@ Generator CSS files: app.wxss, styles/app.wxss, index.wxss, app252bdc3c.wxss
    color: var(--color-white);
  }
  .underline {
-@@ -451,7 +404,6 @@
+@@ -449,7 +402,6 @@
  }
  .before_ccontent-_b_aFestivus_a_B:before {
    --tw-content: 'Festivus';
@@ -271,7 +267,7 @@ Generator CSS files: app.wxss, styles/app.wxss, index.wxss, app252bdc3c.wxss
    content: var(--tw-content);
  }
  .after_cborder-none:after {
-@@ -467,9 +419,7 @@
+@@ -465,9 +417,7 @@
  }
  @media (min-width: 96rem) {
    ._2xl_ctext-base {
@@ -281,7 +277,7 @@ Generator CSS files: app.wxss, styles/app.wxss, index.wxss, app252bdc3c.wxss
      line-height: var(--tw-leading, var(--text-base--line-height));
    }
    ._2xl_ctext-_bred_B {
-@@ -478,18 +428,26 @@
+@@ -476,18 +426,26 @@
  }
  @media (prefers-color-scheme: dark) {
    .dark_cbg-green-500 {
@@ -311,7 +307,7 @@ Generator CSS files: app.wxss, styles/app.wxss, index.wxss, app252bdc3c.wxss
 
 
  ::before,
-@@ -500,6 +458,15 @@
+@@ -498,6 +456,15 @@
  text,
  :after,
  :before {
@@ -327,7 +323,7 @@ Generator CSS files: app.wxss, styles/app.wxss, index.wxss, app252bdc3c.wxss
    --tw-space-y-reverse: 0;
    --tw-divide-x-reverse: 0;
    --tw-border-style: solid;
-@@ -529,15 +496,6 @@
+@@ -527,15 +494,6 @@
    --tw-ring-offset-color: #fff;
    --tw-ring-offset-shadow: 0 0 rgba(0, 0, 0, 0);
    --tw-content: '';
@@ -343,7 +339,7 @@ Generator CSS files: app.wxss, styles/app.wxss, index.wxss, app252bdc3c.wxss
    --color-red-400: rgb(255, 101, 104);
    --color-red-500: rgb(251, 44, 54);
    --color-yellow-400: rgb(247, 201, 0);
-@@ -565,20 +523,10 @@
+@@ -563,20 +521,10 @@
    --radius-xl: 24rpx;
    --color-primary: #155dfc;
  }
@@ -364,7 +360,7 @@ Generator CSS files: app.wxss, styles/app.wxss, index.wxss, app252bdc3c.wxss
    margin-top: calc(var(--spacing) * -2);
  }
  .mb-_b-20px_B {
-@@ -592,23 +540,18 @@
+@@ -590,23 +538,18 @@
    display: grid;
  }
  .h-2 {
@@ -388,7 +384,7 @@ Generator CSS files: app.wxss, styles/app.wxss, index.wxss, app252bdc3c.wxss
    height: calc(var(--spacing) * 14);
  }
  .h-_b200_v_B {
-@@ -624,19 +567,15 @@
+@@ -622,19 +565,15 @@
    min-height: 100px;
  }
  .w-2 {
@@ -408,7 +404,7 @@ Generator CSS files: app.wxss, styles/app.wxss, index.wxss, app252bdc3c.wxss
    width: calc(var(--spacing) * 32);
  }
  .w-_b300rpx_B {
-@@ -674,9 +613,7 @@
+@@ -672,9 +611,7 @@
  .space-y-4 > text + view,
  .space-y-4 > text + text {
    --tw-space-y-reverse: 0;
@@ -418,7 +414,7 @@ Generator CSS files: app.wxss, styles/app.wxss, index.wxss, app252bdc3c.wxss
    margin-bottom: calc(var(--spacing) * 4 * var(--tw-space-y-reverse));
  }
  .space-y-_b1_d6rem_B > view + view,
-@@ -684,9 +621,7 @@
+@@ -682,9 +619,7 @@
  .space-y-_b1_d6rem_B > text + view,
  .space-y-_b1_d6rem_B > text + text {
    --tw-space-y-reverse: 0;
@@ -428,7 +424,7 @@ Generator CSS files: app.wxss, styles/app.wxss, index.wxss, app252bdc3c.wxss
    margin-bottom: calc(51.2rpx * var(--tw-space-y-reverse));
  }
  .divide-x-_b10px_B > view + view,
-@@ -694,9 +629,7 @@
+@@ -692,9 +627,7 @@
  .divide-x-_b10px_B > text + view,
  .divide-x-_b10px_B > text + text {
    --tw-divide-x-reverse: 0;
@@ -438,7 +434,7 @@ Generator CSS files: app.wxss, styles/app.wxss, index.wxss, app252bdc3c.wxss
    border-right-width: calc(10px * var(--tw-divide-x-reverse));
    border-left-style: var(--tw-border-style);
    border-right-style: var(--tw-border-style);
-@@ -715,15 +648,12 @@
+@@ -713,19 +646,15 @@
    border-color: #010101;
  }
  .rounded-lg {
@@ -453,24 +449,20 @@ Generator CSS files: app.wxss, styles/app.wxss, index.wxss, app252bdc3c.wxss
 -  border-radius: 24rpx;
    border-radius: var(--radius-xl);
  }
- .border {
-@@ -751,7 +681,6 @@
-   border-style: solid;
- }
  ._eborder-primary {
 -  border-color: #155dfc !important;
    border-color: var(--color-primary) !important;
  }
- .border-_b_h098765_B {
-@@ -761,7 +690,6 @@
-   border-color: red;
+ .border {
+@@ -757,7 +686,6 @@
+   border-top-width: 4px;
  }
  ._ebg-green-500 {
 -  background-color: rgb(0, 198, 90) !important;
    background-color: var(--color-green-500) !important;
  }
  .bg-_b_h0000ff_B {
-@@ -783,27 +711,21 @@
+@@ -779,27 +707,21 @@
    background-color: rgba(48, 128, 255, 0.50196);
  }
  .bg-emerald-500 {
@@ -498,7 +490,7 @@ Generator CSS files: app.wxss, styles/app.wxss, index.wxss, app252bdc3c.wxss
    background-color: var(--color-sky-500);
  }
  .bg-gradient-to-r {
-@@ -829,7 +751,6 @@
+@@ -825,7 +747,6 @@
    );
  }
  .p-4 {
@@ -506,7 +498,7 @@ Generator CSS files: app.wxss, styles/app.wxss, index.wxss, app252bdc3c.wxss
    padding: calc(var(--spacing) * 4);
  }
  .p-_b20px_B {
-@@ -840,15 +761,11 @@
+@@ -836,15 +757,11 @@
    padding-right: 34.54rpx;
  }
  .py-2 {
@@ -522,7 +514,7 @@ Generator CSS files: app.wxss, styles/app.wxss, index.wxss, app252bdc3c.wxss
    line-height: var(--tw-leading, var(--text-2xl--line-height));
  }
  .text-_b20px_B {
-@@ -878,19 +795,16 @@
+@@ -874,19 +791,16 @@
  }
  ._efont-bold {
    --tw-font-weight: var(--font-weight-bold) !important;
@@ -542,7 +534,7 @@ Generator CSS files: app.wxss, styles/app.wxss, index.wxss, app252bdc3c.wxss
    color: var(--color-primary) !important;
  }
  .text-_b_h5cdc34_B {
-@@ -906,15 +820,12 @@
+@@ -902,15 +816,12 @@
    color: var(--my-var);
  }
  .text-black {
@@ -558,7 +550,7 @@ Generator CSS files: app.wxss, styles/app.wxss, index.wxss, app252bdc3c.wxss
    color: var(--color-white);
  }
  .underline {
-@@ -943,7 +854,6 @@
+@@ -939,7 +850,6 @@
  }
  .before_ccontent-_b_aFestivus_a_B:before {
    --tw-content: 'Festivus';
@@ -566,7 +558,7 @@ Generator CSS files: app.wxss, styles/app.wxss, index.wxss, app252bdc3c.wxss
    content: var(--tw-content);
  }
  .after_cborder-none:after {
-@@ -959,9 +869,7 @@
+@@ -955,9 +865,7 @@
  }
  @media (min-width: 96rem) {
    ._2xl_ctext-base {
@@ -576,7 +568,7 @@ Generator CSS files: app.wxss, styles/app.wxss, index.wxss, app252bdc3c.wxss
      line-height: var(--tw-leading, var(--text-base--line-height));
    }
    ._2xl_ctext-_bred_B {
-@@ -970,15 +878,23 @@
+@@ -966,15 +874,23 @@
  }
  @media (prefers-color-scheme: dark) {
    .dark_cbg-green-500 {
@@ -845,21 +837,25 @@ text,
   border-radius: 24rpx;
   border-radius: var(--radius-xl);
 }
+._eborder-primary {
+  border-color: #155dfc !important;
+  border-color: var(--color-primary) !important;
+}
 .border {
   border-style: var(--tw-border-style);
   border-width: 1px;
 }
 .border-_b10px_B {
-  border-style: var(--tw-border-style);
   border-width: 10px;
 }
 .border-_b10rpx_B {
-  border-style: var(--tw-border-style);
   border-width: 10rpx;
 }
-.border-t-_b4px_B {
-  border-top-style: var(--tw-border-style);
-  border-top-width: 4px;
+.border-_b_h098765_B {
+  border-color: #098765;
+}
+.border-_bred_B {
+  border-color: red;
 }
 .border-b-_b4rpx_B {
   border-bottom-style: var(--tw-border-style);
@@ -869,15 +865,9 @@ text,
   --tw-border-style: solid;
   border-style: solid;
 }
-._eborder-primary {
-  border-color: #155dfc !important;
-  border-color: var(--color-primary) !important;
-}
-.border-_b_h098765_B {
-  border-color: #098765;
-}
-.border-_bred_B {
-  border-color: red;
+.border-t-_b4px_B {
+  border-top-style: var(--tw-border-style);
+  border-top-width: 4px;
 }
 ._ebg-green-500 {
   background-color: rgb(0, 198, 90) !important;
@@ -1337,21 +1327,25 @@ text,
   border-radius: 24rpx;
   border-radius: var(--radius-xl);
 }
+._eborder-primary {
+  border-color: #155dfc !important;
+  border-color: var(--color-primary) !important;
+}
 .border {
   border-style: var(--tw-border-style);
   border-width: 1px;
 }
 .border-_b10px_B {
-  border-style: var(--tw-border-style);
   border-width: 10px;
 }
 .border-_b10rpx_B {
-  border-style: var(--tw-border-style);
   border-width: 10rpx;
 }
-.border-t-_b4px_B {
-  border-top-style: var(--tw-border-style);
-  border-top-width: 4px;
+.border-_b_h098765_B {
+  border-color: #098765;
+}
+.border-_bred_B {
+  border-color: red;
 }
 .border-b-_b4rpx_B {
   border-bottom-style: var(--tw-border-style);
@@ -1361,15 +1355,9 @@ text,
   --tw-border-style: solid;
   border-style: solid;
 }
-._eborder-primary {
-  border-color: #155dfc !important;
-  border-color: var(--color-primary) !important;
-}
-.border-_b_h098765_B {
-  border-color: #098765;
-}
-.border-_bred_B {
-  border-color: red;
+.border-t-_b4px_B {
+  border-top-style: var(--tw-border-style);
+  border-top-width: 4px;
 }
 ._ebg-green-500 {
   background-color: rgb(0, 198, 90) !important;
@@ -1806,21 +1794,24 @@ wx-root-portal-content {
 .rounded-xl {
   border-radius: var(--radius-xl);
 }
+._eborder-primary {
+  border-color: var(--color-primary) !important;
+}
 .border {
   border-style: var(--tw-border-style);
   border-width: 1px;
 }
 .border-_b10px_B {
-  border-style: var(--tw-border-style);
   border-width: 10px;
 }
 .border-_b10rpx_B {
-  border-style: var(--tw-border-style);
   border-width: 10rpx;
 }
-.border-t-_b4px_B {
-  border-top-style: var(--tw-border-style);
-  border-top-width: 4px;
+.border-_b_h098765_B {
+  border-color: #098765;
+}
+.border-_bred_B {
+  border-color: red;
 }
 .border-b-_b4rpx_B {
   border-bottom-style: var(--tw-border-style);
@@ -1830,14 +1821,9 @@ wx-root-portal-content {
   --tw-border-style: solid;
   border-style: solid;
 }
-._eborder-primary {
-  border-color: var(--color-primary) !important;
-}
-.border-_b_h098765_B {
-  border-color: #098765;
-}
-.border-_bred_B {
-  border-color: red;
+.border-t-_b4px_B {
+  border-top-style: var(--tw-border-style);
+  border-top-width: 4px;
 }
 ._ebg-green-500 {
   background-color: var(--color-green-500) !important;
@@ -2256,21 +2242,24 @@ wx-root-portal-content {
 .rounded-xl {
   border-radius: var(--radius-xl);
 }
+._eborder-primary {
+  border-color: var(--color-primary) !important;
+}
 .border {
   border-style: var(--tw-border-style);
   border-width: 1px;
 }
 .border-_b10px_B {
-  border-style: var(--tw-border-style);
   border-width: 10px;
 }
 .border-_b10rpx_B {
-  border-style: var(--tw-border-style);
   border-width: 10rpx;
 }
-.border-t-_b4px_B {
-  border-top-style: var(--tw-border-style);
-  border-top-width: 4px;
+.border-_b_h098765_B {
+  border-color: #098765;
+}
+.border-_bred_B {
+  border-color: red;
 }
 .border-b-_b4rpx_B {
   border-bottom-style: var(--tw-border-style);
@@ -2280,14 +2269,9 @@ wx-root-portal-content {
   --tw-border-style: solid;
   border-style: solid;
 }
-._eborder-primary {
-  border-color: var(--color-primary) !important;
-}
-.border-_b_h098765_B {
-  border-color: #098765;
-}
-.border-_bred_B {
-  border-color: red;
+.border-t-_b4px_B {
+  border-top-style: var(--tw-border-style);
+  border-top-width: 4px;
 }
 ._ebg-green-500 {
   background-color: var(--color-green-500) !important;

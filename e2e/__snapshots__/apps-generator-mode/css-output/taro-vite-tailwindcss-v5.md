@@ -7,7 +7,7 @@ Generator CSS files: app.wxss, app-origin.wxss, index.wxss
 
 | Mode | Bytes | Selectors | @supports | :hover | Tailwind banner | Raw arbitrary selector | Weapp escaped arbitrary selector |
 | --- | ---: | ---: | --- | --- | --- | --- | --- |
-| legacy | 4473 | 36 | false | false | false | false | true |
+| legacy | 4433 | 36 | false | false | false | false | true |
 | generator | 23764 | 169 | false | false | false | false | true |
 
 ## Diff
@@ -110,7 +110,7 @@ Generator CSS files: app.wxss, app-origin.wxss, index.wxss
    --color-red-500: rgb(251, 44, 54);
    --color-green-500: rgb(0, 198, 90);
    --color-emerald-600: rgb(0, 150, 105);
-@@ -40,62 +92,359 @@
+@@ -40,61 +92,359 @@
    --color-white: #fff;
    --spacing: 8rpx;
    --radius-xl: 24rpx;
@@ -374,7 +374,6 @@ Generator CSS files: app.wxss, app-origin.wxss, index.wxss
 -  border-radius: 24rpx;
    border-radius: var(--radius-xl);
  }
--.border-_b10rpx_B {
 +.rounded-s {
 +  border-top-left-radius: 8rpx;
 +  border-bottom-left-radius: 8rpx;
@@ -423,11 +422,41 @@ Generator CSS files: app.wxss, app-origin.wxss, index.wxss
 +.rounded-bl {
 +  border-bottom-left-radius: 8rpx;
 +}
-+.border {
-   border-style: var(--tw-border-style);
--  border-width: 10rpx;
-+  border-width: 1rpx;
+ ._eborder-brand {
+-  border-color: #155dfc !important;
+   border-color: var(--color-brand) !important;
  }
++.border {
++  border-style: var(--tw-border-style);
++  border-width: 1rpx;
++}
+ .border-_b10rpx_B {
+   border-width: 10rpx;
+ }
++.border-b {
++  border-bottom-style: var(--tw-border-style);
++  border-bottom-width: 1rpx;
++}
++.border-e {
++  border-right-style: var(--tw-border-style);
++  border-right-width: 1rpx;
++}
++.border-l {
++  border-left-style: var(--tw-border-style);
++  border-left-width: 1rpx;
++}
++.border-r {
++  border-right-style: var(--tw-border-style);
++  border-right-width: 1rpx;
++}
++.border-s {
++  border-left-style: var(--tw-border-style);
++  border-left-width: 1rpx;
++}
++.border-t {
++  border-top-style: var(--tw-border-style);
++  border-top-width: 1rpx;
++}
 +.border-x {
 +  border-left-style: var(--tw-border-style);
 +  border-right-style: var(--tw-border-style);
@@ -439,37 +468,6 @@ Generator CSS files: app.wxss, app-origin.wxss, index.wxss
 +  border-bottom-style: var(--tw-border-style);
 +  border-top-width: 1rpx;
 +  border-bottom-width: 1rpx;
-+}
-+.border-s {
-+  border-left-style: var(--tw-border-style);
-+  border-left-width: 1rpx;
-+}
-+.border-e {
-+  border-right-style: var(--tw-border-style);
-+  border-right-width: 1rpx;
-+}
-+.border-t {
-+  border-top-style: var(--tw-border-style);
-+  border-top-width: 1rpx;
-+}
-+.border-r {
-+  border-right-style: var(--tw-border-style);
-+  border-right-width: 1rpx;
-+}
-+.border-b {
-+  border-bottom-style: var(--tw-border-style);
-+  border-bottom-width: 1rpx;
-+}
-+.border-l {
-+  border-left-style: var(--tw-border-style);
-+  border-left-width: 1rpx;
-+}
- ._eborder-brand {
--  border-color: #155dfc !important;
-   border-color: var(--color-brand) !important;
- }
-+.border-_b10rpx_B {
-+  border-width: 10rpx;
 +}
  .bg-_b_h123456_B {
    background-color: #123456;
@@ -487,7 +485,7 @@ Generator CSS files: app.wxss, app-origin.wxss, index.wxss
    background-color: var(--color-red-500);
  }
  .bg-linear-to-r {
-@@ -148,40 +497,264 @@
+@@ -147,8 +497,18 @@
      var(--tw-gradient-to) var(--tw-gradient-to-position)
    );
  }
@@ -507,37 +505,23 @@ Generator CSS files: app.wxss, app-origin.wxss, index.wxss
    padding: calc(var(--spacing) * 4);
  }
  .p-_b32rpx_B {
-   padding: 32rpx;
- }
--.text-_b32rpx_B {
--  font-size: 32rpx;
-+.text-wrap {
-+  text-wrap: wrap;
- }
--.text-_b55rpx_B {
--  font-size: 55rpx;
-+.text-clip {
-+  text-overflow: clip;
- }
-+.text-ellipsis {
-+  text-overflow: ellipsis;
-+}
- .text-_b_hc31d6b_B {
-   color: #c31d6b;
- }
+@@ -166,21 +526,235 @@
  .text-_b_hfff_B {
    color: #fff;
  }
-+.text-_b32rpx_B {
-+  font-size: 32rpx;
++.text-clip {
++  text-overflow: clip;
 +}
-+.text-_b55rpx_B {
-+  font-size: 55rpx;
++.text-ellipsis {
++  text-overflow: ellipsis;
 +}
  .text-white {
 -  color: #fff;
    color: var(--color-white);
  }
++.text-wrap {
++  text-wrap: wrap;
++}
 +.capitalize {
 +  text-transform: capitalize;
 +}
@@ -843,13 +827,12 @@ text,
   border-radius: 24rpx;
   border-radius: var(--radius-xl);
 }
-.border-_b10rpx_B {
-  border-style: var(--tw-border-style);
-  border-width: 10rpx;
-}
 ._eborder-brand {
   border-color: #155dfc !important;
   border-color: var(--color-brand) !important;
+}
+.border-_b10rpx_B {
+  border-width: 10rpx;
 }
 .bg-_b_h123456_B {
   background-color: #123456;
@@ -1353,9 +1336,39 @@ wx-root-portal-content {
 .rounded-bl {
   border-bottom-left-radius: 8rpx;
 }
+._eborder-brand {
+  border-color: var(--color-brand) !important;
+}
 .border {
   border-style: var(--tw-border-style);
   border-width: 1rpx;
+}
+.border-_b10rpx_B {
+  border-width: 10rpx;
+}
+.border-b {
+  border-bottom-style: var(--tw-border-style);
+  border-bottom-width: 1rpx;
+}
+.border-e {
+  border-right-style: var(--tw-border-style);
+  border-right-width: 1rpx;
+}
+.border-l {
+  border-left-style: var(--tw-border-style);
+  border-left-width: 1rpx;
+}
+.border-r {
+  border-right-style: var(--tw-border-style);
+  border-right-width: 1rpx;
+}
+.border-s {
+  border-left-style: var(--tw-border-style);
+  border-left-width: 1rpx;
+}
+.border-t {
+  border-top-style: var(--tw-border-style);
+  border-top-width: 1rpx;
 }
 .border-x {
   border-left-style: var(--tw-border-style);
@@ -1368,36 +1381,6 @@ wx-root-portal-content {
   border-bottom-style: var(--tw-border-style);
   border-top-width: 1rpx;
   border-bottom-width: 1rpx;
-}
-.border-s {
-  border-left-style: var(--tw-border-style);
-  border-left-width: 1rpx;
-}
-.border-e {
-  border-right-style: var(--tw-border-style);
-  border-right-width: 1rpx;
-}
-.border-t {
-  border-top-style: var(--tw-border-style);
-  border-top-width: 1rpx;
-}
-.border-r {
-  border-right-style: var(--tw-border-style);
-  border-right-width: 1rpx;
-}
-.border-b {
-  border-bottom-style: var(--tw-border-style);
-  border-bottom-width: 1rpx;
-}
-.border-l {
-  border-left-style: var(--tw-border-style);
-  border-left-width: 1rpx;
-}
-._eborder-brand {
-  border-color: var(--color-brand) !important;
-}
-.border-_b10rpx_B {
-  border-width: 10rpx;
 }
 .bg-_b_h123456_B {
   background-color: #123456;
@@ -1478,14 +1461,11 @@ wx-root-portal-content {
 .p-_b32rpx_B {
   padding: 32rpx;
 }
-.text-wrap {
-  text-wrap: wrap;
+.text-_b32rpx_B {
+  font-size: 32rpx;
 }
-.text-clip {
-  text-overflow: clip;
-}
-.text-ellipsis {
-  text-overflow: ellipsis;
+.text-_b55rpx_B {
+  font-size: 55rpx;
 }
 .text-_b_hc31d6b_B {
   color: #c31d6b;
@@ -1493,14 +1473,17 @@ wx-root-portal-content {
 .text-_b_hfff_B {
   color: #fff;
 }
-.text-_b32rpx_B {
-  font-size: 32rpx;
+.text-clip {
+  text-overflow: clip;
 }
-.text-_b55rpx_B {
-  font-size: 55rpx;
+.text-ellipsis {
+  text-overflow: ellipsis;
 }
 .text-white {
   color: var(--color-white);
+}
+.text-wrap {
+  text-wrap: wrap;
 }
 .capitalize {
   text-transform: capitalize;

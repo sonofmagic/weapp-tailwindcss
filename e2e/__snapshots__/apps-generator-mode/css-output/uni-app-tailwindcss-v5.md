@@ -572,56 +572,57 @@ Generator CSS files: app.wxss, home.wxss, user.wxss
 +.rounded-br {
 +  border-bottom-right-radius: 8rpx;
  }
--.text-center {
--  text-align: center;
+-.text-_b45rpx_B {
+-  font-size: 45rpx;
 +.rounded-bl {
 +  border-bottom-left-radius: 8rpx;
  }
--.text-_b45rpx_B {
--  font-size: 45rpx;
+-.text-_b88rpx_B {
+-  font-size: 88rpx;
 +.border {
 +  border-style: var(--tw-border-style);
 +  border-width: 1px;
  }
--.text-_b88rpx_B {
--  font-size: 88rpx;
-+.border-x {
-+  border-left-style: var(--tw-border-style);
-+  border-right-style: var(--tw-border-style);
-+  border-left-width: 1px;
-+  border-right-width: 1px;
+-.text-center {
+-  text-align: center;
++.border-b {
++  border-bottom-style: var(--tw-border-style);
++  border-bottom-width: 1px;
  }
 -.font-bold {
 -  --tw-font-weight: var(--font-weight-bold);
 -  font-weight: 700;
 -  font-weight: var(--font-weight-bold);
-+.border-y {
-+  border-top-style: var(--tw-border-style);
-+  border-bottom-style: var(--tw-border-style);
-+  border-top-width: 1px;
-+  border-bottom-width: 1px;
- }
--.text-_b_h00f285_B {
--  color: #00f285;
-+.border-s {
-+  border-left-style: var(--tw-border-style);
-+  border-left-width: 1px;
- }
--.text-tahiti {
--  color: #3ab7bf;
--  color: var(--color-tahiti);
 +.border-e {
 +  border-right-style: var(--tw-border-style);
 +  border-right-width: 1px;
  }
+-.text-_b_h00f285_B {
+-  color: #00f285;
++.border-emerald-500 {
++  border-color: var(--color-emerald-500);
+ }
+-.text-tahiti {
+-  color: #3ab7bf;
+-  color: var(--color-tahiti);
++.border-l {
++  border-left-style: var(--tw-border-style);
++  border-left-width: 1px;
+ }
 -.text-white {
 -  color: #fff;
 -  color: var(--color-white);
--}
++.border-r {
++  border-right-style: var(--tw-border-style);
++  border-right-width: 1px;
+ }
 -.underline {
 -  -webkit-text-decoration-line: underline;
 -  text-decoration-line: underline;
--}
++.border-s {
++  border-left-style: var(--tw-border-style);
++  border-left-width: 1px;
+ }
 -.shadow-sm {
 -  --tw-shadow: 0 1px 3px 0 var(--tw-shadow-color, rgba(0, 0, 0, 0.10196)), 0 1px 2px -1px var(--tw-shadow-color, rgba(0, 0, 0, 0.10196));
 -  box-shadow:
@@ -632,7 +633,9 @@ Generator CSS files: app.wxss, home.wxss, user.wxss
 -    0 1px 3px 0 rgba(0, 0, 0, 0.10196),
 -    0 1px 2px -1px rgba(0, 0, 0, 0.10196);
 -  box-shadow: var(--tw-inset-shadow), var(--tw-inset-ring-shadow), var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow);
--}
++.border-slate-200 {
++  border-color: var(--color-slate-200);
+ }
 -.divide-x-reverse > view + view,
 -.divide-x-reverse > view + text,
 -.divide-x-reverse > text + view,
@@ -1135,8 +1138,8 @@ Generator CSS files: app.wxss, home.wxss, user.wxss
 -.divide-x-4:not(#\#):not(#\#):not(#\#) > text + view,
 -.divide-x-4:not(#\#):not(#\#):not(#\#) > text + text {
 -  --tw-divide-x-reverse: 0;
--  border-left-style: var(--tw-border-style);
-+.border-r {
++.border-x {
+   border-left-style: var(--tw-border-style);
    border-right-style: var(--tw-border-style);
 -  border-right-width: 0px;
 -  border-right-width: calc(4px * var(--tw-divide-x-reverse));
@@ -1144,6 +1147,7 @@ Generator CSS files: app.wxss, home.wxss, user.wxss
 -  border-left-width: calc(4px * (1 - var(--tw-divide-x-reverse)));
 -  border-left-width: 4px;
 -  border-left-width: calc(4px * (1 - var(--tw-divide-x-reverse)));
++  border-left-width: 1px;
 +  border-right-width: 1px;
  }
 -.divide-y-4:not(#\#):not(#\#):not(#\#) > view + view,
@@ -1151,15 +1155,17 @@ Generator CSS files: app.wxss, home.wxss, user.wxss
 -.divide-y-4:not(#\#):not(#\#):not(#\#) > text + view,
 -.divide-y-4:not(#\#):not(#\#):not(#\#) > text + text {
 -  --tw-divide-y-reverse: 0;
-+.border-b {
-   border-bottom-style: var(--tw-border-style);
--  border-top-style: var(--tw-border-style);
+-  border-bottom-style: var(--tw-border-style);
++.border-y {
+   border-top-style: var(--tw-border-style);
 -  border-bottom-width: 0px;
 -  border-bottom-width: calc(4px * var(--tw-divide-y-reverse));
 -  border-top-width: 4px;
 -  border-top-width: calc(4px * (1 - var(--tw-divide-y-reverse)));
 -  border-top-width: 4px;
 -  border-top-width: calc(4px * (1 - var(--tw-divide-y-reverse)));
++  border-bottom-style: var(--tw-border-style);
++  border-top-width: 1px;
 +  border-bottom-width: 1px;
  }
 -.divide-y-reverse:not(#\#):not(#\#):not(#\#) > view + view,
@@ -1167,9 +1173,8 @@ Generator CSS files: app.wxss, home.wxss, user.wxss
 -.divide-y-reverse:not(#\#):not(#\#):not(#\#) > text + view,
 -.divide-y-reverse:not(#\#):not(#\#):not(#\#) > text + text {
 -  --tw-divide-y-reverse: 1;
-+.border-l {
-+  border-left-style: var(--tw-border-style);
-+  border-left-width: 1px;
++.bg-_b_h0000ff_B {
++  background-color: #0000ff;
  }
 -.divide-dotted:not(#\#):not(#\#):not(#\#) > view + view,
 -.divide-dotted:not(#\#):not(#\#):not(#\#) > view + text,
@@ -1210,19 +1215,15 @@ Generator CSS files: app.wxss, home.wxss, user.wxss
 -}
 -.border-emerald-500:not(#\#):not(#\#):not(#\#) {
 -  border-color: rgb(0, 185, 129);
-+.border-emerald-500 {
-   border-color: var(--color-emerald-500);
- }
+-  border-color: var(--color-emerald-500);
+-}
 -.border-slate-200:not(#\#):not(#\#):not(#\#) {
 -  border-color: rgb(226, 232, 240);
-+.border-slate-200 {
-   border-color: var(--color-slate-200);
- }
+-  border-color: var(--color-slate-200);
+-}
 -.bg-_b_h0000ff_B:not(#\#):not(#\#):not(#\#) {
 -  background-color: #00f;
-+.bg-_b_h0000ff_B {
-+  background-color: #0000ff;
- }
+-}
 -.bg-_b_h123498_B:not(#\#):not(#\#):not(#\#) {
 +.bg-_b_h123498_B {
    background-color: #123498;
@@ -1370,9 +1371,13 @@ Generator CSS files: app.wxss, home.wxss, user.wxss
    padding-top: calc(var(--spacing) * 6);
    padding-bottom: calc(var(--spacing) * 6);
  }
--.text-center:not(#\#):not(#\#):not(#\#) {
-+.text-center {
-   text-align: center;
+-.text-_b45rpx_B:not(#\#):not(#\#):not(#\#) {
++.text-_b45rpx_B {
+   font-size: 45rpx;
+ }
+-.text-_b88rpx_B:not(#\#):not(#\#):not(#\#) {
++.text-_b88rpx_B {
+   font-size: 88rpx;
  }
 -.text-base:not(#\#):not(#\#):not(#\#) {
 -  font-size: 32rpx;
@@ -1380,6 +1385,10 @@ Generator CSS files: app.wxss, home.wxss, user.wxss
    font-size: var(--text-base);
 -  line-height: 1.5;
    line-height: var(--tw-leading, var(--text-base--line-height));
+ }
+-.text-center:not(#\#):not(#\#):not(#\#) {
++.text-center {
+   text-align: center;
  }
 -.text-lg:not(#\#):not(#\#):not(#\#) {
 -  font-size: 36rpx;
@@ -1409,12 +1418,6 @@ Generator CSS files: app.wxss, home.wxss, user.wxss
 -  line-height: 1.33333;
    line-height: var(--tw-leading, var(--text-xs--line-height));
  }
--.text-_b45rpx_B:not(#\#):not(#\#):not(#\#) {
--  font-size: 45rpx;
--}
--.text-_b88rpx_B:not(#\#):not(#\#):not(#\#) {
--  font-size: 88rpx;
--}
 -.leading-6:not(#\#):not(#\#):not(#\#) {
 +.leading-6 {
    --tw-leading: calc(var(--spacing) * 6);
@@ -1440,15 +1443,6 @@ Generator CSS files: app.wxss, home.wxss, user.wxss
    font-weight: var(--font-weight-semibold);
  }
 -.text-_b_h00f285_B:not(#\#):not(#\#):not(#\#) {
-+.text-wrap {
-+  text-wrap: wrap;
-+}
-+.text-clip {
-+  text-overflow: clip;
-+}
-+.text-ellipsis {
-+  text-overflow: ellipsis;
-+}
 +.text-_b_h00f285_B {
    color: #00f285;
  }
@@ -1458,11 +1452,11 @@ Generator CSS files: app.wxss, home.wxss, user.wxss
  }
 -.text-emerald-600:not(#\#):not(#\#):not(#\#) {
 -  color: rgb(0, 150, 105);
-+.text-_b45rpx_B {
-+  font-size: 45rpx;
++.text-clip {
++  text-overflow: clip;
 +}
-+.text-_b88rpx_B {
-+  font-size: 88rpx;
++.text-ellipsis {
++  text-overflow: ellipsis;
 +}
 +.text-emerald-600 {
    color: var(--color-emerald-600);
@@ -1493,8 +1487,8 @@ Generator CSS files: app.wxss, home.wxss, user.wxss
 -.underline:not(#\#):not(#\#):not(#\#) {
 -  -webkit-text-decoration-line: underline;
 -  text-decoration-line: underline;
-+.capitalize {
-+  text-transform: capitalize;
++.text-wrap {
++  text-wrap: wrap;
  }
 -.shadow:not(#\#):not(#\#):not(#\#),
 -.shadow-sm:not(#\#):not(#\#):not(#\#) {
@@ -1507,37 +1501,44 @@ Generator CSS files: app.wxss, home.wxss, user.wxss
 -    0 1px 3px 0 rgba(0, 0, 0, 0.10196),
 -    0 1px 2px -1px rgba(0, 0, 0, 0.10196);
 -  box-shadow: var(--tw-inset-shadow), var(--tw-inset-ring-shadow), var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow);
-+.lowercase {
-+  text-transform: lowercase;
++.capitalize {
++  text-transform: capitalize;
  }
 -.divide-x-reverse:not(#\#):not(#\#):not(#\#) > view + view,
 -.divide-x-reverse:not(#\#):not(#\#):not(#\#) > view + text,
 -.divide-x-reverse:not(#\#):not(#\#):not(#\#) > text + view,
 -.divide-x-reverse:not(#\#):not(#\#):not(#\#) > text + text {
 -  --tw-divide-x-reverse: 1;
-+.normal-case {
-+  text-transform: none;
++.lowercase {
++  text-transform: lowercase;
  }
 -.active_cbg-emerald-50:active:not(#\#):not(#\#):not(#\#) {
 -  background-color: rgb(236, 253, 245);
 -  background-color: var(--color-emerald-50);
-+.uppercase {
-+  text-transform: uppercase;
++.normal-case {
++  text-transform: none;
  }
 -.active_cbg-emerald-600:active:not(#\#):not(#\#):not(#\#) {
 -  background-color: rgb(0, 150, 105);
 -  background-color: var(--color-emerald-600);
++.uppercase {
++  text-transform: uppercase;
+ }
+-@property --tw-space-y-reverse {
+-  syntax: '*';
+-  inherits: false;
+-  initial-value: 0;
 +.italic {
 +  font-style: italic;
  }
--@property --tw-space-y-reverse {
+-@property --tw-space-x-reverse {
 -  syntax: '*';
 -  inherits: false;
 -  initial-value: 0;
 +.not-italic {
 +  font-style: normal;
  }
--@property --tw-space-x-reverse {
+-@property --tw-divide-x-reverse {
 -  syntax: '*';
 -  inherits: false;
 -  initial-value: 0;
@@ -1547,22 +1548,12 @@ Generator CSS files: app.wxss, home.wxss, user.wxss
 +  font-feature-settings: var(--tw-ordinal,) var(--tw-slashed-zero,) var(--tw-numeric-figure,) var(--tw-numeric-spacing,) var(--tw-numeric-fraction,);
 +  font-variant-numeric: var(--tw-ordinal,) var(--tw-slashed-zero,) var(--tw-numeric-figure,) var(--tw-numeric-spacing,) var(--tw-numeric-fraction,);
  }
--@property --tw-divide-x-reverse {
--  syntax: '*';
--  inherits: false;
--  initial-value: 0;
-+.lining-nums {
-+  --tw-numeric-figure: lining-nums;
-+  -webkit-font-feature-settings: var(--tw-ordinal,) var(--tw-slashed-zero,) var(--tw-numeric-figure,) var(--tw-numeric-spacing,) var(--tw-numeric-fraction,);
-+  font-feature-settings: var(--tw-ordinal,) var(--tw-slashed-zero,) var(--tw-numeric-figure,) var(--tw-numeric-spacing,) var(--tw-numeric-fraction,);
-+  font-variant-numeric: var(--tw-ordinal,) var(--tw-slashed-zero,) var(--tw-numeric-figure,) var(--tw-numeric-spacing,) var(--tw-numeric-fraction,);
- }
 -@property --tw-border-style {
 -  syntax: '*';
 -  inherits: false;
 -  initial-value: solid;
-+.oldstyle-nums {
-+  --tw-numeric-figure: oldstyle-nums;
++.lining-nums {
++  --tw-numeric-figure: lining-nums;
 +  -webkit-font-feature-settings: var(--tw-ordinal,) var(--tw-slashed-zero,) var(--tw-numeric-figure,) var(--tw-numeric-spacing,) var(--tw-numeric-fraction,);
 +  font-feature-settings: var(--tw-ordinal,) var(--tw-slashed-zero,) var(--tw-numeric-figure,) var(--tw-numeric-spacing,) var(--tw-numeric-fraction,);
 +  font-variant-numeric: var(--tw-ordinal,) var(--tw-slashed-zero,) var(--tw-numeric-figure,) var(--tw-numeric-spacing,) var(--tw-numeric-fraction,);
@@ -1571,8 +1562,8 @@ Generator CSS files: app.wxss, home.wxss, user.wxss
 -  syntax: '*';
 -  inherits: false;
 -  initial-value: 0;
-+.ordinal {
-+  --tw-ordinal: ordinal;
++.oldstyle-nums {
++  --tw-numeric-figure: oldstyle-nums;
 +  -webkit-font-feature-settings: var(--tw-ordinal,) var(--tw-slashed-zero,) var(--tw-numeric-figure,) var(--tw-numeric-spacing,) var(--tw-numeric-fraction,);
 +  font-feature-settings: var(--tw-ordinal,) var(--tw-slashed-zero,) var(--tw-numeric-figure,) var(--tw-numeric-spacing,) var(--tw-numeric-fraction,);
 +  font-variant-numeric: var(--tw-ordinal,) var(--tw-slashed-zero,) var(--tw-numeric-figure,) var(--tw-numeric-spacing,) var(--tw-numeric-fraction,);
@@ -1580,13 +1571,23 @@ Generator CSS files: app.wxss, home.wxss, user.wxss
 -@property --tw-gradient-position {
 -  syntax: '*';
 -  inherits: false;
++.ordinal {
++  --tw-ordinal: ordinal;
++  -webkit-font-feature-settings: var(--tw-ordinal,) var(--tw-slashed-zero,) var(--tw-numeric-figure,) var(--tw-numeric-spacing,) var(--tw-numeric-fraction,);
++  font-feature-settings: var(--tw-ordinal,) var(--tw-slashed-zero,) var(--tw-numeric-figure,) var(--tw-numeric-spacing,) var(--tw-numeric-fraction,);
++  font-variant-numeric: var(--tw-ordinal,) var(--tw-slashed-zero,) var(--tw-numeric-figure,) var(--tw-numeric-spacing,) var(--tw-numeric-fraction,);
+ }
+-@property --tw-gradient-from {
+-  syntax: '<color>';
+-  inherits: false;
+-  initial-value: rgba(0, 0, 0, 0);
 +.proportional-nums {
 +  --tw-numeric-spacing: proportional-nums;
 +  -webkit-font-feature-settings: var(--tw-ordinal,) var(--tw-slashed-zero,) var(--tw-numeric-figure,) var(--tw-numeric-spacing,) var(--tw-numeric-fraction,);
 +  font-feature-settings: var(--tw-ordinal,) var(--tw-slashed-zero,) var(--tw-numeric-figure,) var(--tw-numeric-spacing,) var(--tw-numeric-fraction,);
 +  font-variant-numeric: var(--tw-ordinal,) var(--tw-slashed-zero,) var(--tw-numeric-figure,) var(--tw-numeric-spacing,) var(--tw-numeric-fraction,);
  }
--@property --tw-gradient-from {
+-@property --tw-gradient-via {
 -  syntax: '<color>';
 -  inherits: false;
 -  initial-value: rgba(0, 0, 0, 0);
@@ -1596,7 +1597,7 @@ Generator CSS files: app.wxss, home.wxss, user.wxss
 +  font-feature-settings: var(--tw-ordinal,) var(--tw-slashed-zero,) var(--tw-numeric-figure,) var(--tw-numeric-spacing,) var(--tw-numeric-fraction,);
 +  font-variant-numeric: var(--tw-ordinal,) var(--tw-slashed-zero,) var(--tw-numeric-figure,) var(--tw-numeric-spacing,) var(--tw-numeric-fraction,);
  }
--@property --tw-gradient-via {
+-@property --tw-gradient-to {
 -  syntax: '<color>';
 -  inherits: false;
 -  initial-value: rgba(0, 0, 0, 0);
@@ -1606,20 +1607,15 @@ Generator CSS files: app.wxss, home.wxss, user.wxss
 +  font-feature-settings: var(--tw-ordinal,) var(--tw-slashed-zero,) var(--tw-numeric-figure,) var(--tw-numeric-spacing,) var(--tw-numeric-fraction,);
 +  font-variant-numeric: var(--tw-ordinal,) var(--tw-slashed-zero,) var(--tw-numeric-figure,) var(--tw-numeric-spacing,) var(--tw-numeric-fraction,);
  }
--@property --tw-gradient-to {
--  syntax: '<color>';
+-@property --tw-gradient-stops {
+-  syntax: '*';
 -  inherits: false;
--  initial-value: rgba(0, 0, 0, 0);
 +.tabular-nums {
 +  --tw-numeric-spacing: tabular-nums;
 +  -webkit-font-feature-settings: var(--tw-ordinal,) var(--tw-slashed-zero,) var(--tw-numeric-figure,) var(--tw-numeric-spacing,) var(--tw-numeric-fraction,);
 +  font-feature-settings: var(--tw-ordinal,) var(--tw-slashed-zero,) var(--tw-numeric-figure,) var(--tw-numeric-spacing,) var(--tw-numeric-fraction,);
 +  font-variant-numeric: var(--tw-ordinal,) var(--tw-slashed-zero,) var(--tw-numeric-figure,) var(--tw-numeric-spacing,) var(--tw-numeric-fraction,);
  }
--@property --tw-gradient-stops {
--  syntax: '*';
--  inherits: false;
--}
 -@property --tw-gradient-via-stops {
 -  syntax: '*';
 -  inherits: false;
@@ -2623,6 +2619,41 @@ Generator CSS files: app.wxss, home.wxss, user.wxss
  }
 -.border-emerald-500:not(#\#):not(#\#):not(#\#) {
 -  border-color: rgb(0, 185, 129);
++.border-b {
++  border-bottom-style: var(--tw-border-style);
++  border-bottom-width: 1px;
++}
++.border-e {
++  border-right-style: var(--tw-border-style);
++  border-right-width: 1px;
++}
++.border-emerald-500 {
+   border-color: var(--color-emerald-500);
+ }
+-.border-slate-200:not(#\#):not(#\#):not(#\#) {
+-  border-color: rgb(226, 232, 240);
++.border-l {
++  border-left-style: var(--tw-border-style);
++  border-left-width: 1px;
++}
++.border-r {
++  border-right-style: var(--tw-border-style);
++  border-right-width: 1px;
++}
++.border-s {
++  border-left-style: var(--tw-border-style);
++  border-left-width: 1px;
++}
++.border-slate-200 {
+   border-color: var(--color-slate-200);
+ }
+-.bg-_b_h0000ff_B:not(#\#):not(#\#):not(#\#) {
+-  background-color: #00f;
++.border-t {
++  border-top-style: var(--tw-border-style);
++  border-top-width: 1px;
+ }
+-.bg-_b_h123498_B:not(#\#):not(#\#):not(#\#) {
 +.border-x {
 +  border-left-style: var(--tw-border-style);
 +  border-right-style: var(--tw-border-style);
@@ -2635,44 +2666,9 @@ Generator CSS files: app.wxss, home.wxss, user.wxss
 +  border-top-width: 1px;
 +  border-bottom-width: 1px;
 +}
-+.border-s {
-+  border-left-style: var(--tw-border-style);
-+  border-left-width: 1px;
-+}
-+.border-e {
-+  border-right-style: var(--tw-border-style);
-+  border-right-width: 1px;
-+}
-+.border-t {
-+  border-top-style: var(--tw-border-style);
-+  border-top-width: 1px;
-+}
-+.border-r {
-+  border-right-style: var(--tw-border-style);
-+  border-right-width: 1px;
-+}
-+.border-b {
-+  border-bottom-style: var(--tw-border-style);
-+  border-bottom-width: 1px;
-+}
-+.border-l {
-+  border-left-style: var(--tw-border-style);
-+  border-left-width: 1px;
-+}
-+.border-emerald-500 {
-   border-color: var(--color-emerald-500);
- }
--.border-slate-200:not(#\#):not(#\#):not(#\#) {
--  border-color: rgb(226, 232, 240);
-+.border-slate-200 {
-   border-color: var(--color-slate-200);
- }
--.bg-_b_h0000ff_B:not(#\#):not(#\#):not(#\#) {
--  background-color: #00f;
 +.bg-_b_h0000ff_B {
 +  background-color: #0000ff;
- }
--.bg-_b_h123498_B:not(#\#):not(#\#):not(#\#) {
++}
 +.bg-_b_h123498_B {
    background-color: #123498;
  }
@@ -2810,9 +2806,13 @@ Generator CSS files: app.wxss, home.wxss, user.wxss
    padding-top: calc(var(--spacing) * 6);
    padding-bottom: calc(var(--spacing) * 6);
  }
--.text-center:not(#\#):not(#\#):not(#\#) {
-+.text-center {
-   text-align: center;
+-.text-_b45rpx_B:not(#\#):not(#\#):not(#\#) {
++.text-_b45rpx_B {
+   font-size: 45rpx;
+ }
+-.text-_b88rpx_B:not(#\#):not(#\#):not(#\#) {
++.text-_b88rpx_B {
+   font-size: 88rpx;
  }
 -.text-base:not(#\#):not(#\#):not(#\#) {
 -  font-size: 32rpx;
@@ -2820,6 +2820,10 @@ Generator CSS files: app.wxss, home.wxss, user.wxss
    font-size: var(--text-base);
 -  line-height: 1.5;
    line-height: var(--tw-leading, var(--text-base--line-height));
+ }
+-.text-center:not(#\#):not(#\#):not(#\#) {
++.text-center {
+   text-align: center;
  }
 -.text-lg:not(#\#):not(#\#):not(#\#) {
 -  font-size: 36rpx;
@@ -2849,12 +2853,6 @@ Generator CSS files: app.wxss, home.wxss, user.wxss
 -  line-height: 1.33333;
    line-height: var(--tw-leading, var(--text-xs--line-height));
  }
--.text-_b45rpx_B:not(#\#):not(#\#):not(#\#) {
--  font-size: 45rpx;
--}
--.text-_b88rpx_B:not(#\#):not(#\#):not(#\#) {
--  font-size: 88rpx;
--}
 -.leading-6:not(#\#):not(#\#):not(#\#) {
 +.leading-6 {
    --tw-leading: calc(var(--spacing) * 6);
@@ -2880,15 +2878,6 @@ Generator CSS files: app.wxss, home.wxss, user.wxss
    font-weight: var(--font-weight-semibold);
  }
 -.text-_b_h00f285_B:not(#\#):not(#\#):not(#\#) {
-+.text-wrap {
-+  text-wrap: wrap;
-+}
-+.text-clip {
-+  text-overflow: clip;
-+}
-+.text-ellipsis {
-+  text-overflow: ellipsis;
-+}
 +.text-_b_h00f285_B {
    color: #00f285;
  }
@@ -2898,11 +2887,11 @@ Generator CSS files: app.wxss, home.wxss, user.wxss
  }
 -.text-emerald-600:not(#\#):not(#\#):not(#\#) {
 -  color: rgb(0, 150, 105);
-+.text-_b45rpx_B {
-+  font-size: 45rpx;
++.text-clip {
++  text-overflow: clip;
 +}
-+.text-_b88rpx_B {
-+  font-size: 88rpx;
++.text-ellipsis {
++  text-overflow: ellipsis;
 +}
 +.text-emerald-600 {
    color: var(--color-emerald-600);
@@ -2930,8 +2919,8 @@ Generator CSS files: app.wxss, home.wxss, user.wxss
 -.underline:not(#\#):not(#\#):not(#\#) {
 -  -webkit-text-decoration-line: underline;
 -  text-decoration-line: underline;
-+.capitalize {
-+  text-transform: capitalize;
++.text-wrap {
++  text-wrap: wrap;
  }
 -.shadow:not(#\#):not(#\#):not(#\#),
 -.shadow-sm:not(#\#):not(#\#):not(#\#) {
@@ -2944,37 +2933,44 @@ Generator CSS files: app.wxss, home.wxss, user.wxss
 -    0 1px 3px 0 rgba(0, 0, 0, 0.10196),
 -    0 1px 2px -1px rgba(0, 0, 0, 0.10196);
 -  box-shadow: var(--tw-inset-shadow), var(--tw-inset-ring-shadow), var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow);
-+.lowercase {
-+  text-transform: lowercase;
++.capitalize {
++  text-transform: capitalize;
  }
 -.divide-x-reverse:not(#\#):not(#\#):not(#\#) > view + view,
 -.divide-x-reverse:not(#\#):not(#\#):not(#\#) > view + text,
 -.divide-x-reverse:not(#\#):not(#\#):not(#\#) > text + view,
 -.divide-x-reverse:not(#\#):not(#\#):not(#\#) > text + text {
 -  --tw-divide-x-reverse: 1;
-+.normal-case {
-+  text-transform: none;
++.lowercase {
++  text-transform: lowercase;
  }
 -.active_cbg-emerald-50:active:not(#\#):not(#\#):not(#\#) {
 -  background-color: rgb(236, 253, 245);
 -  background-color: var(--color-emerald-50);
-+.uppercase {
-+  text-transform: uppercase;
++.normal-case {
++  text-transform: none;
  }
 -.active_cbg-emerald-600:active:not(#\#):not(#\#):not(#\#) {
 -  background-color: rgb(0, 150, 105);
 -  background-color: var(--color-emerald-600);
++.uppercase {
++  text-transform: uppercase;
+ }
+-@property --tw-space-y-reverse {
+-  syntax: '*';
+-  inherits: false;
+-  initial-value: 0;
 +.italic {
 +  font-style: italic;
  }
--@property --tw-space-y-reverse {
+-@property --tw-space-x-reverse {
 -  syntax: '*';
 -  inherits: false;
 -  initial-value: 0;
 +.not-italic {
 +  font-style: normal;
  }
--@property --tw-space-x-reverse {
+-@property --tw-divide-x-reverse {
 -  syntax: '*';
 -  inherits: false;
 -  initial-value: 0;
@@ -2984,22 +2980,12 @@ Generator CSS files: app.wxss, home.wxss, user.wxss
 +  font-feature-settings: var(--tw-ordinal,) var(--tw-slashed-zero,) var(--tw-numeric-figure,) var(--tw-numeric-spacing,) var(--tw-numeric-fraction,);
 +  font-variant-numeric: var(--tw-ordinal,) var(--tw-slashed-zero,) var(--tw-numeric-figure,) var(--tw-numeric-spacing,) var(--tw-numeric-fraction,);
  }
--@property --tw-divide-x-reverse {
--  syntax: '*';
--  inherits: false;
--  initial-value: 0;
-+.lining-nums {
-+  --tw-numeric-figure: lining-nums;
-+  -webkit-font-feature-settings: var(--tw-ordinal,) var(--tw-slashed-zero,) var(--tw-numeric-figure,) var(--tw-numeric-spacing,) var(--tw-numeric-fraction,);
-+  font-feature-settings: var(--tw-ordinal,) var(--tw-slashed-zero,) var(--tw-numeric-figure,) var(--tw-numeric-spacing,) var(--tw-numeric-fraction,);
-+  font-variant-numeric: var(--tw-ordinal,) var(--tw-slashed-zero,) var(--tw-numeric-figure,) var(--tw-numeric-spacing,) var(--tw-numeric-fraction,);
- }
 -@property --tw-border-style {
 -  syntax: '*';
 -  inherits: false;
 -  initial-value: solid;
-+.oldstyle-nums {
-+  --tw-numeric-figure: oldstyle-nums;
++.lining-nums {
++  --tw-numeric-figure: lining-nums;
 +  -webkit-font-feature-settings: var(--tw-ordinal,) var(--tw-slashed-zero,) var(--tw-numeric-figure,) var(--tw-numeric-spacing,) var(--tw-numeric-fraction,);
 +  font-feature-settings: var(--tw-ordinal,) var(--tw-slashed-zero,) var(--tw-numeric-figure,) var(--tw-numeric-spacing,) var(--tw-numeric-fraction,);
 +  font-variant-numeric: var(--tw-ordinal,) var(--tw-slashed-zero,) var(--tw-numeric-figure,) var(--tw-numeric-spacing,) var(--tw-numeric-fraction,);
@@ -3008,8 +2994,8 @@ Generator CSS files: app.wxss, home.wxss, user.wxss
 -  syntax: '*';
 -  inherits: false;
 -  initial-value: 0;
-+.ordinal {
-+  --tw-ordinal: ordinal;
++.oldstyle-nums {
++  --tw-numeric-figure: oldstyle-nums;
 +  -webkit-font-feature-settings: var(--tw-ordinal,) var(--tw-slashed-zero,) var(--tw-numeric-figure,) var(--tw-numeric-spacing,) var(--tw-numeric-fraction,);
 +  font-feature-settings: var(--tw-ordinal,) var(--tw-slashed-zero,) var(--tw-numeric-figure,) var(--tw-numeric-spacing,) var(--tw-numeric-fraction,);
 +  font-variant-numeric: var(--tw-ordinal,) var(--tw-slashed-zero,) var(--tw-numeric-figure,) var(--tw-numeric-spacing,) var(--tw-numeric-fraction,);
@@ -3017,13 +3003,23 @@ Generator CSS files: app.wxss, home.wxss, user.wxss
 -@property --tw-gradient-position {
 -  syntax: '*';
 -  inherits: false;
++.ordinal {
++  --tw-ordinal: ordinal;
++  -webkit-font-feature-settings: var(--tw-ordinal,) var(--tw-slashed-zero,) var(--tw-numeric-figure,) var(--tw-numeric-spacing,) var(--tw-numeric-fraction,);
++  font-feature-settings: var(--tw-ordinal,) var(--tw-slashed-zero,) var(--tw-numeric-figure,) var(--tw-numeric-spacing,) var(--tw-numeric-fraction,);
++  font-variant-numeric: var(--tw-ordinal,) var(--tw-slashed-zero,) var(--tw-numeric-figure,) var(--tw-numeric-spacing,) var(--tw-numeric-fraction,);
+ }
+-@property --tw-gradient-from {
+-  syntax: '<color>';
+-  inherits: false;
+-  initial-value: rgba(0, 0, 0, 0);
 +.proportional-nums {
 +  --tw-numeric-spacing: proportional-nums;
 +  -webkit-font-feature-settings: var(--tw-ordinal,) var(--tw-slashed-zero,) var(--tw-numeric-figure,) var(--tw-numeric-spacing,) var(--tw-numeric-fraction,);
 +  font-feature-settings: var(--tw-ordinal,) var(--tw-slashed-zero,) var(--tw-numeric-figure,) var(--tw-numeric-spacing,) var(--tw-numeric-fraction,);
 +  font-variant-numeric: var(--tw-ordinal,) var(--tw-slashed-zero,) var(--tw-numeric-figure,) var(--tw-numeric-spacing,) var(--tw-numeric-fraction,);
  }
--@property --tw-gradient-from {
+-@property --tw-gradient-via {
 -  syntax: '<color>';
 -  inherits: false;
 -  initial-value: rgba(0, 0, 0, 0);
@@ -3033,7 +3029,7 @@ Generator CSS files: app.wxss, home.wxss, user.wxss
 +  font-feature-settings: var(--tw-ordinal,) var(--tw-slashed-zero,) var(--tw-numeric-figure,) var(--tw-numeric-spacing,) var(--tw-numeric-fraction,);
 +  font-variant-numeric: var(--tw-ordinal,) var(--tw-slashed-zero,) var(--tw-numeric-figure,) var(--tw-numeric-spacing,) var(--tw-numeric-fraction,);
  }
--@property --tw-gradient-via {
+-@property --tw-gradient-to {
 -  syntax: '<color>';
 -  inherits: false;
 -  initial-value: rgba(0, 0, 0, 0);
@@ -3043,17 +3039,16 @@ Generator CSS files: app.wxss, home.wxss, user.wxss
 +  font-feature-settings: var(--tw-ordinal,) var(--tw-slashed-zero,) var(--tw-numeric-figure,) var(--tw-numeric-spacing,) var(--tw-numeric-fraction,);
 +  font-variant-numeric: var(--tw-ordinal,) var(--tw-slashed-zero,) var(--tw-numeric-figure,) var(--tw-numeric-spacing,) var(--tw-numeric-fraction,);
  }
--@property --tw-gradient-to {
--  syntax: '<color>';
+-@property --tw-gradient-stops {
+-  syntax: '*';
 -  inherits: false;
--  initial-value: rgba(0, 0, 0, 0);
 +.tabular-nums {
 +  --tw-numeric-spacing: tabular-nums;
 +  -webkit-font-feature-settings: var(--tw-ordinal,) var(--tw-slashed-zero,) var(--tw-numeric-figure,) var(--tw-numeric-spacing,) var(--tw-numeric-fraction,);
 +  font-feature-settings: var(--tw-ordinal,) var(--tw-slashed-zero,) var(--tw-numeric-figure,) var(--tw-numeric-spacing,) var(--tw-numeric-fraction,);
 +  font-variant-numeric: var(--tw-ordinal,) var(--tw-slashed-zero,) var(--tw-numeric-figure,) var(--tw-numeric-spacing,) var(--tw-numeric-fraction,);
  }
--@property --tw-gradient-stops {
+-@property --tw-gradient-via-stops {
 -  syntax: '*';
 -  inherits: false;
 +.normal-nums {
@@ -3061,63 +3056,56 @@ Generator CSS files: app.wxss, home.wxss, user.wxss
 +  font-feature-settings: normal;
 +  font-variant-numeric: normal;
  }
--@property --tw-gradient-via-stops {
--  syntax: '*';
--  inherits: false;
-+.line-through {
-+  -webkit-text-decoration-line: line-through;
-+  text-decoration-line: line-through;
- }
 -@property --tw-gradient-from-position {
 -  syntax: '<length-percentage>';
 -  inherits: false;
 -  initial-value: 0%;
-+.no-underline {
-+  -webkit-text-decoration-line: none;
-+  text-decoration-line: none;
++.line-through {
++  -webkit-text-decoration-line: line-through;
++  text-decoration-line: line-through;
  }
 -@property --tw-gradient-via-position {
 -  syntax: '<length-percentage>';
 -  inherits: false;
 -  initial-value: 50%;
-+.overline {
-+  -webkit-text-decoration-line: overline;
-+  text-decoration-line: overline;
++.no-underline {
++  -webkit-text-decoration-line: none;
++  text-decoration-line: none;
  }
 -@property --tw-gradient-to-position {
 -  syntax: '<length-percentage>';
 -  inherits: false;
 -  initial-value: 100%;
++.overline {
++  -webkit-text-decoration-line: overline;
++  text-decoration-line: overline;
+ }
+-@property --tw-leading {
+-  syntax: '*';
+-  inherits: false;
 +.underline {
 +  -webkit-text-decoration-line: underline;
 +  text-decoration-line: underline;
  }
--@property --tw-leading {
+-@property --tw-font-weight {
 -  syntax: '*';
 -  inherits: false;
 +.antialiased {
 +  -webkit-font-smoothing: antialiased;
 +  -moz-osx-font-smoothing: grayscale;
  }
--@property --tw-font-weight {
--  syntax: '*';
--  inherits: false;
-+.subpixel-antialiased {
-+  -webkit-font-smoothing: auto;
-+  -moz-osx-font-smoothing: auto;
- }
 -@property --tw-shadow {
 -  syntax: '*';
 -  inherits: false;
 -  initial-value: 0 0 rgba(0, 0, 0, 0);
-+.shadow {
-+  --tw-shadow: 0 1px 3px 0 var(--tw-shadow-color, rgba(0, 0, 0, 0.1)), 0 1px 2px -1px var(--tw-shadow-color, rgba(0, 0, 0, 0.1));
-+  box-shadow: var(--tw-inset-shadow), var(--tw-inset-ring-shadow), var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow);
++.subpixel-antialiased {
++  -webkit-font-smoothing: auto;
++  -moz-osx-font-smoothing: auto;
  }
 -@property --tw-shadow-color {
 -  syntax: '*';
 -  inherits: false;
-+.shadow-sm {
++.shadow {
 +  --tw-shadow: 0 1px 3px 0 var(--tw-shadow-color, rgba(0, 0, 0, 0.1)), 0 1px 2px -1px var(--tw-shadow-color, rgba(0, 0, 0, 0.1));
 +  box-shadow: var(--tw-inset-shadow), var(--tw-inset-ring-shadow), var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow);
  }
@@ -3125,42 +3113,38 @@ Generator CSS files: app.wxss, home.wxss, user.wxss
 -  syntax: '<percentage>';
 -  inherits: false;
 -  initial-value: 100%;
-+.ring {
-+  --tw-ring-shadow: var(--tw-ring-inset,) 0 0 0 calc(1px + var(--tw-ring-offset-width)) var(--tw-ring-color, currentcolor);
++.shadow-sm {
++  --tw-shadow: 0 1px 3px 0 var(--tw-shadow-color, rgba(0, 0, 0, 0.1)), 0 1px 2px -1px var(--tw-shadow-color, rgba(0, 0, 0, 0.1));
 +  box-shadow: var(--tw-inset-shadow), var(--tw-inset-ring-shadow), var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow);
  }
 -@property --tw-inset-shadow {
 -  syntax: '*';
 -  inherits: false;
 -  initial-value: 0 0 rgba(0, 0, 0, 0);
-+.inset-ring {
-+  --tw-inset-ring-shadow: inset 0 0 0 1px var(--tw-inset-ring-color, currentcolor);
++.ring {
++  --tw-ring-shadow: var(--tw-ring-inset,) 0 0 0 calc(1px + var(--tw-ring-offset-width)) var(--tw-ring-color, currentcolor);
 +  box-shadow: var(--tw-inset-shadow), var(--tw-inset-ring-shadow), var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow);
  }
 -@property --tw-inset-shadow-color {
 -  syntax: '*';
 -  inherits: false;
-+.outline {
-+  outline-style: var(--tw-outline-style);
-+  outline-width: 1px;
++.inset-ring {
++  --tw-inset-ring-shadow: inset 0 0 0 1px var(--tw-inset-ring-color, currentcolor);
++  box-shadow: var(--tw-inset-shadow), var(--tw-inset-ring-shadow), var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow);
  }
 -@property --tw-inset-shadow-alpha {
 -  syntax: '<percentage>';
 -  inherits: false;
 -  initial-value: 100%;
-+.blur {
-+  --tw-blur: blur(8px);
-+  -webkit-filter: var(--tw-blur,) var(--tw-brightness,) var(--tw-contrast,) var(--tw-grayscale,) var(--tw-hue-rotate,) var(--tw-invert,) var(--tw-saturate,) var(--tw-sepia,)
-+    var(--tw-drop-shadow,);
-+  filter: var(--tw-blur,) var(--tw-brightness,) var(--tw-contrast,) var(--tw-grayscale,) var(--tw-hue-rotate,) var(--tw-invert,) var(--tw-saturate,) var(--tw-sepia,)
-+    var(--tw-drop-shadow,);
++.outline {
++  outline-style: var(--tw-outline-style);
++  outline-width: 1px;
  }
 -@property --tw-ring-color {
 -  syntax: '*';
 -  inherits: false;
-+.drop-shadow {
-+  --tw-drop-shadow-size: drop-shadow(0 1px 2px var(--tw-drop-shadow-color, rgba(0, 0, 0, 0.1))) drop-shadow(0 1px 1px var(--tw-drop-shadow-color, rgba(0, 0, 0, 0.06)));
-+  --tw-drop-shadow: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.1)) drop-shadow(0 1px 1px rgba(0, 0, 0, 0.06));
++.blur {
++  --tw-blur: blur(8px);
 +  -webkit-filter: var(--tw-blur,) var(--tw-brightness,) var(--tw-contrast,) var(--tw-grayscale,) var(--tw-hue-rotate,) var(--tw-invert,) var(--tw-saturate,) var(--tw-sepia,)
 +    var(--tw-drop-shadow,);
 +  filter: var(--tw-blur,) var(--tw-brightness,) var(--tw-contrast,) var(--tw-grayscale,) var(--tw-hue-rotate,) var(--tw-invert,) var(--tw-saturate,) var(--tw-sepia,)
@@ -3170,18 +3154,19 @@ Generator CSS files: app.wxss, home.wxss, user.wxss
 -  syntax: '*';
 -  inherits: false;
 -  initial-value: 0 0 rgba(0, 0, 0, 0);
-+.backdrop-blur {
-+  --tw-backdrop-blur: blur(8px);
-+  -webkit-backdrop-filter: var(--tw-backdrop-blur,) var(--tw-backdrop-brightness,) var(--tw-backdrop-contrast,) var(--tw-backdrop-grayscale,) var(--tw-backdrop-hue-rotate,)
-+    var(--tw-backdrop-invert,) var(--tw-backdrop-opacity,) var(--tw-backdrop-saturate,) var(--tw-backdrop-sepia,);
-+  backdrop-filter: var(--tw-backdrop-blur,) var(--tw-backdrop-brightness,) var(--tw-backdrop-contrast,) var(--tw-backdrop-grayscale,) var(--tw-backdrop-hue-rotate,)
-+    var(--tw-backdrop-invert,) var(--tw-backdrop-opacity,) var(--tw-backdrop-saturate,) var(--tw-backdrop-sepia,);
++.drop-shadow {
++  --tw-drop-shadow-size: drop-shadow(0 1px 2px var(--tw-drop-shadow-color, rgba(0, 0, 0, 0.1))) drop-shadow(0 1px 1px var(--tw-drop-shadow-color, rgba(0, 0, 0, 0.06)));
++  --tw-drop-shadow: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.1)) drop-shadow(0 1px 1px rgba(0, 0, 0, 0.06));
++  -webkit-filter: var(--tw-blur,) var(--tw-brightness,) var(--tw-contrast,) var(--tw-grayscale,) var(--tw-hue-rotate,) var(--tw-invert,) var(--tw-saturate,) var(--tw-sepia,)
++    var(--tw-drop-shadow,);
++  filter: var(--tw-blur,) var(--tw-brightness,) var(--tw-contrast,) var(--tw-grayscale,) var(--tw-hue-rotate,) var(--tw-invert,) var(--tw-saturate,) var(--tw-sepia,)
++    var(--tw-drop-shadow,);
  }
 -@property --tw-inset-ring-color {
 -  syntax: '*';
 -  inherits: false;
-+.backdrop-grayscale {
-+  --tw-backdrop-grayscale: grayscale(100%);
++.backdrop-blur {
++  --tw-backdrop-blur: blur(8px);
 +  -webkit-backdrop-filter: var(--tw-backdrop-blur,) var(--tw-backdrop-brightness,) var(--tw-backdrop-contrast,) var(--tw-backdrop-grayscale,) var(--tw-backdrop-hue-rotate,)
 +    var(--tw-backdrop-invert,) var(--tw-backdrop-opacity,) var(--tw-backdrop-saturate,) var(--tw-backdrop-sepia,);
 +  backdrop-filter: var(--tw-backdrop-blur,) var(--tw-backdrop-brightness,) var(--tw-backdrop-contrast,) var(--tw-backdrop-grayscale,) var(--tw-backdrop-hue-rotate,)
@@ -3191,8 +3176,8 @@ Generator CSS files: app.wxss, home.wxss, user.wxss
 -  syntax: '*';
 -  inherits: false;
 -  initial-value: 0 0 rgba(0, 0, 0, 0);
-+.backdrop-invert {
-+  --tw-backdrop-invert: invert(100%);
++.backdrop-grayscale {
++  --tw-backdrop-grayscale: grayscale(100%);
 +  -webkit-backdrop-filter: var(--tw-backdrop-blur,) var(--tw-backdrop-brightness,) var(--tw-backdrop-contrast,) var(--tw-backdrop-grayscale,) var(--tw-backdrop-hue-rotate,)
 +    var(--tw-backdrop-invert,) var(--tw-backdrop-opacity,) var(--tw-backdrop-saturate,) var(--tw-backdrop-sepia,);
 +  backdrop-filter: var(--tw-backdrop-blur,) var(--tw-backdrop-brightness,) var(--tw-backdrop-contrast,) var(--tw-backdrop-grayscale,) var(--tw-backdrop-hue-rotate,)
@@ -3201,8 +3186,8 @@ Generator CSS files: app.wxss, home.wxss, user.wxss
 -@property --tw-ring-inset {
 -  syntax: '*';
 -  inherits: false;
-+.backdrop-sepia {
-+  --tw-backdrop-sepia: sepia(100%);
++.backdrop-invert {
++  --tw-backdrop-invert: invert(100%);
 +  -webkit-backdrop-filter: var(--tw-backdrop-blur,) var(--tw-backdrop-brightness,) var(--tw-backdrop-contrast,) var(--tw-backdrop-grayscale,) var(--tw-backdrop-hue-rotate,)
 +    var(--tw-backdrop-invert,) var(--tw-backdrop-opacity,) var(--tw-backdrop-saturate,) var(--tw-backdrop-sepia,);
 +  backdrop-filter: var(--tw-backdrop-blur,) var(--tw-backdrop-brightness,) var(--tw-backdrop-contrast,) var(--tw-backdrop-grayscale,) var(--tw-backdrop-hue-rotate,)
@@ -3212,7 +3197,8 @@ Generator CSS files: app.wxss, home.wxss, user.wxss
 -  syntax: '<length>';
 -  inherits: false;
 -  initial-value: 0;
-+.backdrop-filter {
++.backdrop-sepia {
++  --tw-backdrop-sepia: sepia(100%);
 +  -webkit-backdrop-filter: var(--tw-backdrop-blur,) var(--tw-backdrop-brightness,) var(--tw-backdrop-contrast,) var(--tw-backdrop-grayscale,) var(--tw-backdrop-hue-rotate,)
 +    var(--tw-backdrop-invert,) var(--tw-backdrop-opacity,) var(--tw-backdrop-saturate,) var(--tw-backdrop-sepia,);
 +  backdrop-filter: var(--tw-backdrop-blur,) var(--tw-backdrop-brightness,) var(--tw-backdrop-contrast,) var(--tw-backdrop-grayscale,) var(--tw-backdrop-hue-rotate,)
@@ -3222,16 +3208,22 @@ Generator CSS files: app.wxss, home.wxss, user.wxss
 -  syntax: '*';
 -  inherits: false;
 -  initial-value: #fff;
-+.divide-x-reverse > view + view,
-+.divide-x-reverse > view + text,
-+.divide-x-reverse > text + view,
-+.divide-x-reverse > text + text {
-+  --tw-divide-x-reverse: 1;
++.backdrop-filter {
++  -webkit-backdrop-filter: var(--tw-backdrop-blur,) var(--tw-backdrop-brightness,) var(--tw-backdrop-contrast,) var(--tw-backdrop-grayscale,) var(--tw-backdrop-hue-rotate,)
++    var(--tw-backdrop-invert,) var(--tw-backdrop-opacity,) var(--tw-backdrop-saturate,) var(--tw-backdrop-sepia,);
++  backdrop-filter: var(--tw-backdrop-blur,) var(--tw-backdrop-brightness,) var(--tw-backdrop-contrast,) var(--tw-backdrop-grayscale,) var(--tw-backdrop-hue-rotate,)
++    var(--tw-backdrop-invert,) var(--tw-backdrop-opacity,) var(--tw-backdrop-saturate,) var(--tw-backdrop-sepia,);
  }
 -@property --tw-ring-offset-shadow {
 -  syntax: '*';
 -  inherits: false;
 -  initial-value: 0 0 rgba(0, 0, 0, 0);
++.divide-x-reverse > view + view,
++.divide-x-reverse > view + text,
++.divide-x-reverse > text + view,
++.divide-x-reverse > text + text {
++  --tw-divide-x-reverse: 1;
++}
 +.ring-inset {
 +  --tw-ring-inset: inset;
 +}
@@ -3614,14 +3606,14 @@ text,
   padding-top: calc(var(--spacing) * 3);
   padding-bottom: calc(var(--spacing) * 3);
 }
-.text-center {
-  text-align: center;
-}
 .text-_b45rpx_B {
   font-size: 45rpx;
 }
 .text-_b88rpx_B {
   font-size: 88rpx;
+}
+.text-center {
+  text-align: center;
 }
 .font-bold {
   --tw-font-weight: var(--font-weight-bold);
@@ -4344,14 +4336,20 @@ input:where([type='button'], [type='reset'], [type='submit']):not(#\#):not(#\#) 
   padding-top: calc(var(--spacing) * 6);
   padding-bottom: calc(var(--spacing) * 6);
 }
-.text-center:not(#\#):not(#\#):not(#\#) {
-  text-align: center;
+.text-_b45rpx_B:not(#\#):not(#\#):not(#\#) {
+  font-size: 45rpx;
+}
+.text-_b88rpx_B:not(#\#):not(#\#):not(#\#) {
+  font-size: 88rpx;
 }
 .text-base:not(#\#):not(#\#):not(#\#) {
   font-size: 32rpx;
   font-size: var(--text-base);
   line-height: 1.5;
   line-height: var(--tw-leading, var(--text-base--line-height));
+}
+.text-center:not(#\#):not(#\#):not(#\#) {
+  text-align: center;
 }
 .text-lg:not(#\#):not(#\#):not(#\#) {
   font-size: 36rpx;
@@ -4376,12 +4374,6 @@ input:where([type='button'], [type='reset'], [type='submit']):not(#\#):not(#\#) 
   font-size: var(--text-xs);
   line-height: 1.33333;
   line-height: var(--tw-leading, var(--text-xs--line-height));
-}
-.text-_b45rpx_B:not(#\#):not(#\#):not(#\#) {
-  font-size: 45rpx;
-}
-.text-_b88rpx_B:not(#\#):not(#\#):not(#\#) {
-  font-size: 88rpx;
 }
 .leading-6:not(#\#):not(#\#):not(#\#) {
   --tw-leading: calc(var(--spacing) * 6);
@@ -5267,14 +5259,20 @@ input:where([type='button'], [type='reset'], [type='submit']):not(#\#):not(#\#) 
   padding-top: calc(var(--spacing) * 6);
   padding-bottom: calc(var(--spacing) * 6);
 }
-.text-center:not(#\#):not(#\#):not(#\#) {
-  text-align: center;
+.text-_b45rpx_B:not(#\#):not(#\#):not(#\#) {
+  font-size: 45rpx;
+}
+.text-_b88rpx_B:not(#\#):not(#\#):not(#\#) {
+  font-size: 88rpx;
 }
 .text-base:not(#\#):not(#\#):not(#\#) {
   font-size: 32rpx;
   font-size: var(--text-base);
   line-height: 1.5;
   line-height: var(--tw-leading, var(--text-base--line-height));
+}
+.text-center:not(#\#):not(#\#):not(#\#) {
+  text-align: center;
 }
 .text-lg:not(#\#):not(#\#):not(#\#) {
   font-size: 36rpx;
@@ -5299,12 +5297,6 @@ input:where([type='button'], [type='reset'], [type='submit']):not(#\#):not(#\#) 
   font-size: var(--text-xs);
   line-height: 1.33333;
   line-height: var(--tw-leading, var(--text-xs--line-height));
-}
-.text-_b45rpx_B:not(#\#):not(#\#):not(#\#) {
-  font-size: 45rpx;
-}
-.text-_b88rpx_B:not(#\#):not(#\#):not(#\#) {
-  font-size: 88rpx;
 }
 .leading-6:not(#\#):not(#\#):not(#\#) {
   --tw-leading: calc(var(--spacing) * 6);
@@ -6075,6 +6067,36 @@ wx-root-portal-content {
   border-style: var(--tw-border-style);
   border-width: 1px;
 }
+.border-b {
+  border-bottom-style: var(--tw-border-style);
+  border-bottom-width: 1px;
+}
+.border-e {
+  border-right-style: var(--tw-border-style);
+  border-right-width: 1px;
+}
+.border-emerald-500 {
+  border-color: var(--color-emerald-500);
+}
+.border-l {
+  border-left-style: var(--tw-border-style);
+  border-left-width: 1px;
+}
+.border-r {
+  border-right-style: var(--tw-border-style);
+  border-right-width: 1px;
+}
+.border-s {
+  border-left-style: var(--tw-border-style);
+  border-left-width: 1px;
+}
+.border-slate-200 {
+  border-color: var(--color-slate-200);
+}
+.border-t {
+  border-top-style: var(--tw-border-style);
+  border-top-width: 1px;
+}
 .border-x {
   border-left-style: var(--tw-border-style);
   border-right-style: var(--tw-border-style);
@@ -6086,36 +6108,6 @@ wx-root-portal-content {
   border-bottom-style: var(--tw-border-style);
   border-top-width: 1px;
   border-bottom-width: 1px;
-}
-.border-s {
-  border-left-style: var(--tw-border-style);
-  border-left-width: 1px;
-}
-.border-e {
-  border-right-style: var(--tw-border-style);
-  border-right-width: 1px;
-}
-.border-t {
-  border-top-style: var(--tw-border-style);
-  border-top-width: 1px;
-}
-.border-r {
-  border-right-style: var(--tw-border-style);
-  border-right-width: 1px;
-}
-.border-b {
-  border-bottom-style: var(--tw-border-style);
-  border-bottom-width: 1px;
-}
-.border-l {
-  border-left-style: var(--tw-border-style);
-  border-left-width: 1px;
-}
-.border-emerald-500 {
-  border-color: var(--color-emerald-500);
-}
-.border-slate-200 {
-  border-color: var(--color-slate-200);
 }
 .bg-_b_h0000ff_B {
   background-color: #0000ff;
@@ -6238,12 +6230,18 @@ wx-root-portal-content {
   padding-top: calc(var(--spacing) * 6);
   padding-bottom: calc(var(--spacing) * 6);
 }
-.text-center {
-  text-align: center;
+.text-_b45rpx_B {
+  font-size: 45rpx;
+}
+.text-_b88rpx_B {
+  font-size: 88rpx;
 }
 .text-base {
   font-size: var(--text-base);
   line-height: var(--tw-leading, var(--text-base--line-height));
+}
+.text-center {
+  text-align: center;
 }
 .text-lg {
   font-size: var(--text-lg);
@@ -6277,26 +6275,17 @@ wx-root-portal-content {
   --tw-font-weight: var(--font-weight-semibold);
   font-weight: var(--font-weight-semibold);
 }
-.text-wrap {
-  text-wrap: wrap;
-}
-.text-clip {
-  text-overflow: clip;
-}
-.text-ellipsis {
-  text-overflow: ellipsis;
-}
 .text-_b_h00f285_B {
   color: #00f285;
 }
 .text-_b_h929292_B {
   color: #929292;
 }
-.text-_b45rpx_B {
-  font-size: 45rpx;
+.text-clip {
+  text-overflow: clip;
 }
-.text-_b88rpx_B {
-  font-size: 88rpx;
+.text-ellipsis {
+  text-overflow: ellipsis;
 }
 .text-emerald-600 {
   color: var(--color-emerald-600);
@@ -6315,6 +6304,9 @@ wx-root-portal-content {
 }
 .text-white {
   color: var(--color-white);
+}
+.text-wrap {
+  text-wrap: wrap;
 }
 .capitalize {
   text-transform: capitalize;
@@ -6903,6 +6895,36 @@ wx-root-portal-content {
   border-style: var(--tw-border-style);
   border-width: 1px;
 }
+.border-b {
+  border-bottom-style: var(--tw-border-style);
+  border-bottom-width: 1px;
+}
+.border-e {
+  border-right-style: var(--tw-border-style);
+  border-right-width: 1px;
+}
+.border-emerald-500 {
+  border-color: var(--color-emerald-500);
+}
+.border-l {
+  border-left-style: var(--tw-border-style);
+  border-left-width: 1px;
+}
+.border-r {
+  border-right-style: var(--tw-border-style);
+  border-right-width: 1px;
+}
+.border-s {
+  border-left-style: var(--tw-border-style);
+  border-left-width: 1px;
+}
+.border-slate-200 {
+  border-color: var(--color-slate-200);
+}
+.border-t {
+  border-top-style: var(--tw-border-style);
+  border-top-width: 1px;
+}
 .border-x {
   border-left-style: var(--tw-border-style);
   border-right-style: var(--tw-border-style);
@@ -6914,36 +6936,6 @@ wx-root-portal-content {
   border-bottom-style: var(--tw-border-style);
   border-top-width: 1px;
   border-bottom-width: 1px;
-}
-.border-s {
-  border-left-style: var(--tw-border-style);
-  border-left-width: 1px;
-}
-.border-e {
-  border-right-style: var(--tw-border-style);
-  border-right-width: 1px;
-}
-.border-t {
-  border-top-style: var(--tw-border-style);
-  border-top-width: 1px;
-}
-.border-r {
-  border-right-style: var(--tw-border-style);
-  border-right-width: 1px;
-}
-.border-b {
-  border-bottom-style: var(--tw-border-style);
-  border-bottom-width: 1px;
-}
-.border-l {
-  border-left-style: var(--tw-border-style);
-  border-left-width: 1px;
-}
-.border-emerald-500 {
-  border-color: var(--color-emerald-500);
-}
-.border-slate-200 {
-  border-color: var(--color-slate-200);
 }
 .bg-_b_h0000ff_B {
   background-color: #0000ff;
@@ -7057,12 +7049,18 @@ wx-root-portal-content {
   padding-top: calc(var(--spacing) * 6);
   padding-bottom: calc(var(--spacing) * 6);
 }
-.text-center {
-  text-align: center;
+.text-_b45rpx_B {
+  font-size: 45rpx;
+}
+.text-_b88rpx_B {
+  font-size: 88rpx;
 }
 .text-base {
   font-size: var(--text-base);
   line-height: var(--tw-leading, var(--text-base--line-height));
+}
+.text-center {
+  text-align: center;
 }
 .text-lg {
   font-size: var(--text-lg);
@@ -7096,26 +7094,17 @@ wx-root-portal-content {
   --tw-font-weight: var(--font-weight-semibold);
   font-weight: var(--font-weight-semibold);
 }
-.text-wrap {
-  text-wrap: wrap;
-}
-.text-clip {
-  text-overflow: clip;
-}
-.text-ellipsis {
-  text-overflow: ellipsis;
-}
 .text-_b_h00f285_B {
   color: #00f285;
 }
 .text-_b_h929292_B {
   color: #929292;
 }
-.text-_b45rpx_B {
-  font-size: 45rpx;
+.text-clip {
+  text-overflow: clip;
 }
-.text-_b88rpx_B {
-  font-size: 88rpx;
+.text-ellipsis {
+  text-overflow: ellipsis;
 }
 .text-emerald-600 {
   color: var(--color-emerald-600);
@@ -7131,6 +7120,9 @@ wx-root-portal-content {
 }
 .text-white {
   color: var(--color-white);
+}
+.text-wrap {
+  text-wrap: wrap;
 }
 .capitalize {
   text-transform: capitalize;

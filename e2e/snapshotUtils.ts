@@ -280,11 +280,7 @@ function sortUtilityRuleRuns(container: postcss.Container) {
   }
 }
 
-export function normalizeCssSnapshot(source: string, options: CssSnapshotOptions = {}) {
-  if (!options.classList) {
-    return source
-  }
-
+export function normalizeCssSnapshot(source: string, _options: CssSnapshotOptions = {}) {
   const root = postcss.parse(source)
 
   root.walkRules((rule) => {
