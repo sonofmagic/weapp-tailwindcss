@@ -354,6 +354,181 @@ describe('v5 Tailwind CSS v4 upgrade generator coverage', () => {
     expect(weappResult.css).not.toContain('.bg-red-500')
   })
 
+  it('supports Tailwind v4 theme namespaces and keyframes in generator mode', async () => {
+    const fixture = await createFixtureBase()
+    const css = `
+      @import "tailwindcss" source(none);
+      @theme {
+        --font-script: Great Vibes, cursive;
+        --text-tiny: 0.625rem;
+        --font-weight-extra: 1000;
+        --tracking-tightest: -0.08em;
+        --leading-extra-loose: 2.5;
+        --breakpoint-3xl: 120rem;
+        --container-card: 42rem;
+        --spacing-card: 22px;
+        --radius-panel: 1.25rem;
+        --shadow-brand: 0 10px 20px rgb(0 0 0 / 0.15);
+        --inset-shadow-brand: inset 0 2px 8px rgb(0 0 0 / 0.2);
+        --drop-shadow-brand: 0 4px 8px rgb(0 0 0 / 0.25);
+        --blur-soft: 2px;
+        --perspective-wide: 1200px;
+        --aspect-retro: 4 / 3;
+        --ease-spring: cubic-bezier(.2, .8, .2, 1);
+        --animate-fade-in-scale: fade-in-scale .3s ease-out;
+        @keyframes fade-in-scale {
+          0% {
+            opacity: 0;
+            transform: scale(0.95);
+          }
+          100% {
+            opacity: 1;
+            transform: scale(1);
+          }
+        }
+      }
+      @source inline("font-script text-tiny font-extra tracking-tightest leading-extra-loose 3xl:grid-cols-6 @card:flex w-card max-w-card p-card rounded-panel shadow-brand inset-shadow-brand drop-shadow-brand blur-soft perspective-wide aspect-retro ease-spring animate-fade-in-scale grid grid-cols-2 transition");
+    `
+    const [officialResult, webResult, weappResult] = await Promise.all([
+      postcss([tailwindcssPostcss({ optimize: false })]).process(css, {
+        from: fixture.cssEntry,
+      }),
+      postcss([
+        weappTailwindcss({
+          generator: {
+            mode: 'force',
+            target: 'web',
+          },
+        }),
+      ]).process(css, {
+        from: fixture.cssEntry,
+      }),
+      postcss([
+        weappTailwindcss({
+          generator: {
+            mode: 'force',
+            tailwindcssV3Compatibility: false,
+            target: 'weapp',
+          },
+        }),
+      ]).process(css, {
+        from: fixture.cssEntry,
+      }),
+    ])
+    const normalizedWeappCss = normalizeCss(weappResult.css)
+
+    expect(webResult.css).toBe(officialResult.css)
+    expect(webResult.css).toContain('font-family: var(--font-script)')
+    expect(webResult.css).toContain('@media (width >= 120rem)')
+    expect(webResult.css).toContain('@container (width >= 42rem)')
+    expect(webResult.css).toContain('animation: var(--animate-fade-in-scale)')
+    expect(webResult.css).toContain('@keyframes fade-in-scale')
+
+    expect(weappResult.css).toContain('--font-script: Great Vibes, cursive')
+    expect(weappResult.css).toContain('font-family: var(--font-script)')
+    expect(weappResult.css).toContain('font-size: var(--text-tiny)')
+    expect(weappResult.css).toContain('font-weight: var(--font-weight-extra)')
+    expect(weappResult.css).toContain('letter-spacing: var(--tracking-tightest)')
+    expect(weappResult.css).toContain('line-height: var(--leading-extra-loose)')
+    expect(weappResult.css).toContain('width: var(--spacing-card)')
+    expect(weappResult.css).toContain('max-width: var(--spacing-card)')
+    expect(weappResult.css).toContain('padding: var(--spacing-card)')
+    expect(weappResult.css).toContain('border-radius: var(--radius-panel)')
+    expect(weappResult.css).toContain('--tw-shadow: 0 10px 20px var(--tw-shadow-color, rgba(0, 0, 0, 0.15))')
+    expect(weappResult.css).toContain('--tw-inset-shadow: inset 0 2px 8px var(--tw-inset-shadow-color, rgba(0, 0, 0, 0.2))')
+    expect(weappResult.css).toContain('--tw-drop-shadow: drop-shadow(var(--drop-shadow-brand))')
+    expect(weappResult.css).toContain('--tw-blur: blur(var(--blur-soft))')
+    expect(weappResult.css).toContain('perspective: var(--perspective-wide)')
+    expect(weappResult.css).toContain('aspect-ratio: var(--aspect-retro)')
+    expect(weappResult.css).toContain('--tw-ease: var(--ease-spring)')
+    expect(weappResult.css).toContain('animation: var(--animate-fade-in-scale)')
+    expect(weappResult.css).toContain('@keyframes fade-in-scale')
+    expect(normalizedWeappCss).toContain('@media (min-width: 120rem)')
+    expect(normalizedWeappCss).toContain('@container (width >= 42rem)')
+    expect(normalizedWeappCss).not.toContain('@theme')
+    expect(normalizedWeappCss).not.toContain('@source')
+  })
+
+  it('supports custom theme reset, inline variables, static variables, and theme variable references', async () => {
+    const fixture = await createFixtureBase()
+    const css = `
+      @import "tailwindcss" source(none);
+      @theme {
+        --*: initial;
+        --spacing: 4px;
+        --font-body: Inter, sans-serif;
+        --color-lagoon: #123456;
+        --color-dusk: #abcdef;
+        --radius-xl: 1rem;
+      }
+      @theme inline {
+        --font-sans: var(--font-inter);
+      }
+      @theme static {
+        --color-primary: var(--color-lagoon);
+        --color-secondary: var(--color-dusk);
+      }
+      @source inline("font-body font-sans text-dusk bg-lagoon p-4 rounded-[calc(var(--radius-xl)-1px)] bg-red-500 font-mono");
+      .theme-card {
+        color: var(--color-dusk);
+        border-radius: calc(var(--radius-xl) - 1px);
+      }
+    `
+    const [officialResult, webResult, weappResult] = await Promise.all([
+      postcss([tailwindcssPostcss({ optimize: false })]).process(css, {
+        from: fixture.cssEntry,
+      }),
+      postcss([
+        weappTailwindcss({
+          generator: {
+            mode: 'force',
+            target: 'web',
+          },
+        }),
+      ]).process(css, {
+        from: fixture.cssEntry,
+      }),
+      postcss([
+        weappTailwindcss({
+          generator: {
+            mode: 'force',
+            tailwindcssV3Compatibility: false,
+            target: 'weapp',
+          },
+        }),
+      ]).process(css, {
+        from: fixture.cssEntry,
+      }),
+    ])
+
+    expect(webResult.css).toBe(officialResult.css)
+    expect(webResult.css).toContain('--color-primary: var(--color-lagoon)')
+    expect(webResult.css).toContain('--color-secondary: var(--color-dusk)')
+    expect(webResult.css).toContain('font-family: var(--font-inter)')
+    expect(webResult.css).toContain('.font-body')
+    expect(webResult.css).toContain('.text-dusk')
+    expect(webResult.css).toContain('.bg-lagoon')
+    expect(webResult.css).not.toContain('.bg-red-500')
+    expect(webResult.css).not.toContain('.font-mono')
+
+    expect(weappResult.css).toContain('--spacing: 4px')
+    expect(weappResult.css).toContain('--font-body: Inter, sans-serif')
+    expect(weappResult.css).toContain('--color-lagoon: #123456')
+    expect(weappResult.css).toContain('--color-dusk: #abcdef')
+    expect(weappResult.css).toContain('--color-primary: var(--color-lagoon)')
+    expect(weappResult.css).toContain('--color-secondary: var(--color-dusk)')
+    expect(weappResult.css).toContain('font-family: var(--font-body)')
+    expect(weappResult.css).toContain('font-family: var(--font-inter)')
+    expect(weappResult.css).toContain('color: var(--color-dusk)')
+    expect(weappResult.css).toContain('background-color: var(--color-lagoon)')
+    expect(weappResult.css).toContain('padding: calc(var(--spacing) * 4)')
+    expect(weappResult.css).toContain('border-radius: calc(var(--radius-xl) - 1px)')
+    expect(weappResult.css).not.toContain('.bg-red-500')
+    expect(weappResult.css).not.toContain('.font-mono')
+    expect(weappResult.css).not.toContain('@theme')
+    expect(weappResult.css).not.toContain('@source')
+  })
+
   it('can opt mini-program generator output into native Tailwind v4 defaults', async () => {
     const result = await generate(UPGRADE_DEFAULTS_SOURCE_CSS, {
       mode: 'force',

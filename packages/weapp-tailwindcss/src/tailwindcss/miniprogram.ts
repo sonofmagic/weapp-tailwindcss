@@ -41,6 +41,17 @@ function isPseudoContentInitRule(rule: postcss.Rule) {
   return hasDeclaration && onlyContentVariable
 }
 
+function isKeyframesRule(rule: postcss.Rule) {
+  let parent = rule.parent
+  while (parent) {
+    if (parent.type === 'atrule' && parent.name.endsWith('keyframes')) {
+      return true
+    }
+    parent = parent.parent
+  }
+  return false
+}
+
 /**
  * 裁剪 Tailwind 生成 CSS 中面向浏览器的 classless 规则。
  *
@@ -61,6 +72,10 @@ export function pruneMiniProgramGeneratedCss(css: string) {
   })
 
   root.walkRules((rule) => {
+    if (isKeyframesRule(rule)) {
+      return
+    }
+
     if (hasClassSelector(rule.selector)) {
       return
     }
