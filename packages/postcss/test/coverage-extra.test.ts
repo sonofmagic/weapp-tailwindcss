@@ -2,8 +2,10 @@ import type { Plugin } from 'postcss'
 import postcss, { Declaration, Rule } from 'postcss'
 import { describe, expect, it, vi } from 'vitest'
 import { normalizeTailwindcssV4Declaration } from '@/compat/tailwindcss-v4'
+import { protectDynamicColorMixAlpha } from '@/compat/color-mix'
 import { stripUnsupportedNodeForUniAppX } from '@/compat/uni-app-x'
 import { fingerprintOptions } from '@/fingerprint'
+import { createStyleHandler } from '@/handler'
 import postcssHtmlTransform from '@/html-transform'
 import { commonChunkPreflight, remakeCssVarSelector } from '@/mp'
 import { createOptionsResolver } from '@/options-resolver'
@@ -157,6 +159,29 @@ describe('plugin behaviours', () => {
 
     const unchanged = await postcss([createColorFunctionalFallback()]).process('.bar { color: rgb(1, 2, 3) }', { from: undefined })
     expect(unchanged.css).toContain('rgb(1, 2, 3)')
+  })
+
+  it('protects only dynamic color-mix alpha values', async () => {
+    const styleHandler = createStyleHandler({
+      majorVersion: 4,
+    })
+    const source = `
+      :root {
+        --color-sky-500: #0ea5e9;
+      }
+      .foo {
+        background-color: color-mix(in oklab, var(--color-sky-500) var(--my-alpha-value), transparent);
+        color: color-mix(in oklab, var(--color-sky-500) 50%, transparent);
+      }
+    `
+    const protectedSource = protectDynamicColorMixAlpha(source)
+    expect(protectedSource.css).toContain('background-color: __weapp_tw_dynamic_color_mix_0__')
+    expect(protectedSource.css).toContain('color: color-mix(in oklab, var(--color-sky-500) 50%, transparent)')
+    const result = await styleHandler(protectedSource.css)
+    const css = protectedSource.restore(result.css)
+
+    expect(css).toContain('background-color: color-mix(in oklab, var(--color-sky-500) var(--my-alpha-value), transparent)')
+    expect(css).toContain('color: color-mix(in oklab, var(--color-sky-500) 50%, transparent)')
   })
 
   it('custom property cleaner removes duplicates and matched vars', async () => {

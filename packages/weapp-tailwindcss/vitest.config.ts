@@ -17,6 +17,10 @@ export default defineConfig({
         find: '@weapp-tailwindcss/reset',
         replacement: path.resolve(__dirname, '../reset/src/index.ts'),
       },
+      {
+        find: /^@weapp-tailwindcss\/postcss$/,
+        replacement: path.resolve(__dirname, '../postcss/src/index.ts'),
+      },
     ],
     include: ['test/**/*.{test,spec}.?(c|m)[jt]s?(x)'],
     benchmark: {

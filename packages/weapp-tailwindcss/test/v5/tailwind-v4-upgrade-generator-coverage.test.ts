@@ -224,6 +224,136 @@ describe('v5 Tailwind CSS v4 upgrade generator coverage', () => {
     expect(result.css).not.toContain('oklch(')
   })
 
+  it('supports Tailwind v4 color utilities and color theme APIs in generator mode', async () => {
+    const fixture = await createFixtureBase()
+    const css = `
+      @import "tailwindcss" source(none);
+      @theme {
+        --color-bermuda: #78dcca;
+      }
+      @source inline("text-blue-600 bg-sky-500/75 bg-sky-500/[.33] bg-sky-500/(--my-alpha-value) border-pink-400 divide-orange-300 outline-red-500 decoration-purple-500 accent-green-600 caret-rose-500 fill-bermuda stroke-cyan-400 shadow-blue-500/50 inset-shadow-indigo-500 ring-fuchsia-500 placeholder-zinc-500 dark:bg-gray-800 text-[color:var(--brand-color)] bg-[color:var(--surface-color)]");
+      .color-api {
+        color: var(--color-blue-600);
+        background-color: --alpha(var(--color-sky-500) / 50%);
+      }
+    `
+    const [officialResult, webResult, weappResult] = await Promise.all([
+      postcss([tailwindcssPostcss({ optimize: false })]).process(css, {
+        from: fixture.cssEntry,
+      }),
+      postcss([
+        weappTailwindcss({
+          generator: {
+            mode: 'force',
+            target: 'web',
+          },
+        }),
+      ]).process(css, {
+        from: fixture.cssEntry,
+      }),
+      postcss([
+        weappTailwindcss({
+          generator: {
+            mode: 'force',
+            target: 'weapp',
+          },
+        }),
+      ]).process(css, {
+        from: fixture.cssEntry,
+      }),
+    ])
+    const normalizedWeappCss = normalizeCss(weappResult.css)
+
+    expect(webResult.css).toBe(officialResult.css)
+    expect(webResult.css).toContain('background-color: color-mix(in oklab, var(--color-sky-500) 75%, transparent)')
+    expect(webResult.css).toContain('background-color: color-mix(in oklab, var(--color-sky-500) 33%, transparent)')
+    expect(webResult.css).toContain('background-color: color-mix(in oklab, var(--color-sky-500) var(--my-alpha-value), transparent)')
+    expect(webResult.css).toContain('color: color-mix(in oklab, var(--color-sky-500) 50%, transparent)')
+    expect(webResult.css).toContain('--color-bermuda: #78dcca')
+    expect(webResult.css).not.toContain('@source')
+
+    expect(weappResult.css).toContain('--color-bermuda: #78dcca')
+    expect(weappResult.css).toContain('color: var(--color-blue-600)')
+    expect(weappResult.css).toContain('background-color: rgba(14, 165, 233, 0.5)')
+    expect(weappResult.css).toContain('color: var(--color-blue-600)')
+    expect(weappResult.css).toContain('background-color: rgba(14, 165, 233, 0.75)')
+    expect(weappResult.css).toContain('background-color: rgba(14, 165, 233, 0.33)')
+    expect(weappResult.css).toContain('background-color: color-mix(in oklab, var(--color-sky-500) var(--my-alpha-value), transparent)')
+    expect(weappResult.css).toContain('border-color: var(--color-pink-400)')
+    expect(weappResult.css).toContain('border-color: var(--color-orange-300)')
+    expect(weappResult.css).toContain('outline-color: var(--color-red-500)')
+    expect(weappResult.css).toContain('text-decoration-color: var(--color-purple-500)')
+    expect(weappResult.css).toContain('accent-color: var(--color-green-600)')
+    expect(weappResult.css).toContain('caret-color: var(--color-rose-500)')
+    expect(weappResult.css).toContain('fill: var(--color-bermuda)')
+    expect(weappResult.css).toContain('stroke: var(--color-cyan-400)')
+    expect(weappResult.css).toContain('--tw-shadow-color: rgba(59, 130, 246, 0.5)')
+    expect(weappResult.css).toContain('--tw-inset-shadow-color: #6366f1')
+    expect(weappResult.css).toContain('--tw-ring-color: var(--color-fuchsia-500)')
+    expect(weappResult.css).toContain('color: var(--color-zinc-500)')
+    expect(weappResult.css).toContain('color: var(--brand-color)')
+    expect(weappResult.css).toContain('background-color: var(--surface-color)')
+    expect(weappResult.css).toContain('background-color: var(--color-gray-800)')
+    expect(normalizedWeappCss).toContain('@media (prefers-color-scheme: dark)')
+    expect(normalizedWeappCss).not.toContain('@source')
+  })
+
+  it('supports disabling default colors and declaring custom palettes in v4 generator mode', async () => {
+    const fixture = await createFixtureBase()
+    const css = `
+      @import "tailwindcss" source(none);
+      @theme {
+        --color-*: initial;
+        --color-midnight: #121063;
+        --color-tahiti: #3ab7bf;
+        --color-bermuda: #78dcca;
+      }
+      @source inline("bg-midnight text-tahiti fill-bermuda bg-red-500");
+    `
+    const [officialResult, webResult, weappResult] = await Promise.all([
+      postcss([tailwindcssPostcss({ optimize: false })]).process(css, {
+        from: fixture.cssEntry,
+      }),
+      postcss([
+        weappTailwindcss({
+          generator: {
+            mode: 'force',
+            target: 'web',
+          },
+        }),
+      ]).process(css, {
+        from: fixture.cssEntry,
+      }),
+      postcss([
+        weappTailwindcss({
+          generator: {
+            mode: 'force',
+            target: 'weapp',
+          },
+        }),
+      ]).process(css, {
+        from: fixture.cssEntry,
+      }),
+    ])
+
+    expect(webResult.css).toBe(officialResult.css)
+    expect(webResult.css).toContain('--color-midnight: #121063')
+    expect(webResult.css).toContain('--color-tahiti: #3ab7bf')
+    expect(webResult.css).toContain('--color-bermuda: #78dcca')
+    expect(webResult.css).toContain('.bg-midnight')
+    expect(webResult.css).toContain('.text-tahiti')
+    expect(webResult.css).toContain('.fill-bermuda')
+    expect(webResult.css).not.toContain('.bg-red-500')
+
+    expect(weappResult.css).toContain('--color-midnight: #121063')
+    expect(weappResult.css).toContain('--color-tahiti: #3ab7bf')
+    expect(weappResult.css).toContain('--color-bermuda: #78dcca')
+    expect(weappResult.css).toContain('background-color: var(--color-midnight)')
+    expect(weappResult.css).toContain('color: var(--color-tahiti)')
+    expect(weappResult.css).toContain('fill: var(--color-bermuda)')
+    expect(weappResult.css).not.toContain('.bg-red-500')
+  })
+
   it('can opt mini-program generator output into native Tailwind v4 defaults', async () => {
     const result = await generate(UPGRADE_DEFAULTS_SOURCE_CSS, {
       mode: 'force',
