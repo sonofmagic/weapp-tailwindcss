@@ -204,7 +204,9 @@ export function UnifiedViteWeappTailwindcssPlugin(options: UserDefinedOptions = 
   const disabledOptions = resolveDisabledOptions(disabled)
   const tailwindcssMajorVersion = initialTwPatcher.majorVersion ?? 0
   const generatorOptions = normalizeWeappTailwindcssGeneratorOptions(opts.generator)
-  const shouldOwnTailwindGeneration = generatorOptions.mode !== 'off' && !disabledOptions.plugin
+  const shouldOwnTailwindGeneration = generatorOptions.mode !== 'off'
+    && !disabledOptions.plugin
+    && (tailwindcssMajorVersion >= 4 || generatorOptions.mode === 'force')
   const shouldRewriteCssImports = opts.rewriteCssImports !== false
     && !disabledOptions.rewriteCssImports
     && (rewriteCssImportsSpecified || tailwindcssMajorVersion >= 4)

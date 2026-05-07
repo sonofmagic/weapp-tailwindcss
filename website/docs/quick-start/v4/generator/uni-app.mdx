@@ -17,11 +17,13 @@ keywords:
 
 # uni-app 生成模式
 
-uni-app 项目优先使用构建器入口的 `WeappTailwindcss`。生成模式会代理 Tailwind CSS 样式生成，并同步处理 Vue 模板、JS 中的类名。
+uni-app 项目优先使用构建器入口的 `WeappTailwindcss`，但 Tailwind CSS v3 和 v4 的配置需要分开处理。
 
-## uni-app Vue Vite
+## Tailwind CSS v4：直出生成
 
 仓库示例：`demo/uni-app-tailwindcss-v5`。
+
+Tailwind CSS v4 项目使用 CSS-first 入口。`weapp-tailwindcss@5` 默认接管样式生成，不需要注册 `@tailwindcss/vite` 或 `@tailwindcss/postcss`，也不需要显式写 `generator: true`。
 
 ```ts title="vite.config.ts"
 import { createRequire } from 'node:module'
@@ -90,7 +92,46 @@ const className = ref(twMerge('bg-[#0000ff] text-[45rpx]', 'text-white rounded-l
 
 验证命令：`pnpm --filter @weapp-tailwindcss-demo/uni-app-tailwindcss-v5 build`
 
-## uni-app Vue2 Webpack
+## Tailwind CSS v3：保留旧链路
+
+Tailwind CSS v3 旧项目继续使用 `tailwind.config.js` 的 `content` 和原来的 `tailwindcss` PostCSS 插件。默认 `auto` 会保留旧链路；如果希望把边界写得更明确，可以显式关闭 generator，只让 `weapp-tailwindcss` 做小程序转译。
+
+```ts title="vite.config.ts"
+import uni from '@dcloudio/vite-plugin-uni'
+import { defineConfig } from 'vite'
+import { WeappTailwindcss } from 'weapp-tailwindcss/vite'
+
+export default defineConfig({
+  plugins: [
+    uni(),
+    WeappTailwindcss({
+      rem2rpx: true,
+      generator: false,
+    }),
+  ],
+})
+```
+
+```js title="postcss.config.js"
+export default {
+  plugins: {
+    tailwindcss: {},
+  },
+}
+```
+
+```js title="tailwind.config.js"
+export default {
+  content: ['./src/**/*.{vue,js,ts}'],
+  theme: {
+    extend: {},
+  },
+}
+```
+
+如果要在 Tailwind CSS v3 项目里试验直出生成，单独把 `generator` 改成 `{ mode: 'force' }`，并先用构建产物对比确认样式没有回退。
+
+## uni-app Vue2 Webpack（Tailwind CSS v4） {#uni-app-vue2-webpack}
 
 适合仍使用 Vue CLI / Webpack 编译的 uni-app Vue2 小程序项目。Webpack 插件负责代理 Tailwind CSS 生成小程序 CSS，并同步处理模板与 JS 中的类名。
 

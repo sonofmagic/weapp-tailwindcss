@@ -17,11 +17,13 @@ keywords:
 
 # Taro 生成模式
 
-Taro 项目根据编译器选择 Vite 或 Webpack 入口即可。生成模式下不需要额外注入 Tailwind 官方 PostCSS 插件，CSS 入口由 `cssEntries` 指向项目全局样式。
+Taro 项目根据编译器选择 Vite 或 Webpack 入口，同时需要先区分 Tailwind CSS 主版本。Tailwind CSS v4 走默认直出生成；Tailwind CSS v3 旧项目继续保留原来的 PostCSS 链路。
 
-## Taro Vite
+## Tailwind CSS v4：Taro Vite
 
 仓库示例：`demo/taro-vite-tailwindcss-v5`。
+
+Tailwind CSS v4 项目不需要额外注入 `@tailwindcss/vite` 或 `@tailwindcss/postcss`，CSS 入口由 `cssEntries` 指向项目全局样式。
 
 ```ts title="config/index.ts"
 import { defineConfig, type UserConfigExport } from '@tarojs/cli'
@@ -82,9 +84,56 @@ export default function Index() {
 
 验证命令：`pnpm --filter @weapp-tailwindcss-demo/taro-vite-tailwindcss-v5 build`
 
-## Taro Webpack
+## Tailwind CSS v3：保留旧链路
 
-Taro Webpack 项目把 `WeappTailwindcss` 注册到 `mini.webpackChain`。CSS 入口由 `cssEntries` 指向全局样式文件，CI 严格校验时可以额外使用 `generator.mode = 'force'`。
+Tailwind CSS v3 旧项目继续使用 `tailwind.config.js` 的 `content` 和原来的 `tailwindcss` PostCSS 插件。默认 `auto` 会保留旧链路；如果希望把边界写得更明确，可以显式关闭 generator，避免改动 Taro 旧项目的 Tailwind 生成方式。
+
+```ts title="config/index.ts"
+import { defineConfig, type UserConfigExport } from '@tarojs/cli'
+import { WeappTailwindcss } from 'weapp-tailwindcss/vite'
+
+export default defineConfig<'vite'>(() => {
+  const config: UserConfigExport<'vite'> = {
+    sourceRoot: 'src',
+    outputRoot: 'dist',
+    framework: 'react',
+    compiler: {
+      type: 'vite',
+      vitePlugins: [
+        WeappTailwindcss({
+          rem2rpx: true,
+          generator: false,
+        }),
+      ],
+    },
+  }
+
+  return config
+})
+```
+
+```js title="postcss.config.js"
+export default {
+  plugins: {
+    tailwindcss: {},
+  },
+}
+```
+
+```js title="tailwind.config.js"
+export default {
+  content: ['./src/**/*.{ts,tsx,jsx,js}'],
+  theme: {
+    extend: {},
+  },
+}
+```
+
+Tailwind CSS v3 项目只有在明确要试验直出生成时才设置 `generator: { mode: 'force' }`，不要把这个配置作为老项目常规迁移步骤。
+
+## Tailwind CSS v4：Taro Webpack {#taro-webpack}
+
+Taro Webpack + Tailwind CSS v4 项目把 `WeappTailwindcss` 注册到 `mini.webpackChain`。CSS 入口由 `cssEntries` 指向全局样式文件，CI 严格校验时可以额外使用 `generator.mode = 'force'`。
 
 ```ts title="config/index.ts"
 import path from 'node:path'

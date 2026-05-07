@@ -1,6 +1,6 @@
 {
   "version": "1.0.0",
-  "generatedAt": "2026-05-07T11:42:06.400Z",
+  "generatedAt": "2026-05-07T12:35:43.993Z",
   "siteUrl": "https://tw.icebreaker.top",
   "totals": {
     "all": 184,
@@ -3614,8 +3614,8 @@
       "kind": "doc",
       "id": "doc:migrations/v5",
       "title": "从 v4 迁移到 v5",
-      "description": "weapp-tailwindcss v5 默认启用样式生成模式，迁移时应让 weapp-tailwindcss 接管 Tailwind CSS 样式生成，并移除重复的官方构建插件。",
-      "summary": "weapp-tailwindcss@5 推荐让 weapp-tailwindcss 成为项目里唯一负责 Tailwind CSS 样式生成的入口。生成模式现在默认开启，常规小程序项目不需要再写 generator: true。",
+      "description": "weapp-tailwindcss v5 默认启用样式生成模式，迁移时需要按 Tailwind CSS v3 和 v4 分别处理，避免旧项目被迫改造。",
+      "summary": "weapp-tailwindcss@5 的生成模式默认开启，但迁移时必须先判断项目使用的是 tailwindcss@3 还是 tailwindcss@4。两个版本的 Tailwind 样式生成模型不同，不能共用同一套迁移步骤。",
       "url": "/docs/migrations/v5",
       "canonical": "https://tw.icebreaker.top/docs/migrations/v5",
       "keywords": [
@@ -3638,13 +3638,13 @@
       ],
       "headings": [
         "核心变化",
+        "迁移路径选择",
         "依赖升级",
-        "配置迁移",
+        "Tailwind CSS v4 配置迁移",
         "# Vite / weapp-vite / uni-app Vite",
         "# Taro Vite",
         "# Webpack",
-        "CSS 入口",
-        "兼容旧链路"
+        "Tailwind CSS v3 配置迁移"
       ],
       "updatedAt": null,
       "source": "docs/migrations/v5.md"
@@ -4664,7 +4664,10 @@
         "生成模式",
         "quick start"
       ],
-      "headings": [],
+      "headings": [
+        "Tailwind CSS v4：PostCSS generator",
+        "Tailwind CSS v3：保留旧链路"
+      ],
       "updatedAt": null,
       "source": "docs/quick-start/v4/generator/mpx.mdx"
     },
@@ -4673,7 +4676,7 @@
       "id": "doc:quick-start/v4/generator/taro",
       "title": "Taro 生成模式",
       "description": "使用 weapp-tailwindcss v5 生成模式接入 Taro Vite 与 Taro Webpack",
-      "summary": "Taro 项目根据编译器选择 Vite 或 Webpack 入口即可。生成模式下不需要额外注入 Tailwind 官方 PostCSS 插件，CSS 入口由 cssEntries 指向项目全局样式。",
+      "summary": "Taro 项目根据编译器选择 Vite 或 Webpack 入口，同时需要先区分 Tailwind CSS 主版本。Tailwind CSS v4 走默认直出生成；Tailwind CSS v3 旧项目继续保留原来的 PostCSS 链路。",
       "url": "/docs/quick-start/v4/generator/taro",
       "canonical": "https://tw.icebreaker.top/docs/quick-start/v4/generator/taro",
       "keywords": [
@@ -4695,8 +4698,9 @@
         "quick start"
       ],
       "headings": [
-        "Taro Vite",
-        "Taro Webpack"
+        "Tailwind CSS v4：Taro Vite",
+        "Tailwind CSS v3：保留旧链路",
+        "Tailwind CSS v4：Taro Webpack {#taro-webpack}"
       ],
       "updatedAt": null,
       "source": "docs/quick-start/v4/generator/taro.mdx"
@@ -4706,7 +4710,7 @@
       "id": "doc:quick-start/v4/generator/uni-app",
       "title": "uni-app 生成模式",
       "description": "使用 weapp-tailwindcss v5 生成模式接入 uni-app Vue Vite 与 Vue2 Webpack",
-      "summary": "uni-app 项目优先使用构建器入口的 WeappTailwindcss。生成模式会代理 Tailwind CSS 样式生成，并同步处理 Vue 模板、JS 中的类名。",
+      "summary": "uni-app 项目优先使用构建器入口的 WeappTailwindcss，但 Tailwind CSS v3 和 v4 的配置需要分开处理。",
       "url": "/docs/quick-start/v4/generator/uni-app",
       "canonical": "https://tw.icebreaker.top/docs/quick-start/v4/generator/uni-app",
       "keywords": [
@@ -4728,8 +4732,9 @@
         "quick start"
       ],
       "headings": [
-        "uni-app Vue Vite",
-        "uni-app Vue2 Webpack"
+        "Tailwind CSS v4：直出生成",
+        "Tailwind CSS v3：保留旧链路",
+        "uni-app Vue2 Webpack（Tailwind CSS v4） {#uni-app-vue2-webpack}"
       ],
       "updatedAt": null,
       "source": "docs/quick-start/v4/generator/uni-app.mdx"
@@ -4739,7 +4744,7 @@
       "id": "doc:quick-start/v4/generator/weapp-vite",
       "title": "weapp-vite 生成模式",
       "description": "使用 weapp-tailwindcss v5 生成模式接入 weapp-vite 原生小程序或 Vue SFC 小程序项目",
-      "summary": "weapp-vite 项目直接使用 WeappTailwindcss。生成模式会代理 Tailwind CSS 的样式生成，不需要再注册 @tailwindcss/vite。",
+      "summary": "weapp-vite 项目直接使用 WeappTailwindcss。Tailwind CSS v4 项目默认由 weapp-tailwindcss 接管样式生成；Tailwind CSS v3 旧项目继续保留原来的 tailwindcss PostCSS 链路。",
       "url": "/docs/quick-start/v4/generator/weapp-vite",
       "canonical": "https://tw.icebreaker.top/docs/quick-start/v4/generator/weapp-vite",
       "keywords": [
@@ -4760,7 +4765,10 @@
         "生成模式",
         "quick start"
       ],
-      "headings": [],
+      "headings": [
+        "Tailwind CSS v4：直出生成",
+        "Tailwind CSS v3：保留旧链路"
+      ],
       "updatedAt": null,
       "source": "docs/quick-start/v4/generator/weapp-vite.mdx"
     },
@@ -5286,7 +5294,7 @@
       "id": "doc:quick-start/v4/v5-generator-examples",
       "title": "生成模式使用方式（推荐）",
       "description": "使用 weapp-tailwindcss v5 生成模式接入 uni-app、Taro、weapp-vite 与 Mpx 的入口指南",
-      "summary": "生成模式推荐把 weapp-tailwindcss 作为项目里唯一负责 Tailwind CSS 样式生成的入口。你可以按项目需要安装 tailwindcss@3 或 tailwindcss@4，weapp-tailwindcss 会读取当前安装的 Tailwind 主版本，并按对应策略代理整个项目的样式生成。",
+      "summary": "生成模式必须先区分 Tailwind CSS 主版本。tailwindcss@4 是 CSS-first 引擎，weapp-tailwindcss@5 默认接管它的样式生成，并直接输出小程序目标 CSS；tailwindcss@3 仍是 PostCSS / tailwind.config.js 链路，默认保持旧项目的后处理兼容方式，避免升级 weapp-t…",
       "url": "/docs/quick-start/v4/v5-generator-examples",
       "canonical": "https://tw.icebreaker.top/docs/quick-start/v4/v5-generator-examples",
       "keywords": [
@@ -5309,6 +5317,7 @@
       ],
       "headings": [
         "安装",
+        "版本行为差异",
         "按框架选择入口",
         "CSS 入口",
         "功能覆盖清单",

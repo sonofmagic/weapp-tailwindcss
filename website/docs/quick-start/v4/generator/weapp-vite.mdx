@@ -17,7 +17,11 @@ keywords:
 
 # weapp-vite 生成模式
 
-`weapp-vite` 项目直接使用 `WeappTailwindcss`。生成模式会代理 Tailwind CSS 的样式生成，不需要再注册 `@tailwindcss/vite`。
+`weapp-vite` 项目直接使用 `WeappTailwindcss`。Tailwind CSS v4 项目默认由 `weapp-tailwindcss` 接管样式生成；Tailwind CSS v3 旧项目继续保留原来的 `tailwindcss` PostCSS 链路。
+
+## Tailwind CSS v4：直出生成
+
+Tailwind CSS v4 项目不需要再注册 `@tailwindcss/vite` 或 `@tailwindcss/postcss`。
 
 ```ts title="vite.config.ts"
 import path from 'node:path'
@@ -65,3 +69,40 @@ Page({
 ```
 
 验证命令：当前 weapp-vite 项目的 `pnpm build`。
+
+## Tailwind CSS v3：保留旧链路
+
+Tailwind CSS v3 原生小程序项目继续使用 `tailwind.config.js` 的 `content` 和原来的 `tailwindcss` PostCSS 插件。默认 `auto` 会保留旧链路；如果希望把边界写得更明确，可以显式关闭 generator，降低旧项目改造成本。
+
+```ts title="vite.config.ts"
+import { defineConfig } from 'weapp-vite/config'
+import { WeappTailwindcss } from 'weapp-tailwindcss/vite'
+
+export default defineConfig({
+  plugins: [
+    WeappTailwindcss({
+      rem2rpx: true,
+      generator: false,
+    }),
+  ],
+})
+```
+
+```js title="postcss.config.js"
+export default {
+  plugins: {
+    tailwindcss: {},
+  },
+}
+```
+
+```js title="tailwind.config.js"
+export default {
+  content: ['./src/**/*.{wxml,js,ts,vue}', './app.{js,ts,json}'],
+  theme: {
+    extend: {},
+  },
+}
+```
+
+如果要试验 Tailwind CSS v3 直出生成，使用 `generator: { mode: 'force' }` 并先对比生成的 `app.wxss`。
