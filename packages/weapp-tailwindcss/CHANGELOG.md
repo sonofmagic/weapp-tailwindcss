@@ -1,5 +1,17 @@
 # weapp-tailwindcss
 
+## 5.0.0-next.2
+
+### Patch Changes
+
+- 🐛 **修复 Tailwind CSS v4 小程序生成模式默认颜色与 v3 不一致的问题，Tailwind CSS v3 兼容模式下恢复 v3 默认色板，并避免输出小程序不支持的 `oklch` 默认颜色。** [#846](https://github.com/sonofmagic/weapp-tailwindcss/pull/846) by @sonofmagic
+
+- 🐛 **修复 Tailwind CSS v3 生成器在插件 class cache 中过滤通配符候选时的兼容问题，补充 v3/v4 生成器对官方插件、自定义插件和 Iconify 图标插件的回归覆盖，并在 Tailwind CSS v4 小程序生成模式下将默认颜色变量替换为小程序可识别的 hex 色值。** [#846](https://github.com/sonofmagic/weapp-tailwindcss/pull/846) by @sonofmagic
+
+- 🐛 **补齐 Tailwind CSS v4 生成模式升级兼容覆盖，固定 v3/v4 默认值、preflight、space/divide 选择器与新版候选类语法在小程序目标下的输出行为。** [#846](https://github.com/sonofmagic/weapp-tailwindcss/pull/846) by @sonofmagic
+
+- 🐛 **修复 Tailwind CSS v4 小程序生成模式默认值与 v3 不一致的问题，默认注入 Tailwind CSS v3 兼容默认值，并允许通过 `generator.tailwindcssV3Compatibility: false` 关闭。** [#846](https://github.com/sonofmagic/weapp-tailwindcss/pull/846) by @sonofmagic
+
 ## 5.0.0-next.1
 
 ### Minor Changes
