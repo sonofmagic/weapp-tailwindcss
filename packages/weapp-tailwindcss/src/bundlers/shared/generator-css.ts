@@ -351,6 +351,10 @@ function parseConfigRequest(params: string) {
   return match?.[2]
 }
 
+function isPackageJsonImportRequest(request: string | undefined) {
+  return typeof request === 'string' && request.startsWith('#')
+}
+
 function resolvePostcssFromOption(cssHandlerOptions: IStyleHandlerOptions) {
   const from = cssHandlerOptions.postcssOptions?.options?.from
   return typeof from === 'string' && from.length > 0 ? from : undefined
@@ -384,6 +388,9 @@ function isTailwindSourceDirective(node: postcss.Node) {
   if (isTailwindImportAtRule(node)) {
     return true
   }
+  if (node.name === 'import' && isPackageJsonImportRequest(parseImportRequest(node.params))) {
+    return true
+  }
   return TAILWIND_REMOVABLE_SOURCE_DIRECTIVE_NAMES.has(node.name)
 }
 
@@ -391,7 +398,13 @@ function isTailwindGenerationDirective(node: postcss.Node) {
   if (node.type !== 'atrule') {
     return false
   }
+  const request = node.name === 'import'
+    ? parseImportRequest(node.params)
+    : node.name === 'config' || node.name === 'plugin' || node.name === 'reference'
+      ? parseConfigRequest(node.params)
+      : undefined
   return isTailwindImportAtRule(node)
+    || isPackageJsonImportRequest(request)
     || node.name === 'apply'
     || node.name === 'layer'
     || node.name === 'config'
@@ -455,7 +468,11 @@ export function resolveCssEntrySource(
         const configPath = parseConfigRequest(node.params)
         if (configPath && !config) {
           configRequest = configPath
-          config = path.isAbsolute(configPath) ? configPath : path.resolve(base, configPath)
+          config = isPackageJsonImportRequest(configPath)
+            ? undefined
+            : path.isAbsolute(configPath)
+              ? configPath
+              : path.resolve(base, configPath)
         }
         if (removeConfig) {
           node.remove()

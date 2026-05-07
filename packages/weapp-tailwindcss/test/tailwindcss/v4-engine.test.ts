@@ -182,6 +182,93 @@ describe('tailwindcss v4 engine', () => {
     expect(result.css).toContain('.w-4')
   })
 
+  it('supports Tailwind v4 subpath imports for @import, @reference, @plugin, and @config', async () => {
+    const root = await mkdtemp(path.join(tmpdir(), 'weapp-tw-v4-subpath-'))
+    const cssDir = path.join(root, 'src', 'css')
+    const srcDir = path.join(root, 'src')
+    const cssEntry = path.join(cssDir, 'entry.css')
+    await mkdir(cssDir, { recursive: true })
+    await writeFile(path.join(root, 'package.json'), JSON.stringify({
+      imports: {
+        '#tokens.css': './src/css/tokens.css',
+        '#reference.css': './src/css/reference.css',
+        '#legacy-plugin': './tailwind.plugin.cjs',
+        '#tw-config': './tailwind.config.cjs',
+      },
+    }, null, 2), 'utf8')
+    await writeFile(path.join(root, 'tailwind.config.cjs'), [
+      'module.exports = {',
+      '  theme: {',
+      '    extend: {',
+      '      colors: { config: "#445566" },',
+      '      spacing: { config: "11px" },',
+      '    },',
+      '  },',
+      '}',
+    ].join('\n'), 'utf8')
+    await writeFile(path.join(root, 'tailwind.plugin.cjs'), [
+      'module.exports = function ({ addUtilities }) {',
+      '  addUtilities({',
+      '    ".plugin-card": { color: "#778899" },',
+      '  })',
+      '}',
+    ].join('\n'), 'utf8')
+    await writeFile(path.join(cssDir, 'tokens.css'), [
+      '@theme {',
+      '  --color-imported: #123456;',
+      '  --color-reference: #246810;',
+      '}',
+    ].join('\n'), 'utf8')
+    await writeFile(path.join(cssDir, 'reference.css'), [
+      '@import "#tokens.css";',
+      '@utility ref-bg {',
+      '  background-color: var(--color-reference);',
+      '}',
+    ].join('\n'), 'utf8')
+    await writeFile(path.join(srcDir, 'page.html'), [
+      '<div class="bg-imported bg-config plugin-card card-shell ref-card m-config"></div>',
+    ].join('\n'), 'utf8')
+    await writeFile(cssEntry, [
+      '@config "#tw-config";',
+      '@plugin "#legacy-plugin";',
+      '@reference "#reference.css";',
+      '@import "#tokens.css";',
+      '@source "../page.html";',
+      '@tailwind utilities;',
+      '.card-shell {',
+      '  @apply bg-imported;',
+      '}',
+      '.ref-card {',
+      '  @apply ref-bg;',
+      '}',
+      '',
+    ].join('\n'), 'utf8')
+
+    const source = await resolveTailwindV4Source({
+      projectRoot: root,
+      cssEntries: [cssEntry],
+    })
+    const engine = createTailwindV4Engine(source)
+    const result = await engine.generate()
+
+    expect([...result.classSet]).toEqual(expect.arrayContaining([
+      'bg-config',
+      'bg-imported',
+      'm-config',
+      'plugin-card',
+    ]))
+    expect(result.rawCss).toContain('background-color: var(--color-imported)')
+    expect(result.rawCss).toContain('background-color: var(--color-reference)')
+    expect(result.rawCss).toContain('background-color: #445566')
+    expect(result.rawCss).toContain('margin: 11px')
+    expect(result.rawCss).toContain('color: #778899')
+    expect(result.rawCss).toContain('.card-shell')
+    expect(result.rawCss).toContain('.ref-card')
+    expect(result.rawCss).not.toContain('@config')
+    expect(result.rawCss).not.toContain('@plugin')
+    expect(result.rawCss).not.toContain('@reference')
+  })
+
   it('keeps cssEntries relative to the css file unless v4 base is explicitly configured', () => {
     const implicitBaseOptions = resolveTailwindV4SourceOptionsFromPatcher({
       options: {
