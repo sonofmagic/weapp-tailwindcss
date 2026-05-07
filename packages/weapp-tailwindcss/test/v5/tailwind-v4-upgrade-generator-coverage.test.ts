@@ -451,9 +451,9 @@ describe('v5 Tailwind CSS v4 upgrade generator coverage', () => {
     expect(webResult.css).toContain('background-color: var(--color-zinc-950)')
 
     expect(weappResult.css).toContain('background-color: var(--color-white)')
-    expect(weappResult.css).toContain('background-color: var(--color-zinc-950)')
-    expect(normalizedWeappCss).toContain(':where([data-theme=dark],[data-theme=dark] view)')
-    expect(normalizedWeappCss).toContain(':where([data-theme=dark],[data-theme=dark] text)')
+    expect(weappResult.css).not.toContain('.dark_cbg-zinc-950')
+    expect(weappResult.css).not.toContain('background-color: var(--color-zinc-950)')
+    expect(normalizedWeappCss).not.toContain('[data-theme=dark]')
     expect(normalizedWeappCss).not.toContain('@custom-variant')
     expect(normalizedWeappCss).not.toContain('@source')
   })
