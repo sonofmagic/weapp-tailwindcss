@@ -39,7 +39,6 @@ export default defineConfig(async () => {
       uni(),
       WeappTailwindcss({
         rem2rpx: true,
-        generator: true,
         cssEntries: [
           path.resolve(__dirname, 'src/main.css'),
           path.resolve(__dirname, 'src/common.css'),
@@ -104,7 +103,6 @@ module.exports = {
     config.plugins.push(
       new WeappTailwindcss({
         rem2rpx: true,
-        generator: true,
         cssEntries: [
           path.resolve(__dirname, './src/app.css'),
         ],

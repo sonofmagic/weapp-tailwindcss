@@ -106,15 +106,15 @@ describe('bundlers/gulp createPlugins', () => {
     const processedCss = await runTransform(plugins.transformWxss(), cssFile)
     expect(processedCss.contents?.toString()).toBe('css:.foo { color: red; }')
     expect(styleHandler).toHaveBeenCalledTimes(1)
-    expect(twPatcher.getClassSetSync).not.toHaveBeenCalled()
-    expect(twPatcher.extract).not.toHaveBeenCalled()
+    expect(twPatcher.getClassSetSync).toHaveBeenCalledTimes(1)
+    expect(twPatcher.extract).toHaveBeenCalledTimes(1)
 
     const cachedCssFile = createFile('/src/app.wxss', '.foo { color: red; }')
     const cachedCss = await runTransform(plugins.transformWxss(), cachedCssFile)
     expect(styleHandler).toHaveBeenCalledTimes(1)
     expect(cachedCss.contents?.toString()).toBe('css:.foo { color: red; }')
-    expect(twPatcher.getClassSetSync).not.toHaveBeenCalled()
-    expect(twPatcher.extract).not.toHaveBeenCalled()
+    expect(twPatcher.getClassSetSync).toHaveBeenCalledTimes(1)
+    expect(twPatcher.extract).toHaveBeenCalledTimes(1)
 
     // Ensure runtime set is reused for JS handler
     const jsFile = createFile('/src/app.js', 'import "./init"; console.log("hi")')

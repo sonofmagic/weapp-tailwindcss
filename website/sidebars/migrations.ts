@@ -6,6 +6,10 @@ import type { SidebarConfig } from './types'
 const migrationsSidebar: SidebarConfig = [
   {
     type: 'doc',
+    id: 'migrations/v5',
+  },
+  {
+    type: 'doc',
     id: 'migrations/v3',
   },
   {

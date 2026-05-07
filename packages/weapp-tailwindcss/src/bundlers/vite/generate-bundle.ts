@@ -841,7 +841,7 @@ export function createGenerateBundleHook(context: GenerateBundleContext) {
     }
 
     const cssRuntimeSignature = createCssRuntimeSignature(runtimeSignature, generatorCandidateSignature)
-    if (useIncrementalMode && generatorOptions.mode === 'force') {
+    if (useIncrementalMode && generatorOptions.mode !== 'off') {
       for (const [file, rawSource] of getRememberedMainCssSources?.() ?? []) {
         if (bundleFiles.includes(file) || getRememberedMainCssSignature?.(file) === cssRuntimeSignature) {
           continue

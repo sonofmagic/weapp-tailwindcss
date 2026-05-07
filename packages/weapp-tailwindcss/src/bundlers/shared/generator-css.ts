@@ -1110,32 +1110,30 @@ export async function generateCssByGenerator(
     || hasGeneratedMarkers
     || hasSourceDirectives
     || cssHandlerOptions.isMainChunk
+  const shouldAutoGenerateCurrentCss = hasGeneratedCss
+    || hasGeneratedMarkers
+    || hasSourceDirectives
 
   if (
     generatorOptions.mode === 'off'
     || !SUPPORTED_GENERATOR_MAJOR_VERSIONS.has(majorVersion ?? 0)
     || (
       generatorOptions.mode === 'force'
+        ? !shouldForceGenerateCurrentCss
+        : !shouldAutoGenerateCurrentCss
+    )
+    || (
+      generatorOptions.mode === 'force'
       && (
-        !shouldForceGenerateCurrentCss
-        || (
-          majorVersion === 3
-          && !hasSourceDirectives
-          && !hasGeneratedCss
-          && !hasGeneratedMarkers
-        )
+        majorVersion === 3
+        && !hasSourceDirectives
+        && !hasGeneratedCss
+        && !hasGeneratedMarkers
       )
     )
     || (
       generatorOptions.mode !== 'force'
-      && majorVersion !== 3
-      && !hasGeneratedCss
-    )
-    || (
-      !cssHandlerOptions.isMainChunk
-      && majorVersion !== 3
-      && generatorOptions.mode !== 'force'
-      && !hasGeneratedCss
+      && majorVersion === 3
     )
   ) {
     return undefined
@@ -1242,39 +1240,37 @@ export async function generateCssByGenerator(
       }
     }
 
-    if (generatorOptions.mode === 'force') {
-      debug(
-        'tailwind direct css generation prefix mismatch, append transformed bundle css %s',
-        file,
-      )
-      let css = stripTailwindBanner(generated.css)
-      if (generated.target === 'weapp') {
-        css = inheritLegacyUnitConvertedDeclarations(css, rawSource)
-      }
-      css = await appendLegacyCompatCss(
-        css,
-        rawSource,
-        generated.target,
-        styleHandler,
-        cssHandlerOptions,
-        generatorStyleOptions,
-      )
-      css = await appendLegacyContainerCompatCss(
-        css,
-        rawSource,
-        file,
-        runtime,
-        configuredContainerCompat,
-        generated.target,
-        styleHandler,
-        cssHandlerOptions,
-        generatorStyleOptions,
-      )
-      return {
-        css: finalizeMiniProgramGeneratorCss(css, generated.target),
-        target: generated.target,
-        source: 'generator-forced',
-      }
+    debug(
+      'tailwind direct css generation prefix mismatch, append transformed bundle css %s',
+      file,
+    )
+    let css = stripTailwindBanner(generated.css)
+    if (generated.target === 'weapp') {
+      css = inheritLegacyUnitConvertedDeclarations(css, rawSource)
+    }
+    css = await appendLegacyCompatCss(
+      css,
+      rawSource,
+      generated.target,
+      styleHandler,
+      cssHandlerOptions,
+      generatorStyleOptions,
+    )
+    css = await appendLegacyContainerCompatCss(
+      css,
+      rawSource,
+      file,
+      runtime,
+      configuredContainerCompat,
+      generated.target,
+      styleHandler,
+      cssHandlerOptions,
+      generatorStyleOptions,
+    )
+    return {
+      css: finalizeMiniProgramGeneratorCss(css, generated.target),
+      target: generated.target,
+      source: generatorOptions.mode === 'force' ? 'generator-forced' : 'generator',
     }
   }
   catch (error) {

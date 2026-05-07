@@ -159,6 +159,75 @@ describe('bundlers/shared generator css', () => {
     expect(styleHandler).not.toHaveBeenCalled()
   })
 
+  it('generates mini-program css from Tailwind directives in default auto mode', async () => {
+    const runtimeSet = new Set(['w-[100px]'])
+    const rawSource = '@import "tailwindcss";\n.card{color:red}'
+    const rawTailwindCss = '/*! tailwindcss v4.2.4 | MIT License | https://tailwindcss.com */\n.w-\\[100px\\]{width:100px}'
+    const weappCss = '.w-_b100px_B{width:100px}'
+    const generateMock = vi.fn(async () => ({
+      css: weappCss,
+      rawCss: rawTailwindCss,
+      target: 'weapp',
+      classSet: runtimeSet,
+      dependencies: [],
+      sources: [],
+      root: null,
+    }))
+
+    vi.doMock('@/generator', () => ({
+      ...createDefaultGeneratorMock(),
+      createWeappTailwindcssGenerator: vi.fn(() => ({
+        generate: generateMock,
+      })),
+    }))
+
+    const { generateCssByGenerator } = await import('@/bundlers/shared/generator-css')
+    const styleHandler = vi.fn(async (code: string) => ({ css: `legacy:${code}` }))
+    const result = await generateCssByGenerator({
+      opts: {
+        generator: true,
+        styleHandler,
+      } as any,
+      runtimeState: {
+        twPatcher: {
+          majorVersion: 4,
+        } as any,
+        patchPromise: Promise.resolve(),
+      },
+      runtime: runtimeSet,
+      rawSource,
+      file: 'app.wxss',
+      cssHandlerOptions: {
+        isMainChunk: true,
+        postcssOptions: {
+          options: {
+            from: 'app.wxss',
+          },
+        },
+        majorVersion: 4,
+      } as any,
+      cssUserHandlerOptions: {
+        isMainChunk: false,
+        majorVersion: 4,
+      } as any,
+      styleHandler,
+      debug: vi.fn(),
+    })
+
+    expect(result).toEqual({
+      css: `${weappCss}\nlegacy:.card{color:red}`,
+      target: 'weapp',
+      source: 'generator',
+    })
+    expect(generateMock).toHaveBeenCalledWith(expect.objectContaining({
+      candidates: runtimeSet,
+      target: 'weapp',
+    }))
+    expect(styleHandler).toHaveBeenCalledWith('.card{color:red}', expect.objectContaining({
+      isMainChunk: true,
+    }))
+  })
+
   it('collects css generator candidates from bundle sources in addition to runtime set', async () => {
     const { collectGeneratorCandidatesFromSources } = await import('@/bundlers/shared/generator-candidates')
     const candidates = await collectGeneratorCandidatesFromSources([

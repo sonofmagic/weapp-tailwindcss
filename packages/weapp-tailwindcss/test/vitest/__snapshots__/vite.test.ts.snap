@@ -52,106 +52,8 @@ exports[`vite test > vite common build 1`] = `
 `;
 
 exports[`vite test > vite common build 2`] = `
-"view,
-text,
-:before,
-:after {
-  --tw-border-spacing-x: 0;
-  --tw-border-spacing-y: 0;
-  --tw-translate-x: 0;
-  --tw-translate-y: 0;
-  --tw-rotate: 0;
-  --tw-skew-x: 0;
-  --tw-skew-y: 0;
-  --tw-scale-x: 1;
-  --tw-scale-y: 1;
-  --tw-pan-x: ;
-  --tw-pan-y: ;
-  --tw-pinch-zoom: ;
-  --tw-scroll-snap-strictness: proximity;
-  --tw-gradient-from-position: ;
-  --tw-gradient-via-position: ;
-  --tw-gradient-to-position: ;
-  --tw-ordinal: ;
-  --tw-slashed-zero: ;
-  --tw-numeric-figure: ;
-  --tw-numeric-spacing: ;
-  --tw-numeric-fraction: ;
-  --tw-ring-inset: ;
-  --tw-ring-offset-width: 0px;
-  --tw-ring-offset-color: #fff;
-  --tw-ring-color: rgba(59, 130, 246, 0.5);
-  --tw-ring-offset-shadow: 0 0 rgba(0, 0, 0, 0);
-  --tw-ring-shadow: 0 0 rgba(0, 0, 0, 0);
-  --tw-shadow: 0 0 rgba(0, 0, 0, 0);
-  --tw-shadow-colored: 0 0 rgba(0, 0, 0, 0);
-  --tw-blur: ;
-  --tw-brightness: ;
-  --tw-contrast: ;
-  --tw-grayscale: ;
-  --tw-hue-rotate: ;
-  --tw-invert: ;
-  --tw-saturate: ;
-  --tw-sepia: ;
-  --tw-drop-shadow: ;
-  --tw-backdrop-blur: ;
-  --tw-backdrop-brightness: ;
-  --tw-backdrop-contrast: ;
-  --tw-backdrop-grayscale: ;
-  --tw-backdrop-hue-rotate: ;
-  --tw-backdrop-invert: ;
-  --tw-backdrop-opacity: ;
-  --tw-backdrop-saturate: ;
-  --tw-backdrop-sepia: ;
-  --tw-contain-size: ;
-  --tw-contain-layout: ;
-  --tw-contain-paint: ;
-  --tw-contain-style: ;
-}
-.flex {
-  display: flex;
-}
-.grid {
-  display: grid;
-}
-.h-_b100px_B {
-  height: 100px;
-}
-.h-_b99px_B {
-  height: 99px;
-}
-.w-_b1_d5rem_B {
-  width: 1.5rem;
-}
-.w-_b100px_B {
-  width: 100px;
-}
-.w-_b55px_B {
-  width: 55px;
-}
-.w-_b99px_B {
-  width: 99px;
-}
-.bg-_b_h929292_B {
-  --tw-bg-opacity: 1;
-  background-color: rgba(146, 146, 146, var(--tw-bg-opacity, 1));
-}
-.bg-_bred_B {
-  --tw-bg-opacity: 1;
-  background-color: rgba(255, 0, 0, var(--tw-bg-opacity, 1));
-}
-.bg-yellow-300_f30 {
-  background-color: rgba(253, 224, 71, 0.30196);
-}
-.bg-_burl_p_ahttps_c_f_fxxx_dcom_fxx_dwebp_a_P_B {
-  background-image: url(https://xxx.com/xx.webp);
-}
-.bg-_burl_p_ahttps_c_f_fyyy_dcom_fxx_dwebp_a_P_B {
-  background-image: url(https://yyy.com/xx.webp);
-}
-.text-red-300_f30 {
-  color: rgba(252, 165, 165, 0.30196);
-}
+"@tailwind base;
+@tailwind utilities;
 "
 `;
 
@@ -174,8 +76,8 @@ exports[`vite test > vite common build 3`] = `
     <title></title>
     <!--preload-links-->
     <!--app-context-->
-    <script type="module" crossorigin src="/assets/index-Bu8a-_KN.js"></script>
-    <link rel="stylesheet" crossorigin href="/assets/index-BbXVz5S_.css" />
+    <script type="module" crossorigin src="/assets/index-k_S3_-De.js"></script>
+    <link rel="stylesheet" crossorigin href="/assets/index-eab8MrC3.css" />
   </head>
 
   <body>
@@ -195,106 +97,8 @@ exports[`vite test > vite common build twice for cache 1`] = `
 `;
 
 exports[`vite test > vite common build twice for cache 2`] = `
-"view,
-text,
-:before,
-:after {
-  --tw-border-spacing-x: 0;
-  --tw-border-spacing-y: 0;
-  --tw-translate-x: 0;
-  --tw-translate-y: 0;
-  --tw-rotate: 0;
-  --tw-skew-x: 0;
-  --tw-skew-y: 0;
-  --tw-scale-x: 1;
-  --tw-scale-y: 1;
-  --tw-pan-x: ;
-  --tw-pan-y: ;
-  --tw-pinch-zoom: ;
-  --tw-scroll-snap-strictness: proximity;
-  --tw-gradient-from-position: ;
-  --tw-gradient-via-position: ;
-  --tw-gradient-to-position: ;
-  --tw-ordinal: ;
-  --tw-slashed-zero: ;
-  --tw-numeric-figure: ;
-  --tw-numeric-spacing: ;
-  --tw-numeric-fraction: ;
-  --tw-ring-inset: ;
-  --tw-ring-offset-width: 0px;
-  --tw-ring-offset-color: #fff;
-  --tw-ring-color: rgba(59, 130, 246, 0.5);
-  --tw-ring-offset-shadow: 0 0 rgba(0, 0, 0, 0);
-  --tw-ring-shadow: 0 0 rgba(0, 0, 0, 0);
-  --tw-shadow: 0 0 rgba(0, 0, 0, 0);
-  --tw-shadow-colored: 0 0 rgba(0, 0, 0, 0);
-  --tw-blur: ;
-  --tw-brightness: ;
-  --tw-contrast: ;
-  --tw-grayscale: ;
-  --tw-hue-rotate: ;
-  --tw-invert: ;
-  --tw-saturate: ;
-  --tw-sepia: ;
-  --tw-drop-shadow: ;
-  --tw-backdrop-blur: ;
-  --tw-backdrop-brightness: ;
-  --tw-backdrop-contrast: ;
-  --tw-backdrop-grayscale: ;
-  --tw-backdrop-hue-rotate: ;
-  --tw-backdrop-invert: ;
-  --tw-backdrop-opacity: ;
-  --tw-backdrop-saturate: ;
-  --tw-backdrop-sepia: ;
-  --tw-contain-size: ;
-  --tw-contain-layout: ;
-  --tw-contain-paint: ;
-  --tw-contain-style: ;
-}
-.flex {
-  display: flex;
-}
-.grid {
-  display: grid;
-}
-.h-_b100px_B {
-  height: 100px;
-}
-.h-_b99px_B {
-  height: 99px;
-}
-.w-_b1_d5rem_B {
-  width: 1.5rem;
-}
-.w-_b100px_B {
-  width: 100px;
-}
-.w-_b55px_B {
-  width: 55px;
-}
-.w-_b99px_B {
-  width: 99px;
-}
-.bg-_b_h929292_B {
-  --tw-bg-opacity: 1;
-  background-color: rgba(146, 146, 146, var(--tw-bg-opacity, 1));
-}
-.bg-_bred_B {
-  --tw-bg-opacity: 1;
-  background-color: rgba(255, 0, 0, var(--tw-bg-opacity, 1));
-}
-.bg-yellow-300_f30 {
-  background-color: rgba(253, 224, 71, 0.30196);
-}
-.bg-_burl_p_ahttps_c_f_fxxx_dcom_fxx_dwebp_a_P_B {
-  background-image: url(https://xxx.com/xx.webp);
-}
-.bg-_burl_p_ahttps_c_f_fyyy_dcom_fxx_dwebp_a_P_B {
-  background-image: url(https://yyy.com/xx.webp);
-}
-.text-red-300_f30 {
-  color: rgba(252, 165, 165, 0.30196);
-}
+"@tailwind base;
+@tailwind utilities;
 "
 `;
 
@@ -317,8 +121,8 @@ exports[`vite test > vite common build twice for cache 3`] = `
     <title></title>
     <!--preload-links-->
     <!--app-context-->
-    <script type="module" crossorigin src="/assets/index-Bu8a-_KN.js"></script>
-    <link rel="stylesheet" crossorigin href="/assets/index-BbXVz5S_.css" />
+    <script type="module" crossorigin src="/assets/index-k_S3_-De.js"></script>
+    <link rel="stylesheet" crossorigin href="/assets/index-eab8MrC3.css" />
   </head>
 
   <body>
@@ -338,106 +142,8 @@ exports[`vite test > vite common build twice for cache 4`] = `
 `;
 
 exports[`vite test > vite common build twice for cache 5`] = `
-"view,
-text,
-:before,
-:after {
-  --tw-border-spacing-x: 0;
-  --tw-border-spacing-y: 0;
-  --tw-translate-x: 0;
-  --tw-translate-y: 0;
-  --tw-rotate: 0;
-  --tw-skew-x: 0;
-  --tw-skew-y: 0;
-  --tw-scale-x: 1;
-  --tw-scale-y: 1;
-  --tw-pan-x: ;
-  --tw-pan-y: ;
-  --tw-pinch-zoom: ;
-  --tw-scroll-snap-strictness: proximity;
-  --tw-gradient-from-position: ;
-  --tw-gradient-via-position: ;
-  --tw-gradient-to-position: ;
-  --tw-ordinal: ;
-  --tw-slashed-zero: ;
-  --tw-numeric-figure: ;
-  --tw-numeric-spacing: ;
-  --tw-numeric-fraction: ;
-  --tw-ring-inset: ;
-  --tw-ring-offset-width: 0px;
-  --tw-ring-offset-color: #fff;
-  --tw-ring-color: rgba(59, 130, 246, 0.5);
-  --tw-ring-offset-shadow: 0 0 rgba(0, 0, 0, 0);
-  --tw-ring-shadow: 0 0 rgba(0, 0, 0, 0);
-  --tw-shadow: 0 0 rgba(0, 0, 0, 0);
-  --tw-shadow-colored: 0 0 rgba(0, 0, 0, 0);
-  --tw-blur: ;
-  --tw-brightness: ;
-  --tw-contrast: ;
-  --tw-grayscale: ;
-  --tw-hue-rotate: ;
-  --tw-invert: ;
-  --tw-saturate: ;
-  --tw-sepia: ;
-  --tw-drop-shadow: ;
-  --tw-backdrop-blur: ;
-  --tw-backdrop-brightness: ;
-  --tw-backdrop-contrast: ;
-  --tw-backdrop-grayscale: ;
-  --tw-backdrop-hue-rotate: ;
-  --tw-backdrop-invert: ;
-  --tw-backdrop-opacity: ;
-  --tw-backdrop-saturate: ;
-  --tw-backdrop-sepia: ;
-  --tw-contain-size: ;
-  --tw-contain-layout: ;
-  --tw-contain-paint: ;
-  --tw-contain-style: ;
-}
-.flex {
-  display: flex;
-}
-.grid {
-  display: grid;
-}
-.h-_b100px_B {
-  height: 100px;
-}
-.h-_b99px_B {
-  height: 99px;
-}
-.w-_b1_d5rem_B {
-  width: 1.5rem;
-}
-.w-_b100px_B {
-  width: 100px;
-}
-.w-_b55px_B {
-  width: 55px;
-}
-.w-_b99px_B {
-  width: 99px;
-}
-.bg-_b_h929292_B {
-  --tw-bg-opacity: 1;
-  background-color: rgba(146, 146, 146, var(--tw-bg-opacity, 1));
-}
-.bg-_bred_B {
-  --tw-bg-opacity: 1;
-  background-color: rgba(255, 0, 0, var(--tw-bg-opacity, 1));
-}
-.bg-yellow-300_f30 {
-  background-color: rgba(253, 224, 71, 0.30196);
-}
-.bg-_burl_p_ahttps_c_f_fxxx_dcom_fxx_dwebp_a_P_B {
-  background-image: url(https://xxx.com/xx.webp);
-}
-.bg-_burl_p_ahttps_c_f_fyyy_dcom_fxx_dwebp_a_P_B {
-  background-image: url(https://yyy.com/xx.webp);
-}
-.text-red-300_f30 {
-  color: rgba(252, 165, 165, 0.30196);
-}
+"@tailwind base;
+@tailwind utilities;
 "
 `;
 
@@ -460,8 +166,8 @@ exports[`vite test > vite common build twice for cache 6`] = `
     <title></title>
     <!--preload-links-->
     <!--app-context-->
-    <script type="module" crossorigin src="/assets/index-Bu8a-_KN.js"></script>
-    <link rel="stylesheet" crossorigin href="/assets/index-BbXVz5S_.css" />
+    <script type="module" crossorigin src="/assets/index-k_S3_-De.js"></script>
+    <link rel="stylesheet" crossorigin href="/assets/index-eab8MrC3.css" />
   </head>
 
   <body>
@@ -1501,106 +1207,8 @@ exports[`vite test > vite common build with rem2rpx 1`] = `
 `;
 
 exports[`vite test > vite common build with rem2rpx 2`] = `
-"view,
-text,
-:before,
-:after {
-  --tw-border-spacing-x: 0;
-  --tw-border-spacing-y: 0;
-  --tw-translate-x: 0;
-  --tw-translate-y: 0;
-  --tw-rotate: 0;
-  --tw-skew-x: 0;
-  --tw-skew-y: 0;
-  --tw-scale-x: 1;
-  --tw-scale-y: 1;
-  --tw-pan-x: ;
-  --tw-pan-y: ;
-  --tw-pinch-zoom: ;
-  --tw-scroll-snap-strictness: proximity;
-  --tw-gradient-from-position: ;
-  --tw-gradient-via-position: ;
-  --tw-gradient-to-position: ;
-  --tw-ordinal: ;
-  --tw-slashed-zero: ;
-  --tw-numeric-figure: ;
-  --tw-numeric-spacing: ;
-  --tw-numeric-fraction: ;
-  --tw-ring-inset: ;
-  --tw-ring-offset-width: 0px;
-  --tw-ring-offset-color: #fff;
-  --tw-ring-color: rgba(59, 130, 246, 0.5);
-  --tw-ring-offset-shadow: 0 0 rgba(0, 0, 0, 0);
-  --tw-ring-shadow: 0 0 rgba(0, 0, 0, 0);
-  --tw-shadow: 0 0 rgba(0, 0, 0, 0);
-  --tw-shadow-colored: 0 0 rgba(0, 0, 0, 0);
-  --tw-blur: ;
-  --tw-brightness: ;
-  --tw-contrast: ;
-  --tw-grayscale: ;
-  --tw-hue-rotate: ;
-  --tw-invert: ;
-  --tw-saturate: ;
-  --tw-sepia: ;
-  --tw-drop-shadow: ;
-  --tw-backdrop-blur: ;
-  --tw-backdrop-brightness: ;
-  --tw-backdrop-contrast: ;
-  --tw-backdrop-grayscale: ;
-  --tw-backdrop-hue-rotate: ;
-  --tw-backdrop-invert: ;
-  --tw-backdrop-opacity: ;
-  --tw-backdrop-saturate: ;
-  --tw-backdrop-sepia: ;
-  --tw-contain-size: ;
-  --tw-contain-layout: ;
-  --tw-contain-paint: ;
-  --tw-contain-style: ;
-}
-.flex {
-  display: flex;
-}
-.grid {
-  display: grid;
-}
-.h-_b100px_B {
-  height: 100px;
-}
-.h-_b99px_B {
-  height: 99px;
-}
-.w-_b1_d5rem_B {
-  width: 48rpx;
-}
-.w-_b100px_B {
-  width: 100px;
-}
-.w-_b55px_B {
-  width: 55px;
-}
-.w-_b99px_B {
-  width: 99px;
-}
-.bg-_b_h929292_B {
-  --tw-bg-opacity: 1;
-  background-color: rgba(146, 146, 146, var(--tw-bg-opacity, 1));
-}
-.bg-_bred_B {
-  --tw-bg-opacity: 1;
-  background-color: rgba(255, 0, 0, var(--tw-bg-opacity, 1));
-}
-.bg-yellow-300_f30 {
-  background-color: rgba(253, 224, 71, 0.30196);
-}
-.bg-_burl_p_ahttps_c_f_fxxx_dcom_fxx_dwebp_a_P_B {
-  background-image: url(https://xxx.com/xx.webp);
-}
-.bg-_burl_p_ahttps_c_f_fyyy_dcom_fxx_dwebp_a_P_B {
-  background-image: url(https://yyy.com/xx.webp);
-}
-.text-red-300_f30 {
-  color: rgba(252, 165, 165, 0.30196);
-}
+"@tailwind base;
+@tailwind utilities;
 "
 `;
 
@@ -1623,8 +1231,8 @@ exports[`vite test > vite common build with rem2rpx 3`] = `
     <title></title>
     <!--preload-links-->
     <!--app-context-->
-    <script type="module" crossorigin src="/assets/index-Bu8a-_KN.js"></script>
-    <link rel="stylesheet" crossorigin href="/assets/index-BbXVz5S_.css" />
+    <script type="module" crossorigin src="/assets/index-k_S3_-De.js"></script>
+    <link rel="stylesheet" crossorigin href="/assets/index-eab8MrC3.css" />
   </head>
 
   <body>
@@ -1644,158 +1252,8 @@ exports[`vite test > vite disabled build 1`] = `
 `;
 
 exports[`vite test > vite disabled build 2`] = `
-"*,
-:before,
-:after {
-  --tw-border-spacing-x: 0;
-  --tw-border-spacing-y: 0;
-  --tw-translate-x: 0;
-  --tw-translate-y: 0;
-  --tw-rotate: 0;
-  --tw-skew-x: 0;
-  --tw-skew-y: 0;
-  --tw-scale-x: 1;
-  --tw-scale-y: 1;
-  --tw-pan-x: ;
-  --tw-pan-y: ;
-  --tw-pinch-zoom: ;
-  --tw-scroll-snap-strictness: proximity;
-  --tw-gradient-from-position: ;
-  --tw-gradient-via-position: ;
-  --tw-gradient-to-position: ;
-  --tw-ordinal: ;
-  --tw-slashed-zero: ;
-  --tw-numeric-figure: ;
-  --tw-numeric-spacing: ;
-  --tw-numeric-fraction: ;
-  --tw-ring-inset: ;
-  --tw-ring-offset-width: 0px;
-  --tw-ring-offset-color: #fff;
-  --tw-ring-color: rgb(59 130 246 / 0.5);
-  --tw-ring-offset-shadow: 0 0 #0000;
-  --tw-ring-shadow: 0 0 #0000;
-  --tw-shadow: 0 0 #0000;
-  --tw-shadow-colored: 0 0 #0000;
-  --tw-blur: ;
-  --tw-brightness: ;
-  --tw-contrast: ;
-  --tw-grayscale: ;
-  --tw-hue-rotate: ;
-  --tw-invert: ;
-  --tw-saturate: ;
-  --tw-sepia: ;
-  --tw-drop-shadow: ;
-  --tw-backdrop-blur: ;
-  --tw-backdrop-brightness: ;
-  --tw-backdrop-contrast: ;
-  --tw-backdrop-grayscale: ;
-  --tw-backdrop-hue-rotate: ;
-  --tw-backdrop-invert: ;
-  --tw-backdrop-opacity: ;
-  --tw-backdrop-saturate: ;
-  --tw-backdrop-sepia: ;
-  --tw-contain-size: ;
-  --tw-contain-layout: ;
-  --tw-contain-paint: ;
-  --tw-contain-style: ;
-}
-::backdrop {
-  --tw-border-spacing-x: 0;
-  --tw-border-spacing-y: 0;
-  --tw-translate-x: 0;
-  --tw-translate-y: 0;
-  --tw-rotate: 0;
-  --tw-skew-x: 0;
-  --tw-skew-y: 0;
-  --tw-scale-x: 1;
-  --tw-scale-y: 1;
-  --tw-pan-x: ;
-  --tw-pan-y: ;
-  --tw-pinch-zoom: ;
-  --tw-scroll-snap-strictness: proximity;
-  --tw-gradient-from-position: ;
-  --tw-gradient-via-position: ;
-  --tw-gradient-to-position: ;
-  --tw-ordinal: ;
-  --tw-slashed-zero: ;
-  --tw-numeric-figure: ;
-  --tw-numeric-spacing: ;
-  --tw-numeric-fraction: ;
-  --tw-ring-inset: ;
-  --tw-ring-offset-width: 0px;
-  --tw-ring-offset-color: #fff;
-  --tw-ring-color: rgb(59 130 246 / 0.5);
-  --tw-ring-offset-shadow: 0 0 #0000;
-  --tw-ring-shadow: 0 0 #0000;
-  --tw-shadow: 0 0 #0000;
-  --tw-shadow-colored: 0 0 #0000;
-  --tw-blur: ;
-  --tw-brightness: ;
-  --tw-contrast: ;
-  --tw-grayscale: ;
-  --tw-hue-rotate: ;
-  --tw-invert: ;
-  --tw-saturate: ;
-  --tw-sepia: ;
-  --tw-drop-shadow: ;
-  --tw-backdrop-blur: ;
-  --tw-backdrop-brightness: ;
-  --tw-backdrop-contrast: ;
-  --tw-backdrop-grayscale: ;
-  --tw-backdrop-hue-rotate: ;
-  --tw-backdrop-invert: ;
-  --tw-backdrop-opacity: ;
-  --tw-backdrop-saturate: ;
-  --tw-backdrop-sepia: ;
-  --tw-contain-size: ;
-  --tw-contain-layout: ;
-  --tw-contain-paint: ;
-  --tw-contain-style: ;
-}
-.flex {
-  display: flex;
-}
-.grid {
-  display: grid;
-}
-.h-\\[100px\\] {
-  height: 100px;
-}
-.h-\\[99px\\] {
-  height: 99px;
-}
-.w-\\[1\\.5rem\\] {
-  width: 1.5rem;
-}
-.w-\\[100px\\] {
-  width: 100px;
-}
-.w-\\[55px\\] {
-  width: 55px;
-}
-.w-\\[99px\\] {
-  width: 99px;
-}
-.bg-\\[\\#929292\\] {
-  --tw-bg-opacity: 1;
-  background-color: rgb(146 146 146 / var(--tw-bg-opacity, 1));
-}
-.bg-\\[red\\] {
-  --tw-bg-opacity: 1;
-  background-color: rgb(255 0 0 / var(--tw-bg-opacity, 1));
-}
-.bg-yellow-300\\/30 {
-  background-color: #fde0474d;
-}
-.bg-\\[url\\(\\'https\\:\\/\\/xxx\\.com\\/xx\\.webp\\'\\)\\] {
-  background-image: url(https://xxx.com/xx.webp);
-}
-.bg-\\[url\\(\\'https\\:\\/\\/yyy\\.com\\/xx\\.webp\\'\\)\\] {
-  background-image: url(https://yyy.com/xx.webp);
-}
-.text-red-300\\/30 {
-  color: #fca5a54d;
-}
+"@tailwind base;
+@tailwind utilities;
 "
 `;
 
@@ -1818,8 +1276,8 @@ exports[`vite test > vite disabled build 3`] = `
     <title></title>
     <!--preload-links-->
     <!--app-context-->
-    <script type="module" crossorigin src="/assets/index-Bu8a-_KN.js"></script>
-    <link rel="stylesheet" crossorigin href="/assets/index-BbXVz5S_.css" />
+    <script type="module" crossorigin src="/assets/index-k_S3_-De.js"></script>
+    <link rel="stylesheet" crossorigin href="/assets/index-eab8MrC3.css" />
   </head>
 
   <body>

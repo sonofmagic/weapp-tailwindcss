@@ -53,13 +53,13 @@ describe('bundlers/vite UnifiedViteWeappTailwindcssPlugin rewrite', () => {
     const subpathImporter = '/src/global.scss?inline'
 
     const resolvedRoot = await resolveId?.('tailwindcss', cssImporter)
-    expect(resolvedRoot).toBe('weapp-tailwindcss/index.css')
+    expect(resolvedRoot).toBe(`${pkgDir}/generator-placeholder.css`)
 
     const resolvedBase = await resolveId?.('tailwindcss/base', subpathImporter)
     expect(resolvedBase).toBe(`${pkgDir}/base`)
 
     const resolvedFromPostcssImport = await resolveId?.('tailwindcss', '/src/*')
-    expect(resolvedFromPostcssImport).toBe('weapp-tailwindcss/index.css')
+    expect(resolvedFromPostcssImport).toBe(`${pkgDir}/generator-placeholder.css`)
 
     const ignoredJs = await resolveId?.('tailwindcss', '/src/main.ts')
     expect(ignoredJs).toBeNull()
@@ -87,7 +87,7 @@ describe('bundlers/vite UnifiedViteWeappTailwindcssPlugin rewrite', () => {
 .foo { color: red; }
 `
     const result = await transform?.(source, '/src/app.css') as TransformResult
-    expect(result?.code).toContain(`@import 'weapp-tailwindcss/index.css' layer(base);`)
+    expect(result?.code).toContain(`@import '${pkgDir}/generator-placeholder.css' layer(base);`)
     expect(result?.code).toContain(`@import url("${pkgDir}/utilities");`)
   }, TEST_TIMEOUT_MS)
 
@@ -166,7 +166,7 @@ describe('bundlers/vite UnifiedViteWeappTailwindcssPlugin rewrite', () => {
 
     let source = '@import "tailwindcss";'
     const id = '/src/app.css'
-    slash(resolvePackageDir('weapp-tailwindcss'))
+    const pkgDir = slash(resolvePackageDir('weapp-tailwindcss'))
 
     for (const { handler } of orderedTransforms) {
       const result = await handler(source, id) as TransformResult
@@ -175,7 +175,7 @@ describe('bundlers/vite UnifiedViteWeappTailwindcssPlugin rewrite', () => {
       }
     }
 
-    expect(source).toContain(`@import "weapp-tailwindcss/index.css";`)
+    expect(source).toContain(`@import "${pkgDir}/generator-placeholder.css";`)
     expect(source.startsWith('tailwind:')).toBeTruthy()
   }, TEST_TIMEOUT_MS)
 

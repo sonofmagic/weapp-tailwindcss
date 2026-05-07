@@ -232,7 +232,7 @@ describe('bundlers/vite UnifiedViteWeappTailwindcssPlugin bundle', () => {
     expect(configResult?.css?.postcss?.plugins[0]?.postcssPlugin).toBe('autoprefixer')
   }, TEST_TIMEOUT_MS)
 
-  it('keeps official Tailwind plugins registered outside force generator mode', async () => {
+  it('removes official Tailwind plugins in default generator mode', async () => {
     const UnifiedViteWeappTailwindcssPlugin = await loadUnifiedVitePlugin()
     const currentContext = createContext({
       generator: {
@@ -269,14 +269,8 @@ describe('bundlers/vite UnifiedViteWeappTailwindcssPlugin bundle', () => {
 
     await (postPlugin.configResolved as any)?.call(postPlugin, config)
 
-    expect(config.plugins.map(plugin => plugin.name)).toEqual([
-      '@tailwindcss/vite:scan',
-      '@tailwindcss/vite:generate:build',
-    ])
-    expect((config.css.postcss as any).plugins).toEqual([
-      { postcssPlugin: '@tailwindcss/postcss' },
-      { postcssPlugin: 'tailwindcss' },
-    ])
+    expect(config.plugins.map(plugin => plugin.name)).toEqual([])
+    expect((config.css.postcss as any).plugins).toEqual([])
   }, TEST_TIMEOUT_MS)
 
   it('reuses snapshot hashes for unchanged js process cache checks', async () => {

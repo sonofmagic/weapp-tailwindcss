@@ -34,9 +34,7 @@ module.exports = defineConfig({
         postcssInlineConfig: {
           ignoreConfigFile: true,
           plugins: [
-            weappTailwindcss({
-              generator: true,
-            }),
+            weappTailwindcss(),
           ],
         },
         srcMode: 'wx',

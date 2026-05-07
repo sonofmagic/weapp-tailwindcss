@@ -1,10 +1,10 @@
 {
   "version": "1.0.0",
-  "generatedAt": "2026-05-06T16:00:50.432Z",
+  "generatedAt": "2026-05-07T11:42:06.400Z",
   "siteUrl": "https://tw.icebreaker.top",
   "totals": {
-    "all": 183,
-    "docs": 179,
+    "all": 184,
+    "docs": 180,
     "blog": 4
   },
   "documents": [
@@ -3609,6 +3609,45 @@
       ],
       "updatedAt": null,
       "source": "docs/migrations/v3.md"
+    },
+    {
+      "kind": "doc",
+      "id": "doc:migrations/v5",
+      "title": "从 v4 迁移到 v5",
+      "description": "weapp-tailwindcss v5 默认启用样式生成模式，迁移时应让 weapp-tailwindcss 接管 Tailwind CSS 样式生成，并移除重复的官方构建插件。",
+      "summary": "weapp-tailwindcss@5 推荐让 weapp-tailwindcss 成为项目里唯一负责 Tailwind CSS 样式生成的入口。生成模式现在默认开启，常规小程序项目不需要再写 generator: true。",
+      "url": "/docs/migrations/v5",
+      "canonical": "https://tw.icebreaker.top/docs/migrations/v5",
+      "keywords": [
+        "迁移",
+        "升级",
+        "v4",
+        "v5",
+        "generator",
+        "weapp-tailwindcss",
+        "tailwindcss",
+        "小程序",
+        "uni-app",
+        "taro",
+        "weapp-vite",
+        "mpx",
+        "兼容",
+        "迁移到",
+        "migrations",
+        "微信小程序"
+      ],
+      "headings": [
+        "核心变化",
+        "依赖升级",
+        "配置迁移",
+        "# Vite / weapp-vite / uni-app Vite",
+        "# Taro Vite",
+        "# Webpack",
+        "CSS 入口",
+        "兼容旧链路"
+      ],
+      "updatedAt": null,
+      "source": "docs/migrations/v5.md"
     },
     {
       "kind": "doc",

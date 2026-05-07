@@ -24,7 +24,6 @@ const Transform = stream.Transform
  */
 export function createPlugins(options: UserDefinedOptions = {}) {
   const opts = getCompilerContext(options)
-  const hasExplicitGeneratorOptions = options.generator !== undefined
 
   const { templateHandler, styleHandler, jsHandler, cache, twPatcher: initialTwPatcher, refreshTailwindcssPatcher } = opts
 
@@ -237,19 +236,17 @@ export function createPlugins(options: UserDefinedOptions = {}) {
         async transform() {
           await runtimeState.patchPromise
           const cssHandlerOptions = resolveWxssFileHandlerOptions(file, options)
-          const generated = hasExplicitGeneratorOptions
-            ? await generateCssByGenerator({
-                opts,
-                runtimeState,
-                runtime: await refreshRuntimeSet(false),
-                rawSource,
-                file: file.path,
-                cssHandlerOptions,
-                cssUserHandlerOptions: resolveWxssUserHandlerOptions(options),
-                styleHandler,
-                debug,
-              })
-            : undefined
+          const generated = await generateCssByGenerator({
+            opts,
+            runtimeState,
+            runtime: await refreshRuntimeSet(false),
+            rawSource,
+            file: file.path,
+            cssHandlerOptions,
+            cssUserHandlerOptions: resolveWxssUserHandlerOptions(options),
+            styleHandler,
+            debug,
+          })
           const css = generated?.css ?? (await styleHandler(rawSource, cssHandlerOptions)).css
           debug('css handle: %s', file.path)
           return {

@@ -92,10 +92,10 @@ export interface UserDefinedOptionsGeneralPart {
    *
    * @group 3.一般配置
    * @remarks
-   * 默认值为 `{ mode: 'auto', target: 'weapp' }`，会在不改变 v4 既有 Vite/webpack/gulp 用法的前提下，优先尝试直接生成小程序 CSS；当无法安全生成时回退到原来的 Tailwind 产物后处理链路。
+   * 默认值为 `{ mode: 'auto', target: 'weapp' }`，会默认接管 Tailwind CSS 样式生成并直接输出小程序 CSS；当生成失败时回退到原来的 Tailwind 产物后处理链路。
    *
    * - `false`：关闭生成器，完全使用旧链路。
-   * - `true`：等价于默认 `auto`。
+   * - `true`：等价于默认 `auto`，通常无需显式传入。
    * - `{ mode: 'force' }`：强制使用生成器，失败时直接抛错，适合 CI 中验证新链路。
    */
   generator?: WeappTailwindcssGeneratorUserOptions

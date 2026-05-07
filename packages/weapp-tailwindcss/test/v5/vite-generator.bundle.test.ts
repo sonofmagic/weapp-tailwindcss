@@ -360,7 +360,9 @@ describe('v5 vite generator bundle', () => {
 
     const styleHandler = vi.fn(async (code: string) => ({ css: `user:${code}` }))
     setCurrentContext(createContext({
-      generator: true,
+      generator: {
+        mode: 'force',
+      },
       styleHandler,
       twPatcher: {
         patch: vi.fn(),
@@ -382,17 +384,18 @@ describe('v5 vite generator bundle', () => {
     const generateBundle = getGenerateBundleHandler(postPlugin)
     await generateBundle?.call(postPlugin, {} as any, bundle)
 
-    expect((bundle['app.css'] as OutputAsset).source).toBe(`${weappCss}\nuser:${userCss}`)
+    expect((bundle['app.css'] as OutputAsset).source).toBe(`${weappCss}\nuser:${userCss}\nuser:.hover\\:bg-blue-500:hover{color:blue}${userCss}`)
     expect(resolveV3SourceMock).toHaveBeenCalled()
     expect(resolveV4SourceMock).not.toHaveBeenCalled()
     expect(generateMock).toHaveBeenCalledWith(expect.objectContaining({
-      candidates: runtimeSet,
+      candidates: expect.any(Set),
       target: 'weapp',
       styleOptions: expect.objectContaining({
         isMainChunk: true,
         majorVersion: 3,
       }),
     }))
+    expect(generateMock.mock.calls[0]?.[0]?.candidates.size).toBe(0)
     const userCssCall = styleHandler.mock.calls.find(([code]) => code === userCss)
     expect(userCssCall).toBeTruthy()
     expect(userCssCall?.[1]).toMatchObject({

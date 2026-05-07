@@ -39,7 +39,6 @@ export default defineConfig<'vite'>(() => {
       vitePlugins: [
         WeappTailwindcss({
           rem2rpx: true,
-          generator: true,
           cssEntries: [
             path.resolve(__dirname, '../src/app.css'),
           ],
@@ -108,7 +107,6 @@ export default defineConfig<'webpack5'>(() => {
               args: [
                 {
                   rem2rpx: true,
-                  generator: true,
                   cssEntries: [
                     path.resolve(__dirname, '../src/app.css'),
                   ],

@@ -57,7 +57,7 @@ function shouldFinalizeProcessedCssAsset(
   file: string,
 ) {
   const generatorOptions = normalizeWeappTailwindcssGeneratorOptions(opts.generator)
-  return generatorOptions.mode === 'force'
+  return generatorOptions.mode !== 'off'
     && opts.mainCssChunkMatcher(file, opts.appType)
 }
 
