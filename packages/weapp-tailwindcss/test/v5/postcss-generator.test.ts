@@ -55,6 +55,55 @@ describe('v5 postcss generator', () => {
     }))
   })
 
+  it('keeps web target aligned with native Tailwind v4 defaults by default', async () => {
+    const result = await postcss([
+      weappTailwindcss({
+        generator: {
+          target: 'web',
+        },
+        candidates: ['ring', 'border', 'shadow-sm'],
+      }),
+    ]).process(`
+      @theme default {
+        --color-blue-500: #3b82f6;
+        --color-gray-200: #e5e7eb;
+        --shadow-sm: 0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1);
+      }
+      @tailwind utilities;
+    `, {
+      from: undefined,
+    })
+
+    expect(result.css).not.toContain('border-color: var(--color-gray-200, currentcolor)')
+    expect(result.css).toContain('calc(1px + var(--tw-ring-offset-width))')
+    expect(result.css).toContain('--tw-shadow: 0 1px 3px 0 var(--tw-shadow-color, rgb(0 0 0 / 0.1)), 0 1px 2px -1px var(--tw-shadow-color, rgb(0 0 0 / 0.1))')
+  })
+
+  it('passes explicit legacy default opt-in through postcss generator options', async () => {
+    const result = await postcss([
+      weappTailwindcss({
+        generator: {
+          legacyDefaults: true,
+          target: 'web',
+        },
+        candidates: ['ring', 'border', 'shadow-sm'],
+      }),
+    ]).process(`
+      @theme default {
+        --color-blue-500: #3b82f6;
+        --color-gray-200: #e5e7eb;
+        --shadow-sm: 0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1);
+      }
+      @tailwind utilities;
+    `, {
+      from: undefined,
+    })
+
+    expect(result.css).toContain('border-color: var(--color-gray-200, currentcolor)')
+    expect(result.css).toContain('calc(3px + var(--tw-ring-offset-width))')
+    expect(result.css).toContain('--tw-shadow: 0 1px 2px 0 var(--tw-shadow-color, rgb(0 0 0 / 0.05))')
+  })
+
   it('keeps legacy flat target option for v4 compatibility', async () => {
     const result = await postcss([
       weappTailwindcss({

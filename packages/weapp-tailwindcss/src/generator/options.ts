@@ -20,6 +20,12 @@ export interface WeappTailwindcssGeneratorOptions {
    * 传给小程序 CSS 兼容转换器的额外配置。
    */
   styleOptions?: Partial<IStyleHandlerOptions>
+  /**
+   * Tailwind CSS v4 小程序生成模式默认注入 v3 默认值兼容层，保持升级前的视觉行为。
+   *
+   * 设为 `false` 时，完全使用 Tailwind CSS v4 原生默认值。
+   */
+  legacyDefaults?: boolean
 }
 
 export type WeappTailwindcssGeneratorUserOptions = boolean | WeappTailwindcssGeneratorOptions
@@ -28,6 +34,7 @@ export interface NormalizedWeappTailwindcssGeneratorOptions {
   mode: WeappTailwindcssGeneratorMode
   target: WeappTailwindcssGeneratorTarget
   styleOptions?: Partial<IStyleHandlerOptions>
+  legacyDefaults: boolean
 }
 
 export function normalizeWeappTailwindcssGeneratorOptions(
@@ -37,6 +44,7 @@ export function normalizeWeappTailwindcssGeneratorOptions(
     return {
       mode: 'off',
       target: 'weapp',
+      legacyDefaults: true,
     }
   }
 
@@ -44,6 +52,7 @@ export function normalizeWeappTailwindcssGeneratorOptions(
     return {
       mode: 'auto',
       target: 'weapp',
+      legacyDefaults: true,
     }
   }
 
@@ -51,5 +60,6 @@ export function normalizeWeappTailwindcssGeneratorOptions(
     mode: options.mode ?? 'auto',
     target: options.target ?? 'weapp',
     styleOptions: options.styleOptions,
+    legacyDefaults: options.legacyDefaults ?? (options.target ?? 'weapp') === 'weapp',
   }
 }

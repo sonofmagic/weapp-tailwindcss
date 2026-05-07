@@ -1088,6 +1088,7 @@ export async function generateCssByGenerator(
       const generator = createWeappTailwindcssGenerator(source)
       return generator.generate({
         candidates: runtime,
+        legacyDefaults: generatorOptions.legacyDefaults,
         styleOptions: generatorStyleOptions,
         target: generatorOptions.target,
       })

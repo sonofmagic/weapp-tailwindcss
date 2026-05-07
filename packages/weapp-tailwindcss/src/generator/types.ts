@@ -27,6 +27,7 @@ export type TailwindResolvedSource = TailwindV3ResolvedSource | TailwindV4Resolv
 export interface WeappTailwindcssGenerateOptions extends Omit<TailwindV3GenerateOptions & TailwindV4GenerateOptions, 'target'> {
   target?: WeappTailwindcssGeneratorTarget
   styleOptions?: Partial<IStyleHandlerOptions>
+  legacyDefaults?: boolean
 }
 
 export type WeappTailwindcssGenerateResult = (TailwindV3GenerateResult | TailwindV4GenerateResult) & {

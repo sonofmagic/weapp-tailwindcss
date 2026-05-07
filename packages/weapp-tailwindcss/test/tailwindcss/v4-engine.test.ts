@@ -229,6 +229,89 @@ describe('tailwindcss v4 engine', () => {
     expect(result.css).not.toContain('@supports')
   })
 
+  it('keeps Tailwind v3 default values in v4 generator output', async () => {
+    const source = await resolveTailwindV4Source({
+      css: `
+        @theme default {
+          --color-blue-500: #3b82f6;
+          --color-gray-200: #e5e7eb;
+          --blur-sm: 8px;
+          --radius-sm: 0.25rem;
+          --shadow-sm: 0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1);
+        }
+        @tailwind utilities;
+      `,
+      base: process.cwd(),
+    })
+    const engine = createTailwindV4Engine(source)
+
+    const result = await engine.generate({
+      legacyDefaults: true,
+      target: 'web',
+      candidates: ['ring', 'border', 'shadow-sm', 'rounded-sm', 'blur-sm', 'outline'],
+    })
+
+    expect(result.css).toContain('border-color: var(--color-gray-200, currentcolor)')
+    expect(result.css).toContain('--tw-ring-shadow: var(--tw-ring-inset,) 0 0 0 calc(3px + var(--tw-ring-offset-width)) var(--tw-ring-color, var(--color-blue-500, #3b82f6))')
+    expect(result.css).toContain('--tw-shadow: 0 1px 2px 0 var(--tw-shadow-color, rgb(0 0 0 / 0.05))')
+    expect(result.css).toContain('border-radius: var(--radius-sm)')
+    expect(result.css).toContain('--tw-blur: blur(var(--blur-sm))')
+    expect(result.css).toContain('--blur-sm: 4px')
+    expect(result.css).toContain('outline-width: 3px')
+  })
+
+  it('uses legacy default values for mini-program output by default', async () => {
+    const source = await resolveTailwindV4Source({
+      css: `
+        @theme default {
+          --color-blue-500: #3b82f6;
+          --color-gray-200: #e5e7eb;
+          --shadow-sm: 0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1);
+        }
+        @tailwind utilities;
+      `,
+      base: process.cwd(),
+    })
+    const engine = createTailwindV4Engine(source)
+
+    const result = await engine.generate({
+      candidates: ['ring', 'border', 'shadow-sm'],
+    })
+
+    expect(result.css).toContain('calc(3px + var(--tw-ring-offset-width))')
+    expect(result.css).toContain('--tw-shadow: 0 1px 2px 0 var(--tw-shadow-color, rgba(0, 0, 0, 0.05))')
+  })
+
+  it('can opt out of legacy default values for native Tailwind v4 output', async () => {
+    const source = await resolveTailwindV4Source({
+      css: `
+        @theme default {
+          --color-blue-500: #3b82f6;
+          --color-gray-200: #e5e7eb;
+          --blur-sm: 8px;
+          --radius-sm: 0.25rem;
+          --shadow-sm: 0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1);
+        }
+        @tailwind utilities;
+      `,
+      base: process.cwd(),
+    })
+    const engine = createTailwindV4Engine(source)
+
+    const result = await engine.generate({
+      legacyDefaults: false,
+      target: 'web',
+      candidates: ['ring', 'border', 'shadow-sm', 'rounded-sm', 'blur-sm', 'outline'],
+    })
+
+    expect(result.css).not.toContain('--default-ring-width: 3px')
+    expect(result.css).not.toContain('border-color: var(--color-gray-200, currentcolor)')
+    expect(result.css).toContain('calc(1px + var(--tw-ring-offset-width))')
+    expect(result.css).toContain('--tw-shadow: 0 1px 3px 0 var(--tw-shadow-color, rgb(0 0 0 / 0.1)), 0 1px 2px -1px var(--tw-shadow-color, rgb(0 0 0 / 0.1))')
+    expect(result.css).not.toContain('--blur-sm: 4px')
+    expect(result.css).toContain('outline-width: 1px')
+  })
+
   it('expands spacing child combinators for view and text in mini-program output', async () => {
     const source = await resolveTailwindV4Source({
       css: `

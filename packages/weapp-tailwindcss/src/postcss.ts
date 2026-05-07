@@ -430,6 +430,7 @@ export const weappTailwindcssPostcssPlugin: PluginCreator<WeappTailwindcssPostcs
           ...generatorOptions.styleOptions,
           ...styleOptions,
         },
+        legacyDefaults: generatorOptions.legacyDefaults,
         target: legacyTarget ?? generatorOptions.target,
       }
       const generated = await generator.generate(generateOptions)
