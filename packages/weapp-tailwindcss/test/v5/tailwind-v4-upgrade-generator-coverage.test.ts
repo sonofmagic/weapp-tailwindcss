@@ -298,6 +298,166 @@ describe('v5 Tailwind CSS v4 upgrade generator coverage', () => {
     expect(normalizedWeappCss).not.toContain('@source')
   })
 
+  it('supports Tailwind v4 dark mode variants in generator mode', async () => {
+    const fixture = await createFixtureBase()
+    const css = `
+      @import "tailwindcss" source(none);
+      @theme {
+        --color-white: #fff;
+        --color-gray-100: #f3f4f6;
+        --color-gray-900: #111827;
+        --color-slate-900: #0f172a;
+        --color-blue-500: #3b82f6;
+      }
+      @source inline("bg-white text-gray-900 dark:bg-gray-900 dark:text-gray-100");
+    `
+    const [officialResult, webResult, weappResult] = await Promise.all([
+      postcss([tailwindcssPostcss({ optimize: false })]).process(css, {
+        from: fixture.cssEntry,
+      }),
+      postcss([
+        weappTailwindcss({
+          generator: {
+            mode: 'force',
+            target: 'web',
+          },
+        }),
+      ]).process(css, {
+        from: fixture.cssEntry,
+      }),
+      postcss([
+        weappTailwindcss({
+          generator: {
+            mode: 'force',
+            tailwindcssV3Compatibility: false,
+            target: 'weapp',
+          },
+        }),
+      ]).process(css, {
+        from: fixture.cssEntry,
+      }),
+    ])
+    const normalizedWeappCss = normalizeCss(weappResult.css)
+
+    expect(webResult.css).toBe(officialResult.css)
+    expect(webResult.css).toContain('@media (prefers-color-scheme: dark)')
+    expect(webResult.css).toContain('background-color: var(--color-gray-900)')
+    expect(webResult.css).toContain('color: var(--color-gray-100)')
+    expect(webResult.css).not.toContain('@source')
+
+    expect(weappResult.css).toContain('background-color: var(--color-white)')
+    expect(weappResult.css).toContain('color: var(--color-gray-900)')
+    expect(weappResult.css).toContain('background-color: var(--color-gray-900)')
+    expect(weappResult.css).toContain('color: var(--color-gray-100)')
+    expect(normalizedWeappCss).toContain('@media (prefers-color-scheme: dark)')
+    expect(normalizedWeappCss).not.toContain('@source')
+  })
+
+  it('supports Tailwind v4 dark mode custom selector variants in generator mode', async () => {
+    const fixture = await createFixtureBase()
+    const css = `
+      @import "tailwindcss" source(none);
+      @custom-variant dark (&:where(.dark, .dark *));
+      @theme {
+        --color-white: #fff;
+        --color-gray-900: #111827;
+        --color-indigo-500: #6366f1;
+      }
+      @source inline("bg-white dark:bg-gray-900 dark:[&_.label]:text-indigo-500");
+    `
+    const [officialResult, webResult, weappResult] = await Promise.all([
+      postcss([tailwindcssPostcss({ optimize: false })]).process(css, {
+        from: fixture.cssEntry,
+      }),
+      postcss([
+        weappTailwindcss({
+          generator: {
+            mode: 'force',
+            target: 'web',
+          },
+        }),
+      ]).process(css, {
+        from: fixture.cssEntry,
+      }),
+      postcss([
+        weappTailwindcss({
+          generator: {
+            mode: 'force',
+            tailwindcssV3Compatibility: false,
+            target: 'weapp',
+          },
+        }),
+      ]).process(css, {
+        from: fixture.cssEntry,
+      }),
+    ])
+    const normalizedWeappCss = normalizeCss(weappResult.css)
+
+    expect(webResult.css).toBe(officialResult.css)
+    expect(webResult.css).toContain(':where(.dark, .dark *)')
+    expect(webResult.css).toContain('background-color: var(--color-gray-900)')
+    expect(webResult.css).toContain('color: var(--color-indigo-500)')
+
+    expect(weappResult.css).toContain('background-color: var(--color-white)')
+    expect(weappResult.css).toContain('background-color: var(--color-gray-900)')
+    expect(weappResult.css).toContain('color: var(--color-indigo-500)')
+    expect(normalizedWeappCss).toContain(':where(.dark,.dark view)')
+    expect(normalizedWeappCss).toContain(':where(.dark,.dark text)')
+    expect(normalizedWeappCss).not.toContain('@custom-variant')
+    expect(normalizedWeappCss).not.toContain('@source')
+  })
+
+  it('supports Tailwind v4 dark mode data attribute variants in generator mode', async () => {
+    const fixture = await createFixtureBase()
+    const css = `
+      @import "tailwindcss" source(none);
+      @custom-variant dark (&:where([data-theme=dark], [data-theme=dark] *));
+      @theme {
+        --color-white: #fff;
+        --color-zinc-950: #09090b;
+      }
+      @source inline("bg-white dark:bg-zinc-950");
+    `
+    const [officialResult, webResult, weappResult] = await Promise.all([
+      postcss([tailwindcssPostcss({ optimize: false })]).process(css, {
+        from: fixture.cssEntry,
+      }),
+      postcss([
+        weappTailwindcss({
+          generator: {
+            mode: 'force',
+            target: 'web',
+          },
+        }),
+      ]).process(css, {
+        from: fixture.cssEntry,
+      }),
+      postcss([
+        weappTailwindcss({
+          generator: {
+            mode: 'force',
+            tailwindcssV3Compatibility: false,
+            target: 'weapp',
+          },
+        }),
+      ]).process(css, {
+        from: fixture.cssEntry,
+      }),
+    ])
+    const normalizedWeappCss = normalizeCss(weappResult.css)
+
+    expect(webResult.css).toBe(officialResult.css)
+    expect(webResult.css).toContain(':where([data-theme=dark], [data-theme=dark] *)')
+    expect(webResult.css).toContain('background-color: var(--color-zinc-950)')
+
+    expect(weappResult.css).toContain('background-color: var(--color-white)')
+    expect(weappResult.css).toContain('background-color: var(--color-zinc-950)')
+    expect(normalizedWeappCss).toContain(':where([data-theme=dark],[data-theme=dark] view)')
+    expect(normalizedWeappCss).toContain(':where([data-theme=dark],[data-theme=dark] text)')
+    expect(normalizedWeappCss).not.toContain('@custom-variant')
+    expect(normalizedWeappCss).not.toContain('@source')
+  })
+
   it('supports disabling default colors and declaring custom palettes in v4 generator mode', async () => {
     const fixture = await createFixtureBase()
     const css = `

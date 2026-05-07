@@ -74,15 +74,6 @@ export function getFallbackRemove(_rule?: Rule, options?: IStyleHandlerOptions) 
               }
             }
           }
-          else if (selector.value === ':where') {
-            for (const n of selector.nodes) {
-              for (const node of n.nodes) {
-                if (node.type === 'attribute') {
-                  node.remove()
-                }
-              }
-            }
-          }
         }
         else if (selector.type === 'attribute') {
           if (selector.attribute === 'hidden') {
