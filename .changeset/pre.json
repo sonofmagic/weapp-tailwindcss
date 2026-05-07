@@ -66,6 +66,7 @@
     "@weapp-tailwindcss/website": "1.0.18"
   },
   "changesets": [
+    "default-generator-mode-v5",
     "fresh-v3-colors-for-weapp",
     "generator-plugin-compatibility",
     "quiet-v4-generator-upgrade-coverage",
