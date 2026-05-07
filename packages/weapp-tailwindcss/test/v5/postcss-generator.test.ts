@@ -183,6 +183,41 @@ describe('v5 postcss generator', () => {
     }))
   })
 
+  it('honors Tailwind v4 inline source detection in postcss generator mode', async () => {
+    const result = await postcss([
+      weappTailwindcss({
+        generator: {
+          target: 'web',
+        },
+      }),
+    ]).process(`
+      @theme default {
+        --color-red-100: #fee2e2;
+        --color-red-200: #fecaca;
+        --color-red-300: #fca5a5;
+        --spacing: 0.25rem;
+      }
+      @source not ".";
+      @source inline("{hover:,focus:,}underline w-{1..3}");
+      @source inline("bg-red-{100..300..100}");
+      @source not inline("focus:underline");
+      @tailwind utilities;
+    `, {
+      from: undefined,
+    })
+
+    expect(result.css).toContain('.underline')
+    expect(result.css).toContain('.hover\\:underline')
+    expect(result.css).not.toContain('.focus\\:underline')
+    expect(result.css).toContain('.w-1')
+    expect(result.css).toContain('.w-2')
+    expect(result.css).toContain('.w-3')
+    expect(result.css).toContain('.bg-red-100')
+    expect(result.css).toContain('.bg-red-200')
+    expect(result.css).toContain('.bg-red-300')
+    expect(result.css).not.toContain('@source')
+  })
+
   it('resolves @config paths relative to the current postcss input file', async () => {
     const root = await mkdtemp(path.join(tmpdir(), 'weapp-tw-v5-postcss-config-'))
     const sourceDir = path.join(root, 'src')

@@ -15,7 +15,7 @@ export interface TailwindV4GenerateOptions extends PatchTailwindV4GenerateOption
   target?: TailwindV4GenerateTarget
   styleOptions?: Partial<IStyleHandlerOptions>
   tailwindcssV3Compatibility?: boolean
-  scanSources?: boolean
+  scanSources?: PatchTailwindV4GenerateOptions['scanSources']
 }
 
 export interface TailwindV4GenerateResult extends Omit<PatchTailwindV4GenerateResult, 'css'> {

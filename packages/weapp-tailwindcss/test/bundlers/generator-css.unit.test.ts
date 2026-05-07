@@ -154,6 +154,7 @@ describe('bundlers/shared generator css', () => {
     expect(result?.target).toBe('weapp')
     expect(generateMock).toHaveBeenCalledWith(expect.objectContaining({
       candidates: runtimeSet,
+      scanSources: true,
       target: 'weapp',
     }))
     expect(styleHandler).not.toHaveBeenCalled()
@@ -1286,6 +1287,9 @@ describe('bundlers/shared generator css', () => {
 
     expect(result?.css).toBe('.w-_b100px_B{width:100px}\nlegacy:.card{color:red}')
     expect(generateMock).toHaveBeenCalledTimes(1)
+    expect(generateMock).toHaveBeenCalledWith(expect.objectContaining({
+      scanSources: false,
+    }))
     expect(styleHandler).toHaveBeenCalledWith('.card{color:red}', expect.objectContaining({
       isMainChunk: true,
     }))

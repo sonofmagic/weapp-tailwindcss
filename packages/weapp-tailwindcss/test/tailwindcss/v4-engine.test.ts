@@ -1,7 +1,11 @@
-import { mkdir, mkdtemp, writeFile } from 'node:fs/promises'
+import { mkdir, mkdtemp, symlink, writeFile } from 'node:fs/promises'
+import { createRequire } from 'node:module'
 import { tmpdir } from 'node:os'
 import path from 'node:path'
 import { createTailwindV4Engine, resolveTailwindV4Source, resolveTailwindV4SourceOptionsFromPatcher } from '@/tailwindcss/v4-engine'
+
+const require = createRequire(import.meta.url)
+const tailwindcssRoot = path.dirname(require.resolve('tailwindcss4/package.json'))
 
 const MINIMAL_THEME_CSS = `
 @theme default {
@@ -14,6 +18,12 @@ const MINIMAL_THEME_CSS = `
 
 function compactCss(css: string) {
   return css.replace(/\s+/g, '')
+}
+
+async function linkTailwindcssPackage(root: string) {
+  const nodeModulesDir = path.join(root, 'node_modules')
+  await mkdir(nodeModulesDir, { recursive: true })
+  await symlink(tailwindcssRoot, path.join(nodeModulesDir, 'tailwindcss'), 'dir')
 }
 
 describe('tailwindcss v4 engine', () => {
@@ -162,6 +172,87 @@ describe('tailwindcss v4 engine', () => {
     expect(result.rawCss).not.toContain('.bg-blue-500')
     expect(result.css).toContain('.bg-red-500')
     expect(result.css).not.toContain('.bg-blue-500')
+  })
+
+  it('supports official source detection directives in generator mode', async () => {
+    const root = await mkdtemp(path.join(tmpdir(), 'weapp-tw-v4-source-detection-'))
+    const srcDir = path.join(root, 'src')
+    await linkTailwindcssPackage(root)
+    await mkdir(srcDir, { recursive: true })
+    await writeFile(path.join(srcDir, 'page.html'), '<view class="bg-red-500 w-4"></view>', 'utf8')
+    await writeFile(path.join(srcDir, 'ignored.html'), '<view class="bg-blue-500"></view>', 'utf8')
+    await writeFile(path.join(root, 'outside.html'), '<view class="text-blue-500"></view>', 'utf8')
+    const cssEntry = path.join(root, 'app.css')
+    await writeFile(cssEntry, `
+      @theme default {
+        --color-red-100: #fee2e2;
+        --color-red-200: #fecaca;
+        --color-red-300: #fca5a5;
+        --color-red-500: oklch(63.7% 0.237 25.331);
+        --color-blue-500: oklch(62.3% 0.214 259.815);
+        --spacing: 0.25rem;
+      }
+      @import "tailwindcss" source(none);
+      @source "./src/**/*.html";
+      @source not "./src/ignored.html";
+      @source inline("underline {hover:,focus:}underline bg-red-{100..300..100}");
+      @source not inline("focus:underline");
+      @tailwind utilities;
+    `, 'utf8')
+    const source = await resolveTailwindV4Source({
+      projectRoot: root,
+      cssEntries: [cssEntry],
+    })
+    const engine = createTailwindV4Engine(source)
+
+    const result = await engine.generate()
+
+    expect([...result.classSet]).toEqual(expect.arrayContaining([
+      'bg-red-100',
+      'bg-red-200',
+      'bg-red-300',
+      'bg-red-500',
+      'hover:underline',
+      'underline',
+      'w-4',
+    ]))
+    expect(result.classSet.has('bg-blue-500')).toBe(false)
+    expect(result.classSet.has('focus:underline')).toBe(false)
+    expect(result.classSet.has('text-blue-500')).toBe(false)
+    expect(result.rawCss).toContain('.bg-red-500')
+    expect(result.rawCss).toContain('.hover\\:underline')
+    expect(result.rawCss).not.toContain('.focus\\:underline')
+    expect(result.css).toContain('.bg-red-500')
+    expect(result.css).not.toContain('@source')
+  })
+
+  it('uses the Tailwind v4 import source base for automatic source detection', async () => {
+    const root = await mkdtemp(path.join(tmpdir(), 'weapp-tw-v4-source-base-'))
+    const srcDir = path.join(root, 'src')
+    await linkTailwindcssPackage(root)
+    await mkdir(srcDir, { recursive: true })
+    await writeFile(path.join(srcDir, 'page.html'), '<view class="bg-red-500"></view>', 'utf8')
+    await writeFile(path.join(root, 'outside.html'), '<view class="bg-blue-500"></view>', 'utf8')
+    const cssEntry = path.join(root, 'app.css')
+    await writeFile(cssEntry, `
+      @theme default {
+        --color-red-500: oklch(63.7% 0.237 25.331);
+        --color-blue-500: oklch(62.3% 0.214 259.815);
+      }
+      @import "tailwindcss" source("./src");
+      @tailwind utilities;
+    `, 'utf8')
+    const source = await resolveTailwindV4Source({
+      projectRoot: root,
+      cssEntries: [cssEntry],
+    })
+    const engine = createTailwindV4Engine(source)
+
+    const result = await engine.generate()
+
+    expect(result.classSet).toEqual(new Set(['bg-red-500']))
+    expect(result.rawCss).toContain('.bg-red-500')
+    expect(result.rawCss).not.toContain('.bg-blue-500')
   })
 
   it('resolves cssEntries and tracks the entry dependency', async () => {
