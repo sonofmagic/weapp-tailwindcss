@@ -1,5 +1,7 @@
-const TAILWIND_V4_LEGACY_DEFAULTS_CSS = [
-  '@theme default {',
+import { createTailwindV3ColorThemeCss } from './legacy-colors'
+
+const TAILWIND_V4_LEGACY_THEME_CSS = [
+  '@theme {',
   '  --default-ring-width: 3px;',
   '  --default-ring-color: var(--color-blue-500, #3b82f6);',
   '  --default-outline-width: 3px;',
@@ -22,7 +24,10 @@ const TAILWIND_V4_LEGACY_DEFAULTS_CSS = [
   '  --radius-sm: 0.125rem;',
   '  --radius: 0.25rem;',
   '}',
-  '',
+  createTailwindV3ColorThemeCss(),
+].join('\n')
+
+const TAILWIND_V4_LEGACY_BASE_CSS = [
   '@layer base {',
   '  *,',
   '  ::after,',
@@ -50,5 +55,5 @@ const TAILWIND_V4_LEGACY_DEFAULTS_CSS = [
 ].join('\n')
 
 export function appendTailwindV4LegacyDefaultsCss(css: string) {
-  return `${css}\n${TAILWIND_V4_LEGACY_DEFAULTS_CSS}`
+  return `${TAILWIND_V4_LEGACY_THEME_CSS}\n${css}\n${TAILWIND_V4_LEGACY_BASE_CSS}`
 }
