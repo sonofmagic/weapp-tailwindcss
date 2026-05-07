@@ -295,16 +295,16 @@ describe('v5 Tailwind CSS v4 directives parity', () => {
     expect(result.css).toContain('tab-size: 8')
     expect(result.css).toContain('.underline')
     expect(result.css).not.toContain('focus_cunderline')
-    expect(result.css).toContain('.theme-midnight_cbg-brand:where(view)')
-    expect(result.css).toContain('.theme-midnight_cbg-brand:where(text)')
+    expect(result.css).toContain('.theme-midnight_cbg-brand:where([data-theme="midnight"] view)')
+    expect(result.css).toContain('.theme-midnight_cbg-brand:where([data-theme="midnight"] text)')
     expect(result.css).toContain('.card-shell')
     expect(result.css).toContain('border-radius: 18rpx')
     expect(result.css).toContain('padding-left: 32rpx')
     expect(result.css).toContain('padding-right: 32rpx')
     expect(result.css).toContain('.ref-card')
     expect(result.css).toContain('background-color: var(--color-reference)')
-    expect(result.css).toContain('.variant-rule:where(view)')
-    expect(result.css).toContain('.variant-rule:where(text)')
+    expect(result.css).toContain('.variant-rule:where([data-theme="midnight"] view)')
+    expect(result.css).toContain('.variant-rule:where([data-theme="midnight"] text)')
     expect(result.css).toContain('color: rgba(21, 93, 252, 0.5)')
     expect(result.css).toContain('margin: calc(var(--spacing) * 4)')
     expect(result.css).toContain('padding: 0.5rem')
@@ -346,6 +346,96 @@ describe('v5 Tailwind CSS v4 directives parity', () => {
       target: 'tailwind',
       rawCss: result.css,
     }))
+  })
+
+  it('supports explicit Tailwind v4 preflight subpath imports for web generator output', async () => {
+    const fixture = await createTailwindV4DirectiveFixture()
+    const css = [
+      '@layer theme, base, components, utilities;',
+      '@import "tailwindcss/theme.css" layer(theme);',
+      '@import "tailwindcss/preflight.css" layer(base);',
+      '@import "tailwindcss/utilities.css" layer(utilities) source(none);',
+      '@source inline("block border bg-red-500");',
+      '',
+    ].join('\n')
+    const [officialResult, generatorResult] = await Promise.all([
+      postcss([tailwindcssPostcss({ optimize: false })]).process(css, {
+        from: fixture.cssEntry,
+      }),
+      postcss([
+        weappTailwindcss({
+          generator: {
+            mode: 'force',
+            target: 'web',
+          },
+        }),
+      ]).process(css, {
+        from: fixture.cssEntry,
+      }),
+    ])
+
+    expect(generatorResult.css).toBe(officialResult.css)
+    expect(generatorResult.css).toContain('@layer base')
+    expect(generatorResult.css).toContain('box-sizing: border-box')
+    expect(generatorResult.css).toContain('html, :host')
+    expect(generatorResult.css).toContain('button, input, select, optgroup, textarea, ::file-selector-button')
+    expect(generatorResult.css).toContain('.bg-red-500')
+    expect(generatorResult.css).toContain('background-color: var(--color-red-500)')
+  })
+
+  it('drops Tailwind v4 preflight tag selectors from mini-program generator output', async () => {
+    const fixture = await createTailwindV4DirectiveFixture()
+    const css = [
+      '@layer theme, base, components, utilities;',
+      '@import "tailwindcss/theme.css" layer(theme);',
+      '@import "tailwindcss/preflight.css" layer(base);',
+      '@import "tailwindcss/utilities.css" layer(utilities) source(none);',
+      '@source inline("block border bg-red-500");',
+      '',
+    ].join('\n')
+    const result = await postcss([
+      weappTailwindcss({
+        generator: {
+          mode: 'force',
+          tailwindcssV3Compatibility: false,
+          target: 'weapp',
+        },
+      }),
+    ]).process(css, {
+      from: fixture.cssEntry,
+    })
+
+    expect(result.css).toContain('.bg-red-500')
+    expect(result.css).toContain('background-color: var(--color-red-500)')
+    expect(result.css).not.toContain('box-sizing: border-box')
+    expect(result.css).not.toContain('html,')
+    expect(result.css).not.toContain('button, input')
+    expect(result.css).not.toContain('::file-selector-button')
+  })
+
+  it('ignores Tailwind v4 preflight subpath imports without an explicit layer option', async () => {
+    const fixture = await createTailwindV4DirectiveFixture()
+    const css = [
+      '@import "tailwindcss/preflight.css";',
+      '@import "tailwindcss/utilities.css" source(none);',
+      '@source inline("block");',
+      '',
+    ].join('\n')
+    const result = await postcss([
+      weappTailwindcss({
+        generator: {
+          mode: 'force',
+          target: 'web',
+        },
+      }),
+    ]).process(css, {
+      from: fixture.cssEntry,
+    })
+
+    expect(result.css).toContain('.block')
+    expect(result.css).not.toContain('box-sizing: border-box')
+    expect(result.css).not.toContain('html, :host')
+    expect(result.css).not.toContain('button, input')
   })
 
   it('supports official adding-custom-styles features in v4 generator mode', async () => {

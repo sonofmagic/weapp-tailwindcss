@@ -45,6 +45,50 @@ function isTailwindCssImport(params: string) {
   return /^\s*(['"])tailwindcss(?:\/[^'"]*)?\1/.test(params)
 }
 
+function parseCssImportSpecifier(params: string) {
+  const value = params.trim()
+  const quoted = /^(['"])(.*?)\1/.exec(value)
+  if (quoted) {
+    return quoted[2]
+  }
+
+  const url = /^url\(\s*(?:(['"])(.*?)\1|([^'")\s]+))\s*\)/.exec(value)
+  return url?.[2] ?? url?.[3]
+}
+
+function isTailwindCssPreflightImport(params: string) {
+  const specifier = parseCssImportSpecifier(params)
+  return specifier === 'tailwindcss/preflight.css' || specifier === 'tailwindcss/preflight'
+}
+
+function hasImportLayerOption(params: string) {
+  return /\blayer(?:\s*\(|\s*$)/.test(params)
+}
+
+function removeUnlayeredTailwindV4PreflightImports(css: string) {
+  if (!css.includes('preflight')) {
+    return css
+  }
+
+  let root: postcss.Root
+  try {
+    root = postcss.parse(css)
+  }
+  catch {
+    return css
+  }
+
+  let changed = false
+  root.walkAtRules('import', (rule) => {
+    if (isTailwindCssPreflightImport(rule.params) && !hasImportLayerOption(rule.params)) {
+      rule.remove()
+      changed = true
+    }
+  })
+
+  return changed ? root.toString() : css
+}
+
 function parseSourceFileParam(params: string) {
   const value = params.trim()
   if (!value || value === 'none' || value.startsWith('inline(')) {
@@ -151,11 +195,12 @@ export function createTailwindV4Engine(source: TailwindV4ResolvedSource): Tailwi
       ...patchOptions
     } = options
     const shouldApplyTailwindV3Compatibility = tailwindcssV3Compatibility ?? target === 'weapp'
+    const filteredSourceCss = removeUnlayeredTailwindV4PreflightImports(source.css)
     const sourceCss = shouldApplyTailwindV3Compatibility
-      ? applyTailwindV3CompatibilityCss(source.css)
+      ? applyTailwindV3CompatibilityCss(filteredSourceCss)
       : target === 'weapp'
-        ? applyMiniProgramTailwindV4DefaultColorCss(source.css)
-        : source.css
+        ? applyMiniProgramTailwindV4DefaultColorCss(filteredSourceCss)
+        : filteredSourceCss
     const candidates = target === 'weapp'
       ? filterUnsupportedMiniProgramTailwindV4Candidates(patchOptions.candidates)
       : patchOptions.candidates
