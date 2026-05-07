@@ -9,12 +9,25 @@ const defaultStyleHandler = createStyleHandler({
   isMainChunk: true,
   majorVersion: 4,
 })
+const CSS_DECLARATION_URL_RE = /(:\s*)url\(([^\n\r"';[\]{}]*[[\]{}][^\n\r;]*)\)(?=\s*;)/g
+
+export function normalizeTailwindV4GeneratedUrlValues(css: string) {
+  return css.replace(CSS_DECLARATION_URL_RE, (match, prefix: string, urlValue: string) => {
+    try {
+      return `${prefix}url("${urlValue.replaceAll('\\', '\\\\').replaceAll('"', '\\"')}")`
+    }
+    catch {
+      return match
+    }
+  })
+}
 
 export async function transformTailwindV4CssToWeapp(
   css: string,
   options?: Partial<IStyleHandlerOptions>,
 ) {
-  const result = await defaultStyleHandler(css, {
+  const compatibleCss = normalizeTailwindV4GeneratedUrlValues(css)
+  const result = await defaultStyleHandler(compatibleCss, {
     cssChildCombinatorReplaceValue: ['view', 'text'],
     cssRemoveHoverPseudoClass: true,
     isMainChunk: true,
@@ -29,7 +42,8 @@ export async function transformTailwindV4CssByTarget(
   target: TailwindV4GenerateTarget,
   options?: Partial<IStyleHandlerOptions>,
 ) {
+  const compatibleCss = normalizeTailwindV4GeneratedUrlValues(css)
   return target === 'weapp'
-    ? transformTailwindV4CssToWeapp(css, options)
-    : css
+    ? transformTailwindV4CssToWeapp(compatibleCss, options)
+    : compatibleCss
 }

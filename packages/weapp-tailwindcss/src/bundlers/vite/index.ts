@@ -29,6 +29,7 @@ import { createGenerateBundleHook } from './generate-bundle'
 import { createBundleRuntimeClassSetManager } from './incremental-runtime-class-set'
 import { resolveImplicitAppTypeFromViteRoot } from './resolve-app-type'
 import { createRewriteCssImportsPlugins } from './rewrite-css-imports'
+import { createSourceCandidateCollector, isSourceCandidateRequest } from './source-candidates'
 import { slash } from './utils'
 
 const debug = createDebug()
@@ -240,8 +241,12 @@ export function UnifiedViteWeappTailwindcssPlugin(options: UserDefinedOptions = 
   let runtimeRefreshOptionsKey: string | undefined
   let recordedGeneratorCandidates: Set<string> | undefined
   const bundleRuntimeClassSetManager = createBundleRuntimeClassSetManager()
+  const sourceCandidateCollector = createSourceCandidateCollector()
+  const pendingSourceCandidateSyncs = new Set<Promise<void>>()
   const processedCssAssets = new WeakSet<object>()
   const processedCssAssetFiles = new Set<string>()
+  const rememberedMainCssSources = new Map<string, string>()
+  const rememberedMainCssSignatureByFile = new Map<string, string>()
 
   function resolveRuntimeRefreshOptions() {
     const configPath = resolveTailwindcssOptions(runtimeState.twPatcher.options)?.config
@@ -329,20 +334,8 @@ export function UnifiedViteWeappTailwindcssPlugin(options: UserDefinedOptions = 
     if (runtimeState.twPatcher.majorVersion === 4 && !forceRuntimeRefresh) {
       try {
         const nextRuntimeSet = await bundleRuntimeClassSetManager.sync(runtimeState.twPatcher, snapshot)
-        const shouldForceFullRuntimeSet = forceRuntimeRefresh || invalidation.changed || forceCollectBySource
-        const fullRuntimeSet = !shouldForceFullRuntimeSet && runtimeSet
-          ? runtimeSet
-          : await collectRuntimeClassSet(runtimeState.twPatcher, {
-              force: shouldForceFullRuntimeSet,
-              skipRefresh: forceRuntimeRefresh,
-              clearCache: forceRuntimeRefresh || invalidation.changed,
-            })
-        const mergedRuntimeSet = new Set([
-          ...fullRuntimeSet,
-          ...nextRuntimeSet,
-        ])
-        runtimeSet = mergedRuntimeSet
-        return mergedRuntimeSet
+        runtimeSet = nextRuntimeSet
+        return nextRuntimeSet
       }
       catch (error) {
         debug('incremental runtime set sync failed, fallback to full collect: %O', error)
@@ -384,15 +377,41 @@ export function UnifiedViteWeappTailwindcssPlugin(options: UserDefinedOptions = 
       || (file ? processedCssAssetFiles.has(normalizeOutputPathKey(file)) : false)
   }
   const recordGeneratorCandidates = (candidates: Set<string>) => {
-    if (!recordedGeneratorCandidates) {
-      recordedGeneratorCandidates = new Set(candidates)
-      return
-    }
-    for (const candidate of candidates) {
-      recordedGeneratorCandidates.add(candidate)
-    }
+    recordedGeneratorCandidates = new Set(candidates)
   }
   const getRecordedGeneratorCandidates = () => recordedGeneratorCandidates
+  const getSourceCandidates = () => sourceCandidateCollector.values()
+  const isWatchBuild = () => resolvedConfig?.command === 'build' && resolvedConfig.build.watch != null
+  const waitForSourceCandidateSyncs = async () => {
+    while (pendingSourceCandidateSyncs.size > 0) {
+      await Promise.all(pendingSourceCandidateSyncs)
+    }
+  }
+  const syncChangedSourceCandidateFile = (id: string) => {
+    if (!shouldOwnTailwindGeneration || !isSourceCandidateRequest(id)) {
+      return Promise.resolve()
+    }
+    const task = sourceCandidateCollector.syncFile(id)
+      .catch((error) => {
+        debug('source candidate watch sync failed: %s %O', id, error)
+      })
+      .finally(() => {
+        pendingSourceCandidateSyncs.delete(task)
+      })
+    pendingSourceCandidateSyncs.add(task)
+    return task
+  }
+  const rememberMainCssSource = (file: string, rawSource: string, cssRuntimeSignature?: string) => {
+    rememberedMainCssSources.set(file, rawSource)
+    if (cssRuntimeSignature) {
+      rememberedMainCssSignatureByFile.set(file, cssRuntimeSignature)
+    }
+  }
+  const getRememberedMainCssSources = () => rememberedMainCssSources
+  const getRememberedMainCssSignature = (file: string) => rememberedMainCssSignatureByFile.get(file)
+  const setRememberedMainCssSignature = (file: string, cssRuntimeSignature: string) => {
+    rememberedMainCssSignatureByFile.set(file, cssRuntimeSignature)
+  }
   const cssFinalizerOutputPlugin = createViteCssFinalizerOutputPlugin({
     opts,
     runtimeState,
@@ -402,6 +421,9 @@ export function UnifiedViteWeappTailwindcssPlugin(options: UserDefinedOptions = 
     markCssAssetProcessed,
     isCssAssetProcessed,
     getRecordedGeneratorCandidates,
+    getSourceCandidates,
+    waitForSourceCandidateSyncs,
+    rememberMainCssSource,
   })
   const utsPlatform = resolveUniUtsPlatform()
   const isIosPlatform = utsPlatform.isAppIos
@@ -423,6 +445,40 @@ export function UnifiedViteWeappTailwindcssPlugin(options: UserDefinedOptions = 
 
   const plugins: Plugin[] = [
     ...rewritePlugins,
+    {
+      name: `${vitePluginName}:source-candidates`,
+      enforce: 'pre',
+      async transform(code, id) {
+        if (!shouldOwnTailwindGeneration || !isSourceCandidateRequest(id)) {
+          return
+        }
+        await sourceCandidateCollector.sync(id, code)
+      },
+      async watchChange(id, change) {
+        if (change.event === 'delete') {
+          sourceCandidateCollector.remove(id)
+          return
+        }
+        await syncChangedSourceCandidateFile(id)
+      },
+      async handleHotUpdate(ctx) {
+        await syncChangedSourceCandidateFile(ctx.file)
+      },
+      async buildStart() {
+        if (!shouldOwnTailwindGeneration) {
+          return
+        }
+        if (resolvedConfig?.command === 'build' && !isWatchBuild()) {
+          sourceCandidateCollector.clear()
+        }
+        const root = resolvedConfig?.root ?? process.cwd()
+        const outDir = resolvedConfig?.build?.outDir
+        await sourceCandidateCollector.scanRoot({
+          root,
+          outDir,
+        })
+      },
+    },
     {
       name: `${vitePluginName}:post`,
       enforce: 'post',
@@ -540,6 +596,12 @@ export function UnifiedViteWeappTailwindcssPlugin(options: UserDefinedOptions = 
           debug,
           getResolvedConfig,
           markCssAssetProcessed,
+          getSourceCandidates,
+          waitForSourceCandidateSyncs,
+          rememberMainCssSource,
+          getRememberedMainCssSources,
+          getRememberedMainCssSignature,
+          setRememberedMainCssSignature,
           recordGeneratorCandidates,
         }),
       },

@@ -37,6 +37,11 @@ function getGenerateBundleHandler(plugin: Plugin) {
   return typeof hook === 'object' ? hook.handler : hook
 }
 
+function getTransformHandler(plugin: Plugin) {
+  const hook = plugin.transform as any
+  return typeof hook === 'object' ? hook.handler : hook
+}
+
 function getOutputOptionsHandler(plugin: Plugin) {
   const hook = plugin.outputOptions as any
   return typeof hook === 'object' ? hook.handler : hook
@@ -98,7 +103,9 @@ describe('bundlers/vite UnifiedViteWeappTailwindcssPlugin bundle', () => {
     setCurrentContext(currentContext)
     const plugins = UnifiedViteWeappTailwindcssPlugin()
     expect(plugins).toBeDefined()
+    const sourcePlugin = plugins?.find(plugin => plugin.name === 'weapp-tailwindcss:adaptor:source-candidates') as Plugin
     const postPlugin = plugins?.find(plugin => plugin.name === 'weapp-tailwindcss:adaptor:post') as Plugin
+    expect(sourcePlugin).toBeTruthy()
     expect(postPlugin).toBeTruthy()
     expect(currentContext.onLoad).toHaveBeenCalledTimes(1)
     expect(currentContext.twPatcher.patch).toHaveBeenCalledTimes(1)
@@ -410,7 +417,9 @@ const trace = "at App.vue:4"
 
     const UnifiedViteWeappTailwindcssPlugin = await loadUnifiedVitePlugin()
     const plugins = UnifiedViteWeappTailwindcssPlugin()
+    const sourcePlugin = plugins?.find(plugin => plugin.name === 'weapp-tailwindcss:adaptor:source-candidates') as Plugin
     const postPlugin = plugins?.find(plugin => plugin.name === 'weapp-tailwindcss:adaptor:post') as Plugin
+    expect(sourcePlugin).toBeTruthy()
     expect(postPlugin).toBeTruthy()
 
     await (postPlugin.configResolved as any)?.call(postPlugin, {
@@ -463,7 +472,9 @@ const trace = "at App.vue:4"
 
     const UnifiedViteWeappTailwindcssPlugin = await loadUnifiedVitePlugin()
     const plugins = UnifiedViteWeappTailwindcssPlugin()
+    const sourcePlugin = plugins?.find(plugin => plugin.name === 'weapp-tailwindcss:adaptor:source-candidates') as Plugin
     const postPlugin = plugins?.find(plugin => plugin.name === 'weapp-tailwindcss:adaptor:post') as Plugin
+    expect(sourcePlugin).toBeTruthy()
     expect(postPlugin).toBeTruthy()
 
     await (postPlugin.configResolved as any)?.call(postPlugin, {
@@ -752,7 +763,9 @@ const trace = "at App.vue:4"
 
     const UnifiedViteWeappTailwindcssPlugin = await loadUnifiedVitePlugin()
     const plugins = UnifiedViteWeappTailwindcssPlugin()
+    const sourcePlugin = plugins?.find(plugin => plugin.name === 'weapp-tailwindcss:adaptor:source-candidates') as Plugin
     const postPlugin = plugins?.find(plugin => plugin.name === 'weapp-tailwindcss:adaptor:post') as Plugin
+    expect(sourcePlugin).toBeTruthy()
     expect(postPlugin).toBeTruthy()
 
     await (postPlugin.configResolved as any)?.call(postPlugin, {
@@ -762,7 +775,15 @@ const trace = "at App.vue:4"
       build: { outDir: 'dist' },
     } as ResolvedConfig)
 
+    const transform = getTransformHandler(sourcePlugin)
+    await transform?.call(sourcePlugin, 'const cls = "w-[100px]"', '/project/src/pages/index.ts')
+
     const bundle = {
+      'app.js': {
+        code: 'const cls = "w-[100px]"',
+        fileName: 'app.js',
+        type: 'chunk',
+      } as OutputChunk,
       'app.css': {
         ...createRollupAsset('/*! weapp-tailwindcss generator-placeholder */\n.card{color:red}'),
         fileName: 'app.css',
@@ -775,8 +796,10 @@ const trace = "at App.vue:4"
     expect((bundle['app.css'] as OutputAsset).source).toBe(`${weappCss}\ncss:.card{color:red}`)
     expect((bundle['app.css'] as OutputAsset).source.toString()).not.toContain('generator-placeholder')
     expect(generateMock).toHaveBeenCalledWith(expect.objectContaining({
-      candidates: runtimeSet,
+      candidates: expect.any(Set),
     }))
+    const candidates = generateMock.mock.calls[0]?.[0]?.candidates as Set<string>
+    expect(candidates.has('w-[100px]')).toBe(true)
   }, TEST_TIMEOUT_MS)
 
   it('keeps appended user css when tailwind v4 engine css matches the generated prefix', async () => {
@@ -828,7 +851,9 @@ const trace = "at App.vue:4"
 
     const UnifiedViteWeappTailwindcssPlugin = await loadUnifiedVitePlugin()
     const plugins = UnifiedViteWeappTailwindcssPlugin()
+    const sourcePlugin = plugins?.find(plugin => plugin.name === 'weapp-tailwindcss:adaptor:source-candidates') as Plugin
     const postPlugin = plugins?.find(plugin => plugin.name === 'weapp-tailwindcss:adaptor:post') as Plugin
+    expect(sourcePlugin).toBeTruthy()
     expect(postPlugin).toBeTruthy()
 
     await (postPlugin.configResolved as any)?.call(postPlugin, {
@@ -857,22 +882,23 @@ const trace = "at App.vue:4"
     })
   }, TEST_TIMEOUT_MS)
 
-  it('merges Tailwind v4 content tokens into generator candidates', async () => {
-    const runtimeSet = new Set(['w-[100px]'])
+  it('uses source runtime candidates and filters unsupported Tailwind v4 mini-program variants in force generator mode', async () => {
+    const runtimeSet = new Set([
+      'w-[100px]',
+      'in-[.group/name]:flex',
+      'group-hover/item:visible',
+    ])
     const rawTailwindCss = '/*! tailwindcss v4.2.4 | MIT License | https://tailwindcss.com */\n.w-\\[100px\\]{width:100px}'
-    const weappCss = '.w-_b100px_B{width:100px}.container{width:100%}'
+    const weappCss = '.w-_b100px_B{width:100px}.text-_b_h123456_B{color:#123456}'
     const generateMock = vi.fn(async () => ({
       css: weappCss,
       rawCss: rawTailwindCss,
       target: 'weapp',
-      classSet: new Set(['w-[100px]', 'container']),
+      classSet: new Set(['w-[100px]', 'text-[#123456]']),
       dependencies: [],
       sources: [],
       root: null,
     }))
-    const validateCandidates = vi.fn(async (candidates: Iterable<string>) =>
-      new Set([...candidates].filter(candidate => candidate === 'container')),
-    )
 
     vi.doMock('@/bundlers/vite/incremental-runtime-class-set', () => ({
       createBundleRuntimeClassSetManager: () => ({
@@ -883,10 +909,22 @@ const trace = "at App.vue:4"
     vi.doMock('@/generator', () => ({
       createWeappTailwindcssGenerator: vi.fn(() => ({
         generate: generateMock,
-        validateCandidates,
       })),
       normalizeWeappTailwindcssGeneratorOptions: normalizeGeneratorOptions,
       resolveTailwindV4SourceFromPatcher: vi.fn(async () => ({
+        projectRoot: process.cwd(),
+        base: process.cwd(),
+        baseFallbacks: [],
+        css: '@import "tailwindcss";',
+        dependencies: [],
+      })),
+      resolveTailwindV4SourceOptionsFromPatcher: vi.fn(() => ({
+        projectRoot: process.cwd(),
+        base: process.cwd(),
+        baseFallbacks: [],
+        packageName: 'tailwindcss4',
+      })),
+      resolveTailwindV4Source: vi.fn(async () => ({
         projectRoot: process.cwd(),
         base: process.cwd(),
         baseFallbacks: [],
@@ -905,32 +943,15 @@ const trace = "at App.vue:4"
         getClassSet: vi.fn(async () => runtimeSet),
         getClassSetSync: vi.fn(() => runtimeSet),
         extract: vi.fn(async () => ({ classSet: runtimeSet })),
-        collectContentTokens: vi.fn(async () => ({
-          entries: [
-            {
-              rawCandidate: 'container',
-              file: 'tailwind.config.js',
-              relativeFile: 'tailwind.config.js',
-              extension: 'js',
-              start: 0,
-              end: 9,
-              length: 9,
-              line: 1,
-              column: 1,
-              lineText: 'container: false',
-            },
-          ],
-          filesScanned: 1,
-          sources: [],
-          skippedFiles: [],
-        })),
         majorVersion: 4,
       },
     }))
 
     const UnifiedViteWeappTailwindcssPlugin = await loadUnifiedVitePlugin()
     const plugins = UnifiedViteWeappTailwindcssPlugin()
+    const sourcePlugin = plugins?.find(plugin => plugin.name === 'weapp-tailwindcss:adaptor:source-candidates') as Plugin
     const postPlugin = plugins?.find(plugin => plugin.name === 'weapp-tailwindcss:adaptor:post') as Plugin
+    expect(sourcePlugin).toBeTruthy()
     expect(postPlugin).toBeTruthy()
 
     await (postPlugin.configResolved as any)?.call(postPlugin, {
@@ -940,7 +961,19 @@ const trace = "at App.vue:4"
       build: { outDir: 'dist' },
     } as ResolvedConfig)
 
+    const transform = getTransformHandler(sourcePlugin)
+    await transform?.call(
+      sourcePlugin,
+      'const cls = "w-[100px] text-[#123456] in-[.group/name]:flex group-hover/item:visible"',
+      '/project/src/pages/index.ts',
+    )
+
     const bundle = {
+      'app.js': {
+        code: 'const cls = ""',
+        fileName: 'app.js',
+        type: 'chunk',
+      } as OutputChunk,
       'app.css': {
         ...createRollupAsset(rawTailwindCss),
         fileName: 'app.css',
@@ -954,8 +987,10 @@ const trace = "at App.vue:4"
       candidates: expect.any(Set),
     }))
     const candidates = generateMock.mock.calls[0]?.[0]?.candidates as Set<string>
+    expect(candidates.has('text-[#123456]')).toBe(true)
     expect(candidates.has('w-[100px]')).toBe(true)
-    expect(candidates.has('container')).toBe(true)
+    expect(candidates.has('in-[.group/name]:flex')).toBe(false)
+    expect(candidates.has('group-hover/item:visible')).toBe(false)
   }, TEST_TIMEOUT_MS)
 
   it('finalizes css assets emitted after the main generateBundle pass through Rollup output plugins', async () => {

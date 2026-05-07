@@ -434,13 +434,18 @@ export function hasTailwindSourceDirectives(rawSource: string) {
   }
 }
 
-export function resolveCssEntrySource(rawSource: string, base: string) {
+export function resolveCssEntrySource(
+  rawSource: string,
+  base: string,
+  options: { removeConfig?: boolean } = {},
+) {
   try {
     const root = postcss.parse(rawSource)
     let found = false
     let config: string | undefined
     let configRequest: string | undefined
     let removedConfig = false
+    const removeConfig = options.removeConfig ?? true
     root.walk((node) => {
       if (isTailwindGenerationDirective(node)) {
         found = true
@@ -451,8 +456,10 @@ export function resolveCssEntrySource(rawSource: string, base: string) {
           configRequest = configPath
           config = path.isAbsolute(configPath) ? configPath : path.resolve(base, configPath)
         }
-        node.remove()
-        removedConfig = true
+        if (removeConfig) {
+          node.remove()
+          removedConfig = true
+        }
       }
     })
     if (!found) {
@@ -523,23 +530,61 @@ function createSourceStylePathCandidates(
     cwd?: string
   },
 ) {
-  const relativeFile = stripStyleExtension(file)
-  if (path.isAbsolute(relativeFile)) {
-    return []
-  }
-
   const bases = [
     sourceOptions.projectRoot,
     sourceOptions.cwd,
     process.cwd(),
   ].filter((item): item is string => typeof item === 'string' && item.length > 0)
+  const strippedFile = stripStyleExtension(file)
+  const relativeFiles = new Set<string>()
+
+  if (path.isAbsolute(strippedFile)) {
+    for (const base of bases) {
+      const relative = path.relative(base, strippedFile)
+      if (!relative || relative.startsWith('..') || path.isAbsolute(relative)) {
+        continue
+      }
+      relativeFiles.add(relative)
+      const parts = relative.split(path.sep).filter(Boolean)
+      if (parts.length > 1) {
+        relativeFiles.add(parts.slice(1).join(path.sep))
+        const distIndex = parts.lastIndexOf('dist')
+        if (distIndex >= 0 && distIndex < parts.length - 1) {
+          relativeFiles.add([
+            ...parts.slice(0, distIndex),
+            ...parts.slice(distIndex + 1),
+          ].join(path.sep))
+        }
+      }
+    }
+  }
+  else {
+    relativeFiles.add(strippedFile)
+    const parts = strippedFile.split(/[\\/]/).filter(Boolean)
+    if (parts.length > 1) {
+      relativeFiles.add(parts.slice(1).join(path.sep))
+      const distIndex = parts.lastIndexOf('dist')
+      if (distIndex >= 0 && distIndex < parts.length - 1) {
+        relativeFiles.add([
+          ...parts.slice(0, distIndex),
+          ...parts.slice(distIndex + 1),
+        ].join(path.sep))
+      }
+    }
+  }
+
   const candidates = new Set<string>()
 
-  for (const base of bases) {
-    for (const sourceRoot of ['', 'src']) {
-      const prefix = sourceRoot ? path.resolve(base, sourceRoot, relativeFile) : path.resolve(base, relativeFile)
-      for (const extension of SOURCE_STYLE_EXTENSIONS) {
-        candidates.add(`${prefix}${extension}`)
+  for (const relativeFile of relativeFiles) {
+    if (!relativeFile || path.isAbsolute(relativeFile)) {
+      continue
+    }
+    for (const base of bases) {
+      for (const sourceRoot of ['', 'src']) {
+        const prefix = sourceRoot ? path.resolve(base, sourceRoot, relativeFile) : path.resolve(base, relativeFile)
+        for (const extension of SOURCE_STYLE_EXTENSIONS) {
+          candidates.add(`${prefix}${extension}`)
+        }
       }
     }
   }
@@ -564,12 +609,17 @@ function extractStyleDirectiveSources(source: string) {
   return hasTailwindSourceDirectives(source) ? [source] : []
 }
 
+function shouldResolveSourceSideCssEntry(rawSource: string) {
+  return rawSource.includes('@apply')
+}
+
 function resolveSourceSideCssEntrySource(
   file: string,
   sourceOptions: {
     projectRoot?: string
     cwd?: string
   },
+  resolveOptions: { removeConfig?: boolean } = {},
 ) {
   for (const sourceFile of createSourceStylePathCandidates(file, sourceOptions)) {
     if (!existsSync(sourceFile)) {
@@ -578,7 +628,7 @@ function resolveSourceSideCssEntrySource(
     try {
       const source = readFileSync(sourceFile, 'utf8')
       for (const styleSource of extractStyleDirectiveSources(source)) {
-        const cssEntrySource = resolveCssEntrySource(styleSource, path.dirname(sourceFile))
+        const cssEntrySource = resolveCssEntrySource(styleSource, path.dirname(sourceFile), resolveOptions)
         if (cssEntrySource) {
           return cssEntrySource
         }
@@ -590,6 +640,17 @@ function resolveSourceSideCssEntrySource(
   }
 }
 
+function tryResolveTailwindV4SourceOptions(
+  runtimeState: GenerateCssByGeneratorOptions['runtimeState'],
+) {
+  try {
+    return resolveTailwindV4SourceOptionsFromPatcher(runtimeState.twPatcher)
+  }
+  catch {
+    return undefined
+  }
+}
+
 export async function resolveGeneratorSource(
   majorVersion: number | undefined,
   runtimeState: GenerateCssByGeneratorOptions['runtimeState'],
@@ -598,10 +659,10 @@ export async function resolveGeneratorSource(
   cssHandlerOptions: IStyleHandlerOptions,
 ) {
   const base = resolveCssSourceBase(file, cssHandlerOptions)
-  const cssEntrySource = resolveCssEntrySource(rawSource, base)
+  const cssEntrySource = resolveCssEntrySource(rawSource, base, { removeConfig: majorVersion === 3 })
   if (majorVersion === 3) {
     const sourceOptions = resolveTailwindV3SourceOptionsFromPatcher(runtimeState.twPatcher)
-    const sourceSideEntrySource = resolveSourceSideCssEntrySource(file, sourceOptions)
+    const sourceSideEntrySource = resolveSourceSideCssEntrySource(file, sourceOptions, { removeConfig: true })
     const resolvedEntrySource = cssEntrySource ?? sourceSideEntrySource
     if (!resolvedEntrySource) {
       return resolveTailwindV3SourceFromPatcher(runtimeState.twPatcher)
@@ -620,14 +681,21 @@ export async function resolveGeneratorSource(
     })
   }
 
-  if (!cssEntrySource) {
+  const sourceOptions = tryResolveTailwindV4SourceOptions(runtimeState)
+  const shouldPreferSourceSideEntry = shouldResolveSourceSideCssEntry(rawSource)
+    || Boolean(cssEntrySource?.css.includes('weapp-tailwindcss generator-placeholder'))
+  const sourceSideEntrySource = sourceOptions && shouldPreferSourceSideEntry
+    ? resolveSourceSideCssEntrySource(file, sourceOptions, { removeConfig: false })
+    : undefined
+  const resolvedEntrySource = sourceSideEntrySource ?? cssEntrySource
+  if (!resolvedEntrySource) {
     return resolveTailwindV4SourceFromPatcher(runtimeState.twPatcher)
   }
-  const sourceOptions = resolveTailwindV4SourceOptionsFromPatcher(runtimeState.twPatcher)
+  const resolvedSourceOptions = sourceOptions ?? {}
   return resolveTailwindV4Source({
-    ...sourceOptions,
-    base: cssEntrySource.base,
-    css: cssEntrySource.css,
+    ...resolvedSourceOptions,
+    base: resolvedEntrySource.base,
+    css: resolvedEntrySource.css,
   })
 }
 
@@ -639,7 +707,7 @@ async function resolveGeneratorSources(
   cssHandlerOptions: IStyleHandlerOptions,
 ): Promise<TailwindResolvedSource[]> {
   const base = resolveCssSourceBase(file, cssHandlerOptions)
-  const cssEntrySource = resolveCssEntrySource(rawSource, base)
+  const cssEntrySource = resolveCssEntrySource(rawSource, base, { removeConfig: majorVersion === 3 })
   if (majorVersion !== 4 || (cssEntrySource && !cssHandlerOptions.isMainChunk)) {
     return [
       await resolveGeneratorSource(majorVersion, runtimeState, rawSource, file, cssHandlerOptions),
@@ -1088,6 +1156,7 @@ export async function generateCssByGenerator(
       const generator = createWeappTailwindcssGenerator(source)
       return generator.generate({
         candidates: runtime,
+        scanSources: false,
         styleOptions: generatorStyleOptions,
         tailwindcssV3Compatibility: generatorOptions.tailwindcssV3Compatibility,
         target: generatorOptions.target,

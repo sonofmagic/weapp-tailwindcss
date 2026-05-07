@@ -422,6 +422,7 @@ export const weappTailwindcssPostcssPlugin: PluginCreator<WeappTailwindcssPostcs
           ...autoCandidates,
           ...(candidates ?? []),
         ]),
+        scanSources: false,
         sources: [
           ...collectedSources.sources,
           ...(sources ?? []),

@@ -232,8 +232,5 @@
     "tailwindcss-patch": "catalog:tailwindcssPatch",
     "webpack-sources": "3.3.4",
     "yaml": "^2.8.4"
-  },
-  "devDependencies": {
-    "fast-check": "^4.7.0"
   }
 }

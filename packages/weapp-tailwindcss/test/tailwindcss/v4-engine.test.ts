@@ -41,11 +41,11 @@ describe('tailwindcss v4 engine', () => {
   it('uses mini-program-safe Tailwind v4 default color variables for native v4 weapp output', async () => {
     const source = await resolveTailwindV4Source({
       css: `
+        @import "tailwindcss4";
         @theme default {
           --color-blue-500: oklch(62.3% 0.214 259.815);
           --color-red-500: oklch(63.7% 0.237 25.331);
         }
-        @tailwind utilities;
       `,
       base: process.cwd(),
     })
@@ -58,6 +58,8 @@ describe('tailwindcss v4 engine', () => {
 
     expect(result.css).toContain('--color-blue-500: #2b7fff')
     expect(result.css).toContain('--color-red-500: #fb2c36')
+    expect(result.css).toContain('--font-sans:')
+    expect(result.css).toContain('--default-font-family: var(--font-sans)')
     expect(result.css).toContain('background-color: var(--color-blue-500)')
     expect(result.css).toContain('color: var(--color-red-500)')
     expect(result.css).not.toContain('oklch(')
@@ -408,6 +410,47 @@ describe('tailwindcss v4 engine', () => {
     expect(result.css).not.toContain(':-moz')
     expect(result.css).toMatch(/^::before,\s*::after\s*\{\s*--tw-content:/m)
     expect(result.css).not.toContain('@supports')
+  })
+
+  it('quotes generated complex url values before mini-program postcss handling', async () => {
+    const source = await resolveTailwindV4Source({
+      css: `
+        @tailwind utilities;
+      `,
+      base: process.cwd(),
+    })
+    const engine = createTailwindV4Engine(source)
+
+    const result = await engine.generate({
+      tailwindcssV3Compatibility: false,
+      candidates: ['[background:url(https://example.com?q={[{[([{[[2]]}])]}]})]'],
+    })
+
+    expect(result.rawCss).toContain('background: url(https://example.com')
+    expect(result.css).toContain('background: url("https://example.com')
+  })
+
+  it('filters unsupported slash variants from mini-program output', async () => {
+    const source = await resolveTailwindV4Source({
+      css: `
+        @tailwind utilities;
+      `,
+      base: process.cwd(),
+    })
+    const engine = createTailwindV4Engine(source)
+
+    const result = await engine.generate({
+      tailwindcssV3Compatibility: false,
+      candidates: ['in-[.group/name]:flex', 'not-in-[.group/name]:flex', 'group-hover/item:visible', 'flex'],
+    })
+
+    expect(result.rawCss).not.toContain('in-')
+    expect(result.rawCss).not.toContain('not-in-')
+    expect(result.rawCss).not.toContain('group-hover')
+    expect(result.css).toContain('.flex')
+    expect(result.css).not.toContain('in-')
+    expect(result.css).not.toContain('not-in-')
+    expect(result.css).not.toContain('group-hover')
   })
 
   it('can return raw Tailwind css for diagnostics', async () => {

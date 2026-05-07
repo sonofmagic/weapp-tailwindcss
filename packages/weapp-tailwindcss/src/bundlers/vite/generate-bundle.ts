@@ -7,13 +7,12 @@ import path from 'node:path'
 import process from 'node:process'
 import { logger } from '@weapp-tailwindcss/logger'
 import { splitCode } from '@weapp-tailwindcss/shared/extractors'
-import { createWeappTailwindcssGenerator, normalizeWeappTailwindcssGeneratorOptions } from '@/generator'
+import { normalizeWeappTailwindcssGeneratorOptions } from '@/generator'
 import { getRuntimeClassSetSignature } from '@/tailwindcss/runtime/cache'
-import { resolveTailwindV4SourceFromPatcher } from '@/tailwindcss/v4-engine'
+import { filterUnsupportedMiniProgramTailwindV4Candidates } from '@/tailwindcss/v4-engine/candidates'
 import { createUniAppXAssetTask } from '@/uni-app-x'
 import { isUniAppXEnabled } from '@/uni-app-x/options'
 import { processCachedTask } from '../shared/cache'
-import { collectGeneratorCandidatesFromSources } from '../shared/generator-candidates'
 import { generateCssByGenerator } from '../shared/generator-css'
 import { normalizeOutputPathKey } from '../shared/module-graph'
 import { pushConcurrentTaskFactories } from '../shared/run-tasks'
@@ -33,7 +32,21 @@ interface GenerateBundleContext {
   getResolvedConfig: () => ResolvedConfig | undefined
   markCssAssetProcessed?: (asset: OutputAsset, file?: string) => void
   recordCssAssetResult?: (file: string, css: string) => void
+  getSourceCandidates?: () => Set<string>
+  waitForSourceCandidateSyncs?: () => Promise<void>
+  rememberMainCssSource?: (file: string, rawSource: string, cssRuntimeSignature: string) => void
+  getRememberedMainCssSources?: () => Map<string, string>
+  getRememberedMainCssSignature?: (file: string) => string | undefined
+  setRememberedMainCssSignature?: (file: string, cssRuntimeSignature: string) => void
   recordGeneratorCandidates?: (candidates: Set<string>) => void
+}
+
+interface GenerateBundleThis {
+  emitFile?: (emittedFile: {
+    type: 'asset'
+    fileName: string
+    source: string
+  }) => string
 }
 
 interface BundleMetric {
@@ -155,6 +168,22 @@ function createJsHashSalt(runtimeSignature: string, linkedImpactSignature?: stri
   return `${runtimeSignature}:linked:${linkedImpactSignature}`
 }
 
+function createStableTextSignature(input: string) {
+  let hash = 2166136261
+  for (let i = 0; i < input.length; i++) {
+    hash ^= input.charCodeAt(i)
+    hash = Math.imul(hash, 16777619)
+  }
+  return (hash >>> 0).toString(36)
+}
+
+function createCandidateSignature(candidates: Set<string>) {
+  if (candidates.size === 0) {
+    return 'empty'
+  }
+  return createStableTextSignature([...candidates].sort().join('\n'))
+}
+
 function getSnapshotHash(snapshotMap: Map<string, string>, file: string, fallback: string) {
   return snapshotMap.get(file) ?? fallback
 }
@@ -203,6 +232,23 @@ function createCssTransformShareScopeKey(
   return createCssTransformShareScope(file, rawSource)
 }
 
+function createCssRuntimeSignature(runtimeSignature: string, generatorCandidateSignature: string) {
+  return `${runtimeSignature}:${generatorCandidateSignature}`
+}
+
+function createReplayCssAsset(fileName: string, source: string): OutputAsset {
+  return {
+    type: 'asset',
+    fileName,
+    name: undefined,
+    source,
+    needsCodeReference: false,
+    names: [],
+    originalFileName: null,
+    originalFileNames: [],
+  } as OutputAsset
+}
+
 function hasOmittedKnownBundleFiles(
   currentBundleFiles: string[],
   previousBundleFiles: Iterable<string>,
@@ -248,51 +294,19 @@ function collectUnescapedDynamicCandidates(
 }
 
 function collectLegacyContainerCompatCandidates(
-  sources: GeneratorCandidateSource[],
-  runtime: Set<string>,
+  sourceCandidates: Set<string>,
+  candidates: Set<string>,
 ) {
-  if (runtime.has('container')) {
-    return runtime
+  if (candidates.has('container')) {
+    return candidates
   }
-  if (!sources.some(source => /\bcontainer\b/.test(source.content))) {
-    return runtime
+  if (!sourceCandidates.has('container')) {
+    return candidates
   }
   return new Set([
-    ...runtime,
+    ...candidates,
     'container',
   ])
-}
-
-async function collectTailwindV4ContentCandidates(
-  runtimeState: GenerateBundleContext['runtimeState'],
-  runtime: Set<string>,
-  generatorMode: ReturnType<typeof normalizeWeappTailwindcssGeneratorOptions>['mode'],
-  debug: GenerateBundleContext['debug'],
-) {
-  const collectContentTokens = runtimeState.twPatcher.collectContentTokens
-  if (generatorMode !== 'force' || runtimeState.twPatcher.majorVersion !== 4 || typeof collectContentTokens !== 'function') {
-    return runtime
-  }
-
-  try {
-    const source = await resolveTailwindV4SourceFromPatcher(runtimeState.twPatcher)
-    const generator = createWeappTailwindcssGenerator(source)
-    const report = await collectContentTokens.call(runtimeState.twPatcher)
-    const rawCandidates = new Set(report.entries.map(entry => entry.rawCandidate))
-    const validCandidates = await generator.validateCandidates(rawCandidates)
-    if (rawCandidates.size === 0 && validCandidates.size === 0) {
-      return runtime
-    }
-    return new Set([
-      ...runtime,
-      ...rawCandidates,
-      ...validCandidates,
-    ])
-  }
-  catch (error) {
-    debug('collect Tailwind v4 content candidates for generator failed: %O', error)
-    return runtime
-  }
 }
 
 export function createGenerateBundleHook(context: GenerateBundleContext) {
@@ -315,8 +329,7 @@ export function createGenerateBundleHook(context: GenerateBundleContext) {
     }
     majorVersion: number | undefined
   }>()
-
-  return async function generateBundle(_opt: unknown, bundle: Record<string, OutputAsset | OutputChunk>) {
+  return async function generateBundle(this: GenerateBundleThis, _opt: unknown, bundle: Record<string, OutputAsset | OutputChunk>) {
     const {
       opts,
       runtimeState,
@@ -325,6 +338,12 @@ export function createGenerateBundleHook(context: GenerateBundleContext) {
       getResolvedConfig,
       markCssAssetProcessed,
       recordCssAssetResult,
+      getSourceCandidates,
+      waitForSourceCandidateSyncs,
+      rememberMainCssSource,
+      getRememberedMainCssSources,
+      getRememberedMainCssSignature,
+      setRememberedMainCssSignature,
       recordGeneratorCandidates,
     } = context
     const {
@@ -450,20 +469,23 @@ export function createGenerateBundleHook(context: GenerateBundleContext) {
     const runtime = useBundleRuntimeClassSet
       ? await ensureBundleRuntimeClassSet(snapshot, forceRuntimeRefreshByEnv)
       : await context.ensureRuntimeClassSet(forceRuntimeRefreshByEnv)
-    const generatorBaseRuntime = await collectTailwindV4ContentCandidates(runtimeState, runtime, generatorOptions.mode, debug)
-    const generatorCandidateSources = snapshot.entries
-      .filter(entry => entry.type === 'html' || entry.type === 'js')
-      .map(entry => ({
-        content: entry.source,
-        extension: path.extname(entry.file).replace(/^\./, '') || (entry.type === 'html' ? 'html' : 'js'),
-      }))
+    const shouldFilterTailwindV4MiniProgramCandidates = runtimeState.twPatcher.majorVersion === 4 && generatorOptions.target === 'weapp'
+    await waitForSourceCandidateSyncs?.()
+    const sourceCandidates = getSourceCandidates?.() ?? new Set<string>()
+    const collectedGeneratorCandidates = generatorOptions.mode === 'force'
+      ? new Set(sourceCandidates)
+      : new Set([
+          ...runtime,
+          ...sourceCandidates,
+        ])
+    const filteredGeneratorCandidates = shouldFilterTailwindV4MiniProgramCandidates
+      ? filterUnsupportedMiniProgramTailwindV4Candidates(collectedGeneratorCandidates)
+      : collectedGeneratorCandidates
     const generatorRuntime = collectLegacyContainerCompatCandidates(
-      generatorCandidateSources,
-      await collectGeneratorCandidatesFromSources(
-        generatorCandidateSources,
-        generatorBaseRuntime,
-      ),
+      sourceCandidates,
+      filteredGeneratorCandidates,
     )
+    const generatorCandidateSignature = createCandidateSignature(generatorRuntime)
     recordGeneratorCandidates?.(generatorRuntime)
     const defaultTemplateHandlerOptions = {
       runtimeSet: runtime,
@@ -580,16 +602,20 @@ export function createGenerateBundleHook(context: GenerateBundleContext) {
         const cssRuntimeAffectingSignature = snapshot.runtimeAffectingSignatureByFile.get(file) ?? rawSource
         const cssShareScope = createCssTransformShareScopeKey(opts, file, rawSource)
         const cssHandlerOptions = getCssHandlerOptions(file)
-        const cssSharedCacheKey = `${cssShareScope}:${runtimeSignature}:${runtimeState.twPatcher.majorVersion ?? 'unknown'}:${cssHandlerOptions.isMainChunk ? '1' : '0'}:${cssRuntimeAffectingSignature}`
+        const cssRuntimeSignature = createCssRuntimeSignature(runtimeSignature, generatorCandidateSignature)
+        const cssSharedCacheKey = `${cssShareScope}:${cssRuntimeSignature}:${runtimeState.twPatcher.majorVersion ?? 'unknown'}:${cssHandlerOptions.isMainChunk ? '1' : '0'}:${cssRuntimeAffectingSignature}`
         tasks.push(
           processCachedTask<string>({
             cache,
             cacheKey: file,
-            hashKey: `${file}:css:${runtimeSignature}:${runtimeState.twPatcher.majorVersion ?? 'unknown'}`,
-            hash: getSnapshotHash(snapshot.runtimeAffectingHashByFile, file, cssRuntimeAffectingSignature),
+            hashKey: `${file}:css:${cssRuntimeSignature}:${runtimeState.twPatcher.majorVersion ?? 'unknown'}`,
+            hash: `${getSnapshotHash(snapshot.runtimeAffectingHashByFile, file, cssRuntimeAffectingSignature)}:${generatorCandidateSignature}`,
             applyResult(source) {
               originalSource.source = source
               markCssAssetProcessed?.(originalSource, file)
+              if (cssHandlerOptions.isMainChunk) {
+                rememberMainCssSource?.(file, rawSource, cssRuntimeSignature)
+              }
             },
             onCacheHit() {
               metrics.css.cacheHits++
@@ -811,6 +837,52 @@ export function createGenerateBundleHook(context: GenerateBundleContext) {
           metrics.js.elapsed += measureElapsed(start)
           metrics.js.transformed++
         })
+      }
+    }
+
+    const cssRuntimeSignature = createCssRuntimeSignature(runtimeSignature, generatorCandidateSignature)
+    if (useIncrementalMode && generatorOptions.mode === 'force') {
+      for (const [file, rawSource] of getRememberedMainCssSources?.() ?? []) {
+        if (bundleFiles.includes(file) || getRememberedMainCssSignature?.(file) === cssRuntimeSignature) {
+          continue
+        }
+        tasks.push((async () => {
+          const start = performance.now()
+          const cssHandlerOptions = getCssHandlerOptions(file)
+          const generated = await generateCssByGenerator({
+            opts,
+            runtimeState,
+            runtime: generatorRuntime,
+            rawSource,
+            file,
+            cssHandlerOptions,
+            cssUserHandlerOptions: getCssUserHandlerOptions(file),
+            styleHandler,
+            debug,
+          })
+          const css = generated?.css ?? (await styleHandler(rawSource, cssHandlerOptions)).css
+          setRememberedMainCssSignature?.(file, cssRuntimeSignature)
+          if (generated) {
+            recordCssAssetResult?.(file, generated.css)
+            debug('css replay generated result: %s bytes=%d', file, css.length)
+          }
+          const replayAsset = createReplayCssAsset(file, css)
+          if (typeof this.emitFile === 'function') {
+            this.emitFile({
+              type: 'asset',
+              fileName: file,
+              source: css,
+            })
+          }
+          else {
+            bundle[file] = replayAsset
+          }
+          markCssAssetProcessed?.(replayAsset, file)
+          metrics.css.elapsed += measureElapsed(start)
+          metrics.css.transformed++
+          onUpdate(file, rawSource, css)
+          debug('css replay handle: %s', file)
+        })())
       }
     }
 

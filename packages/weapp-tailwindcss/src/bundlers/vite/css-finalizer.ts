@@ -2,9 +2,8 @@ import type { IStyleHandlerOptions } from '@weapp-tailwindcss/postcss/types'
 import type { OutputAsset, OutputBundle } from 'rollup'
 import type { Plugin, ResolvedConfig } from 'vite'
 import type { InternalUserDefinedOptions } from '@/types'
-import path from 'node:path'
 import { normalizeWeappTailwindcssGeneratorOptions } from '@/generator'
-import { collectGeneratorCandidatesFromSources } from '../shared/generator-candidates'
+import { filterUnsupportedMiniProgramTailwindV4Candidates } from '@/tailwindcss/v4-engine/candidates'
 import { generateCssByGenerator, hasTailwindGeneratedCssMarkers, hasTailwindSourceDirectives } from '../shared/generator-css'
 
 interface CssFinalizerContext {
@@ -20,6 +19,9 @@ interface CssFinalizerContext {
   getResolvedConfig: () => ResolvedConfig | undefined
   recordCssAssetResult?: (file: string, css: string) => void
   getRecordedGeneratorCandidates?: () => Set<string> | undefined
+  getSourceCandidates?: () => Set<string>
+  waitForSourceCandidateSyncs?: () => Promise<void>
+  rememberMainCssSource?: (file: string, rawSource: string) => void
 }
 
 function createCssHandlerOptions(
@@ -75,6 +77,9 @@ export function createViteCssFinalizerOutputPlugin(context: CssFinalizerContext)
           getResolvedConfig,
           recordCssAssetResult,
           getRecordedGeneratorCandidates,
+          getSourceCandidates,
+          waitForSourceCandidateSyncs,
+          rememberMainCssSource,
         } = context
         const resolvedConfig = getResolvedConfig()
         if (resolvedConfig?.command !== 'build') {
@@ -96,17 +101,16 @@ export function createViteCssFinalizerOutputPlugin(context: CssFinalizerContext)
         }
 
         await runtimeState.patchPromise
-        const runtime = getRecordedGeneratorCandidates?.() ?? await ensureRuntimeClassSet()
-        const generatorRuntime = await collectGeneratorCandidatesFromSources(
-          Object.entries(bundle)
-            .filter(([, output]) => output.type === 'asset' || output.type === 'chunk')
-            .filter(([file]) => opts.htmlMatcher(file) || opts.jsMatcher(file) || opts.wxsMatcher(file))
-            .map(([file, output]) => ({
-              content: output.type === 'chunk' ? output.code : output.source.toString(),
-              extension: path.extname(file).replace(/^\./, '') || (opts.htmlMatcher(file) ? 'html' : 'js'),
-            })),
-          runtime,
-        )
+        await waitForSourceCandidateSyncs?.()
+        const generatorOptions = normalizeWeappTailwindcssGeneratorOptions(opts.generator)
+        const runtime = getRecordedGeneratorCandidates?.() ?? getSourceCandidates?.() ?? await ensureRuntimeClassSet()
+        const collectedGeneratorCandidates = new Set([
+          ...runtime,
+          ...(getSourceCandidates?.() ?? []),
+        ])
+        const generatorRuntime = runtimeState.twPatcher.majorVersion === 4 && generatorOptions.target === 'weapp'
+          ? filterUnsupportedMiniProgramTailwindV4Candidates(collectedGeneratorCandidates)
+          : collectedGeneratorCandidates
         await Promise.all(entries.map(async ([bundleFile, output]) => {
           const file = output.fileName || bundleFile
           const rawSource = output.source.toString()
@@ -137,6 +141,9 @@ export function createViteCssFinalizerOutputPlugin(context: CssFinalizerContext)
           if (generated) {
             debug('css finalizer generated result: %s bytes=%d', file, nextCss.length)
             recordCssAssetResult?.(file, nextCss)
+            if (cssHandlerOptions.isMainChunk) {
+              rememberMainCssSource?.(file, rawSource)
+            }
           }
           output.source = nextCss
           markCssAssetProcessed(output, file)

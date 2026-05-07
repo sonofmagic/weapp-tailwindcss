@@ -27,6 +27,7 @@ const PARITY_CSS = `
   --color-brand: #155dfc;
   --color-zinc-800: #27272a;
 }
+@source not ".";
 @source inline("${PARITY_CANDIDATES.join(' ')}");
 @tailwind utilities;
 `

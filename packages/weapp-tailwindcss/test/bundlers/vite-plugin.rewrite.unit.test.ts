@@ -161,6 +161,7 @@ describe('bundlers/vite UnifiedViteWeappTailwindcssPlugin rewrite', () => {
     expect(orderedTransforms.map(item => item.name)).toEqual([
       `${vitePluginName}:rewrite-css-imports`,
       '@tailwindcss/vite:generate',
+      `${vitePluginName}:source-candidates`,
     ])
 
     let source = '@import "tailwindcss";'
