@@ -33,7 +33,7 @@ const navbar: NonNullable<ThemeConfig['navbar']> = {
     {
       type: 'doc',
       label: '更新与迁移',
-      docId: 'migrations/v3',
+      docId: 'migrations/v5',
     },
     {
       type: 'doc',
