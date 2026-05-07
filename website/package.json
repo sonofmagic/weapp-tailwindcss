@@ -19,7 +19,7 @@
     "dev": "node scripts/dev-public.mjs",
     "dev:type": "cross-env NO_UPDATE_NOTIFIER=1 TYPEDOC_WATCH=true docusaurus start --port 4000",
     "build": "pnpm run build:deps && node scripts/clear-webpack-cache.mjs && node scripts/generate-geo-index.mjs && node scripts/seo-quality-report.mjs && cross-env NO_UPDATE_NOTIFIER=1 docusaurus build",
-    "build:deps": "pnpm --filter \"@weapp-tailwindcss/website...\" --filter \"!@weapp-tailwindcss/website\" build",
+    "build:deps": "node scripts/build-deps.mjs",
     "build:next": "pnpm run build:deps && cross-env SITE_URL=https://next.tw.icebreaker.top node scripts/clear-webpack-cache.mjs && cross-env SITE_URL=https://next.tw.icebreaker.top node scripts/generate-geo-index.mjs && node scripts/seo-quality-report.mjs && cross-env NO_UPDATE_NOTIFIER=1 SITE_URL=https://next.tw.icebreaker.top docusaurus build",
     "build:github": "pnpm run build:deps && node scripts/clear-webpack-cache.mjs && node scripts/generate-geo-index.mjs && node scripts/seo-quality-report.mjs && cross-env NO_UPDATE_NOTIFIER=1 PROVIDER=GITHUB docusaurus build",
     "deploy:next": "wrangler deploy --config wrangler.next.jsonc",
