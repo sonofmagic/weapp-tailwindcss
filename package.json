@@ -121,7 +121,7 @@
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
     "lint:view": "npx @eslint/config-inspector",
-    "publish-packages": "pnpm build && pnpm test && changeset version && changeset publish",
+    "publish-packages": "node scripts/publish-packages.mjs",
     "dev:apps": "pnpm -r --parallel --filter ./apps/react-app --filter ./apps/vue-app run dev",
     "run:watch": "tsx scripts/watcher",
     "showcase:update": "tsx scripts/update-showcase.ts",
