@@ -4,6 +4,10 @@ on:
   push:
     branches:
       - main
+      - alpha
+      - beta
+      - rc
+      - next
   workflow_dispatch:
 
 concurrency: ${{ github.workflow }}-${{ github.ref }}
@@ -72,6 +76,7 @@ jobs:
         with:
           # This expects you to have a script called release which does a build for your packages and calls changeset publish
           publish: pnpm publish-packages
+          version: pnpm publish-packages -- --phase version
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           npm_config_registry: https://registry.npmjs.org
