@@ -66,6 +66,10 @@
     "@weapp-tailwindcss/website": "1.0.18"
   },
   "changesets": [
+    "fresh-v3-colors-for-weapp",
+    "generator-plugin-compatibility",
+    "quiet-v4-generator-upgrade-coverage",
+    "tailwind-v3-compatibility-defaults",
     "tailwindcss-config-ts-source",
     "tiny-cycles-draw",
     "v5-source-discovery",
