@@ -1215,6 +1215,221 @@ describe('bundlers/shared generator css', () => {
     }))
   })
 
+  it('generates Tailwind v3 css in auto mode when only @apply is present', async () => {
+    const rawSource = [
+      '.test {',
+      '  @apply flex text-center h-[100px] w-[222.222px] items-center justify-center rounded-[40px] bg-[#123456] bg-opacity-[.54] text-[#ffffff] !important;',
+      '}',
+      '.card{color:red}',
+    ].join('\n')
+    const generateMock = vi.fn(async () => ({
+      css: '.test{display:flex;height:200rpx;width:444.444rpx;background-color:#123456;color:#ffffff}.card{color:red}',
+      rawCss: '.test{display:flex;height:100px;width:222.222px;background-color:#123456;color:#ffffff}.card{color:red}',
+      target: 'weapp',
+      classSet: new Set([
+        'flex',
+        'text-center',
+        'h-[100px]',
+        'w-[222.222px]',
+        'items-center',
+        'justify-center',
+        'rounded-[40px]',
+        'bg-[#123456]',
+        'bg-opacity-[.54]',
+        'text-[#ffffff]',
+      ]),
+      dependencies: [],
+      sources: [],
+      root: null,
+    }))
+    const resolveTailwindV3Source = vi.fn(async (options: any) => ({
+      projectRoot: process.cwd(),
+      base: process.cwd(),
+      css: options.css,
+      dependencies: [],
+      version: 3,
+    }))
+
+    vi.doMock('@/generator', () => ({
+      createWeappTailwindcssGenerator: vi.fn(() => ({
+        generate: generateMock,
+      })),
+      normalizeWeappTailwindcssGeneratorOptions: normalizeGeneratorOptions,
+      resolveTailwindV3SourceFromPatcher: vi.fn(async () => ({
+        projectRoot: process.cwd(),
+        base: process.cwd(),
+        css: '@tailwind utilities;',
+        dependencies: [],
+        version: 3,
+      })),
+      resolveTailwindV3SourceOptionsFromPatcher: vi.fn(() => ({
+        projectRoot: process.cwd(),
+        cwd: process.cwd(),
+      })),
+      resolveTailwindV3Source,
+    }))
+
+    const { generateCssByGenerator } = await import('@/bundlers/shared/generator-css')
+    const styleHandler = vi.fn(async (code: string) => ({ css: `legacy:${code}` }))
+    const result = await generateCssByGenerator({
+      opts: {
+        generator: {
+          mode: 'auto',
+          target: 'weapp',
+        },
+        styleHandler,
+      } as any,
+      runtimeState: {
+        twPatcher: {
+          majorVersion: 3,
+        } as any,
+        patchPromise: Promise.resolve(),
+      },
+      runtime: new Set(['bg-[#123456]']),
+      rawSource,
+      file: 'components/sections/ExperienceLab.wxss',
+      cssHandlerOptions: {
+        isMainChunk: false,
+        postcssOptions: {
+          options: {
+            from: 'components/sections/ExperienceLab.wxss',
+          },
+        },
+        majorVersion: 3,
+      } as any,
+      cssUserHandlerOptions: {
+        isMainChunk: false,
+        postcssOptions: {
+          options: {
+            from: 'components/sections/ExperienceLab.wxss',
+          },
+        },
+        majorVersion: 3,
+      } as any,
+      styleHandler,
+      debug: vi.fn(),
+    })
+
+    expect(result?.css).toContain('.test{display:flex')
+    expect(result?.css).toContain('background-color:#123456')
+    expect(result?.css).not.toContain('@apply')
+    expect(resolveTailwindV3Source).toHaveBeenCalledWith(expect.objectContaining({
+      css: rawSource,
+    }))
+    expect(styleHandler).not.toHaveBeenCalled()
+  })
+
+  it('does not append raw Tailwind v3 @apply rules after generated css', async () => {
+    const rawSource = [
+      '@tailwind base;',
+      '@tailwind components;',
+      '@tailwind utilities;',
+      '.raw-btn {',
+      '  @apply after:border-none inline-flex items-center gap-2 rounded text-sm font-semibold transition-all;',
+      '}',
+      '.btn {',
+      '  @apply raw-btn bg-gradient-to-r from-[#9e58e9] to-blue-500 px-2 py-1 text-white;',
+      '}',
+      '.card{color:red}',
+    ].join('\n')
+    const generateMock = vi.fn(async () => ({
+      css: '.raw-btn{display:inline-flex}.btn{color:#fff}.card{color:red}',
+      rawCss: '.raw-btn{display:inline-flex}.btn{color:#fff}.card{color:red}',
+      target: 'weapp',
+      classSet: new Set([
+        'after:border-none',
+        'inline-flex',
+        'items-center',
+        'gap-2',
+        'rounded',
+        'text-sm',
+        'font-semibold',
+        'transition-all',
+        'raw-btn',
+        'bg-gradient-to-r',
+        'from-[#9e58e9]',
+        'to-blue-500',
+        'px-2',
+        'py-1',
+        'text-white',
+      ]),
+      dependencies: [],
+      sources: [],
+      root: null,
+    }))
+
+    vi.doMock('@/generator', () => ({
+      createWeappTailwindcssGenerator: vi.fn(() => ({
+        generate: generateMock,
+      })),
+      normalizeWeappTailwindcssGeneratorOptions: normalizeGeneratorOptions,
+      resolveTailwindV3SourceFromPatcher: vi.fn(async () => ({
+        projectRoot: process.cwd(),
+        base: process.cwd(),
+        css: '@tailwind utilities;',
+        dependencies: [],
+        version: 3,
+      })),
+      resolveTailwindV3SourceOptionsFromPatcher: vi.fn(() => ({
+        projectRoot: process.cwd(),
+        cwd: process.cwd(),
+      })),
+      resolveTailwindV3Source: vi.fn(async (options: any) => ({
+        projectRoot: process.cwd(),
+        base: process.cwd(),
+        css: options.css,
+        dependencies: [],
+        version: 3,
+      })),
+    }))
+
+    const { generateCssByGenerator } = await import('@/bundlers/shared/generator-css')
+    const styleHandler = vi.fn(async (code: string) => ({ css: `legacy:${code}` }))
+    const result = await generateCssByGenerator({
+      opts: {
+        generator: {
+          mode: 'auto',
+          target: 'weapp',
+        },
+        styleHandler,
+      } as any,
+      runtimeState: {
+        twPatcher: {
+          majorVersion: 3,
+        } as any,
+        patchPromise: Promise.resolve(),
+      },
+      runtime: new Set(['after:border-none', 'bg-[#123456]']),
+      rawSource,
+      file: 'app.wxss',
+      cssHandlerOptions: {
+        isMainChunk: true,
+        postcssOptions: {
+          options: {
+            from: 'app.wxss',
+          },
+        },
+        majorVersion: 3,
+      } as any,
+      cssUserHandlerOptions: {
+        isMainChunk: false,
+        postcssOptions: {
+          options: {
+            from: 'app.wxss',
+          },
+        },
+        majorVersion: 3,
+      } as any,
+      styleHandler,
+      debug: vi.fn(),
+    })
+
+    expect(result?.css).toBe('.raw-btn{display:inline-flex}.btn{color:#fff}.card{color:red}')
+    expect(result?.css).not.toContain('@tailwind')
+    expect(result?.css).not.toContain('@apply')
+    expect(styleHandler).not.toHaveBeenCalled()
+  })
+
   it('resolves current css asset directives for generator source', async () => {
     const rawSource = [
       '@config "./generator-css.unit.test.ts";',
@@ -1231,6 +1446,20 @@ describe('bundlers/shared generator css', () => {
         '@tailwind utilities;',
       ].join('\n'),
       config: path.resolve(__dirname, 'generator-css.unit.test.ts'),
+      base: __dirname,
+    }))
+  })
+
+  it('resolves @apply-only css assets as generator source entries', async () => {
+    const rawSource = [
+      '.test {',
+      '  @apply flex bg-[#123456];',
+      '}',
+    ].join('\n')
+    const { resolveCssEntrySource } = await import('@/bundlers/shared/generator-css')
+    const source = resolveCssEntrySource(rawSource, __dirname)
+    expect(source).toEqual(expect.objectContaining({
+      css: rawSource,
       base: __dirname,
     }))
   })

@@ -392,6 +392,7 @@ function isTailwindGenerationDirective(node: postcss.Node) {
     return false
   }
   return isTailwindImportAtRule(node)
+    || node.name === 'apply'
     || node.name === 'layer'
     || node.name === 'config'
 }
@@ -774,7 +775,33 @@ export function isPureLocalCssImportWrapper(css: string) {
 
 function resolveLegacyCompatCssSource(rawSource: string) {
   const source = removeTailwindSourceDirectives(stripTailwindBanners(rawSource))
-  return removeUnsupportedMiniProgramAtRules(source)
+  return removeUnsupportedMiniProgramAtRules(removeTailwindApplyRules(source))
+}
+
+export function removeTailwindApplyRules(rawSource: string) {
+  try {
+    const root = postcss.parse(rawSource)
+    let removed = false
+    root.walkAtRules('apply', (rule) => {
+      const parent = rule.parent
+      if (parent?.type === 'rule') {
+        parent.remove()
+      }
+      else {
+        rule.remove()
+      }
+      removed = true
+    })
+    root.walkAtRules((rule) => {
+      if (rule.nodes && rule.nodes.length === 0) {
+        rule.remove()
+      }
+    })
+    return removed ? root.toString() : rawSource
+  }
+  catch {
+    return rawSource
+  }
 }
 
 function hasContainerConfigToken(rawSource: string) {

@@ -10,6 +10,9 @@
     <view class="-wx:bg-red-400">-wx:bg-red-400</view>
     <view class="mv:bg-blue-400">mv:bg-blue-400</view>
     <view class="-mv:bg-red-400">-mv:bg-red-400</view>
+    <view class="group published">
+      <view class="after:content-['v3_apply'] group-[.published]:text-green-500 i-mdi-home">generator regression</view>
+    </view>
 
     <Issue228 class="mt-[96.3px] w-[61.1px] h-[50.99px]"
       src="https://pic1.zhimg.com/v2-3ee20468f54bbfefcd0027283b21aaa8_720w.jpg"></Issue228>
@@ -216,5 +219,9 @@ page::before {
   content: '';
 
   @apply w-5 h-5 bg-red-500/50 inline-block;
+}
+
+.apply-class-0 {
+  @apply ifdef-[MP-WEIXIN]:bg-blue-500 ifndef-[MP-WEIXIN]:bg-red-500 wx:bg-blue-400 -wx:bg-red-400;
 }
 </style>

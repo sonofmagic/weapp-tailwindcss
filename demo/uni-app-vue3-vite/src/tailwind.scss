@@ -1,9 +1,14 @@
-@import "tailwindcss/base";
-@import "tailwindcss/components";
-@import "tailwindcss/utilities";
 @config "../tailwind.config.js";
-// @layer components {
-//   .testCmpnt {
-//     @apply bg-black;
-//   }
-// }
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer components {
+  .raw-btn {
+    @apply after:border-none inline-flex items-center gap-2 rounded text-sm font-semibold transition-all;
+  }
+
+  .btn {
+    @apply raw-btn bg-gradient-to-r from-[#9e58e9] to-blue-500 px-2 py-1 text-white;
+  }
+}
