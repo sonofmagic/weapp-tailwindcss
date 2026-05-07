@@ -10,7 +10,7 @@
     ],
     "status": "passed",
     "legacy": {
-      "bytes": 5712,
+      "bytes": 4940,
       "selectors": [
         ".bg-_b_h3a32d1_B",
         ".bg-_b_h68c828_B",
@@ -134,8 +134,8 @@
       "hasWeappEscapedArbitrarySelector": true,
       "hasRawArbitrarySelector": false
     },
-    "deltaBytes": 1901,
-    "generatorBytesRatio": 1.3328,
+    "deltaBytes": 2673,
+    "generatorBytesRatio": 1.5411,
     "sharedSelectors": [
       ".bg-_b_h3a32d1_B",
       ".bg-_b_h68c828_B",
@@ -6555,7 +6555,7 @@
     ],
     "status": "passed",
     "legacy": {
-      "bytes": 52812,
+      "bytes": 48552,
       "selectors": [
         ".active_cbg-emerald-50:active",
         ".active_cbg-emerald-600:active",
@@ -6921,8 +6921,8 @@
       "hasWeappEscapedArbitrarySelector": true,
       "hasRawArbitrarySelector": false
     },
-    "deltaBytes": -3123,
-    "generatorBytesRatio": 0.9409,
+    "deltaBytes": 1137,
+    "generatorBytesRatio": 1.0234,
     "sharedSelectors": [
       ".active_cbg-emerald-50:active",
       ".active_cbg-emerald-600:active",
@@ -6980,7 +6980,7 @@
     ],
     "status": "passed",
     "legacy": {
-      "bytes": 61948,
+      "bytes": 57474,
       "selectors": [
         ".active_cbg-emerald-50:active",
         ".active_cbg-emerald-600:active",
@@ -7368,8 +7368,8 @@
       "hasWeappEscapedArbitrarySelector": true,
       "hasRawArbitrarySelector": false
     },
-    "deltaBytes": -7839,
-    "generatorBytesRatio": 0.8735,
+    "deltaBytes": -3365,
+    "generatorBytesRatio": 0.9415,
     "sharedSelectors": [
       ".active_cbg-emerald-50:active",
       ".active_cbg-emerald-600:active",
@@ -7775,7 +7775,7 @@
     ],
     "status": "passed",
     "legacy": {
-      "bytes": 382159,
+      "bytes": 349563,
       "selectors": [
         "._bchunkhash_c8_B",
         "._bhash_c8_B",
@@ -9937,7 +9937,7 @@
       "hasRawArbitrarySelector": false
     },
     "generator": {
-      "bytes": 366436,
+      "bytes": 365438,
       "selectors": [
         "._bchunkhash_c8_B",
         "._bhash_c8_B",
@@ -12102,8 +12102,8 @@
       "hasWeappEscapedArbitrarySelector": true,
       "hasRawArbitrarySelector": false
     },
-    "deltaBytes": -15723,
-    "generatorBytesRatio": 0.9589,
+    "deltaBytes": 15875,
+    "generatorBytesRatio": 1.0454,
     "sharedSelectors": [
       "._bchunkhash_c8_B",
       "._bhash_c8_B",
@@ -12290,7 +12290,7 @@
     ],
     "status": "passed",
     "legacy": {
-      "bytes": 2050,
+      "bytes": 1992,
       "selectors": [
         ".bg-_b_h123456_B",
         ".bg-gradient-to-r",
@@ -12359,8 +12359,8 @@
       "hasWeappEscapedArbitrarySelector": true,
       "hasRawArbitrarySelector": false
     },
-    "deltaBytes": 3484,
-    "generatorBytesRatio": 2.6995,
+    "deltaBytes": 3542,
+    "generatorBytesRatio": 2.7781,
     "sharedSelectors": [
       ".bg-_b_h123456_B",
       ".bg-gradient-to-r",
@@ -12412,7 +12412,7 @@
     ],
     "status": "passed",
     "legacy": {
-      "bytes": 4433,
+      "bytes": 4055,
       "selectors": [
         "._eborder-brand",
         ".active_cbg-emerald-600:active",
@@ -12636,8 +12636,8 @@
       "hasWeappEscapedArbitrarySelector": true,
       "hasRawArbitrarySelector": false
     },
-    "deltaBytes": 19331,
-    "generatorBytesRatio": 5.3607,
+    "deltaBytes": 19709,
+    "generatorBytesRatio": 5.8604,
     "sharedSelectors": [
       "._eborder-brand",
       ".active_cbg-emerald-600:active",
@@ -13519,7 +13519,7 @@
     ],
     "status": "passed",
     "legacy": {
-      "bytes": 189931,
+      "bytes": 189884,
       "selectors": [
         ".after_ccontent-_b_au_x4f60_u_x597d_u_x554a_u_xff0c_u_x6211_u_x8fd9_u_x662f_u_x4e2d_u_x6587_u_x5b57_u_x7b26_u_x4e32__a_B:after",
         ".after_ccontent-_b_qu_x4f60_u_x597d_u_x554a_u_xff0c_u_x6211_u_x5f88_u_x65e0_u_x804a__q_B:after",
@@ -16406,7 +16406,7 @@
       "hasRawArbitrarySelector": false
     },
     "generator": {
-      "bytes": 199251,
+      "bytes": 199204,
       "selectors": [
         ".after_ccontent-_b_au_x4f60_u_x597d_u_x554a_u_xff0c_u_x6211_u_x8fd9_u_x662f_u_x4e2d_u_x6587_u_x5b57_u_x7b26_u_x4e32__a_B:after",
         ".after_ccontent-_b_qu_x4f60_u_x597d_u_x554a_u_xff0c_u_x6211_u_x5f88_u_x65e0_u_x804a__q_B:after",
@@ -19338,7 +19338,7 @@
     ],
     "status": "passed",
     "legacy": {
-      "bytes": 18826,
+      "bytes": 16858,
       "selectors": [
         ".-m-_b20px_B",
         ".-mt-2",
@@ -19457,7 +19457,7 @@
       "hasRawArbitrarySelector": false
     },
     "generator": {
-      "bytes": 17172,
+      "bytes": 16902,
       "selectors": [
         ".-m-_b20px_B",
         ".-mt-2",
@@ -19575,8 +19575,8 @@
       "hasWeappEscapedArbitrarySelector": true,
       "hasRawArbitrarySelector": false
     },
-    "deltaBytes": -1654,
-    "generatorBytesRatio": 0.9121,
+    "deltaBytes": 44,
+    "generatorBytesRatio": 1.0026,
     "sharedSelectors": [
       ".-m-_b20px_B",
       ".-mt-2",
@@ -19614,7 +19614,7 @@
     ],
     "status": "passed",
     "legacy": {
-      "bytes": 22280,
+      "bytes": 19938,
       "selectors": [
         ".-m-_b20px_B",
         ".-mt-2",
@@ -19742,7 +19742,7 @@
       "hasRawArbitrarySelector": false
     },
     "generator": {
-      "bytes": 20252,
+      "bytes": 19982,
       "selectors": [
         ".-m-_b20px_B",
         ".-mt-2",
@@ -19869,8 +19869,8 @@
       "hasWeappEscapedArbitrarySelector": true,
       "hasRawArbitrarySelector": false
     },
-    "deltaBytes": -2028,
-    "generatorBytesRatio": 0.909,
+    "deltaBytes": 44,
+    "generatorBytesRatio": 1.0022,
     "sharedSelectors": [
       ".-m-_b20px_B",
       ".-mt-2",

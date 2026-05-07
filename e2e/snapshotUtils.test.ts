@@ -33,4 +33,24 @@ describe('normalizeCssSnapshot', () => {
       '.text-_b45rpx_B { font-size: 45rpx; }',
     ].join('\n'))
   })
+
+  it('removes fallback declarations before equivalent var declarations', () => {
+    expect(normalizeCssSnapshot([
+      '.rounded-md {',
+      '  border-radius: 12rpx;',
+      '  border-radius: var(--radius-md);',
+      '}',
+      '.border-b-_b4rpx_B {',
+      '  border-bottom-style: var(--tw-border-style);',
+      '  border-bottom-width: 4rpx;',
+      '}',
+    ].join('\n'))).toBe([
+      '.rounded-md {',
+      '  border-radius: var(--radius-md);',
+      '}',
+      '.border-b-_b4rpx_B {',
+      '  border-bottom-width: 4rpx;',
+      '}',
+    ].join('\n'))
+  })
 })

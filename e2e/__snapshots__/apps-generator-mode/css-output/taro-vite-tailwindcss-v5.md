@@ -7,7 +7,7 @@ Generator CSS files: app.wxss, app-origin.wxss, index.wxss
 
 | Mode | Bytes | Selectors | @supports | :hover | Tailwind banner | Raw arbitrary selector | Weapp escaped arbitrary selector |
 | --- | ---: | ---: | --- | --- | --- | --- | --- |
-| legacy | 4433 | 36 | false | false | false | false | true |
+| legacy | 4055 | 36 | false | false | false | false | true |
 | generator | 23764 | 169 | false | false | false | false | true |
 
 ## Diff
@@ -110,7 +110,7 @@ Generator CSS files: app.wxss, app-origin.wxss, index.wxss
    --color-red-500: rgb(251, 44, 54);
    --color-green-500: rgb(0, 198, 90);
    --color-emerald-600: rgb(0, 150, 105);
-@@ -40,61 +92,359 @@
+@@ -40,26 +92,201 @@
    --color-white: #fff;
    --spacing: 8rpx;
    --radius-xl: 24rpx;
@@ -276,7 +276,6 @@ Generator CSS files: app.wxss, app-origin.wxss, index.wxss
 +  display: table-row-group;
 +}
  .h-14 {
--  height: 112rpx;
    height: calc(var(--spacing) * 14);
  }
  .h-_b300px_B {
@@ -320,11 +319,8 @@ Generator CSS files: app.wxss, app-origin.wxss, index.wxss
  .space-y-4 > view + view,
  .space-y-4 > view + text,
  .space-y-4 > text + view,
- .space-y-4 > text + text {
-   --tw-space-y-reverse: 0;
--  margin-bottom: 0rpx;
+@@ -68,15 +295,146 @@
    margin-bottom: calc((var(--spacing) * 4) * var(--tw-space-y-reverse));
--  margin-top: 32rpx;
    margin-top: calc((var(--spacing) * 4) * (1 - var(--tw-space-y-reverse)));
  }
 +.space-y-reverse > view + view,
@@ -371,7 +367,6 @@ Generator CSS files: app.wxss, app-origin.wxss, index.wxss
 +  white-space: nowrap;
 +}
  .rounded-xl {
--  border-radius: 24rpx;
    border-radius: var(--radius-xl);
  }
 +.rounded-s {
@@ -423,7 +418,6 @@ Generator CSS files: app.wxss, app-origin.wxss, index.wxss
 +  border-bottom-left-radius: 8rpx;
 +}
  ._eborder-brand {
--  border-color: #155dfc !important;
    border-color: var(--color-brand) !important;
  }
 +.border {
@@ -472,20 +466,7 @@ Generator CSS files: app.wxss, app-origin.wxss, index.wxss
  .bg-_b_h123456_B {
    background-color: #123456;
  }
- .bg-brand {
--  background-color: #155dfc;
-   background-color: var(--color-brand);
- }
- .bg-gray-100 {
--  background-color: rgb(243, 244, 246);
-   background-color: var(--color-gray-100);
- }
- .bg-red-500 {
--  background-color: rgb(251, 44, 54);
-   background-color: var(--color-red-500);
- }
- .bg-linear-to-r {
-@@ -147,8 +497,18 @@
+@@ -139,6 +497,17 @@
      var(--tw-gradient-to) var(--tw-gradient-to-position)
    );
  }
@@ -501,11 +482,9 @@ Generator CSS files: app.wxss, app-origin.wxss, index.wxss
 +  mask-repeat: repeat;
 +}
  .p-4 {
--  padding: 32rpx;
    padding: calc(var(--spacing) * 4);
  }
- .p-_b32rpx_B {
-@@ -166,21 +526,235 @@
+@@ -157,9 +526,225 @@
  .text-_b_hfff_B {
    color: #fff;
  }
@@ -516,7 +495,6 @@ Generator CSS files: app.wxss, app-origin.wxss, index.wxss
 +  text-overflow: ellipsis;
 +}
  .text-white {
--  color: #fff;
    color: var(--color-white);
  }
 +.text-wrap {
@@ -730,21 +708,17 @@ Generator CSS files: app.wxss, app-origin.wxss, index.wxss
 +  --tw-ring-inset: inset;
 +}
  .active_cbg-emerald-600:active {
--  background-color: rgb(0, 150, 105);
    background-color: var(--color-emerald-600);
  }
- @media (prefers-color-scheme: dark) {
+@@ -167,6 +752,8 @@
    .dark_cbg-green-500 {
--    background-color: rgb(0, 198, 90);
      background-color: var(--color-green-500);
    }
 +}
 +@media (prefers-color-scheme: dark) {
    .dark_cbg-zinc-800 {
--    background-color: rgb(39, 39, 42);
      background-color: var(--color-zinc-800);
    }
- }
 ```
 
 ## Legacy CSS
@@ -804,7 +778,6 @@ text,
   padding: 0;
 }
 .h-14 {
-  height: 112rpx;
   height: calc(var(--spacing) * 14);
 }
 .h-_b300px_B {
@@ -818,17 +791,13 @@ text,
 .space-y-4 > text + view,
 .space-y-4 > text + text {
   --tw-space-y-reverse: 0;
-  margin-bottom: 0rpx;
   margin-bottom: calc((var(--spacing) * 4) * var(--tw-space-y-reverse));
-  margin-top: 32rpx;
   margin-top: calc((var(--spacing) * 4) * (1 - var(--tw-space-y-reverse)));
 }
 .rounded-xl {
-  border-radius: 24rpx;
   border-radius: var(--radius-xl);
 }
 ._eborder-brand {
-  border-color: #155dfc !important;
   border-color: var(--color-brand) !important;
 }
 .border-_b10rpx_B {
@@ -838,15 +807,12 @@ text,
   background-color: #123456;
 }
 .bg-brand {
-  background-color: #155dfc;
   background-color: var(--color-brand);
 }
 .bg-gray-100 {
-  background-color: rgb(243, 244, 246);
   background-color: var(--color-gray-100);
 }
 .bg-red-500 {
-  background-color: rgb(251, 44, 54);
   background-color: var(--color-red-500);
 }
 .bg-linear-to-r {
@@ -900,7 +866,6 @@ text,
   );
 }
 .p-4 {
-  padding: 32rpx;
   padding: calc(var(--spacing) * 4);
 }
 .p-_b32rpx_B {
@@ -919,20 +884,16 @@ text,
   color: #fff;
 }
 .text-white {
-  color: #fff;
   color: var(--color-white);
 }
 .active_cbg-emerald-600:active {
-  background-color: rgb(0, 150, 105);
   background-color: var(--color-emerald-600);
 }
 @media (prefers-color-scheme: dark) {
   .dark_cbg-green-500 {
-    background-color: rgb(0, 198, 90);
     background-color: var(--color-green-500);
   }
   .dark_cbg-zinc-800 {
-    background-color: rgb(39, 39, 42);
     background-color: var(--color-zinc-800);
   }
 }

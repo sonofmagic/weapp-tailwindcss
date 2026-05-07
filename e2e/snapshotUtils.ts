@@ -302,6 +302,29 @@ export function normalizeCssSnapshot(source: string, _options: CssSnapshotOption
         }
       })
     }
+
+    if (/^\.border(?:-[trblxy])?-_b.+_B$/.test(rule.selector)) {
+      rule.walkDecls(/^border(?:-.+)?-style$/, (decl) => {
+        if (decl.value === 'var(--tw-border-style)') {
+          decl.remove()
+        }
+      })
+    }
+
+    const declarations = rule.nodes?.filter(node => node.type === 'decl') ?? []
+    for (let index = 0; index < declarations.length - 1; index++) {
+      const current = declarations[index]
+      const next = declarations[index + 1]
+      if (
+        current?.type === 'decl'
+        && next?.type === 'decl'
+        && current.prop === next.prop
+        && !current.value.includes('var(')
+        && next.value.includes('var(')
+      ) {
+        current.remove()
+      }
+    }
   })
 
   if (isTailwindV4Css(root)) {

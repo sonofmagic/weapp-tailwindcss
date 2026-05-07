@@ -7,8 +7,8 @@ Generator CSS files: app.wxss, styles/base.wxss, styles/components.wxss, styles/
 
 | Mode | Bytes | Selectors | @supports | :hover | Tailwind banner | Raw arbitrary selector | Weapp escaped arbitrary selector |
 | --- | ---: | ---: | --- | --- | --- | --- | --- |
-| legacy | 189931 | 2877 | false | false | false | false | true |
-| generator | 199251 | 2880 | false | false | false | false | true |
+| legacy | 189884 | 2877 | false | false | false | false | true |
+| generator | 199204 | 2880 | false | false | false | false | true |
 
 ## Diff
 
@@ -324,7 +324,7 @@ Generator CSS files: app.wxss, styles/base.wxss, styles/components.wxss, styles/
 
  @import '../../../../styles/index.wxss';
  .t-button--size-extra-small {
-@@ -9499,6 +9775,67 @@
+@@ -9498,6 +9774,67 @@
    border-width: 1px;
  }
 
@@ -392,7 +392,7 @@ Generator CSS files: app.wxss, styles/base.wxss, styles/components.wxss, styles/
  .flex {
    display: flex;
  }
-@@ -9514,7 +9851,7 @@
+@@ -9513,7 +9850,7 @@
    background-color: rgba(146, 146, 146, var(--tw-bg-opacity, 1));
  }
  .bg-_burl_p_ahttps_c_f_fxxx_dcom_fxx_dwebp_a_P_B {
@@ -401,7 +401,7 @@ Generator CSS files: app.wxss, styles/base.wxss, styles/components.wxss, styles/
  }
  .text-_b_he67240_B {
    --tw-text-opacity: 1;
-@@ -9524,6 +9861,23 @@
+@@ -9523,6 +9860,23 @@
    --tw-text-opacity: 1;
    color: rgba(0, 0, 255, var(--tw-text-opacity, 1));
  }
@@ -8446,7 +8446,6 @@ text,
 @import '../../../../../styles/index.wxss';
 .van-icon {
   -webkit-font-smoothing: antialiased;
-  font: normal normal normal 14px/1 vant-icon;
   font: normal normal normal 14px/1 var(--van-icon-font-family, 'vant-icon');
   font-size: inherit;
   position: relative;
@@ -18270,7 +18269,6 @@ wx-root-portal-content {
 @import '../../../../../styles/index.wxss';
 .van-icon {
   -webkit-font-smoothing: antialiased;
-  font: normal normal normal 14px/1 vant-icon;
   font: normal normal normal 14px/1 var(--van-icon-font-family, 'vant-icon');
   font-size: inherit;
   position: relative;

@@ -7,7 +7,7 @@ Generator CSS files: app.wxss, apple.wxss, index.wxss
 
 | Mode | Bytes | Selectors | @supports | :hover | Tailwind banner | Raw arbitrary selector | Weapp escaped arbitrary selector |
 | --- | ---: | ---: | --- | --- | --- | --- | --- |
-| legacy | 5712 | 47 | false | false | false | false | true |
+| legacy | 4940 | 47 | false | false | false | false | true |
 | generator | 7613 | 58 | false | false | false | false | true |
 
 ## Diff
@@ -69,7 +69,7 @@ Generator CSS files: app.wxss, apple.wxss, index.wxss
    --color-red-700: rgb(191, 0, 15);
    --color-amber-300: rgb(255, 210, 55);
    --color-green-300: rgb(123, 241, 168);
-@@ -37,74 +50,45 @@
+@@ -37,61 +50,37 @@
    --color-zinc-50: rgb(250, 250, 250);
    --color-zinc-900: rgb(24, 24, 27);
    --spacing: 8rpx;
@@ -123,10 +123,8 @@ Generator CSS files: app.wxss, apple.wxss, index.wxss
 +  display: inline-block;
    width: 1em;
    height: 1em;
--  -webkit-mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' width='24' height='24'%3E%3Cpath fill='black' d='M10 20v-6h4v6h5v-8h3L12 3L2 12h3v8z'/%3E%3C/svg%3E");
 +  background-color: currentColor;
    -webkit-mask-image: var(--svg);
--  mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' width='24' height='24'%3E%3Cpath fill='black' d='M10 20v-6h4v6h5v-8h3L12 3L2 12h3v8z'/%3E%3C/svg%3E");
    mask-image: var(--svg);
 -  --svg: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' width='24' height='24'%3E%3Cpath fill='black' d='M10 20v-6h4v6h5v-8h3L12 3L2 12h3v8z'/%3E%3C/svg%3E");
 -  background-color: currentColor;
@@ -149,18 +147,7 @@ Generator CSS files: app.wxss, apple.wxss, index.wxss
  .inline-block {
    display: inline-block;
  }
- .size-12 {
--  width: 96rpx;
-   width: calc(var(--spacing) * 12);
--  height: 96rpx;
-   height: calc(var(--spacing) * 12);
- }
- .h-10 {
--  height: 80rpx;
-   height: calc(var(--spacing) * 10);
- }
- .h-_b29_d292px_B {
-@@ -125,6 +109,13 @@
+@@ -120,6 +109,13 @@
  .w-_b323px_B {
    width: 323px;
  }
@@ -174,23 +161,8 @@ Generator CSS files: app.wxss, apple.wxss, index.wxss
  .flex-col {
    -webkit-flex-direction: column;
    flex-direction: column;
-@@ -134,9 +125,7 @@
- .space-y-2_d5 > text + view,
- .space-y-2_d5 > text + text {
-   --tw-space-y-reverse: 0;
--  margin-bottom: 0rpx;
-   margin-bottom: calc((var(--spacing) * 2.5) * var(--tw-space-y-reverse));
--  margin-top: 20rpx;
-   margin-top: calc((var(--spacing) * 2.5) * (1 - var(--tw-space-y-reverse)));
- }
- .space-x-2_d5 > view + view,
-@@ -144,11 +133,17 @@
- .space-x-2_d5 > text + view,
- .space-x-2_d5 > text + text {
-   --tw-space-x-reverse: 0;
--  margin-right: 0rpx;
+@@ -140,6 +136,14 @@
    margin-right: calc((var(--spacing) * 2.5) * var(--tw-space-x-reverse));
--  margin-left: 20rpx;
    margin-left: calc((var(--spacing) * 2.5) * (1 - var(--tw-space-x-reverse)));
  }
 +.truncate {
@@ -204,11 +176,7 @@ Generator CSS files: app.wxss, apple.wxss, index.wxss
  .border-4 {
    border-style: var(--tw-border-style);
    border-width: 4px;
-@@ -160,14 +155,12 @@
-   background-color: #68c828;
- }
- .bg-amber-300 {
--  background-color: rgb(255, 210, 55);
+@@ -154,7 +158,7 @@
    background-color: var(--color-amber-300);
  }
  .bg-blue-500_f30 {
@@ -216,31 +184,9 @@ Generator CSS files: app.wxss, apple.wxss, index.wxss
 +  background-color: rgba(50, 128, 255, 0.3);
  }
  .bg-zinc-50 {
--  background-color: rgb(250, 250, 250);
    background-color: var(--color-zinc-50);
- }
- .bg-gradient-to-b {
-@@ -201,7 +194,6 @@
-   );
- }
- .p-4 {
--  padding: 32rpx;
-   padding: calc(var(--spacing) * 4);
- }
- .text-_b100px_B {
-@@ -217,23 +209,70 @@
-   color: #123456;
- }
- .text-blue-300 {
--  color: rgb(145, 197, 255);
-   color: var(--color-blue-300);
- }
- .text-pink-300 {
--  color: rgb(253, 165, 213);
-   color: var(--color-pink-300);
- }
+@@ -213,11 +217,62 @@
  .text-red-700 {
--  color: rgb(191, 0, 15);
    color: var(--color-red-700);
  }
 +.capitalize {
@@ -268,7 +214,6 @@ Generator CSS files: app.wxss, apple.wxss, index.wxss
 +}
  @media (prefers-color-scheme: dark) {
    .dark_cbg-zinc-900 {
--    background-color: rgb(24, 24, 27);
      background-color: var(--color-zinc-900);
    }
  }
@@ -388,9 +333,7 @@ text,
 .i-mdi-home {
   width: 1em;
   height: 1em;
-  -webkit-mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' width='24' height='24'%3E%3Cpath fill='black' d='M10 20v-6h4v6h5v-8h3L12 3L2 12h3v8z'/%3E%3C/svg%3E");
   -webkit-mask-image: var(--svg);
-  mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' width='24' height='24'%3E%3Cpath fill='black' d='M10 20v-6h4v6h5v-8h3L12 3L2 12h3v8z'/%3E%3C/svg%3E");
   mask-image: var(--svg);
   --svg: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' width='24' height='24'%3E%3Cpath fill='black' d='M10 20v-6h4v6h5v-8h3L12 3L2 12h3v8z'/%3E%3C/svg%3E");
   background-color: currentColor;
@@ -408,13 +351,10 @@ text,
   display: inline-block;
 }
 .size-12 {
-  width: 96rpx;
   width: calc(var(--spacing) * 12);
-  height: 96rpx;
   height: calc(var(--spacing) * 12);
 }
 .h-10 {
-  height: 80rpx;
   height: calc(var(--spacing) * 10);
 }
 .h-_b29_d292px_B {
@@ -444,9 +384,7 @@ text,
 .space-y-2_d5 > text + view,
 .space-y-2_d5 > text + text {
   --tw-space-y-reverse: 0;
-  margin-bottom: 0rpx;
   margin-bottom: calc((var(--spacing) * 2.5) * var(--tw-space-y-reverse));
-  margin-top: 20rpx;
   margin-top: calc((var(--spacing) * 2.5) * (1 - var(--tw-space-y-reverse)));
 }
 .space-x-2_d5 > view + view,
@@ -454,9 +392,7 @@ text,
 .space-x-2_d5 > text + view,
 .space-x-2_d5 > text + text {
   --tw-space-x-reverse: 0;
-  margin-right: 0rpx;
   margin-right: calc((var(--spacing) * 2.5) * var(--tw-space-x-reverse));
-  margin-left: 20rpx;
   margin-left: calc((var(--spacing) * 2.5) * (1 - var(--tw-space-x-reverse)));
 }
 .border-4 {
@@ -470,14 +406,12 @@ text,
   background-color: #68c828;
 }
 .bg-amber-300 {
-  background-color: rgb(255, 210, 55);
   background-color: var(--color-amber-300);
 }
 .bg-blue-500_f30 {
   background-color: rgba(48, 128, 255, 0.30196);
 }
 .bg-zinc-50 {
-  background-color: rgb(250, 250, 250);
   background-color: var(--color-zinc-50);
 }
 .bg-gradient-to-b {
@@ -511,7 +445,6 @@ text,
   );
 }
 .p-4 {
-  padding: 32rpx;
   padding: calc(var(--spacing) * 4);
 }
 .text-_b100px_B {
@@ -527,20 +460,16 @@ text,
   color: #123456;
 }
 .text-blue-300 {
-  color: rgb(145, 197, 255);
   color: var(--color-blue-300);
 }
 .text-pink-300 {
-  color: rgb(253, 165, 213);
   color: var(--color-pink-300);
 }
 .text-red-700 {
-  color: rgb(191, 0, 15);
   color: var(--color-red-700);
 }
 @media (prefers-color-scheme: dark) {
   .dark_cbg-zinc-900 {
-    background-color: rgb(24, 24, 27);
     background-color: var(--color-zinc-900);
   }
 }

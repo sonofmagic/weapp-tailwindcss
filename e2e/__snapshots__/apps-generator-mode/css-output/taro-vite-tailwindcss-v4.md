@@ -7,7 +7,7 @@ Generator CSS files: app.wxss, app-origin.wxss, index.wxss
 
 | Mode | Bytes | Selectors | @supports | :hover | Tailwind banner | Raw arbitrary selector | Weapp escaped arbitrary selector |
 | --- | ---: | ---: | --- | --- | --- | --- | --- |
-| legacy | 2050 | 16 | false | false | false | false | true |
+| legacy | 1992 | 16 | false | false | false | false | true |
 | generator | 5534 | 34 | false | false | false | false | true |
 
 ## Diff
@@ -37,7 +37,7 @@ Generator CSS files: app.wxss, app-origin.wxss, index.wxss
    --tw-gradient-position: initial;
    --tw-gradient-from: rgba(0, 0, 0, 0);
    --tw-gradient-via: rgba(0, 0, 0, 0);
-@@ -17,41 +23,112 @@
+@@ -17,35 +23,108 @@
    --tw-gradient-from-position: 0%;
    --tw-gradient-via-position: 50%;
    --tw-gradient-to-position: 100%;
@@ -144,7 +144,6 @@ Generator CSS files: app.wxss, app-origin.wxss, index.wxss
 +  display: table;
 +}
  .h-14 {
--  height: 112rpx;
    height: calc(var(--spacing) * 14);
  }
  .h-_b300px_B {
@@ -164,12 +163,7 @@ Generator CSS files: app.wxss, app-origin.wxss, index.wxss
  .bg-_b_h123456_B {
    background-color: #123456;
  }
- .bg-purple-300 {
--  background-color: rgb(216, 180, 255);
-   background-color: var(--color-purple-300);
- }
- .bg-linear-to-r {
-@@ -91,6 +168,55 @@
+@@ -89,6 +168,55 @@
  .text-_b_hfff_B {
    color: #fff;
  }
@@ -273,7 +267,6 @@ text,
   padding: 0;
 }
 .h-14 {
-  height: 112rpx;
   height: calc(var(--spacing) * 14);
 }
 .h-_b300px_B {
@@ -283,7 +276,6 @@ text,
   background-color: #123456;
 }
 .bg-purple-300 {
-  background-color: rgb(216, 180, 255);
   background-color: var(--color-purple-300);
 }
 .bg-linear-to-r {
