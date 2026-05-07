@@ -2,8 +2,8 @@
 
 Fixture: demo
 Entry: mpx-tailwindcss-v4/dist/wx/app.wxss
-Legacy CSS files: app.wxss, styles/app.wxss, index.wxss, app36a8d5bb.wxss
-Generator CSS files: app.wxss, styles/app.wxss, index.wxss, app36a8d5bb.wxss
+Legacy CSS files: app.wxss, styles/app.wxss, app.wxss, index.wxss
+Generator CSS files: app.wxss, styles/app.wxss, app.wxss, index.wxss
 
 | Mode | Bytes | Selectors | @supports | :hover | Tailwind banner | Raw arbitrary selector | Weapp escaped arbitrary selector |
 | --- | ---: | ---: | --- | --- | --- | --- | --- |
@@ -270,9 +270,9 @@ Generator CSS files: app.wxss, styles/app.wxss, index.wxss, app36a8d5bb.wxss
 +  }
 +}
 
-
  ::before,
-@@ -435,6 +400,15 @@
+ ::after {
+@@ -434,6 +399,15 @@
  text,
  :after,
  :before {
@@ -288,7 +288,7 @@ Generator CSS files: app.wxss, styles/app.wxss, index.wxss, app36a8d5bb.wxss
    --tw-space-y-reverse: 0;
    --tw-divide-x-reverse: 0;
    --tw-border-style: solid;
-@@ -455,15 +429,6 @@
+@@ -454,15 +428,6 @@
    --tw-ring-offset-color: #fff;
    --tw-ring-offset-shadow: 0 0 rgba(0, 0, 0, 0);
    --tw-content: '';
@@ -304,7 +304,7 @@ Generator CSS files: app.wxss, styles/app.wxss, index.wxss, app36a8d5bb.wxss
    --color-red-400: rgb(255, 101, 104);
    --color-red-500: rgb(251, 44, 54);
    --color-yellow-400: rgb(247, 201, 0);
-@@ -486,20 +451,10 @@
+@@ -485,20 +450,10 @@
    --font-weight-bold: 700;
    --radius-md: 12rpx;
  }
@@ -325,7 +325,7 @@ Generator CSS files: app.wxss, styles/app.wxss, index.wxss, app36a8d5bb.wxss
    margin-top: calc(var(--spacing) * -2);
  }
  .mb-_b-20px_B {
-@@ -513,19 +468,15 @@
+@@ -512,19 +467,15 @@
    display: grid;
  }
  .h-2 {
@@ -345,7 +345,7 @@ Generator CSS files: app.wxss, styles/app.wxss, index.wxss, app36a8d5bb.wxss
    height: calc(var(--spacing) * 10);
  }
  .h-_b20px_B {
-@@ -544,19 +495,15 @@
+@@ -543,19 +494,15 @@
    min-height: 100px;
  }
  .w-2 {
@@ -365,7 +365,7 @@ Generator CSS files: app.wxss, styles/app.wxss, index.wxss, app36a8d5bb.wxss
    width: calc(var(--spacing) * 32);
  }
  .w-_b20px_B {
-@@ -597,9 +544,7 @@
+@@ -596,9 +543,7 @@
  .space-y-4 > text + view,
  .space-y-4 > text + text {
    --tw-space-y-reverse: 0;
@@ -375,7 +375,7 @@ Generator CSS files: app.wxss, styles/app.wxss, index.wxss, app36a8d5bb.wxss
    margin-bottom: calc(var(--spacing) * 4 * var(--tw-space-y-reverse));
  }
  .space-y-_b1_d6rem_B > view + view,
-@@ -607,9 +552,7 @@
+@@ -606,9 +551,7 @@
  .space-y-_b1_d6rem_B > text + view,
  .space-y-_b1_d6rem_B > text + text {
    --tw-space-y-reverse: 0;
@@ -385,7 +385,7 @@ Generator CSS files: app.wxss, styles/app.wxss, index.wxss, app36a8d5bb.wxss
    margin-bottom: calc(51.2rpx * var(--tw-space-y-reverse));
  }
  .divide-x-_b10px_B > view + view,
-@@ -617,9 +560,7 @@
+@@ -616,9 +559,7 @@
  .divide-x-_b10px_B > text + view,
  .divide-x-_b10px_B > text + text {
    --tw-divide-x-reverse: 0;
@@ -395,7 +395,7 @@ Generator CSS files: app.wxss, styles/app.wxss, index.wxss, app36a8d5bb.wxss
    border-right-width: calc(10px * var(--tw-divide-x-reverse));
    border-left-style: var(--tw-border-style);
    border-right-style: var(--tw-border-style);
-@@ -638,7 +579,6 @@
+@@ -637,7 +578,6 @@
    border-color: #010101;
  }
  .rounded-md {
@@ -403,7 +403,7 @@ Generator CSS files: app.wxss, styles/app.wxss, index.wxss, app36a8d5bb.wxss
    border-radius: var(--radius-md);
  }
  .border {
-@@ -670,7 +610,6 @@
+@@ -669,7 +609,6 @@
    border-top-width: 4px;
  }
  ._ebg-green-500 {
@@ -411,7 +411,7 @@ Generator CSS files: app.wxss, styles/app.wxss, index.wxss, app36a8d5bb.wxss
    background-color: var(--color-green-500) !important;
  }
  .bg-_b_h010101_B {
-@@ -689,23 +628,18 @@
+@@ -688,23 +627,18 @@
    background-color: rgba(48, 128, 255, 0.50196);
  }
  .bg-gray-100 {
@@ -435,7 +435,7 @@ Generator CSS files: app.wxss, styles/app.wxss, index.wxss, app36a8d5bb.wxss
    background-color: var(--color-sky-500);
  }
  .p-_b20px_B {
-@@ -716,15 +650,11 @@
+@@ -715,15 +649,11 @@
    padding-right: 34.54rpx;
  }
  .py-2 {
@@ -451,7 +451,7 @@ Generator CSS files: app.wxss, styles/app.wxss, index.wxss, app36a8d5bb.wxss
    line-height: var(--tw-leading, var(--text-2xl--line-height));
  }
  .text-_b20px_B {
-@@ -751,12 +681,10 @@
+@@ -750,12 +680,10 @@
  }
  ._efont-bold {
    --tw-font-weight: var(--font-weight-bold) !important;
@@ -464,7 +464,7 @@ Generator CSS files: app.wxss, styles/app.wxss, index.wxss, app36a8d5bb.wxss
    font-weight: var(--font-weight-semibold);
  }
  ._etext-_b_h990000_B {
-@@ -776,15 +704,12 @@
+@@ -775,15 +703,12 @@
    color: var(--my-var);
  }
  .text-black {
@@ -480,7 +480,7 @@ Generator CSS files: app.wxss, styles/app.wxss, index.wxss, app36a8d5bb.wxss
    color: var(--color-white);
  }
  .underline {
-@@ -813,7 +738,6 @@
+@@ -812,7 +737,6 @@
  }
  .before_ccontent-_b_aFestivus_a_B:before {
    --tw-content: 'Festivus';
@@ -488,7 +488,7 @@ Generator CSS files: app.wxss, styles/app.wxss, index.wxss, app36a8d5bb.wxss
    content: var(--tw-content);
  }
  .after_cborder-none:after {
-@@ -829,9 +753,7 @@
+@@ -828,9 +752,7 @@
  }
  @media (min-width: 96rem) {
    ._2xl_ctext-base {
@@ -498,7 +498,7 @@ Generator CSS files: app.wxss, styles/app.wxss, index.wxss, app36a8d5bb.wxss
      line-height: var(--tw-leading, var(--text-base--line-height));
    }
    ._2xl_ctext-_bred_B {
-@@ -840,15 +762,23 @@
+@@ -839,15 +761,23 @@
  }
  @media (prefers-color-scheme: dark) {
    .dark_cbg-green-500 {
@@ -958,7 +958,6 @@ text,
     color: var(--color-yellow-400);
   }
 }
-
 
 ::before,
 ::after {
@@ -1782,7 +1781,6 @@ wx-root-portal-content {
     color: red;
   }
 }
-
 
 ::before,
 ::after {

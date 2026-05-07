@@ -13,6 +13,7 @@ import { createChineseMarkdownReport, createMarkdownReport } from './apps-genera
 import { E2E_PROJECTS, NATIVE_PROJECTS } from './projectEntries'
 import { clearProjectBuildState } from './projectTest'
 import { collectCssSnapshots, resolveSnapshotFile } from './shared'
+import { normalizeSnapshotName } from './snapshotUtils'
 
 type GeneratorBuildMode = 'generator' | 'legacy'
 
@@ -112,6 +113,16 @@ const UNSUPPORTED_LEGACY_SELECTOR_SET = new Set([
   'text',
   'view',
 ])
+
+function compareText(a: string, b: string) {
+  if (a < b) {
+    return -1
+  }
+  if (a > b) {
+    return 1
+  }
+  return 0
+}
 
 function normalizeSelector(selector: string) {
   return selector
@@ -235,15 +246,26 @@ async function collectOutputCssSnapshots(projectRoot: string, cssPath: string, c
   const entryFileNames = new Set(entrySnapshots.map(snapshot => path.normalize(snapshot.fileName)))
   const extraSnapshots = await Promise.all(
     allCssFiles
-      .sort()
+      .sort(compareCssOutputFile)
       .filter(file => !entryFileNames.has(path.normalize(file)))
       .map(file => collectCssSnapshots(outputRoot, file, { classList })),
   )
 
   return [
     ...entrySnapshots,
-    ...extraSnapshots.flat(),
+    ...extraSnapshots.flat().sort(compareCssSnapshotEntry),
   ]
+}
+
+function compareCssOutputFile(a: string, b: string) {
+  return compareText(normalizeSnapshotName(a) ?? a, normalizeSnapshotName(b) ?? b) || compareText(a, b)
+}
+
+function compareCssSnapshotEntry(
+  a: { fileName: string, content: string },
+  b: { fileName: string, content: string },
+) {
+  return compareText(a.fileName, b.fileName) || compareText(a.content, b.content)
 }
 
 function createReportItem(
@@ -470,6 +492,30 @@ describe('apps demo generator mode comparison', () => {
     expect(snapshot).toContain('+++ fixture-app/generator.css')
     expect(snapshot).toContain('-.legacy { color: red; }')
     expect(snapshot).toContain('+.generator { color: blue; }')
+  })
+
+  it('normalizes hashed css output file order for snapshots', () => {
+    expect([
+      'index866b3e7e.wxss',
+      'base29252032.wxss',
+      'index573acbe4.wxss',
+      'components94caae12.wxss',
+    ].sort(compareCssOutputFile)).toEqual([
+      'base29252032.wxss',
+      'components94caae12.wxss',
+      'index573acbe4.wxss',
+      'index866b3e7e.wxss',
+    ])
+
+    expect([
+      { fileName: 'index.wxss', content: '.b{}' },
+      { fileName: 'index.wxss', content: '.a{}' },
+      { fileName: 'base.wxss', content: '.z{}' },
+    ].sort(compareCssSnapshotEntry)).toEqual([
+      { fileName: 'base.wxss', content: '.z{}' },
+      { fileName: 'index.wxss', content: '.a{}' },
+      { fileName: 'index.wxss', content: '.b{}' },
+    ])
   })
 
   it('builds apps and demos in legacy and generator modes with comparable mini-program css output', async () => {

@@ -5,6 +5,7 @@ describe('normalizeCssSnapshot', () => {
   it('removes scanner noise utilities without a class list', () => {
     expect(normalizeCssSnapshot([
       ':host { --spacing: 8rpx; }',
+      '/*$vite$:1*/',
       '.start { left: var(--spacing); }',
       '.end { right: var(--spacing); }',
       '.border-bs { border-top-width: 1px; }',
@@ -19,6 +20,7 @@ describe('normalizeCssSnapshot', () => {
   it('removes scanner noise utilities even when class list contains them', () => {
     expect(normalizeCssSnapshot([
       ':host { --spacing: 8rpx; }',
+      '/*$vite$:1*/',
       '.start { left: var(--spacing); }',
       '.end { right: var(--spacing); }',
       '.border-bs { border-top-width: 1px; }',

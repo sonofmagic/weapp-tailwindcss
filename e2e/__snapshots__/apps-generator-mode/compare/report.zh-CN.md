@@ -6,8 +6,8 @@
 
 | 项目 | 来源 | 状态 | CSS 文件 | 旧链路字节数 | 生成模式字节数 | 差值 | 比例 | 旧链路独有 | @supports | :hover | Tailwind banner |
 | --- | --- | --- | --- | ---: | ---: | ---: | ---: | --- | --- | --- | --- |
-| vite-native | apps | 通过 | `vite-native/dist/app.wxss` (+2) | 5751 | 7653 | +1902 | 1.3307 | 无 | 否 | 否 | 否 |
-| vite-native-ts | apps | 通过 | `vite-native-ts/dist/app.wxss` (+3) | 12443 | 24236 | +11793 | 1.9478 | 无 | 否 | 否 | 否 |
+| vite-native | apps | 通过 | `vite-native/dist/app.wxss` (+2) | 5712 | 7613 | +1901 | 1.3328 | 无 | 否 | 否 | 否 |
+| vite-native-ts | apps | 通过 | `vite-native-ts/dist/app.wxss` (+3) | 12391 | 24184 | +11793 | 1.9517 | 无 | 否 | 否 | 否 |
 | uni-app-vue3-vite | demo | 通过 | `uni-app-vue3-vite/dist/build/mp-weixin/app.wxss` (+10) | 401919 | 502633 | +100714 | 1.2506 | 无 | 否 | 否 | 否 |
 | uni-app-tailwindcss-v4 | demo | 通过 | `uni-app-tailwindcss-v4/dist/build/mp-weixin/app.wxss` (+2) | 52812 | 49689 | -3123 | 0.9409 | 无 | 否 | 否 | 否 |
 | uni-app-tailwindcss-v5 | demo | 通过 | `uni-app-tailwindcss-v5/dist/build/mp-weixin/app.wxss` (+2) | 61948 | 54109 | -7839 | 0.8735 | 无 | 否 | 否 | 否 |
@@ -53,7 +53,7 @@
 
 ### uni-app-vue3-vite
 
-- CSS 文件：`app.wxss`, `index.wxss`, `a.wxss`, `b.wxss`, `index.wxss`, `u-button.wxss`, `u-loading-icon.wxss`, `index.wxss`, `peer.wxss`, `tailwind-children.wxss`, `typography.wxss`
+- CSS 文件：`app.wxss`, `a.wxss`, `b.wxss`, `index.wxss`, `index.wxss`, `index.wxss`, `peer.wxss`, `tailwind-children.wxss`, `typography.wxss`, `u-button.wxss`, `u-loading-icon.wxss`
 - 两边共有：`.-m-_b20px_B`, `.-mt-2`, `._2xl_ctext-_bred_B`, `._2xl_ctext-base`, `._b_n__du-count-down_r__r_text_B_c_etext-red-400 .u-count-down__text`, `._ebg-green-500`, `._eborder-primary`, `._efont-bold`, `._ehidden`, `._etext-_b_h990000_B`, `._etext-primary`, `.after_cborder-none:after`, `.after_ccontent-_b_au_x6211_u_x662f_className_a_B:after`, `.after_ccontent-_b_au_x6211_u_x6765_u_x81ea_utils_dfilter_djs_a_B:after`, `.after_ccontent-_b_r_au_x6211_u_x6765_u_x81ea_inline-wxs_r_a_B:after`, `.backdrop-blur-_b2rpx_B`, `.before_ccontent-_b_aFestivus_a_B:before`, `.before_ccontent-_b_a_x_a_B:before`, `.before_ccontent-_b_amoduleA_u_x72ec_u_x7acb_u_x5206_u_x5305__a_B:before`, `.bg-_b_h123324_B`
 - 仅生成模式：`.-mv_cbg-red-400`, `.-wx_cbg-red-400`, `.absolute`, `.antialiased`, `.backdrop-blur`, `.backdrop-filter`, `.backdrop-grayscale`, `.backdrop-invert`, `.backdrop-sepia`, `.before_ccontent-_b_r_amoduleA__ru72EC_ru7ACB_ru5206_ru5305_r_a_B:before`, `.bg-repeat`, `.border-b`, `.border-collapse`, `.border-e`, `.border-l`, `.border-r`, `.border-s`, `.border-t`, `.border-x`, `.border-y`
 - 仅旧链路：-
@@ -123,21 +123,21 @@
 
 ### mpx-app
 
-- CSS 文件：`app.wxss`, `styles/base.wxss`, `styles/components.wxss`, `styles/utilities.wxss`, `index.wxss`, `button.wxss`, `styles/index.wxss`, `icon.wxss`, `styles/index.wxss`, `loading.wxss`, `styles/index.wxss`, `index.wxss`, `styles/index.wxss`, `index.wxss`, `styles/index.wxss`, `index.wxss`, `styles/index.wxss`, `index.wxss`, `styles/index.wxss`, `base5c682eff.wxss`, `components1e38aa04.wxss`, `indexd323f158.wxss`, `indexfcda771e.wxss`, `utilities68e69726.wxss`
+- CSS 文件：`app.wxss`, `styles/base.wxss`, `styles/components.wxss`, `styles/utilities.wxss`, `base.wxss`, `button.wxss`, `components.wxss`, `icon.wxss`, `index.wxss`, `index.wxss`, `index.wxss`, `index.wxss`, `index.wxss`, `index.wxss`, `index.wxss`, `loading.wxss`, `styles/index.wxss`, `styles/index.wxss`, `styles/index.wxss`, `styles/index.wxss`, `styles/index.wxss`, `styles/index.wxss`, `styles/index.wxss`, `utilities.wxss`
 - 两边共有：`.after_ccontent-_b_au_x4f60_u_x597d_u_x554a_u_xff0c_u_x6211_u_x8fd9_u_x662f_u_x4e2d_u_x6587_u_x5b57_u_x7b26_u_x4e32__a_B:after`, `.after_ccontent-_b_qu_x4f60_u_x597d_u_x554a_u_xff0c_u_x6211_u_x5f88_u_x65e0_u_x804a__q_B:after`, `.after_cml-0_d5:after`, `.after_ctext-red-500:after`, `.bg-_b_h123456_B`, `.bg-_b_h929292_B`, `.bg-_burl_p_ahttps_c_f_fxxx_dcom_fxx_dwebp_a_P_B`, `.flex`, `.flex-col`, `.hotspot-expanded.relative`, `.hotspot-expanded:after`, `.t-button`, `.t-button--block`, `.t-button--circle`, `.t-button--circle.t-button--size-extra-small`, `.t-button--circle.t-button--size-extra-small:after`, `.t-button--circle.t-button--size-large`, `.t-button--circle.t-button--size-large:after`, `.t-button--circle.t-button--size-medium`, `.t-button--circle.t-button--size-medium:after`
 - 仅生成模式：`.tw-root`, `page`, `wx-root-portal-content`
 - 仅旧链路：-
 
 ### mpx-tailwindcss-v4
 
-- CSS 文件：`app.wxss`, `styles/app.wxss`, `index.wxss`, `app36a8d5bb.wxss`
+- CSS 文件：`app.wxss`, `styles/app.wxss`, `app.wxss`, `index.wxss`
 - 两边共有：`.-m-_b20px_B`, `.-mt-2`, `._2xl_ctext-_bred_B`, `._2xl_ctext-base`, `._ebg-green-500`, `._efont-bold`, `._etext-_b_h990000_B`, `.active_cbg-_b_h543210_B:active`, `.active_cbg-_b_h989898_B:active`, `.after_cborder-none:after`, `.before_ccontent-_b_aFestivus_a_B:before`, `.bg-_b_h010101_B`, `.bg-_b_h123456_B`, `.bg-_b_h434344_B`, `.bg-_b_he90505_B`, `.bg-blue-500_f50`, `.bg-gray-100`, `.bg-pink-500`, `.bg-red-400`, `.bg-red-500`
 - 仅生成模式：-
 - 仅旧链路：-
 
 ### mpx-tailwindcss-v5
 
-- CSS 文件：`app.wxss`, `styles/app.wxss`, `index.wxss`, `app252bdc3c.wxss`
+- CSS 文件：`app.wxss`, `styles/app.wxss`, `app.wxss`, `index.wxss`
 - 两边共有：`.-m-_b20px_B`, `.-mt-2`, `._2xl_ctext-_bred_B`, `._2xl_ctext-base`, `._ebg-green-500`, `._eborder-primary`, `._efont-bold`, `._etext-_b_h990000_B`, `._etext-primary`, `.active_cbg-_b_h543210_B:active`, `.active_cbg-_b_h989898_B:active`, `.after_cborder-none:after`, `.before_ccontent-_b_aFestivus_a_B:before`, `.bg-_b_h0000ff_B`, `.bg-_b_h010101_B`, `.bg-_b_h123456_B`, `.bg-_b_h434344_B`, `.bg-_b_he90505_B`, `.bg-blue-500_f50`, `.bg-emerald-500`
 - 仅生成模式：-
 - 仅旧链路：-

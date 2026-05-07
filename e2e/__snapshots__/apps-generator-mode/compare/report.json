@@ -10,7 +10,7 @@
     ],
     "status": "passed",
     "legacy": {
-      "bytes": 5751,
+      "bytes": 5712,
       "selectors": [
         ".bg-_b_h3a32d1_B",
         ".bg-_b_h68c828_B",
@@ -67,7 +67,7 @@
       "hasRawArbitrarySelector": false
     },
     "generator": {
-      "bytes": 7653,
+      "bytes": 7613,
       "selectors": [
         ".-start",
         "._estart",
@@ -134,8 +134,8 @@
       "hasWeappEscapedArbitrarySelector": true,
       "hasRawArbitrarySelector": false
     },
-    "deltaBytes": 1902,
-    "generatorBytesRatio": 1.3307,
+    "deltaBytes": 1901,
+    "generatorBytesRatio": 1.3328,
     "sharedSelectors": [
       ".bg-_b_h3a32d1_B",
       ".bg-_b_h68c828_B",
@@ -185,7 +185,7 @@
     ],
     "status": "passed",
     "legacy": {
-      "bytes": 12443,
+      "bytes": 12391,
       "selectors": [
         ".-inset-1",
         ".-inset-_b1rpx_B",
@@ -335,7 +335,7 @@
       "hasRawArbitrarySelector": false
     },
     "generator": {
-      "bytes": 24236,
+      "bytes": 24184,
       "selectors": [
         ".-inset-1",
         ".-inset-_b1rpx_B",
@@ -607,7 +607,7 @@
       "hasRawArbitrarySelector": false
     },
     "deltaBytes": 11793,
-    "generatorBytesRatio": 1.9478,
+    "generatorBytesRatio": 1.9517,
     "sharedSelectors": [
       ".-inset-1",
       ".-inset-_b1rpx_B",
@@ -660,16 +660,16 @@
     "cssFile": "uni-app-vue3-vite/dist/build/mp-weixin/app.wxss",
     "cssFiles": [
       "app.wxss",
-      "index.wxss",
       "a.wxss",
       "b.wxss",
       "index.wxss",
-      "u-button.wxss",
-      "u-loading-icon.wxss",
+      "index.wxss",
       "index.wxss",
       "peer.wxss",
       "tailwind-children.wxss",
-      "typography.wxss"
+      "typography.wxss",
+      "u-button.wxss",
+      "u-loading-icon.wxss"
     ],
     "status": "passed",
     "legacy": {
@@ -13496,26 +13496,26 @@
       "styles/base.wxss",
       "styles/components.wxss",
       "styles/utilities.wxss",
-      "index.wxss",
+      "base.wxss",
       "button.wxss",
-      "styles/index.wxss",
+      "components.wxss",
       "icon.wxss",
-      "styles/index.wxss",
+      "index.wxss",
+      "index.wxss",
+      "index.wxss",
+      "index.wxss",
+      "index.wxss",
+      "index.wxss",
+      "index.wxss",
       "loading.wxss",
       "styles/index.wxss",
-      "index.wxss",
       "styles/index.wxss",
-      "index.wxss",
       "styles/index.wxss",
-      "index.wxss",
       "styles/index.wxss",
-      "index.wxss",
       "styles/index.wxss",
-      "base5c682eff.wxss",
-      "components1e38aa04.wxss",
-      "indexd323f158.wxss",
-      "indexfcda771e.wxss",
-      "utilities68e69726.wxss"
+      "styles/index.wxss",
+      "styles/index.wxss",
+      "utilities.wxss"
     ],
     "status": "passed",
     "legacy": {
@@ -19333,8 +19333,8 @@
     "cssFiles": [
       "app.wxss",
       "styles/app.wxss",
-      "index.wxss",
-      "app36a8d5bb.wxss"
+      "app.wxss",
+      "index.wxss"
     ],
     "status": "passed",
     "legacy": {
@@ -19609,8 +19609,8 @@
     "cssFiles": [
       "app.wxss",
       "styles/app.wxss",
-      "index.wxss",
-      "app252bdc3c.wxss"
+      "app.wxss",
+      "index.wxss"
     ],
     "status": "passed",
     "legacy": {

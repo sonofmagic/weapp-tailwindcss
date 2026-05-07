@@ -7,8 +7,8 @@ Generator CSS files: app.wxss, index.wxss, index.wxss, index.wxss
 
 | Mode | Bytes | Selectors | @supports | :hover | Tailwind banner | Raw arbitrary selector | Weapp escaped arbitrary selector |
 | --- | ---: | ---: | --- | --- | --- | --- | --- |
-| legacy | 12443 | 140 | false | false | false | false | true |
-| generator | 24236 | 262 | false | false | false | false | true |
+| legacy | 12391 | 140 | false | false | false | false | true |
+| generator | 24184 | 262 | false | false | false | false | true |
 
 ## Diff
 
@@ -561,15 +561,6 @@ Generator CSS files: app.wxss, index.wxss, index.wxss, index.wxss
  .transition-colors {
    transition-property: color, background-color, border-color, text-decoration-color, fill, stroke;
    transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
-@@ -500,7 +912,8 @@
- }
- .focus_c_b_n_view_B_cp-4 view:focus {
-   padding: 32rpx;
--} /*$vite$:1*/
-+}
-+/*$vite$:1*/
-
- /*$vite$:1*/
 ```
 
 ## Legacy CSS
@@ -1077,11 +1068,9 @@ text,
 }
 .focus_c_b_n_view_B_cp-4 view:focus {
   padding: 32rpx;
-} /*$vite$:1*/
+}
 
-/*$vite$:1*/
 
-/*$vite$:1*/
 
 .merge-page {
   min-height: 100vh;
@@ -1192,7 +1181,7 @@ text,
   font-weight: 600;
   letter-spacing: 0.8rpx;
   box-shadow: 0 8rpx 20rpx -12rpx rgba(15, 23, 42, 0.5);
-} /*$vite$:1*/
+}
 ```
 
 ## Generator CSS
@@ -2113,11 +2102,8 @@ wx-root-portal-content {
 .focus_c_b_n_view_B_cp-4 view:focus {
   padding: 32rpx;
 }
-/*$vite$:1*/
 
-/*$vite$:1*/
 
-/*$vite$:1*/
 
 .merge-page {
   min-height: 100vh;
@@ -2228,5 +2214,5 @@ wx-root-portal-content {
   font-weight: 600;
   letter-spacing: 0.8rpx;
   box-shadow: 0 8rpx 20rpx -12rpx rgba(15, 23, 42, 0.5);
-} /*$vite$:1*/
+}
 ```

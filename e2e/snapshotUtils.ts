@@ -283,6 +283,12 @@ function sortUtilityRuleRuns(container: postcss.Container) {
 export function normalizeCssSnapshot(source: string, _options: CssSnapshotOptions = {}) {
   const root = postcss.parse(source)
 
+  root.walkComments((comment) => {
+    if (/^\$vite\$:\d+$/.test(comment.text.trim())) {
+      comment.remove()
+    }
+  })
+
   root.walkRules((rule) => {
     if (SCANNER_NOISE_SELECTORS.has(rule.selector)) {
       rule.remove()
@@ -346,6 +352,6 @@ export async function collectCssSnapshots(projectRoot: string, cssRelativePath: 
     }
   }
 
-  await visit(rootCssPath, path.basename(cssRelativePath))
+  await visit(rootCssPath, normalizeSnapshotName(path.basename(cssRelativePath)) ?? path.basename(cssRelativePath))
   return snapshots
 }

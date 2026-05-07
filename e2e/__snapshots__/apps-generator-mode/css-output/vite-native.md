@@ -7,8 +7,8 @@ Generator CSS files: app.wxss, apple.wxss, index.wxss
 
 | Mode | Bytes | Selectors | @supports | :hover | Tailwind banner | Raw arbitrary selector | Weapp escaped arbitrary selector |
 | --- | ---: | ---: | --- | --- | --- | --- | --- |
-| legacy | 5751 | 47 | false | false | false | false | true |
-| generator | 7653 | 58 | false | false | false | false | true |
+| legacy | 5712 | 47 | false | false | false | false | true |
+| generator | 7613 | 58 | false | false | false | false | true |
 
 ## Diff
 
@@ -228,7 +228,7 @@ Generator CSS files: app.wxss, apple.wxss, index.wxss
    padding: calc(var(--spacing) * 4);
  }
  .text-_b100px_B {
-@@ -217,24 +209,72 @@
+@@ -217,23 +209,70 @@
    color: #123456;
  }
  .text-blue-300 {
@@ -272,8 +272,6 @@ Generator CSS files: app.wxss, apple.wxss, index.wxss
      background-color: var(--color-zinc-900);
    }
  }
-+
- /*$vite$:1*/
 +.container {
 +  width: 100%;
 +}
@@ -303,7 +301,8 @@ Generator CSS files: app.wxss, apple.wxss, index.wxss
 +  }
 +}
 
- /*$vite$:1*/
+
+ /* stylelint-disable-next-line import-notation */
 ```
 
 ## Legacy CSS
@@ -545,9 +544,7 @@ text,
     background-color: var(--color-zinc-900);
   }
 }
-/*$vite$:1*/
 
-/*$vite$:1*/
 
 /* stylelint-disable-next-line import-notation */
 .s .a {
@@ -556,7 +553,7 @@ text,
 
 .user-motto {
   font-size: 12px;
-} /*$vite$:1*/
+}
 ```
 
 ## Generator CSS
@@ -809,8 +806,6 @@ wx-root-portal-content {
     background-color: var(--color-zinc-900);
   }
 }
-
-/*$vite$:1*/
 .container {
   width: 100%;
 }
@@ -840,7 +835,6 @@ wx-root-portal-content {
   }
 }
 
-/*$vite$:1*/
 
 /* stylelint-disable-next-line import-notation */
 .s .a {
@@ -849,5 +843,5 @@ wx-root-portal-content {
 
 .user-motto {
   font-size: 12px;
-} /*$vite$:1*/
+}
 ```
