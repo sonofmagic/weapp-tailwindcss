@@ -105,8 +105,8 @@ describe('v5 Tailwind CSS v4 upgrade generator coverage', () => {
 
   it('keeps postcss generator web target aligned with native Tailwind v4 defaults without scanning workspace fixtures', async () => {
     const result = await generate(UPGRADE_DEFAULTS_SOURCE_CSS, {
-        mode: 'force',
-        target: 'web',
+      mode: 'force',
+      target: 'web',
     })
 
     expect(result.css).toContain('.ring')
@@ -126,6 +126,8 @@ describe('v5 Tailwind CSS v4 upgrade generator coverage', () => {
     expect(result.css).toContain('cursor: pointer')
     expect(result.css).toContain('dialog')
     expect(result.css).toContain('margin: auto')
+    expect(result.css).not.toContain(':not(#n)')
+    expect(result.css).not.toContain(':not(#\\#)')
     expect(result.css).toContain('calc(3px + var(--tw-ring-offset-width))')
     expect(result.css).toContain('var(--tw-ring-color, var(--color-blue-500, #3b82f6))')
     expect(result.css).toContain('outline-width: 3px')
@@ -161,6 +163,8 @@ describe('v5 Tailwind CSS v4 upgrade generator coverage', () => {
     expect(result.css).not.toContain('textarea::placeholder')
     expect(result.css).not.toContain('cursor: pointer')
     expect(result.css).not.toContain('dialog')
+    expect(result.css).not.toContain(':not(#n)')
+    expect(result.css).not.toContain(':not(#\\#)')
     expect(normalized).not.toContain('@supports')
   })
 
