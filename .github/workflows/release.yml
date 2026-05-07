@@ -1,13 +1,6 @@
 name: Release
 
 on:
-  push:
-    branches:
-      - main
-      - alpha
-      - beta
-      - rc
-      - next
   workflow_dispatch:
 
 concurrency: ${{ github.workflow }}-${{ github.ref }}
