@@ -34,7 +34,7 @@ import UniappCliStyle from './UniappCliStyle.mdx'
 ## 安装
 
 ```bash npm2yarn
-npm install -D tailwindcss @tailwindcss/postcss postcss weapp-tailwindcss
+npm install -D tailwindcss weapp-tailwindcss
 ```
 
 <Patch />
@@ -56,7 +56,7 @@ const config = {
       new WeappTailwindcss({
         rem2rpx: true,
         cssEntries: [
-          // 你 @import "weapp-tailwindcss/index.css"; 那个文件绝对路径
+          // Tailwind CSS 入口文件绝对路径
           path.resolve(__dirname, './src/app.css'),
         ],
       })
@@ -70,40 +70,9 @@ module.exports = config
 
 > tailwindcss@4 必须配置 `cssEntries` 并且使用绝对路径，否则 `tailwindcss` 生成的类名不会参与转译。
 
-## 配置 `postcss.config.js`
+## PostCSS 配置
 
-```js title="postcss.config.js"
-const path = require('path')
-const webpack = require('webpack')
-const config = {
-  parser: require('postcss-comment'),
-  plugins: [
-    // highlight-next-line
-    require('@tailwindcss/postcss')(), // 只添加这一行
-    require('postcss-import')({
-      resolve (id, basedir, importOptions) {
-        if (id.startsWith('~@/')) {
-          return path.resolve(process.env.UNI_INPUT_DIR, id.substr(3))
-        } else if (id.startsWith('@/')) {
-          return path.resolve(process.env.UNI_INPUT_DIR, id.substr(2))
-        } else if (id.startsWith('/') && !id.startsWith('//')) {
-          return path.resolve(process.env.UNI_INPUT_DIR, id.substr(1))
-        }
-        return id
-      }
-    }),
-
-    require('autoprefixer')({
-      remove: process.env.UNI_PLATFORM !== 'h5'
-    }),
-    require('@dcloudio/vue-cli-plugin-uni/packages/postcss')
-  ]
-}
-if (webpack.version[0] > 4) {
-  delete config.parser
-}
-module.exports = config
-```
+`weapp-tailwindcss@5` 默认由 Webpack 插件接管 Tailwind CSS 样式生成，不需要再在 `postcss.config.js` 里注册 `@tailwindcss/postcss`。如果这个存量项目已经有 PostCSS 配置，只保留 `postcss-import`、`autoprefixer`、`@dcloudio/vue-cli-plugin-uni/packages/postcss` 等非 Tailwind 插件即可。
 
 ## 添加样式
 

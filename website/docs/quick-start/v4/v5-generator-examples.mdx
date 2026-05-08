@@ -19,7 +19,7 @@ keywords:
 
 生成模式必须先区分 Tailwind CSS 主版本。`tailwindcss@4` 是 CSS-first 引擎，扫描范围写在 CSS 入口的 `@source`；`tailwindcss@3` 仍使用 `tailwind.config.js` 的 `content`。两个版本都会默认由 `weapp-tailwindcss@5` 接管 Tailwind 样式生成，并直接输出小程序目标 CSS。
 
-核心变化是：实际项目中不需要再注册 `@tailwindcss/vite`、`@tailwindcss/postcss`、`tailwindcss` PostCSS 插件或其他 Tailwind 官方构建插件；`weapp-tailwindcss` 会按当前 Tailwind 主版本读取配置并接管样式生成。
+核心变化是：大部分 Vite / Webpack 项目只需要注册 `weapp-tailwindcss` 自己的构建器插件，也就是 `weapp-tailwindcss/vite` 或 `weapp-tailwindcss/webpack` 导出的 `WeappTailwindcss`。实际项目中不需要再注册 `@tailwindcss/vite`、`@tailwindcss/postcss`、`tailwindcss` PostCSS 插件或其他 Tailwind 官方构建插件；`weapp-tailwindcss` 会按当前 Tailwind 主版本读取配置并接管样式生成。
 
 :::tip 新项目优先选择生成模式
 如果你正在接入 Tailwind CSS 或准备升级到 v5，优先从生成模式开始。它会直接生成小程序目标 CSS，并用 `classSet` 精确约束 JS / 模板转译范围。
@@ -43,6 +43,38 @@ npm install -D tailwindcss@3 weapp-tailwindcss
 
 Tailwind CSS v4 项目使用 CSS-first 入口和 `@source`，Tailwind CSS v3 项目继续使用 `tailwind.config.js` 的 `content` 和 `theme`；两者都会默认由 v5 生成模式直接输出目标端样式。
 
+## 默认集成原则
+
+优先把 Tailwind CSS 样式生成、CSS 小程序适配、模板类名转译和 JS 类名转译都交给同一个 `WeappTailwindcss` 构建器插件：
+
+```ts title="Vite"
+import { WeappTailwindcss } from 'weapp-tailwindcss/vite'
+
+export default {
+  plugins: [
+    WeappTailwindcss(),
+  ],
+}
+```
+
+```js title="Webpack"
+const { WeappTailwindcss } = require('weapp-tailwindcss/webpack')
+
+module.exports = {
+  configureWebpack(config) {
+    config.plugins.push(new WeappTailwindcss())
+  },
+}
+```
+
+不要在同一个小程序构建里再额外注册官方 Tailwind 构建插件。也就是说：
+
+- Vite 项目不再添加 `@tailwindcss/vite`。
+- PostCSS 配置里不再添加 `@tailwindcss/postcss`。
+- Tailwind CSS v3 项目不再添加 `tailwindcss` PostCSS 插件。
+
+`postcss.config.js` 可以继续保留项目自己的非 Tailwind 插件，例如 `postcss-import`、框架内置 PostCSS 插件或业务自定义插件；只需要移除 Tailwind 官方生成插件。Mpx 这类需要把 CSS 生成挂在框架 PostCSS 管线里的项目是例外，按 [Mpx 生成模式](./generator/mpx) 使用 `weapp-tailwindcss/postcss`。
+
 ## 版本行为差异
 
 | Tailwind 主版本 | 默认行为 | 扫描配置 | Tailwind 官方插件 | 迁移建议 |
@@ -59,10 +91,10 @@ Tailwind CSS v4 项目使用 CSS-first 入口和 `@source`，Tailwind CSS v3 项
 | Taro Vite | [Taro 生成模式](./generator/taro) | `WeappTailwindcss` | `config/index.ts` 的 `compiler.vitePlugins` | `src/app.css` |
 | Taro Webpack | [Taro 生成模式](./generator/taro#taro-webpack) | `WeappTailwindcss` | `config/index.ts` 的 `mini.webpackChain` | `src/app.css` |
 | weapp-vite | [weapp-vite 生成模式](./generator/weapp-vite) | `WeappTailwindcss` | `vite.config.ts` | `app.css` 或项目全局样式 |
-| Mpx | [Mpx 生成模式](./generator/mpx) | PostCSS 默认导出 + Webpack `WeappTailwindcss` | `mpx.config.js` | `src/app.css` |
+| Mpx | [Mpx 生成模式](./generator/mpx) | 例外：PostCSS 默认导出 + Webpack `WeappTailwindcss` | `mpx.config.js` | `src/app.css` |
 
 :::tip 配置建议
-生成模式下不要再把 `@tailwindcss/vite`、`@tailwindcss/postcss` 或 `tailwindcss` PostCSS 插件注册到实际项目里，否则会形成两套 Tailwind 生成链路。Vite、Webpack、Webpack4 与 Gulp 入口推荐导入大写 `WeappTailwindcss`；小写 `weappTailwindcss` 也可用，适合偏函数式命名的项目。PostCSS 入口继续使用默认导出。
+生成模式下不要再把 `@tailwindcss/vite`、`@tailwindcss/postcss` 或 `tailwindcss` PostCSS 插件注册到实际项目里，否则会形成两套 Tailwind 生成链路。Vite、Webpack、Webpack4 与 Gulp 入口推荐导入大写 `WeappTailwindcss`；小写 `weappTailwindcss` 也可用，适合偏函数式命名的项目。只有无法通过构建器插件接管 CSS 生成的框架，才使用 `weapp-tailwindcss/postcss` 默认导出。
 :::
 
 ## CSS 入口
