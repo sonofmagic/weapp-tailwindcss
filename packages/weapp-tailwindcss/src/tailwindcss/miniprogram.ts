@@ -4,9 +4,42 @@ import { removeUnsupportedCascadeLayers } from './remove-unsupported-css'
 const DEFAULT_WEAPP_VARIABLE_SCOPE = 'page,.tw-root,wx-root-portal-content,:host'
 const CLASS_SELECTOR_RE = /(?:^|[^\w-])\.[_a-z\u00A0-\uFFFF\\-]/i
 const PSEUDO_CONTENT_SELECTOR_RE = /^(?:::before|::after|:before|:after)(?:,(?:::before|::after|:before|:after))*$/
+const MINI_PROGRAM_PREFLIGHT_SELECTORS = new Set([
+  '*',
+  'view',
+  'text',
+  ':before',
+  ':after',
+  '::before',
+  '::after',
+])
+const PREFLIGHT_RESET_PROPS = new Set([
+  'box-sizing',
+  'border',
+  'border-width',
+  'border-style',
+  'border-color',
+  'margin',
+  'padding',
+])
+
+interface PruneMiniProgramGeneratedCssOptions {
+  preservePreflight?: boolean
+}
 
 function hasClassSelector(selector: string) {
   return CLASS_SELECTOR_RE.test(selector)
+}
+
+function normalizeSelector(selector: string) {
+  return selector.trim().replace(/\s+/g, '')
+}
+
+function getRuleSelectors(rule: postcss.Rule) {
+  return rule.selector
+    .split(',')
+    .map(normalizeSelector)
+    .filter(Boolean)
 }
 
 function isCustomPropertyRule(rule: postcss.Rule) {
@@ -41,6 +74,29 @@ function isPseudoContentInitRule(rule: postcss.Rule) {
   return hasDeclaration && onlyContentVariable
 }
 
+function isMiniProgramPreflightRule(rule: postcss.Rule) {
+  const selectors = getRuleSelectors(rule)
+  if (
+    selectors.length === 0
+    || !selectors.every(selector => MINI_PROGRAM_PREFLIGHT_SELECTORS.has(selector))
+    || !selectors.some(selector => selector === '*' || selector === ':before' || selector === ':after' || selector === '::before' || selector === '::after')
+  ) {
+    return false
+  }
+
+  let hasTailwindVariable = false
+  let hasResetProp = false
+  rule.walkDecls((decl) => {
+    if (decl.prop.startsWith('--tw-')) {
+      hasTailwindVariable = true
+    }
+    if (PREFLIGHT_RESET_PROPS.has(decl.prop)) {
+      hasResetProp = true
+    }
+  })
+  return hasTailwindVariable || hasResetProp
+}
+
 function isKeyframesRule(rule: postcss.Rule) {
   let parent = rule.parent
   while (parent) {
@@ -58,7 +114,10 @@ function isKeyframesRule(rule: postcss.Rule) {
  * 生成模式面向小程序时只需要保留业务 utility 与 Tailwind 变量初始化；
  * 浏览器元素 reset、表单伪元素等 classless 规则不适合直接输出到小程序。
  */
-export function pruneMiniProgramGeneratedCss(css: string) {
+export function pruneMiniProgramGeneratedCss(
+  css: string,
+  options: PruneMiniProgramGeneratedCssOptions = {},
+) {
   const root = postcss.parse(css)
 
   root.walkComments((comment) => {
@@ -81,6 +140,10 @@ export function pruneMiniProgramGeneratedCss(css: string) {
     }
 
     if (isPseudoContentInitRule(rule)) {
+      return
+    }
+
+    if (options.preservePreflight && isMiniProgramPreflightRule(rule)) {
       return
     }
 

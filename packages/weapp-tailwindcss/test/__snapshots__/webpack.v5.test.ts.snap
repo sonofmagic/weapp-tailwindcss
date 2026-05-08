@@ -8,7 +8,7 @@ exports[`webpack5 plugin > common > assets 1`] = `
 ::before,::after {
   --tw-content: '';
 }
-:host,page,.tw-root,wx-root-portal-content {
+view,text,::before,::after {
   --tw-border-spacing-x: 0;
   --tw-border-spacing-y: 0;
   --tw-translate-x: 0;
@@ -60,6 +60,12 @@ exports[`webpack5 plugin > common > assets 1`] = `
   --tw-contain-layout:  ;
   --tw-contain-paint:  ;
   --tw-contain-style:  ;
+}
+view,text,::before,::after {
+  box-sizing: border-box;
+  border-width: 0;
+  border-style: solid;
+  border-color: #e5e7eb;
 }
 .-m-_b20px_B {
   margin: -20px;
@@ -373,7 +379,7 @@ exports[`webpack5 plugin > common 0 > assets 1`] = `
 ::before,::after {
   --tw-content: '';
 }
-:host,page,.tw-root,wx-root-portal-content {
+view,text,::before,::after {
   --tw-border-spacing-x: 0;
   --tw-border-spacing-y: 0;
   --tw-translate-x: 0;
@@ -425,6 +431,12 @@ exports[`webpack5 plugin > common 0 > assets 1`] = `
   --tw-contain-layout:  ;
   --tw-contain-paint:  ;
   --tw-contain-style:  ;
+}
+view,text,::before,::after {
+  box-sizing: border-box;
+  border-width: 0;
+  border-style: solid;
+  border-color: #e5e7eb;
 }
 .-m-_b20px_B {
   margin: -20px;
@@ -738,7 +750,7 @@ exports[`webpack5 plugin > common build twice for cache > assets 1`] = `
 ::before,::after {
   --tw-content: '';
 }
-:host,page,.tw-root,wx-root-portal-content {
+view,text,::before,::after {
   --tw-border-spacing-x: 0;
   --tw-border-spacing-y: 0;
   --tw-translate-x: 0;
@@ -790,6 +802,12 @@ exports[`webpack5 plugin > common build twice for cache > assets 1`] = `
   --tw-contain-layout:  ;
   --tw-contain-paint:  ;
   --tw-contain-style:  ;
+}
+view,text,::before,::after {
+  box-sizing: border-box;
+  border-width: 0;
+  border-style: solid;
+  border-color: #e5e7eb;
 }
 .-m-_b20px_B {
   margin: -20px;
@@ -1099,7 +1117,7 @@ exports[`webpack5 plugin > common build twice for cache > assets 2`] = `
 ::before,::after {
   --tw-content: '';
 }
-:host,page,.tw-root,wx-root-portal-content {
+view,text,::before,::after {
   --tw-border-spacing-x: 0;
   --tw-border-spacing-y: 0;
   --tw-translate-x: 0;
@@ -1151,6 +1169,12 @@ exports[`webpack5 plugin > common build twice for cache > assets 2`] = `
   --tw-contain-layout:  ;
   --tw-contain-paint:  ;
   --tw-contain-style:  ;
+}
+view,text,::before,::after {
+  box-sizing: border-box;
+  border-width: 0;
+  border-style: solid;
+  border-color: #e5e7eb;
 }
 .-m-_b20px_B {
   margin: -20px;
@@ -1468,7 +1492,7 @@ exports[`webpack5 plugin > common with loader > assets 1`] = `
 ::before,::after {
   --tw-content: '';
 }
-:host,page,.tw-root,wx-root-portal-content {
+view,text,::before,::after {
   --tw-border-spacing-x: 0;
   --tw-border-spacing-y: 0;
   --tw-translate-x: 0;
@@ -1520,6 +1544,12 @@ exports[`webpack5 plugin > common with loader > assets 1`] = `
   --tw-contain-layout:  ;
   --tw-contain-paint:  ;
   --tw-contain-style:  ;
+}
+view,text,::before,::after {
+  box-sizing: border-box;
+  border-width: 0;
+  border-style: solid;
+  border-color: #e5e7eb;
 }
 .-m-_b20px_B {
   margin: -20px;
@@ -1833,7 +1863,7 @@ exports[`webpack5 plugin > common with rem2rpx > assets 1`] = `
 ::before,::after {
   --tw-content: '';
 }
-:host,page,.tw-root,wx-root-portal-content {
+view,text,::before,::after {
   --tw-border-spacing-x: 0;
   --tw-border-spacing-y: 0;
   --tw-translate-x: 0;
@@ -1885,6 +1915,12 @@ exports[`webpack5 plugin > common with rem2rpx > assets 1`] = `
   --tw-contain-layout:  ;
   --tw-contain-paint:  ;
   --tw-contain-style:  ;
+}
+view,text,::before,::after {
+  box-sizing: border-box;
+  border-width: 0;
+  border-style: solid;
+  border-color: #e5e7eb;
 }
 .-m-_b20px_B {
   margin: -20px;
@@ -2583,7 +2619,7 @@ exports[`webpack5 plugin > empty build > assets 1`] = `
 ::before,::after {
   --tw-content: '';
 }
-:host,page,.tw-root,wx-root-portal-content {
+view,text,::before,::after {
   --tw-border-spacing-x: 0;
   --tw-border-spacing-y: 0;
   --tw-translate-x: 0;
@@ -2635,6 +2671,12 @@ exports[`webpack5 plugin > empty build > assets 1`] = `
   --tw-contain-layout:  ;
   --tw-contain-paint:  ;
   --tw-contain-style:  ;
+}
+view,text,::before,::after {
+  box-sizing: border-box;
+  border-width: 0;
+  border-style: solid;
+  border-color: #e5e7eb;
 }
 .container {
   width: 100%;
@@ -2828,7 +2870,7 @@ exports[`webpack5 plugin > unified common > assets 1`] = `
 ::before,::after {
   --tw-content: '';
 }
-:host,page,.tw-root,wx-root-portal-content {
+view,text,::before,::after {
   --tw-border-spacing-x: 0;
   --tw-border-spacing-y: 0;
   --tw-translate-x: 0;
@@ -2880,6 +2922,12 @@ exports[`webpack5 plugin > unified common > assets 1`] = `
   --tw-contain-layout:  ;
   --tw-contain-paint:  ;
   --tw-contain-style:  ;
+}
+view,text,::before,::after {
+  box-sizing: border-box;
+  border-width: 0;
+  border-style: solid;
+  border-color: #e5e7eb;
 }
 .-m-_b20px_B {
   margin: -20px;
@@ -3193,7 +3241,7 @@ exports[`webpack5 plugin > unified prod common > assets 1`] = `
 ::before,::after {
   --tw-content: '';
 }
-:host,page,.tw-root,wx-root-portal-content {
+view,text,::before,::after {
   --tw-border-spacing-x: 0;
   --tw-border-spacing-y: 0;
   --tw-translate-x: 0;
@@ -3245,6 +3293,12 @@ exports[`webpack5 plugin > unified prod common > assets 1`] = `
   --tw-contain-layout:  ;
   --tw-contain-paint:  ;
   --tw-contain-style:  ;
+}
+view,text,::before,::after {
+  box-sizing: border-box;
+  border-width: 0;
+  border-style: solid;
+  border-color: #e5e7eb;
 }
 .-m-_b20px_B {
   margin: -20px;

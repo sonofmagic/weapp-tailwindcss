@@ -321,6 +321,12 @@ function resolveGeneratorStyleOptions(
   cssHandlerOptions: IStyleHandlerOptions,
   generatorStyleOptions: Partial<IStyleHandlerOptions> | undefined,
 ): Partial<IStyleHandlerOptions> {
+  const tailwindV3StyleOptions: Partial<IStyleHandlerOptions> = cssHandlerOptions.majorVersion === 3
+    ? {
+        cssPreflight: opts.cssPreflight,
+        cssPreflightRange: opts.cssPreflightRange,
+      }
+    : {}
   return {
     cssChildCombinatorReplaceValue: opts.cssChildCombinatorReplaceValue,
     cssSelectorReplacement: opts.cssSelectorReplacement,
@@ -337,6 +343,7 @@ function resolveGeneratorStyleOptions(
     uniAppXCssTarget: opts.uniAppXCssTarget,
     uniAppXUnsupported: opts.uniAppXUnsupported,
     ...cssHandlerOptions,
+    ...tailwindV3StyleOptions,
     ...generatorStyleOptions,
   }
 }

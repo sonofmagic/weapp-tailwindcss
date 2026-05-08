@@ -3,7 +3,7 @@
 exports[`gulp > common build > css 1`] = `
 "::before,::after {
     --tw-content: ""}
-:host,page,.tw-root,wx-root-portal-content {
+view,text,::before,::after {
     --tw-border-spacing-x: 0;
     --tw-border-spacing-y: 0;
     --tw-translate-x: 0;
@@ -55,7 +55,11 @@ exports[`gulp > common build > css 1`] = `
     --tw-contain-layout:  ;
     --tw-contain-paint:  ;
     --tw-contain-style:
-}
+;
+    box-sizing: border-box;
+    border-width: 0;
+    border-style: solid;
+    border-color: currentColor}
 .m-_b20px_B {
     margin: 20px
 }

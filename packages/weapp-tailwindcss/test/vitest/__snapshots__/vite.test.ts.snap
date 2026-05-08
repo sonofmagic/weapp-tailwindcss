@@ -52,10 +52,14 @@ exports[`vite test > vite common build 1`] = `
 `;
 
 exports[`vite test > vite common build 2`] = `
-":host,
-page,
-.tw-root,
-wx-root-portal-content {
+"::before,
+::after {
+  --tw-content: "";
+}
+view,
+text,
+::before,
+::after {
   --tw-border-spacing-x: 0;
   --tw-border-spacing-y: 0;
   --tw-translate-x: 0;
@@ -107,8 +111,11 @@ wx-root-portal-content {
   --tw-contain-layout:  ;
   --tw-contain-paint:  ;
   --tw-contain-style:
-
 ;
+  box-sizing: border-box;
+  border-width: 0;
+  border-style: solid;
+  border-color: currentColor;
 }
 .flex {
   display: flex;
@@ -197,10 +204,14 @@ exports[`vite test > vite common build twice for cache 1`] = `
 `;
 
 exports[`vite test > vite common build twice for cache 2`] = `
-":host,
-page,
-.tw-root,
-wx-root-portal-content {
+"::before,
+::after {
+  --tw-content: "";
+}
+view,
+text,
+::before,
+::after {
   --tw-border-spacing-x: 0;
   --tw-border-spacing-y: 0;
   --tw-translate-x: 0;
@@ -252,8 +263,11 @@ wx-root-portal-content {
   --tw-contain-layout:  ;
   --tw-contain-paint:  ;
   --tw-contain-style:
-
 ;
+  box-sizing: border-box;
+  border-width: 0;
+  border-style: solid;
+  border-color: currentColor;
 }
 .flex {
   display: flex;
@@ -342,10 +356,14 @@ exports[`vite test > vite common build twice for cache 4`] = `
 `;
 
 exports[`vite test > vite common build twice for cache 5`] = `
-":host,
-page,
-.tw-root,
-wx-root-portal-content {
+"::before,
+::after {
+  --tw-content: "";
+}
+view,
+text,
+::before,
+::after {
   --tw-border-spacing-x: 0;
   --tw-border-spacing-y: 0;
   --tw-translate-x: 0;
@@ -397,8 +415,11 @@ wx-root-portal-content {
   --tw-contain-layout:  ;
   --tw-contain-paint:  ;
   --tw-contain-style:
-
 ;
+  box-sizing: border-box;
+  border-width: 0;
+  border-style: solid;
+  border-color: currentColor;
 }
 .flex {
   display: flex;
@@ -1507,10 +1528,14 @@ exports[`vite test > vite common build with rem2rpx 1`] = `
 `;
 
 exports[`vite test > vite common build with rem2rpx 2`] = `
-":host,
-page,
-.tw-root,
-wx-root-portal-content {
+"::before,
+::after {
+  --tw-content: "";
+}
+view,
+text,
+::before,
+::after {
   --tw-border-spacing-x: 0;
   --tw-border-spacing-y: 0;
   --tw-translate-x: 0;
@@ -1562,8 +1587,11 @@ wx-root-portal-content {
   --tw-contain-layout:  ;
   --tw-contain-paint:  ;
   --tw-contain-style:
-
 ;
+  box-sizing: border-box;
+  border-width: 0;
+  border-style: solid;
+  border-color: currentColor;
 }
 .flex {
   display: flex;

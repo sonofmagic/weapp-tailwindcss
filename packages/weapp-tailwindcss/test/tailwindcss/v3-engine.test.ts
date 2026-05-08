@@ -24,6 +24,12 @@ describe('tailwindcss v3 engine', () => {
     expect(result.css).toContain('.w-4')
     expect(result.css).toContain('--tw-translate-x')
     expect(result.css).toContain('--tw-content')
+    expect(compactCss(result.css)).toContain('view,text,::before,::after{')
+    expect(result.css).toContain('box-sizing: border-box')
+    expect(result.css).toContain('border-width: 0')
+    expect(result.css).toContain('border-style: solid')
+    expect(result.css).toContain('border-color:')
+    expect(result.css).not.toContain(':host,page,.tw-root,wx-root-portal-content')
     expect(result.css).not.toContain('button')
     expect(result.css).not.toContain('::-webkit')
     expect(result.css).toMatch(/^::before,\s*::after\s*\{\s*--tw-content:/m)
@@ -48,6 +54,41 @@ describe('tailwindcss v3 engine', () => {
     expect(css).toContain('.divide-x-8>text+text')
     expect(css).toContain('.divide-solid>text+text')
     expect(css).toContain('.divide-_b_h60d256_B>text+view')
+  })
+
+  it('injects legacy mini-program preflight reset when Tailwind v3 preflight is disabled', async () => {
+    const source = await resolveTailwindV3Source({
+      css: '@tailwind base; @tailwind utilities;',
+      base: process.cwd(),
+      config: undefined,
+    })
+    source.configObject = {
+      content: [],
+      corePlugins: {
+        preflight: false,
+      },
+    }
+    const engine = createTailwindV3Engine(source)
+
+    const result = await engine.generate({
+      candidates: ['block'],
+      styleOptions: {
+        cssPreflight: {
+          'box-sizing': 'border-box',
+          'border-width': '0',
+          'border-style': 'solid',
+          'border-color': 'currentColor',
+        },
+      },
+    })
+
+    const css = compactCss(result.css)
+    expect(css).toContain('view,text,::before,::after{')
+    expect(css).toContain('box-sizing:border-box')
+    expect(css).toContain('border-width:0')
+    expect(css).toContain('border-style:solid')
+    expect(css).toContain('border-color:currentColor')
+    expect(result.css).not.toContain(':host,page,.tw-root,wx-root-portal-content')
   })
 
   it('removes browser-only supports rules from mini-program output', async () => {
