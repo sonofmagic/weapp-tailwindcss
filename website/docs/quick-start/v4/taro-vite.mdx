@@ -31,10 +31,10 @@ import Patch from './patch.mdx'
 ## 安装
 
 ```bash npm2yarn
-npm install -D tailwindcss @tailwindcss/postcss postcss weapp-tailwindcss
+npm install -D tailwindcss postcss weapp-tailwindcss
 ```
 
-> 这里不使用 `@tailwindcss/vite` 是由于 `taro` 配置没法加载纯 `esm` 不是 `cjs` 的包, 会爆错误 `No "exports" main defined`
+> `Taro Vite` 里 Tailwind CSS 生成由 `weapp-tailwindcss` 接管，不需要再额外注册 `@tailwindcss/vite` 或 `@tailwindcss/postcss`。
 
 <Patch />
 
@@ -42,22 +42,12 @@ npm install -D tailwindcss @tailwindcss/postcss postcss weapp-tailwindcss
 
 ```js title="config/index.ts"
 import { WeappTailwindcss } from 'weapp-tailwindcss/vite'
-import tailwindcss from '@tailwindcss/postcss'
 import path from 'node:path'
 
 {
   compiler: {
     type: 'vite',
     vitePlugins: [
-      {
-        name: 'postcss-config-loader-plugin',
-        config(config) {
-          // 加载 tailwindcss
-          if (typeof config.css?.postcss === 'object') {
-            config.css?.postcss.plugins?.unshift(tailwindcss())
-          }
-        },
-      },
       WeappTailwindcss({
         rem2rpx: true,
         appType: 'taro',
@@ -71,10 +61,8 @@ import path from 'node:path'
 }
 ```
 
-> tailwindcss@4 必须配置 `cssEntries` 并且使用绝对路径，否则 `tailwindcss` 生成的类名不会参与转译。
+> tailwindcss@4 必须配置 `cssEntries` 并且使用绝对路径，否则 `weapp-tailwindcss` 无法稳定定位 CSS 入口。
 > `cssEntries` 请指向 `.css` 文件，不要指向 `scss` / `less` / `sass`。`@import "weapp-tailwindcss/index.css"` 也只应写在纯 `css` 入口里，否则会导致样式生成或转译失效。
-
-> 这里使用 `vite` 插件直接去加载 `tailwindcss`，这是由于 `taro4 vite` 不会自动去加载项目下的 `postcss.config.js`，所以只能定义这个 `postcss-config-loader-plugin`
 
 ## 添加样式
 

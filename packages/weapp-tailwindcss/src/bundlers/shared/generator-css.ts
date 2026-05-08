@@ -610,6 +610,14 @@ function createSourceStylePathCandidates(
   return [...candidates]
 }
 
+function canResolveSourceSideCssEntry(file: string, cssHandlerOptions: IStyleHandlerOptions) {
+  const from = resolvePostcssFromOption(cssHandlerOptions)
+  if (!from || !path.isAbsolute(from)) {
+    return path.isAbsolute(file)
+  }
+  return true
+}
+
 function extractStyleDirectiveSources(source: string) {
   const styleSources: string[] = []
   SFC_STYLE_BLOCK_RE.lastIndex = 0
@@ -680,7 +688,9 @@ export async function resolveGeneratorSource(
   const cssEntrySource = resolveCssEntrySource(rawSource, base, { removeConfig: majorVersion === 3 })
   if (majorVersion === 3) {
     const sourceOptions = resolveTailwindV3SourceOptionsFromPatcher(runtimeState.twPatcher)
-    const sourceSideEntrySource = resolveSourceSideCssEntrySource(file, sourceOptions, { removeConfig: true })
+    const sourceSideEntrySource = canResolveSourceSideCssEntry(file, cssHandlerOptions)
+      ? resolveSourceSideCssEntrySource(file, sourceOptions, { removeConfig: true })
+      : undefined
     const resolvedEntrySource = cssEntrySource ?? sourceSideEntrySource
     if (!resolvedEntrySource) {
       return resolveTailwindV3SourceFromPatcher(runtimeState.twPatcher)

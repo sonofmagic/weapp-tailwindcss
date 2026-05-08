@@ -29,7 +29,7 @@ import UniappHbuilderStyle from './UniappHbuilderStyle.mdx'
 # 初始化 package.json
 npm init
 # 安装包
-npm install -D tailwindcss @tailwindcss/postcss weapp-tailwindcss
+npm install -D tailwindcss weapp-tailwindcss
 ```
 
 <Patch />
@@ -40,7 +40,6 @@ npm install -D tailwindcss @tailwindcss/postcss weapp-tailwindcss
 import { defineConfig } from "vite";
 import uni from "@dcloudio/vite-plugin-uni";
 import { WeappTailwindcss } from 'weapp-tailwindcss/vite'
-import tailwindcss from '@tailwindcss/postcss'
 import path from 'node:path'
 
 export default defineConfig({
@@ -55,19 +54,10 @@ export default defineConfig({
       ],
     }),
   ],
-  css: {
-    postcss: {
-      plugins: [
-        tailwindcss({
-          base: __dirname
-        })
-      ]
-    }
-  }
 });
 ```
 
-> tailwindcss@4 必须配置 `cssEntries` 并且使用绝对路径，否则 `tailwindcss` 生成的类名不会参与转译。
+> tailwindcss@4 必须配置 `cssEntries` 并且使用绝对路径，否则 `weapp-tailwindcss` 无法稳定定位 CSS 入口。
 
 ## 3. 添加样式
 

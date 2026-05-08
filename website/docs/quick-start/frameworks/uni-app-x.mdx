@@ -53,9 +53,7 @@ module.exports = {
 import { defineConfig } from "vite";
 import uni from "@dcloudio/vite-plugin-uni";
 import { WeappTailwindcss } from 'weapp-tailwindcss/vite'
-import { r } from './shared'
 import { uniAppX } from 'weapp-tailwindcss/presets'
-import tailwindcss from 'tailwindcss'
 
 export default defineConfig({
     plugins: [
@@ -67,17 +65,10 @@ export default defineConfig({
             }),
         ),
     ],
-    css: {
-        postcss: {
-            plugins: [
-                tailwindcss({
-                    config: r('./tailwind.config.js'),
-                }),
-            ]
-        }
-    }
 });
 ```
+
+Tailwind CSS 生成由 `weapp-tailwindcss` 接管，不需要再把 `tailwindcss` 注册到 PostCSS 配置里。
 
 ## 更改 tailwindcss 配置
 

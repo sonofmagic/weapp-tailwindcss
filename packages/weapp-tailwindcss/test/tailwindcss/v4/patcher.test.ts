@@ -200,8 +200,8 @@ describe('tailwindcss/v4/patcher helpers', () => {
     const patcher = createPatcherForBase(baseDir, cssEntries, factoryOptions)
 
     expect(createTailwindcssPatcher).toHaveBeenCalledTimes(2)
-    const [callA, callB] = createTailwindcssPatcher.mock.calls.map(call => call[0])
-    expect(new Set([callA.basedir, callB.basedir])).toEqual(new Set([baseDir]))
+    const [callA] = createTailwindcssPatcher.mock.calls.map(call => call[0])
+    expect(callA.basedir).toBe(baseDir)
     expect(callA.cacheDir).toBeUndefined()
     expect(callA.tailwindcss?.version).toBeUndefined()
     expect(callA.tailwindcss?.v4?.base).toBeUndefined()
@@ -231,6 +231,22 @@ describe('tailwindcss/v4/patcher helpers', () => {
     const packageNames = createTailwindcssPatcher.mock.calls.map(call => call[0].tailwindcss?.packageName)
     expect(packageNames).toContain('@tailwindcss/postcss')
     expect(packageNames).toContain('tailwindcss')
+  })
+
+  it('prefers the installed Tailwind package version over an explicit v4 setting', async () => {
+    createTailwindcssPatcher.mockImplementation(options => options)
+    const { createPatcherForBase } = await loadModule()
+
+    const patcher = createPatcherForBase(process.cwd(), ['/workspace/app/src/app.css'], {
+      tailwindcss: { version: 4 },
+      tailwindcssPatcherOptions: undefined,
+      supportCustomLengthUnitsPatch: true,
+      appType: 'taro',
+    } as unknown as InternalUserDefinedOptions) as any
+
+    expect(createTailwindcssPatcher).toHaveBeenCalledTimes(1)
+    expect(patcher.tailwindcss?.packageName).toBe('tailwindcss')
+    expect(patcher.tailwindcss?.version).toBe(3)
   })
 
   it('skips incompatible tailwindcss candidate when fallback v4 package succeeds', async () => {
@@ -317,7 +333,7 @@ describe('tailwindcss/v4/patcher helpers', () => {
     )
   })
 
-  it('does not inject tailwindcss version when css entries imply v4', async () => {
+  it('does not inject tailwindcss version when css entries are configured', async () => {
     createTailwindcssPatcher.mockImplementation(options => ({
       packageInfo: { name: options.tailwindcss?.packageName } as any,
       majorVersion: 4,

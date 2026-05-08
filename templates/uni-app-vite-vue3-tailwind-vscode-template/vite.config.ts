@@ -26,7 +26,7 @@ export default defineConfig(async () => {
         },
       }),
     ],
-    // 内联 postcss 注册 tailwindcss
+    // 内联 postcss 注册后处理插件
     css: {
       postcss: {
         plugins: postcssPlugins,

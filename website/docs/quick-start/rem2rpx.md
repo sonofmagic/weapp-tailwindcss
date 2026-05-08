@@ -108,7 +108,7 @@ npm i -D postcss-rem-to-responsive-pixel
 ```js title="postcss.config.js"
 module.exports = {
   plugins: {
-    tailwindcss: {},
+    // Tailwind CSS 由 weapp-tailwindcss 生成模式接管，这里不要再注册 tailwindcss
     autoprefixer: {},
     'postcss-rem-to-responsive-pixel': {
       // 32 意味着 1rem = 32rpx

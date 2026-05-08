@@ -6,7 +6,6 @@ const isApp = process.env.UNI_PLATFORM === 'app'
 const WeappTailwindcssDisabled = isH5 || isApp
 import uni from "@dcloudio/vite-plugin-uni";
 import { UnifiedViteWeappTailwindcssPlugin } from 'weapp-tailwindcss/vite'
-import tailwindcss from '@tailwindcss/postcss'
 import path from "node:path";
 
 // https://vitejs.dev/config/
@@ -24,11 +23,4 @@ export default defineConfig({
       }
     )
   ],
-  css: {
-    postcss: {
-      plugins: [
-        tailwindcss()
-      ]
-    }
-  }
 });

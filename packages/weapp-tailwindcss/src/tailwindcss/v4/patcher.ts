@@ -3,6 +3,7 @@ import type { CreateTailwindcssPatcherOptions } from '@/tailwindcss/patcher'
 import type { InternalUserDefinedOptions, TailwindcssPatcherLike } from '@/types'
 import { logger } from '@weapp-tailwindcss/logger'
 import { createTailwindcssPatcher } from '@/tailwindcss/patcher'
+import { readInstalledPackageMajorVersion } from '@/tailwindcss/version'
 import { defuOverrideArray } from '@/utils'
 import { createMultiTailwindcssPatcher } from './multi-patcher'
 import { overrideTailwindcssPatcherOptionsForBase } from './patcher-options'
@@ -140,14 +141,26 @@ export function createPatcherForBase(
     || hasOwnV4Signal((tailwindcssPatcherOptions as any)?.tailwind)
     || hasOwnV4Signal((tailwindcssPatcherOptions as any)?.patch?.tailwindcss)
 
-  const isV4 = explicitTailwindVersion === 3
-    ? false
-    : explicitTailwindVersion === 4
-      || (explicitTailwindVersion === undefined && (
-        mergedTailwindOptions.version === 4
-        || isTailwindcss4Package(configuredPackageName ?? mergedTailwindOptions.packageName)
-        || hasExplicitV4Signals
-      ))
+  const packageNameForVersionDetection = configuredPackageName ?? mergedTailwindOptions.packageName ?? 'tailwindcss'
+  const installedTailwindVersion = readInstalledPackageMajorVersion(packageNameForVersionDetection, baseDir)
+  const resolvedTailwindVersion = installedTailwindVersion ?? explicitTailwindVersion
+
+  const isV4 = (
+    resolvedTailwindVersion === 4 && (
+      installedTailwindVersion === 4
+      || explicitTailwindVersion === 4
+      || (hasExplicitV4Signals && isTailwindcss4Package(packageNameForVersionDetection))
+    )
+  )
+  || (
+    resolvedTailwindVersion === undefined && (
+      hasCssEntries
+      || hasOwnV4Signal(tailwindcss)
+      || hasOwnV4Signal((tailwindcssPatcherOptions as any)?.tailwindcss)
+      || hasOwnV4Signal((tailwindcssPatcherOptions as any)?.tailwind)
+      || hasOwnV4Signal((tailwindcssPatcherOptions as any)?.patch?.tailwindcss)
+    )
+  )
 
   const tailwindPackageConfigured = Boolean(configuredPackageName)
   const shouldPatchV4PostcssPackage = isV4 && !tailwindPackageConfigured
@@ -166,6 +179,9 @@ export function createPatcherForBase(
     const tailwindOptionsForPackage: TailwindUserOptions = {
       ...mergedTailwindOptions,
       packageName,
+    }
+    if (resolvedTailwindVersion) {
+      tailwindOptionsForPackage.version = resolvedTailwindVersion
     }
     try {
       patchers.push(createTailwindcssPatcher({

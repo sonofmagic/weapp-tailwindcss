@@ -114,7 +114,6 @@ cache: {
 
 ```ts title="config/index.[jt]s"
 import type { Plugin } from 'vite'
-import tailwindcss from 'tailwindcss'
 import { WeappTailwindcss } from 'weapp-tailwindcss/vite'
 
 const baseConfig: UserConfigExport<'vite'> = {
@@ -123,16 +122,6 @@ const baseConfig: UserConfigExport<'vite'> = {
   compiler: {
     type: 'vite',
     vitePlugins: [
-      {
-        // 通过 vite 插件加载 postcss,
-        name: 'postcss-config-loader-plugin',
-        config(config) {
-          // 加载 tailwindcss
-          if (typeof config.css?.postcss === 'object') {
-            config.css?.postcss.plugins?.unshift(tailwindcss())
-          }
-        },
-      },
       WeappTailwindcss({
         // rem转rpx
         rem2rpx: true,
@@ -148,9 +137,7 @@ const baseConfig: UserConfigExport<'vite'> = {
 }
 ```
 
-`tailwindcss` 即可注册成功，正常使用了
-
-这段代码的意思为，在 `vite` 里注册 `postcss` 插件和 `vite` 插件
+Tailwind CSS 生成由 `weapp-tailwindcss` 接管，不需要再把 `tailwindcss` 注册到 PostCSS 配置里。
 
 > `vite.config.ts` 只有在运行小程序的时候才会加载，`h5` 不会，所以只能通过这种方式进行 `小程序` + `h5` 双端兼容
 > 但 `Taro Vite` 当前仍然不稳定，这部分内容仅作为历史方案和排障参考，不建议作为新项目默认选型。

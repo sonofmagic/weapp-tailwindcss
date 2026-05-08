@@ -1,12 +1,6 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
-const { resolve } = require('./shared')
-
 const plugins = [
-    require('tailwindcss')(
-        {
-            config: resolve("./tailwind.config.js"),
-        }
-    ),
+    // Tailwind CSS 由 weapp-tailwindcss 生成模式接管，这里不要再注册 tailwindcss
     require('autoprefixer')()]
 
 // if (!WeappTailwindcssDisabled) {

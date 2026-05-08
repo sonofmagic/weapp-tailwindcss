@@ -85,10 +85,7 @@ export default defineConfig({
   css: {
     postcss: {
       plugins: [
-        require("tailwindcss")({
-          // 注意此处，手动传入你 `tailwind.config.js` 的绝对路径
-          config: resolve("./tailwind.config.js"),
-        }),
+        // Tailwind CSS 由 weapp-tailwindcss 生成模式接管，这里不要再注册 tailwindcss
         require("autoprefixer"),
       ],
     },

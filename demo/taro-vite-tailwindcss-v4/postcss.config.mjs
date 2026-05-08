@@ -1,5 +1,5 @@
 export default {
   plugins: {
-    "@tailwindcss/postcss": {},
+    // Tailwind CSS 由 weapp-tailwindcss 生成模式接管，这里不要再注册 @tailwindcss/postcss
   }
 }

@@ -49,7 +49,7 @@ const generator = resolveDemoGeneratorMode({
   },
 })
 
-// 在 gulp 里使用，先使用 postcss 转化 css，触发 tailwindcss ，然后转化 transformWxss， 然后 transformJs, transformWxml
+// 在 Gulp 里使用时，Tailwind CSS 生成由 transformWxss 的生成模式接管，PostCSS 只保留后处理插件
 const { transformJs, transformWxml, transformWxss } = createPlugins({
   rem2rpx: true,
   ...(generator !== undefined ? { generator } : {}),

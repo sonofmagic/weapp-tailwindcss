@@ -56,8 +56,8 @@ const isApp = process.env.UNI_PLATFORM === 'app-plus';
 const WeappTailwindcssDisabled = isH5 || isApp;
 // vite 插件配置
 const vitePlugins = [uni()]; // Unocss()
-// postcss 插件配置
-const postcssPlugins = [require('autoprefixer')(), require('tailwindcss')()];
+// postcss 插件配置：Tailwind CSS 由 weapp-tailwindcss 生成模式接管，这里不要再注册 tailwindcss
+const postcssPlugins = [require('autoprefixer')()];
 
 // const postcssPlugins = [require('postcss-windicss')()];
 
@@ -179,7 +179,7 @@ export default defineConfig(async () => {
     optimizeDeps: {
       include: ['path-browserify', 'entities/lib/decode.js'],
     },
-    // 假如 postcss.config.js 不起作用，请使用内联 postcss Latset
+    // 假如 postcss.config.js 不起作用，请使用内联 postcss 配置
     css: {
       postcss: {
         plugins: postcssPlugins,

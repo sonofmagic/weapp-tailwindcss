@@ -3,7 +3,6 @@ import { defineConfig, type UserConfigExport } from '@tarojs/cli'
 import devConfig from './dev'
 import prodConfig from './prod'
 import type { Plugin } from 'vite'
-import tailwindcss from 'tailwindcss'
 import { UnifiedViteWeappTailwindcssPlugin as uvtw } from 'weapp-tailwindcss/vite'
 import { resolveDemoGeneratorMode } from '../../shared/weapp-tailwind-generator-mode'
 const generator = resolveDemoGeneratorMode({
@@ -42,16 +41,6 @@ export default defineConfig<'vite'>(async (merge, { command, mode }) => {
     compiler: {
       type: 'vite',
       vitePlugins: [
-        {
-          name: 'postcss-config-loader-plugin',
-          config(config) {
-            // 加载 tailwindcss
-            if (typeof config.css?.postcss === 'object') {
-              // @ts-ignore
-              config.css?.postcss.plugins?.unshift(tailwindcss())
-            }
-          },
-        },
         {
           name: 'taro-cjs-stability',
           enforce: 'post',

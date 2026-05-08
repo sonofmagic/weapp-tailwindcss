@@ -9,7 +9,6 @@ import type {
   WeappTailwindcssGeneratorUserOptions,
 } from './generator'
 import { readFile, stat } from 'node:fs/promises'
-import { createRequire } from 'node:module'
 import path from 'node:path'
 import process from 'node:process'
 import fg from 'fast-glob'
@@ -22,6 +21,10 @@ import {
   resolveTailwindV3Source,
   resolveTailwindV4Source,
 } from './generator'
+import {
+  DEFAULT_TAILWINDCSS_GENERATOR_MAJOR_VERSION,
+  readInstalledPackageMajorVersion,
+} from './tailwindcss/version'
 
 const PLUGIN_NAME = 'weapp-tailwindcss'
 const POSTCSS_SOURCE_EXTENSIONS = [
@@ -77,7 +80,10 @@ export interface WeappTailwindcssPostcssPluginOptions extends TailwindV4SourceOp
 
 function resolveInputFile(result: Result) {
   const from = result.opts.from
-  return typeof from === 'string' && from.length > 0 ? from : undefined
+  if (typeof from !== 'string' || from.length === 0) {
+    return undefined
+  }
+  return path.isAbsolute(from) ? from : path.resolve(process.cwd(), from)
 }
 
 function resolvePostcssBase(result: Result, options: WeappTailwindcssPostcssPluginOptions) {
@@ -159,37 +165,29 @@ function hasTailwindV4CssSyntax(root: Root) {
   return hasV4Syntax
 }
 
-function readPackageMajorVersion(packageName: string, base: string) {
-  try {
-    const require = createRequire(`${base}/package.json`)
-    const pkg = require(`${packageName}/package.json`) as { version?: string }
-    const major = Number(pkg.version?.split('.')[0])
-    return major === 3 || major === 4 ? major : undefined
-  }
-  catch {
-    return undefined
-  }
-}
-
 function resolvePostcssTailwindVersion(
   root: Root,
   result: Result,
   options: WeappTailwindcssPostcssPluginOptions,
 ) {
+  const packageName = options.packageName ?? 'tailwindcss'
+  const installedVersion = readInstalledPackageMajorVersion(packageName, resolvePostcssProjectRoot(result, options))
+  if (installedVersion) {
+    return installedVersion
+  }
   if (options.version) {
     return options.version
   }
-  if (hasTailwindV4CssSyntax(root)) {
-    return 4
-  }
-  const packageName = options.packageName ?? 'tailwindcss'
   if (packageName === '@tailwindcss/postcss' || packageName.includes('tailwindcss4')) {
     return 4
   }
   if (packageName.includes('tailwindcss3')) {
     return 3
   }
-  return readPackageMajorVersion(packageName, resolvePostcssProjectRoot(result, options)) ?? 4
+  if (hasTailwindV4CssSyntax(root)) {
+    return 4
+  }
+  return DEFAULT_TAILWINDCSS_GENERATOR_MAJOR_VERSION
 }
 
 function getSourceExtension(file: string) {

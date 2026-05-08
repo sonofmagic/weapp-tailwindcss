@@ -232,4 +232,51 @@ describe('v5 apps and demos generator config', () => {
     expect(mpxPageSource).not.toContain('mergedClass')
     expect(mpxPageSource).not.toContain('@weapp-tailwindcss/merge')
   })
+
+  it('keeps generator examples from registering Tailwind in PostCSS', async () => {
+    const configPaths = [
+      'apps/vite-native-ts/postcss.config.js',
+      'apps/vite-native-skyline/postcss.config.js',
+      'apps/vite-native-ts-skyline/postcss.config.js',
+      'demo/native-ts/postcss.config.js',
+      'demo/taro-app/postcss.config.js',
+      'demo/taro-app-vite/postcss.config.js',
+      'demo/taro-app-vite/config/index.ts',
+      'demo/taro-vite-tailwindcss-v4/config/index.ts',
+      'demo/taro-vite-tailwindcss-v4/postcss.config.mjs',
+      'demo/taro-vite-tailwindcss-v5/config/index.ts',
+      'demo/taro-vite-tailwindcss-v5/postcss.config.mjs',
+      'demo/taro-vue3-app/postcss.config.js',
+      'demo/gulp-app/postcss.config.js',
+      'demo/uni-app-vue3-vite/vite.config.ts',
+      'demo/uni-app-x-hbuilderx-tailwindcss4/vite.config.ts',
+      'templates/taro-react-tailwind-vscode-template/postcss.config.js',
+      'templates/taro-vite-tailwindcss-v4/config/index.ts',
+      'templates/taro-vite-tailwindcss-v4/postcss.config.mjs',
+      'templates/taro-vue3-tailwind-vscode-template/postcss.config.js',
+      'templates/uni-app-tailwindcss-v4/vite.config.ts',
+      'templates/uni-app-hbuilderx-tailwindcss-v4/vite.config.ts',
+      'templates/uni-app-vite-vue3-tailwind-vscode-template/postcss.config.ts',
+      'templates/uni-app-vue2-tailwind-vscode-template/postcss.config.js',
+      'templates/uni-app-vue2-tailwind-hbuilder-template/postcss.config.js',
+      'templates/uni-app-vue3-tailwind-hbuilder-template/postcss.config.cjs',
+    ]
+
+    const sources = await Promise.all(configPaths.map(async file => ({
+      file,
+      source: await readProjectFile(file),
+    })))
+
+    for (const { file, source } of sources) {
+      expect(source, file).toContain('weapp-tailwindcss')
+      expect(source, file).not.toContain('postcss-config-loader-plugin')
+      if (path.basename(file).startsWith('postcss.config')) {
+        expect(source, file).not.toMatch(/\btailwindcss\s*:\s*\{/)
+        expect(source, file).not.toMatch(/['"]@tailwindcss\/postcss['"]\s*:/)
+      }
+      expect(source, file).not.toMatch(/require\(['"]tailwindcss['"]\)\s*\(/)
+      expect(source, file).not.toMatch(/from ['"]@tailwindcss\/postcss['"]/)
+      expect(source, file).not.toMatch(/from ['"]tailwindcss['"]/)
+    }
+  })
 })

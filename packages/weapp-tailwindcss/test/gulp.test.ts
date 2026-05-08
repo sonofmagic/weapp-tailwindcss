@@ -2,7 +2,6 @@ import type internal from 'node:stream'
 import path from 'node:path'
 import { gulpCasePath } from '#test/util'
 import gulp from 'gulp'
-import postcss from 'gulp-postcss'
 import { createPlugins } from '@/gulp'
 
 function promisify(task: internal.Transform) {
@@ -26,6 +25,10 @@ function readContent(task: internal.Transform) {
   })
 }
 
+function normalizeSnapshotContent(content: unknown) {
+  return String(content).replace(/[ \t]+$/gm, '')
+}
+
 async function matchSnap(plugins: ReturnType<typeof createPlugins>) {
   const { transformJs, transformWxml, transformWxss } = plugins
   // const cssPath = path.resolve(gulpCasePath, '*.css')
@@ -34,17 +37,10 @@ async function matchSnap(plugins: ReturnType<typeof createPlugins>) {
     .src('./src/**/*.css', {
       cwd: gulpCasePath,
     })
-    .pipe(
-      postcss([
-        require('tailwindcss')({
-          config: path.resolve(gulpCasePath, 'tailwind.config.js'),
-        }),
-      ]),
-    )
     .pipe(transformWxss())
 
   const result = await readContent(cssTask)
-  expect(result).toMatchSnapshot('css')
+  expect(normalizeSnapshotContent(result)).toMatchSnapshot('css')
   await promisify(cssTask)
 
   const jsTask = gulp
@@ -61,13 +57,14 @@ async function matchSnap(plugins: ReturnType<typeof createPlugins>) {
 
   const ptasks = [jsTask, wxmlTask]
   const [jsRes, wxmlRes] = await Promise.all(ptasks.map(element => readContent(element)))
-  expect(jsRes).toMatchSnapshot('js')
-  expect(wxmlRes).toMatchSnapshot('wxml')
+  expect(normalizeSnapshotContent(jsRes)).toMatchSnapshot('js')
+  expect(normalizeSnapshotContent(wxmlRes)).toMatchSnapshot('wxml')
   await Promise.all(ptasks.map(element => promisify(element)))
 }
 describe('gulp', () => {
   it('common build', async () => {
     await matchSnap(createPlugins({
+      tailwindcssBasedir: gulpCasePath,
       mainCssChunkMatcher(name) {
         return path.basename(name) === 'index.css'
       },

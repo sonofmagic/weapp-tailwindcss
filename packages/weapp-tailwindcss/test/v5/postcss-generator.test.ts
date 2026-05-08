@@ -40,6 +40,7 @@ describe('v5 postcss generator', () => {
         generator: {
           target: 'web',
         },
+        packageName: 'tailwindcss4',
         candidates: ['hover:bg-blue-500', 'w-[100px]'],
         scanSources: false,
       }),
@@ -63,6 +64,7 @@ describe('v5 postcss generator', () => {
         generator: {
           target: 'web',
         },
+        packageName: 'tailwindcss4',
         candidates: ['ring', 'border', 'shadow-sm'],
       }),
     ]).process(`
@@ -88,6 +90,7 @@ describe('v5 postcss generator', () => {
           tailwindcssV3Compatibility: true,
           target: 'web',
         },
+        packageName: 'tailwindcss4',
         candidates: ['ring', 'border', 'shadow-sm'],
       }),
     ]).process(`
@@ -110,6 +113,7 @@ describe('v5 postcss generator', () => {
     const result = await postcss([
       weappTailwindcss({
         target: 'web',
+        packageName: 'tailwindcss4',
         candidates: ['hover:bg-blue-500', 'w-[100px]'],
         scanSources: false,
       }),
@@ -192,6 +196,7 @@ describe('v5 postcss generator', () => {
         generator: {
           target: 'web',
         },
+        packageName: 'tailwindcss4',
       }),
     ]).process(`
       @theme default {

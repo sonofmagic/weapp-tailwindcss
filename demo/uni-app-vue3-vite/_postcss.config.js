@@ -3,7 +3,8 @@ const isH5 = process.env.UNI_PLATFORM === 'h5';
 const isApp = process.env.UNI_PLATFORM === 'app-plus';
 const WeappTailwindcssDisabled = isH5 || isApp;
 
-const plugins = [require('autoprefixer')(), require('tailwindcss')()];
+// Tailwind CSS 由 weapp-tailwindcss 生成模式接管，这里不要再注册 tailwindcss
+const plugins = [require('autoprefixer')()];
 
 if (!WeappTailwindcssDisabled) {
   plugins.push(

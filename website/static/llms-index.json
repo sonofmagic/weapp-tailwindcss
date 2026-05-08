@@ -1,6 +1,6 @@
 {
   "version": "1.0.0",
-  "generatedAt": "2026-05-07T13:45:52.682Z",
+  "generatedAt": "2026-05-08T05:45:11.331Z",
   "siteUrl": "https://tw.icebreaker.top",
   "totals": {
     "all": 184,
@@ -4373,7 +4373,7 @@
       ],
       "headings": [
         "1. 使用包管理器安装 `tailwindcss`",
-        "2. 在项目目录下创建 `postcss.config.js` 并注册 `tailwindcss`",
+        "2. 配置 PostCSS 后处理插件",
         "3. 配置 `tailwind.config.js`",
         "# `content` 扫描范围排障",
         "## 问题现象",
@@ -4455,7 +4455,7 @@
         "0. 初始化 `package.json`",
         "1. 使用包管理器安装 `tailwindcss`",
         "2. 配置 `tailwind.config.js`",
-        "3. 在项目目录下创建 `postcss.config.js` 并注册 `tailwindcss`",
+        "3. 在项目目录下创建 `postcss.config.js`",
         "4. 引入 `tailwindcss`"
       ],
       "updatedAt": null,

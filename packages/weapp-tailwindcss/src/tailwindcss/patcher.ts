@@ -19,6 +19,7 @@ import {
   resolveModuleFromPaths,
   resolveTailwindConfigFallback,
 } from './patcher-resolve'
+import { DEFAULT_TAILWINDCSS_GENERATOR_MAJOR_VERSION } from './version'
 
 type TailwindcssExtractOptions = Parameters<TailwindcssPatcher['extract']>[0]
 type TailwindcssExtractResult = ReturnType<TailwindcssPatcher['extract']>
@@ -45,6 +46,7 @@ function createFallbackTailwindcssPatcher(): TailwindcssPatcherLike {
 
   return {
     packageInfo,
+    majorVersion: DEFAULT_TAILWINDCSS_GENERATOR_MAJOR_VERSION,
     async patch() {
       return {
         exposeContext: undefined,

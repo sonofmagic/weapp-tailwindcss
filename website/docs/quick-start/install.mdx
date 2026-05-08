@@ -46,15 +46,16 @@ npx tailwindcss init
 `tailwindcss` 最新版本(`3.x`)对应的 `postcss` 大版本为 `8`，假如你使用像 `uni-app` 或 `taro` 这样的跨端框架，大概率已经内置了 `postcss` 和 `autoprefixer`
 :::
 
-## 2. 在项目目录下创建 `postcss.config.js` 并注册 `tailwindcss`
+## 2. 配置 PostCSS 后处理插件
 
-> 注意：这只是比较普遍的注册方式，各个框架很有可能是不同的! 比如 `uni-app vue3 vite` 项目就必须要内联注册 `postcss` 选项! 详见下方的注意事项
+生成模式下，Tailwind CSS v3 和 v4 都由 `weapp-tailwindcss` 接管样式生成。项目中仍然需要安装 `tailwindcss`，但不要再把 `tailwindcss` PostCSS 插件注册到实际项目里。
+
+> 注意：各个框架的 PostCSS 注册位置很可能不同。比如 `uni-app vue3 vite` 项目必须使用 `vite.config.ts` 里的内联 `postcss` 选项，详见下方注意事项。
 
 ```js title="postcss.config.js"
-// 假如你使用的框架/工具不支持 postcss.config.js 配置文件，则可以使用内联的写法
 module.exports = {
   plugins: {
-    tailwindcss: {},
+    // Tailwind CSS 由 weapp-tailwindcss 生成模式接管，这里不要再注册 tailwindcss
     // 假如框架已经内置了 `autoprefixer`，可以去除下一行
     autoprefixer: {},
   }

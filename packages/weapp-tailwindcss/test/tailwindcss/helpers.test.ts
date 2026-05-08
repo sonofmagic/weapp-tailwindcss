@@ -157,6 +157,7 @@ describe('tailwindcss helpers', () => {
 
     expect(loggerWarnMock).toHaveBeenCalledTimes(1)
     expect(patcher.packageInfo.version).toBeUndefined()
+    expect(patcher.majorVersion).toBe(4)
     await expect(patcher.patch()).resolves.toEqual({
       exposeContext: undefined,
       extendLengthUnits: undefined,
@@ -173,6 +174,7 @@ describe('tailwindcss helpers', () => {
       skippedFiles: [],
     })
     expect(secondPatcher.packageInfo.version).toBeUndefined()
+    expect(secondPatcher.majorVersion).toBe(4)
   })
 
   it('resolves tailwindcss postcss plugin from basedir node_modules', async () => {

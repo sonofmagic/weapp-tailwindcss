@@ -1,5 +1,5 @@
 import postcss from 'postcss'
-import weappTailwindcss from '@/postcss'
+import { afterEach, vi } from 'vitest'
 
 const MINIMAL_THEME_CSS = `
 @theme default {
@@ -10,7 +10,13 @@ const MINIMAL_THEME_CSS = `
 `
 
 describe('weapp-tailwindcss postcss generator', () => {
+  afterEach(() => {
+    vi.doUnmock('@/generator')
+    vi.resetModules()
+  })
+
   it('generates mini-program css from postcss input', async () => {
+    const { default: weappTailwindcss } = await import('@/postcss')
     const result = await postcss([
       weappTailwindcss({
         candidates: ['hover:bg-blue-500', 'w-[100px]'],
@@ -31,9 +37,11 @@ describe('weapp-tailwindcss postcss generator', () => {
   })
 
   it('can generate web css from the same postcss entry', async () => {
+    const { default: weappTailwindcss } = await import('@/postcss')
     const result = await postcss([
       weappTailwindcss({
         target: 'web',
+        packageName: 'tailwindcss4',
         candidates: ['hover:bg-blue-500', 'w-[100px]'],
         scanSources: false,
       }),
@@ -49,5 +57,53 @@ describe('weapp-tailwindcss postcss generator', () => {
       type: 'weapp-tailwindcss:generated',
       target: 'web',
     }))
+  })
+
+  it('prefers the installed Tailwind package version over v4 css syntax', async () => {
+    const resolveTailwindV3Source = vi.fn(async (options: any) => ({
+      projectRoot: process.cwd(),
+      base: process.cwd(),
+      baseFallbacks: [],
+      css: options.css,
+      dependencies: [],
+      version: 3,
+    }))
+    const generateMock = vi.fn(async () => ({
+      css: '.v3-generated{}',
+      rawCss: '.v3-generated{}',
+      target: 'weapp',
+      classSet: new Set<string>(),
+      dependencies: [],
+      sources: [],
+      root: null,
+    }))
+
+    vi.doMock('@/generator', async (importOriginal) => {
+      const actual = await importOriginal<typeof import('@/generator')>()
+      return {
+        ...actual,
+        createWeappTailwindcssGenerator: vi.fn(() => ({
+          generate: generateMock,
+        })),
+        resolveTailwindV3Source,
+        resolveTailwindV4Source: vi.fn(async () => {
+          throw new Error('should not resolve Tailwind v4 source')
+        }),
+      }
+    })
+
+    const { default: weappTailwindcss } = await import('@/postcss')
+    const result = await postcss([
+      weappTailwindcss({
+        candidates: [],
+        scanSources: false,
+      }),
+    ]).process(MINIMAL_THEME_CSS, {
+      from: undefined,
+    })
+
+    expect(result.css).toBe('.v3-generated{}\n')
+    expect(resolveTailwindV3Source).toHaveBeenCalledTimes(1)
+    expect(generateMock).toHaveBeenCalledTimes(1)
   })
 })

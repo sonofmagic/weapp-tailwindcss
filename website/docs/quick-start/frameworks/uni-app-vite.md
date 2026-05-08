@@ -40,9 +40,7 @@ export default defineConfig({
   css: {
     postcss: {
       plugins: [
-        // require('tailwindcss')() 和 require('tailwindcss') 等价的，表示什么参数都不传，如果你想传入参数
-        // require('tailwindcss')({} <- 这个是postcss插件参数)
-        require('tailwindcss'),
+        // Tailwind CSS 由 weapp-tailwindcss 生成模式接管，这里不要再注册 tailwindcss
         require('autoprefixer')
       ],
     },
