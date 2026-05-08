@@ -5,6 +5,7 @@ const bench = require('../bench.cjs')('mpx')
 const tailwindcss = require('tailwindcss')
 const autoprefixer = require('autoprefixer')
 const generator = resolveDemoGeneratorMode()
+const isGeneratorMode = process.env.WEAPP_TW_GENERATOR_MODE !== 'legacy'
 
 module.exports = defineConfig({
   pluginOptions: {
@@ -13,7 +14,9 @@ module.exports = defineConfig({
       plugin: {
         postcssInlineConfig: {
           ignoreConfigFile: true,
-          plugins: [
+          plugins: isGeneratorMode ? [
+            autoprefixer({ remove: false })
+          ] : [
             tailwindcss(),
             autoprefixer({ remove: false })
           ]

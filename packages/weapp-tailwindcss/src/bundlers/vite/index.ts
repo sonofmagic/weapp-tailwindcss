@@ -213,6 +213,7 @@ export function UnifiedViteWeappTailwindcssPlugin(options: UserDefinedOptions = 
     rootImport: shouldOwnTailwindGeneration
       ? `${weappTailwindcssDirPosix}/generator-placeholder.css`
       : undefined,
+    shouldOwnTailwindGeneration,
     shouldRewrite: shouldRewriteCssImports,
     weappTailwindcssDirPosix,
   })

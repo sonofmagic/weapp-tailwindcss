@@ -1,5 +1,5 @@
 import type { IStyleHandlerOptions } from '@weapp-tailwindcss/postcss/types'
-import type { TailwindResolvedSource } from '@/generator'
+import type { NormalizedWeappTailwindcssGeneratorOptions, TailwindResolvedSource } from '@/generator'
 import type { InternalUserDefinedOptions } from '@/types'
 import { existsSync, readFileSync } from 'node:fs'
 import path from 'node:path'
@@ -536,6 +536,31 @@ function resolveExistingConfigPath(
   return sourceOptions.config
 }
 
+function quoteCssString(value: string) {
+  return value.replaceAll('\\', '\\\\').replaceAll('"', '\\"')
+}
+
+function toCssPath(value: string) {
+  return value.replaceAll('\\', '/')
+}
+
+function prependConfigDirective(css: string, config: string | undefined) {
+  if (!config || /@config\s+/.test(css)) {
+    return css
+  }
+  return `@config "${quoteCssString(toCssPath(config))}";\n${css}`
+}
+
+function normalizeConfigDirective(css: string, config: string | undefined) {
+  if (!config || !/@config\s+/.test(css)) {
+    return css
+  }
+  return css.replace(
+    /@config\s+(["'])(.+?)\1\s*;?/,
+    `@config "${quoteCssString(toCssPath(config))}";`,
+  )
+}
+
 function stripStyleExtension(file: string) {
   const normalized = file.replace(/[?#].*$/, '')
   return normalized.replace(/\.(?:wx|ac|jx|tt|q|c|ty)?ss$/i, '')
@@ -666,6 +691,52 @@ function resolveSourceSideCssEntrySource(
   }
 }
 
+function normalizeCssSourceForCompare(css: string) {
+  return stripGeneratorPlaceholderMarkers(stripTailwindBanners(css)).trim()
+}
+
+function getOutputFileStem(file: string) {
+  const normalized = file.replace(/[?#].*$/, '')
+  return path.basename(normalized, path.extname(normalized))
+}
+
+function resolveMatchingTailwindV4CssEntry(
+  rawSource: string,
+  file: string,
+  sourceOptions: ReturnType<typeof resolveTailwindV4SourceOptionsFromPatcher>,
+) {
+  const cssEntries = sourceOptions.cssEntries
+  if (!cssEntries?.length) {
+    return undefined
+  }
+
+  const normalizedRawSource = normalizeCssSourceForCompare(rawSource)
+  const outputStem = getOutputFileStem(file)
+  const matchingEntry = cssEntries.find((cssEntry) => {
+    if (!existsSync(cssEntry)) {
+      return false
+    }
+    try {
+      const entrySource = readFileSync(cssEntry, 'utf8')
+      if (normalizeCssSourceForCompare(entrySource) === normalizedRawSource) {
+        return true
+      }
+      return outputStem.length > 0 && getOutputFileStem(cssEntry) === outputStem
+    }
+    catch {
+      return false
+    }
+  })
+  if (!matchingEntry) {
+    return undefined
+  }
+  return resolveTailwindV4Source({
+    ...sourceOptions,
+    css: undefined,
+    cssEntries: [matchingEntry],
+  })
+}
+
 function tryResolveTailwindV4SourceOptions(
   runtimeState: GenerateCssByGeneratorOptions['runtimeState'],
 ) {
@@ -683,26 +754,33 @@ export async function resolveGeneratorSource(
   rawSource: string,
   file: string,
   cssHandlerOptions: IStyleHandlerOptions,
+  generatorOptions?: NormalizedWeappTailwindcssGeneratorOptions,
 ) {
   const base = resolveCssSourceBase(file, cssHandlerOptions)
   const cssEntrySource = resolveCssEntrySource(rawSource, base, { removeConfig: majorVersion === 3 })
   if (majorVersion === 3) {
     const sourceOptions = resolveTailwindV3SourceOptionsFromPatcher(runtimeState.twPatcher)
+    const mergedSourceOptions = {
+      ...sourceOptions,
+      config: generatorOptions?.config ?? sourceOptions.config,
+    }
     const sourceSideEntrySource = canResolveSourceSideCssEntry(file, cssHandlerOptions)
-      ? resolveSourceSideCssEntrySource(file, sourceOptions, { removeConfig: true })
+      ? resolveSourceSideCssEntrySource(file, mergedSourceOptions, { removeConfig: true })
       : undefined
     const resolvedEntrySource = cssEntrySource ?? sourceSideEntrySource
     if (!resolvedEntrySource) {
-      return resolveTailwindV3SourceFromPatcher(runtimeState.twPatcher)
+      return generatorOptions?.config
+        ? resolveTailwindV3Source(mergedSourceOptions)
+        : resolveTailwindV3SourceFromPatcher(runtimeState.twPatcher)
     }
     const config = resolveExistingConfigPath(
       resolvedEntrySource.config,
       resolvedEntrySource.configRequest,
       file,
-      sourceOptions,
+      mergedSourceOptions,
     )
     return resolveTailwindV3Source({
-      ...sourceOptions,
+      ...mergedSourceOptions,
       base: resolvedEntrySource.base,
       css: resolvedEntrySource.css,
       ...(config ? { config } : {}),
@@ -715,15 +793,42 @@ export async function resolveGeneratorSource(
   const sourceSideEntrySource = sourceOptions && shouldPreferSourceSideEntry
     ? resolveSourceSideCssEntrySource(file, sourceOptions, { removeConfig: false })
     : undefined
+  const matchedCssEntrySource = sourceOptions && cssEntrySource
+    ? await resolveMatchingTailwindV4CssEntry(rawSource, file, sourceOptions)
+    : undefined
+  if (matchedCssEntrySource) {
+    return generatorOptions?.config
+      ? {
+          ...matchedCssEntrySource,
+          css: prependConfigDirective(matchedCssEntrySource.css, generatorOptions.config),
+        }
+      : matchedCssEntrySource
+  }
+
   const resolvedEntrySource = sourceSideEntrySource ?? cssEntrySource
   if (!resolvedEntrySource) {
-    return resolveTailwindV4SourceFromPatcher(runtimeState.twPatcher)
+    const source = await resolveTailwindV4SourceFromPatcher(runtimeState.twPatcher)
+    return generatorOptions?.config
+      ? {
+          ...source,
+          css: prependConfigDirective(source.css, generatorOptions.config),
+        }
+      : source
   }
   const resolvedSourceOptions = sourceOptions ?? {}
+  const config = resolveExistingConfigPath(
+    resolvedEntrySource.config,
+    resolvedEntrySource.configRequest,
+    file,
+    resolvedSourceOptions,
+  )
   return resolveTailwindV4Source({
     ...resolvedSourceOptions,
     base: resolvedEntrySource.base,
-    css: resolvedEntrySource.css,
+    css: normalizeConfigDirective(
+      prependConfigDirective(resolvedEntrySource.css, generatorOptions?.config),
+      config,
+    ),
   })
 }
 
@@ -733,12 +838,13 @@ async function resolveGeneratorSources(
   rawSource: string,
   file: string,
   cssHandlerOptions: IStyleHandlerOptions,
+  generatorOptions?: NormalizedWeappTailwindcssGeneratorOptions,
 ): Promise<TailwindResolvedSource[]> {
   const base = resolveCssSourceBase(file, cssHandlerOptions)
   const cssEntrySource = resolveCssEntrySource(rawSource, base, { removeConfig: majorVersion === 3 })
   if (majorVersion !== 4 || (cssEntrySource && !cssHandlerOptions.isMainChunk)) {
     return [
-      await resolveGeneratorSource(majorVersion, runtimeState, rawSource, file, cssHandlerOptions),
+      await resolveGeneratorSource(majorVersion, runtimeState, rawSource, file, cssHandlerOptions, generatorOptions),
     ]
   }
 
@@ -748,13 +854,13 @@ async function resolveGeneratorSources(
   }
   catch {
     return [
-      await resolveGeneratorSource(majorVersion, runtimeState, rawSource, file, cssHandlerOptions),
+      await resolveGeneratorSource(majorVersion, runtimeState, rawSource, file, cssHandlerOptions, generatorOptions),
     ]
   }
 
   if (!sourceOptions.cssEntries || sourceOptions.cssEntries.length <= 1) {
     return [
-      await resolveGeneratorSource(majorVersion, runtimeState, rawSource, file, cssHandlerOptions),
+      await resolveGeneratorSource(majorVersion, runtimeState, rawSource, file, cssHandlerOptions, generatorOptions),
     ]
   }
 
@@ -763,7 +869,12 @@ async function resolveGeneratorSources(
       ...sourceOptions,
       css: undefined,
       cssEntries: [cssEntry],
-    }),
+    }).then(source => generatorOptions?.config
+      ? {
+          ...source,
+          css: prependConfigDirective(source.css, generatorOptions.config),
+        }
+      : source),
   ))
   return sources
 }
@@ -1197,6 +1308,7 @@ export async function generateCssByGenerator(
       rawSource,
       file,
       cssHandlerOptions,
+      generatorOptions,
     )
     const generatorStyleOptions = resolveGeneratorStyleOptions(opts, cssHandlerOptions, generatorOptions.styleOptions)
     const configuredContainerCompat = hasConfiguredContainerCompatSources(sources)

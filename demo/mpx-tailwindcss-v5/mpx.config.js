@@ -8,7 +8,7 @@ const generator = resolveDemoGeneratorMode({
   mode: 'force',
   target: 'weapp'
 })
-const postcssPlugins = [tailwindPostcss()]
+const postcssPlugins = isGeneratorMode ? [] : [tailwindPostcss()]
 
 // 修复 @mpxjs/webpack-plugin 序列化器重复注册导致的构建失败
 // 该问题在 pnpm + webpack5 环境下，模块从不同路径被加载两次时触发

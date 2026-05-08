@@ -22,16 +22,21 @@ function isCssLikeImporter(importer?: string | null) {
 interface RewriteCssImportsOptions {
   appType?: AppType
   getAppType?: () => AppType | undefined
+  shouldOwnTailwindGeneration?: boolean
   shouldRewrite: boolean
   rootImport?: string
   weappTailwindcssDirPosix: string
+}
+
+function stripTailwindConfigDirectives(code: string) {
+  return code.replace(/^\s*@config\s+(?:"[^"]+"|'[^']+')[^;\n]*;\s*$/gm, '')
 }
 
 export function createRewriteCssImportsPlugins(options: RewriteCssImportsOptions): Plugin[] {
   if (!options.shouldRewrite) {
     return []
   }
-  const { appType, getAppType, rootImport, weappTailwindcssDirPosix } = options
+  const { appType, getAppType, rootImport, shouldOwnTailwindGeneration, weappTailwindcssDirPosix } = options
   const resolveAppType = () => getAppType?.() ?? appType
   return [
     {
@@ -65,11 +70,14 @@ export function createRewriteCssImportsPlugins(options: RewriteCssImportsOptions
             appType: resolveAppType(),
             rootImport,
           })
-          if (!rewritten) {
+          const nextCode = shouldOwnTailwindGeneration
+            ? stripTailwindConfigDirectives(rewritten ?? code)
+            : rewritten
+          if (!nextCode || nextCode === code) {
             return null
           }
           return {
-            code: rewritten,
+            code: nextCode,
             map: null,
           }
         },

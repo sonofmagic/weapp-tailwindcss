@@ -234,6 +234,20 @@ describe('bundlers/vite UnifiedViteWeappTailwindcssPlugin rewrite', () => {
     expect(transform?.('.foo { color: red; }', '/src/app.css')).toBeNull()
   })
 
+  it('strips @config directives before Vite CSS handling in generator mode', async () => {
+    const [rewritePlugin] = createRewriteCssImportsPlugins({
+      shouldOwnTailwindGeneration: true,
+      shouldRewrite: true,
+      weappTailwindcssDirPosix: '/virtual/weapp-tailwindcss',
+    })
+    const transform = getTransformHandler(rewritePlugin!)
+    expect(transform).toBeTypeOf('function')
+
+    const result = transform?.('@import "tailwindcss";\n@config "../tailwind.config.js";\n.foo { color: red; }', '/src/app.css') as TransformResult
+    expect(result?.code).toContain('@import "weapp-tailwindcss/index.css";')
+    expect(result?.code).not.toContain('@config')
+  })
+
   it('returns null for non-css transform requests', async () => {
     const [rewritePlugin] = createRewriteCssImportsPlugins({
       shouldRewrite: true,

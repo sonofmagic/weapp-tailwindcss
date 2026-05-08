@@ -3,6 +3,7 @@ const { UnifiedWebpackPluginV5 } = require('weapp-tailwindcss/webpack')
 const tailwindPostcss = require('@tailwindcss/postcss')
 const { resolveDemoGeneratorMode } = require('../shared/weapp-tailwind-generator-mode.cjs')
 const path = require('path')
+const isGeneratorMode = process.env.WEAPP_TW_GENERATOR_MODE !== 'legacy'
 const generator = resolveDemoGeneratorMode()
 
 // 修复 @mpxjs/webpack-plugin 序列化器重复注册导致的构建失败
@@ -28,7 +29,7 @@ module.exports = defineConfig({
       plugin: {
         postcssInlineConfig: {
           ignoreConfigFile: true,
-          plugins: [
+          plugins: isGeneratorMode ? [] : [
             tailwindPostcss()
           ]
         },

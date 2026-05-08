@@ -17,6 +17,10 @@ export interface WeappTailwindcssGeneratorOptions {
    */
   target?: WeappTailwindcssGeneratorTarget
   /**
+   * Tailwind 配置文件路径，兼容原 Tailwind PostCSS 插件的 `config` 选项。
+   */
+  config?: string
+  /**
    * 传给小程序 CSS 兼容转换器的额外配置。
    */
   styleOptions?: Partial<IStyleHandlerOptions>
@@ -33,6 +37,7 @@ export type WeappTailwindcssGeneratorUserOptions = boolean | WeappTailwindcssGen
 export interface NormalizedWeappTailwindcssGeneratorOptions {
   mode: WeappTailwindcssGeneratorMode
   target: WeappTailwindcssGeneratorTarget
+  config?: string
   styleOptions?: Partial<IStyleHandlerOptions>
   tailwindcssV3Compatibility: boolean
 }
@@ -59,6 +64,7 @@ export function normalizeWeappTailwindcssGeneratorOptions(
   return {
     mode: options.mode ?? 'auto',
     target: options.target ?? 'weapp',
+    config: options.config,
     styleOptions: options.styleOptions,
     tailwindcssV3Compatibility: options.tailwindcssV3Compatibility ?? (options.target ?? 'weapp') === 'weapp',
   }

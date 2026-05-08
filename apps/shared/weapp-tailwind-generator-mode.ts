@@ -25,5 +25,9 @@ export function resolveAppGeneratorMode(
       target: 'weapp',
     }
   }
-  return fallback
+  return {
+    ...fallbackObject,
+    mode: 'force',
+    target: 'weapp',
+  }
 }

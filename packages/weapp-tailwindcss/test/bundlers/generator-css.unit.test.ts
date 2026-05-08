@@ -11,7 +11,9 @@ function normalizeGeneratorOptions(options: any) {
   return {
     mode: options.mode ?? 'auto',
     target: options.target ?? 'weapp',
+    config: options.config,
     styleOptions: options.styleOptions,
+    tailwindcssV3Compatibility: options.tailwindcssV3Compatibility ?? true,
   }
 }
 
@@ -1481,6 +1483,90 @@ describe('bundlers/shared generator css', () => {
     expect(styleHandler).not.toHaveBeenCalled()
   })
 
+  it('passes generator config to Tailwind v3 source resolution', async () => {
+    const configFile = path.resolve(process.cwd(), 'tailwind.config.js')
+    const rawSource = '@tailwind utilities;'
+    const generateMock = vi.fn(async () => ({
+      css: '.bg-brand{background-color:#123456}',
+      rawCss: '.bg-brand{background-color:#123456}',
+      target: 'weapp',
+      classSet: new Set(['bg-brand']),
+      dependencies: [configFile],
+      sources: [],
+      root: null,
+    }))
+    const resolveTailwindV3Source = vi.fn(async (options: any) => ({
+      projectRoot: process.cwd(),
+      base: process.cwd(),
+      css: options.css,
+      config: options.config,
+      dependencies: options.config ? [options.config] : [],
+      version: 3,
+    }))
+
+    vi.doMock('@/generator', () => ({
+      createWeappTailwindcssGenerator: vi.fn(() => ({
+        generate: generateMock,
+      })),
+      normalizeWeappTailwindcssGeneratorOptions: normalizeGeneratorOptions,
+      resolveTailwindV3SourceFromPatcher: vi.fn(async () => {
+        throw new Error('should use explicit generator config')
+      }),
+      resolveTailwindV3SourceOptionsFromPatcher: vi.fn(() => ({
+        projectRoot: process.cwd(),
+        cwd: process.cwd(),
+      })),
+      resolveTailwindV3Source,
+    }))
+
+    const { generateCssByGenerator } = await import('@/bundlers/shared/generator-css')
+    const result = await generateCssByGenerator({
+      opts: {
+        generator: {
+          mode: 'force',
+          target: 'weapp',
+          config: configFile,
+        },
+        styleHandler: vi.fn(),
+      } as any,
+      runtimeState: {
+        twPatcher: {
+          majorVersion: 3,
+        } as any,
+        patchPromise: Promise.resolve(),
+      },
+      runtime: new Set(['bg-brand']),
+      rawSource,
+      file: 'app.wxss',
+      cssHandlerOptions: {
+        isMainChunk: true,
+        postcssOptions: {
+          options: {
+            from: 'app.wxss',
+          },
+        },
+        majorVersion: 3,
+      } as any,
+      cssUserHandlerOptions: {
+        isMainChunk: false,
+        postcssOptions: {
+          options: {
+            from: 'app.wxss',
+          },
+        },
+        majorVersion: 3,
+      } as any,
+      styleHandler: vi.fn(async (code: string) => ({ css: code })),
+      debug: vi.fn(),
+    })
+
+    expect(result?.css).toContain('.bg-brand')
+    expect(resolveTailwindV3Source).toHaveBeenCalledWith(expect.objectContaining({
+      config: configFile,
+      css: rawSource,
+    }))
+  })
+
   it('does not append raw Tailwind v3 @apply rules after generated css', async () => {
     const rawSource = [
       '@tailwind base;',
@@ -2491,6 +2577,186 @@ describe('bundlers/shared generator css', () => {
     expect(generateMock).toHaveBeenCalledTimes(2)
     expect(result?.css).toContain('.bg-emerald-500{background-color:rgb(0,185,129)}')
     expect(result?.css).toContain('.bg-slate-50{background-color:rgb(248,250,252)}')
+  })
+
+  it('resolves Tailwind v4 output assets from matching configured css entries', async () => {
+    const runtimeSet = new Set(['bg-slate-50'])
+    const commonCss = '@import "tailwindcss";\n@config "../tailwind.config.order.js";'
+    const resolveTailwindV4Source = vi.fn(async (options: any) => ({
+      projectRoot: '/project',
+      base: path.dirname(options.cssEntries[0]),
+      baseFallbacks: [],
+      css: commonCss,
+      dependencies: options.cssEntries,
+    }))
+
+    vi.doMock('node:fs', () => ({
+      existsSync: vi.fn((file: string) => file === '/project/src/common.css'),
+      readFileSync: vi.fn(() => commonCss),
+    }))
+    vi.doMock('@/generator', () => ({
+      createWeappTailwindcssGenerator: vi.fn(() => ({
+        generate: vi.fn(async () => ({
+          css: '.bg-slate-50{background-color:rgb(248,250,252)}',
+          rawCss: commonCss,
+          target: 'weapp',
+          classSet: runtimeSet,
+          dependencies: ['/project/src/common.css'],
+          sources: [],
+          root: null,
+        })),
+      })),
+      normalizeWeappTailwindcssGeneratorOptions: normalizeGeneratorOptions,
+      resolveTailwindV4Source,
+      resolveTailwindV4SourceFromPatcher: vi.fn(async () => ({
+        projectRoot: '/project',
+        base: '/project',
+        baseFallbacks: [],
+        css: '@import "tailwindcss";',
+        dependencies: [],
+      })),
+      resolveTailwindV4SourceOptionsFromPatcher: vi.fn(() => ({
+        projectRoot: '/project',
+        baseFallbacks: [],
+        cssEntries: ['/project/src/main.css', '/project/src/common.css'],
+      })),
+    }))
+
+    const { generateCssByGenerator } = await import('@/bundlers/shared/generator-css')
+    const styleHandler = vi.fn(async (code: string) => ({ css: code }))
+    const result = await generateCssByGenerator({
+      opts: {
+        generator: {
+          mode: 'force',
+          target: 'weapp',
+        },
+        styleHandler,
+      } as any,
+      runtimeState: {
+        twPatcher: {
+          majorVersion: 4,
+        } as any,
+        patchPromise: Promise.resolve(),
+      },
+      runtime: runtimeSet,
+      rawSource: commonCss,
+      file: 'common.wxss',
+      cssHandlerOptions: {
+        isMainChunk: false,
+        postcssOptions: {
+          options: {
+            from: 'common.wxss',
+          },
+        },
+        majorVersion: 4,
+      } as any,
+      cssUserHandlerOptions: {
+        isMainChunk: false,
+        postcssOptions: {
+          options: {
+            from: 'common.wxss',
+          },
+        },
+        majorVersion: 4,
+      } as any,
+      styleHandler,
+      debug: vi.fn(),
+    })
+
+    expect(resolveTailwindV4Source).toHaveBeenCalledTimes(1)
+    expect(resolveTailwindV4Source).toHaveBeenCalledWith(expect.objectContaining({
+      cssEntries: ['/project/src/common.css'],
+    }))
+    expect(result?.css).toBe('.bg-slate-50{background-color:rgb(248,250,252)}')
+  })
+
+  it('normalizes Tailwind v4 @config directives when css import output no longer matches the source entry name', async () => {
+    const runtimeSet = new Set(['bg-slate-50'])
+    const css = '@import "tailwindcss";\n@config "../tailwind.config.order.js";'
+    const resolveTailwindV4Source = vi.fn(async (options: any) => ({
+      projectRoot: '/project',
+      base: options.base,
+      baseFallbacks: [],
+      css: options.css,
+      dependencies: [],
+    }))
+
+    vi.doMock('node:fs', () => ({
+      existsSync: vi.fn((file: string) => file === '/project/tailwind.config.order.js'),
+      readFileSync: vi.fn(() => '@import "tailwindcss";'),
+    }))
+    vi.doMock('@/generator', () => ({
+      createWeappTailwindcssGenerator: vi.fn(() => ({
+        generate: vi.fn(async () => ({
+          css: '.bg-slate-50{background-color:rgb(248,250,252)}',
+          rawCss: css,
+          target: 'weapp',
+          classSet: runtimeSet,
+          dependencies: [],
+          sources: [],
+          root: null,
+        })),
+      })),
+      normalizeWeappTailwindcssGeneratorOptions: normalizeGeneratorOptions,
+      resolveTailwindV4Source,
+      resolveTailwindV4SourceFromPatcher: vi.fn(async () => ({
+        projectRoot: '/project',
+        base: '/project',
+        baseFallbacks: [],
+        css: '@import "tailwindcss";',
+        dependencies: [],
+      })),
+      resolveTailwindV4SourceOptionsFromPatcher: vi.fn(() => ({
+        projectRoot: '/project',
+        baseFallbacks: [],
+        cssEntries: ['/project/src/main.css', '/project/src/common.css'],
+      })),
+    }))
+
+    const { generateCssByGenerator } = await import('@/bundlers/shared/generator-css')
+    const result = await generateCssByGenerator({
+      opts: {
+        generator: {
+          mode: 'force',
+          target: 'weapp',
+        },
+        styleHandler: vi.fn(async (code: string) => ({ css: code })),
+      } as any,
+      runtimeState: {
+        twPatcher: {
+          majorVersion: 4,
+        } as any,
+        patchPromise: Promise.resolve(),
+      },
+      runtime: runtimeSet,
+      rawSource: css,
+      file: 'pages-order/index.wxss',
+      cssHandlerOptions: {
+        isMainChunk: false,
+        postcssOptions: {
+          options: {
+            from: 'pages-order/index.wxss',
+          },
+        },
+        majorVersion: 4,
+      } as any,
+      cssUserHandlerOptions: {
+        isMainChunk: false,
+        postcssOptions: {
+          options: {
+            from: 'pages-order/index.wxss',
+          },
+        },
+        majorVersion: 4,
+      } as any,
+      styleHandler: vi.fn(async (code: string) => ({ css: code })),
+      debug: vi.fn(),
+    })
+
+    expect(resolveTailwindV4Source).toHaveBeenCalledWith(expect.objectContaining({
+      css: expect.stringContaining('@config "/project/tailwind.config.order.js";'),
+    }))
+    expect(result?.css).toBe('.bg-slate-50{background-color:rgb(248,250,252)}')
   })
 
   it('generates scoped tailwind css assets outside the main chunk', async () => {

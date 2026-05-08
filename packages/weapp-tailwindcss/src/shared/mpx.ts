@@ -1,7 +1,10 @@
 import type { AppType } from '@/types'
+import { createRequire } from 'node:module'
 import path from 'node:path'
+import process from 'node:process'
 import { installTailwindcssCssRedirect } from './tailwindcss-css-redirect'
 
+const require = createRequire(import.meta.url)
 const MPX_STYLE_RESOURCE_QUERY_RE = /(?:^|[?&])type=styles(?:&|$)/
 
 function isMpxStyleResourceQuery(query?: string) {
@@ -19,10 +22,32 @@ export function getTailwindcssCssEntry(pkgDir: string) {
   return path.join(pkgDir, 'index.css')
 }
 
+function isMpxWebpackPluginRequest(request: string | undefined) {
+  return request === '@mpxjs/webpack-plugin' || Boolean(request?.startsWith('@mpxjs/webpack-plugin/'))
+}
+
+function ensureResolveLoaderAlias(compiler: any) {
+  compiler.options.resolveLoader = compiler.options.resolveLoader || {}
+  const alias = compiler.options.resolveLoader.alias ?? {}
+  if (Array.isArray(alias)) {
+    alias.push({
+      name: /^@mpxjs\/webpack-plugin\//,
+      alias: path.dirname(require.resolve('@mpxjs/webpack-plugin/package.json')),
+    })
+  }
+  else {
+    compiler.options.resolveLoader.alias = alias
+    const pkgDir = path.dirname(require.resolve('@mpxjs/webpack-plugin/package.json'))
+    alias['@mpxjs/webpack-plugin'] = pkgDir
+    alias['@mpxjs/webpack-plugin$'] = pkgDir
+  }
+}
+
 export function ensureMpxTailwindcssAliases(compiler: any, pkgDir: string) {
   const tailwindcssCssEntry = getTailwindcssCssEntry(pkgDir)
   compiler.options = compiler.options || {}
   compiler.options.resolve = compiler.options.resolve || {}
+  ensureResolveLoaderAlias(compiler)
   const alias = compiler.options.resolve.alias ?? {}
   if (Array.isArray(alias)) {
     alias.push(
@@ -57,6 +82,9 @@ export function patchMpxLoaderResolve(
     }
     if (request?.startsWith('tailwindcss/')) {
       return callback(null, path.join(pkgDir, request.slice('tailwindcss/'.length)))
+    }
+    if (isMpxWebpackPluginRequest(request)) {
+      return originalResolve.call(this, process.cwd(), request, callback)
     }
     return originalResolve.call(this, context, request, callback)
   }

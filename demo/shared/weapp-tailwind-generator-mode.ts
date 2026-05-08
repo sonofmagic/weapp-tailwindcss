@@ -29,5 +29,9 @@ export function resolveDemoGeneratorMode(
       target: 'weapp',
     }
   }
-  return fallback
+  return {
+    ...fallbackObject,
+    mode: 'force',
+    target: 'weapp',
+  }
 }

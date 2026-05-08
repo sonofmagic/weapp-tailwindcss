@@ -382,6 +382,21 @@ function addSourceDependencyMessages(result: Result, files: string[]) {
   }
 }
 
+function quoteCssString(value: string) {
+  return value.replaceAll('\\', '\\\\').replaceAll('"', '\\"')
+}
+
+function toCssPath(value: string) {
+  return value.replaceAll('\\', '/')
+}
+
+function prependConfigDirective(css: string, config: string | undefined) {
+  if (!config || /@config\s+/.test(css)) {
+    return css
+  }
+  return `@config "${quoteCssString(toCssPath(config))}";\n${css}`
+}
+
 export const weappTailwindcssPostcssPlugin: PluginCreator<WeappTailwindcssPostcssPluginOptions> = (options = {}) => {
   return {
     postcssPlugin: PLUGIN_NAME,
@@ -405,9 +420,10 @@ export const weappTailwindcssPostcssPlugin: PluginCreator<WeappTailwindcssPostcs
         collectPostcssLocalSources(root, result, options),
         collectAutoTailwindCandidates(root, result, options),
       ])
+      const generatorConfig = generatorOptions.config ?? options.config
       const source = tailwindVersion === 3
         ? await resolveTailwindV3Source({
-            config: options.config,
+            config: generatorConfig,
             css: sourceOptions.css ?? root.toString(),
             base: resolvePostcssBase(result, options),
             cwd: resolvePostcssProjectRoot(result, options),
@@ -417,7 +433,7 @@ export const weappTailwindcssPostcssPlugin: PluginCreator<WeappTailwindcssPostcs
           })
         : await resolveTailwindV4Source({
             ...sourceOptions,
-            css: sourceOptions.css ?? root.toString(),
+            css: prependConfigDirective(sourceOptions.css ?? root.toString(), generatorConfig),
             base: resolvePostcssBase(result, options),
             projectRoot: resolvePostcssProjectRoot(result, options),
           })

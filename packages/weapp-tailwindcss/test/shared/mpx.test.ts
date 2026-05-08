@@ -40,6 +40,7 @@ describe('shared/mpx helpers', () => {
     expect(compiler.options.resolve.alias.keep).toBe('value')
     expect(compiler.options.resolve.alias.tailwindcss).toBe(entry)
     expect(compiler.options.resolve.alias.tailwindcss$).toBe(entry)
+    expect(compiler.options.resolveLoader.alias['@mpxjs/webpack-plugin']).toEqual(expect.stringContaining('@mpxjs/webpack-plugin'))
   })
 
   it('ensures aliases for array-style resolve config', () => {
@@ -69,6 +70,9 @@ describe('shared/mpx helpers', () => {
     patchedResolve({}, 'tailwindcss/plugin', (_err: any, value: string) => {
       results.tailwindcssSubpath = value
     })
+    patchedResolve('/virtual/weapp-tailwindcss', '@mpxjs/webpack-plugin/lib/record-loader', (_err: any, value: string) => {
+      results.mpxLoader = value
+    })
     patchedResolve({}, 'lodash', (_err: any, value: string) => {
       results.other = value
     })
@@ -77,8 +81,10 @@ describe('shared/mpx helpers', () => {
     expect(results.tailwindcss).toBe(cssEntry)
     expect(results.tailwindcssDollar).toBe(cssEntry)
     expect(results.tailwindcssSubpath).toBe(path.join(pkgDir, 'plugin'))
+    expect(results.mpxLoader).toBe('resolved:@mpxjs/webpack-plugin/lib/record-loader')
     expect(results.other).toBe('resolved:lodash')
-    expect(originalResolve).toHaveBeenCalledTimes(1)
+    expect(originalResolve).toHaveBeenCalledTimes(2)
+    expect(originalResolve).toHaveBeenCalledWith(process.cwd(), '@mpxjs/webpack-plugin/lib/record-loader', expect.any(Function))
 
     patchMpxLoaderResolve(loaderContext, pkgDir, true)
     expect(loaderContext.resolve).toBe(patchedResolve)

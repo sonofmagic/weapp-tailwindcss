@@ -20,7 +20,11 @@ function resolveAppGeneratorMode(fallback) {
       target: 'weapp',
     }
   }
-  return fallback
+  return {
+    ...fallbackObject,
+    mode: 'force',
+    target: 'weapp',
+  }
 }
 
 module.exports = {
