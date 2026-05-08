@@ -41,7 +41,6 @@
     "build:quickapp-webview-union": "uni build -p quickapp-webview-union",
     "open:dev": "weapp open -p dist/dev/mp-weixin",
     "open:build": "weapp open -p dist/build/mp-weixin",
-    "postinstall": "weapp-tw patch",
     "up:pkg": "pnpm up -rLi \"!@dcloudio/*\"",
     "up:uniapp": "npx @dcloudio/uvm@latest"
   },
@@ -107,7 +106,6 @@
     "postcss-rpx-transform": "catalog:postcssRpx",
     "sass": "catalog:sass195",
     "tailwindcss": "catalog:tailwindcss3",
-    "tailwindcss-patch": "catalog:tailwindcssPatch",
     "tailwindcss-rem2px-preset": "catalog:tailwindcssRem",
     "typescript": "catalog:typescript59tilde",
     "vite": "catalog:vite52",

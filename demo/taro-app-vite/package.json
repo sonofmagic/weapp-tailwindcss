@@ -43,7 +43,6 @@
     "dev:qq": "npm run build:qq -- --watch",
     "dev:jd": "npm run build:jd -- --watch",
     "dev:harmony-hybrid": "npm run build:harmony-hybrid -- --watch",
-    "postinstall": "weapp-tw patch",
     "open": "weapp open -p"
   },
   "browserslist": [
@@ -103,7 +102,6 @@
     "sass": "catalog:sass195",
     "stylelint": "catalog:stylelint1625",
     "tailwindcss": "catalog:tailwindcss3",
-    "tailwindcss-patch": "catalog:tailwindcssPatch",
     "tailwindcss-rem2px-preset": "catalog:tailwindcssRem",
     "terser": "^5.47.1",
     "to-fast-properties": "3.0.1",

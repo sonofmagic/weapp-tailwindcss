@@ -48,7 +48,6 @@
     "postcss": "catalog:postcss85",
     "process": "^0.11.10",
     "tailwindcss": "catalog:tailwindcss4",
-    "tailwindcss-patch": "catalog:tailwindcssPatch",
     "typescript": "catalog:typescript59",
     "weapp-ide-cli": "catalog:weappIdeCli",
     "weapp-tailwindcss": "workspace:*",

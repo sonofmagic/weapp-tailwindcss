@@ -23,7 +23,7 @@ keywords:
 
 | 场景 | 命令 | 说明 |
 | --- | --- | --- |
-| 给 Tailwind CSS 打补丁、注入 `rpx` 支持 | `npx weapp-tw patch` | 运行一次即可，推荐写在 `postinstall`；支持 `--cwd` 指向子包目录。 |
+| 给 Tailwind CSS 打补丁、注入 `rpx` 支持 | `npx weapp-tw patch` | 旧 CSS 后处理链路运行一次即可；支持 `--cwd` 指向子包目录。生成模式项目不需要写入 `postinstall`。 |
 | 强制刷新补丁缓存后再打补丁 | `npx weapp-tw patch --clear-cache` | 默认不会清理缓存；仅在怀疑缓存导致补丁未生效或版本不一致时使用。 |
 | 在 monorepo 针对子包补丁 | `pnpm --filter <pkg> exec weapp-tw patch --cwd .` | `pnpm` 场景建议显式传 `--cwd .`，每个子包只写入自己的缓存，避免 hoist 后的 `node_modules` 不一致。 |
 | 一键扫描 workspace 并补丁 | `weapp-tw patch --workspace --cwd <repo-root>` | 自动读取 `pnpm-lock.yaml`/`pnpm-workspace.yaml` 批量补丁，跳过未安装 Tailwind 的包，并输出每个子包状态。 |
@@ -32,6 +32,12 @@ keywords:
 | 输出 Tailwind token 和定位信息 | `npx weapp-tw tokens --format grouped-json` | 调试 `content` 配置时非常有用，可与 `--no-write` 一起纯输出。 |
 
 ## `patch` 子命令
+
+:::tip 生成模式项目不需要配置 postinstall
+如果项目已经使用 `weapp-tailwindcss@5` 生成模式，并且 Tailwind CSS 由 `WeappTailwindcss`、`weapp-tailwindcss/postcss` 或生成器入口接管，就不需要再在业务项目的 `package.json` 中配置 `postinstall: "weapp-tw patch"`。
+
+`weapp-tw patch` 主要保留给旧 CSS 后处理链路、需要手动排查补丁状态的项目，或仍依赖 Tailwind patch 缓存的兼容场景。
+:::
 
 ### 功能
 

@@ -12,6 +12,19 @@ async function readProjectJson<T>(relativePath: string) {
 }
 
 describe('v5 apps and demos generator config', () => {
+  const generatorOnlyPackagePaths = [
+    'apps/vite-native/package.json',
+    'apps/vite-native-ts/package.json',
+    'apps/vite-native-skyline/package.json',
+    'apps/vite-native-ts-skyline/package.json',
+    'demo/native-ts/package.json',
+    'demo/taro-app-vite/package.json',
+    'demo/uni-app-vue3-vite/package.json',
+    'demo/uni-app-tailwindcss-v5/package.json',
+    'demo/taro-vite-tailwindcss-v5/package.json',
+    'demo/mpx-tailwindcss-v5/package.json',
+  ]
+
   it('keeps v5 generator demos as standalone workspace packages', async () => {
     const packages = await Promise.all([
       readProjectJson<{ name: string, scripts?: Record<string, string>, private?: boolean }>('demo/uni-app-tailwindcss-v5/package.json'),
@@ -26,6 +39,24 @@ describe('v5 apps and demos generator config', () => {
     ])
     expect(packages.every(item => item.private)).toBe(true)
     expect(packages.every(item => typeof item.scripts?.build === 'string')).toBe(true)
+    expect(packages.every(item => item.scripts?.postinstall === undefined)).toBe(true)
+  })
+
+  it('keeps generator-only packages free of install-time tailwind patching', async () => {
+    const packages = await Promise.all(generatorOnlyPackagePaths.map(async file => ({
+      file,
+      pkg: await readProjectJson<{
+        scripts?: Record<string, string>
+        dependencies?: Record<string, string>
+        devDependencies?: Record<string, string>
+      }>(file),
+    })))
+
+    for (const { file, pkg } of packages) {
+      expect(pkg.scripts?.postinstall, file).toBeUndefined()
+      expect(pkg.dependencies?.['tailwindcss-patch'], file).toBeUndefined()
+      expect(pkg.devDependencies?.['tailwindcss-patch'], file).toBeUndefined()
+    }
   })
 
   it.each([

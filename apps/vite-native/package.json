@@ -26,7 +26,6 @@
     "dev:open": "weapp-vite dev -o",
     "build": "weapp-vite build",
     "open": "weapp-vite open",
-    "postinstall": "weapp-tw patch",
     "npm": "weapp-vite npm"
   },
   "dependencies": {

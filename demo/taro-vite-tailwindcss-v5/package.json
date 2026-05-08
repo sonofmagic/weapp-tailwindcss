@@ -32,8 +32,7 @@
     "dev:qq": "npm run build:qq -- --watch",
     "dev:jd": "npm run build:jd -- --watch",
     "dev:harmony-hybrid": "npm run build:harmony-hybrid -- --watch",
-    "open": "weapp open -p",
-    "postinstall": "weapp-tw patch"
+    "open": "weapp open -p"
   },
   "browserslist": {
     "development": [
@@ -99,7 +98,6 @@
     "react-refresh": "catalog:reactRefresh018",
     "stylelint": "catalog:stylelint1625",
     "tailwindcss": "catalog:tailwindcss4",
-    "tailwindcss-patch": "catalog:tailwindcssPatch",
     "terser": "^5.47.1",
     "typescript": "catalog:typescript59",
     "vite": "catalog:vite4",

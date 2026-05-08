@@ -11,8 +11,7 @@
     "build:babel": "echo build:babel",
     "dev": "weapp-vite dev",
     "open": "weapp-vite open",
-    "build-npm": "weapp-vite build-npm",
-    "postinstall": "weapp-tw patch"
+    "build-npm": "weapp-vite build-npm"
   },
   "keywords": [],
   "author": "ice breaker <1324318532@qq.com>",
@@ -26,7 +25,6 @@
     "postcss-rem-to-responsive-pixel": "catalog:postcssRem",
     "postcss-rpx-transform": "catalog:postcssRpx",
     "tailwindcss": "catalog:tailwindcss3",
-    "tailwindcss-patch": "catalog:tailwindcssPatch",
     "tailwindcss-rem2px-preset": "catalog:tailwindcssRem",
     "weapp-ide-cli": "catalog:weappIdeCli",
     "weapp-tailwindcss": "workspace:*",

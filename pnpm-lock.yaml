@@ -1999,9 +1999,6 @@ importers:
       tailwindcss:
         specifier: catalog:tailwindcss4
         version: 4.2.4
-      tailwindcss-patch:
-        specifier: catalog:tailwindcssPatch
-        version: 9.2.1(magicast@0.5.2)(tailwindcss@4.2.4)
       typescript:
         specifier: catalog:typescript59
         version: 5.9.3
@@ -2074,9 +2071,6 @@ importers:
       tailwindcss:
         specifier: catalog:tailwindcss3
         version: 3.4.19(tsx@4.21.0)(yaml@2.8.4)
-      tailwindcss-patch:
-        specifier: catalog:tailwindcssPatch
-        version: 9.2.1(magicast@0.5.2)(tailwindcss@3.4.19(tsx@4.21.0)(yaml@2.8.4))
       tailwindcss-rem2px-preset:
         specifier: catalog:tailwindcssRem
         version: 1.0.3(tailwindcss@3.4.19(tsx@4.21.0)(yaml@2.8.4))
@@ -2403,9 +2397,6 @@ importers:
       tailwindcss:
         specifier: catalog:tailwindcss3
         version: 3.4.19(tsx@4.21.0)(yaml@2.8.4)
-      tailwindcss-patch:
-        specifier: catalog:tailwindcssPatch
-        version: 9.2.1(magicast@0.5.2)(tailwindcss@3.4.19(tsx@4.21.0)(yaml@2.8.4))
       tailwindcss-rem2px-preset:
         specifier: catalog:tailwindcssRem
         version: 1.0.3(tailwindcss@3.4.19(tsx@4.21.0)(yaml@2.8.4))
@@ -2747,9 +2738,6 @@ importers:
       tailwindcss:
         specifier: catalog:tailwindcss4
         version: 4.2.4
-      tailwindcss-patch:
-        specifier: catalog:tailwindcssPatch
-        version: 9.2.1(magicast@0.5.2)(tailwindcss@4.2.4)
       terser:
         specifier: ^5.47.1
         version: 5.47.1
@@ -3282,9 +3270,6 @@ importers:
       tailwindcss:
         specifier: catalog:tailwindcss4
         version: 4.2.4
-      tailwindcss-patch:
-        specifier: catalog:tailwindcssPatch
-        version: 9.2.1(magicast@0.5.2)(tailwindcss@4.2.4)
       typescript:
         specifier: catalog:typescript59
         version: 5.9.3
@@ -3484,9 +3469,6 @@ importers:
       tailwindcss:
         specifier: catalog:tailwindcss3
         version: 3.4.19(tsx@4.21.0)(yaml@2.8.4)
-      tailwindcss-patch:
-        specifier: catalog:tailwindcssPatch
-        version: 9.2.1(magicast@0.5.2)(tailwindcss@3.4.19(tsx@4.21.0)(yaml@2.8.4))
       tailwindcss-rem2px-preset:
         specifier: catalog:tailwindcssRem
         version: 1.0.3(tailwindcss@3.4.19(tsx@4.21.0)(yaml@2.8.4))

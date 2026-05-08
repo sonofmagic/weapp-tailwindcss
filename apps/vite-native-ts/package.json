@@ -24,8 +24,7 @@
     "build": "weapp-vite build",
     "open": "weapp-vite open",
     "build-npm": "weapp-vite build-npm",
-    "g": "weapp-vite generate",
-    "postinstall": "weapp-tw patch"
+    "g": "weapp-vite generate"
   },
   "devDependencies": {
     "@weapp-tailwindcss/cva": "workspace:*",

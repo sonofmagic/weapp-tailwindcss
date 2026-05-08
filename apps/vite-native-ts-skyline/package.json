@@ -23,8 +23,7 @@
     "dev:open": "weapp-vite dev -o",
     "build": "weapp-vite build",
     "open": "weapp-vite open",
-    "build-npm": "weapp-vite build-npm",
-    "postinstall": "weapp-tw patch"
+    "build-npm": "weapp-vite build-npm"
   },
   "devDependencies": {
     "@egoist/tailwindcss-icons": "catalog:egoistTailwindcssIcons",

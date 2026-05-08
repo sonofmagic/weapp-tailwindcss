@@ -19,6 +19,10 @@ keywords:
 ---
 然后把下列脚本，添加进你的 `package.json` 的 `scripts` 字段里:
 
+:::tip 仅旧 CSS 后处理链路需要
+`weapp-tailwindcss@5` 生成模式已经由 `WeappTailwindcss` 插件或生成器入口接管 Tailwind CSS，不需要再配置 `postinstall: "weapp-tw patch"`。只有继续使用旧 CSS 后处理链路，或需要手动排查补丁状态时，才需要本页配置。
+:::
+
 ```json title="package.json"
  "scripts": {
     // highlight-next-line
