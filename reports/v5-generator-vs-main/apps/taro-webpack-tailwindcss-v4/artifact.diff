@@ -1,0 +1,284 @@
+# apps/taro-webpack-tailwindcss-v4 artifact diff
+# baseline: main(v4)
+# current: next v5 generator
+# note: only core build artifacts are compared. Text artifacts are formatted/normalized before diffing; large normalized text files are summarized by hash and size.
+
+diff -- dist/app.js
+# normalized content differs; inline diff omitted (large-normalized-text).
+# baseline: 96225 raw bytes, 232354 normalized bytes, hash 283df2d0c992
+# current: 96226 raw bytes, 232355 normalized bytes, hash ba730611a783
+
+--- a/dist/app.wxss
++++ b/dist/app.wxss
+@@ -1,84 +1,3 @@
+-/*! tailwindcss v4.2.4 | MIT License | https://tailwindcss.com */
+-::-webkit-backdrop {
+-  --tw-rotate-x: initial;
+-  --tw-rotate-y: initial;
+-  --tw-rotate-z: initial;
+-  --tw-skew-x: initial;
+-  --tw-skew-y: initial;
+-  --tw-space-y-reverse: 0;
+-  --tw-space-x-reverse: 0;
+-  --tw-gradient-position: initial;
+-  --tw-gradient-from: rgba(0, 0, 0, 0);
+-  --tw-gradient-via: rgba(0, 0, 0, 0);
+-  --tw-gradient-to: rgba(0, 0, 0, 0);
+-  --tw-gradient-stops: initial;
+-  --tw-gradient-via-stops: initial;
+-  --tw-gradient-from-position: 0%;
+-  --tw-gradient-via-position: 50%;
+-  --tw-gradient-to-position: 100%;
+-  --tw-blur: initial;
+-  --tw-brightness: initial;
+-  --tw-contrast: initial;
+-  --tw-grayscale: initial;
+-  --tw-hue-rotate: initial;
+-  --tw-invert: initial;
+-  --tw-opacity: initial;
+-  --tw-saturate: initial;
+-  --tw-sepia: initial;
+-  --tw-drop-shadow: initial;
+-  --tw-drop-shadow-color: initial;
+-  --tw-drop-shadow-alpha: 100%;
+-  --tw-drop-shadow-size: initial;
+-  --tw-backdrop-blur: initial;
+-  --tw-backdrop-brightness: initial;
+-  --tw-backdrop-contrast: initial;
+-  --tw-backdrop-grayscale: initial;
+-  --tw-backdrop-hue-rotate: initial;
+-  --tw-backdrop-invert: initial;
+-  --tw-backdrop-opacity: initial;
+-  --tw-backdrop-saturate: initial;
+-  --tw-backdrop-sepia: initial;
+-}
+-::-ms-backdrop {
+-  --tw-rotate-x: initial;
+-  --tw-rotate-y: initial;
+-  --tw-rotate-z: initial;
+-  --tw-skew-x: initial;
+-  --tw-skew-y: initial;
+-  --tw-space-y-reverse: 0;
+-  --tw-space-x-reverse: 0;
+-  --tw-gradient-position: initial;
+-  --tw-gradient-from: rgba(0, 0, 0, 0);
+-  --tw-gradient-via: rgba(0, 0, 0, 0);
+-  --tw-gradient-to: rgba(0, 0, 0, 0);
+-  --tw-gradient-stops: initial;
+-  --tw-gradient-via-stops: initial;
+-  --tw-gradient-from-position: 0%;
+-  --tw-gradient-via-position: 50%;
+-  --tw-gradient-to-position: 100%;
+-  --tw-blur: initial;
+-  --tw-brightness: initial;
+-  --tw-contrast: initial;
+-  --tw-grayscale: initial;
+-  --tw-hue-rotate: initial;
+-  --tw-invert: initial;
+-  --tw-opacity: initial;
+-  --tw-saturate: initial;
+-  --tw-sepia: initial;
+-  --tw-drop-shadow: initial;
+-  --tw-drop-shadow-color: initial;
+-  --tw-drop-shadow-alpha: 100%;
+-  --tw-drop-shadow-size: initial;
+-  --tw-backdrop-blur: initial;
+-  --tw-backdrop-brightness: initial;
+-  --tw-backdrop-contrast: initial;
+-  --tw-backdrop-grayscale: initial;
+-  --tw-backdrop-hue-rotate: initial;
+-  --tw-backdrop-invert: initial;
+-  --tw-backdrop-opacity: initial;
+-  --tw-backdrop-saturate: initial;
+-  --tw-backdrop-sepia: initial;
+-}
+ ::before,
+ ::after {
+   --tw-content: "";
+@@ -87,101 +6,40 @@
+ text,
+ :after,
+ :before {
+-  --tw-rotate-x: initial;
+-  --tw-rotate-y: initial;
+-  --tw-rotate-z: initial;
+-  --tw-skew-x: initial;
+-  --tw-skew-y: initial;
+-  --tw-space-y-reverse: 0;
+-  --tw-space-x-reverse: 0;
+-  --tw-gradient-position: initial;
+-  --tw-gradient-from: rgba(0, 0, 0, 0);
+-  --tw-gradient-via: rgba(0, 0, 0, 0);
+-  --tw-gradient-to: rgba(0, 0, 0, 0);
+-  --tw-gradient-stops: initial;
+-  --tw-gradient-via-stops: initial;
+-  --tw-gradient-from-position: 0%;
+-  --tw-gradient-via-position: 50%;
+-  --tw-gradient-to-position: 100%;
+-  --tw-blur: initial;
+-  --tw-brightness: initial;
+-  --tw-contrast: initial;
+-  --tw-grayscale: initial;
+-  --tw-hue-rotate: initial;
+-  --tw-invert: initial;
+-  --tw-opacity: initial;
+-  --tw-saturate: initial;
+-  --tw-sepia: initial;
+-  --tw-drop-shadow: initial;
+-  --tw-drop-shadow-color: initial;
+-  --tw-drop-shadow-alpha: 100%;
+-  --tw-drop-shadow-size: initial;
+-  --tw-backdrop-blur: initial;
+-  --tw-backdrop-brightness: initial;
+-  --tw-backdrop-contrast: initial;
+-  --tw-backdrop-grayscale: initial;
+-  --tw-backdrop-hue-rotate: initial;
+-  --tw-backdrop-invert: initial;
+-  --tw-backdrop-opacity: initial;
+-  --tw-backdrop-saturate: initial;
+-  --tw-backdrop-sepia: initial;
++  border: 0 solid;
+   box-sizing: border-box;
+-  border-width: 0;
+-  border-style: solid;
+-  border-color: currentColor;
++  margin: 0;
++  padding: 0;
+ }
+ :host,
+ page,
+ .tw-root,
+ wx-root-portal-content {
++  --tw-space-y-reverse: 0;
++  --color-gray-200: #e5e7eb;
++  --color-gray-400: #9ca3af;
++  --spacing: 8rpx;
+   --color-cyan-500: rgb(0, 182, 212);
+   --color-blue-500: rgb(50, 128, 255);
+   --color-purple-800: rgb(110, 17, 176);
+   --color-pink-200: rgb(252, 206, 232);
+   --color-white: #fff;
+-  --spacing: 8rpx;
+   --blur-2xl: 40rpx;
+ }
+-@supports (color: color(display-p3 0 0 0%)) {
+-  :host,
+-  page,
+-  .tw-root,
+-  wx-root-portal-content {
+-    --color-cyan-500: rgb(0, 182, 212);
+-    --color-blue-500: rgb(50, 128, 255);
+-  }
+-
+-  @media (color-gamut: p3) {
+-    :host,
+-    page,
+-    .tw-root,
+-    wx-root-portal-content {
+-      --color-cyan-500: color(display-p3 0.2467 0.71003 0.84144);
+-      --color-blue-500: color(display-p3 0.26642 0.49122 0.98862);
+-    }
+-  }
++.space-y-1_d5 > view + view,
++.space-y-1_d5 > view + text,
++.space-y-1_d5 > text + view,
++.space-y-1_d5 > text + text {
++  --tw-space-y-reverse: 0;
++  margin-bottom: calc((var(--spacing) * 1.5) * var(--tw-space-y-reverse));
++  margin-top: calc((var(--spacing) * 1.5) * (1 - var(--tw-space-y-reverse)));
+ }
+-::-webkit-backdrop {
+-  border: 0 solid;
+-  box-sizing: border-box;
+-  margin: 0;
+-  padding: 0;
++.bg-_b_h2e2bcc_B {
++  background-color: #2e2bcc;
+ }
+-::-ms-backdrop {
+-  border: 0 solid;
+-  box-sizing: border-box;
+-  margin: 0;
+-  padding: 0;
++.text-_b100rpx_B {
++  font-size: 100rpx;
+ }
+-view,
+-text,
+-:after,
+-:before {
+-  border: 0 solid;
+-  box-sizing: border-box;
+-  margin: 0;
+-  padding: 0;
+-}
+ .static {
+   position: static;
+ }
+@@ -206,16 +64,6 @@
+   -webkit-flex-direction: column;
+   flex-direction: column;
+ }
+-.space-y-1_d5 > view + view,
+-.space-y-1_d5 > view + text,
+-.space-y-1_d5 > text + view,
+-.space-y-1_d5 > text + text {
+-  --tw-space-y-reverse: 0;
+-  margin-bottom: 0rpx;
+-  margin-bottom: calc(var(--spacing) * 1.5 * var(--tw-space-y-reverse));
+-  margin-top: 12rpx;
+-  margin-top: calc(var(--spacing) * 1.5 * (1 - var(--tw-space-y-reverse)));
+-}
+ .space-x-1 > view + view,
+ .space-x-1 > view + text,
+ .space-x-1 > text + view,
+@@ -226,9 +74,6 @@
+   margin-left: 8rpx;
+   margin-left: calc(var(--spacing) * 1 * (1 - var(--tw-space-x-reverse)));
+ }
+-.bg-_b_h2e2bcc_B {
+-  background-color: #2e2bcc;
+-}
+ .bg-purple-800 {
+   background-color: rgb(110, 17, 176);
+   background-color: var(--color-purple-800);
+@@ -255,9 +100,6 @@
+     var(--tw-gradient-to) var(--tw-gradient-to-position)
+   );
+ }
+-.text-_b100rpx_B {
+-  font-size: 100rpx;
+-}
+ .text-pink-200 {
+   color: rgb(252, 206, 232);
+   color: var(--color-pink-200);
+
+--- a/dist/comp.js
++++ b/dist/comp.js
+@@ -7,7 +7,7 @@
+       return n((n.s = t));
+     };
+     n.O(0, [907, 96], function () {
+-      return t(8036);
++      return t(8889);
+     });
+     n.O();
+   },
+
+--- a/dist/pages/index/index.js
++++ b/dist/pages/index/index.js
+@@ -6,7 +6,7 @@
+     593: function (e, s, r) {
+       var n = r(8552),
+         l = r(8825),
+-        a = r(2648),
++        a = r(5847),
+         i = r.p + "assets/logo.png",
+         t = r(5723);
+       function c() {
+
+diff -- dist/taro.js
+# normalized content differs; inline diff omitted (large-normalized-text).
+# baseline: 132899 raw bytes, 287339 normalized bytes, hash 39b1ac3c99bc
+# current: 132899 raw bytes, 287339 normalized bytes, hash 7748ce5e82e3
+

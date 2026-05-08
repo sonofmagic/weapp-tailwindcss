@@ -1,0 +1,2252 @@
+# demo/mpx-tailwindcss-v5 artifact diff
+# baseline: main(v4)
+# current: next v5 generator
+# note: only core build artifacts are compared. Text artifacts are formatted/normalized before diffing; large normalized text files are summarized by hash and size.
+
+--- /dev/null
++++ b/dist/wx/app.js
+@@ -0,0 +1,747 @@
++var self = {};
++((self.webpackChunk_weapp_tailwindcss_demo_mpx_tailwindcss_v5 = require("./bundle.js")),
++  (self.webpackChunk_weapp_tailwindcss_demo_mpx_tailwindcss_v5 =
++    self.webpackChunk_weapp_tailwindcss_demo_mpx_tailwindcss_v5 || []).push([
++    [524],
++    {
++      49499: function (e, t, n) {
++        ((n.g.currentModuleId = "mpx-app-scope"),
++          (n.g.currentCtor = App),
++          (n.g.currentCtorType = "app"),
++          (n.g.currentResourceType = "app"),
++          n(7903),
++          n(96810),
++          (n.g.currentSrcMode = "wx"),
++          n(42915));
++      },
++      42915: function (e, t, n) {
++        "use strict";
++        var o = {};
++        (n.r(o),
++          n.d(o, {
++            addPhoneContact: function () {
++              return w;
++            },
++            arrayBufferToBase64: function () {
++              return P;
++            },
++            base64ToArrayBuffer: function () {
++              return x;
++            },
++            canvasGetImageData: function () {
++              return re;
++            },
++            canvasToTempFilePath: function () {
++              return oe;
++            },
++            checkSession: function () {
++              return ie;
++            },
++            chooseLocation: function () {
++              return Et;
++            },
++            chooseMedia: function () {
++              return Ee;
++            },
++            clearStorage: function () {
++              return rt;
++            },
++            clearStorageSync: function () {
++              return it;
++            },
++            closeBLEConnection: function () {
++              return W;
++            },
++            closeBluetoothAdapter: function () {
++              return _;
++            },
++            compressImage: function () {
++              return me;
++            },
++            connectSocket: function () {
++              return $e;
++            },
++            createAnimation: function () {
++              return m;
++            },
++            createBLEConnection: function () {
++              return U;
++            },
++            createCameraContext: function () {
++              return Ot;
++            },
++            createInnerAudioContext: function () {
++              return k;
++            },
++            createIntersectionObserver: function () {
++              return ue;
++            },
++            createSelectorQuery: function () {
++              return fe;
++            },
++            createVideoContext: function () {
++              return yt;
++            },
++            disableAlertBeforeUnload: function () {
++              return Nt;
++            },
++            downloadFile: function () {
++              return ve;
++            },
++            enableAlertBeforeUnload: function () {
++              return Ft;
++            },
++            getBLEDeviceCharacteristics: function () {
++              return ne;
++            },
++            getBLEDeviceRSSI: function () {
++              return ee;
++            },
++            getBLEDeviceServices: function () {
++              return te;
++            },
++            getBluetoothAdapterState: function () {
++              return K;
++            },
++            getBluetoothDevices: function () {
++              return j;
++            },
++            getClipboardData: function () {
++              return ce;
++            },
++            getConnectedBluetoothDevices: function () {
++              return G;
++            },
++            getConnectedWifi: function () {
++              return Se;
++            },
++            getDeviceInfo: function () {
++              return ut;
++            },
++            getEnterOptionsSync: function () {
++              return gt;
++            },
++            getExtConfig: function () {
++              return kt;
++            },
++            getExtConfigSync: function () {
++              return xt;
++            },
++            getImageInfo: function () {
++              return Ae;
++            },
++            getLaunchOptionsSync: function () {
++              return st;
++            },
++            getLocation: function () {
++              return mt;
++            },
++            getMenuButtonBoundingClientRect: function () {
++              return Ht;
++            },
++            getNetworkType: function () {
++              return se;
++            },
++            getScreenBrightness: function () {
++              return Oe;
++            },
++            getSetting: function () {
++              return Mt;
++            },
++            getStorage: function () {
++              return Ye;
++            },
++            getStorageInfo: function () {
++              return et;
++            },
++            getStorageInfoSync: function () {
++              return tt;
++            },
++            getStorageSync: function () {
++              return Ze;
++            },
++            getSystemInfo: function () {
++              return at;
++            },
++            getSystemInfoSync: function () {
++              return ct;
++            },
++            getUserInfo: function () {
++              return Le;
++            },
++            getWifiList: function () {
++              return de;
++            },
++            getWindowInfo: function () {
++              return ft;
++            },
++            hideHomeButton: function () {
++              return Qe;
++            },
++            hideKeyboard: function () {
++              return Vt;
++            },
++            hideLoading: function () {
++              return vt;
++            },
++            hideTabBar: function () {
++              return dt;
++            },
++            hideToast: function () {
++              return Ct;
++            },
++            login: function () {
++              return Te;
++            },
++            makePhoneCall: function () {
++              return Ie;
++            },
++            navigateBack: function () {
++              return Me;
++            },
++            navigateTo: function () {
++              return Ve;
++            },
++            nextTick: function () {
++              return De;
++            },
++            notifyBLECharacteristicValueChange: function () {
++              return X;
++            },
++            offAppHide: function () {
++              return D;
++            },
++            offAppShow: function () {
++              return I;
++            },
++            offBLECharacteristicValueChange: function () {
++              return Y;
++            },
++            offBLEConnectionStateChange: function () {
++              return V;
++            },
++            offBluetoothAdapterStateChange: function () {
++              return q;
++            },
++            offBluetoothDeviceFound: function () {
++              return O;
++            },
++            offError: function () {
++              return E;
++            },
++            offGetWifiList: function () {
++              return Be;
++            },
++            offKeyboardHeightChange: function () {
++              return Rt;
++            },
++            offLocationChange: function () {
++              return It;
++            },
++            offNetworkStatusChange: function () {
++              return he;
++            },
++            offUserCaptureScreen: function () {
++              return ze;
++            },
++            offWindowResize: function () {
++              return wt;
++            },
++            onAppHide: function () {
++              return b;
++            },
++            onAppShow: function () {
++              return T;
++            },
++            onBLECharacteristicValueChange: function () {
++              return J;
++            },
++            onBLEConnectionStateChange: function () {
++              return R;
++            },
++            onBluetoothAdapterStateChange: function () {
++              return z;
++            },
++            onBluetoothDeviceFound: function () {
++              return H;
++            },
++            onError: function () {
++              return A;
++            },
++            onGetWifiList: function () {
++              return Ce;
++            },
++            onKeyboardHeightChange: function () {
++              return Ut;
++            },
++            onLocationChange: function () {
++              return Tt;
++            },
++            onNetworkStatusChange: function () {
++              return ge;
++            },
++            onUserCaptureScreen: function () {
++              return Ke;
++            },
++            onWindowResize: function () {
++              return Lt;
++            },
++            openBluetoothAdapter: function () {
++              return M;
++            },
++            openLocation: function () {
++              return At;
++            },
++            openSetting: function () {
++              return _t;
++            },
++            pageScrollTo: function () {
++              return ke;
++            },
++            previewImage: function () {
++              return we;
++            },
++            reLaunch: function () {
++              return _e;
++            },
++            readBLECharacteristicValue: function () {
++              return $;
++            },
++            redirectTo: function () {
++              return Re;
++            },
++            removeStorage: function () {
++              return nt;
++            },
++            removeStorageSync: function () {
++              return ot;
++            },
++            request: function () {
++              return We;
++            },
++            requestPayment: function () {
++              return Ue;
++            },
++            scanCode: function () {
++              return Ne;
++            },
++            setBLEMTU: function () {
++              return Z;
++            },
++            setClipboardData: function () {
++              return ae;
++            },
++            setNavigationBarColor: function () {
++              return je;
++            },
++            setNavigationBarTitle: function () {
++              return qe;
++            },
++            setScreenBrightness: function () {
++              return He;
++            },
++            setStorage: function () {
++              return Xe;
++            },
++            setStorageSync: function () {
++              return Je;
++            },
++            setTabBarItem: function () {
++              return ht;
++            },
++            setTabBarStyle: function () {
++              return lt;
++            },
++            setVisualEffectOnCapture: function () {
++              return Ge;
++            },
++            showActionSheet: function () {
++              return L;
++            },
++            showLoading: function () {
++              return Bt;
++            },
++            showModal: function () {
++              return be;
++            },
++            showTabBar: function () {
++              return pt;
++            },
++            showToast: function () {
++              return St;
++            },
++            startBluetoothDevicesDiscovery: function () {
++              return F;
++            },
++            startLocationUpdate: function () {
++              return bt;
++            },
++            startPullDownRefresh: function () {
++              return Pe;
++            },
++            startWifi: function () {
++              return le;
++            },
++            stopBluetoothDevicesDiscovery: function () {
++              return N;
++            },
++            stopLocationUpdate: function () {
++              return Dt;
++            },
++            stopPullDownRefresh: function () {
++              return xe;
++            },
++            stopWifi: function () {
++              return pe;
++            },
++            switchTab: function () {
++              return Fe;
++            },
++            uploadFile: function () {
++              return ye;
++            },
++            vibrateLong: function () {
++              return Wt;
++            },
++            vibrateShort: function () {
++              return Pt;
++            },
++            writeBLECharacteristicValue: function () {
++              return Q;
++            },
++          }));
++        var r = n(70187),
++          i = n(67321),
++          a = n.n(i),
++          c = n(7256),
++          u = n.n(c),
++          f = n(88487),
++          s = n(28499),
++          g = n(30900),
++          h = n(72474),
++          l = n(16761),
++          p = n(28749),
++          d = n(82356);
++        (0, h.pD)((0, l.n)(p.VD).app);
++        var S = n(10321),
++          C = n.n(S);
++        function B(e) {
++          (0, h.R8)(e, "@mpxjs/api-proxy");
++        }
++        function v(e) {
++          return function () {
++            var t;
++            (0, h.z3)(
++              C()((t = "\n ".concat("wx", "环境不支持"))).call(t, e, "方法"),
++              "@mpxjs/api-proxy",
++            );
++          };
++        }
++        var y = (0, h.fi)(),
++          L = y.showActionSheet || v("showActionSheet"),
++          w = y.addPhoneContact || v("addPhoneContact"),
++          m = y.createAnimation || v("createAnimation"),
++          A = y.onError || v("onError"),
++          E = y.offError || v("offError"),
++          T = y.onAppShow || v("onAppShow"),
++          I = y.offAppShow || v("offAppShow"),
++          b = y.onAppHide || v("onAppHide"),
++          D = y.offAppHide || v("offAppHide"),
++          k = y.createInnerAudioContext || v("createInnerAudioContext"),
++          x = y.base64ToArrayBuffer || v("base64ToArrayBuffer"),
++          P = y.arrayBufferToBase64 || v("arrayBufferToBase64"),
++          W = y.closeBLEConnection || v("closeBLEConnection"),
++          U = y.createBLEConnection || v("createBLEConnection"),
++          R = y.onBLEConnectionStateChange || v("onBLEConnectionStateChange"),
++          V = y.offBLEConnectionStateChange || v("offBLEConnectionStateChange"),
++          M = y.openBluetoothAdapter || v("openBluetoothAdapter"),
++          _ = y.closeBluetoothAdapter || v("closeBluetoothAdapter"),
++          F =
++            y.startBluetoothDevicesDiscovery ||
++            v("startBluetoothDevicesDiscovery"),
++          N =
++            y.stopBluetoothDevicesDiscovery ||
++            v("stopBluetoothDevicesDiscovery"),
++          H = y.onBluetoothDeviceFound || v("onBluetoothDeviceFound"),
++          O = y.offBluetoothDeviceFound || v("offBluetoothDeviceFound"),
++          G =
++            y.getConnectedBluetoothDevices || v("getConnectedBluetoothDevices"),
++          K = y.getBluetoothAdapterState || v("getBluetoothAdapterState"),
++          z =
++            y.onBluetoothAdapterStateChange ||
++            v("onBluetoothAdapterStateChange"),
++          q =
++            y.offBluetoothAdapterStateChange ||
++            v("offBluetoothAdapterStateChange"),
++          j = y.getBluetoothDevices || v("getBluetoothDevices"),
++          Q = y.writeBLECharacteristicValue || v("writeBLECharacteristicValue"),
++          $ = y.readBLECharacteristicValue || v("readBLECharacteristicValue"),
++          X =
++            y.notifyBLECharacteristicValueChange ||
++            v("notifyBLECharacteristicValueChange"),
++          J =
++            y.onBLECharacteristicValueChange ||
++            v("onBLECharacteristicValueChange"),
++          Y =
++            y.offBLECharacteristicValueChange ||
++            v("offBLECharacteristicValueChange"),
++          Z = y.setBLEMTU || v("setBLEMTU"),
++          ee = y.getBLEDeviceRSSI || v("getBLEDeviceRSSI"),
++          te = y.getBLEDeviceServices || v("getBLEDeviceServices"),
++          ne =
++            y.getBLEDeviceCharacteristics || v("getBLEDeviceCharacteristics"),
++          oe = y.canvasToTempFilePath || v("canvasToTempFilePath"),
++          re = y.canvasGetImageData || v("canvasGetImageData"),
++          ie = y.checkSession || v("checkSession"),
++          ae = y.setClipboardData || v("setClipboardData"),
++          ce = y.getClipboardData || v("getClipboardData"),
++          ue = y.createIntersectionObserver || v("createIntersectionObserver"),
++          fe = y.createSelectorQuery || v("createSelectorQuery"),
++          se = y.getNetworkType || v("getNetworkType"),
++          ge = y.onNetworkStatusChange || v("onNetworkStatusChange"),
++          he = y.offNetworkStatusChange || v("offNetworkStatusChange"),
++          le = y.startWifi || v("startWifi"),
++          pe = y.stopWifi || v("stopWifi"),
++          de = y.getWifiList || v("getWifiList"),
++          Se = y.getConnectedWifi || v("getConnectedWifi"),
++          Ce = y.onGetWifiList || v("onGetWifiList"),
++          Be = y.offGetWifiList || v("offGetWifiList"),
++          ve = y.downloadFile || v("downloadFile"),
++          ye = y.uploadFile || v("uploadFile"),
++          Le = y.getUserInfo || v("getUserInfo"),
++          we = y.previewImage || v("previewImage"),
++          me = y.compressImage || v("compressImage"),
++          Ae = y.getImageInfo || v("getImageInfo"),
++          Ee = y.chooseMedia || v("chooseMedia"),
++          Te = y.login || v("login"),
++          Ie = y.makePhoneCall || v("makePhoneCall"),
++          be = y.showModal || v("showModal"),
++          De = y.nextTick || v("nextTick"),
++          ke = y.pageScrollTo || v("pageScrollTo"),
++          xe = y.stopPullDownRefresh || v("stopPullDownRefresh"),
++          Pe = y.startPullDownRefresh || v("startPullDownRefresh"),
++          We = y.request || v("request"),
++          Ue = y.requestPayment || v("requestPayment"),
++          Re = y.redirectTo || v("redirectTo"),
++          Ve = y.navigateTo || v("navigateTo"),
++          Me = y.navigateBack || v("navigateBack"),
++          _e = y.reLaunch || v("reLaunch"),
++          Fe = y.switchTab || v("switchTab"),
++          Ne = y.scanCode || v("scanCode"),
++          He = y.setScreenBrightness || v("setScreenBrightness"),
++          Oe = y.getScreenBrightness || v("getScreenBrightness"),
++          Ge = y.setVisualEffectOnCapture || v("setVisualEffectOnCapture"),
++          Ke = y.onUserCaptureScreen || v("onUserCaptureScreen"),
++          ze = y.offUserCaptureScreen || v("offUserCaptureScreen"),
++          qe = y.setNavigationBarTitle || v("setNavigationBarTitle"),
++          je = y.setNavigationBarColor || v("setNavigationBarColor"),
++          Qe = y.hideHomeButton || v("hideHomeButton"),
++          $e = y.connectSocket || v("connectSocket"),
++          Xe = y.setStorage || v("setStorage"),
++          Je = y.setStorageSync || v("setStorageSync"),
++          Ye = y.getStorage || v("getStorage"),
++          Ze = y.getStorageSync || v("getStorageSync"),
++          et = y.getStorageInfo || v("getStorageInfo"),
++          tt = y.getStorageInfoSync || v("getStorageInfoSync"),
++          nt = y.removeStorage || v("removeStorage"),
++          ot = y.removeStorageSync || v("removeStorageSync"),
++          rt = y.clearStorage || v("clearStorage"),
++          it = y.clearStorageSync || v("clearStorageSync"),
++          at = y.getSystemInfo || v("getSystemInfo"),
++          ct = y.getSystemInfoSync || v("getSystemInfoSync"),
++          ut = y.getDeviceInfo || v("getDeviceInfo"),
++          ft = y.getWindowInfo || v("getWindowInfo"),
++          st = y.getLaunchOptionsSync || v("getLaunchOptionsSync"),
++          gt = y.getEnterOptionsSync || v("getEnterOptionsSync"),
++          ht = y.setTabBarItem || v("setTabBarItem"),
++          lt = y.setTabBarStyle || v("setTabBarStyle"),
++          pt = y.showTabBar || v("showTabBar"),
++          dt = y.hideTabBar || v("hideTabBar"),
++          St = y.showToast || v("showToast"),
++          Ct = y.hideToast || v("hideToast"),
++          Bt = y.showLoading || v("showLoading"),
++          vt = y.hideLoading || v("hideLoading"),
++          yt = y.createVideoContext || v("createVideoContext"),
++          Lt = y.onWindowResize || v("onWindowResize"),
++          wt = y.offWindowResize || v("offWindowResize"),
++          mt = y.getLocation || v("getLocation"),
++          At = y.openLocation || v("openLocation"),
++          Et = y.chooseLocation || v("chooseLocation"),
++          Tt = y.onLocationChange || v("onLocationChange"),
++          It = y.offLocationChange || v("offLocationChange"),
++          bt = y.startLocationUpdate || v("startLocationUpdate"),
++          Dt = y.stopLocationUpdate || v("stopLocationUpdate"),
++          kt = y.getExtConfig || v("getExtConfig"),
++          xt = y.getExtConfigSync || v("getExtConfigSync"),
++          Pt = y.vibrateShort || v("vibrateShort"),
++          Wt = y.vibrateLong || v("vibrateLong"),
++          Ut = y.onKeyboardHeightChange || v("onKeyboardHeightChange"),
++          Rt = y.offKeyboardHeightChange || v("offKeyboardHeightChange"),
++          Vt = y.hideKeyboard || v("hideKeyboard"),
++          Mt = y.getSetting || v("getSetting"),
++          _t = y.openSetting || v("openSetting"),
++          Ft = y.enableAlertBeforeUnload || v("enableAlertBeforeUnload"),
++          Nt = y.disableAlertBeforeUnload || v("disableAlertBeforeUnload"),
++          Ht =
++            y.getMenuButtonBoundingClientRect ||
++            v("getMenuButtonBoundingClientRect"),
++          Ot = y.createCameraContext || v("createCameraContext"),
++          Gt = n(69160),
++          Kt = n.n(Gt),
++          zt = [
++            "drawCanvas",
++            "canIUse",
++            "getPerformance",
++            "reportAnalytics",
++            "getMenuButtonBoundingClientRect",
++            "reportMonitor",
++            "reportEvent",
++            "base64ToArrayBuffer",
++            "arrayBufferToBase64",
++            "getDeviceInfo",
++            "getWindowInfo",
++            "getAppBaseInfo",
++            "getAppAuthorizeSetting",
++            "getApiCategory",
++            "postMessageToReferrerPage",
++            "postMessageToReferrerMiniProgram",
++            "reportPerformance",
++            "router",
++            "nextTick",
++            "checkIsPictureInPictureActive",
++            "worklet",
++            "revokeBufferURL",
++            "getExptInfoSync",
++            "getNFCAdapter",
++            "isVKSupport",
++          ];
++        function qt(e) {
++          if (e && e.length) {
++            var t = {};
++            return (
++              e.forEach(function (e) {
++                t[e] = !0;
++              }),
++              t
++            );
++          }
++        }
++        var jt = function (e, t, n) {
++          var o = {},
++            r = qt(t),
++            i = qt(C()(zt).call(zt, n));
++          return (
++            a()(e).forEach(function (t) {
++              "function" == typeof e[t] &&
++                (!(function (e) {
++                  return r && void 0 !== r[e]
++                    ? !!r[e]
++                    : !(
++                        i[e] ||
++                        /^get\w*Manager$/.test(e) ||
++                        /^create(?!BLEConnection|BLEPeripheralServer)\w*$/.test(
++                          e,
++                        ) ||
++                        /^(on|off)/.test(e) ||
++                        /\w+Sync$/.test(e)
++                      );
++                })(t)
++                  ? (o[t] = e[t].bind(y))
++                  : (o[t] = function () {
++                      for (
++                        var n = arguments.length, o = new Array(n), r = 0;
++                        r < n;
++                        r++
++                      )
++                        o[r] = arguments[r];
++                      var i,
++                        a = o[0] || {};
++                      if (!1 === a.usePromise) return e[t].apply(y, o);
++                      o[0] || o.unshift(a);
++                      var c = new (Kt())(function (n, r) {
++                        var c = a.success,
++                          u = a.fail;
++                        ((c || u) &&
++                          B(
++                            "The [".concat(
++                              t,
++                              "] method has been promisified, please use .then or .catch to handle the result, if you need to handle the result with options.success/fail, please set options.usePromise to false to close the promisify in this call temporarily. ",
++                            ),
++                          ),
++                          (a.success = function (e) {
++                            (c && c.call(this, e), n(e));
++                          }),
++                          (a.fail = function (e) {
++                            (u && u.call(this, e), r(e));
++                          }),
++                          (i = e[t].apply(y, o)));
++                      });
++                      return ((c.__returned = i), c);
++                    }));
++            }),
++            o
++          );
++        };
++        function Qt(e) {
++          var t =
++              arguments.length > 1 && void 0 !== arguments[1]
++                ? arguments[1]
++                : {},
++            n = t.usePromise,
++            r = void 0 !== n && n,
++            i = t.whiteList,
++            a = void 0 === i ? [] : i,
++            c = t.blackList,
++            f = void 0 === c ? [] : c,
++            s = t.custom,
++            g = void 0 === s ? {} : s,
++            h = u()({}, y, o),
++            l = r ? jt(h, a, f) : {};
++          u()(e, h, l, g.wx);
++        }
++        var $t = Qt;
++        (r.Ay.use($t, { usePromise: !0 }),
++          (function (e) {
++            var t =
++                arguments.length > 1 && void 0 !== arguments[1]
++                  ? arguments[1]
++                  : {},
++              o = (0, f.A)(e, "app", !1),
++              i = o.rawOptions,
++              c =
++                (o.currentInject,
++                [
++                  {
++                    getMpx: function () {
++                      return r.Ay;
++                    },
++                  },
++                ]);
++            (c.push({
++              onLaunch: function () {
++                (u()(this, r.Ay.prototype), (0, d.QX)(i.provide, this));
++              },
++            }),
++              (i.mixins = c));
++            var l = (function (e) {
++              var t = {};
++              return (
++                a()(e).forEach(function (n) {
++                  g.A[n] || (t[n] = e[n]);
++                }),
++                t
++              );
++            })((0, h.DG)((0, s.Ay)(i, "app", !1), "methods"));
++            (l.onAppInit && l.onAppInit(),
++              (t.customCtor || n.g.currentCtor || App)(l));
++          })({}));
++      },
++      7903: function () {},
++      96810: function () {},
++    },
++    function (e) {
++      var t;
++      ((t = 49499), e((e.s = t)));
++    },
++  ]));
++//# sourceMappingURL=app.js.map
+
+--- /dev/null
++++ b/dist/wx/app.js.map
+@@ -0,0 +1,345 @@
++{
++  "version": 3,
++  "file": "app.js",
++  "mappings": "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",
++  "sources": [
++    "webpack://@weapp-tailwindcss-demo/mpx-tailwindcss-v5/./src/app.mpx?bd72",
++    "webpack://@weapp-tailwindcss-demo/mpx-tailwindcss-v5/../../node_modules/.pnpm/@mpxjs+core@2.10.20_@mpxjs+api-proxy@2.10.20_vue-demi@0.14.10_vue@2.7.16__vue-i18n-brid_5d1cb6d92f7bb5bdd9d8e6db35343574/node_modules/@mpxjs/core/src/platform/createApp.js",
++    "webpack://@weapp-tailwindcss-demo/mpx-tailwindcss-v5/../../node_modules/.pnpm/@mpxjs+api-proxy@2.10.20_@mpxjs+core@2.10.20_debug@4.4.3/node_modules/@mpxjs/api-proxy/src/common/js/utils.js",
++    "webpack://@weapp-tailwindcss-demo/mpx-tailwindcss-v5/../../node_modules/.pnpm/@mpxjs+api-proxy@2.10.20_@mpxjs+core@2.10.20_debug@4.4.3/node_modules/@mpxjs/api-proxy/src/platform/api/action-sheet/index.js",
++    "webpack://@weapp-tailwindcss-demo/mpx-tailwindcss-v5/../../node_modules/.pnpm/@mpxjs+api-proxy@2.10.20_@mpxjs+core@2.10.20_debug@4.4.3/node_modules/@mpxjs/api-proxy/src/platform/api/add-phone-contact/index.js",
++    "webpack://@weapp-tailwindcss-demo/mpx-tailwindcss-v5/../../node_modules/.pnpm/@mpxjs+api-proxy@2.10.20_@mpxjs+core@2.10.20_debug@4.4.3/node_modules/@mpxjs/api-proxy/src/platform/api/animation/index.js",
++    "webpack://@weapp-tailwindcss-demo/mpx-tailwindcss-v5/../../node_modules/.pnpm/@mpxjs+api-proxy@2.10.20_@mpxjs+core@2.10.20_debug@4.4.3/node_modules/@mpxjs/api-proxy/src/platform/api/app/index.js",
++    "webpack://@weapp-tailwindcss-demo/mpx-tailwindcss-v5/../../node_modules/.pnpm/@mpxjs+api-proxy@2.10.20_@mpxjs+core@2.10.20_debug@4.4.3/node_modules/@mpxjs/api-proxy/src/platform/api/audio/index.js",
++    "webpack://@weapp-tailwindcss-demo/mpx-tailwindcss-v5/../../node_modules/.pnpm/@mpxjs+api-proxy@2.10.20_@mpxjs+core@2.10.20_debug@4.4.3/node_modules/@mpxjs/api-proxy/src/platform/api/base/index.js",
++    "webpack://@weapp-tailwindcss-demo/mpx-tailwindcss-v5/../../node_modules/.pnpm/@mpxjs+api-proxy@2.10.20_@mpxjs+core@2.10.20_debug@4.4.3/node_modules/@mpxjs/api-proxy/src/platform/api/ble-connection/index.js",
++    "webpack://@weapp-tailwindcss-demo/mpx-tailwindcss-v5/../../node_modules/.pnpm/@mpxjs+api-proxy@2.10.20_@mpxjs+core@2.10.20_debug@4.4.3/node_modules/@mpxjs/api-proxy/src/platform/api/canvas/index.js",
++    "webpack://@weapp-tailwindcss-demo/mpx-tailwindcss-v5/../../node_modules/.pnpm/@mpxjs+api-proxy@2.10.20_@mpxjs+core@2.10.20_debug@4.4.3/node_modules/@mpxjs/api-proxy/src/platform/api/check-session/index.js",
++    "webpack://@weapp-tailwindcss-demo/mpx-tailwindcss-v5/../../node_modules/.pnpm/@mpxjs+api-proxy@2.10.20_@mpxjs+core@2.10.20_debug@4.4.3/node_modules/@mpxjs/api-proxy/src/platform/api/clipboard-data/index.js",
++    "webpack://@weapp-tailwindcss-demo/mpx-tailwindcss-v5/../../node_modules/.pnpm/@mpxjs+api-proxy@2.10.20_@mpxjs+core@2.10.20_debug@4.4.3/node_modules/@mpxjs/api-proxy/src/platform/api/create-intersection-observer/index.js",
++    "webpack://@weapp-tailwindcss-demo/mpx-tailwindcss-v5/../../node_modules/.pnpm/@mpxjs+api-proxy@2.10.20_@mpxjs+core@2.10.20_debug@4.4.3/node_modules/@mpxjs/api-proxy/src/platform/api/create-selector-query/index.js",
++    "webpack://@weapp-tailwindcss-demo/mpx-tailwindcss-v5/../../node_modules/.pnpm/@mpxjs+api-proxy@2.10.20_@mpxjs+core@2.10.20_debug@4.4.3/node_modules/@mpxjs/api-proxy/src/platform/api/device/network/index.js",
++    "webpack://@weapp-tailwindcss-demo/mpx-tailwindcss-v5/../../node_modules/.pnpm/@mpxjs+api-proxy@2.10.20_@mpxjs+core@2.10.20_debug@4.4.3/node_modules/@mpxjs/api-proxy/src/platform/api/device/wifi/index.js",
++    "webpack://@weapp-tailwindcss-demo/mpx-tailwindcss-v5/../../node_modules/.pnpm/@mpxjs+api-proxy@2.10.20_@mpxjs+core@2.10.20_debug@4.4.3/node_modules/@mpxjs/api-proxy/src/platform/api/file/index.js",
++    "webpack://@weapp-tailwindcss-demo/mpx-tailwindcss-v5/../../node_modules/.pnpm/@mpxjs+api-proxy@2.10.20_@mpxjs+core@2.10.20_debug@4.4.3/node_modules/@mpxjs/api-proxy/src/platform/api/get-user-info/index.js",
++    "webpack://@weapp-tailwindcss-demo/mpx-tailwindcss-v5/../../node_modules/.pnpm/@mpxjs+api-proxy@2.10.20_@mpxjs+core@2.10.20_debug@4.4.3/node_modules/@mpxjs/api-proxy/src/platform/api/image/index.js",
++    "webpack://@weapp-tailwindcss-demo/mpx-tailwindcss-v5/../../node_modules/.pnpm/@mpxjs+api-proxy@2.10.20_@mpxjs+core@2.10.20_debug@4.4.3/node_modules/@mpxjs/api-proxy/src/platform/api/login/index.js",
++    "webpack://@weapp-tailwindcss-demo/mpx-tailwindcss-v5/../../node_modules/.pnpm/@mpxjs+api-proxy@2.10.20_@mpxjs+core@2.10.20_debug@4.4.3/node_modules/@mpxjs/api-proxy/src/platform/api/make-phone-call/index.js",
++    "webpack://@weapp-tailwindcss-demo/mpx-tailwindcss-v5/../../node_modules/.pnpm/@mpxjs+api-proxy@2.10.20_@mpxjs+core@2.10.20_debug@4.4.3/node_modules/@mpxjs/api-proxy/src/platform/api/modal/index.js",
++    "webpack://@weapp-tailwindcss-demo/mpx-tailwindcss-v5/../../node_modules/.pnpm/@mpxjs+api-proxy@2.10.20_@mpxjs+core@2.10.20_debug@4.4.3/node_modules/@mpxjs/api-proxy/src/platform/api/next-tick/index.js",
++    "webpack://@weapp-tailwindcss-demo/mpx-tailwindcss-v5/../../node_modules/.pnpm/@mpxjs+api-proxy@2.10.20_@mpxjs+core@2.10.20_debug@4.4.3/node_modules/@mpxjs/api-proxy/src/platform/api/page-scroll-to/index.js",
++    "webpack://@weapp-tailwindcss-demo/mpx-tailwindcss-v5/../../node_modules/.pnpm/@mpxjs+api-proxy@2.10.20_@mpxjs+core@2.10.20_debug@4.4.3/node_modules/@mpxjs/api-proxy/src/platform/api/pull-down/index.js",
++    "webpack://@weapp-tailwindcss-demo/mpx-tailwindcss-v5/../../node_modules/.pnpm/@mpxjs+api-proxy@2.10.20_@mpxjs+core@2.10.20_debug@4.4.3/node_modules/@mpxjs/api-proxy/src/platform/api/request/index.js",
++    "webpack://@weapp-tailwindcss-demo/mpx-tailwindcss-v5/../../node_modules/.pnpm/@mpxjs+api-proxy@2.10.20_@mpxjs+core@2.10.20_debug@4.4.3/node_modules/@mpxjs/api-proxy/src/platform/api/request-payment/index.js",
++    "webpack://@weapp-tailwindcss-demo/mpx-tailwindcss-v5/../../node_modules/.pnpm/@mpxjs+api-proxy@2.10.20_@mpxjs+core@2.10.20_debug@4.4.3/node_modules/@mpxjs/api-proxy/src/platform/api/route/index.js",
++    "webpack://@weapp-tailwindcss-demo/mpx-tailwindcss-v5/../../node_modules/.pnpm/@mpxjs+api-proxy@2.10.20_@mpxjs+core@2.10.20_debug@4.4.3/node_modules/@mpxjs/api-proxy/src/platform/api/scan-code/index.js",
++    "webpack://@weapp-tailwindcss-demo/mpx-tailwindcss-v5/../../node_modules/.pnpm/@mpxjs+api-proxy@2.10.20_@mpxjs+core@2.10.20_debug@4.4.3/node_modules/@mpxjs/api-proxy/src/platform/api/screen-brightness/index.js",
++    "webpack://@weapp-tailwindcss-demo/mpx-tailwindcss-v5/../../node_modules/.pnpm/@mpxjs+api-proxy@2.10.20_@mpxjs+core@2.10.20_debug@4.4.3/node_modules/@mpxjs/api-proxy/src/platform/api/set-navigation-bar/index.js",
++    "webpack://@weapp-tailwindcss-demo/mpx-tailwindcss-v5/../../node_modules/.pnpm/@mpxjs+api-proxy@2.10.20_@mpxjs+core@2.10.20_debug@4.4.3/node_modules/@mpxjs/api-proxy/src/platform/api/socket/index.js",
++    "webpack://@weapp-tailwindcss-demo/mpx-tailwindcss-v5/../../node_modules/.pnpm/@mpxjs+api-proxy@2.10.20_@mpxjs+core@2.10.20_debug@4.4.3/node_modules/@mpxjs/api-proxy/src/platform/api/storage/index.js",
++    "webpack://@weapp-tailwindcss-demo/mpx-tailwindcss-v5/../../node_modules/.pnpm/@mpxjs+api-proxy@2.10.20_@mpxjs+core@2.10.20_debug@4.4.3/node_modules/@mpxjs/api-proxy/src/platform/api/system/index.js",
++    "webpack://@weapp-tailwindcss-demo/mpx-tailwindcss-v5/../../node_modules/.pnpm/@mpxjs+api-proxy@2.10.20_@mpxjs+core@2.10.20_debug@4.4.3/node_modules/@mpxjs/api-proxy/src/platform/api/tab-bar/index.js",
++    "webpack://@weapp-tailwindcss-demo/mpx-tailwindcss-v5/../../node_modules/.pnpm/@mpxjs+api-proxy@2.10.20_@mpxjs+core@2.10.20_debug@4.4.3/node_modules/@mpxjs/api-proxy/src/platform/api/toast/index.js",
++    "webpack://@weapp-tailwindcss-demo/mpx-tailwindcss-v5/../../node_modules/.pnpm/@mpxjs+api-proxy@2.10.20_@mpxjs+core@2.10.20_debug@4.4.3/node_modules/@mpxjs/api-proxy/src/platform/api/video/index.js",
++    "webpack://@weapp-tailwindcss-demo/mpx-tailwindcss-v5/../../node_modules/.pnpm/@mpxjs+api-proxy@2.10.20_@mpxjs+core@2.10.20_debug@4.4.3/node_modules/@mpxjs/api-proxy/src/platform/api/window/index.js",
++    "webpack://@weapp-tailwindcss-demo/mpx-tailwindcss-v5/../../node_modules/.pnpm/@mpxjs+api-proxy@2.10.20_@mpxjs+core@2.10.20_debug@4.4.3/node_modules/@mpxjs/api-proxy/src/platform/api/location/index.js",
++    "webpack://@weapp-tailwindcss-demo/mpx-tailwindcss-v5/../../node_modules/.pnpm/@mpxjs+api-proxy@2.10.20_@mpxjs+core@2.10.20_debug@4.4.3/node_modules/@mpxjs/api-proxy/src/platform/api/ext/index.js",
++    "webpack://@weapp-tailwindcss-demo/mpx-tailwindcss-v5/../../node_modules/.pnpm/@mpxjs+api-proxy@2.10.20_@mpxjs+core@2.10.20_debug@4.4.3/node_modules/@mpxjs/api-proxy/src/platform/api/vibrate/index.js",
++    "webpack://@weapp-tailwindcss-demo/mpx-tailwindcss-v5/../../node_modules/.pnpm/@mpxjs+api-proxy@2.10.20_@mpxjs+core@2.10.20_debug@4.4.3/node_modules/@mpxjs/api-proxy/src/platform/api/keyboard/index.js",
++    "webpack://@weapp-tailwindcss-demo/mpx-tailwindcss-v5/../../node_modules/.pnpm/@mpxjs+api-proxy@2.10.20_@mpxjs+core@2.10.20_debug@4.4.3/node_modules/@mpxjs/api-proxy/src/platform/api/setting/index.js",
++    "webpack://@weapp-tailwindcss-demo/mpx-tailwindcss-v5/../../node_modules/.pnpm/@mpxjs+api-proxy@2.10.20_@mpxjs+core@2.10.20_debug@4.4.3/node_modules/@mpxjs/api-proxy/src/platform/api/camera/index.js",
++    "webpack://@weapp-tailwindcss-demo/mpx-tailwindcss-v5/../../node_modules/.pnpm/@mpxjs+api-proxy@2.10.20_@mpxjs+core@2.10.20_debug@4.4.3/node_modules/@mpxjs/api-proxy/src/common/js/promisify.js",
++    "webpack://@weapp-tailwindcss-demo/mpx-tailwindcss-v5/../../node_modules/.pnpm/@mpxjs+api-proxy@2.10.20_@mpxjs+core@2.10.20_debug@4.4.3/node_modules/@mpxjs/api-proxy/src/install.js",
++    "webpack://@weapp-tailwindcss-demo/mpx-tailwindcss-v5/../../node_modules/.pnpm/@mpxjs+api-proxy@2.10.20_@mpxjs+core@2.10.20_debug@4.4.3/node_modules/@mpxjs/api-proxy/src/index.js",
++    "webpack://@weapp-tailwindcss-demo/mpx-tailwindcss-v5/./src/app.mpx"
++  ],
++  "sourcesContent": [
++    "global.currentModuleId = \"mpx-app-scope\"\nglobal.currentCtor = App\nglobal.currentCtorType = \"app\"\nglobal.currentResourceType = \"app\"\n/* template */\n/* styles */\nrequire.extract(\"./app.css?extract&index=0&isStatic&issuerResource=%2FUsers%2Ficebreaker%2FProjects%2Fgithub%2Fweapp-tailwindcss%2Fdemo%2Fmpx-tailwindcss-v5%2Fsrc%2Fapp.mpx%3Ftype%3Dstyles&moduleId=mpx-app-scope&mpx&scoped=false&type=styles\")\n/* json */\nrequire.extract(\"./app.mpx.json?asScript!=!@mpxjs/webpack-plugin/lib/selector?mode=wx&env=!./app.mpx?asScript&extract&index=0&mpx&type=json\")\n/* script */\nglobal.currentSrcMode = \"wx\"\nrequire(\"./app.mpx.ts!=!@mpxjs/webpack-plugin/lib/selector?mode=wx&env=!./app.mpx?ctorType=app&index=0&lang=ts&mpx&type=script\")\n",
++    "import transferOptions from '../core/transferOptions'\nimport mergeOptions from '../core/mergeOptions'\nimport builtInKeysMap from './patch/builtInKeysMap'\nimport { makeMap, spreadProp, isBrowser } from '@mpxjs/utils'\nimport { mergeLifecycle } from '../convertor/mergeLifecycle'\nimport { LIFECYCLE } from '../platform/patch/lifecycle/index'\nimport Mpx from '../index'\nimport { initAppProvides } from './export/inject'\n\nconst appHooksMap = makeMap(mergeLifecycle(LIFECYCLE).app)\n\nfunction filterOptions (options, appData) {\n  const newOptions = {}\n  Object.keys(options).forEach(key => {\n    if (builtInKeysMap[key]) {\n      return\n    }\n    if (__mpx_mode__ === 'web' && !appHooksMap[key] && key !== 'provide') {\n      appData[key] = options[key]\n    } else {\n      newOptions[key] = options[key]\n    }\n  })\n  return newOptions\n}\n\nexport default function createApp (options, config = {}) {\n  const appData = {}\n  // app选项目前不需要进行转换\n  const { rawOptions, currentInject } = transferOptions(options, 'app', false)\n  const builtInMixins = [{\n    // 在App中挂载mpx对象供周边工具访问，如e2e测试\n    getMpx () {\n      return Mpx\n    }\n  }]\n  if (__mpx_mode__ === 'web') {\n    builtInMixins.push({\n      beforeCreate () {\n        // for vue provide vm access\n        Object.assign(this, appData, Mpx.prototype)\n        if (isBrowser) {\n          rawOptions.onShow && global.__mpxAppCbs.show.push(rawOptions.onShow.bind(this))\n          rawOptions.onHide && global.__mpxAppCbs.hide.push(rawOptions.onHide.bind(this))\n          rawOptions.onError && global.__mpxAppCbs.error.push(rawOptions.onError.bind(this))\n          rawOptions.onUnhandledRejection && global.__mpxAppCbs.rejection.push(rawOptions.onUnhandledRejection.bind(this))\n        }\n      },\n      created () {\n        const current = this.$root.$options?.router?.currentRoute || {}\n        const options = {\n          path: current.path && current.path.replace(/^\\//, ''),\n          query: current.query,\n          scene: 0,\n          shareTicket: '',\n          referrerInfo: {}\n        }\n        // web不分冷启动和热启动\n        global.__mpxEnterOptions = options\n        global.__mpxLaunchOptions = options\n        rawOptions.onLaunch && rawOptions.onLaunch.call(this, options)\n        global.__mpxAppCbs.show.forEach((cb) => {\n          cb(options)\n        })\n      }\n    })\n  } else {\n    builtInMixins.push({\n      onLaunch () {\n        Object.assign(this, Mpx.prototype)\n        initAppProvides(rawOptions.provide, this)\n      }\n    })\n  }\n  rawOptions.mixins = builtInMixins\n  const defaultOptions = filterOptions(spreadProp(mergeOptions(rawOptions, 'app', false), 'methods'), appData)\n\n  if (__mpx_mode__ === 'web') {\n    global.getApp = function () {\n      if (!isBrowser) {\n        console.error('[Mpx runtime error]: Dangerous API! global.getApp method is running in non browser environments')\n      }\n      return appData\n    }\n    global.__mpxOptionsMap = global.__mpxOptionsMap || {}\n    global.__mpxOptionsMap[currentInject.moduleId] = defaultOptions\n  } else {\n    defaultOptions.onAppInit && defaultOptions.onAppInit()\n    const ctor = config.customCtor || global.currentCtor || App\n    ctor(defaultOptions)\n  }\n}\n",
++    "import { hasOwn, noop, getEnvObj, getFocusedNavigation, error as errorHandler, warn as warnHandler } from '@mpxjs/utils'\n\n/**\n *\n * @param {Object} options 原参数\n * @param {Object} updateOrRemoveOpt 要修改或者删除的参数\n * @param {Object} extraOpt 额外增加的参数\n * @returns {Object} 返回参数\n * @example\n * changeOpts({ a: 1, b: 2 }, {\n *  a: 'c', // a 变为 c\n *  b: '' // 删除 b\n * }, {\n *  d: 4 // 增加 d\n * })\n */\nfunction changeOpts (options, updateOrRemoveOpt = {}, extraOpt = {}) {\n  let opts = {}\n\n  Object.keys(options).forEach(key => {\n    const myKey = hasOwn(updateOrRemoveOpt, key) ? updateOrRemoveOpt[key] : key\n    if (myKey !== '') {\n      opts[myKey] = options[key]\n    }\n  })\n\n  opts = Object.assign({}, opts, extraOpt)\n  return opts\n}\n\n/**\n * @param {Object} opts 原参数\n * @param {Function} getOptions 获取 success 回调修改后的参数\n * @param {Object} thisObj this对象\n */\nconst handleSuccess = (opts, getOptions = noop, thisObj) => {\n  if (!opts.success) {\n    return\n  }\n  const _this = thisObj || this\n  const cacheSuc = opts.success\n  opts.success = res => {\n    const changedRes = getOptions(res) || res\n    cacheSuc.call(_this, changedRes)\n  }\n}\n\nfunction warn (msg) {\n  warnHandler(msg, '@mpxjs/api-proxy')\n}\n\nfunction error (msg) {\n  errorHandler(msg, '@mpxjs/api-proxy')\n}\n\nfunction envError (method) {\n  return () => {\n    errorHandler(`\\n ${__mpx_mode__}环境不支持${method}方法`, '@mpxjs/api-proxy')\n  }\n}\n\nfunction defineUnsupportedProps (resObj, props) {\n  const defineProps = {}\n  props.forEach((item) => {\n    defineProps[item] = {\n      get () {\n        warn(`The ${item} attribute is not supported in ${__mpx_mode__} environment`)\n        return null\n      }\n    }\n  })\n  Object.defineProperties(resObj, defineProps)\n}\n\nconst isBrowser = typeof window !== 'undefined'\n\nfunction throwSSRWarning (info) {\n  console.error(`[Mpx runtime error]: Dangerous API! ${info}, It may cause some problems, please use this method with caution`)\n}\n\nfunction successHandle (result, success, complete) {\n  typeof success === 'function' && success(result)\n  typeof complete === 'function' && complete(result)\n}\n\nfunction failHandle (result, fail, complete) {\n  typeof fail === 'function' && fail(result)\n  typeof complete === 'function' && complete(result)\n}\n\nfunction getCurrentPageId () {\n  const id = getFocusedNavigation()?.pageId || null\n  return id\n}\n\nfunction resolvePath (relative, base) {\n  const firstChar = relative.charAt(0)\n  if (firstChar === '/') {\n    return relative\n  }\n  const stack = base.split('/')\n  stack.pop()\n  // resolve relative path\n  const segments = relative.replace(/^\\//, '').split('/')\n  for (let i = 0; i < segments.length; i++) {\n    const segment = segments[i]\n    if (segment === '..') {\n      stack.pop()\n    } else if (segment !== '.') {\n      stack.push(segment)\n    }\n  }\n  // ensure leading slash\n  if (stack[0] !== '') {\n    stack.unshift('')\n  }\n  return stack.join('/')\n}\n\nconst ENV_OBJ = getEnvObj()\n\nexport {\n  changeOpts,\n  handleSuccess,\n  error,\n  envError,\n  warn,\n  isBrowser,\n  throwSSRWarning,\n  ENV_OBJ,\n  defineUnsupportedProps,\n  successHandle,\n  failHandle,\n  getFocusedNavigation,\n  getCurrentPageId,\n  resolvePath\n}\n",
++    "import { ENV_OBJ, envError } from '../../../common/js'\n\nconst showActionSheet = ENV_OBJ.showActionSheet || envError('showActionSheet')\n\nexport {\n  showActionSheet\n}\n",
++    "import { ENV_OBJ, envError } from '../../../common/js'\n\nconst addPhoneContact = ENV_OBJ.addPhoneContact || envError('addPhoneContact')\n\nexport {\n  addPhoneContact\n}\n",
++    "import { ENV_OBJ, envError } from '../../../common/js'\n\nconst createAnimation = ENV_OBJ.createAnimation || envError('createAnimation')\n\nexport {\n  createAnimation\n}\n",
++    "import { ENV_OBJ, envError } from '../../../common/js'\n\nconst onError = ENV_OBJ.onError || envError('onError')\n\nconst offError = ENV_OBJ.offError || envError('offError')\n\nconst onAppShow = ENV_OBJ.onAppShow || envError('onAppShow')\n\nconst offAppShow = ENV_OBJ.offAppShow || envError('offAppShow')\n\nconst onAppHide = ENV_OBJ.onAppHide || envError('onAppHide')\n\nconst offAppHide = ENV_OBJ.offAppHide || envError('offAppHide')\n\nexport {\n  onAppShow,\n  onAppHide,\n  offAppShow,\n  offAppHide,\n  onError,\n  offError\n}\n",
++    "import { ENV_OBJ, envError } from '../../../common/js'\n\nconst createInnerAudioContext = ENV_OBJ.createInnerAudioContext || envError('createInnerAudioContext')\n\nexport {\n  createInnerAudioContext\n}\n",
++    "import { ENV_OBJ, envError } from '../../../common/js'\n\nconst base64ToArrayBuffer = ENV_OBJ.base64ToArrayBuffer || envError('base64ToArrayBuffer')\n\nconst arrayBufferToBase64 = ENV_OBJ.arrayBufferToBase64 || envError('arrayBufferToBase64')\n\nexport {\n  base64ToArrayBuffer,\n  arrayBufferToBase64\n}\n",
++    "import { ENV_OBJ, envError } from '../../../common/js'\n\nconst closeBLEConnection = ENV_OBJ.closeBLEConnection || envError('closeBLEConnection')\n\nconst createBLEConnection = ENV_OBJ.createBLEConnection || envError('createBLEConnection')\n\nconst onBLEConnectionStateChange = ENV_OBJ.onBLEConnectionStateChange || envError('onBLEConnectionStateChange')\n\nconst offBLEConnectionStateChange = ENV_OBJ.offBLEConnectionStateChange || envError('offBLEConnectionStateChange')\n\nconst openBluetoothAdapter = ENV_OBJ.openBluetoothAdapter || envError('openBluetoothAdapter')\n\nconst closeBluetoothAdapter = ENV_OBJ.closeBluetoothAdapter || envError('closeBluetoothAdapter')\n\nconst startBluetoothDevicesDiscovery = ENV_OBJ.startBluetoothDevicesDiscovery || envError('startBluetoothDevicesDiscovery')\n\nconst stopBluetoothDevicesDiscovery = ENV_OBJ.stopBluetoothDevicesDiscovery || envError('stopBluetoothDevicesDiscovery')\n\nconst onBluetoothDeviceFound = ENV_OBJ.onBluetoothDeviceFound || envError('onBluetoothDeviceFound')\n\nconst offBluetoothDeviceFound = ENV_OBJ.offBluetoothDeviceFound || envError('offBluetoothDeviceFound')\n\nconst getConnectedBluetoothDevices = ENV_OBJ.getConnectedBluetoothDevices || envError('getConnectedBluetoothDevices')\n\nconst getBluetoothAdapterState = ENV_OBJ.getBluetoothAdapterState || envError('getBluetoothAdapterState')\n\nconst onBluetoothAdapterStateChange = ENV_OBJ.onBluetoothAdapterStateChange || envError('onBluetoothAdapterStateChange')\n\nconst offBluetoothAdapterStateChange = ENV_OBJ.offBluetoothAdapterStateChange || envError('offBluetoothAdapterStateChange')\n\nconst getBluetoothDevices = ENV_OBJ.getBluetoothDevices || envError('getBluetoothDevices')\n\nconst writeBLECharacteristicValue = ENV_OBJ.writeBLECharacteristicValue || envError('writeBLECharacteristicValue')\n\nconst readBLECharacteristicValue = ENV_OBJ.readBLECharacteristicValue || envError('readBLECharacteristicValue')\n\nconst notifyBLECharacteristicValueChange = ENV_OBJ.notifyBLECharacteristicValueChange || envError('notifyBLECharacteristicValueChange')\n\nconst onBLECharacteristicValueChange = ENV_OBJ.onBLECharacteristicValueChange || envError('onBLECharacteristicValueChange')\n\nconst offBLECharacteristicValueChange = ENV_OBJ.offBLECharacteristicValueChange || envError('offBLECharacteristicValueChange')\n\nconst setBLEMTU = ENV_OBJ.setBLEMTU || envError('setBLEMTU')\n\nconst getBLEDeviceRSSI = ENV_OBJ.getBLEDeviceRSSI || envError('getBLEDeviceRSSI')\n\nconst getBLEDeviceServices = ENV_OBJ.getBLEDeviceServices || envError('getBLEDeviceServices')\n\nconst getBLEDeviceCharacteristics = ENV_OBJ.getBLEDeviceCharacteristics || envError('getBLEDeviceCharacteristics')\n\nexport {\n  onBLEConnectionStateChange,\n  offBLEConnectionStateChange,\n  openBluetoothAdapter,\n  closeBluetoothAdapter,\n  startBluetoothDevicesDiscovery,\n  stopBluetoothDevicesDiscovery,\n  onBluetoothDeviceFound,\n  offBluetoothDeviceFound,\n  getConnectedBluetoothDevices,\n  getBluetoothAdapterState,\n  onBluetoothAdapterStateChange,\n  offBluetoothAdapterStateChange,\n  getBluetoothDevices,\n  writeBLECharacteristicValue,\n  readBLECharacteristicValue,\n  notifyBLECharacteristicValueChange,\n  onBLECharacteristicValueChange,\n  offBLECharacteristicValueChange,\n  setBLEMTU,\n  getBLEDeviceRSSI,\n  getBLEDeviceServices,\n  getBLEDeviceCharacteristics,\n  createBLEConnection,\n  closeBLEConnection\n}\n",
++    "import { ENV_OBJ, envError } from '../../../common/js'\n\nconst canvasToTempFilePath = ENV_OBJ.canvasToTempFilePath || envError('canvasToTempFilePath')\n\nconst canvasGetImageData = ENV_OBJ.canvasGetImageData || envError('canvasGetImageData')\n\nexport {\n  canvasToTempFilePath,\n  canvasGetImageData\n}\n",
++    "import { ENV_OBJ, envError } from '../../../common/js'\n\nconst checkSession = ENV_OBJ.checkSession || envError('checkSession')\n\nexport {\n  checkSession\n}\n",
++    "import { ENV_OBJ, envError } from '../../../common/js'\n\nconst setClipboardData = ENV_OBJ.setClipboardData || envError('setClipboardData')\n\nconst getClipboardData = ENV_OBJ.getClipboardData || envError('getClipboardData')\n\nexport {\n  setClipboardData,\n  getClipboardData\n}\n",
++    "import { ENV_OBJ, envError } from '../../../common/js'\n\nconst createIntersectionObserver = ENV_OBJ.createIntersectionObserver || envError('createIntersectionObserver')\n\nexport {\n  createIntersectionObserver\n}\n",
++    "import { ENV_OBJ, envError } from '../../../common/js'\n\nconst createSelectorQuery = ENV_OBJ.createSelectorQuery || envError('createSelectorQuery')\n\nexport {\n  createSelectorQuery\n}\n",
++    "import { ENV_OBJ, envError } from '../../../../common/js'\n\nconst getNetworkType = ENV_OBJ.getNetworkType || envError('getNetworkType')\n\nconst onNetworkStatusChange = ENV_OBJ.onNetworkStatusChange || envError('onNetworkStatusChange')\n\nconst offNetworkStatusChange = ENV_OBJ.offNetworkStatusChange || envError('offNetworkStatusChange')\n\nexport {\n  getNetworkType,\n  onNetworkStatusChange,\n  offNetworkStatusChange\n}\n",
++    "import { ENV_OBJ, envError } from '../../../../common/js'\n\nconst startWifi = ENV_OBJ.startWifi || envError('startWifi')\n\nconst stopWifi = ENV_OBJ.stopWifi || envError('stopWifi')\n\nconst getWifiList = ENV_OBJ.getWifiList || envError('getWifiList')\n\nconst getConnectedWifi = ENV_OBJ.getConnectedWifi || envError('getConnectedWifi')\n\nconst onGetWifiList = ENV_OBJ.onGetWifiList || envError('onGetWifiList')\n\nconst offGetWifiList = ENV_OBJ.offGetWifiList || envError('offGetWifiList')\n\nexport {\n  startWifi,\n  stopWifi,\n  getWifiList,\n  onGetWifiList,\n  offGetWifiList,\n  getConnectedWifi\n}\n",
++    "import { ENV_OBJ, envError } from '../../../common/js'\n\nconst downloadFile = ENV_OBJ.downloadFile || envError('downloadFile')\n\nconst uploadFile = ENV_OBJ.uploadFile || envError('uploadFile')\n\nexport {\n  downloadFile,\n  uploadFile\n}\n",
++    "import { ENV_OBJ, envError } from '../../../common/js'\n\nconst getUserInfo = ENV_OBJ.getUserInfo || envError('getUserInfo')\n\nexport {\n  getUserInfo\n}\n",
++    "import { ENV_OBJ, envError } from '../../../common/js'\n\nconst previewImage = ENV_OBJ.previewImage || envError('previewImage')\n\nconst compressImage = ENV_OBJ.compressImage || envError('compressImage')\n\nconst getImageInfo = ENV_OBJ.getImageInfo || envError('getImageInfo')\n\nconst chooseMedia = ENV_OBJ.chooseMedia || envError('chooseMedia')\n\nexport {\n  previewImage,\n  compressImage,\n  getImageInfo,\n  chooseMedia\n}\n",
++    "import { ENV_OBJ, envError } from '../../../common/js'\n\nconst login = ENV_OBJ.login || envError('login')\n\nexport {\n  login\n}\n",
++    "import { ENV_OBJ, envError } from '../../../common/js'\n\nconst makePhoneCall = ENV_OBJ.makePhoneCall || envError('makePhoneCall')\n\nexport {\n  makePhoneCall\n}\n",
++    "import { ENV_OBJ, envError } from '../../../common/js'\n\nconst showModal = ENV_OBJ.showModal || envError('showModal')\n\nexport {\n  showModal\n}\n",
++    "import { ENV_OBJ, envError } from '../../../common/js'\n\nconst nextTick = ENV_OBJ.nextTick || envError('nextTick')\n\nexport {\n  nextTick\n}\n",
++    "import { ENV_OBJ, envError } from '../../../common/js'\n\nconst pageScrollTo = ENV_OBJ.pageScrollTo || envError('pageScrollTo')\n\nexport {\n  pageScrollTo\n}\n",
++    "import { ENV_OBJ, envError } from '../../../common/js'\n\nconst stopPullDownRefresh = ENV_OBJ.stopPullDownRefresh || envError('stopPullDownRefresh')\n\nconst startPullDownRefresh = ENV_OBJ.startPullDownRefresh || envError('startPullDownRefresh')\n\nexport {\n  stopPullDownRefresh,\n  startPullDownRefresh\n}\n",
++    "import { ENV_OBJ, envError } from '../../../common/js'\n\nconst request = ENV_OBJ.request || envError('request')\n\nexport {\n  request\n}\n",
++    "import { ENV_OBJ, envError } from '../../../common/js'\n\nconst requestPayment = ENV_OBJ.requestPayment || envError('requestPayment')\n\nexport {\n  requestPayment\n}\n",
++    "import { ENV_OBJ, envError } from '../../../common/js'\n\nconst redirectTo = ENV_OBJ.redirectTo || envError('redirectTo')\n\nconst navigateTo = ENV_OBJ.navigateTo || envError('navigateTo')\n\nconst navigateBack = ENV_OBJ.navigateBack || envError('navigateBack')\n\nconst reLaunch = ENV_OBJ.reLaunch || envError('reLaunch')\n\nconst switchTab = ENV_OBJ.switchTab || envError('switchTab')\n\nexport {\n  redirectTo,\n  navigateTo,\n  navigateBack,\n  reLaunch,\n  switchTab\n}\n",
++    "import { ENV_OBJ, envError } from '../../../common/js'\n\nconst scanCode = ENV_OBJ.scanCode || envError('scanCode')\n\nexport {\n  scanCode\n}\n",
++    "import { ENV_OBJ, envError } from '../../../common/js'\n\nconst setScreenBrightness = ENV_OBJ.setScreenBrightness || envError('setScreenBrightness')\n\nconst getScreenBrightness = ENV_OBJ.getScreenBrightness || envError('getScreenBrightness')\n\nconst setVisualEffectOnCapture = ENV_OBJ.setVisualEffectOnCapture || envError('setVisualEffectOnCapture')\n\nconst onUserCaptureScreen = ENV_OBJ.onUserCaptureScreen || envError('onUserCaptureScreen')\n\nconst offUserCaptureScreen = ENV_OBJ.offUserCaptureScreen || envError('offUserCaptureScreen')\n\nexport {\n  setScreenBrightness,\n  getScreenBrightness,\n  setVisualEffectOnCapture,\n  onUserCaptureScreen,\n  offUserCaptureScreen\n}\n",
++    "import { ENV_OBJ, envError } from '../../../common/js'\n\nconst setNavigationBarTitle = ENV_OBJ.setNavigationBarTitle || envError('setNavigationBarTitle')\n\nconst setNavigationBarColor = ENV_OBJ.setNavigationBarColor || envError('setNavigationBarColor')\n\nconst hideHomeButton = ENV_OBJ.hideHomeButton || envError('hideHomeButton')\n\nexport {\n  setNavigationBarTitle,\n  setNavigationBarColor,\n  hideHomeButton\n}\n",
++    "import { ENV_OBJ, envError } from '../../../common/js'\n\nconst connectSocket = ENV_OBJ.connectSocket || envError('connectSocket')\n\nexport {\n  connectSocket\n}\n",
++    "import { ENV_OBJ, envError } from '../../../common/js'\n\nconst setStorage = ENV_OBJ.setStorage || envError('setStorage')\n\nconst setStorageSync = ENV_OBJ.setStorageSync || envError('setStorageSync')\n\nconst getStorage = ENV_OBJ.getStorage || envError('getStorage')\n\nconst getStorageSync = ENV_OBJ.getStorageSync || envError('getStorageSync')\n\nconst getStorageInfo = ENV_OBJ.getStorageInfo || envError('getStorageInfo')\n\nconst getStorageInfoSync = ENV_OBJ.getStorageInfoSync || envError('getStorageInfoSync')\n\nconst removeStorage = ENV_OBJ.removeStorage || envError('removeStorage')\n\nconst removeStorageSync = ENV_OBJ.removeStorageSync || envError('removeStorageSync')\n\nconst clearStorage = ENV_OBJ.clearStorage || envError('clearStorage')\n\nconst clearStorageSync = ENV_OBJ.clearStorageSync || envError('clearStorageSync')\n\nexport {\n  setStorage,\n  setStorageSync,\n  getStorage,\n  getStorageSync,\n  getStorageInfo,\n  getStorageInfoSync,\n  removeStorage,\n  removeStorageSync,\n  clearStorage,\n  clearStorageSync\n}\n",
++    "import { ENV_OBJ, envError } from '../../../common/js'\n\nconst getSystemInfo = ENV_OBJ.getSystemInfo || envError('getSystemInfo')\n\nconst getSystemInfoSync = ENV_OBJ.getSystemInfoSync || envError('getSystemInfoSync')\n\nconst getDeviceInfo = ENV_OBJ.getDeviceInfo || envError('getDeviceInfo')\n\nconst getWindowInfo = ENV_OBJ.getWindowInfo || envError('getWindowInfo')\n\nconst getLaunchOptionsSync = ENV_OBJ.getLaunchOptionsSync || envError('getLaunchOptionsSync')\n\nconst getEnterOptionsSync = ENV_OBJ.getEnterOptionsSync || envError('getEnterOptionsSync')\n\nexport {\n  getSystemInfo,\n  getSystemInfoSync,\n  getDeviceInfo,\n  getWindowInfo,\n  getLaunchOptionsSync,\n  getEnterOptionsSync\n}\n",
++    "import { ENV_OBJ, envError } from '../../../common/js'\n\nconst setTabBarItem = ENV_OBJ.setTabBarItem || envError('setTabBarItem')\n\nconst setTabBarStyle = ENV_OBJ.setTabBarStyle || envError('setTabBarStyle')\n\nconst showTabBar = ENV_OBJ.showTabBar || envError('showTabBar')\n\nconst hideTabBar = ENV_OBJ.hideTabBar || envError('hideTabBar')\n\nexport {\n  setTabBarItem,\n  setTabBarStyle,\n  showTabBar,\n  hideTabBar\n}\n",
++    "import { ENV_OBJ, envError } from '../../../common/js'\n\nconst showToast = ENV_OBJ.showToast || envError('showToast')\n\nconst hideToast = ENV_OBJ.hideToast || envError('hideToast')\n\nconst showLoading = ENV_OBJ.showLoading || envError('showLoading')\n\nconst hideLoading = ENV_OBJ.hideLoading || envError('hideLoading')\n\nexport {\n  showToast,\n  hideToast,\n  showLoading,\n  hideLoading\n}\n",
++    "import { ENV_OBJ, envError } from '../../../common/js'\n\nconst createVideoContext = ENV_OBJ.createVideoContext || envError('createVideoContext')\n\nexport {\n  createVideoContext\n}\n",
++    "import { ENV_OBJ, envError } from '../../../common/js'\n\nconst onWindowResize = ENV_OBJ.onWindowResize || envError('onWindowResize')\n\nconst offWindowResize = ENV_OBJ.offWindowResize || envError('offWindowResize')\n\nexport {\n  onWindowResize,\n  offWindowResize\n}\n",
++    "import { ENV_OBJ, envError } from '../../../common/js'\n\nconst getLocation = ENV_OBJ.getLocation || envError('getLocation')\n\nconst openLocation = ENV_OBJ.openLocation || envError('openLocation')\n\nconst chooseLocation = ENV_OBJ.chooseLocation || envError('chooseLocation')\n\nconst onLocationChange = ENV_OBJ.onLocationChange || envError('onLocationChange')\n\nconst offLocationChange = ENV_OBJ.offLocationChange || envError('offLocationChange')\n\nconst startLocationUpdate = ENV_OBJ.startLocationUpdate || envError('startLocationUpdate')\n\nconst stopLocationUpdate = ENV_OBJ.stopLocationUpdate || envError('stopLocationUpdate')\n\nexport {\n  getLocation,\n  openLocation,\n  chooseLocation,\n  onLocationChange,\n  offLocationChange,\n  startLocationUpdate,\n  stopLocationUpdate\n}\n",
++    "import { ENV_OBJ, envError } from '../../../common/js'\n\nconst getExtConfig = ENV_OBJ.getExtConfig || envError('getExtConfig')\n\nconst getExtConfigSync = ENV_OBJ.getExtConfigSync || envError('getExtConfigSync')\n\nexport {\n  getExtConfig,\n  getExtConfigSync\n}\n",
++    "import { ENV_OBJ, envError } from '../../../common/js'\n\nconst vibrateShort = ENV_OBJ.vibrateShort || envError('vibrateShort')\n\nconst vibrateLong = ENV_OBJ.vibrateLong || envError('vibrateLong')\n\nexport {\n  vibrateShort,\n  vibrateLong\n}\n",
++    "import { ENV_OBJ, envError } from '../../../common/js'\n\nconst onKeyboardHeightChange = ENV_OBJ.onKeyboardHeightChange || envError('onKeyboardHeightChange')\n\nconst offKeyboardHeightChange = ENV_OBJ.offKeyboardHeightChange || envError('offKeyboardHeightChange')\n\nconst hideKeyboard = ENV_OBJ.hideKeyboard || envError('hideKeyboard')\n\nexport {\n  onKeyboardHeightChange,\n  offKeyboardHeightChange,\n  hideKeyboard\n}\n",
++    "import { ENV_OBJ, envError } from '../../../common/js'\n\nconst getSetting = ENV_OBJ.getSetting || envError('getSetting')\n\nconst openSetting = ENV_OBJ.openSetting || envError('openSetting')\n\nconst enableAlertBeforeUnload = ENV_OBJ.enableAlertBeforeUnload || envError('enableAlertBeforeUnload')\n\nconst disableAlertBeforeUnload = ENV_OBJ.disableAlertBeforeUnload || envError('disableAlertBeforeUnload')\n\nconst getMenuButtonBoundingClientRect = ENV_OBJ.getMenuButtonBoundingClientRect || envError('getMenuButtonBoundingClientRect')\n\nexport {\n  getSetting,\n  openSetting,\n  enableAlertBeforeUnload,\n  disableAlertBeforeUnload,\n  getMenuButtonBoundingClientRect\n}\n",
++    "import { ENV_OBJ, envError } from '../../../common/js'\n\nconst createCameraContext = ENV_OBJ.createCameraContext || envError('createCameraContext')\n\nexport {\n  createCameraContext\n}\n",
++    "import { ENV_OBJ, warn } from './utils'\n\n// 特别指定的不进行Promise封装的方法\nconst blackList = [\n  'drawCanvas',\n  'canIUse',\n  'getPerformance',\n  'reportAnalytics',\n  'getMenuButtonBoundingClientRect',\n  'reportMonitor',\n  'reportEvent',\n  'base64ToArrayBuffer',\n  'arrayBufferToBase64',\n  'getDeviceInfo',\n  'getWindowInfo',\n  'getAppBaseInfo',\n  'getAppAuthorizeSetting',\n  'getApiCategory',\n  'postMessageToReferrerPage',\n  'postMessageToReferrerMiniProgram',\n  'reportPerformance',\n  'router',\n  'nextTick',\n  'checkIsPictureInPictureActive',\n  'worklet',\n  'revokeBufferURL',\n  'getExptInfoSync',\n  'getNFCAdapter',\n  'isVKSupport'\n]\n\nfunction getMapFromList (list) {\n  if (list && list.length) {\n    const map = {}\n    list.forEach((item) => {\n      map[item] = true\n    })\n    return map\n  }\n}\n\nfunction promisify (listObj, whiteList, customBlackList) {\n  const result = {}\n  const whiteListMap = getMapFromList(whiteList)\n  const blackListMap = getMapFromList(blackList.concat(customBlackList))\n\n  function promisifyFilter (key) {\n    if (whiteListMap && whiteListMap[key] !== undefined) {\n      return !!whiteListMap[key]\n    } else {\n      return !(blackListMap[key] || // 特别指定的方法\n        /^get\\w*Manager$/.test(key) || // 获取manager的api\n        /^create(?!BLEConnection|BLEPeripheralServer)\\w*$/.test(key) || // 创建上下文相关api\n        /^(on|off)/.test(key) || // 以 on* 或 off开头的方法\n        /\\w+Sync$/.test(key) // 以Sync结尾的方法\n      )\n    }\n  }\n\n  Object.keys(listObj).forEach(key => {\n    if (typeof listObj[key] !== 'function') {\n      return\n    }\n    if (!promisifyFilter(key)) {\n      result[key] = listObj[key].bind(ENV_OBJ)\n    } else {\n      result[key] = function (...args) {\n        const obj = args[0] || {}\n        if (obj.usePromise === false) {\n          return listObj[key].apply(ENV_OBJ, args)\n        }\n        if (!args[0]) args.unshift(obj)\n        let returned\n        const promise = new Promise((resolve, reject) => {\n          const originSuccess = obj.success\n          const originFail = obj.fail\n          if (originSuccess || originFail) {\n            warn(`The [${key}] method has been promisified, please use .then or .catch to handle the result, if you need to handle the result with options.success/fail, please set options.usePromise to false to close the promisify in this call temporarily. `)\n          }\n          obj.success = function (res) {\n            originSuccess && originSuccess.call(this, res)\n            resolve(res)\n          }\n          obj.fail = function (e) {\n            originFail && originFail.call(this, e)\n            reject(e)\n          }\n          returned = listObj[key].apply(ENV_OBJ, args)\n        })\n        promise.__returned = returned\n        return promise\n      }\n    }\n  })\n\n  return result\n}\n\nexport default promisify\n",
++    "import * as platformApi from './platform'\nimport { ENV_OBJ } from './common/js'\nimport promisify from './common/js/promisify'\n\nexport default function install (target, options = {}) {\n  const {\n    usePromise = false, // 是否转为 promise 格式\n    whiteList = [], // 强制变成 promise 格式的 api\n    blackList = [], // 强制不变成 promise 格式的 api\n    custom = {} // 自定义转化规则\n  } = options\n  const transedApi = Object.assign({}, ENV_OBJ, platformApi)\n  const promisedApi = usePromise ? promisify(transedApi, whiteList, blackList) : {}\n  Object.assign(target, transedApi, promisedApi, custom[__mpx_mode__])\n}\n\nexport function getProxy (options = {}) {\n  const apiProxy = {}\n  install(apiProxy, options)\n  return apiProxy\n}\n",
++    "import install, { getProxy } from './install'\nimport promisify from './common/js/promisify'\nexport * from './platform'\nexport { getProxy, promisify }\nexport default install\n",
++    "import mpx, { createApp } from '@mpxjs/core';\nimport apiProxy from '@mpxjs/api-proxy';\nmpx.use(apiProxy, { usePromise: true });\ncreateApp({});\n"
++  ],
++  "names": [
++    "g",
++    "currentModuleId",
++    "currentCtor",
++    "App",
++    "currentCtorType",
++    "currentResourceType",
++    "currentSrcMode",
++    "makeMap",
++    "mergeLifecycle",
++    "LIFECYCLE",
++    "app",
++    "warn",
++    "msg",
++    "warnHandler",
++    "envError",
++    "method",
++    "_context",
++    "errorHandler",
++    "_concatInstanceProperty",
++    "concat",
++    "__mpx_mode__",
++    "call",
++    "ENV_OBJ",
++    "getEnvObj",
++    "showActionSheet",
++    "addPhoneContact",
++    "createAnimation",
++    "onError",
++    "offError",
++    "onAppShow",
++    "offAppShow",
++    "onAppHide",
++    "offAppHide",
++    "createInnerAudioContext",
++    "base64ToArrayBuffer",
++    "arrayBufferToBase64",
++    "closeBLEConnection",
++    "createBLEConnection",
++    "onBLEConnectionStateChange",
++    "offBLEConnectionStateChange",
++    "openBluetoothAdapter",
++    "closeBluetoothAdapter",
++    "startBluetoothDevicesDiscovery",
++    "stopBluetoothDevicesDiscovery",
++    "onBluetoothDeviceFound",
++    "offBluetoothDeviceFound",
++    "getConnectedBluetoothDevices",
++    "getBluetoothAdapterState",
++    "onBluetoothAdapterStateChange",
++    "offBluetoothAdapterStateChange",
++    "getBluetoothDevices",
++    "writeBLECharacteristicValue",
++    "readBLECharacteristicValue",
++    "notifyBLECharacteristicValueChange",
++    "onBLECharacteristicValueChange",
++    "offBLECharacteristicValueChange",
++    "setBLEMTU",
++    "getBLEDeviceRSSI",
++    "getBLEDeviceServices",
++    "getBLEDeviceCharacteristics",
++    "canvasToTempFilePath",
++    "canvasGetImageData",
++    "checkSession",
++    "setClipboardData",
++    "getClipboardData",
++    "createIntersectionObserver",
++    "createSelectorQuery",
++    "getNetworkType",
++    "onNetworkStatusChange",
++    "offNetworkStatusChange",
++    "startWifi",
++    "stopWifi",
++    "getWifiList",
++    "getConnectedWifi",
++    "onGetWifiList",
++    "offGetWifiList",
++    "downloadFile",
++    "uploadFile",
++    "getUserInfo",
++    "previewImage",
++    "compressImage",
++    "getImageInfo",
++    "chooseMedia",
++    "login",
++    "makePhoneCall",
++    "showModal",
++    "nextTick",
++    "pageScrollTo",
++    "stopPullDownRefresh",
++    "startPullDownRefresh",
++    "request",
++    "requestPayment",
++    "redirectTo",
++    "navigateTo",
++    "navigateBack",
++    "reLaunch",
++    "switchTab",
++    "scanCode",
++    "setScreenBrightness",
++    "getScreenBrightness",
++    "setVisualEffectOnCapture",
++    "onUserCaptureScreen",
++    "offUserCaptureScreen",
++    "setNavigationBarTitle",
++    "setNavigationBarColor",
++    "hideHomeButton",
++    "connectSocket",
++    "setStorage",
++    "setStorageSync",
++    "getStorage",
++    "getStorageSync",
++    "getStorageInfo",
++    "getStorageInfoSync",
++    "removeStorage",
++    "removeStorageSync",
++    "clearStorage",
++    "clearStorageSync",
++    "getSystemInfo",
++    "getSystemInfoSync",
++    "getDeviceInfo",
++    "getWindowInfo",
++    "getLaunchOptionsSync",
++    "getEnterOptionsSync",
++    "setTabBarItem",
++    "setTabBarStyle",
++    "showTabBar",
++    "hideTabBar",
++    "showToast",
++    "hideToast",
++    "showLoading",
++    "hideLoading",
++    "createVideoContext",
++    "onWindowResize",
++    "offWindowResize",
++    "getLocation",
++    "openLocation",
++    "chooseLocation",
++    "onLocationChange",
++    "offLocationChange",
++    "startLocationUpdate",
++    "stopLocationUpdate",
++    "getExtConfig",
++    "getExtConfigSync",
++    "vibrateShort",
++    "vibrateLong",
++    "onKeyboardHeightChange",
++    "offKeyboardHeightChange",
++    "hideKeyboard",
++    "getSetting",
++    "openSetting",
++    "enableAlertBeforeUnload",
++    "disableAlertBeforeUnload",
++    "getMenuButtonBoundingClientRect",
++    "createCameraContext",
++    "blackList",
++    "getMapFromList",
++    "list",
++    "length",
++    "map",
++    "forEach",
++    "item",
++    "listObj",
++    "whiteList",
++    "customBlackList",
++    "result",
++    "whiteListMap",
++    "blackListMap",
++    "_Object$keys",
++    "key",
++    "undefined",
++    "test",
++    "promisifyFilter",
++    "bind",
++    "_len",
++    "arguments",
++    "args",
++    "Array",
++    "_key",
++    "returned",
++    "obj",
++    "usePromise",
++    "apply",
++    "unshift",
++    "promise",
++    "_Promise",
++    "resolve",
++    "reject",
++    "originSuccess",
++    "success",
++    "originFail",
++    "fail",
++    "res",
++    "this",
++    "e",
++    "__returned",
++    "install",
++    "target",
++    "options",
++    "_options$usePromise",
++    "_options$whiteList",
++    "_options$blackList",
++    "_options$custom",
++    "custom",
++    "transedApi",
++    "_Object$assign",
++    "platformApi",
++    "promisedApi",
++    "promisify",
++    "mpx",
++    "use",
++    "apiProxy",
++    "config",
++    "_transferOptions",
++    "transferOptions",
++    "rawOptions",
++    "builtInMixins",
++    "currentInject",
++    "getMpx",
++    "Mpx",
++    "push",
++    "onLaunch",
++    "prototype",
++    "initAppProvides",
++    "provide",
++    "mixins",
++    "defaultOptions",
++    "newOptions",
++    "builtInKeysMap",
++    "filterOptions",
++    "spreadProp",
++    "mergeOptions",
++    "onAppInit",
++    "customCtor",
++    "global",
++    "createApp"
++  ],
++  "sourceRoot": ""
++}
+
+--- /dev/null
++++ b/dist/wx/app.json
+@@ -0,0 +1,22 @@
++{
++  "pages": [
++    "pages/index",
++    "pages/component/index"
++  ],
++  "tabBar": {
++    "custom": true,
++    "color": "#000000",
++    "selectedColor": "#000000",
++    "backgroundColor": "#000000",
++    "list": [
++      {
++        "pagePath": "pages/component/index",
++        "text": "组件"
++      },
++      {
++        "pagePath": "pages/index",
++        "text": "接口"
++      }
++    ]
++  }
++}
+
+--- /dev/null
++++ b/dist/wx/app.wxss
+@@ -0,0 +1 @@
++@import "./styles/app5e440dc4.wxss";
+
+diff -- dist/wx/bundle.js
+# normalized content differs; inline diff omitted (large-added-file).
+# baseline: /dev/null
+# current: 172969 raw bytes, 386067 normalized bytes, hash 69d84d381ffd
+
+diff -- dist/wx/bundle.js.map
+# normalized content differs; inline diff omitted (large-added-file).
+# baseline: /dev/null
+# current: 829964 raw bytes, 845493 normalized bytes, hash 4b3968826242
+
+--- /dev/null
++++ b/dist/wx/components/lista8452db4/index.js
+@@ -0,0 +1,41 @@
++var self = {};
++((self.webpackChunk_weapp_tailwindcss_demo_mpx_tailwindcss_v5 = require("../../bundle.js")),
++  (self.webpackChunk_weapp_tailwindcss_demo_mpx_tailwindcss_v5 =
++    self.webpackChunk_weapp_tailwindcss_demo_mpx_tailwindcss_v5 || []).push([
++    [933],
++    {
++      40549: function (n, e, t) {
++        ((t.g.currentModuleId = "_a8452db4"),
++          (t.g.currentCtor = Component),
++          (t.g.currentCtorType = "component"),
++          (t.g.currentResourceType = "component"),
++          t(64927),
++          t(63451),
++          (t.g.currentSrcMode = "wx"),
++          t(50690));
++      },
++      50690: function (n, e, t) {
++        "use strict";
++        (t.r(e),
++          (0, t(12657).A)({
++            data: {
++              listData: ["手机", "电视", "电脑"],
++              clsnm: "bg-_b_h010101_B active_cbg-_b_h989898_B",
++            },
++            options: { addGlobalClass: !0 },
++          }));
++      },
++      64927: function (n, e, t) {
++        ((t.g.currentInject = { moduleId: "_a8452db4" }),
++          (t.g.currentInject.render = function (n, e, t, c) {
++            (n(c("listData", this.listData), function (n, e) {}), t());
++          }));
++      },
++      63451: function () {},
++    },
++    function (n) {
++      var e;
++      ((e = 40549), n((n.s = e)));
++    },
++  ]));
++//# sourceMappingURL=index.js.map
+
+--- /dev/null
++++ b/dist/wx/components/lista8452db4/index.js.map
+@@ -0,0 +1,41 @@
++{
++  "version": 3,
++  "file": "components/lista8452db4/index.js",
++  "mappings": "oQAAA,EAAAA,EAAOC,gBAAkB,YACzB,EAAAD,EAAOE,YAAcC,UACrB,EAAAH,EAAOI,gBAAkB,YACzB,EAAAJ,EAAOK,oBAAsB,YAE7B,SAGA,SAEA,EAAAL,EAAOM,eAAiB,KACxB,EAAQ,M,6CCVRC,E,SAAAA,GAAgB,CACZC,KAAM,CACFC,SAAU,CAAC,KAAM,KAAM,MACvBC,MAAO,oCAEXC,QAAS,CACLC,gBAAgB,I,wBCPxB,EAAAZ,EAAOa,cAAgB,CACrBC,SAAU,aAEZ,EAAAd,EAAOa,cAAcE,OAAS,SAAUC,EAAIC,EAAIC,EAAIC,GACpDH,EAAGG,EAAI,WAAYC,KAAKX,UAAW,SAAUY,EAAMC,GAEnD,GACAJ,GACA,C",
++  "sources": [
++    "webpack://@weapp-tailwindcss-demo/mpx-tailwindcss-v5/./src/components/list.mpx?e507",
++    "webpack://@weapp-tailwindcss-demo/mpx-tailwindcss-v5/./src/components/list.mpx",
++    "webpack://@weapp-tailwindcss-demo/mpx-tailwindcss-v5/./src/components/list.mpx?45bd"
++  ],
++  "sourcesContent": [
++    "global.currentModuleId = \"_a8452db4\"\nglobal.currentCtor = Component\nglobal.currentCtorType = \"component\"\nglobal.currentResourceType = \"component\"\n/* template */\nrequire.extract(\"./list.mpx.wxml?isComponent!=!@mpxjs/webpack-plugin/lib/selector?mode=wx&env=!./list.mpx?ctorType=component&extract&hasScoped=false&index=0&isComponent&isNative=false&moduleId=_a8452db4&mpx&originalUsingComponents=%5B%5D&type=template&usingComponentsInfo=%7B%7D\")\n/* styles */\n/* json */\nrequire.extract(\"./list.mpx.json?asScript&isComponent!=!@mpxjs/webpack-plugin/lib/selector?mode=wx&env=!./list.mpx?asScript&extract&index=0&isComponent&mpx&type=json\")\n/* script */\nglobal.currentSrcMode = \"wx\"\nrequire(\"./list.mpx.ts?isComponent!=!@mpxjs/webpack-plugin/lib/selector?mode=wx&env=!./list.mpx?ctorType=component&index=0&isComponent&lang=ts&mpx&type=script\")\n",
++    "import { createComponent } from '@mpxjs/core';\ncreateComponent({\n    data: {\n        listData: ['手机', '电视', '电脑'],\n        clsnm: 'bg-[#010101] active:bg-[#989898]'\n    },\n    options: {\n        addGlobalClass: true\n    }\n});\n",
++    "global.currentInject = {\n  moduleId: \"_a8452db4\"\n};\nglobal.currentInject.render = function (_i, _c, _r, _sc) {\n_i(_sc(\"listData\", this.listData), function (item, index) {\n  item;\n});\n_r();\n};\n"
++  ],
++  "names": [
++    "g",
++    "currentModuleId",
++    "currentCtor",
++    "Component",
++    "currentCtorType",
++    "currentResourceType",
++    "currentSrcMode",
++    "createComponent",
++    "data",
++    "listData",
++    "clsnm",
++    "options",
++    "addGlobalClass",
++    "currentInject",
++    "moduleId",
++    "render",
++    "_i",
++    "_c",
++    "_r",
++    "_sc",
++    "this",
++    "item",
++    "index"
++  ],
++  "sourceRoot": ""
++}
+
+--- /dev/null
++++ b/dist/wx/components/lista8452db4/index.json
+@@ -0,0 +1,3 @@
++{
++  "component": true
++}
+
+--- /dev/null
++++ b/dist/wx/components/lista8452db4/index.wxml
+@@ -0,0 +1,3 @@
++<view class="bg-_b_h434344_B active_cbg-_b_h543210_B"
++  ><view wx:for="{{listData}}" wx:key="*this">{{item}}</view></view
++>
+
+--- /dev/null
++++ b/dist/wx/custom-tab-bar/index.js
+@@ -0,0 +1,38 @@
++var self = {};
++((self.webpackChunk_weapp_tailwindcss_demo_mpx_tailwindcss_v5 = require("../bundle.js")),
++  (self.webpackChunk_weapp_tailwindcss_demo_mpx_tailwindcss_v5 =
++    self.webpackChunk_weapp_tailwindcss_demo_mpx_tailwindcss_v5 || []).push([
++    [777],
++    {
++      21310: function (e, n, t) {
++        ((t.g.currentModuleId = "_5bb04e21"),
++          (t.g.currentCtor = Component),
++          (t.g.currentCtorType = "component"),
++          (t.g.currentResourceType = "component"),
++          t(23381),
++          t(19390),
++          (t.g.currentSrcMode = "wx"),
++          t(70703));
++      },
++      70703: function (e, n, t) {
++        "use strict";
++        (t.r(n),
++          (0, t(12657).A)({
++            data: {
++              listData: ["手机", "电视", "电脑"],
++              clsnm: "bg-_b_h010101_B active_cbg-_b_h989898_B",
++            },
++            options: { addGlobalClass: !0 },
++          }));
++      },
++      23381: function (e, n, t) {
++        t.g.currentInject = { moduleId: "_5bb04e21" };
++      },
++      19390: function () {},
++    },
++    function (e) {
++      var n;
++      ((n = 21310), e((e.s = n)));
++    },
++  ]));
++//# sourceMappingURL=index.js.map
+
+--- /dev/null
++++ b/dist/wx/custom-tab-bar/index.js.map
+@@ -0,0 +1,33 @@
++{
++  "version": 3,
++  "file": "custom-tab-bar/index.js",
++  "mappings": "iQAAA,EAAAA,EAAOC,gBAAkB,YACzB,EAAAD,EAAOE,YAAcC,UACrB,EAAAH,EAAOI,gBAAkB,YACzB,EAAAJ,EAAOK,oBAAsB,YAE7B,SAGA,SAEA,EAAAL,EAAOM,eAAiB,KACxB,EAAQ,M,6CCVRC,E,SAAAA,GAAgB,CACZC,KAAM,CACFC,SAAU,CAAC,KAAM,KAAM,MACvBC,MAAO,oCAEXC,QAAS,CACLC,gBAAgB,I,wBCPxB,EAAAZ,EAAOa,cAAgB,CACrBC,SAAU,Y",
++  "sources": [
++    "webpack://@weapp-tailwindcss-demo/mpx-tailwindcss-v5/./src/custom-tab-bar/index.mpx?6179",
++    "webpack://@weapp-tailwindcss-demo/mpx-tailwindcss-v5/./src/custom-tab-bar/index.mpx",
++    "webpack://@weapp-tailwindcss-demo/mpx-tailwindcss-v5/./src/custom-tab-bar/index.mpx?6fb2"
++  ],
++  "sourcesContent": [
++    "global.currentModuleId = \"_5bb04e21\"\nglobal.currentCtor = Component\nglobal.currentCtorType = \"component\"\nglobal.currentResourceType = \"component\"\n/* template */\nrequire.extract(\"./index.mpx.wxml?isComponent!=!@mpxjs/webpack-plugin/lib/selector?mode=wx&env=!./index.mpx?ctorType=component&extract&hasScoped=false&index=0&isComponent&isNative=false&moduleId=_5bb04e21&mpx&originalUsingComponents=%5B%5D&type=template&usingComponentsInfo=%7B%7D\")\n/* styles */\n/* json */\nrequire.extract(\"./index.mpx.json?asScript&isComponent!=!@mpxjs/webpack-plugin/lib/selector?mode=wx&env=!./index.mpx?asScript&extract&index=0&isComponent&mpx&type=json\")\n/* script */\nglobal.currentSrcMode = \"wx\"\nrequire(\"./index.mpx.ts?isComponent!=!@mpxjs/webpack-plugin/lib/selector?mode=wx&env=!./index.mpx?ctorType=component&index=0&isComponent&lang=ts&mpx&type=script\")\n",
++    "import { createComponent } from '@mpxjs/core';\ncreateComponent({\n    data: {\n        listData: ['手机', '电视', '电脑'],\n        clsnm: 'bg-[#010101] active:bg-[#989898]'\n    },\n    options: {\n        addGlobalClass: true\n    }\n});\n",
++    "global.currentInject = {\n  moduleId: \"_5bb04e21\"\n};\n"
++  ],
++  "names": [
++    "g",
++    "currentModuleId",
++    "currentCtor",
++    "Component",
++    "currentCtorType",
++    "currentResourceType",
++    "currentSrcMode",
++    "createComponent",
++    "data",
++    "listData",
++    "clsnm",
++    "options",
++    "addGlobalClass",
++    "currentInject",
++    "moduleId"
++  ],
++  "sourceRoot": ""
++}
+
+--- /dev/null
++++ b/dist/wx/custom-tab-bar/index.json
+@@ -0,0 +1,3 @@
++{
++  "component": true
++}
+
+--- /dev/null
++++ b/dist/wx/custom-tab-bar/index.wxml
+@@ -0,0 +1 @@
++<view class="bg-_b_he90505_B text-purple-600 tw-root">111</view>
+
+--- /dev/null
++++ b/dist/wx/pages/component/index.js
+@@ -0,0 +1,30 @@
++var self = {};
++((self.webpackChunk_weapp_tailwindcss_demo_mpx_tailwindcss_v5 = require("../../bundle.js")),
++  (self.webpackChunk_weapp_tailwindcss_demo_mpx_tailwindcss_v5 =
++    self.webpackChunk_weapp_tailwindcss_demo_mpx_tailwindcss_v5 || []).push([
++    [260],
++    {
++      67879: function (e, n, c) {
++        ((c.g.currentModuleId = "_f7d5e5b8"),
++          (c.g.currentCtor = Component),
++          (c.g.currentCtorType = "component"),
++          (c.g.currentResourceType = "page"),
++          c(7379),
++          c(97720),
++          c(95440),
++          (c.g.currentSrcMode = "wx"),
++          c(93696));
++      },
++      93696: function () {},
++      7379: function (e, n, c) {
++        c.g.currentInject = { moduleId: "_f7d5e5b8" };
++      },
++      97720: function () {},
++      95440: function () {},
++    },
++    function (e) {
++      var n;
++      ((n = 67879), e((e.s = n)));
++    },
++  ]));
++//# sourceMappingURL=index.js.map
+
+--- /dev/null
++++ b/dist/wx/pages/component/index.js.map
+@@ -0,0 +1,25 @@
++{
++  "version": 3,
++  "file": "pages/component/index.js",
++  "mappings": "oQAAA,EAAAA,EAAOC,gBAAkB,YACzB,EAAAD,EAAOE,YAAcC,UACrB,EAAAH,EAAOI,gBAAkB,YACzB,EAAAJ,EAAOK,oBAAsB,OAE7B,QAEA,SAEA,SAEA,EAAAL,EAAOM,eAAiB,KACxB,EAAQ,M,0CCZR,EAAAN,EAAOO,cAAgB,CACrBC,SAAU,Y",
++  "sources": [
++    "webpack://@weapp-tailwindcss-demo/mpx-tailwindcss-v5/./src/pages/component/index.mpx",
++    "webpack://@weapp-tailwindcss-demo/mpx-tailwindcss-v5/./src/pages/component/index.mpx?d0aa"
++  ],
++  "sourcesContent": [
++    "global.currentModuleId = \"_f7d5e5b8\"\nglobal.currentCtor = Component\nglobal.currentCtorType = \"component\"\nglobal.currentResourceType = \"page\"\n/* template */\nrequire.extract(\"./index.mpx.wxml?isPage!=!@mpxjs/webpack-plugin/lib/selector?mode=wx&env=!./index.mpx?ctorType=page&extract&hasScoped&index=0&isNative=false&isPage&moduleId=_f7d5e5b8&mpx&originalUsingComponents=%5B%5D&type=template&usingComponentsInfo=%7B%7D\")\n/* styles */\nrequire.extract(\"./index.mpx.wxss?isPage!=!@mpxjs/webpack-plugin/lib/selector?mode=wx&env=!./index.mpx?extract&index=0&isPage&moduleId=_f7d5e5b8&mpx&scoped&type=styles\")\n/* json */\nrequire.extract(\"./index.mpx.json?asScript&isPage!=!@mpxjs/webpack-plugin/lib/selector?mode=wx&env=!./index.mpx?asScript&extract&index=0&isPage&mpx&type=json\")\n/* script */\nglobal.currentSrcMode = \"wx\"\nrequire(\"./index.mpx.ts?isPage!=!@mpxjs/webpack-plugin/lib/selector?mode=wx&env=!./index.mpx?ctorType=page&index=0&isPage&lang=ts&mpx&type=script\")\n",
++    "global.currentInject = {\n  moduleId: \"_f7d5e5b8\"\n};\n"
++  ],
++  "names": [
++    "g",
++    "currentModuleId",
++    "currentCtor",
++    "Component",
++    "currentCtorType",
++    "currentResourceType",
++    "currentSrcMode",
++    "currentInject",
++    "moduleId"
++  ],
++  "sourceRoot": ""
++}
+
+--- /dev/null
++++ b/dist/wx/pages/component/index.json
+@@ -0,0 +1,3 @@
++{
++  "usingComponents": {}
++}
+
+--- /dev/null
++++ b/dist/wx/pages/component/index.wxml
+@@ -0,0 +1 @@
++<div>component</div>
+
+--- /dev/null
++++ b/dist/wx/pages/component/index.wxss
+@@ -0,0 +1 @@
++
+
+diff -- dist/wx/pages/index.js
+# normalized content differs; inline diff omitted (large-added-file).
+# baseline: /dev/null
+# current: 35954 raw bytes, 82067 normalized bytes, hash af6f14c8543e
+
+diff -- dist/wx/pages/index.js.map
+# normalized content differs; inline diff omitted (large-added-file).
+# baseline: /dev/null
+# current: 178030 raw bytes, 181044 normalized bytes, hash b1688ade2c5b
+
+--- /dev/null
++++ b/dist/wx/pages/index.json
+@@ -0,0 +1,5 @@
++{
++  "usingComponents": {
++    "list": "/components/lista8452db4/index"
++  }
++}
+
+--- /dev/null
++++ b/dist/wx/pages/index.wxml
+@@ -0,0 +1,79 @@
++<view class="_2xl_ctext-base">2xl:text-base</view
++><view :class="numClassObj">2xl:text-[red]</view
++><view :class="mergedClass">twMerge 动态类</view
++><view class="space-y-4 flex flex-col bg-red-400"
++  ><view class="bg-sky-500">view space-y-4</view
++  ><view class="bg-sky-500">view space-y-4</view
++  ><text class="bg-sky-500">text space-y-4</text
++  ><button class="bg-sky-500">button space-y-4</button
++  ><view class="bg-sky-500">view space-y-4</view
++  ><text class="bg-sky-500">text space-y-4</text
++  ><view class="bg-sky-500">view space-y-4</view
++  ><text class="bg-sky-500">text space-y-4</text></view
++><view class="rotate-_b10deg_B">rotate1111111</view
++><view class="bg-gradient-to-r from-cyan-500 to-blue-500 h-14"></view
++><view class="text-_b32rpx_B border-_b10rpx_B">rpx</view
++><view class="text-_b32px_B border-_b10px_B">px</view
++><view class="_etext-primary _eborder-primary text-_b32px_B">1111</view
++><view
++  class="border-b-_b4rpx_B border-t-_b4px_B border w-screen h-3 border-_bred_B"
++></view
++><view
++  ><view></view><view></view><view></view><view></view
++  ><view><view class="u-count-down__text">u-count-down__text</view></view></view
++><button class="rounded-xl bg-emerald-500 py-2 text-white">主要按钮</button
++><view class="after_cborder-none">当前系统主题:{{ themeRef }}</view
++><view
++  hover-class="bg-red-500 dark_cbg-green-500"
++  class="bg-gray-100 dark_cbg-zinc-800 h-10 w-10"
++></view
++><view
++  class="h-5 w-5 shadow-_b0px_2px_11px_0px_rgba_p0_m0_m0_m0_d4_P_B before_ccontent-_b_aFestivus_a_B"
++></view
++><view class="h-5 w-5 shadow-_b0px_2px_11px_0px__h00000a_B"></view
++><view class="text-_b22px_B dark_ctext-yellow-400">text-[22px]</view
++><view class="text-_b_hbada55_B">text-[#bada55]</view>
++<div class="text-_blength_cvar_p--my-var-length_P_B">
++  text-[length:var(--my-var-length)]
++</div>
++<div class="text-_bcolor_cvar_p--my-var_P_B">text-[color:var(--my-var)]</div>
++<button
++  :class="{      'opacity-50': disabled    }"
++  :disabled="disabled"
++  class="_ebg-green-500 _esr-onlytext-white"
++>
++  disable</button
++><view class="test">test</view><view class="w-2 h-2 bg-_b_h123456_B"></view
++><view class="w-2 h-2 bg-blue-500_f50"></view
++><view class="flex items-center justify-center w-screen h-screen"
++  ><view
++    :class="['text-2xl', { underline: true }]"
++    class="_efont-bold _etext-_b_h990000_B"
++    >{{ title }}</view
++  ></view
++><view class="text-area"
++  ><text class="title h-_b200_v_B">{{ title }}</text></view
++><view class="p-_b20px_B -mt-2 mb-_b-20px_B"
++  >p-[20px] -mt-2 mb-[-20px] margin的jit 可不能这么写 -m-[20px]</view
++><view class="space-y-_b1_d6rem_B"
++  ><view class="w-_b300rpx_B text-black text-opacity-_b0_d19_B"
++    >w-[300rpx] text-black text-opacity-[0.19]</view
++  ><view class="min-w-_b300rpx_B max-h-_b100px_B text-_b20px_B leading-_b0_d9_B"
++    >min-w-[300rpx] max-h-[100px] text-[20px] leading-[0.9]</view
++  ><view class="max-w-_b300rpx_B min-h-_b100px_B text-_b_hdddddd_B"
++    >max-w-[300rpx] min-h-[100px] text-[#dddddd]</view
++  ><view
++    class="border-_b10px_B border-_b_h098765_B border-solid border-opacity-_b0_d44_B"
++    >border-[10px] border-[#098765] border-solid border-opacity-[0.44]</view
++  ><view
++    class="grid grid-cols-3 divide-x-_b10px_B divide-_b_h010101_B divide-solid"
++    ><div>1</div>
++    <div>2</div>
++    <div>3</div></view
++  ><view
++    class="w-32 py-2 rounded-md font-semibold text-white bg-pink-500 ring-4 ring-pink-300"
++    >Default</view
++  ></view
++><view class="px-_b34_d54rpx_B text-_b32_d4rpx_B text-_b_h5cdc34_B"
++  >Hello World<list></list
++></view>
+
+--- /dev/null
++++ b/dist/wx/project.config.json
+@@ -0,0 +1,30 @@
++{
++  "setting": {
++    "newFeature": true,
++    "urlCheck": true,
++    "es6": false,
++    "postcss": true,
++    "minified": false,
++    "checkSiteMap": false,
++    "autoAudits": false,
++    "babelSetting": {
++      "ignore": [],
++      "disablePlugins": [],
++      "outputPath": ""
++    }
++  },
++  "appid": "wx6ffee4673b257014",
++  "projectname": "mpx-tailwindcss-v5-weapp",
++  "description": "A mpx project",
++  "condition": {},
++  "compileType": "miniprogram",
++  "libVersion": "3.10.3",
++  "packOptions": {
++    "ignore": [],
++    "include": []
++  },
++  "editorSetting": {
++    "tabIndent": "insertSpaces",
++    "tabSize": 2
++  }
++}
+
+--- /dev/null
++++ b/dist/wx/styles/app5e440dc4.wxss
+@@ -0,0 +1,442 @@
++::before,
++::after {
++  --tw-content: "";
++}
++:host,
++page,
++.tw-root,
++wx-root-portal-content {
++  --tw-space-y-reverse: 0;
++  --tw-divide-x-reverse: 0;
++  --tw-border-style: solid;
++  --tw-gradient-position: initial;
++  --tw-gradient-from: rgba(0, 0, 0, 0);
++  --tw-gradient-via: rgba(0, 0, 0, 0);
++  --tw-gradient-to: rgba(0, 0, 0, 0);
++  --tw-gradient-stops: initial;
++  --tw-gradient-via-stops: initial;
++  --tw-gradient-from-position: 0%;
++  --tw-gradient-via-position: 50%;
++  --tw-gradient-to-position: 100%;
++  --tw-leading: initial;
++  --tw-font-weight: initial;
++  --tw-shadow: 0 0 rgba(0, 0, 0, 0);
++  --tw-shadow-color: initial;
++  --tw-shadow-alpha: 100%;
++  --tw-inset-shadow: 0 0 rgba(0, 0, 0, 0);
++  --tw-inset-shadow-color: initial;
++  --tw-inset-shadow-alpha: 100%;
++  --tw-ring-color: initial;
++  --tw-ring-shadow: 0 0 rgba(0, 0, 0, 0);
++  --tw-inset-ring-color: initial;
++  --tw-inset-ring-shadow: 0 0 rgba(0, 0, 0, 0);
++  --tw-ring-inset: initial;
++  --tw-ring-offset-width: 0px;
++  --tw-ring-offset-color: #fff;
++  --tw-ring-offset-shadow: 0 0 rgba(0, 0, 0, 0);
++  --tw-content: "";
++  --color-black: #000;
++  --color-white: #fff;
++  --color-gray-100: #f3f4f6;
++  --color-gray-200: #e5e7eb;
++  --color-gray-400: #9ca3af;
++  --color-zinc-800: #27272a;
++  --color-red-400: #f87171;
++  --color-red-500: #ef4444;
++  --color-yellow-400: #facc15;
++  --color-green-500: #22c55e;
++  --color-emerald-500: #10b981;
++  --color-cyan-500: #06b6d4;
++  --color-sky-500: #0ea5e9;
++  --color-blue-500: #3b82f6;
++  --color-purple-600: #9333ea;
++  --color-pink-300: #f9a8d4;
++  --color-pink-500: #ec4899;
++  --spacing: 8rpx;
++  --text-base: 32rpx;
++  --text-base--line-height: 1.5;
++  --text-2xl: 48rpx;
++  --text-2xl--line-height: 1.33333;
++  --font-weight-semibold: 600;
++  --font-weight-bold: 700;
++  --radius-md: 12rpx;
++  --radius-lg: 16rpx;
++  --radius-xl: 24rpx;
++  --color-primary: #155dfc;
++}
++.-m-_b20px_B {
++  margin: -20px;
++}
++.-mt-2 {
++  margin-top: calc(var(--spacing) * -2);
++}
++.mb-_b-20px_B {
++  margin-bottom: -20px;
++}
++.flex {
++  display: -webkit-flex;
++  display: flex;
++}
++.grid {
++  display: grid;
++}
++.h-2 {
++  height: calc(var(--spacing) * 2);
++}
++.h-3 {
++  height: calc(var(--spacing) * 3);
++}
++.h-5 {
++  height: calc(var(--spacing) * 5);
++}
++.h-10 {
++  height: calc(var(--spacing) * 10);
++}
++.h-14 {
++  height: calc(var(--spacing) * 14);
++}
++.h-_b200_v_B {
++  height: 200%;
++}
++.h-screen {
++  height: 100vh;
++}
++.max-h-_b100px_B {
++  max-height: 100px;
++}
++.min-h-_b100px_B {
++  min-height: 100px;
++}
++.w-2 {
++  width: calc(var(--spacing) * 2);
++}
++.w-5 {
++  width: calc(var(--spacing) * 5);
++}
++.w-10 {
++  width: calc(var(--spacing) * 10);
++}
++.w-32 {
++  width: calc(var(--spacing) * 32);
++}
++.w-_b300rpx_B {
++  width: 300rpx;
++}
++.w-screen {
++  width: 100vw;
++}
++.max-w-_b300rpx_B {
++  max-width: 300rpx;
++}
++.min-w-_b300rpx_B {
++  min-width: 300rpx;
++}
++.rotate-_b10deg_B {
++  rotate: 10deg;
++}
++.grid-cols-3 {
++  grid-template-columns: repeat(3, minmax(0, 1fr));
++}
++.flex-col {
++  -webkit-flex-direction: column;
++  flex-direction: column;
++}
++.items-center {
++  -webkit-align-items: center;
++  align-items: center;
++}
++.justify-center {
++  -webkit-justify-content: center;
++  justify-content: center;
++}
++.space-y-4 > view + view,
++.space-y-4 > view + text,
++.space-y-4 > text + view,
++.space-y-4 > text + text {
++  --tw-space-y-reverse: 0;
++  margin-bottom: calc((var(--spacing) * 4) * var(--tw-space-y-reverse));
++  margin-top: calc((var(--spacing) * 4) * (1 - var(--tw-space-y-reverse)));
++}
++.space-y-_b1_d6rem_B > view + view,
++.space-y-_b1_d6rem_B > view + text,
++.space-y-_b1_d6rem_B > text + view,
++.space-y-_b1_d6rem_B > text + text {
++  --tw-space-y-reverse: 0;
++  margin-bottom: calc(51.2rpx * var(--tw-space-y-reverse));
++  margin-top: calc(51.2rpx * (1 - var(--tw-space-y-reverse)));
++}
++.divide-x-_b10px_B > view + view,
++.divide-x-_b10px_B > view + text,
++.divide-x-_b10px_B > text + view,
++.divide-x-_b10px_B > text + text {
++  --tw-divide-x-reverse: 0;
++  border-left-style: var(--tw-border-style);
++  border-right-style: var(--tw-border-style);
++  border-right-width: calc(10px * var(--tw-divide-x-reverse));
++  border-left-width: calc(10px * (1 - var(--tw-divide-x-reverse)));
++}
++.divide-solid > view + view,
++.divide-solid > view + text,
++.divide-solid > text + view,
++.divide-solid > text + text {
++  --tw-border-style: solid;
++  border-style: solid;
++}
++.divide-_b_h010101_B > view + view,
++.divide-_b_h010101_B > view + text,
++.divide-_b_h010101_B > text + view,
++.divide-_b_h010101_B > text + text {
++  border-color: #010101;
++}
++.rounded-lg {
++  border-radius: var(--radius-lg);
++}
++.rounded-md {
++  border-radius: var(--radius-md);
++}
++.rounded-xl {
++  border-radius: var(--radius-xl);
++}
++.border {
++  border-style: var(--tw-border-style);
++  border-width: 1px;
++}
++.border-_b10px_B {
++  border-style: var(--tw-border-style);
++  border-width: 10px;
++}
++.border-_b10rpx_B {
++  border-style: var(--tw-border-style);
++  border-width: 10rpx;
++}
++.border-t-_b4px_B {
++  border-top-style: var(--tw-border-style);
++  border-top-width: 4px;
++}
++.border-b-_b4rpx_B {
++  border-bottom-style: var(--tw-border-style);
++  border-bottom-width: 4rpx;
++}
++.border-solid {
++  --tw-border-style: solid;
++  border-style: solid;
++}
++._eborder-primary {
++  border-color: var(--color-primary) !important;
++}
++.border-_b_h098765_B {
++  border-color: #098765;
++}
++.border-_bred_B {
++  border-color: red;
++}
++._ebg-green-500 {
++  background-color: var(--color-green-500) !important;
++}
++.bg-_b_h0000ff_B {
++  background-color: #0000ff;
++}
++.bg-_b_h010101_B {
++  background-color: #010101;
++}
++.bg-_b_h123456_B {
++  background-color: #123456;
++}
++.bg-_b_h434344_B {
++  background-color: #434344;
++}
++.bg-_b_he90505_B {
++  background-color: #e90505;
++}
++.bg-blue-500_f50 {
++  background-color: rgba(59, 130, 246, 0.5);
++}
++.bg-emerald-500 {
++  background-color: var(--color-emerald-500);
++}
++.bg-gray-100 {
++  background-color: var(--color-gray-100);
++}
++.bg-pink-500 {
++  background-color: var(--color-pink-500);
++}
++.bg-red-400 {
++  background-color: var(--color-red-400);
++}
++.bg-red-500 {
++  background-color: var(--color-red-500);
++}
++.bg-sky-500 {
++  background-color: var(--color-sky-500);
++}
++.bg-gradient-to-r {
++  --tw-gradient-position: to right;
++  background-image: linear-gradient(var(--tw-gradient-stops));
++}
++.from-cyan-500 {
++  --tw-gradient-from: var(--color-cyan-500);
++  --tw-gradient-stops: var(
++    --tw-gradient-via-stops,
++    var(--tw-gradient-position),
++    var(--tw-gradient-from) var(--tw-gradient-from-position),
++    var(--tw-gradient-to) var(--tw-gradient-to-position)
++  );
++}
++.to-blue-500 {
++  --tw-gradient-to: var(--color-blue-500);
++  --tw-gradient-stops: var(
++    --tw-gradient-via-stops,
++    var(--tw-gradient-position),
++    var(--tw-gradient-from) var(--tw-gradient-from-position),
++    var(--tw-gradient-to) var(--tw-gradient-to-position)
++  );
++}
++.p-4 {
++  padding: calc(var(--spacing) * 4);
++}
++.p-_b20px_B {
++  padding: 20px;
++}
++.px-_b34_d54rpx_B {
++  padding-left: 34.54rpx;
++  padding-right: 34.54rpx;
++}
++.py-2 {
++  padding-top: calc(var(--spacing) * 2);
++  padding-bottom: calc(var(--spacing) * 2);
++}
++.text-2xl {
++  font-size: var(--text-2xl);
++  line-height: var(--tw-leading, var(--text-2xl--line-height));
++}
++.text-_b20px_B {
++  font-size: 20px;
++}
++.text-_b22px_B {
++  font-size: 22px;
++}
++.text-_b32_d4rpx_B {
++  font-size: 32.4rpx;
++}
++.text-_b32px_B {
++  font-size: 32px;
++}
++.text-_b32rpx_B {
++  font-size: 32rpx;
++}
++.text-_b45rpx_B {
++  font-size: 45rpx;
++}
++.text-_blength_cvar_p--my-var-length_P_B {
++  font-size: var(--my-var-length);
++}
++.leading-_b0_d9_B {
++  --tw-leading: 0.9;
++  line-height: 0.9;
++}
++._efont-bold {
++  --tw-font-weight: var(--font-weight-bold) !important;
++  font-weight: var(--font-weight-bold) !important;
++}
++.font-semibold {
++  --tw-font-weight: var(--font-weight-semibold);
++  font-weight: var(--font-weight-semibold);
++}
++._etext-_b_h990000_B {
++  color: #990000 !important;
++}
++._etext-primary {
++  color: var(--color-primary) !important;
++}
++.text-_b_h5cdc34_B {
++  color: #5cdc34;
++}
++.text-_b_hbada55_B {
++  color: #bada55;
++}
++.text-_b_hdddddd_B {
++  color: #dddddd;
++}
++.text-_bcolor_cvar_p--my-var_P_B {
++  color: var(--my-var);
++}
++.text-black {
++  color: var(--color-black);
++}
++.text-purple-600 {
++  color: var(--color-purple-600);
++}
++.text-white {
++  color: var(--color-white);
++}
++.underline {
++  -webkit-text-decoration-line: underline;
++  text-decoration-line: underline;
++}
++.opacity-50 {
++  opacity: 0.5;
++}
++.shadow-_b0px_2px_11px_0px__h00000a_B {
++  --tw-shadow: 0px 2px 11px 0px var(--tw-shadow-color, #00000a);
++  box-shadow:
++    var(--tw-inset-shadow), var(--tw-inset-ring-shadow),
++    var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow);
++}
++.shadow-_b0px_2px_11px_0px_rgba_p0_m0_m0_m0_d4_P_B {
++  --tw-shadow: 0px 2px 11px 0px var(--tw-shadow-color, rgba(0, 0, 0, 0.4));
++  box-shadow:
++    var(--tw-inset-shadow), var(--tw-inset-ring-shadow),
++    var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow);
++}
++.ring-4 {
++  --tw-ring-shadow: var(--tw-ring-inset,) 0 0 0
++    calc(4px + var(--tw-ring-offset-width))
++    var(--tw-ring-color, var(--color-blue-500, #3b82f6));
++  box-shadow:
++    var(--tw-inset-shadow), var(--tw-inset-ring-shadow),
++    var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow);
++}
++.ring-pink-300 {
++  --tw-ring-color: var(--color-pink-300);
++}
++.before_ccontent-_b_aFestivus_a_B::before {
++  --tw-content: "Festivus";
++  content: var(--tw-content);
++}
++.after_cborder-none::after {
++  content: var(--tw-content);
++  --tw-border-style: none;
++  border-style: none;
++}
++.active_cbg-_b_h543210_B:active {
++  background-color: #543210;
++}
++.active_cbg-_b_h989898_B:active {
++  background-color: #989898;
++}
++@media (min-width: 96rem) {
++  ._2xl_ctext-base {
++    font-size: var(--text-base);
++    line-height: var(--tw-leading, var(--text-base--line-height));
++  }
++}
++@media (min-width: 96rem) {
++  ._2xl_ctext-_bred_B {
++    color: red;
++  }
++}
++@media (prefers-color-scheme: dark) {
++  .dark_cbg-green-500 {
++    background-color: var(--color-green-500);
++  }
++}
++@media (prefers-color-scheme: dark) {
++  .dark_cbg-zinc-800 {
++    background-color: var(--color-zinc-800);
++  }
++}
++@media (prefers-color-scheme: dark) {
++  .dark_ctext-yellow-400 {
++    color: var(--color-yellow-400);
++  }
++}
+
+--- /dev/null
++++ b/dist/wx/styles/index6ff7f9ca.wxss
+@@ -0,0 +1,245 @@
++::before,
++::after {
++  --tw-content: "";
++}
++view,
++text,
++:after,
++:before {
++  border: 0 solid;
++  box-sizing: border-box;
++  margin: 0;
++  padding: 0;
++}
++:host,
++page,
++.tw-root,
++wx-root-portal-content {
++  --tw-space-y-reverse: 0;
++  --tw-divide-x-reverse: 0;
++  --tw-border-style: solid;
++  --tw-leading: initial;
++  --tw-font-weight: initial;
++  --tw-shadow: 0 0 rgba(0, 0, 0, 0);
++  --tw-shadow-color: initial;
++  --tw-shadow-alpha: 100%;
++  --tw-inset-shadow: 0 0 rgba(0, 0, 0, 0);
++  --tw-inset-shadow-color: initial;
++  --tw-inset-shadow-alpha: 100%;
++  --tw-ring-color: initial;
++  --tw-ring-shadow: 0 0 rgba(0, 0, 0, 0);
++  --tw-inset-ring-color: initial;
++  --tw-inset-ring-shadow: 0 0 rgba(0, 0, 0, 0);
++  --tw-ring-inset: initial;
++  --tw-ring-offset-width: 0px;
++  --tw-ring-offset-color: #fff;
++  --tw-ring-offset-shadow: 0 0 rgba(0, 0, 0, 0);
++  --tw-content: "";
++  --color-gray-200: #e5e7eb;
++  --color-gray-400: #9ca3af;
++  --color-zinc-800: #27272a;
++  --color-yellow-400: #facc15;
++  --color-green-500: #22c55e;
++  --color-blue-500: #3b82f6;
++  --text-base: 32rpx;
++  --text-base--line-height: 1.5;
++  --font-weight-bold: 700;
++}
++.-m-_b20px_B {
++  margin: -20px;
++}
++.mb-_b-20px_B {
++  margin-bottom: -20px;
++}
++.h-_b200_v_B {
++  height: 200%;
++}
++.max-h-_b100px_B {
++  max-height: 100px;
++}
++.min-h-_b100px_B {
++  min-height: 100px;
++}
++.w-_b300rpx_B {
++  width: 300rpx;
++}
++.max-w-_b300rpx_B {
++  max-width: 300rpx;
++}
++.min-w-_b300rpx_B {
++  min-width: 300rpx;
++}
++.rotate-_b10deg_B {
++  rotate: 10deg;
++}
++.space-y-_b1_d6rem_B > view + view,
++.space-y-_b1_d6rem_B > view + text,
++.space-y-_b1_d6rem_B > text + view,
++.space-y-_b1_d6rem_B > text + text {
++  --tw-space-y-reverse: 0;
++  margin-bottom: calc(51.2rpx * var(--tw-space-y-reverse));
++  margin-top: calc(51.2rpx * (1 - var(--tw-space-y-reverse)));
++}
++.divide-x-_b10px_B > view + view,
++.divide-x-_b10px_B > view + text,
++.divide-x-_b10px_B > text + view,
++.divide-x-_b10px_B > text + text {
++  --tw-divide-x-reverse: 0;
++  border-left-style: var(--tw-border-style);
++  border-right-style: var(--tw-border-style);
++  border-right-width: calc(10px * var(--tw-divide-x-reverse));
++  border-left-width: calc(10px * (1 - var(--tw-divide-x-reverse)));
++}
++.divide-_b_h010101_B > view + view,
++.divide-_b_h010101_B > view + text,
++.divide-_b_h010101_B > text + view,
++.divide-_b_h010101_B > text + text {
++  border-color: #010101;
++}
++.border-_b10px_B {
++  border-style: var(--tw-border-style);
++  border-width: 10px;
++}
++.border-_b10rpx_B {
++  border-style: var(--tw-border-style);
++  border-width: 10rpx;
++}
++.border-t-_b4px_B {
++  border-top-style: var(--tw-border-style);
++  border-top-width: 4px;
++}
++.border-b-_b4rpx_B {
++  border-bottom-style: var(--tw-border-style);
++  border-bottom-width: 4rpx;
++}
++.border-_b_h098765_B {
++  border-color: #098765;
++}
++.border-_bred_B {
++  border-color: red;
++}
++._ebg-green-500 {
++  background-color: var(--color-green-500) !important;
++}
++.bg-_b_h0000ff_B {
++  background-color: #0000ff;
++}
++.bg-_b_h010101_B {
++  background-color: #010101;
++}
++.bg-_b_h123456_B {
++  background-color: #123456;
++}
++.bg-_b_h434344_B {
++  background-color: #434344;
++}
++.bg-_b_he90505_B {
++  background-color: #e90505;
++}
++.bg-blue-500_f50 {
++  background-color: rgba(59, 130, 246, 0.5);
++}
++.p-_b20px_B {
++  padding: 20px;
++}
++.px-_b34_d54rpx_B {
++  padding-left: 34.54rpx;
++  padding-right: 34.54rpx;
++}
++.text-_b20px_B {
++  font-size: 20px;
++}
++.text-_b22px_B {
++  font-size: 22px;
++}
++.text-_b32_d4rpx_B {
++  font-size: 32.4rpx;
++}
++.text-_b32px_B {
++  font-size: 32px;
++}
++.text-_b32rpx_B {
++  font-size: 32rpx;
++}
++.text-_b45rpx_B {
++  font-size: 45rpx;
++}
++.text-_blength_cvar_p--my-var-length_P_B {
++  font-size: var(--my-var-length);
++}
++.leading-_b0_d9_B {
++  --tw-leading: 0.9;
++  line-height: 0.9;
++}
++._efont-bold {
++  --tw-font-weight: var(--font-weight-bold) !important;
++  font-weight: var(--font-weight-bold) !important;
++}
++._etext-_b_h990000_B {
++  color: #990000 !important;
++}
++.text-_b_h5cdc34_B {
++  color: #5cdc34;
++}
++.text-_b_hbada55_B {
++  color: #bada55;
++}
++.text-_b_hdddddd_B {
++  color: #dddddd;
++}
++.text-_bcolor_cvar_p--my-var_P_B {
++  color: var(--my-var);
++}
++.shadow-_b0px_2px_11px_0px__h00000a_B {
++  --tw-shadow: 0px 2px 11px 0px var(--tw-shadow-color, #00000a);
++  box-shadow:
++    var(--tw-inset-shadow), var(--tw-inset-ring-shadow),
++    var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow);
++}
++.shadow-_b0px_2px_11px_0px_rgba_p0_m0_m0_m0_d4_P_B {
++  --tw-shadow: 0px 2px 11px 0px var(--tw-shadow-color, rgba(0, 0, 0, 0.4));
++  box-shadow:
++    var(--tw-inset-shadow), var(--tw-inset-ring-shadow),
++    var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow);
++}
++.before_ccontent-_b_aFestivus_a_B::before {
++  --tw-content: "Festivus";
++  content: var(--tw-content);
++}
++.after_cborder-none::after {
++  content: var(--tw-content);
++  --tw-border-style: none;
++  border-style: none;
++}
++.active_cbg-_b_h543210_B:active {
++  background-color: #543210;
++}
++.active_cbg-_b_h989898_B:active {
++  background-color: #989898;
++}
++@media (min-width: 96rem) {
++  ._2xl_ctext-base {
++    font-size: var(--text-base);
++    line-height: var(--tw-leading, var(--text-base--line-height));
++  }
++}
++@media (min-width: 96rem) {
++  ._2xl_ctext-_bred_B {
++    color: red;
++  }
++}
++@media (prefers-color-scheme: dark) {
++  .dark_cbg-green-500 {
++    background-color: var(--color-green-500);
++  }
++}
++@media (prefers-color-scheme: dark) {
++  .dark_cbg-zinc-800 {
++    background-color: var(--color-zinc-800);
++  }
++}
++@media (prefers-color-scheme: dark) {
++  .dark_ctext-yellow-400 {
++    color: var(--color-yellow-400);
++  }
++}
+

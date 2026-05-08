@@ -1,0 +1,308 @@
+# apps/vite-native artifact diff
+# baseline: main(v4)
+# current: next v5 generator
+# note: only core build artifacts are compared. Text artifacts are formatted/normalized before diffing; large normalized text files are summarized by hash and size.
+
+--- a/dist/app.wxss
++++ b/dist/app.wxss
+@@ -1,12 +1,16 @@
+-/*! tailwindcss v4.2.4 | MIT License | https://tailwindcss.com */
+ ::before,
+ ::after {
+   --tw-content: "";
+ }
+-view,
+-text,
+-::before,
+-::after {
++:host,
++page,
++.tw-root,
++wx-root-portal-content {
++  --tw-rotate-x: initial;
++  --tw-rotate-y: initial;
++  --tw-rotate-z: initial;
++  --tw-skew-x: initial;
++  --tw-skew-y: initial;
+   --tw-space-y-reverse: 0;
+   --tw-space-x-reverse: 0;
+   --tw-border-style: solid;
+@@ -19,60 +23,53 @@
+   --tw-gradient-from-position: 0%;
+   --tw-gradient-via-position: 50%;
+   --tw-gradient-to-position: 100%;
+-  box-sizing: border-box;
+-  border-width: 0;
+-  border-style: solid;
+-  border-color: currentColor;
+-}
+-page,
+-.tw-root,
+-wx-root-portal-content,
+-:host {
+-  --color-red-700: rgb(191, 0, 15);
+-  --color-amber-300: rgb(255, 210, 55);
+-  --color-green-300: rgb(123, 241, 168);
+-  --color-blue-200: rgb(190, 219, 255);
+-  --color-blue-300: rgb(145, 197, 255);
+-  --color-blue-500: rgb(50, 128, 255);
+-  --color-pink-300: rgb(253, 165, 213);
+-  --color-zinc-50: rgb(250, 250, 250);
+-  --color-zinc-900: rgb(24, 24, 27);
++  --tw-blur: initial;
++  --tw-brightness: initial;
++  --tw-contrast: initial;
++  --tw-grayscale: initial;
++  --tw-hue-rotate: initial;
++  --tw-invert: initial;
++  --tw-opacity: initial;
++  --tw-saturate: initial;
++  --tw-sepia: initial;
++  --tw-drop-shadow: initial;
++  --tw-drop-shadow-color: initial;
++  --tw-drop-shadow-alpha: 100%;
++  --tw-drop-shadow-size: initial;
++  --radius: 8rpx;
++  --color-gray-200: #e5e7eb;
++  --color-gray-400: #9ca3af;
++  --color-zinc-50: #fafafa;
++  --color-zinc-900: #18181b;
++  --color-red-700: #b91c1c;
++  --color-amber-300: #fcd34d;
++  --color-green-300: #86efac;
++  --color-blue-200: #bfdbfe;
++  --color-blue-300: #93c5fd;
++  --color-blue-500: #3b82f6;
++  --color-pink-300: #f9a8d4;
++  --font-sans:
++    ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Ubuntu,
++    Cantarell, Noto Sans, sans-serif, "Apple Color Emoji", "Segoe UI Emoji",
++    "Segoe UI Symbol", "Noto Color Emoji";
++  --font-mono:
++    ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono",
++    "Courier New", monospace;
+   --spacing: 8rpx;
++  --default-transition-duration: 150ms;
++  --default-transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
++  --default-font-family: var(--font-sans);
++  --default-mono-font-family: var(--font-mono);
+ }
+-@supports (color: color(display-p3 0 0 0%)) {
+-  page,
+-  .tw-root,
+-  wx-root-portal-content,
+-  :host {
+-    --color-red-700: rgb(191, 0, 16);
+-    --color-amber-300: rgb(255, 210, 55);
+-    --color-blue-200: rgb(190, 219, 255);
+-    --color-blue-300: rgb(145, 197, 255);
+-    --color-blue-500: rgb(50, 128, 255);
+-  }
+-
+-  @media (color-gamut: p3) {
+-    page,
+-    .tw-root,
+-    wx-root-portal-content,
+-    :host {
+-      --color-red-700: color(display-p3 0.69274 0.11623 0.10468);
+-      --color-amber-300: color(display-p3 0.97433 0.83063 0.33298);
+-      --color-blue-200: color(display-p3 0.76688 0.85521 0.98748);
+-      --color-blue-300: color(display-p3 0.60256 0.76721 0.99394);
+-      --color-blue-500: color(display-p3 0.26642 0.49122 0.98862);
+-    }
+-  }
++.-start {
++  left: calc(var(--spacing) * -1);
+ }
+-view,
+-text,
+-:after,
+-:before {
+-  box-sizing: border-box;
+-  border: 0 solid;
+-  margin: 0;
+-  padding: 0;
++.start {
++  left: var(--spacing);
+ }
++.end {
++  right: var(--spacing);
++}
+ .container {
+   width: 100%;
+ }
+@@ -106,9 +103,7 @@
+   width: 1em;
+   height: 1em;
+   background-color: currentColor;
+-  -webkit-mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' width='24' height='24'%3E%3Cpath fill='black' d='M10 20v-6h4v6h5v-8h3L12 3L2 12h3v8z'/%3E%3C/svg%3E");
+   -webkit-mask-image: var(--svg);
+-  mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' width='24' height='24'%3E%3Cpath fill='black' d='M10 20v-6h4v6h5v-8h3L12 3L2 12h3v8z'/%3E%3C/svg%3E");
+   mask-image: var(--svg);
+   -webkit-mask-repeat: no-repeat;
+   mask-repeat: no-repeat;
+@@ -116,21 +111,27 @@
+   mask-size: 100% 100%;
+   --svg: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' width='24' height='24'%3E%3Cpath fill='black' d='M10 20v-6h4v6h5v-8h3L12 3L2 12h3v8z'/%3E%3C/svg%3E");
+ }
++.block {
++  display: block;
++}
+ .flex {
+   display: -webkit-flex;
+   display: flex;
+ }
++.inline {
++  display: inline;
++}
+ .inline-block {
+   display: inline-block;
+ }
++.table {
++  display: table;
++}
+ .size-12 {
+-  width: 96rpx;
+   width: calc(var(--spacing) * 12);
+-  height: 96rpx;
+   height: calc(var(--spacing) * 12);
+ }
+ .h-10 {
+-  height: 80rpx;
+   height: calc(var(--spacing) * 10);
+ }
+ .h-_b29_d292px_B {
+@@ -151,6 +152,15 @@
+ .w-_b323px_B {
+   width: 323px;
+ }
++.transform {
++  -webkit-transform: var(--tw-rotate-x,) var(--tw-rotate-y,) var(--tw-rotate-z,)
++    var(--tw-skew-x,) var(--tw-skew-y,);
++  transform: var(--tw-rotate-x,) var(--tw-rotate-y,) var(--tw-rotate-z,)
++    var(--tw-skew-x,) var(--tw-skew-y,);
++}
++.resize {
++  resize: both;
++}
+ .flex-col {
+   -webkit-flex-direction: column;
+   flex-direction: column;
+@@ -160,9 +170,7 @@
+ .space-y-2_d5 > text + view,
+ .space-y-2_d5 > text + text {
+   --tw-space-y-reverse: 0;
+-  margin-bottom: 0rpx;
+   margin-bottom: calc((var(--spacing) * 2.5) * var(--tw-space-y-reverse));
+-  margin-top: 20rpx;
+   margin-top: calc((var(--spacing) * 2.5) * (1 - var(--tw-space-y-reverse)));
+ }
+ .space-x-2_d5 > view + view,
+@@ -170,11 +178,17 @@
+ .space-x-2_d5 > text + view,
+ .space-x-2_d5 > text + text {
+   --tw-space-x-reverse: 0;
+-  margin-right: 0rpx;
+   margin-right: calc((var(--spacing) * 2.5) * var(--tw-space-x-reverse));
+-  margin-left: 20rpx;
+   margin-left: calc((var(--spacing) * 2.5) * (1 - var(--tw-space-x-reverse)));
+ }
++.truncate {
++  overflow: hidden;
++  text-overflow: ellipsis;
++  white-space: nowrap;
++}
++.rounded {
++  border-radius: var(--radius);
++}
+ .border-4 {
+   border-style: var(--tw-border-style);
+   border-width: 4px;
+@@ -186,20 +200,12 @@
+   background-color: #68c828;
+ }
+ .bg-amber-300 {
+-  background-color: rgb(255, 210, 55);
+-  background-color: color(display-p3 0.97433 0.83063 0.33298);
+   background-color: var(--color-amber-300);
+ }
+ .bg-blue-500_f30 {
+-  background-color: rgba(50, 128, 255, 0.3);
++  background-color: rgba(59, 130, 246, 0.3);
+ }
+-@media (color-gamut: p3) {
+-  .bg-blue-500_f30 {
+-    background-color: color(display-p3 0.26642 0.49122 0.98862 / 0.3);
+-  }
+-}
+ .bg-zinc-50 {
+-  background-color: rgb(250, 250, 250);
+   background-color: var(--color-zinc-50);
+ }
+ .bg-gradient-to-b {
+@@ -233,7 +239,6 @@
+   );
+ }
+ .p-4 {
+-  padding: 32rpx;
+   padding: calc(var(--spacing) * 4);
+ }
+ .text-_b100px_B {
+@@ -249,23 +254,50 @@
+   color: #123456;
+ }
+ .text-blue-300 {
+-  color: rgb(145, 197, 255);
+-  color: color(display-p3 0.60256 0.76721 0.99394);
+   color: var(--color-blue-300);
+ }
+ .text-pink-300 {
+-  color: rgb(253, 165, 213);
+   color: var(--color-pink-300);
+ }
+ .text-red-700 {
+-  color: rgb(191, 0, 15);
+-  color: color(display-p3 0.69274 0.11623 0.10468);
+   color: var(--color-red-700);
+ }
++.capitalize {
++  text-transform: capitalize;
++}
++.invert {
++  --tw-invert: invert(100%);
++  -webkit-filter: var(--tw-blur,) var(--tw-brightness,) var(--tw-contrast,)
++    var(--tw-grayscale,) var(--tw-hue-rotate,) var(--tw-invert,)
++    var(--tw-saturate,) var(--tw-sepia,) var(--tw-drop-shadow,);
++  filter: var(--tw-blur,) var(--tw-brightness,) var(--tw-contrast,)
++    var(--tw-grayscale,) var(--tw-hue-rotate,) var(--tw-invert,)
++    var(--tw-saturate,) var(--tw-sepia,) var(--tw-drop-shadow,);
++}
++.filter {
++  -webkit-filter: var(--tw-blur,) var(--tw-brightness,) var(--tw-contrast,)
++    var(--tw-grayscale,) var(--tw-hue-rotate,) var(--tw-invert,)
++    var(--tw-saturate,) var(--tw-sepia,) var(--tw-drop-shadow,);
++  filter: var(--tw-blur,) var(--tw-brightness,) var(--tw-contrast,)
++    var(--tw-grayscale,) var(--tw-hue-rotate,) var(--tw-invert,)
++    var(--tw-saturate,) var(--tw-sepia,) var(--tw-drop-shadow,);
++}
++.transition {
++  transition-property:
++    color, background-color, border-color, outline-color, text-decoration-color,
++    fill, stroke, --tw-gradient-from, --tw-gradient-via, --tw-gradient-to,
++    opacity, box-shadow, transform, translate, scale, rotate, filter,
++    backdrop-filter, display, content-visibility, overlay, pointer-events;
++  transition-timing-function: var(
++    --tw-ease,
++    var(--default-transition-timing-function)
++  );
++  transition-duration: var(--tw-duration, var(--default-transition-duration));
++}
+ @media (prefers-color-scheme: dark) {
+   .dark_cbg-zinc-900 {
+-    background-color: rgb(24, 24, 27);
+     background-color: var(--color-zinc-900);
+   }
+ }
++
+ /*$vite$:1*/
+

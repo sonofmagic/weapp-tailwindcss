@@ -1,0 +1,4876 @@
+# apps/vite-native-ts-skyline artifact diff
+# baseline: main(v4)
+# current: next v5 generator
+# note: only core build artifacts are compared. Text artifacts are formatted/normalized before diffing; large normalized text files are summarized by hash and size.
+
+--- a/dist/app.js
++++ b/dist/app.js
+@@ -1,6 +1,6 @@
+-const require_common = require("./weapp-vendors/wevu-router.js");
++const require_common = require("./weapp-vendors/wevu-ref.js");
+ //#region miniprogram/app.ts
+-require("./weapp-vendors/wevu-src.js").na({
++require("./src-BF-e4_0K.js").oa({
+   globalData: {},
+   setup() {
+     require_common.xe(() => {
+
+--- a/dist/app.wxss
++++ b/dist/app.wxss
+@@ -2,10 +2,10 @@
+ ::after {
+   --tw-content: "";
+ }
+-view,
+-text,
+-::before,
+-::after {
++:host,
++page,
++.tw-root,
++wx-root-portal-content {
+   --tw-border-spacing-x: 0;
+   --tw-border-spacing-y: 0;
+   --tw-translate-x: 0;
+@@ -58,10 +58,6 @@
+   --tw-contain-paint:  ;
+   --tw-contain-style:   
+ ;
+-  box-sizing: border-box;
+-  border-width: 0;
+-  border-style: solid;
+-  border-color: currentColor;
+ }
+ .i-mdi-arrow-left {
+   display: inline-block;
+@@ -143,6 +139,9 @@
+ }
+ .pointer-events-none {
+   pointer-events: none;
++}
++.static {
++  position: static;
+ }
+ .fixed {
+   position: fixed;
+@@ -264,6 +263,9 @@
+ .inline-flex {
+   display: inline-flex;
+ }
++.table {
++  display: table;
++}
+ .grid {
+   display: grid;
+ }
+@@ -361,7 +363,6 @@
+   min-width: 28rpx;
+ }
+ .max-w-fit {
+-  max-width: -moz-fit-content;
+   max-width: fit-content;
+ }
+ .flex-1 {
+@@ -379,6 +380,9 @@
+ }
+ .animate-ping {
+   animation: ping 1s cubic-bezier(0, 0, 0.2, 1) infinite;
++}
++.resize {
++  resize: both;
+ }
+ .grid-cols-2 {
+   grid-template-columns: repeat(2, minmax(0, 1fr));
+@@ -685,7 +689,6 @@
+   --tw-gradient-to: rgba(255, 255, 255, 0.9) var(--tw-gradient-to-position);
+ }
+ .object-cover {
+-  -o-object-fit: cover;
+   object-fit: cover;
+ }
+ .p-_b10rpx_B {
+@@ -1015,6 +1018,9 @@
+     var(--tw-backdrop-opacity) var(--tw-backdrop-saturate)
+     var(--tw-backdrop-sepia);
+ }
++._bwevu_csetData_B {
++  wevu: setData;
++}
+ .active_cscale-95:active {
+   --tw-scale-x: 0.95;
+   --tw-scale-y: 0.95;
+
+--- a/dist/components/skyline-navbar/index.js
++++ b/dist/components/skyline-navbar/index.js
+@@ -1,12 +1,12 @@
+-const require_common = require("../../weapp-vendors/wevu-router.js");
+-const require_src_BFQLJ5K7 = require("../../weapp-vendors/wevu-src.js");
++const require_common = require("../../weapp-vendors/wevu-ref.js");
++const require_src_BF_e4_0K = require("../../src-BF-e4_0K.js");
+ //#region miniprogram/components/skyline-navbar/index.ts
+ var defaultTrend = [42, 68, 54, 92, 78, 118, 88];
+ function formatTime() {
+   const now = /* @__PURE__ */ new Date();
+   return `${now.getHours().toString().padStart(2, "0")}:${now.getMinutes().toString().padStart(2, "0")}`;
+ }
+-var skyline_navbar_default = require_src_BFQLJ5K7.ja({
++var skyline_navbar_default = require_src_BF_e4_0K.Fa({
+   options: { addGlobalClass: true },
+   properties: {
+     title: {
+@@ -57,7 +57,7 @@
+         };
+       });
+     }
+-    require_src_BFQLJ5K7.ft(
++    require_src_BF_e4_0K.wt(
+       () => props.trend,
+       (value) => updateTrend(value),
+       {
+@@ -65,7 +65,7 @@
+         deep: true,
+       },
+     );
+-    require_src_BFQLJ5K7.ft(
++    require_src_BF_e4_0K.wt(
+       () => Number(props.trendDelta),
+       (value) => {
+         if (!Number.isFinite(value)) {
+@@ -84,11 +84,11 @@
+       },
+       { immediate: true },
+     );
+-    require_src_BFQLJ5K7.Je(() => {
++    require_src_BF_e4_0K.ot(() => {
+       updateTime();
+       timer = setInterval(updateTime, 6e4);
+     });
+-    require_src_BFQLJ5K7.Ze(() => {
++    require_src_BF_e4_0K.lt(() => {
+       if (timer != null) clearInterval(timer);
+       timer = void 0;
+     });
+
+--- a/dist/pages/cart/index.js
++++ b/dist/pages/cart/index.js
+@@ -1,14 +1,14 @@
+-const require_common = require("../../weapp-vendors/wevu-router.js");
+-const require_src_BFQLJ5K7 = require("../../weapp-vendors/wevu-src.js");
++const require_common = require("../../weapp-vendors/wevu-ref.js");
++const require_src_BF_e4_0K = require("../../src-BF-e4_0K.js");
+ //#region miniprogram/pages/cart/index.vue
+-require_src_BFQLJ5K7.Ma({
++require_src_BF_e4_0K.Ia({
+   computed: {
+     __wv_cls_0: function () {
+       return (() => {
+         try {
+-          return require_src_BFQLJ5K7.Ja([
++          return require_src_BF_e4_0K.mo([
+             "mr-_b16rpx_B flex h-_b34rpx_B w-_b34rpx_B items-center justify-center rounded-full border border-white_f40",
+-            require_common.$(
++            require_common.Ae(
+               this.$state != null &&
+                 Object.prototype.hasOwnProperty.call(
+                   this.$state,
+@@ -36,9 +36,9 @@
+     __wv_style_0: function () {
+       return (() => {
+         try {
+-          return require_src_BFQLJ5K7.qa(
++          return require_src_BF_e4_0K.po(
+             "width: " +
+-              require_common.$(
++              require_common.Ae(
+                 this.$state != null &&
+                   Object.prototype.hasOwnProperty.call(
+                     this.$state,
+@@ -66,8 +66,8 @@
+       return (() => {
+         let __wv_list_0 = [];
+         try {
+-          __wv_list_0 = require_common.$(
+-            require_common.$(
++          __wv_list_0 = require_common.Ae(
++            require_common.Ae(
+               this.$state != null &&
+                 Object.prototype.hasOwnProperty.call(this.$state, "items")
+                 ? this.items
+@@ -89,7 +89,7 @@
+           return __wv_list_0.map((item, __wv_index_0) => {
+             return (() => {
+               try {
+-                return require_src_BFQLJ5K7.Ja([
++                return require_src_BF_e4_0K.mo([
+                   "rounded-_b30rpx_B border p-_b22rpx_B backdrop-blur-_b20rpx_B",
+                   item.checked
+                     ? "border-sky-300_f45 bg-sky-500_f10 shadow-_b0_0_42rpx_rgba_p56_m189_m248_m0_d2_P_B"
+@@ -108,7 +108,7 @@
+             const item = __wv_list_0[__wv_key_0];
+             __wv_res_0[__wv_key_0] = (() => {
+               try {
+-                return require_src_BFQLJ5K7.Ja([
++                return require_src_BF_e4_0K.mo([
+                   "rounded-_b30rpx_B border p-_b22rpx_B backdrop-blur-_b20rpx_B",
+                   item.checked
+                     ? "border-sky-300_f45 bg-sky-500_f10 shadow-_b0_0_42rpx_rgba_p56_m189_m248_m0_d2_P_B"
+@@ -127,8 +127,8 @@
+       return (() => {
+         let __wv_list_0 = [];
+         try {
+-          __wv_list_0 = require_common.$(
+-            require_common.$(
++          __wv_list_0 = require_common.Ae(
++            require_common.Ae(
+               this.$state != null &&
+                 Object.prototype.hasOwnProperty.call(this.$state, "items")
+                 ? this.items
+@@ -150,7 +150,7 @@
+           return __wv_list_0.map((item, __wv_index_0) => {
+             return (() => {
+               try {
+-                return require_src_BFQLJ5K7.Ja([
++                return require_src_BF_e4_0K.mo([
+                   "mr-_b16rpx_B mt-_b8rpx_B flex h-_b34rpx_B w-_b34rpx_B items-center justify-center rounded-full border border-white_f40",
+                   item.checked
+                     ? "border-emerald-300 bg-emerald-400"
+@@ -169,7 +169,7 @@
+             const item = __wv_list_0[__wv_key_0];
+             __wv_res_0[__wv_key_0] = (() => {
+               try {
+-                return require_src_BFQLJ5K7.Ja([
++                return require_src_BF_e4_0K.mo([
+                   "mr-_b16rpx_B mt-_b8rpx_B flex h-_b34rpx_B w-_b34rpx_B items-center justify-center rounded-full border border-white_f40",
+                   item.checked
+                     ? "border-emerald-300 bg-emerald-400"
+@@ -188,8 +188,8 @@
+       return (() => {
+         let __wv_list_0 = [];
+         try {
+-          __wv_list_0 = require_common.$(
+-            require_common.$(
++          __wv_list_0 = require_common.Ae(
++            require_common.Ae(
+               this.$state != null &&
+                 Object.prototype.hasOwnProperty.call(this.$state, "items")
+                 ? this.items
+@@ -211,7 +211,7 @@
+           return __wv_list_0.map((item, __wv_index_0) => {
+             return (() => {
+               try {
+-                return require_src_BFQLJ5K7.Ja([
++                return require_src_BF_e4_0K.mo([
+                   "flex h-_b34rpx_B w-_b34rpx_B items-center justify-center rounded-full bg-white_f10 text-_b22rpx_B text-white",
+                   item.quantity <= 1 ? "opacity-40" : "active_cscale-95",
+                 ]);
+@@ -228,7 +228,7 @@
+             const item = __wv_list_0[__wv_key_0];
+             __wv_res_0[__wv_key_0] = (() => {
+               try {
+-                return require_src_BFQLJ5K7.Ja([
++                return require_src_BF_e4_0K.mo([
+                   "flex h-_b34rpx_B w-_b34rpx_B items-center justify-center rounded-full bg-white_f10 text-_b22rpx_B text-white",
+                   item.quantity <= 1 ? "opacity-40" : "active_cscale-95",
+                 ]);
+@@ -244,9 +244,9 @@
+     __wv_cls_4: function () {
+       return (() => {
+         try {
+-          return require_src_BFQLJ5K7.Ja([
++          return require_src_BF_e4_0K.mo([
+             "rounded-_b999rpx_B px-_b48rpx_B py-_b20rpx_B text-_b26rpx_B font-semibold text-slate-950",
+-            require_common.$(
++            require_common.Ae(
+               this.$state != null &&
+                 Object.prototype.hasOwnProperty.call(
+                   this.$state,
+
+--- a/dist/pages/index/index.js
++++ b/dist/pages/index/index.js
+@@ -1,5 +1,5 @@
+-const require_common = require("../../weapp-vendors/wevu-router.js");
+-const require_src_BFQLJ5K7 = require("../../weapp-vendors/wevu-src.js");
++const require_common = require("../../weapp-vendors/wevu-ref.js");
++const require_src_BF_e4_0K = require("../../src-BF-e4_0K.js");
+ //#region miniprogram/pages/index/index.ts
+ var WEATHER_PRESETS = [
+   "晴 · 26°C",
+@@ -11,9 +11,9 @@
+   const now = /* @__PURE__ */ new Date();
+   return `${now.getHours().toString().padStart(2, "0")}:${now.getMinutes().toString().padStart(2, "0")}`;
+ }
+-var index_default = require_src_BFQLJ5K7.ja({
++var index_default = require_src_BF_e4_0K.Fa({
+   setup() {
+-    const skylineNav = require_common.Y({
++    const skylineNav = require_common.X({
+       title: "Skyline Market",
+       location: "深圳 · 夜景塔群",
+       weather: "晴 · 26°C",
+@@ -21,7 +21,7 @@
+       trend: [48, 76, 58, 102, 96, 132, 118],
+       trendDelta: 0,
+     });
+-    const trendInsight = require_common.Y({
++    const trendInsight = require_common.X({
+       peak: "0",
+       average: "0",
+       momentum: "▲ +0%",
+
+diff -- dist/src-BF-e4_0K.js
+# normalized content differs; inline diff omitted (large-added-file).
+# baseline: /dev/null
+# current: 115565 raw bytes, 139600 normalized bytes, hash 6f5e4d8d1ba4
+
+--- /dev/null
++++ b/dist/weapp-vendors/wevu-ref.js
+@@ -0,0 +1,2320 @@
++//#region ../../node_modules/.pnpm/wevu@6.16.6_miniprogram-api-typings@5.2.0_rolldown@1.0.0-rc.17_rollup@4.60.3_typescript@5.9.3/node_modules/wevu/dist/ref-B6CIXciv.mjs
++var e = Promise.resolve(),
++  t = /* @__PURE__ */ new Set();
++var n = !1,
++  r = !1;
++function i() {
++  ((r = !1), (n = !0));
++  try {
++    t.forEach((e) => e());
++  } finally {
++    (t.clear(), (n = !1));
++  }
++}
++function a(a) {
++  (t.add(a), !n && !r && ((r = !0), e.then(i)));
++}
++function o(t) {
++  return t ? e.then(t) : e;
++}
++function s(e) {
++  "@babel/helpers - typeof";
++  return (
++    (s =
++      typeof Symbol == `function` && typeof Symbol.iterator == `symbol`
++        ? function (e) {
++            return typeof e;
++          }
++        : function (e) {
++            return e &&
++              typeof Symbol == `function` &&
++              e.constructor === Symbol &&
++              e !== Symbol.prototype
++              ? `symbol`
++              : typeof e;
++          }),
++    s(e)
++  );
++}
++function c(e, t) {
++  if (s(e) != `object` || !e) return e;
++  var n = e[Symbol.toPrimitive];
++  if (n !== void 0) {
++    var r = n.call(e, t || `default`);
++    if (s(r) != `object`) return r;
++    throw TypeError(`@@toPrimitive must return a primitive value.`);
++  }
++  return (t === `string` ? String : Number)(e);
++}
++function l(e) {
++  var t = c(e, `string`);
++  return s(t) == `symbol` ? t : t + ``;
++}
++function u$1(e, t, n) {
++  return (
++    (t = l(t)) in e
++      ? Object.defineProperty(e, t, {
++          value: n,
++          enumerable: !0,
++          configurable: !0,
++          writable: !0,
++        })
++      : (e[t] = n),
++    e
++  );
++}
++var d = /* @__PURE__ */ new WeakMap();
++var f = null;
++var p = [];
++var m = 0;
++var h$1 = /* @__PURE__ */ new Set();
++function _$1(e) {
++  let { deps: t } = e;
++  for (let n = 0; n < t.length; n++) t[n].delete(e);
++  t.length = 0;
++}
++function v$1(e) {
++  var t;
++  e.active && ((e.active = !1), _$1(e), (t = e.onStop) == null || t.call(e));
++}
++var y$1;
++var re = class {
++  constructor(e = !1) {
++    if (
++      ((this.detached = e),
++      u$1(this, `active`, !0),
++      u$1(this, `effects`, []),
++      u$1(this, `cleanups`, []),
++      u$1(this, `parent`, void 0),
++      u$1(this, `scopes`, void 0),
++      !e && y$1)
++    ) {
++      var t;
++      ((this.parent = y$1), ((t = y$1).scopes || (t.scopes = [])).push(this));
++    }
++  }
++  run(e) {
++    if (!this.active) return;
++    let t = y$1;
++    y$1 = this;
++    try {
++      return e();
++    } finally {
++      y$1 = t;
++    }
++  }
++  stop() {
++    var e;
++    if (this.active) {
++      this.active = !1;
++      for (let e of this.effects) v$1(e);
++      this.effects.length = 0;
++      for (let e of this.cleanups) e();
++      if (((this.cleanups.length = 0), this.scopes)) {
++        for (let e of this.scopes) e.stop();
++        this.scopes.length = 0;
++      }
++      if ((e = this.parent) != null && e.scopes) {
++        let e = this.parent.scopes.indexOf(this);
++        e >= 0 && this.parent.scopes.splice(e, 1);
++      }
++      this.parent = void 0;
++    }
++  }
++};
++function ie(e = !1) {
++  return new re(e);
++}
++function oe(e) {
++  y$1 != null && y$1.active && y$1.cleanups.push(e);
++}
++function se(e) {
++  y$1 != null && y$1.active && y$1.effects.push(e);
++}
++function ce(e, t = {}) {
++  let n = function () {
++    if (!n.active || n._running) return e();
++    _$1(n);
++    try {
++      return ((n._running = !0), p.push(n), (f = n), e());
++    } finally {
++      var t;
++      (p.pop(),
++        (f = (t = p[p.length - 1]) == null ? null : t),
++        (n._running = !1));
++    }
++  };
++  return (
++    (n.deps = []),
++    (n.scheduler = t.scheduler),
++    (n.onStop = t.onStop),
++    (n.active = !0),
++    (n._running = !1),
++    (n._fn = e),
++    n
++  );
++}
++function le(e, t = {}) {
++  let n = ce(e, t);
++  return (se(n), t.lazy || n(), n);
++}
++function b$1(e, t) {
++  if (!f) return;
++  let n = d.get(e);
++  n || ((n = /* @__PURE__ */ new Map()), d.set(e, n));
++  let r = n.get(t);
++  (r || ((r = /* @__PURE__ */ new Set()), n.set(t, r)),
++    r.has(f) || (r.add(f), f.deps.push(r)));
++}
++function x$1(e) {
++  if (e.scheduler) {
++    e.scheduler();
++    return;
++  }
++  if (m > 0) {
++    h$1.add(e);
++    return;
++  }
++  e();
++}
++function S$1(e, t) {
++  let n = d.get(e);
++  if (!n) return;
++  let r = n.get(t);
++  if (!r) return;
++  let i = /* @__PURE__ */ new Set();
++  (r.forEach((e) => {
++    e !== f && i.add(e);
++  }),
++    i.forEach(x$1));
++}
++function C$1(e) {
++  f && (e.has(f) || (e.add(f), f.deps.push(e)));
++}
++function w$1(e) {
++  new Set(e).forEach(x$1);
++}
++var T$1 = /* @__PURE__ */ new Set();
++function ue$1(e) {
++  T$1.add(e);
++}
++function de(e) {
++  T$1.delete(e);
++}
++var E = /* @__PURE__ */ new WeakMap(),
++  D = /* @__PURE__ */ new WeakMap(),
++  O$1 = /* @__PURE__ */ new WeakMap(),
++  k$1 = /* @__PURE__ */ new WeakMap(),
++  A$1 = /* @__PURE__ */ new WeakSet(),
++  j$1 = /* @__PURE__ */ new WeakMap(),
++  M = /* @__PURE__ */ new WeakMap();
++function fe$1(e) {
++  let t = M.get(e);
++  return (t || ((t = /* @__PURE__ */ new Set()), M.set(e, t)), t);
++}
++function N(e, t) {
++  fe$1(e).add(t);
++}
++function P$1(e) {
++  var t;
++  D.set(e, ((t = D.get(e)) == null ? 0 : t) + 1);
++}
++function pe$1(e) {
++  var t;
++  return (t = D.get(e)) == null ? 0 : t;
++}
++function F$1(e) {
++  let t = /* @__PURE__ */ new Set(),
++    n = [e];
++  for (let e = 0; e < 2e3 && n.length; e++) {
++    let e = n.pop(),
++      r = k$1.get(e);
++    if (r) for (let e of r.keys()) t.has(e) || (t.add(e), P$1(e), n.push(e));
++  }
++}
++function I$1(e) {
++  let t = k$1.get(e);
++  if (!t) {
++    (A$1.delete(e), O$1.delete(e));
++    return;
++  }
++  let n,
++    r,
++    i = 0;
++  for (let [e, a] of t) {
++    for (let t of a) {
++      if (((i += 1), i > 1)) break;
++      ((n = e), (r = t));
++    }
++    if (i > 1) break;
++  }
++  if (i === 1 && n && r) {
++    (A$1.delete(e),
++      O$1.set(e, {
++        parent: n,
++        key: r,
++      }));
++    return;
++  }
++  (A$1.add(e), O$1.delete(e));
++}
++function L$1(e, t, n) {
++  if (typeof n != `string`) {
++    (A$1.add(e), O$1.delete(e));
++    return;
++  }
++  if (T$1.size) {
++    var r;
++    let n = (r = E.get(t)) == null ? t : r;
++    (N(n, t), N(n, e));
++  }
++  let i = k$1.get(e);
++  i || ((i = /* @__PURE__ */ new Map()), k$1.set(e, i));
++  let a = i.get(t);
++  (a || ((a = /* @__PURE__ */ new Set()), i.set(t, a)), a.add(n), I$1(e));
++}
++function R$1(e, t, n) {
++  let r = k$1.get(e);
++  if (!r) return;
++  let i = r.get(t);
++  i && (i.delete(n), i.size || r.delete(t), r.size || k$1.delete(e), I$1(e));
++}
++function z$1(e, t) {
++  if (t === e) return [];
++  if (A$1.has(t)) return;
++  let n = [],
++    r = t;
++  for (let t = 0; t < 2e3; t++) {
++    if (r === e) return n.reverse();
++    if (A$1.has(r)) return;
++    let t = O$1.get(r);
++    if (!t || typeof t.key != `string`) return;
++    (n.push(t.key), (r = t.parent));
++  }
++}
++function B$1(e) {
++  return typeof e == `object` && !!e;
++}
++function V$1(e, t) {
++  return Object.prototype.hasOwnProperty.call(e, t);
++}
++function me(e) {
++  return Object.prototype.toString.call(e).slice(8, -1);
++}
++function he$1(e) {
++  switch (e) {
++    case `Object`:
++    case `Array`:
++      return 1;
++    case `Map`:
++    case `Set`:
++    case `WeakMap`:
++    case `WeakSet`:
++      return 0;
++    default:
++      return 0;
++  }
++}
++function H(e) {
++  return e.__r_skip ? 0 : he$1(me(e));
++}
++var U$1 = Symbol(`wevu.version`);
++function W(e) {
++  if (!e) return !1;
++  let t = e.charCodeAt(0);
++  if (t < 48 || t > 57) return !1;
++  let n = Number(e);
++  return Number.isInteger(n) && n >= 0 && String(n) === e;
++}
++function G(e) {
++  var t;
++  return (t = e == null ? void 0 : e.__r_raw) == null ? e : t;
++}
++var K = /* @__PURE__ */ new WeakMap(),
++  q = /* @__PURE__ */ new WeakMap(),
++  J = /* @__PURE__ */ new WeakMap();
++function ge$1(e, t) {
++  let n = G(e);
++  (j$1.set(n, ``), N(n, n));
++  let r = t == null ? void 0 : t.shouldIncludeTopKey,
++    i =
++      typeof (t == null ? void 0 : t.maxDepth) == `number`
++        ? Math.max(0, Math.floor(t.maxDepth))
++        : Infinity,
++    a =
++      typeof (t == null ? void 0 : t.maxKeys) == `number`
++        ? Math.max(0, Math.floor(t.maxKeys))
++        : Infinity,
++    o = /* @__PURE__ */ new WeakSet(),
++    s = [
++      {
++        current: n,
++        path: ``,
++        depth: 0,
++      },
++    ],
++    c = 0;
++  for (; s.length; ) {
++    let e = s.pop();
++    if (
++      o.has(e.current) ||
++      (o.add(e.current),
++      j$1.set(e.current, e.path),
++      N(n, e.current),
++      (c += 1),
++      c >= a) ||
++      e.depth >= i ||
++      Array.isArray(e.current)
++    )
++      continue;
++    let t = Object.entries(e.current);
++    for (let [i, a] of t) {
++      if ((e.path === `` && r && !r(i)) || !B$1(a) || a.__r_skip) continue;
++      let t = G(a);
++      if ((E.has(t) || E.set(t, n), L$1(t, e.current, i), !A$1.has(t))) {
++        let n = e.path ? `${e.path}.${i}` : i;
++        j$1.set(t, n);
++      }
++      (N(n, t),
++        s.push({
++          current: t,
++          path: e.path ? `${e.path}.${i}` : i,
++          depth: e.depth + 1,
++        }));
++    }
++  }
++}
++function _e(e) {
++  let t = G(e),
++    n = M.get(t);
++  if (!n) {
++    j$1.delete(t);
++    return;
++  }
++  for (let e of n)
++    (O$1.delete(e),
++      k$1.delete(e),
++      j$1.delete(e),
++      A$1.delete(e),
++      E.delete(e),
++      D.delete(e));
++  M.delete(t);
++}
++function ve(e) {
++  b$1(G(e), U$1);
++}
++var ye = {
++  get(e, t, n) {
++    if (t === `__r_isReactive`) return !0;
++    if (t === `__r_raw`) return e;
++    let r = Reflect.get(e, t, n);
++    return (b$1(e, t), r);
++  },
++  set(e, t, n, r) {
++    let i = Reflect.get(e, t, r),
++      a = Reflect.set(e, t, n, r);
++    return (Object.is(i, n) || (S$1(e, t), S$1(e, U$1), P$1(e)), a);
++  },
++  deleteProperty(e, t) {
++    let n = V$1(e, t),
++      r = Reflect.deleteProperty(e, t);
++    return (n && r && (S$1(e, t), S$1(e, U$1), P$1(e)), r);
++  },
++  ownKeys(e) {
++    return (b$1(e, Symbol.iterator), b$1(e, U$1), Reflect.ownKeys(e));
++  },
++};
++function be$1(e) {
++  if (!B$1(e) || e.__r_isReactive) return e;
++  let t = J.get(e);
++  if (t) return t;
++  if (H(e) === 0) return e;
++  let n = new Proxy(e, ye);
++  return (J.set(e, n), q.set(n, e), D.has(e) || D.set(e, 0), n);
++}
++function Se(e) {
++  return pe$1(G(e));
++}
++function Y(e, t, n) {
++  var r;
++  if (!T$1.size || typeof t != `string` || t.startsWith(`__r_`)) return;
++  let i = (r = E.get(e)) == null ? e : r,
++    a = Array.isArray(e) && (t === `length` || W(t)) ? `array` : `property`,
++    o = z$1(i, e);
++  if (!o) {
++    let r = /* @__PURE__ */ new Set(),
++      o = k$1.get(e);
++    if (o)
++      for (let [e, t] of o) {
++        var s;
++        let n = j$1.get(e),
++          a = n ? n.split(`.`, 1)[0] : void 0,
++          o = a || (s = z$1(i, e)) == null ? void 0 : s[0];
++        for (let e of t) {
++          var c;
++          typeof e == `string` &&
++            r.add((c = a == null ? o : a) == null ? e : c);
++        }
++      }
++    else r.add(t);
++    for (let e of T$1)
++      e({
++        root: i,
++        kind: a,
++        op: n,
++        path: void 0,
++        fallbackTopKeys: r.size ? [...r] : void 0,
++      });
++    return;
++  }
++  let l = o.findIndex((e) => W(e));
++  if (l !== -1) {
++    let e = o.slice(0, l).join(`.`) || void 0;
++    for (let t of T$1)
++      t({
++        root: i,
++        kind: `array`,
++        op: n,
++        path: e,
++      });
++    return;
++  }
++  let u = o.length ? o.join(`.`) : ``,
++    d = a === `array` ? u || void 0 : u ? `${u}.${t}` : t;
++  for (let e of T$1)
++    e({
++      root: i,
++      kind: a,
++      op: n,
++      path: d,
++    });
++}
++var Ce = {
++  get(e, t, n) {
++    if (t === `__r_isReactive`) return !0;
++    if (t === `__r_raw`) return e;
++    let r = Reflect.get(e, t, n);
++    if ((b$1(e, t), B$1(r))) {
++      var i, a;
++      if (r.__r_skip) return r;
++      let n = (i = E.get(e)) == null ? e : i,
++        o = (a = r == null ? void 0 : r.__r_raw) == null ? r : a;
++      (E.has(o) || E.set(o, n), L$1(o, e, t));
++      let s = j$1.get(e);
++      if (T$1.size && typeof t == `string` && s != null && !A$1.has(o)) {
++        let e = s ? `${s}.${t}` : t;
++        j$1.set(o, e);
++      }
++      return X(r);
++    }
++    return r;
++  },
++  set(e, t, n, r) {
++    let i = Array.isArray(e),
++      a = i ? e.length : 0,
++      o = Reflect.get(e, t, r),
++      s = Reflect.set(e, t, n, r);
++    if (!Object.is(o, n)) {
++      var c;
++      let r = B$1(o)
++        ? (c = o == null ? void 0 : o.__r_raw) == null
++          ? o
++          : c
++        : void 0;
++      if ((r && R$1(r, e, t), B$1(n) && !n.__r_skip)) {
++        var l, u;
++        let r = (l = E.get(e)) == null ? e : l,
++          i = (u = n == null ? void 0 : n.__r_raw) == null ? n : u;
++        (E.has(i) || E.set(i, r), L$1(i, e, t));
++        let a = j$1.get(e);
++        if (T$1.size && typeof t == `string` && a != null && !A$1.has(i)) {
++          let e = a ? `${a}.${t}` : t;
++          j$1.set(i, e);
++        }
++      }
++      (S$1(e, t),
++        i && typeof t == `string` && W(t) && Number(t) >= a && S$1(e, `length`),
++        S$1(e, U$1),
++        P$1(e),
++        F$1(e));
++      let s = E.get(e);
++      (s && s !== e && (S$1(s, U$1), P$1(s)), Y(e, t, `set`));
++    }
++    return s;
++  },
++  deleteProperty(e, t) {
++    let n = V$1(e, t),
++      r = n ? e[t] : void 0,
++      i = Reflect.deleteProperty(e, t);
++    if (n && i) {
++      var a;
++      let n = B$1(r)
++        ? (a = r == null ? void 0 : r.__r_raw) == null
++          ? r
++          : a
++        : void 0;
++      (n && R$1(n, e, t), S$1(e, t), S$1(e, U$1), P$1(e), F$1(e));
++      let i = E.get(e);
++      (i && i !== e && (S$1(i, U$1), P$1(i)), Y(e, t, `delete`));
++    }
++    return i;
++  },
++  ownKeys(e) {
++    return (b$1(e, Symbol.iterator), b$1(e, U$1), Reflect.ownKeys(e));
++  },
++};
++function X(e) {
++  if (!B$1(e) || e.__r_isReactive) return e;
++  let t = K.get(e);
++  if (t) return t;
++  if (H(e) === 0) return e;
++  let n = new Proxy(e, Ce);
++  return (
++    K.set(e, n),
++    q.set(n, e),
++    D.has(e) || D.set(e, 0),
++    E.has(e) || E.set(e, e),
++    n
++  );
++}
++function we(e) {
++  return !!(e && e.__r_isReactive);
++}
++function Te(e) {
++  return B$1(e) ? X(e) : e;
++}
++function Z(e) {
++  return (
++    B$1(e) &&
++      Object.defineProperty(e, `__r_skip`, {
++        value: !0,
++        configurable: !0,
++        enumerable: !1,
++        writable: !0,
++      }),
++    e
++  );
++}
++var De = `__v_isRef`;
++function Q(e) {
++  try {
++    Object.defineProperty(e, De, {
++      value: !0,
++      configurable: !0,
++    });
++  } catch (t) {
++    e[De] = !0;
++  }
++  return e;
++}
++function $(e) {
++  return !!(e && typeof e == `object` && e.__v_isRef === !0);
++}
++var Oe = class {
++  constructor(e) {
++    (u$1(this, `_value`, void 0),
++      u$1(this, `_rawValue`, void 0),
++      u$1(this, `dep`, void 0),
++      Q(this),
++      (this._rawValue = e),
++      (this._value = Te(e)));
++  }
++  get value() {
++    return (
++      this.dep || (this.dep = /* @__PURE__ */ new Set()),
++      C$1(this.dep),
++      this._value
++    );
++  }
++  set value(e) {
++    Object.is(e, this._rawValue) ||
++      ((this._rawValue = e), (this._value = Te(e)), this.dep && w$1(this.dep));
++  }
++};
++function ke(e) {
++  return $(e) ? e : Z(new Oe(e));
++}
++function Ae(e) {
++  return $(e) ? e.value : e;
++}
++//#endregion
++//#region ../../node_modules/.pnpm/wevu@6.16.6_miniprogram-api-typings@5.2.0_rolldown@1.0.0-rc.17_rollup@4.60.3_typescript@5.9.3/node_modules/wevu/dist/store-C-7rPMM3.mjs
++function u(n) {
++  let r, a;
++  typeof n == `function`
++    ? ((r = n),
++      (a = () => {
++        throw Error(`计算属性是只读的`);
++      }))
++    : ((r = n.get), (a = n.set));
++  let o,
++    c = !0,
++    l,
++    u = {
++      get value() {
++        return (c && ((o = l()), (c = !1)), b$1(u, `value`), o);
++      },
++      set value(e) {
++        a(e);
++      },
++    };
++  return (
++    Q(u),
++    (l = le(r, {
++      lazy: !0,
++      scheduler: () => {
++        c || ((c = !0), S$1(u, `value`));
++      },
++    })),
++    u
++  );
++}
++//#endregion
++//#region ../../node_modules/.pnpm/@weapp-core+constants@0.1.4/node_modules/@weapp-core/constants/dist/index.js
++var WEVU_PAGE_LAYOUT_SETTER_KEY = "__wevuSetPageLayout";
++var WEVU_PAGE_LAYOUT_NONE = "__wv_no_layout";
++var WEVU_PAGE_LAYOUT_NAME_KEY = "__wv_page_layout_name";
++var WEVU_PAGE_LAYOUT_PROPS_KEY = "__wv_page_layout_props";
++var WEVU_INLINE_HANDLER = "__weapp_vite_inline";
++var WEVU_MODEL_HANDLER = "__weapp_vite_model";
++var WEVU_OWNER_HANDLER = "__weapp_vite_owner";
++var WEVU_RESERVED_METHOD_PREFIX = "__weapp_vite_";
++var WEVU_INLINE_MAP_KEY = "__weapp_vite_inline_map";
++var WEVU_SCOPED_SLOT_CREATOR_KEY = "__weapp_vite_createScopedSlotComponent";
++var WEVU_SLOT_OWNER_ID_KEY = "__wvOwnerId";
++var WEVU_SLOT_OWNER_ID_PROP = "__wvSlotOwnerId";
++var WEVU_SLOT_PROPS_KEY = "__wvSlotProps";
++var WEVU_SLOT_SCOPE_KEY = "__wvSlotScope";
++var WEVU_SLOT_OWNER_KEY = "__wvOwner";
++var WEVU_SLOT_PROPS_DATA_KEY = "__wvSlotPropsData";
++var WEVU_SLOT_NAMES_PROP = "vueSlots";
++var WEVU_PROPS_KEY = "__wevuProps";
++var WEVU_ATTRS_KEY = "__wevuAttrs";
++var WEVU_NATIVE_INSTANCE_KEY = "__wevuNativeInstance";
++var WEVU_RUNTIME_KEY = "__wevuRuntime";
++var WEVU_TEMPLATE_REFS_KEY = "__wevuTemplateRefs";
++var WEVU_SETUP_CONTEXT_INSTANCE_KEY = "__wevuSetupContextInstance";
++var WEVU_PROP_KEYS_KEY = "__wevuPropKeys";
++var WEVU_READY_CALLED_KEY = "__wevuReadyCalled";
++var WEVU_TEMPLATE_REFS_CALLBACKS_KEY = "__wevuTemplateRefsCallbacks";
++var WEVU_TEMPLATE_REFS_PENDING_KEY = "__wevuTemplateRefsPending";
++var WEVU_PENDING_PROP_VALUES_KEY = "__wevuPendingPropValues";
++var WEVU_ON_LOAD_CALLED_KEY = "__wevuOnLoadCalled";
++var WEVU_ROUTE_DONE_CALLED_KEY = "__wevuRouteDoneCalled";
++var WEVU_ROUTE_DONE_IN_TICK_KEY = "__wevuRouteDoneInTick";
++var WEVU_PAGE_SCROLL_HOOK_DEPTH_KEY = "__wevuPageScrollHookDepth";
++var WEVU_HOOKS_KEY = "__wevuHooks";
++var WEVU_EXPOSED_KEY = "__wevuExposed";
++var WEVU_PUBLIC_RUNTIME_KEY = "$wevu";
++var WEVU_RUNTIME_APP_KEY = "__wevuRuntimeApp";
++var WEVU_IS_APP_INSTANCE_KEY = "__wevuIsAppInstance";
++var WEVU_APP_PROVIDES_KEY = "__wevuAppProvides";
++var WEVU_PROVIDES_KEY = "__wevuProvides";
++var WEVU_PARENT_INSTANCE_KEY = "__wevuParentInstance";
++var WEVU_WATCH_STOPS_KEY = "__wevuWatchStops";
++var WEVU_EFFECT_SCOPE_KEY = "__wevuEffectScope";
++var WEVU_TEMPLATE_REF_MAP_KEY = "__wevuTemplateRefMap";
++var WEVU_LAYOUT_HOST_BRIDGE_KEY = "__wevuLayoutHostBridge";
++var WEVU_LAYOUT_BRIDGE_PAGE_KEYS = "__wevuLayoutBridgePageKeys";
++//#endregion
++//#region ../../node_modules/.pnpm/@weapp-core+shared@3.0.4/node_modules/@weapp-core/shared/dist/index.js
++var __create = Object.create;
++var __defProp$1 = Object.defineProperty;
++var __getOwnPropDesc = Object.getOwnPropertyDescriptor;
++var __getOwnPropNames = Object.getOwnPropertyNames;
++var __getProtoOf = Object.getPrototypeOf;
++var __hasOwnProp = Object.prototype.hasOwnProperty;
++var __commonJSMin = (cb, mod) => () => (
++  mod || cb((mod = { exports: {} }).exports, mod),
++  mod.exports
++);
++var __copyProps = (to, from, except, desc) => {
++  if ((from && typeof from === "object") || typeof from === "function")
++    for (
++      var keys = __getOwnPropNames(from), i = 0, n = keys.length, key;
++      i < n;
++      i++
++    ) {
++      key = keys[i];
++      if (!__hasOwnProp.call(to, key) && key !== except)
++        __defProp$1(to, key, {
++          get: ((k) => from[k]).bind(null, key),
++          enumerable: !(desc = __getOwnPropDesc(from, key)) || desc.enumerable,
++        });
++    }
++  return to;
++};
++var __toESM = (mod, isNodeMode, target) => (
++  (target = mod != null ? __create(__getProtoOf(mod)) : {}),
++  __copyProps(
++    isNodeMode || !mod || !mod.__esModule
++      ? __defProp$1(target, "default", {
++          value: mod,
++          enumerable: true,
++        })
++      : target,
++    mod,
++  )
++);
++function isPlainObject(value) {
++  if (value === null || typeof value !== "object") return false;
++  const prototype = Object.getPrototypeOf(value);
++  if (
++    prototype !== null &&
++    prototype !== Object.prototype &&
++    Object.getPrototypeOf(prototype) !== null
++  )
++    return false;
++  if (Symbol.iterator in value) return false;
++  if (Symbol.toStringTag in value)
++    return Object.prototype.toString.call(value) === "[object Module]";
++  return true;
++}
++function _defu(baseObject, defaults, namespace = ".", merger) {
++  if (!isPlainObject(defaults)) return _defu(baseObject, {}, namespace, merger);
++  const object = { ...defaults };
++  for (const key of Object.keys(baseObject)) {
++    if (key === "__proto__" || key === "constructor") continue;
++    const value = baseObject[key];
++    if (value === null || value === void 0) continue;
++    if (merger && merger(object, key, value, namespace)) continue;
++    if (Array.isArray(value) && Array.isArray(object[key]))
++      object[key] = [...value, ...object[key]];
++    else if (isPlainObject(value) && isPlainObject(object[key]))
++      object[key] = _defu(
++        value,
++        object[key],
++        (namespace ? `${namespace}.` : "") + key.toString(),
++        merger,
++      );
++    else object[key] = value;
++  }
++  return object;
++}
++var DEFAULT_PROJECT_CONFIG_ROOT_KEYS = [
++  "miniprogramRoot",
++  "srcMiniprogramRoot",
++];
++var DEFAULT_RUNTIME_CAPABILITIES = Object.freeze({
++  globalPageStack: true,
++  globalCreateSelectorQuery: true,
++  selectorQueryScopeByIn: true,
++  globalCreateIntersectionObserver: true,
++  intersectionObserverScopeByParameter: true,
++  pageShareMenu: true,
++  shareTimelineRequiresShareAppMessage: true,
++  pageScrollApi: true,
++  pullDownRefreshApi: true,
++  globalRouterApi: true,
++  appErrorListener: true,
++  appPageNotFoundListener: true,
++  appUnhandledRejectionListener: true,
++  appThemeChangeListener: true,
++  appMemoryWarningListener: true,
++});
++var DEFAULT_PAGE_IDENTITY_RULES = [
++  {
++    prefix: "route",
++    source: "route",
++  },
++];
++/**
++ * @description 全仓库统一的小程序平台描述表。
++ */
++var MINI_PROGRAM_PLATFORM_DESCRIPTORS = [
++  {
++    id: "weapp",
++    displayName: "WeChat Mini Program",
++    family: "wechat",
++    aliases: ["weapp", "wechat", "weixin", "wx"],
++    outputExtensions: {
++      js: "js",
++      json: "json",
++      wxml: "wxml",
++      wxss: "wxss",
++      wxs: "wxs",
++    },
++    projectConfigFileName: "project.config.json",
++    projectConfigRootKeys: DEFAULT_PROJECT_CONFIG_ROOT_KEYS,
++    ide: {},
++    build: {
++      autoTouchAppStyle: true,
++      defaultBuildTarget: "es2020",
++    },
++    resolvePreservedNpmDirNames: () => ["miniprogram_npm"],
++    json: {},
++    npm: { distDirName: () => "miniprogram_npm" },
++    wxml: {
++      eventBindingStyle: "default",
++      directivePrefix: "wx",
++    },
++    compiler: { templatePreset: "wechat" },
++    typescript: { appTypesPackage: "miniprogram-api-typings" },
++    runtime: {
++      globalObjectKey: "wx",
++      hostConfigKey: "__wxConfig",
++      globalResolvePriority: 1,
++      routeGlobalResolvePriority: 0,
++      capabilities: DEFAULT_RUNTIME_CAPABILITIES,
++      pageIdentityRules: [
++        {
++          prefix: "webview",
++          source: "field",
++          field: "__wxWebviewId__",
++        },
++        {
++          prefix: "exparser",
++          source: "field",
++          field: "__wxExparserNodeId__",
++        },
++        ...DEFAULT_PAGE_IDENTITY_RULES,
++      ],
++    },
++  },
++  {
++    id: "alipay",
++    displayName: "Alipay Mini Program",
++    family: "alipay",
++    aliases: ["alipay", "ali", "my"],
++    outputExtensions: {
++      js: "js",
++      json: "json",
++      wxml: "axml",
++      wxss: "acss",
++      wxs: "sjs",
++    },
++    projectConfigFileName: "mini.project.json",
++    projectConfigRootKeys: DEFAULT_PROJECT_CONFIG_ROOT_KEYS,
++    scriptModuleTagByExtension: { sjs: "import-sjs" },
++    usesProjectRootNpmDir: true,
++    ide: {
++      requiresOpenPlatformArg: true,
++      defaultProjectRoot: "dist/alipay/dist",
++    },
++    build: {
++      autoTouchAppStyle: false,
++      defaultBuildTarget: "es2015",
++    },
++    resolvePreservedNpmDirNames: (options) => [
++      options?.alipayNpmMode === "miniprogram_npm"
++        ? "miniprogram_npm"
++        : "node_modules",
++    ],
++    json: {
++      normalizeUsingComponents: true,
++      fillComponentGenericsDefault: true,
++      rewriteBundleNpmImports: true,
++    },
++    npm: {
++      distDirName: (options) =>
++        options?.alipayNpmMode === "miniprogram_npm"
++          ? "miniprogram_npm"
++          : "node_modules",
++      normalizeImportPath: true,
++      normalizeMiniprogramPackage: true,
++      copyEsModuleDirectory: true,
++      hoistNestedDependencies: true,
++      shouldRebuildCachedPackage: true,
++    },
++    wxml: {
++      eventBindingStyle: "alipay",
++      directivePrefix: "a",
++      normalizeComponentTagName: true,
++      normalizeVueTemplate: true,
++      emitGenericPlaceholder: true,
++    },
++    compiler: { templatePreset: "alipay" },
++    typescript: { appTypesPackage: "@mini-types/alipay" },
++    runtime: {
++      globalObjectKey: "my",
++      hostConfigKey: "__wxConfig",
++      globalResolvePriority: 0,
++      routeGlobalResolvePriority: 2,
++      capabilities: {
++        ...DEFAULT_RUNTIME_CAPABILITIES,
++        pageShareMenu: false,
++        appThemeChangeListener: false,
++      },
++      pageIdentityRules: DEFAULT_PAGE_IDENTITY_RULES,
++    },
++  },
++  {
++    id: "swan",
++    displayName: "Baidu Smart Program",
++    family: "swan",
++    aliases: ["swan", "baidu", "bd"],
++    outputExtensions: {
++      js: "js",
++      json: "json",
++      wxml: "swan",
++      wxss: "css",
++      wxs: "sjs",
++    },
++    projectConfigFileName: "project.swan.json",
++    projectConfigRootKeys: [
++      "smartProgramRoot",
++      ...DEFAULT_PROJECT_CONFIG_ROOT_KEYS,
++    ],
++    ide: {},
++    build: { autoTouchAppStyle: false },
++    resolvePreservedNpmDirNames: () => ["miniprogram_npm"],
++    json: {},
++    npm: { distDirName: () => "miniprogram_npm" },
++    wxml: {
++      eventBindingStyle: "default",
++      directivePrefix: "s",
++    },
++    compiler: { templatePreset: "swan" },
++    typescript: { appTypesPackage: "miniprogram-api-typings" },
++    runtime: {
++      globalObjectKey: "swan",
++      hostConfigKey: "__wxConfig",
++      capabilities: DEFAULT_RUNTIME_CAPABILITIES,
++      pageIdentityRules: DEFAULT_PAGE_IDENTITY_RULES,
++    },
++  },
++  {
++    id: "tt",
++    displayName: "ByteDance / Douyin Mini Program",
++    family: "tt",
++    aliases: ["tt", "toutiao", "bytedance", "douyin"],
++    outputExtensions: {
++      js: "js",
++      json: "json",
++      wxml: "ttml",
++      wxss: "ttss",
++    },
++    projectConfigFileName: "project.config.json",
++    projectConfigRootKeys: DEFAULT_PROJECT_CONFIG_ROOT_KEYS,
++    ide: {},
++    build: { autoTouchAppStyle: false },
++    resolvePreservedNpmDirNames: () => ["miniprogram_npm"],
++    json: {},
++    npm: { distDirName: () => "miniprogram_npm" },
++    wxml: {
++      eventBindingStyle: "default",
++      directivePrefix: "tt",
++    },
++    compiler: { templatePreset: "tt" },
++    typescript: { appTypesPackage: "@douyin-microapp/typings" },
++    runtime: {
++      globalObjectKey: "tt",
++      hostConfigKey: "__wxConfig",
++      globalResolvePriority: 2,
++      routeGlobalResolvePriority: 1,
++      capabilities: {
++        ...DEFAULT_RUNTIME_CAPABILITIES,
++        appThemeChangeListener: false,
++      },
++      pageIdentityRules: DEFAULT_PAGE_IDENTITY_RULES,
++    },
++  },
++  {
++    id: "jd",
++    displayName: "JD Mini Program",
++    family: "wechat",
++    aliases: ["jd", "jingdong"],
++    outputExtensions: {
++      js: "js",
++      json: "json",
++      wxml: "jxml",
++      wxss: "jxss",
++      wxs: "wxs",
++    },
++    projectConfigFileName: "project.config.json",
++    projectConfigRootKeys: DEFAULT_PROJECT_CONFIG_ROOT_KEYS,
++    ide: {},
++    build: { autoTouchAppStyle: false },
++    resolvePreservedNpmDirNames: () => ["miniprogram_npm"],
++    json: {},
++    npm: { distDirName: () => "miniprogram_npm" },
++    wxml: {
++      eventBindingStyle: "default",
++      directivePrefix: "wx",
++    },
++    compiler: { templatePreset: "wechat" },
++    typescript: { appTypesPackage: "miniprogram-api-typings" },
++    runtime: {
++      globalObjectKey: "jd",
++      hostConfigKey: "__wxConfig",
++      capabilities: DEFAULT_RUNTIME_CAPABILITIES,
++      pageIdentityRules: DEFAULT_PAGE_IDENTITY_RULES,
++    },
++  },
++  {
++    id: "xhs",
++    displayName: "Xiaohongshu Mini Program",
++    family: "wechat",
++    aliases: ["xhs", "xiaohongshu", "little-red-book", "red"],
++    outputExtensions: {
++      js: "js",
++      json: "json",
++      wxml: "xhsml",
++      wxss: "css",
++      wxs: "wxs",
++    },
++    projectConfigFileName: "project.config.json",
++    projectConfigRootKeys: DEFAULT_PROJECT_CONFIG_ROOT_KEYS,
++    ide: {},
++    build: { autoTouchAppStyle: false },
++    resolvePreservedNpmDirNames: () => ["miniprogram_npm"],
++    json: {},
++    npm: { distDirName: () => "miniprogram_npm" },
++    wxml: {
++      eventBindingStyle: "default",
++      directivePrefix: "wx",
++    },
++    compiler: { templatePreset: "wechat" },
++    typescript: { appTypesPackage: "miniprogram-api-typings" },
++    runtime: {
++      globalObjectKey: "xhs",
++      hostConfigKey: "__wxConfig",
++      capabilities: DEFAULT_RUNTIME_CAPABILITIES,
++      pageIdentityRules: DEFAULT_PAGE_IDENTITY_RULES,
++    },
++  },
++];
++var LEADING_SLASH_RE = /^\/+/;
++function createMiniProgramPlatformRegistry(descriptors) {
++  const descriptorById = /* @__PURE__ */ new Map();
++  const aliasToId = /* @__PURE__ */ new Map();
++  const runtimeGlobalKeyToId = /* @__PURE__ */ new Map();
++  for (const descriptor of descriptors) {
++    descriptorById.set(descriptor.id, descriptor);
++    runtimeGlobalKeyToId.set(descriptor.runtime.globalObjectKey, descriptor.id);
++    aliasToId.set(descriptor.id, descriptor.id);
++    for (const alias of descriptor.aliases) {
++      const normalized = alias.trim().toLowerCase();
++      if (!normalized) continue;
++      aliasToId.set(normalized, descriptor.id);
++    }
++  }
++  return {
++    aliasToId,
++    descriptorById,
++    runtimeGlobalKeyToId,
++  };
++}
++var {
++  aliasToId: MINI_PROGRAM_PLATFORM_ALIAS_TO_ID,
++  descriptorById: MINI_PROGRAM_PLATFORM_DESCRIPTOR_BY_ID,
++  runtimeGlobalKeyToId: MINI_PROGRAM_RUNTIME_GLOBAL_KEY_TO_ID,
++} = createMiniProgramPlatformRegistry(MINI_PROGRAM_PLATFORM_DESCRIPTORS);
++Object.freeze(
++  MINI_PROGRAM_PLATFORM_DESCRIPTORS.map((descriptor) => descriptor.id),
++);
++Object.freeze(
++  Array.from(
++    new Set(
++      MINI_PROGRAM_PLATFORM_DESCRIPTORS.map(
++        (descriptor) => descriptor.wxml?.directivePrefix,
++      ).filter((prefix) => Boolean(prefix)),
++    ),
++  ),
++);
++var ORDERED_RUNTIME_GLOBAL_KEYS = Object.freeze(
++  Array.from(
++    new Set(
++      MINI_PROGRAM_PLATFORM_DESCRIPTORS.map(
++        (descriptor) => descriptor.runtime.globalObjectKey,
++      ),
++    ),
++  ),
++);
++var MAX_RUNTIME_RESOLVE_PRIORITY = Number.MAX_SAFE_INTEGER;
++function getOrderedRuntimeGlobalKeysByPriority(priorityKey) {
++  const ordered = [...MINI_PROGRAM_PLATFORM_DESCRIPTORS].sort((left, right) => {
++    const leftPriority =
++      left.runtime[priorityKey] ?? MAX_RUNTIME_RESOLVE_PRIORITY;
++    const rightPriority =
++      right.runtime[priorityKey] ?? MAX_RUNTIME_RESOLVE_PRIORITY;
++    if (leftPriority !== rightPriority) return leftPriority - rightPriority;
++    return (
++      MINI_PROGRAM_PLATFORM_DESCRIPTORS.indexOf(left) -
++      MINI_PROGRAM_PLATFORM_DESCRIPTORS.indexOf(right)
++    );
++  });
++  return Object.freeze(
++    Array.from(
++      new Set(ordered.map((descriptor) => descriptor.runtime.globalObjectKey)),
++    ),
++  );
++}
++getOrderedRuntimeGlobalKeysByPriority("globalResolvePriority");
++getOrderedRuntimeGlobalKeysByPriority("routeGlobalResolvePriority");
++Object.freeze(Object.fromEntries(MINI_PROGRAM_PLATFORM_ALIAS_TO_ID.entries()));
++/**
++ * @description 标准化平台输入。
++ */
++function normalizeMiniProgramPlatform(input) {
++  return input?.trim().toLowerCase() || void 0;
++}
++/**
++ * @description 解析平台输入到标准平台标识。
++ */
++function resolveMiniProgramPlatform(input) {
++  const normalized = normalizeMiniProgramPlatform(input);
++  if (!normalized) return;
++  return MINI_PROGRAM_PLATFORM_ALIAS_TO_ID.get(normalized);
++}
++/**
++ * @description 获取平台描述。
++ */
++function getMiniProgramPlatformDescriptor(platform) {
++  const descriptor = MINI_PROGRAM_PLATFORM_DESCRIPTOR_BY_ID.get(platform);
++  if (!descriptor) throw new Error(`不支持的小程序平台 "${platform}"。`);
++  return descriptor;
++}
++/**
++ * @description 获取宿主全局对象 key。
++ */
++function getMiniProgramRuntimeGlobalKey(platform) {
++  return getMiniProgramPlatformDescriptor(platform).runtime.globalObjectKey;
++}
++/**
++ * @description 解析宿主全局对象 key 对应的平台。
++ */
++function getMiniProgramPlatformByRuntimeGlobalKey(globalObjectKey) {
++  const normalized = globalObjectKey?.trim();
++  if (!normalized) return;
++  return MINI_PROGRAM_RUNTIME_GLOBAL_KEY_TO_ID.get(normalized);
++}
++/**
++ * @description 返回 runtime 全局对象 key 的扫描优先级。
++ */
++function getMiniProgramRuntimeGlobalKeys(platform) {
++  if (platform) return [getMiniProgramRuntimeGlobalKey(platform)];
++  return ORDERED_RUNTIME_GLOBAL_KEYS;
++}
++/**
++ * @description 获取平台 runtime 宿主配置 key。
++ */
++function getMiniProgramRuntimeHostConfigKey(platform) {
++  if (!platform) return "__wxConfig";
++  return getMiniProgramPlatformDescriptor(platform).runtime.hostConfigKey;
++}
++/**
++ * @description 获取平台 runtime 能力描述。
++ */
++function getMiniProgramRuntimeCapabilities(platform) {
++  if (!platform) return DEFAULT_RUNTIME_CAPABILITIES;
++  return getMiniProgramPlatformDescriptor(platform).runtime.capabilities;
++}
++/**
++ * @description 判断平台是否支持指定 runtime 能力。
++ */
++function supportsMiniProgramRuntimeCapability(platform, capabilityName) {
++  return getMiniProgramRuntimeCapabilities(platform)[capabilityName] === true;
++}
++function serializeMiniProgramPageIdentityRule(rule) {
++  return rule.source === "field"
++    ? `${rule.prefix}:${rule.field ?? ""}`
++    : `${rule.prefix}:route`;
++}
++function getMiniProgramPageIdentityRules(platform) {
++  if (platform)
++    return getMiniProgramPlatformDescriptor(platform).runtime.pageIdentityRules;
++  const merged = /* @__PURE__ */ new Map();
++  for (const descriptor of MINI_PROGRAM_PLATFORM_DESCRIPTORS)
++    for (const rule of descriptor.runtime.pageIdentityRules)
++      merged.set(serializeMiniProgramPageIdentityRule(rule), rule);
++  return [...merged.values()];
++}
++/**
++ * @description 根据平台描述解析页面身份 key。
++ */
++function resolveMiniProgramPageKeys(page, platform) {
++  if (!page || typeof page !== "object") return [];
++  const keys = [];
++  for (const rule of getMiniProgramPageIdentityRules(platform)) {
++    if (rule.source === "route") {
++      const route =
++        typeof page.route === "string"
++          ? page.route.replace(LEADING_SLASH_RE, "")
++          : "";
++      if (route) keys.push(`${rule.prefix}:${route}`);
++      continue;
++    }
++    const field = rule.field;
++    if (!field) continue;
++    const value = page[field];
++    if (typeof value === "number" || typeof value === "string")
++      keys.push(`${rule.prefix}:${String(value)}`);
++  }
++  return Array.from(new Set(keys));
++}
++/*!
++ * get-value <https://github.com/jonschlinkert/get-value>
++ *
++ * Copyright (c) 2014-present, Jon Schlinkert.
++ * Released under the MIT License.
++ */
++/*!
++ * is-primitive <https://github.com/jonschlinkert/is-primitive>
++ *
++ * Copyright (c) 2014-present, Jon Schlinkert.
++ * Released under the MIT License.
++ */
++var require_is_primitive = /* @__PURE__ */ __commonJSMin((exports, module) => {
++  module.exports = function isPrimitive(val) {
++    if (typeof val === "object") return val === null;
++    return typeof val !== "function";
++  };
++});
++/*!
++ * isobject <https://github.com/jonschlinkert/isobject>
++ *
++ * Copyright (c) 2014-2017, Jon Schlinkert.
++ * Released under the MIT License.
++ */
++var require_isobject = /* @__PURE__ */ __commonJSMin((exports, module) => {
++  module.exports = function isObject(val) {
++    return (
++      val != null && typeof val === "object" && Array.isArray(val) === false
++    );
++  };
++});
++/*!
++ * is-plain-object <https://github.com/jonschlinkert/is-plain-object>
++ *
++ * Copyright (c) 2014-2017, Jon Schlinkert.
++ * Released under the MIT License.
++ */
++var require_is_plain_object = /* @__PURE__ */ __commonJSMin(
++  (exports, module) => {
++    var isObject = require_isobject();
++    function isObjectObject(o) {
++      return (
++        isObject(o) === true &&
++        Object.prototype.toString.call(o) === "[object Object]"
++      );
++    }
++    module.exports = function isPlainObject(o) {
++      var ctor, prot;
++      if (isObjectObject(o) === false) return false;
++      ctor = o.constructor;
++      if (typeof ctor !== "function") return false;
++      prot = ctor.prototype;
++      if (isObjectObject(prot) === false) return false;
++      if (prot.hasOwnProperty("isPrototypeOf") === false) return false;
++      return true;
++    };
++  },
++);
++/* @__PURE__ */ __toESM(
++  /* @__PURE__ */ __commonJSMin((exports, module) => {
++    const { deleteProperty } = Reflect;
++    const isPrimitive = require_is_primitive();
++    const isPlainObject = require_is_plain_object();
++    const isObject = (value) => {
++      return (
++        (typeof value === "object" && value !== null) ||
++        typeof value === "function"
++      );
++    };
++    const isUnsafeKey = (key) => {
++      return (
++        key === "__proto__" || key === "constructor" || key === "prototype"
++      );
++    };
++    const validateKey = (key) => {
++      if (!isPrimitive(key))
++        throw new TypeError("Object keys must be strings or symbols");
++      if (isUnsafeKey(key)) throw new Error(`Cannot set unsafe key: "${key}"`);
++    };
++    const toStringKey = (input) => {
++      return Array.isArray(input) ? input.flat().map(String).join(",") : input;
++    };
++    const createMemoKey = (input, options) => {
++      if (typeof input !== "string" || !options) return input;
++      let key = input + ";";
++      if (options.arrays !== void 0) key += `arrays=${options.arrays};`;
++      if (options.separator !== void 0)
++        key += `separator=${options.separator};`;
++      if (options.split !== void 0) key += `split=${options.split};`;
++      if (options.merge !== void 0) key += `merge=${options.merge};`;
++      if (options.preservePaths !== void 0)
++        key += `preservePaths=${options.preservePaths};`;
++      return key;
++    };
++    const memoize = (input, options, fn) => {
++      const key = toStringKey(options ? createMemoKey(input, options) : input);
++      validateKey(key);
++      const value = setValue.cache.get(key) || fn();
++      setValue.cache.set(key, value);
++      return value;
++    };
++    const splitString = (input, options = {}) => {
++      const sep = options.separator || ".";
++      const preserve = sep === "/" ? false : options.preservePaths;
++      if (typeof input === "string" && preserve !== false && /\//.test(input))
++        return [input];
++      const parts = [];
++      let part = "";
++      const push = (part) => {
++        let number;
++        if (part.trim() !== "" && Number.isInteger((number = Number(part))))
++          parts.push(number);
++        else parts.push(part);
++      };
++      for (let i = 0; i < input.length; i++) {
++        const value = input[i];
++        if (value === "\\") {
++          part += input[++i];
++          continue;
++        }
++        if (value === sep) {
++          push(part);
++          part = "";
++          continue;
++        }
++        part += value;
++      }
++      if (part) push(part);
++      return parts;
++    };
++    const split = (input, options) => {
++      if (options && typeof options.split === "function")
++        return options.split(input);
++      if (typeof input === "symbol") return [input];
++      if (Array.isArray(input)) return input;
++      return memoize(input, options, () => splitString(input, options));
++    };
++    const assignProp = (obj, prop, value, options) => {
++      validateKey(prop);
++      if (value === void 0) deleteProperty(obj, prop);
++      else if (options && options.merge) {
++        const merge =
++          options.merge === "function" ? options.merge : Object.assign;
++        if (merge && isPlainObject(obj[prop]) && isPlainObject(value))
++          obj[prop] = merge(obj[prop], value);
++        else obj[prop] = value;
++      } else obj[prop] = value;
++      return obj;
++    };
++    const setValue = (target, path, value, options) => {
++      if (!path || !isObject(target)) return target;
++      const keys = split(path, options);
++      let obj = target;
++      for (let i = 0; i < keys.length; i++) {
++        const key = keys[i];
++        const next = keys[i + 1];
++        validateKey(key);
++        if (next === void 0) {
++          assignProp(obj, key, value, options);
++          break;
++        }
++        if (typeof next === "number" && !Array.isArray(obj[key])) {
++          obj = obj[key] = [];
++          continue;
++        }
++        if (!isObject(obj[key])) obj[key] = {};
++        obj = obj[key];
++      }
++      return target;
++    };
++    setValue.split = split;
++    setValue.cache = /* @__PURE__ */ new Map();
++    setValue.clear = () => {
++      setValue.cache = /* @__PURE__ */ new Map();
++    };
++    module.exports = setValue;
++  })(),
++  1,
++).default;
++//#endregion
++//#region ../../node_modules/.pnpm/wevu@6.16.6_miniprogram-api-typings@5.2.0_rolldown@1.0.0-rc.17_rollup@4.60.3_typescript@5.9.3/node_modules/wevu/dist/router-Cm3FUnTw.mjs
++function h() {
++  if (!(typeof globalThis > `u`)) return globalThis;
++}
++function g() {
++  var e;
++  let t = h(),
++    n = resolveMiniProgramPlatform(
++      (e = {
++        BASE_URL: "/",
++        DEV: true,
++        IS_MINIPROGRAM: true,
++        IS_WEB: false,
++        MODE: "production",
++        MP_PLATFORM: "weapp",
++        PLATFORM: "weapp",
++        PROD: false,
++        SSR: false,
++      }) == null
++        ? void 0
++        : e.PLATFORM,
++    );
++  if (n) return n;
++  for (let e of getMiniProgramRuntimeGlobalKeys())
++    if (t != null && t[e]) return getMiniProgramPlatformByRuntimeGlobalKey(e);
++}
++function _() {
++  return getMiniProgramRuntimeCapabilities(g());
++}
++function v(e) {
++  return supportsMiniProgramRuntimeCapability(g(), e);
++}
++function y() {
++  if (!v(`globalPageStack`)) return [];
++  let e = globalThis.getCurrentPages;
++  if (typeof e != `function`) return [];
++  try {
++    let t = e();
++    return Array.isArray(t) ? t : [];
++  } catch (e) {
++    return [];
++  }
++}
++function ue() {
++  let e = h(),
++    t = getMiniProgramRuntimeHostConfigKey(g()),
++    n = e == null ? void 0 : e[t];
++  return n && typeof n == `object` ? n : void 0;
++}
++function b(e) {
++  var t;
++  let n = h(),
++    r = resolveMiniProgramPlatform(
++      e == null
++        ? (t = {
++            BASE_URL: "/",
++            DEV: true,
++            IS_MINIPROGRAM: true,
++            IS_WEB: false,
++            MODE: "production",
++            MP_PLATFORM: "weapp",
++            PLATFORM: "weapp",
++            PROD: false,
++            SSR: false,
++          }) == null
++          ? void 0
++          : t.PLATFORM
++        : e,
++    );
++  if (r) {
++    let e = getMiniProgramRuntimeGlobalKey(r);
++    return n == null ? void 0 : n[e];
++  }
++  for (let e of getMiniProgramRuntimeGlobalKeys()) {
++    let t = n == null ? void 0 : n[e];
++    if (t) return t;
++  }
++}
++function fe() {
++  var e;
++  return (e = b()) == null ? h() : e;
++}
++var x;
++function C() {
++  return x;
++}
++function pe(e) {
++  x = e;
++}
++function he(e) {}
++function w(e) {
++  if (!x) throw Error(`${e}() 必须在 setup() 的同步阶段调用`);
++  return x;
++}
++function ge(e) {
++  return (
++    e["__wevuHooks"] || (e["__wevuHooks"] = Object.create(null)),
++    e[WEVU_HOOKS_KEY]
++  );
++}
++function T(e, t, n, { single: r = !1 } = {}) {
++  let i = ge(e);
++  if (r) i[t] = n;
++  else {
++    var a;
++    ((a = i[t]) == null ? (i[t] = []) : a).push(n);
++  }
++}
++function O(e, t, n = []) {
++  var r;
++  let i = e[WEVU_HOOKS_KEY];
++  if (!i) return;
++  let a = i[t];
++  if (!a) return;
++  let s = e.__wevu,
++    c = (r = s == null ? void 0 : s.proxy) == null ? e : r;
++  if (Array.isArray(a))
++    for (let e of a)
++      try {
++        e.apply(c, n);
++      } catch (e) {}
++  else if (typeof a == `function`)
++    try {
++      a.apply(c, n);
++    } catch (e) {}
++}
++function be(e, t, n = []) {
++  var r;
++  let i = e[WEVU_HOOKS_KEY];
++  if (!i) return;
++  let a = i[t];
++  if (!a) return;
++  let s = e.__wevu,
++    c = (r = s == null ? void 0 : s.proxy) == null ? e : r;
++  if (typeof a == `function`)
++    try {
++      return a.apply(c, n);
++    } catch (e) {
++      return;
++    }
++  if (Array.isArray(a)) {
++    let e;
++    for (let t of a)
++      try {
++        e = t.apply(c, n);
++      } catch (e) {}
++    return e;
++  }
++}
++function k(e, t, n) {
++  T(w(e), e, t, n);
++}
++function xe(e) {
++  k(`onLaunch`, e);
++}
++var A = /* @__PURE__ */ new Map();
++function j(e, t) {
++  A.set(e, t);
++}
++function P(e) {
++  return !!(e && typeof e == `object` && e["__wevuIsAppInstance"] === !0);
++}
++function F(e) {
++  return Object.create(e == null ? null : e);
++}
++function I(e) {
++  if (!e) return F();
++  let t = e[WEVU_APP_PROVIDES_KEY];
++  if (t && typeof t == `object`) return t;
++  let n = F();
++  try {
++    Object.defineProperty(e, WEVU_APP_PROVIDES_KEY, {
++      value: n,
++      configurable: !0,
++      enumerable: !1,
++      writable: !1,
++    });
++  } catch (t) {
++    e[WEVU_APP_PROVIDES_KEY] = n;
++  }
++  return n;
++}
++function L(e, t) {
++  try {
++    Object.defineProperty(e, WEVU_PROVIDES_KEY, {
++      value: t,
++      configurable: !0,
++      enumerable: !1,
++      writable: !0,
++    });
++  } catch (n) {
++    e[WEVU_PROVIDES_KEY] = t;
++  }
++}
++function R(e) {
++  var t, n;
++  let r = e[WEVU_PROVIDES_KEY];
++  if (r && typeof r == `object`) return r;
++  let i = e[WEVU_RUNTIME_APP_KEY],
++    a =
++      (t =
++        (n = e["__wevuParentInstance"]) == null
++          ? void 0
++          : n["__wevuProvides"]) == null
++        ? I(i)
++        : t,
++    o = P(e) ? I(i) : F(a);
++  return (L(e, o), o);
++}
++function Ge(e) {
++  return I(e);
++}
++function Ke(e, t, n) {
++  ((I(e)[t] = n), j(t, n));
++}
++function qe(e, t, n) {
++  var r;
++  let i = I(t),
++    a = (r = n == null ? void 0 : n["__wevuProvides"]) == null ? i : r,
++    o = P(e) ? i : F(a);
++  if (n)
++    try {
++      Object.defineProperty(e, WEVU_PARENT_INSTANCE_KEY, {
++        value: n,
++        configurable: !0,
++        enumerable: !1,
++        writable: !0,
++      });
++    } catch (t) {
++      e[WEVU_PARENT_INSTANCE_KEY] = n;
++    }
++  L(e, o);
++}
++function z(e, t) {
++  let n = Object.getPrototypeOf(e);
++  for (; n; ) {
++    if (n === t) return !0;
++    n = Object.getPrototypeOf(n);
++  }
++  return !1;
++}
++function Je(e, t) {
++  let n = R(e),
++    r = R(t);
++  if (!(n === r || z(n, r) || z(r, n))) {
++    Object.setPrototypeOf(r, n);
++    try {
++      Object.defineProperty(t, WEVU_PARENT_INSTANCE_KEY, {
++        value: e,
++        configurable: !0,
++        enumerable: !1,
++        writable: !0,
++      });
++    } catch (n) {
++      t[WEVU_PARENT_INSTANCE_KEY] = e;
++    }
++  }
++}
++var B = !1,
++  V;
++function Ye(e) {
++  V = e;
++}
++function Xe(e) {
++  V === e && (V = void 0);
++}
++function U(e, t) {
++  var n;
++  e[WEVU_PAGE_SCROLL_HOOK_DEPTH_KEY] =
++    Number((n = e["__wevuPageScrollHookDepth"]) == null ? 0 : n) + 1;
++  try {
++    return t();
++  } finally {
++    var r;
++    let t = Number((r = e["__wevuPageScrollHookDepth"]) == null ? 1 : r) - 1;
++    t <= 0
++      ? delete e[WEVU_PAGE_SCROLL_HOOK_DEPTH_KEY]
++      : (e[WEVU_PAGE_SCROLL_HOOK_DEPTH_KEY] = t);
++  }
++}
++function Ze(e) {
++  let t = e.options;
++  if (t && typeof t == `object`) return t;
++  let n = y(),
++    r = n[n.length - 1],
++    i = r && typeof r == `object` ? r.options : void 0;
++  return i && typeof i == `object` ? i : {};
++}
++function Qe() {
++  if (B) return;
++  B = !0;
++  let e = b();
++  if (!(!e || typeof e != `object`)) {
++    if (v(`pullDownRefreshApi`)) {
++      let t = e.startPullDownRefresh;
++      typeof t == `function` &&
++        (e.startPullDownRefresh = function (...e) {
++          let n = t.apply(this, e);
++          return (V && O(V, `onPullDownRefresh`, []), n);
++        });
++    }
++    if (v(`pageScrollApi`)) {
++      let t = e.pageScrollTo;
++      typeof t == `function` &&
++        (e.pageScrollTo = function (e, ...n) {
++          let r = t.apply(this, [e, ...n]);
++          if (V) {
++            let t = V;
++            U(t, () => {
++              O(t, `onPageScroll`, [e == null ? {} : e]);
++            });
++          }
++          return r;
++        });
++    }
++  }
++}
++function $e(e) {
++  let { enableOnShareAppMessage: t, enableOnShareTimeline: n } = e;
++  if ((!t && !n) || !v(`pageShareMenu`)) return;
++  let r = b();
++  if (!r || typeof r.showShareMenu != `function`) return;
++  let i = _().shareTimelineRequiresShareAppMessage ? t || n : t;
++  if (!i && !n) return;
++  let a = [];
++  (i && a.push(`shareAppMessage`), n && a.push(`shareTimeline`));
++  let o = [
++    {
++      withShareTicket: !0,
++      menus: a,
++    },
++    { menus: a },
++    n ? { withShareTicket: !0 } : void 0,
++    n ? {} : void 0,
++    void 0,
++  ];
++  for (let e of o)
++    try {
++      e === void 0 ? r.showShareMenu() : r.showShareMenu(e);
++      break;
++    } catch (e) {}
++}
++//#endregion
++Object.defineProperty(exports, "$", {
++  enumerable: true,
++  get: function () {
++    return $;
++  },
++});
++Object.defineProperty(exports, "$e", {
++  enumerable: true,
++  get: function () {
++    return $e;
++  },
++});
++Object.defineProperty(exports, "Ae", {
++  enumerable: true,
++  get: function () {
++    return Ae;
++  },
++});
++Object.defineProperty(exports, "B", {
++  enumerable: true,
++  get: function () {
++    return B$1;
++  },
++});
++Object.defineProperty(exports, "C", {
++  enumerable: true,
++  get: function () {
++    return C;
++  },
++});
++Object.defineProperty(exports, "G", {
++  enumerable: true,
++  get: function () {
++    return G;
++  },
++});
++Object.defineProperty(exports, "Ge", {
++  enumerable: true,
++  get: function () {
++    return Ge;
++  },
++});
++Object.defineProperty(exports, "Je", {
++  enumerable: true,
++  get: function () {
++    return Je;
++  },
++});
++Object.defineProperty(exports, "Ke", {
++  enumerable: true,
++  get: function () {
++    return Ke;
++  },
++});
++Object.defineProperty(exports, "O", {
++  enumerable: true,
++  get: function () {
++    return O;
++  },
++});
++Object.defineProperty(exports, "Q", {
++  enumerable: true,
++  get: function () {
++    return Q;
++  },
++});
++Object.defineProperty(exports, "Qe", {
++  enumerable: true,
++  get: function () {
++    return Qe;
++  },
++});
++Object.defineProperty(exports, "S", {
++  enumerable: true,
++  get: function () {
++    return S$1;
++  },
++});
++Object.defineProperty(exports, "Se", {
++  enumerable: true,
++  get: function () {
++    return Se;
++  },
++});
++Object.defineProperty(exports, "T", {
++  enumerable: true,
++  get: function () {
++    return T;
++  },
++});
++Object.defineProperty(exports, "U", {
++  enumerable: true,
++  get: function () {
++    return U;
++  },
++});
++Object.defineProperty(exports, "WEVU_ATTRS_KEY", {
++  enumerable: true,
++  get: function () {
++    return WEVU_ATTRS_KEY;
++  },
++});
++Object.defineProperty(exports, "WEVU_EFFECT_SCOPE_KEY", {
++  enumerable: true,
++  get: function () {
++    return WEVU_EFFECT_SCOPE_KEY;
++  },
++});
++Object.defineProperty(exports, "WEVU_EXPOSED_KEY", {
++  enumerable: true,
++  get: function () {
++    return WEVU_EXPOSED_KEY;
++  },
++});
++Object.defineProperty(exports, "WEVU_HOOKS_KEY", {
++  enumerable: true,
++  get: function () {
++    return WEVU_HOOKS_KEY;
++  },
++});
++Object.defineProperty(exports, "WEVU_INLINE_HANDLER", {
++  enumerable: true,
++  get: function () {
++    return WEVU_INLINE_HANDLER;
++  },
++});
++Object.defineProperty(exports, "WEVU_INLINE_MAP_KEY", {
++  enumerable: true,
++  get: function () {
++    return WEVU_INLINE_MAP_KEY;
++  },
++});
++Object.defineProperty(exports, "WEVU_IS_APP_INSTANCE_KEY", {
++  enumerable: true,
++  get: function () {
++    return WEVU_IS_APP_INSTANCE_KEY;
++  },
++});
++Object.defineProperty(exports, "WEVU_LAYOUT_BRIDGE_PAGE_KEYS", {
++  enumerable: true,
++  get: function () {
++    return WEVU_LAYOUT_BRIDGE_PAGE_KEYS;
++  },
++});
++Object.defineProperty(exports, "WEVU_LAYOUT_HOST_BRIDGE_KEY", {
++  enumerable: true,
++  get: function () {
++    return WEVU_LAYOUT_HOST_BRIDGE_KEY;
++  },
++});
++Object.defineProperty(exports, "WEVU_MODEL_HANDLER", {
++  enumerable: true,
++  get: function () {
++    return WEVU_MODEL_HANDLER;
++  },
++});
++Object.defineProperty(exports, "WEVU_NATIVE_INSTANCE_KEY", {
++  enumerable: true,
++  get: function () {
++    return WEVU_NATIVE_INSTANCE_KEY;
++  },
++});
++Object.defineProperty(exports, "WEVU_ON_LOAD_CALLED_KEY", {
++  enumerable: true,
++  get: function () {
++    return WEVU_ON_LOAD_CALLED_KEY;
++  },
++});
++Object.defineProperty(exports, "WEVU_OWNER_HANDLER", {
++  enumerable: true,
++  get: function () {
++    return WEVU_OWNER_HANDLER;
++  },
++});
++Object.defineProperty(exports, "WEVU_PAGE_LAYOUT_NAME_KEY", {
++  enumerable: true,
++  get: function () {
++    return WEVU_PAGE_LAYOUT_NAME_KEY;
++  },
++});
++Object.defineProperty(exports, "WEVU_PAGE_LAYOUT_NONE", {
++  enumerable: true,
++  get: function () {
++    return WEVU_PAGE_LAYOUT_NONE;
++  },
++});
++Object.defineProperty(exports, "WEVU_PAGE_LAYOUT_PROPS_KEY", {
++  enumerable: true,
++  get: function () {
++    return WEVU_PAGE_LAYOUT_PROPS_KEY;
++  },
++});
++Object.defineProperty(exports, "WEVU_PAGE_LAYOUT_SETTER_KEY", {
++  enumerable: true,
++  get: function () {
++    return WEVU_PAGE_LAYOUT_SETTER_KEY;
++  },
++});
++Object.defineProperty(exports, "WEVU_PAGE_SCROLL_HOOK_DEPTH_KEY", {
++  enumerable: true,
++  get: function () {
++    return WEVU_PAGE_SCROLL_HOOK_DEPTH_KEY;
++  },
++});
++Object.defineProperty(exports, "WEVU_PARENT_INSTANCE_KEY", {
++  enumerable: true,
++  get: function () {
++    return WEVU_PARENT_INSTANCE_KEY;
++  },
++});
++Object.defineProperty(exports, "WEVU_PENDING_PROP_VALUES_KEY", {
++  enumerable: true,
++  get: function () {
++    return WEVU_PENDING_PROP_VALUES_KEY;
++  },
++});
++Object.defineProperty(exports, "WEVU_PROPS_KEY", {
++  enumerable: true,
++  get: function () {
++    return WEVU_PROPS_KEY;
++  },
++});
++Object.defineProperty(exports, "WEVU_PROP_KEYS_KEY", {
++  enumerable: true,
++  get: function () {
++    return WEVU_PROP_KEYS_KEY;
++  },
++});
++Object.defineProperty(exports, "WEVU_PUBLIC_RUNTIME_KEY", {
++  enumerable: true,
++  get: function () {
++    return WEVU_PUBLIC_RUNTIME_KEY;
++  },
++});
++Object.defineProperty(exports, "WEVU_READY_CALLED_KEY", {
++  enumerable: true,
++  get: function () {
++    return WEVU_READY_CALLED_KEY;
++  },
++});
++Object.defineProperty(exports, "WEVU_RESERVED_METHOD_PREFIX", {
++  enumerable: true,
++  get: function () {
++    return WEVU_RESERVED_METHOD_PREFIX;
++  },
++});
++Object.defineProperty(exports, "WEVU_ROUTE_DONE_CALLED_KEY", {
++  enumerable: true,
++  get: function () {
++    return WEVU_ROUTE_DONE_CALLED_KEY;
++  },
++});
++Object.defineProperty(exports, "WEVU_ROUTE_DONE_IN_TICK_KEY", {
++  enumerable: true,
++  get: function () {
++    return WEVU_ROUTE_DONE_IN_TICK_KEY;
++  },
++});
++Object.defineProperty(exports, "WEVU_RUNTIME_APP_KEY", {
++  enumerable: true,
++  get: function () {
++    return WEVU_RUNTIME_APP_KEY;
++  },
++});
++Object.defineProperty(exports, "WEVU_RUNTIME_KEY", {
++  enumerable: true,
++  get: function () {
++    return WEVU_RUNTIME_KEY;
++  },
++});
++Object.defineProperty(exports, "WEVU_SCOPED_SLOT_CREATOR_KEY", {
++  enumerable: true,
++  get: function () {
++    return WEVU_SCOPED_SLOT_CREATOR_KEY;
++  },
++});
++Object.defineProperty(exports, "WEVU_SETUP_CONTEXT_INSTANCE_KEY", {
++  enumerable: true,
++  get: function () {
++    return WEVU_SETUP_CONTEXT_INSTANCE_KEY;
++  },
++});
++Object.defineProperty(exports, "WEVU_SLOT_NAMES_PROP", {
++  enumerable: true,
++  get: function () {
++    return WEVU_SLOT_NAMES_PROP;
++  },
++});
++Object.defineProperty(exports, "WEVU_SLOT_OWNER_ID_KEY", {
++  enumerable: true,
++  get: function () {
++    return WEVU_SLOT_OWNER_ID_KEY;
++  },
++});
++Object.defineProperty(exports, "WEVU_SLOT_OWNER_ID_PROP", {
++  enumerable: true,
++  get: function () {
++    return WEVU_SLOT_OWNER_ID_PROP;
++  },
++});
++Object.defineProperty(exports, "WEVU_SLOT_OWNER_KEY", {
++  enumerable: true,
++  get: function () {
++    return WEVU_SLOT_OWNER_KEY;
++  },
++});
++Object.defineProperty(exports, "WEVU_SLOT_PROPS_DATA_KEY", {
++  enumerable: true,
++  get: function () {
++    return WEVU_SLOT_PROPS_DATA_KEY;
++  },
++});
++Object.defineProperty(exports, "WEVU_SLOT_PROPS_KEY", {
++  enumerable: true,
++  get: function () {
++    return WEVU_SLOT_PROPS_KEY;
++  },
++});
++Object.defineProperty(exports, "WEVU_SLOT_SCOPE_KEY", {
++  enumerable: true,
++  get: function () {
++    return WEVU_SLOT_SCOPE_KEY;
++  },
++});
++Object.defineProperty(exports, "WEVU_TEMPLATE_REFS_CALLBACKS_KEY", {
++  enumerable: true,
++  get: function () {
++    return WEVU_TEMPLATE_REFS_CALLBACKS_KEY;
++  },
++});
++Object.defineProperty(exports, "WEVU_TEMPLATE_REFS_KEY", {
++  enumerable: true,
++  get: function () {
++    return WEVU_TEMPLATE_REFS_KEY;
++  },
++});
++Object.defineProperty(exports, "WEVU_TEMPLATE_REFS_PENDING_KEY", {
++  enumerable: true,
++  get: function () {
++    return WEVU_TEMPLATE_REFS_PENDING_KEY;
++  },
++});
++Object.defineProperty(exports, "WEVU_TEMPLATE_REF_MAP_KEY", {
++  enumerable: true,
++  get: function () {
++    return WEVU_TEMPLATE_REF_MAP_KEY;
++  },
++});
++Object.defineProperty(exports, "WEVU_WATCH_STOPS_KEY", {
++  enumerable: true,
++  get: function () {
++    return WEVU_WATCH_STOPS_KEY;
++  },
++});
++Object.defineProperty(exports, "X", {
++  enumerable: true,
++  get: function () {
++    return X;
++  },
++});
++Object.defineProperty(exports, "Xe", {
++  enumerable: true,
++  get: function () {
++    return Xe;
++  },
++});
++Object.defineProperty(exports, "Ye", {
++  enumerable: true,
++  get: function () {
++    return Ye;
++  },
++});
++Object.defineProperty(exports, "Ze", {
++  enumerable: true,
++  get: function () {
++    return Ze;
++  },
++});
++Object.defineProperty(exports, "_", {
++  enumerable: true,
++  get: function () {
++    return _;
++  },
++});
++Object.defineProperty(exports, "_e", {
++  enumerable: true,
++  get: function () {
++    return _e;
++  },
++});
++Object.defineProperty(exports, "a", {
++  enumerable: true,
++  get: function () {
++    return a;
++  },
++});
++Object.defineProperty(exports, "b", {
++  enumerable: true,
++  get: function () {
++    return b;
++  },
++});
++Object.defineProperty(exports, "b$1", {
++  enumerable: true,
++  get: function () {
++    return b$1;
++  },
++});
++Object.defineProperty(exports, "be", {
++  enumerable: true,
++  get: function () {
++    return be;
++  },
++});
++Object.defineProperty(exports, "be$1", {
++  enumerable: true,
++  get: function () {
++    return be$1;
++  },
++});
++Object.defineProperty(exports, "de", {
++  enumerable: true,
++  get: function () {
++    return de;
++  },
++});
++Object.defineProperty(exports, "fe", {
++  enumerable: true,
++  get: function () {
++    return fe;
++  },
++});
++Object.defineProperty(exports, "ge", {
++  enumerable: true,
++  get: function () {
++    return ge$1;
++  },
++});
++Object.defineProperty(exports, "he", {
++  enumerable: true,
++  get: function () {
++    return he;
++  },
++});
++Object.defineProperty(exports, "ie", {
++  enumerable: true,
++  get: function () {
++    return ie;
++  },
++});
++Object.defineProperty(exports, "ke", {
++  enumerable: true,
++  get: function () {
++    return ke;
++  },
++});
++Object.defineProperty(exports, "le", {
++  enumerable: true,
++  get: function () {
++    return le;
++  },
++});
++Object.defineProperty(exports, "o", {
++  enumerable: true,
++  get: function () {
++    return o;
++  },
++});
++Object.defineProperty(exports, "oe", {
++  enumerable: true,
++  get: function () {
++    return oe;
++  },
++});
++Object.defineProperty(exports, "pe", {
++  enumerable: true,
++  get: function () {
++    return pe;
++  },
++});
++Object.defineProperty(exports, "qe", {
++  enumerable: true,
++  get: function () {
++    return qe;
++  },
++});
++Object.defineProperty(exports, "resolveMiniProgramPageKeys", {
++  enumerable: true,
++  get: function () {
++    return resolveMiniProgramPageKeys;
++  },
++});
++Object.defineProperty(exports, "u", {
++  enumerable: true,
++  get: function () {
++    return u;
++  },
++});
++Object.defineProperty(exports, "ue", {
++  enumerable: true,
++  get: function () {
++    return ue;
++  },
++});
++Object.defineProperty(exports, "ue$1", {
++  enumerable: true,
++  get: function () {
++    return ue$1;
++  },
++});
++Object.defineProperty(exports, "v", {
++  enumerable: true,
++  get: function () {
++    return v;
++  },
++});
++Object.defineProperty(exports, "v$1", {
++  enumerable: true,
++  get: function () {
++    return v$1;
++  },
++});
++Object.defineProperty(exports, "ve", {
++  enumerable: true,
++  get: function () {
++    return ve;
++  },
++});
++Object.defineProperty(exports, "w", {
++  enumerable: true,
++  get: function () {
++    return w;
++  },
++});
++Object.defineProperty(exports, "we", {
++  enumerable: true,
++  get: function () {
++    return we;
++  },
++});
++Object.defineProperty(exports, "xe", {
++  enumerable: true,
++  get: function () {
++    return xe;
++  },
++});
++Object.defineProperty(exports, "y", {
++  enumerable: true,
++  get: function () {
++    return y;
++  },
++});
+
+--- a/dist/weapp-vendors/wevu-router.js
++++ /dev/null
+@@ -1,2219 +0,0 @@
+-//#region ../../node_modules/.pnpm/wevu@6.16.2_miniprogram-api-typings@5.1.3_rolldown@1.0.0-rc.17_rollup@4.60.2_typescript@5.9.3/node_modules/wevu/dist/ref-Bs--7iY3.mjs
+-var e = Promise.resolve(),
+-  t = /* @__PURE__ */ new Set();
+-var n = !1,
+-  r = !1;
+-function i() {
+-  ((r = !1), (n = !0));
+-  try {
+-    t.forEach((e) => e());
+-  } finally {
+-    (t.clear(), (n = !1));
+-  }
+-}
+-function a(a) {
+-  (t.add(a), !n && !r && ((r = !0), e.then(i)));
+-}
+-function o(t) {
+-  return t ? e.then(t) : e;
+-}
+-function s(e) {
+-  "@babel/helpers - typeof";
+-  return (
+-    (s =
+-      typeof Symbol == `function` && typeof Symbol.iterator == `symbol`
+-        ? function (e) {
+-            return typeof e;
+-          }
+-        : function (e) {
+-            return e &&
+-              typeof Symbol == `function` &&
+-              e.constructor === Symbol &&
+-              e !== Symbol.prototype
+-              ? `symbol`
+-              : typeof e;
+-          }),
+-    s(e)
+-  );
+-}
+-function c(e, t) {
+-  if (s(e) != `object` || !e) return e;
+-  var n = e[Symbol.toPrimitive];
+-  if (n !== void 0) {
+-    var r = n.call(e, t || `default`);
+-    if (s(r) != `object`) return r;
+-    throw TypeError(`@@toPrimitive must return a primitive value.`);
+-  }
+-  return (t === `string` ? String : Number)(e);
+-}
+-function l(e) {
+-  var t = c(e, `string`);
+-  return s(t) == `symbol` ? t : t + ``;
+-}
+-function u$1(e, t, n) {
+-  return (
+-    (t = l(t)) in e
+-      ? Object.defineProperty(e, t, {
+-          value: n,
+-          enumerable: !0,
+-          configurable: !0,
+-          writable: !0,
+-        })
+-      : (e[t] = n),
+-    e
+-  );
+-}
+-var d = /* @__PURE__ */ new WeakMap();
+-var f = null;
+-var p = [];
+-var m = 0;
+-var h = /* @__PURE__ */ new Set();
+-function v$1(e) {
+-  let { deps: t } = e;
+-  for (let n = 0; n < t.length; n++) t[n].delete(e);
+-  t.length = 0;
+-}
+-function y$1(e) {
+-  var t;
+-  e.active && ((e.active = !1), v$1(e), (t = e.onStop) == null || t.call(e));
+-}
+-var b$1;
+-var ne = class {
+-  constructor(e = !1) {
+-    if (
+-      ((this.detached = e),
+-      u$1(this, `active`, !0),
+-      u$1(this, `effects`, []),
+-      u$1(this, `cleanups`, []),
+-      u$1(this, `parent`, void 0),
+-      u$1(this, `scopes`, void 0),
+-      !e && b$1)
+-    ) {
+-      var t;
+-      ((this.parent = b$1), ((t = b$1).scopes || (t.scopes = [])).push(this));
+-    }
+-  }
+-  run(e) {
+-    if (!this.active) return;
+-    let t = b$1;
+-    b$1 = this;
+-    try {
+-      return e();
+-    } finally {
+-      b$1 = t;
+-    }
+-  }
+-  stop() {
+-    var e;
+-    if (this.active) {
+-      this.active = !1;
+-      for (let e of this.effects) y$1(e);
+-      this.effects.length = 0;
+-      for (let e of this.cleanups) e();
+-      if (((this.cleanups.length = 0), this.scopes)) {
+-        for (let e of this.scopes) e.stop();
+-        this.scopes.length = 0;
+-      }
+-      if ((e = this.parent) != null && e.scopes) {
+-        let e = this.parent.scopes.indexOf(this);
+-        e >= 0 && this.parent.scopes.splice(e, 1);
+-      }
+-      this.parent = void 0;
+-    }
+-  }
+-};
+-function re(e = !1) {
+-  return new ne(e);
+-}
+-function ae(e) {
+-  b$1 != null && b$1.active && b$1.cleanups.push(e);
+-}
+-function oe(e) {
+-  b$1 != null && b$1.active && b$1.effects.push(e);
+-}
+-function se(e, t = {}) {
+-  let n = function () {
+-    if (!n.active || n._running) return e();
+-    v$1(n);
+-    try {
+-      return ((n._running = !0), p.push(n), (f = n), e());
+-    } finally {
+-      var t;
+-      (p.pop(), (f = (t = p.at(-1)) == null ? null : t), (n._running = !1));
+-    }
+-  };
+-  return (
+-    (n.deps = []),
+-    (n.scheduler = t.scheduler),
+-    (n.onStop = t.onStop),
+-    (n.active = !0),
+-    (n._running = !1),
+-    (n._fn = e),
+-    n
+-  );
+-}
+-function ce$1(e, t = {}) {
+-  let n = se(e, t);
+-  return (oe(n), t.lazy || n(), n);
+-}
+-function x$1(e, t) {
+-  if (!f) return;
+-  let n = d.get(e);
+-  n || ((n = /* @__PURE__ */ new Map()), d.set(e, n));
+-  let r = n.get(t);
+-  (r || ((r = /* @__PURE__ */ new Set()), n.set(t, r)),
+-    r.has(f) || (r.add(f), f.deps.push(r)));
+-}
+-function S$1(e) {
+-  if (e.scheduler) {
+-    e.scheduler();
+-    return;
+-  }
+-  if (m > 0) {
+-    h.add(e);
+-    return;
+-  }
+-  e();
+-}
+-function C$1(e, t) {
+-  let n = d.get(e);
+-  if (!n) return;
+-  let r = n.get(t);
+-  if (!r) return;
+-  let i = /* @__PURE__ */ new Set();
+-  (r.forEach((e) => {
+-    e !== f && i.add(e);
+-  }),
+-    i.forEach(S$1));
+-}
+-function w$1(e) {
+-  f && (e.has(f) || (e.add(f), f.deps.push(e)));
+-}
+-function T(e) {
+-  new Set(e).forEach(S$1);
+-}
+-var E = /* @__PURE__ */ new Set();
+-function le$1(e) {
+-  E.add(e);
+-}
+-function ue$1(e) {
+-  E.delete(e);
+-}
+-var D$1 = /* @__PURE__ */ new WeakMap(),
+-  O$1 = /* @__PURE__ */ new WeakMap(),
+-  k$1 = /* @__PURE__ */ new WeakMap(),
+-  A$1 = /* @__PURE__ */ new WeakMap(),
+-  j = /* @__PURE__ */ new WeakSet(),
+-  M = /* @__PURE__ */ new WeakMap(),
+-  N$1 = /* @__PURE__ */ new WeakMap();
+-function de(e) {
+-  let t = N$1.get(e);
+-  return (t || ((t = /* @__PURE__ */ new Set()), N$1.set(e, t)), t);
+-}
+-function P$1(e, t) {
+-  de(e).add(t);
+-}
+-function F$1(e) {
+-  var t;
+-  O$1.set(e, ((t = O$1.get(e)) == null ? 0 : t) + 1);
+-}
+-function fe$1(e) {
+-  var t;
+-  return (t = O$1.get(e)) == null ? 0 : t;
+-}
+-function I$1(e) {
+-  let t = /* @__PURE__ */ new Set(),
+-    n = [e];
+-  for (let e = 0; e < 2e3 && n.length; e++) {
+-    let e = n.pop(),
+-      r = A$1.get(e);
+-    if (r) for (let e of r.keys()) t.has(e) || (t.add(e), F$1(e), n.push(e));
+-  }
+-}
+-function L$1(e) {
+-  let t = A$1.get(e);
+-  if (!t) {
+-    (j.delete(e), k$1.delete(e));
+-    return;
+-  }
+-  let n,
+-    r,
+-    i = 0;
+-  for (let [e, a] of t) {
+-    for (let t of a) {
+-      if (((i += 1), i > 1)) break;
+-      ((n = e), (r = t));
+-    }
+-    if (i > 1) break;
+-  }
+-  if (i === 1 && n && r) {
+-    (j.delete(e),
+-      k$1.set(e, {
+-        parent: n,
+-        key: r,
+-      }));
+-    return;
+-  }
+-  (j.add(e), k$1.delete(e));
+-}
+-function R$1(e, t, n) {
+-  if (typeof n != `string`) {
+-    (j.add(e), k$1.delete(e));
+-    return;
+-  }
+-  if (E.size) {
+-    var r;
+-    let n = (r = D$1.get(t)) == null ? t : r;
+-    (P$1(n, t), P$1(n, e));
+-  }
+-  let i = A$1.get(e);
+-  i || ((i = /* @__PURE__ */ new Map()), A$1.set(e, i));
+-  let a = i.get(t);
+-  (a || ((a = /* @__PURE__ */ new Set()), i.set(t, a)), a.add(n), L$1(e));
+-}
+-function z(e, t, n) {
+-  let r = A$1.get(e);
+-  if (!r) return;
+-  let i = r.get(t);
+-  i && (i.delete(n), i.size || r.delete(t), r.size || A$1.delete(e), L$1(e));
+-}
+-function B(e, t) {
+-  if (t === e) return [];
+-  if (j.has(t)) return;
+-  let n = [],
+-    r = t;
+-  for (let t = 0; t < 2e3; t++) {
+-    if (r === e) return n.reverse();
+-    if (j.has(r)) return;
+-    let t = k$1.get(r);
+-    if (!t || typeof t.key != `string`) return;
+-    (n.push(t.key), (r = t.parent));
+-  }
+-}
+-function V(e) {
+-  return typeof e == `object` && !!e;
+-}
+-function pe$1(e) {
+-  return Object.prototype.toString.call(e).slice(8, -1);
+-}
+-function me(e) {
+-  switch (e) {
+-    case `Object`:
+-    case `Array`:
+-      return 1;
+-    case `Map`:
+-    case `Set`:
+-    case `WeakMap`:
+-    case `WeakSet`:
+-      return 0;
+-    default:
+-      return 0;
+-  }
+-}
+-function H(e) {
+-  return e.__r_skip ? 0 : me(pe$1(e));
+-}
+-var U = Symbol(`wevu.version`);
+-function W(e) {
+-  if (!e) return !1;
+-  let t = e.charCodeAt(0);
+-  if (t < 48 || t > 57) return !1;
+-  let n = Number(e);
+-  return Number.isInteger(n) && n >= 0 && String(n) === e;
+-}
+-function G(e) {
+-  var t;
+-  return (t = e == null ? void 0 : e.__r_raw) == null ? e : t;
+-}
+-var K = /* @__PURE__ */ new WeakMap(),
+-  q = /* @__PURE__ */ new WeakMap(),
+-  J = /* @__PURE__ */ new WeakMap();
+-function he$1(e, t) {
+-  let n = G(e);
+-  (M.set(n, ``), P$1(n, n));
+-  let r = t == null ? void 0 : t.shouldIncludeTopKey,
+-    i =
+-      typeof (t == null ? void 0 : t.maxDepth) == `number`
+-        ? Math.max(0, Math.floor(t.maxDepth))
+-        : Infinity,
+-    a =
+-      typeof (t == null ? void 0 : t.maxKeys) == `number`
+-        ? Math.max(0, Math.floor(t.maxKeys))
+-        : Infinity,
+-    o = /* @__PURE__ */ new WeakSet(),
+-    s = [
+-      {
+-        current: n,
+-        path: ``,
+-        depth: 0,
+-      },
+-    ],
+-    c = 0;
+-  for (; s.length; ) {
+-    let e = s.pop();
+-    if (
+-      o.has(e.current) ||
+-      (o.add(e.current),
+-      M.set(e.current, e.path),
+-      P$1(n, e.current),
+-      (c += 1),
+-      c >= a) ||
+-      e.depth >= i ||
+-      Array.isArray(e.current)
+-    )
+-      continue;
+-    let t = Object.entries(e.current);
+-    for (let [i, a] of t) {
+-      if ((e.path === `` && r && !r(i)) || !V(a) || a.__r_skip) continue;
+-      let t = G(a);
+-      if ((D$1.has(t) || D$1.set(t, n), R$1(t, e.current, i), !j.has(t))) {
+-        let n = e.path ? `${e.path}.${i}` : i;
+-        M.set(t, n);
+-      }
+-      (P$1(n, t),
+-        s.push({
+-          current: t,
+-          path: e.path ? `${e.path}.${i}` : i,
+-          depth: e.depth + 1,
+-        }));
+-    }
+-  }
+-}
+-function ge$1(e) {
+-  let t = G(e),
+-    n = N$1.get(t);
+-  if (!n) {
+-    M.delete(t);
+-    return;
+-  }
+-  for (let e of n)
+-    (k$1.delete(e),
+-      A$1.delete(e),
+-      M.delete(e),
+-      j.delete(e),
+-      D$1.delete(e),
+-      O$1.delete(e));
+-  N$1.delete(t);
+-}
+-function _e(e) {
+-  x$1(G(e), U);
+-}
+-var ve = {
+-  get(e, t, n) {
+-    if (t === `__r_isReactive`) return !0;
+-    if (t === `__r_raw`) return e;
+-    let r = Reflect.get(e, t, n);
+-    return (x$1(e, t), r);
+-  },
+-  set(e, t, n, r) {
+-    let i = Reflect.get(e, t, r),
+-      a = Reflect.set(e, t, n, r);
+-    return (Object.is(i, n) || (C$1(e, t), C$1(e, U), F$1(e)), a);
+-  },
+-  deleteProperty(e, t) {
+-    let n = Object.hasOwn(e, t),
+-      r = Reflect.deleteProperty(e, t);
+-    return (n && r && (C$1(e, t), C$1(e, U), F$1(e)), r);
+-  },
+-  ownKeys(e) {
+-    return (x$1(e, Symbol.iterator), x$1(e, U), Reflect.ownKeys(e));
+-  },
+-};
+-function ye(e) {
+-  if (!V(e) || e.__r_isReactive) return e;
+-  let t = J.get(e);
+-  if (t) return t;
+-  if (H(e) === 0) return e;
+-  let n = new Proxy(e, ve);
+-  return (J.set(e, n), q.set(n, e), O$1.has(e) || O$1.set(e, 0), n);
+-}
+-function xe$1(e) {
+-  return fe$1(G(e));
+-}
+-function Se(e, t, n) {
+-  var r;
+-  if (!E.size || typeof t != `string` || t.startsWith(`__r_`)) return;
+-  let i = (r = D$1.get(e)) == null ? e : r,
+-    a = Array.isArray(e) && (t === `length` || W(t)) ? `array` : `property`,
+-    o = B(i, e);
+-  if (!o) {
+-    let r = /* @__PURE__ */ new Set(),
+-      o = A$1.get(e);
+-    if (o)
+-      for (let [e, t] of o) {
+-        var s;
+-        let n = M.get(e),
+-          a = n ? n.split(`.`, 1)[0] : void 0,
+-          o = a || (s = B(i, e)) == null ? void 0 : s[0];
+-        for (let e of t) {
+-          var c;
+-          typeof e == `string` &&
+-            r.add((c = a == null ? o : a) == null ? e : c);
+-        }
+-      }
+-    else r.add(t);
+-    for (let e of E)
+-      e({
+-        root: i,
+-        kind: a,
+-        op: n,
+-        path: void 0,
+-        fallbackTopKeys: r.size ? [...r] : void 0,
+-      });
+-    return;
+-  }
+-  let l = o.findIndex((e) => W(e));
+-  if (l !== -1) {
+-    let e = o.slice(0, l).join(`.`) || void 0;
+-    for (let t of E)
+-      t({
+-        root: i,
+-        kind: `array`,
+-        op: n,
+-        path: e,
+-      });
+-    return;
+-  }
+-  let u = o.length ? o.join(`.`) : ``,
+-    d = a === `array` ? u || void 0 : u ? `${u}.${t}` : t;
+-  for (let e of E)
+-    e({
+-      root: i,
+-      kind: a,
+-      op: n,
+-      path: d,
+-    });
+-}
+-var Ce = {
+-  get(e, t, n) {
+-    if (t === `__r_isReactive`) return !0;
+-    if (t === `__r_raw`) return e;
+-    let r = Reflect.get(e, t, n);
+-    if ((x$1(e, t), V(r))) {
+-      var i, a;
+-      if (r.__r_skip) return r;
+-      let n = (i = D$1.get(e)) == null ? e : i,
+-        o = (a = r == null ? void 0 : r.__r_raw) == null ? r : a;
+-      (D$1.has(o) || D$1.set(o, n), R$1(o, e, t));
+-      let s = M.get(e);
+-      if (E.size && typeof t == `string` && s != null && !j.has(o)) {
+-        let e = s ? `${s}.${t}` : t;
+-        M.set(o, e);
+-      }
+-      return Y(r);
+-    }
+-    return r;
+-  },
+-  set(e, t, n, r) {
+-    let i = Array.isArray(e),
+-      a = i ? e.length : 0,
+-      o = Reflect.get(e, t, r),
+-      s = Reflect.set(e, t, n, r);
+-    if (!Object.is(o, n)) {
+-      var c;
+-      let r = V(o)
+-        ? (c = o == null ? void 0 : o.__r_raw) == null
+-          ? o
+-          : c
+-        : void 0;
+-      if ((r && z(r, e, t), V(n) && !n.__r_skip)) {
+-        var l, u;
+-        let r = (l = D$1.get(e)) == null ? e : l,
+-          i = (u = n == null ? void 0 : n.__r_raw) == null ? n : u;
+-        (D$1.has(i) || D$1.set(i, r), R$1(i, e, t));
+-        let a = M.get(e);
+-        if (E.size && typeof t == `string` && a != null && !j.has(i)) {
+-          let e = a ? `${a}.${t}` : t;
+-          M.set(i, e);
+-        }
+-      }
+-      (C$1(e, t),
+-        i && typeof t == `string` && W(t) && Number(t) >= a && C$1(e, `length`),
+-        C$1(e, U),
+-        F$1(e),
+-        I$1(e));
+-      let s = D$1.get(e);
+-      (s && s !== e && (C$1(s, U), F$1(s)), Se(e, t, `set`));
+-    }
+-    return s;
+-  },
+-  deleteProperty(e, t) {
+-    let n = Object.hasOwn(e, t),
+-      r = n ? e[t] : void 0,
+-      i = Reflect.deleteProperty(e, t);
+-    if (n && i) {
+-      var a;
+-      let n = V(r)
+-        ? (a = r == null ? void 0 : r.__r_raw) == null
+-          ? r
+-          : a
+-        : void 0;
+-      (n && z(n, e, t), C$1(e, t), C$1(e, U), F$1(e), I$1(e));
+-      let i = D$1.get(e);
+-      (i && i !== e && (C$1(i, U), F$1(i)), Se(e, t, `delete`));
+-    }
+-    return i;
+-  },
+-  ownKeys(e) {
+-    return (x$1(e, Symbol.iterator), x$1(e, U), Reflect.ownKeys(e));
+-  },
+-};
+-function Y(e) {
+-  if (!V(e) || e.__r_isReactive) return e;
+-  let t = K.get(e);
+-  if (t) return t;
+-  if (H(e) === 0) return e;
+-  let n = new Proxy(e, Ce);
+-  return (
+-    K.set(e, n),
+-    q.set(n, e),
+-    O$1.has(e) || O$1.set(e, 0),
+-    D$1.has(e) || D$1.set(e, e),
+-    n
+-  );
+-}
+-function we(e) {
+-  return !!(e && e.__r_isReactive);
+-}
+-function Te(e) {
+-  return V(e) ? Y(e) : e;
+-}
+-function X(e) {
+-  return (
+-    V(e) &&
+-      Object.defineProperty(e, `__r_skip`, {
+-        value: !0,
+-        configurable: !0,
+-        enumerable: !1,
+-        writable: !0,
+-      }),
+-    e
+-  );
+-}
+-var De = `__v_isRef`;
+-function Z(e) {
+-  try {
+-    Object.defineProperty(e, De, {
+-      value: !0,
+-      configurable: !0,
+-    });
+-  } catch (t) {
+-    e[De] = !0;
+-  }
+-  return e;
+-}
+-function Q(e) {
+-  return !!(e && typeof e == `object` && e.__v_isRef === !0);
+-}
+-var Oe = class {
+-  constructor(e) {
+-    (u$1(this, `_value`, void 0),
+-      u$1(this, `_rawValue`, void 0),
+-      u$1(this, `dep`, void 0),
+-      Z(this),
+-      (this._rawValue = e),
+-      (this._value = Te(e)));
+-  }
+-  get value() {
+-    return (
+-      this.dep || (this.dep = /* @__PURE__ */ new Set()),
+-      w$1(this.dep),
+-      this._value
+-    );
+-  }
+-  set value(e) {
+-    Object.is(e, this._rawValue) ||
+-      ((this._rawValue = e), (this._value = Te(e)), this.dep && T(this.dep));
+-  }
+-};
+-function ke(e) {
+-  return Q(e) ? e : X(new Oe(e));
+-}
+-function $(e) {
+-  return Q(e) ? e.value : e;
+-}
+-//#endregion
+-//#region ../../node_modules/.pnpm/wevu@6.16.2_miniprogram-api-typings@5.1.3_rolldown@1.0.0-rc.17_rollup@4.60.2_typescript@5.9.3/node_modules/wevu/dist/store-B63-EIon.mjs
+-function u(n) {
+-  let r, a;
+-  typeof n == `function`
+-    ? ((r = n),
+-      (a = () => {
+-        throw Error(`计算属性是只读的`);
+-      }))
+-    : ((r = n.get), (a = n.set));
+-  let o,
+-    c = !0,
+-    l,
+-    u = {
+-      get value() {
+-        return (c && ((o = l()), (c = !1)), x$1(u, `value`), o);
+-      },
+-      set value(e) {
+-        a(e);
+-      },
+-    };
+-  return (
+-    Z(u),
+-    (l = ce$1(r, {
+-      lazy: !0,
+-      scheduler: () => {
+-        c || ((c = !0), C$1(u, `value`));
+-      },
+-    })),
+-    u
+-  );
+-}
+-//#endregion
+-//#region ../../node_modules/.pnpm/@weapp-core+constants@0.1.4/node_modules/@weapp-core/constants/dist/index.js
+-var WEVU_PAGE_LAYOUT_SETTER_KEY = "__wevuSetPageLayout";
+-var WEVU_PAGE_LAYOUT_NONE = "__wv_no_layout";
+-var WEVU_PAGE_LAYOUT_NAME_KEY = "__wv_page_layout_name";
+-var WEVU_PAGE_LAYOUT_PROPS_KEY = "__wv_page_layout_props";
+-var WEVU_INLINE_HANDLER = "__weapp_vite_inline";
+-var WEVU_MODEL_HANDLER = "__weapp_vite_model";
+-var WEVU_OWNER_HANDLER = "__weapp_vite_owner";
+-var WEVU_RESERVED_METHOD_PREFIX = "__weapp_vite_";
+-var WEVU_INLINE_MAP_KEY = "__weapp_vite_inline_map";
+-var WEVU_SCOPED_SLOT_CREATOR_KEY = "__weapp_vite_createScopedSlotComponent";
+-var WEVU_SLOT_OWNER_ID_KEY = "__wvOwnerId";
+-var WEVU_SLOT_OWNER_ID_PROP = "__wvSlotOwnerId";
+-var WEVU_SLOT_PROPS_KEY = "__wvSlotProps";
+-var WEVU_SLOT_SCOPE_KEY = "__wvSlotScope";
+-var WEVU_SLOT_OWNER_KEY = "__wvOwner";
+-var WEVU_SLOT_PROPS_DATA_KEY = "__wvSlotPropsData";
+-var WEVU_SLOT_NAMES_PROP = "vueSlots";
+-var WEVU_PROPS_KEY = "__wevuProps";
+-var WEVU_ATTRS_KEY = "__wevuAttrs";
+-var WEVU_NATIVE_INSTANCE_KEY = "__wevuNativeInstance";
+-var WEVU_RUNTIME_KEY = "__wevuRuntime";
+-var WEVU_TEMPLATE_REFS_KEY = "__wevuTemplateRefs";
+-var WEVU_SETUP_CONTEXT_INSTANCE_KEY = "__wevuSetupContextInstance";
+-var WEVU_PROP_KEYS_KEY = "__wevuPropKeys";
+-var WEVU_READY_CALLED_KEY = "__wevuReadyCalled";
+-var WEVU_TEMPLATE_REFS_CALLBACKS_KEY = "__wevuTemplateRefsCallbacks";
+-var WEVU_TEMPLATE_REFS_PENDING_KEY = "__wevuTemplateRefsPending";
+-var WEVU_PENDING_PROP_VALUES_KEY = "__wevuPendingPropValues";
+-var WEVU_ON_LOAD_CALLED_KEY = "__wevuOnLoadCalled";
+-var WEVU_ROUTE_DONE_CALLED_KEY = "__wevuRouteDoneCalled";
+-var WEVU_ROUTE_DONE_IN_TICK_KEY = "__wevuRouteDoneInTick";
+-var WEVU_PAGE_SCROLL_HOOK_DEPTH_KEY = "__wevuPageScrollHookDepth";
+-var WEVU_HOOKS_KEY = "__wevuHooks";
+-var WEVU_EXPOSED_KEY = "__wevuExposed";
+-var WEVU_PUBLIC_RUNTIME_KEY = "$wevu";
+-var WEVU_RUNTIME_APP_KEY = "__wevuRuntimeApp";
+-var WEVU_IS_APP_INSTANCE_KEY = "__wevuIsAppInstance";
+-var WEVU_APP_PROVIDES_KEY = "__wevuAppProvides";
+-var WEVU_PROVIDES_KEY = "__wevuProvides";
+-var WEVU_PARENT_INSTANCE_KEY = "__wevuParentInstance";
+-var WEVU_WATCH_STOPS_KEY = "__wevuWatchStops";
+-var WEVU_EFFECT_SCOPE_KEY = "__wevuEffectScope";
+-var WEVU_TEMPLATE_REF_MAP_KEY = "__wevuTemplateRefMap";
+-var WEVU_LAYOUT_HOST_BRIDGE_KEY = "__wevuLayoutHostBridge";
+-var WEVU_LAYOUT_BRIDGE_PAGE_KEYS = "__wevuLayoutBridgePageKeys";
+-//#endregion
+-//#region ../../node_modules/.pnpm/@weapp-core+shared@3.0.4/node_modules/@weapp-core/shared/dist/index.js
+-var __create = Object.create;
+-var __defProp$1 = Object.defineProperty;
+-var __getOwnPropDesc = Object.getOwnPropertyDescriptor;
+-var __getOwnPropNames = Object.getOwnPropertyNames;
+-var __getProtoOf = Object.getPrototypeOf;
+-var __hasOwnProp = Object.prototype.hasOwnProperty;
+-var __commonJSMin = (cb, mod) => () => (
+-  mod || cb((mod = { exports: {} }).exports, mod),
+-  mod.exports
+-);
+-var __copyProps = (to, from, except, desc) => {
+-  if ((from && typeof from === "object") || typeof from === "function")
+-    for (
+-      var keys = __getOwnPropNames(from), i = 0, n = keys.length, key;
+-      i < n;
+-      i++
+-    ) {
+-      key = keys[i];
+-      if (!__hasOwnProp.call(to, key) && key !== except)
+-        __defProp$1(to, key, {
+-          get: ((k) => from[k]).bind(null, key),
+-          enumerable: !(desc = __getOwnPropDesc(from, key)) || desc.enumerable,
+-        });
+-    }
+-  return to;
+-};
+-var __toESM = (mod, isNodeMode, target) => (
+-  (target = mod != null ? __create(__getProtoOf(mod)) : {}),
+-  __copyProps(
+-    isNodeMode || !mod || !mod.__esModule
+-      ? __defProp$1(target, "default", {
+-          value: mod,
+-          enumerable: true,
+-        })
+-      : target,
+-    mod,
+-  )
+-);
+-function isPlainObject(value) {
+-  if (value === null || typeof value !== "object") return false;
+-  const prototype = Object.getPrototypeOf(value);
+-  if (
+-    prototype !== null &&
+-    prototype !== Object.prototype &&
+-    Object.getPrototypeOf(prototype) !== null
+-  )
+-    return false;
+-  if (Symbol.iterator in value) return false;
+-  if (Symbol.toStringTag in value)
+-    return Object.prototype.toString.call(value) === "[object Module]";
+-  return true;
+-}
+-function _defu(baseObject, defaults, namespace = ".", merger) {
+-  if (!isPlainObject(defaults)) return _defu(baseObject, {}, namespace, merger);
+-  const object = { ...defaults };
+-  for (const key of Object.keys(baseObject)) {
+-    if (key === "__proto__" || key === "constructor") continue;
+-    const value = baseObject[key];
+-    if (value === null || value === void 0) continue;
+-    if (merger && merger(object, key, value, namespace)) continue;
+-    if (Array.isArray(value) && Array.isArray(object[key]))
+-      object[key] = [...value, ...object[key]];
+-    else if (isPlainObject(value) && isPlainObject(object[key]))
+-      object[key] = _defu(
+-        value,
+-        object[key],
+-        (namespace ? `${namespace}.` : "") + key.toString(),
+-        merger,
+-      );
+-    else object[key] = value;
+-  }
+-  return object;
+-}
+-function createDefu(merger) {
+-  return (...arguments_) =>
+-    arguments_.reduce((p, c) => _defu(p, c, "", merger), {});
+-}
+-createDefu();
+-createDefu((object, key, currentValue) => {
+-  if (object[key] !== void 0 && typeof currentValue === "function") {
+-    object[key] = currentValue(object[key]);
+-    return true;
+-  }
+-});
+-createDefu((object, key, currentValue) => {
+-  if (Array.isArray(object[key]) && typeof currentValue === "function") {
+-    object[key] = currentValue(object[key]);
+-    return true;
+-  }
+-});
+-var DEFAULT_PROJECT_CONFIG_ROOT_KEYS = [
+-  "miniprogramRoot",
+-  "srcMiniprogramRoot",
+-];
+-var DEFAULT_RUNTIME_CAPABILITIES = Object.freeze({
+-  globalPageStack: true,
+-  globalCreateSelectorQuery: true,
+-  selectorQueryScopeByIn: true,
+-  globalCreateIntersectionObserver: true,
+-  intersectionObserverScopeByParameter: true,
+-  pageShareMenu: true,
+-  shareTimelineRequiresShareAppMessage: true,
+-  pageScrollApi: true,
+-  pullDownRefreshApi: true,
+-  globalRouterApi: true,
+-  appErrorListener: true,
+-  appPageNotFoundListener: true,
+-  appUnhandledRejectionListener: true,
+-  appThemeChangeListener: true,
+-  appMemoryWarningListener: true,
+-});
+-var DEFAULT_PAGE_IDENTITY_RULES = [
+-  {
+-    prefix: "route",
+-    source: "route",
+-  },
+-];
+-/**
+- * @description 全仓库统一的小程序平台描述表。
+- */
+-var MINI_PROGRAM_PLATFORM_DESCRIPTORS = [
+-  {
+-    id: "weapp",
+-    displayName: "WeChat Mini Program",
+-    family: "wechat",
+-    aliases: ["weapp", "wechat", "weixin", "wx"],
+-    outputExtensions: {
+-      js: "js",
+-      json: "json",
+-      wxml: "wxml",
+-      wxss: "wxss",
+-      wxs: "wxs",
+-    },
+-    projectConfigFileName: "project.config.json",
+-    projectConfigRootKeys: DEFAULT_PROJECT_CONFIG_ROOT_KEYS,
+-    ide: {},
+-    build: {
+-      autoTouchAppStyle: true,
+-      defaultBuildTarget: "es2020",
+-    },
+-    resolvePreservedNpmDirNames: () => ["miniprogram_npm"],
+-    json: {},
+-    npm: { distDirName: () => "miniprogram_npm" },
+-    wxml: {
+-      eventBindingStyle: "default",
+-      directivePrefix: "wx",
+-    },
+-    compiler: { templatePreset: "wechat" },
+-    typescript: { appTypesPackage: "miniprogram-api-typings" },
+-    runtime: {
+-      globalObjectKey: "wx",
+-      hostConfigKey: "__wxConfig",
+-      globalResolvePriority: 1,
+-      routeGlobalResolvePriority: 0,
+-      capabilities: DEFAULT_RUNTIME_CAPABILITIES,
+-      pageIdentityRules: [
+-        {
+-          prefix: "webview",
+-          source: "field",
+-          field: "__wxWebviewId__",
+-        },
+-        {
+-          prefix: "exparser",
+-          source: "field",
+-          field: "__wxExparserNodeId__",
+-        },
+-        ...DEFAULT_PAGE_IDENTITY_RULES,
+-      ],
+-    },
+-  },
+-  {
+-    id: "alipay",
+-    displayName: "Alipay Mini Program",
+-    family: "alipay",
+-    aliases: ["alipay", "ali", "my"],
+-    outputExtensions: {
+-      js: "js",
+-      json: "json",
+-      wxml: "axml",
+-      wxss: "acss",
+-      wxs: "sjs",
+-    },
+-    projectConfigFileName: "mini.project.json",
+-    projectConfigRootKeys: DEFAULT_PROJECT_CONFIG_ROOT_KEYS,
+-    scriptModuleTagByExtension: { sjs: "import-sjs" },
+-    usesProjectRootNpmDir: true,
+-    ide: {
+-      requiresOpenPlatformArg: true,
+-      defaultProjectRoot: "dist/alipay/dist",
+-    },
+-    build: {
+-      autoTouchAppStyle: false,
+-      defaultBuildTarget: "es2015",
+-    },
+-    resolvePreservedNpmDirNames: (options) => [
+-      options?.alipayNpmMode === "miniprogram_npm"
+-        ? "miniprogram_npm"
+-        : "node_modules",
+-    ],
+-    json: {
+-      normalizeUsingComponents: true,
+-      fillComponentGenericsDefault: true,
+-      rewriteBundleNpmImports: true,
+-    },
+-    npm: {
+-      distDirName: (options) =>
+-        options?.alipayNpmMode === "miniprogram_npm"
+-          ? "miniprogram_npm"
+-          : "node_modules",
+-      normalizeImportPath: true,
+-      normalizeMiniprogramPackage: true,
+-      copyEsModuleDirectory: true,
+-      hoistNestedDependencies: true,
+-      shouldRebuildCachedPackage: true,
+-    },
+-    wxml: {
+-      eventBindingStyle: "alipay",
+-      directivePrefix: "a",
+-      normalizeComponentTagName: true,
+-      normalizeVueTemplate: true,
+-      emitGenericPlaceholder: true,
+-    },
+-    compiler: { templatePreset: "alipay" },
+-    typescript: { appTypesPackage: "@mini-types/alipay" },
+-    runtime: {
+-      globalObjectKey: "my",
+-      hostConfigKey: "__wxConfig",
+-      globalResolvePriority: 0,
+-      routeGlobalResolvePriority: 2,
+-      capabilities: {
+-        ...DEFAULT_RUNTIME_CAPABILITIES,
+-        pageShareMenu: false,
+-        appThemeChangeListener: false,
+-      },
+-      pageIdentityRules: DEFAULT_PAGE_IDENTITY_RULES,
+-    },
+-  },
+-  {
+-    id: "swan",
+-    displayName: "Baidu Smart Program",
+-    family: "swan",
+-    aliases: ["swan", "baidu", "bd"],
+-    outputExtensions: {
+-      js: "js",
+-      json: "json",
+-      wxml: "swan",
+-      wxss: "css",
+-      wxs: "sjs",
+-    },
+-    projectConfigFileName: "project.swan.json",
+-    projectConfigRootKeys: [
+-      "smartProgramRoot",
+-      ...DEFAULT_PROJECT_CONFIG_ROOT_KEYS,
+-    ],
+-    ide: {},
+-    build: { autoTouchAppStyle: false },
+-    resolvePreservedNpmDirNames: () => ["miniprogram_npm"],
+-    json: {},
+-    npm: { distDirName: () => "miniprogram_npm" },
+-    wxml: {
+-      eventBindingStyle: "default",
+-      directivePrefix: "s",
+-    },
+-    compiler: { templatePreset: "swan" },
+-    typescript: { appTypesPackage: "miniprogram-api-typings" },
+-    runtime: {
+-      globalObjectKey: "swan",
+-      hostConfigKey: "__wxConfig",
+-      capabilities: DEFAULT_RUNTIME_CAPABILITIES,
+-      pageIdentityRules: DEFAULT_PAGE_IDENTITY_RULES,
+-    },
+-  },
+-  {
+-    id: "tt",
+-    displayName: "ByteDance / Douyin Mini Program",
+-    family: "tt",
+-    aliases: ["tt", "toutiao", "bytedance", "douyin"],
+-    outputExtensions: {
+-      js: "js",
+-      json: "json",
+-      wxml: "ttml",
+-      wxss: "ttss",
+-    },
+-    projectConfigFileName: "project.config.json",
+-    projectConfigRootKeys: DEFAULT_PROJECT_CONFIG_ROOT_KEYS,
+-    ide: {},
+-    build: { autoTouchAppStyle: false },
+-    resolvePreservedNpmDirNames: () => ["miniprogram_npm"],
+-    json: {},
+-    npm: { distDirName: () => "miniprogram_npm" },
+-    wxml: {
+-      eventBindingStyle: "default",
+-      directivePrefix: "tt",
+-    },
+-    compiler: { templatePreset: "tt" },
+-    typescript: { appTypesPackage: "@douyin-microapp/typings" },
+-    runtime: {
+-      globalObjectKey: "tt",
+-      hostConfigKey: "__wxConfig",
+-      globalResolvePriority: 2,
+-      routeGlobalResolvePriority: 1,
+-      capabilities: {
+-        ...DEFAULT_RUNTIME_CAPABILITIES,
+-        appThemeChangeListener: false,
+-      },
+-      pageIdentityRules: DEFAULT_PAGE_IDENTITY_RULES,
+-    },
+-  },
+-  {
+-    id: "jd",
+-    displayName: "JD Mini Program",
+-    family: "wechat",
+-    aliases: ["jd", "jingdong"],
+-    outputExtensions: {
+-      js: "js",
+-      json: "json",
+-      wxml: "jxml",
+-      wxss: "jxss",
+-      wxs: "wxs",
+-    },
+-    projectConfigFileName: "project.config.json",
+-    projectConfigRootKeys: DEFAULT_PROJECT_CONFIG_ROOT_KEYS,
+-    ide: {},
+-    build: { autoTouchAppStyle: false },
+-    resolvePreservedNpmDirNames: () => ["miniprogram_npm"],
+-    json: {},
+-    npm: { distDirName: () => "miniprogram_npm" },
+-    wxml: {
+-      eventBindingStyle: "default",
+-      directivePrefix: "wx",
+-    },
+-    compiler: { templatePreset: "wechat" },
+-    typescript: { appTypesPackage: "miniprogram-api-typings" },
+-    runtime: {
+-      globalObjectKey: "jd",
+-      hostConfigKey: "__wxConfig",
+-      capabilities: DEFAULT_RUNTIME_CAPABILITIES,
+-      pageIdentityRules: DEFAULT_PAGE_IDENTITY_RULES,
+-    },
+-  },
+-  {
+-    id: "xhs",
+-    displayName: "Xiaohongshu Mini Program",
+-    family: "wechat",
+-    aliases: ["xhs", "xiaohongshu", "little-red-book", "red"],
+-    outputExtensions: {
+-      js: "js",
+-      json: "json",
+-      wxml: "xhsml",
+-      wxss: "css",
+-      wxs: "wxs",
+-    },
+-    projectConfigFileName: "project.config.json",
+-    projectConfigRootKeys: DEFAULT_PROJECT_CONFIG_ROOT_KEYS,
+-    ide: {},
+-    build: { autoTouchAppStyle: false },
+-    resolvePreservedNpmDirNames: () => ["miniprogram_npm"],
+-    json: {},
+-    npm: { distDirName: () => "miniprogram_npm" },
+-    wxml: {
+-      eventBindingStyle: "default",
+-      directivePrefix: "wx",
+-    },
+-    compiler: { templatePreset: "wechat" },
+-    typescript: { appTypesPackage: "miniprogram-api-typings" },
+-    runtime: {
+-      globalObjectKey: "xhs",
+-      hostConfigKey: "__wxConfig",
+-      capabilities: DEFAULT_RUNTIME_CAPABILITIES,
+-      pageIdentityRules: DEFAULT_PAGE_IDENTITY_RULES,
+-    },
+-  },
+-];
+-var LEADING_SLASH_RE = /^\/+/;
+-function createMiniProgramPlatformRegistry(descriptors) {
+-  const descriptorById = /* @__PURE__ */ new Map();
+-  const aliasToId = /* @__PURE__ */ new Map();
+-  const runtimeGlobalKeyToId = /* @__PURE__ */ new Map();
+-  for (const descriptor of descriptors) {
+-    descriptorById.set(descriptor.id, descriptor);
+-    runtimeGlobalKeyToId.set(descriptor.runtime.globalObjectKey, descriptor.id);
+-    aliasToId.set(descriptor.id, descriptor.id);
+-    for (const alias of descriptor.aliases) {
+-      const normalized = alias.trim().toLowerCase();
+-      if (!normalized) continue;
+-      aliasToId.set(normalized, descriptor.id);
+-    }
+-  }
+-  return {
+-    aliasToId,
+-    descriptorById,
+-    runtimeGlobalKeyToId,
+-  };
+-}
+-var {
+-  aliasToId: MINI_PROGRAM_PLATFORM_ALIAS_TO_ID,
+-  descriptorById: MINI_PROGRAM_PLATFORM_DESCRIPTOR_BY_ID,
+-  runtimeGlobalKeyToId: MINI_PROGRAM_RUNTIME_GLOBAL_KEY_TO_ID,
+-} = createMiniProgramPlatformRegistry(MINI_PROGRAM_PLATFORM_DESCRIPTORS);
+-Object.freeze(
+-  MINI_PROGRAM_PLATFORM_DESCRIPTORS.map((descriptor) => descriptor.id),
+-);
+-Object.freeze(
+-  Array.from(
+-    new Set(
+-      MINI_PROGRAM_PLATFORM_DESCRIPTORS.map(
+-        (descriptor) => descriptor.wxml?.directivePrefix,
+-      ).filter((prefix) => Boolean(prefix)),
+-    ),
+-  ),
+-);
+-var ORDERED_RUNTIME_GLOBAL_KEYS = Object.freeze(
+-  Array.from(
+-    new Set(
+-      MINI_PROGRAM_PLATFORM_DESCRIPTORS.map(
+-        (descriptor) => descriptor.runtime.globalObjectKey,
+-      ),
+-    ),
+-  ),
+-);
+-var MAX_RUNTIME_RESOLVE_PRIORITY = Number.MAX_SAFE_INTEGER;
+-function getOrderedRuntimeGlobalKeysByPriority(priorityKey) {
+-  const ordered = [...MINI_PROGRAM_PLATFORM_DESCRIPTORS].sort((left, right) => {
+-    const leftPriority =
+-      left.runtime[priorityKey] ?? MAX_RUNTIME_RESOLVE_PRIORITY;
+-    const rightPriority =
+-      right.runtime[priorityKey] ?? MAX_RUNTIME_RESOLVE_PRIORITY;
+-    if (leftPriority !== rightPriority) return leftPriority - rightPriority;
+-    return (
+-      MINI_PROGRAM_PLATFORM_DESCRIPTORS.indexOf(left) -
+-      MINI_PROGRAM_PLATFORM_DESCRIPTORS.indexOf(right)
+-    );
+-  });
+-  return Object.freeze(
+-    Array.from(
+-      new Set(ordered.map((descriptor) => descriptor.runtime.globalObjectKey)),
+-    ),
+-  );
+-}
+-getOrderedRuntimeGlobalKeysByPriority("globalResolvePriority");
+-getOrderedRuntimeGlobalKeysByPriority("routeGlobalResolvePriority");
+-Object.freeze(Object.fromEntries(MINI_PROGRAM_PLATFORM_ALIAS_TO_ID.entries()));
+-/**
+- * @description 标准化平台输入。
+- */
+-function normalizeMiniProgramPlatform(input) {
+-  return input?.trim().toLowerCase() || void 0;
+-}
+-/**
+- * @description 解析平台输入到标准平台标识。
+- */
+-function resolveMiniProgramPlatform(input) {
+-  const normalized = normalizeMiniProgramPlatform(input);
+-  if (!normalized) return;
+-  return MINI_PROGRAM_PLATFORM_ALIAS_TO_ID.get(normalized);
+-}
+-/**
+- * @description 获取平台描述。
+- */
+-function getMiniProgramPlatformDescriptor(platform) {
+-  const descriptor = MINI_PROGRAM_PLATFORM_DESCRIPTOR_BY_ID.get(platform);
+-  if (!descriptor) throw new Error(`不支持的小程序平台 "${platform}"。`);
+-  return descriptor;
+-}
+-/**
+- * @description 获取宿主全局对象 key。
+- */
+-function getMiniProgramRuntimeGlobalKey(platform) {
+-  return getMiniProgramPlatformDescriptor(platform).runtime.globalObjectKey;
+-}
+-/**
+- * @description 解析宿主全局对象 key 对应的平台。
+- */
+-function getMiniProgramPlatformByRuntimeGlobalKey(globalObjectKey) {
+-  const normalized = globalObjectKey?.trim();
+-  if (!normalized) return;
+-  return MINI_PROGRAM_RUNTIME_GLOBAL_KEY_TO_ID.get(normalized);
+-}
+-/**
+- * @description 返回 runtime 全局对象 key 的扫描优先级。
+- */
+-function getMiniProgramRuntimeGlobalKeys(platform) {
+-  if (platform) return [getMiniProgramRuntimeGlobalKey(platform)];
+-  return ORDERED_RUNTIME_GLOBAL_KEYS;
+-}
+-/**
+- * @description 获取平台 runtime 宿主配置 key。
+- */
+-function getMiniProgramRuntimeHostConfigKey(platform) {
+-  if (!platform) return "__wxConfig";
+-  return getMiniProgramPlatformDescriptor(platform).runtime.hostConfigKey;
+-}
+-/**
+- * @description 获取平台 runtime 能力描述。
+- */
+-function getMiniProgramRuntimeCapabilities(platform) {
+-  if (!platform) return DEFAULT_RUNTIME_CAPABILITIES;
+-  return getMiniProgramPlatformDescriptor(platform).runtime.capabilities;
+-}
+-/**
+- * @description 判断平台是否支持指定 runtime 能力。
+- */
+-function supportsMiniProgramRuntimeCapability(platform, capabilityName) {
+-  return getMiniProgramRuntimeCapabilities(platform)[capabilityName] === true;
+-}
+-function serializeMiniProgramPageIdentityRule(rule) {
+-  return rule.source === "field"
+-    ? `${rule.prefix}:${rule.field ?? ""}`
+-    : `${rule.prefix}:route`;
+-}
+-function getMiniProgramPageIdentityRules(platform) {
+-  if (platform)
+-    return getMiniProgramPlatformDescriptor(platform).runtime.pageIdentityRules;
+-  const merged = /* @__PURE__ */ new Map();
+-  for (const descriptor of MINI_PROGRAM_PLATFORM_DESCRIPTORS)
+-    for (const rule of descriptor.runtime.pageIdentityRules)
+-      merged.set(serializeMiniProgramPageIdentityRule(rule), rule);
+-  return [...merged.values()];
+-}
+-/**
+- * @description 根据平台描述解析页面身份 key。
+- */
+-function resolveMiniProgramPageKeys(page, platform) {
+-  if (!page || typeof page !== "object") return [];
+-  const keys = [];
+-  for (const rule of getMiniProgramPageIdentityRules(platform)) {
+-    if (rule.source === "route") {
+-      const route =
+-        typeof page.route === "string"
+-          ? page.route.replace(LEADING_SLASH_RE, "")
+-          : "";
+-      if (route) keys.push(`${rule.prefix}:${route}`);
+-      continue;
+-    }
+-    const field = rule.field;
+-    if (!field) continue;
+-    const value = page[field];
+-    if (typeof value === "number" || typeof value === "string")
+-      keys.push(`${rule.prefix}:${String(value)}`);
+-  }
+-  return Array.from(new Set(keys));
+-}
+-/*!
+- * get-value <https://github.com/jonschlinkert/get-value>
+- *
+- * Copyright (c) 2014-present, Jon Schlinkert.
+- * Released under the MIT License.
+- */
+-/*!
+- * is-primitive <https://github.com/jonschlinkert/is-primitive>
+- *
+- * Copyright (c) 2014-present, Jon Schlinkert.
+- * Released under the MIT License.
+- */
+-var require_is_primitive = /* @__PURE__ */ __commonJSMin((exports, module) => {
+-  module.exports = function isPrimitive(val) {
+-    if (typeof val === "object") return val === null;
+-    return typeof val !== "function";
+-  };
+-});
+-/*!
+- * isobject <https://github.com/jonschlinkert/isobject>
+- *
+- * Copyright (c) 2014-2017, Jon Schlinkert.
+- * Released under the MIT License.
+- */
+-var require_isobject = /* @__PURE__ */ __commonJSMin((exports, module) => {
+-  module.exports = function isObject(val) {
+-    return (
+-      val != null && typeof val === "object" && Array.isArray(val) === false
+-    );
+-  };
+-});
+-/*!
+- * is-plain-object <https://github.com/jonschlinkert/is-plain-object>
+- *
+- * Copyright (c) 2014-2017, Jon Schlinkert.
+- * Released under the MIT License.
+- */
+-var require_is_plain_object = /* @__PURE__ */ __commonJSMin(
+-  (exports, module) => {
+-    var isObject = require_isobject();
+-    function isObjectObject(o) {
+-      return (
+-        isObject(o) === true &&
+-        Object.prototype.toString.call(o) === "[object Object]"
+-      );
+-    }
+-    module.exports = function isPlainObject(o) {
+-      var ctor, prot;
+-      if (isObjectObject(o) === false) return false;
+-      ctor = o.constructor;
+-      if (typeof ctor !== "function") return false;
+-      prot = ctor.prototype;
+-      if (isObjectObject(prot) === false) return false;
+-      if (prot.hasOwnProperty("isPrototypeOf") === false) return false;
+-      return true;
+-    };
+-  },
+-);
+-var import_set_value = /* @__PURE__ */ __toESM(
+-  /* @__PURE__ */ __commonJSMin((exports, module) => {
+-    const { deleteProperty } = Reflect;
+-    const isPrimitive = require_is_primitive();
+-    const isPlainObject = require_is_plain_object();
+-    const isObject = (value) => {
+-      return (
+-        (typeof value === "object" && value !== null) ||
+-        typeof value === "function"
+-      );
+-    };
+-    const isUnsafeKey = (key) => {
+-      return (
+-        key === "__proto__" || key === "constructor" || key === "prototype"
+-      );
+-    };
+-    const validateKey = (key) => {
+-      if (!isPrimitive(key))
+-        throw new TypeError("Object keys must be strings or symbols");
+-      if (isUnsafeKey(key)) throw new Error(`Cannot set unsafe key: "${key}"`);
+-    };
+-    const toStringKey = (input) => {
+-      return Array.isArray(input) ? input.flat().map(String).join(",") : input;
+-    };
+-    const createMemoKey = (input, options) => {
+-      if (typeof input !== "string" || !options) return input;
+-      let key = input + ";";
+-      if (options.arrays !== void 0) key += `arrays=${options.arrays};`;
+-      if (options.separator !== void 0)
+-        key += `separator=${options.separator};`;
+-      if (options.split !== void 0) key += `split=${options.split};`;
+-      if (options.merge !== void 0) key += `merge=${options.merge};`;
+-      if (options.preservePaths !== void 0)
+-        key += `preservePaths=${options.preservePaths};`;
+-      return key;
+-    };
+-    const memoize = (input, options, fn) => {
+-      const key = toStringKey(options ? createMemoKey(input, options) : input);
+-      validateKey(key);
+-      const value = setValue.cache.get(key) || fn();
+-      setValue.cache.set(key, value);
+-      return value;
+-    };
+-    const splitString = (input, options = {}) => {
+-      const sep = options.separator || ".";
+-      const preserve = sep === "/" ? false : options.preservePaths;
+-      if (typeof input === "string" && preserve !== false && /\//.test(input))
+-        return [input];
+-      const parts = [];
+-      let part = "";
+-      const push = (part) => {
+-        let number;
+-        if (part.trim() !== "" && Number.isInteger((number = Number(part))))
+-          parts.push(number);
+-        else parts.push(part);
+-      };
+-      for (let i = 0; i < input.length; i++) {
+-        const value = input[i];
+-        if (value === "\\") {
+-          part += input[++i];
+-          continue;
+-        }
+-        if (value === sep) {
+-          push(part);
+-          part = "";
+-          continue;
+-        }
+-        part += value;
+-      }
+-      if (part) push(part);
+-      return parts;
+-    };
+-    const split = (input, options) => {
+-      if (options && typeof options.split === "function")
+-        return options.split(input);
+-      if (typeof input === "symbol") return [input];
+-      if (Array.isArray(input)) return input;
+-      return memoize(input, options, () => splitString(input, options));
+-    };
+-    const assignProp = (obj, prop, value, options) => {
+-      validateKey(prop);
+-      if (value === void 0) deleteProperty(obj, prop);
+-      else if (options && options.merge) {
+-        const merge =
+-          options.merge === "function" ? options.merge : Object.assign;
+-        if (merge && isPlainObject(obj[prop]) && isPlainObject(value))
+-          obj[prop] = merge(obj[prop], value);
+-        else obj[prop] = value;
+-      } else obj[prop] = value;
+-      return obj;
+-    };
+-    const setValue = (target, path, value, options) => {
+-      if (!path || !isObject(target)) return target;
+-      const keys = split(path, options);
+-      let obj = target;
+-      for (let i = 0; i < keys.length; i++) {
+-        const key = keys[i];
+-        const next = keys[i + 1];
+-        validateKey(key);
+-        if (next === void 0) {
+-          assignProp(obj, key, value, options);
+-          break;
+-        }
+-        if (typeof next === "number" && !Array.isArray(obj[key])) {
+-          obj = obj[key] = [];
+-          continue;
+-        }
+-        if (!isObject(obj[key])) obj[key] = {};
+-        obj = obj[key];
+-      }
+-      return target;
+-    };
+-    setValue.split = split;
+-    setValue.cache = /* @__PURE__ */ new Map();
+-    setValue.clear = () => {
+-      setValue.cache = /* @__PURE__ */ new Map();
+-    };
+-    module.exports = setValue;
+-  })(),
+-  1,
+-);
+-createDefu((obj, key, value) => {
+-  if (Array.isArray(obj[key]) && Array.isArray(value)) {
+-    obj[key] = value;
+-    return true;
+-  }
+-});
+-import_set_value.default;
+-//#endregion
+-//#region ../../node_modules/.pnpm/wevu@6.16.2_miniprogram-api-typings@5.1.3_rolldown@1.0.0-rc.17_rollup@4.60.2_typescript@5.9.3/node_modules/wevu/dist/router-BtpVtHM4.mjs
+-function g() {
+-  if (!(typeof globalThis > `u`)) return globalThis;
+-}
+-function _() {
+-  var e;
+-  let t = g(),
+-    n = resolveMiniProgramPlatform(
+-      (e = {
+-        BASE_URL: "/",
+-        DEV: true,
+-        IS_MINIPROGRAM: true,
+-        IS_WEB: false,
+-        MODE: "production",
+-        MP_PLATFORM: "weapp",
+-        PLATFORM: "weapp",
+-        PROD: false,
+-        SSR: false,
+-      }) == null
+-        ? void 0
+-        : e.PLATFORM,
+-    );
+-  if (n) return n;
+-  for (let e of getMiniProgramRuntimeGlobalKeys())
+-    if (t != null && t[e]) return getMiniProgramPlatformByRuntimeGlobalKey(e);
+-}
+-function ce() {
+-  return getMiniProgramRuntimeCapabilities(_());
+-}
+-function v(e) {
+-  return supportsMiniProgramRuntimeCapability(_(), e);
+-}
+-function le() {
+-  if (!v(`globalPageStack`)) return [];
+-  let e = globalThis.getCurrentPages;
+-  if (typeof e != `function`) return [];
+-  try {
+-    let t = e();
+-    return Array.isArray(t) ? t : [];
+-  } catch (e) {
+-    return [];
+-  }
+-}
+-function ue() {
+-  let e = g(),
+-    t = getMiniProgramRuntimeHostConfigKey(_()),
+-    n = e == null ? void 0 : e[t];
+-  return n && typeof n == `object` ? n : void 0;
+-}
+-function y(e) {
+-  var t;
+-  let n = g(),
+-    r = resolveMiniProgramPlatform(
+-      e == null
+-        ? (t = {
+-            BASE_URL: "/",
+-            DEV: true,
+-            IS_MINIPROGRAM: true,
+-            IS_WEB: false,
+-            MODE: "production",
+-            MP_PLATFORM: "weapp",
+-            PLATFORM: "weapp",
+-            PROD: false,
+-            SSR: false,
+-          }) == null
+-          ? void 0
+-          : t.PLATFORM
+-        : e,
+-    );
+-  if (r) {
+-    let e = getMiniProgramRuntimeGlobalKey(r);
+-    return n == null ? void 0 : n[e];
+-  }
+-  for (let e of getMiniProgramRuntimeGlobalKeys()) {
+-    let t = n == null ? void 0 : n[e];
+-    if (t) return t;
+-  }
+-}
+-function fe() {
+-  var e;
+-  return (e = y()) == null ? g() : e;
+-}
+-var b;
+-function S() {
+-  return b;
+-}
+-function pe(e) {
+-  b = e;
+-}
+-function he(e) {}
+-function C(e) {
+-  if (!b) throw Error(`${e}() 必须在 setup() 的同步阶段调用`);
+-  return b;
+-}
+-function ge(e) {
+-  return (
+-    e["__wevuHooks"] || (e["__wevuHooks"] = Object.create(null)),
+-    e[WEVU_HOOKS_KEY]
+-  );
+-}
+-function w(e, t, n, { single: r = !1 } = {}) {
+-  let i = ge(e);
+-  if (r) i[t] = n;
+-  else {
+-    var a;
+-    ((a = i[t]) == null ? (i[t] = []) : a).push(n);
+-  }
+-}
+-function D(e, t, n = []) {
+-  var r;
+-  let i = e[WEVU_HOOKS_KEY];
+-  if (!i) return;
+-  let a = i[t];
+-  if (!a) return;
+-  let s = e.__wevu,
+-    c = (r = s == null ? void 0 : s.proxy) == null ? e : r;
+-  if (Array.isArray(a))
+-    for (let e of a)
+-      try {
+-        e.apply(c, n);
+-      } catch (e) {}
+-  else if (typeof a == `function`)
+-    try {
+-      a.apply(c, n);
+-    } catch (e) {}
+-}
+-function be(e, t, n = []) {
+-  var r;
+-  let i = e[WEVU_HOOKS_KEY];
+-  if (!i) return;
+-  let a = i[t];
+-  if (!a) return;
+-  let s = e.__wevu,
+-    c = (r = s == null ? void 0 : s.proxy) == null ? e : r;
+-  if (typeof a == `function`)
+-    try {
+-      return a.apply(c, n);
+-    } catch (e) {
+-      return;
+-    }
+-  if (Array.isArray(a)) {
+-    let e;
+-    for (let t of a)
+-      try {
+-        e = t.apply(c, n);
+-      } catch (e) {}
+-    return e;
+-  }
+-}
+-function O(e, t, n) {
+-  w(C(e), e, t, n);
+-}
+-function xe(e) {
+-  O(`onLaunch`, e);
+-}
+-var k = /* @__PURE__ */ new Map();
+-function A(e, t) {
+-  k.set(e, t);
+-}
+-function N(e) {
+-  return !!(e && typeof e == `object` && e["__wevuIsAppInstance"] === !0);
+-}
+-function P(e) {
+-  return Object.create(e == null ? null : e);
+-}
+-function F(e) {
+-  if (!e) return P();
+-  let t = e[WEVU_APP_PROVIDES_KEY];
+-  if (t && typeof t == `object`) return t;
+-  let n = P();
+-  try {
+-    Object.defineProperty(e, WEVU_APP_PROVIDES_KEY, {
+-      value: n,
+-      configurable: !0,
+-      enumerable: !1,
+-      writable: !1,
+-    });
+-  } catch (t) {
+-    e[WEVU_APP_PROVIDES_KEY] = n;
+-  }
+-  return n;
+-}
+-function I(e, t) {
+-  try {
+-    Object.defineProperty(e, WEVU_PROVIDES_KEY, {
+-      value: t,
+-      configurable: !0,
+-      enumerable: !1,
+-      writable: !0,
+-    });
+-  } catch (n) {
+-    e[WEVU_PROVIDES_KEY] = t;
+-  }
+-}
+-function L(e) {
+-  var t, n;
+-  let r = e[WEVU_PROVIDES_KEY];
+-  if (r && typeof r == `object`) return r;
+-  let i = e[WEVU_RUNTIME_APP_KEY],
+-    a =
+-      (t =
+-        (n = e["__wevuParentInstance"]) == null
+-          ? void 0
+-          : n["__wevuProvides"]) == null
+-        ? F(i)
+-        : t,
+-    o = N(e) ? F(i) : P(a);
+-  return (I(e, o), o);
+-}
+-function Ge(e) {
+-  return F(e);
+-}
+-function Ke(e, t, n) {
+-  ((F(e)[t] = n), A(t, n));
+-}
+-function qe(e, t, n) {
+-  var r;
+-  let i = F(t),
+-    a = (r = n == null ? void 0 : n["__wevuProvides"]) == null ? i : r,
+-    o = N(e) ? i : P(a);
+-  if (n)
+-    try {
+-      Object.defineProperty(e, WEVU_PARENT_INSTANCE_KEY, {
+-        value: n,
+-        configurable: !0,
+-        enumerable: !1,
+-        writable: !0,
+-      });
+-    } catch (t) {
+-      e[WEVU_PARENT_INSTANCE_KEY] = n;
+-    }
+-  I(e, o);
+-}
+-function R(e, t) {
+-  let n = Object.getPrototypeOf(e);
+-  for (; n; ) {
+-    if (n === t) return !0;
+-    n = Object.getPrototypeOf(n);
+-  }
+-  return !1;
+-}
+-function Je(e, t) {
+-  let n = L(e),
+-    r = L(t);
+-  if (!(n === r || R(n, r) || R(r, n))) {
+-    Object.setPrototypeOf(r, n);
+-    try {
+-      Object.defineProperty(t, WEVU_PARENT_INSTANCE_KEY, {
+-        value: e,
+-        configurable: !0,
+-        enumerable: !1,
+-        writable: !0,
+-      });
+-    } catch (n) {
+-      t[WEVU_PARENT_INSTANCE_KEY] = e;
+-    }
+-  }
+-}
+-//#endregion
+-Object.defineProperty(exports, "$", {
+-  enumerable: true,
+-  get: function () {
+-    return $;
+-  },
+-});
+-Object.defineProperty(exports, "C", {
+-  enumerable: true,
+-  get: function () {
+-    return C;
+-  },
+-});
+-Object.defineProperty(exports, "C$1", {
+-  enumerable: true,
+-  get: function () {
+-    return C$1;
+-  },
+-});
+-Object.defineProperty(exports, "D", {
+-  enumerable: true,
+-  get: function () {
+-    return D;
+-  },
+-});
+-Object.defineProperty(exports, "G", {
+-  enumerable: true,
+-  get: function () {
+-    return G;
+-  },
+-});
+-Object.defineProperty(exports, "Ge", {
+-  enumerable: true,
+-  get: function () {
+-    return Ge;
+-  },
+-});
+-Object.defineProperty(exports, "Je", {
+-  enumerable: true,
+-  get: function () {
+-    return Je;
+-  },
+-});
+-Object.defineProperty(exports, "Ke", {
+-  enumerable: true,
+-  get: function () {
+-    return Ke;
+-  },
+-});
+-Object.defineProperty(exports, "Q", {
+-  enumerable: true,
+-  get: function () {
+-    return Q;
+-  },
+-});
+-Object.defineProperty(exports, "S", {
+-  enumerable: true,
+-  get: function () {
+-    return S;
+-  },
+-});
+-Object.defineProperty(exports, "V", {
+-  enumerable: true,
+-  get: function () {
+-    return V;
+-  },
+-});
+-Object.defineProperty(exports, "WEVU_ATTRS_KEY", {
+-  enumerable: true,
+-  get: function () {
+-    return WEVU_ATTRS_KEY;
+-  },
+-});
+-Object.defineProperty(exports, "WEVU_EFFECT_SCOPE_KEY", {
+-  enumerable: true,
+-  get: function () {
+-    return WEVU_EFFECT_SCOPE_KEY;
+-  },
+-});
+-Object.defineProperty(exports, "WEVU_EXPOSED_KEY", {
+-  enumerable: true,
+-  get: function () {
+-    return WEVU_EXPOSED_KEY;
+-  },
+-});
+-Object.defineProperty(exports, "WEVU_HOOKS_KEY", {
+-  enumerable: true,
+-  get: function () {
+-    return WEVU_HOOKS_KEY;
+-  },
+-});
+-Object.defineProperty(exports, "WEVU_INLINE_HANDLER", {
+-  enumerable: true,
+-  get: function () {
+-    return WEVU_INLINE_HANDLER;
+-  },
+-});
+-Object.defineProperty(exports, "WEVU_INLINE_MAP_KEY", {
+-  enumerable: true,
+-  get: function () {
+-    return WEVU_INLINE_MAP_KEY;
+-  },
+-});
+-Object.defineProperty(exports, "WEVU_IS_APP_INSTANCE_KEY", {
+-  enumerable: true,
+-  get: function () {
+-    return WEVU_IS_APP_INSTANCE_KEY;
+-  },
+-});
+-Object.defineProperty(exports, "WEVU_LAYOUT_BRIDGE_PAGE_KEYS", {
+-  enumerable: true,
+-  get: function () {
+-    return WEVU_LAYOUT_BRIDGE_PAGE_KEYS;
+-  },
+-});
+-Object.defineProperty(exports, "WEVU_LAYOUT_HOST_BRIDGE_KEY", {
+-  enumerable: true,
+-  get: function () {
+-    return WEVU_LAYOUT_HOST_BRIDGE_KEY;
+-  },
+-});
+-Object.defineProperty(exports, "WEVU_MODEL_HANDLER", {
+-  enumerable: true,
+-  get: function () {
+-    return WEVU_MODEL_HANDLER;
+-  },
+-});
+-Object.defineProperty(exports, "WEVU_NATIVE_INSTANCE_KEY", {
+-  enumerable: true,
+-  get: function () {
+-    return WEVU_NATIVE_INSTANCE_KEY;
+-  },
+-});
+-Object.defineProperty(exports, "WEVU_ON_LOAD_CALLED_KEY", {
+-  enumerable: true,
+-  get: function () {
+-    return WEVU_ON_LOAD_CALLED_KEY;
+-  },
+-});
+-Object.defineProperty(exports, "WEVU_OWNER_HANDLER", {
+-  enumerable: true,
+-  get: function () {
+-    return WEVU_OWNER_HANDLER;
+-  },
+-});
+-Object.defineProperty(exports, "WEVU_PAGE_LAYOUT_NAME_KEY", {
+-  enumerable: true,
+-  get: function () {
+-    return WEVU_PAGE_LAYOUT_NAME_KEY;
+-  },
+-});
+-Object.defineProperty(exports, "WEVU_PAGE_LAYOUT_NONE", {
+-  enumerable: true,
+-  get: function () {
+-    return WEVU_PAGE_LAYOUT_NONE;
+-  },
+-});
+-Object.defineProperty(exports, "WEVU_PAGE_LAYOUT_PROPS_KEY", {
+-  enumerable: true,
+-  get: function () {
+-    return WEVU_PAGE_LAYOUT_PROPS_KEY;
+-  },
+-});
+-Object.defineProperty(exports, "WEVU_PAGE_LAYOUT_SETTER_KEY", {
+-  enumerable: true,
+-  get: function () {
+-    return WEVU_PAGE_LAYOUT_SETTER_KEY;
+-  },
+-});
+-Object.defineProperty(exports, "WEVU_PAGE_SCROLL_HOOK_DEPTH_KEY", {
+-  enumerable: true,
+-  get: function () {
+-    return WEVU_PAGE_SCROLL_HOOK_DEPTH_KEY;
+-  },
+-});
+-Object.defineProperty(exports, "WEVU_PARENT_INSTANCE_KEY", {
+-  enumerable: true,
+-  get: function () {
+-    return WEVU_PARENT_INSTANCE_KEY;
+-  },
+-});
+-Object.defineProperty(exports, "WEVU_PENDING_PROP_VALUES_KEY", {
+-  enumerable: true,
+-  get: function () {
+-    return WEVU_PENDING_PROP_VALUES_KEY;
+-  },
+-});
+-Object.defineProperty(exports, "WEVU_PROPS_KEY", {
+-  enumerable: true,
+-  get: function () {
+-    return WEVU_PROPS_KEY;
+-  },
+-});
+-Object.defineProperty(exports, "WEVU_PROP_KEYS_KEY", {
+-  enumerable: true,
+-  get: function () {
+-    return WEVU_PROP_KEYS_KEY;
+-  },
+-});
+-Object.defineProperty(exports, "WEVU_PUBLIC_RUNTIME_KEY", {
+-  enumerable: true,
+-  get: function () {
+-    return WEVU_PUBLIC_RUNTIME_KEY;
+-  },
+-});
+-Object.defineProperty(exports, "WEVU_READY_CALLED_KEY", {
+-  enumerable: true,
+-  get: function () {
+-    return WEVU_READY_CALLED_KEY;
+-  },
+-});
+-Object.defineProperty(exports, "WEVU_RESERVED_METHOD_PREFIX", {
+-  enumerable: true,
+-  get: function () {
+-    return WEVU_RESERVED_METHOD_PREFIX;
+-  },
+-});
+-Object.defineProperty(exports, "WEVU_ROUTE_DONE_CALLED_KEY", {
+-  enumerable: true,
+-  get: function () {
+-    return WEVU_ROUTE_DONE_CALLED_KEY;
+-  },
+-});
+-Object.defineProperty(exports, "WEVU_ROUTE_DONE_IN_TICK_KEY", {
+-  enumerable: true,
+-  get: function () {
+-    return WEVU_ROUTE_DONE_IN_TICK_KEY;
+-  },
+-});
+-Object.defineProperty(exports, "WEVU_RUNTIME_APP_KEY", {
+-  enumerable: true,
+-  get: function () {
+-    return WEVU_RUNTIME_APP_KEY;
+-  },
+-});
+-Object.defineProperty(exports, "WEVU_RUNTIME_KEY", {
+-  enumerable: true,
+-  get: function () {
+-    return WEVU_RUNTIME_KEY;
+-  },
+-});
+-Object.defineProperty(exports, "WEVU_SCOPED_SLOT_CREATOR_KEY", {
+-  enumerable: true,
+-  get: function () {
+-    return WEVU_SCOPED_SLOT_CREATOR_KEY;
+-  },
+-});
+-Object.defineProperty(exports, "WEVU_SETUP_CONTEXT_INSTANCE_KEY", {
+-  enumerable: true,
+-  get: function () {
+-    return WEVU_SETUP_CONTEXT_INSTANCE_KEY;
+-  },
+-});
+-Object.defineProperty(exports, "WEVU_SLOT_NAMES_PROP", {
+-  enumerable: true,
+-  get: function () {
+-    return WEVU_SLOT_NAMES_PROP;
+-  },
+-});
+-Object.defineProperty(exports, "WEVU_SLOT_OWNER_ID_KEY", {
+-  enumerable: true,
+-  get: function () {
+-    return WEVU_SLOT_OWNER_ID_KEY;
+-  },
+-});
+-Object.defineProperty(exports, "WEVU_SLOT_OWNER_ID_PROP", {
+-  enumerable: true,
+-  get: function () {
+-    return WEVU_SLOT_OWNER_ID_PROP;
+-  },
+-});
+-Object.defineProperty(exports, "WEVU_SLOT_OWNER_KEY", {
+-  enumerable: true,
+-  get: function () {
+-    return WEVU_SLOT_OWNER_KEY;
+-  },
+-});
+-Object.defineProperty(exports, "WEVU_SLOT_PROPS_DATA_KEY", {
+-  enumerable: true,
+-  get: function () {
+-    return WEVU_SLOT_PROPS_DATA_KEY;
+-  },
+-});
+-Object.defineProperty(exports, "WEVU_SLOT_PROPS_KEY", {
+-  enumerable: true,
+-  get: function () {
+-    return WEVU_SLOT_PROPS_KEY;
+-  },
+-});
+-Object.defineProperty(exports, "WEVU_SLOT_SCOPE_KEY", {
+-  enumerable: true,
+-  get: function () {
+-    return WEVU_SLOT_SCOPE_KEY;
+-  },
+-});
+-Object.defineProperty(exports, "WEVU_TEMPLATE_REFS_CALLBACKS_KEY", {
+-  enumerable: true,
+-  get: function () {
+-    return WEVU_TEMPLATE_REFS_CALLBACKS_KEY;
+-  },
+-});
+-Object.defineProperty(exports, "WEVU_TEMPLATE_REFS_KEY", {
+-  enumerable: true,
+-  get: function () {
+-    return WEVU_TEMPLATE_REFS_KEY;
+-  },
+-});
+-Object.defineProperty(exports, "WEVU_TEMPLATE_REFS_PENDING_KEY", {
+-  enumerable: true,
+-  get: function () {
+-    return WEVU_TEMPLATE_REFS_PENDING_KEY;
+-  },
+-});
+-Object.defineProperty(exports, "WEVU_TEMPLATE_REF_MAP_KEY", {
+-  enumerable: true,
+-  get: function () {
+-    return WEVU_TEMPLATE_REF_MAP_KEY;
+-  },
+-});
+-Object.defineProperty(exports, "WEVU_WATCH_STOPS_KEY", {
+-  enumerable: true,
+-  get: function () {
+-    return WEVU_WATCH_STOPS_KEY;
+-  },
+-});
+-Object.defineProperty(exports, "Y", {
+-  enumerable: true,
+-  get: function () {
+-    return Y;
+-  },
+-});
+-Object.defineProperty(exports, "Z", {
+-  enumerable: true,
+-  get: function () {
+-    return Z;
+-  },
+-});
+-Object.defineProperty(exports, "_e", {
+-  enumerable: true,
+-  get: function () {
+-    return _e;
+-  },
+-});
+-Object.defineProperty(exports, "a", {
+-  enumerable: true,
+-  get: function () {
+-    return a;
+-  },
+-});
+-Object.defineProperty(exports, "ae", {
+-  enumerable: true,
+-  get: function () {
+-    return ae;
+-  },
+-});
+-Object.defineProperty(exports, "be", {
+-  enumerable: true,
+-  get: function () {
+-    return be;
+-  },
+-});
+-Object.defineProperty(exports, "ce", {
+-  enumerable: true,
+-  get: function () {
+-    return ce;
+-  },
+-});
+-Object.defineProperty(exports, "ce$1", {
+-  enumerable: true,
+-  get: function () {
+-    return ce$1;
+-  },
+-});
+-Object.defineProperty(exports, "fe", {
+-  enumerable: true,
+-  get: function () {
+-    return fe;
+-  },
+-});
+-Object.defineProperty(exports, "ge", {
+-  enumerable: true,
+-  get: function () {
+-    return ge$1;
+-  },
+-});
+-Object.defineProperty(exports, "he", {
+-  enumerable: true,
+-  get: function () {
+-    return he;
+-  },
+-});
+-Object.defineProperty(exports, "he$1", {
+-  enumerable: true,
+-  get: function () {
+-    return he$1;
+-  },
+-});
+-Object.defineProperty(exports, "ke", {
+-  enumerable: true,
+-  get: function () {
+-    return ke;
+-  },
+-});
+-Object.defineProperty(exports, "le", {
+-  enumerable: true,
+-  get: function () {
+-    return le;
+-  },
+-});
+-Object.defineProperty(exports, "le$1", {
+-  enumerable: true,
+-  get: function () {
+-    return le$1;
+-  },
+-});
+-Object.defineProperty(exports, "o", {
+-  enumerable: true,
+-  get: function () {
+-    return o;
+-  },
+-});
+-Object.defineProperty(exports, "pe", {
+-  enumerable: true,
+-  get: function () {
+-    return pe;
+-  },
+-});
+-Object.defineProperty(exports, "qe", {
+-  enumerable: true,
+-  get: function () {
+-    return qe;
+-  },
+-});
+-Object.defineProperty(exports, "re", {
+-  enumerable: true,
+-  get: function () {
+-    return re;
+-  },
+-});
+-Object.defineProperty(exports, "resolveMiniProgramPageKeys", {
+-  enumerable: true,
+-  get: function () {
+-    return resolveMiniProgramPageKeys;
+-  },
+-});
+-Object.defineProperty(exports, "u", {
+-  enumerable: true,
+-  get: function () {
+-    return u;
+-  },
+-});
+-Object.defineProperty(exports, "ue", {
+-  enumerable: true,
+-  get: function () {
+-    return ue;
+-  },
+-});
+-Object.defineProperty(exports, "ue$1", {
+-  enumerable: true,
+-  get: function () {
+-    return ue$1;
+-  },
+-});
+-Object.defineProperty(exports, "v", {
+-  enumerable: true,
+-  get: function () {
+-    return v;
+-  },
+-});
+-Object.defineProperty(exports, "w", {
+-  enumerable: true,
+-  get: function () {
+-    return w;
+-  },
+-});
+-Object.defineProperty(exports, "we", {
+-  enumerable: true,
+-  get: function () {
+-    return we;
+-  },
+-});
+-Object.defineProperty(exports, "x", {
+-  enumerable: true,
+-  get: function () {
+-    return x$1;
+-  },
+-});
+-Object.defineProperty(exports, "xe", {
+-  enumerable: true,
+-  get: function () {
+-    return xe;
+-  },
+-});
+-Object.defineProperty(exports, "xe$1", {
+-  enumerable: true,
+-  get: function () {
+-    return xe$1;
+-  },
+-});
+-Object.defineProperty(exports, "y", {
+-  enumerable: true,
+-  get: function () {
+-    return y;
+-  },
+-});
+-Object.defineProperty(exports, "y$1", {
+-  enumerable: true,
+-  get: function () {
+-    return y$1;
+-  },
+-});
+-Object.defineProperty(exports, "ye", {
+-  enumerable: true,
+-  get: function () {
+-    return ye;
+-  },
+-});
+
+diff -- dist/weapp-vendors/wevu-src.js
+# normalized content differs; inline diff omitted (large-removed-file).
+# baseline: 117955 raw bytes, 142345 normalized bytes, hash 5957dab98675
+# current: /dev/null
+

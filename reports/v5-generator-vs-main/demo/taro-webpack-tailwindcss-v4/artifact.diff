@@ -1,0 +1,100 @@
+# demo/taro-webpack-tailwindcss-v4 artifact diff
+# baseline: main(v4)
+# current: next v5 generator
+# note: only core build artifacts are compared. Text artifacts are formatted/normalized before diffing; large normalized text files are summarized by hash and size.
+
+diff -- dist/app.js
+# normalized content differs; inline diff omitted (large-normalized-text).
+# baseline: 96357 raw bytes, 232646 normalized bytes, hash 2962b2469774
+# current: 96359 raw bytes, 232648 normalized bytes, hash 0e79d246e6af
+
+diff -- dist/app.wxss
+# normalized content differs; inline diff omitted (large-normalized-text).
+# baseline: 325956 raw bytes, 379166 normalized bytes, hash 3dfcf6d22051
+# current: 324468 raw bytes, 377343 normalized bytes, hash 0df3b2116174
+
+--- a/dist/comp.js
++++ b/dist/comp.js
+@@ -7,7 +7,7 @@
+       return n((n.s = t));
+     };
+     n.O(0, [907, 96], function () {
+-      return t(2848);
++      return t(6972);
+     });
+     n.O();
+   },
+
+--- a/dist/pages/index/index.js
++++ b/dist/pages/index/index.js
+@@ -2,11 +2,11 @@
+ (wx["webpackJsonp"] = wx["webpackJsonp"] || []).push([
+   [421],
+   {
+-    3752: function (e, t, n) {
++    141: function (e, t, n) {
+       "use strict";
+       var r = n(7496),
+         o = n(4553),
+-        u = n(7827);
++        u = n(8256);
+       function c(e, t, n) {
+         return (
+           t in e
+@@ -123,7 +123,7 @@
+         }
+         return e;
+       }
+-      var m = n(1979),
++      var m = n(7348),
+         h = {
+           useSvg: !0,
+           classPrefix: "nut-icon",
+@@ -214,7 +214,7 @@
+             ),
+           );
+         },
+-        A = n(6264),
++        A = n(3383),
+         D = n.n(A),
+         O = { className: "", style: {} },
+         S = function () {
+@@ -456,7 +456,7 @@
+       "use strict";
+       e.exports = n(2921);
+     },
+-    808: function (e, t, n) {
++    6773: function (e, t, n) {
+       "use strict";
+       var r = n(6717)["window"],
+         o = Symbol.for("react.transitional.element"),
+@@ -917,11 +917,11 @@
+         (t.useTransition = function () {
+           return S.H.useTransition();
+         }),
+-        (t.version = "19.2.5"));
++        (t.version = "19.2.6"));
+     },
+-    1979: function (e, t, n) {
++    7348: function (e, t, n) {
+       "use strict";
+-      e.exports = n(808);
++      e.exports = n(6773);
+     },
+     395: function (e, t) {
+       var n, r;
+@@ -966,7 +966,7 @@
+       return e((e.s = t));
+     };
+     e.O(0, [907, 96], function () {
+-      return t(3752);
++      return t(141);
+     });
+     e.O();
+   },
+
+diff -- dist/taro.js
+# normalized content differs; inline diff omitted (large-normalized-text).
+# baseline: 133043 raw bytes, 287568 normalized bytes, hash 549a56bf2947
+# current: 133043 raw bytes, 287568 normalized bytes, hash 6744ea11445b
+
