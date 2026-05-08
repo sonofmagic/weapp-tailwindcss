@@ -412,7 +412,7 @@ describe('v5 Tailwind CSS v4 directives parity', () => {
     expect(result.css).not.toContain('::file-selector-button')
   })
 
-  it('ignores Tailwind v4 preflight subpath imports without an explicit layer option', async () => {
+  it('keeps unlayered Tailwind v4 preflight subpath imports for web generator output', async () => {
     const fixture = await createTailwindV4DirectiveFixture()
     const css = [
       '@import "tailwindcss/preflight.css";',
@@ -420,21 +420,27 @@ describe('v5 Tailwind CSS v4 directives parity', () => {
       '@source inline("block");',
       '',
     ].join('\n')
-    const result = await postcss([
-      weappTailwindcss({
-        generator: {
-          mode: 'force',
-          target: 'web',
-        },
+    const [officialResult, generatorResult] = await Promise.all([
+      postcss([tailwindcssPostcss({ optimize: false })]).process(css, {
+        from: fixture.cssEntry,
       }),
-    ]).process(css, {
-      from: fixture.cssEntry,
-    })
+      postcss([
+        weappTailwindcss({
+          generator: {
+            mode: 'force',
+            target: 'web',
+          },
+        }),
+      ]).process(css, {
+        from: fixture.cssEntry,
+      }),
+    ])
 
-    expect(result.css).toContain('.block')
-    expect(result.css).not.toContain('box-sizing: border-box')
-    expect(result.css).not.toContain('html, :host')
-    expect(result.css).not.toContain('button, input')
+    expect(generatorResult.css).toBe(officialResult.css)
+    expect(generatorResult.css).toContain('.block')
+    expect(generatorResult.css).toContain('box-sizing: border-box')
+    expect(generatorResult.css).toContain('html, :host')
+    expect(generatorResult.css).toContain('button, input')
   })
 
   it('supports official adding-custom-styles features in v4 generator mode', async () => {

@@ -103,11 +103,18 @@ function resolvePostcssProjectRoot(result: Result, options: WeappTailwindcssPost
 }
 
 function replaceRootCss(root: Root, css: string, result: Result) {
-  const nextRoot = postcss.parse(css, {
-    from: resolveInputFile(result),
-  })
   root.removeAll()
-  root.append(nextRoot.nodes)
+  try {
+    const nextRoot = postcss.parse(css, {
+      from: resolveInputFile(result),
+    })
+    root.append(nextRoot.nodes)
+  }
+  catch {
+    root.raws = {
+      after: css,
+    }
+  }
 }
 
 function addDependencyMessages(result: Result, generated: WeappTailwindcssGenerateResult) {

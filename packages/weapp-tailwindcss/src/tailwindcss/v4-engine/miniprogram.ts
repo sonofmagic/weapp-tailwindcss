@@ -43,8 +43,7 @@ export async function transformTailwindV4CssByTarget(
   target: TailwindV4GenerateTarget,
   options?: Partial<IStyleHandlerOptions>,
 ) {
-  const compatibleCss = normalizeTailwindV4GeneratedUrlValues(css)
   return target === 'weapp'
-    ? transformTailwindV4CssToWeapp(compatibleCss, options)
-    : compatibleCss
+    ? transformTailwindV4CssToWeapp(css, options)
+    : css
 }

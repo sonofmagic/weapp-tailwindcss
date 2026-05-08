@@ -195,7 +195,9 @@ export function createTailwindV4Engine(source: TailwindV4ResolvedSource): Tailwi
       ...patchOptions
     } = options
     const shouldApplyTailwindV3Compatibility = tailwindcssV3Compatibility ?? target === 'weapp'
-    const filteredSourceCss = removeUnlayeredTailwindV4PreflightImports(source.css)
+    const filteredSourceCss = target === 'weapp'
+      ? removeUnlayeredTailwindV4PreflightImports(source.css)
+      : source.css
     const sourceCss = shouldApplyTailwindV3Compatibility
       ? applyTailwindV3CompatibilityCss(filteredSourceCss)
       : target === 'weapp'
