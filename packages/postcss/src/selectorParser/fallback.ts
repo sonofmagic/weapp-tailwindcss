@@ -138,6 +138,7 @@ export function getFallbackRemove(_rule?: Rule, options?: IStyleHandlerOptions) 
         const cached = selectorCache.get(sourceSelector)
         if (cached) {
           if (cached.action === 'remove') {
+            targetRule.selector = ''
             targetRule.remove()
           }
           else if (cached.action === 'update' && cached.selector && cached.selector !== sourceSelector) {
@@ -151,6 +152,7 @@ export function getFallbackRemove(_rule?: Rule, options?: IStyleHandlerOptions) 
       try {
         rawTransformSync(targetRule, FALLBACK_TRANSFORM_OPTIONS)
         if (targetRule.parent && targetRule.selector.trim().length === 0) {
+          targetRule.selector = ''
           targetRule.remove()
         }
       }
@@ -162,6 +164,7 @@ export function getFallbackRemove(_rule?: Rule, options?: IStyleHandlerOptions) 
       if (transformOptions === FALLBACK_TRANSFORM_OPTIONS) {
         const wasRemoved = targetRule.parent == null
         if (wasRemoved) {
+          targetRule.selector = ''
           writeSelectorCache(sourceSelector, { action: 'remove' })
         }
         else if (targetRule.selector === sourceSelector) {

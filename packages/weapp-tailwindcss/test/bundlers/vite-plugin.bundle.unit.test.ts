@@ -2016,6 +2016,7 @@ const cls = "w-[1.5px]"
   it('reapplies cached css transform when js changes but css source stays the same', async () => {
     const UnifiedViteWeappTailwindcssPlugin = await loadUnifiedVitePlugin()
     setCurrentContext(createContext({
+      generator: false,
       styleHandler: vi.fn(async (code: string) => ({
         css: code
           .replace('*,::before,::after', 'view,text,::before,::after')
@@ -2067,6 +2068,7 @@ const cls = "w-[1.5px]"
   it('reapplies cached css transform when css formatting changes only', async () => {
     const UnifiedViteWeappTailwindcssPlugin = await loadUnifiedVitePlugin()
     setCurrentContext(createContext({
+      generator: false,
       styleHandler: vi.fn(async (code: string) => ({
         css: code
           .replace('*,::before,::after', 'view,text,::before,::after')

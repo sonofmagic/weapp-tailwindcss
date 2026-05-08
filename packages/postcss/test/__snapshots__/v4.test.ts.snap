@@ -423,11 +423,6 @@ hr {
     border-top-width: 1px;
   }
 
-abbr {
-    text-decoration: underline;
-    text-decoration: underline dotted;
-  }
-
 h1,h2,h3,h4,h5,h6 {
     font-size: inherit;
     font-weight: inherit;
@@ -554,7 +549,7 @@ textarea {
     box-shadow: none;
   }
 
-button,input {
+button {
     appearance: button;
   }
 
@@ -1367,11 +1362,6 @@ hr {
     color: inherit;
     border-top-width: 1px;
   }
-abbr {
-    -webkit-text-decoration: underline dotted;
-    text-decoration: underline;
-    text-decoration: underline dotted;
-  }
 h1,h2,h3,h4,h5,h6 {
     font-size: inherit;
     font-weight: inherit;
@@ -1515,7 +1505,7 @@ textarea {
 :-moz-ui-invalid {
     box-shadow: none;
   }
-button,input {
+button {
     -webkit-appearance: button;
     -moz-appearance: button;
     appearance: button;
@@ -3713,11 +3703,6 @@ hr {
     border-top-width: 1px;
   }
 
-abbr {
-    text-decoration: underline;
-    text-decoration: underline dotted;
-  }
-
 h1,h2,h3,h4,h5,h6 {
     font-size: inherit;
     font-weight: inherit;
@@ -3884,7 +3869,7 @@ textarea {
     box-shadow: none;
   }
 
-button,input {
+button {
     appearance: button;
   }
 

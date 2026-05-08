@@ -70,6 +70,7 @@ export interface WeappTailwindcssPostcssPluginOptions extends TailwindV4SourceOp
   config?: string
   postcssPlugin?: string
   candidates?: Iterable<string>
+  scanSources?: WeappTailwindcssGenerateOptions['scanSources']
   sources?: TailwindV4CandidateSource[]
   styleOptions?: Partial<IStyleHandlerOptions>
 }
@@ -299,6 +300,10 @@ async function collectAutoTailwindCandidates(
   result: Result,
   options: WeappTailwindcssPostcssPluginOptions,
 ) {
+  if (options.scanSources === false) {
+    return new Set<string>()
+  }
+
   const base = resolvePostcssBase(result, options)
   const projectRoot = resolvePostcssProjectRoot(result, options)
   const sourceEntryTasks: Array<Promise<TailwindSourceEntry>> = []
@@ -386,6 +391,7 @@ export const weappTailwindcssPostcssPlugin: PluginCreator<WeappTailwindcssPostcs
       const {
         candidates,
         generator: userGeneratorOptions,
+        scanSources,
         sources,
         styleOptions,
         target: legacyTarget,
@@ -423,7 +429,7 @@ export const weappTailwindcssPostcssPlugin: PluginCreator<WeappTailwindcssPostcs
           ...autoCandidates,
           ...(candidates ?? []),
         ]),
-        scanSources: false,
+        scanSources: scanSources ?? false,
         sources: [
           ...collectedSources.sources,
           ...(sources ?? []),

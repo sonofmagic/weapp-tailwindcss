@@ -18,6 +18,7 @@ describe('v5 postcss generator', () => {
     const result = await postcss([
       weappTailwindcss({
         candidates: ['hover:bg-blue-500', 'w-[100px]'],
+        scanSources: false,
       }),
     ]).process(MINIMAL_THEME_CSS, {
       from: undefined,
@@ -40,6 +41,7 @@ describe('v5 postcss generator', () => {
           target: 'web',
         },
         candidates: ['hover:bg-blue-500', 'w-[100px]'],
+        scanSources: false,
       }),
     ]).process(MINIMAL_THEME_CSS, {
       from: undefined,
@@ -109,6 +111,7 @@ describe('v5 postcss generator', () => {
       weappTailwindcss({
         target: 'web',
         candidates: ['hover:bg-blue-500', 'w-[100px]'],
+        scanSources: false,
       }),
     ]).process(MINIMAL_THEME_CSS, {
       from: undefined,
