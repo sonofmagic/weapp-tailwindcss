@@ -1,5 +1,11 @@
 # @weapp-tailwindcss/init
 
+## 1.0.12-next.0
+
+### Patch Changes
+
+- 🐛 **调整初始化生成的 PostCSS 配置：生成模式下不再注册 `tailwindcss` PostCSS 插件，只保留 `autoprefixer` 等后处理插件。** [#852](https://github.com/sonofmagic/weapp-tailwindcss/pull/852) by @github-actions
+
 ## 1.0.11
 
 ### Patch Changes
