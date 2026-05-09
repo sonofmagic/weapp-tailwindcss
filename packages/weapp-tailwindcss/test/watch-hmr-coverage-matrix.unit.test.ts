@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest'
-import { buildAppCases } from '../scripts/watch-hmr-regression/cases/apps'
-import { buildDemoBaseCases } from '../scripts/watch-hmr-regression/cases/demo/base'
-import { buildDemoExtendedCases } from '../scripts/watch-hmr-regression/cases/demo/extended'
+import { buildAppCases } from '../../../tools/weapp-tailwindcss-scripts/src/watch-hmr-regression/cases/apps'
+import { buildDemoBaseCases } from '../../../tools/weapp-tailwindcss-scripts/src/watch-hmr-regression/cases/demo/base'
+import { buildDemoExtendedCases } from '../../../tools/weapp-tailwindcss-scripts/src/watch-hmr-regression/cases/demo/extended'
 
 const watchCoveredProjects = new Set([
   ...buildDemoBaseCases('/repo').map(item => item.project),
@@ -31,6 +31,7 @@ const miniProgramV3Projects = [
   'demo/taro-app-vite',
   'demo/taro-vue3-app',
   'demo/mpx-app',
+  'demo/gulp-app',
   'demo/native-ts',
   'apps/vite-native-ts',
   'apps/vite-native-skyline',
@@ -55,7 +56,6 @@ const miniProgramV5Projects = [
 
 const manualBoundaryProjects = [
   'demo/native',
-  'demo/gulp-app',
   'demo/uni-app-x-hbuilderx-tailwindcss3',
 ]
 
@@ -93,11 +93,12 @@ describe('watch-hmr coverage matrix', () => {
     for (const watchCase of automatedWatchCases) {
       expect(watchCase.templateMutation, `${watchCase.project} should cover template class HMR`).toBeDefined()
       expect(watchCase.scriptMutation, `${watchCase.project} should cover script class HMR`).toBeDefined()
-      expect(watchCase.contentMutation, `${watchCase.project} should cover JS content scanning HMR`).toBeDefined()
       expect(watchCase.styleMutation, `${watchCase.project} should cover style @apply HMR`).toBeDefined()
       expect(watchCase.templateMutation.verifyEscapedIn.length + (watchCase.templateMutation.verifyClassLiteralIn?.length ?? 0)).toBeGreaterThan(0)
       expect(watchCase.scriptMutation.verifyEscapedIn.length + (watchCase.scriptMutation.verifyClassLiteralIn?.length ?? 0)).toBeGreaterThan(0)
-      expect(watchCase.contentMutation?.verifyClassLiteralIn).toContain('js')
+      if (watchCase.contentMutation) {
+        expect(watchCase.contentMutation.verifyClassLiteralIn).toContain('js')
+      }
     }
   })
 
@@ -112,7 +113,6 @@ describe('watch-hmr coverage matrix', () => {
   it('documents the current hbuilderx v3 automation boundary', () => {
     expect(manualBoundaryProjects).toEqual([
       'demo/native',
-      'demo/gulp-app',
       'demo/uni-app-x-hbuilderx-tailwindcss3',
     ])
   })

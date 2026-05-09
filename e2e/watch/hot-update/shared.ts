@@ -8,6 +8,7 @@ export type WatchProjectGroup = 'demo' | 'apps'
 export type ConcreteWatchCaseName
   = | 'taro'
     | 'mpx'
+    | 'gulp-app'
     | 'weapp-vite'
     | 'uni-app-vue3-vite'
     | 'uni-app-tailwindcss-v4'
@@ -293,6 +294,7 @@ export function resolveCaseName() {
   if (
     value === 'taro'
     || value === 'mpx'
+    || value === 'gulp-app'
     || value === 'weapp-vite'
     || value === 'uni-app-vue3-vite'
     || value === 'uni-app-tailwindcss-v4'
@@ -335,6 +337,7 @@ export function resolveExpectedGroup(target: WatchCaseName): WatchProjectGroup |
   if (
     target === 'taro'
     || target === 'mpx'
+    || target === 'gulp-app'
     || target === 'weapp-vite'
     || target === 'uni-app-vue3-vite'
     || target === 'uni-app-tailwindcss-v4'
@@ -431,7 +434,12 @@ function assertHotUpdateReport(report: HotUpdateReport, target: WatchCaseName, m
   expect(report.summaryByMutationKind.template?.count).toBe(report.summary.count)
   expect(report.summaryByMutationKind.script?.count).toBe(report.summary.count)
   expect(report.summaryByMutationKind.style?.count).toBe(report.summary.count)
-  expect(report.summaryByMutationKind.content?.count).toBe(report.summary.count)
+  const casesWithContentMutation = report.cases.filter(
+    item => item.mutationMetrics.some(metric => metric.mutationKind === 'content'),
+  )
+  if (casesWithContentMutation.length > 0) {
+    expect(report.summaryByMutationKind.content?.count).toBe(casesWithContentMutation.length)
+  }
   expect(Object.keys(report.summaryByProject).length).toBe(report.summary.count)
 
   const expectedGroup = resolveExpectedGroup(target)
@@ -455,12 +463,11 @@ function assertHotUpdateReport(report: HotUpdateReport, target: WatchCaseName, m
     expect(item.escapedClasses.length).toBe(item.classTokens.length)
     expect(item.rounds.length).toBeGreaterThanOrEqual(requiredMutationRounds.length)
     const hasContentMutation = item.mutationMetrics.some(metric => metric.mutationKind === 'content')
-    expect(hasContentMutation).toBe(true)
-    expect(item.mutationMetrics.length).toBe(4)
+    expect(item.mutationMetrics.length).toBe(hasContentMutation ? 4 : 3)
     expect(item.summaryByMutationKind.template?.count).toBe(1)
     expect(item.summaryByMutationKind.script?.count).toBe(1)
     expect(item.summaryByMutationKind.style?.count).toBe(1)
-    expect(item.summaryByMutationKind.content?.count).toBe(1)
+    expect(item.summaryByMutationKind.content?.count ?? 0).toBe(hasContentMutation ? 1 : 0)
     assertHasWxssOutput(
       normalizeGlobalStyleOutputs(item.globalStyleOutputs ?? item.globalStyleOutput),
       `[${item.project}] case global style outputs`,

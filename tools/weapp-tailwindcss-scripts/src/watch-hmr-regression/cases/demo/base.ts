@@ -137,6 +137,49 @@ export function buildDemoBaseCases(baseCwd: string): WatchCase[] {
     },
   }
 
+  const gulpCase: WatchCase = {
+    name: 'gulp-app',
+    label: 'demo/gulp-app',
+    project: 'demo/gulp-app',
+    group: 'demo',
+    requireInitialCompileSuccess: false,
+    initialMutationDelayMs: 5_000,
+    cwd: path.resolve(baseCwd, 'demo/gulp-app'),
+    devScript: 'dev',
+    outputWxml: path.resolve(baseCwd, 'demo/gulp-app/dist/pages/index/index.wxml'),
+    outputJs: path.resolve(baseCwd, 'demo/gulp-app/dist/pages/index/index.js'),
+    outputStyleCandidates: [
+      path.resolve(baseCwd, 'demo/gulp-app/dist/pages/index/index.wxss'),
+      path.resolve(baseCwd, 'demo/gulp-app/dist/app.wxss'),
+    ],
+    globalStyleCandidates: [
+      path.resolve(baseCwd, 'demo/gulp-app/dist/app.wxss'),
+    ],
+    templateMutation: {
+      sourceFile: path.resolve(baseCwd, 'demo/gulp-app/src/pages/index/index.wxml'),
+      verifyEscapedIn: ['wxml'],
+      verifyClassLiteralIn: [],
+      mutate(source, payload) {
+        const snippet = `        <view class="${payload.classLiteral}">${payload.marker}-template</view>`
+        return insertBeforeClosingTag(source, '      </view>', snippet)
+      },
+    },
+    scriptMutation: {
+      sourceFile: path.resolve(baseCwd, 'demo/gulp-app/src/pages/index/index.ts'),
+      verifyEscapedIn: [],
+      verifyClassLiteralIn: ['js'],
+      mutate(source, payload) {
+        return mutateScriptByDataAnchor(source, '  data: {', payload)
+      },
+    },
+    styleMutation: {
+      sourceFile: path.resolve(baseCwd, 'demo/gulp-app/src/app.scss'),
+      mutate(source, payload) {
+        return appendTrailingSnippet(source, createStyleRuleSnippet(payload))
+      },
+    },
+  }
+
   const weappViteCase: WatchCase = {
     name: 'weapp-vite',
     label: 'demo/native-ts (weapp-vite)',
@@ -146,6 +189,7 @@ export function buildDemoBaseCases(baseCwd: string): WatchCase[] {
     // 这里改为依赖初始产物 + 后续 mutation 实测，避免被日志抖动误伤。
     requireInitialCompileSuccess: false,
     requireStableGlobalStyleOnSameClassLiteral: false,
+    initialBuildScript: 'build',
     cwd: path.resolve(baseCwd, 'demo/native-ts'),
     devScript: 'dev',
     outputWxml: path.resolve(baseCwd, 'demo/native-ts/dist/pages/index/index.wxml'),
@@ -200,6 +244,7 @@ export function buildDemoBaseCases(baseCwd: string): WatchCase[] {
 
   return [
     weappViteCase,
+    gulpCase,
     taroCase,
     mpxCase,
   ]

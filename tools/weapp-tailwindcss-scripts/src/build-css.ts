@@ -1,7 +1,7 @@
 // import browserslist from 'browserslist'
 import fs from 'fs-extra'
 import { bundleAsync } from 'lightningcss'
-import path from 'pathe'
+import { resolveCorePackagePath } from './paths'
 // Features
 // const targets = browserslistToTargets(browserslist('>= 0.25%'))
 async function main() {
@@ -11,12 +11,12 @@ async function main() {
     files.map(async (x) => {
       const { code } = await bundleAsync(
         {
-          filename: `css/${x}`,
+          filename: resolveCorePackagePath('css', x),
           minify: true,
-          projectRoot: path.resolve(__dirname, '../'),
+          projectRoot: resolveCorePackagePath(),
         },
       )
-      await fs.outputFile(path.resolve(__dirname, `../${x}`), code, 'utf8')
+      await fs.outputFile(resolveCorePackagePath(x), code, 'utf8')
     }),
   )
 }

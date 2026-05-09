@@ -13,7 +13,7 @@ import type {
 import { promises as fs } from 'node:fs'
 import path from 'node:path'
 import process from 'node:process'
-import { replaceWxml } from '../../../src/wxml/shared'
+import { replaceWxml } from '../../core/replace-wxml'
 import { formatPath } from '../cli'
 import {
   assertContains,
@@ -32,6 +32,7 @@ import {
   buildRoundComparison,
   createClassMutationScenario,
   expandOutputFileEntries,
+  hasResolvedOutputFiles,
   readJoinedOutputFiles,
   resolvePreferredRound,
   waitForCompileSettled,
@@ -219,8 +220,10 @@ async function collectOutputMtimes(files: string[]) {
   return new Map(entries)
 }
 
-async function waitForContentRoundOutputs(
+async function waitForRoundOutputs(
   watchCase: WatchCase,
+  mutationKind: 'template' | 'script' | 'content',
+  phase: 'add' | 'modify',
   globalStyleOutputs: string[],
   options: CliOptions,
   session: WatchSession,
@@ -245,14 +248,14 @@ async function waitForContentRoundOutputs(
     {
       timeoutMs: options.timeoutMs,
       pollMs: options.pollMs,
-      message: `[${watchCase.label}] mutation=content global style output did not contain transformed classes in time`,
+      message: `[${watchCase.label}] mutation=${mutationKind} phase=${phase} global style output did not contain transformed classes in time`,
       onTick: session.ensureRunning,
     },
     startedAt,
   )
 
   if (!resolvedOutputs) {
-    throw new Error(`[${watchCase.label}] mutation=content failed to resolve outputs`)
+    throw new Error(`[${watchCase.label}] mutation=${mutationKind} phase=${phase} failed to resolve outputs`)
   }
 
   return {
@@ -397,7 +400,7 @@ export async function runClassMutation(
     readJoinedOutputFiles(globalStyleOutputs),
   ])
 
-  if (!baselineWxml || !baselineJs || !baselineGlobalStyle) {
+  if (!baselineWxml || !baselineJs || !await hasResolvedOutputFiles(globalStyleOutputs)) {
     throw new Error(`[${watchCase.label}] baseline outputs are missing for ${mutationKind}`)
   }
 
@@ -487,43 +490,31 @@ export async function runClassMutation(
             hotUpdateStartedAt,
           )
 
-      const contentAddResult = isContentMutation
-        ? await waitForContentRoundOutputs(
-            watchCase,
-            globalStyleOutputs,
-            options,
-            session,
-            hotUpdateStartedAt,
-            outputs => assertRoundOutputs(
-              watchCase,
-              mutationKind,
-              sourcePath,
-              'add',
-              mutation,
-              verifyClassLiteralIn,
-              forbidBgHexTruncationIn,
-              minRequiredGlobalStyleEscapedClasses,
-              classTokens,
-              escapedClasses,
-              outputs,
-            ),
-          )
-        : undefined
-      const outputs = contentAddResult?.outputs ?? await loadRoundOutputs(watchCase, globalStyleOutputs)
-      phaseOutputs = outputs
-      const matchedEscapedClasses = contentAddResult?.matchedEscapedClasses ?? assertRoundOutputs(
+      const addResult = await waitForRoundOutputs(
         watchCase,
         mutationKind,
-        sourcePath,
         'add',
-        mutation,
-        verifyClassLiteralIn,
-        forbidBgHexTruncationIn,
-        minRequiredGlobalStyleEscapedClasses,
-        classTokens,
-        escapedClasses,
-        outputs,
+        globalStyleOutputs,
+        options,
+        session,
+        hotUpdateStartedAt,
+        outputs => assertRoundOutputs(
+          watchCase,
+          mutationKind,
+          sourcePath,
+          'add',
+          mutation,
+          verifyClassLiteralIn,
+          forbidBgHexTruncationIn,
+          minRequiredGlobalStyleEscapedClasses,
+          classTokens,
+          escapedClasses,
+          outputs,
+        ),
       )
+      const outputs = addResult.outputs
+      phaseOutputs = outputs
+      const matchedEscapedClasses = addResult.matchedEscapedClasses
 
       for (const escaped of matchedEscapedClasses.slice(0, 3)) {
         verifiedGlobalEscapedClasses.add(escaped)
@@ -548,7 +539,7 @@ export async function runClassMutation(
       }
 
       effectiveHotUpdateOutputMs = hotUpdateOutputMs
-      effectiveHotUpdateEffectiveMs = contentAddResult?.effectiveMs ?? hotUpdateEffectiveMs
+      effectiveHotUpdateEffectiveMs = isContentMutation ? addResult.effectiveMs : Math.max(hotUpdateEffectiveMs, addResult.effectiveMs)
       if (!isContentMutation) {
         await waitForCompileSettled(watchCase, options, session, hotUpdateStartedAt)
       }
@@ -639,43 +630,31 @@ export async function runClassMutation(
               modifyStartedAt,
             )
 
-        const contentModifyResult = isContentMutation
-          ? await waitForContentRoundOutputs(
-              watchCase,
-              globalStyleOutputs,
-              options,
-              session,
-              modifyStartedAt,
-              outputs => assertRoundOutputs(
-                watchCase,
-                mutationKind,
-                sourcePath,
-                'modify',
-                mutation,
-                verifyClassLiteralIn,
-                forbidBgHexTruncationIn,
-                minRequiredGlobalStyleEscapedClasses,
-                modifyClassTokens,
-                modifyEscapedClasses,
-                outputs,
-              ),
-            )
-          : undefined
-        const outputs = contentModifyResult?.outputs ?? await loadRoundOutputs(watchCase, globalStyleOutputs)
-        phaseOutputs = outputs
-        const matchedEscapedClasses = contentModifyResult?.matchedEscapedClasses ?? assertRoundOutputs(
+        const modifyResult = await waitForRoundOutputs(
           watchCase,
           mutationKind,
-          sourcePath,
           'modify',
-          mutation,
-          verifyClassLiteralIn,
-          forbidBgHexTruncationIn,
-          minRequiredGlobalStyleEscapedClasses,
-          modifyClassTokens,
-          modifyEscapedClasses,
-          outputs,
+          globalStyleOutputs,
+          options,
+          session,
+          modifyStartedAt,
+          outputs => assertRoundOutputs(
+            watchCase,
+            mutationKind,
+            sourcePath,
+            'modify',
+            mutation,
+            verifyClassLiteralIn,
+            forbidBgHexTruncationIn,
+            minRequiredGlobalStyleEscapedClasses,
+            modifyClassTokens,
+            modifyEscapedClasses,
+            outputs,
+          ),
         )
+        const outputs = modifyResult.outputs
+        phaseOutputs = outputs
+        const matchedEscapedClasses = modifyResult.matchedEscapedClasses
 
         for (const escaped of matchedEscapedClasses.slice(0, 3)) {
           verifiedGlobalEscapedClasses.add(escaped)
@@ -704,7 +683,7 @@ export async function runClassMutation(
         effectiveClassTokens = modifyClassTokens
         effectiveEscapedClasses = modifyEscapedClasses
         effectiveHotUpdateOutputMs = modifyOutputMs
-        effectiveHotUpdateEffectiveMs = contentModifyResult?.effectiveMs ?? modifyEffectiveMs
+        effectiveHotUpdateEffectiveMs = isContentMutation ? modifyResult.effectiveMs : Math.max(modifyEffectiveMs, modifyResult.effectiveMs)
         if (!isContentMutation) {
           await waitForCompileSettled(watchCase, options, session, modifyStartedAt)
         }

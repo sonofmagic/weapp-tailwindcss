@@ -1,12 +1,12 @@
 import { describe, expect, it } from 'vitest'
-import { buildAppCases } from '../scripts/watch-hmr-regression/cases/apps'
-import { buildDemoBaseCases } from '../scripts/watch-hmr-regression/cases/demo/base'
-import { buildDemoExtendedCases } from '../scripts/watch-hmr-regression/cases/demo/extended'
+import { buildAppCases } from '../../../tools/weapp-tailwindcss-scripts/src/watch-hmr-regression/cases/apps'
+import { buildDemoBaseCases } from '../../../tools/weapp-tailwindcss-scripts/src/watch-hmr-regression/cases/demo/base'
+import { buildDemoExtendedCases } from '../../../tools/weapp-tailwindcss-scripts/src/watch-hmr-regression/cases/demo/extended'
 import {
   mutateScriptByDataAnchorWithCommentCarrier,
   mutateTsxScriptByReturnAnchorWithCommentCarrier,
   mutateVueScriptSetupArrayByAnchorWithCommentCarrier,
-} from '../scripts/watch-hmr-regression/text'
+} from '../../../tools/weapp-tailwindcss-scripts/src/watch-hmr-regression/text'
 
 const payload = {
   marker: 'tw-watch-comment-marker',

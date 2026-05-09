@@ -4,6 +4,7 @@ packages:
   - apps/*
   - website
   - benchmark/*
+  - tools/*
   - e2e
   - '!tailwindcss-weapp'
   - '!**/test/**'

@@ -7,7 +7,7 @@ import type {
   WatchCase,
   WatchSession,
 } from '../../types'
-import { replaceWxml } from '../../../../src/wxml/shared'
+import { replaceWxml } from '../../../core/replace-wxml'
 import {
   assertContains,
   assertContainsOneOf,

@@ -39,7 +39,7 @@ async function main() {
     }
     return value
   })
-  await fs.writeJson(path.resolve(__dirname, './build/colors.json'), x, {
+  await fs.writeJson(path.resolve(import.meta.dirname, 'build/colors.json'), x, {
     encoding: 'utf8',
     spaces: 2,
   })

@@ -4081,6 +4081,67 @@ importers:
         specifier: ^6.7.14
         version: 6.7.14
 
+  tools/weapp-tailwindcss-scripts:
+    dependencies:
+      '@csstools/css-color-parser':
+        specifier: ^4.1.0
+        version: 4.1.0(@csstools/css-parser-algorithms@4.0.0(@csstools/css-tokenizer@4.0.0))(@csstools/css-tokenizer@4.0.0)
+      '@csstools/css-parser-algorithms':
+        specifier: ^4.0.0
+        version: 4.0.0(@csstools/css-tokenizer@4.0.0)
+      '@csstools/css-tokenizer':
+        specifier: ^4.0.0
+        version: 4.0.0
+      '@weapp-core/escape':
+        specifier: ~7.0.0
+        version: 7.0.0
+      colorette:
+        specifier: ^2.0.20
+        version: 2.0.20
+      del:
+        specifier: ^8.0.1
+        version: 8.0.1
+      execa:
+        specifier: ^9.6.1
+        version: 9.6.1
+      fast-glob:
+        specifier: ^3.3.3
+        version: 3.3.3
+      fs-extra:
+        specifier: ^11.3.5
+        version: 11.3.5
+      lightningcss:
+        specifier: ^1.32.0
+        version: 1.32.0
+      pathe:
+        specifier: ^2.0.3
+        version: 2.0.3
+      picocolors:
+        specifier: ^1.1.1
+        version: 1.1.1
+      postcss:
+        specifier: catalog:postcss85
+        version: 8.5.14
+      tailwindcss:
+        specifier: catalog:tailwindcss3
+        version: 3.4.19(tsx@4.21.0)(yaml@2.8.4)
+      tailwindcss4:
+        specifier: catalog:tailwindcss4
+        version: tailwindcss@4.2.4
+      traverse:
+        specifier: ^0.6.11
+        version: 0.6.11
+    devDependencies:
+      '@types/node':
+        specifier: catalog:typesNode2410
+        version: 24.12.2
+      tsx:
+        specifier: ^4.21.0
+        version: 4.21.0
+      typescript:
+        specifier: catalog:typescript59
+        version: 5.9.3
+
   website:
     dependencies:
       '@docusaurus/core':
@@ -28562,7 +28623,7 @@ snapshots:
   '@babel/code-frame@7.24.7':
     dependencies:
       '@babel/highlight': 7.25.9
-      picocolors: 1.1.0
+      picocolors: 1.1.1
 
   '@babel/code-frame@7.29.0':
     dependencies:
@@ -28887,7 +28948,7 @@ snapshots:
       '@babel/helper-validator-identifier': 7.28.5
       chalk: 2.4.2
       js-tokens: 4.0.0
-      picocolors: 1.1.0
+      picocolors: 1.1.1
 
   '@babel/parser@7.25.6':
     dependencies:
@@ -34669,7 +34730,7 @@ snapshots:
     dependencies:
       '@types/istanbul-lib-coverage': 2.0.6
       '@types/istanbul-reports': 3.0.4
-      '@types/node': 24.12.2
+      '@types/node': 25.6.0
       '@types/yargs': 15.0.20
       chalk: 4.1.2
 
@@ -34686,7 +34747,7 @@ snapshots:
       '@jest/schemas': 29.6.3
       '@types/istanbul-lib-coverage': 2.0.6
       '@types/istanbul-reports': 3.0.4
-      '@types/node': 24.12.2
+      '@types/node': 25.6.0
       '@types/yargs': 17.0.35
       chalk: 4.1.2
 
@@ -40048,7 +40109,7 @@ snapshots:
 
   '@types/accepts@1.3.7':
     dependencies:
-      '@types/node': 16.18.126
+      '@types/node': 25.6.0
 
   '@types/archy@0.0.31': {}
 
@@ -40080,11 +40141,11 @@ snapshots:
   '@types/body-parser@1.19.6':
     dependencies:
       '@types/connect': 3.4.38
-      '@types/node': 24.12.2
+      '@types/node': 25.6.0
 
   '@types/bonjour@3.5.13':
     dependencies:
-      '@types/node': 24.12.2
+      '@types/node': 25.6.0
 
   '@types/braces@3.0.5': {}
 
@@ -40095,17 +40156,17 @@ snapshots:
 
   '@types/concat-stream@2.0.3':
     dependencies:
-      '@types/node': 24.12.2
+      '@types/node': 25.6.0
     optional: true
 
   '@types/connect-history-api-fallback@1.5.4':
     dependencies:
       '@types/express-serve-static-core': 4.19.8
-      '@types/node': 24.12.2
+      '@types/node': 25.6.0
 
   '@types/connect@3.4.38':
     dependencies:
-      '@types/node': 24.12.2
+      '@types/node': 25.6.0
 
   '@types/content-disposition@0.5.9': {}
 
@@ -40114,7 +40175,7 @@ snapshots:
       '@types/connect': 3.4.38
       '@types/express': 5.0.6
       '@types/keygrip': 1.0.6
-      '@types/node': 16.18.126
+      '@types/node': 25.6.0
 
   '@types/d3-array@3.2.2': {}
 
@@ -40270,14 +40331,14 @@ snapshots:
 
   '@types/express-serve-static-core@4.19.8':
     dependencies:
-      '@types/node': 24.12.2
+      '@types/node': 25.6.0
       '@types/qs': 6.15.0
       '@types/range-parser': 1.2.7
       '@types/send': 1.2.1
 
   '@types/express-serve-static-core@5.1.0':
     dependencies:
-      '@types/node': 24.12.2
+      '@types/node': 25.6.0
       '@types/qs': 6.14.0
       '@types/range-parser': 1.2.7
       '@types/send': 1.2.1
@@ -40300,11 +40361,11 @@ snapshots:
   '@types/fs-extra@11.0.4':
     dependencies:
       '@types/jsonfile': 6.1.4
-      '@types/node': 24.12.2
+      '@types/node': 25.6.0
 
   '@types/fs-extra@8.1.5':
     dependencies:
-      '@types/node': 24.12.2
+      '@types/node': 25.6.0
 
   '@types/geojson@7946.0.16': {}
 
@@ -40312,14 +40373,14 @@ snapshots:
 
   '@types/glob-stream@8.0.3':
     dependencies:
-      '@types/node': 24.12.2
+      '@types/node': 25.6.0
       '@types/picomatch': 4.0.2
       '@types/streamx': 2.9.5
 
   '@types/glob@7.2.0':
     dependencies:
       '@types/minimatch': 6.0.0
-      '@types/node': 24.12.2
+      '@types/node': 25.6.0
 
   '@types/graceful-fs@4.1.9':
     dependencies:
@@ -40329,17 +40390,17 @@ snapshots:
 
   '@types/gulp-debug@2.0.36':
     dependencies:
-      '@types/node': 24.12.2
+      '@types/node': 25.6.0
 
   '@types/gulp-if@3.0.5':
     dependencies:
       '@types/gulp-match': 1.1.6
       '@types/minimatch': 5.1.2
-      '@types/node': 24.12.2
+      '@types/node': 25.6.0
 
   '@types/gulp-less@0.0.36':
     dependencies:
-      '@types/node': 24.12.2
+      '@types/node': 25.6.0
 
   '@types/gulp-match@1.1.6':
     dependencies:
@@ -40348,16 +40409,16 @@ snapshots:
 
   '@types/gulp-plumber@0.0.37':
     dependencies:
-      '@types/node': 24.12.2
+      '@types/node': 25.6.0
 
   '@types/gulp-postcss@8.0.6':
     dependencies:
-      '@types/node': 24.12.2
+      '@types/node': 25.6.0
       '@types/vinyl': 2.0.12
 
   '@types/gulp-rename@2.0.7':
     dependencies:
-      '@types/node': 24.12.2
+      '@types/node': 25.6.0
       '@types/vinyl': 2.0.12
 
   '@types/gulp-replace@1.1.0':
@@ -40367,18 +40428,18 @@ snapshots:
   '@types/gulp-sass@6.0.0':
     dependencies:
       '@sass/types': 1.97.1
-      '@types/node': 24.12.2
+      '@types/node': 25.6.0
 
   '@types/gulp-util@3.0.41':
     dependencies:
-      '@types/node': 24.12.2
+      '@types/node': 25.6.0
       '@types/through2': 2.0.41
       '@types/vinyl': 2.0.12
       chalk: 2.4.2
 
   '@types/gulp@4.0.18':
     dependencies:
-      '@types/node': 24.12.2
+      '@types/node': 25.6.0
       '@types/undertaker': 1.2.12
       '@types/vinyl-fs': 3.0.7
       chokidar: 3.6.0
@@ -40399,7 +40460,7 @@ snapshots:
 
   '@types/http-proxy@1.17.17':
     dependencies:
-      '@types/node': 24.12.2
+      '@types/node': 25.6.0
 
   '@types/is-empty@1.2.3':
     optional: true
@@ -40430,7 +40491,7 @@ snapshots:
 
   '@types/jsdom@28.0.1':
     dependencies:
-      '@types/node': 24.12.2
+      '@types/node': 25.6.0
       '@types/tough-cookie': 4.0.5
       parse5: 7.3.0
       undici-types: 7.24.5
@@ -40443,7 +40504,7 @@ snapshots:
 
   '@types/jsonfile@6.1.4':
     dependencies:
-      '@types/node': 24.12.2
+      '@types/node': 25.6.0
 
   '@types/katex@0.16.8': {}
 
@@ -40451,11 +40512,11 @@ snapshots:
 
   '@types/keyv@3.1.4':
     dependencies:
-      '@types/node': 24.12.2
+      '@types/node': 25.6.0
 
   '@types/klaw@3.0.7':
     dependencies:
-      '@types/node': 24.12.2
+      '@types/node': 25.6.0
 
   '@types/koa-compose@3.2.9':
     dependencies:
@@ -40470,11 +40531,11 @@ snapshots:
       '@types/http-errors': 2.0.5
       '@types/keygrip': 1.0.6
       '@types/koa-compose': 3.2.9
-      '@types/node': 16.18.126
+      '@types/node': 25.6.0
 
   '@types/loader-runner@2.2.8':
     dependencies:
-      '@types/node': 24.12.2
+      '@types/node': 25.6.0
 
   '@types/loader-utils@2.0.6':
     dependencies:
@@ -40483,7 +40544,7 @@ snapshots:
 
   '@types/loader-utils@3.0.0(@swc/core@1.15.33(@swc/helpers@0.5.19))(esbuild@0.28.0)':
     dependencies:
-      '@types/node': 24.12.2
+      '@types/node': 25.6.0
       webpack: 5.106.2(@swc/core@1.15.33(@swc/helpers@0.5.19))(esbuild@0.28.0)
     transitivePeerDependencies:
       - '@swc/core'
@@ -40527,12 +40588,12 @@ snapshots:
 
   '@types/node-fetch@2.6.13':
     dependencies:
-      '@types/node': 24.12.2
+      '@types/node': 25.6.0
       form-data: 4.0.5
 
   '@types/node-forge@1.3.14':
     dependencies:
-      '@types/node': 24.12.2
+      '@types/node': 25.6.0
 
   '@types/node@12.20.55': {}
 
@@ -40558,7 +40619,7 @@ snapshots:
 
   '@types/npm-registry-fetch@8.0.9':
     dependencies:
-      '@types/node': 24.12.2
+      '@types/node': 25.6.0
       '@types/node-fetch': 2.6.13
       '@types/npm-package-arg': 6.1.4
       '@types/npmlog': 7.0.0
@@ -40566,7 +40627,7 @@ snapshots:
 
   '@types/npmlog@7.0.0':
     dependencies:
-      '@types/node': 24.12.2
+      '@types/node': 25.6.0
 
   '@types/pako@2.0.4': {}
 
@@ -40584,7 +40645,7 @@ snapshots:
 
   '@types/postcss-url@10.0.4':
     dependencies:
-      '@types/node': 24.12.2
+      '@types/node': 25.6.0
       postcss: 8.5.14
 
   '@types/prettier@2.7.3': {}
@@ -40630,7 +40691,7 @@ snapshots:
 
   '@types/responselike@1.0.3':
     dependencies:
-      '@types/node': 24.12.2
+      '@types/node': 25.6.0
 
   '@types/retry@0.12.0': {}
 
@@ -40642,18 +40703,18 @@ snapshots:
 
   '@types/sax@1.2.7':
     dependencies:
-      '@types/node': 24.12.2
+      '@types/node': 25.6.0
 
   '@types/semver@7.7.1': {}
 
   '@types/send@0.17.6':
     dependencies:
       '@types/mime': 1.3.5
-      '@types/node': 24.12.2
+      '@types/node': 25.6.0
 
   '@types/send@1.2.1':
     dependencies:
-      '@types/node': 24.12.2
+      '@types/node': 25.6.0
 
   '@types/serve-index@1.9.4':
     dependencies:
@@ -40662,31 +40723,31 @@ snapshots:
   '@types/serve-static@1.15.10':
     dependencies:
       '@types/http-errors': 2.0.5
-      '@types/node': 24.12.2
+      '@types/node': 25.6.0
       '@types/send': 0.17.6
 
   '@types/serve-static@2.2.0':
     dependencies:
       '@types/http-errors': 2.0.5
-      '@types/node': 24.12.2
+      '@types/node': 25.6.0
 
   '@types/set-value@4.0.3': {}
 
   '@types/sockjs@0.3.36':
     dependencies:
-      '@types/node': 24.12.2
+      '@types/node': 25.6.0
 
   '@types/source-list-map@0.1.6': {}
 
   '@types/ssri@7.1.5':
     dependencies:
-      '@types/node': 24.12.2
+      '@types/node': 25.6.0
 
   '@types/stack-utils@2.0.3': {}
 
   '@types/streamx@2.9.5':
     dependencies:
-      '@types/node': 24.12.2
+      '@types/node': 25.6.0
 
   '@types/supports-color@8.1.3':
     optional: true
@@ -40695,7 +40756,7 @@ snapshots:
 
   '@types/through2@2.0.41':
     dependencies:
-      '@types/node': 24.12.2
+      '@types/node': 25.6.0
 
   '@types/tough-cookie@4.0.5': {}
 
@@ -40711,7 +40772,7 @@ snapshots:
 
   '@types/undertaker@1.2.12':
     dependencies:
-      '@types/node': 24.12.2
+      '@types/node': 25.6.0
       '@types/undertaker-registry': 1.0.4
       async-done: 1.3.2
 
@@ -40722,13 +40783,13 @@ snapshots:
   '@types/vinyl-fs@3.0.7':
     dependencies:
       '@types/glob-stream': 8.0.3
-      '@types/node': 24.12.2
+      '@types/node': 25.6.0
       '@types/vinyl': 2.0.12
 
   '@types/vinyl@2.0.12':
     dependencies:
       '@types/expect': 1.20.4
-      '@types/node': 24.12.2
+      '@types/node': 25.6.0
 
   '@types/web-bluetooth@0.0.21': {}
 
@@ -40736,13 +40797,13 @@ snapshots:
 
   '@types/webpack-sources@3.2.3':
     dependencies:
-      '@types/node': 24.12.2
+      '@types/node': 25.6.0
       '@types/source-list-map': 0.1.6
       source-map: 0.7.6
 
   '@types/webpack@4.41.40':
     dependencies:
-      '@types/node': 24.12.2
+      '@types/node': 25.6.0
       '@types/tapable': 1.0.12
       '@types/uglify-js': 3.17.5
       '@types/webpack-sources': 3.2.3
@@ -40751,7 +40812,7 @@ snapshots:
 
   '@types/webpack@5.28.5(@swc/core@1.15.33(@swc/helpers@0.5.19))(esbuild@0.28.0)':
     dependencies:
-      '@types/node': 24.12.2
+      '@types/node': 25.6.0
       tapable: 2.3.0
       webpack: 5.106.2(@swc/core@1.15.33(@swc/helpers@0.5.19))(esbuild@0.28.0)
     transitivePeerDependencies:
@@ -40762,7 +40823,7 @@ snapshots:
 
   '@types/webpack@5.28.5(@swc/core@1.3.96(@swc/helpers@0.5.19))(esbuild@0.28.0)':
     dependencies:
-      '@types/node': 24.12.2
+      '@types/node': 25.6.0
       tapable: 2.3.0
       webpack: 5.106.2(@swc/core@1.3.96(@swc/helpers@0.5.19))(esbuild@0.28.0)
     transitivePeerDependencies:
@@ -40774,7 +40835,7 @@ snapshots:
 
   '@types/ws@8.18.1':
     dependencies:
-      '@types/node': 24.12.2
+      '@types/node': 25.6.0
 
   '@types/yargs-parser@21.0.3': {}
 
@@ -43100,7 +43161,7 @@ snapshots:
       caniuse-lite: 1.0.30001788
       fraction.js: 4.3.7
       normalize-range: 0.1.2
-      picocolors: 1.1.0
+      picocolors: 1.1.1
       postcss: 8.5.14
       postcss-value-parser: 4.2.0
 
@@ -47417,7 +47478,7 @@ snapshots:
 
   eval@0.1.8:
     dependencies:
-      '@types/node': 24.12.2
+      '@types/node': 25.6.0
       require-like: 0.1.2
 
   event-pubsub@4.3.0: {}
@@ -48756,7 +48817,7 @@ snapshots:
 
   gulp-replace@1.1.4:
     dependencies:
-      '@types/node': 24.12.2
+      '@types/node': 25.6.0
       '@types/vinyl': 2.0.12
       istextorbinary: 3.3.0
       replacestream: 4.0.3
@@ -50743,7 +50804,7 @@ snapshots:
   jest-util@29.7.0:
     dependencies:
       '@jest/types': 29.6.3
-      '@types/node': 24.12.2
+      '@types/node': 25.6.0
       chalk: 4.1.2
       ci-info: 3.9.0
       graceful-fs: 4.2.11
@@ -50804,13 +50865,13 @@ snapshots:
 
   jest-worker@27.5.1:
     dependencies:
-      '@types/node': 24.12.2
+      '@types/node': 25.6.0
       merge-stream: 2.0.0
       supports-color: 8.1.1
 
   jest-worker@29.7.0:
     dependencies:
-      '@types/node': 24.12.2
+      '@types/node': 25.6.0
       jest-util: 29.7.0
       merge-stream: 2.0.0
       supports-color: 8.1.1

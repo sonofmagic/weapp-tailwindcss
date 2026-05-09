@@ -121,4 +121,64 @@ module.exports = {
       await rm(tempRoot, { force: true, recursive: true })
     }
   })
+
+  it('refreshes generated css when watched scripts add new classes', async () => {
+    const tempRoot = path.join(tmpdir(), `weapp-tw-gulp-script-watch-${Date.now()}-${Math.random().toString(16).slice(2)}`)
+    const srcRoot = path.join(tempRoot, 'src')
+
+    await mkdir(srcRoot, { recursive: true })
+    await writeFile(path.join(tempRoot, 'tailwind.config.js'), `
+module.exports = {
+  content: ['./src/**/*.{js,ts,wxml}'],
+  corePlugins: { preflight: false },
+}
+`, 'utf8')
+    await writeFile(path.join(srcRoot, 'index.css'), '@tailwind utilities;', 'utf8')
+    const scriptPath = path.join(srcRoot, 'index.js')
+    await writeFile(scriptPath, 'export const className = "text-xs"', 'utf8')
+
+    const cwd = process.cwd()
+    try {
+      process.chdir(tempRoot)
+      const plugins = createPlugins({
+        tailwindcssBasedir: tempRoot,
+        mainCssChunkMatcher(name) {
+          return path.basename(name) === 'index.css'
+        },
+      })
+      const readGeneratedCss = async () => {
+        const cssTask = gulp
+          .src('./src/index.css', {
+            cwd: tempRoot,
+          })
+          .pipe(plugins.transformWxss())
+
+        const css = await readContent(cssTask)
+        await promisify(cssTask)
+        return normalizeSnapshotContent(css)
+      }
+      const transformScript = async () => {
+        const jsTask = gulp
+          .src('./src/index.js', {
+            cwd: tempRoot,
+          })
+          .pipe(plugins.transformJs())
+
+        await readContent(jsTask)
+        await promisify(jsTask)
+      }
+
+      const initialCss = await readGeneratedCss()
+      expect(initialCss).not.toContain('bg-_b_h0f0_B')
+
+      await writeFile(scriptPath, 'export const className = "text-xs bg-[#0f0]"', 'utf8')
+      await transformScript()
+      const nextCss = await readGeneratedCss()
+      expect(nextCss).toContain('bg-_b_h0f0_B')
+    }
+    finally {
+      process.chdir(cwd)
+      await rm(tempRoot, { force: true, recursive: true })
+    }
+  })
 })

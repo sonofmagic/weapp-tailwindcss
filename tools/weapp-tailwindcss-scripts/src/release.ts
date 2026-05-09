@@ -1,5 +1,5 @@
 import fs from 'fs-extra'
-import path from 'pathe'
+import { resolveCorePackagePath } from './paths'
 
 const pluginNames = ['weapp-tailwindcss', 'weapp-tailwindcss-webpack-plugin', 'weapp-tw', 'miniprogram-tailwindcss']
 
@@ -7,7 +7,7 @@ const pluginNames = ['weapp-tailwindcss', 'weapp-tailwindcss-webpack-plugin', 'w
 
 async function main() {
   const { execa } = await import('execa')
-  const pkgJsonPath = path.resolve(__dirname, '../package.json')
+  const pkgJsonPath = resolveCorePackagePath('package.json')
   const pkgJson = await fs.readJSON(pkgJsonPath)
   const pkgName = pkgJson.name
 

@@ -1,9 +1,9 @@
 /* empty */
 // Micro benchmark for JS handlers: Babel vs SWC vs OXC POCs.
 // Usage:
-//   pnpm tsx packages/weapp-tailwindcss/scripts/js-bench.ts
-//   pnpm tsx packages/weapp-tailwindcss/scripts/js-bench.ts --engines=babel,swc,oxc --iter=5 --warmup=1
-//   pnpm tsx packages/weapp-tailwindcss/scripts/js-bench.ts --glob="packages/weapp-tailwindcss/test/fixtures/jsx/**/*.js"
+//   pnpm --filter weapp-tailwindcss bench:js-handlers
+//   pnpm --filter weapp-tailwindcss bench:js-handlers -- --engines=babel,swc,oxc --iter=5 --warmup=1
+//   pnpm --filter weapp-tailwindcss bench:js-handlers -- --glob="packages/weapp-tailwindcss/test/fixtures/jsx/**/*.js"
 //
 // Notes:
 // - SWC requires @swc/core.
@@ -11,7 +11,7 @@
 // - We focus on transform hot-path. For fairness and determinism, we run with:
 //   { alwaysEscape: true, needEscaped: true, generateMap: false }
 //   so the handlers do roughly the same amount of work regardless of classNameSet.
-import type { IJsHandlerOptions, JsHandlerResult } from '../src/types'
+import type { IJsHandlerOptions, JsHandlerResult } from 'weapp-tailwindcss/src/types'
 import path from 'node:path'
 import { performance } from 'node:perf_hooks'
 import process from 'node:process'
@@ -20,7 +20,7 @@ import { MappingChars2String } from '@weapp-core/escape'
 import fg from 'fast-glob'
 import fs from 'fs-extra'
 import pc from 'picocolors'
-import { getDefaultOptions } from '../src/defaults'
+import { getDefaultOptions } from 'weapp-tailwindcss/src/defaults'
 
 // Resolve repo root independenty of CWD.
 const __filename = fileURLToPath(import.meta.url)
@@ -104,17 +104,17 @@ function makeBaseOptions(): IJsHandlerOptions {
 function useBabel() {
   // Import the Babel implementation
 
-  const { jsHandler } = require('../src/js/babel') as typeof import('../src/js/babel')
+  const { jsHandler } = require('weapp-tailwindcss/src/js/babel') as typeof import('weapp-tailwindcss/src/js/babel')
   return jsHandler
 }
 
 function useSwc() {
-  const { swcJsHandler } = require('../src/experimental/swc') as typeof import('../src/experimental/swc')
+  const { swcJsHandler } = require('weapp-tailwindcss/src/experimental/swc') as typeof import('weapp-tailwindcss/src/experimental/swc')
   return swcJsHandler
 }
 
 function useOxc() {
-  const { oxcJsHandler } = require('../src/experimental/oxc') as typeof import('../src/experimental/oxc')
+  const { oxcJsHandler } = require('weapp-tailwindcss/src/experimental/oxc') as typeof import('weapp-tailwindcss/src/experimental/oxc')
   return oxcJsHandler
 }
 

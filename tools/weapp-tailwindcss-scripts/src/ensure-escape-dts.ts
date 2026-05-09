@@ -1,10 +1,9 @@
 import { mkdir, writeFile } from 'node:fs/promises'
 import path from 'node:path'
 import process from 'node:process'
-import { fileURLToPath } from 'node:url'
+import { corePackageRoot } from './paths'
 
-const __dirname = path.dirname(fileURLToPath(import.meta.url))
-const DIST_DIR = path.resolve(__dirname, '../dist')
+const DIST_DIR = path.resolve(corePackageRoot, 'dist')
 
 function DECLARATION_TEMPLATE(importPath) {
   return `import type { ITemplateHandlerOptions } from '${importPath}';

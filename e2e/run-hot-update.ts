@@ -2,7 +2,7 @@ import { spawn } from 'node:child_process'
 import { mkdir } from 'node:fs/promises'
 import path from 'node:path'
 import process from 'node:process'
-import { HOT_UPDATE_CASES_BY_TARGET, resolveHotUpdateTargets } from './e2eMatrix'
+import { HOT_UPDATE_CASES_BY_TARGET, HOT_UPDATE_CI_CASES, resolveHotUpdateTargets } from './e2eMatrix'
 
 function toNumberEnv(name: string, fallback: number) {
   const value = process.env[name]
@@ -15,6 +15,19 @@ function toNumberEnv(name: string, fallback: number) {
 
 function formatTimestamp(date = new Date()) {
   return date.toISOString().replaceAll(':', '-').replaceAll('.', '-')
+}
+
+function resolveCiCaseNames() {
+  if (process.env.E2E_HOT_UPDATE_CI !== '1') {
+    return undefined
+  }
+
+  const rawCaseNames = process.env.HOT_UPDATE_CI_CASES
+  if (rawCaseNames) {
+    return new Set(rawCaseNames.split(',').map(item => item.trim()).filter(Boolean))
+  }
+
+  return new Set<string>(HOT_UPDATE_CI_CASES)
 }
 
 async function ensureReportDir(root: string) {
@@ -77,10 +90,12 @@ async function main() {
   const root = path.resolve(import.meta.dirname, '..')
   const targets = resolveHotUpdateTargets()
   const onlyCaseName = process.env.E2E_HOT_UPDATE_CASE_NAME
+  const ciCaseNames = resolveCiCaseNames()
 
   for (const target of targets) {
     const caseNames = HOT_UPDATE_CASES_BY_TARGET[target.name]
       .filter(caseName => !onlyCaseName || caseName === onlyCaseName)
+      .filter(caseName => !ciCaseNames || ciCaseNames.has(caseName))
     if (caseNames.length === 0) {
       continue
     }

@@ -2,18 +2,18 @@ import { mkdtemp, readFile, rm, writeFile } from 'node:fs/promises'
 import os from 'node:os'
 import path from 'node:path'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
-import type { CliOptions, WatchCase, WatchSession } from '../scripts/watch-hmr-regression/types'
+import type { CliOptions, WatchCase, WatchSession } from '../../../tools/weapp-tailwindcss-scripts/src/watch-hmr-regression/types'
 
 const createWatchSessionMock = vi.fn<() => WatchSession>()
 const runStyleMutationMock = vi.fn()
 const sleepMock = vi.fn<(ms: number) => Promise<void>>()
 
-vi.mock('../scripts/watch-hmr-regression/session', () => ({
+vi.mock('../../../tools/weapp-tailwindcss-scripts/src/watch-hmr-regression/session', () => ({
   createWatchSession: () => createWatchSessionMock(),
   sleep: (ms: number) => sleepMock(ms),
 }))
 
-vi.mock('../scripts/watch-hmr-regression/mutations/style', () => ({
+vi.mock('../../../tools/weapp-tailwindcss-scripts/src/watch-hmr-regression/mutations/style', () => ({
   runStyleMutation: (...args: unknown[]) => runStyleMutationMock(...args),
 }))
 
@@ -97,7 +97,7 @@ describe('watch-hmr style-only helpers', () => {
       rollbackNeedleCleared: true,
     })
 
-    const { runStyleOnlyCase } = await import('../scripts/watch-hmr-regression/style-only')
+    const { runStyleOnlyCase } = await import('../../../tools/weapp-tailwindcss-scripts/src/watch-hmr-regression/style-only')
     const result = await runStyleOnlyCase(watchCase, createOptions())
 
     expect(result).toMatchObject({
@@ -126,7 +126,7 @@ describe('watch-hmr style-only helpers', () => {
     createWatchSessionMock.mockReturnValue(session)
     runStyleMutationMock.mockRejectedValue(new Error('style hot update failed'))
 
-    const { runStyleOnlyCase } = await import('../scripts/watch-hmr-regression/style-only')
+    const { runStyleOnlyCase } = await import('../../../tools/weapp-tailwindcss-scripts/src/watch-hmr-regression/style-only')
 
     await expect(runStyleOnlyCase(watchCase, createOptions())).rejects.toThrow(
       'style hot update failed\n[apps/taro-webpack-tailwindcss-v4] recent watch logs:\ncaptured watch logs',

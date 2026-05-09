@@ -18,7 +18,7 @@ import {
   waitForOutputsReady,
 } from './mutations'
 import { resolvePreferredRound } from './mutations/shared'
-import { createWatchSession, sleep } from './session'
+import { createWatchSession, runPnpmCommand, sleep } from './session'
 import { summarizeMutationMetricsByKind } from './summary'
 import { writeFilePreserveEol } from './text'
 
@@ -40,13 +40,18 @@ export async function runCase(watchCase: WatchCase, options: CliOptions): Promis
     sourceOriginals.set(sourceFile, await fs.readFile(sourceFile, 'utf8'))
   }
 
+  if (watchCase.initialBuildScript) {
+    process.stdout.write(`[watch-hmr] ${watchCase.label} prepare initial build (${watchCase.initialBuildScript})\n`)
+    await runPnpmCommand(watchCase.cwd, ['run', watchCase.initialBuildScript], 'prebuild')
+  }
+
   const sessionStartedAt = Date.now()
   const session = createWatchSession(watchCase.cwd, watchCase.devScript, {
     quietSass: options.quietSass,
   }, watchCase.env)
 
   try {
-    const outputsReadyMs = await waitForOutputsReady(watchCase, options, session)
+    const outputsReadyMs = await waitForOutputsReady(watchCase, options, session, sessionStartedAt)
     const warmupMs = await waitForInitialWarmup(watchCase, options, session, sessionStartedAt)
     const initialReadyMs = Math.max(outputsReadyMs, warmupMs)
 

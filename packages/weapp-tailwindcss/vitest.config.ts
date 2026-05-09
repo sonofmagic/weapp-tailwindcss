@@ -34,8 +34,8 @@ export default defineConfig({
         'test/**',
         'packages/weapp-tailwindcss/test/**',
         // 开发态 watch 回归脚本不属于对外运行时代码，避免拉低 project coverage 门禁。
-        'scripts/watch-hmr-regression/**',
-        'packages/weapp-tailwindcss/scripts/watch-hmr-regression/**',
+        '../../tools/weapp-tailwindcss-scripts/src/watch-hmr-regression/**',
+        'tools/weapp-tailwindcss-scripts/src/watch-hmr-regression/**',
       ],
       // reportsDirectory: 'coverage/vitest'
     },

@@ -5,6 +5,7 @@ import process from 'node:process'
 import { pluginName } from '@/constants'
 import { shouldSkipJsTransform } from '@/js/precheck'
 import { ensureRuntimeClassSet } from '@/tailwindcss/runtime'
+import { getRuntimeClassSetSignature } from '@/tailwindcss/runtime/cache'
 import { getGroupedEntries } from '@/utils'
 import { processCachedTask } from '../../shared/cache'
 import { generateCssByGenerator } from '../../shared/generator-css'
@@ -182,6 +183,10 @@ export function setupWebpackV5ProcessAssetsHook(options: SetupWebpackV5ProcessAs
         })
         await refreshRuntimeMetadata(forceRuntimeRefresh)
         consumeRuntimeRefreshRequirement()
+        const runtimeSetHash = compilerOptions.cache.computeHash([
+          getRuntimeClassSetSignature(runtimeState.twPatcher),
+          [...runtimeSet].sort().join('\n'),
+        ].join('\n\n'))
         const defaultTemplateHandlerOptions = {
           runtimeSet,
         }
@@ -288,13 +293,16 @@ export function setupWebpackV5ProcessAssetsHook(options: SetupWebpackV5ProcessAs
             const rawSource = originalSource.source().toString()
             const cacheKey = file
             const chunkHash = assetHashByChunk.get(file)
+            const runtimeAwareHash = chunkHash
+              ? `${chunkHash}:${runtimeSetHash}`
+              : undefined
             tasks.push(
               processCachedTask({
                 cache: compilerOptions.cache,
                 cacheKey,
                 hashKey: `${file}:asset`,
                 rawSource,
-                hash: chunkHash,
+                hash: runtimeAwareHash,
                 applyResult(source) {
                   compilation.updateAsset(file, source)
                 },

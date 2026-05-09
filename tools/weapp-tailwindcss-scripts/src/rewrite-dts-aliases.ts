@@ -1,8 +1,9 @@
 import { readdir, readFile, writeFile } from 'node:fs/promises'
 import { dirname, join, relative, sep } from 'node:path'
-import { fileURLToPath } from 'node:url'
+import process from 'node:process'
+import { corePackageRoot } from './paths'
 
-const root = join(dirname(fileURLToPath(import.meta.url)), '..')
+const root = corePackageRoot
 const distDir = join(root, 'dist')
 
 async function* walk(dir) {
@@ -27,12 +28,19 @@ function toModulePath(filepath, aliasTarget) {
   return value
 }
 
-for await (const filepath of walk(distDir)) {
-  const content = await readFile(filepath, 'utf8')
-  const next = content.replace(/from\s+(['"])@\/([^'"]+)\1/g, (match, quote, aliasTarget) => {
-    return `from ${quote}${toModulePath(filepath, aliasTarget)}${quote}`
-  })
-  if (next !== content) {
-    await writeFile(filepath, next, 'utf8')
+async function main() {
+  for await (const filepath of walk(distDir)) {
+    const content = await readFile(filepath, 'utf8')
+    const next = content.replace(/from\s+(['"])@\/([^'"]+)\1/g, (_match, quote, aliasTarget) => {
+      return `from ${quote}${toModulePath(filepath, aliasTarget)}${quote}`
+    })
+    if (next !== content) {
+      await writeFile(filepath, next, 'utf8')
+    }
   }
 }
+
+main().catch((error) => {
+  console.error(error)
+  process.exitCode = 1
+})

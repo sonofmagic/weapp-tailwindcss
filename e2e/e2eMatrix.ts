@@ -17,6 +17,7 @@ export type HotUpdateTargetName = typeof HOT_UPDATE_TARGETS[number]['name']
 export const HOT_UPDATE_CASES_BY_TARGET: Record<HotUpdateTargetName, string[]> = {
   demo: [
     'weapp-vite',
+    'gulp-app',
     'taro',
     'mpx',
     'uni-app-vue3-vite',
@@ -39,6 +40,14 @@ export const HOT_UPDATE_CASES_BY_TARGET: Record<HotUpdateTargetName, string[]> =
   ],
 }
 
+export const HOT_UPDATE_CI_CASES = [
+  'weapp-vite',
+  'gulp-app',
+  'taro',
+  'taro-webpack-tailwindcss-v4',
+  'taro-vue3-app',
+] as const
+
 export const HOT_UPDATE_COVERED_PROJECTS = new Set([
   'uni-app-vue3-vite',
   'uni-app-tailwindcss-v4',
@@ -49,6 +58,7 @@ export const HOT_UPDATE_COVERED_PROJECTS = new Set([
   'taro-vite-tailwindcss-v4',
   'taro-vite-tailwindcss-v5',
   'taro-vue3-app',
+  'gulp-app',
   'mpx-app',
   'mpx-tailwindcss-v4',
   'mpx-tailwindcss-v5',
@@ -58,7 +68,6 @@ export const HOT_UPDATE_COVERED_PROJECTS = new Set([
 
 // 这些项目没有稳定的 dev/hot-update 链路，默认只保留静态产物 e2e。
 export const HOT_UPDATE_EXEMPT_PROJECTS = new Set([
-  'gulp-app',
   'web-postcss7-compat',
 ])
 

@@ -58,6 +58,10 @@ const { transformJs, transformWxml, transformWxss } = createPlugins({
 // }
 
 type StreamTask = NodeJS.ReadWriteStream & { destroyed?: boolean }
+type Watcher = ReturnType<typeof gulp.watch>
+
+let sourceWatcher: Watcher | undefined
+let watchTaskQueue = Promise.resolve()
 
 function promisify(task: StreamTask) {
   return new Promise<void>((resolve, reject) => {
@@ -201,8 +205,8 @@ const watchHandler = async function (type: 'changed' | 'removed' | 'add', file: 
       await deleteAsync([tmp])
     }
     else {
-      await promisify(sassCompile())
       await promisify(copyWXML())
+      await promisify(sassCompile())
     }
   }
   else if (extname === '.js' || extname === '.ts') {
@@ -211,8 +215,8 @@ const watchHandler = async function (type: 'changed' | 'removed' | 'add', file: 
       await deleteAsync([tmp])
     }
     else {
-      await promisify(sassCompile())
       await promisify(compileTsFiles())
+      await promisify(sassCompile())
     }
   }
 
@@ -228,21 +232,44 @@ const watchHandler = async function (type: 'changed' | 'removed' | 'add', file: 
   }
 }
 
+function queueWatchHandler(type: 'changed' | 'removed' | 'add', file: string) {
+  watchTaskQueue = watchTaskQueue
+    .then(async () => {
+      await watchHandler(type, file)
+      log(`${gutil.colors.green(file)} ${type} handled`)
+      log('build complete')
+    })
+    .catch((error: unknown) => {
+      log(`${gutil.colors.red(file)} ${type} failed`, error)
+    })
+}
+
 // 监听文件
 function watchFiles() {
-  const watcher = gulp.watch([paths.src.baseDir, paths.tmp.imgDir], { ignored: /[/\\]\./ })
-  watcher
+  sourceWatcher = gulp.watch([
+    `${paths.src.baseDir}/**/*`,
+    `${paths.tmp.imgDir}/**/*`,
+  ], {
+    ignored: /[/\\]\./,
+    ignoreInitial: true,
+    interval: Number(process.env.CHOKIDAR_INTERVAL ?? 1000),
+    usePolling: process.env.CHOKIDAR_USEPOLLING === '1' || process.env.CHOKIDAR_USEPOLLING === 'true',
+  })
+  sourceWatcher
+    .on('ready', () => {
+      log('watching for changes')
+    })
     .on('change', (file) => {
       log(`${gutil.colors.yellow(file)} is changed`)
-      void watchHandler('changed', file)
+      queueWatchHandler('changed', file)
     })
     .on('add', (file) => {
       log(`${gutil.colors.yellow(file)} is added`)
-      void watchHandler('add', file)
+      queueWatchHandler('add', file)
     })
     .on('unlink', (file) => {
       log(`${gutil.colors.yellow(file)} is deleted`)
-      void watchHandler('removed', file)
+      queueWatchHandler('removed', file)
     })
 }
 

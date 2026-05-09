@@ -265,7 +265,7 @@ export function createPlugins(options: UserDefinedOptions = {}) {
       if (!file.contents) {
         return
       }
-      await refreshRuntimeSet(false)
+      await refreshRuntimeSet(true)
       await runtimeState.patchPromise
       const filename = path.resolve(file.path)
       const moduleGraph = resolveModuleGraphOptions(options.moduleGraph)
@@ -310,7 +310,7 @@ export function createPlugins(options: UserDefinedOptions = {}) {
       if (!file.contents) {
         return
       }
-      await refreshRuntimeSet(false)
+      await refreshRuntimeSet(true)
       await runtimeState.patchPromise
       const rawSource = file.contents.toString()
       await processCachedTask<string>({

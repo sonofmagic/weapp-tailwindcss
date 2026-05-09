@@ -1,6 +1,7 @@
 import fs from 'node:fs'
 import path from 'pathe'
 import { describe, expect, it } from 'vitest'
+import { HOT_UPDATE_CI_CASES, HOT_UPDATE_COVERED_PROJECTS, HOT_UPDATE_EXEMPT_PROJECTS } from './e2eMatrix'
 import { FRAMEWORK_SUPPORT_CASES, getFrameworkCiCases, getFrameworkIdeExemptCases } from './frameworkSupportMatrix'
 
 const describeFrameworkCi = process.env['E2E_FRAMEWORK_SUPPORT'] === '1' ? describe : describe.skip
@@ -32,6 +33,24 @@ describeFrameworkCi('framework support matrix ci', () => {
         `${entry.name} should have static e2e snapshots`,
       ).toBe(true)
     }
+  })
+
+  it('covers every required demo framework support case with watch hot-update or an explicit exemption', () => {
+    for (const entry of getFrameworkCiCases().filter(item => item.fixturesDir === '../demo')) {
+      const projectName = entry.project.name
+      expect(
+        HOT_UPDATE_COVERED_PROJECTS.has(projectName) || HOT_UPDATE_EXEMPT_PROJECTS.has(projectName),
+        `${entry.name} should have demo watch hot-update coverage or an explicit exemption`,
+      ).toBe(true)
+    }
+  })
+
+  it('keeps stable demo hot-update cases wired into e2e:ci', () => {
+    expect(HOT_UPDATE_CI_CASES).toContain('weapp-vite')
+    expect(HOT_UPDATE_CI_CASES).toContain('gulp-app')
+    expect(HOT_UPDATE_CI_CASES).toContain('taro')
+    expect(HOT_UPDATE_CI_CASES).toContain('taro-webpack-tailwindcss-v4')
+    expect(HOT_UPDATE_CI_CASES).toContain('taro-vue3-app')
   })
 
   for (const entry of getFrameworkCiCases()) {

@@ -1,12 +1,12 @@
 /* empty */
 // Per-file micro benchmark with diffing against a saved baseline.
 // Usage:
-//   pnpm tsx packages/weapp-tailwindcss/scripts/js-bench-diff.ts
-//   pnpm tsx packages/weapp-tailwindcss/scripts/js-bench-diff.ts --engines=babel,swc,oxc --iter=8 --warmup=1
-//   pnpm tsx packages/weapp-tailwindcss/scripts/js-bench-diff.ts --save=.bench/baseline.json
-//   pnpm tsx packages/weapp-tailwindcss/scripts/js-bench-diff.ts --compare=.bench/baseline.json
-//   pnpm tsx packages/weapp-tailwindcss/scripts/js-bench-diff.ts --glob="packages/weapp-tailwindcss/test/fixtures/js/**/*.js"
-import type { IJsHandlerOptions, JsHandlerResult } from '../src/types'
+//   pnpm --filter weapp-tailwindcss bench:js-diff
+//   pnpm --filter weapp-tailwindcss bench:js-diff -- --engines=babel,swc,oxc --iter=8 --warmup=1
+//   pnpm --filter weapp-tailwindcss bench:js-diff -- --save=.bench/baseline.json
+//   pnpm --filter weapp-tailwindcss bench:js-diff -- --compare=.bench/baseline.json
+//   pnpm --filter weapp-tailwindcss bench:js-diff -- --glob="packages/weapp-tailwindcss/test/fixtures/js/**/*.js"
+import type { IJsHandlerOptions, JsHandlerResult } from 'weapp-tailwindcss/src/types'
 import path from 'node:path'
 import { performance } from 'node:perf_hooks'
 import process from 'node:process'
@@ -15,7 +15,7 @@ import { MappingChars2String } from '@weapp-core/escape'
 import fg from 'fast-glob'
 import fs from 'fs-extra'
 import pc from 'picocolors'
-import { getDefaultOptions } from '../src/defaults'
+import { getDefaultOptions } from 'weapp-tailwindcss/src/defaults'
 
 type EngineId = 'babel' | 'swc' | 'oxc'
 
@@ -118,17 +118,17 @@ function makeBaseOptions(): IJsHandlerOptions {
 }
 
 function useBabel() {
-  const { jsHandler } = require('../src/js/babel') as typeof import('../src/js/babel')
+  const { jsHandler } = require('weapp-tailwindcss/src/js/babel') as typeof import('weapp-tailwindcss/src/js/babel')
   return jsHandler
 }
 
 function useSwc() {
-  const { swcJsHandler } = require('../src/experimental/swc') as typeof import('../src/experimental/swc')
+  const { swcJsHandler } = require('weapp-tailwindcss/src/experimental/swc') as typeof import('weapp-tailwindcss/src/experimental/swc')
   return swcJsHandler
 }
 
 function useOxc() {
-  const { oxcJsHandler } = require('../src/experimental/oxc') as typeof import('../src/experimental/oxc')
+  const { oxcJsHandler } = require('weapp-tailwindcss/src/experimental/oxc') as typeof import('weapp-tailwindcss/src/experimental/oxc')
   return oxcJsHandler
 }
 

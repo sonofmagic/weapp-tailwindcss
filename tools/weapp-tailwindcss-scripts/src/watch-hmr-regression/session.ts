@@ -23,6 +23,7 @@ const WATCH_COMMAND_PATTERNS = [
   /taro-build-guard\.mjs\s+--watch/i,
   /run-mpx-cli-service\.js\s+serve/i,
   /webpack(?:\.js)?\s+--watch/i,
+  /gulp[\s\S]+gulpfile\.ts/i,
   /\bnpm\b[\s\S]+build:weapp[\s\S]+--watch/i,
 ] as const
 
@@ -368,7 +369,7 @@ function cleanupExistingWatchProcesses(cwd: string) {
   }
 }
 
-async function runCommand(cwd: string, args: string[], label: string) {
+export async function runPnpmCommand(cwd: string, args: string[], label: string) {
   const lines: string[] = []
   const child = spawnPnpm(args, {
     cwd,
@@ -394,7 +395,7 @@ async function runCommand(cwd: string, args: string[], label: string) {
 export async function ensureLocalPackageBuild(baseCwd: string) {
   const packageRoot = path.resolve(baseCwd, 'packages/weapp-tailwindcss')
   process.stdout.write('[watch-hmr] prepare local package build\n')
-  await runCommand(packageRoot, ['run', 'build'], 'build')
+  await runPnpmCommand(packageRoot, ['run', 'build'], 'build')
 }
 
 export function createWatchSession(

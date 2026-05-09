@@ -4,6 +4,7 @@ export type WatchProjectGroup = 'demo' | 'apps'
 export type ConcreteWatchCaseName
   = | 'taro'
     | 'mpx'
+    | 'gulp-app'
     | 'weapp-vite'
     | 'uni-app-vue3-vite'
     | 'uni-app-tailwindcss-v4'
@@ -89,6 +90,7 @@ export interface WatchCase {
   group: WatchProjectGroup
   requireInitialCompileSuccess?: boolean
   initialMutationDelayMs?: number
+  initialBuildScript?: string
   minGlobalStyleEscapedClasses?: number
   requireStableGlobalStyleOnSameClassLiteral?: boolean
   cwd: string

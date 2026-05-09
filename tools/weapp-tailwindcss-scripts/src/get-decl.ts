@@ -3,6 +3,7 @@ import fs from 'node:fs'
 import path from 'node:path'
 import postcss from 'postcss'
 import tailwindcss from 'tailwindcss'
+import { resolveCorePackagePath } from './paths'
 
 async function main() {
   // @ts-ignore
@@ -22,10 +23,10 @@ async function main() {
   ]).process(`@tailwind base;
   @tailwind components;
   @tailwind utilities;`)
-  fs.writeFileSync(path.resolve(__dirname, 'var.css'), source.css, 'utf8')
+  fs.writeFileSync(path.resolve(import.meta.dirname, 'var.css'), source.css, 'utf8')
 
-  // const rawSource = path.resolve(__dirname, '../test/fixtures/css/css-var-scope-raw.css')
-  const target = path.resolve(__dirname, '../src/postcss/cssVars.ts')
+  // const rawSource = resolveCorePackagePath('test/fixtures/css/css-var-scope-raw.css')
+  const target = resolveCorePackagePath('src/postcss/cssVars.ts')
   const content = source.css // fs.readFileSync(rawSource, 'utf8')
 
   const root = postcss.parse(content)

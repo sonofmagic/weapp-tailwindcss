@@ -12,7 +12,7 @@ import type {
 } from '../types'
 import { readdir } from 'node:fs/promises'
 import path from 'node:path'
-import { replaceWxml } from '../../../src/wxml/shared'
+import { replaceWxml } from '../../core/replace-wxml'
 import { formatPath } from '../cli'
 import { getMtime, readFileIfExists, waitFor } from '../text'
 import { DEFAULT_STYLE_APPLY_VALIDATION, STYLE_APPLY_UNSUPPORTED_CASES } from '../types'
@@ -70,14 +70,32 @@ export async function expandOutputFileEntries(files: string[]) {
   return [...resolved]
 }
 
-export async function waitForOutputsReady(watchCase: WatchCase, options: CliOptions, session: WatchSession) {
+export async function waitForOutputsReady(
+  watchCase: WatchCase,
+  options: CliOptions,
+  session: WatchSession,
+  sessionStartedAt: number,
+) {
+  const stableWindowMs = Math.min(Math.max(options.pollMs * 2, 600), 1500)
   return waitFor(
     async () => {
-      const [wxml, js] = await Promise.all([
+      const [wxml, js, wxmlMtime, jsMtime] = await Promise.all([
         readFileIfExists(watchCase.outputWxml),
         readFileIfExists(watchCase.outputJs),
+        getMtime(watchCase.outputWxml),
+        getMtime(watchCase.outputJs),
       ])
-      return Boolean(wxml && js)
+      if (wxml == null || js == null) {
+        return false
+      }
+
+      if (Math.max(wxmlMtime, jsMtime) > sessionStartedAt) {
+        return true
+      }
+
+      const lastCompileSuccessAt = session.lastCompileSuccessAt()
+      return lastCompileSuccessAt > sessionStartedAt
+        && Date.now() - lastCompileSuccessAt >= stableWindowMs
     },
     {
       timeoutMs: options.timeoutMs,
@@ -383,6 +401,10 @@ export async function readJoinedOutputFiles(files: string[]) {
   const resolvedFiles = await expandOutputFileEntries(files)
   const parts = await Promise.all(resolvedFiles.map(file => readFileIfExists(file)))
   return parts.filter((item): item is string => item != null).join('\n')
+}
+
+export async function hasResolvedOutputFiles(files: string[]) {
+  return (await expandOutputFileEntries(files)).length > 0
 }
 
 export function resolvePreferredRound(rounds: MutationRoundMetrics[]) {

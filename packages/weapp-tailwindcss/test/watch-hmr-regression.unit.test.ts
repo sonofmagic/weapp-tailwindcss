@@ -5,22 +5,22 @@ import { parse } from 'yaml'
 import { afterEach, describe, expect, it, vi } from 'vitest'
 import {
   buildDemoBaseCases,
-} from '../scripts/watch-hmr-regression/cases/demo/base'
+} from '../../../tools/weapp-tailwindcss-scripts/src/watch-hmr-regression/cases/demo/base'
 import {
   buildDemoExtendedCases,
-} from '../scripts/watch-hmr-regression/cases/demo/extended'
+} from '../../../tools/weapp-tailwindcss-scripts/src/watch-hmr-regression/cases/demo/extended'
 import {
   buildAppCases,
-} from '../scripts/watch-hmr-regression/cases/apps'
+} from '../../../tools/weapp-tailwindcss-scripts/src/watch-hmr-regression/cases/apps'
 import {
   buildCases,
   filterCasesForPlatform,
   pickCases,
-} from '../scripts/watch-hmr-regression/cases'
+} from '../../../tools/weapp-tailwindcss-scripts/src/watch-hmr-regression/cases'
 import {
   buildHexScriptRoundConfigs,
   buildIssue33HighRiskRoundConfigs,
-} from '../scripts/watch-hmr-regression/cases/round-configs'
+} from '../../../tools/weapp-tailwindcss-scripts/src/watch-hmr-regression/cases/round-configs'
 import {
   resolveReportPath,
   resolveRepositoryRootLabel,
@@ -32,20 +32,22 @@ import {
   summarizeMutationMetricsByKind,
   summarizeSamples,
   writeReport,
-} from '../scripts/watch-hmr-regression/summary'
+} from '../../../tools/weapp-tailwindcss-scripts/src/watch-hmr-regression/summary'
 import {
   expandOutputFileEntries,
   createClassMutationScenario,
   createStyleMutationPayload,
+  hasResolvedOutputFiles,
   readJoinedOutputFiles,
   waitForCompileSettled,
   waitForInitialWarmup,
+  waitForOutputsReady,
   waitForOutputFilesUpdated,
-} from '../scripts/watch-hmr-regression/mutations/shared'
+} from '../../../tools/weapp-tailwindcss-scripts/src/watch-hmr-regression/mutations/shared'
 import {
   ISSUE33_ADD_CLASS_TOKENS,
   ISSUE33_MODIFY_CLASS_TOKENS,
-} from '../scripts/watch-hmr-regression/mutations/tokens'
+} from '../../../tools/weapp-tailwindcss-scripts/src/watch-hmr-regression/mutations/tokens'
 import {
   alignContentEol,
   appendTrailingSnippet,
@@ -74,7 +76,7 @@ import {
   readFileWithRetry,
   waitFor,
   writeFilePreserveEol,
-} from '../scripts/watch-hmr-regression/text'
+} from '../../../tools/weapp-tailwindcss-scripts/src/watch-hmr-regression/text'
 import { replaceWxml } from '../src/wxml/shared'
 import type {
   CliOptions,
@@ -82,7 +84,7 @@ import type {
   WatchCase,
   WatchCaseMetrics,
   WatchCaseMutationMetrics,
-} from '../scripts/watch-hmr-regression/types'
+} from '../../../tools/weapp-tailwindcss-scripts/src/watch-hmr-regression/types'
 
 const payload = {
   marker: 'tw-watch-20260313',
@@ -235,6 +237,16 @@ describe('watch-hmr regression text helpers', () => {
     expect(joined).toContain('.b{}')
   })
 
+  it('treats empty generated style files as resolved outputs', async () => {
+    const tempDir = await mkdtemp(path.join(os.tmpdir(), 'weapp-tw-watch-empty-style-'))
+    tempDirs.push(tempDir)
+    const outputFile = path.join(tempDir, 'app.wxss')
+    await writeFilePreserveEol(outputFile, '', '')
+
+    await expect(hasResolvedOutputFiles([outputFile])).resolves.toBe(true)
+    await expect(readJoinedOutputFiles([outputFile])).resolves.toBe('')
+  })
+
   it('waits for predicates and reports timeout failures', async () => {
     let attempt = 0
     let tickCount = 0
@@ -357,6 +369,42 @@ describe('watch-hmr regression text helpers', () => {
     )
 
     expect(elapsed).toBeGreaterThanOrEqual(0)
+  })
+
+  it('does not treat stale pre-start outputs as initially ready', async () => {
+    const tempDir = await mkdtemp(path.join(os.tmpdir(), 'weapp-tw-watch-stale-ready-'))
+    tempDirs.push(tempDir)
+    const wxmlFile = path.join(tempDir, 'index.wxml')
+    const jsFile = path.join(tempDir, 'index.js')
+    await writeFilePreserveEol(wxmlFile, '<view>stale</view>', '<view />')
+    await writeFilePreserveEol(jsFile, 'Page({ stale: true })', 'Page({})')
+    await new Promise(resolve => setTimeout(resolve, 20))
+    const sessionStartedAt = Date.now()
+    let compileSuccessAt = 0
+    setTimeout(async () => {
+      await writeFilePreserveEol(wxmlFile, '<view>ready</view>', '<view />')
+      await writeFilePreserveEol(jsFile, 'Page({ ready: true })', 'Page({})')
+      compileSuccessAt = Date.now()
+    }, 20)
+
+    const elapsed = await waitForOutputsReady(
+      {
+        label: 'demo/native-ts (weapp-vite)',
+        outputWxml: wxmlFile,
+        outputJs: jsFile,
+      } as any,
+      {
+        timeoutMs: 2_000,
+        pollMs: 20,
+      } as CliOptions,
+      {
+        ensureRunning() {},
+        lastCompileSuccessAt: () => compileSuccessAt,
+      } as any,
+      sessionStartedAt,
+    )
+
+    expect(elapsed).toBeGreaterThanOrEqual(20)
   })
 
   it('requires a stable post-start output update during warmup when compile success is mandatory', async () => {
@@ -781,10 +829,16 @@ describe('watch-hmr regression cases', () => {
       ...buildDemoExtendedCases('/repo'),
       ...buildAppCases('/repo'),
     ]
+    const contentMutationOptionalCases = new Set(['gulp-app'])
 
     expect(cases.length).toBeGreaterThan(0)
 
     for (const watchCase of cases) {
+      if (contentMutationOptionalCases.has(watchCase.name)) {
+        expect(watchCase.contentMutation, `${watchCase.name} keeps template/script/style hot-update coverage`).toBeUndefined()
+        continue
+      }
+
       expect(
         watchCase.contentMutation,
         `${watchCase.name} should define content mutation for existing js class literal refresh`,
@@ -849,6 +903,12 @@ describe('watch-hmr regression cases', () => {
     expect(appCases.find(watchCase => watchCase.name === 'vite-native')?.requireInitialCompileSuccess).toBe(false)
     expect(appCases.find(watchCase => watchCase.name === 'vite-native-ts')?.requireInitialCompileSuccess).toBe(false)
     expect(appCases.find(watchCase => watchCase.name === 'vite-native-skyline')?.requireInitialCompileSuccess).toBe(false)
+  })
+
+  it('prebuilds the weapp-vite demo before watch so dev hot updates start from complete outputs', () => {
+    const demoBaseCases = buildDemoBaseCases('/repo')
+
+    expect(demoBaseCases.find(watchCase => watchCase.name === 'weapp-vite')?.initialBuildScript).toBe('build')
   })
 
   it('filters platform-specific unstable watch cases from grouped runs', () => {

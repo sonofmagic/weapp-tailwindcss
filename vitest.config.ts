@@ -122,7 +122,7 @@ export default defineConfig(() => {
           '**/tests/**',
           '**/__tests__/**',
           'website/**',
-          'packages/weapp-tailwindcss/scripts/watch-hmr-regression/**',
+          'tools/weapp-tailwindcss-scripts/src/watch-hmr-regression/**',
         ],
       },
       forceRerunTriggers: [
