@@ -1,5 +1,45 @@
 # weapp-tailwindcss
 
+## 5.0.0-next.4
+
+### Minor Changes
+
+- ✨ **移除 v4 时代“先生成浏览器 CSS 再后处理”的关闭生成器链路，`generator: false` 现在按默认生成模式处理，Vite、Webpack、Gulp 与 PostCSS 入口统一由 weapp-tailwindcss 接管 Tailwind CSS 样式生成。** [#852](https://github.com/sonofmagic/weapp-tailwindcss/pull/852) by @github-actions
+
+### Patch Changes
+
+- 🐛 **标记 v5 默认生成模式稳定后不再推荐的兼容配置，并在迁移文档中补充 `generator` 布尔写法、`mode`、默认 `target`、PostCSS 顶层 `target`、`staleClassNameFallback`、`rewriteCssImports` 与旧 Vite 插件命名的废弃说明。** [`d329bcf`](https://github.com/sonofmagic/weapp-tailwindcss/commit/d329bcf83122680e4348f096b4ff314ff52859ad) by @sonofmagic
+
+- 🐛 **修复 Mpx webpack 场景下 `@mpxjs/webpack-plugin` 子路径 loader 解析失败的问题，并补充跨框架支持矩阵的 CI 与 IDE 验证入口。** [#852](https://github.com/sonofmagic/weapp-tailwindcss/pull/852) by @github-actions
+
+- 🐛 **支持在生成模式中通过 `generator.config` 指定 Tailwind 配置文件，兼容原 Tailwind PostCSS 插件 `config` 选项的手动配置路径用法。** [#852](https://github.com/sonofmagic/weapp-tailwindcss/pull/852) by @github-actions
+
+- 🐛 **修正 Tailwind CSS v3 项目的默认生成模式行为：`auto` 会和 Tailwind CSS v4 一样由 weapp-tailwindcss 接管 Tailwind 样式生成，并移除重复的官方 Tailwind PostCSS 链路。** [#852](https://github.com/sonofmagic/weapp-tailwindcss/pull/852) by @github-actions
+
+- 🐛 **修复 v5 默认生成模式在 Tailwind CSS v3 + uni-app Vite 小程序/quickapp 构建中遗漏 `@tailwind`/`@apply` 展开导致产物残留原始 Tailwind 指令的问题。现在 `@apply` 会作为生成入口参与 Tailwind v3 样式生成，并且生成后的兼容 CSS 追加不会把未展开的 `@apply` 规则重新写回产物。** [#852](https://github.com/sonofmagic/weapp-tailwindcss/pull/852) by @github-actions
+
+- 🐛 **补充 Tailwind CSS v4 生成模式对官方 Adding custom styles 写法的回归覆盖，确保 `@theme`、任意值/属性/变体、自定义 CSS、`@utility` 函数式工具类和 `@custom-variant` 在生成模式下保持语义一致。** [#852](https://github.com/sonofmagic/weapp-tailwindcss/pull/852) by @github-actions
+
+- 🐛 **修复 Tailwind CSS v4 生成模式下 colors 透明度变量在小程序样式兼容阶段被静态降级为不透明色的问题，并补充颜色工具类、`@theme` 自定义颜色与禁用默认颜色的回归覆盖。** [#852](https://github.com/sonofmagic/weapp-tailwindcss/pull/852) by @github-actions
+
+- 🐛 **修复小程序样式转换中错误保留 `[data-theme=dark]` / `[data-mode="dark"]` 这类属性选择器的问题。web 目标继续保留 Tailwind CSS v4 data attribute dark variant，小程序目标会移除依赖属性选择器的无效规则，避免生成小程序不支持的选择器或让 dark 样式无条件生效。** [#852](https://github.com/sonofmagic/weapp-tailwindcss/pull/852) by @github-actions
+
+- 🐛 **修复 Tailwind CSS v4 生成模式下 data attribute 版 `@custom-variant dark` 在小程序选择器兜底清理阶段丢失属性选择器的问题，并补充默认媒体查询、`.dark` 自定义选择器和 `[data-theme=dark]` 自定义选择器的回归覆盖。** [#852](https://github.com/sonofmagic/weapp-tailwindcss/pull/852) by @github-actions
+
+- 🐛 **修复 Tailwind CSS v4 生成模式下 `tailwindcss/preflight.css` subpath import 的处理策略：web 目标仅在显式使用 `layer(...)` 导入时保留 Preflight，小程序目标继续裁剪浏览器标签 reset，并补充对应回归测试。** [#852](https://github.com/sonofmagic/weapp-tailwindcss/pull/852) by @github-actions
+
+- 🐛 **修复 Tailwind CSS v4 生成模式下 bundler 和 PostCSS 入口未启用官方 source detection 的问题，支持自动扫描、`@source`、`source(...)` / `source(none)`、`@source not`、`inline()` 与 brace expansion 等规则，同时保持 Tailwind CSS v3 生成链路不变。** [#852](https://github.com/sonofmagic/weapp-tailwindcss/pull/852) by @github-actions
+
+- 🐛 **完善 Tailwind CSS v4 生成模式对 `package.json#imports` subpath imports 的支持：`@import "#..."` 会触发默认生成模式，`@config "#..."` 会保留给 Tailwind v4 按官方规则解析，并新增 `@import`、`@reference`、`@plugin`、`@config` 的真实生成回归测试。** [#852](https://github.com/sonofmagic/weapp-tailwindcss/pull/852) by @github-actions
+
+- 🐛 **修复 Tailwind CSS v4 生成模式下 `--animate-*` 主题变量对应的 `@keyframes` 在小程序 CSS 裁剪阶段被误删的问题，并补充 `@theme` 命名空间、`inline`、`static`、自定义主题重置和主题变量引用的回归覆盖。** [#852](https://github.com/sonofmagic/weapp-tailwindcss/pull/852) by @github-actions
+
+- 🐛 **升级 `tailwindcss-patch` 到 `9.2.1`，同步消费最新补丁版本。** [#852](https://github.com/sonofmagic/weapp-tailwindcss/pull/852) by @github-actions
+
+- 🐛 **增强 Vite v5 生成模式的 Tailwind 依赖追踪，在生成 CSS 时向 Vite 注册生成器依赖，覆盖 CSS 入口、配置文件和 Tailwind source 解析产物。** [#852](https://github.com/sonofmagic/weapp-tailwindcss/pull/852) by @github-actions
+- 📦 **Dependencies** [`3d11ae3`](https://github.com/sonofmagic/weapp-tailwindcss/commit/3d11ae36e3d244d22d816ad1b6fb5d1984bc5c8c)
+  → `@weapp-tailwindcss/postcss@2.2.1-next.0`
+
 ## 5.0.0-next.3
 
 ### Minor Changes

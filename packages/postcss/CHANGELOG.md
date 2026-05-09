@@ -1,5 +1,15 @@
 # @weapp-tailwindcss/postcss
 
+## 2.2.1-next.0
+
+### Patch Changes
+
+- 🐛 **修复 Tailwind CSS v4 生成模式下 colors 透明度变量在小程序样式兼容阶段被静态降级为不透明色的问题，并补充颜色工具类、`@theme` 自定义颜色与禁用默认颜色的回归覆盖。** [#852](https://github.com/sonofmagic/weapp-tailwindcss/pull/852) by @github-actions
+
+- 🐛 **修复小程序样式转换中错误保留 `[data-theme=dark]` / `[data-mode="dark"]` 这类属性选择器的问题。web 目标继续保留 Tailwind CSS v4 data attribute dark variant，小程序目标会移除依赖属性选择器的无效规则，避免生成小程序不支持的选择器或让 dark 样式无条件生效。** [#852](https://github.com/sonofmagic/weapp-tailwindcss/pull/852) by @github-actions
+
+- 🐛 **修复 Tailwind CSS v4 生成模式下 data attribute 版 `@custom-variant dark` 在小程序选择器兜底清理阶段丢失属性选择器的问题，并补充默认媒体查询、`.dark` 自定义选择器和 `[data-theme=dark]` 自定义选择器的回归覆盖。** [#852](https://github.com/sonofmagic/weapp-tailwindcss/pull/852) by @github-actions
+
 ## 2.2.0
 
 ### Minor Changes
