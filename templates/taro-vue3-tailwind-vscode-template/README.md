@@ -39,7 +39,7 @@ pnpm open
 
 ## 模板说明
 
-- 安装依赖后会自动执行 `weapp-tw patch`
+- 生成模式不需要配置 `postinstall: "weapp-tw patch"`
 - 模板包含 `NutUI Taro` 相关依赖，更适合 Vue 3 组件化场景
 - 如果你更偏向 React，请使用 `taro-react-tailwind-vscode-template`
 

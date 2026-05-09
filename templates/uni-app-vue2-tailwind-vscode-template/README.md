@@ -56,7 +56,7 @@ pnpm open:build
 
 ## 模板说明
 
-- 安装依赖后会自动执行 `weapp-tw patch`
+- 生成模式不需要配置 `postinstall: "weapp-tw patch"`
 - 该模板面向 `Vue 2` 存量项目，不建议作为新项目默认起点
 - `uni-app` 依赖升级可使用 `pnpm up:uni-app`
 

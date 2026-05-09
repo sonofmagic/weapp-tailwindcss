@@ -42,8 +42,7 @@
     "up:pkg": "pnpm up -rLi \"!@dcloudio/*\"",
     "up:uniapp": "pnpx @dcloudio/uvm@latest",
     "open:dev": "weapp open -p dist/dev/mp-weixin",
-    "open:build": "weapp open -p dist/build/mp-weixin",
-    "postinstall": "weapp-tw patch"
+    "open:build": "weapp open -p dist/build/mp-weixin"
   },
   "dependencies": {
     "@dcloudio/uni-app": "3.0.0-5000320260312001",

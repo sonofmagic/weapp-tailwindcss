@@ -49,7 +49,7 @@ pnpm open:build
 
 ## 模板说明
 
-- 安装依赖后会自动执行 `weapp-tw patch`
+- 生成模式不需要配置 `postinstall: "weapp-tw patch"`
 - 请先把 `src/manifest.json` 中的 `appid` 改成你自己的
 - 模板内保留了 `up:pkg` 和 `up:uniapp`，用于分别升级通用依赖和 `uni-app` 依赖
 - 推荐在 VS Code 中安装 `Tailwind CSS IntelliSense`、`ESLint`、`Stylelint`

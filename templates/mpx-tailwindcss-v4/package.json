@@ -7,8 +7,7 @@
     "serve": "mpx-cli-service serve",
     "build": "mpx-cli-service build",
     "lint": "eslint --ext .js,.ts,.mpx src/",
-    "open": "weapp open -p dist/wx",
-    "postinstall": "weapp-tw patch"
+    "open": "weapp open -p dist/wx"
   },
   "dependencies": {
     "@mpxjs/api-proxy": "^2.10.13",

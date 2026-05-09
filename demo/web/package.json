@@ -9,8 +9,7 @@
   "scripts": {
     "start": "node ./index.js",
     "build": "node ./index.js",
-    "build:babel": "node ./index.js",
-    "postinstall": "weapp-tw patch"
+    "build:babel": "node ./index.js"
   },
   "dependencies": {
     "defu": "^6.1.7",

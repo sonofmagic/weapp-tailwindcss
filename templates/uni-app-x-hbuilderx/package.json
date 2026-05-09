@@ -1,7 +1,6 @@
 {
   "name": "uni-app-x-weapp-tailwindcss-template",
   "scripts": {
-    "postinstall": "weapp-tw patch",
     "start:android:emulator": "node ./scripts/start-android-emulator.mjs",
     "start:ios:simulator": "open -a Simulator",
     "dev:android:emulator": "uni-launch app-android --deviceId emulator-5554",

@@ -33,8 +33,7 @@
     "dev:qq": "pnpm build:qq -- --watch",
     "dev:jd": "pnpm build:jd -- --watch",
     "dev:quickapp": "pnpm build:quickapp -- --watch",
-    "open": "weapp open -p .",
-    "postinstall": "weapp-tw patch"
+    "open": "weapp open -p ."
   },
   "dependencies": {
     "@babel/runtime": "^7.28.3",

@@ -6,7 +6,7 @@ This template uses `uni-app + Vite + Vue 3 + Tailwind CSS` with `pnpm`. Applicat
 
 ## Build, Test, and Development Commands
 
-Use `pnpm install` to install dependencies; `postinstall` automatically runs `weapp-tw patch`.
+Use `pnpm install` to install dependencies. The template uses generator mode and does not need a `postinstall` patch hook.
 
 - `pnpm dev:mp-weixin`: start WeChat Mini Program development build.
 - `pnpm dev:h5`: run the H5 dev server.

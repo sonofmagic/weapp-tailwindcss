@@ -24,8 +24,7 @@
     "lint": "eslint --ext .js,.ts,.mpx src/",
     "build:e2e": "npm run build && npm run test:e2e",
     "test": "jest test/components",
-    "open": "weapp open -p dist/wx",
-    "postinstall": "weapp-tw patch"
+    "open": "weapp open -p dist/wx"
   },
   "dependencies": {
     "@mpxjs/api-proxy": "^2.10.20",
