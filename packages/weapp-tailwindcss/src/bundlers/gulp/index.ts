@@ -9,7 +9,8 @@ import { getCompilerContext } from '@/context'
 import { createDebug } from '@/debug'
 import { shouldSkipJsTransform } from '@/js/precheck'
 import { setupPatchRecorder } from '@/tailwindcss/recorder'
-import { ensureRuntimeClassSet, refreshTailwindRuntimeState } from '@/tailwindcss/runtime'
+import { ensureRuntimeClassSet } from '@/tailwindcss/runtime'
+import { getRuntimeClassSetSignature } from '@/tailwindcss/runtime/cache'
 import { processCachedTask } from '../shared/cache'
 import { generateCssByGenerator } from '../shared/generator-css'
 
@@ -47,10 +48,6 @@ export function createPlugins(options: UserDefinedOptions = {}) {
   const MODULE_EXTENSIONS = ['.js', '.mjs', '.cjs', '.ts', '.tsx', '.jsx']
   let runtimeSetInitialized = false
 
-  async function refreshRuntimeState(force: boolean) {
-    await refreshTailwindRuntimeState(runtimeState, force)
-  }
-
   async function refreshRuntimeSet(force = false) {
     if (!force && runtimeSetInitialized) {
       return runtimeSet
@@ -63,6 +60,14 @@ export function createPlugins(options: UserDefinedOptions = {}) {
     })
     runtimeSetInitialized = true
     return runtimeSet
+  }
+
+  function createRuntimeSetHash(rawSource: string, nextRuntimeSet: Set<string>) {
+    return cache.computeHash([
+      rawSource,
+      getRuntimeClassSetSignature(runtimeState.twPatcher),
+      [...nextRuntimeSet].sort().join('\n'),
+    ].join('\n\n'))
   }
   function resolveWithExtensions(base: string): string | undefined {
     for (const ext of MODULE_EXTENSIONS) {
@@ -220,13 +225,12 @@ export function createPlugins(options: UserDefinedOptions = {}) {
       if (!file.contents) {
         return
       }
-      await refreshRuntimeState(true)
-      await runtimeState.patchPromise
       const rawSource = file.contents.toString()
+      const nextRuntimeSet = await refreshRuntimeSet(true)
       await processCachedTask<string>({
         cache,
         cacheKey: file.path,
-        rawSource,
+        hash: createRuntimeSetHash(rawSource, nextRuntimeSet),
         applyResult(source) {
           file.contents = Buffer.from(source)
         },
@@ -239,7 +243,7 @@ export function createPlugins(options: UserDefinedOptions = {}) {
           const generated = await generateCssByGenerator({
             opts,
             runtimeState,
-            runtime: await refreshRuntimeSet(false),
+            runtime: nextRuntimeSet,
             rawSource,
             file: file.path,
             cssHandlerOptions,

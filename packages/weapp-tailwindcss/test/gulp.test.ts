@@ -1,4 +1,6 @@
 import type internal from 'node:stream'
+import { mkdir, rm, writeFile } from 'node:fs/promises'
+import { tmpdir } from 'node:os'
 import path from 'node:path'
 import { gulpCasePath } from '#test/util'
 import gulp from 'gulp'
@@ -69,5 +71,54 @@ describe('gulp', () => {
         return path.basename(name) === 'index.css'
       },
     }))
+  })
+
+  it('refreshes generated css when watched templates add new classes', async () => {
+    const tempRoot = path.join(tmpdir(), `weapp-tw-gulp-watch-${Date.now()}-${Math.random().toString(16).slice(2)}`)
+    const srcRoot = path.join(tempRoot, 'src')
+
+    await mkdir(srcRoot, { recursive: true })
+    await writeFile(path.join(tempRoot, 'tailwind.config.js'), `
+module.exports = {
+  content: ['./src/**/*.wxml'],
+  corePlugins: { preflight: false },
+}
+`, 'utf8')
+    await writeFile(path.join(srcRoot, 'index.css'), '@tailwind utilities;', 'utf8')
+    const wxmlPath = path.join(srcRoot, 'index.wxml')
+    await writeFile(wxmlPath, '<view class="text-xs"></view>', 'utf8')
+
+    const cwd = process.cwd()
+    try {
+      process.chdir(tempRoot)
+      const plugins = createPlugins({
+        tailwindcssBasedir: tempRoot,
+        mainCssChunkMatcher(name) {
+          return path.basename(name) === 'index.css'
+        },
+      })
+      const readGeneratedCss = async () => {
+        const cssTask = gulp
+          .src('./src/index.css', {
+            cwd: tempRoot,
+          })
+          .pipe(plugins.transformWxss())
+
+        const css = await readContent(cssTask)
+        await promisify(cssTask)
+        return normalizeSnapshotContent(css)
+      }
+
+      const initialCss = await readGeneratedCss()
+      expect(initialCss).not.toContain('bg-_bred_B')
+
+      await writeFile(wxmlPath, '<view class="text-xs bg-[red]"></view>', 'utf8')
+      const nextCss = await readGeneratedCss()
+      expect(nextCss).toContain('bg-_bred_B')
+    }
+    finally {
+      process.chdir(cwd)
+      await rm(tempRoot, { force: true, recursive: true })
+    }
   })
 })
