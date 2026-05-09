@@ -759,6 +759,89 @@ const trace = "at App.vue:4"
     expect(currentContext.styleHandler).not.toHaveBeenCalled()
   }, TEST_TIMEOUT_MS)
 
+  it('keeps generator css output when Rollup rejects late addWatchFile registration', async () => {
+    const runtimeSet = new Set(['w-[100px]'])
+    const rawTailwindCss = '/*! tailwindcss v4.2.4 | MIT License | https://tailwindcss.com */\n.w-\\[100px\\]{width:100px}'
+    const weappCss = '.w-_b100px_B{width:100px}'
+    const dependencyFiles = [
+      path.resolve(process.cwd(), 'tailwind.config.js'),
+    ]
+    const generateMock = vi.fn(async () => ({
+      css: weappCss,
+      rawCss: '.w-\\[100px\\]{width:100px}',
+      target: 'weapp',
+      classSet: runtimeSet,
+      dependencies: dependencyFiles,
+      sources: [],
+      root: null,
+    }))
+    const createEngineMock = vi.fn(() => ({
+      generate: generateMock,
+    }))
+    const resolveSourceMock = vi.fn(async () => ({
+      projectRoot: process.cwd(),
+      base: process.cwd(),
+      baseFallbacks: [],
+      css: '@import "tailwindcss";',
+      dependencies: [],
+    }))
+
+    vi.doMock('@/bundlers/vite/incremental-runtime-class-set', () => ({
+      createBundleRuntimeClassSetManager: () => ({
+        sync: vi.fn(async () => runtimeSet),
+        reset: vi.fn(async () => undefined),
+      }),
+    }))
+    vi.doMock('@/generator', () => ({
+      createWeappTailwindcssGenerator: createEngineMock,
+      normalizeWeappTailwindcssGeneratorOptions: normalizeGeneratorOptions,
+      resolveTailwindV4SourceFromPatcher: resolveSourceMock,
+    }))
+
+    setCurrentContext(createContext({
+      generator: {
+        mode: 'force',
+        target: 'weapp',
+      },
+      styleHandler: vi.fn(async (code: string) => ({ css: `css:${code}` })),
+      twPatcher: {
+        patch: vi.fn(),
+        getClassSet: vi.fn(async () => runtimeSet),
+        getClassSetSync: vi.fn(() => runtimeSet),
+        extract: vi.fn(async () => ({ classSet: runtimeSet })),
+        majorVersion: 4,
+      },
+    }))
+
+    const UnifiedViteWeappTailwindcssPlugin = await loadUnifiedVitePlugin()
+    const plugins = UnifiedViteWeappTailwindcssPlugin()
+    const postPlugin = plugins?.find(plugin => plugin.name === 'weapp-tailwindcss:adaptor:post') as Plugin
+
+    await (postPlugin.configResolved as any)?.call(postPlugin, {
+      command: 'serve',
+      root: process.cwd(),
+      css: { postcss: { plugins: [] } },
+      build: { outDir: 'dist' },
+    } as ResolvedConfig)
+
+    const bundle = {
+      'app.css': {
+        ...createRollupAsset(rawTailwindCss),
+        fileName: 'app.css',
+      },
+    }
+
+    const phaseError = new Error('Cannot call "addWatchFile" after the build has finished.')
+    const generateBundle = getGenerateBundleHandler(postPlugin)
+    const addWatchFile = vi.fn(() => {
+      throw phaseError
+    })
+
+    await expect(generateBundle?.call({ ...postPlugin, addWatchFile }, {} as any, bundle)).resolves.toBeUndefined()
+    expect((bundle['app.css'] as OutputAsset).source.toString()).toContain(weappCss)
+    expect(addWatchFile).toHaveBeenCalledWith(dependencyFiles[0])
+  }, TEST_TIMEOUT_MS)
+
   it('uses force generator css for assets carrying the generator placeholder marker', async () => {
     const runtimeSet = new Set(['w-[100px]'])
     const rawTailwindCss = '.w-\\[100px\\]{width:100px}'

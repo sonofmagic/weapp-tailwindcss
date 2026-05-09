@@ -250,12 +250,28 @@ function createReplayCssAsset(fileName: string, source: string): OutputAsset {
   } as OutputAsset
 }
 
+function isAddWatchFileInvalidRollupPhaseError(error: unknown) {
+  const candidate = error as { code?: string, pluginCode?: string, message?: string }
+  return candidate?.code === 'INVALID_ROLLUP_PHASE'
+    || candidate?.pluginCode === 'INVALID_ROLLUP_PHASE'
+    || candidate?.message?.includes('Cannot call "addWatchFile" after the build has finished.') === true
+}
+
 function registerGeneratorDependencies(ctx: GenerateBundleThis, dependencies: readonly string[] | undefined) {
   if (typeof ctx.addWatchFile !== 'function') {
     return
   }
   for (const dependency of dependencies ?? []) {
-    ctx.addWatchFile(dependency)
+    try {
+      ctx.addWatchFile(dependency)
+    }
+    catch (error) {
+      if (isAddWatchFileInvalidRollupPhaseError(error)) {
+        logger.debug('跳过生成模式依赖监听注册，当前 Rollup 阶段不允许 addWatchFile: %s', dependency)
+        continue
+      }
+      throw error
+    }
   }
 }
 

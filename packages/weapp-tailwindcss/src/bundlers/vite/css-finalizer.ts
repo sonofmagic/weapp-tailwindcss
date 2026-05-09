@@ -2,6 +2,7 @@ import type { IStyleHandlerOptions } from '@weapp-tailwindcss/postcss/types'
 import type { OutputAsset, OutputBundle } from 'rollup'
 import type { Plugin, ResolvedConfig } from 'vite'
 import type { InternalUserDefinedOptions } from '@/types'
+import { logger } from '@weapp-tailwindcss/logger'
 import { normalizeWeappTailwindcssGeneratorOptions } from '@/generator'
 import { filterUnsupportedMiniProgramTailwindV4Candidates } from '@/tailwindcss/v4-engine/candidates'
 import { generateCssByGenerator, hasTailwindGeneratedCssMarkers, hasTailwindSourceDirectives } from '../shared/generator-css'
@@ -28,12 +29,28 @@ interface CssFinalizerThis {
   addWatchFile?: (id: string) => void
 }
 
+function isAddWatchFileInvalidRollupPhaseError(error: unknown) {
+  const candidate = error as { code?: string, pluginCode?: string, message?: string }
+  return candidate?.code === 'INVALID_ROLLUP_PHASE'
+    || candidate?.pluginCode === 'INVALID_ROLLUP_PHASE'
+    || candidate?.message?.includes('Cannot call "addWatchFile" after the build has finished.') === true
+}
+
 function registerGeneratorDependencies(ctx: CssFinalizerThis, dependencies: readonly string[] | undefined) {
   if (typeof ctx.addWatchFile !== 'function') {
     return
   }
   for (const dependency of dependencies ?? []) {
-    ctx.addWatchFile(dependency)
+    try {
+      ctx.addWatchFile(dependency)
+    }
+    catch (error) {
+      if (isAddWatchFileInvalidRollupPhaseError(error)) {
+        logger.debug('跳过生成模式依赖监听注册，当前 Rollup 阶段不允许 addWatchFile: %s', dependency)
+        continue
+      }
+      throw error
+    }
   }
 }
 
