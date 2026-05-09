@@ -1,17 +1,13 @@
 import { defineConfig } from 'weapp-vite/config'
-import { UnifiedViteWeappTailwindcssPlugin } from 'weapp-tailwindcss/vite'
-import { resolveDemoGeneratorMode } from '../shared/weapp-tailwind-generator-mode'
-
-const generator = resolveDemoGeneratorMode()
+import { WeappTailwindcss } from 'weapp-tailwindcss/vite'
 
 export default defineConfig({
   weapp: {
     // weapp-vite options
     srcRoot: './miniprogram'
   },
-  plugins: [UnifiedViteWeappTailwindcssPlugin({
+  plugins: [WeappTailwindcss({
     rem2rpx: true,
-    ...(generator !== undefined ? { generator } : {}),
   })],
   css: {
     preprocessorOptions: {

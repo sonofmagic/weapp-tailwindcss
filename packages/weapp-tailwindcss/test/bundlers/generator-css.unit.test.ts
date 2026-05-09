@@ -2,10 +2,7 @@ import path from 'node:path'
 import { afterEach, describe, expect, it, vi } from 'vitest'
 
 function normalizeGeneratorOptions(options: any) {
-  if (options === false) {
-    return { mode: 'off', target: 'weapp' }
-  }
-  if (options === true || options == null) {
+  if (options === false || options === true || options == null) {
     return { mode: 'auto', target: 'weapp' }
   }
   return {
@@ -112,7 +109,7 @@ describe('bundlers/shared generator css', () => {
     }))
 
     const { generateCssByGenerator } = await import('@/bundlers/shared/generator-css')
-    const styleHandler = vi.fn(async (code: string) => ({ css: `legacy:${code}` }))
+    const styleHandler = vi.fn(async (code: string) => ({ css: code }))
     const result = await generateCssByGenerator({
       opts: {
         generator: {
@@ -263,7 +260,7 @@ describe('bundlers/shared generator css', () => {
     }))
 
     const { generateCssByGenerator } = await import('@/bundlers/shared/generator-css')
-    const styleHandler = vi.fn(async (code: string) => ({ css: `legacy:${code}` }))
+    const styleHandler = vi.fn(async (code: string) => ({ css: code }))
     const result = await generateCssByGenerator({
       opts: {
         generator: true,
@@ -349,7 +346,7 @@ describe('bundlers/shared generator css', () => {
     }))
 
     const { generateCssByGenerator } = await import('@/bundlers/shared/generator-css')
-    const styleHandler = vi.fn(async (code: string) => ({ css: `legacy:${code}` }))
+    const styleHandler = vi.fn(async (code: string) => ({ css: code }))
     const result = await generateCssByGenerator({
       opts: {
         generator: true,
@@ -1212,6 +1209,72 @@ describe('bundlers/shared generator css', () => {
 
     expect(result).toBeUndefined()
     expect(styleHandler).not.toHaveBeenCalled()
+  })
+
+  it('removes Tailwind source directives from local import wrapper assets', async () => {
+    const runtimeSet = new Set(['w-[100px]'])
+    const generateMock = vi.fn(async () => ({
+      css: '.w-_b100px_B{width:100px}',
+      rawCss: '.w-\\[100px\\]{width:100px}',
+      target: 'weapp',
+      classSet: runtimeSet,
+      dependencies: [],
+      sources: [],
+      root: null,
+    }))
+
+    vi.doMock('@/generator', () => ({
+      ...createDefaultGeneratorMock(),
+      createWeappTailwindcssGenerator: vi.fn(() => ({
+        generate: generateMock,
+      })),
+    }))
+
+    const { generateCssByGenerator } = await import('@/bundlers/shared/generator-css')
+    const styleHandler = vi.fn(async (code: string) => ({ css: code }))
+    const result = await generateCssByGenerator({
+      opts: {
+        generator: {
+          mode: 'auto',
+          target: 'weapp',
+        },
+        styleHandler,
+      } as any,
+      runtimeState: {
+        twPatcher: {
+          majorVersion: 4,
+        } as any,
+        patchPromise: Promise.resolve(),
+      },
+      runtime: runtimeSet,
+      rawSource: '@import "./index.wxss";\n@source "../src";',
+      file: 'styles/app.wxss',
+      cssHandlerOptions: {
+        isMainChunk: false,
+        postcssOptions: {
+          options: {
+            from: 'styles/app.wxss',
+          },
+        },
+        majorVersion: 4,
+      } as any,
+      cssUserHandlerOptions: {
+        isMainChunk: false,
+        postcssOptions: {
+          options: {
+            from: 'styles/app.wxss',
+          },
+        },
+        majorVersion: 4,
+      } as any,
+      styleHandler,
+      debug: vi.fn(),
+    })
+
+    expect(result?.css).toBe('/* webpackIgnore: true */\n@import "./index.wxss";')
+    expect(result?.css).not.toContain('@source')
+    expect(styleHandler).not.toHaveBeenCalled()
+    expect(generateMock).not.toHaveBeenCalled()
   })
 
   it('uses forced generator for ordinary main css assets backed by configured Tailwind source', async () => {

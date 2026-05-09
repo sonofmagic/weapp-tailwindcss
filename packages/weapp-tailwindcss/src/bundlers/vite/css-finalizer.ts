@@ -86,9 +86,7 @@ function shouldFinalizeProcessedCssAsset(
   opts: InternalUserDefinedOptions,
   file: string,
 ) {
-  const generatorOptions = normalizeWeappTailwindcssGeneratorOptions(opts.generator)
-  return generatorOptions.mode !== 'off'
-    && opts.mainCssChunkMatcher(file, opts.appType)
+  return opts.mainCssChunkMatcher(file, opts.appType)
 }
 
 export function createViteCssFinalizerOutputPlugin(context: CssFinalizerContext): Plugin {

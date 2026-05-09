@@ -14,7 +14,6 @@ import ts from 'gulp-typescript'
 import gutil from 'gulp-util'
 import dartSass from 'sass'
 import { createPlugins } from 'weapp-tailwindcss/gulp'
-import { resolveDemoGeneratorMode } from '../shared/weapp-tailwind-generator-mode'
 
 const isDebug = Boolean(process.env.DEBUG)
 const isWatch = Boolean(process.env.WATCH)
@@ -41,18 +40,18 @@ if (!platformHit) {
 
 const sass = gulpSass(dartSass)
 const tsProject = ts.createProject('tsconfig.json')
-const generator = resolveDemoGeneratorMode({
+const generator = {
   styleOptions: {
     px2rpx: {
       designWidth: 375,
     },
   },
-})
+}
 
 // 在 Gulp 里使用时，Tailwind CSS 生成由 transformWxss 的生成模式接管，PostCSS 只保留后处理插件
 const { transformJs, transformWxml, transformWxss } = createPlugins({
   rem2rpx: true,
-  ...(generator !== undefined ? { generator } : {}),
+  generator,
 })
 // {
 //   mangle: true

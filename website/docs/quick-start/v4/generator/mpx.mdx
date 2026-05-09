@@ -49,7 +49,6 @@ module.exports = defineConfig({
       new WeappTailwindcss({
         rem2rpx: true,
         appType: 'mpx',
-        generator: false,
         cssEntries: [
           path.resolve(__dirname, 'src/app.css'),
         ],
@@ -99,12 +98,10 @@ createPage({
 
 Tailwind CSS v3 Mpx 项目不需要迁移到 CSS-first，扫描范围仍写在 `tailwind.config.js`。CSS 生成由 `weapp-tailwindcss/postcss` 接管，Webpack 插件继续负责模板与 JS 转译。
 
-这里的 `generator: false` 只关闭 Webpack 插件里的 CSS generator，避免和 PostCSS generator 重复执行；Tailwind CSS 样式生成仍然由 `weapp-tailwindcss/postcss` 接管。
-
 ```js title="mpx.config.js"
 const { defineConfig } = require('@vue/cli-service')
-const { default: weappTailwindcss } = require('weapp-tailwindcss/postcss')
 const { WeappTailwindcss } = require('weapp-tailwindcss/webpack')
+const path = require('path')
 
 module.exports = defineConfig({
   pluginOptions: {
@@ -112,9 +109,7 @@ module.exports = defineConfig({
       plugin: {
         postcssInlineConfig: {
           ignoreConfigFile: true,
-          plugins: [
-            weappTailwindcss(),
-          ],
+          plugins: [],
         },
         srcMode: 'wx',
       },
@@ -126,7 +121,9 @@ module.exports = defineConfig({
       new WeappTailwindcss({
         rem2rpx: true,
         appType: 'mpx',
-        generator: false,
+        cssEntries: [
+          path.resolve(__dirname, 'src/app.css'),
+        ],
       }),
     )
   },

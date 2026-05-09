@@ -1,14 +1,6 @@
 const { defineConfig } = require('@vue/cli-service')
 const { UnifiedWebpackPluginV5 } = require('weapp-tailwindcss/webpack')
-const tailwindPostcss = require('@tailwindcss/postcss')
-const { resolveDemoGeneratorMode } = require('../shared/weapp-tailwind-generator-mode.cjs')
 const path = require('path')
-const isGeneratorMode = process.env.WEAPP_TW_GENERATOR_MODE !== 'legacy'
-const generator = resolveDemoGeneratorMode({
-  mode: 'force',
-  target: 'weapp'
-})
-const postcssPlugins = isGeneratorMode ? [] : [tailwindPostcss()]
 
 // 修复 @mpxjs/webpack-plugin 序列化器重复注册导致的构建失败
 // 该问题在 pnpm + webpack5 环境下，模块从不同路径被加载两次时触发
@@ -33,7 +25,7 @@ module.exports = defineConfig({
       plugin: {
         postcssInlineConfig: {
           ignoreConfigFile: true,
-          plugins: postcssPlugins
+          plugins: []
         },
         srcMode: 'wx',
         hackResolveBuildDependencies: ({ files, resolveDependencies }) => {
@@ -56,7 +48,6 @@ module.exports = defineConfig({
       new UnifiedWebpackPluginV5({
         rem2rpx: true,
         appType: 'mpx',
-        generator: isGeneratorMode ? generator : false,
         cssEntries: [
           path.resolve(__dirname, 'src/app.css')
         ]
@@ -65,5 +56,13 @@ module.exports = defineConfig({
   },
   chainWebpack(config) {
     config.plugins.delete('fork-ts-checker')
+    config.module
+      .rule('wxss')
+      .oneOf('normal')
+      .use('mpx-wxss-loader')
+      .tap(options => ({
+        ...options,
+        import: false
+      }))
   }
 })

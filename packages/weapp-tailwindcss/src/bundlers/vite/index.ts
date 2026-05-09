@@ -12,7 +12,6 @@ import { getCompilerContext } from '@/context'
 import { toCustomAttributesEntities } from '@/context/custom-attributes'
 import { findNearestPackageRoot } from '@/context/workspace'
 import { createDebug } from '@/debug'
-import { normalizeWeappTailwindcssGeneratorOptions } from '@/generator'
 import { resolveTailwindcssOptions } from '@/tailwindcss/patcher-options'
 import { findTailwindConfig } from '@/tailwindcss/patcher-resolve'
 import { setupPatchRecorder } from '@/tailwindcss/recorder'
@@ -203,8 +202,7 @@ export function UnifiedViteWeappTailwindcssPlugin(options: UserDefinedOptions = 
 
   const disabledOptions = resolveDisabledOptions(disabled)
   const tailwindcssMajorVersion = initialTwPatcher.majorVersion ?? 0
-  const generatorOptions = normalizeWeappTailwindcssGeneratorOptions(opts.generator)
-  const shouldOwnTailwindGeneration = generatorOptions.mode !== 'off' && !disabledOptions.plugin
+  const shouldOwnTailwindGeneration = !disabledOptions.plugin
   const shouldRewriteCssImports = opts.rewriteCssImports !== false
     && !disabledOptions.rewriteCssImports
     && (rewriteCssImportsSpecified || tailwindcssMajorVersion >= 4)

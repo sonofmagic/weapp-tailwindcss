@@ -45,7 +45,6 @@ async function buildPlatform(platform: string) {
       BROWSERSLIST_ENV: 'production',
       UNI_BUILD_STRICT: '1',
       RUST_BACKTRACE: process.env.RUST_BACKTRACE ?? '1',
-      WEAPP_TW_GENERATOR_MODE: '',
       npm_package_json: path.resolve(projectRoot, 'package.json'),
       INIT_CWD: projectRoot,
     },

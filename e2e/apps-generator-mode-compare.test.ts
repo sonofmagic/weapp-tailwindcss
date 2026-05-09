@@ -3,7 +3,6 @@ import type { ProjectEntry } from './shared'
 import { Buffer } from 'node:buffer'
 import fs from 'node:fs/promises'
 import process from 'node:process'
-import { createTwoFilesPatch } from 'diff'
 import { execa } from 'execa'
 import fg from 'fast-glob'
 import path from 'pathe'
@@ -15,8 +14,6 @@ import { clearProjectBuildState } from './projectTest'
 import { collectCssSnapshots, resolveSnapshotFile } from './shared'
 import { normalizeCssSnapshot as normalizeProjectCssSnapshot, normalizeSnapshotName } from './snapshotUtils'
 
-type GeneratorBuildMode = 'generator' | 'legacy'
-
 interface CompareProject {
   name: string
   fixturesDir: '../apps' | '../demo'
@@ -27,7 +24,6 @@ interface CompareProject {
 
 interface CreateProjectReportOptions {
   onPassed?: (result: {
-    legacyResult: { css: string, cssFiles: string[] }
     generatorResult: { css: string, cssFiles: string[] }
   }) => void | Promise<void>
 }
@@ -191,7 +187,7 @@ async function cleanProject(root: string) {
   await clearProjectBuildState(root)
 }
 
-async function buildProject(project: CompareProject, mode: GeneratorBuildMode) {
+async function buildProject(project: CompareProject) {
   const projectBase = path.resolve(__dirname, project.fixturesDir)
   const root = path.resolve(projectBase, project.rootDir)
   const projectRoot = path.resolve(projectBase, project.rootDir)
@@ -207,7 +203,6 @@ async function buildProject(project: CompareProject, mode: GeneratorBuildMode) {
       TARO_BUILD_STRICT: '1',
       UNI_BUILD_STRICT: '1',
       RUST_BACKTRACE: process.env.RUST_BACKTRACE ?? '1',
-      WEAPP_TW_GENERATOR_MODE: mode,
       npm_package_json: path.resolve(root, 'package.json'),
       INIT_CWD: root,
     },
@@ -270,32 +265,18 @@ function compareCssSnapshotEntry(
 
 function createReportItem(
   project: CompareProject,
-  legacyResult: { css: string, cssFiles: string[] },
   generatorResult: { css: string, cssFiles: string[] },
 ): CompareReportItem {
-  const legacyCss = normalizeCssForSummary(legacyResult.css)
   const generatorCss = normalizeCssForSummary(generatorResult.css)
-  const legacy = summarizeCss(legacyCss)
   const generator = summarizeCss(generatorCss)
-  const legacySelectorSet = new Set(legacy.selectors)
-  const generatorSelectorSet = new Set(generator.selectors)
-  const sharedSelectors = generator.selectors.filter(selector => legacySelectorSet.has(selector))
-  const generatorOnlySelectors = generator.selectors.filter(selector => !legacySelectorSet.has(selector))
-  const legacyOnlySelectors = legacy.selectors.filter(selector => !generatorSelectorSet.has(selector))
 
   return {
     name: project.name,
     fixture: project.fixturesDir === '../apps' ? 'apps' : 'demo',
     cssFile: project.cssFile,
-    cssFiles: generatorResult.cssFiles.length > 0 ? generatorResult.cssFiles : legacyResult.cssFiles,
+    cssFiles: generatorResult.cssFiles.length > 0 ? generatorResult.cssFiles : [project.cssFile],
     status: 'passed',
-    legacy,
     generator,
-    deltaBytes: generator.bytes - legacy.bytes,
-    generatorBytesRatio: Number((generator.bytes / Math.max(legacy.bytes, 1)).toFixed(4)),
-    sharedSelectors: sharedSelectors.slice(0, 20),
-    generatorOnlySelectors: generatorOnlySelectors.slice(0, 20),
-    legacyOnlySelectors,
   }
 }
 
@@ -320,9 +301,9 @@ async function createProjectReport(
   project: CompareProject,
   options: CreateProjectReportOptions = {},
 ): Promise<AppsGeneratorCompareReportItem> {
-  let legacyResult: { css: string, cssFiles: string[] }
+  let generatorResult: { css: string, cssFiles: string[] }
   try {
-    legacyResult = await buildProject(project, 'legacy')
+    generatorResult = await buildProject(project)
   }
   catch (error) {
     return {
@@ -331,33 +312,15 @@ async function createProjectReport(
       cssFile: project.cssFile,
       cssFiles: [project.cssFile],
       status: 'failed',
-      failedMode: 'legacy',
-      error: normalizeError(error),
-    }
-  }
-
-  let generatorResult: { css: string, cssFiles: string[] }
-  try {
-    generatorResult = await buildProject(project, 'generator')
-  }
-  catch (error) {
-    return {
-      name: project.name,
-      fixture: project.fixturesDir === '../apps' ? 'apps' : 'demo',
-      cssFile: project.cssFile,
-      cssFiles: legacyResult.cssFiles.length > 0 ? legacyResult.cssFiles : [project.cssFile],
-      status: 'failed',
-      failedMode: 'generator',
       error: normalizeError(error),
     }
   }
 
   await options.onPassed?.({
-    legacyResult,
     generatorResult,
   })
 
-  return createReportItem(project, legacyResult, generatorResult)
+  return createReportItem(project, generatorResult)
 }
 
 async function expectReportSnapshot(report: AppsGeneratorCompareReportItem[]) {
@@ -381,56 +344,22 @@ function normalizeCssForSummary(css: string) {
   return `${normalizeCssSnapshot(css)}\n`
 }
 
-function createCssOutputDiffSnapshot(project: CompareProject, legacyCss: string, generatorCss: string) {
-  return createTwoFilesPatch(
-    `${project.name}/legacy.css`,
-    `${project.name}/generator.css`,
-    legacyCss,
-    generatorCss,
-    undefined,
-    undefined,
-    { context: 3 },
-  )
-    .trimEnd()
-    .split('\n')
-    .map(line => line.trimEnd())
-    .join('\n')
-}
-
-function createCssOutputComparisonSnapshot(
+function createCssOutputSnapshot(
   project: CompareProject,
-  legacyResult: { css: string, cssFiles: string[] },
   generatorResult: { css: string, cssFiles: string[] },
 ) {
-  const legacyCss = normalizeCssSnapshot(legacyResult.css)
   const generatorCss = normalizeCssSnapshot(generatorResult.css)
-  const legacy = summarizeCss(`${legacyCss}\n`)
   const generator = summarizeCss(`${generatorCss}\n`)
-  const diff = createCssOutputDiffSnapshot(project, legacyCss, generatorCss)
   return [
-    `# ${project.name} CSS Output Comparison`,
+    `# ${project.name} CSS Output`,
     '',
     `Fixture: ${project.fixturesDir === '../apps' ? 'apps' : 'demo'}`,
     `Entry: ${project.cssFile}`,
-    `Legacy CSS files: ${legacyResult.cssFiles.join(', ')}`,
     `Generator CSS files: ${generatorResult.cssFiles.join(', ')}`,
     '',
-    '| Mode | Bytes | Selectors | @supports | :hover | Tailwind banner | Raw arbitrary selector | Weapp escaped arbitrary selector |',
-    '| --- | ---: | ---: | --- | --- | --- | --- | --- |',
-    `| legacy | ${legacy.bytes} | ${legacy.selectors.length} | ${legacy.hasSupports} | ${legacy.hasHoverPseudo} | ${legacy.hasTailwindBanner} | ${legacy.hasRawArbitrarySelector} | ${legacy.hasWeappEscapedArbitrarySelector} |`,
-    `| generator | ${generator.bytes} | ${generator.selectors.length} | ${generator.hasSupports} | ${generator.hasHoverPseudo} | ${generator.hasTailwindBanner} | ${generator.hasRawArbitrarySelector} | ${generator.hasWeappEscapedArbitrarySelector} |`,
-    '',
-    '## Diff',
-    '',
-    '```diff',
-    diff,
-    '```',
-    '',
-    '## Legacy CSS',
-    '',
-    '```css',
-    legacyCss,
-    '```',
+    '| Bytes | Selectors | @supports | :hover | Tailwind banner | Raw arbitrary selector | Weapp escaped arbitrary selector |',
+    '| ---: | ---: | --- | --- | --- | --- | --- |',
+    `| ${generator.bytes} | ${generator.selectors.length} | ${generator.hasSupports} | ${generator.hasHoverPseudo} | ${generator.hasTailwindBanner} | ${generator.hasRawArbitrarySelector} | ${generator.hasWeappEscapedArbitrarySelector} |`,
     '',
     '## Generator CSS',
     '',
@@ -441,17 +370,16 @@ function createCssOutputComparisonSnapshot(
   ].join('\n')
 }
 
-async function expectCssOutputComparisonSnapshot(
+async function expectCssOutputSnapshot(
   project: CompareProject,
-  legacyResult: { css: string, cssFiles: string[] },
   generatorResult: { css: string, cssFiles: string[] },
 ) {
   const snapshotPath = await resolveSnapshotFile(__dirname, 'apps-generator-mode', 'css-output', `${project.name}.md`)
-  await expect(createCssOutputComparisonSnapshot(project, legacyResult, generatorResult)).toMatchFileSnapshot(snapshotPath)
+  await expect(createCssOutputSnapshot(project, generatorResult)).toMatchFileSnapshot(snapshotPath)
 }
 
-describe('apps demo generator mode comparison', () => {
-  it('collects nested selectors and normalizes legacy pseudo aliases', () => {
+describe('apps demo generator mode output', () => {
+  it('collects nested selectors and normalizes unsupported pseudo aliases', () => {
     expect(collectSelectors([
       '@media (prefers-color-scheme: dark) {',
       '  .dark_cbg-zinc-800 { color: black; }',
@@ -476,26 +404,22 @@ describe('apps demo generator mode comparison', () => {
     ])
   })
 
-  it('prints css diff before raw css output blocks', () => {
-    const snapshot = createCssOutputComparisonSnapshot({
+  it('prints css metrics before raw css output blocks', () => {
+    const snapshot = createCssOutputSnapshot({
       name: 'fixture-app',
       fixturesDir: '../demo',
       rootDir: 'fixture-app',
       cssFile: 'fixture-app/dist/app.wxss',
       cssPath: 'dist/app.wxss',
     }, {
-      css: '.legacy { color: red; }\n.shared { display: block; }\n',
-      cssFiles: ['app.wxss'],
-    }, {
       css: '.generator { color: blue; }\n.shared { display: block; }\n',
       cssFiles: ['app.wxss'],
     })
 
-    expect(snapshot.indexOf('## Diff')).toBeLessThan(snapshot.indexOf('## Legacy CSS'))
-    expect(snapshot).toContain('--- fixture-app/legacy.css')
-    expect(snapshot).toContain('+++ fixture-app/generator.css')
-    expect(snapshot).toContain('-.legacy { color: red; }')
-    expect(snapshot).toContain('+.generator { color: blue; }')
+    expect(snapshot.indexOf('| Bytes |')).toBeLessThan(snapshot.indexOf('## Generator CSS'))
+    expect(snapshot).toContain('# fixture-app CSS Output')
+    expect(snapshot).toContain('| 56 | 2 | false | false | false | false | false |')
+    expect(snapshot).toContain('.generator { color: blue; }')
   })
 
   it('normalizes hashed css output file order for snapshots', () => {
@@ -522,15 +446,13 @@ describe('apps demo generator mode comparison', () => {
     ])
   })
 
-  it('builds apps and demos in legacy and generator modes with comparable mini-program css output', async () => {
+  it('builds apps and demos with generator mini-program css output', async () => {
     const report: AppsGeneratorCompareReportItem[] = []
 
     for (const project of projects) {
-      let legacyResult: { css: string, cssFiles: string[] } | undefined
       let generatorResult: { css: string, cssFiles: string[] } | undefined
       const item = await createProjectReport(project, {
         onPassed(result) {
-          legacyResult = result.legacyResult
           generatorResult = result.generatorResult
         },
       })
@@ -544,10 +466,9 @@ describe('apps demo generator mode comparison', () => {
       expect(item.generator.hasHoverPseudo, `${project.name} generator css should remove unsupported :hover`).toBe(false)
       expect(item.generator.hasTailwindBanner, `${project.name} generator css should not keep raw Tailwind banner`).toBe(false)
       expect(item.generator.hasWeappEscapedArbitrarySelector || !item.generator.hasRawArbitrarySelector).toBe(true)
-      expect(item.legacyOnlySelectors, `${project.name} generator css should cover legacy-only selectors`).toEqual([])
 
-      if (legacyResult && generatorResult) {
-        await expectCssOutputComparisonSnapshot(project, legacyResult, generatorResult)
+      if (generatorResult) {
+        await expectCssOutputSnapshot(project, generatorResult)
       }
     }
 

@@ -157,7 +157,7 @@ export function removeUnsupportedMiniProgramAtRules(css: string) {
       }
     })
     root.walkAtRules((atRule) => {
-      if (!atRule.nodes || atRule.nodes.length === 0) {
+      if (atRule.nodes && atRule.nodes.length === 0) {
         atRule.remove()
       }
     })

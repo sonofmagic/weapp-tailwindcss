@@ -1,11 +1,11 @@
 import { defineConfig } from 'vite'
 import autoprefixer from 'autoprefixer'
-import { UnifiedViteWeappTailwindcssPlugin } from 'weapp-tailwindcss/vite'
+import { WeappTailwindcss } from 'weapp-tailwindcss/vite'
 
 export default defineConfig({
   plugins: [
     // @ts-ignore
-    UnifiedViteWeappTailwindcssPlugin({
+    WeappTailwindcss({
       rem2rpx: true,
     })
   ],

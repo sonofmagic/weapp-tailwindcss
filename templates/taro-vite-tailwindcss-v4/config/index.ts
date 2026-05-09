@@ -1,7 +1,7 @@
 import { defineConfig, type UserConfigExport } from '@tarojs/cli'
 import devConfig from './dev'
 import prodConfig from './prod'
-import { UnifiedViteWeappTailwindcssPlugin } from 'weapp-tailwindcss/vite'
+import { WeappTailwindcss } from 'weapp-tailwindcss/vite'
 import path from 'path'
 
 // https://taro-docs.jd.com/docs/next/config#defineconfig-辅助函数
@@ -31,7 +31,7 @@ export default defineConfig<'vite'>(async (merge, { command, mode }) => {
     compiler: {
       type: 'vite',
       vitePlugins: [
-        UnifiedViteWeappTailwindcssPlugin({
+        WeappTailwindcss({
           rem2rpx: true,
           cssEntries: [
             path.resolve(__dirname, '../src/app.css')

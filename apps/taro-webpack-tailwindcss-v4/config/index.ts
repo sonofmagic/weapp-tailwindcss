@@ -4,15 +4,14 @@ import process from 'node:process'
 import { defineConfig } from '@tarojs/cli'
 import TsconfigPathsPlugin from 'tsconfig-paths-webpack-plugin'
 import { UnifiedWebpackPluginV5 } from 'weapp-tailwindcss/webpack'
-import { resolveAppGeneratorMode } from '../../shared/weapp-tailwind-generator-mode'
 import devConfig from './dev'
 import prodConfig from './prod'
 
-const generator = resolveAppGeneratorMode({
+const generator = {
   styleOptions: {
     px2rpx: true,
   },
-})
+}
 
 // https://taro-docs.jd.com/docs/next/config#defineconfig-辅助函数
 export default defineConfig<'webpack5'>(async (merge, { command, mode }) => {
@@ -77,7 +76,7 @@ export default defineConfig<'webpack5'>(async (merge, { command, mode }) => {
               args: [
                 {
                   rem2rpx: true,
-                  ...(generator !== undefined ? { generator } : {}),
+                  generator,
                   tailwindcss: {
                     // 显示声明用的是 tailwindcss v4
                     version: 4,

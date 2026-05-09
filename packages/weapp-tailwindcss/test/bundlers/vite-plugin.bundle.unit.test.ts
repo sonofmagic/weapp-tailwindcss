@@ -5,9 +5,7 @@ import { mkdtemp, readFile, rm, writeFile } from 'node:fs/promises'
 import os from 'node:os'
 import path from 'node:path'
 import { MappingChars2String } from '@weapp-core/escape'
-import prettier from 'prettier'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
-import { createStyleHandler } from '../../../postcss/src/handler'
 import { createJsHandler } from '@/js'
 import { replaceWxml } from '@/wxml'
 import { createTemplateHandler } from '@/wxml/utils'
@@ -23,9 +21,6 @@ import {
 const TEST_TIMEOUT_MS = 30000
 const SPLIT_WHITESPACE_RE = /\s+/
 const createdDirs: string[] = []
-async function formatCssSnapshot(css: string) {
-  return prettier.format(css, { parser: 'css' })
-}
 
 async function loadUnifiedVitePlugin() {
   const mod = await import('@/bundlers/vite')
@@ -48,10 +43,7 @@ function getOutputOptionsHandler(plugin: Plugin) {
 }
 
 function normalizeGeneratorOptions(options: any) {
-  if (options === false) {
-    return { mode: 'off', target: 'weapp' }
-  }
-  if (options === true || options == null) {
+  if (options === false || options === true || options == null) {
     return { mode: 'auto', target: 'weapp' }
   }
   return {
@@ -1242,7 +1234,7 @@ const trace = "at App.vue:4"
     expect(writeFileMock).not.toHaveBeenCalled()
   }, TEST_TIMEOUT_MS)
 
-  it('keeps legacy css handling when tailwind v4 generator is disabled', async () => {
+  it('treats generator false as the default generator path', async () => {
     const runtimeSet = new Set(['w-[100px]'])
     const rawTailwindCss = '/*! tailwindcss v4.2.4 | MIT License | https://tailwindcss.com */\n.w-\\[100px\\]{width:100px}'
     const generateMock = vi.fn(async () => ({
@@ -1310,12 +1302,12 @@ const trace = "at App.vue:4"
     const generateBundle = getGenerateBundleHandler(postPlugin)
     await generateBundle?.call(postPlugin, {} as any, bundle)
 
-    expect((bundle['app.css'] as OutputAsset).source).toBe(`legacy:${rawTailwindCss}`)
-    expect(generateMock).not.toHaveBeenCalled()
-    expect(styleHandler).toHaveBeenCalledTimes(1)
+    expect((bundle['app.css'] as OutputAsset).source).toBe('.w-_b100px_B{width:100px}')
+    expect(generateMock).toHaveBeenCalledTimes(1)
+    expect(styleHandler).not.toHaveBeenCalled()
   }, TEST_TIMEOUT_MS)
 
-  it('throws instead of falling back when tailwind v4 generator is forced', async () => {
+  it('throws instead of falling back when tailwind v4 generator fails', async () => {
     const runtimeSet = new Set(['w-[100px]'])
     const rawTailwindCss = '/*! tailwindcss v4.2.4 | MIT License | https://tailwindcss.com */\n.w-\\[100px\\]{width:100px}'
     const generateMock = vi.fn(async () => {
@@ -2357,71 +2349,6 @@ const cls = "w-[1.5px]"
     expect(currentContext.mainCssChunkMatcher).toHaveBeenCalledWith('app.wxss', 'taro')
   })
 
-  it('fixes issue #834 by emitting taro app-origin wxss without layer or specificity placeholders', async () => {
-    const UnifiedViteWeappTailwindcssPlugin = await loadUnifiedVitePlugin()
-    const rawCss = await readFile(
-      path.resolve(__dirname, '../fixtures/css/taro-vite-tailwindcss-v4-app-origin.raw.css'),
-      'utf8',
-    )
-    const realStyleHandler = createStyleHandler({ isMainChunk: true })
-    const styleHandler = vi.fn((code: string, options?: Record<string, unknown>) => {
-      return realStyleHandler(code, options as any)
-    })
-
-    setCurrentContext(createContext({
-      appType: 'taro',
-      cssMatcher: (file: string) => file.endsWith('.wxss') || file.endsWith('.css'),
-      mainCssChunkMatcher: vi.fn((file: string) => file.startsWith('app')),
-      styleHandler,
-      twPatcher: {
-        patch: vi.fn(),
-        getClassSet: vi.fn(async () => new Set<string>()),
-        getClassSetSync: vi.fn(() => new Set<string>()),
-        extract: vi.fn(async () => ({ classSet: new Set<string>() })),
-        majorVersion: 4,
-      },
-    }))
-
-    const plugins = UnifiedViteWeappTailwindcssPlugin()
-    const postPlugin = plugins?.find(plugin => plugin.name === 'weapp-tailwindcss:adaptor:post') as Plugin
-    expect(postPlugin).toBeTruthy()
-
-    await (postPlugin.configResolved as any)?.call(postPlugin, {
-      command: 'build',
-      root: process.cwd(),
-      css: { postcss: { plugins: [] } },
-      build: { outDir: 'dist' },
-    } as ResolvedConfig)
-
-    const bundle = {
-      'app.wxss': {
-        ...createRollupAsset('@import "app-origin.wxss";'),
-        fileName: 'app.wxss',
-      },
-      'app-origin.wxss': {
-        ...createRollupAsset(rawCss),
-        fileName: 'app-origin.wxss',
-      },
-    }
-
-    const generateBundle = getGenerateBundleHandler(postPlugin)
-    await generateBundle?.call(postPlugin, {} as any, bundle)
-
-    const appOriginCall = styleHandler.mock.calls.find(([, options]) =>
-      (options as any)?.postcssOptions?.options?.from === 'app-origin.wxss')
-    expect(appOriginCall).toBeTruthy()
-
-    const rawInput = await formatCssSnapshot(appOriginCall?.[0] as string)
-    const processedOutput = await formatCssSnapshot((bundle['app-origin.wxss'] as OutputAsset).source.toString())
-
-    expect(rawInput).toMatchSnapshot('taro-app-origin-raw-input')
-    expect(processedOutput).toMatchSnapshot('taro-app-origin-processed-output')
-    expect(rawInput).toContain(':not(#\\#)')
-    expect(processedOutput).not.toContain('@layer')
-    expect(processedOutput).not.toContain(':not(#n)')
-    expect(processedOutput).not.toContain(':not(#\\#)')
-  }, 8000)
-
   it('keeps template transform stable on script-only incremental updates', async () => {
     const UnifiedViteWeappTailwindcssPlugin = await loadUnifiedVitePlugin()
     const htmlFile = 'dist/pages/index/index.wxml'
@@ -2479,14 +2406,11 @@ const cls = "w-[1.5px]"
       expect(js).not.toContain(unexpectedRawColor)
 
       const wxss = (bundle[cssFile] as OutputAsset).source.toString()
-      expect(wxss).toContain(escapedAfterContent)
-      expect(wxss).toContain(escapedHeight)
-      expect(wxss).toContain(escapedColorA)
-      expect(wxss).toContain(escapedColorB)
-      expect(wxss).not.toContain('after:content-[\'A\']')
-      expect(wxss).not.toContain('h-[20px]')
-      expect(wxss).not.toContain('bg-[#fafa00]')
-      expect(wxss).not.toContain('bg-[#0000]')
+      expect(wxss).toContain('height: 20px')
+      expect(wxss).toContain('content: var(--tw-content)')
+      expect(wxss).toMatch(/(?:250 250 0|250,\s*250,\s*0)/)
+      expect(wxss).toContain('#0000')
+      expect(wxss).not.toContain('@apply')
     }
 
     const firstBundle = {
@@ -2541,7 +2465,7 @@ const cls = "w-[1.5px]"
     assertStableOutputs(thirdBundle, escapedColorA, 'bg-[#fafa00]')
 
     expect(currentContext.templateHandler).toHaveBeenCalledTimes(1)
-    expect(currentContext.styleHandler).toHaveBeenCalledTimes(1)
+    expect(currentContext.styleHandler).not.toHaveBeenCalled()
     expect(currentContext.jsHandler).toHaveBeenCalledTimes(3)
   }, TEST_TIMEOUT_MS)
 

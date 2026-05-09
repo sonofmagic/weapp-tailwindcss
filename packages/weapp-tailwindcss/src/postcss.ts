@@ -418,9 +418,6 @@ export const weappTailwindcssPostcssPlugin: PluginCreator<WeappTailwindcssPostcs
         ...sourceOptions
       } = options
       const generatorOptions = normalizeWeappTailwindcssGeneratorOptions(userGeneratorOptions)
-      if (generatorOptions.mode === 'off') {
-        return
-      }
       const tailwindVersion = resolvePostcssTailwindVersion(root, result, options)
 
       const [collectedSources, autoCandidates] = await Promise.all([

@@ -416,6 +416,7 @@ function isTailwindGenerationDirective(node: postcss.Node) {
     || node.name === 'apply'
     || node.name === 'layer'
     || node.name === 'config'
+    || node.name === 'source'
 }
 
 export function removeTailwindSourceDirectives(rawSource: string) {
@@ -919,6 +920,54 @@ export function isPureLocalCssImportWrapper(css: string) {
   return hasImport
 }
 
+function cleanLocalCssImportWrapperTailwindDirectives(css: string) {
+  let hasLocalImport = false
+  let hasTailwindDirective = false
+  try {
+    const root = postcss.parse(css)
+    for (const node of root.nodes) {
+      if (node.type === 'comment') {
+        continue
+      }
+      if (node.type === 'atrule' && node.name === 'import') {
+        const request = parseImportRequest(node.params)
+        if (!request || !isLocalImportRequest(request)) {
+          return undefined
+        }
+        hasLocalImport = true
+        continue
+      }
+      if (node.type === 'atrule' && node.name === 'source') {
+        hasTailwindDirective = true
+        continue
+      }
+      return undefined
+    }
+  }
+  catch {
+    return undefined
+  }
+  return hasLocalImport && hasTailwindDirective
+    ? prefixLocalCssImportsWithWebpackIgnore(removeTailwindSourceDirectives(css))
+    : undefined
+}
+
+function prefixLocalCssImportsWithWebpackIgnore(css: string) {
+  try {
+    const root = postcss.parse(css)
+    root.walkAtRules('import', (atRule) => {
+      const request = parseImportRequest(atRule.params)
+      if (request && isLocalImportRequest(request)) {
+        atRule.raws.before = `${atRule.raws.before ?? ''}/* webpackIgnore: true */\n`
+      }
+    })
+    return root.toString()
+  }
+  catch {
+    return css
+  }
+}
+
 function resolveLegacyCompatCssSource(rawSource: string) {
   const source = removeTailwindSourceDirectives(stripTailwindBanners(rawSource))
   return removeUnsupportedMiniProgramAtRules(removeTailwindApplyRules(source))
@@ -1124,7 +1173,7 @@ function removeGeneratedSelectorCompatCss(css: string, generatedCss: string) {
       }
     })
     root.walkAtRules((atRule) => {
-      if (!atRule.nodes || atRule.nodes.length === 0) {
+      if (atRule.nodes && atRule.nodes.length === 0) {
         atRule.remove()
       }
     })
@@ -1272,6 +1321,18 @@ export async function generateCssByGenerator(
   const generatorOptions = normalizeWeappTailwindcssGeneratorOptions(opts.generator)
   const majorVersion = runtimeState.twPatcher.majorVersion
 
+  const cleanedLocalImportWrapper = cleanLocalCssImportWrapperTailwindDirectives(rawSource)
+  if (cleanedLocalImportWrapper !== undefined) {
+    return {
+      css: generatorOptions.target === 'weapp'
+        ? removeUnsupportedMiniProgramAtRules(cleanedLocalImportWrapper)
+        : cleanedLocalImportWrapper,
+      target: generatorOptions.target,
+      source: 'generator',
+      dependencies: [],
+    }
+  }
+
   if (isPureLocalCssImportWrapper(rawSource)) {
     return undefined
   }
@@ -1288,8 +1349,7 @@ export async function generateCssByGenerator(
     || hasSourceDirectives
 
   if (
-    generatorOptions.mode === 'off'
-    || !SUPPORTED_GENERATOR_MAJOR_VERSIONS.has(majorVersion ?? 0)
+    !SUPPORTED_GENERATOR_MAJOR_VERSIONS.has(majorVersion ?? 0)
     || (
       generatorOptions.mode === 'force'
         ? !shouldForceGenerateCurrentCss
@@ -1447,10 +1507,8 @@ export async function generateCssByGenerator(
     }
   }
   catch (error) {
-    if (generatorOptions.mode === 'force') {
-      throw error
-    }
-    debug('tailwind direct css generation failed, fallback to styleHandler: %s %O', file, error)
+    debug('tailwind direct css generation failed: %s %O', file, error)
+    throw error
   }
 
   return undefined

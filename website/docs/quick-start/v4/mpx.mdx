@@ -65,7 +65,6 @@ module.exports = defineConfig({
       new WeappTailwindcss({
         appType: 'mpx',
         rem2rpx: true,
-        generator: false,
         cssEntries: [
           // Tailwind CSS 入口文件绝对路径
           path.resolve(__dirname, './src/app.css'),
@@ -78,7 +77,7 @@ module.exports = defineConfig({
 ```
 
 > tailwindcss@4 必须配置 `cssEntries` 并且使用绝对路径，否则 `tailwindcss` 生成的类名不会参与转译。
-> Mpx 是生成模式里的少数例外：CSS 生成放在 `postcssInlineConfig` 中，但注册的是 `weapp-tailwindcss/postcss`，不要再注册官方 `@tailwindcss/postcss`。Webpack 插件里的 `generator: false` 只避免 CSS generator 重复执行，模板和 JS 转译仍由 `WeappTailwindcss` 负责。
+> Mpx 的 CSS 生成也由 `WeappTailwindcss` 接管，不要再注册官方 `@tailwindcss/postcss` 或 `tailwindcss` PostCSS 插件。
 > 这里的注册目标也必须是纯 `css` 入口文件，不要把 `tailwindcss@4` 放进 `scss` / `less` / `sass` 入口里，否则样式生成和 `weapp-tailwindcss` 转译都可能失效。
 
 ## 添加样式

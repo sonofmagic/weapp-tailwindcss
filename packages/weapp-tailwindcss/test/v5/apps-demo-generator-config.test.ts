@@ -72,16 +72,16 @@ describe('v5 apps and demos generator config', () => {
       config: 'demo/taro-vite-tailwindcss-v5/config/index.ts',
       css: 'demo/taro-vite-tailwindcss-v5/src/app.css',
     },
-  ])('uses tailwind v4 standard css entry with forced mini-program generator in $config', async ({ config, css }) => {
+  ])('uses tailwind v4 standard css entry with default mini-program generator in $config', async ({ config, css }) => {
     const [configSource, cssSource] = await Promise.all([
       readProjectFile(config),
       readProjectFile(css),
     ])
 
-    expect(configSource).toContain('generator')
-    expect(configSource).toContain('resolve')
-    expect(configSource).toContain("mode: 'force'")
-    expect(configSource).toContain("target: 'weapp'")
+    expect(configSource).toContain('WeappTailwindcss')
+    expect(configSource).not.toContain('UnifiedViteWeappTailwindcssPlugin')
+    expect(configSource).not.toContain("mode: 'force'")
+    expect(configSource).not.toContain("target: 'weapp'")
     expect(cssSource).toContain('tailwindcss')
     expect(cssSource).not.toContain('weapp-tailwindcss')
   })
@@ -98,13 +98,13 @@ describe('v5 apps and demos generator config', () => {
     expect(orderCss).toContain('@config "../../tailwind.config.order.js";')
   })
 
-  it('passes generator options through the uni-app-x preset demo', async () => {
+  it('keeps the uni-app-x preset demo on generator defaults', async () => {
     const configSource = await readProjectFile('demo/uni-app-x-hbuilderx-tailwindcss4/vite.config.ts')
 
     expect(configSource).toContain('uniAppX({')
-    expect(configSource).toContain('generator:')
-    expect(configSource).toContain("mode: 'force'")
-    expect(configSource).toContain("target: 'weapp'")
+    expect(configSource).not.toContain('generator:')
+    expect(configSource).not.toContain("mode: 'force'")
+    expect(configSource).not.toContain("target: 'weapp'")
   })
 
   it('documents the v5 generator examples for uni-app, taro and mpx', async () => {
@@ -145,6 +145,7 @@ describe('v5 apps and demos generator config', () => {
     expect(docsSource).toContain('不要再把 `@tailwindcss/vite`、`@tailwindcss/postcss` 或 `tailwindcss` PostCSS 插件注册到实际项目里')
     expect(docsSource).toContain('Tailwind CSS v3 项目继续使用')
     expect(docsSource).toContain('Tailwind CSS v3 和 v4 都会默认由 `weapp-tailwindcss` 接管样式生成')
+    expect(docsSource).not.toContain('generator: false')
     expect(overviewDocsSource).toContain('./generator/uni-app')
     expect(overviewDocsSource).toContain('./generator/taro')
     expect(overviewDocsSource).toContain('./generator/weapp-vite')
@@ -222,12 +223,14 @@ describe('v5 apps and demos generator config', () => {
       readProjectFile('demo/mpx-tailwindcss-v5/src/app.css'),
     ])
 
-    expect(configSource).toContain("require('@tailwindcss/postcss')")
-    expect(configSource).toContain("WEAPP_TW_GENERATOR_MODE !== 'legacy'")
-    expect(configSource).toContain("mode: 'force'")
-    expect(configSource).toContain("target: 'weapp'")
-    expect(configSource).toContain('generator: isGeneratorMode ? generator : false')
-    expect(postcssConfigSource).toContain("require('weapp-tailwindcss/postcss')")
+    expect(configSource).not.toContain("require('@tailwindcss/postcss')")
+    expect(configSource).not.toContain('WEAPP_TW_GENERATOR_MODE')
+    expect(configSource).not.toContain("mode: 'force'")
+    expect(configSource).not.toContain("target: 'weapp'")
+    expect(configSource).not.toContain('generator: false')
+    expect(configSource).toContain("import: false")
+    expect(postcssConfigSource).not.toContain("require('weapp-tailwindcss/postcss')")
+    expect(postcssConfigSource).not.toContain("require('@tailwindcss/postcss')")
     expect(cssSource).toContain('@import "tailwindcss";')
     expect(cssSource).toContain('@source "../src";')
     expect(cssSource).not.toContain('@import "weapp-tailwindcss";')
@@ -258,10 +261,10 @@ describe('v5 apps and demos generator config', () => {
     expect(taroCssSource).toContain('@source "../src/**/*.{ts,tsx,jsx,js,html}";')
     expect(taroPageSource).not.toContain('@weapp-tailwindcss/merge')
     expect(taroPageSource).not.toContain('hoverClass=')
-    expect(mpxConfigSource).toContain("require('@tailwindcss/postcss')")
+    expect(mpxConfigSource).not.toContain("require('@tailwindcss/postcss')")
     expect(mpxConfigSource).not.toContain("require('weapp-tailwindcss/postcss')")
     expect(mpxConfigSource).not.toContain('generator: false')
-    expect(mpxPostcssSource).toContain("require('@tailwindcss/postcss')()")
+    expect(mpxPostcssSource).not.toContain("require('@tailwindcss/postcss')()")
     expect(mpxPostcssSource).not.toContain("require('weapp-tailwindcss/postcss')")
     expect(mpxCssSource).toContain('@import "weapp-tailwindcss";')
     expect(mpxCssSource).not.toContain('@import "tailwindcss";')

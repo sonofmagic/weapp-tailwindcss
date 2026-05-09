@@ -374,7 +374,7 @@ describe('v5 postcss generator', () => {
     expect(result.css).toContain('.w-_b100px_B')
   })
 
-  it('skips generation when generator is disabled', async () => {
+  it('treats generator false as the default generator path', async () => {
     const css = '.card { color: red; }'
     const result = await postcss([
       weappTailwindcss({
@@ -386,7 +386,7 @@ describe('v5 postcss generator', () => {
     })
 
     expect(result.css).toBe(css)
-    expect(result.messages).not.toContainEqual(expect.objectContaining({
+    expect(result.messages).toContainEqual(expect.objectContaining({
       type: 'weapp-tailwindcss:generated',
     }))
   })

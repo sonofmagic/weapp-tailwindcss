@@ -1,11 +1,7 @@
 const { defineConfig } = require('@vue/cli-service')
 const { UnifiedWebpackPluginV5 } = require('weapp-tailwindcss/webpack')
-const { resolveDemoGeneratorMode } = require('../shared/weapp-tailwind-generator-mode.cjs')
 const bench = require('../bench.cjs')('mpx')
-const tailwindcss = require('tailwindcss')
 const autoprefixer = require('autoprefixer')
-const generator = resolveDemoGeneratorMode()
-const isGeneratorMode = process.env.WEAPP_TW_GENERATOR_MODE !== 'legacy'
 
 module.exports = defineConfig({
   pluginOptions: {
@@ -14,10 +10,7 @@ module.exports = defineConfig({
       plugin: {
         postcssInlineConfig: {
           ignoreConfigFile: true,
-          plugins: isGeneratorMode ? [
-            autoprefixer({ remove: false })
-          ] : [
-            tailwindcss(),
+          plugins: [
             autoprefixer({ remove: false })
           ]
         },
@@ -50,7 +43,6 @@ module.exports = defineConfig({
         // console.log('UnifiedWebpackPluginV5 onEnd:', performance.now() - start, 'ms')
       },
       rem2rpx: true,
-      ...(generator !== undefined ? { generator } : {}),
       appType: 'mpx'
     }))
   },

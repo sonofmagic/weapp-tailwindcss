@@ -1,8 +1,5 @@
-import { UnifiedViteWeappTailwindcssPlugin as uvwt } from 'weapp-tailwindcss/vite'
+import { WeappTailwindcss } from 'weapp-tailwindcss/vite'
 import { defineConfig } from 'weapp-vite/config'
-import { resolveAppGeneratorMode } from '../shared/weapp-tailwind-generator-mode'
-
-const generator = resolveAppGeneratorMode()
 
 export default defineConfig({
   // root: './packageA',
@@ -18,9 +15,8 @@ export default defineConfig({
   // },
   plugins: [
     // @ts-ignore
-    uvwt({
+    WeappTailwindcss({
       rem2rpx: true,
-      ...(generator !== undefined ? { generator } : {}),
     }),
   ],
   css: {
