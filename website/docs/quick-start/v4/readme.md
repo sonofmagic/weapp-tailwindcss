@@ -54,7 +54,7 @@ keywords:
 
 这样可以避免同一个构建里同时存在两套 Tailwind 生成链路：官方 Tailwind 插件先生成一次浏览器 CSS，`weapp-tailwindcss` 再尝试二次后处理。生成模式会直接输出小程序目标 CSS，并让模板 / JS 类名转译共享同一份 `classSet`。
 
-只有框架限制导致构建器插件无法接管 CSS 生成时，才使用 `weapp-tailwindcss/postcss` 默认导出。Mpx 就属于这类例外：它通常用 `weapp-tailwindcss/postcss` 负责 CSS 生成，用 `weapp-tailwindcss/webpack` 负责模板和 JS 转译。
+Mpx 也使用 `weapp-tailwindcss/webpack` 的 `WeappTailwindcss` 接管 CSS 生成、模板与 JS 转译。不要再为 Tailwind CSS 额外注册 PostCSS 生成插件。
 
 ## 小程序样式引入 `weapp-tailwindcss` 不同点
 

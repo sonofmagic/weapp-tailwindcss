@@ -1,6 +1,6 @@
 {
   "version": "1.0.0",
-  "generatedAt": "2026-05-09T09:42:53.234Z",
+  "generatedAt": "2026-05-09T10:00:23.673Z",
   "totals": {
     "files": 188,
     "issues": 1
@@ -29,7 +29,7 @@
     {
       "type": "few_keywords",
       "file": "tailwindcss/v5-official-plugin-parity.mdx",
-      "message": "keywords 数量偏少（5）",
+      "message": "keywords 数量偏少（6）",
       "scope": "docs"
     }
   ]

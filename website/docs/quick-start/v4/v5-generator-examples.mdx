@@ -74,7 +74,7 @@ module.exports = {
 - Tailwind CSS v3 项目不再添加 `tailwindcss` PostCSS 插件。
 - `package.json` 不再添加 `postinstall: "weapp-tw patch"`。
 
-`postcss.config.js` 可以继续保留项目自己的非 Tailwind 插件，例如 `postcss-import`、框架内置 PostCSS 插件或业务自定义插件；只需要移除 Tailwind 官方生成插件。`weapp-tw patch` 仍可用于旧 CSS 后处理链路或手动调试补丁状态，但生成模式项目不需要把它写进安装生命周期。Mpx 这类需要把 CSS 生成挂在框架 PostCSS 管线里的项目是例外，按 [Mpx 生成模式](./generator/mpx) 使用 `weapp-tailwindcss/postcss`。
+`postcss.config.js` 可以继续保留项目自己的非 Tailwind 插件，例如 `postcss-import`、框架内置 PostCSS 插件或业务自定义插件；只需要移除 Tailwind 官方生成插件。`weapp-tw patch` 仍可用于旧 CSS 后处理链路或手动调试补丁状态，但生成模式项目不需要把它写进安装生命周期。
 
 ## 版本行为差异
 
@@ -92,10 +92,10 @@ module.exports = {
 | Taro Vite | [Taro 生成模式](./generator/taro) | `WeappTailwindcss` | `config/index.ts` 的 `compiler.vitePlugins` | `src/app.css` |
 | Taro Webpack | [Taro 生成模式](./generator/taro#taro-webpack) | `WeappTailwindcss` | `config/index.ts` 的 `mini.webpackChain` | `src/app.css` |
 | weapp-vite | [weapp-vite 生成模式](./generator/weapp-vite) | `WeappTailwindcss` | `vite.config.ts` | `app.css` 或项目全局样式 |
-| Mpx | [Mpx 生成模式](./generator/mpx) | 例外：PostCSS 默认导出 + Webpack `WeappTailwindcss` | `mpx.config.js` | `src/app.css` |
+| Mpx | [Mpx 生成模式](./generator/mpx) | `WeappTailwindcss` | `mpx.config.js` | `src/app.css` |
 
 :::tip 配置建议
-生成模式下不要再把 `@tailwindcss/vite`、`@tailwindcss/postcss` 或 `tailwindcss` PostCSS 插件注册到实际项目里，否则会形成两套 Tailwind 生成链路。Vite、Webpack、Webpack4 与 Gulp 入口推荐导入大写 `WeappTailwindcss`；小写 `weappTailwindcss` 也可用，适合偏函数式命名的项目。只有无法通过构建器插件接管 CSS 生成的框架，才使用 `weapp-tailwindcss/postcss` 默认导出。
+生成模式下不要再把 `@tailwindcss/vite`、`@tailwindcss/postcss` 或 `tailwindcss` PostCSS 插件注册到实际项目里，否则会形成两套 Tailwind 生成链路。Vite、Webpack、Webpack4 与 Gulp 入口推荐导入大写 `WeappTailwindcss`；小写 `weappTailwindcss` 也可用，适合偏函数式命名的项目。
 :::
 
 ## CSS 入口
@@ -134,7 +134,7 @@ export default {
 | 标准 `@import "tailwindcss"` | 是 | 是 | 是 | 是 | 是 | 是 |
 | Tailwind CSS v4 `@source` | 是 | 是 | 是 | 是 | 是 | 是 |
 | `@theme` / `@config` | 是 | 是 | 是 | 是 | 是 | 是 |
-| 默认启用生成模式 | Vite 插件 | Webpack 插件 | Vite 插件 | Webpack 插件 | Vite 插件 | PostCSS 插件 |
+| 默认启用生成模式 | Vite 插件 | Webpack 插件 | Vite 插件 | Webpack 插件 | Vite 插件 | Webpack 插件 |
 | `target = "weapp"` 小程序产物 | 是 | 是 | 是 | 是 | 是 | 是 |
 | `target = "web"` 多端调试 | 支持 | 支持 | 支持 | 支持 | 支持 | 支持 |
 | `rem2rpx` / `rpx` 任意值 | 是 | 是 | 是 | 是 | 是 | 是 |

@@ -1,11 +1,10 @@
 ---
 title: Mpx 生成模式
-description: 使用 weapp-tailwindcss v5 PostCSS generator 与 Webpack 插件接入 Mpx
+description: 使用 weapp-tailwindcss v5 Webpack 插件接入 Mpx
 keywords:
   - weapp-tailwindcss
   - generator
   - mpx
-  - postcss
   - webpack
   - tailwindcss v4
   - tailwindcss v5
@@ -19,13 +18,12 @@ keywords:
 
 仓库示例：`demo/mpx-tailwindcss-v5`。
 
-Mpx 仍由 Webpack 负责模板与 JS 转译，但 CSS 生成要按 Tailwind CSS 主版本区分。Tailwind CSS v3 和 v4 都可以走 v5 PostCSS generator，不需要再注册官方 Tailwind PostCSS 插件。
+Mpx 仍由 Webpack 负责模板、JS 与 CSS 生成。Tailwind CSS v3 和 v4 都交给 `weapp-tailwindcss/webpack` 的 `WeappTailwindcss` 接管，不需要再注册 Tailwind PostCSS 生成插件。
 
-## Tailwind CSS v4：PostCSS generator
+## Tailwind CSS v4：Webpack 生成模式
 
 ```js title="mpx.config.js"
 const { defineConfig } = require('@vue/cli-service')
-const { default: weappTailwindcss } = require('weapp-tailwindcss/postcss')
 const { WeappTailwindcss } = require('weapp-tailwindcss/webpack')
 const path = require('node:path')
 
@@ -35,9 +33,7 @@ module.exports = defineConfig({
       plugin: {
         postcssInlineConfig: {
           ignoreConfigFile: true,
-          plugins: [
-            weappTailwindcss(),
-          ],
+          plugins: [],
         },
         srcMode: 'wx',
       },
@@ -96,7 +92,7 @@ createPage({
 
 ## Tailwind CSS v3：默认接管生成
 
-Tailwind CSS v3 Mpx 项目不需要迁移到 CSS-first，扫描范围仍写在 `tailwind.config.js`。CSS 生成由 `weapp-tailwindcss/postcss` 接管，Webpack 插件继续负责模板与 JS 转译。
+Tailwind CSS v3 Mpx 项目不需要迁移到 CSS-first，扫描范围仍写在 `tailwind.config.js`。CSS 生成、模板与 JS 转译都由 Webpack 插件接管。
 
 ```js title="mpx.config.js"
 const { defineConfig } = require('@vue/cli-service')

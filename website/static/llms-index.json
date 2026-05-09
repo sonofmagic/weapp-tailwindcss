@@ -1,6 +1,6 @@
 {
   "version": "1.0.0",
-  "generatedAt": "2026-05-09T09:42:53.151Z",
+  "generatedAt": "2026-05-09T10:00:23.669Z",
   "siteUrl": "https://tw.icebreaker.top",
   "totals": {
     "all": 188,
@@ -4792,7 +4792,7 @@
       "kind": "doc",
       "id": "doc:quick-start/v4/generator/mpx",
       "title": "Mpx 生成模式",
-      "description": "使用 weapp-tailwindcss v5 PostCSS generator 与 Webpack 插件接入 Mpx",
+      "description": "使用 weapp-tailwindcss v5 Webpack 插件接入 Mpx",
       "summary": "仓库示例：demo/mpx-tailwindcss-v5。",
       "url": "/docs/quick-start/v4/generator/mpx",
       "canonical": "https://tw.icebreaker.top/docs/quick-start/v4/generator/mpx",
@@ -4800,7 +4800,6 @@
         "weapp-tailwindcss",
         "generator",
         "mpx",
-        "postcss",
         "webpack",
         "tailwindcss v4",
         "tailwindcss v5",
@@ -4812,10 +4811,11 @@
         "安装",
         "配置",
         "生成模式",
-        "quick start"
+        "quick start",
+        "v4"
       ],
       "headings": [
-        "Tailwind CSS v4：PostCSS generator",
+        "Tailwind CSS v4：Webpack 生成模式",
         "Tailwind CSS v3：默认接管生成"
       ],
       "updatedAt": null,
@@ -6415,16 +6415,17 @@
       "kind": "doc",
       "id": "doc:tailwindcss/v5-official-plugin-parity",
       "title": "v5 与官方 Tailwind 插件对照",
-      "description": "对比 weapp-tailwindcss v5 generator 与 @tailwindcss/postcss、@tailwindcss/vite 的能力映射",
+      "description": "对比 weapp-tailwindcss v5 generator 与 Tailwind 官方 Vite 插件的能力映射",
       "summary": "v5 generator 的目标不是替代 Tailwind CSS v4 的 CSS-first 语义，而是在同一份 Tailwind 输入上增加小程序专用输出能力。target: 'web' 应与官方 Tailwind 浏览器产物保持同源；target: 'weapp' 则在同一 classSet 基础上生成小程序需要且兼容的 CSS。",
       "url": "/docs/tailwindcss/v5-official-plugin-parity",
       "canonical": "https://tw.icebreaker.top/docs/tailwindcss/v5-official-plugin-parity",
       "keywords": [
         "weapp-tailwindcss",
         "tailwindcss v4",
-        "@tailwindcss/postcss",
         "@tailwindcss/vite",
+        "vite",
         "generator",
+        "cssEntries",
         "tailwindcss",
         "教程",
         "原子化",
@@ -6434,12 +6435,10 @@
         "插件对照",
         "v5 official plugin parity",
         "小程序",
-        "微信小程序",
-        "uni-app"
+        "微信小程序"
       ],
       "headings": [
         "一一对应矩阵",
-        "PostCSS 对照",
         "Vite 对照",
         "回归测试"
       ],

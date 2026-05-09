@@ -34,7 +34,7 @@ keywords:
 ## `patch` 子命令
 
 :::tip 生成模式项目不需要配置 postinstall
-如果项目已经使用 `weapp-tailwindcss@5` 生成模式，并且 Tailwind CSS 由 `WeappTailwindcss`、`weapp-tailwindcss/postcss` 或生成器入口接管，就不需要再在业务项目的 `package.json` 中配置 `postinstall: "weapp-tw patch"`。
+如果项目已经使用 `weapp-tailwindcss@5` 生成模式，并且 Tailwind CSS 由 `WeappTailwindcss` 或生成器入口接管，就不需要再在业务项目的 `package.json` 中配置 `postinstall: "weapp-tw patch"`。
 
 `weapp-tw patch` 主要保留给旧 CSS 后处理链路、需要手动排查补丁状态的项目，或仍依赖 Tailwind patch 缓存的兼容场景。
 :::
