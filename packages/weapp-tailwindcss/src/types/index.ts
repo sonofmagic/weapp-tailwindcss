@@ -64,6 +64,8 @@ export interface IJsHandlerOptions {
    * 兼容字段：不再参与 JS 候选判定。
    *
    * JS 转译统一遵循 `classNameSet` 精确命中策略，仅转换 tailwindcss-patch 提供的类名集合。
+   *
+   * @deprecated 该配置仅保留兼容旧项目，不再参与 JS 候选判定。需要处理任意值兜底时请使用 `jsArbitraryValueFallback`。
    */
   staleClassNameFallback?: boolean
   /**

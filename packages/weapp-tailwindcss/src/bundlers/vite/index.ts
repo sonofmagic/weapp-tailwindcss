@@ -179,6 +179,7 @@ function resolveImplicitTailwindcssBasedirFromViteRoot(root: string) {
  * @name UnifiedViteWeappTailwindcssPlugin
  * @description uni-app vite / uni-app-x 版本插件
  * @link https://tw.icebreaker.top/docs/quick-start/frameworks/uni-app-vite
+ * @deprecated 请改用 `import { WeappTailwindcss } from 'weapp-tailwindcss/vite'`。
  */
 export function UnifiedViteWeappTailwindcssPlugin(options: UserDefinedOptions = {}): Plugin[] | undefined {
   const hasExplicitAppType = typeof options.appType === 'string' && options.appType.trim().length > 0

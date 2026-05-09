@@ -68,6 +68,9 @@ type LegacyContentConfig
 
 export interface WeappTailwindcssPostcssPluginOptions extends TailwindV4SourceOptions {
   generator?: WeappTailwindcssGeneratorUserOptions
+  /**
+   * @deprecated 请改用 `generator.target`。小程序构建默认就是 `weapp`，普通项目不需要显式配置。
+   */
   target?: WeappTailwindcssGeneratorTarget
   version?: 3 | 4
   config?: string

@@ -1,6 +1,6 @@
 {
   "version": "1.0.0",
-  "generatedAt": "2026-05-08T09:44:25.162Z",
+  "generatedAt": "2026-05-09T09:09:32.742Z",
   "siteUrl": "https://tw.icebreaker.top",
   "totals": {
     "all": 184,
@@ -1801,8 +1801,8 @@
       "kind": "doc",
       "id": "doc:api/options/general",
       "title": "⚙️ 一般配置",
-      "description": "⚙️ 一般配置文档，汇总 17 个 weapp-tailwindcss 配置项的用途、默认值与注意事项。",
-      "summary": "本页收录 17 个配置项，来源于 UserDefinedOptions。",
+      "description": "⚙️ 一般配置文档，汇总 18 个 weapp-tailwindcss 配置项的用途、默认值与注意事项。",
+      "summary": "本页收录 18 个配置项，来源于 UserDefinedOptions。",
       "url": "/docs/api/options/general",
       "canonical": "https://tw.icebreaker.top/docs/api/options/general",
       "keywords": [

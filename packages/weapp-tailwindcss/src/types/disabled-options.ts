@@ -16,6 +16,7 @@ export interface DisabledOptions {
   /**
    * 禁用对 `@import "tailwindcss"` 的预处理重写。
    *
+   * @deprecated 该开关仅用于配合已废弃的 `rewriteCssImports` 迁移行为。新项目推荐在运行时 CSS 入口直接写 `@import "weapp-tailwindcss/index.css"`。
    * @default false
    */
   rewriteCssImports?: boolean

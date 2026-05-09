@@ -53,6 +53,8 @@ export interface UserDefinedOptionsGeneralPart {
    * @group 3.一般配置
    * @remarks
    * JS 转译统一采用 `classNameSet` 精确匹配策略，仅转换 tailwindcss-patch 提供的类名集合。
+   *
+   * @deprecated 该配置仅保留兼容旧项目，不再参与 JS 候选判定。需要处理任意值兜底时请使用 `jsArbitraryValueFallback`。
    */
   staleClassNameFallback?: boolean
 
@@ -97,6 +99,9 @@ export interface UserDefinedOptionsGeneralPart {
    * - `false`：兼容旧配置，按默认生成模式处理。
    * - `true`：等价于默认 `auto`，通常无需显式传入。
    * - `{ mode: 'force' }`：强制使用生成器，失败时直接抛错，适合 CI 中验证新链路。
+   *
+   * @remarks
+   * v5 默认生成模式已经是稳定链路，`generator: true`、`generator: false`、`generator.mode` 与 `generator.target: 'weapp'` 都不再推荐出现在业务配置中。
    */
   generator?: WeappTailwindcssGeneratorUserOptions
 

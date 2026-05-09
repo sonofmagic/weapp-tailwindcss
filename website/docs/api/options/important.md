@@ -32,7 +32,7 @@ keywords:
 | [cssPreflightRange](#csspreflightrange) | <code>"all"</code> | — | 控制 `cssPreflight` 注入的 DOM 选择器范围。 |
 | [cssCalc](#csscalc) | <code>boolean &#124; (string &#124; RegExp)[] &#124; CssCalcOptions</code> | — | 预计算 CSS 变量或 `calc` 表达式的结果。 |
 | [injectAdditionalCssVarScope](#injectadditionalcssvarscope) | <code>boolean</code> | <code>false</code> | 是否额外注入 `tailwindcss css var scope`。 |
-| [rewriteCssImports](#rewritecssimports) | <code>boolean</code> | <code>true</code> | 是否在 webpack/vite 阶段自动把 CSS 中的 `@import 'tailwindcss'` 映射为 `weapp-tailwindcss`。 |
+| [rewriteCssImports](#rewritecssimports) | <code>boolean</code> | <code>true</code> | 已废弃。旧项目中自动把 CSS 的 `@import 'tailwindcss'` 映射为 `weapp-tailwindcss`。 |
 | [cssSelectorReplacement](#cssselectorreplacement) | <code>{ root?: string &#124; string[] &#124; false; universal?: string &#124; string[] &#124; false; }</code> | 详见下方 | 控制 CSS 选择器的替换规则。 |
 | [rem2rpx](#rem2rpx) | <code>boolean &#124; Rem2rpxOptions</code> | — | rem 到 rpx 的转换配置。 |
 | [px2rpx](#px2rpx) | <code>boolean &#124; Px2rpxOptions</code> | — | px 到 rpx 的转换配置。 |
@@ -237,6 +237,12 @@ false
 ### rewriteCssImports
 
 > 可选 | 类型: `boolean` | 默认值: `true`
+
+:::warning 已废弃
+
+该配置保留给旧项目和 IntelliSense 迁移场景。新项目推荐在运行时 CSS 入口直接写 `@import "weapp-tailwindcss/index.css"`，不再依赖构建阶段把 `@import "tailwindcss"` 改写到 weapp-tailwindcss。
+
+:::
 
 是否在 webpack/vite 阶段自动把 CSS 中的 `@import 'tailwindcss'` 映射为 `weapp-tailwindcss/index.css`。
 

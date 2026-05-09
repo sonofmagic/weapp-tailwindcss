@@ -68,9 +68,9 @@ export interface UserDefinedOptionsImportantPart {
    * const isApp = process.env.UNI_PLATFORM === 'app'
    * const disabled = isH5 || isApp
    *
-   * import { UnifiedViteWeappTailwindcssPlugin as uvtw } from 'weapp-tailwindcss/vite'
+   * import { WeappTailwindcss } from 'weapp-tailwindcss/vite'
    *
-   * uvtw({
+   * WeappTailwindcss({
    *   disabled,
    * })
    * ```
@@ -214,6 +214,8 @@ export interface UserDefinedOptionsImportantPart {
    * @group 0.重要配置
    * @remarks
    * 开启后打包链路只会在处理样式时拦截 `tailwindcss` 的导入路径（JS/TS `import 'tailwindcss'` 不会被修改），让源码可以继续写 `@import 'tailwindcss';`，同时输出 weapp-tailwindcss 的样式。传入 `false` 可完全关闭该行为。
+   *
+   * @deprecated 该配置保留给旧项目和 IntelliSense 迁移场景。新项目推荐在运行时 CSS 入口直接写 `@import "weapp-tailwindcss/index.css"`。
    * @default true
    */
   rewriteCssImports?: boolean

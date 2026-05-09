@@ -9,6 +9,8 @@ export interface WeappTailwindcssGeneratorOptions {
    *
    * - `auto`：默认，Tailwind CSS v3 和 v4 都接管样式生成；生成失败时直接抛错。
    * - `force`：强制使用生成器，无法生成时直接抛错。
+   *
+   * @deprecated v5 默认生成模式已经是稳定链路，普通项目不需要再显式配置 `mode`。
    */
   mode?: WeappTailwindcssGeneratorMode
   /**
@@ -31,7 +33,12 @@ export interface WeappTailwindcssGeneratorOptions {
   tailwindcssV3Compatibility?: boolean
 }
 
-export type WeappTailwindcssGeneratorUserOptions = boolean | WeappTailwindcssGeneratorOptions
+/**
+ * @deprecated v5 默认启用生成模式，`true` 和 `false` 都会按默认生成模式处理。请删除布尔配置，或仅在需要 `config`、`styleOptions`、`target`、`tailwindcssV3Compatibility` 时传入对象。
+ */
+export type DeprecatedWeappTailwindcssGeneratorSwitch = boolean
+
+export type WeappTailwindcssGeneratorUserOptions = DeprecatedWeappTailwindcssGeneratorSwitch | WeappTailwindcssGeneratorOptions
 
 export interface NormalizedWeappTailwindcssGeneratorOptions {
   mode: WeappTailwindcssGeneratorMode
