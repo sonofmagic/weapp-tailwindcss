@@ -8,7 +8,7 @@
 不然开发时，热更新会有问题，详见:
 
 - [mpx#1146](https://github.com/didi/mpx/issues/1146)
-- [weapp-tailwindcss-webpack-plugin#133](https://github.com/sonofmagic/weapp-tailwindcss-webpack-plugin/issues/133)
+- [weapp-tailwindcss#133](https://github.com/sonofmagic/weapp-tailwindcss/issues/133)
 
 ## 快速开始
 
@@ -34,12 +34,12 @@ pnpm install
 执行:
 
 ```bash
-pnpm add -D tailwindcss weapp-tailwindcss-webpack-plugin postcss-rem-to-responsive-pixel
+pnpm add -D tailwindcss weapp-tailwindcss postcss-rem-to-responsive-pixel
 ```
 
 由于 `postcss 8` 和 `autoprefixer` 已经内置，我们无需额外安装，其中:
 
-- `weapp-tailwindcss-webpack-plugin` 是一个给 `tailwindcss` 设计的小程序适配插件
+- `weapp-tailwindcss` 是一个给 `tailwindcss` 设计的小程序适配插件
 
 - `postcss-rem-to-responsive-pixel` 则是用来把 `rem` 转化成 `px` 或者 `rpx` 的工具，由于 `tailwindcss` 长度默认都是 `rem` 所以我们需要它把 `rem` 转化成 `rpx`。
 
@@ -166,12 +166,12 @@ Component({
 
 这时候要保存一下 `app.mpx` / `tailwind.config.js` / `package.json` 进行全量更新
 
-[#133](https://github.com/sonofmagic/weapp-tailwindcss-webpack-plugin/issues/133) 中，这个问题已经修复，请把 `mpx` 升级到大于等于 [2.8.16](https://github.com/didi/mpx/releases/tag/v2.8.16) 版本 -->
+[#133](https://github.com/sonofmagic/weapp-tailwindcss/issues/133) 中，这个问题已经修复，请把 `mpx` 升级到大于等于 [2.8.16](https://github.com/didi/mpx/releases/tag/v2.8.16) 版本 -->
 <!-- 又出现了保存后，热更新无效的问题
 
 // taro-plugin-compiler-optimization
 
-<https://github.com/sonofmagic/weapp-tailwindcss-webpack-plugin/issues/123>
+<https://github.com/sonofmagic/weapp-tailwindcss/issues/123>
 
 <https://github.com/CANntyield/taro-plugin-compiler-optimization/blob/main/index.js>
 

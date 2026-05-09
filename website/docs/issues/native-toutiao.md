@@ -160,7 +160,7 @@ module.exports = {
   安装插件
 
   ```sh
-  npm i -D weapp-tailwindcss-webpack-plugin
+  pnpm add -D weapp-tailwindcss
   ```
 
   配置 `gulpfile.js`，需要注意的事，在面板执行 `serve` 后，即使后来停止了任务，程序里的监听 `watch` 也不会停，使得后续再启动 `serve` 后，会有多个监听 `watch` 和多个监听处理程序 `watchHandler`，重复处理文件。所以停止后再启动 `serve`，应该关闭 `vscode` 后重新打开
@@ -171,7 +171,7 @@ module.exports = {
   const plumber = require('gulp-plumber')
   const path = require('path')
   const del = require('del')
-  const tailwindcssGulp = require('weapp-tailwindcss-webpack-plugin/gulp')
+  const tailwindcssGulp = require('weapp-tailwindcss/gulp')
 
   // 在 gulp 里使用, 先使用 postcss 转化 css, 触发 tailwindcss，然后转化 transformWxss，最后转化 transformJs, transformWxml
   const {

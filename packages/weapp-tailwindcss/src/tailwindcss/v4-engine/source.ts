@@ -14,7 +14,6 @@ function isPostcssPluginImportTarget(value: string | undefined) {
     return false
   }
   return value === '@tailwindcss/postcss'
-    || value === '@tailwindcss/postcss7-compat'
     || value.includes('/postcss')
 }
 

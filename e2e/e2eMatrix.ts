@@ -67,9 +67,7 @@ export const HOT_UPDATE_COVERED_PROJECTS = new Set([
 ])
 
 // 这些项目没有稳定的 dev/hot-update 链路，默认只保留静态产物 e2e。
-export const HOT_UPDATE_EXEMPT_PROJECTS = new Set([
-  'web-postcss7-compat',
-])
+export const HOT_UPDATE_EXEMPT_PROJECTS = new Set<string>()
 
 export function getAllStaticE2EProjectNames() {
   return [...E2E_PROJECTS, ...NATIVE_PROJECTS].map(item => item.name)

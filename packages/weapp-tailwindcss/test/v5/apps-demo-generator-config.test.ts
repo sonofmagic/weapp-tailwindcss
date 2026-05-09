@@ -294,7 +294,6 @@ describe('v5 apps and demos generator config', () => {
       'templates/uni-app-hbuilderx-tailwindcss-v4/vite.config.ts',
       'templates/uni-app-vite-vue3-tailwind-vscode-template/postcss.config.ts',
       'templates/uni-app-vue2-tailwind-vscode-template/postcss.config.js',
-      'templates/uni-app-vue2-tailwind-hbuilder-template/postcss.config.js',
       'templates/uni-app-vue3-tailwind-hbuilder-template/postcss.config.cjs',
     ]
 

@@ -7,7 +7,6 @@ export interface WatchAwareOptions {
 export const runtimeEntries = {
   'index': 'src/index.ts',
   'webpack': 'src/webpack.ts',
-  'webpack4': 'src/webpack4.ts',
   'gulp': 'src/gulp.ts',
   'generator': 'src/generator/index.ts',
   'vite': 'src/vite.ts',

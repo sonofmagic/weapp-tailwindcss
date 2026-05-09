@@ -1,17 +1,7 @@
 {
   "generatedAt": "2026-03-29T06:57:43.699Z",
-  "projectCount": 28,
+  "projectCount": 27,
   "projects": [
-    {
-      "id": "apps/web-postcss7-compat",
-      "type": "app",
-      "typeLabel": "应用",
-      "packageName": "@native-app/postcss7-compat",
-      "displayName": "postcss7-compat",
-      "benchmarkKey": "postcss7-compat",
-      "buildScript": "build",
-      "hasBuildScript": true
-    },
     {
       "id": "apps/react-app",
       "type": "app",

@@ -127,15 +127,7 @@ export function createTailwindcssPatcher(options?: CreateTailwindcssPatcherOptio
     },
   )
 
-  if (baseTailwindOptions.version === 2) {
-    if (!baseTailwindOptions.packageName) {
-      baseTailwindOptions.packageName = '@tailwindcss/postcss7-compat'
-    }
-    if (!baseTailwindOptions.postcssPlugin) {
-      baseTailwindOptions.postcssPlugin = '@tailwindcss/postcss7-compat'
-    }
-  }
-  else if (!baseTailwindOptions.packageName) {
+  if (!baseTailwindOptions.packageName) {
     baseTailwindOptions.packageName = 'tailwindcss'
   }
 

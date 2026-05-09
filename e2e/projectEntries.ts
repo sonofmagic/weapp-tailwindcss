@@ -96,12 +96,6 @@ export const NATIVE_PROJECTS = [
   //   projectPath: 'vite-native-ts-skyline',
   //   cssFile: 'dist/app.wxss',
   // },
-  {
-    name: 'web-postcss7-compat',
-    projectPath: 'web-postcss7-compat',
-    cssFile: 'result.css',
-    skipOpenAutomator: true,
-  },
   // {
   //   name: 'native-skyline',
   //   projectPath: 'native-skyline',

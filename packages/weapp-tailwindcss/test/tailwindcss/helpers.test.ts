@@ -207,22 +207,6 @@ describe('tailwindcss helpers', () => {
     expect(String(callArgs.tailwindcss?.postcssPlugin).replaceAll('\\', '/')).toContain('@tailwindcss/postcss')
   })
 
-  it('uses postcss7 compat defaults for Tailwind CSS v2', async () => {
-    const { createTailwindcssPatcher } = await import('@/tailwindcss')
-
-    createTailwindcssPatcher({
-      basedir: '/repo',
-      tailwindcss: {
-        version: 2,
-      },
-    })
-
-    const lastCall = tailwindcssPatcherMock.mock.calls.at(-1)
-    const callArgs = lastCall?.[0] as any
-    expect(callArgs.tailwindcss?.packageName).toBe('@tailwindcss/postcss7-compat')
-    expect(callArgs.tailwindcss?.postcssPlugin).toBe('@tailwindcss/postcss7-compat')
-  })
-
   it('resolves postcss plugin strings after legacy patcher options merge', async () => {
     const { createTailwindcssPatcher } = await import('@/tailwindcss')
 

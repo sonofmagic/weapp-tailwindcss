@@ -74,9 +74,7 @@ const { WeappTailwindcss } = require('weapp-tailwindcss/webpack')
 :::info
 `weapp-tailwindcss/webpack` 对应的推荐插件名 `WeappTailwindcss` 适用于 `webpack@5`
 
-`weapp-tailwindcss/webpack4` 对应的推荐插件名 `WeappTailwindcss` 适用于 `webpack@4`
-
-在使用 `Taro` 时，检查一下 `config/index` 文件的配置项 `compiler`，来确认你的 `webpack` 版本，推荐使用 `'webpack5'`
+在使用 `Taro` 时，检查一下 `config/index` 文件的配置项 `compiler`，来确认你的 `webpack` 版本。`weapp-tailwindcss@5` 不再内置 Webpack4 入口，推荐使用 `'webpack5'`
 
 另外假如你使用了 [`taro-plugin-compiler-optimization`](https://www.npmjs.com/package/taro-plugin-compiler-optimization) 记得把它干掉。因为和它一起使用时，它会使整个打包结果变得混乱。详见 [issues/123](https://github.com/sonofmagic/weapp-tailwindcss/issues/123) [issues/131](https://github.com/sonofmagic/weapp-tailwindcss/issues/131)
 

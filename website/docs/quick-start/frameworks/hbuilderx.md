@@ -93,9 +93,9 @@ export default defineConfig({
 });
 ```
 
-`hbuilderx` 正式版本的 `vue2` 项目,由于使用 `webpack4` 和 `postcss7`，所以只能使用本插件的 `weapp-tailwindcss/webpack4` 版本， 详见[uni-app-vue2-tailwind-hbuilder-template](https://github.com/sonofmagic/uni-app-vue2-tailwind-hbuilder-template)
+`hbuilderx` 正式版本的 `vue2` 项目由于使用 `webpack4` 和 `postcss7`，不再适配 `weapp-tailwindcss@5`。存量项目请继续停留在旧版本，或者迁移到 `HBuilderX Vue3 Vite` / `uni-app cli vue2 webpack5` 链路。
 
-或者下方也有一种 `Hack hbuilderx vue2 Way` 来在 `hbuilderx` `vue2` 项目中，使用 `webpack5` 和 `postcss8`
+下方也有一种 `Hack hbuilderx vue2 Way` 来在 `hbuilderx` `vue2` 项目中，使用 `webpack5` 和 `postcss8`
 
 <!-- 另外出于开发体验的角度，还是推荐使用 `vscode` 作为你的开发工具，`hbuilderx` 只用于进行原生发布调试与 `ucloud` 部署用。 -->
 
@@ -114,9 +114,7 @@ export default defineConfig({
 
 ## HBuilderX Vue2 Webpack（存量项目） {#hbuilderx-vue2-webpack}
 
-如果你实在必须在 `hbuilderx vue2` 的项目中使用 `tailwindcss`，那么你可以使用下面的方法来使用 `tailwindcss`
-
-详见 [uni-app-vue2-tailwind-hbuilder-template](https://github.com/icebreaker-trash/uni-app-vue2-tailwind-hbuilder-template)
+`weapp-tailwindcss@5` 不再内置 Webpack4 / PostCSS7 / Tailwind CSS v2 兼容入口。如果你必须维护 `hbuilderx vue2` 项目，请继续使用旧版 `weapp-tailwindcss`，或迁移到上方推荐的 Vite / Webpack5 链路。
 
 ## Hack hbuilderx vue2 Way
 

@@ -102,14 +102,6 @@ describe('watch-hmr coverage matrix', () => {
     }
   })
 
-  it('documents the current tailwindcss v2 sample boundary', () => {
-    const v2Projects = [
-      'apps/web-postcss7-compat',
-    ]
-
-    expect(v2Projects).toEqual(['apps/web-postcss7-compat'])
-  })
-
   it('documents the current hbuilderx v3 automation boundary', () => {
     expect(manualBoundaryProjects).toEqual([
       'demo/native',

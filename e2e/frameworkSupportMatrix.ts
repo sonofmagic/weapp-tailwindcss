@@ -223,22 +223,6 @@ export const FRAMEWORK_SUPPORT_CASES = [
     ci: { tier: 'required' },
     ide: { tier: 'required' },
   }),
-  supportCase({
-    name: 'postcss7-web-compat-tailwindcss-v3',
-    framework: 'web',
-    builder: 'postcss7',
-    tailwindcss: 'v3',
-    fixturesDir: '../apps',
-    project: nativeProject('web-postcss7-compat'),
-    ci: {
-      tier: 'exempt',
-      reason: 'Web PostCSS 7 兼容用例不是小程序框架产物，已有独立 e2e 测试文件覆盖。',
-    },
-    ide: {
-      tier: 'exempt',
-      reason: 'Web PostCSS 兼容用例不生成微信小程序 project.config.json。',
-    },
-  }),
 ] as const satisfies FrameworkSupportCase[]
 
 export function getFrameworkCiCases() {

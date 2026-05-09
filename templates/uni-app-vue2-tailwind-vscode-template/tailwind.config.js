@@ -1,6 +1,6 @@
 const cssMacro = require('weapp-tailwindcss/css-macro')
 // 基础配置，无需任何preset
-// https://github.com/sonofmagic/weapp-tailwindcss-webpack-plugin/blob/main/demo/uni-app/tailwind.config.js
+// https://github.com/sonofmagic/weapp-tailwindcss/blob/main/demo/uni-app/tailwind.config.js
 /** @type {import('@types/tailwindcss/tailwind-config').TailwindConfig} */
 module.exports = {
   content: [
