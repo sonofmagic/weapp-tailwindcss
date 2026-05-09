@@ -7,6 +7,7 @@ import { jsHandler } from './babel'
 export {
   jsHandler,
 }
+export { transformLiteralText } from './literal-transform'
 
 /** 默认 LRU 缓存最大条目数 */
 const RESULT_CACHE_MAX = 512

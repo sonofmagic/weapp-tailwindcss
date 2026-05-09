@@ -66,11 +66,9 @@ describe('tailwindcss/v4/config', () => {
   it('skips warning when cssEntries are provided via options', async () => {
     const ctx = createCtx({
       tailwindcssPatcherOptions: {
-        patch: {
-          tailwindcss: {
-            v4: {
-              cssEntries: ['/abs/app.css'],
-            },
+        tailwindcss: {
+          v4: {
+            cssEntries: ['/abs/app.css'],
           },
         },
       },
@@ -99,12 +97,10 @@ describe('tailwindcss/v4/config', () => {
     expect(logger.warn).not.toHaveBeenCalled()
   })
 
-  it('warns when legacy patch options omit cssEntries', async () => {
+  it('warns when modern patcher options omit cssEntries', async () => {
     const ctx = createCtx({
       tailwindcssPatcherOptions: {
-        patch: {
-          tailwindcss: {},
-        },
+        tailwindcss: {},
       },
     })
     const patcher = createPatcher(4)

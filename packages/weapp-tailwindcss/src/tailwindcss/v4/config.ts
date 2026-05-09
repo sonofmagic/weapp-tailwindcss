@@ -104,12 +104,6 @@ function hasConfiguredCssEntries(ctx: InternalUserDefinedOptions) {
     if (normalizeCssEntriesConfig(patcherOptions.tailwindcss?.v4?.cssEntries)) {
       return true
     }
-    if (normalizeCssEntriesConfig(patcherOptions.tailwind?.v4?.cssEntries)) {
-      return true
-    }
-    if (normalizeCssEntriesConfig(patcherOptions.patch?.tailwindcss?.v4?.cssEntries)) {
-      return true
-    }
   }
 
   return false

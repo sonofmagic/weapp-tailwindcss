@@ -1,7 +1,7 @@
 import fs from 'node:fs/promises'
 import path from 'node:path'
 import { describe, expect, it } from 'vitest'
-import { transformLiteralText } from '@/experimental/shared'
+import { transformLiteralText } from '@/js'
 import { collectRuntimeClassSet } from '@/tailwindcss/runtime'
 import { createPatcherForBase } from '@/tailwindcss/v4'
 

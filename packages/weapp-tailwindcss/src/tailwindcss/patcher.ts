@@ -1,5 +1,4 @@
 import type { ILengthUnitsPatchOptions, TailwindCssPatchOptions } from 'tailwindcss-patch'
-import type { LegacyTailwindcssPatcherOptions } from './patcher-options'
 import type { TailwindcssPatcherLike } from '@/types'
 import path from 'node:path'
 import process from 'node:process'
@@ -8,10 +7,8 @@ import { defuOverrideArray } from '@weapp-tailwindcss/shared'
 import { TailwindcssPatcher } from 'tailwindcss-patch'
 import { findNearestPackageRoot } from '@/context/workspace'
 import {
-
   normalizeExtendLengthUnits,
   normalizeTailwindcssPatcherOptions,
-  toModernTailwindcssPatchOptions,
 } from './patcher-options'
 import {
   createDefaultResolvePaths,
@@ -32,7 +29,7 @@ export interface CreateTailwindcssPatcherOptions {
   cacheDir?: string
   supportCustomLengthUnitsPatch?: boolean | ILengthUnitsPatchOptions
   tailwindcss?: TailwindUserOptions
-  tailwindcssPatcherOptions?: TailwindCssPatchOptions | LegacyTailwindcssPatcherOptions
+  tailwindcssPatcherOptions?: TailwindCssPatchOptions
 }
 
 function createFallbackTailwindcssPatcher(): TailwindcssPatcherLike {
@@ -169,7 +166,7 @@ export function createTailwindcssPatcher(options?: CreateTailwindcssPatcherOptio
     (normalizedUserOptions ?? {}) as TailwindCssPatchOptions,
     baseOptions,
   )
-  const resolvedOptions = toModernTailwindcssPatchOptions(mergedOptions) ?? {}
+  const resolvedOptions = mergedOptions
   const resolvedTailwindOptions: TailwindUserOptions | undefined = resolvedOptions.tailwindcss
 
   if (resolvedTailwindOptions) {

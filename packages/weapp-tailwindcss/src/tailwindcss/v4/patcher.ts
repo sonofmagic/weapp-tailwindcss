@@ -126,20 +126,14 @@ export function createPatcherForBase(
 
   const configuredPackageName = tailwindcss?.packageName
     || (tailwindcssPatcherOptions as any)?.tailwindcss?.packageName
-    || (tailwindcssPatcherOptions as any)?.tailwind?.packageName
-    || (tailwindcssPatcherOptions as any)?.patch?.tailwindcss?.packageName
   const configuredVersion = tailwindcss?.version
     || (tailwindcssPatcherOptions as any)?.tailwindcss?.version
-    || (tailwindcssPatcherOptions as any)?.tailwind?.version
-    || (tailwindcssPatcherOptions as any)?.patch?.tailwindcss?.version
     || mergedTailwindOptions.version
   const explicitTailwindVersion = resolveExplicitTailwindVersion(configuredVersion, configuredPackageName)
 
   const hasExplicitV4Signals = hasCssEntries
     || hasOwnV4Signal(tailwindcss)
     || hasOwnV4Signal((tailwindcssPatcherOptions as any)?.tailwindcss)
-    || hasOwnV4Signal((tailwindcssPatcherOptions as any)?.tailwind)
-    || hasOwnV4Signal((tailwindcssPatcherOptions as any)?.patch?.tailwindcss)
 
   const packageNameForVersionDetection = configuredPackageName ?? mergedTailwindOptions.packageName ?? 'tailwindcss'
   const installedTailwindVersion = readInstalledPackageMajorVersion(packageNameForVersionDetection, baseDir)
@@ -157,8 +151,6 @@ export function createPatcherForBase(
       hasCssEntries
       || hasOwnV4Signal(tailwindcss)
       || hasOwnV4Signal((tailwindcssPatcherOptions as any)?.tailwindcss)
-      || hasOwnV4Signal((tailwindcssPatcherOptions as any)?.tailwind)
-      || hasOwnV4Signal((tailwindcssPatcherOptions as any)?.patch?.tailwindcss)
     )
   )
 
