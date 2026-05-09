@@ -1,1 +1,3 @@
-@import "../common.css";
+@import "tailwindcss" source(none);
+@config "../../tailwind.config.order.js";
+@source "./**/*.{vue,js,ts,jsx,tsx,html}";

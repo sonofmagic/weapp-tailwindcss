@@ -26,37 +26,44 @@ function isMpxWebpackPluginRequest(request: string | undefined) {
   return request === '@mpxjs/webpack-plugin' || Boolean(request?.startsWith('@mpxjs/webpack-plugin/'))
 }
 
-function ensureResolveLoaderAlias(compiler: any) {
-  compiler.options.resolveLoader = compiler.options.resolveLoader || {}
-  const alias = compiler.options.resolveLoader.alias ?? {}
+function addMpxWebpackPluginAlias(alias: any, pkgDir: string) {
   if (Array.isArray(alias)) {
     alias.push({
       name: /^@mpxjs\/webpack-plugin\//,
-      alias: path.dirname(require.resolve('@mpxjs/webpack-plugin/package.json')),
+      alias: pkgDir,
     })
   }
   else {
-    compiler.options.resolveLoader.alias = alias
-    const pkgDir = path.dirname(require.resolve('@mpxjs/webpack-plugin/package.json'))
     alias['@mpxjs/webpack-plugin'] = pkgDir
     alias['@mpxjs/webpack-plugin$'] = pkgDir
   }
 }
 
+function ensureResolveLoaderAlias(compiler: any, mpxWebpackPluginDir: string) {
+  compiler.options.resolveLoader = compiler.options.resolveLoader || {}
+  const alias = compiler.options.resolveLoader.alias ?? {}
+  compiler.options.resolveLoader.alias = alias
+  addMpxWebpackPluginAlias(alias, mpxWebpackPluginDir)
+}
+
 export function ensureMpxTailwindcssAliases(compiler: any, pkgDir: string) {
   const tailwindcssCssEntry = getTailwindcssCssEntry(pkgDir)
+  const mpxWebpackPluginDir = path.dirname(require.resolve('@mpxjs/webpack-plugin/package.json'))
   compiler.options = compiler.options || {}
   compiler.options.resolve = compiler.options.resolve || {}
-  ensureResolveLoaderAlias(compiler)
+  ensureResolveLoaderAlias(compiler, mpxWebpackPluginDir)
   const alias = compiler.options.resolve.alias ?? {}
+  compiler.options.resolve.alias = alias
   if (Array.isArray(alias)) {
     alias.push(
+      { name: /^@mpxjs\/webpack-plugin\//, alias: mpxWebpackPluginDir },
       { name: 'tailwindcss', alias: tailwindcssCssEntry },
       { name: 'tailwindcss$', alias: tailwindcssCssEntry },
     )
   }
   else {
-    compiler.options.resolve.alias = alias
+    alias['@mpxjs/webpack-plugin'] = mpxWebpackPluginDir
+    alias['@mpxjs/webpack-plugin$'] = mpxWebpackPluginDir
     alias.tailwindcss = tailwindcssCssEntry
     alias.tailwindcss$ = tailwindcssCssEntry
   }

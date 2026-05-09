@@ -36,6 +36,7 @@ export default defineConfig(async () => {
         cssEntries: [
           path.resolve(__dirname, "src/main.css"),
           path.resolve(__dirname, "src/common.css"),
+          path.resolve(__dirname, "src/pages-order/index.css"),
         ],
       }),
       // StyleInjector(),

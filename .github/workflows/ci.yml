@@ -58,6 +58,9 @@ jobs:
       - name: E2E Static
         run: pnpm e2e:static
 
+      - name: E2E Framework Support CI
+        run: pnpm e2e:ci
+
       - name: Test
         run: pnpm test
 
@@ -68,6 +71,7 @@ jobs:
             echo "## CI 状态说明"
             echo "- 本工作流负责：lint、build、unit/integration tests、coverage 上传。"
             echo "- 现在额外包含：\`pnpm e2e:static\`，用于保证 v5 生成示例和静态快照与 CI 一致。"
+            echo "- \`pnpm e2e:ci\` 负责跨框架支持矩阵的覆盖门禁。"
             echo "- \`Compatibility Gate\` 负责跨系统/多 Node 的核心回归，避免把全仓 lint/build 在每个矩阵里重复执行。"
             echo "- \`pnpm e2e:watch\` 已拆分到独立工作流：\`E2E Watch\`（.github/workflows/e2e-watch.yml）。"
             echo "- website SEO 质量门禁已拆分到独立工作流：\`Website SEO Quality\`（.github/workflows/website-seo-quality.yml）。"

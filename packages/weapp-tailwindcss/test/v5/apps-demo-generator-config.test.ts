@@ -87,13 +87,15 @@ describe('v5 apps and demos generator config', () => {
   })
 
   it('keeps uni-app v5 css entries using @config relative to the css file', async () => {
-    const [mainCss, commonCss] = await Promise.all([
+    const [mainCss, commonCss, orderCss] = await Promise.all([
       readProjectFile('demo/uni-app-tailwindcss-v5/src/main.css'),
       readProjectFile('demo/uni-app-tailwindcss-v5/src/common.css'),
+      readProjectFile('demo/uni-app-tailwindcss-v5/src/pages-order/index.css'),
     ])
 
     expect(mainCss).toContain('@config "../tailwind.config.js";')
     expect(commonCss).toContain('@config "../tailwind.config.order.js";')
+    expect(orderCss).toContain('@config "../../tailwind.config.order.js";')
   })
 
   it('passes generator options through the uni-app-x preset demo', async () => {
@@ -162,6 +164,7 @@ describe('v5 apps and demos generator config', () => {
       uniPagesJsonSource,
       uniMainCssSource,
       uniCommonCssSource,
+      uniOrderCssSource,
       uniOrderHomeSource,
       uniOrderUserSource,
       taroCssSource,
@@ -173,6 +176,7 @@ describe('v5 apps and demos generator config', () => {
       readProjectFile('demo/uni-app-tailwindcss-v5/src/pages.json'),
       readProjectFile('demo/uni-app-tailwindcss-v5/src/main.css'),
       readProjectFile('demo/uni-app-tailwindcss-v5/src/common.css'),
+      readProjectFile('demo/uni-app-tailwindcss-v5/src/pages-order/index.css'),
       readProjectFile('demo/uni-app-tailwindcss-v5/src/pages-order/pages/home/home.vue'),
       readProjectFile('demo/uni-app-tailwindcss-v5/src/pages-order/pages/user/user.vue'),
       readProjectFile('demo/taro-vite-tailwindcss-v5/src/app.css'),
@@ -188,6 +192,7 @@ describe('v5 apps and demos generator config', () => {
     expect(uniPagesJsonSource).toContain('"subPackages"')
     expect(uniMainCssSource).toContain('@config "../tailwind.config.js";')
     expect(uniCommonCssSource).toContain('@config "../tailwind.config.order.js";')
+    expect(uniOrderCssSource).toContain('@source "./**/*.{vue,js,ts,jsx,tsx,html}";')
     expect(uniOrderHomeSource).toContain('bg-gradient-to-r from-emerald-500 to-cyan-500')
     expect(uniOrderUserSource).toContain('bg-gradient-to-r from-blue-500 to-indigo-500')
     expect(taroCssSource).toContain('@import "tailwindcss" source(none);')

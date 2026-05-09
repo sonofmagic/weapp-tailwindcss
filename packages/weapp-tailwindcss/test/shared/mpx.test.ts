@@ -40,6 +40,7 @@ describe('shared/mpx helpers', () => {
     expect(compiler.options.resolve.alias.keep).toBe('value')
     expect(compiler.options.resolve.alias.tailwindcss).toBe(entry)
     expect(compiler.options.resolve.alias.tailwindcss$).toBe(entry)
+    expect(compiler.options.resolve.alias['@mpxjs/webpack-plugin']).toEqual(expect.stringContaining('@mpxjs/webpack-plugin'))
     expect(compiler.options.resolveLoader.alias['@mpxjs/webpack-plugin']).toEqual(expect.stringContaining('@mpxjs/webpack-plugin'))
   })
 
@@ -48,6 +49,7 @@ describe('shared/mpx helpers', () => {
     const compiler: any = { options: { resolve: { alias } } }
     const entry = ensureMpxTailwindcssAliases(compiler, pkgDir)
     expect(alias).toEqual([
+      { name: /^@mpxjs\/webpack-plugin\//, alias: expect.stringContaining('@mpxjs/webpack-plugin') },
       { name: 'tailwindcss', alias: entry },
       { name: 'tailwindcss$', alias: entry },
     ])
