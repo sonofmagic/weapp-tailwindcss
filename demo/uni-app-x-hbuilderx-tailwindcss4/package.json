@@ -11,7 +11,6 @@
     "build": "echo uni-app-x-hbuilderx-tailwindcss4"
   },
   "devDependencies": {
-    "@tailwindcss/postcss": "catalog:tailwindcss4",
     "@weapp-tailwindcss/debug-uni-app-x": "workspace:*",
     "@weapp-tailwindcss/merge": "workspace:*",
     "@weapp-tailwindcss/variants": "workspace:*",

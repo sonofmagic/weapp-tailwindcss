@@ -76,7 +76,6 @@
     "@egoist/tailwindcss-icons": "catalog:egoistTailwindcssIcons",
     "@iconify-json/lucide": "^1.2.105",
     "@iconify-json/mdi": "^1.2.3",
-    "@tailwindcss/vite": "catalog:tailwindcss4",
     "@vue/runtime-core": "catalog:vueRuntimeCore",
     "@vue/tsconfig": "^0.9.1",
     "@weapp-tailwindcss/merge": "workspace:*",
@@ -87,7 +86,6 @@
     "vite": "catalog:vite5421",
     "vue-tsc": "catalog:vueTsc318",
     "weapp-ide-cli": "catalog:weappIdeCli",
-    "weapp-style-injector": "workspace:*",
     "weapp-tailwindcss": "workspace:*"
   }
 }

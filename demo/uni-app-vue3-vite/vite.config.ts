@@ -1,8 +1,6 @@
 import { defineConfig } from 'vite';
 import uni from '@dcloudio/vite-plugin-uni';
-import { UnifiedViteWeappTailwindcssPlugin } from 'weapp-tailwindcss/vite';
-import { StyleInjector } from 'weapp-style-injector/vite/uni-app';
-import { resolveDemoGeneratorMode } from '../shared/weapp-tailwind-generator-mode';
+import { WeappTailwindcss } from 'weapp-tailwindcss/vite';
 
 type WeappTwUpdateKind = 'wxss' | 'wxml' | 'js' | 'other';
 
@@ -54,8 +52,6 @@ const bench =
 const isH5 = process.env.UNI_PLATFORM === 'h5';
 const isApp = process.env.UNI_PLATFORM === 'app-plus';
 const WeappTailwindcssDisabled = isH5 || isApp;
-// vite 插件配置
-const vitePlugins = [uni()]; // Unocss()
 // postcss 插件配置：Tailwind CSS 由 weapp-tailwindcss 生成模式接管，这里不要再注册 tailwindcss
 const postcssPlugins = [require('autoprefixer')()];
 
@@ -76,16 +72,14 @@ let weappTwLoadTime = 0;
 let weappTwStartTime = 0;
 let weappTwUpdateCount = 0;
 let weappTwLoggedUpdateCount = 0;
-const generator = resolveDemoGeneratorMode();
 // https://vitejs.dev/config/
 export default defineConfig(async () => {
   // const { default: Inspect } = await import('vite-plugin-inspect');
   return {
     plugins: [
       uni(),
-      UnifiedViteWeappTailwindcssPlugin({
+      WeappTailwindcss({
         px2rpx: true,
-        ...(generator !== undefined ? { generator } : {}),
         wxsMatcher() {
           return false;
         },
@@ -151,7 +145,6 @@ export default defineConfig(async () => {
         //   ')': '-',
         // },
       }),
-      // StyleInjector(),
       // Inspect({
       //   build: true,
       //   outputDir: '.vite-inspect'

@@ -3125,9 +3125,6 @@ importers:
       '@iconify-json/mdi':
         specifier: ^1.2.3
         version: 1.2.3
-      '@tailwindcss/vite':
-        specifier: catalog:tailwindcss4
-        version: 4.2.4(vite@5.4.21(@types/node@25.6.0)(less@4.6.4)(lightningcss@1.32.0)(sass-embedded@1.99.0)(sass@1.99.0)(stylus@0.57.0)(terser@5.47.1))
       '@vue/runtime-core':
         specifier: catalog:vueRuntimeCore
         version: 3.5.34
@@ -3158,9 +3155,6 @@ importers:
       weapp-ide-cli:
         specifier: catalog:weappIdeCli
         version: 5.2.9
-      weapp-style-injector:
-        specifier: workspace:*
-        version: link:../../packages/weapp-style-injector
       weapp-tailwindcss:
         specifier: workspace:*
         version: link:../../packages/weapp-tailwindcss
@@ -3252,9 +3246,6 @@ importers:
       '@iconify-json/mdi':
         specifier: ^1.2.3
         version: 1.2.3
-      '@tailwindcss/vite':
-        specifier: catalog:tailwindcss4
-        version: 4.2.4(vite@5.4.21(@types/node@25.6.0)(less@4.6.4)(lightningcss@1.32.0)(sass-embedded@1.99.0)(sass@1.99.0)(stylus@0.57.0)(terser@5.47.1))
       '@vue/runtime-core':
         specifier: catalog:vueRuntimeCore
         version: 3.5.34
@@ -3282,9 +3273,6 @@ importers:
       weapp-ide-cli:
         specifier: catalog:weappIdeCli
         version: 5.2.9
-      weapp-style-injector:
-        specifier: workspace:*
-        version: link:../../packages/weapp-style-injector
       weapp-tailwindcss:
         specifier: workspace:*
         version: link:../../packages/weapp-tailwindcss
@@ -3484,9 +3472,6 @@ importers:
       weapp-ide-cli:
         specifier: catalog:weappIdeCli
         version: 5.2.9
-      weapp-style-injector:
-        specifier: workspace:*
-        version: link:../../packages/weapp-style-injector
       weapp-tailwindcss:
         specifier: workspace:*
         version: link:../../packages/weapp-tailwindcss
@@ -3526,9 +3511,6 @@ importers:
 
   demo/uni-app-x-hbuilderx-tailwindcss4:
     devDependencies:
-      '@tailwindcss/postcss':
-        specifier: catalog:tailwindcss4
-        version: 4.2.4
       '@weapp-tailwindcss/debug-uni-app-x':
         specifier: workspace:*
         version: link:../../packages/debug-uni-app-x
@@ -38654,13 +38636,6 @@ snapshots:
       '@tailwindcss/oxide': 4.2.4
       tailwindcss: 4.2.4
       vite: 4.5.14(@types/node@25.6.0)(less@4.6.4)(lightningcss@1.32.0)(sass@1.99.0)(stylus@0.57.0)(terser@5.47.1)
-
-  '@tailwindcss/vite@4.2.4(vite@5.4.21(@types/node@25.6.0)(less@4.6.4)(lightningcss@1.32.0)(sass-embedded@1.99.0)(sass@1.99.0)(stylus@0.57.0)(terser@5.47.1))':
-    dependencies:
-      '@tailwindcss/node': 4.2.4
-      '@tailwindcss/oxide': 4.2.4
-      tailwindcss: 4.2.4
-      vite: 5.4.21(@types/node@25.6.0)(less@4.6.4)(lightningcss@1.32.0)(sass-embedded@1.99.0)(sass@1.99.0)(stylus@0.57.0)(terser@5.47.1)
 
   '@tailwindcss/vite@4.2.4(vite@7.3.3(@types/node@24.12.2)(jiti@2.7.0)(less@4.6.4)(lightningcss@1.32.0)(sass-embedded@1.99.0)(sass@1.99.0)(stylus@0.57.0)(terser@5.47.1)(tsx@4.21.0)(yaml@2.8.4))':
     dependencies:
