@@ -42,6 +42,7 @@ interface GenerateBundleContext {
 }
 
 interface GenerateBundleThis {
+  addWatchFile?: (id: string) => void
   emitFile?: (emittedFile: {
     type: 'asset'
     fileName: string
@@ -249,6 +250,15 @@ function createReplayCssAsset(fileName: string, source: string): OutputAsset {
   } as OutputAsset
 }
 
+function registerGeneratorDependencies(ctx: GenerateBundleThis, dependencies: readonly string[] | undefined) {
+  if (typeof ctx.addWatchFile !== 'function') {
+    return
+  }
+  for (const dependency of dependencies ?? []) {
+    ctx.addWatchFile(dependency)
+  }
+}
+
 function hasOmittedKnownBundleFiles(
   currentBundleFiles: string[],
   previousBundleFiles: Iterable<string>,
@@ -330,6 +340,7 @@ export function createGenerateBundleHook(context: GenerateBundleContext) {
     majorVersion: number | undefined
   }>()
   return async function generateBundle(this: GenerateBundleThis, _opt: unknown, bundle: Record<string, OutputAsset | OutputChunk>) {
+    const addWatchFile = (id: string) => this.addWatchFile?.(id)
     const {
       opts,
       runtimeState,
@@ -649,6 +660,7 @@ export function createGenerateBundleHook(context: GenerateBundleContext) {
                   debug,
                 })
                 if (generated) {
+                  registerGeneratorDependencies({ addWatchFile }, generated.dependencies)
                   if (debugCssDiff) {
                     debug('css diff %s: %s', file, summarizeStringDiff(rawSource, generated.css))
                   }
@@ -863,6 +875,7 @@ export function createGenerateBundleHook(context: GenerateBundleContext) {
           const css = generated?.css ?? (await styleHandler(rawSource, cssHandlerOptions)).css
           setRememberedMainCssSignature?.(file, cssRuntimeSignature)
           if (generated) {
+            registerGeneratorDependencies({ addWatchFile }, generated.dependencies)
             recordCssAssetResult?.(file, generated.css)
             debug('css replay generated result: %s bytes=%d', file, css.length)
           }

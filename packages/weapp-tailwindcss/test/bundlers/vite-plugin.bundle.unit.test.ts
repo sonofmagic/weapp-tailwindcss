@@ -678,6 +678,10 @@ const trace = "at App.vue:4"
     const runtimeSet = new Set(['w-[100px]'])
     const rawTailwindCss = '/*! tailwindcss v4.2.4 | MIT License | https://tailwindcss.com */\n.w-\\[100px\\]{width:100px}'
     const weappCss = '.w-_b100px_B{width:100px}'
+    const dependencyFiles = [
+      path.resolve(process.cwd(), 'src/app.css'),
+      path.resolve(process.cwd(), 'tailwind.config.js'),
+    ]
     const syncMock = vi.fn(async () => runtimeSet)
     const resetMock = vi.fn(async () => undefined)
     const generateMock = vi.fn(async () => ({
@@ -685,7 +689,7 @@ const trace = "at App.vue:4"
       rawCss: rawTailwindCss,
       target: 'weapp',
       classSet: runtimeSet,
-      dependencies: [],
+      dependencies: dependencyFiles,
       sources: [],
       root: null,
     }))
@@ -744,9 +748,11 @@ const trace = "at App.vue:4"
     }
 
     const generateBundle = getGenerateBundleHandler(postPlugin)
-    await generateBundle?.call(postPlugin, {} as any, bundle)
+    const addWatchFile = vi.fn()
+    await generateBundle?.call({ ...postPlugin, addWatchFile }, {} as any, bundle)
 
     expect((bundle['app.css'] as OutputAsset).source).toBe(weappCss)
+    expect(addWatchFile.mock.calls.map(([file]) => file)).toEqual(dependencyFiles)
     expect(generateMock).toHaveBeenCalledWith(expect.objectContaining({
       candidates: runtimeSet,
     }))
@@ -1039,6 +1045,10 @@ const trace = "at App.vue:4"
     const runtimeSet = new Set(['w-[100px]'])
     const rawTailwindCss = '/*! tailwindcss v4.2.4 | MIT License | https://tailwindcss.com */\n.w-\\[100px\\]{width:100px}\n@property --tw-leading{syntax:"*";inherits:false}'
     const weappCss = '.w-_b100px_B{width:100px}'
+    const dependencyFiles = [
+      path.resolve(process.cwd(), 'src/app.css'),
+      path.resolve(process.cwd(), 'tailwind.config.js'),
+    ]
     const writeFileMock = vi.fn(async () => {
       throw new Error('bundler css output must not call writeFile')
     })
@@ -1047,7 +1057,7 @@ const trace = "at App.vue:4"
       rawCss: rawTailwindCss,
       target: 'weapp',
       classSet: runtimeSet,
-      dependencies: [],
+      dependencies: dependencyFiles,
       sources: [],
       root: null,
     }))
@@ -1123,10 +1133,12 @@ const trace = "at App.vue:4"
       },
     }
     const generateBundle = getGenerateBundleHandler(finalizer)
-    await generateBundle?.call(finalizer, {} as any, bundle)
+    const addWatchFile = vi.fn()
+    await generateBundle?.call({ ...finalizer, addWatchFile }, {} as any, bundle)
 
     const css = (bundle['pages-order/pages/home/home.wxss'] as OutputAsset).source.toString()
     expect(css).toBe(weappCss)
+    expect(addWatchFile.mock.calls.map(([file]) => file)).toEqual(dependencyFiles)
     expect(css).not.toContain('@property')
     expect(css).not.toContain('tailwindcss v')
     expect(generateMock).toHaveBeenCalledTimes(1)

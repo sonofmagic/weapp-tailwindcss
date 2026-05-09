@@ -221,6 +221,7 @@ describe('bundlers/shared generator css', () => {
       css: `${weappCss}\nlegacy:.card{color:red}`,
       target: 'weapp',
       source: 'generator',
+      dependencies: [],
     })
     expect(generateMock).toHaveBeenCalledWith(expect.objectContaining({
       candidates: runtimeSet,

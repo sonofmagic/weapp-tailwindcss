@@ -24,6 +24,19 @@ interface CssFinalizerContext {
   rememberMainCssSource?: (file: string, rawSource: string) => void
 }
 
+interface CssFinalizerThis {
+  addWatchFile?: (id: string) => void
+}
+
+function registerGeneratorDependencies(ctx: CssFinalizerThis, dependencies: readonly string[] | undefined) {
+  if (typeof ctx.addWatchFile !== 'function') {
+    return
+  }
+  for (const dependency of dependencies ?? []) {
+    ctx.addWatchFile(dependency)
+  }
+}
+
 function createCssHandlerOptions(
   opts: InternalUserDefinedOptions,
   majorVersion: number | undefined,
@@ -66,7 +79,7 @@ export function createViteCssFinalizerOutputPlugin(context: CssFinalizerContext)
     name: 'weapp-tailwindcss:adaptor:css-finalizer',
     generateBundle: {
       order: 'post',
-      async handler(_options, bundle: OutputBundle) {
+      async handler(this: CssFinalizerThis, _options, bundle: OutputBundle) {
         const {
           opts,
           runtimeState,
@@ -139,6 +152,7 @@ export function createViteCssFinalizerOutputPlugin(context: CssFinalizerContext)
             : undefined
           const nextCss = generated?.css ?? (await opts.styleHandler(rawSource, cssHandlerOptions)).css
           if (generated) {
+            registerGeneratorDependencies(this, generated.dependencies)
             debug('css finalizer generated result: %s bytes=%d', file, nextCss.length)
             recordCssAssetResult?.(file, nextCss)
             if (cssHandlerOptions.isMainChunk) {

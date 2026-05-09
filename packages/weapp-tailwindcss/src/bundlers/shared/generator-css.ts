@@ -112,6 +112,7 @@ export interface GenerateCssByGeneratorResult {
   css: string
   target: string
   source: 'generator' | 'generator-forced'
+  dependencies: string[]
 }
 
 export function createCssAppend(base: string, extra: string) {
@@ -1367,6 +1368,7 @@ export async function generateCssByGenerator(
               css: finalizeMiniProgramGeneratorCss(css, generated.target),
               target: generated.target,
               source: 'generator',
+              dependencies: generated.dependencies,
             }
           }
           if (generated.target === 'weapp') {
@@ -1406,6 +1408,7 @@ export async function generateCssByGenerator(
         css: finalizeMiniProgramGeneratorCss(css, generated.target),
         target: generated.target,
         source: 'generator',
+        dependencies: generated.dependencies,
       }
     }
 
@@ -1440,6 +1443,7 @@ export async function generateCssByGenerator(
       css: finalizeMiniProgramGeneratorCss(css, generated.target),
       target: generated.target,
       source: generatorOptions.mode === 'force' ? 'generator-forced' : 'generator',
+      dependencies: generated.dependencies,
     }
   }
   catch (error) {
