@@ -2,11 +2,10 @@ import path from 'node:path'
 import { afterEach, describe, expect, it, vi } from 'vitest'
 
 function normalizeGeneratorOptions(options: any) {
-  if (options === false || options === true || options == null) {
-    return { mode: 'auto', target: 'weapp' }
+  if (options == null) {
+    return { target: 'weapp' }
   }
   return {
-    mode: options.mode ?? 'auto',
     target: options.target ?? 'weapp',
     config: options.config,
     styleOptions: options.styleOptions,
@@ -112,10 +111,6 @@ describe('bundlers/shared generator css', () => {
     const styleHandler = vi.fn(async (code: string) => ({ css: code }))
     const result = await generateCssByGenerator({
       opts: {
-        generator: {
-          mode: 'force',
-          target: 'weapp',
-        },
         styleHandler,
       } as any,
       runtimeState: {
@@ -185,7 +180,6 @@ describe('bundlers/shared generator css', () => {
     const styleHandler = vi.fn(async (code: string) => ({ css: `legacy:${code}` }))
     const result = await generateCssByGenerator({
       opts: {
-        generator: true,
         styleHandler,
       } as any,
       runtimeState: {
@@ -263,7 +257,6 @@ describe('bundlers/shared generator css', () => {
     const styleHandler = vi.fn(async (code: string) => ({ css: code }))
     const result = await generateCssByGenerator({
       opts: {
-        generator: true,
         styleHandler,
       } as any,
       runtimeState: {
@@ -349,7 +342,6 @@ describe('bundlers/shared generator css', () => {
     const styleHandler = vi.fn(async (code: string) => ({ css: code }))
     const result = await generateCssByGenerator({
       opts: {
-        generator: true,
         styleHandler,
       } as any,
       runtimeState: {
@@ -460,10 +452,6 @@ describe('bundlers/shared generator css', () => {
     }))
     const result = await generateCssByGenerator({
       opts: {
-        generator: {
-          mode: 'force',
-          target: 'weapp',
-        },
         styleHandler,
       } as any,
       runtimeState: {
@@ -547,10 +535,6 @@ describe('bundlers/shared generator css', () => {
     const styleHandler = vi.fn(async (code: string) => ({ css: code.replaceAll('rem', 'rpx') }))
     const result = await generateCssByGenerator({
       opts: {
-        generator: {
-          mode: 'force',
-          target: 'weapp',
-        },
         styleHandler,
       } as any,
       runtimeState: {
@@ -619,10 +603,6 @@ describe('bundlers/shared generator css', () => {
     const styleHandler = vi.fn(async (code: string) => ({ css: code }))
     const result = await generateCssByGenerator({
       opts: {
-        generator: {
-          mode: 'force',
-          target: 'weapp',
-        },
         styleHandler,
       } as any,
       runtimeState: {
@@ -656,7 +636,7 @@ describe('bundlers/shared generator css', () => {
       debug: vi.fn(),
     })
 
-    expect(result?.source).toBe('generator-forced')
+    expect(result?.source).toBe('generator')
     expect(result?.css).toContain('.container')
     expect(result?.css).toContain('.other{color:red}')
   })
@@ -703,7 +683,6 @@ describe('bundlers/shared generator css', () => {
     const styleHandler = vi.fn(async (code: string) => ({ css: `legacy:${code}` }))
     const result = await generateCssByGenerator({
       opts: {
-        generator: true,
         rem2rpx: true,
         px2rpx: {
           designWidth: 750,
@@ -803,10 +782,6 @@ describe('bundlers/shared generator css', () => {
     const styleHandler = vi.fn(async (code: string) => ({ css: code }))
     const result = await generateCssByGenerator({
       opts: {
-        generator: {
-          mode: 'force',
-          target: 'weapp',
-        },
         styleHandler,
       } as any,
       runtimeState: {
@@ -878,7 +853,6 @@ describe('bundlers/shared generator css', () => {
     const styleHandler = vi.fn(async (code: string) => ({ css: `user:${code}` }))
     const result = await generateCssByGenerator({
       opts: {
-        generator: true,
         styleHandler,
       } as any,
       runtimeState: {
@@ -957,7 +931,6 @@ describe('bundlers/shared generator css', () => {
     const styleHandler = vi.fn(async (code: string) => ({ css: `user:${code}` }))
     const result = await generateCssByGenerator({
       opts: {
-        generator: true,
         styleHandler,
       } as any,
       runtimeState: {
@@ -1031,10 +1004,6 @@ describe('bundlers/shared generator css', () => {
     const styleHandler = vi.fn(async (code: string) => ({ css: `user:${code}` }))
     const result = await generateCssByGenerator({
       opts: {
-        generator: {
-          mode: 'force',
-          target: 'weapp',
-        },
         styleHandler,
       } as any,
       runtimeState: {
@@ -1120,10 +1089,6 @@ describe('bundlers/shared generator css', () => {
     const styleHandler = vi.fn(async (code: string) => ({ css: `user:${code}` }))
     const result = await generateCssByGenerator({
       opts: {
-        generator: {
-          mode: 'force',
-          target: 'weapp',
-        },
         styleHandler,
       } as any,
       runtimeState: {
@@ -1170,10 +1135,6 @@ describe('bundlers/shared generator css', () => {
     const styleHandler = vi.fn(async (code: string) => ({ css: `legacy:${code}` }))
     const result = await generateCssByGenerator({
       opts: {
-        generator: {
-          mode: 'force',
-          target: 'weapp',
-        },
         styleHandler,
       } as any,
       runtimeState: {
@@ -1235,7 +1196,6 @@ describe('bundlers/shared generator css', () => {
     const result = await generateCssByGenerator({
       opts: {
         generator: {
-          mode: 'auto',
           target: 'weapp',
         },
         styleHandler,
@@ -1310,10 +1270,6 @@ describe('bundlers/shared generator css', () => {
     const styleHandler = vi.fn(async (code: string) => ({ css: `legacy:${code}` }))
     const result = await generateCssByGenerator({
       opts: {
-        generator: {
-          mode: 'force',
-          target: 'weapp',
-        },
         styleHandler,
       } as any,
       runtimeState: {
@@ -1397,7 +1353,6 @@ describe('bundlers/shared generator css', () => {
     const result = await generateCssByGenerator({
       opts: {
         generator: {
-          mode: 'auto',
           target: 'weapp',
         },
         styleHandler,
@@ -1502,7 +1457,6 @@ describe('bundlers/shared generator css', () => {
     const result = await generateCssByGenerator({
       opts: {
         generator: {
-          mode: 'auto',
           target: 'weapp',
         },
         styleHandler,
@@ -1587,7 +1541,6 @@ describe('bundlers/shared generator css', () => {
     const result = await generateCssByGenerator({
       opts: {
         generator: {
-          mode: 'force',
           target: 'weapp',
           config: configFile,
         },
@@ -1700,7 +1653,6 @@ describe('bundlers/shared generator css', () => {
     const result = await generateCssByGenerator({
       opts: {
         generator: {
-          mode: 'auto',
           target: 'weapp',
         },
         styleHandler,
@@ -1840,10 +1792,6 @@ describe('bundlers/shared generator css', () => {
     const styleHandler = vi.fn(async (code: string) => ({ css: `legacy:${code}` }))
     const result = await generateCssByGenerator({
       opts: {
-        generator: {
-          mode: 'force',
-          target: 'weapp',
-        },
         styleHandler,
       } as any,
       runtimeState: {
@@ -1913,10 +1861,6 @@ describe('bundlers/shared generator css', () => {
     const styleHandler = vi.fn(async (code: string) => ({ css: `legacy:${code}` }))
     const result = await generateCssByGenerator({
       opts: {
-        generator: {
-          mode: 'force',
-          target: 'weapp',
-        },
         styleHandler,
       } as any,
       runtimeState: {
@@ -1984,10 +1928,6 @@ describe('bundlers/shared generator css', () => {
     const styleHandler = vi.fn(async (code: string) => ({ css: `legacy:${code}` }))
     const result = await generateCssByGenerator({
       opts: {
-        generator: {
-          mode: 'force',
-          target: 'weapp',
-        },
         styleHandler,
       } as any,
       runtimeState: {
@@ -2058,10 +1998,6 @@ describe('bundlers/shared generator css', () => {
     const styleHandler = vi.fn(async (code: string) => ({ css: `user:${code}` }))
     const result = await generateCssByGenerator({
       opts: {
-        generator: {
-          mode: 'force',
-          target: 'weapp',
-        },
         styleHandler,
       } as any,
       runtimeState: {
@@ -2134,10 +2070,6 @@ describe('bundlers/shared generator css', () => {
     const styleHandler = vi.fn(async (code: string) => ({ css: `user:${code}` }))
     const result = await generateCssByGenerator({
       opts: {
-        generator: {
-          mode: 'force',
-          target: 'weapp',
-        },
         styleHandler,
       } as any,
       runtimeState: {
@@ -2218,10 +2150,6 @@ describe('bundlers/shared generator css', () => {
     const styleHandler = vi.fn(async (code: string) => ({ css: `legacy:${code}` }))
     const result = await generateCssByGenerator({
       opts: {
-        generator: {
-          mode: 'force',
-          target: 'weapp',
-        },
         styleHandler,
       } as any,
       runtimeState: {
@@ -2297,10 +2225,6 @@ describe('bundlers/shared generator css', () => {
     const styleHandler = vi.fn(async (code: string) => ({ css: `legacy:${code}` }))
     const result = await generateCssByGenerator({
       opts: {
-        generator: {
-          mode: 'force',
-          target: 'weapp',
-        },
         styleHandler,
       } as any,
       runtimeState: {
@@ -2383,10 +2307,6 @@ describe('bundlers/shared generator css', () => {
     const styleHandler = vi.fn(async () => ({ css: legacyCss }))
     const result = await generateCssByGenerator({
       opts: {
-        generator: {
-          mode: 'force',
-          target: 'weapp',
-        },
         styleHandler,
       } as any,
       runtimeState: {
@@ -2477,10 +2397,6 @@ describe('bundlers/shared generator css', () => {
     const styleHandler = vi.fn(async () => ({ css: legacyCss }))
     const result = await generateCssByGenerator({
       opts: {
-        generator: {
-          mode: 'force',
-          target: 'weapp',
-        },
         styleHandler,
       } as any,
       runtimeState: {
@@ -2586,10 +2502,6 @@ describe('bundlers/shared generator css', () => {
     const styleHandler = vi.fn(async (code: string) => ({ css: code }))
     const result = await generateCssByGenerator({
       opts: {
-        generator: {
-          mode: 'force',
-          target: 'weapp',
-        },
         styleHandler,
       } as any,
       runtimeState: {
@@ -2690,10 +2602,6 @@ describe('bundlers/shared generator css', () => {
     const styleHandler = vi.fn(async (code: string) => ({ css: code }))
     const result = await generateCssByGenerator({
       opts: {
-        generator: {
-          mode: 'force',
-          target: 'weapp',
-        },
         styleHandler,
       } as any,
       runtimeState: {
@@ -2780,10 +2688,6 @@ describe('bundlers/shared generator css', () => {
     const { generateCssByGenerator } = await import('@/bundlers/shared/generator-css')
     const result = await generateCssByGenerator({
       opts: {
-        generator: {
-          mode: 'force',
-          target: 'weapp',
-        },
         styleHandler: vi.fn(async (code: string) => ({ css: code })),
       } as any,
       runtimeState: {
@@ -2855,10 +2759,6 @@ describe('bundlers/shared generator css', () => {
     const styleHandler = vi.fn(async (code: string) => ({ css: `legacy:${code}` }))
     const result = await generateCssByGenerator({
       opts: {
-        generator: {
-          mode: 'force',
-          target: 'weapp',
-        },
         styleHandler,
       } as any,
       runtimeState: {
@@ -2928,10 +2828,6 @@ describe('bundlers/shared generator css', () => {
     const styleHandler = vi.fn(async (code: string) => ({ css: `legacy:${code}` }))
     const result = await generateCssByGenerator({
       opts: {
-        generator: {
-          mode: 'force',
-          target: 'weapp',
-        },
         styleHandler,
       } as any,
       runtimeState: {
@@ -3014,10 +2910,6 @@ describe('bundlers/shared generator css', () => {
     }))
     const result = await generateCssByGenerator({
       opts: {
-        generator: {
-          mode: 'force',
-          target: 'weapp',
-        },
         styleHandler,
       } as any,
       runtimeState: {

@@ -5,7 +5,6 @@ import type {
   TailwindV4SourceOptions,
   WeappTailwindcssGenerateOptions,
   WeappTailwindcssGenerateResult,
-  WeappTailwindcssGeneratorTarget,
   WeappTailwindcssGeneratorUserOptions,
 } from './generator'
 import { readFile, stat } from 'node:fs/promises'
@@ -68,10 +67,6 @@ type LegacyContentConfig
 
 export interface WeappTailwindcssPostcssPluginOptions extends TailwindV4SourceOptions {
   generator?: WeappTailwindcssGeneratorUserOptions
-  /**
-   * @deprecated 请改用 `generator.target`。小程序构建默认就是 `weapp`，普通项目不需要显式配置。
-   */
-  target?: WeappTailwindcssGeneratorTarget
   version?: 3 | 4
   config?: string
   postcssPlugin?: string
@@ -417,7 +412,6 @@ export const weappTailwindcssPostcssPlugin: PluginCreator<WeappTailwindcssPostcs
         scanSources,
         sources,
         styleOptions,
-        target: legacyTarget,
         ...sourceOptions
       } = options
       const generatorOptions = normalizeWeappTailwindcssGeneratorOptions(userGeneratorOptions)
@@ -460,7 +454,7 @@ export const weappTailwindcssPostcssPlugin: PluginCreator<WeappTailwindcssPostcs
           ...styleOptions,
         },
         tailwindcssV3Compatibility: generatorOptions.tailwindcssV3Compatibility,
-        target: legacyTarget ?? generatorOptions.target,
+        target: generatorOptions.target,
       }
       const generated = await generator.generate(generateOptions)
 

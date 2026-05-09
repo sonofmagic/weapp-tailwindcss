@@ -20,7 +20,7 @@ import { getRuntimeClassSetSignature } from '@/tailwindcss/runtime/cache'
 import { createUniAppXPlugins } from '@/uni-app-x'
 import { isUniAppXEnabled } from '@/uni-app-x/options'
 import { resolveUniUtsPlatform } from '@/utils'
-import { resolveDisabledOptions } from '@/utils/disabled'
+import { resolvePluginDisabledState } from '@/utils/disabled'
 import { resolvePackageDir } from '@/utils/resolve-package'
 import { normalizeOutputPathKey } from '../shared/module-graph'
 import { createViteCssFinalizerOutputPlugin } from './css-finalizer'
@@ -176,14 +176,12 @@ function resolveImplicitTailwindcssBasedirFromViteRoot(root: string) {
 }
 
 /**
- * @name UnifiedViteWeappTailwindcssPlugin
+ * @name WeappTailwindcss
  * @description uni-app vite / uni-app-x 版本插件
  * @link https://tw.icebreaker.top/docs/quick-start/frameworks/uni-app-vite
- * @deprecated 请改用 `import { WeappTailwindcss } from 'weapp-tailwindcss/vite'`。
  */
-export function UnifiedViteWeappTailwindcssPlugin(options: UserDefinedOptions = {}): Plugin[] | undefined {
+export function WeappTailwindcss(options: UserDefinedOptions = {}): Plugin[] | undefined {
   const hasExplicitAppType = typeof options.appType === 'string' && options.appType.trim().length > 0
-  const rewriteCssImportsSpecified = Object.hasOwn(options, 'rewriteCssImports')
   const hasExplicitTailwindcssBasedir = typeof options.tailwindcssBasedir === 'string'
     && options.tailwindcssBasedir.trim().length > 0
   const opts = getCompilerContext(options)
@@ -201,12 +199,10 @@ export function UnifiedViteWeappTailwindcssPlugin(options: UserDefinedOptions = 
   } = opts
   const uniAppXEnabled = isUniAppXEnabled(uniAppX)
 
-  const disabledOptions = resolveDisabledOptions(disabled)
+  const disabledOptions = resolvePluginDisabledState(disabled)
   const tailwindcssMajorVersion = initialTwPatcher.majorVersion ?? 0
   const shouldOwnTailwindGeneration = !disabledOptions.plugin
-  const shouldRewriteCssImports = opts.rewriteCssImports !== false
-    && !disabledOptions.rewriteCssImports
-    && (rewriteCssImportsSpecified || tailwindcssMajorVersion >= 4)
+  const shouldRewriteCssImports = tailwindcssMajorVersion >= 4
   const rewritePlugins = createRewriteCssImportsPlugins({
     getAppType: () => opts.appType,
     rootImport: shouldOwnTailwindGeneration
@@ -257,7 +253,6 @@ export function UnifiedViteWeappTailwindcssPlugin(options: UserDefinedOptions = 
       customAttributesEntities,
       disabledDefaultTemplateHandler,
       configPath,
-      rewriteCssImports: shouldRewriteCssImports,
     })
     const changed = signature !== runtimeRefreshSignature || optionsKey !== runtimeRefreshOptionsKey
     runtimeRefreshSignature = signature

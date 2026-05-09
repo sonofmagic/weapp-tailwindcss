@@ -76,11 +76,11 @@ const OFFICIAL_PLUGIN_CAPABILITIES = [
     generatorVite: "target: 'weapp'",
   },
   {
-    name: '强制失败',
+    name: '默认生成失败处理',
     officialPostcss: '构建失败',
     officialVite: '构建失败',
-    generatorPostcss: "mode: 'force'",
-    generatorVite: "mode: 'force'",
+    generatorPostcss: '默认生成模式',
+    generatorVite: '默认生成模式',
   },
   {
     name: '依赖追踪 / HMR',
@@ -137,7 +137,6 @@ describe('v5 official tailwind plugin parity', () => {
         weappTailwindcss({
           packageName: 'tailwindcss4',
           generator: {
-            mode: 'force',
             target: 'web',
           },
         }),
@@ -179,7 +178,7 @@ describe('v5 official tailwind plugin parity', () => {
       expect.objectContaining({ name: '候选类生成' }),
       expect.objectContaining({ name: 'Web 产物' }),
       expect.objectContaining({ name: '小程序产物' }),
-      expect.objectContaining({ name: '强制失败' }),
+      expect.objectContaining({ name: '默认生成失败处理' }),
       expect.objectContaining({ name: '依赖追踪 / HMR' }),
     ])
 

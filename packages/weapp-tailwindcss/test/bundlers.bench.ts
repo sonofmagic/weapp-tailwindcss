@@ -12,7 +12,7 @@ import gulpPostcss from 'gulp-postcss'
 import postcss from 'postcss'
 import { bench, describe } from 'vitest'
 import { compile, createLoader, getMemfsCompiler5 } from 'webpack-build-utils'
-import { UnifiedViteWeappTailwindcssPlugin } from '@/bundlers/vite'
+import { WeappTailwindcss } from '@/bundlers/vite'
 import { vitePluginName } from '@/constants'
 import { createPlugins } from '@/gulp'
 import { UnifiedWebpackPluginV5 } from '@/webpack'
@@ -127,7 +127,7 @@ async function runWebpackBuild(mode: Configuration['mode']) {
 }
 
 async function runVitePluginPipeline() {
-  const plugins = UnifiedViteWeappTailwindcssPlugin({
+  const plugins = WeappTailwindcss({
     tailwindcssBasedir: viteFixtureRoot,
     mainCssChunkMatcher: name => name.endsWith('index.css'),
   }) ?? []

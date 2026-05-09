@@ -110,7 +110,6 @@ describe('v5 Tailwind CSS v4 upgrade generator coverage', () => {
       postcss([
         weappTailwindcss({
           generator: {
-            mode: 'force',
             target: 'web',
           },
         }),
@@ -134,7 +133,6 @@ describe('v5 Tailwind CSS v4 upgrade generator coverage', () => {
 
   it('keeps postcss generator web target aligned with native Tailwind v4 defaults without scanning workspace fixtures', async () => {
     const result = await generate(UPGRADE_DEFAULTS_SOURCE_CSS, {
-      mode: 'force',
       target: 'web',
     })
 
@@ -145,7 +143,6 @@ describe('v5 Tailwind CSS v4 upgrade generator coverage', () => {
 
   it('restores Tailwind v3 default values for explicit web generator compatibility output', async () => {
     const result = await generate(UPGRADE_DEFAULTS_SOURCE_CSS, {
-      mode: 'force',
       tailwindcssV3Compatibility: true,
       target: 'web',
     })
@@ -178,7 +175,6 @@ describe('v5 Tailwind CSS v4 upgrade generator coverage', () => {
 
   it('uses Tailwind v3 compatibility defaults and colors for mini-program generator output by default', async () => {
     const result = await generate(UPGRADE_DEFAULTS_SOURCE_CSS, {
-      mode: 'force',
       target: 'weapp',
     })
     const normalized = normalizeCss(result.css)
@@ -212,7 +208,6 @@ describe('v5 Tailwind CSS v4 upgrade generator coverage', () => {
       @import "tailwindcss" source(none);
       @source inline("${TAILWIND_V3_COLOR_CASES.map(([candidate]) => candidate).join(' ')}");
     `, {
-      mode: 'force',
       target: 'weapp',
     })
 
@@ -244,7 +239,6 @@ describe('v5 Tailwind CSS v4 upgrade generator coverage', () => {
       postcss([
         weappTailwindcss({
           generator: {
-            mode: 'force',
             target: 'web',
           },
         }),
@@ -253,10 +247,6 @@ describe('v5 Tailwind CSS v4 upgrade generator coverage', () => {
       }),
       postcss([
         weappTailwindcss({
-          generator: {
-            mode: 'force',
-            target: 'weapp',
-          },
         }),
       ]).process(css, {
         from: fixture.cssEntry,
@@ -318,7 +308,6 @@ describe('v5 Tailwind CSS v4 upgrade generator coverage', () => {
       postcss([
         weappTailwindcss({
           generator: {
-            mode: 'force',
             target: 'web',
           },
         }),
@@ -328,7 +317,6 @@ describe('v5 Tailwind CSS v4 upgrade generator coverage', () => {
       postcss([
         weappTailwindcss({
           generator: {
-            mode: 'force',
             tailwindcssV3Compatibility: false,
             target: 'weapp',
           },
@@ -372,7 +360,6 @@ describe('v5 Tailwind CSS v4 upgrade generator coverage', () => {
       postcss([
         weappTailwindcss({
           generator: {
-            mode: 'force',
             target: 'web',
           },
         }),
@@ -382,7 +369,6 @@ describe('v5 Tailwind CSS v4 upgrade generator coverage', () => {
       postcss([
         weappTailwindcss({
           generator: {
-            mode: 'force',
             tailwindcssV3Compatibility: false,
             target: 'weapp',
           },
@@ -425,7 +411,6 @@ describe('v5 Tailwind CSS v4 upgrade generator coverage', () => {
       postcss([
         weappTailwindcss({
           generator: {
-            mode: 'force',
             target: 'web',
           },
         }),
@@ -435,7 +420,6 @@ describe('v5 Tailwind CSS v4 upgrade generator coverage', () => {
       postcss([
         weappTailwindcss({
           generator: {
-            mode: 'force',
             tailwindcssV3Compatibility: false,
             target: 'weapp',
           },
@@ -477,7 +461,6 @@ describe('v5 Tailwind CSS v4 upgrade generator coverage', () => {
       postcss([
         weappTailwindcss({
           generator: {
-            mode: 'force',
             target: 'web',
           },
         }),
@@ -486,10 +469,6 @@ describe('v5 Tailwind CSS v4 upgrade generator coverage', () => {
       }),
       postcss([
         weappTailwindcss({
-          generator: {
-            mode: 'force',
-            target: 'weapp',
-          },
         }),
       ]).process(css, {
         from: fixture.cssEntry,
@@ -556,7 +535,6 @@ describe('v5 Tailwind CSS v4 upgrade generator coverage', () => {
       postcss([
         weappTailwindcss({
           generator: {
-            mode: 'force',
             target: 'web',
           },
         }),
@@ -566,7 +544,6 @@ describe('v5 Tailwind CSS v4 upgrade generator coverage', () => {
       postcss([
         weappTailwindcss({
           generator: {
-            mode: 'force',
             tailwindcssV3Compatibility: false,
             target: 'weapp',
           },
@@ -641,7 +618,6 @@ describe('v5 Tailwind CSS v4 upgrade generator coverage', () => {
       postcss([
         weappTailwindcss({
           generator: {
-            mode: 'force',
             target: 'web',
           },
         }),
@@ -651,7 +627,6 @@ describe('v5 Tailwind CSS v4 upgrade generator coverage', () => {
       postcss([
         weappTailwindcss({
           generator: {
-            mode: 'force',
             tailwindcssV3Compatibility: false,
             target: 'weapp',
           },
@@ -691,7 +666,6 @@ describe('v5 Tailwind CSS v4 upgrade generator coverage', () => {
 
   it('can opt mini-program generator output into native Tailwind v4 defaults', async () => {
     const result = await generate(UPGRADE_DEFAULTS_SOURCE_CSS, {
-      mode: 'force',
       tailwindcssV3Compatibility: false,
       target: 'weapp',
     })
@@ -718,7 +692,6 @@ describe('v5 Tailwind CSS v4 upgrade generator coverage', () => {
       }
       @source inline("bg-red-500 text-blue-500");
     `, {
-      mode: 'force',
       target: 'weapp',
     })
 
@@ -740,7 +713,6 @@ describe('v5 Tailwind CSS v4 upgrade generator coverage', () => {
       }
       @source inline("space-y-4 space-y-reverse divide-y divide-y-4 divide-y-reverse divide-dashed divide-red-500");
     `, {
-      mode: 'force',
       target: 'weapp',
     })
     const css = normalizeCss(result.css)
@@ -774,7 +746,6 @@ describe('v5 Tailwind CSS v4 upgrade generator coverage', () => {
       }
       @source inline("tw:hover:!bg-brand tw:w-(--card-width) tw:before:content-['']");
     `, {
-      mode: 'force',
       target: 'weapp',
     })
     const generatedMessage = result.messages.find(message =>

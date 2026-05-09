@@ -66,7 +66,6 @@ export {
 
 export type {
   NormalizedWeappTailwindcssGeneratorOptions,
-  WeappTailwindcssGeneratorMode,
   WeappTailwindcssGeneratorOptions,
   WeappTailwindcssGeneratorUserOptions,
 } from './options'

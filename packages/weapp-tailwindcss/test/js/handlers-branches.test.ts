@@ -319,12 +319,11 @@ describe('replaceHandleValue branch coverage', () => {
     expect(token).toBeUndefined()
   })
 
-  it('does not transform non-set candidates even when stale fallback is enabled', () => {
+  it('does not transform non-set candidates', () => {
     const literal = getLiteralPath('const dotted = \'space-y-2.5\'', 'StringLiteral')
     const token = replaceHandleValue(literal, {
       escapeMap: MappingChars2String,
       classNameSet: new Set(['space-y-2']),
-      staleClassNameFallback: true,
       needEscaped: true,
     })
 
@@ -336,7 +335,6 @@ describe('replaceHandleValue branch coverage', () => {
     const token = replaceHandleValue(literal, {
       escapeMap: MappingChars2String,
       classNameSet: new Set(['bg-red-500']),
-      staleClassNameFallback: true,
       needEscaped: true,
     })
 
@@ -353,34 +351,31 @@ describe('replaceHandleValue branch coverage', () => {
     expect(token).toBeUndefined()
   })
 
-  it('does not escape arbitrary classes when classNameSet is missing even if stale fallback is enabled', () => {
+  it('does not escape arbitrary classes when classNameSet is missing', () => {
     const literal = getLiteralPath('const arbitrary = \'w-[100px]\'', 'StringLiteral')
     const token = replaceHandleValue(literal, {
       escapeMap: MappingChars2String,
-      staleClassNameFallback: true,
       needEscaped: true,
     })
 
     expect(token).toBeUndefined()
   })
 
-  it('does not escape arbitrary classes when classNameSet is empty even if stale fallback is enabled', () => {
+  it('does not escape arbitrary classes when classNameSet is empty', () => {
     const literal = getLiteralPath('const arbitrary = \'bg-[length:200rpx_100rpx]\'', 'StringLiteral')
     const token = replaceHandleValue(literal, {
       escapeMap: MappingChars2String,
       classNameSet: new Set<string>(),
-      staleClassNameFallback: true,
       needEscaped: true,
     })
 
     expect(token).toBeUndefined()
   })
 
-  it('still honours jsPreserveClass when stale fallback runs without classNameSet', () => {
+  it('still honours jsPreserveClass when classNameSet is missing', () => {
     const literal = getLiteralPath('const safe = \'biz-token-[alpha]\'', 'StringLiteral')
     const token = replaceHandleValue(literal, {
       escapeMap: MappingChars2String,
-      staleClassNameFallback: true,
       jsPreserveClass: candidate => candidate.startsWith('biz-token'),
       needEscaped: true,
     })

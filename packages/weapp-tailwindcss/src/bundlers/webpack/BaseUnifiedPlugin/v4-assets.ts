@@ -34,16 +34,6 @@ interface WebpackV4AssetCompilation {
   updateAsset: (file: string, source: WebpackV4AssetSource) => void
 }
 
-function resolveWebpackStaleClassNameFallback(
-  option: InternalUserDefinedOptions['staleClassNameFallback'],
-  _compiler: Compiler,
-) {
-  if (typeof option === 'boolean') {
-    return option
-  }
-  return false
-}
-
 function toWebpackV4AssetCompilation(compilation: unknown): WebpackV4AssetCompilation {
   return compilation as WebpackV4AssetCompilation
 }
@@ -184,7 +174,6 @@ export function setupWebpackV4EmitHook(options: SetupWebpackV4EmitHookOptions) {
       cssUserHandlerOptionsCache.set(cacheKey, created)
       return created
     }
-    const staleClassNameFallback = resolveWebpackStaleClassNameFallback(compilerOptions.staleClassNameFallback, compiler)
     const runtimeSet = await ensureRuntimeClassSet(runtimeState, {
       // webpack 的 script-only 热更新可能不会触发 runtime classset loader，
       // 这里强制收集可避免沿用上轮 class set，保证 JS 仅按最新集合精确命中。
@@ -264,7 +253,6 @@ export function setupWebpackV4EmitHook(options: SetupWebpackV4EmitHookOptions) {
               const currentAsset = assetCompilation.assets[file]
               const currentSource = currentAsset ? readWebpackV4AssetSource(currentAsset) : ''
               const handlerOptions = {
-                staleClassNameFallback,
                 tailwindcssMajorVersion: runtimeState.twPatcher.majorVersion,
                 filename: absoluteFile,
                 moduleGraph: moduleGraphOptions,

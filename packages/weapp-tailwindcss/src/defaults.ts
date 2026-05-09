@@ -107,7 +107,6 @@ export function getDefaultOptions(): UserDefinedOptions {
     cssChildCombinatorReplaceValue: ['view', 'text'],
     inlineWxs: false,
     injectAdditionalCssVarScope: false,
-    rewriteCssImports: true,
     jsPreserveClass: (keyword) => {
       /**
        * 默认保留 keyword
@@ -117,7 +116,6 @@ export function getDefaultOptions(): UserDefinedOptions {
       }
       return false
     },
-    staleClassNameFallback: undefined,
     disabledDefaultTemplateHandler: false,
     cssSelectorReplacement: {
       root: ['page', '.tw-root', 'wx-root-portal-content'],
@@ -139,7 +137,6 @@ export function getDefaultOptions(): UserDefinedOptions {
     ignoreTaggedTemplateExpressionIdentifiers: ['weappTwIgnore'],
     replaceRuntimePackages: false,
     generator: {
-      mode: 'auto',
       target: 'weapp',
     },
     tailwindcssPatcherOptions: {

@@ -9,9 +9,8 @@ import { isMpx, setupMpxTailwindcssRedirect } from '@/shared/mpx'
 import { setupPatchRecorder } from '@/tailwindcss/recorder'
 import { ensureRuntimeClassSet } from '@/tailwindcss/runtime'
 import { getRuntimeClassSetSignature } from '@/tailwindcss/runtime/cache'
-import { resolveDisabledOptions } from '@/utils/disabled'
+import { resolvePluginDisabledState } from '@/utils/disabled'
 import { resolvePackageDir } from '@/utils/resolve-package'
-import { applyTailwindcssCssImportRewrite } from '../shared/css-imports'
 import { setupWebpackV4EmitHook } from './v4-assets'
 import { setupWebpackV4Loaders } from './v4-loaders'
 
@@ -40,23 +39,15 @@ export class UnifiedWebpackPluginV4 implements IBaseWebpackPlugin {
       disabled,
       onLoad,
       runtimeLoaderPath,
-      runtimeCssImportRewriteLoaderPath,
       twPatcher: initialTwPatcher,
       refreshTailwindcssPatcher,
     } = this.options
 
-    const disabledOptions = resolveDisabledOptions(disabled)
+    const disabledOptions = resolvePluginDisabledState(disabled)
     const isTailwindcssV4 = (initialTwPatcher.majorVersion ?? 0) >= 4
     const shouldRewriteCssImports = isTailwindcssV4
-      && this.options.rewriteCssImports !== false
-      && !disabledOptions.rewriteCssImports
     const isMpxApp = isMpx(this.appType)
     if (shouldRewriteCssImports) {
-      applyTailwindcssCssImportRewrite(compiler, {
-        pkgDir: weappTailwindcssPackageDir,
-        enabled: true,
-        appType: this.appType,
-      })
       setupMpxTailwindcssRedirect(weappTailwindcssPackageDir, isMpxApp)
     }
     if (disabledOptions.plugin) {
@@ -104,7 +95,6 @@ export class UnifiedWebpackPluginV4 implements IBaseWebpackPlugin {
       weappTailwindcssPackageDir,
       shouldRewriteCssImports,
       runtimeLoaderPath,
-      runtimeCssImportRewriteLoaderPath,
       getClassSetInLoader,
       debug,
     })

@@ -141,7 +141,7 @@ Tailwind CSS 生成由 `weapp-tailwindcss` 接管，不需要再把 `tailwindcss
 
 > `vite.config.ts` 只有在运行小程序的时候才会加载，`h5` 不会，所以只能通过这种方式进行 `小程序` + `h5` 双端兼容
 > 但 `Taro Vite` 当前仍然不稳定，这部分内容仅作为历史方案和排障参考，不建议作为新项目默认选型。
-> 如果你使用的是 `Taro Vite` + `tailwindcss@4`，更推荐在样式入口里直接写 `@import "weapp-tailwindcss/index.css";`，而不是依赖 `rewriteCssImports` 去把 `@import "tailwindcss";` 二次改写。这样排查样式链路会更直接。
+> 如果你使用的是 `Taro Vite` + `tailwindcss@4`，更推荐在样式入口里直接写 `@import "weapp-tailwindcss/index.css";`。这样排查样式链路会更直接。
 
 ## 视频演示
 

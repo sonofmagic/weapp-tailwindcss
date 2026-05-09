@@ -109,10 +109,12 @@ describe('v5 postcss generator', () => {
     expect(result.css).toContain('--tw-shadow: 0 1px 2px 0 var(--tw-shadow-color, rgb(0 0 0 / 0.05))')
   })
 
-  it('keeps legacy flat target option for v4 compatibility', async () => {
+  it('uses generator target option for v4 web output', async () => {
     const result = await postcss([
       weappTailwindcss({
-        target: 'web',
+        generator: {
+          target: 'web',
+        },
         packageName: 'tailwindcss4',
         candidates: ['hover:bg-blue-500', 'w-[100px]'],
         scanSources: false,
@@ -378,7 +380,6 @@ describe('v5 postcss generator', () => {
     const css = '.card { color: red; }'
     const result = await postcss([
       weappTailwindcss({
-        generator: false,
         candidates: ['w-[100px]'],
       }),
     ]).process(css, {

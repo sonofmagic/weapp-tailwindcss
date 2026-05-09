@@ -48,17 +48,6 @@ export interface UserDefinedOptionsGeneralPart {
   jsPreserveClass?: (keyword: string) => boolean | undefined
 
   /**
-   * 兼容字段：不再参与 JS 候选判定。
-   *
-   * @group 3.一般配置
-   * @remarks
-   * JS 转译统一采用 `classNameSet` 精确匹配策略，仅转换 tailwindcss-patch 提供的类名集合。
-   *
-   * @deprecated 该配置仅保留兼容旧项目，不再参与 JS 候选判定。需要处理任意值兜底时请使用 `jsArbitraryValueFallback`。
-   */
-  staleClassNameFallback?: boolean
-
-  /**
    * 控制 JS 任意值类名在 classNameSet 异常时的受控兜底策略。
    *
    * @group 3.一般配置
@@ -94,14 +83,7 @@ export interface UserDefinedOptionsGeneralPart {
    *
    * @group 3.一般配置
    * @remarks
-   * 默认值为 `{ mode: 'auto', target: 'weapp' }`。Tailwind CSS v3 和 v4 项目都会默认接管样式生成并直接输出小程序 CSS。
-   *
-   * - `false`：兼容旧配置，按默认生成模式处理。
-   * - `true`：等价于默认 `auto`，通常无需显式传入。
-   * - `{ mode: 'force' }`：强制使用生成器，失败时直接抛错，适合 CI 中验证新链路。
-   *
-   * @remarks
-   * v5 默认生成模式已经是稳定链路，`generator: true`、`generator: false`、`generator.mode` 与 `generator.target: 'weapp'` 都不再推荐出现在业务配置中。
+   * 默认值为 `{ target: 'weapp' }`。Tailwind CSS v3 和 v4 项目都会默认接管样式生成并直接输出小程序 CSS。
    */
   generator?: WeappTailwindcssGeneratorUserOptions
 
@@ -123,14 +105,6 @@ export interface UserDefinedOptionsGeneralPart {
    * @internal
    */
   runtimeLoaderPath?: string
-
-  /**
-   * 内部使用的 CSS import 重写加载器路径。
-   *
-   * @ignore
-   * @internal
-   */
-  runtimeCssImportRewriteLoaderPath?: string
 
   /**
    * 指定用于获取 Tailwind 上下文的路径。

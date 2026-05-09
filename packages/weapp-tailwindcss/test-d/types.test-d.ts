@@ -3,7 +3,6 @@ import type {
   AppType,
   CreateJsHandlerOptions,
   CssPreflightOptions,
-  DisabledOptions,
   IArbitraryValues,
   ICustomAttributes,
   ICustomAttributesEntities,
@@ -18,11 +17,10 @@ expectAssignable<AppType>('taro')
 expectAssignable<AppType>('weapp-vite')
 expectNotAssignable<AppType>('unknown')
 
-const disabledOptions: DisabledOptions = {
+const disabledOptions: UserDefinedOptions['disabled'] = {
   plugin: true,
-  rewriteCssImports: false,
 }
-expectAssignable<DisabledOptions>(disabledOptions)
+expectAssignable<UserDefinedOptions['disabled']>(disabledOptions)
 
 const customAttributesRecord: ICustomAttributes = {
   '*': ['class', /[Cc]lass/],
@@ -102,7 +100,6 @@ const advancedOptions: UserDefinedOptions = {
   cssPreflightRange: 'all',
   cssCalc: ['--spacing', /--color/],
   injectAdditionalCssVarScope: true,
-  rewriteCssImports: false,
   cssSelectorReplacement: { root: ['page'], universal: false },
   rem2rpx: true,
   px2rpx: true,

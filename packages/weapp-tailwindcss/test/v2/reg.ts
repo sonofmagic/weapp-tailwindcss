@@ -1,20 +1,13 @@
 /* eslint-disable regexp/no-super-linear-backtracking */
-// #region  deprecated
-/** @deprecated */
 export const classRegexp = /(?:class|className)=(?:["']\W+\w+\()?["']([^"]+)["']/g
-/** @deprecated */
 export const vueTemplateClassRegexp = /(?:hover-)?class=(?:["']\W+\w+\()?["']([^"]+)["']/g
 // TODO: poor perf
-/** @deprecated */
 export const tagRegexp = /<([a-z][a-z-]*)\s*(?:(([a-z][a-z-]*)(?:\s*=\s*"(.*?)")?)+\s*)?\/?\s*>/g
-/** @deprecated */
 export const tagWithClassRegexp = /<([a-z][a-z-]*)\s[^>]*?class="([^"]*)"[^>]*?\/?>/g
 
-/** @deprecated */
 export function classStringReplace(str: string, replacement: (substring: string, ...args: any[]) => string) {
   return str.replaceAll(classRegexp, replacement)
 }
-/** @deprecated */
 export function tagStringReplace(str: string, replacement: (substring: string, ...args: any[]) => string) {
   return str.replaceAll(tagRegexp, replacement)
 }

@@ -15,7 +15,7 @@ const TEST_TIMEOUT_MS = 30000
 
 async function loadUnifiedVitePlugin() {
   const mod = await import('@/bundlers/vite')
-  return mod.UnifiedViteWeappTailwindcssPlugin
+  return mod.WeappTailwindcss
 }
 
 function getResolveIdHandler(plugin: Plugin) {
@@ -30,17 +30,17 @@ function getTransformHandler(plugin: Plugin) {
     : plugin.transform?.handler?.bind(plugin)
 }
 
-describe('bundlers/vite UnifiedViteWeappTailwindcssPlugin rewrite', () => {
+describe('bundlers/vite WeappTailwindcss rewrite', () => {
   beforeEach(() => {
     vi.resetModules()
     resetVitePluginTestContext()
   })
 
   it('rewrites tailwindcss imports for css entry files by default', async () => {
-    const UnifiedViteWeappTailwindcssPlugin = await loadUnifiedVitePlugin()
+    const WeappTailwindcss = await loadUnifiedVitePlugin()
     const currentContext = getCurrentContext()
     currentContext.twPatcher.majorVersion = 4
-    const plugins = UnifiedViteWeappTailwindcssPlugin()
+    const plugins = WeappTailwindcss()
     const rewritePlugin = plugins?.find(plugin => plugin.name === `${vitePluginName}:rewrite-css-imports`)
     expect(rewritePlugin).toBeTruthy()
 
@@ -69,10 +69,10 @@ describe('bundlers/vite UnifiedViteWeappTailwindcssPlugin rewrite', () => {
   }, TEST_TIMEOUT_MS)
 
   it('transforms css source to rewrite tailwindcss @import statements', async () => {
-    const UnifiedViteWeappTailwindcssPlugin = await loadUnifiedVitePlugin()
+    const WeappTailwindcss = await loadUnifiedVitePlugin()
     const currentContext = getCurrentContext()
     currentContext.twPatcher.majorVersion = 4
-    const plugins = UnifiedViteWeappTailwindcssPlugin()
+    const plugins = WeappTailwindcss()
     const rewritePlugin = plugins?.find(plugin => plugin.name === `${vitePluginName}:rewrite-css-imports`)
     expect(rewritePlugin).toBeTruthy()
 
@@ -92,20 +92,12 @@ describe('bundlers/vite UnifiedViteWeappTailwindcssPlugin rewrite', () => {
   }, TEST_TIMEOUT_MS)
 
   it('rewrites tailwindcss root imports to generator placeholder in force generator mode', async () => {
-    const UnifiedViteWeappTailwindcssPlugin = await loadUnifiedVitePlugin()
+    const WeappTailwindcss = await loadUnifiedVitePlugin()
     const currentContext = createContext({
-      generator: {
-        mode: 'force',
-        target: 'weapp',
-      },
     })
     setCurrentContext(currentContext)
     currentContext.twPatcher.majorVersion = 4
-    const plugins = UnifiedViteWeappTailwindcssPlugin({
-      generator: {
-        mode: 'force',
-        target: 'weapp',
-      },
+    const plugins = WeappTailwindcss({
     })
     const rewritePlugin = plugins?.find(plugin => plugin.name === `${vitePluginName}:rewrite-css-imports`)
     expect(rewritePlugin).toBeTruthy()
@@ -118,10 +110,10 @@ describe('bundlers/vite UnifiedViteWeappTailwindcssPlugin rewrite', () => {
   }, TEST_TIMEOUT_MS)
 
   it('runs rewrite transform ahead of other pre plugins so tailwindcss imports are replaced first', async () => {
-    const UnifiedViteWeappTailwindcssPlugin = await loadUnifiedVitePlugin()
+    const WeappTailwindcss = await loadUnifiedVitePlugin()
     const currentContext = getCurrentContext()
     currentContext.twPatcher.majorVersion = 4
-    const plugins = UnifiedViteWeappTailwindcssPlugin()
+    const plugins = WeappTailwindcss()
     const rewritePlugin = plugins?.find(plugin => plugin.name === `${vitePluginName}:rewrite-css-imports`)
     expect(rewritePlugin).toBeTruthy()
 
@@ -179,26 +171,12 @@ describe('bundlers/vite UnifiedViteWeappTailwindcssPlugin rewrite', () => {
     expect(source.startsWith('tailwind:')).toBeTruthy()
   }, TEST_TIMEOUT_MS)
 
-  it('can disable only css import rewriting through disabled.rewriteCssImports', async () => {
-    const UnifiedViteWeappTailwindcssPlugin = await loadUnifiedVitePlugin()
-    const currentContext = createContext({ disabled: { rewriteCssImports: true } as any })
-    setCurrentContext(currentContext)
-    currentContext.twPatcher.majorVersion = 4
-    const plugins = UnifiedViteWeappTailwindcssPlugin({
-      disabled: { rewriteCssImports: true },
-    })
-    const rewritePlugin = plugins?.find(plugin => plugin.name === `${vitePluginName}:rewrite-css-imports`)
-    const postPlugin = plugins?.find(plugin => plugin.name === 'weapp-tailwindcss:adaptor:post')
-    expect(rewritePlugin).toBeUndefined()
-    expect(postPlugin).toBeTruthy()
-  }, TEST_TIMEOUT_MS)
-
   it('keeps tailwindcss imports rewritten when plugin is disabled for tailwind v4 projects', async () => {
-    const UnifiedViteWeappTailwindcssPlugin = await loadUnifiedVitePlugin()
+    const WeappTailwindcss = await loadUnifiedVitePlugin()
     const currentContext = createContext({ disabled: true })
     setCurrentContext(currentContext)
     currentContext.twPatcher.majorVersion = 4
-    const plugins = UnifiedViteWeappTailwindcssPlugin()
+    const plugins = WeappTailwindcss()
     expect(plugins?.length).toBe(1)
     const rewritePlugin = plugins?.[0]
     expect(rewritePlugin?.name).toBe(`${vitePluginName}:rewrite-css-imports`)
@@ -259,30 +237,21 @@ describe('bundlers/vite UnifiedViteWeappTailwindcssPlugin rewrite', () => {
     expect(transform?.('@import "tailwindcss";', '/src/main.ts')).toBeNull()
   })
 
-  it('can disable css import rewriting through options', async () => {
-    const UnifiedViteWeappTailwindcssPlugin = await loadUnifiedVitePlugin()
-    const currentContext = getCurrentContext()
-    ;(currentContext as any).rewriteCssImports = false
-    currentContext.twPatcher.majorVersion = 4
-    const plugins = UnifiedViteWeappTailwindcssPlugin({ rewriteCssImports: false })
-    const rewritePlugin = plugins?.find(plugin => plugin.name === `${vitePluginName}:rewrite-css-imports`)
-    expect(rewritePlugin).toBeUndefined()
-  }, TEST_TIMEOUT_MS)
-
-  it('returns undefined when disabled plugin and css rewrite are both turned off', async () => {
-    const UnifiedViteWeappTailwindcssPlugin = await loadUnifiedVitePlugin()
-    setCurrentContext(createContext({ disabled: { plugin: true, rewriteCssImports: true } as any }))
-    const plugins = UnifiedViteWeappTailwindcssPlugin({
-      disabled: { plugin: true, rewriteCssImports: true },
+  it('keeps css import rewrite plugin when main plugin is disabled for tailwind v4 projects', async () => {
+    const WeappTailwindcss = await loadUnifiedVitePlugin()
+    setCurrentContext(createContext({ disabled: { plugin: true } }))
+    getCurrentContext().twPatcher.majorVersion = 4
+    const plugins = WeappTailwindcss({
+      disabled: { plugin: true },
     })
-    expect(plugins).toBeUndefined()
+    expect(plugins?.map(plugin => plugin.name)).toEqual([`${vitePluginName}:rewrite-css-imports`])
   }, TEST_TIMEOUT_MS)
 
   it('skips css import rewrite when tailwindcss major version is below 4', async () => {
-    const UnifiedViteWeappTailwindcssPlugin = await loadUnifiedVitePlugin()
+    const WeappTailwindcss = await loadUnifiedVitePlugin()
     const currentContext = getCurrentContext()
     currentContext.twPatcher.majorVersion = 3
-    const plugins = UnifiedViteWeappTailwindcssPlugin()
+    const plugins = WeappTailwindcss()
     const rewritePlugin = plugins?.find(plugin => plugin.name === `${vitePluginName}:rewrite-css-imports`)
     expect(rewritePlugin).toBeUndefined()
   }, TEST_TIMEOUT_MS)

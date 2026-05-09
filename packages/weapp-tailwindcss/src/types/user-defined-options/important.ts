@@ -9,7 +9,6 @@ import type {
   WeappAutoprefixerOptions,
 } from '@weapp-tailwindcss/postcss/types'
 import type { TailwindCssPatchOptions } from 'tailwindcss-patch'
-import type { DisabledOptions } from '../disabled-options'
 import type { ICustomAttributes } from '../shared'
 
 export interface UniAppXComponentLocalStylesOptions {
@@ -75,7 +74,7 @@ export interface UserDefinedOptionsImportantPart {
    * })
    * ```
    */
-  disabled?: boolean | DisabledOptions
+  disabled?: boolean | { plugin?: boolean }
 
   /**
    * 自定义 `wxml` 标签属性的转换规则。
@@ -208,17 +207,6 @@ export interface UserDefinedOptionsImportantPart {
    * @default false
    */
   injectAdditionalCssVarScope?: boolean
-  /**
-   * 是否在 webpack/vite 阶段自动把 CSS 中的 `@import 'tailwindcss'` 映射为 `weapp-tailwindcss`。
-   *
-   * @group 0.重要配置
-   * @remarks
-   * 开启后打包链路只会在处理样式时拦截 `tailwindcss` 的导入路径（JS/TS `import 'tailwindcss'` 不会被修改），让源码可以继续写 `@import 'tailwindcss';`，同时输出 weapp-tailwindcss 的样式。传入 `false` 可完全关闭该行为。
-   *
-   * @deprecated 该配置保留给旧项目和 IntelliSense 迁移场景。新项目推荐在运行时 CSS 入口直接写 `@import "weapp-tailwindcss/index.css"`。
-   * @default true
-   */
-  rewriteCssImports?: boolean
   /**
    * 控制 CSS 选择器的替换规则。
    *

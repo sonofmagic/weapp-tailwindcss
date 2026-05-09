@@ -226,8 +226,7 @@ function createCssTransformShareScopeKey(
   file: string,
   rawSource: string,
 ) {
-  const generatorOptions = normalizeWeappTailwindcssGeneratorOptions(opts.generator)
-  if (generatorOptions.mode === 'force' && opts.mainCssChunkMatcher(file, opts.appType)) {
+  if (opts.mainCssChunkMatcher(file, opts.appType)) {
     return `main:${normalizeOutputPathKey(file)}`
   }
   return createCssTransformShareScope(file, rawSource)
@@ -499,12 +498,7 @@ export function createGenerateBundleHook(context: GenerateBundleContext) {
     const shouldFilterTailwindV4MiniProgramCandidates = runtimeState.twPatcher.majorVersion === 4 && generatorOptions.target === 'weapp'
     await waitForSourceCandidateSyncs?.()
     const sourceCandidates = getSourceCandidates?.() ?? new Set<string>()
-    const collectedGeneratorCandidates = generatorOptions.mode === 'force'
-      ? new Set(sourceCandidates)
-      : new Set([
-          ...runtime,
-          ...sourceCandidates,
-        ])
+    const collectedGeneratorCandidates = new Set(sourceCandidates)
     const filteredGeneratorCandidates = shouldFilterTailwindV4MiniProgramCandidates
       ? filterUnsupportedMiniProgramTailwindV4Candidates(collectedGeneratorCandidates)
       : collectedGeneratorCandidates

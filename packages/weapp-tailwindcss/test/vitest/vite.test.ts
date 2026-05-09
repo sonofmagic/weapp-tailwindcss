@@ -6,7 +6,7 @@ import * as Diff from 'diff'
 import prettier from 'prettier'
 import tailwindcss from 'tailwindcss'
 import { build } from 'vite'
-import { UnifiedViteWeappTailwindcssPlugin as uvwt } from '@/bundlers/vite/index'
+import { WeappTailwindcss as weappTw } from '@/bundlers/vite/index'
 // 注意： 打包成 h5 和 app 都不需要开启插件配置
 // const isH5 = process.env.UNI_PLATFORM === 'h5'
 // const isApp = process.env.UNI_PLATFORM === 'app-plus'
@@ -102,7 +102,7 @@ describe('vite test', () => {
     let timeStart: number
     let timeTaken: number
     await assertSnap(
-      uvwt({
+      weappTw({
         htmlMatcher,
         onStart() {
           timeStart = performance.now()
@@ -120,7 +120,7 @@ describe('vite test', () => {
     let timeStart: number
     let timeTaken: number
     await assertSnap(
-      uvwt({
+      weappTw({
         htmlMatcher,
         onStart() {
           timeStart = performance.now()
@@ -139,7 +139,7 @@ describe('vite test', () => {
     let timeStart: number
     let timeTaken: number
     await assertSnap(
-      uvwt({
+      weappTw({
         htmlMatcher,
         onStart() {
           timeStart = performance.now()
@@ -152,7 +152,7 @@ describe('vite test', () => {
       }),
     )
     await assertSnap(
-      uvwt({
+      weappTw({
         htmlMatcher,
         onStart() {
           timeStart = performance.now()
@@ -170,7 +170,7 @@ describe('vite test', () => {
     let timeStart: number
     let timeTaken: number
     await assertSnap(
-      uvwt({
+      weappTw({
         disabled: true,
         htmlMatcher,
         onStart() {
@@ -186,7 +186,7 @@ describe('vite test', () => {
 
   it.skip('source map case 0', async () => {
     await assertSnap(
-      uvwt(),
+      weappTw(),
       {
         build: {
           sourcemap: true,
@@ -234,7 +234,7 @@ describe('vite test', () => {
     )
 
     await assertSnap(
-      uvwt(),
+      weappTw(),
       {
         build: {
           sourcemap: true,

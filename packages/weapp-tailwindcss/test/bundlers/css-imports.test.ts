@@ -41,7 +41,7 @@ describe('bundlers/shared css-imports', () => {
   it('rewrites buffer sources in loader for mpx', () => {
     const buf = Buffer.from('@import "tailwindcss";')
     const rewritten = transformCssImportRewriteSource(buf, {
-      rewriteCssImports: {
+      tailwindcssImportRewrite: {
         pkgDir,
         appType: 'mpx',
       },
@@ -55,7 +55,7 @@ describe('bundlers/shared css-imports', () => {
 
     expect(transformCssImportRewriteSource(source, undefined)).toBe(source)
     expect(transformCssImportRewriteSource(buffer, {
-      rewriteCssImports: {
+      tailwindcssImportRewrite: {
         pkgDir,
       },
     })).toBe(buffer)
@@ -63,7 +63,7 @@ describe('bundlers/shared css-imports', () => {
 
   it('supports url imports and trailing slash package directories', () => {
     const rewritten = transformCssImportRewriteSource('@import url("tailwindcss/theme.css");', {
-      rewriteCssImports: {
+      tailwindcssImportRewrite: {
         pkgDir: `${pkgDir}/`,
       },
     })
@@ -86,7 +86,7 @@ describe('bundlers/shared css-imports', () => {
 
     const rewritten = loader.call({
       query: {
-        rewriteCssImports: {
+        tailwindcssImportRewrite: {
           pkgDir,
         },
       },

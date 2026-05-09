@@ -18,7 +18,7 @@ const createdDirs: string[] = []
 
 async function loadUnifiedVitePlugin() {
   const mod = await import('@/bundlers/vite')
-  return mod.UnifiedViteWeappTailwindcssPlugin
+  return mod.WeappTailwindcss
 }
 
 function getGenerateBundleHandler(plugin: Plugin) {
@@ -32,8 +32,8 @@ function getTransformHandler(plugin: Plugin) {
 }
 
 async function resolvePostPlugin() {
-  const UnifiedViteWeappTailwindcssPlugin = await loadUnifiedVitePlugin()
-  const plugins = UnifiedViteWeappTailwindcssPlugin()
+  const WeappTailwindcss = await loadUnifiedVitePlugin()
+  const plugins = WeappTailwindcss()
   const sourcePlugin = plugins?.find(plugin => plugin.name === 'weapp-tailwindcss:adaptor:source-candidates') as Plugin
   const postPlugin = plugins?.find(plugin => plugin.name === 'weapp-tailwindcss:adaptor:post') as Plugin
   expect(sourcePlugin).toBeTruthy()
@@ -108,7 +108,6 @@ describe('v5 vite generator bundle', () => {
     const styleHandler = vi.fn(async (code: string) => ({ css: `user:${code}` }))
     setCurrentContext(createContext({
       generator: {
-        mode: 'force',
         target: 'weapp',
         styleOptions: {
           cssChildCombinatorReplaceValue: 'view',
@@ -200,10 +199,6 @@ describe('v5 vite generator bundle', () => {
     })
 
     setCurrentContext(createContext({
-      generator: {
-        mode: 'force',
-        target: 'weapp',
-      },
       twPatcher: {
         patch: vi.fn(),
         getClassSet: vi.fn(async () => runtimeSet),
@@ -282,7 +277,6 @@ describe('v5 vite generator bundle', () => {
 
     setCurrentContext(createContext({
       generator: {
-        mode: 'force',
         target: 'web',
       },
       twPatcher: {
@@ -361,7 +355,6 @@ describe('v5 vite generator bundle', () => {
     const styleHandler = vi.fn(async (code: string) => ({ css: `user:${code}` }))
     setCurrentContext(createContext({
       generator: {
-        mode: 'force',
       },
       styleHandler,
       twPatcher: {
@@ -442,10 +435,6 @@ describe('v5 vite generator bundle', () => {
     })
 
     setCurrentContext(createContext({
-      generator: {
-        mode: 'force',
-        target: 'weapp',
-      },
       twPatcher: {
         patch: vi.fn(),
         getClassSet: vi.fn(async () => new Set(['bg-[#445566]', 'text-red-500'])),
@@ -455,8 +444,8 @@ describe('v5 vite generator bundle', () => {
       },
     }))
 
-    const UnifiedViteWeappTailwindcssPlugin = await loadUnifiedVitePlugin()
-    const plugins = UnifiedViteWeappTailwindcssPlugin()
+    const WeappTailwindcss = await loadUnifiedVitePlugin()
+    const plugins = WeappTailwindcss()
     const sourcePlugin = plugins?.find(plugin => plugin.name === 'weapp-tailwindcss:adaptor:source-candidates') as Plugin
     const postPlugin = plugins?.find(plugin => plugin.name === 'weapp-tailwindcss:adaptor:post') as Plugin
     expect(sourcePlugin).toBeTruthy()
@@ -547,10 +536,6 @@ describe('v5 vite generator bundle', () => {
     })
 
     setCurrentContext(createContext({
-      generator: {
-        mode: 'force',
-        target: 'weapp',
-      },
       twPatcher: {
         patch: vi.fn(),
         getClassSet: vi.fn(async () => runtimeSet),
@@ -560,8 +545,8 @@ describe('v5 vite generator bundle', () => {
       },
     }))
 
-    const UnifiedViteWeappTailwindcssPlugin = await loadUnifiedVitePlugin()
-    const plugins = UnifiedViteWeappTailwindcssPlugin()
+    const WeappTailwindcss = await loadUnifiedVitePlugin()
+    const plugins = WeappTailwindcss()
     const sourcePlugin = plugins?.find(plugin => plugin.name === 'weapp-tailwindcss:adaptor:source-candidates') as Plugin
     const postPlugin = plugins?.find(plugin => plugin.name === 'weapp-tailwindcss:adaptor:post') as Plugin
     expect(sourcePlugin).toBeTruthy()
@@ -653,10 +638,6 @@ describe('v5 vite generator bundle', () => {
     })
 
     setCurrentContext(createContext({
-      generator: {
-        mode: 'force',
-        target: 'weapp',
-      },
       twPatcher: {
         patch: vi.fn(),
         getClassSet: vi.fn(async () => runtimeSet),
@@ -666,8 +647,8 @@ describe('v5 vite generator bundle', () => {
       },
     }))
 
-    const UnifiedViteWeappTailwindcssPlugin = await loadUnifiedVitePlugin()
-    const plugins = UnifiedViteWeappTailwindcssPlugin()
+    const WeappTailwindcss = await loadUnifiedVitePlugin()
+    const plugins = WeappTailwindcss()
     const sourcePlugin = plugins?.find(plugin => plugin.name === 'weapp-tailwindcss:adaptor:source-candidates') as Plugin
     const postPlugin = plugins?.find(plugin => plugin.name === 'weapp-tailwindcss:adaptor:post') as Plugin
     expect(sourcePlugin).toBeTruthy()
@@ -750,10 +731,6 @@ describe('v5 vite generator bundle', () => {
     })
 
     setCurrentContext(createContext({
-      generator: {
-        mode: 'force',
-        target: 'weapp',
-      },
       twPatcher: {
         patch: vi.fn(),
         getClassSet: vi.fn(async () => runtimeSet),
@@ -772,8 +749,8 @@ describe('v5 vite generator bundle', () => {
       },
     }))
 
-    const UnifiedViteWeappTailwindcssPlugin = await loadUnifiedVitePlugin()
-    const plugins = UnifiedViteWeappTailwindcssPlugin()
+    const WeappTailwindcss = await loadUnifiedVitePlugin()
+    const plugins = WeappTailwindcss()
     const sourcePlugin = plugins?.find(plugin => plugin.name === 'weapp-tailwindcss:adaptor:source-candidates') as Plugin
     const postPlugin = plugins?.find(plugin => plugin.name === 'weapp-tailwindcss:adaptor:post') as Plugin
     expect(sourcePlugin).toBeTruthy()
@@ -858,10 +835,6 @@ describe('v5 vite generator bundle', () => {
     })
 
     setCurrentContext(createContext({
-      generator: {
-        mode: 'force',
-        target: 'weapp',
-      },
       twPatcher: {
         patch: vi.fn(),
         getClassSet: vi.fn(async () => runtimeSet),
@@ -871,8 +844,8 @@ describe('v5 vite generator bundle', () => {
       },
     }))
 
-    const UnifiedViteWeappTailwindcssPlugin = await loadUnifiedVitePlugin()
-    const plugins = UnifiedViteWeappTailwindcssPlugin()
+    const WeappTailwindcss = await loadUnifiedVitePlugin()
+    const plugins = WeappTailwindcss()
     const sourcePlugin = plugins?.find(plugin => plugin.name === 'weapp-tailwindcss:adaptor:source-candidates') as Plugin
     const postPlugin = plugins?.find(plugin => plugin.name === 'weapp-tailwindcss:adaptor:post') as Plugin
     expect(sourcePlugin).toBeTruthy()

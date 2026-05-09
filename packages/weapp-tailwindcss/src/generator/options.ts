@@ -1,18 +1,7 @@
 import type { IStyleHandlerOptions } from '@weapp-tailwindcss/postcss/types'
 import type { WeappTailwindcssGeneratorTarget } from './types'
 
-export type WeappTailwindcssGeneratorMode = 'auto' | 'force'
-
 export interface WeappTailwindcssGeneratorOptions {
-  /**
-   * 控制 Tailwind CSS 直接生成 CSS 的启用策略。
-   *
-   * - `auto`：默认，Tailwind CSS v3 和 v4 都接管样式生成；生成失败时直接抛错。
-   * - `force`：强制使用生成器，无法生成时直接抛错。
-   *
-   * @deprecated v5 默认生成模式已经是稳定链路，普通项目不需要再显式配置 `mode`。
-   */
-  mode?: WeappTailwindcssGeneratorMode
   /**
    * 生成目标。小程序构建默认使用 `weapp`，保留 `web` 与 `tailwind` 便于多端/调试复用。
    */
@@ -33,15 +22,9 @@ export interface WeappTailwindcssGeneratorOptions {
   tailwindcssV3Compatibility?: boolean
 }
 
-/**
- * @deprecated v5 默认启用生成模式，`true` 和 `false` 都会按默认生成模式处理。请删除布尔配置，或仅在需要 `config`、`styleOptions`、`target`、`tailwindcssV3Compatibility` 时传入对象。
- */
-export type DeprecatedWeappTailwindcssGeneratorSwitch = boolean
-
-export type WeappTailwindcssGeneratorUserOptions = DeprecatedWeappTailwindcssGeneratorSwitch | WeappTailwindcssGeneratorOptions
+export type WeappTailwindcssGeneratorUserOptions = WeappTailwindcssGeneratorOptions
 
 export interface NormalizedWeappTailwindcssGeneratorOptions {
-  mode: WeappTailwindcssGeneratorMode
   target: WeappTailwindcssGeneratorTarget
   config?: string
   styleOptions?: Partial<IStyleHandlerOptions>
@@ -51,16 +34,14 @@ export interface NormalizedWeappTailwindcssGeneratorOptions {
 export function normalizeWeappTailwindcssGeneratorOptions(
   options: WeappTailwindcssGeneratorUserOptions | undefined,
 ): NormalizedWeappTailwindcssGeneratorOptions {
-  if (options === false || options === true || options == null) {
+  if (options == null) {
     return {
-      mode: 'auto',
       target: 'weapp',
       tailwindcssV3Compatibility: true,
     }
   }
 
   return {
-    mode: options.mode ?? 'auto',
     target: options.target ?? 'weapp',
     config: options.config,
     styleOptions: options.styleOptions,

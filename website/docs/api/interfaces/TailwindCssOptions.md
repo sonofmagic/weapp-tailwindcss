@@ -47,7 +47,7 @@ Optional PostCSS plugin name to use instead of the default.
 
 ### version?
 
-> `optional` **version**: `2 | 3 | 4`
+> `optional` **version**: `3 | 4 | 2`
 
 Explicit Tailwind CSS major version used by the current project. When omitted, the installed package version is inferred.
 

@@ -23,7 +23,7 @@ keywords:
 
 | 配置项 | 类型 | 默认值 | 说明 |
 | --- | --- | --- | --- |
-| [disabled](#disabled) | <code>boolean &#124; DisabledOptions</code> | — | 是否禁用此插件。 |
+| [disabled](#disabled) | <code>boolean &#124; { plugin?: boolean; }</code> | — | 是否禁用此插件。 |
 | [customAttributes](#customattributes) | <code>ICustomAttributes</code> | — | 自定义 `wxml` 标签属性的转换规则。 |
 | [customReplaceDictionary](#customreplacedictionary) | <code>Record<string, string></code> | <code>MappingChars2String</code> | 自定义 class 名称的替换字典。 |
 | [ignoreTaggedTemplateExpressionIdentifiers](#ignoretaggedtemplateexpressionidentifiers) | <code>(string &#124; RegExp)[]</code> | <code>['weappTwIgnore']</code> | 忽略指定标签模板表达式中的标识符。 |
@@ -32,20 +32,20 @@ keywords:
 | [cssPreflightRange](#csspreflightrange) | <code>"all"</code> | — | 控制 `cssPreflight` 注入的 DOM 选择器范围。 |
 | [cssCalc](#csscalc) | <code>boolean &#124; (string &#124; RegExp)[] &#124; CssCalcOptions</code> | — | 预计算 CSS 变量或 `calc` 表达式的结果。 |
 | [injectAdditionalCssVarScope](#injectadditionalcssvarscope) | <code>boolean</code> | <code>false</code> | 是否额外注入 `tailwindcss css var scope`。 |
-| [rewriteCssImports](#rewritecssimports) | <code>boolean</code> | <code>true</code> | 已废弃。旧项目中自动把 CSS 的 `@import 'tailwindcss'` 映射为 `weapp-tailwindcss`。 |
 | [cssSelectorReplacement](#cssselectorreplacement) | <code>{ root?: string &#124; string[] &#124; false; universal?: string &#124; string[] &#124; false; }</code> | 详见下方 | 控制 CSS 选择器的替换规则。 |
 | [rem2rpx](#rem2rpx) | <code>boolean &#124; Rem2rpxOptions</code> | — | rem 到 rpx 的转换配置。 |
 | [px2rpx](#px2rpx) | <code>boolean &#124; Px2rpxOptions</code> | — | px 到 rpx 的转换配置。 |
 | [unitsToPx](#unitstopx) | <code>boolean &#124; UnitsToPxOptions</code> | — | 多单位转 px 的转换配置。 |
 | [cssPresetEnv](#csspresetenv) | <code>PresetEnvOptions</code> | — | `postcss-preset-env` 的配置项。 |
-| [tailwindcss](#tailwindcss) | <code>import("/Users/yangqiming/Documents/GitHub/weapp-tailwindcss/packages/weapp-tailwindcss/src/typedoc.export").TailwindCssOptions</code> | — | 为不同版本的 Tailwind 配置行为。 |
+| [autoprefixer](#autoprefixer) | <code>WeappAutoprefixerOptions</code> | <code>Tailwind CSS v4 为 `true`，其他版本为 `false`</code> | 控制内置 autoprefixer 后处理。 |
+| [tailwindcss](#tailwindcss) | <code>import("tailwindcss-patch").TailwindCssOptions</code> | — | 为不同版本的 Tailwind 配置行为。 |
 | [cssEntries](#cssentries) | <code>string[]</code> | — | 指定 tailwindcss@4 的入口 CSS。 |
 
 ## 详细说明
 
 ### disabled
 
-> 可选 | 类型: `boolean | DisabledOptions`
+> 可选 | 类型: `boolean | { plugin?: boolean; }`
 
 是否禁用此插件。
 
@@ -234,28 +234,6 @@ cssCalc: { includeCustomProperties: ['--spacing'] }
 false
 ```
 
-### rewriteCssImports
-
-> 可选 | 类型: `boolean` | 默认值: `true`
-
-:::warning 已废弃
-
-该配置保留给旧项目和 IntelliSense 迁移场景。新项目推荐在运行时 CSS 入口直接写 `@import "weapp-tailwindcss/index.css"`，不再依赖构建阶段把 `@import "tailwindcss"` 改写到 weapp-tailwindcss。
-
-:::
-
-是否在 webpack/vite 阶段自动把 CSS 中的 `@import 'tailwindcss'` 映射为 `weapp-tailwindcss/index.css`。
-
-#### 备注
-
-开启后打包链路只会在处理样式时拦截 `tailwindcss` 的导入路径（JS/TS `import 'tailwindcss'` 不会被修改），让源码可以继续写 `@import 'tailwindcss';`，同时输出 `weapp-tailwindcss/index.css` 的样式。传入 `false` 可完全关闭该行为。
-
-#### 默认值
-
-```ts
-true
-```
-
 ### cssSelectorReplacement
 
 > 可选 | 类型: `{ root?: string | string[] | false; universal?: string | string[] | false; }` | 默认值: 详见下方
@@ -316,9 +294,34 @@ px 到 rpx 的转换配置。
 - ://preset-env.cssdb.org/
 - ://github.com/csstools/postcss-plugins/tree/main/plugin-packs/postcss-preset-env#readme
 
+### autoprefixer
+
+> 可选 | 类型: `WeappAutoprefixerOptions` | 默认值: `Tailwind CSS v4 为 \`true\`，其他版本为 \`false\`` | 版本: ^4.11.3
+
+控制内置 autoprefixer 后处理。
+
+#### 备注
+
+Tailwind CSS v4 下默认启用，用于为小程序 WebView 补齐 `-webkit-` 等兼容前缀，例如让 `bg-clip-text` 输出 `-webkit-background-clip: text`。
+Tailwind CSS v3 默认保持关闭。传入 `false` 可显式关闭，传入 `true` 或对象可手动启用或自定义 autoprefixer 参数。
+
+#### 默认值
+
+```ts
+Tailwind CSS v4 为 `true`，其他版本为 `false`
+```
+
+#### 示例
+
+```ts
+weappTailwindcss({
+  autoprefixer: false,
+})
+```
+
 ### tailwindcss
 
-> 可选 | 类型: `import("/Users/yangqiming/Documents/GitHub/weapp-tailwindcss/packages/weapp-tailwindcss/src/typedoc.export").TailwindCssOptions` | 版本: ^4.0.0
+> 可选 | 类型: `import("tailwindcss-patch").TailwindCssOptions` | 版本: ^4.0.0
 
 为不同版本的 Tailwind 配置行为。
 

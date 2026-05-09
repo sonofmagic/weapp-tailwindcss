@@ -54,14 +54,9 @@ describe('uni-app-x preset', () => {
     const { uniAppX } = await import('@/presets')
     const result = uniAppX({
       base: '/repo/uni-app-x',
-      generator: {
-        mode: 'force',
-        target: 'weapp',
-      },
     })
 
     expect(result.generator).toEqual({
-      mode: 'force',
       target: 'weapp',
     })
   })

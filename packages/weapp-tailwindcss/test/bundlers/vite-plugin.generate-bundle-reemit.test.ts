@@ -4,7 +4,7 @@ import os from 'node:os'
 import path from 'node:path'
 import { build } from 'vite'
 import { afterEach, describe, expect, it } from 'vitest'
-import { UnifiedViteWeappTailwindcssPlugin } from '@/bundlers/vite'
+import { WeappTailwindcss } from '@/bundlers/vite'
 
 const createdDirs: string[] = []
 
@@ -62,12 +62,12 @@ function normalizeCss(css: string) {
 async function runBuild(renameInGenerateBundle: boolean) {
   const root = await createFixtureRoot()
   const distDir = path.join(root, 'dist')
-  const unifiedPlugins = UnifiedViteWeappTailwindcssPlugin({
+  const weappTwPlugins = WeappTailwindcss({
     appType: 'weapp-vite',
   })
   const plugins: Plugin[] = renameInGenerateBundle
-    ? [...unifiedPlugins, renameCssToWxssPlugin()]
-    : [...unifiedPlugins]
+    ? [...weappTwPlugins, renameCssToWxssPlugin()]
+    : [...weappTwPlugins]
 
   await build({
     root,

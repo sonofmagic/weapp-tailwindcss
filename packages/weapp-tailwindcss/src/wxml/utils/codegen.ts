@@ -21,9 +21,6 @@ export function generateCode(match: string, options: ITemplateHandlerOptions = {
       return fallback.code
     }
     else {
-      /**
-       * @deprecated
-       */
       return rewriteLegacyExpression(match, options)
     }
   }

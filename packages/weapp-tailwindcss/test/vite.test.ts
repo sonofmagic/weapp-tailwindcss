@@ -7,7 +7,7 @@ import fs from 'fs-extra'
 import path from 'pathe'
 import { build } from 'vite'
 import { afterAll } from 'vitest'
-import { UnifiedViteWeappTailwindcssPlugin } from '@/vite'
+import { WeappTailwindcss } from '@/vite'
 import { fixturesRootPath } from './util'
 
 const tailwindcssBannerPattern = /\/\*! tailwindcss v[\d.]+ \| MIT License \| https:\/\/tailwindcss\.com \*\//g
@@ -54,16 +54,12 @@ describe.skipIf(isCI)('vite', () => {
         root,
         plugins: [
           twv(),
-          UnifiedViteWeappTailwindcssPlugin({
+          WeappTailwindcss({
             tailwindcssBasedir: tailwindcss4Basedir,
             tailwindcss: {
               packageName: 'tailwindcss4',
             },
             cssEntries: [path.join(root, 'index.css')],
-            generator: {
-              mode: 'force',
-              target: 'weapp',
-            },
           }),
         ],
         resolve: {
@@ -102,9 +98,8 @@ describe.skipIf(isCI)('vite', () => {
       root: path.resolve(fixturesRootPath, 'v4-vite-plugin'),
       plugins: [
         twv(),
-        UnifiedViteWeappTailwindcssPlugin({
+        WeappTailwindcss({
           tailwindcssBasedir: tailwindcss4Basedir,
-          rewriteCssImports: true,
         }),
       ],
       resolve: {
@@ -137,9 +132,8 @@ describe.skipIf(isCI)('vite', () => {
     await build({
       root,
       plugins: [
-        UnifiedViteWeappTailwindcssPlugin({
+        WeappTailwindcss({
           tailwindcssBasedir: tailwindcss4Basedir,
-          rewriteCssImports: true,
         }),
       ],
       build: {

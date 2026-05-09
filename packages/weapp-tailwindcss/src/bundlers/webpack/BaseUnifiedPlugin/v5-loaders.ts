@@ -15,7 +15,6 @@ interface SetupWebpackV5LoadersOptions {
   weappTailwindcssPackageDir: string
   shouldRewriteCssImports: boolean
   runtimeLoaderPath?: string
-  runtimeCssImportRewriteLoaderPath?: string
   getClassSetInLoader: () => Promise<void>
   getRuntimeWatchDependencies: () => {
     files: ReadonlySet<string>
@@ -32,7 +31,6 @@ export function setupWebpackV5Loaders(options: SetupWebpackV5LoadersOptions) {
     weappTailwindcssPackageDir,
     shouldRewriteCssImports,
     runtimeLoaderPath,
-    runtimeCssImportRewriteLoaderPath,
     getClassSetInLoader,
     getRuntimeWatchDependencies,
     debug,
@@ -46,8 +44,7 @@ export function setupWebpackV5Loaders(options: SetupWebpackV5LoadersOptions) {
   const runtimeClassSetLoader = runtimeLoaderPath
     ?? path.resolve(__dirname, './weapp-tw-runtime-classset-loader.js')
   const runtimeCssImportRewriteLoader = shouldRewriteCssImports
-    ? (runtimeCssImportRewriteLoaderPath
-      ?? path.resolve(__dirname, './weapp-tw-css-import-rewrite-loader.js'))
+    ? path.resolve(__dirname, './weapp-tw-css-import-rewrite-loader.js')
     : undefined
   const runtimeClassSetLoaderExists = fs.existsSync(runtimeClassSetLoader)
   const runtimeCssImportRewriteLoaderExists = runtimeCssImportRewriteLoader
@@ -66,7 +63,7 @@ export function setupWebpackV5Loaders(options: SetupWebpackV5LoadersOptions) {
   const { findRewriteAnchor, findClassSetAnchor } = createLoaderAnchorFinders(appType)
   const cssImportRewriteLoaderOptions = runtimeLoaderRewriteOptions
     ? {
-        rewriteCssImports: runtimeLoaderRewriteOptions,
+        tailwindcssImportRewrite: runtimeLoaderRewriteOptions,
       }
     : undefined
 

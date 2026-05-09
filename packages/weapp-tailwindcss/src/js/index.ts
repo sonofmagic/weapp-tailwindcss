@@ -57,7 +57,6 @@ function getOptionsFingerprint(options: IJsHandlerOptions): string {
     options.uniAppX ? '1' : '0',
     options.wrapExpression ? '1' : '0',
     String(options.tailwindcssMajorVersion ?? ''),
-    String(options.staleClassNameFallback ?? ''),
     String(options.jsArbitraryValueFallback ?? ''),
     JSON.stringify(options.arbitraryValues ?? null),
     JSON.stringify(options.ignoreCallExpressionIdentifiers ?? null),
@@ -99,7 +98,6 @@ export function createJsHandler(options: CreateJsHandlerOptions): JsHandler {
   // 预构建不可变的默认选项对象，避免每次调用都重新创建字面量。
   const defaults: IJsHandlerOptions = {
     escapeMap: options.escapeMap,
-    staleClassNameFallback: options.staleClassNameFallback,
     jsArbitraryValueFallback: options.jsArbitraryValueFallback,
     tailwindcssMajorVersion: options.tailwindcssMajorVersion,
     arbitraryValues: options.arbitraryValues,

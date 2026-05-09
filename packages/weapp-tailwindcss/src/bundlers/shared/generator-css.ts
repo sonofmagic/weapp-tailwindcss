@@ -111,7 +111,7 @@ export interface GenerateCssByGeneratorOptions {
 export interface GenerateCssByGeneratorResult {
   css: string
   target: string
-  source: 'generator' | 'generator-forced'
+  source: 'generator'
   dependencies: string[]
 }
 
@@ -1340,29 +1340,19 @@ export async function generateCssByGenerator(
   const hasGeneratedCss = hasTailwindGeneratedCss(rawSource)
   const hasSourceDirectives = hasTailwindSourceDirectives(rawSource)
   const hasGeneratedMarkers = hasTailwindGeneratedCssMarkers(rawSource)
-  const shouldForceGenerateCurrentCss = hasGeneratedCss
+  const shouldGenerateCurrentCss = hasGeneratedCss
     || hasGeneratedMarkers
     || hasSourceDirectives
     || cssHandlerOptions.isMainChunk
-  const shouldAutoGenerateCurrentCss = hasGeneratedCss
-    || hasGeneratedMarkers
-    || hasSourceDirectives
 
   if (
     !SUPPORTED_GENERATOR_MAJOR_VERSIONS.has(majorVersion ?? 0)
+    || !shouldGenerateCurrentCss
     || (
-      generatorOptions.mode === 'force'
-        ? !shouldForceGenerateCurrentCss
-        : !shouldAutoGenerateCurrentCss
-    )
-    || (
-      generatorOptions.mode === 'force'
-      && (
-        majorVersion === 3
-        && !hasSourceDirectives
-        && !hasGeneratedCss
-        && !hasGeneratedMarkers
-      )
+      majorVersion === 3
+      && !hasSourceDirectives
+      && !hasGeneratedCss
+      && !hasGeneratedMarkers
     )
   ) {
     return undefined
@@ -1443,7 +1433,7 @@ export async function generateCssByGenerator(
           }
         }
       }
-      if (generated.target === 'weapp' && generatorOptions.mode === 'force') {
+      if (generated.target === 'weapp') {
         css = await appendLegacyCompatCss(
           css,
           rawSource,
@@ -1502,7 +1492,7 @@ export async function generateCssByGenerator(
     return {
       css: finalizeMiniProgramGeneratorCss(css, generated.target),
       target: generated.target,
-      source: generatorOptions.mode === 'force' ? 'generator-forced' : 'generator',
+      source: 'generator',
       dependencies: generated.dependencies,
     }
   }

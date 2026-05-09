@@ -250,7 +250,6 @@ describe('v5 Tailwind CSS v4 directives parity', () => {
       postcss([
         weappTailwindcss({
           generator: {
-            mode: 'force',
             target: 'web',
           },
         }),
@@ -274,10 +273,6 @@ describe('v5 Tailwind CSS v4 directives parity', () => {
     const fixture = await createTailwindV4DirectiveFixture()
     const result = await postcss([
       weappTailwindcss({
-        generator: {
-          mode: 'force',
-          target: 'weapp',
-        },
       }),
     ]).process(fixture.css, {
       from: fixture.cssEntry,
@@ -326,7 +321,6 @@ describe('v5 Tailwind CSS v4 directives parity', () => {
     const result = await postcss([
       weappTailwindcss({
         generator: {
-          mode: 'force',
           target: 'tailwind',
         },
       }),
@@ -364,7 +358,6 @@ describe('v5 Tailwind CSS v4 directives parity', () => {
       postcss([
         weappTailwindcss({
           generator: {
-            mode: 'force',
             target: 'web',
           },
         }),
@@ -395,7 +388,6 @@ describe('v5 Tailwind CSS v4 directives parity', () => {
     const result = await postcss([
       weappTailwindcss({
         generator: {
-          mode: 'force',
           tailwindcssV3Compatibility: false,
           target: 'weapp',
         },
@@ -427,7 +419,6 @@ describe('v5 Tailwind CSS v4 directives parity', () => {
       postcss([
         weappTailwindcss({
           generator: {
-            mode: 'force',
             target: 'web',
           },
         }),
@@ -452,7 +443,6 @@ describe('v5 Tailwind CSS v4 directives parity', () => {
       postcss([
         weappTailwindcss({
           generator: {
-            mode: 'force',
             target: 'web',
           },
         }),
@@ -461,10 +451,6 @@ describe('v5 Tailwind CSS v4 directives parity', () => {
       }),
       postcss([
         weappTailwindcss({
-          generator: {
-            mode: 'force',
-            target: 'weapp',
-          },
         }),
       ]).process(fixture.css, {
         from: fixture.cssEntry,
@@ -648,7 +634,6 @@ describe('v5 Tailwind CSS v4 directives parity', () => {
         postcss([
           weappTailwindcss({
             generator: {
-              mode: 'force',
               target: 'web',
             },
           }),
@@ -657,10 +642,6 @@ describe('v5 Tailwind CSS v4 directives parity', () => {
         }),
         postcss([
           weappTailwindcss({
-            generator: {
-              mode: 'force',
-              target: 'weapp',
-            },
           }),
         ]).process(fixture.css, {
           from: fixture.cssEntry,
@@ -742,7 +723,6 @@ describe('v5 Tailwind CSS v4 directives parity', () => {
         postcss([
           weappTailwindcss({
             generator: {
-              mode: 'force',
               target: 'web',
             },
           }),
@@ -773,7 +753,6 @@ describe('v5 Tailwind CSS v4 directives parity', () => {
     const processGenerator = postcss([
       weappTailwindcss({
         generator: {
-          mode: 'force',
           target: 'web',
         },
       }),
@@ -830,7 +809,6 @@ describe('v5 Tailwind CSS v4 directives parity', () => {
         postcss([
           weappTailwindcss({
             generator: {
-              mode: 'force',
               target: 'web',
             },
           }),

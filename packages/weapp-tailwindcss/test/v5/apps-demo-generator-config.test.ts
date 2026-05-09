@@ -79,8 +79,8 @@ describe('v5 apps and demos generator config', () => {
     ])
 
     expect(configSource).toContain('WeappTailwindcss')
-    expect(configSource).not.toContain('UnifiedViteWeappTailwindcssPlugin')
-    expect(configSource).not.toContain("mode: 'force'")
+    expect(configSource).not.toContain('Unified')
+    expect(configSource).not.toContain('mode:')
     expect(configSource).not.toContain("target: 'weapp'")
     expect(cssSource).toContain('tailwindcss')
     expect(cssSource).not.toContain('weapp-tailwindcss')
@@ -103,7 +103,7 @@ describe('v5 apps and demos generator config', () => {
 
     expect(configSource).toContain('uniAppX({')
     expect(configSource).not.toContain('generator:')
-    expect(configSource).not.toContain("mode: 'force'")
+    expect(configSource).not.toContain('mode:')
     expect(configSource).not.toContain("target: 'weapp'")
   })
 
@@ -225,7 +225,7 @@ describe('v5 apps and demos generator config', () => {
 
     expect(configSource).not.toContain("require('@tailwindcss/postcss')")
     expect(configSource).not.toContain('WEAPP_TW_GENERATOR_MODE')
-    expect(configSource).not.toContain("mode: 'force'")
+    expect(configSource).not.toContain('mode:')
     expect(configSource).not.toContain("target: 'weapp'")
     expect(configSource).not.toContain('generator: false')
     expect(configSource).toContain("import: false")

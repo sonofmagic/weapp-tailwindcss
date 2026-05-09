@@ -5,7 +5,6 @@ import type { Document, Result as PostcssResult, Root } from 'postcss'
 import type { ILengthUnitsPatchOptions, TailwindcssPatcher } from 'tailwindcss-patch'
 import type { ICreateCacheReturnType } from '../cache'
 import type { ItemOrItemArray } from './base'
-import type { DisabledOptions } from './disabled-options'
 import type { AppType, IArbitraryValues, ICustomAttributesEntities } from './shared'
 import type {
   UniAppXComponentLocalStylesOptions,
@@ -18,7 +17,6 @@ type AsyncableMethod<T> = T extends (...args: infer A) => infer R
   : never
 
 export type {
-  DisabledOptions,
   UniAppXComponentLocalStylesOptions,
   UniAppXUserDefinedOptions,
   UserDefinedOptions,
@@ -60,14 +58,6 @@ export interface RefreshTailwindcssPatcherOptions {
 export interface IJsHandlerOptions {
   escapeMap?: Record<string, string>
   classNameSet?: Set<string>
-  /**
-   * 兼容字段：不再参与 JS 候选判定。
-   *
-   * JS 转译统一遵循 `classNameSet` 精确命中策略，仅转换 tailwindcss-patch 提供的类名集合。
-   *
-   * @deprecated 该配置仅保留兼容旧项目，不再参与 JS 候选判定。需要处理任意值兜底时请使用 `jsArbitraryValueFallback`。
-   */
-  staleClassNameFallback?: boolean
   /**
    * 控制在 classNameSet 异常时的任意值兜底策略。
    *

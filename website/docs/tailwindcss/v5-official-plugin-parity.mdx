@@ -25,7 +25,7 @@ v5 generator 的目标不是替代 Tailwind CSS v4 的 CSS-first 语义，而是
 | 候选类生成 | Scanner candidates | Scanner candidates | classSet 精确命中 candidates | runtime classSet 精确命中 candidates |
 | Web 产物 | 浏览器 CSS | 浏览器 CSS | `target: 'web'` | `target: 'web'` |
 | 小程序产物 | 不支持 | 不支持 | `target: 'weapp'` | `target: 'weapp'` |
-| 强制失败 | 编译失败即失败 | 编译失败即失败 | `mode: 'force'` | `mode: 'force'` |
+| 失败处理 | 编译失败即失败 | 编译失败即失败 | 默认构建失败 | 默认构建失败 |
 | 依赖追踪 / HMR | `dependency` / `dir-dependency` | `addWatchFile` / `hotUpdate` | `dependency` | `cssEntries` / dependencies / HMR |
 
 ## PostCSS 对照
@@ -50,10 +50,6 @@ const { default: weappTailwindcss } = require('weapp-tailwindcss/postcss')
 module.exports = {
   plugins: [
     weappTailwindcss({
-      generator: {
-        mode: 'force',
-        target: 'weapp',
-      },
     }),
   ],
 }
@@ -64,7 +60,6 @@ v5 Web 对照写法：
 ```js title="postcss.config.js"
 weappTailwindcss({
   generator: {
-    mode: 'force',
     target: 'web',
   },
 })
@@ -101,10 +96,6 @@ export default defineConfig({
       cssEntries: [
         path.resolve(__dirname, 'src/app.css'),
       ],
-      generator: {
-        mode: 'force',
-        target: 'weapp',
-      },
     }),
   ],
 })

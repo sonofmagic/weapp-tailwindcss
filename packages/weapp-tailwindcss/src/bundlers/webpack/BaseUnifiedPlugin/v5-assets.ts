@@ -26,16 +26,6 @@ interface SetupWebpackV5ProcessAssetsHookOptions {
   debug: (format: string, ...args: unknown[]) => void
 }
 
-function resolveWebpackStaleClassNameFallback(
-  option: InternalUserDefinedOptions['staleClassNameFallback'],
-  _compiler: Compiler,
-) {
-  if (typeof option === 'boolean') {
-    return option
-  }
-  return false
-}
-
 export function setupWebpackV5ProcessAssetsHook(options: SetupWebpackV5ProcessAssetsHookOptions) {
   const {
     compiler,
@@ -180,7 +170,6 @@ export function setupWebpackV5ProcessAssetsHook(options: SetupWebpackV5ProcessAs
           cssUserHandlerOptionsCache.set(cacheKey, created)
           return created
         }
-        const staleClassNameFallback = resolveWebpackStaleClassNameFallback(compilerOptions.staleClassNameFallback, compiler)
         const forceRuntimeRefresh = getRuntimeRefreshRequirement()
         debug('processAssets ensure runtime set forceRefresh=%s major=%s', forceRuntimeRefresh, runtimeState.twPatcher.majorVersion ?? 'unknown')
         const runtimeSet = await ensureRuntimeClassSet(runtimeState, {
@@ -268,7 +257,6 @@ export function setupWebpackV5ProcessAssetsHook(options: SetupWebpackV5ProcessAs
                     ? currentSourceValue
                     : currentSourceValue?.toString() ?? ''
                   const handlerOptions = {
-                    staleClassNameFallback,
                     tailwindcssMajorVersion: runtimeState.twPatcher.majorVersion,
                     filename: absoluteFile,
                     moduleGraph: moduleGraphOptions,

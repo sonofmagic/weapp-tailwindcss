@@ -11,6 +11,15 @@ interface LoaderModule {
   resource?: string
 }
 
+const CSS_IMPORT_REWRITE_LOADER_PATH = path.resolve(
+  __dirname,
+  '../../src/bundlers/webpack/BaseUnifiedPlugin/weapp-tw-css-import-rewrite-loader.js',
+)
+
+function isCssImportRewriteLoader(entry: { loader?: string }) {
+  return entry.loader?.includes('weapp-tw-css-import-rewrite-loader.js') ?? false
+}
+
 interface TestContext {
   disabled: boolean
   generator?: unknown
@@ -35,8 +44,6 @@ interface TestContext {
   jsMatcher: (file: string) => boolean
   wxsMatcher: (file: string) => boolean
   runtimeLoaderPath: string
-  runtimeCssImportRewriteLoaderPath: string
-  staleClassNameFallback?: boolean
   appType?: string
 }
 
@@ -75,8 +82,6 @@ function createContext(overrides: Partial<TestContext> = {}): TestContext {
     jsMatcher: (file: string) => file.endsWith('.js'),
     wxsMatcher: (_file: string) => false,
     runtimeLoaderPath: '/virtual/weapp-tw-runtime-classset-loader.js',
-    runtimeCssImportRewriteLoaderPath: '/virtual/weapp-tw-css-import-rewrite-loader.js',
-    staleClassNameFallback: undefined,
     appType: overrides.appType,
     ...overrides,
   }
@@ -198,8 +203,8 @@ describe('bundlers/webpack UnifiedWebpackPluginV4', () => {
     }
     loaderHandler?.({}, module)
     const classSetLoaderEntry = module.loaders.find(entry => entry.loader === currentContext.runtimeLoaderPath)
-    expect(classSetLoaderEntry?.options?.rewriteCssImports).toBeUndefined()
-    const rewriteLoaderEntry = module.loaders.find(entry => entry.loader === currentContext.runtimeCssImportRewriteLoaderPath)
+    expect(classSetLoaderEntry?.options?.tailwindcssImportRewrite).toBeUndefined()
+    const rewriteLoaderEntry = module.loaders.find(entry => isCssImportRewriteLoader(entry))
     expect(rewriteLoaderEntry).toBeUndefined()
 
     const html = '<view class="foo"></view>'
@@ -255,7 +260,6 @@ describe('bundlers/webpack UnifiedWebpackPluginV4', () => {
 
   it('reuses css handler override objects for repeated asset updates', async () => {
     currentContext = createContext({
-      generator: false,
     })
     const emitHandlers: Array<(compilation: any) => Promise<void>> = []
     const assets: Record<string, any> = {}
@@ -446,9 +450,6 @@ describe('bundlers/webpack UnifiedWebpackPluginV4', () => {
     expect(transformed).toContain(replaceWxml('bg-[#f50505]'))
     expect(transformed).not.toContain('bg-[#f50505]')
     expect(transformed).toContain(replaceWxml('text-[100rpx]'))
-
-    const lastCall = currentContext.jsHandler.mock.calls.at(-1) as [string, Set<string> | undefined, { staleClassNameFallback?: boolean }]
-    expect(lastCall?.[2]?.staleClassNameFallback).toBe(false)
   })
 
   it('respects explicit stale fallback option when set to false', async () => {
@@ -457,7 +458,6 @@ describe('bundlers/webpack UnifiedWebpackPluginV4', () => {
       escapeMap: undefined,
     })
     currentContext = createContext({
-      staleClassNameFallback: false,
       jsHandler: vi.fn((code: string, classSet?: Set<string>, options?: Record<string, unknown>) =>
         realJsHandler(code, classSet, options as any)),
       twPatcher: {
@@ -526,9 +526,6 @@ describe('bundlers/webpack UnifiedWebpackPluginV4', () => {
     expect(transformed).toContain('bg-[#f50505]')
     expect(transformed).not.toContain(replaceWxml('bg-[#f50505]'))
     expect(transformed).toContain(replaceWxml('text-[100rpx]'))
-
-    const lastCall = currentContext.jsHandler.mock.calls.at(-1) as [string, Set<string> | undefined, { staleClassNameFallback?: boolean }]
-    expect(lastCall?.[2]?.staleClassNameFallback).toBe(false)
   })
 
   it('refreshes runtime class set on each emit so script-only updates stay precisely escaped', async () => {
@@ -537,7 +534,6 @@ describe('bundlers/webpack UnifiedWebpackPluginV4', () => {
       escapeMap: undefined,
     })
     currentContext = createContext({
-      staleClassNameFallback: false,
       jsHandler: vi.fn((code: string, classSet?: Set<string>, options?: Record<string, unknown>) =>
         realJsHandler(code, classSet, options as any)),
       twPatcher: {
@@ -606,12 +602,9 @@ describe('bundlers/webpack UnifiedWebpackPluginV4', () => {
     expect(secondPass).toContain(replaceWxml('bg-[#f0a0a0]'))
     expect(secondPass).not.toContain('bg-[#f0a0a0]')
     expect(currentContext.twPatcher.extract).toHaveBeenCalledTimes(2)
-
-    const lastCall = currentContext.jsHandler.mock.calls.at(-1) as [string, Set<string> | undefined, { staleClassNameFallback?: boolean }]
-    expect(lastCall?.[2]?.staleClassNameFallback).toBe(false)
   })
 
-  it('forwards rewriteCssImports options when tailwindcss v4 detected', () => {
+  it('forwards tailwindcssImportRewrite options when tailwindcss v4 detected', () => {
     let loaderHandler: ((loaderContext: any, module: LoaderModule) => void) | undefined
     const compilation = {
       chunks: [],
@@ -658,10 +651,10 @@ describe('bundlers/webpack UnifiedWebpackPluginV4', () => {
     }
     loaderHandler?.({}, module)
     const classSetLoaderEntry = module.loaders.find(entry => entry.loader === currentContext.runtimeLoaderPath)
-    const rewriteLoaderEntry = module.loaders.find(entry => entry.loader === currentContext.runtimeCssImportRewriteLoaderPath)
+    const rewriteLoaderEntry = module.loaders.find(entry => isCssImportRewriteLoader(entry))
     expect(classSetLoaderEntry).toBeDefined()
     expect(rewriteLoaderEntry).toBeDefined()
-    expect(rewriteLoaderEntry?.options?.rewriteCssImports?.pkgDir).toEqual(expect.any(String))
+    expect(rewriteLoaderEntry?.options?.tailwindcssImportRewrite?.pkgDir).toEqual(expect.any(String))
     const classSetIndex = module.loaders.indexOf(classSetLoaderEntry!)
     const postcssIndex = module.loaders.findIndex(entry => entry.loader.includes('postcss-loader'))
     const rewriteIndex = module.loaders.indexOf(rewriteLoaderEntry!)
@@ -715,7 +708,7 @@ describe('bundlers/webpack UnifiedWebpackPluginV4', () => {
       entry.loader.includes('@mpxjs/webpack-plugin/lib/style-compiler/index'),
     )
     const rewriteIndex = module.loaders.findIndex(entry =>
-      entry.loader === currentContext.runtimeCssImportRewriteLoaderPath,
+      isCssImportRewriteLoader(entry),
     )
     expect(styleIndex).toBeGreaterThanOrEqual(0)
     expect(rewriteIndex).toBeGreaterThan(styleIndex)
@@ -740,7 +733,7 @@ describe('bundlers/webpack UnifiedWebpackPluginV4', () => {
       entry.loader.includes('@mpxjs/webpack-plugin/lib/style-compiler/strip-conditional-loader'),
     )
     const rewriteIndex = module.loaders.findIndex(entry =>
-      entry.loader === currentContext.runtimeCssImportRewriteLoaderPath,
+      isCssImportRewriteLoader(entry),
     )
     expect(stripIndex).toBeGreaterThanOrEqual(0)
     expect(rewriteIndex).toBeGreaterThan(stripIndex)
@@ -757,17 +750,17 @@ describe('bundlers/webpack UnifiedWebpackPluginV4', () => {
     const handler = getLoaderHandler()
     const module: LoaderModule = {
       loaders: [
-        { loader: currentContext.runtimeCssImportRewriteLoaderPath },
+        { loader: CSS_IMPORT_REWRITE_LOADER_PATH },
         { loader: '/abs/node_modules/@mpxjs/webpack-plugin/lib/style-compiler/index.js??ruleSet[0]' },
       ],
     }
 
     handler?.({}, module)
 
-    const rewriteLoaders = module.loaders.filter(entry => entry.loader === currentContext.runtimeCssImportRewriteLoaderPath)
+    const rewriteLoaders = module.loaders.filter(entry => isCssImportRewriteLoader(entry))
     expect(rewriteLoaders).toHaveLength(1)
     const styleIndex = module.loaders.findIndex(entry => entry.loader.includes('@mpxjs/webpack-plugin/lib/style-compiler/index'))
-    const rewriteIndex = module.loaders.findIndex(entry => entry.loader === currentContext.runtimeCssImportRewriteLoaderPath)
+    const rewriteIndex = module.loaders.findIndex(entry => isCssImportRewriteLoader(entry))
     expect(rewriteIndex).toBeGreaterThan(styleIndex)
   })
 
@@ -787,7 +780,7 @@ describe('bundlers/webpack UnifiedWebpackPluginV4', () => {
 
     handler?.({}, module)
 
-    const rewriteLoaderEntry = module.loaders.find(entry => entry.loader === currentContext.runtimeCssImportRewriteLoaderPath)
+    const rewriteLoaderEntry = module.loaders.find(entry => isCssImportRewriteLoader(entry))
     const classSetLoaderEntry = module.loaders.find(entry => entry.loader === currentContext.runtimeLoaderPath)
     expect(rewriteLoaderEntry).toBeDefined()
     expect(classSetLoaderEntry).toBeDefined()
@@ -812,7 +805,7 @@ describe('bundlers/webpack UnifiedWebpackPluginV4', () => {
 
     handler?.({}, module)
 
-    const rewriteLoaderEntry = module.loaders.find(entry => entry.loader.includes(currentContext.runtimeCssImportRewriteLoaderPath))
+    const rewriteLoaderEntry = module.loaders.find(entry => isCssImportRewriteLoader(entry))
     const classSetLoaderEntry = module.loaders.find(entry => entry.loader.includes(currentContext.runtimeLoaderPath))
     expect(rewriteLoaderEntry).toBeDefined()
     expect(classSetLoaderEntry).toBeDefined()
@@ -884,13 +877,13 @@ describe('bundlers/webpack UnifiedWebpackPluginV4', () => {
     const handler = getLoaderHandler()
     const module: LoaderModule = {
       loaders: [
-        { loader: `${currentContext.runtimeCssImportRewriteLoaderPath}??ruleSet[0]` },
+        { loader: `${CSS_IMPORT_REWRITE_LOADER_PATH}??ruleSet[0]` },
       ],
       resource: '/abs/app.css',
     }
 
     handler?.({}, module)
-    const rewriteLoaders = module.loaders.filter(entry => entry.loader.includes(currentContext.runtimeCssImportRewriteLoaderPath))
+    const rewriteLoaders = module.loaders.filter(entry => isCssImportRewriteLoader(entry))
     expect(rewriteLoaders).toHaveLength(1)
   })
 
@@ -1103,11 +1096,27 @@ describe('bundlers/webpack UnifiedWebpackPluginV4', () => {
   })
 
   it('only applies css import rewrite for tailwindcss v4 projects', () => {
-    const normalModuleFactoryTap = vi.fn()
+    let loaderHandler: ((loaderContext: any, module: LoaderModule) => void) | undefined
+    const compilation = {
+      chunks: [],
+      hooks: {
+        normalModuleLoader: {
+          tap: (_name: string, handler: (loaderContext: any, module: LoaderModule) => void) => {
+            loaderHandler = handler
+          },
+        },
+      },
+      assets: {},
+      updateAsset: vi.fn(),
+    }
     const compiler = {
       hooks: {
-        normalModuleFactory: { tap: normalModuleFactoryTap },
-        compilation: { tap: vi.fn() },
+        normalModuleFactory: { tap: vi.fn() },
+        compilation: {
+          tap: (_name: string, handler: (_compilation: any) => void) => {
+            handler(compilation)
+          },
+        },
         emit: { tapPromise: vi.fn() },
       },
     }
@@ -1115,15 +1124,25 @@ describe('bundlers/webpack UnifiedWebpackPluginV4', () => {
     currentContext.twPatcher.majorVersion = 4
     let plugin = new UnifiedWebpackPluginV4()
     plugin.apply(compiler as any)
-    expect(normalModuleFactoryTap).toHaveBeenCalledTimes(1)
+    const v4Module: LoaderModule = {
+      loaders: [{ loader: '/path/postcss-loader.js' }],
+      resource: '/abs/app.css',
+    }
+    loaderHandler?.({}, v4Module)
+    expect(v4Module.loaders.some(entry => isCssImportRewriteLoader(entry))).toBe(true)
 
-    normalModuleFactoryTap.mockClear()
     currentContext = createContext()
     currentContext.twPatcher.majorVersion = 3
     getCompilerContextMock.mockImplementation(() => currentContext)
+    loaderHandler = undefined
     plugin = new UnifiedWebpackPluginV4()
     plugin.apply(compiler as any)
-    expect(normalModuleFactoryTap).not.toHaveBeenCalled()
+    const v3Module: LoaderModule = {
+      loaders: [{ loader: '/path/postcss-loader.js' }],
+      resource: '/abs/app.css',
+    }
+    loaderHandler?.({}, v3Module)
+    expect(v3Module.loaders.some(entry => isCssImportRewriteLoader(entry))).toBe(false)
   })
 
   it('prepares runtime class set once per compilation from the injected loader', async () => {

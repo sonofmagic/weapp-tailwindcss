@@ -8,7 +8,7 @@ import loaderUtils from 'loader-utils'
 import { rewriteTailwindcssImportsInCode } from '@/bundlers/shared/css-imports'
 
 interface CssImportRewriteLoaderOptions {
-  rewriteCssImports?: {
+  tailwindcssImportRewrite?: {
     pkgDir: string
     appType?: AppType
   }
@@ -26,7 +26,7 @@ function joinPosixPath(base: string, subpath: string) {
 }
 
 function applyCssImportRewrite(source: string, options: CssImportRewriteLoaderOptions | undefined) {
-  const rewriteOptions = options?.rewriteCssImports
+  const rewriteOptions = options?.tailwindcssImportRewrite
   const pkgDir = rewriteOptions?.pkgDir
   if (!pkgDir) {
     return source

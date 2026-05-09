@@ -314,9 +314,5 @@ view,text,::before,::after,::backdrop {
 
 ```js
 WeappTailwindcss({
-  generator: {
-    mode: 'force',
-    target: 'weapp',
-  },
 })
 ```

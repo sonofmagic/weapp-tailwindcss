@@ -16,7 +16,7 @@ const TEST_TIMEOUT_MS = 30000
 
 async function loadUnifiedVitePlugin() {
   const mod = await import('@/bundlers/vite')
-  return mod.UnifiedViteWeappTailwindcssPlugin
+  return mod.WeappTailwindcss
 }
 
 function getGenerateBundleHandler(plugin: Plugin) {
@@ -46,7 +46,7 @@ describe('bundlers/vite incremental issue #33 regression', () => {
   })
 
   it('reapplies cached js transform for unchanged source on incremental runs', async () => {
-    const UnifiedViteWeappTailwindcssPlugin = await loadUnifiedVitePlugin()
+    const WeappTailwindcss = await loadUnifiedVitePlugin()
     const htmlFile = 'dist/pages/index/index.wxml'
     const jsFile = 'dist/pages/index/index.js'
     const rawTemplateToken = 'bg-[#000]'
@@ -55,7 +55,6 @@ describe('bundlers/vite incremental issue #33 regression', () => {
     const escapeKnown = createEscaper([rawTemplateToken, rawScriptToken])
 
     const realJsHandler = createJsHandler({
-      staleClassNameFallback: false,
       jsArbitraryValueFallback: false,
     })
     const jsHandler = vi.fn((code: string, classNameSet?: Set<string>, options?: Record<string, unknown>) =>
@@ -74,7 +73,7 @@ describe('bundlers/vite incremental issue #33 regression', () => {
       },
     }))
 
-    const plugins = UnifiedViteWeappTailwindcssPlugin()
+    const plugins = WeappTailwindcss()
     const postPlugin = plugins?.find(plugin => plugin.name === 'weapp-tailwindcss:adaptor:post') as Plugin
     expect(postPlugin).toBeTruthy()
 
@@ -126,7 +125,7 @@ describe('bundlers/vite incremental issue #33 regression', () => {
   }, 8000)
 
   it('does not refresh runtime class set for formatting-only incremental html/js changes', async () => {
-    const UnifiedViteWeappTailwindcssPlugin = await loadUnifiedVitePlugin()
+    const WeappTailwindcss = await loadUnifiedVitePlugin()
     const htmlFile = 'dist/pages/index/index.wxml'
     const jsFile = 'dist/pages/index/index.js'
     const rawTemplateToken = 'bg-[#000]'
@@ -135,7 +134,6 @@ describe('bundlers/vite incremental issue #33 regression', () => {
     const escapeKnown = createEscaper([rawTemplateToken, rawScriptToken])
 
     const realJsHandler = createJsHandler({
-      staleClassNameFallback: false,
       jsArbitraryValueFallback: false,
     })
     const jsHandler = vi.fn((code: string, classNameSet?: Set<string>, options?: Record<string, unknown>) =>
@@ -155,7 +153,7 @@ describe('bundlers/vite incremental issue #33 regression', () => {
     }))
 
     const currentContext = getCurrentContext()
-    const plugins = UnifiedViteWeappTailwindcssPlugin()
+    const plugins = WeappTailwindcss()
     const postPlugin = plugins?.find(plugin => plugin.name === 'weapp-tailwindcss:adaptor:post') as Plugin
     expect(postPlugin).toBeTruthy()
 
@@ -208,7 +206,7 @@ describe('bundlers/vite incremental issue #33 regression', () => {
   }, TEST_TIMEOUT_MS)
 
   it('keeps script/template arbitrary values correct across add-modify-delete in incremental runs', async () => {
-    const UnifiedViteWeappTailwindcssPlugin = await loadUnifiedVitePlugin()
+    const WeappTailwindcss = await loadUnifiedVitePlugin()
     const htmlFile = 'dist/pages/index/index.wxml'
     const jsFile = 'dist/pages/index/index.js'
     const stageTokens = [
@@ -221,7 +219,6 @@ describe('bundlers/vite incremental issue #33 regression', () => {
     const escapeKnown = createEscaper([...stageTokens])
 
     const realJsHandler = createJsHandler({
-      staleClassNameFallback: false,
       jsArbitraryValueFallback: false,
     })
     const jsHandler = vi.fn((code: string, classNameSet?: Set<string>, options?: Record<string, unknown>) =>
@@ -240,7 +237,7 @@ describe('bundlers/vite incremental issue #33 regression', () => {
       },
     }))
 
-    const plugins = UnifiedViteWeappTailwindcssPlugin()
+    const plugins = WeappTailwindcss()
     const postPlugin = plugins?.find(plugin => plugin.name === 'weapp-tailwindcss:adaptor:post') as Plugin
     expect(postPlugin).toBeTruthy()
 
@@ -307,7 +304,7 @@ describe('bundlers/vite incremental issue #33 regression', () => {
   }, TEST_TIMEOUT_MS)
 
   it('refreshes runtime class set on build-command watch iterations for changed vue object class keys', async () => {
-    const UnifiedViteWeappTailwindcssPlugin = await loadUnifiedVitePlugin()
+    const WeappTailwindcss = await loadUnifiedVitePlugin()
     const htmlFile = 'dist/pages/index/index.wxml'
     const jsFile = 'dist/pages/index/index.js'
     const runtimeSets = [
@@ -317,7 +314,6 @@ describe('bundlers/vite incremental issue #33 regression', () => {
     let runtimeIndex = 0
     const getRuntimeSet = () => runtimeSets[runtimeIndex]
     const realJsHandler = createJsHandler({
-      staleClassNameFallback: false,
       jsArbitraryValueFallback: false,
     })
 
@@ -335,7 +331,7 @@ describe('bundlers/vite incremental issue #33 regression', () => {
     }))
 
     const currentContext = getCurrentContext()
-    const plugins = UnifiedViteWeappTailwindcssPlugin()
+    const plugins = WeappTailwindcss()
     const postPlugin = plugins?.find(plugin => plugin.name === 'weapp-tailwindcss:adaptor:post') as Plugin
     expect(postPlugin).toBeTruthy()
 
@@ -379,7 +375,7 @@ describe('bundlers/vite incremental issue #33 regression', () => {
   }, TEST_TIMEOUT_MS)
 
   it('keeps high-risk arbitrary object class keys escaped across build-command watch iterations', async () => {
-    const UnifiedViteWeappTailwindcssPlugin = await loadUnifiedVitePlugin()
+    const WeappTailwindcss = await loadUnifiedVitePlugin()
     const htmlFile = 'dist/pages/index/index.wxml'
     const jsFile = 'dist/pages/index/index.js'
     const stageTokens = [
@@ -401,7 +397,6 @@ describe('bundlers/vite incremental issue #33 regression', () => {
     let runtimeIndex = 0
     const getRuntimeSet = () => runtimeSets[runtimeIndex]
     const realJsHandler = createJsHandler({
-      staleClassNameFallback: false,
       jsArbitraryValueFallback: false,
     })
 
@@ -419,7 +414,7 @@ describe('bundlers/vite incremental issue #33 regression', () => {
     }))
 
     const currentContext = getCurrentContext()
-    const plugins = UnifiedViteWeappTailwindcssPlugin()
+    const plugins = WeappTailwindcss()
     const postPlugin = plugins?.find(plugin => plugin.name === 'weapp-tailwindcss:adaptor:post') as Plugin
     expect(postPlugin).toBeTruthy()
 

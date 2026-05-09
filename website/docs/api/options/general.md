@@ -2,7 +2,7 @@
 title: ⚙️ 一般配置
 sidebar_label: ⚙️ 一般配置
 sidebar_position: 4
-description: ⚙️ 一般配置文档，汇总 18 个 weapp-tailwindcss 配置项的用途、默认值与注意事项。
+description: ⚙️ 一般配置文档，汇总 17 个 weapp-tailwindcss 配置项的用途、默认值与注意事项。
 keywords:
   - weapp-tailwindcss
   - API
@@ -17,7 +17,7 @@ keywords:
   - 插件参数
 ---
 
-本页收录 18 个配置项，来源于 `UserDefinedOptions`。
+本页收录 17 个配置项，来源于 `UserDefinedOptions`。
 
 ## 配置一览
 
@@ -27,16 +27,15 @@ keywords:
 | [appType](#apptype) | <code>AppType</code> | — | 声明所使用的框架类型。 |
 | [arbitraryValues](#arbitraryvalues) | <code>IArbitraryValues</code> | — | TailwindCSS 任意值的相关配置。 |
 | [jsPreserveClass](#jspreserveclass) | <code>(keyword: string) => boolean &#124; undefined</code> | <code>保留所有带 `*` js字符串字面量</code> | 控制 JS 字面量是否需要保留。 |
-| [staleClassNameFallback](#staleclassnamefallback) | <code>boolean</code> | — | 已废弃。兼容字段：不再参与 JS 候选判定。 |
 | [jsArbitraryValueFallback](#jsarbitraryvaluefallback) | <code>boolean &#124; "auto"</code> | — | 控制 JS 任意值类名在 classNameSet 异常时的受控兜底策略。 |
 | [replaceRuntimePackages](#replaceruntimepackages) | <code>boolean &#124; Record<string, string></code> | — | 是否替换运行时依赖包名。 |
-| [generator](#generator) | <code>boolean &#124; WeappTailwindcssGeneratorOptions</code> | <code>{ mode: 'auto', target: 'weapp' }</code> | v5 默认生成模式配置；布尔写法、`mode` 和 `target: 'weapp'` 已废弃。 |
+| [generator](#generator) | <code>import("../..").WeappTailwindcssGeneratorOptions</code> | — | 控制 Tailwind CSS 直接生成目标端 CSS 的策略。 |
 | [disabledDefaultTemplateHandler](#disableddefaulttemplatehandler) | <code>boolean</code> | <code>false</code> | 禁用默认的 `wxml` 模板替换器。 |
 | [tailwindcssBasedir](#tailwindcssbasedir) | <code>string</code> | — | 指定用于获取 Tailwind 上下文的路径。 |
 | [cache](#cache) | <code>boolean &#124; ICreateCacheReturnType</code> | — | 控制缓存策略。 |
 | [babelParserOptions](#babelparseroptions) | <code>(Partial<Options> & { cache?: boolean; cacheKey?: string; })</code> | — | `@babel/parser` 的配置选项。 |
 | [cssChildCombinatorReplaceValue](#csschildcombinatorreplacevalue) | <code>string &#124; string[]</code> | <code>'view + view'</code> | 自定义 Tailwind 子组合器的替换值。 |
-| [postcssOptions](#postcssoptions) | <code>Partial<Omit<import("/Users/yangqiming/Documents/GitHub/weapp-tailwindcss/node_modules/.pnpm/postcss-load-config@6.0.1_jiti@2.6.1_postcss@8.5.8_tsx@4.21.0_yaml@2.8.3/node_modules/postcss-load-config/src/index").Result, "file">></code> | — | `postcss` 的配置选项。 |
+| [postcssOptions](#postcssoptions) | <code>Partial<Omit<import(".pnpm/postcss-load-config@6.0.1_jiti@2.7.0_postcss@8.5.14_tsx@4.21.0_yaml@2.8.4/node_modules/postcss-load-config").Result, "file">></code> | — | `postcss` 的配置选项。 |
 | [cssRemoveHoverPseudoClass](#cssremovehoverpseudoclass) | <code>boolean</code> | <code>`true`</code> | 是否移除 CSS 中的 `:hover` 选择器。 |
 | [cssRemoveProperty](#cssremoveproperty) | <code>boolean</code> | <code>`true`</code> | 是否移除 `@property` 节点。 |
 | [tailwindcssPatcherOptions](#tailwindcsspatcheroptions) | <code>TailwindCssPatchOptions</code> | — | 自定义 patcher 参数。 |
@@ -105,41 +104,6 @@ TailwindCSS 任意值的相关配置。
 
 `boolean | undefined`
 
-### staleClassNameFallback
-
-> 可选 | 类型: `boolean`
-
-:::warning 已废弃
-
-该配置仅保留兼容旧项目，不再参与 JS 候选判定。需要处理任意值兜底时请使用 `jsArbitraryValueFallback`。
-
-:::
-
-兼容字段：不再参与 JS 候选判定。
-
-#### 备注
-
-JS 转译统一采用 `classNameSet` 精确匹配策略，仅转换 tailwindcss-patch 提供的类名集合。
-
-### generator
-
-> 可选 | 类型: `boolean | WeappTailwindcssGeneratorOptions` | 默认值: `{ mode: 'auto', target: 'weapp' }`
-
-控制 Tailwind CSS 直接生成目标端 CSS 的策略。
-
-:::warning 迁移稳定期废弃写法
-
-`generator: false`、`generator: true`、`generator.mode` 与 `generator.target: 'weapp'` 都不再推荐出现在业务配置中。v5 默认生成模式已经是稳定链路，普通小程序项目应删除这些显式配置。
-
-:::
-
-#### 备注
-
-- `generator: false`：兼容旧配置，按默认生成模式处理。
-- `generator: true`：等价于默认生成模式，通常无需显式传入。
-- `generator.mode`：保留兼容旧项目和内部测试，普通项目不需要再显式配置。
-- `generator.target: 'weapp'`：等价于默认值，应该删除；仅调试 `web` / `tailwind` 目标时需要显式配置 `target`。
-
 ### jsArbitraryValueFallback
 
 > 可选 | 类型: `boolean | "auto"`
@@ -174,6 +138,16 @@ replaceRuntimePackages: {
   'class-variance-authority': '@weapp-tailwindcss/cva',
 }
 ```
+
+### generator
+
+> 可选 | 类型: `import("../..").WeappTailwindcssGeneratorOptions`
+
+控制 Tailwind CSS 直接生成目标端 CSS 的策略。
+
+#### 备注
+
+默认值为 `{ target: 'weapp' }`。Tailwind CSS v3 和 v4 项目都会默认接管样式生成并直接输出小程序 CSS。
 
 ### disabledDefaultTemplateHandler
 
@@ -238,7 +212,7 @@ false
 
 ### postcssOptions
 
-> 可选 | 类型: `Partial<Omit<import("/Users/yangqiming/Documents/GitHub/weapp-tailwindcss/node_modules/.pnpm/postcss-load-config@6.0.1_jiti@2.6.1_postcss@8.5.8_tsx@4.21.0_yaml@2.8.3/node_modules/postcss-load-config/src/index").Result, "file">>` | 版本: ^3.2.0
+> 可选 | 类型: `Partial<Omit<import(".pnpm/postcss-load-config@6.0.1_jiti@2.7.0_postcss@8.5.14_tsx@4.21.0_yaml@2.8.4/node_modules/postcss-load-config").Result, "file">>` | 版本: ^3.2.0
 
 `postcss` 的配置选项。
 

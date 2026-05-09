@@ -133,7 +133,6 @@ exports[`get options > default options 1`] = `
     "~": "_w",
   },
   "generator": {
-    "mode": "auto",
     "target": "weapp",
   },
   "htmlMatcher": [Function],
@@ -155,7 +154,6 @@ exports[`get options > default options 1`] = `
   "postcssOptions": {},
   "refreshTailwindcssPatcher": [Function],
   "replaceRuntimePackages": false,
-  "rewriteCssImports": true,
   "styleHandler": [Function],
   "tailwindcssBasedir": "<cwd>",
   "tailwindcssPatcherOptions": {

@@ -48,7 +48,6 @@ export function createContext(overrides: Record<string, unknown> = {}) {
     mainChunkRegex: undefined,
     cssEntries: undefined,
     customReplaceDictionary: undefined,
-    staleClassNameFallback: undefined,
     ...overrides,
   }
 }
