@@ -646,15 +646,7 @@ plugin apply 初调用
 
 自从`tailwindcss 3.2.0`对任意值添加了长度单位的校验后，小程序中的`rpx`这个`wxss`单位，由于不在长度合法名单中，于是被识别成了颜色，导致与预期不符，详见：[issues/110](https://github.com/sonofmagic/weapp-tailwindcss-webpack-plugin/issues/110)。所以这个选项是用来给`tailwindcss`运行时，自动打上一个支持`rpx`单位的补丁。默认开启，在绝大部分情况下，你都可以忽略这个配置项，除非你需要更高级的自定义。
 
-> 目前自动检索存在一定的缺陷，它会在第一次运行的时候不生效，关闭后第二次运行才生效。这是因为 nodejs 运行时先加载好了 `tailwindcss` 模块 ，然后再来运行这个插件，自动给 `tailwindcss` 运行时打上 `patch`。此时由于 `tailwindcss` 模块已经加载，所以 `patch` 在第一次运行时不生效，`ctrl+c` 关闭之后，再次运行才生效。这种情况可以使用:
-
-```diff
-"scripts": {
-+  "postinstall": "weapp-tw patch"
-}
-```
-
-使用 `npm hooks` 的方式来给 `tailwindcss` 自动打 `patch`
+生成模式会在运行时接管补丁流程。旧 CSS 后处理链路或排查补丁状态时，可手动执行 `weapp-tw patch`；怀疑缓存异常时再追加 `--clear-cache`。
 
 #### Defined in
 

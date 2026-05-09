@@ -60,24 +60,13 @@ npx tailwindcss init
 </style>
 ```
 
-### 3) 安装 weapp-tailwindcss 并添加补丁脚本
+### 3) 安装 weapp-tailwindcss
 
 ```bash npm2yarn
 npm i -D weapp-tailwindcss
 ```
 
-在 `package.json` 中增加 `postinstall` 脚本：
-
-```json title="package.json"
-{
-  "scripts": {
-    // highlight-next-line
-    "postinstall": "weapp-tw patch"
-  }
-}
-```
-
-> 了解原因可阅读：<a href="/docs/quick-start/this-plugin">weapp-tailwindcss 使用说明</a>
+生成模式会在运行时接管补丁流程，不需要再把 `weapp-tw patch` 写入 `postinstall`。
 
 ### 4) 在 uni-app x 中注册 weapp-tailwindcss
 

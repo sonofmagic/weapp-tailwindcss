@@ -16,6 +16,13 @@ import { logPatchStatusReport } from './mount-options/patch-status'
 import { buildExtendLengthUnitsOverride } from './patch-options'
 import { patchWorkspace } from './workspace'
 
+export const PATCH_COMMAND_GENERATOR_MODE_NOTICE
+  = '提示：weapp-tailwindcss@5 生成模式不再需要执行 weapp-tw patch，也不需要在 package.json 中配置 postinstall 这个 npm hook；旧 CSS 后处理链路或排障时再手动使用。'
+
+export function logPatchCommandGeneratorModeNotice() {
+  logger.warn(PATCH_COMMAND_GENERATOR_MODE_NOTICE)
+}
+
 function handleCliError(error: unknown) {
   if (error instanceof Error) {
     logger.error(error.message)
@@ -102,6 +109,7 @@ export const mountOptions: TailwindcssPatchCliMountOptions = {
       const shouldClearCache = toBoolean((ctx as any).args.clearCache, false)
       const shouldRecordTarget = toBoolean((ctx as any).args.recordTarget, true)
       const runWorkspace = toBoolean((ctx as any).args.workspace, false)
+      logPatchCommandGeneratorModeNotice()
       if (runWorkspace) {
         await patchWorkspace({
           cwd: ctx.cwd,

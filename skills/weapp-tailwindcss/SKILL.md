@@ -45,8 +45,7 @@ description: 帮助用户在 uni-app、taro、uni-app x 与原生小程序项目
 - `tailwindcss@3` 用 `tailwind.config.js -> content`
 - `tailwindcss@4` 用入口 CSS 的 `@source`
 - 扫描范围必须覆盖真实模板与脚本文件，并排除 `dist` / `unpackage` / `node_modules`
-- 明确 `postinstall` 需要有 `weapp-tw patch`
-- 若是 `pnpm@10+`，提醒执行 `pnpm approve-builds weapp-tailwindcss`
+- 生成模式不再要求 `postinstall`；旧 CSS 后处理链路或排障时才手动执行 `weapp-tw patch`
 - 如怀疑补丁缓存或目标记录异常，可使用 `weapp-tw patch --clear-cache`
 
 ### 2) 按任务类型执行

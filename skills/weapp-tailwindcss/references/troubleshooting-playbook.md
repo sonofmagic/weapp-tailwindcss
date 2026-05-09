@@ -28,8 +28,8 @@
 
 排查顺序：
 
-1. 确认 `postinstall` 里存在 `weapp-tw patch`
-2. 重新执行 `weapp-tw patch`（必要时加 `--clear-cache`）
+1. 生成模式先确认构建运行时已接入 `WeappTailwindcss`
+2. 旧 CSS 后处理链路或排障时重新执行 `weapp-tw patch`（必要时加 `--clear-cache`）
 3. 二义性场景改用显式前缀：`length:` / `color:`
 
 示例：
@@ -79,9 +79,9 @@ uvtw({
 
 排查顺序：
 
-1. 执行 `pnpm approve-builds weapp-tailwindcss`
-2. 确认 `package.json` 有 `postinstall: "weapp-tw patch"`
-3. 重新安装依赖或手动执行 `npx weapp-tw patch`
+1. 确认当前是否为旧 CSS 后处理链路；生成模式通常不需要安装阶段补丁。
+2. 手动执行 `npx weapp-tw patch`。
+3. 怀疑缓存或目标记录异常时，执行 `npx weapp-tw patch --clear-cache`。
 
 ## 6. 多端项目里 H5 被误处理
 

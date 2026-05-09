@@ -15,21 +15,7 @@
 pnpm add -D tailwindcss weapp-tailwindcss postcss autoprefixer
 ```
 
-`package.json` 保持：
-
-```json
-{
-  "scripts": {
-    "postinstall": "weapp-tw patch"
-  }
-}
-```
-
-`pnpm@10+` 额外执行：
-
-```bash
-pnpm approve-builds weapp-tailwindcss
-```
+生成模式不需要在 `package.json` 中写入 `postinstall: "weapp-tw patch"`。
 
 怀疑缓存或 patch 目标记录异常时：
 

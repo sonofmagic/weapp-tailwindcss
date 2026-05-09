@@ -118,7 +118,6 @@ jobs:
       - name: Run core compatibility regression tests
         run: >
           pnpm --filter weapp-tailwindcss exec vitest run
-          test/cli/postinstall.test.ts
           test/bundlers/module-graph.unit.test.ts
           test/bundlers/vite-bundle-entries.unit.test.ts
           test/bundlers/vite-plugin.uni-app-x.unit.test.ts
@@ -134,5 +133,5 @@ jobs:
             echo "- os: ${{ matrix.os }}"
             echo "- node: ${{ matrix.node-version }}"
             echo "- scenario: ${{ matrix.scenario }}"
-            echo "- 覆盖重点：CLI postinstall、Windows/跨平台路径归一、Vite bundle graph、Tailwind patch resolve、watch HMR 覆盖矩阵。"
+            echo "- 覆盖重点：Windows/跨平台路径归一、Vite bundle graph、Tailwind patch resolve、watch HMR 覆盖矩阵。"
           } >> "$GITHUB_STEP_SUMMARY"

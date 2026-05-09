@@ -111,7 +111,6 @@
     "format": "prettier --check \"src/**/*.{ts,js}\" -w",
     "format:test": "prettier --check \"test/**/*.test.{ts,js}\" -w",
     "ls:pack": "npm pack --dry-run",
-    "cli:patch": "node bin/weapp-tailwindcss.js patch",
     "prepare": "husky",
     "css-build": "css2plugin build css-plugin.css css-plugin-scss.scss --cwd test/fixtures/css",
     "css-build-out": "css2plugin build css-plugin.css css-plugin-scss.scss --cwd test/fixtures/css --out tw-plugins",

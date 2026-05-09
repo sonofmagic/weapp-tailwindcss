@@ -79,7 +79,6 @@ describe('ci workflows', () => {
 
     const compatibilityRuns = stepRuns(workflow, 'compatibility').join('\n')
     expect(compatibilityRuns).toContain('pnpm --filter weapp-tailwindcss... run build')
-    expect(compatibilityRuns).toContain('test/cli/postinstall.test.ts')
     expect(compatibilityRuns).toContain('test/bundlers/vite-plugin.uni-app-x.unit.test.ts')
     expect(compatibilityRuns).toContain('test/watch-hmr-coverage-matrix.unit.test.ts')
   })

@@ -1,8 +1,5 @@
 {
   "type": "module",
-  "scripts": {
-    "postinstall": "weapp-tw patch"
-  },
   "devDependencies": {
     "tailwindcss": "^3.4.18",
     "postcss": "^8.5.3",

@@ -32,7 +32,7 @@ describe('init', () => {
     const pkgJsonPath = path.resolve(cwd, 'package.json')
     expect(await fs.exists(pkgJsonPath)).toBe(true)
     const json = await fs.readJSON(pkgJsonPath)
-    expect(json.scripts.postinstall).toBe('weapp-tw patch')
+    expect(json.scripts?.postinstall).toBeUndefined()
     for (const [key, value] of Object.entries(defaultDevDeps)) {
       const version = get(json, `devDependencies.${key}`) as string
       expect(version.slice(1).startsWith(value)).toBe(true)
@@ -58,7 +58,7 @@ describe('init', () => {
     expect(await fs.exists(pkgJsonPath)).toBe(true)
     const json = await fs.readJSON(pkgJsonPath)
     expect(json.type).toBe('module')
-    expect(json.scripts.postinstall).toBe('weapp-tw patch')
+    expect(json.scripts?.postinstall).toBeUndefined()
     for (const [key, value] of Object.entries(defaultDevDeps)) {
       const version = get(json, `devDependencies.${key}`) as string
       expect(version.slice(1).startsWith(value)).toBe(true)

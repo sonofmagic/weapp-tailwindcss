@@ -41,7 +41,6 @@ export async function createContext(options: Required<CreateContextOptions>) {
 export type Context = Exclude<Awaited<ReturnType<typeof createContext>>, undefined>
 
 export async function updatePackageJson(ctx: Context) {
-  setValue(ctx.pkgJson, 'scripts.postinstall', 'weapp-tw patch')
   for (const [key, value] of Object.entries(ctx.versions)) {
     setValue(ctx.pkgJson, `devDependencies.${key}`, value)
   }
