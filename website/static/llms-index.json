@@ -1,6 +1,6 @@
 {
   "version": "1.0.0",
-  "generatedAt": "2026-05-09T10:00:23.669Z",
+  "generatedAt": "2026-05-09T16:53:42.171Z",
   "siteUrl": "https://tw.icebreaker.top",
   "totals": {
     "all": 188,
@@ -4693,8 +4693,8 @@
       "kind": "doc",
       "id": "doc:quick-start/this-plugin",
       "title": "2. 安装 weapp-tailwindcss",
-      "description": "然后把下列脚本，添加进你的 package.json 的 scripts 字段里:",
-      "summary": "然后把下列脚本，添加进你的 package.json 的 scripts 字段里:",
+      "description": "安装 weapp-tailwindcss，并按项目链路决定是否手动执行补丁命令。",
+      "summary": "如果项目使用 weapp-tailwindcss@5 生成模式，Tailwind CSS 会由 WeappTailwindcss 插件或生成器入口接管，不需要再把 weapp-tw patch 写入 postinstall。",
       "url": "/docs/quick-start/this-plugin",
       "canonical": "https://tw.icebreaker.top/docs/quick-start/this-plugin",
       "keywords": [
@@ -4959,8 +4959,8 @@
       "kind": "doc",
       "id": "doc:quick-start/v4/patch",
       "title": "patch",
-      "description": "然后把下列脚本，添加进你的 package.json 的 scripts 字段里:",
-      "summary": "然后把下列脚本，添加进你的 package.json 的 scripts 字段里:",
+      "description": "旧 CSS 后处理链路或排障时手动执行 Tailwind CSS 补丁命令。",
+      "summary": "旧 CSS 后处理链路或排障时，可手动执行补丁命令：",
       "url": "/docs/quick-start/v4/patch",
       "canonical": "https://tw.icebreaker.top/docs/quick-start/v4/patch",
       "keywords": [
