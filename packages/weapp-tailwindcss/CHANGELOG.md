@@ -1,5 +1,31 @@
 # weapp-tailwindcss
 
+## 5.0.0-next.5
+
+### Major Changes
+
+- 🚀 **移除 `tailwindcssPatcherOptions` 中早期的 `patch`、`tailwind`、`features`、`output` 兼容配置形态，仅保留 `tailwindcss-patch` 当前的 `TailwindCssPatchOptions` 配置结构。** [#853](https://github.com/sonofmagic/weapp-tailwindcss/pull/853) by @github-actions
+  - 同时删除未接入主转译链路的实验性 SWC/OXC JS handler 入口，避免继续维护无消费方的 POC 代码。
+
+- 🚀 **移除 Webpack4、PostCSS7、Tailwind CSS v2 兼容链路，不再导出 `weapp-tailwindcss/webpack4`，并删除旧包名 `weapp-tailwindcss-webpack-plugin` 的 CLI 别名。** [#853](https://github.com/sonofmagic/weapp-tailwindcss/pull/853) by @github-actions
+  - `pluginName` 现在使用 `weapp-tailwindcss`。如果项目仍依赖 Webpack4、`@tailwindcss/postcss7-compat` 或 Tailwind CSS v2，请继续停留在旧版本。
+
+### Minor Changes
+
+- ✨ **新增 `arbitraryValues.bareArbitraryValues` 配置，默认关闭。开启后会把 UnoCSS 风格裸任意值识别交给 `tailwindcss-patch` v4 引擎处理，例如 `p-10%`、`p-2.5px`、`m-4rem`，小程序侧继续按生成出的 `classNameSet` 精确转义。** [#853](https://github.com/sonofmagic/weapp-tailwindcss/pull/853) by @github-actions
+  - 升级 `tailwindcss-patch` 到 `9.3.0`。
+
+### Patch Changes
+
+- 🐛 **修复 Gulp 生成模式在 dev/watch 场景下模板或脚本新增类名后，主 WXSS 复用旧 classSet 缓存导致缺少新增样式的问题。** [#853](https://github.com/sonofmagic/weapp-tailwindcss/pull/853) by @github-actions
+  - 修复 Webpack 生成模式在仅 JS 类名集合变化时主 WXSS 可能复用旧缓存的问题，并把稳定的 demo 热更新回归纳入 `pnpm e2e:ci`。
+  - 将核心包的大体量内部开发脚本迁移到私有 workspace 项目 `@weapp-tailwindcss/scripts`，发布包内仅保留安装生命周期所需脚本。
+
+- 🐛 **移除初始化流程和核心包安装生命周期中的 `weapp-tw patch` 自动入口。当前生成模式会在构建运行时接管 Tailwind CSS 补丁与类名收集，新项目不再需要把补丁命令写入 `postinstall`；旧 CSS 后处理链路仍可手动执行 `weapp-tw patch` 或 `weapp-tw status` 排查状态。** [#853](https://github.com/sonofmagic/weapp-tailwindcss/pull/853) by @github-actions
+  - 执行 `weapp-tw patch` 时会提示 `weapp-tailwindcss@5` 生成模式不再需要该指令，也不需要配置 `postinstall` 这个 npm hook，避免新项目继续复制旧链路配置。
+- 📦 **Dependencies** [`00ecc29`](https://github.com/sonofmagic/weapp-tailwindcss/commit/00ecc2998ee1b00a2de65c7fd45b396f5d7e0931)
+  → `@weapp-tailwindcss/reset@0.1.1-next.0`
+
 ## 5.0.0-next.4
 
 ### Minor Changes
