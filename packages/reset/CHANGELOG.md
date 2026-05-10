@@ -1,5 +1,11 @@
 # @weapp-tailwindcss/reset
 
+## 0.1.1-next.0
+
+### Patch Changes
+
+- 🐛 **修复 reset 插件声明类型，避免发布声明依赖 Tailwind CSS 内部散列路径。** [#853](https://github.com/sonofmagic/weapp-tailwindcss/pull/853) by @github-actions
+
 ## 0.1.0
 
 ### Minor Changes
