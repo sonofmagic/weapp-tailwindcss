@@ -7,6 +7,9 @@
     "source.fixAll.eslint": "explicit",
     "source.organizeImports": "never"
   },
+  "search.exclude": {
+    "**/submodules/**": true
+  },
   // https://github.com/tailwindlabs/tailwindcss/discussions/5258
   "css.customData": [
     ".vscode/tailwind.json"
