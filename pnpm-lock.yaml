@@ -3994,9 +3994,6 @@ importers:
       '@weapp-tailwindcss/shared':
         specifier: workspace:*
         version: link:../shared
-      cac:
-        specifier: 6.7.14
-        version: 6.7.14
       comment-json:
         specifier: ^4.6.2
         version: 4.6.2
@@ -4033,9 +4030,6 @@ importers:
       tailwindcss-patch:
         specifier: catalog:tailwindcssPatch
         version: 9.3.2(magicast@0.5.2)(tailwindcss@4.3.0)
-      webpack-sources:
-        specifier: 3.3.4
-        version: 3.3.4
       yaml:
         specifier: ^2.8.4
         version: 2.8.4

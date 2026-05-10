@@ -208,7 +208,6 @@
     "@weapp-tailwindcss/postcss": "workspace:*",
     "@weapp-tailwindcss/reset": "workspace:*",
     "@weapp-tailwindcss/shared": "workspace:*",
-    "cac": "6.7.14",
     "comment-json": "^4.6.2",
     "debug": "~4.4.3",
     "fast-glob": "^3.3.3",
@@ -221,7 +220,6 @@
     "semver": "~7.7.4",
     "tailwindcss-config": "workspace:*",
     "tailwindcss-patch": "catalog:tailwindcssPatch",
-    "webpack-sources": "3.3.4",
     "yaml": "^2.8.4"
   }
 }

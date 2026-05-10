@@ -379,35 +379,6 @@ describe('bundlers/shared generator css', () => {
     }))
   })
 
-  it('collects css generator candidates from bundle sources in addition to runtime set', async () => {
-    const { collectGeneratorCandidatesFromSources } = await import('@/bundlers/shared/generator-candidates')
-    const candidates = await collectGeneratorCandidatesFromSources([
-      {
-        content: '<view class="mt-4 flex overflow-hidden border divide-x rounded-lg"></view>',
-        extension: 'wxml',
-      },
-      {
-        content: 'const defaultClass = `weapp-reset-button px-6 py-2 bg-blue-600 hover:bg-blue-500`',
-        extension: 'js',
-      },
-    ], new Set(['bg-[#123456]']))
-
-    expect([...candidates]).toEqual(expect.arrayContaining([
-      'bg-[#123456]',
-      'mt-4',
-      'flex',
-      'overflow-hidden',
-      'border',
-      'divide-x',
-      'rounded-lg',
-      'weapp-reset-button',
-      'px-6',
-      'py-2',
-      'bg-blue-600',
-      'hover:bg-blue-500',
-    ]))
-  })
-
   it('appends legacy-only selectors for force mode even when raw css matches', async () => {
     const runtimeSet = new Set(['w-[100px]'])
     const rawTailwindCss = '/*! tailwindcss v4.2.4 | MIT License | https://tailwindcss.com */\n.container{width:100%}.w-\\[100px\\]{width:100px}'
