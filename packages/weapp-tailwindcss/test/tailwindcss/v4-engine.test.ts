@@ -163,6 +163,17 @@ describe('tailwindcss v4 engine', () => {
     expect(enabledResult.css).toContain('.text-rgb_p255_m0_m0_P')
     expect(enabledResult.css).toContain('.w-calc_p100vh_P')
 
+    const bareColorResult = await engine.generate({
+      bareArbitraryValues: true,
+      candidates: ['bg-#000'],
+    })
+
+    expect(bareColorResult.classSet).toEqual(new Set(['bg-#000']))
+    expect(bareColorResult.rawCss).toContain('.bg-\\#000')
+    expect(bareColorResult.rawCss).toContain('background-color: #000')
+    expect(bareColorResult.css).toContain('.bg-_h000')
+    expect(bareColorResult.css).toContain('background-color: #000')
+
     const limitedResult = await engine.generate({
       bareArbitraryValues: {
         units: ['px'],
