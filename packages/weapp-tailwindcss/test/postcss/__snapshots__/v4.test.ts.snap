@@ -963,6 +963,12 @@ exports[`tailwindcss v4 > weapp-tailwindcss default > tailwindcss 1`] = `
 .w-\\[100px\\] {
   width: 100px;
 }
+.p-2 {
+  padding: calc(var(--spacing) * 2);
+}
+.p-10 {
+  padding: calc(var(--spacing) * 10);
+}
 .shadow {
   --tw-shadow: 0 1px 3px 0 var(--tw-shadow-color, #0000001a), 0 1px 2px -1px var(--tw-shadow-color, #0000001a);
   box-shadow: var(--tw-inset-shadow), var(--tw-inset-ring-shadow), var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow);
@@ -1206,6 +1212,12 @@ view,text,:after,:before {
 .w-_b100px_B {
   width: 100px;
 }
+.p-2 {
+  padding: calc(var(--spacing) * 2);
+}
+.p-10 {
+  padding: calc(var(--spacing) * 10);
+}
 .shadow {
   --tw-shadow: 0 1px 3px 0 var(--tw-shadow-color, rgba(0,0,0,0.10196)), 0 1px 2px -1px var(--tw-shadow-color, rgba(0,0,0,0.10196));
   box-shadow: var(--tw-inset-shadow), var(--tw-inset-ring-shadow), var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow);
@@ -1250,6 +1262,12 @@ exports[`tailwindcss v4 > weapp-tailwindcss default with layer > tailwindcss 1`]
 @layer utilities {
   .w-\\[100px\\] {
     width: 100px;
+  }
+  .p-2 {
+    padding: calc(var(--spacing) * 2);
+  }
+  .p-10 {
+    padding: calc(var(--spacing) * 10);
   }
   .shadow {
     --tw-shadow: 0 1px 3px 0 var(--tw-shadow-color, #0000001a), 0 1px 2px -1px var(--tw-shadow-color, #0000001a);
@@ -1494,6 +1512,12 @@ view,text,:after,:before {
   }
 .w-_b100px_B {
     width: 100px;
+  }
+.p-2 {
+    padding: calc(var(--spacing) * 2);
+  }
+.p-10 {
+    padding: calc(var(--spacing) * 10);
   }
 .shadow {
     --tw-shadow: 0 1px 3px 0 var(--tw-shadow-color, rgba(0,0,0,0.10196)), 0 1px 2px -1px var(--tw-shadow-color, rgba(0,0,0,0.10196));

@@ -38,7 +38,7 @@ const customAttributesEntities: ICustomAttributesEntities = [
 ]
 expectAssignable<ICustomAttributesEntities>(customAttributesEntities)
 
-const arbitraryValues: IArbitraryValues = { allowDoubleQuotes: true }
+const arbitraryValues: IArbitraryValues = { allowDoubleQuotes: true, bareArbitraryValues: true }
 expectAssignable<IArbitraryValues>(arbitraryValues)
 
 const moduleGraphOptions: JsModuleGraphOptions = {

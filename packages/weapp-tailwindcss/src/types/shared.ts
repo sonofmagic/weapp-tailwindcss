@@ -24,4 +24,20 @@ export interface IArbitraryValues {
    * @default `false`
    */
   allowDoubleQuotes?: boolean
+
+  /**
+   * 是否启用 UnoCSS 风格裸任意值。
+   *
+   * @remarks
+   * 开启后会透传给 `tailwindcss-patch` 的 v4 引擎，由 Tailwind 候选解析和生成链路识别
+   * `p-10%`、`p-2.5px`、`m-4rem` 等裸任意值。JS 转译仍遵循 `classNameSet` 精确命中原则。
+   *
+   * @default `false`
+   */
+  bareArbitraryValues?: boolean | {
+    /**
+     * 允许作为裸任意值的单位列表。
+     */
+    units?: string[]
+  }
 }

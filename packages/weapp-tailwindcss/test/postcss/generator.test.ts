@@ -40,7 +40,9 @@ describe('weapp-tailwindcss postcss generator', () => {
     const { default: weappTailwindcss } = await import('@/postcss')
     const result = await postcss([
       weappTailwindcss({
-        target: 'web',
+        generator: {
+          target: 'web',
+        },
         packageName: 'tailwindcss4',
         candidates: ['hover:bg-blue-500', 'w-[100px]'],
         scanSources: false,

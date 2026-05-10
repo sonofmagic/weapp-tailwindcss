@@ -31,4 +31,12 @@ describe('js literal transform helper', () => {
       classNameSet: new Set(['text-[#123456]', 'bg-[#654321]']),
     })).toBe('text-_b_h123456_B bg-_b_h654321_B')
   })
+
+  it('keeps UnoCSS numeric unit values bound to classNameSet', () => {
+    expect(transformLiteralText('p-10% p-2.5px m-4rem', {
+      classNameSet: new Set(['p-10%', 'p-2.5px', 'm-4rem']),
+    })).toBe('p-10_v p-2_d5px m-4rem')
+
+    expect(transformLiteralText('p-10% p-2.5px', {})).toBeUndefined()
+  })
 })

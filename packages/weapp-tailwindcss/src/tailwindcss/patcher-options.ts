@@ -7,7 +7,7 @@ type TailwindExtendLengthUnitsOption = TailwindApplyOptions['extendLengthUnits']
 export function resolveTailwindcssOptions(
   options?: TailwindCssPatchOptions,
 ): TailwindUserOptions | undefined {
-  return options?.tailwindcss
+  return options?.tailwindcss ?? (options as { tailwind?: TailwindUserOptions } | undefined)?.tailwind
 }
 
 export function normalizeExtendLengthUnits(

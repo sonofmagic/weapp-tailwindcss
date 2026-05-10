@@ -103,6 +103,7 @@ export function getDefaultOptions(): UserDefinedOptions {
     appType: undefined,
     arbitraryValues: {
       allowDoubleQuotes: false,
+      bareArbitraryValues: false,
     },
     cssChildCombinatorReplaceValue: ['view', 'text'],
     inlineWxs: false,

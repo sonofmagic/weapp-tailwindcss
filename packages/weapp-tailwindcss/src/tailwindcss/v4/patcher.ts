@@ -56,6 +56,7 @@ export interface TailwindcssPatcherFactoryOptions {
   tailwindcssPatcherOptions?: CreateTailwindcssPatcherOptions['tailwindcssPatcherOptions']
   supportCustomLengthUnitsPatch: InternalUserDefinedOptions['supportCustomLengthUnitsPatch']
   appType: InternalUserDefinedOptions['appType']
+  bareArbitraryValues?: InternalUserDefinedOptions['arbitraryValues']['bareArbitraryValues']
 }
 
 export function createPatcherForBase(
@@ -67,6 +68,7 @@ export function createPatcherForBase(
     tailwindcss,
     tailwindcssPatcherOptions,
     supportCustomLengthUnitsPatch,
+    bareArbitraryValues,
   } = options
 
   const hasCssEntries = Boolean(cssEntries?.length)
@@ -116,6 +118,10 @@ export function createPatcherForBase(
     else if (!mergedTailwindOptions.v4.cssEntries) {
       mergedTailwindOptions.v4.cssEntries = cssEntries ?? []
     }
+  }
+
+  if (bareArbitraryValues !== undefined && bareArbitraryValues !== false) {
+    mergedTailwindOptions.v4.bareArbitraryValues = bareArbitraryValues
   }
 
   const patchedOptions = overrideTailwindcssPatcherOptionsForBase(

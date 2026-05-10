@@ -95,20 +95,24 @@ describe('get options', () => {
     expect(typeof arbitraryValues === 'object').toBe(true)
     expect(arbitraryValues.allowDoubleQuotes).toBeDefined()
     expect(arbitraryValues.allowDoubleQuotes).toBe(false)
+    expect(arbitraryValues.bareArbitraryValues).toBe(false)
     arbitraryValues = getCompilerContext({
       arbitraryValues: {},
     }).arbitraryValues
     expect(typeof arbitraryValues === 'object').toBe(true)
     expect(arbitraryValues.allowDoubleQuotes).toBeDefined()
     expect(arbitraryValues.allowDoubleQuotes).toBe(false)
+    expect(arbitraryValues.bareArbitraryValues).toBe(false)
     arbitraryValues = getCompilerContext({
       arbitraryValues: {
         allowDoubleQuotes: true,
+        bareArbitraryValues: true,
       },
     }).arbitraryValues
     expect(typeof arbitraryValues === 'object').toBe(true)
     expect(arbitraryValues.allowDoubleQuotes).toBeDefined()
     expect(arbitraryValues.allowDoubleQuotes).toBe(true)
+    expect(arbitraryValues.bareArbitraryValues).toBe(true)
   })
 
   it('customAttributes defu merge', () => {

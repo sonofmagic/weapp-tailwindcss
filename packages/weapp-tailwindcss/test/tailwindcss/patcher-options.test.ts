@@ -31,6 +31,26 @@ describe('tailwindcss patcher option normalization', () => {
     })
   })
 
+  it('reads normalized runtime tailwind options from tailwind', () => {
+    expect(resolveTailwindcssOptions({
+      tailwind: {
+        config: 'tailwind.config.ts',
+        v4: {
+          configuredBase: '/project',
+          cssEntries: ['src/app.css'],
+          sources: [],
+        },
+      },
+    } as any)).toEqual({
+      config: 'tailwind.config.ts',
+      v4: {
+        configuredBase: '/project',
+        cssEntries: ['src/app.css'],
+        sources: [],
+      },
+    })
+  })
+
   it('returns modern patch options unchanged', () => {
     const options = {
       cache: false,

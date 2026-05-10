@@ -209,6 +209,33 @@ describe('tailwindcss/v4/patcher helpers', () => {
     expect(patcher.majorVersion).toBe(4)
   })
 
+  it('passes bare arbitrary value options to tailwindcss-patch v4 options', async () => {
+    createTailwindcssPatcher.mockImplementation(options => ({
+      ...options,
+      majorVersion: 4,
+      packageInfo: { version: '4.0.0' },
+    }))
+
+    const { createPatcherForBase } = await loadModule()
+    const baseDir = '/workspace/app'
+    const cssEntries = [`${baseDir}/src/app.css`]
+
+    createPatcherForBase(baseDir, cssEntries, {
+      tailwindcss: { version: 4 },
+      tailwindcssPatcherOptions: undefined,
+      supportCustomLengthUnitsPatch: true,
+      appType: 'taro',
+      bareArbitraryValues: {
+        units: ['%', 'px', 'rem'],
+      },
+    } as unknown as InternalUserDefinedOptions)
+
+    const [callA] = createTailwindcssPatcher.mock.calls.map(call => call[0])
+    expect(callA.tailwindcss?.v4?.bareArbitraryValues).toEqual({
+      units: ['%', 'px', 'rem'],
+    })
+  })
+
   it('creates dual patchers for v4 when no package is configured', async () => {
     createTailwindcssPatcher.mockImplementation(options => ({
       packageInfo: { name: options.tailwindcss?.packageName } as any,

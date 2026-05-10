@@ -436,6 +436,27 @@ describe('replaceHandleValue branch coverage', () => {
     expect(token).toBeUndefined()
   })
 
+  it('transforms UnoCSS numeric unit classes from classNameSet in explicit class context', () => {
+    const literal = getLiteralPath('const state = { className: \'p-10% p-2.5px m-4rem\' }', 'StringLiteral')
+    const token = replaceHandleValue(literal, {
+      escapeMap: MappingChars2String,
+      classNameSet: new Set(['p-10%', 'p-2.5px', 'm-4rem']),
+      needEscaped: true,
+    })
+
+    expect(token?.value).toBe('p-10_v p-2_d5px m-4rem')
+  })
+
+  it('keeps UnoCSS numeric unit fallback disabled by default', () => {
+    const literal = getLiteralPath('const state = { className: \'p-10% p-2.5px\' }', 'StringLiteral')
+    const token = replaceHandleValue(literal, {
+      escapeMap: MappingChars2String,
+      needEscaped: true,
+    })
+
+    expect(token).toBeUndefined()
+  })
+
   it('avoids emitting tokens when the source span collapses', () => {
     const literal = getLiteralPath('const collapsing = \'w-[100px]\'', 'StringLiteral')
     literal.node.start = 0

@@ -4,6 +4,7 @@ exports[`get options > default options 1`] = `
 {
   "arbitraryValues": {
     "allowDoubleQuotes": false,
+    "bareArbitraryValues": false,
   },
   "babelParserOptions": {
     "cache": true,

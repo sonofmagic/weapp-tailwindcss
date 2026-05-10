@@ -117,6 +117,64 @@ describe('tailwindcss v4 engine', () => {
     expect(result.css).toContain('.w-4')
   })
 
+  it('supports UnoCSS-style bare arbitrary values when explicitly enabled', async () => {
+    const source = await resolveTailwindV4Source({
+      css: MINIMAL_THEME_CSS,
+      base: process.cwd(),
+    })
+    const engine = createTailwindV4Engine(source)
+
+    const disabledResult = await engine.generate({
+      candidates: ['p-10%', 'p-2.5px', 'm-4rem'],
+    })
+    expect(disabledResult.classSet).toEqual(new Set())
+    expect(disabledResult.rawCss).not.toContain('.p-10\\%')
+
+    const enabledResult = await engine.generate({
+      bareArbitraryValues: true,
+      candidates: [
+        'p-10%',
+        'p-2.5px',
+        'm-4rem',
+        'bg-#fff',
+        'text-rgb(255,0,0)',
+        'w-calc(100vh)',
+      ],
+      sources: [{
+        extension: 'html',
+        content: '<view class="hover:!-mt-2rem sm:-top-1.5rem text-var(--brand)"></view>',
+      }],
+    })
+
+    expect(enabledResult.classSet).toEqual(new Set([
+      'bg-#fff',
+      'hover:!-mt-2rem',
+      'm-4rem',
+      'p-10%',
+      'p-2.5px',
+      'text-rgb(255,0,0)',
+      'w-calc(100vh)',
+    ]))
+    expect(enabledResult.rawCss).toContain('.p-10\\%')
+    expect(enabledResult.css).toContain('.p-10_v')
+    expect(enabledResult.css).toContain('.p-2_d5px')
+    expect(enabledResult.css).toContain('.m-4rem')
+    expect(enabledResult.css).toContain('.bg-_hfff')
+    expect(enabledResult.css).toContain('.text-rgb_p255_m0_m0_P')
+    expect(enabledResult.css).toContain('.w-calc_p100vh_P')
+
+    const limitedResult = await engine.generate({
+      bareArbitraryValues: {
+        units: ['px'],
+      },
+      candidates: ['p-10%', 'p-10px'],
+    })
+
+    expect(limitedResult.classSet).toEqual(new Set(['p-10px']))
+    expect(limitedResult.css).toContain('.p-10px')
+    expect(limitedResult.css).not.toContain('.p-10_v')
+  })
+
   it('includes @source inline candidates in the class set', async () => {
     const source = await resolveTailwindV4Source({
       css: `

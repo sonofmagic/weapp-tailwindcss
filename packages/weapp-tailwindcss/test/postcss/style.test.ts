@@ -167,6 +167,16 @@ describe('styleHandler', () => {
     expect(css).toBe('.after_ccontent-_b_q_x_q_B::after{}')
   })
 
+  it('escapes UnoCSS numeric unit selectors for miniprogram class names', async () => {
+    const testCase = '.p-10\\%{padding:10%}.p-2\\.5px{padding:2.5px}.m-4rem{margin:4rem}'
+    const { css } = await styleHandler(testCase, {
+      isMainChunk: false,
+      escapeMap: MappingChars2String,
+    })
+
+    expect(css).toBe('.p-10_v{padding:10%}.p-2_d5px{padding:2.5px}.m-4rem{margin:4rem}')
+  })
+
   it('should pseudo element new case', async () => {
     const testCase = '.after\\:content-\\[\\"\\*\\"\\]::after{color:red;}'
     const { css } = await styleHandler(testCase, {

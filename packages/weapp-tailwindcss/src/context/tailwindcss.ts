@@ -20,6 +20,7 @@ export function createTailwindcssPatcherFromContext(ctx: InternalUserDefinedOpti
     tailwindcssPatcherOptions,
     cssEntries: rawCssEntries,
     appType,
+    arbitraryValues,
   } = ctx
 
   const absoluteCssEntryBasedir = guessBasedirFromEntries(rawCssEntries)
@@ -40,6 +41,7 @@ export function createTailwindcssPatcherFromContext(ctx: InternalUserDefinedOpti
     tailwindcssPatcherOptions,
     supportCustomLengthUnitsPatch,
     appType,
+    bareArbitraryValues: arbitraryValues?.bareArbitraryValues,
   }
 
   const workspaceRoot = findWorkspaceRoot(resolvedTailwindcssBasedir)

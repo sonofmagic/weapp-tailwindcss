@@ -56,9 +56,7 @@ describe('uni-app-x preset', () => {
       base: '/repo/uni-app-x',
     })
 
-    expect(result.generator).toEqual({
-      target: 'weapp',
-    })
+    expect(result.generator).toBeUndefined()
   })
 
   it('records installed tailwind major version into patcher options', async () => {
