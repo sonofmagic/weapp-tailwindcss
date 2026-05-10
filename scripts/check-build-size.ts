@@ -1,8 +1,8 @@
 import process from 'node:process'
-import { getWorkspacePackages } from '@icebreakers/monorepo'
 import fs from 'fs-extra'
 import path from 'pathe'
 import pc from 'picocolors'
+import { getWorkspacePackages } from 'repoctl'
 
 interface FileInfo {
   file: string

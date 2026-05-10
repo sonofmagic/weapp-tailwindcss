@@ -1,5 +1,5 @@
 import process from 'node:process'
-import { getWorkspacePackages } from '@icebreakers/monorepo'
+import { getWorkspacePackages } from 'repoctl'
 
 const cwd = process.cwd()
 const pkgs = await getWorkspacePackages(cwd)
