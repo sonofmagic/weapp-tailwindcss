@@ -2,8 +2,6 @@ import pkg from '../package.json'
 
 export const runtimeAopLoader = 'weapp-tw-runtime-aop-loader'
 
-export const ManglePluginHooks = 'ManglePluginHooks'
-
 export const WeappTailwindcssWebpackPluginOptimizeChunkAssetsHooks
   = 'WeappTailwindcssWebpackPluginOptimizeChunkAssetsHooks'
 
