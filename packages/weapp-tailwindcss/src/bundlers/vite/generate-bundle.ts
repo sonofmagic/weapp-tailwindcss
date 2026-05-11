@@ -1,12 +1,11 @@
 import type { OutputAsset, OutputChunk } from 'rollup'
 import type { ResolvedConfig } from 'vite'
 import type { OutputEntry } from './bundle-entries'
-import type { BundleSnapshot, EntryType } from './bundle-state'
+import type { BundleSnapshot } from './bundle-state'
 import type { CreateJsHandlerOptions, InternalUserDefinedOptions, LinkedJsModuleResult } from '@/types'
 import path from 'node:path'
 import process from 'node:process'
 import { logger } from '@weapp-tailwindcss/logger'
-import { splitCode } from '@weapp-tailwindcss/shared/extractors'
 import { normalizeWeappTailwindcssGeneratorOptions } from '@/generator'
 import { getRuntimeClassSetSignature } from '@/tailwindcss/runtime/cache'
 import { filterUnsupportedMiniProgramTailwindV4Candidates } from '@/tailwindcss/v4-engine/candidates'
@@ -18,6 +17,12 @@ import { normalizeOutputPathKey } from '../shared/module-graph'
 import { pushConcurrentTaskFactories } from '../shared/run-tasks'
 import { applyLinkedResults, createBundleModuleGraphOptions } from './bundle-entries'
 import { buildBundleSnapshot, createBundleBuildState, updateBundleBuildState } from './bundle-state'
+import { collectLegacyContainerCompatCandidates, collectUnescapedDynamicCandidates } from './generate-bundle/candidates'
+import { createCssRuntimeSignature, createCssTransformShareScopeKey } from './generate-bundle/css-share-scope'
+import { hasOmittedKnownBundleFiles } from './generate-bundle/dirty-state'
+import { createEmptyMetrics, formatCacheHitRate, formatDebugFileList, formatMs, measureElapsed } from './generate-bundle/metrics'
+import { createReplayCssAsset, registerGeneratorDependencies } from './generate-bundle/rollup-assets'
+import { createCandidateSignature, createJsHashSalt, createLinkedImpactSignature, getSnapshotHash, hasRuntimeAffectingSourceChanges, summarizeStringDiff } from './generate-bundle/signatures'
 import { shouldSkipViteJsTransform } from './js-precheck'
 
 interface GenerateBundleContext {
@@ -50,288 +55,8 @@ interface GenerateBundleThis {
   }) => string
 }
 
-interface BundleMetric {
-  total: number
-  transformed: number
-  cacheHits: number
-  elapsed: number
-}
-
-interface BundleMetrics {
-  runtimeSet: number
-  html: BundleMetric
-  js: BundleMetric
-  css: BundleMetric
-}
-
-function formatDebugFileList(files: Set<string>, limit = 8) {
-  if (files.size === 0) {
-    return '-'
-  }
-  const sorted = [...files].sort()
-  if (sorted.length <= limit) {
-    return sorted.join(',')
-  }
-  return `${sorted.slice(0, limit).join(',')},...(+${sorted.length - limit})`
-}
-
-function createEmptyMetric(): BundleMetric {
-  return {
-    total: 0,
-    transformed: 0,
-    cacheHits: 0,
-    elapsed: 0,
-  }
-}
-
-function createEmptyMetrics(): BundleMetrics {
-  return {
-    runtimeSet: 0,
-    html: createEmptyMetric(),
-    js: createEmptyMetric(),
-    css: createEmptyMetric(),
-  }
-}
-
-function measureElapsed(start: number) {
-  return performance.now() - start
-}
-
 function resolveUniAppXJsTransformEnabled(uniAppX: InternalUserDefinedOptions['uniAppX'] | undefined) {
   return uniAppX === undefined ? true : isUniAppXEnabled(uniAppX)
-}
-
-function formatCacheHitRate(metric: BundleMetric) {
-  if (metric.total === 0) {
-    return '0.00%'
-  }
-  return `${((metric.cacheHits / metric.total) * 100).toFixed(2)}%`
-}
-
-function formatMs(value: number) {
-  return value.toFixed(2)
-}
-
-function summarizeStringDiff(previous: string, next: string) {
-  if (previous === next) {
-    return 'same'
-  }
-
-  const previousLength = previous.length
-  const nextLength = next.length
-  const minLength = Math.min(previousLength, nextLength)
-  let prefixLength = 0
-  while (prefixLength < minLength && previous.charCodeAt(prefixLength) === next.charCodeAt(prefixLength)) {
-    prefixLength += 1
-  }
-
-  let previousSuffixCursor = previousLength - 1
-  let nextSuffixCursor = nextLength - 1
-  while (
-    previousSuffixCursor >= prefixLength
-    && nextSuffixCursor >= prefixLength
-    && previous.charCodeAt(previousSuffixCursor) === next.charCodeAt(nextSuffixCursor)
-  ) {
-    previousSuffixCursor -= 1
-    nextSuffixCursor -= 1
-  }
-
-  const previousChangedLength = previousSuffixCursor >= prefixLength ? previousSuffixCursor - prefixLength + 1 : 0
-  const nextChangedLength = nextSuffixCursor >= prefixLength ? nextSuffixCursor - prefixLength + 1 : 0
-
-  return `changed@${prefixLength} old=${previousChangedLength} new=${nextChangedLength} len=${previousLength}->${nextLength}`
-}
-
-function createLinkedImpactSignature(
-  entry: string,
-  linkedImpactsByEntry: Map<string, Set<string>>,
-  sourceHashByFile: Map<string, string>,
-) {
-  const changedLinkedFiles = linkedImpactsByEntry.get(entry)
-  if (!changedLinkedFiles || changedLinkedFiles.size === 0) {
-    return undefined
-  }
-
-  const parts = [...changedLinkedFiles]
-    .sort()
-    .map((file) => {
-      const hash = sourceHashByFile.get(file) ?? 'missing'
-      return `${file}:${hash}`
-    })
-
-  return parts.join(',')
-}
-
-function createJsHashSalt(runtimeSignature: string, linkedImpactSignature?: string) {
-  if (!linkedImpactSignature) {
-    return runtimeSignature
-  }
-  return `${runtimeSignature}:linked:${linkedImpactSignature}`
-}
-
-function createStableTextSignature(input: string) {
-  let hash = 2166136261
-  for (let i = 0; i < input.length; i++) {
-    hash ^= input.charCodeAt(i)
-    hash = Math.imul(hash, 16777619)
-  }
-  return (hash >>> 0).toString(36)
-}
-
-function createCandidateSignature(candidates: Set<string>) {
-  if (candidates.size === 0) {
-    return 'empty'
-  }
-  return createStableTextSignature([...candidates].sort().join('\n'))
-}
-
-function getSnapshotHash(snapshotMap: Map<string, string>, file: string, fallback: string) {
-  return snapshotMap.get(file) ?? fallback
-}
-
-function hasRuntimeAffectingSourceChanges(changedByType: Record<EntryType, Set<string>>) {
-  return changedByType.html.size > 0 || changedByType.js.size > 0
-}
-
-const CSS_URL_FUNCTION_RE = /url\((?:"([^"]*)"|'([^']*)'|([^)]*))\)/gi
-const CSS_PATH_INDEPENDENT_URL_RE = /^(?:[a-z][a-z\d+.-]*:|\/\/|\/|#)/i
-const CSS_IMPORT_RE = /@import\b/i
-function isPathIndependentCssUrl(value: string) {
-  const normalized = value.trim()
-  return normalized.length > 0 && CSS_PATH_INDEPENDENT_URL_RE.test(normalized)
-}
-
-function hasPathDependentCssUrl(rawSource: string) {
-  CSS_URL_FUNCTION_RE.lastIndex = 0
-  let match = CSS_URL_FUNCTION_RE.exec(rawSource)
-  while (match !== null) {
-    const value = match[1] ?? match[2] ?? match[3] ?? ''
-    if (!isPathIndependentCssUrl(value)) {
-      return true
-    }
-    match = CSS_URL_FUNCTION_RE.exec(rawSource)
-  }
-  return false
-}
-
-function createCssTransformShareScope(file: string, rawSource: string) {
-  if (CSS_IMPORT_RE.test(rawSource) || hasPathDependentCssUrl(rawSource)) {
-    return `dir:${normalizeOutputPathKey(path.dirname(file))}`
-  }
-  return 'global'
-}
-
-function createCssTransformShareScopeKey(
-  opts: InternalUserDefinedOptions,
-  file: string,
-  rawSource: string,
-) {
-  if (opts.mainCssChunkMatcher(file, opts.appType)) {
-    return `main:${normalizeOutputPathKey(file)}`
-  }
-  return createCssTransformShareScope(file, rawSource)
-}
-
-function createCssRuntimeSignature(runtimeSignature: string, generatorCandidateSignature: string) {
-  return `${runtimeSignature}:${generatorCandidateSignature}`
-}
-
-function createReplayCssAsset(fileName: string, source: string): OutputAsset {
-  return {
-    type: 'asset',
-    fileName,
-    name: undefined,
-    source,
-    needsCodeReference: false,
-    names: [],
-    originalFileName: null,
-    originalFileNames: [],
-  } as OutputAsset
-}
-
-function isAddWatchFileInvalidRollupPhaseError(error: unknown) {
-  const candidate = error as { code?: string, pluginCode?: string, message?: string }
-  return candidate?.code === 'INVALID_ROLLUP_PHASE'
-    || candidate?.pluginCode === 'INVALID_ROLLUP_PHASE'
-    || candidate?.message?.includes('Cannot call "addWatchFile" after the build has finished.') === true
-}
-
-function registerGeneratorDependencies(ctx: GenerateBundleThis, dependencies: readonly string[] | undefined) {
-  if (typeof ctx.addWatchFile !== 'function') {
-    return
-  }
-  for (const dependency of dependencies ?? []) {
-    try {
-      ctx.addWatchFile(dependency)
-    }
-    catch (error) {
-      if (isAddWatchFileInvalidRollupPhaseError(error)) {
-        logger.debug('跳过生成模式依赖监听注册，当前 Rollup 阶段不允许 addWatchFile: %s', dependency)
-        continue
-      }
-      throw error
-    }
-  }
-}
-
-function hasOmittedKnownBundleFiles(
-  currentBundleFiles: string[],
-  previousBundleFiles: Iterable<string>,
-) {
-  const currentFileSet = new Set(currentBundleFiles)
-  for (const file of previousBundleFiles) {
-    if (!currentFileSet.has(file)) {
-      return true
-    }
-  }
-  return false
-}
-
-const MUSTACHE_EXPRESSION_RE = /\{\{[\s\S]*?\}\}/g
-const QUOTED_LITERAL_RE = /'([^']*)'|"([^"]*)"|`([^`]*)`/g
-
-function isArbitraryValueCandidate(candidate: string) {
-  return candidate.includes('[') && candidate.includes(']')
-}
-
-function collectUnescapedDynamicCandidates(
-  source: string,
-) {
-  const matches = new Set<string>()
-
-  for (const expression of source.match(MUSTACHE_EXPRESSION_RE) ?? []) {
-    QUOTED_LITERAL_RE.lastIndex = 0
-    let quoted = QUOTED_LITERAL_RE.exec(expression)
-    while (quoted !== null) {
-      const literal = quoted[1] ?? quoted[2] ?? quoted[3] ?? ''
-      for (const candidate of splitCode(literal, true)) {
-        const normalized = candidate.trim()
-        if (!normalized || !isArbitraryValueCandidate(normalized)) {
-          continue
-        }
-        matches.add(normalized)
-      }
-      quoted = QUOTED_LITERAL_RE.exec(expression)
-    }
-  }
-
-  return [...matches]
-}
-
-function collectLegacyContainerCompatCandidates(
-  sourceCandidates: Set<string>,
-  candidates: Set<string>,
-) {
-  if (candidates.has('container')) {
-    return candidates
-  }
-  if (!sourceCandidates.has('container')) {
-    return candidates
-  }
-  return new Set([
-    ...candidates,
-    'container',
-  ])
 }
 
 export function createGenerateBundleHook(context: GenerateBundleContext) {

@@ -728,7 +728,7 @@ const trace = "at App.vue:4"
     expect((bundle['app.css'] as OutputAsset).source).toBe(weappCss)
     expect(addWatchFile.mock.calls.map(([file]) => file)).toEqual(dependencyFiles)
     expect(generateMock).toHaveBeenCalledWith(expect.objectContaining({
-      candidates: new Set(),
+      candidates: new Set(['w-[100px]']),
     }))
     expect(currentContext.styleHandler).not.toHaveBeenCalled()
   }, TEST_TIMEOUT_MS)
