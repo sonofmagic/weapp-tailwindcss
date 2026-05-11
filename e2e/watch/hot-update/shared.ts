@@ -299,6 +299,7 @@ export function resolveCaseName() {
     || value === 'uni-app-vue3-vite'
     || value === 'uni-app-tailwindcss-v4'
     || value === 'uni-app-tailwindcss-v5'
+    || value === 'mpx-tailwindcss-v4'
     || value === 'mpx-tailwindcss-v5'
     || value === 'taro-vite-tailwindcss-v4'
     || value === 'taro-vite-tailwindcss-v5'
@@ -306,7 +307,10 @@ export function resolveCaseName() {
     || value === 'taro-webpack-tailwindcss-v4'
     || value === 'taro-vue3-app'
     || value === 'taro-webpack'
+    || value === 'vite-native'
     || value === 'vite-native-ts'
+    || value === 'vite-native-skyline'
+    || value === 'vite-native-ts-skyline'
     || value === 'both'
     || value === 'all'
     || value === 'demo'
@@ -330,7 +334,13 @@ export function resolveExpectedGroup(target: WatchCaseName): WatchProjectGroup |
     return 'demo'
   }
 
-  if (target === 'taro-webpack' || target === 'vite-native-ts') {
+  if (
+    target === 'taro-webpack'
+    || target === 'vite-native'
+    || target === 'vite-native-ts'
+    || target === 'vite-native-skyline'
+    || target === 'vite-native-ts-skyline'
+  ) {
     return 'apps'
   }
 
@@ -342,6 +352,7 @@ export function resolveExpectedGroup(target: WatchCaseName): WatchProjectGroup |
     || target === 'uni-app-vue3-vite'
     || target === 'uni-app-tailwindcss-v4'
     || target === 'uni-app-tailwindcss-v5'
+    || target === 'mpx-tailwindcss-v4'
     || target === 'mpx-tailwindcss-v5'
     || target === 'taro-vite-tailwindcss-v4'
     || target === 'taro-vite-tailwindcss-v5'
@@ -531,6 +542,7 @@ function assertHotUpdateReport(report: HotUpdateReport, target: WatchCaseName, m
     if (contentMetric && contentMetric.mutationKind !== 'style') {
       expect(contentMetric.sourceFile).not.toMatch(INDEX_HTML_RE)
       expect(contentMetric.sourceFile).toMatch(SCRIPT_SOURCE_FILE_RE)
+      expect(contentMetric.verifyEscapedIn).toContain('js')
       expect(contentMetric.verifyClassLiteralIn).toContain('js')
       expect(contentMetric.rounds.length).toBe(1)
       expect(contentMetric.rounds[0]?.roundName).toBe(ISSUE33_REQUIRED_MUTATION_ROUND)
@@ -549,6 +561,7 @@ function assertHotUpdateReport(report: HotUpdateReport, target: WatchCaseName, m
       for (const roundName of requiredMutationRounds) {
         expect(templateMetric.rounds.some(round => round.roundName === roundName)).toBe(true)
       }
+      expect(templateMetric.verifyEscapedIn.length).toBeGreaterThan(0)
       expect(templateMetric.verifiedGlobalStyleEscapedClasses.length).toBeGreaterThanOrEqual(templateMetric.minRequiredGlobalStyleEscapedClasses)
       assertHasWxssOutput(
         normalizeGlobalStyleOutputs(templateMetric.globalStyleOutputs ?? templateMetric.globalStyleOutput),
@@ -573,6 +586,7 @@ function assertHotUpdateReport(report: HotUpdateReport, target: WatchCaseName, m
       for (const roundName of requiredMutationRounds) {
         expect(scriptMetric.rounds.some(round => round.roundName === roundName)).toBe(true)
       }
+      expect(scriptMetric.verifyEscapedIn).toContain('js')
       expect(scriptMetric.verifiedGlobalStyleEscapedClasses.length).toBeGreaterThanOrEqual(scriptMetric.minRequiredGlobalStyleEscapedClasses)
       assertHasWxssOutput(
         normalizeGlobalStyleOutputs(scriptMetric.globalStyleOutputs ?? scriptMetric.globalStyleOutput),

@@ -22,6 +22,7 @@
     "dev:mp-qq": "uni -p mp-qq",
     "dev:mp-toutiao": "uni -p mp-toutiao",
     "dev:mp-weixin": "uni -p mp-weixin",
+    "dev:e2e-watch": "node ../../scripts/uni-e2e-watch.mjs",
     "dev:quickapp-webview": "uni -p quickapp-webview",
     "dev:quickapp-webview-huawei": "uni -p quickapp-webview-huawei",
     "dev:quickapp-webview-union": "uni -p quickapp-webview-union",

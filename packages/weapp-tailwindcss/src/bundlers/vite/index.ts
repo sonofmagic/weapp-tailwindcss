@@ -472,6 +472,22 @@ export function WeappTailwindcss(options: UserDefinedOptions = {}): Plugin[] | u
           root,
           outDir,
         })
+        const basedir = opts.tailwindcssBasedir ? path.resolve(opts.tailwindcssBasedir) : undefined
+        if (basedir && basedir !== path.resolve(root)) {
+          await sourceCandidateCollector.scanRoot({
+            root: basedir,
+            outDir,
+          })
+        }
+        for (const cssEntry of opts.tailwindcss?.cssEntries ?? []) {
+          const cssEntryRoot = path.dirname(path.resolve(cssEntry))
+          if (cssEntryRoot !== path.resolve(root) && cssEntryRoot !== basedir) {
+            await sourceCandidateCollector.scanRoot({
+              root: cssEntryRoot,
+              outDir,
+            })
+          }
+        }
       },
     },
     {

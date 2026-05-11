@@ -14,40 +14,37 @@ export const HOT_UPDATE_TARGETS = [
 
 export type HotUpdateTargetName = typeof HOT_UPDATE_TARGETS[number]['name']
 
-export const HOT_UPDATE_CASES_BY_TARGET: Record<HotUpdateTargetName, string[]> = {
-  demo: [
-    'weapp-vite',
-    'gulp-app',
-    'taro',
-    'mpx',
-    'uni-app-vue3-vite',
-    'uni-app-tailwindcss-v4',
-    'uni-app-tailwindcss-v5',
-    'mpx-tailwindcss-v4',
-    'mpx-tailwindcss-v5',
-    'taro-vite-tailwindcss-v4',
-    'taro-vite-tailwindcss-v5',
-    'taro-app-vite',
-    'taro-webpack-tailwindcss-v4',
-    'taro-vue3-app',
-  ],
-  apps: [
-    'vite-native-ts',
-    'vite-native',
-    'vite-native-ts-skyline',
-    'vite-native-skyline',
-    'taro-webpack',
-  ],
-}
-
-export const HOT_UPDATE_CI_CASES = [
+const DEMO_HOT_UPDATE_CASES = [
   'weapp-vite',
   'gulp-app',
   'taro',
   'mpx',
+  'uni-app-vue3-vite',
+  'uni-app-tailwindcss-v4',
+  'uni-app-tailwindcss-v5',
+  'mpx-tailwindcss-v4',
+  'mpx-tailwindcss-v5',
+  'taro-vite-tailwindcss-v4',
+  'taro-vite-tailwindcss-v5',
+  'taro-app-vite',
   'taro-webpack-tailwindcss-v4',
   'taro-vue3-app',
 ] as const
+
+const APP_HOT_UPDATE_CASES = [
+  'vite-native-ts',
+  'vite-native',
+  'vite-native-ts-skyline',
+  'vite-native-skyline',
+  'taro-webpack',
+] as const
+
+export const HOT_UPDATE_CASES_BY_TARGET: Record<HotUpdateTargetName, string[]> = {
+  demo: [...DEMO_HOT_UPDATE_CASES],
+  apps: [...APP_HOT_UPDATE_CASES],
+}
+
+export const HOT_UPDATE_CI_CASES = [...DEMO_HOT_UPDATE_CASES, ...APP_HOT_UPDATE_CASES] as const
 
 export const HOT_UPDATE_COVERED_PROJECTS = new Set([
   'uni-app-vue3-vite',

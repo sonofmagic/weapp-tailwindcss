@@ -219,6 +219,27 @@ export async function waitForOutputFilesUpdated(
 ) {
   return waitFor(
     async () => {
+      let exactFileUpdated = false
+      for (const file of files) {
+        if (isOutputFilePattern(file)) {
+          continue
+        }
+
+        const currentMtime = await getMtime(file)
+        if (currentMtime === 0) {
+          return false
+        }
+
+        const baselineMtime = baselineMtimes.get(file) ?? 0
+        if (baselineMtime === 0 || currentMtime > baselineMtime) {
+          exactFileUpdated = true
+        }
+      }
+
+      if (exactFileUpdated) {
+        return true
+      }
+
       const resolvedFiles = await expandOutputFileEntries(files)
       for (const file of resolvedFiles) {
         const baselineMtime = baselineMtimes.get(file) ?? 0
@@ -394,7 +415,7 @@ export async function resolveOutputFiles(
     throw new Error(`[${watchCase.label}] no resolved ${label} output`)
   }
 
-  return [...new Set(candidates)]
+  return [...new Set(resolved)]
 }
 
 export async function readJoinedOutputFiles(files: string[]) {

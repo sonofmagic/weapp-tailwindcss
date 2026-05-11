@@ -12,6 +12,13 @@ import {
 } from '../text'
 import { buildHexScriptRoundConfigs, buildIssue33HighRiskRoundConfigs } from './round-configs'
 
+const taroWatchEnv = {
+  TARO_BUILD_STRICT: '1',
+  CHOKIDAR_USEPOLLING: '1',
+  CHOKIDAR_INTERVAL: '100',
+  WATCHPACK_POLLING: 'true',
+}
+
 export function buildAppCases(baseCwd: string): WatchCase[] {
   const taroWebpackCase: WatchCase = {
     name: 'taro-webpack',
@@ -19,10 +26,8 @@ export function buildAppCases(baseCwd: string): WatchCase[] {
     project: 'apps/taro-webpack-tailwindcss-v4',
     group: 'apps',
     cwd: path.resolve(baseCwd, 'apps/taro-webpack-tailwindcss-v4'),
-    devScript: 'dev:weapp2',
-    env: {
-      TARO_BUILD_STRICT: '1',
-    },
+    devScript: 'dev:e2e-watch',
+    env: taroWatchEnv,
     outputWxml: path.resolve(baseCwd, 'apps/taro-webpack-tailwindcss-v4/dist/pages/index/index.wxml'),
     outputJs: path.resolve(baseCwd, 'apps/taro-webpack-tailwindcss-v4/dist/pages/index/index.js'),
     outputStyleCandidates: [
@@ -34,7 +39,7 @@ export function buildAppCases(baseCwd: string): WatchCase[] {
     ],
     contentMutation: {
       sourceFile: path.resolve(baseCwd, 'apps/taro-webpack-tailwindcss-v4/src/pages/index/index.tsx'),
-      verifyEscapedIn: [],
+      verifyEscapedIn: ['js'],
       verifyClassLiteralIn: ['js'],
       forbidBgHexTruncationIn: ['js'],
       roundConfigs: buildIssue33HighRiskRoundConfigs(),
@@ -49,8 +54,9 @@ export function buildAppCases(baseCwd: string): WatchCase[] {
     },
     templateMutation: {
       sourceFile: path.resolve(baseCwd, 'apps/taro-webpack-tailwindcss-v4/src/pages/index/index.tsx'),
-      verifyEscapedIn: [],
+      verifyEscapedIn: ['js'],
       verifyClassLiteralIn: ['js'],
+      roundConfigs: buildHexScriptRoundConfigs(),
       mutate(source, payload) {
         const snippet = `      <View className='${payload.classLiteral}'>${payload.marker}-template</View>`
         return insertBeforeClosingTag(source, '    </>', snippet)
@@ -85,7 +91,7 @@ export function buildAppCases(baseCwd: string): WatchCase[] {
     // weapp-vite/native-ts 的 dev ready 日志偶发缺失，后续 mutation 断言更可靠。
     requireInitialCompileSuccess: false,
     cwd: path.resolve(baseCwd, 'apps/vite-native-ts'),
-    devScript: 'dev',
+    devScript: 'dev:e2e-watch',
     outputWxml: path.resolve(baseCwd, 'apps/vite-native-ts/dist/pages/index/index.wxml'),
     outputJs: path.resolve(baseCwd, 'apps/vite-native-ts/dist/pages/index/index.js'),
     outputStyleCandidates: [
@@ -96,7 +102,7 @@ export function buildAppCases(baseCwd: string): WatchCase[] {
     ],
     contentMutation: {
       sourceFile: path.resolve(baseCwd, 'apps/vite-native-ts/miniprogram/pages/index/index.ts'),
-      verifyEscapedIn: [],
+      verifyEscapedIn: ['js'],
       verifyClassLiteralIn: ['js'],
       forbidBgHexTruncationIn: ['js'],
       roundConfigs: buildIssue33HighRiskRoundConfigs(),
@@ -112,6 +118,7 @@ export function buildAppCases(baseCwd: string): WatchCase[] {
     templateMutation: {
       sourceFile: path.resolve(baseCwd, 'apps/vite-native-ts/miniprogram/pages/index/index.wxml'),
       verifyEscapedIn: ['wxml'],
+      roundConfigs: buildHexScriptRoundConfigs(),
       mutate(source, payload) {
         const snippet = `  <view class="${payload.classLiteral}">${payload.marker}-template</view>`
         return insertBeforeClosingTag(source, '</view>', snippet)
@@ -119,8 +126,9 @@ export function buildAppCases(baseCwd: string): WatchCase[] {
     },
     scriptMutation: {
       sourceFile: path.resolve(baseCwd, 'apps/vite-native-ts/miniprogram/pages/index/index.ts'),
-      verifyEscapedIn: [],
+      verifyEscapedIn: ['js'],
       verifyClassLiteralIn: ['js'],
+      roundConfigs: buildHexScriptRoundConfigs(),
       mutate(source, payload) {
         return mutateScriptByDataAnchor(source, '  data: {', payload)
       },
@@ -143,7 +151,7 @@ export function buildAppCases(baseCwd: string): WatchCase[] {
     group: 'apps',
     requireInitialCompileSuccess: false,
     cwd: path.resolve(baseCwd, 'apps/vite-native'),
-    devScript: 'dev',
+    devScript: 'dev:e2e-watch',
     outputWxml: path.resolve(baseCwd, 'apps/vite-native/dist/pages/index/index.wxml'),
     outputJs: path.resolve(baseCwd, 'apps/vite-native/dist/pages/index/index.js'),
     outputStyleCandidates: [
@@ -155,7 +163,7 @@ export function buildAppCases(baseCwd: string): WatchCase[] {
     ],
     contentMutation: {
       sourceFile: path.resolve(baseCwd, 'apps/vite-native/pages/index/index.ts'),
-      verifyEscapedIn: [],
+      verifyEscapedIn: ['js'],
       verifyClassLiteralIn: ['js'],
       forbidBgHexTruncationIn: ['js'],
       roundConfigs: buildIssue33HighRiskRoundConfigs(),
@@ -171,6 +179,7 @@ export function buildAppCases(baseCwd: string): WatchCase[] {
     templateMutation: {
       sourceFile: path.resolve(baseCwd, 'apps/vite-native/pages/index/index.wxml'),
       verifyEscapedIn: ['wxml'],
+      roundConfigs: buildHexScriptRoundConfigs(),
       mutate(source, payload) {
         const snippet = `  <view class="${payload.classLiteral}">${payload.marker}-template</view>`
         return insertBeforeClosingTag(source, '</scroll-view>', snippet)
@@ -178,8 +187,9 @@ export function buildAppCases(baseCwd: string): WatchCase[] {
     },
     scriptMutation: {
       sourceFile: path.resolve(baseCwd, 'apps/vite-native/pages/index/index.ts'),
-      verifyEscapedIn: [],
+      verifyEscapedIn: ['js'],
       verifyClassLiteralIn: ['js'],
+      roundConfigs: buildHexScriptRoundConfigs(),
       mutate(source, payload) {
         return mutateScriptByDataAnchor(source, '  data: {', payload)
       },
@@ -202,7 +212,7 @@ export function buildAppCases(baseCwd: string): WatchCase[] {
     group: 'apps',
     requireInitialCompileSuccess: false,
     cwd: path.resolve(baseCwd, 'apps/vite-native-skyline'),
-    devScript: 'dev',
+    devScript: 'dev:e2e-watch',
     outputWxml: path.resolve(baseCwd, 'apps/vite-native-skyline/dist/pages/index/index.wxml'),
     outputJs: path.resolve(baseCwd, 'apps/vite-native-skyline/dist/pages/index/index.js'),
     outputStyleCandidates: [
@@ -215,7 +225,7 @@ export function buildAppCases(baseCwd: string): WatchCase[] {
     ],
     contentMutation: {
       sourceFile: path.resolve(baseCwd, 'apps/vite-native-skyline/pages/index/index.js'),
-      verifyEscapedIn: [],
+      verifyEscapedIn: ['js'],
       verifyClassLiteralIn: ['js'],
       forbidBgHexTruncationIn: ['js'],
       roundConfigs: buildIssue33HighRiskRoundConfigs(),
@@ -231,6 +241,7 @@ export function buildAppCases(baseCwd: string): WatchCase[] {
     templateMutation: {
       sourceFile: path.resolve(baseCwd, 'apps/vite-native-skyline/pages/index/index.wxml'),
       verifyEscapedIn: ['wxml'],
+      roundConfigs: buildHexScriptRoundConfigs(),
       mutate(source, payload) {
         const snippet = `    <view class="${payload.classLiteral}">${payload.marker}-template</view>`
         return insertBeforeClosingTag(source, '</scroll-view>', snippet)
@@ -238,8 +249,9 @@ export function buildAppCases(baseCwd: string): WatchCase[] {
     },
     scriptMutation: {
       sourceFile: path.resolve(baseCwd, 'apps/vite-native-skyline/pages/index/index.js'),
-      verifyEscapedIn: [],
+      verifyEscapedIn: ['js'],
       verifyClassLiteralIn: ['js'],
+      roundConfigs: buildHexScriptRoundConfigs(),
       mutate(source, payload) {
         return mutateScriptByDataAnchor(source, '  data: {', payload)
       },
@@ -261,7 +273,7 @@ export function buildAppCases(baseCwd: string): WatchCase[] {
     project: 'apps/vite-native-ts-skyline',
     group: 'apps',
     cwd: path.resolve(baseCwd, 'apps/vite-native-ts-skyline'),
-    devScript: 'dev',
+    devScript: 'dev:e2e-watch',
     outputWxml: path.resolve(baseCwd, 'apps/vite-native-ts-skyline/dist/pages/index/index.wxml'),
     outputJs: path.resolve(baseCwd, 'apps/vite-native-ts-skyline/dist/pages/index/index.js'),
     outputStyleCandidates: [
@@ -274,7 +286,7 @@ export function buildAppCases(baseCwd: string): WatchCase[] {
     ],
     contentMutation: {
       sourceFile: path.resolve(baseCwd, 'apps/vite-native-ts-skyline/miniprogram/pages/index/index.ts'),
-      verifyEscapedIn: [],
+      verifyEscapedIn: ['js'],
       verifyClassLiteralIn: ['js'],
       forbidBgHexTruncationIn: ['js'],
       roundConfigs: buildIssue33HighRiskRoundConfigs(),
@@ -290,6 +302,7 @@ export function buildAppCases(baseCwd: string): WatchCase[] {
     templateMutation: {
       sourceFile: path.resolve(baseCwd, 'apps/vite-native-ts-skyline/miniprogram/pages/index/index.wxml'),
       verifyEscapedIn: ['wxml'],
+      roundConfigs: buildHexScriptRoundConfigs(),
       mutate(source, payload) {
         const snippet = `  <view class="${payload.classLiteral}">${payload.marker}-template</view>`
         return insertBeforeClosingTag(source, '</view>', snippet)
@@ -297,8 +310,9 @@ export function buildAppCases(baseCwd: string): WatchCase[] {
     },
     scriptMutation: {
       sourceFile: path.resolve(baseCwd, 'apps/vite-native-ts-skyline/miniprogram/pages/index/index.ts'),
-      verifyEscapedIn: [],
+      verifyEscapedIn: ['js'],
       verifyClassLiteralIn: ['js'],
+      roundConfigs: buildHexScriptRoundConfigs(),
       mutate(source, payload) {
         return replaceExactSnippet(
           source,

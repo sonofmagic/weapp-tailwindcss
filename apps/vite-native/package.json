@@ -21,6 +21,7 @@
   },
   "scripts": {
     "dev": "weapp-vite dev",
+    "dev:e2e-watch": "node ../../scripts/weapp-vite-e2e-watch.mjs",
     "dev:0": "weapp-vite dev -m x",
     "dev:1": "weapp-vite dev --mode xx",
     "dev:open": "weapp-vite dev -o",

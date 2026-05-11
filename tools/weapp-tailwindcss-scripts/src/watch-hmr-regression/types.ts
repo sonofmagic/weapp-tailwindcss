@@ -104,6 +104,7 @@ export interface WatchCase {
   templateMutation: ClassMutationConfig
   scriptMutation: ClassMutationConfig
   styleMutation: StyleMutationConfig
+  skipStyleMutation?: boolean
 }
 
 export interface WatchSession {

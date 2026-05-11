@@ -1,7 +1,8 @@
 import fs from 'node:fs'
 import path from 'pathe'
 import { describe, expect, it } from 'vitest'
-import { HOT_UPDATE_CI_CASES, HOT_UPDATE_COVERED_PROJECTS, HOT_UPDATE_EXEMPT_PROJECTS } from './e2eMatrix'
+import { buildCases } from '../tools/weapp-tailwindcss-scripts/src/watch-hmr-regression/cases'
+import { HOT_UPDATE_CASES_BY_TARGET, HOT_UPDATE_CI_CASES, HOT_UPDATE_COVERED_PROJECTS, HOT_UPDATE_EXEMPT_PROJECTS } from './e2eMatrix'
 import { FRAMEWORK_SUPPORT_CASES, getFrameworkCiCases, getFrameworkIdeExemptCases } from './frameworkSupportMatrix'
 
 const describeFrameworkCi = process.env['E2E_FRAMEWORK_SUPPORT'] === '1' ? describe : describe.skip
@@ -45,13 +46,66 @@ describeFrameworkCi('framework support matrix ci', () => {
     }
   })
 
-  it('keeps stable demo hot-update cases wired into e2e:ci', () => {
-    expect(HOT_UPDATE_CI_CASES).toContain('weapp-vite')
-    expect(HOT_UPDATE_CI_CASES).toContain('gulp-app')
-    expect(HOT_UPDATE_CI_CASES).toContain('taro')
-    expect(HOT_UPDATE_CI_CASES).toContain('mpx')
-    expect(HOT_UPDATE_CI_CASES).toContain('taro-webpack-tailwindcss-v4')
-    expect(HOT_UPDATE_CI_CASES).toContain('taro-vue3-app')
+  it('keeps stable demo and apps hot-update cases wired into e2e:ci', () => {
+    expect(HOT_UPDATE_CI_CASES).toEqual([
+      ...HOT_UPDATE_CASES_BY_TARGET.demo,
+      ...HOT_UPDATE_CASES_BY_TARGET.apps,
+    ])
+  })
+
+  it('keeps every demo and apps hot-update case runnable from the e2e watch suite by name', () => {
+    for (const target of ['demo', 'apps'] as const) {
+      for (const caseName of HOT_UPDATE_CASES_BY_TARGET[target]) {
+        expect(
+          fs.existsSync(path.resolve(__dirname, `watch/hot-update/${target}/${caseName}.test.ts`)),
+          `${caseName} should have a dedicated e2e watch hot-update test entry`,
+        ).toBe(true)
+      }
+    }
+  })
+
+  it('keeps every demo hot-update case available in the CI hot-update filter', () => {
+    for (const caseName of HOT_UPDATE_CASES_BY_TARGET.demo) {
+      expect(
+        HOT_UPDATE_CI_CASES,
+        `${caseName} should be included in hot-update CI`,
+      ).toContain(caseName)
+    }
+  })
+
+  it('keeps every apps hot-update case available in the CI hot-update filter', () => {
+    for (const caseName of HOT_UPDATE_CASES_BY_TARGET.apps) {
+      expect(
+        HOT_UPDATE_CI_CASES,
+        `${caseName} should be included in hot-update CI`,
+      ).toContain(caseName)
+    }
+  })
+
+  it('requires demo and apps hot-update cases to verify escaped template/js outputs and generated styles', () => {
+    const cases = buildCases(path.resolve(__dirname, '..')).filter(item => item.group === 'demo' || item.group === 'apps')
+
+    for (const item of cases) {
+      expect(
+        item.templateMutation.verifyEscapedIn.length,
+        `${item.name} template mutation should verify escaped template output`,
+      ).toBeGreaterThan(0)
+      expect(
+        item.scriptMutation.verifyEscapedIn,
+        `${item.name} script mutation should verify escaped js output`,
+      ).toContain('js')
+      expect(
+        item.minGlobalStyleEscapedClasses ?? 1,
+        `${item.name} should require generated escaped classes in wxss outputs`,
+      ).toBeGreaterThan(0)
+
+      if (item.contentMutation) {
+        expect(
+          item.contentMutation.verifyEscapedIn,
+          `${item.name} content mutation should verify escaped js output`,
+        ).toContain('js')
+      }
+    }
   })
 
   for (const entry of getFrameworkCiCases()) {

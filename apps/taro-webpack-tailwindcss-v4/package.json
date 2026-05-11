@@ -26,6 +26,7 @@
     "build:harmony-hybrid": "taro build --type harmony-hybrid",
     "dev:weapp": "cross-env NODE_ENV=production npm run build:weapp -- --watch",
     "dev:weapp2": "npm run build:weapp -- --watch",
+    "dev:e2e-watch": "node ../../scripts/taro-e2e-watch.mjs",
     "dev:swan": "npm run build:swan -- --watch",
     "dev:alipay": "npm run build:alipay -- --watch",
     "dev:tt": "npm run build:tt -- --watch",

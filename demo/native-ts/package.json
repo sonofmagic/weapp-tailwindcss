@@ -10,6 +10,7 @@
     "build": "weapp-vite build",
     "build:babel": "echo build:babel",
     "dev": "weapp-vite dev",
+    "dev:e2e-watch": "node ../../scripts/weapp-vite-e2e-watch.mjs",
     "open": "weapp-vite open",
     "build-npm": "weapp-vite build-npm"
   },

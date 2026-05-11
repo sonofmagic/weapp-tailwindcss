@@ -10,7 +10,14 @@ import {
   mutateTsxScriptByReturnAnchor,
   replaceExactSnippet,
 } from '../../text'
-import { buildIssue33HighRiskRoundConfigs } from '../round-configs'
+import { buildHexScriptRoundConfigs, buildIssue33HighRiskRoundConfigs } from '../round-configs'
+
+const taroWatchEnv = {
+  TARO_BUILD_STRICT: '1',
+  CHOKIDAR_USEPOLLING: '1',
+  CHOKIDAR_INTERVAL: '100',
+  WATCHPACK_POLLING: 'true',
+}
 
 export function buildDemoBaseCases(baseCwd: string): WatchCase[] {
   const taroCase: WatchCase = {
@@ -19,10 +26,8 @@ export function buildDemoBaseCases(baseCwd: string): WatchCase[] {
     project: 'demo/taro-app',
     group: 'demo',
     cwd: path.resolve(baseCwd, 'demo/taro-app'),
-    devScript: 'dev:weapp',
-    env: {
-      TARO_BUILD_STRICT: '1',
-    },
+    devScript: 'dev:e2e-watch',
+    env: taroWatchEnv,
     outputWxml: path.resolve(baseCwd, 'demo/taro-app/dist/pages/index/index.wxml'),
     outputJs: path.resolve(baseCwd, 'demo/taro-app/dist/pages/index/index.js'),
     outputStyleCandidates: [
@@ -33,7 +38,7 @@ export function buildDemoBaseCases(baseCwd: string): WatchCase[] {
     ],
     contentMutation: {
       sourceFile: path.resolve(baseCwd, 'demo/taro-app/src/pages/index/index.tsx'),
-      verifyEscapedIn: [],
+      verifyEscapedIn: ['js'],
       verifyClassLiteralIn: ['js'],
       forbidBgHexTruncationIn: ['js'],
       roundConfigs: buildIssue33HighRiskRoundConfigs(),
@@ -48,8 +53,9 @@ export function buildDemoBaseCases(baseCwd: string): WatchCase[] {
     },
     templateMutation: {
       sourceFile: path.resolve(baseCwd, 'demo/taro-app/src/pages/index/index.tsx'),
-      verifyEscapedIn: [],
+      verifyEscapedIn: ['js'],
       verifyClassLiteralIn: ['js'],
+      roundConfigs: buildHexScriptRoundConfigs(),
       mutate(source, payload) {
         const snippet = `      <View className='${payload.classLiteral}'>${payload.marker}-template</View>`
         return insertBeforeClosingTag(source, '    </>', snippet)
@@ -57,8 +63,9 @@ export function buildDemoBaseCases(baseCwd: string): WatchCase[] {
     },
     scriptMutation: {
       sourceFile: path.resolve(baseCwd, 'demo/taro-app/src/pages/index/index.tsx'),
-      verifyEscapedIn: [],
+      verifyEscapedIn: ['js'],
       verifyClassLiteralIn: ['js'],
+      roundConfigs: buildHexScriptRoundConfigs(),
       mutate(source, payload) {
         return mutateTsxScriptByReturnAnchor(source, payload)
       },
@@ -95,7 +102,7 @@ export function buildDemoBaseCases(baseCwd: string): WatchCase[] {
     ],
     contentMutation: {
       sourceFile: path.resolve(baseCwd, 'demo/mpx-app/src/pages/index.mpx'),
-      verifyEscapedIn: [],
+      verifyEscapedIn: ['js'],
       verifyClassLiteralIn: ['js'],
       forbidBgHexTruncationIn: ['js'],
       roundConfigs: buildIssue33HighRiskRoundConfigs(),
@@ -119,7 +126,7 @@ export function buildDemoBaseCases(baseCwd: string): WatchCase[] {
     },
     scriptMutation: {
       sourceFile: path.resolve(baseCwd, 'demo/mpx-app/src/pages/index.mpx'),
-      verifyEscapedIn: [],
+      verifyEscapedIn: ['js'],
       verifyClassLiteralIn: ['js'],
       mutate(source, payload) {
         return mutateScriptByDataAnchor(source, '    classNames: \'bg-[#123456]\',', payload)
@@ -165,7 +172,7 @@ export function buildDemoBaseCases(baseCwd: string): WatchCase[] {
     },
     scriptMutation: {
       sourceFile: path.resolve(baseCwd, 'demo/gulp-app/src/pages/index/index.ts'),
-      verifyEscapedIn: [],
+      verifyEscapedIn: ['js'],
       verifyClassLiteralIn: ['js'],
       mutate(source, payload) {
         return mutateScriptByDataAnchor(source, '  data: {', payload)
@@ -190,7 +197,7 @@ export function buildDemoBaseCases(baseCwd: string): WatchCase[] {
     requireStableGlobalStyleOnSameClassLiteral: false,
     initialBuildScript: 'build',
     cwd: path.resolve(baseCwd, 'demo/native-ts'),
-    devScript: 'dev',
+    devScript: 'dev:e2e-watch',
     outputWxml: path.resolve(baseCwd, 'demo/native-ts/dist/pages/index/index.wxml'),
     outputJs: path.resolve(baseCwd, 'demo/native-ts/dist/pages/index/index.js'),
     outputStyleCandidates: [
@@ -201,7 +208,7 @@ export function buildDemoBaseCases(baseCwd: string): WatchCase[] {
     ],
     contentMutation: {
       sourceFile: path.resolve(baseCwd, 'demo/native-ts/miniprogram/pages/index/index.ts'),
-      verifyEscapedIn: [],
+      verifyEscapedIn: ['js'],
       verifyClassLiteralIn: ['js'],
       forbidBgHexTruncationIn: ['js'],
       roundConfigs: buildIssue33HighRiskRoundConfigs(),
@@ -224,7 +231,7 @@ export function buildDemoBaseCases(baseCwd: string): WatchCase[] {
     },
     scriptMutation: {
       sourceFile: path.resolve(baseCwd, 'demo/native-ts/miniprogram/pages/index/index.ts'),
-      verifyEscapedIn: [],
+      verifyEscapedIn: ['js'],
       verifyClassLiteralIn: ['js'],
       mutate(source, payload) {
         return mutateScriptByDataAnchor(source, '  data: {', payload)

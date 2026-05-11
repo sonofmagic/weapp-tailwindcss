@@ -498,7 +498,7 @@ export function createGenerateBundleHook(context: GenerateBundleContext) {
     const shouldFilterTailwindV4MiniProgramCandidates = runtimeState.twPatcher.majorVersion === 4 && generatorOptions.target === 'weapp'
     await waitForSourceCandidateSyncs?.()
     const sourceCandidates = getSourceCandidates?.() ?? new Set<string>()
-    const collectedGeneratorCandidates = new Set(sourceCandidates)
+    const collectedGeneratorCandidates = new Set([...runtime, ...sourceCandidates])
     const filteredGeneratorCandidates = shouldFilterTailwindV4MiniProgramCandidates
       ? filterUnsupportedMiniProgramTailwindV4Candidates(collectedGeneratorCandidates)
       : collectedGeneratorCandidates

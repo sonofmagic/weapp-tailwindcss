@@ -27,7 +27,7 @@ function resolveCaseSourceFiles(watchCase: WatchCase) {
     watchCase.contentMutation?.sourceFile,
     watchCase.templateMutation.sourceFile,
     watchCase.scriptMutation.sourceFile,
-    watchCase.styleMutation.sourceFile,
+    watchCase.skipStyleMutation ? undefined : watchCase.styleMutation.sourceFile,
   ].filter((item): item is string => Boolean(item)))]
 }
 
@@ -86,8 +86,10 @@ export async function runCase(watchCase: WatchCase, options: CliOptions): Promis
       throw new Error(`[${watchCase.label}] missing script mutation source original`)
     }
 
-    const styleSourceOriginal = sourceOriginals.get(watchCase.styleMutation.sourceFile)
-    if (styleSourceOriginal == null) {
+    const styleSourceOriginal = watchCase.skipStyleMutation
+      ? undefined
+      : sourceOriginals.get(watchCase.styleMutation.sourceFile)
+    if (!watchCase.skipStyleMutation && styleSourceOriginal == null) {
       throw new Error(`[${watchCase.label}] missing style mutation source original`)
     }
 
@@ -129,14 +131,16 @@ export async function runCase(watchCase: WatchCase, options: CliOptions): Promis
       globalStyleOutputs,
     )
 
-    const styleMetrics = await runStyleMutation(
-      watchCase,
-      options,
-      session,
-      watchCase.styleMutation,
-      styleSourceOriginal,
-      watchCase.outputStyleCandidates,
-    )
+    const styleMetrics = watchCase.skipStyleMutation
+      ? undefined
+      : await runStyleMutation(
+          watchCase,
+          options,
+          session,
+          watchCase.styleMutation,
+          styleSourceOriginal!,
+          watchCase.outputStyleCandidates,
+        )
 
     const preferredRound = resolvePreferredRound(templateMetrics.rounds)
     if (!preferredRound) {
@@ -147,7 +151,7 @@ export async function runCase(watchCase: WatchCase, options: CliOptions): Promis
       ...(contentMetrics ? [contentMetrics] : []),
       templateMetrics,
       scriptMetrics,
-      styleMetrics,
+      ...(styleMetrics ? [styleMetrics] : []),
     ]
 
     const metrics: WatchCaseMetrics = {
@@ -175,7 +179,7 @@ export async function runCase(watchCase: WatchCase, options: CliOptions): Promis
     }
 
     process.stdout.write(
-      `[watch-hmr] ${watchCase.label} passed (${contentMetrics ? `content=${contentMetrics.hotUpdateEffectiveMs}ms, ` : ''}template=${templateMetrics.hotUpdateEffectiveMs}ms, script=${scriptMetrics.hotUpdateEffectiveMs}ms, style=${styleMetrics.hotUpdateEffectiveMs}ms)\n`,
+      `[watch-hmr] ${watchCase.label} passed (${contentMetrics ? `content=${contentMetrics.hotUpdateEffectiveMs}ms, ` : ''}template=${templateMetrics.hotUpdateEffectiveMs}ms, script=${scriptMetrics.hotUpdateEffectiveMs}ms${styleMetrics ? `, style=${styleMetrics.hotUpdateEffectiveMs}ms` : ''})\n`,
     )
 
     return metrics

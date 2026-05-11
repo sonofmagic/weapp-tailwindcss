@@ -21,7 +21,6 @@ import {
   assertNotContains,
   getMtime,
   readFileIfExists,
-  readFileWithRetry,
   waitFor,
   writeFilePreserveEol,
 } from '../text'
@@ -180,22 +179,6 @@ async function writeIssue33Snapshot(
   ])
 }
 
-async function loadRoundOutputs(
-  watchCase: WatchCase,
-  globalStyleOutputs: string[],
-): Promise<RoundOutputs> {
-  const [wxml, js, globalStyle] = await Promise.all([
-    readFileWithRetry(watchCase.outputWxml),
-    readFileWithRetry(watchCase.outputJs),
-    readJoinedOutputFiles(globalStyleOutputs),
-  ])
-  return {
-    wxml,
-    js,
-    globalStyle,
-  }
-}
-
 async function loadRoundOutputsSafe(
   watchCase: WatchCase,
   globalStyleOutputs: string[],
@@ -235,7 +218,7 @@ async function waitForRoundOutputs(
 
   const effectiveMs = await waitFor(
     async () => {
-      const outputs = await loadRoundOutputs(watchCase, globalStyleOutputs)
+      const outputs = await loadRoundOutputsSafe(watchCase, globalStyleOutputs)
       try {
         matchedEscapedClasses = runAssert(outputs)
         resolvedOutputs = outputs
@@ -391,7 +374,7 @@ export async function runClassMutation(
   const sourcePath = mutation.sourceFile
   const isContentMutation = mutationKind === 'content'
   const mutationOutputFiles = isContentMutation
-    ? globalStyleOutputs
+    ? [watchCase.outputWxml, watchCase.outputJs, ...globalStyleOutputs]
     : [watchCase.outputWxml, watchCase.outputJs]
 
   const [baselineWxml, baselineJs, baselineGlobalStyle] = await Promise.all([
@@ -733,16 +716,23 @@ export async function runClassMutation(
       rollbackOutputMs = isContentMutation
         ? await waitFor(
             async () => {
-              const resolvedMutationOutputFiles = await expandOutputFileEntries(mutationOutputFiles)
-              for (const file of resolvedMutationOutputFiles) {
+              let outputUpdated = false
+              for (const file of mutationOutputFiles) {
                 const baselineMtime = updatedOutputMtimes.get(file) ?? 0
                 const currentMtime = await getMtime(file)
+                if (currentMtime === 0) {
+                  return false
+                }
                 if (baselineMtime === 0 || currentMtime > baselineMtime) {
-                  return true
+                  outputUpdated = true
                 }
               }
-              const outputs = await loadRoundOutputs(watchCase, globalStyleOutputs)
-              return effectiveEscapedClasses.every(escaped => !outputs.js.includes(escaped))
+              if (!outputUpdated) {
+                return false
+              }
+              const outputs = await loadRoundOutputsSafe(watchCase, globalStyleOutputs)
+              return Boolean(outputs.wxml && outputs.js)
+                && effectiveEscapedClasses.every(escaped => !outputs.js.includes(escaped))
             },
             {
               timeoutMs: options.timeoutMs,
@@ -771,7 +761,7 @@ export async function runClassMutation(
           )
 
       if (issue33Round) {
-        const outputs = await loadRoundOutputs(watchCase, globalStyleOutputs)
+        const outputs = await loadRoundOutputsSafe(watchCase, globalStyleOutputs)
         await writeIssue33Snapshot(
           watchCase,
           mutationKind,

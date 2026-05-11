@@ -78,7 +78,7 @@
     "e2e:static": "vitest run -c ./e2e/vitest.e2e.config.ts",
     "e2e:static:dev": "vitest -c ./e2e/vitest.e2e.config.ts",
     "e2e:static:u": "vitest run -u -c ./e2e/vitest.e2e.config.ts",
-    "e2e:ci": "cross-env E2E_FRAMEWORK_SUPPORT=1 vitest run -c ./e2e/vitest.e2e.config.ts e2e/framework-ci-support.test.ts && cross-env E2E_HOT_UPDATE_CI=1 pnpm e2e:hot-update:demo",
+    "e2e:ci": "cross-env E2E_FRAMEWORK_SUPPORT=1 vitest run -c ./e2e/vitest.e2e.config.ts e2e/framework-ci-support.test.ts && cross-env E2E_HOT_UPDATE_CI=1 pnpm e2e:hot-update",
     "e2e:ide": "cross-env E2E_IDE=1 E2E_IDE_BUILD=1 vitest run -c ./e2e/vitest.e2e.config.ts e2e/framework-ide-support.test.ts",
     "e2e:ide:build": "pnpm e2e:ide",
     "e2e:ide:skip-build": "cross-env E2E_IDE=1 E2E_IDE_BUILD=0 vitest run -c ./e2e/vitest.e2e.config.ts e2e/framework-ide-support.test.ts",

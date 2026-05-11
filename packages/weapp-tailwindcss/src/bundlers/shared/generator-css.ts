@@ -805,13 +805,23 @@ export async function resolveGeneratorSource(
   const matchedCssEntrySource = sourceOptions && cssEntrySource
     ? await resolveMatchingTailwindV4CssEntry(rawSource, file, sourceOptions)
     : undefined
-  if (matchedCssEntrySource) {
+  const mainCssEntrySource = sourceOptions
+    && cssHandlerOptions.isMainChunk
+    && sourceOptions.cssEntries?.length === 1
+    ? await resolveTailwindV4Source({
+        ...sourceOptions,
+        css: undefined,
+        cssEntries: [sourceOptions.cssEntries[0]],
+      })
+    : undefined
+  const preferredCssEntrySource = matchedCssEntrySource ?? mainCssEntrySource
+  if (preferredCssEntrySource) {
     return generatorOptions?.config
       ? {
-          ...matchedCssEntrySource,
-          css: prependConfigDirective(matchedCssEntrySource.css, generatorOptions.config),
+          ...preferredCssEntrySource,
+          css: prependConfigDirective(preferredCssEntrySource.css, generatorOptions.config),
         }
-      : matchedCssEntrySource
+      : preferredCssEntrySource
   }
 
   const resolvedEntrySource = sourceSideEntrySource ?? cssEntrySource
