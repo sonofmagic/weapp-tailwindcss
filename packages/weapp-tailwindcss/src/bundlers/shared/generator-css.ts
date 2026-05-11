@@ -1,31 +1,26 @@
 import type { IStyleHandlerOptions } from '@weapp-tailwindcss/postcss/types'
-import type { TailwindResolvedSource } from '@/generator'
 import type { InternalUserDefinedOptions } from '@/types'
-import { readFileSync } from 'node:fs'
 import postcss from 'postcss'
 import {
   createWeappTailwindcssGenerator,
   normalizeWeappTailwindcssGeneratorOptions,
 } from '@/generator'
-import { replaceWxml } from '@/wxml'
 import { finalizeMiniProgramCss, removeUnsupportedMiniProgramAtRules } from './css-cleanup'
 import {
   hasTailwindSourceDirectives,
   parseImportRequest,
   removeTailwindSourceDirectives,
-  resolveCssEntrySource,
 } from './generator-css/directives'
+import { appendLegacyCompatCss, appendLegacyContainerCompatCss, hasConfiguredContainerCompatSources } from './generator-css/legacy-compat'
+import { inheritLegacyUnitConvertedDeclarations } from './generator-css/legacy-units'
 import {
   createCssAppend,
   hasTailwindGeneratedCss,
   hasTailwindGeneratedCssMarkers,
   splitTailwindV4GeneratedCss,
   stripTailwindBanner,
-  stripTailwindBanners,
-  VITE_MARKER_RE,
 } from './generator-css/markers'
 import {
-  resolveCssSourceBase,
   resolveGeneratorSources,
 } from './generator-css/source-resolver'
 
@@ -34,6 +29,12 @@ export {
   removeTailwindSourceDirectives,
   resolveCssEntrySource,
 } from './generator-css/directives'
+export {
+  removeTailwindApplyRules,
+} from './generator-css/legacy-compat'
+export {
+  inheritLegacyUnitConvertedDeclarations,
+} from './generator-css/legacy-units'
 export {
   createCssAppend,
   hasTailwindGeneratedCss,
@@ -48,43 +49,8 @@ export {
   resolveGeneratorSource,
 } from './generator-css/source-resolver'
 
-const CLASS_SELECTOR_RE = /(?:^|[^\w-])\.[_a-z\u00A0-\uFFFF\\-]/i
-const MINI_PROGRAM_THEME_SCOPE_SELECTORS = new Set([':host', 'page', '.tw-root', 'wx-root-portal-content'])
 const SUPPORTED_GENERATOR_MAJOR_VERSIONS = new Set([3, 4])
 const REMOTE_IMPORT_RE = /^(?:https?:)?\/\//i
-const SPECIFICITY_PLACEHOLDER_RE = /:not\(#(?:\\#|n)\)/g
-const CSS_LENGTH_UNIT_RE = /(?:^|[\s(,])[-+]?(?:\d+|\d*\.\d+)(?:px|rem)\b/i
-const RPX_UNIT_RE = /(?:^|[\s(,])[-+]?(?:\d+|\d*\.\d+)rpx\b/i
-const LEGACY_CONTAINER_COMPAT_CSS = [
-  '.container {',
-  '  width: 100%;',
-  '}',
-  '@media (min-width: 40rem) {',
-  '  .container {',
-  '    max-width: 40rem;',
-  '  }',
-  '}',
-  '@media (min-width: 48rem) {',
-  '  .container {',
-  '    max-width: 48rem;',
-  '  }',
-  '}',
-  '@media (min-width: 64rem) {',
-  '  .container {',
-  '    max-width: 64rem;',
-  '  }',
-  '}',
-  '@media (min-width: 80rem) {',
-  '  .container {',
-  '    max-width: 80rem;',
-  '  }',
-  '}',
-  '@media (min-width: 96rem) {',
-  '  .container {',
-  '    max-width: 96rem;',
-  '  }',
-  '}',
-].join('\n')
 export interface GenerateCssByGeneratorOptions {
   opts: InternalUserDefinedOptions
   runtimeState: {
@@ -112,136 +78,6 @@ function finalizeMiniProgramGeneratorCss(css: string, target: string) {
     return css
   }
   return finalizeMiniProgramCss(css)
-}
-
-function normalizeCompatSelector(selector: string) {
-  return selector
-    .replace(SPECIFICITY_PLACEHOLDER_RE, '')
-    .replace(/\s+/g, ' ')
-    .trim()
-}
-
-function isClassSelectorTerminator(char: string) {
-  return /[\s>+~#,.:()[\]]/.test(char)
-}
-
-function unescapeSimpleCssIdent(value: string) {
-  return value.replaceAll(/\\(.)/g, '$1')
-}
-
-function escapeCompatSelectorClasses(selector: string) {
-  let result = ''
-  let index = 0
-  let changed = false
-  while (index < selector.length) {
-    const char = selector[index]
-    if (char !== '.') {
-      result += char
-      index += 1
-      continue
-    }
-
-    let end = index + 1
-    let className = ''
-    while (end < selector.length) {
-      const current = selector[end]
-      if (current === '\\' && end + 1 < selector.length) {
-        className += current + selector[end + 1]
-        end += 2
-        continue
-      }
-      if (isClassSelectorTerminator(current)) {
-        break
-      }
-      className += current
-      end += 1
-    }
-
-    if (className.includes('\\')) {
-      result += `.${replaceWxml(unescapeSimpleCssIdent(className))}`
-      changed = true
-    }
-    else {
-      result += `.${className}`
-    }
-    index = end
-  }
-  return changed ? result : selector
-}
-
-function normalizeCompatSelectors(selector: string) {
-  const normalized = normalizeCompatSelector(selector)
-  if (!normalized) {
-    return []
-  }
-  const selectors = new Set([normalized])
-  const escaped = normalizeCompatSelector(escapeCompatSelectorClasses(normalized))
-  if (escaped) {
-    selectors.add(escaped)
-  }
-  return [...selectors]
-}
-
-function createLegacyDeclarationValueMap(css: string) {
-  const values = new Map<string, string>()
-  const root = postcss.parse(css)
-  root.walkRules((rule) => {
-    if (!rule.selectors || rule.selectors.length === 0) {
-      return
-    }
-    for (const selector of rule.selectors) {
-      const normalizedSelectors = normalizeCompatSelectors(selector)
-      rule.walkDecls((decl) => {
-        if (RPX_UNIT_RE.test(decl.value)) {
-          for (const normalizedSelector of normalizedSelectors) {
-            values.set(`${normalizedSelector}\n${decl.prop}`, decl.value)
-          }
-        }
-      })
-    }
-  })
-  return values
-}
-
-export function inheritLegacyUnitConvertedDeclarations(css: string, legacyCss: string) {
-  try {
-    const legacyValues = createLegacyDeclarationValueMap(legacyCss)
-    if (legacyValues.size === 0) {
-      return css
-    }
-
-    const root = postcss.parse(css)
-    let changed = false
-    root.walkRules((rule) => {
-      if (!rule.selectors || rule.selectors.length === 0) {
-        return
-      }
-      const selectors = rule.selectors
-        .flatMap(selector => normalizeCompatSelectors(selector))
-      if (selectors.length === 0) {
-        return
-      }
-
-      rule.walkDecls((decl) => {
-        if (!CSS_LENGTH_UNIT_RE.test(decl.value)) {
-          return
-        }
-        for (const selector of selectors) {
-          const legacyValue = legacyValues.get(`${selector}\n${decl.prop}`)
-          if (legacyValue && legacyValue !== decl.value) {
-            decl.value = legacyValue
-            changed = true
-            return
-          }
-        }
-      })
-    })
-
-    return changed ? root.toString() : css
-  }
-  catch {
-    return css
-  }
 }
 
 function resolveGeneratorStyleOptions(
@@ -354,342 +190,6 @@ function prefixLocalCssImportsWithWebpackIgnore(css: string) {
   catch {
     return css
   }
-}
-
-function resolveLegacyCompatCssSource(rawSource: string) {
-  const source = removeTailwindSourceDirectives(stripTailwindBanners(rawSource))
-  return removeUnsupportedMiniProgramAtRules(removeTailwindApplyRules(source))
-}
-
-export function removeTailwindApplyRules(rawSource: string) {
-  try {
-    const root = postcss.parse(rawSource)
-    let removed = false
-    root.walkAtRules('apply', (rule) => {
-      const parent = rule.parent
-      if (parent?.type === 'rule') {
-        parent.remove()
-      }
-      else {
-        rule.remove()
-      }
-      removed = true
-    })
-    root.walkAtRules((rule) => {
-      if (rule.nodes && rule.nodes.length === 0) {
-        rule.remove()
-      }
-    })
-    return removed ? root.toString() : rawSource
-  }
-  catch {
-    return rawSource
-  }
-}
-
-function hasContainerConfigToken(rawSource: string) {
-  return rawSource.includes('@config') && /\bcontainer\b/.test(rawSource)
-}
-
-function hasConfiguredContainerCompat(rawSource: string, file: string, cssHandlerOptions: IStyleHandlerOptions) {
-  if (hasContainerConfigToken(rawSource)) {
-    return true
-  }
-
-  const base = resolveCssSourceBase(file, cssHandlerOptions)
-  const cssEntrySource = resolveCssEntrySource(rawSource, base)
-  if (!cssEntrySource?.config) {
-    return false
-  }
-
-  try {
-    return /\bcontainer\b/.test(readFileSync(cssEntrySource.config, 'utf8'))
-  }
-  catch {
-    return false
-  }
-}
-
-function hasConfiguredContainerCompatSource(source: TailwindResolvedSource) {
-  if (hasContainerConfigToken(source.css)) {
-    return true
-  }
-
-  const cssEntrySource = resolveCssEntrySource(source.css, source.base)
-  if (cssEntrySource?.config) {
-    try {
-      if (/\bcontainer\b/.test(readFileSync(cssEntrySource.config, 'utf8'))) {
-        return true
-      }
-    }
-    catch {
-      // 可选配置不可读时忽略，继续走其他兼容判断。
-    }
-  }
-
-  if ('config' in source && source.config) {
-    try {
-      if (/\bcontainer\b/.test(readFileSync(source.config, 'utf8'))) {
-        return true
-      }
-    }
-    catch {
-      // 可选配置不可读时忽略，继续走其他兼容判断。
-    }
-  }
-
-  return false
-}
-
-function hasConfiguredContainerCompatSources(sources: TailwindResolvedSource[]) {
-  return sources.some(source => hasConfiguredContainerCompatSource(source))
-}
-
-function removeDuplicatedViteMarkers(css: string, baseCss: string) {
-  if (!VITE_MARKER_RE.test(baseCss)) {
-    return css
-  }
-  VITE_MARKER_RE.lastIndex = 0
-  return css.replace(VITE_MARKER_RE, '')
-}
-
-function normalizeCssSelector(selector: string) {
-  return selector.trim().replace(/\s+/g, '')
-}
-
-function getCompatSelectorKeys(selector: string) {
-  return normalizeCompatSelectors(selector).map(normalizeCssSelector)
-}
-
-function getRuleCompatSelectorKeys(rule: postcss.Rule) {
-  return (rule.selectors?.length ? rule.selectors : [rule.selector])
-    .flatMap(selector => getCompatSelectorKeys(selector))
-}
-
-function hasClassSelector(selector: string) {
-  return CLASS_SELECTOR_RE.test(selector)
-}
-
-function getNormalizedSelectorList(selector: string) {
-  return selector.split(',').map(normalizeCssSelector).filter(Boolean)
-}
-
-function isMiniProgramThemeScopeSelector(selector: string) {
-  const selectors = getNormalizedSelectorList(selector)
-  return selectors.length > 0
-    && selectors.every(item => MINI_PROGRAM_THEME_SCOPE_SELECTORS.has(item))
-}
-
-function hasUtilityClassSelector(selector: string) {
-  return hasClassSelector(selector) && !isMiniProgramThemeScopeSelector(selector)
-}
-
-function isCustomPropertyOnlyRule(rule: postcss.Rule) {
-  let hasDeclaration = false
-  let allCustomProperties = true
-
-  rule.each((node) => {
-    if (node.type !== 'decl') {
-      return
-    }
-    hasDeclaration = true
-    if (!node.prop.startsWith('--')) {
-      allCustomProperties = false
-    }
-  })
-
-  return hasDeclaration && allCustomProperties
-}
-
-function isPseudoContentInitRule(rule: postcss.Rule) {
-  let hasDeclaration = false
-  let onlyContentVariable = true
-
-  rule.each((node) => {
-    if (node.type !== 'decl') {
-      return
-    }
-    hasDeclaration = true
-    if (node.prop !== '--tw-content') {
-      onlyContentVariable = false
-    }
-  })
-
-  return hasDeclaration && onlyContentVariable
-}
-
-function collectGeneratedSelectors(css: string) {
-  const selectors = new Set<string>()
-  try {
-    const root = postcss.parse(css)
-    root.walkRules((rule) => {
-      if (isCustomPropertyOnlyRule(rule) && !isPseudoContentInitRule(rule) && !hasUtilityClassSelector(rule.selector)) {
-        return
-      }
-      for (const selector of getRuleCompatSelectorKeys(rule)) {
-        selectors.add(selector)
-      }
-    })
-  }
-  catch {
-    return selectors
-  }
-  return selectors
-}
-
-function removeGeneratedSelectorCompatCss(css: string, generatedCss: string) {
-  const generatedSelectors = collectGeneratedSelectors(generatedCss)
-  if (generatedSelectors.size === 0) {
-    return css
-  }
-
-  try {
-    const root = postcss.parse(css)
-    let removed = false
-    root.walkRules((rule) => {
-      if (isPseudoContentInitRule(rule)) {
-        rule.remove()
-        removed = true
-        return
-      }
-      if (isCustomPropertyOnlyRule(rule) && !isPseudoContentInitRule(rule) && !hasUtilityClassSelector(rule.selector)) {
-        return
-      }
-      if (getRuleCompatSelectorKeys(rule).some(selector => generatedSelectors.has(selector))) {
-        rule.remove()
-        removed = true
-      }
-    })
-    root.walkAtRules((atRule) => {
-      if (atRule.nodes && atRule.nodes.length === 0) {
-        atRule.remove()
-      }
-    })
-    return removed ? root.toString() : css
-  }
-  catch {
-    return css
-  }
-}
-
-function collectDedupedPostTransformCompatCss(css: string, generatedCss: string) {
-  const generatedSelectors = collectGeneratedSelectors(generatedCss)
-  if (generatedSelectors.size === 0) {
-    return css
-  }
-
-  const preservedNodes: postcss.Node[] = []
-  try {
-    const root = postcss.parse(css)
-    root.each((node) => {
-      if (node.type === 'rule' && getRuleCompatSelectorKeys(node).some(selector => generatedSelectors.has(selector))) {
-        if (isCustomPropertyOnlyRule(node) && !isPseudoContentInitRule(node) && !hasUtilityClassSelector(node.selector)) {
-          const declarationProps = new Set<string>()
-          node.walkDecls((decl) => {
-            declarationProps.add(decl.prop)
-          })
-          const generatedRoot = postcss.parse(generatedCss)
-          generatedRoot.walkRules((rule) => {
-            const nodeSelectors = new Set(getRuleCompatSelectorKeys(node))
-            if (!getRuleCompatSelectorKeys(rule).some(selector => nodeSelectors.has(selector))) {
-              return
-            }
-            rule.walkDecls((decl) => {
-              declarationProps.delete(decl.prop)
-            })
-          })
-          const nextRule = node.clone()
-          nextRule.walkDecls((decl) => {
-            if (!declarationProps.has(decl.prop)) {
-              decl.remove()
-            }
-          })
-          if (nextRule.nodes.length > 0) {
-            preservedNodes.push(nextRule)
-          }
-        }
-        return
-      }
-      preservedNodes.push(node.clone())
-    })
-    if (preservedNodes.length === root.nodes.length) {
-      return css
-    }
-    const nextRoot = postcss.root()
-    nextRoot.append(preservedNodes)
-    return nextRoot.toString()
-  }
-  catch {
-    return css
-  }
-}
-
-async function appendLegacyCompatCss(
-  css: string,
-  rawSource: string,
-  generatorTarget: string,
-  styleHandler: InternalUserDefinedOptions['styleHandler'],
-  cssHandlerOptions: IStyleHandlerOptions,
-  generatorStyleOptions: Partial<IStyleHandlerOptions> | undefined,
-) {
-  const compatSource = removeGeneratedSelectorCompatCss(resolveLegacyCompatCssSource(rawSource), css)
-  if (compatSource.trim().length === 0) {
-    return css
-  }
-  if (generatorTarget !== 'weapp') {
-    return createCssAppend(css, compatSource)
-  }
-
-  const { css: compatCss } = await styleHandler(compatSource, {
-    ...cssHandlerOptions,
-    ...generatorStyleOptions,
-  })
-  const cleanedCompatCss = collectDedupedPostTransformCompatCss(
-    removeDuplicatedViteMarkers(removeUnsupportedMiniProgramAtRules(compatCss), css),
-    css,
-  )
-  if (cleanedCompatCss.trim().length === 0) {
-    return css
-  }
-  return createCssAppend(css, cleanedCompatCss)
-}
-
-async function appendLegacyContainerCompatCss(
-  css: string,
-  rawSource: string,
-  file: string,
-  runtime: Set<string>,
-  configuredContainerCompat: boolean,
-  generatorTarget: string,
-  styleHandler: InternalUserDefinedOptions['styleHandler'],
-  cssHandlerOptions: IStyleHandlerOptions,
-  generatorStyleOptions: Partial<IStyleHandlerOptions> | undefined,
-) {
-  const compatSource = resolveLegacyCompatCssSource(rawSource)
-  const shouldAppendContainer = runtime.has('container')
-    || hasConfiguredContainerCompat(rawSource, file, cssHandlerOptions)
-    || configuredContainerCompat
-    || collectGeneratedSelectors(compatSource).has('.container')
-  if (
-    generatorTarget !== 'weapp'
-    || !shouldAppendContainer
-    || collectGeneratedSelectors(css).has('.container')
-  ) {
-    return css
-  }
-
-  const { css: compatCss } = await styleHandler(LEGACY_CONTAINER_COMPAT_CSS, {
-    ...cssHandlerOptions,
-    ...generatorStyleOptions,
-  })
-  const cleanedCompatCss = collectDedupedPostTransformCompatCss(
-    removeUnsupportedMiniProgramAtRules(compatCss),
-    css,
-  )
-  if (cleanedCompatCss.trim().length === 0) {
-    return css
-  }
-  return createCssAppend(css, cleanedCompatCss)
 }
 
 export async function generateCssByGenerator(
