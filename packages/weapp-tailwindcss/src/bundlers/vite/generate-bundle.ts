@@ -2,7 +2,7 @@ import type { OutputAsset, OutputChunk } from 'rollup'
 import type { ResolvedConfig } from 'vite'
 import type { OutputEntry } from './bundle-entries'
 import type { BundleSnapshot } from './bundle-state'
-import type { CreateJsHandlerOptions, InternalUserDefinedOptions, LinkedJsModuleResult } from '@/types'
+import type { InternalUserDefinedOptions, LinkedJsModuleResult } from '@/types'
 import path from 'node:path'
 import process from 'node:process'
 import { logger } from '@weapp-tailwindcss/logger'
@@ -10,16 +10,18 @@ import { normalizeWeappTailwindcssGeneratorOptions } from '@/generator'
 import { getRuntimeClassSetSignature } from '@/tailwindcss/runtime/cache'
 import { filterUnsupportedMiniProgramTailwindV4Candidates } from '@/tailwindcss/v4-engine/candidates'
 import { createUniAppXAssetTask } from '@/uni-app-x'
-import { isUniAppXEnabled } from '@/uni-app-x/options'
 import { processCachedTask } from '../shared/cache'
 import { generateCssByGenerator } from '../shared/generator-css'
 import { normalizeOutputPathKey } from '../shared/module-graph'
 import { pushConcurrentTaskFactories } from '../shared/run-tasks'
-import { applyLinkedResults, createBundleModuleGraphOptions } from './bundle-entries'
+import { createBundleModuleGraphOptions } from './bundle-entries'
 import { buildBundleSnapshot, createBundleBuildState, updateBundleBuildState } from './bundle-state'
 import { collectLegacyContainerCompatCandidates, collectUnescapedDynamicCandidates } from './generate-bundle/candidates'
+import { createCssHandlerOptionsCache } from './generate-bundle/css-handler-options'
 import { createCssRuntimeSignature, createCssTransformShareScopeKey } from './generate-bundle/css-share-scope'
 import { hasOmittedKnownBundleFiles } from './generate-bundle/dirty-state'
+import { createJsHandlerOptionsFactory, resolveUniAppXJsTransformEnabled } from './generate-bundle/js-handler-options'
+import { collectLinkedFileNames, createLinkedUpdateHelpers } from './generate-bundle/js-linking'
 import { createEmptyMetrics, formatCacheHitRate, formatDebugFileList, formatMs, measureElapsed } from './generate-bundle/metrics'
 import { createReplayCssAsset, registerGeneratorDependencies } from './generate-bundle/rollup-assets'
 import { createCandidateSignature, createJsHashSalt, createLinkedImpactSignature, getSnapshotHash, hasRuntimeAffectingSourceChanges, summarizeStringDiff } from './generate-bundle/signatures'
@@ -55,30 +57,13 @@ interface GenerateBundleThis {
   }) => string
 }
 
-function resolveUniAppXJsTransformEnabled(uniAppX: InternalUserDefinedOptions['uniAppX'] | undefined) {
-  return uniAppX === undefined ? true : isUniAppXEnabled(uniAppX)
-}
-
 export function createGenerateBundleHook(context: GenerateBundleContext) {
   const state = createBundleBuildState()
-  const cssHandlerOptionsCache = new Map<string, {
-    isMainChunk: boolean
-    postcssOptions: {
-      options: {
-        from: string
-      }
-    }
-    majorVersion: number | undefined
-  }>()
-  const cssUserHandlerOptionsCache = new Map<string, {
-    isMainChunk: boolean
-    postcssOptions: {
-      options: {
-        from: string
-      }
-    }
-    majorVersion: number | undefined
-  }>()
+  const cssHandlerOptions = createCssHandlerOptionsCache({
+    appType: context.opts.appType,
+    mainCssChunkMatcher: context.opts.mainCssChunkMatcher,
+    getMajorVersion: () => context.runtimeState.twPatcher.majorVersion,
+  })
   return async function generateBundle(this: GenerateBundleThis, _opt: unknown, bundle: Record<string, OutputAsset | OutputChunk>) {
     const addWatchFile = (id: string) => this.addWatchFile?.(id)
     const {
@@ -98,9 +83,7 @@ export function createGenerateBundleHook(context: GenerateBundleContext) {
       recordGeneratorCandidates,
     } = context
     const {
-      appType,
       cache,
-      mainCssChunkMatcher,
       onEnd,
       onStart,
       onUpdate,
@@ -110,45 +93,7 @@ export function createGenerateBundleHook(context: GenerateBundleContext) {
       uniAppX,
     } = opts
     const generatorOptions = normalizeWeappTailwindcssGeneratorOptions(opts.generator)
-
-    // 按文件缓存 CSS handler 的 override 对象，减少 watch/incremental 轮次的重复构造与下游 fingerprint 开销。
-    const getCssHandlerOptions = (file: string) => {
-      const majorVersion = runtimeState.twPatcher.majorVersion
-      const isMainChunk = mainCssChunkMatcher(file, appType)
-      const cacheKey = `${majorVersion ?? 'unknown'}:${isMainChunk ? '1' : '0'}:${file}`
-      const cached = cssHandlerOptionsCache.get(cacheKey)
-      if (cached) {
-        return cached
-      }
-
-      const created = {
-        isMainChunk,
-        postcssOptions: {
-          options: {
-            from: file,
-          },
-        },
-        majorVersion,
-      }
-      cssHandlerOptionsCache.set(cacheKey, created)
-      return created
-    }
-
-    const getCssUserHandlerOptions = (file: string) => {
-      const majorVersion = runtimeState.twPatcher.majorVersion
-      const cacheKey = `${majorVersion ?? 'unknown'}:${file}`
-      const cached = cssUserHandlerOptionsCache.get(cacheKey)
-      if (cached) {
-        return cached
-      }
-
-      const created = {
-        ...getCssHandlerOptions(file),
-        isMainChunk: false,
-      }
-      cssUserHandlerOptionsCache.set(cacheKey, created)
-      return created
-    }
+    const { getCssHandlerOptions, getCssUserHandlerOptions } = cssHandlerOptions
 
     await runtimeState.readyPromise
     debug('start')
@@ -246,33 +191,14 @@ export function createGenerateBundleHook(context: GenerateBundleContext) {
     }
     debug('get runtimeSet, class count: %d', runtime.size)
     const runtimeSignature = getRuntimeClassSetSignature(runtimeState.twPatcher) ?? 'runtime:missing'
-    const handleLinkedUpdate = (fileName: string, previous: string, next: string) => {
-      onUpdate(fileName, previous, next)
-      debug('js linked handle: %s', fileName)
-    }
-    const pendingLinkedUpdates: Array<() => void> = []
-    const scheduleLinkedApply = (entry: OutputEntry, code: string) => {
-      pendingLinkedUpdates.push(() => {
-        if (entry.output.type === 'chunk') {
-          entry.output.code = code
-        }
-        else {
-          entry.output.source = code
-        }
-      })
-    }
-    const applyLinkedUpdates = (linked?: Record<string, LinkedJsModuleResult>) => {
-      applyLinkedResults(linked, jsEntries, handleLinkedUpdate, scheduleLinkedApply)
-    }
-    const createHandlerOptions = (absoluteFilename: string, extra?: CreateJsHandlerOptions): CreateJsHandlerOptions => ({
-      ...extra,
-      filename: absoluteFilename,
-      tailwindcssMajorVersion: runtimeState.twPatcher.majorVersion,
+    const { applyLinkedUpdates, pendingLinkedUpdates } = createLinkedUpdateHelpers({
+      jsEntries,
+      onUpdate,
+      debug,
+    })
+    const createHandlerOptions = createJsHandlerOptionsFactory({
+      getMajorVersion: () => runtimeState.twPatcher.majorVersion,
       moduleGraph: moduleGraphOptions,
-      babelParserOptions: {
-        ...(extra?.babelParserOptions ?? {}),
-        sourceFilename: absoluteFilename,
-      },
     })
 
     const linkedByEntry = useIncrementalMode ? new Map<string, Set<string>>() : undefined
@@ -495,14 +421,7 @@ export function createGenerateBundleHook(context: GenerateBundleContext) {
               metrics.js.transformed++
               onUpdate(file, rawSource, code)
               debug('js handle: %s', file)
-              if (linked) {
-                for (const id of Object.keys(linked)) {
-                  const linkedEntry = getJsEntry(id)
-                  if (linkedEntry && linkedSet) {
-                    linkedSet.add(linkedEntry.fileName)
-                  }
-                }
-              }
+              collectLinkedFileNames(linked, getJsEntry, linkedSet)
               applyLinkedUpdates(linked)
               return {
                 result: code,
@@ -519,14 +438,7 @@ export function createGenerateBundleHook(context: GenerateBundleContext) {
 
         const baseApplyLinkedUpdates = applyLinkedUpdates
         const wrappedApplyLinkedUpdates = (linked?: Record<string, LinkedJsModuleResult>) => {
-          if (linked) {
-            for (const id of Object.keys(linked)) {
-              const linkedEntry = getJsEntry(id)
-              if (linkedEntry && linkedSet) {
-                linkedSet.add(linkedEntry.fileName)
-              }
-            }
-          }
+          collectLinkedFileNames(linked, getJsEntry, linkedSet)
           baseApplyLinkedUpdates(linked)
         }
 
