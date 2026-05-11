@@ -103,6 +103,14 @@ export function createAssetHashByChunkMap(chunks: Iterable<ChunkLike>) {
   return hashByFile
 }
 
+export function createRuntimeAwareCssHash(
+  assetHash: string | undefined,
+  sourceHash: string,
+  runtimeSetHash: string,
+) {
+  return `${assetHash ?? sourceHash}:${runtimeSetHash}`
+}
+
 export function hasWatchChanges(compiler: WebpackWatchChangeLike) {
   return (compiler.modifiedFiles?.size ?? 0) > 0
     || (compiler.removedFiles?.size ?? 0) > 0

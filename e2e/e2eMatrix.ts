@@ -44,6 +44,7 @@ export const HOT_UPDATE_CI_CASES = [
   'weapp-vite',
   'gulp-app',
   'taro',
+  'mpx',
   'taro-webpack-tailwindcss-v4',
   'taro-vue3-app',
 ] as const

@@ -102,6 +102,15 @@ describe('watch-hmr coverage matrix', () => {
     }
   })
 
+  it('keeps the mpx script-only added-class regression guarded by global wxss output', () => {
+    const mpxCase = automatedWatchCases.find(item => item.project === 'demo/mpx-app')
+
+    expect(mpxCase).toBeDefined()
+    expect(mpxCase?.scriptMutation.verifyClassLiteralIn).toContain('js')
+    expect(mpxCase?.globalStyleCandidates.some(item => item.includes('utilities*.wxss'))).toBe(true)
+    expect(mpxCase?.minGlobalStyleEscapedClasses).toBeGreaterThanOrEqual(1)
+  })
+
   it('documents the current hbuilderx v3 automation boundary', () => {
     expect(manualBoundaryProjects).toEqual([
       'demo/native',

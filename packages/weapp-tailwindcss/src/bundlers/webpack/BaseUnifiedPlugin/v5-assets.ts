@@ -11,7 +11,7 @@ import { processCachedTask } from '../../shared/cache'
 import { generateCssByGenerator } from '../../shared/generator-css'
 import { resolveOutputSpecifier, toAbsoluteOutputPath } from '../../shared/module-graph'
 import { pushConcurrentTaskFactories } from '../../shared/run-tasks'
-import { createAssetHashByChunkMap, getCacheKey } from './shared'
+import { createAssetHashByChunkMap, createRuntimeAwareCssHash, getCacheKey } from './shared'
 
 interface SetupWebpackV5ProcessAssetsHookOptions {
   compiler: Compiler
@@ -293,9 +293,11 @@ export function setupWebpackV5ProcessAssetsHook(options: SetupWebpackV5ProcessAs
             const rawSource = originalSource.source().toString()
             const cacheKey = file
             const chunkHash = assetHashByChunk.get(file)
-            const runtimeAwareHash = chunkHash
-              ? `${chunkHash}:${runtimeSetHash}`
-              : undefined
+            const runtimeAwareHash = createRuntimeAwareCssHash(
+              chunkHash,
+              compilerOptions.cache.computeHash(rawSource),
+              runtimeSetHash,
+            )
             tasks.push(
               processCachedTask({
                 cache: compilerOptions.cache,

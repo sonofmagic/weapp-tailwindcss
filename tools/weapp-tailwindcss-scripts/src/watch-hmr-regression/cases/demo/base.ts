@@ -76,9 +76,8 @@ export function buildDemoBaseCases(baseCwd: string): WatchCase[] {
     label: 'demo/mpx-app',
     project: 'demo/mpx-app',
     group: 'demo',
-    // MPX watch output may keep newly introduced utility classes in page-level assets.
-    // Do not hard-require hits in global utilities/app styles for this case.
-    minGlobalStyleEscapedClasses: 0,
+    // 覆盖 MPX script-only 热更新新增类名后，utilities wxss 必须同步生成样式。
+    minGlobalStyleEscapedClasses: 1,
     // MPX watch pipeline may rewrite global style assets even when class literal is unchanged.
     // Keep same-class-literal timing coverage, but skip strict global style stability assertion.
     requireStableGlobalStyleOnSameClassLiteral: false,

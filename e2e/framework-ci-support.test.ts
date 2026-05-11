@@ -49,6 +49,7 @@ describeFrameworkCi('framework support matrix ci', () => {
     expect(HOT_UPDATE_CI_CASES).toContain('weapp-vite')
     expect(HOT_UPDATE_CI_CASES).toContain('gulp-app')
     expect(HOT_UPDATE_CI_CASES).toContain('taro')
+    expect(HOT_UPDATE_CI_CASES).toContain('mpx')
     expect(HOT_UPDATE_CI_CASES).toContain('taro-webpack-tailwindcss-v4')
     expect(HOT_UPDATE_CI_CASES).toContain('taro-vue3-app')
   })

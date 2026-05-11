@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest'
 import {
   createAssetHashByChunkMap,
+  createRuntimeAwareCssHash,
   getCacheKey,
   hasLoaderEntry,
   isCssLikeModuleResource,
@@ -64,5 +65,13 @@ describe('bundlers/webpack shared helpers', () => {
     expect(result.get('runtime.js')).toBe('runtime:hash-runtime')
     expect(result.has('noop.js')).toBe(false)
     expect(result.has('')).toBe(false)
+  })
+
+  it('includes runtime class set hash for css assets without chunk hash', () => {
+    const sourceHash = 'source:old-utilities'
+
+    expect(createRuntimeAwareCssHash('main:chunk-a', sourceHash, 'runtime:1')).toBe('main:chunk-a:runtime:1')
+    expect(createRuntimeAwareCssHash(undefined, sourceHash, 'runtime:1')).toBe('source:old-utilities:runtime:1')
+    expect(createRuntimeAwareCssHash(undefined, sourceHash, 'runtime:2')).toBe('source:old-utilities:runtime:2')
   })
 })
