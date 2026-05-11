@@ -1,5 +1,4 @@
 import type { Plugin, ResolvedConfig } from 'vite'
-import type { BundleSnapshot } from './bundle-state'
 import type { UserDefinedOptions } from '@/types'
 import path from 'node:path'
 import process from 'node:process'
@@ -9,9 +8,6 @@ import { vitePluginName } from '@/constants'
 import { getCompilerContext } from '@/context'
 import { toCustomAttributesEntities } from '@/context/custom-attributes'
 import { createDebug } from '@/debug'
-import { resolveTailwindcssOptions } from '@/tailwindcss/patcher-options'
-import { collectRuntimeClassSet, createTailwindRuntimeReadyPromise, refreshTailwindRuntimeState } from '@/tailwindcss/runtime'
-import { getRuntimeClassSetSignature } from '@/tailwindcss/runtime/cache'
 import { createUniAppXPlugins } from '@/uni-app-x'
 import { isUniAppXEnabled } from '@/uni-app-x/options'
 import { resolveUniUtsPlatform } from '@/utils'
@@ -20,11 +16,11 @@ import { resolvePackageDir } from '@/utils/resolve-package'
 import { normalizeOutputPathKey } from '../shared/module-graph'
 import { createViteCssFinalizerOutputPlugin } from './css-finalizer'
 import { createGenerateBundleHook } from './generate-bundle'
-import { createBundleRuntimeClassSetManager } from './incremental-runtime-class-set'
 import { disableAndRemoveTailwindVitePlugins, getPostcssPluginName, removeTailwindPostcssPlugins, removeTailwindVitePlugins } from './official-tailwind-plugins'
 import { resolveFilteredPostcssConfig } from './postcss-config'
 import { resolveImplicitAppTypeFromViteRoot } from './resolve-app-type'
 import { createRewriteCssImportsPlugins } from './rewrite-css-imports'
+import { createViteRuntimeClassSet } from './runtime-class-set'
 import { createSourceCandidateCollector, isSourceCandidateRequest } from './source-candidates'
 import { resolveImplicitTailwindcssBasedirFromViteRoot } from './tailwind-basedir'
 import { slash } from './utils'
@@ -76,143 +72,28 @@ export function WeappTailwindcss(options: UserDefinedOptions = {}): Plugin[] | u
   }
 
   const customAttributesEntities = toCustomAttributesEntities(customAttributes)
-
-  const readyPromise = createTailwindRuntimeReadyPromise(initialTwPatcher)
-
-  const runtimeState = {
-    twPatcher: initialTwPatcher,
-    readyPromise,
-    refreshTailwindcssPatcher,
-  }
-  let runtimeSet: Set<string> | undefined
-  let runtimeSetPromise: Promise<Set<string>> | undefined
   let resolvedConfig: ResolvedConfig | undefined
-  let runtimeRefreshSignature: string | undefined
-  let runtimeRefreshOptionsKey: string | undefined
   let recordedGeneratorCandidates: Set<string> | undefined
-  const bundleRuntimeClassSetManager = createBundleRuntimeClassSetManager()
   const sourceCandidateCollector = createSourceCandidateCollector()
   const pendingSourceCandidateSyncs = new Set<Promise<void>>()
   const processedCssAssets = new WeakSet<object>()
   const processedCssAssetFiles = new Set<string>()
   const rememberedMainCssSources = new Map<string, string>()
   const rememberedMainCssSignatureByFile = new Map<string, string>()
-
-  function resolveRuntimeRefreshOptions() {
-    const configPath = resolveTailwindcssOptions(runtimeState.twPatcher.options)?.config
-    const signature = getRuntimeClassSetSignature(runtimeState.twPatcher)
-    const optionsKey = JSON.stringify({
-      appType: opts.appType,
-      uniAppX: uniAppXEnabled,
-      customAttributesEntities,
-      disabledDefaultTemplateHandler,
-      configPath,
-    })
-    const changed = signature !== runtimeRefreshSignature || optionsKey !== runtimeRefreshOptionsKey
-    runtimeRefreshSignature = signature
-    runtimeRefreshOptionsKey = optionsKey
-    return {
-      changed,
-      signature,
-      optionsKey,
-    }
-  }
-
-  async function refreshRuntimeState(force: boolean) {
-    const invalidation = resolveRuntimeRefreshOptions()
-    const shouldRefresh = force || invalidation.changed
-    const refreshed = await refreshTailwindRuntimeState(runtimeState, {
-      force: shouldRefresh,
-      clearCache: force || invalidation.changed,
-    })
-    if (invalidation.changed) {
-      debug('runtime signature changed, refresh triggered. signature: %s', invalidation.signature)
-    }
-    if (refreshed) {
-      runtimeSet = undefined
-      runtimeSetPromise = undefined
-    }
-  }
-
-  async function ensureRuntimeClassSet(force = false): Promise<Set<string>> {
-    const forceRuntimeRefresh = force || process.env.WEAPP_TW_VITE_FORCE_RUNTIME_REFRESH === '1'
-    await refreshRuntimeState(force)
-    await runtimeState.readyPromise
-    if (!forceRuntimeRefresh && runtimeSet) {
-      return runtimeSet
-    }
-
-    if (forceRuntimeRefresh || !runtimeSetPromise) {
-      const invalidation = resolveRuntimeRefreshOptions()
-      const task = collectRuntimeClassSet(runtimeState.twPatcher, {
-        force: forceRuntimeRefresh || invalidation.changed,
-        skipRefresh: forceRuntimeRefresh,
-        clearCache: forceRuntimeRefresh || invalidation.changed,
-      })
-      runtimeSetPromise = task
-    }
-
-    const task = runtimeSetPromise!
-    try {
-      runtimeSet = await task
-      return runtimeSet
-    }
-    finally {
-      if (runtimeSetPromise === task) {
-        runtimeSetPromise = undefined
-      }
-    }
-  }
-
-  async function ensureBundleRuntimeClassSet(snapshot: BundleSnapshot, forceRefresh = false) {
-    const forceRuntimeRefresh = forceRefresh || process.env.WEAPP_TW_VITE_FORCE_RUNTIME_REFRESH === '1'
-    const invalidation = resolveRuntimeRefreshOptions()
-    const shouldRefreshPatcher = forceRuntimeRefresh || invalidation.changed
-    const forceCollectBySource = snapshot.runtimeAffectingChangedByType.html.size > 0
-      || snapshot.runtimeAffectingChangedByType.js.size > 0
-
-    await refreshRuntimeState(shouldRefreshPatcher)
-    await runtimeState.readyPromise
-
-    if (shouldRefreshPatcher) {
-      runtimeSet = undefined
-      runtimeSetPromise = undefined
-      await bundleRuntimeClassSetManager.reset()
-    }
-
-    if (runtimeState.twPatcher.majorVersion === 4 && !forceRuntimeRefresh) {
-      try {
-        const nextRuntimeSet = await bundleRuntimeClassSetManager.sync(runtimeState.twPatcher, snapshot)
-        runtimeSet = nextRuntimeSet
-        return nextRuntimeSet
-      }
-      catch (error) {
-        debug('incremental runtime set sync failed, fallback to full collect: %O', error)
-        await bundleRuntimeClassSetManager.reset()
-      }
-    }
-
-    if (!forceRuntimeRefresh && !invalidation.changed && !forceCollectBySource && runtimeSet) {
-      return runtimeSet
-    }
-
-    const task = collectRuntimeClassSet(runtimeState.twPatcher, {
-      force: forceRuntimeRefresh || invalidation.changed || forceCollectBySource,
-      skipRefresh: forceRuntimeRefresh,
-      clearCache: forceRuntimeRefresh || invalidation.changed,
-    })
-    runtimeSetPromise = task
-
-    try {
-      runtimeSet = await task
-      return runtimeSet
-    }
-    finally {
-      if (runtimeSetPromise === task) {
-        runtimeSetPromise = undefined
-      }
-    }
-  }
+  const {
+    runtimeState,
+    refreshRuntimeState,
+    ensureRuntimeClassSet,
+    ensureBundleRuntimeClassSet,
+  } = createViteRuntimeClassSet({
+    opts,
+    initialTwPatcher,
+    refreshTailwindcssPatcher,
+    uniAppXEnabled,
+    customAttributesEntities,
+    disabledDefaultTemplateHandler,
+    debug,
+  })
   onLoad()
   const getResolvedConfig = () => resolvedConfig
   const markCssAssetProcessed = (asset: { source: unknown }, file?: string) => {
