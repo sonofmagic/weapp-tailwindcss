@@ -66,6 +66,7 @@ describe('v5 postcss generator', () => {
         },
         packageName: 'tailwindcss4',
         candidates: ['ring', 'border', 'shadow-sm'],
+        scanSources: false,
       }),
     ]).process(`
       @theme default {
@@ -92,6 +93,7 @@ describe('v5 postcss generator', () => {
         },
         packageName: 'tailwindcss4',
         candidates: ['ring', 'border', 'shadow-sm'],
+        scanSources: false,
       }),
     ]).process(`
       @theme default {

@@ -7,13 +7,12 @@
       "dom"
     ],
     "useDefineForClassFields": true,
-    "baseUrl": ".",
     "rootDir": ".",
     "module": "esnext",
     "moduleResolution": "node",
     "paths": {
       "@/*": [
-        "src/*"
+        "./src/*"
       ]
     },
     "resolveJsonModule": true,

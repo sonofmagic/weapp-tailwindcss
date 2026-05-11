@@ -2,7 +2,6 @@
   "compilerOptions": {
     "target": "esnext",
     "module": "esnext",
-    "baseUrl": "./",
     "noImplicitThis": true,
     "noImplicitAny": true,
     "strictNullChecks": true,
@@ -12,17 +11,16 @@
       "dom",
       "dom.iterable"
     ],
-    "types": [
-    ],
+    "types": [],
     "paths": {
       "@/*": [
-        "src/*"
+        "./src/*"
       ]
     }
   },
   "exclude": [
     "build",
     "dist",
-    "config",
+    "config"
   ]
 }

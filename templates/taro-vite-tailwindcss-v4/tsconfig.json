@@ -7,8 +7,9 @@
     "module": "ES2015",
     "moduleResolution": "bundler",
     "paths": {
-      // TS5090 leading './'
-      "@/*": ["./src/*"]
+      "@/*": [
+        "./src/*"
+      ]
     },
     "resolveJsonModule": true,
     "typeRoots": [
@@ -25,6 +26,10 @@
     "sourceMap": true,
     "allowSyntheticDefaultImports": true
   },
-  "include": ["./src", "./types", "./config"],
+  "include": [
+    "./src",
+    "./types",
+    "./config"
+  ],
   "compileOnSave": false
 }

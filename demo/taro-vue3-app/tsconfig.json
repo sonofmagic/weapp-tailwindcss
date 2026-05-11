@@ -13,18 +13,31 @@
     "noUnusedParameters": true,
     "strictNullChecks": true,
     "sourceMap": true,
-    "baseUrl": ".",
     "rootDir": ".",
     "jsx": "react-jsx",
     "allowJs": true,
     "resolveJsonModule": true,
-    "typeRoots": ["node_modules/@types"],
-    "types": ["@tarojs/taro", "webpack-env", "vite/client"],
+    "typeRoots": [
+      "node_modules/@types"
+    ],
+    "types": [
+      "@tarojs/taro",
+      "webpack-env",
+      "vite/client"
+    ],
     "paths": {
-      "@/*": ["src/*"]
+      "@/*": [
+        "./src/*"
+      ]
     }
   },
-  "include": ["./src", "global.d.ts"],
-  "exclude": ["node_modules", "dist"],
+  "include": [
+    "./src",
+    "global.d.ts"
+  ],
+  "exclude": [
+    "node_modules",
+    "dist"
+  ],
   "compileOnSave": false
 }

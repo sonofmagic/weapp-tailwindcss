@@ -3,7 +3,6 @@
     "target": "es2017",
     "jsx": "preserve",
     "experimentalDecorators": true,
-    "baseUrl": ".",
     "rootDir": ".",
     "module": "commonjs",
     "moduleResolution": "node",
@@ -22,6 +21,10 @@
     "sourceMap": true,
     "allowSyntheticDefaultImports": true
   },
-  "include": ["./src", "./types", "components.d.ts"],
+  "include": [
+    "./src",
+    "./types",
+    "components.d.ts"
+  ],
   "compileOnSave": false
 }

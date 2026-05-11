@@ -10,9 +10,7 @@
     ],
     "moduleDetection": "force",
     "useDefineForClassFields": true,
-    "baseUrl": ".",
     "module": "ESNext",
-    /* Bundler mode */
     "moduleResolution": "bundler",
     "paths": {
       "@/*": [
@@ -23,7 +21,6 @@
       "vite/client"
     ],
     "allowImportingTsExtensions": true,
-    /* Linting */
     "strict": true,
     "noFallthroughCasesInSwitch": true,
     "noUnusedLocals": true,

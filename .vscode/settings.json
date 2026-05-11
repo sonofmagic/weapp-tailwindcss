@@ -8,7 +8,35 @@
     "source.organizeImports": "never"
   },
   "search.exclude": {
-    "**/submodules/**": true
+    "**/submodules/**": true,
+    "**/node_modules/**": true,
+    "**/benchmark/**/node_modules/**": true
+  },
+  "files.exclude": {
+    "**/benchmark/**/node_modules/**": true
+  },
+  "files.watcherExclude": {
+    "**/node_modules/**": true,
+    "**/benchmark/**/node_modules/**": true,
+    "**/.turbo/**": true,
+    "**/.cache/**": true,
+    "**/dist/**": true,
+    "**/build/**": true
+  },
+  // 避免 TypeScript 通过 benchmark 生成依赖的 symlink 重复打开工作区包。
+  "js/ts.tsserver.watchOptions": {
+    "excludeDirectories": [
+      "**/node_modules",
+      "**/benchmark/**/node_modules",
+      "**/.turbo",
+      "**/.cache",
+      "**/dist",
+      "**/build"
+    ],
+    "excludeFiles": [
+      "**/node_modules/**/tsconfig.json",
+      "**/benchmark/**/node_modules/**/tsconfig.json"
+    ]
   },
   // https://github.com/tailwindlabs/tailwindcss/discussions/5258
   "css.customData": [

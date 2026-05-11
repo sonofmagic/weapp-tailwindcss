@@ -22,7 +22,7 @@
     "skipLibCheck": true,
     "types": [
       "miniprogram-api-typings"
-    ],
+    ]
   },
   "references": [
     {

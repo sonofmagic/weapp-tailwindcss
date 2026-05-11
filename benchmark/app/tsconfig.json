@@ -9,12 +9,10 @@
     ],
     "useDefineForClassFields": true,
     "module": "ESNext",
-    /* Bundler mode */
     "moduleResolution": "bundler",
     "resolveJsonModule": true,
     "allowImportingTsExtensions": true,
     "allowJs": true,
-    /* Linting */
     "strict": true,
     "noFallthroughCasesInSwitch": true,
     "noUnusedLocals": true,

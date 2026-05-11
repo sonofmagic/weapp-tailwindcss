@@ -1,18 +1,17 @@
 {
-  "extends": "@tsconfig/recommended/tsconfig.json",
   "compilerOptions": {
+    "target": "ESNext",
     "lib": [
       "ES2022"
     ],
-    "baseUrl": ".",
     "module": "ESNext",
     "moduleResolution": "Bundler",
     "paths": {
       "@/*": [
-        "src/*"
+        "./src/*"
       ],
       "#test/*": [
-        "test/*"
+        "./test/*"
       ]
     },
     "resolveJsonModule": true,
@@ -21,9 +20,18 @@
       "node",
       "vitest/globals"
     ],
+    "allowJs": true,
+    "strict": true,
     "strictPropertyInitialization": false,
+    "exactOptionalPropertyTypes": true,
+    "noImplicitOverride": true,
+    "noPropertyAccessFromIndexSignature": true,
+    "noUncheckedIndexedAccess": true,
+    "noEmit": true,
     "outDir": "dist",
-    "allowSyntheticDefaultImports": true
+    "allowSyntheticDefaultImports": true,
+    "esModuleInterop": true,
+    "skipLibCheck": true
   },
   "include": [
     "src/**/*",

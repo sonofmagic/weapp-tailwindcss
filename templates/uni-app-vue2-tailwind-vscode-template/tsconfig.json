@@ -8,10 +8,9 @@
     "moduleResolution": "node",
     "esModuleInterop": true,
     "allowSyntheticDefaultImports": true,
-    "experimentalDecorators":true,
+    "experimentalDecorators": true,
     "sourceMap": true,
     "skipLibCheck": true,
-    "baseUrl": ".",
     "types": [
       "webpack-env",
       "@dcloudio/types",
