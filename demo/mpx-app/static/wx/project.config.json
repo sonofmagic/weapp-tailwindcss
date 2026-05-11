@@ -17,7 +17,8 @@
     "coverView": false,
     "enhance": false,
     "showShadowRootInWxmlPanel": false,
-    "packNpmRelationList": []
+    "packNpmRelationList": [],
+    "minifyWXML": true
   },
   "appid": "wx6ffee4673b257014",
   "description": "A mpx project",
