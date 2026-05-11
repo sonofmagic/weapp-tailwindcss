@@ -51,6 +51,8 @@
     "build:clean-cache": "pnpm run clean:build-cache",
     "build:nocache": "cross-env TURBO_FORCE=1 WEAPP_TW_SKIP_INTERACTIVE_TARO_BUILD=1 WEAPP_TW_SKIP_INTERACTIVE_UNI_BUILD=1 turbo run build",
     "build:docs": "turbo run build --filter=./website/",
+    "deploy:docs:cf": "pnpm --filter @weapp-tailwindcss/website deploy:cf",
+    "deploy:docs:cf:next": "pnpm --filter @weapp-tailwindcss/website deploy:cf:next",
     "build:apps": "cross-env WEAPP_TW_SKIP_INTERACTIVE_TARO_BUILD=1 WEAPP_TW_SKIP_INTERACTIVE_UNI_BUILD=1 turbo run build --filter=./apps/*",
     "build:pkgs": "turbo run build --filter=./packages/* --filter=./packages-runtime/*",
     "build:demo": "cross-env WEAPP_TW_SKIP_INTERACTIVE_TARO_BUILD=1 WEAPP_TW_SKIP_INTERACTIVE_UNI_BUILD=1 turbo run build --filter=./demo/*",
