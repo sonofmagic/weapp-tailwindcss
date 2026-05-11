@@ -178,41 +178,32 @@ module.exports = {
 
 这样 `2` 个配置文件创建好了，接下来就要通过配置让它们各自在打包中生效。
 
-### `postcss.config.js` 配置
+### v5 生成模式配置
 
-这是非常重要的一块配置，我们需要把 `postcss.config.js` 的配置变成一个函数，这样才能把构建时的上下文传入进来：
+`weapp-tailwindcss@5` 不再建议通过 `postcss.config.js` 创建多个 Tailwind 上下文。请为主包和独立分包准备不同的 CSS 入口，并把这些入口都加入 `cssEntries`：
 
-```js
-const path = require('path')
+```ts title="vite.config.ts"
+import path from 'node:path'
+import { WeappTailwindcss } from 'weapp-tailwindcss/vite'
 
-module.exports = function config(loaderContext) {
-  // moduleA 下面的所有 scss 文件，都是独立模块的，应用不同的 tailwindcss 配置
-  const isModuleA = /moduleA[/\\](?:\w+[/\\])*\w+\.scss$/.test(
-    loaderContext.file
-  )
-  // 多个独立子包同理，加条件分支即可
-  if (isModuleA) {
-    return {
-      plugins: {
-        tailwindcss: {
-          config: path.resolve(__dirname, 'tailwind.config.sub.js')
-        },
-        autoprefixer: {},
-      }
-    }
-  }
-
-  return {
-    plugins: {
-      // 不传默认取 tailwind.config.js
-      tailwindcss: {},
-      autoprefixer: {},
-    }
-  }
-}
+WeappTailwindcss({
+  cssEntries: [
+    path.resolve(__dirname, 'src/app.css'),
+    path.resolve(__dirname, 'src/moduleA/app.css'),
+  ],
+})
 ```
 
-通过这种方式，我们成功的创建了 `2` 个不同的 `tailwindcss` 上下文，此时你进行打包之后，会发现
+每个 CSS 入口可以通过 `@config` 指向自己的 Tailwind 配置：
+
+```css title="src/moduleA/app.css"
+@config "../../tailwind.config.sub.js";
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+```
+
+通过这种方式，我们成功创建了 `2` 个不同的 Tailwind 上下文，此时你进行打包之后，会发现
 
 主包里的 `app.wxss` 和独立分包里的 `index.wxss`，里面的内容就已经各归各了，不再相互包含了。
 

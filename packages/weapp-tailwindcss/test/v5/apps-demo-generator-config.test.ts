@@ -107,48 +107,68 @@ describe('v5 apps and demos generator config', () => {
     expect(configSource).not.toContain("target: 'weapp'")
   })
 
-  it('documents the v5 generator examples for uni-app, taro and mpx', async () => {
+  it('documents generated-mode setup in the Tailwind CSS v3 and v4 quick-start pages', async () => {
     const [
-      overviewDocsSource,
-      uniAppDocsSource,
-      taroDocsSource,
-      weappViteDocsSource,
-      mpxDocsSource,
+      v3InstallDocsSource,
+      v3UniAppDocsSource,
+      v3TaroDocsSource,
+      v3MpxDocsSource,
+      v4ReadmeDocsSource,
+      v4TaroDocsSource,
+      v4MpxDocsSource,
+      migrationDocsSource,
       parityDocsSource,
     ] = await Promise.all([
-      readProjectFile('website/docs/quick-start/v4/v5-generator-examples.mdx'),
-      readProjectFile('website/docs/quick-start/v4/generator/uni-app.mdx'),
-      readProjectFile('website/docs/quick-start/v4/generator/taro.mdx'),
-      readProjectFile('website/docs/quick-start/v4/generator/weapp-vite.mdx'),
-      readProjectFile('website/docs/quick-start/v4/generator/mpx.mdx'),
+      readProjectFile('website/docs/quick-start/install.mdx'),
+      readProjectFile('website/docs/quick-start/frameworks/uni-app-vite.md'),
+      readProjectFile('website/docs/quick-start/frameworks/taro.md'),
+      readProjectFile('website/docs/quick-start/frameworks/mpx.mdx'),
+      readProjectFile('website/docs/quick-start/v4/readme.md'),
+      readProjectFile('website/docs/quick-start/v4/taro-vite.mdx'),
+      readProjectFile('website/docs/quick-start/v4/mpx.mdx'),
+      readProjectFile('website/docs/migrations/v5.md'),
       readProjectFile('website/docs/tailwindcss/v5-official-plugin-parity.mdx'),
     ])
+    const quickStartDocsSource = [
+      v3InstallDocsSource,
+      v3UniAppDocsSource,
+      v3TaroDocsSource,
+      v3MpxDocsSource,
+      v4ReadmeDocsSource,
+      v4TaroDocsSource,
+      v4MpxDocsSource,
+    ].join('\n')
     const docsSource = [
-      overviewDocsSource,
-      uniAppDocsSource,
-      taroDocsSource,
-      weappViteDocsSource,
-      mpxDocsSource,
+      quickStartDocsSource,
+      migrationDocsSource,
     ].join('\n')
 
-    expect(docsSource).toContain('uni-app Vue Vite')
+    expect(docsSource).toContain('uni-app Vue3 Vite')
+    expect(docsSource).toContain('Taro')
     expect(docsSource).toContain('Taro Vite')
     expect(docsSource).toContain('weapp-vite')
     expect(docsSource).toContain('Mpx')
     expect(docsSource).toContain('WeappTailwindcss')
-    expect(docsSource).toContain("target: 'web'")
-    expect(docsSource).toContain('@weapp-tailwindcss/merge')
+    expect(docsSource).toContain('cssEntries')
     expect(docsSource).toContain('tailwindcss@3')
     expect(docsSource).toContain('tailwindcss@4')
-    expect(docsSource).toContain('不需要再配置 `postinstall` 脚本')
-    expect(docsSource).toContain('不要再把 `@tailwindcss/vite`、`@tailwindcss/postcss` 或 `tailwindcss` PostCSS 插件注册到实际项目里')
-    expect(docsSource).toContain('Tailwind CSS v3 项目继续使用')
-    expect(docsSource).toContain('Tailwind CSS v3 和 v4 都会默认由 `weapp-tailwindcss` 接管样式生成')
-    expect(docsSource).not.toContain('generator: false')
-    expect(overviewDocsSource).toContain('./generator/uni-app')
-    expect(overviewDocsSource).toContain('./generator/taro')
-    expect(overviewDocsSource).toContain('./generator/weapp-vite')
-    expect(overviewDocsSource).toContain('./generator/mpx')
+    expect(docsSource).toContain('不再把 `tailwindcss` 注册到 PostCSS')
+    expect(docsSource).toContain('不需要再额外注册 `@tailwindcss/vite` 或 `@tailwindcss/postcss`')
+    expect(docsSource).toContain('不需要把官方 Tailwind Vite 或 PostCSS 插件加入构建')
+    expect(docsSource).toContain('Tailwind CSS v3 和 v4 都由 `WeappTailwindcss` 读取配置并生成目标 CSS')
+    expect(migrationDocsSource).toContain('weapp-tailwindcss v4 到 v5 迁移指南')
+    expect(migrationDocsSource).toContain('Tailwind CSS 3.x 项目迁移')
+    expect(migrationDocsSource).toContain('Tailwind CSS 4.x 项目迁移')
+    expect(migrationDocsSource).toContain('多入口和独立分包迁移')
+    expect(migrationDocsSource).toContain('JS 类名和运行时合并迁移')
+    expect(migrationDocsSource).toContain('v5 配置变更对照')
+    expect(migrationDocsSource).toContain('`postinstall: "weapp-tw patch"`')
+    expect(migrationDocsSource).toContain('同一个小程序构建里不要同时注册官方 Tailwind 生成插件和 `WeappTailwindcss`')
+    expect(quickStartDocsSource).not.toContain('generator: false')
+    expect(docsSource).not.toContain('./generator/uni-app')
+    expect(docsSource).not.toContain('./generator/taro')
+    expect(docsSource).not.toContain('./generator/weapp-vite')
+    expect(docsSource).not.toContain('./generator/mpx')
     expect(docsSource).not.toContain('postcss-config-loader-plugin')
     expect(parityDocsSource).toContain('@tailwindcss/vite')
     expect(parityDocsSource).toContain('weapp-tailwindcss/vite')

@@ -33,14 +33,20 @@ keywords:
 
 ```js title="build.plugin.js"
 const { WeappTailwindcss } = require('weapp-tailwindcss/webpack')
+const path = require('node:path')
 module.exports = ({ context, onGetWebpackConfig }) => {
   onGetWebpackConfig((config) => {
     config.plugin('WeappTailwindcss').use(WeappTailwindcss, [
       {
         rem2rpx: true,
+        cssEntries: [
+          path.resolve(process.cwd(), 'src/app.css'),
+        ],
       },
     ]);
   });
 };
 
 ```
+
+`src/app.css` 继续写 Tailwind CSS 3.x 的 `@tailwind base; @tailwind components; @tailwind utilities;`。生成模式下不要再在 PostCSS 中注册 `tailwindcss`。

@@ -77,13 +77,7 @@ export default defineConfig({
 @source "../src/**/*.{vue,wxml}";
 @source not "../src/**/*.h5.*"; /* 排除只用于 H5 的模板 */
 
-/* 多端开发：H5 用官方 tailwindcss，小程序用 weapp-tailwindcss */
-/*  #ifdef  H5  */
 @import "tailwindcss";
-/*  #endif  */
-/*  #ifndef  H5  */
-@import "weapp-tailwindcss/index.css";
-/*  #endif  */
 ```
 
 当需要拆分体积时，可以把不同业务域的样式写到各自的 `entry.css`，再将路径加入 `cssEntries`：

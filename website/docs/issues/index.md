@@ -110,7 +110,7 @@ const isH5 = process.env.UNI_PLATFORM === "h5";
 const isApp = process.env.UNI_PLATFORM === "app-plus";
 const WeappTailwindcssDisabled = isH5 || isApp;
 
-// 然后在 h5 和 app 环境下把 webpack plugin 和 postcss for weapp 给禁用掉
+// 然后在 h5 和 app 环境下把 WeappTailwindcss 禁用掉
 // 我们以 uni-app-vue3-vite 这个 demo为例
 // vite.config.ts
 import { defineConfig } from 'vite';
@@ -125,23 +125,8 @@ export default defineConfig({
   plugins: vitePlugins
 });
 
-// 同理 postcss 配置
-// 假如不起作用，请使用内联postcss
-const plugins = [require('autoprefixer')(), require('tailwindcss')()];
-
-if (!WeappTailwindcssDisabled) {
-  plugins.push(
-    require('postcss-rem-to-responsive-pixel')({
-      rootValue: 32,
-      propList: ['*'],
-      transformUnit: 'rpx'
-    })
-  );
-}
-
-module.exports = {
-  plugins
-};
+// Tailwind CSS 由 WeappTailwindcss 生成模式接管。
+// 如果项目已有 PostCSS 配置，只保留 autoprefixer、业务自定义插件等非 Tailwind 插件。
 ```
 
 ## 报错 TypeError: Cannot use 'in' operator to search for 'CallExpression' in undefined

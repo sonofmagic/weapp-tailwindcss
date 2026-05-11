@@ -88,11 +88,9 @@ keywords:
 
 ## 目前插件的解决方案
 
-目前，我做了一个解决方案，我在 `weapp-tailwindcss` 植入了一个逻辑，使得插件可以通过分析 `tailwindcss` 运行时代码，来打上支持 `rpx` 单位的补丁，使得 `tailwindcss` 支持这样的写法，生成出长度单位的 `css`。
+目前 `weapp-tailwindcss@5` 的生成模式会在构建运行时处理 Tailwind CSS 3.x / 4.x 的候选类名与小程序单位兼容，不需要再执行 `weapp-tw patch`。
 
-这也是为什么要让大家去执行 `weapp-tw patch` 的原因。
-
-这个解决方案，最新的 `3.x` 和 `4.x` 版本，都是有效的。
+如果你仍然在旧项目里看到 `postinstall: "weapp-tw patch"`，可以直接删除。当前 `weapp-tw patch` 只是兼容旧脚本的提示命令。
 
 <!-- 然而，以后 `tailwindcss` 将会使用由 `rust` 编写的新引擎。
 

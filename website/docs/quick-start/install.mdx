@@ -1,15 +1,13 @@
 ---
-title: 1. 安装与配置 tailwindcss
-description: 首先安装本插件前，我们需要把 tailwindcss 对应的环境和配置安装好。
+title: Tailwind CSS 3.x 生成模式安装与配置
+description: 使用 weapp-tailwindcss v5 默认生成模式接入 Tailwind CSS 3.x。
 keywords:
   - 快速开始
   - 安装
   - 配置
-  - '1.'
-  - 安装与配置
   - tailwindcss
-  - quick start
-  - install
+  - tailwindcss 3
+  - generator
   - weapp-tailwindcss
   - 小程序
   - 微信小程序
@@ -18,171 +16,75 @@ keywords:
   - rax
   - mpx
 ---
-import UniAppUniScss from './_UniAppUniScss.mdx'
 
-# 1. 安装与配置 tailwindcss
+# Tailwind CSS 3.x 生成模式安装与配置
 
-> 推荐使用 `nodejs` 版本 `^20.19.0 || >=22.12.0`。目前低于 `18` 的长期维护版本(`偶数版本`) 都已经结束了生命周期，建议安装 `nodejs` 的 `LTS` 版本，详见 [nodejs/release](https://github.com/nodejs/release)。
->
-> 假如你安装的 `nodejs` 太新，可能会出现安装包不兼容的问题，这时候可以执行安装命令时，使用 `--ignore-engines` 参数进行 `nodejs` 版本的忽略 。
+`weapp-tailwindcss@5` 默认使用生成模式。Tailwind CSS 3.x 项目继续使用 `tailwind.config.js` 的 `content` 扫描范围，但样式生成由 `WeappTailwindcss` 构建器插件接管，不再把 `tailwindcss` 注册到 PostCSS。
 
-首先安装本插件前，我们需要把 `tailwindcss` 对应的环境和配置安装好。
-
-这里我们参考 `tailwindcss` 官网中 `postcss` 的使用方式进行安装 ([参考链接](https://tailwindcss.com/docs/installation/using-postcss))
-
-## 1. 使用包管理器安装 `tailwindcss`
+## 1. 安装依赖
 
 ```bash npm2yarn
-# 安装 tailwindcss@3 版本的依赖
-npm i -D tailwindcss@3 postcss autoprefixer
+npm i -D tailwindcss@3 weapp-tailwindcss
 ```
 
 ```bash npm2yarn
-# 初始化 tailwind.config.js 文件
 npx tailwindcss init
 ```
 
-:::info
-`tailwindcss` 最新版本(`3.x`)对应的 `postcss` 大版本为 `8`，假如你使用像 `uni-app` 或 `taro` 这样的跨端框架，大概率已经内置了 `postcss` 和 `autoprefixer`
-:::
+如果项目已经有 `postcss.config.js`，可以继续保留 `postcss-import`、`autoprefixer` 或框架内置插件等非 Tailwind 后处理插件；不要再添加 `tailwindcss` PostCSS 插件。
 
-## 2. 配置 PostCSS 后处理插件
-
-生成模式下，Tailwind CSS v3 和 v4 都由 `weapp-tailwindcss` 接管样式生成。项目中仍然需要安装 `tailwindcss`，但不要再把 `tailwindcss` PostCSS 插件注册到实际项目里。
-
-> 注意：各个框架的 PostCSS 注册位置很可能不同。比如 `uni-app vue3 vite` 项目必须使用 `vite.config.ts` 里的内联 `postcss` 选项，详见下方注意事项。
-
-```js title="postcss.config.js"
-module.exports = {
-  plugins: {
-    // Tailwind CSS 由 weapp-tailwindcss 生成模式接管，这里不要再注册 tailwindcss
-    // 假如框架已经内置了 `autoprefixer`，可以去除下一行
-    autoprefixer: {},
-  }
-}
-```
-
-:::tip 注意事项
-`uni-app vite vue3` 项目，必须在`vite.config.ts` 文件中，使用 `postcss` 内联的写法注册插件。相关写法可以参考我的这个模板项目: [uni-app-vite-vue3-tailwind-vscode-template](https://github.com/sonofmagic/uni-app-vite-vue3-tailwind-vscode-template)。
-
-`uni-app vue2 / webpack` 属于存量项目路线，不再推荐新项目继续使用。
-:::
-
-## 3. 配置 `tailwind.config.js`
-
-`tailwind.config.js` 是 `tailwindcss` 的配置文件，我们可以在里面配置 `tailwindcss` 的各种行为。
+## 2. 配置扫描范围
 
 ```js title="tailwind.config.js"
 /** @type {import('tailwindcss').Config} */
 module.exports = {
-  // 这里给出了一份 uni-app /taro 通用示例，具体要根据你自己项目的目录结构进行配置
-  // 不在 content 包括的文件内，你编写的 class，是不会生成对应的css工具类的
   content: [
     './public/index.html',
-    './src/**/*.{html,js,ts,jsx,tsx,vue}',
+    './src/**/*.{html,js,ts,jsx,tsx,vue,wxml,axml,ttml,mpx}',
     '!./src/uni_modules/**/*',
+    '!./node_modules/**/*',
+    '!./dist/**/*',
+    '!./unpackage/**/*',
   ],
-  // 其他配置项
-  // ...
-  corePlugins: {
-    // 小程序不需要 preflight，因为这主要是给 h5 的，如果你要同时开发小程序和 h5 端，你应该使用环境变量来控制它
-    preflight: false
-  }
+  theme: {
+    extend: {},
+  },
 }
 ```
 
-### `content` 扫描范围排障
+`content` 应只覆盖业务源码。`uni_modules`、`node_modules`、`dist`、`unpackage`、文档和构建产物默认都应排除；如果必须扫描某个第三方包，请精确包含承载模板类名的文件。
 
-#### 问题现象
+## 3. 添加 CSS 入口
 
-在 `uni-app + tailwindcss@3` 场景下，如果项目把第三方插件或依赖放在 `src/uni_modules` 下，同时 `tailwind.config.js` 里使用了这类过宽配置：
+Tailwind CSS 3.x 入口仍使用 `@tailwind` 指令：
 
-```js
-content: ['./src/**/*.{html,js,ts,jsx,tsx,vue}']
-```
-
-Tailwind 可能会扫描到依赖源码中的正则片段、README 示例文本或构建产物，例如 `[a-zA-Z:_]`，并把它误识别成 arbitrary property class。到了小程序产物阶段，再经过 `weapp-tailwindcss` 转译后，可能出现类似：
-
-```css
-._ba-zA-Z_c__B {
-  a-z-a--z:;
-}
-```
-
-这样的异常 CSS。
-
-#### 根因
-
-根因不是业务代码真的写了这个 class，而是 `tailwindcss@3` 默认内容提取器误扫了第三方目录中的源码、文档或构建产物。
-
-#### 推荐配置
-
-对于 `uni-app + tailwindcss@3`，请显式排除 `src/uni_modules`：
-
-```ts title="tailwind.config.ts"
-export default {
-  content: [
-    './index.html',
-    './src/**/*.{html,js,ts,jsx,tsx,vue}',
-    '!./src/uni_modules/**/*',
-  ],
-}
-```
-
-如果你使用的是 `tailwind.config.js`，同样保持这三段含义不变即可。
-
-#### 最佳实践
-
-- `content` 应尽量只覆盖业务源码目录
-- 默认应排除 `uni_modules`、`node_modules`、`dist`、`unpackage`、文档和生成产物
-- 如果必须扫描某个 `uni_modules` 包，应只精确包含其中真正承载模板类名的文件，而不是整个目录全量扫描
-
-## 4. 引入 `tailwindcss`
-
-在你的项目入口引入 `tailwindcss` 使它在小程序全局生效
-
-### uni-app
-
-比如 `uni-app` 的 `App.vue` 文件:
-
-```html title="App.vue"
-<style>
+```css title="src/app.css"
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
-/* 使用 scss */
-/* @import 'tailwindcss/base'; */
-/* @import 'tailwindcss/utilities'; */
-/* @import 'tailwindcss/components'; */
-</style>
 ```
 
-<UniAppUniScss/>
+这个文件需要在框架入口中引入，并在 `WeappTailwindcss` 的 `cssEntries` 中作为绝对路径传入。这样生成器、模板转译和 JS 转译会共享同一份 classSet。
 
-### Taro
+## 4. 注册构建器插件
 
-又或者 `Taro` 的 `app.scss` 文件:
+不同框架的注册位置不同，但原则一致：只注册 `WeappTailwindcss`，不要再注册 Tailwind 官方生成插件。
 
-```scss title="app.scss"
-@import 'tailwindcss/base';
-@import 'tailwindcss/components';
-@import 'tailwindcss/utilities';
+| 框架 | 构建入口 | 注册位置 | 文档 |
+| --- | --- | --- | --- |
+| uni-app Vue3 Vite | `weapp-tailwindcss/vite` | `vite.config.ts` 的 `plugins` | [uni-app cli vue3 vite](/docs/quick-start/frameworks/uni-app-vite) |
+| Taro Webpack | `weapp-tailwindcss/webpack` | `config/index.ts` 的 `mini.webpackChain` | [Taro](/docs/quick-start/frameworks/taro) |
+| Taro Vite | `weapp-tailwindcss/vite` | `config/index.ts` 的 `compiler.vitePlugins` | [Taro](/docs/quick-start/frameworks/taro) |
+| weapp-vite 原生小程序 | `weapp-tailwindcss/vite` | `vite.config.ts` 的 `plugins` | [原生打包方案](/docs/quick-start/frameworks/native) |
+| Mpx | `weapp-tailwindcss/webpack` | `mpx.config.js` / `vue.config.js` 的 `configureWebpack` | [Mpx](/docs/quick-start/frameworks/mpx) |
 
-// sass 版本1.25+ 使用 @use
-// @use 'tailwindcss/base';
-// @use 'tailwindcss/components';
-// @use 'tailwindcss/utilities';
+## 5. 旧项目迁移检查
 
-// 非 scss 的纯 css 文件，下列写法也是可以生效的
-// @tailwind base;
-// @tailwind components;
-// @tailwind utilities;
-```
+| 旧配置 | 新处理方式 |
+| --- | --- |
+| `postinstall: "weapp-tw patch"` | 删除，v5 不需要手动 patch |
+| `postcss.config.js` 中的 `tailwindcss` | 删除，由 `WeappTailwindcss` 生成 |
+| 过宽的 `content: ['./src/**/*']` | 收窄到业务目录，并排除第三方和产物目录 |
+| 没有 `cssEntries` | 在构建器插件中传入 Tailwind CSS 入口绝对路径 |
 
-然后在 `app.ts` 里引入这个样式文件即可。
-
-这样 `tailwindcss` 的安装与配置就完成了，接下来让我们进入第二个环节：安装 `weapp-tailwindcss`。
-
-## 参考链接
-
-[`tailwindcss` 官方配置项](https://tailwindcss.com/docs/configuration)
+下一步安装与确认 `weapp-tailwindcss`：请继续阅读 [安装 weapp-tailwindcss](/docs/quick-start/this-plugin)。

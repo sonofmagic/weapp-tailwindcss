@@ -36,6 +36,7 @@ import ExternalClassesReminder from '@site/fragments/ExternalClassesReminder.mdx
 :::
 
 ```js title="vue.config.js"
+const path = require('node:path')
 const { WeappTailwindcss } = require('weapp-tailwindcss/webpack')
 /**
  * @type {import('@vue/cli-service').ProjectOptions}
@@ -47,6 +48,9 @@ const config = {
     config.plugins.push(
       new WeappTailwindcss({
         rem2rpx: true,
+        cssEntries: [
+          path.resolve(__dirname, 'src/app.css'),
+        ],
       })
     )
   }
@@ -56,5 +60,7 @@ const config = {
 
 module.exports = config
 ```
+
+`src/app.css` 继续写 Tailwind CSS 3.x 的 `@tailwind base; @tailwind components; @tailwind utilities;`。生成模式下不要再在 PostCSS 中注册 `tailwindcss`。
 
 这样所有的配置便完成了！赶紧启动你的项目试试吧！

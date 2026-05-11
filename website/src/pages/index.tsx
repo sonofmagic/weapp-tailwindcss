@@ -101,8 +101,8 @@ const toolOrbitItems: ToolOrbitItemConfig[] = [
 ]
 
 const versionLinks: VersionLink[] = [
-  { href: '/docs/quick-start/v4', label: 'Tailwind CSS 4.x', cta: '新特性预览' },
-  { href: '/docs/quick-start/install', label: 'Tailwind CSS 3.x', cta: '生产首选' },
+  { href: '/docs/quick-start/v4', label: 'Tailwind CSS 4.x', cta: '生成模式' },
+  { href: '/docs/quick-start/install', label: 'Tailwind CSS 3.x', cta: '生成模式' },
   { href: '/docs/quick-start/v2', label: 'Tailwind CSS 2.x', cta: '兼容保留' },
 ]
 
@@ -289,14 +289,14 @@ function HomepageHeader() {
                       text-center
                       sm:w-auto
                     `}
-                    href="/docs/quick-start/v4/v5-generator-examples"
+                    href="/docs/quick-start/v4"
                   >
                     <span className={`
                       inline-flex items-center gap-1 text-[0.95rem]
                       tracking-[0.02em]
                     `}
                     >
-                      查看生成模式
+                      查看安装方式
                       <svg
                         aria-hidden="true"
                         className="size-5"
@@ -398,7 +398,7 @@ function HomepageHeader() {
                 </FeatureCard>
               )}
               {homepage.versionsCard && (
-                <FeatureCard className="ui-homepage-versions-card" eyebrow="Version Matrix" subtitle="3.x 正式版、4.x 预览版及 2.x JIT 模式" title="Tailwind 多版本无缝支持" variant="versions">
+                <FeatureCard className="ui-homepage-versions-card" eyebrow="Version Matrix" subtitle="3.x 与 4.x 默认生成模式，2.x JIT 模式兼容保留" title="Tailwind 多版本无缝支持" variant="versions">
                   <div className={`
                     flex w-full flex-col gap-3
                     sm:gap-4
@@ -410,7 +410,7 @@ function HomepageHeader() {
                       dark:text-slate-300
                     `}
                     >
-                      覆盖稳定、预览与 JIT 管道，升级与回滚都能一键切换。
+                      覆盖 Tailwind 3、Tailwind 4 与历史 JIT 管道，升级与回滚都能一键切换。
                     </p>
                     <VersionsStack Logo={TailwindcssLogo} links={versionLinks} />
                   </div>

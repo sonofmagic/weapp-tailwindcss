@@ -29,7 +29,7 @@ keywords:
 ## 安装
 
 ```bash npm2yarn
-npm install -D tailwindcss postcss weapp-tailwindcss
+npm install -D tailwindcss weapp-tailwindcss
 ```
 
 > `Taro Vite` 里 Tailwind CSS 生成由 `weapp-tailwindcss` 接管，不需要再额外注册 `@tailwindcss/vite` 或 `@tailwindcss/postcss`。
@@ -58,17 +58,20 @@ import path from 'node:path'
 ```
 
 > tailwindcss@4 必须配置 `cssEntries` 并且使用绝对路径，否则 `weapp-tailwindcss` 无法稳定定位 CSS 入口。
-> `cssEntries` 请指向 `.css` 文件，不要指向 `scss` / `less` / `sass`。`@import "weapp-tailwindcss/index.css"` 也只应写在纯 `css` 入口里，否则会导致样式生成或转译失效。
+> `cssEntries` 请指向 `.css` 文件，不要指向 `scss` / `less` / `sass`。Tailwind CSS 4 入口只应写在纯 CSS 文件里，否则会导致样式生成或转译失效。
 
 ## 添加样式
 
 在项目目录下的 `src/app.css` 中，添加以下内容：
 
 ```css title="src/app.css"
-@import "weapp-tailwindcss/index.css";
+@import "tailwindcss";
+@source "./pages/**/*.{ts,tsx,jsx,js}";
+@source "./components/**/*.{ts,tsx,jsx,js}";
+@source not "../dist";
 ```
 
-> 在 `Taro Vite` 场景下，文档示例统一直接写 `@import "weapp-tailwindcss/index.css";`。这样配置链路更直接，排查样式问题时也更容易定位。
+> `Taro Vite` 场景同样使用 Tailwind CSS 4 的 CSS-first 入口。小程序目标 CSS 由 `WeappTailwindcss` 输出，不需要把官方 Tailwind Vite 或 PostCSS 插件加入构建。
 
 更改好配置之后，直接运行启动项目，微信开发者工具导入这个项目，即可看到效果。
 

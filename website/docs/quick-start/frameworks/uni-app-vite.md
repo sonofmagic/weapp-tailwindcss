@@ -29,27 +29,28 @@ keywords:
 
 创建完成后，快速上手中的准备工作都完成之后，就可以便捷的注册了：
 
-```js title="vite.config.[jt]s"
-import { defineConfig } from "vite";
-import uni from "@dcloudio/vite-plugin-uni";
-import { WeappTailwindcss } from 'weapp-tailwindcss/vite';
+```ts title="vite.config.ts"
+import path from 'node:path'
+import uni from '@dcloudio/vite-plugin-uni'
+import { defineConfig } from 'vite'
+import { WeappTailwindcss } from 'weapp-tailwindcss/vite'
 
 export default defineConfig({
   // uni 是 uni-app 官方插件，WeappTailwindcss 一定要放在 uni 后，对生成文件进行处理
-  plugins: [uni(),WeappTailwindcss()],
-  css: {
-    postcss: {
-      plugins: [
-        // Tailwind CSS 由 weapp-tailwindcss 生成模式接管，这里不要再注册 tailwindcss
-        require('autoprefixer')
+  plugins: [
+    uni(),
+    WeappTailwindcss({
+      rem2rpx: true,
+      cssEntries: [
+        path.resolve(__dirname, 'src/app.css'),
       ],
-    },
-  },
-});
+    }),
+  ],
+})
 
 ```
 
-这里只列举了插件的注册，包括`postcss`配置完整的注册方式，参考配置项文件链接: <https://github.com/sonofmagic/uni-app-vite-vue3-tailwind-vscode-template>
+Tailwind CSS 3.x 也由 `WeappTailwindcss` 生成 CSS，不要再把 `tailwindcss` 注册到 `postcss.config.js` 或 Vite 内联 PostCSS 配置里。`cssEntries` 指向包含 `@tailwind base; @tailwind components; @tailwind utilities;` 的入口文件。
 
 ## `tailwind.config` 扫描范围提醒
 

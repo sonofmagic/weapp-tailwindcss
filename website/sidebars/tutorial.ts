@@ -7,135 +7,7 @@ const tutorialSidebar: SidebarConfig = [
   'intro',
   {
     type: 'category',
-    label: '🔥生成模式（推荐）',
-    collapsed: false,
-    link: {
-      type: 'doc',
-      id: 'quick-start/v4/v5-generator-examples',
-    },
-    items: [
-      {
-        type: 'doc',
-        label: '使用方式总览',
-        id: 'quick-start/v4/v5-generator-examples',
-      },
-      {
-        type: 'category',
-        label: '各个框架的注册方式',
-        collapsed: false,
-        items: [
-          {
-            type: 'doc',
-            label: 'uni-app',
-            id: 'quick-start/v4/generator/uni-app',
-          },
-          {
-            type: 'doc',
-            label: 'Taro',
-            id: 'quick-start/v4/generator/taro',
-          },
-          {
-            type: 'doc',
-            label: 'weapp-vite',
-            id: 'quick-start/v4/generator/weapp-vite',
-          },
-          {
-            type: 'doc',
-            label: 'Mpx',
-            id: 'quick-start/v4/generator/mpx',
-          },
-        ],
-      },
-    ],
-  },
-  {
-    type: 'category',
-    label: '旧版：Tailwind CSS @3.x',
-    collapsed: true,
-    items: [
-      {
-        type: 'category',
-        label: '🔥快速开始(框架类)',
-        items: [
-          {
-            type: 'doc',
-            id: 'quick-start/install',
-          },
-
-          {
-            type: 'doc',
-            id: 'quick-start/this-plugin',
-          },
-          {
-            items: [
-              {
-                type: 'category',
-                label: 'uni-app',
-                items: [
-                  {
-                    type: 'doc',
-                    label: 'CLI Vue3 Vite（推荐）',
-                    id: 'quick-start/frameworks/uni-app-vite',
-                  },
-                  {
-                    type: 'doc',
-                    label: 'HBuilderX Vue3 Vite（推荐）',
-                    id: 'quick-start/frameworks/hbuilderx',
-                  },
-                  {
-                    type: 'link',
-                    label: 'HBuilderX Vue2 Webpack（存量项目）',
-                    href: '/docs/quick-start/frameworks/hbuilderx#hbuilderx-vue2-webpack',
-                  },
-                  {
-                    type: 'doc',
-                    label: 'CLI Vue2 Webpack（存量项目）',
-                    id: 'quick-start/frameworks/uni-app',
-                  },
-                  {
-                    type: 'doc',
-                    label: 'uni-app x',
-                    id: 'quick-start/frameworks/uni-app-x',
-                  },
-                ],
-              },
-              ...['taro', 'rax', 'mpx', 'native', 'api'].map(x => `quick-start/frameworks/${x}`),
-            ],
-            label: '3. 各个框架的注册方式',
-            type: 'category',
-            collapsed: true,
-          },
-          {
-            type: 'doc',
-            id: 'quick-start/rem2rpx',
-          },
-        ],
-        collapsed: false,
-      },
-      {
-        type: 'category',
-        label: '🔥快速开始(纯原生)',
-        items: [
-          {
-            type: 'doc',
-            id: 'quick-start/native/install',
-          },
-          {
-            type: 'doc',
-            id: 'quick-start/native/install-plugin',
-          },
-          // {
-          //   type: 'doc',
-          //   id: 'quick-start/native/principle',
-          // },
-        ],
-        collapsed: false,
-      },
-    ],
-  },
-  {
-    type: 'category',
-    label: '旧版：Tailwind CSS @4.x',
+    label: 'Tailwind CSS @4.x',
     collapsed: true,
     items: [
       {
@@ -217,6 +89,91 @@ const tutorialSidebar: SidebarConfig = [
             id: 'quick-start/v4/tutorial/advanced',
           },
         ],
+      },
+    ],
+  },
+  {
+    type: 'category',
+    label: 'Tailwind CSS @3.x',
+    collapsed: true,
+    items: [
+      {
+        type: 'category',
+        label: '🔥快速开始(框架类)',
+        items: [
+          {
+            type: 'doc',
+            id: 'quick-start/install',
+          },
+
+          {
+            type: 'doc',
+            id: 'quick-start/this-plugin',
+          },
+          {
+            items: [
+              {
+                type: 'category',
+                label: 'uni-app',
+                items: [
+                  {
+                    type: 'doc',
+                    label: 'CLI Vue3 Vite（推荐）',
+                    id: 'quick-start/frameworks/uni-app-vite',
+                  },
+                  {
+                    type: 'doc',
+                    label: 'HBuilderX Vue3 Vite（推荐）',
+                    id: 'quick-start/frameworks/hbuilderx',
+                  },
+                  {
+                    type: 'link',
+                    label: 'HBuilderX Vue2 Webpack（存量项目）',
+                    href: '/docs/quick-start/frameworks/hbuilderx#hbuilderx-vue2-webpack',
+                  },
+                  {
+                    type: 'doc',
+                    label: 'CLI Vue2 Webpack（存量项目）',
+                    id: 'quick-start/frameworks/uni-app',
+                  },
+                  {
+                    type: 'doc',
+                    label: 'uni-app x',
+                    id: 'quick-start/frameworks/uni-app-x',
+                  },
+                ],
+              },
+              ...['taro', 'rax', 'mpx', 'native', 'api'].map(x => `quick-start/frameworks/${x}`),
+            ],
+            label: '3. 各个框架的注册方式',
+            type: 'category',
+            collapsed: true,
+          },
+          {
+            type: 'doc',
+            id: 'quick-start/rem2rpx',
+          },
+        ],
+        collapsed: false,
+      },
+      {
+        type: 'category',
+        label: '🔥快速开始(纯原生)',
+        items: [
+          {
+            type: 'doc',
+            id: 'quick-start/native/install',
+          },
+          {
+            type: 'doc',
+            id: 'quick-start/native/install-plugin',
+          },
+          // {
+          //   type: 'doc',
+          //   id: 'quick-start/native/principle',
+          // },
+        ],
+        collapsed: false,
       },
     ],
   },

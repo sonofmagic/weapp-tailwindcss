@@ -56,7 +56,7 @@ module.exports = {
 
 ### vite.config.[tj]s
 
-另外使用 `vite.config.[tj]s` 中注册 `tailwindcss` 时，也要传入绝对路径:
+另外使用 `vite.config.[tj]s` 注册 `WeappTailwindcss` 时，也要传入 Tailwind CSS 入口文件的绝对路径:
 
 ```js title="vite.config.[tj]s"
 import path from "path";
@@ -79,19 +79,24 @@ export default defineConfig({
       rem2rpx: true,
       disabled: WeappTailwindcssDisabled,
       // 由于 hbuilderx 会改变 process.cwd 所以这里必须传入当前目录的绝对路径
-      tailwindcssBasedir: __dirname
+      tailwindcssBasedir: __dirname,
+      cssEntries: [
+        resolve("src/app.css"),
+      ],
     })
   ],
-  css: {
-    postcss: {
-      plugins: [
-        // Tailwind CSS 由 weapp-tailwindcss 生成模式接管，这里不要再注册 tailwindcss
-        require("autoprefixer"),
-      ],
-    },
-  },
 });
 ```
+
+`src/app.css` 中继续使用 Tailwind CSS 3.x 的入口指令：
+
+```css title="src/app.css"
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+```
+
+生成模式下不要再注册 `tailwindcss` PostCSS 插件。如果项目已有 PostCSS 配置，只保留框架或业务需要的非 Tailwind 插件。
 
 `hbuilderx` 正式版本的 `vue2` 项目由于使用 `webpack4` 和 `postcss7`，不再适配 `weapp-tailwindcss@5`。存量项目请继续停留在旧版本，或者迁移到 `HBuilderX Vue3 Vite` / `uni-app cli vue2 webpack5` 链路。
 

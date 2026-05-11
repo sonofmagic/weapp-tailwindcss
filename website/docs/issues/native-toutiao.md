@@ -57,10 +57,10 @@ npm i -D gulp gulp-postcss gulp-plumber del@^6
 
 ## 安装与配置 tailwindcss
 
-- 安装 tailwindcss
+- 安装 Tailwind CSS 3.x 与 weapp-tailwindcss
 
 ```sh
-npm i -D tailwindcss@3 postcss autoprefixer
+npm i -D tailwindcss@3 weapp-tailwindcss
 ```
 
 - 初始化 tailwindcss 配置文件
@@ -69,17 +69,9 @@ npm i -D tailwindcss@3 postcss autoprefixer
 npx tailwindcss init
 ```
 
-- 创建 `postcss.config.js` 并注册 `tailwindcss`
+- 不再创建 Tailwind 专用的 `postcss.config.js`
 
-```js
-module.exports = {
-  plugins: {
-    tailwindcss: {},
-    // 假如框架已经内置了 `autoprefixer`，可以去除下一行
-    autoprefixer: {},
-  }
-}
-```
+`weapp-tailwindcss@5` 默认由构建器插件接管 Tailwind CSS 生成。如果项目已有 PostCSS 配置，只保留业务自己的非 Tailwind 插件。
 
 - 配置 `tailwind.config.js`
 

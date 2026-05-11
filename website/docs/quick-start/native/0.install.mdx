@@ -64,8 +64,8 @@ keywords:
 然后执行:
 
 ```bash npm2yarn
-# 安装 tailwindcss@3 版本的依赖
-npm i -D tailwindcss@3 postcss autoprefixer
+# 安装 tailwindcss@3 和 weapp-tailwindcss
+npm i -D tailwindcss@3 weapp-tailwindcss
 ```
 
 ```bash npm2yarn
@@ -101,32 +101,18 @@ module.exports = {
 }
 ```
 
-## 3. 在项目目录下创建 `postcss.config.js`
-
-内容如下:
-
-```js title="postcss.config.js"
-module.exports = {
-  plugins: {
-    // Tailwind CSS 由 weapp-tailwindcss 生成模式接管，这里不要再注册 tailwindcss
-    autoprefixer: {},
-  }
-}
-```
-
-> 这个文件和 `tailwind.config.js` 平级
-
-
-## 4. 引入 `tailwindcss`
+## 3. 引入 `tailwindcss`
 
 在你的小程序项目入口 `app.wxss` 文件中，引入 `tailwindcss` 使它在小程序全局生效
 
-```css
+```css title="app.css"
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 ```
 
-在 `app.wxss` 加入这一段代码之后，微信开发者工具会报错。不用担心，这是因为我们还没有完全配置好。
+生成模式下不要再创建 Tailwind 专用的 `postcss.config.js`。如果项目已经有 PostCSS 配置，只保留业务自己的非 Tailwind 插件。
+
+在入口 CSS 加入这一段代码之后，微信开发者工具可能会先报错。不用担心，这是因为我们还没有完全配置好。
 
 接下来，赶紧进入下一步，安装 `weapp-tailwindcss` 并运行吧！

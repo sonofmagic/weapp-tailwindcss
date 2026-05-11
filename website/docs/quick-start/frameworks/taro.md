@@ -40,8 +40,10 @@ keywords:
 
 ```js title="config/index.[jt]s"
 const { WeappTailwindcss } = require('weapp-tailwindcss/webpack')
+const path = require('node:path')
 // 假如你使用 ts 配置，则使用下方 import 的写法
 // import { WeappTailwindcss } from 'weapp-tailwindcss/webpack'
+// import path from 'node:path'
 
 {
   // 找到 mini 这个配置
@@ -58,6 +60,9 @@ const { WeappTailwindcss } = require('weapp-tailwindcss/webpack')
             args: [{
               // 这里可以传参数
               rem2rpx: true,
+              cssEntries: [
+                path.resolve(__dirname, '../src/app.css'),
+              ],
             }]
           }
         }
@@ -106,12 +111,13 @@ cache: {
 如果你没有强依赖 `Taro Vite`，优先选择 `Taro Webpack`、`uni-app`、`weapp-vite` 等更稳定的方案。
 :::
 
-由于 `taro@4` 的 `vite` 版本，目前加载 `postcss.config.js` 配置是失效的，所以我们目前暂时只能使用内联 `postcss` 插件的写法
+Taro Vite 需要把 `WeappTailwindcss` 注册到 `compiler.vitePlugins`。Tailwind CSS 由 `WeappTailwindcss` 生成，不需要再注册 Tailwind 官方 Vite 或 PostCSS 插件。
 
 ### 在 `config/index.ts` 中注册插件
 
 ```ts title="config/index.[jt]s"
 import type { Plugin } from 'vite'
+import path from 'node:path'
 import { WeappTailwindcss } from 'weapp-tailwindcss/vite'
 
 const baseConfig: UserConfigExport<'vite'> = {
@@ -123,6 +129,9 @@ const baseConfig: UserConfigExport<'vite'> = {
       WeappTailwindcss({
         // rem转rpx
         rem2rpx: true,
+        cssEntries: [
+          path.resolve(__dirname, '../src/app.css'),
+        ],
         // 除了小程序这些，其他平台都 disable
         disabled: process.env.TARO_ENV === 'h5' || process.env.TARO_ENV === 'harmony' || process.env.TARO_ENV === 'rn',
         // 由于 taro vite 默认会移除所有的 tailwindcss css 变量，所以一定要开启这个配置，进行css 变量的重新注入
@@ -135,11 +144,11 @@ const baseConfig: UserConfigExport<'vite'> = {
 }
 ```
 
-Tailwind CSS 生成由 `weapp-tailwindcss` 接管，不需要再把 `tailwindcss` 注册到 PostCSS 配置里。
+Tailwind CSS 生成由 `weapp-tailwindcss` 接管，不需要再把 `tailwindcss` 注册到 PostCSS 配置里。`src/app.css` 在 Tailwind CSS 3.x 项目中继续写 `@tailwind base; @tailwind components; @tailwind utilities;`。
 
 > `vite.config.ts` 只有在运行小程序的时候才会加载，`h5` 不会，所以只能通过这种方式进行 `小程序` + `h5` 双端兼容
 > 但 `Taro Vite` 当前仍然不稳定，这部分内容仅作为历史方案和排障参考，不建议作为新项目默认选型。
-> 如果你使用的是 `Taro Vite` + `tailwindcss@4`，更推荐在样式入口里直接写 `@import "weapp-tailwindcss/index.css";`。这样排查样式链路会更直接。
+> 如果你使用的是 `Taro Vite` + `tailwindcss@4`，请阅读 [Tailwind CSS 4.x / Taro Vite](/docs/quick-start/v4/taro-vite)，入口 CSS 使用 `@import "tailwindcss";` 和 `@source`。
 
 ## 视频演示
 

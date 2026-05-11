@@ -61,6 +61,7 @@ npm i
 在你的 `vite.config.ts` 里对插件进行注册:
 
 ```ts title="vite.config.ts"
+import path from 'node:path'
 import { defineConfig } from 'weapp-vite/config'
 import { WeappTailwindcss } from 'weapp-tailwindcss/vite'
 
@@ -69,12 +70,17 @@ export default defineConfig({
   plugins: [
     WeappTailwindcss({
       rem2rpx: true,
+      cssEntries: [
+        path.resolve(import.meta.dirname, './app.css'),
+      ],
     }),
   ],
   // highlight-end
 })
 
 ```
+
+Tailwind CSS 3.x 的扫描范围仍由 `tailwind.config.js` 的 `content` 控制，CSS 入口由 `cssEntries` 指向。生成模式下不要再注册 `tailwindcss` PostCSS 插件，也不需要执行 `weapp-tw patch`。
 
 
 ## 开始运行
@@ -138,5 +144,4 @@ npx weapp-vite create my-app
 ## 想了解更多 weapp-vite
 
 更多场景和配置，请查看 [weapp-vite 文档网站](https://vite.icebreaker.top/)
-
 

@@ -1,6 +1,6 @@
 ---
 title: 使用 doctor 命令诊断项目配置
-description: 使用 weapp-tailwindcss doctor 快速检查 Node.js、Tailwind CSS、PostCSS、框架依赖和构建器配置。
+description: 使用 weapp-tailwindcss doctor 快速检查 Node.js、Tailwind CSS、框架依赖和构建器配置。
 keywords:
   - 常见问题
   - 故障排查
@@ -18,7 +18,7 @@ keywords:
 
 # 使用 doctor 命令诊断项目配置
 
-当项目出现样式未生成、JS 中的 class 未转义、Tailwind CSS v4 PostCSS 报错、插件没有在目标端生效等问题时，可以先运行 `doctor` 命令收集项目配置状态。
+当项目出现样式未生成、JS 中的 class 未转义、CSS 入口没有被扫描、插件没有在目标端生效等问题时，可以先运行 `doctor` 命令收集项目配置状态。
 
 ```bash
 pnpm exec weapp-tailwindcss doctor
@@ -43,7 +43,7 @@ pnpm exec weapp-tailwindcss doctor --cwd ./packages/miniprogram
 | `tailwindcss` | 检查 Tailwind CSS 是否可解析，并尽量读取实际安装版本 |
 | Tailwind 配置 | 检查 `tailwind.config.*` 是否存在 |
 | PostCSS 配置 | 检查 `postcss.config.*` 是否存在 |
-| Tailwind CSS v4 PostCSS | 检查 v4 项目使用 PostCSS 时是否缺少 `@tailwindcss/postcss` |
+| 生成模式配置 | 检查 v5 项目是否应移除 Tailwind 官方 PostCSS / Vite 生成插件 |
 | 框架依赖 | 识别 Taro、uni-app、MPX、Remax、Rax |
 | 构建器配置 | 识别 `vite.config.*` 或 `webpack.config.*` |
 
@@ -81,19 +81,11 @@ pnpm exec weapp-tailwindcss doctor --cwd ./demo/uni-app-vue3-vite
 
 说明当前项目没有安装 `tailwindcss`，或者依赖无法从当前目录解析。请先确认依赖安装完成，再重新运行诊断命令。
 
-### Tailwind CSS v4 项目缺少 @tailwindcss/postcss
+### 生成模式项目仍注册 Tailwind 官方生成插件
 
-如果项目使用 Tailwind CSS v4，并且存在 `postcss.config.*`，PostCSS 插件应使用 `@tailwindcss/postcss`。官方 PostCSS 安装文档也要求安装 `tailwindcss`、`@tailwindcss/postcss` 和 `postcss`，并在 PostCSS 配置中注册 `@tailwindcss/postcss`。
+`weapp-tailwindcss@5` 默认由 `WeappTailwindcss` 构建器插件接管 Tailwind CSS 生成。小程序构建里不要再同时注册 `@tailwindcss/postcss`、`@tailwindcss/vite` 或 Tailwind CSS 3.x 的 `tailwindcss` PostCSS 插件。
 
-```js title="postcss.config.mjs"
-export default {
-  plugins: {
-    '@tailwindcss/postcss': {},
-  },
-}
-```
-
-参考：[Tailwind CSS PostCSS 安装文档](https://tailwindcss.com/docs/installation/using-postcss)
+如果项目已有 `postcss.config.*`，只保留业务自己的非 Tailwind 插件。Tailwind CSS 4.x 的入口 CSS 通过 `cssEntries` 传给 `WeappTailwindcss`，并在 CSS 中使用 `@import "tailwindcss"` 与 `@source`。
 
 ### 未检测到 tailwind.config.*
 
