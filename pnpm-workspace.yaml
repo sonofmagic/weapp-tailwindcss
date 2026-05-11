@@ -85,7 +85,7 @@ catalogs:
   stylelint1625:
     stylelint: ^17.11.0
   tailwindMerge:
-    tailwind-merge: ^3.5.0
+    tailwind-merge: ^3.6.0
   tailwindMerge2:
     tailwind-merge: ^2.6.1
   tailwindcss3:
@@ -162,7 +162,7 @@ catalogs:
   weappIdeCli:
     weapp-ide-cli: ^5.2.9
   weappVite:
-    weapp-vite: ^6.16.7
+    weapp-vite: ^6.16.8
   wrangler:
     wrangler: ^4.90.0
 
