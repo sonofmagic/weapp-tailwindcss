@@ -312,6 +312,7 @@ catalogs:
       version: 4.90.0
 
 overrides:
+  jiti: 2.7.0
   postcss-urlrewrite: 0.3.0
 
 importers:
@@ -682,8 +683,8 @@ importers:
         specifier: ^1.0.1
         version: 1.0.1
       repoctl:
-        specifier: ^4.0.6
-        version: 4.0.6(@commitlint/cli@20.5.3(@types/node@24.12.3)(conventional-commits-parser@6.4.0)(typescript@5.9.3))(@next/eslint-plugin-next@16.2.4)(@types/node@24.12.3)(@unocss/eslint-plugin@66.6.8(eslint@10.3.0(jiti@2.7.0))(typescript@5.9.3))(conventional-changelog-conventionalcommits@9.3.1)(eslint-plugin-jsx-a11y@6.10.2(eslint@10.3.0(jiti@2.7.0)))(eslint-plugin-pnpm@1.6.0(eslint@10.3.0(jiti@2.7.0)))(eslint-plugin-vuejs-accessibility@2.5.0(eslint@10.3.0(jiti@2.7.0))(globals@17.6.0))(eslint@10.3.0(jiti@2.7.0))(magicast@0.5.2)(postcss@8.5.14)(stylelint@17.11.0(typescript@5.9.3))(tailwindcss@3.4.19(tsx@4.21.0)(yaml@2.8.4))(typanion@3.14.0)(typescript@5.9.3)(vitest@4.1.5)
+        specifier: ^4.0.7
+        version: 4.0.7(@commitlint/cli@20.5.3(@types/node@24.12.3)(conventional-commits-parser@6.4.0)(typescript@5.9.3))(@next/eslint-plugin-next@16.2.4)(@types/node@24.12.3)(@unocss/eslint-plugin@66.6.8(eslint@10.3.0(jiti@2.7.0))(typescript@5.9.3))(conventional-changelog-conventionalcommits@9.3.1)(eslint-plugin-jsx-a11y@6.10.2(eslint@10.3.0(jiti@2.7.0)))(eslint-plugin-pnpm@1.6.0(eslint@10.3.0(jiti@2.7.0)))(eslint-plugin-vuejs-accessibility@2.5.0(eslint@10.3.0(jiti@2.7.0))(globals@17.6.0))(eslint@10.3.0(jiti@2.7.0))(magicast@0.5.2)(postcss@8.5.14)(stylelint@17.11.0(typescript@5.9.3))(tailwindcss@3.4.19(tsx@4.21.0)(yaml@2.8.4))(typanion@3.14.0)(typescript@5.9.3)(vitest@4.1.5)
       rimraf:
         specifier: ^6.1.3
         version: 6.1.3
@@ -1018,7 +1019,7 @@ importers:
         version: 5.4.21(@types/node@25.6.2)(less@4.6.4)(lightningcss@1.32.0)(sass-embedded@1.99.0)(sass@1.99.0)(stylus@0.57.0)(terser@5.46.0)
       vue-eslint-parser:
         specifier: ^10.4.0
-        version: 10.4.0(eslint@10.3.0(jiti@1.21.7))
+        version: 10.4.0(eslint@10.3.0(jiti@2.7.0))
       weapp-ide-cli:
         specifier: catalog:weappIdeCli
         version: 5.2.9
@@ -3705,7 +3706,7 @@ importers:
         version: link:../runtime
       tailwind-variants:
         specifier: ^3.2.2
-        version: 3.2.2(tailwind-merge@3.6.0)(tailwindcss@3.4.19(tsx@4.21.0)(yaml@2.8.4))
+        version: 3.2.2(tailwind-merge@3.6.0)(tailwindcss@4.3.0)
 
   packages-runtime/variants-v3:
     dependencies:
@@ -3910,7 +3911,7 @@ importers:
         specifier: workspace:*
         version: link:../shared
       jiti:
-        specifier: ^2.7.0
+        specifier: 2.7.0
         version: 2.7.0
       lilconfig:
         specifier: ^3.1.3
@@ -8061,16 +8062,16 @@ packages:
       eslint-plugin-pnpm:
         optional: true
 
-  '@icebreakers/monorepo-templates@1.0.5':
-    resolution: {integrity: sha512-O00kJY+PeYaAwzVdfLj3M8nDsgeydEhEMhRLlymjvgNQNptlfNMi51yd01wxSsTDuOCIVmTMkoD0V5fCtbwxGg==}
+  '@icebreakers/monorepo-templates@1.0.6':
+    resolution: {integrity: sha512-dx74vHm25JS3uKviEfx+5tcozjnohp0OQr7tnmqhLC9CAlSDL/odHfgoyBnrZHu2TbQ6MCEV1nsctIXzmWEsvg==}
     engines: {node: '>=18.0.0'}
 
-  '@icebreakers/monorepo@4.0.6':
-    resolution: {integrity: sha512-ozFuAaBy55iRIVn0bCIe1kYYFmExhT4AonAEY1uhSstMkhMoTaldsX0N4y6ZtMcukZmH9lFrYtoVVsLr2hUanQ==}
+  '@icebreakers/monorepo@4.0.7':
+    resolution: {integrity: sha512-q8XR9TVC/k7bvI2CqBAl2WUSV+v3DxSq4rK2Wb3bmpSsgyWhpdsKOfXIpbxyMVOIqt9tODUxsdT22j4TwB1K+Q==}
     engines: {node: '>=23.5.0 || ^22.13.0 || ^21.7.0 || ^20.12.0'}
     hasBin: true
     peerDependencies:
-      '@commitlint/cli': ^20.5.3
+      '@commitlint/cli': ^21.0.0
       eslint: ^9.0.0 || ^10.0.0
       stylelint: ^17.11.0
       typescript: ^5.0.0 || ^6.0.0
@@ -8285,15 +8286,6 @@ packages:
     resolution: {integrity: sha512-doc2sWgJpbFQ64UflSVd17ibMGDuxO1yKgOgLMwavzESnXjFWJqUeG8saYosqKpHp4kWiM5x1nXvEjbpx90gzw==}
     engines: {node: '>=23.5.0 || ^22.13.0 || ^21.7.0 || ^20.12.0'}
 
-  '@inquirer/checkbox@5.1.4':
-    resolution: {integrity: sha512-w6KF8ZYRvqHhROkOTHXYC3qIV/KYEu5o12oLqQySvch61vrYtRxNSHTONSdJqWiFJPlCUQAHT5OgOIyuTr+MHQ==}
-    engines: {node: '>=23.5.0 || ^22.13.0 || ^21.7.0 || ^20.12.0'}
-    peerDependencies:
-      '@types/node': '>=18'
-    peerDependenciesMeta:
-      '@types/node':
-        optional: true
-
   '@inquirer/checkbox@5.1.5':
     resolution: {integrity: sha512-Jmf9tgBHIEK5SAOB7swYfStqmtkZb00xOTpSQmkoGEpdxOTpJi9RS0A8bkfDPHTTItZRJrRdZrEMu25wyj0VfQ==}
     engines: {node: '>=23.5.0 || ^22.13.0 || ^21.7.0 || ^20.12.0'}
@@ -8314,15 +8306,6 @@ packages:
 
   '@inquirer/core@11.1.10':
     resolution: {integrity: sha512-a4Q5BXHQAHa9eO202sTaFCHFYVB3x5fauDuThEAdZ9gfn76pSxiKU7wWcEH0N1O0XmQvNfQNU6QXpiRxmYQx+A==}
-    engines: {node: '>=23.5.0 || ^22.13.0 || ^21.7.0 || ^20.12.0'}
-    peerDependencies:
-      '@types/node': '>=18'
-    peerDependenciesMeta:
-      '@types/node':
-        optional: true
-
-  '@inquirer/core@11.1.9':
-    resolution: {integrity: sha512-BDE4fG22uYh1bGSifcj7JSx119TVYNViMhMu85usp4Fswrzh6M0DV3yld64jA98uOAa2GSQ4Bg4bZRm2d2cwSg==}
     engines: {node: '>=23.5.0 || ^22.13.0 || ^21.7.0 || ^20.12.0'}
     peerDependencies:
       '@types/node': '>=18'
@@ -8369,15 +8352,6 @@ packages:
   '@inquirer/figures@2.0.5':
     resolution: {integrity: sha512-NsSs4kzfm12lNetHwAn3GEuH317IzpwrMCbOuMIVytpjnJ90YYHNwdRgYGuKmVxwuIqSgqk3M5qqQt1cDk0tGQ==}
     engines: {node: '>=23.5.0 || ^22.13.0 || ^21.7.0 || ^20.12.0'}
-
-  '@inquirer/input@5.0.12':
-    resolution: {integrity: sha512-uiMFBl4LqFzJClh80Q3f9hbOFJ6kgkDWI4LjAeBuyO6EanVVMF69AgOvpi1qdqjDSjDN6578B6nky9ceEpI+1Q==}
-    engines: {node: '>=23.5.0 || ^22.13.0 || ^21.7.0 || ^20.12.0'}
-    peerDependencies:
-      '@types/node': '>=18'
-    peerDependenciesMeta:
-      '@types/node':
-        optional: true
 
   '@inquirer/input@5.0.13':
     resolution: {integrity: sha512-0l0jCHlJnXIV8CTxwQC0C+5Ziq8WP22edWgmciW2xYvoeoSck4v5FvCS1ctKdqLLR0dUo93uAHgWHywgBSoRyw==}
@@ -8426,15 +8400,6 @@ packages:
 
   '@inquirer/search@4.1.9':
     resolution: {integrity: sha512-ZlbM28Q9lmLkFPNAIv+ZuY530n5Km8U1WW48oYEvDhe9yc2uL3m3t+JSdRUkQlk5fuIuskgiIVjcb7czFzQpuA==}
-    engines: {node: '>=23.5.0 || ^22.13.0 || ^21.7.0 || ^20.12.0'}
-    peerDependencies:
-      '@types/node': '>=18'
-    peerDependenciesMeta:
-      '@types/node':
-        optional: true
-
-  '@inquirer/select@5.1.4':
-    resolution: {integrity: sha512-2kWcGKPMLAXAWRp1AH1SLsQmX+j0QjeljyXMUji9WMZC8nRDO0b7qquIGr6143E7KMLt3VAIGNXzwa/6PXQs4Q==}
     engines: {node: '>=23.5.0 || ^22.13.0 || ^21.7.0 || ^20.12.0'}
     peerDependencies:
       '@types/node': '>=18'
@@ -10276,10 +10241,6 @@ packages:
 
   '@pnpm/env.system-node-version@1000.0.16':
     resolution: {integrity: sha512-p6hTn72yrpx54aNktEea2105/GSrNdPLcS35jWmw87gUFdG6iY1XDO0+wKmg44p4aH5GUJy6aMI7lvq0OLNi8g==}
-    engines: {node: '>=18.12'}
-
-  '@pnpm/error@1000.0.5':
-    resolution: {integrity: sha512-GjH0TPjbVNrPnl/BAGoFuBLJ2sFfXNKbS33lll/Ehe9yw0fyc8Kdw7kO9if37yQqn6vaa4dAHKkPllum7f/IPQ==}
     engines: {node: '>=18.12'}
 
   '@pnpm/error@1000.1.0':
@@ -17691,7 +17652,7 @@ packages:
     engines: {node: ^20.19.0 || ^22.13.0 || >=24}
     hasBin: true
     peerDependencies:
-      jiti: '*'
+      jiti: 2.7.0
     peerDependenciesMeta:
       jiti:
         optional: true
@@ -20293,14 +20254,6 @@ packages:
 
   jimp@0.6.8:
     resolution: {integrity: sha512-F7emeG7Hp61IM8VFbNvWENLTuHe0ghizWPuP4JS9ujx2r5mCVYEd/zdaz6M2M42ZdN41blxPajLWl9FXo7Mr2Q==}
-
-  jiti@1.21.7:
-    resolution: {integrity: sha512-/imKNG4EbWNrVjoNC/1H5/9GFy+tqjGBHCaSsN+P2RnPqjsLmv6UD3Ej+Kj8nBWaRAwyk7kK5ZUc+OEatnTR3A==}
-    hasBin: true
-
-  jiti@2.6.1:
-    resolution: {integrity: sha512-ekilCSN1jwRvIbgeg/57YFh8qQDNbwDb9xT/qu2DAHbFFZUicIl4ygVaAvzveMhMVr3LnpSKTNnwt8PoOfmKhQ==}
-    hasBin: true
 
   jiti@2.7.0:
     resolution: {integrity: sha512-AC/7JofJvZGrrneWNaEnJeOLUx+JlGt7tNa0wZiRPT4MY1wmfKjt2+6O2p2uz2+skll8OZZmJMNqeke7kKbNgQ==}
@@ -23143,7 +23096,7 @@ packages:
     resolution: {integrity: sha512-G5AJ+IX0aD0dygOE0yFZQ/huFFMSNneyfp0e3/bT05a8OfPC5FUoZRPfGijUdGOJNMewJiwzcHJXFafFzeKFVA==}
     engines: {node: '>= 18'}
     peerDependencies:
-      jiti: '>=1.21.0'
+      jiti: 2.7.0
       postcss: '>=8.0.9'
       tsx: ^4.8.1
     peerDependenciesMeta:
@@ -23158,7 +23111,7 @@ packages:
     resolution: {integrity: sha512-oPtTM4oerL+UXmx+93ytZVN82RrlY/wPUV8IeDxFrzIjXOLF1pN+EmKPLbubvKHT2HC20xXsCAH2Z+CKV6Oz/g==}
     engines: {node: '>= 18'}
     peerDependencies:
-      jiti: '>=1.21.0'
+      jiti: 2.7.0
       postcss: '>=8.0.9'
       tsx: ^4.8.1
       yaml: ^2.4.2
@@ -24490,12 +24443,12 @@ packages:
   replacestream@4.0.3:
     resolution: {integrity: sha512-AC0FiLS352pBBiZhd4VXB1Ab/lh0lEgpP+GGvZqbQh8a5cmXVoTe5EX/YeTFArnp4SRGTHh1qCHu9lGs1qG8sA==}
 
-  repoctl@4.0.6:
-    resolution: {integrity: sha512-pv8klX95fSdFI0kPFYOjsutmXbBpA8zEXDrxHoPdR0Gs3+OOdsf9fOb9CPbY4BI7SpBK99jgpqBUKgczSsUPCA==}
+  repoctl@4.0.7:
+    resolution: {integrity: sha512-dSvRZN/ibnrHOzErgYYUaR0yC6YBK6S08O6x+usXQhMEGLh/IPBg33emg/nNO6fJqBRf9BJqz79X1uHfhoSxog==}
     engines: {node: '>=23.5.0 || ^22.13.0 || ^21.7.0 || ^20.12.0'}
     hasBin: true
     peerDependencies:
-      '@commitlint/cli': ^20.5.3
+      '@commitlint/cli': ^21.0.0
       eslint: ^9.0.0 || ^10.0.0
       stylelint: ^17.11.0
       typescript: ^5.0.0 || ^6.0.0
@@ -24834,9 +24787,6 @@ packages:
     engines: {node: 6.* || 8.* || >= 10.*}
     deprecated: some dependency vulnerabilities fixed, support for node < 10 dropped, and newer ECMAScript syntax/features added
     hasBin: true
-
-  sanitize-filename@1.6.3:
-    resolution: {integrity: sha512-y/52Mcy7aw3gRm7IrcGDFx/bCk4AhRh2eI9luHOQM86nZsqwiRkkq2GekHXBBD+SmPidc8i2PqtYZl+pWJ8Oeg==}
 
   sanitize-filename@1.6.4:
     resolution: {integrity: sha512-9ZyI08PsvdQl2r/bBIGubpVdR3RR9sY6RDiWFPreA21C/EFlQhmgo20UZlNjZMMZNubusLhAQozkA0Od5J21Eg==}
@@ -26351,10 +26301,6 @@ packages:
   tinycolor2@1.6.0:
     resolution: {integrity: sha512-XPaBkWQJdsf3pLKJV9p4qN/S+fm2Oj8AIPo1BTUhg5oxkvm9+SVEGFdhyOz7tTdUTfvxMiAs4sp6/eZO2Ew+pw==}
 
-  tinyexec@1.0.2:
-    resolution: {integrity: sha512-W/KYk+NFhkmsYpuHq5JykngiOCnxeVL8v8dFnqxSD8qEEdRfXk1SDM6JzNqcERbcGYj9tMrDQBYV9cjgnunFIg==}
-    engines: {node: '>=18'}
-
   tinyexec@1.0.4:
     resolution: {integrity: sha512-u9r3uZC0bdpGOXtlxUIdwf9pkmvhqJdrVCH9fapQtgy/OeTTMZ1nqH7agtvEfmGui6e1XxjcdrlxvxJvc3sMqw==}
     engines: {node: '>=18'}
@@ -27493,7 +27439,7 @@ packages:
     hasBin: true
     peerDependencies:
       '@types/node': ^20.19.0 || >=22.12.0
-      jiti: '>=1.21.0'
+      jiti: 2.7.0
       less: ^4.0.0
       lightningcss: ^1.21.0
       sass: ^1.70.0
@@ -27533,7 +27479,7 @@ packages:
     hasBin: true
     peerDependencies:
       '@types/node': ^20.19.0 || >=22.12.0
-      jiti: '>=1.21.0'
+      jiti: 2.7.0
       less: ^4.0.0
       lightningcss: ^1.21.0
       sass: ^1.70.0
@@ -27575,7 +27521,7 @@ packages:
       '@types/node': ^20.19.0 || >=22.12.0
       '@vitejs/devtools': ^0.1.18
       esbuild: ^0.27.0 || ^0.28.0
-      jiti: '>=1.21.0'
+      jiti: 2.7.0
       less: ^4.0.0
       sass: ^1.70.0
       sass-embedded: ^1.70.0
@@ -30179,7 +30125,7 @@ snapshots:
       '@commitlint/load': 20.5.3(@types/node@24.12.3)(typescript@5.9.3)
       '@commitlint/read': 20.5.0(conventional-commits-parser@6.4.0)
       '@commitlint/types': 20.5.0
-      tinyexec: 1.0.2
+      tinyexec: 1.1.2
       yargs: 17.7.2
     transitivePeerDependencies:
       - '@types/node'
@@ -30250,7 +30196,7 @@ snapshots:
       '@commitlint/types': 20.5.0
       git-raw-commits: 5.0.1(conventional-commits-parser@6.4.0)
       minimist: 1.2.8
-      tinyexec: 1.0.4
+      tinyexec: 1.1.2
     transitivePeerDependencies:
       - conventional-commits-filter
       - conventional-commits-parser
@@ -33103,7 +33049,7 @@ snapshots:
       github-slugger: 1.5.0
       globby: 11.1.0
       gray-matter: 4.0.3
-      jiti: 1.21.7
+      jiti: 2.7.0
       js-yaml: 4.1.1
       lodash: 4.18.1
       micromatch: 4.0.8
@@ -33144,7 +33090,7 @@ snapshots:
       github-slugger: 1.5.0
       globby: 11.1.0
       gray-matter: 4.0.3
-      jiti: 1.21.7
+      jiti: 2.7.0
       js-yaml: 4.1.1
       lodash: 4.18.1
       micromatch: 4.0.8
@@ -33918,11 +33864,6 @@ snapshots:
       eslint: 10.3.0(jiti@2.7.0)
       eslint-visitor-keys: 3.4.3
 
-  '@eslint-community/eslint-utils@4.9.1(eslint@10.3.0(jiti@1.21.7))':
-    dependencies:
-      eslint: 10.3.0(jiti@1.21.7)
-      eslint-visitor-keys: 3.4.3
-
   '@eslint-community/eslint-utils@4.9.1(eslint@10.3.0(jiti@2.7.0))':
     dependencies:
       eslint: 10.3.0(jiti@2.7.0)
@@ -34244,21 +34185,21 @@ snapshots:
       - typescript
       - vitest
 
-  '@icebreakers/monorepo-templates@1.0.5(@types/node@24.12.3)':
+  '@icebreakers/monorepo-templates@1.0.6(@types/node@24.12.3)':
     dependencies:
-      '@inquirer/checkbox': 5.1.4(@types/node@24.12.3)
-      '@inquirer/input': 5.0.12(@types/node@24.12.3)
-      '@inquirer/select': 5.1.4(@types/node@24.12.3)
+      '@inquirer/checkbox': 5.1.5(@types/node@24.12.3)
+      '@inquirer/input': 5.0.13(@types/node@24.12.3)
+      '@inquirer/select': 5.1.5(@types/node@24.12.3)
       commander: 14.0.3
       nanoexec: 1.1.0(@types/node@24.12.3)
     transitivePeerDependencies:
       - '@types/node'
 
-  '@icebreakers/monorepo@4.0.6(@commitlint/cli@20.5.3(@types/node@24.12.3)(conventional-commits-parser@6.4.0)(typescript@5.9.3))(@next/eslint-plugin-next@16.2.4)(@types/node@24.12.3)(@unocss/eslint-plugin@66.6.8(eslint@10.3.0(jiti@2.7.0))(typescript@5.9.3))(conventional-changelog-conventionalcommits@9.3.1)(eslint-plugin-jsx-a11y@6.10.2(eslint@10.3.0(jiti@2.7.0)))(eslint-plugin-pnpm@1.6.0(eslint@10.3.0(jiti@2.7.0)))(eslint-plugin-vuejs-accessibility@2.5.0(eslint@10.3.0(jiti@2.7.0))(globals@17.6.0))(eslint@10.3.0(jiti@2.7.0))(magicast@0.5.2)(postcss@8.5.14)(stylelint@17.11.0(typescript@5.9.3))(tailwindcss@3.4.19(tsx@4.21.0)(yaml@2.8.4))(typanion@3.14.0)(typescript@5.9.3)(vitest@4.1.5)':
+  '@icebreakers/monorepo@4.0.7(@commitlint/cli@20.5.3(@types/node@24.12.3)(conventional-commits-parser@6.4.0)(typescript@5.9.3))(@next/eslint-plugin-next@16.2.4)(@types/node@24.12.3)(@unocss/eslint-plugin@66.6.8(eslint@10.3.0(jiti@2.7.0))(typescript@5.9.3))(conventional-changelog-conventionalcommits@9.3.1)(eslint-plugin-jsx-a11y@6.10.2(eslint@10.3.0(jiti@2.7.0)))(eslint-plugin-pnpm@1.6.0(eslint@10.3.0(jiti@2.7.0)))(eslint-plugin-vuejs-accessibility@2.5.0(eslint@10.3.0(jiti@2.7.0))(globals@17.6.0))(eslint@10.3.0(jiti@2.7.0))(magicast@0.5.2)(postcss@8.5.14)(stylelint@17.11.0(typescript@5.9.3))(tailwindcss@3.4.19(tsx@4.21.0)(yaml@2.8.4))(typanion@3.14.0)(typescript@5.9.3)(vitest@4.1.5)':
     dependencies:
       '@icebreakers/commitlint-config': 2.0.0(conventional-changelog-conventionalcommits@9.3.1)
       '@icebreakers/eslint-config': 4.0.11(@next/eslint-plugin-next@16.2.4)(@unocss/eslint-plugin@66.6.8(eslint@10.3.0(jiti@2.7.0))(typescript@5.9.3))(eslint-plugin-jsx-a11y@6.10.2(eslint@10.3.0(jiti@2.7.0)))(eslint-plugin-pnpm@1.6.0(eslint@10.3.0(jiti@2.7.0)))(eslint-plugin-vuejs-accessibility@2.5.0(eslint@10.3.0(jiti@2.7.0))(globals@17.6.0))(eslint@10.3.0(jiti@2.7.0))(postcss@8.5.14)(stylelint@17.11.0(typescript@5.9.3))(tailwindcss@3.4.19(tsx@4.21.0)(yaml@2.8.4))(typescript@5.9.3)(vitest@4.1.5)
-      '@icebreakers/monorepo-templates': 1.0.5(@types/node@24.12.3)
+      '@icebreakers/monorepo-templates': 1.0.6(@types/node@24.12.3)
       '@icebreakers/stylelint-config': 3.0.7(postcss@8.5.14)(stylelint@17.11.0(typescript@5.9.3))(tailwindcss@3.4.19(tsx@4.21.0)(yaml@2.8.4))
       '@pnpm/find-workspace-dir': 1000.1.5
       '@pnpm/logger': 1100.0.0
@@ -34276,7 +34217,7 @@ snapshots:
       p-queue: 9.2.0
       pathe: 2.0.3
       picocolors: 1.1.1
-      semver: 7.7.4
+      semver: 7.8.0
       simple-git: 3.36.0
       yaml: 2.8.4
     optionalDependencies:
@@ -34478,10 +34419,10 @@ snapshots:
 
   '@inquirer/ansi@2.0.5': {}
 
-  '@inquirer/checkbox@5.1.4(@types/node@24.12.3)':
+  '@inquirer/checkbox@5.1.5(@types/node@24.12.3)':
     dependencies:
       '@inquirer/ansi': 2.0.5
-      '@inquirer/core': 11.1.9(@types/node@24.12.3)
+      '@inquirer/core': 11.1.10(@types/node@24.12.3)
       '@inquirer/figures': 2.0.5
       '@inquirer/type': 4.0.5(@types/node@24.12.3)
     optionalDependencies:
@@ -34503,6 +34444,18 @@ snapshots:
     optionalDependencies:
       '@types/node': 25.6.2
 
+  '@inquirer/core@11.1.10(@types/node@24.12.3)':
+    dependencies:
+      '@inquirer/ansi': 2.0.5
+      '@inquirer/figures': 2.0.5
+      '@inquirer/type': 4.0.5(@types/node@24.12.3)
+      cli-width: 4.1.0
+      fast-wrap-ansi: 0.2.0
+      mute-stream: 3.0.0
+      signal-exit: 4.1.0
+    optionalDependencies:
+      '@types/node': 24.12.3
+
   '@inquirer/core@11.1.10(@types/node@25.6.2)':
     dependencies:
       '@inquirer/ansi': 2.0.5
@@ -34514,18 +34467,6 @@ snapshots:
       signal-exit: 4.1.0
     optionalDependencies:
       '@types/node': 25.6.2
-
-  '@inquirer/core@11.1.9(@types/node@24.12.3)':
-    dependencies:
-      '@inquirer/ansi': 2.0.5
-      '@inquirer/figures': 2.0.5
-      '@inquirer/type': 4.0.5(@types/node@24.12.3)
-      cli-width: 4.1.0
-      fast-wrap-ansi: 0.2.0
-      mute-stream: 3.0.0
-      signal-exit: 4.1.0
-    optionalDependencies:
-      '@types/node': 24.12.3
 
   '@inquirer/editor@5.1.2(@types/node@25.6.2)':
     dependencies:
@@ -34565,9 +34506,9 @@ snapshots:
 
   '@inquirer/figures@2.0.5': {}
 
-  '@inquirer/input@5.0.12(@types/node@24.12.3)':
+  '@inquirer/input@5.0.13(@types/node@24.12.3)':
     dependencies:
-      '@inquirer/core': 11.1.9(@types/node@24.12.3)
+      '@inquirer/core': 11.1.10(@types/node@24.12.3)
       '@inquirer/type': 4.0.5(@types/node@24.12.3)
     optionalDependencies:
       '@types/node': 24.12.3
@@ -34624,10 +34565,10 @@ snapshots:
     optionalDependencies:
       '@types/node': 25.6.2
 
-  '@inquirer/select@5.1.4(@types/node@24.12.3)':
+  '@inquirer/select@5.1.5(@types/node@24.12.3)':
     dependencies:
       '@inquirer/ansi': 2.0.5
-      '@inquirer/core': 11.1.9(@types/node@24.12.3)
+      '@inquirer/core': 11.1.10(@types/node@24.12.3)
       '@inquirer/figures': 2.0.5
       '@inquirer/type': 4.0.5(@types/node@24.12.3)
     optionalDependencies:
@@ -37353,10 +37294,6 @@ snapshots:
       execa: safe-execa@0.1.2
       mem: 8.1.1
 
-  '@pnpm/error@1000.0.5':
-    dependencies:
-      '@pnpm/constants': 1001.3.1
-
   '@pnpm/error@1000.1.0':
     dependencies:
       '@pnpm/constants': 1001.3.1
@@ -37454,7 +37391,7 @@ snapshots:
       p-limit: 3.1.0
       path-temp: 2.1.1
       rename-overwrite: 6.0.6
-      sanitize-filename: 1.6.3
+      sanitize-filename: 1.6.4
 
   '@pnpm/fs.indexed-pkg-importer@1100.0.5(@pnpm/logger@1100.0.0)':
     dependencies:
@@ -37624,7 +37561,7 @@ snapshots:
 
   '@pnpm/network.proxy-agent@2.0.3':
     dependencies:
-      '@pnpm/error': 1000.0.5
+      '@pnpm/error': 1000.1.0
       http-proxy-agent: 7.0.2
       https-proxy-agent: 7.0.6
       lru-cache: 7.18.3
@@ -37680,7 +37617,7 @@ snapshots:
   '@pnpm/npm-lifecycle@1001.0.0(typanion@3.14.0)':
     dependencies:
       '@pnpm/byline': 1.0.0
-      '@pnpm/error': 1000.0.5
+      '@pnpm/error': 1000.1.0
       '@yarnpkg/fslib': 3.1.5
       '@yarnpkg/shell': 4.0.0(typanion@3.14.0)
       node-gyp: 11.5.0
@@ -45184,7 +45121,7 @@ snapshots:
     dependencies:
       '@types/node': 24.12.3
       cosmiconfig: 9.0.1(typescript@5.9.3)
-      jiti: 2.6.1
+      jiti: 2.7.0
       typescript: 5.9.3
 
   cosmiconfig@7.1.0:
@@ -47647,43 +47584,6 @@ snapshots:
   eslint-visitor-keys@4.2.1: {}
 
   eslint-visitor-keys@5.0.1: {}
-
-  eslint@10.3.0(jiti@1.21.7):
-    dependencies:
-      '@eslint-community/eslint-utils': 4.9.1(eslint@10.3.0(jiti@1.21.7))
-      '@eslint-community/regexpp': 4.12.2
-      '@eslint/config-array': 0.23.5
-      '@eslint/config-helpers': 0.5.5
-      '@eslint/core': 1.2.1
-      '@eslint/plugin-kit': 0.7.1
-      '@humanfs/node': 0.16.7
-      '@humanwhocodes/module-importer': 1.0.1
-      '@humanwhocodes/retry': 0.4.3
-      '@types/estree': 1.0.8
-      ajv: 6.14.0
-      cross-spawn: 7.0.6
-      debug: 4.4.3
-      escape-string-regexp: 4.0.0
-      eslint-scope: 9.1.2
-      eslint-visitor-keys: 5.0.1
-      espree: 11.2.0
-      esquery: 1.7.0
-      esutils: 2.0.3
-      fast-deep-equal: 3.1.3
-      file-entry-cache: 8.0.0
-      find-up: 5.0.0
-      glob-parent: 6.0.2
-      ignore: 5.3.2
-      imurmurhash: 0.1.4
-      is-glob: 4.0.3
-      json-stable-stringify-without-jsonify: 1.0.1
-      minimatch: 10.2.5
-      natural-compare: 1.4.0
-      optionator: 0.9.4
-    optionalDependencies:
-      jiti: 1.21.7
-    transitivePeerDependencies:
-      - supports-color
 
   eslint@10.3.0(jiti@2.7.0):
     dependencies:
@@ -51289,10 +51189,6 @@ snapshots:
     transitivePeerDependencies:
       - debug
 
-  jiti@1.21.7: {}
-
-  jiti@2.6.1: {}
-
   jiti@2.7.0: {}
 
   jju@1.4.0: {}
@@ -54720,15 +54616,6 @@ snapshots:
       postcss: 8.5.14
       tsx: 4.21.0
 
-  postcss-load-config@6.0.1(jiti@1.21.7)(postcss@8.5.14)(tsx@4.21.0)(yaml@2.8.4):
-    dependencies:
-      lilconfig: 3.1.3
-    optionalDependencies:
-      jiti: 1.21.7
-      postcss: 8.5.14
-      tsx: 4.21.0
-      yaml: 2.8.4
-
   postcss-load-config@6.0.1(jiti@2.7.0)(postcss@8.5.14)(tsx@4.21.0)(yaml@2.8.4):
     dependencies:
       lilconfig: 3.1.3
@@ -54749,7 +54636,7 @@ snapshots:
   postcss-loader@7.3.4(postcss@8.5.14)(typescript@6.0.3)(webpack@5.106.2(@swc/core@1.15.33(@swc/helpers@0.5.19))(esbuild@0.28.0)(lightningcss@1.32.0)(postcss@8.5.14)):
     dependencies:
       cosmiconfig: 8.3.6(typescript@6.0.3)
-      jiti: 1.21.7
+      jiti: 2.7.0
       postcss: 8.5.14
       semver: 7.7.4
       webpack: 5.106.2(@swc/core@1.15.33(@swc/helpers@0.5.19))(esbuild@0.28.0)(lightningcss@1.32.0)(postcss@8.5.14)
@@ -56217,9 +56104,9 @@ snapshots:
       object-assign: 4.1.1
       readable-stream: 2.3.8
 
-  repoctl@4.0.6(@commitlint/cli@20.5.3(@types/node@24.12.3)(conventional-commits-parser@6.4.0)(typescript@5.9.3))(@next/eslint-plugin-next@16.2.4)(@types/node@24.12.3)(@unocss/eslint-plugin@66.6.8(eslint@10.3.0(jiti@2.7.0))(typescript@5.9.3))(conventional-changelog-conventionalcommits@9.3.1)(eslint-plugin-jsx-a11y@6.10.2(eslint@10.3.0(jiti@2.7.0)))(eslint-plugin-pnpm@1.6.0(eslint@10.3.0(jiti@2.7.0)))(eslint-plugin-vuejs-accessibility@2.5.0(eslint@10.3.0(jiti@2.7.0))(globals@17.6.0))(eslint@10.3.0(jiti@2.7.0))(magicast@0.5.2)(postcss@8.5.14)(stylelint@17.11.0(typescript@5.9.3))(tailwindcss@3.4.19(tsx@4.21.0)(yaml@2.8.4))(typanion@3.14.0)(typescript@5.9.3)(vitest@4.1.5):
+  repoctl@4.0.7(@commitlint/cli@20.5.3(@types/node@24.12.3)(conventional-commits-parser@6.4.0)(typescript@5.9.3))(@next/eslint-plugin-next@16.2.4)(@types/node@24.12.3)(@unocss/eslint-plugin@66.6.8(eslint@10.3.0(jiti@2.7.0))(typescript@5.9.3))(conventional-changelog-conventionalcommits@9.3.1)(eslint-plugin-jsx-a11y@6.10.2(eslint@10.3.0(jiti@2.7.0)))(eslint-plugin-pnpm@1.6.0(eslint@10.3.0(jiti@2.7.0)))(eslint-plugin-vuejs-accessibility@2.5.0(eslint@10.3.0(jiti@2.7.0))(globals@17.6.0))(eslint@10.3.0(jiti@2.7.0))(magicast@0.5.2)(postcss@8.5.14)(stylelint@17.11.0(typescript@5.9.3))(tailwindcss@3.4.19(tsx@4.21.0)(yaml@2.8.4))(typanion@3.14.0)(typescript@5.9.3)(vitest@4.1.5):
     dependencies:
-      '@icebreakers/monorepo': 4.0.6(@commitlint/cli@20.5.3(@types/node@24.12.3)(conventional-commits-parser@6.4.0)(typescript@5.9.3))(@next/eslint-plugin-next@16.2.4)(@types/node@24.12.3)(@unocss/eslint-plugin@66.6.8(eslint@10.3.0(jiti@2.7.0))(typescript@5.9.3))(conventional-changelog-conventionalcommits@9.3.1)(eslint-plugin-jsx-a11y@6.10.2(eslint@10.3.0(jiti@2.7.0)))(eslint-plugin-pnpm@1.6.0(eslint@10.3.0(jiti@2.7.0)))(eslint-plugin-vuejs-accessibility@2.5.0(eslint@10.3.0(jiti@2.7.0))(globals@17.6.0))(eslint@10.3.0(jiti@2.7.0))(magicast@0.5.2)(postcss@8.5.14)(stylelint@17.11.0(typescript@5.9.3))(tailwindcss@3.4.19(tsx@4.21.0)(yaml@2.8.4))(typanion@3.14.0)(typescript@5.9.3)(vitest@4.1.5)
+      '@icebreakers/monorepo': 4.0.7(@commitlint/cli@20.5.3(@types/node@24.12.3)(conventional-commits-parser@6.4.0)(typescript@5.9.3))(@next/eslint-plugin-next@16.2.4)(@types/node@24.12.3)(@unocss/eslint-plugin@66.6.8(eslint@10.3.0(jiti@2.7.0))(typescript@5.9.3))(conventional-changelog-conventionalcommits@9.3.1)(eslint-plugin-jsx-a11y@6.10.2(eslint@10.3.0(jiti@2.7.0)))(eslint-plugin-pnpm@1.6.0(eslint@10.3.0(jiti@2.7.0)))(eslint-plugin-vuejs-accessibility@2.5.0(eslint@10.3.0(jiti@2.7.0))(globals@17.6.0))(eslint@10.3.0(jiti@2.7.0))(magicast@0.5.2)(postcss@8.5.14)(stylelint@17.11.0(typescript@5.9.3))(tailwindcss@3.4.19(tsx@4.21.0)(yaml@2.8.4))(typanion@3.14.0)(typescript@5.9.3)(vitest@4.1.5)
     optionalDependencies:
       '@commitlint/cli': 20.5.3(@types/node@24.12.3)(conventional-commits-parser@6.4.0)(typescript@5.9.3)
       eslint: 10.3.0(jiti@2.7.0)
@@ -56687,10 +56574,6 @@ snapshots:
       walker: 1.0.8
     transitivePeerDependencies:
       - supports-color
-
-  sanitize-filename@1.6.3:
-    dependencies:
-      truncate-utf8-bytes: 1.0.2
 
   sanitize-filename@1.6.4:
     dependencies:
@@ -58284,7 +58167,7 @@ snapshots:
       fast-glob: 3.3.3
       glob-parent: 6.0.2
       is-glob: 4.0.3
-      jiti: 1.21.7
+      jiti: 2.7.0
       lilconfig: 3.1.3
       micromatch: 4.0.8
       normalize-path: 3.0.0
@@ -58293,7 +58176,7 @@ snapshots:
       postcss: 8.5.14
       postcss-import: 15.1.0(postcss@8.5.14)
       postcss-js: 4.1.0(postcss@8.5.14)
-      postcss-load-config: 6.0.1(jiti@1.21.7)(postcss@8.5.14)(tsx@4.21.0)(yaml@2.8.4)
+      postcss-load-config: 6.0.1(jiti@2.7.0)(postcss@8.5.14)(tsx@4.21.0)(yaml@2.8.4)
       postcss-nested: 6.2.0(postcss@8.5.14)
       postcss-selector-parser: 6.1.2
       resolve: 1.22.11
@@ -58627,8 +58510,6 @@ snapshots:
   tinybench@2.9.0: {}
 
   tinycolor2@1.6.0: {}
-
-  tinyexec@1.0.2: {}
 
   tinyexec@1.0.4: {}
 
@@ -60120,18 +60001,6 @@ snapshots:
     dependencies:
       echarts: 6.0.0
       vue: 3.5.34(typescript@6.0.3)
-
-  vue-eslint-parser@10.4.0(eslint@10.3.0(jiti@1.21.7)):
-    dependencies:
-      debug: 4.4.3
-      eslint: 10.3.0(jiti@1.21.7)
-      eslint-scope: 8.4.0
-      eslint-visitor-keys: 4.2.1
-      espree: 10.4.0
-      esquery: 1.7.0
-      semver: 7.7.3
-    transitivePeerDependencies:
-      - supports-color
 
   vue-eslint-parser@10.4.0(eslint@10.3.0(jiti@2.7.0)):
     dependencies:
