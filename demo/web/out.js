@@ -1,1 +1,1 @@
-const classNames = ["bg-[length:200rpx_100rpx]","grid-cols-[200rpx_minmax(900rpx,_1fr)_100rpx]","dark:text-[14.54rpx]"]
+const classNames = ["bg-_blength_c200rpx_100rpx_B","grid-cols-_b200rpx_minmax_p900rpx_m_1fr_P_100rpx_B","dark_ctext-_b14_d54rpx_B"]
