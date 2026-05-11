@@ -718,11 +718,11 @@ describe('watch-hmr regression cases', () => {
     const viteNativeTsSkylineCase = appCases.find(item => item.name === 'vite-native-ts-skyline')
 
     expect(uniViteCase?.outputWxml).toBe(
-      path.resolve('/repo', 'demo/uni-app-vue3-vite/dist/dev/mp-weixin/pages/index/index.wxml'),
+      path.resolve('/repo', 'demo/uni-app-vue3-vite/dist/build/mp-weixin/pages/index/index.wxml'),
     )
     expect(uniViteCase?.globalStyleCandidates).toEqual([
-      path.resolve('/repo', 'demo/uni-app-vue3-vite/dist/dev/mp-weixin/pages/index/index.wxss'),
-      path.resolve('/repo', 'demo/uni-app-vue3-vite/dist/dev/mp-weixin/app.wxss'),
+      path.resolve('/repo', 'demo/uni-app-vue3-vite/dist/build/mp-weixin/pages/index/index.wxss'),
+      path.resolve('/repo', 'demo/uni-app-vue3-vite/dist/build/mp-weixin/app.wxss'),
     ])
 
     expect(mpxV4Case?.outputWxml).toBe(
@@ -730,6 +730,7 @@ describe('watch-hmr regression cases', () => {
     )
     expect(mpxV4Case?.globalStyleCandidates).toEqual([
       path.resolve('/repo', 'demo/mpx-tailwindcss-v4/dist/wx/styles/app*.wxss'),
+      path.resolve('/repo', 'demo/mpx-tailwindcss-v4/dist/wx/styles/index*.wxss'),
     ])
 
     expect(viteNativeCase?.outputJs).toBe(
@@ -764,10 +765,10 @@ describe('watch-hmr regression cases', () => {
     const mpxV5Case = extendedCases.find(item => item.name === 'mpx-tailwindcss-v5')
 
     expect(uniV5Case?.outputWxml).toBe(
-      path.resolve('/repo', 'demo/uni-app-tailwindcss-v5/dist/dev/mp-weixin/pages/index/index.wxml'),
+      path.resolve('/repo', 'demo/uni-app-tailwindcss-v5/dist/build/mp-weixin/pages/index/index.wxml'),
     )
     expect(uniV5Case?.outputStyleCandidates).toEqual([
-      path.resolve('/repo', 'demo/uni-app-tailwindcss-v5/dist/dev/mp-weixin/app.wxss'),
+      path.resolve('/repo', 'demo/uni-app-tailwindcss-v5/dist/build/mp-weixin/app.wxss'),
     ])
     expect(uniV5Case?.contentMutation?.sourceFile).toBe(
       path.resolve('/repo', 'demo/uni-app-tailwindcss-v5/src/pages/index/index.vue'),
@@ -800,6 +801,7 @@ describe('watch-hmr regression cases', () => {
     )
     expect(mpxV5Case?.globalStyleCandidates).toEqual([
       path.resolve('/repo', 'demo/mpx-tailwindcss-v5/dist/wx/styles/app*.wxss'),
+      path.resolve('/repo', 'demo/mpx-tailwindcss-v5/dist/wx/styles/index*.wxss'),
     ])
     expect(mpxV5Case?.contentMutation?.sourceFile).toBe(
       path.resolve('/repo', 'demo/mpx-tailwindcss-v5/src/custom-tab-bar/index.mpx'),

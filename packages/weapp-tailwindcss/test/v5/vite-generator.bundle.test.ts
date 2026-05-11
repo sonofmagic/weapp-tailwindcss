@@ -388,7 +388,7 @@ describe('v5 vite generator bundle', () => {
         majorVersion: 3,
       }),
     }))
-    expect(generateMock.mock.calls[0]?.[0]?.candidates.size).toBe(0)
+    expect(generateMock.mock.calls[0]?.[0]?.candidates).toEqual(runtimeSet)
     const userCssCall = styleHandler.mock.calls.find(([code]) => code === userCss)
     expect(userCssCall).toBeTruthy()
     expect(userCssCall?.[1]).toMatchObject({
