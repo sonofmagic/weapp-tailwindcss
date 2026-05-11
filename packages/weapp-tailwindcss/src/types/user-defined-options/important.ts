@@ -136,6 +136,7 @@ export interface UserDefinedOptionsImportantPart {
    * @see https://github.com/sonofmagic/weapp-tailwindcss/issues/7
    * @remarks
    * 默认会向所有 `view`/`text` 元素注入 Tailwind 风格的基础样式，可通过此配置禁用、调整或补充规则，受 `cssPreflightRange` 影响。
+   * 默认值会按检测到的 Tailwind CSS 主版本区分：v3 使用拆分的 `border-width` / `border-style` / `border-color`，v4 使用 `margin` / `padding` / `border`。
    * @example
    * ```js
    * cssPreflight: {
@@ -143,6 +144,14 @@ export interface UserDefinedOptionsImportantPart {
    *   'border-width': '0',
    *   'border-style': 'solid',
    *   'border-color': 'currentColor',
+   * }
+   *
+   * // Tailwind CSS v4 默认值
+   * cssPreflight: {
+   *   'box-sizing': 'border-box',
+   *   margin: '0',
+   *   padding: '0',
+   *   border: '0 solid',
    * }
    *
    * cssPreflight: false

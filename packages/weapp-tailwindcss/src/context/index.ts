@@ -2,7 +2,7 @@ import type { InternalUserDefinedOptions, RefreshTailwindcssPatcherOptions, Tail
 import { rm } from 'node:fs/promises'
 import { logger } from '@weapp-tailwindcss/logger'
 import { initializeCache } from '@/cache'
-import { getDefaultOptions } from '@/defaults'
+import { getDefaultOptions, resolveDefaultCssPreflight } from '@/defaults'
 import { invalidateRuntimeClassSet, refreshTailwindcssPatcherSymbol } from '@/tailwindcss/runtime'
 import { logRuntimeTailwindcssVersion } from '@/tailwindcss/runtime-logs'
 import { logTailwindcssTarget } from '@/tailwindcss/targets'
@@ -96,6 +96,8 @@ function createInternalCompilerContext(opts?: UserDefinedOptions): InternalUserD
   )
 
   warnMissingCssEntries(ctx, twPatcher)
+
+  ctx.cssPreflight = resolveDefaultCssPreflight(opts?.cssPreflight, twPatcher.majorVersion)
 
   const cssCalcOptions = applyV4CssCalcDefaults(ctx.cssCalc, twPatcher)
   ctx.cssCalc = cssCalcOptions

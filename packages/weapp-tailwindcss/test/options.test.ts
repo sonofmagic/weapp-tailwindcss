@@ -1,5 +1,6 @@
 import path from 'node:path'
 import { getCompilerContext } from '@/context'
+import { TAILWIND_V3_CSS_PREFLIGHT, TAILWIND_V4_CSS_PREFLIGHT } from '@/defaults'
 import { defu } from '@/utils'
 
 function sanitizeSnapshotOptions(options: ReturnType<typeof getCompilerContext>) {
@@ -64,6 +65,22 @@ describe('get options', () => {
       'border-width': '0',
       'box-sizing': 'content-box',
     })
+  })
+
+  it('uses Tailwind v4 cssPreflight defaults for tailwindcss v4 runtime', () => {
+    const config = getCompilerContext({
+      tailwindcss: {
+        packageName: 'tailwindcss4',
+      },
+    })
+    expect(config.twPatcher.majorVersion).toBe(4)
+    expect(config.cssPreflight).toStrictEqual(TAILWIND_V4_CSS_PREFLIGHT)
+  })
+
+  it('uses Tailwind v3 cssPreflight defaults for tailwindcss v3 runtime', () => {
+    const config = getCompilerContext()
+    expect(config.twPatcher.majorVersion).toBe(3)
+    expect(config.cssPreflight).toStrictEqual(TAILWIND_V3_CSS_PREFLIGHT)
   })
 
   // it('supportCustomLengthUnitsPatch boolean', () => {

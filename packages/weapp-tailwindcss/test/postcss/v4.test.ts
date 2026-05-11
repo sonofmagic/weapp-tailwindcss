@@ -26,6 +26,24 @@ function getCtx(options?: CompilerOptions) {
 }
 
 describe('tailwindcss v4', () => {
+  it('uses Tailwind v4 cssPreflight defaults when the compiler context resolves v4', async () => {
+    const { styleHandler } = getCtx({
+      tailwindcss: {
+        packageName: 'tailwindcss4',
+      },
+    })
+    const borderProp = ['bor', 'der'].join('')
+    const { css } = await styleHandler('::before,::after{--tw-content:"";--tw-border-spacing-x:0;}')
+
+    expect(css).toContain('box-sizing:border-box')
+    expect(css).toContain('margin:0')
+    expect(css).toContain('padding:0')
+    expect(css).toContain(`${borderProp}:0 solid`)
+    expect(css).not.toContain('border-width: 0')
+    expect(css).not.toContain('border-style: solid')
+    expect(css).not.toContain('border-color: currentColor')
+  })
+
   it('generates linear background direction css with v4 source directive', async () => {
     const className = ['bg', 'linear', 'to', 'r'].join('-')
     const sourceFunction = ['in', 'line'].join('')
