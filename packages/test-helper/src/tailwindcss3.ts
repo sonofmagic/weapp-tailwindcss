@@ -1,6 +1,7 @@
 import type { Config } from 'tailwindcss'
 import defu from 'defu'
 import postcss from 'postcss'
+import { TailwindcssPatcher } from 'tailwindcss-patch'
 import { postcssRemoveComment } from './removeComment'
 
 export interface IGenerateCssOptions {
@@ -10,7 +11,29 @@ export interface IGenerateCssOptions {
   isContentGlob?: boolean
 }
 
+let runtimeReadyPromise: Promise<void> | undefined
+
+function ensureTailwindcss3RuntimeReady() {
+  runtimeReadyPromise ??= new TailwindcssPatcher({
+    apply: {
+      exposeContext: true,
+      extendLengthUnits: true,
+    },
+    cache: {
+      driver: 'memory',
+    },
+    tailwindcss: {
+      packageName: 'tailwindcss',
+      postcssPlugin: 'tailwindcss',
+      version: 3,
+    },
+  }).patch().then(() => undefined)
+  return runtimeReadyPromise
+}
+
 export async function generateCss(content: string | string[], options: IGenerateCssOptions = {}) {
+  await ensureTailwindcss3RuntimeReady()
+
   // 默认执行顺序：@tailwind base;@tailwind components;@tailwind utilities;
   const { css, postcssPlugins, twConfig, isContentGlob } = defu(options, {
     css: '@tailwind utilities;',

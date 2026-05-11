@@ -3943,7 +3943,11 @@ importers:
         specifier: workspace:*
         version: link:../tailwindcss-config
 
-  packages/test-helper: {}
+  packages/test-helper:
+    dependencies:
+      tailwindcss-patch:
+        specifier: catalog:tailwindcssPatch
+        version: 9.3.2(magicast@0.5.2)(tailwindcss@4.3.0)
 
   packages/weapp-style-injector:
     dependencies:

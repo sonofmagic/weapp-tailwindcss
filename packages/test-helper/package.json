@@ -24,6 +24,9 @@
   "engines": {
     "node": "^20.19.0 || >=22.12.0"
   },
+  "dependencies": {
+    "tailwindcss-patch": "catalog:tailwindcssPatch"
+  },
   "scripts": {
     "dev": "tsdown --watch --sourcemap",
     "build:watch": "tsdown --watch --sourcemap",

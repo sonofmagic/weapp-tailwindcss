@@ -10,7 +10,7 @@ import { getRuntimeClassSetSignature } from '@/tailwindcss/runtime/cache'
 import { filterUnsupportedMiniProgramTailwindV4Candidates } from '@/tailwindcss/v4-engine/candidates'
 import { createUniAppXAssetTask } from '@/uni-app-x'
 import { processCachedTask } from '../shared/cache'
-import { generateCssByGenerator } from '../shared/generator-css'
+import { generateCssByGenerator, validateCandidatesByGenerator } from '../shared/generator-css'
 import { pushConcurrentTaskFactories } from '../shared/run-tasks'
 import { createBundleModuleGraphOptions } from './bundle-entries'
 import { buildBundleSnapshot, createBundleBuildState, updateBundleBuildState } from './bundle-state'
@@ -145,8 +145,30 @@ export function createGenerateBundleHook(context: GenerateBundleContext) {
     )
     const generatorCandidateSignature = createCandidateSignature(generatorRuntime)
     recordGeneratorCandidates?.(generatorRuntime)
+    let transformRuntime = runtime
+    if (runtimeState.twPatcher.majorVersion === 3 && generatorRuntime.size > 0) {
+      const cssEntries = snapshot.entries.filter(entry =>
+        entry.type === 'css' && entry.output.type === 'asset')
+      const mainCssEntry = cssEntries.find(entry => getCssHandlerOptions(entry.file).isMainChunk) ?? cssEntries[0]
+      if (mainCssEntry) {
+        const validatedRuntime = await validateCandidatesByGenerator({
+          opts,
+          runtimeState,
+          candidates: generatorRuntime,
+          rawSource: mainCssEntry.source,
+          file: mainCssEntry.file,
+          cssHandlerOptions: getCssHandlerOptions(mainCssEntry.file),
+          cssUserHandlerOptions: getCssUserHandlerOptions(mainCssEntry.file),
+          styleHandler,
+          debug,
+        })
+        if (validatedRuntime.size > 0) {
+          transformRuntime = new Set([...runtime, ...validatedRuntime])
+        }
+      }
+    }
     const defaultTemplateHandlerOptions = {
-      runtimeSet: runtime,
+      runtimeSet: transformRuntime,
     }
     metrics.runtimeSet = measureElapsed(runtimeStart)
     if (forceRuntimeRefreshBySource) {
@@ -156,7 +178,7 @@ export function createGenerateBundleHook(context: GenerateBundleContext) {
         snapshot.runtimeAffectingChangedByType.js.size,
       )
     }
-    debug('get runtimeSet, class count: %d', runtime.size)
+    debug('get runtimeSet, class count: %d, transform class count: %d', runtime.size, transformRuntime.size)
     const runtimeSignature = getRuntimeClassSetSignature(runtimeState.twPatcher) ?? 'runtime:missing'
     const { applyLinkedUpdates, pendingLinkedUpdates } = createLinkedUpdateHelpers({
       jsEntries,
@@ -383,7 +405,7 @@ export function createGenerateBundleHook(context: GenerateBundleContext) {
                 }
               }
 
-              const { code, linked } = await jsHandler(rawSource, runtime, handlerOptions)
+              const { code, linked } = await jsHandler(rawSource, transformRuntime, handlerOptions)
               metrics.js.elapsed += measureElapsed(start)
               metrics.js.transformed++
               onUpdate(file, rawSource, code)
@@ -430,7 +452,7 @@ export function createGenerateBundleHook(context: GenerateBundleContext) {
             debug,
             jsHandler,
             onUpdate,
-            runtimeSet: runtime,
+            runtimeSet: transformRuntime,
             applyLinkedResults: wrappedApplyLinkedUpdates,
             uniAppX,
           },

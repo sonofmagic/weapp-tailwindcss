@@ -7,6 +7,8 @@ import type {
 } from './types'
 import { createRequire } from 'node:module'
 import postcss from 'postcss'
+import { createTailwindcssPatcher } from '@/tailwindcss/patcher'
+import { ensureTailwindcssRuntimePatch } from '@/tailwindcss/runtime-patch'
 import { transformTailwindV3CssByTarget } from './miniprogram'
 
 interface TailwindcssPlugin {
@@ -129,8 +131,29 @@ function collectDependencyMessages(result: postcss.Result) {
   return dependencies
 }
 
+function createRuntimeReadyPromise(source: TailwindV3ResolvedSource) {
+  const patcher = createTailwindcssPatcher({
+    basedir: source.cwd,
+    supportCustomLengthUnitsPatch: true,
+    tailwindcss: {
+      config: source.config,
+      cwd: source.cwd,
+      packageName: source.packageName,
+      postcssPlugin: source.postcssPlugin,
+      version: 3,
+    },
+  })
+  return ensureTailwindcssRuntimePatch(patcher, {
+    clearRequireCache: true,
+  })
+}
+
 export function createTailwindV3Engine(source: TailwindV3ResolvedSource): TailwindV3Engine {
+  const runtimeReadyPromise = createRuntimeReadyPromise(source)
+
   async function generate(options: TailwindV3GenerateOptions = {}) {
+    await runtimeReadyPromise
+
     const {
       styleOptions,
       target = 'weapp',

@@ -1,5 +1,6 @@
 import type { RefreshTailwindcssPatcherOptions, TailwindcssPatcherLike } from '@/types'
 import { createDebug } from '@/debug'
+import { ensureTailwindcssRuntimePatch } from './runtime-patch'
 import {
   getRuntimeClassSetCacheEntry,
   getRuntimeClassSetSignature,
@@ -24,7 +25,8 @@ export interface RefreshTailwindRuntimeStateOptions {
 export function createTailwindRuntimeReadyPromise(
   twPatcher: TailwindcssPatcherLike,
 ): Promise<void> {
-  return Promise.resolve().then(() => {
+  return Promise.resolve().then(async () => {
+    await ensureTailwindcssRuntimePatch(twPatcher)
     invalidateRuntimeClassSet(twPatcher)
   })
 }
@@ -245,6 +247,8 @@ async function collectRuntimeClassSet(
   }
 
   const task = (async () => {
+    await ensureTailwindcssRuntimePatch(activePatcher)
+
     // force 场景先抓一份 sync 快照作为兜底，避免 extract() 在某些环境返回空集合后
     // 破坏本轮 JS/WXML 转译结果（例如构建链路中 class set 尚未落盘的瞬时状态）。
     const preExtractSyncSet = options.force

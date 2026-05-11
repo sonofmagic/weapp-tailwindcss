@@ -391,3 +391,54 @@ export async function generateCssByGenerator(
 
   return undefined
 }
+
+export interface ValidateCandidatesByGeneratorOptions extends Omit<GenerateCssByGeneratorOptions, 'runtime'> {
+  candidates: Set<string>
+}
+
+export async function validateCandidatesByGenerator(
+  options: ValidateCandidatesByGeneratorOptions,
+): Promise<Set<string>> {
+  const {
+    candidates,
+    cssHandlerOptions,
+    debug,
+    file,
+    opts,
+    rawSource,
+    runtimeState,
+  } = options
+  const majorVersion = runtimeState.twPatcher.majorVersion
+  if (!SUPPORTED_GENERATOR_MAJOR_VERSIONS.has(majorVersion ?? 0) || candidates.size === 0) {
+    return new Set<string>()
+  }
+
+  const generatorOptions = normalizeWeappTailwindcssGeneratorOptions(opts.generator)
+  const sources = await resolveGeneratorSources(
+    majorVersion,
+    runtimeState,
+    rawSource,
+    file,
+    cssHandlerOptions,
+    generatorOptions,
+  )
+  const classSets = await Promise.all(sources.map(async (source) => {
+    const generator = createWeappTailwindcssGenerator(source)
+    if (typeof generator.validateCandidates === 'function') {
+      return generator.validateCandidates(candidates)
+    }
+    const generated = await generator.generate({
+      candidates,
+      target: 'tailwind',
+    })
+    return generated.classSet
+  }))
+  const classSet = new Set(classSets.flatMap(item => [...item]))
+  debug(
+    'tailwind generator validated candidates: %s candidates=%d classSet=%d',
+    file,
+    candidates.size,
+    classSet.size,
+  )
+  return classSet
+}

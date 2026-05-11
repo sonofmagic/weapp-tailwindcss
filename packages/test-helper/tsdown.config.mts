@@ -13,6 +13,6 @@ export default defineConfig({
     }
   },
   deps: {
-    neverBundle: ['postcss', 'tailwindcss', '@tailwindcss/postcss'],
+    neverBundle: ['postcss', 'tailwindcss', '@tailwindcss/postcss', 'tailwindcss-patch'],
   },
 })
