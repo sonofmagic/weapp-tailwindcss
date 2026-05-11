@@ -1,19 +1,15 @@
 import type { Plugin, ResolvedConfig } from 'vite'
 import type { BundleSnapshot } from './bundle-state'
 import type { UserDefinedOptions } from '@/types'
-import { existsSync } from 'node:fs'
 import path from 'node:path'
 import process from 'node:process'
 import { logger } from '@weapp-tailwindcss/logger'
 import postcssHtmlTransform from '@weapp-tailwindcss/postcss/html-transform'
-import postcssrc from 'postcss-load-config'
 import { vitePluginName } from '@/constants'
 import { getCompilerContext } from '@/context'
 import { toCustomAttributesEntities } from '@/context/custom-attributes'
-import { findNearestPackageRoot } from '@/context/workspace'
 import { createDebug } from '@/debug'
 import { resolveTailwindcssOptions } from '@/tailwindcss/patcher-options'
-import { findTailwindConfig } from '@/tailwindcss/patcher-resolve'
 import { collectRuntimeClassSet, createTailwindRuntimeReadyPromise, refreshTailwindRuntimeState } from '@/tailwindcss/runtime'
 import { getRuntimeClassSetSignature } from '@/tailwindcss/runtime/cache'
 import { createUniAppXPlugins } from '@/uni-app-x'
@@ -25,154 +21,17 @@ import { normalizeOutputPathKey } from '../shared/module-graph'
 import { createViteCssFinalizerOutputPlugin } from './css-finalizer'
 import { createGenerateBundleHook } from './generate-bundle'
 import { createBundleRuntimeClassSetManager } from './incremental-runtime-class-set'
+import { disableAndRemoveTailwindVitePlugins, getPostcssPluginName, removeTailwindPostcssPlugins, removeTailwindVitePlugins } from './official-tailwind-plugins'
+import { resolveFilteredPostcssConfig } from './postcss-config'
 import { resolveImplicitAppTypeFromViteRoot } from './resolve-app-type'
 import { createRewriteCssImportsPlugins } from './rewrite-css-imports'
 import { createSourceCandidateCollector, isSourceCandidateRequest } from './source-candidates'
+import { resolveImplicitTailwindcssBasedirFromViteRoot } from './tailwind-basedir'
 import { slash } from './utils'
 
 const debug = createDebug()
 const weappTailwindcssPackageDir = resolvePackageDir('weapp-tailwindcss')
 const weappTailwindcssDirPosix = slash(weappTailwindcssPackageDir)
-const PACKAGE_JSON_FILE = 'package.json'
-const tailwindPostcssPluginNames = new Set(['tailwindcss', '@tailwindcss/postcss'])
-
-function getPostcssPluginName(plugin: unknown): string | undefined {
-  if (!plugin) {
-    return
-  }
-  if (typeof plugin === 'function' && 'postcss' in plugin) {
-    try {
-      return getPostcssPluginName(plugin())
-    }
-    catch {
-      return
-    }
-  }
-  if (typeof plugin !== 'object' || !('postcssPlugin' in plugin)) {
-    return
-  }
-  const { postcssPlugin } = plugin as { postcssPlugin?: unknown }
-  return typeof postcssPlugin === 'string' ? postcssPlugin : undefined
-}
-
-function isTailwindPostcssPlugin(plugin: unknown) {
-  const name = getPostcssPluginName(plugin)
-  return typeof name === 'string' && tailwindPostcssPluginNames.has(name)
-}
-
-function removeTailwindPostcssPlugins(plugins: unknown[]) {
-  let removed = 0
-  for (let i = plugins.length - 1; i >= 0; i--) {
-    if (isTailwindPostcssPlugin(plugins[i])) {
-      plugins.splice(i, 1)
-      removed++
-    }
-  }
-  return removed
-}
-
-async function resolveFilteredPostcssConfig(root: string) {
-  try {
-    const loaded = await postcssrc({}, root)
-    const plugins = Array.isArray(loaded.plugins) ? [...loaded.plugins] : []
-    const removed = removeTailwindPostcssPlugins(plugins)
-    if (removed === 0) {
-      return
-    }
-    return {
-      options: loaded.options,
-      plugins,
-      removed,
-    }
-  }
-  catch (error) {
-    const message = error instanceof Error ? error.message : String(error)
-    if (message.includes('No PostCSS Config found')) {
-      return
-    }
-    throw error
-  }
-}
-
-function isTailwindVitePlugin(plugin: unknown) {
-  if (!plugin || typeof plugin !== 'object' || !('name' in plugin)) {
-    return false
-  }
-  const { name } = plugin as { name?: unknown }
-  return typeof name === 'string' && name.startsWith('@tailwindcss/vite')
-}
-
-function removeTailwindVitePlugins(plugins: Plugin[]) {
-  let removed = 0
-  for (let i = plugins.length - 1; i >= 0; i--) {
-    if (isTailwindVitePlugin(plugins[i])) {
-      plugins.splice(i, 1)
-      removed++
-    }
-  }
-  return removed
-}
-
-function disableTailwindVitePlugin(plugin: unknown) {
-  if (!isTailwindVitePlugin(plugin)) {
-    return false
-  }
-
-  const mutablePlugin = plugin as Record<string, unknown>
-  for (const hook of ['configResolved', 'configureServer', 'transform', 'hotUpdate', 'handleHotUpdate']) {
-    delete mutablePlugin[hook]
-  }
-  return true
-}
-
-function disableAndRemoveTailwindVitePlugins(plugins: unknown[]) {
-  let removed = 0
-  for (let i = plugins.length - 1; i >= 0; i--) {
-    const plugin = plugins[i]
-    if (Array.isArray(plugin)) {
-      removed += disableAndRemoveTailwindVitePlugins(plugin)
-      if (plugin.length === 0) {
-        plugins.splice(i, 1)
-      }
-      continue
-    }
-    if (disableTailwindVitePlugin(plugin)) {
-      plugins.splice(i, 1)
-      removed++
-    }
-  }
-  return removed
-}
-
-function resolveImplicitTailwindcssBasedirFromViteRoot(root: string) {
-  const resolvedRoot = path.resolve(root)
-  if (!existsSync(resolvedRoot)) {
-    return resolvedRoot
-  }
-  const searchRoots: string[] = []
-  let current = resolvedRoot
-
-  while (true) {
-    searchRoots.push(current)
-    const parent = path.dirname(current)
-    if (parent === current) {
-      break
-    }
-    current = parent
-  }
-
-  const tailwindConfigPath = findTailwindConfig(searchRoots)
-  if (tailwindConfigPath) {
-    return path.dirname(tailwindConfigPath)
-  }
-
-  const packageRoot = findNearestPackageRoot(resolvedRoot)
-  if (packageRoot && existsSync(path.join(packageRoot, PACKAGE_JSON_FILE))) {
-    return packageRoot
-  }
-
-  return resolvedRoot
-}
 
 /**
  * @name WeappTailwindcss
