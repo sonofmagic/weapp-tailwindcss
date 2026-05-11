@@ -1,6 +1,5 @@
 import type { OutputAsset, OutputChunk } from 'rollup'
 import type { ResolvedConfig } from 'vite'
-import type { OutputEntry } from './bundle-entries'
 import type { BundleSnapshot } from './bundle-state'
 import type { InternalUserDefinedOptions, LinkedJsModuleResult } from '@/types'
 import path from 'node:path'
@@ -12,7 +11,6 @@ import { filterUnsupportedMiniProgramTailwindV4Candidates } from '@/tailwindcss/
 import { createUniAppXAssetTask } from '@/uni-app-x'
 import { processCachedTask } from '../shared/cache'
 import { generateCssByGenerator } from '../shared/generator-css'
-import { normalizeOutputPathKey } from '../shared/module-graph'
 import { pushConcurrentTaskFactories } from '../shared/run-tasks'
 import { createBundleModuleGraphOptions } from './bundle-entries'
 import { buildBundleSnapshot, createBundleBuildState, updateBundleBuildState } from './bundle-state'
@@ -20,9 +18,11 @@ import { collectLegacyContainerCompatCandidates, collectUnescapedDynamicCandidat
 import { createCssHandlerOptionsCache } from './generate-bundle/css-handler-options'
 import { createCssRuntimeSignature, createCssTransformShareScopeKey } from './generate-bundle/css-share-scope'
 import { hasOmittedKnownBundleFiles } from './generate-bundle/dirty-state'
+import { createJsEntryResolver } from './generate-bundle/js-entries'
 import { createJsHandlerOptionsFactory, resolveUniAppXJsTransformEnabled } from './generate-bundle/js-handler-options'
 import { collectLinkedFileNames, createLinkedUpdateHelpers } from './generate-bundle/js-linking'
-import { createEmptyMetrics, formatCacheHitRate, formatDebugFileList, formatMs, measureElapsed } from './generate-bundle/metrics'
+import { createEmptyMetrics, formatCacheHitRate, formatMs, measureElapsed } from './generate-bundle/metrics'
+import { logBundleProcessPlan } from './generate-bundle/process-plan'
 import { createReplayCssAsset, registerGeneratorDependencies } from './generate-bundle/rollup-assets'
 import { createCandidateSignature, createJsHashSalt, createLinkedImpactSignature, getSnapshotHash, hasRuntimeAffectingSourceChanges, summarizeStringDiff } from './generate-bundle/signatures'
 import { shouldSkipViteJsTransform } from './js-precheck'
@@ -119,47 +119,14 @@ export function createGenerateBundleHook(context: GenerateBundleContext) {
     const forceRuntimeRefreshBySource = useIncrementalMode
       && hasRuntimeAffectingSourceChanges(snapshot.runtimeAffectingChangedByType)
     const processFiles = snapshot.processFiles
-    if (useIncrementalMode) {
-      debug(
-        'dirty iteration=%d html=%d[%s] js=%d[%s] css=%d[%s] other=%d[%s]',
-        state.iteration + 1,
-        snapshot.changedByType.html.size,
-        formatDebugFileList(snapshot.changedByType.html),
-        snapshot.changedByType.js.size,
-        formatDebugFileList(snapshot.changedByType.js),
-        snapshot.changedByType.css.size,
-        formatDebugFileList(snapshot.changedByType.css),
-        snapshot.changedByType.other.size,
-        formatDebugFileList(snapshot.changedByType.other),
-      )
-      debug(
-        'process iteration=%d html=%d[%s] js=%d[%s] css=%d[%s]',
-        state.iteration + 1,
-        processFiles.html.size,
-        formatDebugFileList(processFiles.html),
-        processFiles.js.size,
-        formatDebugFileList(processFiles.js),
-        processFiles.css.size,
-        formatDebugFileList(processFiles.css),
-      )
-    }
-    else {
-      debug(
-        'build mode full process html=%d[%s] js=%d[%s] css=%d[%s]',
-        processFiles.html.size,
-        formatDebugFileList(processFiles.html),
-        processFiles.js.size,
-        formatDebugFileList(processFiles.js),
-        processFiles.css.size,
-        formatDebugFileList(processFiles.css),
-      )
-    }
+    logBundleProcessPlan({
+      debug,
+      snapshot,
+      useIncrementalMode,
+      iteration: state.iteration + 1,
+    })
     const jsEntries = snapshot.jsEntries
-    const normalizedJsEntries = new Map<string, OutputEntry>()
-    for (const [id, entry] of jsEntries) {
-      normalizedJsEntries.set(normalizeOutputPathKey(id), entry)
-    }
-    const getJsEntry = (id: string) => jsEntries.get(id) ?? normalizedJsEntries.get(normalizeOutputPathKey(id))
+    const getJsEntry = createJsEntryResolver(jsEntries)
     const moduleGraphOptions = createBundleModuleGraphOptions(outDir, jsEntries)
     const runtimeStart = performance.now()
     const runtime = useBundleRuntimeClassSet
