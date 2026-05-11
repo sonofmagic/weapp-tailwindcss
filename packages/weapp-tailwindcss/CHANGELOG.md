@@ -1,5 +1,16 @@
 # weapp-tailwindcss
 
+## 5.0.0-next.6
+
+### Patch Changes
+
+- 🐛 **清理 `weapp-tailwindcss` 中未接入生产链路的历史残留代码与孤立测试，并移除不再直接使用的 `cac`、`webpack-sources` 依赖。** [#854](https://github.com/sonofmagic/weapp-tailwindcss/pull/854) by @github-actions
+
+- 🐛 **修复 Webpack 生成模式在 MPX watch/HMR 场景下，仅脚本类名集合变化时可能复用旧 WXSS 缓存，导致脚本中新加的 Tailwind 工具类未生成样式的问题。** [#854](https://github.com/sonofmagic/weapp-tailwindcss/pull/854) by @github-actions
+  - 将 `demo/mpx-app` 的 script-only 新增类名回归纳入正式 watch-HMR 覆盖，并接入 `e2e:ci` 的稳定热更新门禁。
+
+- 🐛 **移除 `weapp-tailwindcss` 中遗留的 mangle 相关依赖、常量、测试夹具与历史快照，保留当前小程序类名转义链路。** [#854](https://github.com/sonofmagic/weapp-tailwindcss/pull/854) by @github-actions
+
 ## 5.0.0-next.5
 
 ### Major Changes
