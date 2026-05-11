@@ -6,31 +6,14 @@ export function createMultiTailwindcssPatcher(patchers: TailwindcssPatcherLike[]
     return patchers[0]
   }
 
-  type PatchResult = Awaited<ReturnType<TailwindcssPatcherLike['patch']>>
-
-  const [first] = patchers
+  const first = patchers[0]!
+  const firstWithoutPatch = { ...first }
+  delete firstWithoutPatch.patch
   const multiPatcher: TailwindcssPatcherLike = {
-    ...first,
+    ...firstWithoutPatch,
     packageInfo: first?.packageInfo,
     majorVersion: first?.majorVersion,
     options: first?.options,
-    async patch() {
-      let exposeContext: PatchResult['exposeContext']
-      let extendLengthUnits: PatchResult['extendLengthUnits']
-      for (const patcher of patchers) {
-        const result = await patcher.patch()
-        if (result?.exposeContext && exposeContext == null) {
-          exposeContext = result.exposeContext
-        }
-        if (result?.extendLengthUnits && extendLengthUnits == null) {
-          extendLengthUnits = result.extendLengthUnits
-        }
-      }
-      return {
-        exposeContext,
-        extendLengthUnits,
-      }
-    },
     async getClassSet() {
       const aggregated = new Set<string>()
       for (const patcher of patchers) {

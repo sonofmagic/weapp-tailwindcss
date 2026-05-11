@@ -35,7 +35,6 @@ keywords:
 - [IPropValue](interfaces/IPropValue.md)
 - [ITemplateHandlerOptions](interfaces/ITemplateHandlerOptions.md)
 - [InternalCssSelectorReplacerOptions](interfaces/InternalCssSelectorReplacerOptions.md)
-- [InternalPatchResult](interfaces/InternalPatchResult.md)
 - [RawSource](interfaces/RawSource.md)
 - [UserDefinedOptions](interfaces/UserDefinedOptions.md)
 

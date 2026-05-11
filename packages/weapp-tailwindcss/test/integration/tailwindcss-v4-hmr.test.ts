@@ -3,7 +3,7 @@ import fs from 'node:fs/promises'
 import path from 'node:path'
 import { describe, expect, it } from 'vitest'
 import { getCompilerContext } from '@/context'
-import { collectRuntimeClassSet, createTailwindPatchPromise } from '@/tailwindcss/runtime'
+import { collectRuntimeClassSet, createTailwindRuntimeReadyPromise } from '@/tailwindcss/runtime'
 
 interface SourceMutationCase {
   title: string
@@ -62,7 +62,7 @@ function assertMissingAllTokens(classSet: Set<string>, classLiteral: string, lab
 async function refreshRuntimeClassSet(options: UserDefinedOptions) {
   const ctx = getCompilerContext(options)
   await ctx.refreshTailwindcssPatcher({ clearCache: true })
-  await createTailwindPatchPromise(ctx.twPatcher)
+  await createTailwindRuntimeReadyPromise(ctx.twPatcher)
   const classSet = await collectRuntimeClassSet(ctx.twPatcher, {
     force: true,
     skipRefresh: true,

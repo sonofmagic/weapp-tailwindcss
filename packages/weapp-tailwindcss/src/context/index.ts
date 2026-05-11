@@ -88,7 +88,7 @@ function createInternalCompilerContext(opts?: UserDefinedOptions): InternalUserD
   applyLoggerLevel(ctx.logLevel)
 
   const twPatcher = createTailwindcssPatcherFromContext(ctx)
-  logTailwindcssTarget('runtime', twPatcher, ctx.tailwindcssBasedir)
+  logTailwindcssTarget(twPatcher, ctx.tailwindcssBasedir)
   logRuntimeTailwindcssVersion(
     ctx.tailwindcssBasedir,
     twPatcher.packageInfo?.rootPath,
@@ -137,9 +137,9 @@ function createInternalCompilerContext(opts?: UserDefinedOptions): InternalUserD
 }
 
 /**
- * 获取用户定义选项的内部表示，并初始化相关的处理程序和补丁。
+ * 获取用户定义选项的内部表示，并初始化相关的处理程序和 Tailwind 运行时。
  * @param opts - 用户定义的选项，可选。
- * @returns 返回一个包含内部用户定义选项的对象，包括样式、JS和模板处理程序，以及Tailwind CSS补丁。
+ * @returns 返回一个包含内部用户定义选项的对象，包括样式、JS 和模板处理程序，以及 Tailwind CSS 运行时。
  */
 export function getCompilerContext(opts?: UserDefinedOptions): InternalUserDefinedOptions {
   return withCompilerContextCache(opts, () => createInternalCompilerContext(opts))

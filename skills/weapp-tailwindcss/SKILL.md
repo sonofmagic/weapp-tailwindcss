@@ -45,8 +45,8 @@ description: 帮助用户在 uni-app、taro、uni-app x 与原生小程序项目
 - `tailwindcss@3` 用 `tailwind.config.js -> content`
 - `tailwindcss@4` 用入口 CSS 的 `@source`
 - 扫描范围必须覆盖真实模板与脚本文件，并排除 `dist` / `unpackage` / `node_modules`
-- 生成模式不再要求 `postinstall`；旧 CSS 后处理链路或排障时才手动执行 `weapp-tw patch`
-- 如怀疑补丁缓存或目标记录异常，可使用 `weapp-tw patch --clear-cache`
+- 生成模式不再要求 `postinstall`，也不需要手动执行 `weapp-tw patch`
+- `weapp-tw patch` 仅作为旧脚本兼容提示保留；排障优先检查入口 CSS、`@source` / `content`、`cssEntries` 和构建插件是否生效
 
 ### 2) 按任务类型执行
 
@@ -95,7 +95,7 @@ description: 帮助用户在 uni-app、taro、uni-app x 与原生小程序项目
 
 ## 关键约束
 
-- 不要省略 `weapp-tw patch`，否则 `rpx` 与 `JS` 转译链路可能失效
+- 不要再要求用户执行 `weapp-tw patch`；当前版本由构建运行时自动接管 Tailwind CSS 处理
 - 不要把小程序转译插件无条件应用到纯 `H5` 场景
 - 不要忽略 `content/@source` 范围配置；这会直接导致 class 不生成
 - 不要建议“运行时自由拼接 class 字符串”作为常规方案；优先枚举化或 `cva/tv`

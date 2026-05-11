@@ -9,7 +9,6 @@ import {
   resolveCliCwd,
   toBoolean,
 } from './helpers/options'
-import { resolvePatchDefaultCwd } from './helpers/patch-cwd'
 
 export async function ensureDir(dir: string) {
   await mkdir(dir, { recursive: true })
@@ -45,6 +44,5 @@ export {
   readStringArrayOption,
   readStringOption,
   resolveCliCwd,
-  resolvePatchDefaultCwd,
   toBoolean,
 }

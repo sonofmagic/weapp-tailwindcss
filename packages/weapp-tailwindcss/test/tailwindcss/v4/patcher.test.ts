@@ -658,7 +658,7 @@ describe('tailwindcss/v4/patcher helpers', () => {
 
   })
 
-  it('merges multiple patchers into a single runtime', async () => {
+  it('merges multiple patchers into a single runtime without exposing patch aggregation', async () => {
     const patcherA: TailwindcssPatcherLike = {
       packageInfo: { version: '4.0.0' } as any,
       majorVersion: 4,
@@ -689,10 +689,9 @@ describe('tailwindcss/v4/patcher helpers', () => {
     const { createMultiTailwindcssPatcher } = await loadModule()
     const merged = createMultiTailwindcssPatcher([patcherA, patcherB])
 
-    const patchResult = await merged.patch()
-    expect(patcherA.patch).toHaveBeenCalled()
-    expect(patcherB.patch).toHaveBeenCalled()
-    expect(patchResult).toEqual({ exposeContext: 'ctxA', extendLengthUnits: true })
+    expect(merged.patch).toBeUndefined()
+    expect(patcherA.patch).not.toHaveBeenCalled()
+    expect(patcherB.patch).not.toHaveBeenCalled()
 
     expect([...await merged.getClassSet()]).toEqual(['a', 'b'])
     expect(merged.getClassSetSync?.()).toEqual(new Set(['a']))

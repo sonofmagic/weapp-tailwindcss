@@ -16,7 +16,7 @@
 - 优先静态类，避免运行时自由拼接字符串。
 - 必须动态时，使用“完整字面量枚举”，不要拼半截 token。
 - 动态组合统一经过 `cn`（`clsx + twMerge`）或 `cva/tv`。
-- 生成模式项目不需要保留 `postinstall: "weapp-tw patch"`；旧 CSS 后处理链路或排障时再手动执行。
+- 生成模式项目不需要保留 `postinstall: "weapp-tw patch"`，也不需要手动执行 `weapp-tw patch`。
 - `JS` 转译遵循 `classNameSet` 精确命中：不要依赖“看起来像 Tailwind”的启发式字符串拼接。
 
 ## 3. 推荐写法与反例
@@ -125,7 +125,7 @@ uvtw({
 `rpx` 不是标准 CSS 长度单位，Tailwind 在二义性原子类中可能误判。
 
 - 常见二义性：`text-[]`、`bg-[]`、`border-[]`、`outline-[]`、`ring-[]`
-- 默认方案：生成模式由运行时接管；旧 CSS 后处理链路或排障时手动执行 `weapp-tw patch`
+- 默认方案：生成模式由构建运行时自动接管
 - 兜底方案：显式声明类型前缀
 
 示例：

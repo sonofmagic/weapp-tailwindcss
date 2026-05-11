@@ -11,21 +11,12 @@ describe('tailwindcss targets', () => {
 
   it('keeps provided tailwindcss basedir for css entry normalization without forcing v4 base', async () => {
     const classList = ['text-green-500']
-    type PatchResult = Awaited<ReturnType<TailwindcssPatcherLike['patch']>>
-    const patchResult: PatchResult = {
-      exposeContext: undefined,
-      extendLengthUnits: {
-        changed: false,
-        code: undefined,
-      },
-    }
 
     const createTailwindcssPatcher = vi.fn((options: CreateTailwindcssPatcherOptions) => {
       const stub: TailwindcssPatcherLike = {
         packageInfo: { version: '4.1.0' } as any,
         majorVersion: 4,
         options: options as any,
-        patch: vi.fn(async () => patchResult),
         getClassSet: vi.fn(async () => new Set(classList)),
         extract: vi.fn(async () => ({
           classList: [...classList],
@@ -63,8 +54,6 @@ describe('tailwindcss targets', () => {
     const extracted = await patcher.extract({})
     expect([...extracted.classSet]).toEqual(classList)
     expect(extracted.classList).toEqual(classList)
-
-    const patched = await patcher.patch()
-    expect(patched).toEqual(patchResult)
+    expect(patcher.patch).toBeUndefined()
   })
 })

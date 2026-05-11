@@ -8,8 +8,7 @@ import stream from 'node:stream'
 import { getCompilerContext } from '@/context'
 import { createDebug } from '@/debug'
 import { shouldSkipJsTransform } from '@/js/precheck'
-import { setupPatchRecorder } from '@/tailwindcss/recorder'
-import { ensureRuntimeClassSet } from '@/tailwindcss/runtime'
+import { createTailwindRuntimeReadyPromise, ensureRuntimeClassSet } from '@/tailwindcss/runtime'
 import { getRuntimeClassSetSignature } from '@/tailwindcss/runtime/cache'
 import { processCachedTask } from '../shared/cache'
 import { generateCssByGenerator } from '../shared/generator-css'
@@ -28,17 +27,13 @@ export function createPlugins(options: UserDefinedOptions = {}) {
 
   const { templateHandler, styleHandler, jsHandler, cache, twPatcher: initialTwPatcher, refreshTailwindcssPatcher } = opts
 
-  const patchRecorderState = setupPatchRecorder(initialTwPatcher, opts.tailwindcssBasedir, {
-    source: 'runtime',
-    cwd: opts.tailwindcssBasedir ?? process.cwd(),
-  })
+  const readyPromise = createTailwindRuntimeReadyPromise(initialTwPatcher)
 
   let runtimeSet = new Set<string>()
   const runtimeState = {
     twPatcher: initialTwPatcher,
-    patchPromise: patchRecorderState.patchPromise,
+    readyPromise,
     refreshTailwindcssPatcher,
-    onPatchCompleted: patchRecorderState.onPatchCompleted,
   }
   const defaultStyleHandlerOptionsCache = new Map<number | 'unknown', Partial<IStyleHandlerOptions>>()
   let cachedDefaultTemplateHandlerOptions: Partial<ITemplateHandlerOptions> | undefined
@@ -238,7 +233,7 @@ export function createPlugins(options: UserDefinedOptions = {}) {
           debug('css cache hit: %s', file.path)
         },
         async transform() {
-          await runtimeState.patchPromise
+          await runtimeState.readyPromise
           const cssHandlerOptions = resolveWxssFileHandlerOptions(file, options)
           const generated = await generateCssByGenerator({
             opts,
@@ -266,7 +261,7 @@ export function createPlugins(options: UserDefinedOptions = {}) {
         return
       }
       await refreshRuntimeSet(true)
-      await runtimeState.patchPromise
+      await runtimeState.readyPromise
       const filename = path.resolve(file.path)
       const moduleGraph = resolveModuleGraphOptions(options.moduleGraph)
       const handlerOptions: CreateJsHandlerOptions = {
@@ -291,7 +286,7 @@ export function createPlugins(options: UserDefinedOptions = {}) {
           debug('js cache hit: %s', file.path)
         },
         async transform() {
-          await runtimeState.patchPromise
+          await runtimeState.readyPromise
           const currentSource = file.contents?.toString() ?? rawSource
           if (shouldSkipJsTransform(currentSource, handlerOptions)) {
             return { result: currentSource }
@@ -311,7 +306,7 @@ export function createPlugins(options: UserDefinedOptions = {}) {
         return
       }
       await refreshRuntimeSet(true)
-      await runtimeState.patchPromise
+      await runtimeState.readyPromise
       const rawSource = file.contents.toString()
       await processCachedTask<string>({
         cache,
@@ -324,7 +319,7 @@ export function createPlugins(options: UserDefinedOptions = {}) {
           debug('html cache hit: %s', file.path)
         },
         async transform() {
-          await runtimeState.patchPromise
+          await runtimeState.readyPromise
           const code = await templateHandler(rawSource, resolveWxmlHandlerOptions(options))
           debug('html handle: %s', file.path)
           return {

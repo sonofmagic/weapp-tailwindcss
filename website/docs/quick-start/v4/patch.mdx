@@ -1,6 +1,6 @@
 ---
 title: patch
-description: '旧 CSS 后处理链路或排障时手动执行 Tailwind CSS 补丁命令。'
+description: '说明 weapp-tailwindcss@5 中 patch 命令已无需执行。'
 keywords:
   - 快速开始
   - 安装
@@ -17,22 +17,14 @@ keywords:
   - rax
   - mpx
 ---
-旧 CSS 后处理链路或排障时，可手动执行补丁命令：
+`weapp-tailwindcss@5` 中，`weapp-tw patch` 已无需执行：
 
-:::tip 仅旧 CSS 后处理链路需要
-`weapp-tailwindcss@5` 生成模式已经由 `WeappTailwindcss` 插件或生成器入口接管 Tailwind CSS，不需要再配置 `postinstall: "weapp-tw patch"`。只有继续使用旧 CSS 后处理链路，或需要手动排查补丁状态时，才需要本页配置。
+:::tip 删除旧的 postinstall
+`weapp-tailwindcss@5` 已由 `WeappTailwindcss` 插件或生成器入口在构建运行时接管 Tailwind CSS，不需要再配置 `postinstall: "weapp-tw patch"`。
 :::
 
 ```bash npm2yarn
 npx weapp-tw patch
 ```
 
-这是为了给 `tailwindcss@4` 打上支持 `rpx` 单位的补丁，否则它会把 `rpx` 认为是一种颜色
-
-如需在补丁前强制刷新 `tailwindcss-patch` 的缓存，可改为：
-
-```bash npm2yarn
-npx weapp-tw patch --clear-cache
-```
-
-默认不清理缓存；只有当你怀疑缓存导致补丁未生效或目标不一致时，才需要添加 `--clear-cache`。***
+该命令现在只是兼容旧脚本的 no-op 提示，不再写入补丁记录、清理缓存或扫描 workspace。请把排障重点放到入口 CSS、`@source`、`cssEntries` 和构建插件是否生效上。

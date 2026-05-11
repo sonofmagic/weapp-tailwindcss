@@ -15,7 +15,7 @@ import {
   resolveCliCwd,
   toBoolean,
 } from './cli/helpers'
-import { mountOptions } from './cli/mount-options'
+import { logPatchCommandObsoleteNotice, mountOptions, PATCH_COMMAND_OBSOLETE_NOTICE } from './cli/mount-options'
 import {
   DEFAULT_VSCODE_ENTRY_OUTPUT,
   generateVscodeIntellisenseEntry,
@@ -35,6 +35,13 @@ type DoctorCommandOptions = CommonCommandOptions & {
   strict?: boolean | string
 }
 
+type PatchCommandOptions = CommonCommandOptions & {
+  clearCache?: boolean | string
+  json?: boolean | string
+  recordTarget?: boolean | string
+  workspace?: boolean | string
+}
+
 process.title = 'node (weapp-tailwindcss)'
 
 if (!semver.satisfies(process.versions.node, WEAPP_TW_REQUIRED_NODE_VERSION_RANGE)) {
@@ -47,6 +54,41 @@ const cli = createTailwindcssPatchCli({
   name: 'weapp-tailwindcss',
   mountOptions,
 })
+
+cli
+  .command('patch', 'Deprecated no-op: v5 runtime handles Tailwind CSS automatically')
+  .alias('install')
+  .option('--cwd <dir>', 'Ignored working directory')
+  .option('--clear-cache', 'Ignored compatibility option')
+  .option('--record-target [enabled]', 'Ignored compatibility option')
+  .option('--workspace', 'Ignored compatibility option')
+  .action(
+    commandAction(async (_options: PatchCommandOptions) => {
+      logPatchCommandObsoleteNotice()
+      logger.success('已跳过：当前版本不需要手动执行 Tailwind CSS patch。')
+    }),
+  )
+
+cli
+  .command('status', 'Deprecated no-op: patch status is no longer required')
+  .option('--cwd <dir>', 'Ignored working directory')
+  .option('--json', 'Print a JSON no-op report')
+  .action(
+    commandAction(async (options: PatchCommandOptions) => {
+      const payload = {
+        required: false,
+        status: 'unnecessary',
+        message: PATCH_COMMAND_OBSOLETE_NOTICE,
+      }
+      if (toBoolean((options as any).json, false)) {
+        logger.log(JSON.stringify(payload, null, 2))
+        return
+      }
+
+      logPatchCommandObsoleteNotice()
+      logger.success('无需检查 Tailwind CSS patch 状态。')
+    }),
+  )
 
 cli
   .command('vscode-entry', 'Generate a VS Code helper CSS for Tailwind IntelliSense')

@@ -14,8 +14,7 @@ import { findNearestPackageRoot } from '@/context/workspace'
 import { createDebug } from '@/debug'
 import { resolveTailwindcssOptions } from '@/tailwindcss/patcher-options'
 import { findTailwindConfig } from '@/tailwindcss/patcher-resolve'
-import { setupPatchRecorder } from '@/tailwindcss/recorder'
-import { collectRuntimeClassSet, refreshTailwindRuntimeState } from '@/tailwindcss/runtime'
+import { collectRuntimeClassSet, createTailwindRuntimeReadyPromise, refreshTailwindRuntimeState } from '@/tailwindcss/runtime'
 import { getRuntimeClassSetSignature } from '@/tailwindcss/runtime/cache'
 import { createUniAppXPlugins } from '@/uni-app-x'
 import { isUniAppXEnabled } from '@/uni-app-x/options'
@@ -219,16 +218,12 @@ export function WeappTailwindcss(options: UserDefinedOptions = {}): Plugin[] | u
 
   const customAttributesEntities = toCustomAttributesEntities(customAttributes)
 
-  const patchRecorderState = setupPatchRecorder(initialTwPatcher, opts.tailwindcssBasedir, {
-    source: 'runtime',
-    cwd: opts.tailwindcssBasedir ?? process.cwd(),
-  })
+  const readyPromise = createTailwindRuntimeReadyPromise(initialTwPatcher)
 
   const runtimeState = {
     twPatcher: initialTwPatcher,
-    patchPromise: patchRecorderState.patchPromise,
+    readyPromise,
     refreshTailwindcssPatcher,
-    onPatchCompleted: patchRecorderState.onPatchCompleted,
   }
   let runtimeSet: Set<string> | undefined
   let runtimeSetPromise: Promise<Set<string>> | undefined
@@ -283,7 +278,7 @@ export function WeappTailwindcss(options: UserDefinedOptions = {}): Plugin[] | u
   async function ensureRuntimeClassSet(force = false): Promise<Set<string>> {
     const forceRuntimeRefresh = force || process.env.WEAPP_TW_VITE_FORCE_RUNTIME_REFRESH === '1'
     await refreshRuntimeState(force)
-    await runtimeState.patchPromise
+    await runtimeState.readyPromise
     if (!forceRuntimeRefresh && runtimeSet) {
       return runtimeSet
     }
@@ -318,7 +313,7 @@ export function WeappTailwindcss(options: UserDefinedOptions = {}): Plugin[] | u
       || snapshot.runtimeAffectingChangedByType.js.size > 0
 
     await refreshRuntimeState(shouldRefreshPatcher)
-    await runtimeState.patchPromise
+    await runtimeState.readyPromise
 
     if (shouldRefreshPatcher) {
       runtimeSet = undefined

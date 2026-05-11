@@ -1,13 +1,13 @@
 /**
  * Runtime 模块热更新测试
  * 测试范围：RT-001 ~ RT-011
- * 覆盖 createTailwindPatchPromise, refreshTailwindRuntimeState, collectRuntimeClassSet, invalidateRuntimeClassSet
+ * 覆盖 createTailwindRuntimeReadyPromise, refreshTailwindRuntimeState, collectRuntimeClassSet, invalidateRuntimeClassSet
  */
 import type { RefreshTailwindcssPatcherOptions, TailwindcssPatcherLike, TailwindRuntimeState } from '@/types'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import {
   collectRuntimeClassSet,
-  createTailwindPatchPromise,
+  createTailwindRuntimeReadyPromise,
   ensureRuntimeClassSet,
   invalidateRuntimeClassSet,
   refreshTailwindcssPatcherSymbol,
@@ -23,8 +23,8 @@ describe('Runtime Hot Update', () => {
     vi.restoreAllMocks()
   })
 
-  describe('createTailwindPatchPromise', () => {
-    it('RT-001: should create patch promise and invalidate cache', async () => {
+  describe('createTailwindRuntimeReadyPromise', () => {
+    it('RT-001: should create ready promise and invalidate cache without patching Tailwind', async () => {
       const mockClassSet = new Set(['class-1', 'class-2'])
       const mockPatcher: TailwindcssPatcherLike = {
         packageInfo: {
@@ -42,23 +42,24 @@ describe('Runtime Hot Update', () => {
       }
 
       // 先收集一次让缓存存在
-      await collectRuntimeClassSet(mockPatcher, { force: true })
+      await collectRuntimeClassSet(mockPatcher)
+      expect(mockPatcher.extract).toHaveBeenCalledTimes(1)
 
-      // 创建 patch promise
-      const promise = createTailwindPatchPromise(mockPatcher)
+      // 创建 runtime ready promise
+      const promise = createTailwindRuntimeReadyPromise(mockPatcher)
       expect(promise).toBeInstanceOf(Promise)
 
       await promise
 
-      // 验证 patch 被调用
-      expect(mockPatcher.patch).toHaveBeenCalledTimes(1)
+      // runtime ready 不再执行旧 patch
+      expect(mockPatcher.patch).not.toHaveBeenCalled()
 
       // 验证缓存被失效
-      const _newSet = await collectRuntimeClassSet(mockPatcher, { force: true })
-      expect(mockPatcher.extract).toHaveBeenCalled()
+      const _newSet = await collectRuntimeClassSet(mockPatcher)
+      expect(mockPatcher.extract).toHaveBeenCalledTimes(2)
     })
 
-    it('RT-011: should handle onPatched callback error gracefully', async () => {
+    it('RT-011: should resolve without invoking obsolete patch hook', async () => {
       const mockPatcher: TailwindcssPatcherLike = {
         packageInfo: {
           name: 'tailwindcss',
@@ -74,13 +75,9 @@ describe('Runtime Hot Update', () => {
         getClassSet: vi.fn().mockResolvedValue(new Set()),
       }
 
-      const failingCallback = vi.fn().mockRejectedValue(new Error('Callback failed'))
+      await expect(createTailwindRuntimeReadyPromise(mockPatcher)).resolves.toBeUndefined()
 
-      // 不应抛出错误
-      await expect(createTailwindPatchPromise(mockPatcher, failingCallback)).resolves.toBeUndefined()
-
-      expect(failingCallback).toHaveBeenCalled()
-      expect(mockPatcher.patch).toHaveBeenCalled()
+      expect(mockPatcher.patch).not.toHaveBeenCalled()
     })
   })
 
@@ -121,7 +118,7 @@ describe('Runtime Hot Update', () => {
 
       const state: TailwindRuntimeState = {
         twPatcher: mockPatcher1,
-        patchPromise: Promise.resolve(),
+        readyPromise: Promise.resolve(),
         refreshTailwindcssPatcher: refreshFn,
       }
 
@@ -130,7 +127,7 @@ describe('Runtime Hot Update', () => {
       expect(result).toBe(true)
       expect(refreshFn).toHaveBeenCalledWith({ clearCache: false })
       expect(state.twPatcher).toBe(mockPatcher2)
-      expect(mockPatcher2.patch).toHaveBeenCalled()
+      expect(mockPatcher2.patch).not.toHaveBeenCalled()
     })
 
     it('passes clearCache=true only when explicitly requested', async () => {
@@ -154,7 +151,7 @@ describe('Runtime Hot Update', () => {
 
       const state: TailwindRuntimeState = {
         twPatcher: mockPatcher,
-        patchPromise: Promise.resolve(),
+        readyPromise: Promise.resolve(),
         refreshTailwindcssPatcher: refreshFn,
       }
 
@@ -182,7 +179,7 @@ describe('Runtime Hot Update', () => {
 
       const state: TailwindRuntimeState = {
         twPatcher: mockPatcher,
-        patchPromise: Promise.resolve(),
+        readyPromise: Promise.resolve(),
         refreshTailwindcssPatcher: refreshFn,
       }
 
@@ -523,7 +520,7 @@ describe('Runtime Hot Update', () => {
       }
       const state: TailwindRuntimeState = {
         twPatcher: patcher,
-        patchPromise: Promise.resolve(),
+        readyPromise: Promise.resolve(),
       }
 
       const first = await ensureRuntimeClassSet(state)
@@ -547,7 +544,7 @@ describe('Runtime Hot Update', () => {
       }
       const state: TailwindRuntimeState = {
         twPatcher: patcher,
-        patchPromise: Promise.resolve(),
+        readyPromise: Promise.resolve(),
         refreshTailwindcssPatcher,
       }
 
@@ -577,7 +574,7 @@ describe('Runtime Hot Update', () => {
       const refreshTailwindcssPatcher = vi.fn().mockResolvedValue(patcher)
       const state: TailwindRuntimeState = {
         twPatcher: patcher,
-        patchPromise: Promise.resolve(),
+        readyPromise: Promise.resolve(),
         refreshTailwindcssPatcher,
       }
 
@@ -585,7 +582,7 @@ describe('Runtime Hot Update', () => {
 
       expect(result).toBe(refreshedSet)
       expect(refreshTailwindcssPatcher).toHaveBeenCalledWith({ clearCache: true })
-      expect(patcher.patch).toHaveBeenCalledTimes(1)
+      expect(patcher.patch).not.toHaveBeenCalled()
       expect(patcher.extract).toHaveBeenCalledTimes(2)
     })
 
@@ -610,7 +607,7 @@ describe('Runtime Hot Update', () => {
       const refreshTailwindcssPatcher = vi.fn().mockResolvedValue(refreshedPatcher)
       const state: TailwindRuntimeState = {
         twPatcher: initialPatcher,
-        patchPromise: Promise.resolve(),
+        readyPromise: Promise.resolve(),
         refreshTailwindcssPatcher,
       }
 
@@ -622,7 +619,7 @@ describe('Runtime Hot Update', () => {
       expect(result).toBe(refreshedSet)
       expect(state.twPatcher).toBe(refreshedPatcher)
       expect(refreshTailwindcssPatcher).toHaveBeenCalledWith({ clearCache: true })
-      expect(refreshedPatcher.patch).toHaveBeenCalledTimes(1)
+      expect(refreshedPatcher.patch).not.toHaveBeenCalled()
     })
   })
 

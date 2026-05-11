@@ -74,7 +74,7 @@ module.exports = {
 - Tailwind CSS v3 项目不再添加 `tailwindcss` PostCSS 插件。
 - `package.json` 不再添加 `postinstall: "weapp-tw patch"`。
 
-`postcss.config.js` 可以继续保留项目自己的非 Tailwind 插件，例如 `postcss-import`、框架内置 PostCSS 插件或业务自定义插件；只需要移除 Tailwind 官方生成插件。`weapp-tw patch` 仍可用于旧 CSS 后处理链路或手动调试补丁状态，但生成模式项目不需要把它写进安装生命周期。
+`postcss.config.js` 可以继续保留项目自己的非 Tailwind 插件，例如 `postcss-import`、框架内置 PostCSS 插件或业务自定义插件；只需要移除 Tailwind 官方生成插件。`weapp-tw patch` 当前只是兼容旧脚本的 no-op 提示，生成模式项目不需要执行它，也不需要把它写进安装生命周期。
 
 ## 版本行为差异
 

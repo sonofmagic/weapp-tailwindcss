@@ -55,7 +55,7 @@ keywords:
 
 #### 备注
 
-TailwindCSS 3.2.0 起对任意值执行长度单位校验，会将未声明的 `rpx` 识别为颜色。本选项默认开启以注入 `rpx` 支持。生成模式会在运行时接管补丁流程，旧 CSS 后处理链路可按需手动执行 `weapp-tw patch` 排查补丁状态。
+TailwindCSS 3.2.0 起对任意值执行长度单位校验，会将未声明的 `rpx` 识别为颜色。本选项默认开启以注入 `rpx` 支持。生成模式会在构建运行时接管 Tailwind CSS 处理，`weapp-tw patch` 当前只是兼容旧脚本的 no-op 提示。
 
 ### appType
 

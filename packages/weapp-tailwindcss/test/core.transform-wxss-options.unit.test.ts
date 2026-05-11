@@ -5,10 +5,7 @@ const templateHandler = vi.fn()
 const jsHandler = vi.fn()
 const refreshTailwindcssPatcher = vi.fn()
 const ensureRuntimeClassSet = vi.fn(async () => new Set<string>())
-const setupPatchRecorder = vi.fn(() => ({
-  patchPromise: Promise.resolve(),
-  onPatchCompleted: vi.fn(),
-}))
+const createTailwindRuntimeReadyPromise = vi.fn(() => Promise.resolve())
 const getCompilerContext = vi.fn(() => ({
   templateHandler,
   styleHandler,
@@ -24,11 +21,8 @@ vi.mock('@/context', () => ({
   getCompilerContext,
 }))
 
-vi.mock('@/tailwindcss/recorder', () => ({
-  setupPatchRecorder,
-}))
-
 vi.mock('@/tailwindcss/runtime', () => ({
+  createTailwindRuntimeReadyPromise,
   ensureRuntimeClassSet,
 }))
 
@@ -41,7 +35,7 @@ describe('core transformWxss option reuse', () => {
     jsHandler.mockClear()
     refreshTailwindcssPatcher.mockClear()
     ensureRuntimeClassSet.mockClear()
-    setupPatchRecorder.mockClear()
+    createTailwindRuntimeReadyPromise.mockClear()
     getCompilerContext.mockClear()
   })
 
@@ -106,7 +100,7 @@ describe('core transformWxml option reuse', () => {
     jsHandler.mockClear()
     refreshTailwindcssPatcher.mockClear()
     ensureRuntimeClassSet.mockClear()
-    setupPatchRecorder.mockClear()
+    createTailwindRuntimeReadyPromise.mockClear()
     getCompilerContext.mockClear()
   })
 
@@ -174,7 +168,7 @@ describe('core transformJs option reuse', () => {
     jsHandler.mockClear()
     refreshTailwindcssPatcher.mockClear()
     ensureRuntimeClassSet.mockClear()
-    setupPatchRecorder.mockClear()
+    createTailwindRuntimeReadyPromise.mockClear()
     getCompilerContext.mockClear()
   })
 

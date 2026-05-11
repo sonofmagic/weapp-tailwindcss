@@ -44,12 +44,6 @@ function createFallbackTailwindcssPatcher(): TailwindcssPatcherLike {
   return {
     packageInfo,
     majorVersion: DEFAULT_TAILWINDCSS_GENERATOR_MAJOR_VERSION,
-    async patch() {
-      return {
-        exposeContext: undefined,
-        extendLengthUnits: undefined,
-      }
-    },
     async getClassSet() {
       return new Set<string>()
     },
@@ -222,7 +216,7 @@ export function createTailwindcssPatcher(options?: CreateTailwindcssPatcherOptio
     const searchPaths = resolvedOptions.tailwindcss?.resolve?.paths
     if (error instanceof Error && TAILWINDCSS_NOT_FOUND_RE.test(error.message)) {
       if (!hasLoggedMissingTailwind) {
-        logger.warn('Tailwind CSS 未安装，已跳过 Tailwind 相关补丁。若需使用 Tailwind 能力，请安装 tailwindcss。')
+        logger.warn('Tailwind CSS 未安装，已跳过 Tailwind 运行时能力。若需使用 Tailwind 能力，请安装 tailwindcss。')
         hasLoggedMissingTailwind = true
       }
       return createFallbackTailwindcssPatcher()

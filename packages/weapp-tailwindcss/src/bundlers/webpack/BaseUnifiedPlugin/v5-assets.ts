@@ -19,7 +19,7 @@ interface SetupWebpackV5ProcessAssetsHookOptions {
   appType?: AppType
   runtimeState: {
     twPatcher: InternalUserDefinedOptions['twPatcher']
-    patchPromise: Promise<void>
+    readyPromise: Promise<void>
   }
   getRuntimeRefreshRequirement: () => boolean
   refreshRuntimeMetadata: (force: boolean) => Promise<void>
@@ -68,7 +68,7 @@ export function setupWebpackV5ProcessAssetsHook(options: SetupWebpackV5ProcessAs
       async (assets) => {
         compilerOptions.onStart()
         debug('start')
-        await runtimeState.patchPromise
+        await runtimeState.readyPromise
 
         // Initial pass marks cache state.
         for (const chunk of compilation.chunks) {
@@ -312,7 +312,7 @@ export function setupWebpackV5ProcessAssetsHook(options: SetupWebpackV5ProcessAs
                   debug('css cache hit: %s', file)
                 },
                 transform: async () => {
-                  await runtimeState.patchPromise
+                  await runtimeState.readyPromise
                   const cssHandlerOptions = getCssHandlerOptions(file)
                   const generated = await generateCssByGenerator({
                     opts: compilerOptions,

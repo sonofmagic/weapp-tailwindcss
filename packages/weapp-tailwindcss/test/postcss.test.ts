@@ -9,7 +9,6 @@ import { getCss } from './helpers/getTwCss'
 
 async function getClassCacheSet() {
   const ctx = getCompilerContext()
-  await ctx.twPatcher.patch()
   return ctx.twPatcher.getClassSet()
 }
 

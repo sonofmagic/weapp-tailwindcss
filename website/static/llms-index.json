@@ -1,10 +1,10 @@
 {
   "version": "1.0.0",
-  "generatedAt": "2026-05-09T16:53:42.171Z",
+  "generatedAt": "2026-05-11T12:44:10.609Z",
   "siteUrl": "https://tw.icebreaker.top",
   "totals": {
-    "all": 188,
-    "docs": 184,
+    "all": 187,
+    "docs": 183,
     "blog": 4
   },
   "documents": [
@@ -1246,43 +1246,6 @@
       ],
       "updatedAt": null,
       "source": "docs/api-v2/interfaces/InternalCssSelectorReplacerOptions.md"
-    },
-    {
-      "kind": "doc",
-      "id": "doc:api-v2/interfaces/InternalPatchResult",
-      "title": "Interface: InternalPatchResult",
-      "description": "InternalPatchResult",
-      "summary": "InternalPatchResult",
-      "url": "/docs/api-v2/interfaces/InternalPatchResult",
-      "canonical": "https://tw.icebreaker.top/docs/api-v2/interfaces/InternalPatchResult",
-      "keywords": [
-        "API",
-        "接口文档",
-        "配置项",
-        "Interface",
-        "InternalPatchResult",
-        "api v2",
-        "interfaces",
-        "weapp-tailwindcss",
-        "tailwindcss",
-        "小程序",
-        "微信小程序",
-        "uni-app",
-        "taro",
-        "rax",
-        "mpx"
-      ],
-      "headings": [
-        "Properties",
-        "# dataTypes",
-        "## Defined in",
-        "# plugin",
-        "## Defined in",
-        "# processTailwindFeatures",
-        "## Defined in"
-      ],
-      "updatedAt": null,
-      "source": "docs/api-v2/interfaces/InternalPatchResult.md"
     },
     {
       "kind": "doc",
@@ -4693,8 +4656,8 @@
       "kind": "doc",
       "id": "doc:quick-start/this-plugin",
       "title": "2. 安装 weapp-tailwindcss",
-      "description": "安装 weapp-tailwindcss，并按项目链路决定是否手动执行补丁命令。",
-      "summary": "如果项目使用 weapp-tailwindcss@5 生成模式，Tailwind CSS 会由 WeappTailwindcss 插件或生成器入口接管，不需要再把 weapp-tw patch 写入 postinstall。",
+      "description": "安装 weapp-tailwindcss，并移除旧版本遗留的手动补丁命令。",
+      "summary": "weapp-tailwindcss@5 会由 WeappTailwindcss 插件或生成器入口在构建运行时接管 Tailwind CSS，不需要再执行 weapp-tw patch，也不要把它写入 postinstall。",
       "url": "/docs/quick-start/this-plugin",
       "canonical": "https://tw.icebreaker.top/docs/quick-start/this-plugin",
       "keywords": [
@@ -4713,10 +4676,7 @@
         "rax",
         "mpx"
       ],
-      "headings": [
-        "# 1. 给当前你本地的 `tailwindcss` 打上支持 `rpx` 的补丁 (小程序特有单位，非 `web` 标准)。",
-        "# 2. 暴露 `tailwindcss` 运行上下文给 `webpack`/`vite`/`glup` 插件。"
-      ],
+      "headings": [],
       "updatedAt": null,
       "source": "docs/quick-start/this-plugin.mdx"
     },
@@ -4959,8 +4919,8 @@
       "kind": "doc",
       "id": "doc:quick-start/v4/patch",
       "title": "patch",
-      "description": "旧 CSS 后处理链路或排障时手动执行 Tailwind CSS 补丁命令。",
-      "summary": "旧 CSS 后处理链路或排障时，可手动执行补丁命令：",
+      "description": "说明 weapp-tailwindcss@5 中 patch 命令已无需执行。",
+      "summary": "weapp-tailwindcss@5 中，weapp-tw patch 已无需执行：",
       "url": "/docs/quick-start/v4/patch",
       "canonical": "https://tw.icebreaker.top/docs/quick-start/v4/patch",
       "keywords": [
@@ -6449,8 +6409,8 @@
       "kind": "doc",
       "id": "doc:tools/weapp-tw-cli",
       "title": "weapp-tw CLI 使用指南",
-      "description": "weapp-tailwindcss 自带一个 weapp-tw 命令行工具，负责提前给 Tailwind CSS 打补丁、生成类名缓存以及收集 token。以下内容介绍常用命令及最佳实践。",
-      "summary": "weapp-tailwindcss 自带一个 weapp-tw 命令行工具，负责提前给 Tailwind CSS 打补丁、生成类名缓存以及收集 token。以下内容介绍常用命令及最佳实践。",
+      "description": "weapp-tailwindcss 自带一个 weapp-tw 命令行工具，负责辅助生成类名缓存、收集 token 和输出兼容提示。以下内容介绍常用命令及最佳实践。",
+      "summary": "weapp-tailwindcss 自带一个 weapp-tw 命令行工具，负责辅助生成类名缓存、收集 token 和输出兼容提示。weapp-tailwindcss@5 已由构建运行时接管 Tailwind CSS 处理，weapp-tw patch 不再是必须步骤。",
       "url": "/docs/tools/weapp-tw-cli",
       "canonical": "https://tw.icebreaker.top/docs/tools/weapp-tw-cli",
       "keywords": [

@@ -97,7 +97,7 @@ export interface GenerateCssByGeneratorOptions {
   opts: InternalUserDefinedOptions
   runtimeState: {
     twPatcher: InternalUserDefinedOptions['twPatcher']
-    patchPromise: Promise<void>
+    readyPromise: Promise<void>
   }
   runtime: Set<string>
   rawSource: string
@@ -1369,7 +1369,7 @@ export async function generateCssByGenerator(
   }
 
   try {
-    await runtimeState.patchPromise
+    await runtimeState.readyPromise
     const sources = await resolveGeneratorSources(
       majorVersion,
       runtimeState,

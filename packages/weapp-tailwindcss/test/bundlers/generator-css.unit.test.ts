@@ -117,7 +117,7 @@ describe('bundlers/shared generator css', () => {
         twPatcher: {
           majorVersion: 4,
         } as any,
-        patchPromise: Promise.resolve(),
+        readyPromise: Promise.resolve(),
       },
       runtime: runtimeSet,
       rawSource: rawTailwindCss,
@@ -186,7 +186,7 @@ describe('bundlers/shared generator css', () => {
         twPatcher: {
           majorVersion: 4,
         } as any,
-        patchPromise: Promise.resolve(),
+        readyPromise: Promise.resolve(),
       },
       runtime: runtimeSet,
       rawSource,
@@ -263,7 +263,7 @@ describe('bundlers/shared generator css', () => {
         twPatcher: {
           majorVersion: 4,
         } as any,
-        patchPromise: Promise.resolve(),
+        readyPromise: Promise.resolve(),
       },
       runtime: runtimeSet,
       rawSource,
@@ -348,7 +348,7 @@ describe('bundlers/shared generator css', () => {
         twPatcher: {
           majorVersion: 4,
         } as any,
-        patchPromise: Promise.resolve(),
+        readyPromise: Promise.resolve(),
       },
       runtime: runtimeSet,
       rawSource,
@@ -429,7 +429,7 @@ describe('bundlers/shared generator css', () => {
         twPatcher: {
           majorVersion: 4,
         } as any,
-        patchPromise: Promise.resolve(),
+        readyPromise: Promise.resolve(),
       },
       runtime: runtimeSet,
       rawSource: rawTailwindCss,
@@ -512,7 +512,7 @@ describe('bundlers/shared generator css', () => {
         twPatcher: {
           majorVersion: 4,
         } as any,
-        patchPromise: Promise.resolve(),
+        readyPromise: Promise.resolve(),
       },
       runtime: runtimeSet,
       rawSource: rawTailwindCss,
@@ -580,7 +580,7 @@ describe('bundlers/shared generator css', () => {
         twPatcher: {
           majorVersion: 4,
         } as any,
-        patchPromise: Promise.resolve(),
+        readyPromise: Promise.resolve(),
       },
       runtime: runtimeSet,
       rawSource: rawTailwindCss,
@@ -667,7 +667,7 @@ describe('bundlers/shared generator css', () => {
         twPatcher: {
           majorVersion: 4,
         } as any,
-        patchPromise: Promise.resolve(),
+        readyPromise: Promise.resolve(),
       },
       runtime: runtimeSet,
       rawSource: rawTailwindCss,
@@ -759,7 +759,7 @@ describe('bundlers/shared generator css', () => {
         twPatcher: {
           majorVersion: 4,
         } as any,
-        patchPromise: Promise.resolve(),
+        readyPromise: Promise.resolve(),
       },
       runtime: runtimeSet,
       rawSource: legacyCss,
@@ -830,7 +830,7 @@ describe('bundlers/shared generator css', () => {
         twPatcher: {
           majorVersion: 4,
         } as any,
-        patchPromise: Promise.resolve(),
+        readyPromise: Promise.resolve(),
       },
       runtime: runtimeSet,
       rawSource: `${rawTailwindCss}${userCss}`,
@@ -908,7 +908,7 @@ describe('bundlers/shared generator css', () => {
         twPatcher: {
           majorVersion: 4,
         } as any,
-        patchPromise: Promise.resolve(),
+        readyPromise: Promise.resolve(),
       },
       runtime: runtimeSet,
       rawSource: `${rawTailwindCss}${displayP3Css}`,
@@ -981,7 +981,7 @@ describe('bundlers/shared generator css', () => {
         twPatcher: {
           majorVersion: 4,
         } as any,
-        patchPromise: Promise.resolve(),
+        readyPromise: Promise.resolve(),
       },
       runtime: runtimeSet,
       rawSource,
@@ -1066,7 +1066,7 @@ describe('bundlers/shared generator css', () => {
         twPatcher: {
           majorVersion: 4,
         } as any,
-        patchPromise: Promise.resolve(),
+        readyPromise: Promise.resolve(),
       },
       runtime: runtimeSet,
       rawSource,
@@ -1112,7 +1112,7 @@ describe('bundlers/shared generator css', () => {
         twPatcher: {
           majorVersion: 4,
         } as any,
-        patchPromise: Promise.resolve(),
+        readyPromise: Promise.resolve(),
       },
       runtime: new Set(['w-[100px]']),
       rawSource: '@import "styles/app252bdc3c.wxss";\n',
@@ -1175,7 +1175,7 @@ describe('bundlers/shared generator css', () => {
         twPatcher: {
           majorVersion: 4,
         } as any,
-        patchPromise: Promise.resolve(),
+        readyPromise: Promise.resolve(),
       },
       runtime: runtimeSet,
       rawSource: '@import "./index.wxss";\n@source "../src";',
@@ -1247,7 +1247,7 @@ describe('bundlers/shared generator css', () => {
         twPatcher: {
           majorVersion: 4,
         } as any,
-        patchPromise: Promise.resolve(),
+        readyPromise: Promise.resolve(),
       },
       runtime: runtimeSet,
       rawSource,
@@ -1332,7 +1332,7 @@ describe('bundlers/shared generator css', () => {
         twPatcher: {
           majorVersion: 3,
         } as any,
-        patchPromise: Promise.resolve(),
+        readyPromise: Promise.resolve(),
       },
       runtime: new Set(['w-[100px]']),
       rawSource,
@@ -1436,7 +1436,7 @@ describe('bundlers/shared generator css', () => {
         twPatcher: {
           majorVersion: 3,
         } as any,
-        patchPromise: Promise.resolve(),
+        readyPromise: Promise.resolve(),
       },
       runtime: new Set(['bg-[#123456]']),
       rawSource,
@@ -1521,7 +1521,7 @@ describe('bundlers/shared generator css', () => {
         twPatcher: {
           majorVersion: 3,
         } as any,
-        patchPromise: Promise.resolve(),
+        readyPromise: Promise.resolve(),
       },
       runtime: new Set(['bg-brand']),
       rawSource,
@@ -1632,7 +1632,7 @@ describe('bundlers/shared generator css', () => {
         twPatcher: {
           majorVersion: 3,
         } as any,
-        patchPromise: Promise.resolve(),
+        readyPromise: Promise.resolve(),
       },
       runtime: new Set(['after:border-none', 'bg-[#123456]']),
       rawSource,
@@ -1769,7 +1769,7 @@ describe('bundlers/shared generator css', () => {
         twPatcher: {
           majorVersion: 3,
         } as any,
-        patchPromise: Promise.resolve(),
+        readyPromise: Promise.resolve(),
       },
       runtime: runtimeSet,
       rawSource,
@@ -1838,7 +1838,7 @@ describe('bundlers/shared generator css', () => {
         twPatcher: {
           majorVersion: 4,
         } as any,
-        patchPromise: Promise.resolve(),
+        readyPromise: Promise.resolve(),
       },
       runtime: runtimeSet,
       rawSource,
@@ -1905,7 +1905,7 @@ describe('bundlers/shared generator css', () => {
         twPatcher: {
           majorVersion: 3,
         } as any,
-        patchPromise: Promise.resolve(),
+        readyPromise: Promise.resolve(),
       },
       runtime: new Set(['w-[100px]']),
       rawSource,
@@ -1975,7 +1975,7 @@ describe('bundlers/shared generator css', () => {
         twPatcher: {
           majorVersion: 4,
         } as any,
-        patchPromise: Promise.resolve(),
+        readyPromise: Promise.resolve(),
       },
       runtime: runtimeSet,
       rawSource: `.existing{color:red}\n${rawTailwindCss}\n/*$vite$:1*/`,
@@ -2047,7 +2047,7 @@ describe('bundlers/shared generator css', () => {
         twPatcher: {
           majorVersion: 4,
         } as any,
-        patchPromise: Promise.resolve(),
+        readyPromise: Promise.resolve(),
       },
       runtime: runtimeSet,
       rawSource: `.existing{color:red}\n${appendedRawTailwindCss}\n/*$vite$:1*/`,
@@ -2127,7 +2127,7 @@ describe('bundlers/shared generator css', () => {
         twPatcher: {
           majorVersion: 4,
         } as any,
-        patchPromise: Promise.resolve(),
+        readyPromise: Promise.resolve(),
       },
       runtime: runtimeSet,
       rawSource,
@@ -2202,7 +2202,7 @@ describe('bundlers/shared generator css', () => {
         twPatcher: {
           majorVersion: 4,
         } as any,
-        patchPromise: Promise.resolve(),
+        readyPromise: Promise.resolve(),
       },
       runtime: runtimeSet,
       rawSource,
@@ -2284,7 +2284,7 @@ describe('bundlers/shared generator css', () => {
         twPatcher: {
           majorVersion: 4,
         } as any,
-        patchPromise: Promise.resolve(),
+        readyPromise: Promise.resolve(),
       },
       runtime: runtimeSet,
       rawSource,
@@ -2374,7 +2374,7 @@ describe('bundlers/shared generator css', () => {
         twPatcher: {
           majorVersion: 4,
         } as any,
-        patchPromise: Promise.resolve(),
+        readyPromise: Promise.resolve(),
       },
       runtime: runtimeSet,
       rawSource,
@@ -2486,7 +2486,7 @@ describe('bundlers/shared generator css', () => {
             },
           },
         } as any,
-        patchPromise: Promise.resolve(),
+        readyPromise: Promise.resolve(),
       },
       runtime: runtimeSet,
       rawSource: '/*! weapp-tailwindcss generator-placeholder */',
@@ -2579,7 +2579,7 @@ describe('bundlers/shared generator css', () => {
         twPatcher: {
           majorVersion: 4,
         } as any,
-        patchPromise: Promise.resolve(),
+        readyPromise: Promise.resolve(),
       },
       runtime: runtimeSet,
       rawSource: commonCss,
@@ -2665,7 +2665,7 @@ describe('bundlers/shared generator css', () => {
         twPatcher: {
           majorVersion: 4,
         } as any,
-        patchPromise: Promise.resolve(),
+        readyPromise: Promise.resolve(),
       },
       runtime: runtimeSet,
       rawSource: css,
@@ -2736,7 +2736,7 @@ describe('bundlers/shared generator css', () => {
         twPatcher: {
           majorVersion: 4,
         } as any,
-        patchPromise: Promise.resolve(),
+        readyPromise: Promise.resolve(),
       },
       runtime: runtimeSet,
       rawSource: rawTailwindCss,
@@ -2805,7 +2805,7 @@ describe('bundlers/shared generator css', () => {
         twPatcher: {
           majorVersion: 4,
         } as any,
-        patchPromise: Promise.resolve(),
+        readyPromise: Promise.resolve(),
       },
       runtime: runtimeSet,
       rawSource: '/*! weapp-tailwindcss generator-placeholder */\n.card{color:red}',
@@ -2887,7 +2887,7 @@ describe('bundlers/shared generator css', () => {
         twPatcher: {
           majorVersion: 4,
         } as any,
-        patchPromise: Promise.resolve(),
+        readyPromise: Promise.resolve(),
       },
       runtime: runtimeSet,
       rawSource,

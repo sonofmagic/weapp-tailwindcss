@@ -14,7 +14,7 @@
 1. 检查文件是否被 Tailwind 扫描
 2. v3 看 `content`，v4 看 `@source`
 3. 确认文件扩展名包含在扫描规则里
-4. 重新执行 `weapp-tw patch`
+4. 确认构建插件已接入并重新运行开发构建
 
 原因提示：
 
@@ -29,7 +29,7 @@
 排查顺序：
 
 1. 生成模式先确认构建运行时已接入 `WeappTailwindcss`
-2. 旧 CSS 后处理链路或排障时重新执行 `weapp-tw patch`（必要时加 `--clear-cache`）
+2. 检查入口 CSS、`@source` / `content` 和 `cssEntries`
 3. 二义性场景改用显式前缀：`length:` / `color:`
 
 示例：
@@ -71,17 +71,17 @@ uvtw({
 2. 确认 `ignoreCallExpressionIdentifiers` 覆盖了封装名
 3. 必要时开启压缩保名（keep names）
 
-## 5. `pnpm@10+` 下补丁看似没执行
+## 5. `pnpm@10+` 下类名看似没生成
 
 常见表现：
 
-- 安装依赖后没有 patch 效果
+- 安装依赖后样式或 JS class 转译没有生效
 
 排查顺序：
 
-1. 确认当前是否为旧 CSS 后处理链路；生成模式通常不需要安装阶段补丁。
-2. 手动执行 `npx weapp-tw patch`。
-3. 怀疑缓存或目标记录异常时，执行 `npx weapp-tw patch --clear-cache`。
+1. 删除旧的 `postinstall: "weapp-tw patch"`，避免误判问题方向。
+2. 确认当前子包实际安装/解析到的 `tailwindcss` 版本。
+3. 检查入口 CSS、`@source` / `content`、`cssEntries` 和构建插件是否生效。
 
 ## 6. 多端项目里 H5 被误处理
 

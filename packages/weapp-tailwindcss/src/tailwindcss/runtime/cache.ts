@@ -122,7 +122,7 @@ function getTailwindOptionsSignature(twPatcher: TailwindcssPatcherLike) {
   })
 }
 
-function getPatchTargetSignature(twPatcher: TailwindcssPatcherLike) {
+function getRuntimeTargetSignature(twPatcher: TailwindcssPatcherLike) {
   const packageInfo = twPatcher.packageInfo
   return [
     packageInfo?.name ?? 'missing',
@@ -145,8 +145,8 @@ function getOwnRuntimeClassSetSignature(twPatcher: TailwindcssPatcherLike) {
     .sort((a, b) => a.localeCompare(b))
     .map(getFileSignature)
   const configSignature = trackedFiles.length > 0 ? trackedFiles.join('|') : 'files:missing'
-  const patchTargetSignature = getPatchTargetSignature(twPatcher)
-  return `${configSignature}|patch:${patchTargetSignature}`
+  const runtimeTargetSignature = getRuntimeTargetSignature(twPatcher)
+  return `${configSignature}|runtime:${runtimeTargetSignature}`
 }
 
 export function invalidateRuntimeClassSet(twPatcher?: TailwindcssPatcherLike) {

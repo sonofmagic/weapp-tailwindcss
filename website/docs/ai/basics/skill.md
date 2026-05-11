@@ -68,7 +68,7 @@ Skill 会要求 AI 优先完成这些关键动作：
 
 - 识别你当前框架和目标端
 - 补齐 `tailwindcss` 与 `weapp-tailwindcss` 最小可用配置
-- 生成模式不再要求 `postinstall`，旧 CSS 后处理链路或排障时才手动执行 `weapp-tw patch`
+- 生成模式不再要求 `postinstall`，也不需要手动执行 `weapp-tw patch`
 - 给出“可复制命令 + 可复制配置 + 验证步骤”
 - 对 `space-y-*` / `space-x-*` 问题按固定优先级排查：先改结构，再评估 `virtualHost`，最后扩展 `cssChildCombinatorReplaceValue`
 

@@ -9,19 +9,13 @@
 3. 明确 Tailwind 主版本：`v3` 或 `v4`
 4. 明确目标端：仅小程序 or 小程序 + `H5/App`
 
-## 2. 安装与补丁
+## 2. 安装
 
 ```bash
 pnpm add -D tailwindcss weapp-tailwindcss postcss autoprefixer
 ```
 
-生成模式不需要在 `package.json` 中写入 `postinstall: "weapp-tw patch"`。
-
-怀疑缓存或 patch 目标记录异常时：
-
-```bash
-npx weapp-tw patch --clear-cache
-```
+生成模式不需要在 `package.json` 中写入 `postinstall: "weapp-tw patch"`，也不需要手动执行 `weapp-tw patch`。排障时优先检查入口 CSS、`@source` / `content`、`cssEntries` 和构建插件是否生效。
 
 ## 3. Tailwind 扫描配置基线
 
@@ -132,4 +126,4 @@ export default {
 2. 验证基础工具类（如 `flex`, `px-4`）
 3. 验证任意值（如 `w-[22rpx]`, `text-[length:22rpx]`）
 4. 验证变体/伪类（如 `hover:`, `after:`）
-5. 产物检查：确认 `weapp-tw patch` 已执行过
+5. 产物检查：确认目标工具类、任意值和变体已生成并完成小程序转译

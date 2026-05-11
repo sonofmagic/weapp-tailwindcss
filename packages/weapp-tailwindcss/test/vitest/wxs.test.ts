@@ -15,7 +15,6 @@ interface ExtractSourceToken {
 }
 async function getClassCacheSet() {
   const ctx = getCompilerContext()
-  await ctx.twPatcher.patch()
   return ctx.twPatcher.getClassSet()
 }
 const getCase = createGetCase(wxsCasePath)

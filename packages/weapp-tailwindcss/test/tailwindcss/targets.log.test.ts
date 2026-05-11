@@ -1,6 +1,7 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 
 const mockLogger = {
+  debug: vi.fn(),
   info: vi.fn(),
   warn: vi.fn(),
 }
@@ -11,6 +12,7 @@ vi.mock('@weapp-tailwindcss/logger', () => ({
 
 describe('logTailwindcssTarget', () => {
   beforeEach(() => {
+    mockLogger.debug.mockReset()
     mockLogger.info.mockReset()
     mockLogger.warn.mockReset()
     mockLogger.success?.mockReset?.()
@@ -21,7 +23,7 @@ describe('logTailwindcssTarget', () => {
     const { logTailwindcssTarget } = await import('@/tailwindcss/targets')
     __resetRuntimeTailwindcssLogsForTests()
 
-    logTailwindcssTarget('runtime', {
+    logTailwindcssTarget({
       packageInfo: {
         rootPath: '/repo/node_modules/tailwindcss',
         version: '3.4.19',
@@ -43,27 +45,27 @@ describe('logTailwindcssTarget', () => {
       },
     } as any
 
-    logTailwindcssTarget('runtime', patcher, '/repo')
-    logTailwindcssTarget('runtime', patcher, '/repo')
+    logTailwindcssTarget(patcher, '/repo')
+    logTailwindcssTarget(patcher, '/repo')
 
     expect(mockLogger.info).toHaveBeenCalledTimes(1)
   })
 
-  it('在 cli 场景保留目标路径日志', async () => {
+  it('仅在 debug 中保留目标路径细节', async () => {
     const { __resetRuntimeTailwindcssLogsForTests } = await import('@/tailwindcss/runtime-logs')
     const { logTailwindcssTarget } = await import('@/tailwindcss/targets')
     __resetRuntimeTailwindcssLogsForTests()
 
-    logTailwindcssTarget('cli', {
+    logTailwindcssTarget({
       packageInfo: {
         rootPath: '/repo/node_modules/tailwindcss',
         version: '3.4.19',
       },
     } as any, '/repo')
 
-    expect(mockLogger.info).toHaveBeenCalledWith(
-      '%s 绑定 Tailwind CSS -> %s%s',
-      'weapp-tw patch',
+    expect(mockLogger.debug).toHaveBeenCalledWith(
+      '%s 解析 Tailwind CSS -> %s%s',
+      'Weapp-tailwindcss',
       'node_modules/tailwindcss',
       ' (v3.4.19)',
     )

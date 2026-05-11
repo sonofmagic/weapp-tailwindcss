@@ -24,7 +24,7 @@ interface GenerateBundleContext {
   opts: InternalUserDefinedOptions
   runtimeState: {
     twPatcher: InternalUserDefinedOptions['twPatcher']
-    patchPromise: Promise<void>
+    readyPromise: Promise<void>
   }
   ensureRuntimeClassSet: (force?: boolean) => Promise<Set<string>>
   ensureBundleRuntimeClassSet: (snapshot: BundleSnapshot, forceRefresh?: boolean) => Promise<Set<string>>
@@ -425,7 +425,7 @@ export function createGenerateBundleHook(context: GenerateBundleContext) {
       return created
     }
 
-    await runtimeState.patchPromise
+    await runtimeState.readyPromise
     debug('start')
     onStart()
 
@@ -657,7 +657,7 @@ export function createGenerateBundleHook(context: GenerateBundleContext) {
               }
               const runTransform = async () => {
                 const start = performance.now()
-                await runtimeState.patchPromise
+                await runtimeState.readyPromise
                 const generated = await generateCssByGenerator({
                   opts,
                   runtimeState,

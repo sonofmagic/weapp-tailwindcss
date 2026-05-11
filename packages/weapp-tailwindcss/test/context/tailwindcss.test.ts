@@ -179,9 +179,9 @@ describe('createTailwindcssPatcherFromContext', () => {
       expect(basedirs.filter(b => b === workspace)).toHaveLength(2)
       expect(basedirs.filter(b => b === externalRoot)).toHaveLength(2)
 
-      await patcher.patch()
-      expect(createdPatchers[0].patch).toHaveBeenCalledTimes(1)
-      expect(createdPatchers[1].patch).toHaveBeenCalledTimes(1)
+      expect(patcher.patch).toBeUndefined()
+      expect(createdPatchers[0].patch).not.toHaveBeenCalled()
+      expect(createdPatchers[1].patch).not.toHaveBeenCalled()
 
       const classSet = await patcher.getClassSet()
       expect([...classSet]).toEqual(['foo', 'bar'])

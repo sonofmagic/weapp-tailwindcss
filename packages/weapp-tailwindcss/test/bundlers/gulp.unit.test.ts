@@ -100,7 +100,7 @@ describe('bundlers/gulp createPlugins', () => {
   it('processes files and caches results across runs', async () => {
     const plugins = createPlugins()
     expect(getCompilerContextMock).toHaveBeenCalled()
-    expect(twPatcher.patch).toHaveBeenCalledTimes(1)
+    expect(twPatcher.patch).not.toHaveBeenCalled()
 
     const cssFile = createFile('/src/app.wxss', '.foo { color: red; }')
     const processedCss = await runTransform(plugins.transformWxss(), cssFile)

@@ -3,7 +3,7 @@ import fs from 'node:fs/promises'
 import path from 'node:path'
 import { describe, expect, it } from 'vitest'
 import { getCompilerContext } from '@/context'
-import { collectRuntimeClassSet, createTailwindPatchPromise } from '@/tailwindcss/runtime'
+import { collectRuntimeClassSet, createTailwindRuntimeReadyPromise } from '@/tailwindcss/runtime'
 
 interface DemoCase {
   title: string
@@ -189,7 +189,7 @@ async function runHotUpdateCase(testCase: DemoCase) {
 
   const ctx = getCompilerContext(options)
 
-  await createTailwindPatchPromise(ctx.twPatcher)
+  await createTailwindRuntimeReadyPromise(ctx.twPatcher)
   const baseline = await collectRuntimeClassSet(ctx.twPatcher, { force: true, skipRefresh: true })
   expect(baseline.has(testCase.marker)).toBe(false)
 
@@ -202,14 +202,14 @@ async function runHotUpdateCase(testCase: DemoCase) {
 
   try {
     await ctx.refreshTailwindcssPatcher({ clearCache: true })
-    await createTailwindPatchPromise(ctx.twPatcher)
+    await createTailwindRuntimeReadyPromise(ctx.twPatcher)
     const refreshed = await collectRuntimeClassSet(ctx.twPatcher, { force: true, skipRefresh: true })
     expect(refreshed.has(testCase.marker)).toBe(true)
   }
   finally {
     await fs.writeFile(entryPath, original, 'utf8')
     await ctx.refreshTailwindcssPatcher({ clearCache: true })
-    await createTailwindPatchPromise(ctx.twPatcher)
+    await createTailwindRuntimeReadyPromise(ctx.twPatcher)
     const restored = await collectRuntimeClassSet(ctx.twPatcher, { force: true, skipRefresh: true })
     expect(restored.has(testCase.marker)).toBe(false)
   }

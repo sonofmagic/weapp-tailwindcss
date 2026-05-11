@@ -21,7 +21,7 @@ import { resolveUniAppXStyleIsolationEnabled } from './style-isolation'
 import { transformUVue } from './transform'
 
 interface UniAppXRuntimeState {
-  patchPromise: Promise<unknown>
+  readyPromise: Promise<unknown>
 }
 
 interface CreateUniAppXPluginsOptions {
@@ -161,7 +161,7 @@ export function createUniAppXPlugins(options: CreateUniAppXPluginsOptions): Plug
     name: 'weapp-tailwindcss:uni-app-x:css:pre',
     enforce: 'pre',
     async transform(code, id) {
-      await runtimeState.patchPromise
+      await runtimeState.readyPromise
       const { query } = parseVueRequest(id)
       const lang = query.lang
       if (isIosPlatform && isPreprocessorRequest(id, lang)) {
@@ -174,7 +174,7 @@ export function createUniAppXPlugins(options: CreateUniAppXPluginsOptions): Plug
   const cssPlugin: Plugin = {
     name: 'weapp-tailwindcss:uni-app-x:css',
     async transform(code, id) {
-      await runtimeState.patchPromise
+      await runtimeState.readyPromise
       return transformStyle(code, id)
     },
   }

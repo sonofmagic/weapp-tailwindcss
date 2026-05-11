@@ -274,7 +274,7 @@ describe('bundlers/webpack UnifiedWebpackPluginV5', () => {
     }
 
     expect(getCompilerContextMock).toHaveBeenCalledTimes(1)
-    expect(currentContext.twPatcher.patch).toHaveBeenCalledTimes(1)
+    expect(currentContext.twPatcher.patch).not.toHaveBeenCalled()
     expect(currentContext.onLoad).toHaveBeenCalledTimes(1)
 
     const module: LoaderModule = {

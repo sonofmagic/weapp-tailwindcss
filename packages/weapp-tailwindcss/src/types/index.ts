@@ -43,7 +43,7 @@ export interface JsHandlerResult {
 export interface TailwindcssPatcherLike {
   packageInfo: TailwindcssPatcher['packageInfo']
   majorVersion?: TailwindcssPatcher['majorVersion']
-  patch: TailwindcssPatcher['patch']
+  patch?: TailwindcssPatcher['patch']
   getClassSet: AsyncableMethod<TailwindcssPatcher['getClassSet']>
   getClassSetSync?: TailwindcssPatcher['getClassSetSync']
   extract: TailwindcssPatcher['extract']
@@ -149,15 +149,6 @@ export interface IBaseWebpackPlugin {
   appType?: AppType
 
   apply: (compiler: any) => void
-}
-
-/**
- * @description InternalPatchResult
- */
-export interface InternalPatchResult {
-  dataTypes?: string
-  processTailwindFeatures?: string
-  plugin?: string
 }
 
 export type CreateJsHandlerOptions = Omit<IJsHandlerOptions, 'classNameSet'>

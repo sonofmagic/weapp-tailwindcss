@@ -95,7 +95,7 @@ describe('bundlers/vite WeappTailwindcss bundle', () => {
     expect(sourcePlugin).toBeTruthy()
     expect(postPlugin).toBeTruthy()
     expect(currentContext.onLoad).toHaveBeenCalledTimes(1)
-    expect(currentContext.twPatcher.patch).toHaveBeenCalledTimes(1)
+    expect(currentContext.twPatcher.patch).not.toHaveBeenCalled()
 
     const config = {
       plugins: [
@@ -2462,7 +2462,7 @@ const fallback = "bg-[#434332] px-[32px]"
     const generateBundle = getGenerateBundleHandler(postPlugin)
     await generateBundle?.call(postPlugin, {} as any, bundle)
 
-    expect(patchMock).toHaveBeenCalledTimes(1)
+    expect(patchMock).not.toHaveBeenCalled()
     expect(extractMock).toHaveBeenCalledTimes(1)
     expect(getClassSetSyncMock).toHaveBeenCalledTimes(1)
     expect(getClassSetMock).not.toHaveBeenCalled()

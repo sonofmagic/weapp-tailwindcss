@@ -1,14 +1,12 @@
 // webpack 5
 import type { Compiler } from 'webpack'
 import type { AppType, IBaseWebpackPlugin, InternalUserDefinedOptions, UserDefinedOptions } from '@/types'
-import process from 'node:process'
 import { pluginName } from '@/constants'
 import { getCompilerContext } from '@/context'
 import { createDebug } from '@/debug'
 import { isMpx, setupMpxTailwindcssRedirect } from '@/shared/mpx'
 import { resolveTailwindcssOptions } from '@/tailwindcss/patcher-options'
-import { setupPatchRecorder } from '@/tailwindcss/recorder'
-import { ensureRuntimeClassSet } from '@/tailwindcss/runtime'
+import { createTailwindRuntimeReadyPromise, ensureRuntimeClassSet } from '@/tailwindcss/runtime'
 import { getRuntimeClassSetSignature } from '@/tailwindcss/runtime/cache'
 import { resolvePluginDisabledState } from '@/utils/disabled'
 import { resolvePackageDir } from '@/utils/resolve-package'
@@ -54,15 +52,11 @@ export class UnifiedWebpackPluginV5 implements IBaseWebpackPlugin {
     if (disabledOptions.plugin) {
       return
     }
-    const patchRecorderState = setupPatchRecorder(initialTwPatcher, this.options.tailwindcssBasedir, {
-      source: 'runtime',
-      cwd: this.options.tailwindcssBasedir ?? process.cwd(),
-    })
+    const readyPromise = createTailwindRuntimeReadyPromise(initialTwPatcher)
     const runtimeState = {
       twPatcher: initialTwPatcher,
-      patchPromise: patchRecorderState.patchPromise,
+      readyPromise,
       refreshTailwindcssPatcher,
-      onPatchCompleted: patchRecorderState.onPatchCompleted,
     }
 
     let runtimeSetPrepared = false

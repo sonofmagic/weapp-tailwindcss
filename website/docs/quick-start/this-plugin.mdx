@@ -1,6 +1,6 @@
 ---
 title: 2. 安装 weapp-tailwindcss
-description: '安装 weapp-tailwindcss，并按项目链路决定是否手动执行补丁命令。'
+description: '安装 weapp-tailwindcss，并移除旧版本遗留的手动补丁命令。'
 keywords:
   - 快速开始
   - 安装
@@ -23,37 +23,14 @@ keywords:
 
 ```bash npm2yarn
 npm i -D weapp-tailwindcss
-
-# 仅旧 CSS 后处理链路或排障时需要手动执行
-# npx weapp-tw patch
 ```
 
-如果项目使用 `weapp-tailwindcss@5` 生成模式，Tailwind CSS 会由 `WeappTailwindcss` 插件或生成器入口接管，不需要再把 `weapp-tw patch` 写入 `postinstall`。
+`weapp-tailwindcss@5` 会由 `WeappTailwindcss` 插件或生成器入口在构建运行时接管 Tailwind CSS，不需要再执行 `weapp-tw patch`，也不要把它写入 `postinstall`。
 
 :::info
-旧 CSS 后处理链路中，手动执行 `weapp-tw patch` 主要是做2件事情
+如果项目从旧版本迁移而来，请删除 `package.json` 中的 `postinstall: "weapp-tw patch"`。当前 `weapp-tw patch` 只是兼容旧脚本的提示命令，不再写补丁记录或清理缓存。
 
-### 1. 给当前你本地的 `tailwindcss` 打上支持 `rpx` 的补丁 (小程序特有单位，非 `web` 标准)。
-
-否则你一旦使用像 `text-[14.43rpx]` 这样的任意值写法，生成出来的 `css` 样式就是 `color: 14.43rpx;`，显然是错误的。
-
-它会被 `tailwindcss` 认为是一种颜色，从而导致生成错误，样式不生效。
-
-详见 [rpx 任意值颜色或长度单位二义性与解决方案](/docs/issues/rpx-ambiguities)
-
-### 2. 暴露 `tailwindcss` 运行上下文给 `webpack`/`vite`/`glup` 插件。
-
-这样就能够在 `js` 中，和 `postcss` 插件进行通信，从而达到共享上下文的效果。
-
----
-
-如果你希望在补丁前“强制刷新 `tailwindcss-patch` 的缓存目录（如 `node_modules/.cache/tailwindcss-patch`）”，可以手动执行：
-
-```bash npm2yarn
-npx weapp-tw patch --clear-cache
-```
-
-默认不清理缓存，更加保守稳定；仅当怀疑缓存导致补丁未生效或版本不一致时再开启该参数。
+任意值二义性背景可参考 [rpx 任意值颜色或长度单位二义性与解决方案](/docs/issues/rpx-ambiguities)。
 :::
 
 我们已经完成了这些步骤了，最后就是注册这个插件，到各个不同的框架里去，马上就好！

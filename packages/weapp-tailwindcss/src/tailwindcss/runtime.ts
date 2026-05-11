@@ -21,28 +21,18 @@ export interface RefreshTailwindRuntimeStateOptions {
   clearCache?: boolean
 }
 
-export function createTailwindPatchPromise(
+export function createTailwindRuntimeReadyPromise(
   twPatcher: TailwindcssPatcherLike,
-  onPatched?: () => Promise<void> | void,
 ): Promise<void> {
-  return Promise.resolve(twPatcher.patch()).then(async () => {
+  return Promise.resolve().then(() => {
     invalidateRuntimeClassSet(twPatcher)
-    if (onPatched) {
-      try {
-        await onPatched()
-      }
-      catch (error) {
-        debug('failed to persist patch target after patch(): %O', error)
-      }
-    }
   })
 }
 
 export interface TailwindRuntimeState {
   twPatcher: TailwindcssPatcherLike
-  patchPromise: Promise<void>
+  readyPromise: Promise<void>
   refreshTailwindcssPatcher?: (options?: RefreshTailwindcssPatcherOptions) => Promise<TailwindcssPatcherLike>
-  onPatchCompleted?: () => Promise<void> | void
 }
 
 interface RuntimeClassSetStateEntry {
@@ -77,7 +67,7 @@ export async function refreshTailwindRuntimeState(
   }
 
   debug('refresh runtime state start, clearCache=%s major=%s', clearCache, state.twPatcher.majorVersion ?? 'unknown')
-  await state.patchPromise
+  await state.readyPromise
 
   let refreshed = false
   if (typeof state.refreshTailwindcssPatcher === 'function') {
@@ -89,7 +79,7 @@ export async function refreshTailwindRuntimeState(
   }
 
   if (refreshed) {
-    state.patchPromise = createTailwindPatchPromise(state.twPatcher, state.onPatchCompleted)
+    state.readyPromise = createTailwindRuntimeReadyPromise(state.twPatcher)
   }
 
   debug('refresh runtime state end, refreshed=%s major=%s', refreshed, state.twPatcher.majorVersion ?? 'unknown')
@@ -119,7 +109,7 @@ export async function ensureRuntimeClassSet(
     })
   }
 
-  await state.patchPromise
+  await state.readyPromise
 
   const entry = getRuntimeClassSetStateEntry(state)
   const signature = getRuntimeClassSetSignature(state.twPatcher)
@@ -150,7 +140,7 @@ export async function ensureRuntimeClassSet(
       force: true,
       clearCache: true,
     })
-    await state.patchPromise
+    await state.readyPromise
     return collectRuntimeClassSet(state.twPatcher, {
       force: true,
       skipRefresh: true,

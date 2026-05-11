@@ -11,7 +11,7 @@ interface CssFinalizerContext {
   opts: InternalUserDefinedOptions
   runtimeState: {
     twPatcher: InternalUserDefinedOptions['twPatcher']
-    patchPromise: Promise<void>
+    readyPromise: Promise<void>
   }
   ensureRuntimeClassSet: (force?: boolean) => Promise<Set<string>>
   isCssAssetProcessed: (asset: OutputAsset, file?: string) => boolean
@@ -128,7 +128,7 @@ export function createViteCssFinalizerOutputPlugin(context: CssFinalizerContext)
           return
         }
 
-        await runtimeState.patchPromise
+        await runtimeState.readyPromise
         await waitForSourceCandidateSyncs?.()
         const generatorOptions = normalizeWeappTailwindcssGeneratorOptions(opts.generator)
         const runtime = getRecordedGeneratorCandidates?.() ?? getSourceCandidates?.() ?? await ensureRuntimeClassSet()

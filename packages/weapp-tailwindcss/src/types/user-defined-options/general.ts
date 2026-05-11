@@ -12,7 +12,7 @@ export interface UserDefinedOptionsGeneralPart {
    * @group 3.一般配置
    * @see https://github.com/sonofmagic/weapp-tailwindcss/issues/110
    * @remarks
-   * TailwindCSS 3.2.0 起对任意值执行长度单位校验，会将未声明的 `rpx` 识别为颜色。本选项默认开启以注入 `rpx` 支持。生成模式会在运行时接管补丁流程，旧 CSS 后处理链路可按需手动执行 `weapp-tw patch` 排查补丁状态。
+   * TailwindCSS 3.2.0 起对任意值执行长度单位校验，会将未声明的 `rpx` 识别为颜色。本选项默认开启，并由构建运行时自动接管。
    */
   supportCustomLengthUnitsPatch?: ILengthUnitsPatchOptions | boolean
 
