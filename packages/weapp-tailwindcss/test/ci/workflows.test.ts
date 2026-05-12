@@ -16,6 +16,10 @@ function readWorkflow(filename: string) {
   }
 }
 
+function readPackageJson<T extends Record<string, unknown>>(relativePath: string) {
+  return JSON.parse(fs.readFileSync(path.join(repoRoot, relativePath), 'utf8')) as T
+}
+
 function stepRuns(workflow: Record<string, any>, jobName: string) {
   const steps: Array<Record<string, unknown>> = workflow.jobs[jobName].steps
   return steps
@@ -81,6 +85,23 @@ describe('ci workflows', () => {
     expect(compatibilityRuns).toContain('pnpm --filter weapp-tailwindcss... run build')
     expect(compatibilityRuns).toContain('test/bundlers/vite-plugin.uni-app-x.unit.test.ts')
     expect(compatibilityRuns).toContain('test/watch-hmr-coverage-matrix.unit.test.ts')
+  })
+
+  it('keeps test helper private so release jobs do not publish it', () => {
+    const packageJson = readPackageJson<{ name: string, private?: boolean }>('packages/test-helper/package.json')
+
+    expect(packageJson.name).toBe('@weapp-tailwindcss/test-helper')
+    expect(packageJson.private).toBe(true)
+  })
+
+  it('keeps npm token fallback for release publishing', () => {
+    const { workflow } = readWorkflow('release.yml')
+    const releaseStep = workflow.jobs.release.steps.find((step: Record<string, unknown>) => {
+      return step.id === 'changesets'
+    })
+
+    expect(releaseStep.env.NPM_TOKEN).toBe('${{ secrets.NPM_TOKEN }}')
+    expect(releaseStep.env.NODE_AUTH_TOKEN).toBe('${{ secrets.NPM_TOKEN }}')
   })
 })
 

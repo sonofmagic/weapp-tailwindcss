@@ -1,5 +1,6 @@
 {
   "name": "@weapp-tailwindcss/test-helper",
+  "private": true,
   "type": "module",
   "version": "0.0.2-next.0",
   "description": "tsdown package template",
