@@ -9,6 +9,7 @@
     "useDefineForClassFields": true,
     "rootDir": ".",
     "module": "esnext",
+    "ignoreDeprecations": "6.0",
     "moduleResolution": "node",
     "paths": {
       "@/*": [

@@ -4,6 +4,7 @@
     "module": "esnext",
     "noImplicitThis": true,
     "strictNullChecks": true,
+    "ignoreDeprecations": "6.0",
     "moduleResolution": "node",
     "lib": [
       "esnext",

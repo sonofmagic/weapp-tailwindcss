@@ -5,6 +5,7 @@
     "experimentalDecorators": true,
     "rootDir": ".",
     "module": "commonjs",
+    "ignoreDeprecations": "6.0",
     "moduleResolution": "node",
     "paths": {
       "@/*": [
