@@ -1,31 +1,12 @@
 name: E2E IDE
 
 on:
-  pull_request:
-    types: [opened, synchronize, reopened, ready_for_review, labeled]
-    paths:
-      - 'packages/weapp-tailwindcss/**'
-      - 'packages-runtime/**'
-      - 'e2e/**'
-      - 'tools/weapp-tailwindcss-scripts/**'
-      - 'demo/**'
-      - 'apps/**'
-      - 'scripts/**'
-      - package.json
-      - pnpm-lock.yaml
-      - pnpm-workspace.yaml
-      - .github/workflows/e2e-ide.yml
-      - '!website/**'
-      - '!**/*.md'
-      - '!.changeset/**'
   workflow_dispatch:
     inputs:
       project_filter:
         description: 可选：只跑匹配的 E2E_PROJECT_FILTER 正则
         required: false
         default: ''
-  schedule:
-    - cron: '0 20 * * *'
 
 concurrency:
   group: e2e-ide-${{ github.event.pull_request.number || github.ref }}
@@ -37,10 +18,7 @@ permissions:
 jobs:
   ide-hot-update:
     name: e2e-ide (${{ matrix.case_name }})
-    if: >-
-      github.event_name != 'pull_request' ||
-      contains(github.event.pull_request.labels.*.name, 'e2e-ide')
-    runs-on: ${{ fromJSON(vars.E2E_IDE_RUNNER_LABELS || '["macos-latest"]') }}
+    runs-on: ${{ fromJSON(vars.E2E_IDE_RUNNER_LABELS || '["self-hosted","macOS","wechat-devtools"]') }}
     timeout-minutes: ${{ matrix.timeout_minutes }}
     strategy:
       fail-fast: false
@@ -98,7 +76,8 @@ jobs:
             exit 1
           fi
           if [[ ! -d /Applications/wechatwebdevtools.app && ! -d /Applications/微信开发者工具.app ]]; then
-            echo "未找到微信开发者工具。请给本工作流配置已安装 DevTools 的 macOS/self-hosted runner。" >&2
+            echo "GitHub hosted runner 无法提供微信开发者工具 GUI/automator 环境。" >&2
+            echo "请只在已安装 DevTools 的 self-hosted macOS runner 上手动触发本工作流。" >&2
             echo "可设置 repository variable E2E_IDE_RUNNER_LABELS，例如 [\"self-hosted\",\"macOS\",\"wechat-devtools\"]。" >&2
             exit 1
           fi
