@@ -126,9 +126,9 @@ catalogs:
   typesNode2410:
     '@types/node': ^24.12.4
   typescript59:
-    typescript: ^5.9.3
+    typescript: ^6.0.3
   typescript59tilde:
-    typescript: ~5.9.3
+    typescript: ^6.0.3
   typescriptEslint:
     '@typescript-eslint/eslint-plugin': ^8.59.3
     '@typescript-eslint/parser': ^8.59.3
