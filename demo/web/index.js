@@ -110,9 +110,10 @@ async function runVersion(version) {
   const { css } = isV4 ? await getCssV4(demoClasses) : await getCssV3(demoClasses)
   const demoDir = __dirname
   const tailwindConfigPath = path.join(demoDir, 'tailwind.config.cjs')
-  const suffix = isV4 ? '.v4' : '.v3'
-  const cssEntryPath = path.join(demoDir, `index${suffix}.css`)
+  const artifactDir = path.join(demoDir, 'artifacts', isV4 ? 'tailwindcss-v4' : 'tailwindcss-v3')
+  const cssEntryPath = path.join(artifactDir, 'index.css')
 
+  await fs.mkdir(artifactDir, { recursive: true })
   await fs.writeFile(cssEntryPath, css, 'utf8')
 
   const ctx = createContext({
@@ -127,12 +128,12 @@ async function runVersion(version) {
   })
 
   const wxml = await ctx.transformWxml('<view class="shadow-[0_35rpx_60rx_-15px_rgba(0,0,0,0.3)]" wx:if="{{ xxx.length > 0 }}">')
-  await fs.writeFile(`./out${suffix}.html`, wxml, 'utf8')
+  await fs.writeFile(path.join(artifactDir, 'out.html'), wxml, 'utf8')
   const { css: cssOut } = await ctx.transformWxss(css)
-  await fs.writeFile(`./out${suffix}.css`, cssOut, 'utf8')
+  await fs.writeFile(path.join(artifactDir, 'out.css'), cssOut, 'utf8')
   const content = `const classNames = ${JSON.stringify(jsClassNames)}`
   const { code } = await ctx.transformJs(content)
-  await fs.writeFile(`./out${suffix}.js`, code, 'utf8')
+  await fs.writeFile(path.join(artifactDir, 'out.js'), code, 'utf8')
 
   if (!isV4) {
     await fs.writeFile('./index.css', css, 'utf8')
