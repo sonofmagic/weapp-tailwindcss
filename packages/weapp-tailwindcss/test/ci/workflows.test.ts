@@ -184,5 +184,41 @@ describe('e2e watch workflow', () => {
       watch_timeout_ms: '720000',
       watch_command_timeout_ms: '1800000',
     }))
+    expect(nightlyRows).toContainEqual(expect.objectContaining({
+      os: 'macos-latest',
+      runner_label: 'macos',
+      watch_case: 'demo',
+      round_profile: 'default',
+      timeout_minutes: 120,
+      watch_timeout_ms: '420000',
+      watch_command_timeout_ms: '5400000',
+    }))
+    expect(nightlyRows).toContainEqual(expect.objectContaining({
+      os: 'windows-latest',
+      runner_label: 'windows',
+      watch_case: 'demo',
+      round_profile: 'default',
+      timeout_minutes: 150,
+      watch_timeout_ms: '540000',
+      watch_command_timeout_ms: '7200000',
+    }))
+    expect(nightlyRows).toContainEqual(expect.objectContaining({
+      os: 'macos-latest',
+      runner_label: 'macos',
+      watch_case: 'all',
+      round_profile: 'default',
+      timeout_minutes: 150,
+      watch_timeout_ms: '600000',
+      watch_command_timeout_ms: '7200000',
+    }))
+    expect(nightlyRows).toContainEqual(expect.objectContaining({
+      os: 'windows-latest',
+      runner_label: 'windows',
+      watch_case: 'all',
+      round_profile: 'default',
+      timeout_minutes: 180,
+      watch_timeout_ms: '720000',
+      watch_command_timeout_ms: '9000000',
+    }))
   })
 })
