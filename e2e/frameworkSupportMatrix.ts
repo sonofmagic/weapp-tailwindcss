@@ -202,10 +202,10 @@ export const FRAMEWORK_SUPPORT_CASES = [
     ide: { tier: 'required' },
   }),
   supportCase({
-    name: 'weapp-vite-native-tailwindcss-v3',
+    name: 'weapp-vite-native-tailwindcss-v4',
     framework: 'native',
     builder: 'weapp-vite',
-    tailwindcss: 'v3',
+    tailwindcss: 'v4',
     fixturesDir: '../apps',
     project: nativeProject('vite-native'),
     snapshotProjectName: 'native-mina',

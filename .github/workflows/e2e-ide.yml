@@ -1,0 +1,138 @@
+name: E2E IDE
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened, ready_for_review, labeled]
+    paths:
+      - 'packages/weapp-tailwindcss/**'
+      - 'packages-runtime/**'
+      - 'e2e/**'
+      - 'tools/weapp-tailwindcss-scripts/**'
+      - 'demo/**'
+      - 'apps/**'
+      - 'scripts/**'
+      - package.json
+      - pnpm-lock.yaml
+      - pnpm-workspace.yaml
+      - .github/workflows/e2e-ide.yml
+      - '!website/**'
+      - '!**/*.md'
+      - '!.changeset/**'
+  workflow_dispatch:
+    inputs:
+      project_filter:
+        description: 可选：只跑匹配的 E2E_PROJECT_FILTER 正则
+        required: false
+        default: ''
+  schedule:
+    - cron: '0 20 * * *'
+
+concurrency:
+  group: e2e-ide-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  ide-hot-update:
+    name: e2e-ide (${{ matrix.case_name }})
+    if: >-
+      github.event_name != 'pull_request' ||
+      contains(github.event.pull_request.labels.*.name, 'e2e-ide')
+    runs-on: ${{ fromJSON(vars.E2E_IDE_RUNNER_LABELS || '["macos-latest"]') }}
+    timeout-minutes: ${{ matrix.timeout_minutes }}
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - case_name: uni-app-vue3-vite-tailwindcss-v3
+            timeout_minutes: 30
+          - case_name: uni-app-vite-tailwindcss-v4
+            timeout_minutes: 30
+          - case_name: taro-react-webpack-tailwindcss-v3
+            timeout_minutes: 35
+          - case_name: taro-react-webpack-tailwindcss-v4
+            timeout_minutes: 35
+          - case_name: taro-react-vite-tailwindcss-v3
+            timeout_minutes: 40
+          - case_name: taro-react-vite-tailwindcss-v4
+            timeout_minutes: 40
+          - case_name: taro-vue3-webpack-tailwindcss-v3
+            timeout_minutes: 35
+          - case_name: taro-apps-webpack-tailwindcss-v4
+            timeout_minutes: 35
+          - case_name: mpx-webpack-tailwindcss-v3
+            timeout_minutes: 35
+          - case_name: mpx-webpack-tailwindcss-v4
+            timeout_minutes: 35
+          - case_name: gulp-tailwindcss-v3
+            timeout_minutes: 30
+          - case_name: weapp-vite-native-tailwindcss-v4
+            timeout_minutes: 30
+          - case_name: weapp-vite-native-ts-tailwindcss-v3
+            timeout_minutes: 30
+
+    steps:
+      - name: Check out code
+        uses: actions/checkout@v6
+        with:
+          fetch-depth: 2
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v6
+        with:
+          node-version: 22
+          cache: pnpm
+          cache-dependency-path: pnpm-lock.yaml
+
+      - name: Check WeChat DevTools automator environment
+        shell: bash
+        run: |
+          set -euo pipefail
+          if [[ "$RUNNER_OS" != "macOS" ]]; then
+            echo "E2E IDE 需要 macOS runner 和微信开发者工具自动化能力。" >&2
+            exit 1
+          fi
+          if [[ ! -d /Applications/wechatwebdevtools.app && ! -d /Applications/微信开发者工具.app ]]; then
+            echo "未找到微信开发者工具。请给本工作流配置已安装 DevTools 的 macOS/self-hosted runner。" >&2
+            echo "可设置 repository variable E2E_IDE_RUNNER_LABELS，例如 [\"self-hosted\",\"macOS\",\"wechat-devtools\"]。" >&2
+            exit 1
+          fi
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Build IDE suite package dependencies
+        run: |
+          pnpm --filter "@weapp-tailwindcss/shared" run build
+          pnpm --filter "@weapp-tailwindcss/logger" run build
+          pnpm --filter "@weapp-tailwindcss/postcss" run build
+          pnpm --filter "@weapp-tailwindcss/reset" run build
+          pnpm --filter "weapp-style-injector" run build
+          pnpm -r --filter "./packages-runtime/*" run build
+          pnpm --filter weapp-tailwindcss run build
+
+      - name: Run WeChat DevTools visible HMR probe
+        env:
+          E2E_PROJECT_FILTER: ${{ github.event.inputs.project_filter || matrix.case_name }}
+          E2E_IDE_PROBE_RETRIES: '2'
+          E2E_IDE_HOT_UPDATE_TIMEOUT_MS: '300000'
+          E2E_WATCH_TIMEOUT_MS: '300000'
+          E2E_WATCH_POLL_MS: '300'
+          E2E_IDE_MAX_HOT_UPDATE_MS: '90000'
+        run: pnpm e2e:ide
+
+      - name: Publish IDE summary
+        if: always()
+        shell: bash
+        run: |
+          {
+            echo "## E2E IDE"
+            echo "- case: ${{ matrix.case_name }}"
+            echo "- filter: ${{ github.event.inputs.project_filter || matrix.case_name }}"
+            echo "- 覆盖：微信开发者工具打开项目、template class HMR、JS class HMR、style @apply/theme() HMR、产物变更对比。"
+          } >> "$GITHUB_STEP_SUMMARY"

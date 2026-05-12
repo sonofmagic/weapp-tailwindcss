@@ -88,6 +88,7 @@ export function buildDemoBaseCases(baseCwd: string): WatchCase[] {
     // MPX watch pipeline may rewrite global style assets even when class literal is unchanged.
     // Keep same-class-literal timing coverage, but skip strict global style stability assertion.
     requireStableGlobalStyleOnSameClassLiteral: false,
+    initialMutationDelayMs: 5_000,
     cwd: path.resolve(baseCwd, 'demo/mpx-app'),
     devScript: 'dev',
     outputWxml: path.resolve(baseCwd, 'demo/mpx-app/dist/wx/pages/index.wxml'),

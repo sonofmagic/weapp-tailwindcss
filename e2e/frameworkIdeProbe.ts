@@ -2,6 +2,7 @@ import fs from 'node:fs/promises'
 import process from 'node:process'
 import { Launcher } from '@weapp-vite/miniprogram-automator'
 import path from 'pathe'
+import { runFrameworkIdeHotUpdateProbe } from './frameworkIdeHotUpdate'
 import { FRAMEWORK_SUPPORT_CASES } from './frameworkSupportMatrix'
 import { resolveFrameworkSupportPaths } from './frameworkSupportPaths'
 
@@ -24,6 +25,10 @@ if (entry.ide.tier !== 'required') {
 const supportEntry = entry
 const { appJsonPath, miniprogramRoot, projectPath, root } = resolveFrameworkSupportPaths(supportEntry)
 let miniProgram: any
+
+function shouldRunHotUpdateProbe() {
+  return process.env['E2E_IDE_HOT_UPDATE'] !== '0'
+}
 
 async function ensureMiniProgramEntry() {
   let appConfig: { pages?: string[] }
@@ -102,9 +107,10 @@ async function main() {
 
   const pageUrl = await ensureMiniProgramEntry()
   const automator = new Launcher()
+  const launchProjectPath = shouldRunHotUpdateProbe() ? miniprogramRoot : projectPath
 
   try {
-    miniProgram = await withStageTimeout('launch', automator.launch({ projectPath, timeout: timeoutMs }))
+    miniProgram = await withStageTimeout('launch', automator.launch({ projectPath: launchProjectPath, timeout: timeoutMs }))
 
     const page: any = await withStageTimeout('reLaunch', miniProgram.reLaunch(pageUrl))
     if (!page) {
@@ -115,6 +121,10 @@ async function main() {
     const wxml = await withStageTimeout('read page wxml', pageRoot?.wxml())
     if (typeof wxml !== 'string' || wxml.trim().length === 0) {
       throw new Error(`Empty page WXML for ${caseName}`)
+    }
+
+    if (shouldRunHotUpdateProbe()) {
+      await runFrameworkIdeHotUpdateProbe(supportEntry, miniProgram, page, pageUrl, launchProjectPath)
     }
   }
   finally {

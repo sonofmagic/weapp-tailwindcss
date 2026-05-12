@@ -3,11 +3,14 @@ import { readdir, stat } from 'node:fs/promises'
 import path from 'node:path'
 import process from 'node:process'
 
-const READY_RE = /watching for file changes|compiled successfully|built in \d+|构建完成/i
+const READY_RE = /compiled successfully|built in [\d.]+s?|构建完成/i
+const WEAK_READY_RE = /watching for file changes/i
 const pnpmExecPath = process.env.npm_execpath
 const sourceDirs = ['src']
 const ignoredDirs = new Set(['dist', 'node_modules', '.git'])
 const taroBuildGuardPath = path.resolve(import.meta.dirname, './taro-build-guard.mjs')
+const skipNativeWatch = process.env.TARO_E2E_WATCH_NATIVE === '0'
+const rebuildDebounceMs = Number(process.env.TARO_E2E_REBUILD_DEBOUNCE_MS ?? 600)
 
 function createPnpmCommand(args) {
   if (pnpmExecPath) {
@@ -36,11 +39,27 @@ function spawnPnpm(args, options = {}) {
 }
 
 function pipeWithReady(child, resolveReady) {
+  let resolved = false
+  let weakReadyTimer
+  const resolveOnce = () => {
+    if (resolved) {
+      return
+    }
+    resolved = true
+    if (weakReadyTimer) {
+      clearTimeout(weakReadyTimer)
+    }
+    resolveReady()
+  }
   const onData = (chunk) => {
     const text = chunk.toString()
     process.stdout.write(text)
     if (READY_RE.test(text)) {
-      resolveReady()
+      resolveOnce()
+      return
+    }
+    if (WEAK_READY_RE.test(text) && !weakReadyTimer) {
+      weakReadyTimer = setTimeout(resolveOnce, 5000)
     }
   }
 
@@ -129,21 +148,28 @@ function hasSnapshotChanged(previous, next) {
 
 async function main() {
   let resolveReady
-  const ready = new Promise((resolve) => {
-    resolveReady = resolve
-  })
-  const watch = spawn(process.execPath, [taroBuildGuardPath, '--watch'], {
-    cwd: process.cwd(),
-    env: process.env,
-    stdio: ['ignore', 'pipe', 'pipe'],
-  })
+  const ready = skipNativeWatch
+    ? runBuild()
+    : new Promise((resolve) => {
+        resolveReady = resolve
+      })
+  const watch = skipNativeWatch
+    ? undefined
+    : spawn(process.execPath, [taroBuildGuardPath, '--watch'], {
+        cwd: process.cwd(),
+        env: process.env,
+        stdio: ['ignore', 'pipe', 'pipe'],
+      })
   let stopping = false
   let building = false
   let queued = false
   let pollTimer
+  let rebuildTimer
   let lastSnapshot = await collectSnapshot()
 
-  pipeWithReady(watch, resolveReady)
+  if (watch) {
+    pipeWithReady(watch, resolveReady)
+  }
 
   const stop = (signal = 'SIGTERM') => {
     if (stopping) {
@@ -153,18 +179,21 @@ async function main() {
     if (pollTimer) {
       clearInterval(pollTimer)
     }
-    watch.kill(signal)
+    if (rebuildTimer) {
+      clearTimeout(rebuildTimer)
+    }
+    watch?.kill(signal)
   }
 
   process.on('SIGINT', () => stop('SIGINT'))
   process.on('SIGTERM', () => stop('SIGTERM'))
 
-  watch.on('error', (error) => {
+  watch?.on('error', (error) => {
     process.stderr.write(`${error.stack ?? error.message}\n`)
     process.exitCode = 1
   })
 
-  watch.on('close', (code, signal) => {
+  watch?.on('close', (code, signal) => {
     if (!stopping && code !== 0) {
       process.exitCode = code ?? 1
     }
@@ -204,11 +233,17 @@ async function main() {
       }
     }
     const triggerRebuild = () => {
-      void rebuild().catch((error) => {
-        process.stderr.write(`${error.stack ?? error.message}\n`)
-        process.exitCode = 1
-        stop()
-      })
+      if (rebuildTimer) {
+        clearTimeout(rebuildTimer)
+      }
+      rebuildTimer = setTimeout(() => {
+        rebuildTimer = undefined
+        void rebuild().catch((error) => {
+          process.stderr.write(`${error.stack ?? error.message}\n`)
+          process.exitCode = 1
+          stop()
+        })
+      }, Number.isFinite(rebuildDebounceMs) ? rebuildDebounceMs : 600)
     }
     pollTimer = setInterval(() => {
       void collectSnapshot().then((nextSnapshot) => {

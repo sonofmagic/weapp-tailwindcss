@@ -7,7 +7,9 @@ const describeFrameworkIde = process.env['E2E_IDE'] === '1' ? describe : describ
 const wait = (timeout: number) => new Promise(resolve => setTimeout(resolve, timeout))
 const transientIdeErrorPatterns = [
   /DevTools did not respond to protocol method/i,
+  /Failed to launch wechat web devTools/i,
   /Framework IDE probe reLaunch timed out/i,
+  /page ".*" is not found/i,
 ]
 
 function readNumberEnv(name: string, fallback: number) {
@@ -17,12 +19,15 @@ function readNumberEnv(name: string, fallback: number) {
 function getProbeTiming() {
   const timeoutMs = readNumberEnv('E2E_AUTOMATOR_TIMEOUT_MS', 30_000)
   const closeTimeoutMs = readNumberEnv('E2E_IDE_CLOSE_TIMEOUT_MS', 10_000)
+  const hotUpdateTimeoutMs = process.env['E2E_IDE_HOT_UPDATE'] === '0'
+    ? 0
+    : readNumberEnv('E2E_IDE_HOT_UPDATE_TIMEOUT_MS', readNumberEnv('E2E_WATCH_TIMEOUT_MS', 240_000))
   const buildTimeoutMs = process.env['E2E_IDE_BUILD'] === '1'
     ? readNumberEnv('E2E_IDE_BUILD_TIMEOUT_MS', 120_000)
     : 0
   const settleTimeoutMs = readNumberEnv('E2E_IDE_SETTLE_MS', 1500)
   const maxAttempts = readNumberEnv('E2E_IDE_PROBE_RETRIES', 2) + 1
-  const attemptTimeoutMs = buildTimeoutMs + timeoutMs + closeTimeoutMs + 5000
+  const attemptTimeoutMs = buildTimeoutMs + hotUpdateTimeoutMs + timeoutMs + closeTimeoutMs + 5000
   const testTimeoutMs = (attemptTimeoutMs + settleTimeoutMs) * maxAttempts
 
   return {
@@ -65,7 +70,7 @@ function isTransientIdeError(error: unknown) {
 }
 
 async function runFrameworkIdeProbe(entryName: string, timeoutMs: number, testTimeoutMs: number) {
-  await execa('node', ['--import', 'tsx', './e2e/frameworkIdeProbe.ts', entryName], {
+  const result = await execa('node', ['--import', 'tsx', './e2e/frameworkIdeProbe.ts', entryName], {
     cwd: process.cwd(),
     env: {
       ...process.env,
@@ -77,6 +82,15 @@ async function runFrameworkIdeProbe(entryName: string, timeoutMs: number, testTi
     killSignal: 'SIGKILL',
     forceKillAfterDelay: 1000,
   })
+  if (process.env['E2E_IDE_DEBUG'] !== '1') {
+    const visibleLines = result.stdout
+      ?.split(/\r?\n/)
+      .filter(line => line.includes('[e2e:ide]'))
+      .join('\n')
+    if (visibleLines) {
+      process.stdout.write(`${visibleLines}\n`)
+    }
+  }
 }
 
 describeFrameworkIde.sequential('framework support matrix ide', () => {
@@ -86,8 +100,33 @@ describeFrameworkIde.sequential('framework support matrix ide', () => {
     }
   })
 
+  it('covers Tailwind CSS v3 and v4 IDE hot updates for every supported framework family', () => {
+    if (process.env['E2E_PROJECT_FILTER']) {
+      return
+    }
+
+    const requiredPairs = [
+      ['uni-app', 'v3'],
+      ['uni-app', 'v4'],
+      ['taro', 'v3'],
+      ['taro', 'v4'],
+      ['mpx', 'v3'],
+      ['mpx', 'v4'],
+      ['native', 'v3'],
+      ['native', 'v4'],
+    ] as const
+    const ideCases = getFrameworkIdeCases()
+
+    for (const [framework, tailwindcss] of requiredPairs) {
+      expect(
+        ideCases.some(entry => entry.framework === framework && entry.tailwindcss === tailwindcss),
+        `${framework} should run tailwindcss@${tailwindcss.slice(1)} in e2e:ide`,
+      ).toBe(true)
+    }
+  })
+
   for (const entry of getFrameworkIdeCases()) {
-    it(`${entry.name} opens in WeChat DevTools automator`, async () => {
+    it(`${entry.name} opens in WeChat DevTools automator and applies a visible hot update`, async () => {
       const {
         attemptTimeoutMs,
         maxAttempts,

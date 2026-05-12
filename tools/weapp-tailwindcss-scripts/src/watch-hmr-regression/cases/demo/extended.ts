@@ -25,6 +25,12 @@ const taroWatchEnv = {
   WATCHPACK_POLLING: 'true',
 }
 
+const taroViteWatchEnv = {
+  ...taroWatchEnv,
+  NODE_ENV: 'production',
+  TARO_E2E_WATCH_NATIVE: '0',
+}
+
 export function buildDemoExtendedCases(baseCwd: string): WatchCase[] {
   const uniAppVue3ViteCase: WatchCase = {
     name: 'uni-app-vue3-vite',
@@ -220,9 +226,9 @@ export function buildDemoExtendedCases(baseCwd: string): WatchCase[] {
     label: 'demo/mpx-tailwindcss-v4',
     project: 'demo/mpx-tailwindcss-v4',
     group: 'demo',
+    initialMutationDelayMs: 5_000,
     cwd: path.resolve(baseCwd, 'demo/mpx-tailwindcss-v4'),
     devScript: 'dev',
-    skipStyleMutation: true,
     outputWxml: path.resolve(baseCwd, 'demo/mpx-tailwindcss-v4/dist/wx/custom-tab-bar/index.wxml'),
     outputJs: path.resolve(baseCwd, 'demo/mpx-tailwindcss-v4/dist/wx/custom-tab-bar/index.js'),
     outputStyleCandidates: [
@@ -349,7 +355,7 @@ export function buildDemoExtendedCases(baseCwd: string): WatchCase[] {
     initialMutationDelayMs: 5_000,
     cwd: path.resolve(baseCwd, 'demo/taro-vite-tailwindcss-v4'),
     devScript: 'dev:e2e-watch',
-    env: taroWatchEnv,
+    env: taroViteWatchEnv,
     outputWxml: path.resolve(baseCwd, 'demo/taro-vite-tailwindcss-v4/dist/pages/index/index.wxml'),
     outputJs: path.resolve(baseCwd, 'demo/taro-vite-tailwindcss-v4/dist/pages/index/index.js'),
     outputStyleCandidates: [
@@ -414,7 +420,7 @@ export function buildDemoExtendedCases(baseCwd: string): WatchCase[] {
     initialMutationDelayMs: 5_000,
     cwd: path.resolve(baseCwd, 'demo/taro-vite-tailwindcss-v5'),
     devScript: 'dev:e2e-watch',
-    env: taroWatchEnv,
+    env: taroViteWatchEnv,
     outputWxml: path.resolve(baseCwd, 'demo/taro-vite-tailwindcss-v5/dist/pages/index/index.wxml'),
     outputJs: path.resolve(baseCwd, 'demo/taro-vite-tailwindcss-v5/dist/pages/index/index.js'),
     outputStyleCandidates: [
@@ -476,7 +482,7 @@ export function buildDemoExtendedCases(baseCwd: string): WatchCase[] {
     initialMutationDelayMs: 5_000,
     cwd: path.resolve(baseCwd, 'demo/taro-app-vite'),
     devScript: 'dev:e2e-watch',
-    env: taroWatchEnv,
+    env: taroViteWatchEnv,
     outputWxml: path.resolve(baseCwd, 'demo/taro-app-vite/dist/pages/index/index.wxml'),
     outputJs: path.resolve(baseCwd, 'demo/taro-app-vite/dist/pages/index/index.js'),
     outputStyleCandidates: [

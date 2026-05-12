@@ -1,0 +1,210 @@
+import type {
+  CliOptions,
+  WatchCase,
+} from '../tools/weapp-tailwindcss-scripts/src/watch-hmr-regression/types'
+import type { FrameworkSupportCase } from './frameworkSupportMatrix'
+import fs from 'node:fs/promises'
+import process from 'node:process'
+import { buildCases } from '../tools/weapp-tailwindcss-scripts/src/watch-hmr-regression/cases'
+import {
+  waitForInitialWarmup,
+  waitForOutputsReady,
+} from '../tools/weapp-tailwindcss-scripts/src/watch-hmr-regression/mutations'
+import { createWatchSession, runPnpmCommand, sleep } from '../tools/weapp-tailwindcss-scripts/src/watch-hmr-regression/session'
+import { getMtime, readFileIfExists, waitFor, writeFilePreserveEol } from '../tools/weapp-tailwindcss-scripts/src/watch-hmr-regression/text'
+import { runIdeClassHotUpdate } from './frameworkIdeClassHotUpdate'
+import { runIdeStyleHotUpdate } from './frameworkIdeStyleHotUpdate'
+
+const TARO_VITE_INITIAL_BUILD_RE = /built in [\d.]+s?|compiled successfully|构建完成/i
+
+const frameworkIdeWatchCaseNames: Record<string, WatchCase['name']> = {
+  'uni-app-vue3-vite-tailwindcss-v3': 'uni-app-vue3-vite',
+  'uni-app-vite-tailwindcss-v4': 'uni-app-tailwindcss-v4',
+  'taro-react-webpack-tailwindcss-v3': 'taro',
+  'taro-react-webpack-tailwindcss-v4': 'taro-webpack-tailwindcss-v4',
+  'taro-react-vite-tailwindcss-v3': 'taro-app-vite',
+  'taro-react-vite-tailwindcss-v4': 'taro-vite-tailwindcss-v4',
+  'taro-vue3-webpack-tailwindcss-v3': 'taro-vue3-app',
+  'taro-apps-webpack-tailwindcss-v4': 'taro-webpack',
+  'mpx-webpack-tailwindcss-v3': 'mpx',
+  'mpx-webpack-tailwindcss-v4': 'mpx-tailwindcss-v4',
+  'gulp-tailwindcss-v3': 'gulp-app',
+  'weapp-vite-native-tailwindcss-v4': 'vite-native',
+  'weapp-vite-native-ts-tailwindcss-v3': 'vite-native-ts',
+}
+
+function readNumberEnv(name: string, fallback: number) {
+  const raw = process.env[name]
+  if (!raw) {
+    return fallback
+  }
+  const value = Number(raw)
+  return Number.isFinite(value) ? value : fallback
+}
+
+function createWatchOptions(): CliOptions {
+  return {
+    caseName: 'all',
+    maxHotUpdateMs: readNumberEnv('E2E_IDE_MAX_HOT_UPDATE_MS', 60_000),
+    pollMs: readNumberEnv('E2E_IDE_HOT_UPDATE_POLL_MS', readNumberEnv('E2E_WATCH_POLL_MS', 240)),
+    quietSass: true,
+    skipBuild: true,
+    timeoutMs: readNumberEnv('E2E_IDE_HOT_UPDATE_TIMEOUT_MS', readNumberEnv('E2E_WATCH_TIMEOUT_MS', 240_000)),
+  }
+}
+
+function resolveFrameworkWatchCase(entry: FrameworkSupportCase) {
+  const watchCaseName = frameworkIdeWatchCaseNames[entry.name]
+  if (!watchCaseName) {
+    throw new Error(`Missing IDE hot-update watch case mapping for ${entry.name}`)
+  }
+
+  const root = process.cwd()
+  const watchCase = buildCases(root).find(item => item.name === watchCaseName)
+  if (!watchCase) {
+    throw new Error(`Missing IDE hot-update watch case ${watchCaseName} for ${entry.name}`)
+  }
+  return watchCase
+}
+
+function shouldWaitForTaroViteInitialBuild(watchCase: WatchCase) {
+  return watchCase.name === 'taro-app-vite' || watchCase.name === 'taro-vite-tailwindcss-v4'
+}
+
+async function waitForTaroViteInitialBuild(
+  watchCase: WatchCase,
+  options: CliOptions,
+  session: ReturnType<typeof createWatchSession>,
+  sessionStartedAt: number,
+) {
+  const stableWindowMs = Math.min(Math.max(options.pollMs * 4, 1500), 3000)
+  await waitFor(
+    async () => {
+      if (TARO_VITE_INITIAL_BUILD_RE.test(session.logs())) {
+        return true
+      }
+
+      const [wxmlMtime, jsMtime] = await Promise.all([
+        getMtime(watchCase.outputWxml),
+        getMtime(watchCase.outputJs),
+      ])
+      const latestOutputMtime = Math.max(wxmlMtime, jsMtime)
+      return latestOutputMtime > sessionStartedAt
+        && Date.now() - latestOutputMtime >= stableWindowMs
+    },
+    {
+      timeoutMs: options.timeoutMs,
+      pollMs: options.pollMs,
+      message: `[${watchCase.label}] Taro/Vite initial build did not finish before IDE HMR mutation`,
+      onTick: session.ensureRunning,
+    },
+    sessionStartedAt,
+  )
+}
+
+async function waitForIdeWatchReady(
+  watchCase: WatchCase,
+  options: CliOptions,
+  session: ReturnType<typeof createWatchSession>,
+  sessionStartedAt: number,
+) {
+  const [wxml, js] = await Promise.all([
+    readFileIfExists(watchCase.outputWxml),
+    readFileIfExists(watchCase.outputJs),
+  ])
+
+  if (wxml == null || js == null) {
+    await waitForOutputsReady(watchCase, options, session, sessionStartedAt)
+  }
+
+  await waitForInitialWarmup(watchCase, options, session, sessionStartedAt)
+
+  if (shouldWaitForTaroViteInitialBuild(watchCase)) {
+    await waitForTaroViteInitialBuild(watchCase, options, session, sessionStartedAt)
+  }
+}
+
+export async function runFrameworkIdeHotUpdateProbe(
+  entry: FrameworkSupportCase,
+  miniProgram: any,
+  page: any,
+  pageUrl: string,
+  launchProjectPath: string,
+) {
+  const watchCase = resolveFrameworkWatchCase(entry)
+  const options = createWatchOptions()
+  const sourceFiles = [...new Set([
+    watchCase.templateMutation.sourceFile,
+    watchCase.scriptMutation.sourceFile,
+    watchCase.skipStyleMutation ? undefined : watchCase.styleMutation.sourceFile,
+  ].filter((item): item is string => Boolean(item)))]
+  const sourceOriginals = new Map<string, string>()
+
+  for (const sourceFile of sourceFiles) {
+    sourceOriginals.set(sourceFile, await fs.readFile(sourceFile, 'utf8'))
+  }
+
+  if (watchCase.initialBuildScript) {
+    await runPnpmCommand(watchCase.cwd, ['run', watchCase.initialBuildScript], 'ide-prebuild')
+  }
+
+  const sessionStartedAt = Date.now()
+  const session = createWatchSession(watchCase.cwd, watchCase.devScript, {
+    quietSass: options.quietSass,
+  }, watchCase.env)
+
+  try {
+    await waitForIdeWatchReady(watchCase, options, session, sessionStartedAt)
+
+    if ((watchCase.initialMutationDelayMs ?? 0) > 0) {
+      await sleep(watchCase.initialMutationDelayMs!)
+      session.ensureRunning()
+    }
+
+    await runIdeClassHotUpdate(
+      options,
+      watchCase,
+      session,
+      'template',
+      sourceOriginals.get(watchCase.templateMutation.sourceFile)!,
+      miniProgram,
+      page,
+      pageUrl,
+      launchProjectPath,
+    )
+    await runIdeClassHotUpdate(
+      options,
+      watchCase,
+      session,
+      'script',
+      sourceOriginals.get(watchCase.scriptMutation.sourceFile)!,
+      miniProgram,
+      page,
+      pageUrl,
+      launchProjectPath,
+    )
+    if (!watchCase.skipStyleMutation) {
+      await runIdeStyleHotUpdate(
+        entry,
+        options,
+        watchCase,
+        session,
+        sourceOriginals.get(watchCase.styleMutation.sourceFile)!,
+      )
+    }
+  }
+  catch (error) {
+    const message = error instanceof Error ? error.message : String(error)
+    throw new Error(`${message}\n[${watchCase.label}] recent watch logs:\n${session.logs()}`)
+  }
+  finally {
+    for (const [sourceFile, sourceOriginal] of sourceOriginals) {
+      try {
+        await writeFilePreserveEol(sourceFile, sourceOriginal, sourceOriginal)
+      }
+      catch {
+      }
+    }
+    await session.stop()
+  }
+}

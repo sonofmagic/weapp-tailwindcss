@@ -88,10 +88,11 @@ const compileSuccessLinePatterns = [
   /compiled successfully/i,
   /build complete/i,
   /watching for changes/i,
+  /watching for file changes/i,
   /ready in \d+/i,
   /dev(?:elopment)? server ready/i,
   /开发服务已就绪/u,
-  /built in \d+/i,
+  /built in [\d.]+s?/i,
   /构建完成/u,
 ] as const
 
