@@ -181,7 +181,8 @@ describe('e2e watch workflow', () => {
       watch_case: 'apps',
       round_profile: 'default',
       timeout_minutes: 70,
-      watch_timeout_ms: '720000',
+      watch_timeout_ms: '1200000',
+      watch_max_hot_update_ms: '1200000',
       watch_command_timeout_ms: '1800000',
     }))
     expect(nightlyRows).toContainEqual(expect.objectContaining({
@@ -217,8 +218,22 @@ describe('e2e watch workflow', () => {
       watch_case: 'all',
       round_profile: 'default',
       timeout_minutes: 180,
-      watch_timeout_ms: '720000',
+      watch_timeout_ms: '1200000',
+      watch_max_hot_update_ms: '1200000',
       watch_command_timeout_ms: '9000000',
     }))
+  })
+
+  it('uses node-version specific artifact names for matrix rows that share case names', () => {
+    const { workflow } = readWorkflow('e2e-watch.yml')
+    const uploadSteps = [
+      ...workflow.jobs['pr-quick-gate'].steps,
+      ...workflow.jobs['nightly-full-regression'].steps,
+    ].filter((step: Record<string, unknown>) => step.uses === 'actions/upload-artifact@v4')
+
+    expect(uploadSteps.length).toBe(4)
+    for (const step of uploadSteps) {
+      expect(step.with?.name).toContain("node${{ matrix['node-version'] || 22 }}")
+    }
   })
 })
