@@ -78,12 +78,14 @@
     "generator-config-option",
     "generator-plugin-compatibility",
     "init-generator-postcss-config",
+    "quiet-target-record-log",
     "quiet-v4-generator-upgrade-coverage",
     "remove-init-postinstall-patch",
     "remove-legacy-generator-mode",
     "remove-obsolete-patcher-compat",
     "remove-weapp-tailwindcss-mangle-remnants",
     "remove-webpack4-postcss7",
+    "tailwind-v3-clean-install-runtime",
     "tailwind-v3-compatibility-defaults",
     "tailwind-v3-generator-auto-compat",
     "tailwind-v3-uni-generator-apply",
@@ -91,6 +93,7 @@
     "tailwind-v4-colors-generator",
     "tailwind-v4-dark-attribute-weapp",
     "tailwind-v4-dark-mode-generator",
+    "tailwind-v4-default-preflight",
     "tailwind-v4-preflight-generator",
     "tailwind-v4-source-detection-generator",
     "tailwind-v4-subpath-imports",
@@ -100,6 +103,7 @@
     "upgrade-tailwindcss-patch-latest",
     "v5-source-discovery",
     "vite-generator-watch-deps",
+    "watch-hmr-demo-apps-coverage",
     "weapp-tailwindcss-plugin-alias"
   ]
 }
