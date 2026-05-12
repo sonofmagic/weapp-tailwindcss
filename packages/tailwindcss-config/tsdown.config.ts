@@ -7,4 +7,10 @@ export default defineConfig({
   clean: true,
   dts: false,
   target: ['es2020'],
+  outExtensions({ format }) {
+    return {
+      js: format === 'es' ? '.js' : '.cjs',
+      dts: '.d.ts',
+    }
+  },
 })

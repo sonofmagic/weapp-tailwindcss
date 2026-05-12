@@ -3,7 +3,7 @@ import fs from 'node:fs/promises'
 import path from 'node:path'
 import process from 'node:process'
 
-const versions = [
+const defaultVersions = [
   { version: '4.9.8', root: '/tmp/weapp-tailwindcss-4.9.8' },
   { version: '4.10.2', root: '/tmp/weapp-tailwindcss-4.10.2' },
 ]
@@ -99,6 +99,28 @@ function parseString(flag, fallback) {
     return fallback
   }
   return process.argv[idx + 1] ?? fallback
+}
+
+async function parseVersions() {
+  const versionsFile = parseString('--versions-file', '')
+  if (!versionsFile) {
+    return defaultVersions
+  }
+
+  const versions = JSON.parse(await fs.readFile(path.resolve(versionsFile), 'utf8'))
+  if (!Array.isArray(versions) || versions.length < 2) {
+    throw new TypeError('--versions-file must contain at least two version roots')
+  }
+
+  return versions.map((item) => {
+    if (typeof item?.version !== 'string' || typeof item?.root !== 'string') {
+      throw new TypeError('--versions-file entries must include string version and root')
+    }
+    return {
+      version: item.version,
+      root: path.resolve(item.root),
+    }
+  })
 }
 
 function now() {
@@ -413,6 +435,7 @@ async function main() {
   const pollIntervalMs = parseNumber('--poll-interval', 120)
   const output = parseString('--out', 'benchmark/version-compare/data/matrix-raw.json')
   const only = parseString('--only', '')
+  const versions = await parseVersions()
 
   const options = { buildRuns, hmrRuns, timeoutMs, pollIntervalMs }
   const rows = []

@@ -109,6 +109,38 @@ describe('ci workflows', () => {
     expect(releaseStep.env.NPM_TOKEN).toBeUndefined()
     expect(releaseStep.env.NODE_AUTH_TOKEN).toBeUndefined()
   })
+
+  it('runs current vs published benchmark on every ci/cd trigger', () => {
+    const { workflow } = readWorkflow('benchmark.yml')
+    const packageJson = readPackageJson<{ scripts: Record<string, string> }>('package.json')
+    const runs = stepRuns(workflow, 'current-vs-published').join('\n')
+
+    expect(packageJson.scripts['bench:ci']).toBe('node benchmark/version-compare/scripts/run-ci.mjs')
+    expect(workflow.on.pull_request.types).toEqual([
+      'opened',
+      'synchronize',
+      'reopened',
+      'ready_for_review',
+    ])
+    expect(workflow.on.push.branches).toEqual([
+      'main',
+      'alpha',
+      'beta',
+      'rc',
+      'next',
+    ])
+    expect(workflow.on.workflow_dispatch.inputs.baseline.default).toBe('auto')
+    expect(workflow.jobs['current-vs-published']['timeout-minutes']).toBe(180)
+    expect(workflow.jobs['current-vs-published'].env.WEAPP_TW_BENCH_BASELINE).toContain('auto')
+    expect(runs).toContain('pnpm install --frozen-lockfile')
+    expect(runs).toContain('pnpm bench:ci --')
+    expect(runs).toContain('--result-dir .tmp/benchmark-ci/result')
+    expect(workflow.jobs['current-vs-published'].steps.some((step: Record<string, unknown>) => {
+      const withConfig = step.with as Record<string, unknown> | undefined
+      return step.uses === 'actions/upload-artifact@v4'
+        && withConfig?.name === 'benchmark-current-vs-published'
+    })).toBe(true)
+  })
 })
 
 describe('e2e watch workflow', () => {
