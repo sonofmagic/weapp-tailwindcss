@@ -15,7 +15,12 @@ import path from 'node:path'
 import { replaceWxml } from '../../core/replace-wxml'
 import { formatPath } from '../cli'
 import { getMtime, readFileIfExists, waitFor } from '../text'
-import { DEFAULT_STYLE_APPLY_VALIDATION, STYLE_APPLY_UNSUPPORTED_CASES } from '../types'
+import {
+  DEFAULT_STYLE_APPLY_VALIDATION,
+  STYLE_APPLY_UNSUPPORTED_CASES,
+  STYLE_FUNCTION_UNSUPPORTED_CASES,
+  STYLE_REFERENCE_REQUIRED_CASES,
+} from '../types'
 
 const GLOB_TOKEN_RE = /[*?]/
 const REGEXP_ESCAPE_RE = /[.*+?^${}()|[\]\\]/g
@@ -363,11 +368,23 @@ export function createStyleMutationPayload(watchCase: WatchCase): StyleMutationP
   const applyValidation = STYLE_APPLY_UNSUPPORTED_CASES.has(watchCase.name)
     ? undefined
     : DEFAULT_STYLE_APPLY_VALIDATION
+  const functionNeedle = STYLE_FUNCTION_UNSUPPORTED_CASES.has(watchCase.name)
+    ? undefined
+    : `.${marker}-theme`
   return {
     marker,
     styleNeedle: `.${marker}`,
     applyUtilities: applyValidation?.utilities ?? [],
     expectedApplyDeclarations: applyValidation?.expectedDeclarations ?? [],
+    ...(functionNeedle ? { functionNeedle } : {}),
+    functionDeclarations: functionNeedle
+      ? ['padding: theme(\'spacing.2\');', 'margin-left: theme(\'spacing.3\');']
+      : [],
+    expectedFunctionDeclarations: functionNeedle ? ['padding:', 'margin-left:'] : [],
+    forbiddenFunctionFragments: functionNeedle ? ['theme('] : [],
+    ...(STYLE_REFERENCE_REQUIRED_CASES.has(watchCase.name)
+      ? { referenceDirective: '@reference "tailwindcss";' }
+      : {}),
   }
 }
 

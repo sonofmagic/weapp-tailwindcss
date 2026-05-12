@@ -47,6 +47,11 @@ export interface StyleMutationPayload {
   styleNeedle: string
   applyUtilities: string[]
   expectedApplyDeclarations: string[]
+  functionNeedle?: string
+  functionDeclarations: string[]
+  expectedFunctionDeclarations: string[]
+  forbiddenFunctionFragments: string[]
+  referenceDirective?: string
 }
 
 export interface MutationRoundConfig {
@@ -217,6 +222,10 @@ export interface StyleMutationMetrics {
   styleNeedle: string
   applyUtilities: string[]
   expectedApplyDeclarations: string[]
+  functionNeedle?: string
+  functionDeclarations: string[]
+  expectedFunctionDeclarations: string[]
+  forbiddenFunctionFragments: string[]
   hotUpdateOutputMs: number
   hotUpdateEffectiveMs: number
   rollbackOutputMs: number
@@ -296,4 +305,21 @@ export const STYLE_APPLY_UNSUPPORTED_CASES = new Set<ConcreteWatchCaseName>([
   'taro-vite-tailwindcss-v5',
   'taro-webpack-tailwindcss-v4',
   'taro-webpack',
+])
+
+export const STYLE_FUNCTION_UNSUPPORTED_CASES = new Set<ConcreteWatchCaseName>([
+  'uni-app-tailwindcss-v5',
+  'mpx-tailwindcss-v5',
+  'taro-vite-tailwindcss-v5',
+  'vite-native-skyline',
+  'vite-native-ts-skyline',
+])
+
+export const STYLE_REFERENCE_REQUIRED_CASES = new Set<ConcreteWatchCaseName>([
+  'uni-app-tailwindcss-v4',
+  'mpx-tailwindcss-v4',
+  'taro-vite-tailwindcss-v4',
+  'taro-webpack-tailwindcss-v4',
+  'taro-webpack',
+  'vite-native',
 ])

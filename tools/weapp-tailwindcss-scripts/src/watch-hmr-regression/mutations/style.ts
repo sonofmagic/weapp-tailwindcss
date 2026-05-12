@@ -123,6 +123,27 @@ export async function runStyleMutation(
       }
     }
   }
+  if (payload.functionNeedle && payload.expectedFunctionDeclarations.length > 0) {
+    const updatedFunctionRuleBody = findCssRuleBody(updatedStyle, payload.functionNeedle)
+    if (!updatedFunctionRuleBody) {
+      throw new Error(`[${watchCase.label}] failed to locate Tailwind function rule body for ${payload.functionNeedle}`)
+    }
+    const normalizedFunctionRuleBody = normalizeCssDeclaration(updatedFunctionRuleBody)
+    for (const forbiddenFragment of payload.forbiddenFunctionFragments) {
+      if (updatedFunctionRuleBody.includes(forbiddenFragment)) {
+        throw new Error(
+          `[${watchCase.label}] style Tailwind function was not resolved: ${forbiddenFragment}, rule=${payload.functionNeedle}`,
+        )
+      }
+    }
+    for (const expectedDeclaration of payload.expectedFunctionDeclarations) {
+      if (!normalizedFunctionRuleBody.includes(normalizeCssDeclaration(expectedDeclaration))) {
+        throw new Error(
+          `[${watchCase.label}] style Tailwind function declaration missing: ${expectedDeclaration}, rule=${payload.functionNeedle}`,
+        )
+      }
+    }
+  }
 
   const outputCandidateMtimesAfterHotUpdate = await collectOutputCandidateMtimes()
   const rollbackStartedAt = Date.now()
@@ -183,6 +204,10 @@ export async function runStyleMutation(
     styleNeedle: payload.styleNeedle,
     applyUtilities: payload.applyUtilities,
     expectedApplyDeclarations: payload.expectedApplyDeclarations,
+    ...(payload.functionNeedle ? { functionNeedle: payload.functionNeedle } : {}),
+    functionDeclarations: payload.functionDeclarations,
+    expectedFunctionDeclarations: payload.expectedFunctionDeclarations,
+    forbiddenFunctionFragments: payload.forbiddenFunctionFragments,
     hotUpdateOutputMs,
     hotUpdateEffectiveMs,
     rollbackOutputMs,

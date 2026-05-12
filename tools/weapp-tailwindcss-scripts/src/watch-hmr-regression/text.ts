@@ -202,7 +202,16 @@ export function createStyleRuleSnippet(payload: StyleMutationPayload) {
   const applySnippet = payload.applyUtilities.length > 0
     ? ` @apply ${payload.applyUtilities.join(' ')};`
     : ''
-  return `${payload.styleNeedle} {${applySnippet} color: #${colorSeed}; }`
+  const lines = [
+    payload.referenceDirective,
+    `${payload.styleNeedle} {${applySnippet} color: #${colorSeed}; }`,
+  ]
+
+  if (payload.functionNeedle && payload.functionDeclarations.length > 0) {
+    lines.push(`${payload.functionNeedle} { ${payload.functionDeclarations.join(' ')} }`)
+  }
+
+  return lines.filter(Boolean).join('\n')
 }
 
 export function mutateScriptByDataAnchor(source: string, dataAnchor: string, payload: ClassMutationPayload, indent = '    ') {
