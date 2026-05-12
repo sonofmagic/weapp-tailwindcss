@@ -96,10 +96,14 @@ describe('ci workflows', () => {
 
   it('keeps release publishing on npm trusted publishing', () => {
     const { workflow } = readWorkflow('release.yml')
+    const setupNodeStep = workflow.jobs.release.steps.find((step: Record<string, unknown>) => {
+      return step.uses === 'actions/setup-node@v6'
+    })
     const releaseStep = workflow.jobs.release.steps.find((step: Record<string, unknown>) => {
       return step.id === 'changesets'
     })
 
+    expect(setupNodeStep.with['node-version']).toBe(24)
     expect(workflow.permissions['id-token']).toBe('write')
     expect(releaseStep.env.NPM_CONFIG_PROVENANCE).toBe(true)
     expect(releaseStep.env.NPM_TOKEN).toBeUndefined()
