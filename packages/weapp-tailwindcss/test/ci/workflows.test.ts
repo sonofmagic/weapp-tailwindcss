@@ -85,17 +85,24 @@ describe('ci workflows', () => {
 })
 
 describe('e2e watch workflow', () => {
-  it('triggers when core package, platform demos, scripts, or lockfiles change', () => {
+  it('triggers when core package, e2e fixtures, platform demos, scripts, or lockfiles change', () => {
     const { workflow } = readWorkflow('e2e-watch.yml')
 
     expect(workflow.on.pull_request.paths).toEqual(expect.arrayContaining([
       'packages/weapp-tailwindcss/**',
-      'e2e/watch/**',
+      'e2e/**',
+      'tools/weapp-tailwindcss-scripts/**',
       'demo/**',
       'apps/**',
       'scripts/**',
+      '.github/scripts/**',
+      'package.json',
       'pnpm-lock.yaml',
+      'pnpm-workspace.yaml',
       '.github/workflows/e2e-watch.yml',
+      '!website/**',
+      '!**/*.md',
+      '!.changeset/**',
     ]))
   })
 
@@ -111,6 +118,9 @@ describe('e2e watch workflow', () => {
       'macos:22:uni-app-vue3-vite:issue33',
       'macos:22:weapp-vite:issue33',
       'macos:22:taro-webpack:issue33',
+      'macos:22:uni-app-tailwindcss-v4:default',
+      'macos:22:mpx-tailwindcss-v4:default',
+      'macos:22:vite-native:issue33',
       'macos:22:vite-native-ts:issue33',
       'windows:22:uni:default',
       'windows:22:mpx:default',
@@ -118,6 +128,8 @@ describe('e2e watch workflow', () => {
       'windows:22:uni-app-vue3-vite:issue33',
       'windows:22:weapp-vite:issue33',
       'windows:22:taro-webpack:issue33',
+      'windows:22:mpx-tailwindcss-v4:default',
+      'windows:22:vite-native:issue33',
       'windows:22:vite-native-ts:issue33',
     ]))
     expect(stepRuns(workflow, 'pr-quick-gate')).toContain('pnpm e2e:watch')
