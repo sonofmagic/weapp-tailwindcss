@@ -653,6 +653,21 @@ describe('watch-hmr regression cases', () => {
     expect(roundConfig?.buildModifyClassTokens?.('seed')).toEqual([...ISSUE33_MODIFY_CLASS_TOKENS])
   })
 
+  it('keeps the uni-app Vue3 Vite content mutation anchored to the current page fixture', () => {
+    const uniAppCase = buildDemoExtendedCases('/repo').find(watchCase => watchCase.name === 'uni-app-vue3-vite')
+    const contentMutation = uniAppCase?.contentMutation
+
+    expect(contentMutation).toBeDefined()
+    expect(contentMutation?.mutate(
+      [
+        'const numClassObj = ref({',
+        '  \'2xl:text-[red]\': true',
+        '})',
+      ].join('\n'),
+      payload,
+    )).toContain('\'text-[#123456]\':true')
+  })
+
   it('keeps enough fresh class candidates after watch mode accumulates earlier classes', () => {
     const [roundConfig] = buildHexScriptRoundConfigs()
     if (!roundConfig) {
@@ -981,6 +996,7 @@ describe('watch-hmr regression cases', () => {
       expect(env?.E2E_WATCH_MAX_HOT_UPDATE_MS).toBe(
         "${{ matrix.watch_max_hot_update_ms || (matrix.runner_label == 'windows' && '30000' || '15000') }}",
       )
+      expect(env?.NODE_OPTIONS).toBe('--max-old-space-size=6144')
     }
   })
 })

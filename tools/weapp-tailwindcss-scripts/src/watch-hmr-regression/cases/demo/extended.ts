@@ -87,7 +87,7 @@ export function buildDemoExtendedCases(baseCwd: string): WatchCase[] {
       mutate(source, payload) {
         return mutateVueScriptSetupObjectKeyByAnchor(
           source,
-          '\'bg-[#000]\':true',
+          '\'2xl:text-[red]\': true',
           payload,
         )
       },

@@ -152,4 +152,37 @@ describe('e2e watch workflow', () => {
     ]))
     expect(stepRuns(workflow, 'nightly-full-regression')).toContain('pnpm e2e:watch')
   })
+
+  it('keeps expanded budgets for known slow e2e watch rows', () => {
+    const { workflow } = readWorkflow('e2e-watch.yml')
+    const prRows: Array<Record<string, unknown>> = workflow.jobs['pr-quick-gate'].strategy.matrix.include
+    const nightlyRows: Array<Record<string, unknown>> = workflow.jobs['nightly-full-regression'].strategy.matrix.include
+
+    const slowMacosWeappViteBudget = {
+      os: 'macos-latest',
+      runner_label: 'macos',
+      watch_case: 'weapp-vite',
+      round_profile: 'issue33',
+      timeout_minutes: 60,
+      watch_timeout_ms: '600000',
+      watch_max_hot_update_ms: '60000',
+      watch_command_timeout_ms: '1500000',
+    }
+
+    expect(prRows).toContainEqual(expect.objectContaining(slowMacosWeappViteBudget))
+    expect(nightlyRows).toContainEqual(expect.objectContaining(slowMacosWeappViteBudget))
+    expect(nightlyRows).toContainEqual(expect.objectContaining({
+      ...slowMacosWeappViteBudget,
+      'node-version': 24,
+    }))
+    expect(nightlyRows).toContainEqual(expect.objectContaining({
+      os: 'windows-latest',
+      runner_label: 'windows',
+      watch_case: 'apps',
+      round_profile: 'default',
+      timeout_minutes: 70,
+      watch_timeout_ms: '720000',
+      watch_command_timeout_ms: '1800000',
+    }))
+  })
 })
