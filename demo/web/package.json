@@ -9,6 +9,8 @@
   "scripts": {
     "start": "node ./index.js",
     "build": "node ./index.js",
+    "build:v3": "node ./index.js v3",
+    "build:v4": "node ./index.js v4",
     "build:babel": "node ./index.js"
   },
   "dependencies": {
@@ -16,11 +18,13 @@
     "postcss": "catalog:postcss85"
   },
   "devDependencies": {
+    "@tailwindcss/postcss": "catalog:tailwindcss4",
     "@weapp-tailwindcss/merge-v3": "workspace:*",
     "@weapp-tailwindcss/variants-v3": "workspace:*",
     "postcss-rem-to-responsive-pixel": "catalog:postcssRem",
     "postcss-rpx-transform": "catalog:postcssRpx",
     "tailwindcss": "catalog:tailwindcss3",
+    "tailwindcss4": "catalog:tailwindcss4",
     "tailwindcss-patch": "catalog:tailwindcssPatch",
     "tailwindcss-rem2px-preset": "catalog:tailwindcssRem",
     "weapp-ide-cli": "catalog:weappIdeCli",

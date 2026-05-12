@@ -3521,6 +3521,9 @@ importers:
         specifier: catalog:postcss85
         version: 8.5.14
     devDependencies:
+      '@tailwindcss/postcss':
+        specifier: catalog:tailwindcss4
+        version: 4.3.0
       '@weapp-tailwindcss/merge-v3':
         specifier: workspace:*
         version: link:../../packages-runtime/merge-v3
@@ -3542,6 +3545,9 @@ importers:
       tailwindcss-rem2px-preset:
         specifier: catalog:tailwindcssRem
         version: 1.0.3(tailwindcss@3.4.19(tsx@4.21.0)(yaml@2.9.0))
+      tailwindcss4:
+        specifier: catalog:tailwindcss4
+        version: tailwindcss@4.2.4
       weapp-ide-cli:
         specifier: catalog:weappIdeCli
         version: 5.2.9
