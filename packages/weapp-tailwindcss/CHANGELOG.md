@@ -1,5 +1,20 @@
 # weapp-tailwindcss
 
+## 5.0.0-next.7
+
+### Patch Changes
+
+- 🐛 **精简 `weapp-tw patch` 兼容链路：该命令在 v5 中改为无需执行的兼容提示，移除目标记录、workspace 批量 patch、运行时 `twPatcher.patch()` 初始化调用与手动 patch 状态检查相关逻辑，由构建运行时直接接管 Tailwind CSS 处理。** [#855](https://github.com/sonofmagic/weapp-tailwindcss/pull/855) by @github-actions
+
+- 🐛 **修复全新安装后 Tailwind CSS v3 未自动准备运行时补丁导致的 `rpx` 任意值误判、生成模式 classSet 为空，以及 Vite/JS 任意值类名未转译问题。** [#855](https://github.com/sonofmagic/weapp-tailwindcss/pull/855) by @github-actions
+
+- 🐛 **按 Tailwind CSS 主版本解析默认 `cssPreflight`，v4 运行时改用 `margin: 0`、`padding: 0` 和 `border: 0 solid`，避免继续注入 v3 的拆分边框默认值。** [#855](https://github.com/sonofmagic/weapp-tailwindcss/pull/855) by @github-actions
+
+- 🐛 **修复 Vite watch 场景下生成器候选类刷新不完整的问题，确保脚本中新增的原子类能同步生成到小程序样式产物。** [#855](https://github.com/sonofmagic/weapp-tailwindcss/pull/855) by @github-actions
+  - 补齐 demo 与 apps 的 watch/HMR 端到端覆盖，在模板、脚本与样式变更后同时校验小程序模板、JS 与 WXSS 产物中的转义结果。
+- 📦 **Dependencies**
+  → `@weapp-tailwindcss/reset@0.1.1-next.0`
+
 ## 5.0.0-next.6
 
 ### Patch Changes
