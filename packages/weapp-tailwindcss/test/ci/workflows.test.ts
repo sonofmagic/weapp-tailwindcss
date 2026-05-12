@@ -94,14 +94,16 @@ describe('ci workflows', () => {
     expect(packageJson.private).toBe(true)
   })
 
-  it('keeps npm token fallback for release publishing', () => {
+  it('keeps release publishing on npm trusted publishing', () => {
     const { workflow } = readWorkflow('release.yml')
     const releaseStep = workflow.jobs.release.steps.find((step: Record<string, unknown>) => {
       return step.id === 'changesets'
     })
 
-    expect(releaseStep.env.NPM_TOKEN).toBe('${{ secrets.NPM_TOKEN }}')
-    expect(releaseStep.env.NODE_AUTH_TOKEN).toBe('${{ secrets.NPM_TOKEN }}')
+    expect(workflow.permissions['id-token']).toBe('write')
+    expect(releaseStep.env.NPM_CONFIG_PROVENANCE).toBe(true)
+    expect(releaseStep.env.NPM_TOKEN).toBeUndefined()
+    expect(releaseStep.env.NODE_AUTH_TOKEN).toBeUndefined()
   })
 })
 

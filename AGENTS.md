@@ -39,6 +39,7 @@
 ## 关键约束索引
 - `packages/weapp-tailwindcss` 的 JS 转译必须遵循 `classNameSet` 精确命中原则，禁止启发式兜底转译。
 - 运行时封装（`packages-runtime/*`）改动需重点关注 escape/unescape、merge 兼容和缓存边界。
+- Release 工作流发布 npm 必须使用 trusted publishing/OIDC：保留 `permissions.id-token: write` 与 provenance，禁止在发布步骤注入 `NPM_TOKEN` 或 `NODE_AUTH_TOKEN`。
 
 ## 新增 AGENTS 触发条件
 - 目录具备独立发布或独立 `build/test` 流程。
