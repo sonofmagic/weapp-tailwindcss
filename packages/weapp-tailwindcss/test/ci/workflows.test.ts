@@ -20,6 +20,10 @@ function readPackageJson<T extends Record<string, unknown>>(relativePath: string
   return JSON.parse(fs.readFileSync(path.join(repoRoot, relativePath), 'utf8')) as T
 }
 
+function readText(relativePath: string) {
+  return fs.readFileSync(path.join(repoRoot, relativePath), 'utf8')
+}
+
 function stepRuns(workflow: Record<string, any>, jobName: string) {
   const steps: Array<Record<string, unknown>> = workflow.jobs[jobName].steps
   return steps
@@ -140,6 +144,17 @@ describe('ci workflows', () => {
       return step.uses === 'actions/upload-artifact@v4'
         && withConfig?.name === 'benchmark-current-vs-published'
     })).toBe(true)
+  })
+
+  it('keeps published benchmark fixture resolver dependencies explicit', () => {
+    const source = readText('benchmark/version-compare/scripts/run-ci.mjs')
+
+    expect(source).toContain('publishedResolverDependencyNames')
+    expect(source).toContain('pnpm\', [\'view\', normalizePackageSpec(baseline), \'dependencies\', \'--json\']')
+    expect(source).toContain('patchPublishedResolverDependencies(json, resolverDependencies)')
+    expect(source).toContain('\'@ast-core/escape\'')
+    expect(source).toContain('\'@weapp-core/escape\'')
+    expect(source).toContain('\'@weapp-core/regex\'')
   })
 })
 

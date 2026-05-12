@@ -22,6 +22,11 @@ const projectDirs = [
 ]
 
 const dependencyFields = ['dependencies', 'devDependencies', 'peerDependencies', 'optionalDependencies']
+const publishedResolverDependencyNames = [
+  '@ast-core/escape',
+  '@weapp-core/escape',
+  '@weapp-core/regex',
+]
 
 function parseArg(name, fallback = '') {
   const index = process.argv.indexOf(name)
@@ -79,6 +84,37 @@ async function run(cwd, command, args, options = {}) {
   }
 }
 
+async function runCapture(cwd, command, args, options = {}) {
+  process.stdout.write(`$ ${command} ${args.join(' ')} (${rel(cwd)})\n`)
+  const child = spawn(command, args, {
+    cwd,
+    stdio: ['ignore', 'pipe', 'pipe'],
+    shell: process.platform === 'win32',
+    env: {
+      ...process.env,
+      CI: '1',
+      HUSKY: '0',
+      ...options.env,
+    },
+  })
+  let stdout = ''
+  let stderr = ''
+  child.stdout.on('data', (chunk) => {
+    stdout += chunk.toString('utf8')
+  })
+  child.stderr.on('data', (chunk) => {
+    stderr += chunk.toString('utf8')
+  })
+  const code = await new Promise((resolve, reject) => {
+    child.once('error', reject)
+    child.once('close', exitCode => resolve(exitCode ?? 1))
+  })
+  if (code !== 0) {
+    throw new Error(`${command} ${args.join(' ')} failed with code ${code}\n${stderr.slice(-4000)}`)
+  }
+  return stdout
+}
+
 function shouldCopy(src) {
   const relative = path.relative(repoRoot, src)
   if (!relative) {
@@ -113,7 +149,43 @@ async function copyRepo(target) {
   })
 }
 
-async function patchPackageJson(file, baseline) {
+function pickPublishedResolverDependencies(dependencies = {}) {
+  return Object.fromEntries(publishedResolverDependencyNames.flatMap((name) => {
+    const spec = dependencies[name]
+    return typeof spec === 'string' ? [[name, spec]] : []
+  }))
+}
+
+async function readPublishedDependencies(baseline, fallbackDependencies) {
+  try {
+    const stdout = await runCapture(repoRoot, 'pnpm', ['view', normalizePackageSpec(baseline), 'dependencies', '--json'])
+    return JSON.parse(stdout)
+  }
+  catch (error) {
+    process.stdout.write(`[benchmark] unable to read published dependencies, fallback to local package metadata: ${error instanceof Error ? error.message : String(error)}\n`)
+    return fallbackDependencies
+  }
+}
+
+function hasDependency(json, name) {
+  return dependencyFields.some(field => Boolean(json[field]?.[name]))
+}
+
+function patchPublishedResolverDependencies(json, resolverDependencies) {
+  const entries = Object.entries(resolverDependencies)
+  if (entries.length === 0) {
+    return
+  }
+
+  json.devDependencies ??= {}
+  for (const [name, spec] of entries) {
+    if (!hasDependency(json, name)) {
+      json.devDependencies[name] = spec
+    }
+  }
+}
+
+async function patchPackageJson(file, baseline, resolverDependencies) {
   const source = await fs.readFile(file, 'utf8')
   const json = JSON.parse(source)
   let changed = false
@@ -125,16 +197,17 @@ async function patchPackageJson(file, baseline) {
     }
   }
   if (changed) {
+    patchPublishedResolverDependencies(json, resolverDependencies)
     await fs.writeFile(file, `${JSON.stringify(json, null, 2)}\n`, 'utf8')
   }
   return changed
 }
 
-async function patchPublishedRoot(root, baseline) {
+async function patchPublishedRoot(root, baseline, resolverDependencies) {
   const patched = []
   for (const projectDir of projectDirs) {
     const file = path.join(root, projectDir, 'package.json')
-    if (await patchPackageJson(file, baseline)) {
+    if (await patchPackageJson(file, baseline, resolverDependencies)) {
       patched.push(projectDir)
     }
   }
@@ -151,10 +224,10 @@ async function patchPublishedRootOverrides(root) {
   await fs.writeFile(file, `${JSON.stringify(json, null, 2)}\n`, 'utf8')
 }
 
-async function prepareRoot({ root, role, baseline }) {
+async function prepareRoot({ root, role, baseline, resolverDependencies }) {
   await copyRepo(root)
   if (role === 'published') {
-    const patched = await patchPublishedRoot(root, baseline)
+    const patched = await patchPublishedRoot(root, baseline, resolverDependencies)
     process.stdout.write(`[benchmark] published baseline ${normalizePackageSpec(baseline)} patched projects: ${patched.join(', ')}\n`)
   }
   await run(root, 'pnpm', ['install', role === 'current' ? '--frozen-lockfile' : '--no-frozen-lockfile'])
@@ -172,6 +245,8 @@ async function appendStepSummary(reportPath) {
 async function main() {
   const pkg = JSON.parse(await fs.readFile(packageJsonPath, 'utf8'))
   const baseline = inferBaseline(pkg.version)
+  const publishedDependencies = await readPublishedDependencies(baseline, pkg.dependencies ?? {})
+  const resolverDependencies = pickPublishedResolverDependencies(publishedDependencies)
   const outputRoot = path.resolve(parseArg('--work-root', path.join(os.tmpdir(), `weapp-tailwindcss-benchmark-${process.pid}`)))
   const resultDir = path.resolve(parseArg('--result-dir', path.join(outputRoot, 'result')))
   const currentRoot = path.join(outputRoot, 'current')
@@ -189,8 +264,8 @@ async function main() {
   const versionsPath = path.join(resultDir, 'versions.json')
 
   await fs.mkdir(resultDir, { recursive: true })
-  await prepareRoot({ root: currentRoot, role: 'current', baseline })
-  await prepareRoot({ root: publishedRoot, role: 'published', baseline })
+  await prepareRoot({ root: currentRoot, role: 'current', baseline, resolverDependencies })
+  await prepareRoot({ root: publishedRoot, role: 'published', baseline, resolverDependencies })
   await fs.writeFile(versionsPath, JSON.stringify([
     { version: baselineLabel, root: publishedRoot },
     { version: currentLabel, root: currentRoot },
