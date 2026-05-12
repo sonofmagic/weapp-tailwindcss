@@ -187,7 +187,7 @@
     "@types/gulp-rename": "^2.0.7",
     "@types/gulp-sass": "^6.0.0",
     "@types/js-beautify": "^1.14.3",
-    "@types/jsdom": "^28.0.1",
+    "@types/jsdom": "^28.0.2",
     "@types/klaw": "^3.0.7",
     "@types/loader-utils": "^3.0.0",
     "@types/lodash": "^4.17.24",
@@ -204,8 +204,8 @@
     "@types/vinyl-fs": "^3.0.7",
     "@types/webpack": "^5.28.5",
     "@types/webpack-sources": "^3.2.3",
-    "@vitest/coverage-v8": "~4.1.5",
-    "@vitest/ui": "~4.1.5",
+    "@vitest/coverage-v8": "~4.1.6",
+    "@vitest/ui": "~4.1.6",
     "@weapp-tailwindcss/shared": "workspace:*",
     "@weapp-tailwindcss/test-helper": "workspace:*",
     "@weapp-vite/miniprogram-automator": "^1.1.0",
@@ -235,7 +235,7 @@
     "eslint": "catalog:eslint10",
     "execa": "^9.6.1",
     "express": "^5.2.1",
-    "fast-check": "^4.7.0",
+    "fast-check": "^4.8.0",
     "fast-glob": "^3.3.3",
     "fs-extra": "^11.3.5",
     "get-value": "^4.0.1",
@@ -271,7 +271,7 @@
     "pptxgenjs": "^4.0.1",
     "prettier": "catalog:prettier371",
     "promisify-loader-runner": "^1.0.1",
-    "repoctl": "^4.0.7",
+    "repoctl": "^4.0.8",
     "rimraf": "^6.1.3",
     "rollup": "^4.60.3",
     "sass": "catalog:sass195",
@@ -305,7 +305,7 @@
     "webpack": "5.105.4",
     "webpack-build-utils": "^0.0.7",
     "wrangler": "catalog:wrangler",
-    "yaml": "^2.8.4"
+    "yaml": "^2.9.0"
   },
   "pnpm": {
     "overrides": {

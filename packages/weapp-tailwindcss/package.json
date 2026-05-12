@@ -219,6 +219,6 @@
     "semver": "~7.7.4",
     "tailwindcss-config": "workspace:*",
     "tailwindcss-patch": "catalog:tailwindcssPatch",
-    "yaml": "^2.8.4"
+    "yaml": "^2.9.0"
   }
 }

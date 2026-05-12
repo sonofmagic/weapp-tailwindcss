@@ -124,15 +124,15 @@ catalogs:
     babel-preset-taro: ^4.2.0
     eslint-config-taro: ^4.2.0
   typesNode2410:
-    '@types/node': ^24.12.3
+    '@types/node': ^24.12.4
   typescript59:
     typescript: ^5.9.3
   typescript59tilde:
     typescript: ~5.9.3
   typescriptEslint:
-    '@typescript-eslint/eslint-plugin': ^8.59.2
-    '@typescript-eslint/parser': ^8.59.2
-    typescript-eslint: ^8.59.2
+    '@typescript-eslint/eslint-plugin': ^8.59.3
+    '@typescript-eslint/parser': ^8.59.3
+    typescript-eslint: ^8.59.3
   vite4:
     vite: ^4.5.14
   vite52:
@@ -146,7 +146,7 @@ catalogs:
   vitePluginReact4:
     '@vitejs/plugin-react': ^4.7.0
   vitest:
-    vitest: ~4.1.5
+    vitest: ~4.1.6
   vue2:
     vue: ^2.7.16
   vue3:
@@ -162,7 +162,7 @@ catalogs:
   weappIdeCli:
     weapp-ide-cli: ^5.2.9
   weappVite:
-    weapp-vite: ^6.16.8
+    weapp-vite: ^6.16.11
   wrangler:
     wrangler: ^4.90.0
 
