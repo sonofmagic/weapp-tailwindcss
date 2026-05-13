@@ -168,12 +168,12 @@ text,
   margin-top: calc(32rpx * (1 - var(--tw-space-y-reverse)));
   margin-bottom: calc(32rpx * var(--tw-space-y-reverse));
 }
-.border-b {
-  border-bottom-width: 2rpx;
-}
 .border-_b_hEEEEEE_B {
   --tw-border-opacity: 1;
   border-color: rgba(238, 238, 238, var(--tw-border-opacity, 1));
+}
+.border-b {
+  border-bottom-width: 2rpx;
 }
 .bg-_b_hfff_B {
   --tw-bg-opacity: 1;
@@ -204,12 +204,6 @@ text,
 .pl-_b15px_B {
   padding-left: 30rpx;
 }
-.text-left {
-  text-align: left;
-}
-.text-center {
-  text-align: center;
-}
 .text-_b14px_B {
   font-size: 28rpx;
 }
@@ -219,6 +213,12 @@ text,
 .text-base {
   font-size: 32rpx;
   line-height: 48rpx;
+}
+.text-center {
+  text-align: center;
+}
+.text-left {
+  text-align: left;
 }
 .text-lg {
   font-size: 36rpx;

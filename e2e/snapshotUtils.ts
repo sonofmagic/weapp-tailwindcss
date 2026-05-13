@@ -323,6 +323,17 @@ function isTailwindV4Css(root: postcss.Root) {
   return matched
 }
 
+function hasWeappEscapedArbitrarySelector(root: postcss.Root) {
+  let matched = false
+  root.walkRules((rule) => {
+    if (/_b[^{}]*_B/.test(rule.selector)) {
+      matched = true
+      return false
+    }
+  })
+  return matched
+}
+
 function getUtilityGroup(selector: string) {
   if (/^\.text(?:-|_)/.test(selector)) {
     return 'typography'
@@ -413,9 +424,13 @@ function sortUtilityRuleRuns(container: postcss.Container) {
     }
 
     if (end - index > 1) {
+      const firstBefore = nodes[index]?.raws.before
       const sorted = nodes
         .slice(index, end)
         .sort(compareUtilityRules)
+      sorted.forEach((node, offset) => {
+        node.raws.before = offset === 0 ? firstBefore : '\n'
+      })
       nodes.splice(index, end - index, ...sorted)
     }
 
@@ -850,6 +865,9 @@ export function normalizeCssSnapshot(source: string, _options: CssSnapshotOption
   dedupeExactDeclarations(root)
 
   const isTailwindV4 = isTailwindV4Css(root)
+  if (!isTailwindV4 && hasWeappEscapedArbitrarySelector(root)) {
+    sortUtilityRuleRuns(root)
+  }
   if (isTailwindV4) {
     normalizeWeappRootRules(root, _options)
     removeTailwindV4RootVariableNoise(root, _options)

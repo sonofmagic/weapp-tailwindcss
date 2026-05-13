@@ -8774,7 +8774,7 @@
     ],
     "status": "passed",
     "generator": {
-      "bytes": 86796,
+      "bytes": 83694,
       "selectors": [
         ".-inset-1",
         "._tcontainer",

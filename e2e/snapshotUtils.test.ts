@@ -85,6 +85,28 @@ describe('normalizeCssSnapshot', () => {
     ].join('\n'))
   })
 
+  it('normalizes escaped arbitrary utility rule ordering without Tailwind CSS v4 markers', () => {
+    expect(normalizeCssSnapshot([
+      '.border-t-_b4px_B { border-top-width: 4px; }',
+      '.border-_b_h098765_B { border-color: #098765; }',
+      '.border-_b10rpx_B { border-width: 10rpx; }',
+      '.border-_bred_B { border-color: red; }',
+      '.border-b-_b4rpx_B { border-bottom-width: 4rpx; }',
+      '.text-_b32px_B { font-size: 32px; }',
+      '.text-_b32_d4rpx_B { font-size: 32.4rpx; }',
+      '.text-_b32rpx_B { font-size: 32rpx; }',
+    ].join('\n'))).toBe([
+      '.border-_b10rpx_B { border-width: 10rpx; }',
+      '.border-_b_h098765_B { border-color: #098765; }',
+      '.border-_bred_B { border-color: red; }',
+      '.border-b-_b4rpx_B { border-bottom-width: 4rpx; }',
+      '.border-t-_b4px_B { border-top-width: 4px; }',
+      '.text-_b32_d4rpx_B { font-size: 32.4rpx; }',
+      '.text-_b32px_B { font-size: 32px; }',
+      '.text-_b32rpx_B { font-size: 32rpx; }',
+    ].join('\n'))
+  })
+
   it('removes optional Tailwind CSS v4 root variable snapshot noise', () => {
     expect(normalizeCssSnapshot([
       ':host, page, .tw-root, wx-root-portal-content {',
