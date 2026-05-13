@@ -11,14 +11,10 @@ const repoRoot = path.resolve(dirname, '../../..')
 const packageJsonPath = path.join(repoRoot, 'packages/weapp-tailwindcss/package.json')
 
 const projectDirs = [
-  'demo/uni-app-vue3-vite',
-  'demo/uni-app-tailwindcss-v4',
-  'apps/vite-native-ts',
-  'apps/vite-native',
-  'apps/vite-native-skyline',
-  'apps/vite-native-ts-skyline',
-  'demo/native-ts',
-  'apps/weapp-wechat-zhihu',
+  'demo/uni-app-vite-tailwindcss-v3',
+  'demo/uni-app-vite-tailwindcss-v4',
+  'demo/weapp-vite-tailwindcss-v3',
+  'demo/weapp-vite-tailwindcss-v4',
 ]
 
 const dependencyFields = ['dependencies', 'devDependencies', 'peerDependencies', 'optionalDependencies']
