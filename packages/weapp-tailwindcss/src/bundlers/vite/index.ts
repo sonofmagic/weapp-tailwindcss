@@ -23,11 +23,25 @@ import { createRewriteCssImportsPlugins } from './rewrite-css-imports'
 import { createViteRuntimeClassSet } from './runtime-class-set'
 import { createSourceCandidateCollector, isSourceCandidateRequest } from './source-candidates'
 import { resolveImplicitTailwindcssBasedirFromViteRoot } from './tailwind-basedir'
-import { slash } from './utils'
+import { cleanUrl, slash } from './utils'
 
 const debug = createDebug()
 const weappTailwindcssPackageDir = resolvePackageDir('weapp-tailwindcss')
 const weappTailwindcssDirPosix = slash(weappTailwindcssPackageDir)
+
+function hasCssEntriesValue(value: unknown) {
+  if (typeof value === 'string') {
+    return value.trim().length > 0
+  }
+  return Array.isArray(value) && value.some(entry => typeof entry === 'string' && entry.trim().length > 0)
+}
+
+function hasConfiguredCssEntries(options: UserDefinedOptions, opts: { cssEntries?: string[] }) {
+  return hasCssEntriesValue(opts.cssEntries)
+    || hasCssEntriesValue(options.cssEntries)
+    || hasCssEntriesValue(options.tailwindcss?.v4?.cssEntries)
+    || hasCssEntriesValue((options.tailwindcssPatcherOptions as any)?.tailwindcss?.v4?.cssEntries)
+}
 
 /**
  * @name WeappTailwindcss
@@ -38,7 +52,10 @@ export function WeappTailwindcss(options: UserDefinedOptions = {}): Plugin[] | u
   const hasExplicitAppType = typeof options.appType === 'string' && options.appType.trim().length > 0
   const hasExplicitTailwindcssBasedir = typeof options.tailwindcssBasedir === 'string'
     && options.tailwindcssBasedir.trim().length > 0
-  const opts = getCompilerContext(options)
+  const opts = getCompilerContext({
+    ...options,
+    __internalDeferMissingCssEntriesWarning: true,
+  } as UserDefinedOptions)
   const {
     disabled,
     customAttributes,
@@ -57,11 +74,40 @@ export function WeappTailwindcss(options: UserDefinedOptions = {}): Plugin[] | u
   const tailwindcssMajorVersion = initialTwPatcher.majorVersion ?? 0
   const shouldOwnTailwindGeneration = !disabledOptions.plugin
   const shouldRewriteCssImports = tailwindcssMajorVersion >= 4
+  const hasInitialCssEntries = hasConfiguredCssEntries(options, opts)
+  const autoCssEntries = new Set<string>()
+  let refreshRuntimeStateForAutoCssEntries: ((force: boolean) => Promise<void>) | undefined
+  let autoCssEntriesRefresh: Promise<void> | undefined
+  const registerAutoCssEntry = async (id: string) => {
+    if (
+      tailwindcssMajorVersion < 4
+      || !shouldOwnTailwindGeneration
+      || hasInitialCssEntries
+    ) {
+      return
+    }
+    const file = cleanUrl(id)
+    if (!path.isAbsolute(file)) {
+      return
+    }
+    const entry = path.normalize(file)
+    if (autoCssEntries.has(entry) || opts.cssEntries?.includes(entry)) {
+      return
+    }
+    autoCssEntries.add(entry)
+    opts.cssEntries = [...(opts.cssEntries ?? []), entry]
+    debug('detected tailwindcss v4 css entry from vite css module: %s', entry)
+    autoCssEntriesRefresh = (autoCssEntriesRefresh ?? Promise.resolve()).then(async () => {
+      await refreshRuntimeStateForAutoCssEntries?.(true)
+    })
+    await autoCssEntriesRefresh
+  }
   const rewritePlugins = createRewriteCssImportsPlugins({
     getAppType: () => opts.appType,
     rootImport: shouldOwnTailwindGeneration
       ? `${weappTailwindcssDirPosix}/generator-placeholder.css`
       : undefined,
+    onTailwindRootCss: id => registerAutoCssEntry(id),
     shouldOwnTailwindGeneration,
     shouldRewrite: shouldRewriteCssImports,
     weappTailwindcssDirPosix,
@@ -94,6 +140,7 @@ export function WeappTailwindcss(options: UserDefinedOptions = {}): Plugin[] | u
     disabledDefaultTemplateHandler,
     debug,
   })
+  refreshRuntimeStateForAutoCssEntries = refreshRuntimeState
   onLoad()
   const getResolvedConfig = () => resolvedConfig
   const markCssAssetProcessed = (asset: { source: unknown }, file?: string) => {
@@ -142,6 +189,22 @@ export function WeappTailwindcss(options: UserDefinedOptions = {}): Plugin[] | u
   const setRememberedMainCssSignature = (file: string, cssRuntimeSignature: string) => {
     rememberedMainCssSignatureByFile.set(file, cssRuntimeSignature)
   }
+  const generateBundleHook = createGenerateBundleHook({
+    opts,
+    runtimeState,
+    ensureRuntimeClassSet,
+    ensureBundleRuntimeClassSet,
+    debug,
+    getResolvedConfig,
+    markCssAssetProcessed,
+    getSourceCandidates,
+    waitForSourceCandidateSyncs,
+    rememberMainCssSource,
+    getRememberedMainCssSources,
+    getRememberedMainCssSignature,
+    setRememberedMainCssSignature,
+    recordGeneratorCandidates,
+  })
   const cssFinalizerOutputPlugin = createViteCssFinalizerOutputPlugin({
     opts,
     runtimeState,
@@ -334,22 +397,7 @@ export function WeappTailwindcss(options: UserDefinedOptions = {}): Plugin[] | u
       },
       generateBundle: {
         order: 'post',
-        handler: createGenerateBundleHook({
-          opts,
-          runtimeState,
-          ensureRuntimeClassSet,
-          ensureBundleRuntimeClassSet,
-          debug,
-          getResolvedConfig,
-          markCssAssetProcessed,
-          getSourceCandidates,
-          waitForSourceCandidateSyncs,
-          rememberMainCssSource,
-          getRememberedMainCssSources,
-          getRememberedMainCssSignature,
-          setRememberedMainCssSignature,
-          recordGeneratorCandidates,
-        }),
+        handler: generateBundleHook,
       },
       outputOptions(options) {
         const plugins = options.plugins

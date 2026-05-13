@@ -2,6 +2,7 @@ import type { Plugin } from 'vite'
 import type { AppType } from '@/types'
 import { vitePluginName } from '@/constants'
 import { resolveTailwindcssImport, rewriteTailwindcssImportsInCode } from '../shared/css-imports'
+import { hasTailwindRootDirectives } from '../shared/generator-css/directives'
 import { cleanUrl, isCSSRequest } from './utils'
 
 function joinPosixPath(base: string, subpath: string) {
@@ -26,6 +27,7 @@ interface RewriteCssImportsOptions {
   shouldRewrite: boolean
   rootImport?: string
   weappTailwindcssDirPosix: string
+  onTailwindRootCss?: (id: string, code: string) => Promise<void> | void
 }
 
 function stripTailwindConfigDirectives(code: string) {
@@ -61,10 +63,14 @@ export function createRewriteCssImportsPlugins(options: RewriteCssImportsOptions
       },
       transform: {
         order: 'pre',
-        handler(code, id) {
+        async handler(code, id) {
           if (!isCSSRequest(id)) {
             return null
           }
+          if (hasTailwindRootDirectives(code)) {
+            await options.onTailwindRootCss?.(id, code)
+          }
+
           const rewritten = rewriteTailwindcssImportsInCode(code, weappTailwindcssDirPosix, {
             join: joinPosixPath,
             appType: resolveAppType(),

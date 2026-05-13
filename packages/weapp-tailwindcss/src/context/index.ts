@@ -95,7 +95,9 @@ function createInternalCompilerContext(opts?: UserDefinedOptions): InternalUserD
     twPatcher.packageInfo?.version,
   )
 
-  warnMissingCssEntries(ctx, twPatcher)
+  if ((opts as any)?.__internalDeferMissingCssEntriesWarning !== true) {
+    warnMissingCssEntries(ctx, twPatcher)
+  }
 
   ctx.cssPreflight = resolveDefaultCssPreflight(opts?.cssPreflight, twPatcher.majorVersion)
 

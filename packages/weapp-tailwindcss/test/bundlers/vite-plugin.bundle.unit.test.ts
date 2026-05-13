@@ -254,6 +254,67 @@ describe('bundlers/vite WeappTailwindcss bundle', () => {
     expect((config.css.postcss as any).plugins).toEqual([])
   }, TEST_TIMEOUT_MS)
 
+  it('detects tailwindcss v4 css entries from vite css transforms when omitted', async () => {
+    const entry = path.join(os.tmpdir(), 'weapp-tw-vite-auto-entry.css')
+    const refreshTailwindcssPatcher = vi.fn()
+    const context = createContext({
+      twPatcher: {
+        patch: vi.fn(),
+        getClassSet: vi.fn(async () => new Set(['w-4'])),
+        getClassSetSync: vi.fn(() => new Set(['w-4'])),
+        majorVersion: 4,
+        extract: vi.fn(async () => ({ classSet: new Set(['w-4']) })),
+      },
+      refreshTailwindcssPatcher,
+    })
+    refreshTailwindcssPatcher.mockImplementation(async () => context.twPatcher)
+    setCurrentContext(context)
+
+    const WeappTailwindcss = await loadUnifiedVitePlugin()
+    const plugins = WeappTailwindcss()
+    const rewritePlugin = plugins?.find(plugin => plugin.name === 'weapp-tailwindcss:adaptor:rewrite-css-imports') as Plugin
+    const transform = getTransformHandler(rewritePlugin)
+
+    const result = await transform?.call(
+      rewritePlugin,
+      '@import "tailwindcss";\n@plugin "./plugin.js";',
+      entry,
+    )
+
+    expect(context.cssEntries).toEqual([entry])
+    expect(refreshTailwindcssPatcher).toHaveBeenCalledTimes(1)
+    expect(String((result as any)?.code)).toContain('generator-placeholder.css')
+  })
+
+  it('keeps explicit cssEntries when vite css transforms see tailwindcss roots', async () => {
+    const explicitEntry = path.join(os.tmpdir(), 'weapp-tw-explicit-entry.css')
+    const detectedEntry = path.join(os.tmpdir(), 'weapp-tw-detected-entry.css')
+    const refreshTailwindcssPatcher = vi.fn()
+    const context = createContext({
+      cssEntries: [explicitEntry],
+      twPatcher: {
+        patch: vi.fn(),
+        getClassSet: vi.fn(async () => new Set(['w-4'])),
+        getClassSetSync: vi.fn(() => new Set(['w-4'])),
+        majorVersion: 4,
+        extract: vi.fn(async () => ({ classSet: new Set(['w-4']) })),
+      },
+      refreshTailwindcssPatcher,
+    })
+    refreshTailwindcssPatcher.mockImplementation(async () => context.twPatcher)
+    setCurrentContext(context)
+
+    const WeappTailwindcss = await loadUnifiedVitePlugin()
+    const plugins = WeappTailwindcss({ cssEntries: [explicitEntry] })
+    const rewritePlugin = plugins?.find(plugin => plugin.name === 'weapp-tailwindcss:adaptor:rewrite-css-imports') as Plugin
+    const transform = getTransformHandler(rewritePlugin)
+
+    await transform?.call(rewritePlugin, '@import "tailwindcss";', detectedEntry)
+
+    expect(context.cssEntries).toEqual([explicitEntry])
+    expect(refreshTailwindcssPatcher).not.toHaveBeenCalled()
+  })
+
   it('removes Tailwind v3 official PostCSS plugins in default auto mode', async () => {
     const WeappTailwindcss = await loadUnifiedVitePlugin()
     const currentContext = createContext({

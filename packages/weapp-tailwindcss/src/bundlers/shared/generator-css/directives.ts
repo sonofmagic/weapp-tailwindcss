@@ -18,6 +18,18 @@ const TAILWIND_REMOVABLE_SOURCE_DIRECTIVE_NAMES = new Set([
   'variant',
 ])
 
+const TAILWIND_ROOT_DIRECTIVE_NAMES = new Set([
+  'config',
+  'custom-variant',
+  'plugin',
+  'source',
+  'tailwind',
+  'theme',
+  'utility',
+  'variant',
+])
+const TAILWIND_ROOT_DIRECTIVE_RE = /@(?:import\s+(?:url\(\s*)?["']?tailwindcss4?(?:\/[^"')\s]*)?|tailwind|config|custom-variant|plugin|source|theme|utility|variant)\b/
+
 export function parseImportRequest(params: string) {
   const match = /^(?:url\(\s*)?(["']?)([^"')\s]+)\1\s*\)?/.exec(params.trim())
   return match?.[2]
@@ -50,30 +62,32 @@ function isTailwindSourceDirective(node: postcss.Node) {
   if (node.type !== 'atrule') {
     return false
   }
-  if (isTailwindImportAtRule(node)) {
+  const atRule = node as postcss.AtRule
+  if (isTailwindImportAtRule(atRule)) {
     return true
   }
-  if (node.name === 'import' && isPackageJsonImportRequest(parseImportRequest(node.params))) {
+  if (atRule.name === 'import' && isPackageJsonImportRequest(parseImportRequest(atRule.params))) {
     return true
   }
-  return TAILWIND_REMOVABLE_SOURCE_DIRECTIVE_NAMES.has(node.name)
+  return TAILWIND_REMOVABLE_SOURCE_DIRECTIVE_NAMES.has(atRule.name)
 }
 
 function isTailwindGenerationDirective(node: postcss.Node) {
   if (node.type !== 'atrule') {
     return false
   }
-  const request = node.name === 'import'
-    ? parseImportRequest(node.params)
-    : node.name === 'config' || node.name === 'plugin' || node.name === 'reference'
-      ? parseConfigRequest(node.params)
+  const atRule = node as postcss.AtRule
+  const request = atRule.name === 'import'
+    ? parseImportRequest(atRule.params)
+    : atRule.name === 'config' || atRule.name === 'plugin' || atRule.name === 'reference'
+      ? parseConfigRequest(atRule.params)
       : undefined
-  return isTailwindImportAtRule(node)
+  return isTailwindImportAtRule(atRule)
     || isPackageJsonImportRequest(request)
-    || node.name === 'apply'
-    || node.name === 'layer'
-    || node.name === 'config'
-    || node.name === 'source'
+    || atRule.name === 'apply'
+    || atRule.name === 'layer'
+    || atRule.name === 'config'
+    || atRule.name === 'source'
 }
 
 export function removeTailwindSourceDirectives(rawSource: string) {
@@ -111,6 +125,36 @@ export function hasTailwindSourceDirectives(rawSource: string) {
   }
   catch {
     return false
+  }
+}
+
+export function hasTailwindRootDirectives(rawSource: string) {
+  if (!TAILWIND_ROOT_DIRECTIVE_RE.test(rawSource)) {
+    return false
+  }
+
+  try {
+    const root = postcss.parse(rawSource)
+    let found = false
+    root.walkAtRules((node) => {
+      const request = node.name === 'import'
+        ? parseImportRequest(node.params)
+        : node.name === 'config' || node.name === 'plugin'
+          ? parseConfigRequest(node.params)
+          : undefined
+      if (
+        isTailwindImportAtRule(node)
+        || isPackageJsonImportRequest(request)
+        || TAILWIND_ROOT_DIRECTIVE_NAMES.has(node.name)
+      ) {
+        found = true
+        return false
+      }
+    })
+    return found
+  }
+  catch {
+    return true
   }
 }
 
