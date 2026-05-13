@@ -107,6 +107,24 @@ describe('normalizeCssSnapshot', () => {
     ].join('\n'))
   })
 
+  it('keeps escaped important text utilities inside the typography sort run', () => {
+    expect(normalizeCssSnapshot([
+      '.text-_b32px_B { font-size: 32px; }',
+      '.leading-_b0_d9_B { line-height: 0.9; }',
+      '._etext-_b_h990000_B { color: #990000 !important; }',
+      '.text-_b32_d4rpx_B { font-size: 32.4rpx; }',
+      '.text-_b32rpx_B { font-size: 32rpx; }',
+      '.text-_b_h5cdc34_B { color: #5cdc34; }',
+    ].join('\n'))).toBe([
+      '.text-_b32_d4rpx_B { font-size: 32.4rpx; }',
+      '.text-_b32px_B { font-size: 32px; }',
+      '.text-_b32rpx_B { font-size: 32rpx; }',
+      '.leading-_b0_d9_B { line-height: 0.9; }',
+      '._etext-_b_h990000_B { color: #990000 !important; }',
+      '.text-_b_h5cdc34_B { color: #5cdc34; }',
+    ].join('\n'))
+  })
+
   it('removes optional Tailwind CSS v4 root variable snapshot noise', () => {
     expect(normalizeCssSnapshot([
       ':host, page, .tw-root, wx-root-portal-content {',

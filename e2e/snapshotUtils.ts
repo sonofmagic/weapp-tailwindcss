@@ -335,7 +335,7 @@ function hasWeappEscapedArbitrarySelector(root: postcss.Root) {
 }
 
 function getUtilityGroup(selector: string) {
-  if (/^\.text(?:-|_)/.test(selector)) {
+  if (/^(?:\.text(?:-|_)|\._etext)/.test(selector)) {
     return 'typography'
   }
   if (/^\.leading(?:-|_)/.test(selector)) {
@@ -350,7 +350,7 @@ function getUtilityGroup(selector: string) {
 }
 
 function getTypographyRank(rule: postcss.Rule) {
-  if (/^\.text(?:-|_)/.test(rule.selector)) {
+  if (/^(?:\.text(?:-|_)|\._etext)/.test(rule.selector)) {
     let rank = 40
     rule.walkDecls((decl) => {
       if (decl.prop === 'font-size' || decl.prop === 'text-align') {
