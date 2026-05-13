@@ -1,5 +1,4 @@
 import type { UserConfigExport } from '@tarojs/cli'
-import path from 'node:path'
 import process from 'node:process'
 import { defineConfig } from '@tarojs/cli'
 import TsconfigPathsPlugin from 'tsconfig-paths-webpack-plugin'
@@ -80,12 +79,6 @@ export default defineConfig<'webpack5'>(async (merge, { command, mode }) => {
                   tailwindcss: {
                     // 显示声明用的是 tailwindcss v4
                     version: 4,
-                    v4: {
-                      cssEntries: [
-                        // app.css 的路径
-                        path.resolve(__dirname, '../src/app.css'),
-                      ],
-                    },
                   },
                 },
               ],

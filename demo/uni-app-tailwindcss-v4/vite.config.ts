@@ -1,6 +1,6 @@
 import { defineConfig } from "vite";
 import { createRequire } from "node:module";
-import path, { dirname } from "node:path";
+import { dirname } from "node:path";
 // dynamic require of is not supported
 // const uni = require("@dcloudio/vite-plugin-uni");
 import uni from "@dcloudio/vite-plugin-uni";
@@ -18,11 +18,6 @@ export default defineConfig(async () => {
       uni(),
       WeappTailwindcss({
         rem2rpx: true,
-        cssEntries: [
-          path.resolve(__dirname, "src/main.css"),
-          path.resolve(__dirname, "src/common.css"),
-          path.resolve(__dirname, "src/pages-order/index.css"),
-        ],
       }),
     ],
     resolve: {

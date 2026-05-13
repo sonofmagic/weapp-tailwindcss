@@ -1,4 +1,5 @@
 // webpack 5
+import type { TailwindV4CssSource } from 'tailwindcss-patch'
 import type { Compiler } from 'webpack'
 import type { AppType, IBaseWebpackPlugin, InternalUserDefinedOptions, UserDefinedOptions } from '@/types'
 import { pluginName } from '@/constants'
@@ -6,8 +7,9 @@ import { getCompilerContext } from '@/context'
 import { createDebug } from '@/debug'
 import { isMpx, setupMpxTailwindcssRedirect } from '@/shared/mpx'
 import { resolveTailwindcssOptions } from '@/tailwindcss/patcher-options'
-import { createTailwindRuntimeReadyPromise, ensureRuntimeClassSet } from '@/tailwindcss/runtime'
+import { createTailwindRuntimeReadyPromise, ensureRuntimeClassSet, refreshTailwindRuntimeState } from '@/tailwindcss/runtime'
 import { getRuntimeClassSetSignature } from '@/tailwindcss/runtime/cache'
+import { hasConfiguredTailwindV4CssRoots, upsertTailwindV4CssSource } from '@/tailwindcss/v4/css-sources'
 import { resolvePluginDisabledState } from '@/utils/disabled'
 import { resolvePackageDir } from '@/utils/resolve-package'
 import { hasWatchChanges } from './shared'
@@ -26,9 +28,14 @@ export const weappTailwindcssPackageDir = resolvePackageDir('weapp-tailwindcss')
 export class UnifiedWebpackPluginV5 implements IBaseWebpackPlugin {
   options: InternalUserDefinedOptions
   appType?: AppType
+  private hasInitialTailwindCssRoots: boolean
 
   constructor(options: UserDefinedOptions = {}) {
-    this.options = getCompilerContext(options)
+    this.hasInitialTailwindCssRoots = hasConfiguredTailwindV4CssRoots(options)
+    this.options = getCompilerContext({
+      ...options,
+      __internalDeferMissingCssEntriesWarning: true,
+    } as UserDefinedOptions)
     this.appType = this.options.appType
   }
 
@@ -76,6 +83,14 @@ export class UnifiedWebpackPluginV5 implements IBaseWebpackPlugin {
       }
       for (const entry of tailwindOptions?.v4?.cssEntries ?? []) {
         runtimeWatchDependencyFiles.add(entry)
+      }
+      for (const source of tailwindOptions?.v4?.cssSources ?? []) {
+        if (source.file) {
+          runtimeWatchDependencyFiles.add(source.file)
+        }
+        for (const dependency of source.dependencies ?? []) {
+          runtimeWatchDependencyFiles.add(dependency)
+        }
       }
       for (const source of tailwindOptions?.v4?.sources ?? []) {
         if (source?.base) {
@@ -126,6 +141,28 @@ export class UnifiedWebpackPluginV5 implements IBaseWebpackPlugin {
       syncRuntimeRefreshRequirement()
     }
 
+    const registerAutoCssSource = async (source: TailwindV4CssSource) => {
+      if (
+        this.hasInitialTailwindCssRoots
+        || (runtimeState.twPatcher.majorVersion ?? 0) < 4
+        || !source.file
+      ) {
+        return
+      }
+      const changed = upsertTailwindV4CssSource(this.options, source)
+      if (!changed) {
+        return
+      }
+      runtimeSetPrepared = false
+      runtimeMetadataPrepared = false
+      runtimeRefreshRequiredForCompilation = true
+      await refreshTailwindRuntimeState(runtimeState, {
+        force: true,
+        clearCache: true,
+      })
+      debug('detected tailwindcss v4 css source from webpack css module: %s', source.file)
+    }
+
     compiler.hooks.invalid?.tap?.(pluginName, () => {
       runtimeRefreshRequiredForCompilation = true
     })
@@ -164,6 +201,7 @@ export class UnifiedWebpackPluginV5 implements IBaseWebpackPlugin {
       weappTailwindcssPackageDir,
       shouldRewriteCssImports,
       runtimeLoaderPath,
+      registerAutoCssSource,
       getClassSetInLoader,
       getRuntimeWatchDependencies() {
         return {

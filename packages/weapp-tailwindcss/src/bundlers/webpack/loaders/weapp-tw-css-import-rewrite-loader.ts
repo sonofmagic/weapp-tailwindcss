@@ -1,3 +1,4 @@
+import type { TailwindV4CssSource } from 'tailwindcss-patch'
 import type webpack from 'webpack'
 import type { AppType } from '@/types'
 import { Buffer } from 'node:buffer'
@@ -7,10 +8,13 @@ import { ensurePosix } from '@weapp-tailwindcss/shared'
 import loaderUtils from 'loader-utils'
 import { rewriteTailwindcssImportsInCode } from '@/bundlers/shared/css-imports'
 
+const TAILWIND_ROOT_DIRECTIVE_RE = /@(?:import\s+(?:url\(\s*)?["']?tailwindcss4?(?:\/[^"')\s]*)?|tailwind|config|custom-variant|plugin|source|theme|utility|variant)\b/
+
 interface CssImportRewriteLoaderOptions {
   tailwindcssImportRewrite?: {
     pkgDir: string
     appType?: AppType
+    registerCssSource?: (source: TailwindV4CssSource) => Promise<void> | void
   }
 }
 
@@ -70,7 +74,18 @@ const WeappTwCssImportRewriteLoader: webpack.LoaderDefinitionFunction<CssImportR
     process.stdout.write(`[weapp-tw-css-import-rewrite-loader] executing for ${this.resourcePath}\n`)
   }
   const opt = getLoaderOptions(this)
-  return transformCssImportRewriteSource(source, opt)
+  const input = Buffer.isBuffer(source) ? source.toString('utf-8') : source
+  const registerTask = typeof input === 'string' && TAILWIND_ROOT_DIRECTIVE_RE.test(input)
+    ? opt?.tailwindcssImportRewrite?.registerCssSource?.({
+        file: this.resourcePath,
+        css: input,
+      })
+    : undefined
+  const transform = () => transformCssImportRewriteSource(source, opt)
+  if (registerTask && typeof (registerTask as PromiseLike<void>).then === 'function') {
+    return Promise.resolve(registerTask).then(transform)
+  }
+  return transform()
 }
 
 export default WeappTwCssImportRewriteLoader

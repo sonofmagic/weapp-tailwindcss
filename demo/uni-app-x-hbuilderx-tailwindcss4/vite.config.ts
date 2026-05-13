@@ -1,4 +1,3 @@
-import path from 'node:path'
 // import uni from '@dcloudio/vite-plugin-uni'
 import { defineConfig } from 'vite'
 import { uniAppX } from 'weapp-tailwindcss/presets'
@@ -12,7 +11,6 @@ export default defineConfig({
       uniAppX({
         base: __dirname,
         rem2rpx: true,
-        cssEntries: [path.resolve(__dirname, 'main.css')],
       }),
     ),
     debugX({

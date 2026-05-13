@@ -23,6 +23,8 @@ interface InternalContext {
     extract: ReturnType<typeof vi.fn>
     majorVersion: number
   }
+  tailwindcss?: any
+  refreshTailwindcssPatcher?: ReturnType<typeof vi.fn>
 }
 
 let currentContext: InternalContext
@@ -92,6 +94,7 @@ describe('bundlers/gulp createPlugins', () => {
       wxsMatcher: vi.fn((id: string) => id.endsWith('.wxs')),
       mainCssChunkMatcher: vi.fn((name: string) => path.basename(name) === 'app.wxss'),
       twPatcher,
+      refreshTailwindcssPatcher: vi.fn(async () => twPatcher),
     }
 
     getCompilerContextMock.mockClear()
@@ -149,6 +152,23 @@ describe('bundlers/gulp createPlugins', () => {
     const cachedHtmlFile = createFile('/src/app.wxml', '<view class="foo"></view>')
     await runTransform(plugins.transformWxml(), cachedHtmlFile)
     expect(templateHandler).toHaveBeenCalledTimes(1)
+  })
+
+  it('registers tailwindcss v4 cssSources from wxss files before collecting runtime classes', async () => {
+    twPatcher.majorVersion = 4
+    const plugins = createPlugins()
+
+    const source = '@source inline("w-4");'
+    const cssFile = createFile('/src/app.wxss', source)
+    await runTransform(plugins.transformWxss(), cssFile)
+
+    expect(currentContext.tailwindcss?.v4?.cssSources).toEqual([
+      {
+        file: '/src/app.wxss',
+        css: source,
+      },
+    ])
+    expect(twPatcher.extract).toHaveBeenCalled()
   })
 
   it('re-runs handlers when cache is disabled', async () => {

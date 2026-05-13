@@ -5,11 +5,13 @@ import fs from 'node:fs'
 import path from 'node:path'
 import process from 'node:process'
 import stream from 'node:stream'
+import { hasTailwindRootDirectives } from '@/bundlers/shared/generator-css/directives'
 import { getCompilerContext } from '@/context'
 import { createDebug } from '@/debug'
 import { shouldSkipJsTransform } from '@/js/precheck'
 import { createTailwindRuntimeReadyPromise, ensureRuntimeClassSet } from '@/tailwindcss/runtime'
 import { getRuntimeClassSetSignature } from '@/tailwindcss/runtime/cache'
+import { hasConfiguredTailwindV4CssRoots, upsertTailwindV4CssSource } from '@/tailwindcss/v4/css-sources'
 import { processCachedTask } from '../shared/cache'
 import { generateCssByGenerator } from '../shared/generator-css'
 
@@ -23,7 +25,11 @@ const Transform = stream.Transform
  * @link https://tw.icebreaker.top/docs/quick-start/frameworks/native
  */
 export function createPlugins(options: UserDefinedOptions = {}) {
-  const opts = getCompilerContext(options)
+  const hasInitialTailwindCssRoots = hasConfiguredTailwindV4CssRoots(options)
+  const opts = getCompilerContext({
+    ...options,
+    __internalDeferMissingCssEntriesWarning: true,
+  } as UserDefinedOptions)
 
   const { templateHandler, styleHandler, jsHandler, cache, twPatcher: initialTwPatcher, refreshTailwindcssPatcher } = opts
 
@@ -63,6 +69,26 @@ export function createPlugins(options: UserDefinedOptions = {}) {
       getRuntimeClassSetSignature(runtimeState.twPatcher),
       [...nextRuntimeSet].sort().join('\n'),
     ].join('\n\n'))
+  }
+
+  async function registerAutoCssSource(file: File, rawSource: string) {
+    if (
+      hasInitialTailwindCssRoots
+      || (runtimeState.twPatcher.majorVersion ?? 0) < 4
+      || !file.path
+      || !hasTailwindRootDirectives(rawSource)
+    ) {
+      return
+    }
+    const changed = upsertTailwindV4CssSource(opts, {
+      file: path.resolve(file.path),
+      css: rawSource,
+    })
+    if (!changed) {
+      return
+    }
+    runtimeSetInitialized = false
+    debug('detected tailwindcss v4 css source from gulp css file: %s', file.path)
   }
   function resolveWithExtensions(base: string): string | undefined {
     for (const ext of MODULE_EXTENSIONS) {
@@ -221,6 +247,7 @@ export function createPlugins(options: UserDefinedOptions = {}) {
         return
       }
       const rawSource = file.contents.toString()
+      await registerAutoCssSource(file, rawSource)
       const nextRuntimeSet = await refreshRuntimeSet(true)
       await processCachedTask<string>({
         cache,

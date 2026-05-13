@@ -1,4 +1,3 @@
-import type { TailwindV4CssSource } from 'tailwindcss-patch'
 import type { Plugin, ResolvedConfig } from 'vite'
 import type { UserDefinedOptions } from '@/types'
 import path from 'node:path'
@@ -9,6 +8,7 @@ import { vitePluginName } from '@/constants'
 import { getCompilerContext } from '@/context'
 import { toCustomAttributesEntities } from '@/context/custom-attributes'
 import { createDebug } from '@/debug'
+import { hasConfiguredTailwindV4CssRoots, upsertTailwindV4CssSource } from '@/tailwindcss/v4/css-sources'
 import { createUniAppXPlugins } from '@/uni-app-x'
 import { isUniAppXEnabled } from '@/uni-app-x/options'
 import { resolveUniUtsPlatform } from '@/utils'
@@ -29,62 +29,6 @@ import { cleanUrl, slash } from './utils'
 const debug = createDebug()
 const weappTailwindcssPackageDir = resolvePackageDir('weapp-tailwindcss')
 const weappTailwindcssDirPosix = slash(weappTailwindcssPackageDir)
-
-function hasCssEntriesValue(value: unknown) {
-  if (typeof value === 'string') {
-    return value.trim().length > 0
-  }
-  return Array.isArray(value) && value.some(entry => typeof entry === 'string' && entry.trim().length > 0)
-}
-
-function hasCssSourcesValue(value: unknown) {
-  return Array.isArray(value) && value.some((source) => {
-    return typeof source === 'object'
-      && source !== null
-      && typeof (source as { css?: unknown }).css === 'string'
-      && (source as { css: string }).css.trim().length > 0
-  })
-}
-
-function hasConfiguredTailwindCssRoots(options: UserDefinedOptions, opts: { cssEntries?: string[] }) {
-  return hasCssEntriesValue(opts.cssEntries)
-    || hasCssEntriesValue(options.cssEntries)
-    || hasCssEntriesValue(options.tailwindcss?.v4?.cssEntries)
-    || hasCssEntriesValue((options.tailwindcssPatcherOptions as any)?.tailwindcss?.v4?.cssEntries)
-    || hasCssSourcesValue(options.tailwindcss?.v4?.cssSources)
-    || hasCssSourcesValue((options.tailwindcssPatcherOptions as any)?.tailwindcss?.v4?.cssSources)
-}
-
-function normalizeCssSourceFile(file: string | undefined) {
-  if (!file) {
-    return undefined
-  }
-  return path.isAbsolute(file) ? path.normalize(file) : file
-}
-
-function upsertAutoCssSource(opts: UserDefinedOptions, source: TailwindV4CssSource) {
-  const tailwindcss = opts.tailwindcss ?? {}
-  const v4 = tailwindcss.v4 ?? {}
-  const cssSources = [...(v4.cssSources ?? [])]
-  const sourceFile = normalizeCssSourceFile(source.file)
-  const existingIndex = cssSources.findIndex(candidate => normalizeCssSourceFile(candidate.file) === sourceFile)
-  if (existingIndex >= 0) {
-    cssSources[existingIndex] = {
-      ...cssSources[existingIndex],
-      ...source,
-    }
-  }
-  else {
-    cssSources.push(source)
-  }
-  opts.tailwindcss = {
-    ...tailwindcss,
-    v4: {
-      ...v4,
-      cssSources,
-    },
-  }
-}
 
 /**
  * @name WeappTailwindcss
@@ -117,7 +61,10 @@ export function WeappTailwindcss(options: UserDefinedOptions = {}): Plugin[] | u
   const tailwindcssMajorVersion = initialTwPatcher.majorVersion ?? 0
   const shouldOwnTailwindGeneration = !disabledOptions.plugin
   const shouldRewriteCssImports = tailwindcssMajorVersion >= 4
-  const hasInitialTailwindCssRoots = hasConfiguredTailwindCssRoots(options, opts)
+  const hasInitialTailwindCssRoots = hasConfiguredTailwindV4CssRoots({
+    ...options,
+    cssEntries: opts.cssEntries ?? options.cssEntries,
+  })
   const autoCssSourceContent = new Map<string, string>()
   let refreshRuntimeStateForAutoCssSources: ((force: boolean) => Promise<void>) | undefined
   let autoCssSourcesRefresh: Promise<void> | undefined
@@ -138,7 +85,7 @@ export function WeappTailwindcss(options: UserDefinedOptions = {}): Plugin[] | u
       return
     }
     autoCssSourceContent.set(sourceFile, css)
-    upsertAutoCssSource(opts, {
+    upsertTailwindV4CssSource(opts, {
       file: sourceFile,
       css,
     })

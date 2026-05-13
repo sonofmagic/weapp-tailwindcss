@@ -1,3 +1,4 @@
+import type { TailwindV4CssSource } from 'tailwindcss-patch'
 import type { Compiler } from 'webpack'
 import type { AppType, InternalUserDefinedOptions } from '@/types'
 import fs from 'node:fs'
@@ -15,6 +16,7 @@ interface SetupWebpackV5LoadersOptions {
   weappTailwindcssPackageDir: string
   shouldRewriteCssImports: boolean
   runtimeLoaderPath?: string
+  registerAutoCssSource?: (source: TailwindV4CssSource) => Promise<void> | void
   getClassSetInLoader: () => Promise<void>
   getRuntimeWatchDependencies: () => {
     files: ReadonlySet<string>
@@ -31,6 +33,7 @@ export function setupWebpackV5Loaders(options: SetupWebpackV5LoadersOptions) {
     weappTailwindcssPackageDir,
     shouldRewriteCssImports,
     runtimeLoaderPath,
+    registerAutoCssSource,
     getClassSetInLoader,
     getRuntimeWatchDependencies,
     debug,
@@ -54,6 +57,7 @@ export function setupWebpackV5Loaders(options: SetupWebpackV5LoadersOptions) {
     ? {
         pkgDir: weappTailwindcssPackageDir,
         appType,
+        registerCssSource: registerAutoCssSource,
       }
     : undefined
   const classSetLoaderOptions = {

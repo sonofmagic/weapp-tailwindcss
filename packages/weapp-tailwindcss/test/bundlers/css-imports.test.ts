@@ -98,6 +98,26 @@ describe('bundlers/shared css-imports', () => {
     expect(write).toHaveBeenCalledWith(expect.stringContaining('rewritten import'))
   })
 
+  it('registers tailwindcss root css sources from the webpack loader', async () => {
+    const registerCssSource = vi.fn()
+    const result = loader.call({
+      query: {
+        tailwindcssImportRewrite: {
+          pkgDir,
+          registerCssSource,
+        },
+      },
+      resourcePath: '/src/app.css',
+    } as any, '@import "tailwindcss";\n@source inline("w-4");')
+
+    await Promise.resolve(result)
+
+    expect(registerCssSource).toHaveBeenCalledWith({
+      file: '/src/app.css',
+      css: '@import "tailwindcss";\n@source inline("w-4");',
+    })
+  })
+
   it('rewrites tailwindcss import to weapp entry for non-mpx', () => {
     const code = '@import "tailwindcss";'
     const rewritten = rewriteTailwindcssImportsInCode(code, pkgDir, { join: joinPosixPath })

@@ -48,9 +48,6 @@ module.exports = defineConfig({
       new UnifiedWebpackPluginV5({
         rem2rpx: true,
         appType: 'mpx',
-        cssEntries: [
-          path.resolve(__dirname, 'src/app.css')
-        ]
       })
     )
   },

@@ -3,7 +3,6 @@ import TsconfigPathsPlugin from 'tsconfig-paths-webpack-plugin'
 import devConfig from './dev'
 import prodConfig from './prod'
 import { UnifiedWebpackPluginV5, UserDefinedOptions } from 'weapp-tailwindcss/webpack'
-import path from 'path'
 
 const generator = {
   styleOptions: {
@@ -81,9 +80,6 @@ export default defineConfig<'webpack5'>(async (merge, { command, mode }) => {
                 {
                   rem2rpx: true,
                   generator,
-                  cssEntries:[
-                    path.resolve(__dirname,'../src/app.css')
-                  ]
                   // before 2248
                   // after 309
                   // cssCalc: ['--nutui']

@@ -118,12 +118,21 @@ async function runVersion(version) {
 
   const ctx = createContext({
     tailwindcssBasedir: demoDir,
-    cssEntries: isV4 ? [cssEntryPath] : [],
     tailwindcss: {
       cwd: demoDir,
       config: tailwindConfigPath,
       packageName: isV4 ? 'tailwindcss4' : 'tailwindcss',
       version: isV4 ? 4 : 3,
+      v4: isV4
+        ? {
+            cssSources: [
+              {
+                file: cssEntryPath,
+                css,
+              },
+            ],
+          }
+        : undefined,
     },
   })
 

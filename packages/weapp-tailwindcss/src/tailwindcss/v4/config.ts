@@ -1,5 +1,6 @@
 import type { InternalUserDefinedOptions, TailwindcssPatcherLike } from '@/types'
 import { logger } from '@weapp-tailwindcss/logger'
+import { hasConfiguredTailwindV4CssRoots } from './css-sources'
 
 // 默认保留列表暂为空，后续若有新增默认变量再补充到该数组
 export const DEFAULT_CSS_CALC_CUSTOM_PROPERTIES: (string | RegExp)[] = []
@@ -90,16 +91,7 @@ export function normalizeCssEntriesConfig(entries: unknown) {
   return normalized.length > 0 ? normalized : undefined
 }
 
-function hasCssSourcesConfig(sources: unknown) {
-  return Array.isArray(sources) && sources.some((source) => {
-    return typeof source === 'object'
-      && source !== null
-      && typeof (source as { css?: unknown }).css === 'string'
-      && (source as { css: string }).css.trim().length > 0
-  })
-}
-
-function hasConfiguredTailwindCssRoots(ctx: InternalUserDefinedOptions) {
+function hasConfiguredCssEntries(ctx: InternalUserDefinedOptions) {
   if (normalizeCssEntriesConfig(ctx.cssEntries)) {
     return true
   }
@@ -108,16 +100,9 @@ function hasConfiguredTailwindCssRoots(ctx: InternalUserDefinedOptions) {
     return true
   }
 
-  if (hasCssSourcesConfig(ctx.tailwindcss?.v4?.cssSources)) {
-    return true
-  }
-
   const patcherOptions = ctx.tailwindcssPatcherOptions as any
   if (patcherOptions) {
     if (normalizeCssEntriesConfig(patcherOptions.tailwindcss?.v4?.cssEntries)) {
-      return true
-    }
-    if (hasCssSourcesConfig(patcherOptions.tailwindcss?.v4?.cssSources)) {
       return true
     }
   }
@@ -139,7 +124,7 @@ export function warnMissingCssEntries(
     return
   }
 
-  if (hasConfiguredTailwindCssRoots(ctx)) {
+  if (hasConfiguredCssEntries(ctx) || hasConfiguredTailwindV4CssRoots(ctx)) {
     return
   }
 

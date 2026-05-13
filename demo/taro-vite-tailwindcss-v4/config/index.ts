@@ -3,7 +3,6 @@ import { defineConfig, type UserConfigExport } from '@tarojs/cli'
 import devConfig from './dev'
 import prodConfig from './prod'
 import { WeappTailwindcss } from 'weapp-tailwindcss/vite'
-import path from 'path'
 
 const generator = {
   styleOptions: {
@@ -57,10 +56,6 @@ export default defineConfig<'vite'>(async (merge, { command, mode }) => {
         WeappTailwindcss({
           rem2rpx: true,
           generator,
-          cssEntries:[
-            // 对应 src/app.css 中 @import "tailwindcss"; 的入口文件
-            path.resolve(__dirname, '../src/app.css')
-          ],
           // injectAdditionalCssVarScope: true,
         })
       ]

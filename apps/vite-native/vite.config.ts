@@ -1,4 +1,3 @@
-import path from 'node:path'
 import { WeappTailwindcss } from 'weapp-tailwindcss/vite'
 import { defineConfig } from 'weapp-vite/config'
 
@@ -19,9 +18,6 @@ export default defineConfig({
     // @ts-ignore
     WeappTailwindcss({
       rem2rpx: true,
-      cssEntries: [
-        path.resolve(import.meta.dirname, './app.css'),
-      ],
     }),
   ],
   css: {

@@ -63,6 +63,7 @@ interface TestContext {
   wxsMatcher: (file: string) => boolean
   runtimeLoaderPath: string
   appType?: string
+  tailwindcss?: any
 }
 let existsSyncSpy: ReturnType<typeof vi.spyOn>
 
@@ -475,6 +476,33 @@ describe('bundlers/webpack UnifiedWebpackPluginV5', () => {
       '/workspace/src/app.css',
     ])
     expect([...dependencies.contexts]).toEqual(['/workspace/src'])
+  })
+
+  it('registers tailwindcss v4 cssSources from the injected css rewrite loader', async () => {
+    currentContext.twPatcher.majorVersion = 4
+    const { compiler, getLoaderHandler } = createCompilerWithLoaderTracking()
+    const plugin = new UnifiedWebpackPluginV5()
+    plugin.apply(compiler as any)
+
+    const module: LoaderModule = {
+      resource: '/workspace/src/app.css',
+      loaders: [{ loader: '/path/postcss-loader.js' }],
+    }
+    getLoaderHandler()?.({}, module)
+
+    const rewriteLoaderEntry = module.loaders.find(isCssImportRewriteLoader)
+    await rewriteLoaderEntry?.options?.tailwindcssImportRewrite?.registerCssSource({
+      file: '/workspace/src/app.css',
+      css: '@import "tailwindcss";\n@source inline("w-4");',
+    })
+
+    expect(currentContext.tailwindcss?.v4?.cssSources).toEqual([
+      {
+        file: '/workspace/src/app.css',
+        css: '@import "tailwindcss";\n@source inline("w-4");',
+      },
+    ])
+    expect(currentContext.refreshTailwindcssPatcher).toHaveBeenCalledTimes(1)
   })
 
   it('skips webpack hooks when the plugin is disabled', () => {
