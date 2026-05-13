@@ -146,7 +146,7 @@ text,
 .divide-x-8 > text + text {
   --tw-divide-x-reverse: 0;
   border-right-width: calc(8rpx * var(--tw-divide-x-reverse));
-  border-left-width: calc(8rpx * calc(1 - var(--tw-divide-x-reverse)));
+  border-left-width: calc(8rpx * (1 - var(--tw-divide-x-reverse)));
 }
 .divide-solid > view + view,
 .divide-solid > view + text,

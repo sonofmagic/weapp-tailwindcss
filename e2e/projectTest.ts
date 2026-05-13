@@ -214,6 +214,7 @@ async function runProjectTest(entry: ProjectEntry, options: ProjectTestOptions) 
   const cssSnapshots = await collectCssSnapshots(projectPath, entry.cssFile, {
     classList: extraction?.classList,
     normalizeWebpackAppSplitNoise: entry.name === 'taro-webpack-tailwindcss-v4',
+    normalizeTailwindV4RootVariableNoise: entry.name === 'taro-vite-tailwindcss-v4',
   })
   for (const snapshot of cssSnapshots) {
     await expectProjectSnapshot(options.suite, entry.name, snapshot.fileName, snapshot.content)

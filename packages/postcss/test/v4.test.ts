@@ -595,6 +595,25 @@ page{--status-bar-height:25px;--top-window-height:0px;--window-top:0px;--window-
     expect(v2jit.css).toContain('font-size: 32rpx')
   })
 
+  it('recovers misparsed arbitrary rpx lengths in non-main chunks', async () => {
+    const styleHandler = createStyleHandler({
+      isMainChunk: true,
+    })
+    const code = `
+.text-_b55rpx_B { color: 55rpx; }
+.border-_b10rpx_B { border-color: 10rpx; }
+`
+    const { css } = await styleHandler(code, {
+      isMainChunk: false,
+      majorVersion: 4,
+    })
+
+    expect(css).toContain('font-size: 55rpx')
+    expect(css).not.toContain('color: 55rpx')
+    expect(css).toContain('border-width: 10rpx')
+    expect(css).not.toContain('border-color: 10rpx')
+  })
+
   it('adds webkit background clip for Tailwind CSS v4 bg-clip-text', async () => {
     const styleHandler = createStyleHandler({
       isMainChunk: true,

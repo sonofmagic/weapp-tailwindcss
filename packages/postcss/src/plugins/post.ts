@@ -92,17 +92,19 @@ const postcssWeappTailwindcssPostPlugin: PostcssWeappTailwindcssRenamePlugin = (
     }
   }
 
-  if (enableMainChunkTransforms) {
-    p.DeclarationExit = (decl) => {
-      if (opts.majorVersion === undefined) {
-        normalizeTailwindcssRpxDeclaration(decl)
-      }
-      else {
-        normalizeTailwindcssRpxDeclaration(decl, { majorVersion: opts.majorVersion })
-      }
+  p.DeclarationExit = (decl) => {
+    if (opts.majorVersion === undefined) {
+      normalizeTailwindcssRpxDeclaration(decl)
+    }
+    else {
+      normalizeTailwindcssRpxDeclaration(decl, { majorVersion: opts.majorVersion })
+    }
+    if (enableMainChunkTransforms) {
       normalizeTailwindcssV4Declaration(decl)
     }
+  }
 
+  if (enableMainChunkTransforms) {
     p.AtRuleExit = (atRule) => {
       /**
        * @description 移除 property

@@ -6,7 +6,7 @@ Generator CSS files: app.wxss, app-origin.wxss, index.wxss
 
 | Bytes | Selectors | @supports | :hover | Tailwind banner | Raw arbitrary selector | Weapp escaped arbitrary selector |
 | ---: | ---: | --- | --- | --- | --- | --- |
-| 5231 | 45 | false | false | false | false | true |
+| 5227 | 45 | false | false | false | false | true |
 
 ## Generator CSS
 
@@ -161,7 +161,7 @@ text,
 .divide-x-8 > text + text {
   --tw-divide-x-reverse: 0;
   border-right-width: calc(8rpx * var(--tw-divide-x-reverse));
-  border-left-width: calc(8rpx * calc(1 - var(--tw-divide-x-reverse)));
+  border-left-width: calc(8rpx * (1 - var(--tw-divide-x-reverse)));
 }
 .divide-solid > view + view,
 .divide-solid > view + text,

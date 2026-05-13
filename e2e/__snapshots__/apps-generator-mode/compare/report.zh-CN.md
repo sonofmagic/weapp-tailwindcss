@@ -10,12 +10,12 @@
 | gulp-tailwindcss-v4 | demo | 通过 | `gulp-tailwindcss-v4/dist/app.wxss` (+2) | 6355 | 52 | 否 | 否 | 否 | 否 | 是 |
 | mpx-tailwindcss-v3 | demo | 通过 | `mpx-tailwindcss-v3/dist/wx/app.wxss` (+23) | 190234 | 2879 | 否 | 否 | 否 | 否 | 是 |
 | mpx-tailwindcss-v4 | demo | 通过 | `mpx-tailwindcss-v4/dist/wx/app.wxss` (+6) | 16002 | 66 | 否 | 否 | 否 | 否 | 是 |
-| taro-webpack-tailwindcss-v3 | demo | 通过 | `taro-webpack-tailwindcss-v3/dist/app.wxss` (+5) | 49085 | 139 | 否 | 否 | 否 | 否 | 是 |
-| taro-webpack-tailwindcss-v4 | demo | 通过 | `taro-webpack-tailwindcss-v4/dist/app.wxss` (+1) | 365139 | 2154 | 否 | 否 | 否 | 否 | 是 |
-| taro-vite-tailwindcss-v3 | demo | 通过 | `taro-vite-tailwindcss-v3/dist/app.wxss` (+2) | 5231 | 45 | 否 | 否 | 否 | 否 | 是 |
+| taro-webpack-tailwindcss-v3 | demo | 通过 | `taro-webpack-tailwindcss-v3/dist/app.wxss` (+5) | 48665 | 139 | 否 | 否 | 否 | 否 | 是 |
+| taro-webpack-tailwindcss-v4 | demo | 通过 | `taro-webpack-tailwindcss-v4/dist/app.wxss` (+1) | 365148 | 2154 | 否 | 否 | 否 | 否 | 是 |
+| taro-vite-tailwindcss-v3 | demo | 通过 | `taro-vite-tailwindcss-v3/dist/app.wxss` (+2) | 5227 | 45 | 否 | 否 | 否 | 否 | 是 |
 | taro-vite-tailwindcss-v4 | demo | 通过 | `taro-vite-tailwindcss-v4/dist/app.wxss` (+2) | 5001 | 39 | 否 | 否 | 否 | 否 | 是 |
-| uni-app-vite-tailwindcss-v3 | demo | 通过 | `uni-app-vite-tailwindcss-v3/dist/build/mp-weixin/app.wxss` (+10) | 503295 | 3122 | 否 | 否 | 否 | 否 | 是 |
-| uni-app-vite-tailwindcss-v4 | demo | 通过 | `uni-app-vite-tailwindcss-v4/dist/build/mp-weixin/app.wxss` (+2) | 84226 | 236 | 否 | 否 | 否 | 否 | 是 |
+| uni-app-vite-tailwindcss-v3 | demo | 通过 | `uni-app-vite-tailwindcss-v3/dist/build/mp-weixin/app.wxss` (+10) | 500582 | 3122 | 否 | 否 | 否 | 否 | 是 |
+| uni-app-vite-tailwindcss-v4 | demo | 通过 | `uni-app-vite-tailwindcss-v4/dist/build/mp-weixin/app.wxss` (+2) | 86796 | 236 | 否 | 否 | 否 | 否 | 是 |
 | weapp-vite-tailwindcss-v3 | demo | 通过 | `weapp-vite-tailwindcss-v3/dist/app.wxss` (+3) | 24266 | 258 | 否 | 否 | 否 | 否 | 是 |
 | weapp-vite-tailwindcss-v4 | demo | 通过 | `weapp-vite-tailwindcss-v4/dist/app.wxss` (+2) | 7456 | 58 | 否 | 否 | 否 | 否 | 是 |
 

@@ -4,7 +4,7 @@ import { normalizeCssSnapshot } from './snapshotUtils'
 describe('normalizeCssSnapshot', () => {
   it('removes scanner noise utilities without a class list', () => {
     expect(normalizeCssSnapshot([
-      ':host { --spacing: 8rpx; }',
+      ':host { --color-red-500: red; --spacing: 8rpx; }',
       '/*$vite$:1*/',
       '.start { left: var(--spacing); }',
       '.end { right: var(--spacing); }',
@@ -50,6 +50,64 @@ describe('normalizeCssSnapshot', () => {
       '}',
       '.border-b-_b4rpx_B {',
       '  border-bottom-width: 4rpx;',
+      '}',
+    ].join('\n'))
+  })
+
+  it('normalizes calc wrapper and utility rule ordering differences', () => {
+    expect(normalizeCssSnapshot([
+      ':host { --spacing: 8rpx; --color-red-500: red; }',
+      '.border-t-_b4px_B { border-top-width: 4px; }',
+      '.border-_b_h098765_B { border-color: #098765; }',
+      '.border-_b10rpx_B { border-width: 10rpx; }',
+      '.border-_bred_B { border-color: red; }',
+      '.border-b-_b4rpx_B { border-bottom-width: 4rpx; }',
+      '.text-_b32px_B { font-size: 32px; }',
+      '.text-_b32_d4rpx_B { font-size: 32.4rpx; }',
+      '.text-_b32rpx_B { font-size: 32rpx; }',
+      '.divide-x-8 {',
+      '  border-left-width: calc(8rpx * calc(1 - var(--tw-divide-x-reverse)));',
+      '  border-left-width: calc(8rpx * (1 - var(--tw-divide-x-reverse)));',
+      '}',
+    ].join('\n'))).toBe([
+      ':host { --spacing: 8rpx; }',
+      '.border-_b10rpx_B { border-width: 10rpx; }',
+      '.border-_b_h098765_B { border-color: #098765; }',
+      '.border-_bred_B { border-color: red; }',
+      '.border-b-_b4rpx_B { border-bottom-width: 4rpx; }',
+      '.border-t-_b4px_B { border-top-width: 4px; }',
+      '.text-_b32_d4rpx_B { font-size: 32.4rpx; }',
+      '.text-_b32px_B { font-size: 32px; }',
+      '.text-_b32rpx_B { font-size: 32rpx; }',
+      '.divide-x-8 {',
+      '  border-left-width: calc(8rpx * (1 - var(--tw-divide-x-reverse)));',
+      '}',
+    ].join('\n'))
+  })
+
+  it('removes optional Tailwind CSS v4 root variable snapshot noise', () => {
+    expect(normalizeCssSnapshot([
+      ':host, page, .tw-root, wx-root-portal-content {',
+      '  --tw-rotate-x: initial;',
+      '  --tw-gradient-position: initial;',
+      '  --font-sans: ui-sans-serif;',
+      '  --spacing: 8rpx;',
+      '}',
+      '::before, ::after {',
+      '  --tw-content: "";',
+      '}',
+      '.bg-gradient-to-r {',
+      '  --tw-gradient-position: to right in oklab;',
+      '}',
+    ].join('\n'), {
+      normalizeTailwindV4RootVariableNoise: true,
+    })).toBe([
+      ':host, page, .tw-root, wx-root-portal-content {',
+      '  --font-sans: ui-sans-serif;',
+      '  --spacing: 8rpx;',
+      '}',
+      '.bg-gradient-to-r {',
+      '  --tw-gradient-position: to right in oklab;',
       '}',
     ].join('\n'))
   })

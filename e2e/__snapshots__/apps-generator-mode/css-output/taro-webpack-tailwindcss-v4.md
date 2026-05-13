@@ -6,7 +6,7 @@ Generator CSS files: app.wxss, index.wxss
 
 | Bytes | Selectors | @supports | :hover | Tailwind banner | Raw arbitrary selector | Weapp escaped arbitrary selector |
 | ---: | ---: | --- | --- | --- | --- | --- |
-| 365139 | 2154 | false | false | false | false | true |
+| 365148 | 2154 | false | false | false | false | true |
 
 ## Generator CSS
 
@@ -279,7 +279,7 @@ wx-root-portal-content {
   background-color: var(--color-purple-800);
 }
 .bg-gradient-to-r {
-  --tw-gradient-position: to right;
+  --tw-gradient-position: to right in oklab;
   background-image: linear-gradient(var(--tw-gradient-stops));
 }
 .from-cyan-500 {

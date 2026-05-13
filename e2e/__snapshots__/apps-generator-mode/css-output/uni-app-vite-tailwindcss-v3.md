@@ -6,7 +6,7 @@ Generator CSS files: app.wxss, a.wxss, b.wxss, index.wxss, index.wxss, index.wxs
 
 | Bytes | Selectors | @supports | :hover | Tailwind banner | Raw arbitrary selector | Weapp escaped arbitrary selector |
 | ---: | ---: | --- | --- | --- | --- | --- |
-| 503295 | 3122 | false | false | false | false | true |
+| 500582 | 3122 | false | false | false | false | true |
 
 ## Generator CSS
 
@@ -6872,7 +6872,6 @@ wx-root-portal-content {
   --tw-space-x-reverse: 0;
   margin-right: calc(20rpx * var(--tw-space-x-reverse));
   margin-left: calc(20rpx * (1 - var(--tw-space-x-reverse)));
-  margin-left: calc(20rpx * calc(1 - var(--tw-space-x-reverse)));
 }
 .space-y-4 > view + view,
 .space-y-4 > view + text,
@@ -6880,7 +6879,6 @@ wx-root-portal-content {
 .space-y-4 > text + text {
   --tw-space-y-reverse: 0;
   margin-top: calc(32rpx * (1 - var(--tw-space-y-reverse)));
-  margin-top: calc(32rpx * calc(1 - var(--tw-space-y-reverse)));
   margin-bottom: calc(32rpx * var(--tw-space-y-reverse));
 }
 .space-y-_b1_d6rem_B > view + view,
@@ -6889,7 +6887,6 @@ wx-root-portal-content {
 .space-y-_b1_d6rem_B > text + text {
   --tw-space-y-reverse: 0;
   margin-top: calc(51.2rpx * (1 - var(--tw-space-y-reverse)));
-  margin-top: calc(51.2rpx * calc(1 - var(--tw-space-y-reverse)));
   margin-bottom: calc(51.2rpx * var(--tw-space-y-reverse));
 }
 .space-y-_b11rpx_B > view + view,
@@ -6898,7 +6895,6 @@ wx-root-portal-content {
 .space-y-_b11rpx_B > text + text {
   --tw-space-y-reverse: 0;
   margin-top: calc(11rpx * (1 - var(--tw-space-y-reverse)));
-  margin-top: calc(11rpx * calc(1 - var(--tw-space-y-reverse)));
   margin-bottom: calc(11rpx * var(--tw-space-y-reverse));
 }
 .space-y-reverse > view + view,
@@ -6920,7 +6916,6 @@ wx-root-portal-content {
   --tw-divide-x-reverse: 0;
   border-right-width: calc(1rpx * var(--tw-divide-x-reverse));
   border-left-width: calc(1rpx * (1 - var(--tw-divide-x-reverse)));
-  border-left-width: calc(1rpx * calc(1 - var(--tw-divide-x-reverse)));
 }
 .divide-x-_b10px_B > view + view,
 .divide-x-_b10px_B > view + text,
@@ -6929,7 +6924,6 @@ wx-root-portal-content {
   --tw-divide-x-reverse: 0;
   border-right-width: calc(10rpx * var(--tw-divide-x-reverse));
   border-left-width: calc(10rpx * (1 - var(--tw-divide-x-reverse)));
-  border-left-width: calc(10rpx * calc(1 - var(--tw-divide-x-reverse)));
 }
 .divide-x-_b3px_B > view + view,
 .divide-x-_b3px_B > view + text,
@@ -6938,7 +6932,6 @@ wx-root-portal-content {
   --tw-divide-x-reverse: 0;
   border-right-width: calc(3rpx * var(--tw-divide-x-reverse));
   border-left-width: calc(3rpx * (1 - var(--tw-divide-x-reverse)));
-  border-left-width: calc(3rpx * calc(1 - var(--tw-divide-x-reverse)));
 }
 .divide-y > view + view,
 .divide-y > view + text,
@@ -6946,7 +6939,6 @@ wx-root-portal-content {
 .divide-y > text + text {
   --tw-divide-y-reverse: 0;
   border-top-width: calc(1rpx * (1 - var(--tw-divide-y-reverse)));
-  border-top-width: calc(1rpx * calc(1 - var(--tw-divide-y-reverse)));
   border-bottom-width: calc(1rpx * var(--tw-divide-y-reverse));
 }
 .divide-y-reverse > view + view,
@@ -6978,7 +6970,7 @@ wx-root-portal-content {
 .divide-_b3rpx_B > view + text,
 .divide-_b3rpx_B > text + view,
 .divide-_b3rpx_B > text + text {
-  border-color: 3rpx;
+  border-width: 3rpx;
 }
 .overflow-hidden {
   overflow: hidden;
@@ -8557,7 +8549,6 @@ wx-root-portal-content {
   --tw-space-x-reverse: 0;
   margin-right: calc(20rpx * var(--tw-space-x-reverse));
   margin-left: calc(20rpx * (1 - var(--tw-space-x-reverse)));
-  margin-left: calc(20rpx * calc(1 - var(--tw-space-x-reverse)));
 }
 .space-y-4 > view + view,
 .space-y-4 > view + text,
@@ -8565,7 +8556,6 @@ wx-root-portal-content {
 .space-y-4 > text + text {
   --tw-space-y-reverse: 0;
   margin-top: calc(32rpx * (1 - var(--tw-space-y-reverse)));
-  margin-top: calc(32rpx * calc(1 - var(--tw-space-y-reverse)));
   margin-bottom: calc(32rpx * var(--tw-space-y-reverse));
 }
 .space-y-_b1_d6rem_B > view + view,
@@ -8574,7 +8564,6 @@ wx-root-portal-content {
 .space-y-_b1_d6rem_B > text + text {
   --tw-space-y-reverse: 0;
   margin-top: calc(51.2rpx * (1 - var(--tw-space-y-reverse)));
-  margin-top: calc(51.2rpx * calc(1 - var(--tw-space-y-reverse)));
   margin-bottom: calc(51.2rpx * var(--tw-space-y-reverse));
 }
 .space-y-_b11rpx_B > view + view,
@@ -8583,7 +8572,6 @@ wx-root-portal-content {
 .space-y-_b11rpx_B > text + text {
   --tw-space-y-reverse: 0;
   margin-top: calc(11rpx * (1 - var(--tw-space-y-reverse)));
-  margin-top: calc(11rpx * calc(1 - var(--tw-space-y-reverse)));
   margin-bottom: calc(11rpx * var(--tw-space-y-reverse));
 }
 .space-y-reverse > view + view,
@@ -8605,7 +8593,6 @@ wx-root-portal-content {
   --tw-divide-x-reverse: 0;
   border-right-width: calc(1rpx * var(--tw-divide-x-reverse));
   border-left-width: calc(1rpx * (1 - var(--tw-divide-x-reverse)));
-  border-left-width: calc(1rpx * calc(1 - var(--tw-divide-x-reverse)));
 }
 .divide-x-_b10px_B > view + view,
 .divide-x-_b10px_B > view + text,
@@ -8614,7 +8601,6 @@ wx-root-portal-content {
   --tw-divide-x-reverse: 0;
   border-right-width: calc(10rpx * var(--tw-divide-x-reverse));
   border-left-width: calc(10rpx * (1 - var(--tw-divide-x-reverse)));
-  border-left-width: calc(10rpx * calc(1 - var(--tw-divide-x-reverse)));
 }
 .divide-x-_b3px_B > view + view,
 .divide-x-_b3px_B > view + text,
@@ -8623,7 +8609,6 @@ wx-root-portal-content {
   --tw-divide-x-reverse: 0;
   border-right-width: calc(3rpx * var(--tw-divide-x-reverse));
   border-left-width: calc(3rpx * (1 - var(--tw-divide-x-reverse)));
-  border-left-width: calc(3rpx * calc(1 - var(--tw-divide-x-reverse)));
 }
 .divide-y > view + view,
 .divide-y > view + text,
@@ -8631,7 +8616,6 @@ wx-root-portal-content {
 .divide-y > text + text {
   --tw-divide-y-reverse: 0;
   border-top-width: calc(1rpx * (1 - var(--tw-divide-y-reverse)));
-  border-top-width: calc(1rpx * calc(1 - var(--tw-divide-y-reverse)));
   border-bottom-width: calc(1rpx * var(--tw-divide-y-reverse));
 }
 .divide-y-reverse > view + view,
@@ -8663,7 +8647,7 @@ wx-root-portal-content {
 .divide-_b3rpx_B > view + text,
 .divide-_b3rpx_B > text + view,
 .divide-_b3rpx_B > text + text {
-  border-color: 3rpx;
+  border-width: 3rpx;
 }
 .overflow-hidden {
   overflow: hidden;
@@ -10281,7 +10265,6 @@ wx-root-portal-content {
   --tw-space-x-reverse: 0;
   margin-right: calc(20rpx * var(--tw-space-x-reverse));
   margin-left: calc(20rpx * (1 - var(--tw-space-x-reverse)));
-  margin-left: calc(20rpx * calc(1 - var(--tw-space-x-reverse)));
 }
 .space-y-4 > view + view,
 .space-y-4 > view + text,
@@ -10289,7 +10272,6 @@ wx-root-portal-content {
 .space-y-4 > text + text {
   --tw-space-y-reverse: 0;
   margin-top: calc(32rpx * (1 - var(--tw-space-y-reverse)));
-  margin-top: calc(32rpx * calc(1 - var(--tw-space-y-reverse)));
   margin-bottom: calc(32rpx * var(--tw-space-y-reverse));
 }
 .space-y-_b1_d6rem_B > view + view,
@@ -10298,7 +10280,6 @@ wx-root-portal-content {
 .space-y-_b1_d6rem_B > text + text {
   --tw-space-y-reverse: 0;
   margin-top: calc(51.2rpx * (1 - var(--tw-space-y-reverse)));
-  margin-top: calc(51.2rpx * calc(1 - var(--tw-space-y-reverse)));
   margin-bottom: calc(51.2rpx * var(--tw-space-y-reverse));
 }
 .space-y-_b11rpx_B > view + view,
@@ -10307,7 +10288,6 @@ wx-root-portal-content {
 .space-y-_b11rpx_B > text + text {
   --tw-space-y-reverse: 0;
   margin-top: calc(11rpx * (1 - var(--tw-space-y-reverse)));
-  margin-top: calc(11rpx * calc(1 - var(--tw-space-y-reverse)));
   margin-bottom: calc(11rpx * var(--tw-space-y-reverse));
 }
 .space-y-reverse > view + view,
@@ -10329,7 +10309,6 @@ wx-root-portal-content {
   --tw-divide-x-reverse: 0;
   border-right-width: calc(1rpx * var(--tw-divide-x-reverse));
   border-left-width: calc(1rpx * (1 - var(--tw-divide-x-reverse)));
-  border-left-width: calc(1rpx * calc(1 - var(--tw-divide-x-reverse)));
 }
 .divide-x-_b10px_B > view + view,
 .divide-x-_b10px_B > view + text,
@@ -10338,7 +10317,6 @@ wx-root-portal-content {
   --tw-divide-x-reverse: 0;
   border-right-width: calc(10rpx * var(--tw-divide-x-reverse));
   border-left-width: calc(10rpx * (1 - var(--tw-divide-x-reverse)));
-  border-left-width: calc(10rpx * calc(1 - var(--tw-divide-x-reverse)));
 }
 .divide-x-_b3px_B > view + view,
 .divide-x-_b3px_B > view + text,
@@ -10347,7 +10325,6 @@ wx-root-portal-content {
   --tw-divide-x-reverse: 0;
   border-right-width: calc(3rpx * var(--tw-divide-x-reverse));
   border-left-width: calc(3rpx * (1 - var(--tw-divide-x-reverse)));
-  border-left-width: calc(3rpx * calc(1 - var(--tw-divide-x-reverse)));
 }
 .divide-y > view + view,
 .divide-y > view + text,
@@ -10355,7 +10332,6 @@ wx-root-portal-content {
 .divide-y > text + text {
   --tw-divide-y-reverse: 0;
   border-top-width: calc(1rpx * (1 - var(--tw-divide-y-reverse)));
-  border-top-width: calc(1rpx * calc(1 - var(--tw-divide-y-reverse)));
   border-bottom-width: calc(1rpx * var(--tw-divide-y-reverse));
 }
 .divide-y-reverse > view + view,
@@ -10387,7 +10363,7 @@ wx-root-portal-content {
 .divide-_b3rpx_B > view + text,
 .divide-_b3rpx_B > text + view,
 .divide-_b3rpx_B > text + text {
-  border-color: 3rpx;
+  border-width: 3rpx;
 }
 .overflow-hidden {
   overflow: hidden;
@@ -12326,7 +12302,6 @@ wx-root-portal-content {
   --tw-space-x-reverse: 0;
   margin-right: calc(20rpx * var(--tw-space-x-reverse));
   margin-left: calc(20rpx * (1 - var(--tw-space-x-reverse)));
-  margin-left: calc(20rpx * calc(1 - var(--tw-space-x-reverse)));
 }
 .space-y-4 > view + view,
 .space-y-4 > view + text,
@@ -12334,7 +12309,6 @@ wx-root-portal-content {
 .space-y-4 > text + text {
   --tw-space-y-reverse: 0;
   margin-top: calc(32rpx * (1 - var(--tw-space-y-reverse)));
-  margin-top: calc(32rpx * calc(1 - var(--tw-space-y-reverse)));
   margin-bottom: calc(32rpx * var(--tw-space-y-reverse));
 }
 .space-y-_b1_d6rem_B > view + view,
@@ -12343,7 +12317,6 @@ wx-root-portal-content {
 .space-y-_b1_d6rem_B > text + text {
   --tw-space-y-reverse: 0;
   margin-top: calc(51.2rpx * (1 - var(--tw-space-y-reverse)));
-  margin-top: calc(51.2rpx * calc(1 - var(--tw-space-y-reverse)));
   margin-bottom: calc(51.2rpx * var(--tw-space-y-reverse));
 }
 .space-y-_b11rpx_B > view + view,
@@ -12352,7 +12325,6 @@ wx-root-portal-content {
 .space-y-_b11rpx_B > text + text {
   --tw-space-y-reverse: 0;
   margin-top: calc(11rpx * (1 - var(--tw-space-y-reverse)));
-  margin-top: calc(11rpx * calc(1 - var(--tw-space-y-reverse)));
   margin-bottom: calc(11rpx * var(--tw-space-y-reverse));
 }
 .space-y-reverse > view + view,
@@ -12374,7 +12346,6 @@ wx-root-portal-content {
   --tw-divide-x-reverse: 0;
   border-right-width: calc(1rpx * var(--tw-divide-x-reverse));
   border-left-width: calc(1rpx * (1 - var(--tw-divide-x-reverse)));
-  border-left-width: calc(1rpx * calc(1 - var(--tw-divide-x-reverse)));
 }
 .divide-x-_b10px_B > view + view,
 .divide-x-_b10px_B > view + text,
@@ -12383,7 +12354,6 @@ wx-root-portal-content {
   --tw-divide-x-reverse: 0;
   border-right-width: calc(10rpx * var(--tw-divide-x-reverse));
   border-left-width: calc(10rpx * (1 - var(--tw-divide-x-reverse)));
-  border-left-width: calc(10rpx * calc(1 - var(--tw-divide-x-reverse)));
 }
 .divide-x-_b3px_B > view + view,
 .divide-x-_b3px_B > view + text,
@@ -12392,7 +12362,6 @@ wx-root-portal-content {
   --tw-divide-x-reverse: 0;
   border-right-width: calc(3rpx * var(--tw-divide-x-reverse));
   border-left-width: calc(3rpx * (1 - var(--tw-divide-x-reverse)));
-  border-left-width: calc(3rpx * calc(1 - var(--tw-divide-x-reverse)));
 }
 .divide-y > view + view,
 .divide-y > view + text,
@@ -12400,7 +12369,6 @@ wx-root-portal-content {
 .divide-y > text + text {
   --tw-divide-y-reverse: 0;
   border-top-width: calc(1rpx * (1 - var(--tw-divide-y-reverse)));
-  border-top-width: calc(1rpx * calc(1 - var(--tw-divide-y-reverse)));
   border-bottom-width: calc(1rpx * var(--tw-divide-y-reverse));
 }
 .divide-y-reverse > view + view,
@@ -12432,7 +12400,7 @@ wx-root-portal-content {
 .divide-_b3rpx_B > view + text,
 .divide-_b3rpx_B > text + view,
 .divide-_b3rpx_B > text + text {
-  border-color: 3rpx;
+  border-width: 3rpx;
 }
 .overflow-hidden {
   overflow: hidden;
@@ -15612,7 +15580,6 @@ wx-root-portal-content {
   --tw-space-x-reverse: 0;
   margin-right: calc(20rpx * var(--tw-space-x-reverse));
   margin-left: calc(20rpx * (1 - var(--tw-space-x-reverse)));
-  margin-left: calc(20rpx * calc(1 - var(--tw-space-x-reverse)));
 }
 .space-y-_b1_d6rem_B > view + view,
 .space-y-_b1_d6rem_B > view + text,
@@ -15620,7 +15587,6 @@ wx-root-portal-content {
 .space-y-_b1_d6rem_B > text + text {
   --tw-space-y-reverse: 0;
   margin-top: calc(51.2rpx * (1 - var(--tw-space-y-reverse)));
-  margin-top: calc(51.2rpx * calc(1 - var(--tw-space-y-reverse)));
   margin-bottom: calc(51.2rpx * var(--tw-space-y-reverse));
 }
 .space-y-_b11rpx_B > view + view,
@@ -15629,7 +15595,6 @@ wx-root-portal-content {
 .space-y-_b11rpx_B > text + text {
   --tw-space-y-reverse: 0;
   margin-top: calc(11rpx * (1 - var(--tw-space-y-reverse)));
-  margin-top: calc(11rpx * calc(1 - var(--tw-space-y-reverse)));
   margin-bottom: calc(11rpx * var(--tw-space-y-reverse));
 }
 .space-y-reverse > view + view,
@@ -15651,7 +15616,6 @@ wx-root-portal-content {
   --tw-divide-x-reverse: 0;
   border-right-width: calc(1rpx * var(--tw-divide-x-reverse));
   border-left-width: calc(1rpx * (1 - var(--tw-divide-x-reverse)));
-  border-left-width: calc(1rpx * calc(1 - var(--tw-divide-x-reverse)));
 }
 .divide-x-_b10px_B > view + view,
 .divide-x-_b10px_B > view + text,
@@ -15660,7 +15624,6 @@ wx-root-portal-content {
   --tw-divide-x-reverse: 0;
   border-right-width: calc(10rpx * var(--tw-divide-x-reverse));
   border-left-width: calc(10rpx * (1 - var(--tw-divide-x-reverse)));
-  border-left-width: calc(10rpx * calc(1 - var(--tw-divide-x-reverse)));
 }
 .divide-x-_b3px_B > view + view,
 .divide-x-_b3px_B > view + text,
@@ -15669,7 +15632,6 @@ wx-root-portal-content {
   --tw-divide-x-reverse: 0;
   border-right-width: calc(3rpx * var(--tw-divide-x-reverse));
   border-left-width: calc(3rpx * (1 - var(--tw-divide-x-reverse)));
-  border-left-width: calc(3rpx * calc(1 - var(--tw-divide-x-reverse)));
 }
 .divide-y > view + view,
 .divide-y > view + text,
@@ -15677,7 +15639,6 @@ wx-root-portal-content {
 .divide-y > text + text {
   --tw-divide-y-reverse: 0;
   border-top-width: calc(1rpx * (1 - var(--tw-divide-y-reverse)));
-  border-top-width: calc(1rpx * calc(1 - var(--tw-divide-y-reverse)));
   border-bottom-width: calc(1rpx * var(--tw-divide-y-reverse));
 }
 .divide-y-reverse > view + view,
@@ -15703,7 +15664,7 @@ wx-root-portal-content {
 .divide-_b3rpx_B > view + text,
 .divide-_b3rpx_B > text + view,
 .divide-_b3rpx_B > text + text {
-  border-color: 3rpx;
+  border-width: 3rpx;
 }
 .overflow-hidden {
   overflow: hidden;
@@ -16787,7 +16748,6 @@ body.data-v-921e5271 {
   display: flex;
   flex-direction: row;
   box-sizing: border-box;
-  flex-direction: row;
 }
 .u-button__text.data-v-921e5271 {
   font-size: 15rpx;

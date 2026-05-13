@@ -6,7 +6,7 @@ Generator CSS files: app.wxss, index.wxss, index.wxss, index.wxss, index.wxss, i
 
 | Bytes | Selectors | @supports | :hover | Tailwind banner | Raw arbitrary selector | Weapp escaped arbitrary selector |
 | ---: | ---: | --- | --- | --- | --- | --- |
-| 49085 | 139 | false | false | false | false | true |
+| 48665 | 139 | false | false | false | false | true |
 
 ## Generator CSS
 
@@ -623,7 +623,6 @@ text,
 .space-y-_b1_d6rem_B > text + text {
   --tw-space-y-reverse: 0;
   margin-top: calc(51.2rpx * (1 - var(--tw-space-y-reverse)));
-  margin-top: calc(51.2rpx * calc(1 - var(--tw-space-y-reverse)));
   margin-bottom: calc(51.2rpx * var(--tw-space-y-reverse));
 }
 .divide-x-_b10px_B > view + view,
@@ -633,7 +632,6 @@ text,
   --tw-divide-x-reverse: 0;
   border-right-width: calc(10rpx * var(--tw-divide-x-reverse));
   border-left-width: calc(10rpx * (1 - var(--tw-divide-x-reverse)));
-  border-left-width: calc(10rpx * calc(1 - var(--tw-divide-x-reverse)));
 }
 .divide-solid > view + view,
 .divide-solid > view + text,
@@ -1161,7 +1159,6 @@ text,
 .space-y-_b1_d6rem_B > text + text {
   --tw-space-y-reverse: 0;
   margin-top: calc(51.2rpx * (1 - var(--tw-space-y-reverse)));
-  margin-top: calc(51.2rpx * calc(1 - var(--tw-space-y-reverse)));
   margin-bottom: calc(51.2rpx * var(--tw-space-y-reverse));
 }
 .divide-x-_b10px_B > view + view,
@@ -1171,7 +1168,6 @@ text,
   --tw-divide-x-reverse: 0;
   border-right-width: calc(10rpx * var(--tw-divide-x-reverse));
   border-left-width: calc(10rpx * (1 - var(--tw-divide-x-reverse)));
-  border-left-width: calc(10rpx * calc(1 - var(--tw-divide-x-reverse)));
 }
 .divide-solid > view + view,
 .divide-solid > view + text,
@@ -1673,7 +1669,6 @@ text,
 .space-y-_b1_d6rem_B > text + text {
   --tw-space-y-reverse: 0;
   margin-top: calc(51.2rpx * (1 - var(--tw-space-y-reverse)));
-  margin-top: calc(51.2rpx * calc(1 - var(--tw-space-y-reverse)));
   margin-bottom: calc(51.2rpx * var(--tw-space-y-reverse));
 }
 .divide-x-_b10px_B > view + view,
@@ -1683,7 +1678,6 @@ text,
   --tw-divide-x-reverse: 0;
   border-right-width: calc(10rpx * var(--tw-divide-x-reverse));
   border-left-width: calc(10rpx * (1 - var(--tw-divide-x-reverse)));
-  border-left-width: calc(10rpx * calc(1 - var(--tw-divide-x-reverse)));
 }
 .divide-solid > view + view,
 .divide-solid > view + text,

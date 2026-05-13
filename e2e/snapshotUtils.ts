@@ -11,6 +11,7 @@ export interface CssSnapshotEntry {
 export interface CssSnapshotOptions {
   classList?: string[]
   normalizeWebpackAppSplitNoise?: boolean
+  normalizeTailwindV4RootVariableNoise?: boolean
 }
 
 async function exists(target: string) {
@@ -179,6 +180,53 @@ const TAILWIND_V4_DEFAULT_TOKEN_PROPS = new Set([
   '--drop-shadow',
   '--radius',
   '--backdrop-blur',
+])
+
+const TAILWIND_V4_ROOT_VARIABLE_NOISE_PROPS = new Set([
+  '--tw-rotate-x',
+  '--tw-rotate-y',
+  '--tw-rotate-z',
+  '--tw-skew-x',
+  '--tw-skew-y',
+  '--tw-border-style',
+  '--tw-gradient-position',
+  '--tw-gradient-from',
+  '--tw-gradient-via',
+  '--tw-gradient-to',
+  '--tw-gradient-stops',
+  '--tw-gradient-via-stops',
+  '--tw-gradient-from-position',
+  '--tw-gradient-via-position',
+  '--tw-gradient-to-position',
+  '--tw-shadow',
+  '--tw-shadow-color',
+  '--tw-shadow-alpha',
+  '--tw-inset-shadow',
+  '--tw-inset-shadow-color',
+  '--tw-inset-shadow-alpha',
+  '--tw-ring-color',
+  '--tw-ring-shadow',
+  '--tw-inset-ring-color',
+  '--tw-inset-ring-shadow',
+  '--tw-ring-inset',
+  '--tw-ring-offset-width',
+  '--tw-ring-offset-color',
+  '--tw-ring-offset-shadow',
+  '--tw-outline-style',
+  '--tw-blur',
+  '--tw-brightness',
+  '--tw-contrast',
+  '--tw-grayscale',
+  '--tw-hue-rotate',
+  '--tw-invert',
+  '--tw-opacity',
+  '--tw-saturate',
+  '--tw-sepia',
+  '--tw-drop-shadow',
+  '--tw-drop-shadow-color',
+  '--tw-drop-shadow-alpha',
+  '--tw-drop-shadow-size',
+  '--tw-ease',
 ])
 
 const TAILWIND_V4_COLOR_VALUE_COMPAT = new Map([
@@ -613,6 +661,15 @@ function removeUnusedTailwindV4ColorTokens(root: postcss.Root) {
 
 function normalizeTailwindV4DefaultTokenUsage(root: postcss.Root) {
   root.walkDecls((decl) => {
+    const parentSelector = decl.parent?.type === 'rule' ? decl.parent.selector : ''
+    if (decl.prop === '--tw-gradient-position' && parentSelector === '.bg-linear-to-r' && decl.value.endsWith('in oklab')) {
+      decl.value = decl.value.slice(0, -'in oklab'.length).trimEnd()
+      return
+    }
+    if (decl.prop === '--tw-gradient-position' && parentSelector === '.bg-gradient-to-r' && /^to \w+(?: \w+)?$/.test(decl.value)) {
+      decl.value = `${decl.value} in oklab`
+      return
+    }
     if (decl.value.includes('rgba(0, 0, 0, 0.10196)')) {
       decl.value = decl.value.replaceAll('rgba(0, 0, 0, 0.10196)', 'rgba(0, 0, 0, 0.1)')
     }
@@ -683,6 +740,65 @@ function normalizeTailwindV4DefaultTokenUsage(root: postcss.Root) {
   })
 }
 
+function normalizeCalcWrapperValues(root: postcss.Root) {
+  root.walkDecls((decl) => {
+    const prefix = ' * calc(1 - var(--'
+    if (!decl.value.includes(prefix)) {
+      return
+    }
+
+    const [sizePart, rest] = decl.value.split(prefix)
+    if (!sizePart?.startsWith('calc(') || rest === undefined || !rest.endsWith(')))')) {
+      return
+    }
+
+    const size = sizePart.slice('calc('.length).trim()
+    const variableName = rest.slice(0, -')))'.length).trim()
+    if (!size || !variableName) {
+      return
+    }
+
+    decl.value = `calc(${size} * (1 - var(--${variableName})))`
+  })
+}
+
+function dedupeExactDeclarations(root: postcss.Root) {
+  root.walkRules((rule) => {
+    const seen = new Set<string>()
+    rule.walkDecls((decl) => {
+      const key = `${decl.prop}\0${decl.value}\0${decl.important ? '1' : '0'}`
+      if (seen.has(key)) {
+        decl.remove()
+        return
+      }
+      seen.add(key)
+    })
+  })
+}
+
+function removeTailwindV4RootVariableNoise(root: postcss.Root, options: CssSnapshotOptions) {
+  if (!options.normalizeTailwindV4RootVariableNoise) {
+    return
+  }
+
+  root.walkRules((rule) => {
+    if (isSelectorSet(rule, WEAPP_ROOT_SELECTOR_PARTS)) {
+      rule.walkDecls((decl) => {
+        if (TAILWIND_V4_ROOT_VARIABLE_NOISE_PROPS.has(decl.prop)) {
+          decl.remove()
+        }
+      })
+    }
+
+    if (isSelectorSet(rule, new Set([':before', ':after']))) {
+      const declarations = rule.nodes?.filter((node): node is postcss.Declaration => node.type === 'decl') ?? []
+      if (declarations.length === 1 && declarations[0]?.prop === '--tw-content') {
+        rule.remove()
+      }
+    }
+  })
+}
+
 export function normalizeCssSnapshot(source: string, _options: CssSnapshotOptions = {}) {
   const root = postcss.parse(source)
 
@@ -730,8 +846,13 @@ export function normalizeCssSnapshot(source: string, _options: CssSnapshotOption
     }
   })
 
-  if (isTailwindV4Css(root)) {
+  normalizeCalcWrapperValues(root)
+  dedupeExactDeclarations(root)
+
+  const isTailwindV4 = isTailwindV4Css(root)
+  if (isTailwindV4) {
     normalizeWeappRootRules(root, _options)
+    removeTailwindV4RootVariableNoise(root, _options)
     removeTailwindV4DefaultTokenNoise(root)
     normalizeTailwindV4ColorOutput(root)
     removeUnusedTailwindV4ColorTokens(root)

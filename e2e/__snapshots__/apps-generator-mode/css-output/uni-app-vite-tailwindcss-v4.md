@@ -6,7 +6,7 @@ Generator CSS files: app.wxss, home.wxss, user.wxss
 
 | Bytes | Selectors | @supports | :hover | Tailwind banner | Raw arbitrary selector | Weapp escaped arbitrary selector |
 | ---: | ---: | --- | --- | --- | --- | --- |
-| 84226 | 236 | false | false | false | false | true |
+| 86796 | 236 | false | false | false | false | true |
 
 ## Generator CSS
 
@@ -947,10 +947,74 @@ wx-root-portal-content {
   display: none !important;
 }
 
+::before,
+::after {
+  --tw-content: '';
+}
 :host,
 page,
 .tw-root,
 wx-root-portal-content {
+  --tw-scale-x: 1;
+  --tw-scale-y: 1;
+  --tw-scale-z: 1;
+  --tw-rotate-x: initial;
+  --tw-rotate-y: initial;
+  --tw-rotate-z: initial;
+  --tw-skew-x: initial;
+  --tw-skew-y: initial;
+  --tw-pan-x: initial;
+  --tw-pan-y: initial;
+  --tw-pinch-zoom: initial;
+  --tw-space-y-reverse: 0;
+  --tw-space-x-reverse: 0;
+  --tw-divide-x-reverse: 0;
+  --tw-border-style: solid;
+  --tw-divide-y-reverse: 0;
+  --tw-leading: initial;
+  --tw-font-weight: initial;
+  --tw-ordinal: initial;
+  --tw-slashed-zero: initial;
+  --tw-numeric-figure: initial;
+  --tw-numeric-spacing: initial;
+  --tw-numeric-fraction: initial;
+  --tw-shadow: 0 0 rgba(0, 0, 0, 0);
+  --tw-shadow-color: initial;
+  --tw-shadow-alpha: 100%;
+  --tw-inset-shadow: 0 0 rgba(0, 0, 0, 0);
+  --tw-inset-shadow-color: initial;
+  --tw-inset-shadow-alpha: 100%;
+  --tw-ring-color: initial;
+  --tw-ring-shadow: 0 0 rgba(0, 0, 0, 0);
+  --tw-inset-ring-color: initial;
+  --tw-inset-ring-shadow: 0 0 rgba(0, 0, 0, 0);
+  --tw-ring-inset: initial;
+  --tw-ring-offset-width: 0px;
+  --tw-ring-offset-color: #fff;
+  --tw-ring-offset-shadow: 0 0 rgba(0, 0, 0, 0);
+  --tw-outline-style: solid;
+  --tw-blur: initial;
+  --tw-brightness: initial;
+  --tw-contrast: initial;
+  --tw-grayscale: initial;
+  --tw-hue-rotate: initial;
+  --tw-invert: initial;
+  --tw-opacity: initial;
+  --tw-saturate: initial;
+  --tw-sepia: initial;
+  --tw-drop-shadow: initial;
+  --tw-drop-shadow-color: initial;
+  --tw-drop-shadow-alpha: 100%;
+  --tw-drop-shadow-size: initial;
+  --tw-backdrop-blur: initial;
+  --tw-backdrop-brightness: initial;
+  --tw-backdrop-contrast: initial;
+  --tw-backdrop-grayscale: initial;
+  --tw-backdrop-hue-rotate: initial;
+  --tw-backdrop-invert: initial;
+  --tw-backdrop-opacity: initial;
+  --tw-backdrop-saturate: initial;
+  --tw-backdrop-sepia: initial;
   --font-sans:
     ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, Cantarell, Noto Sans, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol',
     'Noto Color Emoji';
@@ -1258,9 +1322,7 @@ wx-root-portal-content {
 .space-y-4 > text + text {
   --tw-space-y-reverse: 0;
   margin-bottom: calc((var(--spacing) * 4) * var(--tw-space-y-reverse));
-  margin-bottom: calc(var(--spacing) * 4 * var(--tw-space-y-reverse));
   margin-top: calc((var(--spacing) * 4) * (1 - var(--tw-space-y-reverse)));
-  margin-top: calc(var(--spacing) * 4 * (1 - var(--tw-space-y-reverse)));
 }
 .space-y-reverse > view + view,
 .space-y-reverse > view + text,
@@ -1274,9 +1336,7 @@ wx-root-portal-content {
 .space-x-4 > text + text {
   --tw-space-x-reverse: 0;
   margin-right: calc((var(--spacing) * 4) * var(--tw-space-x-reverse));
-  margin-right: calc(var(--spacing) * 4 * var(--tw-space-x-reverse));
   margin-left: calc((var(--spacing) * 4) * (1 - var(--tw-space-x-reverse)));
-  margin-left: calc(var(--spacing) * 4 * (1 - var(--tw-space-x-reverse)));
 }
 .space-x-reverse > view + view,
 .space-x-reverse > view + text,
@@ -1293,7 +1353,6 @@ wx-root-portal-content {
   border-right-style: var(--tw-border-style);
   border-right-width: calc(1px * var(--tw-divide-x-reverse));
   border-left-width: calc(1px * (1 - var(--tw-divide-x-reverse)));
-  border-left-width: calc(1px * (1 - var(--tw-divide-x-reverse)));
 }
 .divide-x-4 > view + view,
 .divide-x-4 > view + text,
@@ -1303,7 +1362,6 @@ wx-root-portal-content {
   border-left-style: var(--tw-border-style);
   border-right-style: var(--tw-border-style);
   border-right-width: calc(4px * var(--tw-divide-x-reverse));
-  border-left-width: calc(4px * (1 - var(--tw-divide-x-reverse)));
   border-left-width: calc(4px * (1 - var(--tw-divide-x-reverse)));
 }
 .divide-y > view + view,
@@ -1315,7 +1373,6 @@ wx-root-portal-content {
   border-top-style: var(--tw-border-style);
   border-bottom-width: calc(1px * var(--tw-divide-y-reverse));
   border-top-width: calc(1px * (1 - var(--tw-divide-y-reverse)));
-  border-top-width: calc(1px * (1 - var(--tw-divide-y-reverse)));
 }
 .divide-y-4 > view + view,
 .divide-y-4 > view + text,
@@ -1325,7 +1382,6 @@ wx-root-portal-content {
   border-bottom-style: var(--tw-border-style);
   border-top-style: var(--tw-border-style);
   border-bottom-width: calc(4px * var(--tw-divide-y-reverse));
-  border-top-width: calc(4px * (1 - var(--tw-divide-y-reverse)));
   border-top-width: calc(4px * (1 - var(--tw-divide-y-reverse)));
 }
 .divide-y-reverse > view + view,
@@ -1817,10 +1873,74 @@ wx-root-portal-content {
   background-color: var(--color-emerald-600);
 }
 
+::before,
+::after {
+  --tw-content: '';
+}
 :host,
 page,
 .tw-root,
 wx-root-portal-content {
+  --tw-scale-x: 1;
+  --tw-scale-y: 1;
+  --tw-scale-z: 1;
+  --tw-rotate-x: initial;
+  --tw-rotate-y: initial;
+  --tw-rotate-z: initial;
+  --tw-skew-x: initial;
+  --tw-skew-y: initial;
+  --tw-pan-x: initial;
+  --tw-pan-y: initial;
+  --tw-pinch-zoom: initial;
+  --tw-space-y-reverse: 0;
+  --tw-space-x-reverse: 0;
+  --tw-divide-x-reverse: 0;
+  --tw-border-style: solid;
+  --tw-divide-y-reverse: 0;
+  --tw-leading: initial;
+  --tw-font-weight: initial;
+  --tw-ordinal: initial;
+  --tw-slashed-zero: initial;
+  --tw-numeric-figure: initial;
+  --tw-numeric-spacing: initial;
+  --tw-numeric-fraction: initial;
+  --tw-shadow: 0 0 rgba(0, 0, 0, 0);
+  --tw-shadow-color: initial;
+  --tw-shadow-alpha: 100%;
+  --tw-inset-shadow: 0 0 rgba(0, 0, 0, 0);
+  --tw-inset-shadow-color: initial;
+  --tw-inset-shadow-alpha: 100%;
+  --tw-ring-color: initial;
+  --tw-ring-shadow: 0 0 rgba(0, 0, 0, 0);
+  --tw-inset-ring-color: initial;
+  --tw-inset-ring-shadow: 0 0 rgba(0, 0, 0, 0);
+  --tw-ring-inset: initial;
+  --tw-ring-offset-width: 0px;
+  --tw-ring-offset-color: #fff;
+  --tw-ring-offset-shadow: 0 0 rgba(0, 0, 0, 0);
+  --tw-outline-style: solid;
+  --tw-blur: initial;
+  --tw-brightness: initial;
+  --tw-contrast: initial;
+  --tw-grayscale: initial;
+  --tw-hue-rotate: initial;
+  --tw-invert: initial;
+  --tw-opacity: initial;
+  --tw-saturate: initial;
+  --tw-sepia: initial;
+  --tw-drop-shadow: initial;
+  --tw-drop-shadow-color: initial;
+  --tw-drop-shadow-alpha: 100%;
+  --tw-drop-shadow-size: initial;
+  --tw-backdrop-blur: initial;
+  --tw-backdrop-brightness: initial;
+  --tw-backdrop-contrast: initial;
+  --tw-backdrop-grayscale: initial;
+  --tw-backdrop-hue-rotate: initial;
+  --tw-backdrop-invert: initial;
+  --tw-backdrop-opacity: initial;
+  --tw-backdrop-saturate: initial;
+  --tw-backdrop-sepia: initial;
   --font-sans:
     ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, Cantarell, Noto Sans, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol',
     'Noto Color Emoji';
@@ -2128,9 +2248,7 @@ wx-root-portal-content {
 .space-y-4 > text + text {
   --tw-space-y-reverse: 0;
   margin-bottom: calc((var(--spacing) * 4) * var(--tw-space-y-reverse));
-  margin-bottom: calc(var(--spacing) * 4 * var(--tw-space-y-reverse));
   margin-top: calc((var(--spacing) * 4) * (1 - var(--tw-space-y-reverse)));
-  margin-top: calc(var(--spacing) * 4 * (1 - var(--tw-space-y-reverse)));
 }
 .space-y-reverse > view + view,
 .space-y-reverse > view + text,
@@ -2144,9 +2262,7 @@ wx-root-portal-content {
 .space-x-4 > text + text {
   --tw-space-x-reverse: 0;
   margin-right: calc((var(--spacing) * 4) * var(--tw-space-x-reverse));
-  margin-right: calc(var(--spacing) * 4 * var(--tw-space-x-reverse));
   margin-left: calc((var(--spacing) * 4) * (1 - var(--tw-space-x-reverse)));
-  margin-left: calc(var(--spacing) * 4 * (1 - var(--tw-space-x-reverse)));
 }
 .space-x-reverse > view + view,
 .space-x-reverse > view + text,
@@ -2163,7 +2279,6 @@ wx-root-portal-content {
   border-right-style: var(--tw-border-style);
   border-right-width: calc(1px * var(--tw-divide-x-reverse));
   border-left-width: calc(1px * (1 - var(--tw-divide-x-reverse)));
-  border-left-width: calc(1px * (1 - var(--tw-divide-x-reverse)));
 }
 .divide-x-4 > view + view,
 .divide-x-4 > view + text,
@@ -2173,7 +2288,6 @@ wx-root-portal-content {
   border-left-style: var(--tw-border-style);
   border-right-style: var(--tw-border-style);
   border-right-width: calc(4px * var(--tw-divide-x-reverse));
-  border-left-width: calc(4px * (1 - var(--tw-divide-x-reverse)));
   border-left-width: calc(4px * (1 - var(--tw-divide-x-reverse)));
 }
 .divide-y > view + view,
@@ -2185,7 +2299,6 @@ wx-root-portal-content {
   border-top-style: var(--tw-border-style);
   border-bottom-width: calc(1px * var(--tw-divide-y-reverse));
   border-top-width: calc(1px * (1 - var(--tw-divide-y-reverse)));
-  border-top-width: calc(1px * (1 - var(--tw-divide-y-reverse)));
 }
 .divide-y-4 > view + view,
 .divide-y-4 > view + text,
@@ -2195,7 +2308,6 @@ wx-root-portal-content {
   border-bottom-style: var(--tw-border-style);
   border-top-style: var(--tw-border-style);
   border-bottom-width: calc(4px * var(--tw-divide-y-reverse));
-  border-top-width: calc(4px * (1 - var(--tw-divide-y-reverse)));
   border-top-width: calc(4px * (1 - var(--tw-divide-y-reverse)));
 }
 .divide-y-reverse > view + view,
