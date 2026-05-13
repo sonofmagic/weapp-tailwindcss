@@ -111,15 +111,17 @@ describe('normalizeCssSnapshot', () => {
     expect(normalizeCssSnapshot([
       '.text-_b32px_B { font-size: 32px; }',
       '.leading-_b0_d9_B { line-height: 0.9; }',
-      '._etext-_b_h990000_B { color: #990000 !important; }',
+      '._efont-bold { font-weight: var(--font-weight-bold) !important; }',
       '.text-_b32_d4rpx_B { font-size: 32.4rpx; }',
       '.text-_b32rpx_B { font-size: 32rpx; }',
+      '._etext-_b_h990000_B { color: #990000 !important; }',
       '.text-_b_h5cdc34_B { color: #5cdc34; }',
     ].join('\n'))).toBe([
       '.text-_b32_d4rpx_B { font-size: 32.4rpx; }',
       '.text-_b32px_B { font-size: 32px; }',
       '.text-_b32rpx_B { font-size: 32rpx; }',
       '.leading-_b0_d9_B { line-height: 0.9; }',
+      '._efont-bold { font-weight: var(--font-weight-bold) !important; }',
       '._etext-_b_h990000_B { color: #990000 !important; }',
       '.text-_b_h5cdc34_B { color: #5cdc34; }',
     ].join('\n'))

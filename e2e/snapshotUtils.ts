@@ -338,10 +338,10 @@ function getUtilityGroup(selector: string) {
   if (/^(?:\.text(?:-|_)|\._etext)/.test(selector)) {
     return 'typography'
   }
-  if (/^\.leading(?:-|_)/.test(selector)) {
+  if (/^(?:\.leading(?:-|_)|\._eleading)/.test(selector)) {
     return 'typography'
   }
-  if (/^\.font(?:-|_)/.test(selector)) {
+  if (/^(?:\.font(?:-|_)|\._efont)/.test(selector)) {
     return 'typography'
   }
   if (/^(?:\.border(?:-|$)|\._eborder)/.test(selector)) {
@@ -359,10 +359,10 @@ function getTypographyRank(rule: postcss.Rule) {
     })
     return rank
   }
-  if (/^\.leading(?:-|_)/.test(rule.selector)) {
+  if (/^(?:\.leading(?:-|_)|\._eleading)/.test(rule.selector)) {
     return 20
   }
-  if (/^\.font(?:-|_)/.test(rule.selector)) {
+  if (/^(?:\.font(?:-|_)|\._efont)/.test(rule.selector)) {
     return 30
   }
   return 50
