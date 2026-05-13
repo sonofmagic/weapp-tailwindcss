@@ -31,6 +31,7 @@ import {
   writeReport,
 } from '../../../tools/weapp-tailwindcss-scripts/src/watch-hmr-regression/summary'
 import {
+  createStyleMutationPayload,
   expandOutputFileEntries,
   createClassMutationScenario,
   hasResolvedOutputFiles,
@@ -738,7 +739,18 @@ describe('watch-hmr regression cases', () => {
     expect(mpxV4Case?.outputWxml).toBe(
       path.resolve('/repo', 'demo/mpx-tailwindcss-v4/dist/wx/custom-tab-bar/index.wxml'),
     )
+    expect(mpxV4Case?.devScript).toBe('dev:e2e-watch')
+    expect(mpxV4Case?.styleMutation.sourceFile).toBe(
+      path.resolve('/repo', 'demo/mpx-tailwindcss-v4/src/app.mpx'),
+    )
+    expect(mpxV4Case?.outputStyleCandidates).toEqual([
+      path.resolve('/repo', 'demo/mpx-tailwindcss-v4/dist/wx/app.wxss'),
+      path.resolve('/repo', 'demo/mpx-tailwindcss-v4/dist/wx/custom-tab-bar/index.wxss'),
+      path.resolve('/repo', 'demo/mpx-tailwindcss-v4/dist/wx/styles/app*.wxss'),
+      path.resolve('/repo', 'demo/mpx-tailwindcss-v4/dist/wx/styles/index*.wxss'),
+    ])
     expect(mpxV4Case?.globalStyleCandidates).toEqual([
+      path.resolve('/repo', 'demo/mpx-tailwindcss-v4/dist/wx/app.wxss'),
       path.resolve('/repo', 'demo/mpx-tailwindcss-v4/dist/wx/styles/app*.wxss'),
       path.resolve('/repo', 'demo/mpx-tailwindcss-v4/dist/wx/styles/index*.wxss'),
     ])
@@ -823,6 +835,18 @@ describe('watch-hmr regression cases', () => {
     expect(mpxCase?.globalStyleCandidates).toContain(
       path.resolve('/repo', 'demo/mpx-tailwindcss-v3/dist/wx/styles/utilities*.wxss'),
     )
+  })
+
+  it('uses direct CSS style mutation for mpx v4 without unsupported @apply or theme checks', () => {
+    const mpxV4Case = buildDemoExtendedCases('/repo').find(watchCase => watchCase.name === 'mpx-tailwindcss-v4')
+    expect(mpxV4Case).toBeDefined()
+
+    const payload = createStyleMutationPayload(mpxV4Case!)
+    expect(payload.applyUtilities).toEqual([])
+    expect(payload.expectedApplyDeclarations).toEqual([])
+    expect(payload.functionNeedle).toBeUndefined()
+    expect(payload.functionDeclarations).toEqual([])
+    expect(payload.referenceDirective).toBe('@reference "tailwindcss";')
   })
 
   it('opts out same-class global-style stability for platform-variant watch cases', () => {

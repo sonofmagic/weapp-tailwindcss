@@ -1,4 +1,5 @@
 import path from 'node:path'
+import { createRequire } from 'node:module'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 import {
   ensureMpxTailwindcssAliases,
@@ -34,7 +35,10 @@ describe('shared/mpx helpers', () => {
   })
 
   it('ensures aliases for object-style resolve config', () => {
-    const compiler: any = { options: { resolve: { alias: { keep: 'value' } } } }
+    const compiler: any = {
+      context: path.resolve(process.cwd(), '../../demo/mpx-tailwindcss-v4'),
+      options: { resolve: { alias: { keep: 'value' } } },
+    }
     const entry = ensureMpxTailwindcssAliases(compiler, pkgDir)
     expect(entry).toBe(path.join(pkgDir, 'index.css'))
     expect(compiler.options.resolve.alias.keep).toBe('value')
@@ -42,6 +46,20 @@ describe('shared/mpx helpers', () => {
     expect(compiler.options.resolve.alias.tailwindcss$).toBe(entry)
     expect(compiler.options.resolve.alias['@mpxjs/webpack-plugin']).toEqual(expect.stringContaining('@mpxjs/webpack-plugin'))
     expect(compiler.options.resolveLoader.alias['@mpxjs/webpack-plugin']).toEqual(expect.stringContaining('@mpxjs/webpack-plugin'))
+  })
+
+  it('resolves mpx webpack plugin from compiler context before package context', () => {
+    const demoRoot = path.resolve(process.cwd(), '../../demo/mpx-tailwindcss-v4')
+    const compiler: any = {
+      context: demoRoot,
+      options: {},
+    }
+
+    ensureMpxTailwindcssAliases(compiler, pkgDir)
+
+    expect(compiler.options.resolve.alias['@mpxjs/webpack-plugin']).toBe(
+      path.dirname(createRequire(path.join(demoRoot, 'package.json')).resolve('@mpxjs/webpack-plugin/package.json')),
+    )
   })
 
   it('ensures aliases for array-style resolve config', () => {

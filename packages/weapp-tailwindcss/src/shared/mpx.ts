@@ -4,7 +4,7 @@ import path from 'node:path'
 import process from 'node:process'
 import { installTailwindcssCssRedirect } from './tailwindcss-css-redirect'
 
-const require = createRequire(import.meta.url)
+const localRequire = createRequire(import.meta.url)
 const MPX_STYLE_RESOURCE_QUERY_RE = /(?:^|[?&])type=styles(?:&|$)/
 
 function isMpxStyleResourceQuery(query?: string) {
@@ -20,6 +20,25 @@ export function isMpx(appType?: AppType) {
 
 export function getTailwindcssCssEntry(pkgDir: string) {
   return path.join(pkgDir, 'index.css')
+}
+
+function resolveMpxWebpackPluginDir(compiler: any) {
+  const candidates = [
+    compiler?.context,
+    compiler?.options?.context,
+    process.cwd(),
+  ].filter((item): item is string => typeof item === 'string' && item.length > 0)
+
+  for (const candidate of candidates) {
+    try {
+      const projectRequire = createRequire(path.join(candidate, 'package.json'))
+      return path.dirname(projectRequire.resolve('@mpxjs/webpack-plugin/package.json'))
+    }
+    catch {
+    }
+  }
+
+  return path.dirname(localRequire.resolve('@mpxjs/webpack-plugin/package.json'))
 }
 
 function isMpxWebpackPluginRequest(request: string | undefined) {
@@ -48,9 +67,9 @@ function ensureResolveLoaderAlias(compiler: any, mpxWebpackPluginDir: string) {
 
 export function ensureMpxTailwindcssAliases(compiler: any, pkgDir: string) {
   const tailwindcssCssEntry = getTailwindcssCssEntry(pkgDir)
-  const mpxWebpackPluginDir = path.dirname(require.resolve('@mpxjs/webpack-plugin/package.json'))
   compiler.options = compiler.options || {}
   compiler.options.resolve = compiler.options.resolve || {}
+  const mpxWebpackPluginDir = resolveMpxWebpackPluginDir(compiler)
   ensureResolveLoaderAlias(compiler, mpxWebpackPluginDir)
   const alias = compiler.options.resolve.alias ?? {}
   compiler.options.resolve.alias = alias

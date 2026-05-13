@@ -293,12 +293,14 @@ export const DEFAULT_STYLE_APPLY_VALIDATION: StyleApplyValidation = {
 }
 
 export const STYLE_APPLY_UNSUPPORTED_CASES = new Set<ConcreteWatchCaseName>([
+  'mpx-tailwindcss-v4',
   'uni-app-vite-tailwindcss-v4',
   'taro-vite-tailwindcss-v4',
   'taro-webpack-tailwindcss-v4',
 ])
 
 export const STYLE_FUNCTION_UNSUPPORTED_CASES = new Set<ConcreteWatchCaseName>([
+  'mpx-tailwindcss-v4',
 ])
 
 export const STYLE_REFERENCE_REQUIRED_CASES = new Set<ConcreteWatchCaseName>([

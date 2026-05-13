@@ -167,15 +167,17 @@ export function buildDemoExtendedCases(baseCwd: string): WatchCase[] {
     group: 'demo',
     initialMutationDelayMs: 5_000,
     cwd: path.resolve(baseCwd, 'demo/mpx-tailwindcss-v4'),
-    devScript: 'dev',
+    devScript: 'dev:e2e-watch',
     outputWxml: path.resolve(baseCwd, 'demo/mpx-tailwindcss-v4/dist/wx/custom-tab-bar/index.wxml'),
     outputJs: path.resolve(baseCwd, 'demo/mpx-tailwindcss-v4/dist/wx/custom-tab-bar/index.js'),
     outputStyleCandidates: [
+      path.resolve(baseCwd, 'demo/mpx-tailwindcss-v4/dist/wx/app.wxss'),
       path.resolve(baseCwd, 'demo/mpx-tailwindcss-v4/dist/wx/custom-tab-bar/index.wxss'),
       path.resolve(baseCwd, 'demo/mpx-tailwindcss-v4/dist/wx/styles/app*.wxss'),
       path.resolve(baseCwd, 'demo/mpx-tailwindcss-v4/dist/wx/styles/index*.wxss'),
     ],
     globalStyleCandidates: [
+      path.resolve(baseCwd, 'demo/mpx-tailwindcss-v4/dist/wx/app.wxss'),
       path.resolve(baseCwd, 'demo/mpx-tailwindcss-v4/dist/wx/styles/app*.wxss'),
       path.resolve(baseCwd, 'demo/mpx-tailwindcss-v4/dist/wx/styles/index*.wxss'),
     ],
@@ -216,9 +218,14 @@ export function buildDemoExtendedCases(baseCwd: string): WatchCase[] {
       },
     },
     styleMutation: {
-      sourceFile: path.resolve(baseCwd, 'demo/mpx-tailwindcss-v4/src/app.css'),
+      sourceFile: path.resolve(baseCwd, 'demo/mpx-tailwindcss-v4/src/app.mpx'),
       mutate(source, payload) {
-        return appendTrailingSnippet(source, createStyleRuleSnippet(payload))
+        return replaceExactSnippet(
+          source,
+          '<style src="./app.css" />',
+          `<style>\n@import "./app.css";\n${createStyleRuleSnippet(payload)}\n</style>`,
+          'mpx-tailwindcss-v4 style anchor',
+        )
       },
     },
   }
