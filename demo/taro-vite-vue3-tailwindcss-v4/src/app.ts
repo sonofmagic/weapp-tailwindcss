@@ -1,7 +1,8 @@
 import { createApp } from 'vue'
+import App from './App.vue'
 
 import './app.css'
 
-const App = createApp({})
+const app = createApp(App)
 
-export default App
+export default app
