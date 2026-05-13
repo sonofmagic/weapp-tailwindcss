@@ -97,6 +97,27 @@ describe('tailwindcss/v4/config', () => {
     expect(logger.warn).not.toHaveBeenCalled()
   })
 
+  it('skips warning when tailwindcss v4 cssSources are present on context', async () => {
+    const ctx = createCtx({
+      tailwindcss: {
+        v4: {
+          cssSources: [
+            {
+              file: '/ctx/app.css',
+              css: '@import "tailwindcss";',
+            },
+          ],
+        },
+      },
+    })
+    const patcher = createPatcher(4)
+    const { warnMissingCssEntries } = await loadModule()
+
+    warnMissingCssEntries(ctx, patcher)
+
+    expect(logger.warn).not.toHaveBeenCalled()
+  })
+
   it('warns when modern patcher options omit cssEntries', async () => {
     const ctx = createCtx({
       tailwindcssPatcherOptions: {
@@ -129,6 +150,29 @@ describe('tailwindcss/v4/config', () => {
         tailwindcss: {
           v4: {
             cssEntries: ['/modern/path.css'],
+          },
+        },
+      },
+    })
+    const patcher = createPatcher(4)
+    const { warnMissingCssEntries } = await loadModule()
+
+    warnMissingCssEntries(ctx, patcher)
+
+    expect(logger.warn).not.toHaveBeenCalled()
+  })
+
+  it('skips warning when cssSources are provided via modern tailwind patcher options', async () => {
+    const ctx = createCtx({
+      tailwindcssPatcherOptions: {
+        tailwindcss: {
+          v4: {
+            cssSources: [
+              {
+                file: '/modern/path.css',
+                css: '@import "tailwindcss";',
+              },
+            ],
           },
         },
       },

@@ -68,6 +68,16 @@ function getTailwindTrackedFiles(twPatcher: TailwindcssPatcherLike) {
       tracked.add(entry)
     }
   }
+  for (const source of tailwindOptions?.v4?.cssSources ?? []) {
+    if (typeof source.file === 'string' && source.file.length > 0) {
+      tracked.add(source.file)
+    }
+    for (const dependency of source.dependencies ?? []) {
+      if (typeof dependency === 'string' && dependency.length > 0) {
+        tracked.add(dependency)
+      }
+    }
+  }
   return tracked
 }
 
@@ -116,6 +126,7 @@ function getTailwindOptionsSignature(twPatcher: TailwindcssPatcherLike) {
       configuredBase: readOptionalProperty(tailwindOptions?.v4, 'configuredBase'),
       css: tailwindOptions?.v4?.css,
       cssEntries: tailwindOptions?.v4?.cssEntries,
+      cssSources: tailwindOptions?.v4?.cssSources,
       hasUserDefinedSources: readOptionalProperty(tailwindOptions?.v4, 'hasUserDefinedSources'),
       sources: tailwindOptions?.v4?.sources,
     },

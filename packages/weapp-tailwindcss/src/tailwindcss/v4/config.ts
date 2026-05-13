@@ -90,7 +90,16 @@ export function normalizeCssEntriesConfig(entries: unknown) {
   return normalized.length > 0 ? normalized : undefined
 }
 
-function hasConfiguredCssEntries(ctx: InternalUserDefinedOptions) {
+function hasCssSourcesConfig(sources: unknown) {
+  return Array.isArray(sources) && sources.some((source) => {
+    return typeof source === 'object'
+      && source !== null
+      && typeof (source as { css?: unknown }).css === 'string'
+      && (source as { css: string }).css.trim().length > 0
+  })
+}
+
+function hasConfiguredTailwindCssRoots(ctx: InternalUserDefinedOptions) {
   if (normalizeCssEntriesConfig(ctx.cssEntries)) {
     return true
   }
@@ -99,9 +108,16 @@ function hasConfiguredCssEntries(ctx: InternalUserDefinedOptions) {
     return true
   }
 
+  if (hasCssSourcesConfig(ctx.tailwindcss?.v4?.cssSources)) {
+    return true
+  }
+
   const patcherOptions = ctx.tailwindcssPatcherOptions as any
   if (patcherOptions) {
     if (normalizeCssEntriesConfig(patcherOptions.tailwindcss?.v4?.cssEntries)) {
+      return true
+    }
+    if (hasCssSourcesConfig(patcherOptions.tailwindcss?.v4?.cssSources)) {
       return true
     }
   }
@@ -123,7 +139,7 @@ export function warnMissingCssEntries(
     return
   }
 
-  if (hasConfiguredCssEntries(ctx)) {
+  if (hasConfiguredTailwindCssRoots(ctx)) {
     return
   }
 

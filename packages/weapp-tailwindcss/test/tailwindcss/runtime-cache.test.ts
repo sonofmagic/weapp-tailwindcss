@@ -6,6 +6,7 @@ function createMockPatcher(
   configPath = '/tmp/tailwind.config.js',
   options?: {
     cssEntries?: string[]
+    cssSources?: Array<{ css: string, file?: string, dependencies?: string[] }>
     projectRoot?: string
     packageVersion?: string
     packageRootPath?: string
@@ -30,6 +31,7 @@ function createMockPatcher(
         v4: {
           base: options?.projectRoot ?? '/tmp/project',
           cssEntries,
+          cssSources: options?.cssSources ?? [],
           sources: [],
           hasUserDefinedSources: false,
         },
@@ -168,6 +170,64 @@ describe('tailwindcss runtime cache signature', () => {
     })
 
     expect(getRuntimeClassSetSignature(first)).not.toBe(getRuntimeClassSetSignature(second))
+  })
+
+  it('changes signature when cssSources content changes', async () => {
+    const statSync = vi.fn(() => ({ size: 10, mtimeMs: 1000 }))
+    vi.doMock('node:fs', () => ({
+      statSync,
+    }))
+
+    const { getRuntimeClassSetSignature } = await import('@/tailwindcss/runtime/cache')
+    const first = createMockPatcher('/tmp/tailwind.config.js', {
+      cssSources: [
+        {
+          file: '/tmp/project/src/app.css',
+          css: '@import "tailwindcss";\n@source inline("w-4");',
+        },
+      ],
+    })
+    const second = createMockPatcher('/tmp/tailwind.config.js', {
+      cssSources: [
+        {
+          file: '/tmp/project/src/app.css',
+          css: '@import "tailwindcss";\n@source inline("h-4");',
+        },
+      ],
+    })
+
+    expect(getRuntimeClassSetSignature(first)).not.toBe(getRuntimeClassSetSignature(second))
+  })
+
+  it('tracks cssSources files and dependencies in the signature', async () => {
+    const statSync = vi.fn((filePath: string) => {
+      if (filePath.endsWith('app.css')) {
+        return { size: 20, mtimeMs: 2000 }
+      }
+      if (filePath.endsWith('theme.css')) {
+        return { size: 30, mtimeMs: 3000 }
+      }
+      return { size: 10, mtimeMs: 1000 }
+    })
+    vi.doMock('node:fs', () => ({
+      statSync,
+    }))
+
+    const { getRuntimeClassSetSignature } = await import('@/tailwindcss/runtime/cache')
+    const patcher = createMockPatcher('/tmp/tailwind.config.js', {
+      cssSources: [
+        {
+          file: '/tmp/project/src/app.css',
+          css: '@import "tailwindcss";',
+          dependencies: ['/tmp/project/src/theme.css'],
+        },
+      ],
+    })
+
+    const signature = getRuntimeClassSetSignature(patcher)
+
+    expect(signature).toContain('/tmp/project/src/app.css:20:2000')
+    expect(signature).toContain('/tmp/project/src/theme.css:30:3000')
   })
 
   it('changes signature when package version changes', async () => {

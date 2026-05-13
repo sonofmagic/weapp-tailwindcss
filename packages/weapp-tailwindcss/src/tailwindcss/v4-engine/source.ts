@@ -145,6 +145,7 @@ export function resolveTailwindV4SourceOptionsFromPatcher(
       configDir,
     ]),
     css: tailwindOptions?.v4?.css,
+    cssSources: tailwindOptions?.v4?.cssSources,
     cssEntries: tailwindOptions?.v4?.cssEntries,
     sources: tailwindOptions?.v4?.sources,
     packageName: resolveTailwindCssImportTarget(patcher),

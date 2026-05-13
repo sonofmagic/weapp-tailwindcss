@@ -146,8 +146,8 @@ catalogs:
       version: 4.2.4
   tailwindcssPatch:
     tailwindcss-patch:
-      specifier: 9.3.2
-      version: 9.3.2
+      specifier: 9.3.3
+      version: 9.3.3
   tailwindcssRem:
     tailwindcss-rem2px-preset:
       specifier: ^1.0.3
@@ -1140,7 +1140,7 @@ importers:
         version: 4.3.0
       tailwindcss-patch:
         specifier: catalog:tailwindcssPatch
-        version: 9.3.2(magicast@0.5.2)(tailwindcss@4.3.0)
+        version: 9.3.3(magicast@0.5.2)(tailwindcss@4.3.0)
       tsconfig-paths-webpack-plugin:
         specifier: ^4.1.0
         version: 4.2.0
@@ -1590,7 +1590,7 @@ importers:
         version: 3.4.19(tsx@4.21.0)(yaml@2.9.0)
       tailwindcss-patch:
         specifier: catalog:tailwindcssPatch
-        version: 9.3.2(magicast@0.5.2)(tailwindcss@3.4.19(tsx@4.21.0)(yaml@2.9.0))
+        version: 9.3.3(magicast@0.5.2)(tailwindcss@3.4.19(tsx@4.21.0)(yaml@2.9.0))
       tailwindcss-rem2px-preset:
         specifier: catalog:tailwindcssRem
         version: 1.0.3(tailwindcss@3.4.19(tsx@4.21.0)(yaml@2.9.0))
@@ -1738,7 +1738,7 @@ importers:
         version: 3.4.19(tsx@4.21.0)(yaml@2.9.0)
       tailwindcss-patch:
         specifier: catalog:tailwindcssPatch
-        version: 9.3.2(magicast@0.5.2)(tailwindcss@3.4.19(tsx@4.21.0)(yaml@2.9.0))
+        version: 9.3.3(magicast@0.5.2)(tailwindcss@3.4.19(tsx@4.21.0)(yaml@2.9.0))
       tailwindcss-rem2px-preset:
         specifier: catalog:tailwindcssRem
         version: 1.0.3(tailwindcss@3.4.19(tsx@4.21.0)(yaml@2.9.0))
@@ -1865,7 +1865,7 @@ importers:
         version: 4.3.0
       tailwindcss-patch:
         specifier: catalog:tailwindcssPatch
-        version: 9.3.2(magicast@0.5.2)(tailwindcss@4.3.0)
+        version: 9.3.3(magicast@0.5.2)(tailwindcss@4.3.0)
       typescript:
         specifier: catalog:typescript59
         version: 6.0.3
@@ -2010,7 +2010,7 @@ importers:
         version: 3.4.19(tsx@4.21.0)(yaml@2.9.0)
       tailwindcss-patch:
         specifier: catalog:tailwindcssPatch
-        version: 9.3.2(magicast@0.5.2)(tailwindcss@3.4.19(tsx@4.21.0)(yaml@2.9.0))
+        version: 9.3.3(magicast@0.5.2)(tailwindcss@3.4.19(tsx@4.21.0)(yaml@2.9.0))
       tailwindcss-rem2px-preset:
         specifier: catalog:tailwindcssRem
         version: 1.0.3(tailwindcss@3.4.19(tsx@4.21.0)(yaml@2.9.0))
@@ -2197,7 +2197,7 @@ importers:
         version: 3.4.19(tsx@4.21.0)(yaml@2.9.0)
       tailwindcss-patch:
         specifier: catalog:tailwindcssPatch
-        version: 9.3.2(magicast@0.5.2)(tailwindcss@3.4.19(tsx@4.21.0)(yaml@2.9.0))
+        version: 9.3.3(magicast@0.5.2)(tailwindcss@3.4.19(tsx@4.21.0)(yaml@2.9.0))
       tailwindcss-rem2px-preset:
         specifier: catalog:tailwindcssRem
         version: 1.0.3(tailwindcss@3.4.19(tsx@4.21.0)(yaml@2.9.0))
@@ -2550,7 +2550,7 @@ importers:
         version: 4.3.0
       tailwindcss-patch:
         specifier: catalog:tailwindcssPatch
-        version: 9.3.2(magicast@0.5.2)(tailwindcss@4.3.0)
+        version: 9.3.3(magicast@0.5.2)(tailwindcss@4.3.0)
       terser:
         specifier: ^5.47.1
         version: 5.47.1
@@ -2843,7 +2843,7 @@ importers:
         version: 3.4.19(tsx@4.21.0)(yaml@2.9.0)
       tailwindcss-patch:
         specifier: catalog:tailwindcssPatch
-        version: 9.3.2(magicast@0.5.2)(tailwindcss@3.4.19(tsx@4.21.0)(yaml@2.9.0))
+        version: 9.3.3(magicast@0.5.2)(tailwindcss@3.4.19(tsx@4.21.0)(yaml@2.9.0))
       tailwindcss-rem2px-preset:
         specifier: catalog:tailwindcssRem
         version: 1.0.3(tailwindcss@3.4.19(tsx@4.21.0)(yaml@2.9.0))
@@ -3000,7 +3000,7 @@ importers:
         version: 4.3.0
       tailwindcss-patch:
         specifier: catalog:tailwindcssPatch
-        version: 9.3.2(magicast@0.5.2)(tailwindcss@4.3.0)
+        version: 9.3.3(magicast@0.5.2)(tailwindcss@4.3.0)
       tsconfig-paths-webpack-plugin:
         specifier: ^4.1.0
         version: 4.2.0
@@ -3121,7 +3121,7 @@ importers:
         version: 4.3.0
       tailwindcss-patch:
         specifier: catalog:tailwindcssPatch
-        version: 9.3.2(magicast@0.5.2)(tailwindcss@4.3.0)
+        version: 9.3.3(magicast@0.5.2)(tailwindcss@4.3.0)
       typescript:
         specifier: catalog:typescript59
         version: 6.0.3
@@ -3477,7 +3477,7 @@ importers:
         version: 3.4.19(tsx@4.21.0)(yaml@2.9.0)
       tailwindcss-patch:
         specifier: catalog:tailwindcssPatch
-        version: 9.3.2(magicast@0.5.2)(tailwindcss@3.4.19(tsx@4.21.0)(yaml@2.9.0))
+        version: 9.3.3(magicast@0.5.2)(tailwindcss@3.4.19(tsx@4.21.0)(yaml@2.9.0))
       vue:
         specifier: catalog:vue3
         version: 3.5.34(typescript@6.0.3)
@@ -3504,7 +3504,7 @@ importers:
         version: 4.3.0
       tailwindcss-patch:
         specifier: catalog:tailwindcssPatch
-        version: 9.3.2(magicast@0.5.2)(tailwindcss@4.3.0)
+        version: 9.3.3(magicast@0.5.2)(tailwindcss@4.3.0)
       weapp-ide-cli:
         specifier: catalog:weappIdeCli
         version: 5.2.9
@@ -3541,7 +3541,7 @@ importers:
         version: 3.4.19(tsx@4.21.0)(yaml@2.9.0)
       tailwindcss-patch:
         specifier: catalog:tailwindcssPatch
-        version: 9.3.2(magicast@0.5.2)(tailwindcss@3.4.19(tsx@4.21.0)(yaml@2.9.0))
+        version: 9.3.3(magicast@0.5.2)(tailwindcss@3.4.19(tsx@4.21.0)(yaml@2.9.0))
       tailwindcss-rem2px-preset:
         specifier: catalog:tailwindcssRem
         version: 1.0.3(tailwindcss@3.4.19(tsx@4.21.0)(yaml@2.9.0))
@@ -3568,7 +3568,7 @@ importers:
         version: 3.8.3
       tailwindcss-patch:
         specifier: catalog:tailwindcssPatch
-        version: 9.3.2(magicast@0.5.2)(tailwindcss@4.3.0)
+        version: 9.3.3(magicast@0.5.2)(tailwindcss@4.3.0)
 
   packages-runtime/cva:
     dependencies:
@@ -3953,7 +3953,7 @@ importers:
     dependencies:
       tailwindcss-patch:
         specifier: catalog:tailwindcssPatch
-        version: 9.3.2(magicast@0.5.2)(tailwindcss@4.3.0)
+        version: 9.3.3(magicast@0.5.2)(tailwindcss@4.3.0)
 
   packages/weapp-style-injector:
     dependencies:
@@ -4037,7 +4037,7 @@ importers:
         version: link:../tailwindcss-config
       tailwindcss-patch:
         specifier: catalog:tailwindcssPatch
-        version: 9.3.2(magicast@0.5.2)(tailwindcss@4.3.0)
+        version: 9.3.3(magicast@0.5.2)(tailwindcss@4.3.0)
       yaml:
         specifier: ^2.9.0
         version: 2.9.0
@@ -4641,10 +4641,6 @@ packages:
     resolution: {integrity: sha512-qMlSxKbpRlAridDExk92nSobyDdpPijUq2DW6oDnUqd0iOGxmQjyqhMIihI9+zv4LPyZdRje2cavWPbCbWm3eA==}
     engines: {node: '>=6.9.0'}
 
-  '@babel/helper-string-parser@8.0.0-rc.3':
-    resolution: {integrity: sha512-AmwWFx1m8G/a5cXkxLxTiWl+YEoWuoFLUCwqMlNuWO1tqAYITQAbCRPUkyBHv1VOFgfjVOqEj6L3u15J5ZCzTA==}
-    engines: {node: ^20.19.0 || >=22.12.0}
-
   '@babel/helper-string-parser@8.0.0-rc.4':
     resolution: {integrity: sha512-dluR3v287dp6YPF57kyKKrHPKffUeuxH1zQcF1WD30TeFzWXhDiVi1U6PkqaDB0++H1PeCwRhmYl4DvoerlPIw==}
     engines: {node: ^20.19.0 || >=22.12.0}
@@ -4652,10 +4648,6 @@ packages:
   '@babel/helper-validator-identifier@7.28.5':
     resolution: {integrity: sha512-qSs4ifwzKJSV39ucNjsvc6WVHs6b7S03sOh2OcHF9UHfVPqWWALUsNUVzhSBiItjRZoLHx7nIarVjqKVusUZ1Q==}
     engines: {node: '>=6.9.0'}
-
-  '@babel/helper-validator-identifier@8.0.0-rc.3':
-    resolution: {integrity: sha512-8AWCJ2VJJyDFlGBep5GpaaQ9AAaE/FjAcrqI7jyssYhtL7WGV0DOKpJsQqM037xDbpRLHXsY8TwU7zDma7coOw==}
-    engines: {node: ^20.19.0 || >=22.12.0}
 
   '@babel/helper-validator-identifier@8.0.0-rc.4':
     resolution: {integrity: sha512-HTD3bskipk5MSm08twTW6832jzIXUhxMddy4NPPzIMuyMEsrs0ZgwAaMj5ubB5+6hMlUjDu17vNconEmwsmpYg==}
@@ -5319,10 +5311,6 @@ packages:
   '@babel/types@7.29.0':
     resolution: {integrity: sha512-LwdZHpScM4Qz8Xw2iKSzS+cfglZzJGvofQICy7W7v4caru4EaAmyUuO6BGrbyQ2mYV11W0U8j5mBhd14dd3B0A==}
     engines: {node: '>=6.9.0'}
-
-  '@babel/types@8.0.0-rc.3':
-    resolution: {integrity: sha512-mOm5ZrYmphGfqVWoH5YYMTITb3cDXsFgmvFlvkvWDMsR9X8RFnt7a0Wb6yNIdoFsiMO9WjYLq+U/FMtqIYAF8Q==}
-    engines: {node: ^20.19.0 || >=22.12.0}
 
   '@babel/types@8.0.0-rc.4':
     resolution: {integrity: sha512-bw30DV880P/VYtsjWWdoWmJpb9S2Vn1/PqayyccTELzRQ/HslIO7+BD9rNoZ4AAFOAjC1vrNeBCkAsyh6Ibfww==}
@@ -26035,8 +26023,8 @@ packages:
     resolution: {integrity: sha512-qkqLZB/1Kg0EVrp7QX7KtaiMvx80oj9NzkvVwg1REBr4Z/WGwjEkRkQzD4f6Xg1LqCtcsa/xj9zbqB3aNG+zGA==}
     engines: {node: ^20.19.0 || >=22.12.0}
 
-  tailwindcss-patch@9.3.2:
-    resolution: {integrity: sha512-LqqMfuCLsk47Mhp3wUkZakuIoyZ/IzKiK+LSF35ZO2NTNYYuUXl8rO0c/7mPWiUxwWmIjiDYfrd9xxK/0Szm6w==}
+  tailwindcss-patch@9.3.3:
+    resolution: {integrity: sha512-O1GCMQxnYtasG0UeoYEVD7bywvOldOx8EquOr+PfCgXSq43XRVthWkoAdG3z3mVJp6e1i8KVRr5U68sxbGhzHw==}
     engines: {node: '>=18.0.0'}
     hasBin: true
     peerDependencies:
@@ -28914,13 +28902,9 @@ snapshots:
 
   '@babel/helper-string-parser@7.27.1': {}
 
-  '@babel/helper-string-parser@8.0.0-rc.3': {}
-
   '@babel/helper-string-parser@8.0.0-rc.4': {}
 
   '@babel/helper-validator-identifier@7.28.5': {}
-
-  '@babel/helper-validator-identifier@8.0.0-rc.3': {}
 
   '@babel/helper-validator-identifier@8.0.0-rc.4': {}
 
@@ -28968,7 +28952,7 @@ snapshots:
 
   '@babel/parser@8.0.0-rc.3':
     dependencies:
-      '@babel/types': 8.0.0-rc.3
+      '@babel/types': 8.0.0-rc.4
 
   '@babel/parser@8.0.0-rc.4':
     dependencies:
@@ -29824,11 +29808,6 @@ snapshots:
     dependencies:
       '@babel/helper-string-parser': 7.27.1
       '@babel/helper-validator-identifier': 7.28.5
-
-  '@babel/types@8.0.0-rc.3':
-    dependencies:
-      '@babel/helper-string-parser': 8.0.0-rc.3
-      '@babel/helper-validator-identifier': 8.0.0-rc.3
 
   '@babel/types@8.0.0-rc.4':
     dependencies:
@@ -57934,7 +57913,7 @@ snapshots:
       jiti: 2.7.0
       lilconfig: 3.1.3
 
-  tailwindcss-patch@9.3.2(magicast@0.5.2)(tailwindcss@3.4.19(tsx@4.21.0)(yaml@2.9.0)):
+  tailwindcss-patch@9.3.3(magicast@0.5.2)(tailwindcss@3.4.19(tsx@4.21.0)(yaml@2.9.0)):
     dependencies:
       '@babel/generator': 7.29.1
       '@babel/parser': 7.29.3
@@ -57957,7 +57936,7 @@ snapshots:
       - magicast
       - supports-color
 
-  tailwindcss-patch@9.3.2(magicast@0.5.2)(tailwindcss@4.3.0):
+  tailwindcss-patch@9.3.3(magicast@0.5.2)(tailwindcss@4.3.0):
     dependencies:
       '@babel/generator': 7.29.1
       '@babel/parser': 7.29.3
