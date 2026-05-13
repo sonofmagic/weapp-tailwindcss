@@ -1,5 +1,15 @@
 # weapp-tailwindcss
 
+## 5.0.0-next.8
+
+### Patch Changes
+
+- 🐛 **修复 Tailwind CSS v3/v4 在部分生成链路中把 `text-[55rpx]` 等任意值误判为颜色时，非主 CSS chunk 没有恢复为长度声明的问题。** [#856](https://github.com/sonofmagic/weapp-tailwindcss/pull/856) by @github-actions
+
+- 🐛 **支持 Vite、Webpack 和 Gulp 场景下自动识别 Tailwind CSS v4 入口 CSS，未显式传入 `cssEntries` 时会捕获包含 Tailwind 根指令的样式内容，并通过 `tailwindcss-patch@9.3.3` 的 `cssSources` 刷新运行时 patcher；显式配置 `cssEntries` 或 `cssSources` 时仍保持用户配置优先。** [#856](https://github.com/sonofmagic/weapp-tailwindcss/pull/856) by @github-actions
+- 📦 **Dependencies** [`42906cb`](https://github.com/sonofmagic/weapp-tailwindcss/commit/42906cb2daec75c30fe6cf60c0f005cd462de888)
+  → `tailwindcss-config@1.1.6-next.1`, `@weapp-tailwindcss/postcss@2.2.1-next.1`
+
 ## 5.0.0-next.7
 
 ### Patch Changes
