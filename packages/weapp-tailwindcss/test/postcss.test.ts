@@ -183,7 +183,7 @@ describe('postcss plugin', () => {
   })
 
   it('handles taro vite tailwindcss v4 app-origin fixture', async () => {
-    const code = await fs.readFile(path.resolve(__dirname, './fixtures/css/taro-vite-tailwindcss-v4-app-origin.css'), 'utf8')
+    const code = await fs.readFile(path.resolve(__dirname, './fixtures/css/taro-vite-react-tailwindcss-v4-app-origin.css'), 'utf8')
     const ctx = getCompilerContext()
     const { css } = await ctx.styleHandler(code, {
       isMainChunk: true,

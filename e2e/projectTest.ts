@@ -213,8 +213,8 @@ async function runProjectTest(entry: ProjectEntry, options: ProjectTestOptions) 
 
   const cssSnapshots = await collectCssSnapshots(projectPath, entry.cssFile, {
     classList: extraction?.classList,
-    normalizeWebpackAppSplitNoise: entry.name === 'taro-webpack-tailwindcss-v4',
-    normalizeTailwindV4RootVariableNoise: entry.name === 'taro-vite-tailwindcss-v4',
+    normalizeWebpackAppSplitNoise: entry.name === 'taro-webpack-react-tailwindcss-v4' || entry.name === 'taro-webpack-vue3-tailwindcss-v4',
+    normalizeTailwindV4RootVariableNoise: entry.name === 'taro-vite-react-tailwindcss-v4' || entry.name === 'taro-vite-vue3-tailwindcss-v4',
   })
   for (const snapshot of cssSnapshots) {
     await expectProjectSnapshot(options.suite, entry.name, snapshot.fileName, snapshot.content)

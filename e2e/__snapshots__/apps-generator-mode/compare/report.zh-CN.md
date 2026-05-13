@@ -10,10 +10,14 @@
 | gulp-tailwindcss-v4 | demo | 通过 | `gulp-tailwindcss-v4/dist/app.wxss` (+2) | 6355 | 52 | 否 | 否 | 否 | 否 | 是 |
 | mpx-tailwindcss-v3 | demo | 通过 | `mpx-tailwindcss-v3/dist/wx/app.wxss` (+23) | 190234 | 2879 | 否 | 否 | 否 | 否 | 是 |
 | mpx-tailwindcss-v4 | demo | 通过 | `mpx-tailwindcss-v4/dist/wx/app.wxss` (+6) | 16002 | 66 | 否 | 否 | 否 | 否 | 是 |
-| taro-webpack-tailwindcss-v3 | demo | 通过 | `taro-webpack-tailwindcss-v3/dist/app.wxss` (+5) | 48665 | 139 | 否 | 否 | 否 | 否 | 是 |
-| taro-webpack-tailwindcss-v4 | demo | 通过 | `taro-webpack-tailwindcss-v4/dist/app.wxss` (+1) | 365148 | 2154 | 否 | 否 | 否 | 否 | 是 |
-| taro-vite-tailwindcss-v3 | demo | 通过 | `taro-vite-tailwindcss-v3/dist/app.wxss` (+2) | 5227 | 45 | 否 | 否 | 否 | 否 | 是 |
-| taro-vite-tailwindcss-v4 | demo | 通过 | `taro-vite-tailwindcss-v4/dist/app.wxss` (+2) | 5001 | 39 | 否 | 否 | 否 | 否 | 是 |
+| taro-webpack-react-tailwindcss-v3 | demo | 通过 | `taro-webpack-react-tailwindcss-v3/dist/app.wxss` (+5) | 48665 | 139 | 否 | 否 | 否 | 否 | 是 |
+| taro-webpack-react-tailwindcss-v4 | demo | 通过 | `taro-webpack-react-tailwindcss-v4/dist/app.wxss` (+1) | 365148 | 2154 | 否 | 否 | 否 | 否 | 是 |
+| taro-vite-react-tailwindcss-v3 | demo | 通过 | `taro-vite-react-tailwindcss-v3/dist/app.wxss` (+2) | 5227 | 45 | 否 | 否 | 否 | 否 | 是 |
+| taro-vite-react-tailwindcss-v4 | demo | 通过 | `taro-vite-react-tailwindcss-v4/dist/app.wxss` (+2) | 5001 | 39 | 否 | 否 | 否 | 否 | 是 |
+| taro-webpack-vue3-tailwindcss-v3 | demo | 通过 | `taro-webpack-vue3-tailwindcss-v3/dist/app.wxss` | 4883 | 47 | 否 | 否 | 否 | 否 | 是 |
+| taro-webpack-vue3-tailwindcss-v4 | demo | 通过 | `taro-webpack-vue3-tailwindcss-v4/dist/app.wxss` | 1869 | 19 | 否 | 否 | 否 | 否 | 是 |
+| taro-vite-vue3-tailwindcss-v3 | demo | 通过 | `taro-vite-vue3-tailwindcss-v3/dist/app.wxss` (+1) | 5281 | 46 | 否 | 否 | 否 | 否 | 是 |
+| taro-vite-vue3-tailwindcss-v4 | demo | 通过 | `taro-vite-vue3-tailwindcss-v4/dist/app.wxss` (+1) | 5055 | 40 | 否 | 否 | 否 | 否 | 是 |
 | uni-app-vite-tailwindcss-v3 | demo | 通过 | `uni-app-vite-tailwindcss-v3/dist/build/mp-weixin/app.wxss` (+10) | 500582 | 3122 | 否 | 否 | 否 | 否 | 是 |
 | uni-app-vite-tailwindcss-v4 | demo | 通过 | `uni-app-vite-tailwindcss-v4/dist/build/mp-weixin/app.wxss` (+2) | 83694 | 236 | 否 | 否 | 否 | 否 | 是 |
 | weapp-vite-tailwindcss-v3 | demo | 通过 | `weapp-vite-tailwindcss-v3/dist/app.wxss` (+3) | 24266 | 258 | 否 | 否 | 否 | 否 | 是 |
@@ -52,25 +56,45 @@
 - CSS 文件：`app.wxss`, `styles/app.wxss`, `index.wxss`, `app.wxss`, `index.wxss`, `index.wxss`, `index.wxss`
 - 选择器：`.-m-_b20px_B`, `._2xl_ctext-_bred_B`, `._2xl_ctext-base`, `._ebg-green-500`, `._efont-bold`, `._etext-_b_h990000_B`, `.active_cbg-_b_h543210_B:active`, `.active_cbg-_b_h989898_B:active`, `.after_cborder-none:after`, `.before_ccontent-_b_aFestivus_a_B:before`, `.bg-_b_h010101_B`, `.bg-_b_h123456_B`, `.bg-_b_h434344_B`, `.bg-_b_he90505_B`, `.bg-blue-500_f50`, `.border-_b10px_B`, `.border-_b10rpx_B`, `.border-_b_h098765_B`, `.border-_bred_B`, `.border-b-_b4rpx_B`
 
-### taro-webpack-tailwindcss-v3
+### taro-webpack-react-tailwindcss-v3
 
 - CSS 文件：`app.wxss`, `index.wxss`, `index.wxss`, `index.wxss`, `index.wxss`, `index.wxss`
 - 选择器：`.-m-_b20px_B`, `.-mt-2`, `._b_n__du-count-down_r__r_text_B_c_etext-red-400 .u-count-down__text`, `._etext-_b_h555_B`, `.a`, `.aaaaaaa`, `.after_cborder-none:after`, `.after_ccontent-_b_aHello_World_a_B:after`, `.after_ccontent-_b_a_x_a_B:after`, `.after_ccontent-_b_au_x7684_u_x6492_u_x7684_u_x6492__a_B:after`, `.after_ccontent-_b_q_x_q_B:after`, `.after_ccontent-_b_qu_x7684_u_x6492_u_x7684_u_x6492__q_B:after`, `.after_ccontent-_b_x_B:after`, `.after_cml-0_d5:after`, `.after_ctext-red-500:after`, `.aspect-w-16 > text`, `.aspect-w-16 > view`, `.b`, `.before_cabsolute:before`, `.before_cborder-2:before`
 
-### taro-webpack-tailwindcss-v4
+### taro-webpack-react-tailwindcss-v4
 
 - CSS 文件：`app.wxss`, `index.wxss`
 - 选择器：`.bg-_b_h534312_B`, `.bg-gradient-to-r`, `.bg-purple-800`, `.fade-appear`, `.fade-appear-active`, `.fade-enter`, `.fade-enter-active`, `.fade-enter-done`, `.fade-exit`, `.fade-exit-active`, `.fade-exit-done`, `.from-cyan-500`, `.h-14`, `.nut-actionsheet`, `.nut-actionsheet .nut-popup-title`, `.nut-actionsheet-cancel`, `.nut-actionsheet-cancel-danger`, `.nut-actionsheet-cancel-description`, `.nut-actionsheet-cancel-disabled`, `.nut-actionsheet-cancel-name`
 
-### taro-vite-tailwindcss-v3
+### taro-vite-react-tailwindcss-v3
 
 - CSS 文件：`app.wxss`, `app-origin.wxss`, `index.wxss`
 - 选择器：`.absolute`, `.before_ccontent-_b_q11111_q_B:before`, `.before_ccontent-_b_q222_q_B:before`, `.bg-_b_h89ab8d_B`, `.bg-_b_he24826_B`, `.block`, `.blur`, `.border`, `.container`, `.dark_ctext-_b_hec4f4f_B`, `.divide-_b_h60d256_B > text + text`, `.divide-_b_h60d256_B > text + view`, `.divide-_b_h60d256_B > view + text`, `.divide-_b_h60d256_B > view + view`, `.divide-solid > text + text`, `.divide-solid > text + view`, `.divide-solid > view + text`, `.divide-solid > view + view`, `.divide-x-8 > text + text`, `.divide-x-8 > text + view`
 
-### taro-vite-tailwindcss-v4
+### taro-vite-react-tailwindcss-v4
 
 - CSS 文件：`app.wxss`, `app-origin.wxss`, `index.wxss`
 - 选择器：`.absolute`, `.bg-_b_h123456_B`, `.bg-gradient-to-r`, `.bg-linear-to-r`, `.bg-purple-300`, `.block`, `.blur`, `.border`, `.container`, `.ease-out`, `.filter`, `.fixed`, `.flex`, `.flex-grow`, `.flex-shrink`, `.from-cyan-500`, `.grid`, `.h-14`, `.h-_b300px_B`, `.hidden`
+
+### taro-webpack-vue3-tailwindcss-v3
+
+- CSS 文件：`app.wxss`
+- 选择器：`.before_cabsolute:before`, `.before_cborder-2:before`, `.before_cborder-_b_h4bd650_B:before`, `.before_cinset-0:before`, `.before_crounded-_b20rpx_B:before`, `.bg-_b_h123456_B`, `.bg-sky-500_f80`, `.dark text.dark_cbg-_b_h123456_B`, `.dark view.dark_cbg-_b_h123456_B`, `.divide-_b_h010101_B > text + text`, `.divide-_b_h010101_B > text + view`, `.divide-_b_h010101_B > view + text`, `.divide-_b_h010101_B > view + view`, `.divide-solid > text + text`, `.divide-solid > text + view`, `.divide-solid > view + text`, `.divide-solid > view + view`, `.divide-x-_b10px_B > text + text`, `.divide-x-_b10px_B > text + view`, `.divide-x-_b10px_B > view + text`
+
+### taro-webpack-vue3-tailwindcss-v4
+
+- CSS 文件：`app.wxss`
+- 选择器：`.bg-_b_h123456_B`, `.bg-_b_h534312_B`, `.bg-gradient-to-r`, `.bg-purple-800`, `.from-cyan-500`, `.h-14`, `.px-_b32px_B`, `.py-_b18px_B`, `.rounded-_b24rpx_B`, `.static`, `.text-_b100rpx_B`, `.text-_b_hfff_B`, `.text-_b_hffffff_B`, `.text-pink-200`, `.to-blue-500`, `.tw-root`, `:host`, `page`, `wx-root-portal-content`
+
+### taro-vite-vue3-tailwindcss-v3
+
+- CSS 文件：`app.wxss`, `app-origin.wxss`
+- 选择器：`.absolute`, `.before_ccontent-_b_a11111_a_B:before`, `.before_ccontent-_b_a222_a_B:before`, `.bg-_b_h89ab8d_B`, `.bg-_b_he24826_B`, `.block`, `.blur`, `.border`, `.capitalize`, `.container`, `.dark_ctext-_b_hec4f4f_B`, `.divide-_b_h60d256_B > text + text`, `.divide-_b_h60d256_B > text + view`, `.divide-_b_h60d256_B > view + text`, `.divide-_b_h60d256_B > view + view`, `.divide-solid > text + text`, `.divide-solid > text + view`, `.divide-solid > view + text`, `.divide-solid > view + view`, `.divide-x-8 > text + text`
+
+### taro-vite-vue3-tailwindcss-v4
+
+- CSS 文件：`app.wxss`, `app-origin.wxss`
+- 选择器：`.absolute`, `.bg-_b_h123456_B`, `.bg-gradient-to-r`, `.bg-linear-to-r`, `.bg-purple-300`, `.block`, `.blur`, `.border`, `.capitalize`, `.container`, `.ease-out`, `.filter`, `.fixed`, `.flex`, `.flex-grow`, `.flex-shrink`, `.from-cyan-500`, `.grid`, `.h-14`, `.h-_b300px_B`
 
 ### uni-app-vite-tailwindcss-v3
 

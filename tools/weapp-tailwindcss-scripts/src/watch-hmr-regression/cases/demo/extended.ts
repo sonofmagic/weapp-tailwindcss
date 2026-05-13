@@ -231,27 +231,27 @@ export function buildDemoExtendedCases(baseCwd: string): WatchCase[] {
   }
 
   const taroViteTailwindcssV4Case: WatchCase = {
-    name: 'taro-vite-tailwindcss-v4',
-    label: 'demo/taro-vite-tailwindcss-v4',
-    project: 'demo/taro-vite-tailwindcss-v4',
+    name: 'taro-vite-react-tailwindcss-v4',
+    label: 'demo/taro-vite-react-tailwindcss-v4',
+    project: 'demo/taro-vite-react-tailwindcss-v4',
     group: 'demo',
     initialMutationDelayMs: 5_000,
-    cwd: path.resolve(baseCwd, 'demo/taro-vite-tailwindcss-v4'),
+    cwd: path.resolve(baseCwd, 'demo/taro-vite-react-tailwindcss-v4'),
     devScript: 'dev:e2e-watch',
     env: taroViteWatchEnv,
-    outputWxml: path.resolve(baseCwd, 'demo/taro-vite-tailwindcss-v4/dist/pages/index/index.wxml'),
-    outputJs: path.resolve(baseCwd, 'demo/taro-vite-tailwindcss-v4/dist/pages/index/index.js'),
+    outputWxml: path.resolve(baseCwd, 'demo/taro-vite-react-tailwindcss-v4/dist/pages/index/index.wxml'),
+    outputJs: path.resolve(baseCwd, 'demo/taro-vite-react-tailwindcss-v4/dist/pages/index/index.js'),
     outputStyleCandidates: [
-      path.resolve(baseCwd, 'demo/taro-vite-tailwindcss-v4/dist/pages/index/index.wxss'),
-      path.resolve(baseCwd, 'demo/taro-vite-tailwindcss-v4/dist/app-origin.wxss'),
-      path.resolve(baseCwd, 'demo/taro-vite-tailwindcss-v4/dist/app.wxss'),
+      path.resolve(baseCwd, 'demo/taro-vite-react-tailwindcss-v4/dist/pages/index/index.wxss'),
+      path.resolve(baseCwd, 'demo/taro-vite-react-tailwindcss-v4/dist/app-origin.wxss'),
+      path.resolve(baseCwd, 'demo/taro-vite-react-tailwindcss-v4/dist/app.wxss'),
     ],
     globalStyleCandidates: [
-      path.resolve(baseCwd, 'demo/taro-vite-tailwindcss-v4/dist/app-origin.wxss'),
-      path.resolve(baseCwd, 'demo/taro-vite-tailwindcss-v4/dist/app.wxss'),
+      path.resolve(baseCwd, 'demo/taro-vite-react-tailwindcss-v4/dist/app-origin.wxss'),
+      path.resolve(baseCwd, 'demo/taro-vite-react-tailwindcss-v4/dist/app.wxss'),
     ],
     contentMutation: {
-      sourceFile: path.resolve(baseCwd, 'demo/taro-vite-tailwindcss-v4/src/pages/index/index.tsx'),
+      sourceFile: path.resolve(baseCwd, 'demo/taro-vite-react-tailwindcss-v4/src/pages/index/index.tsx'),
       verifyEscapedIn: ['js'],
       verifyClassLiteralIn: ['js'],
       forbidBgHexTruncationIn: ['js'],
@@ -261,12 +261,12 @@ export function buildDemoExtendedCases(baseCwd: string): WatchCase[] {
           source,
           '      <div className=\'h-[300px] text-[#c31d6b] bg-[#123456]\'>短斤少两快点撒</div>',
           `      <div className='${payload.classLiteral}'>短斤少两快点撒</div>`,
-          'taro-vite-tailwindcss-v4 jsx class anchor',
+          'taro-vite-react-tailwindcss-v4 jsx class anchor',
         )
       },
     },
     templateMutation: {
-      sourceFile: path.resolve(baseCwd, 'demo/taro-vite-tailwindcss-v4/src/pages/index/index.tsx'),
+      sourceFile: path.resolve(baseCwd, 'demo/taro-vite-react-tailwindcss-v4/src/pages/index/index.tsx'),
       verifyEscapedIn: ['js'],
       verifyClassLiteralIn: ['js'],
       roundConfigs: buildHexScriptRoundConfigs(),
@@ -276,7 +276,7 @@ export function buildDemoExtendedCases(baseCwd: string): WatchCase[] {
       },
     },
     scriptMutation: {
-      sourceFile: path.resolve(baseCwd, 'demo/taro-vite-tailwindcss-v4/src/pages/index/index.tsx'),
+      sourceFile: path.resolve(baseCwd, 'demo/taro-vite-react-tailwindcss-v4/src/pages/index/index.tsx'),
       verifyEscapedIn: ['js'],
       verifyClassLiteralIn: ['js'],
       roundConfigs: buildHexScriptRoundConfigs(),
@@ -288,7 +288,7 @@ export function buildDemoExtendedCases(baseCwd: string): WatchCase[] {
       },
     },
     styleMutation: {
-      sourceFile: path.resolve(baseCwd, 'demo/taro-vite-tailwindcss-v4/src/pages/index/index.css'),
+      sourceFile: path.resolve(baseCwd, 'demo/taro-vite-react-tailwindcss-v4/src/pages/index/index.css'),
       mutate(source, payload) {
         return appendTrailingSnippet(source, createStyleRuleSnippet(payload))
       },
@@ -296,27 +296,27 @@ export function buildDemoExtendedCases(baseCwd: string): WatchCase[] {
   }
 
   const taroAppViteCase: WatchCase = {
-    name: 'taro-vite-tailwindcss-v3',
-    label: 'demo/taro-vite-tailwindcss-v3',
-    project: 'demo/taro-vite-tailwindcss-v3',
+    name: 'taro-vite-react-tailwindcss-v3',
+    label: 'demo/taro-vite-react-tailwindcss-v3',
+    project: 'demo/taro-vite-react-tailwindcss-v3',
     group: 'demo',
     initialMutationDelayMs: 5_000,
-    cwd: path.resolve(baseCwd, 'demo/taro-vite-tailwindcss-v3'),
+    cwd: path.resolve(baseCwd, 'demo/taro-vite-react-tailwindcss-v3'),
     devScript: 'dev:e2e-watch',
     env: taroViteWatchEnv,
-    outputWxml: path.resolve(baseCwd, 'demo/taro-vite-tailwindcss-v3/dist/pages/index/index.wxml'),
-    outputJs: path.resolve(baseCwd, 'demo/taro-vite-tailwindcss-v3/dist/pages/index/index.js'),
+    outputWxml: path.resolve(baseCwd, 'demo/taro-vite-react-tailwindcss-v3/dist/pages/index/index.wxml'),
+    outputJs: path.resolve(baseCwd, 'demo/taro-vite-react-tailwindcss-v3/dist/pages/index/index.js'),
     outputStyleCandidates: [
-      path.resolve(baseCwd, 'demo/taro-vite-tailwindcss-v3/dist/pages/index/index.wxss'),
-      path.resolve(baseCwd, 'demo/taro-vite-tailwindcss-v3/dist/app-origin.wxss'),
-      path.resolve(baseCwd, 'demo/taro-vite-tailwindcss-v3/dist/app.wxss'),
+      path.resolve(baseCwd, 'demo/taro-vite-react-tailwindcss-v3/dist/pages/index/index.wxss'),
+      path.resolve(baseCwd, 'demo/taro-vite-react-tailwindcss-v3/dist/app-origin.wxss'),
+      path.resolve(baseCwd, 'demo/taro-vite-react-tailwindcss-v3/dist/app.wxss'),
     ],
     globalStyleCandidates: [
-      path.resolve(baseCwd, 'demo/taro-vite-tailwindcss-v3/dist/app-origin.wxss'),
-      path.resolve(baseCwd, 'demo/taro-vite-tailwindcss-v3/dist/app.wxss'),
+      path.resolve(baseCwd, 'demo/taro-vite-react-tailwindcss-v3/dist/app-origin.wxss'),
+      path.resolve(baseCwd, 'demo/taro-vite-react-tailwindcss-v3/dist/app.wxss'),
     ],
     contentMutation: {
-      sourceFile: path.resolve(baseCwd, 'demo/taro-vite-tailwindcss-v3/src/pages/index/index.tsx'),
+      sourceFile: path.resolve(baseCwd, 'demo/taro-vite-react-tailwindcss-v3/src/pages/index/index.tsx'),
       verifyEscapedIn: ['js'],
       verifyClassLiteralIn: ['js'],
       forbidBgHexTruncationIn: ['js'],
@@ -326,12 +326,12 @@ export function buildDemoExtendedCases(baseCwd: string): WatchCase[] {
           source,
           '      <View className=\'bg-[#89ab8d] flex flex-col\'>',
           `      <View className='${payload.classLiteral}'>`,
-          'taro-vite-tailwindcss-v3 jsx class anchor',
+          'taro-vite-react-tailwindcss-v3 jsx class anchor',
         )
       },
     },
     templateMutation: {
-      sourceFile: path.resolve(baseCwd, 'demo/taro-vite-tailwindcss-v3/src/pages/index/index.tsx'),
+      sourceFile: path.resolve(baseCwd, 'demo/taro-vite-react-tailwindcss-v3/src/pages/index/index.tsx'),
       verifyEscapedIn: ['js'],
       verifyClassLiteralIn: ['js'],
       roundConfigs: buildHexScriptRoundConfigs(),
@@ -341,7 +341,7 @@ export function buildDemoExtendedCases(baseCwd: string): WatchCase[] {
       },
     },
     scriptMutation: {
-      sourceFile: path.resolve(baseCwd, 'demo/taro-vite-tailwindcss-v3/src/pages/index/index.tsx'),
+      sourceFile: path.resolve(baseCwd, 'demo/taro-vite-react-tailwindcss-v3/src/pages/index/index.tsx'),
       verifyEscapedIn: ['js'],
       verifyClassLiteralIn: ['js'],
       roundConfigs: buildHexScriptRoundConfigs(),
@@ -353,7 +353,7 @@ export function buildDemoExtendedCases(baseCwd: string): WatchCase[] {
       },
     },
     styleMutation: {
-      sourceFile: path.resolve(baseCwd, 'demo/taro-vite-tailwindcss-v3/src/pages/index/index.scss'),
+      sourceFile: path.resolve(baseCwd, 'demo/taro-vite-react-tailwindcss-v3/src/pages/index/index.scss'),
       mutate(source, payload) {
         return appendTrailingSnippet(source, createStyleRuleSnippet(payload))
       },
@@ -361,25 +361,25 @@ export function buildDemoExtendedCases(baseCwd: string): WatchCase[] {
   }
 
   const taroWebpackTailwindcssV4DemoCase: WatchCase = {
-    name: 'taro-webpack-tailwindcss-v4',
-    label: 'demo/taro-webpack-tailwindcss-v4',
-    project: 'demo/taro-webpack-tailwindcss-v4',
+    name: 'taro-webpack-react-tailwindcss-v4',
+    label: 'demo/taro-webpack-react-tailwindcss-v4',
+    project: 'demo/taro-webpack-react-tailwindcss-v4',
     group: 'demo',
-    cwd: path.resolve(baseCwd, 'demo/taro-webpack-tailwindcss-v4'),
+    cwd: path.resolve(baseCwd, 'demo/taro-webpack-react-tailwindcss-v4'),
     devScript: 'dev:e2e-watch',
     env: taroWatchEnv,
-    outputWxml: path.resolve(baseCwd, 'demo/taro-webpack-tailwindcss-v4/dist/pages/index/index.wxml'),
-    outputJs: path.resolve(baseCwd, 'demo/taro-webpack-tailwindcss-v4/dist/pages/index/index.js'),
+    outputWxml: path.resolve(baseCwd, 'demo/taro-webpack-react-tailwindcss-v4/dist/pages/index/index.wxml'),
+    outputJs: path.resolve(baseCwd, 'demo/taro-webpack-react-tailwindcss-v4/dist/pages/index/index.js'),
     outputStyleCandidates: [
-      path.resolve(baseCwd, 'demo/taro-webpack-tailwindcss-v4/dist/pages/index/index.wxss'),
-      path.resolve(baseCwd, 'demo/taro-webpack-tailwindcss-v4/dist/app.wxss'),
+      path.resolve(baseCwd, 'demo/taro-webpack-react-tailwindcss-v4/dist/pages/index/index.wxss'),
+      path.resolve(baseCwd, 'demo/taro-webpack-react-tailwindcss-v4/dist/app.wxss'),
     ],
     globalStyleCandidates: [
-      path.resolve(baseCwd, 'demo/taro-webpack-tailwindcss-v4/dist/pages/index/index.wxss'),
-      path.resolve(baseCwd, 'demo/taro-webpack-tailwindcss-v4/dist/app.wxss'),
+      path.resolve(baseCwd, 'demo/taro-webpack-react-tailwindcss-v4/dist/pages/index/index.wxss'),
+      path.resolve(baseCwd, 'demo/taro-webpack-react-tailwindcss-v4/dist/app.wxss'),
     ],
     contentMutation: {
-      sourceFile: path.resolve(baseCwd, 'demo/taro-webpack-tailwindcss-v4/src/pages/index/index.tsx'),
+      sourceFile: path.resolve(baseCwd, 'demo/taro-webpack-react-tailwindcss-v4/src/pages/index/index.tsx'),
       verifyEscapedIn: ['js'],
       verifyClassLiteralIn: ['js'],
       forbidBgHexTruncationIn: ['js'],
@@ -389,12 +389,12 @@ export function buildDemoExtendedCases(baseCwd: string): WatchCase[] {
           source,
           '      <View className=\'bg-[#534312] text-[#fff] text-[100rpx]\'>',
           `      <View className='${payload.classLiteral}'>`,
-          'taro-webpack-tailwindcss-v4 jsx class anchor',
+          'taro-webpack-react-tailwindcss-v4 jsx class anchor',
         )
       },
     },
     templateMutation: {
-      sourceFile: path.resolve(baseCwd, 'demo/taro-webpack-tailwindcss-v4/src/pages/index/index.tsx'),
+      sourceFile: path.resolve(baseCwd, 'demo/taro-webpack-react-tailwindcss-v4/src/pages/index/index.tsx'),
       verifyEscapedIn: ['js'],
       verifyClassLiteralIn: ['js'],
       roundConfigs: buildHexScriptRoundConfigs(),
@@ -404,7 +404,7 @@ export function buildDemoExtendedCases(baseCwd: string): WatchCase[] {
       },
     },
     scriptMutation: {
-      sourceFile: path.resolve(baseCwd, 'demo/taro-webpack-tailwindcss-v4/src/pages/index/index.tsx'),
+      sourceFile: path.resolve(baseCwd, 'demo/taro-webpack-react-tailwindcss-v4/src/pages/index/index.tsx'),
       verifyEscapedIn: ['js'],
       verifyClassLiteralIn: ['js'],
       forbidBgHexTruncationIn: ['js'],
@@ -417,7 +417,7 @@ export function buildDemoExtendedCases(baseCwd: string): WatchCase[] {
       },
     },
     styleMutation: {
-      sourceFile: path.resolve(baseCwd, 'demo/taro-webpack-tailwindcss-v4/src/pages/index/index.css'),
+      sourceFile: path.resolve(baseCwd, 'demo/taro-webpack-react-tailwindcss-v4/src/pages/index/index.css'),
       mutate(source, payload) {
         return appendTrailingSnippet(source, createStyleRuleSnippet(payload))
       },

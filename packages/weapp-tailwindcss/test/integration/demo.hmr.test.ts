@@ -55,8 +55,8 @@ const cases: DemoCase[] = [
     makeSnippet: marker => `  <view class="${marker}">hmr-test</view>\n`,
   },
   {
-    title: 'taro-webpack-tailwindcss-v3',
-    project: 'taro-webpack-tailwindcss-v3',
+    title: 'taro-webpack-react-tailwindcss-v3',
+    project: 'taro-webpack-react-tailwindcss-v3',
     entry: 'src/pages/index/index.tsx',
     marker: 'text-[#aa1107]',
     closingTag: '</>',
@@ -64,8 +64,8 @@ const cases: DemoCase[] = [
     makeSnippet: marker => `      <View className='${marker}'>hmr-test</View>\n`,
   },
   {
-    title: 'taro-webpack-tailwindcss-v4',
-    project: 'taro-webpack-tailwindcss-v4',
+    title: 'taro-webpack-react-tailwindcss-v4',
+    project: 'taro-webpack-react-tailwindcss-v4',
     entry: 'src/pages/index/index.tsx',
     marker: 'text-[#aa1111]',
     closingTag: '</>',
@@ -73,8 +73,8 @@ const cases: DemoCase[] = [
     makeSnippet: marker => `      <View className='${marker}'>hmr-test</View>\n`,
   },
   {
-    title: 'taro-vite-tailwindcss-v3',
-    project: 'taro-vite-tailwindcss-v3',
+    title: 'taro-vite-react-tailwindcss-v3',
+    project: 'taro-vite-react-tailwindcss-v3',
     entry: 'src/pages/index/index.tsx',
     marker: 'text-[#aa1108]',
     closingTag: '</View>',
@@ -82,8 +82,8 @@ const cases: DemoCase[] = [
     makeSnippet: marker => `      <View className='${marker}'>hmr-test</View>\n`,
   },
   {
-    title: 'taro-vite-tailwindcss-v4',
-    project: 'taro-vite-tailwindcss-v4',
+    title: 'taro-vite-react-tailwindcss-v4',
+    project: 'taro-vite-react-tailwindcss-v4',
     entry: 'src/pages/index/index.tsx',
     marker: 'text-[#aa1109]',
     closingTag: '</View>',

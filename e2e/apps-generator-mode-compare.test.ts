@@ -229,7 +229,9 @@ async function readBuildClassList(root: string) {
 async function collectOutputCssSnapshots(projectRoot: string, cssPath: string, classList?: string[]) {
   const entrySnapshots = await collectCssSnapshots(projectRoot, cssPath, {
     classList,
-    normalizeTailwindV4RootVariableNoise: projectRoot.endsWith(`${path.sep}taro-vite-tailwindcss-v4`),
+    normalizeTailwindV4RootVariableNoise:
+      projectRoot.endsWith(`${path.sep}taro-vite-react-tailwindcss-v4`)
+      || projectRoot.endsWith(`${path.sep}taro-vite-vue3-tailwindcss-v4`),
   })
   const outputRoot = path.dirname(path.resolve(projectRoot, cssPath))
   const allCssFiles = await fg(MINI_PROGRAM_CSS_PATTERN, {
@@ -244,7 +246,9 @@ async function collectOutputCssSnapshots(projectRoot: string, cssPath: string, c
       .filter(file => !entryFileNames.has(path.normalize(file)))
       .map(file => collectCssSnapshots(outputRoot, file, {
         classList,
-        normalizeTailwindV4RootVariableNoise: projectRoot.endsWith(`${path.sep}taro-vite-tailwindcss-v4`),
+        normalizeTailwindV4RootVariableNoise:
+          projectRoot.endsWith(`${path.sep}taro-vite-react-tailwindcss-v4`)
+          || projectRoot.endsWith(`${path.sep}taro-vite-vue3-tailwindcss-v4`),
       })),
   )
 

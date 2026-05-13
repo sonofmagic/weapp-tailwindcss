@@ -108,8 +108,8 @@ describeFrameworkIde.sequential('framework support matrix ide', () => {
     const requiredPairs = [
       ['uni-app', 'v3'],
       ['uni-app', 'v4'],
-      ['taro', 'v3'],
-      ['taro', 'v4'],
+      ['taro-react', 'v3'],
+      ['taro-react', 'v4'],
       ['mpx', 'v3'],
       ['mpx', 'v4'],
       ['native', 'v3'],

@@ -318,7 +318,7 @@ describe('watch-hmr regression text helpers', () => {
 
     const elapsed = await waitForCompileSettled(
       {
-        label: 'demo/taro-vite-tailwindcss-v3',
+        label: 'demo/taro-vite-react-tailwindcss-v3',
       } as any,
       {
         timeoutMs: 1_200,
@@ -681,8 +681,8 @@ describe('watch-hmr regression cases', () => {
 
       const scenario = createClassMutationScenario(
         {
-          name: 'taro-webpack-tailwindcss-v4',
-          label: 'demo/taro-webpack-tailwindcss-v4',
+          name: 'taro-webpack-react-tailwindcss-v4',
+          label: 'demo/taro-webpack-react-tailwindcss-v4',
         } as WatchCase,
         'script',
         {
@@ -708,16 +708,16 @@ describe('watch-hmr regression cases', () => {
   })
 
   it('tracks taro webpack v4 style outputs in both page and app wxss candidates', () => {
-    const taroWebpackCase = buildDemoExtendedCases('/repo').find(item => item.name === 'taro-webpack-tailwindcss-v4')
+    const taroWebpackCase = buildDemoExtendedCases('/repo').find(item => item.name === 'taro-webpack-react-tailwindcss-v4')
 
-    expect(taroWebpackCase?.name).toBe('taro-webpack-tailwindcss-v4')
+    expect(taroWebpackCase?.name).toBe('taro-webpack-react-tailwindcss-v4')
     expect(taroWebpackCase?.outputStyleCandidates).toEqual([
-      path.resolve('/repo', 'demo/taro-webpack-tailwindcss-v4/dist/pages/index/index.wxss'),
-      path.resolve('/repo', 'demo/taro-webpack-tailwindcss-v4/dist/app.wxss'),
+      path.resolve('/repo', 'demo/taro-webpack-react-tailwindcss-v4/dist/pages/index/index.wxss'),
+      path.resolve('/repo', 'demo/taro-webpack-react-tailwindcss-v4/dist/app.wxss'),
     ])
     expect(taroWebpackCase?.globalStyleCandidates).toEqual([
-      path.resolve('/repo', 'demo/taro-webpack-tailwindcss-v4/dist/pages/index/index.wxss'),
-      path.resolve('/repo', 'demo/taro-webpack-tailwindcss-v4/dist/app.wxss'),
+      path.resolve('/repo', 'demo/taro-webpack-react-tailwindcss-v4/dist/pages/index/index.wxss'),
+      path.resolve('/repo', 'demo/taro-webpack-react-tailwindcss-v4/dist/app.wxss'),
     ])
   })
 

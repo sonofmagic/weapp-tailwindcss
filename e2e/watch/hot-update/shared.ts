@@ -10,10 +10,10 @@ export type ConcreteWatchCaseName
     | 'gulp-tailwindcss-v4'
     | 'mpx-tailwindcss-v3'
     | 'mpx-tailwindcss-v4'
-    | 'taro-webpack-tailwindcss-v3'
-    | 'taro-webpack-tailwindcss-v4'
-    | 'taro-vite-tailwindcss-v3'
-    | 'taro-vite-tailwindcss-v4'
+    | 'taro-webpack-react-tailwindcss-v3'
+    | 'taro-webpack-react-tailwindcss-v4'
+    | 'taro-vite-react-tailwindcss-v3'
+    | 'taro-vite-react-tailwindcss-v4'
     | 'uni-app-vite-tailwindcss-v3'
     | 'uni-app-vite-tailwindcss-v4'
     | 'weapp-vite-tailwindcss-v3'
@@ -195,28 +195,28 @@ const criticalDemoProjects = [
   'demo/gulp-tailwindcss-v4',
   'demo/mpx-tailwindcss-v3',
   'demo/mpx-tailwindcss-v4',
-  'demo/taro-webpack-tailwindcss-v3',
-  'demo/taro-webpack-tailwindcss-v4',
-  'demo/taro-vite-tailwindcss-v3',
-  'demo/taro-vite-tailwindcss-v4',
+  'demo/taro-webpack-react-tailwindcss-v3',
+  'demo/taro-webpack-react-tailwindcss-v4',
+  'demo/taro-vite-react-tailwindcss-v3',
+  'demo/taro-vite-react-tailwindcss-v4',
   'demo/uni-app-vite-tailwindcss-v3',
   'demo/uni-app-vite-tailwindcss-v4',
   'demo/weapp-vite-tailwindcss-v3',
   'demo/weapp-vite-tailwindcss-v4',
 ] as const
 
-const bothCases = new Set<ConcreteWatchCaseName>(['taro-webpack-tailwindcss-v3', 'uni-app-vite-tailwindcss-v3'])
+const bothCases = new Set<ConcreteWatchCaseName>(['taro-webpack-react-tailwindcss-v3', 'uni-app-vite-tailwindcss-v3'])
 const noApplyValidationCases = new Set<ConcreteWatchCaseName>([
   'uni-app-vite-tailwindcss-v4',
-  'taro-vite-tailwindcss-v4',
-  'taro-webpack-tailwindcss-v4',
+  'taro-vite-react-tailwindcss-v4',
+  'taro-webpack-react-tailwindcss-v4',
 ])
 const commentCarrierRequiredCases = new Set<ConcreteWatchCaseName>([
   'mpx-tailwindcss-v3',
-  'taro-vite-tailwindcss-v3',
-  'taro-vite-tailwindcss-v4',
-  'taro-webpack-tailwindcss-v3',
-  'taro-webpack-tailwindcss-v4',
+  'taro-vite-react-tailwindcss-v3',
+  'taro-vite-react-tailwindcss-v4',
+  'taro-webpack-react-tailwindcss-v3',
+  'taro-webpack-react-tailwindcss-v4',
   'uni-app-vite-tailwindcss-v3',
   'weapp-vite-tailwindcss-v3',
   'weapp-vite-tailwindcss-v4',
@@ -294,10 +294,10 @@ export function resolveCaseName() {
     || value === 'gulp-tailwindcss-v4'
     || value === 'mpx-tailwindcss-v3'
     || value === 'mpx-tailwindcss-v4'
-    || value === 'taro-webpack-tailwindcss-v3'
-    || value === 'taro-webpack-tailwindcss-v4'
-    || value === 'taro-vite-tailwindcss-v3'
-    || value === 'taro-vite-tailwindcss-v4'
+    || value === 'taro-webpack-react-tailwindcss-v3'
+    || value === 'taro-webpack-react-tailwindcss-v4'
+    || value === 'taro-vite-react-tailwindcss-v3'
+    || value === 'taro-vite-react-tailwindcss-v4'
     || value === 'uni-app-vite-tailwindcss-v3'
     || value === 'uni-app-vite-tailwindcss-v4'
     || value === 'weapp-vite-tailwindcss-v4'

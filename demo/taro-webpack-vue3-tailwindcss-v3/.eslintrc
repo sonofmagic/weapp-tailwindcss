@@ -1,0 +1,6 @@
+{
+  "root": true,
+  "extends": [
+    "taro/vue3"
+  ]
+}

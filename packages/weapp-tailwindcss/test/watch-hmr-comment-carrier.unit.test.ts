@@ -76,23 +76,23 @@ const classArray = [
     expect(weappViteCase?.scriptMutation.mutateCommentCarrier).toBeTypeOf('function')
   })
 
-  it('enables comment-carrier mutation for the taro-vite-tailwindcss-v4 demo case', () => {
+  it('enables comment-carrier mutation for the taro-vite-react-tailwindcss-v4 demo case', () => {
     const cases = buildDemoExtendedCases('/virtual/workspace')
-    const taroViteCase = cases.find(item => item.name === 'taro-vite-tailwindcss-v4')
+    const taroViteCase = cases.find(item => item.name === 'taro-vite-react-tailwindcss-v4')
 
     expect(taroViteCase?.scriptMutation.mutateCommentCarrier).toBeTypeOf('function')
   })
 
-  it('enables comment-carrier mutation for the taro-vite-tailwindcss-v3 demo case', () => {
+  it('enables comment-carrier mutation for the taro-vite-react-tailwindcss-v3 demo case', () => {
     const cases = buildDemoExtendedCases('/virtual/workspace')
-    const taroAppViteCase = cases.find(item => item.name === 'taro-vite-tailwindcss-v3')
+    const taroAppViteCase = cases.find(item => item.name === 'taro-vite-react-tailwindcss-v3')
 
     expect(taroAppViteCase?.scriptMutation.mutateCommentCarrier).toBeTypeOf('function')
   })
 
-  it('enables comment-carrier mutation for the taro-webpack-tailwindcss-v4 demo case', () => {
+  it('enables comment-carrier mutation for the taro-webpack-react-tailwindcss-v4 demo case', () => {
     const cases = buildDemoExtendedCases('/virtual/workspace')
-    const taroWebpackCase = cases.find(item => item.name === 'taro-webpack-tailwindcss-v4')
+    const taroWebpackCase = cases.find(item => item.name === 'taro-webpack-react-tailwindcss-v4')
 
     expect(taroWebpackCase?.scriptMutation.mutateCommentCarrier).toBeTypeOf('function')
   })

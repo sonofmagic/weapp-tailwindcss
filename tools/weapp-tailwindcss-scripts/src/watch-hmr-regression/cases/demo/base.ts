@@ -21,23 +21,23 @@ const taroWatchEnv = {
 
 export function buildDemoBaseCases(baseCwd: string): WatchCase[] {
   const taroCase: WatchCase = {
-    name: 'taro-webpack-tailwindcss-v3',
-    label: 'demo/taro-webpack-tailwindcss-v3',
-    project: 'demo/taro-webpack-tailwindcss-v3',
+    name: 'taro-webpack-react-tailwindcss-v3',
+    label: 'demo/taro-webpack-react-tailwindcss-v3',
+    project: 'demo/taro-webpack-react-tailwindcss-v3',
     group: 'demo',
-    cwd: path.resolve(baseCwd, 'demo/taro-webpack-tailwindcss-v3'),
+    cwd: path.resolve(baseCwd, 'demo/taro-webpack-react-tailwindcss-v3'),
     devScript: 'dev:e2e-watch',
     env: taroWatchEnv,
-    outputWxml: path.resolve(baseCwd, 'demo/taro-webpack-tailwindcss-v3/dist/pages/index/index.wxml'),
-    outputJs: path.resolve(baseCwd, 'demo/taro-webpack-tailwindcss-v3/dist/pages/index/index.js'),
+    outputWxml: path.resolve(baseCwd, 'demo/taro-webpack-react-tailwindcss-v3/dist/pages/index/index.wxml'),
+    outputJs: path.resolve(baseCwd, 'demo/taro-webpack-react-tailwindcss-v3/dist/pages/index/index.js'),
     outputStyleCandidates: [
-      path.resolve(baseCwd, 'demo/taro-webpack-tailwindcss-v3/dist/pages/index/index.wxss'),
+      path.resolve(baseCwd, 'demo/taro-webpack-react-tailwindcss-v3/dist/pages/index/index.wxss'),
     ],
     globalStyleCandidates: [
-      path.resolve(baseCwd, 'demo/taro-webpack-tailwindcss-v3/dist/app.wxss'),
+      path.resolve(baseCwd, 'demo/taro-webpack-react-tailwindcss-v3/dist/app.wxss'),
     ],
     contentMutation: {
-      sourceFile: path.resolve(baseCwd, 'demo/taro-webpack-tailwindcss-v3/src/pages/index/index.tsx'),
+      sourceFile: path.resolve(baseCwd, 'demo/taro-webpack-react-tailwindcss-v3/src/pages/index/index.tsx'),
       verifyEscapedIn: ['js'],
       verifyClassLiteralIn: ['js'],
       forbidBgHexTruncationIn: ['js'],
@@ -52,7 +52,7 @@ export function buildDemoBaseCases(baseCwd: string): WatchCase[] {
       },
     },
     templateMutation: {
-      sourceFile: path.resolve(baseCwd, 'demo/taro-webpack-tailwindcss-v3/src/pages/index/index.tsx'),
+      sourceFile: path.resolve(baseCwd, 'demo/taro-webpack-react-tailwindcss-v3/src/pages/index/index.tsx'),
       verifyEscapedIn: ['js'],
       verifyClassLiteralIn: ['js'],
       roundConfigs: buildHexScriptRoundConfigs(),
@@ -62,7 +62,7 @@ export function buildDemoBaseCases(baseCwd: string): WatchCase[] {
       },
     },
     scriptMutation: {
-      sourceFile: path.resolve(baseCwd, 'demo/taro-webpack-tailwindcss-v3/src/pages/index/index.tsx'),
+      sourceFile: path.resolve(baseCwd, 'demo/taro-webpack-react-tailwindcss-v3/src/pages/index/index.tsx'),
       verifyEscapedIn: ['js'],
       verifyClassLiteralIn: ['js'],
       roundConfigs: buildHexScriptRoundConfigs(),
@@ -71,7 +71,7 @@ export function buildDemoBaseCases(baseCwd: string): WatchCase[] {
       },
     },
     styleMutation: {
-      sourceFile: path.resolve(baseCwd, 'demo/taro-webpack-tailwindcss-v3/src/pages/index/index.scss'),
+      sourceFile: path.resolve(baseCwd, 'demo/taro-webpack-react-tailwindcss-v3/src/pages/index/index.scss'),
       mutate(source, payload) {
         return appendTrailingSnippet(source, createStyleRuleSnippet(payload))
       },

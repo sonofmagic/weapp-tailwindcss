@@ -153,16 +153,28 @@
       "path": "./demo/mpx-tailwindcss-v4"
     },
     {
-      "path": "./demo/taro-webpack-tailwindcss-v3"
+      "path": "./demo/taro-webpack-react-tailwindcss-v3"
     },
     {
-      "path": "./demo/taro-webpack-tailwindcss-v4"
+      "path": "./demo/taro-webpack-react-tailwindcss-v4"
     },
     {
-      "path": "./demo/taro-vite-tailwindcss-v3"
+      "path": "./demo/taro-vite-react-tailwindcss-v3"
     },
     {
-      "path": "./demo/taro-vite-tailwindcss-v4"
+      "path": "./demo/taro-vite-react-tailwindcss-v4"
+    },
+    {
+      "path": "./demo/taro-webpack-vue3-tailwindcss-v3"
+    },
+    {
+      "path": "./demo/taro-webpack-vue3-tailwindcss-v4"
+    },
+    {
+      "path": "./demo/taro-vite-vue3-tailwindcss-v3"
+    },
+    {
+      "path": "./demo/taro-vite-vue3-tailwindcss-v4"
     },
     {
       "path": "./demo/uni-app-vite-tailwindcss-v3"

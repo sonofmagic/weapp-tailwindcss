@@ -198,8 +198,8 @@ const cases: SourceMutationCase[] = [
     },
   },
   {
-    title: 'demo/taro-vite-tailwindcss-v4',
-    projectRoot: path.resolve(repositoryRoot, 'demo/taro-vite-tailwindcss-v4'),
+    title: 'demo/taro-vite-react-tailwindcss-v4',
+    projectRoot: path.resolve(repositoryRoot, 'demo/taro-vite-react-tailwindcss-v4'),
     appType: 'taro',
     resolveOptions: root => ({
       cssEntries: [path.resolve(root, 'src/app.css')],
@@ -216,14 +216,14 @@ const cases: SourceMutationCase[] = [
           source,
           "<Text className='text-[55rpx] text-[#fff] bg-purple-300'>Hello world!</Text>",
           `<Text className='${classLiteral}'>Hello world!</Text>`,
-          'demo/taro-vite-tailwindcss-v4 script anchor',
+          'demo/taro-vite-react-tailwindcss-v4 script anchor',
         )
       },
     },
   },
   {
-    title: 'demo/taro-webpack-tailwindcss-v4',
-    projectRoot: path.resolve(repositoryRoot, 'demo/taro-webpack-tailwindcss-v4'),
+    title: 'demo/taro-webpack-react-tailwindcss-v4',
+    projectRoot: path.resolve(repositoryRoot, 'demo/taro-webpack-react-tailwindcss-v4'),
     appType: 'taro',
     resolveOptions: root => ({
       cssEntries: [path.resolve(root, 'src/app.css')],
@@ -240,7 +240,7 @@ const cases: SourceMutationCase[] = [
           source,
           "<View className='bg-[#534312] text-[#fff] text-[100rpx]'>",
           `<View className='${classLiteral}'>`,
-          'demo/taro-webpack-tailwindcss-v4 script anchor',
+          'demo/taro-webpack-react-tailwindcss-v4 script anchor',
         )
       },
     },

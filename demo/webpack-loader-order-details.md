@@ -2,8 +2,8 @@
 
 说明：Webpack 会按照 `module.loaders` / `rule.use` **从后往前**执行 loader。以下顺序均按“执行时的先后”列出，并特别标出 `postcss-loader`、`runtimeCssImportRewriteLoader`、`runtimeClassSetLoader` 所处位置。
 
-## taro-webpack-tailwindcss-v3 / taro-webpack-tailwindcss-v4
-- 路径：`demo/taro-webpack-tailwindcss-v3/node_modules/@tarojs/webpack5-runner/dist/webpack/MiniWebpackModule.js`
+## taro-webpack-react-tailwindcss-v3 / taro-webpack-react-tailwindcss-v4
+- 路径：`demo/taro-webpack-react-tailwindcss-v3/node_modules/@tarojs/webpack5-runner/dist/webpack/MiniWebpackModule.js`
 - 基础执行序：`preprocessor (sass/less/stylus) → runtimeCssImportRewriteLoader → postcss-loader → runtimeClassSetLoader → css-loader → MiniCssExtractPlugin.loader`
   - 架构中的 `MiniCssExtractPlugin.loader → css-loader → postcss-loader` 的定义位于 `getCSSLoaders`，rewrite 和 class-set 分别在它们两侧。
 

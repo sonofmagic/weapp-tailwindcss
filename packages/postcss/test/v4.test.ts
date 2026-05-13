@@ -138,7 +138,7 @@ describe('v4', () => {
     const styleHandler = createStyleHandler({
       isMainChunk: true,
     })
-    const code = await fs.readFile(path.resolve(__dirname, './fixtures/css/taro-vite-tailwindcss-v4-app-origin.css'), 'utf8')
+    const code = await fs.readFile(path.resolve(__dirname, './fixtures/css/taro-vite-react-tailwindcss-v4-app-origin.css'), 'utf8')
     const { css } = await styleHandler(code, {
       isMainChunk: true,
     })

@@ -24,23 +24,43 @@ export const E2E_PROJECTS = [
     url: '/pages/index',
   },
   {
-    name: 'taro-webpack-tailwindcss-v3',
-    projectPath: 'taro-webpack-tailwindcss-v3',
+    name: 'taro-webpack-react-tailwindcss-v3',
+    projectPath: 'taro-webpack-react-tailwindcss-v3',
     cssFile: 'dist/app.wxss',
   },
   {
-    name: 'taro-webpack-tailwindcss-v4',
-    projectPath: 'taro-webpack-tailwindcss-v4',
+    name: 'taro-webpack-react-tailwindcss-v4',
+    projectPath: 'taro-webpack-react-tailwindcss-v4',
     cssFile: 'dist/app.wxss',
   },
   {
-    name: 'taro-vite-tailwindcss-v3',
-    projectPath: 'taro-vite-tailwindcss-v3',
+    name: 'taro-vite-react-tailwindcss-v3',
+    projectPath: 'taro-vite-react-tailwindcss-v3',
     cssFile: 'dist/app.wxss',
   },
   {
-    name: 'taro-vite-tailwindcss-v4',
-    projectPath: 'taro-vite-tailwindcss-v4',
+    name: 'taro-vite-react-tailwindcss-v4',
+    projectPath: 'taro-vite-react-tailwindcss-v4',
+    cssFile: 'dist/app.wxss',
+  },
+  {
+    name: 'taro-webpack-vue3-tailwindcss-v3',
+    projectPath: 'taro-webpack-vue3-tailwindcss-v3',
+    cssFile: 'dist/app.wxss',
+  },
+  {
+    name: 'taro-webpack-vue3-tailwindcss-v4',
+    projectPath: 'taro-webpack-vue3-tailwindcss-v4',
+    cssFile: 'dist/app.wxss',
+  },
+  {
+    name: 'taro-vite-vue3-tailwindcss-v3',
+    projectPath: 'taro-vite-vue3-tailwindcss-v3',
+    cssFile: 'dist/app.wxss',
+  },
+  {
+    name: 'taro-vite-vue3-tailwindcss-v4',
+    projectPath: 'taro-vite-vue3-tailwindcss-v4',
     cssFile: 'dist/app.wxss',
   },
   {

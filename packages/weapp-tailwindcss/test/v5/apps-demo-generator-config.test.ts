@@ -8,10 +8,14 @@ const demoProjects = [
   'gulp-tailwindcss-v4',
   'mpx-tailwindcss-v3',
   'mpx-tailwindcss-v4',
-  'taro-webpack-tailwindcss-v3',
-  'taro-webpack-tailwindcss-v4',
-  'taro-vite-tailwindcss-v3',
-  'taro-vite-tailwindcss-v4',
+  'taro-webpack-react-tailwindcss-v3',
+  'taro-webpack-react-tailwindcss-v4',
+  'taro-webpack-vue3-tailwindcss-v3',
+  'taro-webpack-vue3-tailwindcss-v4',
+  'taro-vite-react-tailwindcss-v3',
+  'taro-vite-react-tailwindcss-v4',
+  'taro-vite-vue3-tailwindcss-v3',
+  'taro-vite-vue3-tailwindcss-v4',
   'uni-app-vite-tailwindcss-v3',
   'uni-app-vite-tailwindcss-v4',
   'weapp-vite-tailwindcss-v3',
@@ -86,16 +90,20 @@ describe('demo matrix generator config', () => {
     const configPaths = [
       'demo/gulp-tailwindcss-v4/gulpfile.ts',
       'demo/mpx-tailwindcss-v4/mpx.config.js',
-      'demo/taro-webpack-tailwindcss-v4/config/index.ts',
-      'demo/taro-vite-tailwindcss-v4/config/index.ts',
+      'demo/taro-webpack-react-tailwindcss-v4/config/index.ts',
+      'demo/taro-webpack-vue3-tailwindcss-v4/config/index.ts',
+      'demo/taro-vite-react-tailwindcss-v4/config/index.ts',
+      'demo/taro-vite-vue3-tailwindcss-v4/config/index.ts',
       'demo/uni-app-vite-tailwindcss-v4/vite.config.ts',
       'demo/weapp-vite-tailwindcss-v4/vite.config.ts',
     ]
     const cssPaths = [
       'demo/gulp-tailwindcss-v4/src/app.css',
       'demo/mpx-tailwindcss-v4/src/app.css',
-      'demo/taro-webpack-tailwindcss-v4/src/app.css',
-      'demo/taro-vite-tailwindcss-v4/src/app.css',
+      'demo/taro-webpack-react-tailwindcss-v4/src/app.css',
+      'demo/taro-webpack-vue3-tailwindcss-v4/src/app.css',
+      'demo/taro-vite-react-tailwindcss-v4/src/app.css',
+      'demo/taro-vite-vue3-tailwindcss-v4/src/app.css',
       'demo/uni-app-vite-tailwindcss-v4/src/main.css',
       'demo/weapp-vite-tailwindcss-v4/app.css',
     ]
@@ -113,7 +121,14 @@ describe('demo matrix generator config', () => {
 
   it('keeps removed demo families out of the active matrix tests', () => {
     expect(demoProjects.some(project => project.includes('v5'))).toBe(false)
-    expect(demoProjects.some(project => project.includes('taro-vue3'))).toBe(false)
     expect(demoProjects.some(project => project.includes('uni-app-x'))).toBe(false)
+  })
+
+  it('keeps Taro demo names explicit about React and Vue3 framework variants', () => {
+    const taroProjects = demoProjects.filter(project => project.startsWith('taro-'))
+
+    expect(taroProjects.every(project => project.includes('-react-') || project.includes('-vue3-'))).toBe(true)
+    expect(taroProjects.filter(project => project.includes('-react-')).length).toBe(4)
+    expect(taroProjects.filter(project => project.includes('-vue3-')).length).toBe(4)
   })
 })
