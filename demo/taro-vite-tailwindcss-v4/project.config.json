@@ -15,7 +15,8 @@
       "outputPath": ""
     },
     "ignoreUploadUnusedFiles": true,
-    "packNpmRelationList": []
+    "packNpmRelationList": [],
+    "minifyWXML": true
   },
   "appid": "wxb3d842a4a7e3440d",
   "compileType": "miniprogram",

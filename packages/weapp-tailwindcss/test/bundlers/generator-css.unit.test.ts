@@ -290,7 +290,7 @@ describe('bundlers/shared generator css', () => {
       debug: vi.fn(),
     })
 
-    expect(result?.css).toBe(weappCss)
+    expect(result?.css).toContain(weappCss)
     expect(resolveTailwindV4Source).toHaveBeenCalledWith(expect.objectContaining({
       base: path.resolve('src'),
       css: rawSource,
@@ -1008,7 +1008,7 @@ describe('bundlers/shared generator css', () => {
       debug: vi.fn(),
     })
 
-    expect(result?.css).toBe(weappCss)
+    expect(result?.css).toContain(weappCss)
     expect(styleHandler).not.toHaveBeenCalled()
   })
 
@@ -2838,6 +2838,107 @@ describe('bundlers/shared generator css', () => {
     expect(styleHandler).toHaveBeenCalledWith('.card{color:red}', expect.objectContaining({
       isMainChunk: true,
     }))
+  })
+
+  it('prefers configured Tailwind v4 css source over placeholder-expanded bundle css', async () => {
+    const runtimeSet = new Set(['bg-linear-to-r'])
+    const configuredCss = '@import "tailwindcss";'
+    const rawSource = [
+      ':host,page,.tw-root,wx-root-portal-content{--color-gray-200:#e5e7eb}',
+      '.container{width:100%}',
+    ].join('\n')
+    const rawTailwindCss = '.bg-linear-to-r{--tw-gradient-position:to right}'
+    const weappCss = '.bg-linear-to-r{--tw-gradient-position:to right}'
+    const generateMock = vi.fn(async () => ({
+      css: weappCss,
+      rawCss: rawTailwindCss,
+      target: 'weapp',
+      classSet: runtimeSet,
+      dependencies: ['src/app.css'],
+      sources: [],
+      root: null,
+    }))
+    const createGeneratorMock = vi.fn(() => ({
+      generate: generateMock,
+    }))
+    const resolveTailwindV4Source = vi.fn(async (options: any) => ({
+      projectRoot: '/project',
+      base: '/project',
+      baseFallbacks: [],
+      css: options.css,
+      dependencies: ['src/app.css'],
+    }))
+
+    vi.doMock('@/generator', () => ({
+      createWeappTailwindcssGenerator: createGeneratorMock,
+      normalizeWeappTailwindcssGeneratorOptions: normalizeGeneratorOptions,
+      resolveTailwindV4Source,
+      resolveTailwindV4SourceFromPatcher: vi.fn(async () => ({
+        projectRoot: '/project',
+        base: '/project',
+        baseFallbacks: [],
+        css: configuredCss,
+        dependencies: ['src/app.css'],
+      })),
+      resolveTailwindV4SourceOptionsFromPatcher: vi.fn(() => ({
+        projectRoot: '/project',
+        base: '/project',
+        baseFallbacks: [],
+        css: configuredCss,
+        cssSources: [
+          {
+            file: '/project/src/app.css',
+            css: configuredCss,
+          },
+        ],
+      })),
+    }))
+
+    const { generateCssByGenerator } = await import('@/bundlers/shared/generator-css')
+    const styleHandler = vi.fn(async (code: string) => ({ css: code }))
+    const result = await generateCssByGenerator({
+      opts: {
+        styleHandler,
+      } as any,
+      runtimeState: {
+        twPatcher: {
+          majorVersion: 4,
+        } as any,
+        readyPromise: Promise.resolve(),
+      },
+      runtime: runtimeSet,
+      rawSource,
+      file: 'app-origin.wxss',
+      cssHandlerOptions: {
+        isMainChunk: true,
+        postcssOptions: {
+          options: {
+            from: 'app-origin.wxss',
+          },
+        },
+        majorVersion: 4,
+      } as any,
+      cssUserHandlerOptions: {
+        isMainChunk: false,
+        postcssOptions: {
+          options: {
+            from: 'app-origin.wxss',
+          },
+        },
+        majorVersion: 4,
+      } as any,
+      styleHandler,
+      debug: vi.fn(),
+    })
+
+    expect(resolveTailwindV4Source).toHaveBeenCalledWith(expect.objectContaining({
+      css: configuredCss,
+    }))
+    expect(createGeneratorMock).toHaveBeenCalledWith(expect.objectContaining({
+      css: configuredCss,
+    }))
+    expect(result?.css).toContain(weappCss)
+    expect(result?.css).toContain('.container{width:100%}')
   })
 
   it('deduplicates forced compat css after mini-program selector escaping', async () => {

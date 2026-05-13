@@ -80,7 +80,7 @@ export function summarizeMetricsByRound(cases: WatchCaseMetrics[]) {
 
 export function summarizeMetricsByGroup(cases: WatchCaseMetrics[]) {
   const summaryByGroup: Partial<Record<WatchProjectGroup, WatchSummary>> = {}
-  for (const groupName of ['demo', 'apps'] as const) {
+  for (const groupName of ['demo'] as const) {
     const groupCases = cases.filter(item => item.projectGroup === groupName)
     summaryByGroup[groupName] = summarizeMetrics(groupCases)
   }

@@ -1,0 +1,37 @@
+{
+  "setting": {
+    "newFeature": true,
+    "urlCheck": true,
+    "es6": false,
+    "postcss": true,
+    "minified": false,
+    "checkSiteMap": false,
+    "autoAudits": false,
+    "babelSetting": {
+      "ignore": [],
+      "disablePlugins": [],
+      "outputPath": ""
+    },
+    "condition": false,
+    "ignoreUploadUnusedFiles": true,
+    "coverView": false,
+    "enhance": false,
+    "showShadowRootInWxmlPanel": false,
+    "packNpmRelationList": [],
+    "minifyWXML": true
+  },
+  "appid": "wx6ffee4673b257014",
+  "description": "A mpx project",
+  "condition": {},
+  "compileType": "miniprogram",
+  "editorSetting": {
+    "tabIndent": "insertSpaces",
+    "tabSize": 2
+  },
+  "projectname": "mpx-tailwindcss-v3-weapp",
+  "libVersion": "3.10.3",
+  "packOptions": {
+    "ignore": [],
+    "include": []
+  }
+}

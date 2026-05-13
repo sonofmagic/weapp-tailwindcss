@@ -4,25 +4,21 @@ import { execa } from 'execa'
 import path from 'pathe'
 import { expect } from 'vitest'
 
-export type WatchProjectGroup = 'demo' | 'apps'
+export type WatchProjectGroup = 'demo'
 export type ConcreteWatchCaseName
-  = | 'taro'
-    | 'mpx'
-    | 'gulp-app'
-    | 'weapp-vite'
-    | 'uni-app-vue3-vite'
-    | 'uni-app-tailwindcss-v4'
-    | 'uni-app-tailwindcss-v5'
+  = | 'gulp-tailwindcss-v3'
+    | 'gulp-tailwindcss-v4'
+    | 'mpx-tailwindcss-v3'
     | 'mpx-tailwindcss-v4'
-    | 'mpx-tailwindcss-v5'
-    | 'taro-vite-tailwindcss-v4'
-    | 'taro-vite-tailwindcss-v5'
-    | 'taro-app-vite'
+    | 'taro-webpack-tailwindcss-v3'
     | 'taro-webpack-tailwindcss-v4'
-    | 'taro-vue3-app'
-    | 'taro-webpack'
-    | 'vite-native-ts'
-export type WatchCaseName = ConcreteWatchCaseName | 'both' | 'all' | 'demo' | 'apps'
+    | 'taro-vite-tailwindcss-v3'
+    | 'taro-vite-tailwindcss-v4'
+    | 'uni-app-vite-tailwindcss-v3'
+    | 'uni-app-vite-tailwindcss-v4'
+    | 'weapp-vite-tailwindcss-v3'
+    | 'weapp-vite-tailwindcss-v4'
+export type WatchCaseName = ConcreteWatchCaseName | 'both' | 'all' | 'demo'
 type MutationKind = 'template' | 'script' | 'style' | 'content'
 type MutationRoundName = 'baseline-arbitrary' | 'complex-corpus' | 'hex-arbitrary' | 'issue33-arbitrary'
 const BASE_REQUIRED_MUTATION_ROUNDS: MutationRoundName[] = ['baseline-arbitrary', 'complex-corpus', 'hex-arbitrary']
@@ -195,33 +191,35 @@ interface HotUpdateReport {
 }
 
 const criticalDemoProjects = [
-  'demo/uni-app-vue3-vite',
-  'demo/uni-app-tailwindcss-v4',
-  'demo/uni-app-tailwindcss-v5',
-  'demo/taro-vite-tailwindcss-v4',
-  'demo/taro-vite-tailwindcss-v5',
-  'demo/taro-app-vite',
+  'demo/gulp-tailwindcss-v3',
+  'demo/gulp-tailwindcss-v4',
+  'demo/mpx-tailwindcss-v3',
+  'demo/mpx-tailwindcss-v4',
+  'demo/taro-webpack-tailwindcss-v3',
   'demo/taro-webpack-tailwindcss-v4',
-  'demo/taro-vue3-app',
+  'demo/taro-vite-tailwindcss-v3',
+  'demo/taro-vite-tailwindcss-v4',
+  'demo/uni-app-vite-tailwindcss-v3',
+  'demo/uni-app-vite-tailwindcss-v4',
+  'demo/weapp-vite-tailwindcss-v3',
+  'demo/weapp-vite-tailwindcss-v4',
 ] as const
 
-const bothCases = new Set<ConcreteWatchCaseName>(['taro', 'uni-app-vue3-vite'])
+const bothCases = new Set<ConcreteWatchCaseName>(['taro-webpack-tailwindcss-v3', 'uni-app-vite-tailwindcss-v3'])
 const noApplyValidationCases = new Set<ConcreteWatchCaseName>([
-  'uni-app-tailwindcss-v4',
+  'uni-app-vite-tailwindcss-v4',
   'taro-vite-tailwindcss-v4',
-  'taro-vite-tailwindcss-v5',
   'taro-webpack-tailwindcss-v4',
-  'taro-webpack',
 ])
 const commentCarrierRequiredCases = new Set<ConcreteWatchCaseName>([
-  'mpx',
-  'taro-webpack',
-  'taro-app-vite',
+  'mpx-tailwindcss-v3',
+  'taro-vite-tailwindcss-v3',
   'taro-vite-tailwindcss-v4',
+  'taro-webpack-tailwindcss-v3',
   'taro-webpack-tailwindcss-v4',
-  'uni-app-vue3-vite',
-  'vite-native-ts',
-  'weapp-vite',
+  'uni-app-vite-tailwindcss-v3',
+  'weapp-vite-tailwindcss-v3',
+  'weapp-vite-tailwindcss-v4',
 ])
 
 interface CommentCarrierSummaryItem {
@@ -292,29 +290,21 @@ function assertHasWxssOutput(outputs: string[], label: string) {
 export function resolveCaseName() {
   const value = process.env.E2E_WATCH_CASE
   if (
-    value === 'taro'
-    || value === 'mpx'
-    || value === 'gulp-app'
-    || value === 'weapp-vite'
-    || value === 'uni-app-vue3-vite'
-    || value === 'uni-app-tailwindcss-v4'
-    || value === 'uni-app-tailwindcss-v5'
+    value === 'gulp-tailwindcss-v3'
+    || value === 'gulp-tailwindcss-v4'
+    || value === 'mpx-tailwindcss-v3'
     || value === 'mpx-tailwindcss-v4'
-    || value === 'mpx-tailwindcss-v5'
-    || value === 'taro-vite-tailwindcss-v4'
-    || value === 'taro-vite-tailwindcss-v5'
-    || value === 'taro-app-vite'
+    || value === 'taro-webpack-tailwindcss-v3'
     || value === 'taro-webpack-tailwindcss-v4'
-    || value === 'taro-vue3-app'
-    || value === 'taro-webpack'
-    || value === 'vite-native'
-    || value === 'vite-native-ts'
-    || value === 'vite-native-skyline'
-    || value === 'vite-native-ts-skyline'
+    || value === 'taro-vite-tailwindcss-v3'
+    || value === 'taro-vite-tailwindcss-v4'
+    || value === 'uni-app-vite-tailwindcss-v3'
+    || value === 'uni-app-vite-tailwindcss-v4'
+    || value === 'weapp-vite-tailwindcss-v4'
+    || value === 'weapp-vite-tailwindcss-v3'
     || value === 'both'
     || value === 'all'
     || value === 'demo'
-    || value === 'apps'
   ) {
     return value
   }
@@ -322,11 +312,11 @@ export function resolveCaseName() {
 }
 
 function isConcreteWatchCaseName(value: WatchCaseName): value is ConcreteWatchCaseName {
-  return value !== 'all' && value !== 'both' && value !== 'demo' && value !== 'apps'
+  return value !== 'all' && value !== 'both' && value !== 'demo'
 }
 
 export function resolveExpectedGroup(target: WatchCaseName): WatchProjectGroup | undefined {
-  if (target === 'demo' || target === 'apps') {
+  if (target === 'demo') {
     return target
   }
 
@@ -334,32 +324,7 @@ export function resolveExpectedGroup(target: WatchCaseName): WatchProjectGroup |
     return 'demo'
   }
 
-  if (
-    target === 'taro-webpack'
-    || target === 'vite-native'
-    || target === 'vite-native-ts'
-    || target === 'vite-native-skyline'
-    || target === 'vite-native-ts-skyline'
-  ) {
-    return 'apps'
-  }
-
-  if (
-    target === 'taro'
-    || target === 'mpx'
-    || target === 'gulp-app'
-    || target === 'weapp-vite'
-    || target === 'uni-app-vue3-vite'
-    || target === 'uni-app-tailwindcss-v4'
-    || target === 'uni-app-tailwindcss-v5'
-    || target === 'mpx-tailwindcss-v4'
-    || target === 'mpx-tailwindcss-v5'
-    || target === 'taro-vite-tailwindcss-v4'
-    || target === 'taro-vite-tailwindcss-v5'
-    || target === 'taro-app-vite'
-    || target === 'taro-webpack-tailwindcss-v4'
-    || target === 'taro-vue3-app'
-  ) {
+  if (isConcreteWatchCaseName(target)) {
     return 'demo'
   }
 }
@@ -373,7 +338,7 @@ export function shouldRunTarget(caseName: WatchCaseName, target: ConcreteWatchCa
     return bothCases.has(target)
   }
 
-  if (caseName === 'demo' || caseName === 'apps') {
+  if (caseName === 'demo') {
     return false
   }
 

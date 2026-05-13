@@ -18,6 +18,7 @@ import {
 } from './config-directive'
 import { resolveCssEntrySource } from './directives'
 import {
+  hasTailwindGeneratedCssMarkers,
   stripGeneratorPlaceholderMarkers,
   stripTailwindBanners,
 } from './markers'
@@ -149,6 +150,13 @@ function tryResolveTailwindV4SourceOptions(
   }
 }
 
+function hasConfiguredTailwindV4CssSource(
+  sourceOptions: ReturnType<typeof resolveTailwindV4SourceOptionsFromPatcher> | undefined,
+) {
+  return Boolean(sourceOptions?.css)
+    || Boolean(sourceOptions?.cssSources?.length)
+}
+
 export async function resolveGeneratorSource(
   majorVersion: number | undefined,
   runtimeState: GeneratorSourceRuntimeState,
@@ -189,6 +197,19 @@ export async function resolveGeneratorSource(
   }
 
   const sourceOptions = tryResolveTailwindV4SourceOptions(runtimeState)
+  const configuredCssSource = sourceOptions
+    && hasConfiguredTailwindV4CssSource(sourceOptions)
+    && hasTailwindGeneratedCssMarkers(rawSource)
+    ? await resolveTailwindV4Source(sourceOptions)
+    : undefined
+  if (configuredCssSource) {
+    return generatorOptions?.config
+      ? {
+          ...configuredCssSource,
+          css: prependConfigDirective(configuredCssSource.css, generatorOptions.config),
+        }
+      : configuredCssSource
+  }
   const shouldPreferSourceSideEntry = shouldResolveSourceSideCssEntry(rawSource)
     || Boolean(cssEntrySource?.css.includes('weapp-tailwindcss generator-placeholder'))
   const sourceSideEntrySource = sourceOptions && shouldPreferSourceSideEntry

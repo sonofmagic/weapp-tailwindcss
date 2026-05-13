@@ -46,21 +46,18 @@ describeFrameworkCi('framework support matrix ci', () => {
     }
   })
 
-  it('keeps stable demo and apps hot-update cases wired into e2e:ci', () => {
+  it('keeps stable demo hot-update cases wired into e2e:ci', () => {
     expect(HOT_UPDATE_CI_CASES).toEqual([
       ...HOT_UPDATE_CASES_BY_TARGET.demo,
-      ...HOT_UPDATE_CASES_BY_TARGET.apps,
     ])
   })
 
-  it('keeps every demo and apps hot-update case runnable from the e2e watch suite by name', () => {
-    for (const target of ['demo', 'apps'] as const) {
-      for (const caseName of HOT_UPDATE_CASES_BY_TARGET[target]) {
-        expect(
-          fs.existsSync(path.resolve(__dirname, `watch/hot-update/${target}/${caseName}.test.ts`)),
-          `${caseName} should have a dedicated e2e watch hot-update test entry`,
-        ).toBe(true)
-      }
+  it('keeps every demo hot-update case runnable from the e2e watch suite by name', () => {
+    for (const caseName of HOT_UPDATE_CASES_BY_TARGET.demo) {
+      expect(
+        fs.existsSync(path.resolve(__dirname, `watch/hot-update/demo/${caseName}.test.ts`)),
+        `${caseName} should have a dedicated e2e watch hot-update test entry`,
+      ).toBe(true)
     }
   })
 
@@ -73,17 +70,8 @@ describeFrameworkCi('framework support matrix ci', () => {
     }
   })
 
-  it('keeps every apps hot-update case available in the CI hot-update filter', () => {
-    for (const caseName of HOT_UPDATE_CASES_BY_TARGET.apps) {
-      expect(
-        HOT_UPDATE_CI_CASES,
-        `${caseName} should be included in hot-update CI`,
-      ).toContain(caseName)
-    }
-  })
-
-  it('requires demo and apps hot-update cases to verify escaped template/js outputs and generated styles', () => {
-    const cases = buildCases(path.resolve(__dirname, '..')).filter(item => item.group === 'demo' || item.group === 'apps')
+  it('requires demo hot-update cases to verify escaped template/js outputs and generated styles', () => {
+    const cases = buildCases(path.resolve(__dirname, '..')).filter(item => item.group === 'demo')
 
     for (const item of cases) {
       expect(

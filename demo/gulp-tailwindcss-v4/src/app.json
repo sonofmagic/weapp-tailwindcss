@@ -1,0 +1,32 @@
+{
+  "pages": [
+    "pages/index/index",
+    "pages/more/more"
+  ],
+  "window": {
+    "backgroundTextStyle": "light",
+    "navigationBarBackgroundColor": "#fff",
+    "navigationBarTitleText": "WeApp-Workflow",
+    "navigationBarTextStyle": "black"
+  },
+  "tabBar": {
+    "color": "#7A7E83",
+    "selectedColor": "#CF4646",
+    "borderStyle": "black",
+    "backgroundColor": "#ffffff",
+    "list": [
+      {
+        "pagePath": "pages/index/index",
+        "iconPath": "image/home_D.png",
+        "selectedIconPath": "image/home.png",
+        "text": "介绍"
+      },
+      {
+        "pagePath": "pages/more/more",
+        "iconPath": "image/set_D.png",
+        "selectedIconPath": "image/set.png",
+        "text": "更多"
+      }
+    ]
+  }
+}

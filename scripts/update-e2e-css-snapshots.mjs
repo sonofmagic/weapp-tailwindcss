@@ -2,7 +2,7 @@ import fs from 'node:fs/promises'
 import process from 'node:process'
 import { fileURLToPath } from 'node:url'
 import path from 'pathe'
-import { E2E_PROJECTS, NATIVE_PROJECTS } from '../e2e/projectEntries.js'
+import { E2E_PROJECTS } from '../e2e/projectEntries.js'
 import { collectCssSnapshots } from '../e2e/snapshotUtils.js'
 
 const __filename = fileURLToPath(import.meta.url)
@@ -47,11 +47,6 @@ async function main() {
       suite: 'e2e',
       fixturesDir: '../demo',
       projects: E2E_PROJECTS,
-    },
-    {
-      suite: 'native',
-      fixturesDir: '../apps',
-      projects: NATIVE_PROJECTS,
     },
   ]
 

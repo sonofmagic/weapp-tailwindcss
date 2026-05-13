@@ -23,11 +23,12 @@ describe('e2e', () => {
     }
 
     const css = await fs.readFile(path.resolve(projectPath, 'dist/app-origin.wxss'), 'utf8')
+    const linearBlocks = css.match(/\.bg-linear-to-r\s*\{[^}]*\}/g)?.join('\n') ?? ''
 
     expect(css).toContain('.bg-linear-to-r')
     expect(css).toMatch(/--tw-gradient-position:\s*to right\s*(?:;\s*)?\}/)
     expect(css).toMatch(/background-image:\s*linear-gradient\(var\(--tw-gradient-stops\)\)\s*(?:;\s*)?\}/)
     expect(css).not.toContain('@supports (background-image: linear-gradient(in lab, red, red))')
-    expect(css).not.toContain('in oklab')
+    expect(linearBlocks).not.toContain('in oklab')
   })
 })

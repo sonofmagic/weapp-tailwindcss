@@ -32,16 +32,13 @@ const config = icebreaker(
       '**/.agents/**',
       '.codex/**',
       'skills/**',
-      // 忽略 apps 中生成的 CSS 和类型声明
+      // 忽略 workspace 中生成的 CSS 和类型声明
       'apps/**/result.css',
       'apps/**/result.json',
       'apps/**/transformed.css',
       'apps/**/env.d.ts',
-      'apps/tailwindcss-weapp/src/env.d.ts',
+      'demo/**/env.d.ts',
       '**/*.d.ts',
-      // 忽略 apps 中的 demo 配置文件（非核心代码）
-      'apps/taro-webpack-tailwindcss-v4/**',
-      'apps/vite-native-ts-skyline/**',
     ],
     pnpm: false,
   },

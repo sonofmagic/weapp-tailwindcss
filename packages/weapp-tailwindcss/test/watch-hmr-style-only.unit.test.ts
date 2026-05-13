@@ -32,10 +32,10 @@ function createOptions(): CliOptions {
 function createWatchCase(sourceFile: string): WatchCase {
   return {
     name: 'taro-webpack',
-    label: 'apps/taro-webpack-tailwindcss-v4',
-    project: 'apps/taro-webpack-tailwindcss-v4',
+    label: 'demo/taro-webpack-tailwindcss-v4',
+    project: 'demo/taro-webpack-tailwindcss-v4',
     group: 'apps',
-    cwd: '/repo/apps/taro-webpack-tailwindcss-v4',
+    cwd: '/repo/demo/taro-webpack-tailwindcss-v4',
     devScript: 'dev:weapp2',
     outputWxml: '/repo/dist/pages/index/index.wxml',
     outputJs: '/repo/dist/pages/index/index.js',
@@ -129,7 +129,7 @@ describe('watch-hmr style-only helpers', () => {
     const { runStyleOnlyCase } = await import('../../../tools/weapp-tailwindcss-scripts/src/watch-hmr-regression/style-only')
 
     await expect(runStyleOnlyCase(watchCase, createOptions())).rejects.toThrow(
-      'style hot update failed\n[apps/taro-webpack-tailwindcss-v4] recent watch logs:\ncaptured watch logs',
+      'style hot update failed\n[demo/taro-webpack-tailwindcss-v4] recent watch logs:\ncaptured watch logs',
     )
     expect(session.stop).toHaveBeenCalledTimes(1)
     expect(await readFile(sourceFile, 'utf8')).toBe('.anchor {\n  color: inherit;\n}\n')

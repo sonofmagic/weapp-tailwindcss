@@ -1,27 +1,20 @@
 import type { ChildProcessWithoutNullStreams } from 'node:child_process'
 
-export type WatchProjectGroup = 'demo' | 'apps'
+export type WatchProjectGroup = 'demo'
 export type ConcreteWatchCaseName
-  = | 'taro'
-    | 'mpx'
-    | 'gulp-app'
-    | 'weapp-vite'
-    | 'uni-app-vue3-vite'
-    | 'uni-app-tailwindcss-v4'
-    | 'uni-app-tailwindcss-v5'
+  = | 'gulp-tailwindcss-v3'
+    | 'gulp-tailwindcss-v4'
+    | 'mpx-tailwindcss-v3'
     | 'mpx-tailwindcss-v4'
-    | 'mpx-tailwindcss-v5'
-    | 'taro-vite-tailwindcss-v4'
-    | 'taro-vite-tailwindcss-v5'
-    | 'taro-app-vite'
+    | 'taro-webpack-tailwindcss-v3'
     | 'taro-webpack-tailwindcss-v4'
-    | 'taro-vue3-app'
-    | 'taro-webpack'
-    | 'vite-native'
-    | 'vite-native-skyline'
-    | 'vite-native-ts'
-    | 'vite-native-ts-skyline'
-export type WatchCaseName = ConcreteWatchCaseName | 'both' | 'all' | 'demo' | 'apps'
+    | 'taro-vite-tailwindcss-v3'
+    | 'taro-vite-tailwindcss-v4'
+    | 'uni-app-vite-tailwindcss-v3'
+    | 'uni-app-vite-tailwindcss-v4'
+    | 'weapp-vite-tailwindcss-v3'
+    | 'weapp-vite-tailwindcss-v4'
+export type WatchCaseName = ConcreteWatchCaseName | 'both' | 'all' | 'demo'
 export const MUTATION_ROUND_NAMES = ['baseline-arbitrary', 'complex-corpus', 'hex-arbitrary', 'issue33-arbitrary'] as const
 export type MutationRoundName = typeof MUTATION_ROUND_NAMES[number]
 export type MutationKind = 'template' | 'script' | 'style' | 'content'
@@ -300,26 +293,18 @@ export const DEFAULT_STYLE_APPLY_VALIDATION: StyleApplyValidation = {
 }
 
 export const STYLE_APPLY_UNSUPPORTED_CASES = new Set<ConcreteWatchCaseName>([
-  'uni-app-tailwindcss-v4',
+  'uni-app-vite-tailwindcss-v4',
   'taro-vite-tailwindcss-v4',
-  'taro-vite-tailwindcss-v5',
   'taro-webpack-tailwindcss-v4',
-  'taro-webpack',
 ])
 
 export const STYLE_FUNCTION_UNSUPPORTED_CASES = new Set<ConcreteWatchCaseName>([
-  'uni-app-tailwindcss-v5',
-  'mpx-tailwindcss-v5',
-  'taro-vite-tailwindcss-v5',
-  'vite-native-skyline',
-  'vite-native-ts-skyline',
 ])
 
 export const STYLE_REFERENCE_REQUIRED_CASES = new Set<ConcreteWatchCaseName>([
-  'uni-app-tailwindcss-v4',
+  'uni-app-vite-tailwindcss-v4',
   'mpx-tailwindcss-v4',
   'taro-vite-tailwindcss-v4',
   'taro-webpack-tailwindcss-v4',
-  'taro-webpack',
-  'vite-native',
+  'weapp-vite-tailwindcss-v4',
 ])

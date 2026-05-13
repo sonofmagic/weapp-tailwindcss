@@ -12,7 +12,6 @@ interface DemoCase {
   marker: string
   closingTag: string
   appType?: AppType
-  resolveOptions?: (projectRoot: string) => Partial<UserDefinedOptions>
   makeSnippet: (marker: string) => string
 }
 
@@ -20,103 +19,26 @@ const demoRoot = path.resolve(__dirname, '../../../../demo')
 
 const cases: DemoCase[] = [
   {
-    title: 'uni-app-tailwindcss-v4',
-    project: 'uni-app-tailwindcss-v4',
-    entry: 'src/pages/index/index.vue',
-    marker: 'text-[#aa1102]',
-    closingTag: '</template>',
-    appType: 'uni-app-vite',
-    resolveOptions: root => ({
-      cssEntries: [
-        path.resolve(root, 'src/main.css'),
-        path.resolve(root, 'src/common.css'),
-      ],
-    }),
+    title: 'gulp-tailwindcss-v3',
+    project: 'gulp-tailwindcss-v3',
+    entry: 'src/pages/index/index.wxml',
+    marker: 'text-[#aa1116]',
+    closingTag: '</view>',
+    appType: 'native',
     makeSnippet: marker => `  <view class="${marker}">hmr-test</view>\n`,
   },
   {
-    title: 'uni-app-vue3-vite',
-    project: 'uni-app-vue3-vite',
-    entry: 'src/pages/index/index.vue',
-    marker: 'text-[#0f835c]',
-    closingTag: '</template>',
-    appType: 'uni-app-vite',
+    title: 'gulp-tailwindcss-v4',
+    project: 'gulp-tailwindcss-v4',
+    entry: 'src/pages/index/index.wxml',
+    marker: 'text-[#aa1117]',
+    closingTag: '</view>',
+    appType: 'native',
     makeSnippet: marker => `  <view class="${marker}">hmr-test</view>\n`,
   },
   {
-    title: 'uni-app-x-hbuilderx-tailwindcss4',
-    project: 'uni-app-x-hbuilderx-tailwindcss4',
-    entry: 'pages/index/index.uvue',
-    marker: 'text-[#0f835d]',
-    closingTag: '</template>',
-    appType: 'uni-app-x',
-    resolveOptions: root => ({
-      uniAppX: true,
-      cssEntries: [path.resolve(root, 'main.css')],
-    }),
-    makeSnippet: marker => `\t<text class="${marker}">hmr-test</text>\n`,
-  },
-  {
-    title: 'uni-app-x-hbuilderx-tailwindcss3',
-    project: 'uni-app-x-hbuilderx-tailwindcss3',
-    entry: 'pages/index/index.uvue',
-    marker: 'text-[#0f835e]',
-    closingTag: '</template>',
-    appType: 'uni-app-x',
-    resolveOptions: root => ({
-      uniAppX: true,
-      tailwindcssBasedir: root,
-    }),
-    makeSnippet: marker => `\t<text class="${marker}">hmr-test</text>\n`,
-  },
-  {
-    title: 'taro-app',
-    project: 'taro-app',
-    entry: 'src/pages/index/index.tsx',
-    marker: 'text-[#aa1107]',
-    closingTag: '</>',
-    appType: 'taro',
-    makeSnippet: marker => `      <View className='${marker}'>hmr-test</View>\n`,
-  },
-  {
-    title: 'taro-app-vite',
-    project: 'taro-app-vite',
-    entry: 'src/pages/index/index.tsx',
-    marker: 'text-[#aa1108]',
-    closingTag: '</View>',
-    appType: 'taro',
-    makeSnippet: marker => `      <View className='${marker}'>hmr-test</View>\n`,
-  },
-  {
-    title: 'taro-vite-tailwindcss-v4',
-    project: 'taro-vite-tailwindcss-v4',
-    entry: 'src/pages/index/index.tsx',
-    marker: 'text-[#aa1109]',
-    closingTag: '</View>',
-    appType: 'taro',
-    makeSnippet: marker => `      <View className='${marker}'>hmr-test</View>\n`,
-  },
-  {
-    title: 'taro-vue3-app',
-    project: 'taro-vue3-app',
-    entry: 'src/pages/index/index.vue',
-    marker: 'text-[#aa1110]',
-    closingTag: '</template>',
-    appType: 'taro',
-    makeSnippet: marker => `  <view class="${marker}">hmr-test</view>\n`,
-  },
-  {
-    title: 'taro-webpack-tailwindcss-v4',
-    project: 'taro-webpack-tailwindcss-v4',
-    entry: 'src/pages/index/index.tsx',
-    marker: 'text-[#aa1111]',
-    closingTag: '</>',
-    appType: 'taro',
-    makeSnippet: marker => `      <View className='${marker}'>hmr-test</View>\n`,
-  },
-  {
-    title: 'mpx-app',
-    project: 'mpx-app',
+    title: 'mpx-tailwindcss-v3',
+    project: 'mpx-tailwindcss-v3',
     entry: 'src/pages/index.mpx',
     marker: 'text-[#aa1112]',
     closingTag: '</template>',
@@ -133,17 +55,62 @@ const cases: DemoCase[] = [
     makeSnippet: marker => `  <view class="${marker}">hmr-test</view>\n`,
   },
   {
-    title: 'native',
-    project: 'native',
-    entry: 'pages/index/index.wxml',
-    marker: 'text-[#aa1114]',
-    closingTag: '</scroll-view>',
-    appType: 'native',
-    makeSnippet: marker => `    <view class="${marker}">hmr-test</view>\n`,
+    title: 'taro-webpack-tailwindcss-v3',
+    project: 'taro-webpack-tailwindcss-v3',
+    entry: 'src/pages/index/index.tsx',
+    marker: 'text-[#aa1107]',
+    closingTag: '</>',
+    appType: 'taro',
+    makeSnippet: marker => `      <View className='${marker}'>hmr-test</View>\n`,
   },
   {
-    title: 'native-ts',
-    project: 'native-ts',
+    title: 'taro-webpack-tailwindcss-v4',
+    project: 'taro-webpack-tailwindcss-v4',
+    entry: 'src/pages/index/index.tsx',
+    marker: 'text-[#aa1111]',
+    closingTag: '</>',
+    appType: 'taro',
+    makeSnippet: marker => `      <View className='${marker}'>hmr-test</View>\n`,
+  },
+  {
+    title: 'taro-vite-tailwindcss-v3',
+    project: 'taro-vite-tailwindcss-v3',
+    entry: 'src/pages/index/index.tsx',
+    marker: 'text-[#aa1108]',
+    closingTag: '</View>',
+    appType: 'taro',
+    makeSnippet: marker => `      <View className='${marker}'>hmr-test</View>\n`,
+  },
+  {
+    title: 'taro-vite-tailwindcss-v4',
+    project: 'taro-vite-tailwindcss-v4',
+    entry: 'src/pages/index/index.tsx',
+    marker: 'text-[#aa1109]',
+    closingTag: '</View>',
+    appType: 'taro',
+    makeSnippet: marker => `      <View className='${marker}'>hmr-test</View>\n`,
+  },
+  {
+    title: 'uni-app-vite-tailwindcss-v3',
+    project: 'uni-app-vite-tailwindcss-v3',
+    entry: 'src/pages/index/index.vue',
+    marker: 'text-[#0f835c]',
+    closingTag: '</template>',
+    appType: 'uni-app-vite',
+    makeSnippet: marker => `  <view class="${marker}">hmr-test</view>\n`,
+  },
+  {
+    title: 'uni-app-vite-tailwindcss-v4',
+    project: 'uni-app-vite-tailwindcss-v4',
+    entry: 'src/pages/index/index.vue',
+    marker: 'text-[#aa1102]',
+    closingTag: '</template>',
+    appType: 'uni-app-vite',
+    makeSnippet: marker => `  <view class="${marker}">hmr-test</view>\n`,
+  },
+  {
+    title: 'weapp-vite-tailwindcss-v3',
+    project: 'weapp-vite-tailwindcss-v3',
     entry: 'miniprogram/pages/index/index.wxml',
     marker: 'text-[#aa1115]',
     closingTag: '</view>',
@@ -151,13 +118,13 @@ const cases: DemoCase[] = [
     makeSnippet: marker => `  <view class="${marker}">hmr-test</view>\n`,
   },
   {
-    title: 'gulp-app',
-    project: 'gulp-app',
-    entry: 'src/pages/index/index.wxml',
-    marker: 'text-[#aa1116]',
-    closingTag: '</view>',
+    title: 'weapp-vite-tailwindcss-v4',
+    project: 'weapp-vite-tailwindcss-v4',
+    entry: 'pages/index/index.wxml',
+    marker: 'text-[#aa1118]',
+    closingTag: '</scroll-view>',
     appType: 'native',
-    makeSnippet: marker => `  <view class="${marker}">hmr-test</view>\n`,
+    makeSnippet: marker => `    <view class="${marker}">hmr-test</view>\n`,
   },
 ]
 
@@ -180,11 +147,9 @@ async function runHotUpdateCase(testCase: DemoCase) {
     throw new Error(`expected ${testCase.marker} to be absent before the test`)
   }
 
-  const extraOptions = testCase.resolveOptions?.(projectRoot) ?? {}
   const options: UserDefinedOptions = {
     tailwindcssBasedir: projectRoot,
     ...(testCase.appType ? { appType: testCase.appType } : {}),
-    ...extraOptions,
   }
 
   const ctx = getCompilerContext(options)

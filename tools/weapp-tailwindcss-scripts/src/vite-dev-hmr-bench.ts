@@ -131,7 +131,7 @@ function resolveOptions(): BenchCliOptions {
   const argv = process.argv.slice(2)
   const mode = (parseArg('--mode', argv) ?? 'both') as BenchCliOptions['mode']
   const baseCwd = resolveBaseCwd()
-  const cwd = resolvePathArg(baseCwd, parseArg('--cwd', argv), 'demo/uni-app-vue3-vite')
+  const cwd = resolvePathArg(baseCwd, parseArg('--cwd', argv), 'demo/uni-app-vite-tailwindcss-v3')
   const output = resolvePathArg(baseCwd, parseArg('--output', argv), 'benchmark/vite-adapter/vite-dev-hmr-report.json')
 
   return {

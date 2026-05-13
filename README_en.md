@@ -147,7 +147,7 @@ If the key platform of your project is `app`, it is recommended to use the `hbui
 
 #### Native applet development template
 
-[weapp-tailwindcss-gulp-template(gulp打包)](https://github.com/sonofmagic/weapp-tailwindcss/tree/main/demo/gulp-app)
+[weapp-tailwindcss-gulp-template(gulp打包)](https://github.com/sonofmagic/weapp-tailwindcss/tree/main/demo/gulp-tailwindcss-v3)
 
 ### tailwindcss plugin
 

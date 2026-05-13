@@ -1,5 +1,4 @@
 import { describe, expect, it } from 'vitest'
-import { buildAppCases } from '../../../tools/weapp-tailwindcss-scripts/src/watch-hmr-regression/cases/apps'
 import { buildDemoBaseCases } from '../../../tools/weapp-tailwindcss-scripts/src/watch-hmr-regression/cases/demo/base'
 import { buildDemoExtendedCases } from '../../../tools/weapp-tailwindcss-scripts/src/watch-hmr-regression/cases/demo/extended'
 import {
@@ -72,7 +71,7 @@ const classArray = [
 
   it('enables comment-carrier mutation for the weapp-vite demo case', () => {
     const cases = buildDemoBaseCases('/virtual/workspace')
-    const weappViteCase = cases.find(item => item.name === 'weapp-vite')
+    const weappViteCase = cases.find(item => item.name === 'weapp-vite-tailwindcss-v3')
 
     expect(weappViteCase?.scriptMutation.mutateCommentCarrier).toBeTypeOf('function')
   })
@@ -84,9 +83,9 @@ const classArray = [
     expect(taroViteCase?.scriptMutation.mutateCommentCarrier).toBeTypeOf('function')
   })
 
-  it('enables comment-carrier mutation for the taro-app-vite demo case', () => {
+  it('enables comment-carrier mutation for the taro-vite-tailwindcss-v3 demo case', () => {
     const cases = buildDemoExtendedCases('/virtual/workspace')
-    const taroAppViteCase = cases.find(item => item.name === 'taro-app-vite')
+    const taroAppViteCase = cases.find(item => item.name === 'taro-vite-tailwindcss-v3')
 
     expect(taroAppViteCase?.scriptMutation.mutateCommentCarrier).toBeTypeOf('function')
   })
@@ -102,16 +101,15 @@ const classArray = [
     const baseCases = buildDemoBaseCases('/virtual/workspace')
     const extendedCases = buildDemoExtendedCases('/virtual/workspace')
 
-    expect(baseCases.find(item => item.name === 'mpx')?.scriptMutation.mutateCommentCarrier).toBeTypeOf('function')
-    expect(extendedCases.find(item => item.name === 'uni-app-vue3-vite')?.scriptMutation.mutateCommentCarrier).toBeTypeOf('function')
+    expect(baseCases.find(item => item.name === 'mpx-tailwindcss-v3')?.scriptMutation.mutateCommentCarrier).toBeTypeOf('function')
+    expect(extendedCases.find(item => item.name === 'uni-app-vite-tailwindcss-v3')?.scriptMutation.mutateCommentCarrier).toBeTypeOf('function')
   })
 
-  it('enables comment-carrier mutation for the new v4 demo and app cases', () => {
+  it('enables comment-carrier mutation for the v4 demo cases', () => {
+    const baseCases = buildDemoBaseCases('/virtual/workspace')
     const extendedCases = buildDemoExtendedCases('/virtual/workspace')
-    const appCases = buildAppCases('/virtual/workspace')
 
     expect(extendedCases.find(item => item.name === 'mpx-tailwindcss-v4')?.scriptMutation.mutateCommentCarrier).toBeTypeOf('function')
-    expect(appCases.find(item => item.name === 'vite-native')?.scriptMutation.mutateCommentCarrier).toBeTypeOf('function')
-    expect(appCases.find(item => item.name === 'vite-native-skyline')?.scriptMutation.mutateCommentCarrier).toBeTypeOf('function')
+    expect(baseCases.find(item => item.name === 'weapp-vite-tailwindcss-v4')?.scriptMutation.mutateCommentCarrier).toBeTypeOf('function')
   })
 })

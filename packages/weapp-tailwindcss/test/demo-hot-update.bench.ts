@@ -8,8 +8,8 @@ const __filename = fileURLToPath(import.meta.url)
 const __dirname = path.dirname(__filename)
 const repoRoot = path.resolve(__dirname, '../../..')
 
-const taroRoot = path.resolve(repoRoot, 'demo/taro-app')
-const uniRoot = path.resolve(repoRoot, 'demo/uni-app-vue3-vite')
+const taroRoot = path.resolve(repoRoot, 'demo/taro-webpack-tailwindcss-v3')
+const uniRoot = path.resolve(repoRoot, 'demo/uni-app-vite-tailwindcss-v3')
 
 const taroCssPath = path.resolve(taroRoot, 'dist/app.wxss')
 const taroJsPath = path.resolve(taroRoot, 'dist/pages/index/index.js')
@@ -55,7 +55,7 @@ function createHotWxmlSource(source: string, prefix: string, index: number) {
 
 describe('demo hot-update benchmarks', () => {
   bench(
-    'taro-app hot update (js + wxml, comment-only changes)',
+    'taro-webpack-tailwindcss-v3 hot update (js + wxml, comment-only changes)',
     async () => {
       const iteration = taroHotCounter++
       const ctx = await taroContextPromise

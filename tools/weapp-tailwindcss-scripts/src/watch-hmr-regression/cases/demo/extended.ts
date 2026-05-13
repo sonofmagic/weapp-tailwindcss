@@ -33,25 +33,25 @@ const taroViteWatchEnv = {
 
 export function buildDemoExtendedCases(baseCwd: string): WatchCase[] {
   const uniAppVue3ViteCase: WatchCase = {
-    name: 'uni-app-vue3-vite',
-    label: 'demo/uni-app-vue3-vite',
-    project: 'demo/uni-app-vue3-vite',
+    name: 'uni-app-vite-tailwindcss-v3',
+    label: 'demo/uni-app-vite-tailwindcss-v3',
+    project: 'demo/uni-app-vite-tailwindcss-v3',
     group: 'demo',
     requireStableGlobalStyleOnSameClassLiteral: false,
-    cwd: path.resolve(baseCwd, 'demo/uni-app-vue3-vite'),
+    cwd: path.resolve(baseCwd, 'demo/uni-app-vite-tailwindcss-v3'),
     devScript: 'dev:e2e-watch',
-    outputWxml: path.resolve(baseCwd, 'demo/uni-app-vue3-vite/dist/build/mp-weixin/pages/index/index.wxml'),
-    outputJs: path.resolve(baseCwd, 'demo/uni-app-vue3-vite/dist/build/mp-weixin/pages/index/index.js'),
+    outputWxml: path.resolve(baseCwd, 'demo/uni-app-vite-tailwindcss-v3/dist/build/mp-weixin/pages/index/index.wxml'),
+    outputJs: path.resolve(baseCwd, 'demo/uni-app-vite-tailwindcss-v3/dist/build/mp-weixin/pages/index/index.js'),
     outputStyleCandidates: [
-      path.resolve(baseCwd, 'demo/uni-app-vue3-vite/dist/build/mp-weixin/pages/index/index.wxss'),
-      path.resolve(baseCwd, 'demo/uni-app-vue3-vite/dist/build/mp-weixin/app.wxss'),
+      path.resolve(baseCwd, 'demo/uni-app-vite-tailwindcss-v3/dist/build/mp-weixin/pages/index/index.wxss'),
+      path.resolve(baseCwd, 'demo/uni-app-vite-tailwindcss-v3/dist/build/mp-weixin/app.wxss'),
     ],
     globalStyleCandidates: [
-      path.resolve(baseCwd, 'demo/uni-app-vue3-vite/dist/build/mp-weixin/pages/index/index.wxss'),
-      path.resolve(baseCwd, 'demo/uni-app-vue3-vite/dist/build/mp-weixin/app.wxss'),
+      path.resolve(baseCwd, 'demo/uni-app-vite-tailwindcss-v3/dist/build/mp-weixin/pages/index/index.wxss'),
+      path.resolve(baseCwd, 'demo/uni-app-vite-tailwindcss-v3/dist/build/mp-weixin/app.wxss'),
     ],
     templateMutation: {
-      sourceFile: path.resolve(baseCwd, 'demo/uni-app-vue3-vite/src/pages/index/index.vue'),
+      sourceFile: path.resolve(baseCwd, 'demo/uni-app-vite-tailwindcss-v3/src/pages/index/index.vue'),
       verifyEscapedIn: ['wxml'],
       verifyClassLiteralIn: [],
       mutate(source, payload) {
@@ -60,7 +60,7 @@ export function buildDemoExtendedCases(baseCwd: string): WatchCase[] {
       },
     },
     scriptMutation: {
-      sourceFile: path.resolve(baseCwd, 'demo/uni-app-vue3-vite/src/pages/index/index.vue'),
+      sourceFile: path.resolve(baseCwd, 'demo/uni-app-vite-tailwindcss-v3/src/pages/index/index.vue'),
       verifyEscapedIn: ['js'],
       verifyClassLiteralIn: ['js'],
       mutate(source, payload) {
@@ -79,7 +79,7 @@ export function buildDemoExtendedCases(baseCwd: string): WatchCase[] {
       },
     },
     contentMutation: {
-      sourceFile: path.resolve(baseCwd, 'demo/uni-app-vue3-vite/src/pages/index/index.vue'),
+      sourceFile: path.resolve(baseCwd, 'demo/uni-app-vite-tailwindcss-v3/src/pages/index/index.vue'),
       verifyEscapedIn: ['js'],
       verifyClassLiteralIn: ['js'],
       forbidBgHexTruncationIn: ['js'],
@@ -93,7 +93,7 @@ export function buildDemoExtendedCases(baseCwd: string): WatchCase[] {
       },
     },
     styleMutation: {
-      sourceFile: path.resolve(baseCwd, 'demo/uni-app-vue3-vite/src/pages/index/index.vue'),
+      sourceFile: path.resolve(baseCwd, 'demo/uni-app-vite-tailwindcss-v3/src/pages/index/index.vue'),
       mutate(source, payload) {
         return mutateSfcStyleBlock(source, payload)
       },
@@ -101,22 +101,22 @@ export function buildDemoExtendedCases(baseCwd: string): WatchCase[] {
   }
 
   const uniAppTailwindcssV4Case: WatchCase = {
-    name: 'uni-app-tailwindcss-v4',
-    label: 'demo/uni-app-tailwindcss-v4',
-    project: 'demo/uni-app-tailwindcss-v4',
+    name: 'uni-app-vite-tailwindcss-v4',
+    label: 'demo/uni-app-vite-tailwindcss-v4',
+    project: 'demo/uni-app-vite-tailwindcss-v4',
     group: 'demo',
-    cwd: path.resolve(baseCwd, 'demo/uni-app-tailwindcss-v4'),
+    cwd: path.resolve(baseCwd, 'demo/uni-app-vite-tailwindcss-v4'),
     devScript: 'dev:e2e-watch',
-    outputWxml: path.resolve(baseCwd, 'demo/uni-app-tailwindcss-v4/dist/build/mp-weixin/pages/index/index.wxml'),
-    outputJs: path.resolve(baseCwd, 'demo/uni-app-tailwindcss-v4/dist/build/mp-weixin/pages/index/index.js'),
+    outputWxml: path.resolve(baseCwd, 'demo/uni-app-vite-tailwindcss-v4/dist/build/mp-weixin/pages/index/index.wxml'),
+    outputJs: path.resolve(baseCwd, 'demo/uni-app-vite-tailwindcss-v4/dist/build/mp-weixin/pages/index/index.js'),
     outputStyleCandidates: [
-      path.resolve(baseCwd, 'demo/uni-app-tailwindcss-v4/dist/build/mp-weixin/app.wxss'),
+      path.resolve(baseCwd, 'demo/uni-app-vite-tailwindcss-v4/dist/build/mp-weixin/app.wxss'),
     ],
     globalStyleCandidates: [
-      path.resolve(baseCwd, 'demo/uni-app-tailwindcss-v4/dist/build/mp-weixin/app.wxss'),
+      path.resolve(baseCwd, 'demo/uni-app-vite-tailwindcss-v4/dist/build/mp-weixin/app.wxss'),
     ],
     contentMutation: {
-      sourceFile: path.resolve(baseCwd, 'demo/uni-app-tailwindcss-v4/src/pages/index/index.vue'),
+      sourceFile: path.resolve(baseCwd, 'demo/uni-app-vite-tailwindcss-v4/src/pages/index/index.vue'),
       verifyEscapedIn: ['js'],
       verifyClassLiteralIn: ['js'],
       forbidBgHexTruncationIn: ['js'],
@@ -126,12 +126,12 @@ export function buildDemoExtendedCases(baseCwd: string): WatchCase[] {
           source,
           'const className = ref(\'bg-[#0000ff] text-[45rpx] text-white\')',
           `const className = ref('${payload.classLiteral}')`,
-          'uni-app-tailwindcss-v4 script class anchor',
+          'uni-app-vite-tailwindcss-v4 script class anchor',
         )
       },
     },
     templateMutation: {
-      sourceFile: path.resolve(baseCwd, 'demo/uni-app-tailwindcss-v4/src/pages/index/index.vue'),
+      sourceFile: path.resolve(baseCwd, 'demo/uni-app-vite-tailwindcss-v4/src/pages/index/index.vue'),
       verifyEscapedIn: ['wxml'],
       verifyClassLiteralIn: [],
       mutate(source, payload) {
@@ -140,7 +140,7 @@ export function buildDemoExtendedCases(baseCwd: string): WatchCase[] {
       },
     },
     scriptMutation: {
-      sourceFile: path.resolve(baseCwd, 'demo/uni-app-tailwindcss-v4/src/pages/index/index.vue'),
+      sourceFile: path.resolve(baseCwd, 'demo/uni-app-vite-tailwindcss-v4/src/pages/index/index.vue'),
       verifyEscapedIn: ['js'],
       verifyClassLiteralIn: ['js'],
       roundConfigs: buildHexScriptRoundConfigs(),
@@ -153,68 +153,7 @@ export function buildDemoExtendedCases(baseCwd: string): WatchCase[] {
       },
     },
     styleMutation: {
-      sourceFile: path.resolve(baseCwd, 'demo/uni-app-tailwindcss-v4/src/main.css'),
-      mutate(source, payload) {
-        return appendTrailingSnippet(source, createStyleRuleSnippet(payload))
-      },
-    },
-  }
-
-  const uniAppTailwindcssV5Case: WatchCase = {
-    name: 'uni-app-tailwindcss-v5',
-    label: 'demo/uni-app-tailwindcss-v5',
-    project: 'demo/uni-app-tailwindcss-v5',
-    group: 'demo',
-    cwd: path.resolve(baseCwd, 'demo/uni-app-tailwindcss-v5'),
-    devScript: 'dev:e2e-watch',
-    outputWxml: path.resolve(baseCwd, 'demo/uni-app-tailwindcss-v5/dist/build/mp-weixin/pages/index/index.wxml'),
-    outputJs: path.resolve(baseCwd, 'demo/uni-app-tailwindcss-v5/dist/build/mp-weixin/pages/index/index.js'),
-    outputStyleCandidates: [
-      path.resolve(baseCwd, 'demo/uni-app-tailwindcss-v5/dist/build/mp-weixin/app.wxss'),
-    ],
-    globalStyleCandidates: [
-      path.resolve(baseCwd, 'demo/uni-app-tailwindcss-v5/dist/build/mp-weixin/app.wxss'),
-    ],
-    contentMutation: {
-      sourceFile: path.resolve(baseCwd, 'demo/uni-app-tailwindcss-v5/src/pages/index/index.vue'),
-      verifyEscapedIn: ['js'],
-      verifyClassLiteralIn: ['js'],
-      forbidBgHexTruncationIn: ['js'],
-      roundConfigs: buildIssue33HighRiskRoundConfigs(),
-      mutate(source, payload) {
-        return replaceExactSnippet(
-          source,
-          'const className = ref(twMerge(\'bg-[#0000ff] text-[45rpx]\', \'text-white rounded-lg p-4\'))',
-          `const className = ref(twMerge('${payload.classLiteral}', 'text-white rounded-lg p-4'))`,
-          'uni-app-tailwindcss-v5 script class anchor',
-        )
-      },
-    },
-    templateMutation: {
-      sourceFile: path.resolve(baseCwd, 'demo/uni-app-tailwindcss-v5/src/pages/index/index.vue'),
-      verifyEscapedIn: ['wxml'],
-      verifyClassLiteralIn: [],
-      mutate(source, payload) {
-        const snippet = `    <view class="${payload.classLiteral}">${payload.marker}-template</view>`
-        return insertIntoVueTemplateRoot(source, snippet)
-      },
-    },
-    scriptMutation: {
-      sourceFile: path.resolve(baseCwd, 'demo/uni-app-tailwindcss-v5/src/pages/index/index.vue'),
-      verifyEscapedIn: ['js'],
-      verifyClassLiteralIn: ['js'],
-      roundConfigs: buildHexScriptRoundConfigs(),
-      mutate(source, payload) {
-        return replaceExactSnippet(
-          source,
-          'const className = ref(twMerge(\'bg-[#0000ff] text-[45rpx]\', \'text-white rounded-lg p-4\'))',
-          `const className = ref(twMerge('bg-[#0000ff] text-[45rpx] ${payload.classLiteral} ${payload.marker}', 'text-white rounded-lg p-4'))`,
-          'uni-app-tailwindcss-v5 script ref twMerge anchor',
-        )
-      },
-    },
-    styleMutation: {
-      sourceFile: path.resolve(baseCwd, 'demo/uni-app-tailwindcss-v5/src/main.css'),
+      sourceFile: path.resolve(baseCwd, 'demo/uni-app-vite-tailwindcss-v4/src/main.css'),
       mutate(source, payload) {
         return appendTrailingSnippet(source, createStyleRuleSnippet(payload))
       },
@@ -278,69 +217,6 @@ export function buildDemoExtendedCases(baseCwd: string): WatchCase[] {
     },
     styleMutation: {
       sourceFile: path.resolve(baseCwd, 'demo/mpx-tailwindcss-v4/src/app.css'),
-      mutate(source, payload) {
-        return appendTrailingSnippet(source, createStyleRuleSnippet(payload))
-      },
-    },
-  }
-
-  const mpxTailwindcssV5Case: WatchCase = {
-    name: 'mpx-tailwindcss-v5',
-    label: 'demo/mpx-tailwindcss-v5',
-    project: 'demo/mpx-tailwindcss-v5',
-    group: 'demo',
-    cwd: path.resolve(baseCwd, 'demo/mpx-tailwindcss-v5'),
-    devScript: 'dev',
-    skipStyleMutation: true,
-    outputWxml: path.resolve(baseCwd, 'demo/mpx-tailwindcss-v5/dist/wx/custom-tab-bar/index.wxml'),
-    outputJs: path.resolve(baseCwd, 'demo/mpx-tailwindcss-v5/dist/wx/custom-tab-bar/index.js'),
-    outputStyleCandidates: [
-      path.resolve(baseCwd, 'demo/mpx-tailwindcss-v5/dist/wx/custom-tab-bar/index.wxss'),
-      path.resolve(baseCwd, 'demo/mpx-tailwindcss-v5/dist/wx/styles/app*.wxss'),
-      path.resolve(baseCwd, 'demo/mpx-tailwindcss-v5/dist/wx/styles/index*.wxss'),
-    ],
-    globalStyleCandidates: [
-      path.resolve(baseCwd, 'demo/mpx-tailwindcss-v5/dist/wx/styles/app*.wxss'),
-      path.resolve(baseCwd, 'demo/mpx-tailwindcss-v5/dist/wx/styles/index*.wxss'),
-    ],
-    contentMutation: {
-      sourceFile: path.resolve(baseCwd, 'demo/mpx-tailwindcss-v5/src/custom-tab-bar/index.mpx'),
-      verifyEscapedIn: ['js'],
-      verifyClassLiteralIn: ['js'],
-      forbidBgHexTruncationIn: ['js'],
-      roundConfigs: buildIssue33HighRiskRoundConfigs(),
-      mutate(source, payload) {
-        return replaceExactSnippet(
-          source,
-          '    clsnm: \'bg-[#010101] active:bg-[#989898]\'',
-          `    clsnm: '${payload.classLiteral}'`,
-          'mpx-tailwindcss-v5 script class anchor',
-        )
-      },
-    },
-    templateMutation: {
-      sourceFile: path.resolve(baseCwd, 'demo/mpx-tailwindcss-v5/src/custom-tab-bar/index.mpx'),
-      verifyEscapedIn: ['wxml'],
-      verifyClassLiteralIn: [],
-      mutate(source, payload) {
-        const snippet = `  <view class="${payload.classLiteral}">${payload.marker}-template</view>`
-        return insertBeforeClosingTag(source, '</template>', snippet)
-      },
-    },
-    scriptMutation: {
-      sourceFile: path.resolve(baseCwd, 'demo/mpx-tailwindcss-v5/src/custom-tab-bar/index.mpx'),
-      verifyEscapedIn: ['js'],
-      verifyClassLiteralIn: ['js'],
-      roundConfigs: buildHexScriptRoundConfigs(),
-      mutate(source, payload) {
-        return mutateScriptByDataAnchor(source, '  data: {', payload)
-      },
-      mutateCommentCarrier(source, payload) {
-        return mutateScriptByDataAnchorWithCommentCarrier(source, '  data: {', payload)
-      },
-    },
-    styleMutation: {
-      sourceFile: path.resolve(baseCwd, 'demo/mpx-tailwindcss-v5/src/app.css'),
       mutate(source, payload) {
         return appendTrailingSnippet(source, createStyleRuleSnippet(payload))
       },
@@ -412,90 +288,28 @@ export function buildDemoExtendedCases(baseCwd: string): WatchCase[] {
     },
   }
 
-  const taroViteTailwindcssV5Case: WatchCase = {
-    name: 'taro-vite-tailwindcss-v5',
-    label: 'demo/taro-vite-tailwindcss-v5',
-    project: 'demo/taro-vite-tailwindcss-v5',
-    group: 'demo',
-    initialMutationDelayMs: 5_000,
-    cwd: path.resolve(baseCwd, 'demo/taro-vite-tailwindcss-v5'),
-    devScript: 'dev:e2e-watch',
-    env: taroViteWatchEnv,
-    outputWxml: path.resolve(baseCwd, 'demo/taro-vite-tailwindcss-v5/dist/pages/index/index.wxml'),
-    outputJs: path.resolve(baseCwd, 'demo/taro-vite-tailwindcss-v5/dist/pages/index/index.js'),
-    outputStyleCandidates: [
-      path.resolve(baseCwd, 'demo/taro-vite-tailwindcss-v5/dist/pages/index/index.wxss'),
-      path.resolve(baseCwd, 'demo/taro-vite-tailwindcss-v5/dist/app-origin.wxss'),
-      path.resolve(baseCwd, 'demo/taro-vite-tailwindcss-v5/dist/app.wxss'),
-    ],
-    globalStyleCandidates: [
-      path.resolve(baseCwd, 'demo/taro-vite-tailwindcss-v5/dist/app-origin.wxss'),
-      path.resolve(baseCwd, 'demo/taro-vite-tailwindcss-v5/dist/app.wxss'),
-    ],
-    contentMutation: {
-      sourceFile: path.resolve(baseCwd, 'demo/taro-vite-tailwindcss-v5/src/pages/index/index.tsx'),
-      verifyEscapedIn: ['js'],
-      verifyClassLiteralIn: ['js'],
-      forbidBgHexTruncationIn: ['js'],
-      roundConfigs: buildIssue33HighRiskRoundConfigs(),
-      mutate(source, payload) {
-        return replaceExactSnippet(
-          source,
-          '  const stateClass = twMerge(\'bg-[#123456] text-[#c31d6b]\', \'text-white rounded-xl p-4\')',
-          `  const stateClass = twMerge('${payload.classLiteral}', 'text-white rounded-xl p-4')`,
-          'taro-vite-tailwindcss-v5 jsx class anchor',
-        )
-      },
-    },
-    templateMutation: {
-      sourceFile: path.resolve(baseCwd, 'demo/taro-vite-tailwindcss-v5/src/pages/index/index.tsx'),
-      verifyEscapedIn: ['js'],
-      verifyClassLiteralIn: ['js'],
-      roundConfigs: buildHexScriptRoundConfigs(),
-      mutate(source, payload) {
-        const snippet = `      <View className='${payload.classLiteral}'>${payload.marker}-template</View>`
-        return insertBeforeClosingTag(source, '    </View>', snippet)
-      },
-    },
-    scriptMutation: {
-      sourceFile: path.resolve(baseCwd, 'demo/taro-vite-tailwindcss-v5/src/pages/index/index.tsx'),
-      verifyEscapedIn: ['js'],
-      verifyClassLiteralIn: ['js'],
-      roundConfigs: buildHexScriptRoundConfigs(),
-      mutate(source, payload) {
-        return mutateTsxScriptByReturnAnchor(source, payload)
-      },
-    },
-    styleMutation: {
-      sourceFile: path.resolve(baseCwd, 'demo/taro-vite-tailwindcss-v5/src/pages/index/index.css'),
-      mutate(source, payload) {
-        return appendTrailingSnippet(source, createStyleRuleSnippet(payload))
-      },
-    },
-  }
-
   const taroAppViteCase: WatchCase = {
-    name: 'taro-app-vite',
-    label: 'demo/taro-app-vite',
-    project: 'demo/taro-app-vite',
+    name: 'taro-vite-tailwindcss-v3',
+    label: 'demo/taro-vite-tailwindcss-v3',
+    project: 'demo/taro-vite-tailwindcss-v3',
     group: 'demo',
     initialMutationDelayMs: 5_000,
-    cwd: path.resolve(baseCwd, 'demo/taro-app-vite'),
+    cwd: path.resolve(baseCwd, 'demo/taro-vite-tailwindcss-v3'),
     devScript: 'dev:e2e-watch',
     env: taroViteWatchEnv,
-    outputWxml: path.resolve(baseCwd, 'demo/taro-app-vite/dist/pages/index/index.wxml'),
-    outputJs: path.resolve(baseCwd, 'demo/taro-app-vite/dist/pages/index/index.js'),
+    outputWxml: path.resolve(baseCwd, 'demo/taro-vite-tailwindcss-v3/dist/pages/index/index.wxml'),
+    outputJs: path.resolve(baseCwd, 'demo/taro-vite-tailwindcss-v3/dist/pages/index/index.js'),
     outputStyleCandidates: [
-      path.resolve(baseCwd, 'demo/taro-app-vite/dist/pages/index/index.wxss'),
-      path.resolve(baseCwd, 'demo/taro-app-vite/dist/app-origin.wxss'),
-      path.resolve(baseCwd, 'demo/taro-app-vite/dist/app.wxss'),
+      path.resolve(baseCwd, 'demo/taro-vite-tailwindcss-v3/dist/pages/index/index.wxss'),
+      path.resolve(baseCwd, 'demo/taro-vite-tailwindcss-v3/dist/app-origin.wxss'),
+      path.resolve(baseCwd, 'demo/taro-vite-tailwindcss-v3/dist/app.wxss'),
     ],
     globalStyleCandidates: [
-      path.resolve(baseCwd, 'demo/taro-app-vite/dist/app-origin.wxss'),
-      path.resolve(baseCwd, 'demo/taro-app-vite/dist/app.wxss'),
+      path.resolve(baseCwd, 'demo/taro-vite-tailwindcss-v3/dist/app-origin.wxss'),
+      path.resolve(baseCwd, 'demo/taro-vite-tailwindcss-v3/dist/app.wxss'),
     ],
     contentMutation: {
-      sourceFile: path.resolve(baseCwd, 'demo/taro-app-vite/src/pages/index/index.tsx'),
+      sourceFile: path.resolve(baseCwd, 'demo/taro-vite-tailwindcss-v3/src/pages/index/index.tsx'),
       verifyEscapedIn: ['js'],
       verifyClassLiteralIn: ['js'],
       forbidBgHexTruncationIn: ['js'],
@@ -505,12 +319,12 @@ export function buildDemoExtendedCases(baseCwd: string): WatchCase[] {
           source,
           '      <View className=\'bg-[#89ab8d] flex flex-col\'>',
           `      <View className='${payload.classLiteral}'>`,
-          'taro-app-vite jsx class anchor',
+          'taro-vite-tailwindcss-v3 jsx class anchor',
         )
       },
     },
     templateMutation: {
-      sourceFile: path.resolve(baseCwd, 'demo/taro-app-vite/src/pages/index/index.tsx'),
+      sourceFile: path.resolve(baseCwd, 'demo/taro-vite-tailwindcss-v3/src/pages/index/index.tsx'),
       verifyEscapedIn: ['js'],
       verifyClassLiteralIn: ['js'],
       roundConfigs: buildHexScriptRoundConfigs(),
@@ -520,7 +334,7 @@ export function buildDemoExtendedCases(baseCwd: string): WatchCase[] {
       },
     },
     scriptMutation: {
-      sourceFile: path.resolve(baseCwd, 'demo/taro-app-vite/src/pages/index/index.tsx'),
+      sourceFile: path.resolve(baseCwd, 'demo/taro-vite-tailwindcss-v3/src/pages/index/index.tsx'),
       verifyEscapedIn: ['js'],
       verifyClassLiteralIn: ['js'],
       roundConfigs: buildHexScriptRoundConfigs(),
@@ -532,7 +346,7 @@ export function buildDemoExtendedCases(baseCwd: string): WatchCase[] {
       },
     },
     styleMutation: {
-      sourceFile: path.resolve(baseCwd, 'demo/taro-app-vite/src/pages/index/index.scss'),
+      sourceFile: path.resolve(baseCwd, 'demo/taro-vite-tailwindcss-v3/src/pages/index/index.scss'),
       mutate(source, payload) {
         return appendTrailingSnippet(source, createStyleRuleSnippet(payload))
       },
@@ -603,80 +417,12 @@ export function buildDemoExtendedCases(baseCwd: string): WatchCase[] {
     },
   }
 
-  const taroVue3AppCase: WatchCase = {
-    name: 'taro-vue3-app',
-    label: 'demo/taro-vue3-app',
-    project: 'demo/taro-vue3-app',
-    group: 'demo',
-    cwd: path.resolve(baseCwd, 'demo/taro-vue3-app'),
-    devScript: 'dev:e2e-watch',
-    env: taroWatchEnv,
-    outputWxml: path.resolve(baseCwd, 'demo/taro-vue3-app/dist/pages/index/index.wxml'),
-    outputJs: path.resolve(baseCwd, 'demo/taro-vue3-app/dist/pages/index/index.js'),
-    outputStyleCandidates: [
-      path.resolve(baseCwd, 'demo/taro-vue3-app/dist/pages/index/index.wxss'),
-      path.resolve(baseCwd, 'demo/taro-vue3-app/dist/app.wxss'),
-    ],
-    globalStyleCandidates: [
-      path.resolve(baseCwd, 'demo/taro-vue3-app/dist/pages/index/index.wxss'),
-      path.resolve(baseCwd, 'demo/taro-vue3-app/dist/app.wxss'),
-    ],
-    contentMutation: {
-      sourceFile: path.resolve(baseCwd, 'demo/taro-vue3-app/src/pages/index/index.vue'),
-      verifyEscapedIn: ['js'],
-      verifyClassLiteralIn: ['js'],
-      forbidBgHexTruncationIn: ['js'],
-      roundConfigs: buildIssue33HighRiskRoundConfigs(),
-      mutate(source, payload) {
-        return replaceExactSnippet(
-          source,
-          'const classArray = [\'bg-[#543254]\', \'h-[100px]\', \'w-[300px]\', "bg-[url(\'https://xxx.com/xx.webp\')]"]',
-          `const classArray = ['${payload.classLiteral}', 'w-[300px]', "bg-[url('https://xxx.com/xx.webp')]"]`,
-          'taro-vue3-app script class anchor',
-        )
-      },
-    },
-    templateMutation: {
-      sourceFile: path.resolve(baseCwd, 'demo/taro-vue3-app/src/pages/index/index.vue'),
-      verifyEscapedIn: ['js'],
-      verifyClassLiteralIn: ['js'],
-      roundConfigs: buildHexScriptRoundConfigs(),
-      mutate(source, payload) {
-        const snippet = `  <view class="${payload.classLiteral}">${payload.marker}-template</view>`
-        return insertIntoVueTemplateRoot(source, snippet)
-      },
-    },
-    scriptMutation: {
-      sourceFile: path.resolve(baseCwd, 'demo/taro-vue3-app/src/pages/index/index.vue'),
-      verifyEscapedIn: ['js'],
-      verifyClassLiteralIn: ['js'],
-      roundConfigs: buildHexScriptRoundConfigs(),
-      mutate(source, payload) {
-        return mutateVueScriptSetupArrayByAnchor(
-          source,
-          'const classArray = [',
-          payload,
-        )
-      },
-    },
-    styleMutation: {
-      sourceFile: path.resolve(baseCwd, 'demo/taro-vue3-app/src/pages/index/index.scss'),
-      mutate(source, payload) {
-        return appendTrailingSnippet(source, createStyleRuleSnippet(payload))
-      },
-    },
-  }
-
   return [
     uniAppVue3ViteCase,
     uniAppTailwindcssV4Case,
-    uniAppTailwindcssV5Case,
     mpxTailwindcssV4Case,
-    mpxTailwindcssV5Case,
     taroViteTailwindcssV4Case,
-    taroViteTailwindcssV5Case,
     taroAppViteCase,
     taroWebpackTailwindcssV4DemoCase,
-    taroVue3AppCase,
   ]
 }

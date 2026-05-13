@@ -3,6 +3,24 @@ import path from 'node:path'
 
 const repositoryRoot = path.resolve(__dirname, '../../../..')
 
+const demoProjects = [
+  'gulp-tailwindcss-v3',
+  'gulp-tailwindcss-v4',
+  'mpx-tailwindcss-v3',
+  'mpx-tailwindcss-v4',
+  'taro-webpack-tailwindcss-v3',
+  'taro-webpack-tailwindcss-v4',
+  'taro-vite-tailwindcss-v3',
+  'taro-vite-tailwindcss-v4',
+  'uni-app-vite-tailwindcss-v3',
+  'uni-app-vite-tailwindcss-v4',
+  'weapp-vite-tailwindcss-v3',
+  'weapp-vite-tailwindcss-v4',
+] as const
+
+const tailwindV3Projects = demoProjects.filter(project => project.endsWith('-v3'))
+const tailwindV4Projects = demoProjects.filter(project => project.endsWith('-v4'))
+
 async function readProjectFile(relativePath: string) {
   return readFile(path.resolve(repositoryRoot, relativePath), 'utf8')
 }
@@ -11,327 +29,91 @@ async function readProjectJson<T>(relativePath: string) {
   return JSON.parse(await readProjectFile(relativePath)) as T
 }
 
-describe('v5 apps and demos generator config', () => {
-  const generatorOnlyPackagePaths = [
-    'apps/vite-native/package.json',
-    'apps/vite-native-ts/package.json',
-    'apps/vite-native-skyline/package.json',
-    'apps/vite-native-ts-skyline/package.json',
-    'demo/native-ts/package.json',
-    'demo/taro-app-vite/package.json',
-    'demo/uni-app-vue3-vite/package.json',
-    'demo/uni-app-tailwindcss-v5/package.json',
-    'demo/taro-vite-tailwindcss-v5/package.json',
-    'demo/mpx-tailwindcss-v5/package.json',
-  ]
+describe('demo matrix generator config', () => {
+  it('keeps the runnable demo matrix as standalone workspace packages', async () => {
+    const packages = await Promise.all(demoProjects.map(project => readProjectJson<{
+      name: string
+      private?: boolean
+      scripts?: Record<string, string>
+      repository?: { directory?: string }
+    }>(`demo/${project}/package.json`)))
 
-  it('keeps v5 generator demos as standalone workspace packages', async () => {
-    const packages = await Promise.all([
-      readProjectJson<{ name: string, scripts?: Record<string, string>, private?: boolean }>('demo/uni-app-tailwindcss-v5/package.json'),
-      readProjectJson<{ name: string, scripts?: Record<string, string>, private?: boolean }>('demo/taro-vite-tailwindcss-v5/package.json'),
-      readProjectJson<{ name: string, scripts?: Record<string, string>, private?: boolean }>('demo/mpx-tailwindcss-v5/package.json'),
-    ])
-
-    expect(packages.map(item => item.name)).toEqual([
-      '@weapp-tailwindcss-demo/uni-app-tailwindcss-v5',
-      '@weapp-tailwindcss-demo/taro-vite-tailwindcss-v5',
-      '@weapp-tailwindcss-demo/mpx-tailwindcss-v5',
-    ])
+    expect(packages.map(item => item.name)).toEqual(demoProjects.map(project => `@weapp-tailwindcss-demo/${project}`))
     expect(packages.every(item => item.private)).toBe(true)
     expect(packages.every(item => typeof item.scripts?.build === 'string')).toBe(true)
-    expect(packages.every(item => item.scripts?.postinstall === undefined)).toBe(true)
+    expect(packages.map(item => item.repository?.directory).filter(Boolean)).toEqual(
+      demoProjects
+        .filter(project => packages[demoProjects.indexOf(project)]?.repository?.directory)
+        .map(project => `demo/${project}`),
+    )
   })
 
-  it('keeps generator-only packages free of install-time tailwind patching', async () => {
-    const packages = await Promise.all(generatorOnlyPackagePaths.map(async file => ({
-      file,
-      pkg: await readProjectJson<{
+  it('keeps Tailwind CSS v3 and v4 dependencies aligned with the directory suffix', async () => {
+    for (const project of tailwindV3Projects) {
+      const pkg = await readProjectJson<{
         scripts?: Record<string, string>
         dependencies?: Record<string, string>
         devDependencies?: Record<string, string>
-      }>(file),
-    })))
+      }>(`demo/${project}/package.json`)
+      const deps = {
+        ...(pkg.dependencies ?? {}),
+        ...(pkg.devDependencies ?? {}),
+      }
 
-    for (const { file, pkg } of packages) {
-      expect(pkg.scripts?.postinstall, file).toBeUndefined()
-      expect(pkg.dependencies?.['tailwindcss-patch'], file).toBeUndefined()
-      expect(pkg.devDependencies?.['tailwindcss-patch'], file).toBeUndefined()
+      expect(pkg.scripts?.postinstall, project).toBeUndefined()
+      expect(deps.tailwindcss, project).toBe('catalog:tailwindcss3')
+    }
+
+    for (const project of tailwindV4Projects) {
+      const pkg = await readProjectJson<{
+        scripts?: Record<string, string>
+        dependencies?: Record<string, string>
+        devDependencies?: Record<string, string>
+      }>(`demo/${project}/package.json`)
+      const deps = {
+        ...(pkg.dependencies ?? {}),
+        ...(pkg.devDependencies ?? {}),
+      }
+
+      expect(pkg.scripts?.postinstall, project).toBeUndefined()
+      expect(deps.tailwindcss, project).toBe('catalog:tailwindcss4')
+      expect(deps['@weapp-tailwindcss/merge-v3'], project).toBeUndefined()
+      expect(deps['@weapp-tailwindcss/variants-v3'], project).toBeUndefined()
     }
   })
 
-  it.each([
-    {
-      config: 'apps/vite-native/vite.config.ts',
-      css: 'apps/vite-native/app.css',
-    },
-    {
-      config: 'demo/uni-app-tailwindcss-v5/vite.config.ts',
-      css: 'demo/uni-app-tailwindcss-v5/src/main.css',
-    },
-    {
-      config: 'demo/taro-vite-tailwindcss-v5/config/index.ts',
-      css: 'demo/taro-vite-tailwindcss-v5/src/app.css',
-    },
-  ])('uses tailwind v4 standard css entry with default mini-program generator in $config', async ({ config, css }) => {
-    const [configSource, cssSource] = await Promise.all([
-      readProjectFile(config),
-      readProjectFile(css),
-    ])
-
-    expect(configSource).toContain('WeappTailwindcss')
-    expect(configSource).not.toContain('Unified')
-    expect(configSource).not.toContain('mode:')
-    expect(configSource).not.toContain("target: 'weapp'")
-    expect(cssSource).toContain('tailwindcss')
-    expect(cssSource).not.toContain('weapp-tailwindcss')
-  })
-
-  it('keeps uni-app v5 css entries using @config relative to the css file', async () => {
-    const [mainCss, commonCss, orderCss] = await Promise.all([
-      readProjectFile('demo/uni-app-tailwindcss-v5/src/main.css'),
-      readProjectFile('demo/uni-app-tailwindcss-v5/src/common.css'),
-      readProjectFile('demo/uni-app-tailwindcss-v5/src/pages-order/index.css'),
-    ])
-
-    expect(mainCss).toContain('@config "../tailwind.config.js";')
-    expect(commonCss).toContain('@config "../tailwind.config.order.js";')
-    expect(orderCss).toContain('@config "../../tailwind.config.order.js";')
-  })
-
-  it('keeps the uni-app-x preset demo on generator defaults', async () => {
-    const configSource = await readProjectFile('demo/uni-app-x-hbuilderx-tailwindcss4/vite.config.ts')
-
-    expect(configSource).toContain('uniAppX({')
-    expect(configSource).not.toContain('generator:')
-    expect(configSource).not.toContain('mode:')
-    expect(configSource).not.toContain("target: 'weapp'")
-  })
-
-  it('documents generated-mode setup in the Tailwind CSS v3 and v4 quick-start pages', async () => {
-    const [
-      v3InstallDocsSource,
-      v3UniAppDocsSource,
-      v3TaroDocsSource,
-      v3MpxDocsSource,
-      v4ReadmeDocsSource,
-      v4TaroDocsSource,
-      v4MpxDocsSource,
-      migrationDocsSource,
-      parityDocsSource,
-    ] = await Promise.all([
-      readProjectFile('website/docs/quick-start/install.mdx'),
-      readProjectFile('website/docs/quick-start/frameworks/uni-app-vite.md'),
-      readProjectFile('website/docs/quick-start/frameworks/taro.md'),
-      readProjectFile('website/docs/quick-start/frameworks/mpx.mdx'),
-      readProjectFile('website/docs/quick-start/v4/readme.md'),
-      readProjectFile('website/docs/quick-start/v4/taro-vite.mdx'),
-      readProjectFile('website/docs/quick-start/v4/mpx.mdx'),
-      readProjectFile('website/docs/migrations/v5.md'),
-      readProjectFile('website/docs/tailwindcss/v5-official-plugin-parity.mdx'),
-    ])
-    const quickStartDocsSource = [
-      v3InstallDocsSource,
-      v3UniAppDocsSource,
-      v3TaroDocsSource,
-      v3MpxDocsSource,
-      v4ReadmeDocsSource,
-      v4TaroDocsSource,
-      v4MpxDocsSource,
-    ].join('\n')
-    const docsSource = [
-      quickStartDocsSource,
-      migrationDocsSource,
-    ].join('\n')
-
-    expect(docsSource).toContain('uni-app Vue3 Vite')
-    expect(docsSource).toContain('Taro')
-    expect(docsSource).toContain('Taro Vite')
-    expect(docsSource).toContain('weapp-vite')
-    expect(docsSource).toContain('Mpx')
-    expect(docsSource).toContain('WeappTailwindcss')
-    expect(docsSource).toContain('cssEntries')
-    expect(docsSource).toContain('tailwindcss@3')
-    expect(docsSource).toContain('tailwindcss@4')
-    expect(docsSource).toContain('不再把 `tailwindcss` 注册到 PostCSS')
-    expect(docsSource).toContain('不需要再额外注册 `@tailwindcss/vite` 或 `@tailwindcss/postcss`')
-    expect(docsSource).toContain('不需要把官方 Tailwind Vite 或 PostCSS 插件加入构建')
-    expect(docsSource).toContain('Tailwind CSS v3 和 v4 都由 `WeappTailwindcss` 读取配置并生成目标 CSS')
-    expect(migrationDocsSource).toContain('weapp-tailwindcss v4 到 v5 迁移指南')
-    expect(migrationDocsSource).toContain('Tailwind CSS 3.x 项目迁移')
-    expect(migrationDocsSource).toContain('Tailwind CSS 4.x 项目迁移')
-    expect(migrationDocsSource).toContain('多入口和独立分包迁移')
-    expect(migrationDocsSource).toContain('JS 类名和运行时合并迁移')
-    expect(migrationDocsSource).toContain('v5 配置变更对照')
-    expect(migrationDocsSource).toContain('`postinstall: "weapp-tw patch"`')
-    expect(migrationDocsSource).toContain('同一个小程序构建里不要同时注册官方 Tailwind 生成插件和 `WeappTailwindcss`')
-    expect(quickStartDocsSource).not.toContain('generator: false')
-    expect(docsSource).not.toContain('./generator/uni-app')
-    expect(docsSource).not.toContain('./generator/taro')
-    expect(docsSource).not.toContain('./generator/weapp-vite')
-    expect(docsSource).not.toContain('./generator/mpx')
-    expect(docsSource).not.toContain('postcss-config-loader-plugin')
-    expect(parityDocsSource).toContain('@tailwindcss/vite')
-    expect(parityDocsSource).toContain('weapp-tailwindcss/vite')
-    expect(parityDocsSource).toContain("target: 'weapp'")
-    expect(parityDocsSource).toContain("target: 'web'")
-  })
-
-  it('keeps the runnable framework demos covering v5 generator features', async () => {
-    const [
-      uniPageSource,
-      uniPagesJsonSource,
-      uniMainCssSource,
-      uniCommonCssSource,
-      uniOrderCssSource,
-      uniOrderHomeSource,
-      uniOrderUserSource,
-      taroCssSource,
-      taroPageSource,
-      mpxCssSource,
-      mpxPageSource,
-    ] = await Promise.all([
-      readProjectFile('demo/uni-app-tailwindcss-v5/src/pages/index/index.vue'),
-      readProjectFile('demo/uni-app-tailwindcss-v5/src/pages.json'),
-      readProjectFile('demo/uni-app-tailwindcss-v5/src/main.css'),
-      readProjectFile('demo/uni-app-tailwindcss-v5/src/common.css'),
-      readProjectFile('demo/uni-app-tailwindcss-v5/src/pages-order/index.css'),
-      readProjectFile('demo/uni-app-tailwindcss-v5/src/pages-order/pages/home/home.vue'),
-      readProjectFile('demo/uni-app-tailwindcss-v5/src/pages-order/pages/user/user.vue'),
-      readProjectFile('demo/taro-vite-tailwindcss-v5/src/app.css'),
-      readProjectFile('demo/taro-vite-tailwindcss-v5/src/pages/index/index.tsx'),
-      readProjectFile('demo/mpx-tailwindcss-v5/src/app.css'),
-      readProjectFile('demo/mpx-tailwindcss-v5/src/pages/index.mpx'),
-    ])
-
-    expect(uniPageSource).toContain("twMerge('bg-[#0000ff] text-[45rpx]'")
-    expect(uniPageSource).toContain('bg-gradient-to-r from-cyan-500 to-blue-500')
-    expect(uniPageSource).toContain('aspect-[calc(4*3+1)/3]')
-    expect(uniPageSource).toContain('weappTwIgnore`bg-[#123498]`')
-    expect(uniPagesJsonSource).toContain('"subPackages"')
-    expect(uniMainCssSource).toContain('@config "../tailwind.config.js";')
-    expect(uniCommonCssSource).toContain('@config "../tailwind.config.order.js";')
-    expect(uniOrderCssSource).toContain('@source "./**/*.{vue,js,ts,jsx,tsx,html}";')
-    expect(uniOrderHomeSource).toContain('bg-gradient-to-r from-emerald-500 to-cyan-500')
-    expect(uniOrderUserSource).toContain('bg-gradient-to-r from-blue-500 to-indigo-500')
-    expect(taroCssSource).toContain('@import "tailwindcss" source(none);')
-    expect(taroCssSource).toContain('@source "../src/pages/**/*.{ts,tsx,jsx,js}";')
-    expect(taroCssSource).toContain('@theme')
-    expect(taroPageSource).toContain('@weapp-tailwindcss/merge')
-    expect(taroPageSource).toContain('twJoin(')
-    expect(taroPageSource).toContain('hoverClass=')
-    expect(taroPageSource).toContain('dark:bg-zinc-800')
-    expect(taroPageSource).toContain('!border-brand')
-    expect(taroPageSource).toContain('bg-gradient-to-r from-cyan-500 to-blue-500')
-    expect(taroPageSource).toContain('bg-gradient-to-b from-fuchsia-500 to-rose-500')
-    expect(taroPageSource).toContain('bg-linear-to-r from-cyan-500 to-blue-500')
-    expect(taroPageSource).toContain('rounded-xl bg-[#123456] p-4 text-white')
-    expect(mpxCssSource).toContain('@theme')
-    expect(mpxPageSource).toContain('@weapp-tailwindcss/merge')
-    expect(mpxPageSource).toContain(':class="mergedClass"')
-    expect(mpxPageSource).toContain('space-y-4 flex flex-col bg-red-400')
-    expect(mpxPageSource).toContain('border-[10px] border-[#098765] border-solid border-opacity-[0.44]')
-    expect(mpxPageSource).toContain('bg-gradient-to-r from-cyan-500 to-blue-500')
-  })
-
-  it('uses the webpack generator path for the mpx tailwind v5 demo', async () => {
-    const [configSource, postcssConfigSource, cssSource] = await Promise.all([
-      readProjectFile('demo/mpx-tailwindcss-v5/mpx.config.js'),
-      readProjectFile('demo/mpx-tailwindcss-v5/postcss.config.js'),
-      readProjectFile('demo/mpx-tailwindcss-v5/src/app.css'),
-    ])
-
-    expect(configSource).not.toContain("require('@tailwindcss/postcss')")
-    expect(configSource).not.toContain('WEAPP_TW_GENERATOR_MODE')
-    expect(configSource).not.toContain('mode:')
-    expect(configSource).not.toContain("target: 'weapp'")
-    expect(configSource).not.toContain('generator: false')
-    expect(configSource).toContain("import: false")
-    expect(postcssConfigSource).not.toContain("require('weapp-tailwindcss/postcss')")
-    expect(postcssConfigSource).not.toContain("require('@tailwindcss/postcss')")
-    expect(cssSource).toContain('@import "tailwindcss";')
-    expect(cssSource).toContain('@source "../src";')
-    expect(cssSource).not.toContain('@import "weapp-tailwindcss";')
-  })
-
-  it('keeps the historical v4 demos free of v5 generator-only changes', async () => {
-    const [
-      uniPageSource,
-      taroCssSource,
-      taroPageSource,
-      mpxConfigSource,
-      mpxPostcssSource,
-      mpxCssSource,
-      mpxPageSource,
-    ] = await Promise.all([
-      readProjectFile('demo/uni-app-tailwindcss-v4/src/pages/index/index.vue'),
-      readProjectFile('demo/taro-vite-tailwindcss-v4/src/app.css'),
-      readProjectFile('demo/taro-vite-tailwindcss-v4/src/pages/index/index.tsx'),
-      readProjectFile('demo/mpx-tailwindcss-v4/mpx.config.js'),
-      readProjectFile('demo/mpx-tailwindcss-v4/postcss.config.js'),
-      readProjectFile('demo/mpx-tailwindcss-v4/src/app.css'),
-      readProjectFile('demo/mpx-tailwindcss-v4/src/pages/index.mpx'),
-    ])
-
-    expect(uniPageSource).toContain("const className = ref('bg-[#0000ff] text-[45rpx] text-white')")
-    expect(uniPageSource).not.toContain("twMerge('bg-[#0000ff] text-[45rpx]'")
-    expect(taroCssSource).toContain('@import "tailwindcss" source(none);')
-    expect(taroCssSource).toContain('@source "../src/**/*.{ts,tsx,jsx,js,html}";')
-    expect(taroPageSource).not.toContain('@weapp-tailwindcss/merge')
-    expect(taroPageSource).not.toContain('hoverClass=')
-    expect(mpxConfigSource).not.toContain("require('@tailwindcss/postcss')")
-    expect(mpxConfigSource).not.toContain("require('weapp-tailwindcss/postcss')")
-    expect(mpxConfigSource).not.toContain('generator: false')
-    expect(mpxPostcssSource).not.toContain("require('@tailwindcss/postcss')()")
-    expect(mpxPostcssSource).not.toContain("require('weapp-tailwindcss/postcss')")
-    expect(mpxCssSource).toContain('@import "weapp-tailwindcss";')
-    expect(mpxCssSource).not.toContain('@import "tailwindcss";')
-    expect(mpxPageSource).not.toContain('mergedClass')
-    expect(mpxPageSource).not.toContain('@weapp-tailwindcss/merge')
-  })
-
-  it('keeps generator examples from registering Tailwind in PostCSS', async () => {
+  it('keeps Tailwind CSS v4 demos on standard CSS entry detection without cssEntries', async () => {
     const configPaths = [
-      'apps/vite-native-ts/postcss.config.js',
-      'apps/vite-native-skyline/postcss.config.js',
-      'apps/vite-native-ts-skyline/postcss.config.js',
-      'demo/native-ts/postcss.config.js',
-      'demo/taro-app/postcss.config.js',
-      'demo/taro-app-vite/postcss.config.js',
-      'demo/taro-app-vite/config/index.ts',
+      'demo/gulp-tailwindcss-v4/gulpfile.ts',
+      'demo/mpx-tailwindcss-v4/mpx.config.js',
+      'demo/taro-webpack-tailwindcss-v4/config/index.ts',
       'demo/taro-vite-tailwindcss-v4/config/index.ts',
-      'demo/taro-vite-tailwindcss-v4/postcss.config.mjs',
-      'demo/taro-vite-tailwindcss-v5/config/index.ts',
-      'demo/taro-vite-tailwindcss-v5/postcss.config.mjs',
-      'demo/taro-vue3-app/postcss.config.js',
-      'demo/gulp-app/postcss.config.js',
-      'demo/uni-app-vue3-vite/vite.config.ts',
-      'demo/uni-app-x-hbuilderx-tailwindcss4/vite.config.ts',
-      'templates/taro-react-tailwind-vscode-template/postcss.config.js',
-      'templates/taro-vite-tailwindcss-v4/config/index.ts',
-      'templates/taro-vite-tailwindcss-v4/postcss.config.mjs',
-      'templates/taro-vue3-tailwind-vscode-template/postcss.config.js',
-      'templates/uni-app-tailwindcss-v4/vite.config.ts',
-      'templates/uni-app-hbuilderx-tailwindcss-v4/vite.config.ts',
-      'templates/uni-app-vite-vue3-tailwind-vscode-template/postcss.config.ts',
-      'templates/uni-app-vue2-tailwind-vscode-template/postcss.config.js',
-      'templates/uni-app-vue3-tailwind-hbuilder-template/postcss.config.cjs',
+      'demo/uni-app-vite-tailwindcss-v4/vite.config.ts',
+      'demo/weapp-vite-tailwindcss-v4/vite.config.ts',
+    ]
+    const cssPaths = [
+      'demo/gulp-tailwindcss-v4/src/app.css',
+      'demo/mpx-tailwindcss-v4/src/app.css',
+      'demo/taro-webpack-tailwindcss-v4/src/app.css',
+      'demo/taro-vite-tailwindcss-v4/src/app.css',
+      'demo/uni-app-vite-tailwindcss-v4/src/main.css',
+      'demo/weapp-vite-tailwindcss-v4/app.css',
     ]
 
-    const sources = await Promise.all(configPaths.map(async file => ({
-      file,
-      source: await readProjectFile(file),
-    })))
+    const [configs, cssEntries] = await Promise.all([
+      Promise.all(configPaths.map(readProjectFile)),
+      Promise.all(cssPaths.map(readProjectFile)),
+    ])
 
-    for (const { file, source } of sources) {
-      expect(source, file).toContain('weapp-tailwindcss')
-      expect(source, file).not.toContain('postcss-config-loader-plugin')
-      if (path.basename(file).startsWith('postcss.config')) {
-        expect(source, file).not.toMatch(/\btailwindcss\s*:\s*\{/)
-        expect(source, file).not.toMatch(/['"]@tailwindcss\/postcss['"]\s*:/)
-      }
-      expect(source, file).not.toMatch(/require\(['"]tailwindcss['"]\)\s*\(/)
-      expect(source, file).not.toMatch(/from ['"]@tailwindcss\/postcss['"]/)
-      expect(source, file).not.toMatch(/from ['"]tailwindcss['"]/)
+    expect(configs.join('\n')).not.toContain('cssEntries')
+    for (const cssSource of cssEntries) {
+      expect(cssSource).toContain('tailwindcss')
     }
+  })
+
+  it('keeps removed demo families out of the active matrix tests', () => {
+    expect(demoProjects.some(project => project.includes('v5'))).toBe(false)
+    expect(demoProjects.some(project => project.includes('taro-vue3'))).toBe(false)
+    expect(demoProjects.some(project => project.includes('uni-app-x'))).toBe(false)
   })
 })

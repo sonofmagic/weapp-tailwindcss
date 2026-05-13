@@ -19,12 +19,12 @@ describe('resolveTailwindcssBasedir', () => {
   })
 
   it('prefers npm_package_json directory when available', async () => {
-    process.env.npm_package_json = '/workspace/apps/vite-native-skyline/package.json'
+    process.env.npm_package_json = '/workspace/demo/weapp-vite-tailwindcss-v4/package.json'
 
     const { resolveTailwindcssBasedir } = await import('@/context/tailwindcss')
 
     // npm_package_json 为绝对路径，取其 dirname 后经 path.normalize 返回
-    expect(resolveTailwindcssBasedir()).toBe(path.normalize('/workspace/apps/vite-native-skyline'))
+    expect(resolveTailwindcssBasedir()).toBe(path.normalize('/workspace/demo/weapp-vite-tailwindcss-v4'))
   })
 
   it('resolves relative base against generic env anchor (prefers INIT_CWD over PWD)', async () => {

@@ -21,76 +21,7 @@
   },
   "references": [
     {
-      "path": "./apps/react-app"
-    },
-    {
-      "path": "./apps/tailwindcss-weapp"
-    },
-    {
-      "path": "./apps/taro-webpack-tailwindcss-v4"
-    },
-    {
-      "path": "./apps/vite-native"
-    },
-    {
-      "path": "./apps/vite-native-skyline"
-    },
-    {
-      "path": "./apps/vite-native-ts"
-    },
-    {
-      "path": "./apps/vite-native-ts-skyline"
-    },
-    {
-      "path": "./apps/vue-app"
-    },
-    {
-      "path": "./apps/weapp-wechat-zhihu"
-    },
-    {
       "path": "./benchmark/app"
-    },
-    {
-      "path": "./demo/gulp-app"
-    },
-    {
-      "path": "./demo/mpx-app"
-    },
-    {
-      "path": "./demo/mpx-tailwindcss-v4"
-    },
-    {
-      "path": "./demo/mpx-tailwindcss-v5"
-    },
-    {
-      "path": "./demo/native-ts"
-    },
-    {
-      "path": "./demo/taro-app"
-    },
-    {
-      "path": "./demo/taro-app-vite"
-    },
-    {
-      "path": "./demo/taro-vite-tailwindcss-v4"
-    },
-    {
-      "path": "./demo/taro-vite-tailwindcss-v5"
-    },
-    {
-      "path": "./demo/taro-vue3-app"
-    },
-    {
-      "path": "./demo/taro-webpack-tailwindcss-v4"
-    },
-    {
-      "path": "./demo/uni-app-tailwindcss-v4"
-    },
-    {
-      "path": "./demo/uni-app-tailwindcss-v5"
-    },
-    {
-      "path": "./demo/uni-app-vue3-vite"
     },
     {
       "path": "./e2e"
@@ -208,6 +139,42 @@
     },
     {
       "path": "./website"
+    },
+    {
+      "path": "./demo/gulp-tailwindcss-v3"
+    },
+    {
+      "path": "./demo/gulp-tailwindcss-v4"
+    },
+    {
+      "path": "./demo/mpx-tailwindcss-v3"
+    },
+    {
+      "path": "./demo/mpx-tailwindcss-v4"
+    },
+    {
+      "path": "./demo/taro-webpack-tailwindcss-v3"
+    },
+    {
+      "path": "./demo/taro-webpack-tailwindcss-v4"
+    },
+    {
+      "path": "./demo/taro-vite-tailwindcss-v3"
+    },
+    {
+      "path": "./demo/taro-vite-tailwindcss-v4"
+    },
+    {
+      "path": "./demo/uni-app-vite-tailwindcss-v3"
+    },
+    {
+      "path": "./demo/uni-app-vite-tailwindcss-v4"
+    },
+    {
+      "path": "./demo/weapp-vite-tailwindcss-v3"
+    },
+    {
+      "path": "./demo/weapp-vite-tailwindcss-v4"
     }
   ],
   "files": []

@@ -10,8 +10,8 @@ const require = createRequire(import.meta.url)
 const packageRoot = path.resolve(__dirname, '../..')
 const workspaceRoot = path.resolve(packageRoot, '../..')
 const pluginPackageRoots = [
-  path.join(workspaceRoot, 'demo/uni-app-vue3-vite'),
-  path.join(workspaceRoot, 'demo/uni-app-tailwindcss-v5'),
+  path.join(workspaceRoot, 'demo/uni-app-vite-tailwindcss-v3'),
+  path.join(workspaceRoot, 'demo/uni-app-vite-tailwindcss-v4'),
   path.join(workspaceRoot, 'website'),
 ]
 const tailwindcss3Root = path.dirname(require.resolve('tailwindcss/package.json'))

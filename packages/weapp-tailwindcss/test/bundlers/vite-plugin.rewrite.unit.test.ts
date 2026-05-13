@@ -209,7 +209,7 @@ describe('bundlers/vite WeappTailwindcss rewrite', () => {
     const transform = getTransformHandler(rewritePlugin!)
     expect(transform).toBeTypeOf('function')
 
-    expect(transform?.('.foo { color: red; }', '/src/app.css')).toBeNull()
+    await expect(transform?.('.foo { color: red; }', '/src/app.css')).resolves.toBeNull()
   })
 
   it('strips @config directives before Vite CSS handling in generator mode', async () => {
@@ -221,7 +221,7 @@ describe('bundlers/vite WeappTailwindcss rewrite', () => {
     const transform = getTransformHandler(rewritePlugin!)
     expect(transform).toBeTypeOf('function')
 
-    const result = transform?.('@import "tailwindcss";\n@config "../tailwind.config.js";\n.foo { color: red; }', '/src/app.css') as TransformResult
+    const result = await transform?.('@import "tailwindcss";\n@config "../tailwind.config.js";\n.foo { color: red; }', '/src/app.css') as TransformResult
     expect(result?.code).toContain('@import "weapp-tailwindcss/index.css";')
     expect(result?.code).not.toContain('@config')
   })
@@ -234,7 +234,7 @@ describe('bundlers/vite WeappTailwindcss rewrite', () => {
     const transform = getTransformHandler(rewritePlugin!)
     expect(transform).toBeTypeOf('function')
 
-    expect(transform?.('@import "tailwindcss";', '/src/main.ts')).toBeNull()
+    await expect(transform?.('@import "tailwindcss";', '/src/main.ts')).resolves.toBeNull()
   })
 
   it('keeps css import rewrite plugin when main plugin is disabled for tailwind v4 projects', async () => {

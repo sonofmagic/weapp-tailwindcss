@@ -6,63 +6,32 @@ export const HOT_UPDATE_TARGETS = [
     name: 'demo',
     title: 'demo hot updates',
   },
-  {
-    name: 'apps',
-    title: 'apps hot updates',
-  },
 ] as const
 
 export type HotUpdateTargetName = typeof HOT_UPDATE_TARGETS[number]['name']
 
 const DEMO_HOT_UPDATE_CASES = [
-  'weapp-vite',
-  'gulp-app',
-  'taro',
-  'mpx',
-  'uni-app-vue3-vite',
-  'uni-app-tailwindcss-v4',
-  'uni-app-tailwindcss-v5',
+  'gulp-tailwindcss-v3',
+  'gulp-tailwindcss-v4',
+  'mpx-tailwindcss-v3',
   'mpx-tailwindcss-v4',
-  'mpx-tailwindcss-v5',
-  'taro-vite-tailwindcss-v4',
-  'taro-vite-tailwindcss-v5',
-  'taro-app-vite',
+  'taro-webpack-tailwindcss-v3',
   'taro-webpack-tailwindcss-v4',
-  'taro-vue3-app',
-] as const
-
-const APP_HOT_UPDATE_CASES = [
-  'vite-native-ts',
-  'vite-native',
-  'vite-native-ts-skyline',
-  'vite-native-skyline',
-  'taro-webpack',
+  'taro-vite-tailwindcss-v3',
+  'taro-vite-tailwindcss-v4',
+  'uni-app-vite-tailwindcss-v3',
+  'uni-app-vite-tailwindcss-v4',
+  'weapp-vite-tailwindcss-v3',
+  'weapp-vite-tailwindcss-v4',
 ] as const
 
 export const HOT_UPDATE_CASES_BY_TARGET: Record<HotUpdateTargetName, string[]> = {
   demo: [...DEMO_HOT_UPDATE_CASES],
-  apps: [...APP_HOT_UPDATE_CASES],
 }
 
-export const HOT_UPDATE_CI_CASES = [...DEMO_HOT_UPDATE_CASES, ...APP_HOT_UPDATE_CASES] as const
+export const HOT_UPDATE_CI_CASES = [...DEMO_HOT_UPDATE_CASES] as const
 
-export const HOT_UPDATE_COVERED_PROJECTS = new Set([
-  'uni-app-vue3-vite',
-  'uni-app-tailwindcss-v4',
-  'uni-app-tailwindcss-v5',
-  'taro-app',
-  'taro-webpack-tailwindcss-v4',
-  'taro-app-vite',
-  'taro-vite-tailwindcss-v4',
-  'taro-vite-tailwindcss-v5',
-  'taro-vue3-app',
-  'gulp-app',
-  'mpx-app',
-  'mpx-tailwindcss-v4',
-  'mpx-tailwindcss-v5',
-  'vite-native',
-  'vite-native-ts',
-])
+export const HOT_UPDATE_COVERED_PROJECTS = new Set(DEMO_HOT_UPDATE_CASES)
 
 // 这些项目没有稳定的 dev/hot-update 链路，默认只保留静态产物 e2e。
 export const HOT_UPDATE_EXEMPT_PROJECTS = new Set<string>()
@@ -72,7 +41,7 @@ export function getAllStaticE2EProjectNames() {
 }
 
 export function resolveHotUpdateTargets(value = process.env.E2E_HOT_UPDATE_TARGET) {
-  if (value === 'demo' || value === 'apps') {
+  if (value === 'demo') {
     return HOT_UPDATE_TARGETS.filter(item => item.name === value)
   }
 

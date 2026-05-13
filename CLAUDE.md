@@ -18,9 +18,9 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 - **packages-runtime/** - Runtime-specific implementations (vite, webpack integrations)
 
-- **apps/** - Example applications (react-app, vue-app, native, taro-app, vite-native)
+- **apps/** - Reserved workspace; mini-program demo projects have moved to `demo/`
 
-- **demo/** - Framework-specific demo projects (native, taro, uni-app, rax, mpx, gulp)
+- **demo/** - Framework-specific demo projects for the retained Tailwind CSS v3/v4 matrix (gulp, mpx, Taro webpack/vite, uni-app vite, weapp-vite)
 
 - **templates/** - Project templates for different frameworks
 

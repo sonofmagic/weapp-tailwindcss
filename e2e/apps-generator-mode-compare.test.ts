@@ -9,14 +9,14 @@ import path from 'pathe'
 import postcss from 'postcss'
 import { describe, expect, it } from 'vitest'
 import { createChineseMarkdownReport, createMarkdownReport } from './apps-generator-report'
-import { E2E_PROJECTS, NATIVE_PROJECTS } from './projectEntries'
+import { E2E_PROJECTS } from './projectEntries'
 import { clearProjectBuildState } from './projectTest'
 import { collectCssSnapshots, resolveSnapshotFile } from './shared'
 import { normalizeCssSnapshot as normalizeProjectCssSnapshot, normalizeSnapshotName } from './snapshotUtils'
 
 interface CompareProject {
   name: string
-  fixturesDir: '../apps' | '../demo'
+  fixturesDir: '../demo'
   rootDir: string
   cssFile: string
   cssPath: string
@@ -28,13 +28,9 @@ interface CreateProjectReportOptions {
   }) => void | Promise<void>
 }
 
-const nativeComparisonProjects = new Set(['vite-native', 'vite-native-ts'])
 const MINI_PROGRAM_CSS_PATTERN = '**/*.{wx,ac,jx,tt,q,c,ty}ss'
 
 const projects: CompareProject[] = [
-  ...NATIVE_PROJECTS
-    .filter(entry => nativeComparisonProjects.has(entry.name))
-    .map(entry => createCompareProject(entry, '../apps')),
   ...E2E_PROJECTS.map(entry => createCompareProject(entry, '../demo')),
 ]
 
@@ -157,7 +153,7 @@ function summarizeCss(css: string): CssSummary {
   }
 }
 
-function createCompareProject(entry: ProjectEntry, fixturesDir: '../apps' | '../demo'): CompareProject {
+function createCompareProject(entry: ProjectEntry, fixturesDir: '../demo'): CompareProject {
   const outputCssPath = path.join(entry.projectPath, entry.cssFile)
   const rootPrefix = `${entry.name}${path.sep}`
   const cssPath = outputCssPath.startsWith(rootPrefix)
@@ -272,7 +268,7 @@ function createReportItem(
 
   return {
     name: project.name,
-    fixture: project.fixturesDir === '../apps' ? 'apps' : 'demo',
+    fixture: 'demo',
     cssFile: project.cssFile,
     cssFiles: generatorResult.cssFiles.length > 0 ? generatorResult.cssFiles : [project.cssFile],
     status: 'passed',
@@ -308,7 +304,7 @@ async function createProjectReport(
   catch (error) {
     return {
       name: project.name,
-      fixture: project.fixturesDir === '../apps' ? 'apps' : 'demo',
+      fixture: 'demo',
       cssFile: project.cssFile,
       cssFiles: [project.cssFile],
       status: 'failed',
@@ -353,7 +349,7 @@ function createCssOutputSnapshot(
   return [
     `# ${project.name} CSS Output`,
     '',
-    `Fixture: ${project.fixturesDir === '../apps' ? 'apps' : 'demo'}`,
+    'Fixture: demo',
     `Entry: ${project.cssFile}`,
     `Generator CSS files: ${generatorResult.cssFiles.join(', ')}`,
     '',
@@ -378,7 +374,7 @@ async function expectCssOutputSnapshot(
   await expect(createCssOutputSnapshot(project, generatorResult)).toMatchFileSnapshot(snapshotPath)
 }
 
-describe('apps demo generator mode output', () => {
+describe('demo generator mode output', () => {
   it('collects nested selectors and normalizes unsupported pseudo aliases', () => {
     expect(collectSelectors([
       '@media (prefers-color-scheme: dark) {',
@@ -446,7 +442,7 @@ describe('apps demo generator mode output', () => {
     ])
   })
 
-  it('builds apps and demos with generator mini-program css output', async () => {
+  it('builds retained demos with generator mini-program css output', async () => {
     const report: AppsGeneratorCompareReportItem[] = []
 
     for (const project of projects) {

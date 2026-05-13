@@ -167,7 +167,6 @@ describe('e2e watch workflow', () => {
       'e2e/**',
       'tools/weapp-tailwindcss-scripts/**',
       'demo/**',
-      'apps/**',
       'scripts/**',
       '.github/scripts/**',
       'package.json',
@@ -186,25 +185,25 @@ describe('e2e watch workflow', () => {
 
     expect(workflow.jobs['pr-quick-gate'].strategy['fail-fast']).toBe(false)
     expect(matrixCases(rows)).toEqual(expect.arrayContaining([
-      'macos:22:uni:default',
-      'macos:22:mpx:default',
-      'macos:22:taro:default',
-      'macos:22:uni-app-vue3-vite:issue33',
-      'macos:22:weapp-vite:issue33',
-      'macos:22:taro-webpack:issue33',
-      'macos:22:uni-app-tailwindcss-v4:default',
+      'macos:22:uni-app-vite-tailwindcss-v3:default',
+      'macos:22:mpx-tailwindcss-v3:default',
+      'macos:22:taro-webpack-tailwindcss-v3:default',
+      'macos:22:uni-app-vite-tailwindcss-v3:issue33',
+      'macos:22:weapp-vite-tailwindcss-v3:issue33',
+      'macos:22:taro-webpack-tailwindcss-v4:issue33',
+      'macos:22:uni-app-vite-tailwindcss-v4:default',
       'macos:22:mpx-tailwindcss-v4:default',
-      'macos:22:vite-native:issue33',
-      'macos:22:vite-native-ts:issue33',
-      'windows:22:uni:default',
-      'windows:22:mpx:default',
-      'windows:22:taro:default',
-      'windows:22:uni-app-vue3-vite:issue33',
-      'windows:22:weapp-vite:issue33',
-      'windows:22:taro-webpack:issue33',
+      'macos:22:weapp-vite-tailwindcss-v4:issue33',
+      'macos:22:weapp-vite-tailwindcss-v3:issue33',
+      'windows:22:uni-app-vite-tailwindcss-v3:default',
+      'windows:22:mpx-tailwindcss-v3:default',
+      'windows:22:taro-webpack-tailwindcss-v3:default',
+      'windows:22:uni-app-vite-tailwindcss-v3:issue33',
+      'windows:22:weapp-vite-tailwindcss-v3:issue33',
+      'windows:22:taro-webpack-tailwindcss-v4:issue33',
       'windows:22:mpx-tailwindcss-v4:default',
-      'windows:22:vite-native:issue33',
-      'windows:22:vite-native-ts:issue33',
+      'windows:22:weapp-vite-tailwindcss-v4:issue33',
+      'windows:22:weapp-vite-tailwindcss-v3:issue33',
     ]))
     expect(stepRuns(workflow, 'pr-quick-gate')).toContain('pnpm e2e:watch')
   })
@@ -219,10 +218,8 @@ describe('e2e watch workflow', () => {
       'windows:22:all:default',
       'macos:22:demo:default',
       'windows:22:demo:default',
-      'macos:22:apps:default',
-      'windows:22:apps:default',
-      'macos:24:weapp-vite:issue33',
-      'windows:24:vite-native-ts:issue33',
+      'macos:24:weapp-vite-tailwindcss-v3:issue33',
+      'windows:24:weapp-vite-tailwindcss-v3:issue33',
     ]))
     expect(stepRuns(workflow, 'nightly-full-regression')).toContain('pnpm e2e:watch')
   })
@@ -235,7 +232,7 @@ describe('e2e watch workflow', () => {
     const slowMacosWeappViteBudget = {
       os: 'macos-latest',
       runner_label: 'macos',
-      watch_case: 'weapp-vite',
+      watch_case: 'weapp-vite-tailwindcss-v3',
       round_profile: 'issue33',
       timeout_minutes: 60,
       watch_timeout_ms: '600000',
@@ -248,16 +245,6 @@ describe('e2e watch workflow', () => {
     expect(nightlyRows).toContainEqual(expect.objectContaining({
       ...slowMacosWeappViteBudget,
       'node-version': 24,
-    }))
-    expect(nightlyRows).toContainEqual(expect.objectContaining({
-      os: 'windows-latest',
-      runner_label: 'windows',
-      watch_case: 'apps',
-      round_profile: 'default',
-      timeout_minutes: 70,
-      watch_timeout_ms: '1200000',
-      watch_max_hot_update_ms: '1200000',
-      watch_command_timeout_ms: '1800000',
     }))
     expect(nightlyRows).toContainEqual(expect.objectContaining({
       os: 'macos-latest',

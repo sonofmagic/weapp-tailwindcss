@@ -18,19 +18,18 @@ import { runIdeStyleHotUpdate } from './frameworkIdeStyleHotUpdate'
 const TARO_VITE_INITIAL_BUILD_RE = /built in [\d.]+s?|compiled successfully|构建完成/i
 
 const frameworkIdeWatchCaseNames: Record<string, WatchCase['name']> = {
-  'uni-app-vue3-vite-tailwindcss-v3': 'uni-app-vue3-vite',
-  'uni-app-vite-tailwindcss-v4': 'uni-app-tailwindcss-v4',
-  'taro-react-webpack-tailwindcss-v3': 'taro',
-  'taro-react-webpack-tailwindcss-v4': 'taro-webpack-tailwindcss-v4',
-  'taro-react-vite-tailwindcss-v3': 'taro-app-vite',
-  'taro-react-vite-tailwindcss-v4': 'taro-vite-tailwindcss-v4',
-  'taro-vue3-webpack-tailwindcss-v3': 'taro-vue3-app',
-  'taro-apps-webpack-tailwindcss-v4': 'taro-webpack',
-  'mpx-webpack-tailwindcss-v3': 'mpx',
-  'mpx-webpack-tailwindcss-v4': 'mpx-tailwindcss-v4',
-  'gulp-tailwindcss-v3': 'gulp-app',
-  'weapp-vite-native-tailwindcss-v4': 'vite-native',
-  'weapp-vite-native-ts-tailwindcss-v3': 'vite-native-ts',
+  'gulp-tailwindcss-v3': 'gulp-tailwindcss-v3',
+  'gulp-tailwindcss-v4': 'gulp-tailwindcss-v4',
+  'mpx-tailwindcss-v3': 'mpx-tailwindcss-v3',
+  'mpx-tailwindcss-v4': 'mpx-tailwindcss-v4',
+  'taro-webpack-tailwindcss-v3': 'taro-webpack-tailwindcss-v3',
+  'taro-webpack-tailwindcss-v4': 'taro-webpack-tailwindcss-v4',
+  'taro-vite-tailwindcss-v3': 'taro-vite-tailwindcss-v3',
+  'taro-vite-tailwindcss-v4': 'taro-vite-tailwindcss-v4',
+  'uni-app-vite-tailwindcss-v3': 'uni-app-vite-tailwindcss-v3',
+  'uni-app-vite-tailwindcss-v4': 'uni-app-vite-tailwindcss-v4',
+  'weapp-vite-tailwindcss-v3': 'weapp-vite-tailwindcss-v3',
+  'weapp-vite-tailwindcss-v4': 'weapp-vite-tailwindcss-v4',
 }
 
 function readNumberEnv(name: string, fallback: number) {
@@ -68,7 +67,7 @@ function resolveFrameworkWatchCase(entry: FrameworkSupportCase) {
 }
 
 function shouldWaitForTaroViteInitialBuild(watchCase: WatchCase) {
-  return watchCase.name === 'taro-app-vite' || watchCase.name === 'taro-vite-tailwindcss-v4'
+  return watchCase.name === 'taro-vite-tailwindcss-v3' || watchCase.name === 'taro-vite-tailwindcss-v4'
 }
 
 async function waitForTaroViteInitialBuild(
