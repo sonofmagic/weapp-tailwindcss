@@ -4,10 +4,12 @@ import {
   appendTrailingSnippet,
   createStyleRuleSnippet,
   insertBeforeClosingTag,
+  insertIntoVueTemplateRoot,
   mutateScriptByDataAnchor,
   mutateScriptByDataAnchorWithCommentCarrier,
   mutateSfcStyleBlock,
   mutateTsxScriptByReturnAnchor,
+  mutateVueScriptSetupObjectKeyByAnchorWithCommentCarrier,
   replaceExactSnippet,
 } from '../../text'
 import { buildHexScriptRoundConfigs, buildIssue33HighRiskRoundConfigs } from '../round-configs'
@@ -17,6 +19,84 @@ const taroWatchEnv = {
   CHOKIDAR_USEPOLLING: '1',
   CHOKIDAR_INTERVAL: '100',
   WATCHPACK_POLLING: 'true',
+}
+
+function normalizeExtension(version: 'v3' | 'v4') {
+  return version === 'v3' ? 'scss' : 'css'
+}
+
+function createSubPackageMutations(
+  baseCwd: string,
+  options: {
+    project: string
+    sourceRoot: string
+    distRoot: string
+    version: 'v3' | 'v4'
+    pageKind: 'wxml' | 'tsx' | 'vue' | 'mpx'
+    styleExtension?: 'scss' | 'css'
+    styleCandidates?: (subPackage: 'sub-normal' | 'sub-independent') => string[]
+    globalStyleCandidates?: (subPackage: 'sub-normal' | 'sub-independent') => string[]
+    templateVerifyEscapedIn?: Array<'wxml' | 'js'>
+    templateVerifyClassLiteralIn?: Array<'wxml' | 'js'>
+  },
+): WatchCase['subPackageMutations'] {
+  const styleExtension = options.styleExtension ?? normalizeExtension(options.version)
+  const sourceRoot = options.sourceRoot === '.' ? '' : `${options.sourceRoot}/`
+  const distRoot = options.distRoot === '.' ? '' : `${options.distRoot}/`
+  return (['sub-normal', 'sub-independent'] as const).map((subPackage) => {
+    const independent = subPackage === 'sub-independent'
+    const label = independent ? 'independent' : 'normal'
+    const sourceDir = path.resolve(baseCwd, `demo/${options.project}/${sourceRoot}${subPackage}/pages`)
+    const distDir = path.resolve(baseCwd, `demo/${options.project}/${distRoot}${subPackage}/pages`)
+    const pageSource = path.join(sourceDir, options.pageKind === 'wxml' ? 'index.wxml' : `index.${options.pageKind}`)
+    const styleSource = path.join(sourceDir, `index.${styleExtension}`)
+    const outputStyleCandidates = options.styleCandidates?.(subPackage) ?? [
+      path.join(distDir, 'index.wxss'),
+    ]
+    const globalStyleCandidates = options.globalStyleCandidates?.(subPackage) ?? outputStyleCandidates
+    const roundConfigs = buildHexScriptRoundConfigs()
+
+    return {
+      root: subPackage,
+      independent,
+      outputWxml: path.join(distDir, 'index.wxml'),
+      outputJs: path.join(distDir, 'index.js'),
+      outputStyleCandidates,
+      globalStyleCandidates,
+      templateMutation: {
+        sourceFile: pageSource,
+        verifyEscapedIn: options.templateVerifyEscapedIn
+          ?? (options.pageKind === 'wxml' || options.pageKind === 'mpx' || options.pageKind === 'vue' ? ['wxml'] : ['js']),
+        verifyClassLiteralIn: options.templateVerifyClassLiteralIn
+          ?? (options.pageKind === 'tsx' ? ['js'] : []),
+        roundConfigs,
+        mutate(source, payload) {
+          if (options.pageKind === 'wxml') {
+            return appendTrailingSnippet(
+              source,
+              `<view class="${payload.classLiteral}">${payload.marker}-${label}-subpackage</view>`,
+            )
+          }
+          if (options.pageKind === 'tsx') {
+            const snippet = `  <View className="${payload.classLiteral}">${payload.marker}-${label}-subpackage</View>`
+            return insertBeforeClosingTag(source, '</View>', snippet)
+          }
+          if (options.pageKind === 'vue') {
+            const snippet = `  <view class="${payload.classLiteral}">${payload.marker}-${label}-subpackage</view>`
+            return insertBeforeClosingTag(source, '</template>', snippet)
+          }
+          const snippet = `  <view class="${payload.classLiteral}">${payload.marker}-${label}-subpackage</view>`
+          return insertBeforeClosingTag(source, '</template>', snippet)
+        },
+      },
+      styleMutation: {
+        sourceFile: styleSource,
+        mutate(source, payload) {
+          return appendTrailingSnippet(source, createStyleRuleSnippet(payload))
+        },
+      },
+    }
+  })
 }
 
 export function buildDemoBaseCases(baseCwd: string): WatchCase[] {
@@ -76,6 +156,20 @@ export function buildDemoBaseCases(baseCwd: string): WatchCase[] {
         return appendTrailingSnippet(source, createStyleRuleSnippet(payload))
       },
     },
+    subPackageMutations: createSubPackageMutations(baseCwd, {
+      project: 'taro-webpack-react-tailwindcss-v3',
+      sourceRoot: 'src',
+      distRoot: 'dist',
+      version: 'v3',
+      pageKind: 'tsx',
+      styleExtension: 'css',
+      globalStyleCandidates(subPackage) {
+        return [
+          path.resolve(baseCwd, `demo/taro-webpack-react-tailwindcss-v3/dist/${subPackage}/pages/index.wxss`),
+          path.resolve(baseCwd, 'demo/taro-webpack-react-tailwindcss-v3/dist/app.wxss'),
+        ]
+      },
+    }),
   }
 
   const mpxCase: WatchCase = {
@@ -142,6 +236,21 @@ export function buildDemoBaseCases(baseCwd: string): WatchCase[] {
         return mutateSfcStyleBlock(source, payload)
       },
     },
+    subPackageMutations: createSubPackageMutations(baseCwd, {
+      project: 'mpx-tailwindcss-v3',
+      sourceRoot: 'src',
+      distRoot: 'dist/wx',
+      version: 'v3',
+      pageKind: 'mpx',
+      globalStyleCandidates(subPackage) {
+        return [
+          path.resolve(baseCwd, `demo/mpx-tailwindcss-v3/dist/wx/${subPackage}/pages/index.wxss`),
+          path.resolve(baseCwd, `demo/mpx-tailwindcss-v3/dist/wx/${subPackage}/styles/*.wxss`),
+          path.resolve(baseCwd, 'demo/mpx-tailwindcss-v3/dist/wx/styles/*.wxss'),
+          path.resolve(baseCwd, 'demo/mpx-tailwindcss-v3/dist/wx/app.wxss'),
+        ]
+      },
+    }),
   }
 
   const gulpCase: WatchCase = {
@@ -185,6 +294,13 @@ export function buildDemoBaseCases(baseCwd: string): WatchCase[] {
         return appendTrailingSnippet(source, createStyleRuleSnippet(payload))
       },
     },
+    subPackageMutations: createSubPackageMutations(baseCwd, {
+      project: 'gulp-tailwindcss-v3',
+      sourceRoot: 'src',
+      distRoot: 'dist',
+      version: 'v3',
+      pageKind: 'wxml',
+    }),
   }
 
   const gulpV4Case: WatchCase = {
@@ -215,6 +331,13 @@ export function buildDemoBaseCases(baseCwd: string): WatchCase[] {
       ...gulpCase.styleMutation,
       sourceFile: path.resolve(baseCwd, 'demo/gulp-tailwindcss-v4/src/app.css'),
     },
+    subPackageMutations: createSubPackageMutations(baseCwd, {
+      project: 'gulp-tailwindcss-v4',
+      sourceRoot: 'src',
+      distRoot: 'dist',
+      version: 'v4',
+      pageKind: 'wxml',
+    }),
   }
 
   const weappViteCase: WatchCase = {
@@ -277,6 +400,13 @@ export function buildDemoBaseCases(baseCwd: string): WatchCase[] {
         return appendTrailingSnippet(source, createStyleRuleSnippet(payload))
       },
     },
+    subPackageMutations: createSubPackageMutations(baseCwd, {
+      project: 'weapp-vite-tailwindcss-v3',
+      sourceRoot: 'miniprogram',
+      distRoot: 'dist',
+      version: 'v3',
+      pageKind: 'wxml',
+    }),
   }
 
   const weappViteV4Case: WatchCase = {
@@ -337,12 +467,109 @@ export function buildDemoBaseCases(baseCwd: string): WatchCase[] {
         return appendTrailingSnippet(source, createStyleRuleSnippet(payload))
       },
     },
+    subPackageMutations: createSubPackageMutations(baseCwd, {
+      project: 'weapp-vite-tailwindcss-v4',
+      sourceRoot: '.',
+      distRoot: 'dist',
+      version: 'v4',
+      pageKind: 'wxml',
+    }),
+  }
+
+  const taroWebpackVue3V3Case: WatchCase = {
+    ...taroCase,
+    name: 'taro-webpack-vue3-tailwindcss-v3',
+    label: 'demo/taro-webpack-vue3-tailwindcss-v3',
+    project: 'demo/taro-webpack-vue3-tailwindcss-v3',
+    cwd: path.resolve(baseCwd, 'demo/taro-webpack-vue3-tailwindcss-v3'),
+    outputWxml: path.resolve(baseCwd, 'demo/taro-webpack-vue3-tailwindcss-v3/dist/pages/index/index.wxml'),
+    outputJs: path.resolve(baseCwd, 'demo/taro-webpack-vue3-tailwindcss-v3/dist/pages/index/index.js'),
+    outputStyleCandidates: [
+      path.resolve(baseCwd, 'demo/taro-webpack-vue3-tailwindcss-v3/dist/pages/index/index.wxss'),
+      path.resolve(baseCwd, 'demo/taro-webpack-vue3-tailwindcss-v3/dist/app.wxss'),
+    ],
+    globalStyleCandidates: [
+      path.resolve(baseCwd, 'demo/taro-webpack-vue3-tailwindcss-v3/dist/pages/index/index.wxss'),
+      path.resolve(baseCwd, 'demo/taro-webpack-vue3-tailwindcss-v3/dist/app.wxss'),
+    ],
+    contentMutation: {
+      sourceFile: path.resolve(baseCwd, 'demo/taro-webpack-vue3-tailwindcss-v3/src/pages/index/index.vue'),
+      verifyEscapedIn: ['js'],
+      verifyClassLiteralIn: ['js'],
+      forbidBgHexTruncationIn: ['js'],
+      roundConfigs: buildIssue33HighRiskRoundConfigs(),
+      mutate(source, payload) {
+        return replaceExactSnippet(
+          source,
+          'const dynamicClass = computed(() => \'bg-[#123456] text-[#ffffff] p-[20px]\')',
+          `const dynamicClass = computed(() => '${payload.classLiteral}')`,
+          'taro-webpack-vue3-tailwindcss-v3 vue computed class anchor',
+        )
+      },
+    },
+    templateMutation: {
+      sourceFile: path.resolve(baseCwd, 'demo/taro-webpack-vue3-tailwindcss-v3/src/pages/index/index.vue'),
+      verifyEscapedIn: ['js'],
+      verifyClassLiteralIn: ['js'],
+      roundConfigs: buildHexScriptRoundConfigs(),
+      mutate(source, payload) {
+        const snippet = `    <view class="${payload.classLiteral}">${payload.marker}-template</view>`
+        return insertBeforeClosingTag(source, '</template>', snippet)
+      },
+    },
+    scriptMutation: {
+      sourceFile: path.resolve(baseCwd, 'demo/taro-webpack-vue3-tailwindcss-v3/src/pages/index/index.vue'),
+      verifyEscapedIn: ['js'],
+      verifyClassLiteralIn: ['js'],
+      roundConfigs: buildHexScriptRoundConfigs(),
+      mutate(source, payload) {
+        return insertIntoVueTemplateRoot(
+          replaceExactSnippet(
+            source,
+            'const dynamicClass = computed(() => \'bg-[#123456] text-[#ffffff] p-[20px]\')',
+            `const ${payload.classVariableName} = '${payload.classLiteral}'\nconst __twWatchScriptMarker = '${payload.marker}'\nconst dynamicClass = computed(() => ${payload.classVariableName})`,
+            'taro-webpack-vue3-tailwindcss-v3 script class anchor',
+          ),
+          `    <view hidden :class="${payload.classVariableName}">{{ __twWatchScriptMarker }}</view>`,
+        )
+      },
+      mutateCommentCarrier(source, payload) {
+        return mutateVueScriptSetupObjectKeyByAnchorWithCommentCarrier(
+          source,
+          'const dynamicClass = computed(() => \'bg-[#123456] text-[#ffffff] p-[20px]\')',
+          payload,
+        )
+      },
+    },
+    styleMutation: {
+      sourceFile: path.resolve(baseCwd, 'demo/taro-webpack-vue3-tailwindcss-v3/src/pages/index/index.scss'),
+      mutate(source, payload) {
+        return appendTrailingSnippet(source, createStyleRuleSnippet(payload))
+      },
+    },
+    subPackageMutations: createSubPackageMutations(baseCwd, {
+      project: 'taro-webpack-vue3-tailwindcss-v3',
+      sourceRoot: 'src',
+      distRoot: 'dist',
+      version: 'v3',
+      pageKind: 'vue',
+      styleExtension: 'css',
+      templateVerifyEscapedIn: ['js'],
+      templateVerifyClassLiteralIn: ['js'],
+      globalStyleCandidates(subPackage) {
+        return [
+          path.resolve(baseCwd, `demo/taro-webpack-vue3-tailwindcss-v3/dist/${subPackage}/pages/index.wxss`),
+          path.resolve(baseCwd, 'demo/taro-webpack-vue3-tailwindcss-v3/dist/app.wxss'),
+        ]
+      },
+    }),
   }
 
   return [
     gulpCase,
     gulpV4Case,
     taroCase,
+    taroWebpackVue3V3Case,
     mpxCase,
     weappViteCase,
     weappViteV4Case,

@@ -80,15 +80,24 @@ export async function waitForOutputsReady(
   options: CliOptions,
   session: WatchSession,
   sessionStartedAt: number,
+  outputs: {
+    wxml: string
+    js: string
+    label?: string
+  } = {
+    wxml: watchCase.outputWxml,
+    js: watchCase.outputJs,
+  },
 ) {
   const stableWindowMs = Math.min(Math.max(options.pollMs * 2, 600), 1500)
+  const outputLabel = outputs.label ?? watchCase.label
   return waitFor(
     async () => {
       const [wxml, js, wxmlMtime, jsMtime] = await Promise.all([
-        readFileIfExists(watchCase.outputWxml),
-        readFileIfExists(watchCase.outputJs),
-        getMtime(watchCase.outputWxml),
-        getMtime(watchCase.outputJs),
+        readFileIfExists(outputs.wxml),
+        readFileIfExists(outputs.js),
+        getMtime(outputs.wxml),
+        getMtime(outputs.js),
       ])
       if (wxml == null || js == null) {
         return false
@@ -105,7 +114,7 @@ export async function waitForOutputsReady(
     {
       timeoutMs: options.timeoutMs,
       pollMs: options.pollMs,
-      message: `[${watchCase.label}] initial outputs were not generated in time`,
+      message: `[${outputLabel}] initial outputs were not generated in time`,
       onTick: session.ensureRunning,
     },
   )
@@ -275,12 +284,21 @@ export async function waitForMarkerState(
   options: CliOptions,
   session: WatchSession,
   startedAt = Date.now(),
+  outputs: {
+    wxml: string
+    js: string
+    label?: string
+  } = {
+    wxml: watchCase.outputWxml,
+    js: watchCase.outputJs,
+  },
 ) {
+  const outputLabel = outputs.label ?? watchCase.label
   return waitFor(
     async () => {
       const [wxml, js] = await Promise.all([
-        readFileIfExists(watchCase.outputWxml),
-        readFileIfExists(watchCase.outputJs),
+        readFileIfExists(outputs.wxml),
+        readFileIfExists(outputs.js),
       ])
       if (!wxml || !js) {
         return false
@@ -292,8 +310,8 @@ export async function waitForMarkerState(
       timeoutMs: options.timeoutMs,
       pollMs: options.pollMs,
       message: expected === 'present'
-        ? `[${watchCase.label}] marker was not propagated to outputs`
-        : `[${watchCase.label}] marker was not removed from outputs`,
+        ? `[${outputLabel}] marker was not propagated to outputs`
+        : `[${outputLabel}] marker was not removed from outputs`,
       onTick: session.ensureRunning,
     },
     startedAt,
@@ -302,7 +320,7 @@ export async function waitForMarkerState(
 
 export function createClassMutationScenario(
   watchCase: WatchCase,
-  mutationKind: 'template' | 'script',
+  mutationKind: 'template' | 'script' | 'content',
   mutation: ClassMutationConfig,
   original: string,
   baselineWxml: string,
@@ -313,6 +331,9 @@ export function createClassMutationScenario(
 ): MutationScenario {
   const maxAttempts = 100
   const minFreshEscapedClasses = roundConfig.name === 'issue33-arbitrary' ? 0 : 3
+  const markerPrefix = mutationKind === 'template' && watchCase.label.includes('/sub-')
+    ? `tw-watch-subpackage-${watchCase.name}`
+    : `tw-watch-${watchCase.name}`
 
   for (let attempt = 0; attempt < maxAttempts; attempt += 1) {
     // Keep attempt-specific digits at the front because some round configs
@@ -322,7 +343,7 @@ export function createClassMutationScenario(
     const seed = `${attemptHead}${attemptTail}${Date.now().toString().slice(-2).padStart(2, '0')}`
     const classTokens = roundConfig.buildClassTokens(seed)
     const escapedClasses = classTokens.map(item => replaceWxml(item))
-    const marker = `tw-watch-${watchCase.name}-${mutationKind}-${roundConfig.name}-${seed}`
+    const marker = `${markerPrefix}-${mutationKind}-${roundConfig.name}-${seed}`
     const classLiteral = classTokens.join(' ')
 
     const freshEscapedClasses = escapedClasses.filter((escaped) => {

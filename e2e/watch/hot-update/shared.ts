@@ -14,6 +14,10 @@ export type ConcreteWatchCaseName
     | 'taro-webpack-react-tailwindcss-v4'
     | 'taro-vite-react-tailwindcss-v3'
     | 'taro-vite-react-tailwindcss-v4'
+    | 'taro-webpack-vue3-tailwindcss-v3'
+    | 'taro-webpack-vue3-tailwindcss-v4'
+    | 'taro-vite-vue3-tailwindcss-v3'
+    | 'taro-vite-vue3-tailwindcss-v4'
     | 'uni-app-vite-tailwindcss-v3'
     | 'uni-app-vite-tailwindcss-v4'
     | 'weapp-vite-tailwindcss-v3'
@@ -156,6 +160,16 @@ interface StyleMutationMetric {
 
 type HotUpdateMutationMetric = TemplateOrScriptMutationMetric | StyleMutationMetric
 
+interface SubPackageMutationMetric {
+  root: 'sub-normal' | 'sub-independent'
+  independent: boolean
+  outputWxml: string
+  outputJs: string
+  globalStyleOutputs: string[]
+  template: TemplateOrScriptMutationMetric
+  style: StyleMutationMetric
+}
+
 interface HotUpdateCaseReport {
   name: ConcreteWatchCaseName
   label: string
@@ -172,6 +186,7 @@ interface HotUpdateCaseReport {
   globalStyleOutput?: string
   globalStyleOutputs?: string[]
   mutationMetrics: HotUpdateMutationMetric[]
+  subPackageMutationMetrics?: SubPackageMutationMetric[]
   summaryByMutationKind: Partial<Record<MutationKind, HotUpdateSummary>>
   initialReadyMs: number
   hotUpdateOutputMs: number
@@ -197,8 +212,12 @@ const criticalDemoProjects = [
   'demo/mpx-tailwindcss-v4',
   'demo/taro-webpack-react-tailwindcss-v3',
   'demo/taro-webpack-react-tailwindcss-v4',
+  'demo/taro-webpack-vue3-tailwindcss-v3',
+  'demo/taro-webpack-vue3-tailwindcss-v4',
   'demo/taro-vite-react-tailwindcss-v3',
   'demo/taro-vite-react-tailwindcss-v4',
+  'demo/taro-vite-vue3-tailwindcss-v3',
+  'demo/taro-vite-vue3-tailwindcss-v4',
   'demo/uni-app-vite-tailwindcss-v3',
   'demo/uni-app-vite-tailwindcss-v4',
   'demo/weapp-vite-tailwindcss-v3',
@@ -298,6 +317,10 @@ export function resolveCaseName() {
     || value === 'taro-webpack-react-tailwindcss-v4'
     || value === 'taro-vite-react-tailwindcss-v3'
     || value === 'taro-vite-react-tailwindcss-v4'
+    || value === 'taro-webpack-vue3-tailwindcss-v3'
+    || value === 'taro-webpack-vue3-tailwindcss-v4'
+    || value === 'taro-vite-vue3-tailwindcss-v3'
+    || value === 'taro-vite-vue3-tailwindcss-v4'
     || value === 'uni-app-vite-tailwindcss-v3'
     || value === 'uni-app-vite-tailwindcss-v4'
     || value === 'weapp-vite-tailwindcss-v4'
@@ -439,7 +462,11 @@ function assertHotUpdateReport(report: HotUpdateReport, target: WatchCaseName, m
     expect(item.escapedClasses.length).toBe(item.classTokens.length)
     expect(item.rounds.length).toBeGreaterThanOrEqual(requiredMutationRounds.length)
     const hasContentMutation = item.mutationMetrics.some(metric => metric.mutationKind === 'content')
+    const subPackageMutationMetrics = item.subPackageMutationMetrics ?? []
     expect(item.mutationMetrics.length).toBe(hasContentMutation ? 4 : 3)
+    expect(subPackageMutationMetrics.length).toBe(2)
+    expect(subPackageMutationMetrics.map(metric => metric.root).sort()).toEqual(['sub-independent', 'sub-normal'])
+    expect(subPackageMutationMetrics.some(metric => metric.independent)).toBe(true)
     expect(item.summaryByMutationKind.template?.count).toBe(1)
     expect(item.summaryByMutationKind.script?.count).toBe(1)
     expect(item.summaryByMutationKind.style?.count).toBe(1)
@@ -651,6 +678,31 @@ function assertHotUpdateReport(report: HotUpdateReport, target: WatchCaseName, m
       expect(styleMetric.hotUpdateEffectiveMs).toBeGreaterThan(0)
       expect(styleMetric.rollbackEffectiveMs).toBeGreaterThan(0)
       expect(styleMetric.hotUpdateEffectiveMs).toBeLessThanOrEqual(maxHotUpdateMs)
+    }
+
+    for (const subPackageMetric of subPackageMutationMetrics) {
+      expect(subPackageMetric.outputWxml).toContain(subPackageMetric.root)
+      expect(subPackageMetric.outputJs).toContain(subPackageMetric.root)
+      expect(subPackageMetric.globalStyleOutputs.length).toBeGreaterThan(0)
+      expect(subPackageMetric.template.sourceFile).toContain(subPackageMetric.root)
+      expect(subPackageMetric.template.marker).toContain('tw-watch-subpackage-')
+      expect(subPackageMetric.template.rounds.length).toBeGreaterThanOrEqual(requiredMutationRounds.length)
+      expect(subPackageMetric.template.verifyEscapedIn.length + subPackageMetric.template.verifyClassLiteralIn.length).toBeGreaterThan(0)
+      expect(subPackageMetric.template.verifiedGlobalStyleEscapedClasses.length).toBeGreaterThanOrEqual(
+        subPackageMetric.template.minRequiredGlobalStyleEscapedClasses,
+      )
+      expect(subPackageMetric.template.hotUpdateEffectiveMs).toBeGreaterThan(0)
+      expect(subPackageMetric.template.hotUpdateEffectiveMs).toBeLessThanOrEqual(maxHotUpdateMs)
+      expect(subPackageMetric.template.rollbackEffectiveMs).toBeGreaterThan(0)
+      expect(subPackageMetric.style.sourceFile).toContain(subPackageMetric.root)
+      expect(subPackageMetric.style.outputStyle).toContain('.wxss')
+      expect(subPackageMetric.style.styleNeedle).toContain('.tw-watch-style-')
+      expect(subPackageMetric.style.hotUpdateEffectiveMs).toBeGreaterThan(0)
+      expect(subPackageMetric.style.hotUpdateEffectiveMs).toBeLessThanOrEqual(maxHotUpdateMs)
+      expect(subPackageMetric.style.rollbackEffectiveMs).toBeGreaterThan(0)
+      if (subPackageMetric.independent) {
+        expect(subPackageMetric.root).toBe('sub-independent')
+      }
     }
   }
 

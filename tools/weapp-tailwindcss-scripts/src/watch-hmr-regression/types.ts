@@ -10,6 +10,10 @@ export type ConcreteWatchCaseName
     | 'taro-webpack-react-tailwindcss-v4'
     | 'taro-vite-react-tailwindcss-v3'
     | 'taro-vite-react-tailwindcss-v4'
+    | 'taro-webpack-vue3-tailwindcss-v3'
+    | 'taro-webpack-vue3-tailwindcss-v4'
+    | 'taro-vite-vue3-tailwindcss-v3'
+    | 'taro-vite-vue3-tailwindcss-v4'
     | 'uni-app-vite-tailwindcss-v3'
     | 'uni-app-vite-tailwindcss-v4'
     | 'weapp-vite-tailwindcss-v3'
@@ -18,6 +22,7 @@ export type WatchCaseName = ConcreteWatchCaseName | 'both' | 'all' | 'demo'
 export const MUTATION_ROUND_NAMES = ['baseline-arbitrary', 'complex-corpus', 'hex-arbitrary', 'issue33-arbitrary'] as const
 export type MutationRoundName = typeof MUTATION_ROUND_NAMES[number]
 export type MutationKind = 'template' | 'script' | 'style' | 'content'
+export type ClassMutationKind = 'template' | 'script' | 'content'
 
 export interface CliOptions {
   caseName: WatchCaseName
@@ -102,7 +107,20 @@ export interface WatchCase {
   templateMutation: ClassMutationConfig
   scriptMutation: ClassMutationConfig
   styleMutation: StyleMutationConfig
+  subPackageMutations?: SubPackageMutationConfig[]
   skipStyleMutation?: boolean
+}
+
+export interface SubPackageMutationConfig {
+  root: 'sub-normal' | 'sub-independent'
+  independent: boolean
+  outputWxml: string
+  outputJs: string
+  outputStyleCandidates: string[]
+  globalStyleCandidates: string[]
+  minGlobalStyleEscapedClasses?: number
+  templateMutation: ClassMutationConfig
+  styleMutation: StyleMutationConfig
 }
 
 export interface WatchSession {
@@ -141,7 +159,7 @@ export interface WatchCaseRoundComparison {
 }
 
 export interface ClassMutationMetrics {
-  mutationKind: 'template' | 'script'
+  mutationKind: ClassMutationKind
   sourceFile: string
   marker: string
   classLiteral: string
@@ -228,6 +246,16 @@ export interface StyleMutationMetrics {
 
 export type WatchCaseMutationMetrics = ClassMutationMetrics | StyleMutationMetrics
 
+export interface SubPackageMutationMetrics {
+  root: SubPackageMutationConfig['root']
+  independent: boolean
+  outputWxml: string
+  outputJs: string
+  globalStyleOutputs: string[]
+  template: ClassMutationMetrics
+  style: StyleMutationMetrics
+}
+
 export interface WatchSummary {
   count: number
   hotUpdateAvgMs: number
@@ -253,6 +281,7 @@ export interface WatchCaseMetrics {
   verifyClassLiteralIn: Array<'wxml' | 'js'>
   globalStyleOutputs: string[]
   mutationMetrics: WatchCaseMutationMetrics[]
+  subPackageMutationMetrics: SubPackageMutationMetrics[]
   summaryByMutationKind: Partial<Record<MutationKind, WatchSummary>>
   initialReadyMs: number
   hotUpdateOutputMs: number

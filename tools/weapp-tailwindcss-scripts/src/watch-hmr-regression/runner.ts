@@ -14,6 +14,7 @@ import {
   resolveOutputFiles,
   runClassMutation,
   runStyleMutation,
+  runSubPackageMutation,
   waitForInitialWarmup,
   waitForOutputsReady,
 } from './mutations'
@@ -28,6 +29,10 @@ function resolveCaseSourceFiles(watchCase: WatchCase) {
     watchCase.templateMutation.sourceFile,
     watchCase.scriptMutation.sourceFile,
     watchCase.skipStyleMutation ? undefined : watchCase.styleMutation.sourceFile,
+    ...(watchCase.subPackageMutations ?? []).flatMap(mutation => [
+      mutation.templateMutation.sourceFile,
+      mutation.styleMutation.sourceFile,
+    ]),
   ].filter((item): item is string => Boolean(item)))]
 }
 
@@ -142,6 +147,17 @@ export async function runCase(watchCase: WatchCase, options: CliOptions): Promis
           watchCase.outputStyleCandidates,
         )
 
+    const subPackageMutationMetrics = []
+    for (const subPackageMutation of watchCase.subPackageMutations ?? []) {
+      subPackageMutationMetrics.push(await runSubPackageMutation(
+        watchCase,
+        options,
+        session,
+        subPackageMutation,
+        sourceOriginals,
+      ))
+    }
+
     const preferredRound = resolvePreferredRound(templateMetrics.rounds)
     if (!preferredRound) {
       throw new Error(`[${watchCase.label}] no preferred round produced for template mutation`)
@@ -169,6 +185,7 @@ export async function runCase(watchCase: WatchCase, options: CliOptions): Promis
       verifyClassLiteralIn: templateMetrics.verifyClassLiteralIn,
       globalStyleOutputs,
       mutationMetrics,
+      subPackageMutationMetrics,
       summaryByMutationKind: summarizeMutationMetricsByKind(mutationMetrics),
       initialReadyMs,
       hotUpdateOutputMs: preferredRound.hotUpdateOutputMs,
@@ -179,7 +196,7 @@ export async function runCase(watchCase: WatchCase, options: CliOptions): Promis
     }
 
     process.stdout.write(
-      `[watch-hmr] ${watchCase.label} passed (${contentMetrics ? `content=${contentMetrics.hotUpdateEffectiveMs}ms, ` : ''}template=${templateMetrics.hotUpdateEffectiveMs}ms, script=${scriptMetrics.hotUpdateEffectiveMs}ms${styleMetrics ? `, style=${styleMetrics.hotUpdateEffectiveMs}ms` : ''})\n`,
+      `[watch-hmr] ${watchCase.label} passed (${contentMetrics ? `content=${contentMetrics.hotUpdateEffectiveMs}ms, ` : ''}template=${templateMetrics.hotUpdateEffectiveMs}ms, script=${scriptMetrics.hotUpdateEffectiveMs}ms${styleMetrics ? `, style=${styleMetrics.hotUpdateEffectiveMs}ms` : ''}, subpackage=${subPackageMutationMetrics.length})\n`,
     )
 
     return metrics

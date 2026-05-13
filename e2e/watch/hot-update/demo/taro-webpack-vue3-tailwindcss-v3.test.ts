@@ -1,0 +1,16 @@
+import { describe, it } from 'vitest'
+import { resolveCaseName, runHotUpdateTarget, shouldRunTarget } from '../shared'
+
+describe('e2e watch hot-update taro-webpack-vue3-tailwindcss-v3', () => {
+  const caseName = resolveCaseName()
+  const target = 'taro-webpack-vue3-tailwindcss-v3' as const
+
+  if (!shouldRunTarget(caseName, target)) {
+    it.skip('skips taro-webpack-vue3-tailwindcss-v3 watch hot-update for current E2E_WATCH_CASE filter', () => {})
+    return
+  }
+
+  it('should verify template/script/style/subpackage hot updates and project report for taro-webpack-vue3-tailwindcss-v3', async () => {
+    await runHotUpdateTarget(target)
+  })
+})

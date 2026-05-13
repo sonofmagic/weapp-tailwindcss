@@ -176,6 +176,7 @@ function createCase(
       createClassMutationMetrics('content', [complexRound]),
       createStyleMutationMetrics(),
     ],
+    subPackageMutationMetrics: [],
     summaryByMutationKind: {},
     initialReadyMs: 25,
     hotUpdateOutputMs: hotUpdateEffectiveMs + 10,
@@ -813,6 +814,57 @@ describe('watch-hmr regression cases', () => {
     }
   })
 
+  it('registers watch hot-update cases for every demo project including Vue3 variants', () => {
+    const cases = [
+      ...buildDemoBaseCases('/repo'),
+      ...buildDemoExtendedCases('/repo'),
+    ]
+
+    expect(cases.map(watchCase => watchCase.name)).toEqual([
+      'gulp-tailwindcss-v3',
+      'gulp-tailwindcss-v4',
+      'taro-webpack-react-tailwindcss-v3',
+      'taro-webpack-vue3-tailwindcss-v3',
+      'mpx-tailwindcss-v3',
+      'weapp-vite-tailwindcss-v3',
+      'weapp-vite-tailwindcss-v4',
+      'uni-app-vite-tailwindcss-v3',
+      'uni-app-vite-tailwindcss-v4',
+      'mpx-tailwindcss-v4',
+      'taro-vite-react-tailwindcss-v4',
+      'taro-vite-react-tailwindcss-v3',
+      'taro-webpack-react-tailwindcss-v4',
+      'taro-vite-vue3-tailwindcss-v3',
+      'taro-vite-vue3-tailwindcss-v4',
+      'taro-webpack-vue3-tailwindcss-v4',
+    ])
+  })
+
+  it('covers normal and independent subpackage hot updates for every demo watch case', () => {
+    const cases = [
+      ...buildDemoBaseCases('/repo'),
+      ...buildDemoExtendedCases('/repo'),
+    ]
+
+    for (const watchCase of cases) {
+      expect(watchCase.subPackageMutations?.map(item => item.root).sort(), watchCase.name).toEqual(['sub-independent', 'sub-normal'])
+      for (const subPackageMutation of watchCase.subPackageMutations ?? []) {
+        expect(subPackageMutation.templateMutation.sourceFile, watchCase.name).toContain(subPackageMutation.root)
+        expect(subPackageMutation.styleMutation.sourceFile, watchCase.name).toContain(subPackageMutation.root)
+        expect(subPackageMutation.outputWxml, watchCase.name).toContain(subPackageMutation.root)
+        expect(subPackageMutation.outputJs, watchCase.name).toContain(subPackageMutation.root)
+        expect(subPackageMutation.globalStyleCandidates.length, watchCase.name).toBeGreaterThan(0)
+        expect(subPackageMutation.templateMutation.roundConfigs?.map(item => item.name), watchCase.name).toEqual([
+          'baseline-arbitrary',
+          'complex-corpus',
+          'hex-arbitrary',
+        ])
+      }
+      expect(watchCase.subPackageMutations?.find(item => item.root === 'sub-independent')?.independent, watchCase.name).toBe(true)
+      expect(watchCase.subPackageMutations?.find(item => item.root === 'sub-normal')?.independent, watchCase.name).toBe(false)
+    }
+  })
+
   it('keeps script read-path HMR checks available for every demo case', () => {
     const cases = [
       ...buildDemoBaseCases('/repo'),
@@ -886,7 +938,7 @@ describe('watch-hmr regression cases', () => {
     expect(win32DemoCases.find(watchCase => watchCase.name === 'uni-app-vite-tailwindcss-v3')).toBeDefined()
   })
 
-  it('keeps issue33 watch cases in macOS and Windows CI matrices', async () => {
+  it('keeps issue33 and Vue3 watch cases in macOS and Windows CI matrices', async () => {
     const workflowSource = await readFile(
       path.resolve(__dirname, '../../../.github/workflows/e2e-watch.yml'),
       'utf8',
@@ -909,8 +961,11 @@ describe('watch-hmr regression cases', () => {
     const requiredMatrixEntries = [
       { os: 'macos-latest', runner_label: 'macos', watch_case: 'uni-app-vite-tailwindcss-v3', round_profile: 'issue33' },
       { os: 'macos-latest', runner_label: 'macos', watch_case: 'weapp-vite-tailwindcss-v3', round_profile: 'issue33' },
+      { os: 'macos-latest', runner_label: 'macos', watch_case: 'taro-vite-vue3-tailwindcss-v4', round_profile: 'default' },
+      { os: 'macos-latest', runner_label: 'macos', watch_case: 'taro-webpack-vue3-tailwindcss-v4', round_profile: 'default' },
       { os: 'windows-latest', runner_label: 'windows', watch_case: 'uni-app-vite-tailwindcss-v3', round_profile: 'issue33' },
       { os: 'windows-latest', runner_label: 'windows', watch_case: 'weapp-vite-tailwindcss-v3', round_profile: 'issue33' },
+      { os: 'windows-latest', runner_label: 'windows', watch_case: 'taro-vite-vue3-tailwindcss-v4', round_profile: 'default' },
     ]
 
     for (const entry of requiredMatrixEntries) {

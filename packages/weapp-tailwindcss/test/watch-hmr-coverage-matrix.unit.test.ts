@@ -19,8 +19,12 @@ const matrixProjects = [
   'demo/mpx-tailwindcss-v4',
   'demo/taro-webpack-react-tailwindcss-v3',
   'demo/taro-webpack-react-tailwindcss-v4',
+  'demo/taro-webpack-vue3-tailwindcss-v3',
+  'demo/taro-webpack-vue3-tailwindcss-v4',
   'demo/taro-vite-react-tailwindcss-v3',
   'demo/taro-vite-react-tailwindcss-v4',
+  'demo/taro-vite-vue3-tailwindcss-v3',
+  'demo/taro-vite-vue3-tailwindcss-v4',
   'demo/uni-app-vite-tailwindcss-v3',
   'demo/uni-app-vite-tailwindcss-v4',
   'demo/weapp-vite-tailwindcss-v3',
@@ -44,8 +48,17 @@ describe('watch-hmr coverage matrix', () => {
       expect(watchCase.templateMutation, `${watchCase.project} should cover template class HMR`).toBeDefined()
       expect(watchCase.scriptMutation, `${watchCase.project} should cover script class HMR`).toBeDefined()
       expect(watchCase.styleMutation, `${watchCase.project} should cover style @apply HMR`).toBeDefined()
+      expect(watchCase.subPackageMutations?.map(item => item.root).sort(), `${watchCase.project} should cover normal and independent subpackage HMR`).toEqual(['sub-independent', 'sub-normal'])
       expect(watchCase.templateMutation.verifyEscapedIn.length + (watchCase.templateMutation.verifyClassLiteralIn?.length ?? 0)).toBeGreaterThan(0)
       expect(watchCase.scriptMutation.verifyEscapedIn.length + (watchCase.scriptMutation.verifyClassLiteralIn?.length ?? 0)).toBeGreaterThan(0)
+      for (const subPackageMutation of watchCase.subPackageMutations ?? []) {
+        expect(subPackageMutation.outputWxml).toContain(subPackageMutation.root)
+        expect(subPackageMutation.outputJs).toContain(subPackageMutation.root)
+        expect(subPackageMutation.templateMutation.sourceFile).toContain(subPackageMutation.root)
+        expect(subPackageMutation.styleMutation.sourceFile).toContain(subPackageMutation.root)
+        expect(subPackageMutation.templateMutation.roundConfigs?.length).toBeGreaterThanOrEqual(3)
+        expect(subPackageMutation.templateMutation.verifyEscapedIn.length + (subPackageMutation.templateMutation.verifyClassLiteralIn?.length ?? 0)).toBeGreaterThan(0)
+      }
       if (watchCase.contentMutation) {
         expect(watchCase.contentMutation.verifyClassLiteralIn).toContain('js')
       }
