@@ -162,9 +162,9 @@ catalogs:
   weappIdeCli:
     weapp-ide-cli: ^5.2.9
   weappVite:
-    weapp-vite: ^6.16.11
+    weapp-vite: ^6.16.12
   wrangler:
-    wrangler: ^4.90.0
+    wrangler: ^4.90.1
 
 onlyBuiltDependencies:
   - '@tailwindcss/oxide'
