@@ -91,9 +91,9 @@ export async function transformTailwindV3CssToWeapp(
   const result = await defaultStyleHandler(css, {
     cssChildCombinatorReplaceValue: ['view', 'text'],
     cssRemoveHoverPseudoClass: true,
+    ...options,
     isMainChunk: true,
     majorVersion: 3,
-    ...options,
   })
   const prunedCss = pruneMiniProgramGeneratedCss(result.css, {
     preservePreflight: true,

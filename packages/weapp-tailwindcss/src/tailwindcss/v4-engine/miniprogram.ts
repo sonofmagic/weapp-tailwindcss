@@ -31,9 +31,9 @@ export async function transformTailwindV4CssToWeapp(
   const result = await defaultStyleHandler(protectedCss.css, {
     cssChildCombinatorReplaceValue: ['view', 'text'],
     cssRemoveHoverPseudoClass: true,
+    ...options,
     isMainChunk: true,
     majorVersion: 4,
-    ...options,
   })
   return pruneMiniProgramGeneratedCss(protectedCss.restore(result.css))
 }

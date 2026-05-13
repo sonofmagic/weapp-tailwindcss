@@ -2,7 +2,7 @@ import { mkdir, mkdtemp, symlink, writeFile } from 'node:fs/promises'
 import { createRequire } from 'node:module'
 import { tmpdir } from 'node:os'
 import path from 'node:path'
-import { createTailwindV4Engine, resolveTailwindV4Source, resolveTailwindV4SourceOptionsFromPatcher } from '@/tailwindcss/v4-engine'
+import { createTailwindV4Engine, resolveTailwindV4Source, resolveTailwindV4SourceOptionsFromPatcher, transformTailwindV4CssToWeapp } from '@/tailwindcss/v4-engine'
 
 const require = createRequire(import.meta.url)
 const tailwindcssRoot = path.dirname(require.resolve('tailwindcss4/package.json'))
@@ -46,6 +46,35 @@ describe('tailwindcss v4 engine', () => {
     expect(result.css).toContain('.w-_b100px_B')
     expect(result.css).toContain('width: 100px')
     expect(result.css).not.toContain('not-a-tailwind-class')
+  })
+
+  it('treats rpx arbitrary text values as lengths in generated mini-program css', async () => {
+    const source = await resolveTailwindV4Source({
+      css: MINIMAL_THEME_CSS,
+      base: process.cwd(),
+    })
+    const engine = createTailwindV4Engine(source)
+
+    const result = await engine.generate({
+      candidates: ['text-[55rpx]'],
+      styleOptions: {
+        isMainChunk: false,
+      },
+    })
+
+    expect(result.classSet).toEqual(new Set(['text-[55rpx]']))
+    expect(result.css).toContain('.text-_b55rpx_B')
+    expect(result.css).toContain('font-size: 55rpx')
+    expect(result.css).not.toContain('color: 55rpx')
+
+    const transformed = await transformTailwindV4CssToWeapp(
+      '.text-\\[55rpx\\] { color: 55rpx; }',
+      { isMainChunk: false },
+    )
+
+    expect(transformed).toContain('.text-_b55rpx_B')
+    expect(transformed).toContain('font-size: 55rpx')
+    expect(transformed).not.toContain('color: 55rpx')
   })
 
   it('uses mini-program-safe Tailwind v4 default color variables for native v4 weapp output', async () => {

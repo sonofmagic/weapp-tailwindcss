@@ -1,4 +1,4 @@
-import { createTailwindV3Engine, resolveTailwindV3Source } from '@/tailwindcss/v3-engine'
+import { createTailwindV3Engine, resolveTailwindV3Source, transformTailwindV3CssToWeapp } from '@/tailwindcss/v3-engine'
 import plugin from 'tailwindcss/plugin'
 
 function compactCss(css: string) {
@@ -33,6 +33,36 @@ describe('tailwindcss v3 engine', () => {
     expect(result.css).not.toContain('button')
     expect(result.css).not.toContain('::-webkit')
     expect(result.css).toMatch(/^::before,\s*::after\s*\{\s*--tw-content:/m)
+  })
+
+  it('treats rpx arbitrary text values as lengths in generated mini-program css', async () => {
+    const source = await resolveTailwindV3Source({
+      css: '@tailwind utilities;',
+      base: process.cwd(),
+      config: undefined,
+    })
+    const engine = createTailwindV3Engine(source)
+
+    const result = await engine.generate({
+      candidates: ['text-[55rpx]'],
+      styleOptions: {
+        isMainChunk: false,
+      },
+    })
+
+    expect(result.classSet).toEqual(new Set(['text-[55rpx]']))
+    expect(result.css).toContain('.text-_b55rpx_B')
+    expect(result.css).toContain('font-size: 55rpx')
+    expect(result.css).not.toContain('color: 55rpx')
+
+    const transformed = await transformTailwindV3CssToWeapp(
+      '.text-\\[55rpx\\] { color: 55rpx; }',
+      { isMainChunk: false },
+    )
+
+    expect(transformed).toContain('.text-_b55rpx_B')
+    expect(transformed).toContain('font-size: 55rpx')
+    expect(transformed).not.toContain('color: 55rpx')
   })
 
   it('expands divide child combinators for view and text in mini-program output', async () => {
