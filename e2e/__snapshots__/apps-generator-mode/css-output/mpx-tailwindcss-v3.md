@@ -6,7 +6,7 @@ Generator CSS files: app.wxss, styles/base.wxss, styles/components.wxss, styles/
 
 | Bytes | Selectors | @supports | :hover | Tailwind banner | Raw arbitrary selector | Weapp escaped arbitrary selector |
 | ---: | ---: | --- | --- | --- | --- | --- |
-| 190234 | 2879 | false | false | false | false | true |
+| 190894 | 2881 | false | false | false | false | true |
 
 ## Generator CSS
 
@@ -113,6 +113,14 @@ text,
 .text-_bblue_B {
   --tw-text-opacity: 1;
   color: rgba(0, 0, 255, var(--tw-text-opacity, 1));
+}
+.before_ccontent-_b_aindependent_subpackage_mpx-tailwindcss-v3_a_B::before {
+  --tw-content: 'independent subpackage mpx-tailwindcss-v3';
+  content: var(--tw-content);
+}
+.before_ccontent-_b_anormal_subpackage_mpx-tailwindcss-v3_a_B::before {
+  --tw-content: 'normal subpackage mpx-tailwindcss-v3';
+  content: var(--tw-content);
 }
 .after_cml-0_d5::after {
   content: var(--tw-content);
@@ -9551,6 +9559,14 @@ text,
 .text-_bblue_B {
   --tw-text-opacity: 1;
   color: rgba(0, 0, 255, var(--tw-text-opacity, 1));
+}
+.before_ccontent-_b_aindependent_subpackage_mpx-tailwindcss-v3_a_B::before {
+  --tw-content: 'independent subpackage mpx-tailwindcss-v3';
+  content: var(--tw-content);
+}
+.before_ccontent-_b_anormal_subpackage_mpx-tailwindcss-v3_a_B::before {
+  --tw-content: 'normal subpackage mpx-tailwindcss-v3';
+  content: var(--tw-content);
 }
 .after_cml-0_d5::after {
   content: var(--tw-content);

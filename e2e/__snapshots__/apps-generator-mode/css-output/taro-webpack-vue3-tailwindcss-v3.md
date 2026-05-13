@@ -2,11 +2,11 @@
 
 Fixture: demo
 Entry: taro-webpack-vue3-tailwindcss-v3/dist/app.wxss
-Generator CSS files: app.wxss
+Generator CSS files: app.wxss, index.wxss, index.wxss
 
 | Bytes | Selectors | @supports | :hover | Tailwind banner | Raw arbitrary selector | Weapp escaped arbitrary selector |
 | ---: | ---: | --- | --- | --- | --- | --- |
-| 4883 | 47 | false | false | false | false | true |
+| 6061 | 50 | false | false | false | false | true |
 
 ## Generator CSS
 
@@ -210,9 +210,75 @@ text,
   --tw-border-opacity: 1;
   border-color: rgba(75, 214, 80, var(--tw-border-opacity, 1));
 }
+.before_ccontent-_b_aindependent_subpackage_taro-webpack-vue3-tailwindcss-v3_a_B::before {
+  --tw-content: 'independent subpackage taro-webpack-vue3-tailwindcss-v3';
+  content: var(--tw-content);
+}
+.before_ccontent-_b_anormal_subpackage_taro-webpack-vue3-tailwindcss-v3_a_B::before {
+  --tw-content: 'normal subpackage taro-webpack-vue3-tailwindcss-v3';
+  content: var(--tw-content);
+}
 .dark view.dark_cbg-_b_h123456_B,
 .dark text.dark_cbg-_b_h123456_B {
   --tw-bg-opacity: 1;
   background-color: rgba(18, 52, 86, var(--tw-bg-opacity, 1));
+}
+
+.container {
+  width: 100%;
+}
+@media (min-width: 40rem) {
+  .container {
+    max-width: 1280rpx;
+  }
+}
+@media (min-width: 48rem) {
+  .container {
+    max-width: 1536rpx;
+  }
+}
+@media (min-width: 64rem) {
+  .container {
+    max-width: 2048rpx;
+  }
+}
+@media (min-width: 80rem) {
+  .container {
+    max-width: 2560rpx;
+  }
+}
+@media (min-width: 96rem) {
+  .container {
+    max-width: 3072rpx;
+  }
+}
+
+.container {
+  width: 100%;
+}
+@media (min-width: 40rem) {
+  .container {
+    max-width: 1280rpx;
+  }
+}
+@media (min-width: 48rem) {
+  .container {
+    max-width: 1536rpx;
+  }
+}
+@media (min-width: 64rem) {
+  .container {
+    max-width: 2048rpx;
+  }
+}
+@media (min-width: 80rem) {
+  .container {
+    max-width: 2560rpx;
+  }
+}
+@media (min-width: 96rem) {
+  .container {
+    max-width: 3072rpx;
+  }
 }
 ```

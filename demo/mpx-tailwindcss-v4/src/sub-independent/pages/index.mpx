@@ -1,0 +1,13 @@
+<template>
+  <view class="bg-independent-subpackage-marker before:content-['independent_subpackage_mpx-tailwindcss-v4']">独立分包</view>
+</template>
+
+<script>
+import './index.css'
+</script>
+
+<script type="application/json">
+  {
+    "navigationBarTitleText": "独立分包"
+  }
+</script>

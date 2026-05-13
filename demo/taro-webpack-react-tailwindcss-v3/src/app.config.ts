@@ -12,12 +12,21 @@ export default {
     navigationBarTitleText: 'WeChat',
     navigationBarTextStyle: 'black'
   },
-  subpackages: [
+  subPackages: [
     {
       root: "moduleA",
       pages: [
         "pages/index"
       ]
+    },
+    {
+      root: 'sub-normal',
+      pages: ['pages/index'],
+    },
+    {
+      root: 'sub-independent',
+      pages: ['pages/index'],
+      independent: true,
     },
     {
       root: "moduleB",

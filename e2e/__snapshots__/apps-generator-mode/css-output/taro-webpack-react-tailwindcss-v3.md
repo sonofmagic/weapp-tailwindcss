@@ -2,11 +2,11 @@
 
 Fixture: demo
 Entry: taro-webpack-react-tailwindcss-v3/dist/app.wxss
-Generator CSS files: app.wxss, index.wxss, index.wxss, index.wxss, index.wxss, index.wxss
+Generator CSS files: app.wxss, index.wxss, index.wxss, index.wxss, index.wxss, index.wxss, index.wxss, index.wxss
 
 | Bytes | Selectors | @supports | :hover | Tailwind banner | Raw arbitrary selector | Weapp escaped arbitrary selector |
 | ---: | ---: | --- | --- | --- | --- | --- |
-| 48665 | 139 | false | false | false | false | true |
+| 51017 | 142 | false | false | false | false | true |
 
 ## Generator CSS
 
@@ -452,6 +452,10 @@ text,
   --tw-border-opacity: 1;
   border-color: rgba(75, 214, 80, var(--tw-border-opacity, 1));
 }
+.before_ccontent-_b_aindependent_subpackage_taro-webpack-react-tailwindcss-v3_a_B::before {
+  --tw-content: 'independent subpackage taro-webpack-react-tailwindcss-v3';
+  content: var(--tw-content);
+}
 .before_ccontent-_b_amoduleA_u_x666e_u_x901a_u_x5206_u_x5305__a_B::before {
   --tw-content: 'moduleA 普通分包';
   content: var(--tw-content);
@@ -462,6 +466,10 @@ text,
 }
 .before_ccontent-_b_amoduleC_u_x72ec_u_x7acb_u_x5206_u_x5305__a_B::before {
   --tw-content: 'moduleC 独立分包';
+  content: var(--tw-content);
+}
+.before_ccontent-_b_anormal_subpackage_taro-webpack-react-tailwindcss-v3_a_B::before {
+  --tw-content: 'normal subpackage taro-webpack-react-tailwindcss-v3';
   content: var(--tw-content);
 }
 .after_cml-0_d5::after {
@@ -521,6 +529,64 @@ text,
   color: rgba(248, 113, 113, var(--tw-text-opacity, 1)) !important;
 }
 
+
+.container {
+  width: 100%;
+}
+@media (min-width: 40rem) {
+  .container {
+    max-width: 1280rpx;
+  }
+}
+@media (min-width: 48rem) {
+  .container {
+    max-width: 1536rpx;
+  }
+}
+@media (min-width: 64rem) {
+  .container {
+    max-width: 2048rpx;
+  }
+}
+@media (min-width: 80rem) {
+  .container {
+    max-width: 2560rpx;
+  }
+}
+@media (min-width: 96rem) {
+  .container {
+    max-width: 3072rpx;
+  }
+}
+
+.container {
+  width: 100%;
+}
+@media (min-width: 40rem) {
+  .container {
+    max-width: 1280rpx;
+  }
+}
+@media (min-width: 48rem) {
+  .container {
+    max-width: 1536rpx;
+  }
+}
+@media (min-width: 64rem) {
+  .container {
+    max-width: 2048rpx;
+  }
+}
+@media (min-width: 80rem) {
+  .container {
+    max-width: 2560rpx;
+  }
+}
+@media (min-width: 96rem) {
+  .container {
+    max-width: 3072rpx;
+  }
+}
 
 .relative {
   position: relative;
@@ -901,6 +967,10 @@ text,
   --tw-border-opacity: 1;
   border-color: rgba(75, 214, 80, var(--tw-border-opacity, 1));
 }
+.before_ccontent-_b_aindependent_subpackage_taro-webpack-react-tailwindcss-v3_a_B::before {
+  --tw-content: 'independent subpackage taro-webpack-react-tailwindcss-v3';
+  content: var(--tw-content);
+}
 .before_ccontent-_b_amoduleA_u_x666e_u_x901a_u_x5206_u_x5305__a_B::before {
   --tw-content: 'moduleA 普通分包';
   content: var(--tw-content);
@@ -911,6 +981,10 @@ text,
 }
 .before_ccontent-_b_amoduleC_u_x72ec_u_x7acb_u_x5206_u_x5305__a_B::before {
   --tw-content: 'moduleC 独立分包';
+  content: var(--tw-content);
+}
+.before_ccontent-_b_anormal_subpackage_taro-webpack-react-tailwindcss-v3_a_B::before {
+  --tw-content: 'normal subpackage taro-webpack-react-tailwindcss-v3';
   content: var(--tw-content);
 }
 .after_cml-0_d5::after {
@@ -1434,6 +1508,10 @@ text,
   --tw-border-opacity: 1;
   border-color: rgba(75, 214, 80, var(--tw-border-opacity, 1));
 }
+.before_ccontent-_b_aindependent_subpackage_taro-webpack-react-tailwindcss-v3_a_B::before {
+  --tw-content: 'independent subpackage taro-webpack-react-tailwindcss-v3';
+  content: var(--tw-content);
+}
 .before_ccontent-_b_amoduleA_u_x666e_u_x901a_u_x5206_u_x5305__a_B::before {
   --tw-content: 'moduleA 普通分包';
   content: var(--tw-content);
@@ -1444,6 +1522,10 @@ text,
 }
 .before_ccontent-_b_amoduleC_u_x72ec_u_x7acb_u_x5206_u_x5305__a_B::before {
   --tw-content: 'moduleC 独立分包';
+  content: var(--tw-content);
+}
+.before_ccontent-_b_anormal_subpackage_taro-webpack-react-tailwindcss-v3_a_B::before {
+  --tw-content: 'normal subpackage taro-webpack-react-tailwindcss-v3';
   content: var(--tw-content);
 }
 .after_cml-0_d5::after {
@@ -1944,6 +2026,10 @@ text,
   --tw-border-opacity: 1;
   border-color: rgba(75, 214, 80, var(--tw-border-opacity, 1));
 }
+.before_ccontent-_b_aindependent_subpackage_taro-webpack-react-tailwindcss-v3_a_B::before {
+  --tw-content: 'independent subpackage taro-webpack-react-tailwindcss-v3';
+  content: var(--tw-content);
+}
 .before_ccontent-_b_amoduleA_u_x666e_u_x901a_u_x5206_u_x5305__a_B::before {
   --tw-content: 'moduleA 普通分包';
   content: var(--tw-content);
@@ -1954,6 +2040,10 @@ text,
 }
 .before_ccontent-_b_amoduleC_u_x72ec_u_x7acb_u_x5206_u_x5305__a_B::before {
   --tw-content: 'moduleC 独立分包';
+  content: var(--tw-content);
+}
+.before_ccontent-_b_anormal_subpackage_taro-webpack-react-tailwindcss-v3_a_B::before {
+  --tw-content: 'normal subpackage taro-webpack-react-tailwindcss-v3';
   content: var(--tw-content);
 }
 .after_cml-0_d5::after {

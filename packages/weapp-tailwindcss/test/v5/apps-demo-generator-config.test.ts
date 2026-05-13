@@ -24,6 +24,7 @@ const demoProjects = [
 
 const tailwindV3Projects = demoProjects.filter(project => project.endsWith('-v3'))
 const tailwindV4Projects = demoProjects.filter(project => project.endsWith('-v4'))
+const subPackageRoots = ['sub-normal', 'sub-independent'] as const
 
 async function readProjectFile(relativePath: string) {
   return readFile(path.resolve(repositoryRoot, relativePath), 'utf8')
@@ -31,6 +32,77 @@ async function readProjectFile(relativePath: string) {
 
 async function readProjectJson<T>(relativePath: string) {
   return JSON.parse(await readProjectFile(relativePath)) as T
+}
+
+async function fileExists(relativePath: string) {
+  try {
+    await readProjectFile(relativePath)
+    return true
+  }
+  catch (error) {
+    if ((error as NodeJS.ErrnoException).code === 'ENOENT') {
+      return false
+    }
+    throw error
+  }
+}
+
+function appConfigPath(project: string) {
+  if (project.startsWith('taro-')) {
+    return `demo/${project}/src/app.config.ts`
+  }
+  if (project.startsWith('uni-app-')) {
+    return `demo/${project}/src/pages.json`
+  }
+  if (project.startsWith('gulp-')) {
+    return `demo/${project}/src/app.json`
+  }
+  if (project.startsWith('mpx-')) {
+    return `demo/${project}/src/app.mpx`
+  }
+  if (project === 'weapp-vite-tailwindcss-v3') {
+    return `demo/${project}/miniprogram/app.json.ts`
+  }
+  return `demo/${project}/app.json`
+}
+
+function subPackageStyleCandidates(project: string, subPackage: typeof subPackageRoots[number]) {
+  const extensions = project.endsWith('-v3') ? ['scss', 'css'] : ['css']
+  if (project.startsWith('weapp-vite-tailwindcss-v3')) {
+    return extensions.map(extension => `demo/${project}/miniprogram/${subPackage}/pages/index.${extension}`)
+  }
+  if (project.startsWith('weapp-vite-tailwindcss-v4')) {
+    return extensions.map(extension => `demo/${project}/${subPackage}/pages/index.${extension}`)
+  }
+  return extensions.map(extension => `demo/${project}/src/${subPackage}/pages/index.${extension}`)
+}
+
+async function readFirstExistingProjectFile(relativePaths: string[]) {
+  for (const relativePath of relativePaths) {
+    if (await fileExists(relativePath)) {
+      return readProjectFile(relativePath)
+    }
+  }
+  throw new Error(`Missing project file candidates: ${relativePaths.join(', ')}`)
+}
+
+function subPackagePageCandidates(project: string, subPackage: typeof subPackageRoots[number]) {
+  if (project.includes('-react-')) {
+    return [`demo/${project}/src/${subPackage}/pages/index.tsx`]
+  }
+  if (project.includes('-vue3-') || project.startsWith('uni-app-')) {
+    return [`demo/${project}/src/${subPackage}/pages/index.vue`]
+  }
+  if (project.startsWith('mpx-')) {
+    return [`demo/${project}/src/${subPackage}/pages/index.mpx`]
+  }
+  if (project.startsWith('weapp-vite-tailwindcss-v3')) {
+    return [`demo/${project}/miniprogram/${subPackage}/pages/index.wxml`]
+  }
+  if (project.startsWith('weapp-vite-tailwindcss-v4')) {
+    return [`demo/${project}/${subPackage}/pages/index.wxml`]
+  }
+  return [`demo/${project}/src/${subPackage}/pages/index.wxml`]
 }
 
 describe('demo matrix generator config', () => {
@@ -130,5 +202,40 @@ describe('demo matrix generator config', () => {
     expect(taroProjects.every(project => project.includes('-react-') || project.includes('-vue3-'))).toBe(true)
     expect(taroProjects.filter(project => project.includes('-react-')).length).toBe(4)
     expect(taroProjects.filter(project => project.includes('-vue3-')).length).toBe(4)
+  })
+
+  it('keeps every demo wired with normal and independent subpackages', async () => {
+    for (const project of demoProjects) {
+      const source = await readProjectFile(appConfigPath(project))
+
+      expect(source, project).toContain('sub-normal')
+      expect(source, project).toContain('sub-independent')
+      expect(source, project).toContain('independent')
+    }
+  })
+
+  it('keeps subpackage Tailwind entries on isolated @config files', async () => {
+    for (const project of demoProjects) {
+      for (const subPackage of subPackageRoots) {
+        const configPath = `demo/${project}/tailwind.config.${subPackage}.js`
+        const tsConfigPath = `demo/${project}/tailwind.config.${subPackage}.ts`
+        const configSource = await fileExists(configPath)
+          ? await readProjectFile(configPath)
+          : await readProjectFile(tsConfigPath)
+        const styleSource = await readFirstExistingProjectFile(subPackageStyleCandidates(project, subPackage))
+
+        expect(configSource, `${project}/${subPackage}`).toContain(subPackage)
+        expect(configSource, `${project}/${subPackage}`).toContain(subPackage.replace('sub-', ''))
+        expect(styleSource, `${project}/${subPackage}`).toContain('@config')
+        expect(styleSource, `${project}/${subPackage}`).toContain(`tailwind.config.${subPackage}.`)
+        expect(
+          styleSource.includes('tailwindcss') || styleSource.includes('@tailwind'),
+          `${project}/${subPackage}`,
+        ).toBe(true)
+
+        const pageExists = await Promise.all(subPackagePageCandidates(project, subPackage).map(fileExists))
+        expect(pageExists.some(Boolean), `${project}/${subPackage}`).toBe(true)
+      }
+    }
   })
 })

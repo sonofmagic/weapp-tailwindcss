@@ -9,6 +9,23 @@
   ],
   "subPackages": [
     {
+      "root": "sub-normal",
+      "pages": [
+        {
+          "path": "pages/index"
+        }
+      ]
+    },
+    {
+      "root": "sub-independent",
+      "pages": [
+        {
+          "path": "pages/index"
+        }
+      ],
+      "independent": true
+    },
+    {
       "root": "pages-order",
       "pages": [
         {

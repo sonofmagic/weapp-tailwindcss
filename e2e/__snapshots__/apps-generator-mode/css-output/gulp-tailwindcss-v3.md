@@ -2,11 +2,11 @@
 
 Fixture: demo
 Entry: gulp-tailwindcss-v3/dist/app.wxss
-Generator CSS files: app.wxss, index.wxss, more.wxss
+Generator CSS files: app.wxss, index.wxss, index.wxss, index.wxss, more.wxss
 
 | Bytes | Selectors | @supports | :hover | Tailwind banner | Raw arbitrary selector | Weapp escaped arbitrary selector |
 | ---: | ---: | --- | --- | --- | --- | --- |
-| 6675 | 44 | false | false | false | false | true |
+| 14228 | 49 | false | false | false | false | true |
 
 ## Generator CSS
 
@@ -242,7 +242,339 @@ text,
   --tw-text-opacity: 1;
   color: rgba(91, 164, 229, var(--tw-text-opacity, 1));
 }
+.before_ccontent-_b_aindependent_subpackage_gulp-tailwindcss-v3_a_B::before {
+  --tw-content: 'independent subpackage gulp-tailwindcss-v3';
+  content: var(--tw-content);
+}
+.before_ccontent-_b_anormal_subpackage_gulp-tailwindcss-v3_a_B::before {
+  --tw-content: 'normal subpackage gulp-tailwindcss-v3';
+  content: var(--tw-content);
+}
 
+
+::before,
+::after {
+  --tw-content: '';
+}
+view,
+text,
+::before,
+::after {
+  --tw-border-spacing-x: 0;
+  --tw-border-spacing-y: 0;
+  --tw-translate-x: 0;
+  --tw-translate-y: 0;
+  --tw-rotate: 0;
+  --tw-skew-x: 0;
+  --tw-skew-y: 0;
+  --tw-scale-x: 1;
+  --tw-scale-y: 1;
+  --tw-pan-x:  ;
+  --tw-pan-y:  ;
+  --tw-pinch-zoom:  ;
+  --tw-scroll-snap-strictness: proximity;
+  --tw-gradient-from-position:  ;
+  --tw-gradient-via-position:  ;
+  --tw-gradient-to-position:  ;
+  --tw-ordinal:  ;
+  --tw-slashed-zero:  ;
+  --tw-numeric-figure:  ;
+  --tw-numeric-spacing:  ;
+  --tw-numeric-fraction:  ;
+  --tw-ring-inset:  ;
+  --tw-ring-offset-width: 0rpx;
+  --tw-ring-offset-color: #fff;
+  --tw-ring-color: rgba(59, 130, 246, 0.5);
+  --tw-ring-offset-shadow: 0 0 rgba(0, 0, 0, 0);
+  --tw-ring-shadow: 0 0 rgba(0, 0, 0, 0);
+  --tw-shadow: 0 0 rgba(0, 0, 0, 0);
+  --tw-shadow-colored: 0 0 rgba(0, 0, 0, 0);
+  --tw-blur:  ;
+  --tw-brightness:  ;
+  --tw-contrast:  ;
+  --tw-grayscale:  ;
+  --tw-hue-rotate:  ;
+  --tw-invert:  ;
+  --tw-saturate:  ;
+  --tw-sepia:  ;
+  --tw-drop-shadow:  ;
+  --tw-backdrop-blur:  ;
+  --tw-backdrop-brightness:  ;
+  --tw-backdrop-contrast:  ;
+  --tw-backdrop-grayscale:  ;
+  --tw-backdrop-hue-rotate:  ;
+  --tw-backdrop-invert:  ;
+  --tw-backdrop-opacity:  ;
+  --tw-backdrop-saturate:  ;
+  --tw-backdrop-sepia:  ;
+  --tw-contain-size:  ;
+  --tw-contain-layout:  ;
+  --tw-contain-paint:  ;
+  --tw-contain-style:
+;
+  box-sizing: border-box;
+  border-width: 0;
+  border-style: solid;
+  border-color: currentColor;
+}
+.m-_b20px_B {
+  margin: 40rpx;
+}
+.mb-_b20px_B {
+  margin-bottom: 40rpx;
+}
+.mt-_b24px_B {
+  margin-top: 48rpx;
+}
+.mt-_b33px_B {
+  margin-top: 66rpx;
+}
+.h-_b41_d54vw_B {
+  height: 41.54vw;
+}
+.border-_b_hEEEEEE_B {
+  --tw-border-opacity: 1;
+  border-color: rgba(238, 238, 238, var(--tw-border-opacity, 1));
+}
+.bg-_b_hfff_B {
+  --tw-bg-opacity: 1;
+  background-color: rgba(255, 255, 255, var(--tw-bg-opacity, 1));
+}
+.bg-_bred_B {
+  --tw-bg-opacity: 1;
+  background-color: rgba(255, 0, 0, var(--tw-bg-opacity, 1));
+}
+.bg-independent-subpackage-marker {
+  --tw-bg-opacity: 1;
+  background-color: rgba(220, 38, 38, var(--tw-bg-opacity, 1));
+}
+.bg-_burl_p_ahttps_c_f_fxxx_dcom_fxx_dwebp_a_P_B {
+  background-image: url('https://xxx.com/xx.webp');
+}
+.bg-_burl_phttps_c_f_fpic1_dzhimg_dcom_fv2-3ee20468f54bbfefcd0027283b21aaa8_720w_djpg_P_B {
+  background-image: url(https://pic1.zhimg.com/v2-3ee20468f54bbfefcd0027283b21aaa8_720w.jpg);
+}
+.bg-_blength_c100_v_100_v_B {
+  background-size: 100% 100%;
+}
+.pb-_b10px_B {
+  padding-bottom: 20rpx;
+}
+.pl-_b15px_B {
+  padding-left: 30rpx;
+}
+.text-_b14px_B {
+  font-size: 28rpx;
+}
+.text-_b50px_B {
+  font-size: 100rpx;
+}
+.text-_b_h123456_B {
+  --tw-text-opacity: 1;
+  color: rgba(18, 52, 86, var(--tw-text-opacity, 1));
+}
+.text-_b_h5ba4e5_B {
+  --tw-text-opacity: 1;
+  color: rgba(91, 164, 229, var(--tw-text-opacity, 1));
+}
+.before_ccontent-_b_aindependent_subpackage_gulp-tailwindcss-v3_a_B::before {
+  --tw-content: 'independent subpackage gulp-tailwindcss-v3';
+  content: var(--tw-content);
+}
+.before_ccontent-_b_anormal_subpackage_gulp-tailwindcss-v3_a_B::before {
+  --tw-content: 'normal subpackage gulp-tailwindcss-v3';
+  content: var(--tw-content);
+}
+.container {
+  width: 100%;
+}
+@media (min-width: 40rem) {
+  .container {
+    max-width: 1280rpx;
+  }
+}
+@media (min-width: 48rem) {
+  .container {
+    max-width: 1536rpx;
+  }
+}
+@media (min-width: 64rem) {
+  .container {
+    max-width: 2048rpx;
+  }
+}
+@media (min-width: 80rem) {
+  .container {
+    max-width: 2560rpx;
+  }
+}
+@media (min-width: 96rem) {
+  .container {
+    max-width: 3072rpx;
+  }
+}
+
+::before,
+::after {
+  --tw-content: '';
+}
+view,
+text,
+::before,
+::after {
+  --tw-border-spacing-x: 0;
+  --tw-border-spacing-y: 0;
+  --tw-translate-x: 0;
+  --tw-translate-y: 0;
+  --tw-rotate: 0;
+  --tw-skew-x: 0;
+  --tw-skew-y: 0;
+  --tw-scale-x: 1;
+  --tw-scale-y: 1;
+  --tw-pan-x:  ;
+  --tw-pan-y:  ;
+  --tw-pinch-zoom:  ;
+  --tw-scroll-snap-strictness: proximity;
+  --tw-gradient-from-position:  ;
+  --tw-gradient-via-position:  ;
+  --tw-gradient-to-position:  ;
+  --tw-ordinal:  ;
+  --tw-slashed-zero:  ;
+  --tw-numeric-figure:  ;
+  --tw-numeric-spacing:  ;
+  --tw-numeric-fraction:  ;
+  --tw-ring-inset:  ;
+  --tw-ring-offset-width: 0rpx;
+  --tw-ring-offset-color: #fff;
+  --tw-ring-color: rgba(59, 130, 246, 0.5);
+  --tw-ring-offset-shadow: 0 0 rgba(0, 0, 0, 0);
+  --tw-ring-shadow: 0 0 rgba(0, 0, 0, 0);
+  --tw-shadow: 0 0 rgba(0, 0, 0, 0);
+  --tw-shadow-colored: 0 0 rgba(0, 0, 0, 0);
+  --tw-blur:  ;
+  --tw-brightness:  ;
+  --tw-contrast:  ;
+  --tw-grayscale:  ;
+  --tw-hue-rotate:  ;
+  --tw-invert:  ;
+  --tw-saturate:  ;
+  --tw-sepia:  ;
+  --tw-drop-shadow:  ;
+  --tw-backdrop-blur:  ;
+  --tw-backdrop-brightness:  ;
+  --tw-backdrop-contrast:  ;
+  --tw-backdrop-grayscale:  ;
+  --tw-backdrop-hue-rotate:  ;
+  --tw-backdrop-invert:  ;
+  --tw-backdrop-opacity:  ;
+  --tw-backdrop-saturate:  ;
+  --tw-backdrop-sepia:  ;
+  --tw-contain-size:  ;
+  --tw-contain-layout:  ;
+  --tw-contain-paint:  ;
+  --tw-contain-style:
+;
+  box-sizing: border-box;
+  border-width: 0;
+  border-style: solid;
+  border-color: currentColor;
+}
+.m-_b20px_B {
+  margin: 40rpx;
+}
+.mb-_b20px_B {
+  margin-bottom: 40rpx;
+}
+.mt-_b24px_B {
+  margin-top: 48rpx;
+}
+.mt-_b33px_B {
+  margin-top: 66rpx;
+}
+.h-_b41_d54vw_B {
+  height: 41.54vw;
+}
+.border-_b_hEEEEEE_B {
+  --tw-border-opacity: 1;
+  border-color: rgba(238, 238, 238, var(--tw-border-opacity, 1));
+}
+.bg-_b_hfff_B {
+  --tw-bg-opacity: 1;
+  background-color: rgba(255, 255, 255, var(--tw-bg-opacity, 1));
+}
+.bg-_bred_B {
+  --tw-bg-opacity: 1;
+  background-color: rgba(255, 0, 0, var(--tw-bg-opacity, 1));
+}
+.bg-normal-subpackage-marker {
+  --tw-bg-opacity: 1;
+  background-color: rgba(37, 99, 235, var(--tw-bg-opacity, 1));
+}
+.bg-_burl_p_ahttps_c_f_fxxx_dcom_fxx_dwebp_a_P_B {
+  background-image: url('https://xxx.com/xx.webp');
+}
+.bg-_burl_phttps_c_f_fpic1_dzhimg_dcom_fv2-3ee20468f54bbfefcd0027283b21aaa8_720w_djpg_P_B {
+  background-image: url(https://pic1.zhimg.com/v2-3ee20468f54bbfefcd0027283b21aaa8_720w.jpg);
+}
+.bg-_blength_c100_v_100_v_B {
+  background-size: 100% 100%;
+}
+.pb-_b10px_B {
+  padding-bottom: 20rpx;
+}
+.pl-_b15px_B {
+  padding-left: 30rpx;
+}
+.text-_b14px_B {
+  font-size: 28rpx;
+}
+.text-_b50px_B {
+  font-size: 100rpx;
+}
+.text-_b_h123456_B {
+  --tw-text-opacity: 1;
+  color: rgba(18, 52, 86, var(--tw-text-opacity, 1));
+}
+.text-_b_h5ba4e5_B {
+  --tw-text-opacity: 1;
+  color: rgba(91, 164, 229, var(--tw-text-opacity, 1));
+}
+.before_ccontent-_b_aindependent_subpackage_gulp-tailwindcss-v3_a_B::before {
+  --tw-content: 'independent subpackage gulp-tailwindcss-v3';
+  content: var(--tw-content);
+}
+.before_ccontent-_b_anormal_subpackage_gulp-tailwindcss-v3_a_B::before {
+  --tw-content: 'normal subpackage gulp-tailwindcss-v3';
+  content: var(--tw-content);
+}
+.container {
+  width: 100%;
+}
+@media (min-width: 40rem) {
+  .container {
+    max-width: 1280rpx;
+  }
+}
+@media (min-width: 48rem) {
+  .container {
+    max-width: 1536rpx;
+  }
+}
+@media (min-width: 64rem) {
+  .container {
+    max-width: 2048rpx;
+  }
+}
+@media (min-width: 80rem) {
+  .container {
+    max-width: 2560rpx;
+  }
+}
+@media (min-width: 96rem) {
+  .container {
+    max-width: 3072rpx;
+  }
+}
 
 .more__pre {
   white-space: pre;

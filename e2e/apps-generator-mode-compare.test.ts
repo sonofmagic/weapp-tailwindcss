@@ -28,6 +28,11 @@ interface CreateProjectReportOptions {
   }) => void | Promise<void>
 }
 
+const SUBPACKAGE_MARKER_PATTERNS = [
+  /normal[-_]subpackage/i,
+  /independent[-_]subpackage/i,
+]
+
 const MINI_PROGRAM_CSS_PATTERN = '**/*.{wx,ac,jx,tt,q,c,ty}ss'
 
 const projects: CompareProject[] = [
@@ -472,8 +477,10 @@ describe('demo generator mode output', () => {
       expect(item.generator.hasHoverPseudo, `${project.name} generator css should remove unsupported :hover`).toBe(false)
       expect(item.generator.hasTailwindBanner, `${project.name} generator css should not keep raw Tailwind banner`).toBe(false)
       expect(item.generator.hasWeappEscapedArbitrarySelector || !item.generator.hasRawArbitrarySelector).toBe(true)
-
       if (generatorResult) {
+        for (const pattern of SUBPACKAGE_MARKER_PATTERNS) {
+          expect(generatorResult.css, `${project.name} should include ${pattern} marker`).toMatch(pattern)
+        }
         await expectCssOutputSnapshot(project, generatorResult)
       }
     }

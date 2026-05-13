@@ -7,9 +7,7 @@
     "navigationBarTitleText": "Weixin",
     "navigationBarBackgroundColor": "#ffffff"
   },
-  "usingComponents": {
-
-  },
+  "usingComponents": {},
   "subPackages": [
     {
       "root": "packageA",
@@ -28,6 +26,19 @@
         "pages/banana"
       ],
       "entry": "index.ts",
+      "independent": true
+    },
+    {
+      "root": "sub-normal",
+      "pages": [
+        "pages/index"
+      ]
+    },
+    {
+      "root": "sub-independent",
+      "pages": [
+        "pages/index"
+      ],
       "independent": true
     }
   ],

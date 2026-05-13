@@ -2,11 +2,11 @@
 
 Fixture: demo
 Entry: gulp-tailwindcss-v4/dist/app.wxss
-Generator CSS files: app.wxss, index.wxss, more.wxss
+Generator CSS files: app.wxss, index.wxss, index.wxss, index.wxss, more.wxss
 
 | Bytes | Selectors | @supports | :hover | Tailwind banner | Raw arbitrary selector | Weapp escaped arbitrary selector |
 | ---: | ---: | --- | --- | --- | --- | --- |
-| 6355 | 52 | false | false | false | false | true |
+| 8481 | 57 | false | false | false | false | true |
 
 ## Generator CSS
 
@@ -22,6 +22,7 @@ wx-root-portal-content {
   --tw-space-y-reverse: 0;
   --tw-border-style: solid;
   --tw-font-weight: initial;
+  --tw-content: '';
   --font-sans:
     ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, Cantarell, Noto Sans, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol',
     'Noto Color Emoji';
@@ -37,6 +38,34 @@ wx-root-portal-content {
   --font-weight-bold: 700;
   --default-font-family: var(--font-sans);
   --default-mono-font-family: var(--font-mono);
+}
+.container {
+  width: 100%;
+}
+@media (min-width: 40rem) {
+  .container {
+    max-width: 1280rpx;
+  }
+}
+@media (min-width: 48rem) {
+  .container {
+    max-width: 1536rpx;
+  }
+}
+@media (min-width: 64rem) {
+  .container {
+    max-width: 2048rpx;
+  }
+}
+@media (min-width: 80rem) {
+  .container {
+    max-width: 2560rpx;
+  }
+}
+@media (min-width: 96rem) {
+  .container {
+    max-width: 3072rpx;
+  }
 }
 .m-_b20px_B {
   margin: 40rpx;
@@ -210,7 +239,53 @@ wx-root-portal-content {
 .text-_b_h5ba4e5_B {
   color: #5ba4e5;
 }
+.before_ccontent-_b_aindependent_subpackage_gulp-tailwindcss-v4_a_B:before {
+  --tw-content: 'independent subpackage gulp-tailwindcss-v4';
+  content: var(--tw-content);
+}
+.before_ccontent-_b_anormal_subpackage_gulp-tailwindcss-v4_a_B:before {
+  --tw-content: 'normal subpackage gulp-tailwindcss-v4';
+  content: var(--tw-content);
+}
 
+
+:host,
+page,
+.tw-root,
+wx-root-portal-content {
+  --font-sans:
+    ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, Cantarell, Noto Sans, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol',
+    'Noto Color Emoji';
+  --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New', monospace;
+  --default-font-family: var(--font-sans);
+  --default-mono-font-family: var(--font-mono);
+}
+.bg-independent-subpackage-marker {
+  background-color: #dc2626;
+}
+.before_ccontent-_b_aindependent_subpackage_gulp-tailwindcss-v4_a_B:before {
+  --tw-content: 'independent subpackage gulp-tailwindcss-v4';
+  content: var(--tw-content);
+}
+
+:host,
+page,
+.tw-root,
+wx-root-portal-content {
+  --font-sans:
+    ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, Cantarell, Noto Sans, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol',
+    'Noto Color Emoji';
+  --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New', monospace;
+  --default-font-family: var(--font-sans);
+  --default-mono-font-family: var(--font-mono);
+}
+.bg-normal-subpackage-marker {
+  background-color: #2563eb;
+}
+.before_ccontent-_b_anormal_subpackage_gulp-tailwindcss-v4_a_B:before {
+  --tw-content: 'normal subpackage gulp-tailwindcss-v4';
+  content: var(--tw-content);
+}
 
 .more__pre {
   white-space: pre;
