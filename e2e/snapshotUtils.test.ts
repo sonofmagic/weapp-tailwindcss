@@ -303,7 +303,7 @@ describe('normalizeCssSnapshot', () => {
       '}',
       '@font-face {',
       '  font-family: "JDZH-Bold";',
-      '  src: url(data:font/ttf;base64,bold) format("truetype");',
+      '  src: url(data:font/ttf;charset=utf-8;base64,bold) format("truetype");',
       '}',
       ':host, page, .tw-root, wx-root-portal-content {',
       '  --spacing: 8rpx;',
