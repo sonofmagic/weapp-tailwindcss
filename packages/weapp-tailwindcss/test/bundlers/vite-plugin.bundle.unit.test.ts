@@ -622,6 +622,68 @@ const trace = "at App.vue:4"
     expect((bundle['pages/index/index.wxml'] as OutputAsset).source.toString()).toBe(rawWxml)
   }, TEST_TIMEOUT_MS)
 
+  it('adds unresolved dynamic wxml arbitrary candidates to the full runtime retry', async () => {
+    const loggerModule = await import('@weapp-tailwindcss/logger')
+    const warnSpy = vi.spyOn(loggerModule.logger, 'warn').mockImplementation(() => {})
+    const fullRuntimeSet = new Set<string>()
+    vi.doMock('@/bundlers/vite/incremental-runtime-class-set', () => ({
+      createBundleRuntimeClassSetManager: () => ({
+        sync: vi.fn(async () => new Set<string>()),
+        reset: vi.fn(async () => undefined),
+      }),
+    }))
+
+    setCurrentContext(createContext({
+      htmlMatcher: (file: string) => file.endsWith('wxml'),
+      templateHandler: createTemplateHandler({
+        jsHandler: createJsHandler({
+          jsArbitraryValueFallback: false,
+          tailwindcssMajorVersion: 4,
+        }),
+      }),
+      twPatcher: {
+        patch: vi.fn(),
+        getClassSet: vi.fn(async () => fullRuntimeSet),
+        getClassSetSync: vi.fn(() => fullRuntimeSet),
+        extract: vi.fn(async () => ({ classSet: fullRuntimeSet })),
+        majorVersion: 4,
+      },
+    }))
+
+    const WeappTailwindcss = await loadUnifiedVitePlugin()
+    const plugins = WeappTailwindcss()
+    const postPlugin = plugins?.find(plugin => plugin.name === 'weapp-tailwindcss:adaptor:post') as Plugin
+    expect(postPlugin).toBeTruthy()
+
+    await (postPlugin.configResolved as any)?.call(postPlugin, {
+      command: 'build',
+      root: process.cwd(),
+      css: { postcss: { plugins: [] } },
+      build: { outDir: 'dist' },
+    } as ResolvedConfig)
+
+    const rawWxml = '<view class="{{active ? \'h-[458rpx] w-[218rpx] inset-x-[30%]\' : \'\'}}">111</view>'
+    const bundle = {
+      'packages/activ-gift/indexwxml': {
+        ...createRollupAsset(rawWxml),
+        fileName: 'packages/activ-gift/indexwxml',
+      } satisfies OutputAsset,
+    }
+
+    const generateBundle = getGenerateBundleHandler(postPlugin)
+    await generateBundle?.call(postPlugin, {} as any, bundle)
+
+    const transformed = (bundle['packages/activ-gift/indexwxml'] as OutputAsset).source.toString()
+    expect(transformed).toContain(replaceWxml('h-[458rpx]'))
+    expect(transformed).toContain(replaceWxml('w-[218rpx]'))
+    expect(transformed).toContain(replaceWxml('inset-x-[30%]'))
+    expect(transformed).not.toContain('h-[458rpx]')
+    expect(transformed).not.toContain('w-[218rpx]')
+    expect(transformed).not.toContain('inset-x-[30%]')
+    expect(warnSpy).toHaveBeenCalledTimes(1)
+    expect(warnSpy.mock.calls[0]?.[0]).toContain('已回退到完整 runtimeSet 重试')
+  }, TEST_TIMEOUT_MS)
+
   it('refreshes runtime class set when only comment-carried class candidates change', async () => {
     const WeappTailwindcss = await loadUnifiedVitePlugin()
     const runtimeSets = [

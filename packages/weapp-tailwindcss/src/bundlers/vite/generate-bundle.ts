@@ -228,7 +228,10 @@ export function createGenerateBundleHook(context: GenerateBundleContext) {
                   file,
                   unresolvedDynamicCandidates,
                 )
-                const fullRuntimeSet = await context.ensureRuntimeClassSet(true)
+                const fullRuntimeSet = new Set([
+                  ...await context.ensureRuntimeClassSet(true),
+                  ...unresolvedDynamicCandidates,
+                ])
                 transformed = await templateHandler(rawSource, {
                   runtimeSet: fullRuntimeSet,
                 })

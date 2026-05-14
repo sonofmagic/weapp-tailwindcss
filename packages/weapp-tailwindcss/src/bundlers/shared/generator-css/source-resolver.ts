@@ -16,7 +16,11 @@ import {
   normalizeConfigDirective,
   prependConfigDirective,
 } from './config-directive'
-import { resolveCssEntrySource } from './directives'
+import {
+  hasTailwindApplyDirective,
+  hasTailwindRootDirectives,
+  resolveCssEntrySource,
+} from './directives'
 import {
   hasTailwindGeneratedCssMarkers,
   stripGeneratorPlaceholderMarkers,
@@ -157,6 +161,13 @@ function hasConfiguredTailwindV4CssSource(
     || Boolean(sourceOptions?.cssSources?.length)
 }
 
+function createTailwindV4ApplyReferenceSource(css: string, sourceOptions: { packageName?: string }) {
+  if (!hasTailwindApplyDirective(css) || hasTailwindRootDirectives(css)) {
+    return css
+  }
+  return `@reference "${sourceOptions.packageName ?? 'tailwindcss'}";\n${css}`
+}
+
 export async function resolveGeneratorSource(
   majorVersion: number | undefined,
   runtimeState: GeneratorSourceRuntimeState,
@@ -254,13 +265,17 @@ export async function resolveGeneratorSource(
     file,
     resolvedSourceOptions,
   )
-  return resolveTailwindV4Source({
-    ...resolvedSourceOptions,
-    base: resolvedEntrySource.base,
-    css: normalizeConfigDirective(
+  const css = createTailwindV4ApplyReferenceSource(
+    normalizeConfigDirective(
       prependConfigDirective(resolvedEntrySource.css, generatorOptions?.config),
       config,
     ),
+    resolvedSourceOptions,
+  )
+  return resolveTailwindV4Source({
+    ...resolvedSourceOptions,
+    base: resolvedEntrySource.base,
+    css,
   })
 }
 

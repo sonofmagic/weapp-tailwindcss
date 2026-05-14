@@ -690,7 +690,7 @@ describe('v5 vite generator bundle', () => {
       [
         '@import "tailwindcss";',
         '@config "./tailwind.config.js";',
-        '.tw-watch-style-fixture { @apply font-bold text-center bg-[#123456] px-[12px]; }',
+        '.tw-watch-style-fixture { @apply font-bold text-center min-w-0 bg-[#123456] px-[12px]; }',
       ].join('\n'),
       'utf8',
     )
@@ -769,7 +769,7 @@ describe('v5 vite generator bundle', () => {
         ...createRollupAsset([
           '/*! weapp-tailwindcss generator-placeholder */',
           '@config "./tailwind.config.js";',
-          '.tw-watch-style-fixture { @apply font-bold text-center bg-[#123456] px-[12px]; }',
+          '.tw-watch-style-fixture { @apply font-bold text-center min-w-0 bg-[#123456] px-[12px]; }',
         ].join('\n')),
         fileName: 'dist/app.css',
       },
@@ -780,12 +780,13 @@ describe('v5 vite generator bundle', () => {
     const candidates = generateMock.mock.calls[0]?.[0]?.candidates as Set<string>
     expect(candidates.has('font-bold')).toBe(true)
     expect(candidates.has('text-center')).toBe(true)
+    expect(candidates.has('min-w-0')).toBe(true)
     expect(candidates.has('bg-[#123456]')).toBe(true)
     expect(candidates.has('px-[12px]')).toBe(true)
     expect(candidates.has('tw-watch-style-fixture')).toBe(false)
     expect(createGeneratorMock).toHaveBeenCalledWith(expect.objectContaining({
       base: tempDir,
-      css: expect.stringContaining('.tw-watch-style-fixture { @apply font-bold text-center bg-[#123456] px-[12px]; }'),
+      css: expect.stringContaining('.tw-watch-style-fixture { @apply font-bold text-center min-w-0 bg-[#123456] px-[12px]; }'),
     }))
     expect(createGeneratorMock.mock.calls[0]?.[0]?.css).toContain('@config "./tailwind.config.js";')
     expect(createGeneratorMock.mock.calls[0]?.[0]?.css).not.toContain('generator-placeholder')

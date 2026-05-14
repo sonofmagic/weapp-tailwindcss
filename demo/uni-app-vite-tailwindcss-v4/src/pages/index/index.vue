@@ -7,6 +7,9 @@
     <view :class="className" class="aspect-[calc(4*3+1)/3]">
       {{ className }}
     </view>
+    <view class="uni-vite-v4-apply-regression" :class="giftActive ? 'h-[458rpx] w-[218rpx] inset-x-[30%]' : ''">
+      uni-app vite v4 regression
+    </view>
     <view class="i-mdi-home"></view>
     <view class="bg-midnight text-tahiti fill-bermuda">
       bg-midnight text-tahiti fill-bermuda
@@ -64,6 +67,7 @@ import HelloWorld from "@/components/HelloWorld.vue"
 import { ref } from 'vue'
 const title = ref('Hello')
 const className = ref('bg-[#0000ff] text-[45rpx] text-white')
+const giftActive = ref(true)
 const reverseFlag = ref(false)
 
 const aaa = ref('111')
@@ -79,3 +83,9 @@ const goOrder = () => {
   })
 }
 </script>
+
+<style>
+.uni-vite-v4-apply-regression {
+  @apply min-w-0;
+}
+</style>

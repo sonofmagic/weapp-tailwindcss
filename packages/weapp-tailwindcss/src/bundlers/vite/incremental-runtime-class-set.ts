@@ -55,11 +55,14 @@ function collectChangedRuntimeFiles(snapshot: BundleSnapshot) {
 }
 
 function resolveEntryExtension(entry: BundleStateEntry) {
+  if (entry.type === 'html') {
+    return 'html'
+  }
   const ext = entry.file.split(/[?#]/, 1)[0]?.split('.').pop()?.replace(EXTENSION_DOT_PREFIX_RE, '') ?? ''
   if (ext.length > 0) {
     return ext
   }
-  return entry.type === 'html' ? 'html' : 'js'
+  return 'js'
 }
 
 function createCandidateValidationSource(candidates: Iterable<string>) {

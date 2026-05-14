@@ -158,6 +158,25 @@ export function hasTailwindRootDirectives(rawSource: string) {
   }
 }
 
+export function hasTailwindApplyDirective(rawSource: string) {
+  if (!rawSource.includes('@apply')) {
+    return false
+  }
+
+  try {
+    const root = postcss.parse(rawSource)
+    let found = false
+    root.walkAtRules('apply', () => {
+      found = true
+      return false
+    })
+    return found
+  }
+  catch {
+    return false
+  }
+}
+
 export function resolveCssEntrySource(
   rawSource: string,
   base: string,

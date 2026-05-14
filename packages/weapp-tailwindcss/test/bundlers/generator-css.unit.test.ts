@@ -1714,6 +1714,56 @@ describe('bundlers/shared generator css', () => {
     }))
   })
 
+  it('adds Tailwind v4 reference for @apply-only local css sources', async () => {
+    const rawSource = [
+      '.test {',
+      '  @apply min-w-0;',
+      '}',
+    ].join('\n')
+    const resolveTailwindV4Source = vi.fn(async (options: any) => ({
+      projectRoot: process.cwd(),
+      base: process.cwd(),
+      baseFallbacks: [],
+      css: options.css,
+      dependencies: [],
+    }))
+    vi.doMock('@/generator', () => ({
+      ...createDefaultGeneratorMock({
+        resolveTailwindV4Source,
+        resolveTailwindV4SourceOptionsFromPatcher: vi.fn(() => ({
+          projectRoot: process.cwd(),
+          packageName: 'tailwindcss',
+        })),
+      }),
+    }))
+
+    const { resolveGeneratorSource } = await import('@/bundlers/shared/generator-css/source-resolver')
+    await resolveGeneratorSource(
+      4,
+      {
+        twPatcher: {
+          majorVersion: 4,
+          options: {},
+        } as any,
+      },
+      rawSource,
+      'pages/index/index.wxss',
+      {
+        isMainChunk: false,
+        majorVersion: 4,
+        postcssOptions: {
+          options: {
+            from: 'pages/index/index.wxss',
+          },
+        },
+      } as any,
+    )
+
+    expect(resolveTailwindV4Source).toHaveBeenCalledWith(expect.objectContaining({
+      css: `@reference "tailwindcss";\n${rawSource}`,
+    }))
+  })
+
   it('does not resolve relative Tailwind v3 css assets from package root source files', async () => {
     const runtimeSet = new Set(['w-[100px]'])
     const rawSource = [

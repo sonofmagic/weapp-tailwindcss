@@ -116,6 +116,50 @@ describe('bundlers/vite incremental runtime class set', () => {
     expect(extractCandidates.mock.calls[0]?.[0]?.sources).toBeUndefined()
   })
 
+  it('extracts extensionless uni-app html assets as html content', async () => {
+    const opts = {
+      ...createOptions(),
+      htmlMatcher: (file: string) => file.endsWith('wxml'),
+    } as any
+    const outDir = '/project/dist'
+    const state = createBundleBuildState()
+    const patcher = createPatcher('/project')
+    const extractCandidates = vi.fn(async (options) => {
+      const source = options?.content ?? ''
+      return source.split(/\s+/).filter(Boolean)
+    })
+    const extractRawCandidates = vi.fn(async (_content: string, extension?: string) => {
+      return extension === 'html'
+        ? [
+            { rawCandidate: 'h-[458rpx]' },
+            { rawCandidate: 'w-[218rpx]' },
+            { rawCandidate: 'inset-x-[30%]' },
+          ]
+        : []
+    })
+    const manager = createBundleRuntimeClassSetManager({
+      extractCandidates,
+      extractRawCandidates,
+    })
+
+    const snapshot = buildBundleSnapshot({
+      'packages/activ-gift/indexwxml': {
+        ...createRollupAsset('<view class="{{active ? \'h-[458rpx] w-[218rpx] inset-x-[30%]\' : \'\'}}" />'),
+        fileName: 'packages/activ-gift/indexwxml',
+      },
+    }, opts, outDir, state)
+
+    await expect(manager.sync(patcher, snapshot)).resolves.toEqual(new Set([
+      'h-[458rpx]',
+      'w-[218rpx]',
+      'inset-x-[30%]',
+    ]))
+    expect(extractRawCandidates).toHaveBeenCalledWith(
+      expect.any(String),
+      'html',
+    )
+  })
+
   it('removes stale candidates when runtime files disappear from the bundle', async () => {
     const opts = createOptions()
     const outDir = '/project/dist'
