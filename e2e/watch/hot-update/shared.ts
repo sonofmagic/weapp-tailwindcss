@@ -29,6 +29,7 @@ const BASE_REQUIRED_MUTATION_ROUNDS: MutationRoundName[] = ['baseline-arbitrary'
 const ISSUE33_REQUIRED_MUTATION_ROUND: MutationRoundName = 'issue33-arbitrary'
 const INDEX_HTML_RE = /index\.html$/
 const SCRIPT_SOURCE_FILE_RE = /\.(?:js|ts|tsx|vue|mpx)$/
+const TEMPLATE_SOURCE_FILE_RE = /\.(?:wxml|vue|mpx)$/
 const ISSUE33_MODIFY_CLASS_TOKENS = [
   'bg-[#0f0]',
   'px-[256.25px]',
@@ -571,9 +572,10 @@ function assertHotUpdateReport(report: HotUpdateReport, target: WatchCaseName, m
 
     if (contentMetric && contentMetric.mutationKind !== 'style') {
       expect(contentMetric.sourceFile).not.toMatch(INDEX_HTML_RE)
-      expect(contentMetric.sourceFile).toMatch(SCRIPT_SOURCE_FILE_RE)
-      expect(contentMetric.verifyEscapedIn).toContain('js')
-      expect(contentMetric.verifyClassLiteralIn).toContain('js')
+      const expectedCarrier = TEMPLATE_SOURCE_FILE_RE.test(contentMetric.sourceFile) ? 'wxml' : 'js'
+      expect(contentMetric.sourceFile).toMatch(expectedCarrier === 'wxml' ? TEMPLATE_SOURCE_FILE_RE : SCRIPT_SOURCE_FILE_RE)
+      expect(contentMetric.verifyEscapedIn).toContain(expectedCarrier)
+      expect(contentMetric.verifyClassLiteralIn).toContain(expectedCarrier)
       expect(contentMetric.rounds.length).toBe(1)
       expect(contentMetric.rounds[0]?.roundName).toBe(ISSUE33_REQUIRED_MUTATION_ROUND)
       expect(contentMetric.verifiedGlobalStyleEscapedClasses.length).toBeGreaterThanOrEqual(contentMetric.minRequiredGlobalStyleEscapedClasses)
