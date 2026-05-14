@@ -8,11 +8,11 @@
         "./src/*"
       ]
     },
-    "resolveJsonModule": true,
     "types": [
       "node",
       "vitest/globals"
     ],
+    "allowImportingTsExtensions": true,
     "allowJs": true,
     "strict": true,
     "exactOptionalPropertyTypes": true,

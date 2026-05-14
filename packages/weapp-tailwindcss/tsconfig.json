@@ -14,12 +14,12 @@
         "./test/*"
       ]
     },
-    "resolveJsonModule": true,
     "types": [
       "webpack",
       "node",
       "vitest/globals"
     ],
+    "allowImportingTsExtensions": true,
     "allowJs": true,
     "strict": true,
     "strictPropertyInitialization": false,
