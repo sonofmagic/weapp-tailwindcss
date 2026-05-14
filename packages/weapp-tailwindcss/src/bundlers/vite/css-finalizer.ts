@@ -1,5 +1,5 @@
 import type { IStyleHandlerOptions } from '@weapp-tailwindcss/postcss/types'
-import type { OutputAsset, OutputBundle } from 'rollup'
+import type { OutputAsset, OutputBundle, OutputChunk } from 'rollup'
 import type { Plugin, ResolvedConfig } from 'vite'
 import type { InternalUserDefinedOptions } from '@/types'
 import { logger } from '@weapp-tailwindcss/logger'
@@ -66,7 +66,7 @@ function createCssHandlerOptions(
         from: file,
       },
     },
-    majorVersion,
+    ...(majorVersion === undefined ? {} : { majorVersion }),
   }
 }
 
@@ -114,15 +114,21 @@ export function createViteCssFinalizerOutputPlugin(context: CssFinalizerContext)
           return
         }
 
-        const entries = Object.entries(bundle)
-          .filter(([, output]): output is OutputAsset =>
+        const isCssOutputAssetEntry = (
+          entry: [string, OutputAsset | OutputChunk],
+        ): entry is [string, OutputAsset] => {
+          const [, output] = entry
+          return (
             output.type === 'asset'
             && opts.cssMatcher(output.fileName)
             && (
               !isCssAssetProcessed(output, output.fileName)
               || shouldFinalizeProcessedCssAsset(opts, output.fileName)
-            ),
+            )
           )
+        }
+
+        const entries = Object.entries(bundle).filter(isCssOutputAssetEntry)
 
         if (entries.length === 0) {
           return

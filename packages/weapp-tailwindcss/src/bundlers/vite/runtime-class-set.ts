@@ -79,7 +79,7 @@ export function createViteRuntimeClassSet(options: CreateViteRuntimeClassSetOpti
   }
 
   async function ensureRuntimeClassSet(force = false): Promise<Set<string>> {
-    const forceRuntimeRefresh = force || process.env.WEAPP_TW_VITE_FORCE_RUNTIME_REFRESH === '1'
+    const forceRuntimeRefresh = force || process.env['WEAPP_TW_VITE_FORCE_RUNTIME_REFRESH'] === '1'
     await refreshRuntimeState(force)
     await runtimeState.readyPromise
     if (!forceRuntimeRefresh && runtimeSet) {
@@ -109,7 +109,7 @@ export function createViteRuntimeClassSet(options: CreateViteRuntimeClassSetOpti
   }
 
   async function ensureBundleRuntimeClassSet(snapshot: BundleSnapshot, forceRefresh = false) {
-    const forceRuntimeRefresh = forceRefresh || process.env.WEAPP_TW_VITE_FORCE_RUNTIME_REFRESH === '1'
+    const forceRuntimeRefresh = forceRefresh || process.env['WEAPP_TW_VITE_FORCE_RUNTIME_REFRESH'] === '1'
     const invalidation = resolveRuntimeRefreshOptions()
     const shouldRefreshPatcher = forceRuntimeRefresh || invalidation.changed
     const forceCollectBySource = snapshot.runtimeAffectingChangedByType.html.size > 0

@@ -57,7 +57,7 @@ export function transformCssImportRewriteSource(
   if (rewritten === input) {
     return source
   }
-  if (process.env.WEAPP_TW_LOADER_DEBUG) {
+  if (process.env['WEAPP_TW_LOADER_DEBUG']) {
     process.stdout.write(`[weapp-tw-css-import-rewrite-loader] rewritten import ${inspect({
       before: input.slice(0, 80),
       after: rewritten.slice(0, 80),
@@ -70,7 +70,7 @@ const WeappTwCssImportRewriteLoader: webpack.LoaderDefinitionFunction<CssImportR
   this: webpack.LoaderContext<CssImportRewriteLoaderOptions>,
   source: string | Buffer,
 ) {
-  if (process.env.WEAPP_TW_LOADER_DEBUG) {
+  if (process.env['WEAPP_TW_LOADER_DEBUG']) {
     process.stdout.write(`[weapp-tw-css-import-rewrite-loader] executing for ${this.resourcePath}\n`)
   }
   const opt = getLoaderOptions(this)

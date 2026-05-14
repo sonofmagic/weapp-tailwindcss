@@ -6,6 +6,7 @@ import process from 'node:process'
 import postcss from 'postcss'
 import { loadConfig } from 'tailwindcss-config'
 import { resolveTailwindcssOptions } from '@/tailwindcss/patcher-options'
+import { omitUndefined } from '@/utils/object'
 
 const DEFAULT_TAILWIND_V3_CSS = [
   '@tailwind base;',
@@ -81,10 +82,10 @@ export async function resolveTailwindV3Source(
   const cssConfig = resolveCssConfig(options.css, base)
   const config = resolveOptionalPath(options.config, base) ?? cssConfig.config
   const cwd = options.cwd ?? (config ? path.dirname(config) : projectRoot)
-  const loaded = await loadConfig({
+  const loaded = await loadConfig(omitUndefined({
     config,
     cwd,
-  })
+  }))
 
   return {
     version: 3,

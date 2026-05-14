@@ -3,9 +3,9 @@ import { statSync } from 'node:fs'
 import { resolveTailwindcssOptions } from '@/tailwindcss/patcher-options'
 
 interface RuntimeClassSetCacheEntry {
-  value?: Set<string>
-  promise?: Promise<Set<string>>
-  signature?: string
+  value?: Set<string> | undefined
+  promise?: Promise<Set<string>> | undefined
+  signature?: string | undefined
 }
 
 const runtimeClassSetCache = new WeakMap<TailwindcssPatcherLike, RuntimeClassSetCacheEntry>()

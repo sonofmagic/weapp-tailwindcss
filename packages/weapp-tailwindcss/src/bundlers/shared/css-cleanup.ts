@@ -73,16 +73,18 @@ function isTailwindPreflightRule(node: postcss.Node): node is postcss.Rule {
   if (node.type !== 'rule' || node.parent?.type !== 'root') {
     return false
   }
-  const selectors = getRuleSelectors(node)
-  return isMiniProgramPreflightSelector(selectors) && hasTailwindPreflightDeclaration(node)
+  const rule = node as postcss.Rule
+  const selectors = getRuleSelectors(rule)
+  return isMiniProgramPreflightSelector(selectors) && hasTailwindPreflightDeclaration(rule)
 }
 
 function isMiniProgramThemeVariableRule(node: postcss.Node): node is postcss.Rule {
   if (node.type !== 'rule' || node.parent?.type !== 'root') {
     return false
   }
-  const selectors = getRuleSelectors(node)
-  return isMiniProgramThemeScopeSelector(selectors) && isCustomPropertyOnlyRule(node)
+  const rule = node as postcss.Rule
+  const selectors = getRuleSelectors(rule)
+  return isMiniProgramThemeScopeSelector(selectors) && isCustomPropertyOnlyRule(rule)
 }
 
 function createPseudoContentInitRule() {
@@ -179,12 +181,16 @@ function insertHoistedRules(root: postcss.Root, rules: postcss.Rule[]) {
   }
 
   const topDirectiveTail = getTopDirectiveTail(root)
-  rules[0]!.raws.before = topDirectiveTail ? '\n' : ''
+  const firstRule = rules[0]
+  if (!firstRule) {
+    return
+  }
+  firstRule.raws.before = topDirectiveTail ? '\n' : ''
   if (topDirectiveTail) {
-    topDirectiveTail.after(...rules)
+    topDirectiveTail.after(rules)
   }
   else {
-    root.prepend(...rules)
+    root.prepend(rules)
   }
 }
 

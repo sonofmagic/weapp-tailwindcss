@@ -2,6 +2,7 @@ import type { PackageResolvingOptions } from 'local-pkg'
 import type { UserDefinedOptions } from '@/types'
 import { resolveTailwindcssBasedir } from '@/context/tailwindcss'
 import { defuOverrideArray } from '@/utils'
+import { omitUndefined } from '@/utils/object'
 
 export interface BasePresetOptions extends Omit<Partial<UserDefinedOptions>, 'cssEntries'> {
   base?: string
@@ -33,10 +34,10 @@ export function createBasePreset(options: BasePresetOptions = {}) {
   const tailwindConfig: NonNullable<UserDefinedOptions['tailwindcss']> = {
     v2: { cwd: baseDir },
     v3: { cwd: baseDir },
-    v4: {
+    v4: omitUndefined({
       base: baseDir,
       cssEntries: normalizedCssEntries,
-    },
+    }),
   }
 
   if (normalizedCssEntries && normalizedCssEntries.length > 0) {

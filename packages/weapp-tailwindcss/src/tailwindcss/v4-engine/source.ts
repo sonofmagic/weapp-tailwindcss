@@ -8,6 +8,7 @@ import {
   resolveTailwindV4SourceFromPatchOptions,
 } from 'tailwindcss-patch'
 import { resolveTailwindcssOptions } from '@/tailwindcss/patcher-options'
+import { omitUndefined } from '@/utils/object'
 
 function isPostcssPluginImportTarget(value: string | undefined) {
   if (!value) {
@@ -44,10 +45,14 @@ function parseCssImportSpecifier(params: string) {
   const value = params.trim()
   const quoted = /^(['"])(.*?)\1/.exec(value)
   if (quoted) {
+    const specifier = quoted[2]
+    if (specifier === undefined) {
+      return undefined
+    }
     return {
       quote: quoted[1],
       raw: quoted[0],
-      specifier: quoted[2],
+      specifier,
     }
   }
 
@@ -56,10 +61,14 @@ function parseCssImportSpecifier(params: string) {
     return undefined
   }
 
+  const specifier = url[2] ?? url[3]
+  if (specifier === undefined) {
+    return undefined
+  }
   return {
     quote: url[1],
     raw: url[0],
-    specifier: url[2] ?? url[3],
+    specifier,
   }
 }
 
@@ -137,7 +146,7 @@ export function resolveTailwindV4SourceOptionsFromPatcher(
   const configDir = tailwindOptions?.config ? path.dirname(tailwindOptions.config) : undefined
   const configuredBase = readConfiguredV4Base(tailwindOptions)
   const hasCssEntries = Boolean(tailwindOptions?.v4?.cssEntries?.length)
-  return {
+  return omitUndefined({
     projectRoot,
     base: configuredBase ?? (hasCssEntries ? undefined : tailwindOptions?.v4?.base),
     baseFallbacks: uniqueDefined([
@@ -147,9 +156,8 @@ export function resolveTailwindV4SourceOptionsFromPatcher(
     css: tailwindOptions?.v4?.css,
     cssSources: tailwindOptions?.v4?.cssSources,
     cssEntries: tailwindOptions?.v4?.cssEntries,
-    sources: tailwindOptions?.v4?.sources,
     packageName: resolveTailwindCssImportTarget(patcher),
-  }
+  }) as TailwindV4SourceOptions
 }
 
 export function resolveTailwindV4Source(options?: TailwindV4SourceOptions) {

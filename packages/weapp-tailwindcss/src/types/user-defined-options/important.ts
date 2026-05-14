@@ -1,6 +1,7 @@
 import type {
   CssCalcOptions,
   CssPreflightOptions,
+  IStyleHandlerOptions,
   PresetEnvOptions,
   Px2rpxOptions,
   Rem2rpxOptions,
@@ -17,13 +18,13 @@ export interface UniAppXComponentLocalStylesOptions {
    *
    * @default true
    */
-  enabled?: boolean
+  enabled?: boolean | undefined
   /**
    * 是否仅在 `manifest.json` 的 `styleIsolationVersion=2` 时启用。
    *
    * @default true
    */
-  onlyWhenStyleIsolationVersion2?: boolean
+  onlyWhenStyleIsolationVersion2?: boolean | undefined
 }
 
 export interface UniAppXOptions {
@@ -32,11 +33,11 @@ export interface UniAppXOptions {
    *
    * @default true
    */
-  enabled?: boolean
+  enabled?: boolean | undefined
   /**
    * 配置 issue 822 所需的组件级局部样式能力。
    */
-  componentLocalStyles?: boolean | UniAppXComponentLocalStylesOptions
+  componentLocalStyles?: boolean | UniAppXComponentLocalStylesOptions | undefined
   /**
    * 配置 uvue 不兼容 utility 的处理策略。
    *
@@ -47,7 +48,7 @@ export interface UniAppXOptions {
    * - `warn`：跳过并打印警告。
    * - `silent`：跳过但不打印警告。
    */
-  uvueUnsupported?: UniAppXUnsupportedMode
+  uvueUnsupported?: UniAppXUnsupportedMode | undefined
 }
 
 export interface UserDefinedOptionsImportantPart {
@@ -74,7 +75,7 @@ export interface UserDefinedOptionsImportantPart {
    * })
    * ```
    */
-  disabled?: boolean | { plugin?: boolean }
+  disabled?: boolean | { plugin?: boolean | undefined } | undefined
 
   /**
    * 自定义 `wxml` 标签属性的转换规则。
@@ -95,7 +96,7 @@ export interface UserDefinedOptionsImportantPart {
    * }
    * ```
    */
-  customAttributes?: ICustomAttributes
+  customAttributes?: ICustomAttributes | undefined
   /**
    * 自定义 class 名称的替换字典。
    *
@@ -104,7 +105,7 @@ export interface UserDefinedOptionsImportantPart {
    * 默认策略会将小程序不允许的字符映射为等长度的替代字符串，因此无法通过结果反推出原始类名。如需完全自定义，可传入 `Record<string, string>`，只需确保生成的类名不会与已有样式冲突。示例参考 [dic.ts](https://github.com/sonofmagic/weapp-core/blob/main/packages/escape/src/dic.ts)。
    * @default MappingChars2String
    */
-  customReplaceDictionary?: Record<string, string>
+  customReplaceDictionary?: Record<string, string> | undefined
 
   /**
    * 忽略指定标签模板表达式中的标识符。
@@ -115,7 +116,7 @@ export interface UserDefinedOptionsImportantPart {
    * 当模板字符串被这些标识符包裹时，将跳过转义处理。
    * @default ['weappTwIgnore']
    */
-  ignoreTaggedTemplateExpressionIdentifiers?: (string | RegExp)[]
+  ignoreTaggedTemplateExpressionIdentifiers?: (string | RegExp)[] | undefined
   /**
    * 忽略指定调用表达式中的标识符。
    *
@@ -124,7 +125,7 @@ export interface UserDefinedOptionsImportantPart {
    * @remarks
    * 使用这些方法包裹的模板字符串或字符串字面量会跳过转义，常与 `@weapp-tailwindcss/merge` 配合（如 `['twMerge', 'twJoin', 'cva']`）。
    */
-  ignoreCallExpressionIdentifiers?: (string | RegExp)[]
+  ignoreCallExpressionIdentifiers?: (string | RegExp)[] | undefined
 
   // ------------------------------------------------------------------------------------------------------------------------
   // ------------------------------Postcss-----------------------------------------------------------------------------------
@@ -162,7 +163,7 @@ export interface UserDefinedOptionsImportantPart {
    * }
    * ```
    */
-  cssPreflight?: CssPreflightOptions
+  cssPreflight?: CssPreflightOptions | undefined
   /**
    * 控制 `cssPreflight` 注入的 DOM 选择器范围。
    *
@@ -171,7 +172,7 @@ export interface UserDefinedOptionsImportantPart {
    * @remarks
    * 仅 `view`、`text` 及其伪元素会受影响。设置为 `'all'` 可以覆盖所有元素，此时需自行处理与宿主默认样式的冲突。
    */
-  cssPreflightRange?: 'all'
+  cssPreflightRange?: 'all' | undefined
   /**
    * 预计算 CSS 变量或 `calc` 表达式的结果。
    *
@@ -204,7 +205,7 @@ export interface UserDefinedOptionsImportantPart {
    * cssCalc: { includeCustomProperties: ['--spacing'] }
    * ```
    */
-  cssCalc?: boolean | CssCalcOptions | (string | RegExp)[]
+  cssCalc?: boolean | CssCalcOptions | (string | RegExp)[] | undefined
 
   /**
    * 是否额外注入 `tailwindcss css var scope`。
@@ -215,7 +216,7 @@ export interface UserDefinedOptionsImportantPart {
    * 当构建链路（例如 `@tarojs/plugin-html`）移除了包含 `*` 的选择器时，可启用该选项重新写入变量作用域，以避免渐变等功能失效。
    * @default false
    */
-  injectAdditionalCssVarScope?: boolean
+  injectAdditionalCssVarScope?: boolean | undefined
   /**
    * 控制 CSS 选择器的替换规则。
    *
@@ -231,7 +232,7 @@ export interface UserDefinedOptionsImportantPart {
      * @example
      * root: ['page', '.tw-root', 'wx-root-portal-content']
      */
-    root?: string | string[] | false
+    root?: string | string[] | false | undefined
     /**
      * 将全局选择器 `*` 替换为指定值。
      *
@@ -240,8 +241,8 @@ export interface UserDefinedOptionsImportantPart {
      * @remarks
      * 小程序环境不支持 `*`，因此默认转换为 `view`、`text`；设置为 `false` 会留下原始选择器。
      */
-    universal?: string | string[] | false
-  }
+    universal?: string | string[] | false | undefined
+  } | undefined
   /**
    * rem 到 rpx 的转换配置。
    *
@@ -257,7 +258,7 @@ export interface UserDefinedOptionsImportantPart {
    * }
    * ```
    */
-  rem2rpx?: boolean | Rem2rpxOptions
+  rem2rpx?: boolean | Rem2rpxOptions | undefined
   /**
    * px 到 rpx 的转换配置。
    *
@@ -266,7 +267,7 @@ export interface UserDefinedOptionsImportantPart {
    * @remarks
    * 传入 `true` 启用默认映射（`1px = 1rpx`），或通过对象自定义更多行为。
    */
-  px2rpx?: boolean | Px2rpxOptions
+  px2rpx?: boolean | Px2rpxOptions | undefined
 
   /**
    * 多单位转 px 的转换配置。
@@ -276,7 +277,7 @@ export interface UserDefinedOptionsImportantPart {
    * 传入 `true` 启用默认映射（postcss-units-to-px 默认单位表），或通过对象自定义行为。
    * 默认关闭。
    */
-  unitsToPx?: boolean | UnitsToPxOptions
+  unitsToPx?: boolean | UnitsToPxOptions | undefined
 
   /**
    * `postcss-preset-env` 的配置项。
@@ -286,7 +287,14 @@ export interface UserDefinedOptionsImportantPart {
    * @see https://preset-env.cssdb.org/
    * @see https://github.com/csstools/postcss-plugins/tree/main/plugin-packs/postcss-preset-env#readme
    */
-  cssPresetEnv?: PresetEnvOptions
+  cssPresetEnv?: PresetEnvOptions | undefined
+
+  /**
+   * 控制构建端保留或移除的 CSS at-rule。
+   *
+   * @internal
+   */
+  atRules?: IStyleHandlerOptions['atRules'] | undefined
 
   /**
    * 控制内置 autoprefixer 后处理。
@@ -304,7 +312,7 @@ export interface UserDefinedOptionsImportantPart {
    * })
    * ```
    */
-  autoprefixer?: WeappAutoprefixerOptions
+  autoprefixer?: WeappAutoprefixerOptions | undefined
 
   /**
    * 为不同版本的 Tailwind 配置行为。
@@ -312,7 +320,7 @@ export interface UserDefinedOptionsImportantPart {
    * @since ^4.0.0
    * @group 0.重要配置
    */
-  tailwindcss?: TailwindCssPatchOptions['tailwindcss']
+  tailwindcss?: TailwindCssPatchOptions['tailwindcss'] | undefined
 
   /**
    * 指定 tailwindcss@4 的入口 CSS。
@@ -322,7 +330,7 @@ export interface UserDefinedOptionsImportantPart {
    * @remarks
    * 未配置时无法加载自定义插件，等价于设置 `tailwindcss.v4.cssEntries`。
    */
-  cssEntries?: string[]
+  cssEntries?: string[] | undefined
   /**
    * 配置 uni-app x 场景的行为。
    *
@@ -330,5 +338,19 @@ export interface UserDefinedOptionsImportantPart {
    * @group 0.重要配置
    * @ignore
    */
-  uniAppX?: boolean | UniAppXOptions
+  uniAppX?: boolean | UniAppXOptions | undefined
+
+  /**
+   * uni-app x 样式目标。
+   *
+   * @internal
+   */
+  uniAppXCssTarget?: IStyleHandlerOptions['uniAppXCssTarget'] | undefined
+
+  /**
+   * uni-app x 不兼容 utility 的处理策略。
+   *
+   * @internal
+   */
+  uniAppXUnsupported?: IStyleHandlerOptions['uniAppXUnsupported'] | undefined
 }

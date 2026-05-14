@@ -5,7 +5,7 @@ import { createBasePreset } from './shared'
 export interface UniAppPresetOptions extends BasePresetOptions {}
 
 export function uniApp(options: UniAppPresetOptions = {}) {
-  const uniPlatform = process.env.UNI_PLATFORM
+  const uniPlatform = process.env['UNI_PLATFORM']
   const disableInH5OrApp = uniPlatform === 'h5' || uniPlatform === 'app' || uniPlatform === 'app-plus'
 
   return createBasePreset({

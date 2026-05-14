@@ -1,8 +1,4 @@
-import type {
-  TailwindResolvedSource,
-  TailwindV4ResolvedSource,
-  WeappTailwindcssGenerator,
-} from './types'
+import type { TailwindResolvedSource, WeappTailwindcssGenerator } from './types'
 import type { TailwindcssPatcherLike } from '@/types'
 import {
   createTailwindV3Engine,
@@ -22,14 +18,14 @@ import {
   transformTailwindV4CssToWeapp,
 } from '@/tailwindcss/v4-engine'
 
-function isTailwindV3Source(source: TailwindResolvedSource): source is TailwindResolvedSource & { version: 3 } {
+function isTailwindV3Source(source: TailwindResolvedSource): source is Extract<TailwindResolvedSource, { version: 3 }> {
   return 'version' in source && source.version === 3
 }
 
 export function createWeappTailwindcssGenerator(source: TailwindResolvedSource): WeappTailwindcssGenerator {
   return isTailwindV3Source(source)
     ? createTailwindV3Engine(source)
-    : createTailwindV4Engine(source as TailwindV4ResolvedSource)
+    : createTailwindV4Engine(source)
 }
 
 export async function resolveTailwindSourceFromPatcher(

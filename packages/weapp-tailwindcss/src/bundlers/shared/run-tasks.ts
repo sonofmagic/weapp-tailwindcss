@@ -16,7 +16,11 @@ export async function runWithConcurrency<T>(
       return
     }
     const currentIndex = cursor++
-    const wrapped = Promise.resolve(factories[currentIndex]()).then((value) => {
+    const factory = factories[currentIndex]
+    if (!factory) {
+      return
+    }
+    const wrapped = Promise.resolve(factory()).then((value) => {
       results[currentIndex] = value
     }).finally(() => {
       executing.delete(wrapped)

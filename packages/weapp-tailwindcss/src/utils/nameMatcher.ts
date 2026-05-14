@@ -10,6 +10,9 @@ function buildFuzzyMatcher(fuzzyStrings: string[]): ((value: string) => boolean)
   }
   if (fuzzyStrings.length === 1) {
     const [needle] = fuzzyStrings
+    if (needle === undefined) {
+      return undefined
+    }
     return value => value.includes(needle)
   }
   const unique = [...new Set(fuzzyStrings)]
@@ -55,6 +58,9 @@ export function createNameMatcher(
     const exactStringCount = exactStrings?.size ?? 0
     if (exactStringCount === 1 && regexList.length === 0) {
       const [needle] = exactStrings!
+      if (needle === undefined) {
+        return NEVER_MATCH_NAME
+      }
       return value => value === needle
     }
 
@@ -64,6 +70,9 @@ export function createNameMatcher(
 
     if (exactStringCount === 0 && regexList.length === 1) {
       const [regex] = regexList
+      if (!regex) {
+        return NEVER_MATCH_NAME
+      }
       return value => regex.test(value)
     }
 
@@ -84,6 +93,9 @@ export function createNameMatcher(
 
   if (!fuzzyMatcher && regexList.length === 1) {
     const [regex] = regexList
+    if (!regex) {
+      return NEVER_MATCH_NAME
+    }
     return value => regex.test(value)
   }
 

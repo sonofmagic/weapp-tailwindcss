@@ -98,12 +98,12 @@ function isMiniProgramPreflightRule(rule: postcss.Rule) {
 }
 
 function isKeyframesRule(rule: postcss.Rule) {
-  let parent = rule.parent
+  let parent = rule.parent as postcss.Container | undefined
   while (parent) {
-    if (parent.type === 'atrule' && parent.name.endsWith('keyframes')) {
+    if (parent.type === 'atrule' && (parent as postcss.AtRule).name.endsWith('keyframes')) {
       return true
     }
-    parent = parent.parent
+    parent = parent.parent as postcss.Container | undefined
   }
   return false
 }

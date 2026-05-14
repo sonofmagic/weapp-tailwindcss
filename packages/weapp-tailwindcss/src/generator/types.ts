@@ -25,9 +25,9 @@ export type TailwindCandidateSource = TailwindV3CandidateSource | TailwindV4Cand
 export type TailwindResolvedSource = TailwindV3ResolvedSource | TailwindV4ResolvedSource
 
 export interface WeappTailwindcssGenerateOptions extends Omit<TailwindV3GenerateOptions & TailwindV4GenerateOptions, 'target'> {
-  target?: WeappTailwindcssGeneratorTarget
-  styleOptions?: Partial<IStyleHandlerOptions>
-  tailwindcssV3Compatibility?: boolean
+  target?: WeappTailwindcssGeneratorTarget | undefined
+  styleOptions?: Partial<IStyleHandlerOptions> | undefined
+  tailwindcssV3Compatibility?: boolean | undefined
 }
 
 export type WeappTailwindcssGenerateResult = (TailwindV3GenerateResult | TailwindV4GenerateResult) & {

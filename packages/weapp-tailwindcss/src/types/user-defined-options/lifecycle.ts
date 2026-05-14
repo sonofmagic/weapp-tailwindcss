@@ -4,23 +4,23 @@ export interface UserDefinedOptionsLifecyclePart {
    *
    * @group 2.生命周期
    */
-  onLoad?: () => void
+  onLoad?: (() => void) | undefined
   /**
    * 开始处理前触发。
    *
    * @group 2.生命周期
    */
-  onStart?: () => void
+  onStart?: (() => void) | undefined
   /**
    * 匹配并修改文件后触发。
    *
    * @group 2.生命周期
    */
-  onUpdate?: (filename: string, oldVal: string, newVal: string) => void
+  onUpdate?: ((filename: string, oldVal: string, newVal: string) => void) | undefined
   /**
    * 结束处理时触发。
    *
    * @group 2.生命周期
    */
-  onEnd?: () => void
+  onEnd?: (() => void) | undefined
 }

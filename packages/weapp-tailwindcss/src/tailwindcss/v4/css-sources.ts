@@ -1,6 +1,7 @@
 import type { TailwindV4CssSource } from 'tailwindcss-patch'
 import type { UserDefinedOptions } from '@/types'
 import path from 'node:path'
+import { omitUndefined } from '@/utils/object'
 
 function hasCssEntriesValue(value: unknown) {
   if (typeof value === 'string') {
@@ -52,11 +53,11 @@ export function upsertTailwindV4CssSource(
   opts: UserDefinedOptions,
   source: TailwindV4CssSource,
 ) {
-  const normalizedSource: TailwindV4CssSource = {
+  const normalizedSource: TailwindV4CssSource = omitUndefined({
     ...source,
     ...(source.file === undefined ? {} : { file: normalizeCssSourceFile(source.file) }),
     ...(source.dependencies === undefined ? {} : { dependencies: normalizeDependencies(source.dependencies) }),
-  }
+  }) as TailwindV4CssSource
   const tailwindcss = opts.tailwindcss ?? {}
   const v4 = tailwindcss.v4 ?? {}
   const cssSources = [...(v4.cssSources ?? [])]
@@ -64,6 +65,10 @@ export function upsertTailwindV4CssSource(
   const existingIndex = cssSources.findIndex(candidate => normalizeCssSourceFile(candidate.file) === sourceFile)
   if (existingIndex >= 0) {
     const existing = cssSources[existingIndex]
+    if (!existing) {
+      cssSources[existingIndex] = normalizedSource
+      return true
+    }
     const nextSource = {
       ...existing,
       ...normalizedSource,

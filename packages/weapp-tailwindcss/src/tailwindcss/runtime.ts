@@ -12,14 +12,14 @@ const debug = createDebug('[tailwindcss:runtime] ')
 export const refreshTailwindcssPatcherSymbol = Symbol.for('weapp-tailwindcss.refreshTailwindcssPatcher')
 
 export interface CollectRuntimeClassSetOptions {
-  force?: boolean
-  skipRefresh?: boolean
-  clearCache?: boolean
+  force?: boolean | undefined
+  skipRefresh?: boolean | undefined
+  clearCache?: boolean | undefined
 }
 
 export interface RefreshTailwindRuntimeStateOptions {
   force: boolean
-  clearCache?: boolean
+  clearCache?: boolean | undefined
 }
 
 export function createTailwindRuntimeReadyPromise(
@@ -34,13 +34,13 @@ export function createTailwindRuntimeReadyPromise(
 export interface TailwindRuntimeState {
   twPatcher: TailwindcssPatcherLike
   readyPromise: Promise<void>
-  refreshTailwindcssPatcher?: (options?: RefreshTailwindcssPatcherOptions) => Promise<TailwindcssPatcherLike>
+  refreshTailwindcssPatcher?: ((options?: RefreshTailwindcssPatcherOptions) => Promise<TailwindcssPatcherLike>) | undefined
 }
 
 interface RuntimeClassSetStateEntry {
-  value?: Set<string>
-  promise?: Promise<Set<string>>
-  signature?: string
+  value?: Set<string> | undefined
+  promise?: Promise<Set<string>> | undefined
+  signature?: string | undefined
 }
 
 const runtimeClassSetStateCache = new WeakMap<TailwindRuntimeState, RuntimeClassSetStateEntry>()
@@ -89,10 +89,10 @@ export async function refreshTailwindRuntimeState(
 }
 
 export interface EnsureRuntimeClassSetOptions {
-  forceRefresh?: boolean
-  forceCollect?: boolean
-  clearCache?: boolean
-  allowEmpty?: boolean
+  forceRefresh?: boolean | undefined
+  forceCollect?: boolean | undefined
+  clearCache?: boolean | undefined
+  allowEmpty?: boolean | undefined
 }
 
 export async function ensureRuntimeClassSet(

@@ -100,10 +100,10 @@ export function createGenerateBundleHook(context: GenerateBundleContext) {
     onStart()
 
     const metrics = createEmptyMetrics()
-    const forceRuntimeRefreshByEnv = process.env.WEAPP_TW_VITE_FORCE_RUNTIME_REFRESH === '1'
-    const disableDirtyOptimization = process.env.WEAPP_TW_VITE_DISABLE_DIRTY === '1'
-    const disableJsPrecheck = process.env.WEAPP_TW_VITE_DISABLE_JS_PRECHECK === '1'
-    const debugCssDiff = process.env.WEAPP_TW_VITE_DEBUG_CSS_DIFF === '1'
+    const forceRuntimeRefreshByEnv = process.env['WEAPP_TW_VITE_FORCE_RUNTIME_REFRESH'] === '1'
+    const disableDirtyOptimization = process.env['WEAPP_TW_VITE_DISABLE_DIRTY'] === '1'
+    const disableJsPrecheck = process.env['WEAPP_TW_VITE_DISABLE_JS_PRECHECK'] === '1'
+    const debugCssDiff = process.env['WEAPP_TW_VITE_DEBUG_CSS_DIFF'] === '1'
     const resolvedConfig = getResolvedConfig()
     const bundleFiles = Object.keys(bundle)
     const buildCommand = resolvedConfig?.command === 'build'

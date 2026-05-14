@@ -21,13 +21,13 @@ function isCssLikeImporter(importer?: string | null) {
 }
 
 interface RewriteCssImportsOptions {
-  appType?: AppType
-  getAppType?: () => AppType | undefined
-  shouldOwnTailwindGeneration?: boolean
+  appType?: AppType | undefined
+  getAppType?: (() => AppType | undefined) | undefined
+  shouldOwnTailwindGeneration?: boolean | undefined
   shouldRewrite: boolean
-  rootImport?: string
+  rootImport?: string | undefined
   weappTailwindcssDirPosix: string
-  onTailwindRootCss?: (id: string, code: string) => Promise<void> | void
+  onTailwindRootCss?: ((id: string, code: string) => Promise<void> | void) | undefined
 }
 
 function stripTailwindConfigDirectives(code: string) {

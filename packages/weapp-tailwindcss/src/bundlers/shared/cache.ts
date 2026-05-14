@@ -3,16 +3,16 @@ import type { CacheValue, HashMapKey, ICreateCacheReturnType } from '@/cache'
 export interface ProcessCachedTaskOptions<TValue extends CacheValue> {
   cache: ICreateCacheReturnType
   cacheKey: string
-  hashKey?: HashMapKey
-  rawSource?: string
-  hash?: string
-  readCache?: () => TValue | undefined
+  hashKey?: HashMapKey | undefined
+  rawSource?: string | undefined
+  hash?: string | undefined
+  readCache?: (() => TValue | undefined) | undefined
   applyResult: (value: TValue) => void | Promise<void>
   transform: () => Promise<{
     result: TValue
-    cacheValue?: CacheValue
+    cacheValue?: CacheValue | undefined
   }>
-  onCacheHit?: () => void
+  onCacheHit?: (() => void) | undefined
 }
 
 export async function processCachedTask<TValue extends CacheValue>({

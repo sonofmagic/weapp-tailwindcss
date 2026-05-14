@@ -123,6 +123,9 @@ export class Tokenizer {
 
     for (let i = 0; i < input.length; i++) {
       const char = input[i]
+      if (char === undefined) {
+        continue
+      }
       this.processChar(char, i)
     }
     // Push the last buffer if it's not empty

@@ -2,6 +2,7 @@ import type { TailwindV4Engine, TailwindV4GenerateOptions, TailwindV4ResolvedSou
 import path from 'node:path'
 import postcss from 'postcss'
 import { createTailwindV4Engine as createPatchTailwindV4Engine } from 'tailwindcss-patch'
+import { omitUndefined } from '@/utils/object'
 import { filterUnsupportedMiniProgramTailwindV4Candidates } from './candidates'
 import { transformTailwindV4CssByTarget } from './miniprogram'
 import { applyTailwindV3CompatibilityCss } from './tailwind-v3-compatibility'
@@ -209,11 +210,11 @@ export function createTailwindV4Engine(source: TailwindV4ResolvedSource): Tailwi
     const engine = createPatchTailwindV4Engine(
       sourceCss === source.css ? source : { ...source, css: sourceCss },
     )
-    const result = await engine.generate({
+    const result = await engine.generate(omitUndefined({
       scanSources: resolveScanSources(source, scanSources),
       ...patchOptions,
       candidates,
-    })
+    }))
     const rawCss = result.css
     const css = await transformTailwindV4CssByTarget(rawCss, target, styleOptions)
 

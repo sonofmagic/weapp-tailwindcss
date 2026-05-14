@@ -5,6 +5,7 @@ import { logger } from '@/logger'
 import { getTailwindcssPackageInfo } from '@/tailwindcss'
 import { resolveUniAppXOptions } from '@/uni-app-x/options'
 import { defuOverrideArray, resolveUniUtsPlatform } from '@/utils'
+import { omitUndefined } from '@/utils/object'
 import { normalizeCssEntries } from './shared'
 
 export interface UniAppXOptions {
@@ -103,9 +104,9 @@ function resolveInstalledTailwindDefaults(resolve?: PackageResolvingOptions) {
 }
 
 export function uniAppX(options: UniAppXOptions) {
-  logger.info(`UNI_PLATFORM: ${process.env.UNI_PLATFORM}`)
+  logger.info(`UNI_PLATFORM: ${process.env['UNI_PLATFORM']}`)
   const utsPlatform = resolveUniUtsPlatform()
-  const uniPlatform = resolveUniUtsPlatform(process.env.UNI_PLATFORM)
+  const uniPlatform = resolveUniUtsPlatform(process.env['UNI_PLATFORM'])
 
   logger.info(`UNI_UTS_PLATFORM: ${utsPlatform.raw ?? 'undefined'}`)
 
@@ -142,10 +143,10 @@ export function uniAppX(options: UniAppXOptions) {
           v3: {
             cwd: options.base,
           },
-          v4: {
+          v4: omitUndefined({
             base: options.base,
             cssEntries,
-          },
+          }),
         },
       },
       tailwindcss: {

@@ -19,9 +19,9 @@ const DOUBLE_QUOTE = '"'
 export interface GenerateVscodeEntryOptions {
   baseDir: string
   cssEntry: string
-  output?: string
-  sources?: string[]
-  force?: boolean
+  output?: string | undefined
+  sources?: string[] | undefined
+  force?: boolean | undefined
 }
 
 export interface GenerateVscodeEntryResult {

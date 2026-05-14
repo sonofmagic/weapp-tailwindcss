@@ -87,7 +87,7 @@ function createInternalCompilerContext(opts?: UserDefinedOptions): InternalUserD
 
   applyLoggerLevel(ctx.logLevel)
 
-  const twPatcher = createTailwindcssPatcherFromContext(ctx)
+  const twPatcher = createTailwindcssPatcherFromContext(ctx) as TailwindcssPatcherLike
   logTailwindcssTarget(twPatcher, ctx.tailwindcssBasedir)
   logRuntimeTailwindcssVersion(
     ctx.tailwindcssBasedir,

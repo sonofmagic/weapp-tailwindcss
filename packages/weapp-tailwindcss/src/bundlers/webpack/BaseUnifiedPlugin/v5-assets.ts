@@ -19,7 +19,7 @@ import { createAssetHashByChunkMap, createRuntimeAwareCssHash, getCacheKey } fro
 interface SetupWebpackV5ProcessAssetsHookOptions {
   compiler: Compiler
   options: InternalUserDefinedOptions
-  appType?: AppType
+  appType?: AppType | undefined
   runtimeState: {
     twPatcher: InternalUserDefinedOptions['twPatcher']
     readyPromise: Promise<void>
@@ -27,8 +27,8 @@ interface SetupWebpackV5ProcessAssetsHookOptions {
   getRuntimeRefreshRequirement: () => boolean
   refreshRuntimeMetadata: (force: boolean) => Promise<void>
   consumeRuntimeRefreshRequirement: () => void
-  isWatchMode?: () => boolean
-  runtimeClassSetManager?: BundleRuntimeClassSetManager
+  isWatchMode?: (() => boolean) | undefined
+  runtimeClassSetManager?: BundleRuntimeClassSetManager | undefined
   debug: (format: string, ...args: unknown[]) => void
 }
 
@@ -70,7 +70,7 @@ export function setupWebpackV5ProcessAssetsHook(options: SetupWebpackV5ProcessAs
         from: string
       }
     }
-    majorVersion: number | undefined
+    majorVersion?: number | undefined
   }>()
   const cssUserHandlerOptionsCache = new Map<string, {
     isMainChunk: boolean
@@ -79,7 +79,7 @@ export function setupWebpackV5ProcessAssetsHook(options: SetupWebpackV5ProcessAs
         from: string
       }
     }
-    majorVersion: number | undefined
+    majorVersion?: number | undefined
   }>()
   const bundleBuildState = createBundleBuildState()
   const bundleRuntimeClassSetManager = runtimeClassSetManager ?? createBundleRuntimeClassSetManager()
@@ -177,7 +177,7 @@ export function setupWebpackV5ProcessAssetsHook(options: SetupWebpackV5ProcessAs
                 from: file,
               },
             },
-            majorVersion,
+            ...(majorVersion === undefined ? {} : { majorVersion }),
           }
           cssHandlerOptionsCache.set(cacheKey, created)
           return created

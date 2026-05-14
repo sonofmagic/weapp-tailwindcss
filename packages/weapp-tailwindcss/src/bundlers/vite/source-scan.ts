@@ -86,8 +86,8 @@ interface ResolvedTailwindV4CssEntries {
 }
 
 export interface ResolvedViteSourceScan {
-  entries?: TailwindSourceEntry[]
-  inlineCandidates?: TailwindInlineSourceCandidates
+  entries?: TailwindSourceEntry[] | undefined
+  inlineCandidates?: TailwindInlineSourceCandidates | undefined
 }
 
 async function resolveConfigContentEntries(root: postcss.Root, base: string) {

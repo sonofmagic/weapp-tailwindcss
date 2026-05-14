@@ -9,6 +9,7 @@ import {
   normalizeCssEntries,
   tryCreateMultiTailwindcssPatcher,
 } from '@/tailwindcss/v4'
+import { omitUndefined } from '@/utils/object'
 import { resolveTailwindcssBasedir } from './tailwindcss/basedir'
 import { detectImplicitCssEntries } from './tailwindcss/rax'
 
@@ -48,10 +49,10 @@ export function createTailwindcssPatcherFromContext(ctx: InternalUserDefinedOpti
     ?? (absoluteCssEntryBasedir ? findWorkspaceRoot(absoluteCssEntryBasedir) : undefined)
 
   const groupedCssEntries = normalizedCssEntries
-    ? groupCssEntriesByBase(normalizedCssEntries, {
+    ? groupCssEntriesByBase(normalizedCssEntries, omitUndefined({
         preferredBaseDir: resolvedTailwindcssBasedir,
         workspaceRoot,
-      })
+      }))
     : undefined
 
   const multiPatcher = groupedCssEntries

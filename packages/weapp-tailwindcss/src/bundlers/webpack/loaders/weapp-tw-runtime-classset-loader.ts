@@ -25,7 +25,7 @@ const WeappTwRuntimeClassSetLoader: webpack.LoaderDefinitionFunction<RuntimeClas
   this: webpack.LoaderContext<RuntimeClassSetLoaderOptions>,
   source: string | Buffer,
 ) {
-  if (process.env.WEAPP_TW_LOADER_DEBUG) {
+  if (process.env['WEAPP_TW_LOADER_DEBUG']) {
     process.stdout.write(`[weapp-tw-runtime-classset-loader] executing for ${this.resourcePath}\n`)
   }
   const opt = getLoaderOptions(this)

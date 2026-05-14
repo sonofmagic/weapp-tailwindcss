@@ -32,7 +32,7 @@ function removeEmptyAtRuleAncestors(parent: postcss.Container | undefined) {
   while (parent?.type === 'atrule' && (!parent.nodes || parent.nodes.length === 0)) {
     const nextParent = parent.parent
     parent.remove()
-    parent = nextParent
+    parent = nextParent?.type === 'atrule' ? nextParent : undefined
   }
 }
 

@@ -16,7 +16,7 @@ export class JsModuleGraph {
   private readonly filter?: JsModuleGraphOptions['filter']
   private readonly maxDepth: number
   private readonly baseOptions: IJsHandlerOptions
-  private readonly parserOptions?: ParserOptions
+  private readonly parserOptions?: ParserOptions | undefined
   private readonly rootFilename: string
   private readonly ignoredExports: IgnoredExportsTracker
 

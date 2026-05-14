@@ -20,7 +20,7 @@ type SelectorListTransformer = (
 
 export interface SelectorTransformContext {
   options: IStyleHandlerOptions
-  childCombinatorReplacement?: SelectorComponent[]
+  childCombinatorReplacement?: SelectorComponent[] | undefined
 }
 
 function buildSelectorReplacement(value: string | string[] | false | undefined): SelectorComponent[] | null {
@@ -162,6 +162,9 @@ function transformSelector(
 
   for (let index = 0; index < selector.length; index++) {
     const component = selector[index]
+    if (!component) {
+      continue
+    }
 
     if (component.type === 'combinator' && component.value === 'child' && childCombinatorReplacement) {
       const next = selector[index + 1]

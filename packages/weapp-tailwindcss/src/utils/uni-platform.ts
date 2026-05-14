@@ -15,7 +15,7 @@ function normalizePlatform(value: string | undefined) {
   return value?.trim().toLowerCase() || undefined
 }
 
-export function resolveUniUtsPlatform(value = process.env.UNI_UTS_PLATFORM): UniUtsPlatformInfo {
+export function resolveUniUtsPlatform(value = process.env['UNI_UTS_PLATFORM']): UniUtsPlatformInfo {
   const normalized = normalizePlatform(value)
   const isAppAndroid = normalized === 'app-android'
   const isAppIos = normalized === 'app-ios'

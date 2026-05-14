@@ -1,4 +1,4 @@
-import type { CreateJsHandlerOptions } from '../types'
+import type { IJsHandlerOptions } from '../types'
 import process from 'node:process'
 
 /** 用于检测源码中是否包含类名相关模式的正则表达式 */
@@ -15,8 +15,8 @@ const DEPENDENCY_HINT_RE = /\bimport\s*[("'`{*]|\brequire\s*\(|\bexport\s+\*\s+f
  * @param options - 可选的 JS 处理器配置选项
  * @returns 如果可以跳过转换返回 `true`，否则返回 `false`
  */
-export function shouldSkipJsTransform(rawSource: string, options?: CreateJsHandlerOptions): boolean {
-  if (process.env.WEAPP_TW_DISABLE_JS_PRECHECK === '1') {
+export function shouldSkipJsTransform(rawSource: string, options?: IJsHandlerOptions): boolean {
+  if (process.env['WEAPP_TW_DISABLE_JS_PRECHECK'] === '1') {
     return false
   }
   if (!rawSource) {

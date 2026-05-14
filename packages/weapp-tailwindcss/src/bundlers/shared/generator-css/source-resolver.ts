@@ -12,6 +12,7 @@ import {
   resolveTailwindV4SourceFromPatcher,
   resolveTailwindV4SourceOptionsFromPatcher,
 } from '@/generator'
+import { omitUndefined } from '@/utils/object'
 import {
   normalizeConfigDirective,
   prependConfigDirective,
@@ -137,8 +138,7 @@ function resolveMatchingTailwindV4CssEntry(
     return undefined
   }
   return resolveTailwindV4Source({
-    ...sourceOptions,
-    css: undefined,
+    ...omitUndefined(sourceOptions),
     cssEntries: [matchingEntry],
   })
 }
@@ -180,10 +180,10 @@ export async function resolveGeneratorSource(
   const cssEntrySource = resolveCssEntrySource(rawSource, base, { removeConfig: majorVersion === 3 })
   if (majorVersion === 3) {
     const sourceOptions = resolveTailwindV3SourceOptionsFromPatcher(runtimeState.twPatcher)
-    const mergedSourceOptions = {
+    const mergedSourceOptions = omitUndefined({
       ...sourceOptions,
       config: generatorOptions?.config ?? sourceOptions.config,
-    }
+    })
     const sourceSideEntrySource = canResolveSourceSideCssEntry(file, cssHandlerOptions)
       ? resolveSourceSideCssEntrySource(file, mergedSourceOptions, { removeConfig: true })
       : undefined
@@ -197,7 +197,7 @@ export async function resolveGeneratorSource(
       resolvedEntrySource.config,
       resolvedEntrySource.configRequest,
       file,
-      mergedSourceOptions,
+      omitUndefined(mergedSourceOptions),
     )
     return resolveTailwindV3Source({
       ...mergedSourceOptions,
@@ -233,9 +233,8 @@ export async function resolveGeneratorSource(
     && cssHandlerOptions.isMainChunk
     && sourceOptions.cssEntries?.length === 1
     ? await resolveTailwindV4Source({
-        ...sourceOptions,
-        css: undefined,
-        cssEntries: [sourceOptions.cssEntries[0]],
+        ...omitUndefined(sourceOptions),
+        cssEntries: [sourceOptions.cssEntries[0]!],
       })
     : undefined
   const preferredCssEntrySource = matchedCssEntrySource ?? mainCssEntrySource
@@ -258,7 +257,7 @@ export async function resolveGeneratorSource(
         }
       : source
   }
-  const resolvedSourceOptions = sourceOptions ?? {}
+  const resolvedSourceOptions = omitUndefined(sourceOptions ?? {})
   const config = resolveExistingConfigPath(
     resolvedEntrySource.config,
     resolvedEntrySource.configRequest,
@@ -313,8 +312,7 @@ export async function resolveGeneratorSources(
 
   const sources = await Promise.all(sourceOptions.cssEntries.map(cssEntry =>
     resolveTailwindV4Source({
-      ...sourceOptions,
-      css: undefined,
+      ...omitUndefined(sourceOptions),
       cssEntries: [cssEntry],
     }).then(source => generatorOptions?.config
       ? {

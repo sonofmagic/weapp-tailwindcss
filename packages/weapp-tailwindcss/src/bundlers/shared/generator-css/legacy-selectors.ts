@@ -37,8 +37,15 @@ function escapeCompatSelectorClasses(selector: string) {
     let className = ''
     while (end < selector.length) {
       const current = selector[end]
+      if (current === undefined) {
+        break
+      }
       if (current === '\\' && end + 1 < selector.length) {
-        className += current + selector[end + 1]
+        const escaped = selector[end + 1]
+        if (escaped === undefined) {
+          break
+        }
+        className += current + escaped
         end += 2
         continue
       }

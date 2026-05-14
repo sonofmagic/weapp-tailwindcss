@@ -5,6 +5,7 @@ import { logger } from '@weapp-tailwindcss/logger'
 import { createTailwindcssPatcher } from '@/tailwindcss/patcher'
 import { readInstalledPackageMajorVersion } from '@/tailwindcss/version'
 import { defuOverrideArray } from '@/utils'
+import { omitUndefined } from '@/utils/object'
 import { createMultiTailwindcssPatcher } from './multi-patcher'
 import { overrideTailwindcssPatcherOptionsForBase } from './patcher-options'
 
@@ -82,11 +83,11 @@ export function createPatcherForBase(
       cwd: baseDir,
     },
     v4: hasCssEntries
-      ? { cssEntries }
-      : {
+      ? omitUndefined({ cssEntries })
+      : omitUndefined({
           base: baseDir,
           cssEntries,
-        },
+        }),
   }
 
   const mergedTailwindOptions = defuOverrideArray<TailwindUserOptions, TailwindUserOptions[]>(
@@ -144,6 +145,9 @@ export function createPatcherForBase(
   const packageNameForVersionDetection = configuredPackageName ?? mergedTailwindOptions.packageName ?? 'tailwindcss'
   const installedTailwindVersion = readInstalledPackageMajorVersion(packageNameForVersionDetection, baseDir)
   const resolvedTailwindVersion = installedTailwindVersion ?? explicitTailwindVersion
+  const supportedResolvedTailwindVersion = resolvedTailwindVersion === 2 || resolvedTailwindVersion === 3 || resolvedTailwindVersion === 4
+    ? resolvedTailwindVersion
+    : undefined
 
   const isV4 = (
     resolvedTailwindVersion === 4 && (
@@ -178,16 +182,16 @@ export function createPatcherForBase(
       ...mergedTailwindOptions,
       packageName,
     }
-    if (resolvedTailwindVersion) {
-      tailwindOptionsForPackage.version = resolvedTailwindVersion
+    if (supportedResolvedTailwindVersion) {
+      tailwindOptionsForPackage.version = supportedResolvedTailwindVersion
     }
     try {
-      patchers.push(createTailwindcssPatcher({
+      patchers.push(createTailwindcssPatcher(omitUndefined({
         basedir: baseDir,
         supportCustomLengthUnitsPatch: supportCustomLengthUnitsPatch ?? true,
         tailwindcss: tailwindOptionsForPackage,
         tailwindcssPatcherOptions: patchedOptions,
-      }))
+      })))
     }
     catch (error) {
       if (packageCandidateList.length > 1 && isTailwindVersionMismatchError(error)) {
@@ -203,7 +207,8 @@ export function createPatcherForBase(
     throw firstVersionMismatchError
   }
 
-  return patchers.length === 1 ? patchers[0] : createMultiTailwindcssPatcher(patchers)
+  const [singlePatcher] = patchers
+  return patchers.length === 1 && singlePatcher ? singlePatcher : createMultiTailwindcssPatcher(patchers)
 }
 
 export function tryCreateMultiTailwindcssPatcher(
@@ -217,7 +222,10 @@ export function tryCreateMultiTailwindcssPatcher(
   logger.debug('detected multiple Tailwind CSS entry bases: %O', [...groups.keys()])
   const patchers: TailwindcssPatcherLike[] = []
   for (const [baseDir, entries] of groups) {
-    patchers.push(createPatcherForBase(baseDir, entries, options))
+    const patcher = createPatcherForBase(baseDir, entries, options)
+    if (patcher) {
+      patchers.push(patcher)
+    }
   }
   return createMultiTailwindcssPatcher(patchers)
 }
