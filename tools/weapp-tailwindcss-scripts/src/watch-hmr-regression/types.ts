@@ -237,6 +237,7 @@ export interface StyleMutationMetrics {
   functionDeclarations: string[]
   expectedFunctionDeclarations: string[]
   forbiddenFunctionFragments: string[]
+  referenceDirective?: string
   hotUpdateOutputMs: number
   hotUpdateEffectiveMs: number
   rollbackOutputMs: number

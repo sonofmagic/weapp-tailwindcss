@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest'
 import { buildDemoBaseCases } from '../../../tools/weapp-tailwindcss-scripts/src/watch-hmr-regression/cases/demo/base'
 import { buildDemoExtendedCases } from '../../../tools/weapp-tailwindcss-scripts/src/watch-hmr-regression/cases/demo/extended'
+import { createStyleMutationPayload } from '../../../tools/weapp-tailwindcss-scripts/src/watch-hmr-regression/mutations/shared'
 
 const watchCoveredProjects = new Set([
   ...buildDemoBaseCases('/repo').map(item => item.project),
@@ -11,6 +12,25 @@ const automatedWatchCases = [
   ...buildDemoBaseCases('/repo'),
   ...buildDemoExtendedCases('/repo'),
 ]
+
+const styleApplyUnsupportedCases = new Set([
+  'mpx-tailwindcss-v4',
+  'uni-app-vite-tailwindcss-v4',
+  'taro-vite-react-tailwindcss-v4',
+  'taro-webpack-react-tailwindcss-v4',
+])
+
+const styleFunctionUnsupportedCases = new Set([
+  'mpx-tailwindcss-v4',
+])
+
+const styleReferenceRequiredCases = new Set([
+  'mpx-tailwindcss-v4',
+  'uni-app-vite-tailwindcss-v4',
+  'taro-vite-react-tailwindcss-v4',
+  'taro-webpack-react-tailwindcss-v4',
+  'weapp-vite-tailwindcss-v4',
+])
 
 const matrixProjects = [
   'demo/gulp-tailwindcss-v3',
@@ -61,6 +81,66 @@ describe('watch-hmr coverage matrix', () => {
       }
       if (watchCase.contentMutation) {
         expect(watchCase.contentMutation.verifyClassLiteralIn).toContain('js')
+      }
+    }
+  })
+
+  it('models normal user edits for every demo case', () => {
+    for (const watchCase of automatedWatchCases) {
+      const mutationConfigs = [
+        watchCase.templateMutation,
+        watchCase.scriptMutation,
+        watchCase.styleMutation,
+        ...watchCase.subPackageMutations?.flatMap(item => [
+          item.templateMutation,
+          item.styleMutation,
+        ]) ?? [],
+      ]
+
+      for (const mutationConfig of mutationConfigs) {
+        expect(mutationConfig.sourceFile, `${watchCase.project} should edit demo source files`).toContain('/repo/demo/')
+        expect(mutationConfig.sourceFile, `${watchCase.project} should not edit generated dist files`).not.toContain('/dist/')
+      }
+
+      if (watchCase.contentMutation) {
+        expect(watchCase.contentMutation.sourceFile, `${watchCase.project} content mutation should edit demo source files`).toContain('/repo/demo/')
+        expect(watchCase.contentMutation.sourceFile, `${watchCase.project} content mutation should not edit generated dist files`).not.toContain('/dist/')
+        expect(watchCase.contentMutation.verifyClassLiteralIn, `${watchCase.project} content mutation should verify JS-visible literals`).toContain('js')
+      }
+    }
+  })
+
+  it('keeps style @apply and Tailwind function validation policy explicit', () => {
+    for (const watchCase of automatedWatchCases) {
+      const payload = createStyleMutationPayload(watchCase)
+
+      if (styleApplyUnsupportedCases.has(watchCase.name)) {
+        expect(payload.applyUtilities, `${watchCase.name} should skip unsupported @apply validation`).toEqual([])
+        expect(payload.expectedApplyDeclarations, `${watchCase.name} should skip unsupported @apply declarations`).toEqual([])
+      }
+      else {
+        expect(payload.applyUtilities.length, `${watchCase.name} should validate @apply utilities`).toBeGreaterThan(0)
+        expect(payload.expectedApplyDeclarations.length, `${watchCase.name} should validate expanded @apply declarations`).toBeGreaterThan(0)
+      }
+
+      if (styleFunctionUnsupportedCases.has(watchCase.name)) {
+        expect(payload.functionNeedle, `${watchCase.name} should skip unsupported Tailwind function validation`).toBeUndefined()
+        expect(payload.functionDeclarations, `${watchCase.name} should not inject unsupported Tailwind functions`).toEqual([])
+        expect(payload.expectedFunctionDeclarations, `${watchCase.name} should not expect unsupported Tailwind function declarations`).toEqual([])
+        expect(payload.forbiddenFunctionFragments, `${watchCase.name} should not assert unsupported Tailwind function fragments`).toEqual([])
+      }
+      else {
+        expect(payload.functionNeedle, `${watchCase.name} should validate Tailwind function HMR`).toContain('.tw-watch-style-')
+        expect(payload.functionDeclarations.length, `${watchCase.name} should inject Tailwind function declarations`).toBeGreaterThan(0)
+        expect(payload.expectedFunctionDeclarations.length, `${watchCase.name} should validate resolved Tailwind function declarations`).toBeGreaterThan(0)
+        expect(payload.forbiddenFunctionFragments, `${watchCase.name} should forbid unresolved Tailwind functions`).toContain('theme(')
+      }
+
+      if (styleReferenceRequiredCases.has(watchCase.name)) {
+        expect(payload.referenceDirective, `${watchCase.name} should include Tailwind v4 @reference`).toBe('@reference "tailwindcss";')
+      }
+      else {
+        expect(payload.referenceDirective, `${watchCase.name} should not need Tailwind v4 @reference`).toBeUndefined()
       }
     }
   })

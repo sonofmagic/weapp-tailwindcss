@@ -151,6 +151,11 @@ interface StyleMutationMetric {
   styleNeedle: string
   applyUtilities: string[]
   expectedApplyDeclarations: string[]
+  functionNeedle?: string
+  functionDeclarations: string[]
+  expectedFunctionDeclarations: string[]
+  forbiddenFunctionFragments: string[]
+  referenceDirective?: string
   hotUpdateOutputMs: number
   hotUpdateEffectiveMs: number
   rollbackOutputMs: number
@@ -226,9 +231,20 @@ const criticalDemoProjects = [
 
 const bothCases = new Set<ConcreteWatchCaseName>(['taro-webpack-react-tailwindcss-v3', 'uni-app-vite-tailwindcss-v3'])
 const noApplyValidationCases = new Set<ConcreteWatchCaseName>([
+  'mpx-tailwindcss-v4',
   'uni-app-vite-tailwindcss-v4',
   'taro-vite-react-tailwindcss-v4',
   'taro-webpack-react-tailwindcss-v4',
+])
+const noFunctionValidationCases = new Set<ConcreteWatchCaseName>([
+  'mpx-tailwindcss-v4',
+])
+const referenceDirectiveRequiredCases = new Set<ConcreteWatchCaseName>([
+  'mpx-tailwindcss-v4',
+  'uni-app-vite-tailwindcss-v4',
+  'taro-vite-react-tailwindcss-v4',
+  'taro-webpack-react-tailwindcss-v4',
+  'weapp-vite-tailwindcss-v4',
 ])
 const commentCarrierRequiredCases = new Set<ConcreteWatchCaseName>([
   'mpx-tailwindcss-v3',
@@ -675,6 +691,24 @@ function assertHotUpdateReport(report: HotUpdateReport, target: WatchCaseName, m
         expect(styleMetric.applyUtilities.length).toBeGreaterThan(0)
         expect(styleMetric.expectedApplyDeclarations.length).toBeGreaterThan(0)
       }
+      if (noFunctionValidationCases.has(item.name)) {
+        expect(styleMetric.functionNeedle).toBeUndefined()
+        expect(styleMetric.functionDeclarations.length).toBe(0)
+        expect(styleMetric.expectedFunctionDeclarations.length).toBe(0)
+        expect(styleMetric.forbiddenFunctionFragments.length).toBe(0)
+      }
+      else {
+        expect(styleMetric.functionNeedle).toContain('.tw-watch-style-')
+        expect(styleMetric.functionDeclarations.length).toBeGreaterThan(0)
+        expect(styleMetric.expectedFunctionDeclarations.length).toBeGreaterThan(0)
+        expect(styleMetric.forbiddenFunctionFragments).toContain('theme(')
+      }
+      if (referenceDirectiveRequiredCases.has(item.name)) {
+        expect(styleMetric.referenceDirective).toBe('@reference "tailwindcss";')
+      }
+      else {
+        expect(styleMetric.referenceDirective).toBeUndefined()
+      }
       expect(styleMetric.hotUpdateEffectiveMs).toBeGreaterThan(0)
       expect(styleMetric.rollbackEffectiveMs).toBeGreaterThan(0)
       expect(styleMetric.hotUpdateEffectiveMs).toBeLessThanOrEqual(maxHotUpdateMs)
@@ -697,6 +731,10 @@ function assertHotUpdateReport(report: HotUpdateReport, target: WatchCaseName, m
       expect(subPackageMetric.style.sourceFile).toContain(subPackageMetric.root)
       expect(subPackageMetric.style.outputStyle).toContain('.wxss')
       expect(subPackageMetric.style.styleNeedle).toContain('.tw-watch-style-')
+      if (!noApplyValidationCases.has(item.name)) {
+        expect(subPackageMetric.style.applyUtilities.length).toBeGreaterThan(0)
+        expect(subPackageMetric.style.expectedApplyDeclarations.length).toBeGreaterThan(0)
+      }
       expect(subPackageMetric.style.hotUpdateEffectiveMs).toBeGreaterThan(0)
       expect(subPackageMetric.style.hotUpdateEffectiveMs).toBeLessThanOrEqual(maxHotUpdateMs)
       expect(subPackageMetric.style.rollbackEffectiveMs).toBeGreaterThan(0)

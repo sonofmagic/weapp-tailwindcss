@@ -208,6 +208,7 @@ export async function runStyleMutation(
     functionDeclarations: payload.functionDeclarations,
     expectedFunctionDeclarations: payload.expectedFunctionDeclarations,
     forbiddenFunctionFragments: payload.forbiddenFunctionFragments,
+    ...(payload.referenceDirective ? { referenceDirective: payload.referenceDirective } : {}),
     hotUpdateOutputMs,
     hotUpdateEffectiveMs,
     rollbackOutputMs,

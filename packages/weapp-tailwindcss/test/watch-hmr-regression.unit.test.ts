@@ -143,6 +143,10 @@ function createStyleMutationMetrics(): WatchCaseMutationMetrics {
     styleNeedle: '.watch-style-marker',
     applyUtilities: ['font-bold'],
     expectedApplyDeclarations: ['font-weight:'],
+    functionNeedle: '.watch-style-marker-theme',
+    functionDeclarations: ['padding: theme(\'spacing.2\');'],
+    expectedFunctionDeclarations: ['padding:'],
+    forbiddenFunctionFragments: ['theme('],
     hotUpdateOutputMs: 45,
     hotUpdateEffectiveMs: 32,
     rollbackOutputMs: 55,
@@ -469,9 +473,15 @@ describe('watch-hmr regression text helpers', () => {
       styleNeedle: '.watch-style-marker',
       applyUtilities: ['font-bold', 'text-center'],
       expectedApplyDeclarations: [],
+      functionNeedle: '.watch-style-marker-theme',
+      functionDeclarations: ['padding: theme(\'spacing.2\');'],
+      expectedFunctionDeclarations: [],
+      forbiddenFunctionFragments: [],
     })
 
     expect(styleSnippet).toContain('@apply font-bold text-center;')
+    expect(styleSnippet).toContain('.watch-style-marker-theme')
+    expect(styleSnippet).toContain('padding: theme(\'spacing.2\');')
     expect(styleSnippet).toContain('color: #234567;')
   })
 
@@ -953,7 +963,63 @@ describe('watch-hmr regression cases', () => {
     expect(payload.expectedApplyDeclarations).toEqual([])
     expect(payload.functionNeedle).toBeUndefined()
     expect(payload.functionDeclarations).toEqual([])
+    expect(payload.expectedFunctionDeclarations).toEqual([])
+    expect(payload.forbiddenFunctionFragments).toEqual([])
     expect(payload.referenceDirective).toBe('@reference "tailwindcss";')
+  })
+
+  it('keeps style mutation validation policy explicit for every demo watch case', () => {
+    const applyUnsupportedCases = new Set([
+      'mpx-tailwindcss-v4',
+      'uni-app-vite-tailwindcss-v4',
+      'taro-vite-react-tailwindcss-v4',
+      'taro-webpack-react-tailwindcss-v4',
+    ])
+    const functionUnsupportedCases = new Set(['mpx-tailwindcss-v4'])
+    const referenceRequiredCases = new Set([
+      'mpx-tailwindcss-v4',
+      'uni-app-vite-tailwindcss-v4',
+      'taro-vite-react-tailwindcss-v4',
+      'taro-webpack-react-tailwindcss-v4',
+      'weapp-vite-tailwindcss-v4',
+    ])
+    const cases = [
+      ...buildDemoBaseCases('/repo'),
+      ...buildDemoExtendedCases('/repo'),
+    ]
+
+    for (const watchCase of cases) {
+      const payload = createStyleMutationPayload(watchCase)
+
+      if (applyUnsupportedCases.has(watchCase.name)) {
+        expect(payload.applyUtilities, `${watchCase.name} should skip unsupported @apply validation`).toEqual([])
+        expect(payload.expectedApplyDeclarations, `${watchCase.name} should skip unsupported @apply declarations`).toEqual([])
+      }
+      else {
+        expect(payload.applyUtilities.length, `${watchCase.name} should validate @apply utilities`).toBeGreaterThan(0)
+        expect(payload.expectedApplyDeclarations.length, `${watchCase.name} should validate expanded @apply declarations`).toBeGreaterThan(0)
+      }
+
+      if (functionUnsupportedCases.has(watchCase.name)) {
+        expect(payload.functionNeedle, `${watchCase.name} should skip unsupported Tailwind function validation`).toBeUndefined()
+        expect(payload.functionDeclarations, `${watchCase.name} should not inject unsupported Tailwind functions`).toEqual([])
+        expect(payload.expectedFunctionDeclarations, `${watchCase.name} should not expect unsupported Tailwind function declarations`).toEqual([])
+        expect(payload.forbiddenFunctionFragments, `${watchCase.name} should not assert unsupported Tailwind function fragments`).toEqual([])
+      }
+      else {
+        expect(payload.functionNeedle, `${watchCase.name} should validate Tailwind function HMR`).toContain('.tw-watch-style-')
+        expect(payload.functionDeclarations.length, `${watchCase.name} should inject Tailwind function declarations`).toBeGreaterThan(0)
+        expect(payload.expectedFunctionDeclarations.length, `${watchCase.name} should validate resolved Tailwind function declarations`).toBeGreaterThan(0)
+        expect(payload.forbiddenFunctionFragments, `${watchCase.name} should forbid unresolved Tailwind functions`).toContain('theme(')
+      }
+
+      if (referenceRequiredCases.has(watchCase.name)) {
+        expect(payload.referenceDirective, `${watchCase.name} should include Tailwind v4 @reference`).toBe('@reference "tailwindcss";')
+      }
+      else {
+        expect(payload.referenceDirective, `${watchCase.name} should not need Tailwind v4 @reference`).toBeUndefined()
+      }
+    }
   })
 
   it('opts out same-class global-style stability for platform-variant watch cases', () => {
