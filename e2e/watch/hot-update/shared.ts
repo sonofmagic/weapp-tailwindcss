@@ -502,9 +502,19 @@ function assertHotUpdateReport(report: HotUpdateReport, target: WatchCaseName, m
     expect(complexRound).toBeDefined()
     expect(hexRound).toBeDefined()
     expect(baselineRound?.classTokens.length).toBeGreaterThanOrEqual(3)
-    expect(complexRound?.classTokens.length).toBeGreaterThanOrEqual(3)
+    expect(complexRound?.classTokens.length).toBeGreaterThanOrEqual(12)
     expect(hexRound?.classTokens.length).toBeGreaterThanOrEqual(3)
     expect(hexRound?.classTokens.some(token => token.startsWith('bg-[#'))).toBe(true)
+    expect(complexRound?.classTokens).toEqual(expect.arrayContaining([
+      '!mt-2',
+      '-translate-y-1',
+      'data-[state=open]:opacity-100',
+      'supports-[display:grid]:grid',
+      '[mask-type:luminance]',
+    ]))
+    expect(complexRound?.classTokens.some(token => token.startsWith('w-[calc(100%_-_'))).toBe(true)
+    expect(complexRound?.classTokens.some(token => token.startsWith('grid-cols-[200rpx_minmax(900rpx,_1fr)_'))).toBe(true)
+    expect(complexRound?.classTokens.some(token => token.startsWith('after:ml-'))).toBe(true)
     expect(complexRound?.hotUpdateEffectiveMs).toBeGreaterThan(0)
     expect(complexRound?.rollbackEffectiveMs).toBeGreaterThan(0)
 

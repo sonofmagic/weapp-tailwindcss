@@ -773,6 +773,22 @@ describe('watch-hmr regression cases', () => {
     }
   })
 
+  it('uses complex script round tokens for realistic dynamic class hot updates', () => {
+    const [baselineRound, complexRound, hexRound] = buildHexScriptRoundConfigs()
+
+    expect(baselineRound?.buildClassTokens('123456').length).toBeGreaterThan(6)
+    expect(complexRound?.buildClassTokens('123456')).toEqual(expect.arrayContaining([
+      '!mt-2',
+      '-translate-y-1',
+      'data-[state=open]:opacity-100',
+      'supports-[display:grid]:grid',
+      '[mask-type:luminance]',
+    ]))
+    expect(complexRound?.buildClassTokens('123456').some(token => token.startsWith('w-[calc(100%_-_'))).toBe(true)
+    expect(complexRound?.buildClassTokens('123456').some(token => token.startsWith('grid-cols-[200rpx_minmax(900rpx,_1fr)_'))).toBe(true)
+    expect(hexRound?.buildClassTokens('12345678').some(token => token.startsWith('shadow-[0_'))).toBe(true)
+  })
+
   it('tracks taro webpack v4 style outputs in both page and app wxss candidates', () => {
     const taroWebpackCase = buildDemoExtendedCases('/repo').find(item => item.name === 'taro-webpack-react-tailwindcss-v4')
 

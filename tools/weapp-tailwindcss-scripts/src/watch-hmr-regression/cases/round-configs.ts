@@ -1,4 +1,7 @@
 import {
+  buildBaselineArbitraryClassTokens,
+  buildComplexCorpusClassTokens,
+  buildHexArbitraryClassTokens,
   isIssue33RoundEnabled,
   ISSUE33_ADD_CLASS_TOKENS,
   ISSUE33_MODIFY_CLASS_TOKENS,
@@ -16,6 +19,7 @@ export function buildHexScriptRoundConfigs() {
         const textPx = Number(numericSeed.slice(0, 2)) + 20
         const heightPx = Number(numericSeed.slice(2, 4)) + 12
         return [
+          ...buildBaselineArbitraryClassTokens(seed),
           `bg-[#${hex}]`,
           `text-[${textPx}px]`,
           `h-[${heightPx}px]`,
@@ -30,6 +34,7 @@ export function buildHexScriptRoundConfigs() {
         const textPx = Number(numericSeed.slice(0, 2)) + 34
         const heightPx = Number(numericSeed.slice(2, 4)) + 22
         return [
+          ...buildComplexCorpusClassTokens(seed),
           `bg-[#${hex}]`,
           `text-[${textPx}px]`,
           `h-[${heightPx}px]`,
@@ -44,6 +49,7 @@ export function buildHexScriptRoundConfigs() {
         const textPx = Number(numericSeed.slice(0, 2)) + 46
         const heightPx = Number(numericSeed.slice(2, 4)) + 28
         return [
+          ...buildHexArbitraryClassTokens(seed),
           `bg-[#${hex}]`,
           `text-[${textPx}px]`,
           `h-[${heightPx}px]`,
