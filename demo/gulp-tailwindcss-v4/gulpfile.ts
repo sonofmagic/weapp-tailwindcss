@@ -52,6 +52,11 @@ const generator = {
 const { transformJs, transformWxml, transformWxss } = createPlugins({
   rem2rpx: true,
   generator,
+  tailwindcss: {
+    version: 4,
+    packageName: 'tailwindcss',
+    postcssPlugin: '@tailwindcss/postcss',
+  },
 })
 // {
 //   mangle: true

@@ -17,6 +17,7 @@ import {
 import {
   buildHexScriptRoundConfigs,
   buildIssue33HighRiskRoundConfigs,
+  buildTailwindV4JsContentRoundConfigs,
 } from '../../../tools/weapp-tailwindcss-scripts/src/watch-hmr-regression/cases/round-configs'
 import {
   resolveReportPath,
@@ -787,6 +788,32 @@ describe('watch-hmr regression cases', () => {
     expect(complexRound?.buildClassTokens('123456').some(token => token.startsWith('w-[calc(100%_-_'))).toBe(true)
     expect(complexRound?.buildClassTokens('123456').some(token => token.startsWith('grid-cols-[200rpx_minmax(900rpx,_1fr)_'))).toBe(true)
     expect(hexRound?.buildClassTokens('12345678').some(token => token.startsWith('shadow-[0_'))).toBe(true)
+  })
+
+  it('keeps tailwind v4 js content rounds to tokens that produce css from script scanning', () => {
+    const [, complexRound] = buildTailwindV4JsContentRoundConfigs()
+    const tokens = complexRound?.buildClassTokens('123456') ?? []
+
+    expect(tokens).toEqual(expect.arrayContaining([
+      '!mt-2',
+      '-translate-y-1',
+      'data-[state=open]:opacity-100',
+      '[mask-type:luminance]',
+    ]))
+    expect(tokens).not.toEqual(expect.arrayContaining([
+      '[@supports(display:grid)]:grid',
+      'supports-[backdrop-filter:blur(2px)]:backdrop-blur-[2px]',
+      '[@media(any-hover:hover){&:hover}]:opacity-100',
+      'supports-[display:grid]:grid',
+    ]))
+  })
+
+  it('uses tailwind v4 js content rounds for gulp v4 script mutations', () => {
+    const gulpV4Case = buildDemoBaseCases('/repo').find(watchCase => watchCase.name === 'gulp-tailwindcss-v4')
+    const [, complexRound] = gulpV4Case?.scriptMutation.roundConfigs ?? []
+
+    expect(complexRound?.name).toBe('complex-corpus')
+    expect(complexRound?.buildClassTokens('123456')).not.toContain('[@media(any-hover:hover){&:hover}]:opacity-100')
   })
 
   it('tracks taro webpack v4 style outputs in both page and app wxss candidates', () => {

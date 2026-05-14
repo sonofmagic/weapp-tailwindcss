@@ -8,6 +8,12 @@ import {
 } from '../mutations/tokens'
 
 const NON_DIGIT_RE = /\D/g
+const TAILWIND_V4_JS_CONTENT_UNSUPPORTED_TOKENS = new Set([
+  '[@supports(display:grid)]:grid',
+  'supports-[backdrop-filter:blur(2px)]:backdrop-blur-[2px]',
+  '[@media(any-hover:hover){&:hover}]:opacity-100',
+  'supports-[display:grid]:grid',
+])
 
 export function buildHexScriptRoundConfigs() {
   const rounds = [
@@ -71,6 +77,17 @@ export function buildHexScriptRoundConfigs() {
       },
     },
   ]
+}
+
+export function buildTailwindV4JsContentRoundConfigs() {
+  return buildHexScriptRoundConfigs().map(roundConfig => ({
+    ...roundConfig,
+    buildClassTokens(seed: string) {
+      return roundConfig
+        .buildClassTokens(seed)
+        .filter(token => !TAILWIND_V4_JS_CONTENT_UNSUPPORTED_TOKENS.has(token))
+    },
+  }))
 }
 
 export function buildIssue33ScriptRoundConfigs() {

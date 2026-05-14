@@ -12,7 +12,7 @@ import {
   mutateVueScriptSetupObjectKeyByAnchorWithCommentCarrier,
   replaceExactSnippet,
 } from '../../text'
-import { buildHexScriptRoundConfigs, buildIssue33HighRiskRoundConfigs } from '../round-configs'
+import { buildHexScriptRoundConfigs, buildIssue33HighRiskRoundConfigs, buildTailwindV4JsContentRoundConfigs } from '../round-configs'
 
 const taroWatchEnv = {
   TARO_BUILD_STRICT: '1',
@@ -325,7 +325,7 @@ export function buildDemoBaseCases(baseCwd: string): WatchCase[] {
     scriptMutation: {
       ...gulpCase.scriptMutation,
       sourceFile: path.resolve(baseCwd, 'demo/gulp-tailwindcss-v4/src/pages/index/index.ts'),
-      roundConfigs: buildHexScriptRoundConfigs(),
+      roundConfigs: buildTailwindV4JsContentRoundConfigs(),
     },
     styleMutation: {
       ...gulpCase.styleMutation,
@@ -369,7 +369,7 @@ export function buildDemoBaseCases(baseCwd: string): WatchCase[] {
       mutate(source, payload) {
         return replaceExactSnippet(
           source,
-          'const pageClassName = \'bg-[#123456]\'',
+          'const pageClassName = \'bg-[#d72929]\'',
           `const pageClassName = '${payload.classLiteral}'`,
           'weapp-vite script class anchor',
         )
