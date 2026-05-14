@@ -1,8 +1,8 @@
 name: CI
 
 on:
-  # push:
-  #   branches: ['main']
+  push:
+    branches: [main, next]
   pull_request:
     types: [opened, synchronize]
     paths-ignore:
@@ -20,7 +20,7 @@ permissions:
 jobs:
   quality:
     name: Quality Gate (ubuntu-latest, 22)
-    timeout-minutes: 15
+    timeout-minutes: 35
     runs-on: ubuntu-latest
     # Remote Caching enabled - configure TURBO_TOKEN and TURBO_TEAM in repository settings
     env:

@@ -1,6 +1,8 @@
 [
-  "before:content-[\"11111\"]",
-  "before:content-[\"222\"]",
+  "before:content-['11111']",
+  "before:content-['222']",
+  "before:content-['independent_subpackage_taro-vite-vue3-tailwindcss-v3']",
+  "before:content-['normal_subpackage_taro-vite-vue3-tailwindcss-v3']",
   "bg-[#89ab8d]",
   "bg-[#e24826]",
   "dark:text-[#ec4f4f]",

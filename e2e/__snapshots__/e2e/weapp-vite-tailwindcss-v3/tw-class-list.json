@@ -8,6 +8,8 @@
   "[mask-type:alpha]",
   "[mask-type:luminance]",
   "[padding:20rpx]",
+  "before:content-['independent_subpackage_weapp-vite-tailwindcss-v3']",
+  "before:content-['normal_subpackage_weapp-vite-tailwindcss-v3']",
   "bg-[#123456]",
   "bg-[#16a34a]",
   "bg-[#2563eb]",

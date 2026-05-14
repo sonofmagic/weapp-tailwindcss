@@ -15,6 +15,7 @@ wx-root-portal-content {
   --tw-gradient-from-position: 0%;
   --tw-gradient-via-position: 50%;
   --tw-gradient-to-position: 100%;
+  --tw-content: '';
   --color-purple-800: rgb(110, 17, 176);
   --color-pink-200: rgb(252, 206, 232);
   --spacing: 8rpx;
@@ -247,6 +248,34 @@ wx-root-portal-content {
 .static {
   position: static;
 }
+.container {
+  width: 100%;
+}
+@media (min-width: 40rem) {
+  .container {
+    max-width: 1280rpx;
+  }
+}
+@media (min-width: 48rem) {
+  .container {
+    max-width: 1536rpx;
+  }
+}
+@media (min-width: 64rem) {
+  .container {
+    max-width: 2048rpx;
+  }
+}
+@media (min-width: 80rem) {
+  .container {
+    max-width: 2560rpx;
+  }
+}
+@media (min-width: 96rem) {
+  .container {
+    max-width: 3072rpx;
+  }
+}
 .h-14 {
   height: calc(var(--spacing) * 14);
 }
@@ -286,6 +315,14 @@ wx-root-portal-content {
 }
 .text-pink-200 {
   color: var(--color-pink-200);
+}
+.before_ccontent-_b_aindependent_subpackage_taro-webpack-react-tailwindcss-v4_a_B:before {
+  --tw-content: 'independent subpackage taro-webpack-react-tailwindcss-v4';
+  content: var(--tw-content);
+}
+.before_ccontent-_b_anormal_subpackage_taro-webpack-react-tailwindcss-v4_a_B:before {
+  --tw-content: 'normal subpackage taro-webpack-react-tailwindcss-v4';
+  content: var(--tw-content);
 }
 @font-face {
   font-display: swap;

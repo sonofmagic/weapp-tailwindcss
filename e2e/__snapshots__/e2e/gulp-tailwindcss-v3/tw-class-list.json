@@ -1,4 +1,6 @@
 [
+  "before:content-['independent_subpackage_gulp-tailwindcss-v3']",
+  "before:content-['normal_subpackage_gulp-tailwindcss-v3']",
   "bg-[#fff]",
   "bg-[length:100%_100%]",
   "bg-[red]",

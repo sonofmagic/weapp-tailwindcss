@@ -67,9 +67,6 @@ wx-root-portal-content {
 .grid {
   display: grid;
 }
-.hidden {
-  display: none;
-}
 .inline {
   display: inline;
 }
@@ -103,6 +100,12 @@ wx-root-portal-content {
 }
 .bg-_b_h123456_B {
   background-color: #123456;
+}
+.bg-independent-subpackage-marker {
+  background-color: #dc2626;
+}
+.bg-normal-subpackage-marker {
+  background-color: #2563eb;
 }
 .bg-purple-300 {
   background-color: var(--color-purple-300);
@@ -143,6 +146,15 @@ wx-root-portal-content {
 }
 .text-_b_hfff_B {
   color: #fff;
+}
+.capitalize {
+  text-transform: capitalize;
+}
+.lowercase {
+  text-transform: lowercase;
+}
+.uppercase {
+  text-transform: uppercase;
 }
 .shadow {
   --tw-shadow: 0 1px 3px 0 var(--tw-shadow-color, rgba(0, 0, 0, 0.1)), 0 1px 2px -1px var(--tw-shadow-color, rgba(0, 0, 0, 0.1));
@@ -196,4 +208,12 @@ wx-root-portal-content {
 .ease-out {
   --tw-ease: var(--ease-out);
   transition-timing-function: var(--ease-out);
+}
+.before_ccontent-_b_aindependent_subpackage_taro-vite-vue3-tailwindcss-v4_a_B::before {
+  --tw-content: 'independent subpackage taro-vite-vue3-tailwindcss-v4';
+  content: var(--tw-content);
+}
+.before_ccontent-_b_anormal_subpackage_taro-vite-vue3-tailwindcss-v4_a_B::before {
+  --tw-content: 'normal subpackage taro-vite-vue3-tailwindcss-v4';
+  content: var(--tw-content);
 }

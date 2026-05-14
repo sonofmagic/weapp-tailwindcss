@@ -214,6 +214,14 @@ text,
   --tw-content: '222';
   content: var(--tw-content);
 }
+.before_ccontent-_b_aindependent_subpackage_taro-vite-react-tailwindcss-v3_a_B::before {
+  --tw-content: 'independent subpackage taro-vite-react-tailwindcss-v3';
+  content: var(--tw-content);
+}
+.before_ccontent-_b_anormal_subpackage_taro-vite-react-tailwindcss-v3_a_B::before {
+  --tw-content: 'normal subpackage taro-vite-react-tailwindcss-v3';
+  content: var(--tw-content);
+}
 @media (prefers-color-scheme: dark) {
   .dark_ctext-_b_hec4f4f_B {
     --tw-text-opacity: 1;

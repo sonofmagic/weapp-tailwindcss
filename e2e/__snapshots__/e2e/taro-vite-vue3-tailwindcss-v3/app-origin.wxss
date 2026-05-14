@@ -121,9 +121,6 @@ text,
 .grid {
   display: grid;
 }
-.hidden {
-  display: none;
-}
 .flex-shrink {
   flex-shrink: 1;
 }
@@ -175,6 +172,15 @@ text,
 .text-_b66rpx_B {
   font-size: 66rpx;
 }
+.uppercase {
+  text-transform: uppercase;
+}
+.lowercase {
+  text-transform: lowercase;
+}
+.capitalize {
+  text-transform: capitalize;
+}
 .text-_b_h3d31a4_B {
   --tw-text-opacity: 1;
   color: rgba(61, 49, 164, var(--tw-text-opacity, 1));
@@ -206,12 +212,20 @@ text,
 .ease-out {
   transition-timing-function: cubic-bezier(0, 0, 0.2, 1);
 }
-.before_ccontent-_b_q11111_q_B::before {
+.before_ccontent-_b_a11111_a_B::before {
   --tw-content: '11111';
   content: var(--tw-content);
 }
-.before_ccontent-_b_q222_q_B::before {
+.before_ccontent-_b_a222_a_B::before {
   --tw-content: '222';
+  content: var(--tw-content);
+}
+.before_ccontent-_b_aindependent_subpackage_taro-vite-vue3-tailwindcss-v3_a_B::before {
+  --tw-content: 'independent subpackage taro-vite-vue3-tailwindcss-v3';
+  content: var(--tw-content);
+}
+.before_ccontent-_b_anormal_subpackage_taro-vite-vue3-tailwindcss-v3_a_B::before {
+  --tw-content: 'normal subpackage taro-vite-vue3-tailwindcss-v3';
   content: var(--tw-content);
 }
 @media (prefers-color-scheme: dark) {

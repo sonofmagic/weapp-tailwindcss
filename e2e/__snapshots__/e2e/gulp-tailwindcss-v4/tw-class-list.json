@@ -1,4 +1,6 @@
 [
+  "before:content-['independent_subpackage_gulp-tailwindcss-v4']",
+  "before:content-['normal_subpackage_gulp-tailwindcss-v4']",
   "bg-[#fff]",
   "bg-[length:100%_100%]",
   "bg-[red]",
@@ -8,6 +10,7 @@
   "block",
   "border-[#EEEEEE]",
   "border-b",
+  "container",
   "font-bold",
   "font-medium",
   "h-[41.54vw]",

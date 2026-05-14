@@ -1,4 +1,6 @@
 [
+  "before:content-['independent_subpackage_weapp-vite-tailwindcss-v4']",
+  "before:content-['normal_subpackage_weapp-vite-tailwindcss-v4']",
   "bg-[#3a32d1]",
   "bg-[#68c828]",
   "bg-amber-300",

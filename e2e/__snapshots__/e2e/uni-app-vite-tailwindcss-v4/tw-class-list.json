@@ -3,6 +3,8 @@
   "active:bg-emerald-600",
   "aspect-(--my-aspect-ratio)",
   "aspect-[calc(4*3+1)/3]",
+  "before:content-['independent_subpackage_uni-app-vite-tailwindcss-v4']",
+  "before:content-['normal_subpackage_uni-app-vite-tailwindcss-v4']",
   "bg-[#0000ff]",
   "bg-[#123498]",
   "bg-emerald-100",

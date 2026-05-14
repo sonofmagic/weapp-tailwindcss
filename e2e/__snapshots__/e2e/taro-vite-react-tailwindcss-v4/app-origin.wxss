@@ -104,6 +104,12 @@ wx-root-portal-content {
 .bg-_b_h123456_B {
   background-color: #123456;
 }
+.bg-independent-subpackage-marker {
+  background-color: #dc2626;
+}
+.bg-normal-subpackage-marker {
+  background-color: #2563eb;
+}
 .bg-purple-300 {
   background-color: var(--color-purple-300);
 }
@@ -196,4 +202,12 @@ wx-root-portal-content {
 .ease-out {
   --tw-ease: var(--ease-out);
   transition-timing-function: var(--ease-out);
+}
+.before_ccontent-_b_aindependent_subpackage_taro-vite-react-tailwindcss-v4_a_B::before {
+  --tw-content: 'independent subpackage taro-vite-react-tailwindcss-v4';
+  content: var(--tw-content);
+}
+.before_ccontent-_b_anormal_subpackage_taro-vite-react-tailwindcss-v4_a_B::before {
+  --tw-content: 'normal subpackage taro-vite-react-tailwindcss-v4';
+  content: var(--tw-content);
 }
