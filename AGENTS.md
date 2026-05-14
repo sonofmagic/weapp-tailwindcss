@@ -15,6 +15,14 @@
 - 所有新增或修改的 Changeset 内容必须使用中文。
 - JSDoc 注释必须使用中文；新增行内注释默认中文（术语可保留英文）。
 
+## 多 Codex / 多代理协作
+- 同一个物理 checkout 只允许一个 Codex/代理执行写入型任务；多个 Codex 并发处理不同任务时，必须先为每个任务创建独立 `git worktree`。
+- 推荐目录形态：在仓库同级目录创建工作树，例如 `../weapp-tailwindcss-codex/<task-slug>`；不要把并发工作树放进当前仓库目录内部。
+- 每个并发任务使用独立分支名，例如 `codex/<task-slug>`；开始前先执行 `git status --short --branch`，确认当前工作树没有其他代理遗留改动。
+- 在任何编辑、格式化、测试自动修复、`git add`、`git commit`、`git rebase` 或 `git push` 前，都要重新检查 `git status --short`；如果出现自己没有产生的改动，必须停止并说明冲突来源，不得覆盖、删除或顺手纳入提交。
+- 禁止在共享 checkout 中用 `git restore`、`git checkout -- <file>`、批量格式化、代码生成或清理命令处理自己不拥有的文件；确需清理时，先确认文件归属。
+- 提交前只暂存当前任务拥有的文件；除非用户明确要求“提交所有代码”，否则禁止用 `git add -A` 混入其他代理或用户的改动。
+
 ## 仓库常用命令
 - `pnpm install`
 - `pnpm build`
