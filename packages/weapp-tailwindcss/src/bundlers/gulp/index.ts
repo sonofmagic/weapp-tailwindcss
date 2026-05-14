@@ -1,4 +1,6 @@
 import type File from 'vinyl'
+import type { BundleSnapshot, BundleStateEntry, EntryType } from '../vite/bundle-state'
+import type { BundleRuntimeClassSetManager } from '../vite/incremental-runtime-class-set'
 import type { CreateJsHandlerOptions, IStyleHandlerOptions, ITemplateHandlerOptions, JsModuleGraphOptions, UserDefinedOptions } from '@/types'
 import { Buffer } from 'node:buffer'
 import fs from 'node:fs'
@@ -14,6 +16,7 @@ import { getRuntimeClassSetSignature } from '@/tailwindcss/runtime/cache'
 import { hasConfiguredTailwindV4CssRoots, upsertTailwindV4CssSource } from '@/tailwindcss/v4/css-sources'
 import { processCachedTask } from '../shared/cache'
 import { generateCssByGenerator } from '../shared/generator-css'
+import { createBundleRuntimeClassSetManager } from '../vite/incremental-runtime-class-set'
 
 const debug = createDebug()
 
@@ -48,19 +51,113 @@ export function createPlugins(options: UserDefinedOptions = {}) {
 
   const MODULE_EXTENSIONS = ['.js', '.mjs', '.cjs', '.ts', '.tsx', '.jsx']
   let runtimeSetInitialized = false
+  let runtimeSetDirty = false
+  const runtimeSourceHashByFile = new Map<string, string>()
+  const runtimeSourcesByFile = new Map<string, { source: string, type: 'html' | 'js' }>()
+  const bundleRuntimeClassSetManager: BundleRuntimeClassSetManager
+    = (options as UserDefinedOptions & { __internalGulpRuntimeClassSetManager?: BundleRuntimeClassSetManager }).__internalGulpRuntimeClassSetManager
+      ?? createBundleRuntimeClassSetManager()
 
-  async function refreshRuntimeSet(force = false) {
-    if (!force && runtimeSetInitialized) {
+  async function refreshRuntimeSet(options: boolean | {
+    forceRefresh?: boolean
+    forceCollect?: boolean
+    clearCache?: boolean
+  } = false) {
+    const normalizedOptions = typeof options === 'boolean'
+      ? {
+          forceRefresh: options,
+          forceCollect: options,
+          clearCache: options,
+        }
+      : options
+    const forceRefresh = normalizedOptions.forceRefresh === true
+    const shouldForceCollect = normalizedOptions.forceCollect === true || runtimeSetDirty
+    const clearCache = normalizedOptions.clearCache === true || runtimeSetDirty
+    if (!forceRefresh && !shouldForceCollect && runtimeSetInitialized) {
       return runtimeSet
     }
     runtimeSet = await ensureRuntimeClassSet(runtimeState, {
-      forceRefresh: force,
-      forceCollect: force,
-      clearCache: force,
+      forceRefresh,
+      forceCollect: shouldForceCollect,
+      clearCache,
       allowEmpty: false,
     })
     runtimeSetInitialized = true
+    runtimeSetDirty = false
     return runtimeSet
+  }
+
+  function createRuntimeSnapshot(changedFiles: Iterable<string>): BundleSnapshot {
+    const runtimeAffectingChangedByType = {
+      html: new Set<string>(),
+      js: new Set<string>(),
+      css: new Set<string>(),
+      other: new Set<string>(),
+    } satisfies Record<EntryType, Set<string>>
+    for (const file of changedFiles) {
+      const entry = runtimeSourcesByFile.get(file)
+      if (entry) {
+        runtimeAffectingChangedByType[entry.type].add(file)
+      }
+    }
+    const entries = [...runtimeSourcesByFile.entries()].map(([file, entry]) => ({
+      file,
+      output: {
+        fileName: file,
+        source: entry.source,
+        type: 'asset' as const,
+      } as BundleStateEntry['output'],
+      source: entry.source,
+      type: entry.type,
+    }))
+    return {
+      entries,
+      jsEntries: new Map(),
+      sourceHashByFile: new Map(),
+      runtimeAffectingSignatureByFile: new Map(),
+      runtimeAffectingHashByFile: new Map(),
+      changedByType: {
+        html: new Set<string>(),
+        js: new Set<string>(),
+        css: new Set<string>(),
+        other: new Set<string>(),
+      },
+      runtimeAffectingChangedByType,
+      processFiles: {
+        html: new Set<string>(),
+        js: new Set<string>(),
+        css: new Set<string>(),
+      },
+      linkedImpactsByEntry: new Map(),
+    }
+  }
+
+  async function refreshRuntimeSetForSource(file: File, rawSource: string, type: 'html' | 'js') {
+    const filename = path.resolve(file.path)
+    const hash = cache.computeHash(rawSource)
+    const changed = runtimeSourceHashByFile.get(filename) !== hash
+    runtimeSourceHashByFile.set(filename, hash)
+    runtimeSourcesByFile.set(filename, {
+      source: rawSource,
+      type,
+    })
+    if (!changed && runtimeSetInitialized) {
+      return runtimeSet
+    }
+    if (runtimeState.twPatcher.majorVersion === 4 && !runtimeSetDirty) {
+      try {
+        runtimeSet = await bundleRuntimeClassSetManager.sync(runtimeState.twPatcher, createRuntimeSnapshot([filename]))
+        runtimeSetInitialized = true
+        return runtimeSet
+      }
+      catch (error) {
+        debug('gulp incremental runtime set sync failed, fallback to collect: %O', error)
+        await bundleRuntimeClassSetManager.reset()
+      }
+    }
+    return refreshRuntimeSet({
+      forceCollect: true,
+    })
   }
 
   function createRuntimeSetHash(rawSource: string, nextRuntimeSet: Set<string>) {
@@ -78,17 +175,20 @@ export function createPlugins(options: UserDefinedOptions = {}) {
       || !file.path
       || !hasTailwindRootDirectives(rawSource)
     ) {
-      return
+      return false
     }
     const changed = upsertTailwindV4CssSource(opts, {
       file: path.resolve(file.path),
       css: rawSource,
     })
     if (!changed) {
-      return
+      return false
     }
     runtimeSetInitialized = false
+    runtimeSetDirty = true
+    await bundleRuntimeClassSetManager.reset()
     debug('detected tailwindcss v4 css source from gulp css file: %s', file.path)
+    return true
   }
   function resolveWithExtensions(base: string): string | undefined {
     for (const ext of MODULE_EXTENSIONS) {
@@ -187,18 +287,24 @@ export function createPlugins(options: UserDefinedOptions = {}) {
     if (!options || Object.keys(options).length === 0) {
       let cached = defaultStyleHandlerOptionsCache.get(majorVersion)
       if (!cached) {
-        cached = {
-          majorVersion: runtimeState.twPatcher.majorVersion,
-        }
+        cached = runtimeState.twPatcher.majorVersion === undefined
+          ? {}
+          : {
+              majorVersion: runtimeState.twPatcher.majorVersion,
+            }
         defaultStyleHandlerOptionsCache.set(majorVersion, cached)
       }
       return cached
     }
 
-    return {
-      majorVersion: runtimeState.twPatcher.majorVersion,
-      ...options,
-    }
+    return runtimeState.twPatcher.majorVersion === undefined
+      ? {
+          ...options,
+        }
+      : {
+          majorVersion: runtimeState.twPatcher.majorVersion,
+          ...options,
+        }
   }
 
   function resolveGulpMatcherName(file: File) {
@@ -247,8 +353,12 @@ export function createPlugins(options: UserDefinedOptions = {}) {
         return
       }
       const rawSource = file.contents.toString()
-      await registerAutoCssSource(file, rawSource)
-      const nextRuntimeSet = await refreshRuntimeSet(true)
+      const cssSourceChanged = await registerAutoCssSource(file, rawSource)
+      const nextRuntimeSet = await refreshRuntimeSet({
+        forceRefresh: cssSourceChanged,
+        forceCollect: cssSourceChanged || opts.mainCssChunkMatcher(resolveGulpMatcherName(file), opts.appType),
+        clearCache: cssSourceChanged,
+      })
       await processCachedTask<string>({
         cache,
         cacheKey: file.path,
@@ -287,21 +397,23 @@ export function createPlugins(options: UserDefinedOptions = {}) {
       if (!file.contents) {
         return
       }
-      await refreshRuntimeSet(true)
-      await runtimeState.readyPromise
       const filename = path.resolve(file.path)
+      const rawSource = file.contents.toString()
+      await refreshRuntimeSetForSource(file, rawSource, 'js')
+      await runtimeState.readyPromise
       const moduleGraph = resolveModuleGraphOptions(options.moduleGraph)
       const handlerOptions: CreateJsHandlerOptions = {
         ...options,
         filename,
         moduleGraph,
-        tailwindcssMajorVersion: runtimeState.twPatcher.majorVersion,
         babelParserOptions: {
           ...(options?.babelParserOptions ?? {}),
           sourceFilename: filename,
         },
       }
-      const rawSource = file.contents.toString()
+      if (runtimeState.twPatcher.majorVersion !== undefined) {
+        handlerOptions.tailwindcssMajorVersion = runtimeState.twPatcher.majorVersion
+      }
       await processCachedTask<string>({
         cache,
         cacheKey: file.path,
@@ -315,7 +427,10 @@ export function createPlugins(options: UserDefinedOptions = {}) {
         async transform() {
           await runtimeState.readyPromise
           const currentSource = file.contents?.toString() ?? rawSource
-          if (shouldSkipJsTransform(currentSource, handlerOptions)) {
+          if (shouldSkipJsTransform(currentSource, {
+            ...handlerOptions,
+            classNameSet: runtimeSet,
+          } as CreateJsHandlerOptions)) {
             return { result: currentSource }
           }
           const { code } = await jsHandler(currentSource, runtimeSet, handlerOptions)
@@ -332,9 +447,9 @@ export function createPlugins(options: UserDefinedOptions = {}) {
       if (!file.contents) {
         return
       }
-      await refreshRuntimeSet(true)
-      await runtimeState.readyPromise
       const rawSource = file.contents.toString()
+      await refreshRuntimeSetForSource(file, rawSource, 'html')
+      await runtimeState.readyPromise
       await processCachedTask<string>({
         cache,
         cacheKey: file.path,

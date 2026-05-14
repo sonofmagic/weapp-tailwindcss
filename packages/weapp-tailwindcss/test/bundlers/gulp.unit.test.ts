@@ -124,6 +124,7 @@ describe('bundlers/gulp createPlugins', () => {
     const processedJs = await runTransform(plugins.transformJs(), jsFile)
     expect(jsHandler).toHaveBeenCalledTimes(1)
     expect(twPatcher.getClassSetSync).toHaveBeenCalledTimes(3)
+    expect(twPatcher.extract).toHaveBeenCalledTimes(3)
     expect(jsHandler).toHaveBeenCalledWith(
       'import "./init"; console.log("hi")',
       runtimeSet,
@@ -152,6 +153,59 @@ describe('bundlers/gulp createPlugins', () => {
     const cachedHtmlFile = createFile('/src/app.wxml', '<view class="foo"></view>')
     await runTransform(plugins.transformWxml(), cachedHtmlFile)
     expect(templateHandler).toHaveBeenCalledTimes(1)
+  })
+
+  it('refreshes gulp runtime candidates before transforming changed js sources', async () => {
+    let currentRuntimeSet = new Set(['w-[1px]'])
+    twPatcher.getClassSetSync.mockImplementation(() => currentRuntimeSet)
+    twPatcher.extract.mockImplementation(async () => ({ classSet: currentRuntimeSet }))
+    jsHandler.mockImplementation(async (_source: string, classSet?: Set<string>) => ({
+      code: classSet?.has('bar') ? 'hit:bar' : 'miss:bar',
+    }))
+
+    const plugins = createPlugins()
+
+    await runTransform(plugins.transformJs(), createFile('/src/app.js', 'const cls = "w-[1px]"'))
+    currentRuntimeSet = new Set(['w-[1px]', 'w-[2px]', 'bar'])
+    const processed = await runTransform(plugins.transformJs(), createFile('/src/app.js', 'const cls = "w-[2px] bar"'))
+
+    expect(processed.contents?.toString()).toBe('hit:bar')
+    expect(twPatcher.extract).toHaveBeenCalledTimes(2)
+  })
+
+  it('uses incremental runtime candidates for tailwindcss v4 gulp js updates', async () => {
+    twPatcher.majorVersion = 4
+    const incrementalRuntimeSet = new Set<string>()
+    const incrementalRuntimeManager = {
+      reset: vi.fn(async () => undefined),
+      sync: vi.fn(async (_patcher: unknown, snapshot: { runtimeAffectingChangedByType: { js: Set<string> }, entries: Array<{ file: string, source: string }> }) => {
+        for (const file of snapshot.runtimeAffectingChangedByType.js) {
+          const entry = snapshot.entries.find(item => item.file === file)
+          if (!entry) {
+            continue
+          }
+          const matches = entry.source.match(/[a-z]-\[[^\]]+\]/g) ?? []
+          for (const match of matches) {
+            incrementalRuntimeSet.add(match)
+          }
+        }
+        return new Set(incrementalRuntimeSet)
+      }),
+    }
+    jsHandler.mockImplementation(async (_source: string, classSet?: Set<string>) => ({
+      code: classSet?.has('w-[2px]') ? 'hit:w-[2px]' : 'miss:w-[2px]',
+    }))
+
+    const plugins = createPlugins({
+      __internalGulpRuntimeClassSetManager: incrementalRuntimeManager,
+    } as any)
+
+    await runTransform(plugins.transformJs(), createFile('/src/app.js', 'const cls = "w-[1px]"'))
+    const processed = await runTransform(plugins.transformJs(), createFile('/src/app.js', 'const cls = "w-[2px]"'))
+
+    expect(processed.contents?.toString()).toBe('hit:w-[2px]')
+    expect(incrementalRuntimeManager.sync).toHaveBeenCalledTimes(2)
+    expect(twPatcher.extract).not.toHaveBeenCalled()
   })
 
   it('registers tailwindcss v4 cssSources from wxss files before collecting runtime classes', async () => {

@@ -69,6 +69,7 @@ export class UnifiedWebpackPluginV5 implements IBaseWebpackPlugin {
     let runtimeSetPrepared = false
     let runtimeSetSignature: string | undefined
     let runtimeRefreshRequiredForCompilation = false
+    let watchRunObserved = false
     const runtimeWatchDependencyFiles = new Set<string>()
     const runtimeWatchDependencyContexts = new Set<string>()
     let runtimeMetadataPrepared = false
@@ -128,7 +129,10 @@ export class UnifiedWebpackPluginV5 implements IBaseWebpackPlugin {
       runtimeMetadataPrepared = true
     }
 
-    const syncRuntimeRefreshRequirement = () => {
+    const syncRuntimeRefreshRequirement = (markWatchRun = false) => {
+      if (markWatchRun) {
+        watchRunObserved = true
+      }
       runtimeRefreshRequiredForCompilation = runtimeRefreshRequiredForCompilation || hasWatchChanges(compiler as Compiler & {
         modifiedFiles?: Set<string>
         removedFiles?: Set<string>
@@ -166,7 +170,7 @@ export class UnifiedWebpackPluginV5 implements IBaseWebpackPlugin {
     compiler.hooks.invalid?.tap?.(pluginName, () => {
       runtimeRefreshRequiredForCompilation = true
     })
-    compiler.hooks.watchRun?.tap?.(pluginName, syncRuntimeRefreshRequirement)
+    compiler.hooks.watchRun?.tap?.(pluginName, () => syncRuntimeRefreshRequirement(true))
     if (compiler.hooks.thisCompilation?.tap) {
       compiler.hooks.thisCompilation.tap(pluginName, resetRuntimePreparation)
     }
@@ -184,7 +188,7 @@ export class UnifiedWebpackPluginV5 implements IBaseWebpackPlugin {
       runtimeSetPrepared = true
       await ensureRuntimeClassSet(runtimeState, {
         forceRefresh,
-        forceCollect: true,
+        forceCollect: forceRefresh || !watchRunObserved,
         clearCache: forceRefresh,
         allowEmpty: true,
       })
@@ -222,6 +226,8 @@ export class UnifiedWebpackPluginV5 implements IBaseWebpackPlugin {
       consumeRuntimeRefreshRequirement() {
         runtimeRefreshRequiredForCompilation = false
       },
+      isWatchMode: () => watchRunObserved || compiler.options?.watch === true,
+      runtimeClassSetManager: (this.options as any).__internalWebpackRuntimeClassSetManager,
       debug,
     })
   }

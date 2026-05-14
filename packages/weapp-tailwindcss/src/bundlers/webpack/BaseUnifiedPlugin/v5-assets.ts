@@ -1,4 +1,5 @@
 import type { Compiler } from 'webpack'
+import type { BundleRuntimeClassSetManager } from '../../vite/incremental-runtime-class-set'
 import type { AppType, InternalUserDefinedOptions, LinkedJsModuleResult } from '@/types'
 import path from 'node:path'
 import process from 'node:process'
@@ -11,6 +12,8 @@ import { processCachedTask } from '../../shared/cache'
 import { generateCssByGenerator } from '../../shared/generator-css'
 import { resolveOutputSpecifier, toAbsoluteOutputPath } from '../../shared/module-graph'
 import { pushConcurrentTaskFactories } from '../../shared/run-tasks'
+import { buildBundleSnapshot, createBundleBuildState, updateBundleBuildState } from '../../vite/bundle-state'
+import { createBundleRuntimeClassSetManager } from '../../vite/incremental-runtime-class-set'
 import { createAssetHashByChunkMap, createRuntimeAwareCssHash, getCacheKey } from './shared'
 
 interface SetupWebpackV5ProcessAssetsHookOptions {
@@ -24,7 +27,25 @@ interface SetupWebpackV5ProcessAssetsHookOptions {
   getRuntimeRefreshRequirement: () => boolean
   refreshRuntimeMetadata: (force: boolean) => Promise<void>
   consumeRuntimeRefreshRequirement: () => void
+  isWatchMode?: () => boolean
+  runtimeClassSetManager?: BundleRuntimeClassSetManager
   debug: (format: string, ...args: unknown[]) => void
+}
+
+function createWebpackSnapshotAssets(assets: Record<string, { source: () => unknown }>) {
+  return Object.fromEntries(
+    Object.entries(assets).map(([file, asset]) => {
+      const source = asset.source()
+      return [
+        file,
+        {
+          fileName: file,
+          source: typeof source === 'string' ? source : source?.toString() ?? '',
+          type: 'asset',
+        },
+      ]
+    }),
+  )
 }
 
 export function setupWebpackV5ProcessAssetsHook(options: SetupWebpackV5ProcessAssetsHookOptions) {
@@ -36,6 +57,8 @@ export function setupWebpackV5ProcessAssetsHook(options: SetupWebpackV5ProcessAs
     getRuntimeRefreshRequirement,
     refreshRuntimeMetadata,
     consumeRuntimeRefreshRequirement,
+    isWatchMode,
+    runtimeClassSetManager,
     debug,
   } = options
   const { Compilation, sources } = compiler.webpack
@@ -58,6 +81,9 @@ export function setupWebpackV5ProcessAssetsHook(options: SetupWebpackV5ProcessAs
     }
     majorVersion: number | undefined
   }>()
+  const bundleBuildState = createBundleBuildState()
+  const bundleRuntimeClassSetManager = runtimeClassSetManager ?? createBundleRuntimeClassSetManager()
+  let webpackWatchRuntimeScanInitialized = false
 
   compiler.hooks.compilation.tap(pluginName, (compilation) => {
     compilation.hooks.processAssets.tapPromise(
@@ -173,14 +199,52 @@ export function setupWebpackV5ProcessAssetsHook(options: SetupWebpackV5ProcessAs
         }
         const forceRuntimeRefresh = getRuntimeRefreshRequirement()
         debug('processAssets ensure runtime set forceRefresh=%s major=%s', forceRuntimeRefresh, runtimeState.twPatcher.majorVersion ?? 'unknown')
-        const runtimeSet = await ensureRuntimeClassSet(runtimeState, {
-          forceRefresh: forceRuntimeRefresh,
-          // webpack 的 script-only 热更新可能不会触发 runtime classset loader，
-          // 这里强制收集可避免沿用上轮 class set，保证 JS 仅按最新集合精确命中。
-          forceCollect: true,
-          clearCache: forceRuntimeRefresh,
-          allowEmpty: false,
-        })
+        let runtimeSet: Set<string>
+        const watchMode = isWatchMode?.() === true
+        if (watchMode && runtimeState.twPatcher.majorVersion === 4 && !forceRuntimeRefresh) {
+          const snapshot = buildBundleSnapshot(createWebpackSnapshotAssets(assets as any) as any, compilerOptions, outputDir, bundleBuildState)
+          if (!webpackWatchRuntimeScanInitialized) {
+            for (const entry of snapshot.entries) {
+              if (entry.type === 'html' || entry.type === 'js') {
+                snapshot.runtimeAffectingChangedByType[entry.type].add(entry.file)
+              }
+            }
+          }
+          try {
+            runtimeSet = await bundleRuntimeClassSetManager.sync(runtimeState.twPatcher, snapshot)
+          }
+          catch (error) {
+            debug('webpack incremental runtime set sync failed, fallback to full collect: %O', error)
+            await bundleRuntimeClassSetManager.reset()
+            runtimeSet = await ensureRuntimeClassSet(runtimeState, {
+              forceRefresh: false,
+              forceCollect: true,
+              clearCache: false,
+              allowEmpty: false,
+            })
+          }
+          updateBundleBuildState(bundleBuildState, snapshot, new Map(), { incremental: true })
+          webpackWatchRuntimeScanInitialized = true
+        }
+        else {
+          if (forceRuntimeRefresh) {
+            await bundleRuntimeClassSetManager.reset()
+            webpackWatchRuntimeScanInitialized = false
+          }
+          runtimeSet = await ensureRuntimeClassSet(runtimeState, {
+            forceRefresh: forceRuntimeRefresh,
+            // 非 watch 构建继续强制收集，避免一次性构建漏掉外部内容变化。
+            forceCollect: true,
+            clearCache: forceRuntimeRefresh,
+            allowEmpty: false,
+          })
+          if (runtimeSet.size === 0) {
+            const syncSet = runtimeState.twPatcher.getClassSetSync?.()
+            if (syncSet && syncSet.size > 0) {
+              runtimeSet = syncSet
+            }
+          }
+        }
         await refreshRuntimeMetadata(forceRuntimeRefresh)
         consumeRuntimeRefreshRequirement()
         const runtimeSetHash = compilerOptions.cache.computeHash([
@@ -269,7 +333,10 @@ export function setupWebpackV5ProcessAssetsHook(options: SetupWebpackV5ProcessAs
                       sourceFilename: absoluteFile,
                     },
                   }
-                  if (shouldSkipJsTransform(currentSource, handlerOptions)) {
+                  if (shouldSkipJsTransform(currentSource, {
+                    ...handlerOptions,
+                    classNameSet: runtimeSet,
+                  })) {
                     return { result: new ConcatSource(currentSource) }
                   }
                   const { code, linked } = await compilerOptions.jsHandler(currentSource, runtimeSet, handlerOptions)

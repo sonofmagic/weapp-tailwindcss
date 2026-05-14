@@ -1,5 +1,5 @@
 import type { Plugin, ResolvedConfig } from 'vite'
-import type { TailwindSourceEntry } from '@/tailwindcss/source-scan'
+import type { TailwindInlineSourceCandidates, TailwindSourceEntry } from '@/tailwindcss/source-scan'
 import type { UserDefinedOptions } from '@/types'
 import path from 'node:path'
 import process from 'node:process'
@@ -31,6 +31,49 @@ import { cleanUrl, slash } from './utils'
 const debug = createDebug()
 const weappTailwindcssPackageDir = resolvePackageDir('weapp-tailwindcss')
 const weappTailwindcssDirPosix = slash(weappTailwindcssPackageDir)
+
+interface SourceCandidateScanRoot {
+  root: string
+  entries?: TailwindSourceEntry[]
+}
+
+interface SourceCandidateScanSignatureInput {
+  inlineCandidates?: TailwindInlineSourceCandidates
+  outDir?: string
+  roots: SourceCandidateScanRoot[]
+}
+
+function normalizeSignaturePath(value: string) {
+  return slash(path.resolve(value))
+}
+
+function serializeInlineCandidates(inlineCandidates: TailwindInlineSourceCandidates | undefined) {
+  return {
+    excluded: [...(inlineCandidates?.excluded ?? [])].sort(),
+    included: [...(inlineCandidates?.included ?? [])].sort(),
+  }
+}
+
+function serializeSourceEntries(entries: TailwindSourceEntry[] | undefined) {
+  return (entries ?? [])
+    .map(entry => ({
+      base: normalizeSignaturePath(entry.base),
+      negated: entry.negated,
+      pattern: entry.pattern,
+    }))
+    .sort((a, b) => `${a.base}\0${a.pattern}\0${a.negated}`.localeCompare(`${b.base}\0${b.pattern}\0${b.negated}`))
+}
+
+function createSourceCandidateScanSignature(input: SourceCandidateScanSignatureInput) {
+  return JSON.stringify({
+    inlineCandidates: serializeInlineCandidates(input.inlineCandidates),
+    outDir: input.outDir ? normalizeSignaturePath(input.outDir) : undefined,
+    roots: input.roots.map(root => ({
+      entries: serializeSourceEntries(root.entries),
+      root: normalizeSignaturePath(root.root),
+    })),
+  })
+}
 
 /**
  * @name WeappTailwindcss
@@ -118,6 +161,7 @@ export function WeappTailwindcss(options: UserDefinedOptions = {}): Plugin[] | u
   const sourceCandidateCollector = createSourceCandidateCollector()
   let sourceScanEntries: TailwindSourceEntry[] | undefined
   let sourceScanMatcher: ((file: string) => boolean) | undefined
+  let sourceCandidateScanSignature: string | undefined
   const pendingSourceCandidateSyncs = new Set<Promise<void>>()
   const processedCssAssets = new WeakSet<object>()
   const processedCssAssetFiles = new Set<string>()
@@ -156,6 +200,42 @@ export function WeappTailwindcss(options: UserDefinedOptions = {}): Plugin[] | u
   const getRecordedGeneratorCandidates = () => recordedGeneratorCandidates
   const getSourceCandidates = () => sourceCandidateCollector.values()
   const isWatchBuild = () => resolvedConfig?.command === 'build' && resolvedConfig.build.watch != null
+  const collectSourceCandidateScanRoots = (root: string, entries: TailwindSourceEntry[] | undefined) => {
+    const roots: SourceCandidateScanRoot[] = [
+      {
+        entries,
+        root,
+      },
+    ]
+    const normalizedRoot = path.resolve(root)
+    const seenRoots = new Set([normalizedRoot])
+    const basedir = opts.tailwindcssBasedir ? path.resolve(opts.tailwindcssBasedir) : undefined
+    if (basedir && !seenRoots.has(basedir)) {
+      roots.push({ root: basedir })
+      seenRoots.add(basedir)
+    }
+    for (const cssEntry of opts.tailwindcss?.cssEntries ?? []) {
+      const cssEntryRoot = path.dirname(path.resolve(cssEntry))
+      if (seenRoots.has(cssEntryRoot)) {
+        continue
+      }
+      roots.push({ root: cssEntryRoot })
+      seenRoots.add(cssEntryRoot)
+    }
+    return roots
+  }
+  const scanSourceCandidateRoots = async (
+    roots: SourceCandidateScanRoot[],
+    outDir: string | undefined,
+  ) => {
+    await Promise.all(
+      roots.map(root => sourceCandidateCollector.scanRoot({
+        entries: root.entries,
+        root: root.root,
+        outDir,
+      })),
+    )
+  }
   const waitForSourceCandidateSyncs = async () => {
     while (pendingSourceCandidateSyncs.size > 0) {
       await Promise.all(pendingSourceCandidateSyncs)
@@ -268,36 +348,27 @@ export function WeappTailwindcss(options: UserDefinedOptions = {}): Plugin[] | u
         if (!shouldOwnTailwindGeneration) {
           return
         }
-        if (resolvedConfig?.command === 'build' && !isWatchBuild()) {
-          sourceCandidateCollector.clear()
-        }
         const root = resolvedConfig?.root ?? process.cwd()
         const outDir = resolvedConfig?.build?.outDir
         const sourceScan = await resolveViteSourceScanEntries(opts, runtimeState.twPatcher)
         sourceScanEntries = sourceScan?.entries
         sourceScanMatcher = createViteSourceScanMatcher(sourceScanEntries)
-        sourceCandidateCollector.syncInline(sourceScan?.inlineCandidates)
-        await sourceCandidateCollector.scanRoot({
-          entries: sourceScanEntries,
-          root,
+        const roots = collectSourceCandidateScanRoots(root, sourceScanEntries)
+        const nextScanSignature = createSourceCandidateScanSignature({
+          inlineCandidates: sourceScan?.inlineCandidates,
           outDir,
+          roots,
         })
-        const basedir = opts.tailwindcssBasedir ? path.resolve(opts.tailwindcssBasedir) : undefined
-        if (basedir && basedir !== path.resolve(root)) {
-          await sourceCandidateCollector.scanRoot({
-            root: basedir,
-            outDir,
-          })
+        const shouldReuseWatchScan = isWatchBuild() && sourceCandidateScanSignature === nextScanSignature
+        if (shouldReuseWatchScan) {
+          sourceCandidateCollector.syncInline(sourceScan?.inlineCandidates)
+          debug('reuse vite source candidate scan for watch rebuild')
+          return
         }
-        for (const cssEntry of opts.tailwindcss?.cssEntries ?? []) {
-          const cssEntryRoot = path.dirname(path.resolve(cssEntry))
-          if (cssEntryRoot !== path.resolve(root) && cssEntryRoot !== basedir) {
-            await sourceCandidateCollector.scanRoot({
-              root: cssEntryRoot,
-              outDir,
-            })
-          }
-        }
+        sourceCandidateCollector.clear()
+        sourceCandidateCollector.syncInline(sourceScan?.inlineCandidates)
+        await scanSourceCandidateRoots(roots, outDir)
+        sourceCandidateScanSignature = nextScanSignature
       },
     },
     {
