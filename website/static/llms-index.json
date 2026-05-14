@@ -1,6 +1,6 @@
 {
   "version": "1.0.0",
-  "generatedAt": "2026-05-14T05:37:13.862Z",
+  "generatedAt": "2026-05-14T05:49:55.606Z",
   "siteUrl": "https://tw.icebreaker.top",
   "totals": {
     "all": 181,
@@ -3727,8 +3727,8 @@
       "kind": "doc",
       "id": "doc:migrations/v5",
       "title": "从 v4 迁移到 v5",
-      "description": "weapp-tailwindcss v5 默认使用生成模式，本指南说明 Tailwind CSS 3.x / 4.x 项目如何从 v4 配置迁移到 v5。",
-      "summary": "weapp-tailwindcss@5 的核心变化是：生成模式变成默认链路。升级后，小程序构建不再依赖 weapp-tw patch 写入 Tailwind 补丁，也不再建议把 Tailwind 官方 Vite / PostCSS 生成插件和 WeappTailwindcss 同时注册到同一个小程序构建里。",
+      "description": "用尽量少的步骤，把 weapp-tailwindcss v4 项目升级到 v5。",
+      "summary": "v5 最大的变化只有一句话：",
       "url": "/docs/migrations/v5",
       "canonical": "https://tw.icebreaker.top/docs/migrations/v5",
       "keywords": [
@@ -3750,14 +3750,14 @@
         "migrations"
       ],
       "headings": [
-        "1. 升级前确认",
+        "1. 先看你用的是 Tailwind CSS 3 还是 4",
         "2. 升级依赖",
-        "3. 删除旧 patch 链路",
-        "4. 改造构建器插件",
-        "# 4.1 Vite / weapp-vite / uni-app Vite",
-        "# 4.2 Taro Vite",
-        "# 4.3 Webpack / Taro Webpack / Mpx",
-        "5. Tailwind CSS 3.x 项目迁移"
+        "3. 删除旧 patch 脚本",
+        "4. 注册 WeappTailwindcss",
+        "# Vite / uni-app Vite / weapp-vite",
+        "# Webpack / Taro Webpack / Mpx",
+        "# 什么时候还要手动配 cssEntries？",
+        "5. 从 PostCSS 里拿掉 Tailwind"
       ],
       "updatedAt": null,
       "source": "docs/migrations/v5.md"
