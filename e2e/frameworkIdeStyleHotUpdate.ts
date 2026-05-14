@@ -22,6 +22,19 @@ import {
   summarizeChangedArtifacts,
 } from './frameworkIdeHotUpdateArtifacts'
 
+function readNumberEnv(name: string, fallback: number) {
+  const raw = process.env[name]
+  if (!raw) {
+    return fallback
+  }
+  const value = Number(raw)
+  return Number.isFinite(value) ? value : fallback
+}
+
+function getRollbackTimeoutMs(options: CliOptions) {
+  return Math.min(options.timeoutMs, readNumberEnv('E2E_IDE_ROLLBACK_TIMEOUT_MS', 30_000))
+}
+
 function createIdeStyleSnippet(entry: FrameworkSupportCase, marker: string) {
   const selector = `.${marker}`
   const functionSelector = `.${marker}-theme`
@@ -83,6 +96,7 @@ export async function runIdeStyleHotUpdate(
   sourceOriginal: string,
 ) {
   const sourceFile = watchCase.styleMutation.sourceFile
+  process.stdout.write(`[e2e:ide] ${watchCase.label} style HMR mutate ${sourceFile}\n`)
   const marker = `tw-ide-style-${watchCase.name}-${Date.now().toString().slice(-6)}`
   const mutatedSource = mutateStyleSource(sourceOriginal, createIdeStyleSnippet(entry, marker))
   const { artifacts: baselineArtifacts, mtimes: baselineMtimes } = await collectArtifactMtimes(watchCase)
@@ -132,7 +146,7 @@ export async function runIdeStyleHotUpdate(
   await waitFor(
     async () => !hasAnyNeedle(await readArtifacts(watchCase), [marker]),
     {
-      timeoutMs: Math.min(options.timeoutMs, 60_000),
+      timeoutMs: getRollbackTimeoutMs(options),
       pollMs: options.pollMs,
       message: `[${watchCase.label}] IDE style HMR marker was not removed after rollback: ${marker}`,
       onTick: session.ensureRunning,

@@ -48,7 +48,35 @@ function createWatchOptions(): CliOptions {
     pollMs: readNumberEnv('E2E_IDE_HOT_UPDATE_POLL_MS', readNumberEnv('E2E_WATCH_POLL_MS', 240)),
     quietSass: true,
     skipBuild: true,
-    timeoutMs: readNumberEnv('E2E_IDE_HOT_UPDATE_TIMEOUT_MS', readNumberEnv('E2E_WATCH_TIMEOUT_MS', 240_000)),
+    timeoutMs: readNumberEnv('E2E_IDE_HOT_UPDATE_TIMEOUT_MS', readNumberEnv('E2E_WATCH_TIMEOUT_MS', 120_000)),
+  }
+}
+
+function readHotUpdateTotalTimeoutMs(options: CliOptions) {
+  return readNumberEnv('E2E_IDE_HOT_UPDATE_TOTAL_TIMEOUT_MS', options.timeoutMs)
+}
+
+async function withHotUpdateTotalTimeout<T>(
+  watchCase: WatchCase,
+  options: CliOptions,
+  task: Promise<T>,
+) {
+  const timeoutMs = readHotUpdateTotalTimeoutMs(options)
+  let timer: ReturnType<typeof setTimeout> | undefined
+  try {
+    return await Promise.race([
+      task,
+      new Promise<T>((_, reject) => {
+        timer = setTimeout(() => {
+          reject(new Error(`[${watchCase.label}] IDE hot-update probe timed out after ${timeoutMs}ms`))
+        }, timeoutMs)
+      }),
+    ])
+  }
+  finally {
+    if (timer) {
+      clearTimeout(timer)
+    }
   }
 }
 
@@ -153,44 +181,51 @@ export async function runFrameworkIdeHotUpdateProbe(
   }, watchCase.env)
 
   try {
-    await waitForIdeWatchReady(watchCase, options, session, sessionStartedAt)
-
-    if ((watchCase.initialMutationDelayMs ?? 0) > 0) {
-      await sleep(watchCase.initialMutationDelayMs!)
-      session.ensureRunning()
-    }
-
-    await runIdeClassHotUpdate(
-      options,
+    await withHotUpdateTotalTimeout(
       watchCase,
-      session,
-      'template',
-      sourceOriginals.get(watchCase.templateMutation.sourceFile)!,
-      miniProgram,
-      page,
-      pageUrl,
-      launchProjectPath,
-    )
-    await runIdeClassHotUpdate(
       options,
-      watchCase,
-      session,
-      'script',
-      sourceOriginals.get(watchCase.scriptMutation.sourceFile)!,
-      miniProgram,
-      page,
-      pageUrl,
-      launchProjectPath,
+      (async () => {
+        process.stdout.write(`[e2e:ide] ${watchCase.label} wait for watch ready\n`)
+        await waitForIdeWatchReady(watchCase, options, session, sessionStartedAt)
+
+        if ((watchCase.initialMutationDelayMs ?? 0) > 0) {
+          await sleep(watchCase.initialMutationDelayMs!)
+          session.ensureRunning()
+        }
+
+        await runIdeClassHotUpdate(
+          options,
+          watchCase,
+          session,
+          'template',
+          sourceOriginals.get(watchCase.templateMutation.sourceFile)!,
+          miniProgram,
+          page,
+          pageUrl,
+          launchProjectPath,
+        )
+        await runIdeClassHotUpdate(
+          options,
+          watchCase,
+          session,
+          'script',
+          sourceOriginals.get(watchCase.scriptMutation.sourceFile)!,
+          miniProgram,
+          page,
+          pageUrl,
+          launchProjectPath,
+        )
+        if (!watchCase.skipStyleMutation) {
+          await runIdeStyleHotUpdate(
+            entry,
+            options,
+            watchCase,
+            session,
+            sourceOriginals.get(watchCase.styleMutation.sourceFile)!,
+          )
+        }
+      })(),
     )
-    if (!watchCase.skipStyleMutation) {
-      await runIdeStyleHotUpdate(
-        entry,
-        options,
-        watchCase,
-        session,
-        sourceOriginals.get(watchCase.styleMutation.sourceFile)!,
-      )
-    }
   }
   catch (error) {
     const message = error instanceof Error ? error.message : String(error)

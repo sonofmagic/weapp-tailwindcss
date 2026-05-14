@@ -1,6 +1,7 @@
 import process from 'node:process'
 import { execa } from 'execa'
 import { describe, expect, it } from 'vitest'
+import { collectFrameworkIdeDiagnostics } from './frameworkIdeDiagnostics'
 import { getFrameworkIdeCases, getFrameworkIdeExemptCases } from './frameworkSupportMatrix'
 
 const describeFrameworkIde = process.env['E2E_IDE'] === '1' ? describe : describe.skip
@@ -17,18 +18,22 @@ function readNumberEnv(name: string, fallback: number) {
 }
 
 function getProbeTiming() {
-  const timeoutMs = readNumberEnv('E2E_AUTOMATOR_TIMEOUT_MS', 30_000)
-  const closeTimeoutMs = readNumberEnv('E2E_IDE_CLOSE_TIMEOUT_MS', 10_000)
+  const timeoutMs = readNumberEnv('E2E_AUTOMATOR_TIMEOUT_MS', 20_000)
+  const closeTimeoutMs = readNumberEnv('E2E_IDE_CLOSE_TIMEOUT_MS', 5000)
   const hotUpdateTimeoutMs = process.env['E2E_IDE_HOT_UPDATE'] === '0'
     ? 0
-    : readNumberEnv('E2E_IDE_HOT_UPDATE_TIMEOUT_MS', readNumberEnv('E2E_WATCH_TIMEOUT_MS', 240_000))
+    : readNumberEnv('E2E_IDE_HOT_UPDATE_TIMEOUT_MS', readNumberEnv('E2E_WATCH_TIMEOUT_MS', 120_000))
   const buildTimeoutMs = process.env['E2E_IDE_BUILD'] === '1'
-    ? readNumberEnv('E2E_IDE_BUILD_TIMEOUT_MS', 120_000)
+    ? readNumberEnv('E2E_IDE_BUILD_TIMEOUT_MS', 90_000)
     : 0
-  const settleTimeoutMs = readNumberEnv('E2E_IDE_SETTLE_MS', 1500)
-  const maxAttempts = readNumberEnv('E2E_IDE_PROBE_RETRIES', 2) + 1
-  const attemptTimeoutMs = buildTimeoutMs + hotUpdateTimeoutMs + timeoutMs + closeTimeoutMs + 5000
-  const testTimeoutMs = (attemptTimeoutMs + settleTimeoutMs) * maxAttempts
+  const hotUpdateTotalTimeoutMs = process.env['E2E_IDE_HOT_UPDATE'] === '0'
+    ? 0
+    : readNumberEnv('E2E_IDE_HOT_UPDATE_TOTAL_TIMEOUT_MS', hotUpdateTimeoutMs)
+  const settleTimeoutMs = readNumberEnv('E2E_IDE_SETTLE_MS', 800)
+  const maxAttempts = readNumberEnv('E2E_IDE_PROBE_RETRIES', 0) + 1
+  const attemptTimeoutMs = buildTimeoutMs + hotUpdateTotalTimeoutMs + timeoutMs + closeTimeoutMs + 5000
+  const parentGraceMs = readNumberEnv('E2E_IDE_PARENT_TIMEOUT_GRACE_MS', 15_000)
+  const testTimeoutMs = (attemptTimeoutMs + settleTimeoutMs + parentGraceMs) * maxAttempts
 
   return {
     attemptTimeoutMs,
@@ -70,18 +75,29 @@ function isTransientIdeError(error: unknown) {
 }
 
 async function runFrameworkIdeProbe(entryName: string, timeoutMs: number, testTimeoutMs: number) {
-  const result = await execa('node', ['--import', 'tsx', './e2e/frameworkIdeProbe.ts', entryName], {
-    cwd: process.cwd(),
-    env: {
-      ...process.env,
-      E2E_IDE_PROBE_TIMEOUT_MS: String(timeoutMs),
-      E2E_IDE_BUILD: process.env['E2E_IDE_BUILD'] ?? '0',
-    },
-    stdio: process.env['E2E_IDE_DEBUG'] === '1' ? 'inherit' : 'pipe',
-    timeout: testTimeoutMs - 1000,
-    killSignal: 'SIGKILL',
-    forceKillAfterDelay: 1000,
-  })
+  let result
+  try {
+    result = await execa('node', ['--import', 'tsx', './e2e/frameworkIdeProbe.ts', entryName], {
+      cwd: process.cwd(),
+      env: {
+        ...process.env,
+        E2E_IDE_PROBE_TIMEOUT_MS: String(timeoutMs),
+        E2E_IDE_BUILD: process.env['E2E_IDE_BUILD'] ?? '0',
+      },
+      stdio: process.env['E2E_IDE_DEBUG'] === '1' ? 'inherit' : 'pipe',
+      timeout: testTimeoutMs - 1000,
+      killSignal: 'SIGKILL',
+      forceKillAfterDelay: 1000,
+    })
+  }
+  catch (error) {
+    if (error instanceof Error && !('stderr' in error && typeof error.stderr === 'string' && error.stderr.includes('[e2e:ide] diagnostics'))) {
+      const diagnostics = await collectFrameworkIdeDiagnostics(entryName)
+      error.message = `${error.message}\n${diagnostics}`
+    }
+    throw error
+  }
+
   if (process.env['E2E_IDE_DEBUG'] !== '1') {
     const visibleLines = result.stdout
       ?.split(/\r?\n/)
@@ -143,7 +159,7 @@ describeFrameworkIde.sequential('framework support matrix ide', () => {
           if (attempt >= maxAttempts || !isTransientIdeError(error)) {
             throw error
           }
-          process.stderr.write(`[e2e:ide] retry ${entry.name} after transient DevTools error (${attempt}/${maxAttempts - 1})\n`)
+          process.stderr.write(`[e2e:ide] retry ${entry.name} after transient DevTools error (${attempt}/${maxAttempts - 1})\n${await collectFrameworkIdeDiagnostics(entry.name)}\n`)
         }
         finally {
           await cleanupDevTools()

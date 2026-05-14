@@ -31,8 +31,12 @@ function readNumberEnv(name: string, fallback: number) {
 function getDevToolsReadTimeoutMs() {
   return readNumberEnv(
     'E2E_IDE_DEVTOOLS_READ_TIMEOUT_MS',
-    Math.min(readNumberEnv('E2E_AUTOMATOR_TIMEOUT_MS', 30_000), 15_000),
+    Math.min(readNumberEnv('E2E_AUTOMATOR_TIMEOUT_MS', 20_000), 5000),
   )
+}
+
+function getDevToolsVisibleTimeoutMs(options: CliOptions) {
+  return Math.min(options.timeoutMs, readNumberEnv('E2E_IDE_VISIBLE_TIMEOUT_MS', 30_000))
 }
 
 async function withDevToolsReadTimeout<T>(pageUrl: string, task: Promise<T>) {
@@ -105,6 +109,7 @@ export async function runIdeClassHotUpdate(
 ) {
   const mutation = mutationKind === 'template' ? watchCase.templateMutation : watchCase.scriptMutation
   const sourceFile = mutation.sourceFile
+  process.stdout.write(`[e2e:ide] ${watchCase.label} ${mutationKind} HMR mutate ${sourceFile}\n`)
   const { artifacts: baselineArtifacts, mtimes: baselineMtimes } = await collectArtifactMtimes(watchCase)
   const liveBefore = await readPageWxml(page, pageUrl).catch(() => undefined)
   const scenario = createClassMutationScenario(
@@ -166,6 +171,7 @@ export async function runIdeClassHotUpdate(
   await miniProgram.clearCache?.({ clean: 'compile' }).catch(() => undefined)
   await miniProgram.compile({ force: true }).catch(() => undefined)
   let devtoolsVisible = 'false'
+  process.stdout.write(`[e2e:ide] ${watchCase.label} ${mutationKind} HMR verify DevTools visibility\n`)
   const liveHasMarker = await waitFor(
     async () => {
       try {
@@ -176,7 +182,7 @@ export async function runIdeClassHotUpdate(
       }
     },
     {
-      timeoutMs: Math.min(options.timeoutMs, 60_000),
+      timeoutMs: getDevToolsVisibleTimeoutMs(options),
       pollMs: options.pollMs,
       message: `[${watchCase.label}] DevTools page did not show IDE ${mutationKind} HMR marker: ${scenario.marker}`,
       onTick: session.ensureRunning,
@@ -192,6 +198,7 @@ export async function runIdeClassHotUpdate(
     devtoolsVisible = 'live'
   }
   else if (mutationKind === 'template') {
+    process.stdout.write(`[e2e:ide] ${watchCase.label} template HMR reopen DevTools for visibility fallback\n`)
     const freshWxml = await readFreshDevToolsPageWxml(launchProjectPath, pageUrl)
     if (!freshWxml.includes(scenario.marker)) {
       throw new Error(`[${watchCase.label}] DevTools page did not show template HMR marker after reopening project: ${scenario.marker}`)

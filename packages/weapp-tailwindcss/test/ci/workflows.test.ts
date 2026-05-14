@@ -156,6 +156,17 @@ describe('ci workflows', () => {
     expect(source).toContain('\'@weapp-core/escape\'')
     expect(source).toContain('\'@weapp-core/regex\'')
   })
+
+  it('keeps local e2e:ide fail-fast and exposes focused case scripts', () => {
+    const packageJson = readPackageJson<{ scripts: Record<string, string> }>('package.json')
+
+    expect(packageJson.scripts['e2e:ide']).toContain('vitest run --bail=1')
+    expect(packageJson.scripts['e2e:ide:skip-build']).toContain('vitest run --bail=1')
+    expect(packageJson.scripts['e2e:ide:case']).toContain('E2E_IDE_PROBE_RETRIES=0')
+    expect(packageJson.scripts['e2e:ide:case']).toContain('vitest run --bail=1')
+    expect(packageJson.scripts['e2e:ide:case:skip-build']).toContain('E2E_IDE_BUILD=0')
+    expect(packageJson.scripts['e2e:ide:case:skip-build']).toContain('E2E_IDE_PROBE_RETRIES=0')
+  })
 })
 
 describe('e2e watch workflow', () => {

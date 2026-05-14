@@ -2,6 +2,7 @@ import fs from 'node:fs/promises'
 import process from 'node:process'
 import { Launcher } from '@weapp-vite/miniprogram-automator'
 import path from 'pathe'
+import { collectFrameworkIdeDiagnostics } from './frameworkIdeDiagnostics'
 import { runFrameworkIdeHotUpdateProbe } from './frameworkIdeHotUpdate'
 import { FRAMEWORK_SUPPORT_CASES } from './frameworkSupportMatrix'
 import { resolveFrameworkSupportPaths } from './frameworkSupportPaths'
@@ -25,9 +26,32 @@ if (entry.ide.tier !== 'required') {
 const supportEntry = entry
 const { appJsonPath, miniprogramRoot, projectPath, root } = resolveFrameworkSupportPaths(supportEntry)
 let miniProgram: any
+const projectConfigPath = path.resolve(projectPath, 'project.config.json')
+let projectConfigOriginal: string | undefined
 
 function shouldRunHotUpdateProbe() {
   return process.env['E2E_IDE_HOT_UPDATE'] !== '0'
+}
+
+async function snapshotProjectConfig() {
+  try {
+    projectConfigOriginal = await fs.readFile(projectConfigPath, 'utf8')
+  }
+  catch {
+    projectConfigOriginal = undefined
+  }
+}
+
+async function restoreProjectConfig() {
+  if (projectConfigOriginal == null) {
+    return
+  }
+  try {
+    await fs.writeFile(projectConfigPath, projectConfigOriginal)
+  }
+  catch (error) {
+    process.stderr.write(`Framework IDE probe failed to restore project.config.json for ${caseName}: ${String(error)}\n`)
+  }
 }
 
 async function ensureMiniProgramEntry() {
@@ -107,7 +131,8 @@ async function main() {
 
   const pageUrl = await ensureMiniProgramEntry()
   const automator = new Launcher()
-  const launchProjectPath = shouldRunHotUpdateProbe() ? miniprogramRoot : projectPath
+  const launchProjectPath = projectPath
+  await snapshotProjectConfig()
 
   try {
     miniProgram = await withStageTimeout('launch', automator.launch({ projectPath: launchProjectPath, timeout: timeoutMs }))
@@ -129,10 +154,19 @@ async function main() {
   }
   finally {
     await closeMiniProgram()
+    await restoreProjectConfig()
   }
 }
 
-main().catch((error) => {
+main().catch(async (error) => {
   process.stderr.write(`${error instanceof Error ? error.stack : String(error)}\n`)
-  process.exitCode = 1
+  await closeMiniProgram()
+  await restoreProjectConfig()
+  try {
+    process.stderr.write(`${await collectFrameworkIdeDiagnostics(caseName)}\n`)
+  }
+  catch (diagnosticError) {
+    process.stderr.write(`[e2e:ide] failed to collect diagnostics: ${diagnosticError instanceof Error ? diagnosticError.stack : String(diagnosticError)}\n`)
+  }
+  process.exit(1)
 })
