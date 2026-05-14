@@ -156,13 +156,13 @@ catalogs:
   vueRuntimeCore:
     '@vue/runtime-core': ^3.5.34
   vueTsc318:
-    vue-tsc: ^3.2.8
+    vue-tsc: ^3.2.9
   weappChildren:
     weapp-tailwindcss-children: ^0.1.0
   weappIdeCli:
-    weapp-ide-cli: ^5.2.9
+    weapp-ide-cli: ^5.2.10
   weappVite:
-    weapp-vite: ^6.16.12
+    weapp-vite: ^6.16.13
   wrangler:
     wrangler: ^4.90.1
 
