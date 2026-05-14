@@ -220,6 +220,7 @@ export function buildDemoBaseCases(baseCwd: string): WatchCase[] {
       sourceFile: path.resolve(baseCwd, 'demo/mpx-tailwindcss-v3/src/pages/index.mpx'),
       verifyEscapedIn: ['wxml'],
       verifyClassLiteralIn: [],
+      roundConfigs: buildHexScriptRoundConfigs(),
       mutate(source, payload) {
         const snippet = `    <view class="${payload.classLiteral}">${payload.marker}-template</view>`
         return insertBeforeClosingTag(source, '</template>', snippet)
@@ -229,6 +230,7 @@ export function buildDemoBaseCases(baseCwd: string): WatchCase[] {
       sourceFile: path.resolve(baseCwd, 'demo/mpx-tailwindcss-v3/src/pages/index.mpx'),
       verifyEscapedIn: ['js'],
       verifyClassLiteralIn: ['js'],
+      roundConfigs: buildHexScriptRoundConfigs(),
       mutate(source, payload) {
         return mutateScriptByDataAnchor(source, '    classNames: \'bg-[#123456]\',', payload)
       },
@@ -290,6 +292,7 @@ export function buildDemoBaseCases(baseCwd: string): WatchCase[] {
       sourceFile: path.resolve(baseCwd, 'demo/gulp-tailwindcss-v3/src/pages/index/index.wxml'),
       verifyEscapedIn: ['wxml'],
       verifyClassLiteralIn: [],
+      roundConfigs: buildHexScriptRoundConfigs(),
       mutate(source, payload) {
         const snippet = `        <view class="${payload.classLiteral}">${payload.marker}-template</view>`
         return insertBeforeClosingTag(source, '      </view>', snippet)
@@ -299,6 +302,7 @@ export function buildDemoBaseCases(baseCwd: string): WatchCase[] {
       sourceFile: path.resolve(baseCwd, 'demo/gulp-tailwindcss-v3/src/pages/index/index.ts'),
       verifyEscapedIn: ['js'],
       verifyClassLiteralIn: ['js'],
+      roundConfigs: buildHexScriptRoundConfigs(),
       mutate(source, payload) {
         return mutateScriptByDataAnchor(source, '  data: {', payload)
       },
@@ -399,6 +403,7 @@ export function buildDemoBaseCases(baseCwd: string): WatchCase[] {
     templateMutation: {
       sourceFile: path.resolve(baseCwd, 'demo/weapp-vite-tailwindcss-v3/miniprogram/pages/index/index.wxml'),
       verifyEscapedIn: ['wxml'],
+      roundConfigs: buildHexScriptRoundConfigs(),
       mutate(source, payload) {
         const snippet = `  <view class="${payload.classLiteral}">${payload.marker}-template</view>`
         return insertBeforeClosingTag(source, '</view>', snippet)
@@ -408,6 +413,7 @@ export function buildDemoBaseCases(baseCwd: string): WatchCase[] {
       sourceFile: path.resolve(baseCwd, 'demo/weapp-vite-tailwindcss-v3/miniprogram/pages/index/index.ts'),
       verifyEscapedIn: ['js'],
       verifyClassLiteralIn: ['js'],
+      roundConfigs: buildHexScriptRoundConfigs(),
       mutate(source, payload) {
         return mutateScriptByDataAnchor(source, '  data: {', payload)
       },
@@ -468,6 +474,7 @@ export function buildDemoBaseCases(baseCwd: string): WatchCase[] {
     templateMutation: {
       sourceFile: path.resolve(baseCwd, 'demo/weapp-vite-tailwindcss-v4/pages/index/index.wxml'),
       verifyEscapedIn: ['wxml'],
+      roundConfigs: buildHexScriptRoundConfigs(),
       mutate(source, payload) {
         const snippet = `  <view class="${payload.classLiteral}">${payload.marker}-template</view>`
         return insertBeforeClosingTag(source, '</scroll-view>', snippet)
@@ -477,6 +484,7 @@ export function buildDemoBaseCases(baseCwd: string): WatchCase[] {
       sourceFile: path.resolve(baseCwd, 'demo/weapp-vite-tailwindcss-v4/pages/index/index.ts'),
       verifyEscapedIn: ['js'],
       verifyClassLiteralIn: ['js'],
+      roundConfigs: buildTailwindV4JsContentRoundConfigs(),
       mutate(source, payload) {
         return mutateScriptByDataAnchor(source, '  data: {', payload)
       },

@@ -17,8 +17,14 @@ function readNumberEnv(name: string, fallback: number) {
   return Number(process.env[name] ?? fallback)
 }
 
-function getProbeTiming() {
-  const timeoutMs = readNumberEnv('E2E_AUTOMATOR_TIMEOUT_MS', 20_000)
+function getProbeTiming(entryName: string) {
+  const baseTimeoutMs = readNumberEnv('E2E_AUTOMATOR_TIMEOUT_MS', 20_000)
+  const timeoutMs = Math.max(
+    baseTimeoutMs,
+    entryName.startsWith('taro-vite-') ? readNumberEnv('E2E_IDE_TARO_VITE_TIMEOUT_MS', 60_000) : 0,
+    entryName.startsWith('uni-app-vite-') ? readNumberEnv('E2E_IDE_UNI_APP_VITE_TIMEOUT_MS', 60_000) : 0,
+  )
+  const relaunchTimeoutMs = readNumberEnv('E2E_IDE_RELAUNCH_TIMEOUT_MS', 60_000)
   const closeTimeoutMs = readNumberEnv('E2E_IDE_CLOSE_TIMEOUT_MS', 5000)
   const hotUpdateTimeoutMs = process.env['E2E_IDE_HOT_UPDATE'] === '0'
     ? 0
@@ -30,8 +36,8 @@ function getProbeTiming() {
     ? 0
     : readNumberEnv('E2E_IDE_HOT_UPDATE_TOTAL_TIMEOUT_MS', hotUpdateTimeoutMs)
   const settleTimeoutMs = readNumberEnv('E2E_IDE_SETTLE_MS', 800)
-  const maxAttempts = readNumberEnv('E2E_IDE_PROBE_RETRIES', 0) + 1
-  const attemptTimeoutMs = buildTimeoutMs + hotUpdateTotalTimeoutMs + timeoutMs + closeTimeoutMs + 5000
+  const maxAttempts = readNumberEnv('E2E_IDE_PROBE_RETRIES', 1) + 1
+  const attemptTimeoutMs = buildTimeoutMs + hotUpdateTotalTimeoutMs + timeoutMs + relaunchTimeoutMs + closeTimeoutMs + 5000
   const parentGraceMs = readNumberEnv('E2E_IDE_PARENT_TIMEOUT_GRACE_MS', 15_000)
   const testTimeoutMs = (attemptTimeoutMs + settleTimeoutMs + parentGraceMs) * maxAttempts
 
@@ -39,6 +45,7 @@ function getProbeTiming() {
     attemptTimeoutMs,
     closeTimeoutMs,
     maxAttempts,
+    relaunchTimeoutMs,
     settleTimeoutMs,
     testTimeoutMs,
     timeoutMs,
@@ -74,7 +81,7 @@ function isTransientIdeError(error: unknown) {
   return transientIdeErrorPatterns.some(pattern => pattern.test(text))
 }
 
-async function runFrameworkIdeProbe(entryName: string, timeoutMs: number, testTimeoutMs: number) {
+async function runFrameworkIdeProbe(entryName: string, timeoutMs: number, relaunchTimeoutMs: number, testTimeoutMs: number) {
   let result
   try {
     result = await execa('node', ['--import', 'tsx', './e2e/frameworkIdeProbe.ts', entryName], {
@@ -82,6 +89,7 @@ async function runFrameworkIdeProbe(entryName: string, timeoutMs: number, testTi
       env: {
         ...process.env,
         E2E_IDE_PROBE_TIMEOUT_MS: String(timeoutMs),
+        E2E_IDE_RELAUNCH_TIMEOUT_MS: String(relaunchTimeoutMs),
         E2E_IDE_BUILD: process.env['E2E_IDE_BUILD'] ?? '0',
       },
       stdio: process.env['E2E_IDE_DEBUG'] === '1' ? 'inherit' : 'pipe',
@@ -142,17 +150,19 @@ describeFrameworkIde.sequential('framework support matrix ide', () => {
   })
 
   for (const entry of getFrameworkIdeCases()) {
+    const probeTiming = getProbeTiming(entry.name)
     it(`${entry.name} opens in WeChat DevTools automator and applies a visible hot update`, async () => {
       const {
         attemptTimeoutMs,
         maxAttempts,
+        relaunchTimeoutMs,
         settleTimeoutMs,
         timeoutMs,
-      } = getProbeTiming()
+      } = probeTiming
 
       for (let attempt = 1; attempt <= maxAttempts; attempt++) {
         try {
-          await runFrameworkIdeProbe(entry.name, timeoutMs, attemptTimeoutMs)
+          await runFrameworkIdeProbe(entry.name, timeoutMs, relaunchTimeoutMs, attemptTimeoutMs)
           return
         }
         catch (error) {
@@ -166,6 +176,6 @@ describeFrameworkIde.sequential('framework support matrix ide', () => {
           await wait(settleTimeoutMs)
         }
       }
-    }, getProbeTiming().testTimeoutMs)
+    }, probeTiming.testTimeoutMs)
   }
 })
