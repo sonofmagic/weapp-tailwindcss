@@ -11,11 +11,13 @@ import type {
 
 export type TailwindV4GenerateTarget = 'weapp' | 'web' | 'tailwind'
 
-export interface TailwindV4GenerateOptions extends PatchTailwindV4GenerateOptions {
-  target?: TailwindV4GenerateTarget
-  styleOptions?: Partial<IStyleHandlerOptions>
-  tailwindcssV3Compatibility?: boolean
-  scanSources?: PatchTailwindV4GenerateOptions['scanSources']
+type TailwindV4PatchGenerateOptions = Omit<PatchTailwindV4GenerateOptions, 'target' | 'styleOptions' | 'tailwindcssV3Compatibility' | 'scanSources'>
+
+export interface TailwindV4GenerateOptions extends TailwindV4PatchGenerateOptions {
+  target?: TailwindV4GenerateTarget | undefined
+  styleOptions?: Partial<IStyleHandlerOptions> | undefined
+  tailwindcssV3Compatibility?: boolean | undefined
+  scanSources?: PatchTailwindV4GenerateOptions['scanSources'] | undefined
 }
 
 export interface TailwindV4GenerateResult extends Omit<PatchTailwindV4GenerateResult, 'css'> {

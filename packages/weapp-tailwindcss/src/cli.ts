@@ -147,5 +147,5 @@ cli
   )
 
 cli.help()
-cli.version(process.env.npm_package_version ?? '0.0.0')
+cli.version(process.env['npm_package_version'] ?? '0.0.0')
 cli.parse()

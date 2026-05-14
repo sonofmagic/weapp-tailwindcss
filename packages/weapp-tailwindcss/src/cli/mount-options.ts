@@ -16,7 +16,7 @@ export function logPatchCommandObsoleteNotice() {
 function handleCliError(error: unknown) {
   if (error instanceof Error) {
     logger.error(error.message)
-    if (error.stack && process.env.WEAPP_TW_DEBUG === '1') {
+    if (error.stack && process.env['WEAPP_TW_DEBUG'] === '1') {
       logger.error(error.stack)
     }
   }
@@ -41,13 +41,14 @@ function withCommandErrorHandling<TCommand extends TailwindcssPatchCommand>(
 }
 
 const forwardedCommands = ['extract', 'tokens', 'init', 'migrate', 'restore', 'validate'] as const
+const commandHandlers = Object.fromEntries(
+  forwardedCommands.map(command => [
+    command,
+    withCommandErrorHandling<typeof command>(async (_ctx, next) => next()),
+  ]),
+) as unknown as NonNullable<TailwindcssPatchCliMountOptions['commandHandlers']>
 
 export const mountOptions: TailwindcssPatchCliMountOptions = {
   commands: [...forwardedCommands],
-  commandHandlers: Object.fromEntries(
-    forwardedCommands.map(command => [
-      command,
-      withCommandErrorHandling<typeof command>(async (_ctx, next) => next()),
-    ]),
-  ) as TailwindcssPatchCliMountOptions['commandHandlers'],
+  commandHandlers,
 }

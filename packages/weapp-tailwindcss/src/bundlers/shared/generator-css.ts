@@ -5,6 +5,7 @@ import {
   createWeappTailwindcssGenerator,
   normalizeWeappTailwindcssGeneratorOptions,
 } from '@/generator'
+import { resolveUniAppXOptions } from '@/uni-app-x/options'
 import { finalizeMiniProgramCss, removeUnsupportedMiniProgramAtRules } from './css-cleanup'
 import {
   hasTailwindSourceDirectives,
@@ -91,6 +92,7 @@ function resolveGeneratorStyleOptions(
         cssPreflightRange: opts.cssPreflightRange,
       }
     : {}
+  const resolvedUniAppXOptions = resolveUniAppXOptions(opts.uniAppX)
   return {
     cssChildCombinatorReplaceValue: opts.cssChildCombinatorReplaceValue,
     cssSelectorReplacement: opts.cssSelectorReplacement,
@@ -103,7 +105,7 @@ function resolveGeneratorStyleOptions(
     autoprefixer: opts.autoprefixer,
     cssCalc: opts.cssCalc,
     atRules: opts.atRules,
-    uniAppX: opts.uniAppX,
+    uniAppX: resolvedUniAppXOptions.enabled,
     uniAppXCssTarget: opts.uniAppXCssTarget,
     uniAppXUnsupported: opts.uniAppXUnsupported,
     ...cssHandlerOptions,

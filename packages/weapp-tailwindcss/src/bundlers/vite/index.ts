@@ -34,12 +34,12 @@ const weappTailwindcssDirPosix = slash(weappTailwindcssPackageDir)
 
 interface SourceCandidateScanRoot {
   root: string
-  entries?: TailwindSourceEntry[]
+  entries?: TailwindSourceEntry[] | undefined
 }
 
 interface SourceCandidateScanSignatureInput {
-  inlineCandidates?: TailwindInlineSourceCandidates
-  outDir?: string
+  inlineCandidates?: TailwindInlineSourceCandidates | undefined
+  outDir?: string | undefined
   roots: SourceCandidateScanRoot[]
 }
 
@@ -216,7 +216,7 @@ export function WeappTailwindcss(options: UserDefinedOptions = {}): Plugin[] | u
       roots.push({ root: basedir })
       seenRoots.add(basedir)
     }
-    for (const cssEntry of opts.tailwindcss?.cssEntries ?? []) {
+    for (const cssEntry of opts.tailwindcss?.v4?.cssEntries ?? []) {
       const cssEntryRoot = path.dirname(path.resolve(cssEntry))
       if (seenRoots.has(cssEntryRoot)) {
         continue

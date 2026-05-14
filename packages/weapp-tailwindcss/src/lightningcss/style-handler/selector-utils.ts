@@ -63,10 +63,10 @@ export function assignNestedSelectors(
 export function trimCombinators(components: SelectorComponent[]): SelectorComponent[] {
   let start = 0
   let end = components.length
-  while (start < end && components[start].type === 'combinator') {
+  while (start < end && components[start]?.type === 'combinator') {
     start++
   }
-  while (end > start && components[end - 1].type === 'combinator') {
+  while (end > start && components[end - 1]?.type === 'combinator') {
     end--
   }
   return components.slice(start, end)
@@ -81,10 +81,16 @@ export function matchesHiddenNot(component: SelectorComponent | undefined): bool
     return false
   }
   const [nestedSelector] = selectors
+  if (!nestedSelector) {
+    return false
+  }
   if (nestedSelector.length !== 1) {
     return false
   }
   const [node] = nestedSelector
+  if (!node) {
+    return false
+  }
   return (
     (node.type === 'attribute' && node.name === 'hidden')
     || (node.type === 'type' && node.name === 'template')

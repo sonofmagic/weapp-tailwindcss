@@ -38,14 +38,14 @@ function pickEnvBasedir(): EnvBasedirResult | undefined {
 }
 
 function pickPackageEnvBasedir(): string | undefined {
-  const packageJsonPath = process.env.npm_package_json
+  const packageJsonPath = process.env['npm_package_json']
   if (packageJsonPath) {
     const packageDir = path.dirname(packageJsonPath)
     if (packageDir && path.isAbsolute(packageDir)) {
       return packageDir
     }
   }
-  const localPrefix = process.env.npm_config_local_prefix
+  const localPrefix = process.env['npm_config_local_prefix']
   if (localPrefix && path.isAbsolute(localPrefix)) {
     return localPrefix
   }
@@ -61,7 +61,7 @@ function detectCallerBasedir(): string | undefined {
   if (!stack) {
     return undefined
   }
-  if (process.env.WEAPP_TW_DEBUG_STACK === '1') {
+  if (process.env['WEAPP_TW_DEBUG_STACK'] === '1') {
     logger.debug('caller stack: %s', stack)
   }
   const lines = stack.split('\n')
@@ -80,7 +80,7 @@ function detectCallerBasedir(): string | undefined {
         continue
       }
     }
-    const [candidate] = filePath.split(':')
+    const [candidate = ''] = filePath.split(':')
     const resolvedPath = path.isAbsolute(filePath) ? filePath : candidate
     if (!path.isAbsolute(resolvedPath)) {
       continue
@@ -111,7 +111,7 @@ export function resolveTailwindcssBasedir(basedir?: string, fallback?: string) {
   const resolveRelative = (value: string) => path.isAbsolute(value)
     ? path.normalize(value)
     : path.normalize(path.resolve(anchor, value))
-  if (process.env.WEAPP_TW_DEBUG_STACK === '1') {
+  if (process.env['WEAPP_TW_DEBUG_STACK'] === '1') {
     logger.debug('resolveTailwindcssBasedir anchor %O', {
       basedir,
       envBasedir,
@@ -120,7 +120,7 @@ export function resolveTailwindcssBasedir(basedir?: string, fallback?: string) {
       packageEnvBasedir,
       fallback,
       callerBasedir,
-      npm_package_json: process.env.npm_package_json,
+      npm_package_json: process.env['npm_package_json'],
       cwd,
       anchor,
     })
@@ -150,18 +150,18 @@ export function resolveTailwindcssBasedir(basedir?: string, fallback?: string) {
     }
   }
 
-  const packageName = process.env.PNPM_PACKAGE_NAME
+  const packageName = process.env['PNPM_PACKAGE_NAME']
   if (packageName) {
     try {
       const anchorRequire = createRequire(path.join(anchor, '__resolve_tailwindcss_basedir__.cjs'))
       const packageJsonPath = anchorRequire.resolve(`${packageName}/package.json`)
-      if (process.env.WEAPP_TW_DEBUG_STACK === '1') {
+      if (process.env['WEAPP_TW_DEBUG_STACK'] === '1') {
         logger.debug('package basedir resolved from PNPM_PACKAGE_NAME: %s', packageJsonPath)
       }
       return path.normalize(path.dirname(packageJsonPath))
     }
     catch {
-      if (process.env.WEAPP_TW_DEBUG_STACK === '1') {
+      if (process.env['WEAPP_TW_DEBUG_STACK'] === '1') {
         logger.debug('failed to resolve package json for %s', packageName)
       }
       // 忽略解析失败，继续走兜底逻辑

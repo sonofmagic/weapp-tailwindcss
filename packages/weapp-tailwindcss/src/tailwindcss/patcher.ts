@@ -6,6 +6,7 @@ import { logger } from '@weapp-tailwindcss/logger'
 import { defuOverrideArray } from '@weapp-tailwindcss/shared'
 import { TailwindcssPatcher } from 'tailwindcss-patch'
 import { findNearestPackageRoot } from '@/context/workspace'
+import { omitUndefined } from '@/utils/object'
 import {
   normalizeExtendLengthUnits,
   normalizeTailwindcssPatcherOptions,
@@ -113,12 +114,12 @@ export function createTailwindcssPatcher(options?: CreateTailwindcssPatcherOptio
 
   const baseTailwindOptions = defuOverrideArray<TailwindUserOptions, Partial<TailwindUserOptions>[]>(
     (tailwindcss ?? {}) as TailwindUserOptions,
-    {
+    omitUndefined({
       cwd: normalizedBasedir,
       resolve: {
         paths: resolvePaths,
       },
-    },
+    }) as Partial<TailwindUserOptions>,
   )
 
   if (!baseTailwindOptions.packageName) {
@@ -138,15 +139,15 @@ export function createTailwindcssPatcher(options?: CreateTailwindcssPatcherOptio
     }
   }
 
-  const baseOptions: TailwindCssPatchOptions = {
+  const baseOptions: TailwindCssPatchOptions = omitUndefined({
     projectRoot: normalizedBasedir,
     cache,
     tailwindcss: baseTailwindOptions,
-    apply: {
+    apply: omitUndefined({
       exposeContext: true,
       extendLengthUnits,
-    } satisfies TailwindApplyOptions,
-  }
+    }) satisfies TailwindApplyOptions,
+  }) as TailwindCssPatchOptions
 
   const mergedOptions = defuOverrideArray<TailwindCssPatchOptions, TailwindCssPatchOptions[]>(
     (normalizedUserOptions ?? {}) as TailwindCssPatchOptions,

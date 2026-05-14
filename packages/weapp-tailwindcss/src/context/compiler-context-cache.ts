@@ -49,7 +49,7 @@ function withCircularGuard<T extends object>(
 function encodeTaggedValue(type: string, value?: NormalizedOptionsValue): Record<string, NormalizedOptionsValue> {
   const record: Record<string, NormalizedOptionsValue> = { __type: type }
   if (value !== undefined) {
-    record.value = value
+    record['value'] = value
   }
   return record
 }
@@ -64,10 +64,10 @@ function shouldProbeCallerLocation(opts?: UserDefinedOptions) {
   }
 
   return !(
-    process.env.WEAPP_TAILWINDCSS_BASEDIR
-    || process.env.WEAPP_TAILWINDCSS_BASE_DIR
-    || process.env.TAILWINDCSS_BASEDIR
-    || process.env.TAILWINDCSS_BASE_DIR
+    process.env['WEAPP_TAILWINDCSS_BASEDIR']
+    || process.env['WEAPP_TAILWINDCSS_BASE_DIR']
+    || process.env['TAILWINDCSS_BASEDIR']
+    || process.env['TAILWINDCSS_BASE_DIR']
   )
 }
 
@@ -120,19 +120,19 @@ function getRuntimeCacheScope(opts?: UserDefinedOptions) {
   const runtimeScope = {
     caller: undefined as string | undefined,
     cwd: process.cwd(),
-    init_cwd: process.env.INIT_CWD,
-    npm_config_local_prefix: process.env.npm_config_local_prefix,
-    npm_package_json: process.env.npm_package_json,
-    pnpm_package_name: process.env.PNPM_PACKAGE_NAME,
-    pwd: process.env.PWD,
-    tailwindcss_base_dir: process.env.TAILWINDCSS_BASE_DIR,
-    tailwindcss_basedir: process.env.TAILWINDCSS_BASEDIR,
-    uni_app_input_dir: process.env.UNI_APP_INPUT_DIR,
-    uni_cli_root: process.env.UNI_CLI_ROOT,
-    uni_input_dir: process.env.UNI_INPUT_DIR,
-    uni_input_root: process.env.UNI_INPUT_ROOT,
-    weapp_tailwindcss_base_dir: process.env.WEAPP_TAILWINDCSS_BASE_DIR,
-    weapp_tailwindcss_basedir: process.env.WEAPP_TAILWINDCSS_BASEDIR,
+    init_cwd: process.env['INIT_CWD'],
+    npm_config_local_prefix: process.env['npm_config_local_prefix'],
+    npm_package_json: process.env['npm_package_json'],
+    pnpm_package_name: process.env['PNPM_PACKAGE_NAME'],
+    pwd: process.env['PWD'],
+    tailwindcss_base_dir: process.env['TAILWINDCSS_BASE_DIR'],
+    tailwindcss_basedir: process.env['TAILWINDCSS_BASEDIR'],
+    uni_app_input_dir: process.env['UNI_APP_INPUT_DIR'],
+    uni_cli_root: process.env['UNI_CLI_ROOT'],
+    uni_input_dir: process.env['UNI_INPUT_DIR'],
+    uni_input_root: process.env['UNI_INPUT_ROOT'],
+    weapp_tailwindcss_base_dir: process.env['WEAPP_TAILWINDCSS_BASE_DIR'],
+    weapp_tailwindcss_basedir: process.env['WEAPP_TAILWINDCSS_BASEDIR'],
   }
   if (shouldProbeCallerLocation(opts)) {
     runtimeScope.caller = detectCallerLocation()

@@ -124,8 +124,9 @@ function collectClassSet(plugin: TailwindcssPlugin) {
 function collectDependencyMessages(result: postcss.Result) {
   const dependencies = new Set<string>()
   for (const message of result.messages) {
-    if (message.type === 'dependency' && typeof message.file === 'string') {
-      dependencies.add(message.file)
+    const file = message['file']
+    if (message.type === 'dependency' && typeof file === 'string') {
+      dependencies.add(file)
     }
   }
   return dependencies
@@ -136,7 +137,7 @@ function createRuntimeReadyPromise(source: TailwindV3ResolvedSource) {
     basedir: source.cwd,
     supportCustomLengthUnitsPatch: true,
     tailwindcss: {
-      config: source.config,
+      ...(source.config === undefined ? {} : { config: source.config }),
       cwd: source.cwd,
       packageName: source.packageName,
       postcssPlugin: source.postcssPlugin,

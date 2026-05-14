@@ -5,7 +5,7 @@ export type TailwindV3GenerateTarget = 'weapp' | 'web' | 'tailwind'
 
 export interface TailwindV3CandidateSource {
   content: string
-  extension?: string
+  extension?: string | undefined
 }
 
 export interface TailwindV3SourcePattern {
@@ -15,13 +15,13 @@ export interface TailwindV3SourcePattern {
 }
 
 export interface TailwindV3SourceOptions {
-  projectRoot?: string
-  cwd?: string
-  base?: string
-  css?: string
-  config?: string
-  packageName?: string
-  postcssPlugin?: string
+  projectRoot?: string | undefined
+  cwd?: string | undefined
+  base?: string | undefined
+  css?: string | undefined
+  config?: string | undefined
+  packageName?: string | undefined
+  postcssPlugin?: string | undefined
 }
 
 export interface TailwindV3ResolvedSource {
@@ -30,18 +30,18 @@ export interface TailwindV3ResolvedSource {
   cwd: string
   base: string
   css: string
-  config?: string
-  configObject?: Config
+  config?: string | undefined
+  configObject?: Config | undefined
   dependencies: string[]
   packageName: string
   postcssPlugin: string
 }
 
 export interface TailwindV3GenerateOptions {
-  candidates?: Iterable<string>
-  sources?: TailwindV3CandidateSource[]
-  target?: TailwindV3GenerateTarget
-  styleOptions?: Partial<IStyleHandlerOptions>
+  candidates?: Iterable<string> | undefined
+  sources?: TailwindV3CandidateSource[] | undefined
+  target?: TailwindV3GenerateTarget | undefined
+  styleOptions?: Partial<IStyleHandlerOptions> | undefined
 }
 
 export interface TailwindV3GenerateResult {

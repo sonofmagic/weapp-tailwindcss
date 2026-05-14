@@ -149,10 +149,13 @@ export async function collectPostcssLocalSources(
     ...await expandTailwindSourceEntries(sourceEntries),
     ...configContentFiles.files,
   ])]
-  const sources: TailwindV4CandidateSource[] = await Promise.all(files.map(async file => ({
-    content: await readFile(file, 'utf8'),
-    extension: getSourceExtension(file),
-  })))
+  const sources: TailwindV4CandidateSource[] = await Promise.all(files.map(async (file) => {
+    const extension = getSourceExtension(file)
+    return {
+      content: await readFile(file, 'utf8'),
+      ...(extension === undefined ? {} : { extension }),
+    }
+  }))
 
   return {
     files: [

@@ -5,9 +5,9 @@ const tailwindcssImportRE = /^tailwindcss(?:\/.*)?$/
 const tailwindcssCssImportStatementRE = /(@import\s+(?:url\(\s*)?)(["'])(tailwindcss(?:\/[^"']*)?\$?)(\2\s*\)?)/gi
 
 export interface ResolveTailwindcssImportOptions {
-  join?: (base: string, subpath: string) => string
-  appType?: AppType
-  rootImport?: string
+  join?: ((base: string, subpath: string) => string) | undefined
+  appType?: AppType | undefined
+  rootImport?: string | undefined
 }
 
 function normalizeTailwindcssSpecifier(specifier: string) {

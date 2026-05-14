@@ -26,6 +26,24 @@ export type {
 export type { CssPreflightOptions, IStyleHandlerOptions, ItemOrItemArray }
 export type { AppType, IArbitraryValues, ICustomAttributes, ICustomAttributesEntities } from './shared'
 
+export type RequiredDefined<T> = {
+  [K in keyof T]-?: Exclude<T[K], undefined>
+}
+
+type InternalUserDefinedOptionsBase = RequiredDefined<
+  Omit<
+    UserDefinedOptions,
+    | 'supportCustomLengthUnitsPatch'
+    | 'customReplaceDictionary'
+    | 'cache'
+    | 'twPatcher'
+    | 'refreshTailwindcssPatcher'
+    | 'templateHandler'
+    | 'styleHandler'
+    | 'jsHandler'
+  >
+>
+
 export interface LinkedJsModuleResult {
   code: string
 }
@@ -42,22 +60,22 @@ export interface JsHandlerResult {
 
 export interface TailwindcssPatcherLike {
   packageInfo: TailwindcssPatcher['packageInfo']
-  majorVersion?: TailwindcssPatcher['majorVersion']
-  patch?: TailwindcssPatcher['patch']
+  majorVersion?: TailwindcssPatcher['majorVersion'] | undefined
+  patch?: TailwindcssPatcher['patch'] | undefined
   getClassSet: AsyncableMethod<TailwindcssPatcher['getClassSet']>
-  getClassSetSync?: TailwindcssPatcher['getClassSetSync']
+  getClassSetSync?: TailwindcssPatcher['getClassSetSync'] | undefined
   extract: TailwindcssPatcher['extract']
-  collectContentTokens?: TailwindcssPatcher['collectContentTokens']
-  options?: TailwindcssPatcher['options']
+  collectContentTokens?: TailwindcssPatcher['collectContentTokens'] | undefined
+  options?: TailwindcssPatcher['options'] | undefined
 }
 
 export interface RefreshTailwindcssPatcherOptions {
-  clearCache?: boolean
+  clearCache?: boolean | undefined
 }
 
 export interface IJsHandlerOptions {
-  escapeMap?: Record<string, string>
-  classNameSet?: Set<string>
+  escapeMap?: Record<string, string> | undefined
+  classNameSet?: Set<string> | undefined
   /**
    * 控制在 classNameSet 异常时的任意值兜底策略。
    *
@@ -65,36 +83,36 @@ export interface IJsHandlerOptions {
    * - `true`：在 class 语义上下文中允许任意值兜底。
    * - `'auto'`：仅在 TailwindCSS v4 且 classNameSet 为空时启用。
    */
-  jsArbitraryValueFallback?: boolean | 'auto'
+  jsArbitraryValueFallback?: boolean | 'auto' | undefined
   /**
    * 当前 TailwindCSS 主版本号，用于自动兜底判定。
    */
-  tailwindcssMajorVersion?: number
-  arbitraryValues?: IArbitraryValues
-  jsPreserveClass?: (keyword: string) => boolean | undefined
-  needEscaped?: boolean
-  generateMap?: boolean
-  alwaysEscape?: boolean
-  unescapeUnicode?: boolean
-  babelParserOptions?: ParserOptions
-  ignoreTaggedTemplateExpressionIdentifiers?: (string | RegExp)[]
-  ignoreCallExpressionIdentifiers?: (string | RegExp)[]
-  uniAppX?: boolean
-  moduleSpecifierReplacements?: Record<string, string>
+  tailwindcssMajorVersion?: number | undefined
+  arbitraryValues?: IArbitraryValues | undefined
+  jsPreserveClass?: ((keyword: string) => boolean | undefined) | undefined
+  needEscaped?: boolean | undefined
+  generateMap?: boolean | undefined
+  alwaysEscape?: boolean | undefined
+  unescapeUnicode?: boolean | undefined
+  babelParserOptions?: ParserOptions | undefined
+  ignoreTaggedTemplateExpressionIdentifiers?: (string | RegExp)[] | undefined
+  ignoreCallExpressionIdentifiers?: (string | RegExp)[] | undefined
+  uniAppX?: boolean | undefined
+  moduleSpecifierReplacements?: Record<string, string> | undefined
   /**
    * 为 `true` 时将输入视作独立表达式，而非完整的程序。
    * 适用于 `:class="{ 'foo bar': cond }"` 等模板绑定场景。
    */
-  wrapExpression?: boolean
+  wrapExpression?: boolean | undefined
   /**
    * 当前正在转换的模块绝对路径。
    * 启用跨文件分析时必须提供。
    */
-  filename?: string
+  filename?: string | undefined
   /**
    * 配置跨文件模块图分析行为。
    */
-  moduleGraph?: JsModuleGraphOptions
+  moduleGraph?: JsModuleGraphOptions | undefined
 }
 
 export interface JsHandler {
@@ -106,36 +124,34 @@ export interface JsHandler {
 }
 
 export interface ICommonReplaceOptions {
-  keepEOL?: boolean
-  escapeMap?: Record<string, string>
+  keepEOL?: boolean | undefined
+  escapeMap?: Record<string, string> | undefined
 }
 
 export interface ITemplateHandlerOptions extends ICommonReplaceOptions {
-  customAttributesEntities?: ICustomAttributesEntities
-  escapeMap?: Record<string, string>
-  inlineWxs?: boolean
-  jsHandler?: JsHandler
-  runtimeSet?: Set<string>
-  disabledDefaultTemplateHandler?: boolean
-  quote?: string | null
+  customAttributesEntities?: ICustomAttributesEntities | undefined
+  escapeMap?: Record<string, string> | undefined
+  inlineWxs?: boolean | undefined
+  jsHandler?: JsHandler | undefined
+  runtimeSet?: Set<string> | undefined
+  disabledDefaultTemplateHandler?: boolean | undefined
+  quote?: string | null | undefined
   // 是否转译首字母，默认转译，传入 true 不转
-  ignoreHead?: boolean
-  wrapExpression?: boolean
+  ignoreHead?: boolean | undefined
+  wrapExpression?: boolean | undefined
 }
 
-export type InternalUserDefinedOptions = Required<
-  Omit<UserDefinedOptions, 'supportCustomLengthUnitsPatch' | 'customReplaceDictionary' | 'cache'> & {
-    supportCustomLengthUnitsPatch: ILengthUnitsPatchOptions | boolean
-    templateHandler: (rawSource: string, options?: ITemplateHandlerOptions) => Promise<string>
-    styleHandler: (rawSource: string, options?: IStyleHandlerOptions) => Promise<PostcssResult<Root | Document>>
-    jsHandler: JsHandler
-    escapeMap: Record<string, string>
-    customReplaceDictionary: Record<string, string>
-    cache: ICreateCacheReturnType
-    twPatcher: TailwindcssPatcherLike
-    refreshTailwindcssPatcher: (options?: RefreshTailwindcssPatcherOptions) => Promise<TailwindcssPatcherLike>
-  }
->
+export interface InternalUserDefinedOptions extends InternalUserDefinedOptionsBase {
+  supportCustomLengthUnitsPatch: ILengthUnitsPatchOptions | boolean
+  templateHandler: (rawSource: string, options?: ITemplateHandlerOptions) => Promise<string>
+  styleHandler: (rawSource: string, options?: IStyleHandlerOptions) => Promise<PostcssResult<Root | Document>>
+  jsHandler: JsHandler
+  escapeMap: Record<string, string>
+  customReplaceDictionary: Record<string, string>
+  cache: ICreateCacheReturnType
+  twPatcher: TailwindcssPatcherLike
+  refreshTailwindcssPatcher: (options?: RefreshTailwindcssPatcherOptions) => Promise<TailwindcssPatcherLike>
+}
 
 export type InternalPostcssOptions = Pick<
   UserDefinedOptions,
@@ -146,7 +162,7 @@ export interface IBaseWebpackPlugin {
   // 构造函数签名示例：new (options: UserDefinedOptions, appType: AppType): any
   // 或 constructor(options: UserDefinedOptions, appType: AppType): void
   options: InternalUserDefinedOptions
-  appType?: AppType
+  appType?: AppType | undefined
 
   apply: (compiler: any) => void
 }
@@ -165,9 +181,9 @@ export interface JsModuleGraphOptions {
   /**
    * 可选过滤器，用于跳过特定模块。
    */
-  filter?: (id: string, specifier: string, importer: string) => boolean
+  filter?: ((id: string, specifier: string, importer: string) => boolean) | undefined
   /**
    * 最大遍历深度，默认无限制（`Infinity`）。
    */
-  maxDepth?: number
+  maxDepth?: number | undefined
 }

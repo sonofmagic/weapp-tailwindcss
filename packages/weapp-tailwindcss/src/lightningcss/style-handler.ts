@@ -4,6 +4,7 @@ import type { SelectorTransformContext } from './style-handler/selector-transfor
 import { Buffer } from 'node:buffer'
 import { defuOverrideArray } from '@weapp-tailwindcss/shared'
 import { transform } from 'lightningcss'
+import { omitUndefined } from '@/utils/object'
 import { createRootSpecificityReplacer, prepareStyleOptions } from './style-handler/options'
 import { buildChildCombinatorReplacement, createVisitor } from './style-handler/selector-transform'
 
@@ -13,13 +14,13 @@ type CustomAtRules = Record<string, never>
 
 export interface LightningcssStyleHandlerResult {
   code: string
-  map?: string
+  map?: string | undefined
   warnings: Warning[]
 }
 
 export interface LightningcssTransformConfig {
-  filename?: string
-  transformOptions?: Omit<TransformOptions<CustomAtRules>, 'filename' | 'code' | 'visitor'>
+  filename?: string | undefined
+  transformOptions?: Omit<TransformOptions<CustomAtRules>, 'filename' | 'code' | 'visitor'> | undefined
 }
 
 interface LightningcssStyleHandler {
@@ -28,22 +29,22 @@ interface LightningcssStyleHandler {
 
 interface PreparedLightningcssRuntime {
   options: IStyleHandlerOptions
-  replaceSpecificity?: (code: string) => string
+  replaceSpecificity?: ((code: string) => string) | undefined
   visitor: TransformOptions<CustomAtRules>['visitor']
 }
 
 function createPreparedRuntime(options?: Partial<IStyleHandlerOptions>): PreparedLightningcssRuntime {
   const resolvedOptions = prepareStyleOptions(options)
-  const ctx: SelectorTransformContext = {
+  const ctx = omitUndefined({
     options: resolvedOptions,
     childCombinatorReplacement: buildChildCombinatorReplacement(resolvedOptions),
-  }
+  }) as SelectorTransformContext
 
-  return {
+  return omitUndefined({
     options: resolvedOptions,
     replaceSpecificity: createRootSpecificityReplacer(resolvedOptions),
     visitor: createVisitor(ctx),
-  }
+  }) as PreparedLightningcssRuntime
 }
 
 export function createLightningcssStyleHandler(
@@ -63,21 +64,21 @@ export function createLightningcssStyleHandler(
             baseRuntime.options,
           ),
         )
-    const lightningResult = transform({
+    const lightningResult = transform(omitUndefined({
       filename: filename ?? defaultLightningFilename,
       code: Buffer.from(rawSource),
       visitor: runtime.visitor,
       minify: false,
       ...transformOverrides,
-    })
+    }) as TransformOptions<CustomAtRules>)
 
     const decodedCode = textDecoder.decode(lightningResult.code)
     const code = runtime.replaceSpecificity ? runtime.replaceSpecificity(decodedCode) : decodedCode
 
-    return {
+    return omitUndefined({
       code,
       map: lightningResult.map ? textDecoder.decode(lightningResult.map) : undefined,
       warnings: lightningResult.warnings,
-    }
+    }) as LightningcssStyleHandlerResult
   }
 }

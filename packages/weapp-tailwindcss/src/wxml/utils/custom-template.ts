@@ -103,10 +103,12 @@ export async function customTemplateHandler(rawSource: string, options: Required
   )
   parser.write(rawSource)
   parser.end()
-  for (const { data, endIndex, startIndex } of wxsArray ?? []) {
-    const { code } = await jsHandler(data, runtimeSet)
-    if (code !== data) {
-      getMagicString().update(startIndex, endIndex, code)
+  if (jsHandler) {
+    for (const { data, endIndex, startIndex } of wxsArray ?? []) {
+      const { code } = await jsHandler(data, runtimeSet)
+      if (code !== data) {
+        getMagicString().update(startIndex, endIndex, code)
+      }
     }
   }
 

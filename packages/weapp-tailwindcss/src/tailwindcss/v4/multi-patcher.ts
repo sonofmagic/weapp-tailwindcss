@@ -1,9 +1,14 @@
 import type { TailwindcssPatcherLike } from '@/types'
 import { runtimeSignaturePatchersSymbol } from '@/tailwindcss/runtime/cache'
+import { omitUndefined } from '@/utils/object'
 
 export function createMultiTailwindcssPatcher(patchers: TailwindcssPatcherLike[]): TailwindcssPatcherLike {
   if (patchers.length <= 1) {
-    return patchers[0]
+    const [patcher] = patchers
+    if (!patcher) {
+      throw new Error('createMultiTailwindcssPatcher requires at least one patcher.')
+    }
+    return patcher
   }
 
   const first = patchers[0]!
@@ -50,11 +55,11 @@ export function createMultiTailwindcssPatcher(patchers: TailwindcssPatcherLike[]
           }
         }
       }
-      return {
+      return omitUndefined({
         classList: aggregatedList,
         classSet: aggregatedSet,
         filename,
-      }
+      }) as Awaited<ReturnType<TailwindcssPatcherLike['extract']>>
     },
   }
 

@@ -14,7 +14,7 @@ export function parseVueRequest(id: string): {
   filename: string
   query: VueQuery
 } {
-  const [filename, rawQuery] = id.split(`?`, 2)
+  const [filename = id, rawQuery] = id.split(`?`, 2)
   const searchParams = new URLSearchParams(rawQuery)
   const query = Object.fromEntries(searchParams) as VueQuery & Record<string, string>
   if (query.vue != null) {

@@ -33,7 +33,7 @@ function matchesPluginCwd(cwd: string) {
 }
 
 export function isRunningInHBuilderX(options: HBuilderXRuntimeHints = {}) {
-  const nodePath = 'nodePath' in options ? options.nodePath : process.env.NODE_PATH
+  const nodePath = 'nodePath' in options ? options.nodePath : process.env['NODE_PATH']
   const nodePathMissing = nodePath == null || nodePath.trim().length === 0
   if (!nodePathMissing) {
     return false

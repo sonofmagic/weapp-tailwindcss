@@ -55,7 +55,9 @@ export function analyzeSource(
     : EMPTY_IGNORED_PATHS
   const walker = needScope
     ? new NodePathWalker({
-        ignoreCallExpressionIdentifiers: options.ignoreCallExpressionIdentifiers,
+        ...(options.ignoreCallExpressionIdentifiers === undefined
+          ? {}
+          : { ignoreCallExpressionIdentifiers: options.ignoreCallExpressionIdentifiers }),
         callback(path) {
           ignoredPaths.add(path)
         },
@@ -72,7 +74,9 @@ export function analyzeSource(
     if (!taggedTemplateIgnore) {
       taggedTemplateIgnore = createTaggedTemplateIgnore({
         matcher: getIgnoredTaggedTemplateMatcher(options),
-        names: options.ignoreTaggedTemplateExpressionIdentifiers,
+        ...(options.ignoreTaggedTemplateExpressionIdentifiers === undefined
+          ? {}
+          : { names: options.ignoreTaggedTemplateExpressionIdentifiers }),
       })
     }
     return taggedTemplateIgnore

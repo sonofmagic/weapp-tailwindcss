@@ -16,6 +16,7 @@ import { parseVueRequest } from '@/bundlers/vite/query'
 import { cleanUrl, formatPostcssSourceMap, isCSSRequest } from '@/bundlers/vite/utils'
 import { logger } from '@/logger'
 import { resolveUniUtsPlatform } from '@/utils'
+import { omitUndefined } from '@/utils/object'
 import { isUniAppXEnabled, resolveUniAppXOptions } from './options'
 import { resolveUniAppXStyleIsolationEnabled } from './style-isolation'
 import { transformUVue } from './transform'
@@ -51,7 +52,8 @@ function isPreprocessorRequest(id: string, lang?: string): boolean {
     return true
   }
   const inlineLangMatch = id.match(INLINE_LANG_RE)
-  if (inlineLangMatch && preprocessorLangs.has(inlineLangMatch[1].toLowerCase())) {
+  const inlineLang = inlineLangMatch?.[1]
+  if (inlineLang && preprocessorLangs.has(inlineLang.toLowerCase())) {
     return true
   }
   return PREPROCESSOR_EXT_RE.test(id)
@@ -83,7 +85,7 @@ export function createUniAppXPlugins(options: CreateUniAppXPluginsOptions): Plug
   const isIosPlatform = providedIosPlatform ?? resolveUniUtsPlatform().isAppIos
   const cssHandlerOptionsCache = new Map<string, {
     isMainChunk: boolean
-    uniAppXCssTarget?: 'uvue'
+    uniAppXCssTarget?: 'uvue' | undefined
     uniAppXUnsupported: 'error' | 'warn' | 'silent'
     postcssOptions: {
       options: {
@@ -121,7 +123,7 @@ export function createUniAppXPlugins(options: CreateUniAppXPluginsOptions): Plug
       const cacheKey = `${mainCssChunkMatcher(id, appType) ? '1' : '0'}:${id}`
       let styleHandlerOptions = cssHandlerOptionsCache.get(cacheKey)
       if (!styleHandlerOptions) {
-        styleHandlerOptions = {
+        styleHandlerOptions = omitUndefined({
           isMainChunk: mainCssChunkMatcher(id, appType),
           uniAppXCssTarget: resolveUniAppXCssTarget(id),
           uniAppXUnsupported: resolvedUniAppXOptions.uvueUnsupported,
@@ -137,7 +139,7 @@ export function createUniAppXPlugins(options: CreateUniAppXPluginsOptions): Plug
               },
             },
           },
-        }
+        }) as NonNullable<typeof styleHandlerOptions>
         cssHandlerOptionsCache.set(cacheKey, styleHandlerOptions)
       }
       const postcssResult = await styleHandler(code, styleHandlerOptions)

@@ -17,7 +17,7 @@ export async function ensureDir(dir: string) {
 function handleCliError(error: unknown) {
   if (error instanceof Error) {
     logger.error(error.message)
-    if (error.stack && process.env.WEAPP_TW_DEBUG === '1') {
+    if (error.stack && process.env['WEAPP_TW_DEBUG'] === '1') {
       logger.error(error.stack)
     }
   }

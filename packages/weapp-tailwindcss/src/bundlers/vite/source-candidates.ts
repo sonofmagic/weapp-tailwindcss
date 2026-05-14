@@ -18,8 +18,8 @@ export interface SourceCandidateCollector {
 
 interface ScanSourceCandidateRootOptions {
   root: string
-  outDir?: string
-  entries?: TailwindSourceEntry[]
+  outDir?: string | undefined
+  entries?: TailwindSourceEntry[] | undefined
 }
 
 const CLEAN_URL_RE = /[?#].*$/

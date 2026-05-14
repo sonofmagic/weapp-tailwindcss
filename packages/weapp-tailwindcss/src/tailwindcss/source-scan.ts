@@ -121,6 +121,9 @@ function expandSequence(value: string) {
     return [value]
   }
   const [, start, end, stepValue] = match
+  if (start === undefined || end === undefined) {
+    return [value]
+  }
   let step = stepValue ? Number.parseInt(stepValue, 10) : undefined
   const startNumber = Number.parseInt(start, 10)
   const endNumber = Number.parseInt(end, 10)
@@ -200,9 +203,13 @@ function parseSourceInlineParam(params: string) {
   if (!match) {
     return undefined
   }
+  const source = match[2]
+  if (source === undefined) {
+    return undefined
+  }
   return {
     negated,
-    source: match[2],
+    source,
   }
 }
 
@@ -363,10 +370,11 @@ export async function expandTailwindSourceEntries(
     if (!patterns.some(pattern => !pattern.startsWith('!'))) {
       return
     }
+    const ignore = options.ignore
     const matched = await fg(patterns, {
       absolute: true,
       cwd: base,
-      ignore: options.ignore,
+      ...(ignore === undefined ? {} : { ignore }),
       onlyFiles: true,
       unique: true,
     })

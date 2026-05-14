@@ -12,11 +12,11 @@ import { hasLoaderEntry, isCssLikeModuleResource } from './shared'
 interface SetupWebpackV5LoadersOptions {
   compiler: Compiler
   options: InternalUserDefinedOptions
-  appType?: AppType
+  appType?: AppType | undefined
   weappTailwindcssPackageDir: string
   shouldRewriteCssImports: boolean
-  runtimeLoaderPath?: string
-  registerAutoCssSource?: (source: TailwindV4CssSource) => Promise<void> | void
+  runtimeLoaderPath?: string | undefined
+  registerAutoCssSource?: ((source: TailwindV4CssSource) => Promise<void> | void) | undefined
   getClassSetInLoader: () => Promise<void>
   getRuntimeWatchDependencies: () => {
     files: ReadonlySet<string>
@@ -56,8 +56,8 @@ export function setupWebpackV5Loaders(options: SetupWebpackV5LoadersOptions) {
   const runtimeLoaderRewriteOptions = shouldRewriteCssImports
     ? {
         pkgDir: weappTailwindcssPackageDir,
-        appType,
-        registerCssSource: registerAutoCssSource,
+        ...(appType === undefined ? {} : { appType }),
+        ...(registerAutoCssSource === undefined ? {} : { registerCssSource: registerAutoCssSource }),
       }
     : undefined
   const classSetLoaderOptions = {
@@ -83,7 +83,7 @@ export function setupWebpackV5Loaders(options: SetupWebpackV5LoadersOptions) {
     type: null,
   })
   const createCssImportRewriteLoaderEntry = () => {
-    if (!runtimeCssImportRewriteLoader) {
+    if (!runtimeCssImportRewriteLoader || !cssImportRewriteLoaderOptions) {
       return null
     }
     return {
@@ -107,13 +107,13 @@ export function setupWebpackV5Loaders(options: SetupWebpackV5LoadersOptions) {
       let rewriteAnchorIdx = findRewriteAnchor(loaderEntries)
       const classSetAnchorIdx = findClassSetAnchor(loaderEntries)
       const isCssModule = isCssLikeModuleResource(module.resource, compilerOptions.cssMatcher, appType)
-      if (process.env.WEAPP_TW_LOADER_DEBUG && isCssModule) {
+      if (process.env['WEAPP_TW_LOADER_DEBUG'] && isCssModule) {
         debug('loader hook css module: %s loaders=%o anchors=%o', module.resource, loaderEntries.map((x: any) => x.loader), { rewriteAnchorIdx, classSetAnchorIdx })
       }
-      if (process.env.WEAPP_TW_LOADER_DEBUG && typeof module.resource === 'string' && module.resource.includes('app.css')) {
+      if (process.env['WEAPP_TW_LOADER_DEBUG'] && typeof module.resource === 'string' && module.resource.includes('app.css')) {
         debug('app.css module loaders=%o anchors=%o', loaderEntries.map((x: any) => x.loader), { rewriteAnchorIdx, classSetAnchorIdx })
       }
-      else if (process.env.WEAPP_TW_LOADER_DEBUG && typeof module.resource === 'string' && module.resource.endsWith('.css')) {
+      else if (process.env['WEAPP_TW_LOADER_DEBUG'] && typeof module.resource === 'string' && module.resource.endsWith('.css')) {
         debug('css module seen: %s loaders=%o anchors=%o', module.resource, loaderEntries.map((x: any) => x.loader), { rewriteAnchorIdx, classSetAnchorIdx })
       }
       if (rewriteAnchorIdx === -1 && classSetAnchorIdx === -1 && !isCssModule) {

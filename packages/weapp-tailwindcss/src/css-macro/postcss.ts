@@ -14,7 +14,10 @@ const creator: PluginCreator<Options> = () => {
           if (atRule.name === 'media') {
             const values: string[] = []
             matchCustomPropertyFromValue(atRule.params, (arr) => {
-              values.push(arr[1])
+              const value = arr[1]
+              if (value) {
+                values.push(value)
+              }
             })
             if (values.length > 0) {
               const isNegative = atRule.params.includes('not')
