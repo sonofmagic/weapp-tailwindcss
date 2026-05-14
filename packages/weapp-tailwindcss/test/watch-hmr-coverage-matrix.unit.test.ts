@@ -58,8 +58,12 @@ function toSlashPath(filePath: string) {
   return filePath.replace(/\\/g, '/')
 }
 
+function toRepoPath(filePath: string) {
+  return toSlashPath(filePath).replace(/^[A-Z]:(?=\/)/i, '')
+}
+
 function expectDemoSourceFile(sourceFile: string, message: string) {
-  const normalizedSourceFile = toSlashPath(sourceFile)
+  const normalizedSourceFile = toRepoPath(sourceFile)
 
   expect(normalizedSourceFile, `${message} should edit demo source files`).toContain('/repo/demo/')
   expect(normalizedSourceFile, `${message} should not edit generated dist files`).not.toContain('/dist/')
@@ -180,8 +184,8 @@ describe('watch-hmr coverage matrix', () => {
     const watchCase = automatedWatchCases.find(item => item.project === 'demo/taro-webpack-vue3-tailwindcss-v4')
 
     expect(watchCase).toBeDefined()
-    expect(watchCase?.styleMutation?.sourceFile).toBe('/repo/demo/taro-webpack-vue3-tailwindcss-v4/src/pages/index/index.css')
-    expect(watchCase?.outputStyleCandidates).toContain('/repo/demo/taro-webpack-vue3-tailwindcss-v4/dist/app.wxss')
+    expect(toRepoPath(watchCase?.styleMutation?.sourceFile ?? '')).toBe('/repo/demo/taro-webpack-vue3-tailwindcss-v4/src/pages/index/index.css')
+    expect(watchCase?.outputStyleCandidates.map(toRepoPath)).toContain('/repo/demo/taro-webpack-vue3-tailwindcss-v4/dist/app.wxss')
   })
 
   it('keeps the automated watch matrix explicit', () => {
