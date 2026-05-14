@@ -286,6 +286,7 @@ jobs:
           E2E_WATCH_POLL_MS: ${{ matrix.watch_poll_ms }}
           E2E_WATCH_MAX_HOT_UPDATE_MS: ${{ matrix.watch_max_hot_update_ms || '30000' }}
           E2E_WATCH_COMMAND_TIMEOUT_MS: ${{ matrix.watch_command_timeout_ms }}
+          E2E_WATCH_MAX_ATTEMPTS: ${{ matrix.watch_max_attempts || '2' }}
           E2E_WATCH_ROUND_PROFILE: ${{ matrix.round_profile }}
           E2E_WATCH_SAVE_SNAPSHOTS: ${{ matrix.watch_save_snapshots }}
           NODE_OPTIONS: --max-old-space-size=6144

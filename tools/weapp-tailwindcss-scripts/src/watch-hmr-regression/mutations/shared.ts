@@ -231,6 +231,19 @@ export async function waitForOutputFilesUpdated(
   startedAt = Date.now(),
   acceptWhen?: () => Promise<boolean>,
 ) {
+  const acceptsSemanticOutput = async () => {
+    if (!acceptWhen) {
+      return false
+    }
+
+    try {
+      return await acceptWhen()
+    }
+    catch {
+      return false
+    }
+  }
+
   return waitFor(
     async () => {
       let exactFileUpdated = false
@@ -241,7 +254,10 @@ export async function waitForOutputFilesUpdated(
 
         const currentMtime = await getMtime(file)
         if (currentMtime === 0) {
-          return false
+          if (await acceptsSemanticOutput()) {
+            return true
+          }
+          continue
         }
 
         const baselineMtime = baselineMtimes.get(file) ?? 0
@@ -262,7 +278,7 @@ export async function waitForOutputFilesUpdated(
           return true
         }
       }
-      if (acceptWhen && await acceptWhen()) {
+      if (await acceptsSemanticOutput()) {
         return true
       }
       return false

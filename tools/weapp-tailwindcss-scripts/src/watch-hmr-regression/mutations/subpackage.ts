@@ -10,7 +10,7 @@ import { promises as fs } from 'node:fs'
 import process from 'node:process'
 import { writeFilePreserveEol } from '../text'
 import { runClassMutation } from './class'
-import { resolveOutputFiles, waitForOutputsReady } from './shared'
+import { waitForOutputsReady } from './shared'
 import { runStyleMutation } from './style'
 
 function createSubPackageWatchCase(watchCase: WatchCase, mutation: SubPackageMutationConfig): WatchCase {
@@ -74,14 +74,28 @@ export async function runSubPackageMutation(
   sourceOriginals.set(mutation.templateMutation.sourceFile, templateSourceOriginal)
 
   const styleSourceOriginal = sourceOriginals.get(mutation.styleMutation.sourceFile)
-    ?? await fs.readFile(mutation.styleMutation.sourceFile, 'utf8')
-  sourceOriginals.set(mutation.styleMutation.sourceFile, styleSourceOriginal)
+    ?? (
+      mutation.skipStyleMutation
+        ? undefined
+        : await fs.readFile(mutation.styleMutation.sourceFile, 'utf8')
+    )
+  if (!mutation.skipStyleMutation && styleSourceOriginal == null) {
+    throw new Error(`[${subWatchCase.label}] missing style mutation source original`)
+  }
+  if (styleSourceOriginal != null) {
+    sourceOriginals.set(mutation.styleMutation.sourceFile, styleSourceOriginal)
+  }
 
   const attachStartedAt = Date.now()
-  await Promise.all([
+  const attachWrites = [
     writeFilePreserveEol(mutation.templateMutation.sourceFile, templateSourceOriginal, templateSourceOriginal),
-    writeFilePreserveEol(mutation.styleMutation.sourceFile, styleSourceOriginal, styleSourceOriginal),
-  ])
+  ]
+  if (!mutation.skipStyleMutation && styleSourceOriginal != null) {
+    attachWrites.push(
+      writeFilePreserveEol(mutation.styleMutation.sourceFile, styleSourceOriginal, styleSourceOriginal),
+    )
+  }
+  await Promise.all(attachWrites)
 
   await waitForOutputsReady(watchCase, options, session, attachStartedAt, {
     wxml: mutation.outputWxml,
@@ -89,16 +103,10 @@ export async function runSubPackageMutation(
     label: subWatchCase.label,
   })
 
-  const globalStyleOutputs = await resolveOutputFiles(
-    subWatchCase,
-    [...new Set([
-      ...mutation.outputStyleCandidates,
-      ...mutation.globalStyleCandidates,
-    ])],
-    `${mutation.root} global style`,
-    options,
-    session,
-  )
+  const globalStyleOutputs = [...new Set([
+    ...mutation.outputStyleCandidates,
+    ...mutation.globalStyleCandidates,
+  ])]
 
   const template = await runClassMutation(
     subWatchCase,
@@ -111,20 +119,22 @@ export async function runSubPackageMutation(
   )
   assertSubPackageTemplateMetric(watchCase, mutation, template)
 
-  const style = await runStyleMutation(
-    subWatchCase,
-    options,
-    session,
-    mutation.styleMutation,
-    styleSourceOriginal,
-    [...new Set([
-      ...mutation.outputStyleCandidates,
-      ...mutation.globalStyleCandidates,
-    ])],
-  )
+  const style = mutation.skipStyleMutation
+    ? undefined
+    : await runStyleMutation(
+        subWatchCase,
+        options,
+        session,
+        mutation.styleMutation,
+        styleSourceOriginal!,
+        [...new Set([
+          ...mutation.outputStyleCandidates,
+          ...mutation.globalStyleCandidates,
+        ])],
+      )
 
   process.stdout.write(
-    `[watch-hmr] ${subWatchCase.label} mutation=subpackage passed (template=${template.hotUpdateEffectiveMs}ms, style=${style.hotUpdateEffectiveMs}ms)\n`,
+    `[watch-hmr] ${subWatchCase.label} mutation=subpackage passed (template=${template.hotUpdateEffectiveMs}ms${style ? `, style=${style.hotUpdateEffectiveMs}ms` : ''})\n`,
   )
 
   return {

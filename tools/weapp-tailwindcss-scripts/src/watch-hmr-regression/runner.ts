@@ -11,7 +11,6 @@ import type {
 import { promises as fs } from 'node:fs'
 import process from 'node:process'
 import {
-  resolveOutputFiles,
   runClassMutation,
   runStyleMutation,
   runSubPackageMutation,
@@ -31,7 +30,7 @@ function resolveCaseSourceFiles(watchCase: WatchCase) {
     watchCase.skipStyleMutation ? undefined : watchCase.styleMutation.sourceFile,
     ...(watchCase.subPackageMutations ?? []).flatMap(mutation => [
       mutation.templateMutation.sourceFile,
-      mutation.styleMutation.sourceFile,
+      mutation.skipStyleMutation ? undefined : mutation.styleMutation.sourceFile,
     ]),
   ].filter((item): item is string => Boolean(item)))]
 }
@@ -73,13 +72,7 @@ export async function runCase(watchCase: WatchCase, options: CliOptions): Promis
       ...watchCase.globalStyleCandidates,
     ])]
 
-    const globalStyleOutputs = await resolveOutputFiles(
-      watchCase,
-      styleOutputCandidates,
-      'global style',
-      options,
-      session,
-    )
+    const globalStyleOutputs = styleOutputCandidates
 
     const templateSourceOriginal = sourceOriginals.get(watchCase.templateMutation.sourceFile)
     if (templateSourceOriginal == null) {

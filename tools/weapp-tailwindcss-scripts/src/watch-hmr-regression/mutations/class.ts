@@ -458,6 +458,23 @@ export async function runClassMutation(
             options,
             session,
             hotUpdateStartedAt,
+            async () => {
+              const outputs = await loadRoundOutputsSafe(watchCase, globalStyleOutputs)
+              assertRoundOutputs(
+                watchCase,
+                mutationKind,
+                sourcePath,
+                'add',
+                mutation,
+                verifyClassLiteralIn,
+                forbidBgHexTruncationIn,
+                minRequiredGlobalStyleEscapedClasses,
+                classTokens,
+                escapedClasses,
+                outputs,
+              )
+              return true
+            },
           )
         : await waitForOutputsUpdated(
             watchCase,
@@ -598,6 +615,23 @@ export async function runClassMutation(
               options,
               session,
               modifyStartedAt,
+              async () => {
+                const outputs = await loadRoundOutputsSafe(watchCase, globalStyleOutputs)
+                assertRoundOutputs(
+                  watchCase,
+                  mutationKind,
+                  sourcePath,
+                  'modify',
+                  mutation,
+                  verifyClassLiteralIn,
+                  forbidBgHexTruncationIn,
+                  minRequiredGlobalStyleEscapedClasses,
+                  modifyClassTokens,
+                  modifyEscapedClasses,
+                  outputs,
+                )
+                return true
+              },
             )
           : await waitForOutputsUpdated(
               watchCase,
@@ -718,33 +752,20 @@ export async function runClassMutation(
       )
       await writeFilePreserveEol(sourcePath, sourceOriginal, sourceOriginal)
       rollbackOutputMs = isContentMutation
-        ? await waitFor(
+        ? await waitForOutputFilesUpdated(
+            watchCase,
+            mutationOutputFiles,
+            updatedOutputMtimes,
+            options,
+            session,
+            rollbackStartedAt,
             async () => {
-              let outputUpdated = false
-              for (const file of mutationOutputFiles) {
-                const baselineMtime = updatedOutputMtimes.get(file) ?? 0
-                const currentMtime = await getMtime(file)
-                if (currentMtime === 0) {
-                  return false
-                }
-                if (baselineMtime === 0 || currentMtime > baselineMtime) {
-                  outputUpdated = true
-                }
-              }
-              if (!outputUpdated) {
+              const outputs = await loadRoundOutputsSafe(watchCase, globalStyleOutputs)
+              if (!outputs.wxml || !outputs.js) {
                 return false
               }
-              const outputs = await loadRoundOutputsSafe(watchCase, globalStyleOutputs)
-              return Boolean(outputs.wxml && outputs.js)
-                && effectiveEscapedClasses.every(escaped => !outputs.js.includes(escaped))
+              return effectiveEscapedClasses.every(escaped => !outputs.js.includes(escaped))
             },
-            {
-              timeoutMs: options.timeoutMs,
-              pollMs: options.pollMs,
-              message: `[${watchCase.label}] output files were not updated after source change: ${mutationOutputFiles.map(formatPath).join(', ')}`,
-              onTick: session.ensureRunning,
-            },
-            rollbackStartedAt,
           )
         : await waitForOutputsUpdated(
             watchCase,

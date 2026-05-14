@@ -130,6 +130,7 @@ export interface SubPackageMutationConfig {
   minGlobalStyleEscapedClasses?: number
   templateMutation: ClassMutationConfig
   styleMutation: StyleMutationConfig
+  skipStyleMutation?: boolean
 }
 
 export interface WatchSession {
@@ -266,7 +267,7 @@ export interface SubPackageMutationMetrics {
   outputJs: string
   globalStyleOutputs: string[]
   template: ClassMutationMetrics
-  style: StyleMutationMetrics
+  style?: StyleMutationMetrics
 }
 
 export interface WatchSummary {

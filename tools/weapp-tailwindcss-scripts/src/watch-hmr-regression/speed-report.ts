@@ -190,6 +190,9 @@ export function collectSpeedSamplesFromReport(report: WatchReport, reportFile: s
         ['template', subPackage.template],
         ['style', subPackage.style],
       ] as const) {
+        if (!mutation) {
+          continue
+        }
         pushSpeedSample(samples, {
           caseName,
           project,
