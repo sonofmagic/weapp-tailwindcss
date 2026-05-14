@@ -20,7 +20,7 @@ const IDE_STYLE_HOT_UPDATE_EXEMPT_CASES = new Set([
   'mpx-tailwindcss-v4',
 ])
 
-const frameworkIdeWatchCaseNames: Record<string, WatchCase['name']> = {
+export const frameworkIdeWatchCaseNames: Record<string, WatchCase['name']> = {
   'gulp-tailwindcss-v3': 'gulp-tailwindcss-v3',
   'gulp-tailwindcss-v4': 'gulp-tailwindcss-v4',
   'mpx-tailwindcss-v3': 'mpx-tailwindcss-v3',

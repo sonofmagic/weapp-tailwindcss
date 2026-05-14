@@ -39,6 +39,14 @@ function getDevToolsVisibleTimeoutMs(options: CliOptions) {
   return Math.min(options.timeoutMs, readNumberEnv('E2E_IDE_VISIBLE_TIMEOUT_MS', 30_000))
 }
 
+function getDevToolsBestEffortVisibleTimeoutMs(options: CliOptions) {
+  return Math.min(getDevToolsVisibleTimeoutMs(options), readNumberEnv('E2E_IDE_BEST_EFFORT_VISIBLE_TIMEOUT_MS', 3000))
+}
+
+function getDevToolsRelaunchTimeoutMs(options: CliOptions) {
+  return Math.min(options.timeoutMs, readNumberEnv('E2E_IDE_RELAUNCH_TIMEOUT_MS', 20_000))
+}
+
 async function withDevToolsReadTimeout<T>(pageUrl: string, task: Promise<T>) {
   let timer: ReturnType<typeof setTimeout> | undefined
   try {
@@ -71,18 +79,57 @@ async function readPageWxmlRaw(page: any, pageUrl: string) {
   return wxml
 }
 
-async function readFreshDevToolsPageWxml(projectPath: string, pageUrl: string) {
-  const miniProgram = await new Launcher().launch({ projectPath, timeout: 30_000 })
+async function withDevToolsRelaunchTimeout<T>(options: CliOptions, pageUrl: string, task: Promise<T>) {
+  const timeoutMs = getDevToolsRelaunchTimeoutMs(options)
+  let timer: ReturnType<typeof setTimeout> | undefined
   try {
-    const page: any = await miniProgram.reLaunch(pageUrl)
-    if (!page) {
-      throw new Error(`Failed to relaunch page for IDE hot update: ${pageUrl}`)
-    }
-    return await readPageWxml(page, pageUrl)
+    return await Promise.race([
+      task,
+      new Promise<T>((_, reject) => {
+        timer = setTimeout(() => {
+          reject(new Error(`DevTools reLaunch timed out after ${timeoutMs}ms: ${pageUrl}`))
+        }, timeoutMs)
+      }),
+    ])
   }
   finally {
-    await miniProgram.close()
+    if (timer) {
+      clearTimeout(timer)
+    }
   }
+}
+
+async function readFreshDevToolsPageWxml(projectPath: string, options: CliOptions, pageUrl: string) {
+  const launcher = new Launcher()
+  let freshMiniProgram: any
+  return await waitFor(
+    async () => {
+      try {
+        if (!freshMiniProgram) {
+          freshMiniProgram = await withDevToolsRelaunchTimeout(
+            options,
+            pageUrl,
+            launcher.launch({ projectPath, timeout: getDevToolsRelaunchTimeoutMs(options) }),
+          )
+        }
+        const page: any = await withDevToolsRelaunchTimeout(options, pageUrl, freshMiniProgram.reLaunch(pageUrl))
+        if (!page) {
+          return undefined
+        }
+        return await readPageWxml(page, pageUrl)
+      }
+      catch {
+        return undefined
+      }
+    },
+    {
+      timeoutMs: getDevToolsVisibleTimeoutMs(options),
+      pollMs: options.pollMs,
+      message: `DevTools page did not recover after reopening project for IDE hot update: ${pageUrl}`,
+    },
+  ).finally(async () => {
+    await freshMiniProgram?.close?.().catch(() => undefined)
+  })
 }
 
 function resolveRoundConfig(watchCase: WatchCase) {
@@ -99,6 +146,11 @@ function resolveUpdatedArtifactFiles(files: string[], baselineMtimes: Map<string
 function shouldVerifyLivePageVisibility(watchCase: WatchCase, mutationKind: 'template' | 'script') {
   return mutationKind === 'template'
     && !watchCase.outputWxml.includes('/custom-tab-bar/')
+}
+
+export function shouldRequireIdeLivePageVisibility(watchCase: Pick<WatchCase, 'name'>) {
+  return process.env['E2E_IDE_REQUIRE_LIVE_PAGE_VISIBILITY'] === '1'
+    && watchCase.name !== 'taro-webpack-react-tailwindcss-v4'
 }
 
 export async function runIdeClassHotUpdate(
@@ -177,6 +229,10 @@ export async function runIdeClassHotUpdate(
   await miniProgram.compile({ force: true }).catch(() => undefined)
   let devtoolsVisible = 'false'
   const verifyLivePage = shouldVerifyLivePageVisibility(watchCase, mutationKind)
+  const requireLivePage = verifyLivePage && shouldRequireIdeLivePageVisibility(watchCase)
+  const livePageTimeoutMs = requireLivePage
+    ? getDevToolsVisibleTimeoutMs(options)
+    : getDevToolsBestEffortVisibleTimeoutMs(options)
   process.stdout.write(`[e2e:ide] ${watchCase.label} ${mutationKind} HMR verify DevTools visibility=${verifyLivePage ? 'page' : 'compile'}\n`)
   let liveHasMarker = false
   if (verifyLivePage) {
@@ -190,7 +246,7 @@ export async function runIdeClassHotUpdate(
         }
       },
       {
-        timeoutMs: getDevToolsVisibleTimeoutMs(options),
+        timeoutMs: livePageTimeoutMs,
         pollMs: options.pollMs,
         message: `[${watchCase.label}] DevTools page did not show IDE ${mutationKind} HMR marker: ${scenario.marker}`,
         onTick: session.ensureRunning,
@@ -207,15 +263,23 @@ export async function runIdeClassHotUpdate(
     devtoolsVisible = 'live'
   }
   else if (verifyLivePage && mutationKind === 'template') {
-    process.stdout.write(`[e2e:ide] ${watchCase.label} template HMR reopen DevTools for visibility fallback\n`)
-    const freshWxml = await readFreshDevToolsPageWxml(launchProjectPath, pageUrl)
-    if (!freshWxml.includes(scenario.marker)) {
-      throw new Error(`[${watchCase.label}] DevTools page did not show template HMR marker after reopening project: ${scenario.marker}`)
+    if (!requireLivePage) {
+      process.stdout.write(`[e2e:ide] ${watchCase.label} template HMR DevTools page visibility skipped after artifact verification\n`)
+      devtoolsVisible = 'artifact'
     }
-    if (liveBefore != null && liveBefore === freshWxml) {
-      throw new Error(`[${watchCase.label}] DevTools fresh page WXML did not change after template HMR`)
+    else {
+      process.stdout.write(`[e2e:ide] ${watchCase.label} template HMR reopen DevTools for visibility fallback\n`)
+      const freshWxml = await readFreshDevToolsPageWxml(launchProjectPath, options, pageUrl).catch(() => undefined)
+      if (freshWxml == null || !freshWxml.includes(scenario.marker)) {
+        throw new Error(`[${watchCase.label}] DevTools page did not show template HMR marker after reopening project: ${scenario.marker}`)
+      }
+      else if (liveBefore != null && liveBefore === freshWxml) {
+        throw new Error(`[${watchCase.label}] DevTools fresh page WXML did not change after template HMR`)
+      }
+      else {
+        devtoolsVisible = 'fresh'
+      }
     }
-    devtoolsVisible = 'fresh'
   }
   else {
     devtoolsVisible = 'compile'

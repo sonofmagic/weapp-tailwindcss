@@ -9,6 +9,7 @@ import { resolveFrameworkSupportPaths } from './frameworkSupportPaths'
 
 const caseName = process.argv[2]
 const timeoutMs = Number(process.env['E2E_IDE_PROBE_TIMEOUT_MS'] ?? process.env['E2E_AUTOMATOR_TIMEOUT_MS'] ?? 30_000)
+const relaunchTimeoutMs = Number(process.env['E2E_IDE_RELAUNCH_TIMEOUT_MS'] ?? timeoutMs)
 const closeTimeoutMs = Number(process.env['E2E_IDE_CLOSE_TIMEOUT_MS'] ?? 10_000)
 
 if (!caseName) {
@@ -87,15 +88,15 @@ async function ensureMiniProgramEntry() {
   return url
 }
 
-async function withStageTimeout<T>(stage: string, task: Promise<T>) {
+async function withStageTimeout<T>(stage: string, task: Promise<T>, stageTimeoutMs = timeoutMs) {
   let stageTimer: ReturnType<typeof setTimeout> | undefined
   try {
     return await Promise.race([
       task,
       new Promise<T>((_, reject) => {
         stageTimer = setTimeout(() => {
-          reject(new Error(`Framework IDE probe ${stage} timed out after ${timeoutMs}ms: ${caseName}`))
-        }, timeoutMs)
+          reject(new Error(`Framework IDE probe ${stage} timed out after ${stageTimeoutMs}ms: ${caseName}`))
+        }, stageTimeoutMs)
       }),
     ])
   }
@@ -137,7 +138,7 @@ async function main() {
   try {
     miniProgram = await withStageTimeout('launch', automator.launch({ projectPath: launchProjectPath, timeout: timeoutMs }))
 
-    const page: any = await withStageTimeout('reLaunch', miniProgram.reLaunch(pageUrl))
+    const page: any = await withStageTimeout('reLaunch', miniProgram.reLaunch(pageUrl), relaunchTimeoutMs)
     if (!page) {
       throw new Error(`Failed to relaunch page for ${caseName}`)
     }

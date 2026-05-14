@@ -136,6 +136,7 @@ export function buildDemoExtendedCases(baseCwd: string): WatchCase[] {
       sourceFile: path.resolve(baseCwd, 'demo/uni-app-vite-tailwindcss-v3/src/pages/index/index.vue'),
       verifyEscapedIn: ['wxml'],
       verifyClassLiteralIn: [],
+      roundConfigs: buildHexScriptRoundConfigs(),
       mutate(source, payload) {
         const snippet = `    <view class="${payload.classLiteral}">${payload.marker}-template</view>`
         return insertIntoVueTemplateRoot(source, snippet)
@@ -145,6 +146,7 @@ export function buildDemoExtendedCases(baseCwd: string): WatchCase[] {
       sourceFile: path.resolve(baseCwd, 'demo/uni-app-vite-tailwindcss-v3/src/pages/index/index.vue'),
       verifyEscapedIn: ['js'],
       verifyClassLiteralIn: ['js'],
+      roundConfigs: buildHexScriptRoundConfigs(),
       mutate(source, payload) {
         return mutateVueScriptSetupArrayByAnchor(
           source,
@@ -223,6 +225,7 @@ export function buildDemoExtendedCases(baseCwd: string): WatchCase[] {
       sourceFile: path.resolve(baseCwd, 'demo/uni-app-vite-tailwindcss-v4/src/pages/index/index.vue'),
       verifyEscapedIn: ['wxml'],
       verifyClassLiteralIn: [],
+      roundConfigs: buildHexScriptRoundConfigs(),
       mutate(source, payload) {
         const snippet = `    <view class="${payload.classLiteral}">${payload.marker}-template</view>`
         return insertIntoVueTemplateRoot(source, snippet)
@@ -296,6 +299,7 @@ export function buildDemoExtendedCases(baseCwd: string): WatchCase[] {
       sourceFile: path.resolve(baseCwd, 'demo/mpx-tailwindcss-v4/src/custom-tab-bar/index.mpx'),
       verifyEscapedIn: ['wxml'],
       verifyClassLiteralIn: [],
+      roundConfigs: buildHexScriptRoundConfigs(),
       mutate(source, payload) {
         const snippet = `  <view class="${payload.classLiteral}">${payload.marker}-template</view>`
         return insertBeforeClosingTag(source, '</template>', snippet)

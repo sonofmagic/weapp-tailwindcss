@@ -1,39 +1,26 @@
+import { existsSync, readFileSync } from 'node:fs'
+import { join } from 'node:path'
 import { describe, expect, it } from 'vitest'
+import { getFrameworkIdeCases, getFrameworkIdeExemptCases } from '../../../e2e/frameworkSupportMatrix'
+import { shouldRequireIdeLivePageVisibility } from '../../../e2e/frameworkIdeClassHotUpdate'
+import { frameworkIdeWatchCaseNames } from '../../../e2e/frameworkIdeHotUpdate'
 import { buildDemoBaseCases } from '../../../tools/weapp-tailwindcss-scripts/src/watch-hmr-regression/cases/demo/base'
 import { buildDemoExtendedCases } from '../../../tools/weapp-tailwindcss-scripts/src/watch-hmr-regression/cases/demo/extended'
 import { createStyleMutationPayload } from '../../../tools/weapp-tailwindcss-scripts/src/watch-hmr-regression/mutations/shared'
-
-const watchCoveredProjects = new Set([
-  ...buildDemoBaseCases('/repo').map(item => item.project),
-  ...buildDemoExtendedCases('/repo').map(item => item.project),
-])
+import {
+  STYLE_APPLY_UNSUPPORTED_CASES,
+  STYLE_FUNCTION_UNSUPPORTED_CASES,
+  STYLE_REFERENCE_REQUIRED_CASES,
+} from '../../../tools/weapp-tailwindcss-scripts/src/watch-hmr-regression/types'
 
 const automatedWatchCases = [
   ...buildDemoBaseCases('/repo'),
   ...buildDemoExtendedCases('/repo'),
 ]
 
-const styleApplyUnsupportedCases = new Set([
-  'mpx-tailwindcss-v4',
-  'uni-app-vite-tailwindcss-v4',
-  'taro-vite-react-tailwindcss-v4',
-  'taro-webpack-react-tailwindcss-v4',
-])
-
-const styleFunctionUnsupportedCases = new Set([
-  'mpx-tailwindcss-v4',
-  'taro-vite-react-tailwindcss-v4',
-  'taro-webpack-react-tailwindcss-v4',
-])
-
-const styleReferenceRequiredCases = new Set([
-  'gulp-tailwindcss-v4',
-  'mpx-tailwindcss-v4',
-  'uni-app-vite-tailwindcss-v4',
-  'taro-vite-react-tailwindcss-v4',
-  'taro-webpack-react-tailwindcss-v4',
-  'weapp-vite-tailwindcss-v4',
-])
+const watchCoveredProjects = new Set(automatedWatchCases.map(item => item.project))
+const automatedWatchCasesByName = new Map(automatedWatchCases.map(item => [item.name, item]))
+const repoRoot = join(import.meta.dirname, '../../..')
 
 const matrixProjects = [
   'demo/gulp-tailwindcss-v3',
@@ -69,6 +56,17 @@ function expectDemoSourceFile(sourceFile: string, message: string) {
   expect(normalizedSourceFile, `${message} should not edit generated dist files`).not.toContain('/dist/')
 }
 
+function expectHasRoundConfig(
+  roundConfigs: { name: string }[] | undefined,
+  roundName: string,
+  message: string,
+) {
+  expect(
+    roundConfigs?.some(item => item.name === roundName),
+    message,
+  ).toBe(true)
+}
+
 describe('watch-hmr coverage matrix', () => {
   it('covers every retained demo matrix project through watch regression cases', () => {
     for (const project of matrixProjects) {
@@ -101,6 +99,114 @@ describe('watch-hmr coverage matrix', () => {
         const expectedCarrier = watchCase.contentMutation.sourceFile.endsWith('.wxml') ? 'wxml' : 'js'
         expect(watchCase.contentMutation.verifyClassLiteralIn).toContain(expectedCarrier)
       }
+    }
+  })
+
+  it('keeps IDE hot-update cases backed by complex development-time watch scenarios', () => {
+    for (const entry of getFrameworkIdeCases()) {
+      const watchCaseName = frameworkIdeWatchCaseNames[entry.name]
+      expect(watchCaseName, `${entry.name} should map to a watch-HMR case`).toBeDefined()
+
+      const watchCase = automatedWatchCasesByName.get(watchCaseName!)
+      expect(watchCase, `${entry.name} should reuse an automated watch-HMR case`).toBeDefined()
+      expect(watchCase?.project, `${entry.name} should run against the same demo project as e2e:ide`).toBe(`demo/${entry.name}`)
+      expect(watchCase?.templateMutation, `${entry.name} should cover template edits in IDE`).toBeDefined()
+      expect(watchCase?.scriptMutation, `${entry.name} should cover script edits in IDE`).toBeDefined()
+      expect(watchCase?.globalStyleCandidates.length, `${entry.name} should verify global CSS output for IDE class changes`).toBeGreaterThan(0)
+
+      expectHasRoundConfig(
+        watchCase?.templateMutation.roundConfigs,
+        'complex-corpus',
+        `${entry.name} template IDE HMR should include complex arbitrary variants`,
+      )
+      expectHasRoundConfig(
+        watchCase?.scriptMutation.roundConfigs,
+        'complex-corpus',
+        `${entry.name} script IDE HMR should include complex arbitrary variants`,
+      )
+    }
+  })
+
+  it('keeps Tailwind CSS v4 IDE demos on the standard tailwindcss import surface', () => {
+    for (const entry of getFrameworkIdeCases()) {
+      if (entry.tailwindcss !== 'v4') {
+        continue
+      }
+
+      const watchCaseName = frameworkIdeWatchCaseNames[entry.name]
+      const watchCase = automatedWatchCasesByName.get(watchCaseName!)
+      expect(watchCase, `${entry.name} should map to an automated watch case`).toBeDefined()
+
+      const styleSources = [
+        watchCase?.styleMutation.sourceFile,
+        ...watchCase?.subPackageMutations?.map(item => item.styleMutation.sourceFile) ?? [],
+      ].filter((item): item is string => Boolean(item))
+
+      for (const sourceFile of styleSources) {
+        const realSourceFile = sourceFile.replace('/repo/', `${repoRoot}/`)
+        expect(existsSync(realSourceFile), `${entry.name} style source should exist: ${realSourceFile}`).toBe(true)
+        const source = readFileSync(realSourceFile, 'utf8')
+
+        if (source.includes('@import')) {
+          expect(source, `${entry.name} should use @import "tailwindcss" in ${realSourceFile}`).toContain('@import "tailwindcss"')
+          expect(source, `${entry.name} should not expose @import "weapp-tailwindcss" in ${realSourceFile}`).not.toContain('@import "weapp-tailwindcss"')
+        }
+      }
+    }
+  })
+
+  it('keeps Tailwind CSS v4 IDE style HMR aligned with @reference requirements', () => {
+    for (const entry of getFrameworkIdeCases()) {
+      if (entry.tailwindcss !== 'v4') {
+        continue
+      }
+
+      const watchCaseName = frameworkIdeWatchCaseNames[entry.name]
+      const watchCase = automatedWatchCasesByName.get(watchCaseName!)
+      expect(watchCase, `${entry.name} should map to an automated watch case`).toBeDefined()
+
+      const payload = createStyleMutationPayload(watchCase!)
+      expect(payload.referenceDirective, `${entry.name} should inject Tailwind v4 @reference during style HMR`).toBe('@reference "tailwindcss";')
+    }
+  })
+
+  it('keeps IDE page-visibility relaxations explicit and narrow', () => {
+    const originalRequireLivePageVisibility = process.env.E2E_IDE_REQUIRE_LIVE_PAGE_VISIBILITY
+    process.env.E2E_IDE_REQUIRE_LIVE_PAGE_VISIBILITY = '1'
+    try {
+      const relaxedCases = getFrameworkIdeCases()
+        .filter(entry => !shouldRequireIdeLivePageVisibility({ name: frameworkIdeWatchCaseNames[entry.name] }))
+        .map(entry => entry.name)
+
+      expect(relaxedCases).toEqual(['taro-webpack-react-tailwindcss-v4'])
+    }
+    finally {
+      if (originalRequireLivePageVisibility == null) {
+        delete process.env.E2E_IDE_REQUIRE_LIVE_PAGE_VISIBILITY
+      }
+      else {
+        process.env.E2E_IDE_REQUIRE_LIVE_PAGE_VISIBILITY = originalRequireLivePageVisibility
+      }
+    }
+  })
+
+  it('keeps Taro Vue3 IDE exemptions paired with full watch-HMR coverage', () => {
+    for (const entry of getFrameworkIdeExemptCases()) {
+      expect(entry.framework, `${entry.name} should be an explicit Taro Vue3 IDE exemption`).toBe('taro-vue3')
+      expect(entry.ide.reason, `${entry.name} should document the Vue3 probe gap`).toContain('Vue3 Taro demo')
+
+      const watchCase = automatedWatchCasesByName.get(entry.name)
+      expect(watchCase, `${entry.name} should still be covered by watch-HMR`).toBeDefined()
+      expectHasRoundConfig(
+        watchCase?.templateMutation.roundConfigs,
+        'complex-corpus',
+        `${entry.name} template watch-HMR should include complex arbitrary variants`,
+      )
+      expectHasRoundConfig(
+        watchCase?.scriptMutation.roundConfigs,
+        'complex-corpus',
+        `${entry.name} script watch-HMR should include complex arbitrary variants`,
+      )
     }
   })
 
@@ -140,7 +246,7 @@ describe('watch-hmr coverage matrix', () => {
     for (const watchCase of automatedWatchCases) {
       const payload = createStyleMutationPayload(watchCase)
 
-      if (styleApplyUnsupportedCases.has(watchCase.name)) {
+      if (STYLE_APPLY_UNSUPPORTED_CASES.has(watchCase.name)) {
         expect(payload.applyUtilities, `${watchCase.name} should skip unsupported @apply validation`).toEqual([])
         expect(payload.expectedApplyDeclarations, `${watchCase.name} should skip unsupported @apply declarations`).toEqual([])
       }
@@ -149,7 +255,7 @@ describe('watch-hmr coverage matrix', () => {
         expect(payload.expectedApplyDeclarations.length, `${watchCase.name} should validate expanded @apply declarations`).toBeGreaterThan(0)
       }
 
-      if (styleFunctionUnsupportedCases.has(watchCase.name)) {
+      if (STYLE_FUNCTION_UNSUPPORTED_CASES.has(watchCase.name)) {
         expect(payload.functionNeedle, `${watchCase.name} should skip unsupported Tailwind function validation`).toBeUndefined()
         expect(payload.functionDeclarations, `${watchCase.name} should not inject unsupported Tailwind functions`).toEqual([])
         expect(payload.expectedFunctionDeclarations, `${watchCase.name} should not expect unsupported Tailwind function declarations`).toEqual([])
@@ -162,7 +268,7 @@ describe('watch-hmr coverage matrix', () => {
         expect(payload.forbiddenFunctionFragments, `${watchCase.name} should forbid unresolved Tailwind functions`).toContain('theme(')
       }
 
-      if (styleReferenceRequiredCases.has(watchCase.name)) {
+      if (STYLE_REFERENCE_REQUIRED_CASES.has(watchCase.name)) {
         expect(payload.referenceDirective, `${watchCase.name} should include Tailwind v4 @reference`).toBe('@reference "tailwindcss";')
       }
       else {
