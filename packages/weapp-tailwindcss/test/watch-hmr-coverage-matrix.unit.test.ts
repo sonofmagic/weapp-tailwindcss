@@ -51,6 +51,17 @@ const matrixProjects = [
   'demo/weapp-vite-tailwindcss-v4',
 ]
 
+function toSlashPath(filePath: string) {
+  return filePath.replace(/\\/g, '/')
+}
+
+function expectDemoSourceFile(sourceFile: string, message: string) {
+  const normalizedSourceFile = toSlashPath(sourceFile)
+
+  expect(normalizedSourceFile, `${message} should edit demo source files`).toContain('/repo/demo/')
+  expect(normalizedSourceFile, `${message} should not edit generated dist files`).not.toContain('/dist/')
+}
+
 describe('watch-hmr coverage matrix', () => {
   it('covers every retained demo matrix project through watch regression cases', () => {
     for (const project of matrixProjects) {
@@ -98,16 +109,22 @@ describe('watch-hmr coverage matrix', () => {
       ]
 
       for (const mutationConfig of mutationConfigs) {
-        expect(mutationConfig.sourceFile, `${watchCase.project} should edit demo source files`).toContain('/repo/demo/')
-        expect(mutationConfig.sourceFile, `${watchCase.project} should not edit generated dist files`).not.toContain('/dist/')
+        expectDemoSourceFile(mutationConfig.sourceFile, watchCase.project)
       }
 
       if (watchCase.contentMutation) {
-        expect(watchCase.contentMutation.sourceFile, `${watchCase.project} content mutation should edit demo source files`).toContain('/repo/demo/')
-        expect(watchCase.contentMutation.sourceFile, `${watchCase.project} content mutation should not edit generated dist files`).not.toContain('/dist/')
+        expectDemoSourceFile(watchCase.contentMutation.sourceFile, `${watchCase.project} content mutation`)
         expect(watchCase.contentMutation.verifyClassLiteralIn, `${watchCase.project} content mutation should verify JS-visible literals`).toContain('js')
       }
     }
+  })
+
+  it('keeps demo source boundary checks portable on Windows paths', () => {
+    expectDemoSourceFile('D:\\repo\\demo\\gulp-tailwindcss-v3\\src\\pages\\index\\index.wxml', 'windows demo path')
+
+    expect(() => {
+      expectDemoSourceFile('D:\\repo\\demo\\gulp-tailwindcss-v3\\dist\\pages\\index\\index.wxml', 'windows dist path')
+    }).toThrow()
   })
 
   it('keeps style @apply and Tailwind function validation policy explicit', () => {
