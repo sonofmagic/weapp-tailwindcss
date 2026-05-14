@@ -90,6 +90,7 @@
     "fix-mpx-watch-script-css",
     "fix-reset-types",
     "fix-rpx-arbitrary-length",
+    "fix-uni-app-vite-dynamic-classes",
     "framework-support-matrix",
     "fresh-v3-colors-for-weapp",
     "generator-config-option",
