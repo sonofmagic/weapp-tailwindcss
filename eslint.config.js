@@ -52,6 +52,7 @@ const config = icebreaker(
     files: [
       'packages/debug-uni-app-x/**',
       'packages/weapp-tailwindcss/bin/**',
+      'tools/weapp-tailwindcss-scripts/src/**',
     ],
     rules: {
       'no-console': 'off',

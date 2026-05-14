@@ -131,6 +131,8 @@
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
     "lint:view": "npx @eslint/config-inspector",
+    "stylelint": "stylelint \"packages-runtime/**/*.{css,scss}\" --allow-empty-input",
+    "typecheck": "pnpm --filter tailwindcss-config exec tsc -p tsconfig.json --pretty false && pnpm --filter @weapp-tailwindcss/test-helper exec tsc -p tsconfig.json --pretty false && pnpm --filter weapp-tailwindcss exec tsc -p tsconfig.build.json --noEmit --noCheck false --pretty false",
     "publish-packages": "node scripts/publish-packages.mjs",
     "dev:apps": "echo \"apps workspace has no demo projects\"",
     "run:watch": "tsx scripts/watcher",
