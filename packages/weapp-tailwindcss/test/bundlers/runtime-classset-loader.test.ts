@@ -71,6 +71,40 @@ describe('bundlers/runtime classset loader', () => {
     } as any, source)).toBe(source)
   })
 
+  it('removes cascade layer syntax from runtime css before later webpack processors', () => {
+    const source = [
+      '@layer theme, base, components, utilities;',
+      '@layer utilities {',
+      '.text-red-500 { color: red; }',
+      '}',
+    ].join('\n')
+
+    const result = loader.call({
+      query: {},
+      resourcePath: '/workspace/src/app.css',
+    } as any, source)
+
+    expect(result).not.toContain('@layer')
+    expect(result).toContain('.text-red-500 { color: red; }')
+  })
+
+  it('removes cascade layer syntax from buffer runtime css source', () => {
+    const source = Buffer.from([
+      '@layer utilities {',
+      '.text-blue-500 { color: blue; }',
+      '}',
+    ].join('\n'))
+
+    const result = loader.call({
+      query: {},
+      resourcePath: '/workspace/src/app.css',
+    } as any, source)
+
+    expect(Buffer.isBuffer(result)).toBe(true)
+    expect(result.toString('utf8')).not.toContain('@layer')
+    expect(result.toString('utf8')).toContain('.text-blue-500 { color: blue; }')
+  })
+
   it('emits debug output when loader debug flag is enabled', () => {
     process.env.WEAPP_TW_LOADER_DEBUG = '1'
     const write = vi.spyOn(process.stdout, 'write').mockImplementation(() => true)

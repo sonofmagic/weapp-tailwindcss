@@ -1,7 +1,8 @@
-import type { Buffer } from 'node:buffer'
 import type webpack from 'webpack'
+import { Buffer } from 'node:buffer'
 import process from 'node:process'
 import loaderUtils from 'loader-utils'
+import { finalizeMiniProgramCss } from '@/bundlers/shared/css-cleanup'
 
 interface RuntimeClassSetLoaderOptions {
   getClassSet?: () => void | Promise<void>
@@ -20,6 +21,14 @@ function isPromiseLike<T>(value: unknown): value is PromiseLike<T> {
 const getLoaderOptions = (loaderUtils as unknown as {
   getOptions: (context: webpack.LoaderContext<RuntimeClassSetLoaderOptions>) => RuntimeClassSetLoaderOptions | undefined
 }).getOptions
+
+function normalizeRuntimeCssSource(source: string | Buffer) {
+  if (Buffer.isBuffer(source)) {
+    const css = source.toString('utf8')
+    return css.includes('@layer') ? Buffer.from(finalizeMiniProgramCss(css)) : source
+  }
+  return source.includes('@layer') ? finalizeMiniProgramCss(source) : source
+}
 
 const WeappTwRuntimeClassSetLoader: webpack.LoaderDefinitionFunction<RuntimeClassSetLoaderOptions> = function (
   this: webpack.LoaderContext<RuntimeClassSetLoaderOptions>,
@@ -50,11 +59,11 @@ const WeappTwRuntimeClassSetLoader: webpack.LoaderDefinitionFunction<RuntimeClas
   if (isPromiseLike<void>(maybePromise)) {
     return Promise.resolve(maybePromise).then(async () => {
       await resolveWatchDependencies()
-      return source
+      return normalizeRuntimeCssSource(source)
     })
   }
   resolveWatchDependencies()
-  return source
+  return normalizeRuntimeCssSource(source)
 }
 
 export default WeappTwRuntimeClassSetLoader
