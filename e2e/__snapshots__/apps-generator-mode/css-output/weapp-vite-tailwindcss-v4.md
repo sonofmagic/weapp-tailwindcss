@@ -6,7 +6,7 @@ Generator CSS files: app.wxss, apple.wxss, index.wxss, index.wxss, index.wxss
 
 | Bytes | Selectors | @supports | :hover | Tailwind banner | Raw arbitrary selector | Weapp escaped arbitrary selector |
 | ---: | ---: | --- | --- | --- | --- | --- |
-| 22397 | 62 | false | false | false | false | true |
+| 20194 | 60 | false | false | false | false | true |
 
 ## Generator CSS
 
@@ -66,47 +66,6 @@ wx-root-portal-content {
   --default-font-family: var(--font-sans);
   --default-mono-font-family: var(--font-mono);
 }
-.container {
-  width: 100%;
-}
-@media (min-width: 40rem) {
-  .container {
-    max-width: 1280rpx;
-  }
-}
-@media (min-width: 48rem) {
-  .container {
-    max-width: 1536rpx;
-  }
-}
-@media (min-width: 64rem) {
-  .container {
-    max-width: 2048rpx;
-  }
-}
-@media (min-width: 80rem) {
-  .container {
-    max-width: 2560rpx;
-  }
-}
-@media (min-width: 96rem) {
-  .container {
-    max-width: 3072rpx;
-  }
-}
-.i-mdi-home {
-  display: inline-block;
-  width: 1em;
-  height: 1em;
-  background-color: currentColor;
-  -webkit-mask-image: var(--svg);
-  mask-image: var(--svg);
-  -webkit-mask-repeat: no-repeat;
-  mask-repeat: no-repeat;
-  -webkit-mask-size: 100% 100%;
-  mask-size: 100% 100%;
-  --svg: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' width='24' height='24'%3E%3Cpath fill='black' d='M10 20v-6h4v6h5v-8h3L12 3L2 12h3v8z'/%3E%3C/svg%3E");
-}
 .block {
   display: block;
 }
@@ -129,9 +88,6 @@ wx-root-portal-content {
 }
 .h-10 {
   height: calc(var(--spacing) * 10);
-}
-.h-_b29_d292px_B {
-  height: 29.292px;
 }
 .h-_b30px_B {
   height: 30px;
@@ -198,12 +154,6 @@ wx-root-portal-content {
 }
 .bg-blue-500_f30 {
   background-color: rgba(50, 128, 255, 0.3);
-}
-.bg-independent-subpackage-marker {
-  background-color: #dc2626;
-}
-.bg-normal-subpackage-marker {
-  background-color: #2563eb;
 }
 .bg-zinc-50 {
   background-color: var(--color-zinc-50);
@@ -285,10 +235,6 @@ wx-root-portal-content {
   transition-timing-function: var(--tw-ease, var(--default-transition-timing-function));
   transition-duration: var(--tw-duration, var(--default-transition-duration));
 }
-.before_ccontent-_b_aindependent_subpackage_weapp-vite-tailwindcss-v4_a_B::before {
-  --tw-content: 'independent subpackage weapp-vite-tailwindcss-v4';
-  content: var(--tw-content);
-}
 .before_ccontent-_b_anormal_subpackage_weapp-vite-tailwindcss-v4_a_B::before {
   --tw-content: 'normal subpackage weapp-vite-tailwindcss-v4';
   content: var(--tw-content);
@@ -296,6 +242,34 @@ wx-root-portal-content {
 @media (prefers-color-scheme: dark) {
   .dark_cbg-zinc-900 {
     background-color: var(--color-zinc-900);
+  }
+}
+.container {
+  width: 100%;
+}
+@media (min-width: 40rem) {
+  .container {
+    max-width: 1280rpx;
+  }
+}
+@media (min-width: 48rem) {
+  .container {
+    max-width: 1536rpx;
+  }
+}
+@media (min-width: 64rem) {
+  .container {
+    max-width: 2048rpx;
+  }
+}
+@media (min-width: 80rem) {
+  .container {
+    max-width: 2560rpx;
+  }
+}
+@media (min-width: 96rem) {
+  .container {
+    max-width: 3072rpx;
   }
 }
 
@@ -329,47 +303,6 @@ wx-root-portal-content {
   --default-font-family: var(--font-sans);
   --default-mono-font-family: var(--font-mono);
 }
-.container {
-  width: 100%;
-}
-@media (min-width: 40rem) {
-  .container {
-    max-width: 1280rpx;
-  }
-}
-@media (min-width: 48rem) {
-  .container {
-    max-width: 1536rpx;
-  }
-}
-@media (min-width: 64rem) {
-  .container {
-    max-width: 2048rpx;
-  }
-}
-@media (min-width: 80rem) {
-  .container {
-    max-width: 2560rpx;
-  }
-}
-@media (min-width: 96rem) {
-  .container {
-    max-width: 3072rpx;
-  }
-}
-.i-mdi-home {
-  display: inline-block;
-  width: 1em;
-  height: 1em;
-  background-color: currentColor;
-  -webkit-mask-image: var(--svg);
-  mask-image: var(--svg);
-  -webkit-mask-repeat: no-repeat;
-  mask-repeat: no-repeat;
-  -webkit-mask-size: 100% 100%;
-  mask-size: 100% 100%;
-  --svg: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' width='24' height='24'%3E%3Cpath fill='black' d='M10 20v-6h4v6h5v-8h3L12 3L2 12h3v8z'/%3E%3C/svg%3E");
-}
 .block {
   display: block;
 }
@@ -392,9 +325,6 @@ wx-root-portal-content {
 }
 .h-10 {
   height: calc(var(--spacing) * 10);
-}
-.h-_b29_d292px_B {
-  height: 29.292px;
 }
 .h-_b30px_B {
   height: 30px;
@@ -465,12 +395,6 @@ wx-root-portal-content {
 }
 .bg-blue-500_f30 {
   background-color: rgba(50, 128, 255, 0.3);
-}
-.bg-independent-subpackage-marker {
-  background-color: #dc2626;
-}
-.bg-normal-subpackage-marker {
-  background-color: #2563eb;
 }
 .bg-zinc-50 {
   background-color: var(--color-zinc-50);
@@ -552,10 +476,6 @@ wx-root-portal-content {
   transition-timing-function: var(--tw-ease, var(--default-transition-timing-function));
   transition-duration: var(--tw-duration, var(--default-transition-duration));
 }
-.before_ccontent-_b_aindependent_subpackage_weapp-vite-tailwindcss-v4_a_B::before {
-  --tw-content: 'independent subpackage weapp-vite-tailwindcss-v4';
-  content: var(--tw-content);
-}
 .before_ccontent-_b_anormal_subpackage_weapp-vite-tailwindcss-v4_a_B::before {
   --tw-content: 'normal subpackage weapp-vite-tailwindcss-v4';
   content: var(--tw-content);
@@ -564,6 +484,45 @@ wx-root-portal-content {
   .dark_cbg-zinc-900 {
     background-color: var(--color-zinc-900);
   }
+}
+
+.container {
+  width: 100%;
+}
+@media (min-width: 40rem) {
+  .container {
+    max-width: 1280rpx;
+  }
+}
+@media (min-width: 48rem) {
+  .container {
+    max-width: 1536rpx;
+  }
+}
+@media (min-width: 64rem) {
+  .container {
+    max-width: 2048rpx;
+  }
+}
+@media (min-width: 80rem) {
+  .container {
+    max-width: 2560rpx;
+  }
+}
+@media (min-width: 96rem) {
+  .container {
+    max-width: 3072rpx;
+  }
+}
+.h-_b29_d292px_B {
+  height: 29.292px;
+}
+.bg-independent-subpackage-marker {
+  background-color: #dc2626;
+}
+.before_ccontent-_b_aindependent_subpackage_weapp-vite-tailwindcss-v4_a_B::before {
+  --tw-content: 'independent subpackage weapp-vite-tailwindcss-v4';
+  content: var(--tw-content);
 }
 
 :host,
@@ -586,47 +545,6 @@ wx-root-portal-content {
   --default-font-family: var(--font-sans);
   --default-mono-font-family: var(--font-mono);
 }
-.container {
-  width: 100%;
-}
-@media (min-width: 40rem) {
-  .container {
-    max-width: 1280rpx;
-  }
-}
-@media (min-width: 48rem) {
-  .container {
-    max-width: 1536rpx;
-  }
-}
-@media (min-width: 64rem) {
-  .container {
-    max-width: 2048rpx;
-  }
-}
-@media (min-width: 80rem) {
-  .container {
-    max-width: 2560rpx;
-  }
-}
-@media (min-width: 96rem) {
-  .container {
-    max-width: 3072rpx;
-  }
-}
-.i-mdi-home {
-  display: inline-block;
-  width: 1em;
-  height: 1em;
-  background-color: currentColor;
-  -webkit-mask-image: var(--svg);
-  mask-image: var(--svg);
-  -webkit-mask-repeat: no-repeat;
-  mask-repeat: no-repeat;
-  -webkit-mask-size: 100% 100%;
-  mask-size: 100% 100%;
-  --svg: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' width='24' height='24'%3E%3Cpath fill='black' d='M10 20v-6h4v6h5v-8h3L12 3L2 12h3v8z'/%3E%3C/svg%3E");
-}
 .block {
   display: block;
 }
@@ -649,9 +567,6 @@ wx-root-portal-content {
 }
 .h-10 {
   height: calc(var(--spacing) * 10);
-}
-.h-_b29_d292px_B {
-  height: 29.292px;
 }
 .h-_b30px_B {
   height: 30px;
@@ -722,12 +637,6 @@ wx-root-portal-content {
 }
 .bg-blue-500_f30 {
   background-color: rgba(50, 128, 255, 0.3);
-}
-.bg-independent-subpackage-marker {
-  background-color: #dc2626;
-}
-.bg-normal-subpackage-marker {
-  background-color: #2563eb;
 }
 .bg-zinc-50 {
   background-color: var(--color-zinc-50);
@@ -809,10 +718,6 @@ wx-root-portal-content {
   transition-timing-function: var(--tw-ease, var(--default-transition-timing-function));
   transition-duration: var(--tw-duration, var(--default-transition-duration));
 }
-.before_ccontent-_b_aindependent_subpackage_weapp-vite-tailwindcss-v4_a_B::before {
-  --tw-content: 'independent subpackage weapp-vite-tailwindcss-v4';
-  content: var(--tw-content);
-}
 .before_ccontent-_b_anormal_subpackage_weapp-vite-tailwindcss-v4_a_B::before {
   --tw-content: 'normal subpackage weapp-vite-tailwindcss-v4';
   content: var(--tw-content);
@@ -820,6 +725,34 @@ wx-root-portal-content {
 @media (prefers-color-scheme: dark) {
   .dark_cbg-zinc-900 {
     background-color: var(--color-zinc-900);
+  }
+}
+.container {
+  width: 100%;
+}
+@media (min-width: 40rem) {
+  .container {
+    max-width: 1280rpx;
+  }
+}
+@media (min-width: 48rem) {
+  .container {
+    max-width: 1536rpx;
+  }
+}
+@media (min-width: 64rem) {
+  .container {
+    max-width: 2048rpx;
+  }
+}
+@media (min-width: 80rem) {
+  .container {
+    max-width: 2560rpx;
+  }
+}
+@media (min-width: 96rem) {
+  .container {
+    max-width: 3072rpx;
   }
 }
 ```
