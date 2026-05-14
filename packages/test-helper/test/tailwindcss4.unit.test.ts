@@ -14,10 +14,8 @@ vi.mock('@tailwindcss/postcss', () => ({
 const require = createRequire(import.meta.url)
 
 describe('tailwindcss4 test helper', () => {
-  it('rewrites tailwindcss root imports before postcss processing', async () => {
-    const result = await generateCss('/project/app', {
-      css: '@import "tailwindcss";',
-    })
+  it('uses tailwindcss root imports by default before postcss processing', async () => {
+    const result = await generateCss('/project/app')
 
     expect(tailwindcssPostcss).toHaveBeenCalledWith({
       base: '/project/app',
