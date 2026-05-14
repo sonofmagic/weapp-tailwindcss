@@ -53,15 +53,26 @@ function resolveMpxWebpackPluginRequest(request: string, mpxWebpackPluginDir: st
 }
 
 function addMpxWebpackPluginAlias(alias: any, pkgDir: string) {
+  const recordLoader = path.join(pkgDir, 'lib/record-loader')
+  const styleCompiler = path.join(pkgDir, 'lib/style-compiler/index')
+  const stripConditionalLoader = path.join(pkgDir, 'lib/style-compiler/strip-conditional-loader')
   if (Array.isArray(alias)) {
-    alias.push({
-      name: /^@mpxjs\/webpack-plugin\//,
-      alias: pkgDir,
-    })
+    alias.push(
+      { name: '@mpxjs/webpack-plugin/lib/record-loader', alias: recordLoader },
+      { name: '@mpxjs/webpack-plugin/lib/style-compiler/index', alias: styleCompiler },
+      { name: '@mpxjs/webpack-plugin/lib/style-compiler/strip-conditional-loader', alias: stripConditionalLoader },
+      {
+        name: /^@mpxjs\/webpack-plugin\//,
+        alias: pkgDir,
+      },
+    )
   }
   else {
     alias['@mpxjs/webpack-plugin'] = pkgDir
     alias['@mpxjs/webpack-plugin$'] = pkgDir
+    alias['@mpxjs/webpack-plugin/lib/record-loader'] = recordLoader
+    alias['@mpxjs/webpack-plugin/lib/style-compiler/index'] = styleCompiler
+    alias['@mpxjs/webpack-plugin/lib/style-compiler/strip-conditional-loader'] = stripConditionalLoader
   }
 }
 
@@ -82,17 +93,15 @@ export function ensureMpxTailwindcssAliases(compiler: any, pkgDir: string) {
   compiler.options.resolve.alias = alias
   if (Array.isArray(alias)) {
     alias.push(
-      { name: /^@mpxjs\/webpack-plugin\//, alias: mpxWebpackPluginDir },
       { name: 'tailwindcss', alias: tailwindcssCssEntry },
       { name: 'tailwindcss$', alias: tailwindcssCssEntry },
     )
   }
   else {
-    alias['@mpxjs/webpack-plugin'] = mpxWebpackPluginDir
-    alias['@mpxjs/webpack-plugin$'] = mpxWebpackPluginDir
     alias.tailwindcss = tailwindcssCssEntry
     alias.tailwindcss$ = tailwindcssCssEntry
   }
+  addMpxWebpackPluginAlias(alias, mpxWebpackPluginDir)
   return tailwindcssCssEntry
 }
 
