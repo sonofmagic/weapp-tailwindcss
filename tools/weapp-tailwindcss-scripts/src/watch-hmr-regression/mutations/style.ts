@@ -24,14 +24,22 @@ export async function runStyleMutation(
   const payload = createStyleMutationPayload(watchCase)
   const sourcePath = styleMutation.sourceFile
   const mutatedSource = styleMutation.mutate(sourceOriginal, payload)
+  const verifyOutputCandidates = styleMutation.verifyOutputCandidates ?? outputStyleCandidates
+  const validateApply = styleMutation.validateApply !== false
+  const validateFunction = styleMutation.validateFunction !== false
+  const outputNeedles = styleMutation.outputNeedles?.(payload) ?? payload.outputNeedles
+  const rollbackNeedles = styleMutation.rollbackNeedles?.(payload) ?? payload.rollbackNeedles
 
   if (mutatedSource === sourceOriginal) {
     throw new Error(`[${watchCase.label}] style mutation produced no source change`)
   }
+  if (outputNeedles.length === 0) {
+    throw new Error(`[${watchCase.label}] style mutation requires at least one output needle`)
+  }
 
   const collectOutputCandidateMtimes = async () => {
-    const resolvedCandidates = await expandOutputFileEntries(outputStyleCandidates)
-    const targetCandidates = resolvedCandidates.length > 0 ? resolvedCandidates : outputStyleCandidates
+    const resolvedCandidates = await expandOutputFileEntries(verifyOutputCandidates)
+    const targetCandidates = resolvedCandidates.length > 0 ? resolvedCandidates : verifyOutputCandidates
     const entries = await Promise.all(targetCandidates.map(async candidate => [candidate, await getMtime(candidate)] as const))
     return new Map(entries)
   }
@@ -44,8 +52,8 @@ export async function runStyleMutation(
   ) => {
     return waitFor(
       async () => {
-        const resolvedCandidates = await expandOutputFileEntries(outputStyleCandidates)
-        const targetCandidates = resolvedCandidates.length > 0 ? resolvedCandidates : outputStyleCandidates
+        const resolvedCandidates = await expandOutputFileEntries(verifyOutputCandidates)
+        const targetCandidates = resolvedCandidates.length > 0 ? resolvedCandidates : verifyOutputCandidates
         for (const candidate of targetCandidates) {
           const baselineMtime = baselineMtimes.get(candidate) ?? 0
           const currentMtime = await getMtime(candidate)
@@ -61,7 +69,7 @@ export async function runStyleMutation(
       {
         timeoutMs: options.timeoutMs,
         pollMs: options.pollMs,
-        message: `[${watchCase.label}] style output candidates were not updated during ${phase}: ${outputStyleCandidates.map(formatPath).join(', ')}`,
+        message: `[${watchCase.label}] style output candidates were not updated during ${phase}: ${verifyOutputCandidates.map(formatPath).join(', ')}`,
         onTick: session.ensureRunning,
       },
       startedAt,
@@ -77,17 +85,17 @@ export async function runStyleMutation(
     'hot-update',
     async (candidate) => {
       const content = await readFileIfExists(candidate)
-      return content?.includes(payload.styleNeedle) === true
+      return content != null && outputNeedles.every(needle => content.includes(needle))
     },
   )
   let resolvedOutputStyle: string | undefined
   const hotUpdateEffectiveMs = await waitFor(
     async () => {
-      const resolvedCandidates = await expandOutputFileEntries(outputStyleCandidates)
-      const targetCandidates = resolvedCandidates.length > 0 ? resolvedCandidates : outputStyleCandidates
+      const resolvedCandidates = await expandOutputFileEntries(verifyOutputCandidates)
+      const targetCandidates = resolvedCandidates.length > 0 ? resolvedCandidates : verifyOutputCandidates
       for (const candidate of targetCandidates) {
         const content = await readFileIfExists(candidate)
-        if (content?.includes(payload.styleNeedle)) {
+        if (content != null && outputNeedles.every(needle => content.includes(needle))) {
           resolvedOutputStyle = candidate
           return true
         }
@@ -97,7 +105,7 @@ export async function runStyleMutation(
     {
       timeoutMs: options.timeoutMs,
       pollMs: options.pollMs,
-      message: `[${watchCase.label}] style output candidates are missing needle ${payload.styleNeedle}: ${outputStyleCandidates.map(formatPath).join(', ')}`,
+      message: `[${watchCase.label}] style output candidates are missing needles ${outputNeedles.join(', ')}: ${verifyOutputCandidates.map(formatPath).join(', ')}`,
       onTick: session.ensureRunning,
     },
     hotUpdateStartedAt,
@@ -108,8 +116,10 @@ export async function runStyleMutation(
   }
 
   const updatedStyle = await fs.readFile(resolvedOutputStyle, 'utf8')
-  assertContains(updatedStyle, payload.styleNeedle, `[${watchCase.label}] updated style output (${formatPath(resolvedOutputStyle)})`)
-  if (payload.expectedApplyDeclarations.length > 0) {
+  for (const needle of outputNeedles) {
+    assertContains(updatedStyle, needle, `[${watchCase.label}] updated style output (${formatPath(resolvedOutputStyle)})`)
+  }
+  if (validateApply && payload.expectedApplyDeclarations.length > 0) {
     const updatedRuleBody = findCssRuleBody(updatedStyle, payload.styleNeedle)
     if (!updatedRuleBody) {
       throw new Error(`[${watchCase.label}] failed to locate style rule body for ${payload.styleNeedle}`)
@@ -122,8 +132,15 @@ export async function runStyleMutation(
         )
       }
     }
+    for (const expectedDeclarationGroup of payload.expectedApplyDeclarationGroups) {
+      if (!expectedDeclarationGroup.some(expectedDeclaration => normalizedRuleBody.includes(normalizeCssDeclaration(expectedDeclaration)))) {
+        throw new Error(
+          `[${watchCase.label}] style @apply declaration group missing: ${expectedDeclarationGroup.join(' or ')}, rule=${payload.styleNeedle}`,
+        )
+      }
+    }
   }
-  if (payload.functionNeedle && payload.expectedFunctionDeclarations.length > 0) {
+  if (validateFunction && payload.functionNeedle && payload.expectedFunctionDeclarations.length > 0) {
     const updatedFunctionRuleBody = findCssRuleBody(updatedStyle, payload.functionNeedle)
     if (!updatedFunctionRuleBody) {
       throw new Error(`[${watchCase.label}] failed to locate Tailwind function rule body for ${payload.functionNeedle}`)
@@ -154,7 +171,7 @@ export async function runStyleMutation(
     'rollback',
     async (candidate) => {
       const content = await readFileIfExists(candidate)
-      return content != null && !content.includes(payload.styleNeedle)
+      return content != null && rollbackNeedles.every(needle => !content.includes(needle))
     },
   )
   let rollbackEffectiveMs = rollbackOutputMs
@@ -166,11 +183,11 @@ export async function runStyleMutation(
     )
     rollbackEffectiveMs = await waitFor(
       async () => {
-        const resolvedCandidates = await expandOutputFileEntries(outputStyleCandidates)
-        const targetCandidates = resolvedCandidates.length > 0 ? resolvedCandidates : outputStyleCandidates
+        const resolvedCandidates = await expandOutputFileEntries(verifyOutputCandidates)
+        const targetCandidates = resolvedCandidates.length > 0 ? resolvedCandidates : verifyOutputCandidates
         for (const candidate of targetCandidates) {
           const content = await readFileIfExists(candidate)
-          if (content?.includes(payload.styleNeedle)) {
+          if (content != null && rollbackNeedles.some(needle => content.includes(needle))) {
             return false
           }
         }
@@ -179,7 +196,7 @@ export async function runStyleMutation(
       {
         timeoutMs: rollbackNeedleCheckTimeoutMs,
         pollMs: options.pollMs,
-        message: `[${watchCase.label}] style output candidates still contain needle ${payload.styleNeedle}: ${outputStyleCandidates.map(formatPath).join(', ')}`,
+        message: `[${watchCase.label}] style output candidates still contain rollback needles ${rollbackNeedles.join(', ')}: ${verifyOutputCandidates.map(formatPath).join(', ')}`,
         onTick: session.ensureRunning,
       },
       rollbackStartedAt,
@@ -202,8 +219,11 @@ export async function runStyleMutation(
     outputStyle: resolvedOutputStyle,
     marker: payload.marker,
     styleNeedle: payload.styleNeedle,
+    outputNeedles,
+    rollbackNeedles,
     applyUtilities: payload.applyUtilities,
     expectedApplyDeclarations: payload.expectedApplyDeclarations,
+    expectedApplyDeclarationGroups: payload.expectedApplyDeclarationGroups,
     ...(payload.functionNeedle ? { functionNeedle: payload.functionNeedle } : {}),
     functionDeclarations: payload.functionDeclarations,
     expectedFunctionDeclarations: payload.expectedFunctionDeclarations,

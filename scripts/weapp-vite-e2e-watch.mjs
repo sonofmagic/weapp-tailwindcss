@@ -5,9 +5,9 @@ import process from 'node:process'
 
 const READY_RE = /开发服务已就绪|dev(?:elopment)? server ready|ready in \d+/i
 const pnpmExecPath = process.env.npm_execpath
-const sourceDirs = ['miniprogram', 'pages', 'packageA', 'packageB']
+const sourceDirs = ['miniprogram', 'pages', 'packageA', 'packageB', 'sub-normal', 'sub-independent']
 const ignoredDirs = new Set(['dist', 'node_modules', '.git'])
-const rootSourceFileRe = /^app\.[cm]?[jt]s$|^app\.(?:wxss|css|s[ac]ss|less|json)$/i
+const rootSourceFileRe = /^(?:app|tailwind\.config(?:\.[\w-]+)?)\.[cm]?[jt]s$|^app\.(?:wxss|css|s[ac]ss|less|json)$/i
 
 function createPnpmCommand(args) {
   if (pnpmExecPath) {

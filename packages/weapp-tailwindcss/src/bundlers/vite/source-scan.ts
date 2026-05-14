@@ -5,10 +5,12 @@ import path from 'node:path'
 import process from 'node:process'
 import micromatch from 'micromatch'
 import postcss from 'postcss'
+import { loadConfig } from 'tailwindcss-config'
 import {
   collectCssInlineSourceCandidates,
   createSourceScanPattern,
   normalizeLegacyContentEntries,
+  parseConfigParam,
   resolveCssSourceEntries,
 } from '@/tailwindcss/source-scan'
 import { resolveTailwindV3SourceFromPatcher } from '@/tailwindcss/v3-engine'
@@ -72,15 +74,49 @@ function resolveSourceBase(base: string, sourcePath: string) {
   return path.isAbsolute(sourcePath) ? sourcePath : path.resolve(base, sourcePath)
 }
 
+function resolveConfigPath(base: string, configPath: string) {
+  return path.isAbsolute(configPath) ? path.resolve(configPath) : path.resolve(base, configPath)
+}
+
 interface ResolvedTailwindV4CssEntries {
   entries: TailwindSourceEntry[]
   explicit: boolean
   inlineCandidates: TailwindInlineSourceCandidates
+  dependencies: string[]
 }
 
 export interface ResolvedViteSourceScan {
   entries?: TailwindSourceEntry[]
   inlineCandidates?: TailwindInlineSourceCandidates
+}
+
+async function resolveConfigContentEntries(root: postcss.Root, base: string) {
+  const configPaths = new Set<string>()
+  root.walkAtRules('config', (rule) => {
+    const configPath = parseConfigParam(rule.params)
+    if (configPath) {
+      configPaths.add(resolveConfigPath(base, configPath))
+    }
+  })
+
+  const entries: TailwindSourceEntry[] = []
+  for (const configPath of configPaths) {
+    try {
+      const loaded = await loadConfig({
+        config: configPath,
+        cwd: path.dirname(configPath),
+      })
+      entries.push(...normalizeLegacyContentEntries(loaded?.config.content, path.dirname(configPath)))
+    }
+    catch {
+      // 依赖收集只负责补充 watch 签名，配置有效性由 Tailwind 生成阶段校验。
+    }
+  }
+
+  return {
+    dependencies: [...configPaths],
+    entries,
+  }
 }
 
 async function resolveTailwindV4EntriesFromCss(css: string, base: string): Promise<ResolvedTailwindV4CssEntries | undefined> {
@@ -94,7 +130,14 @@ async function resolveTailwindV4EntriesFromCss(css: string, base: string): Promi
 
   let importSourceBase: string | undefined
   let hasSourceNone = false
-  const entries = await resolveCssSourceEntries(root, base, VITE_SOURCE_CANDIDATE_PATTERN)
+  const [sourceEntries, configEntries] = await Promise.all([
+    resolveCssSourceEntries(root, base, VITE_SOURCE_CANDIDATE_PATTERN),
+    resolveConfigContentEntries(root, base),
+  ])
+  const entries = [
+    ...configEntries.entries,
+    ...sourceEntries,
+  ]
   const inlineCandidates = collectCssInlineSourceCandidates(root)
 
   root.walkAtRules('import', (rule) => {
@@ -122,6 +165,7 @@ async function resolveTailwindV4EntriesFromCss(css: string, base: string): Promi
       ],
       explicit: true,
       inlineCandidates,
+      dependencies: configEntries.dependencies,
     }
   }
 
@@ -130,6 +174,7 @@ async function resolveTailwindV4EntriesFromCss(css: string, base: string): Promi
       entries,
       explicit: true,
       inlineCandidates,
+      dependencies: configEntries.dependencies,
     }
   }
 
@@ -138,14 +183,21 @@ async function resolveTailwindV4EntriesFromCss(css: string, base: string): Promi
         entries,
         explicit: true,
         inlineCandidates,
+        dependencies: configEntries.dependencies,
       }
     : inlineCandidates.included.size > 0 || inlineCandidates.excluded.size > 0
       ? {
           entries: [],
           explicit: true,
           inlineCandidates,
+          dependencies: configEntries.dependencies,
         }
       : undefined
+}
+
+export async function resolveViteTailwindV4CssDependencies(css: string, base: string) {
+  const resolved = await resolveTailwindV4EntriesFromCss(css, base)
+  return resolved?.dependencies ?? []
 }
 
 function collectExistingCssEntries(options: UserDefinedOptions) {

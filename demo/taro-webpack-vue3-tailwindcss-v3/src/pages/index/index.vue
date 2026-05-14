@@ -26,3 +26,21 @@ const dynamicClass = computed(() => 'bg-[#123456] text-[#ffffff] p-[20px]')
 
 useLoad(() => {})
 </script>
+
+<style lang="scss">
+.test {
+  @apply flex items-center justify-center h-[100px] w-[100px] rounded-[40px] bg-[#123456] bg-opacity-[0.54] text-[#ffffff] #{!important};
+}
+
+.aspect-w-16 > * {
+  color: red;
+}
+
+.a {
+  color: green;
+}
+
+.b {
+  color: yellow;
+}
+</style>

@@ -142,8 +142,11 @@ function createStyleMutationMetrics(): WatchCaseMutationMetrics {
     outputStyle: 'app.wxss',
     marker: 'style-marker',
     styleNeedle: '.watch-style-marker',
+    outputNeedles: ['.watch-style-marker'],
+    rollbackNeedles: ['.watch-style-marker'],
     applyUtilities: ['font-bold'],
     expectedApplyDeclarations: ['font-weight:'],
+    expectedApplyDeclarationGroups: [],
     functionNeedle: '.watch-style-marker-theme',
     functionDeclarations: ['padding: theme(\'spacing.2\');'],
     expectedFunctionDeclarations: ['padding:'],
@@ -472,6 +475,8 @@ describe('watch-hmr regression text helpers', () => {
     const styleSnippet = createStyleRuleSnippet({
       marker: 'watch-1234567',
       styleNeedle: '.watch-style-marker',
+      outputNeedles: ['.watch-style-marker'],
+      rollbackNeedles: ['.watch-style-marker'],
       applyUtilities: ['font-bold', 'text-center'],
       expectedApplyDeclarations: [],
       functionNeedle: '.watch-style-marker-theme',
@@ -559,6 +564,8 @@ const bgObj = ref({
     const styleMutated = mutateSfcStyleBlock(vueSource, {
       marker: 'watch-123456',
       styleNeedle: '.watch-style-marker',
+      outputNeedles: ['.watch-style-marker'],
+      rollbackNeedles: ['.watch-style-marker'],
       applyUtilities: ['font-bold'],
       expectedApplyDeclarations: [],
     })
@@ -850,8 +857,25 @@ describe('watch-hmr regression cases', () => {
     )
     expect(mpxV4Case?.devScript).toBe('dev:e2e-watch')
     expect(mpxV4Case?.styleMutation.sourceFile).toBe(
-      path.resolve('/repo', 'demo/mpx-tailwindcss-v4/src/app.mpx'),
+      path.resolve('/repo', 'demo/mpx-tailwindcss-v4/src/pages/component/index.mpx'),
     )
+    expect(mpxV4Case?.styleMutation.verifyOutputCandidates).toEqual([
+      path.resolve('/repo', 'demo/mpx-tailwindcss-v4/dist/wx/pages/component/index.wxss'),
+    ])
+    expect(mpxV4Case?.styleMutation.validateApply).toBe(false)
+    const mpxV4SubPackage = mpxV4Case?.subPackageMutations?.find(item => item.root === 'sub-normal')
+    expect(mpxV4SubPackage?.styleMutation.validateApply).toBe(false)
+    expect(mpxV4SubPackage?.styleMutation.validateFunction).toBe(false)
+    expect(mpxV4SubPackage?.outputStyleCandidates).toEqual([
+      path.resolve('/repo', 'demo/mpx-tailwindcss-v4/dist/wx/sub-normal/pages/index.js'),
+    ])
+    expect(mpxV4SubPackage?.globalStyleCandidates).toEqual([
+      path.resolve('/repo', 'demo/mpx-tailwindcss-v4/dist/wx/sub-normal/pages/index.wxss'),
+      path.resolve('/repo', 'demo/mpx-tailwindcss-v4/dist/wx/sub-normal/styles/*.wxss'),
+      path.resolve('/repo', 'demo/mpx-tailwindcss-v4/dist/wx/styles/*.wxss'),
+      path.resolve('/repo', 'demo/mpx-tailwindcss-v4/dist/wx/app.wxss'),
+    ])
+
     expect(mpxV4Case?.outputStyleCandidates).toEqual([
       path.resolve('/repo', 'demo/mpx-tailwindcss-v4/dist/wx/app.wxss'),
       path.resolve('/repo', 'demo/mpx-tailwindcss-v4/dist/wx/custom-tab-bar/index.wxss'),
@@ -886,7 +910,7 @@ describe('watch-hmr regression cases', () => {
     }
   })
 
-  it('covers js literal refresh content mutations for every demo case', () => {
+  it('covers literal refresh content mutations for every demo case', () => {
     const cases = [
       ...buildDemoBaseCases('/repo'),
       ...buildDemoExtendedCases('/repo'),
@@ -911,14 +935,15 @@ describe('watch-hmr regression cases', () => {
         continue
       }
 
-      expect(contentMutation.verifyClassLiteralIn).toContain('js')
-      expect(contentMutation.forbidBgHexTruncationIn).toContain('js')
+      const expectedCarrier = contentMutation.sourceFile.endsWith('.wxml') ? 'wxml' : 'js'
+      expect(contentMutation.verifyClassLiteralIn).toContain(expectedCarrier)
+      expect(contentMutation.forbidBgHexTruncationIn).toContain(expectedCarrier)
       expect(contentMutation.roundConfigs?.length).toBe(1)
       expect(contentMutation.roundConfigs?.[0]?.name).toBe('issue33-arbitrary')
       expect(contentMutation.roundConfigs?.[0]?.buildClassTokens('seed')).toEqual([...ISSUE33_ADD_CLASS_TOKENS])
       expect(contentMutation.roundConfigs?.[0]?.buildModifyClassTokens?.('seed')).toEqual([...ISSUE33_MODIFY_CLASS_TOKENS])
       expect(contentMutation.sourceFile).not.toMatch(/index\.html$/)
-      expect(contentMutation.sourceFile).toMatch(/\.(?:js|ts|tsx|vue|mpx)$/)
+      expect(contentMutation.sourceFile).toMatch(/\.(?:js|ts|tsx|vue|mpx|wxml)$/)
     }
   })
 
@@ -1018,8 +1043,13 @@ describe('watch-hmr regression cases', () => {
       'taro-vite-react-tailwindcss-v4',
       'taro-webpack-react-tailwindcss-v4',
     ])
-    const functionUnsupportedCases = new Set(['mpx-tailwindcss-v4'])
+    const functionUnsupportedCases = new Set([
+      'mpx-tailwindcss-v4',
+      'taro-vite-react-tailwindcss-v4',
+      'taro-webpack-react-tailwindcss-v4',
+    ])
     const referenceRequiredCases = new Set([
+      'gulp-tailwindcss-v4',
       'mpx-tailwindcss-v4',
       'uni-app-vite-tailwindcss-v4',
       'taro-vite-react-tailwindcss-v4',

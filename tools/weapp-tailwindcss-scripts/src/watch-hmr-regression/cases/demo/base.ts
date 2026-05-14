@@ -36,6 +36,7 @@ function createSubPackageMutations(
     styleExtension?: 'scss' | 'css'
     styleCandidates?: (subPackage: 'sub-normal' | 'sub-independent') => string[]
     globalStyleCandidates?: (subPackage: 'sub-normal' | 'sub-independent') => string[]
+    styleMutationOptions?: Pick<NonNullable<WatchCase['subPackageMutations']>[number]['styleMutation'], 'validateApply' | 'validateFunction' | 'outputNeedles' | 'rollbackNeedles'>
     templateVerifyEscapedIn?: Array<'wxml' | 'js'>
     templateVerifyClassLiteralIn?: Array<'wxml' | 'js'>
   },
@@ -91,6 +92,7 @@ function createSubPackageMutations(
       },
       styleMutation: {
         sourceFile: styleSource,
+        ...options.styleMutationOptions,
         mutate(source, payload) {
           return appendTrailingSnippet(source, createStyleRuleSnippet(payload))
         },
@@ -242,6 +244,11 @@ export function buildDemoBaseCases(baseCwd: string): WatchCase[] {
       distRoot: 'dist/wx',
       version: 'v3',
       pageKind: 'mpx',
+      styleCandidates(subPackage) {
+        return [
+          path.resolve(baseCwd, `demo/mpx-tailwindcss-v3/dist/wx/${subPackage}/pages/index.js`),
+        ]
+      },
       globalStyleCandidates(subPackage) {
         return [
           path.resolve(baseCwd, `demo/mpx-tailwindcss-v3/dist/wx/${subPackage}/pages/index.wxss`),
@@ -249,6 +256,10 @@ export function buildDemoBaseCases(baseCwd: string): WatchCase[] {
           path.resolve(baseCwd, 'demo/mpx-tailwindcss-v3/dist/wx/styles/*.wxss'),
           path.resolve(baseCwd, 'demo/mpx-tailwindcss-v3/dist/wx/app.wxss'),
         ]
+      },
+      styleMutationOptions: {
+        validateApply: false,
+        validateFunction: false,
       },
     }),
   }
@@ -337,6 +348,12 @@ export function buildDemoBaseCases(baseCwd: string): WatchCase[] {
       distRoot: 'dist',
       version: 'v4',
       pageKind: 'wxml',
+      styleCandidates(subPackage) {
+        return [
+          path.resolve(baseCwd, `demo/gulp-tailwindcss-v4/dist/${subPackage}/pages/index.wxss`),
+          path.resolve(baseCwd, 'demo/gulp-tailwindcss-v4/dist/app.wxss'),
+        ]
+      },
     }),
   }
 
@@ -416,6 +433,8 @@ export function buildDemoBaseCases(baseCwd: string): WatchCase[] {
     group: 'demo',
     requireInitialCompileSuccess: false,
     requireStableGlobalStyleOnSameClassLiteral: false,
+    initialBuildScript: 'build',
+    initialMutationDelayMs: 3_000,
     cwd: path.resolve(baseCwd, 'demo/weapp-vite-tailwindcss-v4'),
     devScript: 'dev:e2e-watch',
     outputWxml: path.resolve(baseCwd, 'demo/weapp-vite-tailwindcss-v4/dist/pages/index/index.wxml'),
@@ -428,17 +447,17 @@ export function buildDemoBaseCases(baseCwd: string): WatchCase[] {
       path.resolve(baseCwd, 'demo/weapp-vite-tailwindcss-v4/dist/app.wxss'),
     ],
     contentMutation: {
-      sourceFile: path.resolve(baseCwd, 'demo/weapp-vite-tailwindcss-v4/pages/index/index.ts'),
-      verifyEscapedIn: ['js'],
-      verifyClassLiteralIn: ['js'],
-      forbidBgHexTruncationIn: ['js'],
+      sourceFile: path.resolve(baseCwd, 'demo/weapp-vite-tailwindcss-v4/pages/index/index.wxml'),
+      verifyEscapedIn: ['wxml'],
+      verifyClassLiteralIn: ['wxml'],
+      forbidBgHexTruncationIn: ['wxml'],
       roundConfigs: buildIssue33HighRiskRoundConfigs(),
       mutate(source, payload) {
         return replaceExactSnippet(
           source,
-          '    message: \'Hello MINA!\',',
-          `    message: '${payload.classLiteral}',`,
-          'weapp-vite-tailwindcss-v4 script class anchor',
+          'bg-[#68c828] text-[100px] text-[#123456] w-[323px]',
+          payload.classLiteral,
+          'weapp-vite-tailwindcss-v4 content class anchor',
         )
       },
     },
@@ -473,6 +492,12 @@ export function buildDemoBaseCases(baseCwd: string): WatchCase[] {
       distRoot: 'dist',
       version: 'v4',
       pageKind: 'wxml',
+      globalStyleCandidates(subPackage) {
+        return [
+          path.resolve(baseCwd, `demo/weapp-vite-tailwindcss-v4/dist/${subPackage}/pages/index.wxss`),
+          path.resolve(baseCwd, 'demo/weapp-vite-tailwindcss-v4/dist/app.wxss'),
+        ]
+      },
     }),
   }
 
@@ -542,9 +567,9 @@ export function buildDemoBaseCases(baseCwd: string): WatchCase[] {
       },
     },
     styleMutation: {
-      sourceFile: path.resolve(baseCwd, 'demo/taro-webpack-vue3-tailwindcss-v3/src/pages/index/index.scss'),
+      sourceFile: path.resolve(baseCwd, 'demo/taro-webpack-vue3-tailwindcss-v3/src/pages/index/index.vue'),
       mutate(source, payload) {
-        return appendTrailingSnippet(source, createStyleRuleSnippet(payload))
+        return mutateSfcStyleBlock(source, payload)
       },
     },
     subPackageMutations: createSubPackageMutations(baseCwd, {

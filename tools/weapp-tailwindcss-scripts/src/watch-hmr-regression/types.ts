@@ -43,8 +43,11 @@ export interface ClassMutationPayload {
 export interface StyleMutationPayload {
   marker: string
   styleNeedle: string
+  outputNeedles: string[]
+  rollbackNeedles: string[]
   applyUtilities: string[]
   expectedApplyDeclarations: string[]
+  expectedApplyDeclarationGroups: string[][]
   functionNeedle?: string
   functionDeclarations: string[]
   expectedFunctionDeclarations: string[]
@@ -61,6 +64,7 @@ export interface MutationRoundConfig {
 export interface StyleApplyValidation {
   utilities: string[]
   expectedDeclarations: string[]
+  expectedDeclarationGroups?: string[][]
 }
 
 export interface MutationScenario extends ClassMutationPayload {
@@ -83,6 +87,11 @@ export interface ClassMutationConfig {
 
 export interface StyleMutationConfig {
   sourceFile: string
+  verifyOutputCandidates?: string[]
+  validateApply?: boolean
+  validateFunction?: boolean
+  outputNeedles?: (payload: StyleMutationPayload) => string[]
+  rollbackNeedles?: (payload: StyleMutationPayload) => string[]
   mutate: (source: string, payload: StyleMutationPayload) => string
 }
 
@@ -231,8 +240,11 @@ export interface StyleMutationMetrics {
   outputStyle: string
   marker: string
   styleNeedle: string
+  outputNeedles: string[]
+  rollbackNeedles: string[]
   applyUtilities: string[]
   expectedApplyDeclarations: string[]
+  expectedApplyDeclarationGroups: string[][]
   functionNeedle?: string
   functionDeclarations: string[]
   expectedFunctionDeclarations: string[]
@@ -317,8 +329,10 @@ export const DEFAULT_STYLE_APPLY_VALIDATION: StyleApplyValidation = {
     'font-weight:',
     'text-align:',
     'background-color:',
-    'padding-left:',
-    'padding-right:',
+  ],
+  expectedDeclarationGroups: [
+    ['padding-inline:', 'padding-left:'],
+    ['padding-inline:', 'padding-right:'],
   ],
 }
 
@@ -331,9 +345,12 @@ export const STYLE_APPLY_UNSUPPORTED_CASES = new Set<ConcreteWatchCaseName>([
 
 export const STYLE_FUNCTION_UNSUPPORTED_CASES = new Set<ConcreteWatchCaseName>([
   'mpx-tailwindcss-v4',
+  'taro-vite-react-tailwindcss-v4',
+  'taro-webpack-react-tailwindcss-v4',
 ])
 
 export const STYLE_REFERENCE_REQUIRED_CASES = new Set<ConcreteWatchCaseName>([
+  'gulp-tailwindcss-v4',
   'uni-app-vite-tailwindcss-v4',
   'mpx-tailwindcss-v4',
   'taro-vite-react-tailwindcss-v4',

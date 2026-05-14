@@ -60,6 +60,7 @@ function createSubPackageMutations(
     styleExtension?: 'scss' | 'css'
     styleCandidates?: (subPackage: 'sub-normal' | 'sub-independent') => string[]
     globalStyleCandidates?: (subPackage: 'sub-normal' | 'sub-independent') => string[]
+    styleMutationOptions?: Pick<NonNullable<WatchCase['subPackageMutations']>[number]['styleMutation'], 'validateApply' | 'validateFunction' | 'outputNeedles' | 'rollbackNeedles'>
     templateVerifyEscapedIn?: Array<'wxml' | 'js'>
     templateVerifyClassLiteralIn?: Array<'wxml' | 'js'>
   },
@@ -103,6 +104,7 @@ function createSubPackageMutations(
       },
       styleMutation: {
         sourceFile: styleSource,
+        ...options.styleMutationOptions,
         mutate(source, payload) {
           return appendTrailingSnippet(source, createStyleRuleSnippet(payload))
         },
@@ -312,14 +314,13 @@ export function buildDemoExtendedCases(baseCwd: string): WatchCase[] {
       },
     },
     styleMutation: {
-      sourceFile: path.resolve(baseCwd, 'demo/mpx-tailwindcss-v4/src/app.mpx'),
+      sourceFile: path.resolve(baseCwd, 'demo/mpx-tailwindcss-v4/src/pages/component/index.mpx'),
+      verifyOutputCandidates: [
+        path.resolve(baseCwd, 'demo/mpx-tailwindcss-v4/dist/wx/pages/component/index.wxss'),
+      ],
+      validateApply: false,
       mutate(source, payload) {
-        return replaceExactSnippet(
-          source,
-          '<style src="./app.css" />',
-          `<style>\n@import "./app.css";\n${createStyleRuleSnippet(payload)}\n</style>`,
-          'mpx-tailwindcss-v4 style anchor',
-        )
+        return insertBeforeClosingTag(source, '</style>', createStyleRuleSnippet(payload))
       },
     },
     subPackageMutations: createSubPackageMutations(baseCwd, {
@@ -328,6 +329,11 @@ export function buildDemoExtendedCases(baseCwd: string): WatchCase[] {
       distRoot: 'dist/wx',
       version: 'v4',
       pageKind: 'mpx',
+      styleCandidates(subPackage) {
+        return [
+          path.resolve(baseCwd, `demo/mpx-tailwindcss-v4/dist/wx/${subPackage}/pages/index.js`),
+        ]
+      },
       globalStyleCandidates(subPackage) {
         return [
           path.resolve(baseCwd, `demo/mpx-tailwindcss-v4/dist/wx/${subPackage}/pages/index.wxss`),
@@ -335,6 +341,10 @@ export function buildDemoExtendedCases(baseCwd: string): WatchCase[] {
           path.resolve(baseCwd, 'demo/mpx-tailwindcss-v4/dist/wx/styles/*.wxss'),
           path.resolve(baseCwd, 'demo/mpx-tailwindcss-v4/dist/wx/app.wxss'),
         ]
+      },
+      styleMutationOptions: {
+        validateApply: false,
+        validateFunction: false,
       },
     }),
   }

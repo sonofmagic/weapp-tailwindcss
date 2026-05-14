@@ -36,7 +36,7 @@ export function buildHexScriptRoundConfigs() {
       name: 'complex-corpus' as const,
       buildClassTokens(seed: string) {
         const numericSeed = seed.replace(NON_DIGIT_RE, '').padEnd(6, '0')
-        const hex = numericSeed.slice(0, 4)
+        const hex = numericSeed.slice(0, 6)
         const textPx = Number(numericSeed.slice(0, 2)) + 34
         const heightPx = Number(numericSeed.slice(2, 4)) + 22
         return [
@@ -51,7 +51,7 @@ export function buildHexScriptRoundConfigs() {
       name: 'hex-arbitrary' as const,
       buildClassTokens(seed: string) {
         const numericSeed = seed.replace(NON_DIGIT_RE, '').padEnd(8, '0')
-        const hex = `${numericSeed.slice(0, 2)}00`
+        const hex = `${numericSeed.slice(0, 2)}00${numericSeed.slice(2, 4)}`
         const textPx = Number(numericSeed.slice(0, 2)) + 46
         const heightPx = Number(numericSeed.slice(2, 4)) + 28
         return [

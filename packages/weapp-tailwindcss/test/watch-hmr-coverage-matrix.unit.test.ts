@@ -22,9 +22,12 @@ const styleApplyUnsupportedCases = new Set([
 
 const styleFunctionUnsupportedCases = new Set([
   'mpx-tailwindcss-v4',
+  'taro-vite-react-tailwindcss-v4',
+  'taro-webpack-react-tailwindcss-v4',
 ])
 
 const styleReferenceRequiredCases = new Set([
+  'gulp-tailwindcss-v4',
   'mpx-tailwindcss-v4',
   'uni-app-vite-tailwindcss-v4',
   'taro-vite-react-tailwindcss-v4',
@@ -91,7 +94,8 @@ describe('watch-hmr coverage matrix', () => {
         expect(subPackageMutation.templateMutation.verifyEscapedIn.length + (subPackageMutation.templateMutation.verifyClassLiteralIn?.length ?? 0)).toBeGreaterThan(0)
       }
       if (watchCase.contentMutation) {
-        expect(watchCase.contentMutation.verifyClassLiteralIn).toContain('js')
+        const expectedCarrier = watchCase.contentMutation.sourceFile.endsWith('.wxml') ? 'wxml' : 'js'
+        expect(watchCase.contentMutation.verifyClassLiteralIn).toContain(expectedCarrier)
       }
     }
   })
@@ -113,8 +117,9 @@ describe('watch-hmr coverage matrix', () => {
       }
 
       if (watchCase.contentMutation) {
+        const expectedCarrier = watchCase.contentMutation.sourceFile.endsWith('.wxml') ? 'wxml' : 'js'
         expectDemoSourceFile(watchCase.contentMutation.sourceFile, `${watchCase.project} content mutation`)
-        expect(watchCase.contentMutation.verifyClassLiteralIn, `${watchCase.project} content mutation should verify JS-visible literals`).toContain('js')
+        expect(watchCase.contentMutation.verifyClassLiteralIn, `${watchCase.project} content mutation should verify source-visible literals`).toContain(expectedCarrier)
       }
     }
   })
@@ -169,6 +174,14 @@ describe('watch-hmr coverage matrix', () => {
     expect(mpxCase?.scriptMutation.verifyClassLiteralIn).toContain('js')
     expect(mpxCase?.globalStyleCandidates.some(item => item.includes('utilities*.wxss'))).toBe(true)
     expect(mpxCase?.minGlobalStyleEscapedClasses).toBeGreaterThanOrEqual(1)
+  })
+
+  it('keeps Taro Webpack Vue3 v4 style HMR wired through the page css import', () => {
+    const watchCase = automatedWatchCases.find(item => item.project === 'demo/taro-webpack-vue3-tailwindcss-v4')
+
+    expect(watchCase).toBeDefined()
+    expect(watchCase?.styleMutation?.sourceFile).toBe('/repo/demo/taro-webpack-vue3-tailwindcss-v4/src/pages/index/index.css')
+    expect(watchCase?.outputStyleCandidates).toContain('/repo/demo/taro-webpack-vue3-tailwindcss-v4/dist/app.wxss')
   })
 
   it('keeps the automated watch matrix explicit', () => {

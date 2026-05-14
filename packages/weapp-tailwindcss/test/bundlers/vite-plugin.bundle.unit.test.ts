@@ -1,7 +1,7 @@
 import type { OutputAsset, OutputChunk } from 'rollup'
 import type { Plugin, ResolvedConfig } from 'vite'
 import type { CreateJsHandlerOptions } from '@/types'
-import { mkdtemp, readFile, rm, writeFile } from 'node:fs/promises'
+import { mkdir, mkdtemp, readFile, rm, writeFile } from 'node:fs/promises'
 import os from 'node:os'
 import path from 'node:path'
 import { MappingChars2String } from '@weapp-core/escape'
@@ -20,6 +20,12 @@ import {
 
 const TEST_TIMEOUT_MS = 30000
 const SPLIT_WHITESPACE_RE = /\s+/
+const MINIMAL_TAILWIND_V4_CSS = `
+@theme default {
+  --spacing: 0.25rem;
+}
+@tailwind utilities;
+`
 const createdDirs: string[] = []
 
 async function loadUnifiedVitePlugin() {
@@ -255,8 +261,13 @@ describe('bundlers/vite WeappTailwindcss bundle', () => {
   }, TEST_TIMEOUT_MS)
 
   it('detects tailwindcss v4 css sources from vite css transforms when omitted', async () => {
-    const entry = path.join(os.tmpdir(), 'weapp-tw-vite-auto-entry.css')
-    const css = '@import "tailwindcss";\n@plugin "./plugin.js";'
+    const root = await mkdtemp(path.join(os.tmpdir(), 'weapp-tw-vite-auto-entry-'))
+    createdDirs.push(root)
+    const entry = path.join(root, 'subpackage', 'entry.css')
+    const configFile = path.join(root, 'subpackage', 'tailwind.config.js')
+    const css = '@import "tailwindcss" source(none);\n@config "./tailwind.config.js";'
+    await mkdir(path.dirname(entry), { recursive: true })
+    await writeFile(configFile, 'module.exports = { content: ["./**/*.wxml"] }\n', 'utf8')
     const refreshTailwindcssPatcher = vi.fn()
     const context = createContext({
       twPatcher: {
@@ -287,10 +298,61 @@ describe('bundlers/vite WeappTailwindcss bundle', () => {
       {
         file: entry,
         css,
+        dependencies: [configFile],
       },
     ])
     expect(refreshTailwindcssPatcher).toHaveBeenCalledTimes(1)
     expect(String((result as any)?.code)).toContain('generator-placeholder.css')
+  })
+
+  it('scans Tailwind v4 @config content for vite source candidates', async () => {
+    const root = await mkdtemp(path.join(os.tmpdir(), 'weapp-tw-vite-config-content-'))
+    createdDirs.push(root)
+    const cssEntry = path.join(root, 'sub-independent', 'pages', 'index.css')
+    const configFile = path.join(root, 'sub-independent', 'tailwind.config.cjs')
+    const pageFile = path.join(root, 'sub-independent', 'pages', 'index.wxml')
+    await mkdir(path.dirname(pageFile), { recursive: true })
+    await writeFile(configFile, 'module.exports = { content: ["./pages/**/*.{wxml,ts}"] }\n', 'utf8')
+    await writeFile(pageFile, '<view class="bg-[#010721] text-[35px] h-[29px]">ok</view>\n', 'utf8')
+
+    const context = createContext({
+      twPatcher: {
+        patch: vi.fn(),
+        getClassSet: vi.fn(async () => new Set()),
+        getClassSetSync: vi.fn(() => new Set()),
+        majorVersion: 4,
+        extract: vi.fn(async () => ({ classSet: new Set() })),
+      },
+    })
+    setCurrentContext(context)
+
+    const WeappTailwindcss = await loadUnifiedVitePlugin()
+    const plugins = WeappTailwindcss({
+      cssEntries: [cssEntry],
+    })
+    const sourcePlugin = plugins?.find(plugin => plugin.name === 'weapp-tailwindcss:adaptor:source-candidates') as Plugin
+    const postPlugin = plugins?.find(plugin => plugin.name === 'weapp-tailwindcss:adaptor:post') as Plugin
+    await writeFile(cssEntry, '@import "tailwindcss" source(none);\n@config "./tailwind.config.cjs";\n', 'utf8')
+    await (postPlugin.configResolved as any)?.call(postPlugin, {
+      command: 'build',
+      root,
+      css: { postcss: { plugins: [] } },
+      build: { outDir: 'dist' },
+    } as ResolvedConfig)
+    await (sourcePlugin.buildStart as any)?.call(sourcePlugin)
+
+    const bundle = {
+      'app.css': {
+        ...createRollupAsset(MINIMAL_TAILWIND_V4_CSS),
+        fileName: 'app.css',
+      },
+    }
+    const generateBundle = getGenerateBundleHandler(postPlugin)
+    await generateBundle?.call({ addWatchFile: vi.fn() }, {}, bundle, false)
+
+    expect(String(bundle['app.css'].source)).toContain('.bg-_b_h010721_B')
+    expect(String(bundle['app.css'].source)).toContain('.text-_b35px_B')
+    expect(String(bundle['app.css'].source)).toContain('.h-_b29px_B')
   })
 
   it('updates auto tailwindcss v4 css source content on repeated vite css transforms', async () => {
@@ -321,6 +383,7 @@ describe('bundlers/vite WeappTailwindcss bundle', () => {
       {
         file: entry,
         css: '@import "tailwindcss";\n@source inline("h-4");',
+        dependencies: [],
       },
     ])
     expect(refreshTailwindcssPatcher).toHaveBeenCalledTimes(2)

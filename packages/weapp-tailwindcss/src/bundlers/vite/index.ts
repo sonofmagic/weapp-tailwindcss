@@ -24,7 +24,7 @@ import { resolveImplicitAppTypeFromViteRoot } from './resolve-app-type'
 import { createRewriteCssImportsPlugins } from './rewrite-css-imports'
 import { createViteRuntimeClassSet } from './runtime-class-set'
 import { createSourceCandidateCollector, isSourceCandidateRequest } from './source-candidates'
-import { createViteSourceScanMatcher, resolveViteSourceScanEntries } from './source-scan'
+import { createViteSourceScanMatcher, resolveViteSourceScanEntries, resolveViteTailwindV4CssDependencies } from './source-scan'
 import { resolveImplicitTailwindcssBasedirFromViteRoot } from './tailwind-basedir'
 import { cleanUrl, slash } from './utils'
 
@@ -130,9 +130,11 @@ export function WeappTailwindcss(options: UserDefinedOptions = {}): Plugin[] | u
       return
     }
     autoCssSourceContent.set(sourceFile, css)
+    const dependencies = await resolveViteTailwindV4CssDependencies(css, path.dirname(sourceFile))
     upsertTailwindV4CssSource(opts, {
       file: sourceFile,
       css,
+      dependencies,
     })
     debug('detected tailwindcss v4 css source from vite css module: %s', sourceFile)
     autoCssSourcesRefresh = (autoCssSourcesRefresh ?? Promise.resolve()).then(async () => {

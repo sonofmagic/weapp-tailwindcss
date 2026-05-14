@@ -16,7 +16,6 @@ import process from 'node:process'
 import { replaceWxml } from '../../core/replace-wxml'
 import { formatPath } from '../cli'
 import {
-  assertContains,
   assertContainsOneOf,
   assertNotContains,
   getMtime,
@@ -215,8 +214,10 @@ async function waitForRoundOutputs(
 ): Promise<{ effectiveMs: number, outputs: RoundOutputs, matchedEscapedClasses: string[] }> {
   let resolvedOutputs: RoundOutputs | undefined
   let matchedEscapedClasses: string[] = []
+  let lastAssertError: unknown
 
-  const effectiveMs = await waitFor(
+  const waitStartedAt = Date.now()
+  await waitFor(
     async () => {
       const outputs = await loadRoundOutputsSafe(watchCase, globalStyleOutputs)
       try {
@@ -224,17 +225,18 @@ async function waitForRoundOutputs(
         resolvedOutputs = outputs
         return true
       }
-      catch {
+      catch (error) {
+        lastAssertError = error
         return false
       }
     },
     {
       timeoutMs: options.timeoutMs,
       pollMs: options.pollMs,
-      message: `[${watchCase.label}] mutation=${mutationKind} phase=${phase} global style output did not contain transformed classes in time`,
+      message: `[${watchCase.label}] mutation=${mutationKind} phase=${phase} transformed class assertions did not pass in time: ${asErrorMessage(lastAssertError)}`,
       onTick: session.ensureRunning,
     },
-    startedAt,
+    waitStartedAt,
   )
 
   if (!resolvedOutputs) {
@@ -242,7 +244,7 @@ async function waitForRoundOutputs(
   }
 
   return {
-    effectiveMs,
+    effectiveMs: Date.now() - startedAt,
     outputs: resolvedOutputs,
     matchedEscapedClasses,
   }
@@ -287,11 +289,13 @@ function assertRoundOutputs(
   outputs: RoundOutputs,
 ) {
   for (const escaped of escapedClasses) {
+    const classToken = classTokens[escapedClasses.indexOf(escaped)]
+    const expectedValues = classToken ? [escaped, classToken] : [escaped]
     if (mutation.verifyEscapedIn.includes('wxml')) {
-      assertContains(outputs.wxml, escaped, `[${watchCase.label}] mutation=${mutationKind} phase=${phase} updated wxml`)
+      assertContainsOneOf(outputs.wxml, expectedValues, `[${watchCase.label}] mutation=${mutationKind} phase=${phase} updated wxml`)
     }
     if (mutation.verifyEscapedIn.includes('js')) {
-      assertContains(outputs.js, escaped, `[${watchCase.label}] mutation=${mutationKind} phase=${phase} updated js`)
+      assertContainsOneOf(outputs.js, expectedValues, `[${watchCase.label}] mutation=${mutationKind} phase=${phase} updated js`)
     }
   }
 

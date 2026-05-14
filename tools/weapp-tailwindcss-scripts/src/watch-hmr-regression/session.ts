@@ -86,6 +86,7 @@ function createLineCollector(
 
 const compileSuccessLinePatterns = [
   /compiled successfully/i,
+  /compiled with (?:some )?warnings?/i,
   /build complete/i,
   /watching for changes/i,
   /watching for file changes/i,
@@ -420,6 +421,7 @@ export function createWatchSession(
       WATCHPACK_POLLING_INTERVAL: process.env.WATCHPACK_POLLING_INTERVAL ?? '1000',
       CHOKIDAR_USEPOLLING: process.env.CHOKIDAR_USEPOLLING ?? '1',
       CHOKIDAR_INTERVAL: process.env.CHOKIDAR_INTERVAL ?? '1000',
+      NODE_OPTIONS: process.env.NODE_OPTIONS ?? '--max-old-space-size=8192',
       ...env,
     }),
     detached: process.platform !== 'win32',

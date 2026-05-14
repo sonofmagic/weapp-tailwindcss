@@ -1,3 +1,5 @@
+@reference "tailwindcss";
+
 .tw-page-style-watch-anchor {
   color: inherit;
 }

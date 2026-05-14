@@ -392,11 +392,15 @@ export function createStyleMutationPayload(watchCase: WatchCase): StyleMutationP
   const functionNeedle = STYLE_FUNCTION_UNSUPPORTED_CASES.has(watchCase.name)
     ? undefined
     : `.${marker}-theme`
+  const styleNeedle = `.${marker}`
   return {
     marker,
-    styleNeedle: `.${marker}`,
+    styleNeedle,
+    outputNeedles: [styleNeedle],
+    rollbackNeedles: [styleNeedle],
     applyUtilities: applyValidation?.utilities ?? [],
     expectedApplyDeclarations: applyValidation?.expectedDeclarations ?? [],
+    expectedApplyDeclarationGroups: applyValidation?.expectedDeclarationGroups ?? [],
     ...(functionNeedle ? { functionNeedle } : {}),
     functionDeclarations: functionNeedle
       ? ['padding: theme(\'spacing.2\');', 'margin-left: theme(\'spacing.3\');']

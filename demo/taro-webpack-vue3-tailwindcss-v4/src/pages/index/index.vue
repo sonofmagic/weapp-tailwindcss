@@ -13,6 +13,7 @@
 
 <script setup lang="ts">
 import { useLoad } from '@tarojs/taro'
+import './index.css'
 
 useLoad(() => {})
 </script>
