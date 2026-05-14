@@ -1,15 +1,13 @@
 import type { createWatchSession } from '../tools/weapp-tailwindcss-scripts/src/watch-hmr-regression/session'
 import type { CliOptions, WatchCase } from '../tools/weapp-tailwindcss-scripts/src/watch-hmr-regression/types'
-import type { FrameworkSupportCase } from './frameworkSupportMatrix'
 import process from 'node:process'
 import {
+  createStyleMutationPayload,
   waitForCompileSettled,
   waitForOutputFilesUpdated,
 } from '../tools/weapp-tailwindcss-scripts/src/watch-hmr-regression/mutations'
 import {
-  appendTrailingSnippet,
   findCssRuleBody,
-  insertBeforeClosingTag,
   normalizeCssDeclaration,
   waitFor,
   writeFilePreserveEol,
@@ -35,49 +33,39 @@ function getRollbackTimeoutMs(options: CliOptions) {
   return Math.min(options.timeoutMs, readNumberEnv('E2E_IDE_ROLLBACK_TIMEOUT_MS', 30_000))
 }
 
-function createIdeStyleSnippet(entry: FrameworkSupportCase, marker: string) {
-  const selector = `.${marker}`
-  const functionSelector = `.${marker}-theme`
-  const color = entry.tailwindcss === 'v4' ? '#14532d' : '#1d4ed8'
-  const lines = [
-    `${selector} { @apply font-bold text-center bg-[#123456] px-[12px]; color: ${color}; }`,
-    `${functionSelector} { padding: theme('spacing.2'); margin-left: theme('spacing.3'); }`,
-  ]
-  if (entry.tailwindcss === 'v4') {
-    lines.unshift('@reference "tailwindcss";')
-  }
-  return lines.join('\n')
-}
-
-function mutateStyleSource(source: string, snippet: string) {
-  if (source.includes('</style>')) {
-    return insertBeforeClosingTag(source, '</style>', snippet)
-  }
-  return appendTrailingSnippet(source, snippet)
-}
-
-function assertStyleOutput(watchCase: WatchCase, content: string, marker: string) {
-  const applyRule = findCssRuleBody(content, `.${marker}`)
+function assertStyleOutput(
+  watchCase: WatchCase,
+  content: string,
+  payload: ReturnType<typeof createStyleMutationPayload>,
+) {
+  const applyRule = findCssRuleBody(content, payload.styleNeedle)
   if (!applyRule) {
-    throw new Error(`[${watchCase.label}] IDE style HMR output is missing @apply rule .${marker}`)
+    throw new Error(`[${watchCase.label}] IDE style HMR output is missing style rule ${payload.styleNeedle}`)
   }
   const normalizedApplyRule = normalizeCssDeclaration(applyRule)
-  for (const expected of ['font-weight:', 'text-align:', 'background-color:', 'padding-left:', 'padding-right:']) {
+  for (const expected of payload.expectedApplyDeclarations) {
     if (!normalizedApplyRule.includes(normalizeCssDeclaration(expected))) {
       throw new Error(`[${watchCase.label}] IDE style HMR @apply output is missing declaration ${expected}`)
     }
   }
 
-  const functionRule = findCssRuleBody(content, `.${marker}-theme`)
+  if (!payload.functionNeedle) {
+    return
+  }
+
+  const functionRule = findCssRuleBody(content, payload.functionNeedle)
   if (!functionRule) {
-    throw new Error(`[${watchCase.label}] IDE style HMR output is missing Tailwind function rule .${marker}-theme`)
+    throw new Error(`[${watchCase.label}] IDE style HMR output is missing Tailwind function rule ${payload.functionNeedle}`)
   }
-  if (functionRule.includes('theme(')) {
-    throw new Error(`[${watchCase.label}] IDE style HMR did not resolve Tailwind theme() function`)
-  }
+
   const normalizedFunctionRule = normalizeCssDeclaration(functionRule)
-  for (const expected of ['padding', 'margin-left']) {
-    if (!normalizedFunctionRule.includes(`${expected}:`)) {
+  for (const forbidden of payload.forbiddenFunctionFragments) {
+    if (functionRule.includes(forbidden)) {
+      throw new Error(`[${watchCase.label}] IDE style HMR did not resolve Tailwind function fragment ${forbidden}`)
+    }
+  }
+  for (const expected of payload.expectedFunctionDeclarations) {
+    if (!normalizedFunctionRule.includes(normalizeCssDeclaration(expected))) {
       throw new Error(`[${watchCase.label}] IDE style HMR function output is missing declaration ${expected}`)
     }
   }
@@ -89,7 +77,6 @@ function resolveUpdatedStyleFiles(watchCase: WatchCase, baselineMtimes: Map<stri
 }
 
 export async function runIdeStyleHotUpdate(
-  entry: FrameworkSupportCase,
   options: CliOptions,
   watchCase: WatchCase,
   session: ReturnType<typeof createWatchSession>,
@@ -97,8 +84,8 @@ export async function runIdeStyleHotUpdate(
 ) {
   const sourceFile = watchCase.styleMutation.sourceFile
   process.stdout.write(`[e2e:ide] ${watchCase.label} style HMR mutate ${sourceFile}\n`)
-  const marker = `tw-ide-style-${watchCase.name}-${Date.now().toString().slice(-6)}`
-  const mutatedSource = mutateStyleSource(sourceOriginal, createIdeStyleSnippet(entry, marker))
+  const payload = createStyleMutationPayload(watchCase)
+  const mutatedSource = watchCase.styleMutation.mutate(sourceOriginal, payload)
   const { artifacts: baselineArtifacts, mtimes: baselineMtimes } = await collectArtifactMtimes(watchCase)
   const mutationStartedAt = Date.now()
 
@@ -110,19 +97,19 @@ export async function runIdeStyleHotUpdate(
     options,
     session,
     mutationStartedAt,
-    async () => hasAnyNeedle(await readArtifacts(watchCase), [marker]),
+    async () => hasAnyNeedle(await readArtifacts(watchCase), [payload.styleNeedle]),
   )
 
   let changedArtifacts: string[] = []
   await waitFor(
     async () => {
       const currentArtifacts = await readArtifacts(watchCase)
-      const styleArtifacts = currentArtifacts.filter(item => item.kind === 'style' && item.content.includes(marker))
+      const styleArtifacts = currentArtifacts.filter(item => item.kind === 'style' && item.content.includes(payload.styleNeedle))
       if (styleArtifacts.length === 0 || countChangedArtifacts(baselineArtifacts, currentArtifacts) === 0) {
         return false
       }
       for (const artifact of styleArtifacts) {
-        assertStyleOutput(watchCase, artifact.content, marker)
+        assertStyleOutput(watchCase, artifact.content, payload)
       }
       changedArtifacts = summarizeChangedArtifacts(baselineArtifacts, currentArtifacts)
       return true
@@ -144,11 +131,11 @@ export async function runIdeStyleHotUpdate(
   await writeFilePreserveEol(sourceFile, sourceOriginal, sourceOriginal)
   await waitForCompileSettled(watchCase, options, session, rollbackStartedAt)
   await waitFor(
-    async () => !hasAnyNeedle(await readArtifacts(watchCase), [marker]),
+    async () => !hasAnyNeedle(await readArtifacts(watchCase), [payload.styleNeedle]),
     {
       timeoutMs: getRollbackTimeoutMs(options),
       pollMs: options.pollMs,
-      message: `[${watchCase.label}] IDE style HMR marker was not removed after rollback: ${marker}`,
+      message: `[${watchCase.label}] IDE style HMR marker was not removed after rollback: ${payload.styleNeedle}`,
       onTick: session.ensureRunning,
     },
     rollbackStartedAt,

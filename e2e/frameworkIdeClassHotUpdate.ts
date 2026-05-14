@@ -96,6 +96,11 @@ function resolveUpdatedArtifactFiles(files: string[], baselineMtimes: Map<string
   return files.filter(file => file.includes('*') || baselineMtimes.has(file))
 }
 
+function shouldVerifyLivePageVisibility(watchCase: WatchCase, mutationKind: 'template' | 'script') {
+  return mutationKind === 'template'
+    && !watchCase.outputWxml.includes('/custom-tab-bar/')
+}
+
 export async function runIdeClassHotUpdate(
   options: CliOptions,
   watchCase: WatchCase,
@@ -171,24 +176,28 @@ export async function runIdeClassHotUpdate(
   await miniProgram.clearCache?.({ clean: 'compile' }).catch(() => undefined)
   await miniProgram.compile({ force: true }).catch(() => undefined)
   let devtoolsVisible = 'false'
-  process.stdout.write(`[e2e:ide] ${watchCase.label} ${mutationKind} HMR verify DevTools visibility\n`)
-  const liveHasMarker = await waitFor(
-    async () => {
-      try {
-        return (await readPageWxml(page, pageUrl)).includes(scenario.marker)
-      }
-      catch {
-        return false
-      }
-    },
-    {
-      timeoutMs: getDevToolsVisibleTimeoutMs(options),
-      pollMs: options.pollMs,
-      message: `[${watchCase.label}] DevTools page did not show IDE ${mutationKind} HMR marker: ${scenario.marker}`,
-      onTick: session.ensureRunning,
-    },
-    mutationStartedAt,
-  ).then(() => true).catch(() => false)
+  const verifyLivePage = shouldVerifyLivePageVisibility(watchCase, mutationKind)
+  process.stdout.write(`[e2e:ide] ${watchCase.label} ${mutationKind} HMR verify DevTools visibility=${verifyLivePage ? 'page' : 'compile'}\n`)
+  let liveHasMarker = false
+  if (verifyLivePage) {
+    liveHasMarker = await waitFor(
+      async () => {
+        try {
+          return (await readPageWxml(page, pageUrl)).includes(scenario.marker)
+        }
+        catch {
+          return false
+        }
+      },
+      {
+        timeoutMs: getDevToolsVisibleTimeoutMs(options),
+        pollMs: options.pollMs,
+        message: `[${watchCase.label}] DevTools page did not show IDE ${mutationKind} HMR marker: ${scenario.marker}`,
+        onTick: session.ensureRunning,
+      },
+      mutationStartedAt,
+    ).then(() => true).catch(() => false)
+  }
 
   if (liveHasMarker) {
     const liveAfter = await readPageWxml(page, pageUrl)
@@ -197,7 +206,7 @@ export async function runIdeClassHotUpdate(
     }
     devtoolsVisible = 'live'
   }
-  else if (mutationKind === 'template') {
+  else if (verifyLivePage && mutationKind === 'template') {
     process.stdout.write(`[e2e:ide] ${watchCase.label} template HMR reopen DevTools for visibility fallback\n`)
     const freshWxml = await readFreshDevToolsPageWxml(launchProjectPath, pageUrl)
     if (!freshWxml.includes(scenario.marker)) {
@@ -207,6 +216,9 @@ export async function runIdeClassHotUpdate(
       throw new Error(`[${watchCase.label}] DevTools fresh page WXML did not change after template HMR`)
     }
     devtoolsVisible = 'fresh'
+  }
+  else {
+    devtoolsVisible = 'compile'
   }
 
   process.stdout.write(

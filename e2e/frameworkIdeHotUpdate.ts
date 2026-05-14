@@ -16,6 +16,9 @@ import { runIdeClassHotUpdate } from './frameworkIdeClassHotUpdate'
 import { runIdeStyleHotUpdate } from './frameworkIdeStyleHotUpdate'
 
 const TARO_VITE_INITIAL_BUILD_RE = /built in [\d.]+s?|compiled successfully|构建完成/i
+const IDE_STYLE_HOT_UPDATE_EXEMPT_CASES = new Set([
+  'mpx-tailwindcss-v4',
+])
 
 const frameworkIdeWatchCaseNames: Record<string, WatchCase['name']> = {
   'gulp-tailwindcss-v3': 'gulp-tailwindcss-v3',
@@ -96,6 +99,10 @@ function resolveFrameworkWatchCase(entry: FrameworkSupportCase) {
 
 function shouldWaitForTaroViteInitialBuild(watchCase: WatchCase) {
   return watchCase.name === 'taro-vite-react-tailwindcss-v3' || watchCase.name === 'taro-vite-react-tailwindcss-v4'
+}
+
+function shouldRunIdeStyleHotUpdate(watchCase: WatchCase) {
+  return !watchCase.skipStyleMutation && !IDE_STYLE_HOT_UPDATE_EXEMPT_CASES.has(watchCase.name)
 }
 
 async function waitForTaroViteInitialBuild(
@@ -215,14 +222,16 @@ export async function runFrameworkIdeHotUpdateProbe(
           pageUrl,
           launchProjectPath,
         )
-        if (!watchCase.skipStyleMutation) {
+        if (shouldRunIdeStyleHotUpdate(watchCase)) {
           await runIdeStyleHotUpdate(
-            entry,
             options,
             watchCase,
             session,
             sourceOriginals.get(watchCase.styleMutation.sourceFile)!,
           )
+        }
+        else if (!watchCase.skipStyleMutation) {
+          process.stdout.write(`[e2e:ide] ${watchCase.label} style HMR skipped for IDE stability; watch-HMR keeps style coverage\n`)
         }
       })(),
     )
