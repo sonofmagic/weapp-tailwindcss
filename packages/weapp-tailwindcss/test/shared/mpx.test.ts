@@ -98,13 +98,13 @@ describe('shared/mpx helpers', () => {
     })
 
     const cssEntry = path.join(pkgDir, 'index.css')
+    const mpxPluginDir = path.dirname(createRequire(import.meta.url).resolve('@mpxjs/webpack-plugin/package.json'))
     expect(results.tailwindcss).toBe(cssEntry)
     expect(results.tailwindcssDollar).toBe(cssEntry)
     expect(results.tailwindcssSubpath).toBe(path.join(pkgDir, 'plugin'))
-    expect(results.mpxLoader).toBe('resolved:@mpxjs/webpack-plugin/lib/record-loader')
+    expect(results.mpxLoader).toBe(path.join(mpxPluginDir, 'lib/record-loader'))
     expect(results.other).toBe('resolved:lodash')
-    expect(originalResolve).toHaveBeenCalledTimes(2)
-    expect(originalResolve).toHaveBeenCalledWith(process.cwd(), '@mpxjs/webpack-plugin/lib/record-loader', expect.any(Function))
+    expect(originalResolve).toHaveBeenCalledTimes(1)
 
     patchMpxLoaderResolve(loaderContext, pkgDir, true)
     expect(loaderContext.resolve).toBe(patchedResolve)

@@ -45,6 +45,13 @@ function isMpxWebpackPluginRequest(request: string | undefined) {
   return request === '@mpxjs/webpack-plugin' || Boolean(request?.startsWith('@mpxjs/webpack-plugin/'))
 }
 
+function resolveMpxWebpackPluginRequest(request: string, mpxWebpackPluginDir: string) {
+  if (request === '@mpxjs/webpack-plugin') {
+    return mpxWebpackPluginDir
+  }
+  return path.join(mpxWebpackPluginDir, request.slice('@mpxjs/webpack-plugin/'.length))
+}
+
 function addMpxWebpackPluginAlias(alias: any, pkgDir: string) {
   if (Array.isArray(alias)) {
     alias.push({
@@ -102,6 +109,7 @@ export function patchMpxLoaderResolve(
     return
   }
   const tailwindcssCssEntry = getTailwindcssCssEntry(pkgDir)
+  const mpxWebpackPluginDir = path.dirname(localRequire.resolve('@mpxjs/webpack-plugin/package.json'))
   const wrappedResolve = function (this: any, context: any, request: string, callback: any) {
     if (request === 'tailwindcss' || request === 'tailwindcss$') {
       return callback(null, tailwindcssCssEntry)
@@ -110,7 +118,7 @@ export function patchMpxLoaderResolve(
       return callback(null, path.join(pkgDir, request.slice('tailwindcss/'.length)))
     }
     if (isMpxWebpackPluginRequest(request)) {
-      return originalResolve.call(this, process.cwd(), request, callback)
+      return callback(null, resolveMpxWebpackPluginRequest(request, mpxWebpackPluginDir))
     }
     return originalResolve.call(this, context, request, callback)
   }

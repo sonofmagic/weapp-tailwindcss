@@ -2,23 +2,14 @@
 ::after {
   --tw-content: '';
 }
+
 :host,
 page,
 .tw-root,
 wx-root-portal-content {
-  --tw-gradient-position: initial;
-  --tw-gradient-from: rgba(0, 0, 0, 0);
-  --tw-gradient-via: rgba(0, 0, 0, 0);
-  --tw-gradient-to: rgba(0, 0, 0, 0);
-  --tw-gradient-stops: initial;
-  --tw-gradient-via-stops: initial;
-  --tw-gradient-from-position: 0%;
-  --tw-gradient-via-position: 50%;
-  --tw-gradient-to-position: 100%;
   --tw-content: '';
-  --color-purple-800: rgb(110, 17, 176);
-  --color-pink-200: rgb(252, 206, 232);
-  --spacing: 8rpx;
+  --color-gray-200: #e5e7eb;
+  --color-gray-400: #9ca3af;
   --nutui-brand-1: #ffebf1;
   --nutui-brand-2: #ffd6e1;
   --nutui-brand-3: #ffadbe;
@@ -245,67 +236,8 @@ wx-root-portal-content {
   --nutui-radius-xxl: var(--nutui-radius-14);
   --nutui-radius-xxxl: var(--nutui-radius-16);
 }
-.static {
-  position: static;
-}
-.container {
-  width: 100%;
-}
-@media (min-width: 40rem) {
-  .container {
-    max-width: 1280rpx;
-  }
-}
-@media (min-width: 48rem) {
-  .container {
-    max-width: 1536rpx;
-  }
-}
-@media (min-width: 64rem) {
-  .container {
-    max-width: 2048rpx;
-  }
-}
-@media (min-width: 80rem) {
-  .container {
-    max-width: 2560rpx;
-  }
-}
-@media (min-width: 96rem) {
-  .container {
-    max-width: 3072rpx;
-  }
-}
-.h-14 {
-  height: calc(var(--spacing) * 14);
-}
 .bg-_b_h534312_B {
   background-color: #534312;
-}
-.bg-purple-800 {
-  background-color: var(--color-purple-800);
-}
-.bg-gradient-to-r {
-  --tw-gradient-position: to right;
-  background-image: linear-gradient(var(--tw-gradient-stops));
-}
-.from-cyan-500 {
-  --tw-gradient-from: var(--color-cyan-500);
-  --tw-gradient-stops: var(
-    --tw-gradient-via-stops,
-    var(--tw-gradient-position),
-    var(--tw-gradient-from) var(--tw-gradient-from-position),
-    var(--tw-gradient-to) var(--tw-gradient-to-position)
-  );
-}
-.to-blue-500 {
-  --tw-gradient-to: var(--color-blue-500);
-  --tw-gradient-stops: var(
-    --tw-gradient-via-stops,
-    var(--tw-gradient-position),
-    var(--tw-gradient-from) var(--tw-gradient-from-position),
-    var(--tw-gradient-to) var(--tw-gradient-to-position)
-  );
 }
 .text-_b100rpx_B {
   font-size: 100rpx;
@@ -313,14 +245,11 @@ wx-root-portal-content {
 .text-_b_hfff_B {
   color: #fff;
 }
-.text-pink-200 {
-  color: var(--color-pink-200);
-}
-.before_ccontent-_b_aindependent_subpackage_taro-webpack-react-tailwindcss-v4_a_B:before {
+.before_ccontent-_b_aindependent_subpackage_taro-webpack-react-tailwindcss-v4_a_B::before {
   --tw-content: 'independent subpackage taro-webpack-react-tailwindcss-v4';
   content: var(--tw-content);
 }
-.before_ccontent-_b_anormal_subpackage_taro-webpack-react-tailwindcss-v4_a_B:before {
+.before_ccontent-_b_anormal_subpackage_taro-webpack-react-tailwindcss-v4_a_B::before {
   --tw-content: 'normal subpackage taro-webpack-react-tailwindcss-v4';
   content: var(--tw-content);
 }

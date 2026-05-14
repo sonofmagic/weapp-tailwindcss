@@ -868,8 +868,8 @@ export function normalizeCssSnapshot(source: string, _options: CssSnapshotOption
   if (!isTailwindV4 && hasWeappEscapedArbitrarySelector(root)) {
     sortUtilityRuleRuns(root)
   }
+  normalizeWeappRootRules(root, _options)
   if (isTailwindV4) {
-    normalizeWeappRootRules(root, _options)
     removeTailwindV4RootVariableNoise(root, _options)
     removeTailwindV4DefaultTokenNoise(root)
     normalizeTailwindV4ColorOutput(root)
