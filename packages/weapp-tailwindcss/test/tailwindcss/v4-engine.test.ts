@@ -577,6 +577,7 @@ describe('tailwindcss v4 engine', () => {
     })
 
     expect(result.css).toContain('border-color: var(--color-gray-200, currentcolor)')
+    expect(result.css).not.toContain('@layer base')
     expect(result.css).toContain('--tw-ring-shadow: var(--tw-ring-inset,) 0 0 0 calc(3px + var(--tw-ring-offset-width)) var(--tw-ring-color, var(--color-blue-500, #3b82f6))')
     expect(result.css).toContain('--tw-shadow: 0 1px 2px 0 var(--tw-shadow-color, rgb(0 0 0 / 0.05))')
     expect(result.css).toContain('border-radius: var(--radius-sm)')
