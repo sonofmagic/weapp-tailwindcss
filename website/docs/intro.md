@@ -52,19 +52,17 @@ keywords:
 
 ## 快速开始 :rocket:
 
-### 🔥 Tailwind CSS @3.x
+### 👉 [快速使用](/docs/quick-start/install)
 
-`weapp-tailwindcss` 主要提供了 `3` 种使用方式:
+先选择 `tailwindcss@3` 或 `tailwindcss@4`，再按 `uni-app`、`Taro`、`Mpx`、原生小程序等框架注册 `WeappTailwindcss` 构建器插件。
 
-#### 👉 [1. 框架类( `taro` , `uni-app` , `mpx` )小程序开发的快速开始](/docs/quick-start/install)
+### 👉 [各框架模板](/docs/community/templates)
 
-#### 👉 [2. 原生小程序开发的快速开始](/docs/quick-start/native/install)
+如果你想直接对照可运行项目，可以优先查看模板项目。
 
-#### 👉 [3. 可直接使用的各个框架的小程序模板](/docs/community/templates)
+### 👉 [Tailwind CSS 4.x 参考](/docs/quick-start/v4)
 
-### 🧪 Tailwind CSS @4.x
-
-#### 👉 [Tailwindcss@4.x 快速开始](/docs/quick-start/v4)
+如果你已经确定使用 `tailwindcss@4`，这里有 CSS-first、`@source`、`@apply`、`@layer` 和 IntelliSense 的补充说明。
 
 ## 演示视频
 

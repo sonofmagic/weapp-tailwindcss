@@ -19,6 +19,8 @@ keywords:
 ---
 # Rax (react)
 
+本文是 `weapp-tailwindcss@5` 配合 `tailwindcss@3` 的 Rax 接入方式。Tailwind CSS 3.x 入口 CSS 使用 `@tailwind` 指令，扫描范围继续写在 `tailwind.config.js` 的 `content` 中。
+
 在根目录下创建一个 `build.plugin.js` 文件，然后在 `build.json` 中注册：
 
 ```json title="build.json"

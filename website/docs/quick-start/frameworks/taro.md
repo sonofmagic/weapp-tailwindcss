@@ -32,6 +32,17 @@ keywords:
 
 下列配置同时支持 `taro` 的 `react` / `preact` / `vue2` / `vue3` 所有框架
 
+## Tailwind CSS 版本选择
+
+本文是 `weapp-tailwindcss@5` 配合 `tailwindcss@3` 的 Taro 接入方式：
+
+- `src/app.css` 使用 `@tailwind base; @tailwind components; @tailwind utilities;`
+- `tailwind.config.js` 使用 `content` 配置扫描范围
+- `config/index.[jt]s` 只注册 `WeappTailwindcss`
+- 不再在 PostCSS 中注册 `tailwindcss`
+
+如果你的项目已经使用 `tailwindcss@4`，请改看 [Tailwind CSS 4.x / Taro Webpack](/docs/quick-start/v4/taro-webpack) 或 [Tailwind CSS 4.x / Taro Vite](/docs/quick-start/v4/taro-vite)。
+
 ## 使用 Webpack 作为打包工具
 
 ### 注册插件

@@ -1,6 +1,6 @@
 {
   "version": "1.0.0",
-  "generatedAt": "2026-05-11T16:23:27.251Z",
+  "generatedAt": "2026-05-14T05:37:13.862Z",
   "siteUrl": "https://tw.icebreaker.top",
   "totals": {
     "all": 181,
@@ -2986,10 +2986,10 @@
         "环境要求",
         "Why `weapp-tailwindcss`?",
         "快速开始 :rocket:",
-        "# 🔥 Tailwind CSS @3.x",
-        "## 👉 [1. 框架类( `taro` , `uni-app` , `mpx` )小程序开发的快速开始](/docs/quick-start/install)",
-        "## 👉 [2. 原生小程序开发的快速开始](/docs/quick-start/native/install)",
-        "## 👉 [3. 可直接使用的各个框架的小程序模板](/docs/community/templates)"
+        "# 👉 [快速使用](/docs/quick-start/install)",
+        "# 👉 [各框架模板](/docs/community/templates)",
+        "# 👉 [Tailwind CSS 4.x 参考](/docs/quick-start/v4)",
+        "演示视频"
       ],
       "updatedAt": null,
       "source": "docs/intro.md"
@@ -4149,7 +4149,9 @@
         "mpx"
       ],
       "headings": [
-        "如何使用"
+        "Tailwind CSS 3.x 前置步骤",
+        "如何使用",
+        "和构建器插件的区别"
       ],
       "updatedAt": null,
       "source": "docs/quick-start/frameworks/api.md"
@@ -4250,6 +4252,7 @@
       ],
       "headings": [
         "gulp 模板",
+        "weapp-vite 模板",
         "组件样式的隔离性",
         "vscode tailwindcss 智能提示设置"
       ],
@@ -4261,7 +4264,7 @@
       "id": "doc:quick-start/frameworks/rax",
       "title": "Rax (react)",
       "description": "在根目录下创建一个 build.plugin.js 文件，然后在 build.json 中注册：",
-      "summary": "在根目录下创建一个 build.plugin.js 文件，然后在 build.json 中注册：",
+      "summary": "本文是 weapp-tailwindcss@5 配合 tailwindcss@3 的 Rax 接入方式。Tailwind CSS 3.x 入口 CSS 使用 @tailwind 指令，扫描范围继续写在 tailwind.config.js 的 content 中。",
       "url": "/docs/quick-start/frameworks/rax",
       "canonical": "https://tw.icebreaker.top/docs/quick-start/frameworks/rax",
       "keywords": [
@@ -4309,6 +4312,7 @@
         "mpx"
       ],
       "headings": [
+        "Tailwind CSS 版本选择",
         "使用 Webpack 作为打包工具",
         "# 注册插件",
         "使用 Vite 作为打包工具",
@@ -4460,9 +4464,9 @@
     {
       "kind": "doc",
       "id": "doc:quick-start/install",
-      "title": "Tailwind CSS 3.x 生成模式安装与配置",
-      "description": "使用 weapp-tailwindcss v5 默认生成模式接入 Tailwind CSS 3.x。",
-      "summary": "weapp-tailwindcss@5 默认使用生成模式。Tailwind CSS 3.x 项目继续使用 tailwind.config.js 的 content 扫描范围，但样式生成由 WeappTailwindcss 构建器插件接管，不再把 tailwindcss 注册到 PostCSS。",
+      "title": "快速使用",
+      "description": "使用 weapp-tailwindcss v5 接入 Tailwind CSS 3.x 或 4.x，并按框架注册构建器插件。",
+      "summary": "weapp-tailwindcss@5 默认使用生成模式。你只需要做两件事：",
       "url": "/docs/quick-start/install",
       "canonical": "https://tw.icebreaker.top/docs/quick-start/install",
       "keywords": [
@@ -4471,6 +4475,7 @@
         "配置",
         "tailwindcss",
         "tailwindcss 3",
+        "tailwindcss 4",
         "generator",
         "weapp-tailwindcss",
         "小程序",
@@ -4479,16 +4484,18 @@
         "taro",
         "rax",
         "mpx",
-        "Tailwind",
-        "CSS",
-        "3.x"
+        "快速使用",
+        "quick start"
       ],
       "headings": [
-        "1. 安装依赖",
-        "2. 配置扫描范围",
-        "3. 添加 CSS 入口",
-        "4. 注册构建器插件",
-        "5. 旧项目迁移检查"
+        "1. 选择 Tailwind CSS 版本",
+        "2. 安装依赖",
+        "# Tailwind CSS 3.x",
+        "# Tailwind CSS 4.x",
+        "3. 准备 CSS 入口",
+        "# Tailwind CSS 3.x 入口",
+        "# Tailwind CSS 4.x 入口",
+        "4. 注册构建器插件"
       ],
       "updatedAt": null,
       "source": "docs/quick-start/install.mdx"
