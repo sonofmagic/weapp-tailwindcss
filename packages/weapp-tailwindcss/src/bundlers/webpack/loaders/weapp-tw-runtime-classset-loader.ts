@@ -2,7 +2,8 @@ import type webpack from 'webpack'
 import { Buffer } from 'node:buffer'
 import process from 'node:process'
 import loaderUtils from 'loader-utils'
-import { finalizeMiniProgramCss } from '@/bundlers/shared/css-cleanup'
+import postcss from 'postcss'
+import { removeUnsupportedCascadeLayers } from '@/tailwindcss/remove-unsupported-css'
 
 interface RuntimeClassSetLoaderOptions {
   getClassSet?: () => void | Promise<void>
@@ -25,9 +26,30 @@ const getLoaderOptions = (loaderUtils as unknown as {
 function normalizeRuntimeCssSource(source: string | Buffer) {
   if (Buffer.isBuffer(source)) {
     const css = source.toString('utf8')
-    return css.includes('@layer') ? Buffer.from(finalizeMiniProgramCss(css)) : source
+    return shouldCleanRuntimeCss(css) ? Buffer.from(cleanRuntimeCss(css)) : source
   }
-  return source.includes('@layer') ? finalizeMiniProgramCss(source) : source
+  return shouldCleanRuntimeCss(source) ? cleanRuntimeCss(source) : source
+}
+
+function shouldCleanRuntimeCss(css: string) {
+  return css.includes('@layer') || css.includes('@theme')
+}
+
+function cleanRuntimeCss(css: string) {
+  const root = postcss.parse(css)
+  removeUnsupportedCascadeLayers(root)
+  removeUnsupportedThemeKeyframes(root)
+  return root.toString()
+}
+
+function removeUnsupportedThemeKeyframes(root: postcss.Root) {
+  root.walkAtRules('theme', (themeRule) => {
+    themeRule.walkAtRules((atRule) => {
+      if (atRule.name.startsWith('-') && atRule.name.endsWith('keyframes')) {
+        atRule.remove()
+      }
+    })
+  })
 }
 
 const WeappTwRuntimeClassSetLoader: webpack.LoaderDefinitionFunction<RuntimeClassSetLoaderOptions> = function (

@@ -105,6 +105,60 @@ describe('bundlers/runtime classset loader', () => {
     expect(result.toString('utf8')).toContain('.text-blue-500 { color: blue; }')
   })
 
+  it('preserves runtime css declaration order outside cascade layers', () => {
+    const source = [
+      '@layer utilities {',
+      '.i-mdi-abacus {',
+      '  width: 1em;',
+      '  height: 1em;',
+      '  --svg: url("data:image/svg+xml,%3Csvg%3E%3C/svg%3E");',
+      '  mask-image: var(--svg);',
+      '  background-color: currentColor;',
+      '  display: inline-block;',
+      '}',
+      '}',
+    ].join('\n')
+
+    const result = loader.call({
+      query: {},
+      resourcePath: '/workspace/src/app.css',
+    } as any, source)
+
+    expect(result.trim()).toMatchInlineSnapshot(`
+      ".i-mdi-abacus {
+        width: 1em;
+        height: 1em;
+        --svg: url("data:image/svg+xml,%3Csvg%3E%3C/svg%3E");
+        mask-image: var(--svg);
+        background-color: currentColor;
+        display: inline-block;
+      }"
+    `)
+  })
+
+  it('removes vendor-prefixed keyframes from runtime theme blocks', () => {
+    const source = [
+      '@theme default {',
+      '@-webkit-keyframes spin {',
+      '  to { transform: rotate(1turn); }',
+      '}',
+      '@keyframes spin {',
+      '  to { transform: rotate(1turn); }',
+      '}',
+      '--animate-spin: spin 1s linear infinite;',
+      '}',
+    ].join('\n')
+
+    const result = loader.call({
+      query: {},
+      resourcePath: '/workspace/src/app.css',
+    } as any, source)
+
+    expect(result).not.toContain('@-webkit-keyframes')
+    expect(result).toContain('@keyframes spin')
+    expect(result).toContain('--animate-spin: spin 1s linear infinite;')
+  })
+
   it('emits debug output when loader debug flag is enabled', () => {
     process.env.WEAPP_TW_LOADER_DEBUG = '1'
     const write = vi.spyOn(process.stdout, 'write').mockImplementation(() => true)

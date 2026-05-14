@@ -22,6 +22,22 @@ describe('tailwindcss/remove unsupported css', () => {
     expect(css).toContain('.md\\:block{display:block}')
   })
 
+  it('unwraps Tailwind source media markers in final mini-program css', () => {
+    const css = finalizeMiniProgramCss([
+      '@media source(none) {',
+      'view,text,:after,:before{box-sizing:border-box}',
+      '}',
+      '@media (min-width: 768px) {',
+      '.md\\:block{display:block}',
+      '}',
+    ].join('\n'))
+
+    expect(css).not.toContain('@media source(none)')
+    expect(css).toContain('view,text,:after,:before{box-sizing:border-box}')
+    expect(css).toContain('@media (min-width: 768px)')
+    expect(css).toContain('.md\\:block{display:block}')
+  })
+
   it('keeps generated utilities when pruning layer-wrapped mini-program css', () => {
     const css = pruneMiniProgramGeneratedCss([
       '@layer theme, base, components, utilities;',

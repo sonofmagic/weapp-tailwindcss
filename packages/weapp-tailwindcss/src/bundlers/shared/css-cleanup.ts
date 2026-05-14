@@ -196,6 +196,7 @@ function insertHoistedRules(root: postcss.Root, rules: postcss.Rule[]) {
 
 function finalizeMiniProgramCssRoot(root: postcss.Root) {
   removeUnsupportedCascadeLayers(root)
+  unwrapTailwindSourceMedia(root)
   root.walkAtRules('property', (atRule) => {
     atRule.remove()
   })
@@ -207,6 +208,14 @@ function finalizeMiniProgramCssRoot(root: postcss.Root) {
   const themeRule = collectThemeVariableRule(root)
   const hoistedRules = themeRule ? [...preflightRules, themeRule] : preflightRules
   insertHoistedRules(root, hoistedRules)
+}
+
+function unwrapTailwindSourceMedia(root: postcss.Root) {
+  root.walkAtRules('media', (atRule) => {
+    if (atRule.params.startsWith('source(') && atRule.nodes && atRule.nodes.length > 0) {
+      atRule.replaceWith(...atRule.nodes)
+    }
+  })
 }
 
 export function hoistTailwindPreflightBase(css: string) {
