@@ -90,6 +90,13 @@ const classArray = [
     expect(taroAppViteCase?.scriptMutation.mutateCommentCarrier).toBeTypeOf('function')
   })
 
+  it('enables comment-carrier mutation for the taro-webpack-react-tailwindcss-v3 demo case', () => {
+    const cases = buildDemoBaseCases('/virtual/workspace')
+    const taroWebpackCase = cases.find(item => item.name === 'taro-webpack-react-tailwindcss-v3')
+
+    expect(taroWebpackCase?.scriptMutation.mutateCommentCarrier).toBeTypeOf('function')
+  })
+
   it('enables comment-carrier mutation for the taro-webpack-react-tailwindcss-v4 demo case', () => {
     const cases = buildDemoExtendedCases('/virtual/workspace')
     const taroWebpackCase = cases.find(item => item.name === 'taro-webpack-react-tailwindcss-v4')

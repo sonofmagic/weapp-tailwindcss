@@ -9,6 +9,7 @@ import {
   mutateScriptByDataAnchorWithCommentCarrier,
   mutateSfcStyleBlock,
   mutateTsxScriptByReturnAnchor,
+  mutateTsxScriptByReturnAnchorWithCommentCarrier,
   mutateVueScriptSetupObjectKeyByAnchorWithCommentCarrier,
   replaceExactSnippet,
 } from '../../text'
@@ -150,6 +151,9 @@ export function buildDemoBaseCases(baseCwd: string): WatchCase[] {
       roundConfigs: buildHexScriptRoundConfigs(),
       mutate(source, payload) {
         return mutateTsxScriptByReturnAnchor(source, payload)
+      },
+      mutateCommentCarrier(source, payload) {
+        return mutateTsxScriptByReturnAnchorWithCommentCarrier(source, payload)
       },
     },
     styleMutation: {
