@@ -299,6 +299,20 @@ describe('e2e watch workflow', () => {
     }))
   })
 
+  it('keeps the default e2e watch hot-update budget tolerant for shared runners', () => {
+    const { workflow } = readWorkflow('e2e-watch.yml')
+
+    const prRunStep = workflow.jobs['pr-quick-gate'].steps.find((step: Record<string, unknown>) => {
+      return step.name === 'Run e2e watch suite (PR quick gate)'
+    })
+    const nightlyRunStep = workflow.jobs['nightly-full-regression'].steps.find((step: Record<string, unknown>) => {
+      return step.name === 'Run e2e watch suite (nightly/full)'
+    })
+
+    expect(prRunStep.env.E2E_WATCH_MAX_HOT_UPDATE_MS).toBe("${{ matrix.watch_max_hot_update_ms || '30000' }}")
+    expect(nightlyRunStep.env.E2E_WATCH_MAX_HOT_UPDATE_MS).toBe("${{ matrix.watch_max_hot_update_ms || '30000' }}")
+  })
+
   it('uses node-version specific artifact names for matrix rows that share case names', () => {
     const { workflow } = readWorkflow('e2e-watch.yml')
     const uploadSteps = [

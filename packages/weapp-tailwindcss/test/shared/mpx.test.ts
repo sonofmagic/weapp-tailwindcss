@@ -41,11 +41,16 @@ describe('shared/mpx helpers', () => {
     }
     const entry = ensureMpxTailwindcssAliases(compiler, pkgDir)
     expect(entry).toBe(path.join(pkgDir, 'index.css'))
+    const mpxPluginDir = compiler.options.resolve.alias['@mpxjs/webpack-plugin']
     expect(compiler.options.resolve.alias.keep).toBe('value')
     expect(compiler.options.resolve.alias.tailwindcss).toBe(entry)
     expect(compiler.options.resolve.alias.tailwindcss$).toBe(entry)
-    expect(compiler.options.resolve.alias['@mpxjs/webpack-plugin']).toEqual(expect.stringContaining('@mpxjs/webpack-plugin'))
-    expect(compiler.options.resolveLoader.alias['@mpxjs/webpack-plugin']).toEqual(expect.stringContaining('@mpxjs/webpack-plugin'))
+    expect(mpxPluginDir).toEqual(expect.stringContaining('@mpxjs/webpack-plugin'))
+    expect(compiler.options.resolve.alias['@mpxjs/webpack-plugin/lib/record-loader']).toBe(path.join(mpxPluginDir, 'lib/record-loader'))
+    expect(compiler.options.resolve.alias['@mpxjs/webpack-plugin/lib/style-compiler/index']).toBe(path.join(mpxPluginDir, 'lib/style-compiler/index'))
+    expect(compiler.options.resolve.alias['@mpxjs/webpack-plugin/lib/style-compiler/strip-conditional-loader']).toBe(path.join(mpxPluginDir, 'lib/style-compiler/strip-conditional-loader'))
+    expect(compiler.options.resolveLoader.alias['@mpxjs/webpack-plugin']).toBe(mpxPluginDir)
+    expect(compiler.options.resolveLoader.alias['@mpxjs/webpack-plugin/lib/record-loader']).toBe(path.join(mpxPluginDir, 'lib/record-loader'))
   })
 
   it('resolves mpx webpack plugin from compiler context before package context', () => {
@@ -66,11 +71,14 @@ describe('shared/mpx helpers', () => {
     const alias: any[] = []
     const compiler: any = { options: { resolve: { alias } } }
     const entry = ensureMpxTailwindcssAliases(compiler, pkgDir)
-    expect(alias).toEqual([
+    expect(alias).toEqual(expect.arrayContaining([
+      { name: '@mpxjs/webpack-plugin/lib/record-loader', alias: expect.stringContaining(path.join('@mpxjs/webpack-plugin', 'lib/record-loader')) },
+      { name: '@mpxjs/webpack-plugin/lib/style-compiler/index', alias: expect.stringContaining(path.join('@mpxjs/webpack-plugin', 'lib/style-compiler/index')) },
+      { name: '@mpxjs/webpack-plugin/lib/style-compiler/strip-conditional-loader', alias: expect.stringContaining(path.join('@mpxjs/webpack-plugin', 'lib/style-compiler/strip-conditional-loader')) },
       { name: /^@mpxjs\/webpack-plugin\//, alias: expect.stringContaining('@mpxjs/webpack-plugin') },
       { name: 'tailwindcss', alias: entry },
       { name: 'tailwindcss$', alias: entry },
-    ])
+    ]))
   })
 
   it('wraps loaderContext.resolve once and redirects tailwindcss requests', () => {
