@@ -1,6 +1,6 @@
 import type { ITemplateHandlerOptions } from '../types'
 import { escape, MappingChars2String } from '@weapp-core/escape'
-import { omitUndefined } from '@/utils/object'
+import { omitUndefined } from '../utils/object'
 
 // 匹配换行符（用于去除无用换行和空格）
 const NEWLINE_RE = /[\n\r]+/g
