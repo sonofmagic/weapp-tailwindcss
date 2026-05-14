@@ -17,7 +17,9 @@ function ensureTailwindcss3RuntimeReady() {
   runtimeReadyPromise ??= new TailwindcssPatcher({
     apply: {
       exposeContext: true,
-      extendLengthUnits: true,
+      extendLengthUnits: {
+        enabled: true,
+      },
     },
     cache: {
       driver: 'memory',
