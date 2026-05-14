@@ -1,6 +1,6 @@
 module.exports = {
   plugins: {
-    '@tailwindcss/postcss': {},
+    // Tailwind CSS 由 weapp-tailwindcss 生成模式接管，这里只保留后处理插件
     autoprefixer: {},
     'postcss-pxtransform': {
       platform: 'weapp',

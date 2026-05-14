@@ -85,7 +85,6 @@
     "weapp-ide-cli": "catalog:weappIdeCli",
     "weapp-tailwindcss": "workspace:*",
     "@weapp-tailwindcss/merge": "workspace:*",
-    "@weapp-tailwindcss/variants": "workspace:*",
-    "@tailwindcss/postcss": "catalog:tailwindcss4"
+    "@weapp-tailwindcss/variants": "workspace:*"
   }
 }

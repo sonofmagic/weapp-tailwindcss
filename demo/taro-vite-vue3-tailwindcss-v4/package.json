@@ -76,8 +76,6 @@
     "@babel/preset-env": "^7.29.5",
     "@babel/preset-typescript": "^7.24.1",
     "@babel/runtime-corejs3": "^7.24.4",
-    "@tailwindcss/postcss": "catalog:tailwindcss4",
-    "@tailwindcss/vite": "catalog:tailwindcss4",
     "@tarojs/cli": "catalog:taro4",
     "@tarojs/vite-runner": "catalog:taro4",
     "@weapp-tailwindcss/merge": "workspace:*",

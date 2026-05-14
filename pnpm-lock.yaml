@@ -1027,9 +1027,6 @@ importers:
       '@iconify-json/mdi':
         specifier: ^1.2.2
         version: 1.2.3
-      '@tailwindcss/postcss':
-        specifier: catalog:tailwindcss4
-        version: 4.3.0
       '@types/gulp':
         specifier: ^4.0.18
         version: 4.0.18
@@ -1386,9 +1383,6 @@ importers:
       '@mpxjs/webpack-plugin':
         specifier: ^2.10.20
         version: 2.10.20(@mpxjs/core@2.10.20)(vue@2.7.16)(webpack@5.105.4(@swc/core@1.15.33(@swc/helpers@0.5.19))(esbuild@0.28.0))
-      '@tailwindcss/postcss':
-        specifier: catalog:tailwindcss4
-        version: 4.3.0
       '@vue/cli-service':
         specifier: ~5.0.0
         version: 5.0.9(@swc/core@1.15.33(@swc/helpers@0.5.19))(@vue/compiler-sfc@3.5.34)(ejs@3.1.10)(encoding@0.1.13)(esbuild@0.28.0)(handlebars@4.7.9)(lodash@4.18.1)(prettier@3.8.3)(vue-template-compiler@2.7.16)(vue@2.7.16)(webpack-sources@3.3.4)
@@ -1694,12 +1688,6 @@ importers:
       '@babel/runtime-corejs3':
         specifier: ^7.24.4
         version: 7.29.2
-      '@tailwindcss/postcss':
-        specifier: catalog:tailwindcss4
-        version: 4.3.0
-      '@tailwindcss/vite':
-        specifier: catalog:tailwindcss4
-        version: 4.3.0(vite@4.5.14(@types/node@25.7.0)(less@4.6.4)(lightningcss@1.32.0)(sass@1.99.0)(stylus@0.57.0)(terser@5.47.1))
       '@tarojs/cli':
         specifier: catalog:taro4
         version: 4.2.0(@swc/helpers@0.5.19)(@types/node@25.7.0)(debug@4.4.3)
@@ -2020,12 +2008,6 @@ importers:
       '@babel/runtime-corejs3':
         specifier: ^7.24.4
         version: 7.29.2
-      '@tailwindcss/postcss':
-        specifier: catalog:tailwindcss4
-        version: 4.3.0
-      '@tailwindcss/vite':
-        specifier: catalog:tailwindcss4
-        version: 4.3.0(vite@4.5.14(@types/node@25.7.0)(less@4.6.4)(lightningcss@1.32.0)(sass@1.99.0)(stylus@0.57.0)(terser@5.47.1))
       '@tarojs/cli':
         specifier: catalog:taro4
         version: 4.2.0(@swc/helpers@0.5.19)(@types/node@25.7.0)(debug@4.4.3)
@@ -2331,9 +2313,6 @@ importers:
       '@pmmmwh/react-refresh-webpack-plugin':
         specifier: ^0.6.2
         version: 0.6.2(@types/webpack@5.28.5(@swc/core@1.15.33(@swc/helpers@0.5.19))(esbuild@0.28.0)(lightningcss@1.32.0)(postcss@8.5.14))(react-refresh@0.18.0)(type-fest@5.6.0)(webpack-dev-server@4.15.2(debug@4.4.3)(webpack@5.105.4(@swc/core@1.15.33(@swc/helpers@0.5.19))(esbuild@0.28.0)))(webpack@5.105.4(@swc/core@1.15.33(@swc/helpers@0.5.19))(esbuild@0.28.0))
-      '@tailwindcss/postcss':
-        specifier: catalog:tailwindcss4
-        version: 4.3.0
       '@tarojs/cli':
         specifier: catalog:taro4
         version: 4.2.0(@swc/helpers@0.5.19)(@types/node@24.12.4)(debug@4.4.3)
@@ -2615,9 +2594,6 @@ importers:
       '@babel/plugin-proposal-class-properties':
         specifier: 7.18.6
         version: 7.18.6(@babel/core@7.29.0)
-      '@tailwindcss/postcss':
-        specifier: catalog:tailwindcss4
-        version: 4.3.0
       '@tarojs/cli':
         specifier: catalog:taro4
         version: 4.2.0(@swc/helpers@0.5.19)(@types/node@24.12.4)(debug@4.4.3)
@@ -3071,12 +3047,6 @@ importers:
       '@iconify-json/mdi':
         specifier: ^1.2.3
         version: 1.2.3
-      '@tailwindcss/postcss':
-        specifier: catalog:tailwindcss4
-        version: 4.3.0
-      '@tailwindcss/vite':
-        specifier: catalog:tailwindcss4
-        version: 4.3.0(vite@8.0.12(@types/node@25.7.0)(esbuild@0.28.0)(jiti@2.7.0)(less@4.6.4)(sass-embedded@1.99.0)(sass@1.99.0)(stylus@0.57.0)(terser@5.47.1)(tsx@4.21.0)(yaml@2.9.0))
       '@weapp-tailwindcss/variants':
         specifier: workspace:*
         version: link:../../packages-runtime/variants
@@ -36923,13 +36893,6 @@ snapshots:
       postcss-selector-parser: 6.0.10
       tailwindcss: 3.4.19(tsx@4.21.0)(yaml@2.9.0)
 
-  '@tailwindcss/vite@4.3.0(vite@4.5.14(@types/node@25.7.0)(less@4.6.4)(lightningcss@1.32.0)(sass@1.99.0)(stylus@0.57.0)(terser@5.47.1))':
-    dependencies:
-      '@tailwindcss/node': 4.3.0
-      '@tailwindcss/oxide': 4.3.0
-      tailwindcss: 4.3.0
-      vite: 4.5.14(@types/node@25.7.0)(less@4.6.4)(lightningcss@1.32.0)(sass@1.99.0)(stylus@0.57.0)(terser@5.47.1)
-
   '@tailwindcss/vite@4.3.0(vite@7.3.3(@types/node@24.12.4)(jiti@2.7.0)(less@4.6.4)(lightningcss@1.32.0)(sass-embedded@1.99.0)(sass@1.99.0)(stylus@0.57.0)(terser@5.47.1)(tsx@4.21.0)(yaml@2.9.0))':
     dependencies:
       '@tailwindcss/node': 4.3.0
@@ -36943,13 +36906,6 @@ snapshots:
       '@tailwindcss/oxide': 4.3.0
       tailwindcss: 4.3.0
       vite: 7.3.3(@types/node@25.7.0)(jiti@2.7.0)(less@4.6.4)(lightningcss@1.32.0)(sass-embedded@1.99.0)(sass@1.99.0)(stylus@0.57.0)(terser@5.47.1)(tsx@4.21.0)(yaml@2.9.0)
-
-  '@tailwindcss/vite@4.3.0(vite@8.0.12(@types/node@25.7.0)(esbuild@0.28.0)(jiti@2.7.0)(less@4.6.4)(sass-embedded@1.99.0)(sass@1.99.0)(stylus@0.57.0)(terser@5.47.1)(tsx@4.21.0)(yaml@2.9.0))':
-    dependencies:
-      '@tailwindcss/node': 4.3.0
-      '@tailwindcss/oxide': 4.3.0
-      tailwindcss: 4.3.0
-      vite: 8.0.12(@types/node@25.7.0)(esbuild@0.28.0)(jiti@2.7.0)(less@4.6.4)(sass-embedded@1.99.0)(sass@1.99.0)(stylus@0.57.0)(terser@5.47.1)(tsx@4.21.0)(yaml@2.9.0)
 
   '@taro-hooks/ahooks@2.2.0':
     dependencies:

@@ -6,6 +6,6 @@ export default {
     // 'tailwindcss-injector/postcss': {},
     // tailwindcss: {},
     // autoprefixer: {},
-    '@tailwindcss/postcss': {},
+    // Tailwind CSS 由 weapp-tailwindcss 生成模式接管
   },
 }

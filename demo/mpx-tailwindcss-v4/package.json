@@ -40,7 +40,6 @@
     "@mpxjs/vue-cli-plugin-mpx": "^2.2.21",
     "@mpxjs/vue-cli-plugin-mpx-typescript": "^2.2.21",
     "@mpxjs/webpack-plugin": "^2.10.20",
-    "@tailwindcss/postcss": "catalog:tailwindcss4",
     "@vue/cli-service": "~5.0.0",
     "@weapp-tailwindcss/merge": "workspace:*",
     "@weapp-tailwindcss/variants": "workspace:*",
