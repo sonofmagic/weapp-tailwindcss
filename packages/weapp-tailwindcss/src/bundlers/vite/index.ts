@@ -1,4 +1,5 @@
 import type { Plugin, ResolvedConfig } from 'vite'
+import type { TailwindSourceEntry } from '@/tailwindcss/source-scan'
 import type { UserDefinedOptions } from '@/types'
 import path from 'node:path'
 import process from 'node:process'
@@ -23,6 +24,7 @@ import { resolveImplicitAppTypeFromViteRoot } from './resolve-app-type'
 import { createRewriteCssImportsPlugins } from './rewrite-css-imports'
 import { createViteRuntimeClassSet } from './runtime-class-set'
 import { createSourceCandidateCollector, isSourceCandidateRequest } from './source-candidates'
+import { createViteSourceScanMatcher, resolveViteSourceScanEntries } from './source-scan'
 import { resolveImplicitTailwindcssBasedirFromViteRoot } from './tailwind-basedir'
 import { cleanUrl, slash } from './utils'
 
@@ -114,6 +116,8 @@ export function WeappTailwindcss(options: UserDefinedOptions = {}): Plugin[] | u
   let resolvedConfig: ResolvedConfig | undefined
   let recordedGeneratorCandidates: Set<string> | undefined
   const sourceCandidateCollector = createSourceCandidateCollector()
+  let sourceScanEntries: TailwindSourceEntry[] | undefined
+  let sourceScanMatcher: ((file: string) => boolean) | undefined
   const pendingSourceCandidateSyncs = new Set<Promise<void>>()
   const processedCssAssets = new WeakSet<object>()
   const processedCssAssetFiles = new Set<string>()
@@ -159,6 +163,11 @@ export function WeappTailwindcss(options: UserDefinedOptions = {}): Plugin[] | u
   }
   const syncChangedSourceCandidateFile = (id: string) => {
     if (!shouldOwnTailwindGeneration || !isSourceCandidateRequest(id)) {
+      return Promise.resolve()
+    }
+    const file = cleanUrl(id)
+    if (sourceScanMatcher && !sourceScanMatcher(file)) {
+      sourceCandidateCollector.remove(file)
       return Promise.resolve()
     }
     const task = sourceCandidateCollector.syncFile(id)
@@ -238,6 +247,11 @@ export function WeappTailwindcss(options: UserDefinedOptions = {}): Plugin[] | u
         if (!shouldOwnTailwindGeneration || !isSourceCandidateRequest(id)) {
           return
         }
+        const file = cleanUrl(id)
+        if (sourceScanMatcher && !sourceScanMatcher(file)) {
+          sourceCandidateCollector.remove(file)
+          return
+        }
         await sourceCandidateCollector.sync(id, code)
       },
       async watchChange(id, change) {
@@ -259,7 +273,12 @@ export function WeappTailwindcss(options: UserDefinedOptions = {}): Plugin[] | u
         }
         const root = resolvedConfig?.root ?? process.cwd()
         const outDir = resolvedConfig?.build?.outDir
+        const sourceScan = await resolveViteSourceScanEntries(opts, runtimeState.twPatcher)
+        sourceScanEntries = sourceScan?.entries
+        sourceScanMatcher = createViteSourceScanMatcher(sourceScanEntries)
+        sourceCandidateCollector.syncInline(sourceScan?.inlineCandidates)
         await sourceCandidateCollector.scanRoot({
+          entries: sourceScanEntries,
           root,
           outDir,
         })

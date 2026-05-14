@@ -31,6 +31,12 @@ import {
   writeReport,
 } from '../../../tools/weapp-tailwindcss-scripts/src/watch-hmr-regression/summary'
 import {
+  buildSpeedReport,
+  collectSpeedSamplesFromReport,
+  renderSpeedReportMarkdown,
+  summarizeSpeedSamples,
+} from '../../../tools/weapp-tailwindcss-scripts/src/watch-hmr-regression/speed-report'
+import {
   createStyleMutationPayload,
   expandOutputFileEntries,
   createClassMutationScenario,
@@ -638,6 +644,55 @@ describe('watch-hmr regression summary helpers', () => {
     expect(report.options.caseName).toBe('demo')
     expect(report.summary).toMatchObject({ count: 1, hotUpdateAvgMs: 30, rollbackAvgMs: 40 })
     expect(report.summaryByMutationKind.template).toMatchObject({ count: 1, hotUpdateAvgMs: 30 })
+  })
+
+  it('builds a CI-facing HMR speed report from watch JSON metrics', async () => {
+    const tempDir = await mkdtemp(path.join(os.tmpdir(), 'weapp-tw-watch-speed-'))
+    tempDirs.push(tempDir)
+    const reportFile = 'artifacts/watch-report.json'
+    const cases = [createCase('weapp-vite-tailwindcss-v3', 'demo', 30, 40)]
+    const options: CliOptions = {
+      caseName: 'demo',
+      timeoutMs: 2_000,
+      pollMs: 20,
+      skipBuild: true,
+      quietSass: true,
+      reportFile,
+      maxHotUpdateMs: 100,
+    }
+
+    const stdoutSpy = vi.spyOn(process.stdout, 'write').mockReturnValue(true)
+    try {
+      await writeReport(tempDir, options, cases)
+    }
+    finally {
+      stdoutSpy.mockRestore()
+    }
+
+    const reportPath = path.join(tempDir, reportFile)
+    const watchReport = JSON.parse(await readFile(reportPath, 'utf8'))
+    const samples = collectSpeedSamplesFromReport(watchReport, 'watch-report.json')
+    const speedReport = buildSpeedReport([{ file: reportPath, report: watchReport }], '2026-05-14T00:00:00.000Z')
+    const markdown = renderSpeedReportMarkdown(speedReport)
+
+    expect(samples.map(item => item.surface)).toEqual(expect.arrayContaining([
+      'case-template-preferred',
+      'template:complex-corpus',
+      'script:complex-corpus',
+      'style',
+      'content:complex-corpus',
+    ]))
+    expect(summarizeSpeedSamples(samples)).toMatchObject({
+      count: samples.length,
+      minMs: 30,
+      p50Ms: 30,
+      maxMs: 32,
+    })
+    expect(speedReport.byProject['demo-weapp-vite-tailwindcss-v3']).toMatchObject({ count: samples.length })
+    expect(speedReport.bySurface.style).toMatchObject({ count: 1, avgMs: 32 })
+    expect(speedReport.slowest[0]).toMatchObject({ surface: 'style', hotUpdateMs: 32 })
+    expect(markdown).toContain('# e2e-watch HMR 速度报告')
+    expect(markdown).toContain('Tailwind v3/v4 官方 Vite/Webpack 插件')
   })
 })
 

@@ -99,6 +99,7 @@
     "e2e:watch:uni": "cross-env E2E_WATCH_CASE=uni-app-vite-tailwindcss-v3 pnpm e2e:watch",
     "e2e:watch:mpx": "cross-env E2E_WATCH_CASE=mpx-tailwindcss-v3 pnpm e2e:watch",
     "e2e:watch:weapp-vite": "cross-env E2E_WATCH_CASE=weapp-vite-tailwindcss-v3 pnpm e2e:watch",
+    "e2e:watch:speed-report": "node .github/scripts/e2e-watch-report.cjs speed-report",
     "e2e:update-snapshots": "node scripts/e2e-update-snapshots-runner.mjs",
     "demo:build": "pnpm run build:demo",
     "demo:install": "tsx scripts/demo/install.ts",

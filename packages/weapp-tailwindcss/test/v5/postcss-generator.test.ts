@@ -194,6 +194,43 @@ describe('v5 postcss generator', () => {
     }))
   })
 
+  it('honors Tailwind v4 @source not entries for postcss local sources', async () => {
+    const root = await mkdtemp(path.join(tmpdir(), 'weapp-tw-v5-postcss-v4-not-'))
+    const cssEntry = path.join(root, 'app.css')
+    const sourceDir = path.join(root, 'src')
+    const pageEntry = path.join(sourceDir, 'pages', 'index.wxml')
+    const ignoredEntry = path.join(sourceDir, 'apis', 'client.ts')
+    await mkdir(path.dirname(pageEntry), { recursive: true })
+    await mkdir(path.dirname(ignoredEntry), { recursive: true })
+    await writeFile(pageEntry, '<view class="bg-blue-500 w-[100px]"></view>', 'utf8')
+    await writeFile(ignoredEntry, 'export const cls = "text-[77rpx]"', 'utf8')
+
+    const result = await postcss([
+      weappTailwindcss(),
+    ]).process(`
+      @theme default {
+        --color-blue-500: oklch(62.3% 0.214 259.815);
+      }
+      @source "./src";
+      @source not "./src/apis/**";
+      @tailwind utilities;
+    `, {
+      from: cssEntry,
+    })
+
+    expect(result.css).toContain('.bg-blue-500')
+    expect(result.css).toContain('.w-_b100px_B')
+    expect(result.css).not.toContain('.text-_b77rpx_B')
+    expect(result.messages).toContainEqual(expect.objectContaining({
+      type: 'dependency',
+      file: pageEntry,
+    }))
+    expect(result.messages).not.toContainEqual(expect.objectContaining({
+      type: 'dependency',
+      file: ignoredEntry,
+    }))
+  })
+
   it('honors Tailwind v4 inline source detection in postcss generator mode', async () => {
     const result = await postcss([
       weappTailwindcss({
@@ -201,6 +238,7 @@ describe('v5 postcss generator', () => {
           target: 'web',
         },
         packageName: 'tailwindcss4',
+        projectRoot: repositoryRoot,
       }),
     ]).process(`
       @theme default {
@@ -228,6 +266,70 @@ describe('v5 postcss generator', () => {
     expect(result.css).toContain('.bg-red-200')
     expect(result.css).toContain('.bg-red-300')
     expect(result.css).not.toContain('@source')
+  })
+
+  it('keeps inline sources available when file source scanning is fully negated', async () => {
+    const root = await mkdtemp(path.join(tmpdir(), 'weapp-tw-v5-postcss-inline-none-'))
+    const cssEntry = path.join(root, 'app.css')
+    const sourceDir = path.join(root, 'src')
+    await mkdir(sourceDir)
+    await writeFile(path.join(sourceDir, 'page.wxml'), '<view class="text-[88rpx]"></view>', 'utf8')
+
+    const result = await postcss([
+      weappTailwindcss({
+        generator: {
+          target: 'web',
+        },
+        packageName: 'tailwindcss4',
+        projectRoot: repositoryRoot,
+      }),
+    ]).process(`
+      @theme default {
+        --spacing: 0.25rem;
+      }
+      @source not "./src/**";
+      @source inline(
+        "underline w-{1..2}"
+      );
+      @source not inline("w-2");
+      @tailwind utilities;
+    `, {
+      from: cssEntry,
+    })
+
+    expect(result.css).toContain('.underline')
+    expect(result.css).toContain('.w-1')
+    expect(result.css).not.toContain('.w-2')
+    expect(result.css).not.toContain('.text-\\[88rpx\\]')
+  })
+
+  it('lets @source not inline remove candidates discovered from files', async () => {
+    const root = await mkdtemp(path.join(tmpdir(), 'weapp-tw-v5-postcss-inline-not-file-'))
+    const cssEntry = path.join(root, 'app.css')
+    const sourceDir = path.join(root, 'src')
+    await mkdir(sourceDir)
+    await writeFile(path.join(sourceDir, 'page.wxml'), '<view class="underline w-1"></view>', 'utf8')
+
+    const result = await postcss([
+      weappTailwindcss({
+        generator: {
+          target: 'web',
+        },
+        packageName: 'tailwindcss4',
+      }),
+    ]).process(`
+      @theme default {
+        --spacing: 0.25rem;
+      }
+      @source "./src";
+      @source not inline("underline");
+      @tailwind utilities;
+    `, {
+      from: cssEntry,
+    })
+
+    expect(result.css).not.toContain('.underline')
+    expect(result.css).toContain('.w-1')
   })
 
   it('resolves @config paths relative to the current postcss input file', async () => {
@@ -310,6 +412,48 @@ describe('v5 postcss generator', () => {
       expect(result.messages).toContainEqual(expect.objectContaining({
         type: 'dependency',
         file: configFile,
+      }))
+    }
+    finally {
+      process.chdir(cwd)
+    }
+  })
+
+  it('honors Tailwind v3 content negation when collecting postcss local sources', async () => {
+    const root = await mkdtemp(path.join(tmpdir(), 'weapp-tw-v5-postcss-v3-not-'))
+    const sourceDir = path.join(root, 'src')
+    const cssEntry = path.join(root, 'app.css')
+    const configFile = path.join(root, 'tailwind.config.js')
+    const pageEntry = path.join(sourceDir, 'pages', 'index.wxml')
+    const ignoredEntry = path.join(sourceDir, 'apis', 'client.ts')
+    await mkdir(path.dirname(pageEntry), { recursive: true })
+    await mkdir(path.dirname(ignoredEntry), { recursive: true })
+    await writeFile(configFile, 'module.exports = { content: ["./src/**/*.{wxml,js,ts}", "!./src/apis/**"], theme: { extend: { colors: { brand: "#123456" } } } }', 'utf8')
+    await writeFile(pageEntry, '<view class="w-[300.31rpx] bg-brand"></view>', 'utf8')
+    await writeFile(ignoredEntry, 'export const cls = "text-[77rpx]"', 'utf8')
+
+    const cwd = process.cwd()
+    process.chdir(root)
+    try {
+      const result = await postcss([
+        weappTailwindcss({
+          version: 3,
+          config: configFile,
+        }),
+      ]).process('@tailwind utilities;', {
+        from: cssEntry,
+      })
+
+      expect(result.css).toContain('.w-_b300_d31rpx_B')
+      expect(result.css).toContain('.bg-brand')
+      expect(result.css).not.toContain('.text-_b77rpx_B')
+      expect(result.messages).toContainEqual(expect.objectContaining({
+        type: 'dependency',
+        file: pageEntry,
+      }))
+      expect(result.messages).not.toContainEqual(expect.objectContaining({
+        type: 'dependency',
+        file: ignoredEntry,
       }))
     }
     finally {

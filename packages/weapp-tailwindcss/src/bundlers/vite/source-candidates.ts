@@ -1,13 +1,16 @@
+import type { TailwindInlineSourceCandidates, TailwindSourceEntry } from '@/tailwindcss/source-scan'
 import { readFile } from 'node:fs/promises'
 import path from 'node:path'
 import { splitCode } from '@weapp-tailwindcss/shared/extractors'
 import fg from 'fast-glob'
 import { extractRawCandidatesWithPositions } from 'tailwindcss-patch'
+import { expandTailwindSourceEntries } from '@/tailwindcss/source-scan'
 
 export interface SourceCandidateCollector {
   sync: (id: string, source: string) => Promise<void>
   syncFile: (id: string) => Promise<void>
   scanRoot: (options: ScanSourceCandidateRootOptions) => Promise<void>
+  syncInline: (inlineCandidates: TailwindInlineSourceCandidates | undefined) => void
   remove: (id: string) => void
   values: () => Set<string>
   clear: () => void
@@ -16,6 +19,7 @@ export interface SourceCandidateCollector {
 interface ScanSourceCandidateRootOptions {
   root: string
   outDir?: string
+  entries?: TailwindSourceEntry[]
 }
 
 const CLEAN_URL_RE = /[?#].*$/
@@ -142,6 +146,8 @@ function extractCssApplyCandidates(source: string) {
 export function createSourceCandidateCollector(): SourceCandidateCollector {
   const candidatesById = new Map<string, Set<string>>()
   const candidateCount = new Map<string, number>()
+  let inlineIncludedCandidates = new Set<string>()
+  let inlineExcludedCandidates = new Set<string>()
 
   async function sync(id: string, source: string) {
     const normalizedId = cleanUrl(id)
@@ -180,20 +186,28 @@ export function createSourceCandidateCollector(): SourceCandidateCollector {
     await sync(normalizedId, await readFile(normalizedId, 'utf8'))
   }
 
-  async function scanRoot({ root, outDir }: ScanSourceCandidateRootOptions) {
+  async function scanRoot({ entries, root, outDir }: ScanSourceCandidateRootOptions) {
     const resolvedRoot = path.resolve(root)
     const outDirIgnore = resolveOutDirIgnorePattern(resolvedRoot, outDir)
-    const files = await fg(SOURCE_CANDIDATE_GLOB, {
-      absolute: true,
-      cwd: resolvedRoot,
-      ignore: outDirIgnore
-        ? [...DEFAULT_SCAN_IGNORE, outDirIgnore]
-        : DEFAULT_SCAN_IGNORE,
-      onlyFiles: true,
-      unique: true,
-    })
+    const ignore = outDirIgnore
+      ? [...DEFAULT_SCAN_IGNORE, outDirIgnore]
+      : DEFAULT_SCAN_IGNORE
+    const files = entries
+      ? await expandTailwindSourceEntries(entries, { ignore })
+      : await fg(SOURCE_CANDIDATE_GLOB, {
+          absolute: true,
+          cwd: resolvedRoot,
+          ignore,
+          onlyFiles: true,
+          unique: true,
+        })
 
     await Promise.all(files.map(file => syncFile(file)))
+  }
+
+  function syncInline(inlineCandidates: TailwindInlineSourceCandidates | undefined) {
+    inlineIncludedCandidates = new Set(inlineCandidates?.included ?? [])
+    inlineExcludedCandidates = new Set(inlineCandidates?.excluded ?? [])
   }
 
   function remove(id: string) {
@@ -207,18 +221,28 @@ export function createSourceCandidateCollector(): SourceCandidateCollector {
   }
 
   function values() {
-    return new Set(candidateCount.keys())
+    const values = new Set([
+      ...candidateCount.keys(),
+      ...inlineIncludedCandidates,
+    ])
+    for (const candidate of inlineExcludedCandidates) {
+      values.delete(candidate)
+    }
+    return values
   }
 
   function clear() {
     candidatesById.clear()
     candidateCount.clear()
+    inlineIncludedCandidates.clear()
+    inlineExcludedCandidates.clear()
   }
 
   return {
     sync,
     syncFile,
     scanRoot,
+    syncInline,
     remove,
     values,
     clear,

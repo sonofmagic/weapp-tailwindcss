@@ -38,6 +38,8 @@ const ROUND_NAME_RE = /round=([a-z0-9-]+)/g
 const ROOT_DIR = path.resolve(process.cwd(), 'e2e/benchmark/e2e-watch-hmr')
 const SNAPSHOTS_DIR = path.join(ROOT_DIR, 'snapshots')
 const FAILURES_DIR = path.join(ROOT_DIR, 'failures')
+const SPEED_REPORT_JSON = path.join(ROOT_DIR, 'hmr-speed-report.json')
+const SPEED_REPORT_MD = path.join(ROOT_DIR, 'hmr-speed-report.md')
 
 function ensureFailuresDir() {
   fs.mkdirSync(FAILURES_DIR, { recursive: true })
@@ -227,6 +229,271 @@ function pickMetricFromReport(report, primary) {
     }
   }
   return undefined
+}
+
+function toFiniteNumber(value) {
+  return Number.isFinite(value) ? value : undefined
+}
+
+function pushSpeedSample(samples, item) {
+  const hotUpdateMs = toFiniteNumber(item.hotUpdateMs)
+  const rollbackMs = toFiniteNumber(item.rollbackMs)
+  if (hotUpdateMs == null) {
+    return
+  }
+  samples.push({
+    caseName: item.caseName || 'unknown',
+    project: item.project || 'unknown',
+    surface: item.surface || 'unknown',
+    sourceFile: item.sourceFile || '',
+    hotUpdateMs,
+    rollbackMs,
+    initialReadyMs: toFiniteNumber(item.initialReadyMs),
+    reportFile: item.reportFile || '',
+  })
+}
+
+function percentile(sortedValues, ratio) {
+  if (sortedValues.length === 0) {
+    return 0
+  }
+  const index = Math.ceil(sortedValues.length * ratio) - 1
+  return sortedValues[Math.min(Math.max(index, 0), sortedValues.length - 1)]
+}
+
+function summarizeSpeedSamples(samples) {
+  if (samples.length === 0) {
+    return {
+      count: 0,
+      avgMs: 0,
+      minMs: 0,
+      maxMs: 0,
+      p50Ms: 0,
+      p95Ms: 0,
+    }
+  }
+  const values = samples
+    .map(item => item.hotUpdateMs)
+    .filter(Number.isFinite)
+    .sort((a, b) => a - b)
+  const sum = values.reduce((total, value) => total + value, 0)
+  return {
+    count: values.length,
+    avgMs: Math.round(sum / values.length),
+    minMs: values[0],
+    maxMs: values.at(-1),
+    p50Ms: percentile(values, 0.5),
+    p95Ms: percentile(values, 0.95),
+  }
+}
+
+function groupSpeedSamples(samples, key) {
+  const grouped = new Map()
+  for (const sample of samples) {
+    const groupKey = sample[key] || 'unknown'
+    const list = grouped.get(groupKey) || []
+    list.push(sample)
+    grouped.set(groupKey, list)
+  }
+  return Object.fromEntries(
+    [...grouped.entries()]
+      .sort(([a], [b]) => a.localeCompare(b))
+      .map(([name, groupSamples]) => [name, summarizeSpeedSamples(groupSamples)]),
+  )
+}
+
+function collectSpeedSamplesFromReport(report, reportFile) {
+  const samples = []
+  for (const oneCase of report?.cases ?? []) {
+    const caseName = oneCase.name || oneCase.label || oneCase.project || 'unknown'
+    const project = oneCase.project || 'unknown'
+    pushSpeedSample(samples, {
+      caseName,
+      project,
+      surface: 'case-template-preferred',
+      sourceFile: '',
+      hotUpdateMs: oneCase.hotUpdateEffectiveMs,
+      rollbackMs: oneCase.rollbackEffectiveMs,
+      initialReadyMs: oneCase.initialReadyMs,
+      reportFile,
+    })
+
+    for (const mutation of oneCase.mutationMetrics ?? []) {
+      const sourceFile = mutation.sourceFile || ''
+      if (Array.isArray(mutation.rounds)) {
+        for (const round of mutation.rounds) {
+          pushSpeedSample(samples, {
+            caseName,
+            project,
+            surface: `${mutation.mutationKind}:${round.roundName}`,
+            sourceFile,
+            hotUpdateMs: round.hotUpdateEffectiveMs,
+            rollbackMs: round.rollbackEffectiveMs,
+            initialReadyMs: oneCase.initialReadyMs,
+            reportFile,
+          })
+        }
+      }
+      else {
+        pushSpeedSample(samples, {
+          caseName,
+          project,
+          surface: mutation.mutationKind,
+          sourceFile,
+          hotUpdateMs: mutation.hotUpdateEffectiveMs,
+          rollbackMs: mutation.rollbackEffectiveMs,
+          initialReadyMs: oneCase.initialReadyMs,
+          reportFile,
+        })
+      }
+
+      for (const [extraKey, extraValue] of [
+        ['added-class', mutation.addedClassHmr],
+        ['same-class-literal', mutation.sameClassLiteralHmr],
+        ['comment-carrier', mutation.commentCarrierHmr],
+      ]) {
+        if (!extraValue) {
+          continue
+        }
+        pushSpeedSample(samples, {
+          caseName,
+          project,
+          surface: `${mutation.mutationKind}:${extraKey}`,
+          sourceFile,
+          hotUpdateMs: extraValue.hotUpdateEffectiveMs,
+          rollbackMs: extraValue.rollbackEffectiveMs,
+          initialReadyMs: oneCase.initialReadyMs,
+          reportFile,
+        })
+      }
+    }
+
+    for (const subPackage of oneCase.subPackageMutationMetrics ?? []) {
+      for (const [kind, mutation] of [
+        ['template', subPackage.template],
+        ['style', subPackage.style],
+      ]) {
+        if (!mutation) {
+          continue
+        }
+        pushSpeedSample(samples, {
+          caseName,
+          project,
+          surface: `subpackage:${subPackage.root}:${kind}`,
+          sourceFile: mutation.sourceFile || '',
+          hotUpdateMs: mutation.hotUpdateEffectiveMs,
+          rollbackMs: mutation.rollbackEffectiveMs,
+          initialReadyMs: oneCase.initialReadyMs,
+          reportFile,
+        })
+      }
+    }
+  }
+  return samples
+}
+
+function readWatchReports() {
+  const reportFiles = listFilesSafe(ROOT_DIR, name =>
+    name.endsWith('.json') && name !== path.basename(SPEED_REPORT_JSON))
+    .sort((a, b) => fs.statSync(a).mtimeMs - fs.statSync(b).mtimeMs)
+  const reports = []
+  for (const file of reportFiles) {
+    try {
+      reports.push({
+        file,
+        report: JSON.parse(readUtf8(file)),
+      })
+    }
+    catch {}
+  }
+  return reports
+}
+
+function buildSpeedReport() {
+  const reports = readWatchReports()
+  const samples = reports.flatMap(item =>
+    collectSpeedSamplesFromReport(item.report, path.basename(item.file)))
+  const initialReadyValues = samples
+    .map(item => item.initialReadyMs)
+    .filter(Number.isFinite)
+    .sort((a, b) => a - b)
+  const slowest = [...samples]
+    .sort((a, b) => b.hotUpdateMs - a.hotUpdateMs)
+    .slice(0, 10)
+
+  return {
+    generatedAt: new Date().toISOString(),
+    reportCount: reports.length,
+    sampleCount: samples.length,
+    summary: summarizeSpeedSamples(samples),
+    initialReady: summarizeSpeedSamples(
+      initialReadyValues.map(value => ({ hotUpdateMs: value })),
+    ),
+    byProject: groupSpeedSamples(samples, 'project'),
+    bySurface: groupSpeedSamples(samples, 'surface'),
+    slowest,
+    sourceReports: reports.map(item => path.basename(item.file)),
+  }
+}
+
+function renderSummaryTable(grouped) {
+  const lines = [
+    '| name | count | avg | p50 | p95 | min | max |',
+    '| --- | ---: | ---: | ---: | ---: | ---: | ---: |',
+  ]
+  for (const [name, summary] of Object.entries(grouped)) {
+    lines.push(
+      `| ${name} | ${summary.count} | ${summary.avgMs}ms | ${summary.p50Ms}ms | ${summary.p95Ms}ms | ${summary.minMs}ms | ${summary.maxMs}ms |`,
+    )
+  }
+  return lines
+}
+
+function renderSpeedReportMarkdown(report) {
+  const lines = []
+  lines.push('# e2e-watch HMR 速度报告')
+  lines.push('')
+  lines.push(`- generated_at: ${report.generatedAt}`)
+  lines.push(`- source reports: ${report.reportCount}`)
+  lines.push(`- samples: ${report.sampleCount}`)
+  lines.push(
+    `- hot update: avg=${report.summary.avgMs}ms, p50=${report.summary.p50Ms}ms, p95=${report.summary.p95Ms}ms, max=${report.summary.maxMs}ms`,
+  )
+  lines.push(
+    `- initial ready: avg=${report.initialReady.avgMs}ms, p50=${report.initialReady.p50Ms}ms, p95=${report.initialReady.p95Ms}ms, max=${report.initialReady.maxMs}ms`,
+  )
+  lines.push('')
+  lines.push('## 按项目')
+  lines.push(...renderSummaryTable(report.byProject))
+  lines.push('')
+  lines.push('## 按 HMR 场景')
+  lines.push(...renderSummaryTable(report.bySurface))
+  lines.push('')
+  lines.push('## 最慢样本')
+  if (report.slowest.length === 0) {
+    lines.push('- no samples')
+  }
+  else {
+    for (const sample of report.slowest) {
+      lines.push(
+        `- ${sample.hotUpdateMs}ms | ${sample.project} | ${sample.surface} | ${sample.sourceFile || 'n/a'} | ${sample.reportFile}`,
+      )
+    }
+  }
+  lines.push('')
+  lines.push('## 实现依据')
+  lines.push('- Tailwind v3/v4 官方 Vite/Webpack 插件在 watch 生命周期复用 compiler、scanner 与 candidates 集合。')
+  lines.push('- 本仓库 HMR 回归沿用同一思路：启动一次开发 watcher，在同一 session 内连续验证 template/script/style/content/subpackage 变更，并记录增量输出与实际生效耗时。')
+  return `${lines.join('\n')}\n`
+}
+
+function generateSpeedReport() {
+  fs.mkdirSync(ROOT_DIR, { recursive: true })
+  const report = buildSpeedReport()
+  fs.writeFileSync(SPEED_REPORT_JSON, `${JSON.stringify(report, null, 2)}\n`, 'utf8')
+  fs.writeFileSync(SPEED_REPORT_MD, renderSpeedReportMarkdown(report), 'utf8')
+  process.stdout.write(`[e2e-watch] hmr speed report written: ${SPEED_REPORT_MD}\n`)
+  return report
 }
 
 function pickSnippet(source, probes) {
@@ -632,6 +899,7 @@ function publishJobSummary() {
 
   const title = process.env.SUMMARY_TITLE || 'e2e-watch'
   const rootCauseReportPath = path.join(FAILURES_DIR, 'root-cause-report.md')
+  const speedReport = generateSpeedReport()
 
   const reportFiles = listFilesSafe(ROOT_DIR, name => name.endsWith('.json'))
   reportFiles.sort((a, b) => fs.statSync(a).mtimeMs - fs.statSync(b).mtimeMs)
@@ -674,6 +942,12 @@ function publishJobSummary() {
   lines.push(
     `- RCA report: ${fs.existsSync(rootCauseReportPath) ? '[root-cause-report.md](./e2e/benchmark/e2e-watch-hmr/failures/root-cause-report.md)' : 'not-found'}`,
   )
+  lines.push(
+    `- HMR speed: avg=${speedReport.summary.avgMs}ms, p50=${speedReport.summary.p50Ms}ms, p95=${speedReport.summary.p95Ms}ms, max=${speedReport.summary.maxMs}ms`,
+  )
+  lines.push(
+    `- HMR speed report: ${fs.existsSync(SPEED_REPORT_MD) ? '[hmr-speed-report.md](./e2e/benchmark/e2e-watch-hmr/hmr-speed-report.md)' : 'not-found'}`,
+  )
 
   fs.appendFileSync(summaryPath, `${lines.join('\n')}\n`, 'utf8')
 }
@@ -690,6 +964,10 @@ function main() {
   }
   if (command === 'job-summary') {
     publishJobSummary()
+    return
+  }
+  if (command === 'speed-report') {
+    generateSpeedReport()
     return
   }
   throw new Error(`unknown command: ${command || '(empty)'}`)

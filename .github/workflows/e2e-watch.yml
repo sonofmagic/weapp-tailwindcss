@@ -317,7 +317,9 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: e2e-watch-hmr-pr-${{ matrix.runner_label }}-node${{ matrix['node-version'] || 22 }}-${{ matrix.watch_case }}-${{ matrix.round_profile }}-${{ github.run_id }}
-          path: e2e/benchmark/e2e-watch-hmr/*.json
+          path: |
+            e2e/benchmark/e2e-watch-hmr/*.json
+            e2e/benchmark/e2e-watch-hmr/hmr-speed-report.md
           if-no-files-found: ignore
           retention-days: 14
 
@@ -518,7 +520,9 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: e2e-watch-hmr-nightly-${{ matrix.runner_label }}-node${{ matrix['node-version'] || 22 }}-${{ matrix.watch_case }}-${{ matrix.round_profile }}-${{ github.run_id }}
-          path: e2e/benchmark/e2e-watch-hmr/*.json
+          path: |
+            e2e/benchmark/e2e-watch-hmr/*.json
+            e2e/benchmark/e2e-watch-hmr/hmr-speed-report.md
           if-no-files-found: ignore
           retention-days: 14
 

@@ -882,4 +882,431 @@ describe('v5 vite generator bundle', () => {
     expect(candidates.has('bg-[#112233]')).toBe(false)
     expect(candidates.has('bg-[#445566]')).toBe(true)
   }, TEST_TIMEOUT_MS)
+
+  it('honors Tailwind v3 content negation when scanning vite source candidates', async () => {
+    const tempDir = await path.join(os.tmpdir(), `weapp-tw-vite-v3-not-${Date.now()}-${Math.random().toString(16).slice(2)}`)
+    createdDirs.push(tempDir)
+    const pageFile = path.join(tempDir, 'src/pages/index.tsx')
+    const ignoredFile = path.join(tempDir, 'src/apis/client.ts')
+    const configFile = path.join(tempDir, 'tailwind.config.js')
+    await mkdir(path.dirname(pageFile), { recursive: true })
+    await mkdir(path.dirname(ignoredFile), { recursive: true })
+    await writeFile(configFile, 'module.exports = { content: ["./src/**/*.{ts,tsx}", "!./src/apis/**"] }', 'utf8')
+    await writeFile(pageFile, 'export const cls = "bg-[#112233]"', 'utf8')
+    await writeFile(ignoredFile, 'export const cls = "text-[77rpx]"', 'utf8')
+
+    const runtimeSet = new Set<string>()
+    const generateMock = vi.fn(async () => ({
+      css: '.bg-_b_h112233_B{background-color:#112233}',
+      rawCss: '.bg-\\[\\#112233\\]{background-color:#112233}',
+      target: 'weapp',
+      classSet: new Set(['bg-[#112233]']),
+      dependencies: [],
+      sources: [],
+      root: null,
+      version: 3,
+    }))
+
+    vi.doMock('@/bundlers/vite/incremental-runtime-class-set', () => ({
+      createBundleRuntimeClassSetManager: () => ({
+        sync: vi.fn(async () => runtimeSet),
+        reset: vi.fn(async () => undefined),
+      }),
+    }))
+    vi.doMock('@/generator', async (importOriginal) => {
+      const actual = await importOriginal<typeof import('@/generator')>()
+      return {
+        ...actual,
+        createWeappTailwindcssGenerator: vi.fn(() => ({
+          generate: generateMock,
+          validateCandidates: vi.fn(async (candidates: Set<string>) => candidates),
+        })),
+        resolveTailwindV3SourceFromPatcher: vi.fn(async () => ({
+          version: 3,
+          projectRoot: tempDir,
+          cwd: tempDir,
+          base: tempDir,
+          css: '@tailwind utilities;',
+          config: configFile,
+          configObject: {
+            content: ['./src/**/*.{ts,tsx}', '!./src/apis/**'],
+          },
+          dependencies: [configFile],
+          packageName: 'tailwindcss',
+          postcssPlugin: 'tailwindcss',
+        })),
+      }
+    })
+
+    setCurrentContext(createContext({
+      twPatcher: {
+        patch: vi.fn(),
+        getClassSet: vi.fn(async () => runtimeSet),
+        getClassSetSync: vi.fn(() => runtimeSet),
+        extract: vi.fn(async () => ({ classSet: runtimeSet })),
+        majorVersion: 3,
+        options: {
+          projectRoot: tempDir,
+          tailwindcss: {
+            cwd: tempDir,
+            config: configFile,
+          },
+        },
+      },
+    }))
+
+    const WeappTailwindcss = await loadUnifiedVitePlugin()
+    const plugins = WeappTailwindcss()
+    const sourcePlugin = plugins?.find(plugin => plugin.name === 'weapp-tailwindcss:adaptor:source-candidates') as Plugin
+    const postPlugin = plugins?.find(plugin => plugin.name === 'weapp-tailwindcss:adaptor:post') as Plugin
+
+    await (postPlugin.configResolved as any)?.call(postPlugin, {
+      command: 'build',
+      root: tempDir,
+      css: { postcss: { plugins: [] } },
+      build: { outDir: 'dist' },
+    } as ResolvedConfig)
+    await (sourcePlugin.buildStart as any)?.call(sourcePlugin)
+
+    const transform = getTransformHandler(sourcePlugin)
+    await transform?.call(sourcePlugin, await readFile(ignoredFile, 'utf8'), ignoredFile)
+
+    const generateBundle = getGenerateBundleHandler(postPlugin)
+    await generateBundle?.call(postPlugin, {} as any, {
+      'app.css': {
+        ...createRollupAsset('/*! weapp-tailwindcss generator-placeholder */'),
+        fileName: 'app.css',
+      },
+    })
+
+    const candidates = generateMock.mock.calls[0]?.[0]?.candidates as Set<string>
+    expect(candidates.has('bg-[#112233]')).toBe(true)
+    expect(candidates.has('text-[77rpx]')).toBe(false)
+  }, TEST_TIMEOUT_MS)
+
+  it('honors Tailwind v4 @source not when scanning vite source candidates', async () => {
+    const tempDir = await path.join(os.tmpdir(), `weapp-tw-vite-v4-not-${Date.now()}-${Math.random().toString(16).slice(2)}`)
+    createdDirs.push(tempDir)
+    const cssEntry = path.join(tempDir, 'src/app.css')
+    const pageFile = path.join(tempDir, 'src/pages/index.tsx')
+    const ignoredFile = path.join(tempDir, 'src/apis/client.ts')
+    await mkdir(path.dirname(cssEntry), { recursive: true })
+    await mkdir(path.dirname(pageFile), { recursive: true })
+    await mkdir(path.dirname(ignoredFile), { recursive: true })
+    await writeFile(cssEntry, [
+      '@import "tailwindcss" source("../src");',
+      '@source not "./apis/**";',
+    ].join('\n'), 'utf8')
+    await writeFile(pageFile, 'export const cls = "bg-[#112233]"', 'utf8')
+    await writeFile(ignoredFile, 'export const cls = "text-[77rpx]"', 'utf8')
+
+    const runtimeSet = new Set<string>()
+    const generateMock = vi.fn(async () => ({
+      css: '.bg-_b_h112233_B{background-color:#112233}',
+      rawCss: '.bg-\\[\\#112233\\]{background-color:#112233}',
+      target: 'weapp',
+      classSet: new Set(['bg-[#112233]']),
+      dependencies: [],
+      sources: [],
+      root: null,
+    }))
+
+    vi.doMock('@/bundlers/vite/incremental-runtime-class-set', () => ({
+      createBundleRuntimeClassSetManager: () => ({
+        sync: vi.fn(async () => runtimeSet),
+        reset: vi.fn(async () => undefined),
+      }),
+    }))
+    vi.doMock('@/generator', async (importOriginal) => {
+      const actual = await importOriginal<typeof import('@/generator')>()
+      return {
+        ...actual,
+        createWeappTailwindcssGenerator: vi.fn(() => ({
+          generate: generateMock,
+        })),
+        resolveTailwindV4SourceOptionsFromPatcher: vi.fn(() => ({
+          projectRoot: tempDir,
+          base: tempDir,
+          baseFallbacks: [],
+          cssEntries: [cssEntry],
+          packageName: 'tailwindcss4',
+        })),
+        resolveTailwindV4SourceFromPatcher: vi.fn(async () => ({
+          projectRoot: tempDir,
+          base: path.dirname(cssEntry),
+          baseFallbacks: [],
+          css: await readFile(cssEntry, 'utf8'),
+          dependencies: [cssEntry],
+        })),
+      }
+    })
+
+    setCurrentContext(createContext({
+      cssEntries: [cssEntry],
+      tailwindcss: {
+        version: 4,
+        packageName: 'tailwindcss4',
+        v4: {
+          cssEntries: [cssEntry],
+        },
+      },
+      twPatcher: {
+        patch: vi.fn(),
+        getClassSet: vi.fn(async () => runtimeSet),
+        getClassSetSync: vi.fn(() => runtimeSet),
+        extract: vi.fn(async () => ({ classSet: runtimeSet })),
+        majorVersion: 4,
+      },
+    }))
+
+    const WeappTailwindcss = await loadUnifiedVitePlugin()
+    const plugins = WeappTailwindcss({
+      cssEntries: [cssEntry],
+      tailwindcss: {
+        version: 4,
+        packageName: 'tailwindcss4',
+        v4: {
+          cssEntries: [cssEntry],
+        },
+      },
+    })
+    const sourcePlugin = plugins?.find(plugin => plugin.name === 'weapp-tailwindcss:adaptor:source-candidates') as Plugin
+    const postPlugin = plugins?.find(plugin => plugin.name === 'weapp-tailwindcss:adaptor:post') as Plugin
+
+    await (postPlugin.configResolved as any)?.call(postPlugin, {
+      command: 'build',
+      root: tempDir,
+      css: { postcss: { plugins: [] } },
+      build: { outDir: 'dist' },
+    } as ResolvedConfig)
+    await (sourcePlugin.buildStart as any)?.call(sourcePlugin)
+
+    const transform = getTransformHandler(sourcePlugin)
+    await transform?.call(sourcePlugin, await readFile(ignoredFile, 'utf8'), ignoredFile)
+
+    const generateBundle = getGenerateBundleHandler(postPlugin)
+    await generateBundle?.call(postPlugin, {} as any, {
+      'app.css': {
+        ...createRollupAsset('/*! weapp-tailwindcss generator-placeholder */'),
+        fileName: 'app.css',
+      },
+    })
+
+    const candidates = generateMock.mock.calls[0]?.[0]?.candidates as Set<string>
+    expect(candidates.has('bg-[#112233]')).toBe(true)
+    expect(candidates.has('text-[77rpx]')).toBe(false)
+  }, TEST_TIMEOUT_MS)
+
+  it('adds Tailwind v4 @source inline candidates to vite generator source candidates', async () => {
+    const tempDir = await path.join(os.tmpdir(), `weapp-tw-vite-v4-inline-${Date.now()}-${Math.random().toString(16).slice(2)}`)
+    createdDirs.push(tempDir)
+    const cssEntry = path.join(tempDir, 'src/app.css')
+    await mkdir(path.dirname(cssEntry), { recursive: true })
+    await writeFile(cssEntry, [
+      '@import "tailwindcss" source(none);',
+      '@source inline("underline w-{1..2}");',
+      '@source not inline("w-2");',
+    ].join('\n'), 'utf8')
+
+    const runtimeSet = new Set<string>()
+    const generateMock = vi.fn(async () => ({
+      css: '.ok{}',
+      rawCss: '.ok{}',
+      target: 'weapp',
+      classSet: new Set(['underline', 'w-1']),
+      dependencies: [],
+      sources: [],
+      root: null,
+    }))
+
+    vi.doMock('@/bundlers/vite/incremental-runtime-class-set', () => ({
+      createBundleRuntimeClassSetManager: () => ({
+        sync: vi.fn(async () => runtimeSet),
+        reset: vi.fn(async () => undefined),
+      }),
+    }))
+    vi.doMock('@/generator', async (importOriginal) => {
+      const actual = await importOriginal<typeof import('@/generator')>()
+      return {
+        ...actual,
+        createWeappTailwindcssGenerator: vi.fn(() => ({
+          generate: generateMock,
+        })),
+        resolveTailwindV4SourceOptionsFromPatcher: vi.fn(() => ({
+          projectRoot: tempDir,
+          base: tempDir,
+          baseFallbacks: [],
+          cssEntries: [cssEntry],
+          packageName: 'tailwindcss4',
+        })),
+        resolveTailwindV4SourceFromPatcher: vi.fn(async () => ({
+          projectRoot: tempDir,
+          base: path.dirname(cssEntry),
+          baseFallbacks: [],
+          css: await readFile(cssEntry, 'utf8'),
+          dependencies: [cssEntry],
+        })),
+      }
+    })
+
+    setCurrentContext(createContext({
+      cssEntries: [cssEntry],
+      tailwindcss: {
+        version: 4,
+        packageName: 'tailwindcss4',
+        v4: {
+          cssEntries: [cssEntry],
+        },
+      },
+      twPatcher: {
+        patch: vi.fn(),
+        getClassSet: vi.fn(async () => runtimeSet),
+        getClassSetSync: vi.fn(() => runtimeSet),
+        extract: vi.fn(async () => ({ classSet: runtimeSet })),
+        majorVersion: 4,
+      },
+    }))
+
+    const WeappTailwindcss = await loadUnifiedVitePlugin()
+    const plugins = WeappTailwindcss({
+      cssEntries: [cssEntry],
+      tailwindcss: {
+        version: 4,
+        packageName: 'tailwindcss4',
+        v4: {
+          cssEntries: [cssEntry],
+        },
+      },
+    })
+    const sourcePlugin = plugins?.find(plugin => plugin.name === 'weapp-tailwindcss:adaptor:source-candidates') as Plugin
+    const postPlugin = plugins?.find(plugin => plugin.name === 'weapp-tailwindcss:adaptor:post') as Plugin
+
+    await (postPlugin.configResolved as any)?.call(postPlugin, {
+      command: 'build',
+      root: tempDir,
+      css: { postcss: { plugins: [] } },
+      build: { outDir: 'dist' },
+    } as ResolvedConfig)
+    await (sourcePlugin.buildStart as any)?.call(sourcePlugin)
+
+    const generateBundle = getGenerateBundleHandler(postPlugin)
+    await generateBundle?.call(postPlugin, {} as any, {
+      'app.css': {
+        ...createRollupAsset('/*! weapp-tailwindcss generator-placeholder */'),
+        fileName: 'app.css',
+      },
+    })
+
+    const candidates = generateMock.mock.calls[0]?.[0]?.candidates as Set<string>
+    expect(candidates.has('underline')).toBe(true)
+    expect(candidates.has('w-1')).toBe(true)
+    expect(candidates.has('w-2')).toBe(false)
+  }, TEST_TIMEOUT_MS)
+
+  it('lets Tailwind v4 @source not inline remove vite candidates discovered from files', async () => {
+    const tempDir = await path.join(os.tmpdir(), `weapp-tw-vite-v4-inline-not-${Date.now()}-${Math.random().toString(16).slice(2)}`)
+    createdDirs.push(tempDir)
+    const cssEntry = path.join(tempDir, 'src/app.css')
+    const pageFile = path.join(tempDir, 'src/pages/index.tsx')
+    await mkdir(path.dirname(cssEntry), { recursive: true })
+    await mkdir(path.dirname(pageFile), { recursive: true })
+    await writeFile(cssEntry, [
+      '@import "tailwindcss" source("../src");',
+      '@source not inline("underline");',
+    ].join('\n'), 'utf8')
+    await writeFile(pageFile, 'export const cls = "underline w-1"', 'utf8')
+
+    const runtimeSet = new Set<string>()
+    const generateMock = vi.fn(async () => ({
+      css: '.ok{}',
+      rawCss: '.ok{}',
+      target: 'weapp',
+      classSet: new Set(['w-1']),
+      dependencies: [],
+      sources: [],
+      root: null,
+    }))
+
+    vi.doMock('@/bundlers/vite/incremental-runtime-class-set', () => ({
+      createBundleRuntimeClassSetManager: () => ({
+        sync: vi.fn(async () => runtimeSet),
+        reset: vi.fn(async () => undefined),
+      }),
+    }))
+    vi.doMock('@/generator', async (importOriginal) => {
+      const actual = await importOriginal<typeof import('@/generator')>()
+      return {
+        ...actual,
+        createWeappTailwindcssGenerator: vi.fn(() => ({
+          generate: generateMock,
+        })),
+        resolveTailwindV4SourceOptionsFromPatcher: vi.fn(() => ({
+          projectRoot: tempDir,
+          base: tempDir,
+          baseFallbacks: [],
+          cssEntries: [cssEntry],
+          packageName: 'tailwindcss4',
+        })),
+        resolveTailwindV4SourceFromPatcher: vi.fn(async () => ({
+          projectRoot: tempDir,
+          base: path.dirname(cssEntry),
+          baseFallbacks: [],
+          css: await readFile(cssEntry, 'utf8'),
+          dependencies: [cssEntry],
+        })),
+      }
+    })
+
+    setCurrentContext(createContext({
+      cssEntries: [cssEntry],
+      tailwindcss: {
+        version: 4,
+        packageName: 'tailwindcss4',
+        v4: {
+          cssEntries: [cssEntry],
+        },
+      },
+      twPatcher: {
+        patch: vi.fn(),
+        getClassSet: vi.fn(async () => runtimeSet),
+        getClassSetSync: vi.fn(() => runtimeSet),
+        extract: vi.fn(async () => ({ classSet: runtimeSet })),
+        majorVersion: 4,
+      },
+    }))
+
+    const WeappTailwindcss = await loadUnifiedVitePlugin()
+    const plugins = WeappTailwindcss({
+      cssEntries: [cssEntry],
+      tailwindcss: {
+        version: 4,
+        packageName: 'tailwindcss4',
+        v4: {
+          cssEntries: [cssEntry],
+        },
+      },
+    })
+    const sourcePlugin = plugins?.find(plugin => plugin.name === 'weapp-tailwindcss:adaptor:source-candidates') as Plugin
+    const postPlugin = plugins?.find(plugin => plugin.name === 'weapp-tailwindcss:adaptor:post') as Plugin
+
+    await (postPlugin.configResolved as any)?.call(postPlugin, {
+      command: 'build',
+      root: tempDir,
+      css: { postcss: { plugins: [] } },
+      build: { outDir: 'dist' },
+    } as ResolvedConfig)
+    await (sourcePlugin.buildStart as any)?.call(sourcePlugin)
+
+    const generateBundle = getGenerateBundleHandler(postPlugin)
+    await generateBundle?.call(postPlugin, {} as any, {
+      'app.css': {
+        ...createRollupAsset('/*! weapp-tailwindcss generator-placeholder */'),
+        fileName: 'app.css',
+      },
+    })
+
+    const candidates = generateMock.mock.calls[0]?.[0]?.candidates as Set<string>
+    expect(candidates.has('underline')).toBe(false)
+    expect(candidates.has('w-1')).toBe(true)
+  }, TEST_TIMEOUT_MS)
 })

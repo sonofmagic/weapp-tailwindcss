@@ -1,11 +1,18 @@
 import type { Result, Root } from 'postcss'
 import type { TailwindV4CandidateSource } from '../generator'
 import type { WeappTailwindcssPostcssPluginOptions } from '../postcss'
-import { readFile, stat } from 'node:fs/promises'
+import { readFile } from 'node:fs/promises'
 import path from 'node:path'
-import fg from 'fast-glob'
 import { loadConfig } from 'tailwindcss-config'
 import { extractValidCandidates } from 'tailwindcss-patch'
+import {
+  collectCssInlineSourceCandidates,
+  createSourceScanPattern,
+  expandTailwindSourceEntries,
+  normalizeLegacyContentEntries,
+  parseConfigParam,
+  resolveCssSourceEntries,
+} from '@/tailwindcss/source-scan'
 import { resolvePostcssBase, resolvePostcssProjectRoot } from './context'
 
 const POSTCSS_SOURCE_EXTENSIONS = [
@@ -26,117 +33,11 @@ const POSTCSS_SOURCE_EXTENSIONS = [
   'ts',
   'tsx',
 ]
-const POSTCSS_SOURCE_PATTERN = `**/*.{${POSTCSS_SOURCE_EXTENSIONS.join(',')}}`
-
-type LegacyContentFilePattern = string
-
-interface LegacyContentObject {
-  files?: LegacyContentConfig
-  relative?: boolean
-}
-
-interface TailwindSourceEntry {
-  base: string
-  pattern: string
-  negated: boolean
-}
-
-type LegacyContentConfig
-  = | LegacyContentFilePattern
-    | LegacyContentFilePattern[]
-    | LegacyContentObject
-    | Array<LegacyContentFilePattern | LegacyContentObject>
-
-function parseLocalSourceParam(params: string) {
-  const value = params.trim()
-  if (!value || value === 'none' || value.startsWith('not ') || value.startsWith('inline(')) {
-    return
-  }
-  const match = /^(['"])(.+)\1$/.exec(value)
-  return match?.[2]
-}
-
-function parseConfigParam(params: string) {
-  const value = params.trim()
-  const match = /^(['"])(.+)\1$/.exec(value)
-  return match?.[2]
-}
-
-function parseSourceFileParam(params: string) {
-  const value = params.trim()
-  if (!value || value === 'none' || value.startsWith('inline(')) {
-    return undefined
-  }
-
-  const negated = value.startsWith('not ')
-  const sourceValue = negated ? value.slice(4).trim() : value
-  const match = /^(['"])(.+)\1$/.exec(sourceValue)
-  return match?.[2]
-    ? {
-        negated,
-        sourcePath: match[2],
-      }
-    : undefined
-}
+const POSTCSS_SOURCE_PATTERN = createSourceScanPattern(POSTCSS_SOURCE_EXTENSIONS)
 
 function getSourceExtension(file: string) {
   const extension = path.extname(file).slice(1)
   return extension || undefined
-}
-
-async function pathExistsAsDirectory(file: string) {
-  try {
-    return (await stat(file)).isDirectory()
-  }
-  catch {
-    return false
-  }
-}
-
-async function expandLocalSourceFiles(sourcePath: string, base: string) {
-  const absoluteSource = path.isAbsolute(sourcePath) ? sourcePath : path.resolve(base, sourcePath)
-  if (await pathExistsAsDirectory(absoluteSource)) {
-    return fg(POSTCSS_SOURCE_PATTERN, {
-      absolute: true,
-      cwd: absoluteSource,
-      onlyFiles: true,
-    })
-  }
-
-  return fg(sourcePath, {
-    absolute: true,
-    cwd: base,
-    onlyFiles: true,
-  })
-}
-
-async function resolveTailwindSourceEntry(
-  sourcePath: string,
-  base: string,
-  negated: boolean,
-): Promise<TailwindSourceEntry> {
-  const absoluteSource = path.isAbsolute(sourcePath) ? path.resolve(sourcePath) : path.resolve(base, sourcePath)
-  if (await pathExistsAsDirectory(absoluteSource)) {
-    return {
-      base: absoluteSource,
-      negated,
-      pattern: POSTCSS_SOURCE_PATTERN,
-    }
-  }
-
-  if (path.isAbsolute(sourcePath)) {
-    return {
-      base: path.dirname(absoluteSource),
-      negated,
-      pattern: path.basename(absoluteSource),
-    }
-  }
-
-  return {
-    base,
-    negated,
-    pattern: sourcePath,
-  }
 }
 
 function collectConfigPaths(root: Root, base: string) {
@@ -150,36 +51,44 @@ function collectConfigPaths(root: Root, base: string) {
   return [...new Set(configPaths)]
 }
 
-function normalizeContentFiles(content: unknown): string[] {
-  if (typeof content === 'string') {
-    return [content]
+function resolveOptionConfigPath(config: string | undefined, base: string) {
+  if (!config) {
+    return undefined
   }
-  if (Array.isArray(content)) {
-    return content.flatMap(item => normalizeContentFiles(item))
-  }
-  if (typeof content === 'object' && content !== null && 'files' in content) {
-    return normalizeContentFiles((content as LegacyContentObject).files)
-  }
-  return []
+  return path.isAbsolute(config) ? config : path.resolve(base, config)
 }
 
-async function collectConfigContentFiles(root: Root, base: string) {
-  const configPaths = collectConfigPaths(root, base)
+async function collectConfigContentFiles(root: Root, base: string, options: WeappTailwindcssPostcssPluginOptions) {
+  const configPaths = [...new Set([
+    ...(resolveOptionConfigPath(options.config, base) ? [resolveOptionConfigPath(options.config, base)!] : []),
+    ...collectConfigPaths(root, base),
+  ])]
   const files: string[] = []
   for (const configPath of configPaths) {
     const result = await loadConfig({
       config: configPath,
       cwd: path.dirname(configPath),
     })
-    const contentFiles = normalizeContentFiles(result?.config.content)
-    for (const contentFile of contentFiles) {
-      files.push(...await expandLocalSourceFiles(contentFile, path.dirname(configPath)))
-    }
+    const contentEntries = normalizeLegacyContentEntries(result?.config.content, path.dirname(configPath))
+    files.push(...await expandTailwindSourceEntries(contentEntries))
   }
   return {
     configPaths,
     files: [...new Set(files)],
   }
+}
+
+async function collectConfiguredContentEntries(root: Root, base: string, options: WeappTailwindcssPostcssPluginOptions) {
+  const configPath = resolveOptionConfigPath(options.config, base) ?? collectConfigPaths(root, base)[0]
+  if (!configPath) {
+    return []
+  }
+  const resolvedConfigPath = path.isAbsolute(configPath) ? configPath : path.resolve(base, configPath)
+  const result = await loadConfig({
+    config: resolvedConfigPath,
+    cwd: path.dirname(resolvedConfigPath),
+  })
+  return normalizeLegacyContentEntries(result?.config.content, path.dirname(resolvedConfigPath))
 }
 
 export async function collectAutoTailwindCandidates(
@@ -193,40 +102,38 @@ export async function collectAutoTailwindCandidates(
 
   const base = resolvePostcssBase(result, options)
   const projectRoot = resolvePostcssProjectRoot(result, options)
-  const sourceEntryTasks: Array<Promise<TailwindSourceEntry>> = []
+  const sourceEntries = []
   const hasSourceNone = root.toString().includes('source(none)')
+  const inlineCandidates = collectCssInlineSourceCandidates(root)
+  const configuredContentEntries = options.version === 3
+    ? await collectConfiguredContentEntries(root, base, options)
+    : []
 
-  if (!hasSourceNone) {
-    sourceEntryTasks.push(Promise.resolve({
+  if (configuredContentEntries.length > 0) {
+    sourceEntries.push(...configuredContentEntries)
+  }
+  else if (!hasSourceNone) {
+    sourceEntries.push({
       base,
       negated: false,
       pattern: POSTCSS_SOURCE_PATTERN,
-    }))
+    })
   }
 
-  root.walkAtRules('source', (rule) => {
-    const parsed = parseSourceFileParam(rule.params)
-    if (!parsed) {
-      return
-    }
-    sourceEntryTasks.push(
-      resolveTailwindSourceEntry(parsed.sourcePath, base, parsed.negated),
-    )
-  })
+  sourceEntries.push(...await resolveCssSourceEntries(root, base, POSTCSS_SOURCE_PATTERN))
+  const candidates = sourceEntries.length === 0
+    ? []
+    : await extractValidCandidates({
+        base,
+        css: root.toString(),
+        cwd: projectRoot,
+        sources: sourceEntries,
+      })
 
-  const sourceEntries = await Promise.all(sourceEntryTasks)
-  if (sourceEntries.length === 0) {
-    return new Set<string>()
-  }
-
-  const candidates = await extractValidCandidates({
-    base,
-    css: root.toString(),
-    cwd: projectRoot,
-    sources: sourceEntries,
-  })
-
-  return new Set(candidates)
+  return new Set([
+    ...candidates.filter(candidate => !inlineCandidates.excluded.has(candidate)),
+    ...inlineCandidates.included,
+  ])
 }
 
 export async function collectPostcssLocalSources(
@@ -235,18 +142,13 @@ export async function collectPostcssLocalSources(
   options: WeappTailwindcssPostcssPluginOptions,
 ) {
   const base = resolvePostcssBase(result, options)
-  const sourcePaths: string[] = []
-  root.walkAtRules('source', (rule) => {
-    const sourcePath = parseLocalSourceParam(rule.params)
-    if (sourcePath) {
-      sourcePaths.push(sourcePath)
-    }
-  })
+  const sourceEntries = await resolveCssSourceEntries(root, base, POSTCSS_SOURCE_PATTERN)
 
-  const configContentFiles = await collectConfigContentFiles(root, base)
-  const files = [...new Set((await Promise.all(
-    sourcePaths.map(sourcePath => expandLocalSourceFiles(sourcePath, base)),
-  )).flat().concat(configContentFiles.files))]
+  const configContentFiles = await collectConfigContentFiles(root, base, options)
+  const files = [...new Set([
+    ...await expandTailwindSourceEntries(sourceEntries),
+    ...configContentFiles.files,
+  ])]
   const sources: TailwindV4CandidateSource[] = await Promise.all(files.map(async file => ({
     content: await readFile(file, 'utf8'),
     extension: getSourceExtension(file),

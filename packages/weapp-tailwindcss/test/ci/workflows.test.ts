@@ -300,4 +300,23 @@ describe('e2e watch workflow', () => {
       expect(step.with?.name).toContain("node${{ matrix['node-version'] || 22 }}")
     }
   })
+
+  it('publishes HMR speed report in every watch job summary and artifact', () => {
+    const { workflow } = readWorkflow('e2e-watch.yml')
+    const jobs = [
+      workflow.jobs['pr-quick-gate'],
+      workflow.jobs['nightly-full-regression'],
+    ]
+
+    for (const job of jobs) {
+      const runs = stepRuns({ jobs: { target: job } }, 'target').join('\n')
+      expect(runs).toContain('node .github/scripts/e2e-watch-report.cjs job-summary')
+      expect(job.steps.some((step: Record<string, unknown>) => {
+        const withConfig = step.with as Record<string, unknown> | undefined
+        return step.uses === 'actions/upload-artifact@v4'
+          && typeof withConfig?.path === 'string'
+          && withConfig.path.includes('e2e/benchmark/e2e-watch-hmr/hmr-speed-report.md')
+      })).toBe(true)
+    }
+  })
 })

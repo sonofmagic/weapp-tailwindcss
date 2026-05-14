@@ -188,6 +188,7 @@
     "lint": "eslint .",
     "lint:fix": "eslint ./src --fix",
     "bench:vite-dev-hmr": "pnpm --filter @weapp-tailwindcss/scripts bench:vite-dev-hmr",
+    "watch-hmr:speed-report": "pnpm --filter @weapp-tailwindcss/scripts watch-hmr:speed-report",
     "test:watch-hmr": "pnpm --filter @weapp-tailwindcss/scripts test:watch-hmr"
   },
   "publishConfig": {
@@ -215,6 +216,7 @@
     "local-pkg": "^1.1.2",
     "lru-cache": "10.4.3",
     "magic-string": "0.30.21",
+    "micromatch": "^4.0.8",
     "postcss-load-config": "^6.0.1",
     "semver": "~7.8.0",
     "tailwindcss-config": "workspace:*",

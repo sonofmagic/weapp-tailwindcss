@@ -17,6 +17,7 @@
     "colors": "tsx src/colors.ts",
     "release": "tsx src/release.ts",
     "bench:vite-dev-hmr": "tsx src/vite-dev-hmr-bench.ts",
+    "watch-hmr:speed-report": "node ../../.github/scripts/e2e-watch-report.cjs speed-report",
     "test:watch-hmr": "node --import tsx src/watch-hmr-regression/index.ts"
   },
   "dependencies": {

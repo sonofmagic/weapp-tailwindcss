@@ -3253,7 +3253,7 @@ importers:
         version: link:../runtime
       tailwind-variants:
         specifier: ^3.2.2
-        version: 3.2.2(tailwind-merge@3.6.0)(tailwindcss@3.4.19(tsx@4.21.0)(yaml@2.9.0))
+        version: 3.2.2(tailwind-merge@3.6.0)(tailwindcss@4.3.0)
 
   packages-runtime/variants-v3:
     dependencies:
@@ -3567,6 +3567,9 @@ importers:
       magic-string:
         specifier: 0.30.21
         version: 0.30.21
+      micromatch:
+        specifier: ^4.0.8
+        version: 4.0.8
       postcss-load-config:
         specifier: ^6.0.1
         version: 6.0.1(jiti@2.7.0)(postcss@8.5.14)(tsx@4.21.0)(yaml@2.9.0)
