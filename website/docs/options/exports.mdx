@@ -55,9 +55,11 @@ Vite、Webpack 与 Gulp 入口都导出 `WeappTailwindcss` 和 `weappTailwindcss
 
 ## 样式资源
 
+在 `tailwindcss@4` + `weapp-tailwindcss@5` 的项目样式入口里，推荐统一写 `@import 'tailwindcss';`。下面这些 `weapp-tailwindcss/*` CSS 导出是给兼容旧项目、直接引用静态子资源或自定义组合时使用的稳定路径。
+
 | 导出路径 | 说明 | 引用示例 |
 | --- | --- | --- |
-| `weapp-tailwindcss/index.css` (`weapp-tailwindcss/index`) | 默认 runtime 样式（==推荐直接引用==） | `@import 'weapp-tailwindcss/index.css';`
+| `weapp-tailwindcss/index.css` (`weapp-tailwindcss/index`) | 兼容 runtime 样式入口 | `@import 'weapp-tailwindcss/index.css';`
 | `weapp-tailwindcss/preflight.css` (`weapp-tailwindcss/preflight`) | 小程序专用 Preflight | `@import 'weapp-tailwindcss/preflight.css';`
 | `weapp-tailwindcss/theme.css` (`weapp-tailwindcss/theme`) | 主题变量定义 | `@import 'weapp-tailwindcss/theme.css';`
 | `weapp-tailwindcss/utilities.css` (`weapp-tailwindcss/utilities`) | 原子类集合 | `@import 'weapp-tailwindcss/utilities.css';`
@@ -65,7 +67,7 @@ Vite、Webpack 与 Gulp 入口都导出 `WeappTailwindcss` 和 `weappTailwindcss
 | `weapp-tailwindcss/uni-app-x.css` (`weapp-tailwindcss/uni-app-x`) | uni-app x 定制样式 | `@import 'weapp-tailwindcss/uni-app-x.css';`
 | `weapp-tailwindcss/css` | 指向 `css/index.css`，兼容旧目录结构 | `@import 'weapp-tailwindcss/css';`
 
-> ⚠️ 注意：部分构建工具（例如 `postcss-import`、mpx CLI）在解析裸包名 `weapp-tailwindcss` 时可能回退到 JS 入口（`dist/index.js`），并抛出 “Unknown word "use strict"”。请显式写成 `@import 'weapp-tailwindcss/index.css'`，或在本地创建中转 `app.css` 后再导入。
+> ⚠️ 注意：不要在项目入口里写裸包名 `@import 'weapp-tailwindcss';`。部分构建工具（例如 `postcss-import`、mpx CLI）可能把它解析到 JS 入口（`dist/index.js`），并抛出 “Unknown word "use strict"”。Tailwind v4 项目入口请写 `@import 'tailwindcss';`；只有在明确需要直接引用静态子资源时，才使用上表里的 `weapp-tailwindcss/*` 路径。
 
 ## 其他导出
 

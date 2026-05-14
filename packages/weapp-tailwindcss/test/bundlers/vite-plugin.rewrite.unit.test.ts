@@ -171,7 +171,7 @@ describe('bundlers/vite WeappTailwindcss rewrite', () => {
     expect(source.startsWith('tailwind:')).toBeTruthy()
   }, TEST_TIMEOUT_MS)
 
-  it('keeps tailwindcss imports rewritten when plugin is disabled for tailwind v4 projects', async () => {
+  it('keeps tailwindcss imports resolvable when plugin is disabled for tailwind v4 projects', async () => {
     const WeappTailwindcss = await loadUnifiedVitePlugin()
     const currentContext = createContext({ disabled: true })
     setCurrentContext(currentContext)
@@ -186,7 +186,8 @@ describe('bundlers/vite WeappTailwindcss rewrite', () => {
     expect(transform).toBeTypeOf('function')
 
     const result = await transform?.('@import "tailwindcss";', '/src/app.css') as TransformResult
-    expect(result?.code).toContain('@import "weapp-tailwindcss/index.css";')
+    const pkgDir = slash(resolvePackageDir('weapp-tailwindcss'))
+    expect(result?.code).toContain(`@import "${pkgDir}/index.css";`)
   }, TEST_TIMEOUT_MS)
 
   it('supports trailing package directories and importer-less resolution in rewrite factory', async () => {
@@ -222,7 +223,7 @@ describe('bundlers/vite WeappTailwindcss rewrite', () => {
     expect(transform).toBeTypeOf('function')
 
     const result = await transform?.('@import "tailwindcss";\n@config "../tailwind.config.js";\n.foo { color: red; }', '/src/app.css') as TransformResult
-    expect(result?.code).toContain('@import "weapp-tailwindcss/index.css";')
+    expect(result?.code).toContain('@import "/virtual/weapp-tailwindcss/index.css";')
     expect(result?.code).not.toContain('@config')
   })
 

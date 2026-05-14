@@ -79,7 +79,7 @@ module.exports = {
 @config "../tailwind.config.js";
 ```
 
-> **注意**：实际运行时入口更推荐直接写 `@import 'weapp-tailwindcss/index.css'`。如果这里继续写 `@import 'tailwindcss'`，构建器会在 Tailwind v4 链路中自动改写。
+> **注意**：`tailwindcss@4` + `weapp-tailwindcss@5` 的实际运行时入口推荐直接写 `@import 'tailwindcss'`。构建器会在 Tailwind v4 小程序生成链路中解析到目标 CSS。
 
 这样在 `tailwindcss@4` 中才能起效果
 

@@ -1,24 +1,13 @@
-import { postcssRemoveComment } from '@weapp-tailwindcss/test-helper'
+import { generateCss4 } from '@weapp-tailwindcss/test-helper'
 import autoprefixer from 'autoprefixer'
-// import tailwindcss from '@tailwindcss/postcss'
-// import fs from 'fs-extra'
 import path from 'pathe'
-import postcss from 'postcss'
+import type postcss from 'postcss'
 import { createStyleHandler } from '@/index'
 
 async function generateCss(base: string, plugins: readonly postcss.AcceptedPlugin[] = []) {
-  const tailwindcss = (await import('@tailwindcss/postcss')).default
-  return await postcss([
-    ...plugins,
-    tailwindcss({
-      base,
-    }),
-    postcssRemoveComment,
-
-  ])
-    .process('@import "weapp-tailwindcss";', {
-      from: './index.ts',
-    })
+  return await generateCss4(base, {
+    postcssPlugins: [...plugins],
+  })
 }
 
 describe('issues', () => {

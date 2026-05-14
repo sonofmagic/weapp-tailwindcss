@@ -15,13 +15,13 @@ describe('bundlers/shared css-imports', () => {
     vi.restoreAllMocks()
   })
 
-  it('rewrites tailwindcss import to weapp entry for mpx', () => {
+  it('rewrites tailwindcss import to the package css entry for mpx', () => {
     const code = '@import "tailwindcss";'
     const rewritten = rewriteTailwindcssImportsInCode(code, pkgDir, {
       join: joinPosixPath,
       appType: 'mpx',
     })
-    expect(rewritten).toBe('@import "weapp-tailwindcss/index.css";')
+    expect(rewritten).toBe(`@import "${pkgDir}/index.css";`)
   })
 
   it('keeps tailwindcss subpath resolution for mpx', () => {
@@ -34,7 +34,7 @@ describe('bundlers/shared css-imports', () => {
   })
 
   it('normalizes tailwindcss$ and ignores unrelated specifiers', () => {
-    expect(resolveTailwindcssImport('tailwindcss$', pkgDir)).toBe('weapp-tailwindcss/index.css')
+    expect(resolveTailwindcssImport('tailwindcss$', pkgDir, { join: joinPosixPath })).toBe(`${pkgDir}/index.css`)
     expect(resolveTailwindcssImport('postcss', pkgDir)).toBeNull()
   })
 
@@ -46,7 +46,7 @@ describe('bundlers/shared css-imports', () => {
         appType: 'mpx',
       },
     })
-    expect(rewritten).toBe('@import "weapp-tailwindcss/index.css";')
+    expect(rewritten).toBe(`@import "${pkgDir}/index.css";`)
   })
 
   it('preserves original source when loader options are missing or unchanged', () => {
@@ -118,9 +118,15 @@ describe('bundlers/shared css-imports', () => {
     })
   })
 
-  it('rewrites tailwindcss import to weapp entry for non-mpx', () => {
+  it('keeps legacy weapp-tailwindcss root imports resolvable as compatibility aliases', () => {
+    const code = '@import "weapp-tailwindcss";'
+    const rewritten = rewriteTailwindcssImportsInCode(code, pkgDir, { join: joinPosixPath })
+    expect(rewritten).toBe(`@import "${pkgDir}/index.css";`)
+  })
+
+  it('rewrites tailwindcss import to package css entry for non-mpx', () => {
     const code = '@import "tailwindcss";'
     const rewritten = rewriteTailwindcssImportsInCode(code, pkgDir, { join: joinPosixPath })
-    expect(rewritten).toBe('@import "weapp-tailwindcss/index.css";')
+    expect(rewritten).toBe(`@import "${pkgDir}/index.css";`)
   })
 })

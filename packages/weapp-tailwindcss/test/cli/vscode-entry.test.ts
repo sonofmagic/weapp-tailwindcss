@@ -19,7 +19,7 @@ describe('generateVscodeIntellisenseEntry', () => {
     const root = await createTempWorkspace()
     const cssEntry = path.join(root, 'src/app.css')
     await mkdir(path.dirname(cssEntry), { recursive: true })
-    await writeFile(cssEntry, '@import "weapp-tailwindcss";\n', 'utf8')
+    await writeFile(cssEntry, '@import "tailwindcss";\n', 'utf8')
 
     const result = await generateVscodeIntellisenseEntry({ baseDir: root, cssEntry })
 
@@ -38,7 +38,7 @@ describe('generateVscodeIntellisenseEntry', () => {
     const root = await createTempWorkspace()
     const cssEntry = path.join(root, 'styles/global.css')
     await mkdir(path.dirname(cssEntry), { recursive: true })
-    await writeFile(cssEntry, '@import "weapp-tailwindcss";\n', 'utf8')
+    await writeFile(cssEntry, '@import "tailwindcss";\n', 'utf8')
 
     const output = path.join(root, 'tailwindcss.vscode.css')
     const first = await generateVscodeIntellisenseEntry({
