@@ -249,6 +249,24 @@ describe('watch-hmr regression text helpers', () => {
     expect(joined).toContain('.b{}')
   })
 
+  it('re-reads wildcard output files after hashed style assets change', async () => {
+    const tempDir = await mkdtemp(path.join(os.tmpdir(), 'weapp-tw-watch-glob-refresh-'))
+    tempDirs.push(tempDir)
+    const styleDir = path.join(tempDir, 'styles')
+    const pattern = path.join(styleDir, 'index*.wxss')
+    await mkdir(styleDir, { recursive: true })
+    await writeFilePreserveEol(path.join(styleDir, 'index111.wxss'), '.old{}', '.old{}')
+
+    const before = await readJoinedOutputFiles([pattern])
+    await rm(path.join(styleDir, 'index111.wxss'))
+    await writeFilePreserveEol(path.join(styleDir, 'index222.wxss'), '.fresh{}', '.fresh{}')
+    const after = await readJoinedOutputFiles([pattern])
+
+    expect(before).toContain('.old{}')
+    expect(after).not.toContain('.old{}')
+    expect(after).toContain('.fresh{}')
+  })
+
   it('treats empty generated style files as resolved outputs', async () => {
     const tempDir = await mkdtemp(path.join(os.tmpdir(), 'weapp-tw-watch-empty-style-'))
     tempDirs.push(tempDir)
@@ -306,6 +324,36 @@ describe('watch-hmr regression text helpers', () => {
       } as any,
       [outputFile],
       new Map([[outputFile, baselineMtime]]),
+      {
+        timeoutMs: 100,
+        pollMs: 1,
+      } as CliOptions,
+      {
+        ensureRunning() {},
+      } as any,
+      Date.now(),
+      async () => {
+        attempts += 1
+        return attempts >= 2
+      },
+    )
+
+    expect(elapsed).toBeGreaterThanOrEqual(0)
+    expect(attempts).toBeGreaterThanOrEqual(2)
+  })
+
+  it('allows output file update waits to pass via semantic fallback when optional exact files are missing', async () => {
+    const tempDir = await mkdtemp(path.join(os.tmpdir(), 'weapp-tw-watch-output-missing-'))
+    tempDirs.push(tempDir)
+    const outputFile = path.join(tempDir, 'custom-tab-bar.wxss')
+    let attempts = 0
+
+    const elapsed = await waitForOutputFilesUpdated(
+      {
+        label: 'demo/mpx-tailwindcss-v4',
+      } as any,
+      [outputFile],
+      new Map([[outputFile, Date.now()]]),
       {
         timeoutMs: 100,
         pollMs: 1,
@@ -823,6 +871,15 @@ describe('watch-hmr regression cases', () => {
     expect(complexRound?.buildClassTokens('123456')).not.toContain('[@media(any-hover:hover){&:hover}]:opacity-100')
   })
 
+  it('uses tailwind v4 js content rounds for mpx v4 script mutations', () => {
+    const mpxV4Case = buildDemoExtendedCases('/repo').find(watchCase => watchCase.name === 'mpx-tailwindcss-v4')
+    const [, complexRound] = mpxV4Case?.scriptMutation.roundConfigs ?? []
+
+    expect(complexRound?.name).toBe('complex-corpus')
+    expect(complexRound?.buildClassTokens('123456')).not.toContain('[@media(any-hover:hover){&:hover}]:opacity-100')
+    expect(complexRound?.buildClassTokens('123456')).not.toContain('[@supports(display:grid)]:grid')
+  })
+
   it('tracks taro webpack v4 style outputs in both page and app wxss candidates', () => {
     const taroWebpackCase = buildDemoExtendedCases('/repo').find(item => item.name === 'taro-webpack-react-tailwindcss-v4')
 
@@ -1022,11 +1079,13 @@ describe('watch-hmr regression cases', () => {
     )
   })
 
-  it('uses direct CSS style mutation for mpx v4 without unsupported @apply or theme checks', () => {
+  it('uses page style mutation for mpx v4 without unsupported @apply or theme checks', () => {
     const mpxV4Case = buildDemoExtendedCases('/repo').find(watchCase => watchCase.name === 'mpx-tailwindcss-v4')
     expect(mpxV4Case).toBeDefined()
 
     const payload = createStyleMutationPayload(mpxV4Case!)
+    expect(mpxV4Case?.styleMutation.sourceFile).toBe(path.resolve('/repo', 'demo/mpx-tailwindcss-v4/src/pages/component/index.mpx'))
+    expect(mpxV4Case?.styleMutation.mutate('<style>\n</style>\n', payload)).toContain(payload.styleNeedle)
     expect(payload.applyUtilities).toEqual([])
     expect(payload.expectedApplyDeclarations).toEqual([])
     expect(payload.functionNeedle).toBeUndefined()
@@ -1167,7 +1226,7 @@ describe('watch-hmr regression cases', () => {
     }
   })
 
-  it('sets a Windows-specific watch hot-update budget without relaxing macOS', async () => {
+  it('keeps watch hot-update and retry budgets tolerant for shared runners', async () => {
     const workflowSource = await readFile(
       path.resolve(__dirname, '../../../.github/workflows/e2e-watch.yml'),
       'utf8',
@@ -1186,9 +1245,8 @@ describe('watch-hmr regression cases', () => {
     expect(runSteps.length).toBe(2)
     for (const step of runSteps) {
       const env = step.env as Record<string, string> | undefined
-      expect(env?.E2E_WATCH_MAX_HOT_UPDATE_MS).toBe(
-        "${{ matrix.watch_max_hot_update_ms || (matrix.runner_label == 'windows' && '30000' || '15000') }}",
-      )
+      expect(env?.E2E_WATCH_MAX_HOT_UPDATE_MS).toBe("${{ matrix.watch_max_hot_update_ms || '30000' }}")
+      expect(env?.E2E_WATCH_MAX_ATTEMPTS).toBe("${{ matrix.watch_max_attempts || '2' }}")
       expect(env?.NODE_OPTIONS).toBe('--max-old-space-size=6144')
     }
   })

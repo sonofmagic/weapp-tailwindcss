@@ -6,6 +6,7 @@ import { installTailwindcssCssRedirect } from './tailwindcss-css-redirect'
 
 const localRequire = createRequire(import.meta.url)
 const MPX_STYLE_RESOURCE_QUERY_RE = /(?:^|[?&])type=styles(?:&|$)/
+const MPX_WEBPACK_PLUGIN_PACKAGE_RE = /@mpxjs[\\/]webpack-plugin[\\/]package\.json$/
 
 function isMpxStyleResourceQuery(query?: string) {
   if (typeof query !== 'string') {
@@ -38,7 +39,17 @@ function resolveMpxWebpackPluginDir(compiler: any) {
     }
   }
 
-  return path.dirname(localRequire.resolve('@mpxjs/webpack-plugin/package.json'))
+  const cachedPackageJson = Object.keys(localRequire.cache).find(file => MPX_WEBPACK_PLUGIN_PACKAGE_RE.test(file))
+  if (cachedPackageJson) {
+    return path.dirname(cachedPackageJson)
+  }
+
+  try {
+    return path.dirname(localRequire.resolve('@mpxjs/webpack-plugin/package.json'))
+  }
+  catch {
+    return undefined
+  }
 }
 
 function isMpxWebpackPluginRequest(request: string | undefined) {
@@ -83,12 +94,67 @@ function ensureResolveLoaderAlias(compiler: any, mpxWebpackPluginDir: string) {
   addMpxWebpackPluginAlias(alias, mpxWebpackPluginDir)
 }
 
+function resolveMpxWebpackPluginRequire(compiler: any) {
+  const candidates = [
+    compiler?.context,
+    compiler?.options?.context,
+    process.cwd(),
+  ].filter((item): item is string => typeof item === 'string' && item.length > 0)
+
+  for (const candidate of candidates) {
+    try {
+      const projectRequire = createRequire(path.join(candidate, 'package.json'))
+      projectRequire.resolve('@mpxjs/webpack-plugin/package.json')
+      return projectRequire
+    }
+    catch {
+    }
+  }
+
+  const cachedPackageJson = Object.keys(localRequire.cache).find(file => MPX_WEBPACK_PLUGIN_PACKAGE_RE.test(file))
+  if (cachedPackageJson) {
+    return createRequire(cachedPackageJson)
+  }
+
+  return localRequire
+}
+
+export function patchMpxWebpackPluginNormalizeLib(compiler: any, mpxWebpackPluginDir: string | undefined) {
+  if (!mpxWebpackPluginDir) {
+    return false
+  }
+  const projectRequire = resolveMpxWebpackPluginRequire(compiler)
+  let normalize: { lib?: (file: string) => string }
+  try {
+    normalize = projectRequire('@mpxjs/webpack-plugin/lib/utils/normalize')
+  }
+  catch {
+    return false
+  }
+
+  if (typeof normalize.lib !== 'function') {
+    return false
+  }
+  if ((normalize.lib as any).__weappTwPatched) {
+    return true
+  }
+
+  const wrappedLib = (file: string) => path.join(mpxWebpackPluginDir, 'lib', file)
+  ;(wrappedLib as any).__weappTwPatched = true
+  ;(wrappedLib as any).__weappTwOriginal = normalize.lib
+  normalize.lib = wrappedLib
+  return true
+}
+
 export function ensureMpxTailwindcssAliases(compiler: any, pkgDir: string) {
   const tailwindcssCssEntry = getTailwindcssCssEntry(pkgDir)
   compiler.options = compiler.options || {}
   compiler.options.resolve = compiler.options.resolve || {}
   const mpxWebpackPluginDir = resolveMpxWebpackPluginDir(compiler)
-  ensureResolveLoaderAlias(compiler, mpxWebpackPluginDir)
+  patchMpxWebpackPluginNormalizeLib(compiler, mpxWebpackPluginDir)
+  if (mpxWebpackPluginDir) {
+    ensureResolveLoaderAlias(compiler, mpxWebpackPluginDir)
+  }
   const alias = compiler.options.resolve.alias ?? {}
   compiler.options.resolve.alias = alias
   if (Array.isArray(alias)) {
@@ -101,7 +167,9 @@ export function ensureMpxTailwindcssAliases(compiler: any, pkgDir: string) {
     alias.tailwindcss = tailwindcssCssEntry
     alias.tailwindcss$ = tailwindcssCssEntry
   }
-  addMpxWebpackPluginAlias(alias, mpxWebpackPluginDir)
+  if (mpxWebpackPluginDir) {
+    addMpxWebpackPluginAlias(alias, mpxWebpackPluginDir)
+  }
   return tailwindcssCssEntry
 }
 
@@ -118,7 +186,7 @@ export function patchMpxLoaderResolve(
     return
   }
   const tailwindcssCssEntry = getTailwindcssCssEntry(pkgDir)
-  const mpxWebpackPluginDir = path.dirname(localRequire.resolve('@mpxjs/webpack-plugin/package.json'))
+  const mpxWebpackPluginDir = resolveMpxWebpackPluginDir(loaderContext)
   const wrappedResolve = function (this: any, context: any, request: string, callback: any) {
     if (request === 'tailwindcss' || request === 'tailwindcss$') {
       return callback(null, tailwindcssCssEntry)
@@ -126,7 +194,7 @@ export function patchMpxLoaderResolve(
     if (request?.startsWith('tailwindcss/')) {
       return callback(null, path.join(pkgDir, request.slice('tailwindcss/'.length)))
     }
-    if (isMpxWebpackPluginRequest(request)) {
+    if (mpxWebpackPluginDir && isMpxWebpackPluginRequest(request)) {
       return callback(null, resolveMpxWebpackPluginRequest(request, mpxWebpackPluginDir))
     }
     return originalResolve.call(this, context, request, callback)

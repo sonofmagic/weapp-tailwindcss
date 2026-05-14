@@ -16,7 +16,7 @@ import {
   mutateVueScriptSetupObjectKeyByAnchor,
   replaceExactSnippet,
 } from '../../text'
-import { buildHexScriptRoundConfigs, buildIssue33HighRiskRoundConfigs } from '../round-configs'
+import { buildHexScriptRoundConfigs, buildIssue33HighRiskRoundConfigs, buildTailwindV4JsContentRoundConfigs } from '../round-configs'
 
 const taroWatchEnv = {
   TARO_BUILD_STRICT: '1',
@@ -305,7 +305,7 @@ export function buildDemoExtendedCases(baseCwd: string): WatchCase[] {
       sourceFile: path.resolve(baseCwd, 'demo/mpx-tailwindcss-v4/src/custom-tab-bar/index.mpx'),
       verifyEscapedIn: ['js'],
       verifyClassLiteralIn: ['js'],
-      roundConfigs: buildHexScriptRoundConfigs(),
+      roundConfigs: buildTailwindV4JsContentRoundConfigs(),
       mutate(source, payload) {
         return mutateScriptByDataAnchor(source, '  data: {', payload)
       },

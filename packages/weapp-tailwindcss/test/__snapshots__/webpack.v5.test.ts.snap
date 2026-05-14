@@ -5,9 +5,11 @@ exports[`webpack5 plugin > common > assets 1`] = `
   "index.css": "::before,::after {
   --tw-content: "";
 }
+
 ::before,::after {
   --tw-content: '';
 }
+
 view,text,::before,::after {
   --tw-border-spacing-x: 0;
   --tw-border-spacing-y: 0;
@@ -61,6 +63,7 @@ view,text,::before,::after {
   --tw-contain-paint:  ;
   --tw-contain-style:  ;
 }
+
 view,text,::before,::after {
   box-sizing: border-box;
   border-width: 0;
@@ -376,9 +379,11 @@ exports[`webpack5 plugin > common 0 > assets 1`] = `
   "index.css": "::before,::after {
   --tw-content: "";
 }
+
 ::before,::after {
   --tw-content: '';
 }
+
 view,text,::before,::after {
   --tw-border-spacing-x: 0;
   --tw-border-spacing-y: 0;
@@ -432,6 +437,7 @@ view,text,::before,::after {
   --tw-contain-paint:  ;
   --tw-contain-style:  ;
 }
+
 view,text,::before,::after {
   box-sizing: border-box;
   border-width: 0;
@@ -747,9 +753,11 @@ exports[`webpack5 plugin > common build twice for cache > assets 1`] = `
   "index.css": "::before,::after {
   --tw-content: "";
 }
+
 ::before,::after {
   --tw-content: '';
 }
+
 view,text,::before,::after {
   --tw-border-spacing-x: 0;
   --tw-border-spacing-y: 0;
@@ -803,6 +811,7 @@ view,text,::before,::after {
   --tw-contain-paint:  ;
   --tw-contain-style:  ;
 }
+
 view,text,::before,::after {
   box-sizing: border-box;
   border-width: 0;
@@ -1114,9 +1123,11 @@ exports[`webpack5 plugin > common build twice for cache > assets 2`] = `
   "index.css": "::before,::after {
   --tw-content: "";
 }
+
 ::before,::after {
   --tw-content: '';
 }
+
 view,text,::before,::after {
   --tw-border-spacing-x: 0;
   --tw-border-spacing-y: 0;
@@ -1170,6 +1181,7 @@ view,text,::before,::after {
   --tw-contain-paint:  ;
   --tw-contain-style:  ;
 }
+
 view,text,::before,::after {
   box-sizing: border-box;
   border-width: 0;
@@ -1489,9 +1501,11 @@ exports[`webpack5 plugin > common with loader > assets 1`] = `
   "index.css": "::before,::after {
   --tw-content: "";
 }
+
 ::before,::after {
   --tw-content: '';
 }
+
 view,text,::before,::after {
   --tw-border-spacing-x: 0;
   --tw-border-spacing-y: 0;
@@ -1545,6 +1559,7 @@ view,text,::before,::after {
   --tw-contain-paint:  ;
   --tw-contain-style:  ;
 }
+
 view,text,::before,::after {
   box-sizing: border-box;
   border-width: 0;
@@ -1860,9 +1875,11 @@ exports[`webpack5 plugin > common with rem2rpx > assets 1`] = `
   "index.css": "::before,::after {
   --tw-content: "";
 }
+
 ::before,::after {
   --tw-content: '';
 }
+
 view,text,::before,::after {
   --tw-border-spacing-x: 0;
   --tw-border-spacing-y: 0;
@@ -1916,6 +1933,7 @@ view,text,::before,::after {
   --tw-contain-paint:  ;
   --tw-contain-style:  ;
 }
+
 view,text,::before,::after {
   box-sizing: border-box;
   border-width: 0;
@@ -2616,9 +2634,11 @@ exports[`webpack5 plugin > empty build > assets 1`] = `
   "index.css": "::before,::after {
   --tw-content: "";
 }
+
 ::before,::after {
   --tw-content: '';
 }
+
 view,text,::before,::after {
   --tw-border-spacing-x: 0;
   --tw-border-spacing-y: 0;
@@ -2672,6 +2692,7 @@ view,text,::before,::after {
   --tw-contain-paint:  ;
   --tw-contain-style:  ;
 }
+
 view,text,::before,::after {
   box-sizing: border-box;
   border-width: 0;
@@ -2867,9 +2888,11 @@ exports[`webpack5 plugin > unified common > assets 1`] = `
   "index.css": "::before,::after {
   --tw-content: "";
 }
+
 ::before,::after {
   --tw-content: '';
 }
+
 view,text,::before,::after {
   --tw-border-spacing-x: 0;
   --tw-border-spacing-y: 0;
@@ -2923,6 +2946,7 @@ view,text,::before,::after {
   --tw-contain-paint:  ;
   --tw-contain-style:  ;
 }
+
 view,text,::before,::after {
   box-sizing: border-box;
   border-width: 0;
@@ -3238,9 +3262,11 @@ exports[`webpack5 plugin > unified prod common > assets 1`] = `
   "index.css": "::before,::after {
   --tw-content: "";
 }
+
 ::before,::after {
   --tw-content: '';
 }
+
 view,text,::before,::after {
   --tw-border-spacing-x: 0;
   --tw-border-spacing-y: 0;
@@ -3294,6 +3320,7 @@ view,text,::before,::after {
   --tw-contain-paint:  ;
   --tw-contain-style:  ;
 }
+
 view,text,::before,::after {
   box-sizing: border-box;
   border-width: 0;

@@ -6,6 +6,7 @@ import {
   getTailwindcssCssEntry,
   injectMpxCssRewritePreRules,
   isMpx,
+  patchMpxWebpackPluginNormalizeLib,
   patchMpxLoaderResolve,
   setupMpxTailwindcssRedirect,
 } from '@/shared/mpx'
@@ -65,6 +66,25 @@ describe('shared/mpx helpers', () => {
     expect(compiler.options.resolve.alias['@mpxjs/webpack-plugin']).toBe(
       path.dirname(createRequire(path.join(demoRoot, 'package.json')).resolve('@mpxjs/webpack-plugin/package.json')),
     )
+  })
+
+  it('patches mpx normalize lib requests to absolute plugin paths', () => {
+    const demoRoot = path.resolve(process.cwd(), '../../demo/mpx-tailwindcss-v4')
+    const demoRequire = createRequire(path.join(demoRoot, 'package.json'))
+    const normalize = demoRequire('@mpxjs/webpack-plugin/lib/utils/normalize') as {
+      lib: ((file: string) => string) & { __weappTwOriginal?: (file: string) => string }
+    }
+    const originalLib = normalize.lib.__weappTwOriginal ?? normalize.lib
+    normalize.lib = originalLib
+    const mpxPluginDir = path.dirname(demoRequire.resolve('@mpxjs/webpack-plugin/package.json'))
+
+    expect(patchMpxWebpackPluginNormalizeLib({ context: demoRoot, options: {} }, mpxPluginDir)).toBe(true)
+    expect(normalize.lib('record-loader')).toBe(path.join(mpxPluginDir, 'lib/record-loader'))
+    expect(normalize.lib('style-compiler/index')).toBe(path.join(mpxPluginDir, 'lib/style-compiler/index'))
+    expect(patchMpxWebpackPluginNormalizeLib({ context: demoRoot, options: {} }, mpxPluginDir)).toBe(true)
+    expect(normalize.lib('record-loader')).toBe(path.join(mpxPluginDir, 'lib/record-loader'))
+
+    normalize.lib = originalLib
   })
 
   it('ensures aliases for array-style resolve config', () => {

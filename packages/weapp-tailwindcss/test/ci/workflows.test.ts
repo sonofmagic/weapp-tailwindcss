@@ -311,6 +311,8 @@ describe('e2e watch workflow', () => {
 
     expect(prRunStep.env.E2E_WATCH_MAX_HOT_UPDATE_MS).toBe("${{ matrix.watch_max_hot_update_ms || '30000' }}")
     expect(nightlyRunStep.env.E2E_WATCH_MAX_HOT_UPDATE_MS).toBe("${{ matrix.watch_max_hot_update_ms || '30000' }}")
+    expect(prRunStep.env.E2E_WATCH_MAX_ATTEMPTS).toBe("${{ matrix.watch_max_attempts || '2' }}")
+    expect(nightlyRunStep.env.E2E_WATCH_MAX_ATTEMPTS).toBe("${{ matrix.watch_max_attempts || '2' }}")
   })
 
   it('uses node-version specific artifact names for matrix rows that share case names', () => {
