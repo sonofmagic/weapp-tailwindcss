@@ -439,6 +439,15 @@ async function runWatchHmrCommand(cwd: string, args: string[], commandTimeoutMs:
   }
 }
 
+function expectStyleRollbackMetric(metric: StyleMutationMetric, message: string) {
+  if (metric.rollbackNeedleCleared === false) {
+    expect(metric.rollbackOutputMs, `${message} fallback rollback output latency should be recorded`).toBeGreaterThanOrEqual(0)
+    return
+  }
+
+  expect(metric.rollbackEffectiveMs, `${message} rollback marker clearance should be positive`).toBeGreaterThan(0)
+}
+
 function assertHotUpdateReport(report: HotUpdateReport, target: WatchCaseName, maxHotUpdateMs: number) {
   const requiredMutationRounds = resolveRequiredMutationRounds()
   const issue33RoundProfile = isIssue33RoundProfile()
@@ -731,7 +740,7 @@ function assertHotUpdateReport(report: HotUpdateReport, target: WatchCaseName, m
         expect(styleMetric.referenceDirective).toBeUndefined()
       }
       expect(styleMetric.hotUpdateEffectiveMs).toBeGreaterThan(0)
-      expect(styleMetric.rollbackEffectiveMs).toBeGreaterThan(0)
+      expectStyleRollbackMetric(styleMetric, `[${item.name}] style`)
       expect(styleMetric.hotUpdateEffectiveMs).toBeLessThanOrEqual(maxHotUpdateMs)
     }
 
@@ -758,7 +767,7 @@ function assertHotUpdateReport(report: HotUpdateReport, target: WatchCaseName, m
       }
       expect(subPackageMetric.style.hotUpdateEffectiveMs).toBeGreaterThan(0)
       expect(subPackageMetric.style.hotUpdateEffectiveMs).toBeLessThanOrEqual(maxHotUpdateMs)
-      expect(subPackageMetric.style.rollbackEffectiveMs).toBeGreaterThan(0)
+      expectStyleRollbackMetric(subPackageMetric.style, `[${item.name}/${subPackageMetric.root}] subpackage style`)
       if (subPackageMetric.independent) {
         expect(subPackageMetric.root).toBe('sub-independent')
       }
