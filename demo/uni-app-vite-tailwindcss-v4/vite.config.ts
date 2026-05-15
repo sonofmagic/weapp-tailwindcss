@@ -17,6 +17,7 @@ export default defineConfig(async () => {
       // 改成 mts，则爆 uni is not a function
       uni(),
       WeappTailwindcss({
+        tailwindcssBasedir: process.cwd(),
         rem2rpx: true,
       }),
     ],

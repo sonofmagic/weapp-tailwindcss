@@ -78,6 +78,7 @@ export default defineConfig<'webpack5'>(async (merge, { command, mode }) => {
               plugin: UnifiedWebpackPluginV5,
               args: [
                 {
+                  tailwindcssBasedir: process.cwd(),
                   rem2rpx: true,
                   generator,
                   // before 2248

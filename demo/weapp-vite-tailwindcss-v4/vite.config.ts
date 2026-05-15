@@ -17,6 +17,7 @@ export default defineConfig({
     // tailwindcss(),
     // @ts-ignore
     WeappTailwindcss({
+      tailwindcssBasedir: process.cwd(),
       rem2rpx: true,
     }),
   ],

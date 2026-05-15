@@ -46,6 +46,7 @@ module.exports = defineConfig({
   configureWebpack(config) {
     config.plugins.push(
       new UnifiedWebpackPluginV5({
+        tailwindcssBasedir: process.cwd(),
         rem2rpx: true,
         appType: 'mpx',
       })
