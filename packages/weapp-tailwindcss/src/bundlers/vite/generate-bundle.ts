@@ -139,12 +139,10 @@ export function createGenerateBundleHook(context: GenerateBundleContext) {
     const filteredGeneratorCandidates = shouldFilterTailwindV4MiniProgramCandidates
       ? filterUnsupportedMiniProgramTailwindV4Candidates(collectedGeneratorCandidates)
       : collectedGeneratorCandidates
-    const generatorRuntime = collectLegacyContainerCompatCandidates(
+    let generatorRuntime = collectLegacyContainerCompatCandidates(
       sourceCandidates,
       filteredGeneratorCandidates,
     )
-    const generatorCandidateSignature = createCandidateSignature(generatorRuntime)
-    recordGeneratorCandidates?.(generatorRuntime)
     let transformRuntime = runtime
     if (runtimeState.twPatcher.majorVersion === 3 && generatorRuntime.size > 0) {
       const cssEntries = snapshot.entries.filter(entry =>
@@ -163,10 +161,20 @@ export function createGenerateBundleHook(context: GenerateBundleContext) {
           debug,
         })
         if (validatedRuntime.size > 0) {
-          transformRuntime = new Set([...runtime, ...validatedRuntime])
+          generatorRuntime = collectLegacyContainerCompatCandidates(
+            sourceCandidates,
+            validatedRuntime,
+          )
+          transformRuntime = generatorRuntime
+        }
+        else {
+          generatorRuntime = validatedRuntime
+          transformRuntime = validatedRuntime
         }
       }
     }
+    const generatorCandidateSignature = createCandidateSignature(generatorRuntime)
+    recordGeneratorCandidates?.(generatorRuntime)
     const defaultTemplateHandlerOptions = {
       runtimeSet: transformRuntime,
     }

@@ -136,6 +136,28 @@ export function createViteRuntimeClassSet(options: CreateViteRuntimeClassSetOpti
       }
     }
 
+    if (runtimeState.twPatcher.majorVersion === 3 && !forceRuntimeRefresh) {
+      try {
+        let baseClassSet: Set<string> | undefined
+        if (!runtimeSet || shouldRefreshPatcher) {
+          baseClassSet = await collectRuntimeClassSet(runtimeState.twPatcher, {
+            force: true,
+            skipRefresh: shouldRefreshPatcher,
+            clearCache: shouldRefreshPatcher,
+          })
+        }
+        const nextRuntimeSet = await bundleRuntimeClassSetManager.sync(runtimeState.twPatcher, snapshot, {
+          baseClassSet,
+        })
+        runtimeSet = nextRuntimeSet
+        return nextRuntimeSet
+      }
+      catch (error) {
+        debug('incremental runtime set sync failed, fallback to full collect: %O', error)
+        await bundleRuntimeClassSetManager.reset()
+      }
+    }
+
     if (!forceRuntimeRefresh && !invalidation.changed && !forceCollectBySource && runtimeSet) {
       return runtimeSet
     }

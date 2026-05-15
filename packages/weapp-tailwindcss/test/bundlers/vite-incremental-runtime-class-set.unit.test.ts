@@ -35,6 +35,16 @@ function createPatcher(projectRoot: string) {
   } as any
 }
 
+function createV3Patcher() {
+  return {
+    majorVersion: 3,
+    patch: vi.fn(async () => ({})),
+    getClassSet: vi.fn(async () => new Set<string>()),
+    extract: vi.fn(async () => ({ classSet: new Set<string>() })),
+    options: {},
+  } as any
+}
+
 describe('bundlers/vite incremental runtime class set', () => {
   let tempRoot = ''
 
@@ -432,5 +442,52 @@ describe('bundlers/vite incremental runtime class set', () => {
 
     await manager.sync(patcher, secondSnapshot)
     expect(extractCandidates).toHaveBeenCalledTimes(2)
+  })
+
+  it('keeps v3 non-source baseline classes while replacing changed source candidates', async () => {
+    const opts = createOptions()
+    const outDir = '/project/dist'
+    const state = createBundleBuildState()
+    const patcher = createV3Patcher()
+    const extractRawCandidates = vi.fn(async (content: string) => {
+      if (content.includes('bg-blue-500')) {
+        return [{ rawCandidate: 'bg-blue-500' }]
+      }
+      if (content.includes('bg-[#123455]')) {
+        return [{ rawCandidate: 'bg-[#123455]' }]
+      }
+      return []
+    })
+    const manager = createBundleRuntimeClassSetManager({
+      extractRawCandidates,
+    })
+
+    const firstSnapshot = buildBundleSnapshot({
+      'pages/index/index.wxml': {
+        ...createRollupAsset('<view class="bg-blue-500" />'),
+        fileName: 'pages/index/index.wxml',
+      },
+    }, opts, outDir, state)
+
+    const firstRuntimeSet = await manager.sync(patcher, firstSnapshot, {
+      baseClassSet: new Set(['bg-blue-500', 'safelist-only']),
+    })
+
+    expect(firstRuntimeSet).toEqual(new Set(['safelist-only', 'bg-blue-500']))
+
+    updateBundleBuildState(state, firstSnapshot, new Map())
+
+    const secondSnapshot = buildBundleSnapshot({
+      'pages/index/index.wxml': {
+        ...createRollupAsset('<view class="bg-[#123455]" />'),
+        fileName: 'pages/index/index.wxml',
+      },
+    }, opts, outDir, state)
+
+    const secondRuntimeSet = await manager.sync(patcher, secondSnapshot)
+
+    expect(secondRuntimeSet).toEqual(new Set(['safelist-only', 'bg-[#123455]']))
+    expect(secondRuntimeSet.has('bg-blue-500')).toBe(false)
+    expect(extractRawCandidates).toHaveBeenCalledTimes(2)
   })
 })

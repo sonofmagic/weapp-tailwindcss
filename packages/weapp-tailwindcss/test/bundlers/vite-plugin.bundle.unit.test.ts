@@ -554,6 +554,101 @@ const trace = "at App.vue:4"
     expect(currentContext.twPatcher.getClassSetSync).toHaveBeenCalledTimes(2)
   }, TEST_TIMEOUT_MS)
 
+  it('updates v3 watch runtime classes incrementally without full extract on source candidate changes', async () => {
+    const WeappTailwindcss = await loadUnifiedVitePlugin()
+    const htmlFile = 'pages/index/index.wxml'
+    const jsFile = 'assets/index.js'
+    const cssFile = 'app.wxss'
+    const baselineClass = 'text-red-500'
+    const firstClass = 'bg-blue-500'
+    const secondClass = 'bg-[#123455]'
+    const jsHandler = createJsHandler({
+      escapeMap: MappingChars2String,
+      jsArbitraryValueFallback: false,
+      tailwindcssMajorVersion: 3,
+    })
+    const templateHandler = createTemplateHandler({
+      escapeMap: MappingChars2String,
+      jsHandler,
+    })
+    const extractMock = vi.fn(async () => ({
+      classSet: new Set([baselineClass, firstClass]),
+    }))
+
+    setCurrentContext(createContext({
+      cssMatcher: (file: string) => file.endsWith('.wxss'),
+      templateHandler,
+      jsHandler,
+      twPatcher: {
+        patch: vi.fn(),
+        getClassSet: vi.fn(async () => new Set([baselineClass, firstClass])),
+        getClassSetSync: vi.fn(() => new Set([baselineClass, firstClass])),
+        extract: extractMock,
+        majorVersion: 3,
+      },
+    }))
+
+    const plugins = WeappTailwindcss()
+    const postPlugin = plugins?.find(plugin => plugin.name === 'weapp-tailwindcss:adaptor:post') as Plugin
+    expect(postPlugin).toBeTruthy()
+
+    await (postPlugin.configResolved as any)?.call(postPlugin, {
+      command: 'serve',
+      root: process.cwd(),
+      css: { postcss: { plugins: [] } },
+      build: { outDir: 'dist' },
+    } as ResolvedConfig)
+
+    const generateBundle = getGenerateBundleHandler(postPlugin)
+    const firstBundle = {
+      [htmlFile]: {
+        ...createRollupAsset(`<view class="${firstClass}"></view>`),
+        fileName: htmlFile,
+      },
+      [jsFile]: {
+        ...createRollupChunk(`const cls = "${firstClass}"`),
+        fileName: jsFile,
+      },
+      [cssFile]: {
+        ...createRollupAsset('@tailwind utilities;'),
+        fileName: cssFile,
+      },
+    } as Record<string, OutputAsset | OutputChunk>
+
+    await generateBundle?.call(postPlugin, {} as any, firstBundle)
+
+    expect((firstBundle[htmlFile] as OutputAsset).source.toString()).toContain(replaceWxml(firstClass))
+    expect((firstBundle[jsFile] as OutputChunk).code).toContain(replaceWxml(firstClass))
+    expect((firstBundle[cssFile] as OutputAsset).source.toString()).toContain(`.${replaceWxml(firstClass)}`)
+
+    const secondBundle = {
+      [htmlFile]: {
+        ...createRollupAsset(`<view class="${secondClass}"></view>`),
+        fileName: htmlFile,
+      },
+      [jsFile]: {
+        ...createRollupChunk(`const cls = "${secondClass}"`),
+        fileName: jsFile,
+      },
+      [cssFile]: {
+        ...createRollupAsset('@tailwind utilities;'),
+        fileName: cssFile,
+      },
+    } as Record<string, OutputAsset | OutputChunk>
+
+    await generateBundle?.call(postPlugin, {} as any, secondBundle)
+
+    const secondHtml = (secondBundle[htmlFile] as OutputAsset).source.toString()
+    const secondJs = (secondBundle[jsFile] as OutputChunk).code
+    const secondCss = (secondBundle[cssFile] as OutputAsset).source.toString()
+    expect(secondHtml).toContain(replaceWxml(secondClass))
+    expect(secondJs).toContain(replaceWxml(secondClass))
+    expect(secondCss).toContain(`.${replaceWxml(secondClass)}`)
+    expect(secondCss).toContain(`.${replaceWxml(baselineClass)}`)
+    expect(secondCss).not.toContain(`.${replaceWxml(firstClass)}`)
+    expect(extractMock).toHaveBeenCalledTimes(1)
+  }, TEST_TIMEOUT_MS)
+
   it('warns and falls back to full runtime set when bundle runtime set misses dynamic arbitrary candidates in wxml', async () => {
     const fallbackRuntimeSet = new Set([
       'bg-[#68c828]',
@@ -2315,7 +2410,7 @@ const cls = "w-[1.5px]"
     await generateBundle?.call(postPlugin, {} as any, firstBundle)
     const firstCss = (firstBundle['index.css'] as OutputAsset).source.toString()
     expect(firstCss).toContain('view,text,::before,::after')
-    expect(firstCss).toContain('._f70')
+    expect(firstCss).toContain('.border-emerald-200_f70')
     expect(firstCss).not.toContain('*,::before,::after')
     expect(firstCss).not.toContain('border-emerald-200\\/70')
 
@@ -2388,8 +2483,8 @@ const cls = "w-[1.5px]"
 
     const transformedCss = (secondBundle['index.css'] as OutputAsset).source.toString()
     expect(transformedCss).toContain('view,text,::before,::after')
-    expect(transformedCss).toContain('._f70')
-    expect(currentContext.styleHandler).toHaveBeenCalledTimes(1)
+    expect(transformedCss).toContain('.border-emerald-200_f70')
+    expect(currentContext.styleHandler).not.toHaveBeenCalled()
   }, TEST_TIMEOUT_MS)
 
   it('shares non-main css transform results for identical assets in the same bundle round', async () => {

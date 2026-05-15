@@ -18,8 +18,12 @@ type ExtractRawCandidateResult = Awaited<ReturnType<typeof extractRawCandidatesW
 type ExtractRawCandidatesFn = (content: string, extension?: string) => Promise<ExtractRawCandidateResult>
 
 export interface BundleRuntimeClassSetManager {
-  sync: (patcher: TailwindcssPatcherLike, snapshot: BundleSnapshot) => Promise<Set<string>>
+  sync: (patcher: TailwindcssPatcherLike, snapshot: BundleSnapshot, options?: BundleRuntimeClassSetSyncOptions) => Promise<Set<string>>
   reset: () => Promise<void>
+}
+
+export interface BundleRuntimeClassSetSyncOptions {
+  baseClassSet?: Set<string> | undefined
 }
 
 interface CreateBundleRuntimeClassSetManagerOptions {
@@ -71,7 +75,6 @@ function createCandidateValidationSource(candidates: Iterable<string>) {
 
 function removeCandidateSet(
   candidateCountByClass: Map<string, number>,
-  runtimeSet: Set<string>,
   candidates: Set<string>,
 ) {
   for (const className of candidates) {
@@ -81,7 +84,6 @@ function removeCandidateSet(
     }
     if (count <= 1) {
       candidateCountByClass.delete(className)
-      runtimeSet.delete(className)
       continue
     }
     candidateCountByClass.set(className, count - 1)
@@ -90,14 +92,33 @@ function removeCandidateSet(
 
 function addCandidateSet(
   candidateCountByClass: Map<string, number>,
-  runtimeSet: Set<string>,
   candidates: Set<string>,
 ) {
   for (const className of candidates) {
     const nextCount = (candidateCountByClass.get(className) ?? 0) + 1
     candidateCountByClass.set(className, nextCount)
-    runtimeSet.add(className)
   }
+}
+
+function createRuntimeClassSet(
+  baseClassSet: Set<string>,
+  candidateCountByClass: Map<string, number>,
+) {
+  return new Set([
+    ...baseClassSet,
+    ...candidateCountByClass.keys(),
+  ])
+}
+
+function createNonSourceBaseClassSet(
+  baseClassSet: Set<string>,
+  candidateCountByClass: Map<string, number>,
+) {
+  const nextBaseClassSet = new Set(baseClassSet)
+  for (const candidate of candidateCountByClass.keys()) {
+    nextBaseClassSet.delete(candidate)
+  }
+  return nextBaseClassSet
 }
 
 export function createBundleRuntimeClassSetManager(
@@ -106,7 +127,7 @@ export function createBundleRuntimeClassSetManager(
   const customExtractCandidates = options.extractCandidates
   const extractCandidates = customExtractCandidates ?? extractValidCandidates
   const extractRawCandidates = options.extractRawCandidates ?? extractRawCandidatesWithPositions
-  const runtimeSet = new Set<string>()
+  let baseClassSet = new Set<string>()
   const candidateCountByClass = new Map<string, number>()
   const candidatesByFile = new Map<string, Set<string>>()
   const candidateValidityCache = new Map<string, boolean>()
@@ -115,7 +136,7 @@ export function createBundleRuntimeClassSetManager(
   let designSystemPromise: Promise<TailwindV4DesignSystem> | undefined
 
   async function reset() {
-    runtimeSet.clear()
+    baseClassSet = new Set<string>()
     candidateCountByClass.clear()
     candidatesByFile.clear()
     candidateValidityCache.clear()
@@ -169,6 +190,13 @@ export function createBundleRuntimeClassSetManager(
       return
     }
 
+    if (patcher.majorVersion === 3 && !customExtractCandidates) {
+      for (const candidate of unknownCandidates) {
+        candidateValidityCache.set(candidate, true)
+      }
+      return
+    }
+
     const context = await resolveValidationContextCached(patcher)
     if (!customExtractCandidates) {
       try {
@@ -206,6 +234,7 @@ export function createBundleRuntimeClassSetManager(
   async function sync(
     patcher: TailwindcssPatcherLike,
     snapshot: BundleSnapshot,
+    options: BundleRuntimeClassSetSyncOptions = {},
   ) {
     const nextSignature = getRuntimeClassSetSignature(patcher) ?? 'runtime:missing'
     const runtimeEntries = createRuntimeEntries(snapshot)
@@ -219,12 +248,13 @@ export function createBundleRuntimeClassSetManager(
     }
 
     runtimeSignature = nextSignature
+    const nextBaseClassSet = options.baseClassSet
 
     for (const [file, previousCandidates] of candidatesByFile) {
       if (currentRuntimeFiles.has(file)) {
         continue
       }
-      removeCandidateSet(candidateCountByClass, runtimeSet, previousCandidates)
+      removeCandidateSet(candidateCountByClass, previousCandidates)
       candidatesByFile.delete(file)
     }
 
@@ -233,7 +263,10 @@ export function createBundleRuntimeClassSetManager(
       : [...collectChangedRuntimeFiles(snapshot)]
 
     if (changedRuntimeFiles.length === 0) {
-      return new Set(runtimeSet)
+      if (nextBaseClassSet) {
+        baseClassSet = createNonSourceBaseClassSet(nextBaseClassSet, candidateCountByClass)
+      }
+      return createRuntimeClassSet(baseClassSet, candidateCountByClass)
     }
 
     const rawCandidatesByFile = new Map<string, Set<string>>()
@@ -261,7 +294,7 @@ export function createBundleRuntimeClassSetManager(
       const nextRawCandidates = rawCandidatesByFile.get(file)
       const previousCandidates = candidatesByFile.get(file)
       if (previousCandidates) {
-        removeCandidateSet(candidateCountByClass, runtimeSet, previousCandidates)
+        removeCandidateSet(candidateCountByClass, previousCandidates)
       }
 
       if (!nextRawCandidates || nextRawCandidates.size === 0) {
@@ -279,9 +312,14 @@ export function createBundleRuntimeClassSetManager(
         continue
       }
 
-      addCandidateSet(candidateCountByClass, runtimeSet, nextCandidates)
+      addCandidateSet(candidateCountByClass, nextCandidates)
       candidatesByFile.set(file, nextCandidates)
     }
+
+    if (nextBaseClassSet) {
+      baseClassSet = createNonSourceBaseClassSet(nextBaseClassSet, candidateCountByClass)
+    }
+    const runtimeSet = createRuntimeClassSet(baseClassSet, candidateCountByClass)
 
     debug(
       'incremental runtime set synced, changedFiles=%d rawCandidates=%d validateMisses=%d runtimeSize=%d trackedFiles=%d',
