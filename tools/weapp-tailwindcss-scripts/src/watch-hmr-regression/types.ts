@@ -20,6 +20,8 @@ export type ConcreteWatchCaseName
     | 'weapp-vite-tailwindcss-v4'
 export type WatchCaseName = ConcreteWatchCaseName | 'both' | 'all' | 'demo'
 export const MUTATION_ROUND_NAMES = ['baseline-arbitrary', 'complex-corpus', 'hex-arbitrary', 'issue33-arbitrary'] as const
+export const DEFAULT_HOT_UPDATE_BUDGET_MS = 2000
+export const PREFERRED_HOT_UPDATE_TARGET_MS = 1000
 export type MutationRoundName = typeof MUTATION_ROUND_NAMES[number]
 export type MutationKind = 'template' | 'script' | 'style' | 'content'
 export type ClassMutationKind = 'template' | 'script' | 'content'

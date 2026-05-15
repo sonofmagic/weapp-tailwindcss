@@ -1,6 +1,7 @@
 import type { WatchReport } from './types'
 import { promises as fs } from 'node:fs'
 import path from 'node:path'
+import { DEFAULT_HOT_UPDATE_BUDGET_MS, PREFERRED_HOT_UPDATE_TARGET_MS } from './types'
 
 export interface HmrSpeedSample {
   caseName: string
@@ -26,6 +27,10 @@ export interface HmrSpeedReport {
   generatedAt: string
   reportCount: number
   sampleCount: number
+  maxHotUpdateBudgetMs: number
+  preferredHotUpdateTargetMs: number
+  withinBudgetCount: number
+  withinPreferredTargetCount: number
   summary: HmrSpeedSummary
   initialReady: HmrSpeedSummary
   byProject: Record<string, HmrSpeedSummary>
@@ -221,6 +226,10 @@ export function buildSpeedReport(entries: Array<{ file: string, report: WatchRep
     generatedAt,
     reportCount: entries.length,
     sampleCount: samples.length,
+    maxHotUpdateBudgetMs: DEFAULT_HOT_UPDATE_BUDGET_MS,
+    preferredHotUpdateTargetMs: PREFERRED_HOT_UPDATE_TARGET_MS,
+    withinBudgetCount: samples.filter(item => item.hotUpdateMs <= DEFAULT_HOT_UPDATE_BUDGET_MS).length,
+    withinPreferredTargetCount: samples.filter(item => item.hotUpdateMs <= PREFERRED_HOT_UPDATE_TARGET_MS).length,
     summary: summarizeSpeedSamples(samples),
     initialReady: summarizeSpeedSamples(initialReadySamples),
     byProject: groupSpeedSamples(samples, 'project'),
@@ -237,6 +246,9 @@ export function renderSpeedReportMarkdown(report: HmrSpeedReport) {
     `- generated_at: ${report.generatedAt}`,
     `- source reports: ${report.reportCount}`,
     `- samples: ${report.sampleCount}`,
+    `- budget: <=${report.maxHotUpdateBudgetMs}ms`,
+    `- preferred target: <=${report.preferredHotUpdateTargetMs}ms (${report.withinPreferredTargetCount}/${report.sampleCount} samples)`,
+    `- within budget: ${report.withinBudgetCount}/${report.sampleCount} samples`,
     `- hot update: avg=${report.summary.avgMs}ms, p50=${report.summary.p50Ms}ms, p95=${report.summary.p95Ms}ms, max=${report.summary.maxMs}ms`,
     `- initial ready: avg=${report.initialReady.avgMs}ms, p50=${report.initialReady.p50Ms}ms, p95=${report.initialReady.p95Ms}ms, max=${report.initialReady.maxMs}ms`,
     '',

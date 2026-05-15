@@ -38,6 +38,9 @@ import {
   summarizeSpeedSamples,
 } from '../../../tools/weapp-tailwindcss-scripts/src/watch-hmr-regression/speed-report'
 import {
+  assertHotUpdateBudget,
+} from '../../../tools/weapp-tailwindcss-scripts/src/watch-hmr-regression/runner'
+import {
   createStyleMutationPayload,
   expandOutputFileEntries,
   createClassMutationScenario,
@@ -796,8 +799,49 @@ describe('watch-hmr regression summary helpers', () => {
     expect(speedReport.byProject['demo-weapp-vite-tailwindcss-v3']).toMatchObject({ count: samples.length })
     expect(speedReport.bySurface.style).toMatchObject({ count: 1, avgMs: 32 })
     expect(speedReport.slowest[0]).toMatchObject({ surface: 'style', hotUpdateMs: 32 })
+    expect(speedReport.maxHotUpdateBudgetMs).toBe(2000)
+    expect(speedReport.preferredHotUpdateTargetMs).toBe(1000)
+    expect(speedReport.withinBudgetCount).toBe(samples.length)
+    expect(speedReport.withinPreferredTargetCount).toBe(samples.length)
     expect(markdown).toContain('# e2e-watch HMR 速度报告')
+    expect(markdown).toContain('- budget: <=2000ms')
+    expect(markdown).toContain('- preferred target: <=1000ms')
     expect(markdown).toContain('Tailwind v3/v4 官方 Vite/Webpack 插件')
+  })
+
+  it('applies hot-update budget checks to nested HMR samples', () => {
+    const metrics = createCase('weapp-vite-tailwindcss-v3', 'demo', 30, 40)
+    const scriptMetric = metrics.mutationMetrics.find(
+      mutation => mutation.mutationKind === 'script',
+    )
+    if (!scriptMetric || scriptMetric.mutationKind === 'style') {
+      throw new Error('missing script metric')
+    }
+
+    scriptMetric.addedClassHmr = {
+      markerBefore: 'before',
+      markerAfter: 'after',
+      classLiteralBefore: 'text-[#123456]',
+      classLiteralAfter: 'text-[#123456] bg-[#654321]',
+      addedClassLiteral: 'bg-[#654321]',
+      addedClassTokens: ['bg-[#654321]'],
+      addedEscapedClasses: ['bg-_b_h654321_B'],
+      verifiedAddedEscapedClasses: ['bg-_b_h654321_B'],
+      minRequiredEscapedClasses: 1,
+      hotUpdateOutputMs: 2600,
+      hotUpdateEffectiveMs: 2500,
+      rollbackOutputMs: 35,
+      rollbackEffectiveMs: 30,
+    }
+
+    expect(() => assertHotUpdateBudget(metrics, {
+      caseName: 'demo',
+      timeoutMs: 2000,
+      pollMs: 20,
+      skipBuild: true,
+      quietSass: true,
+      maxHotUpdateMs: 2000,
+    })).toThrow('script:added-class hot update exceeded budget: 2500ms > 2000ms')
   })
 })
 
@@ -1271,7 +1315,7 @@ describe('watch-hmr regression cases', () => {
     }
   })
 
-  it('keeps watch hot-update and retry budgets tolerant for shared runners', async () => {
+  it('keeps watch hot-update budget strict while retry settings stay explicit', async () => {
     const workflowSource = await readFile(
       path.resolve(__dirname, '../../../.github/workflows/e2e-watch.yml'),
       'utf8',
@@ -1290,7 +1334,7 @@ describe('watch-hmr regression cases', () => {
     expect(runSteps.length).toBe(2)
     for (const step of runSteps) {
       const env = step.env as Record<string, string> | undefined
-      expect(env?.E2E_WATCH_MAX_HOT_UPDATE_MS).toBe("${{ matrix.watch_max_hot_update_ms || '30000' }}")
+      expect(env?.E2E_WATCH_MAX_HOT_UPDATE_MS).toBe("${{ matrix.watch_max_hot_update_ms || '2000' }}")
       expect(env?.E2E_WATCH_MAX_ATTEMPTS).toBe("${{ matrix.watch_max_attempts || '2' }}")
       expect(env?.NODE_OPTIONS).toBe('--max-old-space-size=6144')
     }

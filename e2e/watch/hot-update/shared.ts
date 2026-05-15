@@ -3,6 +3,7 @@ import process from 'node:process'
 import { execa } from 'execa'
 import path from 'pathe'
 import { expect } from 'vitest'
+import { DEFAULT_HOT_UPDATE_BUDGET_MS } from '../../../tools/weapp-tailwindcss-scripts/src/watch-hmr-regression/types'
 
 export type WatchProjectGroup = 'demo'
 export type ConcreteWatchCaseName
@@ -274,6 +275,11 @@ interface CommentCarrierSummaryItem {
   rollbackEffectiveMs: number
 }
 
+interface HotUpdateBudgetSample {
+  label: string
+  hotUpdateEffectiveMs: number
+}
+
 function isIssue33RoundProfile() {
   return process.env.E2E_WATCH_ROUND_PROFILE === 'issue33'
 }
@@ -451,9 +457,81 @@ function expectStyleRollbackMetric(metric: StyleMutationMetric, message: string)
   expect(metric.rollbackEffectiveMs, `${message} rollback marker clearance should be positive`).toBeGreaterThan(0)
 }
 
+function collectReportBudgetSamples(report: HotUpdateReport) {
+  const samples: HotUpdateBudgetSample[] = []
+
+  for (const oneCase of report.cases) {
+    samples.push({
+      label: `${oneCase.project}:case-template-preferred`,
+      hotUpdateEffectiveMs: oneCase.hotUpdateEffectiveMs,
+    })
+
+    for (const mutation of oneCase.mutationMetrics) {
+      if ('rounds' in mutation && Array.isArray(mutation.rounds)) {
+        for (const round of mutation.rounds) {
+          samples.push({
+            label: `${oneCase.project}:${mutation.mutationKind}:${round.roundName}`,
+            hotUpdateEffectiveMs: round.hotUpdateEffectiveMs,
+          })
+        }
+      }
+      else {
+        samples.push({
+          label: `${oneCase.project}:${mutation.mutationKind}`,
+          hotUpdateEffectiveMs: mutation.hotUpdateEffectiveMs,
+        })
+      }
+
+      if ('addedClassHmr' in mutation && mutation.addedClassHmr) {
+        samples.push({
+          label: `${oneCase.project}:${mutation.mutationKind}:added-class`,
+          hotUpdateEffectiveMs: mutation.addedClassHmr.hotUpdateEffectiveMs,
+        })
+      }
+      if ('sameClassLiteralHmr' in mutation && mutation.sameClassLiteralHmr) {
+        samples.push({
+          label: `${oneCase.project}:${mutation.mutationKind}:same-class-literal`,
+          hotUpdateEffectiveMs: mutation.sameClassLiteralHmr.hotUpdateEffectiveMs,
+        })
+      }
+      if ('commentCarrierHmr' in mutation && mutation.commentCarrierHmr) {
+        samples.push({
+          label: `${oneCase.project}:${mutation.mutationKind}:comment-carrier`,
+          hotUpdateEffectiveMs: mutation.commentCarrierHmr.hotUpdateEffectiveMs,
+        })
+      }
+    }
+
+    for (const subPackage of oneCase.subPackageMutationMetrics ?? []) {
+      samples.push({
+        label: `${oneCase.project}:subpackage:${subPackage.root}:template`,
+        hotUpdateEffectiveMs: subPackage.template.hotUpdateEffectiveMs,
+      })
+      if (subPackage.style) {
+        samples.push({
+          label: `${oneCase.project}:subpackage:${subPackage.root}:style`,
+          hotUpdateEffectiveMs: subPackage.style.hotUpdateEffectiveMs,
+        })
+      }
+    }
+  }
+
+  return samples
+}
+
+function assertAllHotUpdateSamplesWithinBudget(report: HotUpdateReport, maxHotUpdateMs: number) {
+  const samples = collectReportBudgetSamples(report)
+  expect(samples.length, 'watch-HMR report should collect budget samples').toBeGreaterThan(0)
+  for (const sample of samples) {
+    expect(sample.hotUpdateEffectiveMs, `${sample.label} hot update should be positive`).toBeGreaterThan(0)
+    expect(sample.hotUpdateEffectiveMs, `${sample.label} hot update should stay within ${maxHotUpdateMs}ms`).toBeLessThanOrEqual(maxHotUpdateMs)
+  }
+}
+
 function assertHotUpdateReport(report: HotUpdateReport, target: WatchCaseName, maxHotUpdateMs: number) {
   const requiredMutationRounds = resolveRequiredMutationRounds()
   const issue33RoundProfile = isIssue33RoundProfile()
+  assertAllHotUpdateSamplesWithinBudget(report, maxHotUpdateMs)
   expect(report.summary.count).toBeGreaterThan(0)
   expect(report.cases.length).toBe(report.summary.count)
   for (const roundName of requiredMutationRounds) {
@@ -828,7 +906,7 @@ export async function runHotUpdateTarget(target: WatchCaseName) {
   const cwd = path.resolve(__dirname, '../..')
   const timeoutMs = toNumberEnv('E2E_WATCH_TIMEOUT_MS', 240000)
   const pollMs = toNumberEnv('E2E_WATCH_POLL_MS', 240)
-  const maxHotUpdateMs = toNumberEnv('E2E_WATCH_MAX_HOT_UPDATE_MS', 15000)
+  const maxHotUpdateMs = toNumberEnv('E2E_WATCH_MAX_HOT_UPDATE_MS', DEFAULT_HOT_UPDATE_BUDGET_MS)
   const commandTimeoutMs = toNumberEnv(
     'E2E_WATCH_COMMAND_TIMEOUT_MS',
     Math.max(timeoutMs * 2 + 60_000, 240_000),

@@ -1,7 +1,9 @@
 import type {
+  ClassMutationMetrics,
   CliOptions,
   MutationKind,
   MutationRoundName,
+  StyleMutationMetrics,
   WatchCase,
   WatchCaseMetrics,
   WatchCaseMutationMetrics,
@@ -21,6 +23,11 @@ import { resolvePreferredRound } from './mutations/shared'
 import { createWatchSession, runPnpmCommand, sleep } from './session'
 import { summarizeMutationMetricsByKind } from './summary'
 import { writeFilePreserveEol } from './text'
+
+interface HotUpdateBudgetSample {
+  label: string
+  hotUpdateEffectiveMs: number
+}
 
 function resolveCaseSourceFiles(watchCase: WatchCase) {
   return [...new Set([
@@ -217,29 +224,85 @@ export function assertHotUpdateBudget(metrics: WatchCaseMetrics, options: CliOpt
     return
   }
 
-  if (metrics.hotUpdateEffectiveMs > options.maxHotUpdateMs) {
-    throw new Error(
-      `[${metrics.label}] hot update exceeded budget: ${metrics.hotUpdateEffectiveMs}ms > ${options.maxHotUpdateMs}ms`,
-    )
-  }
-
-  for (const mutation of metrics.mutationMetrics) {
-    if (mutation.mutationKind === 'style') {
-      if (mutation.hotUpdateEffectiveMs > options.maxHotUpdateMs) {
-        throw new Error(
-          `[${metrics.label}] style hot update exceeded budget: ${mutation.hotUpdateEffectiveMs}ms > ${options.maxHotUpdateMs}ms`,
-        )
-      }
-      continue
-    }
-
-    const preferredRound = resolvePreferredRound(mutation.rounds)
-    if (preferredRound && preferredRound.hotUpdateEffectiveMs > options.maxHotUpdateMs) {
+  for (const sample of collectHotUpdateBudgetSamples(metrics)) {
+    if (sample.hotUpdateEffectiveMs > options.maxHotUpdateMs) {
       throw new Error(
-        `[${metrics.label}] ${mutation.mutationKind} hot update exceeded budget: ${preferredRound.hotUpdateEffectiveMs}ms > ${options.maxHotUpdateMs}ms`,
+        `[${metrics.label}] ${sample.label} hot update exceeded budget: ${sample.hotUpdateEffectiveMs}ms > ${options.maxHotUpdateMs}ms`,
       )
     }
   }
+}
+
+function collectClassMutationBudgetSamples(
+  mutation: ClassMutationMetrics,
+): HotUpdateBudgetSample[] {
+  const samples: HotUpdateBudgetSample[] = mutation.rounds.map(round => ({
+    label: `${mutation.mutationKind}:${round.roundName}`,
+    hotUpdateEffectiveMs: round.hotUpdateEffectiveMs,
+  }))
+
+  if (mutation.addedClassHmr) {
+    samples.push({
+      label: `${mutation.mutationKind}:added-class`,
+      hotUpdateEffectiveMs: mutation.addedClassHmr.hotUpdateEffectiveMs,
+    })
+  }
+  if (mutation.sameClassLiteralHmr) {
+    samples.push({
+      label: `${mutation.mutationKind}:same-class-literal`,
+      hotUpdateEffectiveMs: mutation.sameClassLiteralHmr.hotUpdateEffectiveMs,
+    })
+  }
+  if (mutation.commentCarrierHmr) {
+    samples.push({
+      label: `${mutation.mutationKind}:comment-carrier`,
+      hotUpdateEffectiveMs: mutation.commentCarrierHmr.hotUpdateEffectiveMs,
+    })
+  }
+
+  return samples
+}
+
+function collectStyleMutationBudgetSample(
+  mutation: StyleMutationMetrics,
+): HotUpdateBudgetSample {
+  return {
+    label: mutation.mutationKind,
+    hotUpdateEffectiveMs: mutation.hotUpdateEffectiveMs,
+  }
+}
+
+function collectHotUpdateBudgetSamples(metrics: WatchCaseMetrics): HotUpdateBudgetSample[] {
+  const samples: HotUpdateBudgetSample[] = [{
+    label: 'case-template-preferred',
+    hotUpdateEffectiveMs: metrics.hotUpdateEffectiveMs,
+  }]
+
+  for (const mutation of metrics.mutationMetrics) {
+    if (mutation.mutationKind === 'style') {
+      samples.push(collectStyleMutationBudgetSample(mutation))
+      continue
+    }
+    samples.push(...collectClassMutationBudgetSamples(mutation))
+  }
+
+  for (const subPackage of metrics.subPackageMutationMetrics) {
+    samples.push(
+      ...collectClassMutationBudgetSamples(subPackage.template).map(sample => ({
+        ...sample,
+        label: `subpackage:${subPackage.root}:${sample.label}`,
+      })),
+    )
+    if (subPackage.style) {
+      const sample = collectStyleMutationBudgetSample(subPackage.style)
+      samples.push({
+        ...sample,
+        label: `subpackage:${subPackage.root}:${sample.label}`,
+      })
+    }
+  }
+
+  return samples
 }
 
 export function logSummary(
