@@ -203,13 +203,30 @@ export async function waitForOutputsUpdated(
   options: CliOptions,
   session: WatchSession,
   startedAt = Date.now(),
+  acceptWhen?: () => Promise<boolean>,
 ) {
+  const acceptsSemanticOutput = async () => {
+    if (!acceptWhen) {
+      return false
+    }
+
+    try {
+      return await acceptWhen()
+    }
+    catch {
+      return false
+    }
+  }
+
   return waitFor(
     async () => {
       const [wxmlMtime, jsMtime] = await Promise.all([
         getMtime(watchCase.outputWxml),
         getMtime(watchCase.outputJs),
       ])
+      if (await acceptsSemanticOutput()) {
+        return true
+      }
       return wxmlMtime > baseline.wxml || jsMtime > baseline.js
     },
     {

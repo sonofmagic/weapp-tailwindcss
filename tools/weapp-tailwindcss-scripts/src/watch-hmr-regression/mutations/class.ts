@@ -556,6 +556,23 @@ export async function runClassMutation(
             options,
             session,
             hotUpdateStartedAt,
+            async () => {
+              const outputs = await loadRoundOutputsSafe(watchCase, globalStyleOutputs)
+              assertRoundOutputs(
+                watchCase,
+                mutationKind,
+                sourcePath,
+                'add',
+                mutation,
+                verifyClassLiteralIn,
+                forbidBgHexTruncationIn,
+                minRequiredGlobalStyleEscapedClasses,
+                classTokens,
+                escapedClasses,
+                outputs,
+              )
+              return true
+            },
           )
       const hotUpdateEffectiveMs = isContentMutation
         ? hotUpdateOutputMs
@@ -713,6 +730,23 @@ export async function runClassMutation(
               options,
               session,
               modifyStartedAt,
+              async () => {
+                const outputs = await loadRoundOutputsSafe(watchCase, globalStyleOutputs)
+                assertRoundOutputs(
+                  watchCase,
+                  mutationKind,
+                  sourcePath,
+                  'modify',
+                  mutation,
+                  verifyClassLiteralIn,
+                  forbidBgHexTruncationIn,
+                  minRequiredGlobalStyleEscapedClasses,
+                  modifyClassTokens,
+                  modifyEscapedClasses,
+                  outputs,
+                )
+                return true
+              },
             )
         const modifyEffectiveMs = isContentMutation
           ? modifyOutputMs
@@ -847,6 +881,15 @@ export async function runClassMutation(
             options,
             session,
             rollbackStartedAt,
+            async () => {
+              const outputs = await loadRoundOutputsSafe(watchCase, globalStyleOutputs)
+              if (!outputs.wxml || !outputs.js) {
+                return false
+              }
+              return !outputs.wxml.includes(effectiveMarker)
+                && !outputs.js.includes(effectiveMarker)
+                && !outputs.globalStyle.includes(effectiveMarker)
+            },
           )
       rollbackEffectiveMs = isContentMutation
         ? rollbackOutputMs
