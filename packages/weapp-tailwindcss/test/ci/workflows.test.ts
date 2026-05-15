@@ -253,8 +253,59 @@ describe('e2e watch workflow', () => {
       watch_max_hot_update_ms: '60000',
       watch_command_timeout_ms: '1500000',
     }
+    const slowWindowsPrBudgets = [
+      {
+        watch_case: 'uni-app-vite-tailwindcss-v3',
+        round_profile: 'default',
+        timeout_minutes: 60,
+        watch_timeout_ms: '420000',
+        watch_command_timeout_ms: '1500000',
+      },
+      {
+        watch_case: 'taro-webpack-react-tailwindcss-v3',
+        round_profile: 'default',
+        timeout_minutes: 60,
+        watch_timeout_ms: '420000',
+        watch_command_timeout_ms: '1500000',
+      },
+      {
+        watch_case: 'uni-app-vite-tailwindcss-v3',
+        round_profile: 'issue33',
+        timeout_minutes: 60,
+        watch_timeout_ms: '420000',
+        watch_command_timeout_ms: '1500000',
+      },
+      {
+        watch_case: 'taro-webpack-react-tailwindcss-v4',
+        round_profile: 'issue33',
+        timeout_minutes: 70,
+        watch_timeout_ms: '600000',
+        watch_command_timeout_ms: '1800000',
+      },
+      {
+        watch_case: 'taro-vite-vue3-tailwindcss-v4',
+        round_profile: 'default',
+        timeout_minutes: 70,
+        watch_timeout_ms: '600000',
+        watch_command_timeout_ms: '1800000',
+      },
+      {
+        watch_case: 'mpx-tailwindcss-v4',
+        round_profile: 'default',
+        timeout_minutes: 60,
+        watch_timeout_ms: '600000',
+        watch_command_timeout_ms: '1500000',
+      },
+    ]
 
     expect(prRows).toContainEqual(expect.objectContaining(slowMacosWeappViteBudget))
+    for (const budget of slowWindowsPrBudgets) {
+      expect(prRows).toContainEqual(expect.objectContaining({
+        os: 'windows-latest',
+        runner_label: 'windows',
+        ...budget,
+      }))
+    }
     expect(nightlyRows).toContainEqual(expect.objectContaining(slowMacosWeappViteBudget))
     expect(nightlyRows).toContainEqual(expect.objectContaining({
       ...slowMacosWeappViteBudget,

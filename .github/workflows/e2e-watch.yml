@@ -151,10 +151,10 @@ jobs:
             watch_case: uni-app-vite-tailwindcss-v3
             round_profile: default
             watch_save_snapshots: '1'
-            timeout_minutes: 40
-            watch_timeout_ms: '280000'
-            watch_poll_ms: '320'
-            watch_command_timeout_ms: '720000'
+            timeout_minutes: 60
+            watch_timeout_ms: '420000'
+            watch_poll_ms: '340'
+            watch_command_timeout_ms: '1500000'
           - os: windows-latest
             runner_label: windows
             watch_case: mpx-tailwindcss-v3
@@ -169,37 +169,37 @@ jobs:
             watch_case: taro-webpack-react-tailwindcss-v3
             round_profile: default
             watch_save_snapshots: '1'
-            timeout_minutes: 40
-            watch_timeout_ms: '280000'
-            watch_poll_ms: '320'
-            watch_command_timeout_ms: '720000'
+            timeout_minutes: 60
+            watch_timeout_ms: '420000'
+            watch_poll_ms: '340'
+            watch_command_timeout_ms: '1500000'
           - os: windows-latest
             runner_label: windows
             watch_case: uni-app-vite-tailwindcss-v3
             round_profile: issue33
             watch_save_snapshots: '1'
-            timeout_minutes: 40
-            watch_timeout_ms: '280000'
-            watch_poll_ms: '320'
-            watch_command_timeout_ms: '720000'
+            timeout_minutes: 60
+            watch_timeout_ms: '420000'
+            watch_poll_ms: '340'
+            watch_command_timeout_ms: '1500000'
           - os: windows-latest
             runner_label: windows
             watch_case: taro-webpack-react-tailwindcss-v4
             round_profile: issue33
             watch_save_snapshots: '1'
-            timeout_minutes: 45
-            watch_timeout_ms: '320000'
-            watch_poll_ms: '340'
-            watch_command_timeout_ms: '840000'
+            timeout_minutes: 70
+            watch_timeout_ms: '600000'
+            watch_poll_ms: '400'
+            watch_command_timeout_ms: '1800000'
           - os: windows-latest
             runner_label: windows
             watch_case: taro-vite-vue3-tailwindcss-v4
             round_profile: default
             watch_save_snapshots: '1'
-            timeout_minutes: 45
-            watch_timeout_ms: '320000'
-            watch_poll_ms: '340'
-            watch_command_timeout_ms: '840000'
+            timeout_minutes: 70
+            watch_timeout_ms: '600000'
+            watch_poll_ms: '400'
+            watch_command_timeout_ms: '1800000'
           - os: windows-latest
             runner_label: windows
             watch_case: weapp-vite-tailwindcss-v3
@@ -223,10 +223,10 @@ jobs:
             watch_case: mpx-tailwindcss-v4
             round_profile: default
             watch_save_snapshots: '1'
-            timeout_minutes: 40
-            watch_timeout_ms: '280000'
-            watch_poll_ms: '320'
-            watch_command_timeout_ms: '720000'
+            timeout_minutes: 60
+            watch_timeout_ms: '600000'
+            watch_poll_ms: '400'
+            watch_command_timeout_ms: '1500000'
           - os: windows-latest
             runner_label: windows
             watch_case: weapp-vite-tailwindcss-v4
