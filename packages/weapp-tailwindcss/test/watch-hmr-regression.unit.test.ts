@@ -46,6 +46,7 @@ import {
   waitForCompileSettled,
   waitForInitialWarmup,
   waitForOutputsReady,
+  waitForOutputsUpdated,
   waitForOutputFilesUpdated,
 } from '../../../tools/weapp-tailwindcss-scripts/src/watch-hmr-regression/mutations/shared'
 import {
@@ -324,6 +325,44 @@ describe('watch-hmr regression text helpers', () => {
       } as any,
       [outputFile],
       new Map([[outputFile, baselineMtime]]),
+      {
+        timeoutMs: 100,
+        pollMs: 1,
+      } as CliOptions,
+      {
+        ensureRunning() {},
+      } as any,
+      Date.now(),
+      async () => {
+        attempts += 1
+        return attempts >= 2
+      },
+    )
+
+    expect(elapsed).toBeGreaterThanOrEqual(0)
+    expect(attempts).toBeGreaterThanOrEqual(2)
+  })
+
+  it('allows primary output update waits to pass via semantic fallback when mtimes stay unchanged', async () => {
+    const tempDir = await mkdtemp(path.join(os.tmpdir(), 'weapp-tw-watch-primary-output-update-'))
+    tempDirs.push(tempDir)
+    const wxmlFile = path.join(tempDir, 'index.wxml')
+    const jsFile = path.join(tempDir, 'index.js')
+    await writeFilePreserveEol(wxmlFile, '<view class="base"></view>', '<view />')
+    await writeFilePreserveEol(jsFile, 'Page({})', 'Page({})')
+    const baseline = {
+      wxml: await getMtime(wxmlFile),
+      js: await getMtime(jsFile),
+    }
+    let attempts = 0
+
+    const elapsed = await waitForOutputsUpdated(
+      {
+        label: 'demo/taro-vite-vue3-tailwindcss-v4',
+        outputWxml: wxmlFile,
+        outputJs: jsFile,
+      } as any,
+      baseline,
       {
         timeoutMs: 100,
         pollMs: 1,
