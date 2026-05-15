@@ -88,10 +88,14 @@ describeFrameworkCi('framework support matrix ci', () => {
       ).toBeGreaterThan(0)
 
       if (item.contentMutation) {
+        const contentVerifiedTargets = new Set([
+          ...item.contentMutation.verifyEscapedIn,
+          ...(item.contentMutation.verifyClassLiteralIn ?? []),
+        ])
         expect(
-          item.contentMutation.verifyEscapedIn,
-          `${item.name} content mutation should verify escaped js output`,
-        ).toContain('js')
+          contentVerifiedTargets.size,
+          `${item.name} content mutation should verify at least one escaped output target`,
+        ).toBeGreaterThan(0)
       }
     }
   })

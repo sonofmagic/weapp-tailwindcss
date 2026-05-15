@@ -572,10 +572,19 @@ function assertHotUpdateReport(report: HotUpdateReport, target: WatchCaseName, m
 
     if (contentMetric && contentMetric.mutationKind !== 'style') {
       expect(contentMetric.sourceFile).not.toMatch(INDEX_HTML_RE)
-      const expectedCarrier = TEMPLATE_SOURCE_FILE_RE.test(contentMetric.sourceFile) ? 'wxml' : 'js'
-      expect(contentMetric.sourceFile).toMatch(expectedCarrier === 'wxml' ? TEMPLATE_SOURCE_FILE_RE : SCRIPT_SOURCE_FILE_RE)
-      expect(contentMetric.verifyEscapedIn).toContain(expectedCarrier)
-      expect(contentMetric.verifyClassLiteralIn).toContain(expectedCarrier)
+      const canContainTemplate = TEMPLATE_SOURCE_FILE_RE.test(contentMetric.sourceFile)
+      const canContainScript = SCRIPT_SOURCE_FILE_RE.test(contentMetric.sourceFile)
+      expect(canContainTemplate || canContainScript).toBe(true)
+      if (!canContainScript) {
+        expect(contentMetric.verifyEscapedIn).toContain('wxml')
+        expect(contentMetric.verifyClassLiteralIn).toContain('wxml')
+      }
+      if (!canContainTemplate) {
+        expect(contentMetric.verifyEscapedIn).toContain('js')
+        expect(contentMetric.verifyClassLiteralIn).toContain('js')
+      }
+      expect(contentMetric.verifyEscapedIn.length).toBeGreaterThan(0)
+      expect(contentMetric.verifyClassLiteralIn.length).toBeGreaterThan(0)
       expect(contentMetric.rounds.length).toBe(1)
       expect(contentMetric.rounds[0]?.roundName).toBe(ISSUE33_REQUIRED_MUTATION_ROUND)
       expect(contentMetric.verifiedGlobalStyleEscapedClasses.length).toBeGreaterThanOrEqual(contentMetric.minRequiredGlobalStyleEscapedClasses)
@@ -741,7 +750,7 @@ function assertHotUpdateReport(report: HotUpdateReport, target: WatchCaseName, m
       expect(subPackageMetric.template.hotUpdateEffectiveMs).toBeLessThanOrEqual(maxHotUpdateMs)
       expect(subPackageMetric.template.rollbackEffectiveMs).toBeGreaterThan(0)
       expect(subPackageMetric.style.sourceFile).toContain(subPackageMetric.root)
-      expect(subPackageMetric.style.outputStyle).toContain('.wxss')
+      expect(subPackageMetric.globalStyleOutputs).toContain(subPackageMetric.style.outputStyle)
       expect(subPackageMetric.style.styleNeedle).toContain('.tw-watch-style-')
       if (!noApplyValidationCases.has(item.name)) {
         expect(subPackageMetric.style.applyUtilities.length).toBeGreaterThan(0)

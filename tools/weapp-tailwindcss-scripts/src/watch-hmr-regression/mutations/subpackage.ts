@@ -10,7 +10,7 @@ import { promises as fs } from 'node:fs'
 import process from 'node:process'
 import { writeFilePreserveEol } from '../text'
 import { runClassMutation } from './class'
-import { waitForOutputsReady } from './shared'
+import { waitForCompileSettled, waitForOutputsReady } from './shared'
 import { runStyleMutation } from './style'
 
 function createSubPackageWatchCase(watchCase: WatchCase, mutation: SubPackageMutationConfig): WatchCase {
@@ -86,7 +86,6 @@ export async function runSubPackageMutation(
     sourceOriginals.set(mutation.styleMutation.sourceFile, styleSourceOriginal)
   }
 
-  const attachStartedAt = Date.now()
   const attachWrites = [
     writeFilePreserveEol(mutation.templateMutation.sourceFile, templateSourceOriginal, templateSourceOriginal),
   ]
@@ -96,12 +95,14 @@ export async function runSubPackageMutation(
     )
   }
   await Promise.all(attachWrites)
+  const attachWrittenAt = Date.now()
 
-  await waitForOutputsReady(watchCase, options, session, attachStartedAt, {
+  await waitForOutputsReady(watchCase, options, session, attachWrittenAt, {
     wxml: mutation.outputWxml,
     js: mutation.outputJs,
     label: subWatchCase.label,
   })
+  await waitForCompileSettled(subWatchCase, options, session, attachWrittenAt)
 
   const globalStyleOutputs = [...new Set([
     ...mutation.outputStyleCandidates,

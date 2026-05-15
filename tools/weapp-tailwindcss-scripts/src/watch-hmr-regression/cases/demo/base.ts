@@ -433,6 +433,12 @@ export function buildDemoBaseCases(baseCwd: string): WatchCase[] {
       distRoot: 'dist',
       version: 'v3',
       pageKind: 'wxml',
+      globalStyleCandidates(subPackage) {
+        return [
+          path.resolve(baseCwd, `demo/weapp-vite-tailwindcss-v3/dist/${subPackage}/pages/index.wxss`),
+          path.resolve(baseCwd, 'demo/weapp-vite-tailwindcss-v3/dist/app.wxss'),
+        ]
+      },
     }),
   }
 

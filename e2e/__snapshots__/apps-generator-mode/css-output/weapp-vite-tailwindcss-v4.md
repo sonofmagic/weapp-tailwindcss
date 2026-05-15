@@ -6,7 +6,7 @@ Generator CSS files: app.wxss, apple.wxss, index.wxss, index.wxss, index.wxss
 
 | Bytes | Selectors | @supports | :hover | Tailwind banner | Raw arbitrary selector | Weapp escaped arbitrary selector |
 | ---: | ---: | --- | --- | --- | --- | --- |
-| 20194 | 60 | false | false | false | false | true |
+| 20551 | 59 | false | false | false | false | true |
 
 ## Generator CSS
 
@@ -66,9 +66,6 @@ wx-root-portal-content {
   --default-font-family: var(--font-sans);
   --default-mono-font-family: var(--font-mono);
 }
-.block {
-  display: block;
-}
 .flex {
   display: -webkit-flex;
   display: flex;
@@ -78,9 +75,6 @@ wx-root-portal-content {
 }
 .inline-block {
   display: inline-block;
-}
-.table {
-  display: table;
 }
 .size-12 {
   width: calc(var(--spacing) * 12);
@@ -154,6 +148,9 @@ wx-root-portal-content {
 }
 .bg-blue-500_f30 {
   background-color: rgba(50, 128, 255, 0.3);
+}
+.bg-independent-subpackage-marker {
+  background-color: #dc2626;
 }
 .bg-zinc-50 {
   background-color: var(--color-zinc-50);
@@ -235,6 +232,10 @@ wx-root-portal-content {
   transition-timing-function: var(--tw-ease, var(--default-transition-timing-function));
   transition-duration: var(--tw-duration, var(--default-transition-duration));
 }
+.before_ccontent-_b_aindependent_subpackage_weapp-vite-tailwindcss-v4_a_B::before {
+  --tw-content: 'independent subpackage weapp-vite-tailwindcss-v4';
+  content: var(--tw-content);
+}
 .before_ccontent-_b_anormal_subpackage_weapp-vite-tailwindcss-v4_a_B::before {
   --tw-content: 'normal subpackage weapp-vite-tailwindcss-v4';
   content: var(--tw-content);
@@ -303,9 +304,6 @@ wx-root-portal-content {
   --default-font-family: var(--font-sans);
   --default-mono-font-family: var(--font-mono);
 }
-.block {
-  display: block;
-}
 .flex {
   display: -webkit-flex;
   display: flex;
@@ -315,9 +313,6 @@ wx-root-portal-content {
 }
 .inline-block {
   display: inline-block;
-}
-.table {
-  display: table;
 }
 .size-12 {
   width: calc(var(--spacing) * 12);
@@ -395,6 +390,9 @@ wx-root-portal-content {
 }
 .bg-blue-500_f30 {
   background-color: rgba(50, 128, 255, 0.3);
+}
+.bg-independent-subpackage-marker {
+  background-color: #dc2626;
 }
 .bg-zinc-50 {
   background-color: var(--color-zinc-50);
@@ -475,6 +473,10 @@ wx-root-portal-content {
     transform, translate, scale, rotate, filter, backdrop-filter, display, content-visibility, overlay, pointer-events;
   transition-timing-function: var(--tw-ease, var(--default-transition-timing-function));
   transition-duration: var(--tw-duration, var(--default-transition-duration));
+}
+.before_ccontent-_b_aindependent_subpackage_weapp-vite-tailwindcss-v4_a_B::before {
+  --tw-content: 'independent subpackage weapp-vite-tailwindcss-v4';
+  content: var(--tw-content);
 }
 .before_ccontent-_b_anormal_subpackage_weapp-vite-tailwindcss-v4_a_B::before {
   --tw-content: 'normal subpackage weapp-vite-tailwindcss-v4';
@@ -514,15 +516,11 @@ wx-root-portal-content {
     max-width: 3072rpx;
   }
 }
+.table {
+  display: table;
+}
 .h-_b29_d292px_B {
   height: 29.292px;
-}
-.bg-independent-subpackage-marker {
-  background-color: #dc2626;
-}
-.before_ccontent-_b_aindependent_subpackage_weapp-vite-tailwindcss-v4_a_B::before {
-  --tw-content: 'independent subpackage weapp-vite-tailwindcss-v4';
-  content: var(--tw-content);
 }
 
 :host,
@@ -545,9 +543,6 @@ wx-root-portal-content {
   --default-font-family: var(--font-sans);
   --default-mono-font-family: var(--font-mono);
 }
-.block {
-  display: block;
-}
 .flex {
   display: -webkit-flex;
   display: flex;
@@ -557,9 +552,6 @@ wx-root-portal-content {
 }
 .inline-block {
   display: inline-block;
-}
-.table {
-  display: table;
 }
 .size-12 {
   width: calc(var(--spacing) * 12);
@@ -637,6 +629,9 @@ wx-root-portal-content {
 }
 .bg-blue-500_f30 {
   background-color: rgba(50, 128, 255, 0.3);
+}
+.bg-independent-subpackage-marker {
+  background-color: #dc2626;
 }
 .bg-zinc-50 {
   background-color: var(--color-zinc-50);
@@ -717,6 +712,10 @@ wx-root-portal-content {
     transform, translate, scale, rotate, filter, backdrop-filter, display, content-visibility, overlay, pointer-events;
   transition-timing-function: var(--tw-ease, var(--default-transition-timing-function));
   transition-duration: var(--tw-duration, var(--default-transition-duration));
+}
+.before_ccontent-_b_aindependent_subpackage_weapp-vite-tailwindcss-v4_a_B::before {
+  --tw-content: 'independent subpackage weapp-vite-tailwindcss-v4';
+  content: var(--tw-content);
 }
 .before_ccontent-_b_anormal_subpackage_weapp-vite-tailwindcss-v4_a_B::before {
   --tw-content: 'normal subpackage weapp-vite-tailwindcss-v4';

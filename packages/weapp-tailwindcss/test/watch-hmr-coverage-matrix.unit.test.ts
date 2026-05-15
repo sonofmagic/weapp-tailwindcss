@@ -143,7 +143,7 @@ describe('watch-hmr coverage matrix', () => {
       ].filter((item): item is string => Boolean(item))
 
       for (const sourceFile of styleSources) {
-        const realSourceFile = sourceFile.replace('/repo/', `${repoRoot}/`)
+        const realSourceFile = toRepoPath(sourceFile).replace('/repo/', `${toSlashPath(repoRoot)}/`)
         expect(existsSync(realSourceFile), `${entry.name} style source should exist: ${realSourceFile}`).toBe(true)
         const source = readFileSync(realSourceFile, 'utf8')
 

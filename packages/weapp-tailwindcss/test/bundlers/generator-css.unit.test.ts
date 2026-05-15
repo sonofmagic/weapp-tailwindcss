@@ -1714,6 +1714,30 @@ describe('bundlers/shared generator css', () => {
     }))
   })
 
+  it('does not treat generated Tailwind layer css as generator source entries', async () => {
+    const rawSource = [
+      '@layer theme, base, components, utilities;',
+      '@layer theme {',
+      '  :host,page,.tw-root,wx-root-portal-content {',
+      '    --tw-content: "";',
+      '    --color-gray-200: #e5e7eb;',
+      '  }',
+      '  @theme default {',
+      '    @-webkit-keyframes spin {',
+      '      to {',
+      '        -webkit-transform: rotate(1turn);',
+      '        transform: rotate(1turn);',
+      '      }',
+      '    }',
+      '  }',
+      '}',
+    ].join('\n')
+    const { hasTailwindSourceDirectives, resolveCssEntrySource } = await import('@/bundlers/shared/generator-css')
+
+    expect(hasTailwindSourceDirectives(rawSource)).toBe(false)
+    expect(resolveCssEntrySource(rawSource, __dirname)).toBeUndefined()
+  })
+
   it('adds Tailwind v4 reference for @apply-only local css sources', async () => {
     const rawSource = [
       '.test {',

@@ -2,11 +2,11 @@
 
 Fixture: demo
 Entry: taro-webpack-vue3-tailwindcss-v4/dist/app.wxss
-Generator CSS files: app.wxss, index.wxss, index.wxss
+Generator CSS files: app.wxss, index.wxss, index.wxss, index.wxss
 
 | Bytes | Selectors | @supports | :hover | Tailwind banner | Raw arbitrary selector | Weapp escaped arbitrary selector |
 | ---: | ---: | --- | --- | --- | --- | --- |
-| 4454 | 17 | false | false | false | false | true |
+| 4531 | 18 | false | false | false | false | true |
 
 ## Generator CSS
 
@@ -249,5 +249,10 @@ wx-root-portal-content {
   .container {
     max-width: 3072rpx;
   }
+}
+
+@reference "tailwindcss";
+.tw-page-style-watch-anchor {
+  color: inherit;
 }
 ```

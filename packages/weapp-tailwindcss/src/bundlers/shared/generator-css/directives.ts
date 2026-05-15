@@ -2,6 +2,7 @@ import path from 'node:path'
 import postcss from 'postcss'
 import {
   GENERATOR_PLACEHOLDER_MARKER_RE,
+  hasTailwindGeneratedCssMarkers,
   stripGeneratorPlaceholderMarkers,
 } from './markers'
 
@@ -72,7 +73,11 @@ function isTailwindSourceDirective(node: postcss.Node) {
   return TAILWIND_REMOVABLE_SOURCE_DIRECTIVE_NAMES.has(atRule.name)
 }
 
-function isTailwindGenerationDirective(node: postcss.Node) {
+function hasGeneratedCssArtifacts(rawSource: string) {
+  return hasTailwindGeneratedCssMarkers(rawSource) && !GENERATOR_PLACEHOLDER_MARKER_RE.test(rawSource)
+}
+
+function isTailwindGenerationDirective(node: postcss.Node, options: { ignoreLayer?: boolean } = {}) {
   if (node.type !== 'atrule') {
     return false
   }
@@ -85,7 +90,7 @@ function isTailwindGenerationDirective(node: postcss.Node) {
   return isTailwindImportAtRule(atRule)
     || isPackageJsonImportRequest(request)
     || atRule.name === 'apply'
-    || atRule.name === 'layer'
+    || (!options.ignoreLayer && atRule.name === 'layer')
     || atRule.name === 'config'
     || atRule.name === 'source'
 }
@@ -115,8 +120,9 @@ export function hasTailwindSourceDirectives(rawSource: string) {
     }
     const root = postcss.parse(rawSource)
     let found = false
+    const ignoreLayer = hasGeneratedCssArtifacts(rawSource)
     root.walk((node) => {
-      if (isTailwindGenerationDirective(node)) {
+      if (isTailwindGenerationDirective(node, { ignoreLayer })) {
         found = true
         return false
       }
@@ -189,8 +195,9 @@ export function resolveCssEntrySource(
     let configRequest: string | undefined
     let removedConfig = false
     const removeConfig = options.removeConfig ?? true
+    const ignoreLayer = hasGeneratedCssArtifacts(rawSource)
     root.walk((node) => {
-      if (isTailwindGenerationDirective(node)) {
+      if (isTailwindGenerationDirective(node, { ignoreLayer })) {
         found = true
       }
       if (node.type === 'atrule' && node.name === 'config') {

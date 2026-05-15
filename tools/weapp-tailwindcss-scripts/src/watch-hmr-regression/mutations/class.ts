@@ -88,6 +88,26 @@ function asErrorMessage(error: unknown) {
   return error instanceof Error ? error.message : String(error)
 }
 
+function htmlEscapeClassToken(value: string) {
+  return value
+    .replaceAll('&', '&amp;')
+    .replaceAll('<', '&lt;')
+    .replaceAll('>', '&gt;')
+    .replaceAll('"', '&quot;')
+}
+
+function createClassTokenExpectedValues(classToken: string | undefined, escaped: string | undefined) {
+  const values = new Set<string>()
+  if (escaped) {
+    values.add(escaped)
+  }
+  if (classToken) {
+    values.add(classToken)
+    values.add(htmlEscapeClassToken(classToken))
+  }
+  return [...values]
+}
+
 function resolveIssue33SnapshotDir(
   watchCase: WatchCase,
   mutationKind: 'template' | 'script',
@@ -290,7 +310,7 @@ function assertRoundOutputs(
 ) {
   for (const escaped of escapedClasses) {
     const classToken = classTokens[escapedClasses.indexOf(escaped)]
-    const expectedValues = classToken ? [escaped, classToken] : [escaped]
+    const expectedValues = createClassTokenExpectedValues(classToken, escaped)
     if (mutation.verifyEscapedIn.includes('wxml')) {
       assertContainsOneOf(outputs.wxml, expectedValues, `[${watchCase.label}] mutation=${mutationKind} phase=${phase} updated wxml`)
     }
@@ -301,7 +321,7 @@ function assertRoundOutputs(
 
   for (const [index, classToken] of classTokens.entries()) {
     const escapedToken = escapedClasses[index]
-    const expectedValues = escapedToken ? [classToken, escapedToken] : [classToken]
+    const expectedValues = createClassTokenExpectedValues(classToken, escapedToken)
 
     if (verifyClassLiteralIn.includes('wxml')) {
       assertContainsOneOf(
