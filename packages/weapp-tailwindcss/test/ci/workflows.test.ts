@@ -297,8 +297,31 @@ describe('e2e watch workflow', () => {
         watch_command_timeout_ms: '1500000',
       },
     ]
+    const slowMacosUniAppPrBudgets = [
+      {
+        watch_case: 'uni-app-vite-tailwindcss-v3',
+        round_profile: 'default',
+        timeout_minutes: 60,
+        watch_timeout_ms: '420000',
+        watch_command_timeout_ms: '1500000',
+      },
+      {
+        watch_case: 'uni-app-vite-tailwindcss-v3',
+        round_profile: 'issue33',
+        timeout_minutes: 60,
+        watch_timeout_ms: '420000',
+        watch_command_timeout_ms: '1500000',
+      },
+    ]
 
     expect(prRows).toContainEqual(expect.objectContaining(slowMacosWeappViteBudget))
+    for (const budget of slowMacosUniAppPrBudgets) {
+      expect(prRows).toContainEqual(expect.objectContaining({
+        os: 'macos-latest',
+        runner_label: 'macos',
+        ...budget,
+      }))
+    }
     for (const budget of slowWindowsPrBudgets) {
       expect(prRows).toContainEqual(expect.objectContaining({
         os: 'windows-latest',
