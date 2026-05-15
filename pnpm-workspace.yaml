@@ -55,7 +55,7 @@ catalogs:
   lucideVueNext0555:
     lucide-vue-next: ^1.0.0
   miniApiTypings:
-    miniprogram-api-typings: ^5.2.0
+    miniprogram-api-typings: ^5.2.1
   postcss85:
     postcss: ^8.5.14
   postcss85tilde:
@@ -83,7 +83,7 @@ catalogs:
   sass195:
     sass: ^1.99.0
   stylelint1625:
-    stylelint: ^17.11.0
+    stylelint: ^17.11.1
   tailwindMerge:
     tailwind-merge: ^3.6.0
   tailwindMerge2:
@@ -162,9 +162,9 @@ catalogs:
   weappIdeCli:
     weapp-ide-cli: ^5.2.10
   weappVite:
-    weapp-vite: ^6.16.13
+    weapp-vite: ^6.16.14
   wrangler:
-    wrangler: ^4.90.1
+    wrangler: ^4.91.0
 
 onlyBuiltDependencies:
   - '@tailwindcss/oxide'

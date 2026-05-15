@@ -55,6 +55,8 @@
     "@types/gulp-sass": "^6.0.0",
     "@types/gulp-util": "^3.0.41",
     "@types/node": "catalog:typesNode2410",
+    "@weapp-tailwindcss/merge": "workspace:*",
+    "@weapp-tailwindcss/variants": "workspace:*",
     "autoprefixer": "catalog:autoprefixer10",
     "cross-env": "catalog:crossEnv",
     "eslint": "catalog:eslint10",
@@ -80,11 +82,9 @@
     "sass": "catalog:sass195",
     "tailwindcss": "catalog:tailwindcss4",
     "tailwindcss-patch": "catalog:tailwindcssPatch",
-    "tsx": "^4.21.0",
+    "tsx": "^4.22.0",
     "typescript": "catalog:typescript59",
     "weapp-ide-cli": "catalog:weappIdeCli",
-    "weapp-tailwindcss": "workspace:*",
-    "@weapp-tailwindcss/merge": "workspace:*",
-    "@weapp-tailwindcss/variants": "workspace:*"
+    "weapp-tailwindcss": "workspace:*"
   }
 }
