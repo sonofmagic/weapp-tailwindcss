@@ -313,6 +313,22 @@ describe('e2e watch workflow', () => {
         watch_command_timeout_ms: '1500000',
       },
     ]
+    const slowWeappViteV4PrBudgets = [
+      {
+        os: 'macos-latest',
+        runner_label: 'macos',
+        timeout_minutes: 40,
+        watch_timeout_ms: '280000',
+        watch_command_timeout_ms: '720000',
+      },
+      {
+        os: 'windows-latest',
+        runner_label: 'windows',
+        timeout_minutes: 45,
+        watch_timeout_ms: '320000',
+        watch_command_timeout_ms: '840000',
+      },
+    ]
 
     expect(prRows).toContainEqual(expect.objectContaining(slowMacosWeappViteBudget))
     for (const budget of slowMacosUniAppPrBudgets) {
@@ -326,6 +342,14 @@ describe('e2e watch workflow', () => {
       expect(prRows).toContainEqual(expect.objectContaining({
         os: 'windows-latest',
         runner_label: 'windows',
+        ...budget,
+      }))
+    }
+    for (const budget of slowWeappViteV4PrBudgets) {
+      expect(prRows).toContainEqual(expect.objectContaining({
+        watch_case: 'weapp-vite-tailwindcss-v4',
+        round_profile: 'issue33',
+        watch_max_hot_update_ms: '60000',
         ...budget,
       }))
     }
