@@ -319,6 +319,7 @@ describe('e2e watch workflow', () => {
         runner_label: 'macos',
         timeout_minutes: 40,
         watch_timeout_ms: '280000',
+        watch_max_hot_update_ms: '90000',
         watch_command_timeout_ms: '720000',
       },
       {
@@ -326,6 +327,7 @@ describe('e2e watch workflow', () => {
         runner_label: 'windows',
         timeout_minutes: 45,
         watch_timeout_ms: '320000',
+        watch_max_hot_update_ms: '60000',
         watch_command_timeout_ms: '840000',
       },
     ]
@@ -349,7 +351,6 @@ describe('e2e watch workflow', () => {
       expect(prRows).toContainEqual(expect.objectContaining({
         watch_case: 'weapp-vite-tailwindcss-v4',
         round_profile: 'issue33',
-        watch_max_hot_update_ms: '60000',
         ...budget,
       }))
     }
