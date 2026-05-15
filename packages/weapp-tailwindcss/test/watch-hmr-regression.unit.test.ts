@@ -952,6 +952,12 @@ describe('watch-hmr regression cases', () => {
       path.resolve('/repo', 'demo/mpx-tailwindcss-v4/dist/wx/custom-tab-bar/index.wxml'),
     )
     expect(mpxV4Case?.devScript).toBe('dev:e2e-watch')
+    expect(mpxV4Case?.env).toMatchObject({
+      CHOKIDAR_INTERVAL: '100',
+      CHOKIDAR_USEPOLLING: '1',
+      WATCHPACK_POLLING: 'true',
+    })
+    expect(mpxV4Case?.initialMutationDelayMs).toBe(15_000)
     expect(mpxV4Case?.styleMutation.sourceFile).toBe(
       path.resolve('/repo', 'demo/mpx-tailwindcss-v4/src/pages/component/index.mpx'),
     )
