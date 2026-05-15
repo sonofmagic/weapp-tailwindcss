@@ -186,6 +186,9 @@ describe('demo matrix generator config', () => {
     ])
 
     expect(configs.join('\n')).not.toContain('cssEntries')
+    for (const [index, configSource] of configs.entries()) {
+      expect(configSource, configPaths[index]).toContain('tailwindcssBasedir: process.cwd()')
+    }
     for (const cssSource of cssEntries) {
       expect(cssSource).toContain('tailwindcss')
     }
