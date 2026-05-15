@@ -25,6 +25,12 @@ const taroWatchEnv = {
   WATCHPACK_POLLING: 'true',
 }
 
+const mpxWatchEnv = {
+  CHOKIDAR_USEPOLLING: '1',
+  CHOKIDAR_INTERVAL: '100',
+  WATCHPACK_POLLING: 'true',
+}
+
 const taroViteWatchEnv = {
   ...taroWatchEnv,
   NODE_ENV: 'production',
@@ -264,9 +270,10 @@ export function buildDemoExtendedCases(baseCwd: string): WatchCase[] {
     label: 'demo/mpx-tailwindcss-v4',
     project: 'demo/mpx-tailwindcss-v4',
     group: 'demo',
-    initialMutationDelayMs: 5_000,
+    initialMutationDelayMs: 15_000,
     cwd: path.resolve(baseCwd, 'demo/mpx-tailwindcss-v4'),
     devScript: 'dev:e2e-watch',
+    env: mpxWatchEnv,
     outputWxml: path.resolve(baseCwd, 'demo/mpx-tailwindcss-v4/dist/wx/custom-tab-bar/index.wxml'),
     outputJs: path.resolve(baseCwd, 'demo/mpx-tailwindcss-v4/dist/wx/custom-tab-bar/index.js'),
     outputStyleCandidates: [
