@@ -10,7 +10,9 @@ import process from 'node:process'
 import { formatPath } from '../../cli'
 import { getMtime, readFileIfExists, writeFilePreserveEol } from '../../text'
 import {
+  collectPluginProcessMetrics,
   readJoinedOutputFiles,
+  waitForCompileSettled,
   waitForMarkerState,
   waitForOutputsUpdated,
 } from '../shared'
@@ -91,6 +93,7 @@ export async function runSameClassLiteralMutation(
     session,
     hotUpdateBeforeStartedAt,
   )
+  await waitForCompileSettled(watchCase, cliOptions, session, hotUpdateBeforeStartedAt)
 
   const mtimeAfterBefore = {
     wxml: await getMtime(watchCase.outputWxml),
@@ -163,6 +166,8 @@ export async function runSameClassLiteralMutation(
     wxml: await getMtime(watchCase.outputWxml),
     js: await getMtime(watchCase.outputJs),
   }
+  await waitForCompileSettled(watchCase, cliOptions, session, hotUpdateAfterStartedAt)
+  const hotUpdatePluginMetrics = collectPluginProcessMetrics(session, hotUpdateAfterStartedAt)
 
   const rollbackStartedAt = Date.now()
   await writeFilePreserveEol(sourcePath, sourceOriginal, sourceOriginal)
@@ -181,6 +186,7 @@ export async function runSameClassLiteralMutation(
     session,
     rollbackStartedAt,
   )
+  const rollbackPluginMetrics = collectPluginProcessMetrics(session, rollbackStartedAt)
 
   process.stdout.write(
     `[watch-hmr] ${watchCase.label} mutation=script same-class-literal passed (hotUpdate=${hotUpdateEffectiveMs}ms, rollback=${rollbackEffectiveMs}ms)\n`,
@@ -203,8 +209,12 @@ export async function runSameClassLiteralMutation(
       changedGlobalStyleOutputs,
       hotUpdateOutputMs,
       hotUpdateEffectiveMs,
+      hotUpdatePluginProcessMs: hotUpdatePluginMetrics.totalMs,
+      hotUpdatePluginProcessSamples: hotUpdatePluginMetrics.samples,
       rollbackOutputMs,
       rollbackEffectiveMs,
+      rollbackPluginProcessMs: rollbackPluginMetrics.totalMs,
+      rollbackPluginProcessSamples: rollbackPluginMetrics.samples,
     },
   }
 }

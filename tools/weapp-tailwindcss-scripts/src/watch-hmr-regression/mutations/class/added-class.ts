@@ -17,8 +17,10 @@ import {
   writeFilePreserveEol,
 } from '../../text'
 import {
+  collectPluginProcessMetrics,
   createClassMutationScenario,
   readJoinedOutputFiles,
+  waitForCompileSettled,
   waitForMarkerState,
   waitForOutputsUpdated,
 } from '../shared'
@@ -201,6 +203,7 @@ export async function runAddedClassMutation(
     session,
     setupStartedAt,
   )
+  await waitForCompileSettled(watchCase, cliOptions, session, setupStartedAt)
 
   const baselineBeforeAdd = {
     wxml: await getMtime(watchCase.outputWxml),
@@ -248,6 +251,8 @@ export async function runAddedClassMutation(
     wxml: await getMtime(watchCase.outputWxml),
     js: await getMtime(watchCase.outputJs),
   }
+  await waitForCompileSettled(watchCase, cliOptions, session, hotUpdateStartedAt)
+  const hotUpdatePluginMetrics = collectPluginProcessMetrics(session, hotUpdateStartedAt)
 
   const rollbackStartedAt = Date.now()
   await writeFilePreserveEol(sourcePath, sourceOriginal, sourceOriginal)
@@ -260,6 +265,7 @@ export async function runAddedClassMutation(
     session,
     rollbackStartedAt,
   )
+  const rollbackPluginMetrics = collectPluginProcessMetrics(session, rollbackStartedAt)
 
   return {
     baselineMtime: {
@@ -278,8 +284,12 @@ export async function runAddedClassMutation(
       minRequiredEscapedClasses,
       hotUpdateOutputMs,
       hotUpdateEffectiveMs,
+      hotUpdatePluginProcessMs: hotUpdatePluginMetrics.totalMs,
+      hotUpdatePluginProcessSamples: hotUpdatePluginMetrics.samples,
       rollbackOutputMs,
       rollbackEffectiveMs,
+      rollbackPluginProcessMs: rollbackPluginMetrics.totalMs,
+      rollbackPluginProcessSamples: rollbackPluginMetrics.samples,
     },
   }
 }

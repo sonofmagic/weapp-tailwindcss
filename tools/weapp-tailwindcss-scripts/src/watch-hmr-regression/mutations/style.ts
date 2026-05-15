@@ -11,7 +11,7 @@ import {
   waitFor,
   writeFilePreserveEol,
 } from '../text'
-import { createStyleMutationPayload, expandOutputFileEntries, waitForCompileSettled } from './shared'
+import { collectPluginProcessMetrics, createStyleMutationPayload, expandOutputFileEntries, waitForCompileSettled } from './shared'
 
 export async function runStyleMutation(
   watchCase: WatchCase,
@@ -114,6 +114,7 @@ export async function runStyleMutation(
   if (!resolvedOutputStyle) {
     throw new Error(`[${watchCase.label}] failed to resolve style output after mutation`)
   }
+  const hotUpdatePluginMetrics = collectPluginProcessMetrics(session, hotUpdateStartedAt)
 
   const updatedStyle = await fs.readFile(resolvedOutputStyle, 'utf8')
   for (const needle of outputNeedles) {
@@ -209,6 +210,7 @@ export async function runStyleMutation(
     )
   }
   await waitForCompileSettled(watchCase, options, session, rollbackStartedAt)
+  const rollbackPluginMetrics = collectPluginProcessMetrics(session, rollbackStartedAt)
 
   process.stdout.write(
     `[watch-hmr] ${watchCase.label} mutation=style passed (hotUpdate=${hotUpdateEffectiveMs}ms, rollback=${rollbackEffectiveMs}ms)\n`,
@@ -232,8 +234,12 @@ export async function runStyleMutation(
     ...(payload.referenceDirective ? { referenceDirective: payload.referenceDirective } : {}),
     hotUpdateOutputMs,
     hotUpdateEffectiveMs,
+    hotUpdatePluginProcessMs: hotUpdatePluginMetrics.totalMs,
+    hotUpdatePluginProcessSamples: hotUpdatePluginMetrics.samples,
     rollbackOutputMs,
     rollbackEffectiveMs,
+    rollbackPluginProcessMs: rollbackPluginMetrics.totalMs,
+    rollbackPluginProcessSamples: rollbackPluginMetrics.samples,
     rollbackNeedleCleared,
   }
 }

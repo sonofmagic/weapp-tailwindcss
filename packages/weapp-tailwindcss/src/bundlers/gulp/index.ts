@@ -16,6 +16,7 @@ import { getRuntimeClassSetSignature } from '@/tailwindcss/runtime/cache'
 import { hasConfiguredTailwindV4CssRoots, upsertTailwindV4CssSource } from '@/tailwindcss/v4/css-sources'
 import { processCachedTask } from '../shared/cache'
 import { generateCssByGenerator } from '../shared/generator-css'
+import { emitHmrTiming } from '../shared/hmr-timing'
 import { createBundleRuntimeClassSetManager } from '../vite/incremental-runtime-class-set'
 
 const debug = createDebug()
@@ -267,12 +268,16 @@ export function createPlugins(options: UserDefinedOptions = {}) {
     return cachedDefaultModuleGraphOptions
   }
 
-  function createVinylTransform(handler: (file: File) => Promise<void>) {
+  function createVinylTransform(phase: string, handler: (file: File) => Promise<void>) {
     return new Transform({
       objectMode: true,
       async transform(file: File, _encoding, callback) {
+        const hmrTimingStartedAt = performance.now()
         try {
           await handler(file)
+          emitHmrTiming('gulp', phase, performance.now() - hmrTimingStartedAt, {
+            file: file.relative || path.basename(file.path),
+          })
           callback(null, file)
         }
         catch (error) {
@@ -348,7 +353,7 @@ export function createPlugins(options: UserDefinedOptions = {}) {
   }
 
   const transformWxss = (options: Partial<IStyleHandlerOptions> = {}) =>
-    createVinylTransform(async (file) => {
+    createVinylTransform('css', async (file) => {
       if (!file.contents) {
         return
       }
@@ -393,7 +398,7 @@ export function createPlugins(options: UserDefinedOptions = {}) {
     })
 
   const transformJs = (options: Partial<CreateJsHandlerOptions> = {}) =>
-    createVinylTransform(async (file) => {
+    createVinylTransform('js', async (file) => {
       if (!file.contents) {
         return
       }
@@ -443,7 +448,7 @@ export function createPlugins(options: UserDefinedOptions = {}) {
     })
 
   const transformWxml = (options: Partial<ITemplateHandlerOptions> = {}) =>
-    createVinylTransform(async (file) => {
+    createVinylTransform('html', async (file) => {
       if (!file.contents) {
         return
       }

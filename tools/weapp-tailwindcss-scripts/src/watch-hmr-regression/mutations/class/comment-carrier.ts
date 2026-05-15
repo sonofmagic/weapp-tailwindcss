@@ -10,6 +10,7 @@ import type {
 import { formatPath } from '../../cli'
 import { getMtime, readFileIfExists, writeFilePreserveEol } from '../../text'
 import {
+  collectPluginProcessMetrics,
   createClassMutationScenario,
   readJoinedOutputFiles,
   waitForMarkerState,
@@ -97,6 +98,7 @@ export async function runCommentCarrierMutation(
     session,
     hotUpdateStartedAt,
   )
+  const hotUpdatePluginMetrics = collectPluginProcessMetrics(session, hotUpdateStartedAt)
 
   const updatedGlobalStyle = await readJoinedOutputFiles(globalStyleOutputs)
   const verifiedEscapedClasses = scenario.escapedClasses.filter(escaped =>
@@ -130,6 +132,7 @@ export async function runCommentCarrierMutation(
     session,
     rollbackStartedAt,
   )
+  const rollbackPluginMetrics = collectPluginProcessMetrics(session, rollbackStartedAt)
 
   return {
     baselineMtime: {
@@ -144,8 +147,12 @@ export async function runCommentCarrierMutation(
       minRequiredEscapedClasses: minRequiredGlobalStyleEscapedClasses,
       hotUpdateOutputMs,
       hotUpdateEffectiveMs,
+      hotUpdatePluginProcessMs: hotUpdatePluginMetrics.totalMs,
+      hotUpdatePluginProcessSamples: hotUpdatePluginMetrics.samples,
       rollbackOutputMs,
       rollbackEffectiveMs,
+      rollbackPluginProcessMs: rollbackPluginMetrics.totalMs,
+      rollbackPluginProcessSamples: rollbackPluginMetrics.samples,
     },
   }
 }

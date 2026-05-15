@@ -20,8 +20,9 @@ export type ConcreteWatchCaseName
     | 'weapp-vite-tailwindcss-v4'
 export type WatchCaseName = ConcreteWatchCaseName | 'both' | 'all' | 'demo'
 export const MUTATION_ROUND_NAMES = ['baseline-arbitrary', 'complex-corpus', 'hex-arbitrary', 'issue33-arbitrary'] as const
-export const DEFAULT_HOT_UPDATE_BUDGET_MS = 2000
+export const DEFAULT_HOT_UPDATE_BUDGET_MS = 1000
 export const PREFERRED_HOT_UPDATE_TARGET_MS = 1000
+export const DEFAULT_PLUGIN_PROCESS_BUDGET_MS = 500
 export type MutationRoundName = typeof MUTATION_ROUND_NAMES[number]
 export type MutationKind = 'template' | 'script' | 'style' | 'content'
 export type ClassMutationKind = 'template' | 'script' | 'content'
@@ -34,6 +35,15 @@ export interface CliOptions {
   quietSass: boolean
   reportFile?: string
   maxHotUpdateMs?: number
+  maxPluginProcessMs?: number
+}
+
+export interface PluginProcessSample {
+  at: number
+  bundler: string
+  phase: string
+  durationMs: number
+  file?: string
 }
 
 export interface ClassMutationPayload {
@@ -141,6 +151,7 @@ export interface WatchSession {
   lastCompileSuccessAt: () => number
   logs: () => string
   stop: () => Promise<void>
+  pluginProcessSamplesSince: (startedAt: number) => PluginProcessSample[]
 }
 
 export interface OutputMtime {
@@ -156,8 +167,12 @@ export interface MutationRoundMetrics {
   escapedClasses: string[]
   hotUpdateOutputMs: number
   hotUpdateEffectiveMs: number
+  hotUpdatePluginProcessMs: number
+  hotUpdatePluginProcessSamples: PluginProcessSample[]
   rollbackOutputMs: number
   rollbackEffectiveMs: number
+  rollbackPluginProcessMs: number
+  rollbackPluginProcessSamples: PluginProcessSample[]
   totalMs: number
 }
 
@@ -186,8 +201,12 @@ export interface ClassMutationMetrics {
   verifiedGlobalStyleEscapedClasses: string[]
   hotUpdateOutputMs: number
   hotUpdateEffectiveMs: number
+  hotUpdatePluginProcessMs: number
+  hotUpdatePluginProcessSamples: PluginProcessSample[]
   rollbackOutputMs: number
   rollbackEffectiveMs: number
+  rollbackPluginProcessMs: number
+  rollbackPluginProcessSamples: PluginProcessSample[]
   addedClassHmr?: AddedClassHmrMetrics
   sameClassLiteralHmr?: SameClassLiteralHmrMetrics
   commentCarrierHmr?: CommentCarrierHmrMetrics
@@ -205,8 +224,12 @@ export interface AddedClassHmrMetrics {
   minRequiredEscapedClasses: number
   hotUpdateOutputMs: number
   hotUpdateEffectiveMs: number
+  hotUpdatePluginProcessMs: number
+  hotUpdatePluginProcessSamples: PluginProcessSample[]
   rollbackOutputMs: number
   rollbackEffectiveMs: number
+  rollbackPluginProcessMs: number
+  rollbackPluginProcessSamples: PluginProcessSample[]
 }
 
 export interface SameClassLiteralHmrMetrics {
@@ -221,8 +244,12 @@ export interface SameClassLiteralHmrMetrics {
   changedGlobalStyleOutputs: string[]
   hotUpdateOutputMs: number
   hotUpdateEffectiveMs: number
+  hotUpdatePluginProcessMs: number
+  hotUpdatePluginProcessSamples: PluginProcessSample[]
   rollbackOutputMs: number
   rollbackEffectiveMs: number
+  rollbackPluginProcessMs: number
+  rollbackPluginProcessSamples: PluginProcessSample[]
 }
 
 export interface CommentCarrierHmrMetrics {
@@ -233,8 +260,12 @@ export interface CommentCarrierHmrMetrics {
   minRequiredEscapedClasses: number
   hotUpdateOutputMs: number
   hotUpdateEffectiveMs: number
+  hotUpdatePluginProcessMs: number
+  hotUpdatePluginProcessSamples: PluginProcessSample[]
   rollbackOutputMs: number
   rollbackEffectiveMs: number
+  rollbackPluginProcessMs: number
+  rollbackPluginProcessSamples: PluginProcessSample[]
 }
 
 export interface StyleMutationMetrics {
@@ -255,8 +286,12 @@ export interface StyleMutationMetrics {
   referenceDirective?: string
   hotUpdateOutputMs: number
   hotUpdateEffectiveMs: number
+  hotUpdatePluginProcessMs: number
+  hotUpdatePluginProcessSamples: PluginProcessSample[]
   rollbackOutputMs: number
   rollbackEffectiveMs: number
+  rollbackPluginProcessMs: number
+  rollbackPluginProcessSamples: PluginProcessSample[]
   rollbackNeedleCleared: boolean
 }
 
@@ -302,8 +337,12 @@ export interface WatchCaseMetrics {
   initialReadyMs: number
   hotUpdateOutputMs: number
   hotUpdateEffectiveMs: number
+  hotUpdatePluginProcessMs: number
+  hotUpdatePluginProcessSamples: PluginProcessSample[]
   rollbackOutputMs: number
   rollbackEffectiveMs: number
+  rollbackPluginProcessMs: number
+  rollbackPluginProcessSamples: PluginProcessSample[]
   totalMs: number
 }
 
@@ -317,6 +356,7 @@ export interface WatchReport {
     skipBuild: boolean
     quietSass: boolean
     maxHotUpdateMs?: number
+    maxPluginProcessMs?: number
   }
   summary: WatchSummary
   summaryByRound: Partial<Record<MutationRoundName, WatchSummary>>

@@ -1,5 +1,5 @@
 import type { Buffer } from 'node:buffer'
-import type { CliOptions, WatchSession } from './types'
+import type { CliOptions, PluginProcessSample, WatchSession } from './types'
 import { spawn, spawnSync } from 'node:child_process'
 import { existsSync } from 'node:fs'
 import path from 'node:path'
@@ -26,6 +26,7 @@ const WATCH_COMMAND_PATTERNS = [
   /gulp[\s\S]+gulpfile\.ts/i,
   /\bnpm\b[\s\S]+build:weapp[\s\S]+--watch/i,
 ] as const
+const HMR_TIMING_PREFIX = '[weapp-tailwindcss:hmr]'
 
 const sassDeprecationLinePatterns = [
   /^DEPRECATION WARNING \[/,
@@ -133,6 +134,37 @@ function stripAnsiControlSequences(line: string) {
 
 function normalizeLogLine(line: string) {
   return stripAnsiControlSequences(line).replace(ZERO_WIDTH_SPACE_RE, '').trim()
+}
+
+function parsePluginProcessSample(line: string): Omit<PluginProcessSample, 'at'> | undefined {
+  const normalized = normalizeLogLine(line)
+  const payloadText = normalized.startsWith(HMR_TIMING_PREFIX)
+    ? normalized.slice(HMR_TIMING_PREFIX.length).trim()
+    : undefined
+  if (!payloadText) {
+    return undefined
+  }
+
+  try {
+    const payload = JSON.parse(payloadText) as Partial<Omit<PluginProcessSample, 'at'>>
+    if (
+      typeof payload.bundler !== 'string'
+      || typeof payload.phase !== 'string'
+      || typeof payload.durationMs !== 'number'
+      || !Number.isFinite(payload.durationMs)
+    ) {
+      return undefined
+    }
+    return {
+      bundler: payload.bundler,
+      phase: payload.phase,
+      durationMs: Math.max(0, Math.round(payload.durationMs)),
+      ...(typeof payload.file === 'string' ? { file: payload.file } : {}),
+    }
+  }
+  catch {
+    return undefined
+  }
 }
 
 function isCompileSuccessLine(line: string) {
@@ -408,6 +440,7 @@ export function createWatchSession(
 ): WatchSession {
   cleanupExistingWatchProcesses(cwd)
   const lines: string[] = []
+  const pluginProcessSamples: PluginProcessSample[] = []
   let lastCompileSuccessAt = 0
   let compileFatalError: string | undefined
   const child = spawnPnpm(['run', devScript], {
@@ -417,10 +450,10 @@ export function createWatchSession(
       // 回归模式优先稳定性。
       // 宿主机上 Webpack/Taro 的 fs.watch 很容易触发 EMFILE，
       // 这里统一切到 polling watcher，必要时仍允许外部环境覆盖。
-      WATCHPACK_POLLING: process.env.WATCHPACK_POLLING ?? 'true',
-      WATCHPACK_POLLING_INTERVAL: process.env.WATCHPACK_POLLING_INTERVAL ?? '1000',
+      WATCHPACK_POLLING: process.env.WATCHPACK_POLLING ?? '50',
+      WATCHPACK_POLLING_INTERVAL: process.env.WATCHPACK_POLLING_INTERVAL ?? '50',
       CHOKIDAR_USEPOLLING: process.env.CHOKIDAR_USEPOLLING ?? '1',
-      CHOKIDAR_INTERVAL: process.env.CHOKIDAR_INTERVAL ?? '1000',
+      CHOKIDAR_INTERVAL: process.env.CHOKIDAR_INTERVAL ?? '50',
       NODE_OPTIONS: process.env.NODE_OPTIONS ?? '--max-old-space-size=8192',
       ...env,
     }),
@@ -490,6 +523,16 @@ export function createWatchSession(
       if (!compileFatalError) {
         compileFatalError = resolveCompileFatalError(line)
       }
+      const pluginSample = parsePluginProcessSample(line)
+      if (pluginSample) {
+        pluginProcessSamples.push({
+          at: Date.now(),
+          ...pluginSample,
+        })
+        if (pluginProcessSamples.length > 1000) {
+          pluginProcessSamples.shift()
+        }
+      }
     }
 
     rawCollect(chunk)
@@ -547,6 +590,7 @@ export function createWatchSession(
     ensureRunning,
     lastCompileSuccessAt: () => lastCompileSuccessAt,
     logs: () => lines.join('\n'),
+    pluginProcessSamplesSince: startedAt => pluginProcessSamples.filter(sample => sample.at >= startedAt),
     stop,
   }
 }

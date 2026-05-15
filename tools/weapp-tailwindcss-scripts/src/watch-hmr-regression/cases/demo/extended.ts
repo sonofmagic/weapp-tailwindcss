@@ -21,20 +21,20 @@ import { buildHexScriptRoundConfigs, buildIssue33HighRiskRoundConfigs, buildTail
 const taroWatchEnv = {
   TARO_BUILD_STRICT: '1',
   CHOKIDAR_USEPOLLING: '1',
-  CHOKIDAR_INTERVAL: '100',
-  WATCHPACK_POLLING: 'true',
+  CHOKIDAR_INTERVAL: '50',
+  WATCHPACK_POLLING: '50',
 }
 
 const mpxWatchEnv = {
   CHOKIDAR_USEPOLLING: '1',
-  CHOKIDAR_INTERVAL: '100',
-  WATCHPACK_POLLING: 'true',
+  CHOKIDAR_INTERVAL: '50',
+  WATCHPACK_POLLING: '50',
 }
 
 const taroViteWatchEnv = {
   ...taroWatchEnv,
   NODE_ENV: 'production',
-  TARO_E2E_WATCH_NATIVE: '0',
+  TARO_E2E_WATCH_NATIVE: '1',
 }
 
 function normalizeExtension(version: 'v3' | 'v4') {

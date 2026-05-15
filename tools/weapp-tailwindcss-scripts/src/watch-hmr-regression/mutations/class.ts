@@ -6,6 +6,7 @@ import type {
   CommentCarrierHmrMetrics,
   MutationRoundConfig,
   MutationRoundMetrics,
+  PluginProcessSample,
   SameClassLiteralHmrMetrics,
   WatchCase,
   WatchSession,
@@ -28,6 +29,7 @@ import { runCommentCarrierMutation } from './class/comment-carrier'
 import { runSameClassLiteralMutation } from './class/same-literal'
 import {
   buildRoundComparison,
+  collectPluginProcessMetrics,
   createClassMutationScenario,
   expandOutputFileEntries,
   hasResolvedOutputFiles,
@@ -57,6 +59,11 @@ interface RoundOutputs {
   wxml: string
   js: string
   globalStyle: string
+}
+
+interface RoundOutputAssertion {
+  outputs: RoundOutputs
+  matchedEscapedClasses: string[]
 }
 
 export async function waitForClassMutationBaselineOutputs(
@@ -322,6 +329,36 @@ async function waitForRoundOutputs(
   }
 }
 
+async function resolveRoundOutputs(
+  assertedOutputs: RoundOutputAssertion | undefined,
+  watchCase: WatchCase,
+  mutationKind: 'template' | 'script' | 'content',
+  phase: 'add' | 'modify',
+  globalStyleOutputs: string[],
+  options: CliOptions,
+  session: WatchSession,
+  startedAt: number,
+  runAssert: (outputs: RoundOutputs) => string[],
+): Promise<{ effectiveMs: number, outputs: RoundOutputs, matchedEscapedClasses: string[] }> {
+  if (assertedOutputs) {
+    return {
+      effectiveMs: Date.now() - startedAt,
+      ...assertedOutputs,
+    }
+  }
+
+  return waitForRoundOutputs(
+    watchCase,
+    mutationKind,
+    phase,
+    globalStyleOutputs,
+    options,
+    session,
+    startedAt,
+    runAssert,
+  )
+}
+
 function assertIssue33ScriptTokenHealth(
   source: string,
   watchCase: WatchCase,
@@ -516,10 +553,13 @@ export async function runClassMutation(
 
     let effectiveHotUpdateOutputMs = 0
     let effectiveHotUpdateEffectiveMs = 0
+    let effectiveHotUpdatePluginProcessMs = 0
+    let effectiveHotUpdatePluginProcessSamples: PluginProcessSample[] = []
     let phaseOutputs: RoundOutputs | undefined
 
     try {
       const hotUpdateStartedAt = Date.now()
+      let assertedAddOutputs: RoundOutputAssertion | undefined
       process.stdout.write(
         `[watch-hmr] ${watchCase.label} mutation=${mutationKind} round=${roundConfig.name} phase=add dirty=${formatPath(sourcePath)} tokens=${classTokens.join(' | ')}\n`,
       )
@@ -534,7 +574,7 @@ export async function runClassMutation(
             hotUpdateStartedAt,
             async () => {
               const outputs = await loadRoundOutputsSafe(watchCase, globalStyleOutputs)
-              assertRoundOutputs(
+              const matchedEscapedClasses = assertRoundOutputs(
                 watchCase,
                 mutationKind,
                 sourcePath,
@@ -547,6 +587,7 @@ export async function runClassMutation(
                 escapedClasses,
                 outputs,
               )
+              assertedAddOutputs = { outputs, matchedEscapedClasses }
               return true
             },
           )
@@ -558,7 +599,7 @@ export async function runClassMutation(
             hotUpdateStartedAt,
             async () => {
               const outputs = await loadRoundOutputsSafe(watchCase, globalStyleOutputs)
-              assertRoundOutputs(
+              const matchedEscapedClasses = assertRoundOutputs(
                 watchCase,
                 mutationKind,
                 sourcePath,
@@ -571,6 +612,7 @@ export async function runClassMutation(
                 escapedClasses,
                 outputs,
               )
+              assertedAddOutputs = { outputs, matchedEscapedClasses }
               return true
             },
           )
@@ -585,7 +627,8 @@ export async function runClassMutation(
             hotUpdateStartedAt,
           )
 
-      const addResult = await waitForRoundOutputs(
+      const addResult = await resolveRoundOutputs(
+        assertedAddOutputs,
         watchCase,
         mutationKind,
         'add',
@@ -634,10 +677,15 @@ export async function runClassMutation(
       }
 
       effectiveHotUpdateOutputMs = hotUpdateOutputMs
-      effectiveHotUpdateEffectiveMs = isContentMutation ? addResult.effectiveMs : Math.max(hotUpdateEffectiveMs, addResult.effectiveMs)
+      effectiveHotUpdateEffectiveMs = isContentMutation
+        ? hotUpdateOutputMs
+        : Math.max(hotUpdateEffectiveMs, assertedAddOutputs ? hotUpdateOutputMs : addResult.effectiveMs)
       if (!isContentMutation) {
         await waitForCompileSettled(watchCase, options, session, hotUpdateStartedAt)
       }
+      const pluginMetrics = collectPluginProcessMetrics(session, hotUpdateStartedAt)
+      effectiveHotUpdatePluginProcessMs = pluginMetrics.totalMs
+      effectiveHotUpdatePluginProcessSamples = pluginMetrics.samples
     }
     catch (error) {
       if (issue33Round) {
@@ -694,6 +742,7 @@ export async function runClassMutation(
         }
         const baselineOutputMtimesBeforeModify = await collectOutputMtimes(mutationOutputFiles)
         const modifyStartedAt = Date.now()
+        let assertedModifyOutputs: RoundOutputAssertion | undefined
         process.stdout.write(
           `[watch-hmr] ${watchCase.label} mutation=${mutationKind} round=${roundConfig.name} phase=modify dirty=${formatPath(sourcePath)} tokens=${modifyClassTokens.join(' | ')}\n`,
         )
@@ -708,7 +757,7 @@ export async function runClassMutation(
               modifyStartedAt,
               async () => {
                 const outputs = await loadRoundOutputsSafe(watchCase, globalStyleOutputs)
-                assertRoundOutputs(
+                const matchedEscapedClasses = assertRoundOutputs(
                   watchCase,
                   mutationKind,
                   sourcePath,
@@ -721,6 +770,7 @@ export async function runClassMutation(
                   modifyEscapedClasses,
                   outputs,
                 )
+                assertedModifyOutputs = { outputs, matchedEscapedClasses }
                 return true
               },
             )
@@ -732,7 +782,7 @@ export async function runClassMutation(
               modifyStartedAt,
               async () => {
                 const outputs = await loadRoundOutputsSafe(watchCase, globalStyleOutputs)
-                assertRoundOutputs(
+                const matchedEscapedClasses = assertRoundOutputs(
                   watchCase,
                   mutationKind,
                   sourcePath,
@@ -745,6 +795,7 @@ export async function runClassMutation(
                   modifyEscapedClasses,
                   outputs,
                 )
+                assertedModifyOutputs = { outputs, matchedEscapedClasses }
                 return true
               },
             )
@@ -759,7 +810,8 @@ export async function runClassMutation(
               modifyStartedAt,
             )
 
-        const modifyResult = await waitForRoundOutputs(
+        const modifyResult = await resolveRoundOutputs(
+          assertedModifyOutputs,
           watchCase,
           mutationKind,
           'modify',
@@ -812,10 +864,15 @@ export async function runClassMutation(
         effectiveClassTokens = modifyClassTokens
         effectiveEscapedClasses = modifyEscapedClasses
         effectiveHotUpdateOutputMs = modifyOutputMs
-        effectiveHotUpdateEffectiveMs = isContentMutation ? modifyResult.effectiveMs : Math.max(modifyEffectiveMs, modifyResult.effectiveMs)
+        effectiveHotUpdateEffectiveMs = isContentMutation
+          ? modifyOutputMs
+          : Math.max(modifyEffectiveMs, assertedModifyOutputs ? modifyOutputMs : modifyResult.effectiveMs)
         if (!isContentMutation) {
           await waitForCompileSettled(watchCase, options, session, modifyStartedAt)
         }
+        const pluginMetrics = collectPluginProcessMetrics(session, modifyStartedAt)
+        effectiveHotUpdatePluginProcessMs = pluginMetrics.totalMs
+        effectiveHotUpdatePluginProcessSamples = pluginMetrics.samples
       }
       catch (error) {
         if (issue33Round) {
@@ -848,6 +905,8 @@ export async function runClassMutation(
 
     let rollbackOutputMs = 0
     let rollbackEffectiveMs = 0
+    let rollbackPluginProcessMs = 0
+    let rollbackPluginProcessSamples: PluginProcessSample[] = []
     try {
       const updatedMtime = {
         wxml: await getMtime(watchCase.outputWxml),
@@ -918,6 +977,9 @@ export async function runClassMutation(
       if (!isContentMutation) {
         await waitForCompileSettled(watchCase, options, session, rollbackStartedAt)
       }
+      const pluginMetrics = collectPluginProcessMetrics(session, rollbackStartedAt)
+      rollbackPluginProcessMs = pluginMetrics.totalMs
+      rollbackPluginProcessSamples = pluginMetrics.samples
     }
     catch (error) {
       if (issue33Round) {
@@ -955,8 +1017,12 @@ export async function runClassMutation(
       escapedClasses: effectiveEscapedClasses,
       hotUpdateOutputMs: effectiveHotUpdateOutputMs,
       hotUpdateEffectiveMs: effectiveHotUpdateEffectiveMs,
+      hotUpdatePluginProcessMs: effectiveHotUpdatePluginProcessMs,
+      hotUpdatePluginProcessSamples: effectiveHotUpdatePluginProcessSamples,
       rollbackOutputMs,
       rollbackEffectiveMs,
+      rollbackPluginProcessMs,
+      rollbackPluginProcessSamples,
       totalMs: Date.now() - roundStartedAt,
     })
 
@@ -1061,8 +1127,12 @@ export async function runClassMutation(
     verifiedGlobalStyleEscapedClasses: [...verifiedGlobalEscapedClasses],
     hotUpdateOutputMs: preferredRound.hotUpdateOutputMs,
     hotUpdateEffectiveMs: preferredRound.hotUpdateEffectiveMs,
+    hotUpdatePluginProcessMs: preferredRound.hotUpdatePluginProcessMs,
+    hotUpdatePluginProcessSamples: preferredRound.hotUpdatePluginProcessSamples,
     rollbackOutputMs: preferredRound.rollbackOutputMs,
     rollbackEffectiveMs: preferredRound.rollbackEffectiveMs,
+    rollbackPluginProcessMs: preferredRound.rollbackPluginProcessMs,
+    rollbackPluginProcessSamples: preferredRound.rollbackPluginProcessSamples,
     addedClassHmr,
     sameClassLiteralHmr,
     commentCarrierHmr,

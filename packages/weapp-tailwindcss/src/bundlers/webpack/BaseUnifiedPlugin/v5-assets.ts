@@ -10,6 +10,7 @@ import { getRuntimeClassSetSignature } from '@/tailwindcss/runtime/cache'
 import { getGroupedEntries } from '@/utils'
 import { processCachedTask } from '../../shared/cache'
 import { generateCssByGenerator } from '../../shared/generator-css'
+import { emitHmrTiming } from '../../shared/hmr-timing'
 import { resolveOutputSpecifier, toAbsoluteOutputPath } from '../../shared/module-graph'
 import { pushConcurrentTaskFactories } from '../../shared/run-tasks'
 import { buildBundleSnapshot, createBundleBuildState, updateBundleBuildState } from '../../vite/bundle-state'
@@ -95,6 +96,7 @@ export function setupWebpackV5ProcessAssetsHook(options: SetupWebpackV5ProcessAs
         compilerOptions.onStart()
         debug('start')
         await runtimeState.readyPromise
+        const hmrTimingStartedAt = performance.now()
 
         // Initial pass marks cache state.
         for (const chunk of compilation.chunks) {
@@ -415,6 +417,7 @@ export function setupWebpackV5ProcessAssetsHook(options: SetupWebpackV5ProcessAs
 
         await Promise.all(tasks)
         debug('end')
+        emitHmrTiming('webpack', 'processAssets', performance.now() - hmrTimingStartedAt)
         compilerOptions.onEnd()
       },
     )

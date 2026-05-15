@@ -203,7 +203,7 @@ async function main() {
   })
 
   await ready
-  if (!stopping) {
+  if (!stopping && skipNativeWatch) {
     const rebuild = async () => {
       if (stopping) {
         return

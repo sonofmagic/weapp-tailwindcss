@@ -1,7 +1,7 @@
 import type { WatchReport } from './types'
 import { promises as fs } from 'node:fs'
 import path from 'node:path'
-import { DEFAULT_HOT_UPDATE_BUDGET_MS, PREFERRED_HOT_UPDATE_TARGET_MS } from './types'
+import { DEFAULT_HOT_UPDATE_BUDGET_MS, DEFAULT_PLUGIN_PROCESS_BUDGET_MS, PREFERRED_HOT_UPDATE_TARGET_MS } from './types'
 
 export interface HmrSpeedSample {
   caseName: string
@@ -9,6 +9,7 @@ export interface HmrSpeedSample {
   surface: string
   sourceFile: string
   hotUpdateMs: number
+  pluginProcessMs?: number
   rollbackMs?: number
   initialReadyMs?: number
   reportFile: string
@@ -28,8 +29,10 @@ export interface HmrSpeedReport {
   reportCount: number
   sampleCount: number
   maxHotUpdateBudgetMs: number
+  maxPluginProcessBudgetMs: number
   preferredHotUpdateTargetMs: number
   withinBudgetCount: number
+  withinPluginProcessBudgetCount: number
   withinPreferredTargetCount: number
   summary: HmrSpeedSummary
   initialReady: HmrSpeedSummary
@@ -118,6 +121,7 @@ export function collectSpeedSamplesFromReport(report: WatchReport, reportFile: s
       surface: 'case-template-preferred',
       sourceFile: '',
       hotUpdateMs: oneCase.hotUpdateEffectiveMs,
+      pluginProcessMs: toFiniteNumber(oneCase.hotUpdatePluginProcessMs),
       rollbackMs: toFiniteNumber(oneCase.rollbackEffectiveMs),
       initialReadyMs,
       reportFile,
@@ -133,6 +137,7 @@ export function collectSpeedSamplesFromReport(report: WatchReport, reportFile: s
             surface: `${mutation.mutationKind}:${round.roundName}`,
             sourceFile,
             hotUpdateMs: round.hotUpdateEffectiveMs,
+            pluginProcessMs: toFiniteNumber(round.hotUpdatePluginProcessMs),
             rollbackMs: toFiniteNumber(round.rollbackEffectiveMs),
             initialReadyMs,
             reportFile,
@@ -146,6 +151,7 @@ export function collectSpeedSamplesFromReport(report: WatchReport, reportFile: s
           surface: mutation.mutationKind,
           sourceFile,
           hotUpdateMs: mutation.hotUpdateEffectiveMs,
+          pluginProcessMs: toFiniteNumber(mutation.hotUpdatePluginProcessMs),
           rollbackMs: toFiniteNumber(mutation.rollbackEffectiveMs),
           initialReadyMs,
           reportFile,
@@ -159,6 +165,7 @@ export function collectSpeedSamplesFromReport(report: WatchReport, reportFile: s
           surface: `${mutation.mutationKind}:added-class`,
           sourceFile,
           hotUpdateMs: mutation.addedClassHmr.hotUpdateEffectiveMs,
+          pluginProcessMs: toFiniteNumber(mutation.addedClassHmr.hotUpdatePluginProcessMs),
           rollbackMs: toFiniteNumber(mutation.addedClassHmr.rollbackEffectiveMs),
           initialReadyMs,
           reportFile,
@@ -171,6 +178,7 @@ export function collectSpeedSamplesFromReport(report: WatchReport, reportFile: s
           surface: `${mutation.mutationKind}:same-class-literal`,
           sourceFile,
           hotUpdateMs: mutation.sameClassLiteralHmr.hotUpdateEffectiveMs,
+          pluginProcessMs: toFiniteNumber(mutation.sameClassLiteralHmr.hotUpdatePluginProcessMs),
           rollbackMs: toFiniteNumber(mutation.sameClassLiteralHmr.rollbackEffectiveMs),
           initialReadyMs,
           reportFile,
@@ -183,6 +191,7 @@ export function collectSpeedSamplesFromReport(report: WatchReport, reportFile: s
           surface: `${mutation.mutationKind}:comment-carrier`,
           sourceFile,
           hotUpdateMs: mutation.commentCarrierHmr.hotUpdateEffectiveMs,
+          pluginProcessMs: toFiniteNumber(mutation.commentCarrierHmr.hotUpdatePluginProcessMs),
           rollbackMs: toFiniteNumber(mutation.commentCarrierHmr.rollbackEffectiveMs),
           initialReadyMs,
           reportFile,
@@ -204,6 +213,7 @@ export function collectSpeedSamplesFromReport(report: WatchReport, reportFile: s
           surface: `subpackage:${subPackage.root}:${kind}`,
           sourceFile: mutation.sourceFile,
           hotUpdateMs: mutation.hotUpdateEffectiveMs,
+          pluginProcessMs: toFiniteNumber(mutation.hotUpdatePluginProcessMs),
           rollbackMs: toFiniteNumber(mutation.rollbackEffectiveMs),
           initialReadyMs,
           reportFile,
@@ -227,8 +237,10 @@ export function buildSpeedReport(entries: Array<{ file: string, report: WatchRep
     reportCount: entries.length,
     sampleCount: samples.length,
     maxHotUpdateBudgetMs: DEFAULT_HOT_UPDATE_BUDGET_MS,
+    maxPluginProcessBudgetMs: DEFAULT_PLUGIN_PROCESS_BUDGET_MS,
     preferredHotUpdateTargetMs: PREFERRED_HOT_UPDATE_TARGET_MS,
     withinBudgetCount: samples.filter(item => item.hotUpdateMs <= DEFAULT_HOT_UPDATE_BUDGET_MS).length,
+    withinPluginProcessBudgetCount: samples.filter(item => (item.pluginProcessMs ?? 0) <= DEFAULT_PLUGIN_PROCESS_BUDGET_MS).length,
     withinPreferredTargetCount: samples.filter(item => item.hotUpdateMs <= PREFERRED_HOT_UPDATE_TARGET_MS).length,
     summary: summarizeSpeedSamples(samples),
     initialReady: summarizeSpeedSamples(initialReadySamples),
@@ -247,6 +259,7 @@ export function renderSpeedReportMarkdown(report: HmrSpeedReport) {
     `- source reports: ${report.reportCount}`,
     `- samples: ${report.sampleCount}`,
     `- budget: <=${report.maxHotUpdateBudgetMs}ms`,
+    `- plugin process budget: <=${report.maxPluginProcessBudgetMs}ms (${report.withinPluginProcessBudgetCount}/${report.sampleCount} samples)`,
     `- preferred target: <=${report.preferredHotUpdateTargetMs}ms (${report.withinPreferredTargetCount}/${report.sampleCount} samples)`,
     `- within budget: ${report.withinBudgetCount}/${report.sampleCount} samples`,
     `- hot update: avg=${report.summary.avgMs}ms, p50=${report.summary.p50Ms}ms, p95=${report.summary.p95Ms}ms, max=${report.summary.maxMs}ms`,
@@ -266,7 +279,7 @@ export function renderSpeedReportMarkdown(report: HmrSpeedReport) {
   }
   else {
     for (const sample of report.slowest) {
-      lines.push(`- ${sample.hotUpdateMs}ms | ${sample.project} | ${sample.surface} | ${sample.sourceFile || 'n/a'} | ${sample.reportFile}`)
+      lines.push(`- ${sample.hotUpdateMs}ms hot-update, ${sample.pluginProcessMs ?? 0}ms plugin | ${sample.project} | ${sample.surface} | ${sample.sourceFile || 'n/a'} | ${sample.reportFile}`)
     }
   }
 

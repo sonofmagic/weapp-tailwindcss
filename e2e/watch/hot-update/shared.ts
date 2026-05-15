@@ -3,7 +3,7 @@ import process from 'node:process'
 import { execa } from 'execa'
 import path from 'pathe'
 import { expect } from 'vitest'
-import { DEFAULT_HOT_UPDATE_BUDGET_MS } from '../../../tools/weapp-tailwindcss-scripts/src/watch-hmr-regression/types'
+import { DEFAULT_PLUGIN_PROCESS_BUDGET_MS } from '../../../tools/weapp-tailwindcss-scripts/src/watch-hmr-regression/types'
 
 export type WatchProjectGroup = 'demo'
 export type ConcreteWatchCaseName
@@ -905,8 +905,8 @@ function assertHotUpdateReport(report: HotUpdateReport, target: WatchCaseName, m
 export async function runHotUpdateTarget(target: WatchCaseName) {
   const cwd = path.resolve(__dirname, '../..')
   const timeoutMs = toNumberEnv('E2E_WATCH_TIMEOUT_MS', 240000)
-  const pollMs = toNumberEnv('E2E_WATCH_POLL_MS', 240)
-  const maxHotUpdateMs = toNumberEnv('E2E_WATCH_MAX_HOT_UPDATE_MS', DEFAULT_HOT_UPDATE_BUDGET_MS)
+  const pollMs = toNumberEnv('E2E_WATCH_POLL_MS', 40)
+  const maxPluginProcessMs = toNumberEnv('E2E_WATCH_MAX_PLUGIN_PROCESS_MS', DEFAULT_PLUGIN_PROCESS_BUDGET_MS)
   const commandTimeoutMs = toNumberEnv(
     'E2E_WATCH_COMMAND_TIMEOUT_MS',
     Math.max(timeoutMs * 2 + 60_000, 240_000),
@@ -926,8 +926,8 @@ export async function runHotUpdateTarget(target: WatchCaseName) {
     String(timeoutMs),
     '--poll',
     String(pollMs),
-    '--max-hot-update-ms',
-    String(maxHotUpdateMs),
+    '--max-plugin-process-ms',
+    String(maxPluginProcessMs),
     '--report',
     reportFile,
   ]

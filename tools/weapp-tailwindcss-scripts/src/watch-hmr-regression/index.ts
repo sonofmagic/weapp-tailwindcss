@@ -4,7 +4,7 @@ import path from 'node:path'
 import process from 'node:process'
 import { buildCases, pickCases } from './cases'
 import { formatPath, resolveBaseCwd, resolveOptions } from './cli'
-import { assertHotUpdateBudget, logSummary, runCase } from './runner'
+import { assertHotUpdateBudget, assertPluginProcessBudget, logSummary, runCase } from './runner'
 import { ensureLocalPackageBuild, sleep } from './session'
 import {
   summarizeMetrics,
@@ -59,6 +59,7 @@ export async function main() {
     process.stdout.write(`[watch-hmr] start ${watchCase.label} (${watchCase.devScript})\n`)
     const result = await runCase(watchCase, options)
     assertHotUpdateBudget(result, options)
+    assertPluginProcessBudget(result, options)
     metrics.push(result)
   }
 

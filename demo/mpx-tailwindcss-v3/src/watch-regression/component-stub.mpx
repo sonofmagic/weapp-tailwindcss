@@ -1,0 +1,11 @@
+<template>
+  <view>
+    <slot></slot>
+  </view>
+</template>
+
+<script lang="ts">
+import { createComponent } from '@mpxjs/core'
+
+createComponent({})
+</script>

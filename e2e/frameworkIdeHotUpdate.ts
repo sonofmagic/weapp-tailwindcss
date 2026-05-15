@@ -48,7 +48,7 @@ function createWatchOptions(): CliOptions {
   return {
     caseName: 'all',
     maxHotUpdateMs: readNumberEnv('E2E_IDE_MAX_HOT_UPDATE_MS', 60_000),
-    pollMs: readNumberEnv('E2E_IDE_HOT_UPDATE_POLL_MS', readNumberEnv('E2E_WATCH_POLL_MS', 240)),
+    pollMs: readNumberEnv('E2E_IDE_HOT_UPDATE_POLL_MS', readNumberEnv('E2E_WATCH_POLL_MS', 40)),
     quietSass: true,
     skipBuild: true,
     timeoutMs: readNumberEnv('E2E_IDE_HOT_UPDATE_TIMEOUT_MS', readNumberEnv('E2E_WATCH_TIMEOUT_MS', 120_000)),

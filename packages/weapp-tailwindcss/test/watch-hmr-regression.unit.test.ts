@@ -39,6 +39,7 @@ import {
 } from '../../../tools/weapp-tailwindcss-scripts/src/watch-hmr-regression/speed-report'
 import {
   assertHotUpdateBudget,
+  assertPluginProcessBudget,
 } from '../../../tools/weapp-tailwindcss-scripts/src/watch-hmr-regression/runner'
 import {
   createStyleMutationPayload,
@@ -100,6 +101,13 @@ const payload = {
   classVariableName: '__twWatchClass',
 }
 
+const pluginProcessSample = {
+  at: 1,
+  bundler: 'vite',
+  phase: 'generateBundle',
+  durationMs: 25,
+}
+
 function createRound(roundName: MutationRoundMetrics['roundName'], hotUpdateEffectiveMs: number, rollbackEffectiveMs: number): MutationRoundMetrics {
   return {
     roundName,
@@ -109,8 +117,12 @@ function createRound(roundName: MutationRoundMetrics['roundName'], hotUpdateEffe
     escapedClasses: ['text-_b_h123456_B'],
     hotUpdateOutputMs: hotUpdateEffectiveMs + 10,
     hotUpdateEffectiveMs,
+    hotUpdatePluginProcessMs: 25,
+    hotUpdatePluginProcessSamples: [pluginProcessSample],
     rollbackOutputMs: rollbackEffectiveMs + 10,
     rollbackEffectiveMs,
+    rollbackPluginProcessMs: 20,
+    rollbackPluginProcessSamples: [{ ...pluginProcessSample, durationMs: 20 }],
     totalMs: hotUpdateEffectiveMs + rollbackEffectiveMs,
   }
 }
@@ -134,8 +146,12 @@ function createClassMutationMetrics(
     verifiedGlobalStyleEscapedClasses: [],
     hotUpdateOutputMs: 40,
     hotUpdateEffectiveMs: 30,
+    hotUpdatePluginProcessMs: 25,
+    hotUpdatePluginProcessSamples: [pluginProcessSample],
     rollbackOutputMs: 50,
     rollbackEffectiveMs: 35,
+    rollbackPluginProcessMs: 20,
+    rollbackPluginProcessSamples: [{ ...pluginProcessSample, durationMs: 20 }],
   }
 }
 
@@ -157,8 +173,12 @@ function createStyleMutationMetrics(): WatchCaseMutationMetrics {
     forbiddenFunctionFragments: ['theme('],
     hotUpdateOutputMs: 45,
     hotUpdateEffectiveMs: 32,
+    hotUpdatePluginProcessMs: 22,
+    hotUpdatePluginProcessSamples: [{ ...pluginProcessSample, durationMs: 22 }],
     rollbackOutputMs: 55,
     rollbackEffectiveMs: 36,
+    rollbackPluginProcessMs: 18,
+    rollbackPluginProcessSamples: [{ ...pluginProcessSample, durationMs: 18 }],
     rollbackNeedleCleared: true,
   }
 }
@@ -199,8 +219,12 @@ function createCase(
     initialReadyMs: 25,
     hotUpdateOutputMs: hotUpdateEffectiveMs + 10,
     hotUpdateEffectiveMs,
+    hotUpdatePluginProcessMs: complexRound.hotUpdatePluginProcessMs,
+    hotUpdatePluginProcessSamples: complexRound.hotUpdatePluginProcessSamples,
     rollbackOutputMs: rollbackEffectiveMs + 10,
     rollbackEffectiveMs,
+    rollbackPluginProcessMs: complexRound.rollbackPluginProcessMs,
+    rollbackPluginProcessSamples: complexRound.rollbackPluginProcessSamples,
     totalMs: hotUpdateEffectiveMs + rollbackEffectiveMs + 25,
   }
 }
@@ -799,12 +823,15 @@ describe('watch-hmr regression summary helpers', () => {
     expect(speedReport.byProject['demo-weapp-vite-tailwindcss-v3']).toMatchObject({ count: samples.length })
     expect(speedReport.bySurface.style).toMatchObject({ count: 1, avgMs: 32 })
     expect(speedReport.slowest[0]).toMatchObject({ surface: 'style', hotUpdateMs: 32 })
-    expect(speedReport.maxHotUpdateBudgetMs).toBe(2000)
+    expect(speedReport.maxHotUpdateBudgetMs).toBe(1000)
+    expect(speedReport.maxPluginProcessBudgetMs).toBe(500)
     expect(speedReport.preferredHotUpdateTargetMs).toBe(1000)
     expect(speedReport.withinBudgetCount).toBe(samples.length)
+    expect(speedReport.withinPluginProcessBudgetCount).toBe(samples.length)
     expect(speedReport.withinPreferredTargetCount).toBe(samples.length)
     expect(markdown).toContain('# e2e-watch HMR 速度报告')
-    expect(markdown).toContain('- budget: <=2000ms')
+    expect(markdown).toContain('- budget: <=1000ms')
+    expect(markdown).toContain('- plugin process budget: <=500ms')
     expect(markdown).toContain('- preferred target: <=1000ms')
     expect(markdown).toContain('Tailwind v3/v4 官方 Vite/Webpack 插件')
   })
@@ -830,8 +857,12 @@ describe('watch-hmr regression summary helpers', () => {
       minRequiredEscapedClasses: 1,
       hotUpdateOutputMs: 2600,
       hotUpdateEffectiveMs: 2500,
+      hotUpdatePluginProcessMs: 25,
+      hotUpdatePluginProcessSamples: [pluginProcessSample],
       rollbackOutputMs: 35,
       rollbackEffectiveMs: 30,
+      rollbackPluginProcessMs: 20,
+      rollbackPluginProcessSamples: [{ ...pluginProcessSample, durationMs: 20 }],
     }
 
     expect(() => assertHotUpdateBudget(metrics, {
@@ -840,8 +871,28 @@ describe('watch-hmr regression summary helpers', () => {
       pollMs: 20,
       skipBuild: true,
       quietSass: true,
-      maxHotUpdateMs: 2000,
-    })).toThrow('script:added-class hot update exceeded budget: 2500ms > 2000ms')
+      maxHotUpdateMs: 1000,
+    })).toThrow('script:added-class hot update exceeded budget: 2500ms > 1000ms')
+  })
+
+  it('applies weapp-tailwindcss processing budget checks to nested HMR samples', () => {
+    const metrics = createCase('weapp-vite-tailwindcss-v3', 'demo', 30, 40)
+    const scriptMetric = metrics.mutationMetrics.find(
+      mutation => mutation.mutationKind === 'script',
+    )
+    if (!scriptMetric || scriptMetric.mutationKind === 'style') {
+      throw new Error('missing script metric')
+    }
+    scriptMetric.rounds[0].hotUpdatePluginProcessMs = 520
+
+    expect(() => assertPluginProcessBudget(metrics, {
+      caseName: 'demo',
+      timeoutMs: 2000,
+      pollMs: 20,
+      skipBuild: true,
+      quietSass: true,
+      maxPluginProcessMs: 500,
+    })).toThrow('template:complex-corpus:hot-update weapp-tailwindcss processing exceeded budget: 520ms > 500ms')
   })
 })
 
@@ -997,9 +1048,9 @@ describe('watch-hmr regression cases', () => {
     )
     expect(mpxV4Case?.devScript).toBe('dev:e2e-watch')
     expect(mpxV4Case?.env).toMatchObject({
-      CHOKIDAR_INTERVAL: '100',
+      CHOKIDAR_INTERVAL: '50',
       CHOKIDAR_USEPOLLING: '1',
-      WATCHPACK_POLLING: 'true',
+      WATCHPACK_POLLING: '50',
     })
     expect(mpxV4Case?.initialMutationDelayMs).toBe(15_000)
     expect(mpxV4Case?.styleMutation.sourceFile).toBe(
@@ -1166,6 +1217,11 @@ describe('watch-hmr regression cases', () => {
     expect(mpxCase?.globalStyleCandidates).toContain(
       path.resolve('/repo', 'demo/mpx-tailwindcss-v3/dist/wx/styles/utilities*.wxss'),
     )
+    expect(mpxCase?.env).toMatchObject({
+      CHOKIDAR_INTERVAL: '50',
+      CHOKIDAR_USEPOLLING: '1',
+      WATCHPACK_POLLING: '50',
+    })
   })
 
   it('uses page style mutation for mpx v4 without unsupported @apply or theme checks', () => {
@@ -1315,7 +1371,7 @@ describe('watch-hmr regression cases', () => {
     }
   })
 
-  it('keeps watch hot-update budget strict while retry settings stay explicit', async () => {
+  it('keeps watch plugin processing budget strict while retry settings stay explicit', async () => {
     const workflowSource = await readFile(
       path.resolve(__dirname, '../../../.github/workflows/e2e-watch.yml'),
       'utf8',
@@ -1334,7 +1390,7 @@ describe('watch-hmr regression cases', () => {
     expect(runSteps.length).toBe(2)
     for (const step of runSteps) {
       const env = step.env as Record<string, string> | undefined
-      expect(env?.E2E_WATCH_MAX_HOT_UPDATE_MS).toBe("${{ matrix.watch_max_hot_update_ms || '2000' }}")
+      expect(env?.E2E_WATCH_MAX_PLUGIN_PROCESS_MS).toBe("${{ matrix.watch_max_plugin_process_ms || '500' }}")
       expect(env?.E2E_WATCH_MAX_ATTEMPTS).toBe("${{ matrix.watch_max_attempts || '2' }}")
       expect(env?.NODE_OPTIONS).toBe('--max-old-space-size=6144')
     }

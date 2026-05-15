@@ -2,6 +2,7 @@ import type { CliOptions } from './types'
 import { existsSync } from 'node:fs'
 import path from 'node:path'
 import process from 'node:process'
+import { DEFAULT_PLUGIN_PROCESS_BUDGET_MS } from './types'
 
 function parseArg(flag: string, argv: string[]) {
   const index = argv.indexOf(flag)
@@ -36,11 +37,14 @@ export function resolveOptions(): CliOptions {
   return {
     caseName: (parseArg('--case', argv) ?? 'all') as CliOptions['caseName'],
     timeoutMs: parseNumber(parseArg('--timeout', argv), 240000),
-    pollMs: parseNumber(parseArg('--poll', argv), 240),
+    pollMs: parseNumber(parseArg('--poll', argv), 40),
     skipBuild: parseBooleanFlag('--skip-build', argv),
     quietSass: parseBooleanFlag('--quiet-sass', argv),
     reportFile: parseArg('--report', argv),
     maxHotUpdateMs: parseOptionalNumber(parseArg('--max-hot-update-ms', argv)),
+    maxPluginProcessMs: parseOptionalNumber(parseArg('--max-plugin-process-ms', argv))
+      ?? parseOptionalNumber(process.env.E2E_WATCH_MAX_PLUGIN_PROCESS_MS)
+      ?? DEFAULT_PLUGIN_PROCESS_BUDGET_MS,
   }
 }
 

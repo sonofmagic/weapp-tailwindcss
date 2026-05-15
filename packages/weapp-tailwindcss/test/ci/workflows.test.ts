@@ -238,7 +238,7 @@ describe('e2e watch workflow', () => {
     expect(stepRuns(workflow, 'nightly-full-regression')).toContain('pnpm e2e:watch')
   })
 
-  it('keeps strict hot-update budgets for e2e watch rows while allowing longer startup timeouts', () => {
+  it('keeps strict plugin processing budgets for e2e watch rows while allowing longer startup timeouts', () => {
     const { workflow } = readWorkflow('e2e-watch.yml')
     const prRows: Array<Record<string, unknown>> = workflow.jobs['pr-quick-gate'].strategy.matrix.include
     const nightlyRows: Array<Record<string, unknown>> = workflow.jobs['nightly-full-regression'].strategy.matrix.include
@@ -250,7 +250,7 @@ describe('e2e watch workflow', () => {
       round_profile: 'issue33',
       timeout_minutes: 60,
       watch_timeout_ms: '600000',
-      watch_max_hot_update_ms: '2000',
+      watch_max_plugin_process_ms: '500',
       watch_command_timeout_ms: '1500000',
     }
     const slowWindowsPrBudgets = [
@@ -319,7 +319,7 @@ describe('e2e watch workflow', () => {
         runner_label: 'macos',
         timeout_minutes: 40,
         watch_timeout_ms: '280000',
-        watch_max_hot_update_ms: '2000',
+        watch_max_plugin_process_ms: '500',
         watch_command_timeout_ms: '720000',
       },
       {
@@ -327,7 +327,7 @@ describe('e2e watch workflow', () => {
         runner_label: 'windows',
         timeout_minutes: 45,
         watch_timeout_ms: '320000',
-        watch_max_hot_update_ms: '2000',
+        watch_max_plugin_process_ms: '500',
         watch_command_timeout_ms: '840000',
       },
     ]
@@ -366,7 +366,7 @@ describe('e2e watch workflow', () => {
       round_profile: 'default',
       timeout_minutes: 120,
       watch_timeout_ms: '420000',
-      watch_max_hot_update_ms: '2000',
+      watch_max_plugin_process_ms: '500',
       watch_command_timeout_ms: '5400000',
     }))
     expect(nightlyRows).toContainEqual(expect.objectContaining({
@@ -394,12 +394,12 @@ describe('e2e watch workflow', () => {
       round_profile: 'default',
       timeout_minutes: 180,
       watch_timeout_ms: '1200000',
-      watch_max_hot_update_ms: '2000',
+      watch_max_plugin_process_ms: '500',
       watch_command_timeout_ms: '9000000',
     }))
   })
 
-  it('keeps the default e2e watch hot-update budget at two seconds', () => {
+  it('keeps the default e2e watch plugin processing budget at 500ms', () => {
     const { workflow } = readWorkflow('e2e-watch.yml')
 
     const prRunStep = workflow.jobs['pr-quick-gate'].steps.find((step: Record<string, unknown>) => {
@@ -409,13 +409,13 @@ describe('e2e watch workflow', () => {
       return step.name === 'Run e2e watch suite (nightly/full)'
     })
 
-    expect(prRunStep.env.E2E_WATCH_MAX_HOT_UPDATE_MS).toBe("${{ matrix.watch_max_hot_update_ms || '2000' }}")
-    expect(nightlyRunStep.env.E2E_WATCH_MAX_HOT_UPDATE_MS).toBe("${{ matrix.watch_max_hot_update_ms || '2000' }}")
+    expect(prRunStep.env.E2E_WATCH_MAX_PLUGIN_PROCESS_MS).toBe("${{ matrix.watch_max_plugin_process_ms || '500' }}")
+    expect(nightlyRunStep.env.E2E_WATCH_MAX_PLUGIN_PROCESS_MS).toBe("${{ matrix.watch_max_plugin_process_ms || '500' }}")
     expect(prRunStep.env.E2E_WATCH_MAX_ATTEMPTS).toBe("${{ matrix.watch_max_attempts || '2' }}")
     expect(nightlyRunStep.env.E2E_WATCH_MAX_ATTEMPTS).toBe("${{ matrix.watch_max_attempts || '2' }}")
   })
 
-  it('does not widen any e2e watch hot-update matrix budget beyond two seconds', () => {
+  it('does not widen any e2e watch plugin processing matrix budget beyond 500ms', () => {
     const { workflow } = readWorkflow('e2e-watch.yml')
     const rows: Array<Record<string, unknown>> = [
       ...workflow.jobs['pr-quick-gate'].strategy.matrix.include,
@@ -423,11 +423,11 @@ describe('e2e watch workflow', () => {
     ]
 
     for (const row of rows) {
-      const budget = row.watch_max_hot_update_ms
+      const budget = row.watch_max_plugin_process_ms
       if (budget == null) {
         continue
       }
-      expect(Number(budget), `${row.runner_label}:${row.watch_case}:${row.round_profile}`).toBeLessThanOrEqual(2000)
+      expect(Number(budget), `${row.runner_label}:${row.watch_case}:${row.round_profile}`).toBeLessThanOrEqual(500)
     }
   })
 

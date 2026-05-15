@@ -2,6 +2,9 @@ const { defineConfig } = require('@vue/cli-service')
 const { UnifiedWebpackPluginV5 } = require('weapp-tailwindcss/webpack')
 const bench = require('../bench.cjs')('mpx')
 const autoprefixer = require('autoprefixer')
+const path = require('node:path')
+
+const isWatchRegression = process.env.WEAPP_TW_WATCH_REGRESSION === '1'
 
 module.exports = defineConfig({
   pluginOptions: {
@@ -32,6 +35,13 @@ module.exports = defineConfig({
    */
   configureWebpack(config) {
     let start
+    if (isWatchRegression) {
+      config.resolve ??= {}
+      config.resolve.alias ??= {}
+      const componentStub = path.resolve(__dirname, 'src/watch-regression/component-stub.mpx')
+      config.resolve.alias['tdesign-miniprogram/button/button'] = componentStub
+      config.resolve.alias['@vant/weapp/button/index'] = componentStub
+    }
     config.plugins.push(new UnifiedWebpackPluginV5({
       onStart() {
         // start = performance.now()
@@ -46,4 +56,9 @@ module.exports = defineConfig({
       appType: 'mpx'
     }))
   },
+  chainWebpack(config) {
+    if (isWatchRegression) {
+      config.plugins.delete('fork-ts-checker')
+    }
+  }
 })

@@ -197,6 +197,14 @@ export async function waitForCompileSettled(
   )
 }
 
+export function collectPluginProcessMetrics(session: WatchSession, startedAt: number) {
+  const samples = session.pluginProcessSamplesSince(startedAt)
+  return {
+    samples,
+    totalMs: Math.max(0, ...samples.map(sample => sample.durationMs)),
+  }
+}
+
 export async function waitForOutputsUpdated(
   watchCase: WatchCase,
   baseline: OutputMtime,

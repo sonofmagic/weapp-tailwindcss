@@ -11,6 +11,7 @@ import { filterUnsupportedMiniProgramTailwindV4Candidates } from '@/tailwindcss/
 import { createUniAppXAssetTask } from '@/uni-app-x'
 import { processCachedTask } from '../shared/cache'
 import { generateCssByGenerator, validateCandidatesByGenerator } from '../shared/generator-css'
+import { emitHmrTiming } from '../shared/hmr-timing'
 import { pushConcurrentTaskFactories } from '../shared/run-tasks'
 import { createBundleModuleGraphOptions } from './bundle-entries'
 import { buildBundleSnapshot, createBundleBuildState, updateBundleBuildState } from './bundle-state'
@@ -98,6 +99,7 @@ export function createGenerateBundleHook(context: GenerateBundleContext) {
     await runtimeState.readyPromise
     debug('start')
     onStart()
+    const hmrTimingStartedAt = performance.now()
 
     const metrics = createEmptyMetrics()
     const forceRuntimeRefreshByEnv = process.env['WEAPP_TW_VITE_FORCE_RUNTIME_REFRESH'] === '1'
@@ -581,6 +583,7 @@ export function createGenerateBundleHook(context: GenerateBundleContext) {
       formatMs(metrics.css.elapsed),
     )
 
+    emitHmrTiming('vite', 'generateBundle', performance.now() - hmrTimingStartedAt)
     onEnd()
     debug('end')
   }

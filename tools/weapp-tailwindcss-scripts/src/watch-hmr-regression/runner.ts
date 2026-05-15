@@ -29,6 +29,11 @@ interface HotUpdateBudgetSample {
   hotUpdateEffectiveMs: number
 }
 
+interface PluginProcessBudgetSample {
+  label: string
+  pluginProcessMs: number
+}
+
 function resolveCaseSourceFiles(watchCase: WatchCase) {
   return [...new Set([
     watchCase.contentMutation?.sourceFile,
@@ -191,8 +196,12 @@ export async function runCase(watchCase: WatchCase, options: CliOptions): Promis
       initialReadyMs,
       hotUpdateOutputMs: preferredRound.hotUpdateOutputMs,
       hotUpdateEffectiveMs: preferredRound.hotUpdateEffectiveMs,
+      hotUpdatePluginProcessMs: preferredRound.hotUpdatePluginProcessMs,
+      hotUpdatePluginProcessSamples: preferredRound.hotUpdatePluginProcessSamples,
       rollbackOutputMs: preferredRound.rollbackOutputMs,
       rollbackEffectiveMs: preferredRound.rollbackEffectiveMs,
+      rollbackPluginProcessMs: preferredRound.rollbackPluginProcessMs,
+      rollbackPluginProcessSamples: preferredRound.rollbackPluginProcessSamples,
       totalMs: Date.now() - caseStartedAt,
     }
 
@@ -233,6 +242,25 @@ export function assertHotUpdateBudget(metrics: WatchCaseMetrics, options: CliOpt
   }
 }
 
+export function assertPluginProcessBudget(metrics: WatchCaseMetrics, options: CliOptions) {
+  if (options.maxPluginProcessMs == null) {
+    return
+  }
+
+  const samples = collectPluginProcessBudgetSamples(metrics)
+  if (samples.length === 0) {
+    throw new Error(`[${metrics.label}] no weapp-tailwindcss processing samples were collected`)
+  }
+
+  for (const sample of samples) {
+    if (sample.pluginProcessMs > options.maxPluginProcessMs) {
+      throw new Error(
+        `[${metrics.label}] ${sample.label} weapp-tailwindcss processing exceeded budget: ${sample.pluginProcessMs}ms > ${options.maxPluginProcessMs}ms`,
+      )
+    }
+  }
+}
+
 function collectClassMutationBudgetSamples(
   mutation: ClassMutationMetrics,
 ): HotUpdateBudgetSample[] {
@@ -258,6 +286,109 @@ function collectClassMutationBudgetSamples(
       label: `${mutation.mutationKind}:comment-carrier`,
       hotUpdateEffectiveMs: mutation.commentCarrierHmr.hotUpdateEffectiveMs,
     })
+  }
+
+  return samples
+}
+
+function collectClassMutationPluginProcessBudgetSamples(
+  mutation: ClassMutationMetrics,
+): PluginProcessBudgetSample[] {
+  const samples: PluginProcessBudgetSample[] = mutation.rounds.flatMap(round => [
+    {
+      label: `${mutation.mutationKind}:${round.roundName}:hot-update`,
+      pluginProcessMs: round.hotUpdatePluginProcessMs,
+    },
+    {
+      label: `${mutation.mutationKind}:${round.roundName}:rollback`,
+      pluginProcessMs: round.rollbackPluginProcessMs,
+    },
+  ])
+
+  if (mutation.addedClassHmr) {
+    samples.push(
+      {
+        label: `${mutation.mutationKind}:added-class:hot-update`,
+        pluginProcessMs: mutation.addedClassHmr.hotUpdatePluginProcessMs,
+      },
+      {
+        label: `${mutation.mutationKind}:added-class:rollback`,
+        pluginProcessMs: mutation.addedClassHmr.rollbackPluginProcessMs,
+      },
+    )
+  }
+  if (mutation.sameClassLiteralHmr) {
+    samples.push(
+      {
+        label: `${mutation.mutationKind}:same-class-literal:hot-update`,
+        pluginProcessMs: mutation.sameClassLiteralHmr.hotUpdatePluginProcessMs,
+      },
+      {
+        label: `${mutation.mutationKind}:same-class-literal:rollback`,
+        pluginProcessMs: mutation.sameClassLiteralHmr.rollbackPluginProcessMs,
+      },
+    )
+  }
+  if (mutation.commentCarrierHmr) {
+    samples.push(
+      {
+        label: `${mutation.mutationKind}:comment-carrier:hot-update`,
+        pluginProcessMs: mutation.commentCarrierHmr.hotUpdatePluginProcessMs,
+      },
+      {
+        label: `${mutation.mutationKind}:comment-carrier:rollback`,
+        pluginProcessMs: mutation.commentCarrierHmr.rollbackPluginProcessMs,
+      },
+    )
+  }
+
+  return samples
+}
+
+function collectStyleMutationPluginProcessBudgetSamples(
+  mutation: StyleMutationMetrics,
+): PluginProcessBudgetSample[] {
+  return [
+    {
+      label: `${mutation.mutationKind}:hot-update`,
+      pluginProcessMs: mutation.hotUpdatePluginProcessMs,
+    },
+    {
+      label: `${mutation.mutationKind}:rollback`,
+      pluginProcessMs: mutation.rollbackPluginProcessMs,
+    },
+  ]
+}
+
+function collectPluginProcessBudgetSamples(metrics: WatchCaseMetrics): PluginProcessBudgetSample[] {
+  const samples: PluginProcessBudgetSample[] = [{
+    label: 'case-template-preferred:hot-update',
+    pluginProcessMs: metrics.hotUpdatePluginProcessMs,
+  }]
+
+  for (const mutation of metrics.mutationMetrics) {
+    if (mutation.mutationKind === 'style') {
+      samples.push(...collectStyleMutationPluginProcessBudgetSamples(mutation))
+      continue
+    }
+    samples.push(...collectClassMutationPluginProcessBudgetSamples(mutation))
+  }
+
+  for (const subPackage of metrics.subPackageMutationMetrics) {
+    samples.push(
+      ...collectClassMutationPluginProcessBudgetSamples(subPackage.template).map(sample => ({
+        ...sample,
+        label: `subpackage:${subPackage.root}:${sample.label}`,
+      })),
+    )
+    if (subPackage.style) {
+      samples.push(
+        ...collectStyleMutationPluginProcessBudgetSamples(subPackage.style).map(sample => ({
+          ...sample,
+          label: `subpackage:${subPackage.root}:${sample.label}`,
+        })),
+      )
+    }
   }
 
   return samples

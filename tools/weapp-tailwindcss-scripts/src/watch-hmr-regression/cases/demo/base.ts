@@ -18,8 +18,14 @@ import { buildHexScriptRoundConfigs, buildIssue33HighRiskRoundConfigs, buildTail
 const taroWatchEnv = {
   TARO_BUILD_STRICT: '1',
   CHOKIDAR_USEPOLLING: '1',
-  CHOKIDAR_INTERVAL: '100',
-  WATCHPACK_POLLING: 'true',
+  CHOKIDAR_INTERVAL: '50',
+  WATCHPACK_POLLING: '50',
+}
+
+const mpxWatchEnv = {
+  CHOKIDAR_USEPOLLING: '1',
+  CHOKIDAR_INTERVAL: '50',
+  WATCHPACK_POLLING: '50',
 }
 
 function normalizeExtension(version: 'v3' | 'v4') {
@@ -191,6 +197,7 @@ export function buildDemoBaseCases(baseCwd: string): WatchCase[] {
     initialMutationDelayMs: 5_000,
     cwd: path.resolve(baseCwd, 'demo/mpx-tailwindcss-v3'),
     devScript: 'dev',
+    env: mpxWatchEnv,
     outputWxml: path.resolve(baseCwd, 'demo/mpx-tailwindcss-v3/dist/wx/pages/index.wxml'),
     outputJs: path.resolve(baseCwd, 'demo/mpx-tailwindcss-v3/dist/wx/pages/index.js'),
     outputStyleCandidates: [

@@ -4,6 +4,8 @@ import devConfig from './dev'
 import prodConfig from './prod'
 import { UnifiedWebpackPluginV5, UserDefinedOptions } from 'weapp-tailwindcss/webpack'
 
+const isWatchRegression = process.env.WEAPP_TW_WATCH_REGRESSION === '1'
+
 const generator = {
   styleOptions: {
     px2rpx: true,
@@ -72,6 +74,15 @@ export default defineConfig<'webpack5'>(async (merge, { command, mode }) => {
       },
       webpackChain(chain) {
         chain.resolve.plugin('tsconfig-paths').use(TsconfigPathsPlugin)
+        if (isWatchRegression) {
+          const nutuiStub = require.resolve('../src/watch-regression/nutui-stub.tsx')
+          const nutuiStyleStub = require.resolve('../src/watch-regression/nutui-style-stub.css')
+          chain.resolve.alias
+            .set('@nutui/nutui-react-taro$', nutuiStub)
+            .set('@nutui/icons-react-taro$', nutuiStub)
+            .set('@nutui/nutui-react-taro/dist/styles/themes/default.css$', nutuiStyleStub)
+            .set('@nutui/nutui-react-taro/dist/style.css$', nutuiStyleStub)
+        }
         chain.merge({
           plugin: {
             install: {
