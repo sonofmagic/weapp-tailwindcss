@@ -42,6 +42,22 @@
 - Gulp 场景中插件处理时间稳定，主要可继续优化的是重复处理未变更文件。
 - Webpack / Taro / MPX 场景需要区分插件耗时、loader/compilation 耗时和框架二次构建耗时，避免误判插件性能。
 
+## uni-app Vite v3 复测进展
+
+本轮继续定位 `uni-app-vite-tailwindcss-v3`：
+
+- e2e watch 输出目录已从 `dist/build/mp-weixin` 调整为 `dist/dev/mp-weixin`，默认不再把反复执行的冷 `build:mp-weixin` 混入 HMR 样本。
+- Vite v3 watch 中，非主 CSS 且不含 Tailwind 根指令的产物不再因为全局 candidate 变化打穿缓存。
+- Tailwind v3 generator 按 CSS source 签名复用 engine，减少同一 watch 进程内重复 runtime patch / require cache 清理。
+
+当前结果：
+
+| 项目 | 当前最好区间 | 仍未达标样本 | 判断 |
+| --- | --- | --- | --- |
+| `uni-app-vite-tailwindcss-v3` | 删除/纯 JS 缓存轮次约 `120-170ms`，部分后续 script 轮次约 `176ms` | 模板/脚本新增 arbitrary class 时仍约 `590-700ms` | 仍有 7-8 个 wxss 在同轮被 uni dev 输出为脏文件，插件还需要继续减少非主 CSS 的 Tailwind v3 生成/回放 |
+
+因此，本报告当前结论是：插件预算框架已落地，多个 demo 已能拆分插件耗时；`uni-app-vite-tailwindcss-v3` 已去掉冷构建污染并有阶段性下降，但还没有稳定满足 `<= 500ms`，下一轮应集中在“非主 wxss 的局部 `@apply`/已生成 CSS 与全局 candidates 解耦”。
+
 ## 后续优化路线
 
 1. 全量跑 16 个 demo 的插件预算报告，按项目输出插件 max/p95 与端到端 max/p95。

@@ -7,6 +7,7 @@ const READY_RE = /Build complete|Watching for changes|ready in \d+/i
 const pnpmExecPath = process.env.npm_execpath
 const sourceDirs = ['src']
 const ignoredDirs = new Set(['dist', 'node_modules', '.git'])
+const useBuildOutput = process.env.UNI_E2E_WATCH_BUILD_OUTPUT === '1'
 
 function createPnpmCommand(args) {
   if (pnpmExecPath) {
@@ -169,7 +170,7 @@ async function main() {
   })
 
   await ready
-  if (!stopping) {
+  if (!stopping && useBuildOutput) {
     const rebuild = async () => {
       if (stopping) {
         return

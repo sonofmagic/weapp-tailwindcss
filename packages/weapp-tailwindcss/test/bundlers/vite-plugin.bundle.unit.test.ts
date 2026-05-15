@@ -649,6 +649,95 @@ const trace = "at App.vue:4"
     expect(extractMock).toHaveBeenCalledTimes(1)
   }, TEST_TIMEOUT_MS)
 
+  it('keeps v3 incremental non-main generated css cache stable on candidate changes', async () => {
+    const WeappTailwindcss = await loadUnifiedVitePlugin()
+    const htmlFile = 'pages/index/index.wxml'
+    const jsFile = 'pages/index/index.js'
+    const appCssFile = 'app.wxss'
+    const pageCssFile = 'pages/index/index.wxss'
+    const firstClass = 'bg-blue-500'
+    const secondClass = 'bg-[#123455]'
+    const generatedPageCss = [
+      '/*! tailwindcss v3.4.19 | MIT License | https://tailwindcss.com */',
+      '.page-local { color: red; }',
+    ].join('\n')
+    const styleHandler = vi.fn(async (code: string) => ({
+      css: `css:${code}`,
+    }))
+
+    setCurrentContext(createContext({
+      cssMatcher: (file: string) => file.endsWith('.wxss'),
+      mainCssChunkMatcher: vi.fn((file: string) => file === appCssFile),
+      styleHandler,
+      twPatcher: {
+        patch: vi.fn(),
+        getClassSet: vi.fn(async () => new Set([firstClass])),
+        getClassSetSync: vi.fn(() => new Set([firstClass])),
+        extract: vi.fn(async () => ({ classSet: new Set([firstClass]) })),
+        majorVersion: 3,
+      },
+    }))
+
+    const plugins = WeappTailwindcss()
+    const postPlugin = plugins?.find(plugin => plugin.name === 'weapp-tailwindcss:adaptor:post') as Plugin
+    expect(postPlugin).toBeTruthy()
+
+    await (postPlugin.configResolved as any)?.call(postPlugin, {
+      command: 'serve',
+      root: process.cwd(),
+      css: { postcss: { plugins: [] } },
+      build: { outDir: 'dist' },
+    } as ResolvedConfig)
+
+    const generateBundle = getGenerateBundleHandler(postPlugin)
+    const firstBundle = {
+      [htmlFile]: {
+        ...createRollupAsset(`<view class="${firstClass}"></view>`),
+        fileName: htmlFile,
+      },
+      [jsFile]: {
+        ...createRollupChunk(`const cls = "${firstClass}"`),
+        fileName: jsFile,
+      },
+      [appCssFile]: {
+        ...createRollupAsset('@tailwind utilities;'),
+        fileName: appCssFile,
+      },
+      [pageCssFile]: {
+        ...createRollupAsset(generatedPageCss),
+        fileName: pageCssFile,
+      },
+    } as Record<string, OutputAsset | OutputChunk>
+    await generateBundle?.call(postPlugin, {} as any, firstBundle)
+
+    expect((firstBundle[pageCssFile] as OutputAsset).source.toString()).toBe(`css:${generatedPageCss}`)
+    expect(styleHandler).toHaveBeenCalledTimes(1)
+
+    const secondBundle = {
+      [htmlFile]: {
+        ...createRollupAsset(`<view class="${secondClass}"></view>`),
+        fileName: htmlFile,
+      },
+      [jsFile]: {
+        ...createRollupChunk(`const cls = "${secondClass}"`),
+        fileName: jsFile,
+      },
+      [appCssFile]: {
+        ...createRollupAsset('@tailwind utilities;'),
+        fileName: appCssFile,
+      },
+      [pageCssFile]: {
+        ...createRollupAsset(generatedPageCss),
+        fileName: pageCssFile,
+      },
+    } as Record<string, OutputAsset | OutputChunk>
+    await generateBundle?.call(postPlugin, {} as any, secondBundle)
+
+    expect((secondBundle[pageCssFile] as OutputAsset).source.toString()).toBe(`css:${generatedPageCss}`)
+    expect((secondBundle[appCssFile] as OutputAsset).source.toString()).toContain(`.${replaceWxml(secondClass)}`)
+    expect(styleHandler).toHaveBeenCalledTimes(1)
+  }, TEST_TIMEOUT_MS)
+
   it('warns and falls back to full runtime set when bundle runtime set misses dynamic arbitrary candidates in wxml', async () => {
     const fallbackRuntimeSet = new Set([
       'bg-[#68c828]',

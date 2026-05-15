@@ -2,11 +2,11 @@ import type { IStyleHandlerOptions } from '@weapp-tailwindcss/postcss/types'
 import type { InternalUserDefinedOptions } from '@/types'
 import postcss from 'postcss'
 import {
-  createWeappTailwindcssGenerator,
   normalizeWeappTailwindcssGeneratorOptions,
 } from '@/generator'
 import { resolveUniAppXOptions } from '@/uni-app-x/options'
 import { finalizeMiniProgramCss, removeUnsupportedMiniProgramAtRules } from './css-cleanup'
+import { getCachedWeappTailwindcssGenerator } from './generator-css/cache'
 import {
   hasTailwindSourceDirectives,
   parseImportRequest,
@@ -26,6 +26,8 @@ import {
 } from './generator-css/source-resolver'
 
 export {
+  hasTailwindApplyDirective,
+  hasTailwindRootDirectives,
   hasTailwindSourceDirectives,
   removeTailwindSourceDirectives,
   resolveCssEntrySource,
@@ -261,7 +263,7 @@ export async function generateCssByGenerator(
     const generatorStyleOptions = resolveGeneratorStyleOptions(opts, cssHandlerOptions, generatorOptions.styleOptions)
     const configuredContainerCompat = hasConfiguredContainerCompatSources(sources)
     const generatedResults = await Promise.all(sources.map(async (source) => {
-      const generator = createWeappTailwindcssGenerator(source)
+      const generator = getCachedWeappTailwindcssGenerator(source)
       return generator.generate({
         candidates: runtime,
         scanSources: majorVersion === 4,
@@ -425,7 +427,7 @@ export async function validateCandidatesByGenerator(
     generatorOptions,
   )
   const classSets = await Promise.all(sources.map(async (source) => {
-    const generator = createWeappTailwindcssGenerator(source)
+    const generator = getCachedWeappTailwindcssGenerator(source)
     if (typeof generator.validateCandidates === 'function') {
       return generator.validateCandidates(candidates)
     }

@@ -10,7 +10,7 @@ import { getRuntimeClassSetSignature } from '@/tailwindcss/runtime/cache'
 import { filterUnsupportedMiniProgramTailwindV4Candidates } from '@/tailwindcss/v4-engine/candidates'
 import { createUniAppXAssetTask } from '@/uni-app-x'
 import { processCachedTask } from '../shared/cache'
-import { generateCssByGenerator, validateCandidatesByGenerator } from '../shared/generator-css'
+import { generateCssByGenerator, hasTailwindRootDirectives, hasTailwindSourceDirectives, validateCandidatesByGenerator } from '../shared/generator-css'
 import { emitHmrTiming } from '../shared/hmr-timing'
 import { pushConcurrentTaskFactories } from '../shared/run-tasks'
 import { createBundleModuleGraphOptions } from './bundle-entries'
@@ -274,16 +274,32 @@ export function createGenerateBundleHook(context: GenerateBundleContext) {
         // 否则会退回未转译内容并与同轮 JS/WXML 的 class 改写失配。
         const rawSource = originalEntrySource
         const cssRuntimeAffectingSignature = snapshot.runtimeAffectingSignatureByFile.get(file) ?? rawSource
-        const cssShareScope = createCssTransformShareScopeKey(opts, file, rawSource)
         const cssHandlerOptions = getCssHandlerOptions(file)
-        const cssRuntimeSignature = createCssRuntimeSignature(runtimeSignature, generatorCandidateSignature)
+        const majorVersion = runtimeState.twPatcher.majorVersion
+        const hasTailwindGenerationDirectives = hasTailwindSourceDirectives(rawSource)
+        const hasTailwindRootGenerationDirectives = hasTailwindRootDirectives(rawSource)
+        const shouldUseGeneratorForCss = !(
+          majorVersion === 3
+          && !cssHandlerOptions.isMainChunk
+          && !hasTailwindGenerationDirectives
+        )
+        const cssDependsOnGeneratorCandidates = shouldUseGeneratorForCss && !(
+          majorVersion === 3
+          && !cssHandlerOptions.isMainChunk
+          && !hasTailwindRootGenerationDirectives
+        )
+        const cssGeneratorCandidateSignature = cssDependsOnGeneratorCandidates
+          ? generatorCandidateSignature
+          : 'generator:stable'
+        const cssShareScope = createCssTransformShareScopeKey(opts, file, rawSource)
+        const cssRuntimeSignature = createCssRuntimeSignature(runtimeSignature, cssGeneratorCandidateSignature)
         const cssSharedCacheKey = `${cssShareScope}:${cssRuntimeSignature}:${runtimeState.twPatcher.majorVersion ?? 'unknown'}:${cssHandlerOptions.isMainChunk ? '1' : '0'}:${cssRuntimeAffectingSignature}`
         tasks.push(
           processCachedTask<string>({
             cache,
             cacheKey: file,
             hashKey: `${file}:css:${cssRuntimeSignature}:${runtimeState.twPatcher.majorVersion ?? 'unknown'}`,
-            hash: `${getSnapshotHash(snapshot.runtimeAffectingHashByFile, file, cssRuntimeAffectingSignature)}:${generatorCandidateSignature}`,
+            hash: `${getSnapshotHash(snapshot.runtimeAffectingHashByFile, file, cssRuntimeAffectingSignature)}:${cssGeneratorCandidateSignature}`,
             applyResult(source) {
               originalSource.source = source
               markCssAssetProcessed?.(originalSource, file)
@@ -311,17 +327,22 @@ export function createGenerateBundleHook(context: GenerateBundleContext) {
               const runTransform = async () => {
                 const start = performance.now()
                 await runtimeState.readyPromise
-                const generated = await generateCssByGenerator({
-                  opts,
-                  runtimeState,
-                  runtime: generatorRuntime,
-                  rawSource,
-                  file,
-                  cssHandlerOptions,
-                  cssUserHandlerOptions: getCssUserHandlerOptions(file),
-                  styleHandler,
-                  debug,
-                })
+                const cssGeneratorRuntime = cssDependsOnGeneratorCandidates
+                  ? generatorRuntime
+                  : new Set<string>()
+                const generated = shouldUseGeneratorForCss
+                  ? await generateCssByGenerator({
+                      opts,
+                      runtimeState,
+                      runtime: cssGeneratorRuntime,
+                      rawSource,
+                      file,
+                      cssHandlerOptions,
+                      cssUserHandlerOptions: getCssUserHandlerOptions(file),
+                      styleHandler,
+                      debug,
+                    })
+                  : undefined
                 if (generated) {
                   registerGeneratorDependencies({ addWatchFile }, generated.dependencies)
                   if (debugCssDiff) {
