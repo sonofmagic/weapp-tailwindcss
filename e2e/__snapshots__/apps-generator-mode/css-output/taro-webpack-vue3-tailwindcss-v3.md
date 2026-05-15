@@ -2,11 +2,11 @@
 
 Fixture: demo
 Entry: taro-webpack-vue3-tailwindcss-v3/dist/app.wxss
-Generator CSS files: app.wxss, index.wxss, index.wxss
+Generator CSS files: app.wxss, index.wxss, index.wxss, index.wxss
 
 | Bytes | Selectors | @supports | :hover | Tailwind banner | Raw arbitrary selector | Weapp escaped arbitrary selector |
 | ---: | ---: | --- | --- | --- | --- | --- |
-| 6061 | 50 | false | false | false | false | true |
+| 6862 | 62 | false | false | false | false | true |
 
 ## Generator CSS
 
@@ -79,17 +79,26 @@ text,
 .relative {
   position: relative;
 }
+.flex {
+  display: flex;
+}
 .grid {
   display: grid;
 }
 .h-12 {
   height: 96rpx;
 }
+.h-_b100px_B {
+  height: 100rpx;
+}
 .max-h-_b100px_B {
   max-height: 100rpx;
 }
 .w-12 {
   width: 96rpx;
+}
+.w-_b100px_B {
+  width: 100rpx;
 }
 .w-_b200_v_B {
   width: 200%;
@@ -110,6 +119,12 @@ text,
 }
 .grid-cols-3 {
   grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+.items-center {
+  align-items: center;
+}
+.justify-center {
+  justify-content: center;
 }
 .space-y-_b1_d6rem_B > view + view,
 .space-y-_b1_d6rem_B > view + text,
@@ -143,12 +158,18 @@ text,
 .rounded-_b20rpx_B {
   border-radius: 20rpx;
 }
+.rounded-_b40px_B {
+  border-radius: 40rpx;
+}
 .bg-_b_h123456_B {
   --tw-bg-opacity: 1;
   background-color: rgba(18, 52, 86, var(--tw-bg-opacity, 1));
 }
 .bg-sky-500_f80 {
   background-color: rgba(14, 165, 233, 0.8);
+}
+.bg-opacity-_b0_d54_B {
+  --tw-bg-opacity: 0.54;
 }
 .p-_b20px_B {
   padding: 20rpx;
@@ -280,5 +301,28 @@ text,
   .container {
     max-width: 3072rpx;
   }
+}
+
+.test {
+  display: flex !important;
+  height: 100rpx !important;
+  width: 100rpx !important;
+  align-items: center !important;
+  justify-content: center !important;
+  border-radius: 40rpx !important;
+  background-color: rgba(18, 52, 86, var(--tw-bg-opacity, 1)) !important;
+  --tw-bg-opacity: 0.54 !important;
+  --tw-text-opacity: 1 !important;
+  color: rgba(255, 255, 255, var(--tw-text-opacity, 1)) !important;
+}
+.aspect-w-16 > view,
+.aspect-w-16 > text {
+  color: red;
+}
+.a {
+  color: green;
+}
+.b {
+  color: #ff0;
 }
 ```

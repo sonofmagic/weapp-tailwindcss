@@ -186,6 +186,45 @@ function resolveScanSources(
   return resolveCssDefinedScanSources(source) ?? scanSources
 }
 
+function hasThemeParent(rule: postcss.AtRule) {
+  let parent = rule.parent as postcss.Container | undefined
+  while (parent) {
+    if (parent.type === 'atrule' && (parent as postcss.AtRule).name === 'theme') {
+      return true
+    }
+    parent = parent.parent as postcss.Container | undefined
+  }
+  return false
+}
+
+function isVendorPrefixedKeyframes(rule: postcss.AtRule) {
+  return rule.name.startsWith('-') && rule.name.endsWith('keyframes')
+}
+
+function removeUnsupportedThemeVendorKeyframes(css: string) {
+  if (!css.includes('@theme') || !css.includes('@-')) {
+    return css
+  }
+
+  let root: postcss.Root
+  try {
+    root = postcss.parse(css)
+  }
+  catch {
+    return css
+  }
+
+  let changed = false
+  root.walkAtRules((rule) => {
+    if (isVendorPrefixedKeyframes(rule) && hasThemeParent(rule)) {
+      rule.remove()
+      changed = true
+    }
+  })
+
+  return changed ? root.toString() : css
+}
+
 export function createTailwindV4Engine(source: TailwindV4ResolvedSource): TailwindV4Engine {
   async function generate(options: TailwindV4GenerateOptions = {}) {
     const {
@@ -204,11 +243,12 @@ export function createTailwindV4Engine(source: TailwindV4ResolvedSource): Tailwi
       : target === 'weapp'
         ? applyMiniProgramTailwindV4DefaultColorCss(filteredSourceCss)
         : filteredSourceCss
+    const compatibleSourceCss = removeUnsupportedThemeVendorKeyframes(sourceCss)
     const candidates = target === 'weapp'
       ? filterUnsupportedMiniProgramTailwindV4Candidates(patchOptions.candidates)
       : patchOptions.candidates
     const engine = createPatchTailwindV4Engine(
-      sourceCss === source.css ? source : { ...source, css: sourceCss },
+      compatibleSourceCss === source.css ? source : { ...source, css: compatibleSourceCss },
     )
     const result = await engine.generate(omitUndefined({
       scanSources: resolveScanSources(source, scanSources),

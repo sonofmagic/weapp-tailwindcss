@@ -11,7 +11,7 @@ import {
   waitFor,
   writeFilePreserveEol,
 } from '../text'
-import { createStyleMutationPayload, expandOutputFileEntries } from './shared'
+import { createStyleMutationPayload, expandOutputFileEntries, waitForCompileSettled } from './shared'
 
 export async function runStyleMutation(
   watchCase: WatchCase,
@@ -208,6 +208,7 @@ export async function runStyleMutation(
       `[watch-hmr] ${watchCase.label} mutation=style rollback marker still present in candidate outputs, fallback to output latency metric\n`,
     )
   }
+  await waitForCompileSettled(watchCase, options, session, rollbackStartedAt)
 
   process.stdout.write(
     `[watch-hmr] ${watchCase.label} mutation=style passed (hotUpdate=${hotUpdateEffectiveMs}ms, rollback=${rollbackEffectiveMs}ms)\n`,

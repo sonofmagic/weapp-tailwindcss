@@ -126,6 +126,39 @@ describe('tailwindcss v4 engine', () => {
     expect(result.css).toContain('background-color: var(--color-blue-500)')
   })
 
+  it('removes unsupported vendor-prefixed keyframes from Tailwind v4 theme sources', async () => {
+    const source = await resolveTailwindV4Source({
+      css: `
+        @theme default {
+          --animate-spin: spin 1s linear infinite;
+          @-webkit-keyframes spin {
+            to {
+              -webkit-transform: rotate(1turn);
+              transform: rotate(1turn);
+            }
+          }
+          @keyframes spin {
+            to {
+              transform: rotate(360deg);
+            }
+          }
+        }
+        @tailwind utilities;
+      `,
+      base: process.cwd(),
+    })
+    const engine = createTailwindV4Engine(source)
+
+    const result = await engine.generate({
+      candidates: ['animate-spin'],
+    })
+
+    expect(result.classSet).toEqual(new Set(['animate-spin']))
+    expect(result.rawCss).toContain('.animate-spin')
+    expect(result.rawCss).toContain('@keyframes spin')
+    expect(result.rawCss).not.toContain('@-webkit-keyframes')
+  })
+
   it('extracts candidates from runtime sources', async () => {
     const source = await resolveTailwindV4Source({
       css: MINIMAL_THEME_CSS,
