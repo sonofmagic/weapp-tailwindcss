@@ -59,6 +59,58 @@ interface RoundOutputs {
   globalStyle: string
 }
 
+export async function waitForClassMutationBaselineOutputs(
+  watchCase: WatchCase,
+  options: CliOptions,
+  session: WatchSession,
+  mutationKind: 'template' | 'script' | 'content',
+  globalStyleOutputs: string[],
+): Promise<RoundOutputs> {
+  let resolvedOutputs: RoundOutputs | undefined
+  let lastReason = 'outputs are not ready'
+  const waitStartedAt = Date.now()
+
+  await waitFor(
+    async () => {
+      const [wxml, js, globalStyle, hasGlobalStyleOutputs] = await Promise.all([
+        readFileIfExists(watchCase.outputWxml),
+        readFileIfExists(watchCase.outputJs),
+        readJoinedOutputFiles(globalStyleOutputs),
+        hasResolvedOutputFiles(globalStyleOutputs),
+      ])
+
+      if (wxml && js && hasGlobalStyleOutputs) {
+        resolvedOutputs = {
+          wxml,
+          js,
+          globalStyle,
+        }
+        return true
+      }
+
+      lastReason = [
+        wxml ? undefined : 'wxml',
+        js ? undefined : 'js',
+        hasGlobalStyleOutputs ? undefined : 'global style',
+      ].filter(Boolean).join(', ')
+      return false
+    },
+    {
+      timeoutMs: options.timeoutMs,
+      pollMs: options.pollMs,
+      message: `[${watchCase.label}] baseline outputs are missing for ${mutationKind}: ${lastReason}`,
+      onTick: session.ensureRunning,
+    },
+    waitStartedAt,
+  )
+
+  if (!resolvedOutputs) {
+    throw new Error(`[${watchCase.label}] baseline outputs failed to resolve for ${mutationKind}`)
+  }
+
+  return resolvedOutputs
+}
+
 function collectBgHexTruncationNeedles(classTokens: string[]) {
   const needles: string[] = []
   for (const token of classTokens) {
@@ -401,15 +453,17 @@ export async function runClassMutation(
     ? [watchCase.outputWxml, watchCase.outputJs, ...globalStyleOutputs]
     : [watchCase.outputWxml, watchCase.outputJs]
 
-  const [baselineWxml, baselineJs, baselineGlobalStyle] = await Promise.all([
-    readFileIfExists(watchCase.outputWxml),
-    readFileIfExists(watchCase.outputJs),
-    readJoinedOutputFiles(globalStyleOutputs),
-  ])
-
-  if (!baselineWxml || !baselineJs || !await hasResolvedOutputFiles(globalStyleOutputs)) {
-    throw new Error(`[${watchCase.label}] baseline outputs are missing for ${mutationKind}`)
-  }
+  const {
+    wxml: baselineWxml,
+    js: baselineJs,
+    globalStyle: baselineGlobalStyle,
+  } = await waitForClassMutationBaselineOutputs(
+    watchCase,
+    options,
+    session,
+    mutationKind,
+    globalStyleOutputs,
+  )
 
   const verifyClassLiteralIn = mutation.verifyClassLiteralIn ?? []
   const forbidBgHexTruncationIn = mutation.forbidBgHexTruncationIn ?? []
