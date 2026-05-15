@@ -136,6 +136,7 @@ jobs:
             timeout_minutes: 40
             watch_timeout_ms: '280000'
             watch_poll_ms: '300'
+            watch_max_hot_update_ms: '60000'
             watch_command_timeout_ms: '720000'
           - os: macos-latest
             runner_label: macos
@@ -235,6 +236,7 @@ jobs:
             timeout_minutes: 45
             watch_timeout_ms: '320000'
             watch_poll_ms: '340'
+            watch_max_hot_update_ms: '60000'
             watch_command_timeout_ms: '840000'
     runs-on: ${{ matrix.os }}
     timeout-minutes: ${{ matrix.timeout_minutes }}
