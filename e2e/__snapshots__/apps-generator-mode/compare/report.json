@@ -9169,7 +9169,7 @@
     ],
     "status": "passed",
     "generator": {
-      "bytes": 20551,
+      "bytes": 20591,
       "selectors": [
         ".before_ccontent-_b_aindependent_subpackage_weapp-vite-tailwindcss-v4_a_B:before",
         ".before_ccontent-_b_anormal_subpackage_weapp-vite-tailwindcss-v4_a_B:before",

@@ -5,6 +5,7 @@ import path from 'node:path'
 import process from 'node:process'
 import { logger } from '@weapp-tailwindcss/logger'
 import postcssHtmlTransform from '@weapp-tailwindcss/postcss/html-transform'
+import { normalizeTailwindSourceForGenerator } from '@/bundlers/shared/generator-css/directives'
 import { vitePluginName } from '@/constants'
 import { getCompilerContext } from '@/context'
 import { toCustomAttributesEntities } from '@/context/custom-attributes'
@@ -126,14 +127,15 @@ export function WeappTailwindcss(options: UserDefinedOptions = {}): Plugin[] | u
       return
     }
     const sourceFile = path.normalize(file)
-    if (autoCssSourceContent.get(sourceFile) === css) {
+    const sourceCss = normalizeTailwindSourceForGenerator(css, { importFallback: true })
+    if (autoCssSourceContent.get(sourceFile) === sourceCss) {
       return
     }
-    autoCssSourceContent.set(sourceFile, css)
-    const dependencies = await resolveViteTailwindV4CssDependencies(css, path.dirname(sourceFile))
+    autoCssSourceContent.set(sourceFile, sourceCss)
+    const dependencies = await resolveViteTailwindV4CssDependencies(sourceCss, path.dirname(sourceFile))
     upsertTailwindV4CssSource(opts, {
       file: sourceFile,
-      css,
+      css: sourceCss,
       dependencies,
     })
     debug('detected tailwindcss v4 css source from vite css module: %s', sourceFile)

@@ -59,13 +59,25 @@ describe('ci workflows', () => {
       '.changeset/**',
     ])
     expect(workflow.jobs.quality.steps.some((step: Record<string, unknown>) => step.name === 'E2E Static')).toBe(true)
+    expect(workflow.jobs.quality.steps.some((step: Record<string, unknown>) => step.name === 'E2E Preprocessor Source')).toBe(true)
 
     expect(stepRuns(workflow, 'quality')).toEqual(expect.arrayContaining([
       'pnpm install --frozen-lockfile',
       'pnpm lint',
       'pnpm build',
+      'pnpm e2e:preprocessor',
       'pnpm test',
     ]))
+  })
+
+  it('keeps the preprocessor source demo in local e2e and CI', () => {
+    const packageJson = readPackageJson<{ scripts: Record<string, string> }>('package.json')
+    const { workflow } = readWorkflow('ci.yml')
+
+    expect(packageJson.scripts['e2e:preprocessor']).toBe('vitest run -c ./e2e/vitest.e2e.config.ts e2e/preprocessor-source.test.ts')
+    expect(stepRuns(workflow, 'quality')).toContain('pnpm e2e:preprocessor')
+    expect(readText('e2e/preprocessor-source.test.ts')).toContain('@weapp-tailwindcss-demo/weapp-vite-tailwindcss-v4')
+    expect(readText('demo/weapp-vite-tailwindcss-v4/app.scss')).toContain('@import "tailwindcss";')
   })
 
   it('keeps workflow_dispatch compatibility coverage across OS and Node versions', () => {

@@ -3,6 +3,7 @@ import { readFileSync } from 'node:fs'
 import fs from 'node:fs/promises'
 import path from 'node:path'
 import { describe, expect, it } from 'vitest'
+import { normalizeTailwindSourceForGenerator } from '@/bundlers/shared/generator-css'
 import { getCompilerContext } from '@/context'
 import { collectRuntimeClassSet, createTailwindRuntimeReadyPromise } from '@/tailwindcss/runtime'
 
@@ -273,9 +274,25 @@ const cases: SourceMutationCase[] = [
     title: 'demo/weapp-vite-tailwindcss-v4',
     projectRoot: path.resolve(repositoryRoot, 'demo/weapp-vite-tailwindcss-v4'),
     appType: 'native',
-    resolveOptions: root => ({
-      cssEntries: [path.resolve(root, 'app.css')],
-    }),
+    resolveOptions: (root) => {
+      const file = path.resolve(root, 'app.scss')
+      return {
+        tailwindcss: {
+          v4: {
+            cssSources: [
+              {
+                file,
+                base: root,
+                css: normalizeTailwindSourceForGenerator(readFileSync(file, 'utf8'), {
+                  importFallback: true,
+                }),
+                dependencies: [file],
+              },
+            ],
+          },
+        },
+      }
+    },
     template: {
       entry: 'pages/index/index.wxml',
       closingTag: '</scroll-view>',

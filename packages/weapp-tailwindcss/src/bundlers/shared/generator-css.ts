@@ -28,6 +28,7 @@ import {
 
 export {
   hasTailwindSourceDirectives,
+  normalizeTailwindSourceForGenerator,
   removeTailwindSourceDirectives,
   resolveCssEntrySource,
 } from './generator-css/directives'

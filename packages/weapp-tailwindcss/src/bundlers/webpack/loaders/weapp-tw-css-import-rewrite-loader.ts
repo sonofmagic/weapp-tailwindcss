@@ -7,7 +7,7 @@ import { inspect } from 'node:util'
 import { ensurePosix } from '@weapp-tailwindcss/shared'
 import loaderUtils from 'loader-utils'
 import { rewriteTailwindcssImportsInCode } from '@/bundlers/shared/css-imports'
-import { hasTailwindRootDirectives } from '@/bundlers/shared/generator-css/directives'
+import { hasTailwindRootDirectives, normalizeTailwindSourceForGenerator } from '@/bundlers/shared/generator-css/directives'
 
 interface CssImportRewriteLoaderOptions {
   tailwindcssImportRewrite?: {
@@ -77,7 +77,7 @@ const WeappTwCssImportRewriteLoader: webpack.LoaderDefinitionFunction<CssImportR
   const registerTask = typeof input === 'string' && hasTailwindRootDirectives(input, { importFallback: true })
     ? opt?.tailwindcssImportRewrite?.registerCssSource?.({
         file: this.resourcePath,
-        css: input,
+        css: normalizeTailwindSourceForGenerator(input, { importFallback: true }),
       })
     : undefined
   const transform = () => transformCssImportRewriteSource(source, opt)

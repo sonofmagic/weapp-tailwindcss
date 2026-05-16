@@ -34,7 +34,7 @@ const tailwindV4DemoCssEntries = [
   'demo/taro-vite-react-tailwindcss-v4/src/app.css',
   'demo/taro-vite-vue3-tailwindcss-v4/src/app.css',
   'demo/uni-app-vite-tailwindcss-v4/src/main.css',
-  'demo/weapp-vite-tailwindcss-v4/app.css',
+  'demo/weapp-vite-tailwindcss-v4/app.scss',
 ] as const
 
 async function readProjectFile(relativePath: string) {

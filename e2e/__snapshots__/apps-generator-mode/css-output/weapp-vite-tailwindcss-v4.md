@@ -6,7 +6,7 @@ Generator CSS files: app.wxss, apple.wxss, index.wxss, index.wxss, index.wxss
 
 | Bytes | Selectors | @supports | :hover | Tailwind banner | Raw arbitrary selector | Weapp escaped arbitrary selector |
 | ---: | ---: | --- | --- | --- | --- | --- |
-| 20551 | 59 | false | false | false | false | true |
+| 20591 | 59 | false | false | false | false | true |
 
 ## Generator CSS
 
@@ -65,6 +65,7 @@ wx-root-portal-content {
   --default-transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
   --default-font-family: var(--font-sans);
   --default-mono-font-family: var(--font-mono);
+  --preprocessor-entry-marker: #1d4ed8;
 }
 .flex {
   display: -webkit-flex;

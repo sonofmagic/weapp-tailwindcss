@@ -181,6 +181,12 @@ function hasPreprocessorOnlySyntax(rawSource: string) {
   return /(?:^|\n)\s*(?:\/\/|\$[\w-]+\s*:|@[\w-]+\s*:|@(?:mixin|include|function|use|forward)\b)/.test(rawSource)
 }
 
+export function normalizeTailwindSourceForGenerator(rawSource: string, options: TailwindDirectiveOptions = {}) {
+  return hasPreprocessorOnlySyntax(rawSource)
+    ? extractTailwindSourceForPostcssFallback(rawSource, options) ?? rawSource
+    : rawSource
+}
+
 export function normalizeTailwindSourceDirectives(rawSource: string, options: TailwindDirectiveOptions = {}) {
   if (!options.importFallback) {
     return rawSource
@@ -249,6 +255,9 @@ function isTailwindGenerationDirective(node: postcss.Node, options: TailwindGene
 
 export function removeTailwindSourceDirectives(rawSource: string, options: TailwindDirectiveOptions = {}) {
   try {
+    if (hasPreprocessorOnlySyntax(rawSource)) {
+      return ''
+    }
     const source = stripGeneratorPlaceholderMarkers(rawSource)
     const root = postcss.parse(source)
     let removed = false

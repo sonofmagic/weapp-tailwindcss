@@ -58,6 +58,9 @@ jobs:
       - name: E2E Static
         run: pnpm e2e:static
 
+      - name: E2E Preprocessor Source
+        run: pnpm e2e:preprocessor
+
       - name: E2E Framework Support
         run: pnpm exec cross-env E2E_FRAMEWORK_SUPPORT=1 vitest run -c ./e2e/vitest.e2e.config.ts e2e/framework-ci-support.test.ts
 
@@ -71,6 +74,7 @@ jobs:
             echo "## CI 状态说明"
             echo "- 本工作流负责：lint、build、unit/integration tests、coverage 上传。"
             echo "- 现在额外包含：\`pnpm e2e:static\`，用于保证 v5 生成示例和静态快照与 CI 一致。"
+            echo "- 现在额外包含：\`pnpm e2e:preprocessor\`，用于保证 Sass/Less 等预处理器 Tailwind 入口在真实 demo 中可构建。"
             echo "- 现在额外包含：跨框架支持矩阵 e2e，用于保证 demo 构建入口与模板静态输出一致。"
             echo "- \`pnpm e2e:ci\` 仍保留本地/专项使用，其中 hot-update/watch 覆盖由独立工作流承载。"
             echo "- \`Compatibility Gate\` 负责跨系统/多 Node 的核心回归，避免把全仓 lint/build 在每个矩阵里重复执行。"

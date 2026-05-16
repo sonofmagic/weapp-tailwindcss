@@ -427,6 +427,25 @@ describe('bundlers/shared generator css', () => {
     expect(source?.css).not.toContain('@include')
   })
 
+  it('normalizes registered generator sources from preprocessor syntax', async () => {
+    const { normalizeTailwindSourceForGenerator, removeTailwindSourceDirectives } = await import('@/bundlers/shared/generator-css')
+    const rawSource = [
+      '// source comment',
+      '$brand: #123456;',
+      '@import "weapp-tailwindcss";',
+      '@config "./tailwind.config.ts";',
+      '@source inline("w-[100px]");',
+      '.card { color: $brand; }',
+    ].join('\n')
+
+    expect(normalizeTailwindSourceForGenerator(rawSource, { importFallback: true })).toBe([
+      '@import "tailwindcss";',
+      '@config "./tailwind.config.ts";',
+      '@source inline("w-[100px]");',
+    ].join('\n'))
+    expect(removeTailwindSourceDirectives(rawSource, { importFallback: true })).toBe('')
+  })
+
   it('extracts Tailwind v3 @tailwind directives from Less sources', async () => {
     const { resolveCssEntrySource } = await import('@/bundlers/shared/generator-css')
     const rawSource = [

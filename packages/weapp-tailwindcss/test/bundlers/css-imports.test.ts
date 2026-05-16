@@ -118,6 +118,32 @@ describe('bundlers/shared css-imports', () => {
     })
   })
 
+  it('registers sanitized preprocessor root css sources from the webpack loader', async () => {
+    const registerCssSource = vi.fn()
+    const result = loader.call({
+      query: {
+        tailwindcssImportRewrite: {
+          pkgDir,
+          registerCssSource,
+        },
+      },
+      resourcePath: '/src/app.scss',
+    } as any, [
+      '// source comment',
+      '$brand: #123456;',
+      '@import "weapp-tailwindcss";',
+      '@source inline("w-4");',
+      '.card { color: $brand; }',
+    ].join('\n'))
+
+    await Promise.resolve(result)
+
+    expect(registerCssSource).toHaveBeenCalledWith({
+      file: '/src/app.scss',
+      css: '@import "tailwindcss";\n@source inline("w-4");',
+    })
+  })
+
   it('keeps legacy weapp-tailwindcss root imports resolvable as compatibility aliases', () => {
     const code = '@import "weapp-tailwindcss";'
     const rewritten = rewriteTailwindcssImportsInCode(code, pkgDir, { join: joinPosixPath })

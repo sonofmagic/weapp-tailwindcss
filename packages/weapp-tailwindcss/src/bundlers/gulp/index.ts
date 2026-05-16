@@ -7,7 +7,7 @@ import fs from 'node:fs'
 import path from 'node:path'
 import process from 'node:process'
 import stream from 'node:stream'
-import { hasTailwindRootDirectives } from '@/bundlers/shared/generator-css/directives'
+import { hasTailwindRootDirectives, normalizeTailwindSourceForGenerator } from '@/bundlers/shared/generator-css/directives'
 import { getCompilerContext } from '@/context'
 import { createDebug } from '@/debug'
 import { shouldSkipJsTransform } from '@/js/precheck'
@@ -178,9 +178,10 @@ export function createPlugins(options: UserDefinedOptions = {}) {
     ) {
       return false
     }
+    const sourceCss = normalizeTailwindSourceForGenerator(rawSource, { importFallback: true })
     const changed = upsertTailwindV4CssSource(opts, {
       file: path.resolve(file.path),
-      css: rawSource,
+      css: sourceCss,
     })
     if (!changed) {
       return false
