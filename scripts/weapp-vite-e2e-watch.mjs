@@ -4,6 +4,7 @@ import path from 'node:path'
 import process from 'node:process'
 
 const READY_RE = /开发服务已就绪|dev(?:elopment)? server ready|ready in \d+/i
+const WEAK_READY_RE = /根据 Vite 项目根目录自动推断 appType/i
 const pnpmExecPath = process.env.npm_execpath
 const sourceDirs = ['miniprogram', 'pages', 'packageA', 'packageB', 'sub-normal', 'sub-independent']
 const ignoredDirs = new Set(['dist', 'node_modules', '.git'])
@@ -33,11 +34,23 @@ function spawnPnpm(args, options = {}) {
 }
 
 function pipeWithReady(child, resolveReady) {
+  let resolved = false
+  const resolveOnce = () => {
+    if (resolved) {
+      return
+    }
+    resolved = true
+    resolveReady()
+  }
   const onData = (chunk) => {
     const text = chunk.toString()
     process.stdout.write(text)
     if (READY_RE.test(text)) {
-      resolveReady()
+      resolveOnce()
+      return
+    }
+    if (WEAK_READY_RE.test(text)) {
+      resolveOnce()
     }
   }
 

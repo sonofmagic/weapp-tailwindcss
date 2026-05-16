@@ -906,6 +906,7 @@ export async function runHotUpdateTarget(target: WatchCaseName) {
   const cwd = path.resolve(__dirname, '../..')
   const timeoutMs = toNumberEnv('E2E_WATCH_TIMEOUT_MS', 240000)
   const pollMs = toNumberEnv('E2E_WATCH_POLL_MS', 40)
+  const maxHotUpdateMs = toNumberEnv('E2E_WATCH_MAX_HOT_UPDATE_MS', timeoutMs)
   const maxPluginProcessMs = toNumberEnv('E2E_WATCH_MAX_PLUGIN_PROCESS_MS', DEFAULT_PLUGIN_PROCESS_BUDGET_MS)
   const commandTimeoutMs = toNumberEnv(
     'E2E_WATCH_COMMAND_TIMEOUT_MS',
