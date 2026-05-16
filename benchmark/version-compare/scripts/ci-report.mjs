@@ -58,6 +58,8 @@ export function buildSummary(raw, baselineLabel, currentLabel) {
     key: row.key,
     error: row.error,
   }))
+  const baselineErrors = errors.filter(item => item.version === baselineLabel)
+  const currentErrors = errors.filter(item => item.version === currentLabel)
   const validCompares = compares.filter(item => !item.baselineError && !item.currentError)
   return {
     generatedAt: raw.generatedAt,
@@ -66,6 +68,8 @@ export function buildSummary(raw, baselineLabel, currentLabel) {
     current: currentLabel,
     compares,
     errors,
+    baselineErrors,
+    currentErrors,
     averages: {
       buildDeltaPct: average(validCompares.map(item => item.buildDeltaPct)),
       hmrDeltaPct: average(validCompares.map(item => item.hmrDeltaPct)),

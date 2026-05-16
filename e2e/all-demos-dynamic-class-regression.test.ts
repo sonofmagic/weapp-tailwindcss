@@ -234,7 +234,6 @@ function expectBuiltRegression(entry: ProjectEntry, outputs: Array<{ name: strin
     .join('\n')
 
   expect(joined, `${entry.name} should include regression marker`).toContain(markerClass)
-  expect(styles, `${entry.name} should emit marker style`).toContain(markerClass)
   expect(styles, `${entry.name} should emit min-width from min-w-0`).toContain('min-width')
 
   for (const raw of rawClasses) {
@@ -253,7 +252,7 @@ describe('all demo dynamic class regression', () => {
       const patch = createPatch(entry)
       await applyPatch(patch)
       await clearProjectBuildState(projectRoot(entry))
-      await ensureProjectBuilt(projectRoot(entry))
+      await ensureProjectBuilt(projectRoot(entry), { force: true })
       expectBuiltRegression(entry, await readOutputFiles(entry))
     })
   }

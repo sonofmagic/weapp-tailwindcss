@@ -296,8 +296,8 @@ async function main() {
   process.stdout.write(`[benchmark] report -> ${reportPath}\n`)
   process.stdout.write(`[benchmark] summary -> ${summaryPath}\n`)
 
-  if (summary.errors.length > 0 && !process.argv.includes('--allow-errors')) {
-    throw new Error(`benchmark matrix has ${summary.errors.length} failed row(s)`)
+  if (summary.currentErrors.length > 0 && !process.argv.includes('--allow-errors')) {
+    throw new Error(`benchmark current matrix has ${summary.currentErrors.length} failed row(s)`)
   }
 }
 

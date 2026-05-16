@@ -6,13 +6,17 @@ import path from 'pathe'
 
 const buildTasks = new Map<string, Promise<void>>()
 
+interface EnsureProjectBuiltOptions {
+  force?: boolean
+}
+
 function logE2EError(message: string, ...args: unknown[]) {
   process.stderr.write(`${formatMessage(message, ...args)}\n`)
 }
 
-export async function ensureProjectBuilt(root: string) {
+export async function ensureProjectBuilt(root: string, options: EnsureProjectBuiltOptions = {}) {
   const existing = buildTasks.get(root)
-  if (existing) {
+  if (existing && !options.force) {
     return existing
   }
 
