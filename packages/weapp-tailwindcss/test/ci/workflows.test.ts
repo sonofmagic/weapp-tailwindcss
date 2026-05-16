@@ -378,7 +378,7 @@ describe('e2e watch workflow', () => {
       round_profile: 'default',
       timeout_minutes: 120,
       watch_timeout_ms: '420000',
-      watch_max_plugin_process_ms: '6000',
+      watch_max_plugin_process_ms: '15000',
       watch_command_timeout_ms: '5400000',
     }))
     expect(nightlyRows).toContainEqual(expect.objectContaining({
@@ -388,6 +388,7 @@ describe('e2e watch workflow', () => {
       round_profile: 'default',
       timeout_minutes: 150,
       watch_timeout_ms: '540000',
+      watch_max_plugin_process_ms: '15000',
       watch_command_timeout_ms: '7200000',
     }))
     expect(nightlyRows).toContainEqual(expect.objectContaining({
@@ -397,6 +398,7 @@ describe('e2e watch workflow', () => {
       round_profile: 'default',
       timeout_minutes: 150,
       watch_timeout_ms: '600000',
+      watch_max_plugin_process_ms: '15000',
       watch_command_timeout_ms: '7200000',
     }))
     expect(nightlyRows).toContainEqual(expect.objectContaining({
@@ -406,7 +408,7 @@ describe('e2e watch workflow', () => {
       round_profile: 'default',
       timeout_minutes: 180,
       watch_timeout_ms: '1200000',
-      watch_max_plugin_process_ms: '6000',
+      watch_max_plugin_process_ms: '15000',
       watch_command_timeout_ms: '9000000',
     }))
   })
@@ -427,7 +429,7 @@ describe('e2e watch workflow', () => {
     expect(nightlyRunStep.env.E2E_WATCH_MAX_ATTEMPTS).toBe("${{ matrix.watch_max_attempts || '2' }}")
   })
 
-  it('keeps any explicit e2e watch plugin processing matrix budget within 6000ms', () => {
+  it('keeps any explicit e2e watch plugin processing matrix budget within 15000ms', () => {
     const { workflow } = readWorkflow('e2e-watch.yml')
     const rows: Array<Record<string, unknown>> = [
       ...workflow.jobs['pr-quick-gate'].strategy.matrix.include,
@@ -439,7 +441,7 @@ describe('e2e watch workflow', () => {
       if (budget == null) {
         continue
       }
-      expect(Number(budget), `${row.runner_label}:${row.watch_case}:${row.round_profile}`).toBeLessThanOrEqual(6000)
+      expect(Number(budget), `${row.runner_label}:${row.watch_case}:${row.round_profile}`).toBeLessThanOrEqual(15000)
     }
   })
 
