@@ -177,7 +177,10 @@ export async function resolveGeneratorSource(
   generatorOptions?: NormalizedWeappTailwindcssGeneratorOptions,
 ) {
   const base = resolveCssSourceBase(file, cssHandlerOptions)
-  const cssEntrySource = resolveCssEntrySource(rawSource, base, { removeConfig: majorVersion === 3 })
+  const cssEntrySource = resolveCssEntrySource(rawSource, base, {
+    importFallback: generatorOptions?.importFallback ?? false,
+    removeConfig: majorVersion === 3,
+  })
   if (majorVersion === 3) {
     const sourceOptions = resolveTailwindV3SourceOptionsFromPatcher(runtimeState.twPatcher)
     const mergedSourceOptions = omitUndefined({
@@ -287,7 +290,10 @@ export async function resolveGeneratorSources(
   generatorOptions?: NormalizedWeappTailwindcssGeneratorOptions,
 ): Promise<TailwindResolvedSource[]> {
   const base = resolveCssSourceBase(file, cssHandlerOptions)
-  const cssEntrySource = resolveCssEntrySource(rawSource, base, { removeConfig: majorVersion === 3 })
+  const cssEntrySource = resolveCssEntrySource(rawSource, base, {
+    importFallback: generatorOptions?.importFallback ?? false,
+    removeConfig: majorVersion === 3,
+  })
   if (majorVersion !== 4 || (cssEntrySource && !cssHandlerOptions.isMainChunk)) {
     return [
       await resolveGeneratorSource(majorVersion, runtimeState, rawSource, file, cssHandlerOptions, generatorOptions),

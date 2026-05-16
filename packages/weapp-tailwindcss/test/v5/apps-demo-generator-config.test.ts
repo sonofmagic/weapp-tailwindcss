@@ -1,5 +1,6 @@
 import { readFile } from 'node:fs/promises'
 import path from 'node:path'
+import { resolveCssEntrySource } from '@/bundlers/shared/generator-css'
 
 const repositoryRoot = path.resolve(__dirname, '../../../..')
 
@@ -25,6 +26,16 @@ const demoProjects = [
 const tailwindV3Projects = demoProjects.filter(project => project.endsWith('-v3'))
 const tailwindV4Projects = demoProjects.filter(project => project.endsWith('-v4'))
 const subPackageRoots = ['sub-normal', 'sub-independent'] as const
+const tailwindV4DemoCssEntries = [
+  'demo/gulp-tailwindcss-v4/src/app.css',
+  'demo/mpx-tailwindcss-v4/src/app.css',
+  'demo/taro-webpack-react-tailwindcss-v4/src/app.css',
+  'demo/taro-webpack-vue3-tailwindcss-v4/src/app.css',
+  'demo/taro-vite-react-tailwindcss-v4/src/app.css',
+  'demo/taro-vite-vue3-tailwindcss-v4/src/app.css',
+  'demo/uni-app-vite-tailwindcss-v4/src/main.css',
+  'demo/weapp-vite-tailwindcss-v4/app.css',
+] as const
 
 async function readProjectFile(relativePath: string) {
   return readFile(path.resolve(repositoryRoot, relativePath), 'utf8')
@@ -169,20 +180,9 @@ describe('demo matrix generator config', () => {
       'demo/uni-app-vite-tailwindcss-v4/vite.config.ts',
       'demo/weapp-vite-tailwindcss-v4/vite.config.ts',
     ]
-    const cssPaths = [
-      'demo/gulp-tailwindcss-v4/src/app.css',
-      'demo/mpx-tailwindcss-v4/src/app.css',
-      'demo/taro-webpack-react-tailwindcss-v4/src/app.css',
-      'demo/taro-webpack-vue3-tailwindcss-v4/src/app.css',
-      'demo/taro-vite-react-tailwindcss-v4/src/app.css',
-      'demo/taro-vite-vue3-tailwindcss-v4/src/app.css',
-      'demo/uni-app-vite-tailwindcss-v4/src/main.css',
-      'demo/weapp-vite-tailwindcss-v4/app.css',
-    ]
-
     const [configs, cssEntries] = await Promise.all([
       Promise.all(configPaths.map(readProjectFile)),
-      Promise.all(cssPaths.map(readProjectFile)),
+      Promise.all(tailwindV4DemoCssEntries.map(readProjectFile)),
     ])
 
     expect(configs.join('\n')).not.toContain('cssEntries')
@@ -191,6 +191,23 @@ describe('demo matrix generator config', () => {
     }
     for (const cssSource of cssEntries) {
       expect(cssSource).toContain('tailwindcss')
+    }
+  })
+
+  it('keeps every Tailwind CSS v4 demo entry compatible with default import fallback', async () => {
+    for (const cssEntry of tailwindV4DemoCssEntries) {
+      const source = await readProjectFile(cssEntry)
+      const fallbackSource = source.replaceAll('@import "tailwindcss"', '@import "weapp-tailwindcss"')
+      expect(fallbackSource, cssEntry).toContain('@import "weapp-tailwindcss"')
+
+      const resolved = resolveCssEntrySource(
+        fallbackSource,
+        path.dirname(path.resolve(repositoryRoot, cssEntry)),
+        { importFallback: true, removeConfig: false },
+      )
+
+      expect(resolved?.css, cssEntry).toContain('@import "tailwindcss"')
+      expect(resolved?.css, cssEntry).not.toContain('@import "weapp-tailwindcss"')
     }
   })
 

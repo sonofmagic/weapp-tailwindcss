@@ -9,6 +9,7 @@ import { resolveUniAppXOptions } from '@/uni-app-x/options'
 import { finalizeMiniProgramCss, removeUnsupportedMiniProgramAtRules } from './css-cleanup'
 import {
   hasTailwindSourceDirectives,
+  normalizeTailwindSourceDirectives,
   parseImportRequest,
   removeTailwindSourceDirectives,
 } from './generator-css/directives'
@@ -210,8 +211,11 @@ export async function generateCssByGenerator(
   } = options
   const generatorOptions = normalizeWeappTailwindcssGeneratorOptions(opts.generator)
   const majorVersion = runtimeState.twPatcher.majorVersion
+  const effectiveRawSource = normalizeTailwindSourceDirectives(rawSource, {
+    importFallback: generatorOptions.importFallback,
+  })
 
-  const cleanedLocalImportWrapper = cleanLocalCssImportWrapperTailwindDirectives(rawSource)
+  const cleanedLocalImportWrapper = cleanLocalCssImportWrapperTailwindDirectives(effectiveRawSource)
   if (cleanedLocalImportWrapper !== undefined) {
     return {
       css: generatorOptions.target === 'weapp'
@@ -223,13 +227,15 @@ export async function generateCssByGenerator(
     }
   }
 
-  if (isPureLocalCssImportWrapper(rawSource)) {
+  if (isPureLocalCssImportWrapper(effectiveRawSource)) {
     return undefined
   }
 
-  const hasGeneratedCss = hasTailwindGeneratedCss(rawSource)
-  const hasSourceDirectives = hasTailwindSourceDirectives(rawSource)
-  const hasGeneratedMarkers = hasTailwindGeneratedCssMarkers(rawSource)
+  const hasGeneratedCss = hasTailwindGeneratedCss(effectiveRawSource)
+  const hasSourceDirectives = hasTailwindSourceDirectives(effectiveRawSource, {
+    importFallback: generatorOptions.importFallback,
+  })
+  const hasGeneratedMarkers = hasTailwindGeneratedCssMarkers(effectiveRawSource)
   const shouldGenerateCurrentCss = hasGeneratedCss
     || hasGeneratedMarkers
     || hasSourceDirectives
@@ -253,7 +259,7 @@ export async function generateCssByGenerator(
     const sources = await resolveGeneratorSources(
       majorVersion,
       runtimeState,
-      rawSource,
+      effectiveRawSource,
       file,
       cssHandlerOptions,
       generatorOptions,
@@ -291,14 +297,16 @@ export async function generateCssByGenerator(
       generated.css.length,
       generated.classSet.size,
     )
-    const extraCss = splitTailwindV4GeneratedCss(rawSource, generated.rawCss)
+    const extraCss = splitTailwindV4GeneratedCss(effectiveRawSource, generated.rawCss)
     if (typeof extraCss === 'string') {
       let css = stripTailwindBanner(generated.css)
       if (generated.target === 'weapp') {
-        css = inheritLegacyUnitConvertedDeclarations(css, rawSource)
+        css = inheritLegacyUnitConvertedDeclarations(css, effectiveRawSource)
       }
       if (extraCss.trim().length > 0) {
-        const cleanedExtraCss = removeTailwindSourceDirectives(extraCss)
+        const cleanedExtraCss = removeTailwindSourceDirectives(extraCss, {
+          importFallback: generatorOptions.importFallback,
+        })
         if (cleanedExtraCss.trim().length > 0) {
           const extraSource = generated.target === 'weapp'
             ? removeUnsupportedMiniProgramAtRules(cleanedExtraCss)
@@ -326,7 +334,7 @@ export async function generateCssByGenerator(
       if (generated.target === 'weapp') {
         css = await appendLegacyCompatCss(
           css,
-          rawSource,
+          effectiveRawSource,
           generated.target,
           styleHandler,
           cssHandlerOptions,
@@ -334,7 +342,7 @@ export async function generateCssByGenerator(
         )
         css = await appendLegacyContainerCompatCss(
           css,
-          rawSource,
+          effectiveRawSource,
           file,
           runtime,
           configuredContainerCompat,
@@ -358,11 +366,11 @@ export async function generateCssByGenerator(
     )
     let css = stripTailwindBanner(generated.css)
     if (generated.target === 'weapp') {
-      css = inheritLegacyUnitConvertedDeclarations(css, rawSource)
+      css = inheritLegacyUnitConvertedDeclarations(css, effectiveRawSource)
     }
     css = await appendLegacyCompatCss(
       css,
-      rawSource,
+      effectiveRawSource,
       generated.target,
       styleHandler,
       cssHandlerOptions,
@@ -370,7 +378,7 @@ export async function generateCssByGenerator(
     )
     css = await appendLegacyContainerCompatCss(
       css,
-      rawSource,
+      effectiveRawSource,
       file,
       runtime,
       configuredContainerCompat,

@@ -76,7 +76,11 @@ function shouldGenerateCssByGenerator(
   rawSource: string,
   processed: boolean,
 ) {
-  if (hasTailwindGeneratedCssMarkers(rawSource) || hasTailwindSourceDirectives(rawSource)) {
+  const generatorOptions = normalizeWeappTailwindcssGeneratorOptions(opts.generator)
+  if (
+    hasTailwindGeneratedCssMarkers(rawSource)
+    || hasTailwindSourceDirectives(rawSource, { importFallback: generatorOptions.importFallback })
+  ) {
     return true
   }
   return processed && shouldFinalizeProcessedCssAsset(opts, file)

@@ -1,6 +1,7 @@
 import path from 'node:path'
 import { getCompilerContext } from '@/context'
 import { TAILWIND_V3_CSS_PREFLIGHT, TAILWIND_V4_CSS_PREFLIGHT } from '@/defaults'
+import { normalizeWeappTailwindcssGeneratorOptions } from '@/generator'
 import { defu } from '@/utils'
 
 function sanitizeSnapshotOptions(options: ReturnType<typeof getCompilerContext>) {
@@ -27,6 +28,12 @@ describe('get options', () => {
     expect(jsMatcher('node_modules/a.js')).toBe(false)
     expect(mainCssChunkMatcher('app.wxss', 'native')).toBe(true)
     expect(htmlMatcher('a.wxml')).toBe(true)
+  })
+
+  it('enables generator import fallback by default', () => {
+    expect(normalizeWeappTailwindcssGeneratorOptions(undefined).importFallback).toBe(true)
+    expect(normalizeWeappTailwindcssGeneratorOptions({}).importFallback).toBe(true)
+    expect(normalizeWeappTailwindcssGeneratorOptions({ importFallback: false }).importFallback).toBe(false)
   })
 
   // it.skip('glob matcher', () => {

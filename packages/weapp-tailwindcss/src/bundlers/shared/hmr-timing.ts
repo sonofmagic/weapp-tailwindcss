@@ -5,8 +5,8 @@ export interface HmrTimingDetails {
 }
 
 export function shouldEmitHmrTiming() {
-  return process.env.WEAPP_TW_WATCH_REGRESSION === '1'
-    || process.env.WEAPP_TW_HMR_TIMING === '1'
+  return process.env['WEAPP_TW_WATCH_REGRESSION'] === '1'
+    || process.env['WEAPP_TW_HMR_TIMING'] === '1'
 }
 
 export function emitHmrTiming(

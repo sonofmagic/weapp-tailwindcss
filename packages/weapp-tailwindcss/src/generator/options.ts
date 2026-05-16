@@ -15,6 +15,12 @@ export interface WeappTailwindcssGeneratorOptions {
    */
   styleOptions?: Partial<IStyleHandlerOptions> | undefined
   /**
+   * 将 `@import "weapp-tailwindcss"` 作为 Tailwind CSS v4 生成入口的兜底别名。
+   *
+   * 适用于框架无法把 `@import "tailwindcss"` 改写到 `weapp-tailwindcss` 包入口的场景，默认开启。
+   */
+  importFallback?: boolean | undefined
+  /**
    * Tailwind CSS v4 小程序生成模式默认注入 v3 默认值兼容层，保持升级前的视觉行为。
    *
    * 设为 `false` 时，完全使用 Tailwind CSS v4 原生默认值。
@@ -28,6 +34,7 @@ export interface NormalizedWeappTailwindcssGeneratorOptions {
   target: WeappTailwindcssGeneratorTarget
   config?: string | undefined
   styleOptions?: Partial<IStyleHandlerOptions> | undefined
+  importFallback: boolean
   tailwindcssV3Compatibility: boolean
 }
 
@@ -37,6 +44,7 @@ export function normalizeWeappTailwindcssGeneratorOptions(
   if (options == null) {
     return {
       target: 'weapp',
+      importFallback: true,
       tailwindcssV3Compatibility: true,
     }
   }
@@ -45,6 +53,7 @@ export function normalizeWeappTailwindcssGeneratorOptions(
     target: options.target ?? 'weapp',
     config: options.config,
     styleOptions: options.styleOptions,
+    importFallback: options.importFallback ?? true,
     tailwindcssV3Compatibility: options.tailwindcssV3Compatibility ?? (options.target ?? 'weapp') === 'weapp',
   }
 }

@@ -6,7 +6,7 @@ Generator CSS files: app.wxss, index.wxss, index.wxss, index.wxss, index.wxss, i
 
 | Bytes | Selectors | @supports | :hover | Tailwind banner | Raw arbitrary selector | Weapp escaped arbitrary selector |
 | ---: | ---: | --- | --- | --- | --- | --- |
-| 33905 | 144 | false | false | false | false | true |
+| 33934 | 144 | false | false | false | false | true |
 
 ## Generator CSS
 
@@ -737,6 +737,9 @@ text,
 }
 .mt-4 {
   margin-top: 32rpx;
+}
+.block {
+  display: block;
 }
 .flex {
   display: flex;
