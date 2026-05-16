@@ -115,6 +115,7 @@ export interface WatchCase {
   requireInitialCompileSuccess?: boolean
   initialMutationDelayMs?: number
   initialBuildScript?: string
+  maxPluginProcessMs?: number
   minGlobalStyleEscapedClasses?: number
   requireStableGlobalStyleOnSameClassLiteral?: boolean
   cwd: string
@@ -335,6 +336,7 @@ export interface WatchCaseMetrics {
   subPackageMutationMetrics: SubPackageMutationMetrics[]
   summaryByMutationKind: Partial<Record<MutationKind, WatchSummary>>
   initialReadyMs: number
+  maxPluginProcessMs?: number
   hotUpdateOutputMs: number
   hotUpdateEffectiveMs: number
   hotUpdatePluginProcessMs: number
@@ -384,12 +386,14 @@ export const STYLE_APPLY_UNSUPPORTED_CASES = new Set<ConcreteWatchCaseName>([
   'uni-app-vite-tailwindcss-v4',
   'taro-vite-react-tailwindcss-v4',
   'taro-webpack-react-tailwindcss-v4',
+  'weapp-vite-tailwindcss-v4',
 ])
 
 export const STYLE_FUNCTION_UNSUPPORTED_CASES = new Set<ConcreteWatchCaseName>([
   'mpx-tailwindcss-v4',
   'taro-vite-react-tailwindcss-v4',
   'taro-webpack-react-tailwindcss-v4',
+  'weapp-vite-tailwindcss-v4',
 ])
 
 export const STYLE_REFERENCE_REQUIRED_CASES = new Set<ConcreteWatchCaseName>([

@@ -894,6 +894,27 @@ describe('watch-hmr regression summary helpers', () => {
       maxPluginProcessMs: 500,
     })).toThrow('template:complex-corpus:hot-update weapp-tailwindcss processing exceeded budget: 520ms > 500ms')
   })
+
+  it('lets Taro Vite cases override the plugin processing budget for restart fallback runs', () => {
+    const metrics = createCase('taro-vite-react-tailwindcss-v4', 'demo', 30, 40)
+    metrics.maxPluginProcessMs = 800
+    const templateMetric = metrics.mutationMetrics.find(
+      mutation => mutation.mutationKind === 'template',
+    )
+    if (!templateMetric || templateMetric.mutationKind === 'style') {
+      throw new Error('missing template metric')
+    }
+    templateMetric.rounds[0].hotUpdatePluginProcessMs = 620
+
+    expect(() => assertPluginProcessBudget(metrics, {
+      caseName: 'demo',
+      timeoutMs: 2000,
+      pollMs: 20,
+      skipBuild: true,
+      quietSass: true,
+      maxPluginProcessMs: 500,
+    })).not.toThrow()
+  })
 })
 
 describe('watch-hmr regression cases', () => {
@@ -1107,6 +1128,22 @@ describe('watch-hmr regression cases', () => {
     }
   })
 
+  it('keeps Taro Vite watch cases on restart fallback compatible budgets', () => {
+    const cases = buildDemoExtendedCases('/repo').filter(watchCase => watchCase.name.startsWith('taro-vite-'))
+
+    expect(cases.map(watchCase => watchCase.name).sort()).toEqual([
+      'taro-vite-react-tailwindcss-v3',
+      'taro-vite-react-tailwindcss-v4',
+      'taro-vite-vue3-tailwindcss-v3',
+      'taro-vite-vue3-tailwindcss-v4',
+    ])
+
+    for (const watchCase of cases) {
+      expect(watchCase.env).not.toHaveProperty('TARO_E2E_WATCH_NATIVE')
+      expect(watchCase.maxPluginProcessMs).toBe(800)
+    }
+  })
+
   it('covers literal refresh content mutations for every demo case', () => {
     const cases = [
       ...buildDemoBaseCases('/repo'),
@@ -1246,11 +1283,13 @@ describe('watch-hmr regression cases', () => {
       'uni-app-vite-tailwindcss-v4',
       'taro-vite-react-tailwindcss-v4',
       'taro-webpack-react-tailwindcss-v4',
+      'weapp-vite-tailwindcss-v4',
     ])
     const functionUnsupportedCases = new Set([
       'mpx-tailwindcss-v4',
       'taro-vite-react-tailwindcss-v4',
       'taro-webpack-react-tailwindcss-v4',
+      'weapp-vite-tailwindcss-v4',
     ])
     const referenceRequiredCases = new Set([
       'gulp-tailwindcss-v4',
@@ -1359,6 +1398,8 @@ describe('watch-hmr regression cases', () => {
     const requiredMatrixEntries = [
       { os: 'macos-latest', runner_label: 'macos', watch_case: 'uni-app-vite-tailwindcss-v3', round_profile: 'issue33' },
       { os: 'macos-latest', runner_label: 'macos', watch_case: 'weapp-vite-tailwindcss-v3', round_profile: 'issue33' },
+      { os: 'macos-latest', runner_label: 'macos', watch_case: 'taro-vite-react-tailwindcss-v4', round_profile: 'default' },
+      { os: 'macos-latest', runner_label: 'macos', watch_case: 'taro-vite-vue3-tailwindcss-v3', round_profile: 'default' },
       { os: 'macos-latest', runner_label: 'macos', watch_case: 'taro-vite-vue3-tailwindcss-v4', round_profile: 'default' },
       { os: 'macos-latest', runner_label: 'macos', watch_case: 'taro-webpack-vue3-tailwindcss-v4', round_profile: 'default' },
       { os: 'windows-latest', runner_label: 'windows', watch_case: 'uni-app-vite-tailwindcss-v3', round_profile: 'issue33' },

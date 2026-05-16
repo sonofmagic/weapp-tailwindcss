@@ -34,8 +34,9 @@ const mpxWatchEnv = {
 const taroViteWatchEnv = {
   ...taroWatchEnv,
   NODE_ENV: 'production',
-  TARO_E2E_WATCH_NATIVE: '1',
 }
+
+const taroVitePluginProcessBudgetMs = 800
 
 function normalizeExtension(version: 'v3' | 'v4') {
   return version === 'v3' ? 'scss' : 'css'
@@ -45,12 +46,13 @@ function mutateVueScriptWithTemplateConsumer(
   source: string,
   payload: Parameters<NonNullable<WatchCase['scriptMutation']>['mutate']>[1],
 ) {
-  return insertIntoVueTemplateRoot(
+  return insertBeforeClosingTag(
     insertBeforeClosingTag(
       source,
       '</script>',
       `const ${payload.classVariableName} = '${payload.classLiteral}'\nconst __twWatchScriptMarker = '${payload.marker}'`,
     ),
+    '</template>',
     `    <view hidden :class="${payload.classVariableName}">{{ __twWatchScriptMarker }}</view>`,
   )
 }
@@ -365,6 +367,7 @@ export function buildDemoExtendedCases(baseCwd: string): WatchCase[] {
     label: 'demo/taro-vite-react-tailwindcss-v4',
     project: 'demo/taro-vite-react-tailwindcss-v4',
     group: 'demo',
+    maxPluginProcessMs: taroVitePluginProcessBudgetMs,
     initialMutationDelayMs: 5_000,
     cwd: path.resolve(baseCwd, 'demo/taro-vite-react-tailwindcss-v4'),
     devScript: 'dev:e2e-watch',
@@ -444,6 +447,7 @@ export function buildDemoExtendedCases(baseCwd: string): WatchCase[] {
     label: 'demo/taro-vite-react-tailwindcss-v3',
     project: 'demo/taro-vite-react-tailwindcss-v3',
     group: 'demo',
+    maxPluginProcessMs: taroVitePluginProcessBudgetMs,
     initialMutationDelayMs: 5_000,
     cwd: path.resolve(baseCwd, 'demo/taro-vite-react-tailwindcss-v3'),
     devScript: 'dev:e2e-watch',
@@ -600,6 +604,7 @@ export function buildDemoExtendedCases(baseCwd: string): WatchCase[] {
     name: 'taro-vite-vue3-tailwindcss-v3',
     label: 'demo/taro-vite-vue3-tailwindcss-v3',
     project: 'demo/taro-vite-vue3-tailwindcss-v3',
+    maxPluginProcessMs: taroVitePluginProcessBudgetMs,
     cwd: path.resolve(baseCwd, 'demo/taro-vite-vue3-tailwindcss-v3'),
     outputWxml: path.resolve(baseCwd, 'demo/taro-vite-vue3-tailwindcss-v3/dist/pages/index/index.wxml'),
     outputJs: path.resolve(baseCwd, 'demo/taro-vite-vue3-tailwindcss-v3/dist/pages/index/index.js'),
@@ -646,12 +651,13 @@ export function buildDemoExtendedCases(baseCwd: string): WatchCase[] {
         return mutateVueScriptWithTemplateConsumer(source, payload)
       },
       mutateCommentCarrier(source, payload) {
-        return insertIntoVueTemplateRoot(
+        return insertBeforeClosingTag(
           insertBeforeClosingTag(
             source,
             '</script>',
             `/* ${payload.classLiteral} */\nconst __twWatchScriptCommentMarker = '${payload.marker}'`,
           ),
+          '</template>',
           '    <view hidden>{{ __twWatchScriptCommentMarker }}</view>',
         )
       },
@@ -731,12 +737,13 @@ export function buildDemoExtendedCases(baseCwd: string): WatchCase[] {
         return mutateVueScriptWithTemplateConsumer(source, payload)
       },
       mutateCommentCarrier(source, payload) {
-        return insertIntoVueTemplateRoot(
+        return insertBeforeClosingTag(
           insertBeforeClosingTag(
             source,
             '</script>',
             `/* ${payload.classLiteral} */\nconst __twWatchScriptCommentMarker = '${payload.marker}'`,
           ),
+          '</template>',
           '    <view hidden>{{ __twWatchScriptCommentMarker }}</view>',
         )
       },

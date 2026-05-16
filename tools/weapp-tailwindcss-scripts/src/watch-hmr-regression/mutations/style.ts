@@ -29,6 +29,9 @@ export async function runStyleMutation(
   const validateFunction = styleMutation.validateFunction !== false
   const outputNeedles = styleMutation.outputNeedles?.(payload) ?? payload.outputNeedles
   const rollbackNeedles = styleMutation.rollbackNeedles?.(payload) ?? payload.rollbackNeedles
+  const hasExpectedStyleRule = (content: string) => findCssRuleBody(content, payload.styleNeedle) != null
+  const hasExpectedOutput = (content: string) =>
+    outputNeedles.every(needle => content.includes(needle)) && hasExpectedStyleRule(content)
 
   if (mutatedSource === sourceOriginal) {
     throw new Error(`[${watchCase.label}] style mutation produced no source change`)
@@ -85,7 +88,7 @@ export async function runStyleMutation(
     'hot-update',
     async (candidate) => {
       const content = await readFileIfExists(candidate)
-      return content != null && outputNeedles.every(needle => content.includes(needle))
+      return content != null && hasExpectedOutput(content)
     },
   )
   let resolvedOutputStyle: string | undefined
@@ -95,7 +98,7 @@ export async function runStyleMutation(
       const targetCandidates = resolvedCandidates.length > 0 ? resolvedCandidates : verifyOutputCandidates
       for (const candidate of targetCandidates) {
         const content = await readFileIfExists(candidate)
-        if (content != null && outputNeedles.every(needle => content.includes(needle))) {
+        if (content != null && hasExpectedOutput(content)) {
           resolvedOutputStyle = candidate
           return true
         }

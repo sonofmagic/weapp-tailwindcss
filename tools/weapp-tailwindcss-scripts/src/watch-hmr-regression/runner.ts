@@ -194,6 +194,7 @@ export async function runCase(watchCase: WatchCase, options: CliOptions): Promis
       subPackageMutationMetrics,
       summaryByMutationKind: summarizeMutationMetricsByKind(mutationMetrics),
       initialReadyMs,
+      maxPluginProcessMs: watchCase.maxPluginProcessMs,
       hotUpdateOutputMs: preferredRound.hotUpdateOutputMs,
       hotUpdateEffectiveMs: preferredRound.hotUpdateEffectiveMs,
       hotUpdatePluginProcessMs: preferredRound.hotUpdatePluginProcessMs,
@@ -243,7 +244,8 @@ export function assertHotUpdateBudget(metrics: WatchCaseMetrics, options: CliOpt
 }
 
 export function assertPluginProcessBudget(metrics: WatchCaseMetrics, options: CliOptions) {
-  if (options.maxPluginProcessMs == null) {
+  const maxPluginProcessMs = metrics.maxPluginProcessMs ?? options.maxPluginProcessMs
+  if (maxPluginProcessMs == null) {
     return
   }
 
@@ -253,9 +255,9 @@ export function assertPluginProcessBudget(metrics: WatchCaseMetrics, options: Cl
   }
 
   for (const sample of samples) {
-    if (sample.pluginProcessMs > options.maxPluginProcessMs) {
+    if (sample.pluginProcessMs > maxPluginProcessMs) {
       throw new Error(
-        `[${metrics.label}] ${sample.label} weapp-tailwindcss processing exceeded budget: ${sample.pluginProcessMs}ms > ${options.maxPluginProcessMs}ms`,
+        `[${metrics.label}] ${sample.label} weapp-tailwindcss processing exceeded budget: ${sample.pluginProcessMs}ms > ${maxPluginProcessMs}ms`,
       )
     }
   }
