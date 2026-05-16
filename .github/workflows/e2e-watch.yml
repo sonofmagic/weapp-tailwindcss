@@ -81,7 +81,7 @@ jobs:
             timeout_minutes: 60
             watch_timeout_ms: '600000'
             watch_poll_ms: '40'
-            watch_max_plugin_process_ms: '1500'
+            watch_max_plugin_process_ms: '3000'
             watch_command_timeout_ms: '1500000'
           - os: macos-latest
             runner_label: macos
@@ -154,7 +154,7 @@ jobs:
             timeout_minutes: 40
             watch_timeout_ms: '280000'
             watch_poll_ms: '40'
-            watch_max_plugin_process_ms: '1500'
+            watch_max_plugin_process_ms: '3000'
             watch_command_timeout_ms: '720000'
           - os: macos-latest
             runner_label: macos
@@ -254,7 +254,7 @@ jobs:
             timeout_minutes: 45
             watch_timeout_ms: '320000'
             watch_poll_ms: '40'
-            watch_max_plugin_process_ms: '1500'
+            watch_max_plugin_process_ms: '3000'
             watch_command_timeout_ms: '840000'
     runs-on: ${{ matrix.os }}
     timeout-minutes: ${{ matrix.timeout_minutes }}
@@ -304,7 +304,7 @@ jobs:
           E2E_WATCH_CASE: ${{ matrix.watch_case }}
           E2E_WATCH_TIMEOUT_MS: ${{ matrix.watch_timeout_ms }}
           E2E_WATCH_POLL_MS: ${{ matrix.watch_poll_ms }}
-          E2E_WATCH_MAX_PLUGIN_PROCESS_MS: ${{ matrix.watch_max_plugin_process_ms || '1500' }}
+          E2E_WATCH_MAX_PLUGIN_PROCESS_MS: ${{ matrix.watch_max_plugin_process_ms || '3000' }}
           E2E_WATCH_COMMAND_TIMEOUT_MS: ${{ matrix.watch_command_timeout_ms }}
           E2E_WATCH_MAX_ATTEMPTS: ${{ matrix.watch_max_attempts || '2' }}
           E2E_WATCH_ROUND_PROFILE: ${{ matrix.round_profile }}
@@ -370,7 +370,7 @@ jobs:
             timeout_minutes: 150
             watch_timeout_ms: '600000'
             watch_poll_ms: '40'
-            watch_max_plugin_process_ms: '1500'
+            watch_max_plugin_process_ms: '3000'
             watch_command_timeout_ms: '7200000'
           - os: windows-latest
             runner_label: windows
@@ -380,7 +380,7 @@ jobs:
             timeout_minutes: 180
             watch_timeout_ms: '1200000'
             watch_poll_ms: '40'
-            watch_max_plugin_process_ms: '1500'
+            watch_max_plugin_process_ms: '3000'
             watch_command_timeout_ms: '9000000'
           - os: macos-latest
             runner_label: macos
@@ -399,7 +399,7 @@ jobs:
             timeout_minutes: 60
             watch_timeout_ms: '600000'
             watch_poll_ms: '40'
-            watch_max_plugin_process_ms: '1500'
+            watch_max_plugin_process_ms: '3000'
             watch_command_timeout_ms: '1500000'
           - os: macos-latest
             runner_label: macos
@@ -409,7 +409,7 @@ jobs:
             timeout_minutes: 120
             watch_timeout_ms: '420000'
             watch_poll_ms: '40'
-            watch_max_plugin_process_ms: '1500'
+            watch_max_plugin_process_ms: '3000'
             watch_command_timeout_ms: '5400000'
           - os: windows-latest
             runner_label: windows
@@ -447,7 +447,7 @@ jobs:
             timeout_minutes: 60
             watch_timeout_ms: '600000'
             watch_poll_ms: '40'
-            watch_max_plugin_process_ms: '1500'
+            watch_max_plugin_process_ms: '3000'
             watch_command_timeout_ms: '1500000'
           - os: windows-latest
             runner_label: windows
@@ -507,7 +507,7 @@ jobs:
           E2E_WATCH_CASE: ${{ matrix.watch_case }}
           E2E_WATCH_TIMEOUT_MS: ${{ matrix.watch_timeout_ms }}
           E2E_WATCH_POLL_MS: ${{ matrix.watch_poll_ms }}
-          E2E_WATCH_MAX_PLUGIN_PROCESS_MS: ${{ matrix.watch_max_plugin_process_ms || '1500' }}
+          E2E_WATCH_MAX_PLUGIN_PROCESS_MS: ${{ matrix.watch_max_plugin_process_ms || '3000' }}
           E2E_WATCH_COMMAND_TIMEOUT_MS: ${{ matrix.watch_command_timeout_ms }}
           E2E_WATCH_MAX_ATTEMPTS: ${{ matrix.watch_max_attempts || '2' }}
           E2E_WATCH_ROUND_PROFILE: ${{ matrix.round_profile }}
