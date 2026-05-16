@@ -3,6 +3,7 @@ import type { AppType } from '@/types'
 import { vitePluginName } from '@/constants'
 import { resolveTailwindcssImport, rewriteTailwindcssImportsInCode } from '../shared/css-imports'
 import { hasTailwindRootDirectives } from '../shared/generator-css/directives'
+import { isSourceStyleRequest } from '../shared/style-requests'
 import { cleanUrl, isCSSRequest } from './utils'
 
 function joinPosixPath(base: string, subpath: string) {
@@ -17,7 +18,7 @@ function isCssLikeImporter(importer?: string | null) {
     return false
   }
   const normalized = cleanUrl(importer)
-  return isCSSRequest(normalized) || normalized.endsWith('/*')
+  return isSourceStyleRequest(importer) || isCSSRequest(normalized) || normalized.endsWith('/*')
 }
 
 interface RewriteCssImportsOptions {

@@ -91,6 +91,26 @@ describe('bundlers/vite WeappTailwindcss rewrite', () => {
     expect(result?.code).toContain(`@import url("${pkgDir}/utilities");`)
   }, TEST_TIMEOUT_MS)
 
+  it('rewrites tailwindcss imports in preprocessor and SFC style requests', async () => {
+    const [rewritePlugin] = createRewriteCssImportsPlugins({
+      shouldRewrite: true,
+      weappTailwindcssDirPosix: '/virtual/weapp-tailwindcss',
+    })
+    const resolveId = getResolveIdHandler(rewritePlugin!)
+    const transform = getTransformHandler(rewritePlugin!)
+
+    expect(await resolveId?.('tailwindcss', '/src/app.scss?inline')).toBe('/virtual/weapp-tailwindcss/index.css')
+    expect(await resolveId?.('weapp-tailwindcss', '/src/component.vue?vue&type=style&index=0&lang.scss')).toBe('/virtual/weapp-tailwindcss/index.css')
+
+    const scss = await transform?.('$color: red;\n@import "tailwindcss";\n.app { color: $color; }', '/src/app.scss') as TransformResult
+    expect(scss?.code).toContain('@import "/virtual/weapp-tailwindcss/index.css";')
+    expect(scss?.code).toContain('$color: red;')
+
+    const less = await transform?.('@import "weapp-tailwindcss";\n@color: red;\n.app { color: @color; }', '/src/component.vue?vue&type=style&index=0&lang=less') as TransformResult
+    expect(less?.code).toContain('@import "/virtual/weapp-tailwindcss/index.css";')
+    expect(less?.code).toContain('@color: red;')
+  })
+
   it('rewrites tailwindcss root imports to generator placeholder in force generator mode', async () => {
     const WeappTailwindcss = await loadUnifiedVitePlugin()
     const currentContext = createContext({

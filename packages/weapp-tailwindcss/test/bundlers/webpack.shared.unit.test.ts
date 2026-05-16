@@ -22,8 +22,11 @@ describe('bundlers/webpack shared helpers', () => {
 
     expect(isCssLikeModuleResource(undefined, cssMatcher)).toBe(false)
     expect(isCssLikeModuleResource('app.css?type=style', cssMatcher)).toBe(true)
+    expect(isCssLikeModuleResource('app.scss?inline', cssMatcher)).toBe(true)
+    expect(isCssLikeModuleResource('component.vue?vue&type=style&index=0&lang.scss', cssMatcher)).toBe(true)
+    expect(isCssLikeModuleResource('component.vue?vue&type=style&index=0&lang=less', cssMatcher)).toBe(true)
     expect(isCssLikeModuleResource('component.mpx?type=styles&index=0', cssMatcher, 'mpx')).toBe(true)
-    expect(isCssLikeModuleResource('component.mpx?type=styles&index=0', cssMatcher)).toBe(false)
+    expect(isCssLikeModuleResource('component.mpx?type=styles&index=0', cssMatcher)).toBe(true)
 
     expect(hasLoaderEntry([{ loader: '/virtual/runtime-loader.js?abc' }], 'runtime-loader.js')).toBe(true)
     expect(hasLoaderEntry([{ loader: '/virtual/runtime-loader.js?abc' }])).toBe(false)

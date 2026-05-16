@@ -1642,6 +1642,31 @@ describe('bundlers/webpack UnifiedWebpackPluginV5', () => {
     expect(classSetLoaderEntry).toBeDefined()
   })
 
+  it('injects rewrite loader for preprocessor and SFC style modules', () => {
+    currentContext = createContext()
+    currentContext.twPatcher.majorVersion = 4
+    getCompilerContextMock.mockReturnValue(currentContext)
+    const { compiler, getLoaderHandler } = createCompilerWithLoaderTracking()
+    const plugin = new UnifiedWebpackPluginV5()
+    plugin.apply(compiler as any)
+
+    const handler = getLoaderHandler()
+    const scssModule: LoaderModule = {
+      loaders: [{ loader: '/path/sass-loader.js' }],
+      resource: '/abs/app.scss?inline',
+    }
+    const sfcLessModule: LoaderModule = {
+      loaders: [{ loader: '/path/less-loader.js' }],
+      resource: '/abs/component.vue?vue&type=style&index=0&lang=less',
+    }
+
+    handler?.({}, scssModule)
+    handler?.({}, sfcLessModule)
+
+    expect(scssModule.loaders.find(entry => isCssImportRewriteLoader(entry))).toBeDefined()
+    expect(sfcLessModule.loaders.find(entry => isCssImportRewriteLoader(entry))).toBeDefined()
+  })
+
   it('walks loader debug branches for app and page css modules', () => {
     const previousDebug = process.env.WEAPP_TW_LOADER_DEBUG
     process.env.WEAPP_TW_LOADER_DEBUG = '1'

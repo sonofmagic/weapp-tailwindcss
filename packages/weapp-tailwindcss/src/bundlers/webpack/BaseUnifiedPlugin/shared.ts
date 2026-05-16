@@ -1,4 +1,5 @@
 import type { AppType } from '@/types'
+import { isSourceStyleRequest, stripRequestQuery } from '@/bundlers/shared/style-requests'
 
 const MPX_STYLE_RESOURCE_QUERY_RE = /(?:\?|&)type=styles\b/
 
@@ -10,15 +11,7 @@ export function stripResourceQuery(resource?: string): string | undefined {
   if (typeof resource !== 'string') {
     return resource
   }
-  const queryIndex = resource.indexOf('?')
-  if (queryIndex !== -1) {
-    return resource.slice(0, queryIndex)
-  }
-  const hashIndex = resource.indexOf('#')
-  if (hashIndex !== -1) {
-    return resource.slice(0, hashIndex)
-  }
-  return resource
+  return stripRequestQuery(resource)
 }
 
 export function isCssLikeModuleResource(
@@ -31,6 +24,9 @@ export function isCssLikeModuleResource(
   }
   const normalizedResource = stripResourceQuery(resource)
   if (normalizedResource && cssMatcher(normalizedResource)) {
+    return true
+  }
+  if (isSourceStyleRequest(resource)) {
     return true
   }
   if (appType === 'mpx') {

@@ -2,6 +2,7 @@ import type { ExistingRawSourceMap } from 'rollup'
 import path from 'node:path'
 import process from 'node:process'
 import { cleanUrl, ensurePosix } from '@weapp-tailwindcss/shared'
+import { isSourceStyleRequest } from '../shared/style-requests'
 
 export function slash(p: string): string {
   return ensurePosix(p)
@@ -12,7 +13,7 @@ export const isWindows = process.platform === 'win32'
 const cssLangs = `\\.(css|less|sass|scss|styl|stylus|pcss|postcss)($|\\?)`
 export const cssLangRE = new RegExp(cssLangs)
 export function isCSSRequest(request: string): boolean {
-  return cssLangRE.test(request)
+  return cssLangRE.test(request) || isSourceStyleRequest(request)
 }
 
 export function normalizePath(id: string): string {

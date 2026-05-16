@@ -30,6 +30,8 @@ const TAILWIND_ROOT_DIRECTIVE_NAMES = new Set([
   'variant',
 ])
 const TAILWIND_ROOT_DIRECTIVE_RE = /@(?:import\s+(?:url\(\s*)?["']?tailwindcss4?(?:\/[^"')\s]*)?|tailwind|config|custom-variant|plugin|source|theme|utility|variant)\b/
+const TAILWIND_EXTRACTABLE_DIRECTIVE_RE = /^\s*@(?:import|tailwind|config|source|reference|plugin)\b[\s\S]*?(?:;|$)/
+const TAILWIND_EXTRACTABLE_BLOCK_DIRECTIVE_RE = /^\s*@(?:theme|utility|variant|custom-variant)\b[\s\S]*$/
 
 interface TailwindDirectiveOptions {
   importFallback?: boolean | undefined
@@ -103,6 +105,82 @@ function normalizeTailwindImportAtRules(root: postcss.Root, options: TailwindDir
   return changed
 }
 
+function normalizeTailwindDirectiveLine(line: string, options: TailwindDirectiveOptions = {}) {
+  if (!options.importFallback || !line.trimStart().startsWith('@import')) {
+    return line
+  }
+  const request = parseImportRequest(line.trimStart().replace(/^@import\b/, ''))
+  if (!isWeappTailwindcssImportRequest(request)) {
+    return line
+  }
+  return replaceImportRequest(line, request, request.replace(/^weapp-tailwindcss/, 'tailwindcss'))
+}
+
+function extractTailwindDirectiveLines(
+  rawSource: string,
+  options: TailwindDirectiveOptions & { removeConfig?: boolean } = {},
+) {
+  const directives: string[] = []
+  const seenImports = new Set<string>()
+  for (const line of stripGeneratorPlaceholderMarkers(rawSource).split(/\r?\n/)) {
+    const trimmed = line.trim()
+    if (!trimmed || trimmed.startsWith('//')) {
+      continue
+    }
+    const directive = TAILWIND_EXTRACTABLE_DIRECTIVE_RE.exec(line)?.[0]
+      ?? TAILWIND_EXTRACTABLE_BLOCK_DIRECTIVE_RE.exec(line)?.[0]
+    if (!directive) {
+      continue
+    }
+    const normalized = normalizeTailwindDirectiveLine(directive.trimEnd(), options)
+    const normalizedTrimmed = normalized.trim()
+    if (options.removeConfig && normalizedTrimmed.startsWith('@config')) {
+      continue
+    }
+    const request = /^@import\b/.test(normalizedTrimmed)
+      ? parseImportRequest(normalizedTrimmed.replace(/^@import\b/, ''))
+      : undefined
+    if (request && !isTailwindImportRequest(request) && !isPackageJsonImportRequest(request)) {
+      continue
+    }
+    if (/^@import\b/.test(normalizedTrimmed) && !request) {
+      continue
+    }
+    if (request && isTailwindImportRequest(request)) {
+      const key = normalizedTrimmed
+      if (seenImports.has(key)) {
+        continue
+      }
+      seenImports.add(key)
+    }
+    directives.push(normalized)
+  }
+  return directives
+}
+
+function extractTailwindSourceForPostcssFallback(
+  rawSource: string,
+  options: TailwindDirectiveOptions & { removeConfig?: boolean } = {},
+) {
+  const directives = extractTailwindDirectiveLines(rawSource, options)
+  return directives.length > 0 ? directives.join('\n') : undefined
+}
+
+function extractConfigRequestFromSource(rawSource: string) {
+  for (const line of rawSource.split(/\r?\n/)) {
+    const match = /^\s*@config\b([\s\S]*?)(?:;|$)/.exec(line)
+    const request = match ? parseConfigRequest(match[1] ?? '') : undefined
+    if (request) {
+      return request
+    }
+  }
+  return undefined
+}
+
+function hasPreprocessorOnlySyntax(rawSource: string) {
+  return /(?:^|\n)\s*(?:\/\/|\$[\w-]+\s*:|@[\w-]+\s*:|@(?:mixin|include|function|use|forward)\b)/.test(rawSource)
+}
+
 export function normalizeTailwindSourceDirectives(rawSource: string, options: TailwindDirectiveOptions = {}) {
   if (!options.importFallback) {
     return rawSource
@@ -112,7 +190,7 @@ export function normalizeTailwindSourceDirectives(rawSource: string, options: Ta
     return normalizeTailwindImportAtRules(root, options) ? root.toString() : rawSource
   }
   catch {
-    return rawSource
+    return extractTailwindSourceForPostcssFallback(rawSource, options) ?? rawSource
   }
 }
 
@@ -204,7 +282,7 @@ export function hasTailwindSourceDirectives(rawSource: string, options: Tailwind
     return found
   }
   catch {
-    return false
+    return extractTailwindDirectiveLines(rawSource, options).length > 0
   }
 }
 
@@ -234,7 +312,7 @@ export function hasTailwindRootDirectives(rawSource: string, options: TailwindDi
     return found
   }
   catch {
-    return true
+    return extractTailwindDirectiveLines(rawSource, options).length > 0
   }
 }
 
@@ -294,6 +372,17 @@ export function resolveCssEntrySource(
     if (!found) {
       return undefined
     }
+    if (hasPreprocessorOnlySyntax(rawSource)) {
+      const css = extractTailwindSourceForPostcssFallback(rawSource, { ...options, removeConfig })
+      if (css) {
+        return {
+          css,
+          config,
+          configRequest,
+          base,
+        }
+      }
+    }
     return {
       css: removedConfig || normalizedImports ? root.toString() : rawSource,
       config,
@@ -302,6 +391,20 @@ export function resolveCssEntrySource(
     }
   }
   catch {
-    return undefined
+    const css = extractTailwindSourceForPostcssFallback(rawSource, options)
+    const configRequest = extractConfigRequestFromSource(rawSource)
+    const config = configRequest && !isPackageJsonImportRequest(configRequest)
+      ? path.isAbsolute(configRequest)
+        ? configRequest
+        : path.resolve(base, configRequest)
+      : undefined
+    return css
+      ? {
+          css,
+          config,
+          configRequest,
+          base,
+        }
+      : undefined
   }
 }

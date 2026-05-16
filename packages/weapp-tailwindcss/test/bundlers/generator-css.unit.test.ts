@@ -390,6 +390,62 @@ describe('bundlers/shared generator css', () => {
     expect(source?.css).toBe('@import "tailwindcss";\n@import "tailwindcss/theme.css";')
   })
 
+  it('extracts Tailwind directives from Sass and Less sources when PostCSS cannot parse them', async () => {
+    const { hasTailwindSourceDirectives, resolveCssEntrySource } = await import('@/bundlers/shared/generator-css')
+    const rawSource = [
+      '$brand: #123456;',
+      '// sass comment',
+      '@import "tailwindcss";',
+      '@import "weapp-tailwindcss";',
+      '@config "./tailwind.config.ts";',
+      '@source inline("w-[100px] text-[#123456]");',
+      '@reference "tailwindcss";',
+      '.card {',
+      '  color: $brand;',
+      '  @include rounded;',
+      '  .title { color: red; }',
+      '}',
+    ].join('\n')
+
+    expect(hasTailwindSourceDirectives(rawSource, { importFallback: true })).toBe(true)
+
+    const source = resolveCssEntrySource(rawSource, __dirname, {
+      importFallback: true,
+      removeConfig: false,
+    })
+
+    expect(source).toEqual(expect.objectContaining({
+      css: [
+        '@import "tailwindcss";',
+        '@config "./tailwind.config.ts";',
+        '@source inline("w-[100px] text-[#123456]");',
+        '@reference "tailwindcss";',
+      ].join('\n'),
+      base: __dirname,
+    }))
+    expect(source?.css).not.toContain('$brand')
+    expect(source?.css).not.toContain('@include')
+  })
+
+  it('extracts Tailwind v3 @tailwind directives from Less sources', async () => {
+    const { resolveCssEntrySource } = await import('@/bundlers/shared/generator-css')
+    const rawSource = [
+      '@brand: #123456;',
+      '// less comment',
+      '@tailwind base;',
+      '@tailwind components;',
+      '@tailwind utilities;',
+      '.card { color: @brand; }',
+    ].join('\n')
+    const source = resolveCssEntrySource(rawSource, __dirname)
+
+    expect(source?.css).toBe([
+      '@tailwind base;',
+      '@tailwind components;',
+      '@tailwind utilities;',
+    ].join('\n'))
+  })
+
   it('generates Tailwind v4 css from package.json subpath imports in default auto mode', async () => {
     const runtimeSet = new Set(['w-[100px]'])
     const rawSource = '@import "#tailwind.css";\n.card{color:red}'
