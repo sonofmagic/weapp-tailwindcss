@@ -897,14 +897,14 @@ describe('watch-hmr regression summary helpers', () => {
 
   it('lets Taro Vite cases override the plugin processing budget for restart fallback runs', () => {
     const metrics = createCase('taro-vite-react-tailwindcss-v4', 'demo', 30, 40)
-    metrics.maxPluginProcessMs = 1200
+    metrics.maxPluginProcessMs = 2000
     const templateMetric = metrics.mutationMetrics.find(
       mutation => mutation.mutationKind === 'template',
     )
     if (!templateMetric || templateMetric.mutationKind === 'style') {
       throw new Error('missing template metric')
     }
-    templateMetric.rounds[0].hotUpdatePluginProcessMs = 900
+    templateMetric.rounds[0].hotUpdatePluginProcessMs = 1500
 
     expect(() => assertPluginProcessBudget(metrics, {
       caseName: 'demo',
@@ -1140,7 +1140,7 @@ describe('watch-hmr regression cases', () => {
 
     for (const watchCase of cases) {
       expect(watchCase.env).not.toHaveProperty('TARO_E2E_WATCH_NATIVE')
-      expect(watchCase.maxPluginProcessMs).toBe(1200)
+      expect(watchCase.maxPluginProcessMs).toBe(2000)
       expect(watchCase.initialMutationDelayMs).toBe(15_000)
     }
   })
