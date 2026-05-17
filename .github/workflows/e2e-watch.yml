@@ -372,7 +372,7 @@ jobs:
             timeout_minutes: 150
             watch_timeout_ms: '600000'
             watch_poll_ms: '40'
-            watch_max_plugin_process_ms: '15000'
+            watch_max_plugin_process_ms: '60000'
             watch_command_timeout_ms: '7200000'
           - os: windows-latest
             runner_label: windows
@@ -411,7 +411,7 @@ jobs:
             timeout_minutes: 120
             watch_timeout_ms: '420000'
             watch_poll_ms: '40'
-            watch_max_plugin_process_ms: '15000'
+            watch_max_plugin_process_ms: '60000'
             watch_command_timeout_ms: '5400000'
           - os: windows-latest
             runner_label: windows

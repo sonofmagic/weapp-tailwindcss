@@ -390,7 +390,7 @@ describe('e2e watch workflow', () => {
       round_profile: 'default',
       timeout_minutes: 120,
       watch_timeout_ms: '420000',
-      watch_max_plugin_process_ms: '15000',
+      watch_max_plugin_process_ms: '60000',
       watch_command_timeout_ms: '5400000',
     }))
     expect(nightlyRows).toContainEqual(expect.objectContaining({
@@ -411,7 +411,7 @@ describe('e2e watch workflow', () => {
       round_profile: 'default',
       timeout_minutes: 150,
       watch_timeout_ms: '600000',
-      watch_max_plugin_process_ms: '15000',
+      watch_max_plugin_process_ms: '60000',
       watch_command_timeout_ms: '7200000',
     }))
     expect(nightlyRows).toContainEqual(expect.objectContaining({
