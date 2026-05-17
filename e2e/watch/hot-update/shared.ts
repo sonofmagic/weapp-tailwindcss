@@ -404,6 +404,7 @@ export function shouldRunGroupedTarget(caseName: WatchCaseName, target: WatchPro
 
 async function runWatchHmrCommand(cwd: string, args: string[], commandTimeoutMs: number) {
   const maxAttempts = Math.max(1, toNumberEnv('E2E_WATCH_MAX_ATTEMPTS', 2))
+  const heartbeatIntervalMs = Math.max(30_000, toNumberEnv('E2E_WATCH_HEARTBEAT_INTERVAL_MS', 60_000))
   const env = { ...process.env }
 
   for (const key of Object.keys(env)) {
@@ -419,6 +420,12 @@ async function runWatchHmrCommand(cwd: string, args: string[], commandTimeoutMs:
   }
 
   for (let attempt = 1; attempt <= maxAttempts; attempt += 1) {
+    const attemptStartedAt = Date.now()
+    const heartbeat = setInterval(() => {
+      const elapsedSeconds = Math.round((Date.now() - attemptStartedAt) / 1000)
+      process.stdout.write(`[e2e-watch] watch-hmr attempt ${attempt}/${maxAttempts} still running (${elapsedSeconds}s elapsed)\n`)
+    }, heartbeatIntervalMs)
+
     try {
       await execa('pnpm', args, {
         cwd,
@@ -444,6 +451,9 @@ async function runWatchHmrCommand(cwd: string, args: string[], commandTimeoutMs:
       }
       const message = error instanceof Error ? error.message : String(error)
       process.stdout.write(`[e2e-watch] watch-hmr attempt ${attempt} failed, retrying once: ${message}\n`)
+    }
+    finally {
+      clearInterval(heartbeat)
     }
   }
 }
