@@ -1141,6 +1141,7 @@ describe('watch-hmr regression cases', () => {
     for (const watchCase of cases) {
       expect(watchCase.env).not.toHaveProperty('TARO_E2E_WATCH_NATIVE')
       expect(watchCase.maxPluginProcessMs).toBe(800)
+      expect(watchCase.initialMutationDelayMs).toBe(15_000)
     }
   })
 
