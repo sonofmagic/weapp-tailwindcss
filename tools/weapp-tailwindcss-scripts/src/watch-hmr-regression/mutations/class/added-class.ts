@@ -20,6 +20,7 @@ import {
   collectPluginProcessMetrics,
   createClassMutationScenario,
   readJoinedOutputFiles,
+  waitForClassOutputBaseline,
   waitForCompileSettled,
   waitForMarkerState,
   waitForOutputsUpdated,
@@ -152,15 +153,17 @@ export async function runAddedClassMutation(
     verifyClassLiteralIn,
   } = options
 
-  const [baselineWxml, baselineJs, baselineGlobalStyle] = await Promise.all([
-    readFileIfExists(watchCase.outputWxml),
-    readFileIfExists(watchCase.outputJs),
-    readJoinedOutputFiles(globalStyleOutputs),
-  ])
-
-  if (!baselineWxml || !baselineJs || !baselineGlobalStyle) {
-    throw new Error(`[${watchCase.label}] missing baseline outputs for ${mutationKind} added-class mutation`)
-  }
+  const {
+    wxml: baselineWxml,
+    js: baselineJs,
+    globalStyle: baselineGlobalStyle,
+  } = await waitForClassOutputBaseline(
+    watchCase,
+    cliOptions,
+    session,
+    mutationKind,
+    globalStyleOutputs,
+  )
 
   const baseScenario = createClassMutationScenario(
     watchCase,

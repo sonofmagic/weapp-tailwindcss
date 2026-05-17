@@ -247,6 +247,62 @@ export async function waitForOutputsUpdated(
   )
 }
 
+export async function waitForClassOutputBaseline(
+  watchCase: WatchCase,
+  options: CliOptions,
+  session: WatchSession,
+  mutationKind: 'template' | 'script' | 'content',
+  globalStyleOutputs: string[],
+) {
+  let resolvedOutputs: {
+    wxml: string
+    js: string
+    globalStyle: string
+  } | undefined
+  let lastReason = 'outputs are not ready'
+  const waitStartedAt = Date.now()
+
+  await waitFor(
+    async () => {
+      const [wxml, js, globalStyle, hasGlobalStyleOutputs] = await Promise.all([
+        readFileIfExists(watchCase.outputWxml),
+        readFileIfExists(watchCase.outputJs),
+        readJoinedOutputFiles(globalStyleOutputs),
+        hasResolvedOutputFiles(globalStyleOutputs),
+      ])
+
+      if (wxml && js && hasGlobalStyleOutputs) {
+        resolvedOutputs = {
+          wxml,
+          js,
+          globalStyle,
+        }
+        return true
+      }
+
+      lastReason = [
+        wxml ? undefined : 'wxml',
+        js ? undefined : 'js',
+        hasGlobalStyleOutputs ? undefined : 'global style',
+      ].filter(Boolean).join(', ')
+      return false
+    },
+    {
+      timeoutMs: options.timeoutMs,
+      pollMs: options.pollMs,
+      message: `[${watchCase.label}] baseline outputs are missing for ${mutationKind}: ${lastReason}`,
+      onTick: session.ensureRunning,
+    },
+    waitStartedAt,
+  )
+
+  if (!resolvedOutputs) {
+    throw new Error(`[${watchCase.label}] baseline outputs failed to resolve for ${mutationKind}`)
+  }
+
+  return resolvedOutputs
+}
+
 export async function waitForOutputFilesUpdated(
   watchCase: WatchCase,
   files: string[],

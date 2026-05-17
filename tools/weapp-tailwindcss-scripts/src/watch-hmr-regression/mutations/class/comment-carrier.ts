@@ -8,11 +8,12 @@ import type {
   WatchSession,
 } from '../../types'
 import { formatPath } from '../../cli'
-import { getMtime, readFileIfExists, writeFilePreserveEol } from '../../text'
+import { getMtime, writeFilePreserveEol } from '../../text'
 import {
   collectPluginProcessMetrics,
   createClassMutationScenario,
   readJoinedOutputFiles,
+  waitForClassOutputBaseline,
   waitForMarkerState,
   waitForOutputsUpdated,
 } from '../shared'
@@ -51,15 +52,17 @@ export async function runCommentCarrierMutation(
     baselineMtime,
   } = options
 
-  const [baselineWxml, baselineJs, baselineGlobalStyle] = await Promise.all([
-    readFileIfExists(watchCase.outputWxml),
-    readFileIfExists(watchCase.outputJs),
-    readJoinedOutputFiles(globalStyleOutputs),
-  ])
-
-  if (!baselineWxml || !baselineJs || !baselineGlobalStyle) {
-    throw new Error(`[${watchCase.label}] missing baseline outputs for script comment-carrier mutation`)
-  }
+  const {
+    wxml: baselineWxml,
+    js: baselineJs,
+    globalStyle: baselineGlobalStyle,
+  } = await waitForClassOutputBaseline(
+    watchCase,
+    cliOptions,
+    session,
+    'script',
+    globalStyleOutputs,
+  )
 
   const mutateCommentCarrier = mutation.mutateCommentCarrier
   if (!mutateCommentCarrier) {
