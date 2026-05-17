@@ -324,6 +324,7 @@ describe('e2e watch workflow', () => {
         round_profile: 'issue33',
         timeout_minutes: 60,
         watch_timeout_ms: '420000',
+        watch_max_plugin_process_ms: '9000',
         watch_command_timeout_ms: '1500000',
       },
     ]
@@ -372,6 +373,16 @@ describe('e2e watch workflow', () => {
     expect(nightlyRows).toContainEqual(expect.objectContaining({
       ...slowMacosWeappViteBudget,
       'node-version': 24,
+    }))
+    expect(nightlyRows).toContainEqual(expect.objectContaining({
+      os: 'macos-latest',
+      runner_label: 'macos',
+      watch_case: 'uni-app-vite-tailwindcss-v3',
+      round_profile: 'issue33',
+      timeout_minutes: 60,
+      watch_timeout_ms: '420000',
+      watch_max_plugin_process_ms: '9000',
+      watch_command_timeout_ms: '1500000',
     }))
     expect(nightlyRows).toContainEqual(expect.objectContaining({
       os: 'windows-latest',
