@@ -1,5 +1,27 @@
 # weapp-tailwindcss
 
+## 5.0.0-next.11
+
+### Minor Changes
+
+- ✨ **默认开启 Tailwind CSS v4 生成模式的 `@import "weapp-tailwindcss"` 兜底识别，并新增 `generator.importFallback` 配置用于显式关闭。该能力用于框架无法完成 `@import "tailwindcss"` 转写时，仍让两种入口产出保持一致。** [#860](https://github.com/sonofmagic/weapp-tailwindcss/pull/860) by @github-actions
+
+### Patch Changes
+
+- 🐛 **修复核心源码在严格 TypeScript 配置下的类型问题，并清理对应 ESLint 诊断。** [#859](https://github.com/sonofmagic/weapp-tailwindcss/pull/859) by @sonofmagic
+
+- 🐛 **修复 Tailwind CSS v3 在 Vite watch 热更新中因源码类名变化反复触发完整 runtime extract 导致 HMR 变慢的问题。v3 首轮仍保留完整 runtime 基线，后续 watch 轮次按文件增量更新源码候选类，避免已删除源码类继续污染 CSS，同时保留 safelist 等非源码基线类。** [#860](https://github.com/sonofmagic/weapp-tailwindcss/pull/860) by @github-actions
+
+- 🐛 **为 watch-HMR 回归增加 weapp-tailwindcss 插件自身处理耗时采集与 500ms 预算校验，区分构建器端到端热更新时间和插件内部处理时间，便于持续优化开发体验。** [#860](https://github.com/sonofmagic/weapp-tailwindcss/pull/860) by @github-actions
+
+- 🐛 **增强 Sass/Less 等预处理器样式入口的 Tailwind 指令识别与改写能力，避免将预处理器私有语法直接交给 Tailwind 解析，并补充真实 demo 与 CI 回归覆盖。** [#860](https://github.com/sonofmagic/weapp-tailwindcss/pull/860) by @github-actions
+
+- 🐛 **收紧 demo watch-HMR 回归验收：所有 demo 热更新样本统一按 2 秒预算校验，并在速度报告中标注 1 秒推荐目标。** [#860](https://github.com/sonofmagic/weapp-tailwindcss/pull/860) by @github-actions
+
+- 🐛 **统一 Tailwind CSS v4 示例、测试辅助入口和构建器重写契约，推荐继续使用 `@import "tailwindcss"`，并仅将 `weapp-tailwindcss` CSS 入口保留为兼容解析路径。** [#859](https://github.com/sonofmagic/weapp-tailwindcss/pull/859) by @sonofmagic
+- 📦 **Dependencies** [`bc3b689`](https://github.com/sonofmagic/weapp-tailwindcss/commit/bc3b689f916d9dd8e2fbb7a685d040b2510ddee3)
+  → `@weapp-tailwindcss/postcss@2.2.1-next.2`, `@weapp-tailwindcss/reset@0.1.1-next.0`
+
 ## 5.0.0-next.10
 
 ### Patch Changes
