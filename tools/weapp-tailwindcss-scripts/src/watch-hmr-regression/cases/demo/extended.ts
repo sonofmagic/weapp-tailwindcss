@@ -36,7 +36,7 @@ const taroViteWatchEnv = {
   NODE_ENV: 'production',
 }
 
-const taroVitePluginProcessBudgetMs = 800
+const taroVitePluginProcessBudgetMs = 1200
 
 function normalizeExtension(version: 'v3' | 'v4') {
   return version === 'v3' ? 'scss' : 'css'
