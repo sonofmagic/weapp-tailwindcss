@@ -240,8 +240,6 @@ describe('e2e watch workflow', () => {
 
     expect(workflow.jobs['nightly-full-regression'].strategy['fail-fast']).toBe(false)
     expect(matrixCases(rows)).toEqual(expect.arrayContaining([
-      'macos:22:all:default',
-      'windows:22:all:default',
       'macos:22:demo:default',
       'windows:22:demo:default',
       'macos:24:weapp-vite-tailwindcss-v3:issue33',
@@ -415,26 +413,7 @@ describe('e2e watch workflow', () => {
       watch_max_attempts: '3',
       watch_command_timeout_ms: '7200000',
     }))
-    expect(nightlyRows).toContainEqual(expect.objectContaining({
-      os: 'macos-latest',
-      runner_label: 'macos',
-      watch_case: 'all',
-      round_profile: 'default',
-      timeout_minutes: 150,
-      watch_timeout_ms: '600000',
-      watch_max_plugin_process_ms: '60000',
-      watch_command_timeout_ms: '7200000',
-    }))
-    expect(nightlyRows).toContainEqual(expect.objectContaining({
-      os: 'windows-latest',
-      runner_label: 'windows',
-      watch_case: 'all',
-      round_profile: 'default',
-      timeout_minutes: 180,
-      watch_timeout_ms: '1200000',
-      watch_max_plugin_process_ms: '60000',
-      watch_command_timeout_ms: '9000000',
-    }))
+    expect(nightlyRows.some(row => row.watch_case === 'all')).toBe(false)
   })
 
   it('keeps the CI e2e watch plugin processing fallback budget at 6000ms', () => {
