@@ -1,5 +1,11 @@
 # @weapp-tailwindcss/postcss
 
+## 2.2.1-next.2
+
+### Patch Changes
+
+- 🐛 **修复核心源码在严格 TypeScript 配置下的类型问题，并清理对应 ESLint 诊断。** [#859](https://github.com/sonofmagic/weapp-tailwindcss/pull/859) by @sonofmagic
+
 ## 2.2.1-next.1
 
 ### Patch Changes

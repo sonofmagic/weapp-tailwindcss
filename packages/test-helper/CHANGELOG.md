@@ -1,5 +1,11 @@
 # @weapp-tailwindcss/test-helper
 
+## 0.0.2-next.1
+
+### Patch Changes
+
+- 🐛 **统一 Tailwind CSS v4 示例、测试辅助入口和构建器重写契约，推荐继续使用 `@import "tailwindcss"`，并仅将 `weapp-tailwindcss` CSS 入口保留为兼容解析路径。** [#859](https://github.com/sonofmagic/weapp-tailwindcss/pull/859) by @sonofmagic
+
 ## 0.0.2-next.0
 
 ### Patch Changes
