@@ -241,7 +241,6 @@ describe('e2e watch workflow', () => {
     expect(workflow.jobs['nightly-full-regression'].strategy['fail-fast']).toBe(false)
     expect(matrixCases(rows)).toEqual(expect.arrayContaining([
       'macos:22:demo:default',
-      'windows:22:demo:default',
       'macos:24:weapp-vite-tailwindcss-v3:issue33',
       'windows:24:weapp-vite-tailwindcss-v3:issue33',
     ]))
@@ -402,17 +401,7 @@ describe('e2e watch workflow', () => {
       watch_max_plugin_process_ms: '60000',
       watch_command_timeout_ms: '5400000',
     }))
-    expect(nightlyRows).toContainEqual(expect.objectContaining({
-      os: 'windows-latest',
-      runner_label: 'windows',
-      watch_case: 'demo',
-      round_profile: 'default',
-      timeout_minutes: 150,
-      watch_timeout_ms: '900000',
-      watch_max_plugin_process_ms: '60000',
-      watch_max_attempts: '3',
-      watch_command_timeout_ms: '7200000',
-    }))
+    expect(nightlyRows.some(row => row.runner_label === 'windows' && row.watch_case === 'demo')).toBe(false)
     expect(nightlyRows.some(row => row.watch_case === 'all')).toBe(false)
   })
 
