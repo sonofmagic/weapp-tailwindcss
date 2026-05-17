@@ -191,6 +191,7 @@ jobs:
             timeout_minutes: 60
             watch_timeout_ms: '420000'
             watch_poll_ms: '40'
+            watch_max_plugin_process_ms: '30000'
             watch_command_timeout_ms: '1500000'
           - os: windows-latest
             runner_label: windows
@@ -381,7 +382,7 @@ jobs:
             timeout_minutes: 180
             watch_timeout_ms: '1200000'
             watch_poll_ms: '40'
-            watch_max_plugin_process_ms: '15000'
+            watch_max_plugin_process_ms: '30000'
             watch_command_timeout_ms: '9000000'
           - os: macos-latest
             runner_label: macos
@@ -439,7 +440,7 @@ jobs:
             timeout_minutes: 150
             watch_timeout_ms: '540000'
             watch_poll_ms: '40'
-            watch_max_plugin_process_ms: '15000'
+            watch_max_plugin_process_ms: '30000'
             watch_command_timeout_ms: '7200000'
           - os: macos-latest
             runner_label: macos
