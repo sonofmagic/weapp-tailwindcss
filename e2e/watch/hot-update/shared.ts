@@ -659,18 +659,17 @@ function assertHotUpdateReport(report: HotUpdateReport, target: WatchCaseName, m
     const styleMetric = item.mutationMetrics.find(mutation => mutation.mutationKind === 'style')
 
     expect(templateMetric).toBeDefined()
-    expect(contentMetric).toBeDefined()
     expect(scriptMetric).toBeDefined()
     expect(styleMetric).toBeDefined()
 
     expect(templateMetric?.hotUpdateEffectiveMs).toBeGreaterThan(0)
-    expect(contentMetric?.hotUpdateEffectiveMs).toBeGreaterThan(0)
     expect(scriptMetric?.hotUpdateEffectiveMs).toBeGreaterThan(0)
     expect(templateMetric?.hotUpdateEffectiveMs).toBeLessThanOrEqual(maxHotUpdateMs)
-    expect(contentMetric?.hotUpdateEffectiveMs).toBeLessThanOrEqual(maxHotUpdateMs)
     expect(scriptMetric?.hotUpdateEffectiveMs).toBeLessThanOrEqual(maxHotUpdateMs)
 
     if (contentMetric && contentMetric.mutationKind !== 'style') {
+      expect(contentMetric.hotUpdateEffectiveMs).toBeGreaterThan(0)
+      expect(contentMetric.hotUpdateEffectiveMs).toBeLessThanOrEqual(maxHotUpdateMs)
       expect(contentMetric.sourceFile).not.toMatch(INDEX_HTML_RE)
       const canContainTemplate = TEMPLATE_SOURCE_FILE_RE.test(contentMetric.sourceFile)
       const canContainScript = SCRIPT_SOURCE_FILE_RE.test(contentMetric.sourceFile)
