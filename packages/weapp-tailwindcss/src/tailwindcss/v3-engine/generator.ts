@@ -44,6 +44,7 @@ interface TailwindV3Internals {
 }
 
 interface TailwindV3IncrementalGenerateCacheEntry {
+  context: TailwindV3Context
   seenCandidates: Set<string>
   classSet: Set<string>
   css: string
@@ -234,42 +235,6 @@ function createRuntimeReadyCacheKey(source: TailwindV3ResolvedSource, rootPath: 
   ].join('\0')
 }
 
-function isTailwindImport(params: string, layer: string) {
-  const trimmed = params.trim()
-  return new RegExp(`^(?:url\\()?['"]tailwindcss/${layer}(?:\\.css)?['"]\\)?(?:\\s|$)`).test(trimmed)
-}
-
-function createUtilitiesOnlyCss(css: string) {
-  try {
-    const root = postcss.parse(css)
-    root.walkAtRules((rule) => {
-      if (rule.name === 'tailwind') {
-        const layer = rule.params.trim()
-        if (layer === 'base' || layer === 'components') {
-          rule.remove()
-        }
-        return
-      }
-      if (rule.name === 'import' && (isTailwindImport(rule.params, 'base') || isTailwindImport(rule.params, 'components'))) {
-        rule.remove()
-        return
-      }
-      if (rule.name === 'layer') {
-        const layer = rule.params.trim()
-        if (layer === 'base' || layer === 'components') {
-          rule.remove()
-        }
-      }
-    })
-    return root.toString()
-  }
-  catch {
-    return css
-      .replace(/@tailwind\s+(?:base|components)\s*;/g, '')
-      .replace(/@import\s+(?:url\()?['"]tailwindcss\/(?:base|components)(?:\.css)?['"][^;]*;/g, '')
-  }
-}
-
 function isDirectUtilitiesOnlyCss(css: string) {
   return css.replace(/\s+/g, '') === '@tailwindutilities;'
 }
@@ -304,14 +269,18 @@ function sortCandidates(candidates: Iterable<string>) {
   })
 }
 
-function appendDirectUtilityRules(root: postcss.Root, context: TailwindV3Context) {
-  const sortedRules = context.offsets.sort([...context.ruleCache])
+function appendUtilityRules(root: postcss.Root, context: TailwindV3Context, rules: Array<[unknown, postcss.Node]>) {
+  const sortedRules = context.offsets.sort(rules)
   for (const [sort, rule] of sortedRules) {
     const tailwindRaw = rule.raws.tailwind as { parentLayer?: string } | undefined
     if (sort.layer === 'utilities' || (sort.layer === 'variants' && tailwindRaw?.parentLayer === 'utilities')) {
       root.append(rule.clone())
     }
   }
+}
+
+function appendDirectUtilityRules(root: postcss.Root, context: TailwindV3Context) {
+  appendUtilityRules(root, context, [...context.ruleCache])
 }
 
 function createRuntimeReadyPromise(source: TailwindV3ResolvedSource) {
@@ -397,6 +366,7 @@ export function createTailwindV3Engine(source: TailwindV3ResolvedSource): Tailwi
     return {
       css,
       rawCss,
+      context,
       classSet,
       rawCandidates: collectCandidates(options.candidates),
       dependencies: [...dependencies],
@@ -404,6 +374,35 @@ export function createTailwindV3Engine(source: TailwindV3ResolvedSource): Tailwi
       root: null,
       target,
       version: 3 as const,
+    }
+  }
+
+  async function generateIncrementalMissingUtilities(
+    context: TailwindV3Context,
+    candidates: string[],
+    target: TailwindV3GenerateTarget,
+    styleOptions: Partial<IStyleHandlerOptions> | undefined,
+  ) {
+    tailwindInternals ??= loadTailwindV3Internals(source)
+    const internals = tailwindInternals
+    const root = postcss.root()
+    const result: TailwindV3ProcessResult = {
+      css: '',
+      messages: [],
+    }
+    const rules = internals.generateRules(new Set(sortCandidates(candidates)), context)
+    appendUtilityRules(root, context, rules)
+    internals.resolveDefaultsAtRules(context)(root, result)
+    internals.collapseAdjacentRules(context)(root, result)
+    internals.collapseDuplicateDeclarations(context)(root, result)
+
+    const rawCss = root.toString()
+    const css = await transformTailwindV3CssByTarget(rawCss, target, styleOptions)
+    return {
+      css,
+      rawCss,
+      classSet: collectClassSet(context),
+      dependencies: collectDependencyMessages(result),
     }
   }
 
@@ -432,14 +431,12 @@ export function createTailwindV3Engine(source: TailwindV3ResolvedSource): Tailwi
         }
       }
 
-      const utilitySource = {
-        ...source,
-        css: createUtilitiesOnlyCss(source.css),
-      }
-      const generated = await generateOnce(utilitySource, {
-        ...options,
-        candidates: missingCandidates,
-      })
+      const generated = await generateIncrementalMissingUtilities(
+        cached.context,
+        missingCandidates,
+        target,
+        options.styleOptions,
+      )
       for (const candidate of missingCandidates) {
         cached.seenCandidates.add(candidate)
       }
@@ -464,6 +461,7 @@ export function createTailwindV3Engine(source: TailwindV3ResolvedSource): Tailwi
 
     const generated = await generateOnce(source, options)
     incrementalGenerateCache.set(cacheKey, {
+      context: generated.context,
       seenCandidates: new Set(requestedCandidates),
       classSet: new Set(generated.classSet),
       css: generated.css,

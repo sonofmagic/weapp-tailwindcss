@@ -40,6 +40,40 @@ const LEGACY_CONTAINER_COMPAT_CSS = [
   '}',
 ].join('\n')
 
+const LEGACY_COMPAT_CACHE_LIMIT = 128
+const legacyCompatSourceCache = new Map<string, string>()
+const legacyCompatTransformCache = new Map<string, string>()
+
+function setLimitedCacheValue(cache: Map<string, string>, key: string, value: string) {
+  if (cache.size >= LEGACY_COMPAT_CACHE_LIMIT) {
+    const firstKey = cache.keys().next().value
+    if (firstKey !== undefined) {
+      cache.delete(firstKey)
+    }
+  }
+  cache.set(key, value)
+}
+
+function createStableJson(value: unknown): string {
+  if (value === undefined) {
+    return 'undefined'
+  }
+  if (value === null || typeof value !== 'object') {
+    return JSON.stringify(value)
+  }
+  if (Array.isArray(value)) {
+    return `[${value.map(item => createStableJson(item)).join(',')}]`
+  }
+  return `{${Object.keys(value).sort().map((key) => {
+    const record = value as Record<string, unknown>
+    return `${JSON.stringify(key)}:${createStableJson(record[key])}`
+  }).join(',')}}`
+}
+
+function createLegacyCompatTransformCacheKey(source: string, options: IStyleHandlerOptions) {
+  return `${createStableJson(options)}\0${source}`
+}
+
 export function removeTailwindApplyRules(rawSource: string) {
   try {
     const root = postcss.parse(rawSource)
@@ -67,8 +101,14 @@ export function removeTailwindApplyRules(rawSource: string) {
 }
 
 function resolveLegacyCompatCssSource(rawSource: string) {
+  const cached = legacyCompatSourceCache.get(rawSource)
+  if (cached !== undefined) {
+    return cached
+  }
   const source = removeTailwindSourceDirectives(stripTailwindBanners(rawSource))
-  return removeUnsupportedMiniProgramAtRules(removeTailwindApplyRules(source))
+  const resolved = removeUnsupportedMiniProgramAtRules(removeTailwindApplyRules(source))
+  setLimitedCacheValue(legacyCompatSourceCache, rawSource, resolved)
+  return resolved
 }
 
 function hasContainerConfigToken(rawSource: string) {
@@ -145,10 +185,17 @@ export async function appendLegacyCompatCss(
     return createCssAppend(css, compatSource)
   }
 
-  const { css: compatCss } = await styleHandler(compatSource, {
+  const styleOptions = {
     ...cssHandlerOptions,
     ...generatorStyleOptions,
-  })
+  }
+  const compatCssCacheKey = createLegacyCompatTransformCacheKey(compatSource, styleOptions)
+  let compatCss = legacyCompatTransformCache.get(compatCssCacheKey)
+  if (compatCss === undefined) {
+    const handled = await styleHandler(compatSource, styleOptions)
+    compatCss = handled.css
+    setLimitedCacheValue(legacyCompatTransformCache, compatCssCacheKey, compatCss)
+  }
   const cleanedCompatCss = collectDedupedPostTransformCompatCss(
     removeDuplicatedViteMarkers(removeUnsupportedMiniProgramAtRules(compatCss), css),
     css,
@@ -183,10 +230,17 @@ export async function appendLegacyContainerCompatCss(
     return css
   }
 
-  const { css: compatCss } = await styleHandler(LEGACY_CONTAINER_COMPAT_CSS, {
+  const styleOptions = {
     ...cssHandlerOptions,
     ...generatorStyleOptions,
-  })
+  }
+  const compatCssCacheKey = createLegacyCompatTransformCacheKey(LEGACY_CONTAINER_COMPAT_CSS, styleOptions)
+  let compatCss = legacyCompatTransformCache.get(compatCssCacheKey)
+  if (compatCss === undefined) {
+    const handled = await styleHandler(LEGACY_CONTAINER_COMPAT_CSS, styleOptions)
+    compatCss = handled.css
+    setLimitedCacheValue(legacyCompatTransformCache, compatCssCacheKey, compatCss)
+  }
   const cleanedCompatCss = collectDedupedPostTransformCompatCss(
     removeUnsupportedMiniProgramAtRules(compatCss),
     css,

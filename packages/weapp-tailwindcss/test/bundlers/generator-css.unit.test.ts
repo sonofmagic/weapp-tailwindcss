@@ -224,6 +224,75 @@ describe('bundlers/shared generator css', () => {
     }))
   })
 
+  it('reuses transformed legacy compat css for stable source during hmr', async () => {
+    const firstRuntimeSet = new Set(['bg-blue-500'])
+    const secondRuntimeSet = new Set(['bg-red-500'])
+    const rawSource = '@import "tailwindcss";\n.card{color:red}'
+    const generateMock = vi.fn(async (options: any) => {
+      const candidate = [...options.candidates][0]
+      return {
+        css: `.${candidate}{background-color:red}`,
+        rawCss: `.${candidate}{background-color:red}`,
+        target: 'weapp',
+        classSet: options.candidates,
+        dependencies: [],
+        sources: [],
+        root: null,
+      }
+    })
+
+    vi.doMock('@/generator', () => ({
+      ...createDefaultGeneratorMock(),
+      createWeappTailwindcssGenerator: vi.fn(() => ({
+        generate: generateMock,
+      })),
+    }))
+
+    const { generateCssByGenerator } = await import('@/bundlers/shared/generator-css')
+    const styleHandler = vi.fn(async (code: string) => ({ css: `legacy:${code}` }))
+    const baseOptions = {
+      opts: {
+        styleHandler,
+      } as any,
+      runtimeState: {
+        twPatcher: {
+          majorVersion: 4,
+        } as any,
+        readyPromise: Promise.resolve(),
+      },
+      rawSource,
+      file: 'app.wxss',
+      cssHandlerOptions: {
+        isMainChunk: true,
+        postcssOptions: {
+          options: {
+            from: 'app.wxss',
+          },
+        },
+        majorVersion: 4,
+      } as any,
+      cssUserHandlerOptions: {
+        isMainChunk: false,
+        majorVersion: 4,
+      } as any,
+      styleHandler,
+      debug: vi.fn(),
+    }
+
+    const first = await generateCssByGenerator({
+      ...baseOptions,
+      runtime: firstRuntimeSet,
+    })
+    const second = await generateCssByGenerator({
+      ...baseOptions,
+      runtime: secondRuntimeSet,
+    })
+
+    expect(first?.css).toContain('legacy:.card{color:red}')
+    expect(second?.css).toContain('legacy:.card{color:red}')
+    expect(styleHandler).toHaveBeenCalledTimes(1)
+  })
+
   it('treats weapp-tailwindcss imports as Tailwind v4 source entries by default', async () => {
     const runtimeSet = new Set(['w-[100px]'])
     const rawSource = '@import "weapp-tailwindcss";\n.card{color:red}'
