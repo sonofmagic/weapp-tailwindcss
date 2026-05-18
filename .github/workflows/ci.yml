@@ -129,6 +129,7 @@ jobs:
           test/tailwindcss/patcher-resolve.test.ts
           test/tailwindcss/targets.log.test.ts
           test/watch-hmr-coverage-matrix.unit.test.ts
+          test/watch-hmr-regression.unit.test.ts
 
       - name: Compatibility Status Note
         if: always()

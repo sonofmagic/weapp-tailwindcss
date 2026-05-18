@@ -35,7 +35,13 @@ interface GenerateBundleContext {
     readyPromise: Promise<void>
   }
   ensureRuntimeClassSet: (force?: boolean) => Promise<Set<string>>
-  ensureBundleRuntimeClassSet: (snapshot: BundleSnapshot, forceRefresh?: boolean) => Promise<Set<string>>
+  ensureBundleRuntimeClassSet: (
+    snapshot: BundleSnapshot,
+    forceRefresh?: boolean,
+    options?: {
+      allowBaselineOnlyInitialSync?: boolean | undefined
+    },
+  ) => Promise<Set<string>>
   debug: (format: string, ...args: unknown[]) => void
   getResolvedConfig: () => ResolvedConfig | undefined
   markCssAssetProcessed?: (asset: OutputAsset, file?: string) => void
@@ -132,7 +138,9 @@ export function createGenerateBundleHook(context: GenerateBundleContext) {
     const moduleGraphOptions = createBundleModuleGraphOptions(outDir, jsEntries)
     const runtimeStart = performance.now()
     const runtime = useBundleRuntimeClassSet
-      ? await ensureBundleRuntimeClassSet(snapshot, forceRuntimeRefreshByEnv)
+      ? await ensureBundleRuntimeClassSet(snapshot, forceRuntimeRefreshByEnv, {
+          allowBaselineOnlyInitialSync: buildCommand,
+        })
       : await context.ensureRuntimeClassSet(forceRuntimeRefreshByEnv)
     const shouldFilterTailwindV4MiniProgramCandidates = runtimeState.twPatcher.majorVersion === 4 && generatorOptions.target === 'weapp'
     await waitForSourceCandidateSyncs?.()

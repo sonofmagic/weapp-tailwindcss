@@ -57,6 +57,22 @@ function mutateVueScriptWithTemplateConsumer(
   )
 }
 
+function mutateUniAppViteV3BgObjKey(
+  source: string,
+  payload: Parameters<NonNullable<WatchCase['contentMutation']>['mutate']>[1],
+) {
+  const anchors = [
+    '\'bg-[#999999]\':true',
+    '\'bg-[#4268EA]\':true',
+    '\'bg-[red]\':true',
+  ]
+  const anchor = anchors.find(candidate => source.includes(candidate))
+  if (!anchor) {
+    throw new Error(`uni-app vite v3 bgObj key anchor not found: ${anchors.join(' | ')}`)
+  }
+  return mutateVueScriptSetupObjectKeyByAnchor(source, anchor, payload)
+}
+
 function createSubPackageMutations(
   baseCwd: string,
   options: {
@@ -177,11 +193,7 @@ export function buildDemoExtendedCases(baseCwd: string): WatchCase[] {
       forbidBgHexTruncationIn: ['js'],
       roundConfigs: buildIssue33HighRiskRoundConfigs(),
       mutate(source, payload) {
-        return mutateVueScriptSetupObjectKeyByAnchor(
-          source,
-          '\'2xl:text-[red]\': true',
-          payload,
-        )
+        return mutateUniAppViteV3BgObjKey(source, payload)
       },
     },
     styleMutation: {

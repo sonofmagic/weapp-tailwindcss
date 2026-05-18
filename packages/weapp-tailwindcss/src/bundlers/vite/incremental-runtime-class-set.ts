@@ -24,6 +24,7 @@ export interface BundleRuntimeClassSetManager {
 
 export interface BundleRuntimeClassSetSyncOptions {
   baseClassSet?: Set<string> | undefined
+  skipInitialFullScanWithBase?: boolean | undefined
 }
 
 interface CreateBundleRuntimeClassSetManagerOptions {
@@ -240,6 +241,7 @@ export function createBundleRuntimeClassSetManager(
     const runtimeEntries = createRuntimeEntries(snapshot)
     const runtimeEntriesByFile = new Map(runtimeEntries.map(entry => [entry.file, entry]))
     const currentRuntimeFiles = new Set(runtimeEntriesByFile.keys())
+    const hadTrackedRuntimeFiles = candidatesByFile.size > 0
     const fullRebuild = runtimeSignature !== nextSignature || candidatesByFile.size === 0
 
     if (runtimeSignature !== nextSignature) {
@@ -249,6 +251,11 @@ export function createBundleRuntimeClassSetManager(
 
     runtimeSignature = nextSignature
     const nextBaseClassSet = options.baseClassSet
+    const canUseBaseWithoutInitialFullScan = Boolean(fullRebuild
+      && !hadTrackedRuntimeFiles
+      && options.skipInitialFullScanWithBase === true
+      && nextBaseClassSet
+      && nextBaseClassSet.size > 0)
 
     for (const [file, previousCandidates] of candidatesByFile) {
       if (currentRuntimeFiles.has(file)) {
@@ -258,13 +265,19 @@ export function createBundleRuntimeClassSetManager(
       candidatesByFile.delete(file)
     }
 
-    const changedRuntimeFiles = fullRebuild
-      ? [...runtimeEntriesByFile.keys()]
-      : [...collectChangedRuntimeFiles(snapshot)]
+    const changedRuntimeFiles = canUseBaseWithoutInitialFullScan
+      ? [...collectChangedRuntimeFiles(snapshot)]
+      : (
+          fullRebuild
+            ? [...runtimeEntriesByFile.keys()]
+            : [...collectChangedRuntimeFiles(snapshot)]
+        )
 
     if (changedRuntimeFiles.length === 0) {
       if (nextBaseClassSet) {
-        baseClassSet = createNonSourceBaseClassSet(nextBaseClassSet, candidateCountByClass)
+        baseClassSet = canUseBaseWithoutInitialFullScan
+          ? new Set(nextBaseClassSet)
+          : createNonSourceBaseClassSet(nextBaseClassSet, candidateCountByClass)
       }
       return createRuntimeClassSet(baseClassSet, candidateCountByClass)
     }
@@ -317,7 +330,9 @@ export function createBundleRuntimeClassSetManager(
     }
 
     if (nextBaseClassSet) {
-      baseClassSet = createNonSourceBaseClassSet(nextBaseClassSet, candidateCountByClass)
+      baseClassSet = canUseBaseWithoutInitialFullScan
+        ? new Set(nextBaseClassSet)
+        : createNonSourceBaseClassSet(nextBaseClassSet, candidateCountByClass)
     }
     const runtimeSet = createRuntimeClassSet(baseClassSet, candidateCountByClass)
 

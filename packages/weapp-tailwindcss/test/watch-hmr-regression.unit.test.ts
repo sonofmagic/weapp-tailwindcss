@@ -927,15 +927,15 @@ describe('watch-hmr regression cases', () => {
     expect(roundConfig?.buildModifyClassTokens?.('seed')).toEqual([...ISSUE33_MODIFY_CLASS_TOKENS])
   })
 
-  it('keeps the uni-app Vue3 Vite content mutation anchored to the current page fixture', () => {
+  it('keeps the uni-app Vue3 Vite content mutation anchored to the bgObj page fixture', () => {
     const uniAppCase = buildDemoExtendedCases('/repo').find(watchCase => watchCase.name === 'uni-app-vite-tailwindcss-v3')
     const contentMutation = uniAppCase?.contentMutation
 
     expect(contentMutation).toBeDefined()
     expect(contentMutation?.mutate(
       [
-        'const numClassObj = ref({',
-        '  \'2xl:text-[red]\': true',
+        'const bgObj = ref({',
+        '  \'bg-[#999999]\':true',
         '})',
       ].join('\n'),
       payload,

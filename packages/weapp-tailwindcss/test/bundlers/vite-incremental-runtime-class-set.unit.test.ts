@@ -490,4 +490,62 @@ describe('bundlers/vite incremental runtime class set', () => {
     expect(secondRuntimeSet.has('bg-blue-500')).toBe(false)
     expect(extractRawCandidates).toHaveBeenCalledTimes(2)
   })
+
+  it('uses v3 baseline runtime set without scanning clean files on first incremental sync', async () => {
+    const opts = createOptions()
+    const outDir = '/project/dist'
+    const state = createBundleBuildState()
+    const patcher = createV3Patcher()
+    const extractRawCandidates = vi.fn(async (content: string) => {
+      if (content.includes('bg-[red]')) {
+        return [{ rawCandidate: 'bg-[red]' }]
+      }
+      if (content.includes('vendor-token')) {
+        return [{ rawCandidate: 'vendor-token' }]
+      }
+      return []
+    })
+    const manager = createBundleRuntimeClassSetManager({
+      extractRawCandidates,
+    })
+
+    const firstSnapshot = buildBundleSnapshot({
+      'common/vendor.js': {
+        ...createRollupChunk('const vendor = "vendor-token"'),
+        fileName: 'common/vendor.js',
+      },
+      'pages/index/index.js': {
+        ...createRollupChunk('const cls = "bg-[#4268EA]"'),
+        fileName: 'pages/index/index.js',
+      },
+    }, opts, outDir, state)
+
+    updateBundleBuildState(state, firstSnapshot, new Map([
+      ['common/vendor.js', new Set<string>()],
+      ['pages/index/index.js', new Set<string>()],
+    ]))
+
+    const secondSnapshot = buildBundleSnapshot({
+      'common/vendor.js': {
+        ...createRollupChunk('const vendor = "vendor-token"'),
+        fileName: 'common/vendor.js',
+      },
+      'pages/index/index.js': {
+        ...createRollupChunk('const cls = "bg-[red]"'),
+        fileName: 'pages/index/index.js',
+      },
+    }, opts, outDir, state)
+
+    const runtimeSet = await manager.sync(patcher, secondSnapshot, {
+      baseClassSet: new Set(['bg-[#4268EA]', 'safelist-only']),
+      skipInitialFullScanWithBase: true,
+    })
+
+    expect(runtimeSet).toEqual(new Set(['bg-[#4268EA]', 'safelist-only', 'bg-[red]']))
+    expect(extractRawCandidates).toHaveBeenCalledTimes(1)
+    expect(extractRawCandidates).toHaveBeenCalledWith(
+      expect.stringContaining('bg-[red]'),
+      'js',
+    )
+  })
 })

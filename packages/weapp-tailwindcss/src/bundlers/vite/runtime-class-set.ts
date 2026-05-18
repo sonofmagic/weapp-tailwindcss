@@ -108,7 +108,13 @@ export function createViteRuntimeClassSet(options: CreateViteRuntimeClassSetOpti
     }
   }
 
-  async function ensureBundleRuntimeClassSet(snapshot: BundleSnapshot, forceRefresh = false) {
+  async function ensureBundleRuntimeClassSet(
+    snapshot: BundleSnapshot,
+    forceRefresh = false,
+    options: {
+      allowBaselineOnlyInitialSync?: boolean | undefined
+    } = {},
+  ) {
     const forceRuntimeRefresh = forceRefresh || process.env['WEAPP_TW_VITE_FORCE_RUNTIME_REFRESH'] === '1'
     const invalidation = resolveRuntimeRefreshOptions()
     const shouldRefreshPatcher = forceRuntimeRefresh || invalidation.changed
@@ -147,7 +153,10 @@ export function createViteRuntimeClassSet(options: CreateViteRuntimeClassSetOpti
           })
         }
         const nextRuntimeSet = await bundleRuntimeClassSetManager.sync(runtimeState.twPatcher, snapshot, {
-          baseClassSet,
+          baseClassSet: baseClassSet ?? (
+            options.allowBaselineOnlyInitialSync === true ? runtimeSet : undefined
+          ),
+          skipInitialFullScanWithBase: options.allowBaselineOnlyInitialSync === true && Boolean(runtimeSet),
         })
         runtimeSet = nextRuntimeSet
         return nextRuntimeSet
