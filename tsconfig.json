@@ -4,10 +4,7 @@
     "module": "ESNext",
     "moduleResolution": "Bundler",
     "resolveJsonModule": true,
-    "types": [
-      "node",
-      "vitest/globals"
-    ],
+    "types": ["node", "vitest/globals"],
     "allowJs": true,
     "strict": true,
     "exactOptionalPropertyTypes": true,
@@ -20,12 +17,6 @@
     "skipLibCheck": true
   },
   "references": [
-    {
-      "path": "./benchmark/app"
-    },
-    {
-      "path": "./e2e"
-    },
     {
       "path": "./packages-runtime/cva"
     },
@@ -108,85 +99,7 @@
       "path": "./packages/wetw"
     },
     {
-      "path": "./templates/mpx-tailwindcss-v4"
-    },
-    {
-      "path": "./templates/taro-react-tailwind-vscode-template"
-    },
-    {
-      "path": "./templates/taro-vite-tailwindcss-v4"
-    },
-    {
-      "path": "./templates/taro-vue3-tailwind-vscode-template"
-    },
-    {
-      "path": "./templates/taro-webpack-tailwindcss-v4"
-    },
-    {
-      "path": "./templates/uni-app-tailwindcss-v4"
-    },
-    {
-      "path": "./templates/uni-app-vite-vue3-tailwind-vscode-template"
-    },
-    {
-      "path": "./templates/uni-app-vue2-tailwind-vscode-template"
-    },
-    {
-      "path": "./templates/uni-app-webpack-tailwindcss-v4"
-    },
-    {
       "path": "./tools/weapp-tailwindcss-scripts"
-    },
-    {
-      "path": "./website"
-    },
-    {
-      "path": "./demo/gulp-tailwindcss-v3"
-    },
-    {
-      "path": "./demo/gulp-tailwindcss-v4"
-    },
-    {
-      "path": "./demo/mpx-tailwindcss-v3"
-    },
-    {
-      "path": "./demo/mpx-tailwindcss-v4"
-    },
-    {
-      "path": "./demo/taro-webpack-react-tailwindcss-v3"
-    },
-    {
-      "path": "./demo/taro-webpack-react-tailwindcss-v4"
-    },
-    {
-      "path": "./demo/taro-vite-react-tailwindcss-v3"
-    },
-    {
-      "path": "./demo/taro-vite-react-tailwindcss-v4"
-    },
-    {
-      "path": "./demo/taro-webpack-vue3-tailwindcss-v3"
-    },
-    {
-      "path": "./demo/taro-webpack-vue3-tailwindcss-v4"
-    },
-    {
-      "path": "./demo/taro-vite-vue3-tailwindcss-v3"
-    },
-    {
-      "path": "./demo/taro-vite-vue3-tailwindcss-v4"
-    },
-    {
-      "path": "./demo/uni-app-vite-tailwindcss-v3"
-    },
-    {
-      "path": "./demo/uni-app-vite-tailwindcss-v4"
-    },
-    {
-      "path": "./demo/weapp-vite-tailwindcss-v3"
-    },
-    {
-      "path": "./demo/weapp-vite-tailwindcss-v4"
     }
   ],
   "files": []
