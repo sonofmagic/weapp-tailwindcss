@@ -165,6 +165,21 @@ interface StyleMutationMetric {
   rollbackNeedleCleared?: boolean
 }
 
+interface UserReportedHotUpdateMetric {
+  label: string
+  sourceFile: string
+  from: string
+  to: string
+  classTokens: string[]
+  escapedClasses: string[]
+  verifiedGlobalStyleEscapedClasses: string[]
+  minRequiredGlobalStyleEscapedClasses: number
+  hotUpdateOutputMs: number
+  hotUpdateEffectiveMs: number
+  rollbackOutputMs: number
+  rollbackEffectiveMs: number
+}
+
 type HotUpdateMutationMetric = TemplateOrScriptMutationMetric | StyleMutationMetric
 
 interface SubPackageMutationMetric {
@@ -193,6 +208,7 @@ interface HotUpdateCaseReport {
   globalStyleOutput?: string
   globalStyleOutputs?: string[]
   mutationMetrics: HotUpdateMutationMetric[]
+  userReportedHotUpdate?: UserReportedHotUpdateMetric
   subPackageMutationMetrics?: SubPackageMutationMetric[]
   summaryByMutationKind: Partial<Record<MutationKind, HotUpdateSummary>>
   initialReadyMs: number
@@ -514,6 +530,13 @@ function collectReportBudgetSamples(report: HotUpdateReport) {
       }
     }
 
+    if (oneCase.userReportedHotUpdate) {
+      samples.push({
+        label: `${oneCase.project}:user-reported:${oneCase.userReportedHotUpdate.label}`,
+        hotUpdateEffectiveMs: oneCase.userReportedHotUpdate.hotUpdateEffectiveMs,
+      })
+    }
+
     for (const subPackage of oneCase.subPackageMutationMetrics ?? []) {
       samples.push({
         label: `${oneCase.project}:subpackage:${subPackage.root}:template`,
@@ -663,6 +686,40 @@ export function assertHotUpdateReport(report: HotUpdateReport, target: WatchCase
     expect(templateMetric).toBeDefined()
     expect(scriptMetric).toBeDefined()
     expect(styleMetric).toBeDefined()
+
+    if (item.name === 'uni-app-vite-tailwindcss-v3' || item.name === 'uni-app-vite-tailwindcss-v4') {
+      const userReportedHotUpdate = item.userReportedHotUpdate
+      expect(userReportedHotUpdate, `[${item.project}] should include the user reported hot-update scenario`).toBeDefined()
+      if (!userReportedHotUpdate) {
+        throw new Error(`[${item.project}] missing user reported hot-update metric`)
+      }
+      expect(userReportedHotUpdate.sourceFile).toContain('src/pages/index/index.vue')
+      expect(userReportedHotUpdate.classTokens.length).toBeGreaterThan(0)
+      expect(userReportedHotUpdate.escapedClasses.length).toBe(userReportedHotUpdate.classTokens.length)
+      expect(userReportedHotUpdate.verifiedGlobalStyleEscapedClasses.length).toBeGreaterThanOrEqual(
+        userReportedHotUpdate.minRequiredGlobalStyleEscapedClasses,
+      )
+      expect(userReportedHotUpdate.hotUpdateEffectiveMs).toBeGreaterThan(0)
+      expect(userReportedHotUpdate.hotUpdateEffectiveMs).toBeLessThanOrEqual(maxHotUpdateMs)
+      expect(userReportedHotUpdate.rollbackEffectiveMs).toBeGreaterThan(0)
+      if (item.name === 'uni-app-vite-tailwindcss-v3') {
+        expect(userReportedHotUpdate.label).toBe('cardsColor bg-[#4268EA] to bg-[red]')
+        expect([userReportedHotUpdate.from, userReportedHotUpdate.to]).toEqual(
+          expect.arrayContaining(['bg-[#4268EA] shadow-indigo-100', 'bg-[red] shadow-indigo-100']),
+        )
+        expect(userReportedHotUpdate.classTokens.some(token => token === 'bg-[red]' || token === 'bg-[#4268EA]')).toBe(true)
+      }
+      if (item.name === 'uni-app-vite-tailwindcss-v4') {
+        expect(userReportedHotUpdate.label).toBe('index text-[88rpx] to text-[188rpx]')
+        expect([userReportedHotUpdate.from, userReportedHotUpdate.to]).toEqual(
+          expect.arrayContaining([
+            'text-[#00f285] text-[88rpx] font-bold underline',
+            'text-[#00f285] text-[188rpx] font-bold underline',
+          ]),
+        )
+        expect(userReportedHotUpdate.classTokens.some(token => token === 'text-[88rpx]' || token === 'text-[188rpx]')).toBe(true)
+      }
+    }
 
     expect(templateMetric?.hotUpdateEffectiveMs).toBeGreaterThan(0)
     expect(scriptMetric?.hotUpdateEffectiveMs).toBeGreaterThan(0)

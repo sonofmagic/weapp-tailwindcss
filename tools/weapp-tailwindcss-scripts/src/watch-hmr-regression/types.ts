@@ -107,6 +107,18 @@ export interface StyleMutationConfig {
   mutate: (source: string, payload: StyleMutationPayload) => string
 }
 
+export interface UserReportedHotUpdateConfig {
+  label: string
+  sourceFile: string
+  before: string
+  after: string
+  beforeClassTokens: string[]
+  afterClassTokens: string[]
+  verifyEscapedIn: Array<'wxml' | 'js'>
+  verifyClassLiteralIn?: Array<'wxml' | 'js'>
+  minRequiredGlobalStyleEscapedClasses?: number
+}
+
 export interface WatchCase {
   name: ConcreteWatchCaseName
   label: string
@@ -126,6 +138,7 @@ export interface WatchCase {
   outputStyleCandidates: string[]
   globalStyleCandidates: string[]
   contentMutation?: ClassMutationConfig
+  userReportedHotUpdate?: UserReportedHotUpdateConfig
   templateMutation: ClassMutationConfig
   scriptMutation: ClassMutationConfig
   styleMutation: StyleMutationConfig
@@ -296,6 +309,25 @@ export interface StyleMutationMetrics {
   rollbackNeedleCleared: boolean
 }
 
+export interface UserReportedHotUpdateMetrics {
+  label: string
+  sourceFile: string
+  from: string
+  to: string
+  classTokens: string[]
+  escapedClasses: string[]
+  verifiedGlobalStyleEscapedClasses: string[]
+  minRequiredGlobalStyleEscapedClasses: number
+  hotUpdateOutputMs: number
+  hotUpdateEffectiveMs: number
+  hotUpdatePluginProcessMs: number
+  hotUpdatePluginProcessSamples: PluginProcessSample[]
+  rollbackOutputMs: number
+  rollbackEffectiveMs: number
+  rollbackPluginProcessMs: number
+  rollbackPluginProcessSamples: PluginProcessSample[]
+}
+
 export type WatchCaseMutationMetrics = ClassMutationMetrics | StyleMutationMetrics
 
 export interface SubPackageMutationMetrics {
@@ -333,6 +365,7 @@ export interface WatchCaseMetrics {
   verifyClassLiteralIn: Array<'wxml' | 'js'>
   globalStyleOutputs: string[]
   mutationMetrics: WatchCaseMutationMetrics[]
+  userReportedHotUpdate?: UserReportedHotUpdateMetrics
   subPackageMutationMetrics: SubPackageMutationMetrics[]
   summaryByMutationKind: Partial<Record<MutationKind, WatchSummary>>
   initialReadyMs: number

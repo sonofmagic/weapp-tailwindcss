@@ -16,6 +16,7 @@ import {
   runClassMutation,
   runStyleMutation,
   runSubPackageMutation,
+  runUserReportedHotUpdate,
   waitForInitialWarmup,
   waitForOutputsReady,
 } from './mutations'
@@ -37,6 +38,7 @@ interface PluginProcessBudgetSample {
 function resolveCaseSourceFiles(watchCase: WatchCase) {
   return [...new Set([
     watchCase.contentMutation?.sourceFile,
+    watchCase.userReportedHotUpdate?.sourceFile,
     watchCase.templateMutation.sourceFile,
     watchCase.scriptMutation.sourceFile,
     watchCase.skipStyleMutation ? undefined : watchCase.styleMutation.sourceFile,
@@ -153,6 +155,23 @@ export async function runCase(watchCase: WatchCase, options: CliOptions): Promis
       )
     }
 
+    let userReportedHotUpdateMetrics
+    if (watchCase.userReportedHotUpdate) {
+      const userReportedSourceOriginal = sourceOriginals.get(watchCase.userReportedHotUpdate.sourceFile)
+      if (userReportedSourceOriginal == null) {
+        throw new Error(`[${watchCase.label}] missing user reported hot-update source original`)
+      }
+
+      userReportedHotUpdateMetrics = await runUserReportedHotUpdate(
+        watchCase,
+        options,
+        session,
+        watchCase.userReportedHotUpdate,
+        userReportedSourceOriginal,
+        globalStyleOutputs,
+      )
+    }
+
     const subPackageMutationMetrics = []
     for (const subPackageMutation of watchCase.subPackageMutations ?? []) {
       subPackageMutationMetrics.push(await runSubPackageMutation(
@@ -191,6 +210,7 @@ export async function runCase(watchCase: WatchCase, options: CliOptions): Promis
       verifyClassLiteralIn: templateMetrics.verifyClassLiteralIn,
       globalStyleOutputs,
       mutationMetrics,
+      ...(userReportedHotUpdateMetrics ? { userReportedHotUpdate: userReportedHotUpdateMetrics } : {}),
       subPackageMutationMetrics,
       summaryByMutationKind: summarizeMutationMetricsByKind(mutationMetrics),
       initialReadyMs,
@@ -376,6 +396,19 @@ function collectPluginProcessBudgetSamples(metrics: WatchCaseMetrics): PluginPro
     samples.push(...collectClassMutationPluginProcessBudgetSamples(mutation))
   }
 
+  if (metrics.userReportedHotUpdate) {
+    samples.push(
+      {
+        label: `user-reported:${metrics.userReportedHotUpdate.label}:hot-update`,
+        pluginProcessMs: metrics.userReportedHotUpdate.hotUpdatePluginProcessMs,
+      },
+      {
+        label: `user-reported:${metrics.userReportedHotUpdate.label}:rollback`,
+        pluginProcessMs: metrics.userReportedHotUpdate.rollbackPluginProcessMs,
+      },
+    )
+  }
+
   for (const subPackage of metrics.subPackageMutationMetrics) {
     samples.push(
       ...collectClassMutationPluginProcessBudgetSamples(subPackage.template).map(sample => ({
@@ -417,6 +450,13 @@ function collectHotUpdateBudgetSamples(metrics: WatchCaseMetrics): HotUpdateBudg
       continue
     }
     samples.push(...collectClassMutationBudgetSamples(mutation))
+  }
+
+  if (metrics.userReportedHotUpdate) {
+    samples.push({
+      label: `user-reported:${metrics.userReportedHotUpdate.label}`,
+      hotUpdateEffectiveMs: metrics.userReportedHotUpdate.hotUpdateEffectiveMs,
+    })
   }
 
   for (const subPackage of metrics.subPackageMutationMetrics) {

@@ -54,6 +54,8 @@ async function runBuild() {
     const build = spawnPnpm(['run', 'build:mp-weixin'], {
       env: {
         UNI_BUILD_STRICT: '1',
+        WEAPP_TW_HMR_TIMING: '0',
+        WEAPP_TW_WATCH_REGRESSION: '0',
       },
       stdio: 'inherit',
     })

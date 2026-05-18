@@ -193,6 +193,16 @@ export function buildDemoExtendedCases(baseCwd: string): WatchCase[] {
         return mutateUniAppViteV3BgObjKey(source, payload)
       },
     },
+    userReportedHotUpdate: {
+      label: 'cardsColor bg-[#4268EA] to bg-[red]',
+      sourceFile: path.resolve(baseCwd, 'demo/uni-app-vite-tailwindcss-v3/src/pages/index/index.vue'),
+      before: 'bg-[#4268EA] shadow-indigo-100',
+      after: 'bg-[red] shadow-indigo-100',
+      beforeClassTokens: ['bg-[#4268EA]'],
+      afterClassTokens: ['bg-[red]'],
+      verifyEscapedIn: ['js'],
+      verifyClassLiteralIn: ['js'],
+    },
     styleMutation: {
       sourceFile: path.resolve(baseCwd, 'demo/uni-app-vite-tailwindcss-v3/src/pages/index/index.vue'),
       mutate(source, payload) {
@@ -223,6 +233,15 @@ export function buildDemoExtendedCases(baseCwd: string): WatchCase[] {
     globalStyleCandidates: [
       path.resolve(baseCwd, 'demo/uni-app-vite-tailwindcss-v4/dist/build/mp-weixin/app.wxss'),
     ],
+    userReportedHotUpdate: {
+      label: 'index text-[88rpx] to text-[188rpx]',
+      sourceFile: path.resolve(baseCwd, 'demo/uni-app-vite-tailwindcss-v4/src/pages/index/index.vue'),
+      before: 'text-[#00f285] text-[88rpx] font-bold underline',
+      after: 'text-[#00f285] text-[188rpx] font-bold underline',
+      beforeClassTokens: ['text-[88rpx]'],
+      afterClassTokens: ['text-[188rpx]'],
+      verifyEscapedIn: ['wxml'],
+    },
     contentMutation: {
       sourceFile: path.resolve(baseCwd, 'demo/uni-app-vite-tailwindcss-v4/src/pages/index/index.vue'),
       verifyEscapedIn: ['js'],

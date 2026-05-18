@@ -199,6 +199,20 @@ export function collectSpeedSamplesFromReport(report: WatchReport, reportFile: s
       }
     }
 
+    if (oneCase.userReportedHotUpdate) {
+      pushSpeedSample(samples, {
+        caseName,
+        project,
+        surface: `user-reported:${oneCase.userReportedHotUpdate.label}`,
+        sourceFile: oneCase.userReportedHotUpdate.sourceFile,
+        hotUpdateMs: oneCase.userReportedHotUpdate.hotUpdateEffectiveMs,
+        pluginProcessMs: toFiniteNumber(oneCase.userReportedHotUpdate.hotUpdatePluginProcessMs),
+        rollbackMs: toFiniteNumber(oneCase.userReportedHotUpdate.rollbackEffectiveMs),
+        initialReadyMs,
+        reportFile,
+      })
+    }
+
     for (const subPackage of oneCase.subPackageMutationMetrics ?? []) {
       for (const [kind, mutation] of [
         ['template', subPackage.template],
