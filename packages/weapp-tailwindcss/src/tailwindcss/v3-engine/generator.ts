@@ -20,6 +20,8 @@ interface TailwindcssPlugin {
   }
 }
 
+const runtimeReadyPromiseCache = new Map<string, Promise<void>>()
+
 interface LegacyContentObject {
   files?: unknown
   relative?: boolean
@@ -109,6 +111,22 @@ function loadTailwindcssPlugin(source: TailwindV3ResolvedSource): TailwindcssPlu
   return typeof plugin === 'function' ? plugin : plugin.default as TailwindcssPlugin
 }
 
+function createRuntimeReadyCacheKey(source: TailwindV3ResolvedSource, rootPath: string | undefined) {
+  return [
+    source.packageName,
+    source.postcssPlugin,
+    rootPath ?? 'missing',
+    source.config ?? 'config:missing',
+    source.cwd,
+  ].join('\0')
+}
+
+function resetTailwindcssPluginContext(plugin: TailwindcssPlugin) {
+  if (plugin.contextRef) {
+    plugin.contextRef.value = []
+  }
+}
+
 function collectClassSet(plugin: TailwindcssPlugin) {
   const classSet = new Set<string>()
   for (const context of plugin.contextRef?.value ?? []) {
@@ -144,9 +162,20 @@ function createRuntimeReadyPromise(source: TailwindV3ResolvedSource) {
       version: 3,
     },
   })
-  return ensureTailwindcssRuntimePatch(patcher, {
+  const cacheKey = createRuntimeReadyCacheKey(source, patcher.packageInfo?.rootPath)
+  const cached = runtimeReadyPromiseCache.get(cacheKey)
+  if (cached) {
+    return cached
+  }
+
+  const task = ensureTailwindcssRuntimePatch(patcher, {
     clearRequireCache: true,
+  }).catch((error) => {
+    runtimeReadyPromiseCache.delete(cacheKey)
+    throw error
   })
+  runtimeReadyPromiseCache.set(cacheKey, task)
+  return task
 }
 
 export function createTailwindV3Engine(source: TailwindV3ResolvedSource): TailwindV3Engine {
@@ -160,6 +189,7 @@ export function createTailwindV3Engine(source: TailwindV3ResolvedSource): Tailwi
       target = 'weapp',
     } = options
     const tailwindcss = loadTailwindcssPlugin(source)
+    resetTailwindcssPluginContext(tailwindcss)
     const tailwindConfig = createTailwindConfig(source, options)
     const result = await postcss([
       tailwindcss(tailwindConfig),

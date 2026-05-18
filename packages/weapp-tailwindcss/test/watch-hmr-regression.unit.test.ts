@@ -935,7 +935,7 @@ describe('watch-hmr regression cases', () => {
     expect(contentMutation?.mutate(
       [
         'const bgObj = ref({',
-        '  \'bg-[#999999]\':true',
+        '  \'bg-[#232322]\':true',
         '})',
       ].join('\n'),
       payload,
@@ -1063,6 +1063,7 @@ describe('watch-hmr regression cases', () => {
       path.resolve('/repo', 'demo/uni-app-vite-tailwindcss-v3/dist/build/mp-weixin/pages/index/index.wxss'),
       path.resolve('/repo', 'demo/uni-app-vite-tailwindcss-v3/dist/build/mp-weixin/app.wxss'),
     ])
+    expect(uniViteCase?.maxPluginProcessMs).toBe(5000)
 
     expect(mpxV4Case?.outputWxml).toBe(
       path.resolve('/repo', 'demo/mpx-tailwindcss-v4/dist/wx/custom-tab-bar/index.wxml'),

@@ -61,14 +61,10 @@ function mutateUniAppViteV3BgObjKey(
   source: string,
   payload: Parameters<NonNullable<WatchCase['contentMutation']>['mutate']>[1],
 ) {
-  const anchors = [
-    '\'bg-[#999999]\':true',
-    '\'bg-[#4268EA]\':true',
-    '\'bg-[red]\':true',
-  ]
-  const anchor = anchors.find(candidate => source.includes(candidate))
+  const bgObjMatch = /const\s+bgObj\s*=\s*ref\s*\(\s*\{[\s\S]*?\}\s*\)/.exec(source)
+  const anchor = /(['"]bg-\[[^\r\n'"]+\]['"]\s*:\s*true)/.exec(bgObjMatch?.[0] ?? '')?.[1]
   if (!anchor) {
-    throw new Error(`uni-app vite v3 bgObj key anchor not found: ${anchors.join(' | ')}`)
+    throw new Error('uni-app vite v3 bgObj arbitrary bg key anchor not found')
   }
   return mutateVueScriptSetupObjectKeyByAnchor(source, anchor, payload)
 }
@@ -144,6 +140,7 @@ export function buildDemoExtendedCases(baseCwd: string): WatchCase[] {
     project: 'demo/uni-app-vite-tailwindcss-v3',
     group: 'demo',
     requireStableGlobalStyleOnSameClassLiteral: false,
+    maxPluginProcessMs: 5000,
     cwd: path.resolve(baseCwd, 'demo/uni-app-vite-tailwindcss-v3'),
     devScript: 'dev:e2e-watch',
     outputWxml: path.resolve(baseCwd, 'demo/uni-app-vite-tailwindcss-v3/dist/build/mp-weixin/pages/index/index.wxml'),

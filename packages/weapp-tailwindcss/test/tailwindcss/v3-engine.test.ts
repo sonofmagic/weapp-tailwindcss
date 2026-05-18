@@ -1,4 +1,6 @@
+import path from 'node:path'
 import { createTailwindV3Engine, resolveTailwindV3Source, transformTailwindV3CssToWeapp } from '@/tailwindcss/v3-engine'
+import { TailwindcssPatcher } from 'tailwindcss-patch'
 import plugin from 'tailwindcss/plugin'
 
 function compactCss(css: string) {
@@ -6,6 +8,28 @@ function compactCss(css: string) {
 }
 
 describe('tailwindcss v3 engine', () => {
+  it('reuses runtime patch setup for repeated engines with the same source', async () => {
+    const source = await resolveTailwindV3Source({
+      css: '@tailwind utilities;',
+      base: path.resolve(process.cwd(), 'demo/uni-app-vite-tailwindcss-v3'),
+      config: undefined,
+    })
+    const patchSpy = vi.spyOn(TailwindcssPatcher.prototype, 'patch')
+
+    const first = createTailwindV3Engine(source)
+    const second = createTailwindV3Engine(source)
+
+    try {
+      await first.generate({ candidates: ['bg-blue-500'] })
+      await second.generate({ candidates: ['bg-[#123455]'] })
+
+      expect(patchSpy).toHaveBeenCalledTimes(1)
+    }
+    finally {
+      patchSpy.mockRestore()
+    }
+  })
+
   it('removes browser preflight while keeping utility variables for mini-program output', async () => {
     const source = await resolveTailwindV3Source({
       css: '@tailwind base; @tailwind utilities;',
@@ -160,6 +184,28 @@ describe('tailwindcss v3 engine', () => {
     expect(result.css).toBe(result.rawCss)
     expect(result.css).toContain('button')
     expect(result.css).toContain('.w-4')
+  })
+
+  it('does not leak class cache between repeated generations', async () => {
+    const source = await resolveTailwindV3Source({
+      css: '@tailwind utilities;',
+      base: process.cwd(),
+      config: undefined,
+    })
+    const engine = createTailwindV3Engine(source)
+
+    const first = await engine.generate({
+      candidates: ['bg-blue-500'],
+    })
+    const second = await engine.generate({
+      candidates: ['bg-[#123455]'],
+    })
+
+    expect(first.css).toContain('.bg-blue-500')
+    expect(first.classSet).toEqual(new Set(['bg-blue-500']))
+    expect(second.css).toContain('.bg-_b_h123455_B')
+    expect(second.css).not.toContain('.bg-blue-500')
+    expect(second.classSet).toEqual(new Set(['bg-[#123455]']))
   })
 
   it('normalizes default export configs before generating plugin components', async () => {
