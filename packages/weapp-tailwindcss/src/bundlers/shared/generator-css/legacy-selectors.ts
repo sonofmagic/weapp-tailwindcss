@@ -5,6 +5,18 @@ import { VITE_MARKER_RE } from './markers'
 const CLASS_SELECTOR_RE = /(?:^|[^\w-])\.[_a-z\u00A0-\uFFFF\\-]/i
 const MINI_PROGRAM_THEME_SCOPE_SELECTORS = new Set([':host', 'page', '.tw-root', 'wx-root-portal-content'])
 const SPECIFICITY_PLACEHOLDER_RE = /:not\(#(?:\\#|n)\)/g
+const SELECTOR_CACHE_LIMIT = 64
+const generatedSelectorCache = new Map<string, Set<string>>()
+
+function setGeneratedSelectorCache(css: string, selectors: Set<string>) {
+  if (generatedSelectorCache.size >= SELECTOR_CACHE_LIMIT) {
+    const firstKey = generatedSelectorCache.keys().next().value
+    if (firstKey !== undefined) {
+      generatedSelectorCache.delete(firstKey)
+    }
+  }
+  generatedSelectorCache.set(css, selectors)
+}
 
 function normalizeCompatSelector(selector: string) {
   return selector
@@ -147,6 +159,11 @@ function isPseudoContentInitRule(rule: postcss.Rule) {
 }
 
 export function collectGeneratedSelectors(css: string) {
+  const cached = generatedSelectorCache.get(css)
+  if (cached) {
+    return cached
+  }
+
   const selectors = new Set<string>()
   try {
     const root = postcss.parse(css)
@@ -162,7 +179,40 @@ export function collectGeneratedSelectors(css: string) {
   catch {
     return selectors
   }
+  setGeneratedSelectorCache(css, selectors)
   return selectors
+}
+
+function collectGeneratedDeclarationPropsBySelector(generatedCss: string, selectors: Set<string>) {
+  const propsBySelector = new Map<string, Set<string>>()
+  try {
+    const generatedRoot = postcss.parse(generatedCss)
+    generatedRoot.walkRules((rule) => {
+      const matchedSelectors = getRuleCompatSelectorKeys(rule).filter(selector => selectors.has(selector))
+      if (matchedSelectors.length === 0) {
+        return
+      }
+      const props = new Set<string>()
+      rule.walkDecls((decl) => {
+        props.add(decl.prop)
+      })
+      for (const selector of matchedSelectors) {
+        const existing = propsBySelector.get(selector)
+        if (existing) {
+          for (const prop of props) {
+            existing.add(prop)
+          }
+        }
+        else {
+          propsBySelector.set(selector, new Set(props))
+        }
+      }
+    })
+  }
+  catch {
+    return propsBySelector
+  }
+  return propsBySelector
 }
 
 export function removeGeneratedSelectorCompatCss(css: string, generatedCss: string) {
@@ -205,27 +255,33 @@ export function collectDedupedPostTransformCompatCss(css: string, generatedCss: 
   if (generatedSelectors.size === 0) {
     return css
   }
+  const generatedDeclarationPropsBySelector = collectGeneratedDeclarationPropsBySelector(generatedCss, generatedSelectors)
 
   const preservedNodes: postcss.Node[] = []
   try {
     const root = postcss.parse(css)
     root.each((node) => {
-      if (node.type === 'rule' && getRuleCompatSelectorKeys(node).some(selector => generatedSelectors.has(selector))) {
+      if (node.type === 'rule') {
+        const nodeSelectors = getRuleCompatSelectorKeys(node)
+        const duplicated = nodeSelectors.some(selector => generatedSelectors.has(selector))
+        if (!duplicated) {
+          preservedNodes.push(node.clone())
+          return
+        }
         if (isCustomPropertyOnlyRule(node) && !isPseudoContentInitRule(node) && !hasUtilityClassSelector(node.selector)) {
           const declarationProps = new Set<string>()
           node.walkDecls((decl) => {
             declarationProps.add(decl.prop)
           })
-          const generatedRoot = postcss.parse(generatedCss)
-          generatedRoot.walkRules((rule) => {
-            const nodeSelectors = new Set(getRuleCompatSelectorKeys(node))
-            if (!getRuleCompatSelectorKeys(rule).some(selector => nodeSelectors.has(selector))) {
-              return
+          for (const selector of nodeSelectors) {
+            const generatedProps = generatedDeclarationPropsBySelector.get(selector)
+            if (!generatedProps) {
+              continue
             }
-            rule.walkDecls((decl) => {
-              declarationProps.delete(decl.prop)
-            })
-          })
+            for (const prop of generatedProps) {
+              declarationProps.delete(prop)
+            }
+          }
           const nextRule = node.clone()
           nextRule.walkDecls((decl) => {
             if (!declarationProps.has(decl.prop)) {
