@@ -142,16 +142,16 @@ export function buildDemoExtendedCases(baseCwd: string): WatchCase[] {
     requireStableGlobalStyleOnSameClassLiteral: false,
     maxPluginProcessMs: 5000,
     cwd: path.resolve(baseCwd, 'demo/uni-app-vite-tailwindcss-v3'),
-    devScript: 'dev:e2e-watch',
-    outputWxml: path.resolve(baseCwd, 'demo/uni-app-vite-tailwindcss-v3/dist/build/mp-weixin/pages/index/index.wxml'),
-    outputJs: path.resolve(baseCwd, 'demo/uni-app-vite-tailwindcss-v3/dist/build/mp-weixin/pages/index/index.js'),
+    devScript: 'dev:mp-weixin',
+    outputWxml: path.resolve(baseCwd, 'demo/uni-app-vite-tailwindcss-v3/dist/dev/mp-weixin/pages/index/index.wxml'),
+    outputJs: path.resolve(baseCwd, 'demo/uni-app-vite-tailwindcss-v3/dist/dev/mp-weixin/pages/index/index.js'),
     outputStyleCandidates: [
-      path.resolve(baseCwd, 'demo/uni-app-vite-tailwindcss-v3/dist/build/mp-weixin/pages/index/index.wxss'),
-      path.resolve(baseCwd, 'demo/uni-app-vite-tailwindcss-v3/dist/build/mp-weixin/app.wxss'),
+      path.resolve(baseCwd, 'demo/uni-app-vite-tailwindcss-v3/dist/dev/mp-weixin/pages/index/index.wxss'),
+      path.resolve(baseCwd, 'demo/uni-app-vite-tailwindcss-v3/dist/dev/mp-weixin/app.wxss'),
     ],
     globalStyleCandidates: [
-      path.resolve(baseCwd, 'demo/uni-app-vite-tailwindcss-v3/dist/build/mp-weixin/pages/index/index.wxss'),
-      path.resolve(baseCwd, 'demo/uni-app-vite-tailwindcss-v3/dist/build/mp-weixin/app.wxss'),
+      path.resolve(baseCwd, 'demo/uni-app-vite-tailwindcss-v3/dist/dev/mp-weixin/pages/index/index.wxss'),
+      path.resolve(baseCwd, 'demo/uni-app-vite-tailwindcss-v3/dist/dev/mp-weixin/app.wxss'),
     ],
     templateMutation: {
       sourceFile: path.resolve(baseCwd, 'demo/uni-app-vite-tailwindcss-v3/src/pages/index/index.vue'),
@@ -212,7 +212,7 @@ export function buildDemoExtendedCases(baseCwd: string): WatchCase[] {
     subPackageMutations: createSubPackageMutations(baseCwd, {
       project: 'uni-app-vite-tailwindcss-v3',
       sourceRoot: 'src',
-      distRoot: 'dist/build/mp-weixin',
+      distRoot: 'dist/dev/mp-weixin',
       version: 'v3',
       pageKind: 'vue',
     }),
@@ -224,14 +224,14 @@ export function buildDemoExtendedCases(baseCwd: string): WatchCase[] {
     project: 'demo/uni-app-vite-tailwindcss-v4',
     group: 'demo',
     cwd: path.resolve(baseCwd, 'demo/uni-app-vite-tailwindcss-v4'),
-    devScript: 'dev:e2e-watch',
-    outputWxml: path.resolve(baseCwd, 'demo/uni-app-vite-tailwindcss-v4/dist/build/mp-weixin/pages/index/index.wxml'),
-    outputJs: path.resolve(baseCwd, 'demo/uni-app-vite-tailwindcss-v4/dist/build/mp-weixin/pages/index/index.js'),
+    devScript: 'dev:mp-weixin',
+    outputWxml: path.resolve(baseCwd, 'demo/uni-app-vite-tailwindcss-v4/dist/dev/mp-weixin/pages/index/index.wxml'),
+    outputJs: path.resolve(baseCwd, 'demo/uni-app-vite-tailwindcss-v4/dist/dev/mp-weixin/pages/index/index.js'),
     outputStyleCandidates: [
-      path.resolve(baseCwd, 'demo/uni-app-vite-tailwindcss-v4/dist/build/mp-weixin/app.wxss'),
+      path.resolve(baseCwd, 'demo/uni-app-vite-tailwindcss-v4/dist/dev/mp-weixin/app.wxss'),
     ],
     globalStyleCandidates: [
-      path.resolve(baseCwd, 'demo/uni-app-vite-tailwindcss-v4/dist/build/mp-weixin/app.wxss'),
+      path.resolve(baseCwd, 'demo/uni-app-vite-tailwindcss-v4/dist/dev/mp-weixin/app.wxss'),
     ],
     userReportedHotUpdate: {
       label: 'index text-[88rpx] to text-[188rpx]',
@@ -289,7 +289,7 @@ export function buildDemoExtendedCases(baseCwd: string): WatchCase[] {
     subPackageMutations: createSubPackageMutations(baseCwd, {
       project: 'uni-app-vite-tailwindcss-v4',
       sourceRoot: 'src',
-      distRoot: 'dist/build/mp-weixin',
+      distRoot: 'dist/dev/mp-weixin',
       version: 'v4',
       pageKind: 'vue',
     }),

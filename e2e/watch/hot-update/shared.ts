@@ -3,6 +3,7 @@ import process from 'node:process'
 import { execa } from 'execa'
 import path from 'pathe'
 import { expect } from 'vitest'
+import { buildCases } from '../../../tools/weapp-tailwindcss-scripts/src/watch-hmr-regression/cases'
 import { DEFAULT_PLUGIN_PROCESS_BUDGET_MS } from '../../../tools/weapp-tailwindcss-scripts/src/watch-hmr-regression/types'
 
 export type WatchProjectGroup = 'demo'
@@ -228,24 +229,9 @@ interface HotUpdateReport {
   cases: HotUpdateCaseReport[]
 }
 
-const criticalDemoProjects = [
-  'demo/gulp-tailwindcss-v3',
-  'demo/gulp-tailwindcss-v4',
-  'demo/mpx-tailwindcss-v3',
-  'demo/mpx-tailwindcss-v4',
-  'demo/taro-webpack-react-tailwindcss-v3',
-  'demo/taro-webpack-react-tailwindcss-v4',
-  'demo/taro-webpack-vue3-tailwindcss-v3',
-  'demo/taro-webpack-vue3-tailwindcss-v4',
-  'demo/taro-vite-react-tailwindcss-v3',
-  'demo/taro-vite-react-tailwindcss-v4',
-  'demo/taro-vite-vue3-tailwindcss-v3',
-  'demo/taro-vite-vue3-tailwindcss-v4',
-  'demo/uni-app-vite-tailwindcss-v3',
-  'demo/uni-app-vite-tailwindcss-v4',
-  'demo/weapp-vite-tailwindcss-v3',
-  'demo/weapp-vite-tailwindcss-v4',
-] as const
+const criticalDemoProjects = buildCases(path.resolve(__dirname, '../../..'))
+  .filter(item => item.group === 'demo')
+  .map(item => item.project)
 
 const bothCases = new Set<ConcreteWatchCaseName>(['taro-webpack-react-tailwindcss-v3', 'uni-app-vite-tailwindcss-v3'])
 const noApplyValidationCases = new Set<ConcreteWatchCaseName>([

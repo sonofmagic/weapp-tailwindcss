@@ -1,6 +1,7 @@
-import { existsSync, readFileSync } from 'node:fs'
+import { existsSync, readdirSync, readFileSync } from 'node:fs'
 import { join } from 'node:path'
 import { describe, expect, it } from 'vitest'
+import { HOT_UPDATE_CASES_BY_TARGET, HOT_UPDATE_COVERED_PROJECTS } from '../../../e2e/e2eMatrix'
 import { getFrameworkIdeCases, getFrameworkIdeExemptCases } from '../../../e2e/frameworkSupportMatrix'
 import { shouldRequireIdeLivePageVisibility } from '../../../e2e/frameworkIdeClassHotUpdate'
 import { frameworkIdeWatchCaseNames } from '../../../e2e/frameworkIdeHotUpdate'
@@ -19,27 +20,15 @@ const automatedWatchCases = [
 ]
 
 const watchCoveredProjects = new Set(automatedWatchCases.map(item => item.project))
+const watchCoveredCaseNames = new Set(automatedWatchCases.map(item => item.name))
 const automatedWatchCasesByName = new Map(automatedWatchCases.map(item => [item.name, item]))
 const repoRoot = join(import.meta.dirname, '../../..')
-
-const matrixProjects = [
-  'demo/gulp-tailwindcss-v3',
-  'demo/gulp-tailwindcss-v4',
-  'demo/mpx-tailwindcss-v3',
-  'demo/mpx-tailwindcss-v4',
-  'demo/taro-webpack-react-tailwindcss-v3',
-  'demo/taro-webpack-react-tailwindcss-v4',
-  'demo/taro-webpack-vue3-tailwindcss-v3',
-  'demo/taro-webpack-vue3-tailwindcss-v4',
-  'demo/taro-vite-react-tailwindcss-v3',
-  'demo/taro-vite-react-tailwindcss-v4',
-  'demo/taro-vite-vue3-tailwindcss-v3',
-  'demo/taro-vite-vue3-tailwindcss-v4',
-  'demo/uni-app-vite-tailwindcss-v3',
-  'demo/uni-app-vite-tailwindcss-v4',
-  'demo/weapp-vite-tailwindcss-v3',
-  'demo/weapp-vite-tailwindcss-v4',
-]
+const demoPackageProjects = readdirSync(join(repoRoot, 'demo'), { withFileTypes: true })
+  .filter(item => item.isDirectory())
+  .map(item => item.name)
+  .filter(name => existsSync(join(repoRoot, 'demo', name, 'package.json')))
+  .map(name => `demo/${name}`)
+  .sort()
 
 function toSlashPath(filePath: string) {
   return filePath.replace(/\\/g, '/')
@@ -68,11 +57,26 @@ function expectHasRoundConfig(
 }
 
 describe('watch-hmr coverage matrix', () => {
-  it('covers every retained demo matrix project through watch regression cases', () => {
-    for (const project of matrixProjects) {
+  it('covers every demo package project through watch regression cases', () => {
+    for (const project of demoPackageProjects) {
       expect(
         watchCoveredProjects.has(project),
         `${project} should be covered by watch regression cases`,
+      ).toBe(true)
+    }
+  })
+
+  it('wires every demo watch case into hot-update e2e entries', () => {
+    expect([...HOT_UPDATE_CASES_BY_TARGET.demo].sort()).toEqual([...watchCoveredCaseNames].sort())
+
+    for (const watchCase of automatedWatchCases) {
+      expect(
+        HOT_UPDATE_COVERED_PROJECTS.has(watchCase.name),
+        `${watchCase.name} should be included in hot-update e2e coverage`,
+      ).toBe(true)
+      expect(
+        existsSync(join(repoRoot, 'e2e/watch/hot-update/demo', `${watchCase.name}.test.ts`)),
+        `${watchCase.name} should have a dedicated e2e watch hot-update test entry`,
       ).toBe(true)
     }
   })
@@ -295,6 +299,6 @@ describe('watch-hmr coverage matrix', () => {
   })
 
   it('keeps the automated watch matrix explicit', () => {
-    expect([...watchCoveredProjects].sort()).toEqual([...matrixProjects].sort())
+    expect([...watchCoveredProjects].sort()).toEqual(demoPackageProjects)
   })
 })

@@ -1,4 +1,6 @@
 import process from 'node:process'
+import path from 'pathe'
+import { buildCases } from '../tools/weapp-tailwindcss-scripts/src/watch-hmr-regression/cases'
 import { E2E_PROJECTS, NATIVE_PROJECTS } from './projectEntries'
 
 export const HOT_UPDATE_TARGETS = [
@@ -10,30 +12,16 @@ export const HOT_UPDATE_TARGETS = [
 
 export type HotUpdateTargetName = typeof HOT_UPDATE_TARGETS[number]['name']
 
-const DEMO_HOT_UPDATE_CASES = [
-  'gulp-tailwindcss-v3',
-  'gulp-tailwindcss-v4',
-  'mpx-tailwindcss-v3',
-  'mpx-tailwindcss-v4',
-  'taro-webpack-react-tailwindcss-v3',
-  'taro-webpack-react-tailwindcss-v4',
-  'taro-webpack-vue3-tailwindcss-v3',
-  'taro-webpack-vue3-tailwindcss-v4',
-  'taro-vite-react-tailwindcss-v3',
-  'taro-vite-react-tailwindcss-v4',
-  'taro-vite-vue3-tailwindcss-v3',
-  'taro-vite-vue3-tailwindcss-v4',
-  'uni-app-vite-tailwindcss-v3',
-  'uni-app-vite-tailwindcss-v4',
-  'weapp-vite-tailwindcss-v3',
-  'weapp-vite-tailwindcss-v4',
-] as const
+const repoRoot = path.resolve(import.meta.dirname, '..')
+const DEMO_HOT_UPDATE_CASES = buildCases(repoRoot)
+  .filter(item => item.group === 'demo')
+  .map(item => item.name)
 
 export const HOT_UPDATE_CASES_BY_TARGET: Record<HotUpdateTargetName, string[]> = {
   demo: [...DEMO_HOT_UPDATE_CASES],
 }
 
-export const HOT_UPDATE_CI_CASES = [...DEMO_HOT_UPDATE_CASES] as const
+export const HOT_UPDATE_CI_CASES = [...DEMO_HOT_UPDATE_CASES]
 
 export const HOT_UPDATE_COVERED_PROJECTS = new Set(DEMO_HOT_UPDATE_CASES)
 
