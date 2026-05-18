@@ -124,12 +124,25 @@ function normalizeConfigObject(config: Config | undefined) {
   return config
 }
 
+function hasExplicitContentInput(options: TailwindV3GenerateOptions) {
+  return options.candidates !== undefined || options.sources !== undefined
+}
+
+function createExplicitContentConfig(rawEntries: Array<{ raw: string, extension: string }>) {
+  return {
+    relative: true,
+    files: rawEntries,
+  }
+}
+
 function createTailwindConfig(source: TailwindV3ResolvedSource, options: TailwindV3GenerateOptions) {
   const config = {
     ...(normalizeConfigObject(source.configObject) ?? {}),
   } as Config
   const rawEntries = createRawContentEntries(options.candidates ?? [], options.sources ?? [])
-  config.content = mergeContent(config.content, rawEntries) as Config['content']
+  config.content = hasExplicitContentInput(options)
+    ? createExplicitContentConfig(rawEntries) as Config['content']
+    : mergeContent(config.content, rawEntries) as Config['content']
   return config
 }
 

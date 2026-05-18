@@ -249,6 +249,41 @@ describe('tailwindcss v3 engine', () => {
     expect(second.css.match(/\.bg-blue-500/g) ?? []).toHaveLength(1)
   })
 
+  it('does not rescan configured content when explicit candidates drive v3 incremental generation', async () => {
+    const source = await resolveTailwindV3Source({
+      css: '@tailwind utilities;',
+      base: process.cwd(),
+      config: undefined,
+    })
+    source.configObject = {
+      content: [
+        {
+          raw: '<view class="text-[88rpx] bg-[#4268EA]"></view>',
+          extension: 'html',
+        },
+      ],
+    }
+    const engine = createTailwindV3Engine(source)
+
+    const first = await engine.generate({
+      candidates: ['bg-[#4268EA]'],
+      incrementalCache: true,
+    })
+    const second = await engine.generate({
+      candidates: ['bg-[#4268EA]', 'bg-[red]'],
+      incrementalCache: true,
+    })
+
+    expect(first.classSet).toEqual(new Set(['bg-[#4268EA]']))
+    expect(first.css).toContain('.bg-_b_h4268EA_B')
+    expect(first.css).not.toContain('88rpx')
+    expect(second.classSet).toEqual(new Set(['bg-[#4268EA]', 'bg-[red]']))
+    expect(second.css).toContain('.bg-_bred_B')
+    expect(second.css).not.toContain('88rpx')
+    expect(second.css.length - first.css.length).toBeLessThan(400)
+    expect(second.css.match(/\.bg-_b_h4268EA_B/g) ?? []).toHaveLength(1)
+  })
+
   it('normalizes default export configs before generating plugin components', async () => {
     const source = await resolveTailwindV3Source({
       css: '@tailwind components;',
