@@ -1,5 +1,13 @@
 # weapp-tailwindcss
 
+## 5.0.0-next.12
+
+### Patch Changes
+
+- 🐛 **修复 Tailwind CSS v3 生成器在 uni-app Vite 热更新中重复清理 Tailwind require cache 导致 wxss 生成缓存失效、增量编译明显变慢的问题。现在 v3 生成器会复用运行时 patch 初始化结果，并在每次生成前主动重置 Tailwind v3 plugin 上下文，避免旧 class 泄漏。** [`aceef73`](https://github.com/sonofmagic/weapp-tailwindcss/commit/aceef7393f419cd9da144a0856489e4c6c04274a) by @sonofmagic
+
+- 🐛 **修复 Tailwind CSS v3 在 uni-app vite build-mode dev 首次增量热更新时全量扫描输出 JS/WXML，导致候选集被 vendor 普通字符串放大、热更新极慢的问题，并将 `bgObj` 对象 key 热更新场景纳入 watch-HMR e2e 回归。** [#862](https://github.com/sonofmagic/weapp-tailwindcss/pull/862) by @github-actions
+
 ## 5.0.0-next.11
 
 ### Minor Changes

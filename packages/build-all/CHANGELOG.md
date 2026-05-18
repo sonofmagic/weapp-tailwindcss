@@ -1,5 +1,12 @@
 # @weapp-tailwindcss/build-all
 
+## 0.0.26-next.12
+
+### Patch Changes
+
+- 📦 **Dependencies** [`aceef73`](https://github.com/sonofmagic/weapp-tailwindcss/commit/aceef7393f419cd9da144a0856489e4c6c04274a)
+  → `weapp-tailwindcss@5.0.0-next.12`
+
 ## 0.0.26-next.11
 
 ### Patch Changes
