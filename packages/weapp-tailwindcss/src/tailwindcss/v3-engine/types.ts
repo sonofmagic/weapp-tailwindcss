@@ -40,6 +40,7 @@ export interface TailwindV3ResolvedSource {
 export interface TailwindV3GenerateOptions {
   candidates?: Iterable<string> | undefined
   sources?: TailwindV3CandidateSource[] | undefined
+  incrementalCache?: boolean | undefined
   target?: TailwindV3GenerateTarget | undefined
   styleOptions?: Partial<IStyleHandlerOptions> | undefined
 }

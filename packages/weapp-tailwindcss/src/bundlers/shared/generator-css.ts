@@ -271,6 +271,7 @@ export async function generateCssByGenerator(
       const generator = createWeappTailwindcssGenerator(source)
       return generator.generate({
         candidates: runtime,
+        incrementalCache: majorVersion === 3,
         scanSources: majorVersion === 4,
         styleOptions: generatorStyleOptions,
         tailwindcssV3Compatibility: generatorOptions.tailwindcssV3Compatibility,

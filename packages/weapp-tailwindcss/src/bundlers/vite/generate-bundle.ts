@@ -64,8 +64,29 @@ interface GenerateBundleThis {
   }) => string
 }
 
+function addSiblingCssFile(files: Set<string>, file: string) {
+  if (file.endsWith('.wxml')) {
+    files.add(file.replace(/\.wxml$/, '.wxss'))
+  }
+  else if (file.endsWith('.js')) {
+    files.add(file.replace(/\.js$/, '.wxss'))
+  }
+}
+
+function collectRuntimeLinkedCssFiles(snapshot: BundleSnapshot) {
+  const files = new Set<string>()
+  for (const file of snapshot.runtimeAffectingChangedByType.html) {
+    addSiblingCssFile(files, file)
+  }
+  for (const file of snapshot.runtimeAffectingChangedByType.js) {
+    addSiblingCssFile(files, file)
+  }
+  return files
+}
+
 export function createGenerateBundleHook(context: GenerateBundleContext) {
   const state = createBundleBuildState()
+  const lastCssResultByFile = new Map<string, string>()
   const cssHandlerOptions = createCssHandlerOptionsCache({
     appType: context.opts.appType,
     mainCssChunkMatcher: context.opts.mainCssChunkMatcher,
@@ -184,6 +205,7 @@ export function createGenerateBundleHook(context: GenerateBundleContext) {
       }
     }
     const generatorCandidateSignature = createCandidateSignature(generatorRuntime)
+    const runtimeLinkedCssFiles = collectRuntimeLinkedCssFiles(snapshot)
     recordGeneratorCandidates?.(generatorRuntime)
     const defaultTemplateHandlerOptions = {
       runtimeSet: transformRuntime,
@@ -284,16 +306,34 @@ export function createGenerateBundleHook(context: GenerateBundleContext) {
         const cssRuntimeAffectingSignature = snapshot.runtimeAffectingSignatureByFile.get(file) ?? rawSource
         const cssShareScope = createCssTransformShareScopeKey(opts, file, rawSource)
         const cssHandlerOptions = getCssHandlerOptions(file)
-        const cssRuntimeSignature = createCssRuntimeSignature(runtimeSignature, generatorCandidateSignature)
+        const shouldTrackGeneratorRuntime = !useIncrementalMode
+          || cssHandlerOptions.isMainChunk
+          || processFiles.css.has(file)
+          || runtimeLinkedCssFiles.has(file)
+        const scopedGeneratorCandidateSignature = shouldTrackGeneratorRuntime
+          ? generatorCandidateSignature
+          : 'generator:stable'
+        const cssRuntimeSignature = createCssRuntimeSignature(runtimeSignature, scopedGeneratorCandidateSignature)
         const cssSharedCacheKey = `${cssShareScope}:${cssRuntimeSignature}:${runtimeState.twPatcher.majorVersion ?? 'unknown'}:${cssHandlerOptions.isMainChunk ? '1' : '0'}:${cssRuntimeAffectingSignature}`
+        if (!shouldTrackGeneratorRuntime) {
+          const lastCss = lastCssResultByFile.get(file)
+          if (lastCss != null) {
+            originalSource.source = lastCss
+            markCssAssetProcessed?.(originalSource, file)
+            metrics.css.cacheHits++
+            debug('css replay last result: %s', file)
+            continue
+          }
+        }
         tasks.push(
           processCachedTask<string>({
             cache,
             cacheKey: file,
             hashKey: `${file}:css:${cssRuntimeSignature}:${runtimeState.twPatcher.majorVersion ?? 'unknown'}`,
-            hash: `${getSnapshotHash(snapshot.runtimeAffectingHashByFile, file, cssRuntimeAffectingSignature)}:${generatorCandidateSignature}`,
+            hash: `${getSnapshotHash(snapshot.runtimeAffectingHashByFile, file, cssRuntimeAffectingSignature)}:${scopedGeneratorCandidateSignature}`,
             applyResult(source) {
               originalSource.source = source
+              lastCssResultByFile.set(file, source)
               markCssAssetProcessed?.(originalSource, file)
               if (cssHandlerOptions.isMainChunk) {
                 rememberMainCssSource?.(file, rawSource, cssRuntimeSignature)

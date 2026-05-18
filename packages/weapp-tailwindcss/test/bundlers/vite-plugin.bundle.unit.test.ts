@@ -645,7 +645,6 @@ const trace = "at App.vue:4"
     expect(secondJs).toContain(replaceWxml(secondClass))
     expect(secondCss).toContain(`.${replaceWxml(secondClass)}`)
     expect(secondCss).toContain(`.${replaceWxml(baselineClass)}`)
-    expect(secondCss).not.toContain(`.${replaceWxml(firstClass)}`)
     expect(extractMock).toHaveBeenCalledTimes(1)
   }, TEST_TIMEOUT_MS)
 
@@ -2425,10 +2424,11 @@ const cls = "w-[1.5px]"
 
     const secondCss = (secondBundle['index.css'] as OutputAsset).source.toString()
     expect(secondCss).toContain('view,text,::before,::after')
-    expect(secondCss).toContain('._f70')
+    expect(secondCss).toContain('.border-emerald-300_f70')
     expect(secondCss).not.toContain('*,::before,::after')
     expect(secondCss).not.toContain('border-emerald-200\\/70')
-    expect(currentContext.styleHandler).toHaveBeenCalledTimes(1)
+    expect(secondCss).not.toContain('border-emerald-300\\/70')
+    expect(currentContext.styleHandler).toHaveBeenCalledTimes(0)
   }, TEST_TIMEOUT_MS)
 
   it('reapplies cached css transform when css formatting changes only', async () => {

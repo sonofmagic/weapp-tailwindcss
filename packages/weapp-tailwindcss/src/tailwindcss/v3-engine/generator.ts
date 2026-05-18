@@ -1,10 +1,13 @@
+import type { IStyleHandlerOptions } from '@weapp-tailwindcss/postcss/types'
 import type { Config } from 'tailwindcss'
 import type {
   TailwindV3CandidateSource,
   TailwindV3Engine,
   TailwindV3GenerateOptions,
+  TailwindV3GenerateTarget,
   TailwindV3ResolvedSource,
 } from './types'
+import fs from 'node:fs'
 import { createRequire } from 'node:module'
 import postcss from 'postcss'
 import { createTailwindcssPatcher } from '@/tailwindcss/patcher'
@@ -21,6 +24,16 @@ interface TailwindcssPlugin {
 }
 
 const runtimeReadyPromiseCache = new Map<string, Promise<void>>()
+const incrementalGenerateCache = new Map<string, TailwindV3IncrementalGenerateCacheEntry>()
+
+interface TailwindV3IncrementalGenerateCacheEntry {
+  seenCandidates: Set<string>
+  classSet: Set<string>
+  css: string
+  rawCss: string
+  dependencies: string[]
+  target: TailwindV3GenerateTarget
+}
 
 interface LegacyContentObject {
   files?: unknown
@@ -49,6 +62,10 @@ function createRawContentEntries(candidates: Iterable<string>, sources: Tailwind
     })
   }
   return entries
+}
+
+function collectCandidates(candidates: Iterable<string> | undefined) {
+  return new Set(candidates ?? [])
 }
 
 function mergeContent(content: unknown, rawEntries: Array<{ raw: string, extension: string }>) {
@@ -111,6 +128,51 @@ function loadTailwindcssPlugin(source: TailwindV3ResolvedSource): TailwindcssPlu
   return typeof plugin === 'function' ? plugin : plugin.default as TailwindcssPlugin
 }
 
+function createStableJson(value: unknown): string {
+  if (value === undefined) {
+    return 'undefined'
+  }
+  if (value === null || typeof value !== 'object') {
+    return JSON.stringify(value)
+  }
+  if (Array.isArray(value)) {
+    return `[${value.map(item => createStableJson(item)).join(',')}]`
+  }
+  return `{${Object.keys(value).sort().map((key) => {
+    const record = value as Record<string, unknown>
+    return `${JSON.stringify(key)}:${createStableJson(record[key])}`
+  }).join(',')}}`
+}
+
+function createDependencyFingerprint(files: string[]) {
+  return files.map((file) => {
+    try {
+      const stat = fs.statSync(file)
+      return `${file}:${stat.size}:${stat.mtimeMs}`
+    }
+    catch {
+      return `${file}:missing`
+    }
+  }).join('|')
+}
+
+function createIncrementalGenerateCacheKey(
+  source: TailwindV3ResolvedSource,
+  target: TailwindV3GenerateTarget,
+  styleOptions: Partial<IStyleHandlerOptions> | undefined,
+) {
+  return [
+    source.packageName,
+    source.postcssPlugin,
+    source.cwd,
+    source.config ?? 'config:missing',
+    createDependencyFingerprint(source.dependencies),
+    source.css,
+    target,
+    createStableJson(styleOptions),
+  ].join('\0')
+}
+
 function createRuntimeReadyCacheKey(source: TailwindV3ResolvedSource, rootPath: string | undefined) {
   return [
     source.packageName,
@@ -124,6 +186,42 @@ function createRuntimeReadyCacheKey(source: TailwindV3ResolvedSource, rootPath: 
 function resetTailwindcssPluginContext(plugin: TailwindcssPlugin) {
   if (plugin.contextRef) {
     plugin.contextRef.value = []
+  }
+}
+
+function isTailwindImport(params: string, layer: string) {
+  const trimmed = params.trim()
+  return new RegExp(`^(?:url\\()?['"]tailwindcss/${layer}(?:\\.css)?['"]\\)?(?:\\s|$)`).test(trimmed)
+}
+
+function createUtilitiesOnlyCss(css: string) {
+  try {
+    const root = postcss.parse(css)
+    root.walkAtRules((rule) => {
+      if (rule.name === 'tailwind') {
+        const layer = rule.params.trim()
+        if (layer === 'base' || layer === 'components') {
+          rule.remove()
+        }
+        return
+      }
+      if (rule.name === 'import' && (isTailwindImport(rule.params, 'base') || isTailwindImport(rule.params, 'components'))) {
+        rule.remove()
+        return
+      }
+      if (rule.name === 'layer') {
+        const layer = rule.params.trim()
+        if (layer === 'base' || layer === 'components') {
+          rule.remove()
+        }
+      }
+    })
+    return root.toString()
+  }
+  catch {
+    return css
+      .replace(/@tailwind\s+(?:base|components)\s*;/g, '')
+      .replace(/@import\s+(?:url\()?['"]tailwindcss\/(?:base|components)(?:\.css)?['"][^;]*;/g, '')
   }
 }
 
@@ -181,25 +279,28 @@ function createRuntimeReadyPromise(source: TailwindV3ResolvedSource) {
 export function createTailwindV3Engine(source: TailwindV3ResolvedSource): TailwindV3Engine {
   const runtimeReadyPromise = createRuntimeReadyPromise(source)
 
-  async function generate(options: TailwindV3GenerateOptions = {}) {
+  async function generateOnce(
+    generateSource: TailwindV3ResolvedSource,
+    options: TailwindV3GenerateOptions = {},
+  ) {
     await runtimeReadyPromise
 
     const {
       styleOptions,
       target = 'weapp',
     } = options
-    const tailwindcss = loadTailwindcssPlugin(source)
+    const tailwindcss = loadTailwindcssPlugin(generateSource)
     resetTailwindcssPluginContext(tailwindcss)
-    const tailwindConfig = createTailwindConfig(source, options)
+    const tailwindConfig = createTailwindConfig(generateSource, options)
     const result = await postcss([
       tailwindcss(tailwindConfig),
-    ]).process(source.css, {
+    ]).process(generateSource.css, {
       from: undefined,
     })
     const rawCss = result.css
     const css = await transformTailwindV3CssByTarget(rawCss, target, styleOptions)
     const dependencies = collectDependencyMessages(result)
-    for (const dependency of source.dependencies) {
+    for (const dependency of generateSource.dependencies) {
       dependencies.add(dependency)
     }
     const classSet = collectClassSet(tailwindcss)
@@ -208,13 +309,86 @@ export function createTailwindV3Engine(source: TailwindV3ResolvedSource): Tailwi
       css,
       rawCss,
       classSet,
-      rawCandidates: new Set(options.candidates ?? []),
+      rawCandidates: collectCandidates(options.candidates),
       dependencies: [...dependencies],
       sources: [],
       root: null,
       target,
       version: 3 as const,
     }
+  }
+
+  async function generateWithIncrementalCache(options: TailwindV3GenerateOptions = {}) {
+    if ((options.sources?.length ?? 0) > 0) {
+      return generateOnce(source, options)
+    }
+
+    const target = options.target ?? 'weapp'
+    const requestedCandidates = collectCandidates(options.candidates)
+    const cacheKey = createIncrementalGenerateCacheKey(source, target, options.styleOptions)
+    const cached = incrementalGenerateCache.get(cacheKey)
+    if (cached) {
+      const missingCandidates = [...requestedCandidates].filter(candidate => !cached.seenCandidates.has(candidate))
+      if (missingCandidates.length === 0) {
+        return {
+          css: cached.css,
+          rawCss: cached.rawCss,
+          classSet: new Set(cached.classSet),
+          rawCandidates: new Set(cached.seenCandidates),
+          dependencies: cached.dependencies,
+          sources: [],
+          root: null,
+          target: cached.target,
+          version: 3 as const,
+        }
+      }
+
+      const utilitySource = {
+        ...source,
+        css: createUtilitiesOnlyCss(source.css),
+      }
+      const generated = await generateOnce(utilitySource, {
+        ...options,
+        candidates: missingCandidates,
+      })
+      for (const candidate of missingCandidates) {
+        cached.seenCandidates.add(candidate)
+      }
+      for (const className of generated.classSet) {
+        cached.classSet.add(className)
+      }
+      cached.css = [cached.css, generated.css].filter(Boolean).join('\n')
+      cached.rawCss = [cached.rawCss, generated.rawCss].filter(Boolean).join('\n')
+      cached.dependencies = [...new Set([...cached.dependencies, ...generated.dependencies])]
+      return {
+        css: cached.css,
+        rawCss: cached.rawCss,
+        classSet: new Set(cached.classSet),
+        rawCandidates: new Set(cached.seenCandidates),
+        dependencies: cached.dependencies,
+        sources: [],
+        root: null,
+        target: cached.target,
+        version: 3 as const,
+      }
+    }
+
+    const generated = await generateOnce(source, options)
+    incrementalGenerateCache.set(cacheKey, {
+      seenCandidates: new Set(requestedCandidates),
+      classSet: new Set(generated.classSet),
+      css: generated.css,
+      rawCss: generated.rawCss,
+      dependencies: generated.dependencies,
+      target: generated.target,
+    })
+    return generated
+  }
+
+  async function generate(options: TailwindV3GenerateOptions = {}) {
+    return options.incrementalCache
+      ? generateWithIncrementalCache(options)
+      : generateOnce(source, options)
   }
 
   return {
