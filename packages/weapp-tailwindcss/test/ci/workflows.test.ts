@@ -24,6 +24,22 @@ function readText(relativePath: string) {
   return fs.readFileSync(path.join(repoRoot, relativePath), 'utf8')
 }
 
+function readDemoPackageJsons() {
+  const demoRoot = path.join(repoRoot, 'demo')
+  return fs.readdirSync(demoRoot)
+    .map(project => ({
+      project,
+      packageJsonPath: path.join(demoRoot, project, 'package.json'),
+    }))
+    .filter(entry => fs.existsSync(entry.packageJsonPath))
+    .map(entry => ({
+      project: entry.project,
+      packageJson: JSON.parse(fs.readFileSync(entry.packageJsonPath, 'utf8')) as {
+        scripts?: Record<string, string>
+      },
+    }))
+}
+
 function stepRuns(workflow: Record<string, any>, jobName: string) {
   const steps: Array<Record<string, unknown>> = workflow.jobs[jobName].steps
   return steps
@@ -178,6 +194,20 @@ describe('ci workflows', () => {
     expect(packageJson.scripts['e2e:ide:case']).toContain('vitest run --bail=1')
     expect(packageJson.scripts['e2e:ide:case:skip-build']).toContain('E2E_IDE_BUILD=0')
     expect(packageJson.scripts['e2e:ide:case:skip-build']).toContain('E2E_IDE_PROBE_RETRIES=0')
+  })
+
+  it('keeps demo dev scripts printing weapp-tailwindcss timing by default', () => {
+    for (const { project, packageJson } of readDemoPackageJsons()) {
+      const scripts = packageJson.scripts ?? {}
+      const devScripts = Object.entries(scripts)
+        .filter(([name]) => name.startsWith('dev') && name !== 'dev:e2e-watch')
+
+      expect(devScripts.length, `${project} should expose dev scripts`).toBeGreaterThan(0)
+
+      for (const [name, command] of devScripts) {
+        expect(command, `${project} ${name} should enable timing output`).toContain('WEAPP_TW_HMR_TIMING=1')
+      }
+    }
   })
 })
 

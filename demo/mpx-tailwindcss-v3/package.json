@@ -15,8 +15,8 @@
     "url": "https://github.com/sonofmagic/weapp-tailwindcss/issues"
   },
   "scripts": {
-    "dev": "cross-env BABEL=1 node ./scripts/run-mpx-cli-service.js serve",
-    "dev:debug": "cross-env DEBUG=weapp-tw node ./scripts/run-mpx-cli-service.js serve",
+    "dev": "cross-env WEAPP_TW_HMR_TIMING=1 BABEL=1 node ./scripts/run-mpx-cli-service.js serve",
+    "dev:debug": "cross-env WEAPP_TW_HMR_TIMING=1 DEBUG=weapp-tw node ./scripts/run-mpx-cli-service.js serve",
     "serve": "node ./scripts/run-mpx-cli-service.js serve",
     "build": "cross-env node ./scripts/run-mpx-cli-service.js build",
     "build:babel": "cross-env BABEL=1 node ./scripts/run-mpx-cli-service.js build",
