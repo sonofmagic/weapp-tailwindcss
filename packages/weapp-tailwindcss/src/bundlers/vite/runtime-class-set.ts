@@ -113,6 +113,7 @@ export function createViteRuntimeClassSet(options: CreateViteRuntimeClassSetOpti
     forceRefresh = false,
     options: {
       allowBaselineOnlyInitialSync?: boolean | undefined
+      baseClassSet?: Set<string> | undefined
     } = {},
   ) {
     const forceRuntimeRefresh = forceRefresh || process.env['WEAPP_TW_VITE_FORCE_RUNTIME_REFRESH'] === '1'
@@ -144,8 +145,8 @@ export function createViteRuntimeClassSet(options: CreateViteRuntimeClassSetOpti
 
     if (runtimeState.twPatcher.majorVersion === 3 && !forceRuntimeRefresh) {
       try {
-        let baseClassSet: Set<string> | undefined
-        if (!runtimeSet || shouldRefreshPatcher) {
+        let baseClassSet = options.baseClassSet
+        if (!baseClassSet && (!runtimeSet || shouldRefreshPatcher)) {
           baseClassSet = await collectRuntimeClassSet(runtimeState.twPatcher, {
             force: true,
             skipRefresh: shouldRefreshPatcher,

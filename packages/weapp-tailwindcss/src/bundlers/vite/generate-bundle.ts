@@ -40,6 +40,7 @@ interface GenerateBundleContext {
     forceRefresh?: boolean,
     options?: {
       allowBaselineOnlyInitialSync?: boolean | undefined
+      baseClassSet?: Set<string> | undefined
     },
   ) => Promise<Set<string>>
   debug: (format: string, ...args: unknown[]) => void
@@ -168,7 +169,10 @@ export function createGenerateBundleHook(context: GenerateBundleContext) {
       && !disableV3OxideSourceRuntime
     const runtimeStart = performance.now()
     const runtime = useV3OxideSourceRuntime
-      ? new Set<string>()
+      ? await ensureBundleRuntimeClassSet(snapshot, forceRuntimeRefreshByEnv, {
+          allowBaselineOnlyInitialSync: true,
+          baseClassSet: sourceCandidates,
+        })
       : useBundleRuntimeClassSet
         ? await ensureBundleRuntimeClassSet(snapshot, forceRuntimeRefreshByEnv, {
             allowBaselineOnlyInitialSync: buildCommand,
