@@ -44,6 +44,8 @@ export interface PluginProcessSample {
   phase: string
   durationMs: number
   file?: string
+  metric?: 'hook' | 'total'
+  wallMs?: number
 }
 
 export interface ClassMutationPayload {

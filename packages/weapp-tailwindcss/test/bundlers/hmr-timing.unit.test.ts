@@ -1,5 +1,5 @@
 import { afterEach, describe, expect, it, vi } from 'vitest'
-import { emitHmrTiming, shouldEmitHmrTiming } from '@/bundlers/shared/hmr-timing'
+import { createHmrTimingRecorder, emitHmrTiming, shouldEmitHmrTiming } from '@/bundlers/shared/hmr-timing'
 
 const originalEnv = { ...process.env }
 
@@ -52,5 +52,25 @@ describe('bundlers/shared hmr timing', () => {
 
     expect(write).toHaveBeenCalledTimes(1)
     expect(write).toHaveBeenCalledWith('[weapp-tailwindcss:hmr] {"bundler":"vite","phase":"generateBundle","durationMs":3}\n')
+  })
+
+  it('emits an overall plugin timing sample with hook summaries', () => {
+    process.env.WEAPP_TW_HMR_TIMING = '1'
+    const write = vi.spyOn(process.stdout, 'write').mockImplementation(() => true)
+    const recorder = createHmrTimingRecorder('vite')
+
+    recorder.record('sourceCandidates.buildStart', 2.2, { emit: false })
+    recorder.record('generateBundle', 8.8)
+    recorder.emitTotal()
+
+    expect(write).toHaveBeenCalledTimes(4)
+    expect(write).toHaveBeenNthCalledWith(1, '[weapp-tailwindcss:hmr] {"bundler":"vite","phase":"generateBundle","durationMs":9}\n')
+    expect(write).toHaveBeenNthCalledWith(2, '[weapp-tailwindcss] vite:generateBundle 耗时 9ms\n')
+    const totalLine = String((write.mock.calls[2] as unknown[][])[0])
+    expect(totalLine).toContain('"phase":"total"')
+    expect(totalLine).toContain('"durationMs":11')
+    expect(totalLine).toContain('"sourceCandidates.buildStart":{"count":1,"durationMs":2,"maxMs":2}')
+    expect(totalLine).toContain('"generateBundle":{"count":1,"durationMs":9,"maxMs":9}')
+    expect(write).toHaveBeenNthCalledWith(4, expect.stringContaining('vite:weapp-tailwindcss 总耗时 11ms'))
   })
 })

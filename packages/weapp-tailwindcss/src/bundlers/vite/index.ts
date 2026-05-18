@@ -16,6 +16,7 @@ import { isUniAppXEnabled } from '@/uni-app-x/options'
 import { resolveUniUtsPlatform } from '@/utils'
 import { resolvePluginDisabledState } from '@/utils/disabled'
 import { resolvePackageDir } from '@/utils/resolve-package'
+import { createHmrTimingRecorder } from '../shared/hmr-timing'
 import { normalizeOutputPathKey } from '../shared/module-graph'
 import { createViteCssFinalizerOutputPlugin } from './css-finalizer'
 import { createGenerateBundleHook } from './generate-bundle'
@@ -185,6 +186,7 @@ export function WeappTailwindcss(options: UserDefinedOptions = {}): Plugin[] | u
     disabledDefaultTemplateHandler,
     debug,
   })
+  const hmrTimingRecorder = createHmrTimingRecorder('vite')
   refreshRuntimeStateForAutoCssSources = refreshRuntimeState
   onLoad()
   const getResolvedConfig = () => resolvedConfig
@@ -290,6 +292,7 @@ export function WeappTailwindcss(options: UserDefinedOptions = {}): Plugin[] | u
     getRememberedMainCssSignature,
     setRememberedMainCssSignature,
     recordGeneratorCandidates,
+    hmrTimingRecorder,
   })
   const cssFinalizerOutputPlugin = createViteCssFinalizerOutputPlugin({
     opts,
@@ -331,48 +334,56 @@ export function WeappTailwindcss(options: UserDefinedOptions = {}): Plugin[] | u
         if (!shouldOwnTailwindGeneration || !isSourceCandidateRequest(id)) {
           return
         }
-        const file = cleanUrl(id)
-        if (sourceScanMatcher && !sourceScanMatcher(file)) {
-          sourceCandidateCollector.remove(file)
-          return
-        }
-        await sourceCandidateCollector.sync(id, code)
+        return hmrTimingRecorder.measure('sourceCandidates.transform', async () => {
+          const file = cleanUrl(id)
+          if (sourceScanMatcher && !sourceScanMatcher(file)) {
+            sourceCandidateCollector.remove(file)
+            return
+          }
+          await sourceCandidateCollector.sync(id, code)
+        }, { emit: false })
       },
       async watchChange(id, change) {
-        if (change.event === 'delete') {
-          sourceCandidateCollector.remove(id)
-          return
-        }
-        await syncChangedSourceCandidateFile(id)
+        await hmrTimingRecorder.measure('sourceCandidates.watchChange', async () => {
+          if (change.event === 'delete') {
+            sourceCandidateCollector.remove(id)
+            return
+          }
+          await syncChangedSourceCandidateFile(id)
+        }, { emit: false })
       },
       async handleHotUpdate(ctx) {
-        await syncChangedSourceCandidateFile(ctx.file)
+        await hmrTimingRecorder.measure('sourceCandidates.handleHotUpdate', async () => {
+          await syncChangedSourceCandidateFile(ctx.file)
+        }, { emit: false })
       },
       async buildStart() {
-        if (!shouldOwnTailwindGeneration) {
-          return
-        }
-        const root = resolvedConfig?.root ?? process.cwd()
-        const outDir = resolvedConfig?.build?.outDir
-        const sourceScan = await resolveViteSourceScanEntries(opts, runtimeState.twPatcher)
-        sourceScanEntries = sourceScan?.entries
-        sourceScanMatcher = createViteSourceScanMatcher(sourceScanEntries)
-        const roots = collectSourceCandidateScanRoots(root, sourceScanEntries)
-        const nextScanSignature = createSourceCandidateScanSignature({
-          inlineCandidates: sourceScan?.inlineCandidates,
-          outDir,
-          roots,
-        })
-        const shouldReuseWatchScan = isWatchBuild() && sourceCandidateScanSignature === nextScanSignature
-        if (shouldReuseWatchScan) {
+        await hmrTimingRecorder.measure('sourceCandidates.buildStart', async () => {
+          if (!shouldOwnTailwindGeneration) {
+            return
+          }
+          const root = resolvedConfig?.root ?? process.cwd()
+          const outDir = resolvedConfig?.build?.outDir
+          const sourceScan = await resolveViteSourceScanEntries(opts, runtimeState.twPatcher)
+          sourceScanEntries = sourceScan?.entries
+          sourceScanMatcher = createViteSourceScanMatcher(sourceScanEntries)
+          const roots = collectSourceCandidateScanRoots(root, sourceScanEntries)
+          const nextScanSignature = createSourceCandidateScanSignature({
+            inlineCandidates: sourceScan?.inlineCandidates,
+            outDir,
+            roots,
+          })
+          const shouldReuseWatchScan = isWatchBuild() && sourceCandidateScanSignature === nextScanSignature
+          if (shouldReuseWatchScan) {
+            sourceCandidateCollector.syncInline(sourceScan?.inlineCandidates)
+            debug('reuse vite source candidate scan for watch rebuild')
+            return
+          }
+          sourceCandidateCollector.clear()
           sourceCandidateCollector.syncInline(sourceScan?.inlineCandidates)
-          debug('reuse vite source candidate scan for watch rebuild')
-          return
-        }
-        sourceCandidateCollector.clear()
-        sourceCandidateCollector.syncInline(sourceScan?.inlineCandidates)
-        await scanSourceCandidateRoots(roots, outDir)
-        sourceCandidateScanSignature = nextScanSignature
+          await scanSourceCandidateRoots(roots, outDir)
+          sourceCandidateScanSignature = nextScanSignature
+        }, { emit: false })
       },
     },
     {
@@ -419,68 +430,70 @@ export function WeappTailwindcss(options: UserDefinedOptions = {}): Plugin[] | u
         })
       },
       async configResolved(config) {
-        resolvedConfig = config
-        if (shouldOwnTailwindGeneration) {
-          const removed = Array.isArray(config.plugins)
-            ? removeTailwindVitePlugins(config.plugins)
-            : 0
-          if (removed > 0) {
-            debug('remove official tailwind vite plugins in generator mode: %d', removed)
-          }
-        }
-        const resolvedRoot = config.root ? path.resolve(config.root) : undefined
-        let shouldRefreshRuntime = false
-        if (
-          !hasExplicitTailwindcssBasedir
-          && resolvedRoot
-        ) {
-          const nextTailwindcssBasedir = resolveImplicitTailwindcssBasedirFromViteRoot(resolvedRoot)
-          if (opts.tailwindcssBasedir !== nextTailwindcssBasedir) {
-            const previousBasedir = opts.tailwindcssBasedir
-            opts.tailwindcssBasedir = nextTailwindcssBasedir
-            debug(
-              'align tailwindcss basedir with vite root: %s -> %s',
-              previousBasedir ?? 'undefined',
-              nextTailwindcssBasedir,
-            )
-            shouldRefreshRuntime = true
-          }
-        }
-        if (
-          !hasExplicitAppType
-          && resolvedRoot
-        ) {
-          const nextAppType = resolveImplicitAppTypeFromViteRoot(resolvedRoot)
-          if (nextAppType && opts.appType !== nextAppType) {
-            const previousAppType = opts.appType
-            opts.appType = nextAppType
-            logger.info('根据 Vite 项目根目录自动推断 appType -> %s', nextAppType)
-            debug(
-              'align appType with vite root: %s -> %s',
-              previousAppType ?? 'undefined',
-              nextAppType,
-            )
-            shouldRefreshRuntime = true
-          }
-        }
-        if (shouldRefreshRuntime) {
-          await refreshRuntimeState(true)
-        }
-        if (typeof config.css.postcss === 'object' && Array.isArray(config.css.postcss.plugins)) {
-          const postcssPlugins = config.css.postcss.plugins as unknown[]
+        await hmrTimingRecorder.measure('configResolved', async () => {
+          resolvedConfig = config
           if (shouldOwnTailwindGeneration) {
-            const removed = removeTailwindPostcssPlugins(postcssPlugins)
+            const removed = Array.isArray(config.plugins)
+              ? removeTailwindVitePlugins(config.plugins)
+              : 0
             if (removed > 0) {
-              debug('remove official tailwind postcss plugins in generator mode: %d', removed)
+              debug('remove official tailwind vite plugins in generator mode: %d', removed)
             }
           }
-          const idx = postcssPlugins.findIndex(x =>
-            getPostcssPluginName(x) === 'postcss-html-transform')
-          if (idx > -1) {
-            postcssPlugins.splice(idx, 1, postcssHtmlTransform())
-            debug('remove postcss-html-transform plugin from vite config')
+          const resolvedRoot = config.root ? path.resolve(config.root) : undefined
+          let shouldRefreshRuntime = false
+          if (
+            !hasExplicitTailwindcssBasedir
+            && resolvedRoot
+          ) {
+            const nextTailwindcssBasedir = resolveImplicitTailwindcssBasedirFromViteRoot(resolvedRoot)
+            if (opts.tailwindcssBasedir !== nextTailwindcssBasedir) {
+              const previousBasedir = opts.tailwindcssBasedir
+              opts.tailwindcssBasedir = nextTailwindcssBasedir
+              debug(
+                'align tailwindcss basedir with vite root: %s -> %s',
+                previousBasedir ?? 'undefined',
+                nextTailwindcssBasedir,
+              )
+              shouldRefreshRuntime = true
+            }
           }
-        }
+          if (
+            !hasExplicitAppType
+            && resolvedRoot
+          ) {
+            const nextAppType = resolveImplicitAppTypeFromViteRoot(resolvedRoot)
+            if (nextAppType && opts.appType !== nextAppType) {
+              const previousAppType = opts.appType
+              opts.appType = nextAppType
+              logger.info('根据 Vite 项目根目录自动推断 appType -> %s', nextAppType)
+              debug(
+                'align appType with vite root: %s -> %s',
+                previousAppType ?? 'undefined',
+                nextAppType,
+              )
+              shouldRefreshRuntime = true
+            }
+          }
+          if (shouldRefreshRuntime) {
+            await refreshRuntimeState(true)
+          }
+          if (typeof config.css.postcss === 'object' && Array.isArray(config.css.postcss.plugins)) {
+            const postcssPlugins = config.css.postcss.plugins as unknown[]
+            if (shouldOwnTailwindGeneration) {
+              const removed = removeTailwindPostcssPlugins(postcssPlugins)
+              if (removed > 0) {
+                debug('remove official tailwind postcss plugins in generator mode: %d', removed)
+              }
+            }
+            const idx = postcssPlugins.findIndex(x =>
+              getPostcssPluginName(x) === 'postcss-html-transform')
+            if (idx > -1) {
+              postcssPlugins.splice(idx, 1, postcssHtmlTransform())
+              debug('remove postcss-html-transform plugin from vite config')
+            }
+          }
+        }, { emit: false })
       },
       generateBundle: {
         order: 'post',

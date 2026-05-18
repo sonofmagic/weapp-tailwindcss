@@ -160,6 +160,8 @@ function parsePluginProcessSample(line: string): Omit<PluginProcessSample, 'at'>
       phase: payload.phase,
       durationMs: Math.max(0, Math.round(payload.durationMs)),
       ...(typeof payload.file === 'string' ? { file: payload.file } : {}),
+      ...(payload.metric === 'hook' || payload.metric === 'total' ? { metric: payload.metric } : {}),
+      ...(typeof payload.wallMs === 'number' && Number.isFinite(payload.wallMs) ? { wallMs: Math.max(0, Math.round(payload.wallMs)) } : {}),
     }
   }
   catch {

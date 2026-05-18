@@ -1,5 +1,6 @@
 import type { OutputAsset, OutputChunk } from 'rollup'
 import type { ResolvedConfig } from 'vite'
+import type { HmrTimingRecorder } from '../shared/hmr-timing'
 import type { BundleSnapshot } from './bundle-state'
 import type { InternalUserDefinedOptions, LinkedJsModuleResult } from '@/types'
 import path from 'node:path'
@@ -11,7 +12,6 @@ import { filterUnsupportedMiniProgramTailwindV4Candidates } from '@/tailwindcss/
 import { createUniAppXAssetTask } from '@/uni-app-x'
 import { processCachedTask } from '../shared/cache'
 import { generateCssByGenerator, validateCandidatesByGenerator } from '../shared/generator-css'
-import { emitHmrTiming } from '../shared/hmr-timing'
 import { pushConcurrentTaskFactories } from '../shared/run-tasks'
 import { createBundleModuleGraphOptions } from './bundle-entries'
 import { buildBundleSnapshot, createBundleBuildState, updateBundleBuildState } from './bundle-state'
@@ -54,6 +54,7 @@ interface GenerateBundleContext {
   getRememberedMainCssSignature?: (file: string) => string | undefined
   setRememberedMainCssSignature?: (file: string, cssRuntimeSignature: string) => void
   recordGeneratorCandidates?: (candidates: Set<string>) => void
+  hmrTimingRecorder?: HmrTimingRecorder
 }
 
 interface GenerateBundleThis {
@@ -110,6 +111,7 @@ export function createGenerateBundleHook(context: GenerateBundleContext) {
       getRememberedMainCssSignature,
       setRememberedMainCssSignature,
       recordGeneratorCandidates,
+      hmrTimingRecorder,
     } = context
     const {
       cache,
@@ -650,7 +652,10 @@ export function createGenerateBundleHook(context: GenerateBundleContext) {
       formatMs(metrics.css.elapsed),
     )
 
-    emitHmrTiming('vite', 'generateBundle', performance.now() - hmrTimingStartedAt)
+    if (hmrTimingRecorder) {
+      hmrTimingRecorder.record('generateBundle', performance.now() - hmrTimingStartedAt)
+      hmrTimingRecorder.emitTotal()
+    }
     onEnd()
     debug('end')
   }

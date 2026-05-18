@@ -199,9 +199,11 @@ export async function waitForCompileSettled(
 
 export function collectPluginProcessMetrics(session: WatchSession, startedAt: number) {
   const samples = session.pluginProcessSamplesSince(startedAt)
+  const totalSamples = samples.filter(sample => sample.metric === 'total' || sample.phase === 'total')
+  const budgetSamples = totalSamples.length > 0 ? totalSamples : samples
   return {
     samples,
-    totalMs: Math.max(0, ...samples.map(sample => sample.durationMs)),
+    totalMs: Math.max(0, ...budgetSamples.map(sample => sample.durationMs)),
   }
 }
 

@@ -45,6 +45,7 @@ import {
   createStyleMutationPayload,
   expandOutputFileEntries,
   createClassMutationScenario,
+  collectPluginProcessMetrics,
   hasResolvedOutputFiles,
   readJoinedOutputFiles,
   waitForCompileSettled,
@@ -895,6 +896,18 @@ describe('watch-hmr regression summary helpers', () => {
     })).toThrow('template:complex-corpus:hot-update weapp-tailwindcss processing exceeded budget: 520ms > 500ms')
   })
 
+  it('prefers total timing samples when collecting plugin processing metrics', () => {
+    const metrics = collectPluginProcessMetrics({
+      pluginProcessSamplesSince: () => [
+        { ...pluginProcessSample, durationMs: 1200 },
+        { ...pluginProcessSample, phase: 'total', durationMs: 85, metric: 'total' },
+      ],
+    } as never, 1)
+
+    expect(metrics.totalMs).toBe(85)
+    expect(metrics.samples).toHaveLength(2)
+  })
+
   it('lets Taro Vite cases override the plugin processing budget for restart fallback runs', () => {
     const metrics = createCase('taro-vite-react-tailwindcss-v4', 'demo', 30, 40)
     metrics.maxPluginProcessMs = 3000
@@ -1057,11 +1070,11 @@ describe('watch-hmr regression cases', () => {
     const viteNativeCase = baseCases.find(item => item.name === 'weapp-vite-tailwindcss-v4')
 
     expect(uniViteCase?.outputWxml).toBe(
-      path.resolve('/repo', 'demo/uni-app-vite-tailwindcss-v3/dist/build/mp-weixin/pages/index/index.wxml'),
+      path.resolve('/repo', 'demo/uni-app-vite-tailwindcss-v3/dist/dev/mp-weixin/pages/index/index.wxml'),
     )
     expect(uniViteCase?.globalStyleCandidates).toEqual([
-      path.resolve('/repo', 'demo/uni-app-vite-tailwindcss-v3/dist/build/mp-weixin/pages/index/index.wxss'),
-      path.resolve('/repo', 'demo/uni-app-vite-tailwindcss-v3/dist/build/mp-weixin/app.wxss'),
+      path.resolve('/repo', 'demo/uni-app-vite-tailwindcss-v3/dist/dev/mp-weixin/pages/index/index.wxss'),
+      path.resolve('/repo', 'demo/uni-app-vite-tailwindcss-v3/dist/dev/mp-weixin/app.wxss'),
     ])
     expect(uniViteCase?.maxPluginProcessMs).toBe(5000)
 
