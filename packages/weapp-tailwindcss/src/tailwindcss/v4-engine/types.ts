@@ -14,6 +14,7 @@ export type TailwindV4GenerateTarget = 'weapp' | 'web' | 'tailwind'
 type TailwindV4PatchGenerateOptions = Omit<PatchTailwindV4GenerateOptions, 'target' | 'styleOptions' | 'tailwindcssV3Compatibility' | 'scanSources'>
 
 export interface TailwindV4GenerateOptions extends TailwindV4PatchGenerateOptions {
+  incrementalCache?: boolean | undefined
   target?: TailwindV4GenerateTarget | undefined
   styleOptions?: Partial<IStyleHandlerOptions> | undefined
   tailwindcssV3Compatibility?: boolean | undefined
