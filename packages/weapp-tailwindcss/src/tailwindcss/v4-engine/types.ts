@@ -11,6 +11,12 @@ import type {
 
 export type TailwindV4GenerateTarget = 'weapp' | 'web' | 'tailwind'
 
+export interface TailwindV4SourcePattern {
+  base: string
+  pattern: string
+  negated: boolean
+}
+
 type TailwindV4PatchGenerateOptions = Omit<PatchTailwindV4GenerateOptions, 'target' | 'styleOptions' | 'tailwindcssV3Compatibility' | 'scanSources'>
 
 export interface TailwindV4GenerateOptions extends TailwindV4PatchGenerateOptions {

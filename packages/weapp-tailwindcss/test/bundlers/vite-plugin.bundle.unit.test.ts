@@ -184,6 +184,116 @@ describe('bundlers/vite WeappTailwindcss bundle', () => {
     expect(currentContext.twPatcher.getClassSetSync).toHaveBeenCalledTimes(1)
   }, TEST_TIMEOUT_MS)
 
+  it('uses oxide source candidates as the default Tailwind v3 runtime input in Vite generator mode', async () => {
+    const validateCandidatesMock = vi.fn(async (candidates: Set<string>) => {
+      return new Set([...candidates].filter(candidate => candidate === 'bg-[red]'))
+    })
+    const generateMock = vi.fn(async (options: { candidates: Set<string> }) => ({
+      css: '.bg-_red_ { background-color: red; }',
+      rawCss: '.bg-\\[red\\] { background-color: red; }',
+      target: 'weapp',
+      classSet: new Set(options.candidates),
+      dependencies: [],
+      sources: [],
+      root: null,
+      version: 3,
+    }))
+    vi.doMock('@/generator', () => ({
+      createWeappTailwindcssGenerator: vi.fn(() => ({
+        generate: generateMock,
+        validateCandidates: validateCandidatesMock,
+      })),
+      normalizeWeappTailwindcssGeneratorOptions: normalizeGeneratorOptions,
+      resolveTailwindV3Source: vi.fn(async options => ({
+        version: 3,
+        projectRoot: process.cwd(),
+        cwd: process.cwd(),
+        base: process.cwd(),
+        css: options?.css ?? '@tailwind utilities;',
+        config: undefined,
+        configObject: {},
+        dependencies: [],
+        packageName: 'tailwindcss',
+        postcssPlugin: 'tailwindcss',
+      })),
+      resolveTailwindV3SourceFromPatcher: vi.fn(async () => ({
+        version: 3,
+        projectRoot: process.cwd(),
+        cwd: process.cwd(),
+        base: process.cwd(),
+        css: '@tailwind utilities;',
+        config: undefined,
+        configObject: {},
+        dependencies: [],
+        packageName: 'tailwindcss',
+        postcssPlugin: 'tailwindcss',
+      })),
+      resolveTailwindV3SourceOptionsFromPatcher: vi.fn(() => ({
+        projectRoot: process.cwd(),
+        cwd: process.cwd(),
+        packageName: 'tailwindcss',
+        postcssPlugin: 'tailwindcss',
+      })),
+    }))
+
+    const runtimeSet = new Set(['from-patcher'])
+    const currentContext = createContext({
+      templateHandler: vi.fn(async () => '<view></view>'),
+      twPatcher: {
+        patch: vi.fn(),
+        getClassSet: vi.fn(async () => runtimeSet),
+        getClassSetSync: vi.fn(() => runtimeSet),
+        extract: vi.fn(async () => ({ classSet: runtimeSet })),
+        majorVersion: 3,
+      },
+    })
+    setCurrentContext(currentContext)
+
+    const WeappTailwindcss = await loadUnifiedVitePlugin()
+    const plugins = WeappTailwindcss()
+    const sourcePlugin = plugins?.find(plugin => plugin.name === 'weapp-tailwindcss:adaptor:source-candidates') as Plugin
+    const postPlugin = plugins?.find(plugin => plugin.name === 'weapp-tailwindcss:adaptor:post') as Plugin
+    expect(sourcePlugin).toBeTruthy()
+    expect(postPlugin).toBeTruthy()
+
+    await (postPlugin.configResolved as any)?.call(postPlugin, {
+      command: 'serve',
+      root: process.cwd(),
+      css: { postcss: { plugins: [] } },
+      build: { outDir: 'dist' },
+    } as ResolvedConfig)
+
+    await getTransformHandler(sourcePlugin)?.call(
+      sourcePlugin,
+      '<view class="bg-[red] not-a-tailwind-class"></view>',
+      path.join(process.cwd(), 'src/pages/index/index.vue'),
+    )
+
+    const bundle = {
+      'app.css': {
+        ...createRollupAsset('@tailwind utilities;'),
+        fileName: 'app.css',
+      },
+      'pages/index/index.wxml': {
+        ...createRollupAsset('<view class="bg-[red]"></view>'),
+        fileName: 'pages/index/index.wxml',
+      },
+    }
+    const generateBundle = getGenerateBundleHandler(postPlugin)
+    await generateBundle?.call(postPlugin, {} as any, bundle)
+
+    expect(currentContext.twPatcher.extract).not.toHaveBeenCalled()
+    expect(currentContext.twPatcher.getClassSet).not.toHaveBeenCalled()
+    expect(currentContext.twPatcher.getClassSetSync).not.toHaveBeenCalled()
+    expect(validateCandidatesMock).toHaveBeenCalledWith(expect.any(Set))
+    expect([...(validateCandidatesMock.mock.calls[0]![0] as Set<string>)]).toEqual(expect.arrayContaining(['bg-[red]']))
+    expect(generateMock).toHaveBeenCalledWith(expect.objectContaining({
+      candidates: new Set(['bg-[red]']),
+      incrementalCache: true,
+    }))
+    expect((bundle['app.css'] as OutputAsset).source).toContain('background-color: red')
+  }, TEST_TIMEOUT_MS)
+
   it('inlines external postcss config without official Tailwind plugins in force generator mode', async () => {
     const WeappTailwindcss = await loadUnifiedVitePlugin()
     const tempDir = await mkdtemp(path.join(os.tmpdir(), 'weapp-tw-vite-postcss-'))

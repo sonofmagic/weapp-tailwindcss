@@ -110,7 +110,7 @@ function normalizeTailwindDirectiveLine(line: string, options: TailwindDirective
     return line
   }
   const request = parseImportRequest(line.trimStart().replace(/^@import\b/, ''))
-  if (!isWeappTailwindcssImportRequest(request)) {
+  if (!request || !isWeappTailwindcssImportRequest(request)) {
     return line
   }
   return replaceImportRequest(line, request, request.replace(/^weapp-tailwindcss/, 'tailwindcss'))

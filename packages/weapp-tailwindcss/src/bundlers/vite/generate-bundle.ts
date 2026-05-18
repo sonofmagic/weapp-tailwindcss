@@ -133,6 +133,7 @@ export function createGenerateBundleHook(context: GenerateBundleContext) {
     const disableDirtyOptimization = process.env['WEAPP_TW_VITE_DISABLE_DIRTY'] === '1'
     const disableJsPrecheck = process.env['WEAPP_TW_VITE_DISABLE_JS_PRECHECK'] === '1'
     const debugCssDiff = process.env['WEAPP_TW_VITE_DEBUG_CSS_DIFF'] === '1'
+    const disableV3OxideSourceRuntime = process.env['WEAPP_TW_VITE_DISABLE_V3_OXIDE_RUNTIME'] === '1'
     const resolvedConfig = getResolvedConfig()
     const bundleFiles = Object.keys(bundle)
     const buildCommand = resolvedConfig?.command === 'build'
@@ -154,18 +155,32 @@ export function createGenerateBundleHook(context: GenerateBundleContext) {
       useIncrementalMode,
       iteration: state.iteration + 1,
     })
+    await waitForSourceCandidateSyncs?.()
+    const sourceCandidates = getSourceCandidates?.() ?? new Set<string>()
     const jsEntries = snapshot.jsEntries
     const getJsEntry = createJsEntryResolver(jsEntries)
     const moduleGraphOptions = createBundleModuleGraphOptions(outDir, jsEntries)
+    const hasCssAssetEntry = snapshot.entries.some(entry => entry.type === 'css' && entry.output.type === 'asset')
+    const useV3OxideSourceRuntime = runtimeState.twPatcher.majorVersion === 3
+      && sourceCandidates.size > 0
+      && hasCssAssetEntry
+      && !forceRuntimeRefreshByEnv
+      && !disableV3OxideSourceRuntime
     const runtimeStart = performance.now()
-    const runtime = useBundleRuntimeClassSet
-      ? await ensureBundleRuntimeClassSet(snapshot, forceRuntimeRefreshByEnv, {
-          allowBaselineOnlyInitialSync: buildCommand,
-        })
-      : await context.ensureRuntimeClassSet(forceRuntimeRefreshByEnv)
+    const runtime = useV3OxideSourceRuntime
+      ? new Set<string>()
+      : useBundleRuntimeClassSet
+        ? await ensureBundleRuntimeClassSet(snapshot, forceRuntimeRefreshByEnv, {
+            allowBaselineOnlyInitialSync: buildCommand,
+          })
+        : await context.ensureRuntimeClassSet(forceRuntimeRefreshByEnv)
+    if (useV3OxideSourceRuntime) {
+      debug(
+        '[tailwindcss:v3] use oxide source candidates as runtime input, candidates=%d',
+        sourceCandidates.size,
+      )
+    }
     const shouldFilterTailwindV4MiniProgramCandidates = runtimeState.twPatcher.majorVersion === 4 && generatorOptions.target === 'weapp'
-    await waitForSourceCandidateSyncs?.()
-    const sourceCandidates = getSourceCandidates?.() ?? new Set<string>()
     const collectedGeneratorCandidates = new Set([...runtime, ...sourceCandidates])
     const filteredGeneratorCandidates = shouldFilterTailwindV4MiniProgramCandidates
       ? filterUnsupportedMiniProgramTailwindV4Candidates(collectedGeneratorCandidates)

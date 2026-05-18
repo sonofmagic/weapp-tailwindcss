@@ -30,6 +30,23 @@ describe('tailwindcss v3 engine', () => {
     }
   })
 
+  it('generates without loading the Tailwind v3 PostCSS plugin entry', async () => {
+    const source = await resolveTailwindV3Source({
+      css: '@tailwind utilities;',
+      base: process.cwd(),
+      config: undefined,
+      postcssPlugin: 'tailwindcss/__missing_postcss_plugin__',
+    })
+    const engine = createTailwindV3Engine(source)
+
+    const result = await engine.generate({
+      candidates: ['w-4'],
+    })
+
+    expect(result.css).toContain('.w-4')
+    expect(result.classSet).toEqual(new Set(['w-4']))
+  })
+
   it('removes browser preflight while keeping utility variables for mini-program output', async () => {
     const source = await resolveTailwindV3Source({
       css: '@tailwind base; @tailwind utilities;',
