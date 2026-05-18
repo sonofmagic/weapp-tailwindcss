@@ -36,6 +36,15 @@ interface TailwindV4IncrementalGenerateCacheEntry {
   target: TailwindV4GenerateTarget
 }
 
+interface TailwindV4IncrementalCacheSeedOptions {
+  compatibleSource: TailwindV4ResolvedSource
+  generated: Awaited<ReturnType<TailwindV4Engine['generate']>>
+  requestedCandidates: Set<string>
+  styleOptions: Partial<IStyleHandlerOptions> | undefined
+  tailwindcssV3Compatibility: boolean | undefined
+  target: TailwindV4GenerateTarget
+}
+
 function findLeadingImportInsertionIndex(css: string) {
   const importPattern = /(?:^|\n)\s*@import\b[^;]*;/g
   let insertionIndex = 0
@@ -132,6 +141,36 @@ function resolveTargetCandidates(
   return target === 'weapp'
     ? filterUnsupportedMiniProgramTailwindV4Candidates(collected)
     : collected
+}
+
+function collectSeenCandidates(
+  generated: Pick<Awaited<ReturnType<TailwindV4Engine['generate']>>, 'rawCandidates' | 'classSet'>,
+  requestedCandidates: Set<string>,
+) {
+  return new Set([
+    ...requestedCandidates,
+    ...generated.rawCandidates,
+    ...generated.classSet,
+  ])
+}
+
+function seedIncrementalGenerateCache(options: TailwindV4IncrementalCacheSeedOptions) {
+  const cacheKey = createIncrementalGenerateCacheKey(
+    options.compatibleSource,
+    options.target,
+    options.styleOptions,
+    options.tailwindcssV3Compatibility,
+  )
+  incrementalGenerateCache.set(cacheKey, {
+    seenCandidates: collectSeenCandidates(options.generated, options.requestedCandidates),
+    classSet: new Set(options.generated.classSet),
+    css: options.generated.css,
+    rawCss: options.generated.rawCss,
+    dependencies: options.generated.dependencies,
+    sources: options.generated.sources,
+    root: options.generated.root,
+    target: options.generated.target,
+  })
 }
 
 function parseImportSourceParam(params: string) {
@@ -360,13 +399,27 @@ export function createTailwindV4Engine(source: TailwindV4ResolvedSource): Tailwi
   }
 
   async function generateWithIncrementalCache(options: TailwindV4GenerateOptions = {}) {
-    if ((options.sources?.length ?? 0) > 0 || options.bareArbitraryValues !== undefined || options.scanSources === true || Array.isArray(options.scanSources)) {
-      return generateOnce(source, options)
-    }
-
     const target = options.target ?? 'weapp'
     const compatibleSource = createCompatibleSource(source, target, options.tailwindcssV3Compatibility)
     const requestedCandidates = resolveTargetCandidates(options.candidates, target)
+
+    if ((options.sources?.length ?? 0) > 0 || options.bareArbitraryValues !== undefined || Array.isArray(options.scanSources)) {
+      return generateOnce(source, options)
+    }
+
+    if (options.scanSources === true) {
+      const generated = await generateOnce(source, options)
+      seedIncrementalGenerateCache({
+        compatibleSource,
+        generated,
+        requestedCandidates,
+        styleOptions: options.styleOptions,
+        tailwindcssV3Compatibility: options.tailwindcssV3Compatibility,
+        target,
+      })
+      return generated
+    }
+
     const cacheKey = createIncrementalGenerateCacheKey(
       compatibleSource,
       target,
@@ -427,15 +480,13 @@ export function createTailwindV4Engine(source: TailwindV4ResolvedSource): Tailwi
     }
 
     const generated = await generateOnce(source, options)
-    incrementalGenerateCache.set(cacheKey, {
-      seenCandidates: new Set(requestedCandidates),
-      classSet: new Set(generated.classSet),
-      css: generated.css,
-      rawCss: generated.rawCss,
-      dependencies: generated.dependencies,
-      sources: generated.sources,
-      root: generated.root,
-      target: generated.target,
+    seedIncrementalGenerateCache({
+      compatibleSource,
+      generated,
+      requestedCandidates,
+      styleOptions: options.styleOptions,
+      tailwindcssV3Compatibility: options.tailwindcssV3Compatibility,
+      target,
     })
     return generated
   }

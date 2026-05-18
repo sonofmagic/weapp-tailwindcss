@@ -110,6 +110,37 @@ describe('tailwindcss v4 engine', () => {
     expect(second.css.match(/\.text-_b88rpx_B/g) ?? []).toHaveLength(1)
   })
 
+  it('seeds the v4 incremental cache from the initial source scan', async () => {
+    const source = await resolveTailwindV4Source({
+      css: MINIMAL_THEME_CSS,
+      base: process.cwd(),
+    })
+    const engine = createTailwindV4Engine(source)
+
+    const first = await engine.generate({
+      candidates: ['text-[88rpx]'],
+      incrementalCache: true,
+      scanSources: true,
+      styleOptions: {
+        isMainChunk: false,
+      },
+    })
+    const second = await engine.generate({
+      candidates: ['text-[88rpx]', 'text-[188rpx]'],
+      incrementalCache: true,
+      scanSources: false,
+      styleOptions: {
+        isMainChunk: false,
+      },
+    })
+
+    expect(first.classSet).toEqual(new Set(['text-[88rpx]']))
+    expect(second.classSet).toEqual(new Set(['text-[88rpx]', 'text-[188rpx]']))
+    expect(second.css).toContain('.text-_b88rpx_B')
+    expect(second.css).toContain('.text-_b188rpx_B')
+    expect(second.css.match(/\.text-_b88rpx_B/g) ?? []).toHaveLength(1)
+  })
+
   it('uses mini-program-safe Tailwind v4 default color variables for native v4 weapp output', async () => {
     const source = await resolveTailwindV4Source({
       css: `
