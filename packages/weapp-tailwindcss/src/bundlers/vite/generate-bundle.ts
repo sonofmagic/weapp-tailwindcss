@@ -139,6 +139,15 @@ export function createGenerateBundleHook(context: GenerateBundleContext) {
     const recordTimingDetail = (name: string, startedAt: number) => {
       timingDetails[name] = (timingDetails[name] ?? 0) + Math.max(0, performance.now() - startedAt)
     }
+    const timeTask = async (name: string, task: () => Promise<void>) => {
+      const start = performance.now()
+      try {
+        await task()
+      }
+      finally {
+        recordTimingDetail(`tasks.${name}`, start)
+      }
+    }
 
     const metrics = createEmptyMetrics()
     const forceRuntimeRefreshByEnv = process.env['WEAPP_TW_VITE_FORCE_RUNTIME_REFRESH'] === '1'
@@ -290,7 +299,7 @@ export function createGenerateBundleHook(context: GenerateBundleContext) {
           continue
         }
         const rawSource = originalEntrySource
-        tasks.push(
+        tasks.push(timeTask('html', () =>
           processCachedTask<string>({
             cache,
             cacheKey: file,
@@ -338,8 +347,7 @@ export function createGenerateBundleHook(context: GenerateBundleContext) {
                 result: transformed,
               }
             },
-          }),
-        )
+          })))
         continue
       }
 
@@ -374,7 +382,7 @@ export function createGenerateBundleHook(context: GenerateBundleContext) {
             continue
           }
         }
-        tasks.push(
+        tasks.push(timeTask('css', () =>
           processCachedTask<string>({
             cache,
             cacheKey: file,
@@ -456,8 +464,7 @@ export function createGenerateBundleHook(context: GenerateBundleContext) {
                 result: css,
               }
             },
-          }),
-        )
+          })))
         continue
       }
 
@@ -481,52 +488,54 @@ export function createGenerateBundleHook(context: GenerateBundleContext) {
         }
 
         jsTaskFactories.push(async () => {
-          const linkedImpactSignature = useIncrementalMode
-            ? createLinkedImpactSignature(
-                file,
-                snapshot.linkedImpactsByEntry,
-                snapshot.sourceHashByFile,
-              )
-            : undefined
-          const hashSalt = createJsHashSalt(runtimeSignature, linkedImpactSignature)
-          await processCachedTask<string>({
-            cache,
-            cacheKey: file,
-            hashKey: `${file}:js`,
-            hash: `${getSnapshotHash(snapshot.sourceHashByFile, file, initialRawSource)}:${hashSalt}`,
-            applyResult(source) {
-              originalSource.code = source
-            },
-            onCacheHit() {
-              metrics.js.cacheHits++
-              debug('js cache hit: %s', file)
-            },
-            async transform() {
-              const start = performance.now()
-              const rawSource = originalSource.code
-              if (!shouldTransformJs) {
-                debug('js cache replay miss, fallback transform: %s', file)
-              }
-              const handlerOptions = createHandlerOptions(absoluteFile)
-              if (!disableJsPrecheck && shouldSkipViteJsTransform(rawSource, handlerOptions)) {
+          await timeTask('js', async () => {
+            const linkedImpactSignature = useIncrementalMode
+              ? createLinkedImpactSignature(
+                  file,
+                  snapshot.linkedImpactsByEntry,
+                  snapshot.sourceHashByFile,
+                )
+              : undefined
+            const hashSalt = createJsHashSalt(runtimeSignature, linkedImpactSignature)
+            await processCachedTask<string>({
+              cache,
+              cacheKey: file,
+              hashKey: `${file}:js`,
+              hash: `${getSnapshotHash(snapshot.sourceHashByFile, file, initialRawSource)}:${hashSalt}`,
+              applyResult(source) {
+                originalSource.code = source
+              },
+              onCacheHit() {
+                metrics.js.cacheHits++
+                debug('js cache hit: %s', file)
+              },
+              async transform() {
+                const start = performance.now()
+                const rawSource = originalSource.code
+                if (!shouldTransformJs) {
+                  debug('js cache replay miss, fallback transform: %s', file)
+                }
+                const handlerOptions = createHandlerOptions(absoluteFile)
+                if (!disableJsPrecheck && shouldSkipViteJsTransform(rawSource, handlerOptions)) {
+                  metrics.js.elapsed += measureElapsed(start)
+                  metrics.js.transformed++
+                  return {
+                    result: rawSource,
+                  }
+                }
+
+                const { code, linked } = await jsHandler(rawSource, transformRuntime, handlerOptions)
                 metrics.js.elapsed += measureElapsed(start)
                 metrics.js.transformed++
+                onUpdate(file, rawSource, code)
+                debug('js handle: %s', file)
+                collectLinkedFileNames(linked, getJsEntry, linkedSet)
+                applyLinkedUpdates(linked)
                 return {
-                  result: rawSource,
+                  result: code,
                 }
-              }
-
-              const { code, linked } = await jsHandler(rawSource, transformRuntime, handlerOptions)
-              metrics.js.elapsed += measureElapsed(start)
-              metrics.js.transformed++
-              onUpdate(file, rawSource, code)
-              debug('js handle: %s', file)
-              collectLinkedFileNames(linked, getJsEntry, linkedSet)
-              applyLinkedUpdates(linked)
-              return {
-                result: code,
-              }
-            },
+              },
+            })
           })
         })
       }
@@ -570,31 +579,33 @@ export function createGenerateBundleHook(context: GenerateBundleContext) {
         )
 
         jsTaskFactories.push(async () => {
-          const start = performance.now()
-          if (!shouldTransformJs) {
-            debug('js skip transform (clean, uni-app-x), replay cache: %s', file)
+          await timeTask('js', async () => {
+            const start = performance.now()
+            if (!shouldTransformJs) {
+              debug('js skip transform (clean, uni-app-x), replay cache: %s', file)
+              await factory()
+              metrics.js.elapsed += measureElapsed(start)
+              metrics.js.transformed++
+              return
+            }
+            const currentSource = originalEntrySource
+            const absoluteFile = path.resolve(outDir, file)
+            const precheckOptions = createHandlerOptions(absoluteFile, {
+              uniAppX: resolveUniAppXJsTransformEnabled(uniAppX),
+              babelParserOptions: {
+                plugins: ['typescript'],
+                sourceType: 'unambiguous',
+              },
+            })
+            if (!disableJsPrecheck && shouldSkipViteJsTransform(currentSource, precheckOptions)) {
+              metrics.js.elapsed += measureElapsed(start)
+              metrics.js.transformed++
+              return
+            }
             await factory()
             metrics.js.elapsed += measureElapsed(start)
             metrics.js.transformed++
-            return
-          }
-          const currentSource = originalEntrySource
-          const absoluteFile = path.resolve(outDir, file)
-          const precheckOptions = createHandlerOptions(absoluteFile, {
-            uniAppX: resolveUniAppXJsTransformEnabled(uniAppX),
-            babelParserOptions: {
-              plugins: ['typescript'],
-              sourceType: 'unambiguous',
-            },
           })
-          if (!disableJsPrecheck && shouldSkipViteJsTransform(currentSource, precheckOptions)) {
-            metrics.js.elapsed += measureElapsed(start)
-            metrics.js.transformed++
-            return
-          }
-          await factory()
-          metrics.js.elapsed += measureElapsed(start)
-          metrics.js.transformed++
         })
       }
     }
@@ -605,7 +616,7 @@ export function createGenerateBundleHook(context: GenerateBundleContext) {
         if (bundleFiles.includes(file) || getRememberedMainCssSignature?.(file) === cssRuntimeSignature) {
           continue
         }
-        tasks.push((async () => {
+        tasks.push(timeTask('css.replay', async () => {
           const start = performance.now()
           const cssHandlerOptions = getCssHandlerOptions(file)
           const generated = await generateCssByGenerator({
@@ -643,7 +654,7 @@ export function createGenerateBundleHook(context: GenerateBundleContext) {
           metrics.css.transformed++
           onUpdate(file, rawSource, css)
           debug('css replay handle: %s', file)
-        })())
+        }))
       }
     }
 

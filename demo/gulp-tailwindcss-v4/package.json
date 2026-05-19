@@ -37,7 +37,15 @@
     "build": "gulp --preload tsx/dist/loader.cjs -f gulpfile.ts",
     "build:babel": "cross-env BABEL=1 gulp --preload tsx/dist/loader.cjs -f gulpfile.ts",
     "build:tt": "cross-env PLATFORM=tt gulp --preload tsx/dist/loader.cjs -f gulpfile.ts",
-    "open": "weapp open -p"
+    "open": "weapp open -p",
+    "predev": "node ../../scripts/ensure-weapp-tailwindcss-built.mjs",
+    "prebuild": "node ../../scripts/ensure-weapp-tailwindcss-built.mjs",
+    "predev:debug": "node ../../scripts/ensure-weapp-tailwindcss-built.mjs",
+    "predev:tt": "node ../../scripts/ensure-weapp-tailwindcss-built.mjs",
+    "predev:local": "node ../../scripts/ensure-weapp-tailwindcss-built.mjs",
+    "prebuild:local": "node ../../scripts/ensure-weapp-tailwindcss-built.mjs",
+    "prebuild:babel": "node ../../scripts/ensure-weapp-tailwindcss-built.mjs",
+    "prebuild:tt": "node ../../scripts/ensure-weapp-tailwindcss-built.mjs"
   },
   "dependencies": {
     "@vant/weapp": "^1.11.6"

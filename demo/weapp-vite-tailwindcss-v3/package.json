@@ -25,7 +25,10 @@
     "build": "weapp-vite build",
     "open": "weapp-vite open",
     "build-npm": "weapp-vite build-npm",
-    "g": "weapp-vite generate"
+    "g": "weapp-vite generate",
+    "predev": "node ../../scripts/ensure-weapp-tailwindcss-built.mjs",
+    "prebuild": "node ../../scripts/ensure-weapp-tailwindcss-built.mjs",
+    "predev:open": "node ../../scripts/ensure-weapp-tailwindcss-built.mjs"
   },
   "devDependencies": {
     "@weapp-tailwindcss/cva": "workspace:*",

@@ -35,6 +35,8 @@ function readDemoPackageJsons() {
     .map(entry => ({
       project: entry.project,
       packageJson: JSON.parse(fs.readFileSync(entry.packageJsonPath, 'utf8')) as {
+        dependencies?: Record<string, string>
+        devDependencies?: Record<string, string>
         scripts?: Record<string, string>
       },
     }))
@@ -206,6 +208,29 @@ describe('ci workflows', () => {
 
       for (const [name, command] of devScripts) {
         expect(command, `${project} ${name} should enable timing output`).toContain('WEAPP_TW_HMR_TIMING=1')
+      }
+    }
+  })
+
+  it('keeps workspace demos using a fresh core build before dev and build scripts', () => {
+    for (const { project, packageJson } of readDemoPackageJsons()) {
+      const dependencies = {
+        ...(packageJson.dependencies ?? {}),
+        ...(packageJson.devDependencies ?? {}),
+      }
+      if (!dependencies['weapp-tailwindcss']) {
+        continue
+      }
+
+      const scripts = packageJson.scripts ?? {}
+      for (const name of Object.keys(scripts)) {
+        if (
+          (name === 'dev' || name.startsWith('dev:') || name === 'build' || name.startsWith('build:'))
+          && !name.endsWith(':e2e-watch')
+        ) {
+          expect(scripts[`pre${name}`], `${project} should refresh core dist before ${name}`)
+            .toBe('node ../../scripts/ensure-weapp-tailwindcss-built.mjs')
+        }
       }
     }
   })

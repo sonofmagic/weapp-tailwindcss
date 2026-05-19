@@ -27,7 +27,12 @@
     "dev:open": "cross-env WEAPP_TW_HMR_TIMING=1 weapp-vite dev -o",
     "build": "weapp-vite build",
     "open": "weapp-vite open",
-    "npm": "weapp-vite npm"
+    "npm": "weapp-vite npm",
+    "predev": "node ../../scripts/ensure-weapp-tailwindcss-built.mjs",
+    "prebuild": "node ../../scripts/ensure-weapp-tailwindcss-built.mjs",
+    "predev:0": "node ../../scripts/ensure-weapp-tailwindcss-built.mjs",
+    "predev:1": "node ../../scripts/ensure-weapp-tailwindcss-built.mjs",
+    "predev:open": "node ../../scripts/ensure-weapp-tailwindcss-built.mjs"
   },
   "dependencies": {
     "@weapp-tailwindcss/merge": "workspace:*",

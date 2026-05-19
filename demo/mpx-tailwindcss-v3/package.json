@@ -24,7 +24,12 @@
     "lint": "eslint --ext .js,.ts,.mpx src/",
     "build:e2e": "pnpm run build && pnpm run test:e2e",
     "test": "jest test/components",
-    "open": "weapp open -p dist/wx"
+    "open": "weapp open -p dist/wx",
+    "predev": "node ../../scripts/ensure-weapp-tailwindcss-built.mjs",
+    "prebuild": "node ../../scripts/ensure-weapp-tailwindcss-built.mjs",
+    "predev:debug": "node ../../scripts/ensure-weapp-tailwindcss-built.mjs",
+    "prebuild:babel": "node ../../scripts/ensure-weapp-tailwindcss-built.mjs",
+    "prebuild:e2e": "node ../../scripts/ensure-weapp-tailwindcss-built.mjs"
   },
   "dependencies": {
     "@mpxjs/api-proxy": "^2.10.20",

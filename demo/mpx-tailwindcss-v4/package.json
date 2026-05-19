@@ -12,7 +12,11 @@
     "dev:debug-loader": "cross-env WEAPP_TW_HMR_TIMING=1 WEAPP_TW_LOADER_DEBUG=1 mpx-cli-service serve",
     "build:debug-loader": "cross-env WEAPP_TW_LOADER_DEBUG=1 mpx-cli-service build",
     "lint": "eslint --ext .js,.ts,.mpx src/",
-    "open": "weapp open -p dist/wx"
+    "open": "weapp open -p dist/wx",
+    "predev": "node ../../scripts/ensure-weapp-tailwindcss-built.mjs",
+    "prebuild": "node ../../scripts/ensure-weapp-tailwindcss-built.mjs",
+    "predev:debug-loader": "node ../../scripts/ensure-weapp-tailwindcss-built.mjs",
+    "prebuild:debug-loader": "node ../../scripts/ensure-weapp-tailwindcss-built.mjs"
   },
   "dependencies": {
     "@mpxjs/api-proxy": "^2.10.20",
