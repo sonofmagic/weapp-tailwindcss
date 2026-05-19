@@ -2,6 +2,7 @@ import type { TailwindV4CssSource } from 'tailwindcss-patch'
 import type webpack from 'webpack'
 import type { AppType } from '@/types'
 import { Buffer } from 'node:buffer'
+import path from 'node:path'
 import process from 'node:process'
 import { inspect } from 'node:util'
 import { ensurePosix } from '@weapp-tailwindcss/shared'
@@ -45,6 +46,32 @@ function applyCssImportRewrite(source: string, options: CssImportRewriteLoaderOp
   return rewritten ?? source
 }
 
+function isPackageJsonImportRequest(request: string) {
+  return request.startsWith('#')
+}
+
+function toRootRelativeConfigPath(configPath: string, rootContext: string | undefined) {
+  if (!rootContext) {
+    return ensurePosix(configPath)
+  }
+  const relative = ensurePosix(path.relative(rootContext, configPath))
+  return relative.startsWith('.') ? relative : `./${relative}`
+}
+
+function normalizeCssConfigDirectives(source: string, resourcePath?: string, rootContext?: string) {
+  if (!resourcePath) {
+    return source
+  }
+  const base = path.dirname(resourcePath)
+  return source.replace(/@config\s+(["'])(.+?)\1\s*;?/g, (full, quote: string, request: string) => {
+    if (path.isAbsolute(request) || isPackageJsonImportRequest(request)) {
+      return full
+    }
+    const resolved = path.resolve(base, request)
+    return `@config ${quote}${toRootRelativeConfigPath(resolved, rootContext)}${quote};`
+  })
+}
+
 export function transformCssImportRewriteSource(
   source: string | Buffer,
   options: CssImportRewriteLoaderOptions | undefined,
@@ -77,10 +104,20 @@ const WeappTwCssImportRewriteLoader: webpack.LoaderDefinitionFunction<CssImportR
   const registerTask = typeof input === 'string' && hasTailwindRootDirectives(input, { importFallback: true })
     ? opt?.tailwindcssImportRewrite?.registerCssSource?.({
         file: this.resourcePath,
-        css: normalizeTailwindSourceForGenerator(input, { importFallback: true }),
+        css: normalizeCssConfigDirectives(
+          normalizeTailwindSourceForGenerator(input, { importFallback: true }),
+          this.resourcePath,
+          this.rootContext,
+        ),
       })
     : undefined
-  const transform = () => transformCssImportRewriteSource(source, opt)
+  const transform = () => {
+    const transformed = transformCssImportRewriteSource(source, opt)
+    if (typeof transformed === 'string') {
+      return normalizeCssConfigDirectives(transformed, this.resourcePath, this.rootContext)
+    }
+    return transformed
+  }
   if (registerTask && typeof (registerTask as PromiseLike<void>).then === 'function') {
     return Promise.resolve(registerTask).then(transform)
   }

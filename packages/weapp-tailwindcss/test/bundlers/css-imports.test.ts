@@ -49,6 +49,50 @@ describe('bundlers/shared css-imports', () => {
     expect(rewritten).toBe(`@import "${pkgDir}/index.css";`)
   })
 
+  it('normalizes registered relative @config paths against the webpack loader resource file', async () => {
+    const registerCssSource = vi.fn()
+    const result = loader.call({
+      query: {
+        tailwindcssImportRewrite: {
+          pkgDir,
+          appType: 'mpx',
+          registerCssSource,
+        },
+      },
+      resourcePath: '/repo/demo/mpx-tailwindcss-v4/src/sub-normal/pages/index.css',
+      rootContext: '/repo/demo/mpx-tailwindcss-v4',
+    } as any,
+      [
+        '@import "tailwindcss" source(none);',
+        '@config "../../../tailwind.config.sub-normal.js";',
+      ].join('\n'),
+    )
+
+    await Promise.resolve(result)
+
+    expect(result).toBe([
+      `@import "${pkgDir}/index.css" source(none);`,
+      '@config "./tailwind.config.sub-normal.js";',
+    ].join('\n'))
+    expect(registerCssSource).toHaveBeenCalledWith({
+      file: '/repo/demo/mpx-tailwindcss-v4/src/sub-normal/pages/index.css',
+      css: [
+        '@import "tailwindcss" source(none);',
+        '@config "./tailwind.config.sub-normal.js";',
+      ].join('\n'),
+    })
+  })
+
+  it('keeps absolute and package import @config requests unchanged in the webpack loader', () => {
+    expect(transformCssImportRewriteSource('@config "/repo/tailwind.config.js";', {
+      tailwindcssImportRewrite: { pkgDir },
+    })).toBe('@config "/repo/tailwind.config.js";')
+
+    expect(transformCssImportRewriteSource('@config "#tw-config";', {
+      tailwindcssImportRewrite: { pkgDir },
+    })).toBe('@config "#tw-config";')
+  })
+
   it('preserves original source when loader options are missing or unchanged', () => {
     const source = '@import "local.css";'
     const buffer = Buffer.from(source)
