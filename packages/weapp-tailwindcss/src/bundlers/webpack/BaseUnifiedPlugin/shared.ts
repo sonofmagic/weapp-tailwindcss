@@ -1,4 +1,5 @@
 import type { AppType } from '@/types'
+import path from 'node:path'
 import { isSourceStyleRequest, stripRequestQuery } from '@/bundlers/shared/style-requests'
 
 const MPX_STYLE_RESOURCE_QUERY_RE = /(?:\?|&)type=styles\b/
@@ -57,6 +58,20 @@ interface WebpackWatchChangeLike {
   removedFiles?: Set<string>
 }
 
+interface RuntimeWatchDependenciesLike {
+  files?: Iterable<string>
+  contexts?: Iterable<string>
+}
+
+function normalizeWatchPath(file: string) {
+  return path.resolve(file)
+}
+
+function isFileInContext(file: string, context: string) {
+  const relative = path.relative(normalizeWatchPath(context), normalizeWatchPath(file))
+  return relative.length > 0 && !relative.startsWith('..') && !path.isAbsolute(relative)
+}
+
 function toChunkFiles(files: ChunkLike['files']) {
   if (!files) {
     return []
@@ -110,4 +125,22 @@ export function createRuntimeAwareCssHash(
 export function hasWatchChanges(compiler: WebpackWatchChangeLike) {
   return (compiler.modifiedFiles?.size ?? 0) > 0
     || (compiler.removedFiles?.size ?? 0) > 0
+}
+
+export function isWatchFileInRuntimeDependencies(
+  file: string,
+  dependencies: RuntimeWatchDependenciesLike,
+) {
+  const normalizedFile = normalizeWatchPath(file)
+  for (const dependency of dependencies.files ?? []) {
+    if (normalizeWatchPath(dependency) === normalizedFile) {
+      return true
+    }
+  }
+  for (const context of dependencies.contexts ?? []) {
+    if (isFileInContext(normalizedFile, context)) {
+      return true
+    }
+  }
+  return false
 }

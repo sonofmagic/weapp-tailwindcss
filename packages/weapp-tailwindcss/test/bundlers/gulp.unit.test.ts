@@ -208,6 +208,39 @@ describe('bundlers/gulp createPlugins', () => {
     expect(twPatcher.extract).not.toHaveBeenCalled()
   })
 
+  it('does not force collect tailwindcss v4 runtime when gulp css follows js updates', async () => {
+    twPatcher.majorVersion = 4
+    const incrementalRuntimeSet = new Set<string>()
+    const incrementalRuntimeManager = {
+      reset: vi.fn(async () => undefined),
+      sync: vi.fn(async (_patcher: unknown, snapshot: { runtimeAffectingChangedByType: { js: Set<string> }, entries: Array<{ file: string, source: string }> }) => {
+        for (const file of snapshot.runtimeAffectingChangedByType.js) {
+          const entry = snapshot.entries.find(item => item.file === file)
+          if (!entry) {
+            continue
+          }
+          const matches = entry.source.match(/[a-z]-\[[^\]]+\]/g) ?? []
+          for (const match of matches) {
+            incrementalRuntimeSet.add(match)
+          }
+        }
+        return new Set(incrementalRuntimeSet)
+      }),
+    }
+    const plugins = createPlugins({
+      __internalGulpRuntimeClassSetManager: incrementalRuntimeManager,
+    } as any)
+
+    await runTransform(plugins.transformJs(), createFile('/src/app.js', 'const cls = "w-[2px]"'))
+    const processed = await runTransform(plugins.transformWxss({
+      isMainChunk: true,
+    }), createFile('/src/app.wxss', '@import "./foo.css";'))
+
+    expect(processed.contents?.toString()).toBe('css:@import "./foo.css";')
+    expect(incrementalRuntimeManager.sync).toHaveBeenCalledTimes(1)
+    expect(twPatcher.extract).not.toHaveBeenCalled()
+  })
+
   it('registers tailwindcss v4 cssSources from wxss files before collecting runtime classes', async () => {
     twPatcher.majorVersion = 4
     const plugins = createPlugins()

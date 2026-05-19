@@ -2,6 +2,7 @@
 import type { TailwindV4CssSource } from 'tailwindcss-patch'
 import type { Compiler } from 'webpack'
 import type { AppType, IBaseWebpackPlugin, InternalUserDefinedOptions, UserDefinedOptions } from '@/types'
+import path from 'node:path'
 import { pluginName } from '@/constants'
 import { getCompilerContext } from '@/context'
 import { createDebug } from '@/debug'
@@ -12,7 +13,7 @@ import { getRuntimeClassSetSignature } from '@/tailwindcss/runtime/cache'
 import { hasConfiguredTailwindV4CssRoots, upsertTailwindV4CssSource } from '@/tailwindcss/v4/css-sources'
 import { resolvePluginDisabledState } from '@/utils/disabled'
 import { resolvePackageDir } from '@/utils/resolve-package'
-import { hasWatchChanges } from './shared'
+import { isWatchFileInRuntimeDependencies } from './shared'
 import { setupWebpackV5ProcessAssetsHook } from './v5-assets'
 import { setupWebpackV5Loaders } from './v5-loaders'
 
@@ -129,19 +130,40 @@ export class UnifiedWebpackPluginV5 implements IBaseWebpackPlugin {
       runtimeMetadataPrepared = true
     }
 
+    const collectWatchChangedFiles = () => {
+      const compilerLike = compiler as Compiler & {
+        modifiedFiles?: Set<string>
+        removedFiles?: Set<string>
+      }
+      return new Set([
+        ...(compilerLike.modifiedFiles ?? []),
+        ...(compilerLike.removedFiles ?? []),
+      ])
+    }
+
+    const hasRuntimeDependencyChanges = (files: Iterable<string>) => {
+      for (const file of files) {
+        if (isWatchFileInRuntimeDependencies(file, {
+          contexts: runtimeWatchDependencyContexts,
+          files: runtimeWatchDependencyFiles,
+        })) {
+          return true
+        }
+      }
+      return false
+    }
+
     const syncRuntimeRefreshRequirement = (markWatchRun = false) => {
       if (markWatchRun) {
         watchRunObserved = true
       }
-      runtimeRefreshRequiredForCompilation = runtimeRefreshRequiredForCompilation || hasWatchChanges(compiler as Compiler & {
-        modifiedFiles?: Set<string>
-        removedFiles?: Set<string>
-      })
+      const changedFiles = collectWatchChangedFiles()
+      runtimeRefreshRequiredForCompilation = runtimeRefreshRequiredForCompilation
+        || hasRuntimeDependencyChanges(changedFiles)
     }
 
     const resetRuntimePreparation = () => {
       runtimeSetPrepared = false
-      runtimeMetadataPrepared = false
       syncRuntimeRefreshRequirement()
     }
 
@@ -167,8 +189,12 @@ export class UnifiedWebpackPluginV5 implements IBaseWebpackPlugin {
       debug('detected tailwindcss v4 css source from webpack css module: %s', source.file)
     }
 
-    compiler.hooks.invalid?.tap?.(pluginName, () => {
-      runtimeRefreshRequiredForCompilation = true
+    compiler.hooks.invalid?.tap?.(pluginName, (fileName?: string) => {
+      if (!fileName) {
+        return
+      }
+      runtimeRefreshRequiredForCompilation = runtimeRefreshRequiredForCompilation
+        || hasRuntimeDependencyChanges([path.resolve(fileName)])
     })
     compiler.hooks.watchRun?.tap?.(pluginName, () => syncRuntimeRefreshRequirement(true))
     if (compiler.hooks.thisCompilation?.tap) {

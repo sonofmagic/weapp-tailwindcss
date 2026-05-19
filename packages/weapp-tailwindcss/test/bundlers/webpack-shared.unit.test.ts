@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { hasWatchChanges } from '@/bundlers/webpack/BaseUnifiedPlugin/shared'
+import { hasWatchChanges, isWatchFileInRuntimeDependencies } from '@/bundlers/webpack/BaseUnifiedPlugin/shared'
 
 describe('bundlers/webpack shared helpers', () => {
   it('detects watch changes from modifiedFiles', () => {
@@ -19,6 +19,22 @@ describe('bundlers/webpack shared helpers', () => {
     expect(hasWatchChanges({
       modifiedFiles: new Set(),
       removedFiles: new Set(),
+    })).toBe(false)
+  })
+
+  it('matches changed files against runtime dependency files and contexts', () => {
+    expect(isWatchFileInRuntimeDependencies('/workspace/tailwind.config.js', {
+      files: new Set(['/workspace/tailwind.config.js']),
+    })).toBe(true)
+    expect(isWatchFileInRuntimeDependencies('/workspace/src/pages/index.ts', {
+      contexts: new Set(['/workspace/src']),
+    })).toBe(true)
+    expect(isWatchFileInRuntimeDependencies('/workspace/src-other/index.ts', {
+      contexts: new Set(['/workspace/src']),
+    })).toBe(false)
+    expect(isWatchFileInRuntimeDependencies('/workspace/src/pages/index.ts', {
+      files: new Set(['/workspace/tailwind.config.js']),
+      contexts: new Set(['/workspace/styles']),
     })).toBe(false)
   })
 })

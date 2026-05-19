@@ -360,9 +360,10 @@ export function createPlugins(options: UserDefinedOptions = {}) {
       }
       const rawSource = file.contents.toString()
       const cssSourceChanged = await registerAutoCssSource(file, rawSource)
+      const isMainChunk = opts.mainCssChunkMatcher(resolveGulpMatcherName(file), opts.appType)
       const nextRuntimeSet = await refreshRuntimeSet({
         forceRefresh: cssSourceChanged,
-        forceCollect: cssSourceChanged || opts.mainCssChunkMatcher(resolveGulpMatcherName(file), opts.appType),
+        forceCollect: cssSourceChanged || (runtimeState.twPatcher.majorVersion !== 4 && isMainChunk),
         clearCache: cssSourceChanged,
       })
       await processCachedTask<string>({
