@@ -113,6 +113,7 @@ describe('tailwindcss v4 engine', () => {
     expect(second.css).toContain('.text-_b188rpx_B')
     expect(second.css).toContain('font-size: 188rpx')
     expect(second.css.match(/\.text-_b88rpx_B/g) ?? []).toHaveLength(1)
+    expect(second.css.indexOf('.text-_b188rpx_B')).toBeGreaterThan(second.css.indexOf('.text-_b88rpx_B'))
   })
 
   it('remembers requested candidates that do not generate css in the v4 incremental cache', async () => {

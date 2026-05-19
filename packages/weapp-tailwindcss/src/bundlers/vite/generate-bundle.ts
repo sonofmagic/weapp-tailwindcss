@@ -135,6 +135,10 @@ export function createGenerateBundleHook(context: GenerateBundleContext) {
     debug('start')
     onStart()
     const hmrTimingStartedAt = performance.now()
+    const timingDetails: Record<string, number> = {}
+    const recordTimingDetail = (name: string, startedAt: number) => {
+      timingDetails[name] = (timingDetails[name] ?? 0) + Math.max(0, performance.now() - startedAt)
+    }
 
     const metrics = createEmptyMetrics()
     const forceRuntimeRefreshByEnv = process.env['WEAPP_TW_VITE_FORCE_RUNTIME_REFRESH'] === '1'
@@ -157,7 +161,9 @@ export function createGenerateBundleHook(context: GenerateBundleContext) {
       ? path.resolve(rootDir, resolvedConfig.build.outDir)
       : rootDir
     currentOutDir = outDir
+    const snapshotStart = performance.now()
     const snapshot = buildBundleSnapshot(bundle, opts, outDir, state, disableDirtyOptimization || !useIncrementalMode)
+    recordTimingDetail('snapshot', snapshotStart)
     const useBundleRuntimeClassSet = useIncrementalMode || runtimeState.twPatcher.majorVersion === 4
     const forceRuntimeRefreshBySource = useIncrementalMode
       && hasRuntimeAffectingSourceChanges(snapshot.runtimeAffectingChangedByType)
@@ -168,7 +174,9 @@ export function createGenerateBundleHook(context: GenerateBundleContext) {
       useIncrementalMode,
       iteration: state.iteration + 1,
     })
+    const sourceCandidateWaitStart = performance.now()
     await waitForSourceCandidateSyncs?.()
+    recordTimingDetail('sourceCandidates.wait', sourceCandidateWaitStart)
     const sourceCandidates = getSourceCandidates?.() ?? new Set<string>()
     const jsEntries = snapshot.jsEntries
     const getJsEntry = createJsEntryResolver(jsEntries)
@@ -244,6 +252,7 @@ export function createGenerateBundleHook(context: GenerateBundleContext) {
       runtimeSet: transformRuntime,
     }
     metrics.runtimeSet = measureElapsed(runtimeStart)
+    timingDetails.runtime = metrics.runtimeSet
     if (forceRuntimeRefreshBySource) {
       debug(
         'runtimeSet forced refresh due to source changes: html=%d js=%d',
@@ -640,11 +649,14 @@ export function createGenerateBundleHook(context: GenerateBundleContext) {
 
     pushConcurrentTaskFactories(tasks, jsTaskFactories)
 
+    const tasksStart = performance.now()
     await Promise.all(tasks)
+    recordTimingDetail('tasks', tasksStart)
     for (const apply of pendingLinkedUpdates) {
       apply()
     }
 
+    const stateUpdateStart = performance.now()
     updateBundleBuildState(
       state,
       snapshot,
@@ -652,6 +664,7 @@ export function createGenerateBundleHook(context: GenerateBundleContext) {
       { incremental: useIncrementalMode },
     )
     state.generatorCandidateSignature = generatorCandidateSignature
+    recordTimingDetail('state.update', stateUpdateStart)
 
     debug(
       'metrics iteration=%d runtime=%sms html(total=%d transform=%d hit=%d rate=%s elapsed=%sms) js(total=%d transform=%d hit=%d rate=%s elapsed=%sms) css(total=%d transform=%d hit=%d rate=%s elapsed=%sms)',
@@ -675,7 +688,7 @@ export function createGenerateBundleHook(context: GenerateBundleContext) {
     )
 
     if (hmrTimingRecorder) {
-      hmrTimingRecorder.record('generateBundle', performance.now() - hmrTimingStartedAt)
+      hmrTimingRecorder.record('generateBundle', performance.now() - hmrTimingStartedAt, timingDetails)
       hmrTimingRecorder.emitTotal()
     }
     onEnd()

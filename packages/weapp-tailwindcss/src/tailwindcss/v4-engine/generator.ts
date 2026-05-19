@@ -510,7 +510,7 @@ export function createTailwindV4Engine(source: TailwindV4ResolvedSource): Tailwi
           }
         }
         const rawCss = rawCssParts.join('\n')
-        const css = rawCss.length > 0
+        const incrementalCss = rawCss.length > 0
           ? await transformTailwindV4CssByTarget(rawCss, target, options.styleOptions)
           : ''
 
@@ -520,7 +520,7 @@ export function createTailwindV4Engine(source: TailwindV4ResolvedSource): Tailwi
         for (const className of classSet) {
           cached.classSet.add(className)
         }
-        cached.css = [cached.css, css].filter(Boolean).join('\n')
+        cached.css = [cached.css, incrementalCss].filter(Boolean).join('\n')
         cached.rawCss = [cached.rawCss, rawCss].filter(Boolean).join('\n')
         return {
           css: cached.css,
