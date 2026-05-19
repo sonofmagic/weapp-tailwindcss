@@ -120,6 +120,7 @@ export function WeappTailwindcss(options: UserDefinedOptions = {}): Plugin[] | u
   const autoCssSourceContent = new Map<string, string>()
   let refreshRuntimeStateForAutoCssSources: ((force: boolean) => Promise<void>) | undefined
   let autoCssSourcesRefresh: Promise<void> | undefined
+  let autoCssSourcesDiscovered = false
   const registerAutoCssSource = async (id: string, css: string, options: { refresh?: boolean } = {}) => {
     if (
       tailwindcssMajorVersion < 4
@@ -172,6 +173,7 @@ export function WeappTailwindcss(options: UserDefinedOptions = {}): Plugin[] | u
       resolvedConfig.root,
       resolvedConfig.build?.outDir,
     )
+    autoCssSourcesDiscovered = true
     let changed = false
     for (const cssEntry of cssEntries) {
       const sourceFile = path.resolve(cssEntry)
@@ -325,6 +327,15 @@ export function WeappTailwindcss(options: UserDefinedOptions = {}): Plugin[] | u
       sourceCandidateScanSnapshotCache.set(sourceCandidateScanSignature, sourceCandidateCollector.snapshot())
     }
   }
+  const shouldDiscoverAutoCssSources = () => {
+    if (!autoCssSourcesDiscovered) {
+      return true
+    }
+    if (!isWatchLikeBuild()) {
+      return true
+    }
+    return sourceCandidateScanInvalidated
+  }
   async function syncSourceCandidateScan(options: { force?: boolean } = {}) {
     if (!shouldOwnTailwindGeneration) {
       return
@@ -424,6 +435,14 @@ export function WeappTailwindcss(options: UserDefinedOptions = {}): Plugin[] | u
     pendingSourceCandidateSyncByFile.set(file, task)
     return task
   }
+  const shouldCollectTransformedSourceCandidates = (id: string) => {
+    const queryIndex = id.search(/[?#]/)
+    if (queryIndex < 0) {
+      return true
+    }
+    const file = cleanUrl(id)
+    return !/\.(?:vue|uvue|nvue|svelte|mpx)$/i.test(file)
+  }
   const rememberMainCssSource = (file: string, rawSource: string, cssRuntimeSignature?: string) => {
     rememberedMainCssSources.set(file, rawSource)
     if (cssRuntimeSignature) {
@@ -491,7 +510,7 @@ export function WeappTailwindcss(options: UserDefinedOptions = {}): Plugin[] | u
       name: `${vitePluginName}:source-candidates`,
       enforce: 'pre',
       async transform(code, id) {
-        if (!shouldOwnTailwindGeneration || !isSourceCandidateRequest(id)) {
+        if (!shouldOwnTailwindGeneration || !isSourceCandidateRequest(id) || !shouldCollectTransformedSourceCandidates(id)) {
           return
         }
         return hmrTimingRecorder.measure('sourceCandidates.transform', async () => {
@@ -529,7 +548,9 @@ export function WeappTailwindcss(options: UserDefinedOptions = {}): Plugin[] | u
       },
       async buildStart() {
         await hmrTimingRecorder.measure('sourceCandidates.buildStart', async () => {
-          await discoverAndRegisterAutoCssSources()
+          if (shouldDiscoverAutoCssSources()) {
+            await discoverAndRegisterAutoCssSources()
+          }
           await syncSourceCandidateScan()
         }, { emit: false })
       },

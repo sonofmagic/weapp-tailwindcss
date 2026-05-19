@@ -1,5 +1,6 @@
 import type { IStyleHandlerOptions } from '@weapp-tailwindcss/postcss/types'
 import type { NormalizedWeappTailwindcssGeneratorOptions, TailwindResolvedSource } from '@/generator'
+import type { TailwindSourceEntry } from '@/tailwindcss/source-scan'
 import type { InternalUserDefinedOptions } from '@/types'
 import { existsSync, readFileSync } from 'node:fs'
 import path from 'node:path'
@@ -35,13 +36,23 @@ interface GeneratorSourceRuntimeState {
   twPatcher: InternalUserDefinedOptions['twPatcher']
 }
 
+interface GeneratorSourceSelectionOptions {
+  runtime?: Set<string> | undefined
+  getSourceCandidatesForEntries?: ((entries: TailwindSourceEntry[] | undefined) => Set<string>) | undefined
+}
+
 export interface GeneratorSourceMetadata {
   matchedCssSourceFile?: string | undefined
+  sourceBase?: string | undefined
+  sourceCss?: string | undefined
 }
 
 export type GeneratorResolvedSource = TailwindResolvedSource & {
   __weappTailwindcssMeta?: GeneratorSourceMetadata | undefined
 }
+
+type TailwindV4SourceOptions = ReturnType<typeof resolveTailwindV4SourceOptionsFromPatcher>
+type TailwindV4CssSource = NonNullable<TailwindV4SourceOptions['cssSources']>[number]
 
 function resolvePostcssFromOption(cssHandlerOptions: IStyleHandlerOptions) {
   const from = cssHandlerOptions.postcssOptions?.options?.from
@@ -62,6 +73,24 @@ function resolveCssHandlerSourceOptions(cssHandlerOptions: IStyleHandlerOptions)
       outputRoot?: string | undefined
     } | undefined
   }).sourceOptions
+}
+
+function createSingleTailwindV4SourceOptions(
+  sourceOptions: TailwindV4SourceOptions,
+  options: {
+    base: string
+    css: string
+  },
+) {
+  return omitUndefined({
+    projectRoot: sourceOptions.projectRoot,
+    baseFallbacks: sourceOptions.baseFallbacks,
+    sources: sourceOptions.sources,
+    packageName: sourceOptions.packageName,
+    outputRoot: (sourceOptions as { outputRoot?: string }).outputRoot,
+    base: options.base,
+    css: options.css,
+  })
 }
 
 export function resolveCssSourceBase(file: string, cssHandlerOptions: IStyleHandlerOptions) {
@@ -210,7 +239,7 @@ async function resolveMatchingTailwindV4CssSource(
   rawSource: string,
   file: string,
   cssHandlerOptions: IStyleHandlerOptions,
-  sourceOptions: ReturnType<typeof resolveTailwindV4SourceOptionsFromPatcher>,
+  sourceOptions: TailwindV4SourceOptions,
 ) {
   const cssSources = sourceOptions.cssSources
   if (!cssSources?.length) {
@@ -234,13 +263,7 @@ async function resolveMatchingTailwindV4CssSource(
   if (!matchingSource) {
     return undefined
   }
-  const source = await resolveTailwindV4Source({
-    ...omitUndefined(sourceOptions),
-    cssSources: [matchingSource],
-  })
-  return withGeneratorSourceMetadata(source, {
-    matchedCssSourceFile: typeof matchingSource.file === 'string' ? matchingSource.file : undefined,
-  })
+  return resolveSingleTailwindV4CssSource(matchingSource, sourceOptions)
 }
 
 function tryResolveTailwindV4SourceOptions(
@@ -255,14 +278,130 @@ function tryResolveTailwindV4SourceOptions(
 }
 
 function hasConfiguredTailwindV4CssSource(
-  sourceOptions: ReturnType<typeof resolveTailwindV4SourceOptionsFromPatcher> | undefined,
+  sourceOptions: TailwindV4SourceOptions | undefined,
 ) {
   return Boolean(sourceOptions?.css)
     || Boolean(sourceOptions?.cssSources?.length)
 }
 
+function resolveTailwindV4CssSourceBase(
+  cssSource: TailwindV4CssSource,
+  fallbackBase: string,
+) {
+  if (typeof cssSource.base === 'string' && cssSource.base.length > 0) {
+    return cssSource.base
+  }
+  if (typeof cssSource.file === 'string' && cssSource.file.length > 0) {
+    return path.dirname(cssSource.file)
+  }
+  return fallbackBase
+}
+
+async function resolveSingleTailwindV4CssSource(
+  cssSource: TailwindV4CssSource,
+  sourceOptions: TailwindV4SourceOptions,
+) {
+  const source = await resolveTailwindV4Source({
+    ...omitUndefined(sourceOptions),
+    cssSources: [cssSource],
+  })
+  const sourceBaseFallback = sourceOptions.base ?? sourceOptions.projectRoot ?? process.cwd()
+  return withGeneratorSourceMetadata(source, {
+    matchedCssSourceFile: typeof cssSource.file === 'string' ? cssSource.file : undefined,
+    sourceBase: resolveTailwindV4CssSourceBase(cssSource, sourceBaseFallback),
+    sourceCss: cssSource.css,
+  })
+}
+
+async function resolveTailwindV4CssSourceEntries(
+  cssSource: TailwindV4CssSource,
+  sourceOptions: TailwindV4SourceOptions,
+) {
+  if (typeof cssSource.css !== 'string' || cssSource.css.length === 0) {
+    return undefined
+  }
+  const sourceBaseFallback = sourceOptions.base ?? sourceOptions.projectRoot ?? process.cwd()
+  const sourceBase = resolveTailwindV4CssSourceBase(cssSource, sourceBaseFallback)
+  return resolveTailwindV4EntriesFromCss(cssSource.css, sourceBase)
+}
+
+function countRuntimeCandidateHits(candidates: Set<string>, runtime: Set<string> | undefined) {
+  if (!runtime?.size) {
+    return 0
+  }
+  let hits = 0
+  for (const candidate of candidates) {
+    if (runtime.has(candidate)) {
+      hits += 1
+    }
+  }
+  return hits
+}
+
+async function resolveCandidateMatchedTailwindV4CssSource(
+  rawSource: string,
+  cssHandlerOptions: IStyleHandlerOptions,
+  sourceOptions: TailwindV4SourceOptions,
+  selectionOptions: GeneratorSourceSelectionOptions | undefined,
+) {
+  const cssSources = sourceOptions.cssSources
+  const getSourceCandidatesForEntries = selectionOptions?.getSourceCandidatesForEntries
+  if (
+    !cssHandlerOptions.isMainChunk
+    || !hasTailwindGeneratedCssMarkers(rawSource)
+    || !cssSources?.length
+    || !getSourceCandidatesForEntries
+  ) {
+    return undefined
+  }
+
+  const matches: Array<{
+    cssSource: TailwindV4CssSource
+    index: number
+    runtimeHits: number
+    totalCandidates: number
+  }> = []
+  await Promise.all(cssSources.map(async (cssSource, index) => {
+    const resolved = await resolveTailwindV4CssSourceEntries(cssSource, sourceOptions)
+    if (resolved?.entries === undefined) {
+      return
+    }
+    const scopedCandidates = getSourceCandidatesForEntries(resolved?.entries)
+    const runtimeHits = countRuntimeCandidateHits(scopedCandidates, selectionOptions?.runtime)
+    if (runtimeHits === 0) {
+      return
+    }
+    matches.push({
+      cssSource,
+      index,
+      runtimeHits,
+      totalCandidates: scopedCandidates.size,
+    })
+  }))
+  if (matches.length === 0) {
+    return undefined
+  }
+  matches.sort((a, b) =>
+    b.runtimeHits - a.runtimeHits
+    || b.totalCandidates - a.totalCandidates
+    || a.index - b.index)
+  const best = matches[0]
+  const second = matches[1]
+  if (!best) {
+    return undefined
+  }
+  if (
+    second
+    && second.runtimeHits === best.runtimeHits
+    && second.totalCandidates === best.totalCandidates
+  ) {
+    return undefined
+  }
+  return resolveSingleTailwindV4CssSource(best.cssSource, sourceOptions)
+}
+
 function createTailwindV4CssSourceResolver(
-  sourceOptions: ReturnType<typeof resolveTailwindV4SourceOptionsFromPatcher>,
+  sourceOptions: TailwindV4SourceOptions,
   generatorOptions: NormalizedWeappTailwindcssGeneratorOptions | undefined,
 ) {
   return (cssSource: NonNullable<typeof sourceOptions.cssSources>[number]) =>
@@ -300,12 +439,11 @@ async function resolveTailwindV4SourceSideEntrySource(
     ),
     resolvedSourceOptions,
   )
-  const source = await resolveTailwindV4Source({
-    ...resolvedSourceOptions,
+  const source = await resolveTailwindV4Source(createSingleTailwindV4SourceOptions(resolvedSourceOptions, {
     base: resolvedEntrySource.base,
     css,
-  })
-  return withMatchedSourceSideMetadata(source, resolvedEntrySource.file)
+  }))
+  return withMatchedSourceSideMetadata(source, resolvedEntrySource)
 }
 
 function withGeneratorSourceMetadata(
@@ -320,11 +458,13 @@ function withGeneratorSourceMetadata(
 
 function withMatchedSourceSideMetadata(
   source: TailwindResolvedSource,
-  sourceFile: string | undefined,
+  resolvedEntrySource: SourceSideCssEntrySource,
 ) {
-  return sourceFile
+  return resolvedEntrySource.file
     ? withGeneratorSourceMetadata(source, {
-        matchedCssSourceFile: sourceFile,
+        matchedCssSourceFile: resolvedEntrySource.file,
+        sourceBase: resolvedEntrySource.base,
+        sourceCss: resolvedEntrySource.css,
       })
     : source
 }
@@ -343,6 +483,7 @@ export async function resolveGeneratorSource(
   file: string,
   cssHandlerOptions: IStyleHandlerOptions,
   generatorOptions?: NormalizedWeappTailwindcssGeneratorOptions,
+  selectionOptions?: GeneratorSourceSelectionOptions,
 ) {
   const base = resolveCssSourceBase(file, cssHandlerOptions)
   const cssEntrySource = resolveCssEntrySource(rawSource, base, {
@@ -394,10 +535,13 @@ export async function resolveGeneratorSource(
   const matchedCssSource = sourceOptions
     ? await resolveMatchingTailwindV4CssSource(rawSource, file, cssHandlerOptions, sourceOptions)
     : undefined
+  const candidateMatchedCssSource = sourceOptions
+    ? await resolveCandidateMatchedTailwindV4CssSource(rawSource, cssHandlerOptions, sourceOptions, selectionOptions)
+    : undefined
   const configuredCssSource = sourceOptions
     && hasConfiguredTailwindV4CssSource(sourceOptions)
     && hasTailwindGeneratedCssMarkers(rawSource)
-    ? matchedCssSource ?? await resolveTailwindV4Source(sourceOptions)
+    ? matchedCssSource ?? candidateMatchedCssSource ?? await resolveTailwindV4Source(sourceOptions)
     : undefined
   if (configuredCssSource) {
     return generatorOptions?.config
@@ -418,7 +562,7 @@ export async function resolveGeneratorSource(
         cssEntries: [sourceOptions.cssEntries[0]!],
       })
     : undefined
-  const preferredCssEntrySource = matchedCssEntrySource ?? matchedCssSource ?? mainCssEntrySource
+  const preferredCssEntrySource = matchedCssEntrySource ?? matchedCssSource ?? candidateMatchedCssSource ?? mainCssEntrySource
   if (preferredCssEntrySource) {
     return generatorOptions?.config
       ? {
@@ -459,11 +603,10 @@ export async function resolveGeneratorSource(
     ),
     resolvedSourceOptions ?? {},
   )
-  return resolveTailwindV4Source({
-    ...omitUndefined(resolvedSourceOptions ?? {}),
+  return resolveTailwindV4Source(createSingleTailwindV4SourceOptions(resolvedSourceOptions ?? {}, {
     base: resolvedEntrySource.base,
     css,
-  })
+  }))
 }
 
 export async function resolveGeneratorSources(
@@ -473,6 +616,7 @@ export async function resolveGeneratorSources(
   file: string,
   cssHandlerOptions: IStyleHandlerOptions,
   generatorOptions?: NormalizedWeappTailwindcssGeneratorOptions,
+  selectionOptions?: GeneratorSourceSelectionOptions,
 ): Promise<TailwindResolvedSource[]> {
   const base = resolveCssSourceBase(file, cssHandlerOptions)
   const cssEntrySource = resolveCssEntrySource(rawSource, base, {
@@ -481,7 +625,7 @@ export async function resolveGeneratorSources(
   })
   if (majorVersion !== 4 || (cssEntrySource && !cssHandlerOptions.isMainChunk)) {
     return [
-      await resolveGeneratorSource(majorVersion, runtimeState, rawSource, file, cssHandlerOptions, generatorOptions),
+      await resolveGeneratorSource(majorVersion, runtimeState, rawSource, file, cssHandlerOptions, generatorOptions, selectionOptions),
     ]
   }
 
@@ -494,7 +638,7 @@ export async function resolveGeneratorSources(
   }
   catch {
     return [
-      await resolveGeneratorSource(majorVersion, runtimeState, rawSource, file, cssHandlerOptions, generatorOptions),
+      await resolveGeneratorSource(majorVersion, runtimeState, rawSource, file, cssHandlerOptions, generatorOptions, selectionOptions),
     ]
   }
 
@@ -502,6 +646,12 @@ export async function resolveGeneratorSources(
     ? await resolveMatchingTailwindV4CssEntry(rawSource, file, sourceOptions)
     : undefined
   const matchedCssSource = await resolveMatchingTailwindV4CssSource(rawSource, file, cssHandlerOptions, sourceOptions)
+  const candidateMatchedCssSource = await resolveCandidateMatchedTailwindV4CssSource(
+    rawSource,
+    cssHandlerOptions,
+    sourceOptions,
+    selectionOptions,
+  )
   const shouldPreferSourceSideEntry = shouldResolveSourceSideCssEntry(rawSource)
     || Boolean(cssEntrySource?.css.includes('weapp-tailwindcss generator-placeholder'))
   const sourceSideEntrySource = shouldPreferSourceSideEntry
@@ -513,7 +663,7 @@ export async function resolveGeneratorSources(
     generatorOptions,
     file,
   )
-  const preferredCssEntrySource = matchedCssEntrySource ?? matchedCssSource
+  const preferredCssEntrySource = matchedCssEntrySource ?? matchedCssSource ?? candidateMatchedCssSource
   if (sourceSideCssSource) {
     return [sourceSideCssSource]
   }
@@ -533,7 +683,7 @@ export async function resolveGeneratorSources(
       return Promise.all(sourceOptions.cssSources.map(createTailwindV4CssSourceResolver(sourceOptions, generatorOptions)))
     }
     return [
-      await resolveGeneratorSource(majorVersion, runtimeState, rawSource, file, cssHandlerOptions, generatorOptions),
+      await resolveGeneratorSource(majorVersion, runtimeState, rawSource, file, cssHandlerOptions, generatorOptions, selectionOptions),
     ]
   }
 
@@ -562,7 +712,10 @@ export async function resolveGeneratorSourceEntries(source: TailwindResolvedSour
     return undefined
   }
   const sourceMetadata = (source as GeneratorResolvedSource).__weappTailwindcssMeta
-  const resolved = await resolveTailwindV4EntriesFromCss(source.css, source.base)
+  const resolved = await resolveTailwindV4EntriesFromCss(
+    sourceMetadata?.sourceCss ?? source.css,
+    sourceMetadata?.sourceBase ?? source.base,
+  )
   if (resolved?.entries.length || (!resolved?.explicit && !sourceMetadata?.matchedCssSourceFile) || !runtimeState) {
     return resolved?.entries
   }

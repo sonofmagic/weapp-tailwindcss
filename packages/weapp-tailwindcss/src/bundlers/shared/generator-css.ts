@@ -291,6 +291,10 @@ export async function generateCssByGenerator(
       file,
       cssHandlerOptions,
       generatorOptions,
+      {
+        getSourceCandidatesForEntries,
+        runtime,
+      },
     )
     const generatorStyleOptions = resolveGeneratorStyleOptions(opts, cssHandlerOptions, generatorOptions.styleOptions)
     const configuredContainerCompat = hasConfiguredContainerCompatSources(sources)
@@ -481,6 +485,9 @@ export async function validateCandidatesByGenerator(
     file,
     cssHandlerOptions,
     generatorOptions,
+    {
+      runtime: candidates,
+    },
   )
   const classSets = await Promise.all(sources.map(async (source) => {
     const generator = createWeappTailwindcssGenerator(source)

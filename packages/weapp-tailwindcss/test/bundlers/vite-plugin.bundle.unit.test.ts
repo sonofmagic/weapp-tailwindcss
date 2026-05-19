@@ -1601,6 +1601,88 @@ const trace = "at App.vue:4"
     expect(candidates.has('group-hover/item:visible')).toBe(false)
   }, TEST_TIMEOUT_MS)
 
+  it('keeps raw vue source candidates when vite transforms vue sub-requests', async () => {
+    const runtimeSet = new Set<string>()
+    const rawTailwindCss = '/*! weapp-tailwindcss generator-placeholder */'
+    const generateMock = vi.fn(async ({ candidates }: { candidates: Set<string> }) => ({
+      css: [...candidates].sort().map(candidate => `.${candidate}{}`).join('\n'),
+      rawCss: [...candidates].sort().map(candidate => `.${candidate}{}`).join('\n'),
+      target: 'weapp',
+      classSet: new Set(candidates),
+      dependencies: [],
+      sources: [],
+      root: null,
+    }))
+
+    vi.doMock('@/bundlers/vite/incremental-runtime-class-set', () => ({
+      createBundleRuntimeClassSetManager: () => ({
+        sync: vi.fn(async () => runtimeSet),
+        reset: vi.fn(async () => undefined),
+      }),
+    }))
+    vi.doMock('@/generator', () => ({
+      createWeappTailwindcssGenerator: vi.fn(() => ({
+        generate: generateMock,
+      })),
+      normalizeWeappTailwindcssGeneratorOptions: normalizeGeneratorOptions,
+      resolveTailwindV4SourceFromPatcher: vi.fn(async () => ({
+        projectRoot: process.cwd(),
+        base: process.cwd(),
+        baseFallbacks: [],
+        css: '@import "tailwindcss";',
+        dependencies: [],
+      })),
+    }))
+
+    setCurrentContext(createContext({
+      twPatcher: {
+        patch: vi.fn(),
+        getClassSet: vi.fn(async () => runtimeSet),
+        getClassSetSync: vi.fn(() => runtimeSet),
+        extract: vi.fn(async () => ({ classSet: runtimeSet })),
+        majorVersion: 4,
+      },
+    }))
+
+    const WeappTailwindcss = await loadUnifiedVitePlugin()
+    const plugins = WeappTailwindcss()
+    const sourcePlugin = plugins?.find(plugin => plugin.name === 'weapp-tailwindcss:adaptor:source-candidates') as Plugin
+    const postPlugin = plugins?.find(plugin => plugin.name === 'weapp-tailwindcss:adaptor:post') as Plugin
+    expect(sourcePlugin).toBeTruthy()
+    expect(postPlugin).toBeTruthy()
+
+    await (postPlugin.configResolved as any)?.call(postPlugin, {
+      command: 'serve',
+      root: process.cwd(),
+      css: { postcss: { plugins: [] } },
+      build: { outDir: 'dist' },
+    } as ResolvedConfig)
+
+    const transform = getTransformHandler(sourcePlugin)
+    const vueFile = path.resolve(process.cwd(), 'src/pages/index/index.vue')
+    await transform?.call(sourcePlugin, '<template><text class="text-[188rpx] font-bold"></text></template>', vueFile)
+    await transform?.call(sourcePlugin, 'import "./main.css"', `${vueFile}?vue&type=script&lang.ts`)
+    await transform?.call(sourcePlugin, 'export function render() { return "compiled" }', `${vueFile}?vue&type=template`)
+
+    const bundle = {
+      'pages/index/index.wxml': {
+        ...createRollupAsset('<text class="text-[188rpx] font-bold"></text>'),
+        fileName: 'pages/index/index.wxml',
+      },
+      'app.css': {
+        ...createRollupAsset(rawTailwindCss),
+        fileName: 'app.css',
+      },
+    }
+    const generateBundle = getGenerateBundleHandler(postPlugin)
+    await generateBundle?.call(postPlugin, {} as any, bundle)
+
+    const candidates = generateMock.mock.calls.at(-1)?.[0].candidates as Set<string>
+    expect(candidates).toContain('text-[188rpx]')
+    expect(candidates).toContain('font-bold')
+    expect(String((bundle['app.css'] as OutputAsset).source)).toContain('.text-[188rpx]{}')
+  }, TEST_TIMEOUT_MS)
+
   it('finalizes css assets emitted after the main generateBundle pass through Rollup output plugins', async () => {
     const runtimeSet = new Set(['w-[100px]'])
     const rawTailwindCss = '/*! tailwindcss v4.2.4 | MIT License | https://tailwindcss.com */\n.w-\\[100px\\]{width:100px}\n@property --tw-leading{syntax:"*";inherits:false}'
