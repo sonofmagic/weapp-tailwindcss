@@ -2,6 +2,7 @@ import { mkdir, mkdtemp, symlink, writeFile } from 'node:fs/promises'
 import { createRequire } from 'node:module'
 import { tmpdir } from 'node:os'
 import path from 'node:path'
+import { afterEach, vi } from 'vitest'
 import { createTailwindV4Engine, resolveTailwindV4Source, resolveTailwindV4SourceOptionsFromPatcher, transformTailwindV4CssToWeapp } from '@/tailwindcss/v4-engine'
 
 const require = createRequire(import.meta.url)
@@ -27,6 +28,10 @@ async function linkTailwindcssPackage(root: string) {
 }
 
 describe('tailwindcss v4 engine', () => {
+  afterEach(() => {
+    vi.restoreAllMocks()
+  })
+
   it('generates css and class set from explicit candidates', async () => {
     const source = await resolveTailwindV4Source({
       css: MINIMAL_THEME_CSS,
@@ -110,6 +115,36 @@ describe('tailwindcss v4 engine', () => {
     expect(second.css.match(/\.text-_b88rpx_B/g) ?? []).toHaveLength(1)
   })
 
+  it('remembers requested candidates that do not generate css in the v4 incremental cache', async () => {
+    const source = await resolveTailwindV4Source({
+      css: `${MINIMAL_THEME_CSS}\n/* invalid candidate cache regression */`,
+      base: process.cwd(),
+    })
+    const engine = createTailwindV4Engine(source)
+
+    const first = await engine.generate({
+      candidates: ['text-[88rpx]', 'not-a-tailwind-class'],
+      incrementalCache: true,
+      scanSources: false,
+      styleOptions: {
+        isMainChunk: false,
+      },
+    })
+    const second = await engine.generate({
+      candidates: ['text-[88rpx]', 'not-a-tailwind-class'],
+      incrementalCache: true,
+      scanSources: false,
+      styleOptions: {
+        isMainChunk: false,
+      },
+    })
+
+    expect(first.classSet).toEqual(new Set(['text-[88rpx]']))
+    expect(second.classSet).toEqual(new Set(['text-[88rpx]']))
+    expect(second.rawCandidates).toEqual(new Set(['text-[88rpx]', 'not-a-tailwind-class']))
+    expect(second.css.match(/\.text-_b88rpx_B/g) ?? []).toHaveLength(1)
+  })
+
   it('seeds the v4 incremental cache from the initial source scan', async () => {
     const source = await resolveTailwindV4Source({
       css: MINIMAL_THEME_CSS,
@@ -139,6 +174,65 @@ describe('tailwindcss v4 engine', () => {
     expect(second.css).toContain('.text-_b88rpx_B')
     expect(second.css).toContain('.text-_b188rpx_B')
     expect(second.css.match(/\.text-_b88rpx_B/g) ?? []).toHaveLength(1)
+  })
+
+  it('dedupes concurrent v4 incremental generation for identical requests', async () => {
+    vi.resetModules()
+    const generate = vi.fn(async () => {
+      await new Promise(resolve => setTimeout(resolve, 10))
+      return {
+        css: '.text-\\[88rpx\\] { font-size: 88rpx; }',
+        classSet: new Set(['text-[88rpx]']),
+        rawCandidates: new Set(['text-[88rpx]']),
+        dependencies: [],
+        sources: [],
+        root: null,
+      }
+    })
+    vi.doMock('tailwindcss-patch', async (importOriginal) => {
+      const actual = await importOriginal<typeof import('tailwindcss-patch')>()
+      return {
+        ...actual,
+        createTailwindV4Engine: vi.fn(() => ({
+          generate,
+          loadDesignSystem: vi.fn(),
+          source: {} as never,
+          validateCandidates: vi.fn(),
+        })),
+      }
+    })
+    const { createTailwindV4Engine: createMockedTailwindV4Engine } = await import('@/tailwindcss/v4-engine')
+    const source = {
+      base: process.cwd(),
+      baseFallbacks: [],
+      css: MINIMAL_THEME_CSS,
+      dependencies: [],
+      projectRoot: process.cwd(),
+      version: 4,
+    } as const
+
+    const [first, second] = await Promise.all([
+      createMockedTailwindV4Engine(source).generate({
+        candidates: ['text-[88rpx]'],
+        incrementalCache: true,
+        scanSources: false,
+        styleOptions: {
+          isMainChunk: false,
+        },
+      }),
+      createMockedTailwindV4Engine(source).generate({
+        candidates: ['text-[88rpx]'],
+        incrementalCache: true,
+        scanSources: false,
+        styleOptions: {
+          isMainChunk: false,
+        },
+      }),
+    ])
+
+    expect(generate).toHaveBeenCalledTimes(1)
+    expect(first.css).toContain('.text-_b88rpx_B')
+    expect(second.css).toContain('.text-_b88rpx_B')
   })
 
   it('uses mini-program-safe Tailwind v4 default color variables for native v4 weapp output', async () => {

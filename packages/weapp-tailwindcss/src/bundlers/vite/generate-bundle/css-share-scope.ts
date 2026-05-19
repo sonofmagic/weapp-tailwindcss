@@ -1,5 +1,12 @@
 import type { InternalUserDefinedOptions } from '@/types'
 import path from 'node:path'
+import {
+  hasTailwindSourceDirectives,
+} from '@/bundlers/shared/generator-css/directives'
+import {
+  hasTailwindGeneratedCssMarkers,
+} from '@/bundlers/shared/generator-css/markers'
+import { normalizeWeappTailwindcssGeneratorOptions } from '@/generator'
 import { normalizeOutputPathKey } from '../../shared/module-graph'
 
 const CSS_URL_FUNCTION_RE = /url\((?:"([^"]*)"|'([^']*)'|([^)]*))\)/gi
@@ -24,7 +31,7 @@ function hasPathDependentCssUrl(rawSource: string) {
   return false
 }
 
-function createCssTransformShareScope(file: string, rawSource: string) {
+export function createCssTransformShareScope(file: string, rawSource: string) {
   if (CSS_IMPORT_RE.test(rawSource) || hasPathDependentCssUrl(rawSource)) {
     return `dir:${normalizeOutputPathKey(path.dirname(file))}`
   }
@@ -38,6 +45,13 @@ export function createCssTransformShareScopeKey(
 ) {
   if (opts.mainCssChunkMatcher(file, opts.appType)) {
     return `main:${normalizeOutputPathKey(file)}`
+  }
+  const generatorOptions = normalizeWeappTailwindcssGeneratorOptions(opts.generator)
+  if (
+    hasTailwindGeneratedCssMarkers(rawSource)
+    || hasTailwindSourceDirectives(rawSource, { importFallback: generatorOptions.importFallback })
+  ) {
+    return `source:${normalizeOutputPathKey(file)}`
   }
   return createCssTransformShareScope(file, rawSource)
 }

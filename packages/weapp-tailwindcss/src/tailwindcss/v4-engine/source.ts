@@ -26,8 +26,8 @@ function getProjectRoot(patcher: TailwindcssPatcherLike) {
   return patcher.options?.projectRoot ?? process.cwd()
 }
 
-function readConfiguredV4Base(tailwindOptions: ReturnType<typeof resolveTailwindcssOptions>) {
-  const v4 = tailwindOptions?.v4
+function readConfiguredV4Base(tailwindOptions: unknown) {
+  const v4 = typeof tailwindOptions === 'object' && tailwindOptions !== null ? tailwindOptions : undefined
   if (typeof v4 !== 'object' || v4 === null) {
     return undefined
   }
@@ -138,25 +138,31 @@ function resolveTailwindCssImportTarget(patcher: TailwindcssPatcherLike) {
   return 'tailwindcss'
 }
 
+function readTailwindV4Options(patcher: TailwindcssPatcherLike) {
+  const tailwindOptions = resolveTailwindcssOptions(patcher.options)
+  return tailwindOptions?.v4 ?? (patcher.options as any)?.tailwind?.v4
+}
+
 export function resolveTailwindV4SourceOptionsFromPatcher(
   patcher: TailwindcssPatcherLike,
 ): TailwindV4SourceOptions {
   const projectRoot = getProjectRoot(patcher)
   const tailwindOptions = resolveTailwindcssOptions(patcher.options)
+  const tailwindV4Options = readTailwindV4Options(patcher)
   const configDir = tailwindOptions?.config ? path.dirname(tailwindOptions.config) : undefined
-  const configuredBase = readConfiguredV4Base(tailwindOptions)
-  const hasCssEntries = Boolean(tailwindOptions?.v4?.cssEntries?.length)
+  const configuredBase = readConfiguredV4Base(tailwindV4Options)
+  const hasCssEntries = Boolean(tailwindV4Options?.cssEntries?.length)
   return omitUndefined({
     projectRoot,
-    base: configuredBase ?? (hasCssEntries ? undefined : tailwindOptions?.v4?.base),
+    base: configuredBase ?? (hasCssEntries ? undefined : tailwindV4Options?.base),
     baseFallbacks: uniqueDefined([
       tailwindOptions?.cwd,
       configDir,
     ]),
-    css: tailwindOptions?.v4?.css,
-    cssSources: tailwindOptions?.v4?.cssSources,
-    cssEntries: tailwindOptions?.v4?.cssEntries,
-    sources: tailwindOptions?.v4?.sources,
+    css: tailwindV4Options?.css,
+    cssSources: tailwindV4Options?.cssSources,
+    cssEntries: tailwindV4Options?.cssEntries,
+    sources: tailwindV4Options?.sources,
     packageName: resolveTailwindCssImportTarget(patcher),
   }) as TailwindV4SourceOptions
 }

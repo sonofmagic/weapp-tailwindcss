@@ -1,5 +1,6 @@
 import type { IStyleHandlerOptions } from '@weapp-tailwindcss/postcss/types'
 import type {
+  TailwindV4DesignSystem,
   TailwindV4Engine,
   TailwindV4GenerateOptions,
   TailwindV4GenerateTarget,
@@ -21,12 +22,14 @@ type TailwindV4ScanSourcePatterns = Exclude<NonNullable<TailwindV4GenerateOption
 type TailwindV4ResolvedScanSources = TailwindV4GenerateOptions['scanSources']
 
 const incrementalGenerateCache = new Map<string, TailwindV4IncrementalGenerateCacheEntry>()
+const incrementalGenerateTaskCache = new Map<string, Promise<Awaited<ReturnType<TailwindV4Engine['generate']>>>>()
 
 interface TailwindV4IncrementalGenerateCacheEntry {
   seenCandidates: Set<string>
   classSet: Set<string>
   css: string
   rawCss: string
+  designSystemPromise: Promise<TailwindV4DesignSystem>
   dependencies: string[]
   sources: TailwindV4SourcePattern[]
   root: null | 'none' | {
@@ -115,6 +118,53 @@ function createIncrementalGenerateCacheKey(
   ].join('\0')
 }
 
+function createIncrementalGenerateTaskCacheKey(
+  cacheKey: string,
+  requestedCandidates: Set<string>,
+  scanSources: TailwindV4GenerateOptions['scanSources'],
+) {
+  return [
+    cacheKey,
+    scanSources === true ? 'scan:1' : 'scan:0',
+    [...requestedCandidates].sort().join('\n'),
+  ].join('\0')
+}
+
+function runIncrementalGenerateTask(
+  cacheKey: string,
+  requestedCandidates: Set<string>,
+  scanSources: TailwindV4GenerateOptions['scanSources'],
+  task: () => Promise<Awaited<ReturnType<TailwindV4Engine['generate']>>>,
+) {
+  const taskKey = createIncrementalGenerateTaskCacheKey(cacheKey, requestedCandidates, scanSources)
+  const cachedTask = incrementalGenerateTaskCache.get(taskKey)
+  if (cachedTask) {
+    return cachedTask
+  }
+  const promise = task()
+  incrementalGenerateTaskCache.set(taskKey, promise)
+  promise.finally(() => {
+    if (incrementalGenerateTaskCache.get(taskKey) === promise) {
+      incrementalGenerateTaskCache.delete(taskKey)
+    }
+  })
+  return promise
+}
+
+function createIncrementalDesignSystemPromise(
+  source: TailwindV4ResolvedSource,
+  cacheKey: string,
+) {
+  const promise = loadTailwindV4DesignSystem(source)
+  promise.catch(() => {
+    const cached = incrementalGenerateCache.get(cacheKey)
+    if (cached?.designSystemPromise === promise) {
+      incrementalGenerateCache.delete(cacheKey)
+    }
+  })
+  return promise
+}
+
 function createCompatibleSource(
   source: TailwindV4ResolvedSource,
   target: TailwindV4GenerateTarget,
@@ -166,6 +216,7 @@ function seedIncrementalGenerateCache(options: TailwindV4IncrementalCacheSeedOpt
     classSet: new Set(options.generated.classSet),
     css: options.generated.css,
     rawCss: options.generated.rawCss,
+    designSystemPromise: createIncrementalDesignSystemPromise(options.compatibleSource, cacheKey),
     dependencies: options.generated.dependencies,
     sources: options.generated.sources,
     root: options.generated.root,
@@ -407,25 +458,28 @@ export function createTailwindV4Engine(source: TailwindV4ResolvedSource): Tailwi
       return generateOnce(source, options)
     }
 
-    if (options.scanSources === true) {
-      const generated = await generateOnce(source, options)
-      seedIncrementalGenerateCache({
-        compatibleSource,
-        generated,
-        requestedCandidates,
-        styleOptions: options.styleOptions,
-        tailwindcssV3Compatibility: options.tailwindcssV3Compatibility,
-        target,
-      })
-      return generated
-    }
-
     const cacheKey = createIncrementalGenerateCacheKey(
       compatibleSource,
       target,
       options.styleOptions,
       options.tailwindcssV3Compatibility,
     )
+
+    if (options.scanSources === true) {
+      return runIncrementalGenerateTask(cacheKey, requestedCandidates, options.scanSources, async () => {
+        const generated = await generateOnce(source, options)
+        seedIncrementalGenerateCache({
+          compatibleSource,
+          generated,
+          requestedCandidates,
+          styleOptions: options.styleOptions,
+          tailwindcssV3Compatibility: options.tailwindcssV3Compatibility,
+          target,
+        })
+        return generated
+      })
+    }
+
     const cached = incrementalGenerateCache.get(cacheKey)
     if (cached) {
       const missingCandidates = [...requestedCandidates].filter(candidate => !cached.seenCandidates.has(candidate))
@@ -442,53 +496,57 @@ export function createTailwindV4Engine(source: TailwindV4ResolvedSource): Tailwi
         }
       }
 
-      const designSystem = await loadTailwindV4DesignSystem(compatibleSource)
-      const cssByCandidate = designSystem.candidatesToCss(missingCandidates)
-      const rawCssParts: string[] = []
-      const classSet = new Set<string>()
-      for (let index = 0; index < missingCandidates.length; index += 1) {
-        const candidate = missingCandidates[index]
-        const css = cssByCandidate[index]
-        if (candidate && typeof css === 'string' && css.trim().length > 0) {
-          rawCssParts.push(css)
-          classSet.add(candidate)
+      return runIncrementalGenerateTask(cacheKey, requestedCandidates, options.scanSources, async () => {
+        const designSystem = await cached.designSystemPromise
+        const cssByCandidate = designSystem.candidatesToCss(missingCandidates)
+        const rawCssParts: string[] = []
+        const classSet = new Set<string>()
+        for (let index = 0; index < missingCandidates.length; index += 1) {
+          const candidate = missingCandidates[index]
+          const css = cssByCandidate[index]
+          if (candidate && typeof css === 'string' && css.trim().length > 0) {
+            rawCssParts.push(css)
+            classSet.add(candidate)
+          }
         }
-      }
-      const rawCss = rawCssParts.join('\n')
-      const css = rawCss.length > 0
-        ? await transformTailwindV4CssByTarget(rawCss, target, options.styleOptions)
-        : ''
+        const rawCss = rawCssParts.join('\n')
+        const css = rawCss.length > 0
+          ? await transformTailwindV4CssByTarget(rawCss, target, options.styleOptions)
+          : ''
 
-      for (const candidate of missingCandidates) {
-        cached.seenCandidates.add(candidate)
-      }
-      for (const className of classSet) {
-        cached.classSet.add(className)
-      }
-      cached.css = [cached.css, css].filter(Boolean).join('\n')
-      cached.rawCss = [cached.rawCss, rawCss].filter(Boolean).join('\n')
-      return {
-        css: cached.css,
-        rawCss: cached.rawCss,
-        classSet: new Set(cached.classSet),
-        rawCandidates: new Set(cached.seenCandidates),
-        dependencies: cached.dependencies,
-        sources: cached.sources,
-        root: cached.root,
-        target: cached.target,
-      }
+        for (const candidate of missingCandidates) {
+          cached.seenCandidates.add(candidate)
+        }
+        for (const className of classSet) {
+          cached.classSet.add(className)
+        }
+        cached.css = [cached.css, css].filter(Boolean).join('\n')
+        cached.rawCss = [cached.rawCss, rawCss].filter(Boolean).join('\n')
+        return {
+          css: cached.css,
+          rawCss: cached.rawCss,
+          classSet: new Set(cached.classSet),
+          rawCandidates: new Set(cached.seenCandidates),
+          dependencies: cached.dependencies,
+          sources: cached.sources,
+          root: cached.root,
+          target: cached.target,
+        }
+      })
     }
 
-    const generated = await generateOnce(source, options)
-    seedIncrementalGenerateCache({
-      compatibleSource,
-      generated,
-      requestedCandidates,
-      styleOptions: options.styleOptions,
-      tailwindcssV3Compatibility: options.tailwindcssV3Compatibility,
-      target,
+    return runIncrementalGenerateTask(cacheKey, requestedCandidates, options.scanSources, async () => {
+      const generated = await generateOnce(source, options)
+      seedIncrementalGenerateCache({
+        compatibleSource,
+        generated,
+        requestedCandidates,
+        styleOptions: options.styleOptions,
+        tailwindcssV3Compatibility: options.tailwindcssV3Compatibility,
+        target,
+      })
+      return generated
     })
-    return generated
   }
 
   async function generate(options: TailwindV4GenerateOptions = {}) {

@@ -76,11 +76,11 @@ const classArray = [
     expect(weappViteCase?.scriptMutation.mutateCommentCarrier).toBeTypeOf('function')
   })
 
-  it('enables comment-carrier mutation for the taro-vite-react-tailwindcss-v4 demo case', () => {
+  it('disables comment-carrier mutation for the taro-vite-react-tailwindcss-v4 demo case', () => {
     const cases = buildDemoExtendedCases('/virtual/workspace')
     const taroViteCase = cases.find(item => item.name === 'taro-vite-react-tailwindcss-v4')
 
-    expect(taroViteCase?.scriptMutation.mutateCommentCarrier).toBeTypeOf('function')
+    expect(taroViteCase?.scriptMutation.mutateCommentCarrier).toBeUndefined()
   })
 
   it('enables comment-carrier mutation for the taro-vite-react-tailwindcss-v3 demo case', () => {

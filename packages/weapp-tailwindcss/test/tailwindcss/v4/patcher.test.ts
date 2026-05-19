@@ -600,6 +600,32 @@ describe('tailwindcss/v4/patcher helpers', () => {
     expect(patcher.tailwindcss?.v4?.cssEntries).toEqual(['/workspace/app/src/app.css'])
   })
 
+  it('preserves auto-detected v4 css sources when css entries are omitted', async () => {
+    createTailwindcssPatcher.mockImplementation(options => options)
+    const { createPatcherForBase } = await loadModule()
+
+    const cssSource = {
+      file: '/workspace/app/src/main.css',
+      base: '/workspace/app/src',
+      css: '@import "tailwindcss";',
+      dependencies: ['/workspace/app/src/tailwind.config.js'],
+    }
+    const patcher = createPatcherForBase('/workspace/app', undefined, {
+      tailwindcss: {
+        v4: {
+          cssSources: [cssSource],
+        },
+      },
+      tailwindcssPatcherOptions: undefined,
+      supportCustomLengthUnitsPatch: true,
+      appType: 'uni-app-vite',
+    } as unknown as InternalUserDefinedOptions) as any
+
+    expect(patcher.tailwindcss?.v4?.base).toBe('/workspace/app')
+    expect(patcher.tailwindcss?.v4?.cssEntries).toEqual([])
+    expect(patcher.tailwindcss?.v4?.cssSources).toEqual([cssSource])
+  })
+
   it('recreates v4 config when user explicitly disables it', async () => {
     createTailwindcssPatcher.mockImplementation(options => options)
     const { createPatcherForBase } = await loadModule()

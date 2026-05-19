@@ -36,6 +36,13 @@ function normalizeCssSourceFile(file: string | undefined) {
   return path.isAbsolute(file) ? path.normalize(file) : file
 }
 
+function normalizeCssSourceBase(base: string | undefined) {
+  if (!base) {
+    return undefined
+  }
+  return path.resolve(base)
+}
+
 function normalizeDependencies(dependencies: string[] | undefined) {
   return dependencies
     ?.map(normalizeCssSourceFile)
@@ -44,7 +51,7 @@ function normalizeDependencies(dependencies: string[] | undefined) {
 
 function isSameCssSource(a: TailwindV4CssSource, b: TailwindV4CssSource) {
   return a.css === b.css
-    && a.base === b.base
+    && normalizeCssSourceBase(a.base) === normalizeCssSourceBase(b.base)
     && normalizeCssSourceFile(a.file) === normalizeCssSourceFile(b.file)
     && JSON.stringify(normalizeDependencies(a.dependencies)) === JSON.stringify(normalizeDependencies(b.dependencies))
 }
@@ -55,6 +62,7 @@ export function upsertTailwindV4CssSource(
 ) {
   const normalizedSource: TailwindV4CssSource = omitUndefined({
     ...source,
+    ...(source.base === undefined ? {} : { base: normalizeCssSourceBase(source.base) }),
     ...(source.file === undefined ? {} : { file: normalizeCssSourceFile(source.file) }),
     ...(source.dependencies === undefined ? {} : { dependencies: normalizeDependencies(source.dependencies) }),
   }) as TailwindV4CssSource

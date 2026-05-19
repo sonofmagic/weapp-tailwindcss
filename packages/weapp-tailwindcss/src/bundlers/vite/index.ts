@@ -1,6 +1,8 @@
 import type { Plugin, ResolvedConfig } from 'vite'
+import type { SourceCandidateCollectorSnapshot } from './source-candidates'
 import type { TailwindInlineSourceCandidates, TailwindSourceEntry } from '@/tailwindcss/source-scan'
 import type { UserDefinedOptions } from '@/types'
+import { readFile } from 'node:fs/promises'
 import path from 'node:path'
 import process from 'node:process'
 import { logger } from '@weapp-tailwindcss/logger'
@@ -26,13 +28,14 @@ import { resolveImplicitAppTypeFromViteRoot } from './resolve-app-type'
 import { createRewriteCssImportsPlugins } from './rewrite-css-imports'
 import { createViteRuntimeClassSet } from './runtime-class-set'
 import { createSourceCandidateCollector, isSourceCandidateRequest } from './source-candidates'
-import { createViteSourceScanMatcher, resolveViteSourceScanEntries, resolveViteTailwindV4CssDependencies } from './source-scan'
+import { createViteSourceScanMatcher, discoverTailwindV4CssEntries, resolveTailwindV4EntriesFromCssCached, resolveViteSourceScanEntries, resolveViteTailwindV4CssDependencies } from './source-scan'
 import { resolveImplicitTailwindcssBasedirFromViteRoot } from './tailwind-basedir'
 import { cleanUrl, slash } from './utils'
 
 const debug = createDebug()
 const weappTailwindcssPackageDir = resolvePackageDir('weapp-tailwindcss')
 const weappTailwindcssDirPosix = slash(weappTailwindcssPackageDir)
+const sourceCandidateScanSnapshotCache = new Map<string, SourceCandidateCollectorSnapshot>()
 
 interface SourceCandidateScanRoot {
   root: string
@@ -43,6 +46,7 @@ interface SourceCandidateScanSignatureInput {
   inlineCandidates?: TailwindInlineSourceCandidates | undefined
   outDir?: string | undefined
   roots: SourceCandidateScanRoot[]
+  scanAllSources?: boolean | undefined
 }
 
 function normalizeSignaturePath(value: string) {
@@ -74,6 +78,7 @@ function createSourceCandidateScanSignature(input: SourceCandidateScanSignatureI
       entries: serializeSourceEntries(root.entries),
       root: normalizeSignaturePath(root.root),
     })),
+    scanAllSources: input.scanAllSources ?? false,
   })
 }
 
@@ -115,7 +120,7 @@ export function WeappTailwindcss(options: UserDefinedOptions = {}): Plugin[] | u
   const autoCssSourceContent = new Map<string, string>()
   let refreshRuntimeStateForAutoCssSources: ((force: boolean) => Promise<void>) | undefined
   let autoCssSourcesRefresh: Promise<void> | undefined
-  const registerAutoCssSource = async (id: string, css: string) => {
+  const registerAutoCssSource = async (id: string, css: string, options: { refresh?: boolean } = {}) => {
     if (
       tailwindcssMajorVersion < 4
       || !shouldOwnTailwindGeneration
@@ -134,16 +139,63 @@ export function WeappTailwindcss(options: UserDefinedOptions = {}): Plugin[] | u
     }
     autoCssSourceContent.set(sourceFile, sourceCss)
     const dependencies = await resolveViteTailwindV4CssDependencies(sourceCss, path.dirname(sourceFile))
-    upsertTailwindV4CssSource(opts, {
+    const changed = upsertTailwindV4CssSource(opts, {
       file: sourceFile,
+      base: path.dirname(sourceFile),
       css: sourceCss,
       dependencies,
     })
+    if (!changed) {
+      return
+    }
+    invalidateSourceCandidateScan()
     debug('detected tailwindcss v4 css source from vite css module: %s', sourceFile)
+    if (options.refresh === false) {
+      return
+    }
     autoCssSourcesRefresh = (autoCssSourcesRefresh ?? Promise.resolve()).then(async () => {
       await refreshRuntimeStateForAutoCssSources?.(true)
+      await syncSourceCandidateScan({ force: true })
     })
     await autoCssSourcesRefresh
+  }
+  const discoverAndRegisterAutoCssSources = async () => {
+    if (
+      tailwindcssMajorVersion < 4
+      || !shouldOwnTailwindGeneration
+      || hasInitialTailwindCssRoots
+      || !resolvedConfig?.root
+    ) {
+      return
+    }
+    const cssEntries = await discoverTailwindV4CssEntries(
+      resolvedConfig.root,
+      resolvedConfig.build?.outDir,
+    )
+    let changed = false
+    for (const cssEntry of cssEntries) {
+      const sourceFile = path.resolve(cssEntry)
+      const sourceCss = normalizeTailwindSourceForGenerator(
+        await readFile(sourceFile, 'utf8'),
+        { importFallback: true },
+      )
+      if (autoCssSourceContent.get(sourceFile) === sourceCss) {
+        continue
+      }
+      autoCssSourceContent.set(sourceFile, sourceCss)
+      const resolved = await resolveTailwindV4EntriesFromCssCached(sourceCss, path.dirname(sourceFile))
+      changed = upsertTailwindV4CssSource(opts, {
+        file: sourceFile,
+        base: path.dirname(sourceFile),
+        css: sourceCss,
+        dependencies: resolved?.dependencies ?? [],
+      }) || changed
+    }
+    if (!changed) {
+      return
+    }
+    invalidateSourceCandidateScan()
+    await refreshRuntimeStateForAutoCssSources?.(true)
   }
   const rewritePlugins = createRewriteCssImportsPlugins({
     getAppType: () => opts.appType,
@@ -164,10 +216,15 @@ export function WeappTailwindcss(options: UserDefinedOptions = {}): Plugin[] | u
   let resolvedConfig: ResolvedConfig | undefined
   let recordedGeneratorCandidates: Set<string> | undefined
   const sourceCandidateCollector = createSourceCandidateCollector()
+  const sourceCandidateScanCache = new Map<string, SourceCandidateCollectorSnapshot>()
   let sourceScanEntries: TailwindSourceEntry[] | undefined
   let sourceScanMatcher: ((file: string) => boolean) | undefined
+  let sourceScanDependencies = new Set<string>()
+  let sourceScanExplicit = false
   let sourceCandidateScanSignature: string | undefined
+  let sourceCandidateScanInvalidated = true
   const pendingSourceCandidateSyncs = new Set<Promise<void>>()
+  const pendingSourceCandidateSyncByFile = new Map<string, Promise<void>>()
   const processedCssAssets = new WeakSet<object>()
   const processedCssAssetFiles = new Set<string>()
   const rememberedMainCssSources = new Map<string, string>()
@@ -205,8 +262,28 @@ export function WeappTailwindcss(options: UserDefinedOptions = {}): Plugin[] | u
   }
   const getRecordedGeneratorCandidates = () => recordedGeneratorCandidates
   const getSourceCandidates = () => sourceCandidateCollector.values()
+  const getSourceCandidatesForEntries = (entries: TailwindSourceEntry[] | undefined) => sourceCandidateCollector.valuesForEntries(entries)
   const isWatchBuild = () => resolvedConfig?.command === 'build' && resolvedConfig.build.watch != null
+  const isWatchLikeBuild = () => isWatchBuild()
+    || resolvedConfig?.command === 'serve'
+    || process.env['WEAPP_TW_WATCH_REGRESSION'] === '1'
+    || process.env['WEAPP_TW_HMR_TIMING'] === '1'
+  const hasSourceCandidateScanState = () => sourceCandidateScanSignature !== undefined
+  const normalizeSourceScanDependency = (file: string) => path.normalize(path.resolve(cleanUrl(file)))
+  const isSourceScanDependency = (file: string) => sourceScanDependencies.has(normalizeSourceScanDependency(file))
+  const invalidateSourceCandidateScan = () => {
+    sourceCandidateScanInvalidated = true
+  }
   const collectSourceCandidateScanRoots = (root: string, entries: TailwindSourceEntry[] | undefined) => {
+    if (entries?.length) {
+      return [{
+        entries,
+        root,
+      }]
+    }
+    if (sourceScanExplicit) {
+      return []
+    }
     const roots: SourceCandidateScanRoot[] = [
       {
         entries,
@@ -242,6 +319,70 @@ export function WeappTailwindcss(options: UserDefinedOptions = {}): Plugin[] | u
       })),
     )
   }
+  const cacheCurrentSourceCandidateScan = () => {
+    if (sourceCandidateScanSignature) {
+      sourceCandidateScanCache.set(sourceCandidateScanSignature, sourceCandidateCollector.snapshot())
+      sourceCandidateScanSnapshotCache.set(sourceCandidateScanSignature, sourceCandidateCollector.snapshot())
+    }
+  }
+  async function syncSourceCandidateScan(options: { force?: boolean } = {}) {
+    if (!shouldOwnTailwindGeneration) {
+      return
+    }
+    if (
+      !options.force
+      && isWatchLikeBuild()
+      && hasSourceCandidateScanState()
+      && !sourceCandidateScanInvalidated
+    ) {
+      debug('reuse vite source candidate scan definition for watch rebuild')
+      return
+    }
+    const root = resolvedConfig?.root ?? process.cwd()
+    const outDir = resolvedConfig?.build?.outDir
+    const sourceScan = await resolveViteSourceScanEntries(opts, runtimeState.twPatcher, {
+      outDir,
+      root,
+    })
+    sourceScanEntries = sourceScan?.entries
+    sourceScanExplicit = sourceScan?.explicit ?? false
+    sourceScanMatcher = createViteSourceScanMatcher(sourceScanEntries)
+    sourceScanDependencies = new Set((sourceScan?.dependencies ?? []).map(normalizeSourceScanDependency))
+    const roots = collectSourceCandidateScanRoots(root, sourceScanEntries)
+    const nextScanSignature = createSourceCandidateScanSignature({
+      inlineCandidates: sourceScan?.inlineCandidates,
+      outDir,
+      roots,
+      scanAllSources: !sourceScanExplicit,
+    })
+    const shouldReuseCurrentScan = hasSourceCandidateScanState() && sourceCandidateScanSignature === nextScanSignature
+    if (shouldReuseCurrentScan) {
+      sourceCandidateCollector.syncInline(sourceScan?.inlineCandidates)
+      sourceCandidateScanCache.set(nextScanSignature, sourceCandidateCollector.snapshot())
+      debug('reuse vite source candidate scan for watch rebuild')
+      sourceCandidateScanInvalidated = false
+      return
+    }
+    const cachedScan = isWatchLikeBuild()
+      ? sourceCandidateScanCache.get(nextScanSignature) ?? sourceCandidateScanSnapshotCache.get(nextScanSignature)
+      : undefined
+    if (cachedScan) {
+      sourceCandidateCollector.restore(cachedScan)
+      sourceCandidateScanSignature = nextScanSignature
+      debug('reuse cached vite source candidate scan for watch rebuild')
+      sourceCandidateScanInvalidated = false
+      return
+    }
+    sourceCandidateCollector.clear()
+    sourceCandidateCollector.syncInline(sourceScan?.inlineCandidates)
+    await scanSourceCandidateRoots(roots, outDir)
+    sourceCandidateScanSignature = nextScanSignature
+    sourceCandidateScanInvalidated = false
+    if (isWatchLikeBuild()) {
+      sourceCandidateScanCache.set(nextScanSignature, sourceCandidateCollector.snapshot())
+      sourceCandidateScanSnapshotCache.set(nextScanSignature, sourceCandidateCollector.snapshot())
+    }
+  }
   const waitForSourceCandidateSyncs = async () => {
     while (pendingSourceCandidateSyncs.size > 0) {
       await Promise.all(pendingSourceCandidateSyncs)
@@ -252,18 +393,35 @@ export function WeappTailwindcss(options: UserDefinedOptions = {}): Plugin[] | u
       return Promise.resolve()
     }
     const file = cleanUrl(id)
+    if (isSourceScanDependency(file)) {
+      invalidateSourceCandidateScan()
+    }
     if (sourceScanMatcher && !sourceScanMatcher(file)) {
       sourceCandidateCollector.remove(file)
+      cacheCurrentSourceCandidateScan()
       return Promise.resolve()
+    }
+    if (sourceScanExplicit && sourceScanEntries?.length === 0) {
+      cacheCurrentSourceCandidateScan()
+      return Promise.resolve()
+    }
+    const existingTask = pendingSourceCandidateSyncByFile.get(file)
+    if (existingTask) {
+      return existingTask
     }
     const task = sourceCandidateCollector.syncFile(id)
       .catch((error) => {
         debug('source candidate watch sync failed: %s %O', id, error)
       })
+      .then(() => {
+        cacheCurrentSourceCandidateScan()
+      })
       .finally(() => {
         pendingSourceCandidateSyncs.delete(task)
+        pendingSourceCandidateSyncByFile.delete(file)
       })
     pendingSourceCandidateSyncs.add(task)
+    pendingSourceCandidateSyncByFile.set(file, task)
     return task
   }
   const rememberMainCssSource = (file: string, rawSource: string, cssRuntimeSignature?: string) => {
@@ -286,6 +444,7 @@ export function WeappTailwindcss(options: UserDefinedOptions = {}): Plugin[] | u
     getResolvedConfig,
     markCssAssetProcessed,
     getSourceCandidates,
+    getSourceCandidatesForEntries,
     waitForSourceCandidateSyncs,
     rememberMainCssSource,
     getRememberedMainCssSources,
@@ -304,6 +463,7 @@ export function WeappTailwindcss(options: UserDefinedOptions = {}): Plugin[] | u
     isCssAssetProcessed,
     getRecordedGeneratorCandidates,
     getSourceCandidates,
+    getSourceCandidatesForEntries,
     waitForSourceCandidateSyncs,
     rememberMainCssSource,
   })
@@ -338,15 +498,25 @@ export function WeappTailwindcss(options: UserDefinedOptions = {}): Plugin[] | u
           const file = cleanUrl(id)
           if (sourceScanMatcher && !sourceScanMatcher(file)) {
             sourceCandidateCollector.remove(file)
+            cacheCurrentSourceCandidateScan()
+            return
+          }
+          if (sourceScanExplicit && sourceScanEntries?.length === 0) {
+            cacheCurrentSourceCandidateScan()
             return
           }
           await sourceCandidateCollector.sync(id, code)
+          cacheCurrentSourceCandidateScan()
         }, { emit: false })
       },
       async watchChange(id, change) {
         await hmrTimingRecorder.measure('sourceCandidates.watchChange', async () => {
+          if (isSourceScanDependency(id)) {
+            invalidateSourceCandidateScan()
+          }
           if (change.event === 'delete') {
             sourceCandidateCollector.remove(id)
+            cacheCurrentSourceCandidateScan()
             return
           }
           await syncChangedSourceCandidateFile(id)
@@ -359,30 +529,8 @@ export function WeappTailwindcss(options: UserDefinedOptions = {}): Plugin[] | u
       },
       async buildStart() {
         await hmrTimingRecorder.measure('sourceCandidates.buildStart', async () => {
-          if (!shouldOwnTailwindGeneration) {
-            return
-          }
-          const root = resolvedConfig?.root ?? process.cwd()
-          const outDir = resolvedConfig?.build?.outDir
-          const sourceScan = await resolveViteSourceScanEntries(opts, runtimeState.twPatcher)
-          sourceScanEntries = sourceScan?.entries
-          sourceScanMatcher = createViteSourceScanMatcher(sourceScanEntries)
-          const roots = collectSourceCandidateScanRoots(root, sourceScanEntries)
-          const nextScanSignature = createSourceCandidateScanSignature({
-            inlineCandidates: sourceScan?.inlineCandidates,
-            outDir,
-            roots,
-          })
-          const shouldReuseWatchScan = isWatchBuild() && sourceCandidateScanSignature === nextScanSignature
-          if (shouldReuseWatchScan) {
-            sourceCandidateCollector.syncInline(sourceScan?.inlineCandidates)
-            debug('reuse vite source candidate scan for watch rebuild')
-            return
-          }
-          sourceCandidateCollector.clear()
-          sourceCandidateCollector.syncInline(sourceScan?.inlineCandidates)
-          await scanSourceCandidateRoots(roots, outDir)
-          sourceCandidateScanSignature = nextScanSignature
+          await discoverAndRegisterAutoCssSources()
+          await syncSourceCandidateScan()
         }, { emit: false })
       },
     },

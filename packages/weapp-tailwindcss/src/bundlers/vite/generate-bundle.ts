@@ -2,6 +2,7 @@ import type { OutputAsset, OutputChunk } from 'rollup'
 import type { ResolvedConfig } from 'vite'
 import type { HmrTimingRecorder } from '../shared/hmr-timing'
 import type { BundleSnapshot } from './bundle-state'
+import type { TailwindSourceEntry } from '@/tailwindcss/source-scan'
 import type { InternalUserDefinedOptions, LinkedJsModuleResult } from '@/types'
 import path from 'node:path'
 import process from 'node:process'
@@ -48,6 +49,7 @@ interface GenerateBundleContext {
   markCssAssetProcessed?: (asset: OutputAsset, file?: string) => void
   recordCssAssetResult?: (file: string, css: string) => void
   getSourceCandidates?: () => Set<string>
+  getSourceCandidatesForEntries?: ((entries: TailwindSourceEntry[] | undefined) => Set<string>) | undefined
   waitForSourceCandidateSyncs?: () => Promise<void>
   rememberMainCssSource?: (file: string, rawSource: string, cssRuntimeSignature: string) => void
   getRememberedMainCssSources?: () => Map<string, string>
@@ -105,6 +107,7 @@ export function createGenerateBundleHook(context: GenerateBundleContext) {
       markCssAssetProcessed,
       recordCssAssetResult,
       getSourceCandidates,
+      getSourceCandidatesForEntries,
       waitForSourceCandidateSyncs,
       rememberMainCssSource,
       getRememberedMainCssSources,
@@ -140,9 +143,13 @@ export function createGenerateBundleHook(context: GenerateBundleContext) {
     const resolvedConfig = getResolvedConfig()
     const bundleFiles = Object.keys(bundle)
     const buildCommand = resolvedConfig?.command === 'build'
+    const hasPreviousBundleState = state.iteration > 0 || state.sourceHashByFile.size > 0
     // uni-app vite 的 dev 流程可能以 command=build 驱动 generateBundle，
-    // 但后续轮次只回传脏文件子集；此时需要保留上一轮状态并按增量处理。
-    const useIncrementalMode = !buildCommand || hasOmittedKnownBundleFiles(bundleFiles, state.sourceHashByFile.keys())
+    // 后续轮次可能回传完整 bundle 或脏文件子集；只要同一插件实例已有状态，
+    // 就按增量处理，避免候选变化时把未改动的分包 CSS 全量重生成。
+    const useIncrementalMode = !buildCommand
+      || hasPreviousBundleState
+      || hasOmittedKnownBundleFiles(bundleFiles, state.sourceHashByFile.keys())
     const rootDir = resolvedConfig?.root ? path.resolve(resolvedConfig.root) : process.cwd()
     const outDir = resolvedConfig?.build?.outDir
       ? path.resolve(rootDir, resolvedConfig.build.outDir)
@@ -164,6 +171,7 @@ export function createGenerateBundleHook(context: GenerateBundleContext) {
     const getJsEntry = createJsEntryResolver(jsEntries)
     const moduleGraphOptions = createBundleModuleGraphOptions(outDir, jsEntries)
     const hasCssAssetEntry = snapshot.entries.some(entry => entry.type === 'css' && entry.output.type === 'asset')
+    const hasRuntimeAffectingChanges = hasRuntimeAffectingSourceChanges(snapshot.runtimeAffectingChangedByType)
     const useV3OxideSourceRuntime = runtimeState.twPatcher.majorVersion === 3
       && sourceCandidates.size > 0
       && hasCssAssetEntry
@@ -226,6 +234,7 @@ export function createGenerateBundleHook(context: GenerateBundleContext) {
       }
     }
     const generatorCandidateSignature = createCandidateSignature(generatorRuntime)
+    const generatorCandidatesChanged = state.generatorCandidateSignature !== generatorCandidateSignature
     const runtimeLinkedCssFiles = collectRuntimeLinkedCssFiles(snapshot)
     recordGeneratorCandidates?.(generatorRuntime)
     const defaultTemplateHandlerOptions = {
@@ -241,6 +250,10 @@ export function createGenerateBundleHook(context: GenerateBundleContext) {
     }
     debug('get runtimeSet, class count: %d, transform class count: %d', runtime.size, transformRuntime.size)
     const runtimeSignature = getRuntimeClassSetSignature(runtimeState.twPatcher) ?? 'runtime:missing'
+    const shouldProcessTailwindGeneration = !useIncrementalMode
+      || hasRuntimeAffectingChanges
+      || generatorCandidatesChanged
+      || snapshot.processFiles.css.size > 0
     const { applyLinkedUpdates, pendingLinkedUpdates } = createLinkedUpdateHelpers({
       jsEntries,
       onUpdate,
@@ -327,10 +340,13 @@ export function createGenerateBundleHook(context: GenerateBundleContext) {
         const cssRuntimeAffectingSignature = snapshot.runtimeAffectingSignatureByFile.get(file) ?? rawSource
         const cssShareScope = createCssTransformShareScopeKey(opts, file, rawSource)
         const cssHandlerOptions = getCssHandlerOptions(file)
-        const shouldTrackGeneratorRuntime = !useIncrementalMode
-          || cssHandlerOptions.isMainChunk
-          || processFiles.css.has(file)
-          || runtimeLinkedCssFiles.has(file)
+        const shouldTrackGeneratorRuntime = shouldProcessTailwindGeneration
+          && (
+            !useIncrementalMode
+            || cssHandlerOptions.isMainChunk
+            || processFiles.css.has(file)
+            || runtimeLinkedCssFiles.has(file)
+          )
         const scopedGeneratorCandidateSignature = shouldTrackGeneratorRuntime
           ? generatorCandidateSignature
           : 'generator:stable'
@@ -388,6 +404,7 @@ export function createGenerateBundleHook(context: GenerateBundleContext) {
                   file,
                   cssHandlerOptions,
                   cssUserHandlerOptions: getCssUserHandlerOptions(file),
+                  getSourceCandidatesForEntries,
                   styleHandler,
                   debug,
                 })
@@ -587,6 +604,7 @@ export function createGenerateBundleHook(context: GenerateBundleContext) {
             file,
             cssHandlerOptions,
             cssUserHandlerOptions: getCssUserHandlerOptions(file),
+            getSourceCandidatesForEntries,
             styleHandler,
             debug,
           })
@@ -630,6 +648,7 @@ export function createGenerateBundleHook(context: GenerateBundleContext) {
       useIncrementalMode ? (linkedByEntry ?? new Map<string, Set<string>>()) : new Map<string, Set<string>>(),
       { incremental: useIncrementalMode },
     )
+    state.generatorCandidateSignature = generatorCandidateSignature
 
     debug(
       'metrics iteration=%d runtime=%sms html(total=%d transform=%d hit=%d rate=%s elapsed=%sms) js(total=%d transform=%d hit=%d rate=%s elapsed=%sms) css(total=%d transform=%d hit=%d rate=%s elapsed=%sms)',

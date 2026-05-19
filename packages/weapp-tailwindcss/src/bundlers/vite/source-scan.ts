@@ -1,8 +1,11 @@
+import type { TailwindV4CssSource } from 'tailwindcss-patch'
 import type { TailwindInlineSourceCandidates, TailwindSourceEntry } from '@/tailwindcss/source-scan'
 import type { TailwindcssPatcherLike, UserDefinedOptions } from '@/types'
 import { existsSync, readFileSync } from 'node:fs'
+import { stat } from 'node:fs/promises'
 import path from 'node:path'
 import process from 'node:process'
+import fg from 'fast-glob'
 import micromatch from 'micromatch'
 import postcss from 'postcss'
 import { loadConfig } from 'tailwindcss-config'
@@ -15,6 +18,7 @@ import {
 } from '@/tailwindcss/source-scan'
 import { resolveTailwindV3SourceFromPatcher } from '@/tailwindcss/v3-engine'
 import { resolveTailwindV4SourceFromPatcher, resolveTailwindV4SourceOptionsFromPatcher } from '@/tailwindcss/v4-engine'
+import { readStaticConfigContent } from './static-config-content'
 
 const VITE_SOURCE_CANDIDATE_EXTENSIONS = [
   'js',
@@ -54,6 +58,14 @@ const VITE_SOURCE_CANDIDATE_EXTENSIONS = [
   'stylus',
 ]
 const VITE_SOURCE_CANDIDATE_PATTERN = createSourceScanPattern(VITE_SOURCE_CANDIDATE_EXTENSIONS)
+const VITE_TAILWIND_CSS_ENTRY_PATTERN = '**/*.{css,less,sass,scss,styl,stylus,pcss,postcss}'
+const tailwindV4CssEntriesCache = new Map<string, Promise<ResolvedTailwindV4CssEntries | undefined>>()
+
+interface ConfigDependencySignature {
+  file: string
+  mtimeMs: number
+  size: number
+}
 
 function parseImportSourceParam(params: string) {
   const match = /\bsource\(\s*(none|(['"])(.*?)\2)\s*\)/.exec(params)
@@ -75,10 +87,27 @@ function resolveSourceBase(base: string, sourcePath: string) {
 }
 
 function resolveConfigPath(base: string, configPath: string) {
-  return path.isAbsolute(configPath) ? path.resolve(configPath) : path.resolve(base, configPath)
+  if (path.isAbsolute(configPath)) {
+    return path.resolve(configPath)
+  }
+
+  let current = path.resolve(base)
+  while (true) {
+    const candidate = path.resolve(current, configPath)
+    if (existsSync(candidate)) {
+      return candidate
+    }
+    const parent = path.dirname(current)
+    if (parent === current) {
+      break
+    }
+    current = parent
+  }
+
+  return path.resolve(base, configPath)
 }
 
-interface ResolvedTailwindV4CssEntries {
+export interface ResolvedTailwindV4CssEntries {
   entries: TailwindSourceEntry[]
   explicit: boolean
   inlineCandidates: TailwindInlineSourceCandidates
@@ -86,8 +115,97 @@ interface ResolvedTailwindV4CssEntries {
 }
 
 export interface ResolvedViteSourceScan {
+  dependencies?: string[] | undefined
   entries?: TailwindSourceEntry[] | undefined
+  explicit?: boolean | undefined
   inlineCandidates?: TailwindInlineSourceCandidates | undefined
+}
+
+interface ResolveViteSourceScanOptions {
+  root?: string | undefined
+  outDir?: string | undefined
+}
+
+function createCssEntriesCacheKey(css: string, base: string, dependencies: ConfigDependencySignature[]) {
+  return JSON.stringify({
+    base: path.resolve(base),
+    css,
+    dependencies,
+  })
+}
+
+function addSourceScanDependency(dependencies: Set<string>, file: string | undefined) {
+  if (typeof file === 'string' && file.length > 0) {
+    dependencies.add(path.resolve(file))
+  }
+}
+
+function addSourceScanDependencies(dependencies: Set<string>, files: string[] | undefined) {
+  for (const file of files ?? []) {
+    addSourceScanDependency(dependencies, file)
+  }
+}
+
+function createResolvedViteSourceScan(input: ResolvedViteSourceScan, dependencies: Set<string>): ResolvedViteSourceScan {
+  return {
+    ...input,
+    ...(dependencies.size > 0 ? { dependencies: [...dependencies].sort() } : {}),
+  }
+}
+
+async function statConfigDependency(file: string): Promise<ConfigDependencySignature> {
+  try {
+    const stats = await stat(file)
+    return {
+      file,
+      mtimeMs: stats.mtimeMs,
+      size: stats.size,
+    }
+  }
+  catch {
+    return {
+      file,
+      mtimeMs: -1,
+      size: -1,
+    }
+  }
+}
+
+async function collectConfigDependencySignatures(root: postcss.Root, base: string) {
+  const configPaths = new Set<string>()
+  root.walkAtRules('config', (rule) => {
+    const configPath = parseConfigParam(rule.params)
+    if (configPath) {
+      configPaths.add(resolveConfigPath(base, configPath))
+    }
+  })
+  return Promise.all([...configPaths].sort().map(statConfigDependency))
+}
+
+export function mergeTailwindInlineSourceCandidates(
+  allInlineCandidates: Array<TailwindInlineSourceCandidates | undefined>,
+): TailwindInlineSourceCandidates | undefined {
+  const merged: TailwindInlineSourceCandidates = {
+    included: new Set(),
+    excluded: new Set(),
+  }
+  for (const inlineCandidates of allInlineCandidates) {
+    if (!inlineCandidates) {
+      continue
+    }
+    for (const candidate of inlineCandidates.included) {
+      if (!merged.excluded.has(candidate)) {
+        merged.included.add(candidate)
+      }
+    }
+    for (const candidate of inlineCandidates.excluded) {
+      merged.excluded.add(candidate)
+      merged.included.delete(candidate)
+    }
+  }
+  return merged.included.size > 0 || merged.excluded.size > 0
+    ? merged
+    : undefined
 }
 
 async function resolveConfigContentEntries(root: postcss.Root, base: string) {
@@ -101,6 +219,11 @@ async function resolveConfigContentEntries(root: postcss.Root, base: string) {
 
   const entries: TailwindSourceEntry[] = []
   for (const configPath of configPaths) {
+    const staticContent = readStaticConfigContent(configPath)
+    if (staticContent !== undefined) {
+      entries.push(...normalizeLegacyContentEntries(staticContent, path.dirname(configPath)))
+      continue
+    }
     try {
       const loaded = await loadConfig({
         config: configPath,
@@ -119,7 +242,7 @@ async function resolveConfigContentEntries(root: postcss.Root, base: string) {
   }
 }
 
-async function resolveTailwindV4EntriesFromCss(css: string, base: string): Promise<ResolvedTailwindV4CssEntries | undefined> {
+export async function resolveTailwindV4EntriesFromCss(css: string, base: string): Promise<ResolvedTailwindV4CssEntries | undefined> {
   let root: postcss.Root
   try {
     root = postcss.parse(css)
@@ -211,80 +334,202 @@ function collectExistingCssEntries(options: UserDefinedOptions) {
     .filter(item => existsSync(item))
 }
 
-function mergeInlineCandidates(
-  allInlineCandidates: Array<TailwindInlineSourceCandidates | undefined>,
-): TailwindInlineSourceCandidates | undefined {
-  const merged: TailwindInlineSourceCandidates = {
-    included: new Set(),
-    excluded: new Set(),
+async function pathExistsAsFile(file: string) {
+  try {
+    return (await stat(file)).isFile()
   }
-  for (const inlineCandidates of allInlineCandidates) {
-    if (!inlineCandidates) {
+  catch {
+    return false
+  }
+}
+
+export async function resolveTailwindV4EntriesFromCssCached(css: string, base: string) {
+  let root: postcss.Root
+  try {
+    root = postcss.parse(css)
+  }
+  catch {
+    return undefined
+  }
+  const cacheKey = createCssEntriesCacheKey(
+    css,
+    base,
+    await collectConfigDependencySignatures(root, base),
+  )
+  const cached = tailwindV4CssEntriesCache.get(cacheKey)
+  if (cached) {
+    return cached
+  }
+  const task = resolveTailwindV4EntriesFromCss(css, base)
+  tailwindV4CssEntriesCache.set(cacheKey, task)
+  return task
+}
+
+export async function discoverTailwindV4CssEntries(root: string, outDir: string | undefined) {
+  const resolvedRoot = path.resolve(root)
+  const ignore = [
+    '**/node_modules/**',
+    '**/.git/**',
+  ]
+  const resolvedOutDir = outDir ? path.resolve(resolvedRoot, outDir) : undefined
+  if (resolvedOutDir) {
+    const relativeOutDir = path.relative(resolvedRoot, resolvedOutDir)
+    if (relativeOutDir && !relativeOutDir.startsWith('..') && !path.isAbsolute(relativeOutDir)) {
+      ignore.push(`${relativeOutDir.split(path.sep).join('/')}/**`)
+    }
+  }
+  const candidates = await fg(VITE_TAILWIND_CSS_ENTRY_PATTERN, {
+    absolute: true,
+    cwd: resolvedRoot,
+    ignore,
+    onlyFiles: true,
+    unique: true,
+  })
+  const entries: string[] = []
+  for (const file of candidates) {
+    if (!await pathExistsAsFile(file)) {
       continue
     }
-    for (const candidate of inlineCandidates.included) {
-      if (!merged.excluded.has(candidate)) {
-        merged.included.add(candidate)
+    try {
+      const css = readFileSync(file, 'utf8')
+      if (css.includes('tailwindcss') || css.includes('@source') || css.includes('@config')) {
+        const resolved = await resolveTailwindV4EntriesFromCssCached(css, path.dirname(file))
+        if (resolved) {
+          entries.push(file)
+        }
       }
     }
-    for (const candidate of inlineCandidates.excluded) {
-      merged.excluded.add(candidate)
-      merged.included.delete(candidate)
+    catch {
+      // 自动发现只用于缩小 HMR 首轮扫描范围，读取失败时继续尝试其它入口。
     }
   }
-  return merged.included.size > 0 || merged.excluded.size > 0
-    ? merged
-    : undefined
+  return entries
+}
+
+function collectConfiguredCssSources(options: UserDefinedOptions) {
+  return [
+    ...(options.tailwindcss?.v4?.cssSources ?? []),
+    ...(((options.tailwindcssPatcherOptions as any)?.tailwindcss?.v4?.cssSources ?? []) as TailwindV4CssSource[]),
+  ]
+}
+
+function resolveTailwindV4CssSourceBase(
+  source: TailwindV4CssSource,
+  fallbackBase: string,
+) {
+  if (typeof source.base === 'string' && source.base.length > 0) {
+    return source.base
+  }
+  if (typeof source.file === 'string' && source.file.length > 0) {
+    return path.dirname(source.file)
+  }
+  return fallbackBase
 }
 
 export async function resolveViteSourceScanEntries(
   options: UserDefinedOptions,
   patcher: TailwindcssPatcherLike,
+  scanOptions: ResolveViteSourceScanOptions = {},
 ): Promise<ResolvedViteSourceScan | undefined> {
   if (patcher.majorVersion === 3) {
     const source = await resolveTailwindV3SourceFromPatcher(patcher)
     const contentEntries = normalizeLegacyContentEntries(source.configObject?.content, source.config ? path.dirname(source.config) : source.cwd)
-    return contentEntries.length > 0 ? { entries: contentEntries } : undefined
+    const dependencies = new Set<string>()
+    addSourceScanDependency(dependencies, source.config)
+    return contentEntries.length > 0
+      ? createResolvedViteSourceScan({ entries: contentEntries }, dependencies)
+      : undefined
   }
 
   if (patcher.majorVersion === 4) {
     const sourceOptions = resolveTailwindV4SourceOptionsFromPatcher(patcher)
     const cssEntries = collectExistingCssEntries(options)
+    if (cssEntries.length === 0 && !sourceOptions.css && !sourceOptions.cssSources?.length) {
+      const scanRoot = scanOptions.root
+      const sourceProjectRoot = sourceOptions.projectRoot
+      if (scanRoot && sourceProjectRoot && path.resolve(scanRoot) === path.resolve(sourceProjectRoot)) {
+        const discoveredCssEntries = await discoverTailwindV4CssEntries(
+          scanRoot,
+          scanOptions.outDir,
+        )
+        cssEntries.push(...discoveredCssEntries)
+      }
+    }
     const entries: TailwindSourceEntry[] = []
     const cssInlineCandidates: TailwindInlineSourceCandidates[] = []
+    const dependencies = new Set<string>()
+    let explicit = false
     for (const cssEntry of cssEntries) {
+      addSourceScanDependency(dependencies, cssEntry)
       const css = readFileSync(cssEntry, 'utf8')
-      const resolved = await resolveTailwindV4EntriesFromCss(css, path.dirname(cssEntry))
+      const resolved = await resolveTailwindV4EntriesFromCssCached(css, path.dirname(cssEntry))
       if (resolved) {
         entries.push(...resolved.entries)
         cssInlineCandidates.push(resolved.inlineCandidates)
+        addSourceScanDependencies(dependencies, resolved.dependencies)
+        explicit ||= resolved.explicit
       }
     }
-    const inlineCandidates = mergeInlineCandidates(cssInlineCandidates)
-    if (entries.length > 0 || inlineCandidates) {
-      return {
-        entries,
+    const inlineCandidates = mergeTailwindInlineSourceCandidates(cssInlineCandidates)
+    if (entries.length > 0 || inlineCandidates || explicit) {
+      return createResolvedViteSourceScan({
+        entries: explicit ? entries : entries.length > 0 ? entries : undefined,
+        explicit,
         inlineCandidates,
-      }
+      }, dependencies)
     }
 
     if (typeof sourceOptions.css === 'string' && sourceOptions.css.length > 0) {
-      const resolved = await resolveTailwindV4EntriesFromCss(sourceOptions.css, sourceOptions.base ?? sourceOptions.projectRoot ?? process.cwd())
+      const resolved = await resolveTailwindV4EntriesFromCssCached(sourceOptions.css, sourceOptions.base ?? sourceOptions.projectRoot ?? process.cwd())
       return resolved
-        ? {
+        ? createResolvedViteSourceScan({
             entries: resolved.entries,
+            explicit: resolved.explicit,
             inlineCandidates: resolved.inlineCandidates,
-          }
+          }, new Set(resolved.dependencies))
         : undefined
     }
 
+    const sourceOptionBase = sourceOptions.base ?? sourceOptions.projectRoot ?? process.cwd()
+    for (const cssSource of [
+      ...collectConfiguredCssSources(options),
+      ...(sourceOptions.cssSources ?? []),
+    ]) {
+      if (typeof cssSource.css !== 'string' || cssSource.css.length === 0) {
+        continue
+      }
+      addSourceScanDependency(dependencies, cssSource.file)
+      addSourceScanDependencies(dependencies, cssSource.dependencies)
+      const resolved = await resolveTailwindV4EntriesFromCssCached(
+        cssSource.css,
+        resolveTailwindV4CssSourceBase(cssSource, sourceOptionBase),
+      )
+      if (resolved) {
+        entries.push(...resolved.entries)
+        cssInlineCandidates.push(resolved.inlineCandidates)
+        addSourceScanDependencies(dependencies, resolved.dependencies)
+        explicit ||= resolved.explicit
+      }
+    }
+    const cssSourceInlineCandidates = mergeTailwindInlineSourceCandidates(cssInlineCandidates)
+    if (entries.length > 0 || cssSourceInlineCandidates || explicit) {
+      return createResolvedViteSourceScan({
+        entries: explicit ? entries : entries.length > 0 ? entries : undefined,
+        explicit,
+        inlineCandidates: cssSourceInlineCandidates,
+      }, dependencies)
+    }
+
     const source = await resolveTailwindV4SourceFromPatcher(patcher)
-    const resolved = await resolveTailwindV4EntriesFromCss(source.css, source.base)
+    addSourceScanDependency(dependencies, (source as { file?: string }).file)
+    addSourceScanDependencies(dependencies, (source as { dependencies?: string[] }).dependencies)
+    const resolved = await resolveTailwindV4EntriesFromCssCached(source.css, source.base)
     return resolved
-      ? {
+      ? createResolvedViteSourceScan({
           entries: resolved.entries,
+          explicit: resolved.explicit,
           inlineCandidates: resolved.inlineCandidates,
-        }
+        }, new Set([...dependencies, ...resolved.dependencies]))
       : undefined
   }
 

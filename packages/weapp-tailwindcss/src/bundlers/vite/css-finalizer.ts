@@ -1,6 +1,7 @@
 import type { IStyleHandlerOptions } from '@weapp-tailwindcss/postcss/types'
 import type { OutputAsset, OutputBundle, OutputChunk } from 'rollup'
 import type { Plugin, ResolvedConfig } from 'vite'
+import type { TailwindSourceEntry } from '@/tailwindcss/source-scan'
 import type { InternalUserDefinedOptions } from '@/types'
 import { logger } from '@weapp-tailwindcss/logger'
 import { normalizeWeappTailwindcssGeneratorOptions } from '@/generator'
@@ -21,6 +22,7 @@ interface CssFinalizerContext {
   recordCssAssetResult?: (file: string, css: string) => void
   getRecordedGeneratorCandidates?: () => Set<string> | undefined
   getSourceCandidates?: () => Set<string>
+  getSourceCandidatesForEntries?: ((entries: TailwindSourceEntry[] | undefined) => Set<string>) | undefined
   waitForSourceCandidateSyncs?: () => Promise<void>
   rememberMainCssSource?: (file: string, rawSource: string) => void
 }
@@ -110,6 +112,7 @@ export function createViteCssFinalizerOutputPlugin(context: CssFinalizerContext)
           recordCssAssetResult,
           getRecordedGeneratorCandidates,
           getSourceCandidates,
+          getSourceCandidatesForEntries,
           waitForSourceCandidateSyncs,
           rememberMainCssSource,
         } = context
@@ -171,6 +174,7 @@ export function createViteCssFinalizerOutputPlugin(context: CssFinalizerContext)
                 file,
                 cssHandlerOptions,
                 cssUserHandlerOptions,
+                getSourceCandidatesForEntries,
                 styleHandler: opts.styleHandler,
                 debug,
               })

@@ -1,4 +1,6 @@
 import type { IStyleHandlerOptions } from '@weapp-tailwindcss/postcss/types'
+import type { GeneratorResolvedSource } from './generator-css/source-resolver'
+import type { TailwindSourceEntry } from '@/tailwindcss/source-scan'
 import type { InternalUserDefinedOptions } from '@/types'
 import postcss from 'postcss'
 import {
@@ -23,6 +25,8 @@ import {
   stripTailwindBanner,
 } from './generator-css/markers'
 import {
+
+  resolveGeneratorSourceEntries,
   resolveGeneratorSources,
 } from './generator-css/source-resolver'
 
@@ -65,6 +69,7 @@ export interface GenerateCssByGeneratorOptions {
   file: string
   cssHandlerOptions: IStyleHandlerOptions
   cssUserHandlerOptions: IStyleHandlerOptions
+  getSourceCandidatesForEntries?: ((entries: TailwindSourceEntry[] | undefined) => Set<string>) | undefined
   styleHandler: InternalUserDefinedOptions['styleHandler']
   debug: (format: string, ...args: unknown[]) => void
 }
@@ -81,6 +86,27 @@ function finalizeMiniProgramGeneratorCss(css: string, target: string) {
     return css
   }
   return finalizeMiniProgramCss(css)
+}
+
+function mergeScopedRuntimeWithCurrentRuntime(
+  scopedRuntime: Set<string>,
+  runtime: Set<string>,
+  options: {
+    cssHandlerOptions: IStyleHandlerOptions
+    isolateCssSource: boolean
+  },
+) {
+  if (runtime.size === 0 || !options.cssHandlerOptions.isMainChunk || options.isolateCssSource) {
+    return scopedRuntime
+  }
+  return new Set([
+    ...scopedRuntime,
+    ...runtime,
+  ])
+}
+
+function shouldIsolateMatchedCssSource(source: GeneratorResolvedSource, sourceEntries: TailwindSourceEntry[] | undefined) {
+  return Boolean(source.__weappTailwindcssMeta?.matchedCssSourceFile && sourceEntries?.length)
 }
 
 function resolveGeneratorStyleOptions(
@@ -207,6 +233,7 @@ export async function generateCssByGenerator(
     file,
     cssHandlerOptions,
     cssUserHandlerOptions,
+    getSourceCandidatesForEntries,
     styleHandler,
     debug,
   } = options
@@ -269,10 +296,23 @@ export async function generateCssByGenerator(
     const configuredContainerCompat = hasConfiguredContainerCompatSources(sources)
     const generatedResults = await Promise.all(sources.map(async (source) => {
       const generator = createWeappTailwindcssGenerator(source)
+      const sourceEntries = getSourceCandidatesForEntries && majorVersion === 4
+        ? await resolveGeneratorSourceEntries(source, runtimeState)
+        : undefined
+      const scopedRuntime = sourceEntries
+        ? getSourceCandidatesForEntries?.(sourceEntries)
+        : undefined
+      const isolateCssSource = shouldIsolateMatchedCssSource(source, sourceEntries)
+      const sourceRuntime = scopedRuntime && (scopedRuntime.size > 0 || isolateCssSource)
+        ? mergeScopedRuntimeWithCurrentRuntime(scopedRuntime, runtime, {
+            cssHandlerOptions,
+            isolateCssSource,
+          })
+        : runtime
       return generator.generate({
-        candidates: runtime,
+        candidates: sourceRuntime,
         incrementalCache: majorVersion === 3 || majorVersion === 4,
-        scanSources: majorVersion === 4 && runtime.size === 0,
+        scanSources: majorVersion === 4 && sourceRuntime.size === 0 && !isolateCssSource,
         styleOptions: generatorStyleOptions,
         tailwindcssV3Compatibility: generatorOptions.tailwindcssV3Compatibility,
         target: generatorOptions.target,
@@ -369,6 +409,14 @@ export async function generateCssByGenerator(
     let css = stripTailwindBanner(generated.css)
     if (generated.target === 'weapp') {
       css = inheritLegacyUnitConvertedDeclarations(css, effectiveRawSource)
+    }
+    if (sources.some(source => (source as GeneratorResolvedSource).__weappTailwindcssMeta?.matchedCssSourceFile)) {
+      return {
+        css: finalizeMiniProgramGeneratorCss(css, generated.target),
+        target: generated.target,
+        source: 'generator',
+        dependencies: generated.dependencies,
+      }
     }
     css = await appendLegacyCompatCss(
       css,

@@ -65,6 +65,30 @@ function normalizeGlobPattern(pattern: string) {
   return pattern.startsWith('./') ? pattern.slice(2) : pattern
 }
 
+function hasGlobMagic(value: string) {
+  return /[*?[\]{}()!+@]/.test(value)
+}
+
+function splitStaticGlobPrefix(pattern: string) {
+  const normalized = normalizeGlobPattern(pattern)
+  const segments = normalized.split(/[\\/]+/)
+  const prefix: string[] = []
+  const rest: string[] = []
+  let reachedGlob = false
+  for (const segment of segments) {
+    if (!reachedGlob && segment && !hasGlobMagic(segment)) {
+      prefix.push(segment)
+      continue
+    }
+    reachedGlob = true
+    rest.push(segment)
+  }
+  return {
+    prefix,
+    rest,
+  }
+}
+
 function segmentTopLevel(input: string, separator: string) {
   const parts: string[] = []
   const stack: string[] = []
@@ -294,6 +318,15 @@ export async function resolveTailwindSourceEntry(
       base: path.dirname(absoluteSource),
       negated,
       pattern: normalizeGlobPattern(path.basename(absoluteSource)),
+    }
+  }
+
+  const { prefix, rest } = splitStaticGlobPrefix(sourcePath)
+  if (prefix.length > 0 && rest.length > 0) {
+    return {
+      base: path.resolve(base, ...prefix),
+      negated,
+      pattern: normalizeGlobPattern(rest.join('/')),
     }
   }
 

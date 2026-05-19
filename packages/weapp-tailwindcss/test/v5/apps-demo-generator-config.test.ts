@@ -258,4 +258,18 @@ describe('demo matrix generator config', () => {
       }
     }
   })
+
+  it('keeps gulp v4 @config paths aligned with gulp postcss cwd', async () => {
+    const configRefs = [
+      await readProjectFile('demo/gulp-tailwindcss-v4/src/app.css'),
+      await readProjectFile('demo/gulp-tailwindcss-v4/src/sub-normal/pages/index.css'),
+      await readProjectFile('demo/gulp-tailwindcss-v4/src/sub-independent/pages/index.css'),
+    ].flatMap(source => [...source.matchAll(/@config\s+["']([^"']+)["']/g)].map(match => match[1]))
+
+    expect(configRefs).toEqual([
+      './tailwind.config.js',
+      './tailwind.config.sub-normal.js',
+      './tailwind.config.sub-independent.js',
+    ])
+  })
 })

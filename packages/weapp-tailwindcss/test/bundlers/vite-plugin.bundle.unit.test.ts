@@ -407,6 +407,7 @@ describe('bundlers/vite WeappTailwindcss bundle', () => {
     expect(context.tailwindcss?.v4?.cssSources).toEqual([
       {
         file: entry,
+        base: path.dirname(entry),
         css,
         dependencies: [configFile],
       },
@@ -414,6 +415,88 @@ describe('bundlers/vite WeappTailwindcss bundle', () => {
     expect(refreshTailwindcssPatcher).toHaveBeenCalledTimes(1)
     expect(String((result as any)?.code)).toContain('generator-placeholder.css')
   })
+
+  it('discovers omitted Tailwind v4 css sources before vite buildStart scans candidates', async () => {
+    const root = await mkdtemp(path.join(os.tmpdir(), 'weapp-tw-vite-auto-discover-'))
+    createdDirs.push(root)
+    const appCss = path.join(root, 'src', 'app.css')
+    const appPage = path.join(root, 'src', 'pages', 'index', 'index.tsx')
+    const subCss = path.join(root, 'src', 'sub-independent', 'pages', 'index.css')
+    const subConfig = path.join(root, 'src', 'sub-independent', 'pages', 'tailwind.config.js')
+    const subPage = path.join(root, 'src', 'sub-independent', 'pages', 'index.tsx')
+    await mkdir(path.dirname(appPage), { recursive: true })
+    await mkdir(path.dirname(subPage), { recursive: true })
+    await writeFile(appCss, '@import "tailwindcss" source(none);\n@source "../src/**/*.{ts,tsx}";\n', 'utf8')
+    await writeFile(appPage, 'export default () => <View className="bg-[#010203]" />\n', 'utf8')
+    await writeFile(subCss, '@import "tailwindcss" source(none);\n@config "./tailwind.config.js";\n', 'utf8')
+    await writeFile(subConfig, 'module.exports = { content: ["./**/*.{ts,tsx}"] }\n', 'utf8')
+    await writeFile(subPage, 'export default () => <View className="text-[37px]" />\n', 'utf8')
+
+    const refreshTailwindcssPatcher = vi.fn()
+    const context = createContext({
+      twPatcher: {
+        patch: vi.fn(),
+        getClassSet: vi.fn(async () => new Set()),
+        getClassSetSync: vi.fn(() => new Set()),
+        majorVersion: 4,
+        extract: vi.fn(async () => ({ classSet: new Set() })),
+        options: {
+          tailwindcss: {
+            v4: {
+              projectRoot: root,
+            },
+          },
+        },
+      },
+      refreshTailwindcssPatcher,
+    })
+    refreshTailwindcssPatcher.mockImplementation(async () => context.twPatcher)
+    setCurrentContext(context)
+
+    const WeappTailwindcss = await loadUnifiedVitePlugin()
+    const plugins = WeappTailwindcss()
+    const sourcePlugin = plugins?.find(plugin => plugin.name === 'weapp-tailwindcss:adaptor:source-candidates') as Plugin
+    const postPlugin = plugins?.find(plugin => plugin.name === 'weapp-tailwindcss:adaptor:post') as Plugin
+    expect(sourcePlugin).toBeTruthy()
+    expect(postPlugin).toBeTruthy()
+
+    await (postPlugin.configResolved as any)?.call(postPlugin, {
+      command: 'build',
+      root,
+      css: { postcss: { plugins: [] } },
+      build: { outDir: 'dist', watch: {} },
+    } as ResolvedConfig)
+    refreshTailwindcssPatcher.mockClear()
+    await (sourcePlugin.buildStart as any)?.call(sourcePlugin)
+
+    expect(context.tailwindcss?.v4?.cssSources).toEqual([
+      expect.objectContaining({
+        file: appCss,
+        base: path.dirname(appCss),
+        css: '@import "tailwindcss" source(none);\n@source "../src/**/*.{ts,tsx}";\n',
+        dependencies: [],
+      }),
+      expect.objectContaining({
+        file: subCss,
+        base: path.dirname(subCss),
+        css: '@import "tailwindcss" source(none);\n@config "./tailwind.config.js";\n',
+        dependencies: [subConfig],
+      }),
+    ])
+    expect(refreshTailwindcssPatcher).toHaveBeenCalledTimes(1)
+
+    const bundle = {
+      'app.css': {
+        ...createRollupAsset(MINIMAL_TAILWIND_V4_CSS),
+        fileName: 'app.css',
+      },
+    }
+    const generateBundle = getGenerateBundleHandler(postPlugin)
+    await generateBundle?.call({ addWatchFile: vi.fn() }, {}, bundle, false)
+
+    expect(String(bundle['app.css'].source)).toContain('.bg-_b_h010203_B')
+    expect(String(bundle['app.css'].source)).toContain('.text-_b37px_B')
+  }, TEST_TIMEOUT_MS)
 
   it('scans Tailwind v4 @config content for vite source candidates', async () => {
     const root = await mkdtemp(path.join(os.tmpdir(), 'weapp-tw-vite-config-content-'))
@@ -492,6 +575,7 @@ describe('bundlers/vite WeappTailwindcss bundle', () => {
     expect(context.tailwindcss?.v4?.cssSources).toEqual([
       {
         file: entry,
+        base: path.dirname(entry),
         css: '@import "tailwindcss";\n@source inline("h-4");',
         dependencies: [],
       },
@@ -2641,6 +2725,19 @@ const cls = "w-[1.5px]"
     expect((bundle['pages/b.wxss'] as OutputAsset).source.toString()).toBe(`shared:${duplicatedCss}`)
     expect(currentContext.styleHandler).toHaveBeenCalledTimes(2)
   }, TEST_TIMEOUT_MS)
+
+  it('isolates Tailwind v4 generated css share scope per output asset', async () => {
+    const { createCssTransformShareScopeKey } = await import('@/bundlers/vite/generate-bundle/css-share-scope')
+    const generatedCss = '/*! tailwindcss v4.3.0 | MIT License | https://tailwindcss.com */\n.bg-\\[red\\]{color:red}'
+    const opts = createContext({
+      mainCssChunkMatcher: vi.fn(() => false),
+    }) as any
+
+    expect(createCssTransformShareScopeKey(opts, 'pages/a.wxss', generatedCss)).toBe('source:pages/a.wxss')
+    expect(createCssTransformShareScopeKey(opts, 'pages/b.wxss', generatedCss)).toBe('source:pages/b.wxss')
+    expect(createCssTransformShareScopeKey(opts, 'pages/a.wxss', '.card{color:red}')).toBe('global')
+    expect(createCssTransformShareScopeKey(opts, 'pages/b.wxss', '.card{color:red}')).toBe('global')
+  })
 
   it('logs css diffs when vite css diff debugging is enabled', async () => {
     const previousDebugCssDiff = process.env.WEAPP_TW_VITE_DEBUG_CSS_DIFF

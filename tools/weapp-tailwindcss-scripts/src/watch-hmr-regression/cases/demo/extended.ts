@@ -404,10 +404,12 @@ export function buildDemoExtendedCases(baseCwd: string): WatchCase[] {
     outputJs: path.resolve(baseCwd, 'demo/taro-vite-react-tailwindcss-v4/dist/pages/index/index.js'),
     outputStyleCandidates: [
       path.resolve(baseCwd, 'demo/taro-vite-react-tailwindcss-v4/dist/pages/index/index.wxss'),
+      path.resolve(baseCwd, 'demo/taro-vite-react-tailwindcss-v4/dist/sub-independent/pages/index.wxss'),
       path.resolve(baseCwd, 'demo/taro-vite-react-tailwindcss-v4/dist/app-origin.wxss'),
       path.resolve(baseCwd, 'demo/taro-vite-react-tailwindcss-v4/dist/app.wxss'),
     ],
     globalStyleCandidates: [
+      path.resolve(baseCwd, 'demo/taro-vite-react-tailwindcss-v4/dist/sub-independent/pages/index.wxss'),
       path.resolve(baseCwd, 'demo/taro-vite-react-tailwindcss-v4/dist/app-origin.wxss'),
       path.resolve(baseCwd, 'demo/taro-vite-react-tailwindcss-v4/dist/app.wxss'),
     ],
@@ -443,9 +445,6 @@ export function buildDemoExtendedCases(baseCwd: string): WatchCase[] {
       roundConfigs: buildHexScriptRoundConfigs(),
       mutate(source, payload) {
         return mutateTsxScriptByReturnAnchor(source, payload)
-      },
-      mutateCommentCarrier(source, payload) {
-        return mutateTsxScriptByReturnAnchorWithCommentCarrier(source, payload)
       },
     },
     styleMutation: {

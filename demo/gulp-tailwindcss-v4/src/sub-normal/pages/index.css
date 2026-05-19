@@ -1,2 +1,2 @@
 @import "tailwindcss" source(none);
-@config "../../../tailwind.config.sub-normal.js";
+@config "./tailwind.config.sub-normal.js";
