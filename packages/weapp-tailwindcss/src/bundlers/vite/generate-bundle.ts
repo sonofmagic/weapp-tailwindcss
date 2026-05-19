@@ -171,7 +171,10 @@ export function createGenerateBundleHook(context: GenerateBundleContext) {
       : rootDir
     currentOutDir = outDir
     const snapshotStart = performance.now()
-    const snapshot = buildBundleSnapshot(bundle, opts, outDir, state, disableDirtyOptimization || !useIncrementalMode)
+    const snapshot = buildBundleSnapshot(bundle, opts, outDir, state, {
+      forceAll: disableDirtyOptimization || !useIncrementalMode,
+      fastInitialRuntimeSignatures: buildCommand && (!useIncrementalMode || !hasPreviousBundleState),
+    })
     recordTimingDetail('snapshot', snapshotStart)
     const useBundleRuntimeClassSet = useIncrementalMode || runtimeState.twPatcher.majorVersion === 4
     const forceRuntimeRefreshBySource = useIncrementalMode
@@ -364,6 +367,7 @@ export function createGenerateBundleHook(context: GenerateBundleContext) {
           && (
             !useIncrementalMode
             || cssHandlerOptions.isMainChunk
+            || generatorCandidatesChanged
             || processFiles.css.has(file)
             || runtimeLinkedCssFiles.has(file)
           )

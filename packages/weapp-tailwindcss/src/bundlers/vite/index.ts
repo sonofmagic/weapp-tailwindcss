@@ -8,6 +8,7 @@ import process from 'node:process'
 import { logger } from '@weapp-tailwindcss/logger'
 import postcssHtmlTransform from '@weapp-tailwindcss/postcss/html-transform'
 import { normalizeTailwindSourceForGenerator } from '@/bundlers/shared/generator-css/directives'
+import { createTailwindV4CssSourceIdMarker } from '@/bundlers/shared/generator-css/source-resolver'
 import { vitePluginName } from '@/constants'
 import { getCompilerContext } from '@/context'
 import { toCustomAttributesEntities } from '@/context/custom-attributes'
@@ -160,6 +161,10 @@ export function WeappTailwindcss(options: UserDefinedOptions = {}): Plugin[] | u
     })
     await autoCssSourcesRefresh
   }
+  const markTailwindRootCssSource = async (id: string, code: string) => {
+    await registerAutoCssSource(id, code)
+    return `${createTailwindV4CssSourceIdMarker(cleanUrl(id))}\n${code}`
+  }
   const discoverAndRegisterAutoCssSources = async () => {
     if (
       tailwindcssMajorVersion < 4
@@ -204,7 +209,7 @@ export function WeappTailwindcss(options: UserDefinedOptions = {}): Plugin[] | u
     rootImport: shouldOwnTailwindGeneration
       ? `${weappTailwindcssDirPosix}/generator-placeholder.css`
       : undefined,
-    onTailwindRootCss: (id, code) => registerAutoCssSource(id, code),
+    onTailwindRootCss: markTailwindRootCssSource,
     shouldOwnTailwindGeneration,
     shouldRewrite: shouldRewriteCssImports,
     weappTailwindcssDirPosix,

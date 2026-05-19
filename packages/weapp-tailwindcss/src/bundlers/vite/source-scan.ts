@@ -323,6 +323,17 @@ export async function resolveViteTailwindV4CssDependencies(css: string, base: st
   return resolved?.dependencies ?? []
 }
 
+function hasTailwindV4ExplicitSourceInput(resolved: ResolvedTailwindV4CssEntries | undefined) {
+  return Boolean(
+    resolved
+    && (
+      resolved.entries.length > 0
+      || resolved.inlineCandidates.included.size > 0
+      || resolved.inlineCandidates.excluded.size > 0
+    ),
+  )
+}
+
 function collectExistingCssEntries(options: UserDefinedOptions) {
   return [
     ...(options.cssEntries ?? []),
@@ -394,7 +405,7 @@ export async function discoverTailwindV4CssEntries(root: string, outDir: string 
       const css = readFileSync(file, 'utf8')
       if (css.includes('tailwindcss') || css.includes('@source') || css.includes('@config')) {
         const resolved = await resolveTailwindV4EntriesFromCssCached(css, path.dirname(file))
-        if (resolved) {
+        if (hasTailwindV4ExplicitSourceInput(resolved)) {
           entries.push(file)
         }
       }
@@ -444,6 +455,7 @@ export async function resolveViteSourceScanEntries(
   if (patcher.majorVersion === 4) {
     const sourceOptions = resolveTailwindV4SourceOptionsFromPatcher(patcher)
     const cssEntries = collectExistingCssEntries(options)
+    const hasConfiguredCssEntries = cssEntries.length > 0
     if (cssEntries.length === 0 && !sourceOptions.css && !sourceOptions.cssSources?.length) {
       const scanRoot = scanOptions.root
       const sourceProjectRoot = sourceOptions.projectRoot
@@ -471,7 +483,7 @@ export async function resolveViteSourceScanEntries(
       }
     }
     const inlineCandidates = mergeTailwindInlineSourceCandidates(cssInlineCandidates)
-    if (entries.length > 0 || inlineCandidates || explicit) {
+    if (entries.length > 0 || inlineCandidates || (explicit && hasConfiguredCssEntries)) {
       return createResolvedViteSourceScan({
         entries: explicit ? entries : entries.length > 0 ? entries : undefined,
         explicit,
@@ -512,7 +524,7 @@ export async function resolveViteSourceScanEntries(
       }
     }
     const cssSourceInlineCandidates = mergeTailwindInlineSourceCandidates(cssInlineCandidates)
-    if (entries.length > 0 || cssSourceInlineCandidates || explicit) {
+    if (entries.length > 0 || cssSourceInlineCandidates) {
       return createResolvedViteSourceScan({
         entries: explicit ? entries : entries.length > 0 ? entries : undefined,
         explicit,

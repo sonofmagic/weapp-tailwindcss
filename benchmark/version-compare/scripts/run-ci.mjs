@@ -17,6 +17,11 @@ const projectDirs = [
   'demo/weapp-vite-tailwindcss-v4',
 ]
 
+const publishedViteConfigCompatFiles = [
+  'demo/uni-app-vite-tailwindcss-v4/vite.config.ts',
+  'demo/weapp-vite-tailwindcss-v4/vite.config.ts',
+]
+
 const dependencyFields = ['dependencies', 'devDependencies', 'peerDependencies', 'optionalDependencies']
 const publishedResolverDependencyNames = [
   '@ast-core/escape',
@@ -207,8 +212,28 @@ async function patchPublishedRoot(root, baseline, resolverDependencies) {
       patched.push(projectDir)
     }
   }
+  await patchPublishedViteConfigCompat(root)
   await patchPublishedRootOverrides(root)
   return patched
+}
+
+async function patchPublishedViteConfigCompat(root) {
+  for (const relative of publishedViteConfigCompatFiles) {
+    const file = path.join(root, relative)
+    const source = await fs.readFile(file, 'utf8')
+    const next = source
+      .replace(
+        'import { WeappTailwindcss } from \'weapp-tailwindcss/vite\'',
+        'import { UnifiedViteWeappTailwindcssPlugin as WeappTailwindcss } from \'weapp-tailwindcss/vite\'',
+      )
+      .replace(
+        'import { WeappTailwindcss } from "weapp-tailwindcss/vite"',
+        'import { UnifiedViteWeappTailwindcssPlugin as WeappTailwindcss } from "weapp-tailwindcss/vite"',
+      )
+    if (next !== source) {
+      await fs.writeFile(file, next, 'utf8')
+    }
+  }
 }
 
 async function patchPublishedRootOverrides(root) {

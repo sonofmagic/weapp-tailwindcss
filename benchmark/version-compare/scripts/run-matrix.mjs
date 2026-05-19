@@ -340,7 +340,17 @@ async function runHmrRounds({
       times.push(now() - start)
 
       await fs.writeFile(sourcePath, original, 'utf8')
-      await new Promise(resolve => setTimeout(resolve, injectType === 'wxml-class' ? 900 : 260))
+      const restored = await waitFor(async () => {
+        if (child.exitCode != null) {
+          throw new Error(`dev exited during hmr rollback round=${i + 1} code=${child.exitCode}`)
+        }
+        const text = await readText(outputPath)
+        return !text.includes(marker)
+      }, timeoutMs, pollIntervalMs)
+
+      if (!restored) {
+        throw new Error(`hmr rollback ${i + 1} timeout ${timeoutMs}ms marker=${marker}`)
+      }
     }
 
     await fs.writeFile(sourcePath, original, 'utf8')

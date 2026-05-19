@@ -188,7 +188,24 @@ describe('bundlers/vite WeappTailwindcss rewrite', () => {
     }
 
     expect(source).toContain(`@import "${pkgDir}/generator-placeholder.css";`)
+    expect(source).toContain(`/*! weapp-tailwindcss source-id:${encodeURIComponent(id)} */`)
     expect(source.startsWith('tailwind:')).toBeTruthy()
+  }, TEST_TIMEOUT_MS)
+
+  it('marks Tailwind v4 root css with the Vite css module id before rewriting imports', async () => {
+    const WeappTailwindcss = await loadUnifiedVitePlugin()
+    const currentContext = getCurrentContext()
+    currentContext.twPatcher.majorVersion = 4
+    const plugins = WeappTailwindcss()
+    const rewritePlugin = plugins?.find(plugin => plugin.name === `${vitePluginName}:rewrite-css-imports`)
+    expect(rewritePlugin).toBeTruthy()
+
+    const transform = getTransformHandler(rewritePlugin as Plugin)
+    const id = '/project/src/styles/design-system.css?direct'
+    const result = await transform?.('@import "tailwindcss";\n.button{}', id) as TransformResult
+
+    expect(result?.code).toContain(`/*! weapp-tailwindcss source-id:${encodeURIComponent('/project/src/styles/design-system.css')} */`)
+    expect(result?.code).toContain('/generator-placeholder.css')
   }, TEST_TIMEOUT_MS)
 
   it('keeps tailwindcss imports resolvable when plugin is disabled for tailwind v4 projects', async () => {

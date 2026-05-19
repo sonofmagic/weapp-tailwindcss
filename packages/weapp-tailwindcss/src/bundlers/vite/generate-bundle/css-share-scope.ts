@@ -4,7 +4,7 @@ import {
   hasTailwindSourceDirectives,
 } from '@/bundlers/shared/generator-css/directives'
 import {
-  hasTailwindGeneratedCssMarkers,
+  GENERATOR_PLACEHOLDER_MARKER_RE,
 } from '@/bundlers/shared/generator-css/markers'
 import { normalizeWeappTailwindcssGeneratorOptions } from '@/generator'
 import { normalizeOutputPathKey } from '../../shared/module-graph'
@@ -47,10 +47,10 @@ export function createCssTransformShareScopeKey(
     return `main:${normalizeOutputPathKey(file)}`
   }
   const generatorOptions = normalizeWeappTailwindcssGeneratorOptions(opts.generator)
-  if (
-    hasTailwindGeneratedCssMarkers(rawSource)
-    || hasTailwindSourceDirectives(rawSource, { importFallback: generatorOptions.importFallback })
-  ) {
+  if (hasTailwindSourceDirectives(rawSource, { importFallback: generatorOptions.importFallback })) {
+    return `source:${normalizeOutputPathKey(file)}`
+  }
+  if (GENERATOR_PLACEHOLDER_MARKER_RE.test(rawSource)) {
     return `source:${normalizeOutputPathKey(file)}`
   }
   return createCssTransformShareScope(file, rawSource)

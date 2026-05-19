@@ -26,6 +26,7 @@ export interface BundleSnapshot {
   sourceHashByFile: Map<string, string>
   runtimeAffectingSignatureByFile: Map<string, string>
   runtimeAffectingHashByFile: Map<string, string>
+  runtimeAffectingFastSourceByFile: Map<string, string>
   changedByType: Record<EntryType, Set<string>>
   runtimeAffectingChangedByType: Record<EntryType, Set<string>>
   processFiles: ProcessFileSets
@@ -37,14 +38,24 @@ export interface BundleBuildState {
   sourceHashByFile: Map<string, string>
   runtimeAffectingSignatureByFile: Map<string, string>
   runtimeAffectingHashByFile: Map<string, string>
+  runtimeAffectingFastSourceByFile: Map<string, string>
   linkedByEntry: Map<string, Set<string>>
   dependentsByLinkedFile: Map<string, Set<string>>
   generatorCandidateSignature?: string | undefined
 }
 
+export interface BuildBundleSnapshotOptions {
+  forceAll?: boolean | undefined
+  fastInitialRuntimeSignatures?: boolean | undefined
+}
+
 interface UpdateBundleBuildStateOptions {
   incremental?: boolean
 }
+
+const FAST_RUNTIME_AFFECTING_SIGNATURE_PREFIX = 'fast-source:'
+const LARGE_JS_RUNTIME_SIGNATURE_THRESHOLD = 100 * 1024
+const VENDOR_JS_FILE_RE = /(?:^|\/)(?:common\/)?(?:vendor|vendors|taro|runtime|babelHelpers)(?:[./-]|$)/
 
 export function createBundleBuildState(): BundleBuildState {
   return {
@@ -52,6 +63,7 @@ export function createBundleBuildState(): BundleBuildState {
     sourceHashByFile: new Map<string, string>(),
     runtimeAffectingSignatureByFile: new Map<string, string>(),
     runtimeAffectingHashByFile: new Map<string, string>(),
+    runtimeAffectingFastSourceByFile: new Map<string, string>(),
     linkedByEntry: new Map<string, Set<string>>(),
     dependentsByLinkedFile: new Map<string, Set<string>>(),
     generatorCandidateSignature: undefined,
@@ -119,16 +131,26 @@ function markProcessFile(
   }
 }
 
+function shouldUseSourceHashRuntimeSignature(file: string, source: string, type: EntryType) {
+  return type === 'js'
+    && source.length >= LARGE_JS_RUNTIME_SIGNATURE_THRESHOLD
+    && VENDOR_JS_FILE_RE.test(file)
+}
+
 export function buildBundleSnapshot(
   bundle: Record<string, OutputAsset | OutputChunk>,
   opts: InternalUserDefinedOptions,
   outDir: string,
   state: BundleBuildState,
-  forceAll = false,
+  options: boolean | BuildBundleSnapshotOptions = false,
 ): BundleSnapshot {
+  const forceAll = typeof options === 'boolean' ? options : options.forceAll === true
+  const fastInitialRuntimeSignatures = typeof options === 'object'
+    && options.fastInitialRuntimeSignatures === true
   const sourceHashByFile = new Map<string, string>()
   const runtimeAffectingSignatureByFile = new Map<string, string>()
   const runtimeAffectingHashByFile = new Map<string, string>()
+  const runtimeAffectingFastSourceByFile = new Map<string, string>()
   const changedByType = createChangedByType()
   const runtimeAffectingChangedByType = createChangedByType()
   const processFiles = createProcessFiles()
@@ -136,6 +158,8 @@ export function buildBundleSnapshot(
   const jsEntries = new Map<string, OutputEntry>()
   const entries: BundleStateEntry[] = []
   const firstRun = state.linkedByEntry.size === 0
+  const canUseFastInitialRuntimeSignatures = fastInitialRuntimeSignatures
+    && (forceAll || firstRun)
 
   for (const [file, output] of Object.entries(bundle)) {
     const type = classifyBundleEntry(file, opts)
@@ -150,12 +174,34 @@ export function buildBundleSnapshot(
     const canReuseRuntimeAffectingSignature = !changed
       && previousRuntimeAffectingSignature != null
       && previousRuntimeAffectingHash != null
-    const runtimeAffectingSignature = canReuseRuntimeAffectingSignature
-      ? previousRuntimeAffectingSignature
-      : createRuntimeAffectingSourceSignature(source, type)
-    const runtimeAffectingHash = canReuseRuntimeAffectingSignature
-      ? previousRuntimeAffectingHash
-      : opts.cache.computeHash(runtimeAffectingSignature)
+    let runtimeAffectingSignature: string
+    let runtimeAffectingHash: string
+    let previousComparableRuntimeAffectingHash = previousRuntimeAffectingHash
+    if (canReuseRuntimeAffectingSignature) {
+      runtimeAffectingSignature = previousRuntimeAffectingSignature
+      runtimeAffectingHash = previousRuntimeAffectingHash
+      const previousFastSource = state.runtimeAffectingFastSourceByFile.get(file)
+      if (previousFastSource != null) {
+        runtimeAffectingFastSourceByFile.set(file, previousFastSource)
+      }
+    }
+    else if (
+      (canUseFastInitialRuntimeSignatures && previousRuntimeAffectingHash == null)
+      || shouldUseSourceHashRuntimeSignature(file, source, type)
+    ) {
+      runtimeAffectingSignature = `${FAST_RUNTIME_AFFECTING_SIGNATURE_PREFIX}${hash}`
+      runtimeAffectingHash = hash
+      runtimeAffectingFastSourceByFile.set(file, source)
+    }
+    else {
+      const previousFastSource = state.runtimeAffectingFastSourceByFile.get(file)
+      runtimeAffectingSignature = createRuntimeAffectingSourceSignature(source, type)
+      runtimeAffectingHash = opts.cache.computeHash(runtimeAffectingSignature)
+      if (previousFastSource != null && previousRuntimeAffectingSignature?.startsWith(FAST_RUNTIME_AFFECTING_SIGNATURE_PREFIX)) {
+        const previousRuntimeAffectingSignature = createRuntimeAffectingSourceSignature(previousFastSource, type)
+        previousComparableRuntimeAffectingHash = opts.cache.computeHash(previousRuntimeAffectingSignature)
+      }
+    }
     runtimeAffectingSignatureByFile.set(file, runtimeAffectingSignature)
     runtimeAffectingHashByFile.set(file, runtimeAffectingHash)
 
@@ -163,7 +209,7 @@ export function buildBundleSnapshot(
       changedByType[type].add(file)
     }
     const runtimeAffectingChanged
-      = previousRuntimeAffectingHash == null || previousRuntimeAffectingHash !== runtimeAffectingHash
+      = previousComparableRuntimeAffectingHash == null || previousComparableRuntimeAffectingHash !== runtimeAffectingHash
     if (runtimeAffectingChanged) {
       runtimeAffectingChangedByType[type].add(file)
     }
@@ -212,6 +258,7 @@ export function buildBundleSnapshot(
     sourceHashByFile,
     runtimeAffectingSignatureByFile,
     runtimeAffectingHashByFile,
+    runtimeAffectingFastSourceByFile,
     changedByType,
     runtimeAffectingChangedByType,
     processFiles,
@@ -247,6 +294,7 @@ export function buildBundleSnapshotForBuild(
     sourceHashByFile: new Map<string, string>(),
     runtimeAffectingSignatureByFile: new Map<string, string>(),
     runtimeAffectingHashByFile: new Map<string, string>(),
+    runtimeAffectingFastSourceByFile: new Map<string, string>(),
     changedByType: createChangedByType(),
     runtimeAffectingChangedByType: createChangedByType(),
     processFiles,
@@ -292,6 +340,22 @@ export function updateBundleBuildState(
         ...snapshot.runtimeAffectingHashByFile,
       ])
     : snapshot.runtimeAffectingHashByFile
+  if (incremental) {
+    const nextFastSourceByFile = new Map(state.runtimeAffectingFastSourceByFile)
+    for (const entry of snapshot.entries) {
+      const fastSource = snapshot.runtimeAffectingFastSourceByFile.get(entry.file)
+      if (fastSource == null) {
+        nextFastSourceByFile.delete(entry.file)
+      }
+      else {
+        nextFastSourceByFile.set(entry.file, fastSource)
+      }
+    }
+    state.runtimeAffectingFastSourceByFile = nextFastSourceByFile
+  }
+  else {
+    state.runtimeAffectingFastSourceByFile = snapshot.runtimeAffectingFastSourceByFile
+  }
   state.linkedByEntry = incremental
     ? new Map([
         ...state.linkedByEntry,

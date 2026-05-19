@@ -2808,15 +2808,18 @@ const cls = "w-[1.5px]"
     expect(currentContext.styleHandler).toHaveBeenCalledTimes(2)
   }, TEST_TIMEOUT_MS)
 
-  it('isolates Tailwind v4 generated css share scope per output asset', async () => {
+  it('shares Tailwind v4 generated css but isolates source directives per output asset', async () => {
     const { createCssTransformShareScopeKey } = await import('@/bundlers/vite/generate-bundle/css-share-scope')
     const generatedCss = '/*! tailwindcss v4.3.0 | MIT License | https://tailwindcss.com */\n.bg-\\[red\\]{color:red}'
+    const sourceCss = '@import "tailwindcss";\n@source "../src/**/*.{vue,ts}";'
     const opts = createContext({
       mainCssChunkMatcher: vi.fn(() => false),
     }) as any
 
-    expect(createCssTransformShareScopeKey(opts, 'pages/a.wxss', generatedCss)).toBe('source:pages/a.wxss')
-    expect(createCssTransformShareScopeKey(opts, 'pages/b.wxss', generatedCss)).toBe('source:pages/b.wxss')
+    expect(createCssTransformShareScopeKey(opts, 'pages/a.wxss', generatedCss)).toBe('global')
+    expect(createCssTransformShareScopeKey(opts, 'pages/b.wxss', generatedCss)).toBe('global')
+    expect(createCssTransformShareScopeKey(opts, 'pages/a.wxss', sourceCss)).toBe('source:pages/a.wxss')
+    expect(createCssTransformShareScopeKey(opts, 'pages/b.wxss', sourceCss)).toBe('source:pages/b.wxss')
     expect(createCssTransformShareScopeKey(opts, 'pages/a.wxss', '.card{color:red}')).toBe('global')
     expect(createCssTransformShareScopeKey(opts, 'pages/b.wxss', '.card{color:red}')).toBe('global')
   })

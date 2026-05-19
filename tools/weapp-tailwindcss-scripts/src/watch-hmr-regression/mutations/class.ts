@@ -37,8 +37,8 @@ import {
   waitForClassOutputBaseline,
   waitForCompileSettled,
   waitForMarkerState,
-  waitForOutputFilesUpdated,
-  waitForOutputsUpdated,
+  waitForOutputFilesUpdatedResult,
+  waitForOutputsUpdatedResult,
 } from './shared'
 import {
   ISSUE33_MODIFY_CLASS_TOKENS,
@@ -64,6 +64,7 @@ interface RoundOutputs {
 interface RoundOutputAssertion {
   outputs: RoundOutputs
   matchedEscapedClasses: string[]
+  effectiveMs: number
 }
 
 export async function waitForClassMutationBaselineOutputs(
@@ -299,10 +300,7 @@ async function resolveRoundOutputs(
   runAssert: (outputs: RoundOutputs) => string[],
 ): Promise<{ effectiveMs: number, outputs: RoundOutputs, matchedEscapedClasses: string[] }> {
   if (assertedOutputs) {
-    return {
-      effectiveMs: Date.now() - startedAt,
-      ...assertedOutputs,
-    }
+    return assertedOutputs
   }
 
   return waitForRoundOutputs(
@@ -522,8 +520,8 @@ export async function runClassMutation(
         `[watch-hmr] ${watchCase.label} mutation=${mutationKind} round=${roundConfig.name} phase=add dirty=${formatPath(sourcePath)} tokens=${classTokens.join(' | ')}\n`,
       )
       await writeFilePreserveEol(sourcePath, mutatedSource, sourceOriginal)
-      const hotUpdateOutputMs = isContentMutation
-        ? await waitForOutputFilesUpdated(
+      const hotUpdateResult = isContentMutation
+        ? await waitForOutputFilesUpdatedResult(
             watchCase,
             mutationOutputFiles,
             baselineOutputMtimes,
@@ -545,11 +543,15 @@ export async function runClassMutation(
                 escapedClasses,
                 outputs,
               )
-              assertedAddOutputs = { outputs, matchedEscapedClasses }
+              assertedAddOutputs = {
+                outputs,
+                matchedEscapedClasses,
+                effectiveMs: Date.now() - hotUpdateStartedAt,
+              }
               return true
             },
           )
-        : await waitForOutputsUpdated(
+        : await waitForOutputsUpdatedResult(
             watchCase,
             baselineMtime,
             options,
@@ -570,20 +572,15 @@ export async function runClassMutation(
                 escapedClasses,
                 outputs,
               )
-              assertedAddOutputs = { outputs, matchedEscapedClasses }
+              assertedAddOutputs = {
+                outputs,
+                matchedEscapedClasses,
+                effectiveMs: Date.now() - hotUpdateStartedAt,
+              }
               return true
             },
           )
-      const hotUpdateEffectiveMs = isContentMutation
-        ? hotUpdateOutputMs
-        : await waitForMarkerState(
-            watchCase,
-            marker,
-            'present',
-            options,
-            session,
-            hotUpdateStartedAt,
-          )
+      const hotUpdateOutputMs = hotUpdateResult.outputMs
 
       const addResult = await resolveRoundOutputs(
         assertedAddOutputs,
@@ -635,15 +632,25 @@ export async function runClassMutation(
       }
 
       effectiveHotUpdateOutputMs = hotUpdateOutputMs
-      effectiveHotUpdateEffectiveMs = isContentMutation
-        ? hotUpdateOutputMs
-        : Math.max(hotUpdateEffectiveMs, assertedAddOutputs ? hotUpdateOutputMs : addResult.effectiveMs)
-      if (!isContentMutation) {
-        await waitForCompileSettled(watchCase, options, session, hotUpdateStartedAt)
-      }
-      const pluginMetrics = collectPluginProcessMetrics(session, hotUpdateStartedAt)
+      effectiveHotUpdateEffectiveMs = addResult.effectiveMs
+      const pluginMetrics = collectPluginProcessMetrics(
+        session,
+        hotUpdateStartedAt,
+        hotUpdateStartedAt + effectiveHotUpdateEffectiveMs,
+      )
       effectiveHotUpdatePluginProcessMs = pluginMetrics.totalMs
       effectiveHotUpdatePluginProcessSamples = pluginMetrics.samples
+      if (!isContentMutation) {
+        await waitForMarkerState(
+          watchCase,
+          marker,
+          'present',
+          options,
+          session,
+          hotUpdateStartedAt,
+        )
+        await waitForCompileSettled(watchCase, options, session, hotUpdateStartedAt)
+      }
     }
     catch (error) {
       if (issue33Round) {
@@ -705,8 +712,8 @@ export async function runClassMutation(
           `[watch-hmr] ${watchCase.label} mutation=${mutationKind} round=${roundConfig.name} phase=modify dirty=${formatPath(sourcePath)} tokens=${modifyClassTokens.join(' | ')}\n`,
         )
         await writeFilePreserveEol(sourcePath, sourceForModify, sourceOriginal)
-        const modifyOutputMs = isContentMutation
-          ? await waitForOutputFilesUpdated(
+        const modifyResultWait = isContentMutation
+          ? await waitForOutputFilesUpdatedResult(
               watchCase,
               mutationOutputFiles,
               baselineOutputMtimesBeforeModify,
@@ -728,11 +735,15 @@ export async function runClassMutation(
                   modifyEscapedClasses,
                   outputs,
                 )
-                assertedModifyOutputs = { outputs, matchedEscapedClasses }
+                assertedModifyOutputs = {
+                  outputs,
+                  matchedEscapedClasses,
+                  effectiveMs: Date.now() - modifyStartedAt,
+                }
                 return true
               },
             )
-          : await waitForOutputsUpdated(
+          : await waitForOutputsUpdatedResult(
               watchCase,
               baselineBeforeModify,
               options,
@@ -753,20 +764,15 @@ export async function runClassMutation(
                   modifyEscapedClasses,
                   outputs,
                 )
-                assertedModifyOutputs = { outputs, matchedEscapedClasses }
+                assertedModifyOutputs = {
+                  outputs,
+                  matchedEscapedClasses,
+                  effectiveMs: Date.now() - modifyStartedAt,
+                }
                 return true
               },
             )
-        const modifyEffectiveMs = isContentMutation
-          ? modifyOutputMs
-          : await waitForMarkerState(
-              watchCase,
-              modifyMarker,
-              'present',
-              options,
-              session,
-              modifyStartedAt,
-            )
+        const modifyOutputMs = modifyResultWait.outputMs
 
         const modifyResult = await resolveRoundOutputs(
           assertedModifyOutputs,
@@ -822,15 +828,25 @@ export async function runClassMutation(
         effectiveClassTokens = modifyClassTokens
         effectiveEscapedClasses = modifyEscapedClasses
         effectiveHotUpdateOutputMs = modifyOutputMs
-        effectiveHotUpdateEffectiveMs = isContentMutation
-          ? modifyOutputMs
-          : Math.max(modifyEffectiveMs, assertedModifyOutputs ? modifyOutputMs : modifyResult.effectiveMs)
-        if (!isContentMutation) {
-          await waitForCompileSettled(watchCase, options, session, modifyStartedAt)
-        }
-        const pluginMetrics = collectPluginProcessMetrics(session, modifyStartedAt)
+        effectiveHotUpdateEffectiveMs = modifyResult.effectiveMs
+        const pluginMetrics = collectPluginProcessMetrics(
+          session,
+          modifyStartedAt,
+          modifyStartedAt + effectiveHotUpdateEffectiveMs,
+        )
         effectiveHotUpdatePluginProcessMs = pluginMetrics.totalMs
         effectiveHotUpdatePluginProcessSamples = pluginMetrics.samples
+        if (!isContentMutation) {
+          await waitForMarkerState(
+            watchCase,
+            modifyMarker,
+            'present',
+            options,
+            session,
+            modifyStartedAt,
+          )
+          await waitForCompileSettled(watchCase, options, session, modifyStartedAt)
+        }
       }
       catch (error) {
         if (issue33Round) {
@@ -876,8 +892,8 @@ export async function runClassMutation(
         `[watch-hmr] ${watchCase.label} mutation=${mutationKind} round=${roundConfig.name} phase=delete dirty=${formatPath(sourcePath)}\n`,
       )
       await writeFilePreserveEol(sourcePath, sourceOriginal, sourceOriginal)
-      rollbackOutputMs = isContentMutation
-        ? await waitForOutputFilesUpdated(
+      const rollbackResult = isContentMutation
+        ? await waitForOutputFilesUpdatedResult(
             watchCase,
             mutationOutputFiles,
             updatedOutputMtimes,
@@ -892,7 +908,7 @@ export async function runClassMutation(
               return effectiveEscapedClasses.every(escaped => !outputs.js.includes(escaped))
             },
           )
-        : await waitForOutputsUpdated(
+        : await waitForOutputsUpdatedResult(
             watchCase,
             updatedMtime,
             options,
@@ -908,16 +924,8 @@ export async function runClassMutation(
                 && !outputs.globalStyle.includes(effectiveMarker)
             },
           )
-      rollbackEffectiveMs = isContentMutation
-        ? rollbackOutputMs
-        : await waitForMarkerState(
-            watchCase,
-            effectiveMarker,
-            'absent',
-            options,
-            session,
-            rollbackStartedAt,
-          )
+      rollbackOutputMs = rollbackResult.outputMs
+      rollbackEffectiveMs = rollbackResult.semanticMs ?? rollbackOutputMs
 
       if (issue33Round) {
         const outputs = await loadRoundOutputsSafe(watchCase, globalStyleOutputs)
@@ -932,12 +940,24 @@ export async function runClassMutation(
           sourcePath,
         )
       }
-      if (!isContentMutation) {
-        await waitForCompileSettled(watchCase, options, session, rollbackStartedAt)
-      }
-      const pluginMetrics = collectPluginProcessMetrics(session, rollbackStartedAt)
+      const pluginMetrics = collectPluginProcessMetrics(
+        session,
+        rollbackStartedAt,
+        rollbackStartedAt + rollbackEffectiveMs,
+      )
       rollbackPluginProcessMs = pluginMetrics.totalMs
       rollbackPluginProcessSamples = pluginMetrics.samples
+      if (!isContentMutation) {
+        await waitForMarkerState(
+          watchCase,
+          effectiveMarker,
+          'absent',
+          options,
+          session,
+          rollbackStartedAt,
+        )
+        await waitForCompileSettled(watchCase, options, session, rollbackStartedAt)
+      }
     }
     catch (error) {
       if (issue33Round) {

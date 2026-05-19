@@ -1,5 +1,5 @@
 import { spawn } from 'node:child_process'
-import { readdir, readFile, stat } from 'node:fs/promises'
+import { readdir, stat } from 'node:fs/promises'
 import path from 'node:path'
 import process from 'node:process'
 
@@ -9,28 +9,8 @@ const pnpmExecPath = process.env.npm_execpath
 const sourceDirs = ['src']
 const ignoredDirs = new Set(['dist', 'node_modules', '.git'])
 const taroBuildGuardPath = path.resolve(import.meta.dirname, './taro-build-guard.mjs')
-const forceNativeWatch = process.env.TARO_E2E_WATCH_NATIVE === '1'
 const forcePollingWatch = process.env.TARO_E2E_WATCH_NATIVE === '0'
 const rebuildDebounceMs = Number(process.env.TARO_E2E_REBUILD_DEBOUNCE_MS ?? 600)
-
-async function isTaroViteProject() {
-  try {
-    const packageJson = JSON.parse(await readFile(path.resolve(process.cwd(), 'package.json'), 'utf8'))
-    if (packageJson.devDependencies?.['@tarojs/vite-runner'] || packageJson.dependencies?.['@tarojs/vite-runner']) {
-      return true
-    }
-  }
-  catch {
-  }
-
-  try {
-    const config = await readFile(path.resolve(process.cwd(), 'config/index.ts'), 'utf8')
-    return /compiler\s*:\s*\{[\s\S]*?type\s*:\s*['"]vite['"]/.test(config)
-  }
-  catch {
-    return false
-  }
-}
 
 function createPnpmCommand(args) {
   if (pnpmExecPath) {
@@ -167,12 +147,8 @@ function hasSnapshotChanged(previous, next) {
 }
 
 async function main() {
-  const taroViteProject = await isTaroViteProject()
-  // 旧版 Taro Vite 在部分非交互式环境中会启动 watch，但不会稳定响应后续源码变更。
-  // e2e 场景保留首轮原生 watch 构建，再用脚本内轮询发现变更并重启 watch。
-  const restartNativeWatchOnChange = !forceNativeWatch && !forcePollingWatch && taroViteProject
   const skipNativeWatch = forcePollingWatch
-  process.stdout.write(`[taro-e2e-watch] mode=${restartNativeWatchOnChange ? 'vite-polling-restart' : skipNativeWatch ? 'polling-build' : 'native-watch'} cwd=${process.cwd()}\n`)
+  process.stdout.write(`[taro-e2e-watch] mode=${skipNativeWatch ? 'polling-build' : 'native-watch'} cwd=${process.cwd()}\n`)
   let resolveReady
   const ready = skipNativeWatch
     ? runBuild()
@@ -180,16 +156,11 @@ async function main() {
         resolveReady = resolve
       })
   let watch
-  let restartingNativeWatch = false
-  let restartQueued = false
   let stopping = false
   let building = false
   let queued = false
   let pollTimer
   let rebuildTimer
-  let requestNativeRestart = () => {
-    restartQueued = true
-  }
   const startNativeWatch = () => {
     const child = spawn(process.execPath, [taroBuildGuardPath, '--watch'], {
       cwd: process.cwd(),
@@ -203,15 +174,6 @@ async function main() {
     })
 
     child.on('close', (code, signal) => {
-      if (restartingNativeWatch) {
-        restartingNativeWatch = false
-        watch = startNativeWatch()
-        if (restartQueued) {
-          restartQueued = false
-          requestNativeRestart()
-        }
-        return
-      }
       if (!stopping && code !== 0) {
         process.exitCode = code ?? 1
       }
@@ -245,39 +207,7 @@ async function main() {
   process.on('SIGTERM', () => stop('SIGTERM'))
 
   await ready
-  if (!stopping && restartNativeWatchOnChange) {
-    process.stdout.write('[taro-e2e-watch] Taro Vite detected, enabling polling restart fallback.\n')
-    requestNativeRestart = () => {
-      if (rebuildTimer) {
-        clearTimeout(rebuildTimer)
-      }
-      rebuildTimer = setTimeout(() => {
-        rebuildTimer = undefined
-        if (stopping) {
-          return
-        }
-        if (restartingNativeWatch) {
-          restartQueued = true
-          return
-        }
-        restartingNativeWatch = true
-        watch?.kill('SIGTERM')
-      }, Number.isFinite(rebuildDebounceMs) ? rebuildDebounceMs : 600)
-    }
-    pollTimer = setInterval(() => {
-      void collectSnapshot().then((nextSnapshot) => {
-        if (hasSnapshotChanged(lastSnapshot, nextSnapshot)) {
-          lastSnapshot = nextSnapshot
-          requestNativeRestart()
-        }
-      }).catch((error) => {
-        process.stderr.write(`${error.stack ?? error.message}\n`)
-        process.exitCode = 1
-        stop()
-      })
-    }, 250)
-  }
-  else if (!stopping && skipNativeWatch) {
+  if (!stopping && skipNativeWatch) {
     const rebuild = async () => {
       if (stopping) {
         return

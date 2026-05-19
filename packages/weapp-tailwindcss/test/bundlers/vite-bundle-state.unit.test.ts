@@ -60,6 +60,81 @@ describe('bundlers/vite bundle state', () => {
     expect(secondSnapshot.runtimeAffectingChangedByType.js.has('assets/index.js')).toBe(false)
   })
 
+  it('keeps formatting-only filtering after a fast initial runtime snapshot', () => {
+    const opts = createOptions()
+    const state = createBundleBuildState()
+    const outDir = '/project/dist'
+    const jsFile = 'assets/index.js'
+    const htmlFile = 'pages/index/index.wxml'
+    const cssFile = 'assets/index.css'
+
+    const firstSnapshot = buildBundleSnapshot({
+      [htmlFile]: {
+        ...createRollupAsset('<view class="foo">hello</view>'),
+        fileName: htmlFile,
+      },
+      [jsFile]: {
+        ...createRollupChunk('const cls = "foo"\nexport { cls }\n'),
+        fileName: jsFile,
+      },
+      [cssFile]: {
+        ...createRollupAsset('.card { color: red; }\n.page { padding: 8px; }'),
+        fileName: cssFile,
+      },
+    }, opts, outDir, state, {
+      forceAll: true,
+      fastInitialRuntimeSignatures: true,
+    })
+
+    expect(firstSnapshot.runtimeAffectingFastSourceByFile.get(jsFile)).toBe('const cls = "foo"\nexport { cls }\n')
+    expect(firstSnapshot.runtimeAffectingSignatureByFile.get(jsFile)).toBe(`fast-source:${opts.cache.computeHash('const cls = "foo"\nexport { cls }\n')}`)
+
+    updateBundleBuildState(state, firstSnapshot, new Map([
+      [jsFile, new Set<string>()],
+    ]))
+
+    const secondSnapshot = buildBundleSnapshot({
+      [htmlFile]: {
+        ...createRollupAsset('<view   class="foo">\n  hello\n</view>'),
+        fileName: htmlFile,
+      },
+      [jsFile]: {
+        ...createRollupChunk('const cls = "foo";\n\nexport { cls }\n'),
+        fileName: jsFile,
+      },
+      [cssFile]: {
+        ...createRollupAsset('.card{color:red}/* note */\n.page{padding:8px}'),
+        fileName: cssFile,
+      },
+    }, opts, outDir, state)
+
+    expect(secondSnapshot.changedByType.html.has(htmlFile)).toBe(true)
+    expect(secondSnapshot.changedByType.js.has(jsFile)).toBe(true)
+    expect(secondSnapshot.changedByType.css.has(cssFile)).toBe(true)
+    expect(secondSnapshot.runtimeAffectingChangedByType.html.has(htmlFile)).toBe(false)
+    expect(secondSnapshot.runtimeAffectingChangedByType.js.has(jsFile)).toBe(false)
+    expect(secondSnapshot.runtimeAffectingChangedByType.css.has(cssFile)).toBe(false)
+    expect(secondSnapshot.runtimeAffectingFastSourceByFile.has(jsFile)).toBe(false)
+  })
+
+  it('uses source-hash runtime signatures for large vendor js chunks', () => {
+    const opts = createOptions()
+    const state = createBundleBuildState()
+    const outDir = '/project/dist'
+    const file = 'taro.js'
+    const source = `const runtime = "foo";\n${'/* framework runtime */\n'.repeat(5200)}`
+
+    const snapshot = buildBundleSnapshot({
+      [file]: {
+        ...createRollupChunk(source),
+        fileName: file,
+      },
+    }, opts, outDir, state)
+
+    expect(snapshot.runtimeAffectingSignatureByFile.get(file)).toBe(`fast-source:${opts.cache.computeHash(source)}`)
+    expect(snapshot.runtimeAffectingFastSourceByFile.get(file)).toBe(source)
+  })
+
   it('does not mark formatting-only css changes as runtime-affecting', () => {
     const opts = createOptions()
     const state = createBundleBuildState()

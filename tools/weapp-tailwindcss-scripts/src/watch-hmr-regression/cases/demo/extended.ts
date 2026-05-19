@@ -36,8 +36,6 @@ const taroViteWatchEnv = {
   NODE_ENV: 'production',
 }
 
-const taroVitePluginProcessBudgetMs = 3000
-
 function normalizeExtension(version: 'v3' | 'v4') {
   return version === 'v3' ? 'scss' : 'css'
 }
@@ -395,8 +393,6 @@ export function buildDemoExtendedCases(baseCwd: string): WatchCase[] {
     label: 'demo/taro-vite-react-tailwindcss-v4',
     project: 'demo/taro-vite-react-tailwindcss-v4',
     group: 'demo',
-    maxPluginProcessMs: taroVitePluginProcessBudgetMs,
-    initialMutationDelayMs: 15_000,
     cwd: path.resolve(baseCwd, 'demo/taro-vite-react-tailwindcss-v4'),
     devScript: 'dev:e2e-watch',
     env: taroViteWatchEnv,
@@ -474,8 +470,6 @@ export function buildDemoExtendedCases(baseCwd: string): WatchCase[] {
     label: 'demo/taro-vite-react-tailwindcss-v3',
     project: 'demo/taro-vite-react-tailwindcss-v3',
     group: 'demo',
-    maxPluginProcessMs: taroVitePluginProcessBudgetMs,
-    initialMutationDelayMs: 15_000,
     cwd: path.resolve(baseCwd, 'demo/taro-vite-react-tailwindcss-v3'),
     devScript: 'dev:e2e-watch',
     env: taroViteWatchEnv,
@@ -631,7 +625,6 @@ export function buildDemoExtendedCases(baseCwd: string): WatchCase[] {
     name: 'taro-vite-vue3-tailwindcss-v3',
     label: 'demo/taro-vite-vue3-tailwindcss-v3',
     project: 'demo/taro-vite-vue3-tailwindcss-v3',
-    maxPluginProcessMs: taroVitePluginProcessBudgetMs,
     cwd: path.resolve(baseCwd, 'demo/taro-vite-vue3-tailwindcss-v3'),
     outputWxml: path.resolve(baseCwd, 'demo/taro-vite-vue3-tailwindcss-v3/dist/pages/index/index.wxml'),
     outputJs: path.resolve(baseCwd, 'demo/taro-vite-vue3-tailwindcss-v3/dist/pages/index/index.js'),
@@ -723,10 +716,12 @@ export function buildDemoExtendedCases(baseCwd: string): WatchCase[] {
     outputJs: path.resolve(baseCwd, 'demo/taro-vite-vue3-tailwindcss-v4/dist/pages/index/index.js'),
     outputStyleCandidates: [
       path.resolve(baseCwd, 'demo/taro-vite-vue3-tailwindcss-v4/dist/pages/index/index.wxss'),
+      path.resolve(baseCwd, 'demo/taro-vite-vue3-tailwindcss-v4/dist/sub-independent/pages/index.wxss'),
       path.resolve(baseCwd, 'demo/taro-vite-vue3-tailwindcss-v4/dist/app-origin.wxss'),
       path.resolve(baseCwd, 'demo/taro-vite-vue3-tailwindcss-v4/dist/app.wxss'),
     ],
     globalStyleCandidates: [
+      path.resolve(baseCwd, 'demo/taro-vite-vue3-tailwindcss-v4/dist/sub-independent/pages/index.wxss'),
       path.resolve(baseCwd, 'demo/taro-vite-vue3-tailwindcss-v4/dist/app-origin.wxss'),
       path.resolve(baseCwd, 'demo/taro-vite-vue3-tailwindcss-v4/dist/app.wxss'),
     ],

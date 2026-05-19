@@ -32,6 +32,21 @@ describe('bundlers/vite runtime-affecting signature', () => {
     expect(second).toContain('c: text-[#654321] ')
   })
 
+  it('keeps Taro createStaticVNode html string class changes in runtime-affecting signature', () => {
+    const first = createRuntimeAffectingSourceSignature(
+      '"use strict";e.createStaticVNode(\'<view class="bg-_b_h000054_B text-_b23_B">x</view>\',2)',
+      'js',
+    )
+    const second = createRuntimeAffectingSourceSignature(
+      '"use strict";e.createStaticVNode(\'<view class="bg-_b_h000077_B text-_b23_B">x</view>\',2)',
+      'js',
+    )
+
+    expect(first).not.toBe(second)
+    expect(first).toContain('bg-_b_h000054_B')
+    expect(second).toContain('bg-_b_h000077_B')
+  })
+
   it('ignores formatting-only html/js noise in runtime-affecting signature', () => {
     const htmlA = createRuntimeAffectingSourceSignature('<view class="card">hello</view>', 'html')
     const htmlB = createRuntimeAffectingSourceSignature('<view   class="card">\n  hello\n</view>', 'html')

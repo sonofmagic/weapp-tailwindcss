@@ -117,6 +117,7 @@ export function createPlugins(options: UserDefinedOptions = {}) {
       sourceHashByFile: new Map(),
       runtimeAffectingSignatureByFile: new Map(),
       runtimeAffectingHashByFile: new Map(),
+      runtimeAffectingFastSourceByFile: new Map(),
       changedByType: {
         html: new Set<string>(),
         js: new Set<string>(),

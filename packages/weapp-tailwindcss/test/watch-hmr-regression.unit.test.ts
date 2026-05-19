@@ -50,9 +50,11 @@ import {
   readJoinedOutputFiles,
   waitForCompileSettled,
   waitForInitialWarmup,
+  waitForGlobalStyleEscapedClasses,
   waitForOutputsReady,
   waitForOutputsUpdated,
   waitForOutputFilesUpdated,
+  waitForOutputFilesUpdatedResult,
 } from '../../../tools/weapp-tailwindcss-scripts/src/watch-hmr-regression/mutations/shared'
 import {
   ISSUE33_ADD_CLASS_TOKENS,
@@ -371,6 +373,45 @@ describe('watch-hmr regression text helpers', () => {
     expect(attempts).toBeGreaterThanOrEqual(2)
   })
 
+  it('keeps semantic update timing separate from early output mtime changes', async () => {
+    const tempDir = await mkdtemp(path.join(os.tmpdir(), 'weapp-tw-watch-output-semantic-time-'))
+    tempDirs.push(tempDir)
+    const outputFile = path.join(tempDir, 'app.wxss')
+    await writeFilePreserveEol(outputFile, '.base{}', '.base{}')
+    const baselineMtime = await getMtime(outputFile)
+    const startedAt = Date.now()
+
+    setTimeout(() => {
+      void writeFilePreserveEol(outputFile, '.base{}\n/* touched */', '.base{}')
+    }, 5)
+    setTimeout(() => {
+      void writeFilePreserveEol(outputFile, '.base{}\n.text-_b_h123456_B{}', '.base{}')
+    }, 35)
+
+    const result = await waitForOutputFilesUpdatedResult(
+      {
+        label: 'demo/taro-vite-vue3-tailwindcss-v4',
+      } as any,
+      [outputFile],
+      new Map([[outputFile, baselineMtime]]),
+      {
+        timeoutMs: 1_000,
+        pollMs: 5,
+      } as CliOptions,
+      {
+        ensureRunning() {},
+      } as any,
+      startedAt,
+      async () => {
+        const content = await readFileIfExists(outputFile)
+        return content?.includes('text-_b_h123456_B') === true
+      },
+    )
+
+    expect(result.outputMs).toBeGreaterThanOrEqual(30)
+    expect(result.semanticMs).toBeGreaterThanOrEqual(30)
+  })
+
   it('allows primary output update waits to pass via semantic fallback when mtimes stay unchanged', async () => {
     const tempDir = await mkdtemp(path.join(os.tmpdir(), 'weapp-tw-watch-primary-output-update-'))
     tempDirs.push(tempDir)
@@ -407,6 +448,35 @@ describe('watch-hmr regression text helpers', () => {
 
     expect(elapsed).toBeGreaterThanOrEqual(0)
     expect(attempts).toBeGreaterThanOrEqual(2)
+  })
+
+  it('waits for global style escaped classes that arrive after marker output', async () => {
+    const tempDir = await mkdtemp(path.join(os.tmpdir(), 'weapp-tw-watch-global-style-'))
+    tempDirs.push(tempDir)
+    const globalStyleFile = path.join(tempDir, 'app.wxss')
+    await writeFilePreserveEol(globalStyleFile, '.base{}', '.base{}')
+    setTimeout(() => {
+      void writeFilePreserveEol(globalStyleFile, '.base{}\n.text-_b_h123456_B{}', '.base{}')
+    }, 5)
+
+    const verified = await waitForGlobalStyleEscapedClasses(
+      {
+        label: 'demo/weapp-vite-tailwindcss-v3',
+      } as any,
+      [globalStyleFile],
+      ['text-_b_h123456_B'],
+      1,
+      {
+        timeoutMs: 200,
+        pollMs: 1,
+      } as CliOptions,
+      {
+        ensureRunning() {},
+      } as any,
+      Date.now(),
+    )
+
+    expect(verified).toEqual(['text-_b_h123456_B'])
   })
 
   it('allows output file update waits to pass via semantic fallback when optional exact files are missing', async () => {
@@ -908,9 +978,20 @@ describe('watch-hmr regression summary helpers', () => {
     expect(metrics.samples).toHaveLength(2)
   })
 
-  it('lets Taro Vite cases override the plugin processing budget for restart fallback runs', () => {
+  it('excludes later rebuild samples from the current plugin processing window', () => {
+    const metrics = collectPluginProcessMetrics({
+      pluginProcessSamplesSince: () => [
+        { ...pluginProcessSample, at: 10, phase: 'total', durationMs: 14, metric: 'total' },
+        { ...pluginProcessSample, at: 80, phase: 'total', durationMs: 552, metric: 'total' },
+      ],
+    } as never, 1, 50)
+
+    expect(metrics.totalMs).toBe(14)
+    expect(metrics.samples).toHaveLength(1)
+  })
+
+  it('keeps Taro Vite cases on the shared plugin processing budget', () => {
     const metrics = createCase('taro-vite-react-tailwindcss-v4', 'demo', 30, 40)
-    metrics.maxPluginProcessMs = 3000
     const templateMetric = metrics.mutationMetrics.find(
       mutation => mutation.mutationKind === 'template',
     )
@@ -926,7 +1007,7 @@ describe('watch-hmr regression summary helpers', () => {
       skipBuild: true,
       quietSass: true,
       maxPluginProcessMs: 500,
-    })).not.toThrow()
+    })).toThrow('template:complex-corpus:hot-update weapp-tailwindcss processing exceeded budget: 1500ms > 500ms')
   })
 })
 
@@ -1142,7 +1223,7 @@ describe('watch-hmr regression cases', () => {
     }
   })
 
-  it('keeps Taro Vite watch cases on restart fallback compatible budgets', () => {
+  it('keeps Taro Vite watch cases on native-watch compatible budgets', () => {
     const cases = buildDemoExtendedCases('/repo').filter(watchCase => watchCase.name.startsWith('taro-vite-'))
 
     expect(cases.map(watchCase => watchCase.name).sort()).toEqual([
@@ -1154,9 +1235,16 @@ describe('watch-hmr regression cases', () => {
 
     for (const watchCase of cases) {
       expect(watchCase.env).not.toHaveProperty('TARO_E2E_WATCH_NATIVE')
-      expect(watchCase.maxPluginProcessMs).toBe(3000)
-      expect(watchCase.initialMutationDelayMs).toBe(15_000)
+      expect(watchCase.maxPluginProcessMs).toBeUndefined()
+      expect(watchCase.initialMutationDelayMs).toBeUndefined()
     }
+  })
+
+  it('tracks Taro Vite Vue3 v4 page classes in the generated aggregate style asset', () => {
+    const watchCase = buildDemoExtendedCases('/repo').find(item => item.name === 'taro-vite-vue3-tailwindcss-v4')
+
+    expect(watchCase?.globalStyleCandidates).toContain('/repo/demo/taro-vite-vue3-tailwindcss-v4/dist/sub-independent/pages/index.wxss')
+    expect(watchCase?.outputStyleCandidates).toContain('/repo/demo/taro-vite-vue3-tailwindcss-v4/dist/sub-independent/pages/index.wxss')
   })
 
   it('covers literal refresh content mutations for every demo case', () => {

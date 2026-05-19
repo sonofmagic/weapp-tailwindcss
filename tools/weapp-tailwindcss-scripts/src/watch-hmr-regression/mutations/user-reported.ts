@@ -22,7 +22,7 @@ import {
   readJoinedOutputFiles,
   waitForClassOutputBaseline,
   waitForCompileSettled,
-  waitForOutputFilesUpdated,
+  waitForOutputFilesUpdatedResult,
 } from './shared'
 
 interface UserReportedOutputs {
@@ -164,7 +164,7 @@ export async function runUserReportedHotUpdate(
     `[watch-hmr] ${watchCase.label} user-reported=${config.label} phase=hot-update dirty=${formatPath(sourcePath)} tokens=${classTokens.join(' | ')}\n`,
   )
   await writeFilePreserveEol(sourcePath, sourceForHotUpdate, sourceOriginal)
-  const hotUpdateOutputMs = await waitForOutputFilesUpdated(
+  const hotUpdateResult = await waitForOutputFilesUpdatedResult(
     watchCase,
     outputFiles,
     baselineOutputMtimes,
@@ -184,9 +184,14 @@ export async function runUserReportedHotUpdate(
       return true
     },
   )
-  const hotUpdateEffectiveMs = hotUpdateOutputMs
+  const hotUpdateOutputMs = hotUpdateResult.outputMs
+  const hotUpdateEffectiveMs = hotUpdateResult.semanticMs ?? hotUpdateOutputMs
+  const hotUpdatePluginMetrics = collectPluginProcessMetrics(
+    session,
+    hotUpdateStartedAt,
+    hotUpdateStartedAt + hotUpdateEffectiveMs,
+  )
   await waitForCompileSettled(watchCase, options, session, hotUpdateStartedAt)
-  const hotUpdatePluginMetrics = collectPluginProcessMetrics(session, hotUpdateStartedAt)
 
   const updatedOutputMtimes = await collectOutputMtimes(outputFiles)
   const rollbackStartedAt = Date.now()
@@ -194,7 +199,7 @@ export async function runUserReportedHotUpdate(
     `[watch-hmr] ${watchCase.label} user-reported=${config.label} phase=rollback dirty=${formatPath(sourcePath)} tokens=${rollbackClassTokens.join(' | ')}\n`,
   )
   await writeFilePreserveEol(sourcePath, sourceOriginal, sourceOriginal)
-  const rollbackOutputMs = await waitForOutputFilesUpdated(
+  const rollbackResult = await waitForOutputFilesUpdatedResult(
     watchCase,
     outputFiles,
     updatedOutputMtimes,
@@ -222,9 +227,14 @@ export async function runUserReportedHotUpdate(
       return true
     },
   )
-  const rollbackEffectiveMs = rollbackOutputMs
+  const rollbackOutputMs = rollbackResult.outputMs
+  const rollbackEffectiveMs = rollbackResult.semanticMs ?? rollbackOutputMs
+  const rollbackPluginMetrics = collectPluginProcessMetrics(
+    session,
+    rollbackStartedAt,
+    rollbackStartedAt + rollbackEffectiveMs,
+  )
   await waitForCompileSettled(watchCase, options, session, rollbackStartedAt)
-  const rollbackPluginMetrics = collectPluginProcessMetrics(session, rollbackStartedAt)
 
   const minRequiredGlobalStyleEscapedClasses = config.minRequiredGlobalStyleEscapedClasses ?? 1
   return {

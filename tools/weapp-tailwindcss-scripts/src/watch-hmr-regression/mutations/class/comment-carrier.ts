@@ -12,8 +12,8 @@ import { getMtime, writeFilePreserveEol } from '../../text'
 import {
   collectPluginProcessMetrics,
   createClassMutationScenario,
-  readJoinedOutputFiles,
   waitForClassOutputBaseline,
+  waitForGlobalStyleEscapedClasses,
   waitForMarkerState,
   waitForOutputsUpdated,
 } from '../shared'
@@ -103,15 +103,20 @@ export async function runCommentCarrierMutation(
   )
   const hotUpdatePluginMetrics = collectPluginProcessMetrics(session, hotUpdateStartedAt)
 
-  const updatedGlobalStyle = await readJoinedOutputFiles(globalStyleOutputs)
-  const verifiedEscapedClasses = scenario.escapedClasses.filter(escaped =>
-    updatedGlobalStyle.includes(escaped),
-  )
-  if (verifiedEscapedClasses.length < minRequiredGlobalStyleEscapedClasses) {
-    throw new Error(
-      `[${watchCase.label}] script comment-carrier mutation lost transformed global style classes: required=${minRequiredGlobalStyleEscapedClasses}, actual=${verifiedEscapedClasses.length}, source=${formatPath(sourcePath)}`,
-    )
-  }
+  // comment-carrier 只修改注释和 marker，类名字符串不变；默认只覆盖 JS HMR 生效。
+  const minRequiredEscapedClasses = mutation.minRequiredGlobalStyleEscapedClasses ?? 0
+  const verifiedEscapedClasses = minRequiredEscapedClasses > 0
+    ? await waitForGlobalStyleEscapedClasses(
+        watchCase,
+        globalStyleOutputs,
+        scenario.escapedClasses,
+        Math.min(minRequiredEscapedClasses, minRequiredGlobalStyleEscapedClasses),
+        cliOptions,
+        session,
+        hotUpdateStartedAt,
+        `[${watchCase.label}] script comment-carrier mutation lost transformed global style classes: required=${minRequiredEscapedClasses}, source=${formatPath(sourcePath)}`,
+      )
+    : []
 
   const updatedMtime = {
     wxml: await getMtime(watchCase.outputWxml),
@@ -147,7 +152,7 @@ export async function runCommentCarrierMutation(
       classLiteral: scenario.classLiteral,
       escapedClasses: scenario.escapedClasses,
       verifiedEscapedClasses,
-      minRequiredEscapedClasses: minRequiredGlobalStyleEscapedClasses,
+      minRequiredEscapedClasses,
       hotUpdateOutputMs,
       hotUpdateEffectiveMs,
       hotUpdatePluginProcessMs: hotUpdatePluginMetrics.totalMs,

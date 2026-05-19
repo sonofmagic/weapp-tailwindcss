@@ -25,6 +25,11 @@ import {
 const GLOB_TOKEN_RE = /[*?]/
 const REGEXP_ESCAPE_RE = /[.*+?^${}()|[\]\\]/g
 
+export interface WatchOutputUpdateResult {
+  outputMs: number
+  semanticMs?: number
+}
+
 function escapeRegExp(value: string) {
   return value.replace(REGEXP_ESCAPE_RE, '\\$&')
 }
@@ -197,8 +202,9 @@ export async function waitForCompileSettled(
   )
 }
 
-export function collectPluginProcessMetrics(session: WatchSession, startedAt: number) {
+export function collectPluginProcessMetrics(session: WatchSession, startedAt: number, endedAt = Date.now()) {
   const samples = session.pluginProcessSamplesSince(startedAt)
+    .filter(sample => sample.at <= endedAt)
   const totalSamples = samples.filter(sample => sample.metric === 'total' || sample.phase === 'total')
   const budgetSamples = totalSamples.length > 0 ? totalSamples : samples
   return {
@@ -247,6 +253,54 @@ export async function waitForOutputsUpdated(
     },
     startedAt,
   )
+}
+
+export async function waitForOutputsUpdatedResult(
+  watchCase: WatchCase,
+  baseline: OutputMtime,
+  options: CliOptions,
+  session: WatchSession,
+  startedAt = Date.now(),
+  acceptWhen?: () => Promise<boolean>,
+): Promise<WatchOutputUpdateResult> {
+  if (!acceptWhen) {
+    return {
+      outputMs: await waitForOutputsUpdated(
+        watchCase,
+        baseline,
+        options,
+        session,
+        startedAt,
+      ),
+    }
+  }
+
+  let semanticMs: number | undefined
+  const outputMs = await waitFor(
+    async () => {
+      try {
+        const accepted = await acceptWhen()
+        if (accepted && semanticMs == null) {
+          semanticMs = Date.now() - startedAt
+        }
+        return accepted
+      }
+      catch {
+        return false
+      }
+    },
+    {
+      timeoutMs: options.timeoutMs,
+      pollMs: options.pollMs,
+      message: `[${watchCase.label}] outputs did not reach expected semantic state after source change`,
+      onTick: session.ensureRunning,
+    },
+    startedAt,
+  )
+  return {
+    outputMs,
+    ...(semanticMs == null ? {} : { semanticMs }),
+  }
 }
 
 export async function waitForClassOutputBaseline(
@@ -329,6 +383,10 @@ export async function waitForOutputFilesUpdated(
 
   return waitFor(
     async () => {
+      if (await acceptsSemanticOutput()) {
+        return true
+      }
+
       let exactFileUpdated = false
       for (const file of files) {
         if (isOutputFilePattern(file)) {
@@ -361,9 +419,6 @@ export async function waitForOutputFilesUpdated(
           return true
         }
       }
-      if (await acceptsSemanticOutput()) {
-        return true
-      }
       return false
     },
     {
@@ -374,6 +429,56 @@ export async function waitForOutputFilesUpdated(
     },
     startedAt,
   )
+}
+
+export async function waitForOutputFilesUpdatedResult(
+  watchCase: WatchCase,
+  files: string[],
+  baselineMtimes: Map<string, number>,
+  options: CliOptions,
+  session: WatchSession,
+  startedAt = Date.now(),
+  acceptWhen?: () => Promise<boolean>,
+): Promise<WatchOutputUpdateResult> {
+  if (!acceptWhen) {
+    return {
+      outputMs: await waitForOutputFilesUpdated(
+        watchCase,
+        files,
+        baselineMtimes,
+        options,
+        session,
+        startedAt,
+      ),
+    }
+  }
+
+  let semanticMs: number | undefined
+  const outputMs = await waitFor(
+    async () => {
+      try {
+        const accepted = await acceptWhen()
+        if (accepted && semanticMs == null) {
+          semanticMs = Date.now() - startedAt
+        }
+        return accepted
+      }
+      catch {
+        return false
+      }
+    },
+    {
+      timeoutMs: options.timeoutMs,
+      pollMs: options.pollMs,
+      message: `[${watchCase.label}] output files did not reach expected semantic state after source change: ${files.map(formatPath).join(', ')}`,
+      onTick: session.ensureRunning,
+    },
+    startedAt,
+  )
+  return {
+    outputMs,
+    ...(semanticMs == null ? {} : { semanticMs }),
+  }
 }
 
 export async function waitForMarkerState(
@@ -563,6 +668,36 @@ export async function readJoinedOutputFiles(files: string[]) {
   const resolvedFiles = await expandOutputFileEntries(files)
   const parts = await Promise.all(resolvedFiles.map(file => readFileIfExists(file)))
   return parts.filter((item): item is string => item != null).join('\n')
+}
+
+export async function waitForGlobalStyleEscapedClasses(
+  watchCase: WatchCase,
+  files: string[],
+  escapedClasses: string[],
+  minRequiredEscapedClasses: number,
+  options: CliOptions,
+  session: WatchSession,
+  startedAt = Date.now(),
+  message = `[${watchCase.label}] transformed global style classes were not generated in time`,
+) {
+  let verifiedEscapedClasses: string[] = []
+
+  await waitFor(
+    async () => {
+      const globalStyle = await readJoinedOutputFiles(files)
+      verifiedEscapedClasses = escapedClasses.filter(escaped => globalStyle.includes(escaped))
+      return verifiedEscapedClasses.length >= minRequiredEscapedClasses
+    },
+    {
+      timeoutMs: Math.min(options.timeoutMs, 30_000),
+      pollMs: options.pollMs,
+      message,
+      onTick: session.ensureRunning,
+    },
+    startedAt,
+  )
+
+  return verifiedEscapedClasses
 }
 
 export async function hasResolvedOutputFiles(files: string[]) {

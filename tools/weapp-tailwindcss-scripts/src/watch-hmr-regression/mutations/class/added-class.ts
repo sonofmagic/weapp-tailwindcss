@@ -198,12 +198,33 @@ export async function runAddedClassMutation(
   const setupStartedAt = Date.now()
   await writeFilePreserveEol(sourcePath, baseScenario.mutatedSource, sourceOriginal)
   await waitForOutputsUpdated(watchCase, baselineMtime, cliOptions, session, setupStartedAt)
-  await waitForMarkerState(
-    watchCase,
-    baseScenario.marker,
-    'present',
-    cliOptions,
-    session,
+  await waitFor(
+    async () => {
+      const outputs = await readOutputs(watchCase, globalStyleOutputs)
+      try {
+        assertClassOutputs(
+          outputs,
+          watchCase,
+          mutationKind,
+          mutation,
+          verifyClassLiteralIn,
+          baseScenario.marker,
+          baseScenario.classTokens,
+          baseScenario.escapedClasses,
+          minRequiredGlobalStyleEscapedClasses,
+        )
+        return true
+      }
+      catch {
+        return false
+      }
+    },
+    {
+      timeoutMs: cliOptions.timeoutMs,
+      pollMs: cliOptions.pollMs,
+      message: `[${watchCase.label}] ${mutationKind} added-class setup classes were not propagated in time`,
+      onTick: session.ensureRunning,
+    },
     setupStartedAt,
   )
   await waitForCompileSettled(watchCase, cliOptions, session, setupStartedAt)
@@ -254,8 +275,8 @@ export async function runAddedClassMutation(
     wxml: await getMtime(watchCase.outputWxml),
     js: await getMtime(watchCase.outputJs),
   }
-  await waitForCompileSettled(watchCase, cliOptions, session, hotUpdateStartedAt)
   const hotUpdatePluginMetrics = collectPluginProcessMetrics(session, hotUpdateStartedAt)
+  await waitForCompileSettled(watchCase, cliOptions, session, hotUpdateStartedAt)
 
   const rollbackStartedAt = Date.now()
   await writeFilePreserveEol(sourcePath, sourceOriginal, sourceOriginal)

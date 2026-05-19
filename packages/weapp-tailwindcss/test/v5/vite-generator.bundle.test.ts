@@ -753,6 +753,453 @@ describe('v5 vite generator bundle', () => {
     expect(generateMock).toHaveBeenCalledTimes(2)
   }, TEST_TIMEOUT_MS)
 
+  it('regenerates v4 non-main css when runtime candidates change but the css asset source is stable', async () => {
+    const runtimeSet = new Set<string>()
+    const generateMock = vi.fn(async ({ candidates }: { candidates: Set<string> }) => ({
+      css: [...candidates].sort().map(candidate => `.${candidate}{}`).join('\n'),
+      rawCss: [...candidates].sort().map(candidate => `.${candidate}{}`).join('\n'),
+      target: 'weapp',
+      classSet: new Set(candidates),
+      dependencies: [],
+      sources: [],
+      root: null,
+    }))
+
+    vi.doMock('@/bundlers/vite/incremental-runtime-class-set', () => ({
+      createBundleRuntimeClassSetManager: () => ({
+        sync: vi.fn(async () => runtimeSet),
+        reset: vi.fn(async () => undefined),
+      }),
+    }))
+    vi.doMock('@/generator', async (importOriginal) => {
+      const actual = await importOriginal<typeof import('@/generator')>()
+      return {
+        ...actual,
+        createWeappTailwindcssGenerator: vi.fn(() => ({
+          generate: generateMock,
+        })),
+        resolveTailwindV4SourceFromPatcher: vi.fn(async () => ({
+          projectRoot: process.cwd(),
+          base: process.cwd(),
+          baseFallbacks: [],
+          css: '@import "tailwindcss";',
+          dependencies: [],
+        })),
+      }
+    })
+
+    setCurrentContext(createContext({
+      mainCssChunkMatcher: vi.fn(file => file === 'app.css'),
+      cssMatcher: (file: string) => file.endsWith('.css') || file.endsWith('.wxss'),
+      twPatcher: {
+        patch: vi.fn(),
+        getClassSet: vi.fn(async () => runtimeSet),
+        getClassSetSync: vi.fn(() => runtimeSet),
+        extract: vi.fn(async () => ({ classSet: runtimeSet })),
+        majorVersion: 4,
+      },
+    }))
+
+    const WeappTailwindcss = await loadUnifiedVitePlugin()
+    const plugins = WeappTailwindcss()
+    const sourcePlugin = plugins?.find(plugin => plugin.name === 'weapp-tailwindcss:adaptor:source-candidates') as Plugin
+    const postPlugin = plugins?.find(plugin => plugin.name === 'weapp-tailwindcss:adaptor:post') as Plugin
+    expect(sourcePlugin).toBeTruthy()
+    expect(postPlugin).toBeTruthy()
+
+    await (postPlugin.configResolved as any)?.call(postPlugin, {
+      command: 'build',
+      root: process.cwd(),
+      css: { postcss: { plugins: [] } },
+      build: { outDir: 'dist', watch: {} },
+    } as ResolvedConfig)
+
+    const transform = getTransformHandler(sourcePlugin)
+    const generateBundle = getGenerateBundleHandler(postPlugin)
+    const createBundle = (js: string) => ({
+      'pages/index/index.js': {
+        ...createRollupChunk(js),
+        fileName: 'pages/index/index.js',
+      } as OutputChunk,
+      'app.css': {
+        ...createRollupAsset('/* stable app css */'),
+        fileName: 'app.css',
+      },
+      'sub-independent/pages/index.wxss': {
+        ...createRollupAsset('/*! weapp-tailwindcss generator-placeholder */'),
+        fileName: 'sub-independent/pages/index.wxss',
+      },
+    })
+
+    await transform?.call(sourcePlugin, 'export const cls = "bg-[#112233]"', '/project/src/pages/index/index.vue')
+    const firstBundle = createBundle('const cls = "bg-[#112233]"')
+    await generateBundle?.call(postPlugin, {} as any, firstBundle)
+    expect((firstBundle['sub-independent/pages/index.wxss'] as OutputAsset).source).toBe('.bg-[#112233]{}')
+
+    await transform?.call(sourcePlugin, 'export const cls = "bg-[#445566]"', '/project/src/pages/index/index.vue')
+    const secondBundle = createBundle('const cls = "bg-[#445566]"')
+    await generateBundle?.call(postPlugin, {} as any, secondBundle)
+    expect((secondBundle['sub-independent/pages/index.wxss'] as OutputAsset).source).toBe('.bg-[#445566]{}')
+    expect(generateMock).toHaveBeenCalledTimes(4)
+  }, TEST_TIMEOUT_MS)
+
+  it('keeps global source candidates for Taro v4 config-only non-main css entries', async () => {
+    const tempDir = await path.join(os.tmpdir(), `weapp-tw-taro-v4-config-only-css-${Date.now()}-${Math.random().toString(16).slice(2)}`)
+    createdDirs.push(tempDir)
+    const pageFile = path.join(tempDir, 'src/pages/index/index.vue')
+    const subCssFile = path.join(tempDir, 'src/sub-independent/pages/index.css')
+    const subConfigFile = path.join(tempDir, 'src/sub-independent/pages/tailwind.config.sub-independent.js')
+    await mkdir(path.dirname(pageFile), { recursive: true })
+    await mkdir(path.dirname(subCssFile), { recursive: true })
+    await writeFile(pageFile, '<template><view class="bg-[#112233]"></view></template>', 'utf8')
+    await writeFile(subConfigFile, 'module.exports = { content: [] }', 'utf8')
+    await writeFile(subCssFile, [
+      '@import "tailwindcss" source(none);',
+      '@config "./tailwind.config.sub-independent.js";',
+    ].join('\n'), 'utf8')
+
+    const runtimeSet = new Set<string>()
+    const generateMock = vi.fn(async ({ candidates }: { candidates: Set<string> }) => ({
+      css: [...candidates].sort().map(candidate => `.${candidate}{}`).join('\n'),
+      rawCss: [...candidates].sort().map(candidate => `.${candidate}{}`).join('\n'),
+      target: 'weapp',
+      classSet: new Set(candidates),
+      dependencies: [],
+      sources: [],
+      root: null,
+    }))
+
+    vi.doMock('@/bundlers/vite/incremental-runtime-class-set', () => ({
+      createBundleRuntimeClassSetManager: () => ({
+        sync: vi.fn(async () => runtimeSet),
+        reset: vi.fn(async () => undefined),
+      }),
+    }))
+    vi.doMock('@/generator', async (importOriginal) => {
+      const actual = await importOriginal<typeof import('@/generator')>()
+      return {
+        ...actual,
+        createWeappTailwindcssGenerator: vi.fn(() => ({
+          generate: generateMock,
+        })),
+        resolveTailwindV4Source: vi.fn(async (options: any) => ({
+          projectRoot: tempDir,
+          base: options.base ?? tempDir,
+          baseFallbacks: [],
+          css: options.css ?? '',
+          dependencies: [],
+        })),
+        resolveTailwindV4SourceFromPatcher: vi.fn(async () => ({
+          projectRoot: tempDir,
+          base: tempDir,
+          baseFallbacks: [],
+          css: '@import "tailwindcss";',
+          dependencies: [],
+        })),
+        resolveTailwindV4SourceOptionsFromPatcher: vi.fn(() => ({
+          projectRoot: tempDir,
+          base: tempDir,
+          baseFallbacks: [],
+        })),
+      }
+    })
+
+    setCurrentContext(createContext({
+      mainCssChunkMatcher: vi.fn(file => file === 'app.wxss'),
+      cssMatcher: (file: string) => file.endsWith('.css') || file.endsWith('.wxss'),
+      twPatcher: {
+        patch: vi.fn(),
+        getClassSet: vi.fn(async () => runtimeSet),
+        getClassSetSync: vi.fn(() => runtimeSet),
+        extract: vi.fn(async () => ({ classSet: runtimeSet })),
+        majorVersion: 4,
+        options: {
+          projectRoot: tempDir,
+          tailwindcss: {
+            cwd: tempDir,
+            v4: {},
+          },
+        },
+      },
+    }))
+
+    const WeappTailwindcss = await loadUnifiedVitePlugin()
+    const plugins = WeappTailwindcss()
+    const sourcePlugin = plugins?.find(plugin => plugin.name === 'weapp-tailwindcss:adaptor:source-candidates') as Plugin
+    const postPlugin = plugins?.find(plugin => plugin.name === 'weapp-tailwindcss:adaptor:post') as Plugin
+    expect(sourcePlugin).toBeTruthy()
+    expect(postPlugin).toBeTruthy()
+
+    await (postPlugin.configResolved as any)?.call(postPlugin, {
+      command: 'build',
+      root: tempDir,
+      css: { postcss: { plugins: [] } },
+      build: { outDir: 'dist', watch: {} },
+    } as ResolvedConfig)
+    await (sourcePlugin.buildStart as any)?.call(sourcePlugin)
+
+    await writeFile(pageFile, '<template><view class="bg-[#445566] text-[23.000077px]"></view></template>', 'utf8')
+    await (sourcePlugin.watchChange as any)?.call(sourcePlugin, pageFile, { event: 'update' })
+    await (sourcePlugin.buildStart as any)?.call(sourcePlugin)
+
+    const generateBundle = getGenerateBundleHandler(postPlugin)
+    const bundle = {
+      'sub-independent/pages/index.wxss': {
+        ...createRollupAsset('/*! weapp-tailwindcss generator-placeholder */'),
+        fileName: 'sub-independent/pages/index.wxss',
+      },
+    }
+    await generateBundle?.call(postPlugin, {} as any, bundle)
+
+    const transformedCss = (bundle['sub-independent/pages/index.wxss'] as OutputAsset).source.toString()
+    expect(transformedCss).toContain('.bg-[#445566]{}')
+    expect(transformedCss).toContain('.text-[23.000077px]{}')
+    expect(transformedCss).not.toContain('.bg-[#112233]{}')
+
+    await writeFile(pageFile, '<template><view class="bg-[#778899] text-[23.000088px]"></view></template>', 'utf8')
+    await (sourcePlugin.watchChange as any)?.call(sourcePlugin, pageFile, { event: 'update' })
+    await (sourcePlugin.buildStart as any)?.call(sourcePlugin)
+
+    const secondBundle = {
+      'sub-independent/pages/index.wxss': {
+        ...createRollupAsset('/*! weapp-tailwindcss generator-placeholder */'),
+        fileName: 'sub-independent/pages/index.wxss',
+      },
+    }
+    await generateBundle?.call(postPlugin, {} as any, secondBundle)
+
+    const secondTransformedCss = (secondBundle['sub-independent/pages/index.wxss'] as OutputAsset).source.toString()
+    expect(secondTransformedCss).toContain('.bg-[#778899]{}')
+    expect(secondTransformedCss).toContain('.text-[23.000088px]{}')
+    expect(secondTransformedCss).not.toContain('.bg-[#445566]{}')
+  }, TEST_TIMEOUT_MS)
+
+  it('regenerates Taro v4 non-main css when only watchChange updates Vue source candidates', async () => {
+    const tempDir = await path.join(os.tmpdir(), `weapp-tw-taro-v4-watchchange-css-${Date.now()}-${Math.random().toString(16).slice(2)}`)
+    createdDirs.push(tempDir)
+    const pageFile = path.join(tempDir, 'src/pages/index/index.vue')
+    await mkdir(path.dirname(pageFile), { recursive: true })
+    await writeFile(pageFile, '<template><view class="bg-[#000051]"></view></template>', 'utf8')
+
+    const runtimeSet = new Set<string>()
+    const generateMock = vi.fn(async ({ candidates }: { candidates: Set<string> }) => ({
+      css: [...candidates].sort().map(candidate => `.${candidate}{}`).join('\n'),
+      rawCss: [...candidates].sort().map(candidate => `.${candidate}{}`).join('\n'),
+      target: 'weapp',
+      classSet: new Set(candidates),
+      dependencies: [],
+      sources: [],
+      root: null,
+    }))
+
+    vi.doMock('@/bundlers/vite/incremental-runtime-class-set', () => ({
+      createBundleRuntimeClassSetManager: () => ({
+        sync: vi.fn(async () => runtimeSet),
+        reset: vi.fn(async () => undefined),
+      }),
+    }))
+    vi.doMock('@/generator', async (importOriginal) => {
+      const actual = await importOriginal<typeof import('@/generator')>()
+      return {
+        ...actual,
+        createWeappTailwindcssGenerator: vi.fn(() => ({
+          generate: generateMock,
+        })),
+        resolveTailwindV4SourceFromPatcher: vi.fn(async () => ({
+          projectRoot: tempDir,
+          base: tempDir,
+          baseFallbacks: [],
+          css: '@import "tailwindcss";',
+          dependencies: [],
+        })),
+      }
+    })
+
+    setCurrentContext(createContext({
+      mainCssChunkMatcher: vi.fn(file => file === 'app.wxss'),
+      cssMatcher: (file: string) => file.endsWith('.css') || file.endsWith('.wxss'),
+      twPatcher: {
+        patch: vi.fn(),
+        getClassSet: vi.fn(async () => runtimeSet),
+        getClassSetSync: vi.fn(() => runtimeSet),
+        extract: vi.fn(async () => ({ classSet: runtimeSet })),
+        majorVersion: 4,
+      },
+    }))
+
+    const WeappTailwindcss = await loadUnifiedVitePlugin()
+    const plugins = WeappTailwindcss()
+    const sourcePlugin = plugins?.find(plugin => plugin.name === 'weapp-tailwindcss:adaptor:source-candidates') as Plugin
+    const postPlugin = plugins?.find(plugin => plugin.name === 'weapp-tailwindcss:adaptor:post') as Plugin
+    expect(sourcePlugin).toBeTruthy()
+    expect(postPlugin).toBeTruthy()
+
+    await (postPlugin.configResolved as any)?.call(postPlugin, {
+      command: 'build',
+      root: tempDir,
+      css: { postcss: { plugins: [] } },
+      build: { outDir: 'dist', watch: {} },
+    } as ResolvedConfig)
+    await (sourcePlugin.buildStart as any)?.call(sourcePlugin)
+
+    const generateBundle = getGenerateBundleHandler(postPlugin)
+    const createBundle = (js: string) => ({
+      'pages/index/index.js': {
+        ...createRollupChunk(js),
+        fileName: 'pages/index/index.js',
+      } as OutputChunk,
+      'app.wxss': {
+        ...createRollupAsset('/* stable app css */'),
+        fileName: 'app.wxss',
+      },
+      'sub-independent/pages/index.wxss': {
+        ...createRollupAsset('/*! weapp-tailwindcss generator-placeholder */'),
+        fileName: 'sub-independent/pages/index.wxss',
+      },
+    })
+
+    const firstBundle = createBundle('const cls = "bg-_b_h000051_B"')
+    await generateBundle?.call(postPlugin, {} as any, firstBundle)
+    expect((firstBundle['sub-independent/pages/index.wxss'] as OutputAsset).source).toContain('.bg-[#000051]{}')
+
+    await writeFile(pageFile, '<template><view class="bg-[#000070] shadow-[0_78px_80px_#000070]"></view></template>', 'utf8')
+    await (sourcePlugin.watchChange as any)?.call(sourcePlugin, pageFile, { event: 'update' })
+    await (sourcePlugin.buildStart as any)?.call(sourcePlugin)
+
+    const secondBundle = createBundle('const cls = "bg-_b_h000070_B shadow-_b0_78px_80px__h000070_B"')
+    await generateBundle?.call(postPlugin, {} as any, secondBundle)
+
+    const secondCss = (secondBundle['sub-independent/pages/index.wxss'] as OutputAsset).source.toString()
+    expect(secondCss).toContain('.bg-[#000070]{}')
+    expect(secondCss).toContain('.shadow-[0_78px_80px_#000070]{}')
+    expect(secondCss).not.toContain('.bg-[#000051]{}')
+  }, TEST_TIMEOUT_MS)
+
+  it('uses the main-like v4 css source for main css when multiple discovered sources match candidates', async () => {
+    const tempDir = await path.join(os.tmpdir(), `weapp-tw-vite-v4-main-source-${Date.now()}-${Math.random().toString(16).slice(2)}`)
+    createdDirs.push(tempDir)
+    const mainCss = path.join(tempDir, 'src/main.css')
+    const commonCss = path.join(tempDir, 'src/common.css')
+    await mkdir(path.dirname(mainCss), { recursive: true })
+
+    const runtimeSet = new Set<string>()
+    const generatedCssBySource = new Map([
+      ['main', '.from-main{}'],
+      ['common', '.from-common{}'],
+    ])
+    const generateMock = vi.fn(async function (this: unknown) {
+      const source = (this as { source?: { css?: string } }).source
+      const css = source?.css?.includes('main source') ? generatedCssBySource.get('main')! : generatedCssBySource.get('common')!
+      return {
+        css,
+        rawCss: css,
+        target: 'weapp',
+        classSet: new Set(['bg-[#112233]']),
+        dependencies: [],
+        sources: [],
+        root: null,
+      }
+    })
+    const createGeneratorMock = vi.fn((source: { css?: string }) => ({
+      source,
+      generate: generateMock,
+    }))
+
+    vi.doMock('@/bundlers/vite/incremental-runtime-class-set', () => ({
+      createBundleRuntimeClassSetManager: () => ({
+        sync: vi.fn(async () => runtimeSet),
+        reset: vi.fn(async () => undefined),
+      }),
+    }))
+    vi.doMock('@/generator', async (importOriginal) => {
+      const actual = await importOriginal<typeof import('@/generator')>()
+      return {
+        ...actual,
+        createWeappTailwindcssGenerator: createGeneratorMock,
+        resolveTailwindV4SourceOptionsFromPatcher: vi.fn(() => ({
+          projectRoot: tempDir,
+          base: tempDir,
+          baseFallbacks: [],
+          cssSources: [
+            {
+              file: mainCss,
+              base: path.dirname(mainCss),
+              css: [
+                '@import "tailwindcss" source(none);',
+                '/* main source */',
+                '@source "../src/**/*.{vue,js,ts}";',
+              ].join('\n'),
+            },
+            {
+              file: commonCss,
+              base: path.dirname(commonCss),
+              css: [
+                '@import "tailwindcss";',
+                '/* common source */',
+              ].join('\n'),
+            },
+          ],
+          packageName: 'tailwindcss4',
+        })),
+        resolveTailwindV4Source: vi.fn(async (options: { cssSources?: Array<{ file?: string, css: string, base: string }> }) => {
+          const source = options.cssSources?.[0]
+          return {
+            projectRoot: tempDir,
+            base: source?.base ?? tempDir,
+            baseFallbacks: [],
+            css: source?.css ?? '@import "tailwindcss";',
+            dependencies: [],
+          }
+        }),
+      }
+    })
+
+    setCurrentContext(createContext({
+      mainCssChunkMatcher: vi.fn(file => file === 'app.css'),
+      twPatcher: {
+        patch: vi.fn(),
+        getClassSet: vi.fn(async () => runtimeSet),
+        getClassSetSync: vi.fn(() => runtimeSet),
+        extract: vi.fn(async () => ({ classSet: runtimeSet })),
+        majorVersion: 4,
+      },
+    }))
+
+    const WeappTailwindcss = await loadUnifiedVitePlugin()
+    const plugins = WeappTailwindcss()
+    const sourcePlugin = plugins?.find(plugin => plugin.name === 'weapp-tailwindcss:adaptor:source-candidates') as Plugin
+    const postPlugin = plugins?.find(plugin => plugin.name === 'weapp-tailwindcss:adaptor:post') as Plugin
+    expect(sourcePlugin).toBeTruthy()
+    expect(postPlugin).toBeTruthy()
+
+    await (postPlugin.configResolved as any)?.call(postPlugin, {
+      command: 'build',
+      root: tempDir,
+      css: { postcss: { plugins: [] } },
+      build: { outDir: 'dist', watch: {} },
+    } as ResolvedConfig)
+
+    const transform = getTransformHandler(sourcePlugin)
+    await transform?.call(sourcePlugin, '<view class="bg-[#112233]"></view>', path.join(tempDir, 'src/pages/index/index.vue'))
+    const generateBundle = getGenerateBundleHandler(postPlugin)
+    const bundle = {
+      'pages/index/index.wxml': {
+        ...createRollupAsset('<view class="bg-[#112233]"></view>'),
+        fileName: 'pages/index/index.wxml',
+      },
+      'app.css': {
+        ...createRollupAsset('/*! weapp-tailwindcss generator-placeholder */'),
+        fileName: 'app.css',
+      },
+    }
+
+    await generateBundle?.call(postPlugin, {} as any, bundle)
+
+    expect((bundle['app.css'] as OutputAsset).source).toBe('.from-main{}')
+    expect(createGeneratorMock).toHaveBeenCalledTimes(1)
+    expect(createGeneratorMock.mock.calls[0]?.[0]?.css).toContain('main source')
+  }, TEST_TIMEOUT_MS)
+
   it('scans project source files for generator candidates without reading dist products or sourcemaps', async () => {
     const tempDir = await path.join(os.tmpdir(), `weapp-tw-source-scan-${Date.now()}-${Math.random().toString(16).slice(2)}`)
     createdDirs.push(tempDir)

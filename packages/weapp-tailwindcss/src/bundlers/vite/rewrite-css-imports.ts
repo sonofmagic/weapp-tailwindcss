@@ -28,7 +28,7 @@ interface RewriteCssImportsOptions {
   shouldRewrite: boolean
   rootImport?: string | undefined
   weappTailwindcssDirPosix: string
-  onTailwindRootCss?: ((id: string, code: string) => Promise<void> | void) | undefined
+  onTailwindRootCss?: ((id: string, code: string) => Promise<string | void> | string | void) | undefined
 }
 
 function stripTailwindConfigDirectives(code: string) {
@@ -68,17 +68,18 @@ export function createRewriteCssImportsPlugins(options: RewriteCssImportsOptions
           if (!isCSSRequest(id)) {
             return null
           }
-          if (hasTailwindRootDirectives(code)) {
-            await options.onTailwindRootCss?.(id, code)
-          }
+          const markedCode = hasTailwindRootDirectives(code)
+            ? await options.onTailwindRootCss?.(id, code)
+            : undefined
 
-          const rewritten = rewriteTailwindcssImportsInCode(code, weappTailwindcssDirPosix, {
+          const sourceCode = typeof markedCode === 'string' ? markedCode : code
+          const rewritten = rewriteTailwindcssImportsInCode(sourceCode, weappTailwindcssDirPosix, {
             join: joinPosixPath,
             appType: resolveAppType(),
             rootImport,
           })
           const nextCode = shouldOwnTailwindGeneration
-            ? stripTailwindConfigDirectives(rewritten ?? code)
+            ? stripTailwindConfigDirectives(rewritten ?? sourceCode)
             : rewritten
           if (!nextCode || nextCode === code) {
             return null

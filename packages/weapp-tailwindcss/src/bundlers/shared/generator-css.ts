@@ -2,6 +2,7 @@ import type { IStyleHandlerOptions } from '@weapp-tailwindcss/postcss/types'
 import type { GeneratorResolvedSource } from './generator-css/source-resolver'
 import type { TailwindSourceEntry } from '@/tailwindcss/source-scan'
 import type { InternalUserDefinedOptions } from '@/types'
+import { existsSync, readFileSync } from 'node:fs'
 import postcss from 'postcss'
 import {
   createWeappTailwindcssGenerator,
@@ -10,6 +11,7 @@ import {
 import { resolveUniAppXOptions } from '@/uni-app-x/options'
 import { finalizeMiniProgramCss, removeUnsupportedMiniProgramAtRules } from './css-cleanup'
 import {
+  hasTailwindApplyDirective,
   hasTailwindSourceDirectives,
   normalizeTailwindSourceDirectives,
   parseImportRequest,
@@ -106,7 +108,7 @@ function mergeScopedRuntimeWithCurrentRuntime(
 }
 
 function shouldIsolateMatchedCssSource(source: GeneratorResolvedSource, sourceEntries: TailwindSourceEntry[] | undefined) {
-  return Boolean(source.__weappTailwindcssMeta?.matchedCssSourceFile && sourceEntries !== undefined)
+  return Boolean(source.__weappTailwindcssMeta?.isolateCssSource && sourceEntries !== undefined)
 }
 
 function resolveGeneratorStyleOptions(
@@ -204,6 +206,85 @@ function cleanLocalCssImportWrapperTailwindDirectives(css: string) {
   return hasLocalImport && hasTailwindDirective
     ? prefixLocalCssImportsWithWebpackIgnore(removeTailwindSourceDirectives(css))
     : undefined
+}
+
+function resolveMatchedCssSourceUserCss(
+  sources: GeneratorResolvedSource[],
+  options: {
+    importFallback: boolean
+  },
+) {
+  if (sources.length !== 1) {
+    return undefined
+  }
+  const matchedCssSourceFile = sources[0]?.__weappTailwindcssMeta?.matchedCssSourceFile
+  if (!matchedCssSourceFile || !existsSync(matchedCssSourceFile)) {
+    return undefined
+  }
+  try {
+    const source = readFileSync(matchedCssSourceFile, 'utf8')
+    return prepareMatchedCssSourceUserCss(source, options)
+  }
+  catch {
+    return undefined
+  }
+}
+
+function collectReferenceDirectives(css: string) {
+  const references: string[] = []
+  try {
+    const root = postcss.parse(css)
+    root.walkAtRules('reference', (node) => {
+      const reference = `${node.toString().replace(/;?\s*$/, '')};`
+      if (!references.includes(reference)) {
+        references.push(reference)
+      }
+    })
+  }
+  catch {
+  }
+  return references
+}
+
+function hasTailwindCssFunction(css: string) {
+  return /\btheme\(\s*['"]/.test(css)
+}
+
+function prepareMatchedCssSourceUserCss(
+  source: string,
+  options: {
+    importFallback: boolean
+  },
+) {
+  const cleanedSource = removeTailwindSourceDirectives(source, options)
+  if (!hasTailwindApplyDirective(cleanedSource) && !hasTailwindCssFunction(cleanedSource)) {
+    return cleanedSource
+  }
+
+  const references = collectReferenceDirectives(source)
+  return [
+    ...(references.length > 0 ? references : ['@reference "tailwindcss";']),
+    cleanedSource,
+  ].join('\n')
+}
+
+function prepareExtraCssForUserStyleHandler(
+  originalExtraCss: string,
+  cleanedExtraCss: string,
+  majorVersion: number | undefined,
+) {
+  if (!hasTailwindApplyDirective(cleanedExtraCss) && !hasTailwindCssFunction(cleanedExtraCss)) {
+    return cleanedExtraCss
+  }
+  if (majorVersion !== 4) {
+    return cleanedExtraCss
+  }
+
+  const references = collectReferenceDirectives(originalExtraCss)
+  return [
+    ...(references.length > 0 ? references : ['@reference "tailwindcss";']),
+    cleanedExtraCss,
+  ].join('\n')
 }
 
 function prefixLocalCssImportsWithWebpackIgnore(css: string) {
@@ -343,7 +424,12 @@ export async function generateCssByGenerator(
       generated.css.length,
       generated.classSet.size,
     )
-    const extraCss = splitTailwindV4GeneratedCss(effectiveRawSource, generated.rawCss)
+    const hasIsolatedCssSource = sources.some(source => (source as GeneratorResolvedSource).__weappTailwindcssMeta?.isolateCssSource)
+    const matchedCssSourceUserCss = resolveMatchedCssSourceUserCss(sources as GeneratorResolvedSource[], {
+      importFallback: generatorOptions.importFallback,
+    })
+    const extraCss = matchedCssSourceUserCss
+      ?? (hasIsolatedCssSource ? undefined : splitTailwindV4GeneratedCss(effectiveRawSource, generated.rawCss))
     if (typeof extraCss === 'string') {
       let css = stripTailwindBanner(generated.css)
       if (generated.target === 'weapp') {
@@ -354,9 +440,22 @@ export async function generateCssByGenerator(
           importFallback: generatorOptions.importFallback,
         })
         if (cleanedExtraCss.trim().length > 0) {
+          if (majorVersion === 4 && (hasTailwindApplyDirective(cleanedExtraCss) || hasTailwindCssFunction(cleanedExtraCss))) {
+            return {
+              css: finalizeMiniProgramGeneratorCss(css, generated.target),
+              target: generated.target,
+              source: 'generator',
+              dependencies: generated.dependencies,
+            }
+          }
+          const preparedExtraCss = prepareExtraCssForUserStyleHandler(
+            extraCss,
+            cleanedExtraCss,
+            majorVersion,
+          )
           const extraSource = generated.target === 'weapp'
-            ? removeUnsupportedMiniProgramAtRules(cleanedExtraCss)
-            : cleanedExtraCss
+            ? removeUnsupportedMiniProgramAtRules(preparedExtraCss)
+            : preparedExtraCss
           if (extraSource.trim().length === 0) {
             return {
               css: finalizeMiniProgramGeneratorCss(css, generated.target),
@@ -414,7 +513,23 @@ export async function generateCssByGenerator(
     if (generated.target === 'weapp') {
       css = inheritLegacyUnitConvertedDeclarations(css, effectiveRawSource)
     }
-    if (sources.some(source => (source as GeneratorResolvedSource).__weappTailwindcssMeta?.matchedCssSourceFile)) {
+    if (matchedCssSourceUserCss !== undefined) {
+      css = await appendLegacyCompatCss(
+        css,
+        matchedCssSourceUserCss,
+        generated.target,
+        styleHandler,
+        cssHandlerOptions,
+        generatorStyleOptions,
+      )
+      return {
+        css: finalizeMiniProgramGeneratorCss(css, generated.target),
+        target: generated.target,
+        source: 'generator',
+        dependencies: generated.dependencies,
+      }
+    }
+    if (hasIsolatedCssSource) {
       return {
         css: finalizeMiniProgramGeneratorCss(css, generated.target),
         target: generated.target,

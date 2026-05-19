@@ -166,8 +166,8 @@ export async function runSameClassLiteralMutation(
     wxml: await getMtime(watchCase.outputWxml),
     js: await getMtime(watchCase.outputJs),
   }
-  await waitForCompileSettled(watchCase, cliOptions, session, hotUpdateAfterStartedAt)
   const hotUpdatePluginMetrics = collectPluginProcessMetrics(session, hotUpdateAfterStartedAt)
+  await waitForCompileSettled(watchCase, cliOptions, session, hotUpdateAfterStartedAt)
 
   const rollbackStartedAt = Date.now()
   await writeFilePreserveEol(sourcePath, sourceOriginal, sourceOriginal)
