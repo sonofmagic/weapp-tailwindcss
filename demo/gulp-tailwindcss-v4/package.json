@@ -90,7 +90,7 @@
     "sass": "catalog:sass195",
     "tailwindcss": "catalog:tailwindcss4",
     "tailwindcss-patch": "catalog:tailwindcssPatch",
-    "tsx": "^4.22.2",
+    "tsx": "^4.22.3",
     "typescript": "catalog:typescript59",
     "weapp-ide-cli": "catalog:weappIdeCli",
     "weapp-tailwindcss": "workspace:*"

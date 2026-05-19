@@ -57,9 +57,9 @@ catalogs:
   miniApiTypings:
     miniprogram-api-typings: ^5.2.1
   postcss85:
-    postcss: ^8.5.14
+    postcss: ^8.5.15
   postcss85tilde:
-    postcss: ^8.5.14
+    postcss: ^8.5.15
   postcssComment2:
     postcss-comment: ^2.0.0
   postcssRem:
@@ -164,7 +164,7 @@ catalogs:
   weappVite:
     weapp-vite: ^6.16.17
   wrangler:
-    wrangler: ^4.92.0
+    wrangler: ^4.93.0
 
 onlyBuiltDependencies:
   - '@tailwindcss/oxide'
