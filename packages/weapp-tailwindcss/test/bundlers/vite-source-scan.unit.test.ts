@@ -274,6 +274,82 @@ describe('bundlers/vite source scan', () => {
     ])
   })
 
+  it('discovers uni-app vite Tailwind v4 css entries with main and subpackage configs', async () => {
+    const tempDir = await createTempDir('weapp-tw-vite-source-scan-uni')
+    const srcDir = path.join(tempDir, 'src')
+    await mkdir(path.join(srcDir, 'sub-normal/pages'), { recursive: true })
+    await mkdir(path.join(srcDir, 'pages-order'), { recursive: true })
+    await writeFile(path.join(srcDir, 'main.css'), [
+      '@import "tailwindcss" source(none);',
+      '@config "./tailwind.config.js";',
+      '@source "../src/**/*.{vue,js,ts,jsx,tsx,html}";',
+    ].join('\n'))
+    await writeFile(path.join(srcDir, 'pages-order/index.css'), [
+      '@import "tailwindcss" source(none);',
+      '@config "./tailwind.config.order.js";',
+      '@source "./**/*.{vue,js,ts,jsx,tsx,html}";',
+    ].join('\n'))
+    await writeFile(path.join(srcDir, 'sub-normal/pages/index.css'), [
+      '@import "tailwindcss" source(none);',
+      '@config "./tailwind.config.sub-normal.js";',
+    ].join('\n'))
+    await writeFile(path.join(srcDir, 'tailwind.config.js'), 'module.exports = { content: [] }')
+    await writeFile(path.join(srcDir, 'tailwind.config.order.js'), 'module.exports = { content: [] }')
+    await writeFile(path.join(srcDir, 'tailwind.config.sub-normal.js'), [
+      'module.exports = {',
+      '  content: ["./src/sub-normal/**/*.{wxml,html,js,ts,jsx,tsx,vue,mpx}"],',
+      '}',
+    ].join('\n'))
+
+    const fallbackResolve = vi.fn(async () => {
+      throw new Error('auto-discovered uni-app css roots should avoid full Tailwind v4 source fallback')
+    })
+    vi.doMock('@/tailwindcss/v4-engine', async (importOriginal) => {
+      const actual = await importOriginal<typeof import('@/tailwindcss/v4-engine')>()
+      return {
+        ...actual,
+        resolveTailwindV4SourceOptionsFromPatcher: vi.fn(() => ({
+          projectRoot: tempDir,
+          base: tempDir,
+          baseFallbacks: [],
+          packageName: 'tailwindcss4',
+        })),
+        resolveTailwindV4SourceFromPatcher: fallbackResolve,
+      }
+    })
+
+    const { discoverTailwindV4CssEntries, resolveViteSourceScanEntries } = await import('@/bundlers/vite/source-scan')
+    const discovered = await discoverTailwindV4CssEntries(tempDir, 'dist/dev/mp-weixin')
+    const resolved = await resolveViteSourceScanEntries({}, {
+      majorVersion: 4,
+    } as TailwindcssPatcherLike, {
+      root: tempDir,
+      outDir: 'dist/dev/mp-weixin',
+    })
+
+    expect(discovered.map(file => path.relative(tempDir, file)).sort()).toEqual([
+      'src/main.css',
+      'src/pages-order/index.css',
+      'src/sub-normal/pages/index.css',
+    ])
+    expect(fallbackResolve).not.toHaveBeenCalled()
+    expect(resolved?.entries).toContainEqual({
+      base: srcDir,
+      pattern: '**/*.{vue,js,ts,jsx,tsx,html}',
+      negated: false,
+    })
+    expect(resolved?.entries).toContainEqual({
+      base: path.join(srcDir, 'pages-order'),
+      pattern: '**/*.{vue,js,ts,jsx,tsx,html}',
+      negated: false,
+    })
+    expect(resolved?.entries).toContainEqual({
+      base: srcDir,
+      pattern: 'src/sub-normal/**/*.{wxml,html,js,ts,jsx,tsx,vue,mpx}',
+      negated: false,
+    })
+  })
+
   it('keeps broad Tailwind v4 fallback when the Vite root differs from the patcher project root', async () => {
     const tempDir = await createTempDir('weapp-tw-vite-source-scan')
     await writeFile(path.join(tempDir, 'app.scss'), [

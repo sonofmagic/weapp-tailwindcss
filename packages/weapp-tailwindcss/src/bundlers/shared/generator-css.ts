@@ -106,7 +106,7 @@ function mergeScopedRuntimeWithCurrentRuntime(
 }
 
 function shouldIsolateMatchedCssSource(source: GeneratorResolvedSource, sourceEntries: TailwindSourceEntry[] | undefined) {
-  return Boolean(source.__weappTailwindcssMeta?.matchedCssSourceFile && sourceEntries?.length)
+  return Boolean(source.__weappTailwindcssMeta?.matchedCssSourceFile && sourceEntries !== undefined)
 }
 
 function resolveGeneratorStyleOptions(

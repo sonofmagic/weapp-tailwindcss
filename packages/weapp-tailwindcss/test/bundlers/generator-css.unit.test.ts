@@ -1,3 +1,5 @@
+import { mkdir, mkdtemp, rm, writeFile } from 'node:fs/promises'
+import { tmpdir } from 'node:os'
 import path from 'node:path'
 import { afterEach, describe, expect, it, vi } from 'vitest'
 
@@ -3635,6 +3637,216 @@ describe('bundlers/shared generator css', () => {
       debug: vi.fn(),
     })
 
+    const generateOptions = generateMock.mock.calls[0]?.[0]
+    expect(generateOptions.candidates).toEqual(new Set())
+    expect(generateOptions.scanSources).toBe(false)
+  })
+
+  it('isolates Tailwind v4 generated subpackage css matched from source-side css entry', async () => {
+    const root = await mkdtemp(path.join(tmpdir(), 'weapp-tw-source-side-subpackage-'))
+    const cssFile = path.join(root, 'src/sub-normal/pages/index.css')
+    await mkdir(path.dirname(cssFile), { recursive: true })
+    await writeFile(cssFile, [
+      '@import "tailwindcss" source(none);',
+      '@config "./tailwind.config.sub-normal.js";',
+    ].join('\n'))
+    await writeFile(path.join(root, 'src/sub-normal/pages/tailwind.config.sub-normal.js'), 'module.exports = { content: [] }')
+    const generateMock = vi.fn(async (options: any) => {
+      const candidates = [...options.candidates].sort()
+      return {
+        css: candidates.map(candidate => `.${candidate}{}`).join('\n'),
+        rawCss: candidates.map(candidate => `.${candidate}{}`).join('\n'),
+        target: 'weapp',
+        classSet: new Set(candidates),
+        dependencies: [],
+        sources: [],
+        root: null,
+      }
+    })
+
+    vi.doMock('@/generator', () => ({
+      createWeappTailwindcssGenerator: vi.fn(() => ({
+        generate: generateMock,
+      })),
+      normalizeWeappTailwindcssGeneratorOptions: normalizeGeneratorOptions,
+      resolveTailwindV4Source: vi.fn(async (options: any) => ({
+        projectRoot: root,
+        base: options.base,
+        baseFallbacks: [],
+        css: options.css,
+        dependencies: [],
+      })),
+      resolveTailwindV4SourceFromPatcher: vi.fn(async () => ({
+        projectRoot: root,
+        base: root,
+        baseFallbacks: [],
+        css: '@import "tailwindcss" source(none);\n@source "./src/**/*.{vue,ts}";',
+        dependencies: [],
+      })),
+      resolveTailwindV4SourceOptionsFromPatcher: vi.fn(() => ({
+        projectRoot: root,
+        baseFallbacks: [],
+      })),
+    }))
+
+    try {
+      const { generateCssByGenerator } = await import('@/bundlers/shared/generator-css')
+      await generateCssByGenerator({
+        opts: {
+          styleHandler: vi.fn(async (code: string) => ({ css: code })),
+        } as any,
+        runtimeState: {
+          twPatcher: {
+            majorVersion: 4,
+          } as any,
+          readyPromise: Promise.resolve(),
+        },
+        runtime: new Set(['main-only']),
+        rawSource: [
+          ':host,page,.tw-root,wx-root-portal-content { --color-slate-50: #f8fafc; }',
+          '.main-only{}',
+        ].join('\n'),
+        file: path.join(root, 'dist/dev/mp-weixin/sub-normal/pages/index.wxss'),
+        cssHandlerOptions: {
+          isMainChunk: true,
+          majorVersion: 4,
+          postcssOptions: {
+            options: {
+              from: path.join(root, 'dist/dev/mp-weixin/sub-normal/pages/index.wxss'),
+            },
+          },
+        } as any,
+        cssUserHandlerOptions: {
+          isMainChunk: true,
+          majorVersion: 4,
+        } as any,
+        getSourceCandidatesForEntries: vi.fn(() => new Set()),
+        styleHandler: vi.fn(async (code: string) => ({ css: code })),
+        debug: vi.fn(),
+      })
+    }
+    finally {
+      await rm(root, { recursive: true, force: true })
+    }
+
+    const generateOptions = generateMock.mock.calls[0]?.[0]
+    expect(generateOptions.candidates).toEqual(new Set())
+    expect(generateOptions.scanSources).toBe(false)
+  })
+
+  it('prefers source-side Tailwind v4 subpackage css over auto-discovered global css sources', async () => {
+    const root = await mkdtemp(path.join(tmpdir(), 'weapp-tw-source-side-relative-subpackage-'))
+    const mainCssFile = path.join(root, 'src/main.css')
+    const subCssFile = path.join(root, 'src/sub-normal/pages/index.css')
+    await mkdir(path.dirname(subCssFile), { recursive: true })
+    await writeFile(mainCssFile, [
+      '@import "tailwindcss" source(none);',
+      '@source "../src/**/*.{vue,js,ts}";',
+    ].join('\n'))
+    await writeFile(subCssFile, [
+      '@import "tailwindcss" source(none);',
+      '@config "./tailwind.config.sub-normal.js";',
+    ].join('\n'))
+    await writeFile(path.join(root, 'src/sub-normal/pages/tailwind.config.sub-normal.js'), 'module.exports = { content: [] }')
+    const generateMock = vi.fn(async (options: any) => {
+      const candidates = [...options.candidates].sort()
+      return {
+        css: candidates.map(candidate => `.${candidate}{}`).join('\n'),
+        rawCss: candidates.map(candidate => `.${candidate}{}`).join('\n'),
+        target: 'weapp',
+        classSet: new Set(candidates),
+        dependencies: [],
+        sources: [],
+        root: null,
+      }
+    })
+    const resolveTailwindV4Source = vi.fn(async (options: any) => ({
+      projectRoot: root,
+      base: options.base,
+      baseFallbacks: [],
+      css: options.css,
+      dependencies: [],
+    }))
+
+    vi.doMock('@/generator', () => ({
+      createWeappTailwindcssGenerator: vi.fn(() => ({
+        generate: generateMock,
+      })),
+      normalizeWeappTailwindcssGeneratorOptions: normalizeGeneratorOptions,
+      resolveTailwindV4Source,
+      resolveTailwindV4SourceFromPatcher: vi.fn(async () => ({
+        projectRoot: root,
+        base: root,
+        baseFallbacks: [],
+        css: '@import "tailwindcss" source(none);\n@source "./src/**/*.{vue,ts}";',
+        dependencies: [],
+      })),
+      resolveTailwindV4SourceOptionsFromPatcher: vi.fn(() => ({
+        projectRoot: root,
+        baseFallbacks: [],
+        cssSources: [
+          {
+            file: mainCssFile,
+            base: path.dirname(mainCssFile),
+            css: '@import "tailwindcss" source(none);\n@source "../src/**/*.{vue,js,ts}";',
+          },
+          {
+            file: subCssFile,
+            base: path.dirname(subCssFile),
+            css: '@import "tailwindcss" source(none);\n@config "./tailwind.config.sub-normal.js";',
+          },
+        ],
+      })),
+    }))
+
+    try {
+      const { generateCssByGenerator } = await import('@/bundlers/shared/generator-css')
+      await generateCssByGenerator({
+        opts: {
+          styleHandler: vi.fn(async (code: string) => ({ css: code })),
+        } as any,
+        runtimeState: {
+          twPatcher: {
+            majorVersion: 4,
+          } as any,
+          readyPromise: Promise.resolve(),
+        },
+        runtime: new Set(['main-only']),
+        rawSource: [
+          ':host,page,.tw-root,wx-root-portal-content { --color-slate-50: #f8fafc; }',
+          '.main-only{}',
+        ].join('\n'),
+        file: 'sub-normal/pages/index.wxss',
+        cssHandlerOptions: {
+          isMainChunk: true,
+          majorVersion: 4,
+          postcssOptions: {
+            options: {
+              from: 'sub-normal/pages/index.wxss',
+            },
+          },
+        } as any,
+        cssUserHandlerOptions: {
+          isMainChunk: true,
+          majorVersion: 4,
+        } as any,
+        getSourceCandidatesForEntries: vi.fn(entries =>
+          entries !== undefined
+            ? new Set()
+            : new Set(['main-only']),
+        ),
+        styleHandler: vi.fn(async (code: string) => ({ css: code })),
+        debug: vi.fn(),
+      })
+    }
+    finally {
+      await rm(root, { recursive: true, force: true })
+    }
+
+    expect(resolveTailwindV4Source).toHaveBeenCalledWith(expect.objectContaining({
+      base: path.dirname(subCssFile),
+      css: expect.stringContaining('tailwind.config.sub-normal.js'),
+    }))
     const generateOptions = generateMock.mock.calls[0]?.[0]
     expect(generateOptions.candidates).toEqual(new Set())
     expect(generateOptions.scanSources).toBe(false)

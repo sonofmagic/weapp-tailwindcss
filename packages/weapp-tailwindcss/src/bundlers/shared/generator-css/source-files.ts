@@ -43,6 +43,28 @@ function createSourceStylePathCandidates(
   ].filter((item): item is string => typeof item === 'string' && item.length > 0)
   const strippedFile = stripStyleExtension(file)
   const relativeFiles = new Set<string>()
+  const addKnownOutputRelativePath = (relative: string) => {
+    const parts = relative.split(/[\\/]/).filter(Boolean)
+    const distIndex = parts.lastIndexOf('dist')
+    if (distIndex === -1 || distIndex >= parts.length - 1) {
+      return
+    }
+    const outputRest = parts.slice(distIndex + 1)
+    const knownOutputRoots = [
+      ['dev'],
+      ['build'],
+      ['dev', 'mp-weixin'],
+      ['build', 'mp-weixin'],
+    ]
+    for (const outputRoot of knownOutputRoots) {
+      if (
+        outputRest.length > outputRoot.length
+        && outputRoot.every((segment, index) => outputRest[index] === segment)
+      ) {
+        relativeFiles.add(outputRest.slice(outputRoot.length).join(path.sep))
+      }
+    }
+  }
 
   if (path.isAbsolute(strippedFile)) {
     for (const base of bases) {
@@ -51,30 +73,24 @@ function createSourceStylePathCandidates(
         continue
       }
       relativeFiles.add(relative)
-      const parts = relative.split(path.sep).filter(Boolean)
-      if (parts.length > 1) {
-        relativeFiles.add(parts.slice(1).join(path.sep))
-        const distIndex = parts.lastIndexOf('dist')
-        if (distIndex >= 0 && distIndex < parts.length - 1) {
-          relativeFiles.add([
-            ...parts.slice(0, distIndex),
-            ...parts.slice(distIndex + 1),
-          ].join(path.sep))
-        }
-      }
+      addKnownOutputRelativePath(relative)
     }
   }
   else {
     relativeFiles.add(strippedFile)
+    addKnownOutputRelativePath(strippedFile)
     const parts = strippedFile.split(/[\\/]/).filter(Boolean)
-    if (parts.length > 1) {
-      relativeFiles.add(parts.slice(1).join(path.sep))
-      const distIndex = parts.lastIndexOf('dist')
-      if (distIndex >= 0 && distIndex < parts.length - 1) {
-        relativeFiles.add([
-          ...parts.slice(0, distIndex),
-          ...parts.slice(distIndex + 1),
-        ].join(path.sep))
+    for (const outputRoot of [
+      ['dev'],
+      ['build'],
+      ['dev', 'mp-weixin'],
+      ['build', 'mp-weixin'],
+    ]) {
+      if (
+        parts.length > outputRoot.length
+        && outputRoot.every((segment, index) => parts[index] === segment)
+      ) {
+        relativeFiles.add(parts.slice(outputRoot.length).join(path.sep))
       }
     }
   }
@@ -115,6 +131,14 @@ function extractStyleDirectiveSources(source: string) {
   return hasTailwindSourceDirectives(source) ? [source] : []
 }
 
+export interface SourceSideCssEntrySource {
+  css: string
+  config?: string | undefined
+  configRequest?: string | undefined
+  base: string
+  file: string
+}
+
 export function resolveSourceSideCssEntrySource(
   file: string,
   sourceOptions: {
@@ -122,7 +146,7 @@ export function resolveSourceSideCssEntrySource(
     cwd?: string
   },
   resolveOptions: { removeConfig?: boolean } = {},
-) {
+): SourceSideCssEntrySource | undefined {
   for (const sourceFile of createSourceStylePathCandidates(file, sourceOptions)) {
     if (!existsSync(sourceFile)) {
       continue
@@ -132,7 +156,10 @@ export function resolveSourceSideCssEntrySource(
       for (const styleSource of extractStyleDirectiveSources(source)) {
         const cssEntrySource = resolveCssEntrySource(styleSource, path.dirname(sourceFile), resolveOptions)
         if (cssEntrySource) {
-          return cssEntrySource
+          return {
+            ...cssEntrySource,
+            file: sourceFile,
+          }
         }
       }
     }
