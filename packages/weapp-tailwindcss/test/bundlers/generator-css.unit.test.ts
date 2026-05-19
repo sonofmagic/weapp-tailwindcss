@@ -3710,6 +3710,9 @@ describe('bundlers/shared generator css', () => {
         cssHandlerOptions: {
           isMainChunk: true,
           majorVersion: 4,
+          sourceOptions: {
+            outputRoot: path.join(root, 'dist/dev/mp-weixin'),
+          },
           postcssOptions: {
             options: {
               from: path.join(root, 'dist/dev/mp-weixin/sub-normal/pages/index.wxss'),

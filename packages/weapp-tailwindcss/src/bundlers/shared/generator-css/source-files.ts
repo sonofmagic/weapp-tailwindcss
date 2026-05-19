@@ -34,6 +34,7 @@ function createSourceStylePathCandidates(
   sourceOptions: {
     projectRoot?: string
     cwd?: string
+    outputRoot?: string
   },
 ) {
   const bases = [
@@ -41,58 +42,33 @@ function createSourceStylePathCandidates(
     sourceOptions.cwd,
     process.cwd(),
   ].filter((item): item is string => typeof item === 'string' && item.length > 0)
+  const outputRoots = [
+    sourceOptions.outputRoot,
+  ].filter((item): item is string => typeof item === 'string' && item.length > 0)
   const strippedFile = stripStyleExtension(file)
   const relativeFiles = new Set<string>()
-  const addKnownOutputRelativePath = (relative: string) => {
-    const parts = relative.split(/[\\/]/).filter(Boolean)
-    const distIndex = parts.lastIndexOf('dist')
-    if (distIndex === -1 || distIndex >= parts.length - 1) {
-      return
-    }
-    const outputRest = parts.slice(distIndex + 1)
-    const knownOutputRoots = [
-      ['dev'],
-      ['build'],
-      ['dev', 'mp-weixin'],
-      ['build', 'mp-weixin'],
-    ]
-    for (const outputRoot of knownOutputRoots) {
-      if (
-        outputRest.length > outputRoot.length
-        && outputRoot.every((segment, index) => outputRest[index] === segment)
-      ) {
-        relativeFiles.add(outputRest.slice(outputRoot.length).join(path.sep))
+  const addOutputRelativePath = (absoluteFile: string) => {
+    for (const outputRoot of outputRoots) {
+      const relative = path.relative(outputRoot, absoluteFile)
+      if (!relative || relative.startsWith('..') || path.isAbsolute(relative)) {
+        continue
       }
+      relativeFiles.add(relative)
     }
   }
 
   if (path.isAbsolute(strippedFile)) {
+    addOutputRelativePath(strippedFile)
     for (const base of bases) {
       const relative = path.relative(base, strippedFile)
       if (!relative || relative.startsWith('..') || path.isAbsolute(relative)) {
         continue
       }
       relativeFiles.add(relative)
-      addKnownOutputRelativePath(relative)
     }
   }
   else {
     relativeFiles.add(strippedFile)
-    addKnownOutputRelativePath(strippedFile)
-    const parts = strippedFile.split(/[\\/]/).filter(Boolean)
-    for (const outputRoot of [
-      ['dev'],
-      ['build'],
-      ['dev', 'mp-weixin'],
-      ['build', 'mp-weixin'],
-    ]) {
-      if (
-        parts.length > outputRoot.length
-        && outputRoot.every((segment, index) => parts[index] === segment)
-      ) {
-        relativeFiles.add(parts.slice(outputRoot.length).join(path.sep))
-      }
-    }
   }
 
   const candidates = new Set<string>()
@@ -144,6 +120,7 @@ export function resolveSourceSideCssEntrySource(
   sourceOptions: {
     projectRoot?: string
     cwd?: string
+    outputRoot?: string
   },
   resolveOptions: { removeConfig?: boolean } = {},
 ): SourceSideCssEntrySource | undefined {

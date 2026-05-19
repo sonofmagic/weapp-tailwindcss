@@ -91,10 +91,12 @@ function collectRuntimeLinkedCssFiles(snapshot: BundleSnapshot) {
 export function createGenerateBundleHook(context: GenerateBundleContext) {
   const state = createBundleBuildState()
   const lastCssResultByFile = new Map<string, string>()
+  let currentOutDir: string | undefined
   const cssHandlerOptions = createCssHandlerOptionsCache({
     appType: context.opts.appType,
     mainCssChunkMatcher: context.opts.mainCssChunkMatcher,
     getMajorVersion: () => context.runtimeState.twPatcher.majorVersion,
+    getOutputRoot: () => currentOutDir,
   })
   return async function generateBundle(this: GenerateBundleThis, _opt: unknown, bundle: Record<string, OutputAsset | OutputChunk>) {
     const addWatchFile = (id: string) => this.addWatchFile?.(id)
@@ -154,6 +156,7 @@ export function createGenerateBundleHook(context: GenerateBundleContext) {
     const outDir = resolvedConfig?.build?.outDir
       ? path.resolve(rootDir, resolvedConfig.build.outDir)
       : rootDir
+    currentOutDir = outDir
     const snapshot = buildBundleSnapshot(bundle, opts, outDir, state, disableDirtyOptimization || !useIncrementalMode)
     const useBundleRuntimeClassSet = useIncrementalMode || runtimeState.twPatcher.majorVersion === 4
     const forceRuntimeRefreshBySource = useIncrementalMode
