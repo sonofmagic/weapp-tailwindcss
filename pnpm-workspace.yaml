@@ -45,7 +45,7 @@ catalogs:
   egoistTailwindcssIcons:
     '@egoist/tailwindcss-icons': ^1.9.2
   eslint10:
-    eslint: ^10.3.0
+    eslint: ^10.4.0
   eslintPluginReact:
     eslint-plugin-react: ^7.37.5
   eslintPluginReactHooks:
@@ -130,8 +130,8 @@ catalogs:
   typescript59tilde:
     typescript: ^6.0.3
   typescriptEslint:
-    '@typescript-eslint/eslint-plugin': ^8.59.3
-    '@typescript-eslint/parser': ^8.59.3
+    '@typescript-eslint/eslint-plugin': ^8.59.4
+    '@typescript-eslint/parser': ^8.59.4
     typescript-eslint: ^8.59.3
   vite4:
     vite: ^4.5.14
@@ -156,15 +156,15 @@ catalogs:
   vueRuntimeCore:
     '@vue/runtime-core': ^3.5.34
   vueTsc318:
-    vue-tsc: ^3.2.9
+    vue-tsc: ^3.3.0
   weappChildren:
     weapp-tailwindcss-children: ^0.1.0
   weappIdeCli:
     weapp-ide-cli: ^5.2.10
   weappVite:
-    weapp-vite: ^6.16.14
+    weapp-vite: ^6.16.17
   wrangler:
-    wrangler: ^4.91.0
+    wrangler: ^4.92.0
 
 onlyBuiltDependencies:
   - '@tailwindcss/oxide'
