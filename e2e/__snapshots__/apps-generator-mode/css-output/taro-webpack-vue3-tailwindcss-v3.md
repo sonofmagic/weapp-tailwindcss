@@ -6,7 +6,7 @@ Generator CSS files: app.wxss, index.wxss, index.wxss, index.wxss
 
 | Bytes | Selectors | @supports | :hover | Tailwind banner | Raw arbitrary selector | Weapp escaped arbitrary selector |
 | ---: | ---: | --- | --- | --- | --- | --- |
-| 6862 | 62 | false | false | false | false | true |
+| 5723 | 46 | false | false | false | false | true |
 
 ## Generator CSS
 
@@ -76,26 +76,11 @@ text,
   border-style: solid;
   border-color: currentColor;
 }
-.relative {
-  position: relative;
-}
-.flex {
-  display: flex;
-}
-.grid {
-  display: grid;
-}
-.h-12 {
-  height: 96rpx;
-}
 .h-_b100px_B {
   height: 100rpx;
 }
 .max-h-_b100px_B {
   max-height: 100rpx;
-}
-.w-12 {
-  width: 96rpx;
 }
 .w-_b100px_B {
   width: 100rpx;
@@ -108,23 +93,6 @@ text,
 }
 .min-w-_b300rpx_B {
   min-width: 300rpx;
-}
-.rotate-45 {
-  --tw-rotate: 45deg;
-  transform: translate(var(--tw-translate-x), var(--tw-translate-y)) rotate(var(--tw-rotate)) skewX(var(--tw-skew-x)) skewY(var(--tw-skew-y)) scaleX(var(--tw-scale-x))
-    scaleY(var(--tw-scale-y));
-}
-.resize {
-  resize: both;
-}
-.grid-cols-3 {
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-}
-.items-center {
-  align-items: center;
-}
-.justify-center {
-  justify-content: center;
 }
 .space-y-_b1_d6rem_B > view + view,
 .space-y-_b1_d6rem_B > view + text,
@@ -141,12 +109,6 @@ text,
   --tw-divide-x-reverse: 0;
   border-right-width: calc(10rpx * var(--tw-divide-x-reverse));
   border-left-width: calc(10rpx * (1 - var(--tw-divide-x-reverse)));
-}
-.divide-solid > view + view,
-.divide-solid > view + text,
-.divide-solid > text + view,
-.divide-solid > text + text {
-  border-style: solid;
 }
 .divide-_b_h010101_B > view + view,
 .divide-_b_h010101_B > view + text,
@@ -195,17 +157,8 @@ text,
   --tw-text-opacity: 1;
   color: rgba(255, 255, 255, var(--tw-text-opacity, 1));
 }
-.text-black {
-  --tw-text-opacity: 1;
-  color: rgba(0, 0, 0, var(--tw-text-opacity, 1));
-}
 .text-opacity-_b0_d19_B {
   --tw-text-opacity: 0.19;
-}
-.shadow-md {
-  --tw-shadow: 0 4rpx 6rpx -1rpx rgba(0, 0, 0, 0.1), 0 2rpx 4rpx -2rpx rgba(0, 0, 0, 0.1);
-  --tw-shadow-colored: 0 4rpx 6rpx -1rpx var(--tw-shadow-color), 0 2rpx 4rpx -2rpx var(--tw-shadow-color);
-  box-shadow: var(--tw-ring-offset-shadow, 0 0 rgba(0, 0, 0, 0)), var(--tw-ring-shadow, 0 0 rgba(0, 0, 0, 0)), var(--tw-shadow);
 }
 .before_cabsolute::before {
   content: var(--tw-content);

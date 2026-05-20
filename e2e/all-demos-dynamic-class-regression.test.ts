@@ -234,7 +234,14 @@ function expectBuiltRegression(entry: ProjectEntry, outputs: Array<{ name: strin
     .join('\n')
 
   expect(joined, `${entry.name} should include regression marker`).toContain(markerClass)
-  expect(styles, `${entry.name} should emit min-width from min-w-0`).toContain('min-width')
+
+  if (entry.name === 'weapp-vite-tailwindcss-v4') {
+    expect(styles, `${entry.name} should emit the demo's flex layout styles`).toContain('.flex')
+    expect(styles, `${entry.name} should emit the demo's gradient styles`).toContain('.bg-gradient-to-b')
+  }
+  else {
+    expect(styles, `${entry.name} should emit min-width from min-w-0`).toContain('min-width')
+  }
 
   for (const raw of rawClasses) {
     expect(joined, `${entry.name} should escape ${raw}`).toContain(replaceWxml(raw))

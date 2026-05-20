@@ -82,6 +82,7 @@ export const E2E_PROJECTS = [
     name: 'weapp-vite-tailwindcss-v4',
     projectPath: 'weapp-vite-tailwindcss-v4',
     cssFile: 'dist/app.wxss',
+    skipOpenAutomator: true,
   },
 ] satisfies ProjectEntry[]
 

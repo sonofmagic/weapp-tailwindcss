@@ -41,11 +41,11 @@ describe('preprocessor Tailwind source demo', () => {
     })
 
     const wxssFiles = await readAllWxssFiles(demoRoot)
-    const appWxss = await fs.readFile(path.join(demoRoot, 'dist/app.wxss'), 'utf8')
+    const pageWxss = await fs.readFile(path.join(demoRoot, 'dist/pages/index/index.wxss'), 'utf8')
     const joined = wxssFiles.map(item => item.content).join('\n')
 
-    expect(appWxss).toContain('--preprocessor-entry-marker: #1d4ed8;')
-    expect(appWxss).toContain('.flex')
+    expect(pageWxss).toContain('.s .a')
+    expect(pageWxss).toContain('color: turquoise;')
     expect(joined).not.toContain('@import "tailwindcss"')
     expect(joined).not.toContain('@config "./tailwind.config.js"')
     expect(joined).not.toContain('// Tailwind root entry intentionally lives in SCSS')

@@ -2,6 +2,7 @@
 page,
 .tw-root,
 wx-root-portal-content {
+  --tw-content: '';
   --font-sans:
     ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, Cantarell, Noto Sans, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol',
     'Noto Color Emoji';
@@ -17,14 +18,8 @@ wx-root-portal-content {
 .visible {
   visibility: visible;
 }
-.absolute {
-  position: absolute;
-}
 .fixed {
   position: fixed;
-}
-.relative {
-  position: relative;
 }
 .static {
   position: static;
@@ -82,14 +77,6 @@ wx-root-portal-content {
 .h-_b300px_B {
   height: 300rpx;
 }
-.flex-shrink {
-  -webkit-flex-shrink: 1;
-  flex-shrink: 1;
-}
-.flex-grow {
-  -webkit-flex-grow: 1;
-  flex-grow: 1;
-}
 .transform {
   -webkit-transform: var(--tw-rotate-x,) var(--tw-rotate-y,) var(--tw-rotate-z,) var(--tw-skew-x,) var(--tw-skew-y,);
   transform: var(--tw-rotate-x,) var(--tw-rotate-y,) var(--tw-rotate-z,) var(--tw-skew-x,) var(--tw-skew-y,);
@@ -120,7 +107,7 @@ wx-root-portal-content {
   background-image: linear-gradient(var(--tw-gradient-stops));
 }
 .bg-gradient-to-r {
-  --tw-gradient-position: to right in oklab;
+  --tw-gradient-position: to right;
   background-image: linear-gradient(var(--tw-gradient-stops));
 }
 .from-cyan-500 {
@@ -149,10 +136,6 @@ wx-root-portal-content {
 }
 .text-_b_hfff_B {
   color: #fff;
-}
-.shadow {
-  --tw-shadow: 0 1px 3px 0 var(--tw-shadow-color, rgba(0, 0, 0, 0.1)), 0 1px 2px -1px var(--tw-shadow-color, rgba(0, 0, 0, 0.1));
-  box-shadow: var(--tw-inset-shadow), var(--tw-inset-ring-shadow), var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow);
 }
 .outline {
   outline-style: var(--tw-outline-style);

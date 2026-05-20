@@ -6,7 +6,7 @@ Generator CSS files: app.wxss, index.wxss, index.wxss, index.wxss, more.wxss
 
 | Bytes | Selectors | @supports | :hover | Tailwind banner | Raw arbitrary selector | Weapp escaped arbitrary selector |
 | ---: | ---: | --- | --- | --- | --- | --- |
-| 14228 | 49 | false | false | false | false | true |
+| 16276 | 49 | false | false | false | false | true |
 
 ## Generator CSS
 
@@ -329,12 +329,40 @@ text,
 .mt-_b33px_B {
   margin-top: 66rpx;
 }
+.block {
+  display: block;
+}
 .h-_b41_d54vw_B {
   height: 41.54vw;
+}
+.h-full {
+  height: 100%;
+}
+.w-screen {
+  width: 100vw;
+}
+.space-y-1 > view + view,
+.space-y-1 > view + text,
+.space-y-1 > text + view,
+.space-y-1 > text + text {
+  --tw-space-y-reverse: 0;
+  margin-top: calc(8rpx * (1 - var(--tw-space-y-reverse)));
+  margin-bottom: calc(8rpx * var(--tw-space-y-reverse));
+}
+.space-y-4 > view + view,
+.space-y-4 > view + text,
+.space-y-4 > text + view,
+.space-y-4 > text + text {
+  --tw-space-y-reverse: 0;
+  margin-top: calc(32rpx * (1 - var(--tw-space-y-reverse)));
+  margin-bottom: calc(32rpx * var(--tw-space-y-reverse));
 }
 .border-_b_hEEEEEE_B {
   --tw-border-opacity: 1;
   border-color: rgba(238, 238, 238, var(--tw-border-opacity, 1));
+}
+.border-b {
+  border-bottom-width: 2rpx;
 }
 .bg-_b_hfff_B {
   --tw-bg-opacity: 1;
@@ -357,6 +385,12 @@ text,
 .bg-_blength_c100_v_100_v_B {
   background-size: 100% 100%;
 }
+.bg-no-repeat {
+  background-repeat: no-repeat;
+}
+.p-4 {
+  padding: 32rpx;
+}
 .pb-_b10px_B {
   padding-bottom: 20rpx;
 }
@@ -368,6 +402,30 @@ text,
 }
 .text-_b50px_B {
   font-size: 100rpx;
+}
+.text-base {
+  font-size: 32rpx;
+  line-height: 48rpx;
+}
+.text-center {
+  text-align: center;
+}
+.text-left {
+  text-align: left;
+}
+.text-lg {
+  font-size: 36rpx;
+  line-height: 56rpx;
+}
+.text-xs {
+  font-size: 24rpx;
+  line-height: 32rpx;
+}
+.font-bold {
+  font-weight: 700;
+}
+.font-medium {
+  font-weight: 500;
 }
 .text-_b_h123456_B {
   --tw-text-opacity: 1;
@@ -491,12 +549,40 @@ text,
 .mt-_b33px_B {
   margin-top: 66rpx;
 }
+.block {
+  display: block;
+}
 .h-_b41_d54vw_B {
   height: 41.54vw;
+}
+.h-full {
+  height: 100%;
+}
+.w-screen {
+  width: 100vw;
+}
+.space-y-1 > view + view,
+.space-y-1 > view + text,
+.space-y-1 > text + view,
+.space-y-1 > text + text {
+  --tw-space-y-reverse: 0;
+  margin-top: calc(8rpx * (1 - var(--tw-space-y-reverse)));
+  margin-bottom: calc(8rpx * var(--tw-space-y-reverse));
+}
+.space-y-4 > view + view,
+.space-y-4 > view + text,
+.space-y-4 > text + view,
+.space-y-4 > text + text {
+  --tw-space-y-reverse: 0;
+  margin-top: calc(32rpx * (1 - var(--tw-space-y-reverse)));
+  margin-bottom: calc(32rpx * var(--tw-space-y-reverse));
 }
 .border-_b_hEEEEEE_B {
   --tw-border-opacity: 1;
   border-color: rgba(238, 238, 238, var(--tw-border-opacity, 1));
+}
+.border-b {
+  border-bottom-width: 2rpx;
 }
 .bg-_b_hfff_B {
   --tw-bg-opacity: 1;
@@ -519,6 +605,12 @@ text,
 .bg-_blength_c100_v_100_v_B {
   background-size: 100% 100%;
 }
+.bg-no-repeat {
+  background-repeat: no-repeat;
+}
+.p-4 {
+  padding: 32rpx;
+}
 .pb-_b10px_B {
   padding-bottom: 20rpx;
 }
@@ -530,6 +622,30 @@ text,
 }
 .text-_b50px_B {
   font-size: 100rpx;
+}
+.text-base {
+  font-size: 32rpx;
+  line-height: 48rpx;
+}
+.text-center {
+  text-align: center;
+}
+.text-left {
+  text-align: left;
+}
+.text-lg {
+  font-size: 36rpx;
+  line-height: 56rpx;
+}
+.text-xs {
+  font-size: 24rpx;
+  line-height: 32rpx;
+}
+.font-bold {
+  font-weight: 700;
+}
+.font-medium {
+  font-weight: 500;
 }
 .text-_b_h123456_B {
   --tw-text-opacity: 1;

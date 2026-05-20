@@ -6,7 +6,7 @@ Generator CSS files: app.wxss, index.wxss, index.wxss, index.wxss
 
 | Bytes | Selectors | @supports | :hover | Tailwind banner | Raw arbitrary selector | Weapp escaped arbitrary selector |
 | ---: | ---: | --- | --- | --- | --- | --- |
-| 367196 | 2152 | false | false | false | false | true |
+| 366524 | 2150 | false | false | false | false | true |
 
 ## Generator CSS
 
@@ -11570,6 +11570,59 @@ page,
 wx-root-portal-content {
   --color-gray-200: #e5e7eb;
   --color-gray-400: #9ca3af;
+}
+.bg-_b_h534312_B {
+  background-color: #534312;
+}
+.text-_b100rpx_B {
+  font-size: 100rpx;
+}
+.text-_b_hfff_B {
+  color: #fff;
+}
+.before_ccontent-_b_aindependent_subpackage_taro-webpack-react-tailwindcss-v4_a_B::before {
+  --tw-content: 'independent subpackage taro-webpack-react-tailwindcss-v4';
+  content: var(--tw-content);
+}
+.before_ccontent-_b_anormal_subpackage_taro-webpack-react-tailwindcss-v4_a_B::before {
+  --tw-content: 'normal subpackage taro-webpack-react-tailwindcss-v4';
+  content: var(--tw-content);
+}
+.container {
+  width: 100%;
+}
+@media (min-width: 40rem) {
+  .container {
+    max-width: 1280rpx;
+  }
+}
+@media (min-width: 48rem) {
+  .container {
+    max-width: 1536rpx;
+  }
+}
+@media (min-width: 64rem) {
+  .container {
+    max-width: 2048rpx;
+  }
+}
+@media (min-width: 80rem) {
+  .container {
+    max-width: 2560rpx;
+  }
+}
+@media (min-width: 96rem) {
+  .container {
+    max-width: 3072rpx;
+  }
+}
+
+:host,
+page,
+.tw-root,
+wx-root-portal-content {
+  --color-gray-200: #e5e7eb;
+  --color-gray-400: #9ca3af;
   --font-sans:
     ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, Cantarell, Noto Sans, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol',
     'Noto Color Emoji';
@@ -11593,107 +11646,5 @@ wx-root-portal-content {
 .before_ccontent-_b_anormal_subpackage_taro-webpack-react-tailwindcss-v4_a_B::before {
   --tw-content: 'normal subpackage taro-webpack-react-tailwindcss-v4';
   content: var(--tw-content);
-}
-.bg-independent-subpackage-marker {
-  background-color: #dc2626;
-}
-.container {
-  width: 100%;
-}
-@media (min-width: 40rem) {
-  .container {
-    max-width: 1280rpx;
-  }
-}
-@media (min-width: 48rem) {
-  .container {
-    max-width: 1536rpx;
-  }
-}
-@media (min-width: 64rem) {
-  .container {
-    max-width: 2048rpx;
-  }
-}
-@media (min-width: 80rem) {
-  .container {
-    max-width: 2560rpx;
-  }
-}
-@media (min-width: 96rem) {
-  .container {
-    max-width: 3072rpx;
-  }
-}
-
-::before,
-::after {
-  --tw-content: '';
-}
-
-view,
-text,
-:after,
-:before {
-  border: 0 solid;
-  box-sizing: border-box;
-  margin: 0;
-  padding: 0;
-}
-
-:host,
-page,
-.tw-root,
-wx-root-portal-content {
-  --color-gray-200: #e5e7eb;
-  --color-gray-400: #9ca3af;
-}
-.bg-_b_h534312_B {
-  background-color: #534312;
-}
-.bg-normal-subpackage-marker {
-  background-color: #2563eb;
-}
-.text-_b100rpx_B {
-  font-size: 100rpx;
-}
-.text-_b_hfff_B {
-  color: #fff;
-}
-.before_ccontent-_b_aindependent_subpackage_taro-webpack-react-tailwindcss-v4_a_B::before {
-  --tw-content: 'independent subpackage taro-webpack-react-tailwindcss-v4';
-  content: var(--tw-content);
-}
-.before_ccontent-_b_anormal_subpackage_taro-webpack-react-tailwindcss-v4_a_B::before {
-  --tw-content: 'normal subpackage taro-webpack-react-tailwindcss-v4';
-  content: var(--tw-content);
-}
-.container {
-  width: 100%;
-}
-@media (min-width: 40rem) {
-  .container {
-    max-width: 1280rpx;
-  }
-}
-@media (min-width: 48rem) {
-  .container {
-    max-width: 1536rpx;
-  }
-}
-@media (min-width: 64rem) {
-  .container {
-    max-width: 2048rpx;
-  }
-}
-@media (min-width: 80rem) {
-  .container {
-    max-width: 2560rpx;
-  }
-}
-@media (min-width: 96rem) {
-  .container {
-    max-width: 3072rpx;
-  }
 }
 ```
