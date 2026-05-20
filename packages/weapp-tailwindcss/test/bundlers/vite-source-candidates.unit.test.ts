@@ -34,6 +34,20 @@ describe('bundlers/vite source candidates', () => {
     expect(values.has('[mask-type:luminance]')).toBe(true)
   })
 
+  it('does not collect html tag fragments from JavaScript template strings', async () => {
+    const { createSourceCandidateCollector } = await import('@/bundlers/vite/source-candidates')
+    const collector = createSourceCandidateCollector()
+
+    await collector.sync(
+      '/project/src/index.js',
+      'document.body.append(`<div class="${className}">className</div>`)'
+      + '\nconst className = "flex bg-yellow-300/30 w-[100px]"',
+    )
+
+    const values = collector.values()
+    expect(values).toEqual(new Set(['flex', 'bg-yellow-300/30', 'w-[100px]']))
+  })
+
   it('merges transformed module candidates without dropping raw source candidates', async () => {
     const { createSourceCandidateCollector } = await import('@/bundlers/vite/source-candidates')
     const collector = createSourceCandidateCollector()

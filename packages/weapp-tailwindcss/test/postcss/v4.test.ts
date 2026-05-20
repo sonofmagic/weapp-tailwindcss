@@ -26,7 +26,7 @@ function getCtx(options?: CompilerOptions) {
 }
 
 describe('tailwindcss v4', () => {
-  it('uses Tailwind v4 cssPreflight defaults when the compiler context resolves v4', async () => {
+  it('keeps Tailwind v4 variable-only input without injecting preflight reset defaults', async () => {
     const { styleHandler } = getCtx({
       tailwindcss: {
         packageName: 'tailwindcss4',
@@ -35,10 +35,12 @@ describe('tailwindcss v4', () => {
     const borderProp = ['bor', 'der'].join('')
     const { css } = await styleHandler('::before,::after{--tw-content:"";--tw-border-spacing-x:0;}')
 
-    expect(css).toContain('box-sizing:border-box')
-    expect(css).toContain('margin:0')
-    expect(css).toContain('padding:0')
-    expect(css).toContain(`${borderProp}:0 solid`)
+    expect(css).toContain('--tw-border-spacing-x:0')
+    expect(css).not.toContain('--tw-content')
+    expect(css).not.toContain('box-sizing:border-box')
+    expect(css).not.toContain('margin:0')
+    expect(css).not.toContain('padding:0')
+    expect(css).not.toContain(`${borderProp}:0 solid`)
     expect(css).not.toContain('border-width: 0')
     expect(css).not.toContain('border-style: solid')
     expect(css).not.toContain('border-color: currentColor')

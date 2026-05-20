@@ -6,7 +6,7 @@ Generator CSS files: app.wxss, home.wxss, index.wxss, index.wxss, user.wxss
 
 | Bytes | Selectors | @supports | :hover | Tailwind banner | Raw arbitrary selector | Weapp escaped arbitrary selector |
 | ---: | ---: | --- | --- | --- | --- | --- |
-| 40719 | 232 | false | false | false | false | true |
+| 40739 | 232 | false | false | false | false | true |
 
 ## Generator CSS
 
@@ -75,6 +75,7 @@ wx-root-portal-content {
   --tw-backdrop-opacity: initial;
   --tw-backdrop-saturate: initial;
   --tw-backdrop-sepia: initial;
+  --tw-content: '';
   --font-sans:
     ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, Cantarell, Noto Sans, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol',
     'Noto Color Emoji';

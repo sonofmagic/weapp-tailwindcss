@@ -172,6 +172,17 @@ function isFileMatchedByEntries(file: string, entries: TailwindSourceEntry[] | u
 const CSS_APPLY_RE = /@apply\s+([^;{}]+)/g
 const CSS_APPLY_IMPORTANT = '!important'
 const SOURCE_QUOTED_LITERAL_RE = /"((?:\\.|[^"\\])*)"|'((?:\\.|[^'\\])*)'|`((?:\\.|[^`\\])*)`/g
+const HTML_CLASS_ATTRIBUTE_RE = /\b(?:class|className|hover-class|hoverClass)\s*=\s*(?:"([^"]*)"|'([^']*)'|`([^`]*)`)/g
+const TEMPLATE_INTERPOLATION_RE = /\$\{[^}]*\}/
+
+function addSplitCandidates(candidates: Set<string>, token: string) {
+  for (const candidate of splitCode(token, true)) {
+    const normalized = candidate.trim()
+    if (normalized && !TEMPLATE_INTERPOLATION_RE.test(normalized)) {
+      candidates.add(normalized)
+    }
+  }
+}
 
 function extractCssApplyCandidates(source: string) {
   const candidates = new Set<string>()
@@ -192,15 +203,19 @@ function extractCssApplyCandidates(source: string) {
 
 function extractSourceCandidates(source: string) {
   const candidates = new Set<string>()
+  HTML_CLASS_ATTRIBUTE_RE.lastIndex = 0
+  let classAttribute = HTML_CLASS_ATTRIBUTE_RE.exec(source)
+  while (classAttribute !== null) {
+    addSplitCandidates(candidates, classAttribute[1] ?? classAttribute[2] ?? classAttribute[3] ?? '')
+    classAttribute = HTML_CLASS_ATTRIBUTE_RE.exec(source)
+  }
+
   SOURCE_QUOTED_LITERAL_RE.lastIndex = 0
   let match = SOURCE_QUOTED_LITERAL_RE.exec(source)
   while (match !== null) {
     const token = match[1] ?? match[2] ?? match[3] ?? ''
-    for (const candidate of splitCode(token, true)) {
-      const normalized = candidate.trim()
-      if (normalized) {
-        candidates.add(normalized)
-      }
+    if (!token.includes('<')) {
+      addSplitCandidates(candidates, token)
     }
     match = SOURCE_QUOTED_LITERAL_RE.exec(source)
   }

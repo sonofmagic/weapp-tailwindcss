@@ -6,7 +6,7 @@ Generator CSS files: app.wxss, styles/app.wxss, index.wxss, app.wxss, index.wxss
 
 | Bytes | Selectors | @supports | :hover | Tailwind banner | Raw arbitrary selector | Weapp escaped arbitrary selector |
 | ---: | ---: | --- | --- | --- | --- | --- |
-| 22364 | 68 | false | false | false | false | true |
+| 22444 | 68 | false | false | false | false | true |
 
 ## Generator CSS
 
@@ -48,6 +48,7 @@ wx-root-portal-content {
   --tw-ring-offset-width: 0px;
   --tw-ring-offset-color: #fff;
   --tw-ring-offset-shadow: 0 0 rgba(0, 0, 0, 0);
+  --tw-content: '';
   --color-gray-200: #e5e7eb;
   --color-gray-400: #9ca3af;
   --color-zinc-800: #27272a;
@@ -296,6 +297,7 @@ wx-root-portal-content {
   --tw-ring-offset-width: 0px;
   --tw-ring-offset-color: #fff;
   --tw-ring-offset-shadow: 0 0 rgba(0, 0, 0, 0);
+  --tw-content: '';
   --color-gray-200: #e5e7eb;
   --color-gray-400: #9ca3af;
   --color-zinc-800: #27272a;
@@ -540,6 +542,7 @@ wx-root-portal-content {
   --tw-ring-offset-width: 0px;
   --tw-ring-offset-color: #fff;
   --tw-ring-offset-shadow: 0 0 rgba(0, 0, 0, 0);
+  --tw-content: '';
   --color-gray-200: #e5e7eb;
   --color-gray-400: #9ca3af;
   --color-zinc-800: #27272a;
@@ -784,6 +787,7 @@ wx-root-portal-content {
   --tw-ring-offset-width: 0px;
   --tw-ring-offset-color: #fff;
   --tw-ring-offset-shadow: 0 0 rgba(0, 0, 0, 0);
+  --tw-content: '';
   --color-gray-200: #e5e7eb;
   --color-gray-400: #9ca3af;
   --color-zinc-800: #27272a;

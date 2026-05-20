@@ -84,7 +84,7 @@
     ],
     "status": "passed",
     "generator": {
-      "bytes": 6385,
+      "bytes": 6405,
       "selectors": [
         ".before_ccontent-_b_aindependent_subpackage_gulp-tailwindcss-v4_a_B:before",
         ".before_ccontent-_b_anormal_subpackage_gulp-tailwindcss-v4_a_B:before",
@@ -3060,7 +3060,7 @@
     ],
     "status": "passed",
     "generator": {
-      "bytes": 22364,
+      "bytes": 22444,
       "selectors": [
         ".-m-_b20px_B",
         "._2xl_ctext-_bred_B",
@@ -3273,7 +3273,7 @@
     ],
     "status": "passed",
     "generator": {
-      "bytes": 366416,
+      "bytes": 366436,
       "selectors": [
         ".before_ccontent-_b_aindependent_subpackage_taro-webpack-react-tailwindcss-v4_a_B:before",
         ".before_ccontent-_b_anormal_subpackage_taro-webpack-react-tailwindcss-v4_a_B:before",
@@ -5510,7 +5510,7 @@
     ],
     "status": "passed",
     "generator": {
-      "bytes": 6402,
+      "bytes": 6422,
       "selectors": [
         ".before_ccontent-_b_aindependent_subpackage_taro-vite-react-tailwindcss-v4_a_B:before",
         ".before_ccontent-_b_anormal_subpackage_taro-vite-react-tailwindcss-v4_a_B:before",
@@ -5638,7 +5638,7 @@
     ],
     "status": "passed",
     "generator": {
-      "bytes": 3751,
+      "bytes": 3771,
       "selectors": [
         ".before_ccontent-_b_aindependent_subpackage_taro-webpack-vue3-tailwindcss-v4_a_B:before",
         ".before_ccontent-_b_anormal_subpackage_taro-webpack-vue3-tailwindcss-v4_a_B:before",
@@ -5736,7 +5736,7 @@
     ],
     "status": "passed",
     "generator": {
-      "bytes": 6284,
+      "bytes": 6304,
       "selectors": [
         ".before_ccontent-_b_aindependent_subpackage_taro-vite-vue3-tailwindcss-v4_a_B:before",
         ".before_ccontent-_b_anormal_subpackage_taro-vite-vue3-tailwindcss-v4_a_B:before",
@@ -8943,7 +8943,7 @@
     ],
     "status": "passed",
     "generator": {
-      "bytes": 40719,
+      "bytes": 40739,
       "selectors": [
         "._tcontainer",
         ".absolute",
