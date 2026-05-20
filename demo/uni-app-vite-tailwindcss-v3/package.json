@@ -6,7 +6,8 @@
     "node": "^20.19.0 || >=22.12.0"
   },
   "scripts": {
-    "dev": "cross-env WEAPP_TW_HMR_TIMING=1 DEBUG=weapp-tw BABEL=1 uni -p mp-weixin",
+    "dev": "cross-env WEAPP_TW_HMR_TIMING=1 BABEL=1 uni -p mp-weixin",
+    "dev:debug": "cross-env WEAPP_TW_HMR_TIMING=1 DEBUG=weapp-tw BABEL=1 uni -p mp-weixin",
     "dev:local": "cross-env WEAPP_TW_HMR_TIMING=1 LOCAL=1 uni -p mp-weixin",
     "build": "node ../../scripts/uni-build-guard.mjs build -p mp-weixin",
     "build:babel": "cross-env BABEL=1 node ../../scripts/uni-build-guard.mjs build -p mp-weixin",
@@ -45,6 +46,7 @@
     "up:pkg": "pnpm up -rLi \"!@dcloudio/*\"",
     "up:uniapp": "npx @dcloudio/uvm@latest",
     "predev": "node ../../scripts/ensure-weapp-tailwindcss-built.mjs",
+    "predev:debug": "node ../../scripts/ensure-weapp-tailwindcss-built.mjs",
     "prebuild": "node ../../scripts/ensure-weapp-tailwindcss-built.mjs",
     "predev:local": "node ../../scripts/ensure-weapp-tailwindcss-built.mjs",
     "prebuild:babel": "node ../../scripts/ensure-weapp-tailwindcss-built.mjs",

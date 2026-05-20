@@ -48,6 +48,8 @@ export interface TailwindV3GenerateOptions {
 export interface TailwindV3GenerateResult {
   css: string
   rawCss: string
+  incrementalCss?: string | undefined
+  incrementalRawCss?: string | undefined
   classSet: Set<string>
   rawCandidates: Set<string>
   dependencies: string[]

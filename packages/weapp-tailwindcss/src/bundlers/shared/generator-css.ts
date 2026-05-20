@@ -72,6 +72,7 @@ export interface GenerateCssByGeneratorOptions {
   getSourceCandidatesForEntries?: ((entries: TailwindSourceEntry[] | undefined) => Set<string>) | undefined
   styleHandler: InternalUserDefinedOptions['styleHandler']
   debug: (format: string, ...args: unknown[]) => void
+  previousCss?: string | undefined
 }
 
 export interface GenerateCssByGeneratorResult {
@@ -79,6 +80,7 @@ export interface GenerateCssByGeneratorResult {
   target: string
   source: 'generator'
   dependencies: string[]
+  incremental?: boolean | undefined
 }
 
 function finalizeMiniProgramGeneratorCss(css: string, target: string) {
@@ -326,12 +328,24 @@ export async function generateCssByGenerator(
     if (!firstGenerated) {
       return undefined
     }
+    const incrementalCssResults = generatedResults
+      .map(item => item.incrementalCss)
+      .filter((css): css is string => typeof css === 'string')
+    const incrementalRawCssResults = generatedResults
+      .map(item => item.incrementalRawCss)
+      .filter((css): css is string => typeof css === 'string')
     const generated = generatedResults.length === 1
       ? firstGenerated
       : {
           ...firstGenerated,
           css: generatedResults.map(item => item.css).join('\n'),
           rawCss: generatedResults.map(item => item.rawCss).join('\n'),
+          incrementalCss: incrementalCssResults.length === generatedResults.length
+            ? incrementalCssResults.filter(Boolean).join('\n')
+            : undefined,
+          incrementalRawCss: incrementalRawCssResults.length === generatedResults.length
+            ? incrementalRawCssResults.filter(Boolean).join('\n')
+            : undefined,
           classSet: new Set(generatedResults.flatMap(item => [...item.classSet])),
           dependencies: [...new Set(generatedResults.flatMap(item => item.dependencies))],
           sources: generatedResults.flatMap(item => item.sources),
@@ -343,6 +357,19 @@ export async function generateCssByGenerator(
       generated.css.length,
       generated.classSet.size,
     )
+    if (typeof options.previousCss === 'string' && typeof generated.incrementalCss === 'string') {
+      const incrementalCss = stripTailwindBanner(generated.incrementalCss)
+      const css = incrementalCss.trim().length > 0
+        ? createCssAppend(options.previousCss, finalizeMiniProgramGeneratorCss(incrementalCss, generated.target))
+        : options.previousCss
+      return {
+        css,
+        target: generated.target,
+        source: 'generator',
+        dependencies: generated.dependencies,
+        incremental: true,
+      }
+    }
     const extraCss = splitTailwindV4GeneratedCss(effectiveRawSource, generated.rawCss)
     if (typeof extraCss === 'string') {
       let css = stripTailwindBanner(generated.css)

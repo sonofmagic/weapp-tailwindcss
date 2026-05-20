@@ -426,6 +426,8 @@ export function createTailwindV3Engine(source: TailwindV3ResolvedSource): Tailwi
         return {
           css: cached.css,
           rawCss: cached.rawCss,
+          incrementalCss: '',
+          incrementalRawCss: '',
           classSet: new Set(cached.classSet),
           rawCandidates: new Set(cached.seenCandidates),
           dependencies: cached.dependencies,
@@ -454,6 +456,8 @@ export function createTailwindV3Engine(source: TailwindV3ResolvedSource): Tailwi
       return {
         css: cached.css,
         rawCss: cached.rawCss,
+        incrementalCss: generated.css,
+        incrementalRawCss: generated.rawCss,
         classSet: new Set(cached.classSet),
         rawCandidates: new Set(cached.seenCandidates),
         dependencies: cached.dependencies,

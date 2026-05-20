@@ -285,12 +285,14 @@ describe('bundlers/vite WeappTailwindcss bundle', () => {
     expect(currentContext.twPatcher.extract).not.toHaveBeenCalled()
     expect(currentContext.twPatcher.getClassSet).not.toHaveBeenCalled()
     expect(currentContext.twPatcher.getClassSetSync).not.toHaveBeenCalled()
-    expect(validateCandidatesMock).toHaveBeenCalledWith(expect.any(Set))
-    expect([...(validateCandidatesMock.mock.calls[0]![0] as Set<string>)]).toEqual(expect.arrayContaining(['bg-[red]']))
-    expect(generateMock).toHaveBeenCalledWith(expect.objectContaining({
-      candidates: new Set(['bg-[red]']),
+    expect(validateCandidatesMock).not.toHaveBeenCalled()
+    expect(generateMock).toHaveBeenCalledTimes(1)
+    expect(generateMock.mock.calls[0]?.[0]).toEqual(expect.objectContaining({
       incrementalCache: true,
     }))
+    expect([...(generateMock.mock.calls[0]?.[0].candidates as Set<string>)]).toEqual(
+      expect.arrayContaining(['bg-[red]']),
+    )
     expect((bundle['app.css'] as OutputAsset).source).toContain('background-color: red')
   }, TEST_TIMEOUT_MS)
 
@@ -2913,6 +2915,212 @@ const cls = "w-[1.5px]"
     expect((secondBundle['pages/b.wxss'] as OutputAsset).source.toString()).toBe(firstPageCss)
     expect(generateMock).toHaveBeenCalledTimes(1)
     expect(currentContext.styleHandler).not.toHaveBeenCalled()
+  }, TEST_TIMEOUT_MS)
+
+  it('appends incremental generator css when only runtime candidates grow', async () => {
+    const generatedCandidates = new Set<string>()
+    const generateMock = vi.fn(async (options: { candidates: Set<string> }) => {
+      const candidates = [...options.candidates].sort()
+      const missingCandidates = candidates.filter(candidate => !generatedCandidates.has(candidate))
+      for (const candidate of missingCandidates) {
+        generatedCandidates.add(candidate)
+      }
+      const createCss = (items: string[]) => items.map(candidate => `.${candidate}{}`).join('\n')
+      return {
+        css: createCss(candidates),
+        rawCss: createCss(candidates),
+        incrementalCss: createCss(missingCandidates),
+        incrementalRawCss: createCss(missingCandidates),
+        target: 'weapp',
+        classSet: new Set(candidates),
+        rawCandidates: new Set(candidates),
+        dependencies: [],
+        sources: [],
+        root: null,
+        version: 4,
+      }
+    })
+    vi.doMock('@/generator', () => ({
+      createWeappTailwindcssGenerator: vi.fn(() => ({
+        generate: generateMock,
+      })),
+      normalizeWeappTailwindcssGeneratorOptions: normalizeGeneratorOptions,
+      resolveTailwindV4SourceFromPatcher: vi.fn(async () => ({
+        version: 4,
+        projectRoot: process.cwd(),
+        base: process.cwd(),
+        baseFallbacks: [],
+        css: '@import "tailwindcss";',
+        dependencies: [],
+        packageName: 'tailwindcss',
+      })),
+      resolveTailwindV4SourceOptionsFromPatcher: vi.fn(() => ({
+        projectRoot: process.cwd(),
+        base: process.cwd(),
+        baseFallbacks: [],
+        packageName: 'tailwindcss',
+      })),
+    }))
+    const WeappTailwindcss = await loadUnifiedVitePlugin()
+    const runtimeSet = new Set<string>()
+    setCurrentContext(createContext({
+      cssMatcher: (file: string) => file.endsWith('.wxss'),
+      mainCssChunkMatcher: vi.fn((file: string) => file === 'app.wxss'),
+      styleHandler: vi.fn(async (code: string) => ({ css: `style:${code}` })),
+      twPatcher: {
+        patch: vi.fn(),
+        getClassSet: vi.fn(async () => new Set(runtimeSet)),
+        getClassSetSync: vi.fn(() => new Set(runtimeSet)),
+        majorVersion: 4,
+        extract: vi.fn(async () => ({ classSet: new Set(runtimeSet) })),
+      },
+    }))
+    const currentContext = getCurrentContext()
+    const plugins = WeappTailwindcss()
+    const postPlugin = plugins?.find(plugin => plugin.name === 'weapp-tailwindcss:adaptor:post') as Plugin
+    expect(postPlugin).toBeTruthy()
+
+    await (postPlugin.configResolved as any)?.call(postPlugin, {
+      command: 'serve',
+      root: process.cwd(),
+      css: { postcss: { plugins: [] } },
+      build: { outDir: 'dist' },
+    } as ResolvedConfig)
+
+    const generateBundle = getGenerateBundleHandler(postPlugin)
+    const createBundle = (js: string) => ({
+      'pages/index/index.wxml': {
+        ...createRollupAsset('<view class="text-[#111111]"></view>'),
+        fileName: 'pages/index/index.wxml',
+      },
+      'pages/index/index.js': {
+        ...createRollupChunk(js),
+        fileName: 'pages/index/index.js',
+      },
+      'app.wxss': {
+        ...createRollupAsset('/*! weapp-tailwindcss generator-placeholder */'),
+        fileName: 'app.wxss',
+      },
+    })
+
+    runtimeSet.add('text-[#111111]')
+    const firstBundle = createBundle('const color = "text-[#111111]"')
+    await generateBundle?.call(postPlugin, {} as any, firstBundle)
+    const firstCss = (firstBundle['app.wxss'] as OutputAsset).source.toString()
+
+    runtimeSet.add('text-[#222222]')
+    const secondBundle = createBundle('const color = "text-[#111111] text-[#222222]"')
+    await generateBundle?.call(postPlugin, {} as any, secondBundle)
+    const secondCss = (secondBundle['app.wxss'] as OutputAsset).source.toString()
+
+    expect(generateMock).toHaveBeenCalledTimes(2)
+    expect(secondCss).toBe(`${firstCss}\n.text-[#222222]{}`)
+    expect(secondCss).toContain('text-[#111111]')
+    expect(secondCss).toContain('text-[#222222]')
+    expect(currentContext.styleHandler).not.toHaveBeenCalled()
+  }, TEST_TIMEOUT_MS)
+
+  it('keeps generator css incremental when runtime candidates replace a utility', async () => {
+    const generatedCandidates = new Set<string>()
+    const generateMock = vi.fn(async (options: { candidates: Set<string> }) => {
+      const candidates = [...options.candidates].sort()
+      const missingCandidates = candidates.filter(candidate => !generatedCandidates.has(candidate))
+      for (const candidate of missingCandidates) {
+        generatedCandidates.add(candidate)
+      }
+      const createCss = (items: string[]) => items.map(candidate => `.${candidate}{}`).join('\n')
+      return {
+        css: createCss([...generatedCandidates].sort()),
+        rawCss: createCss([...generatedCandidates].sort()),
+        incrementalCss: createCss(missingCandidates),
+        incrementalRawCss: createCss(missingCandidates),
+        target: 'weapp',
+        classSet: new Set(generatedCandidates),
+        rawCandidates: new Set(generatedCandidates),
+        dependencies: [],
+        sources: [],
+        root: null,
+        version: 4,
+      }
+    })
+    vi.doMock('@/generator', () => ({
+      createWeappTailwindcssGenerator: vi.fn(() => ({
+        generate: generateMock,
+      })),
+      normalizeWeappTailwindcssGeneratorOptions: normalizeGeneratorOptions,
+      resolveTailwindV4SourceFromPatcher: vi.fn(async () => ({
+        version: 4,
+        projectRoot: process.cwd(),
+        base: process.cwd(),
+        baseFallbacks: [],
+        css: '@import "tailwindcss";',
+        dependencies: [],
+        packageName: 'tailwindcss',
+      })),
+      resolveTailwindV4SourceOptionsFromPatcher: vi.fn(() => ({
+        projectRoot: process.cwd(),
+        base: process.cwd(),
+        baseFallbacks: [],
+        packageName: 'tailwindcss',
+      })),
+    }))
+    const WeappTailwindcss = await loadUnifiedVitePlugin()
+    const runtimeSet = new Set<string>()
+    setCurrentContext(createContext({
+      cssMatcher: (file: string) => file.endsWith('.wxss'),
+      mainCssChunkMatcher: vi.fn((file: string) => file === 'app.wxss'),
+      styleHandler: vi.fn(async (code: string) => ({ css: `style:${code}` })),
+      twPatcher: {
+        patch: vi.fn(),
+        getClassSet: vi.fn(async () => new Set(runtimeSet)),
+        getClassSetSync: vi.fn(() => new Set(runtimeSet)),
+        majorVersion: 4,
+        extract: vi.fn(async () => ({ classSet: new Set(runtimeSet) })),
+      },
+    }))
+    const plugins = WeappTailwindcss()
+    const postPlugin = plugins?.find(plugin => plugin.name === 'weapp-tailwindcss:adaptor:post') as Plugin
+    expect(postPlugin).toBeTruthy()
+
+    await (postPlugin.configResolved as any)?.call(postPlugin, {
+      command: 'serve',
+      root: process.cwd(),
+      css: { postcss: { plugins: [] } },
+      build: { outDir: 'dist' },
+    } as ResolvedConfig)
+
+    const generateBundle = getGenerateBundleHandler(postPlugin)
+    const createBundle = (js: string) => ({
+      'pages/index/index.wxml': {
+        ...createRollupAsset('<view class="text-[#111111]"></view>'),
+        fileName: 'pages/index/index.wxml',
+      },
+      'pages/index/index.js': {
+        ...createRollupChunk(js),
+        fileName: 'pages/index/index.js',
+      },
+      'app.wxss': {
+        ...createRollupAsset('/*! weapp-tailwindcss generator-placeholder */'),
+        fileName: 'app.wxss',
+      },
+    })
+
+    runtimeSet.add('text-[#111111]')
+    const firstBundle = createBundle('const color = "text-[#111111]"')
+    await generateBundle?.call(postPlugin, {} as any, firstBundle)
+    const firstCss = (firstBundle['app.wxss'] as OutputAsset).source.toString()
+
+    runtimeSet.delete('text-[#111111]')
+    runtimeSet.delete('text-[#222222]')
+    runtimeSet.add('text-[#222222]')
+    const secondBundle = createBundle('const color = "text-[#222222]"')
+    await generateBundle?.call(postPlugin, {} as any, secondBundle)
+    const secondCss = (secondBundle['app.wxss'] as OutputAsset).source.toString()
+
+    expect(generateMock).toHaveBeenCalledTimes(2)
+    expect(secondCss).toBe(`${firstCss}\n.text-[#222222]{}`)
+    expect(secondCss).toContain('text-[#111111]')
+    expect(secondCss).toContain('text-[#222222]')
   }, TEST_TIMEOUT_MS)
 
   it('isolates Tailwind v4 generated css share scope per output asset', async () => {

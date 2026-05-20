@@ -30,6 +30,8 @@ export interface TailwindV4GenerateOptions extends TailwindV4PatchGenerateOption
 export interface TailwindV4GenerateResult extends Omit<PatchTailwindV4GenerateResult, 'css'> {
   css: string
   rawCss: string
+  incrementalCss?: string | undefined
+  incrementalRawCss?: string | undefined
   target: TailwindV4GenerateTarget
 }
 

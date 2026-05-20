@@ -224,7 +224,10 @@ export function createGenerateBundleHook(context: GenerateBundleContext) {
       filteredGeneratorCandidates,
     )
     let transformRuntime = runtime
-    if (runtimeState.twPatcher.majorVersion === 3 && generatorRuntime.size > 0) {
+    const shouldValidateV3GeneratorRuntime = runtimeState.twPatcher.majorVersion === 3
+      && generatorRuntime.size > 0
+      && !useV3OxideSourceRuntime
+    if (shouldValidateV3GeneratorRuntime) {
       const cssEntries = snapshot.entries.filter(entry =>
         entry.type === 'css' && entry.output.type === 'asset')
       const mainCssEntry = cssEntries.find(entry => getCssHandlerOptions(entry.file).isMainChunk) ?? cssEntries[0]
@@ -416,6 +419,9 @@ export function createGenerateBundleHook(context: GenerateBundleContext) {
               const runTransform = async () => {
                 const start = performance.now()
                 await runtimeState.readyPromise
+                const previousCss = useIncrementalMode && !snapshot.changedByType.css.has(file)
+                  ? lastCssResultByFile.get(file)
+                  : undefined
                 const generated = await generateCssByGenerator({
                   opts,
                   runtimeState,
@@ -427,6 +433,7 @@ export function createGenerateBundleHook(context: GenerateBundleContext) {
                   getSourceCandidatesForEntries,
                   styleHandler,
                   debug,
+                  previousCss,
                 })
                 if (generated) {
                   registerGeneratorDependencies({ addWatchFile }, generated.dependencies)

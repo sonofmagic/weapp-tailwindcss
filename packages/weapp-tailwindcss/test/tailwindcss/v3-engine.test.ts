@@ -245,6 +245,8 @@ describe('tailwindcss v3 engine', () => {
     expect(first.css).toContain('.bg-blue-500')
     expect(second.css).toContain('.bg-blue-500')
     expect(second.css).toContain('.bg-_b_h123455_B')
+    expect(second.incrementalCss).toContain('.bg-_b_h123455_B')
+    expect(second.incrementalCss).not.toContain('.bg-blue-500')
     expect(second.classSet).toEqual(new Set(['bg-blue-500', 'bg-[#123455]']))
     expect(second.css.match(/\.bg-blue-500/g) ?? []).toHaveLength(1)
   })
