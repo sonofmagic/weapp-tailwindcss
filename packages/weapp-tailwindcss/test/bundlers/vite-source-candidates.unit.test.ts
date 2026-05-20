@@ -72,6 +72,25 @@ describe('bundlers/vite source candidates', () => {
     }])).toEqual(new Set(['bg-[#000020]', 'text-[23.000020px]']))
   })
 
+  it.each(['vue', 'uvue', 'nvue'])('collects %s template and script source candidates through tailwindcss-patch', async (extension) => {
+    const { createSourceCandidateCollector } = await import('@/bundlers/vite/source-candidates')
+    const collector = createSourceCandidateCollector()
+
+    await collector.sync(`src/pages/index.${extension}`, [
+      '<template><view class="bg-[#000020] text-[23.000020px]"></view></template>',
+      '<script setup>',
+      'const className = "flex w-[100px]"',
+      '</script>',
+    ].join('\n'))
+
+    expect(collector.values()).toEqual(new Set([
+      'bg-[#000020]',
+      'text-[23.000020px]',
+      'flex',
+      'w-[100px]',
+    ]))
+  })
+
   it('matches absolute source entry patterns against tracked source files', async () => {
     const { createSourceCandidateCollector } = await import('@/bundlers/vite/source-candidates')
     const collector = createSourceCandidateCollector()

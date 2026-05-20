@@ -1,9 +1,9 @@
 import type { TailwindInlineSourceCandidates, TailwindSourceEntry } from '@/tailwindcss/source-scan'
 import { readFile } from 'node:fs/promises'
 import path from 'node:path'
-import { splitCode } from '@weapp-tailwindcss/shared/extractors'
 import fg from 'fast-glob'
 import micromatch from 'micromatch'
+import { extractSourceCandidates } from 'tailwindcss-patch'
 import { expandTailwindSourceEntries } from '@/tailwindcss/source-scan'
 
 export interface SourceCandidateCollector {
@@ -73,7 +73,6 @@ const SOURCE_CANDIDATE_EXTENSIONS = [
   'stylus',
 ]
 const SOURCE_CANDIDATE_EXTENSION_RE = /\.(?:[cm]?[jt]sx?|vue|uvue|nvue|svelte|mpx|html|wxml|axml|jxml|ksml|ttml|qml|tyml|xhsml|swan|css|wxss|acss|jxss|ttss|qss|tyss|scss|sass|less|stylus?)$/
-const CSS_SOURCE_CANDIDATE_EXTENSION_RE = /^(?:css|wxss|acss|jxss|ttss|qss|tyss|scss|sass|less|styl|stylus)$/
 const SOURCE_CANDIDATE_GLOB = `**/*.{${SOURCE_CANDIDATE_EXTENSIONS.join(',')}}`
 const DEFAULT_SCAN_IGNORE = [
   '**/node_modules/**',
@@ -169,73 +168,6 @@ function isFileMatchedByEntries(file: string, entries: TailwindSourceEntry[] | u
   })
 }
 
-const CSS_APPLY_RE = /@apply\s+([^;{}]+)/g
-const CSS_APPLY_IMPORTANT = '!important'
-const SOURCE_QUOTED_LITERAL_RE = /"((?:\\.|[^"\\])*)"|'((?:\\.|[^'\\])*)'|`((?:\\.|[^`\\])*)`/g
-const HTML_CLASS_ATTRIBUTE_RE = /\b(?:class|className|hover-class|hoverClass)\s*=\s*(?:"([^"]*)"|'([^']*)'|`([^`]*)`)/g
-const TEMPLATE_INTERPOLATION_RE = /\$\{[^}]*\}/
-
-function addSplitCandidates(candidates: Set<string>, token: string) {
-  for (const candidate of splitCode(token, true)) {
-    const normalized = candidate.trim()
-    if (normalized && !TEMPLATE_INTERPOLATION_RE.test(normalized)) {
-      candidates.add(normalized)
-    }
-  }
-}
-
-function extractCssApplyCandidates(source: string) {
-  const candidates = new Set<string>()
-  CSS_APPLY_RE.lastIndex = 0
-  let match = CSS_APPLY_RE.exec(source)
-  while (match !== null) {
-    const params = match[1] ?? ''
-    for (const candidate of splitCode(params, true)) {
-      const normalized = candidate.trim()
-      if (normalized && normalized !== CSS_APPLY_IMPORTANT) {
-        candidates.add(normalized)
-      }
-    }
-    match = CSS_APPLY_RE.exec(source)
-  }
-  return candidates
-}
-
-function extractSourceCandidates(source: string) {
-  const candidates = new Set<string>()
-  HTML_CLASS_ATTRIBUTE_RE.lastIndex = 0
-  let classAttribute = HTML_CLASS_ATTRIBUTE_RE.exec(source)
-  while (classAttribute !== null) {
-    addSplitCandidates(candidates, classAttribute[1] ?? classAttribute[2] ?? classAttribute[3] ?? '')
-    classAttribute = HTML_CLASS_ATTRIBUTE_RE.exec(source)
-  }
-
-  SOURCE_QUOTED_LITERAL_RE.lastIndex = 0
-  let match = SOURCE_QUOTED_LITERAL_RE.exec(source)
-  while (match !== null) {
-    const token = match[1] ?? match[2] ?? match[3] ?? ''
-    if (!token.includes('<')) {
-      addSplitCandidates(candidates, token)
-    }
-    match = SOURCE_QUOTED_LITERAL_RE.exec(source)
-  }
-  return candidates
-}
-
-function extractCandidatesByExtension(extension: string, source: string) {
-  const candidates = new Set<string>()
-  if (CSS_SOURCE_CANDIDATE_EXTENSION_RE.test(extension)) {
-    for (const candidate of extractCssApplyCandidates(source)) {
-      candidates.add(candidate)
-    }
-    return candidates
-  }
-  for (const candidate of extractSourceCandidates(source)) {
-    candidates.add(candidate)
-  }
-  return candidates
-}
-
 export function createSourceCandidateCollector(): SourceCandidateCollector {
   const candidatesById = new Map<string, Set<string>>()
   const scanCandidatesById = new Map<string, Set<string>>()
@@ -254,7 +186,7 @@ export function createSourceCandidateCollector(): SourceCandidateCollector {
       return
     }
 
-    const nextCandidates = extractCandidatesByExtension(extension, source)
+    const nextCandidates = new Set(await extractSourceCandidates(source, extension))
     sourceCandidateContentCache.set(contentCacheKey, [...nextCandidates])
 
     replaceScanLayer(normalizedId, nextCandidates)
@@ -267,7 +199,7 @@ export function createSourceCandidateCollector(): SourceCandidateCollector {
     const cachedCandidates = sourceCandidateContentCache.get(contentCacheKey)
     const extractedCandidates = cachedCandidates
       ? new Set(cachedCandidates)
-      : extractCandidatesByExtension(extension, source)
+      : new Set(await extractSourceCandidates(source, extension))
     if (!cachedCandidates) {
       sourceCandidateContentCache.set(contentCacheKey, [...extractedCandidates])
     }
