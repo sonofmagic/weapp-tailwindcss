@@ -81,9 +81,25 @@ describe('demo/web vite matrix', () => {
 
     expect(sources[0]).toContain('@tailwind base;')
     expect(sources[1]).toContain('@tailwind base;')
-    expect(sources[2]).toContain('@import "tailwindcss" source(none);')
-    expect(sources[3]).toContain('@import "tailwindcss" source(none);')
+    expect(sources[2]).toContain('@import "tailwindcss/theme.css" layer(theme);')
+    expect(sources[3]).toContain('@import "tailwindcss/theme.css" layer(theme);')
     expect(sources[4]).toContain('content')
     expect(sources[5]).toContain('content')
+    expect(sources[4]).toContain('preflight: false')
+    expect(sources[5]).toContain('preflight: false')
+  })
+
+  it('keeps preflight disabled for the web demo CSS entries', async () => {
+    const sources = await Promise.all([
+      readDemoFile('web/react-vite-tailwindcss-v3/tailwind.config.cjs'),
+      readDemoFile('web/vue-vite-tailwindcss-v3/tailwind.config.cjs'),
+      readDemoFile('web/react-vite-tailwindcss-v4/src/style.css'),
+      readDemoFile('web/vue-vite-tailwindcss-v4/src/style.css'),
+    ])
+
+    for (const source of sources) {
+      expect(source).not.toContain('@import "tailwindcss/preflight.css"')
+      expect(source).not.toContain('button, input, select, optgroup, textarea')
+    }
   })
 })

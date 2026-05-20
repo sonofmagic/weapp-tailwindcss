@@ -1,6 +1,7 @@
 # Web Vite Tailwind CSS Demos
 
 这里放纯 Vite 8 的 Web 平台对比 demo，不使用 Taro、uni-app、`@tailwindcss/vite` 或 `@tailwindcss/postcss`。
+默认不启用 Tailwind preflight，方便直接对比 web 与小程序产物差异。
 
 - `react-vite-tailwindcss-v3`
 - `react-vite-tailwindcss-v4`
