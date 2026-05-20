@@ -152,14 +152,20 @@ function isFileMatchedByEntries(file: string, entries: TailwindSourceEntry[] | u
   const resolvedFile = path.resolve(file)
   const matchesPositive = positiveEntries.some((entry) => {
     const relative = toPosixPath(path.relative(path.resolve(entry.base), resolvedFile))
-    return relative && !relative.startsWith('../') && !path.isAbsolute(relative) && micromatch.isMatch(relative, entry.pattern)
+    const pattern = path.isAbsolute(entry.pattern)
+      ? toPosixPath(path.relative(path.resolve(entry.base), entry.pattern))
+      : entry.pattern
+    return relative && !relative.startsWith('../') && !path.isAbsolute(relative) && micromatch.isMatch(relative, pattern)
   })
   if (!matchesPositive) {
     return false
   }
   return !negativeEntries.some((entry) => {
     const relative = toPosixPath(path.relative(path.resolve(entry.base), resolvedFile))
-    return relative && !relative.startsWith('../') && !path.isAbsolute(relative) && micromatch.isMatch(relative, entry.pattern)
+    const pattern = path.isAbsolute(entry.pattern)
+      ? toPosixPath(path.relative(path.resolve(entry.base), entry.pattern))
+      : entry.pattern
+    return relative && !relative.startsWith('../') && !path.isAbsolute(relative) && micromatch.isMatch(relative, pattern)
   })
 }
 

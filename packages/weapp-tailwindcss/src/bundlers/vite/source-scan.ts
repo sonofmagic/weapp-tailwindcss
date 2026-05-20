@@ -540,6 +540,12 @@ function toPosixPath(value: string) {
   return value.split(path.sep).join('/')
 }
 
+function normalizeEntryPattern(entry: TailwindSourceEntry) {
+  return path.isAbsolute(entry.pattern)
+    ? toPosixPath(path.relative(path.resolve(entry.base), entry.pattern))
+    : entry.pattern
+}
+
 export function createViteSourceScanMatcher(entries: TailwindSourceEntry[] | undefined) {
   if (!entries?.length) {
     return undefined
@@ -554,14 +560,14 @@ export function createViteSourceScanMatcher(entries: TailwindSourceEntry[] | und
     const resolvedFile = path.resolve(file)
     const matchesPositive = positiveEntries.some((entry) => {
       const relative = toPosixPath(path.relative(path.resolve(entry.base), resolvedFile))
-      return relative && !relative.startsWith('../') && !path.isAbsolute(relative) && micromatch.isMatch(relative, entry.pattern)
+      return relative && !relative.startsWith('../') && !path.isAbsolute(relative) && micromatch.isMatch(relative, normalizeEntryPattern(entry))
     })
     if (!matchesPositive) {
       return false
     }
     return !negativeEntries.some((entry) => {
       const relative = toPosixPath(path.relative(path.resolve(entry.base), resolvedFile))
-      return relative && !relative.startsWith('../') && !path.isAbsolute(relative) && micromatch.isMatch(relative, entry.pattern)
+      return relative && !relative.startsWith('../') && !path.isAbsolute(relative) && micromatch.isMatch(relative, normalizeEntryPattern(entry))
     })
   }
 }

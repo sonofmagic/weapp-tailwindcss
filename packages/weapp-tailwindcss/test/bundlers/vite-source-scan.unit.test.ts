@@ -23,6 +23,19 @@ describe('bundlers/vite source scan', () => {
     )
   })
 
+  it('matches absolute source entry patterns against Vite transformed file ids', async () => {
+    const { createViteSourceScanMatcher } = await import('@/bundlers/vite/source-scan')
+    const matcher = createViteSourceScanMatcher([{
+      base: '/project',
+      negated: false,
+      pattern: '/project/src/**/*.{js,html,wxml}',
+    }])
+
+    expect(matcher?.('/project/src/index.js')).toBe(true)
+    expect(matcher?.('/project/src/index.html')).toBe(true)
+    expect(matcher?.('/project/other/index.js')).toBe(false)
+  })
+
   it('resolves Tailwind v4 source candidates from cssSources before fallback source resolution', async () => {
     const fallbackResolve = vi.fn(async () => {
       throw new Error('cssSources should avoid full Tailwind v4 source fallback')

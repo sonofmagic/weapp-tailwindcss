@@ -57,4 +57,19 @@ describe('bundlers/vite source candidates', () => {
       pattern: 'src/**/*',
     }])).toEqual(new Set(['bg-[#000020]', 'text-[23.000020px]']))
   })
+
+  it('matches absolute source entry patterns against tracked source files', async () => {
+    const { createSourceCandidateCollector } = await import('@/bundlers/vite/source-candidates')
+    const collector = createSourceCandidateCollector()
+    const root = '/project'
+    const file = '/project/src/index.js'
+
+    await collector.sync(file, 'export const cls = "flex grid w-[100px]"')
+
+    expect(collector.valuesForEntries([{
+      base: root,
+      negated: false,
+      pattern: '/project/src/*.{js,html,wxml}',
+    }])).toEqual(new Set(['flex', 'grid', 'w-[100px]']))
+  })
 })

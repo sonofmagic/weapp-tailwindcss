@@ -18,6 +18,8 @@ import { processCachedTask } from '../shared/cache'
 import { generateCssByGenerator } from '../shared/generator-css'
 import { emitHmrTiming } from '../shared/hmr-timing'
 import { createBundleRuntimeClassSetManager } from '../vite/incremental-runtime-class-set'
+import { createSourceCandidateCollector } from '../vite/source-candidates'
+import { resolveViteSourceScanEntries } from '../vite/source-scan'
 
 const debug = createDebug()
 
@@ -55,6 +57,8 @@ export function createPlugins(options: UserDefinedOptions = {}) {
   let runtimeSetDirty = false
   const runtimeSourceHashByFile = new Map<string, string>()
   const runtimeSourcesByFile = new Map<string, { source: string, type: 'html' | 'js' }>()
+  let cachedGulpSourceCandidates: Set<string> | undefined
+  let cachedGulpSourceCandidateSignature: string | undefined
   const bundleRuntimeClassSetManager: BundleRuntimeClassSetManager
     = (options as UserDefinedOptions & { __internalGulpRuntimeClassSetManager?: BundleRuntimeClassSetManager }).__internalGulpRuntimeClassSetManager
       ?? createBundleRuntimeClassSetManager()
@@ -159,6 +163,42 @@ export function createPlugins(options: UserDefinedOptions = {}) {
     return refreshRuntimeSet({
       forceCollect: true,
     })
+  }
+
+  async function refreshGulpSourceCandidates(forceRefresh = false) {
+    if (runtimeState.twPatcher.majorVersion !== 3) {
+      return new Set<string>()
+    }
+    const root = opts.tailwindcssBasedir ?? process.cwd()
+    const sourceScan = await resolveViteSourceScanEntries(opts, runtimeState.twPatcher, {
+      root,
+    })
+    const nextSignature = cache.computeHash(JSON.stringify({
+      root,
+      entries: sourceScan?.entries,
+      inlineCandidates: sourceScan?.inlineCandidates
+        ? {
+            included: [...sourceScan.inlineCandidates.included].sort(),
+            excluded: [...sourceScan.inlineCandidates.excluded].sort(),
+          }
+        : undefined,
+      explicit: sourceScan?.explicit ?? false,
+      dependencies: [...(sourceScan?.dependencies ?? [])].sort(),
+    }))
+    if (!forceRefresh && cachedGulpSourceCandidateSignature === nextSignature && cachedGulpSourceCandidates) {
+      return cachedGulpSourceCandidates
+    }
+    const collector = createSourceCandidateCollector()
+    await collector.scanRoot({
+      entries: sourceScan?.entries,
+      root,
+    })
+    collector.syncInline(sourceScan?.inlineCandidates)
+    cachedGulpSourceCandidateSignature = nextSignature
+    cachedGulpSourceCandidates = sourceScan?.entries
+      ? collector.valuesForEntries(sourceScan.entries)
+      : collector.values()
+    return cachedGulpSourceCandidates
   }
 
   function createRuntimeSetHash(rawSource: string, nextRuntimeSet: Set<string>) {
@@ -361,11 +401,22 @@ export function createPlugins(options: UserDefinedOptions = {}) {
       const rawSource = file.contents.toString()
       const cssSourceChanged = await registerAutoCssSource(file, rawSource)
       const isMainChunk = opts.mainCssChunkMatcher(resolveGulpMatcherName(file), opts.appType)
-      const nextRuntimeSet = await refreshRuntimeSet({
+      const shouldUseGenerator = runtimeState.twPatcher.majorVersion !== 3 || hasTailwindRootDirectives(rawSource)
+      let nextRuntimeSet = await refreshRuntimeSet({
         forceRefresh: cssSourceChanged,
         forceCollect: cssSourceChanged || (runtimeState.twPatcher.majorVersion !== 4 && isMainChunk),
         clearCache: cssSourceChanged,
       })
+      if (runtimeState.twPatcher.majorVersion === 3 && isMainChunk && shouldUseGenerator) {
+        const sourceCandidates = await refreshGulpSourceCandidates(cssSourceChanged)
+        if (sourceCandidates.size > 0) {
+          nextRuntimeSet = new Set([
+            ...nextRuntimeSet,
+            ...sourceCandidates,
+          ])
+          runtimeSet = nextRuntimeSet
+        }
+      }
       await processCachedTask<string>({
         cache,
         cacheKey: file.path,
@@ -379,17 +430,19 @@ export function createPlugins(options: UserDefinedOptions = {}) {
         async transform() {
           await runtimeState.readyPromise
           const cssHandlerOptions = resolveWxssFileHandlerOptions(file, options)
-          const generated = await generateCssByGenerator({
-            opts,
-            runtimeState,
-            runtime: nextRuntimeSet,
-            rawSource,
-            file: file.path,
-            cssHandlerOptions,
-            cssUserHandlerOptions: resolveWxssUserHandlerOptions(options),
-            styleHandler,
-            debug,
-          })
+          const generated = shouldUseGenerator
+            ? await generateCssByGenerator({
+                opts,
+                runtimeState,
+                runtime: nextRuntimeSet,
+                rawSource,
+                file: file.path,
+                cssHandlerOptions,
+                cssUserHandlerOptions: resolveWxssUserHandlerOptions(options),
+                styleHandler,
+                debug,
+              })
+            : undefined
           const css = generated?.css ?? (await styleHandler(rawSource, cssHandlerOptions)).css
           debug('css handle: %s', file.path)
           return {

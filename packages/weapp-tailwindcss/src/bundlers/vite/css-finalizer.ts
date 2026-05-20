@@ -85,6 +85,9 @@ function shouldGenerateCssByGenerator(
   ) {
     return true
   }
+  if (opts.twPatcher.majorVersion === 3) {
+    return false
+  }
   return processed && shouldFinalizeProcessedCssAsset(opts, file)
 }
 

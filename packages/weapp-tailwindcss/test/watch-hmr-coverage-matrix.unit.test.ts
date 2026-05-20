@@ -151,7 +151,7 @@ describe('watch-hmr coverage matrix', () => {
         expect(existsSync(realSourceFile), `${entry.name} style source should exist: ${realSourceFile}`).toBe(true)
         const source = readFileSync(realSourceFile, 'utf8')
 
-        if (source.includes('@import')) {
+        if (source.includes('@import "tailwindcss"') || source.includes('@import "weapp-tailwindcss"')) {
           expect(source, `${entry.name} should use @import "tailwindcss" in ${realSourceFile}`).toContain('@import "tailwindcss"')
           expect(source, `${entry.name} should not expose @import "weapp-tailwindcss" in ${realSourceFile}`).not.toContain('@import "weapp-tailwindcss"')
         }

@@ -240,12 +240,6 @@ export function setupWebpackV5ProcessAssetsHook(options: SetupWebpackV5ProcessAs
             clearCache: forceRuntimeRefresh,
             allowEmpty: false,
           })
-          if (runtimeSet.size === 0) {
-            const syncSet = runtimeState.twPatcher.getClassSetSync?.()
-            if (syncSet && syncSet.size > 0) {
-              runtimeSet = syncSet
-            }
-          }
         }
         await refreshRuntimeMetadata(forceRuntimeRefresh)
         consumeRuntimeRefreshRequirement()

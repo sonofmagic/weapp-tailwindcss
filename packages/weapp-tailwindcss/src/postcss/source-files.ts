@@ -4,7 +4,7 @@ import type { WeappTailwindcssPostcssPluginOptions } from '../postcss'
 import { readFile } from 'node:fs/promises'
 import path from 'node:path'
 import { loadConfig } from 'tailwindcss-config'
-import { extractValidCandidates } from 'tailwindcss-patch'
+import { extractRawCandidatesWithPositions, extractValidCandidates } from 'tailwindcss-patch'
 import {
   collectCssInlineSourceCandidates,
   createSourceScanPattern,
@@ -79,7 +79,7 @@ async function collectConfigContentFiles(root: Root, base: string, options: Weap
 }
 
 async function collectConfiguredContentEntries(root: Root, base: string, options: WeappTailwindcssPostcssPluginOptions) {
-  const configPath = resolveOptionConfigPath(options.config, base) ?? collectConfigPaths(root, base)[0]
+  const configPath = resolveOptionConfigPath(options.generator?.config ?? options.config, base) ?? collectConfigPaths(root, base)[0]
   if (!configPath) {
     return []
   }
@@ -89,6 +89,21 @@ async function collectConfiguredContentEntries(root: Root, base: string, options
     cwd: path.dirname(resolvedConfigPath),
   })
   return normalizeLegacyContentEntries(result?.config.content, path.dirname(resolvedConfigPath))
+}
+
+async function collectRawCandidatesFromSourceEntries(sourceEntries: TailwindSourceEntry[]) {
+  const candidates = new Set<string>()
+  const files = await expandTailwindSourceEntries(sourceEntries)
+  await Promise.all(files.map(async (file) => {
+    const matches = await extractRawCandidatesWithPositions(await readFile(file, 'utf8'), getSourceExtension(file))
+    for (const match of matches) {
+      const candidate = match?.rawCandidate
+      if (typeof candidate === 'string' && candidate.length > 0) {
+        candidates.add(candidate)
+      }
+    }
+  }))
+  return candidates
 }
 
 export async function collectAutoTailwindCandidates(
@@ -123,15 +138,17 @@ export async function collectAutoTailwindCandidates(
   sourceEntries.push(...await resolveCssSourceEntries(root, base, POSTCSS_SOURCE_PATTERN))
   const candidates = sourceEntries.length === 0
     ? []
-    : await extractValidCandidates({
-        base,
-        css: root.toString(),
-        cwd: projectRoot,
-        sources: sourceEntries,
-      })
+    : options.version === 3
+      ? await collectRawCandidatesFromSourceEntries(sourceEntries)
+      : await extractValidCandidates({
+          base,
+          css: root.toString(),
+          cwd: projectRoot,
+          sources: sourceEntries,
+        })
 
   return new Set([
-    ...candidates.filter(candidate => !inlineCandidates.excluded.has(candidate)),
+    ...[...candidates].filter(candidate => !inlineCandidates.excluded.has(candidate)),
     ...inlineCandidates.included,
   ])
 }

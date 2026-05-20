@@ -1,4 +1,7 @@
 import type { TailwindcssPatcherLike } from '@/types'
+import { mkdir, rm, writeFile } from 'node:fs/promises'
+import { tmpdir } from 'node:os'
+import path from 'node:path'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import { runtimeSignaturePatchersSymbol } from '@/tailwindcss/runtime/cache'
 
@@ -282,5 +285,39 @@ describe('tailwindcss runtime cache signature', () => {
     expect(signature).toContain('/tmp/app-a/tailwind.config.js:11:1100')
     expect(signature).toContain('/tmp/app-b/tailwind.config.js:22:2200')
     expect(signature.split('||')).toHaveLength(2)
+  })
+
+  it('changes async signature when files matched by tailwind v4 @source change', async () => {
+    vi.useRealTimers()
+    vi.resetModules()
+    vi.doUnmock('node:fs')
+
+    const tempRoot = path.join(tmpdir(), `weapp-tw-runtime-source-${Date.now()}-${Math.random().toString(16).slice(2)}`)
+    const srcRoot = path.join(tempRoot, 'src')
+    await mkdir(srcRoot, { recursive: true })
+    const cssEntry = path.join(srcRoot, 'app.css')
+    const template = path.join(srcRoot, 'index.wxml')
+    await writeFile(cssEntry, '@import "tailwindcss";\n@source "./**/*.wxml";', 'utf8')
+    await writeFile(template, '<view class="text-xs"></view>', 'utf8')
+
+    try {
+      const { getRuntimeClassSetSignatureWithSources } = await import('@/tailwindcss/runtime/cache')
+      const patcher = createMockPatcher(path.join(tempRoot, 'tailwind.config.js'), {
+        cssEntries: [cssEntry],
+        projectRoot: tempRoot,
+      })
+
+      const first = await getRuntimeClassSetSignatureWithSources(patcher)
+      await new Promise(resolve => setTimeout(resolve, 5))
+      await writeFile(template, '<view class="text-sm"></view>', 'utf8')
+      const second = await getRuntimeClassSetSignatureWithSources(patcher)
+
+      expect(first).toContain(template)
+      expect(second).toContain(template)
+      expect(second).not.toBe(first)
+    }
+    finally {
+      await rm(tempRoot, { force: true, recursive: true })
+    }
   })
 })

@@ -220,6 +220,7 @@ function createIncrementalGenerateCacheKey(
     source.config ?? 'config:missing',
     createDependencyFingerprint(source.dependencies),
     source.css,
+    createStableJson(normalizeConfigObject(source.configObject)?.content),
     target,
     createStableJson(styleOptions),
   ].join('\0')
@@ -413,6 +414,10 @@ export function createTailwindV3Engine(source: TailwindV3ResolvedSource): Tailwi
 
     const target = options.target ?? 'weapp'
     const requestedCandidates = collectCandidates(options.candidates)
+    if (requestedCandidates.size === 0) {
+      return generateOnce(source, options)
+    }
+
     const cacheKey = createIncrementalGenerateCacheKey(source, target, options.styleOptions)
     const cached = incrementalGenerateCache.get(cacheKey)
     if (cached) {

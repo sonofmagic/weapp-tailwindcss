@@ -1,6 +1,10 @@
 import type { TailwindcssPatcherLike } from '@/types'
-import { statSync } from 'node:fs'
+import { existsSync, readFileSync, statSync } from 'node:fs'
+import path from 'node:path'
+import process from 'node:process'
+import { resolveTailwindV4EntriesFromCssCached } from '@/bundlers/vite/source-scan'
 import { resolveTailwindcssOptions } from '@/tailwindcss/patcher-options'
+import { expandTailwindSourceEntries } from '@/tailwindcss/source-scan'
 
 interface RuntimeClassSetCacheEntry {
   value?: Set<string> | undefined
@@ -10,6 +14,7 @@ interface RuntimeClassSetCacheEntry {
 
 const runtimeClassSetCache = new WeakMap<TailwindcssPatcherLike, RuntimeClassSetCacheEntry>()
 const runtimeFileSignatureCache = new Map<string, string>()
+const runtimeTrackedSourceFilesCache = new Map<string, string[]>()
 let runtimeFileSignatureCacheClearTimer: ReturnType<typeof setTimeout> | undefined
 
 export const runtimeSignaturePatchersSymbol = Symbol.for('weapp-tailwindcss.runtimeSignaturePatchers')
@@ -32,6 +37,7 @@ function scheduleRuntimeConfigSignatureCacheClear() {
   // 下一轮事件循环自动清空，以保留后续增量构建对配置变更的探测能力。
   runtimeFileSignatureCacheClearTimer = setTimeout(() => {
     runtimeFileSignatureCache.clear()
+    runtimeTrackedSourceFilesCache.clear()
     runtimeFileSignatureCacheClearTimer = undefined
   }, 0)
   runtimeFileSignatureCacheClearTimer.unref?.()
@@ -79,6 +85,64 @@ function getTailwindTrackedFiles(twPatcher: TailwindcssPatcherLike) {
     }
   }
   return tracked
+}
+
+function normalizeTrackedSourceSignature(cssEntries: string[] | undefined, cssSources: Array<{ file?: string, css?: string, dependencies?: string[] }> | undefined) {
+  return normalizeSignatureValue({
+    cssEntries: cssEntries?.map((entry) => {
+      if (!existsSync(entry)) {
+        return `${entry}:missing`
+      }
+      return getFileSignature(entry)
+    }),
+    cssSources,
+  })
+}
+
+async function collectTailwindV4TrackedSourceFiles(twPatcher: TailwindcssPatcherLike) {
+  const tailwindOptions = resolveTailwindcssOptions(twPatcher.options)
+  const signature = normalizeTrackedSourceSignature(
+    tailwindOptions?.v4?.cssEntries,
+    tailwindOptions?.v4?.cssSources,
+  )
+  const cached = runtimeTrackedSourceFilesCache.get(signature)
+  if (cached) {
+    return cached
+  }
+
+  const files = new Set<string>()
+  for (const cssEntry of tailwindOptions?.v4?.cssEntries ?? []) {
+    if (!existsSync(cssEntry)) {
+      continue
+    }
+    const css = readFileSync(cssEntry, 'utf8')
+    const resolved = await resolveTailwindV4EntriesFromCssCached(css, path.dirname(cssEntry))
+    const expanded = resolved?.entries?.length
+      ? await expandTailwindSourceEntries(resolved.entries)
+      : []
+    for (const file of expanded) {
+      files.add(file)
+    }
+  }
+  for (const cssSource of tailwindOptions?.v4?.cssSources ?? []) {
+    if (typeof cssSource.css !== 'string' || cssSource.css.length === 0) {
+      continue
+    }
+    const base = typeof cssSource.file === 'string' && cssSource.file.length > 0
+      ? path.dirname(cssSource.file)
+      : tailwindOptions?.v4?.base ?? tailwindOptions?.cwd ?? twPatcher.options?.projectRoot ?? process.cwd()
+    const resolved = await resolveTailwindV4EntriesFromCssCached(cssSource.css, base)
+    const expanded = resolved?.entries?.length
+      ? await expandTailwindSourceEntries(resolved.entries)
+      : []
+    for (const file of expanded) {
+      files.add(file)
+    }
+  }
+
+  const result = [...files].sort((a, b) => a.localeCompare(b))
+  runtimeTrackedSourceFilesCache.set(signature, result)
+  return result
 }
 
 function normalizeSignatureValue(value: unknown): string {
@@ -173,6 +237,7 @@ export function invalidateRuntimeClassSet(twPatcher?: TailwindcssPatcherLike) {
   for (const trackedFile of getTailwindTrackedFiles(twPatcher)) {
     runtimeFileSignatureCache.delete(trackedFile)
   }
+  runtimeTrackedSourceFilesCache.clear()
   runtimeClassSetCache.delete(twPatcher)
 }
 
@@ -189,4 +254,19 @@ export function getRuntimeClassSetSignature(twPatcher: TailwindcssPatcherLike) {
       .join('||')
   }
   return getOwnRuntimeClassSetSignature(twPatcher)
+}
+
+export async function getRuntimeClassSetSignatureWithSources(twPatcher: TailwindcssPatcherLike) {
+  const baseSignature = getRuntimeClassSetSignature(twPatcher)
+  if (twPatcher.majorVersion !== 4) {
+    return baseSignature
+  }
+  const trackedSourceFiles = await collectTailwindV4TrackedSourceFiles(twPatcher)
+  if (trackedSourceFiles.length === 0) {
+    return baseSignature
+  }
+  return [
+    baseSignature,
+    trackedSourceFiles.map(getFileSignature).join('|'),
+  ].join('|sources:')
 }

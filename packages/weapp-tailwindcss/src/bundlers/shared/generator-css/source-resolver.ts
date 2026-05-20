@@ -22,6 +22,7 @@ import {
 import {
   hasTailwindApplyDirective,
   hasTailwindRootDirectives,
+  hasTailwindSourceDirectives,
   resolveCssEntrySource,
 } from './directives'
 import {
@@ -153,6 +154,11 @@ function shouldResolveSourceSideCssEntry(rawSource: string) {
   return rawSource.includes('@apply')
     || hasTailwindGeneratedCss(rawSource)
     || hasTailwindGeneratedCssMarkers(rawSource)
+}
+
+function shouldPreferTailwindV3SourceSideEntry(rawSource: string, sourceSideEntrySource: unknown) {
+  return Boolean(sourceSideEntrySource)
+    && !hasTailwindSourceDirectives(rawSource, { importFallback: true })
 }
 
 function normalizeCssSourceForCompare(css: string) {
@@ -497,11 +503,31 @@ export async function resolveGeneratorSource(
       config: generatorOptions?.config ?? sourceOptions.config,
       ...resolveCssHandlerSourceOptions(cssHandlerOptions),
     })
+    const applyEntrySource = hasTailwindApplyDirective(rawSource)
+      ? {
+          base,
+          css: rawSource,
+        }
+      : undefined
     const sourceSideEntrySource = canResolveSourceSideCssEntry(file, cssHandlerOptions)
       ? resolveSourceSideCssEntrySource(file, mergedSourceOptions, { removeConfig: true })
       : undefined
-    const resolvedEntrySource = cssEntrySource ?? sourceSideEntrySource
+    const resolvedEntrySource = shouldResolveSourceSideCssEntry(rawSource)
+      ? applyEntrySource ?? cssEntrySource ?? sourceSideEntrySource
+      : shouldPreferTailwindV3SourceSideEntry(rawSource, sourceSideEntrySource)
+        ? sourceSideEntrySource ?? cssEntrySource
+        : cssEntrySource ?? applyEntrySource ?? sourceSideEntrySource
     if (!resolvedEntrySource) {
+      return generatorOptions?.config
+        ? resolveTailwindV3Source(mergedSourceOptions)
+        : resolveTailwindV3SourceFromPatcher(runtimeState.twPatcher)
+    }
+    if (
+      cssEntrySource
+      && !sourceSideEntrySource
+      && !applyEntrySource
+      && !hasTailwindRootDirectives(rawSource, { importFallback: true })
+    ) {
       return generatorOptions?.config
         ? resolveTailwindV3Source(mergedSourceOptions)
         : resolveTailwindV3SourceFromPatcher(runtimeState.twPatcher)

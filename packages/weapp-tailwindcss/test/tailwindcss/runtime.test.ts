@@ -60,11 +60,12 @@ describe('tailwindcss runtime class set collection', () => {
     expect(patcher.getClassSetSync).toHaveBeenCalledTimes(1)
   })
 
-  it('falls back to sync set when force collecting but extract result is empty', async () => {
+  it('keeps empty extract result when force collecting v3 to avoid stale sync cache pollution', async () => {
     const syncSet = new Set(['bg-[length:200rpx_100rpx]'])
+    const extractedSet = new Set<string>()
     const patcher = createMockPatcher({
       syncSet,
-      extractedSet: new Set<string>(),
+      extractedSet,
       fallbackSet: new Set(['fallback-only']),
     })
 
@@ -73,7 +74,7 @@ describe('tailwindcss runtime class set collection', () => {
       skipRefresh: true,
     })
 
-    expect(collected).toBe(syncSet)
+    expect(collected).toBe(extractedSet)
     expect(patcher.extract).toHaveBeenCalledTimes(1)
     expect(patcher.getClassSetSync).toHaveBeenCalledTimes(1)
   })
