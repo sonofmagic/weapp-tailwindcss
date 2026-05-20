@@ -13,7 +13,7 @@ export function createWebDemoWeappTailwindcssPlugins(): PluginOption[] {
   const target = resolveWebDemoGeneratorTarget()
   return WeappTailwindcss({
     tailwindcssBasedir: process.cwd(),
-    rem2rpx: target === 'weapp',
+    rem2rpx: false,
     generator: {
       target,
     },

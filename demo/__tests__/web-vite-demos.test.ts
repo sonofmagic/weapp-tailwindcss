@@ -66,7 +66,7 @@ describe('demo/web vite matrix', () => {
     expect(helper).toContain(`return target === 'weapp' ? 'weapp' : 'web'`)
     expect(helper).toContain(`generator: {`)
     expect(helper).toContain(`target,`)
-    expect(helper).toContain(`rem2rpx: target === 'weapp'`)
+    expect(helper).toContain(`rem2rpx: false`)
   })
 
   it('keeps v3 and v4 CSS entries separated by Tailwind major version', async () => {
@@ -100,6 +100,26 @@ describe('demo/web vite matrix', () => {
     for (const source of sources) {
       expect(source).not.toContain('@import "tailwindcss/preflight.css"')
       expect(source).not.toContain('button, input, select, optgroup, textarea')
+    }
+  })
+
+  it('keeps arbitrary, decimal, negative, and important utilities in every web demo', async () => {
+    const sources = await Promise.all([
+      readDemoFile('web/react-vite-tailwindcss-v3/src/main.tsx'),
+      readDemoFile('web/react-vite-tailwindcss-v4/src/main.tsx'),
+      readDemoFile('web/vue-vite-tailwindcss-v3/src/App.vue'),
+      readDemoFile('web/vue-vite-tailwindcss-v4/src/App.vue'),
+    ])
+
+    for (const source of sources) {
+      expect(source).toContain('rounded-[18.5px]')
+      expect(source).toContain('bg-[linear-gradient(135deg,#f8fafc_0%,#dbeafe_100%)]')
+      expect(source).toContain('-mt-1.5')
+      expect(source).toContain('-ml-[5.5px]')
+      expect(source).toContain('!p-[18.5px]')
+      expect(source).toContain('!-translate-y-[3.5px]')
+      expect(source).toContain('opacity-[0.82]')
+      expect(source).toContain('scale-[1.03]')
     }
   })
 })
