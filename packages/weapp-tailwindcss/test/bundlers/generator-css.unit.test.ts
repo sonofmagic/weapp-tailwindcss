@@ -3293,6 +3293,205 @@ describe('bundlers/shared generator css', () => {
     expect(result?.css.match(/text-_b188rpx_B/g) ?? []).toHaveLength(1)
   })
 
+  it('matches ordinary main css output to one Tailwind v4 cssSource by source candidates', async () => {
+    const runtimeSet = new Set(['text-[188rpx]'])
+    const mainCss = '@import "tailwindcss" source(none);\n@source "./pages/**/*.{vue,ts}";'
+    const subCss = '@import "tailwindcss" source(none);\n@source "./sub/**/*.{vue,ts}";'
+    const resolveTailwindV4Source = vi.fn(async (options: any) => ({
+      projectRoot: '/project',
+      base: options.cssSources[0].base,
+      baseFallbacks: [],
+      css: options.cssSources[0].css,
+      dependencies: [options.cssSources[0].file],
+    }))
+    const generateMock = vi.fn(async () => ({
+      css: '.text-_b188rpx_B{font-size:188rpx}',
+      rawCss: '.text-\\[188rpx\\]{font-size:188rpx}',
+      target: 'weapp',
+      classSet: runtimeSet,
+      dependencies: ['/project/src/main.css'],
+      sources: [],
+      root: null,
+    }))
+
+    vi.doMock('@/generator', () => ({
+      createWeappTailwindcssGenerator: vi.fn(() => ({
+        generate: generateMock,
+      })),
+      normalizeWeappTailwindcssGeneratorOptions: normalizeGeneratorOptions,
+      resolveTailwindV4Source,
+      resolveTailwindV4SourceFromPatcher: vi.fn(async () => ({
+        projectRoot: '/project',
+        base: '/project',
+        baseFallbacks: [],
+        css: '@import "tailwindcss";',
+        dependencies: [],
+      })),
+      resolveTailwindV4SourceOptionsFromPatcher: vi.fn(() => ({
+        projectRoot: '/project',
+        baseFallbacks: [],
+        cssSources: [
+          {
+            file: '/project/src/main.css',
+            base: '/project/src',
+            css: mainCss,
+          },
+          {
+            file: '/project/src/sub/pages/index.css',
+            base: '/project/src/sub/pages',
+            css: subCss,
+          },
+        ],
+      })),
+    }))
+
+    const { generateCssByGenerator } = await import('@/bundlers/shared/generator-css')
+    const result = await generateCssByGenerator({
+      opts: {
+        styleHandler: vi.fn(async (code: string) => ({ css: code })),
+      } as any,
+      runtimeState: {
+        twPatcher: {
+          majorVersion: 4,
+        } as any,
+        readyPromise: Promise.resolve(),
+      },
+      runtime: runtimeSet,
+      rawSource: ':host,page,.tw-root,wx-root-portal-content { --spacing: 0.25rem; }',
+      file: '/project/dist/dev/mp-weixin/app.wxss',
+      cssHandlerOptions: {
+        isMainChunk: true,
+        postcssOptions: {
+          options: {
+            from: '/project/dist/dev/mp-weixin/app.wxss',
+          },
+        },
+        majorVersion: 4,
+        sourceOptions: {
+          outputRoot: '/project/dist/dev/mp-weixin',
+        },
+      } as any,
+      cssUserHandlerOptions: {
+        isMainChunk: false,
+        postcssOptions: {
+          options: {
+            from: '/project/dist/dev/mp-weixin/app.wxss',
+          },
+        },
+        majorVersion: 4,
+      } as any,
+      styleHandler: vi.fn(async (code: string) => ({ css: code })),
+      debug: vi.fn(),
+      getSourceCandidatesForEntries: vi.fn(entries =>
+        entries?.some(entry => entry.base === '/project/src/pages')
+          ? new Set(['text-[188rpx]'])
+          : new Set(['sub-only']),
+      ),
+    })
+
+    expect(resolveTailwindV4Source).toHaveBeenCalledTimes(1)
+    expect(resolveTailwindV4Source).toHaveBeenCalledWith(expect.objectContaining({
+      cssSources: [expect.objectContaining({
+        file: '/project/src/main.css',
+      })],
+    }))
+    expect(generateMock).toHaveBeenCalledTimes(1)
+    expect(result?.css.match(/text-_b188rpx_B/g) ?? []).toHaveLength(1)
+  })
+
+  it('does not generate every Tailwind v4 cssSource when ordinary main css source is ambiguous', async () => {
+    const runtimeSet = new Set(['text-[188rpx]'])
+    const mainCss = '@import "tailwindcss" source(none);\n@source "./pages/**/*.{vue,ts}";'
+    const subCss = '@import "tailwindcss" source(none);\n@source "./sub/**/*.{vue,ts}";'
+    const resolveTailwindV4Source = vi.fn()
+    const resolveTailwindV4SourceFromPatcher = vi.fn(async () => ({
+      projectRoot: '/project',
+      base: '/project',
+      baseFallbacks: [],
+      css: '@import "tailwindcss";',
+      dependencies: [],
+    }))
+    const generateMock = vi.fn(async () => ({
+      css: '.text-_b188rpx_B{font-size:188rpx}',
+      rawCss: '.text-\\[188rpx\\]{font-size:188rpx}',
+      target: 'weapp',
+      classSet: runtimeSet,
+      dependencies: ['/project/src/main.css'],
+      sources: [],
+      root: null,
+    }))
+
+    vi.doMock('@/generator', () => ({
+      createWeappTailwindcssGenerator: vi.fn(() => ({
+        generate: generateMock,
+      })),
+      normalizeWeappTailwindcssGeneratorOptions: normalizeGeneratorOptions,
+      resolveTailwindV4Source,
+      resolveTailwindV4SourceFromPatcher,
+      resolveTailwindV4SourceOptionsFromPatcher: vi.fn(() => ({
+        projectRoot: '/project',
+        baseFallbacks: [],
+        cssSources: [
+          {
+            file: '/project/src/main.css',
+            base: '/project/src',
+            css: mainCss,
+          },
+          {
+            file: '/project/src/sub/pages/index.css',
+            base: '/project/src/sub/pages',
+            css: subCss,
+          },
+        ],
+      })),
+    }))
+
+    const { generateCssByGenerator } = await import('@/bundlers/shared/generator-css')
+    const result = await generateCssByGenerator({
+      opts: {
+        styleHandler: vi.fn(async (code: string) => ({ css: code })),
+      } as any,
+      runtimeState: {
+        twPatcher: {
+          majorVersion: 4,
+        } as any,
+        readyPromise: Promise.resolve(),
+      },
+      runtime: runtimeSet,
+      rawSource: ':host,page,.tw-root,wx-root-portal-content { --spacing: 0.25rem; }',
+      file: '/project/dist/dev/mp-weixin/app.wxss',
+      cssHandlerOptions: {
+        isMainChunk: true,
+        postcssOptions: {
+          options: {
+            from: '/project/dist/dev/mp-weixin/app.wxss',
+          },
+        },
+        majorVersion: 4,
+        sourceOptions: {
+          outputRoot: '/project/dist/dev/mp-weixin',
+        },
+      } as any,
+      cssUserHandlerOptions: {
+        isMainChunk: false,
+        postcssOptions: {
+          options: {
+            from: '/project/dist/dev/mp-weixin/app.wxss',
+          },
+        },
+        majorVersion: 4,
+      } as any,
+      styleHandler: vi.fn(async (code: string) => ({ css: code })),
+      debug: vi.fn(),
+      getSourceCandidatesForEntries: vi.fn(() => new Set()),
+    })
+
+    expect(resolveTailwindV4Source).not.toHaveBeenCalled()
+    expect(resolveTailwindV4SourceFromPatcher).toHaveBeenCalledTimes(1)
+    expect(generateMock).toHaveBeenCalledTimes(1)
+    expect(result?.css.match(/text-_b188rpx_B/g) ?? []).toHaveLength(1)
+  })
+
   it('scopes Tailwind v4 generator candidates by matched css source entries', async () => {
     const appCss = '@import "tailwindcss" source(none);\n@source "./pages/**/*.{ts,tsx}";'
     const subCss = '@import "tailwindcss" source(none);\n@source "./sub-normal/**/*.{ts,tsx}";'

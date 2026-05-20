@@ -345,7 +345,7 @@ function countRuntimeCandidateHits(candidates: Set<string>, runtime: Set<string>
 }
 
 async function resolveCandidateMatchedTailwindV4CssSource(
-  rawSource: string,
+  _rawSource: string,
   cssHandlerOptions: IStyleHandlerOptions,
   sourceOptions: TailwindV4SourceOptions,
   selectionOptions: GeneratorSourceSelectionOptions | undefined,
@@ -354,7 +354,6 @@ async function resolveCandidateMatchedTailwindV4CssSource(
   const getSourceCandidatesForEntries = selectionOptions?.getSourceCandidatesForEntries
   if (
     !cssHandlerOptions.isMainChunk
-    || !hasTailwindGeneratedCssMarkers(rawSource)
     || !cssSources?.length
     || !getSourceCandidatesForEntries
   ) {
@@ -705,8 +704,10 @@ export async function resolveGeneratorSources(
   }
 
   if (!sourceOptions.cssEntries || sourceOptions.cssEntries.length <= 1) {
-    if (sourceOptions.cssSources?.length) {
-      return Promise.all(sourceOptions.cssSources.map(createTailwindV4CssSourceResolver(sourceOptions, generatorOptions)))
+    if (sourceOptions.cssSources?.length === 1) {
+      return [
+        await createTailwindV4CssSourceResolver(sourceOptions, generatorOptions)(sourceOptions.cssSources[0]!),
+      ]
     }
     return [
       await resolveGeneratorSource(majorVersion, runtimeState, rawSource, file, cssHandlerOptions, generatorOptions, selectionOptions),
