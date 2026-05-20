@@ -366,7 +366,6 @@ export function createGenerateBundleHook(context: GenerateBundleContext) {
             || cssHandlerOptions.isMainChunk
             || processFiles.css.has(file)
             || runtimeLinkedCssFiles.has(file)
-            || (generatorCandidatesChanged && lastCssResultByFile.has(file))
           )
         const scopedGeneratorCandidateSignature = shouldTrackGeneratorRuntime
           ? generatorCandidateSignature
