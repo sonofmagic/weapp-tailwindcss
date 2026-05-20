@@ -2,7 +2,7 @@
   <view class="flex flex-col">
     <image class="w-20 h-20" src="/static/logo.png" />
     <view class="text-area aspect-(--my-aspect-ratio)">
-      <text class="text-[#00f285] text-[128rpx] font-bold underline">{{ title }}</text>
+      <text class="text-[#00f285] text-[88rpx] font-bold underline">{{ title }}</text>
     </view>
     <view :class="className" class="aspect-[calc(4*3+1)/3]">
       {{ className }}
