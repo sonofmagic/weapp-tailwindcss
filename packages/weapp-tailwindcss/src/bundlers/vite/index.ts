@@ -524,7 +524,7 @@ export function WeappTailwindcss(options: UserDefinedOptions = {}): Plugin[] | u
             cacheCurrentSourceCandidateScan()
             return
           }
-          await sourceCandidateCollector.sync(id, code)
+          await sourceCandidateCollector.merge(id, code)
           cacheCurrentSourceCandidateScan()
         }, { emit: false })
       },

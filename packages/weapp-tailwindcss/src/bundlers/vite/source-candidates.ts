@@ -8,6 +8,7 @@ import { expandTailwindSourceEntries } from '@/tailwindcss/source-scan'
 
 export interface SourceCandidateCollector {
   sync: (id: string, source: string) => Promise<void>
+  merge: (id: string, source: string) => Promise<void>
   syncFile: (id: string) => Promise<void>
   scanRoot: (options: ScanSourceCandidateRootOptions) => Promise<void>
   syncInline: (inlineCandidates: TailwindInlineSourceCandidates | undefined) => void
@@ -21,6 +22,8 @@ export interface SourceCandidateCollector {
 
 export interface SourceCandidateCollectorSnapshot {
   candidatesById: Array<[string, string[]]>
+  scanCandidatesById?: Array<[string, string[]]> | undefined
+  transformCandidatesById?: Array<[string, string[]]> | undefined
   inlineExcludedCandidates: string[]
   inlineIncludedCandidates: string[]
 }
@@ -198,8 +201,24 @@ function extractSourceCandidates(source: string) {
   return candidates
 }
 
+function extractCandidatesByExtension(extension: string, source: string) {
+  const candidates = new Set<string>()
+  if (CSS_SOURCE_CANDIDATE_EXTENSION_RE.test(extension)) {
+    for (const candidate of extractCssApplyCandidates(source)) {
+      candidates.add(candidate)
+    }
+    return candidates
+  }
+  for (const candidate of extractSourceCandidates(source)) {
+    candidates.add(candidate)
+  }
+  return candidates
+}
+
 export function createSourceCandidateCollector(): SourceCandidateCollector {
   const candidatesById = new Map<string, Set<string>>()
+  const scanCandidatesById = new Map<string, Set<string>>()
+  const transformCandidatesById = new Map<string, Set<string>>()
   const candidateCount = new Map<string, number>()
   let inlineIncludedCandidates = new Set<string>()
   let inlineExcludedCandidates = new Set<string>()
@@ -210,30 +229,29 @@ export function createSourceCandidateCollector(): SourceCandidateCollector {
     const contentCacheKey = createSourceCandidateContentCacheKey(extension, source)
     const cachedCandidates = sourceCandidateContentCache.get(contentCacheKey)
     if (cachedCandidates) {
-      replace(normalizedId, new Set(cachedCandidates))
+      replaceScanLayer(normalizedId, new Set(cachedCandidates))
       return
     }
 
-    const nextCandidates = new Set<string>()
-    if (CSS_SOURCE_CANDIDATE_EXTENSION_RE.test(extension)) {
-      for (const candidate of extractCssApplyCandidates(source)) {
-        nextCandidates.add(candidate)
-      }
-    }
-    else {
-      for (const candidate of extractSourceCandidates(source)) {
-        nextCandidates.add(candidate)
-      }
-    }
+    const nextCandidates = extractCandidatesByExtension(extension, source)
     sourceCandidateContentCache.set(contentCacheKey, [...nextCandidates])
 
-    remove(normalizedId)
-    if (nextCandidates.size === 0) {
-      return
+    replaceScanLayer(normalizedId, nextCandidates)
+  }
+
+  async function merge(id: string, source: string) {
+    const normalizedId = cleanUrl(id)
+    const extension = resolveSourceCandidateExtension(normalizedId)
+    const contentCacheKey = createSourceCandidateContentCacheKey(extension, source)
+    const cachedCandidates = sourceCandidateContentCache.get(contentCacheKey)
+    const extractedCandidates = cachedCandidates
+      ? new Set(cachedCandidates)
+      : extractCandidatesByExtension(extension, source)
+    if (!cachedCandidates) {
+      sourceCandidateContentCache.set(contentCacheKey, [...extractedCandidates])
     }
 
-    candidatesById.set(normalizedId, nextCandidates)
-    addCandidateSet(candidateCount, nextCandidates)
+    replaceTransformLayer(normalizedId, extractedCandidates)
   }
 
   async function syncFile(id: string) {
@@ -260,14 +278,49 @@ export function createSourceCandidateCollector(): SourceCandidateCollector {
     await Promise.all(files.map(file => syncFile(file)))
   }
 
-  function replace(id: string, nextCandidates: Set<string>) {
+  function replaceFinal(id: string, nextCandidates: Set<string>) {
     const normalizedId = cleanUrl(id)
-    remove(normalizedId)
+    const previousCandidates = candidatesById.get(normalizedId)
+    if (previousCandidates) {
+      removeCandidateSet(candidateCount, previousCandidates)
+      candidatesById.delete(normalizedId)
+    }
     if (nextCandidates.size === 0) {
       return
     }
     candidatesById.set(normalizedId, nextCandidates)
     addCandidateSet(candidateCount, nextCandidates)
+  }
+
+  function replaceScanLayer(id: string, nextCandidates: Set<string>) {
+    const normalizedId = cleanUrl(id)
+    if (nextCandidates.size === 0) {
+      scanCandidatesById.delete(normalizedId)
+    }
+    else {
+      scanCandidatesById.set(normalizedId, nextCandidates)
+    }
+    recompute(normalizedId)
+  }
+
+  function replaceTransformLayer(id: string, nextCandidates: Set<string>) {
+    const normalizedId = cleanUrl(id)
+    if (nextCandidates.size === 0) {
+      transformCandidatesById.delete(normalizedId)
+    }
+    else {
+      transformCandidatesById.set(normalizedId, nextCandidates)
+    }
+    recompute(normalizedId)
+  }
+
+  function recompute(id: string) {
+    const normalizedId = cleanUrl(id)
+    const nextCandidates = new Set([
+      ...(scanCandidatesById.get(normalizedId) ?? []),
+      ...(transformCandidatesById.get(normalizedId) ?? []),
+    ])
+    replaceFinal(normalizedId, nextCandidates)
   }
 
   function syncInline(inlineCandidates: TailwindInlineSourceCandidates | undefined) {
@@ -277,6 +330,8 @@ export function createSourceCandidateCollector(): SourceCandidateCollector {
 
   function remove(id: string) {
     const normalizedId = cleanUrl(id)
+    scanCandidatesById.delete(normalizedId)
+    transformCandidatesById.delete(normalizedId)
     const previousCandidates = candidatesById.get(normalizedId)
     if (!previousCandidates) {
       return
@@ -320,6 +375,8 @@ export function createSourceCandidateCollector(): SourceCandidateCollector {
 
   function clear() {
     candidatesById.clear()
+    scanCandidatesById.clear()
+    transformCandidatesById.clear()
     candidateCount.clear()
     inlineIncludedCandidates.clear()
     inlineExcludedCandidates.clear()
@@ -328,6 +385,8 @@ export function createSourceCandidateCollector(): SourceCandidateCollector {
   function snapshot(): SourceCandidateCollectorSnapshot {
     return {
       candidatesById: [...candidatesById.entries()].map(([id, candidates]) => [id, [...candidates]]),
+      scanCandidatesById: [...scanCandidatesById.entries()].map(([id, candidates]) => [id, [...candidates]]),
+      transformCandidatesById: [...transformCandidatesById.entries()].map(([id, candidates]) => [id, [...candidates]]),
       inlineExcludedCandidates: [...inlineExcludedCandidates],
       inlineIncludedCandidates: [...inlineIncludedCandidates],
     }
@@ -337,6 +396,21 @@ export function createSourceCandidateCollector(): SourceCandidateCollector {
     clear()
     inlineExcludedCandidates = new Set(snapshot.inlineExcludedCandidates)
     inlineIncludedCandidates = new Set(snapshot.inlineIncludedCandidates)
+    const scanEntries = snapshot.scanCandidatesById ?? snapshot.candidatesById
+    for (const [id, candidates] of scanEntries) {
+      const candidateSet = new Set(candidates)
+      if (candidateSet.size === 0) {
+        continue
+      }
+      scanCandidatesById.set(id, candidateSet)
+    }
+    for (const [id, candidates] of snapshot.transformCandidatesById ?? []) {
+      const candidateSet = new Set(candidates)
+      if (candidateSet.size === 0) {
+        continue
+      }
+      transformCandidatesById.set(id, candidateSet)
+    }
     for (const [id, candidates] of snapshot.candidatesById) {
       const candidateSet = new Set(candidates)
       if (candidateSet.size === 0) {
@@ -349,6 +423,7 @@ export function createSourceCandidateCollector(): SourceCandidateCollector {
 
   return {
     sync,
+    merge,
     syncFile,
     scanRoot,
     syncInline,

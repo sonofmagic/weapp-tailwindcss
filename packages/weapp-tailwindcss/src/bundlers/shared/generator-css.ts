@@ -96,7 +96,7 @@ function mergeScopedRuntimeWithCurrentRuntime(
     isolateCssSource: boolean
   },
 ) {
-  if (runtime.size === 0 || !options.cssHandlerOptions.isMainChunk || options.isolateCssSource) {
+  if (runtime.size === 0 || !options.cssHandlerOptions.isMainChunk) {
     return scopedRuntime
   }
   return new Set([

@@ -13,7 +13,7 @@ type CssHandlerOptions = IStyleHandlerOptions & {
 }
 
 interface CssHandlerOptionsCacheOptions {
-  appType: InternalUserDefinedOptions['appType']
+  getAppType: () => InternalUserDefinedOptions['appType']
   mainCssChunkMatcher: InternalUserDefinedOptions['mainCssChunkMatcher']
   getMajorVersion: () => number | undefined
   getOutputRoot?: (() => string | undefined) | undefined
@@ -30,9 +30,10 @@ export function createCssHandlerOptionsCache(options: CssHandlerOptionsCacheOpti
 
   const getCssHandlerOptions = (file: string) => {
     const majorVersion = options.getMajorVersion()
-    const isMainChunk = options.mainCssChunkMatcher(file, options.appType)
+    const appType = options.getAppType()
+    const isMainChunk = options.mainCssChunkMatcher(file, appType)
     const outputRoot = options.getOutputRoot?.()
-    const cacheKey = `${majorVersion ?? 'unknown'}:${isMainChunk ? '1' : '0'}:${outputRoot ?? ''}:${file}`
+    const cacheKey = `${majorVersion ?? 'unknown'}:${appType ?? 'unknown'}:${isMainChunk ? '1' : '0'}:${outputRoot ?? ''}:${file}`
     const cached = cssHandlerOptionsCache.get(cacheKey)
     if (cached) {
       return cached

@@ -146,6 +146,7 @@ function hasSnapshotChanged(previous, next) {
 }
 
 async function main() {
+  const runFallbackBuild = process.env.WEAPP_VITE_E2E_WATCH_BUILD_FALLBACK === '1'
   let resolveReady
   const ready = new Promise((resolve) => {
     resolveReady = resolve
@@ -188,7 +189,7 @@ async function main() {
   })
 
   await ready
-  if (!stopping) {
+  if (!stopping && runFallbackBuild) {
     const rebuild = async () => {
       if (stopping) {
         return

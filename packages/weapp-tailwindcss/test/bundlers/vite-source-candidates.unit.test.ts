@@ -34,6 +34,17 @@ describe('bundlers/vite source candidates', () => {
     expect(values.has('[mask-type:luminance]')).toBe(true)
   })
 
+  it('merges transformed module candidates without dropping raw source candidates', async () => {
+    const { createSourceCandidateCollector } = await import('@/bundlers/vite/source-candidates')
+    const collector = createSourceCandidateCollector()
+    const id = '/project/src/pages/index.tsx'
+
+    await collector.sync(id, '<view class="bg-[#112233]"></view>')
+    await collector.merge(id, 'export const cls = "text-[188rpx]"')
+
+    expect(collector.values()).toEqual(new Set(['bg-[#112233]', 'text-[188rpx]']))
+  })
+
   it('matches updated relative-path files against absolute @source entries', async () => {
     const { createSourceCandidateCollector } = await import('@/bundlers/vite/source-candidates')
     const collector = createSourceCandidateCollector()

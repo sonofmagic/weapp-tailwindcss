@@ -93,7 +93,7 @@ export function createGenerateBundleHook(context: GenerateBundleContext) {
   const lastCssResultByFile = new Map<string, string>()
   let currentOutDir: string | undefined
   const cssHandlerOptions = createCssHandlerOptionsCache({
-    appType: context.opts.appType,
+    getAppType: () => context.opts.appType,
     mainCssChunkMatcher: context.opts.mainCssChunkMatcher,
     getMajorVersion: () => context.runtimeState.twPatcher.majorVersion,
     getOutputRoot: () => currentOutDir,
@@ -366,6 +366,7 @@ export function createGenerateBundleHook(context: GenerateBundleContext) {
             || cssHandlerOptions.isMainChunk
             || processFiles.css.has(file)
             || runtimeLinkedCssFiles.has(file)
+            || (generatorCandidatesChanged && lastCssResultByFile.has(file))
           )
         const scopedGeneratorCandidateSignature = shouldTrackGeneratorRuntime
           ? generatorCandidateSignature

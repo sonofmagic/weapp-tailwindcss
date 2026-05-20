@@ -11,6 +11,7 @@ const ignoredDirs = new Set(['dist', 'node_modules', '.git'])
 const taroBuildGuardPath = path.resolve(import.meta.dirname, './taro-build-guard.mjs')
 const forceNativeWatch = process.env.TARO_E2E_WATCH_NATIVE === '1'
 const forcePollingWatch = process.env.TARO_E2E_WATCH_NATIVE === '0'
+const forcePollingRestart = process.env.TARO_E2E_WATCH_RESTART === '1'
 const rebuildDebounceMs = Number(process.env.TARO_E2E_REBUILD_DEBOUNCE_MS ?? 600)
 
 async function isTaroViteProject() {
@@ -168,9 +169,9 @@ function hasSnapshotChanged(previous, next) {
 
 async function main() {
   const taroViteProject = await isTaroViteProject()
-  // 旧版 Taro Vite 在部分非交互式环境中会启动 watch，但不会稳定响应后续源码变更。
-  // e2e 场景保留首轮原生 watch 构建，再用脚本内轮询发现变更并重启 watch。
-  const restartNativeWatchOnChange = !forceNativeWatch && !forcePollingWatch && taroViteProject
+  // Taro Vite 的原生 watch 已经能稳定响应源码变更。默认只保留一个 watch 进程，
+  // 避免每次变更重启 production build，把真实增量耗时放大到数秒。
+  const restartNativeWatchOnChange = forcePollingRestart && !forceNativeWatch && !forcePollingWatch && taroViteProject
   const skipNativeWatch = forcePollingWatch
   process.stdout.write(`[taro-e2e-watch] mode=${restartNativeWatchOnChange ? 'vite-polling-restart' : skipNativeWatch ? 'polling-build' : 'native-watch'} cwd=${process.cwd()}\n`)
   let resolveReady

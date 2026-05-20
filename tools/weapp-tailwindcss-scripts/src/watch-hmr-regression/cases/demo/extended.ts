@@ -33,7 +33,7 @@ const mpxWatchEnv = {
 
 const taroViteWatchEnv = {
   ...taroWatchEnv,
-  NODE_ENV: 'production',
+  NODE_ENV: 'development',
 }
 
 const taroVitePluginProcessBudgetMs = 3000
