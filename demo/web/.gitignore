@@ -1,0 +1,8 @@
+node_modules
+**/node_modules
+.turbo
+**/.turbo
+dist
+dist-weapp
+**/dist
+**/dist-weapp

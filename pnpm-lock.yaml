@@ -238,6 +238,10 @@ catalogs:
     vite:
       specifier: ^7.3.3
       version: 7.3.3
+  vite8:
+    vite:
+      specifier: ^8.0.13
+      version: 8.0.13
   vitePluginInspect:
     vite-plugin-inspect:
       specifier: ^11.3.3
@@ -246,6 +250,14 @@ catalogs:
     '@vitejs/plugin-react':
       specifier: ^4.7.0
       version: 4.7.0
+  vitePluginReact6:
+    '@vitejs/plugin-react':
+      specifier: ^6.0.2
+      version: 6.0.2
+  vitePluginVue6:
+    '@vitejs/plugin-vue':
+      specifier: ^6.0.7
+      version: 6.0.7
   vitest:
     vitest:
       specifier: ~4.1.6
@@ -3059,6 +3071,136 @@ importers:
       weapp-vite:
         specifier: catalog:weappVite
         version: 6.16.17(@types/node@25.7.0)(esbuild@0.28.0)(jiti@2.7.0)(less@4.6.4)(miniprogram-api-typings@5.2.1)(oxc-resolver@11.19.1(@emnapi/core@1.10.0)(@emnapi/runtime@1.10.0))(rollup@4.60.4)(sass-embedded@1.99.0)(sass@1.99.0)(stylus@0.57.0)(terser@5.47.1)(tsx@4.22.3)(yaml@2.9.0)
+
+  demo/web/react-vite-tailwindcss-v3:
+    dependencies:
+      react:
+        specifier: catalog:react19
+        version: 19.2.6
+      react-dom:
+        specifier: catalog:react19
+        version: 19.2.6(react@19.2.6)
+    devDependencies:
+      '@types/react':
+        specifier: catalog:react19
+        version: 19.2.14
+      '@types/react-dom':
+        specifier: catalog:react19
+        version: 19.2.3(@types/react@19.2.14)
+      '@vitejs/plugin-react':
+        specifier: catalog:vitePluginReact6
+        version: 6.0.2(vite@8.0.13(@types/node@25.7.0)(esbuild@0.28.0)(jiti@2.7.0)(less@4.6.4)(sass-embedded@1.99.0)(sass@1.99.0)(stylus@0.57.0)(terser@5.47.1)(tsx@4.22.3)(yaml@2.9.0))
+      cross-env:
+        specifier: catalog:crossEnv
+        version: 10.1.0
+      tailwindcss:
+        specifier: catalog:tailwindcss3
+        version: 3.4.19(tsx@4.22.3)(yaml@2.9.0)
+      typescript:
+        specifier: catalog:typescript59
+        version: 6.0.3
+      vite:
+        specifier: catalog:vite8
+        version: 8.0.13(@types/node@25.7.0)(esbuild@0.28.0)(jiti@2.7.0)(less@4.6.4)(sass-embedded@1.99.0)(sass@1.99.0)(stylus@0.57.0)(terser@5.47.1)(tsx@4.22.3)(yaml@2.9.0)
+      weapp-tailwindcss:
+        specifier: workspace:*
+        version: link:../../../packages/weapp-tailwindcss
+
+  demo/web/react-vite-tailwindcss-v4:
+    dependencies:
+      react:
+        specifier: catalog:react19
+        version: 19.2.6
+      react-dom:
+        specifier: catalog:react19
+        version: 19.2.6(react@19.2.6)
+    devDependencies:
+      '@types/react':
+        specifier: catalog:react19
+        version: 19.2.14
+      '@types/react-dom':
+        specifier: catalog:react19
+        version: 19.2.3(@types/react@19.2.14)
+      '@vitejs/plugin-react':
+        specifier: catalog:vitePluginReact6
+        version: 6.0.2(vite@8.0.13(@types/node@25.7.0)(esbuild@0.28.0)(jiti@2.7.0)(less@4.6.4)(sass-embedded@1.99.0)(sass@1.99.0)(stylus@0.57.0)(terser@5.47.1)(tsx@4.22.3)(yaml@2.9.0))
+      cross-env:
+        specifier: catalog:crossEnv
+        version: 10.1.0
+      tailwindcss:
+        specifier: catalog:tailwindcss4
+        version: 4.3.0
+      typescript:
+        specifier: catalog:typescript59
+        version: 6.0.3
+      vite:
+        specifier: catalog:vite8
+        version: 8.0.13(@types/node@25.7.0)(esbuild@0.28.0)(jiti@2.7.0)(less@4.6.4)(sass-embedded@1.99.0)(sass@1.99.0)(stylus@0.57.0)(terser@5.47.1)(tsx@4.22.3)(yaml@2.9.0)
+      weapp-tailwindcss:
+        specifier: workspace:*
+        version: link:../../../packages/weapp-tailwindcss
+
+  demo/web/vue-vite-tailwindcss-v3:
+    dependencies:
+      vue:
+        specifier: catalog:vue3
+        version: 3.5.34(typescript@6.0.3)
+    devDependencies:
+      '@vitejs/plugin-vue':
+        specifier: catalog:vitePluginVue6
+        version: 6.0.7(vite@8.0.13(@types/node@25.7.0)(esbuild@0.28.0)(jiti@2.7.0)(less@4.6.4)(sass-embedded@1.99.0)(sass@1.99.0)(stylus@0.57.0)(terser@5.47.1)(tsx@4.22.3)(yaml@2.9.0))(vue@3.5.34(typescript@6.0.3))
+      '@vue/compiler-sfc':
+        specifier: catalog:vue3
+        version: 3.5.34
+      cross-env:
+        specifier: catalog:crossEnv
+        version: 10.1.0
+      tailwindcss:
+        specifier: catalog:tailwindcss3
+        version: 3.4.19(tsx@4.22.3)(yaml@2.9.0)
+      typescript:
+        specifier: catalog:typescript59
+        version: 6.0.3
+      vite:
+        specifier: catalog:vite8
+        version: 8.0.13(@types/node@25.7.0)(esbuild@0.28.0)(jiti@2.7.0)(less@4.6.4)(sass-embedded@1.99.0)(sass@1.99.0)(stylus@0.57.0)(terser@5.47.1)(tsx@4.22.3)(yaml@2.9.0)
+      vue-tsc:
+        specifier: catalog:vueTsc318
+        version: 3.3.0(typescript@6.0.3)
+      weapp-tailwindcss:
+        specifier: workspace:*
+        version: link:../../../packages/weapp-tailwindcss
+
+  demo/web/vue-vite-tailwindcss-v4:
+    dependencies:
+      vue:
+        specifier: catalog:vue3
+        version: 3.5.34(typescript@6.0.3)
+    devDependencies:
+      '@vitejs/plugin-vue':
+        specifier: catalog:vitePluginVue6
+        version: 6.0.7(vite@8.0.13(@types/node@25.7.0)(esbuild@0.28.0)(jiti@2.7.0)(less@4.6.4)(sass-embedded@1.99.0)(sass@1.99.0)(stylus@0.57.0)(terser@5.47.1)(tsx@4.22.3)(yaml@2.9.0))(vue@3.5.34(typescript@6.0.3))
+      '@vue/compiler-sfc':
+        specifier: catalog:vue3
+        version: 3.5.34
+      cross-env:
+        specifier: catalog:crossEnv
+        version: 10.1.0
+      tailwindcss:
+        specifier: catalog:tailwindcss4
+        version: 4.3.0
+      typescript:
+        specifier: catalog:typescript59
+        version: 6.0.3
+      vite:
+        specifier: catalog:vite8
+        version: 8.0.13(@types/node@25.7.0)(esbuild@0.28.0)(jiti@2.7.0)(less@4.6.4)(sass-embedded@1.99.0)(sass@1.99.0)(stylus@0.57.0)(terser@5.47.1)(tsx@4.22.3)(yaml@2.9.0)
+      vue-tsc:
+        specifier: catalog:vueTsc318
+        version: 3.3.0(typescript@6.0.3)
+      weapp-tailwindcss:
+        specifier: workspace:*
+        version: link:../../../packages/weapp-tailwindcss
 
   e2e:
     dependencies:
@@ -13067,6 +13209,19 @@ packages:
     engines: {node: ^14.18.0 || >=16.0.0}
     peerDependencies:
       vite: ^4.2.0 || ^5.0.0 || ^6.0.0 || ^7.0.0
+
+  '@vitejs/plugin-react@6.0.2':
+    resolution: {integrity: sha512-DlSMqo4WhThw4vB8Mpn0Woe9J+Jfq1geJ61AKW0QEgLzGMNwtIMdxbDUzLxcun8W7NbJO0e2Jg/Nxm3cCSVzzg==}
+    engines: {node: ^20.19.0 || >=22.12.0}
+    peerDependencies:
+      '@rolldown/plugin-babel': ^0.1.7 || ^0.2.0
+      babel-plugin-react-compiler: ^1.0.0
+      vite: ^8.0.0
+    peerDependenciesMeta:
+      '@rolldown/plugin-babel':
+        optional: true
+      babel-plugin-react-compiler:
+        optional: true
 
   '@vitejs/plugin-vue-jsx@3.1.0':
     resolution: {integrity: sha512-w9M6F3LSEU5kszVb9An2/MmXNxocAnUb3WhRr8bHlimhDrXNt6n6D2nJQR3UXpGlZHh/EsgouOHCsM8V3Ln+WA==}
@@ -40648,6 +40803,11 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
+  '@vitejs/plugin-react@6.0.2(vite@8.0.13(@types/node@25.7.0)(esbuild@0.28.0)(jiti@2.7.0)(less@4.6.4)(sass-embedded@1.99.0)(sass@1.99.0)(stylus@0.57.0)(terser@5.47.1)(tsx@4.22.3)(yaml@2.9.0))':
+    dependencies:
+      '@rolldown/pluginutils': 1.0.1
+      vite: 8.0.13(@types/node@25.7.0)(esbuild@0.28.0)(jiti@2.7.0)(less@4.6.4)(sass-embedded@1.99.0)(sass@1.99.0)(stylus@0.57.0)(terser@5.47.1)(tsx@4.22.3)(yaml@2.9.0)
+
   '@vitejs/plugin-vue-jsx@3.1.0(vite@4.5.14(@types/node@24.12.4)(less@4.6.4)(lightningcss@1.32.0)(sass@1.99.0)(stylus@0.57.0)(terser@5.47.1))(vue@3.5.34(typescript@6.0.3))':
     dependencies:
       '@babel/core': 7.29.0
@@ -40699,6 +40859,12 @@ snapshots:
       vite: 7.3.3(@types/node@25.7.0)(jiti@2.7.0)(less@4.6.4)(lightningcss@1.32.0)(sass-embedded@1.99.0)(sass@1.99.0)(stylus@0.57.0)(terser@5.47.1)(tsx@4.22.3)(yaml@2.9.0)
       vue: 3.5.34(typescript@6.0.3)
 
+  '@vitejs/plugin-vue@6.0.7(vite@8.0.13(@types/node@25.7.0)(esbuild@0.28.0)(jiti@2.7.0)(less@4.6.4)(sass-embedded@1.99.0)(sass@1.99.0)(stylus@0.57.0)(terser@5.47.1)(tsx@4.22.3)(yaml@2.9.0))(vue@3.5.34(typescript@6.0.3))':
+    dependencies:
+      '@rolldown/pluginutils': 1.0.1
+      vite: 8.0.13(@types/node@25.7.0)(esbuild@0.28.0)(jiti@2.7.0)(less@4.6.4)(sass-embedded@1.99.0)(sass@1.99.0)(stylus@0.57.0)(terser@5.47.1)(tsx@4.22.3)(yaml@2.9.0)
+      vue: 3.5.34(typescript@6.0.3)
+
   '@vitest/coverage-v8@4.1.6(vitest@4.1.6)':
     dependencies:
       '@bcoe/v8-coverage': 1.0.2
@@ -40711,7 +40877,7 @@ snapshots:
       obug: 2.1.1
       std-env: 4.0.0
       tinyrainbow: 3.1.0
-      vitest: 4.1.6(@types/node@24.12.4)(@vitest/coverage-v8@4.1.6)(@vitest/ui@4.1.6)(jsdom@29.1.1)(vite@7.3.3(@types/node@24.12.4)(jiti@2.7.0)(less@4.6.4)(lightningcss@1.32.0)(sass-embedded@1.99.0)(sass@1.99.0)(stylus@0.57.0)(terser@5.47.1)(tsx@4.22.3)(yaml@2.9.0))
+      vitest: 4.1.6(@types/node@25.7.0)(@vitest/coverage-v8@4.1.6)(@vitest/ui@4.1.6)(jsdom@29.1.1)(vite@8.0.13(@types/node@25.7.0)(esbuild@0.28.0)(jiti@2.7.0)(less@4.6.4)(sass-embedded@1.99.0)(sass@1.99.0)(stylus@0.57.0)(terser@5.47.1)(tsx@4.22.3)(yaml@2.9.0))
 
   '@vitest/eslint-plugin@1.6.17(@typescript-eslint/eslint-plugin@8.59.4(@typescript-eslint/parser@8.59.4(eslint@10.4.0(jiti@2.7.0))(typescript@6.0.3))(eslint@10.4.0(jiti@2.7.0))(typescript@6.0.3))(eslint@10.4.0(jiti@2.7.0))(typescript@6.0.3)(vitest@4.1.6)':
     dependencies:
@@ -40793,7 +40959,7 @@ snapshots:
       sirv: 3.0.2
       tinyglobby: 0.2.15
       tinyrainbow: 3.1.0
-      vitest: 4.1.6(@types/node@24.12.4)(@vitest/coverage-v8@4.1.6)(@vitest/ui@4.1.6)(jsdom@29.1.1)(vite@7.3.3(@types/node@24.12.4)(jiti@2.7.0)(less@4.6.4)(lightningcss@1.32.0)(sass-embedded@1.99.0)(sass@1.99.0)(stylus@0.57.0)(terser@5.47.1)(tsx@4.22.3)(yaml@2.9.0))
+      vitest: 4.1.6(@types/node@25.7.0)(@vitest/coverage-v8@4.1.6)(@vitest/ui@4.1.6)(jsdom@29.1.1)(vite@8.0.13(@types/node@25.7.0)(esbuild@0.28.0)(jiti@2.7.0)(less@4.6.4)(sass-embedded@1.99.0)(sass@1.99.0)(stylus@0.57.0)(terser@5.47.1)(tsx@4.22.3)(yaml@2.9.0))
 
   '@vitest/utils@3.2.4':
     dependencies:

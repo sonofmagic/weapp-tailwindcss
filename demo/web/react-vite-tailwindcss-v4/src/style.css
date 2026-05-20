@@ -1,0 +1,7 @@
+@import "tailwindcss" source(none);
+@source "../index.html";
+@source "./**/*.{ts,tsx}";
+
+html {
+  font-family: Inter, ui-sans-serif, system-ui, sans-serif;
+}

@@ -9,6 +9,7 @@ packages:
   - '!tailwindcss-weapp'
   - '!**/test/**'
   - demo/*
+  - demo/web/*
 
 allowBuilds:
   '@dcloudio/hbuilderx-cli': false
@@ -141,10 +142,16 @@ catalogs:
     vite: ^5.4.21
   vite724:
     vite: ^7.3.3
+  vite8:
+    vite: ^8.0.13
   vitePluginInspect:
     vite-plugin-inspect: ^11.3.3
   vitePluginReact4:
     '@vitejs/plugin-react': ^4.7.0
+  vitePluginReact6:
+    '@vitejs/plugin-react': ^6.0.2
+  vitePluginVue6:
+    '@vitejs/plugin-vue': ^6.0.7
   vitest:
     vitest: ~4.1.6
   vue2:
