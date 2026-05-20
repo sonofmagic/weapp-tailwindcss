@@ -38,6 +38,55 @@ describe('tailwindcss/remove unsupported css', () => {
     expect(css).toContain('.md\\:block{display:block}')
   })
 
+  it('does not synthesize the Tailwind v3 pseudo content init in final mini-program css', () => {
+    const css = finalizeMiniProgramCss([
+      ':host,page,.tw-root,wx-root-portal-content {',
+      '  --color-red-500: red;',
+      '}',
+      '.bg-red-500 {',
+      '  background-color: var(--color-red-500);',
+      '}',
+    ].join('\n'))
+
+    expect(css).not.toContain('--tw-content')
+    expect(css).toContain(':host,page,.tw-root,wx-root-portal-content')
+    expect(css).toContain('background-color: var(--color-red-500)')
+  })
+
+  it('keeps Tailwind v4 content init when content variable is used', () => {
+    const css = finalizeMiniProgramCss([
+      '::before,::after{--tw-content:""}',
+      ':host,page,.tw-root,wx-root-portal-content {',
+      '  --tw-content: "";',
+      '  --color-red-500: red;',
+      '}',
+      '.before\\:content-\\[\\\"x\\\"\\]::before {',
+      '  --tw-content: "x";',
+      '  content: var(--tw-content);',
+      '}',
+    ].join('\n'))
+
+    expect(css).not.toContain('::before,::after{--tw-content:""}')
+    expect(css).toMatch(/--tw-content:\s*(?:""|''|''|')\s*(?:;|\})/)
+    expect(css).toContain('--tw-content: "x"')
+    expect(css).toContain('content: var(--tw-content)')
+    expect(css).toContain('--color-red-500: red')
+  })
+
+  it('removes Tailwind v4 content init when content variable is unused', () => {
+    const css = finalizeMiniProgramCss([
+      ':host,page,.tw-root,wx-root-portal-content {',
+      '  --tw-content: "";',
+      '  --color-red-500: red;',
+      '}',
+      '.bg-red-500 { background-color: var(--color-red-500); }',
+    ].join('\n'))
+
+    expect(css).not.toContain('--tw-content')
+    expect(css).toContain('--color-red-500: red')
+    expect(css).toContain('background-color: var(--color-red-500)')
+  })
+
   it('keeps generated utilities when pruning layer-wrapped mini-program css', () => {
     const css = pruneMiniProgramGeneratedCss([
       '@layer theme, base, components, utilities;',

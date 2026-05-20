@@ -145,6 +145,7 @@ describe('v4', () => {
     expect(css).not.toContain('@layer')
     expect(css).not.toContain(':not(#\\#)')
     expect(css).not.toContain(':not(#n)')
+    expect(css).not.toContain('--tw-content')
     expect(await prettier.format(css, { parser: 'css' })).toMatchSnapshot()
   })
 

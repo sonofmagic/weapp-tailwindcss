@@ -870,17 +870,19 @@ describe('tailwindcss v4 engine', () => {
     const engine = createTailwindV4Engine(source)
 
     const result = await engine.generate({
-      candidates: ['transform', 'before:content-["x"]', 'w-4'],
+      candidates: ['transform', 'before:bg-gray-200', 'before:content-["x"]', 'w-4'],
     })
 
     expect(result.rawCss).toContain('::before')
     expect(result.css).toContain('.transform')
     expect(result.css).toContain('.w-4')
     expect(result.css).toContain('--tw-rotate-x')
-    expect(result.css).toContain('--tw-content')
+    expect(result.css).toContain('--tw-content: "x"')
+    expect(result.css).toContain('--tw-content: ""')
+    expect(result.css).toContain('background-color: var(--color-gray-200)')
     expect(result.css).not.toContain('::-webkit')
     expect(result.css).not.toContain(':-moz')
-    expect(result.css).toMatch(/^::before,\s*::after\s*\{\s*--tw-content:/m)
+    expect(result.css).not.toMatch(/^::before,\s*::after\s*\{\s*--tw-content:/m)
     expect(result.css).not.toContain('@supports')
   })
 

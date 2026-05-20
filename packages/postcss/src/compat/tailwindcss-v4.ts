@@ -1,5 +1,6 @@
 // Tailwind CSS v4 兼容性相关的辅助方法，集中复用特殊处理逻辑
-import type { AtRule, Declaration, Rule } from 'postcss'
+import type { AtRule, Root, Rule } from 'postcss'
+import { Declaration } from 'postcss'
 import cssVarsV4 from '../cssVarsV4'
 import { createCssVarNodes } from '../utils/css-vars'
 
@@ -21,6 +22,8 @@ const COLOR_GAMUT_P3_RE = /\(\s*color-gamut\s*:\s*p3\s*\)/i
 // 用于 normalizeTailwindcssV4Declaration 的正则
 const RADIUS_VALUE_RE = /\b([+-]?(?:\d+(?:\.\d+)?|\.\d+)(?:e[+-]?\d+)?)\s*(r?px)\b/gi
 const SCIENTIFIC_NOTATION_RE = /e/i
+const TW_VAR_FUNCTION_RE = /var\(\s*(--tw-[\w-]+)\b/g
+const TW_CONTENT_VAR_RE = /var\(\s*--tw-content\b/
 
 export function isTailwindcssV4(options?: { majorVersion?: number }) {
   return options?.majorVersion === 4
@@ -33,6 +36,53 @@ export function testIfRootHostForV4(node: Rule) {
 
 // Tailwind CSS v4 默认 CSS 变量映射，参考官方 utilities 定义
 export const cssVarsV4Nodes = createCssVarNodes(cssVarsV4)
+
+// 从当前 CSS 中收集实际引用到的 Tailwind v4 变量，用于按需注入默认值
+export function collectUsedTailwindcssV4Variables(root: Root) {
+  const props = new Set<string>()
+  root.walkDecls((decl) => {
+    if (decl.prop.startsWith('--tw-')) {
+      props.add(decl.prop)
+    }
+    TW_VAR_FUNCTION_RE.lastIndex = 0
+    let match = TW_VAR_FUNCTION_RE.exec(decl.value)
+    while (match !== null) {
+      const prop = match[1]
+      if (prop) {
+        props.add(prop)
+      }
+      match = TW_VAR_FUNCTION_RE.exec(decl.value)
+    }
+  })
+  root.walkAtRules('property', (atRule) => {
+    const prop = atRule.params.trim()
+    if (prop.startsWith('--tw-')) {
+      props.add(prop)
+    }
+  })
+  return props
+}
+
+// 判断当前 CSS 是否实际依赖 --tw-content 的默认值
+export function usesTailwindcssV4ContentVariable(root: Root) {
+  let used = false
+  root.walkDecls((decl) => {
+    if (TW_CONTENT_VAR_RE.test(decl.value)) {
+      used = true
+    }
+  })
+  return used
+}
+
+// Tailwind v4 的变量默认值只为当前 CSS 实际使用到的变量补齐，避免 v3/v4 全量变量串入
+export function createUsedCssVarsV4Nodes(usedProps: ReadonlySet<string>) {
+  return cssVarsV4
+    .filter(def => usedProps.has(def.prop))
+    .map(def => new Declaration({
+      prop: def.prop,
+      value: def.value,
+    }))
+}
 
 // Tailwind v4 的现代检查语句需要特殊处理以恢复具体规则
 export function isTailwindcssV4ModernCheck(atRule: AtRule) {

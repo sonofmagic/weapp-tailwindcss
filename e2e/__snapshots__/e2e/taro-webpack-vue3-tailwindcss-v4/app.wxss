@@ -1,8 +1,3 @@
-::before,
-::after {
-  --tw-content: '';
-}
-
 view,
 text,
 :after,
@@ -12,7 +7,6 @@ text,
   margin: 0;
   padding: 0;
 }
-
 :host,
 page,
 .tw-root,

@@ -26,6 +26,7 @@ describe('e2e', () => {
     const linearBlocks = css.match(/\.bg-linear-to-r\s*\{[^}]*\}/g)?.join('\n') ?? ''
 
     expect(css).toContain('.bg-linear-to-r')
+    expect(css).not.toMatch(/^::before,\s*::after\s*\{\s*--tw-content:\s*(?:''|"")\s*(?:;|\})/m)
     expect(css).toMatch(/--tw-gradient-position:\s*to right\s*(?:;\s*)?\}/)
     expect(css).toMatch(/background-image:\s*linear-gradient\(var\(--tw-gradient-stops\)\)\s*(?:;\s*)?\}/)
     expect(css).not.toContain('@supports (background-image: linear-gradient(in lab, red, red))')

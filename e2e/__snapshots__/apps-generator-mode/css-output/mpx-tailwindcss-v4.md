@@ -6,7 +6,7 @@ Generator CSS files: app.wxss, styles/app.wxss, index.wxss, app.wxss, index.wxss
 
 | Bytes | Selectors | @supports | :hover | Tailwind banner | Raw arbitrary selector | Weapp escaped arbitrary selector |
 | ---: | ---: | --- | --- | --- | --- | --- |
-| 22620 | 68 | false | false | false | false | true |
+| 22364 | 68 | false | false | false | false | true |
 
 ## Generator CSS
 
@@ -16,11 +16,6 @@ Generator CSS files: app.wxss, styles/app.wxss, index.wxss, app.wxss, index.wxss
 /* webpackIgnore: true */
 @import './index.wxss';
 
-::before,
-::after {
-  --tw-content: '';
-}
-
 view,
 text,
 :after,
@@ -30,7 +25,6 @@ text,
   margin: 0;
   padding: 0;
 }
-
 :host,
 page,
 .tw-root,
@@ -54,7 +48,6 @@ wx-root-portal-content {
   --tw-ring-offset-width: 0px;
   --tw-ring-offset-color: #fff;
   --tw-ring-offset-shadow: 0 0 rgba(0, 0, 0, 0);
-  --tw-content: '';
   --color-gray-200: #e5e7eb;
   --color-gray-400: #9ca3af;
   --color-zinc-800: #27272a;
@@ -271,11 +264,6 @@ wx-root-portal-content {
 @import './index.wxss';
 
 
-::before,
-::after {
-  --tw-content: '';
-}
-
 view,
 text,
 :after,
@@ -285,7 +273,6 @@ text,
   margin: 0;
   padding: 0;
 }
-
 :host,
 page,
 .tw-root,
@@ -309,7 +296,6 @@ wx-root-portal-content {
   --tw-ring-offset-width: 0px;
   --tw-ring-offset-color: #fff;
   --tw-ring-offset-shadow: 0 0 rgba(0, 0, 0, 0);
-  --tw-content: '';
   --color-gray-200: #e5e7eb;
   --color-gray-400: #9ca3af;
   --color-zinc-800: #27272a;
@@ -522,11 +508,6 @@ wx-root-portal-content {
   }
 }
 
-::before,
-::after {
-  --tw-content: '';
-}
-
 view,
 text,
 :after,
@@ -536,7 +517,6 @@ text,
   margin: 0;
   padding: 0;
 }
-
 :host,
 page,
 .tw-root,
@@ -560,7 +540,6 @@ wx-root-portal-content {
   --tw-ring-offset-width: 0px;
   --tw-ring-offset-color: #fff;
   --tw-ring-offset-shadow: 0 0 rgba(0, 0, 0, 0);
-  --tw-content: '';
   --color-gray-200: #e5e7eb;
   --color-gray-400: #9ca3af;
   --color-zinc-800: #27272a;
@@ -773,11 +752,6 @@ wx-root-portal-content {
   }
 }
 
-::before,
-::after {
-  --tw-content: '';
-}
-
 view,
 text,
 :after,
@@ -787,7 +761,6 @@ text,
   margin: 0;
   padding: 0;
 }
-
 :host,
 page,
 .tw-root,
@@ -811,7 +784,6 @@ wx-root-portal-content {
   --tw-ring-offset-width: 0px;
   --tw-ring-offset-color: #fff;
   --tw-ring-offset-shadow: 0 0 rgba(0, 0, 0, 0);
-  --tw-content: '';
   --color-gray-200: #e5e7eb;
   --color-gray-400: #9ca3af;
   --color-zinc-800: #27272a;

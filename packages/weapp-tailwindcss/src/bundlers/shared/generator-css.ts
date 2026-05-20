@@ -83,11 +83,13 @@ export interface GenerateCssByGeneratorResult {
   incremental?: boolean | undefined
 }
 
-function finalizeMiniProgramGeneratorCss(css: string, target: string) {
+function finalizeMiniProgramGeneratorCss(css: string, target: string, majorVersion: number | undefined) {
   if (target !== 'weapp') {
     return css
   }
-  return finalizeMiniProgramCss(css)
+  return finalizeMiniProgramCss(css, {
+    preservePseudoContentInit: majorVersion === 3,
+  })
 }
 
 function mergeScopedRuntimeWithCurrentRuntime(
@@ -360,7 +362,7 @@ export async function generateCssByGenerator(
     if (typeof options.previousCss === 'string' && typeof generated.incrementalCss === 'string') {
       const incrementalCss = stripTailwindBanner(generated.incrementalCss)
       const css = incrementalCss.trim().length > 0
-        ? createCssAppend(options.previousCss, finalizeMiniProgramGeneratorCss(incrementalCss, generated.target))
+        ? createCssAppend(options.previousCss, finalizeMiniProgramGeneratorCss(incrementalCss, generated.target, majorVersion))
         : options.previousCss
       return {
         css,
@@ -386,7 +388,7 @@ export async function generateCssByGenerator(
             : cleanedExtraCss
           if (extraSource.trim().length === 0) {
             return {
-              css: finalizeMiniProgramGeneratorCss(css, generated.target),
+              css: finalizeMiniProgramGeneratorCss(css, generated.target, majorVersion),
               target: generated.target,
               source: 'generator',
               dependencies: generated.dependencies,
@@ -426,7 +428,7 @@ export async function generateCssByGenerator(
         )
       }
       return {
-        css: finalizeMiniProgramGeneratorCss(css, generated.target),
+        css: finalizeMiniProgramGeneratorCss(css, generated.target, majorVersion),
         target: generated.target,
         source: 'generator',
         dependencies: generated.dependencies,
@@ -443,7 +445,7 @@ export async function generateCssByGenerator(
     }
     if (sources.some(source => (source as GeneratorResolvedSource).__weappTailwindcssMeta?.matchedCssSourceFile)) {
       return {
-        css: finalizeMiniProgramGeneratorCss(css, generated.target),
+        css: finalizeMiniProgramGeneratorCss(css, generated.target, majorVersion),
         target: generated.target,
         source: 'generator',
         dependencies: generated.dependencies,
@@ -469,7 +471,7 @@ export async function generateCssByGenerator(
       generatorStyleOptions,
     )
     return {
-      css: finalizeMiniProgramGeneratorCss(css, generated.target),
+      css: finalizeMiniProgramGeneratorCss(css, generated.target, majorVersion),
       target: generated.target,
       source: 'generator',
       dependencies: generated.dependencies,

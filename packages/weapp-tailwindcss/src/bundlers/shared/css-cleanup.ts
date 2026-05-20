@@ -16,6 +16,11 @@ const PREFLIGHT_RESET_PROPS = new Set([
   'margin',
   'padding',
 ])
+const CONTENT_VAR_RE = /var\(\s*--tw-content\b/
+
+interface FinalizeMiniProgramCssOptions {
+  preservePseudoContentInit?: boolean
+}
 
 function isMiniProgramThemeScopeSelector(selectors: string[]) {
   return selectors.length > 0
@@ -69,6 +74,20 @@ function hasContentInitDeclaration(rule: postcss.Rule) {
   return hasContentInit
 }
 
+function isEmptyContentInitDeclaration(decl: postcss.Declaration) {
+  return decl.prop === '--tw-content' && (decl.value === '""' || decl.value === '\'\'')
+}
+
+function usesTwContentVariable(root: postcss.Root) {
+  let used = false
+  root.walkDecls((decl) => {
+    if (CONTENT_VAR_RE.test(decl.value)) {
+      used = true
+    }
+  })
+  return used
+}
+
 function isTailwindPreflightRule(node: postcss.Node): node is postcss.Rule {
   if (node.type !== 'rule' || node.parent?.type !== 'root') {
     return false
@@ -98,7 +117,7 @@ function createPseudoContentInitRule() {
   return rule
 }
 
-function collectPreflightRules(root: postcss.Root) {
+function collectPreflightRules(root: postcss.Root, options: { preservePseudoContentInit?: boolean } = {}) {
   const preflightNodes: postcss.Rule[] = []
   let hasContentInit = false
 
@@ -116,11 +135,16 @@ function collectPreflightRules(root: postcss.Root) {
   }
 
   const clonedPreflightRules = preflightNodes.map(node => node.clone())
-  const contentInitRules = clonedPreflightRules.filter(rule => hasContentInitDeclaration(rule))
+  const contentInitRules = options.preservePseudoContentInit
+    ? clonedPreflightRules.filter(rule => hasContentInitDeclaration(rule))
+    : []
   const otherPreflightRules = clonedPreflightRules.filter(rule => !hasContentInitDeclaration(rule))
   const preflightRules = hasContentInit
     ? [...contentInitRules, ...otherPreflightRules]
-    : [createPseudoContentInitRule(), ...otherPreflightRules]
+    : [
+        ...(options.preservePseudoContentInit ? [createPseudoContentInitRule()] : []),
+        ...otherPreflightRules,
+      ]
   for (const node of preflightNodes) {
     node.remove()
   }
@@ -128,9 +152,10 @@ function collectPreflightRules(root: postcss.Root) {
   return preflightRules
 }
 
-function collectThemeVariableRule(root: postcss.Root) {
+function collectThemeVariableRule(root: postcss.Root, options: FinalizeMiniProgramCssOptions = {}) {
   const themeRules: postcss.Rule[] = []
   const declarations = new Map<string, postcss.Declaration>()
+  const shouldPreserveContentInit = options.preservePseudoContentInit || usesTwContentVariable(root)
 
   for (const node of root.nodes ?? []) {
     if (!isMiniProgramThemeVariableRule(node)) {
@@ -140,6 +165,9 @@ function collectThemeVariableRule(root: postcss.Root) {
     themeRules.push(node)
     node.walkDecls((decl) => {
       if (isDisplayP3Declaration(decl)) {
+        return
+      }
+      if (!shouldPreserveContentInit && isEmptyContentInitDeclaration(decl)) {
         return
       }
       declarations.set(decl.prop, decl.clone())
@@ -194,7 +222,7 @@ function insertHoistedRules(root: postcss.Root, rules: postcss.Rule[]) {
   }
 }
 
-function finalizeMiniProgramCssRoot(root: postcss.Root) {
+function finalizeMiniProgramCssRoot(root: postcss.Root, options: FinalizeMiniProgramCssOptions = {}) {
   removeUnsupportedCascadeLayers(root)
   unwrapTailwindSourceMedia(root)
   root.walkAtRules('property', (atRule) => {
@@ -204,8 +232,8 @@ function finalizeMiniProgramCssRoot(root: postcss.Root) {
   removeUnsupportedBrowserSelectors(root)
   removeDisplayP3Declarations(root)
 
-  const preflightRules = collectPreflightRules(root)
-  const themeRule = collectThemeVariableRule(root)
+  const preflightRules = collectPreflightRules(root, options)
+  const themeRule = collectThemeVariableRule(root, options)
   const hoistedRules = themeRule ? [...preflightRules, themeRule] : preflightRules
   insertHoistedRules(root, hoistedRules)
 }
@@ -221,7 +249,7 @@ function unwrapTailwindSourceMedia(root: postcss.Root) {
 export function hoistTailwindPreflightBase(css: string) {
   try {
     const root = postcss.parse(css)
-    const preflightRules = collectPreflightRules(root)
+    const preflightRules = collectPreflightRules(root, { preservePseudoContentInit: true })
     insertHoistedRules(root, preflightRules)
     return root.toString()
   }
@@ -230,11 +258,11 @@ export function hoistTailwindPreflightBase(css: string) {
   }
 }
 
-export function finalizeMiniProgramCss(css: string) {
+export function finalizeMiniProgramCss(css: string, options: FinalizeMiniProgramCssOptions = {}) {
   const cleanedCss = removeUnsupportedMiniProgramAtRules(css)
   try {
     const root = postcss.parse(cleanedCss)
-    finalizeMiniProgramCssRoot(root)
+    finalizeMiniProgramCssRoot(root, options)
     return root.toString()
   }
   catch {

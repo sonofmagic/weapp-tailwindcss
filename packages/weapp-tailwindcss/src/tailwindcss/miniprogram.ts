@@ -22,6 +22,7 @@ const PREFLIGHT_RESET_PROPS = new Set([
   'margin',
   'padding',
 ])
+const CONTENT_VAR_RE = /var\(\s*--tw-content\b/
 
 interface PruneMiniProgramGeneratedCssOptions {
   preservePreflight?: boolean
@@ -54,6 +55,28 @@ function isCustomPropertyRule(rule: postcss.Rule) {
   })
 
   return hasDeclaration && allCustomProperties
+}
+
+function isEmptyContentInitDeclaration(decl: postcss.Declaration) {
+  return decl.prop === '--tw-content' && (decl.value === '""' || decl.value === '\'\'')
+}
+
+function removeEmptyContentInitDeclarations(rule: postcss.Rule) {
+  rule.walkDecls((decl) => {
+    if (isEmptyContentInitDeclaration(decl)) {
+      decl.remove()
+    }
+  })
+}
+
+function usesTwContentVariable(root: postcss.Root) {
+  let used = false
+  root.walkDecls((decl) => {
+    if (CONTENT_VAR_RE.test(decl.value)) {
+      used = true
+    }
+  })
+  return used
 }
 
 function isPseudoContentInitRule(rule: postcss.Rule) {
@@ -119,6 +142,7 @@ export function pruneMiniProgramGeneratedCss(
   options: PruneMiniProgramGeneratedCssOptions = {},
 ) {
   const root = postcss.parse(css)
+  const shouldPreserveContentInit = options.preservePreflight || usesTwContentVariable(root)
 
   root.walkComments((comment) => {
     comment.remove()
@@ -139,7 +163,14 @@ export function pruneMiniProgramGeneratedCss(
       return
     }
 
+    if (!shouldPreserveContentInit) {
+      removeEmptyContentInitDeclarations(rule)
+    }
+
     if (isPseudoContentInitRule(rule)) {
+      if (!shouldPreserveContentInit) {
+        rule.remove()
+      }
       return
     }
 

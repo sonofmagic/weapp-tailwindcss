@@ -6,15 +6,11 @@ Generator CSS files: app.wxss, apple.wxss, index.wxss, index.wxss, index.wxss
 
 | Bytes | Selectors | @supports | :hover | Tailwind banner | Raw arbitrary selector | Weapp escaped arbitrary selector |
 | ---: | ---: | --- | --- | --- | --- | --- |
-| 5795 | 46 | false | false | false | false | true |
+| 5753 | 46 | false | false | false | false | true |
 
 ## Generator CSS
 
 ```css
-::before,
-::after {
-  --tw-content: '';
-}
 :host,
 page,
 .tw-root,

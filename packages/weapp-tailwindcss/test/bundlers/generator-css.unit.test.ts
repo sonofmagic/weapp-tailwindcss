@@ -2788,7 +2788,6 @@ describe('bundlers/shared generator css', () => {
     })
 
     expect(result?.css).toBe([
-      '::before,::after{--tw-content:""}',
       'view,text,::before,::after{--tw-border-spacing-x:0;box-sizing:border-box;border-width:0;border-style:solid}',
       `${weappCss}`,
       '.card{color:red}',
