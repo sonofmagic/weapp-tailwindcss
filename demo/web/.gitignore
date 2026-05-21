@@ -6,3 +6,4 @@ dist
 dist-weapp
 **/dist
 **/dist-weapp
+.compare-dev-weapp

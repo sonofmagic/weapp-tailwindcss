@@ -105,6 +105,7 @@
     "e2e:watch:speed-report": "node .github/scripts/e2e-watch-report.cjs speed-report",
     "e2e:update-snapshots": "node scripts/e2e-update-snapshots-runner.mjs",
     "demo:build": "pnpm run build:demo",
+    "demo:web:compare": "node demo/web/scripts/compare-dev-weapp.mjs",
     "demo:install": "tsx scripts/demo/install.ts",
     "demo:install:beta": "tsx scripts/demo/install.ts --beta",
     "demo:install:alpha": "tsx scripts/demo/install.ts --alpha",
