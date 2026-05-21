@@ -1,5 +1,54 @@
 # weapp-tailwindcss
 
+## 5.0.0-next.13
+
+### Patch Changes
+
+- 🐛 **优化 demo 构建与热更新中的 Tailwind 生成链路：Vite/Gulp/Webpack 会更精确地复用源码候选、CSS source 与运行时 class set 缓存，避免 v3 空构建复用上一次非空候选、v4 source 文件变化未进入签名，以及 v3 PostCSS 过早过滤配置类导致的重复生成和漏生成。** [#863](https://github.com/sonofmagic/weapp-tailwindcss/pull/863) by @github-actions
+
+- 🐛 **优化 Vite 构建器在 demo 热更新场景下的源候选缓存与 CSS 生成刷新逻辑，避免增量编译反复丢失源码候选或执行不必要的全量任务。** [#863](https://github.com/sonofmagic/weapp-tailwindcss/pull/863) by @github-actions
+  - 同时调整 Taro Vite 与 weapp-vite demo 的 watch 验证脚本，默认使用真实原生 watch 增量流程，避免测试脚本重启构建进程或额外执行全量构建导致热更新时间被放大。
+
+- 🐛 **优化 Webpack 与 Gulp demo 的 watch 热更新路径：普通页面、组件、脚本或模板变更复用已有 Tailwind runtime class set 和依赖元数据，仅在 Tailwind 配置、CSS source 或内容依赖变化时重新刷新完整 patcher。** [#863](https://github.com/sonofmagic/weapp-tailwindcss/pull/863) by @github-actions
+
+- 🐛 **优化 Tailwind CSS v4 增量生成：新增候选类时仅转换新增 CSS 片段并追加到缓存结果，避免每次热更新都重新转换完整生成 CSS。** [#863](https://github.com/sonofmagic/weapp-tailwindcss/pull/863) by @github-actions
+
+- 🐛 **优化 Vite 生成模式在 uni-app watch 场景下的 Tailwind CSS 增量热更新性能，复用底层生成器的新增 CSS 片段并避免重复处理整份历史样式。** [#863](https://github.com/sonofmagic/weapp-tailwindcss/pull/863) by @github-actions
+
+- 🐛 **修复 Tailwind CSS v3 在 Vite 增量构建中只使用 source scan 候选集时遗漏当前 bundle 新增类名的问题，避免 WXML 已转义但 WXSS 未生成对应样式。** [#863](https://github.com/sonofmagic/weapp-tailwindcss/pull/863) by @github-actions
+
+- 🐛 **优化 Vite watch 模式下 Tailwind v4 热更新性能：缓存 source candidates 扫描结果，优先按 `@source`/CSS 入口缩小扫描范围，并复用 Tailwind v4 generator 的增量结果，避免 demo 热更新时反复全量扫描源码和重复生成 CSS。** [#863](https://github.com/sonofmagic/weapp-tailwindcss/pull/863) by @github-actions
+
+- 🐛 **修复 Mpx + Tailwind CSS v4 子包 CSS 中相对 `@config` 路径在构建时被错误按项目根解析的问题，保持源码相对当前文件的写法可用。** [#863](https://github.com/sonofmagic/weapp-tailwindcss/pull/863) by @github-actions
+
+- 🐛 **优化 uni-app Vite + Tailwind CSS v4 热更新性能：主包占位 CSS 现在会根据已注册 CSS source 的 Tailwind source entries 与当前候选命中选择单个源，避免候选变化时把多个自动发现的 CSS source 合并生成到主包样式；同时跳过 Vue SFC 子请求对源码候选集合的覆盖，保留原始 `.vue` 文件中的完整 class 候选。** [#863](https://github.com/sonofmagic/weapp-tailwindcss/pull/863) by @github-actions
+
+- 🐛 **修复 Tailwind CSS v4 生成模式下小程序产物可能缺失默认 preflight reset 的问题，避免 `divide-double`、`divide-dotted` 等分割线样式在未清零边框宽度时渲染出额外边框。** [`d97e16d`](https://github.com/sonofmagic/weapp-tailwindcss/commit/d97e16d9813fa94bdb803b863cbb6e583076cbe8) by @sonofmagic
+
+- 🐛 **修复 uni-app Vite 下 Tailwind CSS v4 子包样式生成过慢的问题：子包 `wxss` 现在会优先反查对应源码侧 CSS 入口，并在命中 `source(none)` 等独立入口时隔离主包运行时候选，避免静态 icon 插件等大候选集被重复合并到子包生成流程。** [#863](https://github.com/sonofmagic/weapp-tailwindcss/pull/863) by @github-actions
+
+- 🐛 **修复 monorepo demo 直接启动时可能复用过期 `dist` 的问题：所有依赖 `weapp-tailwindcss` 的 demo 在 `dev`/`build` 前会按需检查核心包构建产物，源码更新后自动刷新本地 `dist`，避免热更新性能优化没有被实际 demo 加载。** [#863](https://github.com/sonofmagic/weapp-tailwindcss/pull/863) by @github-actions
+
+- 🐛 **当 `WEAPP_TW_HMR_TIMING=1` 时额外输出人可读的插件处理耗时，便于 demo 开发态观察构建和 HMR 性能。** [#863](https://github.com/sonofmagic/weapp-tailwindcss/pull/863) by @github-actions
+
+- 🐛 **Vite source candidates 收集改为复用 `tailwindcss-patch` 的源码候选提取 API，移除本地重复的字符串/`@apply` 提取逻辑，避免与 Tailwind scanner 语义分叉。** [#863](https://github.com/sonofmagic/weapp-tailwindcss/pull/863) by @github-actions
+
+- 🐛 **Vite 生成模式下 Tailwind CSS v3 默认优先使用 Oxide 扫描到的源码候选类作为运行时输入，并将 v3 CSS 生成从 `postcss([tailwindcss(...)])` 切换为内部直接引擎，减少开发热更新中对 v3 PostCSS 插件和 runtime patcher 提取链路的依赖。** [#863](https://github.com/sonofmagic/weapp-tailwindcss/pull/863) by @github-actions
+
+- 🐛 **修复 Tailwind CSS v3 自定义生成引擎在显式候选驱动的增量生成中重复扫描配置 content 的问题，避免 uni-app Vite 热更新时生成 CSS 持续膨胀并拖慢 HMR。** [#863](https://github.com/sonofmagic/weapp-tailwindcss/pull/863) by @github-actions
+
+- 🐛 **优化 Tailwind CSS v3 开发热更新性能，增量生成时复用 Tailwind v3 runtime context，并缓存稳定 CSS 源的 legacy compat 转换结果，避免新增 class 时重复重建 v3 上下文和重复转换兼容 CSS。** [#863](https://github.com/sonofmagic/weapp-tailwindcss/pull/863) by @github-actions
+
+- 🐛 **优化 Tailwind CSS v3 生成器在 Vite 热更新中的增量 CSS 生成路径。现在 v3 生成器在热更新场景会复用同一 source/style/target 下已生成的 CSS，只为新增候选类生成 utilities 片段，减少重复执行完整 Tailwind v3 PostCSS 生成的次数。** [#863](https://github.com/sonofmagic/weapp-tailwindcss/pull/863) by @github-actions
+
+- 🐛 **优化 Tailwind CSS v4 在 Vite watch 下的热更新性能，避免已有候选集时重复扫描源码，并复用增量 CSS 生成缓存。** [#863](https://github.com/sonofmagic/weapp-tailwindcss/pull/863) by @github-actions
+
+- 🐛 **优化 Vite 生成模式下 Tailwind CSS v4 的热更新性能，候选类变化时不再重生成未关联的页面和分包 CSS。** [#863](https://github.com/sonofmagic/weapp-tailwindcss/pull/863) by @github-actions
+
+- 🐛 **优化 Tailwind CSS v4 在 Vite 构建中的 CSS source 匹配模型：普通主 CSS 输出也会优先通过 source candidates 精确匹配单个 cssSource，无法判定时不再对多个 cssSources 执行全量生成，减少 uni-app 等多 CSS source 项目的热更新耗时。** [#863](https://github.com/sonofmagic/weapp-tailwindcss/pull/863) by @github-actions
+
+- 🐛 **Tailwind CSS v4 初始源码扫描生成完成后会同步预热增量生成缓存，避免第一次热更新因为没有基线缓存而再次触发完整 v4 生成。** [#863](https://github.com/sonofmagic/weapp-tailwindcss/pull/863) by @github-actions
+
 ## 5.0.0-next.12
 
 ### Patch Changes
