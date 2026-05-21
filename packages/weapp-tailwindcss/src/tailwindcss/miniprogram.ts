@@ -2,11 +2,11 @@ import postcss from 'postcss'
 import { removeUnsupportedCascadeLayers } from './remove-unsupported-css'
 
 const DEFAULT_WEAPP_VARIABLE_SCOPE = 'page,.tw-root,wx-root-portal-content,:host'
-const DEFAULT_WEAPP_ELEMENT_VARIABLE_SCOPE = 'view,text'
+const DEFAULT_WEAPP_ELEMENT_VARIABLE_SCOPE = 'view,text,::before,::after'
 const CLASS_SELECTOR_RE = /(?:^|[^\w-])\.[_a-z\u00A0-\uFFFF\\-]/i
 const PSEUDO_CONTENT_SELECTOR_RE = /^(?:::before|::after|:before|:after)(?:,(?:::before|::after|:before|:after))*$/
 const MINI_PROGRAM_THEME_SCOPE_SELECTORS = new Set([':root', ':host', 'page', '.tw-root', 'wx-root-portal-content'])
-const MINI_PROGRAM_ELEMENT_VARIABLE_SCOPE_SELECTORS = new Set(['view', 'text'])
+const MINI_PROGRAM_ELEMENT_VARIABLE_SCOPE_SELECTORS = new Set(['view', 'text', ':before', ':after', '::before', '::after'])
 const MINI_PROGRAM_PREFLIGHT_SELECTORS = new Set([
   '*',
   'view',
