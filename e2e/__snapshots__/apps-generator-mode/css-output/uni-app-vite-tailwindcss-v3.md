@@ -6,7 +6,7 @@ Generator CSS files: app.wxss, a.wxss, b.wxss, index.wxss, index.wxss, index.wxs
 
 | Bytes | Selectors | @supports | :hover | Tailwind banner | Raw arbitrary selector | Weapp escaped arbitrary selector |
 | ---: | ---: | --- | --- | --- | --- | --- |
-| 647342 | 3122 | false | false | false | false | true |
+| 646650 | 3120 | false | false | false | false | true |
 
 ## Generator CSS
 
@@ -1661,16 +1661,6 @@ body {
   --u-light-info-disabled: var(--up-info-disabled, var(--u-info-disabled, #c4c6c9));
   --up-light-info-light: var(--up-info-light, var(--u-info-light, #f4f4f5));
   --u-light-info-light: var(--up-info-light, var(--u-info-light, #f4f4f5));
-  @config "../tailwind.config.js";
-  @tailwind base;
-  @tailwind components;
-  @tailwind utilities;
-}
-[data-up-theme='light'] .raw-btn {
-  @apply after:border-none inline-flex items-center gap-2 rounded text-sm font-semibold transition-all;
-}
-[data-up-theme='light'] .btn {
-  @apply raw-btn bg-gradient-to-r from-[#9e58e9] to-blue-500 px-2 py-1 text-white;
 }
 [data-up-theme='light'] page,
 [data-up-theme='light'] .tw-root,
@@ -11050,10 +11040,6 @@ body {
   --u-light-info-disabled: var(--up-info-disabled, var(--u-info-disabled, #c4c6c9));
   --up-light-info-light: var(--up-info-light, var(--u-info-light, #f4f4f5));
   --u-light-info-light: var(--up-info-light, var(--u-info-light, #f4f4f5));
-  @config "./tailwind.config.sub-independent.js";
-  @tailwind base;
-  @tailwind components;
-  @tailwind utilities;
 }
 .container {
   width: 100%;
@@ -12553,10 +12539,6 @@ body {
   --u-light-info-disabled: var(--up-info-disabled, var(--u-info-disabled, #c4c6c9));
   --up-light-info-light: var(--up-info-light, var(--u-info-light, #f4f4f5));
   --u-light-info-light: var(--up-info-light, var(--u-info-light, #f4f4f5));
-  @config "./tailwind.config.sub-normal.js";
-  @tailwind base;
-  @tailwind components;
-  @tailwind utilities;
 }
 .container {
   width: 100%;
@@ -19454,10 +19436,6 @@ body {
   --u-light-info-disabled: var(--up-info-disabled, var(--u-info-disabled, #c4c6c9));
   --up-light-info-light: var(--up-info-light, var(--u-info-light, #f4f4f5));
   --u-light-info-light: var(--up-info-light, var(--u-info-light, #f4f4f5));
-  @config "./tailwind.typography.config.js";
-  @tailwind base;
-  @tailwind components;
-  @tailwind utilities;
 }
 ```
 

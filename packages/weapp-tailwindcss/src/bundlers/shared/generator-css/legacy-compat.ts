@@ -174,7 +174,8 @@ function resolveLegacyCompatCssSource(rawSource: string) {
   if (cached !== undefined) {
     return cached
   }
-  const source = removeTailwindSourceDirectives(stripTailwindBanners(rawSource))
+  const parseableSource = closeTrailingUnclosedBlocks(stripTailwindBanners(rawSource))
+  const source = removeTailwindSourceDirectives(parseableSource)
   const resolved = closeTrailingUnclosedBlocks(removeUnsupportedMiniProgramAtRules(removeTailwindApplyRules(source)))
   setLimitedCacheValue(legacyCompatSourceCache, rawSource, resolved)
   return resolved

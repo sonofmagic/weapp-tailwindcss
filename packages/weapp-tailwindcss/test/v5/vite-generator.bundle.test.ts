@@ -306,10 +306,89 @@ describe('v5 vite generator bundle', () => {
     await generateBundle?.call(postPlugin, {} as any, bundle)
 
     expect((bundle['app.css'] as OutputAsset).source).toBe(`${rawTailwindCss}${userCss}`)
-    expect(generateMock).toHaveBeenCalledWith(expect.objectContaining({
-      target: 'web',
-    }))
+    expect(generateMock).not.toHaveBeenCalled()
     expect(currentContext.styleHandler).not.toHaveBeenCalled()
+  }, TEST_TIMEOUT_MS)
+
+  it('does not feed compiled Tailwind v4 web css back through the post processor', async () => {
+    const runtimeSet = new Set(['bg-gradient-to-br', 'from-emerald-200', 'to-cyan-200'])
+    const generatedCss = '.bg-gradient-to-br{background-image:linear-gradient(to bottom right,var(--tw-gradient-stops))}.from-emerald-200{--tw-gradient-from:#a7f3d0}.to-cyan-200{--tw-gradient-to:#a5f3fc}'
+    const compiledViteCss = `@layer theme, base, components, utilities;
+@theme default {
+  --color-emerald-200: oklch(90.5% 0.093 164.15);
+}
+.bg-gradient-to-br{
+  --tw-gradient-position: to bottom right in oklab;
+  background-image: linear-gradient(var(--tw-gradient-stops));
+}`
+    const generateMock = vi.fn(async () => ({
+      css: generatedCss,
+      rawCss: generatedCss,
+      target: 'web',
+      classSet: runtimeSet,
+      dependencies: [],
+      sources: [],
+      root: null,
+    }))
+
+    vi.doMock('@/bundlers/vite/incremental-runtime-class-set', () => ({
+      createBundleRuntimeClassSetManager: () => ({
+        sync: vi.fn(async () => runtimeSet),
+        reset: vi.fn(async () => undefined),
+      }),
+    }))
+    vi.doMock('@/generator', async (importOriginal) => {
+      const actual = await importOriginal<typeof import('@/generator')>()
+      return {
+        ...actual,
+        createWeappTailwindcssGenerator: vi.fn(() => ({
+          generate: generateMock,
+        })),
+        resolveTailwindV4SourceFromPatcher: vi.fn(async () => ({
+          projectRoot: process.cwd(),
+          base: process.cwd(),
+          baseFallbacks: [],
+          css: '@layer theme, base, components, utilities;\n@import "tailwindcss/theme.css" layer(theme);\n@import "tailwindcss/utilities.css" layer(utilities) source(none);',
+          dependencies: [],
+        })),
+      }
+    })
+
+    setCurrentContext(createContext({
+      generator: {
+        target: 'web',
+      },
+      styleHandler: vi.fn(async () => {
+        throw new Error('web target should not post-process compiled css')
+      }),
+      twPatcher: {
+        patch: vi.fn(),
+        getClassSet: vi.fn(async () => runtimeSet),
+        getClassSetSync: vi.fn(() => runtimeSet),
+        extract: vi.fn(async () => ({ classSet: runtimeSet })),
+        majorVersion: 4,
+      },
+    }))
+
+    const { postPlugin, sourcePlugin } = await resolvePostPlugin()
+    const transform = getTransformHandler(sourcePlugin)
+    await transform?.call(
+      sourcePlugin,
+      'export const cls = "bg-gradient-to-br from-emerald-200 to-cyan-200"',
+      '/project/src/features.ts',
+    )
+    const bundle = {
+      'app.css': {
+        ...createRollupAsset(compiledViteCss),
+        fileName: 'app.css',
+      },
+    }
+
+    const generateBundle = getGenerateBundleHandler(postPlugin)
+    await generateBundle?.call(postPlugin, {} as any, bundle)
+
+    expect((bundle['app.css'] as OutputAsset).source).toBe(compiledViteCss)
+    expect(generateMock).not.toHaveBeenCalled()
   }, TEST_TIMEOUT_MS)
 
   it('uses generator mode for tailwind v3 main css without changing existing registration', async () => {

@@ -518,6 +518,26 @@ describe('bundlers/shared generator css', () => {
     expect(removeTailwindSourceDirectives(rawSource, { importFallback: true })).toBe('')
   })
 
+  it('keeps Tailwind v4 top-level layer statements when extracting fallback sources', async () => {
+    const { normalizeTailwindSourceForGenerator } = await import('@/bundlers/shared/generator-css')
+    const rawSource = [
+      '// force fallback extraction',
+      '@layer theme, base, components, utilities;',
+      '@import "tailwindcss/theme.css" layer(theme);',
+      '@import "tailwindcss/utilities.css" layer(utilities) source(none);',
+      '@source "../index.html";',
+      '$brand: #123456;',
+      '.card { color: $brand; }',
+    ].join('\n')
+
+    expect(normalizeTailwindSourceForGenerator(rawSource, { importFallback: true })).toBe([
+      '@layer theme, base, components, utilities;',
+      '@import "tailwindcss/theme.css" layer(theme);',
+      '@import "tailwindcss/utilities.css" layer(utilities) source(none);',
+      '@source "../index.html";',
+    ].join('\n'))
+  })
+
   it('extracts Tailwind v3 @tailwind directives from Less sources', async () => {
     const { resolveCssEntrySource } = await import('@/bundlers/shared/generator-css')
     const rawSource = [
@@ -1659,6 +1679,78 @@ describe('bundlers/shared generator css', () => {
     expect(styleHandler.mock.calls[0]?.[0]).not.toContain('@source')
     expect(styleHandler.mock.calls[0]?.[0]).not.toContain('@theme')
     expect(styleHandler.mock.calls[0]?.[0]).toContain('.card:hover')
+  })
+
+  it('removes Tailwind v3 directives from legacy compat css after an unclosed imported rule', async () => {
+    const runtimeSet = new Set(['w-[100px]'])
+    const rawSource = [
+      ':host,page,.tw-root,wx-root-portal-content {',
+      '  --third-party-color: #303133;',
+      '@config "../tailwind.config.js";',
+      '@tailwind base;',
+      '@tailwind components;',
+      '@tailwind utilities;}',
+      '.raw-btn {',
+      '@apply after:border-none inline-flex items-center;',
+      '}',
+    ].join('\n')
+    const generateMock = vi.fn(async () => ({
+      css: '.w-_b100px_B{width:100px}',
+      rawCss: '.w-\\[100px\\]{width:100px}',
+      target: 'weapp',
+      classSet: runtimeSet,
+      dependencies: [],
+      sources: [],
+      root: null,
+    }))
+
+    vi.doMock('@/generator', () => ({
+      ...createDefaultGeneratorMock(),
+      createWeappTailwindcssGenerator: vi.fn(() => ({
+        generate: generateMock,
+      })),
+    }))
+
+    const { generateCssByGenerator } = await import('@/bundlers/shared/generator-css')
+    const styleHandler = vi.fn(async (code: string) => ({ css: code }))
+    const result = await generateCssByGenerator({
+      opts: {
+        styleHandler,
+      } as any,
+      runtimeState: {
+        twPatcher: {
+          majorVersion: 3,
+        } as any,
+        readyPromise: Promise.resolve(),
+      },
+      runtime: runtimeSet,
+      rawSource,
+      file: 'app.wxss',
+      cssHandlerOptions: {
+        isMainChunk: true,
+        postcssOptions: {
+          options: {
+            from: 'app.wxss',
+          },
+        },
+        majorVersion: 3,
+      } as any,
+      cssUserHandlerOptions: {
+        isMainChunk: false,
+        postcssOptions: {
+          options: {
+            from: 'app.wxss',
+          },
+        },
+        majorVersion: 3,
+      } as any,
+      styleHandler,
+      debug: vi.fn(),
+    })
+
+    expect(result?.css).toContain('.w-_b100px_B{width:100px}')
+    expect(result?.css).toContain('--third-party-color: #303133')
+    expect(result?.css).not.toMatch(/@(config|tailwind|apply)\b/)
   })
 
   it('keeps local import wrapper assets out of forced generator replacement', async () => {

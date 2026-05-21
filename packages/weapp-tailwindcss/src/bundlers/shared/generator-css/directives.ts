@@ -32,6 +32,7 @@ const TAILWIND_ROOT_DIRECTIVE_NAMES = new Set([
 const TAILWIND_ROOT_DIRECTIVE_RE = /@(?:import\s+(?:url\(\s*)?["']?tailwindcss4?(?:\/[^"')\s]*)?|tailwind|config|custom-variant|plugin|source|theme|utility|variant)\b/
 const TAILWIND_EXTRACTABLE_DIRECTIVE_RE = /^\s*@(?:import|tailwind|config|source|reference|plugin)\b[\s\S]*?(?:;|$)/
 const TAILWIND_EXTRACTABLE_BLOCK_DIRECTIVE_RE = /^\s*@(?:theme|utility|variant|custom-variant)\b[\s\S]*$/
+const TAILWIND_EXTRACTABLE_LAYER_STATEMENT_RE = /^\s*@layer\s[^;{]+;\s*$/
 
 interface TailwindDirectiveOptions {
   importFallback?: boolean | undefined
@@ -129,6 +130,7 @@ function extractTailwindDirectiveLines(
     }
     const directive = TAILWIND_EXTRACTABLE_DIRECTIVE_RE.exec(line)?.[0]
       ?? TAILWIND_EXTRACTABLE_BLOCK_DIRECTIVE_RE.exec(line)?.[0]
+      ?? TAILWIND_EXTRACTABLE_LAYER_STATEMENT_RE.exec(line)?.[0]
     if (!directive) {
       continue
     }

@@ -80,6 +80,9 @@ function shouldGenerateCssByGenerator(
   processed: boolean,
 ) {
   const generatorOptions = normalizeWeappTailwindcssGeneratorOptions(opts.generator)
+  if (generatorOptions.target === 'web') {
+    return false
+  }
   if (
     hasTailwindGeneratedCssMarkers(rawSource)
     || hasTailwindSourceDirectives(rawSource, { importFallback: generatorOptions.importFallback })

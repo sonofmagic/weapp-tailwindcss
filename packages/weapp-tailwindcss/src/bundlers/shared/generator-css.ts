@@ -547,7 +547,7 @@ export async function generateCssByGenerator(
     if (generated.target === 'weapp') {
       css = inheritLegacyUnitConvertedDeclarations(css, effectiveRawSource)
     }
-    if (hasMatchedCssSourceFile) {
+    if (hasMatchedCssSourceFile || generated.target === 'web') {
       return {
         css: finalizeMiniProgramGeneratorCss(css, generated.target, majorVersion, opts.cssPreflight),
         target: generated.target,

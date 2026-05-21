@@ -113,6 +113,7 @@ export function WeappTailwindcss(options: UserDefinedOptions = {}): Plugin[] | u
   const tailwindcssMajorVersion = initialTwPatcher.majorVersion ?? 0
   const shouldOwnTailwindGeneration = !disabledOptions.plugin
   const shouldRewriteCssImports = tailwindcssMajorVersion >= 4
+  const shouldInferAppType = !hasExplicitAppType && opts.generator?.target !== 'web'
   const hasInitialTailwindCssRoots = hasConfiguredTailwindV4CssRoots({
     ...options,
     cssEntries: opts.cssEntries ?? options.cssEntries,
@@ -490,6 +491,12 @@ export function WeappTailwindcss(options: UserDefinedOptions = {}): Plugin[] | u
   })
   const utsPlatform = resolveUniUtsPlatform()
   const isIosPlatform = utsPlatform.isAppIos
+  const prepareTailwindGeneration = async () => {
+    if (shouldDiscoverAutoCssSources()) {
+      await discoverAndRegisterAutoCssSources()
+    }
+    await syncSourceCandidateScan()
+  }
   const uniAppXPlugins = uniAppXEnabled
     ? createUniAppXPlugins({
         appType: opts.appType ?? 'uni-app-x',
@@ -550,10 +557,7 @@ export function WeappTailwindcss(options: UserDefinedOptions = {}): Plugin[] | u
       },
       async buildStart() {
         await hmrTimingRecorder.measure('sourceCandidates.buildStart', async () => {
-          if (shouldDiscoverAutoCssSources()) {
-            await discoverAndRegisterAutoCssSources()
-          }
-          await syncSourceCandidateScan()
+          await prepareTailwindGeneration()
         }, { emit: false })
       },
     },
@@ -630,7 +634,7 @@ export function WeappTailwindcss(options: UserDefinedOptions = {}): Plugin[] | u
             }
           }
           if (
-            !hasExplicitAppType
+            shouldInferAppType
             && resolvedRoot
           ) {
             const nextAppType = resolveImplicitAppTypeFromViteRoot(resolvedRoot)

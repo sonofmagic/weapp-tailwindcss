@@ -1936,7 +1936,7 @@ const trace = "at App.vue:4"
     expect(styleHandler).not.toHaveBeenCalled()
   }, TEST_TIMEOUT_MS)
 
-  it('can keep web css from tailwind v4 generator without mini-program post processing', async () => {
+  it('keeps Vite web css without generator or mini-program post processing', async () => {
     const runtimeSet = new Set(['hover:bg-blue-500'])
     const rawTailwindCss = '/*! tailwindcss v4.2.4 | MIT License | https://tailwindcss.com */\n.hover\\:bg-blue-500:hover{color:blue}'
     const userCss = '\n.card:hover{color:red}'
@@ -2008,10 +2008,8 @@ const trace = "at App.vue:4"
     const generateBundle = getGenerateBundleHandler(postPlugin)
     await generateBundle?.call(postPlugin, {} as any, bundle)
 
-    expect((bundle['app.css'] as OutputAsset).source).toBe(`${webCss}${userCss}`)
-    expect(generateMock).toHaveBeenCalledWith(expect.objectContaining({
-      target: 'web',
-    }))
+    expect((bundle['app.css'] as OutputAsset).source).toBe(`${rawTailwindCss}${userCss}`)
+    expect(generateMock).not.toHaveBeenCalled()
     expect(styleHandler).not.toHaveBeenCalled()
   }, TEST_TIMEOUT_MS)
 
@@ -3229,6 +3227,43 @@ const cls = "w-[1.5px]"
     await generateBundle?.call(postPlugin, {} as any, bundle)
 
     expect(currentContext.mainCssChunkMatcher).toHaveBeenCalledWith('app.wxss', 'taro')
+  })
+
+  it('does not infer mini-program appType for web generator target', async () => {
+    const loggerModule = await import('@weapp-tailwindcss/logger')
+    const projectRoot = await mkdtemp(path.join(os.tmpdir(), 'weapp-tw-vite-web-root-'))
+    createdDirs.push(projectRoot)
+    await writeFile(path.join(projectRoot, 'package.json'), JSON.stringify({
+      dependencies: {
+        'weapp-vite': '^6.0.0',
+      },
+    }, null, 2))
+
+    const WeappTailwindcss = await loadUnifiedVitePlugin()
+    setCurrentContext(createContext({
+      appType: undefined,
+      generator: {
+        target: 'web',
+      },
+      styleHandler: vi.fn(async (code: string) => ({ css: code })),
+      mainCssChunkMatcher: vi.fn(() => true),
+      cssMatcher: (file: string) => file.endsWith('.css'),
+    }))
+    const currentContext = getCurrentContext()
+    const plugins = WeappTailwindcss()
+    const postPlugin = plugins?.find(plugin => plugin.name === 'weapp-tailwindcss:adaptor:post') as Plugin
+    expect(postPlugin).toBeTruthy()
+    const loggerInfoSpy = vi.spyOn(loggerModule.logger, 'info').mockImplementation(() => {})
+
+    await (postPlugin.configResolved as any)?.call(postPlugin, {
+      command: 'build',
+      root: projectRoot,
+      css: { postcss: { plugins: [] } },
+      build: { outDir: 'dist' },
+    } as ResolvedConfig)
+
+    expect(currentContext.appType).toBeUndefined()
+    expect(loggerInfoSpy).not.toHaveBeenCalledWith('根据 Vite 项目根目录自动推断 appType -> %s', 'weapp-vite')
   })
 
   it('keeps template transform stable on script-only incremental updates', async () => {

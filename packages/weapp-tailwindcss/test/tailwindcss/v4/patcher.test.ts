@@ -626,6 +626,41 @@ describe('tailwindcss/v4/patcher helpers', () => {
     expect(patcher.tailwindcss?.v4?.cssSources).toEqual([cssSource])
   })
 
+  it('treats auto-detected v4 css sources as a v4 signal when selecting patch packages', async () => {
+    createTailwindcssPatcher.mockImplementation(options => ({
+      majorVersion: options.tailwindcss.packageName === '@tailwindcss/postcss' ? 4 : 3,
+      packageName: options.tailwindcss.packageName,
+      tailwindcss: options.tailwindcss,
+    }))
+    const { createPatcherForBase } = await loadModule()
+
+    const cssSource = {
+      file: '/workspace/app/src/main.css',
+      base: '/workspace/app/src',
+      css: '@import "tailwindcss";',
+    }
+    const patcher = createPatcherForBase('/workspace/app', undefined, {
+      tailwindcss: {
+        v4: {
+          cssSources: [cssSource],
+        },
+      },
+      tailwindcssPatcherOptions: undefined,
+      supportCustomLengthUnitsPatch: true,
+      appType: 'uni-app-vite',
+    } as unknown as InternalUserDefinedOptions) as any
+
+    expect(createTailwindcssPatcher).toHaveBeenCalledWith(expect.objectContaining({
+      tailwindcss: expect.objectContaining({
+        packageName: '@tailwindcss/postcss',
+        v4: expect.objectContaining({
+          cssSources: [cssSource],
+        }),
+      }),
+    }))
+    expect(patcher.packageName).toBe('@tailwindcss/postcss')
+  })
+
   it('recreates v4 config when user explicitly disables it', async () => {
     createTailwindcssPatcher.mockImplementation(options => options)
     const { createPatcherForBase } = await loadModule()

@@ -73,6 +73,8 @@ export function createPatcherForBase(
   } = options
 
   const hasCssEntries = Boolean(cssEntries?.length)
+  const configuredV4Options = tailwindcss?.v4 ?? (tailwindcssPatcherOptions as any)?.tailwindcss?.v4
+  const hasCssSources = Boolean(configuredV4Options?.cssSources?.length)
 
   const defaultTailwindcssConfig: TailwindUserOptions = {
     cwd: baseDir,
@@ -139,6 +141,7 @@ export function createPatcherForBase(
   const explicitTailwindVersion = resolveExplicitTailwindVersion(configuredVersion, configuredPackageName)
 
   const hasExplicitV4Signals = hasCssEntries
+    || hasCssSources
     || hasOwnV4Signal(tailwindcss)
     || hasOwnV4Signal((tailwindcssPatcherOptions as any)?.tailwindcss)
 
@@ -159,6 +162,7 @@ export function createPatcherForBase(
   || (
     resolvedTailwindVersion === undefined && (
       hasCssEntries
+      || hasCssSources
       || hasOwnV4Signal(tailwindcss)
       || hasOwnV4Signal((tailwindcssPatcherOptions as any)?.tailwindcss)
     )
