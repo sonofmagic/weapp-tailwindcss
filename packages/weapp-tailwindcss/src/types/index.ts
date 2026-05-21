@@ -72,6 +72,8 @@ export interface TailwindcssPatcherLike {
 export type BabelParserOptions = ParserOptions & {
   cache?: boolean | undefined
   cacheKey?: string | undefined
+  cacheMaxEntries?: number | undefined
+  cacheMaxSourceLength?: number | undefined
 }
 
 export interface RefreshTailwindcssPatcherOptions {

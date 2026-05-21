@@ -7,7 +7,10 @@ exports[`get options > default options 1`] = `
     "bareArbitraryValues": false,
   },
   "babelParserOptions": {
-    "cache": false,
+    "cache": true,
+    "cacheKey": "st:unambiguous",
+    "cacheMaxEntries": 128,
+    "cacheMaxSourceLength": 50000,
     "sourceType": "unambiguous",
   },
   "cache": {

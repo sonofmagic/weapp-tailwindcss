@@ -23,6 +23,58 @@ describe('babel helpers additional coverage', () => {
     expect(second).toBe(first)
   })
 
+  it('uses hashed parser cache keys instead of retaining source text in keys', () => {
+    const source = 'const secretClass = "text-red-500"'
+    const cacheKey = babel.genCacheKey(source, { sourceType: 'module' })
+
+    expect(cacheKey).not.toContain(source)
+    expect(cacheKey).toContain('sourceType')
+  })
+
+  it('skips parser caching for sources over the configured source length limit', () => {
+    const code = 'const value = "text-red-500"'
+    const spy = vi.spyOn(parser, 'parse')
+    const first = babel.babelParse(code, {
+      sourceType: 'module' as const,
+      cache: true,
+      cacheMaxSourceLength: code.length - 1,
+    })
+    const second = babel.babelParse(code, {
+      sourceType: 'module' as const,
+      cache: true,
+      cacheMaxSourceLength: code.length - 1,
+    })
+
+    expect(spy).toHaveBeenCalledTimes(2)
+    expect(second).not.toBe(first)
+    expect(babel.parseCache.size).toBe(0)
+  })
+
+  it('trims parser cache entries to the configured entry limit', () => {
+    const spy = vi.spyOn(parser, 'parse')
+
+    const first = babel.babelParse('const first = 1', {
+      sourceType: 'module' as const,
+      cache: true,
+      cacheMaxEntries: 1,
+    })
+    const second = babel.babelParse('const second = 2', {
+      sourceType: 'module' as const,
+      cache: true,
+      cacheMaxEntries: 1,
+    })
+    const third = babel.babelParse('const first = 1', {
+      sourceType: 'module' as const,
+      cache: true,
+      cacheMaxEntries: 1,
+    })
+
+    expect(spy).toHaveBeenCalledTimes(3)
+    expect(second).not.toBe(first)
+    expect(third).not.toBe(first)
+    expect(babel.parseCache.size).toBe(1)
+  })
+
   it('does not retain parsed ASTs when parser caching is disabled', () => {
     const code = 'const value = 1'
     const spy = vi.spyOn(parser, 'parse')

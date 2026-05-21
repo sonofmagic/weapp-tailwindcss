@@ -125,7 +125,12 @@ export interface UserDefinedOptionsGeneralPart {
    * @since ^3.2.0
    * @group 3.一般配置
    */
-  babelParserOptions?: (ParserOptions & { cache?: boolean | undefined, cacheKey?: string | undefined }) | undefined
+  babelParserOptions?: (ParserOptions & {
+    cache?: boolean | undefined
+    cacheKey?: string | undefined
+    cacheMaxEntries?: number | undefined
+    cacheMaxSourceLength?: number | undefined
+  }) | undefined
 
   /**
    * 自定义 Tailwind 子组合器的替换值。
