@@ -508,28 +508,38 @@ describe('watch-hmr regression text helpers', () => {
     await new Promise(resolve => setTimeout(resolve, 20))
     const sessionStartedAt = Date.now()
     let compileSuccessAt = 0
-    setTimeout(async () => {
-      await writeFilePreserveEol(wxmlFile, '<view>ready</view>', '<view />')
-      await writeFilePreserveEol(jsFile, 'Page({ ready: true })', 'Page({})')
-      compileSuccessAt = Date.now()
-    }, 20)
+    const delayedUpdate = new Promise<void>((resolve, reject) => {
+      setTimeout(() => {
+        void (async () => {
+          await writeFilePreserveEol(wxmlFile, '<view>ready</view>', '<view />')
+          await writeFilePreserveEol(jsFile, 'Page({ ready: true })', 'Page({})')
+          compileSuccessAt = Date.now()
+        })().then(resolve, reject)
+      }, 20)
+    })
 
-    const elapsed = await waitForOutputsReady(
-      {
-        label: 'demo/weapp-vite-tailwindcss-v3',
-        outputWxml: wxmlFile,
-        outputJs: jsFile,
-      } as any,
-      {
-        timeoutMs: 2_000,
-        pollMs: 20,
-      } as CliOptions,
-      {
-        ensureRunning() {},
-        lastCompileSuccessAt: () => compileSuccessAt,
-      } as any,
-      sessionStartedAt,
-    )
+    let elapsed = 0
+    try {
+      elapsed = await waitForOutputsReady(
+        {
+          label: 'demo/weapp-vite-tailwindcss-v3',
+          outputWxml: wxmlFile,
+          outputJs: jsFile,
+        } as any,
+        {
+          timeoutMs: 2_000,
+          pollMs: 20,
+        } as CliOptions,
+        {
+          ensureRunning() {},
+          lastCompileSuccessAt: () => compileSuccessAt,
+        } as any,
+        sessionStartedAt,
+      )
+    }
+    finally {
+      await delayedUpdate
+    }
 
     expect(elapsed).toBeGreaterThanOrEqual(20)
   })
