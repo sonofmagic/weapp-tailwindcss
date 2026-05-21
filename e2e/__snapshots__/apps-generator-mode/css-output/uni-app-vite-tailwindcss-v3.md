@@ -6,7 +6,7 @@ Generator CSS files: app.wxss, a.wxss, b.wxss, index.wxss, index.wxss, index.wxs
 
 | Bytes | Selectors | @supports | :hover | Tailwind banner | Raw arbitrary selector | Weapp escaped arbitrary selector |
 | ---: | ---: | --- | --- | --- | --- | --- |
-| 646650 | 3120 | false | false | false | false | true |
+| 647434 | 3120 | false | false | false | false | true |
 
 ## Generator CSS
 
@@ -18,6 +18,10 @@ text,
 :before,
 :after {
   --tw-content: '';
+  box-sizing: border-box;
+  border-width: 0;
+  border-style: solid;
+  border-color: currentColor;
 }
 view,
 text,
@@ -6289,6 +6293,10 @@ text,
   --tw-contain-layout:  ;
   --tw-contain-paint:  ;
   --tw-contain-style:  ;
+  box-sizing: border-box;
+  border-width: 0;
+  border-style: solid;
+  border-color: currentColor;
 }
 :host,
 page,
@@ -7940,6 +7948,10 @@ text,
   --tw-contain-layout:  ;
   --tw-contain-paint:  ;
   --tw-contain-style:  ;
+  box-sizing: border-box;
+  border-width: 0;
+  border-style: solid;
+  border-color: currentColor;
 }
 :host,
 page,
@@ -9635,6 +9647,10 @@ text,
   --tw-contain-paint:  ;
   --tw-contain-style:
 ;
+  box-sizing: border-box;
+  border-width: 0;
+  border-style: solid;
+  border-color: currentColor;
 }
 :host,
 page,
@@ -11134,6 +11150,10 @@ text,
   --tw-contain-paint:  ;
   --tw-contain-style:
 ;
+  box-sizing: border-box;
+  border-width: 0;
+  border-style: solid;
+  border-color: currentColor;
 }
 :host,
 page,
@@ -12632,6 +12652,10 @@ text,
   --tw-contain-layout:  ;
   --tw-contain-paint:  ;
   --tw-contain-style:  ;
+  box-sizing: border-box;
+  border-width: 0;
+  border-style: solid;
+  border-color: currentColor;
 }
 :host,
 page,
@@ -14647,6 +14671,10 @@ text,
   --tw-contain-paint:  ;
   --tw-contain-style:
 ;
+  box-sizing: border-box;
+  border-width: 0;
+  border-style: solid;
+  border-color: currentColor;
 }
 :host,
 page,
@@ -16539,6 +16567,10 @@ text,
   --tw-contain-layout:  ;
   --tw-contain-paint:  ;
   --tw-contain-style:  ;
+  box-sizing: border-box;
+  border-width: 0;
+  border-style: solid;
+  border-color: currentColor;
 }
 :host,
 page,

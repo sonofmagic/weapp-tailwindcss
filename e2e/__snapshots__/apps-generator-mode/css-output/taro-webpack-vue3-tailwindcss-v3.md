@@ -6,7 +6,7 @@ Generator CSS files: app.wxss, index.wxss, index.wxss, index.wxss
 
 | Bytes | Selectors | @supports | :hover | Tailwind banner | Raw arbitrary selector | Weapp escaped arbitrary selector |
 | ---: | ---: | --- | --- | --- | --- | --- |
-| 5633 | 46 | false | false | false | false | true |
+| 5731 | 46 | false | false | false | false | true |
 
 ## Generator CSS
 
@@ -18,6 +18,10 @@ text,
 :before,
 :after {
   --tw-content: '';
+  box-sizing: border-box;
+  border-width: 0;
+  border-style: solid;
+  border-color: currentColor;
 }
 view,
 text,

@@ -111,7 +111,7 @@ describe.skipIf(!ci.isCI && os.platform() === 'win32')('webpack5 plugin', () => 
   let prodCompiler: Compiler
   let emptyCompiler: Compiler
   // let sourceMapCompiler: Compiler
-  const cacheDir = path.resolve(process.cwd(), 'node_modules/.cache', 'tailwindcss-patch')
+  const cacheDir = path.join(os.tmpdir(), `weapp-tailwindcss-webpack-v5-cache-${process.pid}`)
   const cacheJson = path.resolve(cacheDir, 'index.json')
   beforeAll(() => {
     const isExisted = fss.existsSync(cacheDir)

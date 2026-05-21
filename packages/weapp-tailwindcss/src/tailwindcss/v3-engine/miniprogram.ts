@@ -10,7 +10,12 @@ const defaultStyleHandler = createStyleHandler({
   isMainChunk: true,
   majorVersion: 3,
 })
-const MINI_PROGRAM_V3_PREFLIGHT_SELECTOR = 'view,text,::before,::after'
+const MINI_PROGRAM_V3_PREFLIGHT_SELECTORS = new Set([
+  'view,text,:before,:after',
+  'view,text,:after,:before',
+  'view,text,::before,::after',
+  'view,text,::after,::before',
+])
 const V3_PREFLIGHT_RESET_PROPS = new Set([
   'box-sizing',
   'border',
@@ -26,7 +31,7 @@ function normalizeSelector(selector: string) {
 }
 
 function isMiniProgramV3PreflightRule(rule: postcss.Rule) {
-  return normalizeSelector(rule.selector) === MINI_PROGRAM_V3_PREFLIGHT_SELECTOR
+  return MINI_PROGRAM_V3_PREFLIGHT_SELECTORS.has(normalizeSelector(rule.selector))
 }
 
 function hasResetDeclaration(rule: postcss.Rule) {

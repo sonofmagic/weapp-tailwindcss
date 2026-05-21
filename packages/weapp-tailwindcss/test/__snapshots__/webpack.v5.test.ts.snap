@@ -2,15 +2,15 @@
 
 exports[`webpack5 plugin > common > assets 1`] = `
 {
-  "index.css": "::before,::after {
+  "index.css": "view,text,:before,:after {
   --tw-content: "";
 }
 
-::before,::after {
+view,text,:before,:after {
   --tw-content: '';
 }
 
-view,text,::before,::after {
+view,text,:before,:after {
   --tw-border-spacing-x: 0;
   --tw-border-spacing-y: 0;
   --tw-translate-x: 0;
@@ -376,15 +376,15 @@ exports[`webpack5 plugin > common > warnings 1`] = `[]`;
 
 exports[`webpack5 plugin > common 0 > assets 1`] = `
 {
-  "index.css": "::before,::after {
+  "index.css": "view,text,:before,:after {
   --tw-content: "";
 }
 
-::before,::after {
+view,text,:before,:after {
   --tw-content: '';
 }
 
-view,text,::before,::after {
+view,text,:before,:after {
   --tw-border-spacing-x: 0;
   --tw-border-spacing-y: 0;
   --tw-translate-x: 0;
@@ -750,15 +750,15 @@ exports[`webpack5 plugin > common 0 > warnings 1`] = `[]`;
 
 exports[`webpack5 plugin > common build twice for cache > assets 1`] = `
 {
-  "index.css": "::before,::after {
+  "index.css": "view,text,:before,:after {
   --tw-content: "";
 }
 
-::before,::after {
+view,text,:before,:after {
   --tw-content: '';
 }
 
-view,text,::before,::after {
+view,text,:before,:after {
   --tw-border-spacing-x: 0;
   --tw-border-spacing-y: 0;
   --tw-translate-x: 0;
@@ -1120,15 +1120,15 @@ eval("{// import \\'./index.wxml\\'\\n// import \\'./index.css\\'\\n\\nconst cla
 
 exports[`webpack5 plugin > common build twice for cache > assets 2`] = `
 {
-  "index.css": "::before,::after {
+  "index.css": "view,text,:before,:after {
   --tw-content: "";
 }
 
-::before,::after {
+view,text,:before,:after {
   --tw-content: '';
 }
 
-view,text,::before,::after {
+view,text,:before,:after {
   --tw-border-spacing-x: 0;
   --tw-border-spacing-y: 0;
   --tw-translate-x: 0;
@@ -1498,15 +1498,15 @@ exports[`webpack5 plugin > common build twice for cache > warnings 2`] = `[]`;
 
 exports[`webpack5 plugin > common with loader > assets 1`] = `
 {
-  "index.css": "::before,::after {
+  "index.css": "view,text,:before,:after {
   --tw-content: "";
 }
 
-::before,::after {
+view,text,:before,:after {
   --tw-content: '';
 }
 
-view,text,::before,::after {
+view,text,:before,:after {
   --tw-border-spacing-x: 0;
   --tw-border-spacing-y: 0;
   --tw-translate-x: 0;
@@ -1872,15 +1872,15 @@ exports[`webpack5 plugin > common with loader > warnings 1`] = `[]`;
 
 exports[`webpack5 plugin > common with rem2rpx > assets 1`] = `
 {
-  "index.css": "::before,::after {
+  "index.css": "view,text,:before,:after {
   --tw-content: "";
 }
 
-::before,::after {
+view,text,:before,:after {
   --tw-content: '';
 }
 
-view,text,::before,::after {
+view,text,:before,:after {
   --tw-border-spacing-x: 0;
   --tw-border-spacing-y: 0;
   --tw-translate-x: 0;
@@ -2631,15 +2631,15 @@ exports[`webpack5 plugin > disabled true > warnings 1`] = `[]`;
 
 exports[`webpack5 plugin > empty build > assets 1`] = `
 {
-  "index.css": "::before,::after {
+  "index.css": "view,text,:before,:after {
   --tw-content: "";
 }
 
-::before,::after {
+view,text,:before,:after {
   --tw-content: '';
 }
 
-view,text,::before,::after {
+view,text,:before,:after {
   --tw-border-spacing-x: 0;
   --tw-border-spacing-y: 0;
   --tw-translate-x: 0;
@@ -2885,15 +2885,15 @@ console.log(a)0"
 
 exports[`webpack5 plugin > unified common > assets 1`] = `
 {
-  "index.css": "::before,::after {
+  "index.css": "view,text,:before,:after {
   --tw-content: "";
 }
 
-::before,::after {
+view,text,:before,:after {
   --tw-content: '';
 }
 
-view,text,::before,::after {
+view,text,:before,:after {
   --tw-border-spacing-x: 0;
   --tw-border-spacing-y: 0;
   --tw-translate-x: 0;
@@ -3259,15 +3259,15 @@ exports[`webpack5 plugin > unified common > warnings 1`] = `[]`;
 
 exports[`webpack5 plugin > unified prod common > assets 1`] = `
 {
-  "index.css": "::before,::after {
+  "index.css": "view,text,:before,:after {
   --tw-content: "";
 }
 
-::before,::after {
+view,text,:before,:after {
   --tw-content: '';
 }
 
-view,text,::before,::after {
+view,text,:before,:after {
   --tw-border-spacing-x: 0;
   --tw-border-spacing-y: 0;
   --tw-translate-x: 0;

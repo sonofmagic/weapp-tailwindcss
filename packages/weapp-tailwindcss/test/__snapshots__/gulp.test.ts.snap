@@ -1,9 +1,13 @@
 // Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
 exports[`gulp > common build > css 1`] = `
-"::before,::after {
-    --tw-content: ""}
-view,text,::before,::after {
+"view,text,:before,:after {
+    --tw-content: "";
+    box-sizing: border-box;
+    border-width: 0;
+    border-style: solid;
+    border-color: currentColor}
+view,text,:before,:after {
     --tw-border-spacing-x: 0;
     --tw-border-spacing-y: 0;
     --tw-translate-x: 0;
@@ -55,11 +59,7 @@ view,text,::before,::after {
     --tw-contain-layout:  ;
     --tw-contain-paint:  ;
     --tw-contain-style:
-;
-    box-sizing: border-box;
-    border-width: 0;
-    border-style: solid;
-    border-color: currentColor}
+}
 .m-_b20px_B {
     margin: 20px
 }

@@ -65,7 +65,8 @@ describe('tailwindcss v3 engine', () => {
     expect(result.css).toContain('.w-4')
     expect(result.css).toContain('--tw-translate-x')
     expect(result.css).toContain('--tw-content')
-    expect(compactCss(result.css)).toContain('view,text,::before,::after{')
+    expect(compactCss(result.css)).toContain('view,text,:before,:after{--tw-content:"";}')
+    expect(result.css).toContain('view,text,::before,::after')
     expect(result.css).toContain('box-sizing: border-box')
     expect(result.css).toContain('border-width: 0')
     expect(result.css).toContain('border-style: solid')
@@ -73,7 +74,7 @@ describe('tailwindcss v3 engine', () => {
     expect(result.css).not.toContain(':host,page,.tw-root,wx-root-portal-content')
     expect(result.css).not.toContain('button')
     expect(result.css).not.toContain('::-webkit')
-    expect(result.css).toMatch(/^::before,\s*::after\s*\{\s*--tw-content:/m)
+    expect(result.css).toContain('view,text,:before,:after')
   })
 
   it('treats rpx arbitrary text values as lengths in generated mini-program css', async () => {
@@ -154,8 +155,7 @@ describe('tailwindcss v3 engine', () => {
     })
 
     const css = compactCss(result.css)
-    expect(css).toContain('view,text,::before,::after{')
-    expect(css).toContain('box-sizing:border-box')
+    expect(css).toContain('view,text,:before,:after{--tw-content:"";box-sizing:border-box')
     expect(css).toContain('border-width:0')
     expect(css).toContain('border-style:solid')
     expect(css).toContain('border-color:currentColor')

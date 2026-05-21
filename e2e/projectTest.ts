@@ -158,6 +158,26 @@ async function captureStablePageWxml(
   return best || latest
 }
 
+async function relaunchPageWithRetry(miniProgram: any, pageUrl: string, timeoutMs = 60_000) {
+  const deadline = Date.now() + timeoutMs
+  let lastError: unknown
+
+  while (Date.now() < deadline) {
+    try {
+      const page = await miniProgram.reLaunch(pageUrl)
+      if (page) {
+        return page
+      }
+    }
+    catch (error) {
+      lastError = error
+    }
+    await wait(1000)
+  }
+
+  throw new Error(`Failed to relaunch page for ${pageUrl}: ${String(lastError ?? 'unknown error')}`)
+}
+
 async function runProjectTest(entry: ProjectEntry, options: ProjectTestOptions) {
   const projectBase = path.resolve(__dirname, options.fixturesDir)
   const projectPath = path.resolve(projectBase, entry.projectPath)
@@ -241,7 +261,8 @@ async function runProjectTest(entry: ProjectEntry, options: ProjectTestOptions) 
   }
 
   try {
-    const page = await miniProgram.reLaunch(entry.url ?? '/pages/index/index')
+    const pageUrl = entry.url ?? '/pages/index/index'
+    const page = await relaunchPageWithRetry(miniProgram, pageUrl)
 
     if (page) {
       let wxml = await captureStablePageWxml(page)

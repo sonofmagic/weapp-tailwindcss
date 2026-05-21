@@ -1,10 +1,10 @@
-<view style="">
-  <view class="bg-_b_h89ab8d_B flex flex-col" style="">
-    <view class="text-_b_h438821_B dark_ctext-_b_hec4f4f_B before content- 11111" style="">Hello world!</view>
-    <view class="text-_b_h3d31a4_B before content- 222" style="">Hello world!</view>
+<view hover-class="none" hover-start-time="50" hover-stay-time="400" style="">
+  <view class="h5-view bg-_b_h89ab8d_B flex flex-col" style="">
+    <view class="h5-view text-_b_h438821_B dark_ctext-_b_hec4f4f_B before_ccontent-_b_n_h39_j11111_n_h39_j_B" style="">Hello Vue3!</view>
+    <view class="h5-view text-_b_h3d31a4_B before_ccontent-_b_n_h39_j222_n_h39_j_B" style="">Taro Vite Tailwind CSS v3</view>
   </view>
-  <view class="bg-_b_h89ab8d_B flex divide-x-8 divide-solid divide-_b_h60d256_B" style="">
-    <view class="text-_b_h438821_B dark_ctext-_b_hec4f4f_B before content- 11111" style="">Hello world!</view>
-    <view class="text-_b_h3d31a4_B before content- 222" style="">Hello world!</view>
+  <view class="h5-view bg-_b_h89ab8d_B flex divide-x-8 divide-solid divide-_b_h60d256_B" style="">
+    <view class="h5-view text-_b_h438821_B dark_ctext-_b_hec4f4f_B before_ccontent-_b_n_h39_j11111_n_h39_j_B" style="">Vue3</view>
+    <view class="h5-view text-_b_h3d31a4_B before_ccontent-_b_n_h39_j222_n_h39_j_B" style="">Vite</view>
   </view>
 </view>
