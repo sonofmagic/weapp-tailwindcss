@@ -1,5 +1,14 @@
 # weapp-tailwindcss
 
+## 5.0.0-next.16
+
+### Patch Changes
+
+- 🐛 **修复 Tailwind CSS v4 生成模式下渐变运行时变量只落在主题作用域的问题，将 `--tw-gradient-*` 默认值补到小程序元素与伪元素作用域，避免 `bg-gradient-* from-* to-*` 在组件节点中失效；伪元素选择器使用小程序工具链更稳定的 `:before` / `:after` 输出。** [#866](https://github.com/sonofmagic/weapp-tailwindcss/pull/866) by @github-actions
+
+- 🐛 **Fix Vite web target builds so generated CSS assets are left as Vite web CSS instead of being routed back through mini-program Tailwind generation and CSS post-processing.** [`ad72840`](https://github.com/sonofmagic/weapp-tailwindcss/commit/ad728404a9ceefe85429cd56449a63ebd6930c07) by @sonofmagic
+  - Also clean Tailwind v3 legacy compat CSS after repairing unclosed imported rules so raw `@tailwind` and `@apply` directives do not leak into generated mini-program CSS.
+
 ## 5.0.0-next.15
 
 ### Patch Changes

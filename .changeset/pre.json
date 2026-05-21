@@ -112,6 +112,7 @@
     "fix-v3-uni-vite-hot-update-runtime",
     "fix-v3-vite-watch-runtime",
     "fix-v4-generator-preflight-reset",
+    "fix-v4-gradient-variable-scope",
     "fix-v4-uni-subpackage-css-source",
     "fix-v5-css-source-order",
     "framework-support-matrix",
@@ -162,6 +163,7 @@
     "vite-v4-css-source-official-model",
     "warm-v4-incremental-cache",
     "watch-hmr-demo-apps-coverage",
-    "weapp-tailwindcss-plugin-alias"
+    "weapp-tailwindcss-plugin-alias",
+    "web-v4-vite-css-target"
   ]
 }
