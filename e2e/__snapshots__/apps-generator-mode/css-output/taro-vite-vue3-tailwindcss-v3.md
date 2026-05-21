@@ -10,9 +10,15 @@ Generator CSS files: app.wxss, app-origin.wxss, index.wxss, index.wxss
 
 ## Generator CSS
 
+### app.wxss
+
 ```css
 @import 'app-origin.wxss';
+```
 
+### app-origin.wxss
+
+```css
 ::before,
 ::after {
   --tw-content: '';
@@ -220,7 +226,11 @@ text,
     color: rgba(236, 79, 79, var(--tw-text-opacity, 1));
   }
 }
+```
 
+### index.wxss
+
+```css
 ::before,
 ::after {
   --tw-content: '';
@@ -428,7 +438,11 @@ text,
     color: rgba(236, 79, 79, var(--tw-text-opacity, 1));
   }
 }
+```
 
+### index.wxss
+
+```css
 ::before,
 ::after {
   --tw-content: '';

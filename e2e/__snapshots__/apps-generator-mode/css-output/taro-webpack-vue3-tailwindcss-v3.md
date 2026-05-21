@@ -10,6 +10,8 @@ Generator CSS files: app.wxss, index.wxss, index.wxss, index.wxss
 
 ## Generator CSS
 
+### app.wxss
+
 ```css
 ::before,
 ::after {
@@ -197,7 +199,11 @@ text,
   --tw-bg-opacity: 1;
   background-color: rgba(18, 52, 86, var(--tw-bg-opacity, 1));
 }
+```
 
+### index.wxss
+
+```css
 .container {
   width: 100%;
 }
@@ -226,7 +232,11 @@ text,
     max-width: 3072rpx;
   }
 }
+```
 
+### index.wxss
+
+```css
 .container {
   width: 100%;
 }
@@ -255,7 +265,11 @@ text,
     max-width: 3072rpx;
   }
 }
+```
 
+### index.wxss
+
+```css
 .test {
   display: flex !important;
   height: 100rpx !important;

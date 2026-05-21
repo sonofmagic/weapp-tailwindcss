@@ -10,6 +10,8 @@ Generator CSS files: app.wxss, index.wxss, index.wxss, index.wxss, index.wxss, i
 
 ## Generator CSS
 
+### app.wxss
+
 ```css
 ::before,
 ::after {
@@ -938,9 +940,23 @@ text,
 .focus_c_b_n_view_B_cp-4 view:focus {
   padding: 32rpx;
 }
+```
 
+### index.wxss
 
+```css
 
+```
+
+### index.wxss
+
+```css
+
+```
+
+### index.wxss
+
+```css
 .merge-page {
   min-height: 100vh;
   padding: 32rpx;
@@ -1051,7 +1067,11 @@ text,
   letter-spacing: 0.8rpx;
   box-shadow: 0 8rpx 20rpx -12rpx rgba(15, 23, 42, 0.5);
 }
+```
 
+### index.wxss
+
+```css
 ::before,
 ::after {
   --tw-content: '';
@@ -1973,7 +1993,11 @@ text,
 .focus_c_b_n_view_B_cp-4 view:focus {
   padding: 32rpx;
 }
+```
 
+### index.wxss
+
+```css
 ::before,
 ::after {
   --tw-content: '';

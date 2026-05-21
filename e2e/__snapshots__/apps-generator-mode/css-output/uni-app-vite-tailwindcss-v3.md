@@ -10,6 +10,8 @@ Generator CSS files: app.wxss, a.wxss, b.wxss, index.wxss, index.wxss, index.wxs
 
 ## Generator CSS
 
+### app.wxss
+
 ```css
 ::before,
 ::after {
@@ -6337,7 +6339,11 @@ body {
 [data-c-h='true'] {
   display: none !important;
 }
+```
 
+### a.wxss
+
+```css
 ::before,
 ::after {
   --tw-content: '';
@@ -7988,7 +7994,11 @@ body {
   --up-light-info-light: var(--up-info-light, var(--u-info-light, #f4f4f5));
   --u-light-info-light: var(--up-info-light, var(--u-info-light, #f4f4f5));
 }
+```
 
+### b.wxss
+
+```css
 ::before,
 ::after {
   --tw-content: '';
@@ -9639,7 +9649,11 @@ body {
   --up-light-info-light: var(--up-info-light, var(--u-info-light, #f4f4f5));
   --u-light-info-light: var(--up-info-light, var(--u-info-light, #f4f4f5));
 }
+```
 
+### index.wxss
+
+```css
 .tab-bar {
   position: fixed;
   bottom: 0;
@@ -9678,7 +9692,11 @@ body {
 .tab-bar-item cover-view {
   font-size: 10px;
 }
+```
 
+### index.wxss
+
+```css
 ::before,
 ::after {
   --tw-content: '';
@@ -11329,7 +11347,11 @@ body {
   --up-light-info-light: var(--up-info-light, var(--u-info-light, #f4f4f5));
   --u-light-info-light: var(--up-info-light, var(--u-info-light, #f4f4f5));
 }
+```
 
+### index.wxss
+
+```css
 ::before,
 ::after {
   --tw-content: '';
@@ -12827,7 +12849,11 @@ body {
     max-width: 3072rpx;
   }
 }
+```
 
+### index.wxss
+
+```css
 ::before,
 ::after {
   --tw-content: '';
@@ -14325,7 +14351,11 @@ body {
     max-width: 3072rpx;
   }
 }
+```
 
+### index.wxss
+
+```css
 :host,
 page,
 .tw-root,
@@ -14684,7 +14714,11 @@ body {
     max-width: 3072rpx;
   }
 }
+```
 
+### peer.wxss
+
+```css
 ::before,
 ::after {
   --tw-content: '';
@@ -16346,7 +16380,11 @@ body {
   --tw-text-opacity: 1;
   color: rgb(14, 165, 233, var(--tw-text-opacity));
 }
+```
 
+### tailwind-children.wxss
+
+```css
 page.data-v-8bf38d10:not(.weapp-tw-ig),
 .data-v-8bf38d10.tw-root,
 wx-root-portal-content.data-v-8bf38d10:not(.weapp-tw-ig) {
@@ -16573,7 +16611,11 @@ body.data-v-8bf38d10 {
   --up-light-info-light: var(--up-info-light, var(--u-info-light, #f4f4f5));
   --u-light-info-light: var(--up-info-light, var(--u-info-light, #f4f4f5));
 }
+```
 
+### typography.wxss
+
+```css
 ::before,
 ::after {
   --tw-content: '';
@@ -19535,7 +19577,11 @@ body {
   --up-light-info-light: var(--up-info-light, var(--u-info-light, #f4f4f5));
   --u-light-info-light: var(--up-info-light, var(--u-info-light, #f4f4f5));
 }
+```
 
+### u-button.wxss
+
+```css
 page.data-v-921e5271:not(.weapp-tw-ig),
 .data-v-921e5271.tw-root,
 wx-root-portal-content.data-v-921e5271:not(.weapp-tw-ig) {
@@ -19909,7 +19955,11 @@ body.data-v-921e5271 {
 .u-button--hairline.data-v-921e5271 {
   border-width: 0.5rpx !important;
 }
+```
 
+### u-loading-icon.wxss
+
+```css
 page.data-v-882a8a56:not(.weapp-tw-ig),
 .data-v-882a8a56.tw-root,
 wx-root-portal-content.data-v-882a8a56:not(.weapp-tw-ig) {

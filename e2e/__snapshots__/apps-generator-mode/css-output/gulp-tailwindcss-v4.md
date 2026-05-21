@@ -10,6 +10,8 @@ Generator CSS files: app.wxss, index.wxss, index.wxss, index.wxss, more.wxss
 
 ## Generator CSS
 
+### app.wxss
+
 ```css
 view,
 text,
@@ -102,8 +104,17 @@ wx-root-portal-content {
   --tw-content: 'normal subpackage gulp-tailwindcss-v4';
   content: var(--tw-content);
 }
+```
 
+### index.wxss
 
+```css
+
+```
+
+### index.wxss
+
+```css
 view,
 text,
 :after,
@@ -193,7 +204,11 @@ wx-root-portal-content {
   --tw-content: 'normal subpackage gulp-tailwindcss-v4';
   content: var(--tw-content);
 }
+```
 
+### index.wxss
+
+```css
 view,
 text,
 :after,
@@ -283,7 +298,11 @@ wx-root-portal-content {
   --tw-content: 'normal subpackage gulp-tailwindcss-v4';
   content: var(--tw-content);
 }
+```
 
+### more.wxss
+
+```css
 .more__pre {
   white-space: pre;
   text-align: left;

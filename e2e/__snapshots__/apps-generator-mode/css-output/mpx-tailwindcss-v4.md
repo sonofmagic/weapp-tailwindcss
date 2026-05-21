@@ -10,12 +10,22 @@ Generator CSS files: app.wxss, styles/app.wxss, index.wxss, app.wxss, index.wxss
 
 ## Generator CSS
 
+### app.wxss
+
 ```css
 @import './styles/app.wxss';
+```
 
+### styles/app.wxss
+
+```css
 /* webpackIgnore: true */
 @import './index.wxss';
+```
 
+### index.wxss
+
+```css
 view,
 text,
 :after,
@@ -260,11 +270,24 @@ wx-root-portal-content {
     color: var(--color-yellow-400);
   }
 }
+```
 
+### app.wxss
+
+```css
 /* webpackIgnore: true */
 @import './index.wxss';
+```
 
+### index.wxss
 
+```css
+
+```
+
+### index.wxss
+
+```css
 view,
 text,
 :after,
@@ -509,7 +532,11 @@ wx-root-portal-content {
     color: var(--color-yellow-400);
   }
 }
+```
 
+### index.wxss
+
+```css
 view,
 text,
 :after,
@@ -754,7 +781,11 @@ wx-root-portal-content {
     color: var(--color-yellow-400);
   }
 }
+```
 
+### index.wxss
+
+```css
 view,
 text,
 :after,

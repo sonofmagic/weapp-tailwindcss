@@ -10,6 +10,8 @@ Generator CSS files: app.wxss, index.wxss, index.wxss, index.wxss, index.wxss, i
 
 ## Generator CSS
 
+### app.wxss
+
 ```css
 ::before,
 ::after {
@@ -377,8 +379,17 @@ text,
   --tw-text-opacity: 1 !important;
   color: rgba(248, 113, 113, var(--tw-text-opacity, 1)) !important;
 }
+```
 
+### index.wxss
 
+```css
+
+```
+
+### index.wxss
+
+```css
 .-m-_b20px_B {
   margin: -20rpx;
 }
@@ -683,7 +694,11 @@ text,
   --tw-text-opacity: 1 !important;
   color: rgba(248, 113, 113, var(--tw-text-opacity, 1)) !important;
 }
+```
 
+### index.wxss
+
+```css
 .container {
   width: 100%;
 }
@@ -712,7 +727,11 @@ text,
     max-width: 3072rpx;
   }
 }
+```
 
+### index.wxss
+
+```css
 .container {
   width: 100%;
 }
@@ -741,7 +760,11 @@ text,
     max-width: 3072rpx;
   }
 }
+```
 
+### index.wxss
+
+```css
 .test {
   display: flex !important;
   height: 100rpx !important;
@@ -764,7 +787,11 @@ text,
 .b {
   color: #ff0;
 }
+```
 
+### index.wxss
+
+```css
 ::before,
 ::after {
   --tw-content: '';
@@ -1131,7 +1158,11 @@ text,
   --tw-text-opacity: 1 !important;
   color: rgba(248, 113, 113, var(--tw-text-opacity, 1)) !important;
 }
+```
 
+### index.wxss
+
+```css
 ::before,
 ::after {
   --tw-content: '';

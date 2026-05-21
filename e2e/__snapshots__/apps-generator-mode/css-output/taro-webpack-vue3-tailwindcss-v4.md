@@ -10,6 +10,8 @@ Generator CSS files: app.wxss, index.wxss, index.wxss, index.wxss
 
 ## Generator CSS
 
+### app.wxss
+
 ```css
 view,
 text,
@@ -62,12 +64,20 @@ wx-root-portal-content {
   --tw-content: 'normal subpackage taro-webpack-vue3-tailwindcss-v4';
   content: var(--tw-content);
 }
+```
 
+### index.wxss
+
+```css
 @reference "tailwindcss";
 .tw-page-style-watch-anchor {
   color: inherit;
 }
+```
 
+### index.wxss
+
+```css
 view,
 text,
 :after,
@@ -146,7 +156,11 @@ wx-root-portal-content {
     max-width: 3072rpx;
   }
 }
+```
 
+### index.wxss
+
+```css
 view,
 text,
 :after,

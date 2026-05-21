@@ -10,9 +10,15 @@ Generator CSS files: app.wxss, app-origin.wxss, index.wxss
 
 ## Generator CSS
 
+### app.wxss
+
 ```css
 @import 'app-origin.wxss';
+```
 
+### app-origin.wxss
+
+```css
 view,
 text,
 :after,
@@ -212,7 +218,11 @@ wx-root-portal-content {
   --tw-content: 'normal subpackage taro-vite-vue3-tailwindcss-v4';
   content: var(--tw-content);
 }
+```
 
+### index.wxss
+
+```css
 view,
 text,
 :after,
@@ -226,6 +236,8 @@ text,
 page,
 .tw-root,
 wx-root-portal-content {
+  --color-gray-200: #e5e7eb;
+  --color-gray-400: #9ca3af;
   --font-sans:
     ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, Cantarell, Noto Sans, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol',
     'Noto Color Emoji';

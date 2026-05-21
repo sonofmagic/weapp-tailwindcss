@@ -10,11 +10,17 @@ Generator CSS files: app.wxss, styles/base.wxss, styles/components.wxss, styles/
 
 ## Generator CSS
 
+### app.wxss
+
 ```css
 @import './styles/base.wxss';
 @import './styles/components.wxss';
 @import './styles/utilities.wxss';
+```
 
+### styles/base.wxss
+
+```css
 ::before,
 ::after {
   --tw-content: '';
@@ -80,8 +86,17 @@ text,
   border-style: solid;
   border-color: currentColor;
 }
+```
 
+### styles/components.wxss
 
+```css
+
+```
+
+### styles/utilities.wxss
+
+```css
 .h-_b43rpx_B {
   height: 43rpx;
 }
@@ -133,7 +148,11 @@ text,
   --tw-content: '你好啊，我这是中文字符串';
   content: var(--tw-content);
 }
+```
 
+### base.wxss
+
+```css
 ::before,
 ::after {
   --tw-content: '';
@@ -199,7 +218,11 @@ text,
   border-style: solid;
   border-color: currentColor;
 }
+```
 
+### button.wxss
+
+```css
 @import '../../../../styles/index.wxss';
 .t-button--size-extra-small {
   font-size: var(--td-button-extra-small-font-size, var(--td-font-size-base, 28rpx));
@@ -717,8 +740,17 @@ text,
 .t-button.t-button--hover:after {
   z-index: -1;
 }
+```
 
+### components.wxss
 
+```css
+
+```
+
+### icon.wxss
+
+```css
 @import '../../../../styles/index.wxss';
 @font-face {
   font-family: t;
@@ -7804,8 +7836,17 @@ text,
 .t-icon-zoom-out:before {
   content: '\E92E';
 }
+```
 
+### index.wxss
 
+```css
+
+```
+
+### index.wxss
+
+```css
 .hotspot-expanded.relative {
   position: relative;
 }
@@ -7819,7 +7860,11 @@ text,
   top: 0;
   transform: scale(1.5);
 }
+```
 
+### index.wxss
+
+```css
 .van-ellipsis {
   overflow: hidden;
   text-overflow: ellipsis;
@@ -7889,7 +7934,11 @@ text,
 .van-hairline--surround:after {
   border-width: 1px;
 }
+```
 
+### index.wxss
+
+```css
 @import '../../../../../styles/index.wxss';
 .van-button {
   -webkit-text-size-adjust: 100%;
@@ -8034,7 +8083,11 @@ text,
 .van-button--hairline.van-button--square:after {
   border-radius: 0;
 }
+```
 
+### index.wxss
+
+```css
 @import '../../../../../styles/index.wxss';
 .van-icon {
   -webkit-font-smoothing: antialiased;
@@ -8846,7 +8899,11 @@ text,
 .van-icon__info {
   z-index: 1;
 }
+```
 
+### index.wxss
+
+```css
 @import '../../../../../styles/index.wxss';
 .van-info {
   align-items: center;
@@ -8877,7 +8934,11 @@ text,
   min-width: 0;
   width: var(--info-dot-size, 8px);
 }
+```
 
+### index.wxss
+
+```css
 @import '../../../../../styles/index.wxss';
 :host {
   font-size: 0;
@@ -8994,7 +9055,11 @@ text,
     transform: rotate(1turn);
   }
 }
+```
 
+### loading.wxss
+
+```css
 @import '../../../../styles/index.wxss';
 .t-loading {
   display: inline-flex;
@@ -9199,7 +9264,11 @@ text,
     opacity: 0.15;
   }
 }
+```
 
+### styles/index.wxss
+
+```css
 .hotspot-expanded.relative {
   position: relative;
 }
@@ -9213,7 +9282,11 @@ text,
   top: 0;
   transform: scale(1.5);
 }
+```
 
+### styles/index.wxss
+
+```css
 .hotspot-expanded.relative {
   position: relative;
 }
@@ -9227,7 +9300,11 @@ text,
   top: 0;
   transform: scale(1.5);
 }
+```
 
+### styles/index.wxss
+
+```css
 .hotspot-expanded.relative {
   position: relative;
 }
@@ -9241,7 +9318,11 @@ text,
   top: 0;
   transform: scale(1.5);
 }
+```
 
+### styles/index.wxss
+
+```css
 .van-ellipsis {
   overflow: hidden;
   text-overflow: ellipsis;
@@ -9311,7 +9392,11 @@ text,
 .van-hairline--surround:after {
   border-width: 1px;
 }
+```
 
+### styles/index.wxss
+
+```css
 .van-ellipsis {
   overflow: hidden;
   text-overflow: ellipsis;
@@ -9381,7 +9466,11 @@ text,
 .van-hairline--surround:after {
   border-width: 1px;
 }
+```
 
+### styles/index.wxss
+
+```css
 .van-ellipsis {
   overflow: hidden;
   text-overflow: ellipsis;
@@ -9451,7 +9540,11 @@ text,
 .van-hairline--surround:after {
   border-width: 1px;
 }
+```
 
+### styles/index.wxss
+
+```css
 .van-ellipsis {
   overflow: hidden;
   text-overflow: ellipsis;
@@ -9521,7 +9614,11 @@ text,
 .van-hairline--surround:after {
   border-width: 1px;
 }
+```
 
+### utilities.wxss
+
+```css
 .h-_b43rpx_B {
   height: 43rpx;
 }

@@ -10,6 +10,8 @@ Generator CSS files: app.wxss, index.wxss, index.wxss, index.wxss
 
 ## Generator CSS
 
+### app.wxss
+
 ```css
 view,
 text,
@@ -11183,7 +11185,11 @@ wx-root-portal-content {
   color: #757575;
   font-size: var(--nutui-input-font-size, var(--nutui-font-size-base, 28rpx));
 }
+```
 
+### index.wxss
+
+```css
 .tw-page-style-watch-anchor {
   color: inherit;
 }
@@ -11542,7 +11548,11 @@ page {
     transform: translate(0);
   }
 }
+```
 
+### index.wxss
+
+```css
 view,
 text,
 :after,
@@ -11604,7 +11614,11 @@ wx-root-portal-content {
     max-width: 3072rpx;
   }
 }
+```
 
+### index.wxss
+
+```css
 view,
 text,
 :after,

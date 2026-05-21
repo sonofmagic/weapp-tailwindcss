@@ -24,8 +24,14 @@ interface CompareProject {
 
 interface CreateProjectReportOptions {
   onPassed?: (result: {
-    generatorResult: { css: string, cssFiles: string[] }
+    generatorResult: GeneratorBuildResult
   }) => void | Promise<void>
+}
+
+interface GeneratorBuildResult {
+  css: string
+  cssFiles: string[]
+  cssSnapshots: Array<{ fileName: string, content: string }>
 }
 
 const SUBPACKAGE_MARKER_PATTERNS = [
@@ -214,6 +220,7 @@ async function buildProject(project: CompareProject) {
   return {
     css: snapshots.map(snapshot => snapshot.content).join('\n'),
     cssFiles: snapshots.map(snapshot => snapshot.fileName),
+    cssSnapshots: snapshots,
   }
 }
 
@@ -276,7 +283,7 @@ function compareCssSnapshotEntry(
 
 function createReportItem(
   project: CompareProject,
-  generatorResult: { css: string, cssFiles: string[] },
+  generatorResult: GeneratorBuildResult,
 ): CompareReportItem {
   const generatorCss = normalizeCssForSummary(generatorResult.css)
   const generator = summarizeCss(generatorCss)
@@ -312,7 +319,7 @@ async function createProjectReport(
   project: CompareProject,
   options: CreateProjectReportOptions = {},
 ): Promise<AppsGeneratorCompareReportItem> {
-  let generatorResult: { css: string, cssFiles: string[] }
+  let generatorResult: GeneratorBuildResult
   try {
     generatorResult = await buildProject(project)
   }
@@ -357,10 +364,21 @@ function normalizeCssForSummary(css: string) {
 
 function createCssOutputSnapshot(
   project: CompareProject,
-  generatorResult: { css: string, cssFiles: string[] },
+  generatorResult: Pick<GeneratorBuildResult, 'css' | 'cssFiles'> & Partial<Pick<GeneratorBuildResult, 'cssSnapshots'>>,
 ) {
   const generatorCss = normalizeCssSnapshot(generatorResult.css)
   const generator = summarizeCss(`${generatorCss}\n`)
+  const cssSnapshots = generatorResult.cssSnapshots && generatorResult.cssSnapshots.length > 0
+    ? generatorResult.cssSnapshots
+    : [{ fileName: generatorResult.cssFiles[0] ?? project.cssFile, content: generatorResult.css }]
+  const cssSections = cssSnapshots.flatMap(snapshot => [
+    `### ${snapshot.fileName}`,
+    '',
+    '```css',
+    normalizeCssSnapshot(snapshot.content),
+    '```',
+    '',
+  ])
   return [
     `# ${project.name} CSS Output`,
     '',
@@ -374,16 +392,13 @@ function createCssOutputSnapshot(
     '',
     '## Generator CSS',
     '',
-    '```css',
-    generatorCss,
-    '```',
-    '',
+    ...cssSections,
   ].join('\n')
 }
 
 async function expectCssOutputSnapshot(
   project: CompareProject,
-  generatorResult: { css: string, cssFiles: string[] },
+  generatorResult: GeneratorBuildResult,
 ) {
   const snapshotPath = await resolveSnapshotFile(__dirname, 'apps-generator-mode', 'css-output', `${project.name}.md`)
   await expect(createCssOutputSnapshot(project, generatorResult)).toMatchFileSnapshot(snapshotPath)
@@ -430,6 +445,7 @@ describe('demo generator mode output', () => {
     expect(snapshot.indexOf('| Bytes |')).toBeLessThan(snapshot.indexOf('## Generator CSS'))
     expect(snapshot).toContain('# fixture-app CSS Output')
     expect(snapshot).toContain('| 56 | 2 | false | false | false | false | false |')
+    expect(snapshot).toContain('### app.wxss')
     expect(snapshot).toContain('.generator { color: blue; }')
   })
 
@@ -461,7 +477,7 @@ describe('demo generator mode output', () => {
     const report: AppsGeneratorCompareReportItem[] = []
 
     for (const project of projects) {
-      let generatorResult: { css: string, cssFiles: string[] } | undefined
+      let generatorResult: GeneratorBuildResult | undefined
       const item = await createProjectReport(project, {
         onPassed(result) {
           generatorResult = result.generatorResult
