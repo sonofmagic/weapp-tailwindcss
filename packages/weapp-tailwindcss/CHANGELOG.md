@@ -1,5 +1,11 @@
 # weapp-tailwindcss
 
+## 5.0.0-next.15
+
+### Patch Changes
+
+- 🐛 **修复 Tailwind v4 generator 模式下用户样式被统一追加到生成 CSS 末尾的问题，保留 Vite/uni-app 合并后的原始 CSS source order。** [#865](https://github.com/sonofmagic/weapp-tailwindcss/pull/865) by @github-actions
+
 ## 5.0.0-next.14
 
 ### Patch Changes
