@@ -113,6 +113,7 @@
     "fix-v3-vite-watch-runtime",
     "fix-v4-generator-preflight-reset",
     "fix-v4-uni-subpackage-css-source",
+    "fix-v5-css-source-order",
     "framework-support-matrix",
     "fresh-demo-core-build",
     "fresh-v3-colors-for-weapp",
