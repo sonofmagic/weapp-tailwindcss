@@ -6,7 +6,7 @@ Generator CSS files: app.wxss, home.wxss, index.wxss, index.wxss, user.wxss
 
 | Bytes | Selectors | @supports | :hover | Tailwind banner | Raw arbitrary selector | Weapp escaped arbitrary selector |
 | ---: | ---: | --- | --- | --- | --- | --- |
-| 42923 | 232 | false | false | false | false | true |
+| 41140 | 233 | false | false | false | false | true |
 
 ## Generator CSS
 
@@ -26,67 +26,6 @@ text,
 page,
 .tw-root,
 wx-root-portal-content {
-  --tw-scale-x: 1;
-  --tw-scale-y: 1;
-  --tw-scale-z: 1;
-  --tw-rotate-x: initial;
-  --tw-rotate-y: initial;
-  --tw-rotate-z: initial;
-  --tw-skew-x: initial;
-  --tw-skew-y: initial;
-  --tw-pan-x: initial;
-  --tw-pan-y: initial;
-  --tw-pinch-zoom: initial;
-  --tw-space-y-reverse: 0;
-  --tw-space-x-reverse: 0;
-  --tw-divide-x-reverse: 0;
-  --tw-border-style: solid;
-  --tw-divide-y-reverse: 0;
-  --tw-leading: initial;
-  --tw-font-weight: initial;
-  --tw-ordinal: initial;
-  --tw-slashed-zero: initial;
-  --tw-numeric-figure: initial;
-  --tw-numeric-spacing: initial;
-  --tw-numeric-fraction: initial;
-  --tw-shadow: 0 0 rgba(0, 0, 0, 0);
-  --tw-shadow-color: initial;
-  --tw-shadow-alpha: 100%;
-  --tw-inset-shadow: 0 0 rgba(0, 0, 0, 0);
-  --tw-inset-shadow-color: initial;
-  --tw-inset-shadow-alpha: 100%;
-  --tw-ring-color: initial;
-  --tw-ring-shadow: 0 0 rgba(0, 0, 0, 0);
-  --tw-inset-ring-color: initial;
-  --tw-inset-ring-shadow: 0 0 rgba(0, 0, 0, 0);
-  --tw-ring-inset: initial;
-  --tw-ring-offset-width: 0px;
-  --tw-ring-offset-color: #fff;
-  --tw-ring-offset-shadow: 0 0 rgba(0, 0, 0, 0);
-  --tw-outline-style: solid;
-  --tw-blur: initial;
-  --tw-brightness: initial;
-  --tw-contrast: initial;
-  --tw-grayscale: initial;
-  --tw-hue-rotate: initial;
-  --tw-invert: initial;
-  --tw-opacity: initial;
-  --tw-saturate: initial;
-  --tw-sepia: initial;
-  --tw-drop-shadow: initial;
-  --tw-drop-shadow-color: initial;
-  --tw-drop-shadow-alpha: 100%;
-  --tw-drop-shadow-size: initial;
-  --tw-backdrop-blur: initial;
-  --tw-backdrop-brightness: initial;
-  --tw-backdrop-contrast: initial;
-  --tw-backdrop-grayscale: initial;
-  --tw-backdrop-hue-rotate: initial;
-  --tw-backdrop-invert: initial;
-  --tw-backdrop-opacity: initial;
-  --tw-backdrop-saturate: initial;
-  --tw-backdrop-sepia: initial;
-  --tw-content: '';
   --font-sans:
     ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, Cantarell, Noto Sans, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol',
     'Noto Color Emoji';
@@ -916,6 +855,9 @@ wx-root-portal-content {
 }
 .active_cbg-emerald-600:active {
   background-color: var(--color-emerald-600);
+}
+.reset-button {
+  display: block;
 }
 [data-c-h='true'] {
   display: none !important;

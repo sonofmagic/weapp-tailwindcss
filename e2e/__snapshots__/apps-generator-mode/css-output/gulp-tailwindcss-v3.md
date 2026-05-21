@@ -6,21 +6,23 @@ Generator CSS files: app.wxss, index.wxss, index.wxss, index.wxss, more.wxss
 
 | Bytes | Selectors | @supports | :hover | Tailwind banner | Raw arbitrary selector | Weapp escaped arbitrary selector |
 | ---: | ---: | --- | --- | --- | --- | --- |
-| 16276 | 49 | false | false | false | false | true |
+| 15986 | 49 | false | false | false | false | true |
 
 ## Generator CSS
 
 ### app.wxss
 
 ```css
-::before,
-::after {
+view,
+text,
+:before,
+:after {
   --tw-content: '';
 }
 view,
 text,
-::before,
-::after {
+:before,
+:after {
   --tw-border-spacing-x: 0;
   --tw-border-spacing-y: 0;
   --tw-translate-x: 0;
@@ -73,10 +75,6 @@ text,
   --tw-contain-paint:  ;
   --tw-contain-style:
 ;
-  box-sizing: border-box;
-  border-width: 0;
-  border-style: solid;
-  border-color: currentColor;
 }
 .i-mdi-123 {
   display: inline-block;
@@ -269,8 +267,8 @@ text,
 }
 view,
 text,
-::before,
-::after {
+:before,
+:after {
   --tw-border-spacing-x: 0;
   --tw-border-spacing-y: 0;
   --tw-translate-x: 0;
@@ -323,10 +321,6 @@ text,
   --tw-contain-paint:  ;
   --tw-contain-style:
 ;
-  box-sizing: border-box;
-  border-width: 0;
-  border-style: solid;
-  border-color: currentColor;
 }
 .m-_b20px_B {
   margin: 40rpx;
@@ -493,8 +487,8 @@ text,
 }
 view,
 text,
-::before,
-::after {
+:before,
+:after {
   --tw-border-spacing-x: 0;
   --tw-border-spacing-y: 0;
   --tw-translate-x: 0;
@@ -547,10 +541,6 @@ text,
   --tw-contain-paint:  ;
   --tw-contain-style:
 ;
-  box-sizing: border-box;
-  border-width: 0;
-  border-style: solid;
-  border-color: currentColor;
 }
 .m-_b20px_B {
   margin: 40rpx;

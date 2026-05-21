@@ -6,7 +6,7 @@ Generator CSS files: app.wxss, apple.wxss, index.wxss, index.wxss, index.wxss
 
 | Bytes | Selectors | @supports | :hover | Tailwind banner | Raw arbitrary selector | Weapp escaped arbitrary selector |
 | ---: | ---: | --- | --- | --- | --- | --- |
-| 6097 | 47 | false | false | false | false | true |
+| 6025 | 47 | false | false | false | false | true |
 
 ## Generator CSS
 
@@ -15,17 +15,8 @@ Generator CSS files: app.wxss, apple.wxss, index.wxss, index.wxss, index.wxss
 ```css
 view,
 text,
-:after,
-:before {
-  box-sizing: border-box;
-  margin: 0;
-  padding: 0;
-  border: 0 solid;
-}
-:host,
-page,
-.tw-root,
-wx-root-portal-content {
+:before,
+:after {
   --tw-space-y-reverse: 0;
   --tw-space-x-reverse: 0;
   --tw-border-style: solid;
@@ -38,6 +29,11 @@ wx-root-portal-content {
   --tw-gradient-from-position: 0%;
   --tw-gradient-via-position: 50%;
   --tw-gradient-to-position: 100%;
+}
+:host,
+page,
+.tw-root,
+wx-root-portal-content {
   --font-sans:
     ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, Cantarell, Noto Sans, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol',
     'Noto Color Emoji';

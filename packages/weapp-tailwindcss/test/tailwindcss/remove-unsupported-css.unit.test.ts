@@ -148,7 +148,7 @@ describe('tailwindcss/remove unsupported css', () => {
       '.bg-linear-to-r{background-image:linear-gradient(var(--tw-gradient-stops))}',
     ].join(''))
 
-    expect(css).toContain('view,text,::before,::after{--tw-gradient-position:initial')
+    expect(css).toContain('view,text,:before,:after{--tw-gradient-position:initial')
     expect(css).toContain('--tw-gradient-from:rgba(0,0,0,0)')
     expect(css).toContain('--tw-gradient-to:rgba(0,0,0,0)')
     expect(css).toContain('--tw-gradient-from-position:0%')

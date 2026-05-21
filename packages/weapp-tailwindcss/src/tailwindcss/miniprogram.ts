@@ -2,7 +2,7 @@ import postcss from 'postcss'
 import { removeUnsupportedCascadeLayers } from './remove-unsupported-css'
 
 const DEFAULT_WEAPP_VARIABLE_SCOPE = 'page,.tw-root,wx-root-portal-content,:host'
-const DEFAULT_WEAPP_ELEMENT_VARIABLE_SCOPE = 'view,text,::before,::after'
+const DEFAULT_WEAPP_ELEMENT_VARIABLE_SCOPE = 'view,text,:before,:after'
 const CLASS_SELECTOR_RE = /(?:^|[^\w-])\.[_a-z\u00A0-\uFFFF\\-]/i
 const PSEUDO_CONTENT_SELECTOR_RE = /^(?:::before|::after|:before|:after)(?:,(?:::before|::after|:before|:after))*$/
 const MINI_PROGRAM_THEME_SCOPE_SELECTORS = new Set([':root', ':host', 'page', '.tw-root', 'wx-root-portal-content'])
@@ -201,6 +201,7 @@ export function pruneMiniProgramGeneratedCss(
     }
 
     if (isCustomPropertyRule(rule) && isMiniProgramElementVariableScopeRule(rule)) {
+      rule.selector = DEFAULT_WEAPP_ELEMENT_VARIABLE_SCOPE
       return
     }
 

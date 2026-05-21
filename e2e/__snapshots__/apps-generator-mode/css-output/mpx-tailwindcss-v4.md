@@ -6,7 +6,7 @@ Generator CSS files: app.wxss, styles/app.wxss, index.wxss, app.wxss, index.wxss
 
 | Bytes | Selectors | @supports | :hover | Tailwind banner | Raw arbitrary selector | Weapp escaped arbitrary selector |
 | ---: | ---: | --- | --- | --- | --- | --- |
-| 22444 | 68 | false | false | false | false | true |
+| 19824 | 68 | false | false | false | false | true |
 
 ## Generator CSS
 
@@ -39,26 +39,6 @@ text,
 page,
 .tw-root,
 wx-root-portal-content {
-  --tw-space-y-reverse: 0;
-  --tw-divide-x-reverse: 0;
-  --tw-border-style: solid;
-  --tw-leading: initial;
-  --tw-font-weight: initial;
-  --tw-shadow: 0 0 rgba(0, 0, 0, 0);
-  --tw-shadow-color: initial;
-  --tw-shadow-alpha: 100%;
-  --tw-inset-shadow: 0 0 rgba(0, 0, 0, 0);
-  --tw-inset-shadow-color: initial;
-  --tw-inset-shadow-alpha: 100%;
-  --tw-ring-color: initial;
-  --tw-ring-shadow: 0 0 rgba(0, 0, 0, 0);
-  --tw-inset-ring-color: initial;
-  --tw-inset-ring-shadow: 0 0 rgba(0, 0, 0, 0);
-  --tw-ring-inset: initial;
-  --tw-ring-offset-width: 0px;
-  --tw-ring-offset-color: #fff;
-  --tw-ring-offset-shadow: 0 0 rgba(0, 0, 0, 0);
-  --tw-content: '';
   --color-gray-200: #e5e7eb;
   --color-gray-400: #9ca3af;
   --color-zinc-800: #27272a;
@@ -301,26 +281,6 @@ text,
 page,
 .tw-root,
 wx-root-portal-content {
-  --tw-space-y-reverse: 0;
-  --tw-divide-x-reverse: 0;
-  --tw-border-style: solid;
-  --tw-leading: initial;
-  --tw-font-weight: initial;
-  --tw-shadow: 0 0 rgba(0, 0, 0, 0);
-  --tw-shadow-color: initial;
-  --tw-shadow-alpha: 100%;
-  --tw-inset-shadow: 0 0 rgba(0, 0, 0, 0);
-  --tw-inset-shadow-color: initial;
-  --tw-inset-shadow-alpha: 100%;
-  --tw-ring-color: initial;
-  --tw-ring-shadow: 0 0 rgba(0, 0, 0, 0);
-  --tw-inset-ring-color: initial;
-  --tw-inset-ring-shadow: 0 0 rgba(0, 0, 0, 0);
-  --tw-ring-inset: initial;
-  --tw-ring-offset-width: 0px;
-  --tw-ring-offset-color: #fff;
-  --tw-ring-offset-shadow: 0 0 rgba(0, 0, 0, 0);
-  --tw-content: '';
   --color-gray-200: #e5e7eb;
   --color-gray-400: #9ca3af;
   --color-zinc-800: #27272a;
@@ -550,26 +510,6 @@ text,
 page,
 .tw-root,
 wx-root-portal-content {
-  --tw-space-y-reverse: 0;
-  --tw-divide-x-reverse: 0;
-  --tw-border-style: solid;
-  --tw-leading: initial;
-  --tw-font-weight: initial;
-  --tw-shadow: 0 0 rgba(0, 0, 0, 0);
-  --tw-shadow-color: initial;
-  --tw-shadow-alpha: 100%;
-  --tw-inset-shadow: 0 0 rgba(0, 0, 0, 0);
-  --tw-inset-shadow-color: initial;
-  --tw-inset-shadow-alpha: 100%;
-  --tw-ring-color: initial;
-  --tw-ring-shadow: 0 0 rgba(0, 0, 0, 0);
-  --tw-inset-ring-color: initial;
-  --tw-inset-ring-shadow: 0 0 rgba(0, 0, 0, 0);
-  --tw-ring-inset: initial;
-  --tw-ring-offset-width: 0px;
-  --tw-ring-offset-color: #fff;
-  --tw-ring-offset-shadow: 0 0 rgba(0, 0, 0, 0);
-  --tw-content: '';
   --color-gray-200: #e5e7eb;
   --color-gray-400: #9ca3af;
   --color-zinc-800: #27272a;
@@ -799,26 +739,6 @@ text,
 page,
 .tw-root,
 wx-root-portal-content {
-  --tw-space-y-reverse: 0;
-  --tw-divide-x-reverse: 0;
-  --tw-border-style: solid;
-  --tw-leading: initial;
-  --tw-font-weight: initial;
-  --tw-shadow: 0 0 rgba(0, 0, 0, 0);
-  --tw-shadow-color: initial;
-  --tw-shadow-alpha: 100%;
-  --tw-inset-shadow: 0 0 rgba(0, 0, 0, 0);
-  --tw-inset-shadow-color: initial;
-  --tw-inset-shadow-alpha: 100%;
-  --tw-ring-color: initial;
-  --tw-ring-shadow: 0 0 rgba(0, 0, 0, 0);
-  --tw-inset-ring-color: initial;
-  --tw-inset-ring-shadow: 0 0 rgba(0, 0, 0, 0);
-  --tw-ring-inset: initial;
-  --tw-ring-offset-width: 0px;
-  --tw-ring-offset-color: #fff;
-  --tw-ring-offset-shadow: 0 0 rgba(0, 0, 0, 0);
-  --tw-content: '';
   --color-gray-200: #e5e7eb;
   --color-gray-400: #9ca3af;
   --color-zinc-800: #27272a;

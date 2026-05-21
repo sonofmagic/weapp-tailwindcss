@@ -173,6 +173,28 @@ function isCommentOnlyCss(source: string) {
   }
 }
 
+function stripTailwindSourceMediaFragments(source: string) {
+  return source
+    .replace(/^\s*@media\s+source\([^)]*\)\s*\{\s*$/gm, '')
+    .replace(/^\s*\}\s*(?=@(?:source|theme|config|plugin|utility|variant|custom-variant)\b)/gm, '')
+    .replace(/^\s*\}\s*\/\*\s*source\([^)]*\)\s*\*\/\s*$/gm, '')
+}
+
+function stripLeadingTailwindSourceMediaCloseFragment(source: string) {
+  return source.replace(/^\s*\}\s*(?:\n|$)/, '')
+}
+
+function stripUnmatchedTailwindSourceMediaCloseFragments(source: string) {
+  try {
+    postcss.parse(source)
+    return source
+  }
+  catch {
+    return stripLeadingTailwindSourceMediaCloseFragment(source)
+      .replace(/\s*\}\s*$/, '')
+  }
+}
+
 function createCssSourceOrderAppend(base: string, extra: string) {
   if (!base) {
     return extra
@@ -211,25 +233,36 @@ async function transformGeneratorUserCss(
   if (source.trim().length === 0) {
     return ''
   }
-  const cleanedSource = removeTailwindSourceDirectives(source, {
+  const repairedSource = stripUnmatchedTailwindSourceMediaCloseFragments(
+    stripTailwindSourceMediaFragments(source),
+  )
+  const cleanedSource = removeTailwindSourceDirectives(repairedSource, {
     importFallback: options.importFallback,
   })
   if (cleanedSource.trim().length === 0) {
     return ''
   }
-  const extraSource = options.generatorTarget === 'weapp'
-    ? removeUnsupportedMiniProgramAtRules(cleanedSource)
-    : cleanedSource
-  if (extraSource.trim().length === 0) {
+  const sanitizedSource = removeTailwindSourceDirectives(
+    stripUnmatchedTailwindSourceMediaCloseFragments(
+      stripTailwindSourceMediaFragments(options.generatorTarget === 'weapp'
+        ? removeUnsupportedMiniProgramAtRules(cleanedSource)
+        : cleanedSource),
+    ),
+    {
+      importFallback: options.importFallback,
+    },
+  )
+  const userSource = stripUnmatchedTailwindSourceMediaCloseFragments(sanitizedSource)
+  if (userSource.trim().length === 0) {
     return ''
   }
-  if (isCommentOnlyCss(extraSource)) {
-    return extraSource
+  if (isCommentOnlyCss(userSource)) {
+    return userSource
   }
   if (options.generatorTarget !== 'weapp') {
-    return extraSource
+    return userSource
   }
-  const { css } = await options.styleHandler(extraSource, {
+  const { css } = await options.styleHandler(userSource, {
     ...options.generatorStyleOptions,
     ...options.cssUserHandlerOptions,
   })
@@ -325,9 +358,13 @@ export async function generateCssByGenerator(
   } = options
   const generatorOptions = normalizeWeappTailwindcssGeneratorOptions(opts.generator)
   const majorVersion = runtimeState.twPatcher.majorVersion
-  const effectiveRawSource = normalizeTailwindSourceDirectives(rawSource, {
-    importFallback: generatorOptions.importFallback,
-  })
+  const effectiveRawSource = stripUnmatchedTailwindSourceMediaCloseFragments(
+    stripTailwindSourceMediaFragments(
+      normalizeTailwindSourceDirectives(rawSource, {
+        importFallback: generatorOptions.importFallback,
+      }),
+    ),
+  )
 
   const cleanedLocalImportWrapper = cleanLocalCssImportWrapperTailwindDirectives(effectiveRawSource)
   if (cleanedLocalImportWrapper !== undefined) {

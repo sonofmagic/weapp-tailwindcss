@@ -74,6 +74,75 @@ function createLegacyCompatTransformCacheKey(source: string, options: IStyleHand
   return `${createStableJson(options)}\0${source}`
 }
 
+function countUnclosedBlocks(source: string) {
+  let depth = 0
+  let quote: string | undefined
+  let inComment = false
+  let escaped = false
+
+  for (let index = 0; index < source.length; index += 1) {
+    const char = source[index]
+    const next = source[index + 1]
+
+    if (inComment) {
+      if (char === '*' && next === '/') {
+        inComment = false
+        index += 1
+      }
+      continue
+    }
+
+    if (quote) {
+      if (escaped) {
+        escaped = false
+        continue
+      }
+      if (char === '\\') {
+        escaped = true
+        continue
+      }
+      if (char === quote) {
+        quote = undefined
+      }
+      continue
+    }
+
+    if (char === '/' && next === '*') {
+      inComment = true
+      index += 1
+      continue
+    }
+
+    if (char === '"' || char === '\'') {
+      quote = char
+      continue
+    }
+
+    if (char === '{') {
+      depth += 1
+    }
+    else if (char === '}' && depth > 0) {
+      depth -= 1
+    }
+  }
+
+  return depth
+}
+
+function closeTrailingUnclosedBlocks(source: string) {
+  try {
+    postcss.parse(source)
+    return source
+  }
+  catch (error) {
+    if ((error as { reason?: string }).reason !== 'Unclosed block') {
+      return source
+    }
+    const unclosedBlocks = countUnclosedBlocks(source)
+    return unclosedBlocks > 0 ? `${source}${'}'.repeat(unclosedBlocks)}` : source
+  }
+}
+
 export function removeTailwindApplyRules(rawSource: string) {
   try {
     const root = postcss.parse(rawSource)
@@ -106,7 +175,7 @@ function resolveLegacyCompatCssSource(rawSource: string) {
     return cached
   }
   const source = removeTailwindSourceDirectives(stripTailwindBanners(rawSource))
-  const resolved = removeUnsupportedMiniProgramAtRules(removeTailwindApplyRules(source))
+  const resolved = closeTrailingUnclosedBlocks(removeUnsupportedMiniProgramAtRules(removeTailwindApplyRules(source)))
   setLimitedCacheValue(legacyCompatSourceCache, rawSource, resolved)
   return resolved
 }

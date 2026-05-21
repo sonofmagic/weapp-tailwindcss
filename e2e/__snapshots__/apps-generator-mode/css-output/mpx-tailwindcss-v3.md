@@ -6,7 +6,7 @@ Generator CSS files: app.wxss, styles/base.wxss, styles/components.wxss, styles/
 
 | Bytes | Selectors | @supports | :hover | Tailwind banner | Raw arbitrary selector | Weapp escaped arbitrary selector |
 | ---: | ---: | --- | --- | --- | --- | --- |
-| 190760 | 2879 | false | false | false | false | true |
+| 190580 | 2879 | false | false | false | false | true |
 
 ## Generator CSS
 
@@ -21,14 +21,16 @@ Generator CSS files: app.wxss, styles/base.wxss, styles/components.wxss, styles/
 ### styles/base.wxss
 
 ```css
-::before,
-::after {
+view,
+text,
+:before,
+:after {
   --tw-content: '';
 }
 view,
 text,
-::before,
-::after {
+:before,
+:after {
   --tw-border-spacing-x: 0;
   --tw-border-spacing-y: 0;
   --tw-translate-x: 0;
@@ -81,10 +83,6 @@ text,
   --tw-contain-paint:  ;
   --tw-contain-style:
 ;
-  box-sizing: border-box;
-  border-width: 0;
-  border-style: solid;
-  border-color: currentColor;
 }
 ```
 
@@ -153,14 +151,16 @@ text,
 ### base.wxss
 
 ```css
-::before,
-::after {
+view,
+text,
+:before,
+:after {
   --tw-content: '';
 }
 view,
 text,
-::before,
-::after {
+:before,
+:after {
   --tw-border-spacing-x: 0;
   --tw-border-spacing-y: 0;
   --tw-translate-x: 0;
@@ -213,10 +213,6 @@ text,
   --tw-contain-paint:  ;
   --tw-contain-style:
 ;
-  box-sizing: border-box;
-  border-width: 0;
-  border-style: solid;
-  border-color: currentColor;
 }
 ```
 

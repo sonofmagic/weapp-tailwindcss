@@ -1212,6 +1212,13 @@ describe('bundlers/shared generator css', () => {
       createWeappTailwindcssGenerator: vi.fn(() => ({
         generate: generateMock,
       })),
+      resolveTailwindV4Source: vi.fn(async (options: any) => ({
+        projectRoot: process.cwd(),
+        base: process.cwd(),
+        baseFallbacks: [],
+        css: options.css,
+        dependencies: [],
+      })),
       normalizeWeappTailwindcssGeneratorOptions: normalizeGeneratorOptions,
       resolveTailwindV4SourceFromPatcher: vi.fn(async () => ({
         projectRoot: process.cwd(),
@@ -1284,6 +1291,13 @@ describe('bundlers/shared generator css', () => {
         generate: generateMock,
       })),
       normalizeWeappTailwindcssGeneratorOptions: normalizeGeneratorOptions,
+      resolveTailwindV4Source: vi.fn(async (options: any) => ({
+        projectRoot: process.cwd(),
+        base: process.cwd(),
+        baseFallbacks: [],
+        css: options.css,
+        dependencies: [],
+      })),
       resolveTailwindV4SourceFromPatcher: vi.fn(async () => ({
         projectRoot: process.cwd(),
         base: process.cwd(),
@@ -4894,7 +4908,7 @@ describe('bundlers/shared generator css', () => {
       '.to-orange-200{--tw-gradient-to:var(--color-orange-200);--tw-gradient-stops:var(--tw-gradient-position),var(--tw-gradient-from),var(--tw-gradient-to)}',
     ].join('\n')
     const weappCss = [
-      'view,text,::before,::after{--tw-gradient-position:initial;--tw-gradient-from:rgba(0,0,0,0);--tw-gradient-to:rgba(0,0,0,0);--tw-gradient-from-position:0%;--tw-gradient-to-position:100%}',
+      'view,text,:before,:after{--tw-gradient-position:initial;--tw-gradient-from:rgba(0,0,0,0);--tw-gradient-to:rgba(0,0,0,0);--tw-gradient-from-position:0%;--tw-gradient-to-position:100%}',
       'page,.tw-root,wx-root-portal-content,:host{--color-amber-200:#fde68a;--color-orange-200:#fed7aa}',
       '.bg-linear-to-r{--tw-gradient-position:to right;background-image:linear-gradient(var(--tw-gradient-stops))}',
       '.from-amber-200{--tw-gradient-from:var(--color-amber-200);--tw-gradient-stops:var(--tw-gradient-position),var(--tw-gradient-from),var(--tw-gradient-to)}',
@@ -4962,7 +4976,7 @@ describe('bundlers/shared generator css', () => {
     })
 
     const css = result?.css ?? ''
-    expect(css).toContain('view,text,::before,::after{--tw-gradient-position:initial')
+    expect(css).toContain('view,text,:before,:after{--tw-gradient-position:initial')
     expect(css).toContain('page,.tw-root,wx-root-portal-content')
     expect(css).toContain(':host')
     expect(css).toContain('--tw-gradient-from:rgba(0,0,0,0)')
@@ -4971,5 +4985,240 @@ describe('bundlers/shared generator css', () => {
     expect(css).toContain('--color-orange-200:#fed7aa')
     expect(css).toContain('.from-amber-200{--tw-gradient-from:var(--color-amber-200)')
     expect(css).toContain('.to-orange-200{--tw-gradient-to:var(--color-orange-200)')
+  })
+
+  it('drops split Tailwind source media fragments before transforming user css', async () => {
+    const runtimeSet = new Set(['text-red-500'])
+    const rawTailwindCss = '.text-red-500{color:red}'
+    const weappCss = '.text-red-500{color:red}'
+    const generateMock = vi.fn(async () => ({
+      css: weappCss,
+      rawCss: rawTailwindCss,
+      target: 'weapp',
+      classSet: runtimeSet,
+      dependencies: [],
+      sources: [],
+      root: null,
+    }))
+
+    vi.doMock('@/generator', () => ({
+      createWeappTailwindcssGenerator: vi.fn(() => ({
+        generate: generateMock,
+      })),
+      normalizeWeappTailwindcssGeneratorOptions: normalizeGeneratorOptions,
+      resolveTailwindV4Source: vi.fn(async (options: any) => ({
+        projectRoot: process.cwd(),
+        base: process.cwd(),
+        baseFallbacks: [],
+        css: options.css,
+        dependencies: [],
+      })),
+      resolveTailwindV4SourceFromPatcher: vi.fn(async () => ({
+        projectRoot: process.cwd(),
+        base: process.cwd(),
+        baseFallbacks: [],
+        css: '@import "tailwindcss";',
+        dependencies: [],
+      })),
+    }))
+
+    const { generateCssByGenerator } = await import('@/bundlers/shared/generator-css')
+    const styleHandler = vi.fn(async (code: string) => ({ css: code }))
+    const result = await generateCssByGenerator({
+      opts: {
+        styleHandler,
+      } as any,
+      runtimeState: {
+        twPatcher: {
+          majorVersion: 4,
+        } as any,
+        readyPromise: Promise.resolve(),
+      },
+      runtime: runtimeSet,
+      rawSource: '/*! tailwindcss v4.3.0 | MIT License | https://tailwindcss.com */\n@media source(none){\n.text-red-500{color:red}\n}@source "./**/*.{vue,ts}";',
+      file: 'pages-order/pages/home/home.wxss',
+      cssHandlerOptions: {
+        isMainChunk: false,
+        postcssOptions: {
+          options: {
+            from: 'pages-order/pages/home/home.wxss',
+          },
+        },
+        majorVersion: 4,
+      } as any,
+      cssUserHandlerOptions: {
+        isMainChunk: false,
+        postcssOptions: {
+          options: {
+            from: 'pages-order/pages/home/home.wxss',
+          },
+        },
+        majorVersion: 4,
+      } as any,
+      styleHandler,
+      debug: vi.fn(),
+    })
+
+    expect(styleHandler).not.toHaveBeenCalledWith(
+      expect.stringContaining('@media source(none){'),
+      expect.anything(),
+    )
+    expect(styleHandler).not.toHaveBeenCalledWith(
+      expect.stringContaining('}@source'),
+      expect.anything(),
+    )
+    expect(result?.css).not.toContain('@media source(none){')
+    expect(result?.css).not.toContain('}@source')
+    expect(result?.css).not.toContain('@source')
+    expect(result?.css).not.toMatch(/^\s*\}\s*$/m)
+    expect(result?.css).toContain(weappCss)
+  })
+
+  it('drops leading Tailwind source media close fragments before transforming user css', async () => {
+    const runtimeSet = new Set(['text-red-500'])
+    const rawTailwindCss = '.text-red-500{color:red}'
+    const weappCss = '.text-red-500{color:red}'
+    const generateMock = vi.fn(async () => ({
+      css: weappCss,
+      rawCss: rawTailwindCss,
+      target: 'weapp',
+      classSet: runtimeSet,
+      dependencies: [],
+      sources: [],
+      root: null,
+    }))
+
+    vi.doMock('@/generator', () => ({
+      createWeappTailwindcssGenerator: vi.fn(() => ({
+        generate: generateMock,
+      })),
+      normalizeWeappTailwindcssGeneratorOptions: normalizeGeneratorOptions,
+      resolveTailwindV4SourceFromPatcher: vi.fn(async () => ({
+        projectRoot: process.cwd(),
+        base: process.cwd(),
+        baseFallbacks: [],
+        css: '@import "tailwindcss";',
+        dependencies: [],
+      })),
+    }))
+
+    const { generateCssByGenerator } = await import('@/bundlers/shared/generator-css')
+    const styleHandler = vi.fn(async (code: string) => ({ css: code }))
+    const result = await generateCssByGenerator({
+      opts: {
+        styleHandler,
+      } as any,
+      runtimeState: {
+        twPatcher: {
+          majorVersion: 4,
+        } as any,
+        readyPromise: Promise.resolve(),
+      },
+      runtime: runtimeSet,
+      rawSource: '/*! tailwindcss v4.3.0 | MIT License | https://tailwindcss.com */\n.text-red-500{color:red}\n}',
+      file: 'index.css',
+      cssHandlerOptions: {
+        isMainChunk: false,
+        postcssOptions: {
+          options: {
+            from: 'index.css',
+          },
+        },
+        majorVersion: 4,
+      } as any,
+      cssUserHandlerOptions: {
+        isMainChunk: false,
+        postcssOptions: {
+          options: {
+            from: 'index.css',
+          },
+        },
+        majorVersion: 4,
+      } as any,
+      styleHandler,
+      debug: vi.fn(),
+    })
+
+    expect(styleHandler).not.toHaveBeenCalledWith(
+      expect.stringMatching(/^\s*\}\s*$/m),
+      expect.anything(),
+    )
+    expect(result?.css).toContain(weappCss)
+  })
+
+  it('closes trailing legacy compat css fragments before style transforms', async () => {
+    const runtimeSet = new Set(['text-red-500'])
+    const rawTailwindCss = '.text-red-500{color:red}'
+    const weappCss = '.text-red-500{color:red}'
+    const generateMock = vi.fn(async () => ({
+      css: weappCss,
+      rawCss: rawTailwindCss,
+      target: 'weapp',
+      classSet: runtimeSet,
+      dependencies: [],
+      sources: [],
+      root: null,
+    }))
+
+    vi.doMock('@/generator', () => ({
+      createWeappTailwindcssGenerator: vi.fn(() => ({
+        generate: generateMock,
+      })),
+      normalizeWeappTailwindcssGeneratorOptions: normalizeGeneratorOptions,
+      resolveTailwindV4SourceFromPatcher: vi.fn(async () => ({
+        projectRoot: process.cwd(),
+        base: process.cwd(),
+        baseFallbacks: [],
+        css: '@import "tailwindcss";',
+        dependencies: [],
+      })),
+    }))
+
+    const { generateCssByGenerator } = await import('@/bundlers/shared/generator-css')
+    const styleHandler = vi.fn(async (code: string) => ({ css: `handled:${code}` }))
+    const result = await generateCssByGenerator({
+      opts: {
+        styleHandler,
+      } as any,
+      runtimeState: {
+        twPatcher: {
+          majorVersion: 4,
+        } as any,
+        readyPromise: Promise.resolve(),
+      },
+      runtime: runtimeSet,
+      rawSource: [
+        '/*! tailwindcss v4.3.0 | MIT License | https://tailwindcss.com */',
+        '.text-red-500{color:red}',
+        '[data-c-h="true"]{display:none',
+      ].join('\n'),
+      file: 'app.wxss',
+      cssHandlerOptions: {
+        isMainChunk: false,
+        postcssOptions: {
+          options: {
+            from: 'app.wxss',
+          },
+        },
+        majorVersion: 4,
+      } as any,
+      cssUserHandlerOptions: {
+        isMainChunk: false,
+        postcssOptions: {
+          options: {
+            from: 'app.wxss',
+          },
+        },
+        majorVersion: 4,
+      } as any,
+      styleHandler,
+      debug: vi.fn(),
+    })
+
+    expect(result?.css).toContain('handled:')
+    expect(styleHandler).toHaveBeenCalledWith(
+      expect.stringContaining('[data-c-h="true"]{display:none}'),
+      expect.anything(),
+    )
   })
 })

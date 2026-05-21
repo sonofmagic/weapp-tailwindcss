@@ -6,7 +6,7 @@ Generator CSS files: app.wxss, app-origin.wxss, index.wxss, index.wxss
 
 | Bytes | Selectors | @supports | :hover | Tailwind banner | Raw arbitrary selector | Weapp escaped arbitrary selector |
 | ---: | ---: | --- | --- | --- | --- | --- |
-| 15078 | 39 | false | false | false | false | true |
+| 14788 | 39 | false | false | false | false | true |
 
 ## Generator CSS
 
@@ -19,14 +19,16 @@ Generator CSS files: app.wxss, app-origin.wxss, index.wxss, index.wxss
 ### app-origin.wxss
 
 ```css
-::before,
-::after {
+view,
+text,
+:before,
+:after {
   --tw-content: '';
 }
 view,
 text,
-::before,
-::after {
+:before,
+:after {
   --tw-border-spacing-x: 0;
   --tw-border-spacing-y: 0;
   --tw-translate-x: 0;
@@ -79,10 +81,6 @@ text,
   --tw-contain-paint:  ;
   --tw-contain-style:
 ;
-  box-sizing: border-box;
-  border-width: 0;
-  border-style: solid;
-  border-color: currentColor;
 }
 .container {
   width: 100%;
@@ -237,8 +235,8 @@ text,
 }
 view,
 text,
-::before,
-::after {
+:before,
+:after {
   --tw-border-spacing-x: 0;
   --tw-border-spacing-y: 0;
   --tw-translate-x: 0;
@@ -291,10 +289,6 @@ text,
   --tw-contain-paint:  ;
   --tw-contain-style:
 ;
-  box-sizing: border-box;
-  border-width: 0;
-  border-style: solid;
-  border-color: currentColor;
 }
 .container {
   width: 100%;
@@ -449,8 +443,8 @@ text,
 }
 view,
 text,
-::before,
-::after {
+:before,
+:after {
   --tw-border-spacing-x: 0;
   --tw-border-spacing-y: 0;
   --tw-translate-x: 0;
@@ -503,10 +497,6 @@ text,
   --tw-contain-paint:  ;
   --tw-contain-style:
 ;
-  box-sizing: border-box;
-  border-width: 0;
-  border-style: solid;
-  border-color: currentColor;
 }
 .container {
   width: 100%;
