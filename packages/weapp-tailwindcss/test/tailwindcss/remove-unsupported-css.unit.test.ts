@@ -134,6 +134,31 @@ describe('tailwindcss/remove unsupported css', () => {
     expect(css).toContain('.text-red-500{color:var(--color-red-500)}')
   })
 
+  it('scopes Tailwind v4 gradient runtime defaults to mini-program elements only', () => {
+    const css = pruneMiniProgramGeneratedCss([
+      ':root,:host{',
+      '--tw-gradient-position:initial;',
+      '--tw-gradient-from:rgba(0,0,0,0);',
+      '--tw-gradient-to:rgba(0,0,0,0);',
+      '--tw-gradient-from-position:0%;',
+      '--tw-gradient-to-position:100%;',
+      '--color-amber-200:#fde68a;',
+      '--color-orange-200:#fed7aa;',
+      '}',
+      '.bg-linear-to-r{background-image:linear-gradient(var(--tw-gradient-stops))}',
+    ].join(''))
+
+    expect(css).toContain('view,text{--tw-gradient-position:initial')
+    expect(css).toContain('--tw-gradient-from:rgba(0,0,0,0)')
+    expect(css).toContain('--tw-gradient-to:rgba(0,0,0,0)')
+    expect(css).toContain('--tw-gradient-from-position:0%')
+    expect(css).toContain('--tw-gradient-to-position:100%')
+    expect(css).toContain('page,.tw-root,wx-root-portal-content,:host{')
+    expect(css).toContain('--color-amber-200:#fde68a')
+    expect(css).toContain('--color-orange-200:#fed7aa')
+    expect(css).toContain('.bg-linear-to-r{background-image:linear-gradient(var(--tw-gradient-stops))}')
+  })
+
   it('removes specificity placeholder selectors from final generator css', () => {
     const css = finalizeMiniProgramCss([
       '.bg-red-500:not(#\\#):not(#\\#){color:red}',

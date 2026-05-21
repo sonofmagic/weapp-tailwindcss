@@ -4894,7 +4894,8 @@ describe('bundlers/shared generator css', () => {
       '.to-orange-200{--tw-gradient-to:var(--color-orange-200);--tw-gradient-stops:var(--tw-gradient-position),var(--tw-gradient-from),var(--tw-gradient-to)}',
     ].join('\n')
     const weappCss = [
-      'page,.tw-root,wx-root-portal-content,:host{--tw-gradient-position:initial;--tw-gradient-from:rgba(0,0,0,0);--tw-gradient-to:rgba(0,0,0,0);--tw-gradient-from-position:0%;--tw-gradient-to-position:100%;--color-amber-200:#fde68a;--color-orange-200:#fed7aa}',
+      'view,text{--tw-gradient-position:initial;--tw-gradient-from:rgba(0,0,0,0);--tw-gradient-to:rgba(0,0,0,0);--tw-gradient-from-position:0%;--tw-gradient-to-position:100%}',
+      'page,.tw-root,wx-root-portal-content,:host{--color-amber-200:#fde68a;--color-orange-200:#fed7aa}',
       '.bg-linear-to-r{--tw-gradient-position:to right;background-image:linear-gradient(var(--tw-gradient-stops))}',
       '.from-amber-200{--tw-gradient-from:var(--color-amber-200);--tw-gradient-stops:var(--tw-gradient-position),var(--tw-gradient-from),var(--tw-gradient-to)}',
       '.to-orange-200{--tw-gradient-to:var(--color-orange-200);--tw-gradient-stops:var(--tw-gradient-position),var(--tw-gradient-from),var(--tw-gradient-to)}',
@@ -4961,7 +4962,7 @@ describe('bundlers/shared generator css', () => {
     })
 
     const css = result?.css ?? ''
-    expect(css).not.toContain('view,text')
+    expect(css).toContain('view,text{--tw-gradient-position:initial')
     expect(css).toContain('page,.tw-root,wx-root-portal-content')
     expect(css).toContain(':host')
     expect(css).toContain('--tw-gradient-from:rgba(0,0,0,0)')

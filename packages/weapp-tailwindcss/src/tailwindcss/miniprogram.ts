@@ -2,9 +2,11 @@ import postcss from 'postcss'
 import { removeUnsupportedCascadeLayers } from './remove-unsupported-css'
 
 const DEFAULT_WEAPP_VARIABLE_SCOPE = 'page,.tw-root,wx-root-portal-content,:host'
+const DEFAULT_WEAPP_ELEMENT_VARIABLE_SCOPE = 'view,text'
 const CLASS_SELECTOR_RE = /(?:^|[^\w-])\.[_a-z\u00A0-\uFFFF\\-]/i
 const PSEUDO_CONTENT_SELECTOR_RE = /^(?:::before|::after|:before|:after)(?:,(?:::before|::after|:before|:after))*$/
 const MINI_PROGRAM_THEME_SCOPE_SELECTORS = new Set([':root', ':host', 'page', '.tw-root', 'wx-root-portal-content'])
+const MINI_PROGRAM_ELEMENT_VARIABLE_SCOPE_SELECTORS = new Set(['view', 'text'])
 const MINI_PROGRAM_PREFLIGHT_SELECTORS = new Set([
   '*',
   'view',
@@ -127,6 +129,38 @@ function isMiniProgramThemeScopeRule(rule: postcss.Rule) {
     && selectors.every(selector => MINI_PROGRAM_THEME_SCOPE_SELECTORS.has(selector))
 }
 
+function isMiniProgramElementVariableScopeRule(rule: postcss.Rule) {
+  const selectors = getRuleSelectors(rule)
+  return selectors.length > 0
+    && selectors.every(selector => MINI_PROGRAM_ELEMENT_VARIABLE_SCOPE_SELECTORS.has(selector))
+}
+
+function isTailwindV4GradientRuntimeDeclaration(decl: postcss.Declaration) {
+  return decl.prop.startsWith('--tw-gradient-')
+}
+
+function moveTailwindV4GradientRuntimeDeclarations(rule: postcss.Rule) {
+  const gradientDeclarations: postcss.Declaration[] = []
+
+  rule.walkDecls((decl) => {
+    if (isTailwindV4GradientRuntimeDeclaration(decl)) {
+      gradientDeclarations.push(decl.clone())
+      decl.remove()
+    }
+  })
+
+  if (gradientDeclarations.length > 0) {
+    rule.before(new postcss.Rule({
+      selector: DEFAULT_WEAPP_ELEMENT_VARIABLE_SCOPE,
+      nodes: gradientDeclarations,
+    }))
+  }
+
+  if (rule.nodes.length === 0) {
+    rule.remove()
+  }
+}
+
 function isKeyframesRule(rule: postcss.Rule) {
   let parent = rule.parent as postcss.Container | undefined
   while (parent) {
@@ -166,7 +200,15 @@ export function pruneMiniProgramGeneratedCss(
       return
     }
 
+    if (isCustomPropertyRule(rule) && isMiniProgramElementVariableScopeRule(rule)) {
+      return
+    }
+
     if (isCustomPropertyRule(rule) && isMiniProgramThemeScopeRule(rule)) {
+      moveTailwindV4GradientRuntimeDeclarations(rule)
+      if (!rule.parent) {
+        return
+      }
       rule.selector = DEFAULT_WEAPP_VARIABLE_SCOPE
       return
     }
@@ -191,6 +233,10 @@ export function pruneMiniProgramGeneratedCss(
     }
 
     if (isCustomPropertyRule(rule)) {
+      moveTailwindV4GradientRuntimeDeclarations(rule)
+      if (!rule.parent) {
+        return
+      }
       rule.selector = DEFAULT_WEAPP_VARIABLE_SCOPE
       return
     }
