@@ -328,7 +328,7 @@ export interface UserDefinedOptionsImportantPart {
    * @since ^4.2.6
    * @group 0.重要配置
    * @remarks
-   * 未配置时无法加载自定义插件，等价于设置 `tailwindcss.v4.cssEntries`。
+   * 等价于设置 `tailwindcss.v4.cssEntries`。Vite 常规项目会自动识别被引入的 Tailwind CSS 入口；多入口、入口未被构建器引入、Webpack/Gulp/自定义构建或自动识别失败时，再显式配置入口 CSS 的绝对路径。
    */
   cssEntries?: string[] | undefined
   /**

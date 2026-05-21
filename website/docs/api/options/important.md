@@ -149,6 +149,7 @@ MappingChars2String
 #### 备注
 
 默认会向所有 `view`/`text` 元素注入 Tailwind 风格的基础样式，可通过此配置禁用、调整或补充规则，受 `cssPreflightRange` 影响。
+默认值会按检测到的 Tailwind CSS 主版本区分：v3 使用拆分的 `border-width` / `border-style` / `border-color`，v4 使用 `margin` / `padding` / `border`。
 
 #### 示例
 
@@ -158,6 +159,14 @@ cssPreflight: {
   'border-width': '0',
   'border-style': 'solid',
   'border-color': 'currentColor',
+}
+
+// Tailwind CSS v4 默认值
+cssPreflight: {
+  'box-sizing': 'border-box',
+  margin: '0',
+  padding: '0',
+  border: '0 solid',
 }
 
 cssPreflight: false
@@ -333,4 +342,4 @@ weappTailwindcss({
 
 #### 备注
 
-未配置时无法加载自定义插件，等价于设置 `tailwindcss.v4.cssEntries`。
+等价于设置 `tailwindcss.v4.cssEntries`。Vite 常规项目会自动识别被引入的 Tailwind CSS 入口；多入口、入口未被构建器引入、Webpack/Gulp/自定义构建或自动识别失败时，再显式配置入口 CSS 的绝对路径。

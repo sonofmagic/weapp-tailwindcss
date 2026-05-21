@@ -36,7 +36,6 @@ npm install -D tailwindcss weapp-tailwindcss
 更改 `vite.config.ts` 注册 `weapp-tailwindcss`
 
 ```js title="vite.config.ts"
-import path from 'node:path'
 import { WeappTailwindcss } from 'weapp-tailwindcss/vite'
 import { defineConfig } from 'weapp-vite/config'
 
@@ -44,16 +43,13 @@ export default defineConfig({
   plugins: [
     WeappTailwindcss({
       rem2rpx: true,
-      cssEntries: [
-        // app.css 的路径
-        path.resolve(import.meta.dirname, './app.css'),
-      ],
     }),
   ],
 })
 ```
 
 `weapp-tailwindcss@5` 默认启用生成模式，不需要再注册 `@tailwindcss/vite` 或 `@tailwindcss/postcss`。如果项目已有 `postcss.config.js`，可以继续保留业务自己的 PostCSS 插件，但请移除 Tailwind 官方生成插件。
+常规 weapp-vite 项目会自动识别 `app.css` 这类 Tailwind CSS 入口。只有多入口、入口没有被 Vite 引入、自动识别失败等场景，才需要手动配置 `cssEntries`。
 
 ## 添加样式
 

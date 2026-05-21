@@ -30,7 +30,6 @@ keywords:
 创建完成后，快速上手中的准备工作都完成之后，就可以便捷的注册了：
 
 ```ts title="vite.config.ts"
-import path from 'node:path'
 import uni from '@dcloudio/vite-plugin-uni'
 import { defineConfig } from 'vite'
 import { WeappTailwindcss } from 'weapp-tailwindcss/vite'
@@ -41,16 +40,13 @@ export default defineConfig({
     uni(),
     WeappTailwindcss({
       rem2rpx: true,
-      cssEntries: [
-        path.resolve(__dirname, 'src/app.css'),
-      ],
     }),
   ],
 })
 
 ```
 
-Tailwind CSS 3.x 也由 `WeappTailwindcss` 生成 CSS，不要再把 `tailwindcss` 注册到 `postcss.config.js` 或 Vite 内联 PostCSS 配置里。`cssEntries` 指向包含 `@tailwind base; @tailwind components; @tailwind utilities;` 的入口文件。
+Tailwind CSS 3.x 也由 `WeappTailwindcss` 生成 CSS，不要再把 `tailwindcss` 注册到 `postcss.config.js` 或 Vite 内联 PostCSS 配置里。常规 Vite 项目会自动识别被引入的 Tailwind CSS 入口；多入口或自动识别失败时，再手动配置 `cssEntries`。
 
 ## `tailwind.config` 扫描范围提醒
 

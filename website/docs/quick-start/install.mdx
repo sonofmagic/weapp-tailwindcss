@@ -23,7 +23,7 @@ keywords:
 `weapp-tailwindcss@5` 默认使用生成模式。你只需要做两件事：
 
 1. 选择 `tailwindcss@3` 或 `tailwindcss@4`，准备 Tailwind CSS 入口。
-2. 按你的框架注册 `WeappTailwindcss` 构建器插件，并把 `cssEntries` 指向同一个入口 CSS。
+2. 按你的框架注册 `WeappTailwindcss` 构建器插件。
 
 也就是说，框架注册方式基本是一套；真正不同的是 Tailwind CSS 入口和扫描配置。
 
@@ -59,7 +59,7 @@ pnpm add -D tailwindcss weapp-tailwindcss
 
 ## 3. 准备 CSS 入口
 
-无论使用 Tailwind CSS 3 还是 4，都建议创建一个纯 `.css` 文件作为小程序 Tailwind 入口，例如 `src/app.css`。后续 `cssEntries` 就指向这个文件。
+无论使用 Tailwind CSS 3 还是 4，都建议创建一个纯 `.css` 文件作为小程序 Tailwind 入口，例如 `src/app.css`。Vite 链路通常会自动识别这个入口；多入口、入口未被框架引入、Webpack 或自定义构建链路再手动配置 `cssEntries`。
 
 ### Tailwind CSS 3.x 入口
 
@@ -106,15 +106,15 @@ module.exports = {
 
 - Vite 链路使用 `weapp-tailwindcss/vite`
 - Webpack 链路使用 `weapp-tailwindcss/webpack`
-- `cssEntries` 必须指向 Tailwind CSS 入口文件的绝对路径
+- Vite 常规项目会自动识别 Tailwind CSS 入口，多入口或自动识别失败时再配置 `cssEntries`
+- Webpack、Gulp、自定义构建等链路建议显式配置 `cssEntries`，并指向 Tailwind CSS 入口文件的绝对路径
 - 不要再为小程序构建注册 Tailwind 官方 Vite / PostCSS 生成插件
 
 ### Vite 通用写法
 
-适用于 `uni-app Vue3 Vite`、`HBuilderX Vue3 Vite`、`weapp-vite`、`Taro Vite` 等构建链路。`uni-app` 项目中 `WeappTailwindcss` 要放在 `uni()` 后面。
+适用于 `uni-app Vue3 Vite`、`weapp-vite` 等构建链路。`uni-app` 项目中 `WeappTailwindcss` 要放在 `uni()` 后面。
 
 ```ts title="vite.config.ts"
-import path from 'node:path'
 import { defineConfig } from 'vite'
 import { WeappTailwindcss } from 'weapp-tailwindcss/vite'
 
@@ -122,10 +122,19 @@ export default defineConfig({
   plugins: [
     WeappTailwindcss({
       rem2rpx: true,
-      cssEntries: [
-        path.resolve(__dirname, 'src/app.css'),
-      ],
     }),
+  ],
+})
+```
+
+如果入口 CSS 没有被 Vite 引入、项目有多个 Tailwind CSS 入口，或者自动识别失败，再补充：
+
+```ts title="vite.config.ts"
+import path from 'node:path'
+
+WeappTailwindcss({
+  cssEntries: [
+    path.resolve(__dirname, 'src/app.css'),
   ],
 })
 ```
@@ -214,7 +223,7 @@ pnpm dev:weapp
 | --- | --- | --- |
 | CSS 入口 | 是否写了 `@tailwind base;` 等指令 | 是否写了 `@import "tailwindcss";` |
 | 扫描范围 | `tailwind.config.js` 的 `content` 是否包含源码 | CSS 入口的 `@source` 是否包含源码 |
-| 构建器插件 | `cssEntries` 是否指向入口 CSS 绝对路径 | `cssEntries` 是否指向入口 CSS 绝对路径 |
+| 构建器插件 | Vite 是否能识别入口，非 Vite 是否配置了 `cssEntries` | Vite 是否能识别入口，非 Vite 是否配置了 `cssEntries` |
 | PostCSS | 是否误注册了 `tailwindcss` | 是否误注册了 `@tailwindcss/postcss` |
 | 产物目录 | 是否误扫 `dist` / `unpackage` | 是否误扫 `dist` / `unpackage` |
 
@@ -225,6 +234,7 @@ pnpm dev:weapp
 | `postinstall: "weapp-tw patch"` | 删除，v5 不需要手动 patch |
 | `postcss.config.js` 中的 `tailwindcss` / `@tailwindcss/postcss` | 删除，由 `WeappTailwindcss` 生成 |
 | 过宽的扫描范围 | 收窄到业务目录，并排除第三方和产物目录 |
-| 没有 `cssEntries` | 在构建器插件中传入 Tailwind CSS 入口绝对路径 |
+| Vite 项目手动写了单个 `cssEntries` | 入口能被 Vite 正常引入时可以删除 |
+| 非 Vite 或多入口项目没有 `cssEntries` | 在构建器插件中传入 Tailwind CSS 入口绝对路径 |
 
 更多 Tailwind CSS 4.x 的背景、`@apply`、`@layer` 和 IntelliSense 说明，请继续阅读 [Tailwind CSS 4.x 参考](/docs/quick-start/v4)。
