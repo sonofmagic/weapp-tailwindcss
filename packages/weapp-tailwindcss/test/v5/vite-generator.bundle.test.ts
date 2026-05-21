@@ -300,7 +300,7 @@ describe('v5 vite generator bundle', () => {
     const generateBundle = getGenerateBundleHandler(postPlugin)
     await generateBundle?.call(postPlugin, {} as any, bundle)
 
-    expect((bundle['app.css'] as OutputAsset).source).toBe(`${rawTailwindCss}\n${userCss}`)
+    expect((bundle['app.css'] as OutputAsset).source).toBe(`${rawTailwindCss}${userCss}`)
     expect(generateMock).toHaveBeenCalledWith(expect.objectContaining({
       target: 'web',
     }))

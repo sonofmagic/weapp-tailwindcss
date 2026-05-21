@@ -12,4 +12,7 @@ onHide(() => {
 </script>
 <style>
 /* @import 'tailwindcss'; */
+.reset-button {
+  display: block;
+}
 </style>

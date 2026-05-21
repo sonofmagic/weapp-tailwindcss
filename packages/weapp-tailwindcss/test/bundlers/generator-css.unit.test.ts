@@ -1265,6 +1265,78 @@ describe('bundlers/shared generator css', () => {
     }))
   })
 
+  it('keeps user css before Tailwind v4 generated css when source order places it first', async () => {
+    const runtimeSet = new Set(['flex'])
+    const userCss = '.reset-button{display:block}'
+    const rawTailwindCss = '/*! tailwindcss v4.2.4 | MIT License | https://tailwindcss.com */\n.flex{display:flex}'
+    const generateMock = vi.fn(async () => ({
+      css: '.flex{display:flex}',
+      rawCss: rawTailwindCss,
+      target: 'weapp',
+      classSet: runtimeSet,
+      dependencies: [],
+      sources: [],
+      root: null,
+    }))
+
+    vi.doMock('@/generator', () => ({
+      createWeappTailwindcssGenerator: vi.fn(() => ({
+        generate: generateMock,
+      })),
+      normalizeWeappTailwindcssGeneratorOptions: normalizeGeneratorOptions,
+      resolveTailwindV4SourceFromPatcher: vi.fn(async () => ({
+        projectRoot: process.cwd(),
+        base: process.cwd(),
+        baseFallbacks: [],
+        css: '@import "tailwindcss";',
+        dependencies: [],
+      })),
+    }))
+
+    const { generateCssByGenerator } = await import('@/bundlers/shared/generator-css')
+    const styleHandler = vi.fn(async (code: string) => ({ css: `user:${code}` }))
+    const result = await generateCssByGenerator({
+      opts: {
+        styleHandler,
+      } as any,
+      runtimeState: {
+        twPatcher: {
+          majorVersion: 4,
+        } as any,
+        readyPromise: Promise.resolve(),
+      },
+      runtime: runtimeSet,
+      rawSource: `${userCss}\n${rawTailwindCss}`,
+      file: 'app.wxss',
+      cssHandlerOptions: {
+        isMainChunk: true,
+        postcssOptions: {
+          options: {
+            from: 'app.wxss',
+          },
+        },
+        majorVersion: 4,
+      } as any,
+      cssUserHandlerOptions: {
+        isMainChunk: false,
+        postcssOptions: {
+          options: {
+            from: 'app.wxss',
+          },
+        },
+        majorVersion: 4,
+      } as any,
+      styleHandler,
+      debug: vi.fn(),
+    })
+
+    expect(result?.css).toBe(`user:${userCss}\n.flex{display:flex}`)
+    expect(result?.css.indexOf('.reset-button')).toBeLessThan(result?.css.indexOf('.flex') ?? -1)
+    expect(styleHandler).toHaveBeenCalledWith(`${userCss}\n`, expect.objectContaining({
+      isMainChunk: false,
+    }))
+  })
+
   it('removes Tailwind display-p3 supports from exact split user css', async () => {
     const runtimeSet = new Set(['bg-blue-500'])
     const rawTailwindCss = '/*! tailwindcss v4.2.4 | MIT License | https://tailwindcss.com */\n.bg-blue-500{background-color:var(--color-blue-500)}'
@@ -2478,8 +2550,8 @@ describe('bundlers/shared generator css', () => {
       debug: vi.fn(),
     })
 
-    expect(result?.css).toBe(`${weappCss}\nuser:.existing{color:red}\n\n\n/*$vite$:1*/`)
-    expect(styleHandler).toHaveBeenCalledWith('.existing{color:red}\n\n\n/*$vite$:1*/', expect.objectContaining({
+    expect(result?.css).toBe(`user:.existing{color:red}\n${weappCss}\n/*$vite$:1*/`)
+    expect(styleHandler).toHaveBeenCalledWith('.existing{color:red}\n', expect.objectContaining({
       isMainChunk: false,
     }))
   })
@@ -2550,15 +2622,92 @@ describe('bundlers/shared generator css', () => {
       debug: vi.fn(),
     })
 
-    expect(result?.css).toBe(`${weappCss}\nuser:.existing{color:red}\n/*$vite$:1*/`)
+    expect(result?.css).toBe(`user:.existing{color:red}\n${weappCss}\n/*$vite$:1*/`)
     expect(result?.css).not.toContain('@supports')
     expect(result?.css).not.toContain('tailwindcss v')
     expect(styleHandler).toHaveBeenCalledWith(expect.stringContaining('.existing{color:red}'), expect.objectContaining({
       isMainChunk: true,
     }))
-    expect(styleHandler.mock.calls[0]?.[0]).toContain('/*$vite$:1*/')
+    expect(result?.css).toContain('/*$vite$:1*/')
+    expect(styleHandler.mock.calls[0]?.[0]).not.toContain('/*$vite$:1*/')
     expect(styleHandler.mock.calls[0]?.[0]).not.toContain('@supports')
     expect(styleHandler.mock.calls[0]?.[0]).not.toContain('tailwindcss v')
+  })
+
+  it('keeps user css before Tailwind v4 css when fallback banner splitting is used', async () => {
+    const runtimeSet = new Set(['flex'])
+    const userCss = '.reset-button{display:block}'
+    const generatedRawTailwindCss = '/*! tailwindcss v4.2.4 | MIT License | https://tailwindcss.com */\n.flex{display:flex}'
+    const rawSource = [
+      userCss,
+      '/*! tailwindcss v4.2.4 | MIT License | https://tailwindcss.com */',
+      '@supports (display:grid){.flex{display:flex}}',
+    ].join('\n')
+    const generateMock = vi.fn(async () => ({
+      css: '.flex{display:flex}',
+      rawCss: generatedRawTailwindCss,
+      target: 'weapp',
+      classSet: runtimeSet,
+      dependencies: [],
+      sources: [],
+      root: null,
+    }))
+
+    vi.doMock('@/generator', () => ({
+      createWeappTailwindcssGenerator: vi.fn(() => ({
+        generate: generateMock,
+      })),
+      normalizeWeappTailwindcssGeneratorOptions: normalizeGeneratorOptions,
+      resolveTailwindV4SourceFromPatcher: vi.fn(async () => ({
+        projectRoot: process.cwd(),
+        base: process.cwd(),
+        baseFallbacks: [],
+        css: '@import "tailwindcss";',
+        dependencies: [],
+      })),
+    }))
+
+    const { generateCssByGenerator } = await import('@/bundlers/shared/generator-css')
+    const styleHandler = vi.fn(async (code: string) => ({ css: `user:${code}` }))
+    const result = await generateCssByGenerator({
+      opts: {
+        styleHandler,
+      } as any,
+      runtimeState: {
+        twPatcher: {
+          majorVersion: 4,
+        } as any,
+        readyPromise: Promise.resolve(),
+      },
+      runtime: runtimeSet,
+      rawSource,
+      file: 'app.wxss',
+      cssHandlerOptions: {
+        isMainChunk: true,
+        postcssOptions: {
+          options: {
+            from: 'app.wxss',
+          },
+        },
+        majorVersion: 4,
+      } as any,
+      cssUserHandlerOptions: {
+        isMainChunk: false,
+        postcssOptions: {
+          options: {
+            from: 'app.wxss',
+          },
+        },
+        majorVersion: 4,
+      } as any,
+      styleHandler,
+      debug: vi.fn(),
+    })
+
+    expect(result?.css).toBe(`user:${userCss}\n.flex{display:flex}`)
+    expect(result?.css.indexOf('.reset-button')).toBeLessThan(result?.css.indexOf('.flex') ?? -1)
+    expect(result?.css).not.toContain('@supports')
+    expect(result?.css).not.toContain('tailwindcss v')
   })
 
   it('does not append generated Tailwind marker css on forced prefix mismatch', async () => {
@@ -4661,5 +4810,91 @@ describe('bundlers/shared generator css', () => {
     const css = result?.css ?? ''
     expect(css).toBe('.from-_b_h2f73f1_B{--tw-gradient-from:#2f73f1}\n.custom{color:red}')
     expect(css.match(/from-_b_h2f73f1_B/g)).toHaveLength(1)
+  })
+
+  it('keeps Tailwind v4 gradient runtime variables on mini-program component elements', async () => {
+    const runtimeSet = new Set(['bg-linear-to-r', 'from-amber-200', 'to-orange-200'])
+    const rawTailwindCss = [
+      '/*! tailwindcss v4.2.4 | MIT License | https://tailwindcss.com */',
+      ':root,:host{--color-amber-200:#fde68a;--color-orange-200:#fed7aa}',
+      '.bg-linear-to-r{--tw-gradient-position:to right;background-image:linear-gradient(var(--tw-gradient-stops))}',
+      '.from-amber-200{--tw-gradient-from:var(--color-amber-200);--tw-gradient-stops:var(--tw-gradient-position),var(--tw-gradient-from),var(--tw-gradient-to)}',
+      '.to-orange-200{--tw-gradient-to:var(--color-orange-200);--tw-gradient-stops:var(--tw-gradient-position),var(--tw-gradient-from),var(--tw-gradient-to)}',
+    ].join('\n')
+    const weappCss = [
+      'view,text,page,.tw-root,wx-root-portal-content,:host{--tw-gradient-position:initial;--tw-gradient-from:rgba(0,0,0,0);--tw-gradient-to:rgba(0,0,0,0);--tw-gradient-from-position:0%;--tw-gradient-to-position:100%;--color-amber-200:#fde68a;--color-orange-200:#fed7aa}',
+      '.bg-linear-to-r{--tw-gradient-position:to right;background-image:linear-gradient(var(--tw-gradient-stops))}',
+      '.from-amber-200{--tw-gradient-from:var(--color-amber-200);--tw-gradient-stops:var(--tw-gradient-position),var(--tw-gradient-from),var(--tw-gradient-to)}',
+      '.to-orange-200{--tw-gradient-to:var(--color-orange-200);--tw-gradient-stops:var(--tw-gradient-position),var(--tw-gradient-from),var(--tw-gradient-to)}',
+    ].join('\n')
+    const generateMock = vi.fn(async () => ({
+      css: weappCss,
+      rawCss: rawTailwindCss,
+      target: 'weapp',
+      classSet: runtimeSet,
+      dependencies: [],
+      sources: [],
+      root: null,
+    }))
+
+    vi.doMock('@/generator', () => ({
+      createWeappTailwindcssGenerator: vi.fn(() => ({
+        generate: generateMock,
+      })),
+      normalizeWeappTailwindcssGeneratorOptions: normalizeGeneratorOptions,
+      resolveTailwindV4SourceFromPatcher: vi.fn(async () => ({
+        projectRoot: process.cwd(),
+        base: process.cwd(),
+        baseFallbacks: [],
+        css: '@import "tailwindcss";',
+        dependencies: [],
+      })),
+    }))
+
+    const { generateCssByGenerator } = await import('@/bundlers/shared/generator-css')
+    const styleHandler = vi.fn(async (code: string) => ({ css: code }))
+    const result = await generateCssByGenerator({
+      opts: {
+        styleHandler,
+      } as any,
+      runtimeState: {
+        twPatcher: {
+          majorVersion: 4,
+        } as any,
+        readyPromise: Promise.resolve(),
+      },
+      runtime: runtimeSet,
+      rawSource: rawTailwindCss,
+      file: 'app.wxss',
+      cssHandlerOptions: {
+        isMainChunk: true,
+        postcssOptions: {
+          options: {
+            from: 'app.wxss',
+          },
+        },
+        majorVersion: 4,
+      } as any,
+      cssUserHandlerOptions: {
+        isMainChunk: false,
+        postcssOptions: {
+          options: {
+            from: 'app.wxss',
+          },
+        },
+        majorVersion: 4,
+      } as any,
+      styleHandler,
+      debug: vi.fn(),
+    })
+
+    const css = result?.css ?? ''
+    expect(css).toContain('view,text,page,.tw-root,wx-root-portal-content,:host{')
+    expect(css).toContain('--tw-gradient-from:rgba(0,0,0,0)')
+    expect(css).toContain('--tw-gradient-to:rgba(0,0,0,0)')
+    expect(css).toContain('--color-amber-200:#fde68a')
+    expect(css).toContain('--color-orange-200:#fed7aa')
+    expect(css).toContain('.from-amber-200{--tw-gradient-from:var(--color-amber-200)')
+    expect(css).toContain('.to-orange-200{--tw-gradient-to:var(--color-orange-200)')
   })
 })

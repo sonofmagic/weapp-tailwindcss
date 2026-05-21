@@ -2008,7 +2008,7 @@ const trace = "at App.vue:4"
     const generateBundle = getGenerateBundleHandler(postPlugin)
     await generateBundle?.call(postPlugin, {} as any, bundle)
 
-    expect((bundle['app.css'] as OutputAsset).source).toBe(`${webCss}\n${userCss}`)
+    expect((bundle['app.css'] as OutputAsset).source).toBe(`${webCss}${userCss}`)
     expect(generateMock).toHaveBeenCalledWith(expect.objectContaining({
       target: 'web',
     }))

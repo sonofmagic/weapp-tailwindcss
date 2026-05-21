@@ -10,8 +10,10 @@ const tailwindcssRoot = path.dirname(require.resolve('tailwindcss4/package.json'
 
 const MINIMAL_THEME_CSS = `
 @theme default {
+  --color-amber-200: oklch(92.4% 0.12 95.746);
   --color-red-500: oklch(63.7% 0.237 25.331);
   --color-blue-500: oklch(62.3% 0.214 259.815);
+  --color-orange-200: oklch(90.1% 0.076 70.697);
   --spacing: 0.25rem;
 }
 @tailwind utilities;
@@ -80,6 +82,32 @@ describe('tailwindcss v4 engine', () => {
     expect(transformed).toContain('.text-_b55rpx_B')
     expect(transformed).toContain('font-size: 55rpx')
     expect(transformed).not.toContain('color: 55rpx')
+  })
+
+  it('scopes Tailwind v4 gradient variables to mini-program component elements', async () => {
+    const source = await resolveTailwindV4Source({
+      css: MINIMAL_THEME_CSS,
+      base: process.cwd(),
+    })
+    const engine = createTailwindV4Engine(source)
+
+    const result = await engine.generate({
+      candidates: ['bg-linear-to-r', 'from-amber-200', 'to-orange-200'],
+      styleOptions: {
+        isMainChunk: true,
+      },
+    })
+    const css = compactCss(result.css)
+
+    expect(css).toContain('view,text,page,.tw-root,wx-root-portal-content,:host{')
+    expect(css).toContain('--tw-gradient-from:rgba(0,0,0,0)')
+    expect(css).toContain('--tw-gradient-to:rgba(0,0,0,0)')
+    expect(css).toContain('--tw-gradient-from-position:0%')
+    expect(css).toContain('--tw-gradient-to-position:100%')
+    expect(css).toContain('--color-amber-200:')
+    expect(css).toContain('--color-orange-200:')
+    expect(css).toContain('.from-amber-200{--tw-gradient-from:var(--color-amber-200)')
+    expect(css).toContain('.to-orange-200{--tw-gradient-to:var(--color-orange-200)')
   })
 
   it('can append new utilities via the v4 incremental cache without full source scans', async () => {

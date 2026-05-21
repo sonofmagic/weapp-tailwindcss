@@ -1,9 +1,10 @@
 import postcss from 'postcss'
 import { removeUnsupportedCascadeLayers } from './remove-unsupported-css'
 
-const DEFAULT_WEAPP_VARIABLE_SCOPE = 'page,.tw-root,wx-root-portal-content,:host'
+const DEFAULT_WEAPP_VARIABLE_SCOPE = 'view,text,page,.tw-root,wx-root-portal-content,:host'
 const CLASS_SELECTOR_RE = /(?:^|[^\w-])\.[_a-z\u00A0-\uFFFF\\-]/i
 const PSEUDO_CONTENT_SELECTOR_RE = /^(?:::before|::after|:before|:after)(?:,(?:::before|::after|:before|:after))*$/
+const MINI_PROGRAM_THEME_SCOPE_SELECTORS = new Set([':root', ':host', 'page', '.tw-root', 'wx-root-portal-content'])
 const MINI_PROGRAM_PREFLIGHT_SELECTORS = new Set([
   '*',
   'view',
@@ -120,6 +121,12 @@ function isMiniProgramPreflightRule(rule: postcss.Rule) {
   return hasTailwindVariable || hasResetProp
 }
 
+function isMiniProgramThemeScopeRule(rule: postcss.Rule) {
+  const selectors = getRuleSelectors(rule)
+  return selectors.length > 0
+    && selectors.every(selector => MINI_PROGRAM_THEME_SCOPE_SELECTORS.has(selector))
+}
+
 function isKeyframesRule(rule: postcss.Rule) {
   let parent = rule.parent as postcss.Container | undefined
   while (parent) {
@@ -156,6 +163,11 @@ export function pruneMiniProgramGeneratedCss(
 
   root.walkRules((rule) => {
     if (isKeyframesRule(rule)) {
+      return
+    }
+
+    if (isCustomPropertyRule(rule) && isMiniProgramThemeScopeRule(rule)) {
+      rule.selector = DEFAULT_WEAPP_VARIABLE_SCOPE
       return
     }
 

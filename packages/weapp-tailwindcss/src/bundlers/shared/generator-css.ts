@@ -21,7 +21,8 @@ import {
   createCssAppend,
   hasTailwindGeneratedCss,
   hasTailwindGeneratedCssMarkers,
-  splitTailwindV4GeneratedCss,
+  splitTailwindGeneratedCssByBanner,
+  splitTailwindV4GeneratedCssBySourceOrder,
   stripTailwindBanner,
 } from './generator-css/markers'
 import {
@@ -47,7 +48,9 @@ export {
   hasTailwindGeneratedCss,
   hasTailwindGeneratedCssMarkers,
   removeTailwindGeneratedCssByBanner,
+  splitTailwindGeneratedCssByBanner,
   splitTailwindV4GeneratedCss,
+  splitTailwindV4GeneratedCssBySourceOrder,
   stripGeneratorPlaceholderMarkers,
   stripTailwindBanner,
   stripTailwindBanners,
@@ -156,6 +159,75 @@ function isLocalImportRequest(request: string) {
     && !request.startsWith('weapp-tailwindcss')
     && !request.startsWith('data:')
     && !REMOTE_IMPORT_RE.test(request)
+}
+
+function isCommentOnlyCss(source: string) {
+  try {
+    const root = postcss.parse(source)
+    return root.nodes.length > 0 && root.nodes.every(node => node.type === 'comment')
+  }
+  catch {
+    return false
+  }
+}
+
+function createCssSourceOrderAppend(base: string, extra: string) {
+  if (!base) {
+    return extra
+  }
+  if (!extra) {
+    return base
+  }
+  if (/\s$/.test(base) || /^\s/.test(extra)) {
+    return `${base}${extra}`
+  }
+  return `${base}\n${extra}`
+}
+
+function splitRawSourceByGeneratedCssOrder(rawSource: string, rawTailwindCss: string) {
+  const exactParts = splitTailwindV4GeneratedCssBySourceOrder(rawSource, rawTailwindCss)
+  if (exactParts) {
+    return exactParts
+  }
+  return splitTailwindGeneratedCssByBanner(rawSource)
+}
+
+async function transformGeneratorUserCss(
+  source: string,
+  options: {
+    generatorTarget: string
+    generatorStyleOptions: Partial<IStyleHandlerOptions>
+    cssUserHandlerOptions: IStyleHandlerOptions
+    styleHandler: InternalUserDefinedOptions['styleHandler']
+    importFallback: boolean
+  },
+) {
+  if (source.trim().length === 0) {
+    return ''
+  }
+  const cleanedSource = removeTailwindSourceDirectives(source, {
+    importFallback: options.importFallback,
+  })
+  if (cleanedSource.trim().length === 0) {
+    return ''
+  }
+  const extraSource = options.generatorTarget === 'weapp'
+    ? removeUnsupportedMiniProgramAtRules(cleanedSource)
+    : cleanedSource
+  if (extraSource.trim().length === 0) {
+    return ''
+  }
+  if (isCommentOnlyCss(extraSource)) {
+    return extraSource
+  }
+  if (options.generatorTarget !== 'weapp') {
+    return extraSource
+  }
+  const { css } = await options.styleHandler(extraSource, {
+    ...options.generatorStyleOptions,
+    ...options.cssUserHandlerOptions,
+  })
+  return removeUnsupportedMiniProgramAtRules(css)
 }
 
 export function isPureLocalCssImportWrapper(css: string) {
@@ -376,40 +448,25 @@ export async function generateCssByGenerator(
         incremental: true,
       }
     }
-    const extraCss = splitTailwindV4GeneratedCss(effectiveRawSource, generated.rawCss)
-    if (typeof extraCss === 'string') {
+    const hasMatchedCssSourceFile = sources.some(source => (source as GeneratorResolvedSource).__weappTailwindcssMeta?.matchedCssSourceFile)
+    const orderedExtraCss = hasMatchedCssSourceFile
+      ? splitTailwindV4GeneratedCssBySourceOrder(effectiveRawSource, generated.rawCss)
+      : splitRawSourceByGeneratedCssOrder(effectiveRawSource, generated.rawCss)
+    if (orderedExtraCss) {
       let css = stripTailwindBanner(generated.css)
       if (generated.target === 'weapp') {
         css = inheritLegacyUnitConvertedDeclarations(css, effectiveRawSource)
       }
-      if (extraCss.trim().length > 0) {
-        const cleanedExtraCss = removeTailwindSourceDirectives(extraCss, {
-          importFallback: generatorOptions.importFallback,
-        })
-        if (cleanedExtraCss.trim().length > 0) {
-          const extraSource = generated.target === 'weapp'
-            ? removeUnsupportedMiniProgramAtRules(cleanedExtraCss)
-            : cleanedExtraCss
-          if (extraSource.trim().length === 0) {
-            return {
-              css: finalizeMiniProgramGeneratorCss(css, generated.target, majorVersion, opts.cssPreflight),
-              target: generated.target,
-              source: 'generator',
-              dependencies: generated.dependencies,
-            }
-          }
-          if (generated.target === 'weapp') {
-            const { css: userCss } = await styleHandler(extraSource, {
-              ...generatorStyleOptions,
-              ...cssUserHandlerOptions,
-            })
-            css = createCssAppend(css, removeUnsupportedMiniProgramAtRules(userCss))
-          }
-          else {
-            css = createCssAppend(css, extraSource)
-          }
-        }
+      const userCssOptions = {
+        generatorTarget: generated.target,
+        generatorStyleOptions,
+        cssUserHandlerOptions,
+        styleHandler,
+        importFallback: generatorOptions.importFallback,
       }
+      const beforeUserCss = await transformGeneratorUserCss(orderedExtraCss.before, userCssOptions)
+      const afterUserCss = await transformGeneratorUserCss(orderedExtraCss.after, userCssOptions)
+      css = createCssSourceOrderAppend(createCssSourceOrderAppend(beforeUserCss, css), afterUserCss)
       if (generated.target === 'weapp') {
         css = await appendLegacyCompatCss(
           css,
@@ -447,7 +504,7 @@ export async function generateCssByGenerator(
     if (generated.target === 'weapp') {
       css = inheritLegacyUnitConvertedDeclarations(css, effectiveRawSource)
     }
-    if (sources.some(source => (source as GeneratorResolvedSource).__weappTailwindcssMeta?.matchedCssSourceFile)) {
+    if (hasMatchedCssSourceFile) {
       return {
         css: finalizeMiniProgramGeneratorCss(css, generated.target, majorVersion, opts.cssPreflight),
         target: generated.target,

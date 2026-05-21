@@ -18,13 +18,27 @@ export function createCssAppend(base: string, extra: string) {
 }
 
 export function splitTailwindV4GeneratedCss(rawSource: string, rawTailwindCss: string) {
+  const parts = splitTailwindV4GeneratedCssBySourceOrder(rawSource, rawTailwindCss)
+  if (!parts) {
+    return parts
+  }
+  return createCssAppend(parts.before, parts.after)
+}
+
+export function splitTailwindV4GeneratedCssBySourceOrder(rawSource: string, rawTailwindCss: string) {
   const trimmedRaw = rawSource.trim()
   const trimmedTailwind = rawTailwindCss.trim()
   if (trimmedRaw === trimmedTailwind) {
-    return ''
+    return {
+      before: '',
+      after: '',
+    }
   }
   if (trimmedTailwind.startsWith(trimmedRaw)) {
-    return ''
+    return {
+      before: '',
+      after: '',
+    }
   }
 
   const start = rawSource.indexOf(rawTailwindCss)
@@ -32,14 +46,26 @@ export function splitTailwindV4GeneratedCss(rawSource: string, rawTailwindCss: s
     return
   }
 
-  return createCssAppend(
-    rawSource.slice(0, start),
-    rawSource.slice(start + rawTailwindCss.length),
-  )
+  return {
+    before: rawSource.slice(0, start),
+    after: rawSource.slice(start + rawTailwindCss.length),
+  }
 }
 
 export function removeTailwindGeneratedCssByBanner(rawSource: string) {
   const match = TAILWIND_BANNER_RE.exec(rawSource)
+  if (!match || match.index === undefined) {
+    return
+  }
+  const parts = splitTailwindGeneratedCssByBanner(rawSource, match.index)
+  if (!parts) {
+    return parts
+  }
+  return createCssAppend(parts.before, parts.after)
+}
+
+export function splitTailwindGeneratedCssByBanner(rawSource: string, start?: number) {
+  const match = start === undefined ? TAILWIND_BANNER_RE.exec(rawSource) : { index: start }
   if (!match || match.index === undefined) {
     return
   }
@@ -48,7 +74,10 @@ export function removeTailwindGeneratedCssByBanner(rawSource: string) {
   const viteMarkers = [...after.matchAll(VITE_MARKER_RE)]
     .map(item => item[0])
     .join('\n')
-  return createCssAppend(before, viteMarkers)
+  return {
+    before,
+    after: viteMarkers,
+  }
 }
 
 export function stripTailwindBanner(css: string) {
