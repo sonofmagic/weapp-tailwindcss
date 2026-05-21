@@ -1,3 +1,4 @@
+import type { CssPreflightOptions } from '@/types'
 import postcss from 'postcss'
 import { removeUnsupportedCascadeLayers } from '@/tailwindcss/remove-unsupported-css'
 import { removeUnsupportedMiniProgramAtRules } from './css-cleanup/at-rules'
@@ -19,6 +20,7 @@ const PREFLIGHT_RESET_PROPS = new Set([
 const CONTENT_VAR_RE = /var\(\s*--tw-content\b/
 
 interface FinalizeMiniProgramCssOptions {
+  cssPreflight?: CssPreflightOptions | undefined
   preservePseudoContentInit?: boolean
 }
 
@@ -152,6 +154,26 @@ function collectPreflightRules(root: postcss.Root, options: { preservePseudoCont
   return preflightRules
 }
 
+function createPreflightResetRule(cssPreflight: CssPreflightOptions | undefined) {
+  if (!cssPreflight || typeof cssPreflight !== 'object') {
+    return
+  }
+
+  const rule = postcss.rule({
+    selector: 'view,text,:after,:before',
+  })
+  for (const [prop, value] of Object.entries(cssPreflight)) {
+    if (value === false) {
+      continue
+    }
+    rule.append({
+      prop,
+      value: value.toString(),
+    })
+  }
+  return rule.nodes?.length ? rule : undefined
+}
+
 function collectThemeVariableRule(root: postcss.Root, options: FinalizeMiniProgramCssOptions = {}) {
   const themeRules: postcss.Rule[] = []
   const declarations = new Map<string, postcss.Declaration>()
@@ -233,6 +255,12 @@ function finalizeMiniProgramCssRoot(root: postcss.Root, options: FinalizeMiniPro
   removeDisplayP3Declarations(root)
 
   const preflightRules = collectPreflightRules(root, options)
+  if (preflightRules.length === 0) {
+    const resetRule = createPreflightResetRule(options.cssPreflight)
+    if (resetRule) {
+      preflightRules.push(resetRule)
+    }
+  }
   const themeRule = collectThemeVariableRule(root, options)
   const hoistedRules = themeRule ? [...preflightRules, themeRule] : preflightRules
   insertHoistedRules(root, hoistedRules)

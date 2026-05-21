@@ -1,7 +1,13 @@
 // Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
 exports[`vite > v4-vite-plugin > css 1`] = `
-":host,page,.tw-root,wx-root-portal-content {
+"view,text,:after,:before {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  border: 0 solid;
+}
+:host,page,.tw-root,wx-root-portal-content {
   --color-gray-200: #e5e7eb;
   --color-gray-400: #9ca3af;
   --color-green-400: #4ade80;
@@ -94,7 +100,13 @@ console.log("bg-_b_h123456_B text-_b_h123456_B first-letter_cmarker_ctext-clip")
 `;
 
 exports[`vite > v4-vite-postcss > css 1`] = `
-":host,page,.tw-root,wx-root-portal-content {
+"view,text,:after,:before {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  border: 0 solid;
+}
+:host,page,.tw-root,wx-root-portal-content {
   --color-gray-200: #e5e7eb;
   --color-gray-400: #9ca3af;
   --font-sans: ui-sans-serif,system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,Cantarell,Noto Sans, sans-serif, "Apple Color Emoji",

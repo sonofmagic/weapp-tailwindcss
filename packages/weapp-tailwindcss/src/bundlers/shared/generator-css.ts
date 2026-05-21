@@ -83,11 +83,17 @@ export interface GenerateCssByGeneratorResult {
   incremental?: boolean | undefined
 }
 
-function finalizeMiniProgramGeneratorCss(css: string, target: string, majorVersion: number | undefined) {
+function finalizeMiniProgramGeneratorCss(
+  css: string,
+  target: string,
+  majorVersion: number | undefined,
+  cssPreflight: InternalUserDefinedOptions['cssPreflight'],
+) {
   if (target !== 'weapp') {
     return css
   }
   return finalizeMiniProgramCss(css, {
+    cssPreflight,
     preservePseudoContentInit: majorVersion === 3,
   })
 }
@@ -118,12 +124,10 @@ function resolveGeneratorStyleOptions(
   cssHandlerOptions: IStyleHandlerOptions,
   generatorStyleOptions: Partial<IStyleHandlerOptions> | undefined,
 ): Partial<IStyleHandlerOptions> {
-  const tailwindV3StyleOptions: Partial<IStyleHandlerOptions> = cssHandlerOptions.majorVersion === 3
-    ? {
-        cssPreflight: opts.cssPreflight,
-        cssPreflightRange: opts.cssPreflightRange,
-      }
-    : {}
+  const preflightStyleOptions: Partial<IStyleHandlerOptions> = {
+    cssPreflight: opts.cssPreflight,
+    cssPreflightRange: opts.cssPreflightRange,
+  }
   const resolvedUniAppXOptions = resolveUniAppXOptions(opts.uniAppX)
   return {
     cssChildCombinatorReplaceValue: opts.cssChildCombinatorReplaceValue,
@@ -141,7 +145,7 @@ function resolveGeneratorStyleOptions(
     uniAppXCssTarget: opts.uniAppXCssTarget,
     uniAppXUnsupported: opts.uniAppXUnsupported,
     ...cssHandlerOptions,
-    ...tailwindV3StyleOptions,
+    ...preflightStyleOptions,
     ...generatorStyleOptions,
   }
 }
@@ -362,7 +366,7 @@ export async function generateCssByGenerator(
     if (typeof options.previousCss === 'string' && typeof generated.incrementalCss === 'string') {
       const incrementalCss = stripTailwindBanner(generated.incrementalCss)
       const css = incrementalCss.trim().length > 0
-        ? createCssAppend(options.previousCss, finalizeMiniProgramGeneratorCss(incrementalCss, generated.target, majorVersion))
+        ? createCssAppend(options.previousCss, finalizeMiniProgramGeneratorCss(incrementalCss, generated.target, majorVersion, opts.cssPreflight))
         : options.previousCss
       return {
         css,
@@ -388,7 +392,7 @@ export async function generateCssByGenerator(
             : cleanedExtraCss
           if (extraSource.trim().length === 0) {
             return {
-              css: finalizeMiniProgramGeneratorCss(css, generated.target, majorVersion),
+              css: finalizeMiniProgramGeneratorCss(css, generated.target, majorVersion, opts.cssPreflight),
               target: generated.target,
               source: 'generator',
               dependencies: generated.dependencies,
@@ -428,7 +432,7 @@ export async function generateCssByGenerator(
         )
       }
       return {
-        css: finalizeMiniProgramGeneratorCss(css, generated.target, majorVersion),
+        css: finalizeMiniProgramGeneratorCss(css, generated.target, majorVersion, opts.cssPreflight),
         target: generated.target,
         source: 'generator',
         dependencies: generated.dependencies,
@@ -445,7 +449,7 @@ export async function generateCssByGenerator(
     }
     if (sources.some(source => (source as GeneratorResolvedSource).__weappTailwindcssMeta?.matchedCssSourceFile)) {
       return {
-        css: finalizeMiniProgramGeneratorCss(css, generated.target, majorVersion),
+        css: finalizeMiniProgramGeneratorCss(css, generated.target, majorVersion, opts.cssPreflight),
         target: generated.target,
         source: 'generator',
         dependencies: generated.dependencies,
@@ -471,7 +475,7 @@ export async function generateCssByGenerator(
       generatorStyleOptions,
     )
     return {
-      css: finalizeMiniProgramGeneratorCss(css, generated.target, majorVersion),
+      css: finalizeMiniProgramGeneratorCss(css, generated.target, majorVersion, opts.cssPreflight),
       target: generated.target,
       source: 'generator',
       dependencies: generated.dependencies,

@@ -87,6 +87,37 @@ describe('tailwindcss/remove unsupported css', () => {
     expect(css).toContain('background-color: var(--color-red-500)')
   })
 
+  it('synthesizes configured mini-program preflight when generator css misses base reset', () => {
+    const css = finalizeMiniProgramCss([
+      '.divide-x-4>view+view{border-left-width:4px}',
+      '.divide-double>view+view{border-style:double}',
+    ].join('\n'), {
+      cssPreflight: {
+        'box-sizing': 'border-box',
+        margin: '0',
+        padding: '0',
+        border: '0 solid',
+      },
+    })
+
+    expect(css).toContain('view,text,:after,:before')
+    expect(css).toContain('box-sizing:border-box')
+    expect(css).toContain('margin:0')
+    expect(css).toContain('padding:0')
+    expect(css).toContain('border:0 solid')
+    expect(css).toContain('.divide-double>view+view{border-style:double}')
+  })
+
+  it('does not synthesize mini-program preflight when cssPreflight is disabled', () => {
+    const css = finalizeMiniProgramCss('.divide-double>view+view{border-style:double}', {
+      cssPreflight: false,
+    })
+
+    expect(css).not.toContain('view,text,:after,:before')
+    expect(css).not.toContain('border:0 solid')
+    expect(css).toContain('.divide-double>view+view{border-style:double}')
+  })
+
   it('keeps generated utilities when pruning layer-wrapped mini-program css', () => {
     const css = pruneMiniProgramGeneratedCss([
       '@layer theme, base, components, utilities;',
