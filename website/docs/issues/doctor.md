@@ -85,7 +85,7 @@ pnpm exec weapp-tailwindcss doctor --cwd ./demo/uni-app-vue3-vite
 
 `weapp-tailwindcss@5` 默认由 `WeappTailwindcss` 构建器插件接管 Tailwind CSS 生成。小程序构建里不要再同时注册 `@tailwindcss/postcss`、`@tailwindcss/vite` 或 Tailwind CSS 3.x 的 `tailwindcss` PostCSS 插件。
 
-如果项目已有 `postcss.config.*`，只保留业务自己的非 Tailwind 插件。Tailwind CSS 4.x 的入口 CSS 通过 `cssEntries` 传给 `WeappTailwindcss`，并在 CSS 中使用 `@import "tailwindcss"` 与 `@source`。
+如果项目已有 `postcss.config.*`，只保留业务自己的非 Tailwind 插件。Tailwind CSS 4.x 的入口 CSS 使用 `@import "tailwindcss"` 与 `@source`；常规 Vite 项目会自动识别入口，多入口、入口未被构建器引入或自动识别失败时，再通过 `cssEntries` 显式传给 `WeappTailwindcss`。
 
 ### 未检测到 tailwind.config.*
 

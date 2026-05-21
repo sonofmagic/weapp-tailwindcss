@@ -130,8 +130,8 @@ export default defineConfig({
 
 运行框架命令（如 `pnpm dev:weapp` 或 `pnpm run build -- --watch`），查看开发者工具中的页面是否渲染出预期样式。如果没有：
 
-- 检查 `cssEntries` 是否指向了正确路径
 - 确认 `@source` 是否包含当前文件扩展名
+- 确认入口 CSS 是否被构建器引入；多入口或自动识别失败时，再检查 `cssEntries` 是否指向正确路径
 - 若在单文件组件内使用 `@apply`，确保添加了 `@reference`
 
 ## 常见下一步
