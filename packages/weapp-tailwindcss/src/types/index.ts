@@ -69,6 +69,11 @@ export interface TailwindcssPatcherLike {
   options?: TailwindcssPatcher['options'] | undefined
 }
 
+export type BabelParserOptions = ParserOptions & {
+  cache?: boolean | undefined
+  cacheKey?: string | undefined
+}
+
 export interface RefreshTailwindcssPatcherOptions {
   clearCache?: boolean | undefined
 }
@@ -94,7 +99,7 @@ export interface IJsHandlerOptions {
   generateMap?: boolean | undefined
   alwaysEscape?: boolean | undefined
   unescapeUnicode?: boolean | undefined
-  babelParserOptions?: ParserOptions | undefined
+  babelParserOptions?: BabelParserOptions | undefined
   ignoreTaggedTemplateExpressionIdentifiers?: (string | RegExp)[] | undefined
   ignoreCallExpressionIdentifiers?: (string | RegExp)[] | undefined
   uniAppX?: boolean | undefined

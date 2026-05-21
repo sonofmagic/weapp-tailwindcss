@@ -23,10 +23,10 @@ export function babelParse(
   opts: (ParserOptions & { cache?: boolean, cacheKey?: string }) = {},
 ) {
   const { cache, cacheKey, ...rest } = opts as any
-  const cacheKeyString = genCacheKey(code, cacheKey ?? rest)
+  const cacheKeyString = cache ? genCacheKey(code, cacheKey ?? rest) : undefined
   let result: ParseResult<File> | undefined
   if (cache) {
-    result = parseCache.get(cacheKeyString)
+    result = parseCache.get(cacheKeyString!)
   }
 
   if (!result) {
@@ -34,7 +34,7 @@ export function babelParse(
     const { cache: _cache, cacheKey: _cacheKey, ...parseOptions } = opts as any
     result = parse(code, parseOptions)
     if (cache) {
-      parseCache.set(cacheKeyString, result)
+      parseCache.set(cacheKeyString!, result)
     }
   }
 
