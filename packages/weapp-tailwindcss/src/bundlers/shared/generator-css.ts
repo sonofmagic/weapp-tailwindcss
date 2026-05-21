@@ -21,6 +21,7 @@ import {
   createCssAppend,
   hasTailwindGeneratedCss,
   hasTailwindGeneratedCssMarkers,
+  splitGeneratorPlaceholderCssBySourceOrder,
   splitTailwindGeneratedCssByBanner,
   splitTailwindV4GeneratedCssBySourceOrder,
   stripTailwindBanner,
@@ -48,6 +49,7 @@ export {
   hasTailwindGeneratedCss,
   hasTailwindGeneratedCssMarkers,
   removeTailwindGeneratedCssByBanner,
+  splitGeneratorPlaceholderCssBySourceOrder,
   splitTailwindGeneratedCssByBanner,
   splitTailwindV4GeneratedCss,
   splitTailwindV4GeneratedCssBySourceOrder,
@@ -185,6 +187,10 @@ function createCssSourceOrderAppend(base: string, extra: string) {
 }
 
 function splitRawSourceByGeneratedCssOrder(rawSource: string, rawTailwindCss: string) {
+  const placeholderParts = splitGeneratorPlaceholderCssBySourceOrder(rawSource, rawTailwindCss)
+  if (placeholderParts) {
+    return placeholderParts
+  }
   const exactParts = splitTailwindV4GeneratedCssBySourceOrder(rawSource, rawTailwindCss)
   if (exactParts) {
     return exactParts

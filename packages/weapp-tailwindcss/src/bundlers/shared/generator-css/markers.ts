@@ -52,6 +52,28 @@ export function splitTailwindV4GeneratedCssBySourceOrder(rawSource: string, rawT
   }
 }
 
+export function splitGeneratorPlaceholderCssBySourceOrder(rawSource: string, rawTailwindCss?: string) {
+  const match = GENERATOR_PLACEHOLDER_MARKER_RE.exec(rawSource)
+  if (!match || match.index === undefined) {
+    return
+  }
+  let afterStart = match.index + match[0].length
+  while (/\s/.test(rawSource[afterStart] ?? '')) {
+    afterStart++
+  }
+  if (rawTailwindCss && rawSource.slice(afterStart).startsWith(rawTailwindCss)) {
+    afterStart += rawTailwindCss.length
+    while (/\s/.test(rawSource[afterStart] ?? '')) {
+      afterStart++
+    }
+  }
+
+  return {
+    before: rawSource.slice(0, match.index),
+    after: rawSource.slice(afterStart),
+  }
+}
+
 export function removeTailwindGeneratedCssByBanner(rawSource: string) {
   const match = TAILWIND_BANNER_RE.exec(rawSource)
   if (!match || match.index === undefined) {

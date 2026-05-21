@@ -31,6 +31,11 @@ function getTransformHandler(plugin: Plugin) {
   return typeof hook === 'object' ? hook.handler : hook
 }
 
+function getOutputOptionsHandler(plugin: Plugin) {
+  const hook = plugin.outputOptions as any
+  return typeof hook === 'object' ? hook.handler : hook
+}
+
 async function resolvePostPlugin() {
   const WeappTailwindcss = await loadUnifiedVitePlugin()
   const plugins = WeappTailwindcss()
@@ -581,6 +586,89 @@ describe('v5 vite generator bundle', () => {
     const secondBundle = createBundle()
     await generateBundle?.call(postPlugin, {} as any, secondBundle)
     expect((secondBundle['app.css'] as OutputAsset).source).toBe('.bg-_b_h445566_B{background-color:#445566}')
+    expect(generateMock).toHaveBeenCalledTimes(2)
+  }, TEST_TIMEOUT_MS)
+
+  it('keeps v4 main css source order when build finalizer reprocesses a generated main asset', async () => {
+    const runtimeSet = new Set(['flex'])
+    const userCss = '.reset-button{padding:0}'
+    const rawTailwindCss = '.flex{display:flex}'
+    const generateMock = vi.fn(async () => ({
+      css: '.flex{display:flex}',
+      rawCss: rawTailwindCss,
+      target: 'weapp',
+      classSet: runtimeSet,
+      dependencies: [],
+      sources: [],
+      root: null,
+    }))
+
+    vi.doMock('@/bundlers/vite/incremental-runtime-class-set', () => ({
+      createBundleRuntimeClassSetManager: () => ({
+        sync: vi.fn(async () => runtimeSet),
+        reset: vi.fn(async () => undefined),
+      }),
+    }))
+    vi.doMock('@/generator', async (importOriginal) => {
+      const actual = await importOriginal<typeof import('@/generator')>()
+      return {
+        ...actual,
+        createWeappTailwindcssGenerator: vi.fn(() => ({
+          generate: generateMock,
+        })),
+        resolveTailwindV4SourceFromPatcher: vi.fn(async () => ({
+          projectRoot: process.cwd(),
+          base: process.cwd(),
+          baseFallbacks: [],
+          css: '@import "tailwindcss";',
+          dependencies: [],
+        })),
+      }
+    })
+
+    setCurrentContext(createContext({
+      mainCssChunkMatcher: vi.fn(file => file === 'app.css'),
+      styleHandler: vi.fn(async (code: string) => ({ css: code })),
+      twPatcher: {
+        patch: vi.fn(),
+        getClassSet: vi.fn(async () => runtimeSet),
+        getClassSetSync: vi.fn(() => runtimeSet),
+        extract: vi.fn(async () => ({ classSet: runtimeSet })),
+        majorVersion: 4,
+      },
+    }))
+
+    const WeappTailwindcss = await loadUnifiedVitePlugin()
+    const plugins = WeappTailwindcss()
+    const postPlugin = plugins?.find(plugin => plugin.name === 'weapp-tailwindcss:adaptor:post') as Plugin
+    expect(postPlugin).toBeTruthy()
+
+    await (postPlugin.configResolved as any)?.call(postPlugin, {
+      command: 'build',
+      root: process.cwd(),
+      css: { postcss: { plugins: [] } },
+      build: { outDir: 'dist' },
+    } as ResolvedConfig)
+
+    const bundle = {
+      'app.css': {
+        ...createRollupAsset(`${userCss}\n/*! weapp-tailwindcss generator-placeholder */`),
+        fileName: 'app.css',
+      },
+    }
+    const generateBundle = getGenerateBundleHandler(postPlugin)
+    await generateBundle?.call(postPlugin, {} as any, bundle)
+    expect((bundle['app.css'] as OutputAsset).source).toBe(`${userCss}\n.flex{display:flex}`)
+
+    const outputOptions = getOutputOptionsHandler(postPlugin)
+    const nextOptions = outputOptions?.call(postPlugin, { plugins: [] })
+    const finalizer = nextOptions?.plugins?.find((plugin: Plugin) =>
+      plugin.name === 'weapp-tailwindcss:adaptor:css-finalizer')
+    expect(finalizer).toBeTruthy()
+
+    const finalizerGenerateBundle = getGenerateBundleHandler(finalizer as Plugin)
+    await finalizerGenerateBundle?.call(finalizer, {} as any, bundle)
+    expect((bundle['app.css'] as OutputAsset).source).toBe(`${userCss}\n.flex{display:flex}`)
     expect(generateMock).toHaveBeenCalledTimes(2)
   }, TEST_TIMEOUT_MS)
 

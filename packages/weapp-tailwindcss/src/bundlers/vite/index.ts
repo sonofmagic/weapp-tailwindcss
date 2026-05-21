@@ -450,6 +450,7 @@ export function WeappTailwindcss(options: UserDefinedOptions = {}): Plugin[] | u
     }
   }
   const getRememberedMainCssSources = () => rememberedMainCssSources
+  const getRememberedMainCssSource = (file: string) => rememberedMainCssSources.get(file)
   const getRememberedMainCssSignature = (file: string) => rememberedMainCssSignatureByFile.get(file)
   const setRememberedMainCssSignature = (file: string, cssRuntimeSignature: string) => {
     rememberedMainCssSignatureByFile.set(file, cssRuntimeSignature)
@@ -485,6 +486,7 @@ export function WeappTailwindcss(options: UserDefinedOptions = {}): Plugin[] | u
     getSourceCandidatesForEntries,
     waitForSourceCandidateSyncs,
     rememberMainCssSource,
+    getRememberedMainCssSource,
   })
   const utsPlatform = resolveUniUtsPlatform()
   const isIosPlatform = utsPlatform.isAppIos

@@ -1337,6 +1337,78 @@ describe('bundlers/shared generator css', () => {
     }))
   })
 
+  it('keeps user css before Tailwind v4 generated css when a generator placeholder marks the Tailwind position', async () => {
+    const runtimeSet = new Set(['flex'])
+    const userCss = '.reset-button{display:block}'
+    const rawTailwindCss = '.flex{display:flex}'
+    const generateMock = vi.fn(async () => ({
+      css: '.flex{display:flex}',
+      rawCss: rawTailwindCss,
+      target: 'weapp',
+      classSet: runtimeSet,
+      dependencies: [],
+      sources: [],
+      root: null,
+    }))
+
+    vi.doMock('@/generator', () => ({
+      createWeappTailwindcssGenerator: vi.fn(() => ({
+        generate: generateMock,
+      })),
+      normalizeWeappTailwindcssGeneratorOptions: normalizeGeneratorOptions,
+      resolveTailwindV4SourceFromPatcher: vi.fn(async () => ({
+        projectRoot: process.cwd(),
+        base: process.cwd(),
+        baseFallbacks: [],
+        css: '@import "tailwindcss";',
+        dependencies: [],
+      })),
+    }))
+
+    const { generateCssByGenerator } = await import('@/bundlers/shared/generator-css')
+    const styleHandler = vi.fn(async (code: string) => ({ css: `user:${code}` }))
+    const result = await generateCssByGenerator({
+      opts: {
+        styleHandler,
+      } as any,
+      runtimeState: {
+        twPatcher: {
+          majorVersion: 4,
+        } as any,
+        readyPromise: Promise.resolve(),
+      },
+      runtime: runtimeSet,
+      rawSource: `${userCss}\n/*! weapp-tailwindcss generator-placeholder */`,
+      file: 'app.wxss',
+      cssHandlerOptions: {
+        isMainChunk: true,
+        postcssOptions: {
+          options: {
+            from: 'app.wxss',
+          },
+        },
+        majorVersion: 4,
+      } as any,
+      cssUserHandlerOptions: {
+        isMainChunk: false,
+        postcssOptions: {
+          options: {
+            from: 'app.wxss',
+          },
+        },
+        majorVersion: 4,
+      } as any,
+      styleHandler,
+      debug: vi.fn(),
+    })
+
+    expect(result?.css).toBe(`user:${userCss}\n.flex{display:flex}`)
+    expect(result?.css.indexOf('.reset-button')).toBeLessThan(result?.css.indexOf('.flex') ?? -1)
+    expect(styleHandler).toHaveBeenCalledWith(`${userCss}\n`, expect.objectContaining({
+      isMainChunk: false,
+    }))
+  })
+
   it('removes Tailwind display-p3 supports from exact split user css', async () => {
     const runtimeSet = new Set(['bg-blue-500'])
     const rawTailwindCss = '/*! tailwindcss v4.2.4 | MIT License | https://tailwindcss.com */\n.bg-blue-500{background-color:var(--color-blue-500)}'

@@ -25,6 +25,7 @@ interface CssFinalizerContext {
   getSourceCandidatesForEntries?: ((entries: TailwindSourceEntry[] | undefined) => Set<string>) | undefined
   waitForSourceCandidateSyncs?: () => Promise<void>
   rememberMainCssSource?: (file: string, rawSource: string) => void
+  getRememberedMainCssSource?: (file: string) => string | undefined
 }
 
 interface CssFinalizerThis {
@@ -118,6 +119,7 @@ export function createViteCssFinalizerOutputPlugin(context: CssFinalizerContext)
           getSourceCandidatesForEntries,
           waitForSourceCandidateSyncs,
           rememberMainCssSource,
+          getRememberedMainCssSource,
         } = context
         const resolvedConfig = getResolvedConfig()
         if (resolvedConfig?.command !== 'build') {
@@ -168,12 +170,15 @@ export function createViteCssFinalizerOutputPlugin(context: CssFinalizerContext)
             isMainChunk: false,
           }
           const processed = isCssAssetProcessed(output, file)
-          const generated = shouldGenerateCssByGenerator(opts, file, rawSource, processed)
+          const generatorRawSource = processed && cssHandlerOptions.isMainChunk
+            ? getRememberedMainCssSource?.(file) ?? rawSource
+            : rawSource
+          const generated = shouldGenerateCssByGenerator(opts, file, generatorRawSource, processed)
             ? await generateCssByGenerator({
                 opts,
                 runtimeState,
                 runtime: generatorRuntime,
-                rawSource,
+                rawSource: generatorRawSource,
                 file,
                 cssHandlerOptions,
                 cssUserHandlerOptions,
@@ -188,7 +193,7 @@ export function createViteCssFinalizerOutputPlugin(context: CssFinalizerContext)
             debug('css finalizer generated result: %s bytes=%d', file, nextCss.length)
             recordCssAssetResult?.(file, nextCss)
             if (cssHandlerOptions.isMainChunk) {
-              rememberMainCssSource?.(file, rawSource)
+              rememberMainCssSource?.(file, generatorRawSource)
             }
           }
           output.source = nextCss
