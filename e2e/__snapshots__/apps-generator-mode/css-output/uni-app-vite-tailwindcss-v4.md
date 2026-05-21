@@ -6,11 +6,20 @@ Generator CSS files: app.wxss, home.wxss, index.wxss, index.wxss, user.wxss
 
 | Bytes | Selectors | @supports | :hover | Tailwind banner | Raw arbitrary selector | Weapp escaped arbitrary selector |
 | ---: | ---: | --- | --- | --- | --- | --- |
-| 40739 | 232 | false | false | false | false | true |
+| 42923 | 232 | false | false | false | false | true |
 
 ## Generator CSS
 
 ```css
+view,
+text,
+:after,
+:before {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  border: 0 solid;
+}
 :host,
 page,
 .tw-root,
@@ -910,6 +919,15 @@ wx-root-portal-content {
   display: none !important;
 }
 
+view,
+text,
+:after,
+:before {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  border: 0 solid;
+}
 :host,
 page,
 .tw-root,
@@ -966,6 +984,14 @@ wx-root-portal-content {
   -webkit-flex-direction: column;
   flex-direction: column;
 }
+.flex-col-reverse {
+  -webkit-flex-direction: column-reverse;
+  flex-direction: column-reverse;
+}
+.flex-row-reverse {
+  -webkit-flex-direction: row-reverse;
+  flex-direction: row-reverse;
+}
 .space-y-4 > view + view,
 .space-y-4 > view + text,
 .space-y-4 > text + view,
@@ -976,6 +1002,12 @@ wx-root-portal-content {
   margin-top: calc((var(--spacing) * 4) * (1 - var(--tw-space-y-reverse)));
   margin-top: calc(var(--spacing) * 4 * (1 - var(--tw-space-y-reverse)));
 }
+.space-y-reverse > view + view,
+.space-y-reverse > view + text,
+.space-y-reverse > text + view,
+.space-y-reverse > text + text {
+  --tw-space-y-reverse: 1;
+}
 .space-x-4 > view + view,
 .space-x-4 > view + text,
 .space-x-4 > text + view,
@@ -985,6 +1017,12 @@ wx-root-portal-content {
   margin-right: calc(var(--spacing) * 4 * var(--tw-space-x-reverse));
   margin-left: calc((var(--spacing) * 4) * (1 - var(--tw-space-x-reverse)));
   margin-left: calc(var(--spacing) * 4 * (1 - var(--tw-space-x-reverse)));
+}
+.space-x-reverse > view + view,
+.space-x-reverse > view + text,
+.space-x-reverse > text + view,
+.space-x-reverse > text + text {
+  --tw-space-x-reverse: 1;
 }
 .divide-x-4 > view + view,
 .divide-x-4 > view + text,
@@ -1005,6 +1043,12 @@ wx-root-portal-content {
   border-top-style: var(--tw-border-style);
   border-bottom-width: calc(4px * var(--tw-divide-y-reverse));
   border-top-width: calc(4px * (1 - var(--tw-divide-y-reverse)));
+}
+.divide-y-reverse > view + view,
+.divide-y-reverse > view + text,
+.divide-y-reverse > text + view,
+.divide-y-reverse > text + text {
+  --tw-divide-y-reverse: 1;
 }
 .divide-dotted > view + view,
 .divide-dotted > view + text,
@@ -1099,6 +1143,12 @@ wx-root-portal-content {
 .shadow-sm {
   --tw-shadow: 0 1px 3px 0 var(--tw-shadow-color, rgba(0, 0, 0, 0.1)), 0 1px 2px -1px var(--tw-shadow-color, rgba(0, 0, 0, 0.1));
   box-shadow: var(--tw-inset-shadow), var(--tw-inset-ring-shadow), var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow);
+}
+.divide-x-reverse > view + view,
+.divide-x-reverse > view + text,
+.divide-x-reverse > text + view,
+.divide-x-reverse > text + text {
+  --tw-divide-x-reverse: 1;
 }
 .before_ccontent-_b_aindependent_subpackage_uni-app-vite-tailwindcss-v4_a_B::before {
   --tw-content: 'independent subpackage uni-app-vite-tailwindcss-v4';
@@ -1141,6 +1191,15 @@ wx-root-portal-content {
   }
 }
 
+view,
+text,
+:after,
+:before {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  border: 0 solid;
+}
 :host,
 page,
 .tw-root,
@@ -1160,6 +1219,15 @@ wx-root-portal-content {
   content: var(--tw-content);
 }
 
+view,
+text,
+:after,
+:before {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  border: 0 solid;
+}
 :host,
 page,
 .tw-root,
@@ -1179,6 +1247,15 @@ wx-root-portal-content {
   content: var(--tw-content);
 }
 
+view,
+text,
+:after,
+:before {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  border: 0 solid;
+}
 :host,
 page,
 .tw-root,
@@ -1235,6 +1312,14 @@ wx-root-portal-content {
   -webkit-flex-direction: column;
   flex-direction: column;
 }
+.flex-col-reverse {
+  -webkit-flex-direction: column-reverse;
+  flex-direction: column-reverse;
+}
+.flex-row-reverse {
+  -webkit-flex-direction: row-reverse;
+  flex-direction: row-reverse;
+}
 .space-y-4 > view + view,
 .space-y-4 > view + text,
 .space-y-4 > text + view,
@@ -1245,6 +1330,12 @@ wx-root-portal-content {
   margin-top: calc((var(--spacing) * 4) * (1 - var(--tw-space-y-reverse)));
   margin-top: calc(var(--spacing) * 4 * (1 - var(--tw-space-y-reverse)));
 }
+.space-y-reverse > view + view,
+.space-y-reverse > view + text,
+.space-y-reverse > text + view,
+.space-y-reverse > text + text {
+  --tw-space-y-reverse: 1;
+}
 .space-x-4 > view + view,
 .space-x-4 > view + text,
 .space-x-4 > text + view,
@@ -1254,6 +1345,12 @@ wx-root-portal-content {
   margin-right: calc(var(--spacing) * 4 * var(--tw-space-x-reverse));
   margin-left: calc((var(--spacing) * 4) * (1 - var(--tw-space-x-reverse)));
   margin-left: calc(var(--spacing) * 4 * (1 - var(--tw-space-x-reverse)));
+}
+.space-x-reverse > view + view,
+.space-x-reverse > view + text,
+.space-x-reverse > text + view,
+.space-x-reverse > text + text {
+  --tw-space-x-reverse: 1;
 }
 .divide-x-4 > view + view,
 .divide-x-4 > view + text,
@@ -1274,6 +1371,12 @@ wx-root-portal-content {
   border-top-style: var(--tw-border-style);
   border-bottom-width: calc(4px * var(--tw-divide-y-reverse));
   border-top-width: calc(4px * (1 - var(--tw-divide-y-reverse)));
+}
+.divide-y-reverse > view + view,
+.divide-y-reverse > view + text,
+.divide-y-reverse > text + view,
+.divide-y-reverse > text + text {
+  --tw-divide-y-reverse: 1;
 }
 .divide-dotted > view + view,
 .divide-dotted > view + text,
@@ -1368,6 +1471,12 @@ wx-root-portal-content {
 .shadow-sm {
   --tw-shadow: 0 1px 3px 0 var(--tw-shadow-color, rgba(0, 0, 0, 0.1)), 0 1px 2px -1px var(--tw-shadow-color, rgba(0, 0, 0, 0.1));
   box-shadow: var(--tw-inset-shadow), var(--tw-inset-ring-shadow), var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow);
+}
+.divide-x-reverse > view + view,
+.divide-x-reverse > view + text,
+.divide-x-reverse > text + view,
+.divide-x-reverse > text + text {
+  --tw-divide-x-reverse: 1;
 }
 .before_ccontent-_b_aindependent_subpackage_uni-app-vite-tailwindcss-v4_a_B::before {
   --tw-content: 'independent subpackage uni-app-vite-tailwindcss-v4';

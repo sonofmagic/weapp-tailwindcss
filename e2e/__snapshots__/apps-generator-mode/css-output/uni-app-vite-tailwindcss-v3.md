@@ -6,7 +6,7 @@ Generator CSS files: app.wxss, a.wxss, b.wxss, index.wxss, index.wxss, index.wxs
 
 | Bytes | Selectors | @supports | :hover | Tailwind banner | Raw arbitrary selector | Weapp escaped arbitrary selector |
 | ---: | ---: | --- | --- | --- | --- | --- |
-| 599279 | 3118 | false | false | false | false | true |
+| 597489 | 3116 | false | false | false | false | true |
 
 ## Generator CSS
 
@@ -6046,22 +6046,10 @@ body,
     background-color: rgba(96, 165, 250, var(--tw-bg-opacity, 1));
   }
 }
-@media not screen and (weapp-tw-platform: 'MP-WEIXIN') {
-  .-wx_cbg-red-400 {
-    --tw-bg-opacity: 1;
-    background-color: rgba(248, 113, 113, var(--tw-bg-opacity, 1));
-  }
-}
 @media (weapp-tw-platform: 'H5 || MP-WEIXIN') {
   .mv_cbg-blue-400 {
     --tw-bg-opacity: 1;
     background-color: rgba(96, 165, 250, var(--tw-bg-opacity, 1));
-  }
-}
-@media not screen and (weapp-tw-platform: 'H5 || MP-WEIXIN') {
-  .-mv_cbg-red-400 {
-    --tw-bg-opacity: 1;
-    background-color: rgba(248, 113, 113, var(--tw-bg-opacity, 1));
   }
 }
 .dark view.dark_cbg-green-500,
@@ -7853,22 +7841,10 @@ wx-root-portal-content {
     background-color: rgba(96, 165, 250, var(--tw-bg-opacity, 1));
   }
 }
-@media not screen and (weapp-tw-platform: 'MP-WEIXIN') {
-  .-wx_cbg-red-400 {
-    --tw-bg-opacity: 1;
-    background-color: rgba(248, 113, 113, var(--tw-bg-opacity, 1));
-  }
-}
 @media (weapp-tw-platform: 'H5 || MP-WEIXIN') {
   .mv_cbg-blue-400 {
     --tw-bg-opacity: 1;
     background-color: rgba(96, 165, 250, var(--tw-bg-opacity, 1));
-  }
-}
-@media not screen and (weapp-tw-platform: 'H5 || MP-WEIXIN') {
-  .-mv_cbg-red-400 {
-    --tw-bg-opacity: 1;
-    background-color: rgba(248, 113, 113, var(--tw-bg-opacity, 1));
   }
 }
 .dark view.dark_cbg-green-500,
@@ -9516,22 +9492,10 @@ wx-root-portal-content {
     background-color: rgba(96, 165, 250, var(--tw-bg-opacity, 1));
   }
 }
-@media not screen and (weapp-tw-platform: 'MP-WEIXIN') {
-  .-wx_cbg-red-400 {
-    --tw-bg-opacity: 1;
-    background-color: rgba(248, 113, 113, var(--tw-bg-opacity, 1));
-  }
-}
 @media (weapp-tw-platform: 'H5 || MP-WEIXIN') {
   .mv_cbg-blue-400 {
     --tw-bg-opacity: 1;
     background-color: rgba(96, 165, 250, var(--tw-bg-opacity, 1));
-  }
-}
-@media not screen and (weapp-tw-platform: 'H5 || MP-WEIXIN') {
-  .-mv_cbg-red-400 {
-    --tw-bg-opacity: 1;
-    background-color: rgba(248, 113, 113, var(--tw-bg-opacity, 1));
   }
 }
 .dark view.dark_cbg-green-500,
@@ -11218,22 +11182,10 @@ wx-root-portal-content {
     background-color: rgba(96, 165, 250, var(--tw-bg-opacity, 1));
   }
 }
-@media not screen and (weapp-tw-platform: 'MP-WEIXIN') {
-  .-wx_cbg-red-400 {
-    --tw-bg-opacity: 1;
-    background-color: rgba(248, 113, 113, var(--tw-bg-opacity, 1));
-  }
-}
 @media (weapp-tw-platform: 'H5 || MP-WEIXIN') {
   .mv_cbg-blue-400 {
     --tw-bg-opacity: 1;
     background-color: rgba(96, 165, 250, var(--tw-bg-opacity, 1));
-  }
-}
-@media not screen and (weapp-tw-platform: 'H5 || MP-WEIXIN') {
-  .-mv_cbg-red-400 {
-    --tw-bg-opacity: 1;
-    background-color: rgba(248, 113, 113, var(--tw-bg-opacity, 1));
   }
 }
 .dark view.dark_cbg-green-500,
@@ -16237,22 +16189,10 @@ wx-root-portal-content {
     background-color: rgba(96, 165, 250, var(--tw-bg-opacity, 1));
   }
 }
-@media not screen and (weapp-tw-platform: 'MP-WEIXIN') {
-  .-wx_cbg-red-400 {
-    --tw-bg-opacity: 1;
-    background-color: rgba(248, 113, 113, var(--tw-bg-opacity, 1));
-  }
-}
 @media (weapp-tw-platform: 'H5 || MP-WEIXIN') {
   .mv_cbg-blue-400 {
     --tw-bg-opacity: 1;
     background-color: rgba(96, 165, 250, var(--tw-bg-opacity, 1));
-  }
-}
-@media not screen and (weapp-tw-platform: 'H5 || MP-WEIXIN') {
-  .-mv_cbg-red-400 {
-    --tw-bg-opacity: 1;
-    background-color: rgba(248, 113, 113, var(--tw-bg-opacity, 1));
   }
 }
 .dark view.dark_cbg-green-500,

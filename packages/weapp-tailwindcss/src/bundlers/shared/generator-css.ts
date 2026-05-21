@@ -93,7 +93,7 @@ function finalizeMiniProgramGeneratorCss(
     return css
   }
   return finalizeMiniProgramCss(css, {
-    cssPreflight,
+    cssPreflight: majorVersion === 4 ? cssPreflight : undefined,
     preservePseudoContentInit: majorVersion === 3,
   })
 }

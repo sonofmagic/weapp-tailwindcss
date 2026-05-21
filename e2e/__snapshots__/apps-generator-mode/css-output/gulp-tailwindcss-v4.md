@@ -6,11 +6,20 @@ Generator CSS files: app.wxss, index.wxss, index.wxss, index.wxss, more.wxss
 
 | Bytes | Selectors | @supports | :hover | Tailwind banner | Raw arbitrary selector | Weapp escaped arbitrary selector |
 | ---: | ---: | --- | --- | --- | --- | --- |
-| 6405 | 29 | false | false | false | false | true |
+| 6717 | 29 | false | false | false | false | true |
 
 ## Generator CSS
 
 ```css
+view,
+text,
+:after,
+:before {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  border: 0 solid;
+}
 :host,
 page,
 .tw-root,
@@ -95,6 +104,15 @@ wx-root-portal-content {
 }
 
 
+view,
+text,
+:after,
+:before {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  border: 0 solid;
+}
 :host,
 page,
 .tw-root,
@@ -176,6 +194,15 @@ wx-root-portal-content {
   content: var(--tw-content);
 }
 
+view,
+text,
+:after,
+:before {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  border: 0 solid;
+}
 :host,
 page,
 .tw-root,
