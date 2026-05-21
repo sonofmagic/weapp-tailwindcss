@@ -89,6 +89,7 @@
     "bare-arbitrary-values",
     "benchmark-published-baseline",
     "clean-weapp-tailwindcss-unused-code",
+    "control-babel-parser-cache",
     "default-generator-mode-v5",
     "fast-demo-generator-runtime",
     "fast-demo-vite-watch",
