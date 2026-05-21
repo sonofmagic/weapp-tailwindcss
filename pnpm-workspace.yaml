@@ -70,12 +70,12 @@ catalogs:
   prettier371:
     prettier: ^3.8.3
   react18:
-    '@types/react': ^19.2.14
+    '@types/react': ^19.2.15
     '@types/react-dom': 18.2.7
     react: ^18.3.1
     react-dom: ^18.3.1
   react19:
-    '@types/react': ^19.2.14
+    '@types/react': ^19.2.15
     '@types/react-dom': 19.2.3
     react: ^19.2.6
     react-dom: ^19.2.6
@@ -84,7 +84,7 @@ catalogs:
   sass195:
     sass: ^1.99.0
   stylelint1625:
-    stylelint: ^17.11.1
+    stylelint: ^17.12.0
   tailwindMerge:
     tailwind-merge: ^3.6.0
   tailwindMerge2:
@@ -143,7 +143,7 @@ catalogs:
   vite724:
     vite: ^7.3.3
   vite8:
-    vite: ^8.0.13
+    vite: ^8.0.14
   vitePluginInspect:
     vite-plugin-inspect: ^11.3.3
   vitePluginReact4:
@@ -153,7 +153,7 @@ catalogs:
   vitePluginVue6:
     '@vitejs/plugin-vue': ^6.0.7
   vitest:
-    vitest: ~4.1.6
+    vitest: ~4.1.7
   vue2:
     vue: ^2.7.16
   vue3:
@@ -163,15 +163,15 @@ catalogs:
   vueRuntimeCore:
     '@vue/runtime-core': ^3.5.34
   vueTsc318:
-    vue-tsc: ^3.3.0
+    vue-tsc: ^3.3.1
   weappChildren:
     weapp-tailwindcss-children: ^0.1.0
   weappIdeCli:
-    weapp-ide-cli: ^5.2.10
+    weapp-ide-cli: ^5.2.11
   weappVite:
-    weapp-vite: ^6.16.17
+    weapp-vite: ^6.16.19
   wrangler:
-    wrangler: ^4.93.0
+    wrangler: ^4.93.1
 
 onlyBuiltDependencies:
   - '@tailwindcss/oxide'

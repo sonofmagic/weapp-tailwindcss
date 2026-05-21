@@ -70,7 +70,7 @@
   "author": "",
   "dependencies": {
     "@babel/runtime": "catalog:babelRuntime7284",
-    "@nutui/nutui-react-taro": "^3.0.19",
+    "@nutui/nutui-react-taro": "^3.0.20",
     "@tarojs/components": "catalog:taro4",
     "@tarojs/helper": "catalog:taro4",
     "@tarojs/plugin-framework-react": "catalog:taro4",

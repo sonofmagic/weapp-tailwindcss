@@ -40,7 +40,7 @@
   },
   "devDependencies": {
     "@egoist/tailwindcss-icons": "catalog:egoistTailwindcssIcons",
-    "@iconify-json/lucide": "^1.2.108",
+    "@iconify-json/lucide": "^1.2.109",
     "@iconify-json/mdi": "^1.2.3",
     "@weapp-tailwindcss/variants": "workspace:*",
     "autoprefixer": "catalog:autoprefixer10",

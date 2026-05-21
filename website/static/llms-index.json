@@ -1,6 +1,6 @@
 {
   "version": "1.0.0",
-  "generatedAt": "2026-05-14T05:49:55.606Z",
+  "generatedAt": "2026-05-21T11:36:43.670Z",
   "siteUrl": "https://tw.icebreaker.top",
   "totals": {
     "all": 181,
@@ -3727,8 +3727,8 @@
       "kind": "doc",
       "id": "doc:migrations/v5",
       "title": "从 v4 迁移到 v5",
-      "description": "用尽量少的步骤，把 weapp-tailwindcss v4 项目升级到 v5。",
-      "summary": "v5 最大的变化只有一句话：",
+      "description": "把 weapp-tailwindcss v4 项目升级到 v5，按清单改就行。",
+      "summary": "v5 的变化很直接：小程序端的 Tailwind CSS 生成交给 WeappTailwindcss。别再手动 patch，也别在同一个小程序构建里再挂 Tailwind 官方插件。",
       "url": "/docs/migrations/v5",
       "canonical": "https://tw.icebreaker.top/docs/migrations/v5",
       "keywords": [
@@ -3750,14 +3750,14 @@
         "migrations"
       ],
       "headings": [
-        "1. 先看你用的是 Tailwind CSS 3 还是 4",
-        "2. 升级依赖",
-        "3. 删除旧 patch 脚本",
+        "先改这几处",
+        "1. 升级依赖",
+        "2. 删除 patch",
+        "3. 检查 CSS 入口",
         "4. 注册 WeappTailwindcss",
-        "# Vite / uni-app Vite / weapp-vite",
-        "# Webpack / Taro Webpack / Mpx",
-        "# 什么时候还要手动配 cssEntries？",
-        "5. 从 PostCSS 里拿掉 Tailwind"
+        "5. cssEntries 不是每个项目都要写",
+        "6. 清理 PostCSS",
+        "7. 跑一次"
       ],
       "updatedAt": null,
       "source": "docs/migrations/v5.md"
@@ -5137,8 +5137,8 @@
       "kind": "doc",
       "id": "doc:quick-start/v4/UniappCliStyle",
       "title": "UniappCliStyle",
-      "description": "在 src/app.css 中引入 tailwindcss，这个文件会作为 cssEntries 的入口：",
-      "summary": "在 src/app.css 中引入 Tailwind CSS，这个文件会作为 cssEntries 的入口：",
+      "description": "在 src/app.css 中引入 tailwindcss，这个文件会作为 Tailwind CSS 入口：",
+      "summary": "在 src/app.css 中引入 Tailwind CSS，这个文件会作为 Tailwind CSS 入口：",
       "url": "/docs/quick-start/v4/UniappCliStyle",
       "canonical": "https://tw.icebreaker.top/docs/quick-start/v4/UniappCliStyle",
       "keywords": [
@@ -5207,8 +5207,8 @@
       "kind": "doc",
       "id": "doc:quick-start/v4/UniappHbuilderStyle",
       "title": "UniappHbuilderStyle",
-      "description": "在 src/app.css 中引入 tailwindcss，这个文件会作为 cssEntries 的入口：",
-      "summary": "在 src/app.css 中引入 Tailwind CSS，这个文件会作为 cssEntries 的入口：",
+      "description": "在 src/app.css 中引入 tailwindcss，这个文件会作为 Tailwind CSS 入口：",
+      "summary": "在 src/app.css 中引入 Tailwind CSS，这个文件会作为 Tailwind CSS 入口：",
       "url": "/docs/quick-start/v4/UniappHbuilderStyle",
       "canonical": "https://tw.icebreaker.top/docs/quick-start/v4/UniappHbuilderStyle",
       "keywords": [
