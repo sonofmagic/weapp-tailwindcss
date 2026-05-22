@@ -18,7 +18,6 @@ type AsyncableMethod<T> = T extends (...args: infer A) => infer R
   : never
 
 export type {
-  BabelParserOptions,
   DisabledOptions,
   UniAppXComponentLocalStylesOptions,
   UniAppXUserDefinedOptions,

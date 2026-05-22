@@ -1,3 +1,4 @@
+import type { Config, PluginCreator } from 'tailwindcss/types/config'
 import type { NormalizedResetRule } from './normalize'
 import type { BuiltInResetName, ResetOptions, ResetPreset } from './types'
 import plugin from 'tailwindcss/plugin'
@@ -104,6 +105,14 @@ const builtInResetKeys = [
   'videoReset',
 ] as const satisfies BuiltInResetName[]
 
+interface ResetPlugin {
+  (options?: ResetOptions): {
+    handler: PluginCreator
+    config?: Partial<Config>
+  }
+  __isOptionsFunction: true
+}
+
 function hasCustomResetConfig(
   value: ResetOptions[BuiltInResetName],
 ): value is Exclude<ResetOptions[BuiltInResetName], false | undefined> {
@@ -141,7 +150,7 @@ function resolvePresetFlags(options?: ResetOptions): PresetResolvedFlags {
   return resolved
 }
 
-export const reset = plugin.withOptions<ResetOptions>(
+export const reset: ResetPlugin = plugin.withOptions<ResetOptions>(
   (options?: ResetOptions) => {
     const rules: NormalizedResetRule[] = []
     const enabledFlags = resolvePresetFlags(options)

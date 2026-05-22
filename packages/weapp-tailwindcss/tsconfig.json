@@ -11,6 +11,30 @@
       "@/*": [
         "src/*"
       ],
+      "@weapp-tailwindcss/logger": [
+        "../logger/src/index.ts"
+      ],
+      "@weapp-tailwindcss/postcss": [
+        "../postcss/src/index.ts"
+      ],
+      "@weapp-tailwindcss/postcss/*": [
+        "../postcss/src/*"
+      ],
+      "@weapp-tailwindcss/postcss/types": [
+        "../postcss/src/types.ts"
+      ],
+      "@weapp-tailwindcss/reset": [
+        "../reset/src/index.ts"
+      ],
+      "@weapp-tailwindcss/reset/*": [
+        "../reset/src/*"
+      ],
+      "@weapp-tailwindcss/shared": [
+        "../shared/src/index.ts"
+      ],
+      "@weapp-tailwindcss/shared/*": [
+        "../shared/src/*"
+      ],
       "#test/*": [
         "test/*"
       ]
