@@ -1,5 +1,17 @@
 # weapp-tailwindcss
 
+## 5.0.0-next.17
+
+### Patch Changes
+
+- 🐛 **修复小程序最终样式中可能残留 `color-mix`、`oklab`、`oklch`、`lab`、`lch` 与 `display-p3` 颜色函数的问题，能确定的颜色会降级为 `rgb`/`rgba`，避免输出小程序不支持的颜色语法。** [`f36f230`](https://github.com/sonofmagic/weapp-tailwindcss/commit/f36f23092a2986b9960ebc34ee54bdb93072e882) by @sonofmagic
+
+- 🐛 **修复 Tailwind CSS v4 小程序产物中透明度颜色可能保留 `color-mix(in oklab, ...)` 的问题，将 `text-white/10`、`bg-sky-500/75`、`bg-sky-500/(--alpha)` 等颜色透明度写法转换为小程序可用的 `rgba(...)` 输出；同时修复 v4 增量热更新追加样式时重复注入 preflight reset 的问题。** [`67896ab`](https://github.com/sonofmagic/weapp-tailwindcss/commit/67896ab30b06aaf16335257c5b5b3156a86c302b) by @sonofmagic
+
+- 🐛 **修复小程序最终样式中被提到前面的 base/theme 规则顺序，确保用户样式仍然能排在这些基础规则之前，不再被 `:host/page` 和 `view/text` 重排压到后面。** [`a09b3e2`](https://github.com/sonofmagic/weapp-tailwindcss/commit/a09b3e2263a094467eabe80e2815e736c9e3ade4) by @sonofmagic
+- 📦 **Dependencies** [`f36f230`](https://github.com/sonofmagic/weapp-tailwindcss/commit/f36f23092a2986b9960ebc34ee54bdb93072e882)
+  → `@weapp-tailwindcss/postcss@2.2.1-next.3`
+
 ## 5.0.0-next.16
 
 ### Patch Changes
