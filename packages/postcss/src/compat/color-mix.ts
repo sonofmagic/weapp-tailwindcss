@@ -11,7 +11,12 @@ export interface DynamicColorMixAlphaProtection {
   restore: (css: string) => string
 }
 
+export interface DynamicColorMixAlphaProtectionOptions {
+  customPropertyValues?: ReadonlyMap<string, string> | undefined
+}
+
 const COLOR_MIX_NAME = 'color-mix'
+const MODERN_COLOR_FUNCTION_NAMES = new Set(['oklch', 'oklab', 'lch', 'lab'])
 const PLACEHOLDER_PREFIX = '__weapp_tw_color_mix_'
 const DYNAMIC_ALPHA_RE = /\b(?:var|env)\(|--[\w-]+\b/
 const INTERNAL_TAILWIND_ALPHA_RE = /var\(\s*--tw-[^)]+-alpha\s*\)/
@@ -160,6 +165,92 @@ function normalizeColorFunctionName(
   return serializeRGB(resolvedColor).toString()
 }
 
+function normalizeStandaloneColorFunction(colorSource: string) {
+  const resolvedColor = getParsedColorData(colorSource)
+  return resolvedColor ? serializeRGB(resolvedColor).toString() : undefined
+}
+
+function isDisplayP3ColorFunction(colorSource: string) {
+  return /^color\(\s*display-p3\b/i.test(colorSource.trim())
+}
+
+function hasUnsupportedModernColorFunction(value: string) {
+  const parsed = valueParser(value)
+  let hasUnsupported = false
+
+  parsed.walk((node) => {
+    if (node.type !== 'function') {
+      return
+    }
+    const name = node.value.toLowerCase()
+    if (
+      name === COLOR_MIX_NAME
+      || MODERN_COLOR_FUNCTION_NAMES.has(name)
+      || (name === 'color' && isDisplayP3ColorFunction(valueParser.stringify(node)))
+    ) {
+      hasUnsupported = true
+      return false
+    }
+  })
+
+  return hasUnsupported
+}
+
+export interface ModernColorValueNormalization {
+  value: string
+  changed: boolean
+  hasUnsupported: boolean
+}
+
+export function normalizeModernColorValue(
+  value: string,
+  customPropertyValues: ReadonlyMap<string, string> = new Map(),
+): ModernColorValueNormalization {
+  if (!hasUnsupportedModernColorFunction(value)) {
+    return {
+      value,
+      changed: false,
+      hasUnsupported: false,
+    }
+  }
+
+  const parsed = valueParser(value)
+  let changed = false
+
+  parsed.walk((node) => {
+    if (node.type !== 'function') {
+      return
+    }
+
+    const name = node.value.toLowerCase()
+    const source = valueParser.stringify(node)
+    let normalized: string | undefined
+    if (MODERN_COLOR_FUNCTION_NAMES.has(name) || (name === 'color' && isDisplayP3ColorFunction(source))) {
+      normalized = normalizeStandaloneColorFunction(source)
+    }
+    else if (name === COLOR_MIX_NAME) {
+      normalized = tryResolveColorMix(node, customPropertyValues)?.value
+    }
+
+    if (!normalized) {
+      return
+    }
+
+    const mutableNode = node as unknown as Node & { nodes?: Node[] }
+    mutableNode.type = 'word'
+    mutableNode.value = normalized
+    delete mutableNode.nodes
+    changed = true
+  })
+
+  const nextValue = changed ? parsed.toString() : value
+  return {
+    value: nextValue,
+    changed,
+    hasUnsupported: hasUnsupportedModernColorFunction(nextValue),
+  }
+}
+
 function createRgbaWithAlpha(colorSource: string, alphaSource: string, customPropertyValues: ReadonlyMap<string, string>) {
   const resolvedColor = resolveColorData(colorSource, customPropertyValues)
   if (!resolvedColor) {
@@ -238,7 +329,10 @@ function unwrapProtectedSupports(cssRoot: postcss.Root) {
   })
 }
 
-export function protectDynamicColorMixAlpha(css: string): DynamicColorMixAlphaProtection {
+export function protectDynamicColorMixAlpha(
+  css: string,
+  options: DynamicColorMixAlphaProtectionOptions = {},
+): DynamicColorMixAlphaProtection {
   if (!css.includes(COLOR_MIX_NAME)) {
     return {
       css,
@@ -248,7 +342,7 @@ export function protectDynamicColorMixAlpha(css: string): DynamicColorMixAlphaPr
 
   const replacements = new Map<string, string>()
   const root = postcss.parse(css)
-  const customPropertyValues = new Map<string, string>()
+  const customPropertyValues = new Map(options.customPropertyValues)
   let changed = false
 
   root.walkDecls((decl) => {

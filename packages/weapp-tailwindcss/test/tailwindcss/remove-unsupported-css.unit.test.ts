@@ -200,4 +200,34 @@ describe('tailwindcss/remove unsupported css', () => {
     expect(css).toContain('.prose .a{color:inherit}')
     expect(css).toContain('.text-red-500{color:red}')
   })
+
+  it('normalizes modern color functions out of final mini-program css', () => {
+    const css = finalizeMiniProgramCss([
+      ':host,page,.tw-root,wx-root-portal-content{',
+      '--color-blue-500:oklch(62.3% 0.214 259.815);',
+      '--color-p3:color(display-p3 0.26642 0.49122 0.98862);',
+      '--color-unknown:color-mix(in oklab, var(--missing) 50%, transparent);',
+      '}',
+      '.text-blue-500{color:var(--color-blue-500)}',
+      '.text-p3{color:color(display-p3 0.26642 0.49122 0.98862)}',
+      '.bg-lab{background-color:lab(50% 40 59.5)}',
+      '.bg-mix{background-color:color-mix(in oklab, var(--color-blue-500) 50%, transparent)}',
+      '.bg-unknown{background-color:color-mix(in oklab, var(--missing) 50%, transparent)}',
+      '@media (color-gamut: p3){.p3-only{color:color(display-p3 1 0 0)}}',
+    ].join('\n'))
+
+    expect(css).toContain('--color-blue-500:rgb(50, 128, 255)')
+    expect(css).toContain('--color-p3:rgb(50, 128, 255)')
+    expect(css).toContain('color:rgb(50, 128, 255)')
+    expect(css).toContain('background-color:rgb(191, 87, 0)')
+    expect(css).toContain('background-color:rgba(50, 128, 255, 0.5)')
+    expect(css).toContain('--color-unknown:var(--missing)')
+    expect(css).toContain('.bg-unknown{background-color:var(--missing)}')
+    expect(css).not.toContain('color-mix')
+    expect(css).not.toContain('oklab')
+    expect(css).not.toContain('oklch')
+    expect(css).not.toContain('lab(')
+    expect(css).not.toContain('display-p3')
+    expect(css).not.toContain('color-gamut')
+  })
 })

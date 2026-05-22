@@ -799,6 +799,42 @@ describe('tailwindcss v4 engine', () => {
     expect(result.css).toContain('color: rgba(255, 255, 255, 0.1)')
     expect(result.css).not.toContain('color-mix')
     expect(result.css).not.toContain('oklab')
+    expect(result.css).not.toContain('oklch')
+    expect(result.css).not.toContain('display-p3')
+  })
+
+  it('keeps modern color syntax out of incremental mini-program css', async () => {
+    const source = await resolveTailwindV4Source({
+      css: `
+        @theme default {
+          --color-white: #fff;
+          --color-blue-500: oklch(62.3% 0.214 259.815);
+        }
+        @tailwind utilities;
+      `,
+      base: process.cwd(),
+    })
+    const engine = createTailwindV4Engine(source)
+
+    await engine.generate({
+      candidates: ['bg-blue-500'],
+      incrementalCache: true,
+      scanSources: false,
+    })
+    const result = await engine.generate({
+      candidates: ['bg-blue-500', 'text-white/10'],
+      incrementalCache: true,
+      scanSources: false,
+    })
+
+    expect(result.css).toContain('background-color: var(--color-blue-500)')
+    expect(result.css).toContain('color: rgba(255, 255, 255, 0.1)')
+    expect(result.incrementalCss).toContain('.text-white_f10')
+    expect(result.incrementalCss).not.toContain('view,text,:after,:before')
+    expect(result.css).not.toContain('color-mix')
+    expect(result.css).not.toContain('oklab')
+    expect(result.css).not.toContain('oklch')
+    expect(result.css).not.toContain('display-p3')
   })
 
   it('keeps Tailwind v3 default values in v4 generator output', async () => {

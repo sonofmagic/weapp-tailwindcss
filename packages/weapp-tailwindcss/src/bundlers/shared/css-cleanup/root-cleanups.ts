@@ -1,5 +1,6 @@
 import type postcss from 'postcss'
-import { isDisplayP3Declaration, isDisplayP3MediaRule } from './color-gamut'
+import { normalizeModernColorValue } from '@weapp-tailwindcss/postcss'
+import { isDisplayP3MediaRule } from './color-gamut'
 import { isUnsupportedBrowserSelector, SPECIFICITY_PLACEHOLDER_SUFFIXES } from './selectors'
 
 export function removeSpecificityPlaceholders(root: postcss.Root) {
@@ -76,9 +77,25 @@ export function removeDisplayP3Declarations(root: postcss.Root) {
       removeEmptyAtRuleAncestors(parent)
     }
   })
+}
+
+export function removeUnsupportedModernColorDeclarations(root: postcss.Root) {
+  const customPropertyValues = new Map<string, string>()
+  root.walkDecls((decl) => {
+    if (decl.prop.startsWith('--')) {
+      customPropertyValues.set(decl.prop, decl.value.trim())
+    }
+  })
 
   root.walkDecls((decl) => {
-    if (isDisplayP3Declaration(decl)) {
+    const normalized = normalizeModernColorValue(decl.value, customPropertyValues)
+    if (normalized.changed) {
+      decl.value = normalized.value
+      if (decl.prop.startsWith('--')) {
+        customPropertyValues.set(decl.prop, decl.value.trim())
+      }
+    }
+    if (normalized.hasUnsupported) {
       removeDeclarationAndEmptyRule(decl)
     }
   })

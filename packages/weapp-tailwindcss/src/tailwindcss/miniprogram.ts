@@ -1,3 +1,4 @@
+import { normalizeModernColorValue } from '@weapp-tailwindcss/postcss'
 import postcss from 'postcss'
 import { removeUnsupportedCascadeLayers } from './remove-unsupported-css'
 
@@ -172,6 +173,36 @@ function isKeyframesRule(rule: postcss.Rule) {
   return false
 }
 
+function removeDeclarationAndEmptyRule(decl: postcss.Declaration) {
+  const parent = decl.parent
+  decl.remove()
+  if (parent?.type === 'rule' && parent.nodes.length === 0) {
+    parent.remove()
+  }
+}
+
+function normalizeMiniProgramColorValues(root: postcss.Root) {
+  const customPropertyValues = new Map<string, string>()
+  root.walkDecls((decl) => {
+    if (decl.prop.startsWith('--')) {
+      customPropertyValues.set(decl.prop, decl.value.trim())
+    }
+  })
+
+  root.walkDecls((decl) => {
+    const normalized = normalizeModernColorValue(decl.value, customPropertyValues)
+    if (normalized.changed) {
+      decl.value = normalized.value
+      if (decl.prop.startsWith('--')) {
+        customPropertyValues.set(decl.prop, decl.value.trim())
+      }
+    }
+    if (normalized.hasUnsupported) {
+      removeDeclarationAndEmptyRule(decl)
+    }
+  })
+}
+
 /**
  * 裁剪 Tailwind 生成 CSS 中面向浏览器的 classless 规则。
  *
@@ -190,6 +221,7 @@ export function pruneMiniProgramGeneratedCss(
   })
 
   removeUnsupportedCascadeLayers(root)
+  normalizeMiniProgramColorValues(root)
 
   root.walkAtRules('supports', (atRule) => {
     atRule.remove()

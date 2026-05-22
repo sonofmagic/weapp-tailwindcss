@@ -27,7 +27,10 @@ export async function transformTailwindV4CssToWeapp(
   options?: Partial<IStyleHandlerOptions>,
 ) {
   const compatibleCss = normalizeTailwindV4GeneratedUrlValues(css)
-  const protectedCss = protectDynamicColorMixAlpha(compatibleCss)
+  const customPropertyValues = options && 'customPropertyValues' in options
+    ? (options as { customPropertyValues?: ReadonlyMap<string, string> }).customPropertyValues
+    : undefined
+  const protectedCss = protectDynamicColorMixAlpha(compatibleCss, { customPropertyValues })
   const result = await defaultStyleHandler(protectedCss.css, {
     cssChildCombinatorReplaceValue: ['view', 'text'],
     cssRemoveHoverPseudoClass: true,

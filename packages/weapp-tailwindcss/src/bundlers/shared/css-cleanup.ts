@@ -3,7 +3,12 @@ import postcss from 'postcss'
 import { removeUnsupportedCascadeLayers } from '@/tailwindcss/remove-unsupported-css'
 import { removeUnsupportedMiniProgramAtRules } from './css-cleanup/at-rules'
 import { isDisplayP3Declaration } from './css-cleanup/color-gamut'
-import { removeDisplayP3Declarations, removeSpecificityPlaceholders, removeUnsupportedBrowserSelectors } from './css-cleanup/root-cleanups'
+import {
+  removeDisplayP3Declarations,
+  removeSpecificityPlaceholders,
+  removeUnsupportedBrowserSelectors,
+  removeUnsupportedModernColorDeclarations,
+} from './css-cleanup/root-cleanups'
 import { getRuleSelectors, MINI_PROGRAM_PREFLIGHT_SELECTORS, MINI_PROGRAM_THEME_SCOPE_SELECTOR, MINI_PROGRAM_THEME_SCOPE_SELECTORS } from './css-cleanup/selectors'
 
 export { removeUnsupportedAtSupports, removeUnsupportedMiniProgramAtRules } from './css-cleanup/at-rules'
@@ -253,6 +258,7 @@ function finalizeMiniProgramCssRoot(root: postcss.Root, options: FinalizeMiniPro
   removeSpecificityPlaceholders(root)
   removeUnsupportedBrowserSelectors(root)
   removeDisplayP3Declarations(root)
+  removeUnsupportedModernColorDeclarations(root)
 
   const preflightRules = collectPreflightRules(root, options)
   if (preflightRules.length === 0) {

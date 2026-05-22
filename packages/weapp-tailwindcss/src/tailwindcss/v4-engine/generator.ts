@@ -29,6 +29,7 @@ interface TailwindV4IncrementalGenerateCacheEntry {
   classSet: Set<string>
   css: string
   rawCss: string
+  customPropertyValues: Map<string, string>
   designSystemPromise: Promise<TailwindV4DesignSystem>
   dependencies: string[]
   sources: TailwindV4SourcePattern[]
@@ -211,6 +212,28 @@ function createIncrementalStyleOptions(styleOptions: Partial<IStyleHandlerOption
   }
 }
 
+function collectCustomPropertyValues(css: string) {
+  const values = new Map<string, string>()
+  try {
+    const root = postcss.parse(css)
+    root.walkDecls((decl) => {
+      if (decl.prop.startsWith('--')) {
+        values.set(decl.prop, decl.value.trim())
+      }
+    })
+  }
+  catch {
+    // Ignore malformed cache context; the normal transformer will still process the current chunk.
+  }
+  return values
+}
+
+function mergeCustomPropertyValues(target: Map<string, string>, css: string) {
+  for (const [prop, value] of collectCustomPropertyValues(css)) {
+    target.set(prop, value)
+  }
+}
+
 function seedIncrementalGenerateCache(options: TailwindV4IncrementalCacheSeedOptions) {
   const cacheKey = createIncrementalGenerateCacheKey(
     options.compatibleSource,
@@ -218,11 +241,14 @@ function seedIncrementalGenerateCache(options: TailwindV4IncrementalCacheSeedOpt
     options.styleOptions,
     options.tailwindcssV3Compatibility,
   )
+  const customPropertyValues = collectCustomPropertyValues(options.compatibleSource.css)
+  mergeCustomPropertyValues(customPropertyValues, options.generated.css)
   incrementalGenerateCache.set(cacheKey, {
     seenCandidates: collectSeenCandidates(options.generated, options.requestedCandidates),
     classSet: new Set(options.generated.classSet),
     css: options.generated.css,
     rawCss: options.generated.rawCss,
+    customPropertyValues,
     designSystemPromise: createIncrementalDesignSystemPromise(options.compatibleSource, cacheKey),
     dependencies: options.generated.dependencies,
     sources: options.generated.sources,
@@ -520,7 +546,10 @@ export function createTailwindV4Engine(source: TailwindV4ResolvedSource): Tailwi
         }
         const rawCss = rawCssParts.join('\n')
         const incrementalCss = rawCss.length > 0
-          ? await transformTailwindV4CssByTarget(rawCss, target, createIncrementalStyleOptions(options.styleOptions))
+          ? await transformTailwindV4CssByTarget(rawCss, target, {
+              ...createIncrementalStyleOptions(options.styleOptions),
+              customPropertyValues: cached.customPropertyValues,
+            } as Partial<IStyleHandlerOptions>)
           : ''
 
         for (const candidate of missingCandidates) {
@@ -531,6 +560,7 @@ export function createTailwindV4Engine(source: TailwindV4ResolvedSource): Tailwi
         }
         cached.css = [cached.css, incrementalCss].filter(Boolean).join('\n')
         cached.rawCss = [cached.rawCss, rawCss].filter(Boolean).join('\n')
+        mergeCustomPropertyValues(cached.customPropertyValues, incrementalCss)
         return {
           css: cached.css,
           rawCss: cached.rawCss,
