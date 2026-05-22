@@ -1,4 +1,3 @@
-import type { Config, PluginCreator } from 'tailwindcss/types/config'
 import type { NormalizedResetRule } from './normalize'
 import type { BuiltInResetName, ResetOptions, ResetPreset } from './types'
 import plugin from 'tailwindcss/plugin'
@@ -107,8 +106,8 @@ const builtInResetKeys = [
 
 interface ResetPlugin {
   (options?: ResetOptions): {
-    handler: PluginCreator
-    config?: Partial<Config>
+    handler: unknown
+    config?: unknown
   }
   __isOptionsFunction: true
 }
