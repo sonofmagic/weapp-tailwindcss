@@ -23,6 +23,7 @@ const PREFLIGHT_RESET_PROPS = new Set([
   'padding',
 ])
 const CONTENT_VAR_RE = /var\(\s*--tw-content\b/
+const HOIST_ANCHOR_COMMENT = '__weapp_tailwindcss_base_anchor__'
 
 interface FinalizeMiniProgramCssOptions {
   cssPreflight?: CssPreflightOptions | undefined
@@ -230,14 +231,35 @@ function getTopDirectiveTail(root: postcss.Root) {
   return tail
 }
 
-function insertHoistedRules(root: postcss.Root, rules: postcss.Rule[]) {
+function createHoistInsertionAnchor(root: postcss.Root) {
+  for (const node of root.nodes ?? []) {
+    if (isTailwindPreflightRule(node) || isMiniProgramThemeVariableRule(node)) {
+      const anchor = postcss.comment({
+        text: HOIST_ANCHOR_COMMENT,
+      })
+      node.before(anchor)
+      return anchor
+    }
+  }
+}
+
+function insertHoistedRules(root: postcss.Root, rules: postcss.Rule[], anchor?: postcss.Comment) {
+  if (anchor && !anchor.parent) {
+    anchor = undefined
+  }
   if (rules.length === 0) {
+    anchor?.remove()
     return
   }
 
   const topDirectiveTail = getTopDirectiveTail(root)
   const firstRule = rules[0]
   if (!firstRule) {
+    return
+  }
+  if (anchor) {
+    firstRule.raws.before = anchor.raws.before
+    anchor.replaceWith(rules)
     return
   }
   firstRule.raws.before = topDirectiveTail ? '\n' : ''
@@ -260,6 +282,7 @@ function finalizeMiniProgramCssRoot(root: postcss.Root, options: FinalizeMiniPro
   removeDisplayP3Declarations(root)
   removeUnsupportedModernColorDeclarations(root)
 
+  const hoistAnchor = createHoistInsertionAnchor(root)
   const preflightRules = collectPreflightRules(root, options)
   if (preflightRules.length === 0) {
     const resetRule = createPreflightResetRule(options.cssPreflight)
@@ -269,7 +292,7 @@ function finalizeMiniProgramCssRoot(root: postcss.Root, options: FinalizeMiniPro
   }
   const themeRule = collectThemeVariableRule(root, options)
   const hoistedRules = themeRule ? [...preflightRules, themeRule] : preflightRules
-  insertHoistedRules(root, hoistedRules)
+  insertHoistedRules(root, hoistedRules, hoistAnchor)
 }
 
 function unwrapTailwindSourceMedia(root: postcss.Root) {

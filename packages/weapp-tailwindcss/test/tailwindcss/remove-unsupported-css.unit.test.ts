@@ -230,4 +230,21 @@ describe('tailwindcss/remove unsupported css', () => {
     expect(css).not.toContain('display-p3')
     expect(css).not.toContain('color-gamut')
   })
+
+  it('keeps user css before hoisted mini-program base and theme rules', () => {
+    const css = finalizeMiniProgramCss([
+      '.reset-button{padding:0;background-color:transparent}',
+      '.reset-button::after{border:none}',
+      'view,text,:before,:after{box-sizing:border-box;margin:0;padding:0;border:0 solid}',
+      ':host,page,.tw-root,wx-root-portal-content{--color-blue-500:rgb(50,128,255)}',
+      '.flex{display:flex}',
+    ].join('\n'))
+
+    expect(css).toContain('.reset-button{padding:0;background-color:transparent}')
+    expect(css).toContain('.reset-button::after{border:none}')
+    expect(css.indexOf('.reset-button{padding:0;background-color:transparent}')).toBeLessThan(css.indexOf('view,text,:before,:after'))
+    expect(css.indexOf('.reset-button{padding:0;background-color:transparent}')).toBeLessThan(css.indexOf(':host,page,.tw-root,wx-root-portal-content'))
+    expect(css.indexOf('view,text,:before,:after')).toBeLessThan(css.indexOf('.flex'))
+    expect(css.indexOf(':host,page,.tw-root,wx-root-portal-content')).toBeLessThan(css.indexOf('.flex'))
+  })
 })

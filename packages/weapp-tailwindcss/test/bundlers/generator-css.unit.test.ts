@@ -1443,6 +1443,86 @@ describe('bundlers/shared generator css', () => {
     }))
   })
 
+  it('keeps user css before Tailwind v4 base and theme rules when final css is hoisted', async () => {
+    const runtimeSet = new Set(['flex'])
+    const userCss = [
+      '.reset-button{padding:0;background-color:transparent;font-size:inherit;line-height:inherit;color:inherit}',
+      '.reset-button::after{border:none}',
+    ].join('\n')
+    const rawTailwindCss = '.flex{display:flex}'
+    const weappCss = [
+      'view,text,:before,:after{box-sizing:border-box;margin:0;padding:0;border:0 solid}',
+      ':host,page,.tw-root,wx-root-portal-content{--color-blue-500:rgb(50,128,255)}',
+      '.flex{display:flex}',
+    ].join('\n')
+    const generateMock = vi.fn(async () => ({
+      css: weappCss,
+      rawCss: rawTailwindCss,
+      target: 'weapp',
+      classSet: runtimeSet,
+      dependencies: [],
+      sources: [],
+      root: null,
+    }))
+
+    vi.doMock('@/generator', () => ({
+      createWeappTailwindcssGenerator: vi.fn(() => ({
+        generate: generateMock,
+      })),
+      normalizeWeappTailwindcssGeneratorOptions: normalizeGeneratorOptions,
+      resolveTailwindV4SourceFromPatcher: vi.fn(async () => ({
+        projectRoot: process.cwd(),
+        base: process.cwd(),
+        baseFallbacks: [],
+        css: '@import "tailwindcss";',
+        dependencies: [],
+      })),
+    }))
+
+    const { generateCssByGenerator } = await import('@/bundlers/shared/generator-css')
+    const styleHandler = vi.fn(async (code: string) => ({ css: code }))
+    const result = await generateCssByGenerator({
+      opts: {
+        styleHandler,
+      } as any,
+      runtimeState: {
+        twPatcher: {
+          majorVersion: 4,
+        } as any,
+        readyPromise: Promise.resolve(),
+      },
+      runtime: runtimeSet,
+      rawSource: `${userCss}\n/*! weapp-tailwindcss generator-placeholder */`,
+      file: 'app.wxss',
+      cssHandlerOptions: {
+        isMainChunk: true,
+        postcssOptions: {
+          options: {
+            from: 'app.wxss',
+          },
+        },
+        majorVersion: 4,
+      } as any,
+      cssUserHandlerOptions: {
+        isMainChunk: false,
+        postcssOptions: {
+          options: {
+            from: 'app.wxss',
+          },
+        },
+        majorVersion: 4,
+      } as any,
+      styleHandler,
+      debug: vi.fn(),
+    })
+
+    const css = result?.css ?? ''
+    expect(css.indexOf('.reset-button')).toBeLessThan(css.indexOf('view,text,:before,:after'))
+    expect(css.indexOf('.reset-button')).toBeLessThan(css.indexOf(':host,page,.tw-root,wx-root-portal-content'))
+    expect(css.indexOf('view,text,:before,:after')).toBeLessThan(css.indexOf('.flex'))
+    expect(css.indexOf(':host,page,.tw-root,wx-root-portal-content')).toBeLessThan(css.indexOf('.flex'))
+  })
+
   it('removes Tailwind display-p3 supports from exact split user css', async () => {
     const runtimeSet = new Set(['bg-blue-500'])
     const rawTailwindCss = '/*! tailwindcss v4.2.4 | MIT License | https://tailwindcss.com */\n.bg-blue-500{background-color:var(--color-blue-500)}'
@@ -3039,7 +3119,7 @@ describe('bundlers/shared generator css', () => {
     expect(styleHandler.mock.calls[0]?.[0]).not.toContain('display-p3')
   })
 
-  it('hoists forced legacy Tailwind preflight before generated utilities', async () => {
+  it('keeps user css before hoisted legacy Tailwind preflight', async () => {
     const runtimeSet = new Set(['bg-[#534312]'])
     const rawSource = [
       '.card{color:red}',
@@ -3114,14 +3194,12 @@ describe('bundlers/shared generator css', () => {
       debug: vi.fn(),
     })
 
-    expect(result?.css).toBe([
-      'view,text,::before,::after{--tw-border-spacing-x:0;box-sizing:border-box;border-width:0;border-style:solid}',
-      `${weappCss}`,
-      '.card{color:red}',
-    ].join('\n'))
+    expect(result?.css).toContain('.card{color:red}')
+    expect(result?.css).toContain('view,text,::before,::after{--tw-border-spacing-x:0;box-sizing:border-box;border-width:0;border-style:solid}')
+    expect(result?.css.indexOf('.card{color:red}')).toBeLessThan(result?.css.indexOf('view,text,::before,::after{--tw-border-spacing-x:0;box-sizing:border-box;border-width:0;border-style:solid}') ?? -1)
   })
 
-  it('hoists and dedupes Tailwind v4 theme variables before generated utilities', async () => {
+  it('keeps user css before hoisted Tailwind v4 theme variables', async () => {
     const runtimeSet = new Set(['bg-blue-500', 'bg-blue-500/50'])
     const rawSource = [
       '.card{color:red}',
@@ -3213,8 +3291,8 @@ describe('bundlers/shared generator css', () => {
     expect(css).toContain('font-family:var(--font-sans)')
     expect(css).toContain('--font-sans')
     expect(css).toContain('--font-mono')
+    expect(css).toContain('.card{color:red}')
     expect(css.indexOf('::before,::after{--tw-content:""}')).toBeLessThan(css.indexOf(':host,page,.tw-root,wx-root-portal-content'))
-    expect(css.indexOf(':host,page,.tw-root,wx-root-portal-content')).toBeLessThan(css.indexOf('.bg-blue-500'))
   })
 
   it('generates Tailwind v4 css entries independently in force mode', async () => {
