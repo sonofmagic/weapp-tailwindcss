@@ -204,6 +204,13 @@ function collectSeenCandidates(
   ])
 }
 
+function createIncrementalStyleOptions(styleOptions: Partial<IStyleHandlerOptions> | undefined) {
+  return {
+    ...styleOptions,
+    isMainChunk: false,
+  }
+}
+
 function seedIncrementalGenerateCache(options: TailwindV4IncrementalCacheSeedOptions) {
   const cacheKey = createIncrementalGenerateCacheKey(
     options.compatibleSource,
@@ -513,7 +520,7 @@ export function createTailwindV4Engine(source: TailwindV4ResolvedSource): Tailwi
         }
         const rawCss = rawCssParts.join('\n')
         const incrementalCss = rawCss.length > 0
-          ? await transformTailwindV4CssByTarget(rawCss, target, options.styleOptions)
+          ? await transformTailwindV4CssByTarget(rawCss, target, createIncrementalStyleOptions(options.styleOptions))
           : ''
 
         for (const candidate of missingCandidates) {

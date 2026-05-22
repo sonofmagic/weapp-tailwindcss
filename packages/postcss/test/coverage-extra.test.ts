@@ -161,7 +161,7 @@ describe('plugin behaviours', () => {
     expect(unchanged.css).toContain('rgb(1, 2, 3)')
   })
 
-  it('protects only dynamic color-mix alpha values', async () => {
+  it('downgrades dynamic color-mix alpha values instead of restoring color-mix', async () => {
     const styleHandler = createStyleHandler({
       majorVersion: 4,
     })
@@ -175,13 +175,33 @@ describe('plugin behaviours', () => {
       }
     `
     const protectedSource = protectDynamicColorMixAlpha(source)
-    expect(protectedSource.css).toContain('background-color: __weapp_tw_dynamic_color_mix_0__')
-    expect(protectedSource.css).toContain('color: color-mix(in oklab, var(--color-sky-500) 50%, transparent)')
+    expect(protectedSource.css).toContain('background-color: __weapp_tw_color_mix_0__')
+    expect(protectedSource.css).toContain('color: rgba(14, 165, 233, 0.5)')
     const result = await styleHandler(protectedSource.css)
     const css = protectedSource.restore(result.css)
 
-    expect(css).toContain('background-color: color-mix(in oklab, var(--color-sky-500) var(--my-alpha-value), transparent)')
-    expect(css).toContain('color: color-mix(in oklab, var(--color-sky-500) 50%, transparent)')
+    expect(css).toContain('background-color: rgba(14, 165, 233, var(--my-alpha-value))')
+    expect(css).toContain('color: rgba(14, 165, 233, 0.5)')
+    expect(css).not.toContain('color-mix')
+    expect(css).not.toContain('oklab')
+  })
+
+  it('downgrades static tailwind v4 color-mix alpha values to rgba', async () => {
+    const styleHandler = createStyleHandler({
+      majorVersion: 4,
+    })
+    const source = `
+      :root {
+        --color-white: #fff;
+      }
+      .foo {
+        color: color-mix(in oklab, var(--color-white) 10%, transparent);
+      }
+    `
+    const { css } = await styleHandler(source)
+    expect(css).toContain('color: rgba(255, 255, 255, 0.1)')
+    expect(css).not.toContain('color-mix(in oklab, var(--color-white) 10%, transparent)')
+    expect(css).not.toContain('oklab')
   })
 
   it('custom property cleaner removes duplicates and matched vars', async () => {

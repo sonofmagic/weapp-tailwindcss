@@ -93,12 +93,13 @@ function finalizeMiniProgramGeneratorCss(
   target: string,
   majorVersion: number | undefined,
   cssPreflight: InternalUserDefinedOptions['cssPreflight'],
+  options: { injectPreflight?: boolean } = {},
 ) {
   if (target !== 'weapp') {
     return css
   }
   return finalizeMiniProgramCss(css, {
-    cssPreflight: majorVersion === 4 ? cssPreflight : undefined,
+    cssPreflight: majorVersion === 4 && options.injectPreflight !== false ? cssPreflight : undefined,
     preservePseudoContentInit: majorVersion === 3,
   })
 }
@@ -481,7 +482,7 @@ export async function generateCssByGenerator(
     if (typeof options.previousCss === 'string' && typeof generated.incrementalCss === 'string') {
       const incrementalCss = stripTailwindBanner(generated.incrementalCss)
       const css = incrementalCss.trim().length > 0
-        ? createCssAppend(options.previousCss, finalizeMiniProgramGeneratorCss(incrementalCss, generated.target, majorVersion, opts.cssPreflight))
+        ? createCssAppend(options.previousCss, finalizeMiniProgramGeneratorCss(incrementalCss, generated.target, majorVersion, opts.cssPreflight, { injectPreflight: false }))
         : options.previousCss
       return {
         css,

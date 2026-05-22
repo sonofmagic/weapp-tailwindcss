@@ -778,6 +778,29 @@ describe('tailwindcss v4 engine', () => {
     expect(result.css).not.toContain('@supports')
   })
 
+  it('downgrades Tailwind v4 color-mix alpha colors for mini-program output', async () => {
+    const source = await resolveTailwindV4Source({
+      css: `
+        @theme default {
+          --color-white: #fff;
+        }
+        @tailwind utilities;
+      `,
+      base: process.cwd(),
+    })
+    const engine = createTailwindV4Engine(source)
+
+    const result = await engine.generate({
+      candidates: ['text-white/10'],
+    })
+
+    expect(result.rawCss).toContain('color-mix')
+    expect(result.css).toContain('.text-white_f10')
+    expect(result.css).toContain('color: rgba(255, 255, 255, 0.1)')
+    expect(result.css).not.toContain('color-mix')
+    expect(result.css).not.toContain('oklab')
+  })
+
   it('keeps Tailwind v3 default values in v4 generator output', async () => {
     const source = await resolveTailwindV4Source({
       css: `

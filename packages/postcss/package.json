@@ -67,6 +67,9 @@
     "lint:fix": "eslint . --fix"
   },
   "dependencies": {
+    "@csstools/css-color-parser": "^4.1.1",
+    "@csstools/css-parser-algorithms": "^4.0.0",
+    "@csstools/css-tokenizer": "^4.0.0",
     "@weapp-core/escape": "~7.0.0",
     "@weapp-tailwindcss/postcss-calc": "^1.0.0",
     "@weapp-tailwindcss/shared": "workspace:*",
