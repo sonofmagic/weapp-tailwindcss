@@ -18,6 +18,7 @@ type AsyncableMethod<T> = T extends (...args: infer A) => infer R
   : never
 
 export type {
+  BabelParserOptions,
   DisabledOptions,
   UniAppXComponentLocalStylesOptions,
   UniAppXUserDefinedOptions,
@@ -57,6 +58,13 @@ export interface RefreshTailwindcssPatcherOptions {
   clearCache?: boolean
 }
 
+export type BabelParserOptions = ParserOptions & {
+  cache?: boolean | undefined
+  cacheKey?: string | undefined
+  cacheMaxEntries?: number | undefined
+  cacheMaxSourceLength?: number | undefined
+}
+
 export interface IJsHandlerOptions {
   escapeMap?: Record<string, string>
   classNameSet?: Set<string>
@@ -84,7 +92,7 @@ export interface IJsHandlerOptions {
   generateMap?: boolean
   alwaysEscape?: boolean
   unescapeUnicode?: boolean
-  babelParserOptions?: ParserOptions
+  babelParserOptions?: BabelParserOptions
   ignoreTaggedTemplateExpressionIdentifiers?: (string | RegExp)[]
   ignoreCallExpressionIdentifiers?: (string | RegExp)[]
   uniAppX?: boolean

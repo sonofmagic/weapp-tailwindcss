@@ -1,5 +1,4 @@
-import type { ParserOptions } from '@babel/parser'
-import type { IJsHandlerOptions, JsModuleGraphOptions, LinkedJsModuleResult } from '../types'
+import type { BabelParserOptions, IJsHandlerOptions, JsModuleGraphOptions, LinkedJsModuleResult } from '../types'
 import type { SourceAnalysis } from './babel'
 import type { ModuleGraphEntry, ModuleState, QueueItem } from './module-graph/types'
 import type { ImportToken } from './NodePathWalker'
@@ -16,7 +15,7 @@ export class JsModuleGraph {
   private readonly filter?: JsModuleGraphOptions['filter']
   private readonly maxDepth: number
   private readonly baseOptions: IJsHandlerOptions
-  private readonly parserOptions?: ParserOptions
+  private readonly parserOptions?: BabelParserOptions
   private readonly rootFilename: string
   private readonly ignoredExports: IgnoredExportsTracker
 

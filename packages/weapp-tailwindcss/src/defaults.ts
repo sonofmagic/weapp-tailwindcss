@@ -1,5 +1,6 @@
 import type { AppType, UserDefinedOptions } from './types'
 import { isAllowedClassName, MappingChars2String } from '@weapp-core/escape'
+import { DEFAULT_PARSE_CACHE_MAX_ENTRIES, DEFAULT_PARSE_CACHE_MAX_SOURCE_LENGTH } from './js/babel/cache-options'
 import { noop } from './utils'
 
 const CSS_FILE_PATTERN = /.+\.(?:wx|ac|jx|tt|q|c|ty)ss$/
@@ -128,6 +129,8 @@ export function getDefaultOptions(): UserDefinedOptions {
       cache: true,
       // 预计算好的 cacheKey，避免重复对选项进行 JSON.stringify
       cacheKey: 'st:unambiguous',
+      cacheMaxEntries: DEFAULT_PARSE_CACHE_MAX_ENTRIES,
+      cacheMaxSourceLength: DEFAULT_PARSE_CACHE_MAX_SOURCE_LENGTH,
     },
     postcssOptions: {},
     // 开发版本微信小程序工具和小米13手机上 @property 是有效果的
