@@ -2,6 +2,8 @@ import { mkdir, mkdtemp, symlink, writeFile } from 'node:fs/promises'
 import { createRequire } from 'node:module'
 import { tmpdir } from 'node:os'
 import path from 'node:path'
+import type { TailwindCssPatchOptions } from 'tailwindcss-patch'
+import { resolveTailwindV4SourceFromPatchOptions } from 'tailwindcss-patch'
 import { afterEach, vi } from 'vitest'
 import { createTailwindV4Engine, resolveTailwindV4Source, resolveTailwindV4SourceOptionsFromPatcher, transformTailwindV4CssToWeapp } from '@/tailwindcss/v4-engine'
 
@@ -682,7 +684,28 @@ describe('tailwindcss v4 engine', () => {
     expect(result.rawCss).not.toContain('@reference')
   })
 
-  it('keeps cssEntries relative to the css file unless v4 base is explicitly configured', () => {
+  it('keeps cssEntries source options aligned with tailwindcss-patch defaults', async () => {
+    const implicitPatchOptions = {
+      projectRoot: '/workspace/app',
+      tailwindcss: {
+        cwd: '/workspace/app',
+        packageName: 'tailwindcss',
+        v4: {
+          cssEntries: ['/workspace/app/src/app.css'],
+        },
+      },
+    } satisfies TailwindCssPatchOptions
+    const explicitPatchOptions = {
+      projectRoot: '/workspace/app',
+      tailwindcss: {
+        cwd: '/workspace/app',
+        packageName: 'tailwindcss',
+        v4: {
+          base: '/custom/base',
+          cssEntries: ['/workspace/app/src/app.css'],
+        },
+      },
+    } satisfies TailwindCssPatchOptions
     const implicitBaseOptions = resolveTailwindV4SourceOptionsFromPatcher({
       options: {
         projectRoot: '/workspace/app',
@@ -690,6 +713,7 @@ describe('tailwindcss v4 engine', () => {
           cwd: '/workspace/app',
           v4: {
             base: '/workspace/app',
+            hasUserDefinedSources: false,
             cssEntries: ['/workspace/app/src/app.css'],
           },
         },
@@ -704,15 +728,34 @@ describe('tailwindcss v4 engine', () => {
           v4: {
             base: '/workspace/app',
             configuredBase: '/custom/base',
+            hasUserDefinedSources: false,
             cssEntries: ['/workspace/app/src/app.css'],
           },
         },
       },
       packageInfo: { name: 'tailwindcss', version: '4.2.4' },
     } as any)
+    const rawExplicitBaseOptions = resolveTailwindV4SourceOptionsFromPatcher({
+      options: explicitPatchOptions,
+      packageInfo: { name: 'tailwindcss', version: '4.2.4' },
+    } as any)
+    const implicitPatchSource = await resolveTailwindV4SourceFromPatchOptions(implicitPatchOptions)
+    const explicitPatchSource = await resolveTailwindV4SourceFromPatchOptions(explicitPatchOptions)
 
     expect(implicitBaseOptions.base).toBeUndefined()
     expect(explicitBaseOptions.base).toBe('/custom/base')
+    expect(rawExplicitBaseOptions.base).toBe('/custom/base')
+    expect(implicitBaseOptions.cssEntries).toEqual(['/workspace/app/src/app.css'])
+    expect(explicitBaseOptions.cssEntries).toEqual(['/workspace/app/src/app.css'])
+    expect(implicitBaseOptions.baseFallbacks).toEqual([
+      '/workspace/app',
+    ])
+    expect(explicitBaseOptions.baseFallbacks).toEqual([
+      '/custom/base',
+      '/workspace/app',
+    ])
+    expect(implicitPatchSource.base).toBe('/workspace/app/src')
+    expect(explicitPatchSource.base).toBe('/custom/base')
   })
 
   it('passes configured v4 source entries through for bundler generation', () => {

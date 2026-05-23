@@ -26,12 +26,20 @@ function getProjectRoot(patcher: TailwindcssPatcherLike) {
   return patcher.options?.projectRoot ?? process.cwd()
 }
 
-function readConfiguredV4Base(tailwindOptions: unknown) {
-  const v4 = typeof tailwindOptions === 'object' && tailwindOptions !== null ? tailwindOptions : undefined
-  if (typeof v4 !== 'object' || v4 === null) {
+function resolveBase(value: string | undefined, fallback: string) {
+  return value === undefined
+    ? fallback
+    : path.isAbsolute(value)
+      ? path.resolve(value)
+      : path.resolve(fallback, value)
+}
+
+function resolveConfigDir(config: string | undefined, projectRoot: string) {
+  if (!config) {
     return undefined
   }
-  return (v4 as { configuredBase?: string }).configuredBase
+  const configPath = path.isAbsolute(config) ? config : path.resolve(projectRoot, config)
+  return path.dirname(configPath)
 }
 
 function isBarePackageSpecifier(specifier: string) {
@@ -143,27 +151,50 @@ function readTailwindV4Options(patcher: TailwindcssPatcherLike) {
   return tailwindOptions?.v4 ?? (patcher.options as any)?.tailwind?.v4
 }
 
+function isRawTailwindcssPatchOptions(options: TailwindcssPatcherLike['options']) {
+  return Boolean(options && 'tailwindcss' in options)
+}
+
+function resolvePatchTailwindV4SourceOptions(patcher: TailwindcssPatcherLike): TailwindV4SourceOptions {
+  if (patcher.options) {
+    const projectRoot = getProjectRoot(patcher)
+    const tailwindOptions = resolveTailwindcssOptions(patcher.options)
+    const tailwindV4Options = readTailwindV4Options(patcher)
+    const cwd = resolveBase(tailwindOptions?.cwd, projectRoot)
+    const configuredBase = (tailwindV4Options as { configuredBase?: string } | undefined)?.configuredBase
+      ?? (isRawTailwindcssPatchOptions(patcher.options) ? tailwindV4Options?.base : undefined)
+    const configDir = resolveConfigDir(tailwindOptions?.config, projectRoot)
+    const baseFallbacks = uniqueDefined([
+      configuredBase,
+      cwd,
+      projectRoot,
+      configDir,
+    ])
+    return {
+      projectRoot,
+      cwd,
+      ...(configuredBase === undefined ? {} : { base: configuredBase }),
+      baseFallbacks,
+      ...(tailwindV4Options?.css === undefined ? {} : { css: tailwindV4Options.css }),
+      ...(tailwindV4Options?.cssSources === undefined ? {} : { cssSources: tailwindV4Options.cssSources }),
+      ...(tailwindV4Options?.cssEntries === undefined ? {} : { cssEntries: tailwindV4Options.cssEntries }),
+      packageName: resolveTailwindCssImportTarget(patcher),
+    }
+  }
+
+  return {
+    projectRoot: getProjectRoot(patcher),
+    packageName: resolveTailwindCssImportTarget(patcher),
+  }
+}
+
 export function resolveTailwindV4SourceOptionsFromPatcher(
   patcher: TailwindcssPatcherLike,
 ): TailwindV4SourceOptionsWithSources {
-  const projectRoot = getProjectRoot(patcher)
-  const tailwindOptions = resolveTailwindcssOptions(patcher.options)
   const tailwindV4Options = readTailwindV4Options(patcher)
-  const configDir = tailwindOptions?.config ? path.dirname(tailwindOptions.config) : undefined
-  const configuredBase = readConfiguredV4Base(tailwindV4Options)
-  const hasCssEntries = Boolean(tailwindV4Options?.cssEntries?.length)
   return omitUndefined({
-    projectRoot,
-    base: configuredBase ?? (hasCssEntries ? undefined : tailwindV4Options?.base),
-    baseFallbacks: uniqueDefined([
-      tailwindOptions?.cwd,
-      configDir,
-    ]),
-    css: tailwindV4Options?.css,
-    cssSources: tailwindV4Options?.cssSources,
-    cssEntries: tailwindV4Options?.cssEntries,
+    ...resolvePatchTailwindV4SourceOptions(patcher),
     sources: tailwindV4Options?.sources,
-    packageName: resolveTailwindCssImportTarget(patcher),
   }) as TailwindV4SourceOptionsWithSources
 }
 
