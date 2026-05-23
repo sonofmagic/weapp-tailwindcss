@@ -1,5 +1,6 @@
 import type { TailwindV4CssSource } from 'tailwindcss-patch'
 import type { Compiler } from 'webpack'
+import type { TailwindRuntimeState } from '@/tailwindcss/runtime'
 import type { AppType, InternalUserDefinedOptions } from '@/types'
 import fs from 'node:fs'
 import path from 'node:path'
@@ -17,7 +18,10 @@ interface SetupWebpackV5LoadersOptions {
   shouldRewriteCssImports: boolean
   runtimeLoaderPath?: string | undefined
   registerAutoCssSource?: ((source: TailwindV4CssSource) => Promise<void> | void) | undefined
+  runtimeState: TailwindRuntimeState
   getClassSetInLoader: () => Promise<void>
+  getRuntimeSetInLoader: () => Promise<Set<string>>
+  markWebpackProcessedCssSource?: ((file: string) => void) | undefined
   getRuntimeWatchDependencies: () => {
     files: ReadonlySet<string>
     contexts: ReadonlySet<string>
@@ -34,7 +38,10 @@ export function setupWebpackV5Loaders(options: SetupWebpackV5LoadersOptions) {
     shouldRewriteCssImports,
     runtimeLoaderPath,
     registerAutoCssSource,
+    runtimeState,
     getClassSetInLoader,
+    getRuntimeSetInLoader,
+    markWebpackProcessedCssSource,
     getRuntimeWatchDependencies,
     debug,
   } = options
@@ -56,8 +63,12 @@ export function setupWebpackV5Loaders(options: SetupWebpackV5LoadersOptions) {
   const runtimeLoaderRewriteOptions = shouldRewriteCssImports
     ? {
         pkgDir: weappTailwindcssPackageDir,
+        compilerOptions,
+        runtimeState,
         ...(appType === undefined ? {} : { appType }),
         ...(registerAutoCssSource === undefined ? {} : { registerCssSource: registerAutoCssSource }),
+        getRuntimeSet: getRuntimeSetInLoader,
+        ...(markWebpackProcessedCssSource === undefined ? {} : { markGeneratedCssSource: markWebpackProcessedCssSource }),
       }
     : undefined
   const classSetLoaderOptions = {

@@ -18,6 +18,7 @@ import { isUniAppXEnabled } from '@/uni-app-x/options'
 import { resolveUniUtsPlatform } from '@/utils'
 import { resolvePluginDisabledState } from '@/utils/disabled'
 import { resolvePackageDir } from '@/utils/resolve-package'
+import { createBundlerGeneratedCssMarker, hasBundlerGeneratedCssMarker } from '../shared/generated-css-marker'
 import { generateCssByGenerator } from '../shared/generator-css'
 import { createHmrTimingRecorder } from '../shared/hmr-timing'
 import { normalizeOutputPathKey } from '../shared/module-graph'
@@ -33,7 +34,6 @@ import { createSourceCandidateCollector, isSourceCandidateRequest } from './sour
 import { createViteSourceScanMatcher, discoverTailwindV4CssEntries, resolveTailwindV4EntriesFromCssCached, resolveViteSourceScanEntries, resolveViteTailwindV4CssDependencies } from './source-scan'
 import { resolveImplicitTailwindcssBasedirFromViteRoot } from './tailwind-basedir'
 import { cleanUrl, slash } from './utils'
-import { createViteGeneratedCssMarker, hasViteGeneratedCssMarker } from './vite-generated-css'
 
 const debug = createDebug()
 const weappTailwindcssPackageDir = resolvePackageDir('weapp-tailwindcss')
@@ -455,7 +455,7 @@ export function WeappTailwindcss(options: UserDefinedOptions = {}): Plugin[] | u
     return viteProcessedCssSourceFiles.has(normalized)
   }
   const isViteProcessedCssAsset = (asset: { source?: unknown, originalFileName?: string | null, originalFileNames?: string[] | undefined }, file?: string) => {
-    if (hasViteGeneratedCssMarker(asset.source)) {
+    if (hasBundlerGeneratedCssMarker(asset.source)) {
       return true
     }
     const candidates = [
@@ -512,7 +512,7 @@ export function WeappTailwindcss(options: UserDefinedOptions = {}): Plugin[] | u
     recordGeneratorCandidates(runtime)
     rememberMainCssSource(file, code)
     debug('css generated for vite postcss pipeline: %s bytes=%d', file, generated.css.length)
-    return `${createViteGeneratedCssMarker(normalizeViteProcessedCssFile(file))}\n${generated.css}`
+    return `${createBundlerGeneratedCssMarker('vite', normalizeViteProcessedCssFile(file))}\n${generated.css}`
   }
   const rewritePlugins = createRewriteCssImportsPlugins({
     getAppType: () => opts.appType,

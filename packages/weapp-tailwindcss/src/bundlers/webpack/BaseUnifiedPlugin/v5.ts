@@ -73,6 +73,7 @@ export class UnifiedWebpackPluginV5 implements IBaseWebpackPlugin {
     let watchRunObserved = false
     const runtimeWatchDependencyFiles = new Set<string>()
     const runtimeWatchDependencyContexts = new Set<string>()
+    const webpackProcessedCssSourceFiles = new Set<string>()
     let runtimeMetadataPrepared = false
 
     const updateRuntimeWatchDependencies = async () => {
@@ -188,6 +189,9 @@ export class UnifiedWebpackPluginV5 implements IBaseWebpackPlugin {
       })
       debug('detected tailwindcss v4 css source from webpack css module: %s', source.file)
     }
+    const markWebpackProcessedCssSource = (file: string) => {
+      webpackProcessedCssSourceFiles.add(path.resolve(file))
+    }
 
     compiler.hooks.invalid?.tap?.(pluginName, (fileName: string | null) => {
       if (!fileName) {
@@ -223,6 +227,13 @@ export class UnifiedWebpackPluginV5 implements IBaseWebpackPlugin {
       runtimeRefreshRequiredForCompilation = false
     }
 
+    async function getRuntimeSetInLoader() {
+      await getClassSetInLoader()
+      return ensureRuntimeClassSet(runtimeState, {
+        allowEmpty: true,
+      })
+    }
+
     onLoad()
     setupWebpackV5Loaders({
       compiler,
@@ -232,7 +243,10 @@ export class UnifiedWebpackPluginV5 implements IBaseWebpackPlugin {
       shouldRewriteCssImports,
       runtimeLoaderPath,
       registerAutoCssSource,
+      runtimeState,
       getClassSetInLoader,
+      getRuntimeSetInLoader,
+      markWebpackProcessedCssSource,
       getRuntimeWatchDependencies() {
         return {
           files: runtimeWatchDependencyFiles,
@@ -249,6 +263,10 @@ export class UnifiedWebpackPluginV5 implements IBaseWebpackPlugin {
       runtimeState,
       getRuntimeRefreshRequirement: () => runtimeRefreshRequiredForCompilation,
       refreshRuntimeMetadata: ensureRuntimeMetadata,
+      isWebpackProcessedCssAsset(file, rawSource) {
+        return webpackProcessedCssSourceFiles.has(path.resolve(file))
+          || rawSource.includes('weapp-tailwindcss webpack-generated-css')
+      },
       consumeRuntimeRefreshRequirement() {
         runtimeRefreshRequiredForCompilation = false
       },

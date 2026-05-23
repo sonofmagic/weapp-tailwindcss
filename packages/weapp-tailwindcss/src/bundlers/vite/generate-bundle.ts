@@ -12,6 +12,7 @@ import { getRuntimeClassSetSignature } from '@/tailwindcss/runtime/cache'
 import { filterUnsupportedMiniProgramTailwindV4Candidates } from '@/tailwindcss/v4-engine/candidates'
 import { createUniAppXAssetTask } from '@/uni-app-x'
 import { processCachedTask } from '../shared/cache'
+import { stripBundlerGeneratedCssMarkers } from '../shared/generated-css-marker'
 import { generateCssByGenerator, validateCandidatesByGenerator } from '../shared/generator-css'
 import { pushConcurrentTaskFactories } from '../shared/run-tasks'
 import { createBundleModuleGraphOptions } from './bundle-entries'
@@ -28,7 +29,6 @@ import { logBundleProcessPlan } from './generate-bundle/process-plan'
 import { createReplayCssAsset, registerGeneratorDependencies } from './generate-bundle/rollup-assets'
 import { createCandidateSignature, createJsHashSalt, createLinkedImpactSignature, getSnapshotHash, hasRuntimeAffectingSourceChanges, summarizeStringDiff } from './generate-bundle/signatures'
 import { shouldSkipViteJsTransform } from './js-precheck'
-import { stripViteGeneratedCssMarkers } from './vite-generated-css'
 
 interface GenerateBundleContext {
   opts: InternalUserDefinedOptions
@@ -365,7 +365,7 @@ export function createGenerateBundleHook(context: GenerateBundleContext) {
         // 否则会退回未转译内容并与同轮 JS/WXML 的 class 改写失配。
         const rawSource = originalEntrySource
         if (isViteProcessedCssAsset?.(originalSource, file)) {
-          const nextCss = stripViteGeneratedCssMarkers(rawSource)
+          const nextCss = stripBundlerGeneratedCssMarkers(rawSource)
           originalSource.source = nextCss
           markCssAssetProcessed?.(originalSource, file)
           recordCssAssetResult?.(file, nextCss)

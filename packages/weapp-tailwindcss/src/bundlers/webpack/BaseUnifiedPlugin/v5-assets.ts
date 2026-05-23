@@ -9,6 +9,7 @@ import { ensureRuntimeClassSet } from '@/tailwindcss/runtime'
 import { getRuntimeClassSetSignature } from '@/tailwindcss/runtime/cache'
 import { getGroupedEntries } from '@/utils'
 import { processCachedTask } from '../../shared/cache'
+import { stripBundlerGeneratedCssMarkers } from '../../shared/generated-css-marker'
 import { generateCssByGenerator } from '../../shared/generator-css'
 import { emitHmrTiming } from '../../shared/hmr-timing'
 import { resolveOutputSpecifier, toAbsoluteOutputPath } from '../../shared/module-graph'
@@ -27,6 +28,7 @@ interface SetupWebpackV5ProcessAssetsHookOptions {
   }
   getRuntimeRefreshRequirement: () => boolean
   refreshRuntimeMetadata: (force: boolean) => Promise<void>
+  isWebpackProcessedCssAsset?: ((file: string, rawSource: string) => boolean) | undefined
   consumeRuntimeRefreshRequirement: () => void
   isWatchMode?: (() => boolean) | undefined
   runtimeClassSetManager?: BundleRuntimeClassSetManager | undefined
@@ -57,6 +59,7 @@ export function setupWebpackV5ProcessAssetsHook(options: SetupWebpackV5ProcessAs
     runtimeState,
     getRuntimeRefreshRequirement,
     refreshRuntimeMetadata,
+    isWebpackProcessedCssAsset,
     consumeRuntimeRefreshRequirement,
     isWatchMode,
     runtimeClassSetManager,
@@ -354,6 +357,36 @@ export function setupWebpackV5ProcessAssetsHook(options: SetupWebpackV5ProcessAs
             const [file, originalSource] = element
 
             const rawSource = originalSource.source().toString()
+            if (isWebpackProcessedCssAsset?.(file, rawSource)) {
+              const nextCss = stripBundlerGeneratedCssMarkers(rawSource)
+              tasks.push(
+                processCachedTask({
+                  cache: compilerOptions.cache,
+                  cacheKey: file,
+                  hashKey: `${file}:asset`,
+                  rawSource,
+                  hash: createRuntimeAwareCssHash(
+                    assetHashByChunk.get(file),
+                    compilerOptions.cache.computeHash(rawSource),
+                    runtimeSetHash,
+                  ),
+                  applyResult(source) {
+                    compilation.updateAsset(file, source)
+                  },
+                  onCacheHit() {
+                    debug('css webpack-loader-pipeline cache hit: %s', file)
+                  },
+                  transform: async () => {
+                    compilerOptions.onUpdate(file, rawSource, nextCss)
+                    debug('css skip webpack-loader-pipeline asset: %s', file)
+                    return {
+                      result: new ConcatSource(nextCss),
+                    }
+                  },
+                }),
+              )
+              continue
+            }
             const cacheKey = file
             const chunkHash = assetHashByChunk.get(file)
             const runtimeAwareHash = createRuntimeAwareCssHash(

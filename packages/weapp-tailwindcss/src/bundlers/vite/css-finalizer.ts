@@ -6,8 +6,8 @@ import type { InternalUserDefinedOptions } from '@/types'
 import { logger } from '@weapp-tailwindcss/logger'
 import { normalizeWeappTailwindcssGeneratorOptions } from '@/generator'
 import { filterUnsupportedMiniProgramTailwindV4Candidates } from '@/tailwindcss/v4-engine/candidates'
+import { stripBundlerGeneratedCssMarkers } from '../shared/generated-css-marker'
 import { generateCssByGenerator, hasTailwindGeneratedCssMarkers, hasTailwindSourceDirectives } from '../shared/generator-css'
-import { stripViteGeneratedCssMarkers } from './vite-generated-css'
 
 interface CssFinalizerContext {
   opts: InternalUserDefinedOptions
@@ -167,7 +167,7 @@ export function createViteCssFinalizerOutputPlugin(context: CssFinalizerContext)
           const file = output.fileName || bundleFile
           const rawSource = output.source.toString()
           if (isViteProcessedCssAsset?.(output, file)) {
-            const nextCss = stripViteGeneratedCssMarkers(rawSource)
+            const nextCss = stripBundlerGeneratedCssMarkers(rawSource)
             output.source = nextCss
             markCssAssetProcessed(output, file)
             recordCssAssetResult?.(file, nextCss)
