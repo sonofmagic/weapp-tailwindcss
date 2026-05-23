@@ -1,7 +1,7 @@
 import type { TailwindV4CssSource } from 'tailwindcss-patch'
 import type { TailwindInlineSourceCandidates, TailwindSourceEntry } from '@/tailwindcss/source-scan'
 import type { TailwindcssPatcherLike, UserDefinedOptions } from '@/types'
-import { existsSync, readFileSync } from 'node:fs'
+import { existsSync, readFileSync, realpathSync } from 'node:fs'
 import { stat } from 'node:fs/promises'
 import path from 'node:path'
 import process from 'node:process'
@@ -253,6 +253,7 @@ export async function resolveTailwindV4EntriesFromCss(css: string, base: string)
 
   let importSourceBase: string | undefined
   let hasSourceNone = false
+  let hasTailwindCssImport = false
   const [sourceEntries, configEntries] = await Promise.all([
     resolveCssSourceEntries(root, base, VITE_SOURCE_CANDIDATE_PATTERN),
     resolveConfigContentEntries(root, base),
@@ -267,6 +268,7 @@ export async function resolveTailwindV4EntriesFromCss(css: string, base: string)
     if (!isTailwindCssImport(rule.params)) {
       return
     }
+    hasTailwindCssImport = true
     const sourceParam = parseImportSourceParam(rule.params)
     if (sourceParam?.none) {
       hasSourceNone = true
@@ -301,21 +303,32 @@ export async function resolveTailwindV4EntriesFromCss(css: string, base: string)
     }
   }
 
-  return entries.length > 0
+  if (entries.length > 0) {
+    return {
+      entries,
+      explicit: true,
+      inlineCandidates,
+      dependencies: configEntries.dependencies,
+    }
+  }
+
+  if (inlineCandidates.included.size > 0 || inlineCandidates.excluded.size > 0) {
+    return {
+      entries: [],
+      explicit: true,
+      inlineCandidates,
+      dependencies: configEntries.dependencies,
+    }
+  }
+
+  return hasTailwindCssImport
     ? {
-        entries,
-        explicit: true,
+        entries: [],
+        explicit: false,
         inlineCandidates,
         dependencies: configEntries.dependencies,
       }
-    : inlineCandidates.included.size > 0 || inlineCandidates.excluded.size > 0
-      ? {
-          entries: [],
-          explicit: true,
-          inlineCandidates,
-          dependencies: configEntries.dependencies,
-        }
-      : undefined
+    : undefined
 }
 
 export async function resolveViteTailwindV4CssDependencies(css: string, base: string) {
@@ -471,7 +484,7 @@ export async function resolveViteSourceScanEntries(
       }
     }
     const inlineCandidates = mergeTailwindInlineSourceCandidates(cssInlineCandidates)
-    if (entries.length > 0 || inlineCandidates || explicit) {
+    if (entries.length > 0 || inlineCandidates || explicit || cssEntries.length > 0) {
       return createResolvedViteSourceScan({
         entries: explicit ? entries : entries.length > 0 ? entries : undefined,
         explicit,
@@ -483,7 +496,7 @@ export async function resolveViteSourceScanEntries(
       const resolved = await resolveTailwindV4EntriesFromCssCached(sourceOptions.css, sourceOptions.base ?? sourceOptions.projectRoot ?? process.cwd())
       return resolved
         ? createResolvedViteSourceScan({
-            entries: resolved.entries,
+            entries: resolved.explicit ? resolved.entries : resolved.entries.length > 0 ? resolved.entries : undefined,
             explicit: resolved.explicit,
             inlineCandidates: resolved.inlineCandidates,
           }, new Set(resolved.dependencies))
@@ -491,8 +504,9 @@ export async function resolveViteSourceScanEntries(
     }
 
     const sourceOptionBase = sourceOptions.base ?? sourceOptions.projectRoot ?? process.cwd()
+    const configuredCssSources = collectConfiguredCssSources(options)
     for (const cssSource of [
-      ...collectConfiguredCssSources(options),
+      ...configuredCssSources,
       ...(sourceOptions.cssSources ?? []),
     ]) {
       if (typeof cssSource.css !== 'string' || cssSource.css.length === 0) {
@@ -512,7 +526,7 @@ export async function resolveViteSourceScanEntries(
       }
     }
     const cssSourceInlineCandidates = mergeTailwindInlineSourceCandidates(cssInlineCandidates)
-    if (entries.length > 0 || cssSourceInlineCandidates || explicit) {
+    if (entries.length > 0 || cssSourceInlineCandidates || explicit || sourceOptions.cssSources?.length || configuredCssSources.length > 0) {
       return createResolvedViteSourceScan({
         entries: explicit ? entries : entries.length > 0 ? entries : undefined,
         explicit,
@@ -526,7 +540,7 @@ export async function resolveViteSourceScanEntries(
     const resolved = await resolveTailwindV4EntriesFromCssCached(source.css, source.base)
     return resolved
       ? createResolvedViteSourceScan({
-          entries: resolved.entries,
+          entries: resolved.explicit ? resolved.entries : resolved.entries.length > 0 ? resolved.entries : undefined,
           explicit: resolved.explicit,
           inlineCandidates: resolved.inlineCandidates,
         }, new Set([...dependencies, ...resolved.dependencies]))
@@ -540,9 +554,19 @@ function toPosixPath(value: string) {
   return value.split(path.sep).join('/')
 }
 
+function resolveSourceScanPath(value: string) {
+  const resolved = path.resolve(value)
+  try {
+    return realpathSync.native(resolved)
+  }
+  catch {
+    return resolved
+  }
+}
+
 function normalizeEntryPattern(entry: TailwindSourceEntry) {
   return path.isAbsolute(entry.pattern)
-    ? toPosixPath(path.relative(path.resolve(entry.base), entry.pattern))
+    ? toPosixPath(path.relative(resolveSourceScanPath(entry.base), entry.pattern))
     : entry.pattern
 }
 
@@ -557,16 +581,16 @@ export function createViteSourceScanMatcher(entries: TailwindSourceEntry[] | und
   }
 
   return (file: string) => {
-    const resolvedFile = path.resolve(file)
+    const resolvedFile = resolveSourceScanPath(file)
     const matchesPositive = positiveEntries.some((entry) => {
-      const relative = toPosixPath(path.relative(path.resolve(entry.base), resolvedFile))
+      const relative = toPosixPath(path.relative(resolveSourceScanPath(entry.base), resolvedFile))
       return relative && !relative.startsWith('../') && !path.isAbsolute(relative) && micromatch.isMatch(relative, normalizeEntryPattern(entry))
     })
     if (!matchesPositive) {
       return false
     }
     return !negativeEntries.some((entry) => {
-      const relative = toPosixPath(path.relative(path.resolve(entry.base), resolvedFile))
+      const relative = toPosixPath(path.relative(resolveSourceScanPath(entry.base), resolvedFile))
       return relative && !relative.startsWith('../') && !path.isAbsolute(relative) && micromatch.isMatch(relative, normalizeEntryPattern(entry))
     })
   }

@@ -258,7 +258,12 @@ function insertHoistedRules(root: postcss.Root, rules: postcss.Rule[], anchor?: 
     return
   }
   if (anchor) {
-    firstRule.raws.before = anchor.raws.before
+    if (anchor.raws.before === undefined) {
+      delete firstRule.raws.before
+    }
+    else {
+      firstRule.raws.before = anchor.raws.before
+    }
     anchor.replaceWith(rules)
     return
   }

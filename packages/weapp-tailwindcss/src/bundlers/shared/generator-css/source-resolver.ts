@@ -1,4 +1,5 @@
 import type { IStyleHandlerOptions } from '@weapp-tailwindcss/postcss/types'
+import type { SourceSideCssEntrySource } from './source-files'
 import type { NormalizedWeappTailwindcssGeneratorOptions, TailwindResolvedSource } from '@/generator'
 import type { TailwindSourceEntry } from '@/tailwindcss/source-scan'
 import type { InternalUserDefinedOptions } from '@/types'
@@ -52,7 +53,10 @@ export type GeneratorResolvedSource = TailwindResolvedSource & {
   __weappTailwindcssMeta?: GeneratorSourceMetadata | undefined
 }
 
-type TailwindV4SourceOptions = ReturnType<typeof resolveTailwindV4SourceOptionsFromPatcher>
+type TailwindV4SourceOptions = ReturnType<typeof resolveTailwindV4SourceOptionsFromPatcher> & {
+  config?: string | undefined
+  outputRoot?: string | undefined
+}
 type TailwindV4CssSource = NonNullable<TailwindV4SourceOptions['cssSources']>[number]
 
 function resolvePostcssFromOption(cssHandlerOptions: IStyleHandlerOptions) {
@@ -86,9 +90,7 @@ function createSingleTailwindV4SourceOptions(
   return omitUndefined({
     projectRoot: sourceOptions.projectRoot,
     baseFallbacks: sourceOptions.baseFallbacks,
-    sources: sourceOptions.sources,
     packageName: sourceOptions.packageName,
-    outputRoot: (sourceOptions as { outputRoot?: string }).outputRoot,
     base: options.base,
     css: options.css,
   })
@@ -506,12 +508,12 @@ export async function resolveGeneratorSource(
       ? {
           base,
           css: rawSource,
-        }
+        } as SourceSideCssEntrySource
       : undefined
     const sourceSideEntrySource = canResolveSourceSideCssEntry(file, cssHandlerOptions)
       ? resolveSourceSideCssEntrySource(file, mergedSourceOptions, { removeConfig: true })
       : undefined
-    const resolvedEntrySource = shouldResolveSourceSideCssEntry(rawSource)
+    const resolvedEntrySource: SourceSideCssEntrySource | ReturnType<typeof resolveCssEntrySource> = shouldResolveSourceSideCssEntry(rawSource)
       ? applyEntrySource ?? cssEntrySource ?? sourceSideEntrySource
       : shouldPreferTailwindV3SourceSideEntry(rawSource, sourceSideEntrySource)
         ? sourceSideEntrySource ?? cssEntrySource
@@ -649,9 +651,8 @@ export async function resolveGeneratorSources(
     removeConfig: majorVersion === 3,
   })
   if (majorVersion !== 4 || (cssEntrySource && !cssHandlerOptions.isMainChunk)) {
-    return [
-      await resolveGeneratorSource(majorVersion, runtimeState, rawSource, file, cssHandlerOptions, generatorOptions, selectionOptions),
-    ]
+    const resolved = await resolveGeneratorSource(majorVersion, runtimeState, rawSource, file, cssHandlerOptions, generatorOptions, selectionOptions)
+    return resolved ? [resolved] : []
   }
 
   let sourceOptions: ReturnType<typeof resolveTailwindV4SourceOptionsFromPatcher>
@@ -662,9 +663,8 @@ export async function resolveGeneratorSources(
     })
   }
   catch {
-    return [
-      await resolveGeneratorSource(majorVersion, runtimeState, rawSource, file, cssHandlerOptions, generatorOptions, selectionOptions),
-    ]
+    const resolved = await resolveGeneratorSource(majorVersion, runtimeState, rawSource, file, cssHandlerOptions, generatorOptions, selectionOptions)
+    return resolved ? [resolved] : []
   }
 
   const matchedCssEntrySource = cssEntrySource
@@ -709,9 +709,8 @@ export async function resolveGeneratorSources(
         await createTailwindV4CssSourceResolver(sourceOptions, generatorOptions)(sourceOptions.cssSources[0]!),
       ]
     }
-    return [
-      await resolveGeneratorSource(majorVersion, runtimeState, rawSource, file, cssHandlerOptions, generatorOptions, selectionOptions),
-    ]
+    const resolved = await resolveGeneratorSource(majorVersion, runtimeState, rawSource, file, cssHandlerOptions, generatorOptions, selectionOptions)
+    return resolved ? [resolved] : []
   }
 
   const cssEntrySources = await Promise.all(sourceOptions.cssEntries.map(cssEntry =>
@@ -788,5 +787,5 @@ export async function resolveGeneratorSourceEntries(source: TailwindResolvedSour
       // 依赖内容只用于裁剪候选，读取失败时回退到 Tailwind 自身生成逻辑。
     }
   }
-  return resolved.entries
+  return resolved?.entries
 }

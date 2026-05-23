@@ -421,7 +421,7 @@ export function WeappTailwindcss(options: UserDefinedOptions = {}): Plugin[] | u
     if (existingTask) {
       return existingTask
     }
-    const task = sourceCandidateCollector.syncFile(id)
+    const task = sourceCandidateCollector.syncCurrentFile(id)
       .catch((error) => {
         debug('source candidate watch sync failed: %s %O', id, error)
       })

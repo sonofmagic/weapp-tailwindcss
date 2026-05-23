@@ -132,6 +132,43 @@ describe('bundlers/vite source scan', () => {
     expect(resolved?.inlineCandidates?.included).toEqual(new Set(['text-[45rpx]']))
   })
 
+  it('keeps bare Tailwind v4 imports aligned with official plugin root scanning', async () => {
+    const tempDir = await createTempDir('weapp-tw-vite-source-scan-default-root')
+    const srcDir = path.join(tempDir, 'src')
+    await mkdir(srcDir, { recursive: true })
+    await writeFile(path.join(srcDir, 'main.css'), '@import "tailwindcss";')
+
+    const fallbackResolve = vi.fn(async () => {
+      throw new Error('auto-discovered css root should define the default source scan')
+    })
+    vi.doMock('@/tailwindcss/v4-engine', async (importOriginal) => {
+      const actual = await importOriginal<typeof import('@/tailwindcss/v4-engine')>()
+      return {
+        ...actual,
+        resolveTailwindV4SourceOptionsFromPatcher: vi.fn(() => ({
+          projectRoot: tempDir,
+          base: tempDir,
+          baseFallbacks: [],
+          packageName: 'tailwindcss4',
+        })),
+        resolveTailwindV4SourceFromPatcher: fallbackResolve,
+      }
+    })
+
+    const { resolveViteSourceScanEntries } = await import('@/bundlers/vite/source-scan')
+    const resolved = await resolveViteSourceScanEntries({}, {
+      majorVersion: 4,
+    } as TailwindcssPatcherLike, {
+      root: tempDir,
+      outDir: 'dist',
+    })
+
+    expect(fallbackResolve).not.toHaveBeenCalled()
+    expect(resolved?.explicit).toBe(false)
+    expect(resolved?.entries).toBeUndefined()
+    expect(resolved?.dependencies).toEqual([path.join(srcDir, 'main.css')])
+  })
+
   it('reads static Tailwind config content without executing the config loader', async () => {
     const tempDir = await createTempDir('weapp-tw-vite-source-scan')
     const cssEntry = path.join(tempDir, 'app.scss')

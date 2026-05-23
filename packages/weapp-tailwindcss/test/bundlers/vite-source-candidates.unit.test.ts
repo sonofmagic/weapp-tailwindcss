@@ -1,9 +1,29 @@
+import { mkdir, rm, writeFile } from 'node:fs/promises'
+import os from 'node:os'
+import path from 'node:path'
 import { afterEach, describe, expect, it, vi } from 'vitest'
 
+const createdDirs: string[] = []
+
+async function createTempDir(prefix: string) {
+  const dir = path.join(os.tmpdir(), `${prefix}-${Date.now()}-${Math.random().toString(16).slice(2)}`)
+  await mkdir(dir, { recursive: true })
+  createdDirs.push(dir)
+  return dir
+}
+
+async function writeTempFile(file: string, content: string) {
+  await mkdir(path.dirname(file), { recursive: true })
+  await writeFile(file, content, 'utf8')
+}
+
 describe('bundlers/vite source candidates', () => {
-  afterEach(() => {
+  afterEach(async () => {
     vi.resetModules()
     vi.restoreAllMocks()
+    await Promise.all(
+      createdDirs.splice(0).map(dir => rm(dir, { recursive: true, force: true })),
+    )
   })
 
   it('reuses extracted candidates for identical source content', async () => {
@@ -104,5 +124,39 @@ describe('bundlers/vite source candidates', () => {
       negated: false,
       pattern: '/project/src/*.{js,html,wxml}',
     }])).toEqual(new Set(['flex', 'grid', 'w-[100px]']))
+  })
+
+  it('uses Tailwind v4 scanner defaults for root source discovery', async () => {
+    const { createSourceCandidateCollector } = await import('@/bundlers/vite/source-candidates')
+    const root = await createTempDir('weapp-tw-vite-scanner-defaults')
+    await writeTempFile(path.join(root, '.gitignore'), 'ignored-by-gitignore.js\n')
+    await writeTempFile(path.join(root, 'src/page.wxml'), '<view class="bg-[#112233]"></view>')
+    await writeTempFile(path.join(root, 'node_modules/pkg/index.js'), 'export const cls = "text-[#111111]"')
+    await writeTempFile(path.join(root, 'ignored-by-gitignore.js'), 'export const cls = "text-[#222222]"')
+    await writeTempFile(path.join(root, 'src/ignored.scss'), '.btn { @apply text-[#333333]; }')
+    await writeTempFile(path.join(root, 'package-lock.json'), '{"class":"text-[#444444]"}')
+
+    const collector = createSourceCandidateCollector()
+    await collector.scanRoot({ root })
+
+    expect(collector.values()).toEqual(new Set(['bg-[#112233]']))
+  })
+
+  it('lets explicit Tailwind v4 source patterns include default ignored extensions', async () => {
+    const { createSourceCandidateCollector } = await import('@/bundlers/vite/source-candidates')
+    const root = await createTempDir('weapp-tw-vite-scanner-explicit-source')
+    await writeTempFile(path.join(root, 'src/explicit.scss'), '.btn { @apply text-[#333333]; }')
+
+    const collector = createSourceCandidateCollector()
+    await collector.scanRoot({
+      root,
+      entries: [{
+        base: path.join(root, 'src'),
+        pattern: 'explicit.scss',
+        negated: false,
+      }],
+    })
+
+    expect(collector.values()).toEqual(new Set(['text-[#333333]']))
   })
 })

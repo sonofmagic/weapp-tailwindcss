@@ -265,7 +265,7 @@ export function createGenerateBundleHook(context: GenerateBundleContext) {
       runtimeSet: transformRuntime,
     }
     metrics.runtimeSet = measureElapsed(runtimeStart)
-    timingDetails.runtime = metrics.runtimeSet
+    timingDetails['runtime'] = metrics.runtimeSet
     if (forceRuntimeRefreshBySource) {
       debug(
         'runtimeSet forced refresh due to source changes: html=%d js=%d',

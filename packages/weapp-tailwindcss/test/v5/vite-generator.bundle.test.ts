@@ -72,6 +72,95 @@ describe('v5 vite generator bundle', () => {
     )
   })
 
+  it('does not generate v4 utilities from vendor merge runtime config', async () => {
+    const generateMock = vi.fn(async ({ candidates }: { candidates: Set<string> }) => ({
+      css: [...candidates].sort().map(candidate => `.${candidate}{}`).join('\n'),
+      rawCss: [...candidates].sort().map(candidate => `.${candidate}{}`).join('\n'),
+      target: 'weapp',
+      classSet: new Set(candidates),
+      dependencies: [],
+      sources: [],
+      root: null,
+    }))
+
+    vi.doMock('@/generator', async (importOriginal) => {
+      const actual = await importOriginal<typeof import('@/generator')>()
+      return {
+        ...actual,
+        createWeappTailwindcssGenerator: vi.fn(() => ({
+          generate: generateMock,
+        })),
+        resolveTailwindV4SourceFromPatcher: vi.fn(async () => ({
+          projectRoot: process.cwd(),
+          base: process.cwd(),
+          baseFallbacks: [],
+          css: '@import "tailwindcss";',
+          dependencies: [],
+        })),
+      }
+    })
+
+    setCurrentContext(createContext({
+      twPatcher: {
+        patch: vi.fn(),
+        getClassSet: vi.fn(async () => new Set<string>()),
+        getClassSetSync: vi.fn(() => new Set<string>()),
+        extract: vi.fn(async () => ({ classSet: new Set<string>() })),
+        majorVersion: 4,
+        options: {
+          projectRoot: process.cwd(),
+          tailwind: {
+            v4: {
+              base: process.cwd(),
+              css: '@import "tailwindcss";',
+            },
+          },
+        },
+      },
+    }))
+
+    const { postPlugin, sourcePlugin } = await resolvePostPlugin()
+    const transform = getTransformHandler(sourcePlugin)
+    await transform?.call(sourcePlugin, 'export const cls = "bg-[#123456]"', '/project/pages/index/index.ts')
+    const vendorChunk = createRollupChunk('const mergeConfig = { sr: ["sr-only", "not-sr-only"], position: ["sticky"], display: ["inline-table"] }')
+    vendorChunk.isEntry = false
+    vendorChunk.fileName = 'common/vendor.js'
+    vendorChunk.moduleIds = ['/project/node_modules/@weapp-tailwindcss/merge/dist/index.mjs']
+    vendorChunk.modules = {
+      '/project/node_modules/@weapp-tailwindcss/merge/dist/index.mjs': {
+        code: null,
+        originalLength: 100,
+        removedExports: [],
+        renderedExports: [],
+        renderedLength: 100,
+      },
+    }
+
+    const bundle = {
+      'common/vendor.js': vendorChunk,
+      'pages/index/index.js': {
+        ...createRollupChunk('const cls = "bg-[#123456]"'),
+        fileName: 'pages/index/index.js',
+      } as OutputChunk,
+      'app.css': {
+        ...createRollupAsset('/*! weapp-tailwindcss generator-placeholder */'),
+        fileName: 'app.css',
+      },
+    }
+
+    const generateBundle = getGenerateBundleHandler(postPlugin)
+    await generateBundle?.call(postPlugin, {} as any, bundle)
+
+    const candidates = generateMock.mock.calls[0]?.[0]?.candidates as Set<string>
+    expect(candidates.has('bg-[#123456]')).toBe(true)
+    expect(candidates.has('sr-only')).toBe(false)
+    expect(candidates.has('not-sr-only')).toBe(false)
+    expect(candidates.has('sticky')).toBe(false)
+    expect(candidates.has('inline-table')).toBe(false)
+    expect((bundle['app.css'] as OutputAsset).source).toContain('bg-[#123456]')
+    expect((bundle['app.css'] as OutputAsset).source).not.toContain('sr-only')
+  }, TEST_TIMEOUT_MS)
+
   it('can force generator output for tailwind v4 main css without relying on the tailwind banner', async () => {
     const runtimeSet = new Set(['w-[100px]'])
     const rawTailwindCss = '.w-\\[100px\\]{width:100px}'

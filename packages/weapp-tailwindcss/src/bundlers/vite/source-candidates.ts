@@ -1,15 +1,15 @@
 import type { TailwindInlineSourceCandidates, TailwindSourceEntry } from '@/tailwindcss/source-scan'
+import { realpathSync } from 'node:fs'
 import { readFile } from 'node:fs/promises'
 import path from 'node:path'
-import fg from 'fast-glob'
 import micromatch from 'micromatch'
-import { extractSourceCandidates } from 'tailwindcss-patch'
-import { expandTailwindSourceEntries } from '@/tailwindcss/source-scan'
+import { extractSourceCandidates, resolveProjectSourceFiles } from 'tailwindcss-patch'
 
 export interface SourceCandidateCollector {
   sync: (id: string, source: string) => Promise<void>
   merge: (id: string, source: string) => Promise<void>
   syncFile: (id: string) => Promise<void>
+  syncCurrentFile: (id: string) => Promise<void>
   scanRoot: (options: ScanSourceCandidateRootOptions) => Promise<void>
   syncInline: (inlineCandidates: TailwindInlineSourceCandidates | undefined) => void
   remove: (id: string) => void
@@ -35,57 +35,25 @@ interface ScanSourceCandidateRootOptions {
 }
 
 const CLEAN_URL_RE = /[?#].*$/
-const SOURCE_CANDIDATE_EXTENSIONS = [
-  'js',
-  'jsx',
-  'mjs',
-  'cjs',
-  'ts',
-  'tsx',
-  'mts',
-  'cts',
-  'vue',
-  'uvue',
-  'nvue',
-  'svelte',
-  'mpx',
-  'html',
-  'wxml',
-  'axml',
-  'jxml',
-  'ksml',
-  'ttml',
-  'qml',
-  'tyml',
-  'xhsml',
-  'swan',
-  'css',
-  'wxss',
-  'acss',
-  'jxss',
-  'ttss',
-  'qss',
-  'tyss',
-  'scss',
-  'sass',
-  'less',
-  'styl',
-  'stylus',
-]
 const SOURCE_CANDIDATE_EXTENSION_RE = /\.(?:[cm]?[jt]sx?|vue|uvue|nvue|svelte|mpx|html|wxml|axml|jxml|ksml|ttml|qml|tyml|xhsml|swan|css|wxss|acss|jxss|ttss|qss|tyss|scss|sass|less|stylus?)$/
-const SOURCE_CANDIDATE_GLOB = `**/*.{${SOURCE_CANDIDATE_EXTENSIONS.join(',')}}`
-const DEFAULT_SCAN_IGNORE = [
-  '**/node_modules/**',
-  '**/.git/**',
-]
 const sourceCandidateContentCache = new Map<string, string[]>()
 
 function cleanUrl(id: string) {
-  return path.resolve(id.replace(CLEAN_URL_RE, ''))
+  const resolved = path.resolve(id.replace(CLEAN_URL_RE, ''))
+  try {
+    return realpathSync.native(resolved)
+  }
+  catch {
+    return resolved
+  }
 }
 
 function toPosixPath(value: string) {
   return value.split(path.sep).join('/')
+}
+
+function resolveEntryBase(entry: TailwindSourceEntry) {
+  return cleanUrl(entry.base)
 }
 
 function resolveOutDirIgnorePattern(root: string, outDir: string | undefined) {
@@ -150,9 +118,9 @@ function isFileMatchedByEntries(file: string, entries: TailwindSourceEntry[] | u
   }
   const resolvedFile = path.resolve(file)
   const matchesPositive = positiveEntries.some((entry) => {
-    const relative = toPosixPath(path.relative(path.resolve(entry.base), resolvedFile))
+    const relative = toPosixPath(path.relative(resolveEntryBase(entry), resolvedFile))
     const pattern = path.isAbsolute(entry.pattern)
-      ? toPosixPath(path.relative(path.resolve(entry.base), entry.pattern))
+      ? toPosixPath(path.relative(resolveEntryBase(entry), entry.pattern))
       : entry.pattern
     return relative && !relative.startsWith('../') && !path.isAbsolute(relative) && micromatch.isMatch(relative, pattern)
   })
@@ -160,9 +128,9 @@ function isFileMatchedByEntries(file: string, entries: TailwindSourceEntry[] | u
     return false
   }
   return !negativeEntries.some((entry) => {
-    const relative = toPosixPath(path.relative(path.resolve(entry.base), resolvedFile))
+    const relative = toPosixPath(path.relative(resolveEntryBase(entry), resolvedFile))
     const pattern = path.isAbsolute(entry.pattern)
-      ? toPosixPath(path.relative(path.resolve(entry.base), entry.pattern))
+      ? toPosixPath(path.relative(resolveEntryBase(entry), entry.pattern))
       : entry.pattern
     return relative && !relative.startsWith('../') && !path.isAbsolute(relative) && micromatch.isMatch(relative, pattern)
   })
@@ -212,21 +180,36 @@ export function createSourceCandidateCollector(): SourceCandidateCollector {
     await sync(normalizedId, await readFile(normalizedId, 'utf8'))
   }
 
+  async function syncCurrentFile(id: string) {
+    const normalizedId = cleanUrl(id)
+    transformCandidatesById.delete(normalizedId)
+    await syncFile(normalizedId)
+  }
+
   async function scanRoot({ entries, root, outDir }: ScanSourceCandidateRootOptions) {
     const resolvedRoot = path.resolve(root)
     const outDirIgnore = resolveOutDirIgnorePattern(resolvedRoot, outDir)
-    const ignore = outDirIgnore
-      ? [...DEFAULT_SCAN_IGNORE, outDirIgnore]
-      : DEFAULT_SCAN_IGNORE
-    const files = entries
-      ? await expandTailwindSourceEntries(entries, { ignore })
-      : await fg(SOURCE_CANDIDATE_GLOB, {
-          absolute: true,
-          cwd: resolvedRoot,
-          ignore,
-          onlyFiles: true,
-          unique: true,
-        })
+    const scanEntries = outDirIgnore
+      ? [
+          ...(entries?.length
+            ? entries
+            : [{
+                base: resolvedRoot,
+                pattern: '**/*',
+                negated: false,
+              }]),
+          {
+            base: resolvedRoot,
+            pattern: outDirIgnore,
+            negated: true,
+          },
+        ]
+      : entries
+    const files = await resolveProjectSourceFiles({
+      cwd: resolvedRoot,
+      ...(scanEntries === undefined ? {} : { sources: scanEntries }),
+      filter: isSourceCandidateRequest,
+    })
 
     await Promise.all(files.map(file => syncFile(file)))
   }
@@ -378,6 +361,7 @@ export function createSourceCandidateCollector(): SourceCandidateCollector {
     sync,
     merge,
     syncFile,
+    syncCurrentFile,
     scanRoot,
     syncInline,
     remove,

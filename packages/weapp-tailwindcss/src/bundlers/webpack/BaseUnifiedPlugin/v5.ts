@@ -189,7 +189,7 @@ export class UnifiedWebpackPluginV5 implements IBaseWebpackPlugin {
       debug('detected tailwindcss v4 css source from webpack css module: %s', source.file)
     }
 
-    compiler.hooks.invalid?.tap?.(pluginName, (fileName?: string) => {
+    compiler.hooks.invalid?.tap?.(pluginName, (fileName: string | null) => {
       if (!fileName) {
         return
       }

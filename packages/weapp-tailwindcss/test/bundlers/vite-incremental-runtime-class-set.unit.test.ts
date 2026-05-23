@@ -384,9 +384,9 @@ describe('bundlers/vite incremental runtime class set', () => {
     })
 
     const snapshot = buildBundleSnapshot({
-      'common/vendor.js': {
+      'pages/index/index.js': {
         ...createRollupChunk('const cls = "w-[200rpx] h-[20upx] bg-[#123456]"'),
-        fileName: 'common/vendor.js',
+        fileName: 'pages/index/index.js',
       },
     }, opts, outDir, state)
 
@@ -396,6 +396,68 @@ describe('bundlers/vite incremental runtime class set', () => {
       'bg-[#123456]',
     ]))
     expect(extractCandidates).toHaveBeenCalledTimes(1)
+  })
+
+  it('ignores dependency vendor chunks when collecting tailwind v4 runtime candidates', async () => {
+    const opts = createOptions()
+    const outDir = '/project/dist'
+    const state = createBundleBuildState()
+    const patcher = createPatcher('/project')
+    const extractCandidates = vi.fn(async (options) => {
+      const source = options?.content ?? ''
+      return source.split(/\s+/).filter(Boolean)
+    })
+    const extractRawCandidates = vi.fn(async (content: string) => {
+      if (content.includes('sr-only')) {
+        return [
+          { rawCandidate: 'sr-only' },
+          { rawCandidate: 'not-sr-only' },
+          { rawCandidate: 'sticky' },
+          { rawCandidate: 'inline-table' },
+        ]
+      }
+      if (content.includes('bg-[#123456]')) {
+        return [{ rawCandidate: 'bg-[#123456]' }]
+      }
+      return []
+    })
+    const manager = createBundleRuntimeClassSetManager({
+      extractCandidates,
+      extractRawCandidates,
+    })
+
+    const vendorChunk = createRollupChunk('const mergeConfig = { sr: ["sr-only", "not-sr-only"], position: ["sticky"], display: ["inline-table"] }')
+    vendorChunk.isEntry = false
+    vendorChunk.fileName = 'common/vendor.js'
+    vendorChunk.moduleIds = ['/project/node_modules/@weapp-tailwindcss/merge/dist/index.mjs']
+    vendorChunk.modules = {
+      '/project/node_modules/@weapp-tailwindcss/merge/dist/index.mjs': {
+        code: null,
+        originalLength: 100,
+        removedExports: [],
+        renderedExports: [],
+        renderedLength: 100,
+      },
+    }
+
+    const snapshot = buildBundleSnapshot({
+      'common/vendor.js': vendorChunk,
+      'pages/index/index.js': {
+        ...createRollupChunk('const cls = "bg-[#123456]"'),
+        fileName: 'pages/index/index.js',
+      },
+    }, opts, outDir, state)
+
+    await expect(manager.sync(patcher, snapshot)).resolves.toEqual(new Set(['bg-[#123456]']))
+    expect(extractRawCandidates).toHaveBeenCalledTimes(1)
+    expect(extractRawCandidates).toHaveBeenCalledWith(
+      expect.stringContaining('bg-[#123456]'),
+      'js',
+    )
+    expect(extractRawCandidates).not.toHaveBeenCalledWith(
+      expect.stringContaining('sr-only'),
+      expect.any(String),
+    )
   })
 
   it('resets incremental runtime state when css entry signature changes', async () => {

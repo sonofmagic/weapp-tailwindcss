@@ -1,8 +1,8 @@
 import type { Root } from 'postcss'
 import { stat } from 'node:fs/promises'
 import path from 'node:path'
-import fg from 'fast-glob'
 import micromatch from 'micromatch'
+import { resolveProjectSourceFiles } from 'tailwindcss-patch'
 
 export interface TailwindSourceEntry {
   base: string
@@ -89,7 +89,7 @@ function splitStaticGlobPrefix(pattern: string) {
   }
 }
 
-function segmentTopLevel(input: string, separator: string) {
+function segmentTopLevel(input: string, separator: string, options: { keepEmpty?: boolean } = {}) {
   const parts: string[] = []
   const stack: string[] = []
   let lastPos = 0
@@ -127,11 +127,17 @@ function segmentTopLevel(input: string, separator: string) {
       continue
     }
     if (stack.length === 0 && char === separator) {
-      parts.push(input.slice(lastPos, index))
+      const part = input.slice(lastPos, index)
+      if (part || options.keepEmpty) {
+        parts.push(part)
+      }
       lastPos = index + 1
     }
   }
-  parts.push(input.slice(lastPos))
+  const part = input.slice(lastPos)
+  if (part || options.keepEmpty) {
+    parts.push(part)
+  }
   return parts
 }
 
@@ -205,7 +211,7 @@ export function expandInlineSourceCandidatePattern(pattern: string): string[] {
 
   const inner = rest.slice(1, endIndex)
   const suffix = rest.slice(endIndex + 1)
-  const parts = (isSequence(inner) ? expandSequence(inner) : segmentTopLevel(inner, ','))
+  const parts = (isSequence(inner) ? expandSequence(inner) : segmentTopLevel(inner, ',', { keepEmpty: true }))
     .flatMap(part => expandInlineSourceCandidatePattern(part))
   const suffixes = expandInlineSourceCandidatePattern(suffix)
   return suffixes.flatMap(suffix =>
@@ -382,8 +388,11 @@ export async function expandTailwindSourceEntries(
     ignore?: string[]
   } = {},
 ) {
+  if (entries.length === 0) {
+    return []
+  }
+
   const files = new Set<string>()
-  const negativeEntries = entries.filter(entry => entry.negated)
   const entriesByBase = new Map<string, TailwindSourceEntry[]>()
   for (const entry of entries) {
     const base = path.resolve(entry.base)
@@ -396,27 +405,22 @@ export async function expandTailwindSourceEntries(
   }
 
   await Promise.all([...entriesByBase.entries()].map(async ([base, group]) => {
-    const patterns = group.map((entry) => {
-      const pattern = normalizeGlobPattern(entry.pattern)
-      return entry.negated ? `!${pattern}` : pattern
-    })
-    if (!patterns.some(pattern => !pattern.startsWith('!'))) {
-      return
-    }
-    const ignore = options.ignore
-    const matched = await fg(patterns, {
-      absolute: true,
+    const ignoredSources = options.ignore?.map(pattern => ({
+      base,
+      pattern: normalizeGlobPattern(pattern),
+      negated: true,
+    }))
+    const matched = await resolveProjectSourceFiles({
       cwd: base,
-      ...(ignore === undefined ? {} : { ignore }),
-      onlyFiles: true,
-      unique: true,
+      sources: group,
+      ...(ignoredSources === undefined ? {} : { ignoredSources }),
     })
     for (const file of matched) {
       files.add(path.resolve(file))
     }
   }))
 
-  return [...files].filter(file => !negativeEntries.some((entry) => {
+  return [...files].filter(file => !entries.filter(entry => entry.negated).some((entry) => {
     const relative = path.relative(path.resolve(entry.base), file).split(path.sep).join('/')
     return relative && !relative.startsWith('../') && !path.isAbsolute(relative) && micromatch.isMatch(relative, normalizeGlobPattern(entry.pattern))
   }))

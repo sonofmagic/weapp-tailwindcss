@@ -1,6 +1,7 @@
 import type { Result, Root } from 'postcss'
 import type { TailwindV4CandidateSource } from '../generator'
 import type { WeappTailwindcssPostcssPluginOptions } from '../postcss'
+import type { TailwindSourceEntry } from '@/tailwindcss/source-scan'
 import { readFile } from 'node:fs/promises'
 import path from 'node:path'
 import { loadConfig } from 'tailwindcss-config'
