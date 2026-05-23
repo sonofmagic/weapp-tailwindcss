@@ -1,4 +1,4 @@
-import { mkdir, mkdtemp, readdir, readFile, rm, symlink, writeFile } from 'node:fs/promises'
+import { mkdir, mkdtemp, readdir, readFile, realpath, rm, symlink, writeFile } from 'node:fs/promises'
 import { createRequire } from 'node:module'
 import { tmpdir } from 'node:os'
 import path from 'node:path'
@@ -63,6 +63,22 @@ async function readBuiltCss(root: string) {
   return (await Promise.all(cssFiles.map(file => readFile(file, 'utf8')))).join('\n')
 }
 
+async function resolvePathForCompare(file: string) {
+  try {
+    return await realpath(file)
+  }
+  catch {
+    return path.resolve(file)
+  }
+}
+
+async function collectDependencyFilesForCompare(messages: postcss.Result['messages']) {
+  const files = await Promise.all(messages
+    .filter(message => message.type === 'dependency' && typeof message.file === 'string')
+    .map(message => resolvePathForCompare(message.file)))
+  return new Set(files)
+}
+
 describe('source negation e2e', () => {
   it('honors Tailwind v3 content negation through the PostCSS generator', async () => {
     const project = await createTempProject('weapp-tw-e2e-postcss-v3-not-')
@@ -89,14 +105,9 @@ describe('source negation e2e', () => {
       expect(result.css).toContain('.w-_b100px_B')
       expect(result.css).not.toContain('.text-_b77rpx_B')
       expect(result.css).not.toContain('.bg-_b_h445566_B')
-      expect(result.messages).toContainEqual(expect.objectContaining({
-        type: 'dependency',
-        file: pageFile,
-      }))
-      expect(result.messages).not.toContainEqual(expect.objectContaining({
-        type: 'dependency',
-        file: ignoredFile,
-      }))
+      const dependencyFiles = await collectDependencyFilesForCompare(result.messages)
+      expect(dependencyFiles).toContain(await resolvePathForCompare(pageFile))
+      expect(dependencyFiles).not.toContain(await resolvePathForCompare(ignoredFile))
     }
     finally {
       await project.cleanup()
@@ -127,14 +138,9 @@ describe('source negation e2e', () => {
       expect(result.css).toContain('.w-_b100px_B')
       expect(result.css).not.toContain('.text-_b77rpx_B')
       expect(result.css).not.toContain('.bg-_b_h445566_B')
-      expect(result.messages).toContainEqual(expect.objectContaining({
-        type: 'dependency',
-        file: pageFile,
-      }))
-      expect(result.messages).not.toContainEqual(expect.objectContaining({
-        type: 'dependency',
-        file: ignoredFile,
-      }))
+      const dependencyFiles = await collectDependencyFilesForCompare(result.messages)
+      expect(dependencyFiles).toContain(await resolvePathForCompare(pageFile))
+      expect(dependencyFiles).not.toContain(await resolvePathForCompare(ignoredFile))
     }
     finally {
       await project.cleanup()
