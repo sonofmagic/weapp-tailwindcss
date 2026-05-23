@@ -1,5 +1,15 @@
 # weapp-tailwindcss
 
+## 5.0.0-next.18
+
+### Patch Changes
+
+- 🐛 **修复 Tailwind CSS v4 source 扫描回归，避免 PostCSS 和 Vite 生成链路误丢 `@source` 命中的文件，并过滤小程序不支持的 slash variant 候选。** [#870](https://github.com/sonofmagic/weapp-tailwindcss/pull/870) by @github-actions
+
+- 🐛 **修复 Vite + Tailwind CSS v4 生成时把 vendor 依赖 chunk 中的运行时配置字符串误提取为候选类的问题，并对齐裸 Tailwind v4 CSS 入口的默认 source 扫描范围。** [#870](https://github.com/sonofmagic/weapp-tailwindcss/pull/870) by @github-actions
+
+- 🐛 **Upgrade tailwindcss-patch to 9.3.7 and align Tailwind CSS v4 source option resolution with the shared patch defaults while preserving configured source entries for bundler scans.** [#870](https://github.com/sonofmagic/weapp-tailwindcss/pull/870) by @github-actions
+
 ## 5.0.0-next.17
 
 ### Patch Changes
