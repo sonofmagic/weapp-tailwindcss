@@ -114,7 +114,7 @@ function shouldUseDefaultAutoprefixer(options: IStyleHandlerOptions, userPlugins
   if (options.autoprefixer === true || typeof options.autoprefixer === 'object') {
     return true
   }
-  return options.majorVersion === 4
+  return options.majorVersion === 3 || options.majorVersion === 4
 }
 
 // createPreparedNodes 直接按最终顺序生成可实例化节点，避免 definition 二次中转

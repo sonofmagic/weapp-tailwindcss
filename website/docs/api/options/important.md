@@ -37,7 +37,7 @@ keywords:
 | [px2rpx](#px2rpx) | <code>boolean &#124; Px2rpxOptions</code> | — | px 到 rpx 的转换配置。 |
 | [unitsToPx](#unitstopx) | <code>boolean &#124; UnitsToPxOptions</code> | — | 多单位转 px 的转换配置。 |
 | [cssPresetEnv](#csspresetenv) | <code>PresetEnvOptions</code> | — | `postcss-preset-env` 的配置项。 |
-| [autoprefixer](#autoprefixer) | <code>WeappAutoprefixerOptions</code> | <code>Tailwind CSS v4 为 `true`，其他版本为 `false`</code> | 控制内置 autoprefixer 后处理。 |
+| [autoprefixer](#autoprefixer) | <code>WeappAutoprefixerOptions</code> | <code>true</code> | 控制内置 autoprefixer 后处理。 |
 | [tailwindcss](#tailwindcss) | <code>import("tailwindcss-patch").TailwindCssOptions</code> | — | 为不同版本的 Tailwind 配置行为。 |
 | [cssEntries](#cssentries) | <code>string[]</code> | — | 指定 tailwindcss@4 的入口 CSS。 |
 
@@ -308,6 +308,8 @@ px 到 rpx 的转换配置。
 > 可选 | 类型: `WeappAutoprefixerOptions` | 默认值: `Tailwind CSS v4 为 \`true\`，其他版本为 \`false\`` | 版本: ^4.11.3
 
 控制内置 autoprefixer 后处理。
+
+默认会在 Tailwind CSS v3 / v4 场景下启用，传入 `false` 可显式关闭。
 
 #### 备注
 

@@ -302,9 +302,9 @@ export interface UserDefinedOptionsImportantPart {
    * @since ^4.11.3
    * @group 0.重要配置
    * @remarks
-   * Tailwind CSS v4 下默认启用，用于为小程序 WebView 补齐 `-webkit-` 等兼容前缀，例如让 `bg-clip-text` 输出 `-webkit-background-clip: text`。
-   * Tailwind CSS v3 默认保持关闭。传入 `false` 可显式关闭，传入 `true` 或对象可手动启用或自定义 autoprefixer 参数。
-   * @default Tailwind CSS v4 为 `true`，其他版本为 `false`
+   * Tailwind CSS v3 / v4 下默认启用，用于为小程序 WebView 补齐 `-webkit-` 等兼容前缀，例如让 `bg-clip-text` 输出 `-webkit-background-clip: text`。
+   * 传入 `false` 可显式关闭，传入 `true` 或对象可手动启用或自定义 autoprefixer 参数。
+   * @default `true`
    * @example
    * ```ts
    * weappTailwindcss({

@@ -643,7 +643,7 @@ page{--status-bar-height:25px;--top-window-height:0px;--window-top:0px;--window-
     expect(css).toContain('background-clip: text')
   })
 
-  it('keeps Tailwind CSS v3 autoprefixer disabled by default', async () => {
+  it('adds webkit background clip for Tailwind CSS v3 by default', async () => {
     const styleHandler = createStyleHandler({
       isMainChunk: true,
     })
@@ -652,7 +652,7 @@ page{--status-bar-height:25px;--top-window-height:0px;--window-top:0px;--window-
       majorVersion: 3,
     })
 
-    expect(css).not.toContain('-webkit-background-clip: text')
+    expect(css).toContain('-webkit-background-clip: text')
     expect(css).toContain('background-clip: text')
   })
 })
