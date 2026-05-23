@@ -5,6 +5,7 @@ import path from 'node:path'
 import postcss from 'postcss'
 import tailwindcssPostcss from '@tailwindcss/postcss'
 import weappTailwindcss from '@/postcss'
+import { resolveSourceScanPath } from '@/tailwindcss/source-scan'
 
 const require = createRequire(import.meta.url)
 const workspaceRoot = path.resolve(__dirname, '../../../..')
@@ -261,7 +262,7 @@ describe('v5 Tailwind CSS v4 directives parity', () => {
     expect(generatorResult.css).toBe(officialResult.css)
     expect(generatorResult.messages).toContainEqual(expect.objectContaining({
       type: 'dependency',
-      file: fixture.sourceFile,
+      file: resolveSourceScanPath(fixture.sourceFile),
     }))
     expect(generatorResult.messages).toContainEqual(expect.objectContaining({
       type: 'weapp-tailwindcss:generated',
@@ -308,7 +309,7 @@ describe('v5 Tailwind CSS v4 directives parity', () => {
     expect(normalized).not.toContain(':hover')
     expect(result.messages).toContainEqual(expect.objectContaining({
       type: 'dependency',
-      file: fixture.sourceFile,
+      file: resolveSourceScanPath(fixture.sourceFile),
     }))
     expect(result.messages).toContainEqual(expect.objectContaining({
       type: 'weapp-tailwindcss:generated',

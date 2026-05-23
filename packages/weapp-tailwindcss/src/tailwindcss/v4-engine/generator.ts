@@ -10,7 +10,8 @@ import type {
 import fs from 'node:fs'
 import path from 'node:path'
 import postcss from 'postcss'
-import { createTailwindV4Engine as createPatchTailwindV4Engine } from 'tailwindcss-patch'
+import { createTailwindV4Engine as createPatchTailwindV4Engine, extractRawCandidates } from 'tailwindcss-patch'
+import { resolveCssSourceEntries, resolveTailwindSourceEntry } from '@/tailwindcss/source-scan'
 import { omitUndefined } from '@/utils/object'
 import { filterUnsupportedMiniProgramTailwindV4Candidates } from './candidates'
 import { loadTailwindV4DesignSystem } from './design-system'
@@ -18,7 +19,6 @@ import { transformTailwindV4CssByTarget } from './miniprogram'
 import { applyTailwindV3CompatibilityCss } from './tailwind-v3-compatibility'
 import { createTailwindV4DefaultColorThemeCss } from './tailwind-v4-default-colors'
 
-type TailwindV4ScanSourcePatterns = Exclude<NonNullable<TailwindV4GenerateOptions['scanSources']>, boolean>
 type TailwindV4ResolvedScanSources = TailwindV4GenerateOptions['scanSources']
 
 const incrementalGenerateCache = new Map<string, TailwindV4IncrementalGenerateCacheEntry>()
@@ -316,35 +316,13 @@ function removeUnlayeredTailwindV4PreflightImports(css: string) {
   return changed ? root.toString() : css
 }
 
-function parseSourceFileParam(params: string) {
-  const value = params.trim()
-  if (!value || value === 'none' || value.startsWith('inline(')) {
-    return undefined
-  }
-
-  const negated = value.startsWith('not ')
-  const sourceValue = negated ? value.slice(4).trim() : value
-  if (sourceValue.startsWith('inline(')) {
-    return undefined
-  }
-
-  const match = /^(['"])(.+)\1$/.exec(sourceValue)
-  return match?.[2]
-    ? {
-        negated,
-        pattern: match[2],
-      }
-    : undefined
-}
-
 function resolveSourceBase(base: string, sourcePath: string) {
   return path.isAbsolute(sourcePath) ? sourcePath : path.resolve(base, sourcePath)
 }
 
-function resolveCssDefinedScanSources(source: TailwindV4ResolvedSource): TailwindV4ResolvedScanSources | undefined {
+async function resolveCssDefinedScanSources(source: Pick<TailwindV4ResolvedSource, 'base' | 'css' | 'dependencies'>): Promise<TailwindV4ResolvedScanSources | undefined> {
   let importSourceBase: string | undefined
   let hasSourceNone = false
-  const sourcePatterns: TailwindV4ScanSourcePatterns = []
   const from = source.dependencies[0]
   let root: postcss.Root
   try {
@@ -366,50 +344,34 @@ function resolveCssDefinedScanSources(source: TailwindV4ResolvedSource): Tailwin
       if (sourceParam?.sourcePath) {
         importSourceBase = resolveSourceBase(source.base, sourceParam.sourcePath)
       }
-      return
     }
-
-    if (rule.name !== 'source') {
-      return
-    }
-
-    const sourcePattern = parseSourceFileParam(rule.params)
-    if (!sourcePattern) {
-      return
-    }
-
-    sourcePatterns.push({
-      base: source.base,
-      negated: sourcePattern.negated,
-      pattern: sourcePattern.pattern,
-    })
   })
 
+  const sourcePatterns = await resolveCssSourceEntries(root, source.base, '**/*')
   if (!importSourceBase) {
+    if (sourcePatterns.length > 0) {
+      return sourcePatterns
+    }
     if (hasSourceNone) {
-      return sourcePatterns.length > 0 ? sourcePatterns : false
+      return false
     }
     return undefined
   }
 
   return [
-    {
-      base: importSourceBase,
-      negated: false,
-      pattern: '**/*',
-    },
+    await resolveTailwindSourceEntry('.', importSourceBase, false, '**/*'),
     ...sourcePatterns,
   ]
 }
 
-function resolveScanSources(
+async function resolveScanSources(
   source: TailwindV4ResolvedSource,
   scanSources: TailwindV4GenerateOptions['scanSources'],
 ) {
   if (scanSources !== true) {
     return scanSources
   }
-  return resolveCssDefinedScanSources(source) ?? scanSources
+  return await resolveCssDefinedScanSources(source) ?? false
 }
 
 function hasThemeParent(rule: postcss.AtRule) {
@@ -464,12 +426,19 @@ export function createTailwindV4Engine(source: TailwindV4ResolvedSource): Tailwi
       ...patchOptions
     } = options
     const compatibleSource = createCompatibleSource(generateSource, target, tailwindcssV3Compatibility)
-    const candidates = resolveTargetCandidates(patchOptions.candidates, target)
     const engine = createPatchTailwindV4Engine(compatibleSource)
+    const resolvedScanSources = await resolveScanSources(generateSource, scanSources)
+    const filesystemCandidates = Array.isArray(resolvedScanSources)
+      ? new Set(await extractRawCandidates(resolvedScanSources))
+      : undefined
+    const resolvedCandidates = resolveTargetCandidates(new Set([
+      ...collectCandidates(patchOptions.candidates),
+      ...(filesystemCandidates ?? []),
+    ]), target)
     const result = await engine.generate(omitUndefined({
-      scanSources: resolveScanSources(compatibleSource, scanSources),
+      scanSources: false,
       ...patchOptions,
-      candidates,
+      candidates: resolvedCandidates,
     }))
     const rawCss = result.css
     const css = await transformTailwindV4CssByTarget(rawCss, target, styleOptions)

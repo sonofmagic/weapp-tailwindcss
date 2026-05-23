@@ -7,6 +7,7 @@ import {
   createWeappTailwindcssGenerator,
   normalizeWeappTailwindcssGeneratorOptions,
 } from '@/generator'
+import { filterUnsupportedMiniProgramTailwindV4Candidates } from '@/tailwindcss/v4-engine/candidates'
 import { resolveUniAppXOptions } from '@/uni-app-x/options'
 import { finalizeMiniProgramCss, removeUnsupportedMiniProgramAtRules } from './css-cleanup'
 import {
@@ -437,10 +438,13 @@ export async function generateCssByGenerator(
             isolateCssSource,
           })
         : runtime
+      const generatorRuntime = majorVersion === 4 && generatorOptions.target === 'weapp'
+        ? filterUnsupportedMiniProgramTailwindV4Candidates(sourceRuntime)
+        : sourceRuntime
       return generator.generate({
-        candidates: sourceRuntime,
+        candidates: generatorRuntime,
         incrementalCache: majorVersion === 3 || majorVersion === 4,
-        scanSources: majorVersion === 4 && sourceRuntime.size === 0 && !isolateCssSource,
+        scanSources: majorVersion === 4 && generatorRuntime.size === 0 && !isolateCssSource,
         styleOptions: generatorStyleOptions,
         tailwindcssV3Compatibility: generatorOptions.tailwindcssV3Compatibility,
         target: generatorOptions.target,

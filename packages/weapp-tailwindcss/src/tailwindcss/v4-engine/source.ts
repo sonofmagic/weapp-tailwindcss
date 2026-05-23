@@ -1,4 +1,4 @@
-import type { TailwindV4SourceOptions } from './types'
+import type { TailwindV4SourceOptions, TailwindV4SourceOptionsWithSources } from './types'
 import type { TailwindcssPatcherLike } from '@/types'
 import path from 'node:path'
 import process from 'node:process'
@@ -145,7 +145,7 @@ function readTailwindV4Options(patcher: TailwindcssPatcherLike) {
 
 export function resolveTailwindV4SourceOptionsFromPatcher(
   patcher: TailwindcssPatcherLike,
-): TailwindV4SourceOptions {
+): TailwindV4SourceOptionsWithSources {
   const projectRoot = getProjectRoot(patcher)
   const tailwindOptions = resolveTailwindcssOptions(patcher.options)
   const tailwindV4Options = readTailwindV4Options(patcher)
@@ -164,7 +164,7 @@ export function resolveTailwindV4SourceOptionsFromPatcher(
     cssEntries: tailwindV4Options?.cssEntries,
     sources: tailwindV4Options?.sources,
     packageName: resolveTailwindCssImportTarget(patcher),
-  }) as TailwindV4SourceOptions
+  }) as TailwindV4SourceOptionsWithSources
 }
 
 export function resolveTailwindV4Source(options?: TailwindV4SourceOptions) {

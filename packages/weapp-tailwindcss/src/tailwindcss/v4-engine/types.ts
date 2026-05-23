@@ -27,6 +27,10 @@ export interface TailwindV4GenerateOptions extends TailwindV4PatchGenerateOption
   scanSources?: PatchTailwindV4GenerateOptions['scanSources'] | undefined
 }
 
+export interface TailwindV4SourceOptionsWithSources extends TailwindV4SourceOptions {
+  sources?: TailwindV4SourcePattern[] | undefined
+}
+
 export interface TailwindV4GenerateResult extends Omit<PatchTailwindV4GenerateResult, 'css'> {
   css: string
   rawCss: string

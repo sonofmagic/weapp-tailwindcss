@@ -112,6 +112,19 @@ function normalizeEntryPattern(entry: TailwindSourceEntry) {
     : entry.pattern
 }
 
+function isFileMatchedByTailwindSourceEntry(file: string, entry: TailwindSourceEntry) {
+  const relative = toPosixPath(path.relative(resolveSourceScanPath(entry.base), file))
+  return relative && !relative.startsWith('../') && !path.isAbsolute(relative) && micromatch.isMatch(relative, normalizeEntryPattern(entry))
+}
+
+export function isFileExcludedByTailwindSourceEntries(file: string, entries: TailwindSourceEntry[] | undefined) {
+  if (!entries?.length) {
+    return false
+  }
+  const resolvedFile = resolveSourceScanPath(file)
+  return entries.some(entry => entry.negated && isFileMatchedByTailwindSourceEntry(resolvedFile, entry))
+}
+
 export function isFileMatchedByTailwindSourceEntries(file: string, entries: TailwindSourceEntry[] | undefined) {
   if (!entries?.length) {
     return true
@@ -122,17 +135,11 @@ export function isFileMatchedByTailwindSourceEntries(file: string, entries: Tail
     return false
   }
   const resolvedFile = resolveSourceScanPath(file)
-  const matchesPositive = positiveEntries.some((entry) => {
-    const relative = toPosixPath(path.relative(resolveSourceScanPath(entry.base), resolvedFile))
-    return relative && !relative.startsWith('../') && !path.isAbsolute(relative) && micromatch.isMatch(relative, normalizeEntryPattern(entry))
-  })
+  const matchesPositive = positiveEntries.some(entry => isFileMatchedByTailwindSourceEntry(resolvedFile, entry))
   if (!matchesPositive) {
     return false
   }
-  return !negativeEntries.some((entry) => {
-    const relative = toPosixPath(path.relative(resolveSourceScanPath(entry.base), resolvedFile))
-    return relative && !relative.startsWith('../') && !path.isAbsolute(relative) && micromatch.isMatch(relative, normalizeEntryPattern(entry))
-  })
+  return !negativeEntries.some(entry => isFileMatchedByTailwindSourceEntry(resolvedFile, entry))
 }
 
 export function createTailwindSourceEntryMatcher(entries: TailwindSourceEntry[] | undefined) {
@@ -526,5 +533,5 @@ export async function expandTailwindSourceEntries(
     }
   }))
 
-  return [...files].filter(file => isFileMatchedByTailwindSourceEntries(file, entries))
+  return [...files].filter(file => !isFileExcludedByTailwindSourceEntries(file, entries))
 }

@@ -3,6 +3,7 @@ import { tmpdir } from 'node:os'
 import path from 'node:path'
 import postcss from 'postcss'
 import weappTailwindcss from '@/postcss'
+import { resolveSourceScanPath } from '@/tailwindcss/source-scan'
 
 const MINIMAL_THEME_CSS = `
 @theme default {
@@ -159,7 +160,7 @@ describe('v5 postcss generator', () => {
     expect(result.css).toContain('.bg-blue-500')
     expect(result.messages).toContainEqual(expect.objectContaining({
       type: 'dependency',
-      file: pageEntry,
+      file: resolveSourceScanPath(pageEntry),
     }))
   })
 
@@ -223,11 +224,11 @@ describe('v5 postcss generator', () => {
     expect(result.css).not.toContain('.text-_b77rpx_B')
     expect(result.messages).toContainEqual(expect.objectContaining({
       type: 'dependency',
-      file: pageEntry,
+      file: resolveSourceScanPath(pageEntry),
     }))
     expect(result.messages).not.toContainEqual(expect.objectContaining({
       type: 'dependency',
-      file: ignoredEntry,
+      file: resolveSourceScanPath(ignoredEntry),
     }))
   })
 
@@ -449,7 +450,7 @@ describe('v5 postcss generator', () => {
       expect(result.css).not.toContain('.text-_b77rpx_B')
       expect(result.messages).toContainEqual(expect.objectContaining({
         type: 'dependency',
-        file: pageEntry,
+        file: resolveSourceScanPath(pageEntry),
       }))
       expect(result.messages).not.toContainEqual(expect.objectContaining({
         type: 'dependency',
