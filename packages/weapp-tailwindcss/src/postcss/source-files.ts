@@ -9,6 +9,7 @@ import { extractRawCandidatesWithPositions, extractValidCandidates } from 'tailw
 import {
   collectCssInlineSourceCandidates,
   createSourceScanPattern,
+  DEFAULT_SOURCE_SCAN_EXTENSIONS,
   expandTailwindSourceEntries,
   normalizeLegacyContentEntries,
   parseConfigParam,
@@ -16,25 +17,7 @@ import {
 } from '@/tailwindcss/source-scan'
 import { resolvePostcssBase, resolvePostcssProjectRoot } from './context'
 
-const POSTCSS_SOURCE_EXTENSIONS = [
-  'html',
-  'wxml',
-  'axml',
-  'jxml',
-  'ksml',
-  'ttml',
-  'qml',
-  'tyml',
-  'xhsml',
-  'swan',
-  'vue',
-  'mpx',
-  'js',
-  'jsx',
-  'ts',
-  'tsx',
-]
-const POSTCSS_SOURCE_PATTERN = createSourceScanPattern(POSTCSS_SOURCE_EXTENSIONS)
+const POSTCSS_SOURCE_PATTERN = createSourceScanPattern(DEFAULT_SOURCE_SCAN_EXTENSIONS)
 
 function getSourceExtension(file: string) {
   const extension = path.extname(file).slice(1)

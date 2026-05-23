@@ -1,9 +1,13 @@
 import type { TailwindInlineSourceCandidates, TailwindSourceEntry } from '@/tailwindcss/source-scan'
-import { realpathSync } from 'node:fs'
 import { readFile } from 'node:fs/promises'
 import path from 'node:path'
-import micromatch from 'micromatch'
 import { extractSourceCandidates, resolveProjectSourceFiles } from 'tailwindcss-patch'
+import {
+  FULL_SOURCE_SCAN_EXTENSION_RE,
+  isFileMatchedByTailwindSourceEntries,
+  resolveSourceScanPath,
+  toPosixPath,
+} from '@/tailwindcss/source-scan'
 
 export interface SourceCandidateCollector {
   sync: (id: string, source: string) => Promise<void>
@@ -35,25 +39,10 @@ interface ScanSourceCandidateRootOptions {
 }
 
 const CLEAN_URL_RE = /[?#].*$/
-const SOURCE_CANDIDATE_EXTENSION_RE = /\.(?:[cm]?[jt]sx?|vue|uvue|nvue|svelte|mpx|html|wxml|axml|jxml|ksml|ttml|qml|tyml|xhsml|swan|css|wxss|acss|jxss|ttss|qss|tyss|scss|sass|less|stylus?)$/
 const sourceCandidateContentCache = new Map<string, string[]>()
 
 function cleanUrl(id: string) {
-  const resolved = path.resolve(id.replace(CLEAN_URL_RE, ''))
-  try {
-    return realpathSync.native(resolved)
-  }
-  catch {
-    return resolved
-  }
-}
-
-function toPosixPath(value: string) {
-  return value.split(path.sep).join('/')
-}
-
-function resolveEntryBase(entry: TailwindSourceEntry) {
-  return cleanUrl(entry.base)
+  return resolveSourceScanPath(id.replace(CLEAN_URL_RE, ''))
 }
 
 function resolveOutDirIgnorePattern(root: string, outDir: string | undefined) {
@@ -78,7 +67,7 @@ function createSourceCandidateContentCacheKey(extension: string, source: string)
 }
 
 export function isSourceCandidateRequest(id: string) {
-  return SOURCE_CANDIDATE_EXTENSION_RE.test(cleanUrl(id))
+  return FULL_SOURCE_SCAN_EXTENSION_RE.test(cleanUrl(id))
 }
 
 function removeCandidateSet(
@@ -105,35 +94,6 @@ function addCandidateSet(
   for (const candidate of candidates) {
     candidateCount.set(candidate, (candidateCount.get(candidate) ?? 0) + 1)
   }
-}
-
-function isFileMatchedByEntries(file: string, entries: TailwindSourceEntry[] | undefined) {
-  if (!entries?.length) {
-    return true
-  }
-  const positiveEntries = entries.filter(entry => !entry.negated)
-  const negativeEntries = entries.filter(entry => entry.negated)
-  if (positiveEntries.length === 0) {
-    return false
-  }
-  const resolvedFile = path.resolve(file)
-  const matchesPositive = positiveEntries.some((entry) => {
-    const relative = toPosixPath(path.relative(resolveEntryBase(entry), resolvedFile))
-    const pattern = path.isAbsolute(entry.pattern)
-      ? toPosixPath(path.relative(resolveEntryBase(entry), entry.pattern))
-      : entry.pattern
-    return relative && !relative.startsWith('../') && !path.isAbsolute(relative) && micromatch.isMatch(relative, pattern)
-  })
-  if (!matchesPositive) {
-    return false
-  }
-  return !negativeEntries.some((entry) => {
-    const relative = toPosixPath(path.relative(resolveEntryBase(entry), resolvedFile))
-    const pattern = path.isAbsolute(entry.pattern)
-      ? toPosixPath(path.relative(resolveEntryBase(entry), entry.pattern))
-      : entry.pattern
-    return relative && !relative.startsWith('../') && !path.isAbsolute(relative) && micromatch.isMatch(relative, pattern)
-  })
 }
 
 export function createSourceCandidateCollector(): SourceCandidateCollector {
@@ -293,7 +253,7 @@ export function createSourceCandidateCollector(): SourceCandidateCollector {
     }
     const filtered = new Set<string>()
     for (const [id, candidates] of candidatesById) {
-      if (!isFileMatchedByEntries(id, entries)) {
+      if (!isFileMatchedByTailwindSourceEntries(id, entries)) {
         continue
       }
       for (const candidate of candidates) {

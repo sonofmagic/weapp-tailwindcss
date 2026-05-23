@@ -1,4 +1,6 @@
 import type { Root } from 'postcss'
+import type { TailwindV4CssSource } from 'tailwindcss-patch'
+import { realpathSync } from 'node:fs'
 import { stat } from 'node:fs/promises'
 import path from 'node:path'
 import micromatch from 'micromatch'
@@ -45,8 +47,112 @@ export const DEFAULT_SOURCE_SCAN_EXTENSIONS = [
   'tsx',
 ]
 
+export const FULL_SOURCE_SCAN_EXTENSIONS = [
+  'js',
+  'jsx',
+  'mjs',
+  'cjs',
+  'ts',
+  'tsx',
+  'mts',
+  'cts',
+  'vue',
+  'uvue',
+  'nvue',
+  'svelte',
+  'mpx',
+  'html',
+  'wxml',
+  'axml',
+  'jxml',
+  'ksml',
+  'ttml',
+  'qml',
+  'tyml',
+  'xhsml',
+  'swan',
+  'css',
+  'wxss',
+  'acss',
+  'jxss',
+  'ttss',
+  'qss',
+  'tyss',
+  'scss',
+  'sass',
+  'less',
+  'styl',
+  'stylus',
+]
+
 export function createSourceScanPattern(extensions = DEFAULT_SOURCE_SCAN_EXTENSIONS) {
   return `**/*.{${extensions.join(',')}}`
+}
+
+export const FULL_SOURCE_SCAN_PATTERN = createSourceScanPattern(FULL_SOURCE_SCAN_EXTENSIONS)
+export const FULL_SOURCE_SCAN_EXTENSION_RE = new RegExp(`\\.(?:${FULL_SOURCE_SCAN_EXTENSIONS.map(extension => extension.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')).join('|')})$`)
+
+export function toPosixPath(value: string) {
+  return value.split(path.sep).join('/')
+}
+
+export function resolveSourceScanPath(value: string) {
+  const resolved = path.resolve(value)
+  try {
+    return realpathSync.native(resolved)
+  }
+  catch {
+    return resolved
+  }
+}
+
+function normalizeEntryPattern(entry: TailwindSourceEntry) {
+  return path.isAbsolute(entry.pattern)
+    ? toPosixPath(path.relative(resolveSourceScanPath(entry.base), entry.pattern))
+    : entry.pattern
+}
+
+export function isFileMatchedByTailwindSourceEntries(file: string, entries: TailwindSourceEntry[] | undefined) {
+  if (!entries?.length) {
+    return true
+  }
+  const positiveEntries = entries.filter(entry => !entry.negated)
+  const negativeEntries = entries.filter(entry => entry.negated)
+  if (positiveEntries.length === 0) {
+    return false
+  }
+  const resolvedFile = resolveSourceScanPath(file)
+  const matchesPositive = positiveEntries.some((entry) => {
+    const relative = toPosixPath(path.relative(resolveSourceScanPath(entry.base), resolvedFile))
+    return relative && !relative.startsWith('../') && !path.isAbsolute(relative) && micromatch.isMatch(relative, normalizeEntryPattern(entry))
+  })
+  if (!matchesPositive) {
+    return false
+  }
+  return !negativeEntries.some((entry) => {
+    const relative = toPosixPath(path.relative(resolveSourceScanPath(entry.base), resolvedFile))
+    return relative && !relative.startsWith('../') && !path.isAbsolute(relative) && micromatch.isMatch(relative, normalizeEntryPattern(entry))
+  })
+}
+
+export function createTailwindSourceEntryMatcher(entries: TailwindSourceEntry[] | undefined) {
+  if (!entries?.length) {
+    return undefined
+  }
+  return (file: string) => isFileMatchedByTailwindSourceEntries(file, entries)
+}
+
+export function resolveTailwindV4CssSourceBase(
+  source: Pick<TailwindV4CssSource, 'base' | 'file'>,
+  fallbackBase: string,
+) {
+  if (typeof source.base === 'string' && source.base.length > 0) {
+    return source.base
+  }
+  if (typeof source.file === 'string' && source.file.length > 0) {
+    return path.dirname(source.file)
+  }
+  return fallbackBase
 }
 
 const NUMERICAL_RANGE_RE = /^(-?\d+)\.\.(-?\d+)(?:\.\.(-?\d+))?$/
@@ -420,8 +526,5 @@ export async function expandTailwindSourceEntries(
     }
   }))
 
-  return [...files].filter(file => !entries.filter(entry => entry.negated).some((entry) => {
-    const relative = path.relative(path.resolve(entry.base), file).split(path.sep).join('/')
-    return relative && !relative.startsWith('../') && !path.isAbsolute(relative) && micromatch.isMatch(relative, normalizeGlobPattern(entry.pattern))
-  }))
+  return [...files].filter(file => isFileMatchedByTailwindSourceEntries(file, entries))
 }

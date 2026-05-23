@@ -15,6 +15,7 @@ import {
   resolveTailwindV4SourceFromPatcher,
   resolveTailwindV4SourceOptionsFromPatcher,
 } from '@/generator'
+import { resolveTailwindV4CssSourceBase } from '@/tailwindcss/source-scan'
 import { omitUndefined } from '@/utils/object'
 import {
   normalizeConfigDirective,
@@ -290,19 +291,6 @@ function hasConfiguredTailwindV4CssSource(
 ) {
   return Boolean(sourceOptions?.css)
     || Boolean(sourceOptions?.cssSources?.length)
-}
-
-function resolveTailwindV4CssSourceBase(
-  cssSource: TailwindV4CssSource,
-  fallbackBase: string,
-) {
-  if (typeof cssSource.base === 'string' && cssSource.base.length > 0) {
-    return cssSource.base
-  }
-  if (typeof cssSource.file === 'string' && cssSource.file.length > 0) {
-    return path.dirname(cssSource.file)
-  }
-  return fallbackBase
 }
 
 async function resolveSingleTailwindV4CssSource(

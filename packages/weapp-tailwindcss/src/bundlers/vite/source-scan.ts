@@ -1,63 +1,27 @@
 import type { TailwindV4CssSource } from 'tailwindcss-patch'
 import type { TailwindInlineSourceCandidates, TailwindSourceEntry } from '@/tailwindcss/source-scan'
 import type { TailwindcssPatcherLike, UserDefinedOptions } from '@/types'
-import { existsSync, readFileSync, realpathSync } from 'node:fs'
+import { existsSync, readFileSync } from 'node:fs'
 import { stat } from 'node:fs/promises'
 import path from 'node:path'
 import process from 'node:process'
 import fg from 'fast-glob'
-import micromatch from 'micromatch'
 import postcss from 'postcss'
 import { loadConfig } from 'tailwindcss-config'
 import {
   collectCssInlineSourceCandidates,
-  createSourceScanPattern,
+  createTailwindSourceEntryMatcher,
+  FULL_SOURCE_SCAN_PATTERN,
   normalizeLegacyContentEntries,
   parseConfigParam,
   resolveCssSourceEntries,
+  resolveTailwindV4CssSourceBase,
 } from '@/tailwindcss/source-scan'
 import { resolveTailwindV3SourceFromPatcher } from '@/tailwindcss/v3-engine'
 import { resolveTailwindV4SourceFromPatcher, resolveTailwindV4SourceOptionsFromPatcher } from '@/tailwindcss/v4-engine'
 import { readStaticConfigContent } from './static-config-content'
 
-const VITE_SOURCE_CANDIDATE_EXTENSIONS = [
-  'js',
-  'jsx',
-  'mjs',
-  'cjs',
-  'ts',
-  'tsx',
-  'mts',
-  'cts',
-  'vue',
-  'uvue',
-  'nvue',
-  'svelte',
-  'mpx',
-  'html',
-  'wxml',
-  'axml',
-  'jxml',
-  'ksml',
-  'ttml',
-  'qml',
-  'tyml',
-  'xhsml',
-  'swan',
-  'css',
-  'wxss',
-  'acss',
-  'jxss',
-  'ttss',
-  'qss',
-  'tyss',
-  'scss',
-  'sass',
-  'less',
-  'styl',
-  'stylus',
-]
-const VITE_SOURCE_CANDIDATE_PATTERN = createSourceScanPattern(VITE_SOURCE_CANDIDATE_EXTENSIONS)
+const VITE_SOURCE_CANDIDATE_PATTERN = FULL_SOURCE_SCAN_PATTERN
 const VITE_TAILWIND_CSS_ENTRY_PATTERN = '**/*.{css,less,sass,scss,styl,stylus,pcss,postcss}'
 const tailwindV4CssEntriesCache = new Map<string, Promise<ResolvedTailwindV4CssEntries | undefined>>()
 
@@ -426,19 +390,6 @@ function collectConfiguredCssSources(options: UserDefinedOptions) {
   ]
 }
 
-function resolveTailwindV4CssSourceBase(
-  source: TailwindV4CssSource,
-  fallbackBase: string,
-) {
-  if (typeof source.base === 'string' && source.base.length > 0) {
-    return source.base
-  }
-  if (typeof source.file === 'string' && source.file.length > 0) {
-    return path.dirname(source.file)
-  }
-  return fallbackBase
-}
-
 export async function resolveViteSourceScanEntries(
   options: UserDefinedOptions,
   patcher: TailwindcssPatcherLike,
@@ -550,48 +501,6 @@ export async function resolveViteSourceScanEntries(
   return undefined
 }
 
-function toPosixPath(value: string) {
-  return value.split(path.sep).join('/')
-}
-
-function resolveSourceScanPath(value: string) {
-  const resolved = path.resolve(value)
-  try {
-    return realpathSync.native(resolved)
-  }
-  catch {
-    return resolved
-  }
-}
-
-function normalizeEntryPattern(entry: TailwindSourceEntry) {
-  return path.isAbsolute(entry.pattern)
-    ? toPosixPath(path.relative(resolveSourceScanPath(entry.base), entry.pattern))
-    : entry.pattern
-}
-
 export function createViteSourceScanMatcher(entries: TailwindSourceEntry[] | undefined) {
-  if (!entries?.length) {
-    return undefined
-  }
-  const positiveEntries = entries.filter(entry => !entry.negated)
-  const negativeEntries = entries.filter(entry => entry.negated)
-  if (positiveEntries.length === 0) {
-    return () => false
-  }
-
-  return (file: string) => {
-    const resolvedFile = resolveSourceScanPath(file)
-    const matchesPositive = positiveEntries.some((entry) => {
-      const relative = toPosixPath(path.relative(resolveSourceScanPath(entry.base), resolvedFile))
-      return relative && !relative.startsWith('../') && !path.isAbsolute(relative) && micromatch.isMatch(relative, normalizeEntryPattern(entry))
-    })
-    if (!matchesPositive) {
-      return false
-    }
-    return !negativeEntries.some((entry) => {
-      const relative = toPosixPath(path.relative(resolveSourceScanPath(entry.base), resolvedFile))
-      return relative && !relative.startsWith('../') && !path.isAbsolute(relative) && micromatch.isMatch(relative, normalizeEntryPattern(entry))
-    })
-  }
+  return createTailwindSourceEntryMatcher(entries)
 }
