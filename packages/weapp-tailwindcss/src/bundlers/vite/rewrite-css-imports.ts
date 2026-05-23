@@ -24,6 +24,7 @@ function isCssLikeImporter(importer?: string | null) {
 interface RewriteCssImportsOptions {
   appType?: AppType | undefined
   getAppType?: (() => AppType | undefined) | undefined
+  generateTailwindCss?: ((id: string, code: string, hookContext?: { addWatchFile?: (id: string) => void }) => Promise<string | undefined> | string | undefined) | undefined
   shouldOwnTailwindGeneration?: boolean | undefined
   shouldRewrite: boolean
   rootImport?: string | undefined
@@ -64,12 +65,21 @@ export function createRewriteCssImportsPlugins(options: RewriteCssImportsOptions
       },
       transform: {
         order: 'pre',
-        async handler(code, id) {
+        async handler(this: { addWatchFile?: (id: string) => void }, code, id) {
           if (!isCSSRequest(id)) {
             return null
           }
           if (hasTailwindRootDirectives(code)) {
             await options.onTailwindRootCss?.(id, code)
+            if (options.shouldOwnTailwindGeneration) {
+              const generatedCss = await options.generateTailwindCss?.(id, code, this)
+              if (generatedCss !== undefined) {
+                return {
+                  code: generatedCss,
+                  map: null,
+                }
+              }
+            }
           }
 
           const rewritten = rewriteTailwindcssImportsInCode(code, weappTailwindcssDirPosix, {

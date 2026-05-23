@@ -50,12 +50,43 @@ function getOutputOptionsHandler(plugin: Plugin) {
 
 function normalizeGeneratorOptions(options: any) {
   if (options == null) {
-    return { target: 'weapp' }
+    return { importFallback: true, target: 'weapp' }
   }
   return {
+    importFallback: options.importFallback ?? true,
     target: options.target ?? 'weapp',
     styleOptions: options.styleOptions,
   }
+}
+
+function mockTailwindV4GeneratorCss(css = '/* generated */') {
+  vi.doMock('@/generator', async (importOriginal) => {
+    const actual = await importOriginal<typeof import('@/generator')>()
+    return {
+      ...actual,
+      createWeappTailwindcssGenerator: vi.fn(() => ({
+        generate: vi.fn(async (options: { candidates: Set<string> }) => ({
+          css,
+          rawCss: css,
+          target: 'weapp',
+          classSet: new Set(options.candidates),
+          dependencies: [],
+          sources: [],
+          root: null,
+          version: 4,
+        })),
+      })),
+      normalizeWeappTailwindcssGeneratorOptions: normalizeGeneratorOptions,
+      resolveTailwindV4SourceFromPatcher: vi.fn(async () => ({
+        version: 4,
+        projectRoot: process.cwd(),
+        base: process.cwd(),
+        baseFallbacks: [],
+        css: '@import "tailwindcss";',
+        dependencies: [],
+      })),
+    }
+  })
 }
 
 async function loadIssue814Fixture() {
@@ -373,6 +404,7 @@ describe('bundlers/vite WeappTailwindcss bundle', () => {
   }, TEST_TIMEOUT_MS)
 
   it('detects tailwindcss v4 css sources from vite css transforms when omitted', async () => {
+    mockTailwindV4GeneratorCss()
     const root = await mkdtemp(path.join(os.tmpdir(), 'weapp-tw-vite-auto-entry-'))
     createdDirs.push(root)
     const entry = path.join(root, 'subpackage', 'entry.css')
@@ -415,7 +447,7 @@ describe('bundlers/vite WeappTailwindcss bundle', () => {
       },
     ])
     expect(refreshTailwindcssPatcher).toHaveBeenCalledTimes(1)
-    expect(String((result as any)?.code)).toContain('generator-placeholder.css')
+    expect(String((result as any)?.code)).toContain('/* generated */')
   })
 
   it('discovers omitted Tailwind v4 css sources before vite buildStart scans candidates', async () => {
@@ -551,6 +583,7 @@ describe('bundlers/vite WeappTailwindcss bundle', () => {
   })
 
   it('updates auto tailwindcss v4 css source content on repeated vite css transforms', async () => {
+    mockTailwindV4GeneratorCss()
     const entry = path.join(os.tmpdir(), 'weapp-tw-vite-auto-entry-update.css')
     const refreshTailwindcssPatcher = vi.fn()
     const context = createContext({
@@ -586,6 +619,7 @@ describe('bundlers/vite WeappTailwindcss bundle', () => {
   })
 
   it('keeps explicit cssEntries when vite css transforms see tailwindcss roots', async () => {
+    mockTailwindV4GeneratorCss()
     const explicitEntry = path.join(os.tmpdir(), 'weapp-tw-explicit-entry.css')
     const detectedEntry = path.join(os.tmpdir(), 'weapp-tw-detected-entry.css')
     const refreshTailwindcssPatcher = vi.fn()

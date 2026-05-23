@@ -28,6 +28,7 @@ import { logBundleProcessPlan } from './generate-bundle/process-plan'
 import { createReplayCssAsset, registerGeneratorDependencies } from './generate-bundle/rollup-assets'
 import { createCandidateSignature, createJsHashSalt, createLinkedImpactSignature, getSnapshotHash, hasRuntimeAffectingSourceChanges, summarizeStringDiff } from './generate-bundle/signatures'
 import { shouldSkipViteJsTransform } from './js-precheck'
+import { stripViteGeneratedCssMarkers } from './vite-generated-css'
 
 interface GenerateBundleContext {
   opts: InternalUserDefinedOptions
@@ -47,6 +48,7 @@ interface GenerateBundleContext {
   debug: (format: string, ...args: unknown[]) => void
   getResolvedConfig: () => ResolvedConfig | undefined
   markCssAssetProcessed?: (asset: OutputAsset, file?: string) => void
+  isViteProcessedCssAsset?: (asset: OutputAsset, file?: string) => boolean
   recordCssAssetResult?: (file: string, css: string) => void
   getSourceCandidates?: () => Set<string>
   getSourceCandidatesForEntries?: ((entries: TailwindSourceEntry[] | undefined) => Set<string>) | undefined
@@ -107,6 +109,7 @@ export function createGenerateBundleHook(context: GenerateBundleContext) {
       debug,
       getResolvedConfig,
       markCssAssetProcessed,
+      isViteProcessedCssAsset,
       recordCssAssetResult,
       getSourceCandidates,
       getSourceCandidatesForEntries,
@@ -361,6 +364,15 @@ export function createGenerateBundleHook(context: GenerateBundleContext) {
         // 即便本轮 CSS 原文 hash 未变化，也必须回填缓存中的转译结果，
         // 否则会退回未转译内容并与同轮 JS/WXML 的 class 改写失配。
         const rawSource = originalEntrySource
+        if (isViteProcessedCssAsset?.(originalSource, file)) {
+          const nextCss = stripViteGeneratedCssMarkers(rawSource)
+          originalSource.source = nextCss
+          markCssAssetProcessed?.(originalSource, file)
+          recordCssAssetResult?.(file, nextCss)
+          onUpdate(file, rawSource, nextCss)
+          debug('css skip vite-processed asset: %s', file)
+          continue
+        }
         if (isWebGeneratorTarget) {
           originalSource.source = rawSource
           markCssAssetProcessed?.(originalSource, file)

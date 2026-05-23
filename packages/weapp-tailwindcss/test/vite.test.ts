@@ -165,4 +165,61 @@ describe.skipIf(isCI)('vite', () => {
     ).toMatchSnapshot('css')
     expect(await fs.readFile(path.resolve(fixturesRootPath, 'v4-vite-postcss/dist/index.js'), 'utf-8')).toMatchSnapshot('js')
   })
+
+  it('passes generated css through Vite PostCSS plugins', async () => {
+    const root = await mkdtemp(path.join(fixturesRootPath, 'v4-vite-generated-postcss-'))
+    await writeFile(path.join(root, 'index.html'), [
+      '<div class="bg-clip-text"></div>',
+      '<script type="module" src="./index.ts"></script>',
+    ].join('\n'))
+    await writeFile(path.join(root, 'index.ts'), 'import "./index.css"\n')
+    await writeFile(path.join(root, 'index.css'), [
+      '@import "tailwindcss";',
+      '@source inline("bg-clip-text");',
+    ].join('\n'))
+
+    try {
+      await build({
+        root,
+        plugins: [
+          WeappTailwindcss({
+            tailwindcssBasedir: tailwindcss4Basedir,
+          }),
+        ],
+        build: {
+          minify: false,
+          rollupOptions: {
+            output: {
+              assetFileNames: '[name].[ext]',
+              entryFileNames: '[name].js',
+              chunkFileNames: '[name].js',
+            },
+          },
+        },
+        css: {
+          postcss: {
+            plugins: [
+              {
+                postcssPlugin: 'test-prefix-generated-background-clip',
+                Declaration(decl) {
+                  if (decl.prop === 'background-clip' && decl.value === 'text') {
+                    decl.cloneBefore({ prop: '-webkit-background-clip' })
+                  }
+                },
+              },
+            ],
+          },
+        },
+      })
+
+      const css = await fs.readFile(path.resolve(root, 'dist/index.css'), 'utf-8')
+      expect(css).toContain('.bg-clip-text')
+      expect(css).toContain('-webkit-background-clip: text')
+      expect(css).toContain('background-clip: text')
+      expect(css).not.toContain('weapp-tailwindcss vite-generated-css')
+    }
+    finally {
+      await rm(root, { recursive: true, force: true })
+    }
+  }, 120_000)
 })
