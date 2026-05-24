@@ -4,6 +4,7 @@ import type { InternalUserDefinedOptions } from '@/types'
 import { toAbsoluteOutputPath } from '../shared/module-graph'
 import { isJavaScriptEntry } from './bundle-entries'
 import { createRuntimeAffectingSourceSignature } from './runtime-affecting-signature'
+import { isCSSRequest } from './utils'
 
 export type EntryType = 'html' | 'js' | 'css' | 'other'
 
@@ -83,7 +84,7 @@ function readEntrySource(output: OutputAsset | OutputChunk) {
 }
 
 export function classifyBundleEntry(file: string, opts: InternalUserDefinedOptions): EntryType {
-  if (opts.cssMatcher(file)) {
+  if (opts.cssMatcher(file) || isCSSRequest(file)) {
     return 'css'
   }
   if (opts.htmlMatcher(file)) {

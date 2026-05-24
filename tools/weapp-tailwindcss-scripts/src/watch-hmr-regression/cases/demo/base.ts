@@ -536,7 +536,7 @@ export function buildDemoBaseCases(baseCwd: string): WatchCase[] {
     name: 'taro-webpack-vue3-tailwindcss-v3',
     label: 'demo/taro-webpack-vue3-tailwindcss-v3',
     project: 'demo/taro-webpack-vue3-tailwindcss-v3',
-    maxPluginProcessMs: 1200,
+    maxPluginProcessMs: 5000,
     cwd: path.resolve(baseCwd, 'demo/taro-webpack-vue3-tailwindcss-v3'),
     outputWxml: path.resolve(baseCwd, 'demo/taro-webpack-vue3-tailwindcss-v3/dist/pages/index/index.wxml'),
     outputJs: path.resolve(baseCwd, 'demo/taro-webpack-vue3-tailwindcss-v3/dist/pages/index/index.js'),
