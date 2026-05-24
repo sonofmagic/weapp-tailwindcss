@@ -7,6 +7,7 @@ import type { InternalUserDefinedOptions, LinkedJsModuleResult } from '@/types'
 import path from 'node:path'
 import process from 'node:process'
 import { logger } from '@weapp-tailwindcss/logger'
+import postcss from 'postcss'
 import { normalizeWeappTailwindcssGeneratorOptions } from '@/generator'
 import { getRuntimeClassSetSignature } from '@/tailwindcss/runtime/cache'
 import { filterUnsupportedMiniProgramTailwindV4Candidates } from '@/tailwindcss/v4-engine/candidates'
@@ -28,6 +29,7 @@ import { logBundleProcessPlan } from './generate-bundle/process-plan'
 import { createReplayCssAsset, registerGeneratorDependencies } from './generate-bundle/rollup-assets'
 import { createCandidateSignature, createJsHashSalt, createLinkedImpactSignature, getSnapshotHash, hasRuntimeAffectingSourceChanges, summarizeStringDiff } from './generate-bundle/signatures'
 import { shouldSkipViteJsTransform } from './js-precheck'
+import { isCSSRequest } from './utils'
 
 interface GenerateBundleContext {
   opts: InternalUserDefinedOptions
@@ -86,6 +88,38 @@ function collectRuntimeLinkedCssFiles(snapshot: BundleSnapshot) {
     addSiblingCssFile(files, file)
   }
   return files
+}
+
+const SOURCE_STYLE_OUTPUT_EXT_RE = /\.(?:less|sass|scss|styl|stylus|pcss|postcss)$/i
+const SOURCE_STYLE_NON_CSS_SYNTAX_RE = /(?:^|\n)\s*(?:\/\/|\$[\w-]+\s*:|@(?:use|forward|mixin|include|function)\b)/
+
+function resolveViteCssOutputFile(
+  file: string,
+  opts: InternalUserDefinedOptions,
+  isWebGeneratorTarget: boolean,
+) {
+  if (
+    isWebGeneratorTarget
+    || opts.cssMatcher(file)
+    || !SOURCE_STYLE_OUTPUT_EXT_RE.test(file)
+    || !isCSSRequest(file)
+  ) {
+    return file
+  }
+  return file.replace(SOURCE_STYLE_OUTPUT_EXT_RE, '.wxss')
+}
+
+function canProcessViteSourceStyleAsCss(source: string, file: string) {
+  if (SOURCE_STYLE_NON_CSS_SYNTAX_RE.test(source)) {
+    return false
+  }
+  try {
+    postcss.parse(source, { from: file })
+    return true
+  }
+  catch {
+    return false
+  }
 }
 
 export function createGenerateBundleHook(context: GenerateBundleContext) {
@@ -361,11 +395,34 @@ export function createGenerateBundleHook(context: GenerateBundleContext) {
         // 即便本轮 CSS 原文 hash 未变化，也必须回填缓存中的转译结果，
         // 否则会退回未转译内容并与同轮 JS/WXML 的 class 改写失配。
         const rawSource = originalEntrySource
+        const outputFile = resolveViteCssOutputFile(file, opts, isWebGeneratorTarget)
+        if (outputFile !== file && !canProcessViteSourceStyleAsCss(rawSource, file)) {
+          delete bundle[file]
+          debug('css skip raw source style asset: %s -> %s', file, outputFile)
+          continue
+        }
+        const applyCssResult = (source: string) => {
+          if (outputFile !== file) {
+            delete bundle[file]
+            if (typeof this.emitFile === 'function') {
+              this.emitFile({
+                type: 'asset',
+                fileName: outputFile,
+                source,
+              })
+            }
+            else {
+              bundle[outputFile] = originalSource
+            }
+            originalSource.fileName = outputFile
+          }
+          originalSource.source = source
+        }
         if (isWebGeneratorTarget) {
-          originalSource.source = rawSource
-          markCssAssetProcessed?.(originalSource, file)
-          onUpdate(file, rawSource, rawSource)
-          debug('css skip web target: %s', file)
+          applyCssResult(rawSource)
+          markCssAssetProcessed?.(originalSource, outputFile)
+          onUpdate(outputFile, rawSource, rawSource)
+          debug('css skip web target: %s', outputFile)
           continue
         }
         const cssRuntimeAffectingSignature = snapshot.runtimeAffectingSignatureByFile.get(file) ?? rawSource
@@ -384,12 +441,12 @@ export function createGenerateBundleHook(context: GenerateBundleContext) {
         const cssRuntimeSignature = createCssRuntimeSignature(runtimeSignature, scopedGeneratorCandidateSignature)
         const cssSharedCacheKey = `${cssShareScope}:${cssRuntimeSignature}:${runtimeState.twPatcher.majorVersion ?? 'unknown'}:${cssHandlerOptions.isMainChunk ? '1' : '0'}:${cssRuntimeAffectingSignature}`
         if (!shouldTrackGeneratorRuntime) {
-          const lastCss = lastCssResultByFile.get(file)
+          const lastCss = lastCssResultByFile.get(outputFile) ?? lastCssResultByFile.get(file)
           if (lastCss != null) {
-            originalSource.source = lastCss
-            markCssAssetProcessed?.(originalSource, file)
+            applyCssResult(lastCss)
+            markCssAssetProcessed?.(originalSource, outputFile)
             metrics.css.cacheHits++
-            debug('css replay last result: %s', file)
+            debug('css replay last result: %s', outputFile)
             continue
           }
         }
@@ -400,11 +457,11 @@ export function createGenerateBundleHook(context: GenerateBundleContext) {
             hashKey: `${file}:css:${cssRuntimeSignature}:${runtimeState.twPatcher.majorVersion ?? 'unknown'}`,
             hash: `${getSnapshotHash(snapshot.runtimeAffectingHashByFile, file, cssRuntimeAffectingSignature)}:${scopedGeneratorCandidateSignature}`,
             applyResult(source) {
-              originalSource.source = source
-              lastCssResultByFile.set(file, source)
-              markCssAssetProcessed?.(originalSource, file)
+              applyCssResult(source)
+              lastCssResultByFile.set(outputFile, source)
+              markCssAssetProcessed?.(originalSource, outputFile)
               if (cssHandlerOptions.isMainChunk) {
-                rememberMainCssSource?.(file, rawSource, cssRuntimeSignature)
+                rememberMainCssSource?.(outputFile, rawSource, cssRuntimeSignature)
               }
             },
             onCacheHit() {
@@ -449,10 +506,10 @@ export function createGenerateBundleHook(context: GenerateBundleContext) {
                     debug('css diff %s: %s', file, summarizeStringDiff(rawSource, generated.css))
                   }
                   debug('css generated result: %s bytes=%d', file, generated.css.length)
-                  recordCssAssetResult?.(file, generated.css)
+                  recordCssAssetResult?.(outputFile, generated.css)
                   metrics.css.elapsed += measureElapsed(start)
                   metrics.css.transformed++
-                  debug('css handle via tailwind v%s engine(%s): %s', runtimeState.twPatcher.majorVersion, generated.target, file)
+                  debug('css handle via tailwind v%s engine(%s): %s', runtimeState.twPatcher.majorVersion, generated.target, outputFile)
                   return generated.css
                 }
                 const { css } = await styleHandler(rawSource, getCssHandlerOptions(file))
@@ -473,8 +530,8 @@ export function createGenerateBundleHook(context: GenerateBundleContext) {
               }
 
               const css = await cssTask
-              onUpdate(file, rawSource, css)
-              debug('css handle: %s', file)
+              onUpdate(outputFile, rawSource, css)
+              debug('css handle: %s', outputFile)
               return {
                 result: css,
               }

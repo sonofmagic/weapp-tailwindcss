@@ -96,6 +96,7 @@ const compileSuccessLinePatterns = [
   /开发服务已就绪/u,
   /built in [\d.]+s?/i,
   /构建完成/u,
+  /已重新构建/u,
 ] as const
 
 const compileFailureLinePatterns = [

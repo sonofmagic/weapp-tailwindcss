@@ -1165,6 +1165,136 @@ const trace = "at App.vue:4"
     expect((bundle['pages/b/index.css'] as OutputAsset).source).toBe(`css:${css}`)
   }, TEST_TIMEOUT_MS)
 
+  it('processes Vite source style assets and writes mini-program style extension', async () => {
+    const styleHandler = vi.fn(async (code: string) => ({ css: `css:${code}` }))
+    setCurrentContext(createContext({
+      appType: 'weapp-vite',
+      cssMatcher: (file: string) => file.endsWith('.wxss'),
+      styleHandler,
+    }))
+
+    const WeappTailwindcss = await loadUnifiedVitePlugin()
+    const currentContext = getCurrentContext()
+    const plugins = WeappTailwindcss()
+    const postPlugin = plugins?.find(plugin => plugin.name === 'weapp-tailwindcss:adaptor:post') as Plugin
+    expect(postPlugin).toBeTruthy()
+
+    await (postPlugin.configResolved as any)?.call(postPlugin, {
+      command: 'serve',
+      root: process.cwd(),
+      css: { postcss: { plugins: [] } },
+      build: { outDir: 'dist' },
+    } as ResolvedConfig)
+
+    const rawScssAssetCss = '.from-scss { color: red; }'
+    const bundle = {
+      'sub-normal/pages/index.scss': {
+        ...createRollupAsset(rawScssAssetCss),
+        fileName: 'sub-normal/pages/index.scss',
+      },
+    }
+
+    const generateBundle = getGenerateBundleHandler(postPlugin)
+    await generateBundle?.call(postPlugin, {} as any, bundle)
+
+    expect(bundle['sub-normal/pages/index.scss']).toBeUndefined()
+    expect((bundle['sub-normal/pages/index.wxss'] as OutputAsset).fileName).toBe('sub-normal/pages/index.wxss')
+    expect((bundle['sub-normal/pages/index.wxss'] as OutputAsset).source).toBe(`css:${rawScssAssetCss}`)
+    expect(styleHandler).toHaveBeenCalledTimes(1)
+    expect(currentContext.onUpdate).toHaveBeenCalledWith(
+      'sub-normal/pages/index.wxss',
+      rawScssAssetCss,
+      `css:${rawScssAssetCss}`,
+    )
+  }, TEST_TIMEOUT_MS)
+
+  it('keeps Vite source style asset names for web generator target', async () => {
+    const styleHandler = vi.fn(async (code: string) => ({ css: `css:${code}` }))
+    setCurrentContext(createContext({
+      cssMatcher: (file: string) => file.endsWith('.wxss'),
+      generator: {
+        target: 'web',
+      },
+      styleHandler,
+    }))
+
+    const WeappTailwindcss = await loadUnifiedVitePlugin()
+    const currentContext = getCurrentContext()
+    const plugins = WeappTailwindcss()
+    const postPlugin = plugins?.find(plugin => plugin.name === 'weapp-tailwindcss:adaptor:post') as Plugin
+    expect(postPlugin).toBeTruthy()
+
+    await (postPlugin.configResolved as any)?.call(postPlugin, {
+      command: 'serve',
+      root: process.cwd(),
+      css: { postcss: { plugins: [] } },
+      build: { outDir: 'dist' },
+    } as ResolvedConfig)
+
+    const css = '.web { color: red; }'
+    const bundle = {
+      'assets/index.scss': {
+        ...createRollupAsset(css),
+        fileName: 'assets/index.scss',
+      },
+    }
+
+    const generateBundle = getGenerateBundleHandler(postPlugin)
+    await generateBundle?.call(postPlugin, {} as any, bundle)
+
+    expect(bundle['assets/index.wxss']).toBeUndefined()
+    expect((bundle['assets/index.scss'] as OutputAsset).fileName).toBe('assets/index.scss')
+    expect((bundle['assets/index.scss'] as OutputAsset).source).toBe(css)
+    expect(styleHandler).not.toHaveBeenCalled()
+    expect(currentContext.onUpdate).toHaveBeenCalledWith('assets/index.scss', css, css)
+  }, TEST_TIMEOUT_MS)
+
+  it('drops raw preprocessor source style assets that Vite exposes during watch', async () => {
+    const styleHandler = vi.fn(async (code: string) => ({ css: `css:${code}` }))
+    setCurrentContext(createContext({
+      appType: 'weapp-vite',
+      cssMatcher: (file: string) => file.endsWith('.wxss'),
+      styleHandler,
+    }))
+
+    const WeappTailwindcss = await loadUnifiedVitePlugin()
+    const plugins = WeappTailwindcss()
+    const postPlugin = plugins?.find(plugin => plugin.name === 'weapp-tailwindcss:adaptor:post') as Plugin
+    expect(postPlugin).toBeTruthy()
+
+    await (postPlugin.configResolved as any)?.call(postPlugin, {
+      command: 'serve',
+      root: process.cwd(),
+      css: { postcss: { plugins: [] } },
+      build: { outDir: 'dist' },
+    } as ResolvedConfig)
+
+    const rawScss = [
+      '// https://sass-lang.com/documentation/at-rules/import/#plain-css-imports',
+      '.s {',
+      '  .a { color: turquoise; }',
+      '}',
+    ].join('\n')
+    const bundle = {
+      'pages/index/index.scss': {
+        ...createRollupAsset(rawScss),
+        fileName: 'pages/index/index.scss',
+      },
+      'pages/index/index.wxss': {
+        ...createRollupAsset('.s .a { color: turquoise; }'),
+        fileName: 'pages/index/index.wxss',
+      },
+    }
+
+    const generateBundle = getGenerateBundleHandler(postPlugin)
+    await generateBundle?.call(postPlugin, {} as any, bundle)
+
+    expect(bundle['pages/index/index.scss']).toBeUndefined()
+    expect((bundle['pages/index/index.wxss'] as OutputAsset).source).toBe('css:.s .a { color: turquoise; }')
+    expect(styleHandler).toHaveBeenCalledTimes(1)
+    expect(styleHandler).toHaveBeenCalledWith('.s .a { color: turquoise; }', expect.any(Object))
+  }, TEST_TIMEOUT_MS)
+
   it('uses tailwind v4 engine css for matching main css assets', async () => {
     const runtimeSet = new Set(['w-[100px]'])
     const rawTailwindCss = '/*! tailwindcss v4.2.4 | MIT License | https://tailwindcss.com */\n.w-\\[100px\\]{width:100px}'
