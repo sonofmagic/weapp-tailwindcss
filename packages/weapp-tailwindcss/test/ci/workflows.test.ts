@@ -116,7 +116,7 @@ describe('ci workflows', () => {
     ])
 
     const compatibilityRuns = stepRuns(workflow, 'compatibility').join('\n')
-    expect(compatibilityRuns).toContain('pnpm --filter weapp-tailwindcss... run build')
+    expect(compatibilityRuns).toContain('pnpm --filter weapp-tailwindcss... --filter "./packages-runtime/*" run build')
     expect(compatibilityRuns).toContain('test/bundlers/vite-plugin.uni-app-x.unit.test.ts')
     expect(compatibilityRuns).toContain('test/watch-hmr-coverage-matrix.unit.test.ts')
   })
@@ -213,6 +213,16 @@ describe('ci workflows', () => {
   })
 
   it('keeps workspace demos using a fresh core build before dev and build scripts', () => {
+    const ensureScript = readText('scripts/ensure-weapp-tailwindcss-built.mjs')
+
+    expect(ensureScript).toContain('runtimeBuildTargets')
+    expect(ensureScript).toContain('collectWorkspaceRuntimeDependencyNames')
+    expect(ensureScript).toContain('\'@weapp-tailwindcss/merge-v3\'')
+    expect(ensureScript).toContain('\'@weapp-tailwindcss/merge\'')
+    expect(ensureScript).toContain('\'@weapp-tailwindcss/cva\'')
+    expect(ensureScript).toContain('\'@weapp-tailwindcss/variants-v3\'')
+    expect(ensureScript).toContain('\'@weapp-tailwindcss/variants\'')
+
     for (const { project, packageJson } of readDemoPackageJsons()) {
       const dependencies = {
         ...(packageJson.dependencies ?? {}),

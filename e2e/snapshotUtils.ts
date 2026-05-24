@@ -166,6 +166,10 @@ export async function formatCss(css: string) {
   })
 }
 
+export function normalizeFormattedCssSnapshot(source: string) {
+  return source.replace(/\n{2,}(?=(?:view|text|:after|:before|:host|page|\.tw-root|wx-root-portal-content)[\s,{])/g, '\n')
+}
+
 const SCANNER_NOISE_SELECTORS = new Set([
   '.start',
   '.end',
@@ -990,7 +994,7 @@ export async function collectCssSnapshots(projectRoot: string, cssRelativePath: 
     const withoutBanner = stripTailwindBanner(source)
     const normalizedImports = normalizeCssImports(withoutBanner)
     const normalizedCss = normalizeCssSnapshot(normalizedImports, options)
-    const formatted = await formatCss(normalizedCss)
+    const formatted = normalizeFormattedCssSnapshot(await formatCss(normalizedCss))
 
     snapshots.push({
       fileName: snapshotName,

@@ -282,7 +282,7 @@ jobs:
         run: pnpm install --frozen-lockfile
 
       - name: Build watch suite package dependencies
-        run: pnpm --filter weapp-tailwindcss... run build
+        run: pnpm --filter weapp-tailwindcss... --filter "./packages-runtime/*" run build
 
       - name: Prepare benchmark output directory
         shell: bash
@@ -449,7 +449,7 @@ jobs:
         run: pnpm install --frozen-lockfile
 
       - name: Build watch suite package dependencies
-        run: pnpm --filter weapp-tailwindcss... run build
+        run: pnpm --filter weapp-tailwindcss... --filter "./packages-runtime/*" run build
 
       - name: Prepare benchmark output directory
         shell: bash
