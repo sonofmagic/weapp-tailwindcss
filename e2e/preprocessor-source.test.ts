@@ -21,8 +21,16 @@ async function readAllWxssFiles(root: string) {
   }))
 }
 
+async function listLeakedPreprocessorFiles(root: string) {
+  return fg('dist/**/*.{scss,sass,less,styl,stylus,pcss,postcss,sss}', {
+    absolute: false,
+    cwd: root,
+    onlyFiles: true,
+  })
+}
+
 describe('preprocessor Tailwind source demo', () => {
-  it('builds Tailwind v4 from a real SCSS root entry without leaking preprocessor syntax', async () => {
+  it('builds Tailwind v4 from a real SCSS root entry without leaking preprocessor output files', async () => {
     const appScss = await fs.readFile(path.join(demoRoot, 'app.scss'), 'utf8')
     expect(appScss).toContain('@import "tailwindcss";')
     expect(appScss).toContain('// Tailwind root entry intentionally lives in SCSS')
@@ -41,9 +49,11 @@ describe('preprocessor Tailwind source demo', () => {
     })
 
     const wxssFiles = await readAllWxssFiles(demoRoot)
+    const leakedPreprocessorFiles = await listLeakedPreprocessorFiles(demoRoot)
     const pageWxss = await fs.readFile(path.join(demoRoot, 'dist/pages/index/index.wxss'), 'utf8')
     const joined = wxssFiles.map(item => item.content).join('\n')
 
+    expect(leakedPreprocessorFiles).toEqual([])
     expect(pageWxss).toContain('.s .a')
     expect(pageWxss).toContain('color: turquoise;')
     expect(joined).not.toContain('@import "tailwindcss"')
