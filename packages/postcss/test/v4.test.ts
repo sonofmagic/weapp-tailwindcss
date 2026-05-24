@@ -655,4 +655,30 @@ page{--status-bar-height:25px;--top-window-height:0px;--window-top:0px;--window-
     expect(css).toContain('-webkit-background-clip: text')
     expect(css).toContain('background-clip: text')
   })
+
+  it('does not add legacy flexbox prefixes by default', async () => {
+    const styleHandler = createStyleHandler({
+      isMainChunk: true,
+    })
+    const { css } = await styleHandler([
+      '.flex-center {',
+      '  display: flex;',
+      '  flex-direction: column;',
+      '  align-items: center;',
+      '  justify-content: center;',
+      '}',
+    ].join('\n'), {
+      isMainChunk: true,
+      majorVersion: 4,
+    })
+
+    expect(css).not.toContain('display: -webkit-flex')
+    expect(css).not.toContain('-webkit-flex-direction')
+    expect(css).not.toContain('-webkit-align-items')
+    expect(css).not.toContain('-webkit-justify-content')
+    expect(css).toContain('display: flex')
+    expect(css).toContain('flex-direction: column')
+    expect(css).toContain('align-items: center')
+    expect(css).toContain('justify-content: center')
+  })
 })
