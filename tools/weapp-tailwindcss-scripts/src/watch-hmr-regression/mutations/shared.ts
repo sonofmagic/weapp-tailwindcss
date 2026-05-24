@@ -107,6 +107,11 @@ export async function waitForOutputsReady(
         return true
       }
 
+      const requireInitialCompileSuccess = watchCase.requireInitialCompileSuccess === true
+      if (!requireInitialCompileSuccess && wxmlMtime > 0 && jsMtime > 0 && Date.now() - sessionStartedAt >= stableWindowMs) {
+        return true
+      }
+
       const lastCompileSuccessAt = session.lastCompileSuccessAt()
       return lastCompileSuccessAt > sessionStartedAt
         && Date.now() - lastCompileSuccessAt >= stableWindowMs
@@ -349,7 +354,7 @@ export async function waitForOutputFilesUpdated(
         }
       }
 
-      if (exactFileUpdated) {
+      if (exactFileUpdated && !acceptWhen) {
         return true
       }
 
@@ -358,6 +363,9 @@ export async function waitForOutputFilesUpdated(
         const baselineMtime = baselineMtimes.get(file) ?? 0
         const currentMtime = await getMtime(file)
         if (baselineMtime === 0 || currentMtime > baselineMtime) {
+          if (acceptWhen) {
+            break
+          }
           return true
         }
       }

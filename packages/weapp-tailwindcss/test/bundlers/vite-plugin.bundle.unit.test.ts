@@ -9,6 +9,7 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import { createJsHandler } from '@/js'
 import { replaceWxml } from '@/wxml'
 import { createTemplateHandler } from '@/wxml/utils'
+import { createBundlerGeneratedCssMarker } from '@/bundlers/shared/generated-css-marker'
 import {
   createContext,
   createRollupAsset,
@@ -17,6 +18,7 @@ import {
   resetVitePluginTestContext,
   setCurrentContext,
 } from './vite-plugin.testkit'
+import { resolveReplayCssOutputFile } from '@/bundlers/vite/generate-bundle'
 
 const TEST_TIMEOUT_MS = 30000
 const SPLIT_WHITESPACE_RE = /\s+/
@@ -50,12 +52,43 @@ function getOutputOptionsHandler(plugin: Plugin) {
 
 function normalizeGeneratorOptions(options: any) {
   if (options == null) {
-    return { target: 'weapp' }
+    return { importFallback: true, target: 'weapp' }
   }
   return {
+    importFallback: options.importFallback ?? true,
     target: options.target ?? 'weapp',
     styleOptions: options.styleOptions,
   }
+}
+
+function mockTailwindV4GeneratorCss(css = '/* generated */') {
+  vi.doMock('@/generator', async (importOriginal) => {
+    const actual = await importOriginal<typeof import('@/generator')>()
+    return {
+      ...actual,
+      createWeappTailwindcssGenerator: vi.fn(() => ({
+        generate: vi.fn(async (options: { candidates: Set<string> }) => ({
+          css,
+          rawCss: css,
+          target: 'weapp',
+          classSet: new Set(options.candidates),
+          dependencies: [],
+          sources: [],
+          root: null,
+          version: 4,
+        })),
+      })),
+      normalizeWeappTailwindcssGeneratorOptions: normalizeGeneratorOptions,
+      resolveTailwindV4SourceFromPatcher: vi.fn(async () => ({
+        version: 4,
+        projectRoot: process.cwd(),
+        base: process.cwd(),
+        baseFallbacks: [],
+        css: '@import "tailwindcss";',
+        dependencies: [],
+      })),
+    }
+  })
 }
 
 async function loadIssue814Fixture() {
@@ -373,6 +406,7 @@ describe('bundlers/vite WeappTailwindcss bundle', () => {
   }, TEST_TIMEOUT_MS)
 
   it('detects tailwindcss v4 css sources from vite css transforms when omitted', async () => {
+    mockTailwindV4GeneratorCss()
     const root = await mkdtemp(path.join(os.tmpdir(), 'weapp-tw-vite-auto-entry-'))
     createdDirs.push(root)
     const entry = path.join(root, 'subpackage', 'entry.css')
@@ -415,7 +449,7 @@ describe('bundlers/vite WeappTailwindcss bundle', () => {
       },
     ])
     expect(refreshTailwindcssPatcher).toHaveBeenCalledTimes(1)
-    expect(String((result as any)?.code)).toContain('generator-placeholder.css')
+    expect(String((result as any)?.code)).toContain('/* generated */')
   })
 
   it('discovers omitted Tailwind v4 css sources before vite buildStart scans candidates', async () => {
@@ -551,6 +585,7 @@ describe('bundlers/vite WeappTailwindcss bundle', () => {
   })
 
   it('updates auto tailwindcss v4 css source content on repeated vite css transforms', async () => {
+    mockTailwindV4GeneratorCss()
     const entry = path.join(os.tmpdir(), 'weapp-tw-vite-auto-entry-update.css')
     const refreshTailwindcssPatcher = vi.fn()
     const context = createContext({
@@ -585,7 +620,55 @@ describe('bundlers/vite WeappTailwindcss bundle', () => {
     expect(refreshTailwindcssPatcher).toHaveBeenCalledTimes(2)
   })
 
+  it('normalizes replayed vite css asset output file names', async () => {
+    const root = await mkdtemp(path.join(os.tmpdir(), 'weapp-tw-vite-replay-'))
+    createdDirs.push(root)
+    expect(resolveReplayCssOutputFile(root, path.join(root, 'sub-independent', 'pages', 'index.css'))).toBe('sub-independent/pages/index.css')
+    expect(resolveReplayCssOutputFile(root, '/private/tmp/elsewhere/index.css')).toBe('index.css')
+  }, TEST_TIMEOUT_MS)
+
+  it('injects vite postcss-processed generated css assets into the main mini-program css asset', async () => {
+    const WeappTailwindcss = await loadUnifiedVitePlugin()
+    setCurrentContext(createContext({
+      cssMatcher: (file: string) => file.endsWith('.wxss'),
+      mainCssChunkMatcher: vi.fn((file: string) => file === 'app.wxss'),
+      styleHandler: vi.fn(async (code: string) => ({ css: code })),
+    }))
+    const plugins = WeappTailwindcss()
+    const postPlugin = plugins?.find(plugin => plugin.name === 'weapp-tailwindcss:adaptor:post') as Plugin
+    expect(postPlugin).toBeTruthy()
+
+    await (postPlugin.configResolved as any)?.call(postPlugin, {
+      command: 'serve',
+      root: process.cwd(),
+      css: { postcss: { plugins: [] } },
+      build: { outDir: 'dist' },
+    } as ResolvedConfig)
+
+    const processedCss = [
+      '.flex{display:-webkit-flex;display:flex}',
+      '.bg-clip-text{-webkit-background-clip:text;background-clip:text}',
+    ].join('\n')
+    const bundle = {
+      'app.wxss': {
+        ...createRollupAsset('.app{color:red}'),
+        fileName: 'app.wxss',
+      },
+      'src/main.css': {
+        ...createRollupAsset(`${createBundlerGeneratedCssMarker('vite', path.resolve(process.cwd(), 'src/main.css'))}\n${processedCss}`),
+        fileName: 'src/main.css',
+      },
+    }
+
+    const generateBundle = getGenerateBundleHandler(postPlugin)
+    await generateBundle?.call(postPlugin, {} as any, bundle)
+
+    expect((bundle['src/main.css'] as OutputAsset).source).toBe(processedCss)
+    expect((bundle['app.wxss'] as OutputAsset).source).toBe(`.app{color:red}\n${processedCss}`)
+  }, TEST_TIMEOUT_MS)
+
   it('keeps explicit cssEntries when vite css transforms see tailwindcss roots', async () => {
+    mockTailwindV4GeneratorCss()
     const explicitEntry = path.join(os.tmpdir(), 'weapp-tw-explicit-entry.css')
     const detectedEntry = path.join(os.tmpdir(), 'weapp-tw-detected-entry.css')
     const refreshTailwindcssPatcher = vi.fn()
@@ -1886,9 +1969,7 @@ const trace = "at App.vue:4"
       build: { outDir: 'dist' },
     } as ResolvedConfig)
 
-    const outputOptions = getOutputOptionsHandler(postPlugin)
-    const nextOptions = outputOptions?.call(postPlugin, { plugins: [] })
-    const finalizer = nextOptions?.plugins?.find((plugin: Plugin) =>
+    const finalizer = plugins?.find((plugin: Plugin) =>
       plugin.name === 'weapp-tailwindcss:adaptor:css-finalizer')
     expect(finalizer).toBeTruthy()
 

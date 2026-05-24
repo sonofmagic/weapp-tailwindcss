@@ -18,10 +18,13 @@ import { isUniAppXEnabled } from '@/uni-app-x/options'
 import { resolveUniUtsPlatform } from '@/utils'
 import { resolvePluginDisabledState } from '@/utils/disabled'
 import { resolvePackageDir } from '@/utils/resolve-package'
+import { createBundlerGeneratedCssMarker, hasBundlerGeneratedCssMarker } from '../shared/generated-css-marker'
+import { generateCssByGenerator } from '../shared/generator-css'
 import { createHmrTimingRecorder } from '../shared/hmr-timing'
 import { normalizeOutputPathKey } from '../shared/module-graph'
 import { createViteCssFinalizerOutputPlugin } from './css-finalizer'
 import { createGenerateBundleHook } from './generate-bundle'
+import { createCssHandlerOptionsCache } from './generate-bundle/css-handler-options'
 import { disableAndRemoveTailwindVitePlugins, getPostcssPluginName, removeTailwindPostcssPlugins, removeTailwindVitePlugins } from './official-tailwind-plugins'
 import { resolveFilteredPostcssConfig } from './postcss-config'
 import { resolveImplicitAppTypeFromViteRoot } from './resolve-app-type'
@@ -200,21 +203,6 @@ export function WeappTailwindcss(options: UserDefinedOptions = {}): Plugin[] | u
     invalidateSourceCandidateScan()
     await refreshRuntimeStateForAutoCssSources?.(true)
   }
-  const rewritePlugins = createRewriteCssImportsPlugins({
-    getAppType: () => opts.appType,
-    rootImport: shouldOwnTailwindGeneration
-      ? `${weappTailwindcssDirPosix}/generator-placeholder.css`
-      : undefined,
-    onTailwindRootCss: (id, code) => registerAutoCssSource(id, code),
-    shouldOwnTailwindGeneration,
-    shouldRewrite: shouldRewriteCssImports,
-    weappTailwindcssDirPosix,
-  })
-
-  if (disabledOptions.plugin) {
-    return rewritePlugins.length ? rewritePlugins : undefined
-  }
-
   const customAttributesEntities = toCustomAttributesEntities(customAttributes)
   let resolvedConfig: ResolvedConfig | undefined
   let recordedGeneratorCandidates: Set<string> | undefined
@@ -230,6 +218,9 @@ export function WeappTailwindcss(options: UserDefinedOptions = {}): Plugin[] | u
   const pendingSourceCandidateSyncByFile = new Map<string, Promise<void>>()
   const processedCssAssets = new WeakSet<object>()
   const processedCssAssetFiles = new Set<string>()
+  const viteProcessedCssSourceFiles = new Set<string>()
+  const viteGeneratedCssByFile = new Map<string, string>()
+  const viteProcessedCssAssetResults = new Map<string, string>()
   const rememberedMainCssSources = new Map<string, string>()
   const rememberedMainCssSignatureByFile = new Map<string, string>()
   const {
@@ -456,6 +447,96 @@ export function WeappTailwindcss(options: UserDefinedOptions = {}): Plugin[] | u
   const setRememberedMainCssSignature = (file: string, cssRuntimeSignature: string) => {
     rememberedMainCssSignatureByFile.set(file, cssRuntimeSignature)
   }
+  const recordCssAssetResult = (file: string, css: string) => {
+    viteGeneratedCssByFile.set(file, css)
+  }
+  const recordViteProcessedCssAssetResult = (file: string, css: string) => {
+    viteProcessedCssAssetResults.set(normalizeOutputPathKey(file), css)
+  }
+  const getViteProcessedCssAssetResults = () => viteProcessedCssAssetResults.entries()
+  const normalizeViteProcessedCssFile = (file: string) => path.resolve(cleanUrl(file))
+  const markViteProcessedCssSource = (file: string) => {
+    viteProcessedCssSourceFiles.add(normalizeViteProcessedCssFile(file))
+  }
+  const matchesViteProcessedCssSource = (candidate: string) => {
+    const normalized = normalizeViteProcessedCssFile(candidate)
+    return viteProcessedCssSourceFiles.has(normalized)
+  }
+  const isViteProcessedCssAsset = (asset: { source?: unknown, originalFileName?: string | null, originalFileNames?: string[] | undefined }, file?: string) => {
+    if (hasBundlerGeneratedCssMarker(asset.source)) {
+      return true
+    }
+    const candidates = [
+      file,
+      asset.originalFileName,
+      ...(asset.originalFileNames ?? []),
+    ].filter((item): item is string => typeof item === 'string' && item.length > 0)
+    return candidates.some(candidate => matchesViteProcessedCssSource(cleanUrl(candidate)))
+  }
+  const transformCssHandlerOptions = createCssHandlerOptionsCache({
+    getAppType: () => opts.appType,
+    mainCssChunkMatcher,
+    getMajorVersion: () => runtimeState.twPatcher.majorVersion,
+    getOutputRoot: () => resolvedConfig?.build?.outDir
+      ? path.resolve(resolvedConfig.root, resolvedConfig.build.outDir)
+      : resolvedConfig?.root,
+  })
+  const generateTailwindCssForVitePipeline = async (
+    id: string,
+    code: string,
+    hookContext?: { addWatchFile?: (id: string) => void },
+  ) => {
+    if (!shouldOwnTailwindGeneration) {
+      return undefined
+    }
+    await runtimeState.readyPromise
+    await waitForSourceCandidateSyncs()
+    const file = cleanUrl(id)
+    const runtime = getRecordedGeneratorCandidates()
+      ?? getSourceCandidates()
+      ?? await ensureRuntimeClassSet()
+    const cssHandlerOptions = transformCssHandlerOptions.getCssHandlerOptions(file)
+    const generated = await generateCssByGenerator({
+      opts,
+      runtimeState,
+      runtime,
+      rawSource: code,
+      file,
+      cssHandlerOptions,
+      cssUserHandlerOptions: transformCssHandlerOptions.getCssUserHandlerOptions(file),
+      getSourceCandidatesForEntries,
+      styleHandler,
+      debug,
+      previousCss: viteGeneratedCssByFile.get(file),
+    })
+    if (!generated) {
+      return undefined
+    }
+    for (const dependency of generated.dependencies) {
+      hookContext?.addWatchFile?.(dependency)
+    }
+    viteGeneratedCssByFile.set(file, generated.css)
+    markViteProcessedCssSource(file)
+    recordGeneratorCandidates(runtime)
+    rememberMainCssSource(file, code)
+    debug('css generated for vite postcss pipeline: %s bytes=%d', file, generated.css.length)
+    return `${createBundlerGeneratedCssMarker('vite', normalizeViteProcessedCssFile(file))}\n${generated.css}`
+  }
+  const rewritePlugins = createRewriteCssImportsPlugins({
+    getAppType: () => opts.appType,
+    generateTailwindCss: generateTailwindCssForVitePipeline,
+    rootImport: shouldOwnTailwindGeneration
+      ? `${weappTailwindcssDirPosix}/generator-placeholder.css`
+      : undefined,
+    onTailwindRootCss: (id, code) => registerAutoCssSource(id, code),
+    shouldOwnTailwindGeneration,
+    shouldRewrite: shouldRewriteCssImports,
+    weappTailwindcssDirPosix,
+  })
+
+  if (disabledOptions.plugin) {
+    return rewritePlugins.length ? rewritePlugins : undefined
+  }
   const generateBundleHook = createGenerateBundleHook({
     opts,
     runtimeState,
@@ -464,6 +545,10 @@ export function WeappTailwindcss(options: UserDefinedOptions = {}): Plugin[] | u
     debug,
     getResolvedConfig,
     markCssAssetProcessed,
+    isViteProcessedCssAsset,
+    recordCssAssetResult,
+    recordViteProcessedCssAssetResult,
+    getViteProcessedCssAssetResults,
     getSourceCandidates,
     getSourceCandidatesForEntries,
     waitForSourceCandidateSyncs,
@@ -482,6 +567,10 @@ export function WeappTailwindcss(options: UserDefinedOptions = {}): Plugin[] | u
     getResolvedConfig,
     markCssAssetProcessed,
     isCssAssetProcessed,
+    isViteProcessedCssAsset,
+    recordCssAssetResult,
+    recordViteProcessedCssAssetResult,
+    getViteProcessedCssAssetResults,
     getRecordedGeneratorCandidates,
     getSourceCandidates,
     getSourceCandidatesForEntries,
@@ -670,20 +759,9 @@ export function WeappTailwindcss(options: UserDefinedOptions = {}): Plugin[] | u
           }
         }, { emit: false })
       },
-      generateBundle: {
-        order: 'post',
-        handler: generateBundleHook,
-      },
-      outputOptions(options) {
-        const plugins = options.plugins
-        return {
-          ...options,
-          plugins: Array.isArray(plugins)
-            ? [...plugins, cssFinalizerOutputPlugin]
-            : [cssFinalizerOutputPlugin],
-        }
-      },
+      generateBundle: generateBundleHook,
     },
+    cssFinalizerOutputPlugin,
   ]
   if (uniAppXPlugins) {
     plugins.push(...uniAppXPlugins)

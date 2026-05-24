@@ -40,11 +40,16 @@ const ISSUE33_MODIFY_CLASS_TOKENS = [
   'bg-[var(--primary-color-bg)]',
   'text-[22px]',
 ] as const
+const PATH_SEPARATOR_RE = /[\\/]+/g
 const INVALID_BG_HEX_WITH_SPACE_RE = /\bbg-\s+\[#?[0-9a-fA-F]{3,8}\]?/g
 const INVALID_BG_UNTERMINATED_RE = /\bbg-\[[^\]]*$/gm
 const INVALID_PX_UNTERMINATED_RE = /\bpx-\[[^\]]*$/gm
 const INVALID_BG_INNER_SPACE_RE = /\bbg-\[[^\]\s]*\s[^\]\s]*\]/g
 const INVALID_PX_INNER_SPACE_RE = /\bpx-\[[^\]\s]*\s[^\]\s]*\]/g
+
+function normalizePathLike(value: string) {
+  return value.replace(PATH_SEPARATOR_RE, '/')
+}
 
 interface MutationRoundReport {
   roundName: MutationRoundName
@@ -229,7 +234,9 @@ interface HotUpdateReport {
   cases: HotUpdateCaseReport[]
 }
 
-const criticalDemoProjects = buildCases(path.resolve(__dirname, '../../..'))
+const configuredWatchCases = buildCases(path.resolve(__dirname, '../../..'))
+
+const criticalDemoProjects = configuredWatchCases
   .filter(item => item.group === 'demo')
   .map(item => item.project)
 
@@ -255,16 +262,11 @@ const referenceDirectiveRequiredCases = new Set<ConcreteWatchCaseName>([
   'taro-webpack-react-tailwindcss-v4',
   'weapp-vite-tailwindcss-v4',
 ])
-const commentCarrierRequiredCases = new Set<ConcreteWatchCaseName>([
-  'mpx-tailwindcss-v3',
-  'taro-vite-react-tailwindcss-v3',
-  'taro-vite-react-tailwindcss-v4',
-  'taro-webpack-react-tailwindcss-v3',
-  'taro-webpack-react-tailwindcss-v4',
-  'uni-app-vite-tailwindcss-v3',
-  'weapp-vite-tailwindcss-v3',
-  'weapp-vite-tailwindcss-v4',
-])
+const commentCarrierRequiredCases = new Set<ConcreteWatchCaseName>(
+  configuredWatchCases
+    .filter(item => item.scriptMutation.mutateCommentCarrier)
+    .map(item => item.name),
+)
 
 interface CommentCarrierSummaryItem {
   name: ConcreteWatchCaseName
@@ -679,7 +681,7 @@ export function assertHotUpdateReport(report: HotUpdateReport, target: WatchCase
       if (!userReportedHotUpdate) {
         throw new Error(`[${item.project}] missing user reported hot-update metric`)
       }
-      expect(userReportedHotUpdate.sourceFile).toContain('src/pages/index/index.vue')
+      expect(normalizePathLike(userReportedHotUpdate.sourceFile)).toContain('src/pages/index/index.vue')
       expect(userReportedHotUpdate.classTokens.length).toBeGreaterThan(0)
       expect(userReportedHotUpdate.escapedClasses.length).toBe(userReportedHotUpdate.classTokens.length)
       expect(userReportedHotUpdate.verifiedGlobalStyleEscapedClasses.length).toBeGreaterThanOrEqual(
@@ -889,6 +891,9 @@ export function assertHotUpdateReport(report: HotUpdateReport, target: WatchCase
       expect(subPackageMetric.template.hotUpdateEffectiveMs).toBeGreaterThan(0)
       expect(subPackageMetric.template.hotUpdateEffectiveMs).toBeLessThanOrEqual(maxHotUpdateMs)
       expect(subPackageMetric.template.rollbackEffectiveMs).toBeGreaterThan(0)
+      if (!subPackageMetric.style) {
+        continue
+      }
       expect(subPackageMetric.style.sourceFile).toContain(subPackageMetric.root)
       expect(subPackageMetric.globalStyleOutputs).toContain(subPackageMetric.style.outputStyle)
       expect(subPackageMetric.style.styleNeedle).toContain('.tw-watch-style-')

@@ -1,6 +1,7 @@
 import { Buffer } from 'node:buffer'
 import { afterEach, describe, expect, it, vi } from 'vitest'
 import { resolveTailwindcssImport, rewriteTailwindcssImportsInCode } from '@/bundlers/shared/css-imports'
+import { createBundlerGeneratedCssMarker } from '@/bundlers/shared/generated-css-marker'
 import loader, { transformCssImportRewriteSource } from '@/bundlers/webpack/loaders/weapp-tw-css-import-rewrite-loader'
 
 function joinPosixPath(base: string, subpath: string) {
@@ -13,6 +14,7 @@ describe('bundlers/shared css-imports', () => {
   afterEach(() => {
     delete process.env.WEAPP_TW_LOADER_DEBUG
     vi.restoreAllMocks()
+    vi.doUnmock('@/generator')
   })
 
   it('rewrites tailwindcss import to the package css entry for mpx', () => {
@@ -160,6 +162,21 @@ describe('bundlers/shared css-imports', () => {
       file: '/src/app.css',
       css: '@import "tailwindcss";\n@source inline("w-4");',
     })
+  })
+
+  it('emits generated css from webpack loader before postcss-loader runs', async () => {
+    const { default: webpackLoader } = await import('@/bundlers/webpack/loaders/weapp-tw-css-import-rewrite-loader')
+    const result = webpackLoader.call({
+      query: {
+        tailwindcssImportRewrite: {
+          pkgDir,
+        },
+      },
+      resourcePath: '/src/app.css',
+      rootContext: '/src',
+    } as any, '@import "tailwindcss";\n@config "./tailwind.config.js";')
+
+    expect(result).toBe('@import "/virtual/weapp-tailwindcss/index.css";\n@config "./tailwind.config.js";')
   })
 
   it('registers sanitized preprocessor root css sources from the webpack loader', async () => {

@@ -1,6 +1,7 @@
 import fs from 'fs-extra'
 import path from 'pathe'
 import prettier from 'prettier'
+import autoprefixer from 'autoprefixer'
 import { createStyleHandler } from '@/index'
 
 const WEBKIT_HYPHENS_RE = /-webkit-hyphens\s*:\s*none/
@@ -680,5 +681,42 @@ page{--status-bar-height:25px;--top-window-height:0px;--window-top:0px;--window-
     expect(css).toContain('flex-direction: column')
     expect(css).toContain('align-items: center')
     expect(css).toContain('justify-content: center')
+  })
+
+  it('removes legacy flexbox prefixes from user postcss autoprefixer output', async () => {
+    const styleHandler = createStyleHandler({
+      isMainChunk: true,
+      postcssOptions: {
+        plugins: [autoprefixer()],
+      },
+    })
+    const { css } = await styleHandler([
+      '.flex-center {',
+      '  display: -webkit-flex;',
+      '  display: flex;',
+      '  -webkit-flex-direction: column;',
+      '  flex-direction: column;',
+      '  -webkit-align-items: center;',
+      '  align-items: center;',
+      '  -webkit-justify-content: center;',
+      '  justify-content: center;',
+      '  -webkit-background-clip: text;',
+      '  background-clip: text;',
+      '}',
+    ].join('\n'), {
+      isMainChunk: true,
+      majorVersion: 4,
+    })
+
+    expect(css).not.toContain('display: -webkit-flex')
+    expect(css).not.toContain('-webkit-flex-direction')
+    expect(css).not.toContain('-webkit-align-items')
+    expect(css).not.toContain('-webkit-justify-content')
+    expect(css).toContain('display: flex')
+    expect(css).toContain('flex-direction: column')
+    expect(css).toContain('align-items: center')
+    expect(css).toContain('justify-content: center')
+    expect(css).toContain('-webkit-background-clip: text')
+    expect(css).toContain('background-clip: text')
   })
 })

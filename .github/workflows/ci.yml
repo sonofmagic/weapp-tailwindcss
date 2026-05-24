@@ -26,6 +26,7 @@ jobs:
     env:
       TURBO_TOKEN: ${{ secrets.TURBO_TOKEN }}
       TURBO_TEAM: ${{ vars.TURBO_TEAM }}
+      E2E_SKIP_OPEN_AUTOMATOR: '1'
 
     steps:
       - name: Check out code
@@ -118,7 +119,7 @@ jobs:
         run: pnpm install --frozen-lockfile
 
       - name: Build core package dependency closure
-        run: pnpm --filter weapp-tailwindcss... run build
+        run: pnpm --filter weapp-tailwindcss... --filter "./packages-runtime/*" run build
 
       - name: Run core compatibility regression tests
         run: >

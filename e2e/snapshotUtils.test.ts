@@ -1,7 +1,45 @@
 import { describe, expect, it } from 'vitest'
-import { normalizeCssSnapshot } from './snapshotUtils'
+import { normalizeCssSnapshot, normalizeFormattedCssSnapshot } from './snapshotUtils'
 
 describe('normalizeCssSnapshot', () => {
+  it('normalizes formatted base selector spacing across platforms', () => {
+    expect(normalizeFormattedCssSnapshot([
+      '.bg-independent-subpackage-marker {',
+      '  background-color: #dc2626;',
+      '}',
+      '',
+      'view,',
+      'text,',
+      ':after,',
+      ':before {',
+      '  box-sizing: border-box;',
+      '}',
+      '',
+      ':host,',
+      'page,',
+      '.tw-root,',
+      'wx-root-portal-content {',
+      '  --spacing: 8rpx;',
+      '}',
+    ].join('\n'))).toBe([
+      '.bg-independent-subpackage-marker {',
+      '  background-color: #dc2626;',
+      '}',
+      'view,',
+      'text,',
+      ':after,',
+      ':before {',
+      '  box-sizing: border-box;',
+      '}',
+      ':host,',
+      'page,',
+      '.tw-root,',
+      'wx-root-portal-content {',
+      '  --spacing: 8rpx;',
+      '}',
+    ].join('\n'))
+  })
+
   it('removes scanner noise utilities without a class list', () => {
     expect(normalizeCssSnapshot([
       ':host { --color-red-500: red; --spacing: 8rpx; }',

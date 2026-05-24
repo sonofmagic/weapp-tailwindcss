@@ -6,7 +6,7 @@ Generator CSS files: app.wxss, index.wxss, index.wxss, index.wxss, index.wxss, i
 
 | Bytes | Selectors | @supports | :hover | Tailwind banner | Raw arbitrary selector | Weapp escaped arbitrary selector |
 | ---: | ---: | --- | --- | --- | --- | --- |
-| 35377 | 97 | false | false | false | false | true |
+| 35370 | 97 | false | false | false | false | true |
 
 ## Generator CSS
 

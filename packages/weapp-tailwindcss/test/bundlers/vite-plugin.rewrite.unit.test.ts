@@ -46,7 +46,7 @@ describe('bundlers/vite WeappTailwindcss rewrite', () => {
 
     const resolveId = getResolveIdHandler(rewritePlugin as Plugin)
     expect(resolveId).toBeTypeOf('function')
-    expect((rewritePlugin as Plugin).resolveId).toMatchObject({ order: 'pre' })
+    expect((rewritePlugin as Plugin).enforce).toBe('pre')
 
     const pkgDir = slash(resolvePackageDir('weapp-tailwindcss'))
     const cssImporter = '/src/app.css'
@@ -69,27 +69,55 @@ describe('bundlers/vite WeappTailwindcss rewrite', () => {
   }, TEST_TIMEOUT_MS)
 
   it('transforms css source to rewrite tailwindcss @import statements', async () => {
-    const WeappTailwindcss = await loadUnifiedVitePlugin()
-    const currentContext = getCurrentContext()
-    currentContext.twPatcher.majorVersion = 4
-    const plugins = WeappTailwindcss()
-    const rewritePlugin = plugins?.find(plugin => plugin.name === `${vitePluginName}:rewrite-css-imports`)
-    expect(rewritePlugin).toBeTruthy()
-
-    const transform = getTransformHandler(rewritePlugin as Plugin)
+    const [rewritePlugin] = createRewriteCssImportsPlugins({
+      rootImport: '/virtual/weapp-tailwindcss/generator-placeholder.css',
+      shouldOwnTailwindGeneration: true,
+      shouldRewrite: true,
+      weappTailwindcssDirPosix: '/virtual/weapp-tailwindcss',
+    })
+    const transform = getTransformHandler(rewritePlugin!)
     expect(transform).toBeTypeOf('function')
-    expect((rewritePlugin as Plugin).transform).toMatchObject({ order: 'pre' })
+    expect(rewritePlugin?.enforce).toBe('pre')
 
-    const pkgDir = slash(resolvePackageDir('weapp-tailwindcss'))
     const source = `
 @import 'tailwindcss' layer(base);
 @import url("tailwindcss/utilities");
 .foo { color: red; }
 `
     const result = await transform?.(source, '/src/app.css') as TransformResult
-    expect(result?.code).toContain(`@import '${pkgDir}/generator-placeholder.css' layer(base);`)
-    expect(result?.code).toContain(`@import url("${pkgDir}/utilities");`)
+    expect(result?.code).toContain('@import \'/virtual/weapp-tailwindcss/generator-placeholder.css\' layer(base);')
+    expect(result?.code).toContain('@import url("/virtual/weapp-tailwindcss/utilities");')
   }, TEST_TIMEOUT_MS)
+
+  it('emits generated tailwind css during the pre transform when generator mode owns output', async () => {
+    const addWatchFile = vi.fn()
+    const generateTailwindCss = vi.fn(async (_id: string, _code: string, hookContext?: { addWatchFile?: (id: string) => void }) => {
+      hookContext?.addWatchFile?.('/project/tailwind.config.ts')
+      return '.bg-clip-text{background-clip:text}'
+    })
+    const onTailwindRootCss = vi.fn()
+    const [rewritePlugin] = createRewriteCssImportsPlugins({
+      generateTailwindCss,
+      onTailwindRootCss,
+      shouldOwnTailwindGeneration: true,
+      shouldRewrite: true,
+      weappTailwindcssDirPosix: '/virtual/weapp-tailwindcss',
+    })
+    const transform = typeof rewritePlugin?.transform === 'object'
+      ? rewritePlugin.transform.handler
+      : rewritePlugin?.transform
+    expect(transform).toBeTypeOf('function')
+
+    const source = '@import "tailwindcss";\n.foo { color: red; }'
+    const result = await transform?.call({ addWatchFile }, source, '/project/src/app.css') as TransformResult
+
+    expect(result?.code).toBe('.bg-clip-text{background-clip:text}')
+    expect(generateTailwindCss).toHaveBeenCalledWith('/project/src/app.css', source, expect.objectContaining({
+      addWatchFile,
+    }))
+    expect(onTailwindRootCss).toHaveBeenCalledWith('/project/src/app.css', source)
+    expect(addWatchFile).toHaveBeenCalledWith('/project/tailwind.config.ts')
+  })
 
   it('rewrites tailwindcss imports in preprocessor and SFC style requests', async () => {
     const [rewritePlugin] = createRewriteCssImportsPlugins({
@@ -112,73 +140,86 @@ describe('bundlers/vite WeappTailwindcss rewrite', () => {
   })
 
   it('rewrites tailwindcss root imports to generator placeholder in force generator mode', async () => {
-    const WeappTailwindcss = await loadUnifiedVitePlugin()
-    const currentContext = createContext({
+    const [rewritePlugin] = createRewriteCssImportsPlugins({
+      rootImport: '/virtual/weapp-tailwindcss/generator-placeholder.css',
+      shouldOwnTailwindGeneration: true,
+      shouldRewrite: true,
+      weappTailwindcssDirPosix: '/virtual/weapp-tailwindcss',
     })
-    setCurrentContext(currentContext)
-    currentContext.twPatcher.majorVersion = 4
-    const plugins = WeappTailwindcss({
-    })
-    const rewritePlugin = plugins?.find(plugin => plugin.name === `${vitePluginName}:rewrite-css-imports`)
-    expect(rewritePlugin).toBeTruthy()
-
-    const transform = getTransformHandler(rewritePlugin as Plugin)
+    const transform = getTransformHandler(rewritePlugin!)
     const result = await transform?.('@import "tailwindcss";\n@import "tailwindcss/theme.css";', '/src/app.css') as TransformResult
-    const pkgDir = slash(resolvePackageDir('weapp-tailwindcss'))
-    expect(result?.code).toContain(`@import "${pkgDir}/generator-placeholder.css";`)
-    expect(result?.code).toContain(`@import "${pkgDir}/theme.css";`)
+    expect(result?.code).toContain('@import "/virtual/weapp-tailwindcss/generator-placeholder.css";')
+    expect(result?.code).toContain('@import "/virtual/weapp-tailwindcss/theme.css";')
   }, TEST_TIMEOUT_MS)
 
   it('runs rewrite transform ahead of other pre plugins so tailwindcss imports are replaced first', async () => {
-    const WeappTailwindcss = await loadUnifiedVitePlugin()
-    const currentContext = getCurrentContext()
-    currentContext.twPatcher.majorVersion = 4
-    const plugins = WeappTailwindcss()
-    const rewritePlugin = plugins?.find(plugin => plugin.name === `${vitePluginName}:rewrite-css-imports`)
-    expect(rewritePlugin).toBeTruthy()
+    const [rewritePlugin] = createRewriteCssImportsPlugins({
+      generateTailwindCss: () => undefined,
+      rootImport: '/virtual/weapp-tailwindcss/generator-placeholder.css',
+      shouldOwnTailwindGeneration: true,
+      shouldRewrite: true,
+      weappTailwindcssDirPosix: '/virtual/weapp-tailwindcss',
+    })
 
     const tailwindLikePlugin: Plugin = {
       name: '@tailwindcss/vite:generate',
       enforce: 'pre',
-      transform(code) {
-        return { code: `tailwind:${code}`, map: null }
+      transform: {
+        order: 'post',
+        handler(code) {
+          return { code: `tailwind:${code}`, map: null }
+        },
       },
     }
 
     function collectOrderedTransforms(pluginList: Plugin[]) {
-      const pre: Array<{ name: string, handler: NonNullable<Plugin['transform']> }> = []
-      const normal: typeof pre = []
-      const post: typeof pre = []
+      const pluginPre: Array<{ name: string, hook: NonNullable<Plugin['transform']> }> = []
+      const pluginNormal: typeof pluginPre = []
+      const pluginPost: typeof pluginPre = []
       for (const plugin of pluginList) {
         const hook = plugin.transform
         if (!hook) {
           continue
         }
+        const target = plugin.enforce === 'post'
+          ? pluginPost
+          : plugin.enforce === 'pre'
+            ? pluginPre
+            : pluginNormal
+        target.push({
+          name: plugin.name,
+          hook,
+        })
+      }
+      const orderedPlugins = [...pluginPre, ...pluginNormal, ...pluginPost]
+      const hookPre: Array<{ name: string, handler: NonNullable<Plugin['transform']> }> = []
+      const hookNormal: typeof hookPre = []
+      const hookPost: typeof hookPre = []
+      for (const plugin of orderedPlugins) {
+        const hook = plugin.hook
         const target = typeof hook === 'object'
           ? hook.order === 'post'
-            ? post
+            ? hookPost
             : hook.order === 'pre'
-              ? pre
-              : normal
-          : normal
+              ? hookPre
+              : hookNormal
+          : hookNormal
         target.push({
           name: plugin.name,
           handler: typeof hook === 'object' ? hook.handler!.bind(plugin) : hook.bind(plugin),
         })
       }
-      return [...pre, ...normal, ...post]
+      return [...hookPre, ...hookNormal, ...hookPost]
     }
 
-    const orderedTransforms = collectOrderedTransforms([tailwindLikePlugin, ...(plugins ?? [])])
+    const orderedTransforms = collectOrderedTransforms([tailwindLikePlugin, rewritePlugin!])
     expect(orderedTransforms.map(item => item.name)).toEqual([
       `${vitePluginName}:rewrite-css-imports`,
       '@tailwindcss/vite:generate',
-      `${vitePluginName}:source-candidates`,
     ])
 
     let source = '@import "tailwindcss";'
     const id = '/src/app.css'
-    const pkgDir = slash(resolvePackageDir('weapp-tailwindcss'))
 
     for (const { handler } of orderedTransforms) {
       const result = await handler(source, id) as TransformResult
@@ -187,7 +228,7 @@ describe('bundlers/vite WeappTailwindcss rewrite', () => {
       }
     }
 
-    expect(source).toContain(`@import "${pkgDir}/generator-placeholder.css";`)
+    expect(source).toContain('@import "/virtual/weapp-tailwindcss/generator-placeholder.css";')
     expect(source.startsWith('tailwind:')).toBeTruthy()
   }, TEST_TIMEOUT_MS)
 

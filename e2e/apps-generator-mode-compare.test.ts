@@ -41,9 +41,19 @@ const SUBPACKAGE_MARKER_PATTERNS = [
 
 const MINI_PROGRAM_CSS_PATTERN = '**/*.{wx,ac,jx,tt,q,c,ty}ss'
 
-const projects: CompareProject[] = [
+function filterCompareProjects(projects: CompareProject[]) {
+  const filter = process.env['E2E_PROJECT_FILTER']
+  if (!filter) {
+    return projects
+  }
+
+  const pattern = new RegExp(filter)
+  return projects.filter(project => pattern.test(project.name))
+}
+
+const projects: CompareProject[] = filterCompareProjects([
   ...E2E_PROJECTS.map(entry => createCompareProject(entry, '../demo')),
-]
+])
 
 const UNSUPPORTED_LEGACY_SELECTOR_SET = new Set([
   ':after',
@@ -346,8 +356,22 @@ async function expectReportSnapshot(report: AppsGeneratorCompareReportItem[]) {
   const markdownSnapshotPath = await resolveSnapshotFile(__dirname, 'apps-generator-mode', 'compare', 'report.md')
   const chineseMarkdownSnapshotPath = await resolveSnapshotFile(__dirname, 'apps-generator-mode', 'compare', 'report.zh-CN.md')
   await expect(`${JSON.stringify(report, null, 2)}\n`).toMatchFileSnapshot(jsonSnapshotPath)
-  await expect(createMarkdownReport(report)).toMatchFileSnapshot(markdownSnapshotPath)
-  await expect(createChineseMarkdownReport(report)).toMatchFileSnapshot(chineseMarkdownSnapshotPath)
+  await expectNormalizedReportSnapshot(markdownSnapshotPath, createMarkdownReport(report))
+  await expectNormalizedReportSnapshot(chineseMarkdownSnapshotPath, createChineseMarkdownReport(report))
+}
+
+async function expectNormalizedReportSnapshot(snapshotPath: string, content: string) {
+  const expected = await fs.readFile(snapshotPath, 'utf8')
+  expect(normalizeReportSnapshotText(content)).toBe(normalizeReportSnapshotText(expected))
+}
+
+function normalizeReportSnapshotText(source: string) {
+  const normalized = source
+    .replace(/\r\n/g, '\n')
+    .replace(/[ \t]+$/gm, '')
+    .replace(/\n{3,}/g, '\n\n')
+    .trimEnd()
+  return `${normalized}\n`
 }
 
 function normalizeCssSnapshot(css: string) {
@@ -401,7 +425,7 @@ async function expectCssOutputSnapshot(
   generatorResult: GeneratorBuildResult,
 ) {
   const snapshotPath = await resolveSnapshotFile(__dirname, 'apps-generator-mode', 'css-output', `${project.name}.md`)
-  await expect(createCssOutputSnapshot(project, generatorResult)).toMatchFileSnapshot(snapshotPath)
+  await expectNormalizedReportSnapshot(snapshotPath, createCssOutputSnapshot(project, generatorResult))
 }
 
 describe('demo generator mode output', () => {

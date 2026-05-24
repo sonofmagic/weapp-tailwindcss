@@ -13,7 +13,6 @@ export async function sleep(ms: number) {
 // 模块级正则，避免函数内重复编译
 const ZERO_WIDTH_SPACE_RE = /\u200B/g
 const NEWLINE_SPLIT_RE = /\r?\n/
-const PNPM_RE = /pnpm/i
 const ERROR_RE = /error/i
 const EMFILE_RE = /emfile/i
 const WHITESPACE_RE = /\s+/
@@ -97,6 +96,7 @@ const compileSuccessLinePatterns = [
   /built in [\d.]+s?/i,
   /构建完成/u,
   /已重新构建/u,
+  /重新构建/u,
 ] as const
 
 const compileFailureLinePatterns = [
@@ -219,6 +219,28 @@ function createSpawnEnv(
   return sanitized
 }
 
+function resolvePnpmBinary() {
+  const candidate = resolvePnpmCommand()
+  if (path.isAbsolute(candidate) && existsSync(candidate)) {
+    return candidate
+  }
+
+  const resolver = process.platform === 'win32' ? 'where' : 'which'
+  const result = spawnSync(resolver, ['pnpm'], {
+    encoding: 'utf8',
+    stdio: ['ignore', 'pipe', 'ignore'],
+  })
+
+  if (result.status === 0 && typeof result.stdout === 'string') {
+    const resolved = result.stdout.split(NEWLINE_SPLIT_RE)[0]?.trim()
+    if (resolved && existsSync(resolved)) {
+      return resolved
+    }
+  }
+
+  return candidate
+}
+
 function spawnPnpm(
   args: string[],
   options: {
@@ -228,25 +250,15 @@ function spawnPnpm(
     stdio: 'pipe'
   },
 ) {
-  const npmExecPath = process.env.npm_execpath
-  if (
-    typeof npmExecPath === 'string'
-    && npmExecPath.length > 0
-    && PNPM_RE.test(path.basename(npmExecPath))
-    && existsSync(npmExecPath)
-  ) {
-    return spawn(process.execPath, [npmExecPath, ...args], options)
-  }
-
   if (process.platform === 'win32') {
-    return spawn('pnpm', args, {
+    return spawn(resolvePnpmBinary(), args, {
       ...options,
       shell: true,
       windowsHide: true,
     })
   }
 
-  return spawn(resolvePnpmCommand(), args, options)
+  return spawn(resolvePnpmBinary(), args, options)
 }
 
 function killProcessTreeOnWindows(pid: number) {

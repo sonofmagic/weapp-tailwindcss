@@ -24,6 +24,7 @@ function isCssLikeImporter(importer?: string | null) {
 interface RewriteCssImportsOptions {
   appType?: AppType | undefined
   getAppType?: (() => AppType | undefined) | undefined
+  generateTailwindCss?: ((id: string, code: string, hookContext?: { addWatchFile?: (id: string) => void }) => Promise<string | undefined> | string | undefined) | undefined
   shouldOwnTailwindGeneration?: boolean | undefined
   shouldRewrite: boolean
   rootImport?: string | undefined
@@ -45,49 +46,52 @@ export function createRewriteCssImportsPlugins(options: RewriteCssImportsOptions
     {
       name: `${vitePluginName}:rewrite-css-imports`,
       enforce: 'pre',
-      resolveId: {
-        order: 'pre',
-        handler(id, importer) {
-          const replacement = resolveTailwindcssImport(id, weappTailwindcssDirPosix, {
-            join: joinPosixPath,
-            appType: resolveAppType(),
-            rootImport,
-          })
-          if (!replacement) {
-            return null
-          }
-          if (importer && !isCssLikeImporter(importer)) {
-            return null
-          }
-          return replacement
-        },
+      resolveId(id, importer) {
+        const replacement = resolveTailwindcssImport(id, weappTailwindcssDirPosix, {
+          join: joinPosixPath,
+          appType: resolveAppType(),
+          rootImport,
+        })
+        if (!replacement) {
+          return null
+        }
+        if (importer && !isCssLikeImporter(importer)) {
+          return null
+        }
+        return replacement
       },
-      transform: {
-        order: 'pre',
-        async handler(code, id) {
-          if (!isCSSRequest(id)) {
-            return null
+      async transform(this: { addWatchFile?: (id: string) => void }, code, id) {
+        if (!isCSSRequest(id)) {
+          return null
+        }
+        if (hasTailwindRootDirectives(code)) {
+          await options.onTailwindRootCss?.(id, code)
+          if (options.shouldOwnTailwindGeneration) {
+            const generatedCss = await options.generateTailwindCss?.(id, code, this)
+            if (generatedCss !== undefined) {
+              return {
+                code: generatedCss,
+                map: null,
+              }
+            }
           }
-          if (hasTailwindRootDirectives(code)) {
-            await options.onTailwindRootCss?.(id, code)
-          }
+        }
 
-          const rewritten = rewriteTailwindcssImportsInCode(code, weappTailwindcssDirPosix, {
-            join: joinPosixPath,
-            appType: resolveAppType(),
-            rootImport,
-          })
-          const nextCode = shouldOwnTailwindGeneration
-            ? stripTailwindConfigDirectives(rewritten ?? code)
-            : rewritten
-          if (!nextCode || nextCode === code) {
-            return null
-          }
-          return {
-            code: nextCode,
-            map: null,
-          }
-        },
+        const rewritten = rewriteTailwindcssImportsInCode(code, weappTailwindcssDirPosix, {
+          join: joinPosixPath,
+          appType: resolveAppType(),
+          rootImport,
+        })
+        const nextCode = shouldOwnTailwindGeneration
+          ? stripTailwindConfigDirectives(rewritten ?? code)
+          : rewritten
+        if (!nextCode || nextCode === code) {
+          return null
+        }
+        return {
+          code: nextCode,
+          map: null,
+        }
       },
     },
   ]

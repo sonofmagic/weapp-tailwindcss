@@ -17,6 +17,7 @@ import { buildHexScriptRoundConfigs, buildIssue33HighRiskRoundConfigs, buildTail
 
 const taroWatchEnv = {
   TARO_BUILD_STRICT: '1',
+  TARO_E2E_WATCH_NATIVE: '0',
   CHOKIDAR_USEPOLLING: '1',
   CHOKIDAR_INTERVAL: '50',
   WATCHPACK_POLLING: '50',
@@ -44,6 +45,7 @@ function createSubPackageMutations(
     styleCandidates?: (subPackage: 'sub-normal' | 'sub-independent') => string[]
     globalStyleCandidates?: (subPackage: 'sub-normal' | 'sub-independent') => string[]
     styleMutationOptions?: Pick<NonNullable<WatchCase['subPackageMutations']>[number]['styleMutation'], 'validateApply' | 'validateFunction' | 'outputNeedles' | 'rollbackNeedles'>
+    skipStyleMutation?: boolean
     templateVerifyEscapedIn?: Array<'wxml' | 'js'>
     templateVerifyClassLiteralIn?: Array<'wxml' | 'js'>
   },
@@ -71,6 +73,7 @@ function createSubPackageMutations(
       outputJs: path.join(distDir, 'index.js'),
       outputStyleCandidates,
       globalStyleCandidates,
+      skipStyleMutation: options.skipStyleMutation,
       templateMutation: {
         sourceFile: pageSource,
         verifyEscapedIn: options.templateVerifyEscapedIn
@@ -441,6 +444,7 @@ export function buildDemoBaseCases(baseCwd: string): WatchCase[] {
       distRoot: 'dist',
       version: 'v3',
       pageKind: 'wxml',
+      skipStyleMutation: true,
       globalStyleCandidates(subPackage) {
         return [
           path.resolve(baseCwd, `demo/weapp-vite-tailwindcss-v3/dist/${subPackage}/pages/index.wxss`),
@@ -518,6 +522,7 @@ export function buildDemoBaseCases(baseCwd: string): WatchCase[] {
       distRoot: 'dist',
       version: 'v4',
       pageKind: 'wxml',
+      skipStyleMutation: true,
       globalStyleCandidates(subPackage) {
         return [
           path.resolve(baseCwd, `demo/weapp-vite-tailwindcss-v4/dist/${subPackage}/pages/index.wxss`),

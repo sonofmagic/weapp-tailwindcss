@@ -544,6 +544,37 @@ describe('watch-hmr regression text helpers', () => {
     expect(elapsed).toBeGreaterThanOrEqual(20)
   })
 
+  it('allows non-strict initial output readiness to reuse prebuild outputs after a stable window', async () => {
+    const tempDir = await mkdtemp(path.join(os.tmpdir(), 'weapp-tw-watch-prebuild-ready-'))
+    tempDirs.push(tempDir)
+    const wxmlFile = path.join(tempDir, 'index.wxml')
+    const jsFile = path.join(tempDir, 'index.js')
+    await writeFilePreserveEol(wxmlFile, '<view>prebuild</view>', '<view />')
+    await writeFilePreserveEol(jsFile, 'Page({ prebuild: true })', 'Page({})')
+    await new Promise(resolve => setTimeout(resolve, 20))
+    const sessionStartedAt = Date.now()
+
+    const elapsed = await waitForOutputsReady(
+      {
+        label: 'demo/weapp-vite-tailwindcss-v3',
+        requireInitialCompileSuccess: false,
+        outputWxml: wxmlFile,
+        outputJs: jsFile,
+      } as any,
+      {
+        timeoutMs: 2_000,
+        pollMs: 20,
+      } as CliOptions,
+      {
+        ensureRunning() {},
+        lastCompileSuccessAt: () => 0,
+      } as any,
+      sessionStartedAt,
+    )
+
+    expect(elapsed).toBeGreaterThanOrEqual(0)
+  })
+
   it('requires a stable post-start output update during warmup when compile success is mandatory', async () => {
     const tempDir = await mkdtemp(path.join(os.tmpdir(), 'weapp-tw-watch-warmup-'))
     tempDirs.push(tempDir)
@@ -1163,7 +1194,7 @@ describe('watch-hmr regression cases', () => {
     ])
 
     for (const watchCase of cases) {
-      expect(watchCase.env).not.toHaveProperty('TARO_E2E_WATCH_NATIVE')
+      expect(watchCase.env).toHaveProperty('TARO_E2E_WATCH_NATIVE', '0')
       expect(watchCase.maxPluginProcessMs).toBe(3000)
       expect(watchCase.initialMutationDelayMs).toBe(15_000)
     }
@@ -1400,7 +1431,7 @@ describe('watch-hmr regression cases', () => {
     expect(win32DemoCases.find(watchCase => watchCase.name === 'uni-app-vite-tailwindcss-v3')).toBeDefined()
   })
 
-  it('keeps issue33 and Vue3 watch cases in macOS and Windows CI matrices', async () => {
+  it('keeps issue33 and Vue3 watch cases across PR smoke and nightly CI matrices', async () => {
     const workflowSource = await readFile(
       path.resolve(__dirname, '../../../.github/workflows/e2e-watch.yml'),
       'utf8',
@@ -1415,9 +1446,11 @@ describe('watch-hmr regression cases', () => {
       }>
     }
 
+    const prMatrixEntries = workflow.jobs?.['pr-quick-gate']?.strategy?.matrix?.include ?? []
+    const nightlyMatrixEntries = workflow.jobs?.['nightly-full-regression']?.strategy?.matrix?.include ?? []
     const matrixEntries = [
-      ...(workflow.jobs?.['pr-quick-gate']?.strategy?.matrix?.include ?? []),
-      ...(workflow.jobs?.['nightly-full-regression']?.strategy?.matrix?.include ?? []),
+      ...prMatrixEntries,
+      ...nightlyMatrixEntries,
     ]
 
     const requiredMatrixEntries = [
@@ -1435,6 +1468,8 @@ describe('watch-hmr regression cases', () => {
     for (const entry of requiredMatrixEntries) {
       expect(matrixEntries).toContainEqual(expect.objectContaining(entry))
     }
+    expect(prMatrixEntries.some(entry => String(entry.watch_case).startsWith('weapp-vite-tailwindcss-'))).toBe(false)
+    expect(prMatrixEntries.some(entry => String(entry.watch_case).startsWith('taro-vite-vue3-tailwindcss-'))).toBe(false)
   })
 
   it('keeps watch plugin processing budget strict while retry settings stay explicit', async () => {

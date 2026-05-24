@@ -5,6 +5,7 @@ import { afterEach, describe, expect, it } from 'vitest'
 import { replaceWxml } from '../packages/weapp-tailwindcss/src/wxml'
 import { E2E_PROJECTS } from './projectEntries'
 import { clearProjectBuildState, ensureProjectBuilt } from './projectTest'
+import { projectFilter } from './shared'
 
 const fixturesRoot = path.resolve(__dirname, '../demo')
 const rawClasses = ['h-[458rpx]', 'w-[218rpx]', 'inset-x-[30%]'] as const
@@ -37,6 +38,15 @@ async function rememberOriginal(file: string) {
   changedFiles.set(file, await fs.readFile(file, 'utf8'))
 }
 
+async function writeFileAtomic(file: string, content: string) {
+  const tmpFile = path.join(
+    path.dirname(file),
+    `.${path.basename(file)}.${process.pid}.${Date.now()}.tmp`,
+  )
+  await fs.writeFile(tmpFile, content, 'utf8')
+  await fs.rename(tmpFile, file)
+}
+
 async function patchFile(target: PatchTarget) {
   await rememberOriginal(target.file)
   const source = await fs.readFile(target.file, 'utf8')
@@ -44,11 +54,11 @@ async function patchFile(target: PatchTarget) {
   if (next === source) {
     throw new Error(`Unable to patch regression fixture: ${target.file}`)
   }
-  await fs.writeFile(target.file, next, 'utf8')
+  await writeFileAtomic(target.file, next)
 }
 
 async function restorePatchedFiles() {
-  await Promise.all([...changedFiles].map(([file, source]) => fs.writeFile(file, source, 'utf8')))
+  await Promise.all([...changedFiles].map(([file, source]) => writeFileAtomic(file, source)))
   changedFiles.clear()
 }
 
@@ -254,7 +264,7 @@ describe('all demo dynamic class regression', () => {
     await restorePatchedFiles()
   })
 
-  for (const entry of E2E_PROJECTS) {
+  for (const entry of projectFilter(E2E_PROJECTS)) {
     it(entry.name, async () => {
       const patch = createPatch(entry)
       await applyPatch(patch)

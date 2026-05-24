@@ -1,5 +1,5 @@
 // 后处理阶段插件：负责选择器兜底、声明去重与变量排序
-import type { Plugin, PluginCreator, Rule } from 'postcss'
+import type { Declaration, Plugin, PluginCreator, Rule } from 'postcss'
 import type { IStyleHandlerOptions } from '../types'
 import { defu } from '@weapp-tailwindcss/shared'
 import { normalizeTailwindcssRpxDeclaration } from '../compat/tailwindcss-rpx'
@@ -17,6 +17,24 @@ export type PostcssWeappTailwindcssRenamePlugin = PluginCreator<IStyleHandlerOpt
 export { reorderVariableDeclarations } from './post/decl-dedupe'
 
 const DEFAULT_ROOT_SELECTORS = ['page', '.tw-root', 'wx-root-portal-content'] as const
+const LEGACY_FLEXBOX_DECLARATION_PROPS = new Set([
+  '-webkit-align-content',
+  '-webkit-align-items',
+  '-webkit-align-self',
+  '-webkit-flex',
+  '-webkit-flex-basis',
+  '-webkit-flex-direction',
+  '-webkit-flex-flow',
+  '-webkit-flex-grow',
+  '-webkit-flex-shrink',
+  '-webkit-flex-wrap',
+  '-webkit-justify-content',
+  '-webkit-order',
+])
+const LEGACY_FLEXBOX_DISPLAY_VALUES = new Set([
+  '-webkit-flex',
+  '-webkit-inline-flex',
+])
 
 function normalizeRootSelectors(value?: string | string[] | false) {
   if (value === undefined || value === false) {
@@ -42,6 +60,16 @@ function createHostSelectorAppender(options: IStyleHandlerOptions) {
       return false
     }
     return DEFAULT_ROOT_SELECTORS.every(selector => selectors.includes(selector))
+  }
+}
+
+function removeLegacyFlexboxPrefix(decl: Declaration) {
+  if (decl.prop === 'display' && LEGACY_FLEXBOX_DISPLAY_VALUES.has(decl.value)) {
+    decl.remove()
+    return
+  }
+  if (LEGACY_FLEXBOX_DECLARATION_PROPS.has(decl.prop)) {
+    decl.remove()
   }
 }
 
@@ -102,6 +130,7 @@ const postcssWeappTailwindcssPostPlugin: PostcssWeappTailwindcssRenamePlugin = (
     if (enableMainChunkTransforms) {
       normalizeTailwindcssV4Declaration(decl)
     }
+    removeLegacyFlexboxPrefix(decl)
   }
 
   if (enableMainChunkTransforms) {

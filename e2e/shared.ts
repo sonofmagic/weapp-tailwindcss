@@ -103,7 +103,12 @@ export function wait(ts = 1000) {
 }
 
 export function projectFilter(x: ProjectEntry[]) {
-  return x
+  const filter = process.env['E2E_PROJECT_FILTER']
+  if (!filter) {
+    return x
+  }
+  const pattern = new RegExp(filter)
+  return x.filter(entry => pattern.test(entry.name))
 }
 
 export function formatWxml(wxml: string) {
