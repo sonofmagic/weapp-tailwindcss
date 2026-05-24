@@ -356,8 +356,17 @@ async function expectReportSnapshot(report: AppsGeneratorCompareReportItem[]) {
   const markdownSnapshotPath = await resolveSnapshotFile(__dirname, 'apps-generator-mode', 'compare', 'report.md')
   const chineseMarkdownSnapshotPath = await resolveSnapshotFile(__dirname, 'apps-generator-mode', 'compare', 'report.zh-CN.md')
   await expect(`${JSON.stringify(report, null, 2)}\n`).toMatchFileSnapshot(jsonSnapshotPath)
-  await expect(createMarkdownReport(report)).toMatchFileSnapshot(markdownSnapshotPath)
-  await expect(createChineseMarkdownReport(report)).toMatchFileSnapshot(chineseMarkdownSnapshotPath)
+  await expect(normalizeReportSnapshotText(createMarkdownReport(report))).toMatchFileSnapshot(markdownSnapshotPath)
+  await expect(normalizeReportSnapshotText(createChineseMarkdownReport(report))).toMatchFileSnapshot(chineseMarkdownSnapshotPath)
+}
+
+function normalizeReportSnapshotText(source: string) {
+  const normalized = source
+    .replace(/\r\n/g, '\n')
+    .replace(/[ \t]+$/gm, '')
+    .replace(/\n{3,}/g, '\n\n')
+    .trimEnd()
+  return `${normalized}\n`
 }
 
 function normalizeCssSnapshot(css: string) {

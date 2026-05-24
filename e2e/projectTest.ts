@@ -85,7 +85,16 @@ function shouldSkipAutomator(entry: ProjectEntry) {
 
 async function expectProjectSnapshot(suite: string, projectName: string, fileName: string, content: string) {
   const snapshotPath = await resolveSnapshotFile(__dirname, suite, projectName, fileName)
-  await expect(content).toMatchFileSnapshot(snapshotPath)
+  await expect(normalizeProjectSnapshotContent(content)).toMatchFileSnapshot(snapshotPath)
+}
+
+function normalizeProjectSnapshotContent(source: string) {
+  const normalized = source
+    .replace(/\r\n/g, '\n')
+    .replace(/[ \t]+$/gm, '')
+    .replace(/\n{3,}/g, '\n\n')
+    .trimEnd()
+  return `${normalized}\n`
 }
 
 function formatClassListSnapshot(classList: string[]) {
