@@ -544,6 +544,37 @@ describe('watch-hmr regression text helpers', () => {
     expect(elapsed).toBeGreaterThanOrEqual(20)
   })
 
+  it('allows non-strict initial output readiness to reuse prebuild outputs after a stable window', async () => {
+    const tempDir = await mkdtemp(path.join(os.tmpdir(), 'weapp-tw-watch-prebuild-ready-'))
+    tempDirs.push(tempDir)
+    const wxmlFile = path.join(tempDir, 'index.wxml')
+    const jsFile = path.join(tempDir, 'index.js')
+    await writeFilePreserveEol(wxmlFile, '<view>prebuild</view>', '<view />')
+    await writeFilePreserveEol(jsFile, 'Page({ prebuild: true })', 'Page({})')
+    await new Promise(resolve => setTimeout(resolve, 20))
+    const sessionStartedAt = Date.now()
+
+    const elapsed = await waitForOutputsReady(
+      {
+        label: 'demo/weapp-vite-tailwindcss-v3',
+        requireInitialCompileSuccess: false,
+        outputWxml: wxmlFile,
+        outputJs: jsFile,
+      } as any,
+      {
+        timeoutMs: 2_000,
+        pollMs: 20,
+      } as CliOptions,
+      {
+        ensureRunning() {},
+        lastCompileSuccessAt: () => 0,
+      } as any,
+      sessionStartedAt,
+    )
+
+    expect(elapsed).toBeGreaterThanOrEqual(0)
+  })
+
   it('requires a stable post-start output update during warmup when compile success is mandatory', async () => {
     const tempDir = await mkdtemp(path.join(os.tmpdir(), 'weapp-tw-watch-warmup-'))
     tempDirs.push(tempDir)
@@ -1163,7 +1194,7 @@ describe('watch-hmr regression cases', () => {
     ])
 
     for (const watchCase of cases) {
-      expect(watchCase.env).not.toHaveProperty('TARO_E2E_WATCH_NATIVE')
+      expect(watchCase.env).toHaveProperty('TARO_E2E_WATCH_NATIVE', '0')
       expect(watchCase.maxPluginProcessMs).toBe(3000)
       expect(watchCase.initialMutationDelayMs).toBe(15_000)
     }

@@ -164,7 +164,6 @@ wx-root-portal-content {
     background-color: var(--color-zinc-900);
   }
 }
-
 view,
 text,
 :after,
@@ -192,7 +191,6 @@ wx-root-portal-content {
 .bg-independent-subpackage-marker {
   background-color: #dc2626;
 }
-
 view,
 text,
 :after,

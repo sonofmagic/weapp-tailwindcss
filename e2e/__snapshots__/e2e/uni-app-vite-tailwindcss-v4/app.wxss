@@ -844,7 +844,6 @@ wx-root-portal-content {
 [data-c-h='true'] {
   display: none !important;
 }
-
 view,
 text,
 :after,
@@ -872,7 +871,6 @@ wx-root-portal-content {
 .bg-independent-subpackage-marker {
   background-color: #dc2626;
 }
-
 view,
 text,
 :after,

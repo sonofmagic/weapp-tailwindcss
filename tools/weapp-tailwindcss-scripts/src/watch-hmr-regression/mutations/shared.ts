@@ -107,6 +107,11 @@ export async function waitForOutputsReady(
         return true
       }
 
+      const requireInitialCompileSuccess = watchCase.requireInitialCompileSuccess === true
+      if (!requireInitialCompileSuccess && wxmlMtime > 0 && jsMtime > 0 && Date.now() - sessionStartedAt >= stableWindowMs) {
+        return true
+      }
+
       const lastCompileSuccessAt = session.lastCompileSuccessAt()
       return lastCompileSuccessAt > sessionStartedAt
         && Date.now() - lastCompileSuccessAt >= stableWindowMs
