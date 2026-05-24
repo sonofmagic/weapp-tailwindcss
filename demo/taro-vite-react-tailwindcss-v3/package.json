@@ -125,7 +125,7 @@
     "stylelint": "catalog:stylelint1625",
     "tailwindcss": "catalog:tailwindcss3",
     "tailwindcss-rem2px-preset": "catalog:tailwindcssRem",
-    "terser": "^5.47.1",
+    "terser": "^5.48.0",
     "to-fast-properties": "3.0.1",
     "typescript": "catalog:typescript59",
     "vite": "catalog:vite4",

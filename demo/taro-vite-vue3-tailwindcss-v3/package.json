@@ -75,6 +75,7 @@
     "@babel/runtime": "catalog:babelRuntime7284",
     "@tarojs/components": "catalog:taro4",
     "@tarojs/helper": "catalog:taro4",
+    "@tarojs/plugin-framework-vue3": "catalog:taro4",
     "@tarojs/plugin-platform-alipay": "catalog:taro4",
     "@tarojs/plugin-platform-h5": "catalog:taro4",
     "@tarojs/plugin-platform-harmony-hybrid": "catalog:taro4",
@@ -86,7 +87,6 @@
     "@tarojs/runtime": "catalog:taro4",
     "@tarojs/shared": "catalog:taro4",
     "@tarojs/taro": "catalog:taro4",
-    "@tarojs/plugin-framework-vue3": "catalog:taro4",
     "vue": "catalog:vue3"
   },
   "devDependencies": {
@@ -101,6 +101,10 @@
     "@babel/runtime-corejs3": "^7.24.4",
     "@tarojs/cli": "catalog:taro4",
     "@tarojs/vite-runner": "catalog:taro4",
+    "@vitejs/plugin-vue": "^4.6.2",
+    "@vitejs/plugin-vue-jsx": "^3.1.0",
+    "@vue/compiler-dom": "catalog:vue3",
+    "@vue/compiler-sfc": "catalog:vue3",
     "@weapp-tailwindcss/merge-v3": "workspace:*",
     "@weapp-tailwindcss/variants-v3": "workspace:*",
     "autoprefixer": "catalog:autoprefixer10",
@@ -110,6 +114,7 @@
     "core-js": "^3.36.1",
     "eslint": "catalog:eslint10",
     "eslint-config-taro": "catalog:taro4",
+    "eslint-plugin-vue": "^10.9.1",
     "postcss": "catalog:postcss85",
     "postcss-rem-to-responsive-pixel": "catalog:postcssRem",
     "postcss-rpx-transform": "catalog:postcssRpx",
@@ -117,16 +122,11 @@
     "stylelint": "catalog:stylelint1625",
     "tailwindcss": "catalog:tailwindcss3",
     "tailwindcss-rem2px-preset": "catalog:tailwindcssRem",
-    "terser": "^5.47.1",
+    "terser": "^5.48.0",
     "to-fast-properties": "3.0.1",
     "typescript": "catalog:typescript59",
     "vite": "catalog:vite4",
     "weapp-ide-cli": "catalog:weappIdeCli",
-    "weapp-tailwindcss": "workspace:*",
-    "@vitejs/plugin-vue": "^4.6.2",
-    "@vitejs/plugin-vue-jsx": "^3.1.0",
-    "@vue/compiler-dom": "catalog:vue3",
-    "@vue/compiler-sfc": "catalog:vue3",
-    "eslint-plugin-vue": "^10.9.1"
+    "weapp-tailwindcss": "workspace:*"
   }
 }
