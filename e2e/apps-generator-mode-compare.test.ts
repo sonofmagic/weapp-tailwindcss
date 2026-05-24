@@ -41,9 +41,19 @@ const SUBPACKAGE_MARKER_PATTERNS = [
 
 const MINI_PROGRAM_CSS_PATTERN = '**/*.{wx,ac,jx,tt,q,c,ty}ss'
 
-const projects: CompareProject[] = [
+function filterCompareProjects(projects: CompareProject[]) {
+  const filter = process.env['E2E_PROJECT_FILTER']
+  if (!filter) {
+    return projects
+  }
+
+  const pattern = new RegExp(filter)
+  return projects.filter(project => pattern.test(project.name))
+}
+
+const projects: CompareProject[] = filterCompareProjects([
   ...E2E_PROJECTS.map(entry => createCompareProject(entry, '../demo')),
-]
+])
 
 const UNSUPPORTED_LEGACY_SELECTOR_SET = new Set([
   ':after',

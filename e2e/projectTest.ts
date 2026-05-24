@@ -38,11 +38,10 @@ async function safeRm(target: string) {
   }
 }
 
-async function clearTailwindPatchCaches(root: string) {
+async function clearTailwindPatchCaches(root: string, options: { includeBuildOutputs?: boolean } = {}) {
   const workspaceRoot = path.resolve(root, '..', '..')
   const candidates = new Set<string>([
-    path.resolve(root, 'dist'),
-    path.resolve(root, 'unpackage'),
+    path.resolve(root, '.cache'),
     path.resolve(root, 'node_modules/.cache/tailwindcss-patch'),
     path.resolve(root, 'node_modules/.cache/weapp-tailwindcss'),
     path.resolve(root, 'src/node_modules/.cache/tailwindcss-patch'),
@@ -57,17 +56,25 @@ async function clearTailwindPatchCaches(root: string) {
     path.resolve(workspaceRoot, 'packages/weapp-tailwindcss/node_modules/.cache/weapp-tailwindcss'),
   ])
 
+  if (options.includeBuildOutputs) {
+    candidates.add(path.resolve(root, 'dist'))
+    candidates.add(path.resolve(root, 'unpackage'))
+  }
+
   await Promise.all(
     Array.from(candidates, target => safeRm(target)),
   )
 }
 
 export async function clearProjectBuildState(root: string) {
-  await clearTailwindPatchCaches(root)
+  await clearTailwindPatchCaches(root, { includeBuildOutputs: true })
 }
 
 function shouldSkipAutomator(entry: ProjectEntry) {
   if (entry.skipOpenAutomator) {
+    return true
+  }
+  if (process.env['E2E_SKIP_OPEN_AUTOMATOR'] === '1') {
     return true
   }
   if (process.env.E2E_OPEN_AUTOMATOR === '1') {
@@ -191,7 +198,7 @@ async function runProjectTest(entry: ProjectEntry, options: ProjectTestOptions) 
   }
 
   if (shouldResetPatchCaches) {
-    await clearProjectBuildState(root)
+    await clearTailwindPatchCaches(root)
   }
 
   let extraction

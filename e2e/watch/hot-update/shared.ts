@@ -229,7 +229,9 @@ interface HotUpdateReport {
   cases: HotUpdateCaseReport[]
 }
 
-const criticalDemoProjects = buildCases(path.resolve(__dirname, '../../..'))
+const configuredWatchCases = buildCases(path.resolve(__dirname, '../../..'))
+
+const criticalDemoProjects = configuredWatchCases
   .filter(item => item.group === 'demo')
   .map(item => item.project)
 
@@ -255,16 +257,11 @@ const referenceDirectiveRequiredCases = new Set<ConcreteWatchCaseName>([
   'taro-webpack-react-tailwindcss-v4',
   'weapp-vite-tailwindcss-v4',
 ])
-const commentCarrierRequiredCases = new Set<ConcreteWatchCaseName>([
-  'mpx-tailwindcss-v3',
-  'taro-vite-react-tailwindcss-v3',
-  'taro-vite-react-tailwindcss-v4',
-  'taro-webpack-react-tailwindcss-v3',
-  'taro-webpack-react-tailwindcss-v4',
-  'uni-app-vite-tailwindcss-v3',
-  'weapp-vite-tailwindcss-v3',
-  'weapp-vite-tailwindcss-v4',
-])
+const commentCarrierRequiredCases = new Set<ConcreteWatchCaseName>(
+  configuredWatchCases
+    .filter(item => item.scriptMutation.mutateCommentCarrier)
+    .map(item => item.name),
+)
 
 interface CommentCarrierSummaryItem {
   name: ConcreteWatchCaseName

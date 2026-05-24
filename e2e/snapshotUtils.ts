@@ -277,6 +277,8 @@ const WEAPP_BASE_NOISE_DECLS = new Set([
 
 const WEBPACK_APP_SPLIT_NOISE_KEYFRAMES = new Set(['float-pop', 'jump'])
 const WEBPACK_APP_SPLIT_NOISE_FONT_FAMILIES = new Set(['JDZH-Regular', 'JDZH-Bold'])
+const SUBPACKAGE_MARKER_SELECTOR_RE = /^\.bg-(?:independent|normal)-subpackage-marker$|^\.before_ccontent-_b_a(?:independent|normal)_subpackage_/
+const SUBPACKAGE_BG_MARKER_SELECTOR_RE = /^\.bg-(?:independent|normal)-subpackage-marker$/
 
 const TAILWIND_V4_APP_COLOR_ORDER = new Map([
   '--color-red-700',
@@ -335,6 +337,9 @@ function hasWeappEscapedArbitrarySelector(root: postcss.Root) {
 }
 
 function getUtilityGroup(selector: string) {
+  if (SUBPACKAGE_MARKER_SELECTOR_RE.test(selector)) {
+    return 'subpackage-marker'
+  }
   if (/^(?:\.text(?:-|_)|\._etext)/.test(selector)) {
     return 'typography'
   }
@@ -435,6 +440,80 @@ function sortUtilityRuleRuns(container: postcss.Container) {
     }
 
     index = end
+  }
+}
+
+function sortSubpackageMarkerChunks(root: postcss.Root) {
+  const nodes = root.nodes
+  if (!nodes) {
+    return
+  }
+
+  const chunks: Array<{
+    start: number
+    end: number
+    key: string
+    nodes: postcss.ChildNode[]
+  }> = []
+
+  let index = 0
+  while (index < nodes.length) {
+    const node = nodes[index]
+    if (node?.type !== 'rule' || !isSelectorSet(node, WEAPP_BASE_SELECTOR_PARTS)) {
+      index += 1
+      continue
+    }
+
+    let end = index + 1
+    while (end < nodes.length) {
+      const next = nodes[end]
+      if (next?.type === 'rule' && isSelectorSet(next, WEAPP_BASE_SELECTOR_PARTS)) {
+        break
+      }
+      end += 1
+    }
+
+    const chunkNodes = nodes.slice(index, end)
+    const markerSelectors = chunkNodes
+      .filter((item): item is postcss.Rule => item.type === 'rule' && SUBPACKAGE_BG_MARKER_SELECTOR_RE.test(item.selector))
+      .map(item => item.selector)
+
+    if (markerSelectors.length > 0) {
+      chunks.push({
+        start: index,
+        end,
+        key: `${markerSelectors.join('\0')}\0${chunkNodes.map(item => item.toString()).join('\0')}`,
+        nodes: chunkNodes,
+      })
+    }
+
+    index = end
+  }
+
+  let runStart = 0
+  while (runStart < chunks.length) {
+    let runEnd = runStart + 1
+    while (runEnd < chunks.length && chunks[runEnd - 1]?.end === chunks[runEnd]?.start) {
+      runEnd += 1
+    }
+
+    if (runEnd - runStart > 1) {
+      const run = chunks.slice(runStart, runEnd)
+      const firstBefore = nodes[run[0]!.start]?.raws.before
+      const sortedNodes = [...run]
+        .sort((a, b) => compareText(a.key, b.key))
+        .flatMap((chunk, chunkIndex) => {
+          for (const [nodeIndex, node] of chunk.nodes.entries()) {
+            node.raws.before = nodeIndex === 0
+              ? chunkIndex === 0 ? firstBefore : '\n\n'
+              : '\n'
+          }
+          return chunk.nodes
+        })
+      nodes.splice(run[0]!.start, run[run.length - 1]!.end - run[0]!.start, ...sortedNodes)
+    }
+
+    runStart = runEnd
   }
 }
 
@@ -876,6 +955,7 @@ export function normalizeCssSnapshot(source: string, _options: CssSnapshotOption
     removeUnusedTailwindV4ColorTokens(root)
     normalizeTailwindV4DefaultTokenUsage(root)
     sortUtilityRuleRuns(root)
+    sortSubpackageMarkerChunks(root)
   }
   return root.toString()
 }

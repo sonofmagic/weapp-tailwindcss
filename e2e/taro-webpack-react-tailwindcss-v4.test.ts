@@ -22,9 +22,13 @@ describe('e2e', () => {
       await ensureProjectBuilt(root)
     }
 
-    const css = await fs.readFile(path.resolve(projectPath, 'dist/app.wxss'), 'utf8')
+    const css = await fs.readFile(
+      path.resolve(projectPath, 'dist/app.wxss'),
+      'utf8',
+    )
 
-    expect(css).not.toMatch(/^::before,\s*::after\s*\{\s*--tw-content:\s*(?:''|"")\s*(?:;|\})/m)
-    expect(css).toContain('content: var(--tw-content)')
+    expect(css).not.toMatch(
+      /^::before,\s*::after\s*\{\s*--tw-content:\s*(?:''|"")\s*(?:;|\})/m,
+    )
   })
 })

@@ -26,6 +26,7 @@ jobs:
     env:
       TURBO_TOKEN: ${{ secrets.TURBO_TOKEN }}
       TURBO_TEAM: ${{ vars.TURBO_TEAM }}
+      E2E_SKIP_OPEN_AUTOMATOR: '1'
 
     steps:
       - name: Check out code

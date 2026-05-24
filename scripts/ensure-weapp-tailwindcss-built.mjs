@@ -6,14 +6,38 @@ import { fileURLToPath } from 'node:url'
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
 const repoRoot = path.resolve(__dirname, '..')
-const packageRoot = path.join(repoRoot, 'packages/weapp-tailwindcss')
-const srcRoot = path.join(packageRoot, 'src')
-const distRoot = path.join(packageRoot, 'dist')
-const stampFiles = [
-  path.join(distRoot, 'vite.js'),
-  path.join(distRoot, 'webpack.js'),
-  path.join(distRoot, 'gulp.js'),
-  path.join(distRoot, 'index.js'),
+const buildTargets = [
+  {
+    filter: 'tailwindcss-config',
+    label: 'tailwindcss-config',
+    packageRoot: path.join(repoRoot, 'packages/tailwindcss-config'),
+    stamps: [
+      'dist/index.js',
+      'dist/index.cjs',
+      'dist/index.d.ts',
+    ],
+  },
+  {
+    filter: '@weapp-tailwindcss/postcss',
+    label: '@weapp-tailwindcss/postcss',
+    packageRoot: path.join(repoRoot, 'packages/postcss'),
+    stamps: [
+      'dist/index.js',
+      'dist/index.mjs',
+      'dist/index.d.ts',
+    ],
+  },
+  {
+    filter: 'weapp-tailwindcss',
+    label: '核心包',
+    packageRoot: path.join(repoRoot, 'packages/weapp-tailwindcss'),
+    stamps: [
+      'dist/vite.js',
+      'dist/webpack.js',
+      'dist/gulp.js',
+      'dist/index.js',
+    ],
+  },
 ]
 
 function collectLatestMtime(target, ignoredDirectories = new Set()) {
@@ -45,7 +69,11 @@ function collectLatestMtime(target, ignoredDirectories = new Set()) {
   return latest
 }
 
-function shouldBuild() {
+function shouldBuild(target) {
+  const srcRoot = path.join(target.packageRoot, 'src')
+  const distRoot = path.join(target.packageRoot, 'dist')
+  const stampFiles = target.stamps.map(stamp => path.join(target.packageRoot, stamp))
+
   if (!existsSync(distRoot) || stampFiles.some(file => !existsSync(file))) {
     return true
   }
@@ -54,24 +82,30 @@ function shouldBuild() {
   return latestSource > latestDist
 }
 
-if (!shouldBuild()) {
+const staleTargets = buildTargets.filter(shouldBuild)
+
+if (staleTargets.length === 0) {
   process.exit(0)
 }
 
-console.log('[weapp-tailwindcss] dist 已过期，正在构建核心包供 demo 使用...')
-const result = spawnSync(
-  process.platform === 'win32' ? 'pnpm.cmd' : 'pnpm',
-  ['--filter', 'weapp-tailwindcss', 'build'],
-  {
-    cwd: repoRoot,
-    stdio: 'inherit',
-    env: process.env,
-  },
-)
+for (const target of staleTargets) {
+  console.log(`[weapp-tailwindcss] ${target.label} dist 已过期，正在构建供 demo 使用...`)
+  const result = spawnSync(
+    process.platform === 'win32' ? 'pnpm.cmd' : 'pnpm',
+    ['--filter', target.filter, 'build'],
+    {
+      cwd: repoRoot,
+      stdio: 'inherit',
+      env: process.env,
+    },
+  )
 
-if (result.error) {
-  console.error(result.error)
-  process.exit(1)
+  if (result.error) {
+    console.error(result.error)
+    process.exit(1)
+  }
+
+  if (result.status !== 0) {
+    process.exit(result.status ?? 1)
+  }
 }
-
-process.exit(result.status ?? 1)

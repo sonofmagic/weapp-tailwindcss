@@ -2,11 +2,11 @@
 
 Fixture: demo
 Entry: weapp-vite-tailwindcss-v4/dist/app.wxss
-Generator CSS files: app.wxss, apple.wxss, index.wxss, index.wxss, index.wxss
+Generator CSS files: app.wxss, apple.wxss, index.css, index.wxss, index.wxss, index.wxss
 
 | Bytes | Selectors | @supports | :hover | Tailwind banner | Raw arbitrary selector | Weapp escaped arbitrary selector |
 | ---: | ---: | --- | --- | --- | --- | --- |
-| 6025 | 47 | false | false | false | false | true |
+| 8377 | 47 | false | false | false | false | true |
 
 ## Generator CSS
 
@@ -61,7 +61,6 @@ wx-root-portal-content {
   --svg: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' width='24' height='24'%3E%3Cpath fill='black' d='M10 20v-6h4v6h5v-8h3L12 3L2 12h3v8z'/%3E%3C/svg%3E");
 }
 .flex {
-  display: -webkit-flex;
   display: flex;
 }
 .inline-block {
@@ -90,7 +89,6 @@ wx-root-portal-content {
   width: 323px;
 }
 .flex-col {
-  -webkit-flex-direction: column;
   flex-direction: column;
 }
 .space-y-2_d5 > view + view,
@@ -181,12 +179,101 @@ wx-root-portal-content {
     background-color: var(--color-zinc-900);
   }
 }
+
+view,
+text,
+:after,
+:before {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  border: 0 solid;
+}
+:host,
+page,
+.tw-root,
+wx-root-portal-content {
+  --font-sans:
+    ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, Cantarell, Noto Sans, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol',
+    'Noto Color Emoji';
+  --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New', monospace;
+  --default-font-family: var(--font-sans);
+  --default-mono-font-family: var(--font-mono);
+}
+.before_ccontent-_b_aindependent_subpackage_weapp-vite-tailwindcss-v4_a_B::before {
+  --tw-content: 'independent subpackage weapp-vite-tailwindcss-v4';
+  content: var(--tw-content);
+}
+.bg-independent-subpackage-marker {
+  background-color: #dc2626;
+}
+view,
+text,
+:after,
+:before {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  border: 0 solid;
+}
+:host,
+page,
+.tw-root,
+wx-root-portal-content {
+  --font-sans:
+    ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, Cantarell, Noto Sans, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol',
+    'Noto Color Emoji';
+  --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New', monospace;
+  --default-font-family: var(--font-sans);
+  --default-mono-font-family: var(--font-mono);
+}
+.before_ccontent-_b_anormal_subpackage_weapp-vite-tailwindcss-v4_a_B::before {
+  --tw-content: 'normal subpackage weapp-vite-tailwindcss-v4';
+  content: var(--tw-content);
+}
+.bg-normal-subpackage-marker {
+  background-color: #2563eb;
+}
 ```
 
 ### apple.wxss
 
 ```css
 
+```
+
+### index.css
+
+```css
+view,
+text,
+:after,
+:before {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  border: 0 solid;
+}
+:host,
+page,
+.tw-root,
+wx-root-portal-content {
+  --color-gray-200: #e5e7eb;
+  --color-gray-400: #9ca3af;
+  --font-sans:
+    ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, Cantarell, Noto Sans, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol',
+    'Noto Color Emoji';
+  --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New', monospace;
+  --default-font-family: var(--font-sans);
+  --default-mono-font-family: var(--font-mono);
+}
+.before_ccontent-_b_anormal_subpackage_weapp-vite-tailwindcss-v4_a_B::before {
+  --tw-content: 'normal subpackage weapp-vite-tailwindcss-v4';
+  content: var(--tw-content);
+}
+.bg-normal-subpackage-marker {
+  background-color: #2563eb;
+}
 ```
 
 ### index.wxss
@@ -227,12 +314,12 @@ wx-root-portal-content {
   --default-font-family: var(--font-sans);
   --default-mono-font-family: var(--font-mono);
 }
-.bg-independent-subpackage-marker {
-  background-color: #dc2626;
-}
 .before_ccontent-_b_aindependent_subpackage_weapp-vite-tailwindcss-v4_a_B::before {
   --tw-content: 'independent subpackage weapp-vite-tailwindcss-v4';
   content: var(--tw-content);
+}
+.bg-independent-subpackage-marker {
+  background-color: #dc2626;
 }
 ```
 
@@ -261,11 +348,11 @@ wx-root-portal-content {
   --default-font-family: var(--font-sans);
   --default-mono-font-family: var(--font-mono);
 }
-.bg-normal-subpackage-marker {
-  background-color: #2563eb;
-}
 .before_ccontent-_b_anormal_subpackage_weapp-vite-tailwindcss-v4_a_B::before {
   --tw-content: 'normal subpackage weapp-vite-tailwindcss-v4';
   content: var(--tw-content);
+}
+.bg-normal-subpackage-marker {
+  background-color: #2563eb;
 }
 ```
