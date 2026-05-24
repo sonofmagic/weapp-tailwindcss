@@ -1,5 +1,15 @@
 # weapp-tailwindcss
 
+## 5.0.0-next.19
+
+### Patch Changes
+
+- 🐛 **现在 Tailwind CSS v3 和 v4 场景都会默认开启内置 `autoprefixer` 后处理，用于补齐小程序 WebView 所需的兼容前缀；如需关闭可继续传入 `autoprefixer: false`。** [#872](https://github.com/sonofmagic/weapp-tailwindcss/pull/872) by @github-actions
+
+- 🐛 **调整 Vite 插件的 Tailwind CSS 生成时机，让生成后的 CSS 进入 Vite 原生 CSS/PostCSS 管道，默认尊重用户的 `postcss.config` 与 `css.postcss` 插件配置。** [#871](https://github.com/sonofmagic/weapp-tailwindcss/pull/871) by @sonofmagic
+- 📦 **Dependencies** [`9f7d222`](https://github.com/sonofmagic/weapp-tailwindcss/commit/9f7d222b0467fe342b86b6165e2406fc18cfbfd8)
+  → `@weapp-tailwindcss/postcss@2.2.1-next.4`
+
 ## 5.0.0-next.18
 
 ### Patch Changes
