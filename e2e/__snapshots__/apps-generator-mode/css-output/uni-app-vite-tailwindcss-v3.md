@@ -6,7 +6,7 @@ Generator CSS files: app.wxss, a.wxss, b.wxss, index.wxss, index.wxss, index.wxs
 
 | Bytes | Selectors | @supports | :hover | Tailwind banner | Raw arbitrary selector | Weapp escaped arbitrary selector |
 | ---: | ---: | --- | --- | --- | --- | --- |
-| 693818 | 3120 | false | false | false | false | true |
+| 693802 | 3120 | false | false | false | false | true |
 
 ## Generator CSS
 
@@ -9779,7 +9779,6 @@ body {
   display: flex;
   padding-bottom: env(safe-area-inset-bottom);
 }
-
 .tab-bar-border {
   background-color: rgba(0, 0, 0, 0.33);
   position: absolute;
@@ -9789,7 +9788,6 @@ body {
   height: 1px;
   transform: scaleY(0.5);
 }
-
 .tab-bar-item {
   flex: 1;
   text-align: center;
@@ -9798,12 +9796,10 @@ body {
   align-items: center;
   flex-direction: column;
 }
-
 .tab-bar-item cover-image {
   width: 27px;
   height: 27px;
 }
-
 .tab-bar-item cover-view {
   font-size: 10px;
 }

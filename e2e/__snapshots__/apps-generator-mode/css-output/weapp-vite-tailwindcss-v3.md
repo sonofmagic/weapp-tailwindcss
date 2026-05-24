@@ -6,7 +6,7 @@ Generator CSS files: app.wxss, index.wxss, index.wxss, index.wxss, index.wxss, i
 
 | Bytes | Selectors | @supports | :hover | Tailwind banner | Raw arbitrary selector | Weapp escaped arbitrary selector |
 | ---: | ---: | --- | --- | --- | --- | --- |
-| 84713 | 262 | false | false | false | false | true |
+| 84705 | 262 | false | false | false | false | true |
 
 ## Generator CSS
 
@@ -1049,7 +1049,6 @@ text,
   flex-direction: column;
   gap: 32rpx;
 }
-
 .intro {
   background: #ffffff;
   padding: 32rpx;
@@ -1067,7 +1066,6 @@ text,
   line-height: 1.6;
   color: #475569;
 }
-
 .section {
   background: #ffffff;
   padding: 32rpx;
@@ -1091,7 +1089,6 @@ text,
   flex-direction: column;
   gap: 24rpx;
 }
-
 .sample {
   padding: 24rpx;
   border-radius: 20rpx;

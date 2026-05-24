@@ -517,6 +517,14 @@ function sortSubpackageMarkerChunks(root: postcss.Root) {
   }
 }
 
+function normalizeNodeSpacing(root: postcss.Root) {
+  root.walk((node) => {
+    if (node.raws.before && node.raws.before.includes('\n\n')) {
+      node.raws.before = '\n'
+    }
+  })
+}
+
 function removeTailwindV4DefaultTokenNoise(root: postcss.Root) {
   root.walkDecls((decl) => {
     if (TAILWIND_V4_DEFAULT_TOKEN_PROPS.has(decl.prop)) {
@@ -957,6 +965,7 @@ export function normalizeCssSnapshot(source: string, _options: CssSnapshotOption
     sortUtilityRuleRuns(root)
     sortSubpackageMarkerChunks(root)
   }
+  normalizeNodeSpacing(root)
   return root.toString()
 }
 

@@ -6,7 +6,7 @@ Generator CSS files: app.wxss, app-origin.wxss, index.wxss, index.wxss
 
 | Bytes | Selectors | @supports | :hover | Tailwind banner | Raw arbitrary selector | Weapp escaped arbitrary selector |
 | ---: | ---: | --- | --- | --- | --- | --- |
-| 14162 | 35 | false | false | false | false | true |
+| 14157 | 35 | false | false | false | false | true |
 
 ## Generator CSS
 
@@ -120,7 +120,6 @@ wx-root-portal-content {
 .bg-independent-subpackage-marker {
   background-color: #dc2626;
 }
-
 view,
 text,
 :after,
@@ -387,7 +386,6 @@ wx-root-portal-content {
 .bg-independent-subpackage-marker {
   background-color: #dc2626;
 }
-
 view,
 text,
 :after,

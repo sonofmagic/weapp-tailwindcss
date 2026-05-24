@@ -349,7 +349,7 @@ export async function waitForOutputFilesUpdated(
         }
       }
 
-      if (exactFileUpdated) {
+      if (exactFileUpdated && !acceptWhen) {
         return true
       }
 
@@ -358,6 +358,9 @@ export async function waitForOutputFilesUpdated(
         const baselineMtime = baselineMtimes.get(file) ?? 0
         const currentMtime = await getMtime(file)
         if (baselineMtime === 0 || currentMtime > baselineMtime) {
+          if (acceptWhen) {
+            break
+          }
           return true
         }
       }

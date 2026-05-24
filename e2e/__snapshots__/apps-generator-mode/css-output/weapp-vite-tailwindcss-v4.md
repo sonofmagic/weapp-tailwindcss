@@ -6,7 +6,7 @@ Generator CSS files: app.wxss, apple.wxss, index.css, index.wxss, index.wxss, in
 
 | Bytes | Selectors | @supports | :hover | Tailwind banner | Raw arbitrary selector | Weapp escaped arbitrary selector |
 | ---: | ---: | --- | --- | --- | --- | --- |
-| 8377 | 47 | false | false | false | false | true |
+| 8370 | 47 | false | false | false | false | true |
 
 ## Generator CSS
 
@@ -179,7 +179,6 @@ wx-root-portal-content {
     background-color: var(--color-zinc-900);
   }
 }
-
 view,
 text,
 :after,
@@ -283,7 +282,6 @@ wx-root-portal-content {
 .s .a {
   color: turquoise;
 }
-
 .user-motto {
   font-size: 12px;
 }
