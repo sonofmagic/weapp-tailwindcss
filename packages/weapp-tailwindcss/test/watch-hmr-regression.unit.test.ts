@@ -1431,7 +1431,7 @@ describe('watch-hmr regression cases', () => {
     expect(win32DemoCases.find(watchCase => watchCase.name === 'uni-app-vite-tailwindcss-v3')).toBeDefined()
   })
 
-  it('keeps issue33 and Vue3 watch cases in macOS and Windows CI matrices', async () => {
+  it('keeps issue33 and Vue3 watch cases across PR smoke and nightly CI matrices', async () => {
     const workflowSource = await readFile(
       path.resolve(__dirname, '../../../.github/workflows/e2e-watch.yml'),
       'utf8',
@@ -1446,9 +1446,11 @@ describe('watch-hmr regression cases', () => {
       }>
     }
 
+    const prMatrixEntries = workflow.jobs?.['pr-quick-gate']?.strategy?.matrix?.include ?? []
+    const nightlyMatrixEntries = workflow.jobs?.['nightly-full-regression']?.strategy?.matrix?.include ?? []
     const matrixEntries = [
-      ...(workflow.jobs?.['pr-quick-gate']?.strategy?.matrix?.include ?? []),
-      ...(workflow.jobs?.['nightly-full-regression']?.strategy?.matrix?.include ?? []),
+      ...prMatrixEntries,
+      ...nightlyMatrixEntries,
     ]
 
     const requiredMatrixEntries = [
@@ -1466,6 +1468,8 @@ describe('watch-hmr regression cases', () => {
     for (const entry of requiredMatrixEntries) {
       expect(matrixEntries).toContainEqual(expect.objectContaining(entry))
     }
+    expect(prMatrixEntries.some(entry => String(entry.watch_case).startsWith('weapp-vite-tailwindcss-'))).toBe(false)
+    expect(prMatrixEntries.some(entry => String(entry.watch_case).startsWith('taro-vite-vue3-tailwindcss-'))).toBe(false)
   })
 
   it('keeps watch plugin processing budget strict while retry settings stay explicit', async () => {

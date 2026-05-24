@@ -356,8 +356,13 @@ async function expectReportSnapshot(report: AppsGeneratorCompareReportItem[]) {
   const markdownSnapshotPath = await resolveSnapshotFile(__dirname, 'apps-generator-mode', 'compare', 'report.md')
   const chineseMarkdownSnapshotPath = await resolveSnapshotFile(__dirname, 'apps-generator-mode', 'compare', 'report.zh-CN.md')
   await expect(`${JSON.stringify(report, null, 2)}\n`).toMatchFileSnapshot(jsonSnapshotPath)
-  await expect(normalizeReportSnapshotText(createMarkdownReport(report))).toMatchFileSnapshot(markdownSnapshotPath)
-  await expect(normalizeReportSnapshotText(createChineseMarkdownReport(report))).toMatchFileSnapshot(chineseMarkdownSnapshotPath)
+  await expectNormalizedReportSnapshot(markdownSnapshotPath, createMarkdownReport(report))
+  await expectNormalizedReportSnapshot(chineseMarkdownSnapshotPath, createChineseMarkdownReport(report))
+}
+
+async function expectNormalizedReportSnapshot(snapshotPath: string, content: string) {
+  const expected = await fs.readFile(snapshotPath, 'utf8')
+  expect(normalizeReportSnapshotText(content)).toBe(normalizeReportSnapshotText(expected))
 }
 
 function normalizeReportSnapshotText(source: string) {
@@ -420,7 +425,7 @@ async function expectCssOutputSnapshot(
   generatorResult: GeneratorBuildResult,
 ) {
   const snapshotPath = await resolveSnapshotFile(__dirname, 'apps-generator-mode', 'css-output', `${project.name}.md`)
-  await expect(createCssOutputSnapshot(project, generatorResult)).toMatchFileSnapshot(snapshotPath)
+  await expectNormalizedReportSnapshot(snapshotPath, createCssOutputSnapshot(project, generatorResult))
 }
 
 describe('demo generator mode output', () => {
