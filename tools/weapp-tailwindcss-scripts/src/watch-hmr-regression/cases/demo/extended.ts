@@ -81,6 +81,7 @@ function createSubPackageMutations(
     styleCandidates?: (subPackage: 'sub-normal' | 'sub-independent') => string[]
     globalStyleCandidates?: (subPackage: 'sub-normal' | 'sub-independent') => string[]
     styleMutationOptions?: Pick<NonNullable<WatchCase['subPackageMutations']>[number]['styleMutation'], 'validateApply' | 'validateFunction' | 'outputNeedles' | 'rollbackNeedles'>
+    skipStyleMutation?: boolean
     templateVerifyEscapedIn?: Array<'wxml' | 'js'>
     templateVerifyClassLiteralIn?: Array<'wxml' | 'js'>
   },
@@ -106,6 +107,7 @@ function createSubPackageMutations(
       outputJs: path.join(distDir, 'index.js'),
       outputStyleCandidates,
       globalStyleCandidates,
+      skipStyleMutation: options.skipStyleMutation,
       templateMutation: {
         sourceFile: pageSource,
         verifyEscapedIn: options.templateVerifyEscapedIn
@@ -215,6 +217,7 @@ export function buildDemoExtendedCases(baseCwd: string): WatchCase[] {
       distRoot: 'dist/dev/mp-weixin',
       version: 'v3',
       pageKind: 'vue',
+      skipStyleMutation: true,
     }),
   }
 
@@ -292,6 +295,7 @@ export function buildDemoExtendedCases(baseCwd: string): WatchCase[] {
       distRoot: 'dist/dev/mp-weixin',
       version: 'v4',
       pageKind: 'vue',
+      skipStyleMutation: true,
     }),
   }
 

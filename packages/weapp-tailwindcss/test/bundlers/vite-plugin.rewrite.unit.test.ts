@@ -46,7 +46,7 @@ describe('bundlers/vite WeappTailwindcss rewrite', () => {
 
     const resolveId = getResolveIdHandler(rewritePlugin as Plugin)
     expect(resolveId).toBeTypeOf('function')
-    expect((rewritePlugin as Plugin).resolveId).toMatchObject({ order: 'pre' })
+    expect((rewritePlugin as Plugin).enforce).toBe('pre')
 
     const pkgDir = slash(resolvePackageDir('weapp-tailwindcss'))
     const cssImporter = '/src/app.css'
@@ -77,7 +77,7 @@ describe('bundlers/vite WeappTailwindcss rewrite', () => {
     })
     const transform = getTransformHandler(rewritePlugin!)
     expect(transform).toBeTypeOf('function')
-    expect(rewritePlugin?.transform).toMatchObject({ order: 'pre' })
+    expect(rewritePlugin?.enforce).toBe('pre')
 
     const source = `
 @import 'tailwindcss' layer(base);
@@ -164,33 +164,52 @@ describe('bundlers/vite WeappTailwindcss rewrite', () => {
     const tailwindLikePlugin: Plugin = {
       name: '@tailwindcss/vite:generate',
       enforce: 'pre',
-      transform(code) {
-        return { code: `tailwind:${code}`, map: null }
+      transform: {
+        order: 'post',
+        handler(code) {
+          return { code: `tailwind:${code}`, map: null }
+        },
       },
     }
 
     function collectOrderedTransforms(pluginList: Plugin[]) {
-      const pre: Array<{ name: string, handler: NonNullable<Plugin['transform']> }> = []
-      const normal: typeof pre = []
-      const post: typeof pre = []
+      const pluginPre: Array<{ name: string, hook: NonNullable<Plugin['transform']> }> = []
+      const pluginNormal: typeof pluginPre = []
+      const pluginPost: typeof pluginPre = []
       for (const plugin of pluginList) {
         const hook = plugin.transform
         if (!hook) {
           continue
         }
+        const target = plugin.enforce === 'post'
+          ? pluginPost
+          : plugin.enforce === 'pre'
+            ? pluginPre
+            : pluginNormal
+        target.push({
+          name: plugin.name,
+          hook,
+        })
+      }
+      const orderedPlugins = [...pluginPre, ...pluginNormal, ...pluginPost]
+      const hookPre: Array<{ name: string, handler: NonNullable<Plugin['transform']> }> = []
+      const hookNormal: typeof hookPre = []
+      const hookPost: typeof hookPre = []
+      for (const plugin of orderedPlugins) {
+        const hook = plugin.hook
         const target = typeof hook === 'object'
           ? hook.order === 'post'
-            ? post
+            ? hookPost
             : hook.order === 'pre'
-              ? pre
-              : normal
-          : normal
+              ? hookPre
+              : hookNormal
+          : hookNormal
         target.push({
           name: plugin.name,
           handler: typeof hook === 'object' ? hook.handler!.bind(plugin) : hook.bind(plugin),
         })
       }
-      return [...pre, ...normal, ...post]
+      return [...hookPre, ...hookNormal, ...hookPost]
     }
 
     const orderedTransforms = collectOrderedTransforms([tailwindLikePlugin, rewritePlugin!])

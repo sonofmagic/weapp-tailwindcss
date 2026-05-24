@@ -220,6 +220,7 @@ export function WeappTailwindcss(options: UserDefinedOptions = {}): Plugin[] | u
   const processedCssAssetFiles = new Set<string>()
   const viteProcessedCssSourceFiles = new Set<string>()
   const viteGeneratedCssByFile = new Map<string, string>()
+  const viteProcessedCssAssetResults = new Map<string, string>()
   const rememberedMainCssSources = new Map<string, string>()
   const rememberedMainCssSignatureByFile = new Map<string, string>()
   const {
@@ -446,6 +447,13 @@ export function WeappTailwindcss(options: UserDefinedOptions = {}): Plugin[] | u
   const setRememberedMainCssSignature = (file: string, cssRuntimeSignature: string) => {
     rememberedMainCssSignatureByFile.set(file, cssRuntimeSignature)
   }
+  const recordCssAssetResult = (file: string, css: string) => {
+    viteGeneratedCssByFile.set(file, css)
+  }
+  const recordViteProcessedCssAssetResult = (file: string, css: string) => {
+    viteProcessedCssAssetResults.set(normalizeOutputPathKey(file), css)
+  }
+  const getViteProcessedCssAssetResults = () => viteProcessedCssAssetResults.entries()
   const normalizeViteProcessedCssFile = (file: string) => path.resolve(cleanUrl(file))
   const markViteProcessedCssSource = (file: string) => {
     viteProcessedCssSourceFiles.add(normalizeViteProcessedCssFile(file))
@@ -538,6 +546,9 @@ export function WeappTailwindcss(options: UserDefinedOptions = {}): Plugin[] | u
     getResolvedConfig,
     markCssAssetProcessed,
     isViteProcessedCssAsset,
+    recordCssAssetResult,
+    recordViteProcessedCssAssetResult,
+    getViteProcessedCssAssetResults,
     getSourceCandidates,
     getSourceCandidatesForEntries,
     waitForSourceCandidateSyncs,
@@ -557,6 +568,9 @@ export function WeappTailwindcss(options: UserDefinedOptions = {}): Plugin[] | u
     markCssAssetProcessed,
     isCssAssetProcessed,
     isViteProcessedCssAsset,
+    recordCssAssetResult,
+    recordViteProcessedCssAssetResult,
+    getViteProcessedCssAssetResults,
     getRecordedGeneratorCandidates,
     getSourceCandidates,
     getSourceCandidatesForEntries,
@@ -745,20 +759,9 @@ export function WeappTailwindcss(options: UserDefinedOptions = {}): Plugin[] | u
           }
         }, { emit: false })
       },
-      generateBundle: {
-        order: 'post',
-        handler: generateBundleHook,
-      },
-      outputOptions(options) {
-        const plugins = options.plugins
-        return {
-          ...options,
-          plugins: Array.isArray(plugins)
-            ? [...plugins, cssFinalizerOutputPlugin]
-            : [cssFinalizerOutputPlugin],
-        }
-      },
+      generateBundle: generateBundleHook,
     },
+    cssFinalizerOutputPlugin,
   ]
   if (uniAppXPlugins) {
     plugins.push(...uniAppXPlugins)

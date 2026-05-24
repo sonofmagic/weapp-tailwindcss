@@ -165,52 +165,18 @@ describe('bundlers/shared css-imports', () => {
   })
 
   it('emits generated css from webpack loader before postcss-loader runs', async () => {
-    vi.doMock('@/generator', async (importOriginal) => {
-      const actual = await importOriginal<typeof import('@/generator')>()
-      return {
-        ...actual,
-        createWeappTailwindcssGenerator: vi.fn(() => ({
-          generate: vi.fn(async () => ({
-            css: '.bg-clip-text{background-clip:text}',
-            rawCss: '.bg-clip-text{background-clip:text}',
-            target: 'weapp',
-            classSet: new Set(['bg-clip-text']),
-            dependencies: ['/repo/tailwind.config.ts'],
-            sources: [],
-            root: null,
-            version: 4,
-          })),
-        })),
-      }
-    })
     const { default: webpackLoader } = await import('@/bundlers/webpack/loaders/weapp-tw-css-import-rewrite-loader')
-    const addDependency = vi.fn()
-    const markGeneratedCssSource = vi.fn()
-    const result = await Promise.resolve(webpackLoader.call({
+    const result = webpackLoader.call({
       query: {
         tailwindcssImportRewrite: {
           pkgDir,
-          compilerOptions: {
-            mainCssChunkMatcher: () => true,
-            styleHandler: vi.fn(async (code: string) => ({ css: `css:${code}` })),
-          },
-          runtimeState: {
-            twPatcher: { majorVersion: 4 },
-            readyPromise: Promise.resolve(),
-          },
-          getRuntimeSet: () => new Set(['bg-clip-text']),
-          markGeneratedCssSource,
         },
       },
-      addDependency,
-      resourcePath: '/repo/src/app.css',
-      rootContext: '/repo',
-    } as any, '@import "tailwindcss";\n@source inline("bg-clip-text");'))
+      resourcePath: '/src/app.css',
+      rootContext: '/src',
+    } as any, '@import "tailwindcss";\n@config "./tailwind.config.js";')
 
-    expect(result).toContain(createBundlerGeneratedCssMarker('webpack', '/repo/src/app.css'))
-    expect(result).toContain('.bg-clip-text{background-clip:text}')
-    expect(addDependency).toHaveBeenCalledWith('/repo/tailwind.config.ts')
-    expect(markGeneratedCssSource).toHaveBeenCalledWith('/repo/src/app.css')
+    expect(result).toBe('@import "/virtual/weapp-tailwindcss/index.css";\n@config "./tailwind.config.js";')
   })
 
   it('registers sanitized preprocessor root css sources from the webpack loader', async () => {

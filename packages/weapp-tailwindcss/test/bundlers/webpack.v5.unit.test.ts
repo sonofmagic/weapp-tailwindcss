@@ -3,6 +3,7 @@ import path from 'node:path'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import { createBundlerGeneratedCssMarker } from '@/bundlers/shared/generated-css-marker'
 import { UnifiedWebpackPluginV5 } from '@/bundlers/webpack/BaseUnifiedPlugin/v5'
+import { getWebpackLoaderRuntime } from '@/bundlers/webpack/loaders/runtime-registry'
 import { createCache } from '@/cache'
 import { createJsHandler } from '@/js'
 import { replaceWxml } from '@/wxml'
@@ -285,7 +286,8 @@ describe('bundlers/webpack UnifiedWebpackPluginV5', () => {
     loaderHandler?.({}, module)
     const classSetLoaderEntry = module.loaders.find(entry => entry.loader === currentContext.runtimeLoaderPath)
     expect(classSetLoaderEntry?.options?.tailwindcssImportRewrite).toBeUndefined()
-    expect(classSetLoaderEntry?.options?.getClassSet).toEqual(expect.any(Function))
+    const loaderRuntime = getWebpackLoaderRuntime(classSetLoaderEntry?.options?.weappTailwindcssRuntimeKey)
+    expect(loaderRuntime?.classSet?.getClassSet).toEqual(expect.any(Function))
     const rewriteLoaderEntry = module.loaders.find(entry => isCssImportRewriteLoader(entry))
     expect(rewriteLoaderEntry).toBeUndefined()
 
@@ -639,16 +641,17 @@ describe('bundlers/webpack UnifiedWebpackPluginV5', () => {
     getLoaderHandler()?.({}, module)
 
     const classSetLoaderEntry = module.loaders.find(entry => entry.loader === currentContext.runtimeLoaderPath)
-    expect(classSetLoaderEntry?.options?.getClassSet).toEqual(expect.any(Function))
-    expect(classSetLoaderEntry?.options?.getWatchDependencies).toEqual(expect.any(Function))
+    const loaderRuntime = getWebpackLoaderRuntime(classSetLoaderEntry?.options?.weappTailwindcssRuntimeKey)
+    expect(loaderRuntime?.classSet?.getClassSet).toEqual(expect.any(Function))
+    expect(loaderRuntime?.classSet?.getWatchDependencies).toEqual(expect.any(Function))
 
-    await classSetLoaderEntry?.options?.getClassSet()
-    await classSetLoaderEntry?.options?.getClassSet()
+    await loaderRuntime?.classSet?.getClassSet?.()
+    await loaderRuntime?.classSet?.getClassSet?.()
 
     expect(currentContext.twPatcher.collectContentTokens).toHaveBeenCalledTimes(1)
     expect(currentContext.twPatcher.extract).toHaveBeenCalledTimes(1)
 
-    const dependencies = classSetLoaderEntry?.options?.getWatchDependencies()
+    const dependencies = loaderRuntime?.classSet?.getWatchDependencies?.()
     expect([...dependencies.files]).toEqual([
       '/workspace/tailwind.config.ts',
       '/workspace/src/app.css',
@@ -669,7 +672,8 @@ describe('bundlers/webpack UnifiedWebpackPluginV5', () => {
     getLoaderHandler()?.({}, module)
 
     const rewriteLoaderEntry = module.loaders.find(isCssImportRewriteLoader)
-    await rewriteLoaderEntry?.options?.tailwindcssImportRewrite?.registerCssSource({
+    const loaderRuntime = getWebpackLoaderRuntime(rewriteLoaderEntry?.options?.tailwindcssImportRewriteRuntimeKey)
+    await loaderRuntime?.cssImportRewrite?.registerCssSource?.({
       file: '/workspace/src/app.css',
       css: '@import "tailwindcss";\n@source inline("w-4");',
     })
@@ -729,10 +733,11 @@ describe('bundlers/webpack UnifiedWebpackPluginV5', () => {
     getLoaderHandler()?.({}, module)
 
     const classSetLoaderEntry = module.loaders.find(entry => entry.loader === currentContext.runtimeLoaderPath)
-    await classSetLoaderEntry?.options?.getClassSet()
+    const loaderRuntime = getWebpackLoaderRuntime(classSetLoaderEntry?.options?.weappTailwindcssRuntimeKey)
+    await loaderRuntime?.classSet?.getClassSet?.()
 
     expect(currentContext.twPatcher.collectContentTokens).toHaveBeenCalledTimes(1)
-    const dependencies = classSetLoaderEntry?.options?.getWatchDependencies()
+    const dependencies = loaderRuntime?.classSet?.getWatchDependencies?.()
     expect([...dependencies.files]).toEqual([
       '/workspace/tailwind.config.ts',
       '/workspace/src/app.css',
@@ -1763,12 +1768,45 @@ describe('bundlers/webpack UnifiedWebpackPluginV5', () => {
     const rewriteLoaderEntry = module.loaders.find(entry => isCssImportRewriteLoader(entry))
     expect(classSetLoaderEntry).toBeDefined()
     expect(rewriteLoaderEntry).toBeDefined()
-    expect(rewriteLoaderEntry?.options?.tailwindcssImportRewrite?.pkgDir).toEqual(expect.any(String))
+    expect(rewriteLoaderEntry?.options?.tailwindcssImportRewriteRuntimeKey).toEqual(expect.any(String))
+    expect(classSetLoaderEntry?.options?.weappTailwindcssRuntimeKey).toBe(rewriteLoaderEntry?.options?.tailwindcssImportRewriteRuntimeKey)
+    expect(classSetLoaderEntry?.ident).toBeNull()
+    expect(rewriteLoaderEntry?.ident).toBeNull()
     const classSetIndex = module.loaders.indexOf(classSetLoaderEntry!)
     const postcssIndex = module.loaders.findIndex(entry => entry.loader.includes('postcss-loader'))
     const rewriteIndex = module.loaders.indexOf(rewriteLoaderEntry!)
     expect(classSetIndex).toBeLessThan(postcssIndex)
     expect(rewriteIndex).toBeGreaterThan(postcssIndex)
+  })
+
+  it('uses safe runtime keys so runtime options are not serialized into webpack requests', () => {
+    currentContext = createContext({
+      ...currentContext,
+      customReplaceDictionary: {
+        '!': '_e',
+        '#': '_h',
+        '/': '_f',
+      },
+    } as any)
+    currentContext.twPatcher.majorVersion = 4
+    getCompilerContextMock.mockReturnValue(currentContext)
+    const { compiler, getLoaderHandler } = createCompilerWithLoaderTracking()
+    new UnifiedWebpackPluginV5().apply(compiler as any)
+
+    const module: LoaderModule = {
+      resource: '/workspace/src/app.css',
+      loaders: [{ loader: '/path/postcss-loader.js' }],
+    }
+    getLoaderHandler()?.({}, module)
+
+    const rewriteLoaderEntry = module.loaders.find(isCssImportRewriteLoader)
+    const serializedRequest = `${rewriteLoaderEntry?.loader}?${JSON.stringify(rewriteLoaderEntry?.options)}`
+    expect(rewriteLoaderEntry?.options).toEqual({
+      tailwindcssImportRewriteRuntimeKey: expect.any(String),
+    })
+    expect(serializedRequest).not.toContain('customReplaceDictionary')
+    expect(serializedRequest).not.toContain('"_e"')
+    expect(serializedRequest).not.toContain('!')
   })
 
   it('uses mpx style compiler loader as anchor when appType is mpx', () => {

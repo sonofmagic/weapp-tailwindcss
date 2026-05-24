@@ -238,8 +238,12 @@ export function setupWebpackV5ProcessAssetsHook(options: SetupWebpackV5ProcessAs
           }
           runtimeSet = await ensureRuntimeClassSet(runtimeState, {
             forceRefresh: forceRuntimeRefresh,
-            // 非 watch 构建继续强制收集，避免一次性构建漏掉外部内容变化。
-            forceCollect: true,
+            // In watch mode the runtime-classset loader may have already
+            // refreshed the class set for this compilation. Reuse that cached
+            // result unless webpack reported a runtime dependency change;
+            // otherwise Taro webpack v3 can do a second full content scan in
+            // processAssets for the same rebuild.
+            forceCollect: !watchMode || forceRuntimeRefresh,
             clearCache: forceRuntimeRefresh,
             allowEmpty: false,
           })

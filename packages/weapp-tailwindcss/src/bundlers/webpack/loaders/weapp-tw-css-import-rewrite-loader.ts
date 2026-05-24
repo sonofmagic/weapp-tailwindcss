@@ -1,6 +1,5 @@
-import type { TailwindV4CssSource } from 'tailwindcss-patch'
 import type webpack from 'webpack'
-import type { TailwindRuntimeState } from '@/tailwindcss/runtime'
+import type { WebpackCssImportRewriteLoaderOptions } from './runtime-registry'
 import type { AppType, InternalUserDefinedOptions } from '@/types'
 import { Buffer } from 'node:buffer'
 import path from 'node:path'
@@ -12,22 +11,23 @@ import { rewriteTailwindcssImportsInCode } from '@/bundlers/shared/css-imports'
 import { createBundlerGeneratedCssMarker } from '@/bundlers/shared/generated-css-marker'
 import { generateCssByGenerator } from '@/bundlers/shared/generator-css'
 import { hasTailwindRootDirectives, normalizeTailwindSourceForGenerator } from '@/bundlers/shared/generator-css/directives'
+import { getWebpackLoaderRuntime } from './runtime-registry'
 
-interface CssImportRewriteLoaderOptions {
-  tailwindcssImportRewrite?: {
-    pkgDir: string
-    appType?: AppType
-    compilerOptions?: InternalUserDefinedOptions
-    runtimeState?: TailwindRuntimeState
-    registerCssSource?: (source: TailwindV4CssSource) => Promise<void> | void
-    getRuntimeSet?: () => Promise<Set<string>> | Set<string>
-    markGeneratedCssSource?: (file: string) => void
-  }
-}
+interface CssImportRewriteLoaderOptions extends WebpackCssImportRewriteLoaderOptions {}
 
 const getLoaderOptions = (loaderUtils as unknown as {
   getOptions: (context: webpack.LoaderContext<CssImportRewriteLoaderOptions>) => CssImportRewriteLoaderOptions | undefined
 }).getOptions
+
+function resolveLoaderOptions(options: CssImportRewriteLoaderOptions | undefined): CssImportRewriteLoaderOptions | undefined {
+  const runtime = getWebpackLoaderRuntime(options?.tailwindcssImportRewriteRuntimeKey)?.cssImportRewrite
+  return runtime
+    ? {
+        ...options,
+        tailwindcssImportRewrite: runtime,
+      }
+    : options
+}
 
 function joinPosixPath(base: string, subpath: string) {
   if (base.endsWith('/')) {
@@ -169,7 +169,7 @@ const WeappTwCssImportRewriteLoader: webpack.LoaderDefinitionFunction<CssImportR
   if (process.env['WEAPP_TW_LOADER_DEBUG']) {
     process.stdout.write(`[weapp-tw-css-import-rewrite-loader] executing for ${this.resourcePath}\n`)
   }
-  const opt = getLoaderOptions(this)
+  const opt = resolveLoaderOptions(getLoaderOptions(this))
   const input = Buffer.isBuffer(source) ? source.toString('utf-8') : source
   const hasTailwindRoot = typeof input === 'string' && hasTailwindRootDirectives(input, { importFallback: true })
   const registerTask = hasTailwindRoot

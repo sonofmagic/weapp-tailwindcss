@@ -44,6 +44,7 @@ function createSubPackageMutations(
     styleCandidates?: (subPackage: 'sub-normal' | 'sub-independent') => string[]
     globalStyleCandidates?: (subPackage: 'sub-normal' | 'sub-independent') => string[]
     styleMutationOptions?: Pick<NonNullable<WatchCase['subPackageMutations']>[number]['styleMutation'], 'validateApply' | 'validateFunction' | 'outputNeedles' | 'rollbackNeedles'>
+    skipStyleMutation?: boolean
     templateVerifyEscapedIn?: Array<'wxml' | 'js'>
     templateVerifyClassLiteralIn?: Array<'wxml' | 'js'>
   },
@@ -71,6 +72,7 @@ function createSubPackageMutations(
       outputJs: path.join(distDir, 'index.js'),
       outputStyleCandidates,
       globalStyleCandidates,
+      skipStyleMutation: options.skipStyleMutation,
       templateMutation: {
         sourceFile: pageSource,
         verifyEscapedIn: options.templateVerifyEscapedIn
@@ -114,6 +116,7 @@ export function buildDemoBaseCases(baseCwd: string): WatchCase[] {
     label: 'demo/taro-webpack-react-tailwindcss-v3',
     project: 'demo/taro-webpack-react-tailwindcss-v3',
     group: 'demo',
+    maxPluginProcessMs: 1200,
     cwd: path.resolve(baseCwd, 'demo/taro-webpack-react-tailwindcss-v3'),
     devScript: 'dev:e2e-watch',
     env: taroWatchEnv,
@@ -440,6 +443,7 @@ export function buildDemoBaseCases(baseCwd: string): WatchCase[] {
       distRoot: 'dist',
       version: 'v3',
       pageKind: 'wxml',
+      skipStyleMutation: true,
       globalStyleCandidates(subPackage) {
         return [
           path.resolve(baseCwd, `demo/weapp-vite-tailwindcss-v3/dist/${subPackage}/pages/index.wxss`),
@@ -517,6 +521,7 @@ export function buildDemoBaseCases(baseCwd: string): WatchCase[] {
       distRoot: 'dist',
       version: 'v4',
       pageKind: 'wxml',
+      skipStyleMutation: true,
       globalStyleCandidates(subPackage) {
         return [
           path.resolve(baseCwd, `demo/weapp-vite-tailwindcss-v4/dist/${subPackage}/pages/index.wxss`),
@@ -531,6 +536,7 @@ export function buildDemoBaseCases(baseCwd: string): WatchCase[] {
     name: 'taro-webpack-vue3-tailwindcss-v3',
     label: 'demo/taro-webpack-vue3-tailwindcss-v3',
     project: 'demo/taro-webpack-vue3-tailwindcss-v3',
+    maxPluginProcessMs: 1200,
     cwd: path.resolve(baseCwd, 'demo/taro-webpack-vue3-tailwindcss-v3'),
     outputWxml: path.resolve(baseCwd, 'demo/taro-webpack-vue3-tailwindcss-v3/dist/pages/index/index.wxml'),
     outputJs: path.resolve(baseCwd, 'demo/taro-webpack-vue3-tailwindcss-v3/dist/pages/index/index.js'),

@@ -14,6 +14,7 @@ import { createUniAppXAssetTask } from '@/uni-app-x'
 import { processCachedTask } from '../shared/cache'
 import { stripBundlerGeneratedCssMarkers } from '../shared/generated-css-marker'
 import { generateCssByGenerator, validateCandidatesByGenerator } from '../shared/generator-css'
+import { normalizeOutputPathKey } from '../shared/module-graph'
 import { pushConcurrentTaskFactories } from '../shared/run-tasks'
 import { createBundleModuleGraphOptions } from './bundle-entries'
 import { buildBundleSnapshot, createBundleBuildState, updateBundleBuildState } from './bundle-state'
@@ -29,6 +30,7 @@ import { logBundleProcessPlan } from './generate-bundle/process-plan'
 import { createReplayCssAsset, registerGeneratorDependencies } from './generate-bundle/rollup-assets'
 import { createCandidateSignature, createJsHashSalt, createLinkedImpactSignature, getSnapshotHash, hasRuntimeAffectingSourceChanges, summarizeStringDiff } from './generate-bundle/signatures'
 import { shouldSkipViteJsTransform } from './js-precheck'
+import { collectViteProcessedCssAssetResults, injectViteProcessedCssIntoMainCssAssets } from './processed-css-assets'
 
 interface GenerateBundleContext {
   opts: InternalUserDefinedOptions
@@ -50,6 +52,8 @@ interface GenerateBundleContext {
   markCssAssetProcessed?: (asset: OutputAsset, file?: string) => void
   isViteProcessedCssAsset?: (asset: OutputAsset, file?: string) => boolean
   recordCssAssetResult?: (file: string, css: string) => void
+  recordViteProcessedCssAssetResult?: (file: string, css: string) => void
+  getViteProcessedCssAssetResults?: () => Iterable<[string, string]>
   getSourceCandidates?: () => Set<string>
   getSourceCandidatesForEntries?: ((entries: TailwindSourceEntry[] | undefined) => Set<string>) | undefined
   waitForSourceCandidateSyncs?: () => Promise<void>
@@ -90,6 +94,20 @@ function collectRuntimeLinkedCssFiles(snapshot: BundleSnapshot) {
   return files
 }
 
+export function resolveReplayCssOutputFile(rootDir: string, file: string) {
+  const nextFile = path.isAbsolute(file) ? path.relative(rootDir, file) : file
+  const normalizedFile = normalizeOutputPathKey(nextFile)
+  if (
+    normalizedFile.length === 0
+    || normalizedFile === '.'
+    || normalizedFile === '..'
+    || normalizedFile.startsWith('../')
+  ) {
+    return normalizeOutputPathKey(path.basename(file))
+  }
+  return normalizedFile
+}
+
 export function createGenerateBundleHook(context: GenerateBundleContext) {
   const state = createBundleBuildState()
   const lastCssResultByFile = new Map<string, string>()
@@ -111,6 +129,8 @@ export function createGenerateBundleHook(context: GenerateBundleContext) {
       markCssAssetProcessed,
       isViteProcessedCssAsset,
       recordCssAssetResult,
+      recordViteProcessedCssAssetResult,
+      getViteProcessedCssAssetResults,
       getSourceCandidates,
       getSourceCandidatesForEntries,
       waitForSourceCandidateSyncs,
@@ -138,6 +158,13 @@ export function createGenerateBundleHook(context: GenerateBundleContext) {
     await runtimeState.readyPromise
     debug('start')
     onStart()
+    collectViteProcessedCssAssetResults(bundle, {
+      isViteProcessedCssAsset,
+      markCssAssetProcessed,
+      recordCssAssetResult,
+      recordViteProcessedCssAssetResult,
+      debug,
+    })
     const hmrTimingStartedAt = performance.now()
     const timingDetails: Record<string, number> = {}
     const recordTimingDetail = (name: string, startedAt: number) => {
@@ -643,17 +670,18 @@ export function createGenerateBundleHook(context: GenerateBundleContext) {
         if (bundleFiles.includes(file) || getRememberedMainCssSignature?.(file) === cssRuntimeSignature) {
           continue
         }
+        const outputFile = resolveReplayCssOutputFile(rootDir, file)
         tasks.push(timeTask('css.replay', async () => {
           const start = performance.now()
-          const cssHandlerOptions = getCssHandlerOptions(file)
+          const cssHandlerOptions = getCssHandlerOptions(outputFile)
           const generated = await generateCssByGenerator({
             opts,
             runtimeState,
             runtime: generatorRuntime,
             rawSource,
-            file,
+            file: outputFile,
             cssHandlerOptions,
-            cssUserHandlerOptions: getCssUserHandlerOptions(file),
+            cssUserHandlerOptions: getCssUserHandlerOptions(outputFile),
             getSourceCandidatesForEntries,
             styleHandler,
             debug,
@@ -662,25 +690,25 @@ export function createGenerateBundleHook(context: GenerateBundleContext) {
           setRememberedMainCssSignature?.(file, cssRuntimeSignature)
           if (generated) {
             registerGeneratorDependencies({ addWatchFile }, generated.dependencies)
-            recordCssAssetResult?.(file, generated.css)
-            debug('css replay generated result: %s bytes=%d', file, css.length)
+            recordCssAssetResult?.(outputFile, generated.css)
+            debug('css replay generated result: %s bytes=%d', outputFile, css.length)
           }
-          const replayAsset = createReplayCssAsset(file, css)
+          const replayAsset = createReplayCssAsset(outputFile, css)
           if (typeof this.emitFile === 'function') {
             this.emitFile({
               type: 'asset',
-              fileName: file,
+              fileName: outputFile,
               source: css,
             })
           }
           else {
-            bundle[file] = replayAsset
+            bundle[outputFile] = replayAsset
           }
-          markCssAssetProcessed?.(replayAsset, file)
+          markCssAssetProcessed?.(replayAsset, outputFile)
           metrics.css.elapsed += measureElapsed(start)
           metrics.css.transformed++
-          onUpdate(file, rawSource, css)
-          debug('css replay handle: %s', file)
+          onUpdate(outputFile, rawSource, css)
+          debug('css replay handle: %s', outputFile)
         }))
       }
     }
@@ -693,6 +721,14 @@ export function createGenerateBundleHook(context: GenerateBundleContext) {
     for (const apply of pendingLinkedUpdates) {
       apply()
     }
+    injectViteProcessedCssIntoMainCssAssets(bundle, {
+      opts,
+      getViteProcessedCssAssetResults,
+      markCssAssetProcessed,
+      recordCssAssetResult,
+      debug,
+      onUpdate,
+    })
 
     const stateUpdateStart = performance.now()
     updateBundleBuildState(

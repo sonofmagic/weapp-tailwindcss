@@ -8,6 +8,7 @@ import { normalizeWeappTailwindcssGeneratorOptions } from '@/generator'
 import { filterUnsupportedMiniProgramTailwindV4Candidates } from '@/tailwindcss/v4-engine/candidates'
 import { stripBundlerGeneratedCssMarkers } from '../shared/generated-css-marker'
 import { generateCssByGenerator, hasTailwindGeneratedCssMarkers, hasTailwindSourceDirectives } from '../shared/generator-css'
+import { collectViteProcessedCssAssetResults, injectViteProcessedCssIntoMainCssAssets } from './processed-css-assets'
 
 interface CssFinalizerContext {
   opts: InternalUserDefinedOptions
@@ -21,6 +22,8 @@ interface CssFinalizerContext {
   debug: (format: string, ...args: unknown[]) => void
   getResolvedConfig: () => ResolvedConfig | undefined
   recordCssAssetResult?: (file: string, css: string) => void
+  recordViteProcessedCssAssetResult?: (file: string, css: string) => void
+  getViteProcessedCssAssetResults?: () => Iterable<[string, string]>
   getRecordedGeneratorCandidates?: () => Set<string> | undefined
   getSourceCandidates?: () => Set<string>
   getSourceCandidatesForEntries?: ((entries: TailwindSourceEntry[] | undefined) => Set<string>) | undefined
@@ -107,6 +110,7 @@ function shouldFinalizeProcessedCssAsset(
 export function createViteCssFinalizerOutputPlugin(context: CssFinalizerContext): Plugin {
   return {
     name: 'weapp-tailwindcss:adaptor:css-finalizer',
+    enforce: 'post',
     generateBundle: {
       order: 'post',
       async handler(this: CssFinalizerThis, _options, bundle: OutputBundle) {
@@ -119,6 +123,8 @@ export function createViteCssFinalizerOutputPlugin(context: CssFinalizerContext)
           debug,
           getResolvedConfig,
           recordCssAssetResult,
+          recordViteProcessedCssAssetResult,
+          getViteProcessedCssAssetResults,
           getRecordedGeneratorCandidates,
           getSourceCandidates,
           getSourceCandidatesForEntries,
@@ -131,6 +137,14 @@ export function createViteCssFinalizerOutputPlugin(context: CssFinalizerContext)
         if (resolvedConfig?.command !== 'build') {
           return
         }
+
+        collectViteProcessedCssAssetResults(bundle, {
+          isViteProcessedCssAsset,
+          markCssAssetProcessed,
+          recordCssAssetResult,
+          recordViteProcessedCssAssetResult,
+          debug,
+        })
 
         const isCssOutputAssetEntry = (
           entry: [string, OutputAsset | OutputChunk],
@@ -149,6 +163,14 @@ export function createViteCssFinalizerOutputPlugin(context: CssFinalizerContext)
         const entries = Object.entries(bundle).filter(isCssOutputAssetEntry)
 
         if (entries.length === 0) {
+          injectViteProcessedCssIntoMainCssAssets(bundle, {
+            opts,
+            getViteProcessedCssAssetResults,
+            markCssAssetProcessed,
+            recordCssAssetResult,
+            debug,
+            onUpdate: opts.onUpdate,
+          })
           return
         }
 
@@ -215,6 +237,14 @@ export function createViteCssFinalizerOutputPlugin(context: CssFinalizerContext)
           opts.onUpdate(file, rawSource, nextCss)
           debug('css finalizer handle: %s', file)
         }))
+        injectViteProcessedCssIntoMainCssAssets(bundle, {
+          opts,
+          getViteProcessedCssAssetResults,
+          markCssAssetProcessed,
+          recordCssAssetResult,
+          debug,
+          onUpdate: opts.onUpdate,
+        })
       },
     },
   }

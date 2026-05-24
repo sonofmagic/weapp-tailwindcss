@@ -7,6 +7,7 @@ import path from 'node:path'
 import process from 'node:process'
 import { pluginName } from '@/constants'
 import { ensureMpxTailwindcssAliases, injectMpxCssRewritePreRules, isMpx, patchMpxLoaderResolve } from '@/shared/mpx'
+import { setWebpackLoaderRuntime } from '../loaders/runtime-registry'
 import { createLoaderAnchorFinders } from '../shared/loader-anchors'
 import { hasLoaderEntry, isCssLikeModuleResource } from './shared'
 
@@ -26,6 +27,7 @@ interface SetupWebpackV5LoadersOptions {
     files: ReadonlySet<string>
     contexts: ReadonlySet<string>
   }
+  runtimeRegistryKey?: string | undefined
   debug: (format: string, ...args: unknown[]) => void
 }
 
@@ -43,6 +45,7 @@ export function setupWebpackV5Loaders(options: SetupWebpackV5LoadersOptions) {
     getRuntimeSetInLoader,
     markWebpackProcessedCssSource,
     getRuntimeWatchDependencies,
+    runtimeRegistryKey = `weapp-tailwindcss-${Date.now()}-${Math.random().toString(36).slice(2)}`,
     debug,
   } = options
   const isMpxApp = isMpx(appType)
@@ -75,10 +78,14 @@ export function setupWebpackV5Loaders(options: SetupWebpackV5LoadersOptions) {
     getClassSet: getClassSetInLoader,
     getWatchDependencies: getRuntimeWatchDependencies,
   }
+  setWebpackLoaderRuntime(runtimeRegistryKey, {
+    classSet: classSetLoaderOptions,
+    ...(runtimeLoaderRewriteOptions === undefined ? {} : { cssImportRewrite: runtimeLoaderRewriteOptions }),
+  })
   const { findRewriteAnchor, findClassSetAnchor } = createLoaderAnchorFinders(appType)
   const cssImportRewriteLoaderOptions = runtimeLoaderRewriteOptions
     ? {
-        tailwindcssImportRewrite: runtimeLoaderRewriteOptions,
+        tailwindcssImportRewriteRuntimeKey: runtimeRegistryKey,
       }
     : undefined
 
@@ -89,7 +96,9 @@ export function setupWebpackV5Loaders(options: SetupWebpackV5LoadersOptions) {
 
   const createRuntimeClassSetLoaderEntry = () => ({
     loader: runtimeClassSetLoader,
-    options: classSetLoaderOptions,
+    options: {
+      weappTailwindcssRuntimeKey: runtimeRegistryKey,
+    },
     ident: null,
     type: null,
   })
