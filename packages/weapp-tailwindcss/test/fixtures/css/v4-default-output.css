@@ -494,7 +494,6 @@ textarea {
     text-align: inherit;
   }
 ::-webkit-datetime-edit {
-    display: -webkit-inline-flex;
     display: inline-flex;
   }
 ::-webkit-datetime-edit-fields-wrapper {

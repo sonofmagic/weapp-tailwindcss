@@ -66,7 +66,6 @@ view,text,:after,:before {
   margin-bottom: -20px;
 }
 .flex {
-  display: -webkit-flex;
   display: flex;
 }
 .grid {
@@ -133,16 +132,13 @@ view,text,:after,:before {
   grid-template-columns: repeat(3, minmax(0, 1fr));
 }
 .flex-col {
-  -webkit-flex-direction: column;
-          flex-direction: column;
+  flex-direction: column;
 }
 .items-center {
-  -webkit-align-items: center;
-          align-items: center;
+  align-items: center;
 }
 .justify-center {
-  -webkit-justify-content: center;
-          justify-content: center;
+  justify-content: center;
 }
 .space-y-4>view+view,.space-y-4>view+text,.space-y-4>text+view,.space-y-4>text+text {
     --tw-space-y-reverse: 0;

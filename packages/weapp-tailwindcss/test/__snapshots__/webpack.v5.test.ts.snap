@@ -193,7 +193,6 @@ view,text,::before,::after {
     margin-top: -0.5rem
 }
 .flex {
-    display: -webkit-flex;
     display: flex
 }
 .grid {
@@ -212,12 +211,10 @@ view,text,::before,::after {
     grid-template-columns: repeat(3, minmax(0, 1fr))
 }
 .items-center {
-    -webkit-align-items: center;
-            align-items: center
+    align-items: center
 }
 .justify-center {
-    -webkit-justify-content: center;
-            justify-content: center
+    justify-content: center
 }
 .divide-solid>view+view,.divide-solid>view+text,.divide-solid>text+view,.divide-solid>text+text {
     border-style: solid
@@ -570,7 +567,6 @@ view,text,::before,::after {
     margin-top: -0.5rem
 }
 .flex {
-    display: -webkit-flex;
     display: flex
 }
 .grid {
@@ -589,12 +585,10 @@ view,text,::before,::after {
     grid-template-columns: repeat(3, minmax(0, 1fr))
 }
 .items-center {
-    -webkit-align-items: center;
-            align-items: center
+    align-items: center
 }
 .justify-center {
-    -webkit-justify-content: center;
-            justify-content: center
+    justify-content: center
 }
 .divide-solid>view+view,.divide-solid>view+text,.divide-solid>text+view,.divide-solid>text+text {
     border-style: solid
@@ -947,7 +941,6 @@ view,text,::before,::after {
     margin-top: -0.5rem
 }
 .flex {
-    display: -webkit-flex;
     display: flex
 }
 .grid {
@@ -966,12 +959,10 @@ view,text,::before,::after {
     grid-template-columns: repeat(3, minmax(0, 1fr))
 }
 .items-center {
-    -webkit-align-items: center;
-            align-items: center
+    align-items: center
 }
 .justify-center {
-    -webkit-justify-content: center;
-            justify-content: center
+    justify-content: center
 }
 .divide-solid>view+view,.divide-solid>view+text,.divide-solid>text+view,.divide-solid>text+text {
     border-style: solid
@@ -1320,7 +1311,6 @@ view,text,::before,::after {
     margin-top: -0.5rem
 }
 .flex {
-    display: -webkit-flex;
     display: flex
 }
 .grid {
@@ -1339,12 +1329,10 @@ view,text,::before,::after {
     grid-template-columns: repeat(3, minmax(0, 1fr))
 }
 .items-center {
-    -webkit-align-items: center;
-            align-items: center
+    align-items: center
 }
 .justify-center {
-    -webkit-justify-content: center;
-            justify-content: center
+    justify-content: center
 }
 .divide-solid>view+view,.divide-solid>view+text,.divide-solid>text+view,.divide-solid>text+text {
     border-style: solid
@@ -1701,7 +1689,6 @@ view,text,::before,::after {
     margin-top: -0.5rem
 }
 .flex {
-    display: -webkit-flex;
     display: flex
 }
 .grid {
@@ -1720,12 +1707,10 @@ view,text,::before,::after {
     grid-template-columns: repeat(3, minmax(0, 1fr))
 }
 .items-center {
-    -webkit-align-items: center;
-            align-items: center
+    align-items: center
 }
 .justify-center {
-    -webkit-justify-content: center;
-            justify-content: center
+    justify-content: center
 }
 .divide-solid>view+view {
     border-style: solid
@@ -2078,7 +2063,6 @@ view,text,::before,::after {
     margin-top: -16rpx
 }
 .flex {
-    display: -webkit-flex;
     display: flex
 }
 .grid {
@@ -2097,12 +2081,10 @@ view,text,::before,::after {
     grid-template-columns: repeat(3, minmax(0, 1fr))
 }
 .items-center {
-    -webkit-align-items: center;
-            align-items: center
+    align-items: center
 }
 .justify-center {
-    -webkit-justify-content: center;
-            justify-content: center
+    justify-content: center
 }
 .divide-solid>view+view,.divide-solid>view+text,.divide-solid>text+view,.divide-solid>text+text {
     border-style: solid
@@ -3094,7 +3076,6 @@ view,text,::before,::after {
     margin-top: -0.5rem
 }
 .flex {
-    display: -webkit-flex;
     display: flex
 }
 .grid {
@@ -3113,12 +3094,10 @@ view,text,::before,::after {
     grid-template-columns: repeat(3, minmax(0, 1fr))
 }
 .items-center {
-    -webkit-align-items: center;
-            align-items: center
+    align-items: center
 }
 .justify-center {
-    -webkit-justify-content: center;
-            justify-content: center
+    justify-content: center
 }
 .divide-solid>view+view,.divide-solid>view+text,.divide-solid>text+view,.divide-solid>text+text {
     border-style: solid
@@ -3471,7 +3450,6 @@ view,text,::before,::after {
     margin-top: -0.5rem
 }
 .flex {
-    display: -webkit-flex;
     display: flex
 }
 .grid {
@@ -3490,12 +3468,10 @@ view,text,::before,::after {
     grid-template-columns: repeat(3, minmax(0, 1fr))
 }
 .items-center {
-    -webkit-align-items: center;
-            align-items: center
+    align-items: center
 }
 .justify-center {
-    -webkit-justify-content: center;
-            justify-content: center
+    justify-content: center
 }
 .divide-solid>view+view,.divide-solid>view+text,.divide-solid>text+view,.divide-solid>text+text {
     border-style: solid

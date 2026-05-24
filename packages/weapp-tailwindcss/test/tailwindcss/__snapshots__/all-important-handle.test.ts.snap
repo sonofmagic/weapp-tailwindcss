@@ -1097,50 +1097,35 @@ img,video {
 }#app .z-auto {
   z-index: auto;
 }#app .order-1 {
-  -webkit-order: 1;
-          order: 1;
+  order: 1;
 }#app .order-10 {
-  -webkit-order: 10;
-          order: 10;
+  order: 10;
 }#app .order-11 {
-  -webkit-order: 11;
-          order: 11;
+  order: 11;
 }#app .order-12 {
-  -webkit-order: 12;
-          order: 12;
+  order: 12;
 }#app .order-2 {
-  -webkit-order: 2;
-          order: 2;
+  order: 2;
 }#app .order-3 {
-  -webkit-order: 3;
-          order: 3;
+  order: 3;
 }#app .order-4 {
-  -webkit-order: 4;
-          order: 4;
+  order: 4;
 }#app .order-5 {
-  -webkit-order: 5;
-          order: 5;
+  order: 5;
 }#app .order-6 {
-  -webkit-order: 6;
-          order: 6;
+  order: 6;
 }#app .order-7 {
-  -webkit-order: 7;
-          order: 7;
+  order: 7;
 }#app .order-8 {
-  -webkit-order: 8;
-          order: 8;
+  order: 8;
 }#app .order-9 {
-  -webkit-order: 9;
-          order: 9;
+  order: 9;
 }#app .order-first {
-  -webkit-order: -9999;
-          order: -9999;
+  order: -9999;
 }#app .order-last {
-  -webkit-order: 9999;
-          order: 9999;
+  order: 9999;
 }#app .order-none {
-  -webkit-order: 0;
-          order: 0;
+  order: 0;
 }#app .col-auto {
   grid-column: auto;
 }#app .col-span-1 {
@@ -2017,10 +2002,8 @@ img,video {
 }#app .inline {
   display: inline;
 }#app .flex {
-  display: -webkit-flex;
   display: flex;
 }#app .inline-flex {
-  display: -webkit-inline-flex;
   display: inline-flex;
 }#app .table {
   display: table;
@@ -2687,140 +2670,95 @@ img,video {
 }#app .max-w-xs {
   max-width: 20rem;
 }#app .flex-1 {
-  -webkit-flex: 1 1 0%;
-          flex: 1 1 0%;
+  flex: 1 1 0%;
 }#app .flex-auto {
-  -webkit-flex: 1 1 auto;
-          flex: 1 1 auto;
+  flex: 1 1 auto;
 }#app .flex-initial {
-  -webkit-flex: 0 1 auto;
-          flex: 0 1 auto;
+  flex: 0 1 auto;
 }#app .flex-none {
-  -webkit-flex: none;
-          flex: none;
+  flex: none;
 }#app .flex-shrink {
-  -webkit-flex-shrink: 1;
-          flex-shrink: 1;
+  flex-shrink: 1;
 }#app .flex-shrink-0 {
-  -webkit-flex-shrink: 0;
-          flex-shrink: 0;
+  flex-shrink: 0;
 }#app .shrink {
-  -webkit-flex-shrink: 1;
-          flex-shrink: 1;
+  flex-shrink: 1;
 }#app .shrink-0 {
-  -webkit-flex-shrink: 0;
-          flex-shrink: 0;
+  flex-shrink: 0;
 }#app .flex-grow {
-  -webkit-flex-grow: 1;
-          flex-grow: 1;
+  flex-grow: 1;
 }#app .flex-grow-0 {
-  -webkit-flex-grow: 0;
-          flex-grow: 0;
+  flex-grow: 0;
 }#app .grow {
-  -webkit-flex-grow: 1;
-          flex-grow: 1;
+  flex-grow: 1;
 }#app .grow-0 {
-  -webkit-flex-grow: 0;
-          flex-grow: 0;
+  flex-grow: 0;
 }#app .basis-0 {
-  -webkit-flex-basis: 0px;
-          flex-basis: 0px;
+  flex-basis: 0px;
 }#app .basis-1 {
-  -webkit-flex-basis: 0.25rem;
-          flex-basis: 0.25rem;
+  flex-basis: 0.25rem;
 }#app .basis-10 {
-  -webkit-flex-basis: 2.5rem;
-          flex-basis: 2.5rem;
+  flex-basis: 2.5rem;
 }#app .basis-11 {
-  -webkit-flex-basis: 2.75rem;
-          flex-basis: 2.75rem;
+  flex-basis: 2.75rem;
 }#app .basis-12 {
-  -webkit-flex-basis: 3rem;
-          flex-basis: 3rem;
+  flex-basis: 3rem;
 }#app .basis-14 {
-  -webkit-flex-basis: 3.5rem;
-          flex-basis: 3.5rem;
+  flex-basis: 3.5rem;
 }#app .basis-16 {
-  -webkit-flex-basis: 4rem;
-          flex-basis: 4rem;
+  flex-basis: 4rem;
 }#app .basis-2 {
-  -webkit-flex-basis: 0.5rem;
-          flex-basis: 0.5rem;
+  flex-basis: 0.5rem;
 }#app .basis-20 {
-  -webkit-flex-basis: 5rem;
-          flex-basis: 5rem;
+  flex-basis: 5rem;
 }#app .basis-24 {
-  -webkit-flex-basis: 6rem;
-          flex-basis: 6rem;
+  flex-basis: 6rem;
 }#app .basis-28 {
-  -webkit-flex-basis: 7rem;
-          flex-basis: 7rem;
+  flex-basis: 7rem;
 }#app .basis-3 {
-  -webkit-flex-basis: 0.75rem;
-          flex-basis: 0.75rem;
+  flex-basis: 0.75rem;
 }#app .basis-32 {
-  -webkit-flex-basis: 8rem;
-          flex-basis: 8rem;
+  flex-basis: 8rem;
 }#app .basis-36 {
-  -webkit-flex-basis: 9rem;
-          flex-basis: 9rem;
+  flex-basis: 9rem;
 }#app .basis-4 {
-  -webkit-flex-basis: 1rem;
-          flex-basis: 1rem;
+  flex-basis: 1rem;
 }#app .basis-40 {
-  -webkit-flex-basis: 10rem;
-          flex-basis: 10rem;
+  flex-basis: 10rem;
 }#app .basis-44 {
-  -webkit-flex-basis: 11rem;
-          flex-basis: 11rem;
+  flex-basis: 11rem;
 }#app .basis-48 {
-  -webkit-flex-basis: 12rem;
-          flex-basis: 12rem;
+  flex-basis: 12rem;
 }#app .basis-5 {
-  -webkit-flex-basis: 1.25rem;
-          flex-basis: 1.25rem;
+  flex-basis: 1.25rem;
 }#app .basis-52 {
-  -webkit-flex-basis: 13rem;
-          flex-basis: 13rem;
+  flex-basis: 13rem;
 }#app .basis-56 {
-  -webkit-flex-basis: 14rem;
-          flex-basis: 14rem;
+  flex-basis: 14rem;
 }#app .basis-6 {
-  -webkit-flex-basis: 1.5rem;
-          flex-basis: 1.5rem;
+  flex-basis: 1.5rem;
 }#app .basis-60 {
-  -webkit-flex-basis: 15rem;
-          flex-basis: 15rem;
+  flex-basis: 15rem;
 }#app .basis-64 {
-  -webkit-flex-basis: 16rem;
-          flex-basis: 16rem;
+  flex-basis: 16rem;
 }#app .basis-7 {
-  -webkit-flex-basis: 1.75rem;
-          flex-basis: 1.75rem;
+  flex-basis: 1.75rem;
 }#app .basis-72 {
-  -webkit-flex-basis: 18rem;
-          flex-basis: 18rem;
+  flex-basis: 18rem;
 }#app .basis-8 {
-  -webkit-flex-basis: 2rem;
-          flex-basis: 2rem;
+  flex-basis: 2rem;
 }#app .basis-80 {
-  -webkit-flex-basis: 20rem;
-          flex-basis: 20rem;
+  flex-basis: 20rem;
 }#app .basis-9 {
-  -webkit-flex-basis: 2.25rem;
-          flex-basis: 2.25rem;
+  flex-basis: 2.25rem;
 }#app .basis-96 {
-  -webkit-flex-basis: 24rem;
-          flex-basis: 24rem;
+  flex-basis: 24rem;
 }#app .basis-auto {
-  -webkit-flex-basis: auto;
-          flex-basis: auto;
+  flex-basis: auto;
 }#app .basis-full {
-  -webkit-flex-basis: 100%;
-          flex-basis: 100%;
+  flex-basis: 100%;
 }#app .basis-px {
-  -webkit-flex-basis: 1px;
-          flex-basis: 1px;
+  flex-basis: 1px;
 }#app .table-auto {
   table-layout: auto;
 }#app .table-fixed {
@@ -5379,165 +5317,115 @@ img,video {
 }#app .grid-rows-subgrid {
   grid-template-rows: subgrid;
 }#app .flex-row {
-  -webkit-flex-direction: row;
-          flex-direction: row;
+  flex-direction: row;
 }#app .flex-row-reverse {
-  -webkit-flex-direction: row-reverse;
-          flex-direction: row-reverse;
+  flex-direction: row-reverse;
 }#app .flex-col {
-  -webkit-flex-direction: column;
-          flex-direction: column;
+  flex-direction: column;
 }#app .flex-col-reverse {
-  -webkit-flex-direction: column-reverse;
-          flex-direction: column-reverse;
+  flex-direction: column-reverse;
 }#app .flex-wrap {
-  -webkit-flex-wrap: wrap;
-          flex-wrap: wrap;
+  flex-wrap: wrap;
 }#app .flex-wrap-reverse {
-  -webkit-flex-wrap: wrap-reverse;
-          flex-wrap: wrap-reverse;
+  flex-wrap: wrap-reverse;
 }#app .flex-nowrap {
-  -webkit-flex-wrap: nowrap;
-          flex-wrap: nowrap;
+  flex-wrap: nowrap;
 }#app .place-content-center {
-  -webkit-align-content: center;
-          align-content: center;
-  -webkit-justify-content: center;
-          justify-content: center;
+  align-content: center;
+  justify-content: center;
   place-content: center;
 }#app .place-content-start {
-  -webkit-align-content: start;
-          align-content: start;
-  -webkit-justify-content: start;
-          justify-content: start;
+  align-content: start;
+  justify-content: start;
   place-content: start;
 }#app .place-content-end {
-  -webkit-align-content: end;
-          align-content: end;
-  -webkit-justify-content: end;
-          justify-content: end;
+  align-content: end;
+  justify-content: end;
   place-content: end;
 }#app .place-content-between {
-  -webkit-align-content: space-between;
-          align-content: space-between;
-  -webkit-justify-content: space-between;
-          justify-content: space-between;
+  align-content: space-between;
+  justify-content: space-between;
   place-content: space-between;
 }#app .place-content-around {
-  -webkit-align-content: space-around;
-          align-content: space-around;
-  -webkit-justify-content: space-around;
-          justify-content: space-around;
+  align-content: space-around;
+  justify-content: space-around;
   place-content: space-around;
 }#app .place-content-evenly {
-  -webkit-align-content: space-evenly;
-          align-content: space-evenly;
-  -webkit-justify-content: space-evenly;
-          justify-content: space-evenly;
+  align-content: space-evenly;
+  justify-content: space-evenly;
   place-content: space-evenly;
 }#app .place-content-baseline {
-  -webkit-align-content: baseline;
-          align-content: baseline;
-  -webkit-justify-content: baseline;
-          justify-content: baseline;
+  align-content: baseline;
+  justify-content: baseline;
   place-content: baseline;
 }#app .place-content-stretch {
-  -webkit-align-content: stretch;
-          align-content: stretch;
-  -webkit-justify-content: stretch;
-          justify-content: stretch;
+  align-content: stretch;
+  justify-content: stretch;
   place-content: stretch;
 }#app .place-items-start {
-  -webkit-align-items: start;
-          align-items: start;
+  align-items: start;
   justify-items: start;
   place-items: start;
 }#app .place-items-end {
-  -webkit-align-items: end;
-          align-items: end;
+  align-items: end;
   justify-items: end;
   place-items: end;
 }#app .place-items-center {
-  -webkit-align-items: center;
-          align-items: center;
+  align-items: center;
   justify-items: center;
   place-items: center;
 }#app .place-items-baseline {
-  -webkit-align-items: baseline;
-          align-items: baseline;
+  align-items: baseline;
   justify-items: baseline;
   place-items: baseline;
 }#app .place-items-stretch {
-  -webkit-align-items: stretch;
-          align-items: stretch;
+  align-items: stretch;
   justify-items: stretch;
   place-items: stretch;
 }#app .content-normal {
-  -webkit-align-content: normal;
-          align-content: normal;
+  align-content: normal;
 }#app .content-center {
-  -webkit-align-content: center;
-          align-content: center;
+  align-content: center;
 }#app .content-start {
-  -webkit-align-content: flex-start;
-          align-content: flex-start;
+  align-content: flex-start;
 }#app .content-end {
-  -webkit-align-content: flex-end;
-          align-content: flex-end;
+  align-content: flex-end;
 }#app .content-between {
-  -webkit-align-content: space-between;
-          align-content: space-between;
+  align-content: space-between;
 }#app .content-around {
-  -webkit-align-content: space-around;
-          align-content: space-around;
+  align-content: space-around;
 }#app .content-evenly {
-  -webkit-align-content: space-evenly;
-          align-content: space-evenly;
+  align-content: space-evenly;
 }#app .content-baseline {
-  -webkit-align-content: baseline;
-          align-content: baseline;
+  align-content: baseline;
 }#app .content-stretch {
-  -webkit-align-content: stretch;
-          align-content: stretch;
+  align-content: stretch;
 }#app .items-start {
-  -webkit-align-items: flex-start;
-          align-items: flex-start;
+  align-items: flex-start;
 }#app .items-end {
-  -webkit-align-items: flex-end;
-          align-items: flex-end;
+  align-items: flex-end;
 }#app .items-center {
-  -webkit-align-items: center;
-          align-items: center;
+  align-items: center;
 }#app .items-baseline {
-  -webkit-align-items: baseline;
-          align-items: baseline;
+  align-items: baseline;
 }#app .items-stretch {
-  -webkit-align-items: stretch;
-          align-items: stretch;
+  align-items: stretch;
 }#app .justify-normal {
-  -webkit-justify-content: normal;
-          justify-content: normal;
+  justify-content: normal;
 }#app .justify-start {
-  -webkit-justify-content: flex-start;
-          justify-content: flex-start;
+  justify-content: flex-start;
 }#app .justify-end {
-  -webkit-justify-content: flex-end;
-          justify-content: flex-end;
+  justify-content: flex-end;
 }#app .justify-center {
-  -webkit-justify-content: center;
-          justify-content: center;
+  justify-content: center;
 }#app .justify-between {
-  -webkit-justify-content: space-between;
-          justify-content: space-between;
+  justify-content: space-between;
 }#app .justify-around {
-  -webkit-justify-content: space-around;
-          justify-content: space-around;
+  justify-content: space-around;
 }#app .justify-evenly {
-  -webkit-justify-content: space-evenly;
-          justify-content: space-evenly;
+  justify-content: space-evenly;
 }#app .justify-stretch {
-  -webkit-justify-content: stretch;
-          justify-content: stretch;
+  justify-content: stretch;
 }#app .justify-items-start {
   justify-items: start;
 }#app .justify-items-end {
@@ -6850,48 +6738,37 @@ img,video {
 }#app .divide-opacity-95>view+view {
   --tw-divide-opacity: 0.95;
 }#app .place-self-auto {
-  -webkit-align-self: auto;
-          align-self: auto;
+  align-self: auto;
   justify-self: auto;
   place-self: auto;
 }#app .place-self-start {
-  -webkit-align-self: start;
-          align-self: start;
+  align-self: start;
   justify-self: start;
   place-self: start;
 }#app .place-self-end {
-  -webkit-align-self: end;
-          align-self: end;
+  align-self: end;
   justify-self: end;
   place-self: end;
 }#app .place-self-center {
-  -webkit-align-self: center;
-          align-self: center;
+  align-self: center;
   justify-self: center;
   place-self: center;
 }#app .place-self-stretch {
-  -webkit-align-self: stretch;
-          align-self: stretch;
+  align-self: stretch;
   justify-self: stretch;
   place-self: stretch;
 }#app .self-auto {
-  -webkit-align-self: auto;
-          align-self: auto;
+  align-self: auto;
 }#app .self-start {
-  -webkit-align-self: flex-start;
-          align-self: flex-start;
+  align-self: flex-start;
 }#app .self-end {
-  -webkit-align-self: flex-end;
-          align-self: flex-end;
+  align-self: flex-end;
 }#app .self-center {
-  -webkit-align-self: center;
-          align-self: center;
+  align-self: center;
 }#app .self-stretch {
-  -webkit-align-self: stretch;
-          align-self: stretch;
+  align-self: stretch;
 }#app .self-baseline {
-  -webkit-align-self: baseline;
-          align-self: baseline;
+  align-self: baseline;
 }#app .justify-self-auto {
   justify-self: auto;
 }#app .justify-self-start {

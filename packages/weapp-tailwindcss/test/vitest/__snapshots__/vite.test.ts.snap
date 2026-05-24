@@ -118,7 +118,6 @@ text,
   border-color: currentColor;
 }
 .flex {
-  display: -webkit-flex;
   display: flex;
 }
 .grid {
@@ -271,7 +270,6 @@ text,
   border-color: currentColor;
 }
 .flex {
-  display: -webkit-flex;
   display: flex;
 }
 .grid {
@@ -424,7 +422,6 @@ text,
   border-color: currentColor;
 }
 .flex {
-  display: -webkit-flex;
   display: flex;
 }
 .grid {
@@ -577,7 +574,6 @@ text,
   border-color: currentColor;
 }
 .flex {
-  display: -webkit-flex;
   display: flex;
 }
 .grid {
