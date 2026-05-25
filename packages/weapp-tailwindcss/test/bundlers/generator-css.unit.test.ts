@@ -227,6 +227,135 @@ describe('bundlers/shared generator css', () => {
     }))
   })
 
+  it('guards Tailwind v3 and v4 generator output for web and weapp targets', async () => {
+    const runtimeSet = new Set(['w-[100px]', 'bg-[#123456]'])
+    const rawWebCss = [
+      '.w-\\[100px\\]{width:100px}',
+      '.bg-\\[\\#123456\\]{background-color:#123456}',
+    ].join('\n')
+    const transformedWeappCss = [
+      '.w-_b100px_B{width:100px}',
+      '.bg-_b_h123456_B{background-color:#123456}',
+    ].join('\n')
+    const generateMock = vi.fn(async ({ target, candidates }: { target: string, candidates: Set<string> }) => ({
+      css: target === 'web' ? rawWebCss : transformedWeappCss,
+      rawCss: rawWebCss,
+      target,
+      classSet: new Set(candidates),
+      dependencies: [],
+      sources: [],
+      root: null,
+    }))
+
+    vi.doMock('@/generator', () => ({
+      ...createDefaultGeneratorMock(),
+      createWeappTailwindcssGenerator: vi.fn(() => ({
+        generate: generateMock,
+      })),
+    }))
+
+    const { generateCssByGenerator } = await import('@/bundlers/shared/generator-css')
+    const styleHandler = vi.fn(async (code: string) => ({ css: `legacy:${code}` }))
+    const matrix = [
+      {
+        label: 'tailwind-v3-web',
+        majorVersion: 3,
+        rawSource: '@tailwind utilities;',
+        target: 'web',
+      },
+      {
+        label: 'tailwind-v3-weapp',
+        majorVersion: 3,
+        rawSource: '@tailwind utilities;',
+        target: 'weapp',
+      },
+      {
+        label: 'tailwind-v4-web',
+        majorVersion: 4,
+        rawSource: '@import "tailwindcss";',
+        target: 'web',
+      },
+      {
+        label: 'tailwind-v4-weapp',
+        majorVersion: 4,
+        rawSource: '@import "tailwindcss";',
+        target: 'weapp',
+      },
+    ] as const
+    const outputs: Record<string, string> = {}
+
+    for (const item of matrix) {
+      const result = await generateCssByGenerator({
+        opts: {
+          generator: {
+            target: item.target,
+          },
+          styleHandler,
+        } as any,
+        runtimeState: {
+          twPatcher: {
+            majorVersion: item.majorVersion,
+          } as any,
+          readyPromise: Promise.resolve(),
+        },
+        runtime: runtimeSet,
+        rawSource: item.rawSource,
+        file: `app.${item.majorVersion}.${item.target}.css`,
+        cssHandlerOptions: {
+          isMainChunk: true,
+          postcssOptions: {
+            options: {
+              from: `app.${item.majorVersion}.${item.target}.css`,
+            },
+          },
+          majorVersion: item.majorVersion,
+        } as any,
+        cssUserHandlerOptions: {
+          isMainChunk: false,
+          postcssOptions: {
+            options: {
+              from: `app.${item.majorVersion}.${item.target}.css`,
+            },
+          },
+          majorVersion: item.majorVersion,
+        } as any,
+        styleHandler,
+        debug: vi.fn(),
+      })
+      expect(result?.target).toBe(item.target)
+      expect(result?.css).toBeTruthy()
+      outputs[item.label] = result!.css
+    }
+
+    expect(outputs['tailwind-v3-web']).toContain('.w-\\[100px\\]')
+    expect(outputs['tailwind-v4-web']).toContain('.w-\\[100px\\]')
+    expect(outputs['tailwind-v3-web']).not.toContain('.w-_b100px_B')
+    expect(outputs['tailwind-v4-web']).not.toContain('.w-_b100px_B')
+    expect(outputs['tailwind-v3-weapp']).toContain('.w-_b100px_B')
+    expect(outputs['tailwind-v4-weapp']).toContain('.w-_b100px_B')
+    expect(outputs['tailwind-v3-weapp']).not.toContain('.w-\\[100px\\]')
+    expect(outputs['tailwind-v4-weapp']).not.toContain('.w-\\[100px\\]')
+    expect(generateMock).toHaveBeenCalledTimes(4)
+    expect(generateMock.mock.calls.map(([options]) => options.target)).toEqual([
+      'web',
+      'weapp',
+      'web',
+      'weapp',
+    ])
+    expect(outputs).toMatchInlineSnapshot(`
+      {
+        "tailwind-v3-weapp": ".w-_b100px_B{width:100px}
+      .bg-_b_h123456_B{background-color:#123456}",
+        "tailwind-v3-web": ".w-\\[100px\\]{width:100px}
+      .bg-\\[\\#123456\\]{background-color:#123456}",
+        "tailwind-v4-weapp": ".w-_b100px_B{width:100px}
+      .bg-_b_h123456_B{background-color:#123456}",
+        "tailwind-v4-web": ".w-\\[100px\\]{width:100px}
+      .bg-\\[\\#123456\\]{background-color:#123456}",
+      }
+    `)
+  })
+
   it('reuses transformed legacy compat css for stable source during hmr', async () => {
     const firstRuntimeSet = new Set(['bg-blue-500'])
     const secondRuntimeSet = new Set(['bg-red-500'])
