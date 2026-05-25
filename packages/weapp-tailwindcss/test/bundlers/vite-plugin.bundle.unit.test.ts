@@ -1332,6 +1332,168 @@ const trace = "at App.vue:4"
     expect(currentContext.onUpdate).toHaveBeenCalledWith('assets/index.scss', css, css)
   }, TEST_TIMEOUT_MS)
 
+  it('skips template and js class transforms for web generator target', async () => {
+    const templateHandler = vi.fn(async (code: string) => `tpl:${code}`)
+    const jsHandler = vi.fn((code: string) => ({ code: `js:${code}` }))
+    setCurrentContext(createContext({
+      cssMatcher: (file: string) => file.endsWith('.css'),
+      generator: {
+        target: 'web',
+      },
+      htmlMatcher: (file: string) => file.endsWith('.html'),
+      jsHandler,
+      jsMatcher: (file: string) => file.endsWith('.js'),
+      templateHandler,
+    }))
+
+    const WeappTailwindcss = await loadUnifiedVitePlugin()
+    const plugins = WeappTailwindcss()
+    const postPlugin = plugins?.find(plugin => plugin.name === 'weapp-tailwindcss:adaptor:post') as Plugin
+    expect(postPlugin).toBeTruthy()
+
+    await (postPlugin.configResolved as any)?.call(postPlugin, {
+      command: 'build',
+      root: process.cwd(),
+      css: { postcss: { plugins: [] } },
+      build: { outDir: 'dist' },
+    } as ResolvedConfig)
+
+    const html = '<div class="from-[#0a0f1c] text-[26rpx]"></div>'
+    const js = 'const cls = "from-[#0a0f1c] text-[26rpx]"'
+    const bundle = {
+      'index.html': {
+        ...createRollupAsset(html),
+        fileName: 'index.html',
+      },
+      'assets/index.js': {
+        ...createRollupChunk(js),
+        fileName: 'assets/index.js',
+      },
+    }
+
+    const generateBundle = getGenerateBundleHandler(postPlugin)
+    await generateBundle?.call(postPlugin, {} as any, bundle)
+
+    expect((bundle['index.html'] as OutputAsset).source).toBe(html)
+    expect((bundle['assets/index.js'] as OutputChunk).code).toBe(js)
+    expect(templateHandler).not.toHaveBeenCalled()
+    expect(jsHandler).not.toHaveBeenCalled()
+  }, TEST_TIMEOUT_MS)
+
+  it('skips bundle runtime class scanning for web generator target', async () => {
+    const syncMock = vi.fn(async () => new Set(['text-[26rpx]']))
+    const resetMock = vi.fn(async () => undefined)
+    vi.doMock('@/bundlers/vite/incremental-runtime-class-set', () => ({
+      createBundleRuntimeClassSetManager: () => ({
+        sync: syncMock,
+        reset: resetMock,
+      }),
+    }))
+
+    const currentContext = createContext({
+      cssMatcher: (file: string) => file.endsWith('.css'),
+      generator: {
+        target: 'web',
+      },
+      htmlMatcher: (file: string) => file.endsWith('.html'),
+      jsMatcher: (file: string) => file.endsWith('.js'),
+      twPatcher: {
+        patch: vi.fn(),
+        getClassSet: vi.fn(async () => new Set(['from-patcher'])),
+        getClassSetSync: vi.fn(() => new Set(['from-patcher'])),
+        extract: vi.fn(async () => ({ classSet: new Set(['from-patcher']) })),
+        majorVersion: 4,
+      },
+    })
+    setCurrentContext(currentContext)
+
+    const WeappTailwindcss = await loadUnifiedVitePlugin()
+    const plugins = WeappTailwindcss()
+    const postPlugin = plugins?.find(plugin => plugin.name === 'weapp-tailwindcss:adaptor:post') as Plugin
+    expect(postPlugin).toBeTruthy()
+
+    await (postPlugin.configResolved as any)?.call(postPlugin, {
+      command: 'build',
+      root: process.cwd(),
+      css: { postcss: { plugins: [] } },
+      build: { outDir: 'dist' },
+    } as ResolvedConfig)
+
+    const css = '.text-\\[26rpx\\] { font-size: 0.8125rem; }'
+    const html = '<div class="from-[#0a0f1c] text-[26rpx]"></div>'
+    const bundle = {
+      'index.html': {
+        ...createRollupAsset(html),
+        fileName: 'index.html',
+      },
+      'assets/index.css': {
+        ...createRollupAsset(css),
+        fileName: 'assets/index.css',
+      },
+      'assets/index.js': {
+        ...createRollupChunk('const cls = "from-[#0a0f1c] text-[26rpx]"'),
+        fileName: 'assets/index.js',
+      },
+    }
+
+    const generateBundle = getGenerateBundleHandler(postPlugin)
+    await generateBundle?.call(postPlugin, {} as any, bundle)
+
+    expect(syncMock).not.toHaveBeenCalled()
+    expect(resetMock).not.toHaveBeenCalled()
+    expect(currentContext.twPatcher.extract).not.toHaveBeenCalled()
+    expect(currentContext.twPatcher.getClassSet).not.toHaveBeenCalled()
+    expect(currentContext.twPatcher.getClassSetSync).not.toHaveBeenCalled()
+    expect((bundle['index.html'] as OutputAsset).source).toBe(html)
+    expect((bundle['assets/index.css'] as OutputAsset).source).toBe(css)
+  }, TEST_TIMEOUT_MS)
+
+  it('skips source candidate root scanning during web generator buildStart', async () => {
+    const resolveScanMock = vi.fn(async () => ({
+      entries: undefined,
+      explicit: false,
+    }))
+    vi.doMock('@/bundlers/vite/source-scan', async (importOriginal) => {
+      const actual = await importOriginal<typeof import('@/bundlers/vite/source-scan')>()
+      return {
+        ...actual,
+        resolveViteSourceScanEntries: resolveScanMock,
+      }
+    })
+
+    setCurrentContext(createContext({
+      cssMatcher: (file: string) => file.endsWith('.css'),
+      generator: {
+        target: 'web',
+      },
+      twPatcher: {
+        patch: vi.fn(),
+        getClassSet: vi.fn(async () => new Set(['from-patcher'])),
+        getClassSetSync: vi.fn(() => new Set(['from-patcher'])),
+        extract: vi.fn(async () => ({ classSet: new Set(['from-patcher']) })),
+        majorVersion: 4,
+      },
+    }))
+
+    const WeappTailwindcss = await loadUnifiedVitePlugin()
+    const plugins = WeappTailwindcss()
+    const sourcePlugin = plugins?.find(plugin => plugin.name === 'weapp-tailwindcss:adaptor:source-candidates') as Plugin
+    const postPlugin = plugins?.find(plugin => plugin.name === 'weapp-tailwindcss:adaptor:post') as Plugin
+    expect(sourcePlugin).toBeTruthy()
+    expect(postPlugin).toBeTruthy()
+
+    await (postPlugin.configResolved as any)?.call(postPlugin, {
+      command: 'build',
+      root: process.cwd(),
+      css: { postcss: { plugins: [] } },
+      build: { outDir: 'dist' },
+    } as ResolvedConfig)
+
+    await sourcePlugin.buildStart?.call(sourcePlugin as any, {} as any)
+
+    expect(resolveScanMock).not.toHaveBeenCalled()
+  }, TEST_TIMEOUT_MS)
+
   it('drops raw preprocessor source style assets that Vite exposes during watch', async () => {
     const styleHandler = vi.fn(async (code: string) => ({ css: `css:${code}` }))
     setCurrentContext(createContext({
@@ -3580,6 +3742,53 @@ const cls = "w-[1.5px]"
     expect(currentContext.appType).toBeUndefined()
     expect(loggerInfoSpy).not.toHaveBeenCalledWith('根据 Vite 项目根目录自动推断 appType -> %s', 'weapp-vite')
   })
+
+  it('defaults uni-app H5 serve mode to web generator target without mini-program appType inference', async () => {
+    const previousUniPlatform = process.env.UNI_PLATFORM
+    process.env.UNI_PLATFORM = 'h5'
+    try {
+      const loggerModule = await import('@weapp-tailwindcss/logger')
+      const projectRoot = await mkdtemp(path.join(os.tmpdir(), 'weapp-tw-vite-uni-h5-root-'))
+      createdDirs.push(projectRoot)
+      await writeFile(path.join(projectRoot, 'package.json'), JSON.stringify({
+        dependencies: {
+          '@dcloudio/vite-plugin-uni': '^3.0.0',
+        },
+      }, null, 2))
+
+      const WeappTailwindcss = await loadUnifiedVitePlugin()
+      setCurrentContext(createContext({
+        appType: undefined,
+        styleHandler: vi.fn(async (code: string) => ({ css: code })),
+        mainCssChunkMatcher: vi.fn(() => true),
+        cssMatcher: (file: string) => file.endsWith('.css'),
+      }))
+      const currentContext = getCurrentContext()
+      const plugins = WeappTailwindcss()
+      const postPlugin = plugins?.find(plugin => plugin.name === 'weapp-tailwindcss:adaptor:post') as Plugin
+      expect(postPlugin).toBeTruthy()
+      const loggerInfoSpy = vi.spyOn(loggerModule.logger, 'info').mockImplementation(() => {})
+
+      await (postPlugin.configResolved as any)?.call(postPlugin, {
+        command: 'serve',
+        root: projectRoot,
+        css: { postcss: { plugins: [] } },
+        build: { outDir: 'dist/dev/h5' },
+      } as ResolvedConfig)
+
+      expect(currentContext.generator?.target).toBeUndefined()
+      expect(currentContext.appType).toBeUndefined()
+      expect(loggerInfoSpy).not.toHaveBeenCalledWith('根据 Vite 项目根目录自动推断 appType -> %s', expect.any(String))
+    }
+    finally {
+      if (previousUniPlatform === undefined) {
+        delete process.env.UNI_PLATFORM
+      }
+      else {
+        process.env.UNI_PLATFORM = previousUniPlatform
+      }
+    }
+  }, TEST_TIMEOUT_MS)
 
   it('keeps template transform stable on script-only incremental updates', async () => {
     const WeappTailwindcss = await loadUnifiedVitePlugin()

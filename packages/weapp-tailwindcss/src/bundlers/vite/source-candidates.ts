@@ -39,6 +39,39 @@ interface ScanSourceCandidateRootOptions {
 }
 
 const CLEAN_URL_RE = /[?#].*$/
+const TAILWIND_V4_IGNORED_CONTENT_DIRS = [
+  '.git',
+  '.hg',
+  '.jj',
+  '.next',
+  '.parcel-cache',
+  '.pnpm-store',
+  '.svelte-kit',
+  '.svn',
+  '.turbo',
+  '.venv',
+  '.vercel',
+  '.yarn',
+  '__pycache__',
+  'node_modules',
+  'venv',
+]
+const TAILWIND_V4_IGNORED_EXTENSIONS = [
+  'less',
+  'lock',
+  'sass',
+  'scss',
+  'styl',
+  'log',
+]
+const TAILWIND_V4_IGNORED_FILES = [
+  'package-lock.json',
+  'pnpm-lock.yaml',
+  'bun.lockb',
+  '.gitignore',
+  '.env',
+  '.env.*',
+]
 const sourceCandidateContentCache = new Map<string, string[]>()
 
 function cleanUrl(id: string) {
@@ -54,6 +87,83 @@ function resolveOutDirIgnorePattern(root: string, outDir: string | undefined) {
     return
   }
   return `${toPosixPath(relative)}/**`
+}
+
+function normalizeScanEntries(
+  root: string,
+  entries: TailwindSourceEntry[] | undefined,
+  outDirIgnore: string | undefined,
+) {
+  const hasPositiveEntry = entries?.some(entry => !entry.negated) === true
+  const scanEntries = entries?.length
+    ? hasPositiveEntry
+      ? entries
+      : [
+          {
+            base: root,
+            pattern: '**/*',
+            negated: false,
+          },
+          ...entries,
+        ]
+    : undefined
+  if (!outDirIgnore) {
+    return scanEntries
+  }
+  return [
+    ...(scanEntries ?? [{
+      base: root,
+      pattern: '**/*',
+      negated: false,
+    }]),
+    {
+      base: root,
+      pattern: outDirIgnore,
+      negated: true,
+    },
+  ]
+}
+
+function shouldApplyDefaultIgnoredSources(entries: TailwindSourceEntry[] | undefined) {
+  return entries?.length === undefined
+    ? false
+    : entries.length > 0 && entries.every(entry => entry.negated)
+}
+
+function createDefaultIgnoredSources(
+  root: string,
+  outDirIgnore: string | undefined,
+  entries: TailwindSourceEntry[] | undefined,
+) {
+  const defaultIgnoredSources = shouldApplyDefaultIgnoredSources(entries)
+    ? [
+        ...TAILWIND_V4_IGNORED_CONTENT_DIRS.map(pattern => ({
+          base: root,
+          pattern: `**/${pattern}/**`,
+          negated: true,
+        })),
+        ...TAILWIND_V4_IGNORED_EXTENSIONS.map(extension => ({
+          base: root,
+          pattern: `**/*.${extension}`,
+          negated: true,
+        })),
+        ...TAILWIND_V4_IGNORED_FILES.map(pattern => ({
+          base: root,
+          pattern: `**/${pattern}`,
+          negated: true,
+        })),
+      ]
+    : []
+  return [
+    ...defaultIgnoredSources,
+    ...(outDirIgnore
+      ? [{
+          base: root,
+          pattern: outDirIgnore,
+          negated: true,
+        }]
+      : []),
+  ]
 }
 
 function resolveSourceCandidateExtension(id: string) {
@@ -149,25 +259,12 @@ export function createSourceCandidateCollector(): SourceCandidateCollector {
   async function scanRoot({ entries, root, outDir }: ScanSourceCandidateRootOptions) {
     const resolvedRoot = path.resolve(root)
     const outDirIgnore = resolveOutDirIgnorePattern(resolvedRoot, outDir)
-    const scanEntries = outDirIgnore
-      ? [
-          ...(entries?.length
-            ? entries
-            : [{
-                base: resolvedRoot,
-                pattern: '**/*',
-                negated: false,
-              }]),
-          {
-            base: resolvedRoot,
-            pattern: outDirIgnore,
-            negated: true,
-          },
-        ]
-      : entries
+    const scanEntries = normalizeScanEntries(resolvedRoot, entries, outDirIgnore)
+    const ignoredSources = createDefaultIgnoredSources(resolvedRoot, outDirIgnore, entries)
     const files = await resolveProjectSourceFiles({
       cwd: resolvedRoot,
       ...(scanEntries === undefined ? {} : { sources: scanEntries }),
+      ...(ignoredSources.length > 0 ? { ignoredSources } : {}),
       filter: isSourceCandidateRequest,
     })
 

@@ -238,7 +238,7 @@ export function createGenerateBundleHook(context: GenerateBundleContext) {
     const snapshotStart = performance.now()
     const snapshot = buildBundleSnapshot(bundle, opts, outDir, state, disableDirtyOptimization || !useIncrementalMode)
     recordTimingDetail('snapshot', snapshotStart)
-    const useBundleRuntimeClassSet = useIncrementalMode || runtimeState.twPatcher.majorVersion === 4
+    const useBundleRuntimeClassSet = !isWebGeneratorTarget && (useIncrementalMode || runtimeState.twPatcher.majorVersion === 4)
     const forceRuntimeRefreshBySource = useIncrementalMode
       && hasRuntimeAffectingSourceChanges(snapshot.runtimeAffectingChangedByType)
     const processFiles = snapshot.processFiles
@@ -263,16 +263,18 @@ export function createGenerateBundleHook(context: GenerateBundleContext) {
       && !forceRuntimeRefreshByEnv
       && !disableV3OxideSourceRuntime
     const runtimeStart = performance.now()
-    const runtime = useV3OxideSourceRuntime
-      ? await ensureBundleRuntimeClassSet(snapshot, forceRuntimeRefreshByEnv, {
-          allowBaselineOnlyInitialSync: true,
-          baseClassSet: sourceCandidates,
-        })
-      : useBundleRuntimeClassSet
+    const runtime = isWebGeneratorTarget
+      ? new Set<string>()
+      : useV3OxideSourceRuntime
         ? await ensureBundleRuntimeClassSet(snapshot, forceRuntimeRefreshByEnv, {
-            allowBaselineOnlyInitialSync: buildCommand,
+            allowBaselineOnlyInitialSync: true,
+            baseClassSet: sourceCandidates,
           })
-        : await context.ensureRuntimeClassSet(forceRuntimeRefreshByEnv)
+        : useBundleRuntimeClassSet
+          ? await ensureBundleRuntimeClassSet(snapshot, forceRuntimeRefreshByEnv, {
+              allowBaselineOnlyInitialSync: buildCommand,
+            })
+          : await context.ensureRuntimeClassSet(forceRuntimeRefreshByEnv)
     if (useV3OxideSourceRuntime) {
       debug(
         '[tailwindcss:v3] use oxide source candidates as runtime input, candidates=%d',
@@ -363,6 +365,10 @@ export function createGenerateBundleHook(context: GenerateBundleContext) {
 
       if (type === 'html' && originalSource.type === 'asset') {
         metrics.html.total++
+        if (isWebGeneratorTarget) {
+          debug('html skip web target: %s', file)
+          continue
+        }
         if (!processFiles.html.has(file)) {
           continue
         }
@@ -584,6 +590,10 @@ export function createGenerateBundleHook(context: GenerateBundleContext) {
       }
 
       metrics.js.total++
+      if (isWebGeneratorTarget) {
+        debug('js skip web target: %s', file)
+        continue
+      }
       const shouldTransformJs = !useIncrementalMode || processFiles.js.has(file)
       if (!shouldTransformJs) {
         // 增量轮次上游可能重写相同源码的原始 JS 产物，这里仍要走缓存回填以保持转译结果稳定。

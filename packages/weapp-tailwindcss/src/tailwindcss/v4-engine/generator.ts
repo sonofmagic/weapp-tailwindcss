@@ -23,6 +23,37 @@ type TailwindV4ResolvedScanSources = TailwindV4GenerateOptions['scanSources']
 
 const incrementalGenerateCache = new Map<string, TailwindV4IncrementalGenerateCacheEntry>()
 const incrementalGenerateTaskCache = new Map<string, Promise<Awaited<ReturnType<TailwindV4Engine['generate']>>>>()
+const BARE_RPX_TEXT_CANDIDATE_RE = /(^|:)text-\[([-+]?(?:\d+|\d*\.\d+)rpx)\](.*)$/u
+const RPX_TEXT_LENGTH_SELECTOR_RE = /text-\\\[length\\:([-+]?(?:\d+|\d*\.\d+)rpx)\\\]/g
+const TAILWIND_V4_DEFAULT_IGNORED_SOURCE_PATTERNS = [
+  '**/.git/**',
+  '**/.hg/**',
+  '**/.jj/**',
+  '**/.next/**',
+  '**/.parcel-cache/**',
+  '**/.pnpm-store/**',
+  '**/.svelte-kit/**',
+  '**/.svn/**',
+  '**/.turbo/**',
+  '**/.venv/**',
+  '**/.vercel/**',
+  '**/.yarn/**',
+  '**/__pycache__/**',
+  '**/node_modules/**',
+  '**/venv/**',
+  '**/*.less',
+  '**/*.lock',
+  '**/*.sass',
+  '**/*.scss',
+  '**/*.styl',
+  '**/*.log',
+  '**/package-lock.json',
+  '**/pnpm-lock.yaml',
+  '**/bun.lockb',
+  '**/.gitignore',
+  '**/.env',
+  '**/.env.*',
+]
 
 interface TailwindV4IncrementalGenerateCacheEntry {
   seenCandidates: Set<string>
@@ -71,6 +102,50 @@ function applyMiniProgramTailwindV4DefaultColorCss(css: string) {
 
 function collectCandidates(candidates: Iterable<string> | undefined) {
   return new Set(candidates ?? [])
+}
+
+function normalizeRpxTextCandidate(candidate: string) {
+  return candidate.replace(BARE_RPX_TEXT_CANDIDATE_RE, '$1text-[length:$2]$3')
+}
+
+function normalizeRpxTextCandidates(candidates: Iterable<string>) {
+  const normalized = new Set<string>()
+  const restoreCandidates = new Map<string, string>()
+  for (const candidate of candidates) {
+    const normalizedCandidate = normalizeRpxTextCandidate(candidate)
+    normalized.add(normalizedCandidate)
+    if (normalizedCandidate !== candidate) {
+      restoreCandidates.set(normalizedCandidate, candidate)
+    }
+  }
+  return {
+    candidates: normalized,
+    restoreCandidates,
+  }
+}
+
+function restoreRpxTextCandidates(candidates: Iterable<string>, restoreCandidates: ReadonlyMap<string, string>) {
+  if (restoreCandidates.size === 0) {
+    return new Set(candidates)
+  }
+  return new Set([...candidates].map(candidate => restoreCandidates.get(candidate) ?? candidate))
+}
+
+function restoreRpxTextCssSelectors(css: string, restoreCandidates: ReadonlyMap<string, string>) {
+  if (restoreCandidates.size === 0 || !css.includes('text-\\[length\\:')) {
+    return css
+  }
+  const restoredValues = new Set(
+    [...restoreCandidates.keys()]
+      .map((candidate) => {
+        const match = BARE_RPX_TEXT_CANDIDATE_RE.exec(candidate.replace('[length:', '['))
+        return match?.[2]
+      })
+      .filter((value): value is string => Boolean(value)),
+  )
+  return css.replace(RPX_TEXT_LENGTH_SELECTOR_RE, (match, value: string) => {
+    return restoredValues.has(value) ? `text-\\[${value}\\]` : match
+  })
 }
 
 function createStableJson(value: unknown): string {
@@ -320,6 +395,27 @@ function resolveSourceBase(base: string, sourcePath: string) {
   return path.isAbsolute(sourcePath) ? sourcePath : path.resolve(base, sourcePath)
 }
 
+function createDefaultIgnoredScanSources(base: string) {
+  return TAILWIND_V4_DEFAULT_IGNORED_SOURCE_PATTERNS.map(pattern => ({
+    base,
+    pattern,
+    negated: true,
+  }))
+}
+
+function normalizeCssDefinedScanSources(base: string, entries: TailwindV4SourcePattern[]) {
+  return entries.length > 0 && entries.every(entry => entry.negated)
+    ? [
+        {
+          base,
+          pattern: '**/*',
+          negated: false,
+        },
+        ...entries,
+      ]
+    : entries
+}
+
 async function resolveCssDefinedScanSources(source: Pick<TailwindV4ResolvedSource, 'base' | 'css' | 'dependencies'>): Promise<TailwindV4ResolvedScanSources | undefined> {
   let importSourceBase: string | undefined
   let hasSourceNone = false
@@ -350,7 +446,10 @@ async function resolveCssDefinedScanSources(source: Pick<TailwindV4ResolvedSourc
   const sourcePatterns = await resolveCssSourceEntries(root, source.base, '**/*')
   if (!importSourceBase) {
     if (sourcePatterns.length > 0) {
-      return sourcePatterns
+      return [
+        ...normalizeCssDefinedScanSources(source.base, sourcePatterns),
+        ...createDefaultIgnoredScanSources(source.base),
+      ]
     }
     if (hasSourceNone) {
       return false
@@ -361,6 +460,7 @@ async function resolveCssDefinedScanSources(source: Pick<TailwindV4ResolvedSourc
   return [
     await resolveTailwindSourceEntry('.', importSourceBase, false, '**/*'),
     ...sourcePatterns,
+    ...createDefaultIgnoredScanSources(importSourceBase),
   ]
 }
 
@@ -435,16 +535,19 @@ export function createTailwindV4Engine(source: TailwindV4ResolvedSource): Tailwi
       ...collectCandidates(patchOptions.candidates),
       ...(filesystemCandidates ?? []),
     ]), target)
+    const normalizedCandidates = normalizeRpxTextCandidates(resolvedCandidates)
     const result = await engine.generate(omitUndefined({
       scanSources: false,
       ...patchOptions,
-      candidates: resolvedCandidates,
+      candidates: normalizedCandidates.candidates,
     }))
-    const rawCss = result.css
+    const rawCss = restoreRpxTextCssSelectors(result.css, normalizedCandidates.restoreCandidates)
     const css = await transformTailwindV4CssByTarget(rawCss, target, styleOptions)
 
     return {
       ...result,
+      classSet: restoreRpxTextCandidates(result.classSet, normalizedCandidates.restoreCandidates),
+      rawCandidates: restoreRpxTextCandidates(result.rawCandidates, normalizedCandidates.restoreCandidates),
       css,
       rawCss,
       target,
@@ -502,15 +605,17 @@ export function createTailwindV4Engine(source: TailwindV4ResolvedSource): Tailwi
 
       return runIncrementalGenerateTask(cacheKey, requestedCandidates, options.scanSources, async () => {
         const designSystem = await cached.designSystemPromise
-        const cssByCandidate = designSystem.candidatesToCss(missingCandidates)
+        const normalizedMissing = normalizeRpxTextCandidates(missingCandidates)
+        const normalizedMissingCandidates = [...normalizedMissing.candidates]
+        const cssByCandidate = designSystem.candidatesToCss(normalizedMissingCandidates)
         const rawCssParts: string[] = []
         const classSet = new Set<string>()
-        for (let index = 0; index < missingCandidates.length; index += 1) {
-          const candidate = missingCandidates[index]
+        for (let index = 0; index < normalizedMissingCandidates.length; index += 1) {
+          const candidate = normalizedMissingCandidates[index]
           const css = cssByCandidate[index]
           if (candidate && typeof css === 'string' && css.trim().length > 0) {
-            rawCssParts.push(css)
-            classSet.add(candidate)
+            rawCssParts.push(restoreRpxTextCssSelectors(css, normalizedMissing.restoreCandidates))
+            classSet.add(normalizedMissing.restoreCandidates.get(candidate) ?? candidate)
           }
         }
         const rawCss = rawCssParts.join('\n')

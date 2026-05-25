@@ -169,9 +169,7 @@ export function getDefaultOptions(): UserDefinedOptions {
     ignoreCallExpressionIdentifiers: [],
     ignoreTaggedTemplateExpressionIdentifiers: ['weappTwIgnore'],
     replaceRuntimePackages: false,
-    generator: {
-      target: 'weapp',
-    },
+    generator: {},
     tailwindcssPatcherOptions: {
       filter(className: string) {
         return !isAllowedClassName(className)

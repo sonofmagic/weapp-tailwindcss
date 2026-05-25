@@ -12,6 +12,7 @@ import { vitePluginName } from '@/constants'
 import { getCompilerContext } from '@/context'
 import { toCustomAttributesEntities } from '@/context/custom-attributes'
 import { createDebug } from '@/debug'
+import { normalizeWeappTailwindcssGeneratorOptions } from '@/generator'
 import { hasConfiguredTailwindV4CssRoots, upsertTailwindV4CssSource } from '@/tailwindcss/v4/css-sources'
 import { createUniAppXPlugins } from '@/uni-app-x'
 import { isUniAppXEnabled } from '@/uni-app-x/options'
@@ -116,7 +117,9 @@ export function WeappTailwindcss(options: UserDefinedOptions = {}): Plugin[] | u
   const tailwindcssMajorVersion = initialTwPatcher.majorVersion ?? 0
   const shouldOwnTailwindGeneration = !disabledOptions.plugin
   const shouldRewriteCssImports = tailwindcssMajorVersion >= 4
-  const shouldInferAppType = !hasExplicitAppType && opts.generator?.target !== 'web'
+  const generatorOptions = normalizeWeappTailwindcssGeneratorOptions(opts.generator)
+  const isWebGeneratorTarget = generatorOptions.target === 'web'
+  const shouldInferAppType = !hasExplicitAppType && generatorOptions.target !== 'web'
   const hasInitialTailwindCssRoots = hasConfiguredTailwindV4CssRoots({
     ...options,
     cssEntries: opts.cssEntries ?? options.cssEntries,
@@ -581,6 +584,9 @@ export function WeappTailwindcss(options: UserDefinedOptions = {}): Plugin[] | u
   const utsPlatform = resolveUniUtsPlatform()
   const isIosPlatform = utsPlatform.isAppIos
   const prepareTailwindGeneration = async () => {
+    if (isWebGeneratorTarget) {
+      return
+    }
     if (shouldDiscoverAutoCssSources()) {
       await discoverAndRegisterAutoCssSources()
     }

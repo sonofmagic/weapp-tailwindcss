@@ -131,10 +131,10 @@ export function isFileMatchedByTailwindSourceEntries(file: string, entries: Tail
   }
   const positiveEntries = entries.filter(entry => !entry.negated)
   const negativeEntries = entries.filter(entry => entry.negated)
-  if (positiveEntries.length === 0) {
-    return false
-  }
   const resolvedFile = resolveSourceScanPath(file)
+  if (positiveEntries.length === 0) {
+    return !negativeEntries.some(entry => isFileMatchedByTailwindSourceEntry(resolvedFile, entry))
+  }
   const matchesPositive = positiveEntries.some(entry => isFileMatchedByTailwindSourceEntry(resolvedFile, entry))
   if (!matchesPositive) {
     return false

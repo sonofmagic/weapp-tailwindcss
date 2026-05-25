@@ -142,6 +142,29 @@ describe('bundlers/vite source candidates', () => {
     expect(collector.values()).toEqual(new Set(['bg-[#112233]']))
   })
 
+  it('keeps Tailwind default ignores when css source entries only exclude paths', async () => {
+    const { createSourceCandidateCollector } = await import('@/bundlers/vite/source-candidates')
+    const root = await createTempDir('weapp-tw-vite-scanner-negated-defaults')
+    await writeTempFile(path.join(root, 'src/page.vue'), '<template><view class="bg-[#112233]"></view></template>')
+    await writeTempFile(path.join(root, 'node_modules/pkg/index.js'), 'export const cls = "text-[#111111]"')
+    await writeTempFile(path.join(root, 'dist/app.js'), 'export const cls = "text-[#222222]"')
+
+    const collector = createSourceCandidateCollector()
+    await collector.scanRoot({
+      root,
+      outDir: 'dist',
+      entries: [
+        {
+          base: path.join(root, 'dist'),
+          pattern: '**/*',
+          negated: true,
+        },
+      ],
+    })
+
+    expect(collector.values()).toEqual(new Set(['bg-[#112233]']))
+  })
+
   it('lets explicit Tailwind v4 source patterns include default ignored extensions', async () => {
     const { createSourceCandidateCollector } = await import('@/bundlers/vite/source-candidates')
     const root = await createTempDir('weapp-tw-vite-scanner-explicit-source')

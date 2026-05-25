@@ -169,6 +169,60 @@ describe('bundlers/vite source scan', () => {
     expect(resolved?.dependencies).toEqual([path.join(srcDir, 'main.css')])
   })
 
+  it('keeps default root scanning when Tailwind v4 css only excludes sources', async () => {
+    const tempDir = await createTempDir('weapp-tw-vite-source-scan-negated-default')
+    const srcDir = path.join(tempDir, 'src')
+    await mkdir(srcDir, { recursive: true })
+    await mkdir(path.join(tempDir, 'dist'), { recursive: true })
+    await mkdir(path.join(srcDir, 'uni_modules'), { recursive: true })
+    await writeFile(path.join(srcDir, 'main.css'), [
+      '@import "tailwindcss";',
+      '@source not "../dist";',
+      '@source not "../src/uni_modules";',
+    ].join('\n'))
+
+    const fallbackResolve = vi.fn(async () => {
+      throw new Error('auto-discovered css root should define the default source scan')
+    })
+    vi.doMock('@/tailwindcss/v4-engine', async (importOriginal) => {
+      const actual = await importOriginal<typeof import('@/tailwindcss/v4-engine')>()
+      return {
+        ...actual,
+        resolveTailwindV4SourceOptionsFromPatcher: vi.fn(() => ({
+          projectRoot: tempDir,
+          base: tempDir,
+          baseFallbacks: [],
+          packageName: 'tailwindcss4',
+        })),
+        resolveTailwindV4SourceFromPatcher: fallbackResolve,
+      }
+    })
+
+    const { resolveViteSourceScanEntries } = await import('@/bundlers/vite/source-scan')
+    const resolved = await resolveViteSourceScanEntries({}, {
+      majorVersion: 4,
+    } as TailwindcssPatcherLike, {
+      root: tempDir,
+      outDir: 'dist',
+    })
+
+    expect(fallbackResolve).not.toHaveBeenCalled()
+    expect(resolved?.explicit).toBe(false)
+    expect(resolved?.entries).toEqual([
+      {
+        base: path.join(tempDir, 'dist'),
+        pattern: '**/*.{js,jsx,mjs,cjs,ts,tsx,mts,cts,vue,uvue,nvue,svelte,mpx,html,wxml,axml,jxml,ksml,ttml,qml,tyml,xhsml,swan,css,wxss,acss,jxss,ttss,qss,tyss,scss,sass,less,styl,stylus}',
+        negated: true,
+      },
+      {
+        base: path.join(srcDir, 'uni_modules'),
+        pattern: '**/*.{js,jsx,mjs,cjs,ts,tsx,mts,cts,vue,uvue,nvue,svelte,mpx,html,wxml,axml,jxml,ksml,ttml,qml,tyml,xhsml,swan,css,wxss,acss,jxss,ttss,qss,tyss,scss,sass,less,styl,stylus}',
+        negated: true,
+      },
+    ])
+    expect(resolved?.dependencies).toEqual([path.join(srcDir, 'main.css')])
+  })
+
   it('reads static Tailwind config content without executing the config loader', async () => {
     const tempDir = await createTempDir('weapp-tw-vite-source-scan')
     const cssEntry = path.join(tempDir, 'app.scss')

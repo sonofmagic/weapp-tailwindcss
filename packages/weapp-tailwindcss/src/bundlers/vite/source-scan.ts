@@ -226,6 +226,7 @@ export async function resolveTailwindV4EntriesFromCss(css: string, base: string)
     ...configEntries.entries,
     ...sourceEntries,
   ]
+  const hasPositiveEntries = entries.some(entry => !entry.negated)
   const inlineCandidates = collectCssInlineSourceCandidates(root)
 
   root.walkAtRules('import', (rule) => {
@@ -267,7 +268,7 @@ export async function resolveTailwindV4EntriesFromCss(css: string, base: string)
     }
   }
 
-  if (entries.length > 0) {
+  if (hasPositiveEntries) {
     return {
       entries,
       explicit: true,
@@ -287,7 +288,7 @@ export async function resolveTailwindV4EntriesFromCss(css: string, base: string)
 
   return hasTailwindCssImport
     ? {
-        entries: [],
+        entries,
         explicit: false,
         inlineCandidates,
         dependencies: configEntries.dependencies,
