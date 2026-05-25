@@ -557,6 +557,35 @@ describe('bundlers/shared generator css', () => {
     ].join('\n'))
   })
 
+  it('extracts Tailwind v3 Sass @use subpath imports before preprocessing', async () => {
+    const { hasTailwindSourceDirectives, resolveCssEntrySource } = await import('@/bundlers/shared/generator-css')
+    const { hasTailwindRootDirectives } = await import('@/bundlers/shared/generator-css/directives')
+    const rawSource = [
+      '$brand: #123456;',
+      '@use "tailwindcss/base";',
+      '@use "tailwindcss/components";',
+      '@use "tailwindcss/utilities";',
+      '.page {',
+      '  color: $brand;',
+      '}',
+    ].join('\n')
+
+    expect(hasTailwindRootDirectives(rawSource)).toBe(true)
+    expect(hasTailwindSourceDirectives(rawSource)).toBe(true)
+
+    const source = resolveCssEntrySource(rawSource, __dirname)
+    expect(source).toEqual(expect.objectContaining({
+      css: [
+        '@import "tailwindcss/base";',
+        '@import "tailwindcss/components";',
+        '@import "tailwindcss/utilities";',
+      ].join('\n'),
+      base: __dirname,
+    }))
+    expect(source?.css).not.toContain('$brand')
+    expect(source?.css).not.toContain('@use')
+  })
+
   it('generates Tailwind v4 css from package.json subpath imports in default auto mode', async () => {
     const runtimeSet = new Set(['w-[100px]'])
     const rawSource = '@import "#tailwind.css";\n.card{color:red}'

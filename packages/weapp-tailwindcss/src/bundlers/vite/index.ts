@@ -584,7 +584,7 @@ export function WeappTailwindcss(options: UserDefinedOptions = {}): Plugin[] | u
   const utsPlatform = resolveUniUtsPlatform()
   const isIosPlatform = utsPlatform.isAppIos
   const prepareTailwindGeneration = async () => {
-    if (isWebGeneratorTarget) {
+    if (isWebGeneratorTarget && runtimeState.twPatcher.majorVersion !== 3) {
       return
     }
     if (shouldDiscoverAutoCssSources()) {

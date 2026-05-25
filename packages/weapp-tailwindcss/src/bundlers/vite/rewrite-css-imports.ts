@@ -37,7 +37,7 @@ function stripTailwindConfigDirectives(code: string) {
 }
 
 export function createRewriteCssImportsPlugins(options: RewriteCssImportsOptions): Plugin[] {
-  if (!options.shouldRewrite) {
+  if (!options.shouldRewrite && !options.shouldOwnTailwindGeneration) {
     return []
   }
   const { appType, getAppType, rootImport, shouldOwnTailwindGeneration, weappTailwindcssDirPosix } = options
@@ -47,6 +47,9 @@ export function createRewriteCssImportsPlugins(options: RewriteCssImportsOptions
       name: `${vitePluginName}:rewrite-css-imports`,
       enforce: 'pre',
       resolveId(id, importer) {
+        if (!options.shouldRewrite) {
+          return null
+        }
         const replacement = resolveTailwindcssImport(id, weappTailwindcssDirPosix, {
           join: joinPosixPath,
           appType: resolveAppType(),
@@ -77,6 +80,9 @@ export function createRewriteCssImportsPlugins(options: RewriteCssImportsOptions
           }
         }
 
+        if (!options.shouldRewrite) {
+          return null
+        }
         const rewritten = rewriteTailwindcssImportsInCode(code, weappTailwindcssDirPosix, {
           join: joinPosixPath,
           appType: resolveAppType(),

@@ -29,8 +29,8 @@ const TAILWIND_ROOT_DIRECTIVE_NAMES = new Set([
   'utility',
   'variant',
 ])
-const TAILWIND_ROOT_DIRECTIVE_RE = /@(?:import\s+(?:url\(\s*)?["']?tailwindcss4?(?:\/[^"')\s]*)?|tailwind|config|custom-variant|plugin|source|theme|utility|variant)\b/
-const TAILWIND_EXTRACTABLE_DIRECTIVE_RE = /^\s*@(?:import|tailwind|config|source|reference|plugin)\b[\s\S]*?(?:;|$)/
+const TAILWIND_ROOT_DIRECTIVE_RE = /@(?:import\s+(?:url\(\s*)?["']?tailwindcss4?(?:\/[^"')\s]*)?|(?:use|forward)\s+(?:url\(\s*)?["']?tailwindcss4?(?:\/[^"')\s]*)?|tailwind|config|custom-variant|plugin|source|theme|utility|variant)\b/
+const TAILWIND_EXTRACTABLE_DIRECTIVE_RE = /^\s*@(?:import|use|forward|tailwind|config|source|reference|plugin)\b[\s\S]*?(?:;|$)/
 const TAILWIND_EXTRACTABLE_BLOCK_DIRECTIVE_RE = /^\s*@(?:theme|utility|variant|custom-variant)\b[\s\S]*$/
 const TAILWIND_EXTRACTABLE_LAYER_STATEMENT_RE = /^\s*@layer\s[^;{]+;\s*$/
 
@@ -107,10 +107,19 @@ function normalizeTailwindImportAtRules(root: postcss.Root, options: TailwindDir
 }
 
 function normalizeTailwindDirectiveLine(line: string, options: TailwindDirectiveOptions = {}) {
-  if (!options.importFallback || !line.trimStart().startsWith('@import')) {
+  const trimmed = line.trimStart()
+  if (/^@(?:use|forward)\b/.test(trimmed)) {
+    const request = parseImportRequest(trimmed.replace(/^@(?:use|forward)\b/, ''))
+    if (isTailwindImportRequest(request) || (options.importFallback && isWeappTailwindcssImportRequest(request))) {
+      const normalizedRequest = normalizeTailwindImportRequest(request, options)
+      return replaceImportRequest(line.replace(/^(\s*)@(?:use|forward)\b/, '$1@import'), request!, normalizedRequest!)
+    }
     return line
   }
-  const request = parseImportRequest(line.trimStart().replace(/^@import\b/, ''))
+  if (!options.importFallback || !trimmed.startsWith('@import')) {
+    return line
+  }
+  const request = parseImportRequest(trimmed.replace(/^@import\b/, ''))
   if (!request || !isWeappTailwindcssImportRequest(request)) {
     return line
   }
@@ -139,13 +148,13 @@ function extractTailwindDirectiveLines(
     if (options.removeConfig && normalizedTrimmed.startsWith('@config')) {
       continue
     }
-    const request = /^@import\b/.test(normalizedTrimmed)
-      ? parseImportRequest(normalizedTrimmed.replace(/^@import\b/, ''))
+    const request = /^@(?:import|use|forward)\b/.test(normalizedTrimmed)
+      ? parseImportRequest(normalizedTrimmed.replace(/^@(?:import|use|forward)\b/, ''))
       : undefined
     if (request && !isTailwindImportRequest(request) && !isPackageJsonImportRequest(request)) {
       continue
     }
-    if (/^@import\b/.test(normalizedTrimmed) && !request) {
+    if (/^@(?:import|use|forward)\b/.test(normalizedTrimmed) && !request) {
       continue
     }
     if (request && isTailwindImportRequest(request)) {
@@ -213,7 +222,7 @@ function isTailwindImportAtRule(node: postcss.AtRule, options: TailwindDirective
   if (node.name === 'tailwind') {
     return true
   }
-  if (node.name !== 'import') {
+  if (node.name !== 'import' && node.name !== 'use' && node.name !== 'forward') {
     return false
   }
   return isTailwindImportRequest(normalizeTailwindImportRequest(parseImportRequest(node.params), options))

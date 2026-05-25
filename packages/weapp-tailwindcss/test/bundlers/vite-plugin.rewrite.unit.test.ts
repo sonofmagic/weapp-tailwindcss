@@ -119,6 +119,56 @@ describe('bundlers/vite WeappTailwindcss rewrite', () => {
     expect(addWatchFile).toHaveBeenCalledWith('/project/tailwind.config.ts')
   })
 
+  it('can emit generated css without rewriting imports for Tailwind v3 generator mode', async () => {
+    const generateTailwindCss = vi.fn(async () => '.flex{display:flex}')
+    const [rewritePlugin] = createRewriteCssImportsPlugins({
+      generateTailwindCss,
+      shouldOwnTailwindGeneration: true,
+      shouldRewrite: false,
+      weappTailwindcssDirPosix: '/virtual/weapp-tailwindcss',
+    })
+    expect(rewritePlugin).toBeTruthy()
+
+    const resolveId = getResolveIdHandler(rewritePlugin!)
+    const transform = getTransformHandler(rewritePlugin!)
+
+    expect(await resolveId?.('tailwindcss', '/src/app.css')).toBeNull()
+    const result = await transform?.('@tailwind utilities;', '/src/App.vue?vue&type=style&index=0&lang.scss') as TransformResult
+
+    expect(result?.code).toBe('.flex{display:flex}')
+    expect(generateTailwindCss).toHaveBeenCalledWith(
+      '/src/App.vue?vue&type=style&index=0&lang.scss',
+      '@tailwind utilities;',
+      expect.anything(),
+    )
+  })
+
+  it('can emit generated css for Tailwind v3 Sass @use entries before preprocessing', async () => {
+    const source = [
+      '@use "tailwindcss/base";',
+      '@use "tailwindcss/components";',
+      '@use "tailwindcss/utilities";',
+      '.page { @apply flex min-h-screen; }',
+    ].join('\n')
+    const generateTailwindCss = vi.fn(async () => '.flex{display:flex}.min-h-screen{min-height:100vh}')
+    const [rewritePlugin] = createRewriteCssImportsPlugins({
+      generateTailwindCss,
+      shouldOwnTailwindGeneration: true,
+      shouldRewrite: false,
+      weappTailwindcssDirPosix: '/virtual/weapp-tailwindcss',
+    })
+    const transform = getTransformHandler(rewritePlugin!)
+
+    const result = await transform?.(source, '/src/App.vue?vue&type=style&index=0&lang.scss') as TransformResult
+
+    expect(result?.code).toBe('.flex{display:flex}.min-h-screen{min-height:100vh}')
+    expect(generateTailwindCss).toHaveBeenCalledWith(
+      '/src/App.vue?vue&type=style&index=0&lang.scss',
+      source,
+      expect.anything(),
+    )
+  })
+
   it('rewrites tailwindcss imports in preprocessor and SFC style requests', async () => {
     const [rewritePlugin] = createRewriteCssImportsPlugins({
       shouldRewrite: true,
@@ -309,12 +359,20 @@ describe('bundlers/vite WeappTailwindcss rewrite', () => {
     expect(plugins?.map(plugin => plugin.name)).toEqual([`${vitePluginName}:rewrite-css-imports`])
   }, TEST_TIMEOUT_MS)
 
-  it('skips css import rewrite when tailwindcss major version is below 4', async () => {
+  it('keeps generator css transform but skips import rewrite when tailwindcss major version is below 4', async () => {
     const WeappTailwindcss = await loadUnifiedVitePlugin()
     const currentContext = getCurrentContext()
     currentContext.twPatcher.majorVersion = 3
     const plugins = WeappTailwindcss()
-    const rewritePlugin = plugins?.find(plugin => plugin.name === `${vitePluginName}:rewrite-css-imports`)
-    expect(rewritePlugin).toBeUndefined()
+    const rewritePlugin = plugins?.find(plugin => plugin.name === `${vitePluginName}:rewrite-css-imports`) as Plugin
+    expect(rewritePlugin).toBeTruthy()
+
+    const resolveId = getResolveIdHandler(rewritePlugin)
+    const transform = getTransformHandler(rewritePlugin)
+
+    expect(await resolveId?.('tailwindcss', '/src/app.css')).toBeNull()
+    const result = await transform?.('@import "tailwindcss";', '/src/app.css') as TransformResult
+    expect(result?.code).toContain('weapp-tailwindcss vite-generated-css')
+    expect(result?.code).not.toContain('/virtual/weapp-tailwindcss')
   }, TEST_TIMEOUT_MS)
 })

@@ -745,6 +745,104 @@ describe('bundlers/vite WeappTailwindcss bundle', () => {
     ])
   }, TEST_TIMEOUT_MS)
 
+  it('generates Tailwind v3 web css in vite generator mode', async () => {
+    const runtimeSet = new Set(['flex', 'min-h-screen'])
+    const generatedCss = '.flex{display:flex}.min-h-screen{min-height:100vh}'
+    const generateMock = vi.fn(async ({ target, candidates }: { target: string, candidates: Set<string> }) => ({
+      css: generatedCss,
+      rawCss: generatedCss,
+      target,
+      classSet: new Set(candidates),
+      dependencies: [],
+      sources: [],
+      root: null,
+      version: 3,
+    }))
+
+    vi.doMock('@/bundlers/vite/incremental-runtime-class-set', () => ({
+      createBundleRuntimeClassSetManager: () => ({
+        sync: vi.fn(async () => runtimeSet),
+        reset: vi.fn(async () => undefined),
+      }),
+    }))
+    vi.doMock('@/generator', async (importOriginal) => {
+      const actual = await importOriginal<typeof import('@/generator')>()
+      return {
+        ...actual,
+        createWeappTailwindcssGenerator: vi.fn(() => ({
+          generate: generateMock,
+        })),
+        normalizeWeappTailwindcssGeneratorOptions: normalizeGeneratorOptions,
+        resolveTailwindV3SourceFromPatcher: vi.fn(async () => ({
+          projectRoot: process.cwd(),
+          cwd: process.cwd(),
+          css: '@tailwind utilities;',
+          dependencies: [],
+          packageName: 'tailwindcss',
+          postcssPlugin: 'tailwindcss',
+          version: 3,
+        })),
+      }
+    })
+
+    setCurrentContext(createContext({
+      generator: {
+        target: 'web',
+      },
+      styleHandler: vi.fn(async () => {
+        throw new Error('web target should not use mini-program styleHandler')
+      }),
+      twPatcher: {
+        patch: vi.fn(),
+        getClassSet: vi.fn(async () => runtimeSet),
+        getClassSetSync: vi.fn(() => runtimeSet),
+        extract: vi.fn(async () => ({ classSet: runtimeSet })),
+        majorVersion: 3,
+      },
+    }))
+
+    const WeappTailwindcss = await loadUnifiedVitePlugin()
+    const plugins = WeappTailwindcss()
+    const sourcePlugin = plugins?.find(plugin => plugin.name === 'weapp-tailwindcss:adaptor:source-candidates') as Plugin
+    const postPlugin = plugins?.find(plugin => plugin.name === 'weapp-tailwindcss:adaptor:post') as Plugin
+    expect(sourcePlugin).toBeTruthy()
+    expect(postPlugin).toBeTruthy()
+
+    await (postPlugin.configResolved as any)?.call(postPlugin, {
+      command: 'serve',
+      root: process.cwd(),
+      css: { postcss: { plugins: [] } },
+      build: { outDir: 'dist' },
+    } as ResolvedConfig)
+
+    const transform = getTransformHandler(sourcePlugin)
+    await transform?.call(sourcePlugin, 'export const cls = "flex min-h-screen"', '/project/src/pages/index.ts')
+
+    const bundle = {
+      'app.js': {
+        ...createRollupChunk('const cls = "flex min-h-screen"'),
+        fileName: 'app.js',
+      },
+      'app.css': {
+        ...createRollupAsset('/*! weapp-tailwindcss generator-placeholder */'),
+        fileName: 'app.css',
+      },
+    }
+
+    const generateBundle = getGenerateBundleHandler(postPlugin)
+    await generateBundle?.call(postPlugin, {} as any, bundle)
+
+    expect((bundle['app.css'] as OutputAsset).source).toBe(generatedCss)
+    expect((bundle['app.js'] as OutputChunk).code).toBe('const cls = "flex min-h-screen"')
+    expect(generateMock).toHaveBeenCalledWith(expect.objectContaining({
+      target: 'web',
+      candidates: expect.any(Set),
+    }))
+    const candidates = generateMock.mock.calls[0]?.[0]?.candidates as Set<string>
+    expect(candidates.has('flex')).toBe(true)
+    expect(candidates.has('min-h-screen')).toBe(true)
+  }, TEST_TIMEOUT_MS)
+
   it('reuses snapshot hashes for unchanged js process cache checks', async () => {
     const WeappTailwindcss = await loadUnifiedVitePlugin()
     const currentContext = getCurrentContext()
@@ -1448,7 +1546,7 @@ const trace = "at App.vue:4"
     expect((bundle['assets/index.css'] as OutputAsset).source).toBe(css)
   }, TEST_TIMEOUT_MS)
 
-  it('skips source candidate root scanning during web generator buildStart', async () => {
+  it('skips source candidate root scanning during Tailwind v4 web generator buildStart', async () => {
     const resolveScanMock = vi.fn(async () => ({
       entries: undefined,
       explicit: false,
@@ -1492,6 +1590,56 @@ const trace = "at App.vue:4"
     await sourcePlugin.buildStart?.call(sourcePlugin as any, {} as any)
 
     expect(resolveScanMock).not.toHaveBeenCalled()
+  }, TEST_TIMEOUT_MS)
+
+  it('scans source candidates during Tailwind v3 web generator buildStart', async () => {
+    const projectRoot = await mkdtemp(path.join(os.tmpdir(), 'weapp-tw-v3-web-scan-'))
+    createdDirs.push(projectRoot)
+    await mkdir(path.join(projectRoot, 'src'), { recursive: true })
+    await writeFile(path.join(projectRoot, 'src/App.vue'), '<template><view class="flex min-h-screen"></view></template>')
+    const resolveScanMock = vi.fn(async () => ({
+      entries: undefined,
+      explicit: false,
+    }))
+    vi.doMock('@/bundlers/vite/source-scan', async (importOriginal) => {
+      const actual = await importOriginal<typeof import('@/bundlers/vite/source-scan')>()
+      return {
+        ...actual,
+        resolveViteSourceScanEntries: resolveScanMock,
+      }
+    })
+
+    setCurrentContext(createContext({
+      cssMatcher: (file: string) => file.endsWith('.css'),
+      generator: {
+        target: 'web',
+      },
+      twPatcher: {
+        patch: vi.fn(),
+        getClassSet: vi.fn(async () => new Set(['from-patcher'])),
+        getClassSetSync: vi.fn(() => new Set(['from-patcher'])),
+        extract: vi.fn(async () => ({ classSet: new Set(['from-patcher']) })),
+        majorVersion: 3,
+      },
+    }))
+
+    const WeappTailwindcss = await loadUnifiedVitePlugin()
+    const plugins = WeappTailwindcss()
+    const sourcePlugin = plugins?.find(plugin => plugin.name === 'weapp-tailwindcss:adaptor:source-candidates') as Plugin
+    const postPlugin = plugins?.find(plugin => plugin.name === 'weapp-tailwindcss:adaptor:post') as Plugin
+    expect(sourcePlugin).toBeTruthy()
+    expect(postPlugin).toBeTruthy()
+
+    await (postPlugin.configResolved as any)?.call(postPlugin, {
+      command: 'serve',
+      root: projectRoot,
+      css: { postcss: { plugins: [] } },
+      build: { outDir: 'dist' },
+    } as ResolvedConfig)
+
+    await sourcePlugin.buildStart?.call(sourcePlugin as any, {} as any)
+
+    expect(resolveScanMock).toHaveBeenCalled()
   }, TEST_TIMEOUT_MS)
 
   it('drops raw preprocessor source style assets that Vite exposes during watch', async () => {

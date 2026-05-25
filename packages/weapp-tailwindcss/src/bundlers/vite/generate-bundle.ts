@@ -187,6 +187,7 @@ export function createGenerateBundleHook(context: GenerateBundleContext) {
     } = opts
     const generatorOptions = normalizeWeappTailwindcssGeneratorOptions(opts.generator)
     const isWebGeneratorTarget = generatorOptions.target === 'web'
+    const shouldGenerateWebCssByGenerator = isWebGeneratorTarget && runtimeState.twPatcher.majorVersion === 3
     const { getCssHandlerOptions, getCssUserHandlerOptions } = cssHandlerOptions
 
     await runtimeState.readyPromise
@@ -263,7 +264,7 @@ export function createGenerateBundleHook(context: GenerateBundleContext) {
       && !forceRuntimeRefreshByEnv
       && !disableV3OxideSourceRuntime
     const runtimeStart = performance.now()
-    const runtime = isWebGeneratorTarget
+    const runtime = isWebGeneratorTarget && !shouldGenerateWebCssByGenerator
       ? new Set<string>()
       : useV3OxideSourceRuntime
         ? await ensureBundleRuntimeClassSet(snapshot, forceRuntimeRefreshByEnv, {
@@ -463,7 +464,7 @@ export function createGenerateBundleHook(context: GenerateBundleContext) {
           debug('css skip vite-processed asset: %s', outputFile)
           continue
         }
-        if (isWebGeneratorTarget) {
+        if (isWebGeneratorTarget && !shouldGenerateWebCssByGenerator) {
           applyCssResult(rawSource)
           markCssAssetProcessed?.(originalSource, outputFile)
           onUpdate(outputFile, rawSource, rawSource)
@@ -556,6 +557,12 @@ export function createGenerateBundleHook(context: GenerateBundleContext) {
                   metrics.css.transformed++
                   debug('css handle via tailwind v%s engine(%s): %s', runtimeState.twPatcher.majorVersion, generated.target, outputFile)
                   return generated.css
+                }
+                if (isWebGeneratorTarget) {
+                  metrics.css.elapsed += measureElapsed(start)
+                  metrics.css.transformed++
+                  debug('css preserve web target: %s', outputFile)
+                  return rawSource
                 }
                 const { css } = await styleHandler(rawSource, getCssHandlerOptions(file))
                 if (debugCssDiff) {

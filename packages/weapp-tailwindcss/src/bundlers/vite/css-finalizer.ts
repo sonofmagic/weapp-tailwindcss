@@ -85,7 +85,7 @@ function shouldGenerateCssByGenerator(
   processed: boolean,
 ) {
   const generatorOptions = normalizeWeappTailwindcssGeneratorOptions(opts.generator)
-  if (generatorOptions.target === 'web') {
+  if (generatorOptions.target === 'web' && opts.twPatcher.majorVersion !== 3) {
     return false
   }
   if (
@@ -223,7 +223,11 @@ export function createViteCssFinalizerOutputPlugin(context: CssFinalizerContext)
                 debug,
               })
             : undefined
-          const nextCss = generated?.css ?? (await opts.styleHandler(rawSource, cssHandlerOptions)).css
+          const nextCss = generated?.css ?? (
+            generatorOptions.target === 'web'
+              ? rawSource
+              : (await opts.styleHandler(rawSource, cssHandlerOptions)).css
+          )
           if (generated) {
             registerGeneratorDependencies(this, generated.dependencies)
             debug('css finalizer generated result: %s bytes=%d', file, nextCss.length)
