@@ -183,8 +183,8 @@ exports[`vite test > vite common build 3`] = `
     <title></title>
     <!--preload-links-->
     <!--app-context-->
-    <script type="module" crossorigin src="/assets/index-k_S3_-De.js"></script>
-    <link rel="stylesheet" crossorigin href="/assets/index-eab8MrC3.css" />
+    <script type="module" crossorigin src="/assets/index-[hash].js"></script>
+    <link rel="stylesheet" crossorigin href="/assets/index-[hash].css" />
   </head>
 
   <body>
@@ -335,8 +335,8 @@ exports[`vite test > vite common build twice for cache 3`] = `
     <title></title>
     <!--preload-links-->
     <!--app-context-->
-    <script type="module" crossorigin src="/assets/index-k_S3_-De.js"></script>
-    <link rel="stylesheet" crossorigin href="/assets/index-eab8MrC3.css" />
+    <script type="module" crossorigin src="/assets/index-[hash].js"></script>
+    <link rel="stylesheet" crossorigin href="/assets/index-[hash].css" />
   </head>
 
   <body>
@@ -487,8 +487,8 @@ exports[`vite test > vite common build twice for cache 6`] = `
     <title></title>
     <!--preload-links-->
     <!--app-context-->
-    <script type="module" crossorigin src="/assets/index-k_S3_-De.js"></script>
-    <link rel="stylesheet" crossorigin href="/assets/index-eab8MrC3.css" />
+    <script type="module" crossorigin src="/assets/index-[hash].js"></script>
+    <link rel="stylesheet" crossorigin href="/assets/index-[hash].css" />
   </head>
 
   <body>
@@ -639,8 +639,8 @@ exports[`vite test > vite common build with rem2rpx 3`] = `
     <title></title>
     <!--preload-links-->
     <!--app-context-->
-    <script type="module" crossorigin src="/assets/index-k_S3_-De.js"></script>
-    <link rel="stylesheet" crossorigin href="/assets/index-eab8MrC3.css" />
+    <script type="module" crossorigin src="/assets/index-[hash].js"></script>
+    <link rel="stylesheet" crossorigin href="/assets/index-[hash].css" />
   </head>
 
   <body>
@@ -684,8 +684,8 @@ exports[`vite test > vite disabled build 3`] = `
     <title></title>
     <!--preload-links-->
     <!--app-context-->
-    <script type="module" crossorigin src="/assets/index-k_S3_-De.js"></script>
-    <link rel="stylesheet" crossorigin href="/assets/index-eab8MrC3.css" />
+    <script type="module" crossorigin src="/assets/index-[hash].js"></script>
+    <link rel="stylesheet" crossorigin href="/assets/index-[hash].css" />
   </head>
 
   <body>

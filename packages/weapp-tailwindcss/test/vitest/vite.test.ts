@@ -89,9 +89,15 @@ async function assertSnap(
       const r = await prettier.format(output[2].source.toString(), {
         parser: 'html',
       })
-      expect(r).toMatchSnapshot()
+      expect(normalizeHtmlAssetHashes(r)).toMatchSnapshot()
     }
   }
+}
+
+function normalizeHtmlAssetHashes(html: string) {
+  return html
+    .replace(/\/assets\/index-[A-Za-z0-9_-]+\.js/g, '/assets/index-[hash].js')
+    .replace(/\/assets\/index-[A-Za-z0-9_-]+\.css/g, '/assets/index-[hash].css')
 }
 
 function htmlMatcher(p: string) {

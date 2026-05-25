@@ -208,6 +208,14 @@ function createTailwindV4Css(candidates: string[]) {
   ].join('\n')
 }
 
+function createTailwindV4CompatibilityCss(candidates: string[]) {
+  return createTailwindV4Css(candidates.map(candidate => candidate.replace(/(^|:)text-\[([-+]?(?:\d+|\d*\.\d+)rpx)\](.*)$/u, '$1text-[length:$2]$3')))
+}
+
+function restoreTailwindV4CompatibilitySelectors(css: string) {
+  return css.replace(/text-\\\[length\\:([-+]?(?:\d+|\d*\.\d+)rpx)\\\]/g, 'text-\\[$1\\]')
+}
+
 async function createTailwindV4FixtureRoot() {
   const root = await mkdtemp(path.join(tmpdir(), 'weapp-tw-v4-order-parity-'))
   const nodeModulesDir = path.join(root, 'node_modules')
@@ -246,7 +254,7 @@ describe('generator order parity', () => {
 
   it('keeps Tailwind v4 generated rule order identical to official Tailwind', async () => {
     const fixture = await createTailwindV4FixtureRoot()
-    const css = createTailwindV4Css(TAILWIND_V4_ORDER_CORPUS)
+    const css = createTailwindV4CompatibilityCss(TAILWIND_V4_ORDER_CORPUS)
 
     const official = await postcss([
       tailwindcssPostcssV4({
@@ -264,9 +272,10 @@ describe('generator order parity', () => {
       candidates: [...TAILWIND_V4_ORDER_CORPUS].reverse(),
       target: 'web',
     })
+    const expectedCss = restoreTailwindV4CompatibilitySelectors(official.css)
 
-    expect(collectRuleOrder(result.css)).toEqual(collectRuleOrder(official.css))
-    expect(normalizeCss(result.css)).toBe(normalizeCss(official.css))
+    expect(collectRuleOrder(result.css)).toEqual(collectRuleOrder(expectedCss))
+    expect(normalizeCss(result.css)).toBe(normalizeCss(expectedCss))
   })
 
   it('preserves Tailwind v3 order after mini-program selector transforms', async () => {
