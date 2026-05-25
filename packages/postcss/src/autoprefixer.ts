@@ -13,7 +13,11 @@ export const WEAPP_AUTOPREFIXER_BROWSERS = [
 ]
 
 const WEAPP_AUTOPREFIXER_DEFAULT_OPTIONS: AutoprefixerOptions = {
+  add: true,
   flexbox: false,
+  grid: false,
+  remove: true,
+  supports: false,
 }
 
 const AUTOPREFIXER_PLUGIN_NAME = 'autoprefixer'
