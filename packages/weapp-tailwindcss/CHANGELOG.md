@@ -1,5 +1,15 @@
 # weapp-tailwindcss
 
+## 5.0.0-next.20
+
+### Patch Changes
+
+- 🐛 **修复 Tailwind CSS v3 generator 模式下 `@layer` 自定义组件和工具类仅在 CSS `@apply` 中引用时被裁剪的问题，并补齐 v3 指令与函数的回归覆盖。** [#874](https://github.com/sonofmagic/weapp-tailwindcss/pull/874) by @github-actions
+
+- 🐛 **收敛小程序 CSS 的 `-webkit-` 前缀输出，默认仅保留 `background-clip: text`、`mask-*`、`box-orient` 等小程序场景需要的兼容写法，并移除 `text-decoration`、`filter/backdrop-filter`、`transform/animation/transition` 等浏览器冗余前缀。** [#874](https://github.com/sonofmagic/weapp-tailwindcss/pull/874) by @github-actions
+- 📦 **Dependencies** [`8575242`](https://github.com/sonofmagic/weapp-tailwindcss/commit/85752425b89b1224e11c4f3dd81a1ae144397be2)
+  → `@weapp-tailwindcss/postcss@2.2.1-next.5`
+
 ## 5.0.0-next.19
 
 ### Patch Changes
