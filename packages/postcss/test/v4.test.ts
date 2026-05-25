@@ -774,4 +774,26 @@ page{--status-bar-height:25px;--top-window-height:0px;--window-top:0px;--window-
     expect(css).not.toContain('transition-property: color, text-decoration-color, transform, filter, backdrop-filter, -webkit-text-decoration-color')
     expect(css).not.toContain('transition: transform .2s, -webkit-transform .2s')
   })
+
+  it('deduplicates transition-property declarations after mini-program prefix cleanup', async () => {
+    const styleHandler = createStyleHandler({
+      isMainChunk: true,
+      majorVersion: 3,
+    })
+    const { css } = await styleHandler([
+      '.transition {',
+      '  transition-property: color, background-color, border-color, text-decoration-color, fill, stroke, opacity, box-shadow, transform, filter, backdrop-filter;',
+      '  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);',
+      '  transition-duration: 150ms;',
+      '}',
+    ].join('\n'))
+    const transitionRule = css.match(/\.transition\s*\{[\s\S]*?\}/)?.[0] ?? ''
+
+    expect(transitionRule.match(/transition-property:/g) ?? []).toHaveLength(1)
+    expect(transitionRule).toContain('transition-property: color, background-color, border-color, text-decoration-color, fill, stroke, opacity, box-shadow, transform, filter, backdrop-filter')
+    expect(transitionRule).not.toContain('-webkit-text-decoration-color')
+    expect(transitionRule).not.toContain('-webkit-transform')
+    expect(transitionRule).not.toContain('-webkit-filter')
+    expect(transitionRule).not.toContain('-webkit-backdrop-filter')
+  })
 })

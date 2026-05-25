@@ -70,6 +70,101 @@ function hasVariableReference(value: string) {
   return value.includes('var(')
 }
 
+function splitTopLevelCommaList(value: string) {
+  const parts: string[] = []
+  let start = 0
+  let depth = 0
+  let quote: string | undefined
+  let escaped = false
+
+  for (let i = 0; i < value.length; i++) {
+    const char = value[i]
+    if (escaped) {
+      escaped = false
+      continue
+    }
+    if (char === '\\') {
+      escaped = true
+      continue
+    }
+    if (quote) {
+      if (char === quote) {
+        quote = undefined
+      }
+      continue
+    }
+    if (char === '"' || char === '\'') {
+      quote = char
+      continue
+    }
+    if (char === '(') {
+      depth++
+      continue
+    }
+    if (char === ')') {
+      depth = Math.max(0, depth - 1)
+      continue
+    }
+    if (char === ',' && depth === 0) {
+      parts.push(value.slice(start, i))
+      start = i + 1
+    }
+  }
+
+  parts.push(value.slice(start))
+  return parts
+}
+
+function getTransitionPropertySet(value: string) {
+  const items = splitTopLevelCommaList(value)
+    .map(item => item.trim().toLowerCase())
+    .filter(Boolean)
+  return items.length > 0 ? new Set(items) : undefined
+}
+
+function isSubsetOfSet(subset: Set<string>, superset: Set<string>) {
+  for (const item of subset) {
+    if (!superset.has(item)) {
+      return false
+    }
+  }
+  return true
+}
+
+export function removeRedundantTransitionPropertyFallbacks(rule: Rule) {
+  const declarations = rule.nodes.filter((node): node is Declaration =>
+    node.type === 'decl' && node.prop.toLowerCase() === 'transition-property',
+  )
+  const entries = declarations.map(decl => ({
+    decl,
+    items: getTransitionPropertySet(decl.value),
+  }))
+
+  for (let i = 0; i < entries.length; i++) {
+    const entry = entries[i]
+    if (!entry?.items) {
+      continue
+    }
+
+    for (let j = i + 1; j < entries.length; j++) {
+      const next = entries[j]
+      if (!next?.items) {
+        continue
+      }
+      if (next.items.size === entry.items.size && isSubsetOfSet(entry.items, next.items)) {
+        next.decl.remove()
+        entries.splice(j, 1)
+        j--
+        continue
+      }
+      if (next.items.size > entry.items.size && isSubsetOfSet(entry.items, next.items)) {
+        entry.decl.remove()
+        break
+      }
+    }
+  }
+}
+
 // reorderVariableDeclarations 确保普通声明在变量声明之前，避免被变量覆盖
 export function reorderVariableDeclarations(rule: Rule) {
   const groupedByProp = new Map<string, Declaration[]>()
@@ -196,6 +291,8 @@ export function dedupeDeclarations(rule: Rule) {
       literalSeen.set(canonical, node)
     }
   }
+
+  removeRedundantTransitionPropertyFallbacks(rule)
 
   // reorderVariableDeclarations(rule)
 }

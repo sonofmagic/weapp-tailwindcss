@@ -9,7 +9,7 @@ import { shouldRemoveEmptyRuleForUniAppX } from '../compat/uni-app-x'
 import { postcssPlugin } from '../constants'
 import { getFallbackRemove } from '../selectorParser'
 import { appendRuleSelector } from '../utils/selector-guard'
-import { dedupeDeclarations } from './post/decl-dedupe'
+import { dedupeDeclarations, removeRedundantTransitionPropertyFallbacks } from './post/decl-dedupe'
 import { createFallbackPlaceholderCleaner, createRootSpecificityCleaner } from './post/specificity-cleaner'
 // 可选依赖：import valueParser from 'postcss-value-parser'
 
@@ -141,6 +141,9 @@ const postcssWeappTailwindcssPostPlugin: PostcssWeappTailwindcssRenamePlugin = (
     p.OnceExit = (root) => {
       root.walkDecls((decl) => {
         normalizeMiniProgramPrefixedDeclaration(decl)
+      })
+      root.walkRules((rule) => {
+        removeRedundantTransitionPropertyFallbacks(rule)
       })
       root.walkAtRules((atRule) => {
         removeUnsupportedMiniProgramPrefixedAtRule(atRule)

@@ -188,6 +188,23 @@ describe('tailwindcss v3 engine', () => {
     expect(result.css).not.toContain('.supports-p3')
   })
 
+  it('deduplicates transition-property declarations in mini-program output', async () => {
+    const source = await resolveTailwindV3Source({
+      css: '@tailwind utilities;',
+      base: process.cwd(),
+      config: undefined,
+    })
+    const engine = createTailwindV3Engine(source)
+
+    const result = await engine.generate({
+      candidates: ['transition'],
+    })
+    const transitionRule = result.css.match(/\.transition\s*\{[\s\S]*?\}/)?.[0] ?? ''
+
+    expect(transitionRule.match(/transition-property:/g) ?? []).toHaveLength(1)
+    expect(transitionRule).toContain('transition-property: color, background-color, border-color, text-decoration-color, fill, stroke, opacity, box-shadow, transform, filter, backdrop-filter')
+  })
+
   it('keeps web output as Tailwind v3 browser css', async () => {
     const source = await resolveTailwindV3Source({
       css: '@tailwind base; @tailwind utilities;',
