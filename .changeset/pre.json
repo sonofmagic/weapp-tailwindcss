@@ -178,6 +178,7 @@
     "warm-v4-incremental-cache",
     "watch-hmr-demo-apps-coverage",
     "weapp-tailwindcss-plugin-alias",
+    "web-generator-framework-env",
     "web-v4-vite-css-target"
   ]
 }

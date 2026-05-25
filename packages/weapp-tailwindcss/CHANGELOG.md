@@ -1,5 +1,11 @@
 # weapp-tailwindcss
 
+## 5.0.0-next.22
+
+### Patch Changes
+
+- 🐛 **在 uni-app、uni-app x、Mpx 与 Taro 的 H5/Web 构建环境中，生成器默认目标会自动切换为 Web，同时保留显式 `generator.target` 配置的优先级。** [#876](https://github.com/sonofmagic/weapp-tailwindcss/pull/876) by @github-actions
+
 ## 5.0.0-next.21
 
 ### Patch Changes
