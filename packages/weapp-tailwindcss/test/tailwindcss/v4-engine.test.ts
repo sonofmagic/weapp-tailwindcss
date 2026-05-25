@@ -65,16 +65,21 @@ describe('tailwindcss v4 engine', () => {
     const engine = createTailwindV4Engine(source)
 
     const result = await engine.generate({
-      candidates: ['text-[55rpx]'],
+      candidates: ['text-[55rpx]', 'text-[32.4rpx]'],
       styleOptions: {
         isMainChunk: false,
       },
     })
 
-    expect(result.classSet).toEqual(new Set(['text-[55rpx]']))
+    expect(result.classSet).toEqual(new Set(['text-[55rpx]', 'text-[32.4rpx]']))
     expect(result.css).toContain('.text-_b55rpx_B')
     expect(result.css).toContain('font-size: 55rpx')
+    expect(result.css).toContain('.text-_b32_d4rpx_B')
+    expect(result.css).toContain('font-size: 32.4rpx')
+    expect(result.css).not.toContain('.text-_blength_c32_d4rpx_B')
+    expect(result.css).not.toContain('text-\\[length\\:')
     expect(result.css).not.toContain('color: 55rpx')
+    expect(result.css).not.toContain('color: 32.4rpx')
 
     const transformed = await transformTailwindV4CssToWeapp(
       '.text-\\[55rpx\\] { color: 55rpx; }',
@@ -94,18 +99,22 @@ describe('tailwindcss v4 engine', () => {
     const engine = createTailwindV4Engine(source)
 
     const result = await engine.generate({
-      candidates: ['text-[55rpx]', 'hover:text-[66rpx]'],
+      candidates: ['text-[55rpx]', 'text-[32.4rpx]', 'hover:text-[66rpx]', 'hover:text-[32.4rpx]'],
       target: 'web',
     })
 
-    expect(result.classSet).toEqual(new Set(['text-[55rpx]', 'hover:text-[66rpx]']))
-    expect(result.rawCandidates).toEqual(new Set(['text-[55rpx]', 'hover:text-[66rpx]']))
+    expect(result.classSet).toEqual(new Set(['text-[55rpx]', 'text-[32.4rpx]', 'hover:text-[66rpx]', 'hover:text-[32.4rpx]']))
+    expect(result.rawCandidates).toEqual(new Set(['text-[55rpx]', 'text-[32.4rpx]', 'hover:text-[66rpx]', 'hover:text-[32.4rpx]']))
     expect(result.css).toContain('.text-\\[55rpx\\]')
     expect(result.css).toContain('font-size: 55rpx')
+    expect(result.css).toContain('.text-\\[32\\.4rpx\\]')
+    expect(result.css).toContain('font-size: 32.4rpx')
     expect(result.css).toContain('.hover\\:text-\\[66rpx\\]')
     expect(result.css).toContain('font-size: 66rpx')
+    expect(result.css).toContain('.hover\\:text-\\[32\\.4rpx\\]')
     expect(result.css).not.toContain('text-\\[length\\:')
     expect(result.css).not.toContain('color: 55rpx')
+    expect(result.css).not.toContain('color: 32.4rpx')
     expect(result.css).not.toContain('color: 66rpx')
   })
 
@@ -152,7 +161,7 @@ describe('tailwindcss v4 engine', () => {
       },
     })
     const second = await engine.generate({
-      candidates: ['text-[88rpx]', 'text-[188rpx]'],
+      candidates: ['text-[88rpx]', 'text-[188rpx]', 'text-[32.4rpx]'],
       incrementalCache: true,
       scanSources: false,
       styleOptions: {
@@ -161,13 +170,19 @@ describe('tailwindcss v4 engine', () => {
     })
 
     expect(first.classSet).toEqual(new Set(['text-[88rpx]']))
-    expect(second.classSet).toEqual(new Set(['text-[88rpx]', 'text-[188rpx]']))
+    expect(second.classSet).toEqual(new Set(['text-[88rpx]', 'text-[188rpx]', 'text-[32.4rpx]']))
     expect(second.css).toContain('.text-_b88rpx_B')
     expect(second.css).toContain('font-size: 88rpx')
     expect(second.css).toContain('.text-_b188rpx_B')
     expect(second.css).toContain('font-size: 188rpx')
+    expect(second.css).toContain('.text-_b32_d4rpx_B')
+    expect(second.css).toContain('font-size: 32.4rpx')
+    expect(second.css).not.toContain('.text-_blength_c32_d4rpx_B')
     expect(second.incrementalCss).toContain('.text-_b188rpx_B')
     expect(second.incrementalCss).toContain('font-size: 188rpx')
+    expect(second.incrementalCss).toContain('.text-_b32_d4rpx_B')
+    expect(second.incrementalCss).toContain('font-size: 32.4rpx')
+    expect(second.incrementalCss).not.toContain('.text-_blength_c32_d4rpx_B')
     expect(second.incrementalCss).not.toContain('.text-_b88rpx_B')
     expect(second.css.match(/\.text-_b88rpx_B/g) ?? []).toHaveLength(1)
     expect(second.css.indexOf('.text-_b188rpx_B')).toBeGreaterThan(second.css.indexOf('.text-_b88rpx_B'))
@@ -187,23 +202,29 @@ describe('tailwindcss v4 engine', () => {
       target: 'web',
     })
     const second = await engine.generate({
-      candidates: ['text-[88rpx]', 'text-[188rpx]'],
+      candidates: ['text-[88rpx]', 'text-[188rpx]', 'text-[32.4rpx]'],
       incrementalCache: true,
       scanSources: false,
       target: 'web',
     })
 
     expect(first.classSet).toEqual(new Set(['text-[88rpx]']))
-    expect(second.classSet).toEqual(new Set(['text-[88rpx]', 'text-[188rpx]']))
+    expect(second.classSet).toEqual(new Set(['text-[88rpx]', 'text-[188rpx]', 'text-[32.4rpx]']))
     expect(second.css).toContain('.text-\\[88rpx\\]')
     expect(second.css).toContain('font-size: 88rpx')
     expect(second.css).toContain('.text-\\[188rpx\\]')
     expect(second.css).toContain('font-size: 188rpx')
+    expect(second.css).toContain('.text-\\[32\\.4rpx\\]')
+    expect(second.css).toContain('font-size: 32.4rpx')
     expect(second.incrementalCss).toContain('.text-\\[188rpx\\]')
     expect(second.incrementalCss).toContain('font-size: 188rpx')
+    expect(second.incrementalCss).toContain('.text-\\[32\\.4rpx\\]')
+    expect(second.incrementalCss).toContain('font-size: 32.4rpx')
     expect(second.css).not.toContain('text-\\[length\\:')
+    expect(second.incrementalCss).not.toContain('text-\\[length\\:')
     expect(second.css).not.toContain('color: 88rpx')
     expect(second.css).not.toContain('color: 188rpx')
+    expect(second.css).not.toContain('color: 32.4rpx')
   })
 
   it('remembers requested candidates that do not generate css in the v4 incremental cache', async () => {

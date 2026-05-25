@@ -24,7 +24,7 @@ type TailwindV4ResolvedScanSources = TailwindV4GenerateOptions['scanSources']
 const incrementalGenerateCache = new Map<string, TailwindV4IncrementalGenerateCacheEntry>()
 const incrementalGenerateTaskCache = new Map<string, Promise<Awaited<ReturnType<TailwindV4Engine['generate']>>>>()
 const BARE_RPX_TEXT_CANDIDATE_RE = /(^|:)text-\[([-+]?(?:\d+|\d*\.\d+)rpx)\](.*)$/u
-const RPX_TEXT_LENGTH_SELECTOR_RE = /text-\\\[length\\:([-+]?(?:\d+|\d*\.\d+)rpx)\\\]/g
+const RPX_TEXT_LENGTH_SELECTOR_RE = /text-\\\[length\\:((?:\\[.+-]|[+\-.\d])+rpx)\\\]/g
 const TAILWIND_V4_DEFAULT_IGNORED_SOURCE_PATTERNS = [
   '**/.git/**',
   '**/.hg/**',
@@ -131,6 +131,10 @@ function restoreRpxTextCandidates(candidates: Iterable<string>, restoreCandidate
   return new Set([...candidates].map(candidate => restoreCandidates.get(candidate) ?? candidate))
 }
 
+function normalizeCssEscapedRpxSelectorValue(value: string) {
+  return value.replace(/\\([.+-])/g, '$1')
+}
+
 function restoreRpxTextCssSelectors(css: string, restoreCandidates: ReadonlyMap<string, string>) {
   if (restoreCandidates.size === 0 || !css.includes('text-\\[length\\:')) {
     return css
@@ -144,7 +148,7 @@ function restoreRpxTextCssSelectors(css: string, restoreCandidates: ReadonlyMap<
       .filter((value): value is string => Boolean(value)),
   )
   return css.replace(RPX_TEXT_LENGTH_SELECTOR_RE, (match, value: string) => {
-    return restoredValues.has(value) ? `text-\\[${value}\\]` : match
+    return restoredValues.has(normalizeCssEscapedRpxSelectorValue(value)) ? `text-\\[${value}\\]` : match
   })
 }
 
