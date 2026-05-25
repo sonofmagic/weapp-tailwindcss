@@ -6,7 +6,7 @@ Generator CSS files: app.wxss, index.wxss, index.wxss, index.wxss, index.wxss, i
 
 | Bytes | Selectors | @supports | :hover | Tailwind banner | Raw arbitrary selector | Weapp escaped arbitrary selector |
 | ---: | ---: | --- | --- | --- | --- | --- |
-| 69861 | 262 | false | false | false | false | true |
+| 69688 | 262 | false | false | false | false | true |
 
 ## Generator CSS
 
@@ -839,13 +839,11 @@ text,
     var(--tw-backdrop-invert) var(--tw-backdrop-opacity) var(--tw-backdrop-saturate) var(--tw-backdrop-sepia);
 }
 .transition {
-  transition-property: color, background-color, border-color, fill, stroke, opacity, box-shadow;
   transition-property: color, background-color, border-color, text-decoration-color, fill, stroke, opacity, box-shadow, transform, filter, backdrop-filter;
   transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
   transition-duration: 150ms;
 }
 .transition-colors {
-  transition-property: color, background-color, border-color, fill, stroke;
   transition-property: color, background-color, border-color, text-decoration-color, fill, stroke;
   transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
   transition-duration: 150ms;

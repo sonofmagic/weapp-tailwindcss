@@ -6,7 +6,7 @@ Generator CSS files: app.wxss, a.wxss, b.wxss, index.wxss, index.wxss, index.wxs
 
 | Bytes | Selectors | @supports | :hover | Tailwind banner | Raw arbitrary selector | Weapp escaped arbitrary selector |
 | ---: | ---: | --- | --- | --- | --- | --- |
-| 434896 | 3105 | false | false | false | false | true |
+| 434799 | 3105 | false | false | false | false | true |
 
 ## Generator CSS
 
@@ -1420,7 +1420,6 @@ wx-root-portal-content {
     var(--tw-backdrop-invert) var(--tw-backdrop-opacity) var(--tw-backdrop-saturate) var(--tw-backdrop-sepia);
 }
 .transition {
-  transition-property: color, background-color, border-color, fill, stroke, opacity, box-shadow;
   transition-property: color, background-color, border-color, text-decoration-color, fill, stroke, opacity, box-shadow, transform, filter, backdrop-filter;
   transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
   transition-duration: 150ms;

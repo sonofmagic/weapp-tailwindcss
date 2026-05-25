@@ -16,11 +16,11 @@
 | taro-vite-react-tailwindcss-v4 | demo | 通过 | `taro-vite-react-tailwindcss-v4/dist/app.wxss` (+4) | 11916 | 21 | 否 | 否 | 否 | 否 | 是 |
 | taro-webpack-vue3-tailwindcss-v3 | demo | 通过 | `taro-webpack-vue3-tailwindcss-v3/dist/app.wxss` (+3) | 5728 | 46 | 否 | 否 | 否 | 否 | 是 |
 | taro-webpack-vue3-tailwindcss-v4 | demo | 通过 | `taro-webpack-vue3-tailwindcss-v4/dist/app.wxss` (+3) | 4335 | 15 | 否 | 否 | 否 | 否 | 是 |
-| taro-vite-vue3-tailwindcss-v3 | demo | 通过 | `taro-vite-vue3-tailwindcss-v3/dist/app.wxss` (+3) | 15370 | 39 | 否 | 否 | 否 | 否 | 是 |
+| taro-vite-vue3-tailwindcss-v3 | demo | 通过 | `taro-vite-vue3-tailwindcss-v3/dist/app.wxss` (+3) | 15273 | 39 | 否 | 否 | 否 | 否 | 是 |
 | taro-vite-vue3-tailwindcss-v4 | demo | 通过 | `taro-vite-vue3-tailwindcss-v4/dist/app.wxss` (+3) | 13526 | 35 | 否 | 否 | 否 | 否 | 是 |
-| uni-app-vite-tailwindcss-v3 | demo | 通过 | `uni-app-vite-tailwindcss-v3/dist/build/mp-weixin/app.wxss` (+11) | 434896 | 3105 | 否 | 否 | 否 | 否 | 是 |
+| uni-app-vite-tailwindcss-v3 | demo | 通过 | `uni-app-vite-tailwindcss-v3/dist/build/mp-weixin/app.wxss` (+11) | 434799 | 3105 | 否 | 否 | 否 | 否 | 是 |
 | uni-app-vite-tailwindcss-v4 | demo | 通过 | `uni-app-vite-tailwindcss-v4/dist/build/mp-weixin/app.wxss` (+4) | 39382 | 233 | 否 | 否 | 否 | 否 | 是 |
-| weapp-vite-tailwindcss-v3 | demo | 通过 | `weapp-vite-tailwindcss-v3/dist/app.wxss` (+5) | 69861 | 262 | 否 | 否 | 否 | 否 | 是 |
+| weapp-vite-tailwindcss-v3 | demo | 通过 | `weapp-vite-tailwindcss-v3/dist/app.wxss` (+5) | 69688 | 262 | 否 | 否 | 否 | 否 | 是 |
 | weapp-vite-tailwindcss-v4 | demo | 通过 | `weapp-vite-tailwindcss-v4/dist/app.wxss` (+5) | 8370 | 47 | 否 | 否 | 否 | 否 | 是 |
 
 ## 说明
