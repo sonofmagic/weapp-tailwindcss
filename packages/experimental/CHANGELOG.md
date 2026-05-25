@@ -1,5 +1,13 @@
 # @weapp-tailwindcss/experimental
 
+## 0.0.2-next.0
+
+### Patch Changes
+
+- 🐛 **将小程序 CSS 清理、收尾与兼容处理集中到 `@weapp-tailwindcss/postcss`，主包仅保留兼容导出与构建器编排；同时把实验性的 Lightning CSS 样式处理迁移到 `@weapp-tailwindcss/experimental/lightningcss`。** [`649d229`](https://github.com/sonofmagic/weapp-tailwindcss/commit/649d2296a164a301ec7d40de093d2e1ccb8e60f1) by @sonofmagic
+- 📦 **Dependencies** [`649d229`](https://github.com/sonofmagic/weapp-tailwindcss/commit/649d2296a164a301ec7d40de093d2e1ccb8e60f1)
+  → `@weapp-tailwindcss/postcss@3.0.0-next.6`
+
 ## 0.0.1
 
 ### Patch Changes

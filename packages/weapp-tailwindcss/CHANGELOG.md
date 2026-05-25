@@ -1,5 +1,15 @@
 # weapp-tailwindcss
 
+## 5.0.0-next.21
+
+### Patch Changes
+
+- 🐛 **将小程序 CSS 清理、收尾与兼容处理集中到 `@weapp-tailwindcss/postcss`，主包仅保留兼容导出与构建器编排；同时把实验性的 Lightning CSS 样式处理迁移到 `@weapp-tailwindcss/experimental/lightningcss`。** [`649d229`](https://github.com/sonofmagic/weapp-tailwindcss/commit/649d2296a164a301ec7d40de093d2e1ccb8e60f1) by @sonofmagic
+
+- 🐛 **修复小程序 CSS 前缀清理后 `transition-property` 声明重复的问题，避免 Tailwind CSS v3 的 `.transition` 输出保留多条等价声明。** [`b9e28da`](https://github.com/sonofmagic/weapp-tailwindcss/commit/b9e28da65561c495dcc430346a5565211329cfbe) by @sonofmagic
+- 📦 **Dependencies** [`649d229`](https://github.com/sonofmagic/weapp-tailwindcss/commit/649d2296a164a301ec7d40de093d2e1ccb8e60f1)
+  → `@weapp-tailwindcss/postcss@3.0.0-next.6`
+
 ## 5.0.0-next.20
 
 ### Patch Changes

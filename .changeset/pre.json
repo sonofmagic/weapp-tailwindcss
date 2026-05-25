@@ -88,6 +88,7 @@
   "changesets": [
     "bare-arbitrary-values",
     "benchmark-published-baseline",
+    "centralize-postcss-style-cleanup",
     "clean-weapp-tailwindcss-unused-code",
     "control-babel-parser-cache",
     "default-generator-mode-v5",
@@ -108,6 +109,7 @@
     "fix-rpx-arbitrary-length",
     "fix-src-type-strictness",
     "fix-tailwind-source-negation",
+    "fix-transition-property-dedupe",
     "fix-uni-app-vite-dynamic-classes",
     "fix-uni-vite-v4-hmr-css-source",
     "fix-v3-layer-apply-candidates",
@@ -140,6 +142,7 @@
     "remove-webpack4-postcss7",
     "soft-v3-v4-autoprefixer-default",
     "source-candidates-use-patch",
+    "steady-mini-program-postcss-refactor",
     "steady-weapp-base-theme-order",
     "strict-demo-hmr-budget",
     "tailwind-v3-clean-install-runtime",
