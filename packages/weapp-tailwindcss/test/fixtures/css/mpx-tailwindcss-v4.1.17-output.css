@@ -303,7 +303,6 @@ view,text,:after,:before {
   color: var(--color-white);
 }
 .underline {
-  -webkit-text-decoration-line: underline;
           text-decoration-line: underline;
 }
 .opacity-50 {

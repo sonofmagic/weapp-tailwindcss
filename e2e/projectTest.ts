@@ -85,8 +85,7 @@ function shouldSkipAutomator(entry: ProjectEntry) {
 
 async function expectProjectSnapshot(suite: string, projectName: string, fileName: string, content: string) {
   const snapshotPath = await resolveSnapshotFile(__dirname, suite, projectName, fileName)
-  const expected = await fs.readFile(snapshotPath, 'utf8')
-  expect(normalizeProjectSnapshotContent(content)).toBe(normalizeProjectSnapshotContent(expected))
+  await expect(normalizeProjectSnapshotContent(content)).toMatchFileSnapshot(snapshotPath)
 }
 
 function normalizeProjectSnapshotContent(source: string) {

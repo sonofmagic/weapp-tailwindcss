@@ -361,8 +361,7 @@ async function expectReportSnapshot(report: AppsGeneratorCompareReportItem[]) {
 }
 
 async function expectNormalizedReportSnapshot(snapshotPath: string, content: string) {
-  const expected = await fs.readFile(snapshotPath, 'utf8')
-  expect(normalizeReportSnapshotText(content)).toBe(normalizeReportSnapshotText(expected))
+  await expect(normalizeReportSnapshotText(content)).toMatchFileSnapshot(snapshotPath)
 }
 
 function normalizeReportSnapshotText(source: string) {

@@ -6,7 +6,7 @@ Generator CSS files: app.wxss, styles/base.wxss, styles/components.wxss, styles/
 
 | Bytes | Selectors | @supports | :hover | Tailwind banner | Raw arbitrary selector | Weapp escaped arbitrary selector |
 | ---: | ---: | --- | --- | --- | --- | --- |
-| 194068 | 2879 | false | false | false | false | true |
+| 193591 | 2879 | false | false | false | false | true |
 
 ## Generator CSS
 
@@ -7863,7 +7863,6 @@ text,
   position: absolute;
   right: 0;
   top: 0;
-  -webkit-transform: scale(1.5);
   transform: scale(1.5);
 }
 ```
@@ -7919,9 +7918,7 @@ text,
   position: absolute;
   right: -50%;
   top: -50%;
-  -webkit-transform: scale(0.5);
   transform: scale(0.5);
-  -webkit-transform-origin: center;
   transform-origin: center;
 }
 .van-hairline--top:after {
@@ -9407,7 +9404,6 @@ text,
   position: absolute;
   right: 0;
   top: 0;
-  -webkit-transform: scale(1.5);
   transform: scale(1.5);
 }
 ```
@@ -9426,7 +9422,6 @@ text,
   position: absolute;
   right: 0;
   top: 0;
-  -webkit-transform: scale(1.5);
   transform: scale(1.5);
 }
 ```
@@ -9445,7 +9440,6 @@ text,
   position: absolute;
   right: 0;
   top: 0;
-  -webkit-transform: scale(1.5);
   transform: scale(1.5);
 }
 ```
@@ -9501,9 +9495,7 @@ text,
   position: absolute;
   right: -50%;
   top: -50%;
-  -webkit-transform: scale(0.5);
   transform: scale(0.5);
-  -webkit-transform-origin: center;
   transform-origin: center;
 }
 .van-hairline--top:after {
@@ -9577,9 +9569,7 @@ text,
   position: absolute;
   right: -50%;
   top: -50%;
-  -webkit-transform: scale(0.5);
   transform: scale(0.5);
-  -webkit-transform-origin: center;
   transform-origin: center;
 }
 .van-hairline--top:after {
@@ -9653,9 +9643,7 @@ text,
   position: absolute;
   right: -50%;
   top: -50%;
-  -webkit-transform: scale(0.5);
   transform: scale(0.5);
-  -webkit-transform-origin: center;
   transform-origin: center;
 }
 .van-hairline--top:after {
@@ -9729,9 +9717,7 @@ text,
   position: absolute;
   right: -50%;
   top: -50%;
-  -webkit-transform: scale(0.5);
   transform: scale(0.5);
-  -webkit-transform-origin: center;
   transform-origin: center;
 }
 .van-hairline--top:after {
