@@ -9,6 +9,7 @@ export {
 export {
   finalizeMiniProgramCss,
   hoistTailwindPreflightBase,
+  pruneMiniProgramGeneratedCss,
   removeUnsupportedAtSupports,
   removeUnsupportedCascadeLayers,
   removeUnsupportedMiniProgramAtRules,

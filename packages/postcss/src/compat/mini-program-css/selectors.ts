@@ -107,3 +107,14 @@ export function isUnsupportedBrowserSelector(selector: string) {
   return MINI_PROGRAM_UNSUPPORTED_BROWSER_SELECTORS.has(normalized)
     || MINI_PROGRAM_UNSUPPORTED_BROWSER_TAG_SELECTORS.has(normalized)
 }
+
+export function isMiniProgramPreflightSelector(selectors: string[]) {
+  return selectors.length > 0
+    && selectors.every(selector => MINI_PROGRAM_PREFLIGHT_SELECTORS.has(selector))
+    && selectors.some(selector => selector === '*' || selector === ':before' || selector === ':after' || selector === '::before' || selector === '::after')
+}
+
+export function isMiniProgramThemeScopeSelector(selectors: string[]) {
+  return selectors.length > 0
+    && selectors.every(selector => MINI_PROGRAM_THEME_SCOPE_SELECTORS.has(selector))
+}

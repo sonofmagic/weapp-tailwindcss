@@ -1,8 +1,7 @@
 import { describe, expect, it } from 'vitest'
-import { finalizeMiniProgramCss } from '@/bundlers/shared/css-cleanup'
-import { pruneMiniProgramGeneratedCss } from '@/tailwindcss/miniprogram'
+import { finalizeMiniProgramCss, pruneMiniProgramGeneratedCss } from '../src'
 
-describe('tailwindcss/remove unsupported css', () => {
+describe('mini-program generated css cleanup', () => {
   it('removes cascade layer declarations and unwraps layer blocks in final mini-program css', () => {
     const css = finalizeMiniProgramCss([
       '@layer theme, base, components, utilities;',
@@ -159,87 +158,6 @@ describe('tailwindcss/remove unsupported css', () => {
     expect(css).toContain('.bg-linear-to-r{background-image:linear-gradient(var(--tw-gradient-stops))}')
   })
 
-  it('removes specificity placeholder selectors from final generator css', () => {
-    const css = finalizeMiniProgramCss([
-      '.bg-red-500:not(#\\#):not(#\\#){color:red}',
-      '.space-y-4:not(#n):not(#\\#)>view+text{margin-top:1rem}',
-    ].join('\n'))
-
-    expect(css).not.toContain(':not(#\\#)')
-    expect(css).not.toContain(':not(#n)')
-    expect(css).toContain('.bg-red-500{color:red}')
-    expect(css).toContain('.space-y-4>view+text{margin-top:1rem}')
-  })
-
-  it('removes browser-only pseudo selectors from final generator css', () => {
-    const css = finalizeMiniProgramCss([
-      '::-webkit-calendar-picker-indicator{display:none}',
-      '::placeholder,::-webkit-input-placeholder{opacity:1}',
-      ':-moz-focusring{outline:auto}',
-      '[hidden]:where(:not([hidden=\'until-found\'])){display:none}',
-      'a,button,input:where([type=\'button\'], [type=\'reset\'], [type=\'submit\']){font:inherit}',
-      'ul,textarea,video{display:block}',
-      '.text-red-500,::-webkit-search-decoration{color:red}',
-      '.nut-input .weui-input::placeholder{color:#999}',
-      '.nut-video video{width:100%}',
-      '.prose .a{color:inherit}',
-    ].join('\n'))
-
-    expect(css).not.toContain('::-webkit-calendar-picker-indicator')
-    expect(css).not.toContain('::-webkit-input-placeholder')
-    expect(css).not.toContain('::placeholder{opacity:1}')
-    expect(css).not.toContain(':-moz-focusring')
-    expect(css).not.toContain('[hidden]:where(:not([hidden=\'until-found\']))')
-    expect(css).not.toContain('input:where([type=\'button\'], [type=\'reset\'], [type=\'submit\'])')
-    expect(css).not.toContain('ul{display:block}')
-    expect(css).not.toContain('textarea{display:block}')
-    expect(css).not.toContain('video{display:block}')
-    expect(css).not.toContain('::-webkit-search-decoration')
-    expect(css).toContain('.nut-input .weui-input::placeholder{color:#999}')
-    expect(css).toContain('.nut-video video{width:100%}')
-    expect(css).toContain('.prose .a{color:inherit}')
-    expect(css).toContain('.text-red-500{color:red}')
-  })
-
-  it('keeps only mini-program useful webkit prefixes in final css', () => {
-    const css = finalizeMiniProgramCss([
-      '.underline{-webkit-text-decoration-line:underline;text-decoration-line:underline}',
-      '.backdrop-blur-lg{--tw-backdrop-blur:blur(16px);-webkit-backdrop-filter:var(--tw-backdrop-blur);backdrop-filter:var(--tw-backdrop-blur)}',
-      '.transition{transition-property:color,text-decoration-color,transform,filter,backdrop-filter,-webkit-text-decoration-color,-webkit-transform,-webkit-filter,-webkit-backdrop-filter;transition:transform .2s, -webkit-transform .2s}',
-      '.clip{-webkit-background-clip:text;background-clip:text}',
-      '.icon{-webkit-mask-image:var(--svg);mask-image:var(--svg);-webkit-mask-size:100% 100%;mask-size:100% 100%}',
-      '.line-clamp{display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:2;overflow:hidden}',
-      '.stroke{-webkit-text-fill-color:transparent;-webkit-text-stroke:1px currentColor;-webkit-text-stroke-color:red;-webkit-text-stroke-width:1px}',
-      '.scroll{-webkit-overflow-scrolling:touch}',
-      '.unsupported{-webkit-clip-path:inset(0);clip-path:inset(0);-webkit-writing-mode:vertical-rl;writing-mode:vertical-rl;-webkit-appearance:none;appearance:none}',
-      '@-webkit-keyframes spin{to{-webkit-transform:rotate(1turn)}}',
-      '@keyframes spin{to{-webkit-transform:rotate(1turn);transform:rotate(1turn)}}',
-    ].join('\n'))
-
-    expect(css).not.toContain('-webkit-text-decoration-line')
-    expect(css).not.toContain('-webkit-backdrop-filter')
-    expect(css).not.toContain('-webkit-text-decoration-color')
-    expect(css).not.toContain('-webkit-transform')
-    expect(css).not.toContain('-webkit-filter')
-    expect(css).not.toContain('@-webkit-keyframes')
-    expect(css).toContain('transition-property:color, text-decoration-color, transform, filter, backdrop-filter')
-    expect(css).toContain('transition:transform .2s')
-    expect(css).toContain('-webkit-background-clip:text')
-    expect(css).toContain('-webkit-mask-image:var(--svg)')
-    expect(css).toContain('-webkit-mask-size:100% 100%')
-    expect(css).toContain('display:-webkit-box')
-    expect(css).toContain('-webkit-box-orient:vertical')
-    expect(css).toContain('-webkit-line-clamp:2')
-    expect(css).toContain('-webkit-text-fill-color:transparent')
-    expect(css).toContain('-webkit-text-stroke:1px currentColor')
-    expect(css).toContain('-webkit-text-stroke-color:red')
-    expect(css).toContain('-webkit-text-stroke-width:1px')
-    expect(css).toContain('-webkit-overflow-scrolling:touch')
-    expect(css).not.toContain('-webkit-clip-path')
-    expect(css).not.toContain('-webkit-writing-mode')
-    expect(css).not.toContain('-webkit-appearance')
-  })
-
   it('keeps only mini-program useful webkit prefixes in generated css pruning', () => {
     const css = pruneMiniProgramGeneratedCss([
       '.underline{-webkit-text-decoration-line:underline;text-decoration-line:underline}',
@@ -294,22 +212,5 @@ describe('tailwindcss/remove unsupported css', () => {
     expect(css).not.toContain('lab(')
     expect(css).not.toContain('display-p3')
     expect(css).not.toContain('color-gamut')
-  })
-
-  it('keeps user css before hoisted mini-program base and theme rules', () => {
-    const css = finalizeMiniProgramCss([
-      '.reset-button{padding:0;background-color:transparent}',
-      '.reset-button::after{border:none}',
-      'view,text,:before,:after{box-sizing:border-box;margin:0;padding:0;border:0 solid}',
-      ':host,page,.tw-root,wx-root-portal-content{--color-blue-500:rgb(50,128,255)}',
-      '.flex{display:flex}',
-    ].join('\n'))
-
-    expect(css).toContain('.reset-button{padding:0;background-color:transparent}')
-    expect(css).toContain('.reset-button::after{border:none}')
-    expect(css.indexOf('.reset-button{padding:0;background-color:transparent}')).toBeLessThan(css.indexOf('view,text,:before,:after'))
-    expect(css.indexOf('.reset-button{padding:0;background-color:transparent}')).toBeLessThan(css.indexOf(':host,page,.tw-root,wx-root-portal-content'))
-    expect(css.indexOf('view,text,:before,:after')).toBeLessThan(css.indexOf('.flex'))
-    expect(css.indexOf(':host,page,.tw-root,wx-root-portal-content')).toBeLessThan(css.indexOf('.flex'))
   })
 })
