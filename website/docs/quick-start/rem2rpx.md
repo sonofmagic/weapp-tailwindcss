@@ -118,7 +118,8 @@ module.exports = {
       // 转化的单位,可以变成 px / rpx
       transformUnit: 'rpx'
       // postcss-rem-to-responsive-pixel@6 版本添加了 disabled 参数，用来禁止插件的转化
-      // disabled: process.env.TARO_ENV === 'h5' || process.env.TARO_ENV === 'rn'
+      // H5/Web 是否禁用 rem 转 rpx，请按业务样式策略单独判断；这和 WeappTailwindcss 的 generator.target 自动推断是两件事。
+      // disabled: process.env.TARO_ENV === 'h5'
     }
   }
 }

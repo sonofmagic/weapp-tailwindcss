@@ -101,16 +101,9 @@ export default {
 
 ## 编译到 h5 / app 注意事项
 
-有些用户通过 `uni-app` 等跨端框架，不止开发成各种小程序，也开发为 `H5`，然而 `tailwindcss` 本身就兼容 `H5` 了。此时你需要更改配置，我们以 `uni-app` 为例:
+有些用户通过 `uni-app` 等跨端框架，不止开发成各种小程序，也开发为 `H5`。从 v5 开始，H5/Web 构建不再需要禁用 `WeappTailwindcss`：插件会根据 `UNI_PLATFORM=h5` 自动把生成器目标切到 `web`，输出浏览器原生 Tailwind CSS。
 
 ```js
-const isH5 = process.env.UNI_PLATFORM === "h5";
-// vue3 版本构建到 app, UNI_PLATFORM 的值为 app
-// vue2 版本为 app-plus
-const isApp = process.env.UNI_PLATFORM === "app-plus";
-const WeappTailwindcssDisabled = isH5 || isApp;
-
-// 然后在 h5 和 app 环境下把 WeappTailwindcss 禁用掉
 // 我们以 uni-app-vue3-vite 这个 demo为例
 // vite.config.ts
 import { defineConfig } from 'vite';
@@ -118,7 +111,7 @@ import uni from '@dcloudio/vite-plugin-uni';
 import { WeappTailwindcss } from "weapp-tailwindcss/vite";
 // vite 插件配置
 const vitePlugins = [uni(),WeappTailwindcss({
-  disabled: WeappTailwindcssDisabled
+  rem2rpx: true
 })];
 
 export default defineConfig({
@@ -127,6 +120,17 @@ export default defineConfig({
 
 // Tailwind CSS 由 WeappTailwindcss 生成模式接管。
 // 如果项目已有 PostCSS 配置，只保留 autoprefixer、业务自定义插件等非 Tailwind 插件。
+```
+
+如果是 App 构建且不希望插件参与，可以只针对 App 目标显式禁用：
+
+```js
+const isApp = process.env.UNI_PLATFORM === "app" || process.env.UNI_PLATFORM === "app-plus";
+
+WeappTailwindcss({
+  disabled: isApp,
+  rem2rpx: true
+});
 ```
 
 ## 报错 TypeError: Cannot use 'in' operator to search for 'CallExpression' in undefined
@@ -168,19 +172,13 @@ export default defineConfig({
 解决方案：
 
 ```js
-// 注意：打包成 h5 和 app 都不需要开启插件配置
-const isH5 = process.env.UNI_PLATFORM === "h5";
-// vue3 版本构建到 app, UNI_PLATFORM 的值为 app
-// vue2 版本为 app-plus
-const isApp = process.env.UNI_PLATFORM === "app-plus";
-const WeappTailwindcssDisabled = isH5 || isApp;
 import { WeappTailwindcss } from "weapp-tailwindcss/vite";
 const vitePlugins = [uni(), WeappTailwindcss({
-  disabled: WeappTailwindcssDisabled
+  rem2rpx: true
 })];
 ```
 
-即 `h5` 环境和 `app` 环境都不开启我这个插件，因为本来这 2 个环境就是 `tailwindcss` 支持的环境，没必要开启插件转义。
+即 H5 环境继续保留插件，由生成器自动切到 `web` 目标。App 环境如果不希望插件参与，可以单独设置 `disabled: process.env.UNI_PLATFORM === "app" || process.env.UNI_PLATFORM === "app-plus"`。
 
 ## 使用 pnpm@8 插件注册失败问题
 

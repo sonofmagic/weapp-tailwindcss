@@ -143,8 +143,6 @@ const baseConfig: UserConfigExport<'vite'> = {
         cssEntries: [
           path.resolve(__dirname, '../src/app.css'),
         ],
-        // 除了小程序这些，其他平台都 disable
-        disabled: process.env.TARO_ENV === 'h5' || process.env.TARO_ENV === 'harmony' || process.env.TARO_ENV === 'rn',
         // 由于 taro vite 默认会移除所有的 tailwindcss css 变量，所以一定要开启这个配置，进行css 变量的重新注入
         injectAdditionalCssVarScope: true,
       })
@@ -156,6 +154,8 @@ const baseConfig: UserConfigExport<'vite'> = {
 ```
 
 Tailwind CSS 生成由 `weapp-tailwindcss` 接管，不需要再把 `tailwindcss` 注册到 PostCSS 配置里。`src/app.css` 在 Tailwind CSS 3.x 项目中继续写 `@tailwind base; @tailwind components; @tailwind utilities;`。
+
+`TARO_ENV=h5` 时，生成器默认目标会自动切换为 `web`，不再需要写 `disabled: process.env.TARO_ENV === 'h5'`。如果 RN 或 Harmony 构建不希望插件参与，可以只针对这些目标显式设置 `disabled`。
 
 > `vite.config.ts` 只有在运行小程序的时候才会加载，`h5` 不会，所以只能通过这种方式进行 `小程序` + `h5` 双端兼容
 > 但 `Taro Vite` 当前仍然不稳定，这部分内容仅作为历史方案和排障参考，不建议作为新项目默认选型。

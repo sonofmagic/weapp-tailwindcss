@@ -63,10 +63,6 @@ import path from "path";
 import { defineConfig } from "vite";
 import uni from "@dcloudio/vite-plugin-uni";
 import { WeappTailwindcss } from "weapp-tailwindcss/vite";
-// 注意： 打包成 h5 和 app 都不需要开启插件配置
-const isH5 = process.env.UNI_PLATFORM === "h5";
-const isApp = process.env.UNI_PLATFORM === "app";
-const WeappTailwindcssDisabled = isH5 || isApp;
 
 const resolve = (p) => {
   return path.resolve(__dirname, p);
@@ -77,13 +73,27 @@ export default defineConfig({
     uni(),
     WeappTailwindcss({
       rem2rpx: true,
-      disabled: WeappTailwindcssDisabled,
       // 由于 hbuilderx 会改变 process.cwd 所以这里必须传入当前目录的绝对路径
       tailwindcssBasedir: __dirname,
       cssEntries: [
         resolve("src/app.css"),
       ],
     })
+  ],
+});
+```
+
+`UNI_PLATFORM=h5` 时，生成器默认目标会自动切换为 `web`，不再需要写 `disabled: WeappTailwindcssDisabled`。如果 App 构建不希望插件参与，可以只针对 App 目标显式禁用：
+
+```js
+const isApp = process.env.UNI_PLATFORM === "app" || process.env.UNI_PLATFORM === "app-plus";
+
+WeappTailwindcss({
+  disabled: isApp,
+  rem2rpx: true,
+  tailwindcssBasedir: __dirname,
+  cssEntries: [
+    resolve("src/app.css"),
   ],
 });
 ```

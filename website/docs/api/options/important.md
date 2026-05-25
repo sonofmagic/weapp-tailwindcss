@@ -51,7 +51,9 @@ keywords:
 
 #### 备注
 
-在多平台构建场景下常用：小程序构建保持默认，非小程序环境（H5、App）传入 `true` 即可跳过转换。
+用于完全跳过插件。v5 起，uni-app、uni-app x、Mpx、Taro 的 H5/Web 构建通常不需要再通过 `disabled` 关闭插件：生成器会根据 `UNI_PLATFORM=h5`、`UNI_UTS_PLATFORM=h5/web/web-*`、`MPX_CLI_MODE=web`、`MPX_CURRENT_TARGET_MODE=web`、`TARO_ENV=h5` 自动切换到 `web` 目标。
+
+`disabled` 更适合 RN、Harmony、App 等你明确不希望进入 `weapp-tailwindcss` 生成链路的独立构建。
 
 #### 示例
 
@@ -59,14 +61,12 @@ keywords:
 // uni-app vue3 vite
 import process from 'node:process'
 
-const isH5 = process.env.UNI_PLATFORM === 'h5'
 const isApp = process.env.UNI_PLATFORM === 'app'
-const disabled = isH5 || isApp
 
 import { WeappTailwindcss } from 'weapp-tailwindcss/vite'
 
 WeappTailwindcss({
-  disabled,
+  disabled: isApp,
 })
 ```
 
