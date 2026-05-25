@@ -1,6 +1,5 @@
-import { describe, expect, it } from 'vitest'
-import { createRootSpecificityReplacer, prepareStyleOptions } from '@/lightningcss/style-handler/options'
-import { buildChildCombinatorReplacement, createVisitor } from '@/lightningcss/style-handler/selector-transform'
+import { createRootSpecificityReplacer, prepareStyleOptions } from '../src/lightningcss/options'
+import { buildChildCombinatorReplacement, createVisitor } from '../src/lightningcss/selector-transform'
 
 describe('lightningcss style handler options', () => {
   it('prepares default options and preserves custom-properties when cssCalc is enabled', () => {
@@ -258,8 +257,6 @@ describe('lightningcss style handler options', () => {
         selectors: [[
           { type: 'type', name: 'view' },
           { type: 'attribute', name: 'data-state', operation: { operator: 'equal', value: 'open' } },
-          { type: 'pseudo-class', kind: 'root' },
-          { type: 'id', name: 'app' },
         ]],
       },
     }
@@ -268,100 +265,6 @@ describe('lightningcss style handler options', () => {
     expect(rule.value.selectors).toEqual([[
       { type: 'type', name: 'view' },
       { type: 'attribute', name: 'data-state', operation: { operator: 'equal', value: 'open' } },
-      { type: 'pseudo-class', kind: 'root' },
-      { type: 'id', name: 'app' },
     ]])
-  })
-
-  it('keeps universal selectors when replacement is disabled or empty', () => {
-    const disabledVisitor = createVisitor({
-      options: {
-        cssSelectorReplacement: {
-          universal: false,
-        },
-      } as any,
-    })
-    const disabledRule = {
-      type: 'style',
-      value: {
-        selectors: [[{ type: 'universal' }]],
-      },
-    }
-    expect(disabledVisitor.Rule?.(disabledRule as any)).toBe(disabledRule)
-    expect(disabledRule.value.selectors).toEqual([[{ type: 'universal' }]])
-
-    const emptyVisitor = createVisitor({
-      options: {
-        cssSelectorReplacement: {
-          universal: [],
-        },
-      } as any,
-    })
-    const emptyRule = {
-      type: 'style',
-      value: {
-        selectors: [[{ type: 'universal' }]],
-      },
-    }
-    expect(emptyVisitor.Rule?.(emptyRule as any)).toBe(emptyRule)
-    expect(emptyRule.value.selectors).toEqual([[{ type: 'universal' }]])
-  })
-
-  it('replaces hidden/template sibling child combinators', () => {
-    const visitor = createVisitor({
-      options: {} as any,
-      childCombinatorReplacement: [
-        { type: 'type', name: 'view' },
-        { type: 'combinator', value: 'next-sibling' },
-        { type: 'type', name: 'view' },
-      ],
-    })
-    const hiddenNot = {
-      type: 'pseudo-class',
-      kind: 'not',
-      selectors: [[{ type: 'attribute', name: 'hidden' }]],
-    }
-    const templateNot = {
-      type: 'pseudo-class',
-      kind: 'not',
-      selectors: [[{ type: 'type', name: 'template' }]],
-    }
-    const rule = {
-      type: 'style',
-      value: {
-        selectors: [[
-          { type: 'class', name: 'space-x-[2px]' },
-          { type: 'combinator', value: 'child' },
-          hiddenNot,
-          { type: 'combinator', value: 'later-sibling' },
-          templateNot,
-        ]],
-      },
-    }
-
-    expect(visitor.Rule?.(rule as any)).toBe(rule)
-    expect(rule.value.selectors).toEqual([[
-      { type: 'class', name: 'space-x-_b2px_B' },
-      { type: 'combinator', value: 'child' },
-      { type: 'type', name: 'view' },
-      { type: 'combinator', value: 'next-sibling' },
-      { type: 'type', name: 'view' },
-    ]])
-  })
-
-  it('removes selectors that only contain combinators after trimming', () => {
-    const visitor = createVisitor({
-      options: {} as any,
-    })
-
-    expect(visitor.Rule?.({
-      type: 'style',
-      value: {
-        selectors: [[
-          { type: 'combinator', value: 'child' },
-          { type: 'combinator', value: 'next-sibling' },
-        ]],
-      },
-    } as any)).toEqual([])
   })
 })

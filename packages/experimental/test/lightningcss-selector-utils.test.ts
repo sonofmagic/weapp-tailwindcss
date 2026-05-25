@@ -8,7 +8,7 @@ import {
   matchesHiddenNot,
   normalizeNestedSelectors,
   trimCombinators,
-} from '@/lightningcss/style-handler/selector-utils'
+} from '../src/lightningcss/selector-utils'
 
 describe('lightningcss selector utils', () => {
   const originalStructuredClone = globalThis.structuredClone

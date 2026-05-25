@@ -81,10 +81,7 @@ export function matchesHiddenNot(component: SelectorComponent | undefined): bool
     return false
   }
   const [nestedSelector] = selectors
-  if (!nestedSelector) {
-    return false
-  }
-  if (nestedSelector.length !== 1) {
+  if (!nestedSelector || nestedSelector.length !== 1) {
     return false
   }
   const [node] = nestedSelector

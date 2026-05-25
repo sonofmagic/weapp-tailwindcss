@@ -1,12 +1,11 @@
 import type { IStyleHandlerOptions } from '@weapp-tailwindcss/postcss'
 import type { TransformOptions, Warning } from 'lightningcss'
-import type { SelectorTransformContext } from './style-handler/selector-transform'
+import type { SelectorTransformContext } from './selector-transform'
 import { Buffer } from 'node:buffer'
 import { defuOverrideArray } from '@weapp-tailwindcss/shared'
 import { transform } from 'lightningcss'
-import { omitUndefined } from '@/utils/object'
-import { createRootSpecificityReplacer, prepareStyleOptions } from './style-handler/options'
-import { buildChildCombinatorReplacement, createVisitor } from './style-handler/selector-transform'
+import { createRootSpecificityReplacer, prepareStyleOptions } from './options'
+import { buildChildCombinatorReplacement, createVisitor } from './selector-transform'
 
 const textDecoder = new TextDecoder()
 const defaultLightningFilename = 'inline.css'
@@ -31,6 +30,16 @@ interface PreparedLightningcssRuntime {
   options: IStyleHandlerOptions
   replaceSpecificity?: ((code: string) => string) | undefined
   visitor: TransformOptions<CustomAtRules>['visitor']
+}
+
+function omitUndefined<T extends object>(value: T) {
+  const result: Partial<T> = {}
+  for (const [key, item] of Object.entries(value) as [keyof T, T[keyof T]][]) {
+    if (item !== undefined) {
+      result[key] = item
+    }
+  }
+  return result
 }
 
 function createPreparedRuntime(options?: Partial<IStyleHandlerOptions>): PreparedLightningcssRuntime {
@@ -82,3 +91,38 @@ export function createLightningcssStyleHandler(
     }) as LightningcssStyleHandlerResult
   }
 }
+
+const defaultHandler = createLightningcssStyleHandler(undefined, {
+  transformOptions: { minify: true },
+})
+
+export async function transformCss(css: string | Buffer = '.foo { color: red }') {
+  const result = await defaultHandler(
+    typeof css === 'string' ? css : css.toString(),
+  )
+
+  return {
+    ...result,
+    code: Buffer.from(result.code),
+    map: result.map ? Buffer.from(result.map) : undefined,
+  }
+}
+
+export {
+  createRootSpecificityReplacer,
+  prepareStyleOptions,
+} from './options'
+export {
+  buildChildCombinatorReplacement,
+  createVisitor,
+  type SelectorTransformContext,
+} from './selector-transform'
+export {
+  assignNestedSelectors,
+  cloneComponent,
+  cloneComponents,
+  createTypeSelector,
+  matchesHiddenNot,
+  normalizeNestedSelectors,
+  trimCombinators,
+} from './selector-utils'

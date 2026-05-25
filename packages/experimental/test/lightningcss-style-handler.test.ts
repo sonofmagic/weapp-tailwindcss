@@ -1,5 +1,4 @@
-import { describe, expect, it } from 'vitest'
-import { createLightningcssStyleHandler } from '@/lightningcss'
+import { createLightningcssStyleHandler } from '../src/lightningcss'
 
 describe('lightningcss style handler', () => {
   it('escapes class selectors and removes hover rules', async () => {

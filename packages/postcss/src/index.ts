@@ -7,6 +7,13 @@ export {
   protectDynamicColorMixAlpha,
 } from './compat/color-mix'
 export {
+  finalizeMiniProgramCss,
+  hoistTailwindPreflightBase,
+  removeUnsupportedAtSupports,
+  removeUnsupportedCascadeLayers,
+  removeUnsupportedMiniProgramAtRules,
+} from './compat/mini-program-css'
+export {
   normalizeMiniProgramPrefixedDeclaration,
   removeUnsupportedMiniProgramPrefixedAtRule,
 } from './compat/mini-program-prefixes'

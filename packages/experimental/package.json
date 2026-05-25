@@ -20,6 +20,11 @@
       "types": "./dist/index.d.ts",
       "import": "./dist/index.mjs",
       "require": "./dist/index.cjs"
+    },
+    "./lightningcss": {
+      "types": "./dist/lightningcss/index.d.ts",
+      "import": "./dist/lightningcss/index.mjs",
+      "require": "./dist/lightningcss/index.cjs"
     }
   },
   "main": "./dist/index.cjs",
@@ -41,5 +46,10 @@
     "lint": "eslint .",
     "lint:fix": "eslint . --fix"
   },
-  "publishConfig": {}
+  "publishConfig": {},
+  "dependencies": {
+    "@weapp-tailwindcss/postcss": "workspace:*",
+    "@weapp-tailwindcss/shared": "workspace:*",
+    "lightningcss": "^1.32.0"
+  }
 }

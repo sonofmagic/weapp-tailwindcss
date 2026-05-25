@@ -1,5 +1,5 @@
 import type postcss from 'postcss'
-import { normalizeModernColorValue } from '@weapp-tailwindcss/postcss'
+import { normalizeModernColorValue } from '../color-mix'
 import { isDisplayP3MediaRule } from './color-gamut'
 import { isUnsupportedBrowserSelector, SPECIFICITY_PLACEHOLDER_SUFFIXES } from './selectors'
 

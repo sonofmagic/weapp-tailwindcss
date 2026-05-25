@@ -3452,7 +3452,17 @@ importers:
         specifier: 7.2.7
         version: 7.2.7(@types/node@25.9.1)(jiti@2.7.0)(less@4.6.4)(lightningcss@1.32.0)(sass-embedded@1.100.0)(sass@1.100.0)(stylus@0.57.0)(terser@5.48.0)(tsx@4.22.3)(yaml@2.9.0)
 
-  packages/experimental: {}
+  packages/experimental:
+    dependencies:
+      '@weapp-tailwindcss/postcss':
+        specifier: workspace:*
+        version: link:../postcss
+      '@weapp-tailwindcss/shared':
+        specifier: workspace:*
+        version: link:../shared
+      lightningcss:
+        specifier: ^1.32.0
+        version: 1.32.0
 
   packages/init:
     dependencies:

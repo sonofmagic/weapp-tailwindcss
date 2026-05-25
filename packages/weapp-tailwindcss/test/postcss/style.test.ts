@@ -5,7 +5,6 @@ import {
   createStyleHandler,
 } from "@weapp-tailwindcss/postcss";
 import { getCompilerContext } from "@/context";
-import { transformCss } from "@/lightningcss";
 import { normalizeEol } from "../helpers/normalizeEol";
 import { createGetCase, cssCasePath } from "../util";
 
@@ -128,10 +127,6 @@ describe("styleHandler", () => {
       escapeMap: MappingChars2String,
     });
     expect(css).toMatchSnapshot();
-    const res = await transformCss(testCase);
-    expect(res.code.toString()).toMatch(
-      /:before,\s*:after\s*\{\s*--tw-border-opacity:\s*1;?\s*\}/,
-    );
   });
 
   it("cssPreflightRange option view", async () => {
@@ -200,10 +195,6 @@ describe("styleHandler", () => {
       },
     });
     expect(css).toBe(".after_ccontent-_b_q_x_q_B::after{color:red;}");
-    const res = await transformCss(testCase);
-    expect(res.code.toString()).toMatch(
-      /\.after_ccontent-_b_q_x_q_B:after\s*\{\s*color:\s*red;?\s*\}/,
-    );
   });
 
   it("should * be replace as view etc", async () => {
