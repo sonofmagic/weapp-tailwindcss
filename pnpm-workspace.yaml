@@ -30,11 +30,11 @@ catalogs:
   autoprefixer10:
     autoprefixer: ^10.5.0
   babelCore7285:
-    '@babel/core': ^7.29.0
+    '@babel/core': ^7.29.7
   babelPresetReact7285:
-    '@babel/preset-react': ^7.28.5
+    '@babel/preset-react': ^7.29.7
   babelRuntime7284:
-    '@babel/runtime': ^7.29.2
+    '@babel/runtime': ^7.29.7
   babelRuntime7284tilde:
     '@babel/runtime': ^7.29.2
   classVarianceAuthority:
@@ -95,7 +95,7 @@ catalogs:
     '@tailwindcss/postcss': ^4.3.0
     '@tailwindcss/vite': ^4.3.0
     tailwindcss: ^4.3.0
-    tailwindcss4: npm:tailwindcss@^4.2.4
+    tailwindcss4: npm:tailwindcss@^4.3.0
   tailwindcssPatch:
     tailwindcss-patch: 9.3.7
   tailwindcssRem:

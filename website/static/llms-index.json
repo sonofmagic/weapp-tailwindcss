@@ -1,6 +1,6 @@
 {
   "version": "1.0.0",
-  "generatedAt": "2026-05-21T11:36:43.670Z",
+  "generatedAt": "2026-05-25T11:38:59.889Z",
   "siteUrl": "https://tw.icebreaker.top",
   "totals": {
     "all": 181,
@@ -3755,9 +3755,9 @@
         "2. 删除 patch",
         "3. 检查 CSS 入口",
         "4. 注册 WeappTailwindcss",
-        "5. cssEntries 不是每个项目都要写",
-        "6. 清理 PostCSS",
-        "7. 跑一次"
+        "5. 多端项目删掉 H5/Web 禁用逻辑",
+        "6. cssEntries 不是每个项目都要写",
+        "7. 清理 PostCSS"
       ],
       "updatedAt": null,
       "source": "docs/migrations/v5.md"
@@ -3785,12 +3785,12 @@
       "headings": [
         "何时开启插件",
         "# uni-app 示例",
+        "# uni-app x 示例",
+        "# Mpx 示例",
         "# Taro 示例",
         "uni-app 打包到 h5 svg icon 偏移问题",
         "uni-app 打包安卓 `rgb()` 颜色失效问题",
-        "# 安装 `postcss-preset-env`",
-        "# 设置 `postcss.config.js`",
-        "CSS变量计算模式"
+        "# 安装 `postcss-preset-env`"
       ],
       "updatedAt": null,
       "source": "docs/multi-platform.md"
