@@ -6,6 +6,7 @@ import path from 'pathe'
 import { describe, expect, it } from 'vitest'
 import { ensureProjectBuilt } from './projectBuild'
 import { collectCssSnapshots, formatWxml, logE2EError, projectFilter, removeWxmlId, resolveSnapshotFile, twExtract, wait } from './shared'
+import { normalizeCssTextSnapshot } from './snapshotUtils'
 
 export { ensureProjectBuilt } from './projectBuild'
 
@@ -85,10 +86,14 @@ function shouldSkipAutomator(entry: ProjectEntry) {
 
 async function expectProjectSnapshot(suite: string, projectName: string, fileName: string, content: string) {
   const snapshotPath = await resolveSnapshotFile(__dirname, suite, projectName, fileName)
-  await expect(normalizeProjectSnapshotContent(content)).toMatchFileSnapshot(snapshotPath)
+  await expect(normalizeProjectSnapshotContent(fileName, content)).toMatchFileSnapshot(snapshotPath)
 }
 
-function normalizeProjectSnapshotContent(source: string) {
+function normalizeProjectSnapshotContent(fileName: string, source: string) {
+  if (/\.(?:wxss|css)$/.test(fileName)) {
+    return `${normalizeCssTextSnapshot(source)}\n`
+  }
+
   const normalized = source
     .replace(/\r\n/g, '\n')
     .replace(/[ \t]+$/gm, '')

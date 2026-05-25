@@ -6,7 +6,7 @@ Generator CSS files: app.wxss, apple.wxss, index.css, index.wxss, index.wxss, in
 
 | Bytes | Selectors | @supports | :hover | Tailwind banner | Raw arbitrary selector | Weapp escaped arbitrary selector |
 | ---: | ---: | --- | --- | --- | --- | --- |
-| 8370 | 47 | false | false | false | false | true |
+| 8365 | 47 | false | false | false | false | true |
 
 ## Generator CSS
 
@@ -199,12 +199,13 @@ wx-root-portal-content {
   --default-font-family: var(--font-sans);
   --default-mono-font-family: var(--font-mono);
 }
-.before_ccontent-_b_aindependent_subpackage_weapp-vite-tailwindcss-v4_a_B::before {
+.before_ccontent-_b_aindependent_subpackage_weapp-vite-tailwindcss-v4_a_B:before {
   --tw-content: 'independent subpackage weapp-vite-tailwindcss-v4';
   content: var(--tw-content);
 }
-.bg-independent-subpackage-marker {
-  background-color: #dc2626;
+.before_ccontent-_b_anormal_subpackage_weapp-vite-tailwindcss-v4_a_B:before {
+  --tw-content: 'normal subpackage weapp-vite-tailwindcss-v4';
+  content: var(--tw-content);
 }
 view,
 text,
@@ -226,9 +227,8 @@ wx-root-portal-content {
   --default-font-family: var(--font-sans);
   --default-mono-font-family: var(--font-mono);
 }
-.before_ccontent-_b_anormal_subpackage_weapp-vite-tailwindcss-v4_a_B::before {
-  --tw-content: 'normal subpackage weapp-vite-tailwindcss-v4';
-  content: var(--tw-content);
+.bg-independent-subpackage-marker {
+  background-color: #dc2626;
 }
 .bg-normal-subpackage-marker {
   background-color: #2563eb;
@@ -266,7 +266,7 @@ wx-root-portal-content {
   --default-font-family: var(--font-sans);
   --default-mono-font-family: var(--font-mono);
 }
-.before_ccontent-_b_anormal_subpackage_weapp-vite-tailwindcss-v4_a_B::before {
+.before_ccontent-_b_anormal_subpackage_weapp-vite-tailwindcss-v4_a_B:before {
   --tw-content: 'normal subpackage weapp-vite-tailwindcss-v4';
   content: var(--tw-content);
 }
@@ -312,7 +312,7 @@ wx-root-portal-content {
   --default-font-family: var(--font-sans);
   --default-mono-font-family: var(--font-mono);
 }
-.before_ccontent-_b_aindependent_subpackage_weapp-vite-tailwindcss-v4_a_B::before {
+.before_ccontent-_b_aindependent_subpackage_weapp-vite-tailwindcss-v4_a_B:before {
   --tw-content: 'independent subpackage weapp-vite-tailwindcss-v4';
   content: var(--tw-content);
 }
@@ -346,7 +346,7 @@ wx-root-portal-content {
   --default-font-family: var(--font-sans);
   --default-mono-font-family: var(--font-mono);
 }
-.before_ccontent-_b_anormal_subpackage_weapp-vite-tailwindcss-v4_a_B::before {
+.before_ccontent-_b_anormal_subpackage_weapp-vite-tailwindcss-v4_a_B:before {
   --tw-content: 'normal subpackage weapp-vite-tailwindcss-v4';
   content: var(--tw-content);
 }

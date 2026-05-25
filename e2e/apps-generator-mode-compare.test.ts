@@ -12,7 +12,7 @@ import { createChineseMarkdownReport, createMarkdownReport } from './apps-genera
 import { E2E_PROJECTS } from './projectEntries'
 import { clearProjectBuildState } from './projectTest'
 import { collectCssSnapshots, resolveSnapshotFile } from './shared'
-import { normalizeCssSnapshot as normalizeProjectCssSnapshot, normalizeSnapshotName } from './snapshotUtils'
+import { normalizeCssTextSnapshot, normalizeSnapshotName } from './snapshotUtils'
 
 interface CompareProject {
   name: string
@@ -374,11 +374,7 @@ function normalizeReportSnapshotText(source: string) {
 }
 
 function normalizeCssSnapshot(css: string) {
-  return normalizeProjectCssSnapshot(css)
-    .trimEnd()
-    .split('\n')
-    .map(line => line.trimEnd())
-    .join('\n')
+  return normalizeCssTextSnapshot(css)
 }
 
 function normalizeCssForSummary(css: string) {

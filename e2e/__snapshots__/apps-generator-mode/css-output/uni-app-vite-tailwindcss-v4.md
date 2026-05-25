@@ -6,7 +6,7 @@ Generator CSS files: app.wxss, home.wxss, index.wxss, index.wxss, user.wxss
 
 | Bytes | Selectors | @supports | :hover | Tailwind banner | Raw arbitrary selector | Weapp escaped arbitrary selector |
 | ---: | ---: | --- | --- | --- | --- | --- |
-| 39382 | 233 | false | false | false | false | true |
+| 39374 | 233 | false | false | false | false | true |
 
 ## Generator CSS
 
@@ -522,8 +522,9 @@ wx-root-portal-content {
 .bg-emerald-500 {
   background-color: var(--color-emerald-500);
 }
-.bg-independent-subpackage-marker {
-  background-color: #dc2626;
+.before_ccontent-_b_aindependent_subpackage_uni-app-vite-tailwindcss-v4_a_B:before {
+  --tw-content: 'independent subpackage uni-app-vite-tailwindcss-v4';
+  content: var(--tw-content);
 }
 .bg-midnight {
   background-color: var(--color-midnight);
@@ -531,8 +532,9 @@ wx-root-portal-content {
 .bg-neutral-1B {
   background-color: var(--color-neutral-1B);
 }
-.bg-normal-subpackage-marker {
-  background-color: #2563eb;
+.before_ccontent-_b_aindependent_subpackage_uni-app-vite-tailwindcss-v4_a_B:before {
+  --tw-content: 'independent subpackage uni-app-vite-tailwindcss-v4';
+  content: var(--tw-content);
 }
 .bg-slate-50 {
   background-color: var(--color-slate-50);
@@ -798,11 +800,11 @@ wx-root-portal-content {
 .ring-inset {
   --tw-ring-inset: inset;
 }
-.before_ccontent-_b_aindependent_subpackage_uni-app-vite-tailwindcss-v4_a_B::before {
+.before_ccontent-_b_aindependent_subpackage_uni-app-vite-tailwindcss-v4_a_B:before {
   --tw-content: 'independent subpackage uni-app-vite-tailwindcss-v4';
   content: var(--tw-content);
 }
-.before_ccontent-_b_anormal_subpackage_uni-app-vite-tailwindcss-v4_a_B::before {
+.before_ccontent-_b_anormal_subpackage_uni-app-vite-tailwindcss-v4_a_B:before {
   --tw-content: 'normal subpackage uni-app-vite-tailwindcss-v4';
   content: var(--tw-content);
 }
@@ -812,8 +814,8 @@ wx-root-portal-content {
 .active_cbg-emerald-600:active {
   background-color: var(--color-emerald-600);
 }
-.before_ccontent-_b_aindependent_subpackage_uni-app-vite-tailwindcss-v4_a_B:before {
-  --tw-content: 'independent subpackage uni-app-vite-tailwindcss-v4';
+.before_ccontent-_b_anormal_subpackage_uni-app-vite-tailwindcss-v4_a_B:before {
+  --tw-content: 'normal subpackage uni-app-vite-tailwindcss-v4';
   content: var(--tw-content);
 }
 .before_ccontent-_b_anormal_subpackage_uni-app-vite-tailwindcss-v4_a_B:before {
@@ -846,9 +848,8 @@ wx-root-portal-content {
   --default-font-family: var(--font-sans);
   --default-mono-font-family: var(--font-mono);
 }
-.before_ccontent-_b_aindependent_subpackage_uni-app-vite-tailwindcss-v4_a_B:before {
-  --tw-content: 'independent subpackage uni-app-vite-tailwindcss-v4';
-  content: var(--tw-content);
+.bg-independent-subpackage-marker {
+  background-color: #dc2626;
 }
 .bg-independent-subpackage-marker {
   background-color: #dc2626;
@@ -873,9 +874,8 @@ wx-root-portal-content {
   --default-font-family: var(--font-sans);
   --default-mono-font-family: var(--font-mono);
 }
-.before_ccontent-_b_anormal_subpackage_uni-app-vite-tailwindcss-v4_a_B:before {
-  --tw-content: 'normal subpackage uni-app-vite-tailwindcss-v4';
-  content: var(--tw-content);
+.bg-normal-subpackage-marker {
+  background-color: #2563eb;
 }
 .bg-normal-subpackage-marker {
   background-color: #2563eb;
@@ -1074,8 +1074,9 @@ wx-root-portal-content {
 .bg-emerald-500 {
   background-color: var(--color-emerald-500);
 }
-.bg-independent-subpackage-marker {
-  background-color: #dc2626;
+.before_ccontent-_b_aindependent_subpackage_uni-app-vite-tailwindcss-v4_a_B:before {
+  --tw-content: 'independent subpackage uni-app-vite-tailwindcss-v4';
+  content: var(--tw-content);
 }
 .bg-midnight {
   background-color: var(--color-midnight);
@@ -1083,8 +1084,9 @@ wx-root-portal-content {
 .bg-neutral-1B {
   background-color: var(--color-neutral-1B);
 }
-.bg-normal-subpackage-marker {
-  background-color: #2563eb;
+.before_ccontent-_b_anormal_subpackage_uni-app-vite-tailwindcss-v4_a_B:before {
+  --tw-content: 'normal subpackage uni-app-vite-tailwindcss-v4';
+  content: var(--tw-content);
 }
 .fill-bermuda {
   fill: var(--color-bermuda);
@@ -1131,13 +1133,11 @@ wx-root-portal-content {
 .divide-x-reverse > text + text {
   --tw-divide-x-reverse: 1;
 }
-.before_ccontent-_b_aindependent_subpackage_uni-app-vite-tailwindcss-v4_a_B::before {
-  --tw-content: 'independent subpackage uni-app-vite-tailwindcss-v4';
-  content: var(--tw-content);
+.bg-independent-subpackage-marker {
+  background-color: #dc2626;
 }
-.before_ccontent-_b_anormal_subpackage_uni-app-vite-tailwindcss-v4_a_B::before {
-  --tw-content: 'normal subpackage uni-app-vite-tailwindcss-v4';
-  content: var(--tw-content);
+.bg-normal-subpackage-marker {
+  background-color: #2563eb;
 }
 .active_cbg-emerald-600:active {
   background-color: var(--color-emerald-600);
@@ -1197,7 +1197,7 @@ wx-root-portal-content {
   --default-font-family: var(--font-sans);
   --default-mono-font-family: var(--font-mono);
 }
-.before_ccontent-_b_aindependent_subpackage_uni-app-vite-tailwindcss-v4_a_B::before {
+.before_ccontent-_b_aindependent_subpackage_uni-app-vite-tailwindcss-v4_a_B:before {
   --tw-content: 'independent subpackage uni-app-vite-tailwindcss-v4';
   content: var(--tw-content);
 }
@@ -1231,7 +1231,7 @@ wx-root-portal-content {
   --default-font-family: var(--font-sans);
   --default-mono-font-family: var(--font-mono);
 }
-.before_ccontent-_b_anormal_subpackage_uni-app-vite-tailwindcss-v4_a_B::before {
+.before_ccontent-_b_anormal_subpackage_uni-app-vite-tailwindcss-v4_a_B:before {
   --tw-content: 'normal subpackage uni-app-vite-tailwindcss-v4';
   content: var(--tw-content);
 }
@@ -1412,8 +1412,9 @@ wx-root-portal-content {
 .bg-emerald-500 {
   background-color: var(--color-emerald-500);
 }
-.bg-independent-subpackage-marker {
-  background-color: #dc2626;
+.before_ccontent-_b_aindependent_subpackage_uni-app-vite-tailwindcss-v4_a_B:before {
+  --tw-content: 'independent subpackage uni-app-vite-tailwindcss-v4';
+  content: var(--tw-content);
 }
 .bg-midnight {
   background-color: var(--color-midnight);
@@ -1421,8 +1422,9 @@ wx-root-portal-content {
 .bg-neutral-1B {
   background-color: var(--color-neutral-1B);
 }
-.bg-normal-subpackage-marker {
-  background-color: #2563eb;
+.before_ccontent-_b_anormal_subpackage_uni-app-vite-tailwindcss-v4_a_B:before {
+  --tw-content: 'normal subpackage uni-app-vite-tailwindcss-v4';
+  content: var(--tw-content);
 }
 .fill-bermuda {
   fill: var(--color-bermuda);
@@ -1469,13 +1471,11 @@ wx-root-portal-content {
 .divide-x-reverse > text + text {
   --tw-divide-x-reverse: 1;
 }
-.before_ccontent-_b_aindependent_subpackage_uni-app-vite-tailwindcss-v4_a_B::before {
-  --tw-content: 'independent subpackage uni-app-vite-tailwindcss-v4';
-  content: var(--tw-content);
+.bg-independent-subpackage-marker {
+  background-color: #dc2626;
 }
-.before_ccontent-_b_anormal_subpackage_uni-app-vite-tailwindcss-v4_a_B::before {
-  --tw-content: 'normal subpackage uni-app-vite-tailwindcss-v4';
-  content: var(--tw-content);
+.bg-normal-subpackage-marker {
+  background-color: #2563eb;
 }
 .active_cbg-emerald-600:active {
   background-color: var(--color-emerald-600);

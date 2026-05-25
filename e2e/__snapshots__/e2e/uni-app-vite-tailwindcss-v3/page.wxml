@@ -9,17 +9,26 @@
   <view class="-wx_cbg-red-400 -wx_cbg-red-400">-wx:bg-red-400</view>
   <view class="mv_cbg-blue-400 mv_cbg-blue-400">mv:bg-blue-400</view>
   <view class="-mv_cbg-red-400 -mv_cbg-red-400">-mv:bg-red-400</view>
+  <view class="group group published published">
+    <view class="after_ccontent-_b_av3_apply_a_B after_ccontent-_b_av3_apply_a_B group-_b_dpublished_B_ctext-green-500 group-_b_dpublished_B_ctext-green-500 i-mdi-home i-mdi-home">
+      generator regression
+    </view>
+  </view>
   <image
     mode="widthFix"
     src="https://pic1.zhimg.com/v2-3ee20468f54bbfefcd0027283b21aaa8_720w.jpg"
-    style="width: 397px; height: 165.417px"
-    role="img"
-    class="mt-_b96_d3px_B w-_b61_d1px_B h-_b50_d99px_B"></image>
+    style="width: 374px; height: 155.833px"
+    class="mt-_b96_d3px_B Issue228--mt-_b96_d3px_B w-_b61_d1px_B Issue228--w-_b61_d1px_B h-_b50_d99px_B Issue228--h-_b50_d99px_B"
+    role="img"></image>
   <view>*******</view>
   <n-image is="components/NImage" class="mt-_b26_d2px_B mt-_b26_d2px_B w-_b43_d1px_B w-_b43_d1px_B h-_b42_d99px_B h-_b42_d99px_B">
     <image src="https://pic1.zhimg.com/v2-3ee20468f54bbfefcd0027283b21aaa8_720w.jpg" style="" role="img"></image>
   </n-image>
-  <image src="https://pic1.zhimg.com/v2-3ee20468f54bbfefcd0027283b21aaa8_720w.jpg" style="" role="img" class="mt-_b96_d3px_B w-_b61_d1px_B h-_b50_d99px_B"></image>
+  <image
+    src="https://pic1.zhimg.com/v2-3ee20468f54bbfefcd0027283b21aaa8_720w.jpg"
+    style=""
+    class="mt-_b96_d3px_B NHostImage--mt-_b96_d3px_B w-_b61_d1px_B NHostImage--w-_b61_d1px_B h-_b50_d99px_B NHostImage--h-_b50_d99px_B"
+    role="img"></image>
   <view class="_2xl_ctext-base _2xl_ctext-base">2xl:text-base</view>
   <view class="_2xl_ctext-_bred_B _2xl_ctext-_bred_B">2xl:text-[red]</view>
   <view class="space-y-4 space-y-4 flex flex flex-col flex-col bg-red-400 bg-red-400">
@@ -59,7 +68,7 @@
   </view>
   <button
     app-parameter=""
-    class="u-button button--u-button u-reset-button button--u-reset-button data-v-921e5271 button--data-v-921e5271 u-button--primary button--u-button--primary u-button--square button--u-button--square u-button--normal button--u-button--normal"
+    class="u-button button--u-button u-reset-button button--u-reset-button data-v-e43777a0 button--data-v-e43777a0 u-button--primary button--u-button--primary u-button--square button--u-button--square u-button--normal button--u-button--normal"
     data-name=""
     form-type=""
     hover-class="u-button--active"
@@ -71,7 +80,7 @@
     send-message-path=""
     send-message-title=""
     session-from=""
-    style="border-width: 1px; border-style: solid; color: #ffffff; background-color: #3c9cff; border-color: #3c9cff ;"
+    style=" ;"
     role="button"
     aria-disabled="false"
     hover-stop-propagation="">
@@ -87,7 +96,7 @@
   <view class="text-_blength_cvar_p--my-var-length_P_B text-_blength_cvar_p--my-var-length_P_B">text-[length:var(--my-var-length)]</view>
   <view class="text-_blength_ccalc_p2_x9_d43px_P_B text-_blength_ccalc_p2_x9_d43px_P_B">text-[length:calc(2*9.43px)]</view>
   <view class="text-_bcolor_cvar_p--my-var_P_B text-_bcolor_cvar_p--my-var_P_B">text-[color:var(--my-var)]</view>
-  <button class="_ebg-green-500 _ebg-green-500 sr-onlytext-white sr-onlytext-white opacity-50 opacity-50" role="button" aria-disabled="true" disabled="">disable</button>
+  <button class="_ebg-green-500 _ebg-green-500 _esr-onlytext-white _esr-onlytext-white opacity-50 opacity-50" role="button" aria-disabled="true" disabled="">disable</button>
   <view class="test test">test</view>
   <view class="h-_b20px_B h-_b20px_B w-_b20px_B w-_b20px_B bg-_b_h4268EA_B bg-_b_h4268EA_B shadow-indigo-100 shadow-indigo-100"></view>
   <view class="h-_b20px_B h-_b20px_B w-_b20px_B w-_b20px_B bg-_b_h123456_B bg-_b_h123456_B shadow-blue-100 shadow-blue-100"></view>

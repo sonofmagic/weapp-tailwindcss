@@ -6,7 +6,7 @@ Generator CSS files: app.wxss, index.wxss, index.wxss, index.wxss, more.wxss
 
 | Bytes | Selectors | @supports | :hover | Tailwind banner | Raw arbitrary selector | Weapp escaped arbitrary selector |
 | ---: | ---: | --- | --- | --- | --- | --- |
-| 6666 | 29 | false | false | false | false | true |
+| 6660 | 29 | false | false | false | false | true |
 
 ## Generator CSS
 
@@ -94,11 +94,11 @@ wx-root-portal-content {
 .text-_b_h5ba4e5_B {
   color: #5ba4e5;
 }
-.before_ccontent-_b_aindependent_subpackage_gulp-tailwindcss-v4_a_B::before {
+.before_ccontent-_b_aindependent_subpackage_gulp-tailwindcss-v4_a_B:before {
   --tw-content: 'independent subpackage gulp-tailwindcss-v4';
   content: var(--tw-content);
 }
-.before_ccontent-_b_anormal_subpackage_gulp-tailwindcss-v4_a_B::before {
+.before_ccontent-_b_anormal_subpackage_gulp-tailwindcss-v4_a_B:before {
   --tw-content: 'normal subpackage gulp-tailwindcss-v4';
   content: var(--tw-content);
 }
@@ -194,11 +194,11 @@ wx-root-portal-content {
 .text-_b_h5ba4e5_B {
   color: #5ba4e5;
 }
-.before_ccontent-_b_aindependent_subpackage_gulp-tailwindcss-v4_a_B::before {
+.before_ccontent-_b_aindependent_subpackage_gulp-tailwindcss-v4_a_B:before {
   --tw-content: 'independent subpackage gulp-tailwindcss-v4';
   content: var(--tw-content);
 }
-.before_ccontent-_b_anormal_subpackage_gulp-tailwindcss-v4_a_B::before {
+.before_ccontent-_b_anormal_subpackage_gulp-tailwindcss-v4_a_B:before {
   --tw-content: 'normal subpackage gulp-tailwindcss-v4';
   content: var(--tw-content);
 }
@@ -288,11 +288,11 @@ wx-root-portal-content {
 .text-_b_h5ba4e5_B {
   color: #5ba4e5;
 }
-.before_ccontent-_b_aindependent_subpackage_gulp-tailwindcss-v4_a_B::before {
+.before_ccontent-_b_aindependent_subpackage_gulp-tailwindcss-v4_a_B:before {
   --tw-content: 'independent subpackage gulp-tailwindcss-v4';
   content: var(--tw-content);
 }
-.before_ccontent-_b_anormal_subpackage_gulp-tailwindcss-v4_a_B::before {
+.before_ccontent-_b_anormal_subpackage_gulp-tailwindcss-v4_a_B:before {
   --tw-content: 'normal subpackage gulp-tailwindcss-v4';
   content: var(--tw-content);
 }

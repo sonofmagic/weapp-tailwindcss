@@ -428,4 +428,46 @@ describe('normalizeCssSnapshot', () => {
       '}',
     ].join('\n'))
   })
+
+  it('sorts subpackage marker chunks deterministically', () => {
+    expect(normalizeCssSnapshot([
+      'view,',
+      'text,',
+      ':before,',
+      ':after {',
+      '  --tw-content: "";',
+      '}',
+      '.bg-independent-subpackage-marker {',
+      '  background-color: #dc2626;',
+      '}',
+      '.before_ccontent-_b_aindependent_subpackage_demo_a_B:before {',
+      '  --tw-content: "independent";',
+      '}',
+      '.bg-normal-subpackage-marker {',
+      '  background-color: #2563eb;',
+      '}',
+      '.before_ccontent-_b_anormal_subpackage_demo_a_B:before {',
+      '  --tw-content: "normal";',
+      '}',
+    ].join('\n'))).toBe([
+      'view,',
+      'text,',
+      ':before,',
+      ':after {',
+      '  --tw-content: "";',
+      '}',
+      '.before_ccontent-_b_aindependent_subpackage_demo_a_B:before {',
+      '  --tw-content: "independent";',
+      '}',
+      '.before_ccontent-_b_anormal_subpackage_demo_a_B:before {',
+      '  --tw-content: "normal";',
+      '}',
+      '.bg-independent-subpackage-marker {',
+      '  background-color: #dc2626;',
+      '}',
+      '.bg-normal-subpackage-marker {',
+      '  background-color: #2563eb;',
+      '}',
+    ].join('\n'))
+  })
 })

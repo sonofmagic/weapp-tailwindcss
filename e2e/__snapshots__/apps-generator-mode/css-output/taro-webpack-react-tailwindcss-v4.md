@@ -6,7 +6,7 @@ Generator CSS files: app.wxss, index.wxss, index.wxss, index.wxss
 
 | Bytes | Selectors | @supports | :hover | Tailwind banner | Raw arbitrary selector | Weapp escaped arbitrary selector |
 | ---: | ---: | --- | --- | --- | --- | --- |
-| 300687 | 2146 | false | false | false | false | true |
+| 300681 | 2146 | false | false | false | false | true |
 
 ## Generator CSS
 
@@ -45,11 +45,11 @@ wx-root-portal-content {
 .text-_b_hfff_B {
   color: #fff;
 }
-.before_ccontent-_b_aindependent_subpackage_taro-webpack-react-tailwindcss-v4_a_B::before {
+.before_ccontent-_b_aindependent_subpackage_taro-webpack-react-tailwindcss-v4_a_B:before {
   --tw-content: 'independent subpackage taro-webpack-react-tailwindcss-v4';
   content: var(--tw-content);
 }
-.before_ccontent-_b_anormal_subpackage_taro-webpack-react-tailwindcss-v4_a_B::before {
+.before_ccontent-_b_anormal_subpackage_taro-webpack-react-tailwindcss-v4_a_B:before {
   --tw-content: 'normal subpackage taro-webpack-react-tailwindcss-v4';
   content: var(--tw-content);
 }
@@ -9877,11 +9877,11 @@ wx-root-portal-content {
 .text-_b_hfff_B {
   color: #fff;
 }
-.before_ccontent-_b_aindependent_subpackage_taro-webpack-react-tailwindcss-v4_a_B::before {
+.before_ccontent-_b_aindependent_subpackage_taro-webpack-react-tailwindcss-v4_a_B:before {
   --tw-content: 'independent subpackage taro-webpack-react-tailwindcss-v4';
   content: var(--tw-content);
 }
-.before_ccontent-_b_anormal_subpackage_taro-webpack-react-tailwindcss-v4_a_B::before {
+.before_ccontent-_b_anormal_subpackage_taro-webpack-react-tailwindcss-v4_a_B:before {
   --tw-content: 'normal subpackage taro-webpack-react-tailwindcss-v4';
   content: var(--tw-content);
 }
@@ -9921,11 +9921,11 @@ wx-root-portal-content {
 .text-_b_hfff_B {
   color: #fff;
 }
-.before_ccontent-_b_aindependent_subpackage_taro-webpack-react-tailwindcss-v4_a_B::before {
+.before_ccontent-_b_aindependent_subpackage_taro-webpack-react-tailwindcss-v4_a_B:before {
   --tw-content: 'independent subpackage taro-webpack-react-tailwindcss-v4';
   content: var(--tw-content);
 }
-.before_ccontent-_b_anormal_subpackage_taro-webpack-react-tailwindcss-v4_a_B::before {
+.before_ccontent-_b_anormal_subpackage_taro-webpack-react-tailwindcss-v4_a_B:before {
   --tw-content: 'normal subpackage taro-webpack-react-tailwindcss-v4';
   content: var(--tw-content);
 }

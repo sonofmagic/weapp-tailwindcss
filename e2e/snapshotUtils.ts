@@ -170,6 +170,17 @@ export function normalizeFormattedCssSnapshot(source: string) {
   return source.replace(/\n{2,}(?=(?:view|text|:after|:before|:host|page|\.tw-root|wx-root-portal-content)[\s,{])/g, '\n')
 }
 
+export function normalizeCssTextSnapshot(source: string) {
+  const withoutBanner = stripTailwindBanner(source)
+  const normalizedImports = normalizeCssImports(withoutBanner)
+  const normalizedCss = normalizeCssSnapshot(normalizedImports)
+  return normalizeFormattedCssSnapshot(normalizedCss)
+    .trimEnd()
+    .split('\n')
+    .map(line => line.trimEnd())
+    .join('\n')
+}
+
 const SCANNER_NOISE_SELECTORS = new Set([
   '.start',
   '.end',
@@ -282,7 +293,6 @@ const WEAPP_BASE_NOISE_DECLS = new Set([
 const WEBPACK_APP_SPLIT_NOISE_KEYFRAMES = new Set(['float-pop', 'jump'])
 const WEBPACK_APP_SPLIT_NOISE_FONT_FAMILIES = new Set(['JDZH-Regular', 'JDZH-Bold'])
 const SUBPACKAGE_MARKER_SELECTOR_RE = /^\.bg-(?:independent|normal)-subpackage-marker$|^\.before_ccontent-_b_a(?:independent|normal)_subpackage_/
-const SUBPACKAGE_BG_MARKER_SELECTOR_RE = /^\.bg-(?:independent|normal)-subpackage-marker$/
 
 const TAILWIND_V4_APP_COLOR_ORDER = new Map([
   '--color-red-700',
@@ -447,77 +457,39 @@ function sortUtilityRuleRuns(container: postcss.Container) {
   }
 }
 
-function sortSubpackageMarkerChunks(root: postcss.Root) {
-  const nodes = root.nodes
+function sortSubpackageMarkerChunks(container: postcss.Container) {
+  const nodes = container.nodes
   if (!nodes) {
     return
   }
 
-  const chunks: Array<{
-    start: number
-    end: number
-    key: string
-    nodes: postcss.ChildNode[]
-  }> = []
-
-  let index = 0
-  while (index < nodes.length) {
-    const node = nodes[index]
-    if (node?.type !== 'rule' || !isSelectorSet(node, WEAPP_BASE_SELECTOR_PARTS)) {
-      index += 1
-      continue
+  for (const node of nodes) {
+    if ('nodes' in node) {
+      sortSubpackageMarkerChunks(node as postcss.Container)
     }
-
-    let end = index + 1
-    while (end < nodes.length) {
-      const next = nodes[end]
-      if (next?.type === 'rule' && isSelectorSet(next, WEAPP_BASE_SELECTOR_PARTS)) {
-        break
-      }
-      end += 1
-    }
-
-    const chunkNodes = nodes.slice(index, end)
-    const markerSelectors = chunkNodes
-      .filter((item): item is postcss.Rule => item.type === 'rule' && SUBPACKAGE_BG_MARKER_SELECTOR_RE.test(item.selector))
-      .map(item => item.selector)
-
-    if (markerSelectors.length > 0) {
-      chunks.push({
-        start: index,
-        end,
-        key: `${markerSelectors.join('\0')}\0${chunkNodes.map(item => item.toString()).join('\0')}`,
-        nodes: chunkNodes,
-      })
-    }
-
-    index = end
   }
 
-  let runStart = 0
-  while (runStart < chunks.length) {
-    let runEnd = runStart + 1
-    while (runEnd < chunks.length && chunks[runEnd - 1]?.end === chunks[runEnd]?.start) {
-      runEnd += 1
+  const slots: number[] = []
+  const markerNodes: postcss.Rule[] = []
+  for (const [index, node] of nodes.entries()) {
+    if (node.type === 'rule' && SUBPACKAGE_MARKER_SELECTOR_RE.test(node.selector)) {
+      slots.push(index)
+      markerNodes.push(node)
     }
+  }
 
-    if (runEnd - runStart > 1) {
-      const run = chunks.slice(runStart, runEnd)
-      const firstBefore = nodes[run[0]!.start]?.raws.before
-      const sortedNodes = [...run]
-        .sort((a, b) => compareText(a.key, b.key))
-        .flatMap((chunk, chunkIndex) => {
-          for (const [nodeIndex, node] of chunk.nodes.entries()) {
-            node.raws.before = nodeIndex === 0
-              ? chunkIndex === 0 ? firstBefore : '\n\n'
-              : '\n'
-          }
-          return chunk.nodes
-        })
-      nodes.splice(run[0]!.start, run[run.length - 1]!.end - run[0]!.start, ...sortedNodes)
+  if (slots.length <= 1) {
+    return
+  }
+
+  const sortedMarkerNodes = [...markerNodes].sort(compareUtilityRules)
+  for (const [slotIndex, nodeIndex] of slots.entries()) {
+    const original = markerNodes[slotIndex]
+    const replacement = sortedMarkerNodes[slotIndex]
+    if (original && replacement) {
+      replacement.raws.before = original.raws.before
+      nodes[nodeIndex] = replacement
     }
-
-    runStart = runEnd
   }
 }
 
@@ -915,6 +887,10 @@ export function normalizeCssSnapshot(source: string, _options: CssSnapshotOption
   })
 
   root.walkRules((rule) => {
+    rule.selector = rule.selector
+      .replaceAll('::before', ':before')
+      .replaceAll('::after', ':after')
+
     if (SCANNER_NOISE_SELECTORS.has(rule.selector)) {
       rule.remove()
       return
@@ -952,6 +928,12 @@ export function normalizeCssSnapshot(source: string, _options: CssSnapshotOption
     }
   })
 
+  root.walkDecls((decl) => {
+    if (decl.prop.startsWith('--') && decl.value.trim().length === 0) {
+      decl.value = ''
+    }
+  })
+
   normalizeCalcWrapperValues(root)
   dedupeExactDeclarations(root)
 
@@ -960,6 +942,7 @@ export function normalizeCssSnapshot(source: string, _options: CssSnapshotOption
     sortUtilityRuleRuns(root)
   }
   normalizeWeappRootRules(root, _options)
+  sortSubpackageMarkerChunks(root)
   if (isTailwindV4) {
     removeTailwindV4RootVariableNoise(root, _options)
     removeTailwindV4DefaultTokenNoise(root)
@@ -967,7 +950,6 @@ export function normalizeCssSnapshot(source: string, _options: CssSnapshotOption
     removeUnusedTailwindV4ColorTokens(root)
     normalizeTailwindV4DefaultTokenUsage(root)
     sortUtilityRuleRuns(root)
-    sortSubpackageMarkerChunks(root)
   }
   normalizeNodeSpacing(root)
   return root.toString()
