@@ -1,5 +1,13 @@
 # weapp-tailwindcss
 
+## 5.0.0-next.23
+
+### Patch Changes
+
+- 🐛 **修复 Tailwind CSS v3 在 uni-app H5/web 目标下的 generator 模式。Vite dev 阶段现在会识别 Sass `@use "tailwindcss/*"` 入口并提前生成 web CSS，同时保留 v4 web 跳过二次生成的行为；生产构建中 v3 web CSS 也会继续由 generator 输出，避免裸 `@apply` 或小程序转义样式进入 H5 产物。** [`4e32dc4`](https://github.com/sonofmagic/weapp-tailwindcss/commit/4e32dc4bf1369937fbebb2bec9fc287f97bdef4c) by @sonofmagic
+
+- 🐛 **修复 uni-app H5 / web 模式下 Vite 插件仍走小程序生成链路的问题。H5 会自动使用 web target，跳过小程序模板、JS、runtime class set 与 source candidate 根目录扫描，保留 Vite/Tailwind 生成的浏览器 CSS；小程序构建仍保持 class 转义和 wxss 输出。** [`e54e8ef`](https://github.com/sonofmagic/weapp-tailwindcss/commit/e54e8ef1ac56c5cfbf8168362e188ad9b2eea2e4) by @sonofmagic
+
 ## 5.0.0-next.22
 
 ### Patch Changes
