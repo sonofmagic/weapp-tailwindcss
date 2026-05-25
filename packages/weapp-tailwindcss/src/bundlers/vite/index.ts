@@ -1,4 +1,4 @@
-import type { Plugin, ResolvedConfig } from 'vite'
+import type { HmrContext, ModuleNode, Plugin, ResolvedConfig } from 'vite'
 import type { SourceCandidateCollectorSnapshot } from './source-candidates'
 import type { TailwindInlineSourceCandidates, TailwindSourceEntry } from '@/tailwindcss/source-scan'
 import type { UserDefinedOptions } from '@/types'
@@ -23,6 +23,7 @@ import { createBundlerGeneratedCssMarker, hasBundlerGeneratedCssMarker } from '.
 import { generateCssByGenerator } from '../shared/generator-css'
 import { createHmrTimingRecorder } from '../shared/hmr-timing'
 import { normalizeOutputPathKey } from '../shared/module-graph'
+import { isSourceStyleRequest } from '../shared/style-requests'
 import { createViteCssFinalizerOutputPlugin } from './css-finalizer'
 import { createGenerateBundleHook } from './generate-bundle'
 import { createCssHandlerOptionsCache } from './generate-bundle/css-handler-options'
@@ -226,6 +227,7 @@ export function WeappTailwindcss(options: UserDefinedOptions = {}): Plugin[] | u
   const viteProcessedCssAssetResults = new Map<string, string>()
   const rememberedMainCssSources = new Map<string, string>()
   const rememberedMainCssSignatureByFile = new Map<string, string>()
+  const tailwindRootCssModuleIds = new Set<string>()
   const {
     runtimeState,
     refreshRuntimeState,
@@ -258,6 +260,9 @@ export function WeappTailwindcss(options: UserDefinedOptions = {}): Plugin[] | u
     recordedGeneratorCandidates = new Set(candidates)
   }
   const getRecordedGeneratorCandidates = () => recordedGeneratorCandidates
+  const invalidateRecordedGeneratorCandidates = () => {
+    recordedGeneratorCandidates = undefined
+  }
   const getSourceCandidates = () => sourceCandidateCollector.values()
   const getSourceCandidatesForEntries = (entries: TailwindSourceEntry[] | undefined) => sourceCandidateCollector.valuesForEntries(entries)
   const isWatchBuild = () => resolvedConfig?.command === 'build' && resolvedConfig.build.watch != null
@@ -461,6 +466,38 @@ export function WeappTailwindcss(options: UserDefinedOptions = {}): Plugin[] | u
   const markViteProcessedCssSource = (file: string) => {
     viteProcessedCssSourceFiles.add(normalizeViteProcessedCssFile(file))
   }
+  const rememberTailwindRootCssModule = (id: string) => {
+    if (!shouldOwnTailwindGeneration) {
+      return
+    }
+    tailwindRootCssModuleIds.add(id)
+    tailwindRootCssModuleIds.add(cleanUrl(id))
+  }
+  const resolveHotTailwindCssModules = (ctx: HmrContext) => {
+    const modules: ModuleNode[] = []
+    const seenModules = new Set<ModuleNode>()
+    for (const id of tailwindRootCssModuleIds) {
+      const candidates = [
+        ctx.server.moduleGraph.getModuleById(id),
+        ...(ctx.server.moduleGraph.getModulesByFile(id) ?? []),
+      ].filter((mod): mod is ModuleNode => {
+        if (mod == null) {
+          return false
+        }
+        const modId = mod.id ?? mod.url
+        return isSourceStyleRequest(modId)
+      })
+      for (const mod of candidates) {
+        if (seenModules.has(mod)) {
+          continue
+        }
+        seenModules.add(mod)
+        ctx.server.moduleGraph.invalidateModule(mod)
+        modules.push(mod)
+      }
+    }
+    return modules
+  }
   const matchesViteProcessedCssSource = (candidate: string) => {
     const normalized = normalizeViteProcessedCssFile(candidate)
     return viteProcessedCssSourceFiles.has(normalized)
@@ -520,6 +557,7 @@ export function WeappTailwindcss(options: UserDefinedOptions = {}): Plugin[] | u
     }
     viteGeneratedCssByFile.set(file, generated.css)
     markViteProcessedCssSource(file)
+    rememberTailwindRootCssModule(id)
     recordGeneratorCandidates(runtime)
     rememberMainCssSource(file, code)
     debug('css generated for vite postcss pipeline: %s bytes=%d', file, generated.css.length)
@@ -646,8 +684,13 @@ export function WeappTailwindcss(options: UserDefinedOptions = {}): Plugin[] | u
         }, { emit: false })
       },
       async handleHotUpdate(ctx) {
-        await hmrTimingRecorder.measure('sourceCandidates.handleHotUpdate', async () => {
+        return hmrTimingRecorder.measure('sourceCandidates.handleHotUpdate', async () => {
           await syncChangedSourceCandidateFile(ctx.file)
+          invalidateRecordedGeneratorCandidates()
+          const cssModules = resolveHotTailwindCssModules(ctx)
+          return cssModules.length > 0
+            ? [...ctx.modules, ...cssModules]
+            : undefined
         }, { emit: false })
       },
       async buildStart() {
