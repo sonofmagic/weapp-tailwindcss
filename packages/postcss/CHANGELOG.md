@@ -1,5 +1,13 @@
 # @weapp-tailwindcss/postcss
 
+## 2.2.1-next.5
+
+### Patch Changes
+
+- 🐛 **调整内置 `autoprefixer` 默认选项，显式关闭小程序不需要的 `grid` 与 `@supports` 前缀分支，保留 `remove: true` 清理过时前缀，并继续允许用户传入 `autoprefixer` 选项覆盖默认值。** [#873](https://github.com/sonofmagic/weapp-tailwindcss/pull/873) by @sonofmagic
+
+- 🐛 **收敛小程序 CSS 的 `-webkit-` 前缀输出，默认仅保留 `background-clip: text`、`mask-*`、`box-orient` 等小程序场景需要的兼容写法，并移除 `text-decoration`、`filter/backdrop-filter`、`transform/animation/transition` 等浏览器冗余前缀。** [#874](https://github.com/sonofmagic/weapp-tailwindcss/pull/874) by @github-actions
+
 ## 2.2.1-next.4
 
 ### Patch Changes
