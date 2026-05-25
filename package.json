@@ -149,8 +149,8 @@
     "script:sync": "repo ws upgrade",
     "script:clean": "repo ws clean",
     "commitlint": "commitlint --edit",
-    "up:pkg:latest": "pnpm up -rLi \"!@dcloudio/*\"",
-    "up:pkg": "pnpm up -ri \"!@dcloudio/*\"",
+    "up:pkg:latest": "node scripts/pnpm-smart-proxy.mjs up -rLi \"!@dcloudio/*\"",
+    "up:pkg": "node scripts/pnpm-smart-proxy.mjs up -ri \"!@dcloudio/*\"",
     "up:uniapp": "pnpx @dcloudio/uvm@latest"
   },
   "publishConfig": {
@@ -169,7 +169,7 @@
     "@csstools/css-tokenizer": "^4.0.0",
     "@csstools/postcss-is-pseudo-class": "^6.0.0",
     "@dcloudio/hbuilderx-cli": "^1.2.0",
-    "@eslint/config-inspector": "^3.0.2",
+    "@eslint/config-inspector": "^3.0.3",
     "@icebreakers/changelog-github": "^1.0.2",
     "@icebreakers/commitlint-config": "^3.0.1",
     "@icebreakers/eslint-config": "^5.0.1",
@@ -286,7 +286,7 @@
     "sass": "catalog:sass195",
     "sass-embedded": "^1.100.0",
     "sass-true": "^10.1.0",
-    "semver": "7.8.0",
+    "semver": "7.8.1",
     "set-value": "^4.1.0",
     "style-loader": "^4.0.0",
     "stylelint": "catalog:stylelint1625",

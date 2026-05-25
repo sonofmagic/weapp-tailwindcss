@@ -169,7 +169,7 @@ catalogs:
   weappIdeCli:
     weapp-ide-cli: ^5.3.2
   weappVite:
-    weapp-vite: ^6.16.23
+    weapp-vite: ^6.16.24
   wrangler:
     wrangler: ^4.94.0
 

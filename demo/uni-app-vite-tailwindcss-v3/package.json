@@ -105,7 +105,7 @@
     "htmlparser2": "^10.1.0",
     "magic-string": "^0.30.21",
     "miniprogram-computed": "^8.0.0",
-    "p-queue": "9.2.0",
+    "p-queue": "9.3.0",
     "tailwind-merge": "catalog:tailwindMerge",
     "tailwind-merge-v2": "npm:tailwind-merge@^2.6.1",
     "uview-plus": "^3.8.37",
