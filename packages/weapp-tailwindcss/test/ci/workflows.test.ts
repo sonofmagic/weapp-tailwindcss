@@ -92,6 +92,9 @@ describe('ci workflows', () => {
     const packageJson = readPackageJson<{ scripts: Record<string, string> }>('package.json')
     const { workflow } = readWorkflow('ci.yml')
 
+    expect(packageJson.scripts['e2e:static']).toContain('E2E_SKIP_OPEN_AUTOMATOR=1')
+    expect(packageJson.scripts['e2e:static:u']).toContain('E2E_SKIP_OPEN_AUTOMATOR=1')
+    expect(packageJson.scripts['e2e:static:dev']).not.toContain('E2E_SKIP_OPEN_AUTOMATOR=1')
     expect(packageJson.scripts['e2e:preprocessor']).toBe('vitest run -c ./e2e/vitest.e2e.config.ts e2e/preprocessor-source.test.ts')
     expect(stepRuns(workflow, 'quality')).toContain('pnpm e2e:preprocessor')
     expect(readText('e2e/preprocessor-source.test.ts')).toContain('@weapp-tailwindcss-demo/weapp-vite-tailwindcss-v4')

@@ -6,7 +6,7 @@ Generator CSS files: app.wxss, a.wxss, b.wxss, index.wxss, index.wxss, index.wxs
 
 | Bytes | Selectors | @supports | :hover | Tailwind banner | Raw arbitrary selector | Weapp escaped arbitrary selector |
 | ---: | ---: | --- | --- | --- | --- | --- |
-| 433980 | 3098 | false | false | false | false | true |
+| 434896 | 3105 | false | false | false | false | true |
 
 ## Generator CSS
 
@@ -225,6 +225,22 @@ wx-root-portal-content {
   -webkit-mask-size: 100% 100%;
   mask-size: 100% 100%;
   --svg: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' width='24' height='24'%3E%3Cpath fill='black' d='M10 20v-6h4v6h5v-8h3L12 3L2 12h3v8z'/%3E%3C/svg%3E");
+}
+.raw-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 16rpx;
+  border-radius: 8rpx;
+  font-size: 28rpx;
+  line-height: 40rpx;
+  font-weight: 600;
+  transition-property: all;
+  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+  transition-duration: 150ms;
+}
+.raw-btn::after {
+  content: var(--tw-content);
+  border-style: none;
 }
 .btn {
   display: inline-flex;
@@ -572,6 +588,9 @@ wx-root-portal-content {
 }
 .justify-center {
   justify-content: center;
+}
+.gap-2 {
+  gap: 16rpx;
 }
 .space-x-2_d5 > view + view,
 .space-x-2_d5 > view + text,
@@ -980,6 +999,9 @@ wx-root-portal-content {
 .bg-gradient-to-b {
   background-image: linear-gradient(to bottom, var(--tw-gradient-stops));
 }
+.bg-gradient-to-r {
+  background-image: linear-gradient(to right, var(--tw-gradient-stops));
+}
 .bg-gradient-to-t {
   background-image: linear-gradient(to top, var(--tw-gradient-stops));
 }
@@ -991,8 +1013,16 @@ wx-root-portal-content {
   --tw-gradient-to: rgba(47, 115, 241, 0) var(--tw-gradient-to-position);
   --tw-gradient-stops: var(--tw-gradient-from), var(--tw-gradient-to);
 }
+.from-_b_h9e58e9_B {
+  --tw-gradient-from: #9e58e9 var(--tw-gradient-from-position);
+  --tw-gradient-to: rgba(158, 88, 233, 0) var(--tw-gradient-to-position);
+  --tw-gradient-stops: var(--tw-gradient-from), var(--tw-gradient-to);
+}
 .to-_b_h4bcefd_B {
   --tw-gradient-to: #4bcefd var(--tw-gradient-to-position);
+}
+.to-blue-500 {
+  --tw-gradient-to: #3b82f6 var(--tw-gradient-to-position);
 }
 .bg-repeat {
   background-repeat: repeat;
@@ -1392,6 +1422,11 @@ wx-root-portal-content {
 .transition {
   transition-property: color, background-color, border-color, fill, stroke, opacity, box-shadow;
   transition-property: color, background-color, border-color, text-decoration-color, fill, stroke, opacity, box-shadow, transform, filter, backdrop-filter;
+  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+  transition-duration: 150ms;
+}
+.transition-all {
+  transition-property: all;
   transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
   transition-duration: 150ms;
 }
