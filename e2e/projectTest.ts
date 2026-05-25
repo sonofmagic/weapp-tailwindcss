@@ -3,7 +3,7 @@ import fs from 'node:fs/promises'
 import process from 'node:process'
 import { Launcher } from '@weapp-vite/miniprogram-automator'
 import path from 'pathe'
-import { describe, it } from 'vitest'
+import { describe, expect, it } from 'vitest'
 import { ensureProjectBuilt } from './projectBuild'
 import { collectCssSnapshots, formatWxml, logE2EError, projectFilter, removeWxmlId, resolveSnapshotFile, twExtract, wait } from './shared'
 
