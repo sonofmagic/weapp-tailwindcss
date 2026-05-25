@@ -2397,6 +2397,87 @@ describe('bundlers/shared generator css', () => {
     expect(styleHandler).not.toHaveBeenCalled()
   })
 
+  it('keeps Tailwind v3 component classes only referenced by @apply in app css output', async () => {
+    const rawSource = [
+      '@tailwind base;',
+      '@tailwind components;',
+      '@tailwind utilities;',
+      '@layer components {',
+      '  .raw-btn {',
+      '    @apply after:border-none inline-flex items-center gap-2 rounded text-sm font-semibold transition-all;',
+      '  }',
+      '  .btn {',
+      '    @apply raw-btn bg-gradient-to-r from-[#9e58e9] to-blue-500 px-2 py-1 text-white;',
+      '  }',
+      '}',
+      '@layer utilities {',
+      '  .filter-none {',
+      '    filter: none;',
+      '  }',
+      '}',
+    ].join('\n')
+
+    vi.doMock('@/generator', async () => {
+      const actual = await vi.importActual<typeof import('@/generator')>('@/generator')
+      return {
+        ...actual,
+        normalizeWeappTailwindcssGeneratorOptions: normalizeGeneratorOptions,
+      }
+    })
+
+    const { generateCssByGenerator } = await import('@/bundlers/shared/generator-css')
+    const result = await generateCssByGenerator({
+      opts: {
+        generator: {
+          target: 'weapp',
+        },
+        styleHandler: vi.fn(async (code: string) => ({ css: code })),
+      } as any,
+      runtimeState: {
+        twPatcher: {
+          majorVersion: 3,
+          options: {
+            projectRoot: process.cwd(),
+          },
+        } as any,
+        readyPromise: Promise.resolve(),
+      },
+      runtime: new Set(['btn']),
+      rawSource,
+      file: 'app.wxss',
+      cssHandlerOptions: {
+        isMainChunk: true,
+        postcssOptions: {
+          options: {
+            from: 'app.wxss',
+          },
+        },
+        majorVersion: 3,
+      } as any,
+      cssUserHandlerOptions: {
+        isMainChunk: false,
+        postcssOptions: {
+          options: {
+            from: 'app.wxss',
+          },
+        },
+        majorVersion: 3,
+      } as any,
+      styleHandler: vi.fn(async (code: string) => ({ css: code })),
+      debug: vi.fn(),
+    })
+    const css = result?.css ?? ''
+
+    expect(css).toContain('.raw-btn')
+    expect(css).toContain('.raw-btn::after')
+    expect(css).toContain('.btn')
+    expect(css).toContain('.btn::after')
+    expect(css).toContain('.filter-none')
+    expect(css).toContain('filter: none')
+    expect(css).toContain('background-image: linear-gradient(to right, var(--tw-gradient-stops))')
+    expect(css).not.toContain('@apply')
+  })
+
   it('resolves current css asset directives for generator source', async () => {
     const rawSource = [
       '@config "./generator-css.unit.test.ts";',

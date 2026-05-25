@@ -93,6 +93,94 @@ function collectCandidates(candidates: Iterable<string> | undefined) {
   return new Set(candidates ?? [])
 }
 
+function collectApplyCandidatesFromCss(css: string) {
+  if (!css.includes('@apply')) {
+    return []
+  }
+
+  const candidates = new Set<string>()
+  try {
+    postcss.parse(css).walkAtRules('apply', (rule) => {
+      for (const candidate of rule.params.split(/\s+/)) {
+        const normalized = candidate.replace(/!important$/, '').trim()
+        if (normalized) {
+          candidates.add(normalized)
+        }
+      }
+    })
+  }
+  catch {
+    // CSS 解析失败时交给后续 Tailwind 流程报错或降级处理。
+  }
+  return [...candidates]
+}
+
+function isTailwindCandidateLayer(params: string) {
+  return params.split(/[,\s]+/).some(layer => layer === 'components' || layer === 'utilities')
+}
+
+function extractClassCandidatesFromSelector(selector: string, candidates: Set<string>) {
+  for (let index = 0; index < selector.length; index++) {
+    if (selector[index] !== '.') {
+      continue
+    }
+
+    let candidate = ''
+    let escaped = false
+    for (let tokenIndex = index + 1; tokenIndex < selector.length; tokenIndex++) {
+      const char = selector[tokenIndex]
+      if (escaped) {
+        candidate += char
+        escaped = false
+        continue
+      }
+      if (char === '\\') {
+        escaped = true
+        continue
+      }
+      if (/[\w-]/.test(char)) {
+        candidate += char
+        continue
+      }
+      break
+    }
+
+    if (candidate) {
+      candidates.add(candidate)
+    }
+  }
+}
+
+function collectLayerCandidatesFromCss(css: string) {
+  if (!css.includes('@layer')) {
+    return []
+  }
+
+  const candidates = new Set<string>()
+  try {
+    postcss.parse(css).walkAtRules('layer', (layer) => {
+      if (!isTailwindCandidateLayer(layer.params)) {
+        return
+      }
+      layer.walkRules((rule) => {
+        extractClassCandidatesFromSelector(rule.selector, candidates)
+      })
+    })
+  }
+  catch {
+    // CSS 解析失败时交给后续 Tailwind 流程报错或降级处理。
+  }
+  return [...candidates]
+}
+
+function mergeGenerateCandidates(source: TailwindV3ResolvedSource, options: TailwindV3GenerateOptions) {
+  return collectCandidates([
+    ...collectLayerCandidatesFromCss(source.css),
+    ...collectApplyCandidatesFromCss(source.css),
+    ...collectCandidates(options.candidates),
+  ])
+}
+
 function mergeContent(content: unknown, rawEntries: Array<{ raw: string, extension: string }>) {
   if (isLegacyContentObject(content)) {
     return {
@@ -140,7 +228,8 @@ function createTailwindConfig(source: TailwindV3ResolvedSource, options: Tailwin
   const config = {
     ...(normalizeConfigObject(source.configObject) ?? {}),
   } as Config
-  const rawEntries = createRawContentEntries(options.candidates ?? [], options.sources ?? [])
+  const candidates = mergeGenerateCandidates(source, options)
+  const rawEntries = createRawContentEntries(candidates, options.sources ?? [])
   config.content = hasExplicitContentInput(options)
     ? createExplicitContentConfig(rawEntries) as Config['content']
     : mergeContent(config.content, rawEntries) as Config['content']
@@ -329,7 +418,8 @@ export function createTailwindV3Engine(source: TailwindV3ResolvedSource): Tailwi
       target = 'weapp',
     } = options
     const tailwindConfig = internals.validateConfig(internals.resolveConfig(createTailwindConfig(generateSource, options)))
-    const changedContent = createChangedContentEntries(options.candidates ?? [], options.sources ?? [])
+    const candidates = mergeGenerateCandidates(generateSource, options)
+    const changedContent = createChangedContentEntries(candidates, options.sources ?? [])
     const root = postcss.parse(generateSource.css, {
       from: undefined,
     })
@@ -341,7 +431,7 @@ export function createTailwindV3Engine(source: TailwindV3ResolvedSource): Tailwi
     if (isDirectUtilitiesOnlyCss(generateSource.css)) {
       context = internals.createContext(tailwindConfig, changedContent, root)
       internals.generateRules(
-        new Set(sortCandidates([internals.notOnDemandCandidate, ...collectCandidates(options.candidates)])),
+        new Set(sortCandidates([internals.notOnDemandCandidate, ...candidates])),
         context,
       )
       root.removeAll()
@@ -369,7 +459,7 @@ export function createTailwindV3Engine(source: TailwindV3ResolvedSource): Tailwi
       rawCss,
       context,
       classSet,
-      rawCandidates: collectCandidates(options.candidates),
+      rawCandidates: candidates,
       dependencies: [...dependencies],
       sources: [],
       root: null,
@@ -413,7 +503,7 @@ export function createTailwindV3Engine(source: TailwindV3ResolvedSource): Tailwi
     }
 
     const target = options.target ?? 'weapp'
-    const requestedCandidates = collectCandidates(options.candidates)
+    const requestedCandidates = mergeGenerateCandidates(source, options)
     if (requestedCandidates.size === 0) {
       return generateOnce(source, options)
     }

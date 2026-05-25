@@ -1,3 +1,5 @@
+import { mkdtemp, writeFile } from 'node:fs/promises'
+import { tmpdir } from 'node:os'
 import path from 'node:path'
 import { createTailwindV3Engine, resolveTailwindV3Source, transformTailwindV3CssToWeapp } from '@/tailwindcss/v3-engine'
 import { TailwindcssPatcher } from 'tailwindcss-patch'
@@ -249,6 +251,149 @@ describe('tailwindcss v3 engine', () => {
     expect(second.incrementalCss).not.toContain('.bg-blue-500')
     expect(second.classSet).toEqual(new Set(['bg-blue-500', 'bg-[#123455]']))
     expect(second.css.match(/\.bg-blue-500/g) ?? []).toHaveLength(1)
+  })
+
+  it('keeps custom component classes referenced by @apply in v3 generator output', async () => {
+    const source = await resolveTailwindV3Source({
+      css: [
+        '@tailwind components;',
+        '@tailwind utilities;',
+        '@layer components {',
+        '  .raw-btn {',
+        '    @apply after:border-none inline-flex items-center gap-2 rounded text-sm font-semibold transition-all;',
+        '  }',
+        '  .btn {',
+        '    @apply raw-btn bg-gradient-to-r from-[#9e58e9] to-blue-500 px-2 py-1 text-white;',
+        '  }',
+        '}',
+      ].join('\n'),
+      base: process.cwd(),
+      config: undefined,
+    })
+    const engine = createTailwindV3Engine(source)
+
+    const result = await engine.generate({
+      candidates: ['btn'],
+    })
+    const css = compactCss(result.css)
+
+    expect(css).toContain('.raw-btn{display:inline-flex')
+    expect(css).toContain('.raw-btn::after{content:var(--tw-content);border-style:none}')
+    expect(css).toContain('.btn{display:inline-flex')
+    expect(css).toContain('.btn::after{content:var(--tw-content);border-style:none}')
+    expect(css).toContain('background-image:linear-gradient(toright,var(--tw-gradient-stops))')
+    expect([...result.classSet]).toEqual(expect.arrayContaining(['btn', 'raw-btn']))
+  })
+
+  it('supports Tailwind v3 functions and directives in generator output', async () => {
+    const source = await resolveTailwindV3Source({
+      css: [
+        '@tailwind base;',
+        '@tailwind components;',
+        '@tailwind utilities;',
+        '@tailwind variants;',
+        '@layer utilities {',
+        '  .filter-none {',
+        '    filter: none;',
+        '  }',
+        '  .filter-grayscale {',
+        '    filter: grayscale(100%);',
+        '  }',
+        '}',
+        '@layer components {',
+        '  .btn-blue {',
+        '    @apply bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded;',
+        '  }',
+        '}',
+        '@layer base {',
+        '  h1 {',
+        '    @apply text-2xl;',
+        '  }',
+        '  h2 {',
+        '    @apply text-xl;',
+        '  }',
+        '}',
+        '.brand-card {',
+        '  color: theme("colors.blue.500");',
+        '}',
+        '@media screen(md) {',
+        '  .screen-md-card {',
+        '    @apply text-xl;',
+        '  }',
+        '}',
+      ].join('\n'),
+      base: process.cwd(),
+      config: undefined,
+    })
+    const engine = createTailwindV3Engine(source)
+
+    const result = await engine.generate({
+      candidates: ['btn-blue', 'brand-card', 'screen-md-card'],
+      styleOptions: {
+        isMainChunk: false,
+      },
+    })
+    const css = compactCss(result.css)
+    const rawCss = compactCss(result.rawCss)
+    const h1Index = rawCss.indexOf('h1{font-size:1.5rem')
+    const buttonIndex = rawCss.indexOf('.btn-blue{')
+    const filterIndex = rawCss.indexOf('.filter-none{')
+
+    expect(rawCss).toContain('h1{font-size:1.5rem')
+    expect(rawCss).toContain('h2{font-size:1.25rem')
+    expect(h1Index).toBeGreaterThanOrEqual(0)
+    expect(buttonIndex).toBeGreaterThan(h1Index)
+    expect(filterIndex).toBeGreaterThan(buttonIndex)
+    expect(css).toContain('.btn-blue{border-radius:0.25rem')
+    expect(css).toContain('background-color:rgba(59,130,246')
+    expect(rawCss).toContain('.btn-blue:hover')
+    expect(rawCss).toContain('2978216')
+    expect(css).toContain('.filter-none{filter:none;}')
+    expect(css).toContain('.filter-grayscale{filter:grayscale(100%);}')
+    expect(css).toContain('.brand-card{color:#3b82f6;}')
+    expect(css).toContain('@media(min-width:768px){.screen-md-card{font-size:1.25rem')
+    expect(css).not.toContain('@tailwind')
+    expect(css).not.toContain('@apply')
+    expect(css).not.toContain('theme(')
+    expect(css).not.toContain('screen(')
+    expect([...result.classSet]).toEqual(expect.arrayContaining([
+      'btn-blue',
+      'filter-none',
+      'filter-grayscale',
+      'text-2xl',
+      'text-xl',
+    ]))
+  })
+
+  it('resolves Tailwind v3 @config directives before generation', async () => {
+    const root = await mkdtemp(path.join(tmpdir(), 'weapp-tw-v3-config-'))
+    await writeFile(path.join(root, 'tailwind.config.cjs'), [
+      'module.exports = {',
+      '  content: [],',
+      '  theme: {',
+      '    extend: {',
+      '      colors: { brand: "#123456" },',
+      '    },',
+      '  },',
+      '}',
+    ].join('\n'), 'utf8')
+    const source = await resolveTailwindV3Source({
+      css: [
+        '@config "./tailwind.config.cjs";',
+        '@tailwind utilities;',
+      ].join('\n'),
+      base: root,
+    })
+    const engine = createTailwindV3Engine(source)
+
+    const result = await engine.generate({
+      candidates: ['bg-brand'],
+    })
+
+    expect(source.config).toBe(path.join(root, 'tailwind.config.cjs'))
+    expect(result.rawCss).toContain('.bg-brand')
+    expect(result.rawCss).toContain('18 52 86')
+    expect(result.rawCss).not.toContain('@config')
   })
 
   it('does not rescan configured content when explicit candidates drive v3 incremental generation', async () => {
