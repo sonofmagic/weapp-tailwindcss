@@ -6,6 +6,10 @@ export {
   normalizeModernColorValue,
   protectDynamicColorMixAlpha,
 } from './compat/color-mix'
+export {
+  normalizeMiniProgramPrefixedDeclaration,
+  removeUnsupportedMiniProgramPrefixedAtRule,
+} from './compat/mini-program-prefixes'
 export * from './handler'
 export { default as postcssHtmlTransform, type IOptions as PostcssHtmlTransformOptions } from './html-transform'
 export {

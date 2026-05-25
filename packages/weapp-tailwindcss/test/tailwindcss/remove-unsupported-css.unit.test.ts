@@ -201,6 +201,71 @@ describe('tailwindcss/remove unsupported css', () => {
     expect(css).toContain('.text-red-500{color:red}')
   })
 
+  it('keeps only mini-program useful webkit prefixes in final css', () => {
+    const css = finalizeMiniProgramCss([
+      '.underline{-webkit-text-decoration-line:underline;text-decoration-line:underline}',
+      '.backdrop-blur-lg{--tw-backdrop-blur:blur(16px);-webkit-backdrop-filter:var(--tw-backdrop-blur);backdrop-filter:var(--tw-backdrop-blur)}',
+      '.transition{transition-property:color,text-decoration-color,transform,filter,backdrop-filter,-webkit-text-decoration-color,-webkit-transform,-webkit-filter,-webkit-backdrop-filter;transition:transform .2s, -webkit-transform .2s}',
+      '.clip{-webkit-background-clip:text;background-clip:text}',
+      '.icon{-webkit-mask-image:var(--svg);mask-image:var(--svg);-webkit-mask-size:100% 100%;mask-size:100% 100%}',
+      '.line-clamp{display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:2;overflow:hidden}',
+      '.stroke{-webkit-text-fill-color:transparent;-webkit-text-stroke:1px currentColor;-webkit-text-stroke-color:red;-webkit-text-stroke-width:1px}',
+      '.scroll{-webkit-overflow-scrolling:touch}',
+      '.unsupported{-webkit-clip-path:inset(0);clip-path:inset(0);-webkit-writing-mode:vertical-rl;writing-mode:vertical-rl;-webkit-appearance:none;appearance:none}',
+      '@-webkit-keyframes spin{to{-webkit-transform:rotate(1turn)}}',
+      '@keyframes spin{to{-webkit-transform:rotate(1turn);transform:rotate(1turn)}}',
+    ].join('\n'))
+
+    expect(css).not.toContain('-webkit-text-decoration-line')
+    expect(css).not.toContain('-webkit-backdrop-filter')
+    expect(css).not.toContain('-webkit-text-decoration-color')
+    expect(css).not.toContain('-webkit-transform')
+    expect(css).not.toContain('-webkit-filter')
+    expect(css).not.toContain('@-webkit-keyframes')
+    expect(css).toContain('transition-property:color, text-decoration-color, transform, filter, backdrop-filter')
+    expect(css).toContain('transition:transform .2s')
+    expect(css).toContain('-webkit-background-clip:text')
+    expect(css).toContain('-webkit-mask-image:var(--svg)')
+    expect(css).toContain('-webkit-mask-size:100% 100%')
+    expect(css).toContain('display:-webkit-box')
+    expect(css).toContain('-webkit-box-orient:vertical')
+    expect(css).toContain('-webkit-line-clamp:2')
+    expect(css).toContain('-webkit-text-fill-color:transparent')
+    expect(css).toContain('-webkit-text-stroke:1px currentColor')
+    expect(css).toContain('-webkit-text-stroke-color:red')
+    expect(css).toContain('-webkit-text-stroke-width:1px')
+    expect(css).toContain('-webkit-overflow-scrolling:touch')
+    expect(css).not.toContain('-webkit-clip-path')
+    expect(css).not.toContain('-webkit-writing-mode')
+    expect(css).not.toContain('-webkit-appearance')
+  })
+
+  it('keeps only mini-program useful webkit prefixes in generated css pruning', () => {
+    const css = pruneMiniProgramGeneratedCss([
+      '.underline{-webkit-text-decoration-line:underline;text-decoration-line:underline}',
+      '.backdrop-blur-lg{-webkit-backdrop-filter:blur(16px);backdrop-filter:blur(16px)}',
+      '.transition{transition-property:transform,-webkit-transform}',
+      '.clip{-webkit-background-clip:text;background-clip:text}',
+      '.icon{-webkit-mask-repeat:no-repeat;mask-repeat:no-repeat}',
+      '.line-clamp{display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:2;overflow:hidden}',
+      '.stroke{-webkit-text-fill-color:transparent;-webkit-text-stroke-color:red}',
+      '.scroll{-webkit-overflow-scrolling:touch}',
+    ].join('\n'))
+
+    expect(css).not.toContain('-webkit-text-decoration-line')
+    expect(css).not.toContain('-webkit-backdrop-filter')
+    expect(css).not.toContain('-webkit-transform')
+    expect(css).toContain('transition-property:transform')
+    expect(css).toContain('-webkit-background-clip:text')
+    expect(css).toContain('-webkit-mask-repeat:no-repeat')
+    expect(css).toContain('display:-webkit-box')
+    expect(css).toContain('-webkit-box-orient:vertical')
+    expect(css).toContain('-webkit-line-clamp:2')
+    expect(css).toContain('-webkit-text-fill-color:transparent')
+    expect(css).toContain('-webkit-text-stroke-color:red')
+    expect(css).toContain('-webkit-overflow-scrolling:touch')
+  })
+
   it('normalizes modern color functions out of final mini-program css', () => {
     const css = finalizeMiniProgramCss([
       ':host,page,.tw-root,wx-root-portal-content{',

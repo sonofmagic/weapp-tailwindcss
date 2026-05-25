@@ -1,4 +1,4 @@
-import { normalizeModernColorValue } from '@weapp-tailwindcss/postcss'
+import { normalizeMiniProgramPrefixedDeclaration, normalizeModernColorValue, removeUnsupportedMiniProgramPrefixedAtRule } from '@weapp-tailwindcss/postcss'
 import postcss from 'postcss'
 import { removeUnsupportedCascadeLayers } from './remove-unsupported-css'
 
@@ -225,6 +225,12 @@ export function pruneMiniProgramGeneratedCss(
 
   root.walkAtRules('supports', (atRule) => {
     atRule.remove()
+  })
+  root.walkAtRules((atRule) => {
+    removeUnsupportedMiniProgramPrefixedAtRule(atRule)
+  })
+  root.walkDecls((decl) => {
+    normalizeMiniProgramPrefixedDeclaration(decl)
   })
 
   root.walkRules((rule) => {

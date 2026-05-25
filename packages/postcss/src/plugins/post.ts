@@ -2,6 +2,7 @@
 import type { Declaration, Plugin, PluginCreator, Rule } from 'postcss'
 import type { IStyleHandlerOptions } from '../types'
 import { defu } from '@weapp-tailwindcss/shared'
+import { normalizeMiniProgramPrefixedDeclaration, removeUnsupportedMiniProgramPrefixedAtRule } from '../compat/mini-program-prefixes'
 import { normalizeTailwindcssRpxDeclaration } from '../compat/tailwindcss-rpx'
 import { normalizeTailwindcssV4Declaration } from '../compat/tailwindcss-v4'
 import { shouldRemoveEmptyRuleForUniAppX } from '../compat/uni-app-x'
@@ -131,10 +132,23 @@ const postcssWeappTailwindcssPostPlugin: PostcssWeappTailwindcssRenamePlugin = (
       normalizeTailwindcssV4Declaration(decl)
     }
     removeLegacyFlexboxPrefix(decl)
+    if (enableMainChunkTransforms) {
+      normalizeMiniProgramPrefixedDeclaration(decl)
+    }
   }
 
   if (enableMainChunkTransforms) {
+    p.OnceExit = (root) => {
+      root.walkDecls((decl) => {
+        normalizeMiniProgramPrefixedDeclaration(decl)
+      })
+      root.walkAtRules((atRule) => {
+        removeUnsupportedMiniProgramPrefixedAtRule(atRule)
+      })
+    }
+
     p.AtRuleExit = (atRule) => {
+      removeUnsupportedMiniProgramPrefixedAtRule(atRule)
       /**
        * @description 移除 property
        */

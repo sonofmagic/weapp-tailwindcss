@@ -410,7 +410,6 @@ html,:host {
     line-height: 1.5;
     tab-size: 4;
     text-size-adjust: 100%;
-    -webkit-tap-highlight-color: transparent;
   }
 
 body {
@@ -1040,7 +1039,6 @@ html,:host {
     line-height: 1.5;
     tab-size: 4;
     text-size-adjust: 100%;
-    -webkit-tap-highlight-color: transparent;
   }
 
 body {
@@ -1336,7 +1334,6 @@ view,text,:after,:before {
     padding: 0;
   }
 html,:host {
-    -webkit-text-size-adjust: 100%;
     -moz-tab-size: 4;
     tab-size: 4;
     line-height: 1.5;
@@ -1352,7 +1349,6 @@ html,:host {
     );
     font-feature-settings: var(--default-font-feature-settings, normal);
     font-variation-settings: var(--default-font-variation-settings, normal);
-    -webkit-tap-highlight-color: transparent;
   }
 body {
     line-height: inherit;
@@ -1368,7 +1364,6 @@ h1,h2,h3,h4,h5,h6 {
   }
 a {
     color: inherit;
-    -webkit-text-decoration: inherit;
     text-decoration: inherit;
   }
 b,strong {
@@ -1454,7 +1449,6 @@ textarea {
     resize: vertical;
   }
 ::-webkit-search-decoration {
-    -webkit-appearance: none;
   }
 ::-webkit-date-and-time-value {
     min-height: 1lh;
@@ -1506,7 +1500,6 @@ textarea {
     box-shadow: none;
   }
 button {
-    -webkit-appearance: button;
     -moz-appearance: button;
     appearance: button;
   }
@@ -2301,7 +2294,6 @@ body {
     outline-style: none;
   }
 .select-none {
-    -webkit-user-select: none;
     user-select: none;
   }
 .duration-200 {
@@ -3690,7 +3682,6 @@ html,:host {
     line-height: 1.5;
     tab-size: 4;
     text-size-adjust: 100%;
-    -webkit-tap-highlight-color: transparent;
   }
 
 body {

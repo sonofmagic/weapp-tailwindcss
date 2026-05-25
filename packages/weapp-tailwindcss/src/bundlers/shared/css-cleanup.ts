@@ -1,4 +1,5 @@
 import type { CssPreflightOptions } from '@/types'
+import { normalizeMiniProgramPrefixedDeclaration, removeUnsupportedMiniProgramPrefixedAtRule } from '@weapp-tailwindcss/postcss'
 import postcss from 'postcss'
 import { removeUnsupportedCascadeLayers } from '@/tailwindcss/remove-unsupported-css'
 import { removeUnsupportedMiniProgramAtRules } from './css-cleanup/at-rules'
@@ -286,6 +287,12 @@ function finalizeMiniProgramCssRoot(root: postcss.Root, options: FinalizeMiniPro
   removeUnsupportedBrowserSelectors(root)
   removeDisplayP3Declarations(root)
   removeUnsupportedModernColorDeclarations(root)
+  root.walkDecls((decl) => {
+    normalizeMiniProgramPrefixedDeclaration(decl)
+  })
+  root.walkAtRules((atRule) => {
+    removeUnsupportedMiniProgramPrefixedAtRule(atRule)
+  })
 
   const hoistAnchor = createHoistInsertionAnchor(root)
   const preflightRules = collectPreflightRules(root, options)

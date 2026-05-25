@@ -719,4 +719,59 @@ page{--status-bar-height:25px;--top-window-height:0px;--window-top:0px;--window-
     expect(css).toContain('-webkit-background-clip: text')
     expect(css).toContain('background-clip: text')
   })
+
+  it('keeps only mini-program useful webkit prefixes', async () => {
+    const styleHandler = createStyleHandler({
+      isMainChunk: true,
+    })
+    const { css } = await styleHandler([
+      '.demo {',
+      '  background-clip: text;',
+      '  mask-image: var(--svg);',
+      '  mask-size: 100% 100%;',
+      '  display: -webkit-box;',
+      '  -webkit-box-orient: vertical;',
+      '  -webkit-line-clamp: 2;',
+      '  -webkit-overflow-scrolling: touch;',
+      '  -webkit-text-fill-color: transparent;',
+      '  -webkit-text-stroke: 1px currentColor;',
+      '  text-decoration-line: underline;',
+      '  backdrop-filter: blur(16px);',
+      '  filter: blur(4px);',
+      '  clip-path: inset(0);',
+      '  writing-mode: vertical-rl;',
+      '  appearance: none;',
+      '  transform: translateX(1px);',
+      '  transition-property: color, text-decoration-color, transform, filter, backdrop-filter;',
+      '  transition: transform .2s;',
+      '  animation: spin 1s;',
+      '}',
+      '@keyframes spin { to { transform: rotate(1turn); } }',
+    ].join('\n'), {
+      isMainChunk: true,
+      majorVersion: 4,
+    })
+
+    expect(css).toContain('-webkit-background-clip: text')
+    expect(css).toContain('-webkit-mask-image: var(--svg)')
+    expect(css).toContain('-webkit-mask-size: 100% 100%')
+    expect(css).toContain('display: -webkit-box')
+    expect(css).toContain('-webkit-box-orient: vertical')
+    expect(css).toContain('-webkit-line-clamp: 2')
+    expect(css).toContain('-webkit-overflow-scrolling: touch')
+    expect(css).toContain('-webkit-text-fill-color: transparent')
+    expect(css).toContain('-webkit-text-stroke: 1px currentColor')
+    expect(css).not.toContain('-webkit-text-decoration-line')
+    expect(css).not.toContain('-webkit-text-decoration-color')
+    expect(css).not.toContain('-webkit-backdrop-filter')
+    expect(css).not.toContain('-webkit-filter')
+    expect(css).not.toContain('-webkit-clip-path')
+    expect(css).not.toContain('-webkit-writing-mode')
+    expect(css).not.toContain('-webkit-appearance')
+    expect(css).not.toContain('-webkit-transform')
+    expect(css).not.toContain('-webkit-animation')
+    expect(css).not.toContain('@-webkit-keyframes')
+    expect(css).not.toContain('transition-property: color, text-decoration-color, transform, filter, backdrop-filter, -webkit-text-decoration-color')
+    expect(css).not.toContain('transition: transform .2s, -webkit-transform .2s')
+  })
 })
