@@ -160,6 +160,10 @@ jobs:
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
+      - name: Install Playwright Chromium
+        shell: bash
+        run: pnpm --filter @weapp-tailwindcss/scripts exec playwright install chromium
+
       - name: Build watch suite package dependencies
         run: pnpm --filter weapp-tailwindcss... --filter "./packages-runtime/*" run build
 
@@ -382,6 +386,10 @@ jobs:
 
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
+
+      - name: Install Playwright Chromium
+        shell: bash
+        run: pnpm --filter @weapp-tailwindcss/scripts exec playwright install chromium
 
       - name: Build watch suite package dependencies
         run: pnpm --filter weapp-tailwindcss... --filter "./packages-runtime/*" run build

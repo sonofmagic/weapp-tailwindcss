@@ -93,6 +93,8 @@ export interface ClassMutationConfig {
   sourceFile: string
   verifyEscapedIn: Array<'wxml' | 'js'>
   verifyClassLiteralIn?: Array<'wxml' | 'js'>
+  verifyAllEscapedClasses?: boolean
+  verifyAllClassLiterals?: boolean
   forbidBgHexTruncationIn?: Array<'wxml' | 'js'>
   roundConfigs?: MutationRoundConfig[]
   mutate: (source: string, payload: ClassMutationPayload) => string

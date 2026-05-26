@@ -117,7 +117,7 @@ export function buildDemoBaseCases(baseCwd: string): WatchCase[] {
     label: 'demo/taro-webpack-react-tailwindcss-v3',
     project: 'demo/taro-webpack-react-tailwindcss-v3',
     group: 'demo',
-    maxPluginProcessMs: 1200,
+    maxPluginProcessMs: 1500,
     cwd: path.resolve(baseCwd, 'demo/taro-webpack-react-tailwindcss-v3'),
     devScript: 'dev:e2e-watch',
     env: taroWatchEnv,

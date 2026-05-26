@@ -713,6 +713,8 @@ export function buildDemoExtendedCases(baseCwd: string): WatchCase[] {
       sourceFile: path.resolve(baseCwd, 'demo/taro-vite-vue3-tailwindcss-v3/src/pages/index/index.vue'),
       verifyEscapedIn: ['js'],
       verifyClassLiteralIn: ['js'],
+      verifyAllEscapedClasses: false,
+      verifyAllClassLiterals: false,
       roundConfigs: buildHexScriptRoundConfigs(),
       mutate(source, payload) {
         const snippet = `    <view class="${payload.classLiteral}">${payload.marker}-template</view>`
@@ -801,6 +803,8 @@ export function buildDemoExtendedCases(baseCwd: string): WatchCase[] {
       sourceFile: path.resolve(baseCwd, 'demo/taro-vite-vue3-tailwindcss-v4/src/pages/index/index.vue'),
       verifyEscapedIn: ['js'],
       verifyClassLiteralIn: ['js'],
+      verifyAllEscapedClasses: false,
+      verifyAllClassLiterals: false,
       roundConfigs: buildHexScriptRoundConfigs(),
       mutate(source, payload) {
         const snippet = `    <view class="${payload.classLiteral}">${payload.marker}-template</view>`

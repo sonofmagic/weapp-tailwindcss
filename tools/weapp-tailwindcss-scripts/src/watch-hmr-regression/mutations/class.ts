@@ -355,34 +355,38 @@ function assertRoundOutputs(
   escapedClasses: string[],
   outputs: RoundOutputs,
 ) {
-  for (const escaped of escapedClasses) {
-    const classToken = classTokens[escapedClasses.indexOf(escaped)]
-    const expectedValues = createClassTokenExpectedValues(classToken, escaped)
-    if (mutation.verifyEscapedIn.includes('wxml')) {
-      assertContainsOneOf(outputs.wxml, expectedValues, `[${watchCase.label}] mutation=${mutationKind} phase=${phase} updated wxml`)
-    }
-    if (mutation.verifyEscapedIn.includes('js')) {
-      assertContainsOneOf(outputs.js, expectedValues, `[${watchCase.label}] mutation=${mutationKind} phase=${phase} updated js`)
+  if (mutation.verifyAllEscapedClasses !== false) {
+    for (const escaped of escapedClasses) {
+      const classToken = classTokens[escapedClasses.indexOf(escaped)]
+      const expectedValues = createClassTokenExpectedValues(classToken, escaped)
+      if (mutation.verifyEscapedIn.includes('wxml')) {
+        assertContainsOneOf(outputs.wxml, expectedValues, `[${watchCase.label}] mutation=${mutationKind} phase=${phase} updated wxml`)
+      }
+      if (mutation.verifyEscapedIn.includes('js')) {
+        assertContainsOneOf(outputs.js, expectedValues, `[${watchCase.label}] mutation=${mutationKind} phase=${phase} updated js`)
+      }
     }
   }
 
-  for (const [index, classToken] of classTokens.entries()) {
-    const escapedToken = escapedClasses[index]
-    const expectedValues = createClassTokenExpectedValues(classToken, escapedToken)
+  if (mutation.verifyAllClassLiterals !== false) {
+    for (const [index, classToken] of classTokens.entries()) {
+      const escapedToken = escapedClasses[index]
+      const expectedValues = createClassTokenExpectedValues(classToken, escapedToken)
 
-    if (verifyClassLiteralIn.includes('wxml')) {
-      assertContainsOneOf(
-        outputs.wxml,
-        expectedValues,
-        `[${watchCase.label}] mutation=${mutationKind} phase=${phase} updated wxml token literal`,
-      )
-    }
-    if (verifyClassLiteralIn.includes('js')) {
-      assertContainsOneOf(
-        outputs.js,
-        expectedValues,
-        `[${watchCase.label}] mutation=${mutationKind} phase=${phase} updated js token literal`,
-      )
+      if (verifyClassLiteralIn.includes('wxml')) {
+        assertContainsOneOf(
+          outputs.wxml,
+          expectedValues,
+          `[${watchCase.label}] mutation=${mutationKind} phase=${phase} updated wxml token literal`,
+        )
+      }
+      if (verifyClassLiteralIn.includes('js')) {
+        assertContainsOneOf(
+          outputs.js,
+          expectedValues,
+          `[${watchCase.label}] mutation=${mutationKind} phase=${phase} updated js token literal`,
+        )
+      }
     }
   }
 

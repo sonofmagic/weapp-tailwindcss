@@ -10,7 +10,7 @@ import { promises as fs } from 'node:fs'
 import process from 'node:process'
 import { writeFilePreserveEol } from '../text'
 import { runClassMutation } from './class'
-import { waitForCompileSettled, waitForOutputsReady } from './shared'
+import { waitForOutputsReady } from './shared'
 import { runStyleMutation } from './style'
 
 function createSubPackageWatchCase(watchCase: WatchCase, mutation: SubPackageMutationConfig): WatchCase {
@@ -102,7 +102,9 @@ export async function runSubPackageMutation(
     js: mutation.outputJs,
     label: subWatchCase.label,
   })
-  await waitForCompileSettled(subWatchCase, options, session, attachWrittenAt)
+  // 这里的 attach 写入只用于确保分包源文件已被 watch 工具链订阅，内容没有变化。
+  // 部分框架会复用已有产物且不再输出新的 compile success，真正的 HMR 行为由后续 mutation 断言覆盖。
+  session.ensureRunning()
 
   const globalStyleOutputs = [...new Set([
     ...mutation.outputStyleCandidates,
