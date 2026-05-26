@@ -6,7 +6,7 @@ Generator CSS files: app.wxss, styles/app.wxss, app.wxss, index.wxss
 
 | Bytes | Selectors | @supports | :hover | Tailwind banner | Raw arbitrary selector | Weapp escaped arbitrary selector |
 | ---: | ---: | --- | --- | --- | --- | --- |
-| 9507 | 68 | false | false | false | false | true |
+| 9491 | 68 | false | false | false | false | true |
 
 ## Generator CSS
 
@@ -148,14 +148,14 @@ wx-root-portal-content {
 .text-_b22px_B {
   font-size: 22px;
 }
+.text-_b32_d4rpx_B {
+  font-size: 32.4rpx;
+}
 .text-_b32px_B {
   font-size: 32px;
 }
 .text-_b32rpx_B {
   font-size: 32rpx;
-}
-.text-_blength_c32_d4rpx_B {
-  font-size: 32.4rpx;
 }
 .text-_blength_cvar_p--my-var-length_P_B {
   font-size: var(--my-var-length);
@@ -371,14 +371,14 @@ wx-root-portal-content {
 .text-_b22px_B {
   font-size: 22px;
 }
+.text-_b32_d4rpx_B {
+  font-size: 32.4rpx;
+}
 .text-_b32px_B {
   font-size: 32px;
 }
 .text-_b32rpx_B {
   font-size: 32rpx;
-}
-.text-_blength_c32_d4rpx_B {
-  font-size: 32.4rpx;
 }
 .text-_blength_cvar_p--my-var-length_P_B {
   font-size: var(--my-var-length);

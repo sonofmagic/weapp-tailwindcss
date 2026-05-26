@@ -3056,7 +3056,7 @@
     ],
     "status": "passed",
     "generator": {
-      "bytes": 9507,
+      "bytes": 9491,
       "selectors": [
         ".-m-_b20px_B",
         "._2xl_ctext-_bred_B",
@@ -3111,13 +3111,13 @@
         ".space-y-_b1_d6rem_B > view + view",
         ".text-_b20px_B",
         ".text-_b22px_B",
+        ".text-_b32_d4rpx_B",
         ".text-_b32px_B",
         ".text-_b32rpx_B",
         ".text-_b_h5cdc34_B",
         ".text-_b_hbada55_B",
         ".text-_b_hdddddd_B",
         ".text-_bcolor_cvar_p--my-var_P_B",
-        ".text-_blength_c32_d4rpx_B",
         ".text-_blength_cvar_p--my-var-length_P_B",
         ".text-_bvar_p--my-var_P_B",
         ".tw-root",
