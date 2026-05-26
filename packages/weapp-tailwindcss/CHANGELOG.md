@@ -1,5 +1,13 @@
 # weapp-tailwindcss
 
+## 5.0.0-next.24
+
+### Patch Changes
+
+- 🐛 **修复 Tailwind CSS v4 下 `text-[32.4rpx]` 等 rpx 长度任意值在 web 和小程序目标中泄漏内部 `length:` 类型提示的问题，保持最终选择器和类名使用原始写法。** [#878](https://github.com/sonofmagic/weapp-tailwindcss/pull/878) by @github-actions
+
+- 🐛 **为 Taro、uni-app 等支持 Web/H5 的 watch 回归补充 Tailwind CSS HMR 验证，并通过 Playwright 校验 Web 端样式热更新链路。** [#878](https://github.com/sonofmagic/weapp-tailwindcss/pull/878) by @github-actions
+
 ## 5.0.0-next.23
 
 ### Patch Changes

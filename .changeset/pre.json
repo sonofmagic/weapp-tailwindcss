@@ -141,6 +141,7 @@
     "remove-obsolete-patcher-compat",
     "remove-weapp-tailwindcss-mangle-remnants",
     "remove-webpack4-postcss7",
+    "smooth-rpx-text-length",
     "soft-v3-v4-autoprefixer-default",
     "source-candidates-use-patch",
     "steady-mini-program-postcss-refactor",
@@ -181,6 +182,7 @@
     "watch-hmr-demo-apps-coverage",
     "weapp-tailwindcss-plugin-alias",
     "web-generator-framework-env",
+    "web-hmr-watch-regression",
     "web-v4-vite-css-target"
   ]
 }
