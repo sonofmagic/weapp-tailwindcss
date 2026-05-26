@@ -9,6 +9,7 @@ const generator = {
     px2rpx: true,
   },
 }
+const isWatchRegression = process.env.WEAPP_TW_WATCH_REGRESSION === '1'
 console.log(process.env.TARO_ENV)
 // https://taro-docs.jd.com/docs/next/config#defineconfig-辅助函数
 export default defineConfig<'vite'>(async (merge, { command, mode }) => {
@@ -59,7 +60,7 @@ export default defineConfig<'vite'>(async (merge, { command, mode }) => {
           rem2rpx: true,
           generator,
           // 除了小程序这些，其他平台都 disabled
-          disabled: process.env.TARO_ENV === 'h5' || process.env.TARO_ENV === 'harmony' || process.env.TARO_ENV === 'rn',
+          disabled: (!isWatchRegression && process.env.TARO_ENV === 'h5') || process.env.TARO_ENV === 'harmony' || process.env.TARO_ENV === 'rn',
           injectAdditionalCssVarScope: true,
         })
       ] as Plugin[]

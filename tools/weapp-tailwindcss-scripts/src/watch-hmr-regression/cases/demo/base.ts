@@ -1,4 +1,4 @@
-import type { WatchCase } from '../../types'
+import type { SubPackageMutationConfig, WatchCase } from '../../types'
 import path from 'node:path'
 import {
   appendTrailingSnippet,
@@ -49,7 +49,7 @@ function createSubPackageMutations(
     templateVerifyEscapedIn?: Array<'wxml' | 'js'>
     templateVerifyClassLiteralIn?: Array<'wxml' | 'js'>
   },
-): WatchCase['subPackageMutations'] {
+): SubPackageMutationConfig[] {
   const styleExtension = options.styleExtension ?? normalizeExtension(options.version)
   const sourceRoot = options.sourceRoot === '.' ? '' : `${options.sourceRoot}/`
   const distRoot = options.distRoot === '.' ? '' : `${options.distRoot}/`
@@ -73,7 +73,7 @@ function createSubPackageMutations(
       outputJs: path.join(distDir, 'index.js'),
       outputStyleCandidates,
       globalStyleCandidates,
-      skipStyleMutation: options.skipStyleMutation,
+      ...(options.skipStyleMutation === undefined ? {} : { skipStyleMutation: options.skipStyleMutation }),
       templateMutation: {
         sourceFile: pageSource,
         verifyEscapedIn: options.templateVerifyEscapedIn

@@ -46,6 +46,14 @@ const INVALID_BG_UNTERMINATED_RE = /\bbg-\[[^\]]*$/gm
 const INVALID_PX_UNTERMINATED_RE = /\bpx-\[[^\]]*$/gm
 const INVALID_BG_INNER_SPACE_RE = /\bbg-\[[^\]\s]*\s[^\]\s]*\]/g
 const INVALID_PX_INNER_SPACE_RE = /\bpx-\[[^\]\s]*\s[^\]\s]*\]/g
+const WEB_HMR_CASES = new Set<ConcreteWatchCaseName>([
+  'taro-vite-react-tailwindcss-v3',
+  'taro-vite-react-tailwindcss-v4',
+  'taro-vite-vue3-tailwindcss-v3',
+  'taro-vite-vue3-tailwindcss-v4',
+  'uni-app-vite-tailwindcss-v3',
+  'uni-app-vite-tailwindcss-v4',
+])
 
 function normalizePathLike(value: string) {
   return value.replace(PATH_SEPARATOR_RE, '/')
@@ -198,6 +206,23 @@ interface SubPackageMutationMetric {
   style: StyleMutationMetric
 }
 
+interface WebHmrMetric {
+  devScript: string
+  sourceFile: string
+  url: string
+  marker: string
+  classLiteral: string
+  computedStyle: {
+    backgroundColor: string
+    width: string
+    height: string
+  }
+  initialReadyMs: number
+  hotUpdateEffectiveMs: number
+  rollbackEffectiveMs: number
+  totalMs: number
+}
+
 interface HotUpdateCaseReport {
   name: ConcreteWatchCaseName
   label: string
@@ -215,6 +240,7 @@ interface HotUpdateCaseReport {
   globalStyleOutputs?: string[]
   mutationMetrics: HotUpdateMutationMetric[]
   userReportedHotUpdate?: UserReportedHotUpdateMetric
+  webHmr?: WebHmrMetric
   subPackageMutationMetrics?: SubPackageMutationMetric[]
   summaryByMutationKind: Partial<Record<MutationKind, HotUpdateSummary>>
   initialReadyMs: number
@@ -336,6 +362,10 @@ function assertHasWxssOutput(outputs: string[], label: string) {
     outputs.some(output => output.includes('.wxss')),
     `${label} should contain *.wxss output`,
   ).toBe(true)
+}
+
+function shouldHaveWebHmr(item: HotUpdateCaseReport) {
+  return WEB_HMR_CASES.has(item.name)
 }
 
 export function resolveCaseName() {
@@ -707,6 +737,32 @@ export function assertHotUpdateReport(report: HotUpdateReport, target: WatchCase
         )
         expect(userReportedHotUpdate.classTokens.some(token => token === 'text-[88rpx]' || token === 'text-[188rpx]')).toBe(true)
       }
+    }
+
+    if (shouldHaveWebHmr(item)) {
+      const webHmr = item.webHmr
+      expect(webHmr, `[${item.project}] should include web Tailwind HMR Playwright metrics`).toBeDefined()
+      if (!webHmr) {
+        throw new Error(`[${item.project}] missing web HMR metric`)
+      }
+      expect(webHmr.devScript).toBe(item.name.startsWith('taro-') ? 'build:h5' : 'dev:h5')
+      expect(normalizePathLike(webHmr.sourceFile)).toContain('src/pages/index/index.')
+      expect(webHmr.url).toMatch(/^https?:\/\/(?:localhost|127\.0\.0\.1|\[::1\])/)
+      expect(webHmr.marker).toContain(`tw-watch-web-${item.name}`)
+      expect(webHmr.classLiteral).toContain('bg-[#123456]')
+      expect(webHmr.classLiteral).toContain('w-[88px]')
+      expect(webHmr.classLiteral).toContain('h-[44px]')
+      expect(webHmr.computedStyle.backgroundColor).toBe('rgb(18, 52, 86)')
+      expect(webHmr.computedStyle.width).toBe('88px')
+      expect(webHmr.computedStyle.height).toBe('44px')
+      expect(webHmr.initialReadyMs).toBeGreaterThan(0)
+      expect(webHmr.hotUpdateEffectiveMs).toBeGreaterThan(0)
+      expect(webHmr.hotUpdateEffectiveMs).toBeLessThanOrEqual(maxHotUpdateMs)
+      expect(webHmr.rollbackEffectiveMs).toBeGreaterThan(0)
+      expect(webHmr.totalMs).toBeGreaterThanOrEqual(webHmr.hotUpdateEffectiveMs)
+    }
+    else {
+      expect(item.webHmr, `[${item.project}] should not include web HMR metrics`).toBeUndefined()
     }
 
     expect(templateMetric?.hotUpdateEffectiveMs).toBeGreaterThan(0)

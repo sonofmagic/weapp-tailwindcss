@@ -24,6 +24,7 @@ import { resolvePreferredRound } from './mutations/shared'
 import { createWatchSession, runPnpmCommand, sleep } from './session'
 import { summarizeMutationMetricsByKind } from './summary'
 import { writeFilePreserveEol } from './text'
+import { runWebHmr } from './web'
 
 interface HotUpdateBudgetSample {
   label: string
@@ -46,6 +47,8 @@ function resolveCaseSourceFiles(watchCase: WatchCase) {
       mutation.templateMutation.sourceFile,
       mutation.skipStyleMutation ? undefined : mutation.styleMutation.sourceFile,
     ]),
+    watchCase.webHmr?.sourceFile,
+    watchCase.webHmr?.cssEntryFile,
   ].filter((item): item is string => Boolean(item)))]
 }
 
@@ -67,6 +70,7 @@ export async function runCase(watchCase: WatchCase, options: CliOptions): Promis
   const session = createWatchSession(watchCase.cwd, watchCase.devScript, {
     quietSass: options.quietSass,
   }, watchCase.env)
+  let sessionStopped = false
 
   try {
     const outputsReadyMs = await waitForOutputsReady(watchCase, options, session, sessionStartedAt)
@@ -183,6 +187,12 @@ export async function runCase(watchCase: WatchCase, options: CliOptions): Promis
       ))
     }
 
+    if (watchCase.webHmr) {
+      await session.stop()
+      sessionStopped = true
+    }
+    const webHmrMetrics = await runWebHmr(watchCase, options, sourceOriginals)
+
     const preferredRound = resolvePreferredRound(templateMetrics.rounds)
     if (!preferredRound) {
       throw new Error(`[${watchCase.label}] no preferred round produced for template mutation`)
@@ -211,6 +221,7 @@ export async function runCase(watchCase: WatchCase, options: CliOptions): Promis
       globalStyleOutputs,
       mutationMetrics,
       ...(userReportedHotUpdateMetrics ? { userReportedHotUpdate: userReportedHotUpdateMetrics } : {}),
+      ...(webHmrMetrics ? { webHmr: webHmrMetrics } : {}),
       subPackageMutationMetrics,
       summaryByMutationKind: summarizeMutationMetricsByKind(mutationMetrics),
       initialReadyMs,
@@ -227,7 +238,7 @@ export async function runCase(watchCase: WatchCase, options: CliOptions): Promis
     }
 
     process.stdout.write(
-      `[watch-hmr] ${watchCase.label} passed (${contentMetrics ? `content=${contentMetrics.hotUpdateEffectiveMs}ms, ` : ''}template=${templateMetrics.hotUpdateEffectiveMs}ms, script=${scriptMetrics.hotUpdateEffectiveMs}ms${styleMetrics ? `, style=${styleMetrics.hotUpdateEffectiveMs}ms` : ''}, subpackage=${subPackageMutationMetrics.length})\n`,
+      `[watch-hmr] ${watchCase.label} passed (${contentMetrics ? `content=${contentMetrics.hotUpdateEffectiveMs}ms, ` : ''}template=${templateMetrics.hotUpdateEffectiveMs}ms, script=${scriptMetrics.hotUpdateEffectiveMs}ms${styleMetrics ? `, style=${styleMetrics.hotUpdateEffectiveMs}ms` : ''}${webHmrMetrics ? `, web=${webHmrMetrics.hotUpdateEffectiveMs}ms` : ''}, subpackage=${subPackageMutationMetrics.length})\n`,
     )
 
     return metrics
@@ -245,7 +256,9 @@ export async function runCase(watchCase: WatchCase, options: CliOptions): Promis
       catch {
       }
     }
-    await session.stop()
+    if (!sessionStopped) {
+      await session.stop()
+    }
   }
 }
 

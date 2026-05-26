@@ -1,6 +1,12 @@
 import { defineConfig } from 'vite';
+import { createRequire } from 'node:module';
+import { dirname, join } from 'node:path';
 import uni from '@dcloudio/vite-plugin-uni';
 import { WeappTailwindcss } from 'weapp-tailwindcss/vite';
+
+const require = createRequire(import.meta.url);
+const entitiesRoot = dirname(require.resolve('entities'));
+const entitiesDecodePath = join(entitiesRoot, 'decode.js');
 
 type WeappTwUpdateKind = 'wxss' | 'wxml' | 'js' | 'other';
 
@@ -10,6 +16,7 @@ const WEAPP_TW_UPDATE_LOG_LIMIT = Number.isFinite(parsedUpdateLogLimit)
   ? Math.max(0, parsedUpdateLogLimit)
   : DEFAULT_UPDATE_LOG_LIMIT;
 const WEAPP_TW_VERBOSE_UPDATE = process.env.WEAPP_TW_VERBOSE_UPDATE === '1';
+const isWatchRegression = process.env.WEAPP_TW_WATCH_REGRESSION === '1';
 
 const weappTwUpdateByKind: Record<WeappTwUpdateKind, number> = {
   wxss: 0,
@@ -52,7 +59,7 @@ const bench =
 // const isH5 = process.env.UNI_PLATFORM === 'h5';
 // const isApp = process.env.UNI_PLATFORM === 'app-plus';
 
-// postcss 插件配置：Tailwind CSS 由 weapp-tailwindcss 生成模式接管，这里不要再注册 tailwindcss
+// postcss 插件配置：Tailwind CSS 由 weapp-tailwindcss 生成模式接管，这里不要再注册 tailwindcss。
 const postcssPlugins = [
   require('weapp-tailwindcss/css-macro/postcss')
 ];
@@ -153,13 +160,22 @@ export default defineConfig(async () => {
     resolve: {
       alias: {
         path: 'path-browserify',
-        'entities/decode': 'entities/lib/decode.js',
+        'entities/decode': entitiesDecodePath,
         url: 'node:url',
       },
     },
     optimizeDeps: {
-      include: ['path-browserify', 'entities/lib/decode.js'],
+      include: ['path-browserify', 'entities/decode'],
     },
+    ...(isWatchRegression
+      ? {
+          server: {
+            host: process.env.UNI_CLI_SERVER_HOST ?? process.env.HOST ?? '127.0.0.1',
+            port: Number(process.env.UNI_CLI_SERVER_PORT ?? process.env.PORT ?? 5173),
+            strictPort: true,
+          },
+        }
+      : {}),
     // 假如 postcss.config.js 不起作用，请使用内联 postcss 配置
     css: {
       postcss: {

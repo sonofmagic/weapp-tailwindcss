@@ -57,7 +57,7 @@ function isSassDeprecationNoiseLine(line: string) {
   return false
 }
 
-function createLineCollector(
+export function createLineCollector(
   prefix: string,
   lines: string[],
   limit = 240,
@@ -133,7 +133,7 @@ function stripAnsiControlSequences(line: string) {
   return output
 }
 
-function normalizeLogLine(line: string) {
+export function normalizeLogLine(line: string) {
   return stripAnsiControlSequences(line).replace(ZERO_WIDTH_SPACE_RE, '').trim()
 }
 
@@ -194,7 +194,7 @@ function resolveCompileFatalError(line: string) {
   }
 }
 
-function createSpawnEnv(
+export function createSpawnEnv(
   base: NodeJS.ProcessEnv,
   extra: Record<string, string> = {},
 ): NodeJS.ProcessEnv {
@@ -241,7 +241,7 @@ function resolvePnpmBinary() {
   return candidate
 }
 
-function spawnPnpm(
+export function spawnPnpm(
   args: string[],
   options: {
     cwd: string
@@ -261,7 +261,7 @@ function spawnPnpm(
   return spawn(resolvePnpmBinary(), args, options)
 }
 
-function killProcessTreeOnWindows(pid: number) {
+export function killProcessTreeOnWindows(pid: number) {
   try {
     spawnSync('taskkill', ['/pid', String(pid), '/t', '/f'], {
       stdio: 'ignore',
@@ -322,7 +322,7 @@ function listDescendantPidsOnPosix(rootPid: number) {
   return descendants
 }
 
-function killProcessTreeOnPosix(pid: number, signal: NodeJS.Signals) {
+export function killProcessTreeOnPosix(pid: number, signal: NodeJS.Signals) {
   const descendants = listDescendantPidsOnPosix(pid)
 
   for (const childPid of descendants.reverse()) {

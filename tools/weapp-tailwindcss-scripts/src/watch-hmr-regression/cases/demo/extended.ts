@@ -1,4 +1,4 @@
-import type { WatchCase } from '../../types'
+import type { SubPackageMutationConfig, WatchCase } from '../../types'
 import path from 'node:path'
 import {
   appendTrailingSnippet,
@@ -86,7 +86,7 @@ function createSubPackageMutations(
     templateVerifyEscapedIn?: Array<'wxml' | 'js'>
     templateVerifyClassLiteralIn?: Array<'wxml' | 'js'>
   },
-): WatchCase['subPackageMutations'] {
+): SubPackageMutationConfig[] {
   const styleExtension = options.styleExtension ?? normalizeExtension(options.version)
   return (['sub-normal', 'sub-independent'] as const).map((subPackage) => {
     const independent = subPackage === 'sub-independent'
@@ -108,7 +108,7 @@ function createSubPackageMutations(
       outputJs: path.join(distDir, 'index.js'),
       outputStyleCandidates,
       globalStyleCandidates,
-      skipStyleMutation: options.skipStyleMutation,
+      ...(options.skipStyleMutation === undefined ? {} : { skipStyleMutation: options.skipStyleMutation }),
       templateMutation: {
         sourceFile: pageSource,
         verifyEscapedIn: options.templateVerifyEscapedIn
@@ -220,6 +220,17 @@ export function buildDemoExtendedCases(baseCwd: string): WatchCase[] {
       pageKind: 'vue',
       skipStyleMutation: true,
     }),
+    webHmr: {
+      devScript: 'dev:h5',
+      sourceFile: path.resolve(baseCwd, 'demo/uni-app-vite-tailwindcss-v3/src/pages/index/index.vue'),
+      cssEntryFile: path.resolve(baseCwd, 'demo/uni-app-vite-tailwindcss-v3/src/tailwind.scss'),
+      injectMarkerElement: true,
+      readySelector: 'uni-page[data-page="pages/index/index"] uni-view.content',
+      initialMutationDelayMs: 1500,
+      mutate(source, payload) {
+        return `${source}\n/* ${payload.marker} ${payload.classLiteral} */`
+      },
+    },
   }
 
   const uniAppTailwindcssV4Case: WatchCase = {
@@ -298,6 +309,17 @@ export function buildDemoExtendedCases(baseCwd: string): WatchCase[] {
       pageKind: 'vue',
       skipStyleMutation: true,
     }),
+    webHmr: {
+      devScript: 'dev:h5',
+      sourceFile: path.resolve(baseCwd, 'demo/uni-app-vite-tailwindcss-v4/src/pages/index/index.vue'),
+      cssEntryFile: path.resolve(baseCwd, 'demo/uni-app-vite-tailwindcss-v4/src/main.css'),
+      injectMarkerElement: true,
+      readySelector: 'uni-page[data-page="pages/index/index"]',
+      initialMutationDelayMs: 1500,
+      mutate(source, payload) {
+        return `${source}\n<!-- ${payload.marker} ${payload.classLiteral} -->`
+      },
+    },
   }
 
   const mpxTailwindcssV4Case: WatchCase = {
@@ -472,6 +494,19 @@ export function buildDemoExtendedCases(baseCwd: string): WatchCase[] {
         ]
       },
     }),
+    webHmr: {
+      devScript: 'build:h5',
+      devArgs: ['--watch'],
+      sourceFile: path.resolve(baseCwd, 'demo/taro-vite-react-tailwindcss-v4/src/pages/index/index.tsx'),
+      cssEntryFile: path.resolve(baseCwd, 'demo/taro-vite-react-tailwindcss-v4/src/app.css'),
+      injectMarkerElement: true,
+      env: {
+        NODE_ENV: 'development',
+      },
+      mutate(source, payload) {
+        return `${source}\n// ${payload.marker} ${payload.classLiteral}\n`
+      },
+    },
   }
 
   const taroAppViteCase: WatchCase = {
@@ -528,9 +563,6 @@ export function buildDemoExtendedCases(baseCwd: string): WatchCase[] {
       mutate(source, payload) {
         return mutateTsxScriptByReturnAnchor(source, payload)
       },
-      mutateCommentCarrier(source, payload) {
-        return mutateTsxScriptByReturnAnchorWithCommentCarrier(source, payload)
-      },
     },
     styleMutation: {
       sourceFile: path.resolve(baseCwd, 'demo/taro-vite-react-tailwindcss-v3/src/pages/index/index.scss'),
@@ -552,6 +584,19 @@ export function buildDemoExtendedCases(baseCwd: string): WatchCase[] {
         ]
       },
     }),
+    webHmr: {
+      devScript: 'build:h5',
+      devArgs: ['--watch'],
+      sourceFile: path.resolve(baseCwd, 'demo/taro-vite-react-tailwindcss-v3/src/pages/index/index.tsx'),
+      cssEntryFile: path.resolve(baseCwd, 'demo/taro-vite-react-tailwindcss-v3/src/app.scss'),
+      injectMarkerElement: true,
+      env: {
+        NODE_ENV: 'development',
+      },
+      mutate(source, payload) {
+        return `${source}\n// ${payload.marker} ${payload.classLiteral}\n`
+      },
+    },
   }
 
   const taroWebpackTailwindcssV4DemoCase: WatchCase = {
@@ -682,17 +727,6 @@ export function buildDemoExtendedCases(baseCwd: string): WatchCase[] {
       mutate(source, payload) {
         return mutateVueScriptWithTemplateConsumer(source, payload)
       },
-      mutateCommentCarrier(source, payload) {
-        return insertBeforeClosingTag(
-          insertBeforeClosingTag(
-            source,
-            '</script>',
-            `/* ${payload.classLiteral} */\nconst __twWatchScriptCommentMarker = '${payload.marker}'`,
-          ),
-          '</template>',
-          '    <view hidden>{{ __twWatchScriptCommentMarker }}</view>',
-        )
-      },
     },
     styleMutation: {
       sourceFile: path.resolve(baseCwd, 'demo/taro-vite-vue3-tailwindcss-v3/src/app.scss'),
@@ -716,6 +750,19 @@ export function buildDemoExtendedCases(baseCwd: string): WatchCase[] {
         ]
       },
     }),
+    webHmr: {
+      devScript: 'build:h5',
+      devArgs: ['--watch'],
+      sourceFile: path.resolve(baseCwd, 'demo/taro-vite-vue3-tailwindcss-v3/src/pages/index/index.vue'),
+      cssEntryFile: path.resolve(baseCwd, 'demo/taro-vite-vue3-tailwindcss-v3/src/app.scss'),
+      injectMarkerElement: true,
+      env: {
+        NODE_ENV: 'development',
+      },
+      mutate(source, payload) {
+        return `${source}\n<!-- ${payload.marker} ${payload.classLiteral} -->\n`
+      },
+    },
   }
 
   const taroViteVue3V4Case: WatchCase = {
@@ -768,17 +815,6 @@ export function buildDemoExtendedCases(baseCwd: string): WatchCase[] {
       mutate(source, payload) {
         return mutateVueScriptWithTemplateConsumer(source, payload)
       },
-      mutateCommentCarrier(source, payload) {
-        return insertBeforeClosingTag(
-          insertBeforeClosingTag(
-            source,
-            '</script>',
-            `/* ${payload.classLiteral} */\nconst __twWatchScriptCommentMarker = '${payload.marker}'`,
-          ),
-          '</template>',
-          '    <view hidden>{{ __twWatchScriptCommentMarker }}</view>',
-        )
-      },
     },
     styleMutation: {
       sourceFile: path.resolve(baseCwd, 'demo/taro-vite-vue3-tailwindcss-v4/src/app.css'),
@@ -802,6 +838,19 @@ export function buildDemoExtendedCases(baseCwd: string): WatchCase[] {
         ]
       },
     }),
+    webHmr: {
+      devScript: 'build:h5',
+      devArgs: ['--watch'],
+      sourceFile: path.resolve(baseCwd, 'demo/taro-vite-vue3-tailwindcss-v4/src/pages/index/index.vue'),
+      cssEntryFile: path.resolve(baseCwd, 'demo/taro-vite-vue3-tailwindcss-v4/src/app.css'),
+      injectMarkerElement: true,
+      env: {
+        NODE_ENV: 'development',
+      },
+      mutate(source, payload) {
+        return `${source}\n<!-- ${payload.marker} ${payload.classLiteral} -->\n`
+      },
+    },
   }
 
   const taroWebpackVue3V4Case: WatchCase = {

@@ -146,6 +146,7 @@ export interface WatchCase {
   styleMutation: StyleMutationConfig
   subPackageMutations?: SubPackageMutationConfig[]
   skipStyleMutation?: boolean
+  webHmr?: WebHmrConfig
 }
 
 export interface SubPackageMutationConfig {
@@ -159,6 +160,22 @@ export interface SubPackageMutationConfig {
   templateMutation: ClassMutationConfig
   styleMutation: StyleMutationConfig
   skipStyleMutation?: boolean
+}
+
+export interface WebHmrConfig {
+  devScript: string
+  devArgs?: string[]
+  sourceFile: string
+  cssEntryFile?: string
+  injectMarkerElement?: boolean
+  readySelector?: string
+  initialMutationDelayMs?: number
+  mutate: (source: string, payload: ClassMutationPayload) => string
+  env?: Record<string, string>
+  classLiteral?: string
+  rollbackClassLiteral?: string
+  expectedStyle?: Partial<Record<'backgroundColor' | 'width' | 'height', string>>
+  rollbackExpectedStyle?: Partial<Record<'backgroundColor' | 'width' | 'height', string>>
 }
 
 export interface WatchSession {
@@ -368,6 +385,7 @@ export interface WatchCaseMetrics {
   globalStyleOutputs: string[]
   mutationMetrics: WatchCaseMutationMetrics[]
   userReportedHotUpdate?: UserReportedHotUpdateMetrics
+  webHmr?: WebHmrMetrics
   subPackageMutationMetrics: SubPackageMutationMetrics[]
   summaryByMutationKind: Partial<Record<MutationKind, WatchSummary>>
   initialReadyMs: number
@@ -380,6 +398,23 @@ export interface WatchCaseMetrics {
   rollbackEffectiveMs: number
   rollbackPluginProcessMs: number
   rollbackPluginProcessSamples: PluginProcessSample[]
+  totalMs: number
+}
+
+export interface WebHmrMetrics {
+  devScript: string
+  sourceFile: string
+  url: string
+  marker: string
+  classLiteral: string
+  computedStyle: {
+    backgroundColor: string
+    width: string
+    height: string
+  }
+  initialReadyMs: number
+  hotUpdateEffectiveMs: number
+  rollbackEffectiveMs: number
   totalMs: number
 }
 
