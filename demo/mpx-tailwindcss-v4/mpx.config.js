@@ -44,6 +44,8 @@ module.exports = defineConfig({
    * 可以将configureWebpack.snap.managedPaths修改为 []
    */
   configureWebpack(config) {
+    // Node 24 + Mpx/Webpack 5 的 filesystem cache 快照 hash 会命中 undefined 输入。
+    config.cache = false
     config.plugins.push(
       new UnifiedWebpackPluginV5({
         tailwindcssBasedir: process.cwd(),
