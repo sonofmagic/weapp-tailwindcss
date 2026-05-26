@@ -49,25 +49,14 @@ const bench =
 
 
 // 注意： 打包成 h5 和 app 都不需要开启插件配置
-const isH5 = process.env.UNI_PLATFORM === 'h5';
-const isApp = process.env.UNI_PLATFORM === 'app-plus';
-const WeappTailwindcssDisabled = isH5 || isApp;
+// const isH5 = process.env.UNI_PLATFORM === 'h5';
+// const isApp = process.env.UNI_PLATFORM === 'app-plus';
+
 // postcss 插件配置：Tailwind CSS 由 weapp-tailwindcss 生成模式接管，这里不要再注册 tailwindcss
-const postcssPlugins = [require('autoprefixer')()];
+const postcssPlugins = [
+  require('weapp-tailwindcss/css-macro/postcss')
+];
 
-// const postcssPlugins = [require('postcss-windicss')()];
-
-// const postcssPlugins = [];
-if (!WeappTailwindcssDisabled) {
-  // postcssPlugins.push(
-  //   require('postcss-rem-to-responsive-pixel')({
-  //     rootValue: 32,
-  //     propList: ['*'],
-  //     transformUnit: 'rpx',
-  //   }),
-  // );
-  postcssPlugins.push(require('weapp-tailwindcss/css-macro/postcss'));
-}
 let weappTwLoadTime = 0;
 let weappTwStartTime = 0;
 let weappTwUpdateCount = 0;
@@ -137,7 +126,6 @@ export default defineConfig(async () => {
         // cssSelectorReplacement: {
         //   universal: ['view', 'text', 'button'],
         // },
-        disabled: WeappTailwindcssDisabled,
         // customReplaceDictionary: {
         //   '[': '_',
         //   ']': '_',

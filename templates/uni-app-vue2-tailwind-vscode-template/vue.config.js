@@ -1,4 +1,3 @@
-const { WeappTailwindcssDisabled } = require("./platform");
 const { UnifiedWebpackPluginV5 } = require("weapp-tailwindcss/webpack");
 
 /**
@@ -10,7 +9,6 @@ const config = {
     plugins: [
       new UnifiedWebpackPluginV5({
         rem2rpx: true,
-        disabled: WeappTailwindcssDisabled,
       }),
     ],
   },
