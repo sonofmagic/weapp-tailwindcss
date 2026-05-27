@@ -136,6 +136,7 @@ export function getDefaultOptions(): UserDefinedOptions {
       allowDoubleQuotes: false,
       bareArbitraryValues: false,
     },
+    unocss: false,
     cssChildCombinatorReplaceValue: ['view', 'text'],
     inlineWxs: false,
     injectAdditionalCssVarScope: false,

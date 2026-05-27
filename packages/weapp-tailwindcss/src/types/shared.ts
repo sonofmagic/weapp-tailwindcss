@@ -41,3 +41,16 @@ export interface IArbitraryValues {
     units?: string[]
   }
 }
+
+export interface IUnocssCompatibilityOptions {
+  /**
+   * 是否启用 UnoCSS 风格裸任意值。
+   *
+   * @remarks
+   * 开启后会透传给 `tailwindcss-patch` 的 v4 引擎，识别 `p-10%`、`bg-#fff`、
+   * `text-rgb(255,0,0)` 等写法。仅 Tailwind CSS v4 生成链路生效。
+   *
+   * @default `true`
+   */
+  bareArbitraryValues?: IArbitraryValues['bareArbitraryValues']
+}

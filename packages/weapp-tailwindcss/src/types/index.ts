@@ -24,7 +24,7 @@ export type {
 
 // UserDefinedPostcssOptions：用户可配置的 PostCSS 选项
 export type { CssPreflightOptions, IStyleHandlerOptions, ItemOrItemArray }
-export type { AppType, IArbitraryValues, ICustomAttributes, ICustomAttributesEntities } from './shared'
+export type { AppType, IArbitraryValues, ICustomAttributes, ICustomAttributesEntities, IUnocssCompatibilityOptions } from './shared'
 
 export type RequiredDefined<T> = {
   [K in keyof T]-?: Exclude<T[K], undefined>

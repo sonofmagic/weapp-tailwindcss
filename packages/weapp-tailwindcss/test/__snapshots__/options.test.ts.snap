@@ -161,6 +161,7 @@ exports[`get options > default options 1`] = `
     "filter": [Function],
   },
   "templateHandler": [Function],
+  "unocss": false,
   "wxsMatcher": [Function],
 }
 `;

@@ -134,6 +134,7 @@ const tutorialSidebar: SidebarConfig = [
   },
   'quick-start/this-plugin',
   'quick-start/rem2rpx',
+  'quick-start/unocss',
 
   {
     type: 'category',

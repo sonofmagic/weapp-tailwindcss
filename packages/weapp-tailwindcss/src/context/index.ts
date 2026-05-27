@@ -7,6 +7,7 @@ import { invalidateRuntimeClassSet, refreshTailwindcssPatcherSymbol } from '@/ta
 import { logRuntimeTailwindcssVersion } from '@/tailwindcss/runtime-logs'
 import { logTailwindcssTarget } from '@/tailwindcss/targets'
 import { applyV4CssCalcDefaults, warnMissingCssEntries } from '@/tailwindcss/v4'
+import { resolveUnocssBareArbitraryValues } from '@/unocss'
 import { defuOverrideArray } from '@/utils'
 import { withCompilerContextCache } from './compiler-context-cache'
 import { toCustomAttributesEntities } from './custom-attributes'
@@ -83,6 +84,7 @@ function createInternalCompilerContext(opts?: UserDefinedOptions): InternalUserD
     {},
   )
 
+  ctx.arbitraryValues = resolveUnocssBareArbitraryValues(ctx.arbitraryValues, ctx.unocss)
   ctx.escapeMap = ctx.customReplaceDictionary
 
   applyLoggerLevel(ctx.logLevel)

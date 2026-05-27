@@ -2,7 +2,7 @@
 title: ⚙️ 一般配置
 sidebar_label: ⚙️ 一般配置
 sidebar_position: 4
-description: ⚙️ 一般配置文档，汇总 17 个 weapp-tailwindcss 配置项的用途、默认值与注意事项。
+description: ⚙️ 一般配置文档，汇总 18 个 weapp-tailwindcss 配置项的用途、默认值与注意事项。
 keywords:
   - weapp-tailwindcss
   - API
@@ -17,7 +17,7 @@ keywords:
   - 插件参数
 ---
 
-本页收录 17 个配置项，来源于 `UserDefinedOptions`。
+本页收录 18 个配置项，来源于 `UserDefinedOptions`。
 
 ## 配置一览
 
@@ -26,6 +26,7 @@ keywords:
 | [supportCustomLengthUnitsPatch](#supportcustomlengthunitspatch) | <code>boolean &#124; ILengthUnitsPatchOptions</code> | — | 控制 Tailwind 自定义长度单位补丁。 |
 | [appType](#apptype) | <code>AppType</code> | — | 声明所使用的框架类型。 |
 | [arbitraryValues](#arbitraryvalues) | <code>IArbitraryValues</code> | — | TailwindCSS 任意值的相关配置。 |
+| [unocss](#unocss) | <code>boolean &#124; IUnocssCompatibilityOptions</code> | <code>false</code> | 启用部分 UnoCSS class 写法兼容。 |
 | [jsPreserveClass](#jspreserveclass) | <code>(keyword: string) => boolean &#124; undefined</code> | <code>保留所有带 `*` js字符串字面量</code> | 控制 JS 字面量是否需要保留。 |
 | [jsArbitraryValueFallback](#jsarbitraryvaluefallback) | <code>boolean &#124; "auto"</code> | — | 控制 JS 任意值类名在 classNameSet 异常时的受控兜底策略。 |
 | [replaceRuntimePackages](#replaceruntimepackages) | <code>boolean &#124; Record<string, string></code> | — | 是否替换运行时依赖包名。 |
@@ -72,6 +73,30 @@ TailwindCSS 3.2.0 起对任意值执行长度单位校验，会将未声明的 `
 > 可选 | 类型: `IArbitraryValues`
 
 TailwindCSS 任意值的相关配置。
+
+### unocss
+
+> 可选 | 类型: `boolean | IUnocssCompatibilityOptions` | 默认值: `false`
+
+启用部分 UnoCSS class 写法兼容。
+
+#### 备注
+
+默认关闭。传入 `true` 后会启用 Tailwind CSS v4 裸任意值生成，可识别 `p-10%`、`bg-#fff`、`text-rgb(255,0,0)` 等写法。class 字符转义继续由 [`customReplaceDictionary`](/docs/api/options/important#customreplacedictionary) 控制，JS 转译仍遵循 `classNameSet` 精确命中原则。
+
+#### 示例
+
+```ts
+import { WeappTailwindcss } from 'weapp-tailwindcss/vite'
+
+export default {
+  plugins: [
+    WeappTailwindcss({
+      unocss: true,
+    }),
+  ],
+}
+```
 
 ### jsPreserveClass
 
