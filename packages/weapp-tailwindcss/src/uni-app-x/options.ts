@@ -1,5 +1,15 @@
 import type { UserDefinedOptions } from '@/types'
 
+const DEFAULT_COMPONENT_LOCAL_STYLES_OPTIONS: ResolvedUniAppXComponentLocalStylesOptions = {
+  enabled: true,
+  onlyWhenStyleIsolationVersion2: true,
+}
+
+const DISABLED_COMPONENT_LOCAL_STYLES_OPTIONS: ResolvedUniAppXComponentLocalStylesOptions = {
+  enabled: false,
+  onlyWhenStyleIsolationVersion2: true,
+}
+
 export interface ResolvedUniAppXComponentLocalStylesOptions {
   enabled: boolean
   onlyWhenStyleIsolationVersion2: boolean
@@ -11,36 +21,26 @@ export interface ResolvedUniAppXOptions {
   uvueUnsupported: 'error' | 'warn' | 'silent'
 }
 
+function isBooleanUniAppXShortcut(
+  option: UserDefinedOptions['uniAppX'],
+): option is boolean | undefined {
+  return option === true || option === false || option === undefined
+}
+
 function resolveComponentLocalStyles(
   option: UserDefinedOptions['uniAppX'],
 ): ResolvedUniAppXComponentLocalStylesOptions {
-  if (option === false) {
-    return {
-      enabled: false,
-      onlyWhenStyleIsolationVersion2: true,
-    }
-  }
-
-  if (option === true || option === undefined) {
-    return {
-      enabled: false,
-      onlyWhenStyleIsolationVersion2: true,
-    }
+  if (isBooleanUniAppXShortcut(option)) {
+    return DISABLED_COMPONENT_LOCAL_STYLES_OPTIONS
   }
 
   const componentLocalStyles = option.componentLocalStyles
   if (componentLocalStyles === false) {
-    return {
-      enabled: false,
-      onlyWhenStyleIsolationVersion2: true,
-    }
+    return DISABLED_COMPONENT_LOCAL_STYLES_OPTIONS
   }
 
   if (componentLocalStyles === true || componentLocalStyles === undefined) {
-    return {
-      enabled: true,
-      onlyWhenStyleIsolationVersion2: true,
-    }
+    return DEFAULT_COMPONENT_LOCAL_STYLES_OPTIONS
   }
 
   return {
