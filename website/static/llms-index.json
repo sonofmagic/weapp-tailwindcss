@@ -1,6 +1,6 @@
 {
   "version": "1.0.0",
-  "generatedAt": "2026-05-25T11:38:59.889Z",
+  "generatedAt": "2026-05-27T06:18:18.728Z",
   "siteUrl": "https://tw.icebreaker.top",
   "totals": {
     "all": 181,
@@ -4712,9 +4712,9 @@
         "# tailwind.config.js 注册",
         "## Tailwind CSS 3.x 配置",
         "## Tailwind CSS 4.x 配置",
-        "# postcss 插件注册",
-        "## uni-app vite vue3",
-        "## uni-app vue2"
+        "# PostCSS 配置说明",
+        "# 配置完成",
+        "配置项"
       ],
       "updatedAt": null,
       "source": "docs/quick-start/uni-app-css-macro.md"

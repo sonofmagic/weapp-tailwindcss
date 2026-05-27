@@ -2,12 +2,13 @@ import type { PluginCreator } from 'postcss'
 import { ifdef, ifndef, matchCustomPropertyFromValue } from './constants'
 
 const IFDEF_ENDIF_RE = /#(?:ifn?def|endif)/
+export const CSS_MACRO_POSTCSS_PLUGIN_NAME = 'postcss-weapp-tw-css-macro-plugin'
 
 export interface Options {}
 
 const creator: PluginCreator<Options> = () => {
   return {
-    postcssPlugin: 'postcss-weapp-tw-css-macro-plugin',
+    postcssPlugin: CSS_MACRO_POSTCSS_PLUGIN_NAME,
     prepare() {
       return {
         AtRule(atRule, helper) {

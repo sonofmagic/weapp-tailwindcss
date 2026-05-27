@@ -133,6 +133,22 @@ describe('mini-program generated css cleanup', () => {
     expect(css).toContain('.text-red-500{color:var(--color-red-500)}')
   })
 
+  it('preserves conditional compilation comments when pruning generated css', () => {
+    const css = pruneMiniProgramGeneratedCss([
+      '/* #ifdef MP-WEIXIN */',
+      '.bg-blue-500{color:blue}',
+      '/* #endif */',
+      '/* normal comment */',
+    ].join('\n'), {
+      preserveConditionalComments: true,
+    })
+
+    expect(css).toContain('#ifdef MP-WEIXIN')
+    expect(css).toContain('#endif')
+    expect(css).toContain('.bg-blue-500{color:blue}')
+    expect(css).not.toContain('normal comment')
+  })
+
   it('scopes Tailwind v4 gradient runtime defaults to mini-program elements only', () => {
     const css = pruneMiniProgramGeneratedCss([
       ':root,:host{',

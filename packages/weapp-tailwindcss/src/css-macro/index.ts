@@ -1,5 +1,6 @@
 import plugin from 'tailwindcss/plugin'
 import { defu } from '../utils'
+import { markCssMacroPlugin } from './auto'
 import { createMediaQuery, createNegativeMediaQuery } from './constants'
 
 export interface Options {
@@ -18,7 +19,7 @@ const defaultOptions: Required<Options> = {
   variantsMap: {},
 }
 
-const cssMacro = plugin.withOptions((options?: Options) => {
+const cssMacroFactory = plugin.withOptions((options?: Options) => {
   const { dynamic, variantsMap } = defu<Required<Options>, Options[]>(options ?? {}, defaultOptions)
 
   const staticVariants: NormalizedVariant[] = Object.entries(variantsMap).map(([name, config]) => {
@@ -54,5 +55,24 @@ const cssMacro = plugin.withOptions((options?: Options) => {
     }
   }
 })
+
+const cssMacro = markCssMacroPlugin(((options?: Options) => {
+  return markCssMacroPlugin(cssMacroFactory(options))
+}) as typeof cssMacroFactory)
+
+const cssMacroOptionsFunction = cssMacro as typeof cssMacroFactory & {
+  __configFunction?: unknown
+  __isOptionsFunction?: boolean
+  __pluginFunction?: unknown
+}
+const cssMacroFactoryOptionsFunction = cssMacroFactory as typeof cssMacroFactory & {
+  __configFunction?: unknown
+  __isOptionsFunction?: boolean
+  __pluginFunction?: unknown
+}
+
+cssMacroOptionsFunction.__isOptionsFunction = cssMacroFactoryOptionsFunction.__isOptionsFunction
+cssMacroOptionsFunction.__pluginFunction = cssMacroFactoryOptionsFunction.__pluginFunction
+cssMacroOptionsFunction.__configFunction = cssMacroFactoryOptionsFunction.__configFunction
 
 export default cssMacro

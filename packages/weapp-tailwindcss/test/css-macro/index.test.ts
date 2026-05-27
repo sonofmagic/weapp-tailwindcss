@@ -5,11 +5,66 @@ import postcss from 'postcss'
 import twPlugin from '@/css-macro'
 import { normalComment } from '@/css-macro/constants'
 import postcssPlugin from '@/css-macro/postcss'
+import { createTailwindV3Engine, resolveTailwindV3Source } from '@/tailwindcss/v3-engine'
+import { createTailwindV4Engine, resolveTailwindV4Source } from '@/tailwindcss/v4-engine'
+
+const TAILWIND_V4_MACRO_CSS = `
+@plugin "weapp-tailwindcss/css-macro";
+@theme default {
+  --color-blue-500: oklch(62.3% 0.214 259.815);
+}
+@tailwind utilities;
+`
 
 // not screen and (weapp-tw-platform:MP-WEIXIN)
 // not screen and (weapp-tw-platform:uniVersion > 3.9)
 // not screen and (weapp-tw-platform:H5 || MP-WEIXIN)
 describe('css-macro tailwindcss plugin', () => {
+  it('auto enables postcss macro transform for tailwindcss v3 config plugins', async () => {
+    const source = await resolveTailwindV3Source({
+      css: '@tailwind utilities;',
+      base: process.cwd(),
+      config: undefined,
+    })
+    source.configObject = {
+      content: [],
+      plugins: [twPlugin],
+    }
+    const engine = createTailwindV3Engine(source)
+
+    const result = await engine.generate({
+      candidates: ['ifdef-[MP-WEIXIN]:bg-blue-500'],
+      styleOptions: {
+        isMainChunk: false,
+      },
+    })
+
+    expect(result.rawCss).toContain('@media')
+    expect(result.css).toContain('#ifdef MP-WEIXIN')
+    expect(result.css).toContain('#endif')
+    expect(result.css).not.toContain('@media')
+  })
+
+  it('auto enables postcss macro transform for tailwindcss v4 @plugin', async () => {
+    const source = await resolveTailwindV4Source({
+      css: TAILWIND_V4_MACRO_CSS,
+      base: process.cwd(),
+    })
+    const engine = createTailwindV4Engine(source)
+
+    const result = await engine.generate({
+      candidates: ['ifdef-[MP-WEIXIN]:bg-blue-500'],
+      styleOptions: {
+        isMainChunk: false,
+      },
+    })
+
+    expect(result.rawCss).toContain('@media')
+    expect(result.css).toContain('#ifdef MP-WEIXIN')
+    expect(result.css).toContain('#endif')
+    expect(result.css).not.toContain('@media')
+  })
+
   it('dynamic case 0', async () => {
     const { css } = await getCss('ifdef-[MP-WEIXIN]:bg-blue-500', {
       twConfig: {

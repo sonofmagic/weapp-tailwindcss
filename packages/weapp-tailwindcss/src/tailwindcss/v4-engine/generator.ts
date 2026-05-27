@@ -11,6 +11,7 @@ import fs from 'node:fs'
 import path from 'node:path'
 import postcss from 'postcss'
 import { createTailwindV4Engine as createPatchTailwindV4Engine, extractRawCandidates } from 'tailwindcss-patch'
+import { hasCssMacroTailwindV4Directive, withCssMacroStyleOptions } from '@/css-macro/auto'
 import { resolveCssSourceEntries, resolveTailwindSourceEntry } from '@/tailwindcss/source-scan'
 import { omitUndefined } from '@/utils/object'
 import { filterUnsupportedMiniProgramTailwindV4Candidates } from './candidates'
@@ -291,6 +292,10 @@ function createIncrementalStyleOptions(styleOptions: Partial<IStyleHandlerOption
   }
 }
 
+function resolveStyleOptions(source: TailwindV4ResolvedSource, options: Partial<IStyleHandlerOptions> | undefined) {
+  return hasCssMacroTailwindV4Directive(source.css) ? withCssMacroStyleOptions(options) : options
+}
+
 function collectCustomPropertyValues(css: string) {
   const values = new Map<string, string>()
   try {
@@ -529,6 +534,7 @@ export function createTailwindV4Engine(source: TailwindV4ResolvedSource): Tailwi
       target = 'weapp',
       ...patchOptions
     } = options
+    const resolvedStyleOptions = resolveStyleOptions(generateSource, styleOptions)
     const compatibleSource = createCompatibleSource(generateSource, target, tailwindcssV3Compatibility)
     const engine = createPatchTailwindV4Engine(compatibleSource)
     const resolvedScanSources = await resolveScanSources(generateSource, scanSources)
@@ -546,7 +552,7 @@ export function createTailwindV4Engine(source: TailwindV4ResolvedSource): Tailwi
       candidates: normalizedCandidates.candidates,
     }))
     const rawCss = restoreRpxTextCssSelectors(result.css, normalizedCandidates.restoreCandidates)
-    const css = await transformTailwindV4CssByTarget(rawCss, target, styleOptions)
+    const css = await transformTailwindV4CssByTarget(rawCss, target, resolvedStyleOptions)
 
     return {
       ...result,
@@ -562,6 +568,7 @@ export function createTailwindV4Engine(source: TailwindV4ResolvedSource): Tailwi
     const target = options.target ?? 'weapp'
     const compatibleSource = createCompatibleSource(source, target, options.tailwindcssV3Compatibility)
     const requestedCandidates = resolveTargetCandidates(options.candidates, target)
+    const styleOptions = resolveStyleOptions(source, options.styleOptions)
 
     if ((options.sources?.length ?? 0) > 0 || options.bareArbitraryValues !== undefined || Array.isArray(options.scanSources)) {
       return generateOnce(source, options)
@@ -570,7 +577,7 @@ export function createTailwindV4Engine(source: TailwindV4ResolvedSource): Tailwi
     const cacheKey = createIncrementalGenerateCacheKey(
       compatibleSource,
       target,
-      options.styleOptions,
+      styleOptions,
       options.tailwindcssV3Compatibility,
     )
 
@@ -625,7 +632,7 @@ export function createTailwindV4Engine(source: TailwindV4ResolvedSource): Tailwi
         const rawCss = rawCssParts.join('\n')
         const incrementalCss = rawCss.length > 0
           ? await transformTailwindV4CssByTarget(rawCss, target, {
-              ...createIncrementalStyleOptions(options.styleOptions),
+              ...createIncrementalStyleOptions(styleOptions),
               customPropertyValues: cached.customPropertyValues,
             } as Partial<IStyleHandlerOptions>)
           : ''
@@ -660,7 +667,7 @@ export function createTailwindV4Engine(source: TailwindV4ResolvedSource): Tailwi
         compatibleSource,
         generated,
         requestedCandidates,
-        styleOptions: options.styleOptions,
+        styleOptions,
         tailwindcssV3Compatibility: options.tailwindcssV3Compatibility,
         target,
       })

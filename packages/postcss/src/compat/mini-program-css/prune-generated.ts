@@ -19,6 +19,11 @@ const MINI_PROGRAM_ELEMENT_VARIABLE_SCOPE_SELECTORS = new Set(['view', 'text', '
 
 export interface PruneMiniProgramGeneratedCssOptions {
   preservePreflight?: boolean
+  preserveConditionalComments?: boolean
+}
+
+function isConditionalCompilationComment(text: string) {
+  return /#(?:ifn?def|endif)\b/.test(text)
 }
 
 function hasClassSelector(selector: string) {
@@ -87,6 +92,9 @@ export function pruneMiniProgramGeneratedCss(
   const shouldPreserveContentInit = options.preservePreflight || usesTwContentVariable(root)
 
   root.walkComments((comment) => {
+    if (options.preserveConditionalComments && isConditionalCompilationComment(comment.text)) {
+      return
+    }
     comment.remove()
   })
 

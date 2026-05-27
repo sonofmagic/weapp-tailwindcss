@@ -62,7 +62,7 @@ keywords:
 
 ## 如何使用
 
-这里需要同时配置 `tailwindcss` 和 `postcss` 的配置文件才能起作用，其中 `tailwindcss` 配置修改的方式大体类似， `uni-app` `vue2/3` `postcss`插件的注册方式，有些许不同:
+现在只需要在 Tailwind CSS 侧声明 `weapp-tailwindcss/css-macro`。`weapp-tailwindcss` 会在生成样式时自动感应这个声明，并内置执行条件编译注释转换，不需要再额外注册 `weapp-tailwindcss/css-macro/postcss`。
 
 ### tailwind.config.js 注册
 
@@ -120,77 +120,29 @@ export default {
 > [!TIP]
 > `cssMacro` 的动态变体（`ifdef:` / `ifndef:`）依赖 Tailwind 内置的 `matchVariant`，请确保 Tailwind 版本 ≥ 3.2；在 v4 中该 API 同样可用。
 
-### postcss 插件注册
+### PostCSS 配置说明
 
-对应的 `postcss` 插件位置为 `weapp-tailwindcss/css-macro/postcss`
+新版本不再要求你手动注册 `weapp-tailwindcss/css-macro/postcss`。只要满足下面任一条件，`weapp-tailwindcss` 就会自动开启宏转换：
 
-值得注意的是，你必须把这个插件，注册在 `tailwindcss` 之后和 `@dcloudio/vue-cli-plugin-uni/packages/postcss` 之前。
+| Tailwind 版本 | 感应方式 | 示例 |
+| --- | --- | --- |
+| v3 | `tailwind.config.js` 的 `plugins` 中注册 `cssMacro()` | `plugins: [cssMacro()]` |
+| v4 | CSS 入口中声明 `@plugin "weapp-tailwindcss/css-macro"` | `@plugin "weapp-tailwindcss/css-macro";` |
 
-> `@dcloudio/vue-cli-plugin-uni/packages/postcss` 为 vue2 cli项目特有，vue3不用管。
-
-注册在 `tailwindcss` 之后很好理解，我们在针对 `tailwindcss` 的产物做修改，自然要在它执行之后处理，注册在 `@dcloudio/vue-cli-plugin-uni/packages/postcss` 之前则是因为 `uni-app` 样式的条件编译，靠的就是它。假如在它之后去处理不久已经太晚了嘛。
-
-> 这里提一下 postcss 插件的执行顺序，假如注册是数组，那就是按照顺序执行，如果是对象，那就是从上往下执行，详见[官方文档](https://www.npmjs.com/package/postcss-load-config#ordering)
-
-#### uni-app vite vue3
+如果项目里还保留了旧的 PostCSS 注册项，可以直接删除：
 
 ```diff
-// vite.config.ts 文件
-import { defineConfig } from 'vite';
-// postcss 插件配置
-const postcssPlugins = [require('autoprefixer')(), require('tailwindcss')()];
-// ... 其他省略
-+ postcssPlugins.push(require('weapp-tailwindcss/css-macro/postcss'));
-// https://vitejs.dev/config/
-export default defineConfig({
-  plugins: vitePlugins,
-  css: {
-    postcss: {
-      plugins: postcssPlugins,
-    },
-  },
-});
+// vite.config.ts / postcss.config.js
+plugins: [
+-  require('weapp-tailwindcss/css-macro/postcss'),
+]
 ```
 
-> 可以参考这个项目的配置 [demo/uni-app-vue3-vite](https://github.com/sonofmagic/weapp-tailwindcss/tree/main/demo/uni-app-vue3-vite)
-
-#### uni-app vue2
-
-:::warning
-`uni-app vue2 / webpack` 已经不推荐，仓库中的对应 classic demo 也已移除。
-
-如果你仍在维护存量项目，可以继续按这个思路注册；新项目请直接参考 `demo/uni-app-vue3-vite`。
-:::
-
-vue2 cli 项目默认会带一个 `postcss.config.js`，我们直接在里面注册即可:
-
-```diff
-const webpack = require('webpack')
-const config = {
-  parser: require('postcss-comment'),
-  plugins: [
-    // ...
-    require('tailwindcss')({ config: './tailwind.config.js' }),
-    // ...
-+   require('weapp-tailwindcss/css-macro/postcss'),
-    require('autoprefixer')({
-      remove: process.env.UNI_PLATFORM !== 'h5'
-    }),
-+   // 注意在 tailwindcss 之后和 这个之前
-    require('@dcloudio/vue-cli-plugin-uni/packages/postcss')
-  ]
-}
-if (webpack.version[0] > 4) {
-  delete config.parser
-}
-module.exports = config
-```
-
-> 仓库已不再保留 `demo/uni-app`，新项目请参考 [demo/uni-app-vue3-vite](https://github.com/sonofmagic/weapp-tailwindcss/tree/main/demo/uni-app-vue3-vite)
+> 提示：`weapp-tailwindcss/css-macro/postcss` 仍然作为导出入口保留，方便存量自定义 PostCSS 流程继续使用；常规 Vite / Webpack / Gulp 集成不再需要手动配置它。
 
 ### 配置完成
 
-现在配置好了这2个地方，目前你就可以直接使用 `ifdef` 和 `ifndef` 的条件编译写法了！
+现在 Tailwind 侧配置完成后，就可以直接使用 `ifdef` 和 `ifndef` 的条件编译写法了！
 
 ```html
 <!-- 默认 -->

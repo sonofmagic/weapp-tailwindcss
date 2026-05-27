@@ -10,6 +10,7 @@ import type {
 import fs from 'node:fs'
 import { createRequire } from 'node:module'
 import postcss from 'postcss'
+import { hasCssMacroTailwindPlugin, withCssMacroStyleOptions } from '@/css-macro/auto'
 import { createTailwindcssPatcher } from '@/tailwindcss/patcher'
 import { ensureTailwindcssRuntimePatch } from '@/tailwindcss/runtime-patch'
 import { transformTailwindV3CssByTarget } from './miniprogram'
@@ -138,7 +139,7 @@ function extractClassCandidatesFromSelector(selector: string, candidates: Set<st
         escaped = true
         continue
       }
-      if (/[\w-]/.test(char)) {
+      if (char && /[\w-]/.test(char)) {
         candidate += char
         continue
       }
@@ -234,6 +235,14 @@ function createTailwindConfig(source: TailwindV3ResolvedSource, options: Tailwin
     ? createExplicitContentConfig(rawEntries) as Config['content']
     : mergeContent(config.content, rawEntries) as Config['content']
   return config
+}
+
+function shouldAutoEnableCssMacro(source: TailwindV3ResolvedSource) {
+  return hasCssMacroTailwindPlugin(normalizeConfigObject(source.configObject)?.plugins)
+}
+
+function resolveStyleOptions(source: TailwindV3ResolvedSource, options: Partial<IStyleHandlerOptions> | undefined) {
+  return shouldAutoEnableCssMacro(source) ? withCssMacroStyleOptions(options) : options
 }
 
 function loadTailwindV3Internals(source: TailwindV3ResolvedSource): TailwindV3Internals {
@@ -417,6 +426,7 @@ export function createTailwindV3Engine(source: TailwindV3ResolvedSource): Tailwi
       styleOptions,
       target = 'weapp',
     } = options
+    const resolvedStyleOptions = resolveStyleOptions(generateSource, styleOptions)
     const tailwindConfig = internals.validateConfig(internals.resolveConfig(createTailwindConfig(generateSource, options)))
     const candidates = mergeGenerateCandidates(generateSource, options)
     const changedContent = createChangedContentEntries(candidates, options.sources ?? [])
@@ -447,7 +457,7 @@ export function createTailwindV3Engine(source: TailwindV3ResolvedSource): Tailwi
       context = await internals.processTailwindFeatures(setupContext)(root, result)
     }
     const rawCss = root.toString()
-    const css = await transformTailwindV3CssByTarget(rawCss, target, styleOptions)
+    const css = await transformTailwindV3CssByTarget(rawCss, target, resolvedStyleOptions)
     const dependencies = collectDependencyMessages(result)
     for (const dependency of generateSource.dependencies) {
       dependencies.add(dependency)
@@ -488,7 +498,7 @@ export function createTailwindV3Engine(source: TailwindV3ResolvedSource): Tailwi
     internals.collapseDuplicateDeclarations(context)(root, result)
 
     const rawCss = root.toString()
-    const css = await transformTailwindV3CssByTarget(rawCss, target, styleOptions)
+    const css = await transformTailwindV3CssByTarget(rawCss, target, resolveStyleOptions(source, styleOptions))
     return {
       css,
       rawCss,
@@ -508,7 +518,8 @@ export function createTailwindV3Engine(source: TailwindV3ResolvedSource): Tailwi
       return generateOnce(source, options)
     }
 
-    const cacheKey = createIncrementalGenerateCacheKey(source, target, options.styleOptions)
+    const styleOptions = resolveStyleOptions(source, options.styleOptions)
+    const cacheKey = createIncrementalGenerateCacheKey(source, target, styleOptions)
     const cached = incrementalGenerateCache.get(cacheKey)
     if (cached) {
       const missingCandidates = [...requestedCandidates].filter(candidate => !cached.seenCandidates.has(candidate))
@@ -532,7 +543,7 @@ export function createTailwindV3Engine(source: TailwindV3ResolvedSource): Tailwi
         cached.context,
         missingCandidates,
         target,
-        options.styleOptions,
+        styleOptions,
       )
       for (const candidate of missingCandidates) {
         cached.seenCandidates.add(candidate)

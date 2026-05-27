@@ -2,6 +2,7 @@ import type { IStyleHandlerOptions } from '@weapp-tailwindcss/postcss/types'
 import type { TailwindV3GenerateTarget } from './types'
 import { createStyleHandler } from '@weapp-tailwindcss/postcss'
 import postcss from 'postcss'
+import { hasCssMacroStyleOptions } from '@/css-macro/auto'
 import { pruneMiniProgramGeneratedCss } from '../miniprogram'
 
 const defaultStyleHandler = createStyleHandler({
@@ -100,9 +101,11 @@ export async function transformTailwindV3CssToWeapp(
     majorVersion: 3,
     ...options,
   })
-  const prunedCss = pruneMiniProgramGeneratedCss(result.css, {
+  const pruneOptions = {
     preservePreflight: true,
-  })
+    preserveConditionalComments: hasCssMacroStyleOptions(options),
+  }
+  const prunedCss = pruneMiniProgramGeneratedCss(result.css, pruneOptions)
   return ensureMiniProgramV3PreflightReset(prunedCss, options?.cssPreflight)
 }
 

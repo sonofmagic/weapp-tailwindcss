@@ -59,11 +59,6 @@ const bench =
 // const isH5 = process.env.UNI_PLATFORM === 'h5';
 // const isApp = process.env.UNI_PLATFORM === 'app-plus';
 
-// postcss 插件配置：Tailwind CSS 由 weapp-tailwindcss 生成模式接管，这里不要再注册 tailwindcss。
-const postcssPlugins = [
-  require('weapp-tailwindcss/css-macro/postcss')
-];
-
 let weappTwLoadTime = 0;
 let weappTwStartTime = 0;
 let weappTwUpdateCount = 0;
@@ -176,11 +171,7 @@ export default defineConfig(async () => {
           },
         }
       : {}),
-    // 假如 postcss.config.js 不起作用，请使用内联 postcss 配置
     css: {
-      postcss: {
-        plugins: postcssPlugins,
-      },
       preprocessorOptions: {
         scss: {
           silenceDeprecations: ['legacy-js-api', 'import'],
