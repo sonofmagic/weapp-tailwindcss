@@ -45,6 +45,7 @@ export type RequiredStyleHandlerOptions = {
   | 'rem2rpx'
   | 'px2rpx'
   | 'unitsToPx'
+  | 'unitConversion'
 >
 
 export interface InternalCssSelectorReplacerOptions {
@@ -71,8 +72,26 @@ export interface UnitsToPxOptions extends Pick<
   transform?: GlobalUnitTransform | false
 }
 
+export type UnitConversionConfig = UnitConverterOptions
+
+export type UnitConversionPlatformMap = Record<string, UnitConversionConfig | false | undefined>
+
+export interface PlatformUnitConversionOptions {
+  /**
+   * 未匹配到具体平台时使用的兜底转换规则。
+   */
+  default?: UnitConversionConfig | false | undefined
+  /**
+   * 按平台名称配置转换规则，平台键会做小写归一化并兼容常见别名。
+   */
+  platforms: UnitConversionPlatformMap
+}
+
+export type UnitConversionOptions = UnitConversionConfig | PlatformUnitConversionOptions | false
+
 export type IStyleHandlerOptions = {
   ctx?: PostcssContext | undefined
+  platform?: string | undefined
   postcssOptions?: LoadedPostcssOptions | undefined
   cssRemoveProperty?: boolean | undefined
   cssRemoveHoverPseudoClass?: boolean | undefined
@@ -106,6 +125,7 @@ export interface UserDefinedPostcssOptions {
   rem2rpx?: boolean | Rem2rpxOptions | undefined
   px2rpx?: boolean | Px2rpxOptions | undefined
   unitsToPx?: boolean | UnitsToPxOptions | undefined
+  unitConversion?: UnitConversionOptions | undefined
   postcssOptions?: LoadedPostcssOptions | undefined
   cssRemoveHoverPseudoClass?: boolean | undefined
   cssRemoveProperty?: boolean | undefined

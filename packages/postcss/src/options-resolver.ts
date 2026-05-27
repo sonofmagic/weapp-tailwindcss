@@ -16,6 +16,8 @@ function getSimpleOverrideCacheKey(options: Partial<IStyleHandlerOptions>) {
   let rem2rpx = SIMPLE_OVERRIDE_UNSET
   let px2rpx = SIMPLE_OVERRIDE_UNSET
   let unitsToPx = SIMPLE_OVERRIDE_UNSET
+  let unitConversion = SIMPLE_OVERRIDE_UNSET
+  let platform = SIMPLE_OVERRIDE_UNSET
   let cssCalc = SIMPLE_OVERRIDE_UNSET
   let cssChildCombinatorReplaceValue = SIMPLE_OVERRIDE_UNSET
   let cssPreflight = SIMPLE_OVERRIDE_UNSET
@@ -84,6 +86,18 @@ function getSimpleOverrideCacheKey(options: Partial<IStyleHandlerOptions>) {
         }
         unitsToPx = value ? '1' : '0'
         break
+      case 'unitConversion':
+        if (value !== false) {
+          return undefined
+        }
+        unitConversion = '0'
+        break
+      case 'platform':
+        if (typeof value !== 'string') {
+          return undefined
+        }
+        platform = value
+        break
       case 'cssCalc':
         if (typeof value !== 'boolean') {
           return undefined
@@ -125,6 +139,8 @@ function getSimpleOverrideCacheKey(options: Partial<IStyleHandlerOptions>) {
     rem2rpx,
     px2rpx,
     unitsToPx,
+    unitConversion,
+    platform,
     cssCalc,
     cssChildCombinatorReplaceValue,
     cssPreflight,

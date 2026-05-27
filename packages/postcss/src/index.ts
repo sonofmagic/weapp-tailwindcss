@@ -32,3 +32,7 @@ export { createFallbackPlaceholderReplacer } from './plugins/post/specificity-cl
 export { createInjectPreflight } from './preflight'
 export { internalCssSelectorReplacer } from './shared'
 export * from './types'
+export {
+  composeRules as unitConversionComposeRules,
+  presets as unitConversionPresets,
+} from 'postcss-rule-unit-converter'

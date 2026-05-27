@@ -28,6 +28,7 @@ type PxModule = typeof import('@/plugins/getPxTransformPlugin')
 type RemModule = typeof import('@/plugins/getRemTransformPlugin')
 type CalcModule = typeof import('@/plugins/getCalcPlugin')
 type UnitsModule = typeof import('@/plugins/getUnitsToPxPlugin')
+type UnitConversionModule = typeof import('@/plugins/getUnitConversionPlugin')
 type CleanerModule = typeof import('@/plugins/getCustomPropertyCleaner')
 
 let getPxTransformPlugin: PxModule['getPxTransformPlugin']
@@ -35,6 +36,7 @@ let getRemTransformPlugin: RemModule['getRemTransformPlugin']
 let getCalcPlugin: CalcModule['getCalcPlugin']
 let getCalcDuplicateCleaner: typeof import('@/plugins/getCalcDuplicateCleaner').getCalcDuplicateCleaner
 let getUnitsToPxPlugin: UnitsModule['getUnitsToPxPlugin']
+let getUnitConversionPlugin: UnitConversionModule['getUnitConversionPlugin']
 let getCustomPropertyCleaner: CleanerModule['getCustomPropertyCleaner']
 
 const TW_CUSTOM_PROPERTY_REGEX = /^--tw-/
@@ -54,6 +56,9 @@ beforeAll(async () => {
 
   const unitsModule = await import('@/plugins/getUnitsToPxPlugin')
   getUnitsToPxPlugin = unitsModule.getUnitsToPxPlugin
+
+  const unitConversionModule = await import('@/plugins/getUnitConversionPlugin')
+  getUnitConversionPlugin = unitConversionModule.getUnitConversionPlugin
 
   const cleanerModule = await import('@/plugins/getCustomPropertyCleaner')
   getCustomPropertyCleaner = cleanerModule.getCustomPropertyCleaner
@@ -231,6 +236,37 @@ describe('getUnitsToPxPlugin', () => {
       ]),
     }))
     expect(plugin?.postcssPlugin).toBe('mock-units')
+  })
+})
+
+describe('getUnitConversionPlugin', () => {
+  it('returns null when unitConversion disabled', () => {
+    const plugin = getUnitConversionPlugin(createOptions({ unitConversion: false }))
+    expect(plugin).toBeNull()
+    expect(unitConverterMock).not.toHaveBeenCalled()
+  })
+
+  it('passes resolved platform config to rule-unit-converter', () => {
+    unitConverterMock.mockImplementation(options => ({ postcssPlugin: 'mock-unit-conversion', options }))
+
+    const config = {
+      rules: [
+        { from: 'px', to: 'rpx', factor: 2 },
+      ],
+      unitPrecision: 4,
+    }
+    const plugin = getUnitConversionPlugin(createOptions({
+      platform: 'mp-weixin',
+      unitConversion: {
+        platforms: {
+          weapp: config,
+        },
+      },
+    })) as Plugin | null
+
+    expect(unitConverterMock).toHaveBeenCalledTimes(1)
+    expect(unitConverterMock).toHaveBeenCalledWith(config)
+    expect(plugin?.postcssPlugin).toBe('mock-unit-conversion')
   })
 })
 

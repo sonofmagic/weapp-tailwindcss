@@ -1,12 +1,21 @@
 import { generateCss4 } from '@weapp-tailwindcss/test-helper'
 import path from 'pathe'
-import { createStyleHandler } from '@/index'
+import { createStyleHandler, unitConversionComposeRules, unitConversionPresets } from '@/index'
 
 function generateCss(css: string, base: string) {
   return generateCss4(base, { css })
 }
 
 describe('index', () => {
+  it('exports unit conversion helpers', () => {
+    expect(unitConversionComposeRules(unitConversionPresets.pxToRpx())).toEqual([
+      expect.objectContaining({
+        from: 'px',
+        to: 'rpx',
+      }),
+    ])
+  })
+
   it('keeps :host in transformed root scope for main chunk', async () => {
     const styleHandler = createStyleHandler({
       isMainChunk: true,

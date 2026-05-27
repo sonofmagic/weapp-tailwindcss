@@ -1234,10 +1234,20 @@ describe('bundlers/shared generator css', () => {
     const styleHandler = vi.fn(async (code: string) => ({ css: `legacy:${code}` }))
     const result = await generateCssByGenerator({
       opts: {
+        platform: 'weapp',
         rem2rpx: true,
         px2rpx: {
           designWidth: 750,
           platform: 'weapp',
+        },
+        unitConversion: {
+          platforms: {
+            weapp: {
+              rules: [
+                { from: 'px', to: 'rpx', factor: 2 },
+              ],
+            },
+          },
         },
         cssChildCombinatorReplaceValue: ['view', 'text'],
         cssRemoveHoverPseudoClass: true,
@@ -1282,6 +1292,16 @@ describe('bundlers/shared generator css', () => {
           designWidth: 750,
           platform: 'weapp',
         }),
+        unitConversion: {
+          platforms: {
+            weapp: {
+              rules: [
+                { from: 'px', to: 'rpx', factor: 2 },
+              ],
+            },
+          },
+        },
+        platform: 'weapp',
         cssChildCombinatorReplaceValue: ['view', 'text'],
         cssRemoveHoverPseudoClass: true,
         isMainChunk: true,

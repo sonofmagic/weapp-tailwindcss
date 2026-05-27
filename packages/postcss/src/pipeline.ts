@@ -11,6 +11,7 @@ import { getCalcPlugin } from './plugins/getCalcPlugin'
 import { getCustomPropertyCleaner } from './plugins/getCustomPropertyCleaner'
 import { getPxTransformPlugin } from './plugins/getPxTransformPlugin'
 import { getRemTransformPlugin } from './plugins/getRemTransformPlugin'
+import { getUnitConversionPlugin } from './plugins/getUnitConversionPlugin'
 import { getUnitsToPxPlugin } from './plugins/getUnitsToPxPlugin'
 import { postcssWeappTailwindcssPostPlugin } from './plugins/post'
 import { postcssWeappTailwindcssPrePlugin } from './plugins/pre'
@@ -148,6 +149,11 @@ function createPreparedNodes(options: IStyleHandlerOptions, signal?: FeatureSign
   const remTransformPlugin = getRemTransformPlugin(options)
   if (remTransformPlugin) {
     preparedNodes.push(createPreparedNode('normal:rem-transform', 'normal', () => remTransformPlugin))
+  }
+
+  const unitConversionPlugin = getUnitConversionPlugin(options)
+  if (unitConversionPlugin) {
+    preparedNodes.push(createPreparedNode('normal:unit-conversion', 'normal', () => unitConversionPlugin))
   }
 
   const calcPlugin = getCalcPlugin(options)

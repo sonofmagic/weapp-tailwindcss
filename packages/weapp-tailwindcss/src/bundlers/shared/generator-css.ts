@@ -139,9 +139,11 @@ function resolveGeneratorStyleOptions(
   return {
     cssChildCombinatorReplaceValue: opts.cssChildCombinatorReplaceValue,
     cssSelectorReplacement: opts.cssSelectorReplacement,
+    platform: opts.platform,
     rem2rpx: opts.rem2rpx,
     px2rpx: opts.px2rpx,
     unitsToPx: opts.unitsToPx,
+    unitConversion: opts.unitConversion,
     cssRemoveProperty: opts.cssRemoveProperty,
     cssRemoveHoverPseudoClass: opts.cssRemoveHoverPseudoClass,
     cssPresetEnv: opts.cssPresetEnv,

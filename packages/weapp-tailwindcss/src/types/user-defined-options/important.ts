@@ -6,6 +6,7 @@ import type {
   Px2rpxOptions,
   Rem2rpxOptions,
   UniAppXUnsupportedMode,
+  UnitConversionOptions,
   UnitsToPxOptions,
   WeappAutoprefixerOptions,
 } from '@weapp-tailwindcss/postcss/types'
@@ -278,6 +279,49 @@ export interface UserDefinedOptionsImportantPart {
    * 默认关闭。
    */
   unitsToPx?: boolean | UnitsToPxOptions | undefined
+
+  /**
+   * 当前样式处理平台。
+   *
+   * @group 0.重要配置
+   * @remarks
+   * 主要供 `unitConversion.platforms` 精确选择平台规则。未传入时会从常见构建环境变量推断。
+   */
+  platform?: IStyleHandlerOptions['platform'] | undefined
+
+  /**
+   * 任意样式单位转换配置。
+   *
+   * @group 0.重要配置
+   * @remarks
+   * 底层使用 `postcss-rule-unit-converter`，可直接传入其 `rules`、`propList`、`selectorBlackList` 等配置。
+   * 需要按平台区分时，使用 `platforms` 配置；平台名称会兼容 `weapp`/`mp-weixin`、`h5`/`web`、`app-plus`/`app` 等常见别名。
+   * 平台优先读取当前样式处理选项的 `platform`，未传入时会从 `WEAPP_TW_TARGET`、`WEAPP_TAILWINDCSS_TARGET`、`UNI_PLATFORM`、`UNI_UTS_PLATFORM`、`TARO_ENV`、`MPX_CLI_MODE` 与 `MPX_CURRENT_TARGET_MODE` 推断。
+   * 默认关闭，且不会隐式注册 Tailwind CSS 官方 PostCSS 插件。
+   * @example
+   * ```ts
+   * import { unitConversionComposeRules, unitConversionPresets } from 'weapp-tailwindcss'
+   *
+   * weappTailwindcss({
+   *   unitConversion: {
+   *     platforms: {
+   *       'mp-weixin': {
+   *         rules: unitConversionComposeRules(
+   *           unitConversionPresets.pxToRpx({ ratio: 2 }),
+   *           unitConversionPresets.remToRpx({ rootValue: 16 }),
+   *         ),
+   *       },
+   *       h5: {
+   *         rules: [
+   *           unitConversionPresets.rpxToPx({ ratio: 0.5 }),
+   *         ],
+   *       },
+   *     },
+   *   },
+   * })
+   * ```
+   */
+  unitConversion?: UnitConversionOptions | undefined
 
   /**
    * `postcss-preset-env` 的配置项。

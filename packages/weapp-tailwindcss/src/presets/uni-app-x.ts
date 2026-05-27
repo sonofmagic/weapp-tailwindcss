@@ -30,6 +30,10 @@ export interface UniAppXOptions {
    */
   unitsToPx?: UserDefinedOptions['unitsToPx']
   /**
+   * 任意样式单位转换配置。
+   */
+  unitConversion?: UserDefinedOptions['unitConversion']
+  /**
    * 透传原始插件配置。
    */
   rawOptions?: UserDefinedOptions
@@ -133,6 +137,7 @@ export function uniAppX(options: UniAppXOptions) {
       ...(options.generator !== undefined ? { generator: options.generator } : {}),
       rem2rpx: options.rem2rpx,
       unitsToPx: options.unitsToPx,
+      unitConversion: options.unitConversion,
       tailwindcssBasedir: options.base,
       tailwindcssPatcherOptions: {
         projectRoot: options.base,

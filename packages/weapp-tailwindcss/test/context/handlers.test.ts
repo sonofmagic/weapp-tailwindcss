@@ -19,12 +19,17 @@ vi.mock('@/wxml', () => ({
 type InternalUserDefinedOptions = import('@/types').InternalUserDefinedOptions
 type Px2rpxOption = InternalUserDefinedOptions['px2rpx']
 type UnitsToPxOption = InternalUserDefinedOptions['unitsToPx']
+type UnitConversionOption = InternalUserDefinedOptions['unitConversion']
 
 const customAttributesEntities: import('@/types').ICustomAttributesEntities = [
   ['view', ['class']],
 ]
 
-function createContext(px2rpx?: Px2rpxOption, unitsToPx?: UnitsToPxOption): InternalUserDefinedOptions {
+function createContext(
+  px2rpx?: Px2rpxOption,
+  unitsToPx?: UnitsToPxOption,
+  unitConversion?: UnitConversionOption,
+): InternalUserDefinedOptions {
   return {
     cssPreflight: {},
     cssPreflightRange: 'all' as const,
@@ -41,6 +46,7 @@ function createContext(px2rpx?: Px2rpxOption, unitsToPx?: UnitsToPxOption): Inte
     uniAppX: true,
     px2rpx,
     unitsToPx,
+    unitConversion,
     arbitraryValues: { allowDoubleQuotes: true },
     jsPreserveClass: vi.fn(),
     babelParserOptions: { sourceType: 'module' },
@@ -79,6 +85,7 @@ describe('createHandlersFromContext', () => {
 
     expect(styleHandlerFactory).toHaveBeenCalledWith(expect.objectContaining({
       cssCalc: true,
+      platform: ctx.platform,
       px2rpx: ctx.px2rpx,
       unitsToPx: ctx.unitsToPx,
       cssPresetEnv: ctx.cssPresetEnv,
@@ -147,6 +154,33 @@ describe('createHandlersFromContext', () => {
 
     expect(styleHandlerFactory).toHaveBeenCalledWith(expect.objectContaining({
       unitsToPx,
+    }))
+  })
+
+  it('forwards unitConversion to the style handler', async () => {
+    const { createHandlersFromContext } = await import('@/context/handlers')
+    const unitConversion: UnitConversionOption = {
+      platforms: {
+        weapp: {
+          rules: [
+            { from: 'px', to: 'rpx', factor: 2 },
+          ],
+        },
+      },
+    }
+
+    styleHandlerFactory.mockReturnValueOnce(vi.fn())
+    jsHandlerFactory.mockReturnValueOnce(vi.fn())
+    templateHandlerFactory.mockReturnValueOnce(vi.fn())
+
+    createHandlersFromContext(
+      createContext(undefined, undefined, unitConversion),
+      customAttributesEntities,
+      true,
+    )
+
+    expect(styleHandlerFactory).toHaveBeenCalledWith(expect.objectContaining({
+      unitConversion,
     }))
   })
 

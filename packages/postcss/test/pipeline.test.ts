@@ -106,6 +106,33 @@ describe('style processing pipeline', () => {
     ])
   })
 
+  it('adds unit-conversion after legacy unit transforms when configured', () => {
+    const options = createOptions({
+      unitsToPx: true,
+      px2rpx: true,
+      rem2rpx: true,
+      unitConversion: {
+        rules: [
+          { from: 'rpx', to: 'px', factor: 0.5 },
+        ],
+      },
+      cssCalc: false,
+    })
+
+    const pipeline = createStylePipeline(options)
+    const ids = pipeline.nodes.map(node => node.id)
+    expect(ids).toEqual([
+      'pre:core',
+      'normal:preset-env',
+      'normal:color-functional-fallback',
+      'normal:units-to-px',
+      'normal:px-transform',
+      'normal:rem-transform',
+      'normal:unit-conversion',
+      'post:core',
+    ])
+  })
+
   it.each([
     ['Tailwind CSS v3', 3],
     ['Tailwind CSS v4', 4],
@@ -267,6 +294,11 @@ describe('signal-driven pipeline pruning', () => {
       unitsToPx: true,
       px2rpx: true,
       rem2rpx: true,
+      unitConversion: {
+        rules: [
+          { from: 'rpx', to: 'px', factor: 0.5 },
+        ],
+      },
       cssCalc: {
         includeCustomProperties: [/^--tw-/],
       },
@@ -283,6 +315,7 @@ describe('signal-driven pipeline pruning', () => {
     expect(ids).toContain('normal:units-to-px')
     expect(ids).toContain('normal:px-transform')
     expect(ids).toContain('normal:rem-transform')
+    expect(ids).toContain('normal:unit-conversion')
     expect(ids).toContain('normal:calc')
     expect(ids).toContain('normal:calc-duplicate-cleaner')
     expect(ids).toContain('normal:custom-property-cleaner')

@@ -47,8 +47,10 @@ export function createHandlersFromContext(
     cssPresetEnv,
     autoprefixer,
     uniAppX,
+    platform,
     px2rpx,
     unitsToPx,
+    unitConversion,
     arbitraryValues,
     jsPreserveClass,
     jsArbitraryValueFallback,
@@ -80,8 +82,10 @@ export function createHandlersFromContext(
     uniAppX: uniAppXEnabled,
     uniAppXUnsupported: resolvedUniAppXOptions.uvueUnsupported,
     cssCalc: cssCalcOptions,
+    platform,
     px2rpx,
     unitsToPx,
+    unitConversion,
     majorVersion: tailwindcssMajorVersion,
   })
 
