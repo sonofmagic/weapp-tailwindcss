@@ -340,6 +340,27 @@ function toNumberEnv(name: string, fallback: number) {
   return Number.isFinite(numeric) ? numeric : fallback
 }
 
+function resolveSelectedWatchCaseCount(target: WatchCaseName) {
+  if (target === 'all') {
+    return configuredWatchCases.length
+  }
+
+  if (target === 'demo') {
+    return configuredWatchCases.filter(item => item.group === target).length
+  }
+
+  if (target === 'both') {
+    return bothCases.size
+  }
+
+  return configuredWatchCases.some(item => item.name === target) ? 1 : 0
+}
+
+function resolveDefaultWatchCommandTimeoutMs(target: WatchCaseName, timeoutMs: number) {
+  const selectedCaseCount = Math.max(1, resolveSelectedWatchCaseCount(target))
+  return Math.max(timeoutMs * selectedCaseCount + 180_000, 240_000)
+}
+
 function createReportFilePath(cwd: string, target: WatchCaseName) {
   const reportDir = path.resolve(cwd, './benchmark/e2e-watch-hmr')
   const timestamp = new Date().toISOString().replaceAll(':', '-').replaceAll('.', '-')
@@ -1021,7 +1042,7 @@ export async function runHotUpdateTarget(target: WatchCaseName) {
   const maxPluginProcessMs = toNumberEnv('E2E_WATCH_MAX_PLUGIN_PROCESS_MS', DEFAULT_PLUGIN_PROCESS_BUDGET_MS)
   const commandTimeoutMs = toNumberEnv(
     'E2E_WATCH_COMMAND_TIMEOUT_MS',
-    Math.max(timeoutMs * 2 + 60_000, 240_000),
+    resolveDefaultWatchCommandTimeoutMs(target, timeoutMs),
   )
   const skipBuild = toBoolEnv('E2E_WATCH_SKIP_BUILD', true)
   const quietSass = toBoolEnv('E2E_WATCH_QUIET_SASS', true)

@@ -135,3 +135,9 @@ export function withCssMacroStyleOptions(
 export function hasCssMacroStyleOptions(options: Partial<IStyleHandlerOptions> | undefined): boolean {
   return Boolean((options as CssMacroStyleOptions | undefined)?.[CSS_MACRO_STYLE_OPTIONS_MARKER])
 }
+
+export async function transformCssMacroCss(css: string): Promise<string> {
+  return (await postcss([cssMacroPostcssPlugin()]).process(css, {
+    from: undefined,
+  })).css
+}

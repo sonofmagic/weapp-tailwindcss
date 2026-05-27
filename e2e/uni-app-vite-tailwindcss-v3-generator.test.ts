@@ -9,6 +9,7 @@ import { clearProjectBuildState } from './projectTest'
 const projectRoot = path.resolve(__dirname, '../demo/uni-app-vite-tailwindcss-v3')
 const rawTailwindDirectiveRE = /@(tailwind|apply)\b/
 const cssOutputPattern = '**/*.{css,wxss,acss,qss}'
+const textOutputPattern = '**/*.{html,js,css,wxml,wxss}'
 
 const platforms = [
   {
@@ -69,6 +70,27 @@ async function collectOutputCss(outputDir: string) {
   return entries
 }
 
+async function collectOutputText(outputDir: string) {
+  const root = path.resolve(projectRoot, outputDir)
+  const files = await fg(textOutputPattern, {
+    absolute: false,
+    cwd: root,
+    onlyFiles: true,
+  })
+  const entries = await Promise.all(files.sort().map(async (file) => {
+    const absolutePath = path.join(root, file)
+    return {
+      file,
+      text: await fs.readFile(absolutePath, 'utf8'),
+    }
+  }))
+  return entries
+}
+
+async function readOutputFile(outputDir: string, file: string) {
+  return fs.readFile(path.resolve(projectRoot, outputDir, file), 'utf8')
+}
+
 describe('uni-app vite vue3 Tailwind v3 generator output', () => {
   it('builds representative mini-program and quickapp platforms without raw Tailwind directives', async () => {
     for (const platform of platforms) {
@@ -91,4 +113,41 @@ describe('uni-app vite vue3 Tailwind v3 generator output', () => {
       }
     }
   }, 1_200_000)
+
+  it('emits platform-specific css-macro comments for mp-weixin and H5 builds', async () => {
+    await buildPlatform('mp-weixin')
+
+    const mpWxml = await readOutputFile('dist/build/mp-weixin', 'pages/index/index.wxml')
+    const mpCss = (await collectOutputCss('dist/build/mp-weixin')).map(entry => entry.css).join('\n')
+
+    expect(mpWxml, 'mp-weixin should keep the mini-program DOM branch').toContain('css-macro-e2e-mp')
+    expect(mpWxml, 'mp-weixin should keep the mini-program DOM text').toContain('css-macro-mp')
+    expect(mpWxml, 'mp-weixin should remove the H5 DOM branch').not.toContain('css-macro-e2e-h5')
+    expect(mpWxml, 'mp-weixin should remove the H5 DOM text').not.toContain('css-macro-h5')
+    expect(mpCss, 'css-macro should not leave legacy platform media queries').not.toContain('@media (weapp-tw-platform')
+    expect(mpCss, 'mp-weixin ifdef CSS must use standalone conditional comments').toMatch(
+      /\/\* #ifdef MP-WEIXIN \*\/\n\.ifdef-_bMP-WEIXIN_B_cbg-_b_h1167ff_B \{[\s\S]*?background-color:\s*rgba\(17,\s*103,\s*255,[\s\S]*?\n\/\* #endif \*\//,
+    )
+    expect(mpCss, 'mp-weixin ifndef CSS must use standalone conditional comments').toMatch(
+      /\/\* #ifndef H5 \*\/\n\.ifndef-_bH5_B_ctext-_b_h0055aa_B \{[\s\S]*?color:\s*rgba\(0,\s*85,\s*170,[\s\S]*?\n\/\* #endif \*\//,
+    )
+
+    await buildPlatform('h5')
+
+    const h5Output = (await collectOutputText('dist/build/h5')).map(entry => entry.text).join('\n')
+
+    expect(h5Output, 'H5 should keep the H5 DOM branch').toContain('css-macro-e2e-h5')
+    expect(h5Output, 'H5 should keep the H5 DOM text').toContain('css-macro-h5')
+    expect(h5Output, 'H5 should remove the mini-program DOM branch').not.toContain('css-macro-e2e-mp')
+    expect(h5Output, 'H5 should remove the mini-program DOM text').not.toContain('css-macro-mp')
+    expect(h5Output, 'css-macro should not leave legacy platform media queries in H5 output').not.toContain('@media (weapp-tw-platform')
+    expect(h5Output, 'css-macro should expand internal conditional at-rules in H5 output').not.toContain('@weapp-tw-ifdef')
+    expect(h5Output, 'css-macro should expand internal negative conditional at-rules in H5 output').not.toContain('@weapp-tw-ifndef')
+    expect(h5Output, 'H5 ifdef CSS must use standalone conditional comments').toMatch(
+      /\/\* #ifdef H5 \*\/\n\.ifdef-\\\[H5\\\]\\:bg-\\\[\\#ff6611\\\] \{[\s\S]*?background-color:\s*rgb\(255\s+102\s+17\s+\/[\s\S]*?\n\/\* #endif \*\//,
+    )
+    expect(h5Output, 'H5 ifndef CSS must use standalone conditional comments').toMatch(
+      /\/\* #ifndef MP-WEIXIN \*\/\n\.ifndef-\\\[MP-WEIXIN\\\]\\:text-\\\[\\#aa3300\\\] \{[\s\S]*?color:\s*rgb\(170\s+51\s+0\s+\/[\s\S]*?\n\/\* #endif \*\//,
+    )
+  }, 600_000)
 })

@@ -9,6 +9,12 @@
   <view class="-wx_cbg-red-400 -wx_cbg-red-400">-wx:bg-red-400</view>
   <view class="mv_cbg-blue-400 mv_cbg-blue-400">mv:bg-blue-400</view>
   <view class="-mv_cbg-red-400 -mv_cbg-red-400">-mv:bg-red-400</view>
+  <view class="css-macro-e2e css-macro-e2e">
+    <view
+      class="css-macro-e2e-mp css-macro-e2e-mp ifdef-_bMP-WEIXIN_B_cbg-_b_h1167ff_B ifdef-_bMP-WEIXIN_B_cbg-_b_h1167ff_B ifndef-_bH5_B_ctext-_b_h0055aa_B ifndef-_bH5_B_ctext-_b_h0055aa_B">
+      css-macro-mp
+    </view>
+  </view>
   <view class="group group published published">
     <view class="after_ccontent-_b_av3_apply_a_B after_ccontent-_b_av3_apply_a_B group-_b_dpublished_B_ctext-green-500 group-_b_dpublished_B_ctext-green-500 i-mdi-home i-mdi-home">
       generator regression

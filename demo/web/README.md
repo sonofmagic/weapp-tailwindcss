@@ -20,10 +20,10 @@ pnpm --filter @weapp-tailwindcss-demo/web-react-vite-tailwindcss-v3 build
 pnpm --filter @weapp-tailwindcss-demo/web-react-vite-tailwindcss-v3 build:weapp
 ```
 
-对比 4 个 demo 的 `dev` 与 `dev:weapp` 页面效果：
+验证 4 个 demo 的 `dev` 与 `dev:weapp`：
 
 ```bash
 pnpm demo:web:compare
 ```
 
-脚本会启动每个 demo 的 web/weapp 两个 Vite dev server，用真实浏览器对比首屏截图和关键元素的 computed style。默认输出目录为 `demo/web/.compare-dev-weapp`。
+脚本会启动每个 demo 的 web/weapp 两个 Vite dev server，用真实浏览器验证 web 目标关键样式，同时读取 weapp 目标的 dev CSS 模块，检查小程序转义选择器、响应式选择器和任意值选择器是否正确生成。默认输出目录为 `demo/web/.compare-dev-weapp`。

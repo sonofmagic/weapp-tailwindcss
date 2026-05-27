@@ -46,6 +46,33 @@ describe('css-macro tailwindcss plugin', () => {
     expect(result.css).not.toContain('@weapp-tw-ifdef')
   })
 
+  it('auto enables postcss macro transform for tailwindcss v3 web target', async () => {
+    const source = await resolveTailwindV3Source({
+      css: '@tailwind utilities;',
+      base: process.cwd(),
+      config: undefined,
+    })
+    source.configObject = {
+      content: [],
+      plugins: [twPlugin],
+    }
+    const engine = createTailwindV3Engine(source)
+
+    const result = await engine.generate({
+      target: 'web',
+      candidates: ['ifdef-[H5]:bg-[#ff6611]'],
+      styleOptions: {
+        isMainChunk: false,
+      },
+    })
+
+    expect(result.rawCss).toContain('@weapp-tw-ifdef')
+    expect(result.css).toContain('/* #ifdef H5 */\n.ifdef-\\[H5\\]\\:bg-\\[\\#ff6611\\]')
+    expect(result.css).toContain('/* #endif */')
+    expect(result.css).not.toContain('@weapp-tw-ifdef')
+    expect(result.css).not.toContain('.ifdef-_bH5_B_cbg-_b_hff6611_B')
+  })
+
   it('auto enables postcss macro transform for tailwindcss v4 @plugin', async () => {
     const source = await resolveTailwindV4Source({
       css: TAILWIND_V4_MACRO_CSS,
@@ -67,6 +94,28 @@ describe('css-macro tailwindcss plugin', () => {
     expect(result.css).not.toContain('@weapp-tw-ifdef')
   })
 
+  it('auto enables postcss macro transform for tailwindcss v4 web target', async () => {
+    const source = await resolveTailwindV4Source({
+      css: TAILWIND_V4_MACRO_CSS,
+      base: process.cwd(),
+    })
+    const engine = createTailwindV4Engine(source)
+
+    const result = await engine.generate({
+      target: 'web',
+      candidates: ['ifdef-[H5]:bg-blue-500'],
+      styleOptions: {
+        isMainChunk: false,
+      },
+    })
+
+    expect(result.rawCss).toContain('@weapp-tw-ifdef')
+    expect(result.css).toContain('/* #ifdef H5 */\n.ifdef-\\[H5\\]\\:bg-blue-500')
+    expect(result.css).toContain('/* #endif */')
+    expect(result.css).not.toContain('@weapp-tw-ifdef')
+    expect(result.css).not.toContain('.ifdef-_bH5_B_cbg-blue-500')
+  })
+
   it('keeps postcss compatibility with legacy media macro output', async () => {
     const { css } = await postcss(postcssPlugin).process(
       '@media (weapp-tw-platform:"MP-WEIXIN") {.legacy{color:blue}}',
@@ -78,6 +127,23 @@ describe('css-macro tailwindcss plugin', () => {
     expect(css).toContain('#ifdef MP-WEIXIN')
     expect(css).toContain('.legacy')
     expect(css).not.toContain('@media')
+  })
+
+  it('prints conditional comments on standalone lines', async () => {
+    const { css } = await postcss(postcssPlugin).process(
+      '.prev{color:black}@media (weapp-tw-platform:"MP-WEIXIN") {.legacy{color:blue}} .next{color:red}',
+      {
+        from: undefined,
+      },
+    )
+
+    expect(css).toBe([
+      '.prev{color:black}',
+      '/* #ifdef MP-WEIXIN */',
+      '.legacy{color:blue}',
+      '/* #endif */',
+      '.next{color:red}',
+    ].join('\n'))
   })
 
   it('expands internal conditional at-rules without media wrappers', async () => {
@@ -92,6 +158,21 @@ describe('css-macro tailwindcss plugin', () => {
     expect(css).toContain('.modern')
     expect(css).not.toContain('@media')
     expect(css).not.toContain('@weapp-tw-ifdef')
+  })
+
+  it('hoists nested internal conditional at-rules around complete rules', async () => {
+    const { css } = await postcss(postcssPlugin).process(
+      '.ifdef-\\[H5\\]\\:bg-blue-500 {@weapp-tw-ifdef "H5" {color:blue}}',
+      {
+        from: undefined,
+      },
+    )
+
+    expect(css).toBe([
+      '/* #ifdef H5 */',
+      '.ifdef-\\[H5\\]\\:bg-blue-500 {color:blue}',
+      '/* #endif */',
+    ].join('\n'))
   })
 
   it('dynamic case 0', async () => {

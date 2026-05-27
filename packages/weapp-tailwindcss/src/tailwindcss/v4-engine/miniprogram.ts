@@ -1,7 +1,7 @@
 import type { IStyleHandlerOptions } from '@weapp-tailwindcss/postcss/types'
 import type { TailwindV4GenerateTarget } from './types'
 import { createStyleHandler, protectDynamicColorMixAlpha } from '@weapp-tailwindcss/postcss'
-import { hasCssMacroStyleOptions } from '@/css-macro/auto'
+import { hasCssMacroStyleOptions, transformCssMacroCss } from '@/css-macro/auto'
 import { pruneMiniProgramGeneratedCss } from '../miniprogram'
 
 const defaultStyleHandler = createStyleHandler({
@@ -50,7 +50,11 @@ export async function transformTailwindV4CssByTarget(
   target: TailwindV4GenerateTarget,
   options?: Partial<IStyleHandlerOptions>,
 ) {
-  return target === 'weapp'
-    ? transformTailwindV4CssToWeapp(css, options)
+  if (target === 'weapp') {
+    return transformTailwindV4CssToWeapp(css, options)
+  }
+
+  return hasCssMacroStyleOptions(options)
+    ? transformCssMacroCss(css)
     : css
 }

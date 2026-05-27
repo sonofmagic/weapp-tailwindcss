@@ -2,7 +2,7 @@ import type { IStyleHandlerOptions } from '@weapp-tailwindcss/postcss/types'
 import type { TailwindV3GenerateTarget } from './types'
 import { createStyleHandler } from '@weapp-tailwindcss/postcss'
 import postcss from 'postcss'
-import { hasCssMacroStyleOptions } from '@/css-macro/auto'
+import { hasCssMacroStyleOptions, transformCssMacroCss } from '@/css-macro/auto'
 import { pruneMiniProgramGeneratedCss } from '../miniprogram'
 
 const defaultStyleHandler = createStyleHandler({
@@ -114,7 +114,11 @@ export async function transformTailwindV3CssByTarget(
   target: TailwindV3GenerateTarget,
   options?: Partial<IStyleHandlerOptions>,
 ) {
-  return target === 'weapp'
-    ? transformTailwindV3CssToWeapp(css, options)
+  if (target === 'weapp') {
+    return transformTailwindV3CssToWeapp(css, options)
+  }
+
+  return hasCssMacroStyleOptions(options)
+    ? transformCssMacroCss(css)
     : css
 }

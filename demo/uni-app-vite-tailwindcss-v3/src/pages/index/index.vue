@@ -10,6 +10,18 @@
     <view class="-wx:bg-red-400">-wx:bg-red-400</view>
     <view class="mv:bg-blue-400">mv:bg-blue-400</view>
     <view class="-mv:bg-red-400">-mv:bg-red-400</view>
+    <view class="css-macro-e2e">
+      <!-- #ifdef MP-WEIXIN -->
+      <view class="css-macro-e2e-mp ifdef-[MP-WEIXIN]:bg-[#1167ff] ifndef-[H5]:text-[#0055aa]">
+        css-macro-mp
+      </view>
+      <!-- #endif -->
+      <!-- #ifdef H5 -->
+      <view class="css-macro-e2e-h5 ifdef-[H5]:bg-[#ff6611] ifndef-[MP-WEIXIN]:text-[#aa3300]">
+        css-macro-h5
+      </view>
+      <!-- #endif -->
+    </view>
     <view class="group published">
       <view class="after:content-['v3_apply'] group-[.published]:text-green-500 i-mdi-home">generator regression</view>
     </view>

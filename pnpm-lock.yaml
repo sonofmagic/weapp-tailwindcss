@@ -13,18 +13,6 @@ catalogs:
     '@babel/core':
       specifier: ^7.29.7
       version: 7.29.7
-  babelPresetReact7285:
-    '@babel/preset-react':
-      specifier: ^7.29.7
-      version: 7.29.7
-  babelRuntime7284:
-    '@babel/runtime':
-      specifier: ^7.29.7
-      version: 7.29.7
-  classVarianceAuthority:
-    class-variance-authority:
-      specifier: ^0.7.1
-      version: 0.7.1
   clsx:
     clsx:
       specifier: ^2.1.1
@@ -33,73 +21,18 @@ catalogs:
     cross-env:
       specifier: ^10.1.0
       version: 10.1.0
-  egoistTailwindcssIcons:
-    '@egoist/tailwindcss-icons':
-      specifier: ^1.9.2
-      version: 1.9.2
   eslint10:
     eslint:
       specifier: ^10.4.0
       version: 10.4.0
-  eslintPluginReact:
-    eslint-plugin-react:
-      specifier: ^7.37.5
-      version: 7.37.5
-  eslintPluginReactHooks:
-    eslint-plugin-react-hooks:
-      specifier: ^7.1.1
-      version: 7.1.1
-  miniApiTypings:
-    miniprogram-api-typings:
-      specifier: ^5.2.1
-      version: 5.2.1
   postcss85:
     postcss:
       specifier: ^8.5.15
       version: 8.5.15
-  postcss85tilde:
-    postcss:
-      specifier: ^8.5.15
-      version: 8.5.15
-  postcssRem:
-    postcss-rem-to-responsive-pixel:
-      specifier: ^7.0.4
-      version: 7.0.4
-  postcssRpx:
-    postcss-rpx-transform:
-      specifier: ^1.0.1
-      version: 1.0.1
   prettier371:
     prettier:
       specifier: ^3.8.3
       version: 3.8.3
-  react18:
-    '@types/react':
-      specifier: ^19.2.15
-      version: 19.2.15
-    react:
-      specifier: ^18.3.1
-      version: 18.3.1
-    react-dom:
-      specifier: ^18.3.1
-      version: 18.3.1
-  react19:
-    '@types/react':
-      specifier: ^19.2.15
-      version: 19.2.15
-    '@types/react-dom':
-      specifier: 19.2.3
-      version: 19.2.3
-    react:
-      specifier: ^19.2.6
-      version: 19.2.6
-    react-dom:
-      specifier: ^19.2.6
-      version: 19.2.6
-  reactRefresh018:
-    react-refresh:
-      specifier: ^0.18.0
-      version: 0.18.0
   sass195:
     sass:
       specifier: ^1.100.0
@@ -108,14 +41,6 @@ catalogs:
     stylelint:
       specifier: ^17.12.0
       version: 17.12.0
-  tailwindMerge:
-    tailwind-merge:
-      specifier: ^3.6.0
-      version: 3.6.0
-  tailwindMerge2:
-    tailwind-merge:
-      specifier: ^2.6.1
-      version: 2.6.1
   tailwindcss3:
     tailwindcss:
       specifier: ^3.4.19
@@ -127,90 +52,9 @@ catalogs:
     '@tailwindcss/vite':
       specifier: ^4.3.0
       version: 4.3.0
-    tailwindcss:
-      specifier: ^4.3.0
-      version: 4.3.0
     tailwindcss4:
       specifier: npm:tailwindcss@^4.3.0
       version: 4.3.0
-  tailwindcssPatch:
-    tailwindcss-patch:
-      specifier: 9.3.7
-      version: 9.3.7
-  tailwindcssRem:
-    tailwindcss-rem2px-preset:
-      specifier: ^1.0.3
-      version: 1.0.3
-  taro4:
-    '@tarojs/cli':
-      specifier: ^4.2.0
-      version: 4.2.0
-    '@tarojs/components':
-      specifier: ^4.2.0
-      version: 4.2.0
-    '@tarojs/helper':
-      specifier: ^4.2.0
-      version: 4.2.0
-    '@tarojs/plugin-framework-react':
-      specifier: ^4.2.0
-      version: 4.2.0
-    '@tarojs/plugin-framework-vue3':
-      specifier: ^4.2.0
-      version: 4.2.0
-    '@tarojs/plugin-html':
-      specifier: ^4.2.0
-      version: 4.2.0
-    '@tarojs/plugin-platform-alipay':
-      specifier: ^4.2.0
-      version: 4.2.0
-    '@tarojs/plugin-platform-h5':
-      specifier: ^4.2.0
-      version: 4.2.0
-    '@tarojs/plugin-platform-harmony-hybrid':
-      specifier: ^4.2.0
-      version: 4.2.0
-    '@tarojs/plugin-platform-jd':
-      specifier: ^4.2.0
-      version: 4.2.0
-    '@tarojs/plugin-platform-qq':
-      specifier: ^4.2.0
-      version: 4.2.0
-    '@tarojs/plugin-platform-swan':
-      specifier: ^4.2.0
-      version: 4.2.0
-    '@tarojs/plugin-platform-tt':
-      specifier: ^4.2.0
-      version: 4.2.0
-    '@tarojs/plugin-platform-weapp':
-      specifier: ^4.2.0
-      version: 4.2.0
-    '@tarojs/react':
-      specifier: ^4.2.0
-      version: 4.2.0
-    '@tarojs/runtime':
-      specifier: ^4.2.0
-      version: 4.2.0
-    '@tarojs/shared':
-      specifier: ^4.2.0
-      version: 4.2.0
-    '@tarojs/taro':
-      specifier: ^4.2.0
-      version: 4.2.0
-    '@tarojs/taro-loader':
-      specifier: ^4.2.0
-      version: 4.2.0
-    '@tarojs/vite-runner':
-      specifier: ^4.2.0
-      version: 4.2.0
-    '@tarojs/webpack5-runner':
-      specifier: ^4.2.0
-      version: 4.2.0
-    babel-preset-taro:
-      specifier: ^4.2.0
-      version: 4.2.0
-    eslint-config-taro:
-      specifier: ^4.2.0
-      version: 4.2.0
   typesNode2410:
     '@types/node':
       specifier: ^24.12.4
@@ -219,79 +63,22 @@ catalogs:
     typescript:
       specifier: ^6.0.3
       version: 6.0.3
-  typescript59tilde:
-    typescript:
-      specifier: ^6.0.3
-      version: 6.0.3
-  typescriptEslint:
-    '@typescript-eslint/eslint-plugin':
-      specifier: ^8.60.0
-      version: 8.60.0
-    '@typescript-eslint/parser':
-      specifier: ^8.60.0
-      version: 8.60.0
-  vite4:
-    vite:
-      specifier: ^4.5.14
-      version: 4.5.14
   vite724:
     vite:
       specifier: ^7.3.3
       version: 7.3.3
-  vite8:
-    vite:
-      specifier: ^8.0.14
-      version: 8.0.14
   vitePluginInspect:
     vite-plugin-inspect:
       specifier: ^11.3.3
       version: 11.3.3
-  vitePluginReact4:
-    '@vitejs/plugin-react':
-      specifier: ^4.7.0
-      version: 4.7.0
-  vitePluginReact6:
-    '@vitejs/plugin-react':
-      specifier: ^6.0.2
-      version: 6.0.2
-  vitePluginVue6:
-    '@vitejs/plugin-vue':
-      specifier: ^6.0.7
-      version: 6.0.7
   vitest:
     vitest:
       specifier: ~4.1.7
       version: 4.1.7
-  vue2:
-    vue:
-      specifier: ^2.7.16
-      version: 2.7.16
-  vue3:
-    '@vue/compiler-dom':
-      specifier: ^3.5.35
-      version: 3.5.35
-    '@vue/compiler-sfc':
-      specifier: ^3.5.35
-      version: 3.5.35
-    vue:
-      specifier: ^3.5.35
-      version: 3.5.35
-  vueTsc318:
-    vue-tsc:
-      specifier: ^3.3.2
-      version: 3.3.2
   weappChildren:
     weapp-tailwindcss-children:
       specifier: ^0.1.0
       version: 0.1.0
-  weappIdeCli:
-    weapp-ide-cli:
-      specifier: ^5.3.2
-      version: 5.3.2
-  weappVite:
-    weapp-vite:
-      specifier: ^6.16.26
-      version: 6.16.26
   wrangler:
     wrangler:
       specifier: ^4.95.0
@@ -641,6 +428,9 @@ importers:
       pkg-types:
         specifier: ^2.3.1
         version: 2.3.1
+      playwright:
+        specifier: ^1.60.0
+        version: 1.60.0
       postcss:
         specifier: catalog:postcss85
         version: 8.5.15
@@ -706,7 +496,7 @@ importers:
         version: tailwindcss@4.3.0
       terser-webpack-plugin:
         specifier: ^5.6.0
-        version: 5.6.0(@swc/core@1.15.40(@swc/helpers@0.5.19))(clean-css@5.3.3)(cssnano@6.1.2(postcss@8.5.15))(esbuild@0.28.0)(html-minifier-terser@7.2.0)(lightningcss@1.32.0)(postcss@8.5.15)(webpack@5.105.4(@swc/core@1.15.40(@swc/helpers@0.5.19))(esbuild@0.28.0))
+        version: 5.6.0(@swc/core@1.15.40(@swc/helpers@0.5.19))(esbuild@0.28.0)(lightningcss@1.32.0)(postcss@8.5.15)(webpack@5.105.4(@swc/core@1.15.40(@swc/helpers@0.5.19))(esbuild@0.28.0))
       traverse:
         specifier: ^0.6.11
         version: 0.6.11
@@ -41840,7 +41630,7 @@ snapshots:
       obug: 2.1.1
       std-env: 4.0.0
       tinyrainbow: 3.1.0
-      vitest: 4.1.7(@types/node@25.9.1)(@vitest/coverage-v8@4.1.7)(@vitest/ui@4.1.7)(jsdom@29.1.1)(vite@8.0.14(@types/node@25.9.1)(esbuild@0.28.0)(jiti@2.7.0)(less@4.6.4)(sass-embedded@1.100.0)(sass@1.100.0)(stylus@0.57.0)(terser@5.48.0)(tsx@4.22.3)(yaml@2.9.0))
+      vitest: 4.1.7(@types/node@24.12.4)(@vitest/coverage-v8@4.1.7)(@vitest/ui@4.1.7)(jsdom@29.1.1)(vite@7.3.3(@types/node@24.12.4)(jiti@2.7.0)(less@4.6.4)(lightningcss@1.32.0)(sass-embedded@1.100.0)(sass@1.100.0)(stylus@0.57.0)(terser@5.48.0)(tsx@4.22.3)(yaml@2.9.0))
 
   '@vitest/eslint-plugin@1.6.18(@typescript-eslint/eslint-plugin@8.60.0(@typescript-eslint/parser@8.60.0(eslint@10.4.0(jiti@2.7.0))(typescript@6.0.3))(eslint@10.4.0(jiti@2.7.0))(typescript@6.0.3))(eslint@10.4.0(jiti@2.7.0))(typescript@6.0.3)(vitest@4.1.7)':
     dependencies:
@@ -41922,7 +41712,7 @@ snapshots:
       sirv: 3.0.2
       tinyglobby: 0.2.15
       tinyrainbow: 3.1.0
-      vitest: 4.1.7(@types/node@25.9.1)(@vitest/coverage-v8@4.1.7)(@vitest/ui@4.1.7)(jsdom@29.1.1)(vite@8.0.14(@types/node@25.9.1)(esbuild@0.28.0)(jiti@2.7.0)(less@4.6.4)(sass-embedded@1.100.0)(sass@1.100.0)(stylus@0.57.0)(terser@5.48.0)(tsx@4.22.3)(yaml@2.9.0))
+      vitest: 4.1.7(@types/node@24.12.4)(@vitest/coverage-v8@4.1.7)(@vitest/ui@4.1.7)(jsdom@29.1.1)(vite@7.3.3(@types/node@24.12.4)(jiti@2.7.0)(less@4.6.4)(lightningcss@1.32.0)(sass-embedded@1.100.0)(sass@1.100.0)(stylus@0.57.0)(terser@5.48.0)(tsx@4.22.3)(yaml@2.9.0))
 
   '@vitest/utils@3.2.4':
     dependencies:
@@ -58213,6 +58003,19 @@ snapshots:
     optionalDependencies:
       '@swc/core': 1.15.40(@swc/helpers@0.5.19)
       esbuild: 0.21.5
+      lightningcss: 1.32.0
+      postcss: 8.5.15
+
+  terser-webpack-plugin@5.6.0(@swc/core@1.15.40(@swc/helpers@0.5.19))(esbuild@0.28.0)(lightningcss@1.32.0)(postcss@8.5.15)(webpack@5.105.4(@swc/core@1.15.40(@swc/helpers@0.5.19))(esbuild@0.28.0)):
+    dependencies:
+      '@jridgewell/trace-mapping': 0.3.31
+      jest-worker: 27.5.1
+      schema-utils: 4.3.3
+      terser: 5.48.0
+      webpack: 5.105.4(@swc/core@1.15.40(@swc/helpers@0.5.19))(esbuild@0.28.0)
+    optionalDependencies:
+      '@swc/core': 1.15.40(@swc/helpers@0.5.19)
+      esbuild: 0.28.0
       lightningcss: 1.32.0
       postcss: 8.5.15
 

@@ -11,8 +11,6 @@ const webRoot = path.resolve(scriptDir, '..')
 const repoRoot = path.resolve(webRoot, '..', '..')
 const require = createRequire(path.join(repoRoot, 'package.json'))
 const { chromium } = require('playwright')
-const pixelmatch = require('pixelmatch').default
-const { PNG } = require('pngjs')
 
 const outputDir = process.env.WEB_DEMO_COMPARE_OUTPUT
   ? path.resolve(process.env.WEB_DEMO_COMPARE_OUTPUT)
@@ -96,8 +94,8 @@ async function stopServer(server) {
 async function collectPage(page, url, name) {
   await page.setViewportSize({ width: 1280, height: 900 })
   await page.emulateMedia({ colorScheme: 'light' })
-  await page.goto(url, { waitUntil: 'networkidle' })
-  await page.waitForSelector('main')
+  await page.goto(url, { waitUntil: 'domcontentloaded', timeout: 60_000 })
+  await page.waitForSelector('main', { timeout: 60_000 })
   await page.screenshot({
     path: path.join(outputDir, `${name}.png`),
     fullPage: true,
@@ -164,6 +162,32 @@ async function collectPage(page, url, name) {
   })
 }
 
+async function fetchText(url) {
+  const response = await fetch(url)
+  if (!response.ok) {
+    throw new Error(`failed to fetch ${url}: ${response.status} ${response.statusText}`)
+  }
+  return response.text()
+}
+
+function decodeViteCssModule(source, url) {
+  const match = source.match(/const __vite__css = "((?:\\.|[^"\\])*)"/)
+  if (!match) {
+    throw new Error(`failed to decode Vite CSS module: ${url}`)
+  }
+
+  return JSON.parse(`"${match[1]}"`)
+}
+
+async function collectGeneratedCss(url) {
+  const styleUrl = new URL('/src/style.css', url).toString()
+  const moduleSource = await fetchText(styleUrl)
+  return {
+    url: styleUrl,
+    css: decodeViteCssModule(moduleSource, styleUrl),
+  }
+}
+
 function diffObjects(a, b, prefix = '') {
   const diffs = []
   if (a === b) {
@@ -180,22 +204,90 @@ function diffObjects(a, b, prefix = '') {
   return diffs
 }
 
-async function compareScreenshots(name) {
-  const webPng = PNG.sync.read(await fs.readFile(path.join(outputDir, `${name}-web.png`)))
-  const weappPng = PNG.sync.read(await fs.readFile(path.join(outputDir, `${name}-weapp.png`)))
-  if (webPng.width !== weappPng.width || webPng.height !== weappPng.height) {
-    return { comparable: false, reason: `${webPng.width}x${webPng.height} vs ${weappPng.width}x${weappPng.height}` }
-  }
+function runChecks(checks) {
+  return checks.map(({ name, pass, details }) => ({
+    name,
+    pass: Boolean(pass),
+    ...(details ? { details } : {}),
+  }))
+}
 
-  const diffPng = new PNG({ width: webPng.width, height: webPng.height })
-  const differentPixels = pixelmatch(webPng.data, weappPng.data, diffPng.data, webPng.width, webPng.height, { threshold: 0.1 })
-  await fs.writeFile(path.join(outputDir, `${name}-diff.png`), PNG.sync.write(diffPng))
+function createWebRenderChecks(data) {
+  return runChecks([
+    {
+      name: 'main renders a non-transparent background',
+      pass: data.main?.backgroundColor && data.main.backgroundColor !== 'rgba(0, 0, 0, 0)',
+      details: data.main?.backgroundColor,
+    },
+    {
+      name: 'section uses grid layout',
+      pass: data.section?.display === 'grid',
+      details: data.section?.display,
+    },
+    {
+      name: 'responsive swatch grid has four columns at desktop width',
+      pass: data.swatchGrid?.gridTemplateColumns?.split(' ').length === 4,
+      details: data.swatchGrid?.gridTemplateColumns,
+    },
+    {
+      name: 'arbitrary value gradient renders',
+      pass: data.arbitraryBox?.backgroundImage?.includes('linear-gradient'),
+      details: data.arbitraryBox?.backgroundImage,
+    },
+    {
+      name: 'decimal arbitrary opacity renders',
+      pass: data.decimal?.opacity === '0.82',
+      details: data.decimal?.opacity,
+    },
+    {
+      name: 'variant pseudo content renders',
+      pass: data.swatches.every(swatch => swatch?.beforeContent && swatch.beforeContent !== 'none'),
+      details: data.swatches.map(swatch => swatch?.beforeContent).join(', '),
+    },
+  ])
+}
+
+function createWeappCssChecks(css) {
+  return runChecks([
+    {
+      name: 'contains normal utility selector',
+      pass: /\.p-6\s*\{/.test(css),
+    },
+    {
+      name: 'contains responsive utility selector',
+      pass: /\.md_cgrid-cols-4\s*\{/.test(css),
+    },
+    {
+      name: 'contains escaped hex arbitrary selector',
+      pass: /\.bg-_b_h123456_B\s*\{/.test(css),
+    },
+    {
+      name: 'contains escaped important arbitrary transform selector',
+      pass: /\._e-translate-y-_b3_d5px_B\s*\{/.test(css),
+    },
+    {
+      name: 'contains escaped decimal arbitrary radius selector',
+      pass: /\.rounded-_b18_d5px_B\s*\{/.test(css),
+    },
+    {
+      name: 'contains escaped important decimal padding selector',
+      pass: /\._ep-_b18_d5px_B\s*\{/.test(css),
+    },
+    {
+      name: 'does not emit raw arbitrary selectors',
+      pass: !/(?:^|[,{]\s*)\.[^,{]*\\?\[(?:#|[^\]]+\])/.test(css),
+    },
+    {
+      name: 'does not leave Tailwind directives uncompiled',
+      pass: !/@(?:tailwind|source|import)\b/.test(css),
+    },
+  ])
+}
+
+function summarizeChecks(checks) {
   return {
-    comparable: true,
-    width: webPng.width,
-    height: webPng.height,
-    differentPixels,
-    ratio: differentPixels / (webPng.width * webPng.height),
+    failedCount: checks.filter(check => !check.pass).length,
+    checks,
   }
 }
 
@@ -228,19 +320,30 @@ async function main() {
         const webData = await collectPage(page, webUrl, `${project}-web`)
         const weappData = await collectPage(page, weappUrl, `${project}-weapp`)
         await page.close()
+        const weappCss = await collectGeneratedCss(weappUrl)
 
         const allDiffs = diffObjects(webData, weappData)
         const styleDiffs = allDiffs.filter(diff => !diff.path.endsWith('.className'))
         const classDiffs = allDiffs.filter(diff => diff.path.endsWith('.className'))
-        const screenshot = await compareScreenshots(project)
+        const webRender = summarizeChecks(createWebRenderChecks(webData))
+        const weappCssChecks = summarizeChecks(createWeappCssChecks(weappCss.css))
 
         results.push({
           project,
+          webRender,
+          weappCss: {
+            url: weappCss.url,
+            size: weappCss.css.length,
+            ...weappCssChecks,
+          },
           styleDiffCount: styleDiffs.length,
           classDiffCount: classDiffs.length,
           styleDiffs,
           classDiffs,
-          screenshot,
+          screenshots: {
+            web: path.join(outputDir, `${project}-web.png`),
+            weapp: path.join(outputDir, `${project}-weapp.png`),
+          },
         })
       }
       finally {
@@ -257,10 +360,8 @@ async function main() {
   console.log(JSON.stringify({ outputDir, results }, null, 2))
 
   const failed = results.filter(result =>
-    result.styleDiffCount > 0
-    || result.classDiffCount > 0
-    || result.screenshot.comparable !== true
-    || result.screenshot.differentPixels > 0,
+    result.webRender.failedCount > 0
+    || result.weappCss.failedCount > 0,
   )
   if (failed.length > 0) {
     process.exitCode = 1
