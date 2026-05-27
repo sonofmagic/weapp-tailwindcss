@@ -1,5 +1,16 @@
 # @weapp-tailwindcss/build-all
 
+## 0.0.26-next.25
+
+### Patch Changes
+
+- 📦 Updated 6 dependencies [`29901e2`](https://github.com/sonofmagic/weapp-tailwindcss/commit/29901e2b1d7fc6ec83d73a202e8f60e186d1b022)
+  <details><summary>Details</summary>
+
+  `weapp-tailwindcss@5.0.0-next.25`, `@weapp-tailwindcss/postcss@3.0.0-next.7`, `@weapp-tailwindcss/init@1.0.12-next.2`, `tailwindcss-injector@1.0.12-next.2`, `weapp-style-injector@0.0.3-next.0`, `@weapp-tailwindcss/experimental@0.0.2-next.1`
+
+  </details>
+
 ## 0.0.26-next.24
 
 ### Patch Changes
