@@ -1,5 +1,18 @@
 # @weapp-tailwindcss/postcss
 
+## 3.0.0-next.7
+
+### Minor Changes
+
+- ✨ **新增内置 `unitConversion` 配置，支持基于 `postcss-rule-unit-converter` 的任意样式单位转换，并可按 `weapp`、`h5`、`web`、`app` 等平台分别配置转换规则。** [#879](https://github.com/sonofmagic/weapp-tailwindcss/pull/879) by @github-actions
+
+### Patch Changes
+
+- 🐛 **内置 `css-macro` 的 PostCSS 转换感应逻辑：当 Tailwind CSS v3 配置中注册 `weapp-tailwindcss/css-macro`，或 Tailwind CSS v4 入口 CSS 中声明 `@plugin "weapp-tailwindcss/css-macro"` 时，会自动启用条件编译注释转换，不再要求常规集成手动注册 `weapp-tailwindcss/css-macro/postcss`。** [#879](https://github.com/sonofmagic/weapp-tailwindcss/pull/879) by @github-actions
+  - 同时在生成 CSS 裁剪阶段保留由 `css-macro` 产生的 `#ifdef` / `#ifndef` / `#endif` 注释，并同步更新文档与 demo 配置。
+
+- 🐛 **升级 ESM 化依赖后，将公开包的 Node.js 安装版本约束统一到 `^20.19.0 || >=22.12.0`，避免不支持稳定 ESM/CJS 混合加载的 Node.js 版本安装使用。** [#879](https://github.com/sonofmagic/weapp-tailwindcss/pull/879) by @github-actions
+
 ## 3.0.0-next.6
 
 ### Major Changes

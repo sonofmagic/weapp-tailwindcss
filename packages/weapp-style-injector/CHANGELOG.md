@@ -1,5 +1,11 @@
 # weapp-style-injector
 
+## 0.0.3-next.0
+
+### Patch Changes
+
+- 🐛 **修复 uni-app Vite 预设在 `generateBundle` 中直接写入 bundle 资产的问题，改为通过 `emitFile` 生成分包样式入口，以兼容 Vite 8/Rolldown。** [#879](https://github.com/sonofmagic/weapp-tailwindcss/pull/879) by @github-actions
+
 ## 0.0.2
 
 ### Patch Changes
