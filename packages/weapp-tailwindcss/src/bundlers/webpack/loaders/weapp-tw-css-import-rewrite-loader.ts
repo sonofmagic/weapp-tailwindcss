@@ -6,7 +6,6 @@ import path from 'node:path'
 import process from 'node:process'
 import { inspect } from 'node:util'
 import { ensurePosix } from '@weapp-tailwindcss/shared'
-import loaderUtils from 'loader-utils'
 import { rewriteTailwindcssImportsInCode } from '@/bundlers/shared/css-imports'
 import { createBundlerGeneratedCssMarker } from '@/bundlers/shared/generated-css-marker'
 import { generateCssByGenerator } from '@/bundlers/shared/generator-css'
@@ -14,10 +13,6 @@ import { hasTailwindRootDirectives, normalizeTailwindSourceForGenerator } from '
 import { getWebpackLoaderRuntime } from './runtime-registry'
 
 interface CssImportRewriteLoaderOptions extends WebpackCssImportRewriteLoaderOptions {}
-
-const getLoaderOptions = (loaderUtils as unknown as {
-  getOptions: (context: webpack.LoaderContext<CssImportRewriteLoaderOptions>) => CssImportRewriteLoaderOptions | undefined
-}).getOptions
 
 function resolveLoaderOptions(options: CssImportRewriteLoaderOptions | undefined): CssImportRewriteLoaderOptions | undefined {
   const runtime = getWebpackLoaderRuntime(options?.tailwindcssImportRewriteRuntimeKey)?.cssImportRewrite
@@ -169,7 +164,7 @@ const WeappTwCssImportRewriteLoader: webpack.LoaderDefinitionFunction<CssImportR
   if (process.env['WEAPP_TW_LOADER_DEBUG']) {
     process.stdout.write(`[weapp-tw-css-import-rewrite-loader] executing for ${this.resourcePath}\n`)
   }
-  const opt = resolveLoaderOptions(getLoaderOptions(this))
+  const opt = resolveLoaderOptions(this.getOptions())
   const input = Buffer.isBuffer(source) ? source.toString('utf-8') : source
   const hasTailwindRoot = typeof input === 'string' && hasTailwindRootDirectives(input, { importFallback: true })
   const registerTask = hasTailwindRoot

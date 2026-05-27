@@ -425,9 +425,6 @@ importers:
       '@types/klaw':
         specifier: ^3.0.7
         version: 3.0.7
-      '@types/loader-utils':
-        specifier: ^3.0.0
-        version: 3.0.0(@swc/core@1.15.40(@swc/helpers@0.5.19))(esbuild@0.28.0)(lightningcss@1.32.0)(postcss@8.5.15)
       '@types/lodash':
         specifier: ^4.17.24
         version: 4.17.24
@@ -3674,9 +3671,6 @@ importers:
       htmlparser2:
         specifier: 12.0.0
         version: 12.0.0
-      loader-utils:
-        specifier: 2.0.4
-        version: 2.0.4
       local-pkg:
         specifier: ^1.2.1
         version: 1.2.1
@@ -12896,9 +12890,6 @@ packages:
 
   '@types/loader-utils@2.0.6':
     resolution: {integrity: sha512-cgu0Xefgq9O5FjFR78jgI6X31aPjDWCaJ6LCfRtlj6BtyVVWiXagysSYlPACwGKAzRwsFLjKXcj4iGfcVt6cLw==}
-
-  '@types/loader-utils@3.0.0':
-    resolution: {integrity: sha512-oOi4OGpiLUbb+Q/cN9FIkkDFgOpOGZ2cUAzb5i03wrGstnG6Syx1WDMhSiB5rcP10XX7cw7Uev8mv++/aplnNg==}
 
   '@types/lodash-es@4.17.12':
     resolution: {integrity: sha512-0NgftHUcV4v34VhXm8QBSftKVXtbkBG3ViCjs6+eJ5a6y6Mi/jiFGPc1sC7QK+9BFhWrURE3EOggmWaSxL9OzQ==}
@@ -41005,25 +40996,6 @@ snapshots:
     dependencies:
       '@types/node': 25.7.0
       '@types/webpack': 4.41.40
-
-  '@types/loader-utils@3.0.0(@swc/core@1.15.40(@swc/helpers@0.5.19))(esbuild@0.28.0)(lightningcss@1.32.0)(postcss@8.5.15)':
-    dependencies:
-      '@types/node': 25.7.0
-      webpack: 5.106.2(@swc/core@1.15.40(@swc/helpers@0.5.19))(esbuild@0.28.0)(lightningcss@1.32.0)(postcss@8.5.15)
-    transitivePeerDependencies:
-      - '@minify-html/node'
-      - '@swc/core'
-      - '@swc/css'
-      - '@swc/html'
-      - clean-css
-      - cssnano
-      - csso
-      - esbuild
-      - html-minifier-terser
-      - lightningcss
-      - postcss
-      - uglify-js
-      - webpack-cli
 
   '@types/lodash-es@4.17.12':
     dependencies:

@@ -427,8 +427,8 @@ const Compilation = compiler.webpack.Compilation
 const { ConcatSource } = compiler.webpack.sources
 // webpack4
 import { ConcatSource, Source } from 'webpack-sources'
-// 还有 `loader-utils` 的版本问题
-import { getOptions } from 'loader-utils'
+// webpack5 loader 直接从 loader context 获取 options
+const options = loaderContext.getOptions()
 // 还有 Compilation 封闭后 assets 对象不可修改问题等等等等
 ```
 

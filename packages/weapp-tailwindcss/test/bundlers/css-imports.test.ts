@@ -54,13 +54,13 @@ describe('bundlers/shared css-imports', () => {
   it('normalizes registered relative @config paths against the webpack loader resource file', async () => {
     const registerCssSource = vi.fn()
     const result = loader.call({
-      query: {
+      getOptions: () => ({
         tailwindcssImportRewrite: {
           pkgDir,
           appType: 'mpx',
           registerCssSource,
         },
-      },
+      }),
       resourcePath: '/repo/demo/mpx-tailwindcss-v4/src/sub-normal/pages/index.css',
       rootContext: '/repo/demo/mpx-tailwindcss-v4',
     } as any,
@@ -131,11 +131,11 @@ describe('bundlers/shared css-imports', () => {
     const write = vi.spyOn(process.stdout, 'write').mockImplementation(() => true)
 
     const rewritten = loader.call({
-      query: {
+      getOptions: () => ({
         tailwindcssImportRewrite: {
           pkgDir,
         },
-      },
+      }),
       resourcePath: '/src/app.css',
     } as any, '@import "tailwindcss/base";')
 
@@ -147,12 +147,12 @@ describe('bundlers/shared css-imports', () => {
   it('registers tailwindcss root css sources from the webpack loader', async () => {
     const registerCssSource = vi.fn()
     const result = loader.call({
-      query: {
+      getOptions: () => ({
         tailwindcssImportRewrite: {
           pkgDir,
           registerCssSource,
         },
-      },
+      }),
       resourcePath: '/src/app.css',
     } as any, '@import "tailwindcss";\n@source inline("w-4");')
 
@@ -167,11 +167,11 @@ describe('bundlers/shared css-imports', () => {
   it('emits generated css from webpack loader before postcss-loader runs', async () => {
     const { default: webpackLoader } = await import('@/bundlers/webpack/loaders/weapp-tw-css-import-rewrite-loader')
     const result = webpackLoader.call({
-      query: {
+      getOptions: () => ({
         tailwindcssImportRewrite: {
           pkgDir,
         },
-      },
+      }),
       resourcePath: '/src/app.css',
       rootContext: '/src',
     } as any, '@import "tailwindcss";\n@config "./tailwind.config.js";')
@@ -182,12 +182,12 @@ describe('bundlers/shared css-imports', () => {
   it('registers sanitized preprocessor root css sources from the webpack loader', async () => {
     const registerCssSource = vi.fn()
     const result = loader.call({
-      query: {
+      getOptions: () => ({
         tailwindcssImportRewrite: {
           pkgDir,
           registerCssSource,
         },
-      },
+      }),
       resourcePath: '/src/app.scss',
     } as any, [
       '// source comment',

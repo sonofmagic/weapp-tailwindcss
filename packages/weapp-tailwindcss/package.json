@@ -211,7 +211,6 @@
     "debug": "~4.4.3",
     "fast-glob": "^3.3.3",
     "htmlparser2": "12.0.0",
-    "loader-utils": "2.0.4",
     "local-pkg": "^1.2.1",
     "lru-cache": "11.5.0",
     "magic-string": "0.30.21",

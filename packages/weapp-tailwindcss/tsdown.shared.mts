@@ -98,7 +98,7 @@ export function createTsdownConfigs(options: WatchAwareOptions = {}) {
       shims: true,
       format: ['cjs'],
       deps: {
-        neverBundle: ['webpack', 'loader-utils'],
+        neverBundle: ['webpack'],
       },
       outExtensions: preserveJsExports,
     },

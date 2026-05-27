@@ -2,7 +2,6 @@ import type webpack from 'webpack'
 import type { RuntimeLoaderWatchDependencies, WebpackRuntimeClassSetLoaderOptions } from './runtime-registry'
 import { Buffer } from 'node:buffer'
 import process from 'node:process'
-import loaderUtils from 'loader-utils'
 import postcss from 'postcss'
 import { removeUnsupportedCascadeLayers } from '@/tailwindcss/remove-unsupported-css'
 import { getWebpackLoaderRuntime } from './runtime-registry'
@@ -14,10 +13,6 @@ interface RuntimeClassSetLoaderOptions extends WebpackRuntimeClassSetLoaderOptio
 function isPromiseLike<T>(value: unknown): value is PromiseLike<T> {
   return Boolean(value && typeof (value as PromiseLike<T>).then === 'function')
 }
-
-const getLoaderOptions = (loaderUtils as unknown as {
-  getOptions: (context: webpack.LoaderContext<RuntimeClassSetLoaderOptions>) => RuntimeClassSetLoaderOptions | undefined
-}).getOptions
 
 function normalizeRuntimeCssSource(source: string | Buffer) {
   if (Buffer.isBuffer(source)) {
@@ -55,7 +50,7 @@ const WeappTwRuntimeClassSetLoader: webpack.LoaderDefinitionFunction<RuntimeClas
   if (process.env['WEAPP_TW_LOADER_DEBUG']) {
     process.stdout.write(`[weapp-tw-runtime-classset-loader] executing for ${this.resourcePath}\n`)
   }
-  const rawOptions = getLoaderOptions(this)
+  const rawOptions = this.getOptions()
   const opt = getWebpackLoaderRuntime(rawOptions?.weappTailwindcssRuntimeKey)?.classSet ?? rawOptions
   const maybePromise = opt?.getClassSet?.()
   const applyWatchDependencies = (dependencies: RuntimeLoaderWatchDependencies | void) => {

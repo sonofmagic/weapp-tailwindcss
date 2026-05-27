@@ -20,10 +20,10 @@ describe('bundlers/runtime classset loader', () => {
     const result = await loader.call({
       addDependency,
       addContextDependency,
-      query: {
+      getOptions: () => ({
         getClassSet,
         getWatchDependencies,
-      },
+      }),
       resourcePath: '/workspace/src/app.css',
     } as any, source)
 
@@ -48,10 +48,10 @@ describe('bundlers/runtime classset loader', () => {
     const result = loader.call({
       addDependency,
       addContextDependency,
-      query: {
+      getOptions: () => ({
         getClassSet,
         getWatchDependencies,
-      },
+      }),
       resourcePath: '/workspace/src/app.css',
     } as any, source)
 
@@ -66,7 +66,7 @@ describe('bundlers/runtime classset loader', () => {
     const source = '.app {}'
 
     expect(loader.call({
-      query: {},
+      getOptions: () => ({}),
       resourcePath: '/workspace/src/app.css',
     } as any, source)).toBe(source)
   })
@@ -80,7 +80,7 @@ describe('bundlers/runtime classset loader', () => {
     ].join('\n')
 
     const result = loader.call({
-      query: {},
+      getOptions: () => ({}),
       resourcePath: '/workspace/src/app.css',
     } as any, source)
 
@@ -96,7 +96,7 @@ describe('bundlers/runtime classset loader', () => {
     ].join('\n'))
 
     const result = loader.call({
-      query: {},
+      getOptions: () => ({}),
       resourcePath: '/workspace/src/app.css',
     } as any, source)
 
@@ -120,7 +120,7 @@ describe('bundlers/runtime classset loader', () => {
     ].join('\n')
 
     const result = loader.call({
-      query: {},
+      getOptions: () => ({}),
       resourcePath: '/workspace/src/app.css',
     } as any, source)
 
@@ -150,7 +150,7 @@ describe('bundlers/runtime classset loader', () => {
     ].join('\n')
 
     const result = loader.call({
-      query: {},
+      getOptions: () => ({}),
       resourcePath: '/workspace/src/app.css',
     } as any, source)
 
@@ -165,7 +165,7 @@ describe('bundlers/runtime classset loader', () => {
     const source = '.app {}'
 
     expect(loader.call({
-      query: {},
+      getOptions: () => ({}),
       resourcePath: '/workspace/src/app.css',
     } as any, source)).toBe(source)
     expect(write).toHaveBeenCalledWith(expect.stringContaining('weapp-tw-runtime-classset-loader'))
