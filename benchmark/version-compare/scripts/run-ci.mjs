@@ -21,7 +21,6 @@ const dependencyFields = ['dependencies', 'devDependencies', 'peerDependencies',
 const publishedResolverDependencyNames = [
   '@ast-core/escape',
   '@weapp-core/escape',
-  '@weapp-core/regex',
 ]
 
 function parseArg(name, fallback = '') {

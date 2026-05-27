@@ -1,4 +1,3 @@
-// import { templateHandler } from '#test/v2/wxml'
 import { getCompilerContext } from '@/context'
 import { createGetCase, wxmlCasePath } from '../util'
 

@@ -187,7 +187,6 @@ describe('ci workflows', () => {
     expect(source).toContain('patchPublishedResolverDependencies(json, resolverDependencies)')
     expect(source).toContain('\'@ast-core/escape\'')
     expect(source).toContain('\'@weapp-core/escape\'')
-    expect(source).toContain('\'@weapp-core/regex\'')
   })
 
   it('keeps local e2e:ide fail-fast and exposes focused case scripts', () => {

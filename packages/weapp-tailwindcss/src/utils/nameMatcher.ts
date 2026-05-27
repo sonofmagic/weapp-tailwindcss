@@ -1,4 +1,4 @@
-import { escapeStringRegexp } from '@weapp-core/regex'
+import { escapeStringRegexp } from './regex'
 
 export type NameMatcher = (value: string) => boolean
 const NEVER_MATCH_NAME: NameMatcher = () => false
