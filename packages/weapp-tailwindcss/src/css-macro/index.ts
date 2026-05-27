@@ -1,7 +1,7 @@
 import plugin from 'tailwindcss/plugin'
 import { defu } from '../utils'
 import { markCssMacroPlugin } from './auto'
-import { createMediaQuery, createNegativeMediaQuery } from './constants'
+import { createConditionalAtRule, createNegativeConditionalAtRule } from './constants'
 
 export interface Options {
   variantsMap?: Record<string, string | { value: string, negative?: boolean }>
@@ -41,15 +41,15 @@ const cssMacroFactory = plugin.withOptions((options?: Options) => {
     const { matchVariant, addVariant } = api
     const supportsDynamic = typeof matchVariant === 'function'
     if (dynamic && supportsDynamic) {
-      matchVariant('ifdef', value => createMediaQuery(value))
-      matchVariant('ifndef', value => createNegativeMediaQuery(value))
+      matchVariant('ifdef', value => createConditionalAtRule(value))
+      matchVariant('ifndef', value => createNegativeConditionalAtRule(value))
     }
 
     if (typeof addVariant === 'function') {
       for (const variant of staticVariants) {
         const query = variant.negative
-          ? createNegativeMediaQuery(variant.value)
-          : createMediaQuery(variant.value)
+          ? createNegativeConditionalAtRule(variant.value)
+          : createConditionalAtRule(variant.value)
         addVariant(variant.name, query)
       }
     }

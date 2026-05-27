@@ -39,10 +39,11 @@ describe('css-macro tailwindcss plugin', () => {
       },
     })
 
-    expect(result.rawCss).toContain('@media')
+    expect(result.rawCss).toContain('@weapp-tw-ifdef')
     expect(result.css).toContain('#ifdef MP-WEIXIN')
     expect(result.css).toContain('#endif')
     expect(result.css).not.toContain('@media')
+    expect(result.css).not.toContain('@weapp-tw-ifdef')
   })
 
   it('auto enables postcss macro transform for tailwindcss v4 @plugin', async () => {
@@ -59,10 +60,38 @@ describe('css-macro tailwindcss plugin', () => {
       },
     })
 
-    expect(result.rawCss).toContain('@media')
+    expect(result.rawCss).toContain('@weapp-tw-ifdef')
     expect(result.css).toContain('#ifdef MP-WEIXIN')
     expect(result.css).toContain('#endif')
     expect(result.css).not.toContain('@media')
+    expect(result.css).not.toContain('@weapp-tw-ifdef')
+  })
+
+  it('keeps postcss compatibility with legacy media macro output', async () => {
+    const { css } = await postcss(postcssPlugin).process(
+      '@media (weapp-tw-platform:"MP-WEIXIN") {.legacy{color:blue}}',
+      {
+        from: undefined,
+      },
+    )
+
+    expect(css).toContain('#ifdef MP-WEIXIN')
+    expect(css).toContain('.legacy')
+    expect(css).not.toContain('@media')
+  })
+
+  it('expands internal conditional at-rules without media wrappers', async () => {
+    const { css } = await postcss(postcssPlugin).process(
+      '@weapp-tw-ifdef "MP-WEIXIN" {.modern{color:blue}}',
+      {
+        from: undefined,
+      },
+    )
+
+    expect(css).toContain('#ifdef MP-WEIXIN')
+    expect(css).toContain('.modern')
+    expect(css).not.toContain('@media')
+    expect(css).not.toContain('@weapp-tw-ifdef')
   })
 
   it('dynamic case 0', async () => {

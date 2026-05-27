@@ -64,6 +64,8 @@ keywords:
 
 现在只需要在 Tailwind CSS 侧声明 `weapp-tailwindcss/css-macro`。`weapp-tailwindcss` 会在生成样式时自动感应这个声明，并内置执行条件编译注释转换，不需要再额外注册 `weapp-tailwindcss/css-macro/postcss`。
 
+新版本的宏变体不会再通过伪 `@media (weapp-tw-platform:...)` 表达平台条件，而是由 `weapp-tailwindcss` 在生成阶段直接输出内部条件节点，再转换为 `/* #ifdef */` / `/* #ifndef */` / `/* #endif */` 注释。存量自定义 PostCSS 流程中的旧 `@media` 写法仍会被兼容处理。
+
 ### tailwind.config.js 注册
 
 首先在你的 `tailwind.config.js` 注册插件 `cssMacro`:
