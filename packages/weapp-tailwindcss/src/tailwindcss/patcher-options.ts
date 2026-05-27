@@ -1,4 +1,5 @@
 import type { ILengthUnitsPatchOptions, TailwindCssPatchOptions } from 'tailwindcss-patch'
+import { resolveBooleanObjectOption } from '@/utils/options'
 
 type TailwindUserOptions = NonNullable<TailwindCssPatchOptions['tailwindcss']>
 type TailwindApplyOptions = NonNullable<TailwindCssPatchOptions['apply']>
@@ -13,19 +14,14 @@ export function resolveTailwindcssOptions(
 export function normalizeExtendLengthUnits(
   value: boolean | ILengthUnitsPatchOptions | undefined,
 ): TailwindExtendLengthUnitsOption | undefined {
-  if (value === false) {
-    return false
+  if (value === undefined) {
+    return undefined
   }
-  if (value === true) {
-    return { enabled: true }
-  }
-  if (value && typeof value === 'object') {
-    return {
-      enabled: true,
-      ...value,
-    }
-  }
-  return undefined
+
+  const resolved = resolveBooleanObjectOption(value, { enabled: true })
+  return resolved && typeof resolved === 'object'
+    ? { enabled: true, ...resolved }
+    : resolved
 }
 
 export function normalizeTailwindcssPatcherOptions(
