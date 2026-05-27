@@ -1,0 +1,125 @@
+import type { Plugin } from 'vite'
+import { vitePluginName } from '@/constants'
+import { hasTailwindRootDirectives } from '../shared/generator-css/directives'
+import { isSourceStyleRequest } from '../shared/style-requests'
+import { isCSSRequest } from './utils'
+
+const SPECIAL_QUERY_RE = /[?&](?:worker|sharedworker|raw|url)\b/
+const COMMON_JS_PROXY_RE = /\?commonjs-proxy/
+const VITE_CSS_HMR_MODULE_RE = /\b__vite__updateStyle\s*\(/
+const VITE_CSS_CONST_RE = /\bconst\s+__vite__css\s*=\s*("(?:\\[\s\S]|[^"])*")/
+
+interface ViteServeCssGenerationOptions {
+  generateCss: (id: string, code: string, hookContext?: { addWatchFile?: (id: string) => void }) => Promise<string | undefined> | string | undefined
+  getCommand: () => string | undefined
+  onTailwindRootCss?: ((id: string, code: string) => Promise<void> | void) | undefined
+  shouldGenerate: () => boolean
+}
+
+function decodeJsStringLiteral(literal: string) {
+  try {
+    return JSON.parse(literal) as string
+  }
+  catch {
+    return undefined
+  }
+}
+
+function encodeJsStringLiteral(value: string) {
+  return JSON.stringify(value)
+}
+
+function extractViteCssHmrModuleCss(code: string) {
+  const match = VITE_CSS_CONST_RE.exec(code)
+  if (!match?.[1]) {
+    return undefined
+  }
+  const css = decodeJsStringLiteral(match[1])
+  if (typeof css !== 'string') {
+    return undefined
+  }
+  return {
+    css,
+    start: match.index + match[0].lastIndexOf(match[1]),
+    end: match.index + match[0].length,
+  }
+}
+
+function replaceViteCssHmrModuleCss(code: string, css: string) {
+  const extracted = extractViteCssHmrModuleCss(code)
+  if (!extracted) {
+    return undefined
+  }
+  return `${code.slice(0, extracted.start)}${encodeJsStringLiteral(css)}${code.slice(extracted.end)}`
+}
+
+function isViteServeStyleRequest(id: string, command: string | undefined) {
+  return command === 'serve'
+    && isSourceStyleRequest(id)
+    && !SPECIAL_QUERY_RE.test(id)
+    && !COMMON_JS_PROXY_RE.test(id)
+}
+
+function isViteServeCssRootRequest(id: string, command: string | undefined) {
+  return command === 'serve'
+    && isCSSRequest(id)
+    && !SPECIAL_QUERY_RE.test(id)
+    && !COMMON_JS_PROXY_RE.test(id)
+}
+
+function isViteCssHmrModule(code: string, id: string, command: string | undefined) {
+  return isViteServeStyleRequest(id, command)
+    && VITE_CSS_HMR_MODULE_RE.test(code)
+    && /[?&](?:direct|vue)(?:&|$)/.test(id)
+}
+
+export function createViteServeCssGenerationPlugins(options: ViteServeCssGenerationOptions): Plugin[] {
+  return [{
+    name: `${vitePluginName}:generate:serve`,
+    apply: 'serve',
+    enforce: 'pre',
+    async transform(code, id) {
+      if (!options.shouldGenerate() || !isViteServeCssRootRequest(id, options.getCommand())) {
+        return
+      }
+      if (!hasTailwindRootDirectives(code)) {
+        return
+      }
+      await options.onTailwindRootCss?.(id, code)
+      const generatedCss = await options.generateCss(id, code, this)
+      if (generatedCss === undefined || generatedCss === code) {
+        return
+      }
+      return {
+        code: generatedCss,
+        map: null,
+      }
+    },
+  }, {
+    name: `${vitePluginName}:generate:serve-hmr`,
+    apply: 'serve',
+    enforce: 'post',
+    async transform(code, id) {
+      if (!options.shouldGenerate() || !isViteCssHmrModule(code, id, options.getCommand())) {
+        return
+      }
+      const extracted = extractViteCssHmrModuleCss(code)
+      if (!extracted) {
+        return
+      }
+      await options.onTailwindRootCss?.(id, extracted.css)
+      const generatedCss = await options.generateCss(id, extracted.css, this)
+      if (generatedCss === undefined || generatedCss === extracted.css) {
+        return
+      }
+      const nextCode = replaceViteCssHmrModuleCss(code, generatedCss)
+      if (nextCode === undefined || nextCode === code) {
+        return
+      }
+      return {
+        code: nextCode,
+        map: null,
+      }
+    },
+  }]
+}

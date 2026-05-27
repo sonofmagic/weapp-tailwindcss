@@ -273,7 +273,7 @@ describe('bundlers/vite WeappTailwindcss bundle', () => {
     const currentContext = createContext({
       templateHandler: vi.fn(async () => '<view></view>'),
       twPatcher: {
-        patch: vi.fn(),
+        patch: vi.fn(async () => undefined),
         getClassSet: vi.fn(async () => runtimeSet),
         getClassSetSync: vi.fn(() => runtimeSet),
         extract: vi.fn(async () => ({ classSet: runtimeSet })),
@@ -451,6 +451,168 @@ describe('bundlers/vite WeappTailwindcss bundle', () => {
     expect(refreshTailwindcssPatcher).toHaveBeenCalledTimes(1)
     expect(String((result as any)?.code)).toContain('/* generated */')
   })
+
+  it('generates Tailwind v3 css in vite serve after sass imports are inlined', async () => {
+    const root = await mkdtemp(path.join(os.tmpdir(), 'weapp-tw-vite-css-hmr-'))
+    createdDirs.push(root)
+    const configFile = path.join(root, 'tailwind.config.js')
+    await writeFile(configFile, 'module.exports = { content: ["./src/**/*.{vue,ts}"] }\n', 'utf8')
+    const generatedCss = '.flex{display:flex}.bg-\\[\\#123456\\]{background-color:#123456}'
+    vi.doMock('@/generator', async (importOriginal) => {
+      const actual = await importOriginal<typeof import('@/generator')>()
+      return {
+        ...actual,
+        createWeappTailwindcssGenerator: vi.fn(() => ({
+          generate: vi.fn(async (options: { candidates: Set<string> }) => ({
+            css: generatedCss,
+            rawCss: generatedCss,
+            target: 'weapp',
+            classSet: new Set(options.candidates),
+            dependencies: [],
+            sources: [],
+            root: null,
+            version: 3,
+          })),
+          validateCandidates: vi.fn(async (candidates: Set<string>) => candidates),
+        })),
+      }
+    })
+
+    const runtimeSet = new Set(['flex', 'bg-[#123456]'])
+    const context = createContext({
+      twPatcher: {
+        patch: vi.fn(),
+        getClassSet: vi.fn(async () => runtimeSet),
+        getClassSetSync: vi.fn(() => runtimeSet),
+        majorVersion: 3,
+        extract: vi.fn(async () => ({ classSet: runtimeSet })),
+        options: {
+          projectRoot: root,
+          tailwindcss: {
+            cwd: root,
+            config: configFile,
+          },
+        },
+      },
+    })
+    setCurrentContext(context)
+
+    const WeappTailwindcss = await loadUnifiedVitePlugin()
+    const plugins = WeappTailwindcss()
+    const cssHmrPlugin = plugins?.find(plugin => plugin.name === 'weapp-tailwindcss:adaptor:generate:serve-hmr') as Plugin
+    const postPlugin = plugins?.find(plugin => plugin.name === 'weapp-tailwindcss:adaptor:post') as Plugin
+    expect(cssHmrPlugin).toBeTruthy()
+
+    await (postPlugin.configResolved as any)?.call(postPlugin, {
+      command: 'serve',
+      root,
+      css: { postcss: { plugins: [] } },
+      build: { outDir: 'dist' },
+    } as ResolvedConfig)
+
+    const css = [
+      '@config "../tailwind.config.js";',
+      '@tailwind utilities;',
+      '.fixture { @apply flex bg-[#123456]; }',
+    ].join('\n')
+    const code = [
+      'import {updateStyle as __vite__updateStyle} from "/@vite/client"',
+      'const __vite__id = "/src/App.vue?vue&type=style&index=0&lang.scss"',
+      `const __vite__css = ${JSON.stringify(css)}`,
+      '__vite__updateStyle(__vite__id, __vite__css)',
+    ].join('\n')
+
+    const transform = getTransformHandler(cssHmrPlugin)
+    const result = await transform?.call(
+      cssHmrPlugin,
+      code,
+      '/src/App.vue?vue&type=style&index=0&lang.scss&direct',
+    )
+    const resultCode = String((result as any)?.code)
+
+    expect(resultCode).toContain('weapp-tailwindcss vite-generated-css')
+    expect(resultCode).toContain('.flex{display:flex}')
+    expect(resultCode).not.toContain('@tailwind utilities')
+    expect(resultCode).not.toContain('@apply flex')
+  }, TEST_TIMEOUT_MS)
+
+  it('generates Tailwind v4 css in vite serve before Vite wraps css hmr modules', async () => {
+    const root = await mkdtemp(path.join(os.tmpdir(), 'weapp-tw-vite-serve-css-root-'))
+    createdDirs.push(root)
+    const configFile = path.join(root, 'tailwind.config.js')
+    await writeFile(configFile, 'module.exports = { content: ["./src/**/*.{vue,ts}"] }\n', 'utf8')
+    const generatedCss = '.flex{display:flex}.bg-midnight{background-color:#121063}'
+    vi.doMock('@/generator', async (importOriginal) => {
+      const actual = await importOriginal<typeof import('@/generator')>()
+      return {
+        ...actual,
+        createWeappTailwindcssGenerator: vi.fn(() => ({
+          generate: vi.fn(async (options: { candidates: Set<string> }) => ({
+            css: generatedCss,
+            rawCss: generatedCss,
+            target: 'weapp',
+            classSet: new Set(options.candidates),
+            dependencies: [configFile],
+            sources: [],
+            root: null,
+            version: 4,
+          })),
+          validateCandidates: vi.fn(async (candidates: Set<string>) => candidates),
+        })),
+      }
+    })
+
+    const runtimeSet = new Set(['flex', 'bg-midnight'])
+    const context = createContext({
+      twPatcher: {
+        patch: vi.fn(),
+        getClassSet: vi.fn(async () => runtimeSet),
+        getClassSetSync: vi.fn(() => runtimeSet),
+        majorVersion: 4,
+        extract: vi.fn(async () => ({ classSet: runtimeSet })),
+        options: {
+          projectRoot: root,
+          tailwindcss: {
+            cwd: root,
+            config: configFile,
+          },
+        },
+      },
+    })
+    setCurrentContext(context)
+
+    const WeappTailwindcss = await loadUnifiedVitePlugin()
+    const plugins = WeappTailwindcss()
+    const servePlugin = plugins?.find(plugin => plugin.name === 'weapp-tailwindcss:adaptor:generate:serve') as Plugin
+    const postPlugin = plugins?.find(plugin => plugin.name === 'weapp-tailwindcss:adaptor:post') as Plugin
+    expect(servePlugin).toBeTruthy()
+
+    await (postPlugin.configResolved as any)?.call(postPlugin, {
+      command: 'serve',
+      root,
+      css: { postcss: { plugins: [] } },
+      build: { outDir: 'dist' },
+    } as ResolvedConfig)
+
+    const addWatchFile = vi.fn()
+    const transform = getTransformHandler(servePlugin)
+    const result = await transform?.call(
+      { ...servePlugin, addWatchFile },
+      [
+        '@import "tailwindcss" source(none);',
+        '@config "./tailwind.config.js";',
+        '@source "./src/**/*.{vue,ts}";',
+      ].join('\n'),
+      path.join(root, 'src/main.css?direct'),
+    )
+    const resultCode = String((result as any)?.code)
+
+    expect(resultCode).toContain('weapp-tailwindcss vite-generated-css')
+    expect(resultCode).toContain('.flex{display:flex}')
+    expect(resultCode).toContain('.bg-midnight')
+    expect(resultCode).not.toContain('@import "tailwindcss"')
+    expect(addWatchFile).toHaveBeenCalledWith(configFile)
+  }, TEST_TIMEOUT_MS)
 
   it('discovers omitted Tailwind v4 css sources before vite buildStart scans candidates', async () => {
     const root = await mkdtemp(path.join(os.tmpdir(), 'weapp-tw-vite-auto-discover-'))
