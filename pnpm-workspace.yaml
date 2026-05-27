@@ -131,8 +131,8 @@ catalogs:
   typescript59tilde:
     typescript: ^6.0.3
   typescriptEslint:
-    '@typescript-eslint/eslint-plugin': ^8.59.4
-    '@typescript-eslint/parser': ^8.59.4
+    '@typescript-eslint/eslint-plugin': ^8.60.0
+    '@typescript-eslint/parser': ^8.60.0
     typescript-eslint: ^8.59.3
   vite4:
     vite: ^4.5.14
@@ -163,7 +163,7 @@ catalogs:
   vueRuntimeCore:
     '@vue/runtime-core': ^3.5.34
   vueTsc318:
-    vue-tsc: ^3.3.1
+    vue-tsc: ^3.3.2
   weappChildren:
     weapp-tailwindcss-children: ^0.1.0
   weappIdeCli:
@@ -171,7 +171,7 @@ catalogs:
   weappVite:
     weapp-vite: ^6.16.25
   wrangler:
-    wrangler: ^4.94.0
+    wrangler: ^4.95.0
 
 onlyBuiltDependencies:
   - '@tailwindcss/oxide'

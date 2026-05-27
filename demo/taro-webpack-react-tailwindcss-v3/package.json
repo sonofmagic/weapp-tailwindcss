@@ -114,7 +114,7 @@
     "weapp-ide-cli": "catalog:weappIdeCli",
     "weapp-tailwindcss": "workspace:*",
     "weapp-tailwindcss-children": "catalog:weappChildren",
-    "webpack": "^5.107.1",
+    "webpack": "^5.107.2",
     "webpack-chain": "^6.5.1"
   },
   "engines": {
