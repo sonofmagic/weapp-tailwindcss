@@ -238,3 +238,32 @@ describe('resolveStyleOptionsFromContext', () => {
     expect(styleOptions).not.toHaveProperty('majorVersion')
   })
 })
+
+describe('resolveRuntimePackageReplacements', () => {
+  it('uses default runtime package replacements when enabled', async () => {
+    const { DEFAULT_RUNTIME_PACKAGE_REPLACEMENTS } = await import('@/constants')
+    const { resolveRuntimePackageReplacements } = await import('@/context/runtime-package-replacements')
+
+    expect(resolveRuntimePackageReplacements(true)).toEqual(DEFAULT_RUNTIME_PACKAGE_REPLACEMENTS)
+  })
+
+  it('normalizes custom runtime package replacements', async () => {
+    const { resolveRuntimePackageReplacements } = await import('@/context/runtime-package-replacements')
+
+    expect(resolveRuntimePackageReplacements({
+      'tailwind-merge': '@scope/tw-merge',
+      'class-variance-authority': '',
+      '': '@scope/ignored',
+    })).toEqual({
+      'tailwind-merge': '@scope/tw-merge',
+    })
+  })
+
+  it('returns undefined when runtime package replacements are empty', async () => {
+    const { resolveRuntimePackageReplacements } = await import('@/context/runtime-package-replacements')
+
+    expect(resolveRuntimePackageReplacements(false)).toBeUndefined()
+    expect(resolveRuntimePackageReplacements(undefined)).toBeUndefined()
+    expect(resolveRuntimePackageReplacements({})).toBeUndefined()
+  })
+})
