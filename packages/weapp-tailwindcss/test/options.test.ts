@@ -52,6 +52,10 @@ function sanitizeSnapshotOptions(options: ReturnType<typeof getCompilerContext>)
   if (typeof clone.tailwindcssBasedir === 'string') {
     clone.tailwindcssBasedir = clone.tailwindcssBasedir.replace(cwd, '<cwd>')
   }
+  clone.cache = {
+    ...clone.cache,
+    instance: '<LRUCache>',
+  } as typeof clone.cache
   return clone
 }
 
@@ -61,6 +65,16 @@ describe('get options', () => {
     // @ts-ignore
     delete options.twPatcher
     expect(options).toMatchSnapshot()
+  })
+
+  it('default cache exposes lru compatible operations', () => {
+    const { cache } = getCompilerContext({})
+    expect(cache.instance).toMatchObject({
+      get: expect.any(Function),
+      has: expect.any(Function),
+      set: expect.any(Function),
+      delete: expect.any(Function),
+    })
   })
 
   it('default matcher', () => {

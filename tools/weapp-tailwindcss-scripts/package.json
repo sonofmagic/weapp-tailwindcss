@@ -24,7 +24,7 @@
     "@csstools/css-color-parser": "^4.1.1",
     "@csstools/css-parser-algorithms": "^4.0.0",
     "@csstools/css-tokenizer": "^4.0.0",
-    "@weapp-core/escape": "~7.0.0",
+    "@weapp-core/escape": "~8.0.0",
     "colorette": "^2.0.20",
     "del": "^8.0.1",
     "execa": "^9.6.1",

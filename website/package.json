@@ -98,7 +98,7 @@
     "mini-svg-data-uri": "^1.4.4",
     "node-loader": "^2.1.0",
     "sass": "catalog:sass195",
-    "sass-loader": "^16.0.8",
+    "sass-loader": "^17.0.0",
     "tailwindcss": "catalog:tailwindcss3",
     "theme-transition": "workspace:*",
     "typedoc": "^0.28.19",

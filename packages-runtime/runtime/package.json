@@ -56,7 +56,7 @@
     "access": "public"
   },
   "dependencies": {
-    "@weapp-core/escape": "^7.0.0",
+    "@weapp-core/escape": "^8.0.0",
     "clsx": "catalog:clsx"
   }
 }
