@@ -3,12 +3,12 @@ import type { GeneratorResolvedSource } from './generator-css/source-resolver'
 import type { TailwindSourceEntry } from '@/tailwindcss/source-scan'
 import type { InternalUserDefinedOptions } from '@/types'
 import postcss from 'postcss'
+import { resolveStyleOptionsFromContext } from '@/context/style-options'
 import {
   createWeappTailwindcssGenerator,
   normalizeWeappTailwindcssGeneratorOptions,
 } from '@/generator'
 import { filterUnsupportedMiniProgramTailwindV4Candidates } from '@/tailwindcss/v4-engine/candidates'
-import { resolveUniAppXOptions } from '@/uni-app-x/options'
 import { finalizeMiniProgramCss, removeUnsupportedMiniProgramAtRules } from './css-cleanup'
 import {
   hasTailwindSourceDirectives,
@@ -135,22 +135,9 @@ function resolveGeneratorStyleOptions(
     cssPreflight: opts.cssPreflight,
     cssPreflightRange: opts.cssPreflightRange,
   }
-  const resolvedUniAppXOptions = resolveUniAppXOptions(opts.uniAppX)
   return {
-    cssChildCombinatorReplaceValue: opts.cssChildCombinatorReplaceValue,
-    cssSelectorReplacement: opts.cssSelectorReplacement,
-    platform: opts.platform,
-    rem2rpx: opts.rem2rpx,
-    px2rpx: opts.px2rpx,
-    unitsToPx: opts.unitsToPx,
-    unitConversion: opts.unitConversion,
-    cssRemoveProperty: opts.cssRemoveProperty,
-    cssRemoveHoverPseudoClass: opts.cssRemoveHoverPseudoClass,
-    cssPresetEnv: opts.cssPresetEnv,
-    autoprefixer: opts.autoprefixer,
-    cssCalc: opts.cssCalc,
+    ...resolveStyleOptionsFromContext(opts),
     atRules: opts.atRules,
-    uniAppX: resolvedUniAppXOptions.enabled,
     uniAppXCssTarget: opts.uniAppXCssTarget,
     uniAppXUnsupported: opts.uniAppXUnsupported,
     ...cssHandlerOptions,

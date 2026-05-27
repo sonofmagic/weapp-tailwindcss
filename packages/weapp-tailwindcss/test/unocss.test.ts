@@ -1,4 +1,5 @@
 import { getCompilerContext } from '@/context'
+import { resolveBooleanObjectOption } from '@/utils/options'
 
 describe('unocss compatibility', () => {
   it('keeps UnoCSS compatibility disabled by default', () => {
@@ -73,5 +74,17 @@ describe('unocss compatibility', () => {
 
     expect(ctx.arbitraryValues.allowDoubleQuotes).toBe(true)
     expect(ctx.arbitraryValues.bareArbitraryValues).toBe(true)
+  })
+})
+
+describe('resolveBooleanObjectOption', () => {
+  it('normalizes boolean or object feature options', () => {
+    const enabledValue = { enabled: true }
+    const objectValue = { enabled: true, mode: 'custom' }
+
+    expect(resolveBooleanObjectOption(undefined, enabledValue)).toBe(false)
+    expect(resolveBooleanObjectOption(false, enabledValue)).toBe(false)
+    expect(resolveBooleanObjectOption(true, enabledValue)).toBe(enabledValue)
+    expect(resolveBooleanObjectOption(objectValue, enabledValue)).toBe(objectValue)
   })
 })

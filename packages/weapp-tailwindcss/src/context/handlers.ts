@@ -2,8 +2,9 @@ import type { ICustomAttributesEntities, InternalUserDefinedOptions } from '@/ty
 import { createStyleHandler } from '@weapp-tailwindcss/postcss'
 import { DEFAULT_RUNTIME_PACKAGE_REPLACEMENTS } from '@/constants'
 import { createJsHandler } from '@/js'
-import { isUniAppXEnabled, resolveUniAppXOptions } from '@/uni-app-x/options'
+import { resolveUniAppXOptions } from '@/uni-app-x/options'
 import { createTemplateHandler } from '@/wxml'
+import { resolveStyleOptionsFromContext } from './style-options'
 
 function resolveRuntimePackageReplacements(
   option: InternalUserDefinedOptions['replaceRuntimePackages'],
@@ -34,23 +35,10 @@ export function createHandlersFromContext(
   tailwindcssMajorVersion?: number,
 ) {
   const {
-    cssPreflight,
-    cssPreflightRange,
     escapeMap,
-    cssChildCombinatorReplaceValue,
     injectAdditionalCssVarScope,
-    cssSelectorReplacement,
-    rem2rpx,
     postcssOptions,
-    cssRemoveProperty,
-    cssRemoveHoverPseudoClass,
-    cssPresetEnv,
-    autoprefixer,
     uniAppX,
-    platform,
-    px2rpx,
-    unitsToPx,
-    unitConversion,
     arbitraryValues,
     jsPreserveClass,
     jsArbitraryValueFallback,
@@ -61,31 +49,19 @@ export function createHandlersFromContext(
     disabledDefaultTemplateHandler,
     replaceRuntimePackages,
   } = ctx
-  const uniAppXEnabled = isUniAppXEnabled(uniAppX)
   const resolvedUniAppXOptions = resolveUniAppXOptions(uniAppX)
+  const styleOptions = resolveStyleOptionsFromContext(ctx)
+  const uniAppXEnabled = styleOptions.uniAppX === true
 
   const moduleSpecifierReplacements = resolveRuntimePackageReplacements(replaceRuntimePackages)
 
   const styleHandler = createStyleHandler({
-    cssPreflight,
-    cssPreflightRange,
+    ...styleOptions,
     escapeMap,
-    cssChildCombinatorReplaceValue,
     injectAdditionalCssVarScope,
-    cssSelectorReplacement,
-    rem2rpx,
     postcssOptions,
-    cssRemoveProperty,
-    cssRemoveHoverPseudoClass,
-    cssPresetEnv,
-    autoprefixer,
-    uniAppX: uniAppXEnabled,
     uniAppXUnsupported: resolvedUniAppXOptions.uvueUnsupported,
     cssCalc: cssCalcOptions,
-    platform,
-    px2rpx,
-    unitsToPx,
-    unitConversion,
     majorVersion: tailwindcssMajorVersion,
   })
 

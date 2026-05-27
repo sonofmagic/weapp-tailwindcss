@@ -203,3 +203,38 @@ describe('createHandlersFromContext', () => {
     }))
   })
 })
+
+describe('resolveStyleOptionsFromContext', () => {
+  it('extracts shared style options without handler-only fields', async () => {
+    const { resolveStyleOptionsFromContext } = await import('@/context/style-options')
+    const ctx = createContext(true, false, {
+      rules: [
+        { from: 'px', to: 'rpx', factor: 2 },
+      ],
+    })
+
+    const styleOptions = resolveStyleOptionsFromContext(ctx)
+
+    expect(styleOptions).toEqual(expect.objectContaining({
+      cssPreflight: ctx.cssPreflight,
+      cssPreflightRange: ctx.cssPreflightRange,
+      cssChildCombinatorReplaceValue: ctx.cssChildCombinatorReplaceValue,
+      cssSelectorReplacement: ctx.cssSelectorReplacement,
+      rem2rpx: ctx.rem2rpx,
+      px2rpx: ctx.px2rpx,
+      unitsToPx: ctx.unitsToPx,
+      unitConversion: ctx.unitConversion,
+      cssRemoveProperty: ctx.cssRemoveProperty,
+      cssRemoveHoverPseudoClass: ctx.cssRemoveHoverPseudoClass,
+      cssPresetEnv: ctx.cssPresetEnv,
+      autoprefixer: ctx.autoprefixer,
+      cssCalc: ctx.cssCalc,
+      uniAppX: true,
+      platform: ctx.platform,
+    }))
+    expect(styleOptions).not.toHaveProperty('escapeMap')
+    expect(styleOptions).not.toHaveProperty('postcssOptions')
+    expect(styleOptions).not.toHaveProperty('injectAdditionalCssVarScope')
+    expect(styleOptions).not.toHaveProperty('majorVersion')
+  })
+})

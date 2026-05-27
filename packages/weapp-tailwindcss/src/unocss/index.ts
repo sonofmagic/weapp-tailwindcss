@@ -1,15 +1,10 @@
 import type { IArbitraryValues, IUnocssCompatibilityOptions, UserDefinedOptions } from '@/types'
+import { resolveBooleanObjectOption } from '@/utils/options'
 
 function normalizeUnocssOptions(
   unocss: UserDefinedOptions['unocss'],
 ): IUnocssCompatibilityOptions | false {
-  if (!unocss) {
-    return false
-  }
-  if (unocss === true) {
-    return {}
-  }
-  return unocss
+  return resolveBooleanObjectOption(unocss, {})
 }
 
 export function resolveUnocssBareArbitraryValues(
