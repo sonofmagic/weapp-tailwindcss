@@ -1,5 +1,5 @@
 import { getCompilerContext } from '@/context'
-import { resolveBooleanObjectOption } from '@/utils/options'
+import { normalizeStringListOption, resolveBooleanObjectOption } from '@/utils/options'
 
 describe('unocss compatibility', () => {
   it('keeps UnoCSS compatibility disabled by default', () => {
@@ -86,5 +86,15 @@ describe('resolveBooleanObjectOption', () => {
     expect(resolveBooleanObjectOption(false, enabledValue)).toBe(false)
     expect(resolveBooleanObjectOption(true, enabledValue)).toBe(enabledValue)
     expect(resolveBooleanObjectOption(objectValue, enabledValue)).toBe(objectValue)
+  })
+})
+
+describe('normalizeStringListOption', () => {
+  it('normalizes unknown values to a non-empty string list', () => {
+    expect(normalizeStringListOption('  app.css  ')).toEqual(['app.css'])
+    expect(normalizeStringListOption(['', 'main.css', ' ', 42])).toEqual(['main.css'])
+    expect(normalizeStringListOption(42)).toBeUndefined()
+    expect(normalizeStringListOption('   ')).toBeUndefined()
+    expect(normalizeStringListOption([])).toBeUndefined()
   })
 })

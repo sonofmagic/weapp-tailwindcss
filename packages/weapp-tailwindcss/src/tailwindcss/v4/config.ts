@@ -1,5 +1,6 @@
 import type { InternalUserDefinedOptions, TailwindcssPatcherLike } from '@/types'
 import { logger } from '@weapp-tailwindcss/logger'
+import { normalizeStringListOption } from '@/utils/options'
 import { hasConfiguredTailwindV4CssRoots } from './css-sources'
 
 // 默认保留列表暂为空，后续若有新增默认变量再补充到该数组
@@ -71,24 +72,7 @@ function ensureDefaultsIncluded(
 }
 
 export function normalizeCssEntriesConfig(entries: unknown) {
-  if (!entries) {
-    return undefined
-  }
-
-  if (typeof entries === 'string') {
-    const trimmed = entries.trim()
-    return trimmed ? [trimmed] : undefined
-  }
-
-  if (!Array.isArray(entries)) {
-    return undefined
-  }
-
-  const normalized = entries
-    .map(entry => (typeof entry === 'string' ? entry.trim() : ''))
-    .filter(entry => entry.length > 0)
-
-  return normalized.length > 0 ? normalized : undefined
+  return normalizeStringListOption(entries)
 }
 
 function hasConfiguredCssEntries(ctx: InternalUserDefinedOptions) {
