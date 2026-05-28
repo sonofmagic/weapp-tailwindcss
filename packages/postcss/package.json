@@ -67,16 +67,12 @@
     "lint:fix": "eslint . --fix"
   },
   "dependencies": {
-    "@csstools/css-color-parser": "^4.1.1",
-    "@csstools/css-parser-algorithms": "^4.0.0",
-    "@csstools/css-tokenizer": "^4.0.0",
     "@weapp-core/escape": "~8.0.0",
     "@weapp-tailwindcss/postcss-calc": "^1.0.0",
     "@weapp-tailwindcss/shared": "workspace:*",
     "autoprefixer": "catalog:autoprefixer10",
     "lru-cache": "11.5.0",
     "postcss": "catalog:postcss85tilde",
-    "postcss-preset-env": "^11.3.0",
     "postcss-pxtrans": "^1.0.4",
     "postcss-rem-to-responsive-pixel": "catalog:postcssRem",
     "postcss-rule-unit-converter": "^0.2.2",
@@ -84,9 +80,13 @@
     "postcss-value-parser": "^4.2.0"
   },
   "devDependencies": {
+    "@csstools/css-color-parser": "^4.1.1",
+    "@csstools/css-parser-algorithms": "^4.0.0",
+    "@csstools/css-tokenizer": "^4.0.0",
     "@csstools/postcss-is-pseudo-class": "^6.0.0",
     "fast-check": "^4.8.0",
     "postcss-calc": "^10.1.1",
-    "postcss-custom-properties": "^15.0.1"
+    "postcss-custom-properties": "^15.0.1",
+    "postcss-preset-env": "^11.3.0"
   }
 }

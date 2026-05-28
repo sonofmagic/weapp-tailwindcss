@@ -3645,15 +3645,6 @@ importers:
 
   packages/postcss:
     dependencies:
-      '@csstools/css-color-parser':
-        specifier: ^4.1.1
-        version: 4.1.1(@csstools/css-parser-algorithms@4.0.0(@csstools/css-tokenizer@4.0.0))(@csstools/css-tokenizer@4.0.0)
-      '@csstools/css-parser-algorithms':
-        specifier: ^4.0.0
-        version: 4.0.0(@csstools/css-tokenizer@4.0.0)
-      '@csstools/css-tokenizer':
-        specifier: ^4.0.0
-        version: 4.0.0
       '@weapp-core/escape':
         specifier: ~8.0.0
         version: 8.0.0
@@ -3672,9 +3663,6 @@ importers:
       postcss:
         specifier: catalog:postcss85tilde
         version: 8.5.15
-      postcss-preset-env:
-        specifier: ^11.3.0
-        version: 11.3.0(postcss@8.5.15)
       postcss-pxtrans:
         specifier: ^1.0.4
         version: 1.0.4(postcss@8.5.15)
@@ -3691,6 +3679,15 @@ importers:
         specifier: ^4.2.0
         version: 4.2.0
     devDependencies:
+      '@csstools/css-color-parser':
+        specifier: ^4.1.1
+        version: 4.1.1(@csstools/css-parser-algorithms@4.0.0(@csstools/css-tokenizer@4.0.0))(@csstools/css-tokenizer@4.0.0)
+      '@csstools/css-parser-algorithms':
+        specifier: ^4.0.0
+        version: 4.0.0(@csstools/css-tokenizer@4.0.0)
+      '@csstools/css-tokenizer':
+        specifier: ^4.0.0
+        version: 4.0.0
       '@csstools/postcss-is-pseudo-class':
         specifier: ^6.0.0
         version: 6.0.0(postcss@8.5.15)
@@ -3703,6 +3700,9 @@ importers:
       postcss-custom-properties:
         specifier: ^15.0.1
         version: 15.0.1(postcss@8.5.15)
+      postcss-preset-env:
+        specifier: ^11.3.0
+        version: 11.3.0(postcss@8.5.15)
 
   packages/reset:
     dependencies:
@@ -3817,9 +3817,6 @@ importers:
       fast-glob:
         specifier: ^3.3.3
         version: 3.3.3
-      htmlparser2:
-        specifier: 12.0.0
-        version: 12.0.0
       local-pkg:
         specifier: ^1.2.1
         version: 1.2.1
@@ -3847,6 +3844,10 @@ importers:
       yaml:
         specifier: ^2.9.0
         version: 2.9.0
+    devDependencies:
+      htmlparser2:
+        specifier: 12.0.0
+        version: 12.0.0
 
   packages/weapp-tw: {}
 
