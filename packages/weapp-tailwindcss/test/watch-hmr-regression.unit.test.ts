@@ -1308,8 +1308,8 @@ describe('watch-hmr regression cases', () => {
       expect(watchCase?.webHmr?.devScript).toBe(name.startsWith('taro-') ? 'build:h5' : 'dev:h5')
     }
 
-    expect(caseMap.get('taro-webpack-react-tailwindcss-v3')?.webHmr?.cssEntryFile).toContain('src/app.less')
-    expect(caseMap.get('taro-webpack-vue3-tailwindcss-v3')?.webHmr?.cssEntryFile).toContain('src/app.scss')
+    expect(toSlashPath(caseMap.get('taro-webpack-react-tailwindcss-v3')?.webHmr?.cssEntryFile ?? '')).toContain('src/app.less')
+    expect(toSlashPath(caseMap.get('taro-webpack-vue3-tailwindcss-v3')?.webHmr?.cssEntryFile ?? '')).toContain('src/app.scss')
 
     const taroWebpackPostcssConfigs = [
       'demo/taro-webpack-react-tailwindcss-v3/postcss.config.js',
