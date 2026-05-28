@@ -105,7 +105,7 @@
     "tailwindcss": "catalog:tailwindcss3",
     "tailwindcss-patch": "catalog:tailwindcssPatch",
     "tailwindcss-rem2px-preset": "catalog:tailwindcssRem",
-    "terser-webpack-plugin": "^5.6.0",
+    "terser-webpack-plugin": "^5.6.1",
     "typescript": "catalog:typescript59tilde",
     "vite": "catalog:vite4",
     "vue-loader": "^17.4.2",
