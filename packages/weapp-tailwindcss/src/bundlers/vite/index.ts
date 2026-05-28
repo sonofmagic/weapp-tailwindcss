@@ -477,27 +477,84 @@ export function WeappTailwindcss(options: UserDefinedOptions = {}): Plugin[] | u
   const resolveHotTailwindCssModules = (ctx: HmrContext) => {
     const modules: ModuleNode[] = []
     const seenModules = new Set<ModuleNode>()
+    const collectModule = (mod: ModuleNode | undefined) => {
+      if (mod == null || seenModules.has(mod)) {
+        return
+      }
+      const modId = mod.id ?? mod.url
+      if (!isSourceStyleRequest(modId)) {
+        return
+      }
+      seenModules.add(mod)
+      ctx.server.moduleGraph.invalidateModule(mod)
+      modules.push(mod)
+    }
     for (const id of tailwindRootCssModuleIds) {
       const candidates = [
         ctx.server.moduleGraph.getModuleById(id),
+        ctx.server.moduleGraph.getModuleById(cleanUrl(id)),
         ...(ctx.server.moduleGraph.getModulesByFile(id) ?? []),
-      ].filter((mod): mod is ModuleNode => {
-        if (mod == null) {
-          return false
-        }
-        const modId = mod.id ?? mod.url
-        return isSourceStyleRequest(modId)
-      })
+        ...(ctx.server.moduleGraph.getModulesByFile(cleanUrl(id)) ?? []),
+      ]
       for (const mod of candidates) {
-        if (seenModules.has(mod)) {
-          continue
-        }
-        seenModules.add(mod)
-        ctx.server.moduleGraph.invalidateModule(mod)
-        modules.push(mod)
+        collectModule(mod)
       }
     }
     return modules
+  }
+  const resolveModuleHotUrl = (mod: ModuleNode) => {
+    if (typeof mod.url === 'string' && mod.url.length > 0) {
+      return mod.url
+    }
+    if (typeof mod.id === 'string' && mod.id.startsWith('/')) {
+      return mod.id
+    }
+    return undefined
+  }
+  const includesHotModule = (modules: ModuleNode[], target: ModuleNode) => {
+    const targetUrl = resolveModuleHotUrl(target)
+    const targetId = target.id
+    return modules.some((mod) => {
+      if (mod === target) {
+        return true
+      }
+      return (
+        targetUrl !== undefined
+        && resolveModuleHotUrl(mod) === targetUrl
+      ) || (
+        typeof targetId === 'string'
+        && targetId.length > 0
+        && mod.id === targetId
+      )
+    })
+  }
+  const sendSupplementalCssHotUpdates = (ctx: HmrContext, cssModules: ModuleNode[]) => {
+    const updates = cssModules
+      .filter(mod => !includesHotModule(ctx.modules, mod))
+      .map((mod) => {
+        const hotUrl = resolveModuleHotUrl(mod)
+        if (!hotUrl) {
+          return undefined
+        }
+        return {
+          type: 'js-update' as const,
+          timestamp: ctx.timestamp,
+          path: hotUrl,
+          acceptedPath: hotUrl,
+          explicitImportRequired: false,
+          isWithinCircularImport: false,
+        }
+      })
+      .filter((update): update is NonNullable<typeof update> => update !== undefined)
+    if (updates.length === 0) {
+      return
+    }
+    queueMicrotask(() => {
+      ctx.server.ws.send({
+        type: 'update',
+        updates,
+      })
+    })
   }
   const matchesViteProcessedCssSource = (candidate: string) => {
     const normalized = normalizeViteProcessedCssFile(candidate)
@@ -689,6 +746,7 @@ export function WeappTailwindcss(options: UserDefinedOptions = {}): Plugin[] | u
           await syncChangedSourceCandidateFile(ctx.file)
           invalidateRecordedGeneratorCandidates()
           const cssModules = resolveHotTailwindCssModules(ctx)
+          sendSupplementalCssHotUpdates(ctx, cssModules)
           return cssModules.length > 0
             ? [...ctx.modules, ...cssModules]
             : undefined

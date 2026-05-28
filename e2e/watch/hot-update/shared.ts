@@ -781,6 +781,19 @@ export function assertHotUpdateReport(report: HotUpdateReport, target: WatchCase
       expect(webHmr.hotUpdateEffectiveMs).toBeLessThanOrEqual(maxHotUpdateMs)
       expect(webHmr.rollbackEffectiveMs).toBeGreaterThan(0)
       expect(webHmr.totalMs).toBeGreaterThanOrEqual(webHmr.hotUpdateEffectiveMs)
+      if (item.name === 'uni-app-vite-tailwindcss-v3') {
+        const sourceClassReplacementSequence = webHmr.sourceClassReplacementSequence ?? []
+        expect(sourceClassReplacementSequence.map(metric => metric.label)).toEqual([
+          'bgObj bg-[#999999] to bg-[#134543]',
+          'bgObj bg-[#134543] to bg-[#256789]',
+        ])
+        expect(sourceClassReplacementSequence[0]?.verifiedCssIncludes).toContain('134543')
+        expect(sourceClassReplacementSequence[1]?.verifiedCssIncludes).toContain('256789')
+        for (const metric of sourceClassReplacementSequence) {
+          expect(metric.hotUpdateEffectiveMs).toBeGreaterThan(0)
+          expect(metric.hotUpdateEffectiveMs).toBeLessThanOrEqual(maxHotUpdateMs)
+        }
+      }
     }
     else {
       expect(item.webHmr, `[${item.project}] should not include web HMR metrics`).toBeUndefined()

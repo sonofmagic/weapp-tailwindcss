@@ -1,6 +1,6 @@
 import type { Buffer } from 'node:buffer'
 import type { Browser, Page } from 'playwright'
-import type { CliOptions, WatchCase, WebHmrConfig, WebHmrMetrics } from './types'
+import type { CliOptions, WatchCase, WebHmrConfig, WebHmrMetrics, WebHmrSourceClassReplacementMetrics } from './types'
 import { createHash } from 'node:crypto'
 import { existsSync } from 'node:fs'
 import process from 'node:process'
@@ -135,6 +135,87 @@ function assertComputedStyle(
   }
 
   return normalizedActual
+}
+
+async function collectStyleText(page: Page) {
+  return await page.evaluate(() => {
+    return [...document.querySelectorAll('style')]
+      .map(style => style.textContent ?? '')
+      .join('\n')
+  })
+}
+
+async function runSourceClassReplacementSequence(
+  watchCase: WatchCase,
+  options: CliOptions,
+  page: Page,
+  config: WebHmrConfig,
+  sourceOriginal: string,
+) {
+  const sequence = config.sourceClassReplacementSequence ?? []
+  if (sequence.length === 0) {
+    return undefined
+  }
+
+  const results: WebHmrSourceClassReplacementMetrics[] = []
+  let currentSource = sourceOriginal
+
+  for (const item of sequence) {
+    if (!currentSource.includes(item.from)) {
+      throw new Error(`[${watchCase.label}] web HMR source replacement anchor not found for ${item.label}: ${item.from}`)
+    }
+    const nextSource = currentSource.replace(item.from, item.to)
+    if (nextSource === currentSource) {
+      throw new Error(`[${watchCase.label}] web HMR source replacement produced no change for ${item.label}`)
+    }
+
+    const hotUpdateStartedAt = Date.now()
+    process.stdout.write(
+      `[watch-hmr] ${watchCase.label} web source-replacement=${item.label} from=${item.from} to=${item.to}\n`,
+    )
+    await writeFilePreserveEol(config.sourceFile, nextSource, sourceOriginal)
+
+    let verifiedCssIncludes: string[] = []
+    let lastError = ''
+    const hotUpdateEffectiveMs = await waitFor(
+      async () => {
+        try {
+          const styleText = await collectStyleText(page)
+          verifiedCssIncludes = (item.expectedCssIncludes ?? [])
+            .filter(needle => styleText.includes(needle))
+          if (verifiedCssIncludes.length !== (item.expectedCssIncludes ?? []).length) {
+            const missing = (item.expectedCssIncludes ?? []).filter(needle => !verifiedCssIncludes.includes(needle))
+            throw new Error(`[${watchCase.label}] web HMR source replacement ${item.label} missing CSS fragments: ${missing.join(', ')}`)
+          }
+          return true
+        }
+        catch (error) {
+          lastError = error instanceof Error ? error.message : String(error)
+          return false
+        }
+      },
+      {
+        timeoutMs: options.timeoutMs,
+        pollMs: options.pollMs,
+        message: `[${watchCase.label}] web HMR source replacement did not apply: ${item.label}`,
+      },
+      hotUpdateStartedAt,
+    ).catch((error) => {
+      const message = error instanceof Error ? error.message : String(error)
+      throw new Error(`${message}${lastError ? `\n${lastError}` : ''}`)
+    })
+
+    results.push({
+      label: item.label,
+      from: item.from,
+      to: item.to,
+      verifiedCssIncludes,
+      hotUpdateEffectiveMs,
+    })
+    currentSource = nextSource
+  }
+
+  return results
 }
 
 function resolveChromiumLaunchOptions() {
@@ -410,6 +491,13 @@ export async function runWebHmr(
         element.remove()
       }).catch(() => {})
     }
+    const sourceClassReplacementSequence = await runSourceClassReplacementSequence(
+      watchCase,
+      options,
+      page,
+      config,
+      sourceOriginal,
+    )
 
     process.stdout.write(
       `[watch-hmr] ${watchCase.label} web hmr passed (hotUpdate=${hotUpdateEffectiveMs}ms, rollback=${rollbackEffectiveMs}ms, url=${url})\n`,
@@ -425,6 +513,7 @@ export async function runWebHmr(
       initialReadyMs,
       hotUpdateEffectiveMs,
       rollbackEffectiveMs,
+      ...(sourceClassReplacementSequence ? { sourceClassReplacementSequence } : {}),
       totalMs: Date.now() - startedAt,
     }
   }

@@ -178,6 +178,14 @@ export interface WebHmrConfig {
   rollbackClassLiteral?: string
   expectedStyle?: Partial<Record<'backgroundColor' | 'width' | 'height', string>>
   rollbackExpectedStyle?: Partial<Record<'backgroundColor' | 'width' | 'height', string>>
+  sourceClassReplacementSequence?: WebHmrSourceClassReplacement[]
+}
+
+export interface WebHmrSourceClassReplacement {
+  label: string
+  from: string
+  to: string
+  expectedCssIncludes?: string[]
 }
 
 export interface WatchSession {
@@ -417,7 +425,16 @@ export interface WebHmrMetrics {
   initialReadyMs: number
   hotUpdateEffectiveMs: number
   rollbackEffectiveMs: number
+  sourceClassReplacementSequence?: WebHmrSourceClassReplacementMetrics[]
   totalMs: number
+}
+
+export interface WebHmrSourceClassReplacementMetrics {
+  label: string
+  from: string
+  to: string
+  verifiedCssIncludes: string[]
+  hotUpdateEffectiveMs: number
 }
 
 export interface WatchReport {

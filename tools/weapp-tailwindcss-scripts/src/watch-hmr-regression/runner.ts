@@ -471,6 +471,12 @@ function collectHotUpdateBudgetSamples(metrics: WatchCaseMetrics): HotUpdateBudg
       hotUpdateEffectiveMs: metrics.userReportedHotUpdate.hotUpdateEffectiveMs,
     })
   }
+  for (const metric of metrics.webHmr?.sourceClassReplacementSequence ?? []) {
+    samples.push({
+      label: `web-source-replacement:${metric.label}`,
+      hotUpdateEffectiveMs: metric.hotUpdateEffectiveMs,
+    })
+  }
 
   for (const subPackage of metrics.subPackageMutationMetrics) {
     samples.push(

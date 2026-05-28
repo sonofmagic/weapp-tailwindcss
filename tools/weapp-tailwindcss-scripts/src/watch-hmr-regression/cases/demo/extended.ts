@@ -230,6 +230,20 @@ export function buildDemoExtendedCases(baseCwd: string): WatchCase[] {
       mutate(source, payload) {
         return `${source}\n/* ${payload.marker} ${payload.classLiteral} */`
       },
+      sourceClassReplacementSequence: [
+        {
+          label: 'bgObj bg-[#999999] to bg-[#134543]',
+          from: '\'bg-[#999999]\':true',
+          to: '\'bg-[#134543]\':true',
+          expectedCssIncludes: ['134543'],
+        },
+        {
+          label: 'bgObj bg-[#134543] to bg-[#256789]',
+          from: '\'bg-[#134543]\':true',
+          to: '\'bg-[#256789]\':true',
+          expectedCssIncludes: ['256789'],
+        },
+      ],
     },
   }
 
