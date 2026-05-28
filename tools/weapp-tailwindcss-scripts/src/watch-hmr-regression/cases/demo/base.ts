@@ -29,6 +29,11 @@ const mpxWatchEnv = {
   WATCHPACK_POLLING: '50',
 }
 
+const gulpWatchEnv = {
+  CHOKIDAR_USEPOLLING: '1',
+  CHOKIDAR_INTERVAL: '50',
+}
+
 function normalizeExtension(version: 'v3' | 'v4') {
   return version === 'v3' ? 'scss' : 'css'
 }
@@ -303,6 +308,7 @@ export function buildDemoBaseCases(baseCwd: string): WatchCase[] {
     initialMutationDelayMs: 5_000,
     cwd: path.resolve(baseCwd, 'demo/gulp-tailwindcss-v3'),
     devScript: 'dev',
+    env: gulpWatchEnv,
     outputWxml: path.resolve(baseCwd, 'demo/gulp-tailwindcss-v3/dist/pages/index/index.wxml'),
     outputJs: path.resolve(baseCwd, 'demo/gulp-tailwindcss-v3/dist/pages/index/index.js'),
     outputStyleCandidates: [

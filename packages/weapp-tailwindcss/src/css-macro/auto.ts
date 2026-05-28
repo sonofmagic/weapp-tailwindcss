@@ -1,5 +1,5 @@
 import type { IStyleHandlerOptions, LoadedPostcssOptions } from '@weapp-tailwindcss/postcss/types'
-import type { AcceptedPlugin } from 'postcss'
+import type { ResultPlugin } from 'postcss-load-config'
 import postcss from 'postcss'
 import cssMacroPostcssPlugin, { CSS_MACRO_POSTCSS_PLUGIN_NAME } from './postcss'
 
@@ -106,13 +106,11 @@ function withCssMacroPostcssPlugins(plugins: unknown): LoadedPostcssOptions['plu
   }
 
   if (typeof plugins === 'object') {
-    if (Object.values(plugins as Record<string, unknown>).some(isCssMacroPostcssPlugin)) {
-      return plugins
+    const values = Object.values(plugins as Record<string, unknown>).filter(Boolean) as ResultPlugin[]
+    if (values.some(isCssMacroPostcssPlugin)) {
+      return values
     }
-    return {
-      ...(plugins as Record<string, AcceptedPlugin | false | null | undefined>),
-      [CSS_MACRO_POSTCSS_PLUGIN_NAME]: macroPlugin,
-    } as LoadedPostcssOptions['plugins']
+    return [...values, macroPlugin]
   }
 
   return [macroPlugin]

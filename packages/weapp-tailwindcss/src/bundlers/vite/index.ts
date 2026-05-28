@@ -550,7 +550,7 @@ export function WeappTailwindcss(options: UserDefinedOptions = {}): Plugin[] | u
       return
     }
     queueMicrotask(() => {
-      ctx.server.ws.send({
+      ctx.server.ws?.send?.({
         type: 'update',
         updates,
       })

@@ -40,12 +40,12 @@ const creator: PluginCreator<Options> = () => {
         atRule.replaceWith(nextNodes)
 
         startComment.raws.before = hasPreviousNode ? '\n' : ''
-        startComment.raws.after = '\n'
+        startComment.raws['after'] = '\n'
         if (clonedNodes[0]) {
           clonedNodes[0].raws.before = '\n'
         }
         endComment.raws.before = '\n'
-        endComment.raws.after = '\n'
+        endComment.raws['after'] = '\n'
 
         const nextNode = endComment?.next()
         if (nextNode) {
@@ -98,10 +98,10 @@ const creator: PluginCreator<Options> = () => {
         }
 
         startComment.raws.before = hasPreviousNode ? '\n' : ''
-        startComment.raws.after = '\n'
+        startComment.raws['after'] = '\n'
         conditionalRule.raws.before = '\n'
         endComment.raws.before = '\n'
-        endComment.raws.after = '\n'
+        endComment.raws['after'] = '\n'
 
         const nextNode = endComment.next()
         if (nextNode) {

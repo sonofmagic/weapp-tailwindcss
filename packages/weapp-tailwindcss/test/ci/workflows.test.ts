@@ -279,8 +279,14 @@ describe('e2e watch workflow', () => {
       'macos:22:uni-app-vite-tailwindcss-v3:default',
       'macos:22:uni-app-vite-tailwindcss-v3:issue33',
       'macos:22:taro-webpack-react-tailwindcss-v4:issue33',
+      'macos:22:taro-webpack-react-tailwindcss-v3:default',
+      'macos:22:taro-webpack-react-tailwindcss-v4:default',
+      'macos:22:taro-vite-react-tailwindcss-v3:default',
       'macos:22:taro-vite-react-tailwindcss-v4:default',
+      'macos:22:taro-webpack-vue3-tailwindcss-v3:default',
       'macos:22:taro-webpack-vue3-tailwindcss-v4:default',
+      'macos:22:taro-vite-vue3-tailwindcss-v3:default',
+      'macos:22:taro-vite-vue3-tailwindcss-v4:default',
       'macos:22:uni-app-vite-tailwindcss-v4:default',
       'macos:22:mpx-tailwindcss-v4:default',
       'windows:22:uni-app-vite-tailwindcss-v3:default',
@@ -289,7 +295,6 @@ describe('e2e watch workflow', () => {
       'windows:22:mpx-tailwindcss-v4:default',
     ]))
     expect(cases.some(item => item.includes(':weapp-vite-tailwindcss-'))).toBe(false)
-    expect(cases.some(item => item.includes(':taro-vite-vue3-tailwindcss-'))).toBe(false)
     expect(stepRuns(workflow, 'pr-quick-gate')).toContain('pnpm e2e:watch')
   })
 
