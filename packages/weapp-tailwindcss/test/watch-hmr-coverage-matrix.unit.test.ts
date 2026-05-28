@@ -29,6 +29,15 @@ const demoPackageProjects = readdirSync(join(repoRoot, 'demo'), { withFileTypes:
   .filter(name => existsSync(join(repoRoot, 'demo', name, 'package.json')))
   .map(name => `demo/${name}`)
   .sort()
+// HBuilderX 项目依赖本机 IDE 验证，不进入 CI 的通用 watch 回归矩阵。
+const localOnlyDemoProjects = new Set([
+  'demo/uni-app-vite-vue3-hbuilderx-tailwindcss-v3',
+  'demo/uni-app-vite-vue3-hbuilderx-tailwindcss-v4',
+  'demo/uni-app-x-hbuilderx-tailwindcss-v3',
+  'demo/uni-app-x-hbuilderx-tailwindcss-v4',
+])
+const automatedWatchDemoPackageProjects = demoPackageProjects
+  .filter(project => !localOnlyDemoProjects.has(project))
 
 function toSlashPath(filePath: string) {
   return filePath.replace(/\\/g, '/')
@@ -57,8 +66,15 @@ function expectHasRoundConfig(
 }
 
 describe('watch-hmr coverage matrix', () => {
-  it('covers every demo package project through watch regression cases', () => {
-    for (const project of demoPackageProjects) {
+  it('keeps local-only HBuilderX demo projects explicit', () => {
+    for (const project of localOnlyDemoProjects) {
+      expect(demoPackageProjects, `${project} should remain a real demo package`).toContain(project)
+      expect(watchCoveredProjects.has(project), `${project} should stay out of CI watch regression cases`).toBe(false)
+    }
+  })
+
+  it('covers every automated demo package project through watch regression cases', () => {
+    for (const project of automatedWatchDemoPackageProjects) {
       expect(
         watchCoveredProjects.has(project),
         `${project} should be covered by watch regression cases`,
@@ -299,6 +315,6 @@ describe('watch-hmr coverage matrix', () => {
   })
 
   it('keeps the automated watch matrix explicit', () => {
-    expect([...watchCoveredProjects].sort()).toEqual(demoPackageProjects)
+    expect([...watchCoveredProjects].sort()).toEqual(automatedWatchDemoPackageProjects)
   })
 })

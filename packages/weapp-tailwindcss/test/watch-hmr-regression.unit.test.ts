@@ -110,6 +110,10 @@ const pluginProcessSample = {
   durationMs: 25,
 }
 
+function toSlashPath(filePath: string) {
+  return filePath.replace(/\\/g, '/')
+}
+
 function createRound(roundName: MutationRoundMetrics['roundName'], hotUpdateEffectiveMs: number, rollbackEffectiveMs: number): MutationRoundMetrics {
   return {
     roundName,
@@ -1295,9 +1299,12 @@ describe('watch-hmr regression cases', () => {
 
     for (const name of webCaseNames) {
       const watchCase = caseMap.get(name)
+      const sourceFile = toSlashPath(watchCase?.webHmr?.sourceFile ?? '')
+      const cssEntryFile = toSlashPath(watchCase?.webHmr?.cssEntryFile ?? '')
+
       expect(watchCase?.webHmr, `${name} should define Web/H5 HMR coverage`).toBeDefined()
-      expect(watchCase?.webHmr?.sourceFile).toMatch(/src\/pages\/index\/index\.(?:tsx|vue)$/)
-      expect(watchCase?.webHmr?.cssEntryFile).toMatch(/src\/(?:app|main|tailwind)\.(?:css|less|scss)$/)
+      expect(sourceFile).toMatch(/src\/pages\/index\/index\.(?:tsx|vue)$/)
+      expect(cssEntryFile).toMatch(/src\/(?:app|main|tailwind)\.(?:css|less|scss)$/)
       expect(watchCase?.webHmr?.devScript).toBe(name.startsWith('taro-') ? 'build:h5' : 'dev:h5')
     }
 
