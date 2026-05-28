@@ -280,6 +280,7 @@ export async function runWebHmr(
   const lines: string[] = []
   let url = `http://127.0.0.1:${port}/`
   let readyAt = 0
+  let lastCompileSignalAt = 0
   const child = spawnPnpm(['run', config.devScript, ...(config.devArgs ?? [])], {
     cwd: watchCase.cwd,
     env: createSpawnEnv(process.env, {
@@ -320,12 +321,33 @@ export async function runWebHmr(
       }
       if (/ready in \d+|compiled successfully|webpack\s+[\d.]+\s+compiled|webpack compiled|dev server running|local:/i.test(normalized)) {
         readyAt = Date.now()
+        lastCompileSignalAt = readyAt
       }
     }
     collectLine(chunk)
   }
   child.stdout.on('data', collect)
   child.stderr.on('data', collect)
+
+  const waitForWebCompileSettled = async (phaseStartedAt: number, phase: string) => {
+    const stableWindowMs = Math.min(Math.max(options.pollMs * 2, 600), 1500)
+    const timeoutMs = Math.min(options.timeoutMs, 30_000)
+    await waitFor(
+      () => {
+        if (child.exitCode != null) {
+          throw new Error(`[${watchCase.label}] web watch process exited unexpectedly with code ${child.exitCode}`)
+        }
+        return lastCompileSignalAt > phaseStartedAt
+          && Date.now() - lastCompileSignalAt >= stableWindowMs
+      },
+      {
+        timeoutMs,
+        pollMs: options.pollMs,
+        message: `[${watchCase.label}] web ${phase} compile did not settle in time`,
+      },
+      phaseStartedAt,
+    )
+  }
 
   const stop = async () => {
     if (child.exitCode != null) {
@@ -406,6 +428,7 @@ export async function runWebHmr(
       )
     }
     if (config.reloadAfterCssMutation) {
+      await waitForWebCompileSettled(hotUpdateStartedAt, 'hot-update')
       await page.reload({
         waitUntil: 'domcontentloaded',
         timeout: Math.min(options.timeoutMs, 60_000),
@@ -467,6 +490,7 @@ export async function runWebHmr(
       )
     }
     if (config.reloadAfterCssMutation) {
+      await waitForWebCompileSettled(rollbackStartedAt, 'rollback')
       await page.reload({
         waitUntil: 'domcontentloaded',
         timeout: Math.min(options.timeoutMs, 60_000),
