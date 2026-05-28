@@ -1,4 +1,3 @@
-import { copyFile } from 'node:fs/promises'
 import { defineConfig } from 'tsdown'
 
 const sharedOptions = {
@@ -31,11 +30,6 @@ export default defineConfig([
     entry: ['src/index.js'],
     clean: true,
     dts: false,
-    hooks: {
-      'build:done': async () => {
-        await copyFile('src/index.d.ts', 'dist/index.d.ts')
-      },
-    },
   },
   {
     ...sharedOptions,

@@ -51,7 +51,7 @@
   },
   "scripts": {
     "dev": "tsdown --watch --sourcemap",
-    "build": "tsdown",
+    "build": "tsdown && node -e \"require('node:fs').copyFileSync('src/index.d.ts','dist/index.d.ts')\"",
     "test": "vitest run",
     "test:dev": "vitest",
     "tsd": "tsd",
