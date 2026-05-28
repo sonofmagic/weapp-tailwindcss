@@ -1,3 +1,4 @@
+import { copyFile } from 'node:fs/promises'
 import { defineConfig } from 'tsdown'
 
 export default defineConfig({
@@ -8,7 +9,20 @@ export default defineConfig({
   clean: true,
   dts: true,
   deps: {
-    neverBundle: ['tailwindcss'],
+    alwaysBundle: [
+      'htmlparser2',
+      'lodash.castarray',
+      'lodash.isplainobject',
+      'lodash.merge',
+      'magic-string',
+      'postcss-selector-parser',
+    ],
+    neverBundle: [/^tailwindcss(\/|$)/],
+  },
+  hooks: {
+    'build:done': async () => {
+      await copyFile('src/index.d.ts', 'dist/index.d.ts')
+    },
   },
   target: 'es6',
   outExtensions({ format }) {

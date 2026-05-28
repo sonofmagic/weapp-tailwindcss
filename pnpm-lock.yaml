@@ -3420,7 +3420,7 @@ importers:
         version: 4.1.18
 
   packages-runtime/typography:
-    dependencies:
+    devDependencies:
       htmlparser2:
         specifier: ^12.0.0
         version: 12.0.0
@@ -3583,7 +3583,7 @@ importers:
         version: link:../wetw
 
   packages/debug-uni-app-x:
-    dependencies:
+    devDependencies:
       defu:
         specifier: 6.1.7
         version: 6.1.7
@@ -3593,7 +3593,6 @@ importers:
       pathe:
         specifier: 2.0.3
         version: 2.0.3
-    devDependencies:
       vite:
         specifier: 7.2.7
         version: 7.2.7(@types/node@25.9.1)(jiti@2.7.0)(less@4.6.4)(lightningcss@1.32.0)(sass-embedded@1.100.0)(sass@1.100.0)(stylus@0.57.0)(terser@5.48.0)(tsx@4.22.3)(yaml@2.9.0)
@@ -3629,7 +3628,7 @@ importers:
         version: 2.0.3
 
   packages/logger:
-    dependencies:
+    devDependencies:
       consola:
         specifier: ^3.4.2
         version: 3.4.2
@@ -3716,6 +3715,16 @@ importers:
 
   packages/shared:
     dependencies:
+      defu:
+        specifier: ^6.1.7
+        version: 6.1.7
+      get-value:
+        specifier: ^4.0.1
+        version: 4.0.1
+      set-value:
+        specifier: ^4.1.0
+        version: 4.1.0
+    devDependencies:
       pathe:
         specifier: ^2.0.3
         version: 2.0.3
@@ -3728,6 +3737,7 @@ importers:
       jiti:
         specifier: 2.7.0
         version: 2.7.0
+    devDependencies:
       lilconfig:
         specifier: ^3.1.3
         version: 3.1.3

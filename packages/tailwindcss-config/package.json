@@ -61,7 +61,9 @@
   },
   "dependencies": {
     "@weapp-tailwindcss/shared": "workspace:*",
-    "jiti": "2.7.0",
+    "jiti": "2.7.0"
+  },
+  "devDependencies": {
     "lilconfig": "^3.1.3"
   }
 }

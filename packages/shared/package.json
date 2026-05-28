@@ -51,6 +51,11 @@
   },
   "publishConfig": {},
   "dependencies": {
+    "defu": "^6.1.7",
+    "get-value": "^4.0.1",
+    "set-value": "^4.1.0"
+  },
+  "devDependencies": {
     "pathe": "^2.0.3"
   }
 }

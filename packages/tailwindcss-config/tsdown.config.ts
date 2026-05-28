@@ -6,6 +6,9 @@ export default defineConfig({
   format: ['cjs', 'esm'],
   clean: true,
   dts: false,
+  deps: {
+    alwaysBundle: ['lilconfig'],
+  },
   target: ['es2020'],
   outExtensions({ format }) {
     return {

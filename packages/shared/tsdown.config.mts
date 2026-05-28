@@ -10,6 +10,9 @@ export default defineConfig({
   format: ['cjs', 'esm'],
   clean: true,
   dts: true,
+  deps: {
+    alwaysBundle: ['pathe'],
+  },
   outExtensions({ format }) {
     return {
       js: format === 'es' ? '.mjs' : '.js',
