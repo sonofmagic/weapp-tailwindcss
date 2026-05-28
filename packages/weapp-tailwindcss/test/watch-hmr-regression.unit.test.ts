@@ -87,6 +87,7 @@ import {
   waitFor,
   writeFilePreserveEol,
 } from '../../../tools/weapp-tailwindcss-scripts/src/watch-hmr-regression/text'
+import { resolveChromiumLaunchOptions } from '../../../tools/weapp-tailwindcss-scripts/src/watch-hmr-regression/web'
 import { replaceWxml } from '../src/wxml/shared'
 import type {
   CliOptions,
@@ -978,6 +979,10 @@ describe('watch-hmr regression summary helpers', () => {
 })
 
 describe('watch-hmr regression cases', () => {
+  it('runs Web/H5 browser checks in headless Chromium mode', () => {
+    expect(resolveChromiumLaunchOptions()).toMatchObject({ headless: true })
+  })
+
   it('defines issue33 high-risk arbitrary CRUD rounds for js literal hot updates', () => {
     const [roundConfig] = buildIssue33HighRiskRoundConfigs()
 

@@ -218,7 +218,7 @@ async function runSourceClassReplacementSequence(
   return results
 }
 
-function resolveChromiumLaunchOptions() {
+export function resolveChromiumLaunchOptions() {
   const candidates = [
     process.env['PLAYWRIGHT_CHROMIUM_EXECUTABLE_PATH'],
     process.env['CHROME_BIN'],
@@ -232,11 +232,11 @@ function resolveChromiumLaunchOptions() {
 
   for (const executablePath of candidates) {
     if (existsSync(executablePath)) {
-      return { executablePath }
+      return { executablePath, headless: true }
     }
   }
 
-  return {}
+  return { headless: true }
 }
 
 async function launchBrowser() {
