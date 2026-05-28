@@ -4,6 +4,15 @@ export default defineConfig({
   entry: ['src/index.ts', 'src/types.ts', 'src/html-transform.ts'],
   shims: true,
   format: ['cjs', 'esm'],
+  deps: {
+    alwaysBundle: [
+      /^@csstools\//,
+      'css-blank-pseudo',
+      'css-has-pseudo',
+      'css-prefers-color-scheme',
+      'postcss-preset-env',
+    ],
+  },
   clean: true,
   dts: false,
   outExtensions({ format }) {

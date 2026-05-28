@@ -1,5 +1,6 @@
 import type { PackageResolvingOptions } from 'local-pkg'
 import type { UniAppXComponentLocalStylesOptions, UserDefinedOptions } from '@/types'
+import path from 'node:path'
 import process from 'node:process'
 import { logger } from '@/logger'
 import { getTailwindcssPackageInfo } from '@/tailwindcss'
@@ -72,7 +73,7 @@ function resolveTailwindResolveOptions(base: string, resolve?: PackageResolvingO
   const currentPaths = Array.isArray(resolve?.paths) ? resolve.paths : []
   return {
     ...(resolve ?? {}),
-    paths: [...new Set([base, ...currentPaths])],
+    paths: [...new Set([path.join(base, 'node_modules'), base, ...currentPaths])],
   }
 }
 
@@ -138,6 +139,7 @@ export function uniAppX(options: UniAppXOptions) {
       rem2rpx: options.rem2rpx,
       unitsToPx: options.unitsToPx,
       unitConversion: options.unitConversion,
+      appType: 'uni-app-x',
       tailwindcssBasedir: options.base,
       tailwindcssPatcherOptions: {
         projectRoot: options.base,

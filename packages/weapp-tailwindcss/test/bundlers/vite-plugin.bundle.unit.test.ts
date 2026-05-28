@@ -1827,10 +1827,27 @@ const trace = "at App.vue:4"
     expect((bundle['assets/index.css'] as OutputAsset).source).toBe(css)
   }, TEST_TIMEOUT_MS)
 
-  it('skips source candidate root scanning during Tailwind v4 web generator buildStart', async () => {
+  it('scans configured source candidates during Tailwind v4 web generator buildStart', async () => {
+    const projectRoot = await mkdtemp(path.join(os.tmpdir(), 'weapp-tw-v4-web-scan-'))
+    createdDirs.push(projectRoot)
+    const cssEntry = path.join(projectRoot, 'src/main.css')
+    const sourceFile = path.join(projectRoot, 'src/pages/index.vue')
+    await mkdir(path.dirname(sourceFile), { recursive: true })
+    await writeFile(cssEntry, [
+      '@import "tailwindcss" source(none);',
+      '@source "./pages/**/*.{vue,js,ts}";',
+    ].join('\n'), 'utf8')
+    await writeFile(sourceFile, '<template><view class="bg-[#123456]"></view></template>')
+
     const resolveScanMock = vi.fn(async () => ({
-      entries: undefined,
-      explicit: false,
+      entries: [
+        {
+          base: path.dirname(cssEntry),
+          pattern: './pages/**/*.{vue,js,ts}',
+          negated: false,
+        },
+      ],
+      explicit: true,
     }))
     vi.doMock('@/bundlers/vite/source-scan', async (importOriginal) => {
       const actual = await importOriginal<typeof import('@/bundlers/vite/source-scan')>()
@@ -1842,6 +1859,11 @@ const trace = "at App.vue:4"
 
     setCurrentContext(createContext({
       cssMatcher: (file: string) => file.endsWith('.css'),
+      tailwindcss: {
+        v4: {
+          cssEntries: [cssEntry],
+        },
+      },
       generator: {
         target: 'web',
       },
@@ -1870,7 +1892,7 @@ const trace = "at App.vue:4"
 
     await sourcePlugin.buildStart?.call(sourcePlugin as any, {} as any)
 
-    expect(resolveScanMock).not.toHaveBeenCalled()
+    expect(resolveScanMock).toHaveBeenCalled()
   }, TEST_TIMEOUT_MS)
 
   it('scans source candidates during Tailwind v3 web generator buildStart', async () => {

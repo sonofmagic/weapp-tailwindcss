@@ -42,6 +42,14 @@ function externalizeRuntimeDeps(id: string) {
     || /[\\/]node_modules[\\/]postcss[\\/]/.test(id)
 }
 
+function alwaysBundleRuntimeDeps(id: string) {
+  return id === 'htmlparser2'
+    || id === 'domhandler'
+    || id === 'domutils'
+    || id === 'domelementtype'
+    || id === 'entities'
+}
+
 function preserveJsExports({ format }: { format: string }) {
   return {
     js: format === 'es' ? '.mjs' : '.js',
@@ -61,8 +69,8 @@ export function createTsdownConfigs(options: WatchAwareOptions = {}) {
       shims: true,
       format: ['cjs', 'esm'],
       deps: {
+        alwaysBundle: alwaysBundleRuntimeDeps,
         neverBundle: externalizeRuntimeDeps,
-        skipNodeModulesBundle: true,
       },
       target: ['es2020'],
       outExtensions: preserveJsExports,
@@ -75,8 +83,8 @@ export function createTsdownConfigs(options: WatchAwareOptions = {}) {
       shims: true,
       format: ['cjs', 'esm'],
       deps: {
+        alwaysBundle: alwaysBundleRuntimeDeps,
         neverBundle: externalizeRuntimeDeps,
-        skipNodeModulesBundle: true,
       },
       target: ['es2020'],
       outExtensions: preserveJsExports,
