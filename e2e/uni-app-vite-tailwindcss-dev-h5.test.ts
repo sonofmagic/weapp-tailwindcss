@@ -158,6 +158,15 @@ function resolveBaseUrls(logs: string[], fallbackUrl: string) {
       const matched = line.match(localUrlRE)?.[1]
       if (matched) {
         urls.add(matched)
+        try {
+          const url = new URL(matched)
+          if (url.hostname === 'localhost') {
+            url.hostname = '127.0.0.1'
+            urls.add(url.toString())
+          }
+        }
+        catch {
+        }
       }
     }
   }
