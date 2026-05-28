@@ -4,11 +4,14 @@ import devConfig from './dev'
 import prodConfig from './prod'
 import { UnifiedWebpackPluginV5, UserDefinedOptions } from 'weapp-tailwindcss/webpack'
 
+const isWatchRegression = process.env.WEAPP_TW_WATCH_REGRESSION === '1'
+
 const generator = {
+  target: process.env.TARO_ENV === 'h5' ? 'web' : 'weapp',
   styleOptions: {
     px2rpx: true,
   },
-}
+} satisfies UserDefinedOptions['generator']
 
 // https://taro-docs.jd.com/docs/next/config#defineconfig-辅助函数
 export default defineConfig<'webpack5'>(async (merge, { command, mode }) => {
@@ -114,6 +117,9 @@ export default defineConfig<'webpack5'>(async (merge, { command, mode }) => {
         }
       },
       webpackChain(chain) {
+        if (isWatchRegression) {
+          chain.plugins.delete('webpackbar')
+        }
         chain.resolve.plugin('tsconfig-paths').use(TsconfigPathsPlugin)
       }
     },

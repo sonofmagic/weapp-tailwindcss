@@ -405,6 +405,16 @@ export async function runWebHmr(
         cssEntryOriginal,
       )
     }
+    if (config.reloadAfterCssMutation) {
+      await page.reload({
+        waitUntil: 'domcontentloaded',
+        timeout: Math.min(options.timeoutMs, 60_000),
+      })
+      await page.locator(config.readySelector ?? 'body').waitFor({
+        state: 'attached',
+        timeout: Math.min(options.timeoutMs, 60_000),
+      })
+    }
     const expectedStyle = resolveExpectedStyle(config)
     let computedStyle: WebHmrMetrics['computedStyle'] | undefined
     let lastStyleError = ''
@@ -455,6 +465,16 @@ export async function runWebHmr(
           : cssEntryOriginal,
         cssEntryOriginal,
       )
+    }
+    if (config.reloadAfterCssMutation) {
+      await page.reload({
+        waitUntil: 'domcontentloaded',
+        timeout: Math.min(options.timeoutMs, 60_000),
+      })
+      await page.locator(config.readySelector ?? 'body').waitFor({
+        state: 'attached',
+        timeout: Math.min(options.timeoutMs, 60_000),
+      })
     }
     const rollbackEffectiveMs = await waitFor(
       async () => {

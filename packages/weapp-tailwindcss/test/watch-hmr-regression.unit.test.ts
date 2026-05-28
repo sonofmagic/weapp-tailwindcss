@@ -795,6 +795,7 @@ describe('watch-hmr regression summary helpers', () => {
       pollMs: 20,
       skipBuild: true,
       quietSass: true,
+      webOnly: false,
       reportFile,
       maxHotUpdateMs: 100,
     }
@@ -816,6 +817,7 @@ describe('watch-hmr regression summary helpers', () => {
 
     expect(report.repositoryRoot).toBe(path.basename(tempDir))
     expect(report.options.caseName).toBe('demo')
+    expect(report.options.webOnly).toBe(false)
     expect(report.summary).toMatchObject({ count: 1, hotUpdateAvgMs: 30, rollbackAvgMs: 40 })
     expect(report.summaryByMutationKind.template).toMatchObject({ count: 1, hotUpdateAvgMs: 30 })
   })
@@ -831,6 +833,7 @@ describe('watch-hmr regression summary helpers', () => {
       pollMs: 20,
       skipBuild: true,
       quietSass: true,
+      webOnly: false,
       reportFile,
       maxHotUpdateMs: 100,
     }
@@ -913,6 +916,7 @@ describe('watch-hmr regression summary helpers', () => {
       pollMs: 20,
       skipBuild: true,
       quietSass: true,
+      webOnly: false,
       maxHotUpdateMs: 1000,
     })).toThrow('script:added-class hot update exceeded budget: 2500ms > 1000ms')
   })
@@ -933,6 +937,7 @@ describe('watch-hmr regression summary helpers', () => {
       pollMs: 20,
       skipBuild: true,
       quietSass: true,
+      webOnly: false,
       maxPluginProcessMs: 500,
     })).toThrow('template:complex-corpus:hot-update weapp-tailwindcss processing exceeded budget: 520ms > 500ms')
   })
@@ -966,6 +971,7 @@ describe('watch-hmr regression summary helpers', () => {
       pollMs: 20,
       skipBuild: true,
       quietSass: true,
+      webOnly: false,
       maxPluginProcessMs: 500,
     })).not.toThrow()
   })
@@ -1263,6 +1269,84 @@ describe('watch-hmr regression cases', () => {
     ])
   })
 
+  it('covers every Taro and uni-app Web/H5 hot-update case in watch config and PR CI', async () => {
+    const cases = [
+      ...buildDemoBaseCases('/repo'),
+      ...buildDemoExtendedCases('/repo'),
+    ]
+    const webCaseNames = [
+      'taro-webpack-react-tailwindcss-v3',
+      'taro-webpack-react-tailwindcss-v4',
+      'taro-vite-react-tailwindcss-v3',
+      'taro-vite-react-tailwindcss-v4',
+      'taro-webpack-vue3-tailwindcss-v3',
+      'taro-webpack-vue3-tailwindcss-v4',
+      'taro-vite-vue3-tailwindcss-v3',
+      'taro-vite-vue3-tailwindcss-v4',
+      'uni-app-vite-tailwindcss-v3',
+      'uni-app-vite-tailwindcss-v4',
+    ]
+    const caseMap = new Map(cases.map(watchCase => [watchCase.name, watchCase]))
+
+    for (const name of webCaseNames) {
+      const watchCase = caseMap.get(name)
+      expect(watchCase?.webHmr, `${name} should define Web/H5 HMR coverage`).toBeDefined()
+      expect(watchCase?.webHmr?.sourceFile).toMatch(/src\/pages\/index\/index\.(?:tsx|vue)$/)
+      expect(watchCase?.webHmr?.cssEntryFile).toMatch(/src\/(?:app|main|tailwind)\.(?:css|less|scss)$/)
+      expect(watchCase?.webHmr?.devScript).toBe(name.startsWith('taro-') ? 'build:h5' : 'dev:h5')
+    }
+
+    expect(caseMap.get('taro-webpack-react-tailwindcss-v3')?.webHmr?.cssEntryFile).toContain('src/app.less')
+    expect(caseMap.get('taro-webpack-vue3-tailwindcss-v3')?.webHmr?.cssEntryFile).toContain('src/app.scss')
+
+    const taroWebpackPostcssConfigs = [
+      'demo/taro-webpack-react-tailwindcss-v3/postcss.config.js',
+      'demo/taro-webpack-vue3-tailwindcss-v3/postcss.config.js',
+      'demo/taro-webpack-react-tailwindcss-v4/postcss.config.mjs',
+      'demo/taro-webpack-vue3-tailwindcss-v4/postcss.config.mjs',
+    ]
+    for (const configPath of taroWebpackPostcssConfigs) {
+      const configSource = await readFile(path.resolve(__dirname, '../../..', configPath), 'utf8')
+      expect(configSource, configPath).toContain('WEAPP_TW_WATCH_REGRESSION')
+      expect(configSource, configPath).toContain('weapp-tailwindcss/postcss')
+      expect(configSource, configPath).not.toContain('@tailwindcss/postcss')
+      expect(configSource, configPath).not.toMatch(/['"]tailwindcss['"]\s*:/)
+      if (configPath.includes('tailwindcss-v3')) {
+        expect(configSource, configPath).toContain('version: 3')
+        expect(configSource, configPath).toContain('projectRoot')
+        expect(configSource, configPath).toContain('path.resolve(projectRoot, \'tailwind.config.js\')')
+      }
+    }
+
+    const workflowSource = await readFile(
+      path.resolve(__dirname, '../../../.github/workflows/e2e-watch.yml'),
+      'utf8',
+    )
+    const workflow = parse(workflowSource) as {
+      jobs?: Record<string, {
+        strategy?: {
+          matrix?: {
+            include?: Array<Record<string, unknown>>
+          }
+        }
+      }>
+    }
+    const prMatrixEntries = workflow.jobs?.['pr-quick-gate']?.strategy?.matrix?.include ?? []
+
+    for (const name of webCaseNames) {
+      expect(
+        prMatrixEntries,
+        `${name} should run in PR quick gate on macOS`,
+      ).toContainEqual(expect.objectContaining({
+        os: 'macos-latest',
+        runner_label: 'macos',
+        watch_case: name,
+        round_profile: 'default',
+        watch_web_only: '1',
+      }))
+    }
+  })
+
   it('covers normal and independent subpackage hot updates for every demo watch case', () => {
     const cases = [
       ...buildDemoBaseCases('/repo'),
@@ -1469,7 +1553,6 @@ describe('watch-hmr regression cases', () => {
       expect(matrixEntries).toContainEqual(expect.objectContaining(entry))
     }
     expect(prMatrixEntries.some(entry => String(entry.watch_case).startsWith('weapp-vite-tailwindcss-'))).toBe(false)
-    expect(prMatrixEntries.some(entry => String(entry.watch_case).startsWith('taro-vite-vue3-tailwindcss-'))).toBe(false)
   })
 
   it('keeps watch plugin processing budget strict while retry settings stay explicit', async () => {

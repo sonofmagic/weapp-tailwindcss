@@ -47,8 +47,12 @@ const INVALID_PX_UNTERMINATED_RE = /\bpx-\[[^\]]*$/gm
 const INVALID_BG_INNER_SPACE_RE = /\bbg-\[[^\]\s]*\s[^\]\s]*\]/g
 const INVALID_PX_INNER_SPACE_RE = /\bpx-\[[^\]\s]*\s[^\]\s]*\]/g
 const WEB_HMR_CASES = new Set<ConcreteWatchCaseName>([
+  'taro-webpack-react-tailwindcss-v3',
+  'taro-webpack-react-tailwindcss-v4',
   'taro-vite-react-tailwindcss-v3',
   'taro-vite-react-tailwindcss-v4',
+  'taro-webpack-vue3-tailwindcss-v3',
+  'taro-webpack-vue3-tailwindcss-v4',
   'taro-vite-vue3-tailwindcss-v3',
   'taro-vite-vue3-tailwindcss-v4',
   'uni-app-vite-tailwindcss-v3',
@@ -220,6 +224,13 @@ interface WebHmrMetric {
   initialReadyMs: number
   hotUpdateEffectiveMs: number
   rollbackEffectiveMs: number
+  sourceClassReplacementSequence?: Array<{
+    label: string
+    from: string
+    to: string
+    verifiedCssIncludes: string[]
+    hotUpdateEffectiveMs: number
+  }>
   totalMs: number
 }
 
@@ -252,6 +263,9 @@ interface HotUpdateCaseReport {
 }
 
 interface HotUpdateReport {
+  options?: {
+    webOnly?: boolean
+  }
   summary: HotUpdateSummary
   summaryByRound: Partial<Record<MutationRoundName, HotUpdateSummary>>
   summaryByGroup: Partial<Record<WatchProjectGroup, HotUpdateSummary>>
@@ -314,6 +328,10 @@ interface HotUpdateBudgetSample {
 
 function isIssue33RoundProfile() {
   return process.env.E2E_WATCH_ROUND_PROFILE === 'issue33'
+}
+
+function isWebOnlyProfile(report?: HotUpdateReport) {
+  return toBoolEnv('E2E_WATCH_WEB_ONLY', false) || report?.options?.webOnly === true
 }
 
 function resolveRequiredMutationRounds() {
@@ -533,6 +551,19 @@ function collectReportBudgetSamples(report: HotUpdateReport) {
       hotUpdateEffectiveMs: oneCase.hotUpdateEffectiveMs,
     })
 
+    if (oneCase.webHmr) {
+      samples.push({
+        label: `${oneCase.project}:web-hmr`,
+        hotUpdateEffectiveMs: oneCase.webHmr.hotUpdateEffectiveMs,
+      })
+      for (const metric of oneCase.webHmr.sourceClassReplacementSequence ?? []) {
+        samples.push({
+          label: `${oneCase.project}:web-source-replacement:${metric.label}`,
+          hotUpdateEffectiveMs: metric.hotUpdateEffectiveMs,
+        })
+      }
+    }
+
     for (const mutation of oneCase.mutationMetrics) {
       if ('rounds' in mutation && Array.isArray(mutation.rounds)) {
         for (const round of mutation.rounds) {
@@ -602,7 +633,77 @@ function assertAllHotUpdateSamplesWithinBudget(report: HotUpdateReport, maxHotUp
   }
 }
 
+function assertWebHmrCase(item: HotUpdateCaseReport, maxHotUpdateMs: number) {
+  const webHmr = item.webHmr
+  expect(webHmr, `[${item.project}] should include web Tailwind HMR Playwright metrics`).toBeDefined()
+  if (!webHmr) {
+    throw new Error(`[${item.project}] missing web HMR metric`)
+  }
+  expect(webHmr.devScript).toBe(item.name.startsWith('taro-') ? 'build:h5' : 'dev:h5')
+  expect(normalizePathLike(webHmr.sourceFile)).toContain('src/pages/index/index.')
+  expect(webHmr.url).toMatch(/^https?:\/\/(?:localhost|127\.0\.0\.1|\[::1\])/)
+  expect(webHmr.marker).toContain(`tw-watch-web-${item.name}`)
+  expect(webHmr.classLiteral).toContain('bg-[#123456]')
+  expect(webHmr.classLiteral).toContain('w-[88px]')
+  expect(webHmr.classLiteral).toContain('h-[44px]')
+  expect(webHmr.computedStyle.backgroundColor).toBe('rgb(18, 52, 86)')
+  expect(webHmr.computedStyle.width).toBe('88px')
+  expect(webHmr.computedStyle.height).toBe('44px')
+  expect(webHmr.initialReadyMs).toBeGreaterThan(0)
+  expect(webHmr.hotUpdateEffectiveMs).toBeGreaterThan(0)
+  expect(webHmr.hotUpdateEffectiveMs).toBeLessThanOrEqual(maxHotUpdateMs)
+  expect(webHmr.rollbackEffectiveMs).toBeGreaterThan(0)
+  expect(webHmr.totalMs).toBeGreaterThanOrEqual(webHmr.hotUpdateEffectiveMs)
+  if (item.name === 'uni-app-vite-tailwindcss-v3') {
+    const sourceClassReplacementSequence = webHmr.sourceClassReplacementSequence ?? []
+    expect(sourceClassReplacementSequence.map(metric => metric.label)).toEqual([
+      'bgObj bg-[#999999] to bg-[#134543]',
+      'bgObj bg-[#134543] to bg-[#256789]',
+    ])
+    expect(sourceClassReplacementSequence[0]?.verifiedCssIncludes).toContain('134543')
+    expect(sourceClassReplacementSequence[1]?.verifiedCssIncludes).toContain('256789')
+    for (const metric of sourceClassReplacementSequence) {
+      expect(metric.hotUpdateEffectiveMs).toBeGreaterThan(0)
+      expect(metric.hotUpdateEffectiveMs).toBeLessThanOrEqual(maxHotUpdateMs)
+    }
+  }
+}
+
+function assertWebOnlyHotUpdateReport(report: HotUpdateReport, target: WatchCaseName, maxHotUpdateMs: number) {
+  assertAllHotUpdateSamplesWithinBudget(report, maxHotUpdateMs)
+  expect(report.options?.webOnly).toBe(true)
+  expect(report.summary.count).toBeGreaterThan(0)
+  expect(report.cases.length).toBe(report.summary.count)
+  expect(Object.keys(report.summaryByProject).length).toBe(report.summary.count)
+
+  const expectedGroup = resolveExpectedGroup(target)
+  if (expectedGroup) {
+    expect(report.summaryByGroup[expectedGroup]?.count).toBe(report.summary.count)
+  }
+
+  for (const item of report.cases) {
+    expect(shouldHaveWebHmr(item), `[${item.project}] should be a configured Web/H5 HMR case`).toBe(true)
+    expect(item.initialReadyMs).toBeGreaterThan(0)
+    expect(item.hotUpdateEffectiveMs).toBeGreaterThan(0)
+    expect(item.hotUpdateEffectiveMs).toBeLessThanOrEqual(maxHotUpdateMs)
+    expect(item.rollbackEffectiveMs).toBeGreaterThan(0)
+    expect(item.classTokens).toEqual(expect.arrayContaining(['bg-[#123456]', 'w-[88px]', 'h-[44px]']))
+    expect(item.rounds).toEqual([])
+    expect(item.mutationMetrics).toEqual([])
+    expect(item.subPackageMutationMetrics ?? []).toEqual([])
+    if (expectedGroup) {
+      expect(item.projectGroup).toBe(expectedGroup)
+    }
+    assertWebHmrCase(item, maxHotUpdateMs)
+  }
+}
+
 export function assertHotUpdateReport(report: HotUpdateReport, target: WatchCaseName, maxHotUpdateMs: number) {
+  if (isWebOnlyProfile(report)) {
+    assertWebOnlyHotUpdateReport(report, target, maxHotUpdateMs)
+    return
+  }
+
   const requiredMutationRounds = resolveRequiredMutationRounds()
   const issue33RoundProfile = isIssue33RoundProfile()
   assertAllHotUpdateSamplesWithinBudget(report, maxHotUpdateMs)
@@ -761,39 +862,7 @@ export function assertHotUpdateReport(report: HotUpdateReport, target: WatchCase
     }
 
     if (shouldHaveWebHmr(item)) {
-      const webHmr = item.webHmr
-      expect(webHmr, `[${item.project}] should include web Tailwind HMR Playwright metrics`).toBeDefined()
-      if (!webHmr) {
-        throw new Error(`[${item.project}] missing web HMR metric`)
-      }
-      expect(webHmr.devScript).toBe(item.name.startsWith('taro-') ? 'build:h5' : 'dev:h5')
-      expect(normalizePathLike(webHmr.sourceFile)).toContain('src/pages/index/index.')
-      expect(webHmr.url).toMatch(/^https?:\/\/(?:localhost|127\.0\.0\.1|\[::1\])/)
-      expect(webHmr.marker).toContain(`tw-watch-web-${item.name}`)
-      expect(webHmr.classLiteral).toContain('bg-[#123456]')
-      expect(webHmr.classLiteral).toContain('w-[88px]')
-      expect(webHmr.classLiteral).toContain('h-[44px]')
-      expect(webHmr.computedStyle.backgroundColor).toBe('rgb(18, 52, 86)')
-      expect(webHmr.computedStyle.width).toBe('88px')
-      expect(webHmr.computedStyle.height).toBe('44px')
-      expect(webHmr.initialReadyMs).toBeGreaterThan(0)
-      expect(webHmr.hotUpdateEffectiveMs).toBeGreaterThan(0)
-      expect(webHmr.hotUpdateEffectiveMs).toBeLessThanOrEqual(maxHotUpdateMs)
-      expect(webHmr.rollbackEffectiveMs).toBeGreaterThan(0)
-      expect(webHmr.totalMs).toBeGreaterThanOrEqual(webHmr.hotUpdateEffectiveMs)
-      if (item.name === 'uni-app-vite-tailwindcss-v3') {
-        const sourceClassReplacementSequence = webHmr.sourceClassReplacementSequence ?? []
-        expect(sourceClassReplacementSequence.map(metric => metric.label)).toEqual([
-          'bgObj bg-[#999999] to bg-[#134543]',
-          'bgObj bg-[#134543] to bg-[#256789]',
-        ])
-        expect(sourceClassReplacementSequence[0]?.verifiedCssIncludes).toContain('134543')
-        expect(sourceClassReplacementSequence[1]?.verifiedCssIncludes).toContain('256789')
-        for (const metric of sourceClassReplacementSequence) {
-          expect(metric.hotUpdateEffectiveMs).toBeGreaterThan(0)
-          expect(metric.hotUpdateEffectiveMs).toBeLessThanOrEqual(maxHotUpdateMs)
-        }
-      }
+      assertWebHmrCase(item, maxHotUpdateMs)
     }
     else {
       expect(item.webHmr, `[${item.project}] should not include web HMR metrics`).toBeUndefined()
@@ -1084,6 +1153,10 @@ export async function runHotUpdateTarget(target: WatchCaseName) {
 
   if (quietSass) {
     args.push('--quiet-sass')
+  }
+
+  if (isWebOnlyProfile()) {
+    args.push('--web-only')
   }
 
   await runWatchHmrCommand(cwd, args, commandTimeoutMs)

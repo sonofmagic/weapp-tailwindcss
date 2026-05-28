@@ -40,6 +40,7 @@ export function resolveOptions(): CliOptions {
     pollMs: parseNumber(parseArg('--poll', argv), 40),
     skipBuild: parseBooleanFlag('--skip-build', argv),
     quietSass: parseBooleanFlag('--quiet-sass', argv),
+    webOnly: parseBooleanFlag('--web-only', argv),
     reportFile: parseArg('--report', argv),
     maxHotUpdateMs: parseOptionalNumber(parseArg('--max-hot-update-ms', argv)),
     maxPluginProcessMs: parseOptionalNumber(parseArg('--max-plugin-process-ms', argv))

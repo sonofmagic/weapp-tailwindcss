@@ -262,6 +262,76 @@ export async function runCase(watchCase: WatchCase, options: CliOptions): Promis
   }
 }
 
+export async function runWebOnlyCase(watchCase: WatchCase, options: CliOptions): Promise<WatchCaseMetrics> {
+  const caseStartedAt = Date.now()
+  if (!watchCase.webHmr) {
+    throw new Error(`[${watchCase.label}] web-only mode requires webHmr config`)
+  }
+
+  const sourceFiles = [...new Set([
+    watchCase.webHmr.sourceFile,
+    watchCase.webHmr.cssEntryFile,
+  ].filter((item): item is string => Boolean(item)))]
+  const sourceOriginals = new Map<string, string>()
+
+  for (const sourceFile of sourceFiles) {
+    sourceOriginals.set(sourceFile, await fs.readFile(sourceFile, 'utf8'))
+  }
+
+  try {
+    const webHmrMetrics = await runWebHmr(watchCase, options, sourceOriginals)
+    if (!webHmrMetrics) {
+      throw new Error(`[${watchCase.label}] web-only mode did not collect web HMR metrics`)
+    }
+
+    const classTokens = webHmrMetrics.classLiteral.split(/\s+/).filter(Boolean)
+    const metrics: WatchCaseMetrics = {
+      name: watchCase.name,
+      label: watchCase.label,
+      project: watchCase.project,
+      projectGroup: watchCase.group,
+      marker: webHmrMetrics.marker,
+      classLiteral: webHmrMetrics.classLiteral,
+      classTokens,
+      escapedClasses: classTokens,
+      rounds: [],
+      verifyEscapedIn: [],
+      verifyClassLiteralIn: [],
+      globalStyleOutputs: [],
+      mutationMetrics: [],
+      webHmr: webHmrMetrics,
+      subPackageMutationMetrics: [],
+      summaryByMutationKind: summarizeMutationMetricsByKind([]),
+      initialReadyMs: webHmrMetrics.initialReadyMs,
+      maxPluginProcessMs: watchCase.maxPluginProcessMs,
+      hotUpdateOutputMs: webHmrMetrics.hotUpdateEffectiveMs,
+      hotUpdateEffectiveMs: webHmrMetrics.hotUpdateEffectiveMs,
+      hotUpdatePluginProcessMs: 0,
+      hotUpdatePluginProcessSamples: [],
+      rollbackOutputMs: webHmrMetrics.rollbackEffectiveMs,
+      rollbackEffectiveMs: webHmrMetrics.rollbackEffectiveMs,
+      rollbackPluginProcessMs: 0,
+      rollbackPluginProcessSamples: [],
+      totalMs: Date.now() - caseStartedAt,
+    }
+
+    process.stdout.write(
+      `[watch-hmr] ${watchCase.label} web-only passed (web=${webHmrMetrics.hotUpdateEffectiveMs}ms)\n`,
+    )
+
+    return metrics
+  }
+  finally {
+    for (const [sourcePath, original] of sourceOriginals.entries()) {
+      try {
+        await writeFilePreserveEol(sourcePath, original, original)
+      }
+      catch {
+      }
+    }
+  }
+}
+
 export function assertHotUpdateBudget(metrics: WatchCaseMetrics, options: CliOptions) {
   if (options.maxHotUpdateMs == null) {
     return
@@ -277,6 +347,10 @@ export function assertHotUpdateBudget(metrics: WatchCaseMetrics, options: CliOpt
 }
 
 export function assertPluginProcessBudget(metrics: WatchCaseMetrics, options: CliOptions) {
+  if (options.webOnly) {
+    return
+  }
+
   const maxPluginProcessMs = metrics.maxPluginProcessMs ?? options.maxPluginProcessMs
   if (maxPluginProcessMs == null) {
     return
@@ -456,6 +530,13 @@ function collectHotUpdateBudgetSamples(metrics: WatchCaseMetrics): HotUpdateBudg
     label: 'case-template-preferred',
     hotUpdateEffectiveMs: metrics.hotUpdateEffectiveMs,
   }]
+
+  if (metrics.webHmr) {
+    samples.push({
+      label: 'web-hmr',
+      hotUpdateEffectiveMs: metrics.webHmr.hotUpdateEffectiveMs,
+    })
+  }
 
   for (const mutation of metrics.mutationMetrics) {
     if (mutation.mutationKind === 'style') {

@@ -6,11 +6,13 @@ import prodConfig from './prod'
 
 const require = createRequire(__filename)
 const bench = require('../../bench.cjs')('taro-react')
+const isWatchRegression = process.env.WEAPP_TW_WATCH_REGRESSION === '1'
 const generator = {
+  target: process.env.TARO_ENV === 'h5' ? 'web' : 'weapp',
   styleOptions: {
     px2rpx: true,
   },
-}
+} satisfies UserDefinedOptions['generator']
 
 const config: UserConfigExport<'webpack5'> = {
   compiler: {
@@ -144,6 +146,11 @@ const config: UserConfigExport<'webpack5'> = {
           namingPattern: 'module', // 转换模式，取值为 global/module
           generateScopedName: '[name]__[local]___[hash:base64:5]'
         }
+      }
+    },
+    webpackChain(chain) {
+      if (isWatchRegression) {
+        chain.plugins.delete('webpackbar')
       }
     }
   }

@@ -688,6 +688,19 @@ export function buildDemoExtendedCases(baseCwd: string): WatchCase[] {
         ]
       },
     }),
+    webHmr: {
+      devScript: 'build:h5',
+      devArgs: ['--watch'],
+      sourceFile: path.resolve(baseCwd, 'demo/taro-webpack-react-tailwindcss-v4/src/pages/index/index.tsx'),
+      cssEntryFile: path.resolve(baseCwd, 'demo/taro-webpack-react-tailwindcss-v4/src/app.css'),
+      injectMarkerElement: true,
+      env: {
+        NODE_ENV: 'development',
+      },
+      mutate(source, payload) {
+        return `${source}\n// ${payload.marker} ${payload.classLiteral}\n`
+      },
+    },
   }
 
   const taroViteVue3V3Case: WatchCase = {
@@ -952,6 +965,20 @@ export function buildDemoExtendedCases(baseCwd: string): WatchCase[] {
         ]
       },
     }),
+    webHmr: {
+      devScript: 'build:h5',
+      devArgs: ['--watch'],
+      sourceFile: path.resolve(baseCwd, 'demo/taro-webpack-vue3-tailwindcss-v4/src/pages/index/index.vue'),
+      cssEntryFile: path.resolve(baseCwd, 'demo/taro-webpack-vue3-tailwindcss-v4/src/app.css'),
+      injectMarkerElement: true,
+      reloadAfterCssMutation: true,
+      env: {
+        NODE_ENV: 'development',
+      },
+      mutate(source, payload) {
+        return `${source}\n<!-- ${payload.marker} ${payload.classLiteral} -->\n`
+      },
+    },
   }
 
   return [

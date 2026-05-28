@@ -173,6 +173,7 @@ export async function writeReport(baseCwd: string, options: CliOptions, metrics:
       pollMs: options.pollMs,
       skipBuild: options.skipBuild,
       quietSass: options.quietSass,
+      webOnly: options.webOnly,
       maxHotUpdateMs: options.maxHotUpdateMs,
       maxPluginProcessMs: options.maxPluginProcessMs,
     },

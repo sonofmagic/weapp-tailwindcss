@@ -186,6 +186,19 @@ export function buildDemoBaseCases(baseCwd: string): WatchCase[] {
         ]
       },
     }),
+    webHmr: {
+      devScript: 'build:h5',
+      devArgs: ['--watch'],
+      sourceFile: path.resolve(baseCwd, 'demo/taro-webpack-react-tailwindcss-v3/src/pages/index/index.tsx'),
+      cssEntryFile: path.resolve(baseCwd, 'demo/taro-webpack-react-tailwindcss-v3/src/app.less'),
+      injectMarkerElement: true,
+      env: {
+        NODE_ENV: 'development',
+      },
+      mutate(source, payload) {
+        return `${source}\n// ${payload.marker} ${payload.classLiteral}\n`
+      },
+    },
   }
 
   const mpxCase: WatchCase = {
@@ -620,6 +633,20 @@ export function buildDemoBaseCases(baseCwd: string): WatchCase[] {
         ]
       },
     }),
+    webHmr: {
+      devScript: 'build:h5',
+      devArgs: ['--watch'],
+      sourceFile: path.resolve(baseCwd, 'demo/taro-webpack-vue3-tailwindcss-v3/src/pages/index/index.vue'),
+      cssEntryFile: path.resolve(baseCwd, 'demo/taro-webpack-vue3-tailwindcss-v3/src/app.scss'),
+      injectMarkerElement: true,
+      reloadAfterCssMutation: true,
+      env: {
+        NODE_ENV: 'development',
+      },
+      mutate(source, payload) {
+        return `${source}\n<!-- ${payload.marker} ${payload.classLiteral} -->\n`
+      },
+    },
   }
 
   return [

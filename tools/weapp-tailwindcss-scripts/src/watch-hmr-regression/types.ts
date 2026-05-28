@@ -33,6 +33,7 @@ export interface CliOptions {
   pollMs: number
   skipBuild: boolean
   quietSass: boolean
+  webOnly: boolean
   reportFile?: string
   maxHotUpdateMs?: number
   maxPluginProcessMs?: number
@@ -172,6 +173,7 @@ export interface WebHmrConfig {
   injectMarkerElement?: boolean
   readySelector?: string
   initialMutationDelayMs?: number
+  reloadAfterCssMutation?: boolean
   mutate: (source: string, payload: ClassMutationPayload) => string
   env?: Record<string, string>
   classLiteral?: string
@@ -446,6 +448,7 @@ export interface WatchReport {
     pollMs: number
     skipBuild: boolean
     quietSass: boolean
+    webOnly: boolean
     maxHotUpdateMs?: number
     maxPluginProcessMs?: number
   }
