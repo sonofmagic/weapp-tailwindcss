@@ -33,9 +33,7 @@ export default defineConfig<'webpack5'>(async (merge, { command, mode }) => {
       375: 2,
       828: 1.81 / 2
     },
-    plugins: [
-      // 'weapp-tailwindcss/postcss-html-transform'
-    ],
+    plugins: [],
     sourceRoot: 'src',
     outputRoot: 'dist',
     defineConstants: {
@@ -133,6 +131,20 @@ export default defineConfig<'webpack5'>(async (merge, { command, mode }) => {
           chain.plugins.delete('webpackbar')
         }
         chain.resolve.plugin('tsconfig-paths').use(TsconfigPathsPlugin)
+        chain.merge({
+          plugin: {
+            install: {
+              plugin: UnifiedWebpackPluginV5,
+              args: [
+                {
+                  tailwindcssBasedir: process.cwd(),
+                  rem2rpx: true,
+                  generator,
+                } satisfies UserDefinedOptions
+              ]
+            }
+          }
+        })
       }
     },
     rn: {

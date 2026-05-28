@@ -6,6 +6,7 @@ import path from 'node:path'
 import { pluginName } from '@/constants'
 import { getCompilerContext } from '@/context'
 import { createDebug } from '@/debug'
+import { normalizeWeappTailwindcssGeneratorOptions } from '@/generator'
 import { isMpx, setupMpxTailwindcssRedirect } from '@/shared/mpx'
 import { resolveTailwindcssOptions } from '@/tailwindcss/patcher-options'
 import { createTailwindRuntimeReadyPromise, ensureRuntimeClassSet, refreshTailwindRuntimeState } from '@/tailwindcss/runtime'
@@ -52,7 +53,8 @@ export class UnifiedWebpackPluginV5 implements IBaseWebpackPlugin {
 
     const disabledOptions = resolvePluginDisabledState(disabled)
     const isTailwindcssV4 = (initialTwPatcher.majorVersion ?? 0) >= 4
-    const shouldRewriteCssImports = isTailwindcssV4
+    const generatorOptions = normalizeWeappTailwindcssGeneratorOptions(this.options.generator)
+    const shouldRewriteCssImports = isTailwindcssV4 || generatorOptions.target === 'web'
     const isMpxApp = isMpx(this.appType)
     if (shouldRewriteCssImports) {
       setupMpxTailwindcssRedirect(weappTailwindcssPackageDir, isMpxApp)

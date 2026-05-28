@@ -2302,7 +2302,7 @@ describe('bundlers/webpack UnifiedWebpackPluginV5', () => {
     expect(options?.moduleGraph?.filter?.(path.resolve(outDir, 'external.js'))).toBe(false)
   })
 
-  it('only applies css import rewrite for tailwindcss v4 projects', () => {
+  it('applies css import rewrite for tailwindcss v4 and web generator projects', () => {
     let loaderHandler: ((loaderContext: any, module: LoaderModule) => void) | undefined
     const compilation = {
       compiler: { outputPath: path.resolve(process.cwd(), 'dist') },
@@ -2364,5 +2364,22 @@ describe('bundlers/webpack UnifiedWebpackPluginV5', () => {
     }
     loaderHandler?.({}, v3Module)
     expect(v3Module.loaders.some(entry => isCssImportRewriteLoader(entry))).toBe(false)
+
+    const ctxV3Web = createContext({
+      generator: {
+        target: 'web',
+      },
+    })
+    ctxV3Web.twPatcher.majorVersion = 3
+    getCompilerContextMock.mockImplementationOnce(() => ctxV3Web)
+    loaderHandler = undefined
+    plugin = new UnifiedWebpackPluginV5()
+    plugin.apply(compiler as any)
+    const v3WebModule: LoaderModule = {
+      loaders: [{ loader: '/path/postcss-loader.js' }],
+      resource: '/abs/app.css',
+    }
+    loaderHandler?.({}, v3WebModule)
+    expect(v3WebModule.loaders.some(entry => isCssImportRewriteLoader(entry))).toBe(true)
   })
 })

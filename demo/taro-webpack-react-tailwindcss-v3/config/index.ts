@@ -152,6 +152,20 @@ const config: UserConfigExport<'webpack5'> = {
       if (isWatchRegression) {
         chain.plugins.delete('webpackbar')
       }
+      chain.merge({
+        plugin: {
+          install: {
+            plugin: UnifiedWebpackPluginV5,
+            args: [
+              {
+                tailwindcssBasedir: process.cwd(),
+                rem2rpx: true,
+                generator,
+              } satisfies UserDefinedOptions
+            ]
+          }
+        }
+      })
     }
   }
 }

@@ -1307,15 +1307,22 @@ describe('watch-hmr regression cases', () => {
     ]
     for (const configPath of taroWebpackPostcssConfigs) {
       const configSource = await readFile(path.resolve(__dirname, '../../..', configPath), 'utf8')
-      expect(configSource, configPath).toContain('WEAPP_TW_WATCH_REGRESSION')
-      expect(configSource, configPath).toContain('weapp-tailwindcss/postcss')
+      expect(configSource, configPath).not.toContain('weapp-tailwindcss/postcss')
       expect(configSource, configPath).not.toContain('@tailwindcss/postcss')
       expect(configSource, configPath).not.toMatch(/['"]tailwindcss['"]\s*:/)
-      if (configPath.includes('tailwindcss-v3')) {
-        expect(configSource, configPath).toContain('version: 3')
-        expect(configSource, configPath).toContain('projectRoot')
-        expect(configSource, configPath).toContain('path.resolve(projectRoot, \'tailwind.config.js\')')
-      }
+    }
+
+    const taroWebpackConfigs = [
+      'demo/taro-webpack-react-tailwindcss-v3/config/index.ts',
+      'demo/taro-webpack-vue3-tailwindcss-v3/config/index.ts',
+      'demo/taro-webpack-react-tailwindcss-v4/config/index.ts',
+      'demo/taro-webpack-vue3-tailwindcss-v4/config/index.ts',
+    ]
+    for (const configPath of taroWebpackConfigs) {
+      const configSource = await readFile(path.resolve(__dirname, '../../..', configPath), 'utf8')
+      expect(configSource, configPath).toContain('WEAPP_TW_WATCH_REGRESSION')
+      expect(configSource, configPath).toContain('UnifiedWebpackPluginV5')
+      expect(configSource, configPath).toContain('target: process.env.TARO_ENV === \'h5\' ? \'web\' : \'weapp\'')
     }
 
     const workflowSource = await readFile(
