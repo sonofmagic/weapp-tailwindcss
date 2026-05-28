@@ -6,7 +6,7 @@
   "author": "icebreaker <hi@sonofmagic.top>",
   "license": "MIT",
   "scripts": {
-    "dev": "pnpm run dev:mp-weixin",
+    "dev": "cross-env WEAPP_TW_HMR_TIMING=1 pnpm run dev:mp-weixin",
     "dev:mp-weixin": "cross-env WEAPP_TW_HMR_TIMING=1 UNI_INPUT_DIR=. uni -p mp-weixin",
     "dev:h5": "cross-env WEAPP_TW_HMR_TIMING=1 UNI_INPUT_DIR=. uni",
     "build": "pnpm run build:mp-weixin",

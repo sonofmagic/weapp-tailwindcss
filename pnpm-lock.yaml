@@ -3108,6 +3108,9 @@ importers:
       '@weapp-tailwindcss/debug-uni-app-x':
         specifier: workspace:*
         version: link:../../packages/debug-uni-app-x
+      cross-env:
+        specifier: catalog:crossEnv
+        version: 10.1.0
       tailwindcss:
         specifier: catalog:tailwindcss3
         version: 3.4.19(tsx@4.22.3)(yaml@2.9.0)
@@ -3132,6 +3135,9 @@ importers:
       '@weapp-tailwindcss/debug-uni-app-x':
         specifier: workspace:*
         version: link:../../packages/debug-uni-app-x
+      cross-env:
+        specifier: catalog:crossEnv
+        version: 10.1.0
       tailwindcss:
         specifier: catalog:tailwindcss4
         version: 4.3.0

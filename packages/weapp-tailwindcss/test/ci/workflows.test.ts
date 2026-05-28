@@ -380,6 +380,13 @@ describe('e2e watch workflow', () => {
         watch_command_timeout_ms: '1500000',
       },
     ]
+    const slowMacosTaroWebpackPrBudget = {
+      watch_case: 'taro-webpack-react-tailwindcss-v4',
+      round_profile: 'issue33',
+      timeout_minutes: 70,
+      watch_timeout_ms: '600000',
+      watch_command_timeout_ms: '1800000',
+    }
     const slowNightlyBudgets = [
       {
         os: 'macos-latest',
@@ -419,6 +426,11 @@ describe('e2e watch workflow', () => {
         ...budget,
       }))
     }
+    expect(prRows).toContainEqual(expect.objectContaining({
+      os: 'macos-latest',
+      runner_label: 'macos',
+      ...slowMacosTaroWebpackPrBudget,
+    }))
     for (const budget of slowWindowsPrBudgets) {
       expect(prRows).toContainEqual(expect.objectContaining({
         os: 'windows-latest',
