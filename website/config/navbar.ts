@@ -61,6 +61,21 @@ const navbar: NonNullable<ThemeConfig['navbar']> = {
     },
 
     {
+      type: 'dropdown',
+      label: 'v5',
+      position: 'right',
+      items: [
+        {
+          label: 'v5 当前版本',
+          href: '/',
+        },
+        {
+          label: 'v4 最新版本',
+          href: 'https://v4.tw.icebreaker.top/',
+        },
+      ],
+    },
+    {
       href: 'https://atomgit.com/sonofmagic/weapp-tailwindcss',
       label: 'AtomGit',
       ariaLabel: 'AtomGit repository',
