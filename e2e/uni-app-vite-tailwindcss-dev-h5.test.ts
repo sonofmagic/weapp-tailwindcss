@@ -151,11 +151,32 @@ function collectProcessOutput(child: ChildProcess) {
   return logs
 }
 
+function stripAnsiEscapes(input: string) {
+  let output = ''
+  for (let index = 0; index < input.length; index++) {
+    const charCode = input.charCodeAt(index)
+    if (charCode !== 27 || input[index + 1] !== '[') {
+      output += input[index]
+      continue
+    }
+
+    index += 2
+    while (index < input.length) {
+      const code = input.charCodeAt(index)
+      if (code >= 0x40 && code <= 0x7E) {
+        break
+      }
+      index++
+    }
+  }
+  return output
+}
+
 function resolveBaseUrls(logs: string[], fallbackUrl: string) {
   const urls = new Set([fallbackUrl])
   for (const chunk of logs) {
     for (const line of chunk.split(/\r?\n/)) {
-      const matched = line.match(localUrlRE)?.[1]
+      const matched = stripAnsiEscapes(line).match(localUrlRE)?.[1]
       if (matched) {
         urls.add(matched)
         try {
