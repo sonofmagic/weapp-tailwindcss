@@ -4,21 +4,21 @@
 
 ### Minor Changes
 
-- ✨ **优化 `css-macro` 的样式生成方式：宏变体现在不再输出伪 `@media (weapp-tw-platform:...)` 包裹，而是生成内部条件节点，并由内置转换直接产出小程序条件编译注释。** [`07f1952`](https://github.com/sonofmagic/weapp-tailwindcss/commit/07f1952079dd1c89c8db202592e100c98e1301f8) by @sonofmagic
+- ✨ **优化 `css-macro` 的样式生成方式：宏变体现在不再输出伪 `@media (weapp-tw-platform:...)` 包裹，而是生成内部条件节点，并由内置转换直接产出小程序条件编译注释。** [#879](https://github.com/sonofmagic/weapp-tailwindcss/pull/879) by @github-actions
   - 旧的 `@media (weapp-tw-platform:...)` 宏输出仍会被 `weapp-tailwindcss/css-macro/postcss` 兼容处理，方便存量自定义 PostCSS 流程平滑迁移。
 
-- ✨ **新增内置 `unitConversion` 配置，支持基于 `postcss-rule-unit-converter` 的任意样式单位转换，并可按 `weapp`、`h5`、`web`、`app` 等平台分别配置转换规则。** [`0b7694b`](https://github.com/sonofmagic/weapp-tailwindcss/commit/0b7694b405711bd8dd2a89ce4bc10de085c9990f) by @sonofmagic
+- ✨ **新增内置 `unitConversion` 配置，支持基于 `postcss-rule-unit-converter` 的任意样式单位转换，并可按 `weapp`、`h5`、`web`、`app` 等平台分别配置转换规则。** [#879](https://github.com/sonofmagic/weapp-tailwindcss/pull/879) by @github-actions
 
-- ✨ **新增默认关闭的 `unocss` 兼容配置。开启后会复用 `tailwindcss-patch` 的 Tailwind CSS v4 裸任意值能力，class 字符转义继续沿用现有 `customReplaceDictionary` 链路，同时在文档站补充 UnoCSS 写法兼容章节。** [`c5b26b4`](https://github.com/sonofmagic/weapp-tailwindcss/commit/c5b26b46f840c36637d1cb7b6101aea3234ccd5a) by @sonofmagic
+- ✨ **新增默认关闭的 `unocss` 兼容配置。开启后会复用 `tailwindcss-patch` 的 Tailwind CSS v4 裸任意值能力，class 字符转义继续沿用现有 `customReplaceDictionary` 链路，同时在文档站补充 UnoCSS 写法兼容章节。** [#879](https://github.com/sonofmagic/weapp-tailwindcss/pull/879) by @github-actions
 
 ### Patch Changes
 
-- 🐛 **内置 `css-macro` 的 PostCSS 转换感应逻辑：当 Tailwind CSS v3 配置中注册 `weapp-tailwindcss/css-macro`，或 Tailwind CSS v4 入口 CSS 中声明 `@plugin "weapp-tailwindcss/css-macro"` 时，会自动启用条件编译注释转换，不再要求常规集成手动注册 `weapp-tailwindcss/css-macro/postcss`。** [`29901e2`](https://github.com/sonofmagic/weapp-tailwindcss/commit/29901e2b1d7fc6ec83d73a202e8f60e186d1b022) by @sonofmagic
+- 🐛 **内置 `css-macro` 的 PostCSS 转换感应逻辑：当 Tailwind CSS v3 配置中注册 `weapp-tailwindcss/css-macro`，或 Tailwind CSS v4 入口 CSS 中声明 `@plugin "weapp-tailwindcss/css-macro"` 时，会自动启用条件编译注释转换，不再要求常规集成手动注册 `weapp-tailwindcss/css-macro/postcss`。** [#879](https://github.com/sonofmagic/weapp-tailwindcss/pull/879) by @github-actions
   - 同时在生成 CSS 裁剪阶段保留由 `css-macro` 产生的 `#ifdef` / `#ifndef` / `#endif` 注释，并同步更新文档与 demo 配置。
 
-- 🐛 **升级 ESM 化依赖后，将公开包的 Node.js 安装版本约束统一到 `^20.19.0 || >=22.12.0`，避免不支持稳定 ESM/CJS 混合加载的 Node.js 版本安装使用。** [`01a0cb2`](https://github.com/sonofmagic/weapp-tailwindcss/commit/01a0cb2f40b59e7989622f22635d0df832b439a1) by @sonofmagic
+- 🐛 **升级 ESM 化依赖后，将公开包的 Node.js 安装版本约束统一到 `^20.19.0 || >=22.12.0`，避免不支持稳定 ESM/CJS 混合加载的 Node.js 版本安装使用。** [#879](https://github.com/sonofmagic/weapp-tailwindcss/pull/879) by @github-actions
 
-- 🐛 **移除 webpack loader 对 `loader-utils` 的依赖，改为使用 webpack 5 loader context 的 `getOptions()` 读取配置。** [`f18ee11`](https://github.com/sonofmagic/weapp-tailwindcss/commit/f18ee1160341fb039e18596e301073a859479b19) by @sonofmagic
+- 🐛 **移除 webpack loader 对 `loader-utils` 的依赖，改为使用 webpack 5 loader context 的 `getOptions()` 读取配置。** [#879](https://github.com/sonofmagic/weapp-tailwindcss/pull/879) by @github-actions
 - 📦 **Dependencies** [`29901e2`](https://github.com/sonofmagic/weapp-tailwindcss/commit/29901e2b1d7fc6ec83d73a202e8f60e186d1b022)
   → `@weapp-tailwindcss/postcss@3.0.0-next.7`, `@weapp-tailwindcss/reset@0.1.1-next.1`
 

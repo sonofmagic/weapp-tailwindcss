@@ -4,7 +4,7 @@
 
 ### Patch Changes
 
-- 🐛 **修复 uni-app Vite 预设在 `generateBundle` 中直接写入 bundle 资产的问题，改为通过 `emitFile` 生成分包样式入口，以兼容 Vite 8/Rolldown。** [`a3129c6`](https://github.com/sonofmagic/weapp-tailwindcss/commit/a3129c616a55f69594d72683a4049e73abd383c3) by @sonofmagic
+- 🐛 **修复 uni-app Vite 预设在 `generateBundle` 中直接写入 bundle 资产的问题，改为通过 `emitFile` 生成分包样式入口，以兼容 Vite 8/Rolldown。** [#879](https://github.com/sonofmagic/weapp-tailwindcss/pull/879) by @github-actions
 
 ## 0.0.2
 

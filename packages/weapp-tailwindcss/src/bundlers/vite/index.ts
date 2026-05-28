@@ -32,6 +32,7 @@ import { resolveFilteredPostcssConfig } from './postcss-config'
 import { resolveImplicitAppTypeFromViteRoot } from './resolve-app-type'
 import { createRewriteCssImportsPlugins } from './rewrite-css-imports'
 import { createViteRuntimeClassSet } from './runtime-class-set'
+import { createViteServeCssGenerationPlugins } from './serve-css-generation'
 import { createSourceCandidateCollector, isSourceCandidateRequest } from './source-candidates'
 import { createViteSourceScanMatcher, discoverTailwindV4CssEntries, resolveTailwindV4EntriesFromCssCached, resolveViteSourceScanEntries, resolveViteTailwindV4CssDependencies } from './source-scan'
 import { resolveImplicitTailwindcssBasedirFromViteRoot } from './tailwind-basedir'
@@ -699,6 +700,12 @@ export function WeappTailwindcss(options: UserDefinedOptions = {}): Plugin[] | u
         }, { emit: false })
       },
     },
+    ...createViteServeCssGenerationPlugins({
+      generateCss: generateTailwindCssForVitePipeline,
+      getCommand: () => resolvedConfig?.command,
+      onTailwindRootCss: (id, code) => registerAutoCssSource(id, code),
+      shouldGenerate: () => shouldOwnTailwindGeneration,
+    }),
     {
       name: `${vitePluginName}:post`,
       enforce: 'post',
