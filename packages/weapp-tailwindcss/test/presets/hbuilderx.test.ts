@@ -12,6 +12,12 @@ describe('hbuilderx preset', () => {
     vi.restoreAllMocks()
   })
 
+  it('is exported from the public presets entry', async () => {
+    const presets = await import('@/presets')
+
+    expect(presets.hbuilderx).toBe(hbuilderx)
+  })
+
   it('fills base configuration using environment fallback', () => {
     env.clearBaseEnv()
     process.env.UNI_INPUT_DIR = '/Users/foo/uni-project'

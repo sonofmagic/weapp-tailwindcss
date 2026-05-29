@@ -120,7 +120,6 @@ export function WeappTailwindcss(options: UserDefinedOptions = {}): Plugin[] | u
   const shouldOwnTailwindGeneration = !disabledOptions.plugin
   const shouldRewriteCssImports = tailwindcssMajorVersion >= 4
   const generatorOptions = normalizeWeappTailwindcssGeneratorOptions(opts.generator)
-  const isWebGeneratorTarget = generatorOptions.target === 'web'
   const shouldInferAppType = !hasExplicitAppType && generatorOptions.target !== 'web'
   const hasInitialTailwindCssRoots = hasConfiguredTailwindV4CssRoots({
     ...options,
@@ -680,9 +679,6 @@ export function WeappTailwindcss(options: UserDefinedOptions = {}): Plugin[] | u
   const utsPlatform = resolveUniUtsPlatform()
   const isIosPlatform = utsPlatform.isAppIos
   const prepareTailwindGeneration = async () => {
-    if (isWebGeneratorTarget && runtimeState.twPatcher.majorVersion !== 3) {
-      return
-    }
     if (shouldDiscoverAutoCssSources()) {
       await discoverAndRegisterAutoCssSources()
     }

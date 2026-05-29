@@ -210,7 +210,6 @@
     "comment-json": "^5.0.0",
     "debug": "~4.4.3",
     "fast-glob": "^3.3.3",
-    "htmlparser2": "12.0.0",
     "local-pkg": "^1.2.1",
     "lru-cache": "11.5.0",
     "magic-string": "0.30.21",
@@ -220,5 +219,8 @@
     "tailwindcss-config": "workspace:*",
     "tailwindcss-patch": "catalog:tailwindcssPatch",
     "yaml": "^2.9.0"
+  },
+  "devDependencies": {
+    "htmlparser2": "12.0.0"
   }
 }

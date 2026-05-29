@@ -41,6 +41,7 @@ describe('uni-app-x preset', () => {
       },
     })
 
+    expect(result.appType).toBe('uni-app-x')
     expect(result.unitsToPx).toEqual({
       unitPrecision: 4,
     })
@@ -76,7 +77,7 @@ describe('uni-app-x preset', () => {
       packageName: 'tailwindcss',
       postcssPlugin: 'tailwindcss',
       resolve: {
-        paths: ['/repo/uni-app-x'],
+        paths: ['/repo/uni-app-x/node_modules', '/repo/uni-app-x'],
       },
     })
     expect(result.tailwindcss).toMatchObject({
@@ -84,7 +85,7 @@ describe('uni-app-x preset', () => {
       packageName: 'tailwindcss',
       postcssPlugin: 'tailwindcss',
       resolve: {
-        paths: ['/repo/uni-app-x'],
+        paths: ['/repo/uni-app-x/node_modules', '/repo/uni-app-x'],
       },
     })
   })
@@ -105,7 +106,7 @@ describe('uni-app-x preset', () => {
       packageName: 'tailwindcss',
       postcssPlugin: '@tailwindcss/postcss',
       resolve: {
-        paths: ['/repo/uni-app-x'],
+        paths: ['/repo/uni-app-x/node_modules', '/repo/uni-app-x'],
       },
     })
   })

@@ -40,7 +40,7 @@
     "lint:fix": "eslint . --fix"
   },
   "publishConfig": {},
-  "dependencies": {
+  "devDependencies": {
     "consola": "^3.4.2",
     "picocolors": "^1.1.1"
   }

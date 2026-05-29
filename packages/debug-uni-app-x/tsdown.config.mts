@@ -7,6 +7,7 @@ export default defineConfig({
   dts: true,
   shims: true,
   deps: {
+    alwaysBundle: ['defu', 'fs-extra', 'pathe'],
     neverBundle: ['vite'],
   },
   outExtensions({ format }) {

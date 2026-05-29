@@ -1,0 +1,29 @@
+{
+  "name": "@weapp-tailwindcss-demo/uni-app-x-hbuilderx-tailwindcss-v3",
+  "private": true,
+  "version": "0.0.0",
+  "description": "uni-app x HBuilderX demo for Tailwind CSS v3 with weapp-tailwindcss direct registration.",
+  "author": "icebreaker <hi@sonofmagic.top>",
+  "license": "MIT",
+  "scripts": {
+    "start:android:emulator": "node ./scripts/start-android-emulator.mjs",
+    "start:ios:simulator": "open -a Simulator",
+    "dev:android:emulator": "cross-env WEAPP_TW_HMR_TIMING=1 hbuilderx launch app-android --project . --deviceId emulator-5554",
+    "dev:ios:simulator": "cross-env WEAPP_TW_HMR_TIMING=1 hbuilderx launch app-ios --project . --iosTarget simulator",
+    "dev:mp-weixin": "cross-env WEAPP_TW_HMR_TIMING=1 hbuilderx launch mp-weixin --project . --compile true",
+    "predev:android:emulator": "node ../../scripts/ensure-weapp-tailwindcss-built.mjs",
+    "predev:ios:simulator": "node ../../scripts/ensure-weapp-tailwindcss-built.mjs",
+    "predev:mp-weixin": "node ../../scripts/ensure-weapp-tailwindcss-built.mjs"
+  },
+  "devDependencies": {
+    "@dcloudio/hbuilderx-cli": "^1.2.0",
+    "@dcloudio/vite-plugin-uni": "3.0.0-5000720260410001",
+    "@weapp-tailwindcss/debug-uni-app-x": "workspace:*",
+    "cross-env": "catalog:crossEnv",
+    "tailwindcss": "catalog:tailwindcss3",
+    "typescript": "catalog:typescript59",
+    "vite": "^5.4.21",
+    "weapp-tailwindcss": "workspace:*"
+  },
+  "packageManager": "pnpm@10.33.2"
+}

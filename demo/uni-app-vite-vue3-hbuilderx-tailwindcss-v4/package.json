@@ -1,0 +1,42 @@
+{
+  "name": "@weapp-tailwindcss-demo/uni-app-vite-vue3-hbuilderx-tailwindcss-v4",
+  "private": true,
+  "version": "0.0.0",
+  "description": "uni-app Vite Vue3 HBuilderX demo for Tailwind CSS v4 with weapp-tailwindcss direct registration.",
+  "author": "icebreaker <hi@sonofmagic.top>",
+  "license": "MIT",
+  "scripts": {
+    "dev": "cross-env WEAPP_TW_HMR_TIMING=1 pnpm run dev:mp-weixin",
+    "dev:mp-weixin": "cross-env WEAPP_TW_HMR_TIMING=1 UNI_INPUT_DIR=. uni -p mp-weixin",
+    "dev:h5": "cross-env WEAPP_TW_HMR_TIMING=1 UNI_INPUT_DIR=. uni",
+    "build": "pnpm run build:mp-weixin",
+    "build:mp-weixin": "cross-env UNI_INPUT_DIR=. node ../../scripts/uni-build-guard.mjs build -p mp-weixin",
+    "build:h5": "cross-env UNI_INPUT_DIR=. uni build",
+    "predev": "node ../../scripts/ensure-weapp-tailwindcss-built.mjs",
+    "predev:mp-weixin": "node ../../scripts/ensure-weapp-tailwindcss-built.mjs",
+    "predev:h5": "node ../../scripts/ensure-weapp-tailwindcss-built.mjs",
+    "prebuild": "node ../../scripts/ensure-weapp-tailwindcss-built.mjs",
+    "prebuild:mp-weixin": "node ../../scripts/ensure-weapp-tailwindcss-built.mjs",
+    "prebuild:h5": "node ../../scripts/ensure-weapp-tailwindcss-built.mjs"
+  },
+  "dependencies": {
+    "@dcloudio/uni-app": "3.0.0-5000720260410001",
+    "@dcloudio/uni-components": "3.0.0-5000720260410001",
+    "@dcloudio/uni-h5": "3.0.0-5000720260410001",
+    "@dcloudio/uni-mp-weixin": "3.0.0-5000720260410001",
+    "vue": "^3.5.35"
+  },
+  "devDependencies": {
+    "@dcloudio/types": "^3.4.8",
+    "@dcloudio/uni-cli-shared": "3.0.0-5000720260410001",
+    "@dcloudio/uni-mp-vue": "3.0.0-5000320260312001",
+    "@dcloudio/uni-stacktracey": "3.0.0-5000720260410001",
+    "@dcloudio/vite-plugin-uni": "3.0.0-5000720260410001",
+    "cross-env": "catalog:crossEnv",
+    "tailwindcss": "catalog:tailwindcss4",
+    "typescript": "catalog:typescript59",
+    "vite": "^5.4.21",
+    "weapp-tailwindcss": "workspace:*"
+  },
+  "packageManager": "pnpm@10.33.2"
+}
