@@ -145,7 +145,7 @@ catalogs:
   vite8:
     vite: ^8.0.14
   vitePluginInspect:
-    vite-plugin-inspect: ^11.3.3
+    vite-plugin-inspect: ^11.4.1
   vitePluginReact4:
     '@vitejs/plugin-react': ^4.7.0
   vitePluginReact6:
@@ -169,7 +169,7 @@ catalogs:
   weappIdeCli:
     weapp-ide-cli: ^5.3.2
   weappVite:
-    weapp-vite: ^6.16.27
+    weapp-vite: ^6.16.28
   wrangler:
     wrangler: ^4.95.0
 

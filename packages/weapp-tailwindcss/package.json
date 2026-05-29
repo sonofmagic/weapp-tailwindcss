@@ -211,7 +211,7 @@
     "debug": "~4.4.3",
     "fast-glob": "^3.3.3",
     "local-pkg": "^1.2.1",
-    "lru-cache": "11.5.0",
+    "lru-cache": "11.5.1",
     "magic-string": "0.30.21",
     "micromatch": "^4.0.8",
     "postcss-load-config": "^6.0.1",

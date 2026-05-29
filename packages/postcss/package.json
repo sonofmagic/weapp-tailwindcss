@@ -71,7 +71,7 @@
     "@weapp-tailwindcss/postcss-calc": "^1.0.0",
     "@weapp-tailwindcss/shared": "workspace:*",
     "autoprefixer": "catalog:autoprefixer10",
-    "lru-cache": "11.5.0",
+    "lru-cache": "11.5.1",
     "postcss": "catalog:postcss85tilde",
     "postcss-pxtrans": "^1.0.4",
     "postcss-rem-to-responsive-pixel": "catalog:postcssRem",
