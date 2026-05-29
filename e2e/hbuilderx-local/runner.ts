@@ -1,4 +1,4 @@
-import type { MiniProgramCase, WebCase } from './cases'
+import type { AppCase, MiniProgramCase, WebCase } from './cases'
 
 import fs from 'node:fs/promises'
 
@@ -6,11 +6,18 @@ import path from 'pathe'
 import { expect } from 'vitest'
 import { rawTailwindDirectiveRE } from './cases'
 import {
+  assertIosSimulatorToolchain,
+  collectProcessOutput,
   fileExists,
+  hbuilderxAppTimeoutMs,
   hbuilderxTimeoutMs,
+  killProcessTree,
+  pollIntervalMs,
   readUtf8,
   resolveHBuilderXCli,
   runPnpm,
+  spawnPnpm,
+  wait,
 } from './process'
 import { runWebHmr } from './web'
 
@@ -27,18 +34,29 @@ function expectContent(source: string, entries: Array<string | RegExp>, label: s
   }
 }
 
+async function waitForFile(file: string, timeoutMs: number) {
+  const startedAt = Date.now()
+  while (Date.now() - startedAt < timeoutMs) {
+    if (await fileExists(file)) {
+      return true
+    }
+    await wait(pollIntervalMs)
+  }
+  return false
+}
+
 async function assertMiniProgramOutput(item: MiniProgramCase) {
   const projectRoot = path.resolve(repoRoot, item.projectDir)
   const outputRoot = path.resolve(projectRoot, item.outputDir)
 
   for (const file of item.requiredFiles) {
     const target = path.resolve(outputRoot, file)
-    expect(await fileExists(target), `${item.name} 缺少产物 ${file}`).toBe(true)
+    expect(await waitForFile(target, hbuilderxTimeoutMs), `${item.name} 缺少产物 ${file}`).toBe(true)
   }
 
   const css = (await Promise.all(item.cssFiles.map(async (file) => {
     const target = path.resolve(outputRoot, file)
-    expect(await fileExists(target), `${item.name} 缺少样式产物 ${file}`).toBe(true)
+    expect(await waitForFile(target, hbuilderxTimeoutMs), `${item.name} 缺少样式产物 ${file}`).toBe(true)
     return await readUtf8(target)
   }))).join('\n')
 
@@ -55,10 +73,104 @@ async function assertMiniProgramOutput(item: MiniProgramCase) {
   }
 }
 
+async function assertAppOutput(item: AppCase) {
+  const projectRoot = path.resolve(repoRoot, item.projectDir)
+  const outputRoot = path.resolve(projectRoot, item.outputDir)
+
+  for (const file of item.requiredFiles) {
+    const target = path.resolve(outputRoot, file)
+    expect(await waitForFile(target, hbuilderxAppTimeoutMs), `${item.name} 缺少产物 ${file}`).toBe(true)
+  }
+
+  const transformed = (await Promise.all(item.transformedFiles.map(async (file) => {
+    const target = path.resolve(projectRoot, file)
+    expect(await waitForFile(target, hbuilderxAppTimeoutMs), `${item.name} 缺少转换产物 ${file}`).toBe(true)
+    return await readUtf8(target)
+  }))).join('\n')
+  expectContent(transformed, item.transformedContains, `${item.name} App 转换产物`)
+}
+
+async function findMissingAppFiles(item: AppCase) {
+  const projectRoot = path.resolve(repoRoot, item.projectDir)
+  const outputRoot = path.resolve(projectRoot, item.outputDir)
+  const missing: string[] = []
+
+  for (const file of item.requiredFiles) {
+    if (!await fileExists(path.resolve(outputRoot, file))) {
+      missing.push(file)
+    }
+  }
+
+  return missing
+}
+
+async function runAppLaunchUntilOutput(item: AppCase, hbuilderxCliPath: string, projectRoot: string) {
+  const child = spawnPnpm(
+    projectRoot,
+    ['exec', 'hbuilderx', 'launch', item.platform, '--project', projectRoot, ...(item.launchArgs ?? [])],
+    {
+      HBUILDERX_CLI_PATH: hbuilderxCliPath,
+      WEAPP_TW_HMR_TIMING: '1',
+    },
+  )
+  const logs = collectProcessOutput(child)
+  const startedAt = Date.now()
+  let exit: { code: number | null, signal: NodeJS.Signals | null } | undefined
+  const closed = new Promise<void>((resolve) => {
+    child.on('close', (code, signal) => {
+      exit = { code, signal }
+      resolve()
+    })
+  })
+
+  while (Date.now() - startedAt < hbuilderxAppTimeoutMs) {
+    const missing = await findMissingAppFiles(item)
+    if (missing.length === 0) {
+      killProcessTree(child)
+      await Promise.race([closed, wait(5_000)])
+      return
+    }
+
+    if (exit) {
+      if (exit.code === 0) {
+        break
+      }
+      throw new Error(`命令失败：pnpm exec hbuilderx launch ${item.platform} exit=${exit.signal ?? exit.code}\n${logs.join('')}`)
+    }
+
+    await wait(pollIntervalMs)
+  }
+
+  killProcessTree(child)
+  await Promise.race([closed, wait(5_000)])
+  await assertAppOutput(item)
+}
+
+async function mutateFile(file: string, anchor: string, insertion: string) {
+  const original = await readUtf8(file)
+  const index = original.indexOf(anchor)
+  if (index < 0) {
+    throw new Error(`找不到 App E2E 插入锚点：${file}`)
+  }
+  const next = `${original.slice(0, index)}${insertion}\n\t\t${original.slice(index)}`
+  await fs.writeFile(file, next, 'utf8')
+  return async () => {
+    await fs.writeFile(file, original, 'utf8')
+  }
+}
+
 export async function compileMiniProgramWithHBuilderX(item: MiniProgramCase) {
   const hbuilderxCliPath = await resolveHBuilderXCli()
   const projectRoot = path.resolve(repoRoot, item.projectDir)
   await fs.rm(path.resolve(projectRoot, item.outputDir), { recursive: true, force: true })
+  await runPnpm(
+    projectRoot,
+    ['exec', 'hbuilderx', 'project', 'open', '--path', projectRoot],
+    hbuilderxTimeoutMs,
+    {
+      HBUILDERX_CLI_PATH: hbuilderxCliPath,
+    },
+  )
   await runPnpm(
     projectRoot,
     ['exec', 'hbuilderx', 'launch', 'mp-weixin', '--project', projectRoot, '--compile', 'true'],
@@ -71,21 +183,54 @@ export async function compileMiniProgramWithHBuilderX(item: MiniProgramCase) {
   await assertMiniProgramOutput(item)
 }
 
+export async function compileAppWithHBuilderX(item: AppCase) {
+  if (item.platform === 'app-ios') {
+    assertIosSimulatorToolchain()
+  }
+
+  const hbuilderxCliPath = await resolveHBuilderXCli()
+  const projectRoot = path.resolve(repoRoot, item.projectDir)
+  let restore: (() => Promise<void>) | undefined
+  try {
+    restore = await mutateFile(
+      path.resolve(projectRoot, item.sourceFile),
+      item.markerAnchor,
+      `<view class="${item.markerClass}">${item.markerText}</view>`,
+    )
+    await fs.rm(path.resolve(projectRoot, item.outputDir), { recursive: true, force: true })
+    await runPnpm(
+      projectRoot,
+      ['exec', 'hbuilderx', 'project', 'open', '--path', projectRoot],
+      hbuilderxAppTimeoutMs,
+      {
+        HBUILDERX_CLI_PATH: hbuilderxCliPath,
+      },
+    )
+    await runAppLaunchUntilOutput(item, hbuilderxCliPath, projectRoot)
+    await assertAppOutput(item)
+  }
+  finally {
+    if (restore) {
+      await restore()
+    }
+  }
+}
+
 export async function verifyWebHmr(item: WebCase) {
   const projectRoot = path.resolve(repoRoot, item.projectDir)
   const result = await runWebHmr(
     projectRoot,
     path.resolve(projectRoot, item.sourceFile),
     item.markerAnchor,
-    item.markerClass,
-    item.markerText,
     item.initialCssPath,
     item.hmrCssPath,
     item.initialCssContains,
-    item.hmrCssContains,
+    item.hmrSteps,
   )
 
   expect(result.pageHtml, `${item.name} Web 首页应可访问`).toContain('<!DOCTYPE html>')
   expect(result.initialCss, `${item.name} 不应保留 Tailwind 原始指令`).not.toMatch(rawTailwindDirectiveRE)
-  expect(result.hmrCss, `${item.name} HMR CSS 不应保留 Tailwind 原始指令`).not.toMatch(rawTailwindDirectiveRE)
+  for (const css of result.hmrCss) {
+    expect(css, `${item.name} HMR CSS 不应保留 Tailwind 原始指令`).not.toMatch(rawTailwindDirectiveRE)
+  }
 }

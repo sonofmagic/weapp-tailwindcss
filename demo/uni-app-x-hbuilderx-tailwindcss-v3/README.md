@@ -15,6 +15,23 @@
 pnpm install
 pnpm dev:mp-weixin
 pnpm dev:android:emulator
+pnpm dev:ios:simulator
 ```
 
 也可以直接用 HBuilderX 导入当前目录运行。
+
+## 本地 E2E
+
+App 端依赖本机 HBuilderX、Android 模拟器或 iOS 模拟器，只在本地运行，不纳入 CI/CD。
+
+```bash
+pnpm e2e:hbuilderx:local:app
+pnpm e2e:hbuilderx:local:android
+pnpm e2e:hbuilderx:local:ios
+```
+
+如果本机安装了完整 Xcode，但 `xcode-select` 仍指向 CommandLineTools，可以临时指定：
+
+```bash
+DEVELOPER_DIR=/Applications/Xcode.app/Contents/Developer pnpm e2e:hbuilderx:local:ios
+```

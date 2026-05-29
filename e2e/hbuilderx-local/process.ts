@@ -17,6 +17,7 @@ const localUrlRE = /Local:\s*(https?:\/\/\S+)/i
 
 export const serverTimeoutMs = Number(process.env['E2E_HBUILDERX_WEB_TIMEOUT_MS'] ?? 180_000)
 export const hbuilderxTimeoutMs = Number(process.env['E2E_HBUILDERX_MP_TIMEOUT_MS'] ?? 240_000)
+export const hbuilderxAppTimeoutMs = Number(process.env['E2E_HBUILDERX_APP_TIMEOUT_MS'] ?? 600_000)
 export const pollIntervalMs = 500
 
 export function wait(ms: number) {
@@ -49,6 +50,40 @@ export async function resolveChromeExecutable() {
     }
   }
   return undefined
+}
+
+function runTool(command: string, args: string[]) {
+  const result = spawnSync(command, args, {
+    encoding: 'utf8',
+  })
+  return {
+    ok: result.status === 0,
+    output: `${result.stdout ?? ''}${result.stderr ?? ''}`.trim(),
+  }
+}
+
+export function assertIosSimulatorToolchain() {
+  if (process.platform !== 'darwin') {
+    throw new Error('HBuilderX iOS 模拟器 E2E 只能在 macOS 本地运行。')
+  }
+
+  const xcodeSelect = runTool('xcode-select', ['-p'])
+  const simctl = runTool('xcrun', ['--find', 'simctl'])
+  const xcodebuild = runTool('xcrun', ['--find', 'xcodebuild'])
+  const firstLaunchStatus = xcodebuild.ok ? runTool('xcodebuild', ['-checkFirstLaunchStatus']) : undefined
+
+  if (!simctl.ok || !xcodebuild.ok || firstLaunchStatus?.ok === false) {
+    throw new Error([
+      '当前机器缺少 iOS 模拟器所需的完整 Xcode 工具链，无法运行 HBuilderX app-ios E2E。',
+      `xcode-select: ${xcodeSelect.output || 'unknown'}`,
+      `DEVELOPER_DIR: ${process.env['DEVELOPER_DIR'] || '未设置'}`,
+      `simctl: ${simctl.output || 'not found'}`,
+      `xcodebuild: ${xcodebuild.output || 'not found'}`,
+      `firstLaunchStatus: ${firstLaunchStatus?.output || (firstLaunchStatus?.ok === false ? 'not ready' : 'unknown')}`,
+      '请安装完整 Xcode，并执行 sudo xcode-select -s /Applications/Xcode.app/Contents/Developer，或用 DEVELOPER_DIR=/Applications/Xcode.app/Contents/Developer 临时指定后重试。',
+      '如果 firstLaunchStatus 不是 ready，请先打开 Xcode 完成首次组件安装，或执行 sudo xcodebuild -runFirstLaunch。',
+    ].join('\n'))
+  }
 }
 
 export async function findFreePort() {

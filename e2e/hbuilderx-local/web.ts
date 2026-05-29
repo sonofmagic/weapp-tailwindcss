@@ -1,4 +1,6 @@
 import type { ChildProcess } from 'node:child_process'
+import type { WebHmrStep } from './cases'
+
 import fs from 'node:fs/promises'
 import process from 'node:process'
 
@@ -116,16 +118,30 @@ async function mutateFile(file: string, anchor: string, insertion: string) {
   }
 }
 
+async function rewriteHmrMarker(file: string, anchor: string, steps: WebHmrStep[], stepIndex: number) {
+  const source = await readUtf8(file)
+  const markerRE = /\n\t\t<view class="[^"]+">hbuilderx-web-hmr-[^<]+<\/view>/g
+  const cleaned = source.replace(markerRE, '')
+  const index = cleaned.indexOf(anchor)
+  if (index < 0) {
+    throw new Error(`找不到 HMR 插入锚点：${file}`)
+  }
+  const insertion = steps
+    .slice(0, stepIndex + 1)
+    .map(step => `<view class="${step.markerClass}">${step.markerText}</view>`)
+    .join('\n\t\t')
+  const next = `${cleaned.slice(0, index)}${insertion}\n\t\t${cleaned.slice(index)}`
+  await fs.writeFile(file, next, 'utf8')
+}
+
 export async function runWebHmr(
   projectRoot: string,
   sourceFile: string,
   markerAnchor: string,
-  markerClass: string,
-  markerText: string,
   initialCssPath: string,
   hmrCssPath: string,
   initialCssContains: Array<string | RegExp>,
-  hmrCssContains: Array<string | RegExp>,
+  hmrSteps: WebHmrStep[],
 ) {
   const port = await findFreePort()
   const child = createDevServer(projectRoot, port)
@@ -143,8 +159,12 @@ export async function runWebHmr(
     await page.goto(joinUrl(ready.baseUrl, '/'), { waitUntil: 'domcontentloaded' })
 
     const initialCss = await waitForCss(joinUrl(ready.baseUrl, initialCssPath), initialCssContains, child, logs)
-    restore = await mutateFile(sourceFile, markerAnchor, `<view class="${markerClass}">${markerText}</view>`)
-    const hmrCss = await waitForCss(joinUrl(ready.baseUrl, hmrCssPath), hmrCssContains, child, logs)
+    restore = await mutateFile(sourceFile, markerAnchor, '')
+    const hmrCss: string[] = []
+    for (const [index, step] of hmrSteps.entries()) {
+      await rewriteHmrMarker(sourceFile, markerAnchor, hmrSteps, index)
+      hmrCss.push(await waitForCss(joinUrl(ready.baseUrl, hmrCssPath), step.cssContains, child, logs))
+    }
 
     return {
       hmrCss,

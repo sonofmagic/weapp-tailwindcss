@@ -1,11 +1,15 @@
 import { afterEach, describe, it } from 'vitest'
 
-import { miniProgramCases, webCases } from './hbuilderx-local/cases'
-import { hbuilderxTimeoutMs, killProcessTree, serverTimeoutMs } from './hbuilderx-local/process'
-import { compileMiniProgramWithHBuilderX, verifyWebHmr } from './hbuilderx-local/runner'
+import { miniProgramCases, uniAppXAppCases, webCases } from './hbuilderx-local/cases'
+import { hbuilderxAppTimeoutMs, hbuilderxTimeoutMs, killProcessTree, serverTimeoutMs } from './hbuilderx-local/process'
+import { compileAppWithHBuilderX, compileMiniProgramWithHBuilderX, verifyWebHmr } from './hbuilderx-local/runner'
 import { clearDevProcess, getDevProcess } from './hbuilderx-local/web'
 
 const describeLocalHBuilderX = process.env['E2E_HBUILDERX_LOCAL'] === '1' ? describe : describe.skip
+const appPlatformFilter = process.env['E2E_HBUILDERX_APP_PLATFORM']
+const appCases = appPlatformFilter
+  ? uniAppXAppCases.filter(item => item.platform === appPlatformFilter)
+  : uniAppXAppCases
 
 describeLocalHBuilderX.sequential('HBuilderX demo local e2e', () => {
   afterEach(() => {
@@ -19,6 +23,10 @@ describeLocalHBuilderX.sequential('HBuilderX demo local e2e', () => {
   it.each(miniProgramCases)('用 HBuilderX 编译微信小程序产物：$name', async (item) => {
     await compileMiniProgramWithHBuilderX(item)
   }, hbuilderxTimeoutMs + 30_000)
+
+  it.each(appCases)('用 HBuilderX 编译 uni-app x App 产物：$name', async (item) => {
+    await compileAppWithHBuilderX(item)
+  }, hbuilderxAppTimeoutMs + 30_000)
 
   it.each(webCases)('验证 HBuilderX uni-app Web 页面和 HMR：$name', async (item) => {
     await verifyWebHmr(item)
