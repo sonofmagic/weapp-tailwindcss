@@ -83,7 +83,11 @@
     "@weapp-tailwindcss-demo/web-react-vite-tailwindcss-v3": "0.0.0",
     "@weapp-tailwindcss-demo/web-react-vite-tailwindcss-v4": "0.0.0",
     "@weapp-tailwindcss-demo/web-vue-vite-tailwindcss-v3": "0.0.0",
-    "@weapp-tailwindcss-demo/web-vue-vite-tailwindcss-v4": "0.0.0"
+    "@weapp-tailwindcss-demo/web-vue-vite-tailwindcss-v4": "0.0.0",
+    "@weapp-tailwindcss-demo/uni-app-vite-vue3-hbuilderx-tailwindcss-v3": "0.0.0",
+    "@weapp-tailwindcss-demo/uni-app-vite-vue3-hbuilderx-tailwindcss-v4": "0.0.0",
+    "@weapp-tailwindcss-demo/uni-app-x-hbuilderx-tailwindcss-v3": "0.0.0",
+    "@weapp-tailwindcss-demo/uni-app-x-hbuilderx-tailwindcss-v4": "0.0.0"
   },
   "changesets": [
     "bare-arbitrary-values",
@@ -125,6 +129,7 @@
     "fix-v4-source-scan-regressions",
     "fix-v4-uni-subpackage-css-source",
     "fix-v5-css-source-order",
+    "fix-vite-h5-source-candidate-hmr",
     "fix-vite-v4-vendor-source-scan",
     "framework-support-matrix",
     "fresh-demo-core-build",
@@ -134,6 +139,7 @@
     "hmr-plugin-process-budget",
     "honest-demos-time",
     "init-generator-postcss-config",
+    "major-hbuilderx-bundled-deps",
     "mini-program-autoprefixer-options",
     "mini-program-webkit-prefix-allowlist",
     "preprocessor-tailwind-source",
