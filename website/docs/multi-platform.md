@@ -118,7 +118,7 @@ webpackChain(chain) {
 
 当 `TARO_ENV=h5` 时，生成器默认目标会自动切换为 `web`。如果 RN 构建不希望插件参与，可以保留 `disabled: process.env.TARO_ENV === "rn"`。
 
-其他的框架，请自行在对应的文档中，发掘不同目标平台的环境变量判断方式。
+其他框架请参考对应文档，确认目标平台使用的环境变量。
 
 ## uni-app 打包到 h5 svg icon 偏移问题
 

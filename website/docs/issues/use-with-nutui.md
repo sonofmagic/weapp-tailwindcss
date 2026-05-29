@@ -1,6 +1,6 @@
 ---
 title: 和 NutUI 一起使用
-description: 'taro 使用 NutUI 的 vue 和 react 版本的共同注意点:'
+description: Taro 项目同时使用 NutUI、@tarojs/plugin-html 和 weapp-tailwindcss 时的 CSS 变量处理方式。
 keywords:
   - 常见问题
   - 故障排查
@@ -20,15 +20,13 @@ keywords:
 ---
 # 和 NutUI 一起使用
 
-`taro` 使用 [NutUI](https://nutui.jd.com) 的 `vue` 和 `react` 版本的共同注意点:
+Taro 项目使用 [NutUI](https://nutui.jd.com) 的 Vue 或 React 版本时，通常会同时启用 `@tarojs/plugin-html`。
 
-由于 [NutUI](https://nutui.jd.com) 必须要配合 `@tarojs/plugin-html` 一起使用。
+`@tarojs/plugin-html` 可能会在构建过程中删掉 Tailwind 的 CSS 变量初始化区域。结果是依赖变量的工具类失效，例如 `drop-shadow-2xl`、`translate-1/2`、渐变、ring 等。
 
-然而 `@tarojs/plugin-html` 这个插件，默认情况下它会移除整个 `tailwindcss` 注入的 `css var` 区域块，这会造成所有 `tw-*` 相关变量找不到，导致样式大量挂掉的问题。例如（`drop-shadow-2xl`，`translate-1/2` 等样式）。
+此时可以开启 [`injectAdditionalCssVarScope`](/docs/api/options/important#injectadditionalcssvarscope)。它会补一份 Tailwind CSS 变量初始化作用域，避免变量类名在小程序端丢失。
 
-此时可以启用这个插件的 [`injectAdditionalCssVarScope`](/docs/api/options/important#injectadditionalcssvarscope) 配置项，把它设为 `true`，这能在插件内部启用功能，来重新注入整个 `tailwindcss` 的 `css` 中的 `var` 区域块( `tailwindcss@3` )。
-
-按照初始的配置，只需要添加一行即可，示例如下：
+示例：
 
 ```diff
 const { WeappTailwindcss } = require('weapp-tailwindcss/webpack')
@@ -52,9 +50,9 @@ const { WeappTailwindcss } = require('weapp-tailwindcss/webpack')
 }
 ```
 
-## 可能有用但是过时的方案（部分 taro 版本有用）
+## 旧 Taro 版本的备选方案
 
-~~需要去配置一下 `postcss-html-transform` 这个插件~~（实在找不到方法可以尝试一下）
+部分旧 Taro 版本可以通过 `postcss-html-transform` 保留相关选择器。优先使用上面的 `injectAdditionalCssVarScope`；只有旧项目无法升级时，再考虑下面的方式。
 
 ```js
 // config/index.js
@@ -66,7 +64,7 @@ config = {
       htmltransform: {
         enable: true,
         // 设置成 false 表示 不去除 * 相关的选择器区块
-        // 假如开启这个配置，它会把 tailwindcss 整个 css 的 var 区域块直接去除掉
+        // 开启后可能删除 Tailwind CSS 变量初始化区域
         // 需要用 config 套一层，官方文档上是错的
         config: {
           removeCursorStyle: false,

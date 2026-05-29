@@ -92,7 +92,7 @@ module.exports = {
 
 #### 指定全局样式配置文件
 
-但是这还没有结束，为了防止这个上下文，影响到你全局的 `tailwindcss` 上下文，你必须做一个显式指定。
+为了避免这个页面的 Tailwind 配置影响全局入口，需要显式指定根目录的配置文件。
 
 此时要在你的引入 `tailwindcss` 的入口文件处(`App.vue`)，声明它用的是根目录的 `tailwind.config.js`
 

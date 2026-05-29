@@ -1,6 +1,6 @@
 ---
 title: uni-app HbuilderX 使用方式
-description: '注意: 在使用 hbuilderx 进行开发时，由于目录结构和启动项的不同，你必须要给你 tailwind.config.js 传入**绝对路径**:'
+description: HBuilderX Vue3 Vite 项目接入 weapp-tailwindcss@5 的配置方式，以及 Vue2 Webpack 存量项目的处理建议。
 keywords:
   - 快速开始
   - 安装
@@ -27,13 +27,13 @@ keywords:
 - `HBuilderX Vue2 Webpack`：仅供存量项目维护
 :::
 
-## HBuilderX Vue3 Vite（推荐）
+## HBuilderX Vue3 Vite
 
-> 配置会稍微复杂一些，这里推荐直接使用或者参考模板: [uni-app-vue3-tailwind-hbuilder-template](https://github.com/sonofmagic/uni-app-vue3-tailwind-hbuilder-template) 或者 [若依移动端 (Gitee 地址)](https://gitee.com/sonofmagic/RuoYi-App)
+这条路线适合 HBuilderX 创建的 Vue3 Vite 项目。Tailwind CSS 3 继续使用 `tailwind.config.js` 的 `content`，Tailwind CSS 4 请改看 [HBuilderX v4 接入](/docs/quick-start/v4/uni-app-vite-hbuilder)。
 
 ### tailwind.config.js
 
-注意: 在使用 `hbuilderx` 进行开发时，由于目录结构和启动项的不同，你必须要给你 `tailwind.config.js` 传入**绝对路径**:
+HBuilderX 会改变运行时的 `process.cwd()`，所以 `tailwind.config.js` 里的扫描路径建议转成绝对路径：
 
 ```js title="tailwind.config.js"
 const path = require("path");
@@ -56,7 +56,7 @@ module.exports = {
 
 ### vite.config.[tj]s
 
-另外使用 `vite.config.[tj]s` 注册 `WeappTailwindcss` 时，也要传入 Tailwind CSS 入口文件的绝对路径:
+注册 `WeappTailwindcss` 时，也建议传入 Tailwind CSS 入口文件的绝对路径：
 
 ```js title="vite.config.[tj]s"
 import path from "path";
@@ -110,50 +110,38 @@ WeappTailwindcss({
 
 `hbuilderx` 正式版本的 `vue2` 项目由于使用 `webpack4` 和 `postcss7`，不再适配 `weapp-tailwindcss@5`。存量项目请继续停留在旧版本，或者迁移到 `HBuilderX Vue3 Vite` / `uni-app cli vue2 webpack5` 链路。
 
-下方也有一种 `Hack hbuilderx vue2 Way` 来在 `hbuilderx` `vue2` 项目中，使用 `webpack5` 和 `postcss8`
+## HBuilderX 与 uni-app CLI 环境汇总
 
-<!-- 另外出于开发体验的角度，还是推荐使用 `vscode` 作为你的开发工具，`hbuilderx` 只用于进行原生发布调试与 `ucloud` 部署用。 -->
-
-## HBuilderX 与 uni-app cli 环境汇总
-
-首先，你需要知道你的项目究竟使用的是什么打包工具，截止今天 `2023/12/18` 目前如下所示:
+先确认项目实际使用的构建链路。下面是文档维护时的常见组合，项目以本机 HBuilderX 安装的编译插件为准：
 
 |                  | webpack  | vite | postcss  |
 | ---------------- | -------- | ---- | -------- |
-| hbuilderx vue2   | webpack4 | x    | postcss7 |
-| uni-app cli vue2 | webpack5 | x    | postcss8 |
-| hbuilderx vue3   | x        | √    | postcss8 |
-| uni-app cli vue3 | x        | √    | postcss8 |
+| HBuilderX Vue2 | webpack4 | x | postcss7 |
+| uni-app CLI Vue2 | webpack5 | x | postcss8 |
+| HBuilderX Vue3 | x | √ | postcss8 |
+| uni-app CLI Vue3 | x | √ | postcss8 |
 
-也就是说，目前 `hbuilderx vue2` 的项目是最老的，无法使用最新版本的 `tailwindcss`，其他都可以使用。
+`weapp-tailwindcss@5` 推荐使用 Vite 或 Webpack5 链路。HBuilderX Vue2 Webpack4 项目建议停留在旧版插件，或迁移到 Vue3 Vite / uni-app CLI Vue2 Webpack5。
 
 ## HBuilderX Vue2 Webpack（存量项目） {#hbuilderx-vue2-webpack}
 
 `weapp-tailwindcss@5` 不再内置 Webpack4 / PostCSS7 / Tailwind CSS v2 兼容入口。如果你必须维护 `hbuilderx vue2` 项目，请继续使用旧版 `weapp-tailwindcss`，或迁移到上方推荐的 Vite / Webpack5 链路。
 
-## Hack hbuilderx vue2 Way
+## 不建议全局改 HBuilderX Vue2 编译器
 
 :::caution
-以下方式为全局 Hack, 可能会在 `hbuilderx` 升级后出现问题
+下面这种做法会改动 HBuilderX 内置编译器，影响同一台机器上的所有 HBuilderX Vue2 项目。除非你清楚回滚成本，否则不要在日常项目里使用。
 :::
 
-`hbuilderx` 和 `hbuilderx alpha` 新建的 `vue2` 项目，发现它们的 `webpack` 版本被锁死在了 **`4`** ，我又用 `cli` 创建了一个 `vue2` 项目，发现已经是 `webpack5` 了，看起来只有 `cli` 创建的项目，会被默认升级 `webpack5`。
+早期 HBuilderX Vue2 项目通常锁在 Webpack4 / PostCSS7。有人会直接升级 `HBuilderX/plugins/uniapp-cli` 里的 `@vue/cli-*`、loader、`postcss` 和 `postcss-loader`，把内置链路改到 Webpack5 / PostCSS8。
 
-当然这并不意味着 `hbuilderx` 创建的 `vue2` 项目无法使用最新的这个插件，我们可以强行升级 `HBuilderX/plugins/uniapp-cli` 中的依赖，使得它适配 `webpack5`
+这不是推荐路径。它会让 HBuilderX 的全局编译环境和官方插件状态不一致，升级 HBuilderX 或重新安装编译插件后也可能失效。
 
 > Macos uniapp-cli 路径在 /Applications/HBuilderX.app/Contents/HBuilderX/plugins/uniapp-cli
 >
-> Windows 的路径应该也在类似的地方，记得要先下载 vue2 的编译器，这个文件夹才有
+> Windows 的路径通常也在 HBuilderX 安装目录下。需要先安装 Vue2 编译插件，这个目录才会出现。
 
-来到 `uniapp-cli` 这个项目路径，执行 `yarn upgradeInteractive --latest` 升级项目依赖，重点升级 `@vue/cli-*` 相关包到 `5`
-
-这时候 `webpack` 已经被升级到 `5` 版本了，然后你升级其他的 `loader` 到适配 `webpack5` 的版本(通常是最新版本)
-
-再安装 `postcss` 和 `postcss-loader` 的最新版本，这时候你就把整个 `uni-app vue2` 项目的 `hbuilderx` 内置 `cli` 从 `webpack4`,`postcss7`变为了 `webpack5`,`postcss8` 了
-
-不过代价是什么呢？那就是，这项改动是全局的！
-
-你要想恢复设置，那只有重新安装 `uni-app vue2` 编译插件，或者重新安装整个 `hbuilderx`，所以这里还是推荐使用 `cli` 方式去创建项目，保证一个项目一个编译模式，你要节省空间就用 `pnpm`, 想用什么版本编译就用什么版本。
+更稳的做法是迁移项目，或者用 uni-app CLI 单独维护 Vue2 Webpack5 链路。这样一个项目对应一套依赖，排查问题也简单。
 
 ## 视频演示
 

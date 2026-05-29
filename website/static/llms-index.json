@@ -1,6 +1,6 @@
 {
   "version": "1.0.0",
-  "generatedAt": "2026-05-29T05:20:55.347Z",
+  "generatedAt": "2026-05-29T06:06:48.833Z",
   "siteUrl": "https://tw.icebreaker.top",
   "totals": {
     "all": 182,
@@ -2874,8 +2874,8 @@
       "kind": "doc",
       "id": "doc:evolution",
       "title": "技术演进",
-      "description": "目前 weapp-tailwindcss 使用:",
-      "summary": "目前 weapp-tailwindcss 使用:",
+      "description": "weapp-tailwindcss 从 patch 方案演进到 v5 生成模式后的核心处理链路。",
+      "summary": "weapp-tailwindcss@5 的核心变化是：Tailwind CSS 生成在构建运行时完成，不再要求业务项目执行 weapp-tw patch。构建器拿到 Tailwind 产出的类名集合后，再对模板、脚本和样式做小程序目标转译。",
       "url": "/docs/evolution",
       "canonical": "https://tw.icebreaker.top/docs/evolution",
       "keywords": [
@@ -3098,8 +3098,8 @@
       "kind": "doc",
       "id": "doc:issues/css-vars",
       "title": "CSS 变量失效问题",
-      "description": "在使用 taro 或者 uni-app 中，可能你会遇到 CSS 变量失效问题",
-      "summary": "在使用 taro 或者 uni-app 中，可能你会遇到 CSS 变量失效问题",
+      "description": "排查 Taro、uni-app 等小程序项目中 Tailwind CSS 变量丢失导致的渐变、阴影等样式失效问题。",
+      "summary": "在 Taro、uni-app 等小程序项目中，可能会遇到 Tailwind CSS 变量丢失的问题。",
       "url": "/docs/issues/css-vars",
       "canonical": "https://tw.icebreaker.top/docs/issues/css-vars",
       "keywords": [
@@ -3121,9 +3121,9 @@
       ],
       "headings": [
         "问题的现象",
-        "原因以及解决方案",
+        "原因与处理方式",
         "设置成功后的效果",
-        "什么是全局 `tailwindcss` 变量注入区域"
+        "什么是 Tailwind CSS 变量初始化区域"
       ],
       "updatedAt": null,
       "source": "docs/issues/css-vars.md"
@@ -3499,8 +3499,8 @@
       "kind": "doc",
       "id": "doc:issues/use-with-nutui",
       "title": "和 NutUI 一起使用",
-      "description": "taro 使用 NutUI 的 vue 和 react 版本的共同注意点:",
-      "summary": "taro 使用 NutUI 的 vue 和 react 版本的共同注意点:",
+      "description": "Taro 项目同时使用 NutUI、@tarojs/plugin-html 和 weapp-tailwindcss 时的 CSS 变量处理方式。",
+      "summary": "Taro 项目使用 NutUI 的 Vue 或 React 版本时，通常会同时启用 @tarojs/plugin-html。",
       "url": "/docs/issues/use-with-nutui",
       "canonical": "https://tw.icebreaker.top/docs/issues/use-with-nutui",
       "keywords": [
@@ -3521,7 +3521,7 @@
         "mpx"
       ],
       "headings": [
-        "可能有用但是过时的方案（部分 taro 版本有用）",
+        "旧 Taro 版本的备选方案",
         "参见"
       ],
       "updatedAt": null,
@@ -4160,8 +4160,8 @@
       "kind": "doc",
       "id": "doc:quick-start/frameworks/hbuilderx",
       "title": "uni-app HbuilderX 使用方式",
-      "description": "注意: 在使用 hbuilderx 进行开发时，由于目录结构和启动项的不同，你必须要给你 tailwind.config.js 传入**绝对路径**:",
-      "summary": "注意: 在使用 hbuilderx 进行开发时，由于目录结构和启动项的不同，你必须要给你 tailwind.config.js 传入**绝对路径**:",
+      "description": "HBuilderX Vue3 Vite 项目接入 weapp-tailwindcss@5 的配置方式，以及 Vue2 Webpack 存量项目的处理建议。",
+      "summary": "这条路线适合 HBuilderX 创建的 Vue3 Vite 项目。Tailwind CSS 3 继续使用 tailwind.config.js 的 content，Tailwind CSS 4 请改看 HBuilderX v4 接入。",
       "url": "/docs/quick-start/frameworks/hbuilderx",
       "canonical": "https://tw.icebreaker.top/docs/quick-start/frameworks/hbuilderx",
       "keywords": [
@@ -4182,12 +4182,12 @@
         "mpx"
       ],
       "headings": [
-        "HBuilderX Vue3 Vite（推荐）",
+        "HBuilderX Vue3 Vite",
         "# tailwind.config.js",
         "# vite.config.[tj]s",
-        "HBuilderX 与 uni-app cli 环境汇总",
+        "HBuilderX 与 uni-app CLI 环境汇总",
         "HBuilderX Vue2 Webpack（存量项目） {#hbuilderx-vue2-webpack}",
-        "Hack hbuilderx vue2 Way",
+        "不建议全局改 HBuilderX Vue2 编译器",
         "视频演示"
       ],
       "updatedAt": null,
@@ -4394,9 +4394,9 @@
     {
       "kind": "doc",
       "id": "doc:quick-start/frameworks/uni-app-x",
-      "title": "🔥 uni-app x",
-      "description": "目前 weapp-tailwindcss 从 4.2.0 版本开始，插件已经支持 uni-app-x 同时构建包括 web,小程序, 安卓,IOS,鸿蒙 五端项目",
-      "summary": "目前 weapp-tailwindcss 从 4.2.0 版本开始，插件已经支持 uni-app-x 同时构建包括 web,小程序, 安卓,IOS,鸿蒙 五端项目",
+      "title": "uni-app x",
+      "description": "weapp-tailwindcss@5 在 HBuilderX uni-app x 项目中接入 Tailwind CSS 3 的配置方式。",
+      "summary": "本文是 weapp-tailwindcss@5 配合 tailwindcss@3 的 uni-app x 接入方式。Tailwind CSS 3 继续通过 tailwind.config.js 的 content 扫描 uts / uvue 文件。",
       "url": "/docs/quick-start/frameworks/uni-app-x",
       "canonical": "https://tw.icebreaker.top/docs/quick-start/frameworks/uni-app-x",
       "keywords": [
@@ -4542,8 +4542,8 @@
       "kind": "doc",
       "id": "doc:quick-start/native/0.install",
       "title": "1. 安装与配置 tailwindcss",
-      "description": "很荣幸，我们在 weapp-tailwindcss@3.2.0 版本开始，引入了微信小程序原生支持的能力。 (其他平台的原生小程序开发，也非常容易兼容)",
-      "summary": "很荣幸，我们在 weapp-tailwindcss@3.2.0 版本开始，引入了微信小程序原生支持的能力。 (其他平台的原生小程序开发，也非常容易兼容)",
+      "description": "原生微信小程序项目接入 Tailwind CSS 3 和 weapp-tailwindcss@5 的安装与配置步骤。",
+      "summary": "本教程演示原生微信小程序 JS 模板接入 weapp-tailwindcss@5 和 Tailwind CSS 3 的方式。其他原生小程序平台也可以按同样思路处理，重点是让源码进入 Tailwind 扫描范围，并让 weapp-tailwindcss 负责小程序目标转译。",
       "url": "/docs/quick-start/native/0.install",
       "canonical": "https://tw.icebreaker.top/docs/quick-start/native/0.install",
       "keywords": [
@@ -4928,8 +4928,8 @@
       "kind": "doc",
       "id": "doc:quick-start/v4/tutorial/index",
       "title": "入门篇：快速认识 Tailwind CSS 4 与 weapp-tailwindcss",
-      "description": "Tailwind CSS 4 重新定义了“原子化”样式的组织方式：配置文件换成了 CSS，主题变量与自定义工具也变成了原生语法。这一变化对小程序生态同样生效，weapp-tailwindcss 已经适配了新的编译流程。本篇入门指南帮助你在 30 分钟内从零搭好一套 tailwi…",
-      "summary": "Tailwind CSS 4 重新定义了“原子化”样式的组织方式：配置文件换成了 CSS，主题变量与自定义工具也变成了原生语法。这一变化对小程序生态同样生效，weapp-tailwindcss 已经适配了新的编译流程。本篇入门指南帮助你在 30 分钟内从零搭好一套 tailwindcss@4 + weapp-tailwindcss 的基础开发环境，并理解最…",
+      "description": "Tailwind CSS 4 把配置入口移到 CSS：主题变量与自定义工具都可以用原生语法声明。weapp-tailwindcss 已经适配这套编译流程。本篇用 30 分钟搭好一套 tailwi…",
+      "summary": "Tailwind CSS 4 把配置入口移到 CSS：主题变量与自定义工具都可以用原生语法声明。weapp-tailwindcss 已经适配这套编译流程。本篇用 30 分钟搭好一套 tailwindcss@4 + weapp-tailwindcss 的基础开发环境，并说明几个必须看懂的配置点。",
       "url": "/docs/quick-start/v4/tutorial",
       "canonical": "https://tw.icebreaker.top/docs/quick-start/v4/tutorial",
       "keywords": [
@@ -5142,8 +5142,8 @@
       "kind": "doc",
       "id": "doc:quick-start/v4/uni-app-x",
       "title": "uni-app x",
-      "description": "Tailwind CSS v4 在 uni-app x（HBuilderX）中的接入说明、平台支持范围与注意事项。",
-      "summary": "Tailwind CSS v4 在 uni-app x（HBuilderX）中的接入说明、平台支持范围与注意事项。",
+      "description": "Tailwind CSS v4 在 uni-app x（HBuilderX）中的接入方式、平台验证范围与本地 E2E 说明。",
+      "summary": "weapp-tailwindcss@5 可以在 HBuilderX 的 uni-app x 项目中接入 Tailwind CSS 4。当前仓库用本地 HBuilderX E2E 覆盖了微信小程序、Android App、iOS App，以及 Web HMR 任意值类名连续新增场景。",
       "url": "/docs/quick-start/v4/uni-app-x",
       "canonical": "https://tw.icebreaker.top/docs/quick-start/v4/uni-app-x",
       "keywords": [
@@ -5164,7 +5164,14 @@
         "quick start",
         "uni app x"
       ],
-      "headings": [],
+      "headings": [
+        "安装",
+        "注册插件",
+        "添加 CSS 入口",
+        "验证任意值类名",
+        "布局限制",
+        "参考模板"
+      ],
       "updatedAt": null,
       "source": "docs/quick-start/v4/uni-app-x.mdx"
     },
@@ -6280,7 +6287,7 @@
       "kind": "doc",
       "id": "doc:uni-app-x/index",
       "title": "uni-app x 专题",
-      "description": "面向用户的实战手册，10 分钟完成 Tailwind CSS 在 uni-app x 的跨端集成与开发。",
+      "description": "在 HBuilderX 的 uni-app x 项目中接入 Tailwind CSS，并覆盖 Web、小程序、Android 与 iOS。",
       "summary": "Tailwind CSS × uni-app x",
       "url": "/docs/uni-app-x",
       "canonical": "https://tw.icebreaker.top/docs/uni-app-x",
@@ -6298,9 +6305,9 @@
       ],
       "headings": [
         "这篇文档适合谁",
-        "你将收获什么",
+        "当前支持范围",
         "最快开始",
-        "开发建议（从用户出发）",
+        "开发建议",
         "布局能力边界",
         "为什么推荐先用 Android",
         "常见问题",

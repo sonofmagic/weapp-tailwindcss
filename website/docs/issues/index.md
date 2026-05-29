@@ -202,14 +202,23 @@ pnpm 8 这个版本改变了一些默认值，其中 `resolution-mode` 默认值
 
 你可以参考仓库中的 `demo/uni-app-vue3-vite` 来进行配置。
 
-## 为什么使用 taro 写 jsx，js 时候，转义不生效？
+## 为什么在 Taro JSX / JS 里写类名不生效？
 
-这是因为 [patch](/docs/quick-start/this-plugin) 方法没有生效，这个指令是用来在运行时暴露 `tailwindcss` 上下文的，只有暴露成功，我们写的 `js` 里的样式，才会变精准转义，否则就会出现在 `jsx` 里写 `className` 不生效的情况。
+在 `weapp-tailwindcss@5` 中，不再需要执行 `weapp-tw patch`。JS/JSX 里的类名能否转译，主要看这些类名是否已经进入 Tailwind 的扫描范围，并出现在构建时收集到的 `classNameSet` 中。
+
+排查顺序：
+
+- Tailwind CSS 3：检查 `tailwind.config.js` 的 `content` 是否包含对应的 `tsx/jsx/js/ts` 文件
+- Tailwind CSS 4：检查 CSS 入口里的 `@source` 是否覆盖对应源码目录
+- 检查项目是否还把官方 Tailwind PostCSS/Vite 插件和 `weapp-tailwindcss` 同时用于小程序目标；小程序生成链路应由 `weapp-tailwindcss` 接管
+- 任意值类名如果写在动态拼接字符串里，Tailwind 可能扫描不到；这种场景需要改成完整字面量，或加入 safelist / `@source`
 
 ## monorepo 项目中 arbitrary values 写法无效？
 
-这可能是由于 tailwindcss 包被提升，导致项目获取不到正确的 tailwind 上下文，有两种解决方案。
+这通常是 Tailwind 上下文定位不准，或源码没有被扫描到。可以先检查两件事：
 
-- 配置 [tailwindcssBasedir](https://tw.icebreaker.top/docs/api/interfaces/UserDefinedOptions#tailwindcssbasedir)
+- 配置 [tailwindcssBasedir](https://tw.icebreaker.top/docs/api/interfaces/UserDefinedOptions#tailwindcssbasedir)，让插件从正确的项目目录解析 Tailwind
 
-- 禁止 `tailwindcss` 包被提升，具体配置方法可以去查阅各包管理器的说明文档
+- Tailwind CSS 3 检查 `content`，Tailwind CSS 4 检查 `@source` / `cssEntries`
+
+如果 monorepo 的依赖提升导致不同包拿到的 Tailwind 版本不一致，再考虑限制 `tailwindcss` 包提升。具体配置取决于包管理器。

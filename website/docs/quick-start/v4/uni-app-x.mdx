@@ -1,6 +1,6 @@
 ---
 title: uni-app x
-description: Tailwind CSS v4 在 uni-app x（HBuilderX）中的接入说明、平台支持范围与注意事项。
+description: Tailwind CSS v4 在 uni-app x（HBuilderX）中的接入方式、平台验证范围与本地 E2E 说明。
 keywords:
   - 快速开始
   - 安装
@@ -17,24 +17,91 @@ keywords:
   - rax
   - mpx
 ---
-import UniAppHbuilderShared from './UniAppHbuilderShared.mdx'
 
 # uni-app x
 
-:::warning
-tailwindcss@4 版本，暂时只支持 hbuilderx uni-app x 跨 `h5` 和 `小程序` 平台，
+`weapp-tailwindcss@5` 可以在 HBuilderX 的 uni-app x 项目中接入 Tailwind CSS 4。当前仓库用本地 HBuilderX E2E 覆盖了微信小程序、Android App、iOS App，以及 Web HMR 任意值类名连续新增场景。
 
-原生安卓和IOS平台无法支持，因为 uni-app x 目前对 css 各种现代语法的兼容较差，兼容不了 tailwindcss@4 生成的样式
+:::info 本地验证
+HBuilderX、Android 模拟器和 iOS 模拟器都依赖开发机环境，所以 App E2E 只在本地跑，不进入 CI/CD。
 
-未来此功能的适配，取决于 uni-app x 团队对现代 css 的兼容程度
-
-(2025-07-27)
+```bash
+pnpm e2e:hbuilderx:local
+pnpm e2e:hbuilderx:local:android
+pnpm e2e:hbuilderx:local:ios
+```
 :::
 
-:::warning 布局限制
-即使在当前可用的平台范围内，也不要把 `gap`、`gap-x-*`、`gap-y-*` 当作 `uni-app x` 可依赖能力。
+## 安装
 
-`space-x-*`、`space-y-*` 也不要在 `uni-app x` 中使用。
-:::
+```bash npm2yarn
+npm init -y
+npm install -D tailwindcss weapp-tailwindcss
+```
 
-<UniAppHbuilderShared isX />
+## 注册插件
+
+uni-app x 要使用 `uniAppX` 预设。Tailwind CSS 4 的入口建议放在纯 `.css` 文件里，并通过 `cssEntries` 显式传入绝对路径。
+
+```ts title="vite.config.ts"
+import path from 'node:path'
+import { defineConfig } from 'vite'
+import uni from '@dcloudio/vite-plugin-uni'
+import { uniAppX } from 'weapp-tailwindcss/presets'
+import { WeappTailwindcss } from 'weapp-tailwindcss/vite'
+
+export default defineConfig({
+  plugins: [
+    uni(),
+    WeappTailwindcss(
+      uniAppX({
+        base: __dirname,
+        cssEntries: [
+          path.resolve(__dirname, 'main.css'),
+        ],
+        rem2rpx: true,
+      }),
+    ),
+  ],
+})
+```
+
+不要再注册 `@tailwindcss/postcss` 或 `@tailwindcss/vite`。小程序和 App 目标下的 Tailwind 生成、类名转译与单位处理都由 `weapp-tailwindcss` 接管。
+
+## 添加 CSS 入口
+
+```css title="main.css"
+@import "tailwindcss" source(none);
+@source "./App.uvue";
+@source "./pages/**/*.{uts,uvue}";
+@source "./components/**/*.{uts,uvue}";
+@source "./stores/**/*.{uts,uvue}";
+@source not "./uni_modules/**/*";
+@source not "./unpackage/**/*";
+```
+
+`@source` 要覆盖页面、组件和可能产出类名的脚本目录。不要把 `unpackage` 放进扫描范围，否则 HBuilderX 产物会反过来干扰开发构建。
+
+## 验证任意值类名
+
+在任意页面写一段最小用例：
+
+```html
+<view class="p-4">
+  <text class="bg-[#102938] text-[#f7fbff] w-[173px]">Tailwind CSS 4</text>
+</view>
+```
+
+运行到微信小程序、Android 或 iOS 后，检查元素样式是否生效。仓库里的 App E2E 也会向页面追加 `bg-[#102938] text-[#f7fbff] w-[173px]`，再检查 HBuilderX 产物里是否出现转译后的类名。
+
+## 布局限制
+
+- `uni-app x` 中不要依赖 `gap`、`gap-x-*`、`gap-y-*`
+- `space-x-*`、`space-y-*` 也不要作为跨端间距方案
+- 原生 App 端文本使用 `<text>`，文本相关样式要直接写在 `<text>` 上
+- 需要跨端稳定的间距时，直接给子项写 `mt-*` / `ml-*`，或封装固定结构的间距组件
+
+## 参考模板
+
+- [uni-app-x-hbuilderx 模板](https://github.com/icebreaker-template/uni-app-x-hbuilderx)
+- [仓库内 Tailwind CSS v4 demo](https://github.com/sonofmagic/weapp-tailwindcss/tree/next/demo/uni-app-x-hbuilderx-tailwindcss-v4)

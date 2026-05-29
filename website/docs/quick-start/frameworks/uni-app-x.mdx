@@ -1,6 +1,6 @@
 ---
-title: "\U0001F525 uni-app x"
-description: '目前 weapp-tailwindcss 从 4.2.0 版本开始，插件已经支持 uni-app-x 同时构建包括 web,小程序, 安卓,IOS,鸿蒙 五端项目'
+title: uni-app x
+description: weapp-tailwindcss@5 在 HBuilderX uni-app x 项目中接入 Tailwind CSS 3 的配置方式。
 keywords:
   - 快速开始
   - 安装
@@ -17,13 +17,13 @@ keywords:
   - rax
   - mpx
 ---
-# 🔥 uni-app x
+# uni-app x
 
-目前 `weapp-tailwindcss` 从 `4.2.0` 版本开始，插件已经支持 `uni-app-x` 同时构建包括 `web`,`小程序`, `安卓`,`IOS`,`鸿蒙` 五端项目
+本文是 `weapp-tailwindcss@5` 配合 `tailwindcss@3` 的 `uni-app x` 接入方式。Tailwind CSS 3 继续通过 `tailwind.config.js` 的 `content` 扫描 `uts` / `uvue` 文件。
 
-本文是 `weapp-tailwindcss@5` 配合 `tailwindcss@3` 的 `uni-app x` 接入方式。Tailwind CSS 3.x 继续通过 `tailwind.config.js` 的 `content` 扫描 `uts` / `uvue` 文件。
+如果你使用的是 Tailwind CSS 4，请改看 [Tailwind CSS 4.x / uni-app x](/docs/quick-start/v4/uni-app-x)。v4 入口需要使用 `@import "tailwindcss" source(none);` 和 `@source`，并建议显式配置 `cssEntries`。
 
-如果你使用的是 `tailwindcss@4`，请改看 [Tailwind CSS 4.x / uni-app x](/docs/quick-start/v4/uni-app-x)，入口 CSS 需要使用 `@import "tailwindcss";` 和 `@source`。
+当前仓库的 HBuilderX 本地 E2E 覆盖了 uni-app x 的 v3/v4 小程序、Android 和 iOS 产物。App E2E 依赖本机 HBuilderX 与模拟器，只在本地执行。
 
 :::warning 能力边界
 `uvue` 原生 App 端不要依赖 `gap`、`gap-x-*`、`gap-y-*`，这些布局能力当前都不支持。
@@ -85,7 +85,8 @@ const { r } = require('./shared')
 module.exports = {
   content: [
     r('./pages/**/*.{uts,uvue}'),
-    r('./components/**/*.{uts,uvue}') 
+    r('./components/**/*.{uts,uvue}'),
+    `!${r('./uni_modules/**/*')}`,
   ],
   corePlugins: {
     preflight: false,
@@ -96,6 +97,5 @@ module.exports = {
 
 ## 现成模板可以直接使用或者参考
 
-https://github.com/icebreaker-template/uni-app-x-hbuilderx
-
-使用方式详见项目中的 `README.md`
+- [uni-app-x-hbuilderx 模板](https://github.com/icebreaker-template/uni-app-x-hbuilderx)
+- [仓库内 Tailwind CSS 3 demo](https://github.com/sonofmagic/weapp-tailwindcss/tree/next/demo/uni-app-x-hbuilderx-tailwindcss-v3)
