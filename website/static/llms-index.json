@@ -1,6 +1,6 @@
 {
   "version": "1.0.0",
-  "generatedAt": "2026-05-27T08:14:31.674Z",
+  "generatedAt": "2026-05-29T05:20:55.347Z",
   "siteUrl": "https://tw.icebreaker.top",
   "totals": {
     "all": 182,
@@ -3727,8 +3727,8 @@
       "kind": "doc",
       "id": "doc:migrations/v5",
       "title": "从 v4 迁移到 v5",
-      "description": "把 weapp-tailwindcss v4 项目升级到 v5，按清单改就行。",
-      "summary": "v5 的变化很直接：小程序端的 Tailwind CSS 生成交给 WeappTailwindcss。别再手动 patch，也别在同一个小程序构建里再挂 Tailwind 官方插件。",
+      "description": "weapp-tailwindcss v4 项目升级到 v5 的迁移清单，覆盖依赖、Tailwind 入口、构建插件、H5/Web 与 uni-app x。",
+      "summary": "v5 最大的变化不是 API 名字，而是职责边界变了。",
       "url": "/docs/migrations/v5",
       "canonical": "https://tw.icebreaker.top/docs/migrations/v5",
       "keywords": [
@@ -3742,22 +3742,22 @@
         "tailwindcss",
         "小程序",
         "uni-app",
+        "uni-app x",
         "taro",
         "weapp-vite",
         "mpx",
         "兼容",
-        "迁移到",
-        "migrations"
+        "迁移到"
       ],
       "headings": [
-        "先改这几处",
+        "先看结论",
         "1. 升级依赖",
-        "2. 删除 patch",
-        "3. 检查 CSS 入口",
-        "4. 注册 WeappTailwindcss",
-        "5. 多端项目删掉 H5/Web 禁用逻辑",
-        "6. cssEntries 不是每个项目都要写",
-        "7. 清理 PostCSS"
+        "2. 删除安装后 patch",
+        "3. 清理 Tailwind 官方生成插件",
+        "4. 检查 Tailwind CSS 入口",
+        "5. 注册 WeappTailwindcss",
+        "6. 什么时候写 cssEntries",
+        "7. H5/Web 构建不要一刀切禁用"
       ],
       "updatedAt": null,
       "source": "docs/migrations/v5.md"
