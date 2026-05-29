@@ -69,6 +69,7 @@ jobs:
         run: pnpm e2e:multiplatform-build
 
       - name: E2E Multiplatform Taro Alipay Output
+        timeout-minutes: 5
         run: pnpm e2e:multiplatform-build:taro-alipay
 
       - name: Test
@@ -83,7 +84,7 @@ jobs:
             echo "- 现在额外包含：\`pnpm e2e:static\`，用于保证 v5 生成示例和静态快照与 CI 一致。"
             echo "- 现在额外包含：\`pnpm e2e:preprocessor\`，用于保证 Sass/Less 等预处理器 Tailwind 入口在真实 demo 中可构建。"
             echo "- 现在额外包含：跨框架支持矩阵 e2e，用于保证 demo 构建入口与模板静态输出一致。"
-            echo "- 现在额外包含：\`pnpm e2e:multiplatform-build\` 和 \`pnpm e2e:multiplatform-build:taro-alipay\`，用于保证 uni-app、Mpx、Taro 等其他平台构建产物可生成且 Tailwind 转译结果稳定。"
+            echo "- 现在额外包含：\`pnpm e2e:multiplatform-build\`，用于保证 uni-app、Mpx 等多平台构建产物可生成且 Tailwind 转译结果稳定；\`pnpm e2e:multiplatform-build:taro-alipay\` 作为 Taro Alipay 专项产物验证并设置单步超时。"
             echo "- \`pnpm e2e:ci\` 仍保留本地/专项使用，其中 hot-update/watch 覆盖由独立工作流承载。"
             echo "- \`Compatibility Gate\` 负责跨系统/多 Node 的核心回归，避免把全仓 lint/build 在每个矩阵里重复执行。"
             echo "- \`pnpm e2e:watch\` 已拆分到独立工作流：\`E2E Watch\`（.github/workflows/e2e-watch.yml）。"

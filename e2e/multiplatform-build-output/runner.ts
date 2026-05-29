@@ -1,4 +1,4 @@
-import type { BuildOutputCase } from './cases'
+import type { BuildOutputCase } from './types'
 import fs from 'node:fs/promises'
 import process from 'node:process'
 import { execa } from 'execa'
