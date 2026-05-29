@@ -612,6 +612,7 @@ describe('bundlers/vite WeappTailwindcss bundle', () => {
 
     const vueModule = {
       id: pageFile,
+      isSelfAccepting: true,
       url: '/src/pages/index/index.vue',
     } as ModuleNode
     const cssModule = {
@@ -653,6 +654,112 @@ describe('bundlers/vite WeappTailwindcss bundle', () => {
         },
       ],
     })
+  }, TEST_TIMEOUT_MS)
+
+  it('reloads uni vue source hot updates that only produce css hmr updates', async () => {
+    const root = await mkdtemp(path.join(os.tmpdir(), 'weapp-tw-vite-hmr-empty-modules-'))
+    createdDirs.push(root)
+    const pageFile = path.join(root, 'src/pages/index/index.vue')
+    const styleId = '/src/App.vue?vue&type=style&index=0&lang.scss&direct'
+    vi.doMock('@/generator', async (importOriginal) => {
+      const actual = await importOriginal<typeof import('@/generator')>()
+      return {
+        ...actual,
+        createWeappTailwindcssGenerator: vi.fn(() => ({
+          generate: vi.fn(async () => ({
+            css: '.text-\\[\\#00ff00\\]{color:#00ff00}',
+            rawCss: '.text-\\[\\#00ff00\\]{color:#00ff00}',
+            target: 'web',
+            classSet: new Set(['text-[#00ff00]']),
+            dependencies: [],
+            sources: [],
+            root: null,
+            version: 3,
+          })),
+          validateCandidates: vi.fn(async (candidates: Set<string>) => candidates),
+        })),
+        normalizeWeappTailwindcssGeneratorOptions: normalizeGeneratorOptions,
+      }
+    })
+
+    setCurrentContext(createContext({
+      generator: {
+        target: 'web',
+      },
+      twPatcher: {
+        patch: vi.fn(),
+        getClassSet: vi.fn(async () => new Set(['text-[#00ff00]'])),
+        getClassSetSync: vi.fn(() => new Set(['text-[#00ff00]'])),
+        majorVersion: 3,
+        extract: vi.fn(async () => ({ classSet: new Set(['text-[#00ff00]']) })),
+      },
+    }))
+
+    const WeappTailwindcss = await loadUnifiedVitePlugin()
+    const plugins = WeappTailwindcss({
+      generator: {
+        target: 'web',
+      },
+    })
+    const sourcePlugin = plugins?.find(plugin => plugin.name === 'weapp-tailwindcss:adaptor:source-candidates') as Plugin
+    const cssHmrPlugin = plugins?.find(plugin => plugin.name === 'weapp-tailwindcss:adaptor:generate:serve-hmr') as Plugin
+    const postPlugin = plugins?.find(plugin => plugin.name === 'weapp-tailwindcss:adaptor:post') as Plugin
+
+    await (postPlugin.configResolved as any)?.call(postPlugin, {
+      command: 'serve',
+      root,
+      plugins: [{ name: 'uni:app' }],
+      css: { postcss: { plugins: [] } },
+      build: { outDir: 'dist' },
+    } as ResolvedConfig)
+
+    await getTransformHandler(cssHmrPlugin)?.call(
+      cssHmrPlugin,
+      [
+        'import {updateStyle as __vite__updateStyle} from "/@vite/client"',
+        `const __vite__id = ${JSON.stringify(styleId)}`,
+        'const __vite__css = "@tailwind utilities;"',
+        '__vite__updateStyle(__vite__id, __vite__css)',
+      ].join('\n'),
+      styleId,
+    )
+
+    const cssModule = {
+      id: styleId,
+      url: styleId,
+    } as ModuleNode
+    const vueModule = {
+      id: pageFile,
+      isSelfAccepting: true,
+      url: '/src/pages/index/index.vue',
+    } as ModuleNode
+    const invalidateModule = vi.fn()
+    const wsSend = vi.fn()
+    const result = await (sourcePlugin.handleHotUpdate as any)?.call(sourcePlugin, {
+      file: pageFile,
+      modules: [vueModule, cssModule],
+      timestamp: 123456,
+      server: {
+        ws: {
+          send: wsSend,
+        },
+        moduleGraph: {
+          getModuleById: vi.fn(id => id === styleId ? cssModule : undefined),
+          getModulesByFile: vi.fn(() => undefined),
+          invalidateModule,
+        },
+      },
+    } as HmrContext)
+
+    expect(wsSend).toHaveBeenCalledWith({
+      type: 'full-reload',
+      path: '*',
+      triggeredBy: pageFile,
+    })
+    expect(result).toEqual([])
+    expect(invalidateModule).toHaveBeenCalledWith(cssModule)
+    await Promise.resolve()
+    expect(wsSend).toHaveBeenCalledTimes(1)
   }, TEST_TIMEOUT_MS)
 
   it('generates Tailwind v4 css in vite serve before Vite wraps css hmr modules', async () => {

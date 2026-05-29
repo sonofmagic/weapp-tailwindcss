@@ -527,6 +527,15 @@ export function WeappTailwindcss(options: UserDefinedOptions = {}): Plugin[] | u
       )
     })
   }
+  const hasSelfAcceptingNonStyleHotModule = (modules: ModuleNode[]) => {
+    return modules.some((mod) => {
+      const modId = mod.id ?? mod.url
+      return !isSourceStyleRequest(modId) && mod.isSelfAccepting === true
+    })
+  }
+  const isUniViteProject = () => {
+    return resolvedConfig?.plugins?.some(plugin => plugin.name.includes('uni')) ?? false
+  }
   const sendSupplementalCssHotUpdates = (ctx: HmrContext, cssModules: ModuleNode[]) => {
     const updates = cssModules
       .filter(mod => !includesHotModule(ctx.modules, mod))
@@ -553,6 +562,13 @@ export function WeappTailwindcss(options: UserDefinedOptions = {}): Plugin[] | u
         type: 'update',
         updates,
       })
+    })
+  }
+  const sendFullReloadForUnresolvedHotUpdate = (ctx: HmrContext) => {
+    ctx.server.ws?.send?.({
+      type: 'full-reload',
+      path: '*',
+      triggeredBy: ctx.file,
     })
   }
   const matchesViteProcessedCssSource = (candidate: string) => {
@@ -739,9 +755,21 @@ export function WeappTailwindcss(options: UserDefinedOptions = {}): Plugin[] | u
       },
       async handleHotUpdate(ctx) {
         return hmrTimingRecorder.measure('sourceCandidates.handleHotUpdate', async () => {
+          const isSourceCandidateHotUpdate = shouldOwnTailwindGeneration && isSourceCandidateRequest(ctx.file)
           await syncChangedSourceCandidateFile(ctx.file)
           invalidateRecordedGeneratorCandidates()
           const cssModules = resolveHotTailwindCssModules(ctx)
+          if (
+            isSourceCandidateHotUpdate
+            && !isSourceStyleRequest(ctx.file)
+            && (
+              !hasSelfAcceptingNonStyleHotModule(ctx.modules)
+              || (cssModules.length > 0 && isUniViteProject())
+            )
+          ) {
+            sendFullReloadForUnresolvedHotUpdate(ctx)
+            return []
+          }
           sendSupplementalCssHotUpdates(ctx, cssModules)
           return cssModules.length > 0
             ? [...ctx.modules, ...cssModules]
