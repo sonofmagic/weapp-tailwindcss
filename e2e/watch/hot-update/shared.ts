@@ -3,7 +3,7 @@ import process from 'node:process'
 import { execa } from 'execa'
 import path from 'pathe'
 import { expect } from 'vitest'
-import { buildCases } from '../../../tools/weapp-tailwindcss-scripts/src/watch-hmr-regression/cases'
+import { buildCases, isLocalOnlyWatchCase } from '../../../tools/weapp-tailwindcss-scripts/src/watch-hmr-regression/cases'
 import { DEFAULT_PLUGIN_PROCESS_BUDGET_MS } from '../../../tools/weapp-tailwindcss-scripts/src/watch-hmr-regression/types'
 
 export type WatchProjectGroup = 'demo'
@@ -380,7 +380,11 @@ function resolveSelectedWatchCaseCount(target: WatchCaseName) {
     return bothCases.size
   }
 
-  return configuredWatchCases.some(item => item.name === target) ? 1 : 0
+  if (configuredWatchCases.some(item => item.name === target)) {
+    return 1
+  }
+
+  return isLocalOnlyWatchCase(target) ? 1 : 0
 }
 
 function resolveDefaultWatchCommandTimeoutMs(target: WatchCaseName, timeoutMs: number) {
@@ -433,6 +437,8 @@ export function resolveCaseName() {
     || value === 'taro-vite-vue3-tailwindcss-v4'
     || value === 'uni-app-vite-tailwindcss-v3'
     || value === 'uni-app-vite-tailwindcss-v4'
+    || value === 'uni-app-vite-vue3-hbuilderx-tailwindcss-v3'
+    || value === 'uni-app-vite-vue3-hbuilderx-tailwindcss-v4'
     || value === 'weapp-vite-tailwindcss-v4'
     || value === 'weapp-vite-tailwindcss-v3'
     || value === 'both'
@@ -464,7 +470,7 @@ export function resolveExpectedGroup(target: WatchCaseName): WatchProjectGroup |
 
 export function shouldRunTarget(caseName: WatchCaseName, target: ConcreteWatchCaseName) {
   if (caseName === 'all') {
-    return true
+    return !isLocalOnlyWatchCase(target)
   }
 
   if (caseName === 'both') {

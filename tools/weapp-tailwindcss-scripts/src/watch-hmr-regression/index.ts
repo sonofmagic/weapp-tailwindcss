@@ -2,7 +2,7 @@ import type { WatchCaseMetrics } from './types'
 import { promises as fs } from 'node:fs'
 import path from 'node:path'
 import process from 'node:process'
-import { buildCases, pickCases } from './cases'
+import { buildCases, isLocalOnlyWatchCase, pickCases } from './cases'
 import { formatPath, resolveBaseCwd, resolveOptions } from './cli'
 import { assertHotUpdateBudget, assertPluginProcessBudget, logSummary, runCase, runWebOnlyCase } from './runner'
 import { ensureLocalPackageBuild, sleep } from './session'
@@ -44,7 +44,9 @@ export async function main() {
     await sleep(postBuildSettleMs)
   }
 
-  const allCases = buildCases(baseCwd)
+  const allCases = buildCases(baseCwd, {
+    includeLocalOnly: isLocalOnlyWatchCase(options.caseName),
+  })
   const selected = pickCases(allCases, options.caseName)
 
   if (selected.length === 0) {

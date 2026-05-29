@@ -17,6 +17,8 @@
     "build:mp-weixin": "cross-env UNI_INPUT_DIR=. node ../../scripts/uni-build-guard.mjs build -p mp-weixin",
     "build:h5": "cross-env UNI_INPUT_DIR=. uni build",
     "predev": "node ../../scripts/ensure-weapp-tailwindcss-built.mjs",
+    "predev:android:emulator": "node ../../scripts/ensure-weapp-tailwindcss-built.mjs",
+    "predev:ios:simulator": "node ../../scripts/ensure-weapp-tailwindcss-built.mjs",
     "predev:app": "node ../../scripts/ensure-weapp-tailwindcss-built.mjs",
     "predev:mp-weixin": "node ../../scripts/ensure-weapp-tailwindcss-built.mjs",
     "predev:h5": "node ../../scripts/ensure-weapp-tailwindcss-built.mjs",
