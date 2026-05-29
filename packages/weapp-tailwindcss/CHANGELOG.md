@@ -1,5 +1,22 @@
 # weapp-tailwindcss
 
+## 5.0.0-next.26
+
+### Major Changes
+
+- 🚀 **新增 HBuilderX 直连演示矩阵，覆盖 uni-app Vite Vue 3 与 uni-app x 的 Tailwind CSS v3/v4 场景，并提供 `hbuilderx` preset。** [#882](https://github.com/sonofmagic/weapp-tailwindcss/pull/882) by @sonofmagic
+  - 同时将已由 tsdown 打包进产物、且不需要消费者安装的实现依赖下移到 `devDependencies`。公开导出或运行期加载边界仍保留为正式依赖，例如 `tailwindcss-config` 的 `jiti`，以及 `@weapp-tailwindcss/shared` 对外导出的 `defu`、`get-value`、`set-value`。
+
+### Patch Changes
+
+- 🐛 **修复 Vite H5 开发模式下仅修改 Vue 脚本中的 Tailwind 任意值类名时，样式模块未稳定参与 HMR，导致新颜色类名 CSS 未生成到页面的问题。** [#881](https://github.com/sonofmagic/weapp-tailwindcss/pull/881) by @github-actions
+- 📦 Updated 4 dependencies [`2d2acf2`](https://github.com/sonofmagic/weapp-tailwindcss/commit/2d2acf29cfee02ffb32783c8bd3c5de8d9aab9df)
+  <details><summary>Details</summary>
+
+  `@weapp-tailwindcss/postcss@3.0.0-next.8`, `@weapp-tailwindcss/logger@2.0.0-next.0`, `@weapp-tailwindcss/shared@2.0.0-next.0`, `tailwindcss-config@2.0.0-next.2`
+
+  </details>
+
 ## 5.0.0-next.25
 
 ### Minor Changes
