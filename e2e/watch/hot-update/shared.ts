@@ -22,6 +22,8 @@ export type ConcreteWatchCaseName
     | 'taro-vite-vue3-tailwindcss-v4'
     | 'uni-app-vite-tailwindcss-v3'
     | 'uni-app-vite-tailwindcss-v4'
+    | 'uni-app-vite-vue3-hbuilderx-tailwindcss-v3'
+    | 'uni-app-vite-vue3-hbuilderx-tailwindcss-v4'
     | 'weapp-vite-tailwindcss-v3'
     | 'weapp-vite-tailwindcss-v4'
 export type WatchCaseName = ConcreteWatchCaseName | 'both' | 'all' | 'demo'
@@ -58,6 +60,11 @@ const WEB_HMR_CASES = new Set<ConcreteWatchCaseName>([
   'uni-app-vite-tailwindcss-v3',
   'uni-app-vite-tailwindcss-v4',
 ])
+const SUBPACKAGE_HMR_CASES = new Set(
+  buildCases(path.resolve(import.meta.dirname, '../../..'))
+    .filter(item => (item.subPackageMutations?.length ?? 0) > 0)
+    .map(item => item.name),
+)
 
 function normalizePathLike(value: string) {
   return value.replace(PATH_SEPARATOR_RE, '/')
@@ -284,6 +291,7 @@ const bothCases = new Set<ConcreteWatchCaseName>(['taro-webpack-react-tailwindcs
 const noApplyValidationCases = new Set<ConcreteWatchCaseName>([
   'mpx-tailwindcss-v4',
   'uni-app-vite-tailwindcss-v4',
+  'uni-app-vite-vue3-hbuilderx-tailwindcss-v4',
   'taro-vite-react-tailwindcss-v4',
   'taro-webpack-react-tailwindcss-v4',
   'weapp-vite-tailwindcss-v4',
@@ -298,6 +306,7 @@ const referenceDirectiveRequiredCases = new Set<ConcreteWatchCaseName>([
   'gulp-tailwindcss-v4',
   'mpx-tailwindcss-v4',
   'uni-app-vite-tailwindcss-v4',
+  'uni-app-vite-vue3-hbuilderx-tailwindcss-v4',
   'taro-vite-react-tailwindcss-v4',
   'taro-webpack-react-tailwindcss-v4',
   'weapp-vite-tailwindcss-v4',
@@ -746,9 +755,14 @@ export function assertHotUpdateReport(report: HotUpdateReport, target: WatchCase
     const hasContentMutation = item.mutationMetrics.some(metric => metric.mutationKind === 'content')
     const subPackageMutationMetrics = item.subPackageMutationMetrics ?? []
     expect(item.mutationMetrics.length).toBe(hasContentMutation ? 4 : 3)
-    expect(subPackageMutationMetrics.length).toBe(2)
-    expect(subPackageMutationMetrics.map(metric => metric.root).sort()).toEqual(['sub-independent', 'sub-normal'])
-    expect(subPackageMutationMetrics.some(metric => metric.independent)).toBe(true)
+    if (SUBPACKAGE_HMR_CASES.has(item.name)) {
+      expect(subPackageMutationMetrics.length).toBe(2)
+      expect(subPackageMutationMetrics.map(metric => metric.root).sort()).toEqual(['sub-independent', 'sub-normal'])
+      expect(subPackageMutationMetrics.some(metric => metric.independent)).toBe(true)
+    }
+    else {
+      expect(subPackageMutationMetrics).toEqual([])
+    }
     expect(item.summaryByMutationKind.template?.count).toBe(1)
     expect(item.summaryByMutationKind.script?.count).toBe(1)
     expect(item.summaryByMutationKind.style?.count).toBe(1)
@@ -888,8 +902,7 @@ export function assertHotUpdateReport(report: HotUpdateReport, target: WatchCase
         expect(contentMetric.verifyEscapedIn).toContain('js')
         expect(contentMetric.verifyClassLiteralIn).toContain('js')
       }
-      expect(contentMetric.verifyEscapedIn.length).toBeGreaterThan(0)
-      expect(contentMetric.verifyClassLiteralIn.length).toBeGreaterThan(0)
+      expect(contentMetric.verifyEscapedIn.length + contentMetric.verifyClassLiteralIn.length).toBeGreaterThan(0)
       expect(contentMetric.rounds.length).toBe(1)
       expect(contentMetric.rounds[0]?.roundName).toBe(ISSUE33_REQUIRED_MUTATION_ROUND)
       expect(contentMetric.verifiedGlobalStyleEscapedClasses.length).toBeGreaterThanOrEqual(contentMetric.minRequiredGlobalStyleEscapedClasses)

@@ -67,6 +67,7 @@ let weappTwLoggedUpdateCount = 0;
 export default defineConfig(async () => {
   // const { default: Inspect } = await import('vite-plugin-inspect');
   const isH5Build = process.env.UNI_PLATFORM === 'h5' && process.env.NODE_ENV === 'production';
+  const isAppBuild = process.env.UNI_PLATFORM === 'app';
   return {
     plugins: [
       uni(),
@@ -182,7 +183,7 @@ export default defineConfig(async () => {
 
     build: {
       minify: false,
-      sourcemap: !isH5Build,
+      sourcemap: !isH5Build && !isAppBuild,
     },
   }
 });

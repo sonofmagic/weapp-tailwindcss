@@ -16,6 +16,8 @@ export type ConcreteWatchCaseName
     | 'taro-vite-vue3-tailwindcss-v4'
     | 'uni-app-vite-tailwindcss-v3'
     | 'uni-app-vite-tailwindcss-v4'
+    | 'uni-app-vite-vue3-hbuilderx-tailwindcss-v3'
+    | 'uni-app-vite-vue3-hbuilderx-tailwindcss-v4'
     | 'weapp-vite-tailwindcss-v3'
     | 'weapp-vite-tailwindcss-v4'
 export type WatchCaseName = ConcreteWatchCaseName | 'both' | 'all' | 'demo'
@@ -476,6 +478,7 @@ export const DEFAULT_STYLE_APPLY_VALIDATION: StyleApplyValidation = {
 export const STYLE_APPLY_UNSUPPORTED_CASES = new Set<ConcreteWatchCaseName>([
   'mpx-tailwindcss-v4',
   'uni-app-vite-tailwindcss-v4',
+  'uni-app-vite-vue3-hbuilderx-tailwindcss-v4',
   'taro-vite-react-tailwindcss-v4',
   'taro-webpack-react-tailwindcss-v4',
   'weapp-vite-tailwindcss-v4',
@@ -491,6 +494,7 @@ export const STYLE_FUNCTION_UNSUPPORTED_CASES = new Set<ConcreteWatchCaseName>([
 export const STYLE_REFERENCE_REQUIRED_CASES = new Set<ConcreteWatchCaseName>([
   'gulp-tailwindcss-v4',
   'uni-app-vite-tailwindcss-v4',
+  'uni-app-vite-vue3-hbuilderx-tailwindcss-v4',
   'mpx-tailwindcss-v4',
   'taro-vite-react-tailwindcss-v4',
   'taro-webpack-react-tailwindcss-v4',

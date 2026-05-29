@@ -58,6 +58,22 @@ function mutateVueScriptWithTemplateConsumer(
   )
 }
 
+function mutateVueOptionsDataWithTemplateConsumer(
+  source: string,
+  payload: Parameters<NonNullable<WatchCase['scriptMutation']>['mutate']>[1],
+) {
+  return insertBeforeClosingTag(
+    replaceExactSnippet(
+      source,
+      'title: \'Hello\'',
+      `title: 'Hello',\n\t\t\t\t${payload.classVariableName}: '${payload.classLiteral}',\n\t\t\t\t__twWatchScriptMarker: '${payload.marker}'`,
+      'vue options data title anchor',
+    ),
+    '</template>',
+    `\t\t<view hidden :class="${payload.classVariableName}">{{ __twWatchScriptMarker }}</view>`,
+  )
+}
+
 function mutateUniAppViteV3BgObjKey(
   source: string,
   payload: Parameters<NonNullable<WatchCase['contentMutation']>['mutate']>[1],
@@ -335,6 +351,70 @@ export function buildDemoExtendedCases(baseCwd: string): WatchCase[] {
       },
     },
   }
+
+  function createUniAppHBuilderXVue3Case(version: 'v3' | 'v4'): WatchCase {
+    const projectName = `uni-app-vite-vue3-hbuilderx-tailwindcss-${version}` as const
+
+    return {
+      name: projectName,
+      label: `demo/${projectName}`,
+      project: `demo/${projectName}`,
+      group: 'demo',
+      cwd: path.resolve(baseCwd, `demo/${projectName}`),
+      devScript: 'dev:mp-weixin',
+      outputWxml: path.resolve(baseCwd, `demo/${projectName}/dist/dev/mp-weixin/pages/index/index.wxml`),
+      outputJs: path.resolve(baseCwd, `demo/${projectName}/dist/dev/mp-weixin/pages/index/index.js`),
+      outputStyleCandidates: [
+        path.resolve(baseCwd, `demo/${projectName}/dist/dev/mp-weixin/app.wxss`),
+        path.resolve(baseCwd, `demo/${projectName}/dist/dev/mp-weixin/main.css`),
+      ],
+      globalStyleCandidates: [
+        path.resolve(baseCwd, `demo/${projectName}/dist/dev/mp-weixin/app.wxss`),
+        path.resolve(baseCwd, `demo/${projectName}/dist/dev/mp-weixin/main.css`),
+      ],
+      contentMutation: {
+        sourceFile: path.resolve(baseCwd, `demo/${projectName}/pages/index/index.vue`),
+        verifyEscapedIn: ['wxml'],
+        roundConfigs: buildIssue33HighRiskRoundConfigs(),
+        mutate(source, payload) {
+          return replaceExactSnippet(
+            source,
+            '<view class="text-[#888800]">',
+            `<view class="${payload.classLiteral}">`,
+            `${projectName} template class anchor`,
+          )
+        },
+      },
+      templateMutation: {
+        sourceFile: path.resolve(baseCwd, `demo/${projectName}/pages/index/index.vue`),
+        verifyEscapedIn: ['wxml'],
+        verifyClassLiteralIn: [],
+        roundConfigs: buildHexScriptRoundConfigs(),
+        mutate(source, payload) {
+          const snippet = `\t\t<view class="${payload.classLiteral}">${payload.marker}-template</view>`
+          return insertBeforeClosingTag(source, '</template>', snippet)
+        },
+      },
+      scriptMutation: {
+        sourceFile: path.resolve(baseCwd, `demo/${projectName}/pages/index/index.vue`),
+        verifyEscapedIn: ['js'],
+        verifyClassLiteralIn: [],
+        roundConfigs: buildHexScriptRoundConfigs(),
+        mutate(source, payload) {
+          return mutateVueOptionsDataWithTemplateConsumer(source, payload)
+        },
+      },
+      styleMutation: {
+        sourceFile: path.resolve(baseCwd, `demo/${projectName}/main.css`),
+        mutate(source, payload) {
+          return appendTrailingSnippet(source, createStyleRuleSnippet(payload))
+        },
+      },
+    }
+  }
+
+  const uniAppHBuilderXVue3V3Case = createUniAppHBuilderXVue3Case('v3')
+  const uniAppHBuilderXVue3V4Case = createUniAppHBuilderXVue3Case('v4')
 
   const mpxTailwindcssV4Case: WatchCase = {
     name: 'mpx-tailwindcss-v4',
@@ -984,6 +1064,8 @@ export function buildDemoExtendedCases(baseCwd: string): WatchCase[] {
   return [
     uniAppVue3ViteCase,
     uniAppTailwindcssV4Case,
+    uniAppHBuilderXVue3V3Case,
+    uniAppHBuilderXVue3V4Case,
     mpxTailwindcssV4Case,
     taroViteTailwindcssV4Case,
     taroAppViteCase,

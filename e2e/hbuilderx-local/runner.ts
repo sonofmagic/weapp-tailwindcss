@@ -34,6 +34,15 @@ function expectContent(source: string, entries: Array<string | RegExp>, label: s
   }
 }
 
+function hasContent(source: string, entries: Array<string | RegExp>) {
+  return entries.every((entry) => {
+    if (typeof entry === 'string') {
+      return source.includes(entry)
+    }
+    return entry.test(source)
+  })
+}
+
 async function waitForFile(file: string, timeoutMs: number) {
   const startedAt = Date.now()
   while (Date.now() - startedAt < timeoutMs) {
@@ -43,6 +52,45 @@ async function waitForFile(file: string, timeoutMs: number) {
     await wait(pollIntervalMs)
   }
   return false
+}
+
+async function resolveAppOutputRoot(item: AppCase) {
+  const projectRoot = path.resolve(repoRoot, item.projectDir)
+  for (const outputDir of resolveAppOutputDirCandidates(item)) {
+    const outputRoot = path.resolve(projectRoot, outputDir)
+    const missing = await findMissingAppFiles(item, outputRoot)
+    if (missing.length === 0) {
+      return outputRoot
+    }
+  }
+  return path.resolve(projectRoot, item.outputDir)
+}
+
+function resolveAppOutputDirCandidates(item: AppCase) {
+  return item.outputDirCandidates?.length ? item.outputDirCandidates : [item.outputDir]
+}
+
+function resolveAppTransformedFiles(projectRoot: string, outputRoot: string, item: AppCase) {
+  return [
+    ...(item.transformedFiles ?? []).map(file => path.resolve(projectRoot, file)),
+    ...(item.transformedOutputFiles ?? []).map(file => path.resolve(outputRoot, file)),
+  ]
+}
+
+async function readAppTransformedOutput(projectRoot: string, outputRoot: string, item: AppCase) {
+  return (await Promise.all(resolveAppTransformedFiles(projectRoot, outputRoot, item).map(async (target) => {
+    const label = path.relative(projectRoot, target) || target
+    expect(await waitForFile(target, hbuilderxAppTimeoutMs), `${item.name} 缺少转换产物 ${label}`).toBe(true)
+    return await readUtf8(target)
+  }))).join('\n')
+}
+
+async function readExistingAppTransformedOutput(projectRoot: string, outputRoot: string, item: AppCase) {
+  const transformedFiles = resolveAppTransformedFiles(projectRoot, outputRoot, item)
+  if (!(await Promise.all(transformedFiles.map(fileExists))).every(Boolean)) {
+    return undefined
+  }
+  return (await Promise.all(transformedFiles.map(readUtf8))).join('\n')
 }
 
 async function assertMiniProgramOutput(item: MiniProgramCase) {
@@ -75,28 +123,24 @@ async function assertMiniProgramOutput(item: MiniProgramCase) {
 
 async function assertAppOutput(item: AppCase) {
   const projectRoot = path.resolve(repoRoot, item.projectDir)
-  const outputRoot = path.resolve(projectRoot, item.outputDir)
+  const outputRoot = await resolveAppOutputRoot(item)
 
   for (const file of item.requiredFiles) {
     const target = path.resolve(outputRoot, file)
     expect(await waitForFile(target, hbuilderxAppTimeoutMs), `${item.name} 缺少产物 ${file}`).toBe(true)
   }
 
-  const transformed = (await Promise.all(item.transformedFiles.map(async (file) => {
-    const target = path.resolve(projectRoot, file)
-    expect(await waitForFile(target, hbuilderxAppTimeoutMs), `${item.name} 缺少转换产物 ${file}`).toBe(true)
-    return await readUtf8(target)
-  }))).join('\n')
+  const transformed = await readAppTransformedOutput(projectRoot, outputRoot, item)
   expectContent(transformed, item.transformedContains, `${item.name} App 转换产物`)
 }
 
-async function findMissingAppFiles(item: AppCase) {
+async function findMissingAppFiles(item: AppCase, outputRoot?: string) {
   const projectRoot = path.resolve(repoRoot, item.projectDir)
-  const outputRoot = path.resolve(projectRoot, item.outputDir)
+  const root = outputRoot ?? path.resolve(projectRoot, item.outputDir)
   const missing: string[] = []
 
   for (const file of item.requiredFiles) {
-    if (!await fileExists(path.resolve(outputRoot, file))) {
+    if (!await fileExists(path.resolve(root, file))) {
       missing.push(file)
     }
   }
@@ -104,13 +148,42 @@ async function findMissingAppFiles(item: AppCase) {
   return missing
 }
 
+async function findReadyAppOutputRoot(item: AppCase) {
+  const projectRoot = path.resolve(repoRoot, item.projectDir)
+  for (const outputDir of resolveAppOutputDirCandidates(item)) {
+    const outputRoot = path.resolve(projectRoot, outputDir)
+    const missing = await findMissingAppFiles(item, outputRoot)
+    if (missing.length > 0) {
+      continue
+    }
+    const transformed = await readExistingAppTransformedOutput(projectRoot, outputRoot, item)
+    if (transformed && hasContent(transformed, item.transformedContains)) {
+      return outputRoot
+    }
+  }
+  return undefined
+}
+
+async function cleanAppOutput(item: AppCase) {
+  const projectRoot = path.resolve(repoRoot, item.projectDir)
+  const targets = [
+    ...resolveAppOutputDirCandidates(item).map(outputDir => path.resolve(projectRoot, outputDir)),
+    ...(item.transformedFiles ?? []).map(file => path.resolve(projectRoot, file)),
+  ]
+
+  await Promise.all([...new Set(targets)].map(async (target) => {
+    await fs.rm(target, { recursive: true, force: true })
+  }))
+}
+
 async function runAppLaunchUntilOutput(item: AppCase, hbuilderxCliPath: string, projectRoot: string) {
   const child = spawnPnpm(
     projectRoot,
-    ['exec', 'hbuilderx', 'launch', item.platform, '--project', projectRoot, ...(item.launchArgs ?? [])],
+    ['exec', 'hbuilderx', 'launch', item.platform, '--project', projectRoot, '--compile', 'true', ...(item.launchArgs ?? [])],
     {
       HBUILDERX_CLI_PATH: hbuilderxCliPath,
       WEAPP_TW_HMR_TIMING: '1',
+      ...item.launchEnv,
     },
   )
   const logs = collectProcessOutput(child)
@@ -124,8 +197,7 @@ async function runAppLaunchUntilOutput(item: AppCase, hbuilderxCliPath: string, 
   })
 
   while (Date.now() - startedAt < hbuilderxAppTimeoutMs) {
-    const missing = await findMissingAppFiles(item)
-    if (missing.length === 0) {
+    if (await findReadyAppOutputRoot(item)) {
       killProcessTree(child)
       await Promise.race([closed, wait(5_000)])
       return
@@ -197,7 +269,7 @@ export async function compileAppWithHBuilderX(item: AppCase) {
       item.markerAnchor,
       `<view class="${item.markerClass}">${item.markerText}</view>`,
     )
-    await fs.rm(path.resolve(projectRoot, item.outputDir), { recursive: true, force: true })
+    await cleanAppOutput(item)
     await runPnpm(
       projectRoot,
       ['exec', 'hbuilderx', 'project', 'open', '--path', projectRoot],

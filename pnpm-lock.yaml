@@ -3004,6 +3004,9 @@ importers:
       '@dcloudio/uni-app':
         specifier: 3.0.0-5000720260410001
         version: 3.0.0-5000720260410001(@dcloudio/types@3.4.28)(@vueuse/core@14.2.1(vue@3.5.35(typescript@6.0.3)))(postcss@8.5.15)(rollup@4.60.4)(vue@3.5.35(typescript@6.0.3))
+      '@dcloudio/uni-app-plus':
+        specifier: 3.0.0-5000720260410001
+        version: 3.0.0-5000720260410001(@vueuse/core@14.2.1(vue@3.5.35(typescript@6.0.3)))(postcss@8.5.15)(rollup@4.60.4)(vite@5.4.21(@types/node@25.9.1)(less@4.6.4)(lightningcss@1.32.0)(sass-embedded@1.100.0)(sass@1.100.0)(stylus@0.57.0)(terser@5.48.0))(vue@3.5.35(typescript@6.0.3))
       '@dcloudio/uni-components':
         specifier: 3.0.0-5000720260410001
         version: 3.0.0-5000720260410001(@vueuse/core@14.2.1(vue@3.5.35(typescript@6.0.3)))(postcss@8.5.15)(rollup@4.60.4)(vue@3.5.35(typescript@6.0.3))
@@ -3053,6 +3056,9 @@ importers:
       '@dcloudio/uni-app':
         specifier: 3.0.0-5000720260410001
         version: 3.0.0-5000720260410001(@dcloudio/types@3.4.28)(@vueuse/core@14.2.1(vue@3.5.35(typescript@6.0.3)))(postcss@8.5.15)(rollup@4.60.4)(vue@3.5.35(typescript@6.0.3))
+      '@dcloudio/uni-app-plus':
+        specifier: 3.0.0-5000720260410001
+        version: 3.0.0-5000720260410001(@vueuse/core@14.2.1(vue@3.5.35(typescript@6.0.3)))(postcss@8.5.15)(rollup@4.60.4)(vite@5.4.21(@types/node@25.9.1)(less@4.6.4)(lightningcss@1.32.0)(sass-embedded@1.100.0)(sass@1.100.0)(stylus@0.57.0)(terser@5.48.0))(vue@3.5.35(typescript@6.0.3))
       '@dcloudio/uni-components':
         specifier: 3.0.0-5000720260410001
         version: 3.0.0-5000720260410001(@vueuse/core@14.2.1(vue@3.5.35(typescript@6.0.3)))(postcss@8.5.15)(rollup@4.60.4)(vue@3.5.35(typescript@6.0.3))
@@ -28792,7 +28798,7 @@ snapshots:
 
   '@babel/generator@7.25.6':
     dependencies:
-      '@babel/types': 7.25.6
+      '@babel/types': 7.29.7
       '@jridgewell/gen-mapping': 0.3.13
       '@jridgewell/trace-mapping': 0.3.31
       jsesc: 2.5.2
@@ -42787,7 +42793,7 @@ snapshots:
 
   ast-kit@3.0.0-beta.1:
     dependencies:
-      '@babel/parser': 8.0.0-rc.4
+      '@babel/parser': 8.0.0-rc.6
       estree-walker: 3.0.3
       pathe: 2.0.3
 

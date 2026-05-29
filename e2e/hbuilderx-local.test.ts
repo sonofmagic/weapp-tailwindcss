@@ -1,15 +1,16 @@
 import { afterEach, describe, it } from 'vitest'
 
-import { miniProgramCases, uniAppXAppCases, webCases } from './hbuilderx-local/cases'
+import { miniProgramCases, uniAppAppCases, uniAppXAppCases, webCases } from './hbuilderx-local/cases'
 import { hbuilderxAppTimeoutMs, hbuilderxTimeoutMs, killProcessTree, serverTimeoutMs } from './hbuilderx-local/process'
 import { compileAppWithHBuilderX, compileMiniProgramWithHBuilderX, verifyWebHmr } from './hbuilderx-local/runner'
 import { clearDevProcess, getDevProcess } from './hbuilderx-local/web'
 
 const describeLocalHBuilderX = process.env['E2E_HBUILDERX_LOCAL'] === '1' ? describe : describe.skip
 const appPlatformFilter = process.env['E2E_HBUILDERX_APP_PLATFORM']
+const allAppCases = [...uniAppAppCases, ...uniAppXAppCases]
 const appCases = appPlatformFilter
-  ? uniAppXAppCases.filter(item => item.platform === appPlatformFilter)
-  : uniAppXAppCases
+  ? allAppCases.filter(item => item.platform === appPlatformFilter)
+  : allAppCases
 
 describeLocalHBuilderX.sequential('HBuilderX demo local e2e', () => {
   afterEach(() => {
@@ -24,7 +25,7 @@ describeLocalHBuilderX.sequential('HBuilderX demo local e2e', () => {
     await compileMiniProgramWithHBuilderX(item)
   }, hbuilderxTimeoutMs + 30_000)
 
-  it.each(appCases)('用 HBuilderX 编译 uni-app x App 产物：$name', async (item) => {
+  it.each(appCases)('用 HBuilderX 编译 uni-app App 产物：$name', async (item) => {
     await compileAppWithHBuilderX(item)
   }, hbuilderxAppTimeoutMs + 30_000)
 

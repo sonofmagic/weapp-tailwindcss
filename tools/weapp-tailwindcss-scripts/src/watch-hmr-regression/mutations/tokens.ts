@@ -104,7 +104,7 @@ export function appendIssue33RoundConfig(rounds: MutationRoundConfig[]) {
   return [
     ...rounds,
     {
-      name: 'issue33-arbitrary',
+      name: 'issue33-arbitrary' as const,
       buildClassTokens: buildIssue33ArbitraryClassTokens,
     },
   ]

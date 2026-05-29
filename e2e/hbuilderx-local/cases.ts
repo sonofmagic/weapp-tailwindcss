@@ -19,13 +19,16 @@ export interface AppCase {
   platform: AppPlatform
   projectDir: string
   outputDir: string
+  outputDirCandidates?: string[]
   sourceFile: string
   markerAnchor: string
   markerClass: string
   markerText: string
   launchArgs?: string[]
+  launchEnv?: Record<string, string>
   requiredFiles: string[]
-  transformedFiles: string[]
+  transformedFiles?: string[]
+  transformedOutputFiles?: string[]
   transformedContains: Array<string | RegExp>
 }
 
@@ -85,6 +88,124 @@ export const miniProgramCases: MiniProgramCase[] = [
   },
 ]
 
+const defaultAndroidLaunchArgs = ['--deviceId', process.env['E2E_HBUILDERX_ANDROID_DEVICE_ID'] ?? 'emulator-5554']
+const defaultIosLaunchArgs = ['--iosTarget', process.env['E2E_HBUILDERX_IOS_TARGET'] ?? 'simulator']
+
+function createUniAppAppCases(options: {
+  name: string
+  projectDir: string
+  sourceFile: string
+  markerAnchor: string
+  version: 'v3' | 'v4'
+  outputDir?: string
+  outputDirCandidates?: string[]
+  requiredFiles?: string[]
+  transformedFiles?: string[]
+  transformedOutputFiles?: string[]
+  launchEnv?: Record<string, string>
+}) {
+  const {
+    name,
+    projectDir,
+    sourceFile,
+    markerAnchor,
+    version,
+    outputDir = 'dist/dev/app',
+    outputDirCandidates,
+    requiredFiles = ['manifest.json', 'app-service.js', 'app.css'],
+    transformedFiles = [`${outputDir}/app-service.js`, `${outputDir}/app.css`],
+    transformedOutputFiles,
+    launchEnv,
+  } = options
+  const markerClass = 'bg-[#102938] text-[#f7fbff] w-[173px]'
+  const transformedClassNames = ['bg-_b_h102938_B', 'text-_b_hf7fbff_B', 'w-_b173px_B']
+
+  function createOutputDirCandidates(platform: AppPlatform) {
+    const defaults = [
+      outputDir,
+      'dist/dev/app',
+      'dist/dev/app-plus',
+      `dist/dev/${platform}`,
+      'unpackage/dist/dev/app',
+      'unpackage/dist/dev/app-plus',
+      `unpackage/dist/dev/${platform}`,
+    ]
+    return [...new Set(outputDirCandidates ?? defaults)]
+  }
+
+  function createCase(platform: AppPlatform, platformName: 'android' | 'ios'): AppCase {
+    return {
+      name: `${name} ${platformName}`,
+      platform,
+      projectDir,
+      outputDir,
+      outputDirCandidates: createOutputDirCandidates(platform),
+      sourceFile,
+      markerAnchor,
+      markerClass,
+      markerText: `hbuilderx-app-dynamic-${version}-${platformName}`,
+      launchArgs: platform === 'app-android' ? defaultAndroidLaunchArgs : defaultIosLaunchArgs,
+      launchEnv,
+      requiredFiles,
+      transformedFiles,
+      transformedOutputFiles,
+      transformedContains: [...transformedClassNames, `hbuilderx-app-dynamic-${version}-${platformName}`],
+    }
+  }
+
+  return [
+    createCase('app-android', 'android'),
+    createCase('app-ios', 'ios'),
+  ] satisfies AppCase[]
+}
+
+export const uniAppAppCases: AppCase[] = [
+  ...createUniAppAppCases({
+    name: 'uni-app-vite-tailwindcss-v3',
+    projectDir: 'demo/uni-app-vite-tailwindcss-v3',
+    sourceFile: 'src/pages/index/index.vue',
+    markerAnchor: '<Issue228 class=',
+    version: 'v3',
+    launchEnv: {
+      UNI_INPUT_DIR: 'src',
+    },
+    transformedFiles: [],
+    transformedOutputFiles: ['app-service.js', 'app.css'],
+  }),
+  ...createUniAppAppCases({
+    name: 'uni-app-vite-tailwindcss-v4',
+    projectDir: 'demo/uni-app-vite-tailwindcss-v4',
+    sourceFile: 'src/pages/index/index.vue',
+    markerAnchor: '<view class="i-mdi-home">',
+    version: 'v4',
+    launchEnv: {
+      UNI_INPUT_DIR: 'src',
+    },
+    transformedFiles: [],
+    transformedOutputFiles: ['app-service.js', 'app.css'],
+  }),
+  ...createUniAppAppCases({
+    name: 'uni-app-vite-vue3-hbuilderx-tailwindcss-v3',
+    projectDir: 'demo/uni-app-vite-vue3-hbuilderx-tailwindcss-v3',
+    sourceFile: 'pages/index/index.vue',
+    markerAnchor: '<view class="text-[#888800]">',
+    version: 'v3',
+    outputDir: 'unpackage/dist/dev/app',
+    transformedFiles: [],
+    transformedOutputFiles: ['app-service.js', 'app.css'],
+  }),
+  ...createUniAppAppCases({
+    name: 'uni-app-vite-vue3-hbuilderx-tailwindcss-v4',
+    projectDir: 'demo/uni-app-vite-vue3-hbuilderx-tailwindcss-v4',
+    sourceFile: 'pages/index/index.vue',
+    markerAnchor: '<view class="text-[#888800]">',
+    version: 'v4',
+    outputDir: 'unpackage/dist/dev/app',
+    transformedFiles: [],
+    transformedOutputFiles: ['app-service.js', 'app.css'],
+  }),
+]
+
 export const uniAppXAppCases: AppCase[] = [
   {
     name: 'uni-app-x-hbuilderx-tailwindcss-v3 android',
@@ -95,7 +216,7 @@ export const uniAppXAppCases: AppCase[] = [
     markerAnchor: '<BindClass />',
     markerClass: 'bg-[#102938] text-[#f7fbff] w-[173px]',
     markerText: 'hbuilderx-app-dynamic-v3-android',
-    launchArgs: ['--deviceId', process.env['E2E_HBUILDERX_ANDROID_DEVICE_ID'] ?? 'emulator-5554'],
+    launchArgs: defaultAndroidLaunchArgs,
     requiredFiles: [
       'manifest.json',
       'components/BindClass/classes.dex',
@@ -116,7 +237,7 @@ export const uniAppXAppCases: AppCase[] = [
     markerAnchor: '<BindClass />',
     markerClass: 'bg-[#102938] text-[#f7fbff] w-[173px]',
     markerText: 'hbuilderx-app-dynamic-v3-ios',
-    launchArgs: ['--iosTarget', process.env['E2E_HBUILDERX_IOS_TARGET'] ?? 'simulator'],
+    launchArgs: defaultIosLaunchArgs,
     requiredFiles: [
       'manifest.json',
     ],
@@ -134,7 +255,7 @@ export const uniAppXAppCases: AppCase[] = [
     markerAnchor: '<BindClass />',
     markerClass: 'bg-[#102938] text-[#f7fbff] w-[173px]',
     markerText: 'hbuilderx-app-dynamic-v4-android',
-    launchArgs: ['--deviceId', process.env['E2E_HBUILDERX_ANDROID_DEVICE_ID'] ?? 'emulator-5554'],
+    launchArgs: defaultAndroidLaunchArgs,
     requiredFiles: [
       'manifest.json',
       'components/BindClass/classes.dex',
@@ -155,7 +276,7 @@ export const uniAppXAppCases: AppCase[] = [
     markerAnchor: '<BindClass />',
     markerClass: 'bg-[#102938] text-[#f7fbff] w-[173px]',
     markerText: 'hbuilderx-app-dynamic-v4-ios',
-    launchArgs: ['--iosTarget', process.env['E2E_HBUILDERX_IOS_TARGET'] ?? 'simulator'],
+    launchArgs: defaultIosLaunchArgs,
     requiredFiles: [
       'manifest.json',
     ],
