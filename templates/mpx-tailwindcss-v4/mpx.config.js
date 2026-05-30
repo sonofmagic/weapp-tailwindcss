@@ -1,5 +1,5 @@
 const { defineConfig } = require('@vue/cli-service')
-const { UnifiedWebpackPluginV5 } = require('weapp-tailwindcss/webpack')
+const { WeappTailwindcss } = require('weapp-tailwindcss/webpack')
 const path = require('path')
 
 module.exports = defineConfig({
@@ -30,7 +30,7 @@ module.exports = defineConfig({
    */
   configureWebpack(config) {
     config.plugins.push(
-      new UnifiedWebpackPluginV5({
+      new WeappTailwindcss({
         rem2rpx: true,
         appType: 'mpx',
         cssEntries: [

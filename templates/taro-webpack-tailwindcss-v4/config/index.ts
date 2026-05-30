@@ -2,7 +2,7 @@ import { defineConfig, type UserConfigExport } from '@tarojs/cli'
 import TsconfigPathsPlugin from 'tsconfig-paths-webpack-plugin'
 import devConfig from './dev'
 import prodConfig from './prod'
-import {UnifiedWebpackPluginV5,type UserDefinedOptions} from 'weapp-tailwindcss/webpack'
+import {WeappTailwindcss,type UserDefinedOptions} from 'weapp-tailwindcss/webpack'
 import path from 'path'
 
 // https://taro-docs.jd.com/docs/next/config#defineconfig-辅助函数
@@ -54,7 +54,7 @@ export default defineConfig<'webpack5'>(async (merge, { command, mode }) => {
         chain.merge({
           plugin: {
             install: {
-              plugin: UnifiedWebpackPluginV5,
+              plugin: WeappTailwindcss,
               args: [
                 {
                   rem2rpx: true,

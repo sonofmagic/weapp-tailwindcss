@@ -67,6 +67,8 @@ export function setupWebpackV5ProcessAssetsHook(options: SetupWebpackV5ProcessAs
   } = options
   const { Compilation, sources } = compiler.webpack
   const { ConcatSource } = sources
+  const generatorOptions = compilerOptions.generator
+  const isWebGeneratorTarget = generatorOptions?.target === 'web'
   const cssHandlerOptionsCache = new Map<string, {
     isMainChunk: boolean
     postcssOptions: {
@@ -259,7 +261,7 @@ export function setupWebpackV5ProcessAssetsHook(options: SetupWebpackV5ProcessAs
         }
         debug('get runtimeSet, class count: %d', runtimeSet.size)
         const tasks: Promise<void>[] = []
-        if (Array.isArray(groupedEntries.html)) {
+        if (!isWebGeneratorTarget && Array.isArray(groupedEntries.html)) {
           for (const element of groupedEntries.html) {
             const [file, originalSource] = element
 
@@ -298,7 +300,7 @@ export function setupWebpackV5ProcessAssetsHook(options: SetupWebpackV5ProcessAs
 
         const jsTaskFactories: Array<() => Promise<void>> = []
 
-        if (Array.isArray(groupedEntries.js)) {
+        if (!isWebGeneratorTarget && Array.isArray(groupedEntries.js)) {
           for (const [file] of groupedEntries.js) {
             const cacheKey = getCacheKey(file)
             const asset = compilation.getAsset(file)

@@ -11,7 +11,7 @@ vi.mock('@/context', () => ({
   getCompilerContext: (options?: unknown) => getCompilerContextMock(options),
 }))
 
-const { UnifiedWebpackPluginV5 } = await import('@/bundlers/webpack/BaseUnifiedPlugin/v5')
+const { WeappTailwindcss } = await import('@/bundlers/webpack/BaseUnifiedPlugin/v5')
 
 class FakeConcatSource {
   constructor(private readonly value: string) {}
@@ -211,7 +211,7 @@ describe('bundlers/webpack v5 runtime metadata', () => {
       },
     }
 
-    new UnifiedWebpackPluginV5().apply(compiler as any)
+    new WeappTailwindcss().apply(compiler as any)
 
     await processAssetsCallbacks[0](createAssets(assetStore))
     expect(assetStore['index.css']).toContain('.base')

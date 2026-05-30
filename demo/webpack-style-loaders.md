@@ -27,4 +27,4 @@
 
 ## 说明
 - `uni-app-vite-tailwindcss-v4` / `taro-vite-react-tailwindcss-v3` 等 Vite 工程不在本文范围。
-- 需要查看 loader 以外的 patch（例如 `UnifiedWebpackPluginV5` 注入的 runtime loader）时，可结合 `packages/weapp-tailwindcss/src/bundlers/webpack/BaseUnifiedPlugin`。
+- 需要查看 loader 以外的 patch（例如 `WeappTailwindcss` 注入的 runtime loader）时，可结合 `packages/weapp-tailwindcss/src/bundlers/webpack/BaseUnifiedPlugin`。

@@ -62,7 +62,7 @@ These plugins can automatically identify and accurately handle all `tailwindcss`
 
 ### Plugin Introduction
 
-The `UnifiedWebpackPluginV5` exported from `weapp-tailwindcss/webpack` is a core plugin that can be used by all frameworks that use `webpack` for packaging.
+The `WeappTailwindcss` exported from `weapp-tailwindcss/webpack` is a core plugin that can be used by all frameworks that use `webpack` for packaging.
 
 The `WeappTailwindcss` exported from `weapp-tailwindcss/vite` is a dedicated plugin for `vite`, and the configuration items and usage are consistent with the `webpack` plugin.
 

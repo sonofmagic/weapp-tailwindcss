@@ -13,6 +13,7 @@ type TailwindPlugin = NonNullable<Config['plugins']>[number]
 
 const logosIcons = logosIconsRaw as IconifyJSON
 const mdiIcons = mdiIconsRaw as IconifyJSON
+const monoFontStack = 'ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace'
 const bxlIcons = {
   prefix: 'bxl',
   icons: {
@@ -70,21 +71,21 @@ const config = {
               fontWeight: '600',
             },
             'h2 small, h3 small, h4 small': {
-              fontFamily: theme('fontFamily.mono').join(', '),
+              fontFamily: monoFontStack,
               color: theme('colors.slate.500'),
               fontWeight: 500,
             },
             'h2 small': {
-              fontSize: theme('fontSize.lg')[0],
-              ...theme('fontSize.lg')[1],
+              fontSize: '1.125rem',
+              lineHeight: '1.75rem',
             },
             'h3 small': {
-              fontSize: theme('fontSize.base')[0],
-              ...theme('fontSize.base')[1],
+              fontSize: '1rem',
+              lineHeight: '1.5rem',
             },
             'h4 small': {
-              fontSize: theme('fontSize.sm')[0],
-              ...theme('fontSize.sm')[1],
+              fontSize: '0.875rem',
+              lineHeight: '1.25rem',
             },
             'h2, h3, h4': {
               'scroll-margin-top': 'var(--scroll-mt)',
@@ -176,8 +177,8 @@ const config = {
               minWidth: '100%',
             },
             'table': {
-              fontSize: theme('fontSize.sm')[0],
-              lineHeight: theme('fontSize.sm')[1].lineHeight,
+              fontSize: '0.875rem',
+              lineHeight: '1.25rem',
             },
             'thead': {
               color: theme('colors.slate.700'),

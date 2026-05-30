@@ -25,7 +25,7 @@ keywords:
 
 ## Implemented by
 
-- [`UnifiedWebpackPluginV5`](../classes/UnifiedWebpackPluginV5.md)
+- [`WeappTailwindcss`](../classes/WeappTailwindcss.md)
 
 ## Properties
 

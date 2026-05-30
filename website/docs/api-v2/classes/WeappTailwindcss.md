@@ -1,16 +1,16 @@
 ---
-id: UnifiedWebpackPluginV5
-title: 'Class: UnifiedWebpackPluginV5'
-sidebar_label: UnifiedWebpackPluginV5
+id: WeappTailwindcss
+title: 'Class: WeappTailwindcss'
+sidebar_label: WeappTailwindcss
 sidebar_position: 0
 custom_edit_url: null
-description: UnifiedWebpackPluginV5
+description: WeappTailwindcss
 keywords:
   - API
   - 接口文档
   - 配置项
   - Class
-  - UnifiedWebpackPluginV5
+  - WeappTailwindcss
   - api v2
   - classes
   - weapp-tailwindcss
@@ -25,7 +25,7 @@ keywords:
 
 **`Name`**
 
-UnifiedWebpackPluginV5
+WeappTailwindcss
 
 **`Description`**
 
@@ -43,7 +43,7 @@ https://tw.icebreaker.top/docs/intro
 
 ### constructor
 
-• **new UnifiedWebpackPluginV5**(`options?`): [`UnifiedWebpackPluginV5`](UnifiedWebpackPluginV5.md)
+• **new WeappTailwindcss**(`options?`): [`WeappTailwindcss`](WeappTailwindcss.md)
 
 #### Parameters
 
@@ -53,7 +53,7 @@ https://tw.icebreaker.top/docs/intro
 
 #### Returns
 
-[`UnifiedWebpackPluginV5`](UnifiedWebpackPluginV5.md)
+[`WeappTailwindcss`](WeappTailwindcss.md)
 
 #### Defined in
 

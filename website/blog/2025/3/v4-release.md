@@ -69,7 +69,7 @@ npm install -D tailwindcss @tailwindcss/vite weapp-tailwindcss
 ```ts title="vite.config.ts"
 import uni from '@dcloudio/vite-plugin-uni'
 import { defineConfig } from 'vite'
-import { UnifiedViteWeappTailwindcssPlugin } from 'weapp-tailwindcss/vite'
+import { WeappTailwindcss } from 'weapp-tailwindcss/vite'
 
 export default defineConfig(async () => {
   // 这里必须这样引用，因为 uni 只提供 cjs 版本，而 @tailwindcss/vite 只提供 esm 版本
@@ -78,7 +78,7 @@ export default defineConfig(async () => {
     plugins: [
       uni(),
       tailwindcss(),
-      UnifiedViteWeappTailwindcssPlugin({ rem2rpx: true })
+      WeappTailwindcss({ rem2rpx: true })
     ],
   }
 })

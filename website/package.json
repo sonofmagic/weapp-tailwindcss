@@ -99,7 +99,7 @@
     "node-loader": "^2.1.0",
     "sass": "catalog:sass195",
     "sass-loader": "^17.0.0",
-    "tailwindcss": "catalog:tailwindcss3",
+    "tailwindcss": "catalog:tailwindcss4",
     "theme-transition": "workspace:*",
     "typedoc": "^0.28.19",
     "typedoc-plugin-markdown": "4.11.0",

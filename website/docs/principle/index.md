@@ -525,8 +525,8 @@ const options = loaderContext.getOptions()
 
 ## 2.0 增加了什么？
 
-这个版本新增了 `UnifiedWebpackPluginV5`
-和 `UnifiedViteWeappTailwindcssPlugin` 这种以 `Unified` 开头的插件。
+这个版本新增了 `WeappTailwindcss`
+和 `WeappTailwindcss` 这个 Vite 插件。
 
 它们能够自动识别并精确处理所有 `tailwindcss` 的工具类，这意味着它可以同时处理 `wxss`,`wxml` 和 `js` 里静态和动态的 `class`(v1版本只有处理`wxss`,`wxml`静态`class`的能力)。所以你再也不需要在 `js` 里引入并调用 `replaceJs`方法了！由于 `2.x` 插件有精准转化 `js`/`jsx` 的能力，误伤问题得到了有效的解决，也大大提升了 `taro` 这种动态模板框架的开发体验。
 

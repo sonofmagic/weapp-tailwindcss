@@ -46,7 +46,7 @@ import uni from '@dcloudio/vite-plugin-uni'
 import autoprefixer from 'autoprefixer'
 import tailwindcss from 'tailwindcss'
 import { defineConfig } from 'vite'
-import { UnifiedViteWeappTailwindcssPlugin as uvtw } from 'weapp-tailwindcss/vite'
+import { WeappTailwindcss as uvtw } from 'weapp-tailwindcss/vite'
 
 export default defineConfig({
   plugins: [uni(), uvtw()],
@@ -61,7 +61,7 @@ export default defineConfig({
 ### taro webpack5
 
 ```js
-const { UnifiedWebpackPluginV5 } = require('weapp-tailwindcss/webpack')
+const { WeappTailwindcss } = require('weapp-tailwindcss/webpack')
 
 // config/index.[jt]s
 module.exports = {
@@ -70,7 +70,7 @@ module.exports = {
       chain.merge({
         plugin: {
           install: {
-            plugin: UnifiedWebpackPluginV5,
+            plugin: WeappTailwindcss,
             args: [{ rem2rpx: true }],
           },
         },
@@ -85,7 +85,7 @@ module.exports = {
 ```ts
 import type { Plugin } from 'vite'
 import tailwindcss from 'tailwindcss'
-import { UnifiedViteWeappTailwindcssPlugin as uvtw } from 'weapp-tailwindcss/vite'
+import { WeappTailwindcss as uvtw } from 'weapp-tailwindcss/vite'
 
 export default {
   compiler: {

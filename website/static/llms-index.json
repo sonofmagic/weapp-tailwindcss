@@ -995,18 +995,18 @@
     },
     {
       "kind": "doc",
-      "id": "doc:api-v2/classes/UnifiedWebpackPluginV5",
-      "title": "Class: UnifiedWebpackPluginV5",
-      "description": "UnifiedWebpackPluginV5",
-      "summary": "UnifiedWebpackPluginV5",
-      "url": "/docs/api-v2/classes/UnifiedWebpackPluginV5",
-      "canonical": "https://tw.icebreaker.top/docs/api-v2/classes/UnifiedWebpackPluginV5",
+      "id": "doc:api-v2/classes/WeappTailwindcss",
+      "title": "Class: WeappTailwindcss",
+      "description": "WeappTailwindcss",
+      "summary": "WeappTailwindcss",
+      "url": "/docs/api-v2/classes/WeappTailwindcss",
+      "canonical": "https://tw.icebreaker.top/docs/api-v2/classes/WeappTailwindcss",
       "keywords": [
         "API",
         "接口文档",
         "配置项",
         "Class",
-        "UnifiedWebpackPluginV5",
+        "WeappTailwindcss",
         "api v2",
         "classes",
         "weapp-tailwindcss",
@@ -1029,7 +1029,7 @@
         "# appType"
       ],
       "updatedAt": null,
-      "source": "docs/api-v2/classes/UnifiedWebpackPluginV5.md"
+      "source": "docs/api-v2/classes/WeappTailwindcss.md"
     },
     {
       "kind": "doc",
@@ -3627,8 +3627,8 @@
       "kind": "doc",
       "id": "doc:migrations/v1",
       "title": "从 v1 迁移到 v2",
-      "description": "在 2.x 版本中，可以把之前使用的 webpack 插件，全部更换为 UnifiedWebpackPluginV5 插件，不过 vite 插件的导出有一些小变化:",
-      "summary": "在 2.x 版本中，可以把之前使用的 webpack 插件，全部更换为 UnifiedWebpackPluginV5 插件，不过 vite 插件的导出有一些小变化:",
+      "description": "在 2.x 版本中，可以把之前使用的 webpack 插件，全部更换为 WeappTailwindcss 插件，不过 vite 插件的导出有一些小变化:",
+      "summary": "在 2.x 版本中，可以把之前使用的 webpack 插件，全部更换为 WeappTailwindcss 插件，不过 vite 插件的导出有一些小变化:",
       "url": "/docs/migrations/v1",
       "canonical": "https://tw.icebreaker.top/docs/migrations/v1",
       "keywords": [
@@ -5346,8 +5346,8 @@
       "kind": "doc",
       "id": "doc:releases/v2",
       "title": "2.x 版本新特性",
-      "description": "这个版本新增了 UnifiedWebpackPluginV5",
-      "summary": "这个版本新增了 UnifiedWebpackPluginV5",
+      "description": "这个版本新增了 WeappTailwindcss",
+      "summary": "这个版本新增了 WeappTailwindcss",
       "url": "/docs/releases/v2",
       "canonical": "https://tw.icebreaker.top/docs/releases/v2",
       "keywords": [

@@ -1,7 +1,5 @@
 /* stylelint-disable property-no-vendor-prefix */
 .navbar {
-  @apply lg:border-b lg:border-slate-900/10 dark:border-slate-50/[0.06];
-
   backdrop-filter: blur(18px);
   transition:
     background 0.4s ease,
@@ -281,12 +279,28 @@ html[data-ui-homepage-frameworks-card='hidden'] .ui-homepage-frameworks-card {
 }
 
 .footer {
-  @apply lg:border-t lg:border-slate-900/10 dark:border-slate-50/[0.08];
-
   color: rgb(15 23 42);
   background: rgb(255 255 255 / 86%);
   box-shadow: 0 -12px 34px rgb(15 23 42 / 5%);
   backdrop-filter: blur(22px);
+}
+
+@media (min-width: 1024px) {
+  .navbar {
+    border-bottom: 1px solid rgb(15 23 42 / 10%);
+  }
+
+  [data-theme='dark'] .navbar {
+    border-bottom-color: rgb(248 250 252 / 6%);
+  }
+
+  .footer {
+    border-top: 1px solid rgb(15 23 42 / 10%);
+  }
+
+  [data-theme='dark'] .footer {
+    border-top-color: rgb(248 250 252 / 8%);
+  }
 }
 
 .footer .footer__title {

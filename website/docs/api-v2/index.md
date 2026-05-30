@@ -23,7 +23,7 @@ keywords:
 
 ## Classes
 
-- [UnifiedWebpackPluginV5](classes/UnifiedWebpackPluginV5.md)
+- [WeappTailwindcss](classes/WeappTailwindcss.md)
 
 ## Interfaces
 
@@ -284,9 +284,9 @@ interface CssCalcOptions extends PostCssCalcOptions {
 
 ## Functions
 
-### UnifiedViteWeappTailwindcssPlugin
+### WeappTailwindcss
 
-▸ **UnifiedViteWeappTailwindcssPlugin**(`options?`): `Plugin` \| `undefined`
+▸ **WeappTailwindcss**(`options?`): `Plugin` \| `undefined`
 
 #### Parameters
 
@@ -300,7 +300,7 @@ interface CssCalcOptions extends PostCssCalcOptions {
 
 **`Name`**
 
-UnifiedViteWeappTailwindcssPlugin
+WeappTailwindcss
 
 **`Description`**
 

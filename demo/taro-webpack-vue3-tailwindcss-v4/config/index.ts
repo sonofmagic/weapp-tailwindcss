@@ -2,7 +2,7 @@ import { defineConfig, type UserConfigExport } from '@tarojs/cli'
 import TsconfigPathsPlugin from 'tsconfig-paths-webpack-plugin'
 import devConfig from './dev'
 import prodConfig from './prod'
-import { UnifiedWebpackPluginV5, UserDefinedOptions } from 'weapp-tailwindcss/webpack'
+import { WeappTailwindcss, UserDefinedOptions } from 'weapp-tailwindcss/webpack'
 
 const isWatchRegression = process.env.WEAPP_TW_WATCH_REGRESSION === '1'
 
@@ -73,7 +73,7 @@ export default defineConfig<'webpack5'>(async (merge, { command, mode }) => {
         chain.merge({
           plugin: {
             install: {
-              plugin: UnifiedWebpackPluginV5,
+              plugin: WeappTailwindcss,
               args: [
                 {
                   tailwindcssBasedir: process.cwd(),
@@ -122,7 +122,7 @@ export default defineConfig<'webpack5'>(async (merge, { command, mode }) => {
         chain.merge({
           plugin: {
             install: {
-              plugin: UnifiedWebpackPluginV5,
+              plugin: WeappTailwindcss,
               args: [
                 {
                   tailwindcssBasedir: process.cwd(),

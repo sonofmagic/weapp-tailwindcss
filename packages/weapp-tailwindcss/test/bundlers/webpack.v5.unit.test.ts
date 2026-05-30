@@ -2,7 +2,7 @@ import fs from 'node:fs'
 import path from 'node:path'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import { createBundlerGeneratedCssMarker } from '@/bundlers/shared/generated-css-marker'
-import { UnifiedWebpackPluginV5 } from '@/bundlers/webpack/BaseUnifiedPlugin/v5'
+import { WeappTailwindcss } from '@/bundlers/webpack/BaseUnifiedPlugin/v5'
 import { getWebpackLoaderRuntime } from '@/bundlers/webpack/loaders/runtime-registry'
 import { createCache } from '@/cache'
 import { createJsHandler } from '@/js'
@@ -171,7 +171,7 @@ function createCompilerWithLoaderTracking() {
   }
 }
 
-describe('bundlers/webpack UnifiedWebpackPluginV5', () => {
+describe('bundlers/webpack WeappTailwindcss', () => {
   beforeEach(() => {
     currentContext = createContext()
     getCompilerContextMock.mockClear()
@@ -269,7 +269,7 @@ describe('bundlers/webpack UnifiedWebpackPluginV5', () => {
       },
     }
 
-    const plugin = new UnifiedWebpackPluginV5()
+    const plugin = new WeappTailwindcss()
     plugin.apply(compiler as any)
 
     compiler.hooks.normalModuleFactory = {
@@ -410,7 +410,7 @@ describe('bundlers/webpack UnifiedWebpackPluginV5', () => {
     }
 
     currentContext.twPatcher.majorVersion = 4
-    const plugin = new UnifiedWebpackPluginV5()
+    const plugin = new WeappTailwindcss()
     plugin.apply(compiler as any)
 
     const generatedCss = [
@@ -500,7 +500,7 @@ describe('bundlers/webpack UnifiedWebpackPluginV5', () => {
       },
     }
 
-    const plugin = new UnifiedWebpackPluginV5()
+    const plugin = new WeappTailwindcss()
     plugin.apply(compiler as any)
 
     currentAssetStore = {
@@ -596,7 +596,7 @@ describe('bundlers/webpack UnifiedWebpackPluginV5', () => {
       },
     }
 
-    const plugin = new UnifiedWebpackPluginV5()
+    const plugin = new WeappTailwindcss()
     plugin.apply(compiler as any)
 
     currentAssetStore = {
@@ -631,7 +631,7 @@ describe('bundlers/webpack UnifiedWebpackPluginV5', () => {
       throw new Error('collect failed')
     })
     const { compiler, getLoaderHandler } = createCompilerWithLoaderTracking()
-    const plugin = new UnifiedWebpackPluginV5()
+    const plugin = new WeappTailwindcss()
     plugin.apply(compiler as any)
 
     const module: LoaderModule = {
@@ -662,7 +662,7 @@ describe('bundlers/webpack UnifiedWebpackPluginV5', () => {
   it('registers tailwindcss v4 cssSources from the injected css rewrite loader', async () => {
     currentContext.twPatcher.majorVersion = 4
     const { compiler, getLoaderHandler } = createCompilerWithLoaderTracking()
-    const plugin = new UnifiedWebpackPluginV5()
+    const plugin = new WeappTailwindcss()
     plugin.apply(compiler as any)
 
     const module: LoaderModule = {
@@ -691,7 +691,7 @@ describe('bundlers/webpack UnifiedWebpackPluginV5', () => {
     currentContext = createContext({ disabled: true })
     const { compiler } = createCompilerWithLoaderTracking()
 
-    const plugin = new UnifiedWebpackPluginV5()
+    const plugin = new WeappTailwindcss()
     plugin.apply(compiler as any)
 
     expect(currentContext.twPatcher.patch).not.toHaveBeenCalled()
@@ -723,7 +723,7 @@ describe('bundlers/webpack UnifiedWebpackPluginV5', () => {
       ],
     }))
     const { compiler, getLoaderHandler } = createCompilerWithLoaderTracking()
-    const plugin = new UnifiedWebpackPluginV5()
+    const plugin = new WeappTailwindcss()
     plugin.apply(compiler as any)
 
     const module: LoaderModule = {
@@ -830,7 +830,7 @@ describe('bundlers/webpack UnifiedWebpackPluginV5', () => {
       },
     }
 
-    const plugin = new UnifiedWebpackPluginV5()
+    const plugin = new WeappTailwindcss()
     plugin.apply(compiler as any)
 
     currentAssetStore = {
@@ -905,7 +905,7 @@ describe('bundlers/webpack UnifiedWebpackPluginV5', () => {
       },
     }
 
-    const plugin = new UnifiedWebpackPluginV5()
+    const plugin = new WeappTailwindcss()
     plugin.apply(compiler as any)
 
     currentAssetStore = {
@@ -996,7 +996,7 @@ describe('bundlers/webpack UnifiedWebpackPluginV5', () => {
       },
     }
 
-    new UnifiedWebpackPluginV5().apply(compiler as any)
+    new WeappTailwindcss().apply(compiler as any)
     await processAssetsCallbacks[0](createAssetsFromStore(currentAssetStore))
 
     expect(currentAssetStore['index.css']).toContain('.tw-watch-style-case')
@@ -1085,7 +1085,7 @@ describe('bundlers/webpack UnifiedWebpackPluginV5', () => {
       },
     }
 
-    new UnifiedWebpackPluginV5().apply(compiler as any)
+    new WeappTailwindcss().apply(compiler as any)
     await processAssetsCallbacks[0](createAssetsFromStore(currentAssetStore))
 
     expect(currentAssetStore['app.wxss']).toContain('.tw-page-style-watch-anchor')
@@ -1170,7 +1170,7 @@ describe('bundlers/webpack UnifiedWebpackPluginV5', () => {
       },
     }
 
-    new UnifiedWebpackPluginV5().apply(compiler as any)
+    new WeappTailwindcss().apply(compiler as any)
     await processAssetsCallbacks[0](createAssetsFromStore(currentAssetStore))
     expect(currentAssetStore['app.css']).toBe('runtime:1')
 
@@ -1240,7 +1240,7 @@ describe('bundlers/webpack UnifiedWebpackPluginV5', () => {
       },
     }
 
-    const plugin = new UnifiedWebpackPluginV5()
+    const plugin = new WeappTailwindcss()
     plugin.apply(compiler as any)
 
     currentAssetStore = {
@@ -1339,7 +1339,7 @@ describe('bundlers/webpack UnifiedWebpackPluginV5', () => {
       },
     }
 
-    const plugin = new UnifiedWebpackPluginV5()
+    const plugin = new WeappTailwindcss()
     plugin.apply(compiler as any)
 
     const js = 'const cls = "bg-[#f50505] text-[100rpx] text-white"'
@@ -1442,7 +1442,7 @@ describe('bundlers/webpack UnifiedWebpackPluginV5', () => {
       },
     }
 
-    const plugin = new UnifiedWebpackPluginV5()
+    const plugin = new WeappTailwindcss()
     plugin.apply(compiler as any)
 
     const js = 'const cls = "bg-[#f50505] text-[100rpx] text-white"'
@@ -1541,7 +1541,7 @@ describe('bundlers/webpack UnifiedWebpackPluginV5', () => {
       },
     }
 
-    const plugin = new UnifiedWebpackPluginV5()
+    const plugin = new WeappTailwindcss()
     plugin.apply(compiler as any)
 
     currentAssetStore = {
@@ -1684,7 +1684,7 @@ describe('bundlers/webpack UnifiedWebpackPluginV5', () => {
       },
     }
 
-    new UnifiedWebpackPluginV5().apply(compiler as any)
+    new WeappTailwindcss().apply(compiler as any)
 
     currentAssetStore = {
       'index.js': 'const cls = "bg-[#101010] text-[100rpx]"',
@@ -1758,7 +1758,7 @@ describe('bundlers/webpack UnifiedWebpackPluginV5', () => {
       },
     }
     currentContext.twPatcher.majorVersion = 4
-    const plugin = new UnifiedWebpackPluginV5()
+    const plugin = new WeappTailwindcss()
     plugin.apply(compiler as any)
     const module: LoaderModule = {
       loaders: [{ loader: '/path/postcss-loader.js' }],
@@ -1791,7 +1791,7 @@ describe('bundlers/webpack UnifiedWebpackPluginV5', () => {
     currentContext.twPatcher.majorVersion = 4
     getCompilerContextMock.mockReturnValue(currentContext)
     const { compiler, getLoaderHandler } = createCompilerWithLoaderTracking()
-    new UnifiedWebpackPluginV5().apply(compiler as any)
+    new WeappTailwindcss().apply(compiler as any)
 
     const module: LoaderModule = {
       resource: '/workspace/src/app.css',
@@ -1813,7 +1813,7 @@ describe('bundlers/webpack UnifiedWebpackPluginV5', () => {
     currentContext = createContext({ appType: 'mpx' })
     getCompilerContextMock.mockReturnValue(currentContext)
     const { compiler, getLoaderHandler } = createCompilerWithLoaderTracking()
-    const plugin = new UnifiedWebpackPluginV5()
+    const plugin = new WeappTailwindcss()
     plugin.apply(compiler as any)
 
     const handler = getLoaderHandler()
@@ -1837,7 +1837,7 @@ describe('bundlers/webpack UnifiedWebpackPluginV5', () => {
     currentContext.twPatcher.majorVersion = 4
     getCompilerContextMock.mockReturnValue(currentContext)
     const { compiler, getLoaderHandler } = createCompilerWithLoaderTracking()
-    const plugin = new UnifiedWebpackPluginV5()
+    const plugin = new WeappTailwindcss()
     plugin.apply(compiler as any)
 
     const handler = getLoaderHandler()
@@ -1864,7 +1864,7 @@ describe('bundlers/webpack UnifiedWebpackPluginV5', () => {
     currentContext.twPatcher.majorVersion = 4
     getCompilerContextMock.mockReturnValue(currentContext)
     const { compiler, getLoaderHandler } = createCompilerWithLoaderTracking()
-    const plugin = new UnifiedWebpackPluginV5()
+    const plugin = new WeappTailwindcss()
     plugin.apply(compiler as any)
 
     const handler = getLoaderHandler()
@@ -1890,7 +1890,7 @@ describe('bundlers/webpack UnifiedWebpackPluginV5', () => {
     currentContext.twPatcher.majorVersion = 4
     getCompilerContextMock.mockImplementation(() => currentContext)
     const { compiler, getLoaderHandler } = createCompilerWithLoaderTracking()
-    const plugin = new UnifiedWebpackPluginV5()
+    const plugin = new WeappTailwindcss()
     plugin.apply(compiler as any)
 
     const handler = getLoaderHandler()
@@ -1915,7 +1915,7 @@ describe('bundlers/webpack UnifiedWebpackPluginV5', () => {
     currentContext.twPatcher.majorVersion = 4
     getCompilerContextMock.mockReturnValue(currentContext)
     const { compiler, getLoaderHandler } = createCompilerWithLoaderTracking()
-    const plugin = new UnifiedWebpackPluginV5()
+    const plugin = new WeappTailwindcss()
     plugin.apply(compiler as any)
 
     const handler = getLoaderHandler()
@@ -1940,7 +1940,7 @@ describe('bundlers/webpack UnifiedWebpackPluginV5', () => {
     currentContext.twPatcher.majorVersion = 4
     getCompilerContextMock.mockReturnValue(currentContext)
     const { compiler, getLoaderHandler } = createCompilerWithLoaderTracking()
-    const plugin = new UnifiedWebpackPluginV5()
+    const plugin = new WeappTailwindcss()
     plugin.apply(compiler as any)
 
     const handler = getLoaderHandler()
@@ -1961,7 +1961,7 @@ describe('bundlers/webpack UnifiedWebpackPluginV5', () => {
     currentContext.twPatcher.majorVersion = 4
     getCompilerContextMock.mockReturnValue(currentContext)
     const { compiler, getLoaderHandler } = createCompilerWithLoaderTracking()
-    const plugin = new UnifiedWebpackPluginV5()
+    const plugin = new WeappTailwindcss()
     plugin.apply(compiler as any)
 
     const handler = getLoaderHandler()
@@ -1988,7 +1988,7 @@ describe('bundlers/webpack UnifiedWebpackPluginV5', () => {
       currentContext = createContext()
       getCompilerContextMock.mockReturnValue(currentContext)
       const { compiler, getLoaderHandler } = createCompilerWithLoaderTracking()
-      const plugin = new UnifiedWebpackPluginV5()
+      const plugin = new WeappTailwindcss()
       plugin.apply(compiler as any)
 
       const handler = getLoaderHandler()
@@ -2022,7 +2022,7 @@ describe('bundlers/webpack UnifiedWebpackPluginV5', () => {
     currentContext.twPatcher.majorVersion = 4
     getCompilerContextMock.mockReturnValue(currentContext)
     const { compiler, getLoaderHandler } = createCompilerWithLoaderTracking()
-    const plugin = new UnifiedWebpackPluginV5()
+    const plugin = new WeappTailwindcss()
     plugin.apply(compiler as any)
 
     const handler = getLoaderHandler()
@@ -2041,7 +2041,7 @@ describe('bundlers/webpack UnifiedWebpackPluginV5', () => {
     currentContext.twPatcher.majorVersion = 4
     getCompilerContextMock.mockReturnValue(currentContext)
     const { compiler, getLoaderHandler } = createCompilerWithLoaderTracking()
-    const plugin = new UnifiedWebpackPluginV5()
+    const plugin = new WeappTailwindcss()
     plugin.apply(compiler as any)
 
     const handler = getLoaderHandler()
@@ -2059,7 +2059,7 @@ describe('bundlers/webpack UnifiedWebpackPluginV5', () => {
 
   it('does not attach runtime loader when postcss loader is missing', () => {
     const { compiler, getLoaderHandler } = createCompilerWithLoaderTracking()
-    const plugin = new UnifiedWebpackPluginV5()
+    const plugin = new WeappTailwindcss()
     plugin.apply(compiler as any)
 
     const handler = getLoaderHandler()
@@ -2142,7 +2142,7 @@ describe('bundlers/webpack UnifiedWebpackPluginV5', () => {
       },
     }
 
-    const plugin = new UnifiedWebpackPluginV5()
+    const plugin = new WeappTailwindcss()
     plugin.apply(compiler as any)
 
     const html = '<view class="foo"></view>'
@@ -2182,6 +2182,95 @@ describe('bundlers/webpack UnifiedWebpackPluginV5', () => {
     expect(jsUpdates[1][1].toString()).toBe(`js:${js}`)
     expect(wxsUpdates[0][1].toString()).toBe(`js:${wxs}`)
     expect(wxsUpdates[1][1].toString()).toBe(`js:${wxs}`)
+  })
+
+  it('skips html and js class transforms for web generator target', async () => {
+    currentContext = createContext({
+      generator: {
+        target: 'web',
+      },
+      htmlMatcher: (file: string) => file.endsWith('.html'),
+      jsMatcher: (file: string) => file.endsWith('.js'),
+    })
+    getCompilerContextMock.mockReturnValue(currentContext)
+
+    const processAssetsCallbacks: Array<(assets: Record<string, any>) => Promise<void>> = []
+    let currentAssetStore: Record<string, string> = {}
+    const updateAsset = vi.fn((file: string, source: FakeConcatSource) => {
+      currentAssetStore[file] = source.toString()
+    })
+    const compilation = {
+      compiler: { outputPath: path.resolve(process.cwd(), 'dist') },
+      chunks: [{ id: 'main', hash: 'hash-1' }],
+      hooks: {
+        processAssets: {
+          tapPromise: (_options: unknown, handler: (assets: Record<string, any>) => Promise<void>) => {
+            processAssetsCallbacks.push(handler)
+          },
+        },
+      },
+      updateAsset,
+      getAsset(file: string) {
+        const content = currentAssetStore[file]
+        if (content === undefined) {
+          return undefined
+        }
+        return {
+          source: {
+            source: () => content,
+          },
+        }
+      },
+    }
+    const compiler = {
+      webpack: {
+        Compilation: {
+          PROCESS_ASSETS_STAGE_SUMMARIZE: Symbol('stage'),
+        },
+        sources: {
+          ConcatSource: FakeConcatSource,
+        },
+        NormalModule: {
+          getCompilationHooks: vi.fn(() => ({
+            loader: {
+              tap: vi.fn(),
+            },
+          })),
+        },
+      },
+      hooks: {
+        normalModuleFactory: {
+          tap: (_name: string, handler: (factory: any) => void) => {
+            handler({
+              hooks: {
+                beforeResolve: {
+                  tap: vi.fn(),
+                },
+              },
+            })
+          },
+        },
+        compilation: {
+          tap: (_name: string, handler: (_compilation: any) => void) => {
+            handler(compilation)
+          },
+        },
+      },
+    }
+
+    const plugin = new WeappTailwindcss()
+    plugin.apply(compiler as any)
+
+    currentAssetStore = {
+      'index.html': '<div class="bg-[#07c160]"></div>',
+      'index.js': 'const cls = "bg-[#07c160]"',
+    }
+    await processAssetsCallbacks[0](createAssetsFromStore(currentAssetStore))
+
+    expect(currentContext.templateHandler).not.toHaveBeenCalled()
+    expect(currentContext.jsHandler).not.toHaveBeenCalled()
+    expect(updateAsset.mock.calls.some(([file]) => file === 'index.html')).toBe(false)
+    expect(updateAsset.mock.calls.some(([file]) => file === 'index.js')).toBe(false)
   })
 
   it('propagates linked js asset updates', async () => {
@@ -2268,7 +2357,7 @@ describe('bundlers/webpack UnifiedWebpackPluginV5', () => {
     })
     getCompilerContextMock.mockReturnValue(currentContext)
 
-    const plugin = new UnifiedWebpackPluginV5()
+    const plugin = new WeappTailwindcss()
     plugin.apply(compiler as any)
 
     const assetStore = {
@@ -2343,7 +2432,7 @@ describe('bundlers/webpack UnifiedWebpackPluginV5', () => {
     const ctxV4 = createContext()
     ctxV4.twPatcher.majorVersion = 4
     getCompilerContextMock.mockImplementationOnce(() => ctxV4)
-    let plugin = new UnifiedWebpackPluginV5()
+    let plugin = new WeappTailwindcss()
     plugin.apply(compiler as any)
     const v4Module: LoaderModule = {
       loaders: [{ loader: '/path/postcss-loader.js' }],
@@ -2356,7 +2445,7 @@ describe('bundlers/webpack UnifiedWebpackPluginV5', () => {
     ctxV3.twPatcher.majorVersion = 3
     getCompilerContextMock.mockImplementationOnce(() => ctxV3)
     loaderHandler = undefined
-    plugin = new UnifiedWebpackPluginV5()
+    plugin = new WeappTailwindcss()
     plugin.apply(compiler as any)
     const v3Module: LoaderModule = {
       loaders: [{ loader: '/path/postcss-loader.js' }],
@@ -2373,7 +2462,7 @@ describe('bundlers/webpack UnifiedWebpackPluginV5', () => {
     ctxV3Web.twPatcher.majorVersion = 3
     getCompilerContextMock.mockImplementationOnce(() => ctxV3Web)
     loaderHandler = undefined
-    plugin = new UnifiedWebpackPluginV5()
+    plugin = new WeappTailwindcss()
     plugin.apply(compiler as any)
     const v3WebModule: LoaderModule = {
       loaders: [{ loader: '/path/postcss-loader.js' }],

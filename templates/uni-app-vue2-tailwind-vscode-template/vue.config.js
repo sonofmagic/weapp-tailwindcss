@@ -1,4 +1,4 @@
-const { UnifiedWebpackPluginV5 } = require("weapp-tailwindcss/webpack");
+const { WeappTailwindcss } = require("weapp-tailwindcss/webpack");
 
 /**
  * @type {import('@vue/cli-service').ProjectOptions}
@@ -7,7 +7,7 @@ const config = {
   //....
   configureWebpack: {
     plugins: [
-      new UnifiedWebpackPluginV5({
+      new WeappTailwindcss({
         rem2rpx: true,
       }),
     ],

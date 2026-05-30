@@ -79,12 +79,12 @@ const vitePlugins = [
 Mpx 单目标构建会注入当前目标环境变量，Web 构建可直接保留插件：
 
 ```js title="mpx.config.js"
-const { UnifiedWebpackPluginV5 } = require("weapp-tailwindcss/webpack");
+const { WeappTailwindcss } = require("weapp-tailwindcss/webpack");
 
 module.exports = {
   configureWebpack(config) {
     config.plugins.push(
-      new UnifiedWebpackPluginV5({
+      new WeappTailwindcss({
         appType: "mpx",
         rem2rpx: true
       })

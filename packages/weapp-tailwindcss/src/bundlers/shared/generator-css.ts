@@ -126,6 +126,37 @@ function shouldIsolateMatchedCssSource(source: GeneratorResolvedSource, sourceEn
   return Boolean(source.__weappTailwindcssMeta?.matchedCssSourceFile && sourceEntries !== undefined)
 }
 
+function shouldScanTailwindV4Sources(
+  majorVersion: number | undefined,
+  target: string,
+  generatorRuntime: Set<string>,
+  isolateCssSource: boolean,
+) {
+  if (majorVersion !== 4 || isolateCssSource) {
+    return false
+  }
+  return target === 'web' || generatorRuntime.size === 0
+}
+
+function shouldAppendWebBundleCssFallback(
+  target: string,
+  options: {
+    hasSourceDirectives: boolean
+    hasMatchedCssSourceFile: boolean
+  },
+) {
+  return target === 'web'
+    && !options.hasMatchedCssSourceFile
+    && !options.hasSourceDirectives
+}
+
+function isEmptyCssSourceOrderParts(parts: {
+  before: string
+  after: string
+}) {
+  return parts.before.trim().length === 0 && parts.after.trim().length === 0
+}
+
 function resolveGeneratorStyleOptions(
   opts: InternalUserDefinedOptions,
   cssHandlerOptions: IStyleHandlerOptions,
@@ -433,7 +464,12 @@ export async function generateCssByGenerator(
       return generator.generate({
         candidates: generatorRuntime,
         incrementalCache: majorVersion === 3 || majorVersion === 4,
-        scanSources: majorVersion === 4 && generatorRuntime.size === 0 && !isolateCssSource,
+        scanSources: shouldScanTailwindV4Sources(
+          majorVersion,
+          generatorOptions.target,
+          generatorRuntime,
+          isolateCssSource,
+        ),
         styleOptions: generatorStyleOptions,
         tailwindcssV3Compatibility: generatorOptions.tailwindcssV3Compatibility,
         target: generatorOptions.target,
@@ -504,6 +540,13 @@ export async function generateCssByGenerator(
       const beforeUserCss = await transformGeneratorUserCss(orderedExtraCss.before, userCssOptions)
       const afterUserCss = await transformGeneratorUserCss(orderedExtraCss.after, userCssOptions)
       css = createCssSourceOrderAppend(createCssSourceOrderAppend(beforeUserCss, css), afterUserCss)
+      if (isEmptyCssSourceOrderParts(orderedExtraCss) && shouldAppendWebBundleCssFallback(generated.target, {
+        hasSourceDirectives,
+        hasMatchedCssSourceFile,
+      })) {
+        const userCss = await transformGeneratorUserCss(effectiveRawSource, userCssOptions)
+        css = createCssSourceOrderAppend(css, userCss)
+      }
       if (generated.target === 'weapp') {
         css = await appendLegacyCompatCss(
           css,
@@ -542,6 +585,19 @@ export async function generateCssByGenerator(
       css = inheritLegacyUnitConvertedDeclarations(css, effectiveRawSource)
     }
     if (hasMatchedCssSourceFile || generated.target === 'web') {
+      if (shouldAppendWebBundleCssFallback(generated.target, {
+        hasSourceDirectives,
+        hasMatchedCssSourceFile,
+      })) {
+        const userCss = await transformGeneratorUserCss(effectiveRawSource, {
+          generatorTarget: generated.target,
+          generatorStyleOptions,
+          cssUserHandlerOptions,
+          styleHandler,
+          importFallback: generatorOptions.importFallback,
+        })
+        css = createCssSourceOrderAppend(css, userCss)
+      }
       return {
         css: finalizeMiniProgramGeneratorCss(css, generated.target, majorVersion, opts.cssPreflight),
         target: generated.target,

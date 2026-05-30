@@ -15,7 +15,7 @@ import { compile, createLoader, getMemfsCompiler5 } from 'webpack-build-utils'
 import { WeappTailwindcss } from '@/bundlers/vite'
 import { vitePluginName } from '@/constants'
 import { createPlugins } from '@/gulp'
-import { UnifiedWebpackPluginV5 } from '@/webpack'
+import { WeappTailwindcss } from '@/webpack'
 
 const require = createRequire(import.meta.url)
 const tailwindcss = require('tailwindcss')
@@ -94,7 +94,7 @@ function createWebpackCompiler(mode: Configuration['mode']): Compiler {
       ],
     },
     plugins: [
-      new UnifiedWebpackPluginV5({
+      new WeappTailwindcss({
         mainCssChunkMatcher: name => name.endsWith('index.css'),
         customReplaceDictionary: MappingChars2String,
       }),

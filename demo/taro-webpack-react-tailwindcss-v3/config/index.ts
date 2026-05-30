@@ -1,6 +1,6 @@
 import type { UserConfigExport } from '@tarojs/cli'
 import { createRequire } from 'node:module'
-import { UnifiedWebpackPluginV5, type UserDefinedOptions } from 'weapp-tailwindcss/webpack'
+import { WeappTailwindcss, type UserDefinedOptions } from 'weapp-tailwindcss/webpack'
 import devConfig from './dev'
 import prodConfig from './prod'
 
@@ -87,14 +87,14 @@ const config: UserConfigExport<'webpack5'> = {
         chain.merge({
           plugin: {
             install: {
-              plugin: UnifiedWebpackPluginV5,
+              plugin: WeappTailwindcss,
               args: [
                 {
                   // onStart() {
                   //   start = performance.now()
                   // },
                   // onEnd() {
-                  //   console.log('UnifiedWebpackPluginV5 onEnd:', performance.now() - start, 'ms')
+                  //   console.log('WeappTailwindcss onEnd:', performance.now() - start, 'ms')
                   // },
                   onStart() {
                     bench.start();
@@ -115,11 +115,11 @@ const config: UserConfigExport<'webpack5'> = {
 
 
       // chain
-      //   .plugin('UnifiedWebpackPlugin')
-      //   .use(UnifiedWebpackPlugin, [opt])
+      //   .plugin('WeappTailwindcss')
+      //   .use(WeappTailwindcss, [opt])
       // chain
-      //   .plugin('UnifiedWebpackPluginV5')
-      //   .use(UnifiedWebpackPluginV5(opt))
+      //   .plugin('WeappTailwindcss')
+      //   .use(WeappTailwindcss(opt))
 
       // if (isWrite) {
       //   opt.loaderOptions = {
@@ -155,7 +155,7 @@ const config: UserConfigExport<'webpack5'> = {
       chain.merge({
         plugin: {
           install: {
-            plugin: UnifiedWebpackPluginV5,
+            plugin: WeappTailwindcss,
             args: [
               {
                 tailwindcssBasedir: process.cwd(),

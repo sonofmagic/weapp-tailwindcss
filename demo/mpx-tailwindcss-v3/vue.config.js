@@ -1,5 +1,5 @@
 const { defineConfig } = require('@vue/cli-service')
-const { UnifiedWebpackPluginV5 } = require('weapp-tailwindcss/webpack')
+const { WeappTailwindcss } = require('weapp-tailwindcss/webpack')
 const bench = require('../bench.cjs')('mpx')
 const autoprefixer = require('autoprefixer')
 const path = require('node:path')
@@ -42,7 +42,7 @@ module.exports = defineConfig({
       config.resolve.alias['tdesign-miniprogram/button/button'] = componentStub
       config.resolve.alias['@vant/weapp/button/index'] = componentStub
     }
-    config.plugins.push(new UnifiedWebpackPluginV5({
+    config.plugins.push(new WeappTailwindcss({
       onStart() {
         // start = performance.now()
         bench.start()
@@ -50,7 +50,7 @@ module.exports = defineConfig({
       onEnd() {
         bench.end()
         bench.dump()
-        // console.log('UnifiedWebpackPluginV5 onEnd:', performance.now() - start, 'ms')
+        // console.log('WeappTailwindcss onEnd:', performance.now() - start, 'ms')
       },
       rem2rpx: true,
       appType: 'mpx'

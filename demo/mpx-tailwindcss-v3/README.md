@@ -99,7 +99,7 @@ module.exports = {
 
 ```js
 const { defineConfig } = require('@vue/cli-service')
-const { UnifiedWebpackPluginV5 } = require('weapp-tailwindcss/webpack')
+const { WeappTailwindcss } = require('weapp-tailwindcss/webpack')
 const tailwindcss = require('tailwindcss')
 const autoprefixer = require('autoprefixer')
 module.exports = defineConfig({
@@ -119,7 +119,7 @@ module.exports = defineConfig({
     }
   },
   configureWebpack(config) {
-    config.plugins.push(new UnifiedWebpackPluginV5({
+    config.plugins.push(new WeappTailwindcss({
       rem2rpx: true
     }))
   }

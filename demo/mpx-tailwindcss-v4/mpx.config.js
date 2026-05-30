@@ -1,5 +1,5 @@
 const { defineConfig } = require('@vue/cli-service')
-const { UnifiedWebpackPluginV5 } = require('weapp-tailwindcss/webpack')
+const { WeappTailwindcss } = require('weapp-tailwindcss/webpack')
 const path = require('path')
 
 // 修复 @mpxjs/webpack-plugin 序列化器重复注册导致的构建失败
@@ -47,7 +47,7 @@ module.exports = defineConfig({
     // Node 24 + Mpx/Webpack 5 的 filesystem cache 快照 hash 会命中 undefined 输入。
     config.cache = false
     config.plugins.push(
-      new UnifiedWebpackPluginV5({
+      new WeappTailwindcss({
         tailwindcssBasedir: process.cwd(),
         rem2rpx: true,
         appType: 'mpx',

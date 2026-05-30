@@ -13,7 +13,7 @@ import postcss from 'postcss'
 
 import { runLoaders } from 'promisify-loader-runner'
 import webpack from 'webpack'
-import { UnifiedWebpackPluginV5 } from '@/index'
+import { WeappTailwindcss } from '@/webpack'
 import { readAssets as _readAssets, compile, createLoader, getMemfsCompiler5 as getCompiler5, getErrors, getWarnings } from './helpers'
 
 function readAssets(...args: Parameters<typeof _readAssets>) {
@@ -167,7 +167,7 @@ describe.skipIf(!ci.isCI && os.platform() === 'win32')('webpack5 plugin', () => 
   it('common', async () => {
     let timeStart: number
     let timeTaken: number
-    new UnifiedWebpackPluginV5({
+    new WeappTailwindcss({
       mainCssChunkMatcher(name) {
         return path.basename(name) === 'index.css'
       },
@@ -191,7 +191,7 @@ describe.skipIf(!ci.isCI && os.platform() === 'win32')('webpack5 plugin', () => 
   it('common with rem2rpx', async () => {
     let timeStart: number
     let timeTaken: number
-    new UnifiedWebpackPluginV5({
+    new WeappTailwindcss({
       mainCssChunkMatcher(name) {
         return path.basename(name) === 'index.css'
       },
@@ -216,7 +216,7 @@ describe.skipIf(!ci.isCI && os.platform() === 'win32')('webpack5 plugin', () => 
   it('common build twice for cache', async () => {
     let timeStart: number
     let timeTaken: number
-    new UnifiedWebpackPluginV5({
+    new WeappTailwindcss({
       mainCssChunkMatcher(name) {
         return path.basename(name) === 'index.css'
       },
@@ -246,7 +246,7 @@ describe.skipIf(!ci.isCI && os.platform() === 'win32')('webpack5 plugin', () => 
   // it('common with source map', async () => {
   //   let timeStart: number
   //   let timeTaken: number
-  //   new UnifiedWebpackPluginV5({
+  //   new WeappTailwindcss({
   //     mainCssChunkMatcher(name) {
   //       return path.basename(name) === 'index.css'
   //     },
@@ -270,7 +270,7 @@ describe.skipIf(!ci.isCI && os.platform() === 'win32')('webpack5 plugin', () => 
   it('common 0', async () => {
     let timeStart: number
     let timeTaken: number
-    new UnifiedWebpackPluginV5({
+    new WeappTailwindcss({
       mainCssChunkMatcher(name) {
         return path.basename(name) === 'index.css'
       },
@@ -295,7 +295,7 @@ describe.skipIf(!ci.isCI && os.platform() === 'win32')('webpack5 plugin', () => 
   it('common with loader', async () => {
     let timeStart: number
     let timeTaken: number
-    new UnifiedWebpackPluginV5({
+    new WeappTailwindcss({
       mainCssChunkMatcher(name: any) {
         return path.basename(name) === 'index.css'
       },
@@ -319,7 +319,7 @@ describe.skipIf(!ci.isCI && os.platform() === 'win32')('webpack5 plugin', () => 
   it('empty build', async () => {
     let timeStart: number
     let timeTaken: number
-    new UnifiedWebpackPluginV5({
+    new WeappTailwindcss({
       mainCssChunkMatcher(name) {
         return path.basename(name) === 'index.css'
       },
@@ -342,7 +342,7 @@ describe.skipIf(!ci.isCI && os.platform() === 'win32')('webpack5 plugin', () => 
   it('unified common', async () => {
     let timeStart: number
     let timeTaken: number
-    new UnifiedWebpackPluginV5({
+    new WeappTailwindcss({
       mainCssChunkMatcher(name) {
         return path.basename(name) === 'index.css'
       },
@@ -365,7 +365,7 @@ describe.skipIf(!ci.isCI && os.platform() === 'win32')('webpack5 plugin', () => 
   it('unified prod common', async () => {
     let timeStart: number
     let timeTaken: number
-    new UnifiedWebpackPluginV5({
+    new WeappTailwindcss({
       mainCssChunkMatcher(name) {
         return path.basename(name) === 'index.css'
       },
@@ -388,7 +388,7 @@ describe.skipIf(!ci.isCI && os.platform() === 'win32')('webpack5 plugin', () => 
   it('disabled true', async () => {
     let timeStart: number
     let timeTaken: number
-    new UnifiedWebpackPluginV5({
+    new WeappTailwindcss({
       mainCssChunkMatcher(name) {
         return path.basename(name) === 'index.css'
       },

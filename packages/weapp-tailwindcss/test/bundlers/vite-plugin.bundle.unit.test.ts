@@ -30,7 +30,7 @@ const MINIMAL_TAILWIND_V4_CSS = `
 `
 const createdDirs: string[] = []
 
-async function loadUnifiedVitePlugin() {
+async function loadWeappTailwindcssPlugin() {
   const mod = await import('@/bundlers/vite')
   return mod.WeappTailwindcss
 }
@@ -123,7 +123,7 @@ describe('bundlers/vite WeappTailwindcss bundle', () => {
   })
 
   it('generates bundle assets and leverages cache', async () => {
-    const WeappTailwindcss = await loadUnifiedVitePlugin()
+    const WeappTailwindcss = await loadWeappTailwindcssPlugin()
     const currentContext = createContext({
     })
     setCurrentContext(currentContext)
@@ -282,7 +282,7 @@ describe('bundlers/vite WeappTailwindcss bundle', () => {
     })
     setCurrentContext(currentContext)
 
-    const WeappTailwindcss = await loadUnifiedVitePlugin()
+    const WeappTailwindcss = await loadWeappTailwindcssPlugin()
     const plugins = WeappTailwindcss()
     const sourcePlugin = plugins?.find(plugin => plugin.name === 'weapp-tailwindcss:adaptor:source-candidates') as Plugin
     const postPlugin = plugins?.find(plugin => plugin.name === 'weapp-tailwindcss:adaptor:post') as Plugin
@@ -330,7 +330,7 @@ describe('bundlers/vite WeappTailwindcss bundle', () => {
   }, TEST_TIMEOUT_MS)
 
   it('inlines external postcss config without official Tailwind plugins in force generator mode', async () => {
-    const WeappTailwindcss = await loadUnifiedVitePlugin()
+    const WeappTailwindcss = await loadWeappTailwindcssPlugin()
     const tempDir = await mkdtemp(path.join(os.tmpdir(), 'weapp-tw-vite-postcss-'))
     createdDirs.push(tempDir)
     await writeFile(
@@ -367,7 +367,7 @@ describe('bundlers/vite WeappTailwindcss bundle', () => {
   }, TEST_TIMEOUT_MS)
 
   it('removes official Tailwind plugins in default generator mode', async () => {
-    const WeappTailwindcss = await loadUnifiedVitePlugin()
+    const WeappTailwindcss = await loadWeappTailwindcssPlugin()
     const currentContext = createContext({
       generator: {
         target: 'weapp',
@@ -428,7 +428,7 @@ describe('bundlers/vite WeappTailwindcss bundle', () => {
     refreshTailwindcssPatcher.mockImplementation(async () => context.twPatcher)
     setCurrentContext(context)
 
-    const WeappTailwindcss = await loadUnifiedVitePlugin()
+    const WeappTailwindcss = await loadWeappTailwindcssPlugin()
     const plugins = WeappTailwindcss()
     const rewritePlugin = plugins?.find(plugin => plugin.name === 'weapp-tailwindcss:adaptor:rewrite-css-imports') as Plugin
     const transform = getTransformHandler(rewritePlugin)
@@ -497,7 +497,7 @@ describe('bundlers/vite WeappTailwindcss bundle', () => {
     })
     setCurrentContext(context)
 
-    const WeappTailwindcss = await loadUnifiedVitePlugin()
+    const WeappTailwindcss = await loadWeappTailwindcssPlugin()
     const plugins = WeappTailwindcss()
     const cssHmrPlugin = plugins?.find(plugin => plugin.name === 'weapp-tailwindcss:adaptor:generate:serve-hmr') as Plugin
     const postPlugin = plugins?.find(plugin => plugin.name === 'weapp-tailwindcss:adaptor:post') as Plugin
@@ -579,7 +579,7 @@ describe('bundlers/vite WeappTailwindcss bundle', () => {
       },
     }))
 
-    const WeappTailwindcss = await loadUnifiedVitePlugin()
+    const WeappTailwindcss = await loadWeappTailwindcssPlugin()
     const plugins = WeappTailwindcss({
       generator: {
         target: 'web',
@@ -695,7 +695,7 @@ describe('bundlers/vite WeappTailwindcss bundle', () => {
       },
     }))
 
-    const WeappTailwindcss = await loadUnifiedVitePlugin()
+    const WeappTailwindcss = await loadWeappTailwindcssPlugin()
     const plugins = WeappTailwindcss({
       generator: {
         target: 'web',
@@ -807,7 +807,7 @@ describe('bundlers/vite WeappTailwindcss bundle', () => {
     })
     setCurrentContext(context)
 
-    const WeappTailwindcss = await loadUnifiedVitePlugin()
+    const WeappTailwindcss = await loadWeappTailwindcssPlugin()
     const plugins = WeappTailwindcss()
     const servePlugin = plugins?.find(plugin => plugin.name === 'weapp-tailwindcss:adaptor:generate:serve') as Plugin
     const postPlugin = plugins?.find(plugin => plugin.name === 'weapp-tailwindcss:adaptor:post') as Plugin
@@ -877,7 +877,7 @@ describe('bundlers/vite WeappTailwindcss bundle', () => {
     refreshTailwindcssPatcher.mockImplementation(async () => context.twPatcher)
     setCurrentContext(context)
 
-    const WeappTailwindcss = await loadUnifiedVitePlugin()
+    const WeappTailwindcss = await loadWeappTailwindcssPlugin()
     const plugins = WeappTailwindcss()
     const sourcePlugin = plugins?.find(plugin => plugin.name === 'weapp-tailwindcss:adaptor:source-candidates') as Plugin
     const postPlugin = plugins?.find(plugin => plugin.name === 'weapp-tailwindcss:adaptor:post') as Plugin
@@ -943,7 +943,7 @@ describe('bundlers/vite WeappTailwindcss bundle', () => {
     })
     setCurrentContext(context)
 
-    const WeappTailwindcss = await loadUnifiedVitePlugin()
+    const WeappTailwindcss = await loadWeappTailwindcssPlugin()
     const plugins = WeappTailwindcss({
       cssEntries: [cssEntry],
     })
@@ -989,7 +989,7 @@ describe('bundlers/vite WeappTailwindcss bundle', () => {
     refreshTailwindcssPatcher.mockImplementation(async () => context.twPatcher)
     setCurrentContext(context)
 
-    const WeappTailwindcss = await loadUnifiedVitePlugin()
+    const WeappTailwindcss = await loadWeappTailwindcssPlugin()
     const plugins = WeappTailwindcss()
     const rewritePlugin = plugins?.find(plugin => plugin.name === 'weapp-tailwindcss:adaptor:rewrite-css-imports') as Plugin
     const transform = getTransformHandler(rewritePlugin)
@@ -1016,7 +1016,7 @@ describe('bundlers/vite WeappTailwindcss bundle', () => {
   }, TEST_TIMEOUT_MS)
 
   it('injects vite postcss-processed generated css assets into the main mini-program css asset', async () => {
-    const WeappTailwindcss = await loadUnifiedVitePlugin()
+    const WeappTailwindcss = await loadWeappTailwindcssPlugin()
     setCurrentContext(createContext({
       cssMatcher: (file: string) => file.endsWith('.wxss'),
       mainCssChunkMatcher: vi.fn((file: string) => file === 'app.wxss'),
@@ -1074,7 +1074,7 @@ describe('bundlers/vite WeappTailwindcss bundle', () => {
     refreshTailwindcssPatcher.mockImplementation(async () => context.twPatcher)
     setCurrentContext(context)
 
-    const WeappTailwindcss = await loadUnifiedVitePlugin()
+    const WeappTailwindcss = await loadWeappTailwindcssPlugin()
     const plugins = WeappTailwindcss({ cssEntries: [explicitEntry] })
     const rewritePlugin = plugins?.find(plugin => plugin.name === 'weapp-tailwindcss:adaptor:rewrite-css-imports') as Plugin
     const transform = getTransformHandler(rewritePlugin)
@@ -1087,7 +1087,7 @@ describe('bundlers/vite WeappTailwindcss bundle', () => {
   })
 
   it('removes Tailwind v3 official PostCSS plugins in default auto mode', async () => {
-    const WeappTailwindcss = await loadUnifiedVitePlugin()
+    const WeappTailwindcss = await loadWeappTailwindcssPlugin()
     const currentContext = createContext({
       generator: {
         target: 'weapp',
@@ -1189,7 +1189,7 @@ describe('bundlers/vite WeappTailwindcss bundle', () => {
       },
     }))
 
-    const WeappTailwindcss = await loadUnifiedVitePlugin()
+    const WeappTailwindcss = await loadWeappTailwindcssPlugin()
     const plugins = WeappTailwindcss()
     const sourcePlugin = plugins?.find(plugin => plugin.name === 'weapp-tailwindcss:adaptor:source-candidates') as Plugin
     const postPlugin = plugins?.find(plugin => plugin.name === 'weapp-tailwindcss:adaptor:post') as Plugin
@@ -1232,7 +1232,7 @@ describe('bundlers/vite WeappTailwindcss bundle', () => {
   }, TEST_TIMEOUT_MS)
 
   it('reuses snapshot hashes for unchanged js process cache checks', async () => {
-    const WeappTailwindcss = await loadUnifiedVitePlugin()
+    const WeappTailwindcss = await loadWeappTailwindcssPlugin()
     const currentContext = getCurrentContext()
     const hashSpy = vi.spyOn(currentContext.cache, 'computeHash')
     const plugins = WeappTailwindcss()
@@ -1258,7 +1258,7 @@ describe('bundlers/vite WeappTailwindcss bundle', () => {
   }, TEST_TIMEOUT_MS)
 
   it('refreshes runtime class set on source changes so new arbitrary classes in :class strings are escaped', async () => {
-    const WeappTailwindcss = await loadUnifiedVitePlugin()
+    const WeappTailwindcss = await loadWeappTailwindcssPlugin()
     const staticClass = 'rounded-[32rpx] border border-slate-100/70 bg-white/90 p-5 shadow-[0_20px_45px_rgba(15,23,42,0.08)]'
     const dynamicClass = 'rounded-[92rpx] border border-slate-100/70 bg-[#213435] p-9 shadow-[0_20px_45px_rgba(15,23,42,0.08)]'
     const runtimeSets = [
@@ -1320,7 +1320,7 @@ const trace = "at App.vue:4"
   }, TEST_TIMEOUT_MS)
 
   it('updates v3 watch runtime classes incrementally without full extract on source candidate changes', async () => {
-    const WeappTailwindcss = await loadUnifiedVitePlugin()
+    const WeappTailwindcss = await loadWeappTailwindcssPlugin()
     const htmlFile = 'pages/index/index.wxml'
     const jsFile = 'assets/index.js'
     const cssFile = 'app.wxss'
@@ -1458,7 +1458,7 @@ const trace = "at App.vue:4"
       },
     }))
 
-    const WeappTailwindcss = await loadUnifiedVitePlugin()
+    const WeappTailwindcss = await loadWeappTailwindcssPlugin()
     const plugins = WeappTailwindcss()
     const sourcePlugin = plugins?.find(plugin => plugin.name === 'weapp-tailwindcss:adaptor:source-candidates') as Plugin
     const postPlugin = plugins?.find(plugin => plugin.name === 'weapp-tailwindcss:adaptor:post') as Plugin
@@ -1513,7 +1513,7 @@ const trace = "at App.vue:4"
       },
     }))
 
-    const WeappTailwindcss = await loadUnifiedVitePlugin()
+    const WeappTailwindcss = await loadWeappTailwindcssPlugin()
     const plugins = WeappTailwindcss()
     const sourcePlugin = plugins?.find(plugin => plugin.name === 'weapp-tailwindcss:adaptor:source-candidates') as Plugin
     const postPlugin = plugins?.find(plugin => plugin.name === 'weapp-tailwindcss:adaptor:post') as Plugin
@@ -1572,7 +1572,7 @@ const trace = "at App.vue:4"
       },
     }))
 
-    const WeappTailwindcss = await loadUnifiedVitePlugin()
+    const WeappTailwindcss = await loadWeappTailwindcssPlugin()
     const plugins = WeappTailwindcss()
     const postPlugin = plugins?.find(plugin => plugin.name === 'weapp-tailwindcss:adaptor:post') as Plugin
     expect(postPlugin).toBeTruthy()
@@ -1607,7 +1607,7 @@ const trace = "at App.vue:4"
   }, TEST_TIMEOUT_MS)
 
   it('refreshes runtime class set when only comment-carried class candidates change', async () => {
-    const WeappTailwindcss = await loadUnifiedVitePlugin()
+    const WeappTailwindcss = await loadWeappTailwindcssPlugin()
     const runtimeSets = [
       new Set(['text-[#123456]']),
       new Set(['text-[#654321]']),
@@ -1665,7 +1665,7 @@ const trace = "at App.vue:4"
   it('reuses css handler override objects for the same asset across incremental runs', async () => {
     setCurrentContext(createContext({
     }))
-    const WeappTailwindcss = await loadUnifiedVitePlugin()
+    const WeappTailwindcss = await loadWeappTailwindcssPlugin()
     const currentContext = getCurrentContext()
     const plugins = WeappTailwindcss()
     const postPlugin = plugins?.find(plugin => plugin.name === 'weapp-tailwindcss:adaptor:post') as Plugin
@@ -1701,7 +1701,7 @@ const trace = "at App.vue:4"
   }, TEST_TIMEOUT_MS)
 
   it('shares css transform results for identical assets with path-independent urls', async () => {
-    const WeappTailwindcss = await loadUnifiedVitePlugin()
+    const WeappTailwindcss = await loadWeappTailwindcssPlugin()
     const currentContext = getCurrentContext()
     const plugins = WeappTailwindcss()
     const postPlugin = plugins?.find(plugin => plugin.name === 'weapp-tailwindcss:adaptor:post') as Plugin
@@ -1742,7 +1742,7 @@ const trace = "at App.vue:4"
       styleHandler,
     }))
 
-    const WeappTailwindcss = await loadUnifiedVitePlugin()
+    const WeappTailwindcss = await loadWeappTailwindcssPlugin()
     const currentContext = getCurrentContext()
     const plugins = WeappTailwindcss()
     const postPlugin = plugins?.find(plugin => plugin.name === 'weapp-tailwindcss:adaptor:post') as Plugin
@@ -1787,7 +1787,7 @@ const trace = "at App.vue:4"
       styleHandler,
     }))
 
-    const WeappTailwindcss = await loadUnifiedVitePlugin()
+    const WeappTailwindcss = await loadWeappTailwindcssPlugin()
     const currentContext = getCurrentContext()
     const plugins = WeappTailwindcss()
     const postPlugin = plugins?.find(plugin => plugin.name === 'weapp-tailwindcss:adaptor:post') as Plugin
@@ -1832,7 +1832,7 @@ const trace = "at App.vue:4"
       templateHandler,
     }))
 
-    const WeappTailwindcss = await loadUnifiedVitePlugin()
+    const WeappTailwindcss = await loadWeappTailwindcssPlugin()
     const plugins = WeappTailwindcss()
     const postPlugin = plugins?.find(plugin => plugin.name === 'weapp-tailwindcss:adaptor:post') as Plugin
     expect(postPlugin).toBeTruthy()
@@ -1893,7 +1893,7 @@ const trace = "at App.vue:4"
     })
     setCurrentContext(currentContext)
 
-    const WeappTailwindcss = await loadUnifiedVitePlugin()
+    const WeappTailwindcss = await loadWeappTailwindcssPlugin()
     const plugins = WeappTailwindcss()
     const postPlugin = plugins?.find(plugin => plugin.name === 'weapp-tailwindcss:adaptor:post') as Plugin
     expect(postPlugin).toBeTruthy()
@@ -1983,7 +1983,7 @@ const trace = "at App.vue:4"
       },
     }))
 
-    const WeappTailwindcss = await loadUnifiedVitePlugin()
+    const WeappTailwindcss = await loadWeappTailwindcssPlugin()
     const plugins = WeappTailwindcss()
     const sourcePlugin = plugins?.find(plugin => plugin.name === 'weapp-tailwindcss:adaptor:source-candidates') as Plugin
     const postPlugin = plugins?.find(plugin => plugin.name === 'weapp-tailwindcss:adaptor:post') as Plugin
@@ -2033,7 +2033,7 @@ const trace = "at App.vue:4"
       },
     }))
 
-    const WeappTailwindcss = await loadUnifiedVitePlugin()
+    const WeappTailwindcss = await loadWeappTailwindcssPlugin()
     const plugins = WeappTailwindcss()
     const sourcePlugin = plugins?.find(plugin => plugin.name === 'weapp-tailwindcss:adaptor:source-candidates') as Plugin
     const postPlugin = plugins?.find(plugin => plugin.name === 'weapp-tailwindcss:adaptor:post') as Plugin
@@ -2060,7 +2060,7 @@ const trace = "at App.vue:4"
       styleHandler,
     }))
 
-    const WeappTailwindcss = await loadUnifiedVitePlugin()
+    const WeappTailwindcss = await loadWeappTailwindcssPlugin()
     const plugins = WeappTailwindcss()
     const postPlugin = plugins?.find(plugin => plugin.name === 'weapp-tailwindcss:adaptor:post') as Plugin
     expect(postPlugin).toBeTruthy()
@@ -2151,7 +2151,7 @@ const trace = "at App.vue:4"
       },
     }))
 
-    const WeappTailwindcss = await loadUnifiedVitePlugin()
+    const WeappTailwindcss = await loadWeappTailwindcssPlugin()
     const currentContext = getCurrentContext()
     const plugins = WeappTailwindcss()
     const postPlugin = plugins?.find(plugin => plugin.name === 'weapp-tailwindcss:adaptor:post') as Plugin
@@ -2233,7 +2233,7 @@ const trace = "at App.vue:4"
       },
     }))
 
-    const WeappTailwindcss = await loadUnifiedVitePlugin()
+    const WeappTailwindcss = await loadWeappTailwindcssPlugin()
     const plugins = WeappTailwindcss()
     const postPlugin = plugins?.find(plugin => plugin.name === 'weapp-tailwindcss:adaptor:post') as Plugin
 
@@ -2308,7 +2308,7 @@ const trace = "at App.vue:4"
       },
     }))
 
-    const WeappTailwindcss = await loadUnifiedVitePlugin()
+    const WeappTailwindcss = await loadWeappTailwindcssPlugin()
     const plugins = WeappTailwindcss()
     const sourcePlugin = plugins?.find(plugin => plugin.name === 'weapp-tailwindcss:adaptor:source-candidates') as Plugin
     const postPlugin = plugins?.find(plugin => plugin.name === 'weapp-tailwindcss:adaptor:post') as Plugin
@@ -2396,7 +2396,7 @@ const trace = "at App.vue:4"
       },
     }))
 
-    const WeappTailwindcss = await loadUnifiedVitePlugin()
+    const WeappTailwindcss = await loadWeappTailwindcssPlugin()
     const plugins = WeappTailwindcss()
     const sourcePlugin = plugins?.find(plugin => plugin.name === 'weapp-tailwindcss:adaptor:source-candidates') as Plugin
     const postPlugin = plugins?.find(plugin => plugin.name === 'weapp-tailwindcss:adaptor:post') as Plugin
@@ -2490,7 +2490,7 @@ const trace = "at App.vue:4"
       },
     }))
 
-    const WeappTailwindcss = await loadUnifiedVitePlugin()
+    const WeappTailwindcss = await loadWeappTailwindcssPlugin()
     const plugins = WeappTailwindcss()
     const sourcePlugin = plugins?.find(plugin => plugin.name === 'weapp-tailwindcss:adaptor:source-candidates') as Plugin
     const postPlugin = plugins?.find(plugin => plugin.name === 'weapp-tailwindcss:adaptor:post') as Plugin
@@ -2579,7 +2579,7 @@ const trace = "at App.vue:4"
       },
     }))
 
-    const WeappTailwindcss = await loadUnifiedVitePlugin()
+    const WeappTailwindcss = await loadWeappTailwindcssPlugin()
     const plugins = WeappTailwindcss()
     const sourcePlugin = plugins?.find(plugin => plugin.name === 'weapp-tailwindcss:adaptor:source-candidates') as Plugin
     const postPlugin = plugins?.find(plugin => plugin.name === 'weapp-tailwindcss:adaptor:post') as Plugin
@@ -2676,7 +2676,7 @@ const trace = "at App.vue:4"
       },
     }))
 
-    const WeappTailwindcss = await loadUnifiedVitePlugin()
+    const WeappTailwindcss = await loadWeappTailwindcssPlugin()
     const currentContext = getCurrentContext()
     const plugins = WeappTailwindcss()
     const postPlugin = plugins?.find(plugin => plugin.name === 'weapp-tailwindcss:adaptor:post') as Plugin
@@ -2775,7 +2775,7 @@ const trace = "at App.vue:4"
       },
     }))
 
-    const WeappTailwindcss = await loadUnifiedVitePlugin()
+    const WeappTailwindcss = await loadWeappTailwindcssPlugin()
     const plugins = WeappTailwindcss()
     const postPlugin = plugins?.find(plugin => plugin.name === 'weapp-tailwindcss:adaptor:post') as Plugin
     expect(postPlugin).toBeTruthy()
@@ -2843,7 +2843,7 @@ const trace = "at App.vue:4"
       },
     }))
 
-    const WeappTailwindcss = await loadUnifiedVitePlugin()
+    const WeappTailwindcss = await loadWeappTailwindcssPlugin()
     const plugins = WeappTailwindcss()
     const postPlugin = plugins?.find(plugin => plugin.name === 'weapp-tailwindcss:adaptor:post') as Plugin
     expect(postPlugin).toBeTruthy()
@@ -2917,7 +2917,7 @@ const trace = "at App.vue:4"
       },
     }))
 
-    const WeappTailwindcss = await loadUnifiedVitePlugin()
+    const WeappTailwindcss = await loadWeappTailwindcssPlugin()
     const plugins = WeappTailwindcss()
     const postPlugin = plugins?.find(plugin => plugin.name === 'weapp-tailwindcss:adaptor:post') as Plugin
     expect(postPlugin).toBeTruthy()
@@ -2945,7 +2945,7 @@ const trace = "at App.vue:4"
   }, TEST_TIMEOUT_MS)
 
   it('does not share css transform results for identical assets with relative urls', async () => {
-    const WeappTailwindcss = await loadUnifiedVitePlugin()
+    const WeappTailwindcss = await loadWeappTailwindcssPlugin()
     const currentContext = getCurrentContext()
     const plugins = WeappTailwindcss()
     const postPlugin = plugins?.find(plugin => plugin.name === 'weapp-tailwindcss:adaptor:post') as Plugin
@@ -2979,7 +2979,7 @@ const trace = "at App.vue:4"
   }, TEST_TIMEOUT_MS)
 
   it('shares css transform results for identical relative-url assets in the same output directory', async () => {
-    const WeappTailwindcss = await loadUnifiedVitePlugin()
+    const WeappTailwindcss = await loadWeappTailwindcssPlugin()
     const currentContext = getCurrentContext()
     const plugins = WeappTailwindcss()
     const postPlugin = plugins?.find(plugin => plugin.name === 'weapp-tailwindcss:adaptor:post') as Plugin
@@ -3013,7 +3013,7 @@ const trace = "at App.vue:4"
   }, TEST_TIMEOUT_MS)
 
   it('reuses template handler options for multiple html assets in one bundle pass', async () => {
-    const WeappTailwindcss = await loadUnifiedVitePlugin()
+    const WeappTailwindcss = await loadWeappTailwindcssPlugin()
     const currentContext = getCurrentContext()
     const plugins = WeappTailwindcss()
     const postPlugin = plugins?.find(plugin => plugin.name === 'weapp-tailwindcss:adaptor:post') as Plugin
@@ -3045,7 +3045,7 @@ const trace = "at App.vue:4"
   }, TEST_TIMEOUT_MS)
 
   it('fixes issue #814 in tw4 fixture when cwd is app root (escaped runtime set entries should still hit)', async () => {
-    const WeappTailwindcss = await loadUnifiedVitePlugin()
+    const WeappTailwindcss = await loadWeappTailwindcssPlugin()
     const { wxml, js } = await loadIssue814Fixture()
     const escapedGap = replaceWxml('gap-[20px]')
     const runtimeSet = new Set(['flex', escapedGap])
@@ -3090,7 +3090,7 @@ const trace = "at App.vue:4"
   }, TEST_TIMEOUT_MS)
 
   it('fixes issue #814 in tw4 fixture when cwd is workspace root and build root points to app root', async () => {
-    const WeappTailwindcss = await loadUnifiedVitePlugin()
+    const WeappTailwindcss = await loadWeappTailwindcssPlugin()
     const { wxml, js } = await loadIssue814Fixture()
     const escapedGap = replaceWxml('gap-[20px]')
     const workspaceRoot = path.resolve(process.cwd())
@@ -3152,7 +3152,7 @@ const trace = "at App.vue:4"
   }, TEST_TIMEOUT_MS)
 
   it('captures issue #814 fault mode when jsPreserveClass keeps gap candidate untouched', async () => {
-    const WeappTailwindcss = await loadUnifiedVitePlugin()
+    const WeappTailwindcss = await loadWeappTailwindcssPlugin()
     const { wxml, js } = await loadIssue814Fixture()
     const escapedGap = replaceWxml('gap-[20px]')
     const runtimeSet = new Set(['flex', 'gap-[20px]'])
@@ -3194,7 +3194,7 @@ const trace = "at App.vue:4"
   }, TEST_TIMEOUT_MS)
 
   it('aligns implicit tailwindcss basedir to vite root before bundle processing', async () => {
-    const WeappTailwindcss = await loadUnifiedVitePlugin()
+    const WeappTailwindcss = await loadWeappTailwindcssPlugin()
     const workspaceRoot = path.resolve(process.cwd())
     const appRoot = path.resolve(workspaceRoot, 'apps/issue-814-tw4')
     const runtimeSet = new Set(['flex', 'gap-[20px]'])
@@ -3235,7 +3235,7 @@ const trace = "at App.vue:4"
   }, TEST_TIMEOUT_MS)
 
   it('prefers the nearest tailwind config root when vite root points to a source subdirectory', async () => {
-    const WeappTailwindcss = await loadUnifiedVitePlugin()
+    const WeappTailwindcss = await loadWeappTailwindcssPlugin()
     const workspaceRoot = path.resolve(__dirname, '../../..')
     const fixtureRoot = path.resolve(__dirname, '../fixtures/vite')
     const viteRoot = path.join(fixtureRoot, 'src')
@@ -3269,7 +3269,7 @@ const trace = "at App.vue:4"
   }, TEST_TIMEOUT_MS)
 
   it('keeps explicit tailwindcss basedir unchanged on configResolved', async () => {
-    const WeappTailwindcss = await loadUnifiedVitePlugin()
+    const WeappTailwindcss = await loadWeappTailwindcssPlugin()
     const workspaceRoot = path.resolve(process.cwd())
     const appRoot = path.resolve(workspaceRoot, 'apps/issue-814-tw4')
     const refreshTailwindcssPatcher = vi.fn(async () => getCurrentContext().twPatcher)
@@ -3304,7 +3304,7 @@ const trace = "at App.vue:4"
   }, TEST_TIMEOUT_MS)
 
   it('keeps non-set business literals unchanged in serve mode while preserving classNameSet-only strategy', async () => {
-    const WeappTailwindcss = await loadUnifiedVitePlugin()
+    const WeappTailwindcss = await loadWeappTailwindcssPlugin()
     const runtimeSet = new Set(['text-red-500'])
     setCurrentContext(createContext({
       jsPreserveClass: (keyword: string) => keyword.startsWith('biz-token'),
@@ -3349,7 +3349,7 @@ const cls = "rounded-[92rpx]"
   }, TEST_TIMEOUT_MS)
 
   it('keeps source-location tokens unchanged in build mode with classNameSet-only strategy', async () => {
-    const WeappTailwindcss = await loadUnifiedVitePlugin()
+    const WeappTailwindcss = await loadWeappTailwindcssPlugin()
     const runtimeSet = new Set(['text-red-500'])
     setCurrentContext(createContext({
       jsHandler: createJsHandler({}),
@@ -3389,7 +3389,7 @@ const cls = "w-[1.5px]"
   }, TEST_TIMEOUT_MS)
 
   it('only transforms dirty js entry and affected linked entries on incremental runs', async () => {
-    const WeappTailwindcss = await loadUnifiedVitePlugin()
+    const WeappTailwindcss = await loadWeappTailwindcssPlugin()
     const rootDir = process.cwd()
     const outDir = path.resolve(rootDir, 'dist')
     const linkedFile = path.resolve(outDir, 'chunk.js')
@@ -3446,7 +3446,7 @@ const cls = "w-[1.5px]"
   }, TEST_TIMEOUT_MS)
 
   it('falls back to transforming clean js chunks when replay cache is missing', async () => {
-    const WeappTailwindcss = await loadUnifiedVitePlugin()
+    const WeappTailwindcss = await loadWeappTailwindcssPlugin()
     setCurrentContext(createContext({
       jsHandler: vi.fn((code: string) => ({ code: `js:${code}` })),
     }))
@@ -3480,7 +3480,7 @@ const cls = "w-[1.5px]"
   }, TEST_TIMEOUT_MS)
 
   it('does not keep linked dirty bookkeeping across build mode runs', async () => {
-    const WeappTailwindcss = await loadUnifiedVitePlugin()
+    const WeappTailwindcss = await loadWeappTailwindcssPlugin()
     const rootDir = process.cwd()
     const outDir = path.resolve(rootDir, 'dist')
     const linkedFile = path.resolve(outDir, 'chunk.js')
@@ -3531,7 +3531,7 @@ const cls = "w-[1.5px]"
   }, TEST_TIMEOUT_MS)
 
   it('keeps dirty state stable when bundle temporarily omits js entries', async () => {
-    const WeappTailwindcss = await loadUnifiedVitePlugin()
+    const WeappTailwindcss = await loadWeappTailwindcssPlugin()
     const currentContext = getCurrentContext()
     const plugins = WeappTailwindcss()
     const postPlugin = plugins?.find(plugin => plugin.name === 'weapp-tailwindcss:adaptor:post') as Plugin
@@ -3587,7 +3587,7 @@ const cls = "w-[1.5px]"
   }, TEST_TIMEOUT_MS)
 
   it('reapplies cached css transform when js changes but css source stays the same', async () => {
-    const WeappTailwindcss = await loadUnifiedVitePlugin()
+    const WeappTailwindcss = await loadWeappTailwindcssPlugin()
     setCurrentContext(createContext({
       styleHandler: vi.fn(async (code: string) => ({
         css: code
@@ -3639,7 +3639,7 @@ const cls = "w-[1.5px]"
   }, TEST_TIMEOUT_MS)
 
   it('reapplies cached css transform when css formatting changes only', async () => {
-    const WeappTailwindcss = await loadUnifiedVitePlugin()
+    const WeappTailwindcss = await loadWeappTailwindcssPlugin()
     setCurrentContext(createContext({
       styleHandler: vi.fn(async (code: string) => ({
         css: code
@@ -3695,7 +3695,7 @@ const cls = "w-[1.5px]"
   }, TEST_TIMEOUT_MS)
 
   it('shares non-main css transform results for identical assets in the same bundle round', async () => {
-    const WeappTailwindcss = await loadUnifiedVitePlugin()
+    const WeappTailwindcss = await loadWeappTailwindcssPlugin()
     setCurrentContext(createContext({
       styleHandler: vi.fn(async (code: string) => ({
         css: `shared:${code}`,
@@ -3772,7 +3772,7 @@ const cls = "w-[1.5px]"
         packageName: 'tailwindcss',
       })),
     }))
-    const WeappTailwindcss = await loadUnifiedVitePlugin()
+    const WeappTailwindcss = await loadWeappTailwindcssPlugin()
     const runtimeSet = new Set<string>()
     setCurrentContext(createContext({
       cssMatcher: (file: string) => file.endsWith('.wxss'),
@@ -3890,7 +3890,7 @@ const cls = "w-[1.5px]"
         packageName: 'tailwindcss',
       })),
     }))
-    const WeappTailwindcss = await loadUnifiedVitePlugin()
+    const WeappTailwindcss = await loadWeappTailwindcssPlugin()
     const runtimeSet = new Set<string>()
     setCurrentContext(createContext({
       cssMatcher: (file: string) => file.endsWith('.wxss'),
@@ -3994,7 +3994,7 @@ const cls = "w-[1.5px]"
         packageName: 'tailwindcss',
       })),
     }))
-    const WeappTailwindcss = await loadUnifiedVitePlugin()
+    const WeappTailwindcss = await loadWeappTailwindcssPlugin()
     const runtimeSet = new Set<string>()
     setCurrentContext(createContext({
       cssMatcher: (file: string) => file.endsWith('.wxss'),
@@ -4097,7 +4097,7 @@ const cls = "w-[1.5px]"
         packageName: 'tailwindcss',
       })),
     }))
-    const WeappTailwindcss = await loadUnifiedVitePlugin()
+    const WeappTailwindcss = await loadWeappTailwindcssPlugin()
     const runtimeSet = new Set<string>()
     setCurrentContext(createContext({
       cssMatcher: (file: string) => file.endsWith('.wxss'),
@@ -4177,7 +4177,7 @@ const cls = "w-[1.5px]"
       vi.doMock('@/debug', () => ({
         createDebug: () => debug,
       }))
-      const WeappTailwindcss = await loadUnifiedVitePlugin()
+      const WeappTailwindcss = await loadWeappTailwindcssPlugin()
       setCurrentContext(createContext({
         styleHandler: vi.fn(async () => ({
           css: '.card{color:blue}',
@@ -4229,7 +4229,7 @@ const cls = "w-[1.5px]"
       },
     }, null, 2))
 
-    const WeappTailwindcss = await loadUnifiedVitePlugin()
+    const WeappTailwindcss = await loadWeappTailwindcssPlugin()
     setCurrentContext(createContext({
       appType: undefined,
       styleHandler: vi.fn(async (code: string) => ({ css: code })),
@@ -4274,7 +4274,7 @@ const cls = "w-[1.5px]"
       },
     }, null, 2))
 
-    const WeappTailwindcss = await loadUnifiedVitePlugin()
+    const WeappTailwindcss = await loadWeappTailwindcssPlugin()
     setCurrentContext(createContext({
       appType: undefined,
       generator: {
@@ -4314,7 +4314,7 @@ const cls = "w-[1.5px]"
         },
       }, null, 2))
 
-      const WeappTailwindcss = await loadUnifiedVitePlugin()
+      const WeappTailwindcss = await loadWeappTailwindcssPlugin()
       setCurrentContext(createContext({
         appType: undefined,
         styleHandler: vi.fn(async (code: string) => ({ css: code })),
@@ -4349,7 +4349,7 @@ const cls = "w-[1.5px]"
   }, TEST_TIMEOUT_MS)
 
   it('keeps template transform stable on script-only incremental updates', async () => {
-    const WeappTailwindcss = await loadUnifiedVitePlugin()
+    const WeappTailwindcss = await loadWeappTailwindcssPlugin()
     const htmlFile = 'dist/pages/index/index.wxml'
     const jsFile = 'dist/pages/index/index.js'
     const cssFile = 'app.wxss'
@@ -4468,7 +4468,7 @@ const cls = "w-[1.5px]"
   }, TEST_TIMEOUT_MS)
 
   it('transforms inlined tailwind-merge output within bundle stage', async () => {
-    const WeappTailwindcss = await loadUnifiedVitePlugin()
+    const WeappTailwindcss = await loadWeappTailwindcssPlugin()
     const runtimeSet = new Set(['bg-[#434332]', 'bg-[#123324]', 'px-[32px]', 'px-[35px]'])
     const realJsHandler = createJsHandler({
       ignoreCallExpressionIdentifiers: [],
@@ -4519,7 +4519,7 @@ const fallback = "bg-[#434332] px-[32px]"
   }, TEST_TIMEOUT_MS)
 
   it('propagates linked js module updates', async () => {
-    const WeappTailwindcss = await loadUnifiedVitePlugin()
+    const WeappTailwindcss = await loadWeappTailwindcssPlugin()
     const rootDir = process.cwd()
     const outDir = path.resolve(rootDir, 'dist')
     const linkedFile = path.resolve(outDir, 'chunk.js')
@@ -4567,7 +4567,7 @@ const fallback = "bg-[#434332] px-[32px]"
   }, TEST_TIMEOUT_MS)
 
   it('propagates linked js updates to asset entries', async () => {
-    const WeappTailwindcss = await loadUnifiedVitePlugin()
+    const WeappTailwindcss = await loadWeappTailwindcssPlugin()
     const rootDir = process.cwd()
     const outDir = path.resolve(rootDir, 'dist')
     const linkedFile = path.resolve(outDir, 'asset.js')

@@ -16,7 +16,7 @@ import {
 const TEST_TIMEOUT_MS = 30000
 const createdDirs: string[] = []
 
-async function loadUnifiedVitePlugin() {
+async function loadWeappTailwindcssPlugin() {
   const mod = await import('@/bundlers/vite')
   return mod.WeappTailwindcss
 }
@@ -37,7 +37,7 @@ function getOutputOptionsHandler(plugin: Plugin) {
 }
 
 async function resolvePostPlugin() {
-  const WeappTailwindcss = await loadUnifiedVitePlugin()
+  const WeappTailwindcss = await loadWeappTailwindcssPlugin()
   const plugins = WeappTailwindcss()
   const sourcePlugin = plugins?.find(plugin => plugin.name === 'weapp-tailwindcss:adaptor:source-candidates') as Plugin
   const postPlugin = plugins?.find(plugin => plugin.name === 'weapp-tailwindcss:adaptor:post') as Plugin
@@ -617,7 +617,7 @@ describe('v5 vite generator bundle', () => {
       },
     }))
 
-    const WeappTailwindcss = await loadUnifiedVitePlugin()
+    const WeappTailwindcss = await loadWeappTailwindcssPlugin()
     const plugins = WeappTailwindcss()
     const sourcePlugin = plugins?.find(plugin => plugin.name === 'weapp-tailwindcss:adaptor:source-candidates') as Plugin
     const postPlugin = plugins?.find(plugin => plugin.name === 'weapp-tailwindcss:adaptor:post') as Plugin
@@ -718,7 +718,7 @@ describe('v5 vite generator bundle', () => {
       },
     }))
 
-    const WeappTailwindcss = await loadUnifiedVitePlugin()
+    const WeappTailwindcss = await loadWeappTailwindcssPlugin()
     const plugins = WeappTailwindcss()
     const sourcePlugin = plugins?.find(plugin => plugin.name === 'weapp-tailwindcss:adaptor:source-candidates') as Plugin
     const postPlugin = plugins?.find(plugin => plugin.name === 'weapp-tailwindcss:adaptor:post') as Plugin
@@ -806,7 +806,7 @@ describe('v5 vite generator bundle', () => {
       },
     }))
 
-    const WeappTailwindcss = await loadUnifiedVitePlugin()
+    const WeappTailwindcss = await loadWeappTailwindcssPlugin()
     const plugins = WeappTailwindcss()
     const postPlugin = plugins?.find(plugin => plugin.name === 'weapp-tailwindcss:adaptor:post') as Plugin
     expect(postPlugin).toBeTruthy()
@@ -884,7 +884,7 @@ describe('v5 vite generator bundle', () => {
       },
     }))
 
-    const WeappTailwindcss = await loadUnifiedVitePlugin()
+    const WeappTailwindcss = await loadWeappTailwindcssPlugin()
     const plugins = WeappTailwindcss()
     const sourcePlugin = plugins?.find(plugin => plugin.name === 'weapp-tailwindcss:adaptor:source-candidates') as Plugin
     const postPlugin = plugins?.find(plugin => plugin.name === 'weapp-tailwindcss:adaptor:post') as Plugin
@@ -968,7 +968,7 @@ describe('v5 vite generator bundle', () => {
       },
     }))
 
-    const WeappTailwindcss = await loadUnifiedVitePlugin()
+    const WeappTailwindcss = await loadWeappTailwindcssPlugin()
     const plugins = WeappTailwindcss()
     const sourcePlugin = plugins?.find(plugin => plugin.name === 'weapp-tailwindcss:adaptor:source-candidates') as Plugin
     const postPlugin = plugins?.find(plugin => plugin.name === 'weapp-tailwindcss:adaptor:post') as Plugin
@@ -1070,7 +1070,7 @@ describe('v5 vite generator bundle', () => {
       },
     }))
 
-    const WeappTailwindcss = await loadUnifiedVitePlugin()
+    const WeappTailwindcss = await loadWeappTailwindcssPlugin()
     const plugins = WeappTailwindcss()
     const sourcePlugin = plugins?.find(plugin => plugin.name === 'weapp-tailwindcss:adaptor:source-candidates') as Plugin
     const postPlugin = plugins?.find(plugin => plugin.name === 'weapp-tailwindcss:adaptor:post') as Plugin
@@ -1172,7 +1172,7 @@ describe('v5 vite generator bundle', () => {
       },
     }))
 
-    const WeappTailwindcss = await loadUnifiedVitePlugin()
+    const WeappTailwindcss = await loadWeappTailwindcssPlugin()
     const plugins = WeappTailwindcss()
     const sourcePlugin = plugins?.find(plugin => plugin.name === 'weapp-tailwindcss:adaptor:source-candidates') as Plugin
     const postPlugin = plugins?.find(plugin => plugin.name === 'weapp-tailwindcss:adaptor:post') as Plugin
@@ -1281,7 +1281,7 @@ describe('v5 vite generator bundle', () => {
       },
     }))
 
-    const WeappTailwindcss = await loadUnifiedVitePlugin()
+    const WeappTailwindcss = await loadWeappTailwindcssPlugin()
     const plugins = WeappTailwindcss()
     const sourcePlugin = plugins?.find(plugin => plugin.name === 'weapp-tailwindcss:adaptor:source-candidates') as Plugin
     const postPlugin = plugins?.find(plugin => plugin.name === 'weapp-tailwindcss:adaptor:post') as Plugin
@@ -1398,7 +1398,7 @@ describe('v5 vite generator bundle', () => {
       },
     }))
 
-    const WeappTailwindcss = await loadUnifiedVitePlugin()
+    const WeappTailwindcss = await loadWeappTailwindcssPlugin()
     const plugins = WeappTailwindcss()
     const sourcePlugin = plugins?.find(plugin => plugin.name === 'weapp-tailwindcss:adaptor:source-candidates') as Plugin
     const postPlugin = plugins?.find(plugin => plugin.name === 'weapp-tailwindcss:adaptor:post') as Plugin
@@ -1492,7 +1492,7 @@ describe('v5 vite generator bundle', () => {
       },
     }))
 
-    const WeappTailwindcss = await loadUnifiedVitePlugin()
+    const WeappTailwindcss = await loadWeappTailwindcssPlugin()
     const plugins = WeappTailwindcss()
     const sourcePlugin = plugins?.find(plugin => plugin.name === 'weapp-tailwindcss:adaptor:source-candidates') as Plugin
     const rewritePlugin = plugins?.find(plugin => plugin.name === 'weapp-tailwindcss:adaptor:rewrite-css-imports') as Plugin
@@ -1624,7 +1624,7 @@ describe('v5 vite generator bundle', () => {
       },
     }))
 
-    const WeappTailwindcss = await loadUnifiedVitePlugin()
+    const WeappTailwindcss = await loadWeappTailwindcssPlugin()
     const plugins = WeappTailwindcss()
     const sourcePlugin = plugins?.find(plugin => plugin.name === 'weapp-tailwindcss:adaptor:source-candidates') as Plugin
     const postPlugin = plugins?.find(plugin => plugin.name === 'weapp-tailwindcss:adaptor:post') as Plugin
@@ -1728,7 +1728,7 @@ describe('v5 vite generator bundle', () => {
       },
     }))
 
-    const WeappTailwindcss = await loadUnifiedVitePlugin()
+    const WeappTailwindcss = await loadWeappTailwindcssPlugin()
     const plugins = WeappTailwindcss({
       cssEntries: [cssEntry],
       tailwindcss: {
@@ -1836,7 +1836,7 @@ describe('v5 vite generator bundle', () => {
       },
     }))
 
-    const WeappTailwindcss = await loadUnifiedVitePlugin()
+    const WeappTailwindcss = await loadWeappTailwindcssPlugin()
     const plugins = WeappTailwindcss({
       cssEntries: [cssEntry],
       tailwindcss: {
@@ -1926,7 +1926,7 @@ describe('v5 vite generator bundle', () => {
       },
     }))
 
-    const WeappTailwindcss = await loadUnifiedVitePlugin()
+    const WeappTailwindcss = await loadWeappTailwindcssPlugin()
     const plugins = WeappTailwindcss({
       cssEntries: [cssEntry],
       tailwindcss: {
@@ -2021,7 +2021,7 @@ describe('v5 vite generator bundle', () => {
       },
     }))
 
-    const WeappTailwindcss = await loadUnifiedVitePlugin()
+    const WeappTailwindcss = await loadWeappTailwindcssPlugin()
     const plugins = WeappTailwindcss({
       cssEntries: [cssEntry],
       tailwindcss: {
@@ -2157,7 +2157,7 @@ describe('v5 vite generator bundle', () => {
       },
     }))
 
-    const WeappTailwindcss = await loadUnifiedVitePlugin()
+    const WeappTailwindcss = await loadWeappTailwindcssPlugin()
     const createPlugins = () => WeappTailwindcss({
       tailwindcss: {
         version: 4,
@@ -2294,7 +2294,7 @@ describe('v5 vite generator bundle', () => {
       },
     }))
 
-    const WeappTailwindcss = await loadUnifiedVitePlugin()
+    const WeappTailwindcss = await loadWeappTailwindcssPlugin()
     const plugins = WeappTailwindcss({
       cssEntries: [cssEntry],
       tailwindcss: {

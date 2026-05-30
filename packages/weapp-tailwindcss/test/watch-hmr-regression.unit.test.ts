@@ -1333,7 +1333,7 @@ describe('watch-hmr regression cases', () => {
     for (const configPath of taroWebpackConfigs) {
       const configSource = await readFile(path.resolve(__dirname, '../../..', configPath), 'utf8')
       expect(configSource, configPath).toContain('WEAPP_TW_WATCH_REGRESSION')
-      expect(configSource, configPath).toContain('UnifiedWebpackPluginV5')
+      expect(configSource, configPath).toContain('WeappTailwindcss')
       expect(configSource, configPath).toContain('target: process.env.TARO_ENV === \'h5\' ? \'web\' : \'weapp\'')
     }
 

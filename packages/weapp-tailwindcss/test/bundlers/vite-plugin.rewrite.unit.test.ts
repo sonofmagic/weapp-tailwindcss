@@ -13,7 +13,7 @@ import {
 
 const TEST_TIMEOUT_MS = 30000
 
-async function loadUnifiedVitePlugin() {
+async function loadWeappTailwindcssPlugin() {
   const mod = await import('@/bundlers/vite')
   return mod.WeappTailwindcss
 }
@@ -37,7 +37,7 @@ describe('bundlers/vite WeappTailwindcss rewrite', () => {
   })
 
   it('rewrites tailwindcss imports for css entry files by default', async () => {
-    const WeappTailwindcss = await loadUnifiedVitePlugin()
+    const WeappTailwindcss = await loadWeappTailwindcssPlugin()
     const currentContext = getCurrentContext()
     currentContext.twPatcher.majorVersion = 4
     const plugins = WeappTailwindcss()
@@ -283,7 +283,7 @@ describe('bundlers/vite WeappTailwindcss rewrite', () => {
   }, TEST_TIMEOUT_MS)
 
   it('keeps tailwindcss imports resolvable when plugin is disabled for tailwind v4 projects', async () => {
-    const WeappTailwindcss = await loadUnifiedVitePlugin()
+    const WeappTailwindcss = await loadWeappTailwindcssPlugin()
     const currentContext = createContext({ disabled: true })
     setCurrentContext(currentContext)
     currentContext.twPatcher.majorVersion = 4
@@ -350,7 +350,7 @@ describe('bundlers/vite WeappTailwindcss rewrite', () => {
   })
 
   it('keeps css import rewrite plugin when main plugin is disabled for tailwind v4 projects', async () => {
-    const WeappTailwindcss = await loadUnifiedVitePlugin()
+    const WeappTailwindcss = await loadWeappTailwindcssPlugin()
     setCurrentContext(createContext({ disabled: { plugin: true } }))
     getCurrentContext().twPatcher.majorVersion = 4
     const plugins = WeappTailwindcss({
@@ -360,7 +360,7 @@ describe('bundlers/vite WeappTailwindcss rewrite', () => {
   }, TEST_TIMEOUT_MS)
 
   it('keeps generator css transform but skips import rewrite when tailwindcss major version is below 4', async () => {
-    const WeappTailwindcss = await loadUnifiedVitePlugin()
+    const WeappTailwindcss = await loadWeappTailwindcssPlugin()
     const currentContext = getCurrentContext()
     currentContext.twPatcher.majorVersion = 3
     const plugins = WeappTailwindcss()

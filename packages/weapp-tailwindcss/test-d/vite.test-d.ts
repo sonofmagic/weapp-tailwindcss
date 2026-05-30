@@ -1,5 +1,5 @@
-import type { Plugin as VitePlugin } from 'vite'
+import type { WeappTailwindcssVitePlugin } from 'weapp-tailwindcss/vite'
 import { expectType } from 'tsd'
 import { WeappTailwindcss } from 'weapp-tailwindcss/vite'
 
-expectType<VitePlugin[] | undefined>(WeappTailwindcss({ appType: 'uni-app' }))
+expectType<WeappTailwindcssVitePlugin[] | undefined>(WeappTailwindcss({ appType: 'uni-app' }))

@@ -356,6 +356,232 @@ describe('bundlers/shared generator css', () => {
     `)
   })
 
+  it('scans Tailwind v4 sources for web target even when runtime candidates exist', async () => {
+    const runtimeSet = new Set(['bg-[#07c160]'])
+    const generateMock = vi.fn(async ({ candidates, scanSources, target }: { candidates: Set<string>, scanSources: boolean, target: string }) => {
+      const rawCss = [
+        '.bg-\\[\\#07c160\\]{background-color:#07c160}',
+        ...(scanSources
+          ? [
+              '.inline-flex{display:inline-flex}',
+              '.items-center{align-items:center}',
+            ]
+          : []),
+      ].join('\n')
+      return {
+        css: rawCss,
+        rawCss,
+        target,
+        classSet: new Set([
+          ...candidates,
+          ...(scanSources ? ['inline-flex', 'items-center'] : []),
+        ]),
+        dependencies: [],
+        sources: [],
+        root: null,
+      }
+    })
+
+    vi.doMock('@/generator', () => ({
+      ...createDefaultGeneratorMock(),
+      createWeappTailwindcssGenerator: vi.fn(() => ({
+        generate: generateMock,
+      })),
+    }))
+
+    const { generateCssByGenerator } = await import('@/bundlers/shared/generator-css')
+    const styleHandler = vi.fn(async (code: string) => ({ css: code }))
+    const result = await generateCssByGenerator({
+      opts: {
+        generator: {
+          target: 'web',
+          tailwindcssV3Compatibility: false,
+        },
+        styleHandler,
+      } as any,
+      runtimeState: {
+        twPatcher: {
+          majorVersion: 4,
+        } as any,
+        readyPromise: Promise.resolve(),
+      },
+      runtime: runtimeSet,
+      rawSource: '@import "tailwindcss";\n@source "./src/**/*.{tsx,html}";',
+      file: 'app.css',
+      cssHandlerOptions: {
+        isMainChunk: true,
+        postcssOptions: {
+          options: {
+            from: 'app.css',
+          },
+        },
+        majorVersion: 4,
+      } as any,
+      cssUserHandlerOptions: {
+        isMainChunk: false,
+        postcssOptions: {
+          options: {
+            from: 'app.css',
+          },
+        },
+        majorVersion: 4,
+      } as any,
+      styleHandler,
+      debug: vi.fn(),
+    })
+
+    expect(generateMock).toHaveBeenCalledWith(expect.objectContaining({
+      candidates: runtimeSet,
+      scanSources: true,
+      target: 'web',
+    }))
+    expect(result?.css).toContain('.inline-flex{display:inline-flex}')
+    expect(result?.css).toContain('.items-center{align-items:center}')
+    expect(result?.css).toContain('.bg-\\[\\#07c160\\]')
+    expect(result?.css).not.toContain('.bg-_b_h07c160_B')
+  })
+
+  it('preserves plain bundled css when Tailwind v4 web target generates the main chunk', async () => {
+    const runtimeSet = new Set(['inline-flex'])
+    const rawSource = '.home-v5{display:flex;color:#0f172a}'
+    const generatedCss = '.inline-flex{display:inline-flex}'
+    const generateMock = vi.fn(async ({ target }: { target: string }) => ({
+      css: generatedCss,
+      rawCss: generatedCss,
+      target,
+      classSet: runtimeSet,
+      dependencies: [],
+      sources: [],
+      root: null,
+    }))
+
+    vi.doMock('@/generator', () => ({
+      ...createDefaultGeneratorMock(),
+      createWeappTailwindcssGenerator: vi.fn(() => ({
+        generate: generateMock,
+      })),
+    }))
+
+    const { generateCssByGenerator } = await import('@/bundlers/shared/generator-css')
+    const styleHandler = vi.fn(async (code: string) => ({ css: `legacy:${code}` }))
+    const result = await generateCssByGenerator({
+      opts: {
+        generator: {
+          target: 'web',
+          tailwindcssV3Compatibility: false,
+        },
+        styleHandler,
+      } as any,
+      runtimeState: {
+        twPatcher: {
+          majorVersion: 4,
+        } as any,
+        readyPromise: Promise.resolve(),
+      },
+      runtime: runtimeSet,
+      rawSource,
+      file: 'custom.css',
+      cssHandlerOptions: {
+        isMainChunk: true,
+        postcssOptions: {
+          options: {
+            from: 'custom.css',
+          },
+        },
+        majorVersion: 4,
+      } as any,
+      cssUserHandlerOptions: {
+        isMainChunk: false,
+        postcssOptions: {
+          options: {
+            from: 'custom.css',
+          },
+        },
+        majorVersion: 4,
+      } as any,
+      styleHandler,
+      debug: vi.fn(),
+    })
+
+    expect(result?.css).toBe(`${generatedCss}\n${rawSource}`)
+    expect(generateMock).toHaveBeenCalledWith(expect.objectContaining({
+      scanSources: true,
+      target: 'web',
+    }))
+    expect(styleHandler).not.toHaveBeenCalled()
+  })
+
+  it('preserves mixed generated and custom bundled css for Tailwind v4 web target fallback', async () => {
+    const runtimeSet = new Set(['inline-flex'])
+    const generatedCss = '.inline-flex{display:inline-flex}'
+    const rawSource = [
+      '/*! tailwindcss v4.3.0 | MIT License | https://tailwindcss.com */',
+      '.items-center{align-items:center}',
+      '.home-v5{display:flex;color:#0f172a}',
+    ].join('\n')
+    const generateMock = vi.fn(async ({ target }: { target: string }) => ({
+      css: generatedCss,
+      rawCss: '.different-generated-output{display:block}',
+      target,
+      classSet: runtimeSet,
+      dependencies: [],
+      sources: [],
+      root: null,
+    }))
+
+    vi.doMock('@/generator', () => ({
+      ...createDefaultGeneratorMock(),
+      createWeappTailwindcssGenerator: vi.fn(() => ({
+        generate: generateMock,
+      })),
+    }))
+
+    const { generateCssByGenerator } = await import('@/bundlers/shared/generator-css')
+    const styleHandler = vi.fn(async (code: string) => ({ css: code }))
+    const result = await generateCssByGenerator({
+      opts: {
+        generator: {
+          target: 'web',
+          tailwindcssV3Compatibility: false,
+        },
+        styleHandler,
+      } as any,
+      runtimeState: {
+        twPatcher: {
+          majorVersion: 4,
+        } as any,
+        readyPromise: Promise.resolve(),
+      },
+      runtime: runtimeSet,
+      rawSource,
+      file: 'styles.css',
+      cssHandlerOptions: {
+        isMainChunk: true,
+        postcssOptions: {
+          options: {
+            from: 'styles.css',
+          },
+        },
+        majorVersion: 4,
+      } as any,
+      cssUserHandlerOptions: {
+        isMainChunk: false,
+        postcssOptions: {
+          options: {
+            from: 'styles.css',
+          },
+        },
+        majorVersion: 4,
+      } as any,
+      styleHandler,
+      debug: vi.fn(),
+    })
+
+    expect(result?.css).toContain(generatedCss)
+    expect(result?.css).toContain('.items-center{align-items:center}')
+    expect(result?.css).toContain('.home-v5{display:flex;color:#0f172a}')
+  })
+
   it('reuses transformed legacy compat css for stable source during hmr', async () => {
     const firstRuntimeSet = new Set(['bg-blue-500'])
     const secondRuntimeSet = new Set(['bg-red-500'])

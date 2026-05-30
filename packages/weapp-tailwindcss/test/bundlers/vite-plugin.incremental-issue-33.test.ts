@@ -14,7 +14,7 @@ import {
 
 const TEST_TIMEOUT_MS = 30000
 
-async function loadUnifiedVitePlugin() {
+async function loadWeappTailwindcssPlugin() {
   const mod = await import('@/bundlers/vite')
   return mod.WeappTailwindcss
 }
@@ -46,7 +46,7 @@ describe('bundlers/vite incremental issue #33 regression', () => {
   })
 
   it('reapplies cached js transform for unchanged source on incremental runs', async () => {
-    const WeappTailwindcss = await loadUnifiedVitePlugin()
+    const WeappTailwindcss = await loadWeappTailwindcssPlugin()
     const htmlFile = 'dist/pages/index/index.wxml'
     const jsFile = 'dist/pages/index/index.js'
     const rawTemplateToken = 'bg-[#000]'
@@ -125,7 +125,7 @@ describe('bundlers/vite incremental issue #33 regression', () => {
   }, 8000)
 
   it('does not refresh runtime class set for formatting-only incremental html/js changes', async () => {
-    const WeappTailwindcss = await loadUnifiedVitePlugin()
+    const WeappTailwindcss = await loadWeappTailwindcssPlugin()
     const htmlFile = 'dist/pages/index/index.wxml'
     const jsFile = 'dist/pages/index/index.js'
     const rawTemplateToken = 'bg-[#000]'
@@ -206,7 +206,7 @@ describe('bundlers/vite incremental issue #33 regression', () => {
   }, TEST_TIMEOUT_MS)
 
   it('keeps script/template arbitrary values correct across add-modify-delete in incremental runs', async () => {
-    const WeappTailwindcss = await loadUnifiedVitePlugin()
+    const WeappTailwindcss = await loadWeappTailwindcssPlugin()
     const htmlFile = 'dist/pages/index/index.wxml'
     const jsFile = 'dist/pages/index/index.js'
     const stageTokens = [
@@ -304,7 +304,7 @@ describe('bundlers/vite incremental issue #33 regression', () => {
   }, TEST_TIMEOUT_MS)
 
   it('refreshes runtime class set on build-command watch iterations for changed vue object class keys', async () => {
-    const WeappTailwindcss = await loadUnifiedVitePlugin()
+    const WeappTailwindcss = await loadWeappTailwindcssPlugin()
     const htmlFile = 'dist/pages/index/index.wxml'
     const jsFile = 'dist/pages/index/index.js'
     const runtimeSets = [
@@ -375,7 +375,7 @@ describe('bundlers/vite incremental issue #33 regression', () => {
   }, TEST_TIMEOUT_MS)
 
   it('keeps high-risk arbitrary object class keys escaped across build-command watch iterations', async () => {
-    const WeappTailwindcss = await loadUnifiedVitePlugin()
+    const WeappTailwindcss = await loadWeappTailwindcssPlugin()
     const htmlFile = 'dist/pages/index/index.wxml'
     const jsFile = 'dist/pages/index/index.js'
     const stageTokens = [

@@ -22,12 +22,12 @@ const debug = createDebug()
 export const weappTailwindcssPackageDir = resolvePackageDir('weapp-tailwindcss')
 
 /**
- * @name UnifiedWebpackPluginV5
+ * @name WeappTailwindcss
  * @description webpack5 核心转义插件
  * @link https://tw.icebreaker.top/docs/intro
  */
 
-export class UnifiedWebpackPluginV5 implements IBaseWebpackPlugin {
+export class WeappTailwindcss implements IBaseWebpackPlugin {
   options: InternalUserDefinedOptions
   appType?: AppType
   private hasInitialTailwindCssRoots: boolean

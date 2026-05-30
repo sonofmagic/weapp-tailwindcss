@@ -4,7 +4,9 @@ import type { Config } from '@docusaurus/types'
 
 // @ts-check
 // Note: type annotations allow type checking and IDEs autocompletion
+import path from 'node:path'
 import process from 'node:process'
+import { fileURLToPath } from 'node:url'
 import createBlogOptions from './config/blog'
 import { footer, footerCustomFields } from './config/footer'
 import headTags from './config/headTags'
@@ -17,11 +19,13 @@ import PrismLight from './src/utils/prismLight'
 const hostingProvider = process.env.PROVIDER
 const isGithub = String.prototype.toLowerCase.call(hostingProvider || '') === 'github'
 const isProd = process.env.NODE_ENV === 'production'
+const __dirname = path.dirname(fileURLToPath(import.meta.url))
+const tailwindCssEntry = path.resolve(__dirname, 'src/css/tailwind.css')
 console.log(`[hostingProvider]: ${hostingProvider}, [isGithub]: ${isGithub}`)
 
 const config: Config = {
-  title: 'weapp-tailwindcss 把tailwindcss带给小程序开发者们',
-  tagline: '用tailwindcss来开发小程序吧!这是一个webpack/vite/gulp插件集合,兼容了各种用这类打包的框架,比如uni-app,tarojs,rax,mpx,remax,原生等等.伟大的icebreaker部署了这个文档网站',
+  title: 'weapp-tailwindcss',
+  tagline: '小程序使用 Tailwind CSS 的事实标准工具链，覆盖 Tailwind v4/v3 与多框架构建链路。',
   favicon: 'favicon.ico',
 
   // Set the production url of your site here
@@ -85,7 +89,7 @@ const config: Config = {
         // },
         theme: {
           // 升级到 docusaurus@3 之后 docusaurus-plugin-sass 似乎挂了
-          customCss: ['./src/css/custom.scss'], // require.resolve('./src/css/custom.scss'),
+          customCss: ['./src/css/tailwind.css', './src/css/custom.scss'], // require.resolve('./src/css/custom.scss'),
         },
         // 在本地开发/局域网联调时关闭 gtag，避免外网脚本加载失败导致 window.gtag 未定义
         gtag: isProd
@@ -112,7 +116,7 @@ const config: Config = {
       'docusaurus-plugin-llms',
       {
         title: 'weapp-tailwindcss 文档索引',
-        description: 'Tailwind CSS 小程序适配方案，覆盖 uni-app、taro、rax、mpx、原生等场景的官方文档合集。',
+        description: 'Tailwind CSS 小程序适配方案，覆盖 Tailwind v4/v3、uni-app、Taro、原生小程序与多构建器场景的官方文档合集。',
         docsDir: 'docs',
         includeBlog: true,
         generateMarkdownFiles: true,
@@ -184,12 +188,28 @@ const config: Config = {
 
     function twPlugin() {
       return {
-        name: 'docusaurus-tailwindcss',
+        name: 'docusaurus-weapp-tailwindcss',
+        configureWebpack() {
+          const { WeappTailwindcss } = require('weapp-tailwindcss/webpack')
+
+          return {
+            plugins: [
+              new WeappTailwindcss({
+                generator: {
+                  target: 'web',
+                  tailwindcssV3Compatibility: false,
+                },
+                tailwindcss: {
+                  v4: {
+                    base: __dirname,
+                    cssEntries: [tailwindCssEntry],
+                  },
+                },
+              }),
+            ],
+          }
+        },
         configurePostCss(postcssOptions) {
-          // Appends TailwindCSS and AutoPrefixer.
-
-          postcssOptions.plugins.push(require('tailwindcss'))
-
           postcssOptions.plugins.push(require('autoprefixer'))
           return postcssOptions
         },

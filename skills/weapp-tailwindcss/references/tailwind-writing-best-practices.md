@@ -108,7 +108,7 @@ Component({
 配置示例：
 
 ```ts
-import { UnifiedViteWeappTailwindcssPlugin as uvtw } from 'weapp-tailwindcss/vite'
+import { WeappTailwindcss as uvtw } from 'weapp-tailwindcss/vite'
 
 uvtw({
   cssChildCombinatorReplaceValue: ['view', 'text', 'button', 'input'],
