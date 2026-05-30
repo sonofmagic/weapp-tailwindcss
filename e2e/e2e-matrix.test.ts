@@ -69,6 +69,39 @@ function platformFromScriptName(name: string) {
   }
 }
 
+function collectDemoWeappTailwindcssConfigFiles() {
+  const demoRoot = path.resolve(__dirname, '../demo')
+  const files: string[] = []
+  const ignoredDirs = new Set(['node_modules', 'dist', '.output', '.vite', '.turbo'])
+  const configFileRE = /(?:^|\/)(?:vite\.config|_vite\.config|webpack\.config|gulpfile|config\/index)\.[cm]?[jt]s$/
+
+  function walk(dir: string) {
+    for (const entry of fs.readdirSync(dir, { withFileTypes: true })) {
+      if (entry.isDirectory()) {
+        if (!ignoredDirs.has(entry.name)) {
+          walk(path.join(dir, entry.name))
+        }
+        continue
+      }
+      if (!entry.isFile()) {
+        continue
+      }
+      const file = path.join(dir, entry.name)
+      const relative = path.relative(demoRoot, file).split(path.sep).join('/')
+      if (!configFileRE.test(relative)) {
+        continue
+      }
+      const code = fs.readFileSync(file, 'utf8')
+      if (code.includes('WeappTailwindcss')) {
+        files.push(file)
+      }
+    }
+  }
+
+  walk(demoRoot)
+  return files.sort()
+}
+
 describe('e2e matrix', () => {
   it('keeps every demo package explicit in the demo coverage matrix', () => {
     expect(DEMO_COVERAGE_MATRIX.map(item => item.name).sort()).toEqual(discoverDemoPackageNames())
@@ -121,6 +154,13 @@ describe('e2e matrix', () => {
   it('declares template/script/style block coverage for SFC-like demos', () => {
     for (const entry of DEMO_COVERAGE_MATRIX.filter(item => item.sourceShape.includes('sfc') || item.sourceShape === 'uvue')) {
       expect(entry.sfcBlocks, `${entry.name} should declare template/script/style coverage`).toEqual(['template', 'script', 'style'])
+    }
+  })
+
+  it('keeps demo WeappTailwindcss configs independent from explicit cssEntries', () => {
+    for (const file of collectDemoWeappTailwindcssConfigFiles()) {
+      const code = fs.readFileSync(file, 'utf8')
+      expect(code, `${path.relative(path.resolve(__dirname, '..'), file)} should rely on automatic Tailwind v4 CSS entry discovery`).not.toContain('cssEntries')
     }
   })
 

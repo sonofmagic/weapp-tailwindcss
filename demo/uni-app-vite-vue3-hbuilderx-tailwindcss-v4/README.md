@@ -6,7 +6,7 @@
 
 - `vite.config.ts` 直接注册 `WeappTailwindcss(hbuilderx(...))`
 - `main.css` 使用 `@import "tailwindcss"` 与 `@source`
-- `cssEntries` 显式指向 `main.css`
+- 不显式配置 `cssEntries`，由 `weapp-tailwindcss` 自动识别 `main.css`
 - 不注册 `@tailwindcss/postcss`，也不注册 `@tailwindcss/vite`
 
 ## 运行
