@@ -105,9 +105,14 @@ async function waitForCss(url: string, entries: Array<string | RegExp>, child: C
   throw new Error(`等待 CSS 内容超时：${url}\n${latest.slice(0, 1000)}\n${logs.join('')}`)
 }
 
-async function mutateFile(file: string, anchor: string, insertion: string) {
+function resolveAnchor(source: string, anchors: string[]) {
+  return anchors.find(anchor => source.includes(anchor))
+}
+
+async function mutateFile(file: string, anchors: string[], insertion: string) {
   const original = await readUtf8(file)
-  const index = original.indexOf(anchor)
+  const anchor = resolveAnchor(original, anchors)
+  const index = anchor ? original.indexOf(anchor) : -1
   if (index < 0) {
     throw new Error(`找不到 HMR 插入锚点：${file}`)
   }
@@ -118,11 +123,12 @@ async function mutateFile(file: string, anchor: string, insertion: string) {
   }
 }
 
-async function rewriteHmrMarker(file: string, anchor: string, steps: WebHmrStep[], stepIndex: number) {
+async function rewriteHmrMarker(file: string, anchors: string[], steps: WebHmrStep[], stepIndex: number) {
   const source = await readUtf8(file)
   const markerRE = /\n\t\t<view class="[^"]+">hbuilderx-web-hmr-[^<]+<\/view>/g
   const cleaned = source.replace(markerRE, '')
-  const index = cleaned.indexOf(anchor)
+  const anchor = resolveAnchor(cleaned, anchors)
+  const index = anchor ? cleaned.indexOf(anchor) : -1
   if (index < 0) {
     throw new Error(`找不到 HMR 插入锚点：${file}`)
   }
@@ -137,7 +143,7 @@ async function rewriteHmrMarker(file: string, anchor: string, steps: WebHmrStep[
 export async function runWebHmr(
   projectRoot: string,
   sourceFile: string,
-  markerAnchor: string,
+  markerAnchors: string[],
   initialCssPath: string,
   hmrCssPath: string,
   initialCssContains: Array<string | RegExp>,
@@ -159,10 +165,10 @@ export async function runWebHmr(
     await page.goto(joinUrl(ready.baseUrl, '/'), { waitUntil: 'domcontentloaded' })
 
     const initialCss = await waitForCss(joinUrl(ready.baseUrl, initialCssPath), initialCssContains, child, logs)
-    restore = await mutateFile(sourceFile, markerAnchor, '')
+    restore = await mutateFile(sourceFile, markerAnchors, '')
     const hmrCss: string[] = []
     for (const [index, step] of hmrSteps.entries()) {
-      await rewriteHmrMarker(sourceFile, markerAnchor, hmrSteps, index)
+      await rewriteHmrMarker(sourceFile, markerAnchors, hmrSteps, index)
       hmrCss.push(await waitForCss(joinUrl(ready.baseUrl, hmrCssPath), step.cssContains, child, logs))
     }
 

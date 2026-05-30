@@ -4,6 +4,7 @@ import {
   HOT_UPDATE_COVERED_PROJECTS,
   HOT_UPDATE_EXEMPT_PROJECTS,
 } from './e2eMatrix'
+import { webViteHmrCaseNames } from './web-vite-demo-hmr-cases'
 
 describe('e2e matrix', () => {
   it('covers every static e2e project with hot-update or an explicit exemption', () => {
@@ -32,6 +33,15 @@ describe('e2e matrix', () => {
       'uni-app-vite-tailwindcss-v4',
       'weapp-vite-tailwindcss-v3',
       'weapp-vite-tailwindcss-v4',
+    ])
+  })
+
+  it('covers every demo/web Vite package with browser source HMR', () => {
+    expect(webViteHmrCaseNames).toEqual([
+      'web react vite Tailwind v3',
+      'web react vite Tailwind v4',
+      'web vue vite Tailwind v3',
+      'web vue vite Tailwind v4',
     ])
   })
 })

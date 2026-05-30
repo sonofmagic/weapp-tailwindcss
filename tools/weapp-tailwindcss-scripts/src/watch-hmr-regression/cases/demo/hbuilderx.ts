@@ -1,18 +1,23 @@
 import type { WatchCase } from '../../types'
 import path from 'node:path'
-import { appendTrailingSnippet, createStyleRuleSnippet, insertBeforeClosingTag, replaceExactSnippet } from '../../text'
+import { appendTrailingSnippet, createStyleRuleSnippet, insertBeforeClosingTag } from '../../text'
 import { buildHexScriptRoundConfigs, buildIssue33HighRiskRoundConfigs } from '../round-configs'
+
+const webDomMarkerAttr = 'data-tw-watch-web-dom="1"'
 
 function mutateVueOptionsDataWithTemplateConsumer(
   source: string,
   payload: Parameters<NonNullable<WatchCase['scriptMutation']>['mutate']>[1],
 ) {
+  const titleMatched = source.match(/title:\s*'[^']*'/)
+  if (!titleMatched) {
+    throw new Error('vue options data title anchor not found')
+  }
+
   return insertBeforeClosingTag(
-    replaceExactSnippet(
-      source,
-      'title: \'Hello\'',
-      `title: 'Hello',\n\t\t\t\t${payload.classVariableName}: '${payload.classLiteral}',\n\t\t\t\t__twWatchScriptMarker: '${payload.marker}'`,
-      'vue options data title anchor',
+    source.replace(
+      titleMatched[0],
+      `${titleMatched[0]},\n\t\t\t\t${payload.classVariableName}: '${payload.classLiteral}',\n\t\t\t\t__twWatchScriptMarker: '${payload.marker}'`,
     ),
     '</template>',
     `\t\t<view hidden :class="${payload.classVariableName}">{{ __twWatchScriptMarker }}</view>`,
@@ -74,6 +79,41 @@ function createUniAppHBuilderXVue3Case(baseCwd: string, version: 'v3' | 'v4'): W
       mutate(source, payload) {
         return appendTrailingSnippet(source, createStyleRuleSnippet(payload))
       },
+    },
+    webHmr: {
+      devScript: 'dev:h5',
+      sourceFile: path.resolve(baseCwd, `demo/${projectName}/pages/index/index.vue`),
+      cssEntryFile: path.resolve(baseCwd, `demo/${projectName}/main.css`),
+      readySelector: 'uni-page[data-page="pages/index/index"]',
+      initialMutationDelayMs: 1500,
+      injectMarkerElement: true,
+      mutate(source, payload) {
+        return `${source}\n<!-- ${payload.marker} ${payload.classLiteral} -->`
+      },
+      sourceDomReplacementSequence: [
+        {
+          label: 'title and color to text-[red]',
+          mutate(source) {
+            const classMatched = source.match(/class="text-\[(?:#[0-9a-fA-F]{6}|red)\]"/)
+            const titleMatched = source.match(/title:\s*'[^']*'/)
+            if (!classMatched || !titleMatched) {
+              throw new Error('HBuilderX web HMR source DOM anchor not found')
+            }
+            const next = source
+              .replace(classMatched[0], `${webDomMarkerAttr} class="text-[red]"`)
+              .replace(titleMatched[0], `title: 'H5-HMR-HBUILDERX-${version.toUpperCase()}'`)
+            return {
+              next,
+              from: `${classMatched[0]} ${titleMatched[0]}`,
+              to: `${webDomMarkerAttr} class="text-[red]" title: 'H5-HMR-HBUILDERX-${version.toUpperCase()}'`,
+            }
+          },
+          expectedText: `H5-HMR-HBUILDERX-${version.toUpperCase()}`,
+          expectedStyle: {
+            color: 'rgb(255, 0, 0)',
+          },
+        },
+      ],
     },
   }
 }

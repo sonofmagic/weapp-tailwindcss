@@ -1,0 +1,214 @@
+import type { Buffer } from 'node:buffer'
+import type { ChildProcess } from 'node:child_process'
+import type { Browser, Page } from 'playwright'
+import type { WebViteHmrCase } from './web-vite-demo-hmr-cases'
+import { spawn, spawnSync } from 'node:child_process'
+import fs from 'node:fs/promises'
+import net from 'node:net'
+import process from 'node:process'
+import path from 'pathe'
+import { chromium } from 'playwright'
+import { afterEach, describe, it } from 'vitest'
+import { resolveChromeExecutable } from './hbuilderx-local/process'
+import { webViteHmrCases } from './web-vite-demo-hmr-cases'
+
+const repoRoot = path.resolve(__dirname, '..')
+const localUrlRE = /Local:\s*(https?:\/\/\S+)/i
+const serverTimeoutMs = Number(process.env['E2E_WEB_VITE_HMR_TIMEOUT_MS'] ?? 120_000)
+const pollIntervalMs = 100
+
+let devProcess: ChildProcess | undefined
+let browser: Browser | undefined
+let restoreSource: (() => Promise<void>) | undefined
+
+function wait(ms: number) {
+  return new Promise(resolve => setTimeout(resolve, ms))
+}
+
+async function findFreePort() {
+  return await new Promise<number>((resolve, reject) => {
+    const server = net.createServer()
+    server.unref()
+    server.once('error', reject)
+    server.listen(0, '127.0.0.1', () => {
+      const address = server.address()
+      if (!address || typeof address === 'string') {
+        server.close(() => reject(new Error('无法解析可用端口')))
+        return
+      }
+      const { port } = address
+      server.close(() => resolve(port))
+    })
+  })
+}
+
+function killProcessTree(child: ChildProcess) {
+  const pid = child.pid
+  if (!pid || child.exitCode != null) {
+    return
+  }
+
+  if (process.platform === 'win32') {
+    spawnSync('taskkill', ['/pid', String(pid), '/t', '/f'], {
+      stdio: 'ignore',
+      windowsHide: true,
+    })
+    return
+  }
+
+  try {
+    process.kill(-pid, 'SIGTERM')
+  }
+  catch {
+    child.kill('SIGTERM')
+  }
+}
+
+function collectProcessOutput(child: ChildProcess) {
+  const logs: string[] = []
+  const collect = (chunk: Buffer | string) => {
+    logs.push(chunk.toString())
+    if (logs.length > 120) {
+      logs.splice(0, logs.length - 120)
+    }
+  }
+  child.stdout?.on('data', collect)
+  child.stderr?.on('data', collect)
+  return logs
+}
+
+function createDevServer(projectRoot: string, port: number) {
+  const child = spawn('pnpm', ['run', 'dev', '--', '--host', '127.0.0.1', '--port', String(port)], {
+    cwd: projectRoot,
+    detached: process.platform !== 'win32',
+    shell: process.platform === 'win32',
+    stdio: ['ignore', 'pipe', 'pipe'],
+    env: {
+      ...process.env,
+      BROWSER: 'none',
+      NODE_OPTIONS: process.env['NODE_OPTIONS'] ?? '--max-old-space-size=8192',
+    },
+  })
+  devProcess = child
+  return child
+}
+
+function resolveBaseUrls(logs: string[], fallbackUrl: string) {
+  const urls = new Set([fallbackUrl])
+  for (const chunk of logs) {
+    for (const line of chunk.split(/\r?\n/)) {
+      const matched = line.match(localUrlRE)?.[1]
+      if (matched) {
+        urls.add(matched)
+      }
+    }
+  }
+  return Array.from(urls)
+}
+
+async function waitForReadyUrl(child: ChildProcess, logs: string[], fallbackUrl: string) {
+  let lastError: unknown
+  const startedAt = Date.now()
+
+  while (Date.now() - startedAt < serverTimeoutMs) {
+    if (child.exitCode != null) {
+      throw new Error(`dev server 提前退出，exit=${child.exitCode}\n${logs.join('')}`)
+    }
+    for (const baseUrl of resolveBaseUrls(logs, fallbackUrl)) {
+      try {
+        const response = await fetch(baseUrl)
+        if (response.ok) {
+          return baseUrl
+        }
+        lastError = new Error(`${baseUrl} -> HTTP ${response.status} ${response.statusText}`)
+      }
+      catch (error) {
+        lastError = error
+      }
+    }
+    await wait(pollIntervalMs)
+  }
+
+  throw new Error(`等待 Web Vite dev server 超时：${lastError instanceof Error ? lastError.message : String(lastError)}\n${logs.join('')}`)
+}
+
+async function mutateSource(item: WebViteHmrCase, sourceFile: string) {
+  const original = await fs.readFile(sourceFile, 'utf8')
+  const next = original
+    .replace(item.classFrom, item.classTo)
+    .replace(item.titleFrom, item.titleTo)
+  if (next === original) {
+    throw new Error(`${item.name} Web HMR 源码替换没有产生变化`)
+  }
+  await fs.writeFile(sourceFile, next, 'utf8')
+  restoreSource = async () => {
+    await fs.writeFile(sourceFile, original, 'utf8')
+  }
+}
+
+async function waitForDomHmr(page: Page, item: WebViteHmrCase) {
+  let lastError = ''
+  const startedAt = Date.now()
+
+  while (Date.now() - startedAt < serverTimeoutMs) {
+    try {
+      const actual = await page.locator(`[data-web-vite-hmr="${item.markerAttr}"]`).evaluate((element) => {
+        const style = window.getComputedStyle(element)
+        return {
+          color: style.color.replace(/\s+/g, ' '),
+          text: element.textContent?.trim() ?? '',
+        }
+      })
+      if (actual.text === item.titleTo && actual.color === 'rgb(255, 0, 0)') {
+        return
+      }
+      lastError = JSON.stringify(actual)
+    }
+    catch (error) {
+      lastError = error instanceof Error ? error.message : String(error)
+    }
+    await wait(pollIntervalMs)
+  }
+
+  const body = await page.locator('body').textContent().catch(error => String(error))
+  throw new Error(`${item.name} Web HMR DOM 未更新：${lastError}\nbody=${body}`)
+}
+
+describe('demo/web Vite source HMR', () => {
+  afterEach(async () => {
+    if (restoreSource) {
+      await restoreSource()
+      restoreSource = undefined
+    }
+    if (browser) {
+      await browser.close()
+      browser = undefined
+    }
+    if (devProcess) {
+      killProcessTree(devProcess)
+      devProcess = undefined
+    }
+  }, 30_000)
+
+  it.each(webViteHmrCases)('updates title and arbitrary text color for $name', async (item) => {
+    const projectRoot = path.resolve(repoRoot, item.projectDir)
+    const sourceFile = path.resolve(projectRoot, item.sourceFile)
+    const port = await findFreePort()
+    const child = createDevServer(projectRoot, port)
+    const logs = collectProcessOutput(child)
+    const baseUrl = await waitForReadyUrl(child, logs, `http://127.0.0.1:${port}/`)
+
+    browser = await chromium.launch({
+      executablePath: await resolveChromeExecutable(),
+      headless: true,
+    })
+    const page = await browser.newPage()
+    await page.goto(baseUrl, {
+      waitUntil: 'domcontentloaded',
+      timeout: Math.min(serverTimeoutMs, 60_000),
+    })
+
+    await mutateSource(item, sourceFile)
+    await waitForDomHmr(page, item)
+  }, serverTimeoutMs + 30_000)
+})

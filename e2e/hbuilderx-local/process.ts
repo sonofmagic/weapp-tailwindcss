@@ -62,6 +62,19 @@ function runTool(command: string, args: string[]) {
   }
 }
 
+export function assertAndroidToolchain() {
+  const adb = runTool('adb', ['version'])
+
+  if (!adb.ok) {
+    throw new Error([
+      '当前机器缺少 Android App E2E 所需的 adb，无法运行 HBuilderX app-android E2E。',
+      `adb: ${adb.output || 'not found'}`,
+      '请先安装 Android SDK platform-tools，并确认 adb 可在 PATH 中访问。',
+      '如需指定设备，请设置 E2E_HBUILDERX_ANDROID_DEVICE_ID。',
+    ].join('\n'))
+  }
+}
+
 export function assertIosSimulatorToolchain() {
   if (process.platform !== 'darwin') {
     throw new Error('HBuilderX iOS 模拟器 E2E 只能在 macOS 本地运行。')

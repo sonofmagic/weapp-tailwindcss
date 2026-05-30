@@ -6,6 +6,7 @@ import path from 'pathe'
 import { expect } from 'vitest'
 import { rawTailwindDirectiveRE } from './cases'
 import {
+  assertAndroidToolchain,
   assertIosSimulatorToolchain,
   collectProcessOutput,
   fileExists,
@@ -22,6 +23,14 @@ import {
 import { runWebHmr } from './web'
 
 const repoRoot = path.resolve(__dirname, '../..')
+
+function resolveAppMarkerAnchors(item: AppCase) {
+  return item.markerAnchorCandidates?.length ? item.markerAnchorCandidates : [item.markerAnchor]
+}
+
+function resolveWebMarkerAnchors(item: WebCase) {
+  return item.markerAnchorCandidates?.length ? item.markerAnchorCandidates : [item.markerAnchor]
+}
 
 function expectContent(source: string, entries: Array<string | RegExp>, label: string) {
   for (const entry of entries) {
@@ -91,6 +100,35 @@ async function readExistingAppTransformedOutput(projectRoot: string, outputRoot:
     return undefined
   }
   return (await Promise.all(transformedFiles.map(readUtf8))).join('\n')
+}
+
+async function waitForAppTransformedContent(
+  item: AppCase,
+  expected: Array<string | RegExp>,
+  timeoutMs: number,
+  ensureRunning?: () => void,
+) {
+  const projectRoot = path.resolve(repoRoot, item.projectDir)
+  const startedAt = Date.now()
+  let latest = ''
+
+  while (Date.now() - startedAt < timeoutMs) {
+    ensureRunning?.()
+    for (const outputDir of resolveAppOutputDirCandidates(item)) {
+      const outputRoot = path.resolve(projectRoot, outputDir)
+      const transformed = await readExistingAppTransformedOutput(projectRoot, outputRoot, item)
+      if (!transformed) {
+        continue
+      }
+      latest = transformed
+      if (hasContent(transformed, expected)) {
+        return outputRoot
+      }
+    }
+    await wait(pollIntervalMs)
+  }
+
+  throw new Error(`${item.name} App 热更新产物未包含预期内容\nexpected=${expected.map(String).join(' | ')}\nlatest=${latest.slice(0, 2000)}`)
 }
 
 async function assertMiniProgramOutput(item: MiniProgramCase) {
@@ -176,59 +214,23 @@ async function cleanAppOutput(item: AppCase) {
   }))
 }
 
-async function runAppLaunchUntilOutput(item: AppCase, hbuilderxCliPath: string, projectRoot: string) {
-  const child = spawnPnpm(
-    projectRoot,
-    ['exec', 'hbuilderx', 'launch', item.platform, '--project', projectRoot, '--compile', 'true', ...(item.launchArgs ?? [])],
-    {
-      HBUILDERX_CLI_PATH: hbuilderxCliPath,
-      WEAPP_TW_HMR_TIMING: '1',
-      ...item.launchEnv,
-    },
-  )
-  const logs = collectProcessOutput(child)
-  const startedAt = Date.now()
-  let exit: { code: number | null, signal: NodeJS.Signals | null } | undefined
-  const closed = new Promise<void>((resolve) => {
-    child.on('close', (code, signal) => {
-      exit = { code, signal }
-      resolve()
-    })
-  })
-
-  while (Date.now() - startedAt < hbuilderxAppTimeoutMs) {
-    if (await findReadyAppOutputRoot(item)) {
-      killProcessTree(child)
-      await Promise.race([closed, wait(5_000)])
-      return
-    }
-
-    if (exit) {
-      if (exit.code === 0) {
-        break
-      }
-      throw new Error(`命令失败：pnpm exec hbuilderx launch ${item.platform} exit=${exit.signal ?? exit.code}\n${logs.join('')}`)
-    }
-
-    await wait(pollIntervalMs)
-  }
-
-  killProcessTree(child)
-  await Promise.race([closed, wait(5_000)])
-  await assertAppOutput(item)
-}
-
-async function mutateFile(file: string, anchor: string, insertion: string) {
-  const original = await readUtf8(file)
-  const index = original.indexOf(anchor)
+async function writeAppMarker(
+  file: string,
+  anchors: string[],
+  marker: {
+    className: string
+    text: string
+  },
+) {
+  const source = await readUtf8(file)
+  const cleaned = source.replace(/\n[ \t]*<view class="[^"]+">hbuilderx-app-(?:dynamic|hmr)-[^<]+<\/view>/g, '')
+  const anchor = anchors.find(item => cleaned.includes(item))
+  const index = anchor ? cleaned.indexOf(anchor) : -1
   if (index < 0) {
     throw new Error(`找不到 App E2E 插入锚点：${file}`)
   }
-  const next = `${original.slice(0, index)}${insertion}\n\t\t${original.slice(index)}`
+  const next = `${cleaned.slice(0, index)}<view class="${marker.className}">${marker.text}</view>\n\t\t${cleaned.slice(index)}`
   await fs.writeFile(file, next, 'utf8')
-  return async () => {
-    await fs.writeFile(file, original, 'utf8')
-  }
 }
 
 export async function compileMiniProgramWithHBuilderX(item: MiniProgramCase) {
@@ -255,20 +257,28 @@ export async function compileMiniProgramWithHBuilderX(item: MiniProgramCase) {
   await assertMiniProgramOutput(item)
 }
 
-export async function compileAppWithHBuilderX(item: AppCase) {
+export async function verifyAppHmrWithHBuilderX(item: AppCase) {
+  if (item.platform === 'app-android') {
+    assertAndroidToolchain()
+  }
   if (item.platform === 'app-ios') {
     assertIosSimulatorToolchain()
   }
 
   const hbuilderxCliPath = await resolveHBuilderXCli()
   const projectRoot = path.resolve(repoRoot, item.projectDir)
+  const sourceFile = path.resolve(projectRoot, item.sourceFile)
   let restore: (() => Promise<void>) | undefined
+  let child: ReturnType<typeof spawnPnpm> | undefined
   try {
-    restore = await mutateFile(
-      path.resolve(projectRoot, item.sourceFile),
-      item.markerAnchor,
-      `<view class="${item.markerClass}">${item.markerText}</view>`,
-    )
+    const original = await readUtf8(sourceFile)
+    restore = async () => {
+      await fs.writeFile(sourceFile, original, 'utf8')
+    }
+    await writeAppMarker(sourceFile, resolveAppMarkerAnchors(item), {
+      className: item.markerClass,
+      text: item.markerText,
+    })
     await cleanAppOutput(item)
     await runPnpm(
       projectRoot,
@@ -278,10 +288,61 @@ export async function compileAppWithHBuilderX(item: AppCase) {
         HBUILDERX_CLI_PATH: hbuilderxCliPath,
       },
     )
-    await runAppLaunchUntilOutput(item, hbuilderxCliPath, projectRoot)
+    child = spawnPnpm(
+      projectRoot,
+      ['exec', 'hbuilderx', 'launch', item.platform, '--project', projectRoot, ...(item.launchArgs ?? [])],
+      {
+        HBUILDERX_CLI_PATH: hbuilderxCliPath,
+        WEAPP_TW_HMR_TIMING: '1',
+        ...item.launchEnv,
+      },
+    )
+    const logs = collectProcessOutput(child)
+    let exit: { code: number | null, signal: NodeJS.Signals | null } | undefined
+    const closed = new Promise<void>((resolve) => {
+      child?.on('close', (code, signal) => {
+        exit = { code, signal }
+        resolve()
+      })
+    })
+
+    const startedAt = Date.now()
+    const ensureLaunchRunning = () => {
+      if (exit && exit.code !== 0) {
+        throw new Error(`命令失败：pnpm exec hbuilderx launch ${item.platform} exit=${exit.signal ?? exit.code}\n${logs.join('')}`)
+      }
+    }
+    let initialOutputRoot: string | undefined
+    while (Date.now() - startedAt < hbuilderxAppTimeoutMs) {
+      initialOutputRoot = await findReadyAppOutputRoot(item)
+      if (initialOutputRoot) {
+        break
+      }
+      ensureLaunchRunning()
+      await wait(pollIntervalMs)
+    }
+    if (!initialOutputRoot) {
+      throw new Error(`${item.name} App 初始开发产物未在 ${hbuilderxAppTimeoutMs}ms 内就绪\n${logs.join('')}`)
+    }
+
     await assertAppOutput(item)
+    if (exit) {
+      throw new Error(`HBuilderX app dev process exited before hot-update mutation: exit=${exit.signal ?? exit.code}\n${logs.join('')}`)
+    }
+    await writeAppMarker(sourceFile, resolveAppMarkerAnchors(item), {
+      className: item.hmrMarkerClass,
+      text: item.hmrMarkerText,
+    })
+    await waitForAppTransformedContent(item, item.hmrTransformedContains, hbuilderxAppTimeoutMs, ensureLaunchRunning)
+
+    killProcessTree(child)
+    await Promise.race([closed, wait(5_000)])
+    child = undefined
   }
   finally {
+    if (child) {
+      killProcessTree(child)
+    }
     if (restore) {
       await restore()
     }
@@ -293,7 +354,7 @@ export async function verifyWebHmr(item: WebCase) {
   const result = await runWebHmr(
     projectRoot,
     path.resolve(projectRoot, item.sourceFile),
-    item.markerAnchor,
+    resolveWebMarkerAnchors(item),
     item.initialCssPath,
     item.hmrCssPath,
     item.initialCssContains,

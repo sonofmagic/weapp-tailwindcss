@@ -59,6 +59,14 @@ const WEB_HMR_CASES = new Set<ConcreteWatchCaseName>([
   'taro-vite-vue3-tailwindcss-v4',
   'uni-app-vite-tailwindcss-v3',
   'uni-app-vite-tailwindcss-v4',
+  'uni-app-vite-vue3-hbuilderx-tailwindcss-v3',
+  'uni-app-vite-vue3-hbuilderx-tailwindcss-v4',
+])
+const WEB_SOURCE_DOM_HMR_CASES = new Set<ConcreteWatchCaseName>([
+  'uni-app-vite-tailwindcss-v3',
+  'uni-app-vite-tailwindcss-v4',
+  'uni-app-vite-vue3-hbuilderx-tailwindcss-v3',
+  'uni-app-vite-vue3-hbuilderx-tailwindcss-v4',
 ])
 const SUBPACKAGE_HMR_CASES = new Set(
   buildCases(path.resolve(import.meta.dirname, '../../..'))
@@ -236,6 +244,15 @@ interface WebHmrMetric {
     from: string
     to: string
     verifiedCssIncludes: string[]
+    hotUpdateEffectiveMs: number
+  }>
+  sourceDomReplacementSequence?: Array<{
+    label: string
+    from: string
+    to: string
+    expectedText: string
+    verifiedCssIncludes: string[]
+    computedStyle: Partial<Record<'color' | 'backgroundColor' | 'width' | 'height', string>>
     hotUpdateEffectiveMs: number
   }>
   totalMs: number
@@ -577,6 +594,12 @@ function collectReportBudgetSamples(report: HotUpdateReport) {
           hotUpdateEffectiveMs: metric.hotUpdateEffectiveMs,
         })
       }
+      for (const metric of oneCase.webHmr.sourceDomReplacementSequence ?? []) {
+        samples.push({
+          label: `${oneCase.project}:web-source-dom-replacement:${metric.label}`,
+          hotUpdateEffectiveMs: metric.hotUpdateEffectiveMs,
+        })
+      }
     }
 
     for (const mutation of oneCase.mutationMetrics) {
@@ -655,7 +678,11 @@ function assertWebHmrCase(item: HotUpdateCaseReport, maxHotUpdateMs: number) {
     throw new Error(`[${item.project}] missing web HMR metric`)
   }
   expect(webHmr.devScript).toBe(item.name.startsWith('taro-') ? 'build:h5' : 'dev:h5')
-  expect(normalizePathLike(webHmr.sourceFile)).toContain('src/pages/index/index.')
+  const normalizedSourceFile = normalizePathLike(webHmr.sourceFile)
+  expect(
+    normalizedSourceFile.includes('src/pages/index/index.')
+    || normalizedSourceFile.includes('pages/index/index.'),
+  ).toBe(true)
   expect(webHmr.url).toMatch(/^https?:\/\/(?:localhost|127\.0\.0\.1|\[::1\])/)
   expect(webHmr.marker).toContain(`tw-watch-web-${item.name}`)
   expect(webHmr.classLiteral).toContain('bg-[#123456]')
@@ -678,6 +705,16 @@ function assertWebHmrCase(item: HotUpdateCaseReport, maxHotUpdateMs: number) {
     expect(sourceClassReplacementSequence[0]?.verifiedCssIncludes).toContain('134543')
     expect(sourceClassReplacementSequence[1]?.verifiedCssIncludes).toContain('256789')
     for (const metric of sourceClassReplacementSequence) {
+      expect(metric.hotUpdateEffectiveMs).toBeGreaterThan(0)
+      expect(metric.hotUpdateEffectiveMs).toBeLessThanOrEqual(maxHotUpdateMs)
+    }
+  }
+  if (WEB_SOURCE_DOM_HMR_CASES.has(item.name)) {
+    const sourceDomReplacementSequence = webHmr.sourceDomReplacementSequence ?? []
+    expect(sourceDomReplacementSequence.length, `[${item.project}] should verify source DOM H5 HMR`).toBeGreaterThanOrEqual(1)
+    for (const metric of sourceDomReplacementSequence) {
+      expect(metric.expectedText, `[${item.project}] source DOM HMR should record expected text`).toContain('H5-HMR')
+      expect(metric.computedStyle.color, `[${item.project}] source DOM HMR should verify red text color`).toBe('rgb(255, 0, 0)')
       expect(metric.hotUpdateEffectiveMs).toBeGreaterThan(0)
       expect(metric.hotUpdateEffectiveMs).toBeLessThanOrEqual(maxHotUpdateMs)
     }

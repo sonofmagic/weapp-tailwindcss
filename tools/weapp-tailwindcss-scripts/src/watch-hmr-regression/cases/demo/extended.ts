@@ -38,9 +38,18 @@ const taroViteWatchEnv = {
 }
 
 const taroVitePluginProcessBudgetMs = 3000
+const webDomMarkerAttr = 'data-tw-watch-web-dom="1"'
 
 function normalizeExtension(version: 'v3' | 'v4') {
   return version === 'v3' ? 'scss' : 'css'
+}
+
+function replaceWebDomSnippet(source: string, from: string, to: string) {
+  return {
+    next: replaceExactSnippet(source, from, to, 'web HMR source DOM replacement anchor'),
+    from,
+    to,
+  }
 }
 
 function mutateVueScriptWithTemplateConsumer(
@@ -244,6 +253,22 @@ export function buildDemoExtendedCases(baseCwd: string): WatchCase[] {
           expectedCssIncludes: ['256789'],
         },
       ],
+      sourceDomReplacementSequence: [
+        {
+          label: 'title and color text-[#990000] to text-[red]',
+          mutate(source) {
+            return replaceWebDomSnippet(
+              source,
+              `<view class="!font-bold !text-[#990000]" :class="['text-2xl', { underline: true }]">{{ title }}</view>`,
+              `<view ${webDomMarkerAttr} class="!font-bold text-[red]" :class="['text-2xl', { underline: true }]">H5-HMR-UNI-V3</view>`,
+            )
+          },
+          expectedText: 'H5-HMR-UNI-V3',
+          expectedStyle: {
+            color: 'rgb(255, 0, 0)',
+          },
+        },
+      ],
     },
   }
 
@@ -333,6 +358,22 @@ export function buildDemoExtendedCases(baseCwd: string): WatchCase[] {
       mutate(source, payload) {
         return `${source}\n<!-- ${payload.marker} ${payload.classLiteral} -->`
       },
+      sourceDomReplacementSequence: [
+        {
+          label: 'title and color text-[#00f285] to text-[red]',
+          mutate(source) {
+            return replaceWebDomSnippet(
+              source,
+              `<text class="text-[#00f285] text-[88rpx] font-bold underline">{{ title }}</text>`,
+              `<text ${webDomMarkerAttr} class="text-[red] text-[88rpx] font-bold underline">H5-HMR-UNI-V4</text>`,
+            )
+          },
+          expectedText: 'H5-HMR-UNI-V4',
+          expectedStyle: {
+            color: 'rgb(255, 0, 0)',
+          },
+        },
+      ],
     },
   }
 

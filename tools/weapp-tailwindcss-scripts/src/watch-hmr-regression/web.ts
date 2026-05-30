@@ -18,6 +18,7 @@ import { waitFor, writeFilePreserveEol } from './text'
 
 const LOCAL_URL_RE = /https?:\/\/(?:localhost|127\.0\.0\.1|\[::1\])\S*/i
 const RGB_RE = /^rgb\((\d+),\s*(\d+),\s*(\d+)\)$/
+const DOM_REPLACEMENT_SELECTOR = '[data-tw-watch-web-dom]'
 
 function hashPortSeed(value: string) {
   const hex = createHash('sha1').update(value).digest('hex').slice(0, 6)
@@ -67,6 +68,15 @@ function resolveRollbackClassLiteral(config: WebHmrConfig) {
 
 function createCssEntryContent(source: string, marker: string, classLiteral: string) {
   return `${source.trimEnd()}\n[data-tw-watch-web="${marker}"] { @apply ${classLiteral}; }\n`
+}
+
+function normalizeDomExpectedStyle(style: NonNullable<NonNullable<WebHmrConfig['sourceDomReplacementSequence']>[number]['expectedStyle']>) {
+  return {
+    color: style.color ? normalizeRgb(style.color) : undefined,
+    backgroundColor: style.backgroundColor ? normalizeRgb(style.backgroundColor) : undefined,
+    width: style.width,
+    height: style.height,
+  }
 }
 
 async function getElementComputedStyle(page: Page, marker: string) {
@@ -135,6 +145,61 @@ function assertComputedStyle(
   }
 
   return normalizedActual
+}
+
+async function getDomReplacementComputedStyle(page: Page) {
+  return page.locator(DOM_REPLACEMENT_SELECTOR).evaluate((element) => {
+    const style = window.getComputedStyle(element)
+    return {
+      backgroundColor: style.backgroundColor,
+      color: style.color,
+      height: style.height,
+      text: element.textContent ?? '',
+      width: style.width,
+    }
+  })
+}
+
+function assertDomReplacement(
+  watchCase: WatchCase,
+  actual: Awaited<ReturnType<typeof getDomReplacementComputedStyle>>,
+  expected: NonNullable<WebHmrConfig['sourceDomReplacementSequence']>[number],
+) {
+  const expectedStyle = normalizeDomExpectedStyle(expected.expectedStyle ?? {})
+  const normalizedActual = {
+    ...actual,
+    backgroundColor: normalizeRgb(actual.backgroundColor),
+    color: normalizeRgb(actual.color),
+  }
+  const actualText = normalizedActual.text.trim()
+  const failures = [
+    actualText !== expected.expectedText
+      ? `text=${actualText}, expected=${expected.expectedText}`
+      : undefined,
+    expectedStyle.color && normalizedActual.color !== expectedStyle.color
+      ? `color=${normalizedActual.color}, expected=${expectedStyle.color}`
+      : undefined,
+    expectedStyle.backgroundColor && normalizedActual.backgroundColor !== expectedStyle.backgroundColor
+      ? `backgroundColor=${normalizedActual.backgroundColor}, expected=${expectedStyle.backgroundColor}`
+      : undefined,
+    expectedStyle.width && normalizedActual.width !== expectedStyle.width
+      ? `width=${normalizedActual.width}, expected=${expectedStyle.width}`
+      : undefined,
+    expectedStyle.height && normalizedActual.height !== expectedStyle.height
+      ? `height=${normalizedActual.height}, expected=${expectedStyle.height}`
+      : undefined,
+  ].filter(Boolean)
+
+  if (failures.length > 0) {
+    throw new Error(`[${watchCase.label}] web source DOM replacement mismatch for ${expected.label}: ${failures.join('; ')}`)
+  }
+
+  return {
+    ...(expectedStyle.color ? { color: normalizedActual.color } : {}),
+    ...(expectedStyle.backgroundColor ? { backgroundColor: normalizedActual.backgroundColor } : {}),
+    ...(expectedStyle.width ? { width: normalizedActual.width } : {}),
+    ...(expectedStyle.height ? { height: normalizedActual.height } : {}),
+  }
 }
 
 async function collectStyleText(page: Page) {
@@ -213,6 +278,88 @@ async function runSourceClassReplacementSequence(
       hotUpdateEffectiveMs,
     })
     currentSource = nextSource
+  }
+
+  return results
+}
+
+async function runSourceDomReplacementSequence(
+  watchCase: WatchCase,
+  options: CliOptions,
+  page: Page,
+  config: WebHmrConfig,
+  sourceOriginal: string,
+) {
+  const sequence = config.sourceDomReplacementSequence ?? []
+  if (sequence.length === 0) {
+    return undefined
+  }
+
+  const results = []
+  let currentSource = sourceOriginal
+
+  for (const item of sequence) {
+    const mutation = item.mutate(currentSource)
+    if (mutation.next === currentSource) {
+      throw new Error(`[${watchCase.label}] web source DOM replacement produced no change for ${item.label}`)
+    }
+
+    const hotUpdateStartedAt = Date.now()
+    process.stdout.write(
+      `[watch-hmr] ${watchCase.label} web source-dom-replacement=${item.label} from=${mutation.from} to=${mutation.to}\n`,
+    )
+    await writeFilePreserveEol(config.sourceFile, mutation.next, sourceOriginal)
+
+    let verifiedCssIncludes: string[] = []
+    let computedStyle: ReturnType<typeof assertDomReplacement> | undefined
+    let lastError = ''
+    const hotUpdateEffectiveMs = await waitFor(
+      async () => {
+        try {
+          await page.locator(DOM_REPLACEMENT_SELECTOR).waitFor({
+            state: 'attached',
+            timeout: options.pollMs,
+          })
+          const styleText = await collectStyleText(page)
+          verifiedCssIncludes = (item.expectedCssIncludes ?? [])
+            .filter(needle => styleText.includes(needle))
+          if (verifiedCssIncludes.length !== (item.expectedCssIncludes ?? []).length) {
+            const missing = (item.expectedCssIncludes ?? []).filter(needle => !verifiedCssIncludes.includes(needle))
+            throw new Error(`[${watchCase.label}] web source DOM replacement ${item.label} missing CSS fragments: ${missing.join(', ')}`)
+          }
+          computedStyle = assertDomReplacement(
+            watchCase,
+            await getDomReplacementComputedStyle(page),
+            item,
+          )
+          return true
+        }
+        catch (error) {
+          lastError = error instanceof Error ? error.message : String(error)
+          return false
+        }
+      },
+      {
+        timeoutMs: options.timeoutMs,
+        pollMs: options.pollMs,
+        message: `[${watchCase.label}] web source DOM replacement did not apply: ${item.label}`,
+      },
+      hotUpdateStartedAt,
+    ).catch((error) => {
+      const message = error instanceof Error ? error.message : String(error)
+      throw new Error(`${message}${lastError ? `\n${lastError}` : ''}`)
+    })
+
+    results.push({
+      label: item.label,
+      from: mutation.from,
+      to: mutation.to,
+      expectedText: item.expectedText,
+      verifiedCssIncludes,
+      computedStyle: computedStyle ?? {},
+      hotUpdateEffectiveMs,
+    })
+    currentSource = mutation.next
   }
 
   return results
@@ -542,6 +689,13 @@ export async function runWebHmr(
       config,
       sourceOriginal,
     )
+    const sourceDomReplacementSequence = await runSourceDomReplacementSequence(
+      watchCase,
+      options,
+      page,
+      config,
+      sourceOriginal,
+    )
 
     process.stdout.write(
       `[watch-hmr] ${watchCase.label} web hmr passed (hotUpdate=${hotUpdateEffectiveMs}ms, rollback=${rollbackEffectiveMs}ms, url=${url})\n`,
@@ -558,6 +712,7 @@ export async function runWebHmr(
       hotUpdateEffectiveMs,
       rollbackEffectiveMs,
       ...(sourceClassReplacementSequence ? { sourceClassReplacementSequence } : {}),
+      ...(sourceDomReplacementSequence ? { sourceDomReplacementSequence } : {}),
       totalMs: Date.now() - startedAt,
     }
   }

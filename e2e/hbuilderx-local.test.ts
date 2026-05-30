@@ -2,7 +2,7 @@ import { afterEach, describe, it } from 'vitest'
 
 import { miniProgramCases, uniAppAppCases, uniAppXAppCases, webCases } from './hbuilderx-local/cases'
 import { hbuilderxAppTimeoutMs, hbuilderxTimeoutMs, killProcessTree, serverTimeoutMs } from './hbuilderx-local/process'
-import { compileAppWithHBuilderX, compileMiniProgramWithHBuilderX, verifyWebHmr } from './hbuilderx-local/runner'
+import { compileMiniProgramWithHBuilderX, verifyAppHmrWithHBuilderX, verifyWebHmr } from './hbuilderx-local/runner'
 import { clearDevProcess, getDevProcess } from './hbuilderx-local/web'
 
 const describeLocalHBuilderX = process.env['E2E_HBUILDERX_LOCAL'] === '1' ? describe : describe.skip
@@ -25,8 +25,8 @@ describeLocalHBuilderX.sequential('HBuilderX demo local e2e', () => {
     await compileMiniProgramWithHBuilderX(item)
   }, hbuilderxTimeoutMs + 30_000)
 
-  it.each(appCases)('用 HBuilderX 编译 uni-app App 产物：$name', async (item) => {
-    await compileAppWithHBuilderX(item)
+  it.each(appCases)('验证 HBuilderX uni-app App 开发态热更新产物：$name', async (item) => {
+    await verifyAppHmrWithHBuilderX(item)
   }, hbuilderxAppTimeoutMs + 30_000)
 
   it.each(webCases)('验证 HBuilderX uni-app Web 页面和 HMR：$name', async (item) => {

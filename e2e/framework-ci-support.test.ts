@@ -4,6 +4,7 @@ import { describe, expect, it } from 'vitest'
 import { buildCases } from '../tools/weapp-tailwindcss-scripts/src/watch-hmr-regression/cases'
 import { HOT_UPDATE_CASES_BY_TARGET, HOT_UPDATE_CI_CASES, HOT_UPDATE_COVERED_PROJECTS, HOT_UPDATE_EXEMPT_PROJECTS } from './e2eMatrix'
 import { FRAMEWORK_SUPPORT_CASES, getFrameworkCiCases, getFrameworkIdeExemptCases } from './frameworkSupportMatrix'
+import { miniProgramCases, uniAppAppCases, uniAppXAppCases, webCases } from './hbuilderx-local/cases'
 
 const describeFrameworkCi = process.env['E2E_FRAMEWORK_SUPPORT'] === '1' ? describe : describe.skip
 
@@ -96,6 +97,54 @@ describeFrameworkCi('framework support matrix ci', () => {
           contentVerifiedTargets.size,
           `${item.name} content mutation should verify at least one escaped output target`,
         ).toBeGreaterThan(0)
+      }
+    }
+  })
+
+  it('keeps HBuilderX local demo coverage explicit for mp-weixin, web, android and ios', () => {
+    expect(miniProgramCases.map(item => item.name)).toEqual([
+      'uni-app-vite-vue3-hbuilderx-tailwindcss-v3',
+      'uni-app-vite-vue3-hbuilderx-tailwindcss-v4',
+      'uni-app-x-hbuilderx-tailwindcss-v3',
+      'uni-app-x-hbuilderx-tailwindcss-v4',
+    ])
+    expect(webCases.map(item => item.name)).toEqual([
+      'uni-app-vite-vue3-hbuilderx-tailwindcss-v3',
+      'uni-app-vite-vue3-hbuilderx-tailwindcss-v4',
+    ])
+    for (const item of webCases) {
+      expect(item.hmrSteps.length, `${item.name} should verify multi-step Web HMR`).toBeGreaterThanOrEqual(2)
+      expect(
+        item.markerAnchorCandidates?.length ?? 0,
+        `${item.name} should support baseline and user-edited anchors`,
+      ).toBeGreaterThanOrEqual(2)
+    }
+
+    const appCases = [...uniAppAppCases, ...uniAppXAppCases]
+    expect(appCases.map(item => item.name)).toEqual([
+      'uni-app-vite-tailwindcss-v3 android',
+      'uni-app-vite-tailwindcss-v3 ios',
+      'uni-app-vite-tailwindcss-v4 android',
+      'uni-app-vite-tailwindcss-v4 ios',
+      'uni-app-vite-vue3-hbuilderx-tailwindcss-v3 android',
+      'uni-app-vite-vue3-hbuilderx-tailwindcss-v3 ios',
+      'uni-app-vite-vue3-hbuilderx-tailwindcss-v4 android',
+      'uni-app-vite-vue3-hbuilderx-tailwindcss-v4 ios',
+      'uni-app-x-hbuilderx-tailwindcss-v3 android',
+      'uni-app-x-hbuilderx-tailwindcss-v3 ios',
+      'uni-app-x-hbuilderx-tailwindcss-v4 android',
+      'uni-app-x-hbuilderx-tailwindcss-v4 ios',
+    ])
+    for (const item of appCases) {
+      expect(item.transformedContains.length, `${item.name} should verify initial App dev output`).toBeGreaterThan(0)
+      expect(item.hmrTransformedContains.length, `${item.name} should verify App hot-update output`).toBeGreaterThan(0)
+      expect(item.hmrMarkerText, `${item.name} should use a distinct HMR marker`).not.toBe(item.markerText)
+      expect(item.hmrMarkerClass, `${item.name} should use distinct HMR classes`).not.toBe(item.markerClass)
+      if (item.projectDir.includes('hbuilderx') && item.projectDir.includes('uni-app-vite-vue3')) {
+        expect(
+          item.markerAnchorCandidates?.length ?? 0,
+          `${item.name} should support baseline and user-edited anchors`,
+        ).toBeGreaterThanOrEqual(2)
       }
     }
   })

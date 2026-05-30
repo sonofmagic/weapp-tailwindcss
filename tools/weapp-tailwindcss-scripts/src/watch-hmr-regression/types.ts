@@ -183,12 +183,25 @@ export interface WebHmrConfig {
   expectedStyle?: Partial<Record<'backgroundColor' | 'width' | 'height', string>>
   rollbackExpectedStyle?: Partial<Record<'backgroundColor' | 'width' | 'height', string>>
   sourceClassReplacementSequence?: WebHmrSourceClassReplacement[]
+  sourceDomReplacementSequence?: WebHmrSourceDomReplacement[]
 }
 
 export interface WebHmrSourceClassReplacement {
   label: string
   from: string
   to: string
+  expectedCssIncludes?: string[]
+}
+
+export interface WebHmrSourceDomReplacement {
+  label: string
+  mutate: (source: string) => {
+    next: string
+    from: string
+    to: string
+  }
+  expectedText: string
+  expectedStyle?: Partial<Record<'color' | 'backgroundColor' | 'width' | 'height', string>>
   expectedCssIncludes?: string[]
 }
 
@@ -430,6 +443,7 @@ export interface WebHmrMetrics {
   hotUpdateEffectiveMs: number
   rollbackEffectiveMs: number
   sourceClassReplacementSequence?: WebHmrSourceClassReplacementMetrics[]
+  sourceDomReplacementSequence?: WebHmrSourceDomReplacementMetrics[]
   totalMs: number
 }
 
@@ -438,6 +452,16 @@ export interface WebHmrSourceClassReplacementMetrics {
   from: string
   to: string
   verifiedCssIncludes: string[]
+  hotUpdateEffectiveMs: number
+}
+
+export interface WebHmrSourceDomReplacementMetrics {
+  label: string
+  from: string
+  to: string
+  expectedText: string
+  verifiedCssIncludes: string[]
+  computedStyle: Partial<Record<'color' | 'backgroundColor' | 'width' | 'height', string>>
   hotUpdateEffectiveMs: number
 }
 
