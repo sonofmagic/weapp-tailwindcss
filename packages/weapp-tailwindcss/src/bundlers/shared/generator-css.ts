@@ -3,6 +3,7 @@ import type { GeneratorResolvedSource } from './generator-css/source-resolver'
 import type { TailwindSourceEntry } from '@/tailwindcss/source-scan'
 import type { InternalUserDefinedOptions } from '@/types'
 import postcss from 'postcss'
+import { extractSourceCandidates } from 'tailwindcss-patch'
 import { resolveStyleOptionsFromContext } from '@/context/style-options'
 import {
   createWeappTailwindcssGenerator,
@@ -429,6 +430,15 @@ export async function generateCssByGenerator(
 
   try {
     await runtimeState.readyPromise
+    const currentCssCandidates = majorVersion === 4
+      ? await extractSourceCandidates(effectiveRawSource, 'css')
+      : []
+    const runtimeWithCurrentCss = currentCssCandidates.length > 0
+      ? new Set([
+          ...runtime,
+          ...currentCssCandidates,
+        ])
+      : runtime
     const sources = await resolveGeneratorSources(
       majorVersion,
       runtimeState,
@@ -438,7 +448,7 @@ export async function generateCssByGenerator(
       generatorOptions,
       {
         getSourceCandidatesForEntries,
-        runtime,
+        runtime: runtimeWithCurrentCss,
       },
     )
     const generatorStyleOptions = resolveGeneratorStyleOptions(opts, cssHandlerOptions, generatorOptions.styleOptions)
@@ -453,11 +463,11 @@ export async function generateCssByGenerator(
         : undefined
       const isolateCssSource = shouldIsolateMatchedCssSource(source, sourceEntries)
       const sourceRuntime = scopedRuntime && (scopedRuntime.size > 0 || isolateCssSource)
-        ? mergeScopedRuntimeWithCurrentRuntime(scopedRuntime, runtime, {
+        ? mergeScopedRuntimeWithCurrentRuntime(scopedRuntime, runtimeWithCurrentCss, {
             cssHandlerOptions,
             isolateCssSource,
           })
-        : runtime
+        : runtimeWithCurrentCss
       const generatorRuntime = majorVersion === 4 && generatorOptions.target === 'weapp'
         ? filterUnsupportedMiniProgramTailwindV4Candidates(sourceRuntime)
         : sourceRuntime

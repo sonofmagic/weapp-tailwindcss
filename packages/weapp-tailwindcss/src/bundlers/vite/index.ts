@@ -135,6 +135,10 @@ export function WeappTailwindcss(options: UserDefinedOptions = {}): WeappTailwin
   let refreshRuntimeStateForAutoCssSources: ((force: boolean) => Promise<void>) | undefined
   let autoCssSourcesRefresh: Promise<void> | undefined
   let autoCssSourcesDiscovered = false
+  const syncTailwindCssSourceCandidates = async (id: string, css: string) => {
+    await sourceCandidateCollector.syncCss(id, css)
+    cacheCurrentSourceCandidateScan()
+  }
   const registerAutoCssSource = async (id: string, css: string, options: { refresh?: boolean } = {}) => {
     if (
       tailwindcssMajorVersion < 4
@@ -153,6 +157,7 @@ export function WeappTailwindcss(options: UserDefinedOptions = {}): WeappTailwin
       return
     }
     autoCssSourceContent.set(sourceFile, sourceCss)
+    await syncTailwindCssSourceCandidates(sourceFile, sourceCss)
     const dependencies = await resolveViteTailwindV4CssDependencies(sourceCss, path.dirname(sourceFile))
     const changed = upsertTailwindV4CssSource(opts, {
       file: sourceFile,
@@ -199,6 +204,7 @@ export function WeappTailwindcss(options: UserDefinedOptions = {}): WeappTailwin
         continue
       }
       autoCssSourceContent.set(sourceFile, sourceCss)
+      await syncTailwindCssSourceCandidates(sourceFile, sourceCss)
       const resolved = await resolveTailwindV4EntriesFromCssCached(sourceCss, path.dirname(sourceFile))
       changed = upsertTailwindV4CssSource(opts, {
         file: sourceFile,
@@ -771,7 +777,7 @@ export function WeappTailwindcss(options: UserDefinedOptions = {}): WeappTailwin
             isSourceCandidateHotUpdate
             && !isSourceStyleRequest(ctx.file)
             && (
-              !hasSelfAcceptingNonStyleHotModule(ctx.modules)
+              (!hasSelfAcceptingNonStyleHotModule(ctx.modules) && cssModules.length === 0)
               || (cssModules.length > 0 && isUniViteProject())
             )
           ) {

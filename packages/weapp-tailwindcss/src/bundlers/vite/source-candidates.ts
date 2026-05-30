@@ -11,6 +11,7 @@ import {
 
 export interface SourceCandidateCollector {
   sync: (id: string, source: string) => Promise<void>
+  syncCss: (id: string, source: string) => Promise<void>
   merge: (id: string, source: string) => Promise<void>
   syncFile: (id: string) => Promise<void>
   syncCurrentFile: (id: string) => Promise<void>
@@ -26,6 +27,7 @@ export interface SourceCandidateCollector {
 
 export interface SourceCandidateCollectorSnapshot {
   candidatesById: Array<[string, string[]]>
+  cssCandidatesById?: Array<[string, string[]]> | undefined
   scanCandidatesById?: Array<[string, string[]]> | undefined
   transformCandidatesById?: Array<[string, string[]]> | undefined
   inlineExcludedCandidates: string[]
@@ -223,6 +225,7 @@ export function createSourceCandidateCollector(): SourceCandidateCollector {
   const candidatesById = new Map<string, Set<string>>()
   const scanCandidatesById = new Map<string, Set<string>>()
   const transformCandidatesById = new Map<string, Set<string>>()
+  const cssCandidatesById = new Map<string, Set<string>>()
   const candidateCount = new Map<string, number>()
   let inlineIncludedCandidates = new Set<string>()
   let inlineExcludedCandidates = new Set<string>()
@@ -241,6 +244,21 @@ export function createSourceCandidateCollector(): SourceCandidateCollector {
     sourceCandidateContentCache.set(contentCacheKey, [...nextCandidates])
 
     replaceScanLayer(normalizedId, nextCandidates)
+  }
+
+  async function syncCss(id: string, source: string) {
+    const normalizedId = cleanUrl(id)
+    const contentCacheKey = createSourceCandidateContentCacheKey('css', source)
+    const cachedCandidates = sourceCandidateContentCache.get(contentCacheKey)
+    if (cachedCandidates) {
+      replaceCssLayer(normalizedId, new Set(cachedCandidates))
+      return
+    }
+
+    const nextCandidates = new Set(await extractSourceCandidates(source, 'css'))
+    sourceCandidateContentCache.set(contentCacheKey, [...nextCandidates])
+
+    replaceCssLayer(normalizedId, nextCandidates)
   }
 
   async function merge(id: string, source: string) {
@@ -320,11 +338,23 @@ export function createSourceCandidateCollector(): SourceCandidateCollector {
     recompute(normalizedId)
   }
 
+  function replaceCssLayer(id: string, nextCandidates: Set<string>) {
+    const normalizedId = cleanUrl(id)
+    if (nextCandidates.size === 0) {
+      cssCandidatesById.delete(normalizedId)
+    }
+    else {
+      cssCandidatesById.set(normalizedId, nextCandidates)
+    }
+    recompute(normalizedId)
+  }
+
   function recompute(id: string) {
     const normalizedId = cleanUrl(id)
     const nextCandidates = new Set([
       ...(scanCandidatesById.get(normalizedId) ?? []),
       ...(transformCandidatesById.get(normalizedId) ?? []),
+      ...(cssCandidatesById.get(normalizedId) ?? []),
     ])
     replaceFinal(normalizedId, nextCandidates)
   }
@@ -338,6 +368,7 @@ export function createSourceCandidateCollector(): SourceCandidateCollector {
     const normalizedId = cleanUrl(id)
     scanCandidatesById.delete(normalizedId)
     transformCandidatesById.delete(normalizedId)
+    cssCandidatesById.delete(normalizedId)
     const previousCandidates = candidatesById.get(normalizedId)
     if (!previousCandidates) {
       return
@@ -383,6 +414,7 @@ export function createSourceCandidateCollector(): SourceCandidateCollector {
     candidatesById.clear()
     scanCandidatesById.clear()
     transformCandidatesById.clear()
+    cssCandidatesById.clear()
     candidateCount.clear()
     inlineIncludedCandidates.clear()
     inlineExcludedCandidates.clear()
@@ -391,6 +423,7 @@ export function createSourceCandidateCollector(): SourceCandidateCollector {
   function snapshot(): SourceCandidateCollectorSnapshot {
     return {
       candidatesById: [...candidatesById.entries()].map(([id, candidates]) => [id, [...candidates]]),
+      cssCandidatesById: [...cssCandidatesById.entries()].map(([id, candidates]) => [id, [...candidates]]),
       scanCandidatesById: [...scanCandidatesById.entries()].map(([id, candidates]) => [id, [...candidates]]),
       transformCandidatesById: [...transformCandidatesById.entries()].map(([id, candidates]) => [id, [...candidates]]),
       inlineExcludedCandidates: [...inlineExcludedCandidates],
@@ -417,6 +450,13 @@ export function createSourceCandidateCollector(): SourceCandidateCollector {
       }
       transformCandidatesById.set(id, candidateSet)
     }
+    for (const [id, candidates] of snapshot.cssCandidatesById ?? []) {
+      const candidateSet = new Set(candidates)
+      if (candidateSet.size === 0) {
+        continue
+      }
+      cssCandidatesById.set(id, candidateSet)
+    }
     for (const [id, candidates] of snapshot.candidatesById) {
       const candidateSet = new Set(candidates)
       if (candidateSet.size === 0) {
@@ -429,6 +469,7 @@ export function createSourceCandidateCollector(): SourceCandidateCollector {
 
   return {
     sync,
+    syncCss,
     merge,
     syncFile,
     syncCurrentFile,
