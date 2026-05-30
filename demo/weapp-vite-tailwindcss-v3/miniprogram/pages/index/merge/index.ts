@@ -6,10 +6,26 @@ const defaultMerge = twMerge
 const { twMerge: mergeWithoutEscape } = createRuntime({ escape: false })
 const { twMerge: mergeWithoutUnescape } = createRuntime({ unescape: false })
 const { twMerge: mergePassthrough } = createRuntime({ escape: false, unescape: false })
+const inactiveCondition: boolean = false
+const activeCondition: boolean = true
 
 const basePreviewItems = ['A', 'B', 'C']
 
-const versionComparison = [
+interface MergeSample {
+  label: string
+  code: string
+  result: string
+  previewItems?: string[]
+  previewBaseClass?: string
+}
+
+interface MergeExampleGroup {
+  title: string
+  description: string
+  samples: MergeSample[]
+}
+
+const versionComparison: MergeSample[] = [
   {
     label: 'twMerge (Tailwind CSS v3 runtime)',
     code: 'twMerge(\'p-1 p-2 p-0.5 text-[34px] text-[#ececec]\')',
@@ -17,7 +33,7 @@ const versionComparison = [
   },
 ]
 
-const mergingExamples = [
+const mergingExamples: MergeExampleGroup[] = [
   {
     title: '最后的冲突类胜出',
     description: '后声明的冲突类会覆盖之前的值，包括支持 rpx 的任意值。',
@@ -252,7 +268,12 @@ const mergingExamples = [
       {
         label: '布尔短路',
         code: 'twMerge(\'my-class\', false && \'not-this\', null && \'also-not-this\', true && \'but-this\')',
-        result: defaultMerge('my-class', false && 'not-this', null && 'also-not-this', true && 'but-this'),
+        result: defaultMerge(
+          'my-class',
+          inactiveCondition && 'not-this',
+          inactiveCondition && 'also-not-this',
+          activeCondition && 'but-this',
+        ),
       },
       {
         label: '嵌套数组',
@@ -263,7 +284,7 @@ const mergingExamples = [
   },
 ]
 
-const runtimeExamples = [
+const runtimeExamples: MergeSample[] = [
   {
     label: '默认 escape/unescape',
     code: 'twMerge(\'text-[#ececec]\', \'text-[#654321]\')',
@@ -308,7 +329,7 @@ const button = cva(['font-semibold', 'border', 'rounded'], {
   },
 })
 
-const cvaSamples = [
+const cvaSamples: MergeSample[] = [
   {
     label: '默认',
     code: 'button()',
@@ -365,7 +386,7 @@ const badge = tv({
   },
 })
 
-const variantsSamples = [
+const variantsSamples: MergeSample[] = [
   {
     label: '默认徽章',
     code: 'badge()',

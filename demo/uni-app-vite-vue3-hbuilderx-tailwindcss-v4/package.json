@@ -1,6 +1,7 @@
 {
   "name": "@weapp-tailwindcss-demo/uni-app-vite-vue3-hbuilderx-tailwindcss-v4",
   "private": true,
+  "type": "module",
   "version": "0.0.0",
   "description": "uni-app Vite Vue3 HBuilderX demo for Tailwind CSS v4 with weapp-tailwindcss direct registration.",
   "author": "icebreaker <hi@sonofmagic.top>",

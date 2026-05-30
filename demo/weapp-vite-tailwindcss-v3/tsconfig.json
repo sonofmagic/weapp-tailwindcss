@@ -35,8 +35,9 @@
     }
   ],
   "include": [
-    "**/*.ts",
-    "**/*.js"
+    "miniprogram/**/*.ts",
+    "miniprogram/**/*.js",
+    "vite-env.d.ts"
   ],
   "exclude": [
     "node_modules"

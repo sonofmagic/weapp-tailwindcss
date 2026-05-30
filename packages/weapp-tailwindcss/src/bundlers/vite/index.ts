@@ -55,6 +55,11 @@ interface SourceCandidateScanSignatureInput {
   scanAllSources?: boolean | undefined
 }
 
+export interface WeappTailwindcssVitePlugin {
+  name: string
+  [hook: string]: any
+}
+
 function normalizeSignaturePath(value: string) {
   return slash(path.resolve(value))
 }
@@ -93,7 +98,7 @@ function createSourceCandidateScanSignature(input: SourceCandidateScanSignatureI
  * @description uni-app vite / uni-app-x 版本插件
  * @link https://tw.icebreaker.top/docs/quick-start/frameworks/uni-app-vite
  */
-export function WeappTailwindcss(options: UserDefinedOptions = {}): Plugin[] | undefined {
+export function WeappTailwindcss(options: UserDefinedOptions = {}): WeappTailwindcssVitePlugin[] | undefined {
   const hasExplicitAppType = typeof options.appType === 'string' && options.appType.trim().length > 0
   const hasExplicitTailwindcssBasedir = typeof options.tailwindcssBasedir === 'string'
     && options.tailwindcssBasedir.trim().length > 0

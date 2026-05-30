@@ -1,16 +1,22 @@
 import { defineConfig } from 'vite'
-import uni from '@dcloudio/vite-plugin-uni'
+import uniModule from '@dcloudio/vite-plugin-uni'
 import { hbuilderx } from 'weapp-tailwindcss/presets'
 import { WeappTailwindcss } from 'weapp-tailwindcss/vite'
+import { dirname } from 'node:path'
+import { fileURLToPath } from 'node:url'
+
+const uni = uniModule.default
+const projectRoot = dirname(fileURLToPath(import.meta.url))
+const weappTailwindcssPlugins = WeappTailwindcss(
+  hbuilderx({
+    base: projectRoot,
+    rem2rpx: true,
+  }),
+) ?? []
 
 export default defineConfig({
   plugins: [
     uni(),
-    WeappTailwindcss(
-      hbuilderx({
-        base: __dirname,
-        rem2rpx: true,
-      }),
-    ),
+    ...weappTailwindcssPlugins,
   ],
 })

@@ -1,6 +1,11 @@
 import { WeappTailwindcss } from 'weapp-tailwindcss/vite'
 import { defineConfig } from 'weapp-vite/config'
 
+const weappTailwindcssPlugins = WeappTailwindcss({
+  tailwindcssBasedir: process.cwd(),
+  rem2rpx: true,
+}) ?? []
+
 export default defineConfig({
   // root: './packageA',
   // build: {
@@ -15,11 +20,7 @@ export default defineConfig({
   // },
   plugins: [
     // tailwindcss(),
-    // @ts-ignore
-    WeappTailwindcss({
-      tailwindcssBasedir: process.cwd(),
-      rem2rpx: true,
-    }),
+    ...weappTailwindcssPlugins,
   ],
   css: {
     preprocessorOptions: {
