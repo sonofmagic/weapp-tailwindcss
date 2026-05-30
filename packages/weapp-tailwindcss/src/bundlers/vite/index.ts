@@ -46,6 +46,7 @@ const sourceCandidateScanSnapshotCache = new Map<string, SourceCandidateCollecto
 interface SourceCandidateScanRoot {
   root: string
   entries?: TailwindSourceEntry[] | undefined
+  explicit?: boolean | undefined
 }
 
 interface SourceCandidateScanSignatureInput {
@@ -285,6 +286,7 @@ export function WeappTailwindcss(options: UserDefinedOptions = {}): WeappTailwin
     if (entries?.length) {
       return [{
         entries,
+        explicit: sourceScanExplicit,
         root,
       }]
     }
@@ -321,6 +323,7 @@ export function WeappTailwindcss(options: UserDefinedOptions = {}): WeappTailwin
     await Promise.all(
       roots.map(root => sourceCandidateCollector.scanRoot({
         entries: root.entries,
+        explicit: root.explicit,
         root: root.root,
         outDir,
       })),

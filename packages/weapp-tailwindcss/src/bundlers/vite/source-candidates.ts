@@ -36,6 +36,7 @@ interface ScanSourceCandidateRootOptions {
   root: string
   outDir?: string | undefined
   entries?: TailwindSourceEntry[] | undefined
+  explicit?: boolean | undefined
 }
 
 const CLEAN_URL_RE = /[?#].*$/
@@ -57,12 +58,22 @@ const TAILWIND_V4_IGNORED_CONTENT_DIRS = [
   'venv',
 ]
 const TAILWIND_V4_IGNORED_EXTENSIONS = [
+  'css',
   'less',
+  'postcss',
+  'pcss',
   'lock',
   'sass',
   'scss',
   'styl',
+  'stylus',
   'log',
+  'wxss',
+  'acss',
+  'jxss',
+  'ttss',
+  'qss',
+  'tyss',
 ]
 const TAILWIND_V4_IGNORED_FILES = [
   'package-lock.json',
@@ -134,8 +145,10 @@ function createDefaultIgnoredSources(
   root: string,
   outDirIgnore: string | undefined,
   entries: TailwindSourceEntry[] | undefined,
+  explicit: boolean | undefined,
 ) {
-  const defaultIgnoredSources = shouldApplyDefaultIgnoredSources(entries)
+  const shouldUseTailwindDefaults = !explicit || shouldApplyDefaultIgnoredSources(entries)
+  const defaultIgnoredSources = shouldUseTailwindDefaults
     ? [
         ...TAILWIND_V4_IGNORED_CONTENT_DIRS.map(pattern => ({
           base: root,
@@ -256,11 +269,11 @@ export function createSourceCandidateCollector(): SourceCandidateCollector {
     await syncFile(normalizedId)
   }
 
-  async function scanRoot({ entries, root, outDir }: ScanSourceCandidateRootOptions) {
+  async function scanRoot({ entries, explicit, root, outDir }: ScanSourceCandidateRootOptions) {
     const resolvedRoot = path.resolve(root)
     const outDirIgnore = resolveOutDirIgnorePattern(resolvedRoot, outDir)
     const scanEntries = normalizeScanEntries(resolvedRoot, entries, outDirIgnore)
-    const ignoredSources = createDefaultIgnoredSources(resolvedRoot, outDirIgnore, entries)
+    const ignoredSources = createDefaultIgnoredSources(resolvedRoot, outDirIgnore, entries, explicit)
     const files = await resolveProjectSourceFiles({
       cwd: resolvedRoot,
       ...(scanEntries === undefined ? {} : { sources: scanEntries }),

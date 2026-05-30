@@ -133,6 +133,7 @@ describe('bundlers/vite source candidates', () => {
     await writeTempFile(path.join(root, 'src/page.wxml'), '<view class="bg-[#112233]"></view>')
     await writeTempFile(path.join(root, 'node_modules/pkg/index.js'), 'export const cls = "text-[#111111]"')
     await writeTempFile(path.join(root, 'ignored-by-gitignore.js'), 'export const cls = "text-[#222222]"')
+    await writeTempFile(path.join(root, 'src/ignored.css'), '.btn { @apply text-[#333333]; }')
     await writeTempFile(path.join(root, 'src/ignored.scss'), '.btn { @apply text-[#333333]; }')
     await writeTempFile(path.join(root, 'package-lock.json'), '{"class":"text-[#444444]"}')
 
@@ -173,6 +174,7 @@ describe('bundlers/vite source candidates', () => {
     const collector = createSourceCandidateCollector()
     await collector.scanRoot({
       root,
+      explicit: true,
       entries: [{
         base: path.join(root, 'src'),
         pattern: 'explicit.scss',
