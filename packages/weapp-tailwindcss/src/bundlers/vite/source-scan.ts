@@ -424,9 +424,18 @@ export async function resolveViteSourceScanEntries(
     const cssInlineCandidates: TailwindInlineSourceCandidates[] = []
     const dependencies = new Set<string>()
     let explicit = false
+    let readableCssEntryCount = 0
     for (const cssEntry of cssEntries) {
       addSourceScanDependency(dependencies, cssEntry)
-      const css = readFileSync(cssEntry, 'utf8')
+      let css: string
+      try {
+        css = readFileSync(cssEntry, 'utf8')
+      }
+      catch {
+        // 自动发现或 Vite transform 记录的 CSS 入口可能在测试/临时构建清理后消失。
+        continue
+      }
+      readableCssEntryCount++
       const resolved = await resolveTailwindV4EntriesFromCssCached(css, path.dirname(cssEntry))
       if (resolved) {
         entries.push(...resolved.entries)
@@ -436,7 +445,7 @@ export async function resolveViteSourceScanEntries(
       }
     }
     const inlineCandidates = mergeTailwindInlineSourceCandidates(cssInlineCandidates)
-    if (entries.length > 0 || inlineCandidates || explicit || cssEntries.length > 0) {
+    if (entries.length > 0 || inlineCandidates || explicit || readableCssEntryCount > 0) {
       return createResolvedViteSourceScan({
         entries: explicit ? entries : entries.length > 0 ? entries : undefined,
         explicit,
