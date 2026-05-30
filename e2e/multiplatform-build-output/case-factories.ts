@@ -115,6 +115,43 @@ export function uniAppQuickappCase(options: {
   }
 }
 
+export function uniAppHBuilderXMiniCase(options: {
+  project: string
+  version: 'v3' | 'v4'
+}): BuildOutputCase {
+  const outputDir = 'dist/build/mp-weixin'
+  return {
+    name: `${options.project} mp-weixin`,
+    framework: 'uni-app',
+    projectDir: `demo/${options.project}`,
+    platform: 'mp-weixin',
+    command: ['pnpm', 'run', 'build:mp-weixin'],
+    outputDir,
+    requiredFiles: [
+      `${outputDir}/app.js`,
+      `${outputDir}/app.json`,
+      `${outputDir}/app.wxss`,
+      `${outputDir}/pages/index/index.wxml`,
+    ],
+    styleFiles: [`${outputDir}/app.wxss`],
+    textFiles: [`${outputDir}/pages/index/index.wxml`],
+    styleContains: [
+      '.bg-_b_h123456_B',
+      '.text-_b_h888800_B',
+      '.w-_b120px_B',
+      '.h-_b6rem_B',
+    ],
+    textContains: [
+      'bg-_b_h123456_B',
+      'text-_b_h888800_B',
+      'w-_b120px_B',
+      'h-_b6rem_B',
+    ],
+    notContains: [rawTailwindDirectiveRE],
+    status: 'ci',
+  }
+}
+
 export function mpxCase(options: {
   project: string
   version: 'v3' | 'v4'

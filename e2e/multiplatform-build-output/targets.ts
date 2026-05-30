@@ -91,9 +91,48 @@ function createUniAppTargets(project: string, platforms: string[]): Multiplatfor
       projectDir: `demo/${project}`,
       platform,
       coverage: isApp ? 'local' : 'default-ci',
-      reason: isApp ? 'uni-app App 产物依赖本地 App SDK，普通 CI 不默认执行。' : undefined,
+      ...(isApp ? { reason: 'uni-app App 产物依赖本地 App SDK，普通 CI 不默认执行。' } : {}),
     })
   })
+}
+
+function createUniAppHBuilderXTargets(project: string): MultiplatformTarget[] {
+  return [
+    target({
+      framework: 'uni-app',
+      projectDir: `demo/${project}`,
+      platform: 'mp-weixin',
+      coverage: 'default-ci',
+    }),
+    target({
+      framework: 'uni-app',
+      projectDir: `demo/${project}`,
+      platform: 'h5',
+      coverage: 'local',
+      reason: 'HBuilderX 版 uni-app H5 产物目前通过 watch-HMR webHmr 链路验证，默认多平台构建只执行 mp-weixin。',
+    }),
+    target({
+      framework: 'uni-app',
+      projectDir: `demo/${project}`,
+      platform: 'app',
+      coverage: 'local',
+      reason: 'HBuilderX 版 uni-app App 产物依赖本机 HBuilderX、Android 或 iOS SDK，普通 CI 不默认执行。',
+    }),
+    target({
+      framework: 'uni-app',
+      projectDir: `demo/${project}`,
+      platform: 'app-android',
+      coverage: 'local',
+      reason: 'Android 调试依赖本机 HBuilderX 与 Android 模拟器。',
+    }),
+    target({
+      framework: 'uni-app',
+      projectDir: `demo/${project}`,
+      platform: 'app-ios',
+      coverage: 'local',
+      reason: 'iOS 调试依赖 macOS Simulator 与 HBuilderX。',
+    }),
+  ]
 }
 
 function createTaroTargets(project: string, platforms: string[]): MultiplatformTarget[] {
@@ -133,10 +172,16 @@ function createUniAppXTargets(project: string): MultiplatformTarget[] {
 export const MULTIPLATFORM_TARGETS: MultiplatformTarget[] = [
   ...createUniAppTargets('uni-app-vite-tailwindcss-v3', uniAppV3Platforms),
   ...createUniAppTargets('uni-app-vite-tailwindcss-v4', uniAppV4Platforms),
+  ...createUniAppHBuilderXTargets('uni-app-vite-vue3-hbuilderx-tailwindcss-v3'),
+  ...createUniAppHBuilderXTargets('uni-app-vite-vue3-hbuilderx-tailwindcss-v4'),
   ...createTaroTargets('taro-vite-react-tailwindcss-v3', taroVitePlatforms),
   ...createTaroTargets('taro-vite-react-tailwindcss-v4', taroVitePlatforms),
+  ...createTaroTargets('taro-vite-vue3-tailwindcss-v3', taroVitePlatforms),
+  ...createTaroTargets('taro-vite-vue3-tailwindcss-v4', taroVitePlatforms),
   ...createTaroTargets('taro-webpack-react-tailwindcss-v3', taroWebpackV3Platforms),
   ...createTaroTargets('taro-webpack-react-tailwindcss-v4', taroWebpackV4Platforms),
+  ...createTaroTargets('taro-webpack-vue3-tailwindcss-v3', taroWebpackV3Platforms),
+  ...createTaroTargets('taro-webpack-vue3-tailwindcss-v4', taroWebpackV4Platforms),
   ...createMpxTargets('mpx-tailwindcss-v3'),
   ...createMpxTargets('mpx-tailwindcss-v4'),
   ...createUniAppXTargets('uni-app-x-hbuilderx-tailwindcss-v3'),

@@ -5,6 +5,7 @@ import {
   taroMiniCase,
   uniAppH5Case,
   uniAppH5SsrCase,
+  uniAppHBuilderXMiniCase,
   uniAppMiniCase,
   uniAppQuickappCase,
 } from './case-factories'
@@ -63,6 +64,14 @@ export const EXECUTABLE_MULTIPLATFORM_BUILD_OUTPUT_CASES: BuildOutputCase[] = [
       styleContains: ['bg-_b_h0000ff_B'],
     }),
   ),
+  uniAppHBuilderXMiniCase({
+    project: 'uni-app-vite-vue3-hbuilderx-tailwindcss-v3',
+    version: 'v3',
+  }),
+  uniAppHBuilderXMiniCase({
+    project: 'uni-app-vite-vue3-hbuilderx-tailwindcss-v4',
+    version: 'v4',
+  }),
   ...(['wx', 'ali', 'swan', 'tt', 'dd'] as const).map(platform =>
     mpxCase({
       project: 'mpx-tailwindcss-v3',
