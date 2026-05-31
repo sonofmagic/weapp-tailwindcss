@@ -77,8 +77,25 @@ function collectProcessOutput(child: ChildProcess) {
   return logs
 }
 
+function runPredev(projectRoot: string) {
+  const result = spawnSync('pnpm', ['run', 'predev'], {
+    cwd: projectRoot,
+    shell: process.platform === 'win32',
+    stdio: 'pipe',
+    env: {
+      ...process.env,
+      NODE_OPTIONS: process.env['NODE_OPTIONS'] ?? '--max-old-space-size=8192',
+    },
+  })
+
+  if (result.status !== 0) {
+    throw new Error(`Web Vite demo predev 失败，exit=${result.status}\n${result.stdout.toString()}${result.stderr.toString()}`)
+  }
+}
+
 function createDevServer(projectRoot: string, port: number) {
-  const child = spawn('pnpm', ['run', 'dev', '--', '--host', '127.0.0.1', '--port', String(port)], {
+  runPredev(projectRoot)
+  const child = spawn('pnpm', ['exec', 'vite', '--host', '127.0.0.1', '--port', String(port), '--strictPort'], {
     cwd: projectRoot,
     detached: process.platform !== 'win32',
     shell: process.platform === 'win32',

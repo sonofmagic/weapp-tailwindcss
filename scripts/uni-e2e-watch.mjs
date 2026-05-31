@@ -7,6 +7,7 @@ const READY_RE = /Build complete|Watching for changes|ready in \d+/i
 const pnpmExecPath = process.env.npm_execpath
 const sourceDirs = ['src']
 const ignoredDirs = new Set(['dist', 'node_modules', '.git'])
+const useNativeWatch = process.env.UNI_E2E_WATCH_NATIVE === '1'
 
 function createPnpmCommand(args) {
   if (pnpmExecPath) {
@@ -129,18 +130,25 @@ function hasSnapshotChanged(previous, next) {
 }
 
 async function main() {
-  let resolveReady
-  const ready = new Promise((resolve) => {
-    resolveReady = resolve
-  })
-  const dev = spawnPnpm(['exec', 'uni', '-p', 'mp-weixin'])
   let stopping = false
   let building = false
   let queued = false
   let pollTimer
   let lastSnapshot = await collectSnapshot()
 
-  pipeWithReady(dev, resolveReady)
+  process.stdout.write(`[uni-e2e-watch] mode=${useNativeWatch ? 'native-watch-with-build-fallback' : 'polling-build'} cwd=${process.cwd()}\n`)
+
+  let dev
+  let ready = Promise.resolve()
+
+  if (useNativeWatch) {
+    let resolveReady
+    ready = new Promise((resolve) => {
+      resolveReady = resolve
+    })
+    dev = spawnPnpm(['exec', 'uni', '-p', 'mp-weixin'])
+    pipeWithReady(dev, resolveReady)
+  }
 
   const stop = (signal = 'SIGTERM') => {
     if (stopping) {
@@ -150,18 +158,18 @@ async function main() {
     if (pollTimer) {
       clearInterval(pollTimer)
     }
-    dev.kill(signal)
+    dev?.kill(signal)
   }
 
   process.on('SIGINT', () => stop('SIGINT'))
   process.on('SIGTERM', () => stop('SIGTERM'))
 
-  dev.on('error', (error) => {
+  dev?.on('error', (error) => {
     process.stderr.write(`${error.stack ?? error.message}\n`)
     process.exitCode = 1
   })
 
-  dev.on('close', (code, signal) => {
+  dev?.on('close', (code, signal) => {
     if (!stopping && code !== 0) {
       process.exitCode = code ?? 1
     }

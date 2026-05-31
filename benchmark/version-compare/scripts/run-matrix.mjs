@@ -13,7 +13,7 @@ const projects = [
     key: 'demo-uni-app-vite-tailwindcss-v3',
     project: 'demo/uni-app-vite-tailwindcss-v3',
     sourceFile: 'src/pages/index/index.vue',
-    outputTemplate: 'dist/dev/mp-weixin/pages/index/index.wxml',
+    outputTemplate: 'dist/build/mp-weixin/pages/index/index.wxml',
     devScript: 'dev:e2e-watch',
     buildScript: 'build',
     injectType: 'vue',
@@ -22,7 +22,7 @@ const projects = [
     key: 'demo-uni-app-vite-tailwindcss-v4',
     project: 'demo/uni-app-vite-tailwindcss-v4',
     sourceFile: 'src/pages/index/index.vue',
-    outputTemplate: 'dist/dev/mp-weixin/pages/index/index.wxml',
+    outputTemplate: 'dist/build/mp-weixin/pages/index/index.wxml',
     devScript: 'dev:e2e-watch',
     buildScript: 'build',
     injectType: 'vue',
@@ -304,7 +304,7 @@ async function runHmrRounds({
   try {
     const ready = await waitFor(async () => {
       if (child.exitCode != null) {
-        throw new Error(`dev exited early code=${child.exitCode}`)
+        throw new Error(`dev exited early code=${child.exitCode}\n${logs.slice(-120).join('\n')}`)
       }
       if (!(await exists(outputPath))) {
         return false
@@ -327,7 +327,7 @@ async function runHmrRounds({
 
       const ok = await waitFor(async () => {
         if (child.exitCode != null) {
-          throw new Error(`dev exited during hmr round=${i + 1} code=${child.exitCode}`)
+          throw new Error(`dev exited during hmr round=${i + 1} code=${child.exitCode}\n${logs.slice(-120).join('\n')}`)
         }
         const text = await readText(outputPath)
         return text.includes(marker)
