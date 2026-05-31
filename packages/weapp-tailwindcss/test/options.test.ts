@@ -126,8 +126,23 @@ describe('get options', () => {
     })
   })
 
+  it('infers web generator target from plain uni-app App WebView env', () => {
+    withGeneratorTargetEnv({ UNI_PLATFORM: 'app' }, () => {
+      expect(normalizeWeappTailwindcssGeneratorOptions(undefined).target).toBe('web')
+      expect(normalizeWeappTailwindcssGeneratorOptions({}).tailwindcssV3Compatibility).toBe(false)
+    })
+
+    withGeneratorTargetEnv({ UNI_PLATFORM: 'app-plus' }, () => {
+      expect(normalizeWeappTailwindcssGeneratorOptions({}).target).toBe('web')
+    })
+  })
+
   it('does not infer web generator target from uni-app x and Mpx non-web env', () => {
     withGeneratorTargetEnv({ UNI_UTS_PLATFORM: 'app-android' }, () => {
+      expect(normalizeWeappTailwindcssGeneratorOptions({}).target).toBe('weapp')
+    })
+
+    withGeneratorTargetEnv({ UNI_PLATFORM: 'app', UNI_UTS_PLATFORM: 'app-ios' }, () => {
       expect(normalizeWeappTailwindcssGeneratorOptions({}).target).toBe('weapp')
     })
 

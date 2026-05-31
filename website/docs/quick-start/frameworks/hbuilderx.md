@@ -83,7 +83,7 @@ export default defineConfig({
 });
 ```
 
-`UNI_PLATFORM=h5` 时，生成器默认目标会自动切换为 `web`，不再需要写 `disabled: WeappTailwindcssDisabled`。如果 App 构建不希望插件参与，可以只针对 App 目标显式禁用：
+`UNI_PLATFORM=h5`、`app` 或 `app-plus` 时，生成器默认目标会自动切换为 `web`，不再需要写 `disabled: WeappTailwindcssDisabled`。如果 App 构建不希望插件参与，可以只针对 App 目标显式禁用：
 
 ```js
 const isApp = process.env.UNI_PLATFORM === "app" || process.env.UNI_PLATFORM === "app-plus";

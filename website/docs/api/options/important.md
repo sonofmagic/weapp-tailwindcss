@@ -51,9 +51,9 @@ keywords:
 
 #### 备注
 
-用于完全跳过插件。v5 起，uni-app、uni-app x、Mpx、Taro 的 H5/Web 构建通常不需要再通过 `disabled` 关闭插件：生成器会根据 `UNI_PLATFORM=h5`、`UNI_UTS_PLATFORM=h5/web/web-*`、`MPX_CLI_MODE=web`、`MPX_CURRENT_TARGET_MODE=web`、`TARO_ENV=h5` 自动切换到 `web` 目标。
+用于完全跳过插件。v5 起，uni-app、uni-app x、Mpx、Taro 的 H5/Web 构建通常不需要再通过 `disabled` 关闭插件：生成器会根据 `UNI_PLATFORM=h5/app/app-plus`、`UNI_UTS_PLATFORM=h5/web/web-*`、`MPX_CLI_MODE=web`、`MPX_CURRENT_TARGET_MODE=web`、`TARO_ENV=h5` 自动切换到 `web` 目标。
 
-`disabled` 更适合 RN、Harmony、App 等你明确不希望进入 `weapp-tailwindcss` 生成链路的独立构建。
+`disabled` 更适合 RN、Harmony、uni-app x 原生 App 等你明确不希望进入 `weapp-tailwindcss` 生成链路的独立构建。
 
 #### 示例
 

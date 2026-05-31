@@ -90,7 +90,8 @@ export interface UserDefinedOptionsGeneralPart {
    *
    * @group 3.一般配置
    * @remarks
-   * 默认值为 `{ target: 'weapp' }`。Tailwind CSS v3 和 v4 项目都会默认接管样式生成并直接输出小程序 CSS。
+   * 默认值会按构建环境推断：小程序构建使用 `weapp`，H5/Web 与普通 uni-app App WebView 使用 `web`。
+   * uni-app x 原生 App 目标继续通过 `uniAppX` 配置处理 uvue/App 约束，不需要配置 `target: 'app'`。
    */
   generator?: WeappTailwindcssGeneratorUserOptions | undefined
 

@@ -5,7 +5,7 @@ import { WeappTailwindcss } from 'weapp-tailwindcss/vite'
 import { dirname } from 'node:path'
 import { fileURLToPath } from 'node:url'
 
-const uni = uniModule.default
+const uni = (uniModule as typeof uniModule & { default?: typeof uniModule }).default ?? uniModule
 const projectRoot = dirname(fileURLToPath(import.meta.url))
 const weappTailwindcssPlugins = WeappTailwindcss(
   uniAppX({

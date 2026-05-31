@@ -30,6 +30,16 @@ function isUniWebPlatform(value: string | undefined): boolean {
   return normalized === 'h5' || normalized?.startsWith('web') === true
 }
 
+function isUniAppWebViewPlatform(value: string | undefined): boolean {
+  const normalized = value?.trim().toLowerCase()
+  return normalized === 'app' || normalized === 'app-plus'
+}
+
+function isUniNativeAppPlatform(value: string | undefined): boolean {
+  const normalized = value?.trim().toLowerCase()
+  return normalized?.startsWith('app-') === true
+}
+
 function isMpxWebPlatform(value: string | undefined): boolean {
   return value?.trim().toLowerCase() === 'web'
 }
@@ -44,6 +54,10 @@ function inferGeneratorTargetFromEnv(): WeappTailwindcssGeneratorTarget {
 
   if (
     uniWebPlatformEnvKeys.some(key => isUniWebPlatform(getEnvValue(key)))
+    || (
+      isUniAppWebViewPlatform(getEnvValue('UNI_PLATFORM'))
+      && !isUniNativeAppPlatform(getEnvValue('UNI_UTS_PLATFORM'))
+    )
     || mpxWebPlatformEnvKeys.some(key => isMpxWebPlatform(getEnvValue(key)))
     || getEnvValue('TARO_ENV') === 'h5'
   ) {
@@ -55,7 +69,11 @@ function inferGeneratorTargetFromEnv(): WeappTailwindcssGeneratorTarget {
 
 export interface WeappTailwindcssGeneratorOptions {
   /**
-   * 生成目标。小程序构建默认使用 `weapp`，保留 `web` 与 `tailwind` 便于多端/调试复用。
+   * 生成目标。小程序构建默认使用 `weapp`，H5/Web 与普通 uni-app App WebView 默认使用 `web`。
+   *
+   * @remarks
+   * `target` 表示 CSS 输出形态，不是平台枚举。uni-app x Android/iOS 这类原生 App 目标继续使用 `weapp` 输出族，
+   * 并通过 `uniAppX`、`platform` 与单位转换配置处理 App 差异。
    */
   target?: WeappTailwindcssGeneratorTarget | undefined
   /**

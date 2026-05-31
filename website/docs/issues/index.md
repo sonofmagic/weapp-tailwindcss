@@ -101,7 +101,7 @@ export default {
 
 ## 编译到 h5 / app 注意事项
 
-有些用户通过 `uni-app` 等跨端框架，不止开发成各种小程序，也开发为 `H5`。从 v5 开始，H5/Web 构建不再需要禁用 `WeappTailwindcss`：插件会根据 `UNI_PLATFORM=h5` 自动把生成器目标切到 `web`，输出浏览器原生 Tailwind CSS。
+有些用户通过 `uni-app` 等跨端框架，不止开发成各种小程序，也开发为 `H5` 或 App。从 v5 开始，H5/Web 与普通 uni-app App WebView 构建不再需要禁用 `WeappTailwindcss`：插件会根据 `UNI_PLATFORM=h5/app/app-plus` 自动把生成器目标切到 `web`，输出浏览器原生 Tailwind CSS。
 
 ```js
 // 我们以 uni-app-vue3-vite 这个 demo为例
@@ -178,7 +178,7 @@ const vitePlugins = [uni(), WeappTailwindcss({
 })];
 ```
 
-即 H5 环境继续保留插件，由生成器自动切到 `web` 目标。App 环境如果不希望插件参与，可以单独设置 `disabled: process.env.UNI_PLATFORM === "app" || process.env.UNI_PLATFORM === "app-plus"`。
+即 H5 与普通 uni-app App WebView 环境继续保留插件，由生成器自动切到 `web` 目标。App 环境如果不希望插件参与，可以单独设置 `disabled: process.env.UNI_PLATFORM === "app" || process.env.UNI_PLATFORM === "app-plus"`。
 
 ## 使用 pnpm@8 插件注册失败问题
 

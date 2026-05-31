@@ -24,12 +24,13 @@ keywords:
 当前内置识别：
 
 - `UNI_PLATFORM=h5`
+- `UNI_PLATFORM=app`、`app-plus`（普通 uni-app App WebView）
 - `UNI_UTS_PLATFORM=h5`、`web`、`web-*`
 - `MPX_CLI_MODE=web`
 - `MPX_CURRENT_TARGET_MODE=web`
 - `TARO_ENV=h5`
 
-因此 uni-app、uni-app x、Mpx、Taro 的 H5/Web 构建不再需要 `disabled: weappTailwindcssDisabled`。只有 RN、Harmony、App 这类非 Web 产物确实不希望插件参与时，才需要显式 `disabled` 或拆成独立构建配置。
+因此 uni-app、uni-app x、Mpx、Taro 的 H5/Web 构建不再需要 `disabled: weappTailwindcssDisabled`。普通 uni-app App WebView 也会默认走 `web` 输出族，不会生成小程序转义选择器。只有 RN、Harmony、uni-app x 原生 App 等非 WebView 产物确实不希望插件参与时，才需要显式 `disabled` 或拆成独立构建配置。
 
 ### uni-app 示例
 
@@ -46,7 +47,7 @@ const vitePlugins = [
 ];
 ```
 
-当 `UNI_PLATFORM=h5` 时，生成器默认目标会自动切换为 `web`。如果是 App 构建且不希望插件参与，可以单独加：
+当 `UNI_PLATFORM=h5`、`app` 或 `app-plus` 时，生成器默认目标会自动切换为 `web`。如果 App 构建不希望插件参与，可以单独加：
 
 ```js
 const isApp = process.env.UNI_PLATFORM === "app" || process.env.UNI_PLATFORM === "app-plus";
@@ -72,7 +73,7 @@ const vitePlugins = [
 ];
 ```
 
-当 `UNI_UTS_PLATFORM=h5`、`web` 或 `web-*` 时，生成器默认目标会自动切换为 `web`。`app-android`、`app-ios`、`app-harmony` 这类 App 目标不会被误判成 Web。
+当 `UNI_UTS_PLATFORM=h5`、`web` 或 `web-*` 时，生成器默认目标会自动切换为 `web`。`app-android`、`app-ios`、`app-harmony` 这类 uni-app x 原生 App 目标不会被误判成 Web，也不需要新增 `target: 'app'`；请使用 `uniAppX(...)` 预设或 `uniAppX` 配置处理 uvue/App 差异。
 
 ### Mpx 示例
 
