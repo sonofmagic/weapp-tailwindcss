@@ -1,5 +1,19 @@
 # weapp-tailwindcss
 
+## 5.0.0-next.27
+
+### Major Changes
+
+- 🚀 **统一构建器插件的公开注册名为 `WeappTailwindcss`，移除 Webpack 与 Vite 入口中的旧 `Unified*` 导出别名；同时补齐 `target: 'web'` 场景下 Tailwind CSS v4 website 模式的 CSS 生成与源码扫描行为，避免文档站接入时依赖官方 Tailwind 生成插件。** [#883](https://github.com/sonofmagic/weapp-tailwindcss/pull/883) by @github-actions
+
+### Patch Changes
+
+- 🐛 **对齐 Tailwind CSS v4 官方 source detection 语义：Vite 生成模式的自动源码扫描默认忽略 CSS 与预处理器文件，只有显式 `@source` 注册时才会扫描这些样式文件，避免自动候选收集把样式入口误当作内容源。** [#883](https://github.com/sonofmagic/weapp-tailwindcss/pull/883) by @github-actions
+
+- 🐛 **修复 Vite 模式下 Tailwind CSS v4 自动 CSS 入口在临时文件被清理后可能导致 source 扫描失败的问题。** [#883](https://github.com/sonofmagic/weapp-tailwindcss/pull/883) by @github-actions
+
+- 🐛 **修复 `weapp-tailwindcss/vite` 插件返回类型绑定单一 Vite 版本导致的类型不兼容问题，兼容 demo 或下游项目使用不同 Vite 版本的 `defineConfig` 场景。** [#883](https://github.com/sonofmagic/weapp-tailwindcss/pull/883) by @github-actions
+
 ## 5.0.0-next.26
 
 ### Major Changes
