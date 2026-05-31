@@ -164,6 +164,11 @@ function HomepageHeader() {
                   小程序使用 Tailwind CSS 的事实标准工具链。
                 </p>
               )}
+              {homepage.heroSubtitleSecondary && (
+                <p className="ui-homepage-hero-subtitle-secondary home-hero__sublead">
+                  对齐 Tailwind CSS v4 的 CSS-first 写法，同时接管 Web 与小程序目标的生成、转义与运行时边界。
+                </p>
+              )}
               <div className="home-hero__actions">
                 {homepage.primaryCta && (
                   <a className={`${ctaButton()} home-cta ui-homepage-primary-cta`} href="/docs/quick-start/install">
@@ -180,6 +185,16 @@ function HomepageHeader() {
                   />
                 )}
               </div>
+              {homepage.platformTags && (
+                <div className="home-hero__platform-strip" aria-label="支持平台">
+                  {platformIcons.map(({ id, label, content }) => (
+                    <span aria-label={label} className="home-hero__platform-icon" key={id} role="img" title={label}>
+                      <span className="sr-only">{label}</span>
+                      {content}
+                    </span>
+                  ))}
+                </div>
+              )}
             </div>
           )}
           <PipelinePanel />
