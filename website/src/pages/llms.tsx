@@ -20,7 +20,7 @@ const txtFiles = [
 const markdownExamples = [
   { label: 'intro.md', path: '/intro.md', desc: '文档首页内容副本' },
   { label: 'quick-start/install.md', path: '/quick-start/install.md', desc: 'Tailwind CSS 3.x 生成模式安装指南' },
-  { label: 'quick-start/v4/uni-app-vite.md', path: '/quick-start/v4/uni-app-vite.md', desc: 'Tailwind CSS 4.x 生成模式 / uni-app Vite 示例' },
+  { label: 'quick-start/v4/uni-app-vite.md', path: '/quick-start/v4/uni-app-vite.md', desc: 'CSS-first 生成模式 / uni-app Vite 示例' },
   { label: 'tools/weapp-tw-cli.md', path: '/tools/weapp-tw-cli.md', desc: 'CLI 用法' },
   { label: 'ai/index.md', path: '/ai/index.md', desc: 'AI 生成小程序专题' },
 ]

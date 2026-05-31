@@ -27,7 +27,7 @@ interface EntryItem {
 }
 
 const facts: FactItem[] = [
-  { label: 'Tailwind', value: 'v4 / v3' },
+  { label: 'Tailwind', value: 'CSS-first / config' },
   { label: '框架', value: 'Taro / uni-app / 原生' },
   { label: '构建器', value: 'Webpack / Vite / Gulp' },
   { label: '运行时', value: 'merge / variants / cva' },
@@ -40,7 +40,7 @@ const capabilities: CapabilityItem[] = [
     icon: 'icon-[mdi--target]',
   },
   {
-    title: 'Tailwind v4 / v3 并行',
+    title: 'Tailwind 多模式并行',
     description: '新项目使用 CSS-first，存量项目继续保留稳定接入路径。',
     icon: 'icon-[mdi--source-branch]',
   },
@@ -65,7 +65,7 @@ const entries: Array<EntryItem & { control?: 'communityEntry' }> = [
   },
   {
     href: '/docs/quick-start/v4',
-    label: 'Tailwind v4',
+    label: 'CSS-first 接入',
     description: '查看 CSS-first 入口、source 与生成模式。',
     icon: 'icon-[mdi--numeric-4-box-outline]',
   },
@@ -131,7 +131,7 @@ function HomepageHeader() {
                 <HomeLogo />
                 {homepage.heroBadge && (
                   <span className="ui-homepage-hero-badge home-hero__badge">
-                    v5 · Tailwind CSS 4 website mode
+                    v5 · Tailwind CSS website mode
                   </span>
                 )}
               </div>
@@ -166,7 +166,7 @@ function HomepageHeader() {
               )}
               {homepage.heroSubtitleSecondary && (
                 <p className="ui-homepage-hero-subtitle-secondary home-hero__sublead">
-                  对齐 Tailwind CSS v4 的 CSS-first 写法，同时接管 Web 与小程序目标的生成、转义与运行时边界。
+                  对齐 Tailwind CSS 的主流写法，同时接管 Web 与小程序目标的生成、转义与运行时边界。
                 </p>
               )}
               <div className="home-hero__actions">
@@ -275,7 +275,7 @@ function HomepageHeader() {
         </div>
         <div className="home-v5-story__body">
           <p>
-            在 Web 目标下保持 Tailwind CSS v4 原生语义；在小程序目标下补齐选择器、单位、转义与运行时边界。团队可以先统一样式入口，再按框架选择插件接入方式。
+            在 Web 目标下保持 Tailwind CSS 原生语义；在小程序目标下补齐选择器、单位、转义与运行时边界。团队可以先统一样式入口，再按框架选择插件接入方式。
           </p>
           <a href="/docs/api-v2">查看 API v2</a>
         </div>

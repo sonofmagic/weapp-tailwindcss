@@ -25,7 +25,7 @@ console.log(`[hostingProvider]: ${hostingProvider}, [isGithub]: ${isGithub}`)
 
 const config: Config = {
   title: 'weapp-tailwindcss',
-  tagline: '小程序使用 Tailwind CSS 的事实标准工具链，覆盖 Tailwind v4/v3 与多框架构建链路。',
+  tagline: '小程序使用 Tailwind CSS 的事实标准工具链，覆盖多框架与多构建器链路。',
   favicon: 'favicon.ico',
 
   // Set the production url of your site here
@@ -116,7 +116,7 @@ const config: Config = {
       'docusaurus-plugin-llms',
       {
         title: 'weapp-tailwindcss 文档索引',
-        description: 'Tailwind CSS 小程序适配方案，覆盖 Tailwind v4/v3、uni-app、Taro、原生小程序与多构建器场景的官方文档合集。',
+        description: 'Tailwind CSS 小程序适配方案，覆盖 uni-app、Taro、原生小程序与多构建器场景的官方文档合集。',
         docsDir: 'docs',
         includeBlog: true,
         generateMarkdownFiles: true,
