@@ -1,5 +1,13 @@
 # weapp-tailwindcss
 
+## 5.0.0-next.28
+
+### Patch Changes
+
+- 🐛 **修复普通 uni-app App WebView 构建的生成目标推断，`UNI_PLATFORM=app/app-plus` 默认切换为 `web` 输出族；uni-app x `UNI_UTS_PLATFORM=app-*` 原生 App 目标继续保留小程序/uvue 兼容输出，不新增 `target: 'app'`。** [#884](https://github.com/sonofmagic/weapp-tailwindcss/pull/884) by @github-actions
+
+- 🐛 **将 `@vue/compiler-dom` 与 `@vue/compiler-sfc` 调整为构建期依赖。uni-app x 转换所需的 Vue compiler 依赖会随 `weapp-tailwindcss` 产物内联，发布包不再要求使用者运行时额外安装这些 Vue compiler 包。** [`5ac951f`](https://github.com/sonofmagic/weapp-tailwindcss/commit/5ac951f44e6dc3c9c70dc7d7f520a66595904e6a) by @sonofmagic
+
 ## 5.0.0-next.27
 
 ### Major Changes
