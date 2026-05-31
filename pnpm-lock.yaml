@@ -4004,6 +4004,9 @@ importers:
       tailwind-variants:
         specifier: ^3.2.2
         version: 3.2.2(tailwind-merge@3.6.0)(tailwindcss@4.3.0)
+      weapp-tailwindcss:
+        specifier: workspace:*
+        version: link:../packages/weapp-tailwindcss
     devDependencies:
       '@babel/parser':
         specifier: ~7.29.7
