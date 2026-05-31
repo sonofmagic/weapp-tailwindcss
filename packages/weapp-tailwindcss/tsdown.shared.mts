@@ -48,6 +48,11 @@ function alwaysBundleRuntimeDeps(id: string) {
     || id === 'domutils'
     || id === 'domelementtype'
     || id === 'entities'
+    || id === '@vue/compiler-core'
+    || id === '@vue/compiler-dom'
+    || id === '@vue/compiler-sfc'
+    || id === '@vue/compiler-ssr'
+    || id === '@vue/shared'
 }
 
 function preserveJsExports({ format }: { format: string }) {

@@ -146,6 +146,10 @@ describe('get options', () => {
       expect(normalizeWeappTailwindcssGeneratorOptions({}).target).toBe('weapp')
     })
 
+    withGeneratorTargetEnv({ UNI_PLATFORM: 'app', UNI_UTS_PLATFORM: 'app-harmony' }, () => {
+      expect(normalizeWeappTailwindcssGeneratorOptions({}).target).toBe('weapp')
+    })
+
     withGeneratorTargetEnv({ MPX_CLI_MODE: 'mp', MPX_CURRENT_TARGET_MODE: 'wx' }, () => {
       expect(normalizeWeappTailwindcssGeneratorOptions({}).target).toBe('weapp')
     })
