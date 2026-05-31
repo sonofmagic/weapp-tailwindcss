@@ -131,7 +131,7 @@ function HomepageHeader() {
                 <HomeLogo />
                 {homepage.heroBadge && (
                   <span className="ui-homepage-hero-badge home-hero__badge">
-                    v5 · Tailwind CSS website mode
+                    Tailwind CSS website mode
                   </span>
                 )}
               </div>
@@ -169,6 +169,16 @@ function HomepageHeader() {
                   对齐 Tailwind CSS 的主流写法，同时接管 Web 与小程序目标的生成、转义与运行时边界。
                 </p>
               )}
+              {homepage.platformTags && (
+                <div className="home-hero__platform-strip" aria-label="支持平台">
+                  {platformIcons.map(({ id, label, content }) => (
+                    <span aria-label={label} className="home-hero__platform-icon" key={id} role="img" title={label}>
+                      <span className="sr-only">{label}</span>
+                      {content}
+                    </span>
+                  ))}
+                </div>
+              )}
               <div className="home-hero__actions">
                 {homepage.primaryCta && (
                   <a className={`${ctaButton()} home-cta ui-homepage-primary-cta`} href="/docs/quick-start/install">
@@ -181,20 +191,10 @@ function HomepageHeader() {
                     className="ui-homepage-ai-entry"
                     href="/docs/api-v2"
                     icon={<i aria-hidden="true" className="icon-[mdi--book-open-page-variant-outline] text-[18px]"></i>}
-                    label="查看 v5 文档"
+                    label="API 文档"
                   />
                 )}
               </div>
-              {homepage.platformTags && (
-                <div className="home-hero__platform-strip" aria-label="支持平台">
-                  {platformIcons.map(({ id, label, content }) => (
-                    <span aria-label={label} className="home-hero__platform-icon" key={id} role="img" title={label}>
-                      <span className="sr-only">{label}</span>
-                      {content}
-                    </span>
-                  ))}
-                </div>
-              )}
             </div>
           )}
           <PipelinePanel />
@@ -270,7 +270,6 @@ function HomepageHeader() {
 
       <section className="home-v5-story" aria-labelledby="home-v5-title">
         <div>
-          <span className="home-v5-story__label">v5 narrative</span>
           <h2 id="home-v5-title">同一套 Tailwind 输入，按目标端生成可交付产物</h2>
         </div>
         <div className="home-v5-story__body">

@@ -14,16 +14,16 @@ const pipelineSteps: Array<{ id: string, title: string, description: string, ton
   {
     id: 'targets',
     title: 'Web / Weapp 同源输出',
-    description: 'v5 generator 按目标生成 CSS',
+    description: '按目标生成 CSS',
     tone: 'targets',
   },
 ]
 
 export function PipelinePanel() {
   return (
-    <div className="home-pipeline" aria-label="weapp-tailwindcss v5 转换流水线">
+    <div className="home-pipeline" aria-label="weapp-tailwindcss 转换流水线">
       <div className="home-pipeline__header">
-        <span>v5 generator</span>
+        <span>generator</span>
         <code>target: web | weapp</code>
       </div>
       <div className="home-pipeline__code" aria-hidden="true">
@@ -31,9 +31,9 @@ export function PipelinePanel() {
         <span className="text-[#07c160]">"grid px-4 bg-[#07c160]"</span>
       </div>
       <div className="home-pipeline__steps">
-        {pipelineSteps.map((step, index) => (
+        {pipelineSteps.map(step => (
           <div className={`home-pipeline__step home-pipeline__step--${step.tone}`} key={step.id}>
-            <span className="home-pipeline__index">{String(index + 1).padStart(2, '0')}</span>
+            <span className="home-pipeline__index" aria-hidden="true"></span>
             <div>
               <strong>{step.title}</strong>
               <p>{step.description}</p>

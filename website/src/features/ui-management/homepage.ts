@@ -87,7 +87,7 @@ export const homepageUiControls: HomepageUiControlMeta[] = [
   {
     key: 'heroBadge',
     label: 'Hero 顶部标签',
-    description: '控制 logo 右侧的 v5 与 Tailwind CSS website mode 标签。',
+    description: '控制 logo 右侧的 Tailwind CSS website mode 标签。',
     className: 'ui-homepage-hero-badge',
     htmlAttribute: 'data-ui-homepage-hero-badge',
   },
@@ -122,7 +122,7 @@ export const homepageUiControls: HomepageUiControlMeta[] = [
   {
     key: 'aiEntry',
     label: 'v5 文档入口',
-    description: '控制首页 hero 区域的 v5 文档入口按钮。',
+    description: '控制首页 hero 区域的 API 文档入口按钮。',
     className: 'ui-homepage-ai-entry',
     htmlAttribute: 'data-ui-homepage-ai-entry',
   },
