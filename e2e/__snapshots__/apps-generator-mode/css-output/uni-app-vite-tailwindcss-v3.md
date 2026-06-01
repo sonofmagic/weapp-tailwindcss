@@ -226,6 +226,36 @@ wx-root-portal-content {
   mask-size: 100% 100%;
   --svg: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' width='24' height='24'%3E%3Cpath fill='black' d='M10 20v-6h4v6h5v-8h3L12 3L2 12h3v8z'/%3E%3C/svg%3E");
 }
+.sr-only {
+  position: absolute;
+  width: 1rpx;
+  height: 1rpx;
+  padding: 0;
+  margin: -1rpx;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border-width: 0;
+}
+.not-sr-only {
+  position: static;
+  width: auto;
+  height: auto;
+  padding: 0;
+  margin: 0;
+  overflow: visible;
+  clip: auto;
+  white-space: normal;
+}
+.visible {
+  visibility: visible;
+}
+.invisible {
+  visibility: hidden;
+}
+.collapse {
+  visibility: collapse;
+}
 .raw-btn {
   display: inline-flex;
   align-items: center;
@@ -270,36 +300,6 @@ wx-root-portal-content {
   padding-bottom: 8rpx;
   --tw-text-opacity: 1;
   color: rgba(255, 255, 255, var(--tw-text-opacity, 1));
-}
-.sr-only {
-  position: absolute;
-  width: 1rpx;
-  height: 1rpx;
-  padding: 0;
-  margin: -1rpx;
-  overflow: hidden;
-  clip: rect(0, 0, 0, 0);
-  white-space: nowrap;
-  border-width: 0;
-}
-.not-sr-only {
-  position: static;
-  width: auto;
-  height: auto;
-  padding: 0;
-  margin: 0;
-  overflow: visible;
-  clip: auto;
-  white-space: normal;
-}
-.visible {
-  visibility: visible;
-}
-.invisible {
-  visibility: hidden;
-}
-.collapse {
-  visibility: collapse;
 }
 .static {
   position: static;

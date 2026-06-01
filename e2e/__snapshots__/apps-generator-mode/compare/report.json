@@ -8897,7 +8897,7 @@
     ],
     "status": "passed",
     "generator": {
-      "bytes": 39374,
+      "bytes": 39683,
       "selectors": [
         "._tcontainer",
         ".absolute",
@@ -9016,6 +9016,7 @@
         ".italic",
         ".items-center",
         ".justify-center",
+        ".layer-card-v4",
         ".leading-6",
         ".line-through",
         ".lining-nums",
