@@ -1,5 +1,11 @@
 # weapp-tailwindcss
 
+## 5.0.0-next.29
+
+### Patch Changes
+
+- 🐛 **修复生成产物时误删用户自定义的 `@layer components { ... }` 块，导致相关样式没有写入 `app.wxss` 的问题。** [#885](https://github.com/sonofmagic/weapp-tailwindcss/pull/885) by @github-actions
+
 ## 5.0.0-next.28
 
 ### Patch Changes
