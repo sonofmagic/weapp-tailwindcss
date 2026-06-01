@@ -52,7 +52,7 @@
   },
   "devDependencies": {
     "@egoist/tailwindcss-icons": "catalog:egoistTailwindcssIcons",
-    "@iconify-json/mdi": "^1.2.2",
+    "@iconify-json/mdi": "catalog:iconifyJson",
     "@types/gulp": "^4.0.18",
     "@types/gulp-debug": "^2.0.36",
     "@types/gulp-if": "^3.0.4",
@@ -91,7 +91,7 @@
     "tailwindcss": "catalog:tailwindcss3",
     "tailwindcss-patch": "catalog:tailwindcssPatch",
     "tailwindcss-rem2px-preset": "catalog:tailwindcssRem",
-    "tsx": "^4.22.3",
+    "tsx": "catalog:tsx",
     "typescript": "catalog:typescript59",
     "weapp-ide-cli": "catalog:weappIdeCli",
     "weapp-tailwindcss": "workspace:*",
