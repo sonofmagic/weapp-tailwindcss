@@ -1,5 +1,11 @@
 # weapp-tailwindcss
 
+## 5.0.0-next.30
+
+### Patch Changes
+
+- 🐛 **修复 uni-app Vite 小程序 dev 产物中 Sass/Less 预处理器入口里的自定义 `@layer components` 被漏提取的问题，确保 `@apply` 生成的 `.raw-btn`、`.btn` 以及伪元素样式会写入 `dist/dev/mp-weixin/app.wxss`，且不会残留小程序不支持的 `@layer`/`@apply`。** [`0c96ecc`](https://github.com/sonofmagic/weapp-tailwindcss/commit/0c96ecc1d9a35215b479663e466c86267662c01f) by @sonofmagic
+
 ## 5.0.0-next.29
 
 ### Patch Changes
