@@ -98,6 +98,7 @@
     "control-babel-parser-cache",
     "css-macro-auto-postcss",
     "css-macro-internal-conditional-at-rules",
+    "css-macro-platform-compile",
     "default-generator-mode-v5",
     "esm-dependency-node-floor",
     "fast-demo-generator-runtime",
