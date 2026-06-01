@@ -360,7 +360,7 @@ describe('e2e watch workflow', () => {
         round_profile: 'default',
         timeout_minutes: 60,
         watch_timeout_ms: '600000',
-        watch_command_timeout_ms: '1500000',
+        watch_command_timeout_ms: '2400000',
       },
     ]
     const slowMacosUniAppPrBudgets = [
