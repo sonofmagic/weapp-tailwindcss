@@ -33,6 +33,11 @@ const TAILWIND_ROOT_DIRECTIVE_RE = /@(?:import\s+(?:url\(\s*)?["']?tailwindcss4?
 const TAILWIND_EXTRACTABLE_DIRECTIVE_RE = /^\s*@(?:import|use|forward|tailwind|config|source|reference|plugin)\b[\s\S]*?(?:;|$)/
 const TAILWIND_EXTRACTABLE_LAYER_STATEMENT_RE = /^\s*@layer\s[^;{]+;\s*$/
 const TAILWIND_EXTRACTABLE_BLOCK_START_RE = /^\s*@(?:layer|theme|utility|variant|custom-variant)\b[\s\S]*\{/
+const TAILWIND_V3_SUBPATH_IMPORT_LAYERS = new Map([
+  ['tailwindcss/base', 'base'],
+  ['tailwindcss/components', 'components'],
+  ['tailwindcss/utilities', 'utilities'],
+])
 
 interface TailwindDirectiveOptions {
   importFallback?: boolean | undefined
@@ -299,6 +304,28 @@ export function normalizeTailwindSourceForGenerator(rawSource: string, options: 
   return hasPreprocessorOnlySyntax(rawSource)
     ? extractTailwindSourceForPostcssFallback(rawSource, options) ?? rawSource
     : rawSource
+}
+
+export function normalizeTailwindV3CssEntrySource(rawSource: string) {
+  try {
+    const root = postcss.parse(rawSource)
+    let changed = false
+    root.walkAtRules('import', (node) => {
+      const layer = TAILWIND_V3_SUBPATH_IMPORT_LAYERS.get(parseImportRequest(node.params) ?? '')
+      if (!layer) {
+        return
+      }
+      node.replaceWith(postcss.atRule({
+        name: 'tailwind',
+        params: layer,
+      }))
+      changed = true
+    })
+    return changed ? root.toString() : rawSource
+  }
+  catch {
+    return rawSource
+  }
 }
 
 export function normalizeTailwindSourceDirectives(rawSource: string, options: TailwindDirectiveOptions = {}) {

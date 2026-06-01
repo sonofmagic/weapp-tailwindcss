@@ -65,6 +65,12 @@ function expectDevAppWxss(css: string) {
   expect(css, 'dev app.wxss should keep btn gradient utilities from @apply').toMatch(
     /\.btn\s*\{[\s\S]*?background-image:\s*linear-gradient\(to right,\s*var\(--tw-gradient-stops\)\)[\s\S]*?padding-left:\s*16rpx[\s\S]*?color:\s*rgba\(255,\s*255,\s*255/,
   )
+
+  const rawBtnIndex = css.indexOf('.raw-btn')
+  const utilityIndex = css.indexOf('.flex')
+  expect(rawBtnIndex, 'dev app.wxss should contain raw-btn').toBeGreaterThanOrEqual(0)
+  expect(utilityIndex, 'dev app.wxss should contain utilities after component layer').toBeGreaterThanOrEqual(0)
+  expect(rawBtnIndex, 'component layer css should be emitted before utility classes').toBeLessThan(utilityIndex)
 }
 
 async function waitForGeneratedAppWxss(child: ReturnType<typeof spawnPnpm>, logs: string[]) {

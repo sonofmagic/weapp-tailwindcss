@@ -12,6 +12,7 @@ import {
 import { filterUnsupportedMiniProgramTailwindV4Candidates } from '@/tailwindcss/v4-engine/candidates'
 import { finalizeMiniProgramCss, removeUnsupportedMiniProgramAtRules } from './css-cleanup'
 import {
+  hasTailwindApplyDirective,
   hasTailwindSourceDirectives,
   normalizeTailwindSourceDirectives,
   parseImportRequest,
@@ -29,10 +30,13 @@ import {
   stripTailwindBanner,
 } from './generator-css/markers'
 import {
-
   resolveGeneratorSourceEntries,
   resolveGeneratorSources,
 } from './generator-css/source-resolver'
+import {
+  reorderMarkedUserLayerComponentsCss,
+  wrapUserLayerComponentsCss,
+} from './generator-css/user-layer-order'
 
 export {
   hasTailwindSourceDirectives,
@@ -231,6 +235,10 @@ function createCssSourceOrderAppend(base: string, extra: string) {
   return `${base}\n${extra}`
 }
 
+function shouldFinalizeMarkedUserLayerComponentsCss(file: string) {
+  return !/\.(?:vue|svelte|astro|scss|sass|less|styl)(?:[?#].*)?$/i.test(file)
+}
+
 function splitRawSourceByGeneratedCssOrder(rawSource: string, rawTailwindCss: string) {
   const placeholderParts = splitGeneratorPlaceholderCssBySourceOrder(rawSource, rawTailwindCss)
   if (placeholderParts) {
@@ -241,6 +249,117 @@ function splitRawSourceByGeneratedCssOrder(rawSource: string, rawTailwindCss: st
     return exactParts
   }
   return splitTailwindGeneratedCssByBanner(rawSource)
+}
+
+function splitUserCssLayerBlocks(source: string) {
+  if (!source.includes('@layer')) {
+    return {
+      layer: '',
+      rest: source,
+    }
+  }
+
+  try {
+    const root = postcss.parse(source)
+    const layerRoot = postcss.root()
+    const restRoot = postcss.root()
+    for (const node of root.nodes) {
+      const target = node.type === 'atrule' && node.name === 'layer' && node.nodes?.length
+        ? layerRoot
+        : restRoot
+      target.append(node.clone())
+    }
+    return {
+      layer: layerRoot.toString(),
+      rest: restRoot.toString(),
+    }
+  }
+  catch {
+    return {
+      layer: source,
+      rest: '',
+    }
+  }
+}
+
+function hasUserCssLayerBlocks(source: string) {
+  if (!source.includes('@layer')) {
+    return false
+  }
+
+  try {
+    let hasLayerBlock = false
+    postcss.parse(source).walkAtRules('layer', (node) => {
+      if (node.nodes?.length) {
+        hasLayerBlock = true
+      }
+    })
+    return hasLayerBlock
+  }
+  catch {
+    return true
+  }
+}
+
+function collectUserLayerSelectors(source: string) {
+  const selectors = new Set<string>()
+  try {
+    postcss.parse(source).walkRules((rule) => {
+      for (const selector of rule.selectors ?? [rule.selector]) {
+        const normalized = selector.trim()
+        if (normalized) {
+          selectors.add(normalized)
+        }
+      }
+    })
+  }
+  catch {
+  }
+  return selectors
+}
+
+function matchesUserLayerSelector(selector: string, userLayerSelector: string) {
+  if (selector === userLayerSelector) {
+    return true
+  }
+  if (!selector.startsWith(userLayerSelector)) {
+    return false
+  }
+  const next = selector[userLayerSelector.length]
+  return next === ':' || next === '['
+}
+
+function extractGeneratedCssForUserLayerSelectors(css: string, userLayerSource: string) {
+  const selectors = collectUserLayerSelectors(userLayerSource)
+  if (selectors.size === 0) {
+    return {
+      layer: '',
+      rest: css,
+    }
+  }
+
+  try {
+    const root = postcss.parse(css)
+    const layerRoot = postcss.root()
+    const selectorList = [...selectors]
+    root.walkRules((rule) => {
+      const ruleSelectors = rule.selectors ?? [rule.selector]
+      if (ruleSelectors.some(selector => selectorList.some(userSelector => matchesUserLayerSelector(selector.trim(), userSelector)))) {
+        layerRoot.append(rule.clone())
+        rule.remove()
+      }
+    })
+    return {
+      layer: layerRoot.toString(),
+      rest: root.toString(),
+    }
+  }
+  catch {
+    return {
+      layer: '',
+      rest: css,
+    }
+  }
 }
 
 async function transformGeneratorUserCss(
@@ -518,7 +637,8 @@ export async function generateCssByGenerator(
       generated.css.length,
       generated.classSet.size,
     )
-    if (typeof options.previousCss === 'string' && typeof generated.incrementalCss === 'string') {
+    const canAppendIncrementalCss = generated.target !== 'weapp' || !hasUserCssLayerBlocks(effectiveRawSource)
+    if (canAppendIncrementalCss && typeof options.previousCss === 'string' && typeof generated.incrementalCss === 'string') {
       const incrementalCss = stripTailwindBanner(generated.incrementalCss)
       const css = incrementalCss.trim().length > 0
         ? createCssAppend(options.previousCss, finalizeMiniProgramGeneratorCss(incrementalCss, generated.target, majorVersion, opts.cssPreflight, { injectPreflight: false }))
@@ -547,9 +667,25 @@ export async function generateCssByGenerator(
         styleHandler,
         importFallback: generatorOptions.importFallback,
       }
+      const afterLayerParts = generated.target === 'weapp'
+        ? splitUserCssLayerBlocks(orderedExtraCss.after)
+        : {
+            layer: '',
+            rest: orderedExtraCss.after,
+          }
       const beforeUserCss = await transformGeneratorUserCss(orderedExtraCss.before, userCssOptions)
-      const afterUserCss = await transformGeneratorUserCss(orderedExtraCss.after, userCssOptions)
-      css = createCssSourceOrderAppend(createCssSourceOrderAppend(beforeUserCss, css), afterUserCss)
+      const afterLayerUserCss = await transformGeneratorUserCss(afterLayerParts.layer, userCssOptions)
+      const afterUserCss = await transformGeneratorUserCss(afterLayerParts.rest, userCssOptions)
+      const orderedAfterLayerUserCss = generated.target === 'weapp'
+        ? wrapUserLayerComponentsCss(afterLayerUserCss)
+        : afterLayerUserCss
+      css = createCssSourceOrderAppend(
+        createCssSourceOrderAppend(
+          createCssSourceOrderAppend(beforeUserCss, orderedAfterLayerUserCss),
+          css,
+        ),
+        afterUserCss,
+      )
       if (isEmptyCssSourceOrderParts(orderedExtraCss) && shouldAppendWebBundleCssFallback(generated.target, {
         hasSourceDirectives,
         hasMatchedCssSourceFile,
@@ -558,6 +694,9 @@ export async function generateCssByGenerator(
         css = createCssSourceOrderAppend(css, userCss)
       }
       if (generated.target === 'weapp') {
+        if (shouldFinalizeMarkedUserLayerComponentsCss(file)) {
+          css = reorderMarkedUserLayerComponentsCss(css)
+        }
         css = await appendLegacyCompatCss(
           css,
           effectiveRawSource,
@@ -593,6 +732,28 @@ export async function generateCssByGenerator(
     let css = stripTailwindBanner(generated.css)
     if (generated.target === 'weapp') {
       css = inheritLegacyUnitConvertedDeclarations(css, effectiveRawSource)
+      if (hasUserCssLayerBlocks(effectiveRawSource)) {
+        const layerParts = splitUserCssLayerBlocks(effectiveRawSource)
+        const layerUserCss = await transformGeneratorUserCss(layerParts.layer, {
+          generatorTarget: generated.target,
+          generatorStyleOptions,
+          cssUserHandlerOptions,
+          styleHandler,
+          importFallback: generatorOptions.importFallback,
+        })
+        const layerCss = layerUserCss.trim().length > 0 && !hasTailwindApplyDirective(layerUserCss)
+          ? {
+              layer: layerUserCss,
+              rest: css,
+            }
+          : extractGeneratedCssForUserLayerSelectors(css, layerParts.layer)
+        if (layerCss.layer.trim().length > 0) {
+          css = createCssSourceOrderAppend(wrapUserLayerComponentsCss(layerCss.layer), layerCss.rest)
+          if (shouldFinalizeMarkedUserLayerComponentsCss(file)) {
+            css = reorderMarkedUserLayerComponentsCss(css)
+          }
+        }
+      }
     }
     if (hasMatchedCssSourceFile || generated.target === 'web') {
       if (shouldAppendWebBundleCssFallback(generated.target, {

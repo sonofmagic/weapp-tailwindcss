@@ -2922,7 +2922,7 @@ describe('bundlers/shared generator css', () => {
         } as any,
         readyPromise: Promise.resolve(),
       },
-      runtime: new Set(['btn']),
+      runtime: new Set(['btn', 'flex']),
       rawSource,
       file: 'app.wxss',
       cssHandlerOptions: {
@@ -3001,7 +3001,7 @@ describe('bundlers/shared generator css', () => {
         } as any,
         readyPromise: Promise.resolve(),
       },
-      runtime: new Set(['btn']),
+      runtime: new Set(['btn', 'flex']),
       rawSource,
       file: '/project/dist/dev/mp-weixin/app.wxss',
       cssHandlerOptions: {
@@ -3036,9 +3036,92 @@ describe('bundlers/shared generator css', () => {
     expect(css).toContain('.btn::after')
     expect(css).toContain('display: inline-flex')
     expect(css).toContain('background-image: linear-gradient(to right, var(--tw-gradient-stops))')
+    expect(css.indexOf('.raw-btn')).toBeGreaterThanOrEqual(0)
+    expect(css.indexOf('.flex')).toBeGreaterThanOrEqual(0)
+    expect(css.indexOf('.raw-btn')).toBeLessThan(css.indexOf('.flex'))
     expect(css).not.toContain('@apply')
     expect(css).not.toContain('@layer')
     expect(css).not.toContain('// formatter note')
+  })
+
+  it('rebuilds Tailwind v3 mini-program layer css instead of appending incremental utilities after previous css', async () => {
+    const rawSource = [
+      '@tailwind base;',
+      '@tailwind components;',
+      '@tailwind utilities;',
+      '@layer components {',
+      '  .raw-cache-btn {',
+      '    @apply inline-flex items-center;',
+      '  }',
+      '}',
+    ].join('\n')
+
+    vi.doMock('@/generator', async () => {
+      const actual = await vi.importActual<typeof import('@/generator')>('@/generator')
+      return {
+        ...actual,
+        normalizeWeappTailwindcssGeneratorOptions: normalizeGeneratorOptions,
+      }
+    })
+
+    const { generateCssByGenerator } = await import('@/bundlers/shared/generator-css')
+    const baseOptions = {
+      opts: {
+        generator: {
+          target: 'weapp',
+        },
+        styleHandler: vi.fn(async (code: string) => ({ css: code })),
+      } as any,
+      runtimeState: {
+        twPatcher: {
+          majorVersion: 3,
+          options: {
+            projectRoot: process.cwd(),
+          },
+        } as any,
+        readyPromise: Promise.resolve(),
+      },
+      rawSource,
+      file: 'app.wxss',
+      cssHandlerOptions: {
+        isMainChunk: true,
+        postcssOptions: {
+          options: {
+            from: 'app.wxss',
+          },
+        },
+        majorVersion: 3,
+      } as any,
+      cssUserHandlerOptions: {
+        isMainChunk: false,
+        postcssOptions: {
+          options: {
+            from: 'app.wxss',
+          },
+        },
+        majorVersion: 3,
+      } as any,
+      styleHandler: vi.fn(async (code: string) => ({ css: code })),
+      debug: vi.fn(),
+    }
+
+    await generateCssByGenerator({
+      ...baseOptions,
+      runtime: new Set(['raw-cache-btn']),
+    })
+    const result = await generateCssByGenerator({
+      ...baseOptions,
+      runtime: new Set(['raw-cache-btn', 'flex']),
+      previousCss: '.flex { display: flex; }',
+    })
+    const css = result?.css ?? ''
+
+    expect(css).toContain('.raw-cache-btn')
+    expect(css.indexOf('.raw-cache-btn')).toBeGreaterThanOrEqual(0)
+    expect(css.indexOf('.flex')).toBeGreaterThanOrEqual(0)
+    expect(css.indexOf('.raw-cache-btn')).toBeLessThan(css.indexOf('.flex'))
+    expect(css).not.toContain('@layer')
+    expect(css).not.toContain('@apply')
   })
 
   it('keeps user-defined Tailwind layer blocks when removing source directives', async () => {
@@ -6062,5 +6145,51 @@ describe('bundlers/shared generator css', () => {
       expect.stringContaining('[data-c-h="true"]{display:none}'),
       expect.anything(),
     )
+  })
+
+  it('injects vite-processed component layer css before main utility css', async () => {
+    const { injectViteProcessedCssIntoMainCssAssets } = await import('@/bundlers/vite/processed-css-assets')
+    const bundle = {
+      'app.wxss': {
+        type: 'asset',
+        fileName: 'app.wxss',
+        source: [
+          '.flex {',
+          '  display: flex;',
+          '}',
+          '.raw-btn {',
+          '  display: inline-flex;',
+          '}',
+          '.text-red-500 {',
+          '  color: rgba(239, 68, 68, 1);',
+          '}',
+        ].join('\n'),
+      },
+    } as any
+
+    const injected = injectViteProcessedCssIntoMainCssAssets(bundle, {
+      opts: {
+        cssMatcher: (file: string) => file.endsWith('.wxss'),
+        mainCssChunkMatcher: (file: string) => file === 'app.wxss',
+        appType: 'uni-app-vite',
+      } as any,
+      getViteProcessedCssAssetResults: () => [[
+        '/src/App.vue',
+        [
+          '/*! weapp-tailwindcss layer components start */',
+          '.raw-btn {',
+          '  display: inline-flex;',
+          '}',
+          '/*! weapp-tailwindcss layer components end */',
+        ].join('\n'),
+      ]],
+    })
+
+    const css = bundle['app.wxss'].source
+    expect(injected).toBe(1)
+    expect(css).toContain('.raw-btn')
+    expect(css).not.toContain('weapp-tailwindcss layer components')
+    expect(css.match(/\.raw-btn\s*\{/g)).toHaveLength(1)
+    expect(css.indexOf('.raw-btn')).toBeLessThan(css.indexOf('.flex'))
   })
 })

@@ -25,6 +25,7 @@ import {
   hasTailwindApplyDirective,
   hasTailwindRootDirectives,
   hasTailwindSourceDirectives,
+  normalizeTailwindV3CssEntrySource,
   resolveCssEntrySource,
 } from './directives'
 import {
@@ -502,7 +503,7 @@ export async function resolveGeneratorSource(
       ? resolveSourceSideCssEntrySource(file, mergedSourceOptions, { removeConfig: true })
       : undefined
     const resolvedEntrySource: SourceSideCssEntrySource | ReturnType<typeof resolveCssEntrySource> = shouldResolveSourceSideCssEntry(rawSource)
-      ? applyEntrySource ?? cssEntrySource ?? sourceSideEntrySource
+      ? cssEntrySource ?? applyEntrySource ?? sourceSideEntrySource
       : shouldPreferTailwindV3SourceSideEntry(rawSource, sourceSideEntrySource)
         ? sourceSideEntrySource ?? cssEntrySource
         : cssEntrySource ?? applyEntrySource ?? sourceSideEntrySource
@@ -530,7 +531,7 @@ export async function resolveGeneratorSource(
     return resolveTailwindV3Source({
       ...mergedSourceOptions,
       base: resolvedEntrySource.base,
-      css: resolvedEntrySource.css,
+      css: normalizeTailwindV3CssEntrySource(resolvedEntrySource.css),
       ...(config ? { config } : {}),
     })
   }

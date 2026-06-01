@@ -643,6 +643,9 @@ export function WeappTailwindcss(options: UserDefinedOptions = {}): WeappTailwin
       hookContext?.addWatchFile?.(dependency)
     }
     viteGeneratedCssByFile.set(file, generated.css)
+    if (generated.css.includes('weapp-tailwindcss layer components start')) {
+      recordViteProcessedCssAssetResult(file, generated.css)
+    }
     markViteProcessedCssSource(file)
     rememberTailwindRootCssModule(id)
     recordGeneratorCandidates(runtime)

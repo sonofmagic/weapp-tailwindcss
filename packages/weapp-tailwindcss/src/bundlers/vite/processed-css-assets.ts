@@ -1,6 +1,7 @@
 import type { OutputAsset, OutputBundle } from 'rollup'
 import type { InternalUserDefinedOptions } from '@/types'
 import { stripBundlerGeneratedCssMarkers } from '../shared/generated-css-marker'
+import { mergeMarkedUserLayerComponentsCss } from '../shared/generator-css/user-layer-order'
 import { normalizeOutputPathKey } from '../shared/module-graph'
 
 interface CssAssetMarkerMatcher {
@@ -94,7 +95,7 @@ export function injectViteProcessedCssIntoMainCssAssets(
   options: InjectViteProcessedCssAssetOptions,
 ) {
   const viteCssResults = [...(options.getViteProcessedCssAssetResults?.() ?? [])]
-    .filter(([file, css]) => isCssOutputFile(file) && css.length > 0)
+    .filter(([, css]) => css.length > 0)
   if (viteCssResults.length === 0) {
     return 0
   }
@@ -123,7 +124,15 @@ export function injectViteProcessedCssIntoMainCssAssets(
         continue
       }
       const css = stripBundlerGeneratedCssMarkers(sourceCss).trim()
-      if (css.length === 0 || nextCss.includes(css)) {
+      if (css.length === 0) {
+        continue
+      }
+      const mergedLayerCss = mergeMarkedUserLayerComponentsCss(nextCss, css)
+      if (mergedLayerCss.merged) {
+        nextCss = mergedLayerCss.css
+        continue
+      }
+      if (nextCss.includes(css)) {
         continue
       }
       nextCss = appendCss(nextCss, css)
