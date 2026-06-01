@@ -148,6 +148,7 @@
     "mini-program-autoprefixer-options",
     "mini-program-webkit-prefix-allowlist",
     "preprocessor-tailwind-source",
+    "quiet-buttons-bloom",
     "quiet-target-record-log",
     "quiet-v4-generator-upgrade-coverage",
     "quiet-vue-compiler-runtime-deps",
