@@ -239,6 +239,9 @@ function isTailwindSourceDirective(node: postcss.Node, options: TailwindDirectiv
   if (atRule.name === 'import' && isPackageJsonImportRequest(parseImportRequest(atRule.params))) {
     return true
   }
+  if (atRule.name === 'layer') {
+    return !atRule.nodes || atRule.nodes.length === 0
+  }
   return TAILWIND_REMOVABLE_SOURCE_DIRECTIVE_NAMES.has(atRule.name)
 }
 

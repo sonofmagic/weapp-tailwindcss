@@ -2882,6 +2882,34 @@ describe('bundlers/shared generator css', () => {
     expect(css).not.toContain('@apply')
   })
 
+  it('keeps user-defined Tailwind layer blocks when removing source directives', async () => {
+    const { removeTailwindSourceDirectives } = await import('@/bundlers/shared/generator-css')
+    const rawSource = [
+      '@tailwind base;',
+      '@tailwind components;',
+      '@tailwind utilities;',
+      '@layer components {',
+      '  .raw-btn {',
+      '    @apply after:border-none inline-flex items-center gap-2 rounded text-sm font-semibold transition-all;',
+      '  }',
+      '  .btn {',
+      '    @apply raw-btn bg-gradient-to-r from-[#9e58e9] to-blue-500 px-2 py-1 text-white;',
+      '  }',
+      '}',
+    ].join('\n')
+
+    expect(removeTailwindSourceDirectives(rawSource)).toBe([
+      '@layer components {',
+      '  .raw-btn {',
+      '    @apply after:border-none inline-flex items-center gap-2 rounded text-sm font-semibold transition-all;',
+      '  }',
+      '  .btn {',
+      '    @apply raw-btn bg-gradient-to-r from-[#9e58e9] to-blue-500 px-2 py-1 text-white;',
+      '  }',
+      '}',
+    ].join('\n'))
+  })
+
   it('resolves current css asset directives for generator source', async () => {
     const rawSource = [
       '@config "./generator-css.unit.test.ts";',
