@@ -92,6 +92,7 @@
   "changesets": [
     "bare-arbitrary-values",
     "benchmark-published-baseline",
+    "bright-apples-argue",
     "centralize-postcss-style-cleanup",
     "clean-weapp-tailwindcss-unused-code",
     "control-babel-parser-cache",
