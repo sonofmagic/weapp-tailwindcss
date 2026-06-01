@@ -292,14 +292,24 @@ describe('tailwindcss v3 engine', () => {
     const result = await engine.generate({
       candidates: ['btn'],
     })
+    const webResult = await engine.generate({
+      target: 'web',
+      candidates: ['btn'],
+    })
     const css = compactCss(result.css)
+    const webCss = compactCss(webResult.css)
 
+    expect(result.css).not.toContain('@layer')
     expect(css).toContain('.raw-btn{display:inline-flex')
     expect(css).toContain('.raw-btn::after{content:var(--tw-content);border-style:none}')
     expect(css).toContain('.btn{display:inline-flex')
     expect(css).toContain('.btn::after{content:var(--tw-content);border-style:none}')
     expect(css).toContain('background-image:linear-gradient(toright,var(--tw-gradient-stops))')
     expect([...result.classSet]).toEqual(expect.arrayContaining(['btn', 'raw-btn']))
+    expect(webResult.css).toBe(webResult.rawCss)
+    expect(webResult.css).not.toContain('@layer')
+    expect(webCss).toContain('.raw-btn{display:inline-flex')
+    expect(webCss).toContain('.btn{display:inline-flex')
   })
 
   it('supports Tailwind v3 functions and directives in generator output', async () => {

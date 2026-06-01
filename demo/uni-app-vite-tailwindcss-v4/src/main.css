@@ -17,4 +17,13 @@
   --color-bermuda: #78dcca;
 }
 
+@layer components {
+  .layer-card-v4 {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: var(--color-midnight);
+  }
+}
+
 /* @source "../node_modules/tailwindcss-core-plugins-extractor/dist"; */

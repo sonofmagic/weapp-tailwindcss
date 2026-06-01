@@ -8,6 +8,7 @@ import { clearProjectBuildState } from './projectTest'
 
 const projectRoot = path.resolve(__dirname, '../demo/uni-app-vite-tailwindcss-v3')
 const rawTailwindDirectiveRE = /@(tailwind|apply)\b/
+const rawLayerDirectiveRE = /@layer\b/
 const cssOutputPattern = '**/*.{css,wxss,acss,qss}'
 const textOutputPattern = '**/*.{html,js,css,wxml,wxss}'
 
@@ -102,6 +103,10 @@ describe('uni-app vite vue3 Tailwind v3 generator output', () => {
       expect(cssEntries.length, `${platform.name} should emit css files`).toBeGreaterThan(0)
       expect(appCss?.bytes ?? 0, `${platform.name}/${platform.appCss} should not be an unexpanded entry css`).toBeGreaterThan(5000)
       expect(css, `${platform.name} css should not keep @tailwind or @apply`).not.toMatch(rawTailwindDirectiveRE)
+      expect(css, `${platform.name} css should not keep unsupported @layer wrappers`).not.toMatch(rawLayerDirectiveRE)
+      expect(css, `${platform.name} should keep custom component layer rules referenced by @apply`).toMatch(/\.raw-btn\s*\{[\s\S]*?display:\s*inline-flex/)
+      expect(css, `${platform.name} should keep custom component layer rules that @apply another custom class`).toMatch(/\.btn\s*\{[\s\S]*?display:\s*inline-flex/)
+      expect(css, `${platform.name} should keep pseudo selectors from custom component @apply`).toMatch(/\.btn(?:::|:)after\s*\{[\s\S]*?border-style:\s*none/)
       expect(css, `${platform.name} should keep arbitrary color utilities`).toMatch(/(?:\.bg-_b_h123456_B|background-color:\s*#123456)/)
       expect(css, `${platform.name} should keep after variant utilities`).toMatch(/after_c(?:content|border-none)|--tw-content|content:/)
       expect(css, `${platform.name} should keep arbitrary group variant utilities`).toMatch(/group-_b_published_B_ctext-green-500|published/)

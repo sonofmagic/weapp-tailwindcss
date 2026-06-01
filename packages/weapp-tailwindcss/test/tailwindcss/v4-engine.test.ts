@@ -396,6 +396,41 @@ describe('tailwindcss v4 engine', () => {
     expect(result.css).toContain('background-color: var(--color-blue-500)')
   })
 
+  it('unwraps custom cascade layers for mini-program output while preserving native layers for web output', async () => {
+    const source = await resolveTailwindV4Source({
+      css: `
+        @theme {
+          --color-midnight: #121063;
+        }
+        @layer components {
+          .layer-card-v4 {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: var(--color-midnight);
+          }
+        }
+        @tailwind utilities;
+      `,
+      base: process.cwd(),
+    })
+    const engine = createTailwindV4Engine(source)
+
+    const result = await engine.generate()
+    const webResult = await engine.generate({
+      target: 'web',
+    })
+    const css = compactCss(result.css)
+    const webCss = compactCss(webResult.css)
+
+    expect(result.rawCss).toContain('@layer components')
+    expect(result.css).not.toContain('@layer')
+    expect(css).toContain('.layer-card-v4{display:flex;align-items:center;gap:8px;color:var(--color-midnight);}')
+    expect(webResult.css).toBe(webResult.rawCss)
+    expect(webResult.css).toContain('@layer components')
+    expect(webCss).toContain('@layercomponents{.layer-card-v4{display:flex;align-items:center;gap:8px;color:var(--color-midnight);}}')
+  })
+
   it('removes unsupported vendor-prefixed keyframes from Tailwind v4 theme sources', async () => {
     const source = await resolveTailwindV4Source({
       css: `
