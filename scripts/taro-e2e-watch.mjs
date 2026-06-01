@@ -5,10 +5,10 @@ import process from 'node:process'
 
 const READY_RE = /compiled successfully|built in [\d.]+m?s?|构建完成/i
 const WEAK_READY_RE = /watching for file changes/i
-const pnpmExecPath = process.env.npm_execpath
 const sourceDirs = ['src']
 const ignoredDirs = new Set(['dist', 'node_modules', '.git'])
 const taroBuildGuardPath = path.resolve(import.meta.dirname, './taro-build-guard.mjs')
+const ensureWeappTailwindcssBuiltPath = path.resolve(import.meta.dirname, './ensure-weapp-tailwindcss-built.mjs')
 const forceNativeWatch = process.env.TARO_E2E_WATCH_NATIVE === '1'
 const forcePollingWatch = process.env.TARO_E2E_WATCH_NATIVE === '0'
 const forcePollingRestart = process.env.TARO_E2E_WATCH_RESTART === '1'
@@ -31,32 +31,6 @@ async function isTaroViteProject() {
   catch {
     return false
   }
-}
-
-function createPnpmCommand(args) {
-  if (pnpmExecPath) {
-    return {
-      command: process.execPath,
-      args: [pnpmExecPath, ...args],
-    }
-  }
-
-  return {
-    command: process.platform === 'win32' ? 'pnpm.cmd' : 'pnpm',
-    args,
-  }
-}
-
-function spawnPnpm(args, options = {}) {
-  const { command, args: commandArgs } = createPnpmCommand(args)
-  return spawn(command, commandArgs, {
-    cwd: process.cwd(),
-    env: {
-      ...process.env,
-      ...options.env,
-    },
-    stdio: options.stdio ?? ['ignore', 'pipe', 'pipe'],
-  })
 }
 
 function pipeWithReady(child, resolveReady) {
@@ -92,8 +66,10 @@ function pipeWithReady(child, resolveReady) {
 
 async function runBuild() {
   await new Promise((resolve, reject) => {
-    const build = spawnPnpm(['run', 'build:weapp'], {
+    const build = spawn(process.execPath, [taroBuildGuardPath], {
+      cwd: process.cwd(),
       env: {
+        ...process.env,
         TARO_BUILD_STRICT: '1',
       },
       stdio: 'inherit',
@@ -105,6 +81,24 @@ async function runBuild() {
         return
       }
       reject(new Error(`taro build failed: ${signal ?? code}`))
+    })
+  })
+}
+
+async function runEnsureBuild() {
+  await new Promise((resolve, reject) => {
+    const build = spawn(process.execPath, [ensureWeappTailwindcssBuiltPath], {
+      cwd: process.cwd(),
+      env: process.env,
+      stdio: 'inherit',
+    })
+    build.on('error', reject)
+    build.on('close', (code, signal) => {
+      if (code === 0) {
+        resolve()
+        return
+      }
+      reject(new Error(`ensure weapp-tailwindcss build failed: ${signal ?? code}`))
     })
   })
 }
@@ -174,6 +168,8 @@ async function main() {
   const restartNativeWatchOnChange = forcePollingRestart && !forceNativeWatch && !forcePollingWatch && taroViteProject
   const skipNativeWatch = forcePollingWatch
   process.stdout.write(`[taro-e2e-watch] mode=${restartNativeWatchOnChange ? 'vite-polling-restart' : skipNativeWatch ? 'polling-build' : 'native-watch'} cwd=${process.cwd()}\n`)
+  // e2e watch 只预构建一次，后续直接调用 Taro guard，避免 npm lifecycle 反复清理 dist 触发自循环。
+  await runEnsureBuild()
   let resolveReady
   const ready = skipNativeWatch
     ? runBuild()

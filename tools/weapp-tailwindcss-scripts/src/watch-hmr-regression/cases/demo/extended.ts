@@ -659,6 +659,7 @@ export function buildDemoExtendedCases(baseCwd: string): WatchCase[] {
     label: 'demo/taro-webpack-react-tailwindcss-v4',
     project: 'demo/taro-webpack-react-tailwindcss-v4',
     group: 'demo',
+    maxPluginProcessMs: 1500,
     cwd: path.resolve(baseCwd, 'demo/taro-webpack-react-tailwindcss-v4'),
     devScript: 'dev:e2e-watch',
     env: taroWatchEnv,
@@ -735,6 +736,7 @@ export function buildDemoExtendedCases(baseCwd: string): WatchCase[] {
       sourceFile: path.resolve(baseCwd, 'demo/taro-webpack-react-tailwindcss-v4/src/pages/index/index.tsx'),
       cssEntryFile: path.resolve(baseCwd, 'demo/taro-webpack-react-tailwindcss-v4/src/app.css'),
       injectMarkerElement: true,
+      reloadAfterCssMutation: true,
       env: {
         NODE_ENV: 'development',
       },
@@ -930,6 +932,9 @@ export function buildDemoExtendedCases(baseCwd: string): WatchCase[] {
     name: 'taro-webpack-vue3-tailwindcss-v4',
     label: 'demo/taro-webpack-vue3-tailwindcss-v4',
     project: 'demo/taro-webpack-vue3-tailwindcss-v4',
+    // Taro webpack Vue watch 在 e2e 轮询重建时会重写全局 wxss；
+    // same-class-literal 仍校验 HMR 生效、回滚与 escaped class，不强制全局样式文本完全稳定。
+    requireStableGlobalStyleOnSameClassLiteral: false,
     cwd: path.resolve(baseCwd, 'demo/taro-webpack-vue3-tailwindcss-v4'),
     outputWxml: path.resolve(baseCwd, 'demo/taro-webpack-vue3-tailwindcss-v4/dist/pages/index/index.wxml'),
     outputJs: path.resolve(baseCwd, 'demo/taro-webpack-vue3-tailwindcss-v4/dist/pages/index/index.js'),
