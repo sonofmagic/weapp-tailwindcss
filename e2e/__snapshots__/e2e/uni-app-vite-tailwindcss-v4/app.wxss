@@ -799,6 +799,12 @@ wx-root-portal-content {
 .active_cbg-emerald-600:active {
   background-color: var(--color-emerald-600);
 }
+.layer-card-v4 {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--color-midnight);
+}
 .before_ccontent-_b_anormal_subpackage_uni-app-vite-tailwindcss-v4_a_B:before {
   --tw-content: 'normal subpackage uni-app-vite-tailwindcss-v4';
   content: var(--tw-content);

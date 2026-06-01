@@ -6,7 +6,7 @@ Generator CSS files: app.wxss, home.wxss, index.wxss, index.wxss, user.wxss
 
 | Bytes | Selectors | @supports | :hover | Tailwind banner | Raw arbitrary selector | Weapp escaped arbitrary selector |
 | ---: | ---: | --- | --- | --- | --- | --- |
-| 39374 | 233 | false | false | false | false | true |
+| 39683 | 234 | false | false | false | false | true |
 
 ## Generator CSS
 
@@ -814,6 +814,12 @@ wx-root-portal-content {
 .active_cbg-emerald-600:active {
   background-color: var(--color-emerald-600);
 }
+.layer-card-v4 {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--color-midnight);
+}
 .before_ccontent-_b_anormal_subpackage_uni-app-vite-tailwindcss-v4_a_B:before {
   --tw-content: 'normal subpackage uni-app-vite-tailwindcss-v4';
   content: var(--tw-content);
@@ -1141,6 +1147,12 @@ wx-root-portal-content {
 }
 .active_cbg-emerald-600:active {
   background-color: var(--color-emerald-600);
+}
+.layer-card-v4 {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--color-midnight);
 }
 .container {
   width: 100%;
@@ -1479,6 +1491,12 @@ wx-root-portal-content {
 }
 .active_cbg-emerald-600:active {
   background-color: var(--color-emerald-600);
+}
+.layer-card-v4 {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--color-midnight);
 }
 .container {
   width: 100%;
