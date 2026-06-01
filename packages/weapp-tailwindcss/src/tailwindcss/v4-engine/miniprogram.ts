@@ -27,7 +27,10 @@ export async function transformTailwindV4CssToWeapp(
   css: string,
   options?: Partial<IStyleHandlerOptions>,
 ) {
-  const compatibleCss = normalizeTailwindV4GeneratedUrlValues(css)
+  const macroCss = hasCssMacroStyleOptions(options)
+    ? await transformCssMacroCss(css, options)
+    : css
+  const compatibleCss = normalizeTailwindV4GeneratedUrlValues(macroCss)
   const customPropertyValues = options && 'customPropertyValues' in options
     ? (options as { customPropertyValues?: ReadonlyMap<string, string> }).customPropertyValues
     : undefined
@@ -55,6 +58,6 @@ export async function transformTailwindV4CssByTarget(
   }
 
   return hasCssMacroStyleOptions(options)
-    ? transformCssMacroCss(css)
+    ? transformCssMacroCss(css, options)
     : css
 }
