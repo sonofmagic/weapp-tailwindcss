@@ -64,10 +64,14 @@ html.docs-wrapper .theme-doc-markdown > p,
 html.docs-wrapper .theme-doc-markdown > ul,
 html.docs-wrapper .theme-doc-markdown > ol,
 html.docs-wrapper .theme-doc-markdown > blockquote,
-html.docs-wrapper .theme-doc-markdown > .theme-admonition,
 html.docs-wrapper .theme-doc-markdown > details,
 html.docs-wrapper .theme-doc-markdown > hr {
   max-width: 82ch;
+}
+
+html.docs-wrapper .theme-doc-markdown .theme-admonition {
+  width: 100%;
+  max-width: none;
 }
 
 html.docs-wrapper .theme-doc-markdown > h1:first-child {
