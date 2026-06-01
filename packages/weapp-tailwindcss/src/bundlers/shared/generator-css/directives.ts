@@ -31,8 +31,8 @@ const TAILWIND_ROOT_DIRECTIVE_NAMES = new Set([
 ])
 const TAILWIND_ROOT_DIRECTIVE_RE = /@(?:import\s+(?:url\(\s*)?["']?tailwindcss4?(?:\/[^"')\s]*)?|(?:use|forward)\s+(?:url\(\s*)?["']?tailwindcss4?(?:\/[^"')\s]*)?|tailwind|config|custom-variant|plugin|source|theme|utility|variant)\b/
 const TAILWIND_EXTRACTABLE_DIRECTIVE_RE = /^\s*@(?:import|use|forward|tailwind|config|source|reference|plugin)\b[\s\S]*?(?:;|$)/
-const TAILWIND_EXTRACTABLE_BLOCK_DIRECTIVE_RE = /^\s*@(?:theme|utility|variant|custom-variant)\b[\s\S]*$/
 const TAILWIND_EXTRACTABLE_LAYER_STATEMENT_RE = /^\s*@layer\s[^;{]+;\s*$/
+const TAILWIND_EXTRACTABLE_BLOCK_START_RE = /^\s*@(?:layer|theme|utility|variant|custom-variant)\b[\s\S]*\{/
 
 interface TailwindDirectiveOptions {
   importFallback?: boolean | undefined
@@ -138,7 +138,6 @@ function extractTailwindDirectiveLines(
       continue
     }
     const directive = TAILWIND_EXTRACTABLE_DIRECTIVE_RE.exec(line)?.[0]
-      ?? TAILWIND_EXTRACTABLE_BLOCK_DIRECTIVE_RE.exec(line)?.[0]
       ?? TAILWIND_EXTRACTABLE_LAYER_STATEMENT_RE.exec(line)?.[0]
     if (!directive) {
       continue
@@ -169,11 +168,115 @@ function extractTailwindDirectiveLines(
   return directives
 }
 
+function stripPreprocessorLineComment(line: string) {
+  let quote: string | undefined
+  let escaped = false
+  for (let index = 0; index < line.length; index++) {
+    const char = line[index]
+    if (escaped) {
+      escaped = false
+      continue
+    }
+    if (char === '\\') {
+      escaped = true
+      continue
+    }
+    if (quote) {
+      if (char === quote) {
+        quote = undefined
+      }
+      continue
+    }
+    if (char === '"' || char === '\'') {
+      quote = char
+      continue
+    }
+    if (char === '/' && line[index + 1] === '/' && (index === 0 || /\s/.test(line[index - 1]!))) {
+      return line.slice(0, index).trimEnd()
+    }
+  }
+  return line
+}
+
+function countBlockBraceDelta(line: string) {
+  let quote: string | undefined
+  let escaped = false
+  let delta = 0
+  for (let index = 0; index < line.length; index++) {
+    const char = line[index]
+    if (escaped) {
+      escaped = false
+      continue
+    }
+    if (char === '\\') {
+      escaped = true
+      continue
+    }
+    if (quote) {
+      if (char === quote) {
+        quote = undefined
+      }
+      continue
+    }
+    if (char === '"' || char === '\'') {
+      quote = char
+      continue
+    }
+    if (char === '{') {
+      delta++
+    }
+    else if (char === '}') {
+      delta--
+    }
+  }
+  return delta
+}
+
+function extractTailwindFallbackBlocks(rawSource: string) {
+  const blocks: string[] = []
+  let current: string[] | undefined
+  let depth = 0
+
+  for (const rawLine of stripGeneratorPlaceholderMarkers(rawSource).split(/\r?\n/)) {
+    const line = stripPreprocessorLineComment(rawLine)
+    if (!line.trim()) {
+      continue
+    }
+
+    if (!current) {
+      if (!TAILWIND_EXTRACTABLE_BLOCK_START_RE.test(line)) {
+        continue
+      }
+      current = [line]
+      depth = countBlockBraceDelta(line)
+      if (depth <= 0) {
+        blocks.push(current.join('\n'))
+        current = undefined
+        depth = 0
+      }
+      continue
+    }
+
+    current.push(line)
+    depth += countBlockBraceDelta(line)
+    if (depth <= 0) {
+      blocks.push(current.join('\n'))
+      current = undefined
+      depth = 0
+    }
+  }
+
+  return blocks
+}
+
 function extractTailwindSourceForPostcssFallback(
   rawSource: string,
   options: TailwindDirectiveOptions & { removeConfig?: boolean } = {},
 ) {
-  const directives = extractTailwindDirectiveLines(rawSource, options)
+  const directives = [
+    ...extractTailwindDirectiveLines(rawSource, options),
+    ...extractTailwindFallbackBlocks(rawSource),
+  ]
   return directives.length > 0 ? directives.join('\n') : undefined
 }
 
@@ -269,10 +372,12 @@ function isTailwindGenerationDirective(node: postcss.Node, options: TailwindGene
 
 export function removeTailwindSourceDirectives(rawSource: string, options: TailwindDirectiveOptions = {}) {
   try {
-    if (hasPreprocessorOnlySyntax(rawSource)) {
+    const source = hasPreprocessorOnlySyntax(rawSource)
+      ? extractTailwindSourceForPostcssFallback(rawSource, options)
+      : stripGeneratorPlaceholderMarkers(rawSource)
+    if (!source) {
       return ''
     }
-    const source = stripGeneratorPlaceholderMarkers(rawSource)
     const root = postcss.parse(source)
     let removed = false
     root.walk((node) => {

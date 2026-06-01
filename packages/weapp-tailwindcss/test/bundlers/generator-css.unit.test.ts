@@ -873,6 +873,52 @@ describe('bundlers/shared generator css', () => {
     expect(removeTailwindSourceDirectives(rawSource, { importFallback: true })).toBe('')
   })
 
+  it('keeps Tailwind layer blocks from preprocessor sources when extracting fallback sources', async () => {
+    const { normalizeTailwindSourceForGenerator, removeTailwindSourceDirectives, resolveCssEntrySource } = await import('@/bundlers/shared/generator-css')
+    const rawSource = [
+      '$brand: #123456;',
+      '@use "tailwindcss/base";',
+      '@use "tailwindcss/components";',
+      '@use "tailwindcss/utilities";',
+      '@layer components {',
+      '  .raw-btn {',
+      '    // formatter note',
+      '    @apply after:border-none inline-flex items-center gap-2 rounded text-sm font-semibold transition-all;',
+      '  }',
+      '',
+      '  .btn {',
+      '    // use custom raw-btn',
+      '    @apply raw-btn bg-gradient-to-r from-[#9e58e9] to-blue-500 px-2 py-1 text-white;',
+      '  }',
+      '}',
+      '.card { color: $brand; }',
+    ].join('\n')
+    const expectedLayer = [
+      '@layer components {',
+      '  .raw-btn {',
+      '    @apply after:border-none inline-flex items-center gap-2 rounded text-sm font-semibold transition-all;',
+      '  }',
+      '  .btn {',
+      '    @apply raw-btn bg-gradient-to-r from-[#9e58e9] to-blue-500 px-2 py-1 text-white;',
+      '  }',
+      '}',
+    ].join('\n')
+
+    expect(normalizeTailwindSourceForGenerator(rawSource)).toBe([
+      '@import "tailwindcss/base";',
+      '@import "tailwindcss/components";',
+      '@import "tailwindcss/utilities";',
+      expectedLayer,
+    ].join('\n'))
+    expect(resolveCssEntrySource(rawSource, __dirname)?.css).toBe([
+      '@import "tailwindcss/base";',
+      '@import "tailwindcss/components";',
+      '@import "tailwindcss/utilities";',
+      expectedLayer,
+    ].join('\n'))
+    expect(removeTailwindSourceDirectives(rawSource)).toBe(expectedLayer)
+  })
+
   it('keeps Tailwind v4 top-level layer statements when extracting fallback sources', async () => {
     const { normalizeTailwindSourceForGenerator } = await import('@/bundlers/shared/generator-css')
     const rawSource = [
@@ -2880,6 +2926,89 @@ describe('bundlers/shared generator css', () => {
     expect(css).toContain('filter: none')
     expect(css).toContain('background-image: linear-gradient(to right, var(--tw-gradient-stops))')
     expect(css).not.toContain('@apply')
+  })
+
+  it('keeps Tailwind v3 component layer classes from Sass app css in dev output', async () => {
+    const rawSource = [
+      '$brand: #123456;',
+      '@use "tailwindcss/base";',
+      '@use "tailwindcss/components";',
+      '@use "tailwindcss/utilities";',
+      '@layer components {',
+      '  .raw-btn {',
+      '    // formatter note',
+      '    @apply after:border-none inline-flex items-center gap-2 rounded text-sm font-semibold transition-all;',
+      '  }',
+      '  .btn {',
+      '    // use custom raw-btn',
+      '    @apply raw-btn bg-gradient-to-r from-[#9e58e9] to-blue-500 px-2 py-1 text-white;',
+      '  }',
+      '}',
+    ].join('\n')
+
+    vi.doMock('@/generator', async () => {
+      const actual = await vi.importActual<typeof import('@/generator')>('@/generator')
+      return {
+        ...actual,
+        normalizeWeappTailwindcssGeneratorOptions: normalizeGeneratorOptions,
+      }
+    })
+
+    const { generateCssByGenerator } = await import('@/bundlers/shared/generator-css')
+    const result = await generateCssByGenerator({
+      opts: {
+        generator: {
+          target: 'weapp',
+        },
+        styleHandler: vi.fn(async (code: string) => ({ css: code })),
+      } as any,
+      runtimeState: {
+        twPatcher: {
+          majorVersion: 3,
+          options: {
+            projectRoot: process.cwd(),
+          },
+        } as any,
+        readyPromise: Promise.resolve(),
+      },
+      runtime: new Set(['btn']),
+      rawSource,
+      file: '/project/dist/dev/mp-weixin/app.wxss',
+      cssHandlerOptions: {
+        isMainChunk: true,
+        postcssOptions: {
+          options: {
+            from: '/project/dist/dev/mp-weixin/app.wxss',
+          },
+        },
+        majorVersion: 3,
+        sourceOptions: {
+          outputRoot: '/project/dist/dev/mp-weixin',
+        },
+      } as any,
+      cssUserHandlerOptions: {
+        isMainChunk: false,
+        postcssOptions: {
+          options: {
+            from: '/project/dist/dev/mp-weixin/app.wxss',
+          },
+        },
+        majorVersion: 3,
+      } as any,
+      styleHandler: vi.fn(async (code: string) => ({ css: code })),
+      debug: vi.fn(),
+    })
+    const css = result?.css ?? ''
+
+    expect(css).toContain('.raw-btn')
+    expect(css).toContain('.raw-btn::after')
+    expect(css).toContain('.btn')
+    expect(css).toContain('.btn::after')
+    expect(css).toContain('display: inline-flex')
+    expect(css).toContain('background-image: linear-gradient(to right, var(--tw-gradient-stops))')
+    expect(css).not.toContain('@apply')
+    expect(css).not.toContain('@layer')
+    expect(css).not.toContain('// formatter note')
   })
 
   it('keeps user-defined Tailwind layer blocks when removing source directives', async () => {
