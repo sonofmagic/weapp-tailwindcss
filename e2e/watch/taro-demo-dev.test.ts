@@ -11,8 +11,10 @@ import {
 import { resolveCaseName, shouldRunTarget } from './hot-update/shared'
 
 const TARO_WATCH_READY_RE = /→ Watching|watching for file changes/i
+const TARO_COMPILED_RE = /Compiled successfully/i
 const ROOT = process.cwd()
 const TARGET = 'taro-webpack-react-tailwindcss-v4'
+const STABLE_AFTER_READY_MS = 8_000
 
 async function stopProcessTree(child: ReturnType<typeof spawnPnpm>) {
   const pid = child.pid
@@ -52,14 +54,21 @@ async function expectDemoDevWatchReady(project: string) {
     quietSass: true,
   })
   let ready = false
+  let readyAt = 0
+  let compiledAfterReady = 0
   let closeResult:
     | { code: number | null, signal: NodeJS.Signals | null }
     | undefined
 
   const onData = (chunk: Buffer | string) => {
+    const text = chunk.toString()
     collect(chunk)
-    if (TARO_WATCH_READY_RE.test(chunk.toString())) {
+    if (ready && TARO_COMPILED_RE.test(text)) {
+      compiledAfterReady += 1
+    }
+    if (TARO_WATCH_READY_RE.test(text)) {
       ready = true
+      readyAt = Date.now()
     }
   }
 
@@ -91,6 +100,20 @@ async function expectDemoDevWatchReady(project: string) {
       closeResult,
       `[${project}] pnpm dev should keep running after watch ready`,
     ).toBeUndefined()
+
+    while (Date.now() - readyAt < STABLE_AFTER_READY_MS) {
+      if (closeResult) {
+        throw new Error(
+          `[${project}] pnpm dev exited during stable watch window: ${closeResult.signal ?? closeResult.code}\n${logs.join('\n')}`,
+        )
+      }
+      await sleep(250)
+    }
+
+    expect(
+      compiledAfterReady,
+      `[${project}] pnpm dev should not self-trigger rebuilds after watch ready\n${logs.join('\n')}`,
+    ).toBe(0)
   }
   finally {
     await stopProcessTree(child)
