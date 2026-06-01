@@ -919,6 +919,36 @@ describe('bundlers/shared generator css', () => {
     expect(removeTailwindSourceDirectives(rawSource)).toBe(expectedLayer)
   })
 
+  it('keeps fallback layer blocks with Less variables and quoted double-slash values', async () => {
+    const { normalizeTailwindSourceForGenerator, removeTailwindSourceDirectives } = await import('@/bundlers/shared/generator-css')
+    const rawSource = [
+      '@brand: #123456;',
+      '@import "tailwindcss";',
+      '@layer components {',
+      '  .asset-card {',
+      '    --asset-url: "https://example.com/a//b";',
+      '    // less comment',
+      '    @apply flex items-center text-sm;',
+      '  }',
+      '}',
+      '.card { color: @brand; }',
+    ].join('\n')
+    const expectedLayer = [
+      '@layer components {',
+      '  .asset-card {',
+      '    --asset-url: "https://example.com/a//b";',
+      '    @apply flex items-center text-sm;',
+      '  }',
+      '}',
+    ].join('\n')
+
+    expect(normalizeTailwindSourceForGenerator(rawSource)).toBe([
+      '@import "tailwindcss";',
+      expectedLayer,
+    ].join('\n'))
+    expect(removeTailwindSourceDirectives(rawSource)).toBe(expectedLayer)
+  })
+
   it('keeps Tailwind v4 top-level layer statements when extracting fallback sources', async () => {
     const { normalizeTailwindSourceForGenerator } = await import('@/bundlers/shared/generator-css')
     const rawSource = [
