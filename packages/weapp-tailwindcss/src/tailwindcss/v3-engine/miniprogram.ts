@@ -94,7 +94,10 @@ export async function transformTailwindV3CssToWeapp(
   css: string,
   options?: Partial<IStyleHandlerOptions>,
 ) {
-  const result = await defaultStyleHandler(css, {
+  const macroCss = hasCssMacroStyleOptions(options)
+    ? await transformCssMacroCss(css, options)
+    : css
+  const result = await defaultStyleHandler(macroCss, {
     cssChildCombinatorReplaceValue: ['view', 'text'],
     cssRemoveHoverPseudoClass: true,
     isMainChunk: true,
@@ -119,6 +122,6 @@ export async function transformTailwindV3CssByTarget(
   }
 
   return hasCssMacroStyleOptions(options)
-    ? transformCssMacroCss(css)
+    ? transformCssMacroCss(css, options)
     : css
 }

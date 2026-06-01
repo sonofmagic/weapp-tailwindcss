@@ -132,12 +132,16 @@ describe('uni-app vite vue3 Tailwind v3 generator output', () => {
     expect(mpWxml, 'mp-weixin should remove the H5 DOM branch').not.toContain('css-macro-e2e-h5')
     expect(mpWxml, 'mp-weixin should remove the H5 DOM text').not.toContain('css-macro-h5')
     expect(mpCss, 'css-macro should not leave legacy platform media queries').not.toContain('@media (weapp-tw-platform')
-    expect(mpCss, 'mp-weixin ifdef CSS must use standalone conditional comments').toMatch(
-      /\/\* #ifdef MP-WEIXIN \*\/\n\.ifdef-_bMP-WEIXIN_B_cbg-_b_h1167ff_B \{[\s\S]*?background-color:\s*rgba\(17,\s*103,\s*255,[\s\S]*?\n\/\* #endif \*\//,
+    expect(mpCss, 'mp-weixin should keep matching css-macro ifdef branch').toMatch(
+      /\.ifdef-_bMP-WEIXIN_B_cbg-_b_h1167ff_B \{[\s\S]*?background-color:\s*rgba\(17,\s*103,\s*255,/,
     )
-    expect(mpCss, 'mp-weixin ifndef CSS must use standalone conditional comments').toMatch(
-      /\/\* #ifndef H5 \*\/\n\.ifndef-_bH5_B_ctext-_b_h0055aa_B \{[\s\S]*?color:\s*rgba\(0,\s*85,\s*170,[\s\S]*?\n\/\* #endif \*\//,
+    expect(mpCss, 'mp-weixin should keep matching css-macro ifndef branch').toMatch(
+      /\.ifndef-_bH5_B_ctext-_b_h0055aa_B \{[\s\S]*?color:\s*rgba\(0,\s*85,\s*170,/,
     )
+    expect(mpCss, 'mp-weixin should remove non-matching css-macro ifndef branch before final css output').not.toContain('.ifndef-_bMP-WEIXIN_B_cbg-red-500')
+    expect(mpCss, 'mp-weixin should remove non-matching css-macro H5 ifdef branch before final css output').not.toContain('.ifdef-_bH5_B_cbg-_b_hff6611_B')
+    expect(mpCss, 'mp-weixin should not leave css-macro conditional comments in final css output').not.toContain('#ifdef MP-WEIXIN')
+    expect(mpCss, 'mp-weixin should not leave css-macro negative conditional comments in final css output').not.toContain('#ifndef MP-WEIXIN')
 
     await buildPlatform('h5')
 
@@ -150,11 +154,15 @@ describe('uni-app vite vue3 Tailwind v3 generator output', () => {
     expect(h5Output, 'css-macro should not leave legacy platform media queries in H5 output').not.toContain('@media (weapp-tw-platform')
     expect(h5Output, 'css-macro should expand internal conditional at-rules in H5 output').not.toContain('@weapp-tw-ifdef')
     expect(h5Output, 'css-macro should expand internal negative conditional at-rules in H5 output').not.toContain('@weapp-tw-ifndef')
-    expect(h5Output, 'H5 ifdef CSS must use standalone conditional comments').toMatch(
-      /\/\* #ifdef H5 \*\/\n\.ifdef-\\\[H5\\\]\\:bg-\\\[\\#ff6611\\\] \{[\s\S]*?background-color:\s*rgb\(255\s+102\s+17\s+\/[\s\S]*?\n\/\* #endif \*\//,
+    expect(h5Output, 'H5 should keep matching css-macro ifdef branch').toMatch(
+      /\.ifdef-\\\[H5\\\]\\:bg-\\\[\\#ff6611\\\] \{[\s\S]*?background-color:\s*rgb\(255\s+102\s+17\s+\//,
     )
-    expect(h5Output, 'H5 ifndef CSS must use standalone conditional comments').toMatch(
-      /\/\* #ifndef MP-WEIXIN \*\/\n\.ifndef-\\\[MP-WEIXIN\\\]\\:text-\\\[\\#aa3300\\\] \{[\s\S]*?color:\s*rgb\(170\s+51\s+0\s+\/[\s\S]*?\n\/\* #endif \*\//,
+    expect(h5Output, 'H5 should keep matching css-macro ifndef branch').toMatch(
+      /\.ifndef-\\\[MP-WEIXIN\\\]\\:text-\\\[\\#aa3300\\\] \{[\s\S]*?color:\s*rgb\(170\s+51\s+0\s+\//,
     )
+    expect(h5Output, 'H5 should remove non-matching css-macro MP-WEIXIN ifdef branch before final css output').not.toContain('.ifdef-\\[MP-WEIXIN\\]\\:bg-blue-500')
+    expect(h5Output, 'H5 should remove non-matching css-macro MP-WEIXIN ifdef branch before final css output').not.toContain('.ifdef-_bMP-WEIXIN_B_cbg-blue-500')
+    expect(h5Output, 'H5 should not leave css-macro conditional comments in final css output').not.toContain('#ifdef H5')
+    expect(h5Output, 'H5 should not leave css-macro negative conditional comments in final css output').not.toContain('#ifndef MP-WEIXIN')
   }, 600_000)
 })

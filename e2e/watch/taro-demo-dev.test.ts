@@ -55,7 +55,8 @@ async function expectDemoDevWatchReady(project: string) {
   })
   let ready = false
   let readyAt = 0
-  let compiledAfterReady = 0
+  let lastReadyCompiledCount = 0
+  let compiledCount = 0
   let closeResult:
     | { code: number | null, signal: NodeJS.Signals | null }
     | undefined
@@ -63,12 +64,13 @@ async function expectDemoDevWatchReady(project: string) {
   const onData = (chunk: Buffer | string) => {
     const text = chunk.toString()
     collect(chunk)
-    if (ready && TARO_COMPILED_RE.test(text)) {
-      compiledAfterReady += 1
+    if (TARO_COMPILED_RE.test(text)) {
+      compiledCount += 1
     }
     if (TARO_WATCH_READY_RE.test(text)) {
       ready = true
       readyAt = Date.now()
+      lastReadyCompiledCount = compiledCount
     }
   }
 
@@ -111,9 +113,13 @@ async function expectDemoDevWatchReady(project: string) {
     }
 
     expect(
-      compiledAfterReady,
-      `[${project}] pnpm dev should not self-trigger rebuilds after watch ready\n${logs.join('\n')}`,
-    ).toBe(0)
+      compiledCount,
+      `[${project}] pnpm dev should not self-trigger rebuilds after the final watch ready\n${logs.join('\n')}`,
+    ).toBe(lastReadyCompiledCount)
+    expect(
+      lastReadyCompiledCount,
+      `[${project}] pnpm dev should compile before entering the final watch ready\n${logs.join('\n')}`,
+    ).toBeGreaterThan(0)
   }
   finally {
     await stopProcessTree(child)
