@@ -110,6 +110,7 @@
     "fast-vite-source-candidates",
     "fast-vite-source-watch",
     "fix-gulp-watch-runtime-css",
+    "fix-mini-program-layer-order",
     "fix-modern-color-functions-weapp-output",
     "fix-mpx-v4-config-path",
     "fix-mpx-watch-script-css",
