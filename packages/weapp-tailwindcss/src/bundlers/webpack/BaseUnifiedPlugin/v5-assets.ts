@@ -51,6 +51,17 @@ function createWebpackSnapshotAssets(assets: Record<string, { source: () => unkn
   )
 }
 
+function stringifyWebpackSource(source: unknown) {
+  if (typeof source === 'string') {
+    return source
+  }
+  return source?.toString() ?? ''
+}
+
+interface WebpackSourceLike {
+  source: () => unknown
+}
+
 export function setupWebpackV5ProcessAssetsHook(options: SetupWebpackV5ProcessAssetsHookOptions) {
   const {
     compiler,
@@ -110,6 +121,30 @@ export function setupWebpackV5ProcessAssetsHook(options: SetupWebpackV5ProcessAs
           }
         }
         const assetHashByChunk = createAssetHashByChunkMap(compilation.chunks as any)
+        const getCurrentAssetSource = (file: string) => {
+          const asset = compilation.getAsset(file)
+          if (!asset) {
+            return undefined
+          }
+          return stringifyWebpackSource(asset.source.source())
+        }
+        const updateAssetIfChanged = (
+          file: string,
+          source: WebpackSourceLike,
+          { notifyUpdate = true }: { notifyUpdate?: boolean } = {},
+        ) => {
+          const nextSource = stringifyWebpackSource(source.source())
+          const previousSource = getCurrentAssetSource(file)
+          if (previousSource === nextSource) {
+            debug('asset unchanged, skip update: %s', file)
+            return false
+          }
+          compilation.updateAsset(file, source)
+          if (notifyUpdate) {
+            compilerOptions.onUpdate(file, previousSource ?? '', nextSource)
+          }
+          return true
+        }
 
         const entries = Object.entries(assets)
         const compilerOutputPath = compilation.compiler?.outputPath ?? compiler.outputPath
@@ -162,9 +197,9 @@ export function setupWebpackV5ProcessAssetsHook(options: SetupWebpackV5ProcessAs
               continue
             }
             const source = new ConcatSource(code)
-            compilation.updateAsset(assetName, source)
-            compilerOptions.onUpdate(assetName, previous, code)
-            debug('js linked handle: %s', assetName)
+            if (updateAssetIfChanged(assetName, source)) {
+              debug('js linked handle: %s', assetName)
+            }
           }
         }
         const groupedEntries = getGroupedEntries(entries, compilerOptions)
@@ -276,8 +311,8 @@ export function setupWebpackV5ProcessAssetsHook(options: SetupWebpackV5ProcessAs
                 hashKey: `${file}:asset`,
                 rawSource,
                 hash: chunkHash,
-                applyResult(source) {
-                  compilation.updateAsset(file, source)
+                applyResult(source, { cacheHit }) {
+                  updateAssetIfChanged(file, source, { notifyUpdate: !cacheHit })
                 },
                 onCacheHit() {
                   debug('html cache hit: %s', file)
@@ -285,8 +320,6 @@ export function setupWebpackV5ProcessAssetsHook(options: SetupWebpackV5ProcessAs
                 transform: async () => {
                   const wxml = await compilerOptions.templateHandler(rawSource, defaultTemplateHandlerOptions)
                   const source = new ConcatSource(wxml)
-
-                  compilerOptions.onUpdate(file, rawSource, wxml)
                   debug('html handle: %s', file)
 
                   return {
@@ -318,8 +351,8 @@ export function setupWebpackV5ProcessAssetsHook(options: SetupWebpackV5ProcessAs
                 hashKey: `${file}:asset`,
                 rawSource: initialRawSource,
                 hash: chunkHash,
-                applyResult(source) {
-                  compilation.updateAsset(file, source)
+                applyResult(source, { cacheHit }) {
+                  updateAssetIfChanged(file, source, { notifyUpdate: !cacheHit })
                 },
                 onCacheHit() {
                   debug('js cache hit: %s', file)
@@ -346,7 +379,6 @@ export function setupWebpackV5ProcessAssetsHook(options: SetupWebpackV5ProcessAs
                   }
                   const { code, linked } = await compilerOptions.jsHandler(currentSource, runtimeSet, handlerOptions)
                   const source = new ConcatSource(code)
-                  compilerOptions.onUpdate(file, currentSource, code)
                   debug('js handle: %s', file)
                   applyLinkedResults(linked)
                   return {
@@ -376,14 +408,13 @@ export function setupWebpackV5ProcessAssetsHook(options: SetupWebpackV5ProcessAs
                     compilerOptions.cache.computeHash(rawSource),
                     runtimeSetHash,
                   ),
-                  applyResult(source) {
-                    compilation.updateAsset(file, source)
+                  applyResult(source, { cacheHit }) {
+                    updateAssetIfChanged(file, source, { notifyUpdate: !cacheHit })
                   },
                   onCacheHit() {
                     debug('css webpack-loader-pipeline cache hit: %s', file)
                   },
                   transform: async () => {
-                    compilerOptions.onUpdate(file, rawSource, nextCss)
                     debug('css skip webpack-loader-pipeline asset: %s', file)
                     return {
                       result: new ConcatSource(nextCss),
@@ -407,8 +438,8 @@ export function setupWebpackV5ProcessAssetsHook(options: SetupWebpackV5ProcessAs
                 hashKey: `${file}:asset`,
                 rawSource,
                 hash: runtimeAwareHash,
-                applyResult(source) {
-                  compilation.updateAsset(file, source)
+                applyResult(source, { cacheHit }) {
+                  updateAssetIfChanged(file, source, { notifyUpdate: !cacheHit })
                 },
                 onCacheHit() {
                   debug('css cache hit: %s', file)
@@ -430,7 +461,6 @@ export function setupWebpackV5ProcessAssetsHook(options: SetupWebpackV5ProcessAs
                   const css = generated?.css ?? (await compilerOptions.styleHandler(rawSource, cssHandlerOptions)).css
                   const source = new ConcatSource(css)
 
-                  compilerOptions.onUpdate(file, rawSource, css)
                   if (generated) {
                     debug('css handle via tailwind v%s engine(%s): %s', runtimeState.twPatcher.majorVersion, generated.target, file)
                   }

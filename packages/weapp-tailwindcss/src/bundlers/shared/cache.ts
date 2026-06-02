@@ -7,7 +7,7 @@ export interface ProcessCachedTaskOptions<TValue extends CacheValue> {
   rawSource?: string | undefined
   hash?: string | undefined
   readCache?: (() => TValue | undefined) | undefined
-  applyResult: (value: TValue) => void | Promise<void>
+  applyResult: (value: TValue, meta: { cacheHit: boolean }) => void | Promise<void>
   transform: () => Promise<{
     result: TValue
     cacheValue?: CacheValue | undefined
@@ -35,13 +35,13 @@ export async function processCachedTask<TValue extends CacheValue>({
     resolveCache: readCache,
     async onCacheHit(value) {
       cacheHit = true
-      await applyResult(value)
+      await applyResult(value, { cacheHit: true })
       onCacheHit?.()
     },
     transform,
   })
 
   if (!cacheHit) {
-    await applyResult(result)
+    await applyResult(result, { cacheHit: false })
   }
 }
