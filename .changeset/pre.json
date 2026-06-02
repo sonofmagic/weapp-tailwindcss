@@ -188,6 +188,7 @@
     "tailwind-v4-vite-auto-css-entries",
     "tailwindcss-config-ts-source",
     "tailwindcss-root-import",
+    "taro-webpack-watch-ignore-output",
     "tidy-v3-oxide-runtime",
     "tiny-cycles-draw",
     "uni-h5-web-target",
