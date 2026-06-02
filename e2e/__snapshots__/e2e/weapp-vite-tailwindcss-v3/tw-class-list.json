@@ -118,6 +118,7 @@
   "text-[length:24rpx]",
   "text-[length:32rpx]",
   "text-base",
+  "text-blue-500",
   "text-gray-600",
   "text-gray-800",
   "text-lg/7",

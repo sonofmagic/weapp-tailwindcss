@@ -393,6 +393,10 @@ text,
   --tw-text-opacity: 1;
   color: rgba(236, 236, 236, var(--tw-text-opacity, 1));
 }
+.text-blue-500 {
+  --tw-text-opacity: 1;
+  color: rgba(59, 130, 246, var(--tw-text-opacity, 1));
+}
 .text-gray-600 {
   --tw-text-opacity: 1;
   color: rgba(75, 85, 99, var(--tw-text-opacity, 1));
@@ -904,6 +908,10 @@ text,
 .text-_b_hececec_B {
   --tw-text-opacity: 1;
   color: rgba(236, 236, 236, var(--tw-text-opacity, 1));
+}
+.text-blue-500 {
+  --tw-text-opacity: 1;
+  color: rgba(59, 130, 246, var(--tw-text-opacity, 1));
 }
 .text-gray-600 {
   --tw-text-opacity: 1;

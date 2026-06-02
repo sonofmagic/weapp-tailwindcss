@@ -65,10 +65,21 @@ describe('e2e', () => {
 
     const pageJs = await fs.readFile(path.resolve(projectPath, 'dist/pages/index/index.js'), 'utf8')
     const pageWxml = await fs.readFile(path.resolve(projectPath, 'dist/pages/index/index.wxml'), 'utf8')
+    const testPageJs = await fs.readFile(path.resolve(projectPath, 'dist/pages/index/test.js'), 'utf8')
+    const testPageWxml = await fs.readFile(path.resolve(projectPath, 'dist/pages/index/test.wxml'), 'utf8')
 
     expect(pageJs).toContain('Hello world!')
+    expect(testPageJs).toContain('at App.vue:4 index.ts:120:3')
+    expect(testPageJs).toContain('size > 4 ? keep-[business] : App.vue:4')
+    expect(testPageJs).toContain('before content ["not-generated"]')
+    expect(testPageJs).toContain('https://example.com/a[b]?q=Hello world!')
     expect(pageJs).not.toContain('Hello world_e')
     expect(pageWxml).not.toContain('Hello world_e')
+    expect(testPageJs).not.toContain('App_dvue_c4')
+    expect(testPageJs).not.toContain('index_dts_c120_c3')
+    expect(testPageJs).not.toContain('keep-_bbusiness_B')
+    expect(testPageJs).not.toContain('not-generated_q_B')
+    expect(testPageWxml).not.toContain('Hello world_e')
   })
 
   it('does not generate workspace dependency dts files in source directories during Taro Vite React v3 build', async () => {

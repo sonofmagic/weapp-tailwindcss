@@ -26,8 +26,16 @@ describe('e2e', () => {
     const pageWxml = await fs.readFile(path.resolve(projectPath, 'dist/pages/index/index.wxml'), 'utf8')
 
     expect(pageJs).toContain('Hello world!')
+    expect(pageJs).toContain('at App.vue:4 index.ts:120:3')
+    expect(pageJs).toContain('size > 4 ? keep-[business] : App.vue:4')
+    expect(pageJs).toContain('before content ["not-generated"]')
+    expect(pageJs).toContain('https://example.com/a[b]?q=Hello world!')
     expect(pageJs).not.toContain('Hello world_e')
     expect(pageWxml).not.toContain('Hello world_e')
+    expect(pageJs).not.toContain('App_dvue_c4')
+    expect(pageJs).not.toContain('index_dts_c120_c3')
+    expect(pageJs).not.toContain('keep-_bbusiness_B')
+    expect(pageJs).not.toContain('not-generated_q_B')
   })
 
   it('removes Tailwind CSS v4 bg-linear-to-r lab supports guard', async () => {
