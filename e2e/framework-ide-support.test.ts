@@ -56,12 +56,25 @@ async function cleanupDevTools() {
   if (process.platform !== 'darwin') {
     return
   }
+  const timeout = Number(process.env['E2E_IDE_CLEANUP_TIMEOUT_MS'] ?? 5000)
   try {
     await execa('osascript', ['-e', 'quit app "wechatwebdevtools"'], {
-      timeout: Number(process.env['E2E_IDE_CLEANUP_TIMEOUT_MS'] ?? 5000),
+      timeout,
     })
   }
   catch {}
+  const startedAt = Date.now()
+  while (Date.now() - startedAt < timeout) {
+    try {
+      await execa('pgrep', ['-f', 'wechat(web)?devtools'], {
+        timeout: 1000,
+      })
+      await wait(250)
+    }
+    catch {
+      return
+    }
+  }
 }
 
 function isTransientIdeError(error: unknown) {
@@ -134,6 +147,8 @@ describeFrameworkIde.sequential('framework support matrix ide', () => {
       ['uni-app', 'v4'],
       ['taro-react', 'v3'],
       ['taro-react', 'v4'],
+      ['taro-vue3', 'v3'],
+      ['taro-vue3', 'v4'],
       ['mpx', 'v3'],
       ['mpx', 'v4'],
       ['native', 'v3'],
@@ -162,6 +177,8 @@ describeFrameworkIde.sequential('framework support matrix ide', () => {
 
       for (let attempt = 1; attempt <= maxAttempts; attempt++) {
         try {
+          await cleanupDevTools()
+          await wait(settleTimeoutMs)
           await runFrameworkIdeProbe(entry.name, timeoutMs, relaunchTimeoutMs, attemptTimeoutMs)
           return
         }

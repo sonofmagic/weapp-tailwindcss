@@ -124,10 +124,7 @@ export const FRAMEWORK_SUPPORT_CASES = [
     fixturesDir: '../demo',
     project: e2eProject('taro-webpack-vue3-tailwindcss-v3'),
     ci: { tier: 'required' },
-    ide: {
-      tier: 'exempt',
-      reason: 'Vue3 Taro demo 暂未接入基于 React TSX 源文件的 IDE hot-update 探针。',
-    },
+    ide: { tier: 'required' },
   }),
   supportCase({
     name: 'taro-webpack-vue3-tailwindcss-v4',
@@ -137,10 +134,7 @@ export const FRAMEWORK_SUPPORT_CASES = [
     fixturesDir: '../demo',
     project: e2eProject('taro-webpack-vue3-tailwindcss-v4'),
     ci: { tier: 'required' },
-    ide: {
-      tier: 'exempt',
-      reason: 'Vue3 Taro demo 暂未接入基于 React TSX 源文件的 IDE hot-update 探针。',
-    },
+    ide: { tier: 'required' },
   }),
   supportCase({
     name: 'taro-vite-vue3-tailwindcss-v3',

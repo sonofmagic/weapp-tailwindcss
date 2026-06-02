@@ -4,6 +4,7 @@ import { Launcher } from '@weapp-vite/miniprogram-automator'
 import path from 'pathe'
 import { collectFrameworkIdeDiagnostics } from './frameworkIdeDiagnostics'
 import { runFrameworkIdeHotUpdateProbe } from './frameworkIdeHotUpdate'
+import { installFrameworkIdeRuntimeErrorCollector } from './frameworkIdeRuntimeErrors'
 import { FRAMEWORK_SUPPORT_CASES } from './frameworkSupportMatrix'
 import { resolveFrameworkSupportPaths } from './frameworkSupportPaths'
 
@@ -15,13 +16,14 @@ const closeTimeoutMs = Number(process.env['E2E_IDE_CLOSE_TIMEOUT_MS'] ?? 10_000)
 if (!caseName) {
   throw new Error('Missing framework support case name.')
 }
+const supportCaseName = caseName
 
-const entry = FRAMEWORK_SUPPORT_CASES.find(item => item.name === caseName)
+const entry = FRAMEWORK_SUPPORT_CASES.find(item => item.name === supportCaseName)
 if (!entry) {
-  throw new Error(`Unknown framework support case: ${caseName}`)
+  throw new Error(`Unknown framework support case: ${supportCaseName}`)
 }
 if (entry.ide.tier !== 'required') {
-  throw new Error(`Framework support case does not require IDE probe: ${caseName}`)
+  throw new Error(`Framework support case does not require IDE probe: ${supportCaseName}`)
 }
 
 const supportEntry = entry
@@ -51,7 +53,7 @@ async function restoreProjectConfig() {
     await fs.writeFile(projectConfigPath, projectConfigOriginal)
   }
   catch (error) {
-    process.stderr.write(`Framework IDE probe failed to restore project.config.json for ${caseName}: ${String(error)}\n`)
+    process.stderr.write(`Framework IDE probe failed to restore project.config.json for ${supportCaseName}: ${String(error)}\n`)
   }
 }
 
@@ -61,18 +63,18 @@ async function ensureMiniProgramEntry() {
     appConfig = JSON.parse(await fs.readFile(appJsonPath, 'utf8'))
   }
   catch {
-    throw new Error(`Failed to read app.json for ${caseName}: ${appJsonPath}`)
+    throw new Error(`Failed to read app.json for ${supportCaseName}: ${appJsonPath}`)
   }
 
   const defaultPage = appConfig.pages?.[0]
   if (!defaultPage) {
-    throw new Error(`app.json does not declare any pages for ${caseName}`)
+    throw new Error(`app.json does not declare any pages for ${supportCaseName}`)
   }
 
   const url = supportEntry.project.url ?? `/${defaultPage}`
   const pagePath = url.replace(/^\//, '')
   if (!appConfig.pages?.includes(pagePath)) {
-    throw new Error(`app.json does not declare ${url} for ${caseName}: ${JSON.stringify(appConfig.pages ?? [])}`)
+    throw new Error(`app.json does not declare ${url} for ${supportCaseName}: ${JSON.stringify(appConfig.pages ?? [])}`)
   }
 
   for (const ext of ['.js', '.json', '.wxml']) {
@@ -81,7 +83,7 @@ async function ensureMiniProgramEntry() {
       await fs.access(filePath)
     }
     catch {
-      throw new Error(`Missing page artifact for ${caseName}: ${filePath}`)
+      throw new Error(`Missing page artifact for ${supportCaseName}: ${filePath}`)
     }
   }
 
@@ -95,7 +97,7 @@ async function withStageTimeout<T>(stage: string, task: Promise<T>, stageTimeout
       task,
       new Promise<T>((_, reject) => {
         stageTimer = setTimeout(() => {
-          reject(new Error(`Framework IDE probe ${stage} timed out after ${stageTimeoutMs}ms: ${caseName}`))
+          reject(new Error(`Framework IDE probe ${stage} timed out after ${stageTimeoutMs}ms: ${supportCaseName}`))
         }, stageTimeoutMs)
       }),
     ])
@@ -120,7 +122,7 @@ async function closeMiniProgram() {
     ])
   }
   catch (error) {
-    process.stderr.write(`Framework IDE probe close failed for ${caseName}: ${String(error)}\n`)
+    process.stderr.write(`Framework IDE probe close failed for ${supportCaseName}: ${String(error)}\n`)
   }
 }
 
@@ -137,21 +139,24 @@ async function main() {
 
   try {
     miniProgram = await withStageTimeout('launch', automator.launch({ projectPath: launchProjectPath, timeout: timeoutMs }))
+    const runtimeErrors = await installFrameworkIdeRuntimeErrorCollector(supportCaseName, miniProgram)
+    await runtimeErrors.assertNoErrors('launch')
 
     const page: any = await withStageTimeout('reLaunch', miniProgram.reLaunch(pageUrl), relaunchTimeoutMs)
     if (!page) {
-      throw new Error(`Failed to relaunch page for ${caseName}`)
+      throw new Error(`Failed to relaunch page for ${supportCaseName}`)
     }
+    await runtimeErrors.assertNoErrors('reLaunch')
 
-    const pageRoot: any = await withStageTimeout('query page root', page.$('page'))
-    const wxml = await withStageTimeout('read page wxml', pageRoot?.wxml())
-    if (typeof wxml !== 'string' || wxml.trim().length === 0) {
-      throw new Error(`Empty page WXML for ${caseName}`)
+    const currentPage = await withStageTimeout('currentPage', miniProgram.currentPage({ timeout: timeoutMs }).catch(() => page))
+    if (!currentPage) {
+      throw new Error(`Failed to resolve current page for ${supportCaseName}`)
     }
 
     if (shouldRunHotUpdateProbe()) {
-      await runFrameworkIdeHotUpdateProbe(supportEntry, miniProgram, page, pageUrl, launchProjectPath)
+      await runFrameworkIdeHotUpdateProbe(supportEntry, miniProgram, page, pageUrl, launchProjectPath, runtimeErrors)
     }
+    await runtimeErrors.assertNoErrors('probe complete')
   }
   finally {
     await closeMiniProgram()
@@ -164,7 +169,7 @@ main().catch(async (error) => {
   await closeMiniProgram()
   await restoreProjectConfig()
   try {
-    process.stderr.write(`${await collectFrameworkIdeDiagnostics(caseName)}\n`)
+    process.stderr.write(`${await collectFrameworkIdeDiagnostics(supportCaseName)}\n`)
   }
   catch (diagnosticError) {
     process.stderr.write(`[e2e:ide] failed to collect diagnostics: ${diagnosticError instanceof Error ? diagnosticError.stack : String(diagnosticError)}\n`)

@@ -13,7 +13,12 @@ import { resolveCaseName, shouldRunTarget } from './hot-update/shared'
 const TARO_WATCH_READY_RE = /→ Watching|watching for file changes/i
 const TARO_COMPILED_RE = /Compiled successfully/i
 const ROOT = process.cwd()
-const TARGET = 'taro-webpack-react-tailwindcss-v4'
+const TARGETS = [
+  'taro-webpack-react-tailwindcss-v3',
+  'taro-webpack-react-tailwindcss-v4',
+  'taro-webpack-vue3-tailwindcss-v3',
+  'taro-webpack-vue3-tailwindcss-v4',
+]
 const STABLE_AFTER_READY_MS = 8_000
 
 async function stopProcessTree(child: ReturnType<typeof spawnPnpm>) {
@@ -129,16 +134,16 @@ async function expectDemoDevWatchReady(project: string) {
 describe('e2e watch taro demo dev entry', () => {
   const caseName = resolveCaseName()
 
-  if (
-    caseName !== 'all'
-    && caseName !== 'demo'
-    && !shouldRunTarget(caseName, TARGET)
-  ) {
-    it.skip('skips taro webpack react tailwindcss v4 pnpm dev smoke for current E2E_WATCH_CASE filter', () => {})
+  const targets = TARGETS.filter(project => caseName === 'all' || caseName === 'demo' || shouldRunTarget(caseName, project))
+
+  if (targets.length === 0) {
+    it.skip('skips taro webpack pnpm dev smoke for current E2E_WATCH_CASE filter', () => {})
     return
   }
 
-  it('keeps taro webpack react tailwindcss v4 pnpm dev in watch mode', async () => {
-    await expectDemoDevWatchReady(TARGET)
-  }, 240_000)
+  for (const target of targets) {
+    it(`keeps ${target} pnpm dev in watch mode`, async () => {
+      await expectDemoDevWatchReady(target)
+    }, 240_000)
+  }
 })

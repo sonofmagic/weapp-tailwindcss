@@ -27,6 +27,8 @@ export const frameworkIdeWatchCaseNames: Record<string, WatchCase['name']> = {
   'mpx-tailwindcss-v4': 'mpx-tailwindcss-v4',
   'taro-webpack-react-tailwindcss-v3': 'taro-webpack-react-tailwindcss-v3',
   'taro-webpack-react-tailwindcss-v4': 'taro-webpack-react-tailwindcss-v4',
+  'taro-webpack-vue3-tailwindcss-v3': 'taro-webpack-vue3-tailwindcss-v3',
+  'taro-webpack-vue3-tailwindcss-v4': 'taro-webpack-vue3-tailwindcss-v4',
   'taro-vite-react-tailwindcss-v3': 'taro-vite-react-tailwindcss-v3',
   'taro-vite-react-tailwindcss-v4': 'taro-vite-react-tailwindcss-v4',
   'uni-app-vite-tailwindcss-v3': 'uni-app-vite-tailwindcss-v3',
@@ -164,6 +166,7 @@ export async function runFrameworkIdeHotUpdateProbe(
   page: any,
   pageUrl: string,
   launchProjectPath: string,
+  runtimeErrors?: { assertNoErrors: (stage: string) => Promise<void> },
 ) {
   const watchCase = resolveFrameworkWatchCase(entry)
   const options = createWatchOptions()
@@ -194,10 +197,12 @@ export async function runFrameworkIdeHotUpdateProbe(
       (async () => {
         process.stdout.write(`[e2e:ide] ${watchCase.label} wait for watch ready\n`)
         await waitForIdeWatchReady(watchCase, options, session, sessionStartedAt)
+        await runtimeErrors?.assertNoErrors('watch ready')
 
         if ((watchCase.initialMutationDelayMs ?? 0) > 0) {
           await sleep(watchCase.initialMutationDelayMs!)
           session.ensureRunning()
+          await runtimeErrors?.assertNoErrors('initial mutation delay')
         }
 
         await runIdeClassHotUpdate(
@@ -211,6 +216,7 @@ export async function runFrameworkIdeHotUpdateProbe(
           pageUrl,
           launchProjectPath,
         )
+        await runtimeErrors?.assertNoErrors('template class HMR')
         await runIdeClassHotUpdate(
           options,
           watchCase,
@@ -222,6 +228,7 @@ export async function runFrameworkIdeHotUpdateProbe(
           pageUrl,
           launchProjectPath,
         )
+        await runtimeErrors?.assertNoErrors('script class HMR')
         if (shouldRunIdeStyleHotUpdate(watchCase)) {
           await runIdeStyleHotUpdate(
             options,
@@ -229,6 +236,7 @@ export async function runFrameworkIdeHotUpdateProbe(
             session,
             sourceOriginals.get(watchCase.styleMutation.sourceFile)!,
           )
+          await runtimeErrors?.assertNoErrors('style HMR')
         }
         else if (!watchCase.skipStyleMutation) {
           process.stdout.write(`[e2e:ide] ${watchCase.label} style HMR skipped for IDE stability; watch-HMR keeps style coverage\n`)
