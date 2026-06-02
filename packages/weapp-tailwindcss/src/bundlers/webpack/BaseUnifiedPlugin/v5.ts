@@ -20,6 +20,41 @@ import { setupWebpackV5Loaders } from './v5-loaders'
 
 const debug = createDebug()
 export const weappTailwindcssPackageDir = resolvePackageDir('weapp-tailwindcss')
+type WebpackWatchOptions = Parameters<Compiler['watch']>[0]
+
+function normalizeIgnoredList(ignored: WebpackWatchOptions['ignored']) {
+  if (Array.isArray(ignored)) {
+    return ignored
+  }
+  return ignored == null ? [] : [ignored]
+}
+
+function appendIgnoredPath(ignored: WebpackWatchOptions['ignored'], ignoredPath: string) {
+  const ignoredList = normalizeIgnoredList(ignored)
+  if (ignoredList.some(item => typeof item === 'string' && path.resolve(item) === ignoredPath)) {
+    return ignored
+  }
+  return [...ignoredList, ignoredPath]
+}
+
+function setupWebpackWatchOutputIgnore(compiler: Compiler) {
+  const originalWatch = compiler.watch?.bind(compiler)
+  if (typeof originalWatch !== 'function') {
+    return
+  }
+  compiler.watch = ((watchOptions: WebpackWatchOptions, handler) => {
+    const outputPath = compiler.outputPath || compiler.options?.output?.path
+    const outputDir = outputPath ? path.resolve(outputPath) : undefined
+    if (!outputDir) {
+      return originalWatch(watchOptions, handler)
+    }
+
+    return originalWatch({
+      ...watchOptions,
+      ignored: appendIgnoredPath(watchOptions.ignored, outputDir),
+    }, handler)
+  }) satisfies Compiler['watch']
+}
 
 /**
  * @name WeappTailwindcss
@@ -62,6 +97,7 @@ export class WeappTailwindcss implements IBaseWebpackPlugin {
     if (disabledOptions.plugin) {
       return
     }
+    setupWebpackWatchOutputIgnore(compiler)
     const readyPromise = createTailwindRuntimeReadyPromise(initialTwPatcher)
     const runtimeState = {
       twPatcher: initialTwPatcher,

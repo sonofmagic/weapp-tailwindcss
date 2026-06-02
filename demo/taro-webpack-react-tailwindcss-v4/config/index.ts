@@ -1,33 +1,12 @@
 import path from 'node:path'
 import { defineConfig, type UserConfigExport } from '@tarojs/cli'
 import TsconfigPathsPlugin from 'tsconfig-paths-webpack-plugin'
-import type { Compiler } from 'webpack'
 import devConfig from './dev'
 import prodConfig from './prod'
 import { WeappTailwindcss, UserDefinedOptions } from 'weapp-tailwindcss/webpack'
 
 const isWatchRegression = process.env.WEAPP_TW_WATCH_REGRESSION === '1'
 const distDir = path.resolve(process.cwd(), 'dist')
-type CompilerWatchOptions = Parameters<Compiler['watch']>[0]
-
-class IgnoreDistWatchOptionsPlugin {
-  apply(compiler: Compiler) {
-    const originalWatch = compiler.watch.bind(compiler)
-    compiler.watch = ((watchOptions: CompilerWatchOptions, handler) => {
-      const ignored = watchOptions.ignored
-      const ignoredList = Array.isArray(ignored)
-        ? ignored
-        : ignored == null
-          ? []
-          : [ignored]
-
-      return originalWatch({
-        ...watchOptions,
-        ignored: [...ignoredList, distDir],
-      }, handler)
-    }) satisfies Compiler['watch']
-  }
-}
 
 const generator = {
   target: process.env.TARO_ENV === 'h5' ? 'web' : 'weapp',
@@ -110,9 +89,6 @@ export default defineConfig<'webpack5'>(async (merge, { command, mode }) => {
         }
         chain.merge({
           plugin: {
-            ignoreDistWatchOptions: {
-              plugin: IgnoreDistWatchOptionsPlugin,
-            },
             install: {
               plugin: WeappTailwindcss,
               args: [
@@ -165,9 +141,6 @@ export default defineConfig<'webpack5'>(async (merge, { command, mode }) => {
         })
         chain.merge({
           plugin: {
-            ignoreDistWatchOptions: {
-              plugin: IgnoreDistWatchOptionsPlugin,
-            },
             install: {
               plugin: WeappTailwindcss,
               args: [

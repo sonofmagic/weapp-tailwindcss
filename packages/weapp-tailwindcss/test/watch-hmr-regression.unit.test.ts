@@ -1309,7 +1309,7 @@ describe('watch-hmr regression cases', () => {
     }
 
     expect(toSlashPath(caseMap.get('taro-webpack-react-tailwindcss-v3')?.webHmr?.cssEntryFile ?? '')).toContain('src/app.less')
-    expect(toSlashPath(caseMap.get('taro-webpack-vue3-tailwindcss-v3')?.webHmr?.cssEntryFile ?? '')).toContain('src/app.scss')
+    expect(toSlashPath(caseMap.get('taro-webpack-vue3-tailwindcss-v3')?.webHmr?.cssEntryFile ?? '')).toContain('src/app.less')
 
     const taroWebpackPostcssConfigs = [
       'demo/taro-webpack-react-tailwindcss-v3/postcss.config.js',
@@ -1335,6 +1335,42 @@ describe('watch-hmr regression cases', () => {
       expect(configSource, configPath).toContain('WEAPP_TW_WATCH_REGRESSION')
       expect(configSource, configPath).toContain('WeappTailwindcss')
       expect(configSource, configPath).toContain('target: process.env.TARO_ENV === \'h5\' ? \'web\' : \'weapp\'')
+      expect(configSource, configPath).toContain('chain.watchOptions({')
+      expect(configSource, configPath).toContain('ignored: [distDir]')
+    }
+
+    const webpackV5PluginSource = await readFile(
+      path.resolve(__dirname, '../src/bundlers/webpack/BaseUnifiedPlugin/v5.ts'),
+      'utf8',
+    )
+    expect(webpackV5PluginSource).toContain('setupWebpackWatchOutputIgnore')
+    expect(webpackV5PluginSource).toContain('compiler.outputPath || compiler.options?.output?.path')
+
+    for (const appStyle of ['src/app.less', 'src/app.scss']) {
+      const appStyleSource = await readFile(
+        path.resolve(__dirname, '../../../demo/taro-webpack-react-tailwindcss-v3', appStyle),
+        'utf8',
+      )
+      expect(appStyleSource.trimStart(), appStyle).toMatch(/^@import 'tailwindcss\/base';/)
+    }
+
+    const taroWebpackV3Styles = [
+      'demo/taro-webpack-react-tailwindcss-v3/src/sub-normal/pages/index.css',
+      'demo/taro-webpack-react-tailwindcss-v3/src/sub-independent/pages/index.css',
+      'demo/taro-webpack-vue3-tailwindcss-v3/src/app.less',
+      'demo/taro-webpack-vue3-tailwindcss-v3/src/sub-normal/pages/index.css',
+      'demo/taro-webpack-vue3-tailwindcss-v3/src/sub-independent/pages/index.css',
+    ]
+    for (const stylePath of taroWebpackV3Styles) {
+      const styleSource = await readFile(path.resolve(__dirname, '../../..', stylePath), 'utf8')
+      const firstNonEmptyLine = styleSource.split(/\r?\n/).find(line => line.trim() !== '')
+      const configIndex = styleSource.indexOf('@config')
+      const importIndex = styleSource.indexOf('@import')
+
+      expect(firstNonEmptyLine, stylePath).toBe('@import \'tailwindcss/base\';')
+      if (configIndex >= 0) {
+        expect(configIndex, stylePath).toBeGreaterThan(importIndex)
+      }
     }
 
     const workflowSource = await readFile(

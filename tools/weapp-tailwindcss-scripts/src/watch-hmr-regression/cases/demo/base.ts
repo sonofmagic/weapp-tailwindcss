@@ -646,7 +646,7 @@ export function buildDemoBaseCases(baseCwd: string): WatchCase[] {
       devScript: 'build:h5',
       devArgs: ['--watch'],
       sourceFile: path.resolve(baseCwd, 'demo/taro-webpack-vue3-tailwindcss-v3/src/pages/index/index.vue'),
-      cssEntryFile: path.resolve(baseCwd, 'demo/taro-webpack-vue3-tailwindcss-v3/src/app.scss'),
+      cssEntryFile: path.resolve(baseCwd, 'demo/taro-webpack-vue3-tailwindcss-v3/src/app.less'),
       injectMarkerElement: true,
       reloadAfterCssMutation: true,
       env: {

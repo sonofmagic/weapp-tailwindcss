@@ -185,6 +185,101 @@ describe('bundlers/webpack WeappTailwindcss', () => {
     vi.resetModules()
   })
 
+  it('adds webpack output path to watch ignored paths without dropping user ignored rules', () => {
+    const outputPath = path.resolve(process.cwd(), 'dist')
+    const watch = vi.fn()
+    const compilation = {
+      compiler: { outputPath },
+      chunks: [],
+      hooks: {
+        processAssets: {
+          tapPromise: vi.fn(),
+        },
+      },
+      updateAsset: vi.fn(),
+      getAsset: vi.fn(),
+    }
+    const compiler = {
+      outputPath,
+      options: {},
+      watch,
+      webpack: {
+        Compilation: {
+          PROCESS_ASSETS_STAGE_SUMMARIZE: Symbol('stage'),
+        },
+        sources: {
+          ConcatSource: FakeConcatSource,
+        },
+        NormalModule: {
+          getCompilationHooks: vi.fn(() => ({
+            loader: {
+              tap: vi.fn(),
+            },
+          })),
+        },
+      },
+      hooks: {
+        normalModuleFactory: {
+          tap: (_name: string, handler: (factory: any) => void) => {
+            handler({
+              hooks: {
+                beforeResolve: {
+                  tap: vi.fn(),
+                },
+              },
+            })
+          },
+        },
+        compilation: {
+          tap: (_name: string, handler: (_compilation: any) => void) => {
+            handler(compilation)
+          },
+        },
+      },
+    }
+
+    new WeappTailwindcss().apply(compiler as any)
+    const handler = vi.fn()
+    ;(compiler.watch as any)({
+      aggregateTimeout: 100,
+      ignored: [/node_modules/, '**/.git/**'],
+    }, handler)
+
+    expect(watch).toHaveBeenCalledTimes(1)
+    expect(watch.mock.calls[0][0]).toEqual({
+      aggregateTimeout: 100,
+      ignored: [/node_modules/, '**/.git/**', outputPath],
+    })
+    expect(watch.mock.calls[0][1]).toBe(handler)
+  })
+
+  it('does not patch webpack watch when the plugin is disabled', () => {
+    currentContext = createContext({
+      disabled: true,
+    })
+    const watch = vi.fn()
+    const compiler = {
+      outputPath: path.resolve(process.cwd(), 'dist'),
+      options: {},
+      watch,
+      webpack: {
+        Compilation: {
+          PROCESS_ASSETS_STAGE_SUMMARIZE: Symbol('stage'),
+        },
+        sources: {
+          ConcatSource: FakeConcatSource,
+        },
+        NormalModule: {
+          getCompilationHooks: vi.fn(),
+        },
+      },
+      hooks: {},
+    }
+
+    new WeappTailwindcss().apply(compiler as any)
+    expect(compiler.watch).toBe(watch)
+  })
+
   it('wires runtime loader, processes assets and caches results', async () => {
     const processAssetsCallbacks: Array<(assets: Record<string, any>) => Promise<void>> = []
     let loaderHandler: ((loaderContext: any, module: LoaderModule) => void) | undefined

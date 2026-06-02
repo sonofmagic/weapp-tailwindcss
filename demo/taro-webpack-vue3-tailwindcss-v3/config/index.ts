@@ -1,5 +1,6 @@
 import type { UserConfigExport } from '@tarojs/cli'
 import { createRequire } from 'node:module'
+import path from 'node:path'
 import { WeappTailwindcss, type UserDefinedOptions } from 'weapp-tailwindcss/webpack'
 import devConfig from './dev'
 import prodConfig from './prod'
@@ -7,6 +8,7 @@ import prodConfig from './prod'
 const require = createRequire(__filename)
 const bench = require('../../bench.cjs')('taro-vue3')
 const isWatchRegression = process.env.WEAPP_TW_WATCH_REGRESSION === '1'
+const distDir = path.resolve(process.cwd(), 'dist')
 const generator = {
   target: process.env.TARO_ENV === 'h5' ? 'web' : 'weapp',
   styleOptions: {
@@ -71,6 +73,9 @@ const config: UserConfigExport<'webpack5'> = {
      * @param {import('webpack')} webpack
      */
     webpackChain(chain) {
+      chain.watchOptions({
+        ignored: [distDir],
+      })
       // chain.module.rules
 
       // chain.merge({
@@ -152,6 +157,9 @@ const config: UserConfigExport<'webpack5'> = {
       if (isWatchRegression) {
         chain.plugins.delete('webpackbar')
       }
+      chain.watchOptions({
+        ignored: [distDir],
+      })
       chain.merge({
         plugin: {
           install: {
