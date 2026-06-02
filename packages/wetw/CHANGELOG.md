@@ -1,5 +1,12 @@
 # wetw
 
+## 0.1.3-next.1
+
+### Patch Changes
+
+- 📦 **Dependencies** [`aaba811`](https://github.com/sonofmagic/weapp-tailwindcss/commit/aaba811cfc2ad003d3daf2cf290c9d8b770c6dfb)
+  → `@weapp-tailwindcss/shared@2.0.0-next.1`
+
 ## 0.1.3-next.0
 
 ### Patch Changes
