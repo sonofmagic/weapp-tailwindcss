@@ -187,11 +187,12 @@ export async function runCase(watchCase: WatchCase, options: CliOptions): Promis
       ))
     }
 
-    if (watchCase.webHmr) {
+    const shouldRunWebHmr = watchCase.webHmr && !watchCase.skipWebHmrInFullRun
+    if (shouldRunWebHmr) {
       await session.stop()
       sessionStopped = true
     }
-    const webHmrMetrics = await runWebHmr(watchCase, options, sourceOriginals)
+    const webHmrMetrics = shouldRunWebHmr ? await runWebHmr(watchCase, options, sourceOriginals) : undefined
 
     const preferredRound = resolvePreferredRound(templateMetrics.rounds)
     if (!preferredRound) {

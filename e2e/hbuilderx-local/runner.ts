@@ -133,7 +133,15 @@ async function waitForAppTransformedContent(
 
 async function assertMiniProgramOutput(item: MiniProgramCase) {
   const projectRoot = path.resolve(repoRoot, item.projectDir)
-  const outputRoot = path.resolve(projectRoot, item.outputDir)
+  let outputRoot = path.resolve(projectRoot, item.outputDir)
+  for (const outputDir of item.outputDirCandidates ?? [item.outputDir]) {
+    const candidateRoot = path.resolve(projectRoot, outputDir)
+    const ready = await Promise.all(item.requiredFiles.map(file => fileExists(path.resolve(candidateRoot, file))))
+    if (ready.every(Boolean)) {
+      outputRoot = candidateRoot
+      break
+    }
+  }
 
   for (const file of item.requiredFiles) {
     const target = path.resolve(outputRoot, file)
@@ -236,7 +244,10 @@ async function writeAppMarker(
 export async function compileMiniProgramWithHBuilderX(item: MiniProgramCase) {
   const hbuilderxCliPath = await resolveHBuilderXCli()
   const projectRoot = path.resolve(repoRoot, item.projectDir)
-  await fs.rm(path.resolve(projectRoot, item.outputDir), { recursive: true, force: true })
+  const outputDirs = item.outputDirCandidates ?? [item.outputDir]
+  await Promise.all([...new Set(outputDirs)].map(async (outputDir) => {
+    await fs.rm(path.resolve(projectRoot, outputDir), { recursive: true, force: true })
+  }))
   await runPnpm(
     projectRoot,
     ['exec', 'hbuilderx', 'project', 'open', '--path', projectRoot],

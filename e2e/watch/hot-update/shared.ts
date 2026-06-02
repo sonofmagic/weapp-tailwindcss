@@ -24,6 +24,8 @@ export type ConcreteWatchCaseName
     | 'uni-app-vite-tailwindcss-v4'
     | 'uni-app-vite-vue3-hbuilderx-tailwindcss-v3'
     | 'uni-app-vite-vue3-hbuilderx-tailwindcss-v4'
+    | 'uni-app-x-hbuilderx-tailwindcss-v3'
+    | 'uni-app-x-hbuilderx-tailwindcss-v4'
     | 'weapp-vite-tailwindcss-v3'
     | 'weapp-vite-tailwindcss-v4'
 export type WatchCaseName = ConcreteWatchCaseName | 'both' | 'all' | 'demo'
@@ -32,8 +34,8 @@ type MutationRoundName = 'baseline-arbitrary' | 'complex-corpus' | 'hex-arbitrar
 const BASE_REQUIRED_MUTATION_ROUNDS: MutationRoundName[] = ['baseline-arbitrary', 'complex-corpus', 'hex-arbitrary']
 const ISSUE33_REQUIRED_MUTATION_ROUND: MutationRoundName = 'issue33-arbitrary'
 const INDEX_HTML_RE = /index\.html$/
-const SCRIPT_SOURCE_FILE_RE = /\.(?:js|ts|tsx|vue|mpx)$/
-const TEMPLATE_SOURCE_FILE_RE = /\.(?:wxml|vue|mpx)$/
+const SCRIPT_SOURCE_FILE_RE = /\.(?:js|ts|tsx|uts|vue|uvue|mpx)$/
+const TEMPLATE_SOURCE_FILE_RE = /\.(?:wxml|vue|uvue|mpx)$/
 const ISSUE33_MODIFY_CLASS_TOKENS = [
   'bg-[#0f0]',
   'px-[256.25px]',
@@ -309,12 +311,14 @@ const noApplyValidationCases = new Set<ConcreteWatchCaseName>([
   'mpx-tailwindcss-v4',
   'uni-app-vite-tailwindcss-v4',
   'uni-app-vite-vue3-hbuilderx-tailwindcss-v4',
+  'uni-app-x-hbuilderx-tailwindcss-v4',
   'taro-vite-react-tailwindcss-v4',
   'taro-webpack-react-tailwindcss-v4',
   'weapp-vite-tailwindcss-v4',
 ])
 const noFunctionValidationCases = new Set<ConcreteWatchCaseName>([
   'mpx-tailwindcss-v4',
+  'uni-app-x-hbuilderx-tailwindcss-v4',
   'taro-vite-react-tailwindcss-v4',
   'taro-webpack-react-tailwindcss-v4',
   'weapp-vite-tailwindcss-v4',
@@ -324,6 +328,7 @@ const referenceDirectiveRequiredCases = new Set<ConcreteWatchCaseName>([
   'mpx-tailwindcss-v4',
   'uni-app-vite-tailwindcss-v4',
   'uni-app-vite-vue3-hbuilderx-tailwindcss-v4',
+  'uni-app-x-hbuilderx-tailwindcss-v4',
   'taro-vite-react-tailwindcss-v4',
   'taro-webpack-react-tailwindcss-v4',
   'weapp-vite-tailwindcss-v4',
@@ -456,6 +461,8 @@ export function resolveCaseName() {
     || value === 'uni-app-vite-tailwindcss-v4'
     || value === 'uni-app-vite-vue3-hbuilderx-tailwindcss-v3'
     || value === 'uni-app-vite-vue3-hbuilderx-tailwindcss-v4'
+    || value === 'uni-app-x-hbuilderx-tailwindcss-v3'
+    || value === 'uni-app-x-hbuilderx-tailwindcss-v4'
     || value === 'weapp-vite-tailwindcss-v4'
     || value === 'weapp-vite-tailwindcss-v3'
     || value === 'both'

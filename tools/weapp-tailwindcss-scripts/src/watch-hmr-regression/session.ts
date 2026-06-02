@@ -24,6 +24,7 @@ const WATCH_COMMAND_PATTERNS = [
   /webpack(?:\.js)?\s+--watch/i,
   /gulp[\s\S]+gulpfile\.ts/i,
   /\bnpm\b[\s\S]+build:weapp[\s\S]+--watch/i,
+  /hbuilderx[\s\S]+launch[\s\S]+mp-weixin/i,
 ] as const
 const HMR_TIMING_PREFIX = '[weapp-tailwindcss:hmr]'
 
@@ -95,6 +96,8 @@ const compileSuccessLinePatterns = [
   /开发服务已就绪/u,
   /built in [\d.]+s?/i,
   /构建完成/u,
+  /编译成功/u,
+  /UTS编译完毕/u,
   /已重新构建/u,
   /重新构建/u,
 ] as const

@@ -11,7 +11,7 @@
     "start:ios:simulator": "open -a Simulator",
     "dev:android:emulator": "cross-env WEAPP_TW_HMR_TIMING=1 hbuilderx launch app-android --project . --deviceId emulator-5554",
     "dev:ios:simulator": "cross-env WEAPP_TW_HMR_TIMING=1 hbuilderx launch app-ios --project . --iosTarget simulator",
-    "dev:mp-weixin": "cross-env WEAPP_TW_HMR_TIMING=1 hbuilderx launch mp-weixin --project . --compile true",
+    "dev:mp-weixin": "cross-env WEAPP_TW_HMR_TIMING=1 node ../../scripts/hbuilderx-launch-mp-weixin-dev.mjs",
     "predev:android:emulator": "node ../../scripts/ensure-weapp-tailwindcss-built.mjs",
     "predev:ios:simulator": "node ../../scripts/ensure-weapp-tailwindcss-built.mjs",
     "predev:mp-weixin": "node ../../scripts/ensure-weapp-tailwindcss-built.mjs"

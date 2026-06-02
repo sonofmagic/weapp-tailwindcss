@@ -1,6 +1,6 @@
 import fs from 'node:fs'
 import path from 'pathe'
-import { HOT_UPDATE_COVERED_PROJECTS } from './e2eMatrix'
+import { HOT_UPDATE_CI_CASES } from './e2eMatrix'
 
 export type DemoFramework
   = | 'gulp'
@@ -317,7 +317,7 @@ export function getAutomatedThreeBlockHotUpdateDemoNames() {
 }
 
 export function getDefaultHotUpdateDemoNames() {
-  return [...HOT_UPDATE_COVERED_PROJECTS].sort()
+  return [...HOT_UPDATE_CI_CASES].sort()
 }
 
 export function discoverDemoPackageNames() {

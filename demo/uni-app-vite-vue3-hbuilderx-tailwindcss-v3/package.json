@@ -10,7 +10,7 @@
     "dev:android:emulator": "cross-env WEAPP_TW_HMR_TIMING=1 hbuilderx launch app-android --project . --deviceId emulator-5554",
     "dev:ios:simulator": "cross-env WEAPP_TW_HMR_TIMING=1 hbuilderx launch app-ios --project . --iosTarget simulator",
     "dev:app": "cross-env WEAPP_TW_HMR_TIMING=1 UNI_INPUT_DIR=. uni -p app",
-    "dev:mp-weixin": "cross-env WEAPP_TW_HMR_TIMING=1 UNI_INPUT_DIR=. uni -p mp-weixin",
+    "dev:mp-weixin": "cross-env WEAPP_TW_HMR_TIMING=1 node ../../scripts/hbuilderx-launch-mp-weixin-dev.mjs",
     "dev:h5": "cross-env WEAPP_TW_HMR_TIMING=1 UNI_INPUT_DIR=. uni",
     "build": "pnpm run build:mp-weixin",
     "build:app": "cross-env UNI_INPUT_DIR=. uni build -p app",

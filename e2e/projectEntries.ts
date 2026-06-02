@@ -74,6 +74,26 @@ export const E2E_PROJECTS = [
     cssFile: 'app.wxss',
   },
   {
+    name: 'uni-app-vite-vue3-hbuilderx-tailwindcss-v3',
+    projectPath: 'uni-app-vite-vue3-hbuilderx-tailwindcss-v3/unpackage/dist/dev/mp-weixin',
+    cssFile: 'app.wxss',
+  },
+  {
+    name: 'uni-app-vite-vue3-hbuilderx-tailwindcss-v4',
+    projectPath: 'uni-app-vite-vue3-hbuilderx-tailwindcss-v4/unpackage/dist/dev/mp-weixin',
+    cssFile: 'app.wxss',
+  },
+  {
+    name: 'uni-app-x-hbuilderx-tailwindcss-v3',
+    projectPath: 'uni-app-x-hbuilderx-tailwindcss-v3/unpackage/dist/dev/mp-weixin',
+    cssFile: 'app.wxss',
+  },
+  {
+    name: 'uni-app-x-hbuilderx-tailwindcss-v4',
+    projectPath: 'uni-app-x-hbuilderx-tailwindcss-v4/unpackage/dist/dev/mp-weixin',
+    cssFile: 'app.wxss',
+  },
+  {
     name: 'weapp-vite-tailwindcss-v3',
     projectPath: 'weapp-vite-tailwindcss-v3',
     cssFile: 'dist/app.wxss',

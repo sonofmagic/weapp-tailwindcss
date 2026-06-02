@@ -23,6 +23,7 @@ function getProbeTiming(entryName: string) {
     baseTimeoutMs,
     entryName.startsWith('taro-vite-') ? readNumberEnv('E2E_IDE_TARO_VITE_TIMEOUT_MS', 60_000) : 0,
     entryName.startsWith('uni-app-vite-') ? readNumberEnv('E2E_IDE_UNI_APP_VITE_TIMEOUT_MS', 60_000) : 0,
+    entryName.includes('hbuilderx') ? readNumberEnv('E2E_IDE_HBUILDERX_TIMEOUT_MS', 90_000) : 0,
   )
   const relaunchTimeoutMs = readNumberEnv('E2E_IDE_RELAUNCH_TIMEOUT_MS', 60_000)
   const closeTimeoutMs = readNumberEnv('E2E_IDE_CLOSE_TIMEOUT_MS', 5000)
@@ -63,6 +64,12 @@ async function cleanupDevTools() {
     })
   }
   catch {}
+  await execa('pkill', ['-f', '/Applications/wechatwebdevtools.app'], {
+    reject: false,
+  }).catch(() => undefined)
+  await execa('pkill', ['-f', 'wechatwebdevtools Daemon'], {
+    reject: false,
+  }).catch(() => undefined)
   const startedAt = Date.now()
   while (Date.now() - startedAt < timeout) {
     try {
@@ -75,6 +82,12 @@ async function cleanupDevTools() {
       return
     }
   }
+  await execa('pkill', ['-9', '-f', '/Applications/wechatwebdevtools.app'], {
+    reject: false,
+  }).catch(() => undefined)
+  await execa('pkill', ['-9', '-f', 'wechatwebdevtools Daemon'], {
+    reject: false,
+  }).catch(() => undefined)
 }
 
 function isTransientIdeError(error: unknown) {
@@ -145,6 +158,8 @@ describeFrameworkIde.sequential('framework support matrix ide', () => {
     const requiredPairs = [
       ['uni-app', 'v3'],
       ['uni-app', 'v4'],
+      ['uni-app-x', 'v3'],
+      ['uni-app-x', 'v4'],
       ['taro-react', 'v3'],
       ['taro-react', 'v4'],
       ['taro-vue3', 'v3'],

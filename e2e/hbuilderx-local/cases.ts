@@ -6,6 +6,7 @@ export interface MiniProgramCase {
   name: string
   projectDir: string
   outputDir: string
+  outputDirCandidates?: string[]
   cssFiles: string[]
   requiredFiles: string[]
   cssContains: Array<string | RegExp>
@@ -54,11 +55,17 @@ export interface WebHmrStep {
   cssContains: Array<string | RegExp>
 }
 
+const hbuilderxMiniProgramOutputDirCandidates = [
+  'unpackage/dist/dev/mp-weixin',
+  'dist/dev/mp-weixin',
+]
+
 export const miniProgramCases: MiniProgramCase[] = [
   {
     name: 'uni-app-vite-vue3-hbuilderx-tailwindcss-v3',
     projectDir: 'demo/uni-app-vite-vue3-hbuilderx-tailwindcss-v3',
     outputDir: 'unpackage/dist/dev/mp-weixin',
+    outputDirCandidates: hbuilderxMiniProgramOutputDirCandidates,
     cssFiles: ['app.wxss'],
     requiredFiles: ['app.json'],
     cssContains: ['.bg-_b_h123456_B', /background-color:\s*rgba\(18,\s*52,\s*86/],
@@ -68,6 +75,7 @@ export const miniProgramCases: MiniProgramCase[] = [
     name: 'uni-app-vite-vue3-hbuilderx-tailwindcss-v4',
     projectDir: 'demo/uni-app-vite-vue3-hbuilderx-tailwindcss-v4',
     outputDir: 'unpackage/dist/dev/mp-weixin',
+    outputDirCandidates: hbuilderxMiniProgramOutputDirCandidates,
     cssFiles: ['app.wxss'],
     requiredFiles: ['app.json'],
     cssContains: ['.bg-_b_h123456_B', 'background-color: #123456'],
@@ -77,6 +85,7 @@ export const miniProgramCases: MiniProgramCase[] = [
     name: 'uni-app-x-hbuilderx-tailwindcss-v3',
     projectDir: 'demo/uni-app-x-hbuilderx-tailwindcss-v3',
     outputDir: 'unpackage/dist/dev/mp-weixin',
+    outputDirCandidates: hbuilderxMiniProgramOutputDirCandidates,
     cssFiles: ['app.wxss'],
     requiredFiles: ['app.json', 'pages/index/index.json'],
     cssContains: ['.bg-_b_hf21903_B', '.text-_b_hda0e3c_B', '.w-64'],
@@ -86,6 +95,7 @@ export const miniProgramCases: MiniProgramCase[] = [
     name: 'uni-app-x-hbuilderx-tailwindcss-v4',
     projectDir: 'demo/uni-app-x-hbuilderx-tailwindcss-v4',
     outputDir: 'unpackage/dist/dev/mp-weixin',
+    outputDirCandidates: hbuilderxMiniProgramOutputDirCandidates,
     cssFiles: ['app.wxss'],
     requiredFiles: ['app.json', 'pages/index/index.json'],
     cssContains: ['.bg-_b_hf21903_B', '.text-_b_hda0e3c_B', '.w-64'],

@@ -35,6 +35,10 @@ export const frameworkIdeWatchCaseNames: Record<string, WatchCase['name']> = {
   'taro-vite-vue3-tailwindcss-v4': 'taro-vite-vue3-tailwindcss-v4',
   'uni-app-vite-tailwindcss-v3': 'uni-app-vite-tailwindcss-v3',
   'uni-app-vite-tailwindcss-v4': 'uni-app-vite-tailwindcss-v4',
+  'uni-app-vite-vue3-hbuilderx-tailwindcss-v3': 'uni-app-vite-vue3-hbuilderx-tailwindcss-v3',
+  'uni-app-vite-vue3-hbuilderx-tailwindcss-v4': 'uni-app-vite-vue3-hbuilderx-tailwindcss-v4',
+  'uni-app-x-hbuilderx-tailwindcss-v3': 'uni-app-x-hbuilderx-tailwindcss-v3',
+  'uni-app-x-hbuilderx-tailwindcss-v4': 'uni-app-x-hbuilderx-tailwindcss-v4',
   'weapp-vite-tailwindcss-v3': 'weapp-vite-tailwindcss-v3',
   'weapp-vite-tailwindcss-v4': 'weapp-vite-tailwindcss-v4',
 }
@@ -94,7 +98,9 @@ function resolveFrameworkWatchCase(entry: FrameworkSupportCase) {
   }
 
   const root = process.cwd()
-  const watchCase = buildCases(root).find(item => item.name === watchCaseName)
+  const watchCase = buildCases(root, {
+    includeLocalOnly: true,
+  }).find(item => item.name === watchCaseName)
   if (!watchCase) {
     throw new Error(`Missing IDE hot-update watch case ${watchCaseName} for ${entry.name}`)
   }

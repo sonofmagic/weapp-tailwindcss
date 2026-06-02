@@ -5,6 +5,8 @@ import { buildDemoCases } from './demo'
 const localOnlyWatchCaseNames = new Set<ConcreteWatchCaseName>([
   'uni-app-vite-vue3-hbuilderx-tailwindcss-v3',
   'uni-app-vite-vue3-hbuilderx-tailwindcss-v4',
+  'uni-app-x-hbuilderx-tailwindcss-v3',
+  'uni-app-x-hbuilderx-tailwindcss-v4',
 ])
 
 export function filterCasesForPlatform(cases: WatchCase[], _platform: NodeJS.Platform): WatchCase[] {

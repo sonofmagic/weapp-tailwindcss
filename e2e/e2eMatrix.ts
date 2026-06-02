@@ -16,6 +16,11 @@ const repoRoot = path.resolve(import.meta.dirname, '..')
 const DEMO_HOT_UPDATE_CASES = buildCases(repoRoot)
   .filter(item => item.group === 'demo')
   .map(item => item.name)
+const DEMO_LOCAL_HOT_UPDATE_CASES = buildCases(repoRoot, {
+  includeLocalOnly: true,
+})
+  .filter(item => item.group === 'demo' && !DEMO_HOT_UPDATE_CASES.includes(item.name))
+  .map(item => item.name)
 
 export const HOT_UPDATE_CASES_BY_TARGET: Record<HotUpdateTargetName, string[]> = {
   demo: [...DEMO_HOT_UPDATE_CASES],
@@ -23,7 +28,10 @@ export const HOT_UPDATE_CASES_BY_TARGET: Record<HotUpdateTargetName, string[]> =
 
 export const HOT_UPDATE_CI_CASES = [...DEMO_HOT_UPDATE_CASES]
 
-export const HOT_UPDATE_COVERED_PROJECTS = new Set(DEMO_HOT_UPDATE_CASES)
+export const HOT_UPDATE_COVERED_PROJECTS = new Set([
+  ...DEMO_HOT_UPDATE_CASES,
+  ...DEMO_LOCAL_HOT_UPDATE_CASES,
+])
 
 // 这些项目没有稳定的 dev/hot-update 链路，默认只保留静态产物 e2e。
 export const HOT_UPDATE_EXEMPT_PROJECTS = new Set<string>()

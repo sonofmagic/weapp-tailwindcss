@@ -5,6 +5,10 @@ import { execa } from 'execa'
 import path from 'pathe'
 
 const buildTasks = new Map<string, Promise<void>>()
+const hbuilderxCliCandidates = [
+  process.env['HBUILDERX_CLI_PATH'],
+  process.platform === 'darwin' ? '/Applications/HBuilderX.app/Contents/MacOS/cli' : undefined,
+].filter((item): item is string => Boolean(item))
 
 interface EnsureProjectBuiltOptions {
   force?: boolean
@@ -12,6 +16,135 @@ interface EnsureProjectBuiltOptions {
 
 function logE2EError(message: string, ...args: unknown[]) {
   process.stderr.write(`${formatMessage(message, ...args)}\n`)
+}
+
+function wait(timeoutMs: number) {
+  return new Promise(resolve => setTimeout(resolve, timeoutMs))
+}
+
+async function fileExists(file: string) {
+  try {
+    await fs.access(file)
+    return true
+  }
+  catch {
+    return false
+  }
+}
+
+async function resolveHBuilderXCliPath() {
+  for (const candidate of hbuilderxCliCandidates) {
+    if (await fileExists(candidate)) {
+      return candidate
+    }
+  }
+  return process.env['HBUILDERX_CLI_PATH']
+}
+
+async function cleanupWechatDevToolsAfterHBuilderXBuild() {
+  if (process.platform !== 'darwin') {
+    return
+  }
+  await execa('osascript', ['-e', 'quit app "wechatwebdevtools"'], {
+    reject: false,
+    timeout: 5000,
+  }).catch(() => undefined)
+  await execa('pkill', ['-f', '/Applications/wechatwebdevtools.app'], {
+    reject: false,
+  }).catch(() => undefined)
+  await execa('pkill', ['-f', 'wechatwebdevtools Daemon'], {
+    reject: false,
+  }).catch(() => undefined)
+  await wait(500)
+}
+
+async function runHBuilderXCli(root: string, args: string[], env: Record<string, string | undefined>, timeoutMs: number) {
+  const stdio = process.env['E2E_DEBUG_BUILD'] === '1' ? 'inherit' : 'pipe'
+  try {
+    await execa('pnpm', ['exec', 'hbuilderx', ...args], {
+      cwd: root,
+      env,
+      stdio,
+      timeout: timeoutMs,
+    })
+  }
+  catch (error) {
+    if (stdio !== 'inherit') {
+      logE2EError('[e2e] HBuilderX command failed in %s: pnpm exec hbuilderx %s\n%o', root, args.join(' '), error)
+    }
+    throw error
+  }
+}
+
+function isHBuilderXMiniProgramProject(root: string, pkg?: { name?: string }) {
+  const name = pkg?.name ?? ''
+  const normalizedRoot = root.replaceAll('\\', '/')
+  return name.includes('hbuilderx-tailwindcss')
+    || normalizedRoot.includes('/uni-app-vite-vue3-hbuilderx-tailwindcss-')
+    || normalizedRoot.includes('/uni-app-x-hbuilderx-tailwindcss-')
+}
+
+async function ensureHBuilderXMiniProgramBuilt(root: string, pkgPath: string, pkg?: { name?: string }) {
+  const timeoutMs = Number(process.env['E2E_IDE_HBUILDERX_DEV_BUILD_TIMEOUT_MS'] ?? process.env['E2E_IDE_BUILD_TIMEOUT_MS'] ?? 120_000)
+  const hbuilderxCliPath = await resolveHBuilderXCliPath()
+  const childEnv: Record<string, string | undefined> = {
+    ...process.env,
+    HBUILDERX_CLI_PATH: hbuilderxCliPath,
+    NODE_ENV: 'development',
+    BROWSERSLIST_ENV: 'development',
+    RUST_BACKTRACE: process.env['RUST_BACKTRACE'] ?? '1',
+    WEAPP_TW_HMR_TIMING: process.env['WEAPP_TW_HMR_TIMING'] ?? '1',
+    npm_package_json: pkgPath,
+    PNPM_PACKAGE_NAME: pkg?.name ?? process.env['PNPM_PACKAGE_NAME'],
+    INIT_CWD: root,
+  }
+
+  delete childEnv['VITEST']
+  for (const key of Object.keys(childEnv)) {
+    if (key.startsWith('VITEST_')) {
+      delete childEnv[key]
+    }
+  }
+
+  await fs.rm(path.resolve(root, 'unpackage/dist/dev/mp-weixin'), {
+    recursive: true,
+    force: true,
+  })
+  await fs.rm(path.resolve(root, 'dist/dev/mp-weixin'), {
+    recursive: true,
+    force: true,
+  })
+
+  try {
+    await runHBuilderXCli(root, ['project', 'open', '--path', root], childEnv, timeoutMs)
+    await runHBuilderXCli(root, ['launch', 'mp-weixin', '--project', root, '--compile', 'true'], childEnv, timeoutMs)
+
+    const outputRoots = [
+      path.resolve(root, 'unpackage/dist/dev/mp-weixin'),
+      path.resolve(root, 'dist/dev/mp-weixin'),
+    ]
+    const requiredFiles = [
+      'app.json',
+      'project.config.json',
+      'pages/index/index.js',
+      'pages/index/index.json',
+      'pages/index/index.wxml',
+    ]
+    const startedAt = Date.now()
+    while (Date.now() - startedAt < timeoutMs) {
+      for (const outputRoot of outputRoots) {
+        const ready = await Promise.all(requiredFiles.map(file => fileExists(path.resolve(outputRoot, file))))
+        if (ready.every(Boolean)) {
+          return
+        }
+      }
+      await wait(500)
+    }
+    throw new Error(`[e2e] HBuilderX mp-weixin compile output did not become ready in ${timeoutMs}ms: ${outputRoots.join(', ')}`)
+  }
+  finally {
+    await cleanupWechatDevToolsAfterHBuilderXBuild()
+  }
 }
 
 export async function ensureProjectBuilt(root: string, options: EnsureProjectBuiltOptions = {}) {
@@ -28,6 +161,11 @@ export async function ensureProjectBuilt(root: string, options: EnsureProjectBui
       pkg = JSON.parse(content)
     }
     catch {
+      return
+    }
+
+    if (isHBuilderXMiniProgramProject(root, pkg)) {
+      await ensureHBuilderXMiniProgramBuilt(root, pkgPath, pkg)
       return
     }
 

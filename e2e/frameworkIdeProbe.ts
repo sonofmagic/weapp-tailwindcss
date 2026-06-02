@@ -164,7 +164,9 @@ async function main() {
   }
 }
 
-main().catch(async (error) => {
+main().then(() => {
+  process.exit(0)
+}).catch(async (error) => {
   process.stderr.write(`${error instanceof Error ? error.stack : String(error)}\n`)
   await closeMiniProgram()
   await restoreProjectConfig()

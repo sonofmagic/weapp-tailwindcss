@@ -228,6 +228,10 @@ describe('e2e matrix', () => {
       'taro-vite-vue3-tailwindcss-v4',
       'uni-app-vite-tailwindcss-v3',
       'uni-app-vite-tailwindcss-v4',
+      'uni-app-vite-vue3-hbuilderx-tailwindcss-v3',
+      'uni-app-vite-vue3-hbuilderx-tailwindcss-v4',
+      'uni-app-x-hbuilderx-tailwindcss-v3',
+      'uni-app-x-hbuilderx-tailwindcss-v4',
       'weapp-vite-tailwindcss-v3',
       'weapp-vite-tailwindcss-v4',
     ])
