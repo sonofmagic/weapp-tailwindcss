@@ -50,25 +50,13 @@ const view = <View className="${runtimeClass}">Hello world!</View>
     expect(result).not.toContain('keep-_bbusiness_B')
   })
 
-  it('supports single-quoted content utilities by default and double-quoted content utilities when enabled', () => {
+  it('supports single and double quoted content utilities by default', () => {
     const singleQuoted = 'before:content-[\'11111\']'
     const doubleQuoted = 'before:content-["11111"]'
     const jsHandler = createJsHandler({
       babelParserOptions: {
         sourceType: 'module',
         plugins: ['jsx', 'typescript'],
-      },
-      escapeMap: MappingChars2String,
-      needEscaped: true,
-      tailwindcssMajorVersion: 3,
-    })
-    const doubleQuoteJsHandler = createJsHandler({
-      babelParserOptions: {
-        sourceType: 'module',
-        plugins: ['jsx', 'typescript'],
-      },
-      arbitraryValues: {
-        allowDoubleQuotes: true,
       },
       escapeMap: MappingChars2String,
       needEscaped: true,
@@ -83,16 +71,10 @@ const view = <View className="${runtimeClass}">Hello world!</View>
       `<View className='${doubleQuoted}'>Hello world!</View>`,
       new Set([doubleQuoted]),
     ).code
-    const enabledDoubleResult = doubleQuoteJsHandler(
-      `<View className='${doubleQuoted}'>Hello world!</View>`,
-      new Set([doubleQuoted]),
-    ).code
 
     expect(singleResult).toContain(replaceWxml(singleQuoted, { escapeMap: MappingChars2String }))
-    expect(doubleResult).toContain(doubleQuoted)
-    expect(doubleResult).not.toContain(replaceWxml(doubleQuoted, { escapeMap: MappingChars2String }))
-    expect(enabledDoubleResult).toContain(replaceWxml(doubleQuoted, { escapeMap: MappingChars2String }))
-    expect(enabledDoubleResult).toContain('Hello world!')
+    expect(doubleResult).toContain(replaceWxml(doubleQuoted, { escapeMap: MappingChars2String }))
+    expect(doubleResult).toContain('Hello world!')
   })
 
   it.each(misescapeCases)('keeps non-class WXML text and expressions untouched in $label', async ({ majorVersion, runtimeClass }) => {

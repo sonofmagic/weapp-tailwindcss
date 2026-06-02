@@ -114,7 +114,7 @@ text,
   --tw-text-opacity: 1;
   color: rgba(67, 136, 33, var(--tw-text-opacity, 1));
 }
-.before_ccontent-_b_a11111_a_B:before {
+.before_ccontent-_b_q11111_q_B:before {
   --tw-content: '11111';
   content: var(--tw-content);
 }
@@ -136,7 +136,7 @@ text,
     color: rgba(236, 79, 79, var(--tw-text-opacity, 1));
   }
 }
-.before_ccontent-_b_a11111_a_B:before {
+.before_ccontent-_b_q11111_q_B:before {
   --tw-content: '11111';
   content: var(--tw-content);
 }
@@ -270,7 +270,7 @@ text,
   --tw-text-opacity: 1;
   color: rgba(67, 136, 33, var(--tw-text-opacity, 1));
 }
-.before_ccontent-_b_a11111_a_B:before {
+.before_ccontent-_b_q11111_q_B:before {
   --tw-content: '11111';
   content: var(--tw-content);
 }
@@ -438,7 +438,7 @@ text,
   --tw-text-opacity: 1;
   color: rgba(67, 136, 33, var(--tw-text-opacity, 1));
 }
-.before_ccontent-_b_a11111_a_B:before {
+.before_ccontent-_b_q11111_q_B:before {
   --tw-content: '11111';
   content: var(--tw-content);
 }

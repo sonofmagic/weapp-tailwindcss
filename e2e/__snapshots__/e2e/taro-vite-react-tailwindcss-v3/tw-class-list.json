@@ -1,5 +1,5 @@
 [
-  "before:content-['11111']",
+  "before:content-[\"11111\"]",
   "before:content-['222']",
   "before:content-['independent_subpackage_taro-vite-react-tailwindcss-v3']",
   "before:content-['normal_subpackage_taro-vite-react-tailwindcss-v3']",
