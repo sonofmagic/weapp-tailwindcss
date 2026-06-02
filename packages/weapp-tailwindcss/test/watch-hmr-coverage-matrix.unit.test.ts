@@ -5,6 +5,7 @@ import { HOT_UPDATE_CASES_BY_TARGET, HOT_UPDATE_COVERED_PROJECTS } from '../../.
 import { getFrameworkIdeCases, getFrameworkIdeExemptCases } from '../../../e2e/frameworkSupportMatrix'
 import { shouldRequireIdeLivePageVisibility } from '../../../e2e/frameworkIdeClassHotUpdate'
 import { frameworkIdeWatchCaseNames } from '../../../e2e/frameworkIdeHotUpdate'
+import { buildCases } from '../../../tools/weapp-tailwindcss-scripts/src/watch-hmr-regression/cases'
 import { buildDemoBaseCases } from '../../../tools/weapp-tailwindcss-scripts/src/watch-hmr-regression/cases/demo/base'
 import { buildDemoExtendedCases } from '../../../tools/weapp-tailwindcss-scripts/src/watch-hmr-regression/cases/demo/extended'
 import { createStyleMutationPayload } from '../../../tools/weapp-tailwindcss-scripts/src/watch-hmr-regression/mutations/shared'
@@ -18,10 +19,12 @@ const automatedWatchCases = [
   ...buildDemoBaseCases('/repo'),
   ...buildDemoExtendedCases('/repo'),
 ]
+const ideWatchCases = buildCases('/repo', { includeLocalOnly: true })
 
 const watchCoveredProjects = new Set(automatedWatchCases.map(item => item.project))
 const watchCoveredCaseNames = new Set(automatedWatchCases.map(item => item.name))
 const automatedWatchCasesByName = new Map(automatedWatchCases.map(item => [item.name, item]))
+const ideWatchCasesByName = new Map(ideWatchCases.map(item => [item.name, item]))
 const repoRoot = join(import.meta.dirname, '../../..')
 const demoPackageProjects = readdirSync(join(repoRoot, 'demo'), { withFileTypes: true })
   .filter(item => item.isDirectory())
@@ -127,7 +130,7 @@ describe('watch-hmr coverage matrix', () => {
       const watchCaseName = frameworkIdeWatchCaseNames[entry.name]
       expect(watchCaseName, `${entry.name} should map to a watch-HMR case`).toBeDefined()
 
-      const watchCase = automatedWatchCasesByName.get(watchCaseName!)
+      const watchCase = ideWatchCasesByName.get(watchCaseName!)
       expect(watchCase, `${entry.name} should reuse an automated watch-HMR case`).toBeDefined()
       expect(watchCase?.project, `${entry.name} should run against the same demo project as e2e:ide`).toBe(`demo/${entry.name}`)
       expect(watchCase?.templateMutation, `${entry.name} should cover template edits in IDE`).toBeDefined()
@@ -154,7 +157,7 @@ describe('watch-hmr coverage matrix', () => {
       }
 
       const watchCaseName = frameworkIdeWatchCaseNames[entry.name]
-      const watchCase = automatedWatchCasesByName.get(watchCaseName!)
+      const watchCase = ideWatchCasesByName.get(watchCaseName!)
       expect(watchCase, `${entry.name} should map to an automated watch case`).toBeDefined()
 
       const styleSources = [
@@ -182,7 +185,7 @@ describe('watch-hmr coverage matrix', () => {
       }
 
       const watchCaseName = frameworkIdeWatchCaseNames[entry.name]
-      const watchCase = automatedWatchCasesByName.get(watchCaseName!)
+      const watchCase = ideWatchCasesByName.get(watchCaseName!)
       expect(watchCase, `${entry.name} should map to an automated watch case`).toBeDefined()
 
       const payload = createStyleMutationPayload(watchCase!)
@@ -195,7 +198,7 @@ describe('watch-hmr coverage matrix', () => {
     process.env.E2E_IDE_REQUIRE_LIVE_PAGE_VISIBILITY = '1'
     try {
       const relaxedCases = getFrameworkIdeCases()
-        .filter(entry => !shouldRequireIdeLivePageVisibility({ name: frameworkIdeWatchCaseNames[entry.name] }))
+        .filter(entry => !shouldRequireIdeLivePageVisibility({ name: frameworkIdeWatchCaseNames[entry.name]! }))
         .map(entry => entry.name)
 
       expect(relaxedCases).toEqual(['taro-webpack-react-tailwindcss-v4'])

@@ -8,38 +8,12 @@ import { splitCandidateTokens } from 'tailwindcss-patch'
 import { createDebug } from '@/debug'
 import { resolveClassNameTransformWithResult, shouldEnableArbitraryValueFallback } from '../shared/classname-transform'
 import { decodeUnicode2 } from '../utils/decode'
-import { replaceWxml } from '../wxml/shared'
 import { isClassContextLiteralPath } from './class-context'
-
-type EscapeMap = NonNullable<IJsHandlerOptions['escapeMap']>
+import { getReplacement, getReplacementCacheStore } from './replacement-cache'
 
 const debug = createDebug('[js:handlers] ')
-const replacementCacheByEscapeMap = new WeakMap<EscapeMap, Map<string, string>>()
-const defaultReplacementCache = new Map<string, string>()
 const WEAPP_TW_IGNORE_MARKER = 'weapp-tw'
 const IGNORE_MARKER = 'ignore'
-
-function getReplacementCacheStore(escapeMap?: EscapeMap) {
-  if (!escapeMap) {
-    return defaultReplacementCache
-  }
-
-  let store = replacementCacheByEscapeMap.get(escapeMap)
-  if (!store) {
-    store = new Map<string, string>()
-    replacementCacheByEscapeMap.set(escapeMap, store)
-  }
-  return store
-}
-
-function getReplacement(candidate: string, escapeMap: EscapeMap | undefined, store = getReplacementCacheStore(escapeMap)) {
-  let cached = store.get(candidate)
-  if (cached === undefined) {
-    cached = replaceWxml(candidate, { escapeMap })
-    store.set(candidate, cached)
-  }
-  return cached
-}
 
 function hasIgnoreComment(node: StringLiteral | TemplateElement) {
   const { leadingComments } = node

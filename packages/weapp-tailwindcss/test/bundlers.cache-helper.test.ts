@@ -20,7 +20,7 @@ describe('processCachedTask', () => {
     })
 
     expect(applyResult).toHaveBeenCalledTimes(1)
-    expect(applyResult).toHaveBeenCalledWith('handled')
+    expect(applyResult).toHaveBeenCalledWith('handled', { cacheHit: false })
     expect(transform).toHaveBeenCalledTimes(1)
     expect(cache.get('file')).toBe('handled')
   })
@@ -54,7 +54,7 @@ describe('processCachedTask', () => {
     expect(transform).not.toHaveBeenCalled()
     expect(onCacheHit).toHaveBeenCalledTimes(1)
     expect(applyResult).toHaveBeenCalledTimes(1)
-    expect(applyResult).toHaveBeenCalledWith('first-run')
+    expect(applyResult).toHaveBeenCalledWith('first-run', { cacheHit: true })
   })
 
   it('supports custom cacheValue storage', async () => {
@@ -74,6 +74,6 @@ describe('processCachedTask', () => {
     })
 
     expect(cache.get('style.wxss')).toBe(concat)
-    expect(applyResult).toHaveBeenCalledWith('css')
+    expect(applyResult).toHaveBeenCalledWith('css', { cacheHit: false })
   })
 })

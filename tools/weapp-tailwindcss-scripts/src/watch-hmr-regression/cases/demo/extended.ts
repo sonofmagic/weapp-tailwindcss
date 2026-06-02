@@ -34,7 +34,9 @@ const mpxWatchEnv = {
 
 const taroViteWatchEnv = {
   TARO_BUILD_STRICT: '1',
-  TARO_E2E_WATCH_NATIVE: '1',
+  TARO_E2E_WATCH_NATIVE: '0',
+  CHOKIDAR_USEPOLLING: '1',
+  CHOKIDAR_INTERVAL: '50',
   NODE_ENV: 'development',
 }
 

@@ -1491,7 +1491,9 @@ describe('watch-hmr regression cases', () => {
       'mpx-tailwindcss-v4',
       'uni-app-vite-tailwindcss-v4',
       'taro-vite-react-tailwindcss-v4',
+      'taro-vite-vue3-tailwindcss-v4',
       'taro-webpack-react-tailwindcss-v4',
+      'taro-webpack-vue3-tailwindcss-v4',
       'weapp-vite-tailwindcss-v4',
     ])
     const cases = [

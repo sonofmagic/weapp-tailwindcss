@@ -527,6 +527,8 @@ export const STYLE_REFERENCE_REQUIRED_CASES = new Set<ConcreteWatchCaseName>([
   'uni-app-x-hbuilderx-tailwindcss-v4',
   'mpx-tailwindcss-v4',
   'taro-vite-react-tailwindcss-v4',
+  'taro-vite-vue3-tailwindcss-v4',
   'taro-webpack-react-tailwindcss-v4',
+  'taro-webpack-vue3-tailwindcss-v4',
   'weapp-vite-tailwindcss-v4',
 ])

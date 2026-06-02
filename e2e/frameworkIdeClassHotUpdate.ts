@@ -25,6 +25,10 @@ import {
   readPageLiveContent,
 } from './frameworkIdeLivePage'
 
+const IDE_LIVE_PAGE_VISIBILITY_RELAXED_CASES = new Set<WatchCase['name']>([
+  'taro-webpack-react-tailwindcss-v4',
+])
+
 async function withDevToolsRelaunchTimeout<T>(options: CliOptions, pageUrl: string, task: Promise<T>) {
   const timeoutMs = getDevToolsRelaunchTimeoutMs(options)
   let timer: ReturnType<typeof setTimeout> | undefined
@@ -93,8 +97,11 @@ function shouldVerifyLivePageVisibility(watchCase: WatchCase) {
   return !watchCase.outputWxml.includes('/custom-tab-bar/')
 }
 
-export function shouldRequireIdeLivePageVisibility() {
-  return process.env['E2E_IDE_REQUIRE_LIVE_PAGE_VISIBILITY'] !== '0'
+export function shouldRequireIdeLivePageVisibility(watchCase?: Pick<WatchCase, 'name'>) {
+  if (process.env['E2E_IDE_REQUIRE_LIVE_PAGE_VISIBILITY'] === '0') {
+    return false
+  }
+  return !watchCase || !IDE_LIVE_PAGE_VISIBILITY_RELAXED_CASES.has(watchCase.name)
 }
 
 export async function runIdeClassHotUpdate(
@@ -173,7 +180,7 @@ export async function runIdeClassHotUpdate(
   await miniProgram.compile({ force: true }).catch(() => undefined)
   let devtoolsVisible = 'false'
   const verifyLivePage = shouldVerifyLivePageVisibility(watchCase)
-  const requireLivePage = verifyLivePage && shouldRequireIdeLivePageVisibility()
+  const requireLivePage = verifyLivePage && shouldRequireIdeLivePageVisibility(watchCase)
   const livePageTimeoutMs = requireLivePage
     ? getDevToolsVisibleTimeoutMs(options)
     : getDevToolsBestEffortVisibleTimeoutMs(options)

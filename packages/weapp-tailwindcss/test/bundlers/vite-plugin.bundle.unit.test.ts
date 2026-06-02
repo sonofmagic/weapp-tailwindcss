@@ -3628,6 +3628,7 @@ const cls = "w-[1.5px]"
     expect(firstCss).toContain('.border-emerald-200_f70')
     expect(firstCss).not.toContain('*,::before,::after')
     expect(firstCss).not.toContain('border-emerald-200\\/70')
+    vi.mocked(currentContext.styleHandler).mockClear()
 
     const secondBundle = {
       'index.js': createRollupChunk('const sss = "border-emerald-300/70"'),
@@ -3644,7 +3645,7 @@ const cls = "w-[1.5px]"
     expect(secondCss).not.toContain('*,::before,::after')
     expect(secondCss).not.toContain('border-emerald-200\\/70')
     expect(secondCss).not.toContain('border-emerald-300\\/70')
-    expect(currentContext.styleHandler).toHaveBeenCalledTimes(0)
+    expect(currentContext.styleHandler).toHaveBeenCalledTimes(1)
   }, TEST_TIMEOUT_MS)
 
   it('reapplies cached css transform when css formatting changes only', async () => {
