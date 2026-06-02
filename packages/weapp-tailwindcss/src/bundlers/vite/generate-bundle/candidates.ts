@@ -1,4 +1,4 @@
-import { splitCode } from '@weapp-tailwindcss/shared/extractors'
+import { splitCandidateTokens } from '@weapp-tailwindcss/shared/extractors'
 
 const MUSTACHE_EXPRESSION_RE = /\{\{[\s\S]*?\}\}/g
 const QUOTED_LITERAL_RE = /'([^']*)'|"([^"]*)"|`([^`]*)`/g
@@ -18,7 +18,7 @@ export function collectUnescapedDynamicCandidates(
     let quoted = QUOTED_LITERAL_RE.exec(expression)
     while (quoted !== null) {
       const literal = quoted[1] ?? quoted[2] ?? quoted[3] ?? ''
-      for (const candidate of splitCode(literal, true)) {
+      for (const candidate of splitCandidateTokens(literal)) {
         const normalized = candidate.trim()
         if (!normalized || !isArbitraryValueCandidate(normalized)) {
           continue

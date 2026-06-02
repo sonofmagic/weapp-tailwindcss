@@ -8,7 +8,7 @@ export function isValidSelector(selector = ''): selector is string {
 
 // 可选实现：export const splitCode = (code: string) => [...new Set(code.split(/\\?[\s'"`;={}]+/g))].filter(isValidSelector)
 
-/** splitCode 结果缓存，避免对相同字符串重复分割和过滤。 */
+/** 候选 token 分割结果缓存，避免对相同字符串重复分割和过滤。 */
 const splitCache = new Map<string, string[]>()
 const SPLIT_CACHE_LIMIT = 8192
 
@@ -82,7 +82,7 @@ function splitBracketAware(code: string) {
   return result
 }
 
-export function splitCode(code: string, _allowDoubleQuotes = false) {
+export function splitCandidateTokens(code: string) {
   const cached = splitCache.get(code)
   if (cached) {
     return cached
@@ -100,4 +100,8 @@ export function splitCode(code: string, _allowDoubleQuotes = false) {
   splitCache.set(code, result)
 
   return result
+}
+
+export function splitCode(code: string, _allowDoubleQuotes = false) {
+  return splitCandidateTokens(code)
 }

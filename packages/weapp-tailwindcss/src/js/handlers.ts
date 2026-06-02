@@ -4,7 +4,7 @@ import type { ClassNameTransformResult } from '../shared/classname-transform'
 import type { IJsHandlerOptions } from '../types'
 import type { JsToken } from './types'
 import { jsStringEscape } from '@ast-core/escape'
-import { splitCode } from '@weapp-tailwindcss/shared/extractors'
+import { splitCandidateTokens } from '@weapp-tailwindcss/shared/extractors'
 import { createDebug } from '@/debug'
 import { resolveClassNameTransformWithResult, shouldEnableArbitraryValueFallback } from '../shared/classname-transform'
 import { decodeUnicode2 } from '../utils/decode'
@@ -59,9 +59,8 @@ function hasIgnoreComment(node: StringLiteral | TemplateElement) {
 
 function extractLiteralValue(
   path: NodePath<StringLiteral | TemplateElement>,
-  { unescapeUnicode, arbitraryValues }: Pick<IJsHandlerOptions, 'unescapeUnicode' | 'arbitraryValues'>,
+  { unescapeUnicode }: Pick<IJsHandlerOptions, 'unescapeUnicode'>,
 ) {
-  const allowDoubleQuotes = arbitraryValues?.allowDoubleQuotes
   const { node } = path
 
   let offset = 0
@@ -83,7 +82,6 @@ function extractLiteralValue(
   }
 
   return {
-    allowDoubleQuotes,
     literal,
     offset,
     original,
@@ -176,8 +174,8 @@ export function replaceHandleValue(
     return undefined
   }
 
-  const { literal, original, allowDoubleQuotes, offset } = extractLiteralValue(path, options)
-  const candidates = splitCode(literal, allowDoubleQuotes)
+  const { literal, original, offset } = extractLiteralValue(path, options)
+  const candidates = splitCandidateTokens(literal)
   if (candidates.length === 0) {
     return undefined
   }

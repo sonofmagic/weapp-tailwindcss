@@ -1,5 +1,5 @@
 import type { IJsHandlerOptions } from '../types'
-import { splitCode } from '@weapp-tailwindcss/shared/extractors'
+import { splitCandidateTokens } from '@weapp-tailwindcss/shared/extractors'
 import { resolveClassNameTransformWithResult, shouldEnableArbitraryValueFallback } from '../shared/classname-transform'
 import { decodeUnicode2 } from '../utils/decode'
 import { replaceWxml } from '../wxml/shared'
@@ -44,9 +44,8 @@ export function transformLiteralText(
     return undefined
   }
 
-  const allowDoubleQuotes = options.arbitraryValues?.allowDoubleQuotes
   const source = options.unescapeUnicode && literal.includes('\\u') ? decodeUnicode2(literal) : literal
-  const candidates = splitCode(source, allowDoubleQuotes)
+  const candidates = splitCandidateTokens(source)
   if (candidates.length === 0) {
     return undefined
   }

@@ -1,6 +1,6 @@
 import type { NodePath } from '@babel/traverse'
 import type { StringLiteral, TemplateElement } from '@babel/types'
-import { splitCode } from '@weapp-tailwindcss/shared/extractors'
+import { splitCandidateTokens } from '@weapp-tailwindcss/shared/extractors'
 import MagicString from 'magic-string'
 import { analyzeSource, babelParse } from '@/js/babel'
 import { isClassContextLiteralPath } from '@/js/class-context'
@@ -25,16 +25,13 @@ function createStableHash(input: string) {
 }
 
 function extractLiteralValue(path: NodePath<StringLiteral | TemplateElement>) {
-  const allowDoubleQuotes = path.isTemplateElement()
   if (path.isStringLiteral()) {
     return {
-      allowDoubleQuotes,
       literal: path.node.value,
       offset: 1,
     }
   }
   return {
-    allowDoubleQuotes,
     literal: typeof path.node.value === 'string' ? path.node.value : path.node.value.raw,
     offset: 0,
   }
@@ -77,7 +74,7 @@ export class UniAppXComponentLocalStyleCollector {
   }
 
   private rewriteLiteral(literal: string, shouldInclude: (candidate: string) => boolean) {
-    const candidates = splitCode(literal)
+    const candidates = splitCandidateTokens(literal)
     if (candidates.length === 0) {
       return literal
     }
@@ -107,8 +104,8 @@ export class UniAppXComponentLocalStyleCollector {
       })
       const analysis = analyzeSource(ast, {}, undefined, false)
       for (const path of analysis.targetPaths) {
-        const { literal, allowDoubleQuotes } = extractLiteralValue(path)
-        const candidates = splitCode(literal, allowDoubleQuotes)
+        const { literal } = extractLiteralValue(path)
+        const candidates = splitCandidateTokens(literal)
         const classContext = options.wrapExpression || isClassContextLiteralPath(path)
         for (const candidate of candidates) {
           if (!candidate || (!classContext && !isRuntimeCandidate(candidate, this.runtimeSet))) {
@@ -145,8 +142,8 @@ export class UniAppXComponentLocalStyleCollector {
       }
       const updater = new JsTokenUpdater()
       for (const path of analysis.targetPaths) {
-        const { literal, allowDoubleQuotes, offset } = extractLiteralValue(path)
-        const candidates = splitCode(literal, allowDoubleQuotes)
+        const { literal, offset } = extractLiteralValue(path)
+        const candidates = splitCandidateTokens(literal)
         if (candidates.length === 0) {
           continue
         }

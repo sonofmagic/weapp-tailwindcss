@@ -1,6 +1,18 @@
-import { splitCode } from '@weapp-tailwindcss/shared/extractors'
+import { splitCandidateTokens, splitCode } from '@weapp-tailwindcss/shared/extractors'
 
 describe('extractorSplit', () => {
+  it('uses the candidate token splitter without allowDoubleQuotes gating', () => {
+    const code = 'after:content-["*"] after:content-[\'Hello_World\'] text-red-500'
+
+    expect(splitCandidateTokens(code)).toEqual([
+      'after:content-["*"]',
+      'after:content-[\'Hello_World\']',
+      'text-red-500',
+    ])
+    expect(splitCode(code, false)).toEqual(splitCandidateTokens(code))
+    expect(splitCode(code, true)).toEqual(splitCandidateTokens(code))
+  })
+
   it('common case ', () => {
     let code = ''
     // const arr = []

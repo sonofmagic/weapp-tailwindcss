@@ -1,7 +1,13 @@
 import { describe, expect, it } from 'vitest'
-import { isValidSelector, splitCode } from '@/extractors'
+import { isValidSelector, splitCandidateTokens, splitCode } from '@/extractors'
 
 describe('splitCode extractor', () => {
+  it('keeps splitCode as a compatibility alias for splitCandidateTokens', () => {
+    const code = 'foo before:content-["bar"] after:content-[\'baz\']'
+
+    expect(splitCode(code)).toEqual(splitCandidateTokens(code))
+  })
+
   it('splits on whitespace and drops empty selectors', () => {
     expect(splitCode('  foo   bar  ')).toEqual(['foo', 'bar'])
     expect(splitCode('"   "')).toEqual([])
