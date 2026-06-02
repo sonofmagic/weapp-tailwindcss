@@ -17,7 +17,7 @@
 ![gstar](https://atomgit.com/sonofmagic/weapp-tailwindcss/star/badge.svg)
 ![dm0](https://badgen.net/npm/dm/weapp-tailwindcss)
 ![license](https://badgen.net/npm/license/weapp-tailwindcss)
-[![test](https://github.com/sonofmagic/weapp-tailwindcss/actions/workflows/test.yml/badge.svg?branch=main)](https://github.com/sonofmagic/weapp-tailwindcss/actions/workflows/test.yml)
+[![test](https://github.com/sonofmagic/weapp-tailwindcss/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/sonofmagic/weapp-tailwindcss/actions/workflows/test.yml)
 [![codecov](https://codecov.io/gh/sonofmagic/weapp-tailwindcss/branch/main/graph/badge.svg?token=zn05qXYznt)](https://codecov.io/gh/sonofmagic/weapp-tailwindcss)
 [![Ask DeepWiki](https://deepwiki.com/badge.svg)](https://deepwiki.com/sonofmagic/weapp-tailwindcss)
 

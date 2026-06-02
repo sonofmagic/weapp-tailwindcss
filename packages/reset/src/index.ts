@@ -114,6 +114,14 @@ const builtInResetKeys = [
   'videoReset',
 ] as const satisfies BuiltInResetName[]
 
+interface ResetPlugin {
+  (options?: ResetOptions): {
+    handler: unknown
+    config?: unknown
+  }
+  __isOptionsFunction: true
+}
+
 function hasCustomResetConfig(
   value: ResetOptions[BuiltInResetName],
 ): value is Exclude<ResetOptions[BuiltInResetName], false | undefined> {
