@@ -37,6 +37,7 @@ export function createViteRuntimeClassSet(options: CreateViteRuntimeClassSetOpti
     refreshTailwindcssPatcher,
   }
   const bundleRuntimeClassSetManager = createBundleRuntimeClassSetManager()
+  const transformRuntimeClassSetManager = createBundleRuntimeClassSetManager()
   let runtimeSet: Set<string> | undefined
   let runtimeSetPromise: Promise<Set<string>> | undefined
   let runtimeRefreshSignature: string | undefined
@@ -114,6 +115,7 @@ export function createViteRuntimeClassSet(options: CreateViteRuntimeClassSetOpti
     options: {
       allowBaselineOnlyInitialSync?: boolean | undefined
       baseClassSet?: Set<string> | undefined
+      transformOnly?: boolean | undefined
     } = {},
   ) {
     const forceRuntimeRefresh = forceRefresh || process.env['WEAPP_TW_VITE_FORCE_RUNTIME_REFRESH'] === '1'
@@ -129,6 +131,7 @@ export function createViteRuntimeClassSet(options: CreateViteRuntimeClassSetOpti
       runtimeSet = undefined
       runtimeSetPromise = undefined
       await bundleRuntimeClassSetManager.reset()
+      await transformRuntimeClassSetManager.reset()
     }
 
     if (runtimeState.twPatcher.majorVersion === 4 && !forceRuntimeRefresh) {
@@ -144,6 +147,16 @@ export function createViteRuntimeClassSet(options: CreateViteRuntimeClassSetOpti
     }
 
     if (runtimeState.twPatcher.majorVersion === 3 && !forceRuntimeRefresh) {
+      if (options.transformOnly) {
+        try {
+          return await transformRuntimeClassSetManager.sync(runtimeState.twPatcher, snapshot)
+        }
+        catch (error) {
+          debug('incremental transform runtime set sync failed, fallback to full collect: %O', error)
+          await transformRuntimeClassSetManager.reset()
+        }
+      }
+
       try {
         let baseClassSet = options.baseClassSet
         if (!baseClassSet && (!runtimeSet || shouldRefreshPatcher)) {

@@ -6,7 +6,7 @@ Generator CSS files: app.wxss, apple.wxss, index.css, index.wxss, index.wxss, in
 
 | Bytes | Selectors | @supports | :hover | Tailwind banner | Raw arbitrary selector | Weapp escaped arbitrary selector |
 | ---: | ---: | --- | --- | --- | --- | --- |
-| 8365 | 47 | false | false | false | false | true |
+| 8495 | 49 | false | false | false | false | true |
 
 ## Generator CSS
 
@@ -40,6 +40,7 @@ wx-root-portal-content {
   --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New', monospace;
   --color-red-700: rgb(191, 0, 15);
   --color-amber-300: rgb(255, 210, 55);
+  --color-blue-500: rgb(50, 128, 255);
   --color-pink-300: rgb(253, 165, 213);
   --color-zinc-50: rgb(250, 250, 250);
   --color-zinc-900: rgb(24, 24, 27);
@@ -165,8 +166,14 @@ wx-root-portal-content {
 .text-_b100rpx_B {
   font-size: 100rpx;
 }
+.text-_b55rpx_B {
+  font-size: 55rpx;
+}
 .text-_b_h123456_B {
   color: #123456;
+}
+.text-blue-500 {
+  color: var(--color-blue-500);
 }
 .text-pink-300 {
   color: var(--color-pink-300);

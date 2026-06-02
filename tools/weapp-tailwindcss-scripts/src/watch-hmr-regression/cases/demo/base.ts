@@ -123,6 +123,9 @@ export function buildDemoBaseCases(baseCwd: string): WatchCase[] {
     project: 'demo/taro-webpack-react-tailwindcss-v3',
     group: 'demo',
     maxPluginProcessMs: 1500,
+    // Taro webpack React v3 watch 在 e2e 轮询重建时会重写全局 wxss；
+    // same-class-literal 仍校验 HMR 生效、回滚与 escaped class，不强制全局样式文本完全稳定。
+    requireStableGlobalStyleOnSameClassLiteral: false,
     cwd: path.resolve(baseCwd, 'demo/taro-webpack-react-tailwindcss-v3'),
     devScript: 'dev:e2e-watch',
     env: taroWatchEnv,

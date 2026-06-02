@@ -6,7 +6,7 @@ Generator CSS files: app.wxss, app-origin.wxss, index.wxss, index.wxss, index.wx
 
 | Bytes | Selectors | @supports | :hover | Tailwind banner | Raw arbitrary selector | Weapp escaped arbitrary selector |
 | ---: | ---: | --- | --- | --- | --- | --- |
-| 11908 | 21 | false | false | false | false | true |
+| 11990 | 22 | false | false | false | false | true |
 
 ## Generator CSS
 
@@ -43,6 +43,9 @@ wx-root-portal-content {
 }
 .bg-_b_h123456_B {
   background-color: #123456;
+}
+.bg-_bred_B {
+  background-color: red;
 }
 .bg-purple-300 {
   background-color: var(--color-purple-300);
@@ -183,6 +186,9 @@ wx-root-portal-content {
 }
 .bg-_b_h123456_B {
   background-color: #123456;
+}
+.bg-_bred_B {
+  background-color: red;
 }
 .before_ccontent-_b_aindependent_subpackage_taro-vite-react-tailwindcss-v4_a_B:before {
   --tw-content: 'independent subpackage taro-vite-react-tailwindcss-v4';

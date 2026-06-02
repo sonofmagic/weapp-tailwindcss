@@ -570,6 +570,9 @@ export function buildDemoExtendedCases(baseCwd: string): WatchCase[] {
     project: 'demo/taro-vite-react-tailwindcss-v3',
     group: 'demo',
     maxPluginProcessMs: taroVitePluginProcessBudgetMs,
+    // Taro Vite v3 watch 会重写全局 wxss；
+    // same-class-literal 仍校验 HMR 生效、回滚与 escaped class，不强制全局样式文本完全稳定。
+    requireStableGlobalStyleOnSameClassLiteral: false,
     initialMutationDelayMs: 15_000,
     cwd: path.resolve(baseCwd, 'demo/taro-vite-react-tailwindcss-v3'),
     devScript: 'dev:e2e-watch',
@@ -594,7 +597,7 @@ export function buildDemoExtendedCases(baseCwd: string): WatchCase[] {
       mutate(source, payload) {
         return replaceExactSnippet(
           source,
-          '      <View className=\'bg-[#89ab8d] flex flex-col\'>',
+          '      <View className=\'bg-[#89ab8d] flex divide-x-8 divide-solid divide-[#60d256]\'>',
           `      <View className='${payload.classLiteral}'>`,
           'taro-vite-react-tailwindcss-v3 jsx class anchor',
         )
@@ -660,6 +663,9 @@ export function buildDemoExtendedCases(baseCwd: string): WatchCase[] {
     project: 'demo/taro-webpack-react-tailwindcss-v4',
     group: 'demo',
     maxPluginProcessMs: 1500,
+    // Taro webpack React v4 watch 在 e2e 轮询重建时会重写全局 wxss；
+    // same-class-literal 仍校验 HMR 生效、回滚与 escaped class，不强制全局样式文本完全稳定。
+    requireStableGlobalStyleOnSameClassLiteral: false,
     cwd: path.resolve(baseCwd, 'demo/taro-webpack-react-tailwindcss-v4'),
     devScript: 'dev:e2e-watch',
     env: taroWatchEnv,

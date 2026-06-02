@@ -8,7 +8,7 @@ import type {
   WatchSession,
 } from '../../types'
 import { formatPath } from '../../cli'
-import { getMtime, writeFilePreserveEol } from '../../text'
+import { getMtime, readFileIfExists, writeFilePreserveEol } from '../../text'
 import {
   collectPluginProcessMetrics,
   createClassMutationScenario,
@@ -30,6 +30,14 @@ interface RunCommentCarrierMutationOptions {
   minRequiredGlobalStyleEscapedClasses: number
   roundConfig: MutationRoundConfig
   baselineMtime: OutputMtime
+}
+
+async function markerState(watchCase: WatchCase, marker: string) {
+  const [wxml, js] = await Promise.all([
+    readFileIfExists(watchCase.outputWxml),
+    readFileIfExists(watchCase.outputJs),
+  ])
+  return Boolean(wxml?.includes(marker) || js?.includes(marker))
 }
 
 export async function runCommentCarrierMutation(
@@ -92,6 +100,13 @@ export async function runCommentCarrierMutation(
     cliOptions,
     session,
     hotUpdateStartedAt,
+    async () => {
+      if (!(await markerState(watchCase, scenario.marker))) {
+        return false
+      }
+      const globalStyle = await readJoinedOutputFiles(globalStyleOutputs)
+      return scenario.escapedClasses.filter(escaped => globalStyle.includes(escaped)).length >= minRequiredGlobalStyleEscapedClasses
+    },
   )
   const hotUpdateEffectiveMs = await waitForMarkerState(
     watchCase,
@@ -126,6 +141,7 @@ export async function runCommentCarrierMutation(
     cliOptions,
     session,
     rollbackStartedAt,
+    async () => !(await markerState(watchCase, scenario.marker)),
   )
   const rollbackEffectiveMs = await waitForMarkerState(
     watchCase,

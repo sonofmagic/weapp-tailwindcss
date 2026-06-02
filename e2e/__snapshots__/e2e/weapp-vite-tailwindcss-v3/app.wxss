@@ -369,6 +369,10 @@ text,
 .tracking-wide {
   letter-spacing: 0.025em;
 }
+.text-_b_h0000ff_B {
+  --tw-text-opacity: 1;
+  color: rgba(0, 0, 255, var(--tw-text-opacity, 1));
+}
 .text-_b_h123456_B {
   --tw-text-opacity: 1;
   color: rgba(18, 52, 86, var(--tw-text-opacity, 1));

@@ -24,6 +24,7 @@ export default defineConfig({
   },
   test: {
     include: [path.resolve(__dirname, './*.test.ts')],
+    reporters: ['default', path.resolve(__dirname, './progress-reporter.ts')],
     testTimeout: 36_000_000,
     globals: true,
     maxConcurrency: 1,

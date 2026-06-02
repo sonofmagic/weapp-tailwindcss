@@ -8,6 +8,7 @@ import type {
 } from '../types'
 import { promises as fs } from 'node:fs'
 import process from 'node:process'
+import { sleep } from '../session'
 import { writeFilePreserveEol } from '../text'
 import { runClassMutation } from './class'
 import { waitForOutputsReady } from './shared'
@@ -104,6 +105,9 @@ export async function runSubPackageMutation(
   })
   // 这里的 attach 写入只用于确保分包源文件已被 watch 工具链订阅，内容没有变化。
   // 部分框架会复用已有产物且不再输出新的 compile success，真正的 HMR 行为由后续 mutation 断言覆盖。
+  // Gulp/Chokidar 偶发会把 attach 写入和紧随其后的 mutation 合并，导致变更事件被上一轮消费。
+  // 给事件队列一个很短的稳定窗口，避免全量 e2e 中分包用例抖动。
+  await sleep(Math.min(Math.max(options.pollMs * 2, 600), 1500))
   session.ensureRunning()
 
   const globalStyleOutputs = [...new Set([

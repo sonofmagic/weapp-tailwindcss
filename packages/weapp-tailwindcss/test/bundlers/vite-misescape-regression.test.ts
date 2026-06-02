@@ -53,6 +53,46 @@ function expectNoMisescapedSamples(result: string, samples: readonly string[] = 
 }
 
 describe('vite misescape regressions', () => {
+  it('keeps v3 source-scan-only candidates out of JS transforms', () => {
+    const runtimeClass = 'text-[#438821]'
+    const sourceOnlyCandidates = new Set([
+      runtimeClass,
+      'Hello',
+      'world!',
+      'keep-[business]',
+      'before:content-["not-generated"]',
+      'https://example.com/a[b]?q=Hello',
+    ])
+    const jsRuntime = new Set([runtimeClass])
+    const jsHandler = createJsHandler({
+      babelParserOptions: {
+        sourceType: 'module',
+        plugins: ['jsx', 'typescript'],
+      },
+      escapeMap: MappingChars2String,
+      needEscaped: true,
+      tailwindcssMajorVersion: 3,
+    })
+    const code = `
+const complexExpression = 'size > 4 ? keep-[business] : App.vue:4'
+const bracketLikeText = 'before content ["not-generated"]'
+const urlLikeText = 'https://example.com/a[b]?q=Hello world!'
+const view = <View className="${runtimeClass}">Hello world!</View>
+`
+
+    const result = jsHandler(code, jsRuntime).code
+
+    expect(sourceOnlyCandidates.size).toBeGreaterThan(jsRuntime.size)
+    expect(result).toContain(replaceWxml(runtimeClass, { escapeMap: MappingChars2String }))
+    expect(result).toContain('Hello world!')
+    expect(result).toContain('keep-[business]')
+    expect(result).toContain('before content ["not-generated"]')
+    expect(result).toContain('https://example.com/a[b]?q=Hello world!')
+    expect(result).not.toContain('Hello world_e')
+    expect(result).not.toContain('keep-_bbusiness_B')
+    expect(result).not.toContain('before_ccontent-_b_qnot-generated_q_B')
+  })
+
   it.each(misescapeCases)('keeps non-class JS and JSX text untouched in $label', ({ majorVersion, runtimeClass }) => {
     const jsHandler = createJsHandler({
       babelParserOptions: {

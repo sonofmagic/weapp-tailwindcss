@@ -47,6 +47,7 @@ interface GenerateBundleContext {
     options?: {
       allowBaselineOnlyInitialSync?: boolean | undefined
       baseClassSet?: Set<string> | undefined
+      transformOnly?: boolean | undefined
     },
   ) => Promise<Set<string>>
   debug: (format: string, ...args: unknown[]) => void
@@ -264,6 +265,11 @@ export function createGenerateBundleHook(context: GenerateBundleContext) {
       && !forceRuntimeRefreshByEnv
       && !disableV3OxideSourceRuntime
     const runtimeStart = performance.now()
+    const transformBaseRuntime = useV3OxideSourceRuntime
+      ? await ensureBundleRuntimeClassSet(snapshot, forceRuntimeRefreshByEnv, {
+          transformOnly: true,
+        })
+      : undefined
     const runtime = isWebGeneratorTarget && !shouldGenerateWebCssByGenerator
       ? new Set<string>()
       : useV3OxideSourceRuntime
@@ -291,12 +297,7 @@ export function createGenerateBundleHook(context: GenerateBundleContext) {
       sourceCandidates,
       filteredGeneratorCandidates,
     )
-    let transformRuntime = runtimeState.twPatcher.majorVersion === 3 && sourceCandidates.size > 0
-      ? new Set([
-          ...runtime,
-          ...sourceCandidates,
-        ])
-      : runtime
+    let transformRuntime = transformBaseRuntime ?? runtime
     const shouldValidateV3GeneratorRuntime = runtimeState.twPatcher.majorVersion === 3
       && generatorRuntime.size > 0
     if (shouldValidateV3GeneratorRuntime) {

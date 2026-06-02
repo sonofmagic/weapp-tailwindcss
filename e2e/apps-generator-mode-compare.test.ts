@@ -54,6 +54,7 @@ function filterCompareProjects(projects: CompareProject[]) {
 const projects: CompareProject[] = filterCompareProjects([
   ...E2E_PROJECTS.map(entry => createCompareProject(entry, '../demo')),
 ])
+const projectFilterEnabled = Boolean(process.env['E2E_PROJECT_FILTER'])
 
 const UNSUPPORTED_LEGACY_SELECTOR_SET = new Set([
   ':after',
@@ -521,6 +522,8 @@ describe('demo generator mode output', () => {
     }
 
     expect(report.filter(item => item.status === 'failed')).toEqual([])
-    await expectReportSnapshot(report)
+    if (!projectFilterEnabled) {
+      await expectReportSnapshot(report)
+    }
   }, 1_800_000)
 })

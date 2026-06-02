@@ -67,6 +67,7 @@ describe('e2e', () => {
     const pageWxml = await fs.readFile(path.resolve(projectPath, 'dist/pages/index/index.wxml'), 'utf8')
     const testPageJs = await fs.readFile(path.resolve(projectPath, 'dist/pages/index/test.js'), 'utf8')
     const testPageWxml = await fs.readFile(path.resolve(projectPath, 'dist/pages/index/test.wxml'), 'utf8')
+    const appWxss = await fs.readFile(path.resolve(projectPath, 'dist/app.wxss'), 'utf8')
 
     expect(pageJs).toContain('Hello world!')
     expect(testPageJs).toContain('at App.vue:4 index.ts:120:3')
@@ -80,6 +81,9 @@ describe('e2e', () => {
     expect(testPageJs).not.toContain('keep-_bbusiness_B')
     expect(testPageJs).not.toContain('not-generated_q_B')
     expect(testPageWxml).not.toContain('Hello world_e')
+    expect(appWxss).not.toContain('Hello world_e')
+    expect(appWxss).not.toContain('keep-_bbusiness_B')
+    expect(appWxss).not.toContain('before_ccontent-_b_qnot-generated_q_B')
   })
 
   it('does not generate workspace dependency dts files in source directories during Taro Vite React v3 build', async () => {

@@ -6,7 +6,7 @@ Generator CSS files: app.wxss, app-origin.wxss, index.wxss, index.wxss, index.wx
 
 | Bytes | Selectors | @supports | :hover | Tailwind banner | Raw arbitrary selector | Weapp escaped arbitrary selector |
 | ---: | ---: | --- | --- | --- | --- | --- |
-| 33535 | 28 | false | false | false | false | true |
+| 35544 | 30 | false | false | false | false | true |
 
 ## Generator CSS
 
@@ -114,6 +114,10 @@ text,
   --tw-bg-opacity: 1;
   background-color: rgba(226, 72, 38, var(--tw-bg-opacity, 1));
 }
+.bg-_bred_B {
+  --tw-bg-opacity: 1;
+  background-color: rgba(255, 0, 0, var(--tw-bg-opacity, 1));
+}
 .text-_b66rpx_B {
   font-size: 66rpx;
 }
@@ -129,8 +133,12 @@ text,
   --tw-content: '11111';
   content: var(--tw-content);
 }
-.before_ccontent-_b_q222_q_B:before {
+.before_ccontent-_b_a222_a_B:before {
   --tw-content: '222';
+  content: var(--tw-content);
+}
+.before_ccontent-_b_a333_a_B:before {
+  --tw-content: '333';
   content: var(--tw-content);
 }
 .before_ccontent-_b_aindependent_subpackage_taro-vite-react-tailwindcss-v3_a_B:before {
@@ -156,8 +164,12 @@ text,
   --tw-content: '11111';
   content: var(--tw-content);
 }
-.before_ccontent-_b_q222_q_B:before {
+.before_ccontent-_b_a222_a_B:before {
   --tw-content: '222';
+  content: var(--tw-content);
+}
+.before_ccontent-_b_a333_a_B:before {
+  --tw-content: '333';
   content: var(--tw-content);
 }
 .before_ccontent-_b_aindependent_subpackage_taro-vite-react-tailwindcss-v3_a_B:before {
@@ -204,8 +216,12 @@ text,
   --tw-content: '11111';
   content: var(--tw-content);
 }
-.before_ccontent-_b_q222_q_B:before {
+.before_ccontent-_b_a222_a_B:before {
   --tw-content: '222';
+  content: var(--tw-content);
+}
+.before_ccontent-_b_a333_a_B:before {
+  --tw-content: '333';
   content: var(--tw-content);
 }
 .before_ccontent-_b_anormal_subpackage_taro-vite-react-tailwindcss-v3_a_B:before {
@@ -343,6 +359,10 @@ text,
   --tw-bg-opacity: 1;
   background-color: rgba(226, 72, 38, var(--tw-bg-opacity, 1));
 }
+.bg-_bred_B {
+  --tw-bg-opacity: 1;
+  background-color: rgba(255, 0, 0, var(--tw-bg-opacity, 1));
+}
 .before_ccontent-_b_anormal_subpackage_taro-vite-react-tailwindcss-v3_a_B:before {
   --tw-content: 'normal subpackage taro-vite-react-tailwindcss-v3';
   content: var(--tw-content);
@@ -362,8 +382,12 @@ text,
   --tw-content: '11111';
   content: var(--tw-content);
 }
-.before_ccontent-_b_q222_q_B:before {
+.before_ccontent-_b_a222_a_B:before {
   --tw-content: '222';
+  content: var(--tw-content);
+}
+.before_ccontent-_b_a333_a_B:before {
+  --tw-content: '333';
   content: var(--tw-content);
 }
 .before_ccontent-_b_anormal_subpackage_taro-vite-react-tailwindcss-v3_a_B:before {
@@ -507,6 +531,10 @@ text,
   --tw-bg-opacity: 1;
   background-color: rgba(226, 72, 38, var(--tw-bg-opacity, 1));
 }
+.bg-_bred_B {
+  --tw-bg-opacity: 1;
+  background-color: rgba(255, 0, 0, var(--tw-bg-opacity, 1));
+}
 .bg-independent-subpackage-marker {
   --tw-bg-opacity: 1;
   background-color: rgba(220, 38, 38, var(--tw-bg-opacity, 1));
@@ -526,8 +554,12 @@ text,
   --tw-content: '11111';
   content: var(--tw-content);
 }
-.before_ccontent-_b_q222_q_B:before {
+.before_ccontent-_b_a222_a_B:before {
   --tw-content: '222';
+  content: var(--tw-content);
+}
+.before_ccontent-_b_a333_a_B:before {
+  --tw-content: '333';
   content: var(--tw-content);
 }
 .bg-normal-subpackage-marker {
@@ -678,6 +710,10 @@ text,
   --tw-bg-opacity: 1;
   background-color: rgba(226, 72, 38, var(--tw-bg-opacity, 1));
 }
+.bg-_bred_B {
+  --tw-bg-opacity: 1;
+  background-color: rgba(255, 0, 0, var(--tw-bg-opacity, 1));
+}
 .text-_b66rpx_B {
   font-size: 66rpx;
 }
@@ -693,8 +729,12 @@ text,
   --tw-content: '11111';
   content: var(--tw-content);
 }
-.before_ccontent-_b_q222_q_B:before {
+.before_ccontent-_b_a222_a_B:before {
   --tw-content: '222';
+  content: var(--tw-content);
+}
+.before_ccontent-_b_a333_a_B:before {
+  --tw-content: '333';
   content: var(--tw-content);
 }
 .before_ccontent-_b_aindependent_subpackage_taro-vite-react-tailwindcss-v3_a_B:before {
@@ -715,8 +755,12 @@ text,
   --tw-content: '11111';
   content: var(--tw-content);
 }
-.before_ccontent-_b_q222_q_B:before {
+.before_ccontent-_b_a222_a_B:before {
   --tw-content: '222';
+  content: var(--tw-content);
+}
+.before_ccontent-_b_a333_a_B:before {
+  --tw-content: '333';
   content: var(--tw-content);
 }
 .before_ccontent-_b_aindependent_subpackage_taro-vite-react-tailwindcss-v3_a_B:before {
@@ -826,6 +870,10 @@ text,
   --tw-bg-opacity: 1;
   background-color: rgba(226, 72, 38, var(--tw-bg-opacity, 1));
 }
+.bg-_bred_B {
+  --tw-bg-opacity: 1;
+  background-color: rgba(255, 0, 0, var(--tw-bg-opacity, 1));
+}
 .before_ccontent-_b_anormal_subpackage_taro-vite-react-tailwindcss-v3_a_B:before {
   --tw-content: 'normal subpackage taro-vite-react-tailwindcss-v3';
   content: var(--tw-content);
@@ -845,8 +893,12 @@ text,
   --tw-content: '11111';
   content: var(--tw-content);
 }
-.before_ccontent-_b_q222_q_B:before {
+.before_ccontent-_b_a222_a_B:before {
   --tw-content: '222';
+  content: var(--tw-content);
+}
+.before_ccontent-_b_a333_a_B:before {
+  --tw-content: '333';
   content: var(--tw-content);
 }
 .before_ccontent-_b_anormal_subpackage_taro-vite-react-tailwindcss-v3_a_B:before {
@@ -990,6 +1042,10 @@ text,
   --tw-bg-opacity: 1;
   background-color: rgba(226, 72, 38, var(--tw-bg-opacity, 1));
 }
+.bg-_bred_B {
+  --tw-bg-opacity: 1;
+  background-color: rgba(255, 0, 0, var(--tw-bg-opacity, 1));
+}
 .before_ccontent-_b_anormal_subpackage_taro-vite-react-tailwindcss-v3_a_B:before {
   --tw-content: 'normal subpackage taro-vite-react-tailwindcss-v3';
   content: var(--tw-content);
@@ -1009,8 +1065,12 @@ text,
   --tw-content: '11111';
   content: var(--tw-content);
 }
-.before_ccontent-_b_q222_q_B:before {
+.before_ccontent-_b_a222_a_B:before {
   --tw-content: '222';
+  content: var(--tw-content);
+}
+.before_ccontent-_b_a333_a_B:before {
+  --tw-content: '333';
   content: var(--tw-content);
 }
 .bg-independent-subpackage-marker {
@@ -1167,6 +1227,10 @@ text,
   --tw-bg-opacity: 1;
   background-color: rgba(226, 72, 38, var(--tw-bg-opacity, 1));
 }
+.bg-_bred_B {
+  --tw-bg-opacity: 1;
+  background-color: rgba(255, 0, 0, var(--tw-bg-opacity, 1));
+}
 .text-_b66rpx_B {
   font-size: 66rpx;
 }
@@ -1182,8 +1246,12 @@ text,
   --tw-content: '11111';
   content: var(--tw-content);
 }
-.before_ccontent-_b_q222_q_B:before {
+.before_ccontent-_b_a222_a_B:before {
   --tw-content: '222';
+  content: var(--tw-content);
+}
+.before_ccontent-_b_a333_a_B:before {
+  --tw-content: '333';
   content: var(--tw-content);
 }
 .before_ccontent-_b_aindependent_subpackage_taro-vite-react-tailwindcss-v3_a_B:before {
@@ -1208,8 +1276,12 @@ text,
   --tw-content: '11111';
   content: var(--tw-content);
 }
-.before_ccontent-_b_q222_q_B:before {
+.before_ccontent-_b_a222_a_B:before {
   --tw-content: '222';
+  content: var(--tw-content);
+}
+.before_ccontent-_b_a333_a_B:before {
+  --tw-content: '333';
   content: var(--tw-content);
 }
 .before_ccontent-_b_anormal_subpackage_taro-vite-react-tailwindcss-v3_a_B:before {
@@ -1352,6 +1424,10 @@ text,
   --tw-bg-opacity: 1;
   background-color: rgba(226, 72, 38, var(--tw-bg-opacity, 1));
 }
+.bg-_bred_B {
+  --tw-bg-opacity: 1;
+  background-color: rgba(255, 0, 0, var(--tw-bg-opacity, 1));
+}
 .text-_b66rpx_B {
   font-size: 66rpx;
 }
@@ -1367,8 +1443,12 @@ text,
   --tw-content: '11111';
   content: var(--tw-content);
 }
-.before_ccontent-_b_q222_q_B:before {
+.before_ccontent-_b_a222_a_B:before {
   --tw-content: '222';
+  content: var(--tw-content);
+}
+.before_ccontent-_b_a333_a_B:before {
+  --tw-content: '333';
   content: var(--tw-content);
 }
 .before_ccontent-_b_aindependent_subpackage_taro-vite-react-tailwindcss-v3_a_B:before {
@@ -1393,8 +1473,12 @@ text,
   --tw-content: '11111';
   content: var(--tw-content);
 }
-.before_ccontent-_b_q222_q_B:before {
+.before_ccontent-_b_a222_a_B:before {
   --tw-content: '222';
+  content: var(--tw-content);
+}
+.before_ccontent-_b_a333_a_B:before {
+  --tw-content: '333';
   content: var(--tw-content);
 }
 .before_ccontent-_b_anormal_subpackage_taro-vite-react-tailwindcss-v3_a_B:before {
