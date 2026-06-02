@@ -11,6 +11,7 @@ import { getGroupedEntries } from '@/utils'
 import { processCachedTask } from '../../shared/cache'
 import { stripBundlerGeneratedCssMarkers } from '../../shared/generated-css-marker'
 import { generateCssByGenerator } from '../../shared/generator-css'
+import { removeTailwindSourceDirectives } from '../../shared/generator-css/directives'
 import { emitHmrTiming } from '../../shared/hmr-timing'
 import { resolveOutputSpecifier, toAbsoluteOutputPath } from '../../shared/module-graph'
 import { pushConcurrentTaskFactories } from '../../shared/run-tasks'
@@ -239,6 +240,12 @@ export function setupWebpackV5ProcessAssetsHook(options: SetupWebpackV5ProcessAs
           cssUserHandlerOptionsCache.set(cacheKey, created)
           return created
         }
+        const finalizeCssAssetSource = (source: string) => {
+          return removeTailwindSourceDirectives(
+            stripBundlerGeneratedCssMarkers(source),
+            { importFallback: true },
+          )
+        }
         const forceRuntimeRefresh = getRuntimeRefreshRequirement()
         debug('processAssets ensure runtime set forceRefresh=%s major=%s', forceRuntimeRefresh, runtimeState.twPatcher.majorVersion ?? 'unknown')
         let runtimeSet: Set<string>
@@ -396,7 +403,7 @@ export function setupWebpackV5ProcessAssetsHook(options: SetupWebpackV5ProcessAs
 
             const rawSource = originalSource.source().toString()
             if (isWebpackProcessedCssAsset?.(file, rawSource)) {
-              const nextCss = stripBundlerGeneratedCssMarkers(rawSource)
+              const nextCss = finalizeCssAssetSource(rawSource)
               tasks.push(
                 processCachedTask({
                   cache: compilerOptions.cache,
@@ -458,7 +465,9 @@ export function setupWebpackV5ProcessAssetsHook(options: SetupWebpackV5ProcessAs
                     styleHandler: compilerOptions.styleHandler,
                     debug,
                   })
-                  const css = generated?.css ?? (await compilerOptions.styleHandler(rawSource, cssHandlerOptions)).css
+                  const css = finalizeCssAssetSource(
+                    generated?.css ?? (await compilerOptions.styleHandler(rawSource, cssHandlerOptions)).css,
+                  )
                   const source = new ConcatSource(css)
 
                   if (generated) {
