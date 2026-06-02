@@ -33,7 +33,8 @@ const mpxWatchEnv = {
 }
 
 const taroViteWatchEnv = {
-  ...taroWatchEnv,
+  TARO_BUILD_STRICT: '1',
+  TARO_E2E_WATCH_NATIVE: '1',
   NODE_ENV: 'development',
 }
 

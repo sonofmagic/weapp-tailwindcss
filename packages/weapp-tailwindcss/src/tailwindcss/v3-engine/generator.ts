@@ -94,6 +94,15 @@ function collectCandidates(candidates: Iterable<string> | undefined) {
   return new Set(candidates ?? [])
 }
 
+function hasRemovedCandidates(previousCandidates: Set<string>, nextCandidates: Set<string>) {
+  for (const candidate of previousCandidates) {
+    if (!nextCandidates.has(candidate)) {
+      return true
+    }
+  }
+  return false
+}
+
 function collectApplyCandidatesFromCss(css: string) {
   if (!css.includes('@apply')) {
     return []
@@ -522,6 +531,20 @@ export function createTailwindV3Engine(source: TailwindV3ResolvedSource): Tailwi
     const cacheKey = createIncrementalGenerateCacheKey(source, target, styleOptions)
     const cached = incrementalGenerateCache.get(cacheKey)
     if (cached) {
+      if (hasRemovedCandidates(cached.seenCandidates, requestedCandidates)) {
+        const generated = await generateOnce(source, options)
+        incrementalGenerateCache.set(cacheKey, {
+          context: generated.context,
+          seenCandidates: new Set(requestedCandidates),
+          classSet: new Set(generated.classSet),
+          css: generated.css,
+          rawCss: generated.rawCss,
+          dependencies: generated.dependencies,
+          target: generated.target,
+        })
+        return generated
+      }
+
       const missingCandidates = [...requestedCandidates].filter(candidate => !cached.seenCandidates.has(candidate))
       if (missingCandidates.length === 0) {
         return {

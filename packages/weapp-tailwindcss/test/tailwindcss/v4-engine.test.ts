@@ -188,6 +188,41 @@ describe('tailwindcss v4 engine', () => {
     expect(second.css.indexOf('.text-_b188rpx_B')).toBeGreaterThan(second.css.indexOf('.text-_b88rpx_B'))
   })
 
+  it('regenerates the v4 incremental cache when requested utilities are removed', async () => {
+    const source = await resolveTailwindV4Source({
+      css: MINIMAL_THEME_CSS,
+      base: process.cwd(),
+    })
+    const engine = createTailwindV4Engine(source)
+
+    const first = await engine.generate({
+      candidates: ['text-[88rpx]', 'text-[188rpx]'],
+      incrementalCache: true,
+      scanSources: false,
+      styleOptions: {
+        isMainChunk: false,
+      },
+    })
+    const second = await engine.generate({
+      candidates: ['text-[88rpx]'],
+      incrementalCache: true,
+      scanSources: false,
+      styleOptions: {
+        isMainChunk: false,
+      },
+    })
+
+    expect(first.css).toContain('.text-_b88rpx_B')
+    expect(first.css).toContain('.text-_b188rpx_B')
+    expect(second.css).toContain('.text-_b88rpx_B')
+    expect(second.css).not.toContain('.text-_b188rpx_B')
+    expect(second.rawCss).not.toContain('.text-\\[188rpx\\]')
+    expect(second.incrementalCss).toBeUndefined()
+    expect(second.incrementalRawCss).toBeUndefined()
+    expect(second.classSet).toEqual(new Set(['text-[88rpx]']))
+    expect(second.rawCandidates).toEqual(new Set(['text-[88rpx]']))
+  })
+
   it('keeps rpx text selectors restored in web incremental css', async () => {
     const source = await resolveTailwindV4Source({
       css: `${MINIMAL_THEME_CSS}\n/* web rpx incremental */`,

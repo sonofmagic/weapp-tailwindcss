@@ -270,6 +270,34 @@ describe('tailwindcss v3 engine', () => {
     expect(second.css.match(/\.bg-blue-500/g) ?? []).toHaveLength(1)
   })
 
+  it('regenerates the v3 incremental cache when requested utilities are removed', async () => {
+    const source = await resolveTailwindV3Source({
+      css: '@tailwind base; @tailwind utilities;',
+      base: process.cwd(),
+      config: undefined,
+    })
+    const engine = createTailwindV3Engine(source)
+
+    const first = await engine.generate({
+      candidates: ['bg-blue-500', 'bg-[#123455]'],
+      incrementalCache: true,
+    })
+    const second = await engine.generate({
+      candidates: ['bg-blue-500'],
+      incrementalCache: true,
+    })
+
+    expect(first.css).toContain('.bg-blue-500')
+    expect(first.css).toContain('.bg-_b_h123455_B')
+    expect(second.css).toContain('.bg-blue-500')
+    expect(second.css).not.toContain('.bg-_b_h123455_B')
+    expect(second.rawCss).not.toContain('.bg-\\[\\#123455\\]')
+    expect(second.incrementalCss).toBeUndefined()
+    expect(second.incrementalRawCss).toBeUndefined()
+    expect(second.classSet).toEqual(new Set(['bg-blue-500']))
+    expect(second.rawCandidates).toEqual(new Set(['bg-blue-500']))
+  })
+
   it('keeps custom component classes referenced by @apply in v3 generator output', async () => {
     const source = await resolveTailwindV3Source({
       css: [

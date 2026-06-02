@@ -1,8 +1,12 @@
 import { createApp } from 'vue'
-import App from './App.vue'
 
 import './app.css'
 
-const app = createApp(App)
+const app = createApp({
+  mounted() {},
+  onLaunch() {},
+  onShow() {},
+  onHide() {},
+})
 
 export default app

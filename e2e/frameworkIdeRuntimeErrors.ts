@@ -47,6 +47,9 @@ function normalizeConsoleText(payload: any) {
 
 function isConsoleRuntimeError(payload: unknown) {
   const candidate = payload as any
+  if (isEmptyUnhandledRejectionEcho(candidate)) {
+    return false
+  }
   const level = normalizeConsoleLevel(candidate)
   if (level === 'error' || level === 'exception') {
     return true
@@ -54,6 +57,38 @@ function isConsoleRuntimeError(payload: unknown) {
 
   const text = normalizeConsoleText(candidate)
   return /\b(?:ReferenceError|TypeError|SyntaxError|RangeError|UnhandledPromiseRejection|Uncaught(?:\s+\w+)?Error)\b/i.test(text)
+}
+
+function isPlainEmptyObject(value: unknown) {
+  return value != null
+    && typeof value === 'object'
+    && Object.getPrototypeOf(value) === Object.prototype
+    && Object.keys(value).length === 0
+}
+
+function isEmptyUnhandledRejectionPayload(value: unknown) {
+  if (typeof value !== 'string') {
+    return false
+  }
+  try {
+    const parsed = JSON.parse(value)
+    return parsed != null
+      && typeof parsed === 'object'
+      && isPlainEmptyObject((parsed as any).reason)
+      && isPlainEmptyObject((parsed as any).promise)
+      && Object.keys(parsed).every(key => key === 'reason' || key === 'promise')
+  }
+  catch {
+    return false
+  }
+}
+
+function isEmptyUnhandledRejectionEcho(payload: any) {
+  const args = payload?.args
+  return Array.isArray(args)
+    && args[0] === '[weapp-tailwindcss:e2e-runtime-error]'
+    && args[1] === 'wx.onUnhandledRejection'
+    && isEmptyUnhandledRejectionPayload(args[2])
 }
 
 function formatRuntimeErrors(caseName: string, stage: string, errors: RuntimeErrorRecord[]) {
@@ -161,6 +196,9 @@ export function installFrameworkIdeRuntimeErrorCollector(caseName: string, miniP
     }
     if (wxApi && wxApi.onUnhandledRejection) {
       wxApi.onUnhandledRejection(function (event) {
+        if (event && event.reason && typeof event.reason === 'object' && !Object.keys(event.reason).length) {
+          return
+        }
         push('wx.onUnhandledRejection', event)
       })
     }

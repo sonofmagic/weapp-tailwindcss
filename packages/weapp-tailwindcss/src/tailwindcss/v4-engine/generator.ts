@@ -105,6 +105,15 @@ function collectCandidates(candidates: Iterable<string> | undefined) {
   return new Set(candidates ?? [])
 }
 
+function hasRemovedCandidates(previousCandidates: Set<string>, nextCandidates: Set<string>) {
+  for (const candidate of previousCandidates) {
+    if (!nextCandidates.has(candidate)) {
+      return true
+    }
+  }
+  return false
+}
+
 function normalizeRpxTextCandidate(candidate: string) {
   return candidate.replace(BARE_RPX_TEXT_CANDIDATE_RE, '$1text-[length:$2]$3')
 }
@@ -598,6 +607,21 @@ export function createTailwindV4Engine(source: TailwindV4ResolvedSource): Tailwi
 
     const cached = incrementalGenerateCache.get(cacheKey)
     if (cached) {
+      if (hasRemovedCandidates(cached.seenCandidates, requestedCandidates)) {
+        return runIncrementalGenerateTask(cacheKey, requestedCandidates, options.scanSources, async () => {
+          const generated = await generateOnce(source, options)
+          seedIncrementalGenerateCache({
+            compatibleSource,
+            generated,
+            requestedCandidates,
+            styleOptions,
+            tailwindcssV3Compatibility: options.tailwindcssV3Compatibility,
+            target,
+          })
+          return generated
+        })
+      }
+
       const missingCandidates = [...requestedCandidates].filter(candidate => !cached.seenCandidates.has(candidate))
       if (missingCandidates.length === 0) {
         return {
