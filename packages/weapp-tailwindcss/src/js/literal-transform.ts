@@ -1,5 +1,5 @@
 import type { IJsHandlerOptions } from '../types'
-import { splitCandidateTokens } from '@weapp-tailwindcss/shared/extractors'
+import { splitCandidateTokens } from 'tailwindcss-patch'
 import { resolveClassNameTransformWithResult, shouldEnableArbitraryValueFallback } from '../shared/classname-transform'
 import { decodeUnicode2 } from '../utils/decode'
 import { replaceWxml } from '../wxml/shared'
