@@ -599,7 +599,7 @@ describe('bundlers/vite incremental runtime class set', () => {
     }, opts, outDir, state)
 
     const runtimeSet = await manager.sync(patcher, secondSnapshot, {
-      baseClassSet: new Set(['bg-[#4268EA]', 'safelist-only']),
+      baseClassSet: new Set(['bg-[#4268EA]', 'bg-[red]', 'safelist-only']),
       skipInitialFullScanWithBase: true,
     })
 
@@ -609,5 +609,39 @@ describe('bundlers/vite incremental runtime class set', () => {
       expect.stringContaining('bg-[red]'),
       'js',
     )
+  })
+
+  it('filters v3 raw text candidates by confirmed source candidates before JS transform', async () => {
+    const opts = createOptions()
+    const outDir = '/project/dist'
+    const state = createBundleBuildState()
+    const patcher = createV3Patcher()
+    const extractRawCandidates = vi.fn(async (content: string) => {
+      if (content.includes('Hello world!')) {
+        return [
+          { rawCandidate: 'bg-[red]' },
+          { rawCandidate: 'flex' },
+          { rawCandidate: 'world!' },
+        ]
+      }
+      return []
+    })
+    const manager = createBundleRuntimeClassSetManager({
+      extractRawCandidates,
+    })
+
+    const snapshot = buildBundleSnapshot({
+      'pages/index/index.js': {
+        ...createRollupChunk('const vnode = <View className="bg-[red] flex">Hello world!</View>'),
+        fileName: 'pages/index/index.js',
+      },
+    }, opts, outDir, state)
+
+    const runtimeSet = await manager.sync(patcher, snapshot, {
+      baseClassSet: new Set(['bg-[red]', 'flex']),
+    })
+
+    expect(runtimeSet).toEqual(new Set(['bg-[red]', 'flex']))
+    expect(runtimeSet.has('world!')).toBe(false)
   })
 })

@@ -1,5 +1,6 @@
 <view class="p-4">
   <view class="{{className}}">className</view>
+  <view class="{{ active ? 'bg-[red]' : 'text-red-500' }}">{{ message === 'Hello world!' ? 'keep-[business]' : 'at App.vue:4' }}</view>
   <IceButton class="bg-[#d72929]" tw-class="bg-[orange]" hover-class="bg-[green]" tw-hover-class="bg-[pink]"></IceButton>
   <view class="dark:hover:border-green-300 dark:hover:bg-gray-600">111222</view>
 </view>

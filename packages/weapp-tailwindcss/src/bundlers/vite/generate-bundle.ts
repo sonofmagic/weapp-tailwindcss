@@ -294,7 +294,6 @@ export function createGenerateBundleHook(context: GenerateBundleContext) {
     let transformRuntime = runtime
     const shouldValidateV3GeneratorRuntime = runtimeState.twPatcher.majorVersion === 3
       && generatorRuntime.size > 0
-      && !useV3OxideSourceRuntime
     if (shouldValidateV3GeneratorRuntime) {
       const cssEntries = snapshot.entries.filter(entry =>
         entry.type === 'css' && entry.output.type === 'asset')
@@ -328,6 +327,11 @@ export function createGenerateBundleHook(context: GenerateBundleContext) {
     const generatorCandidatesChanged = state.generatorCandidateSignature !== generatorCandidateSignature
     const runtimeLinkedCssFiles = collectRuntimeLinkedCssFiles(snapshot)
     recordGeneratorCandidates?.(generatorRuntime)
+    const dynamicRetryCandidates = new Set([
+      ...sourceCandidates,
+      ...generatorRuntime,
+      ...transformRuntime,
+    ])
     const defaultTemplateHandlerOptions = {
       runtimeSet: transformRuntime,
     }
@@ -390,11 +394,11 @@ export function createGenerateBundleHook(context: GenerateBundleContext) {
             async transform() {
               const start = performance.now()
               let transformed = await templateHandler(rawSource, defaultTemplateHandlerOptions)
-              let unresolvedDynamicCandidates = collectUnescapedDynamicCandidates(transformed)
+              let unresolvedDynamicCandidates = collectUnescapedDynamicCandidates(transformed, dynamicRetryCandidates)
 
               if (unresolvedDynamicCandidates.length > 0) {
                 logger.warn(
-                  '检测到 WXML 动态类名未完成转译，已回退到完整 runtimeSet 重试: %s -> %O',
+                  '检测到已提取 WXML 动态类名未完成转译，已回退到完整 runtimeSet 重试: %s -> %O',
                   file,
                   unresolvedDynamicCandidates,
                 )
@@ -405,10 +409,10 @@ export function createGenerateBundleHook(context: GenerateBundleContext) {
                 transformed = await templateHandler(rawSource, {
                   runtimeSet: fullRuntimeSet,
                 })
-                unresolvedDynamicCandidates = collectUnescapedDynamicCandidates(transformed)
+                unresolvedDynamicCandidates = collectUnescapedDynamicCandidates(transformed, dynamicRetryCandidates)
                 if (unresolvedDynamicCandidates.length > 0) {
                   logger.warn(
-                    'WXML 动态类名在完整 runtimeSet 重试后仍未完成转译: %s -> %O',
+                    '已提取 WXML 动态类名在完整 runtimeSet 重试后仍未完成转译: %s -> %O',
                     file,
                     unresolvedDynamicCandidates,
                   )

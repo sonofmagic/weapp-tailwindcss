@@ -13,6 +13,23 @@ defineProjectTest(project, {
 })
 
 describe('e2e', () => {
+  it('keeps non-class JSX and WXML text unescaped in Taro Vite React v4 output', async () => {
+    const projectBase = path.resolve(__dirname, '../demo')
+    const root = path.resolve(projectBase, project.name)
+    const projectPath = path.resolve(projectBase, project.projectPath)
+
+    if (process.env.E2E_SKIP_BUILD !== '1') {
+      await ensureProjectBuilt(root)
+    }
+
+    const pageJs = await fs.readFile(path.resolve(projectPath, 'dist/pages/index/index.js'), 'utf8')
+    const pageWxml = await fs.readFile(path.resolve(projectPath, 'dist/pages/index/index.wxml'), 'utf8')
+
+    expect(pageJs).toContain('Hello world!')
+    expect(pageJs).not.toContain('Hello world_e')
+    expect(pageWxml).not.toContain('Hello world_e')
+  })
+
   it('removes Tailwind CSS v4 bg-linear-to-r lab supports guard', async () => {
     const projectBase = path.resolve(__dirname, '../demo')
     const root = path.resolve(projectBase, project.name)

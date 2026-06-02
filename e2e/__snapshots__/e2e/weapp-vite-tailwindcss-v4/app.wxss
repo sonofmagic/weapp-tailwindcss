@@ -150,6 +150,9 @@ wx-root-portal-content {
 .text-_b100rpx_B {
   font-size: 100rpx;
 }
+.text-_b55rpx_B {
+  font-size: 55rpx;
+}
 .text-_b_h123456_B {
   color: #123456;
 }

@@ -251,6 +251,7 @@ export function createBundleRuntimeClassSetManager(
   async function validateUnknownCandidates(
     patcher: TailwindcssPatcherLike,
     unknownCandidates: Set<string>,
+    knownSourceCandidates?: Set<string>,
   ) {
     if (unknownCandidates.size === 0) {
       return
@@ -258,7 +259,12 @@ export function createBundleRuntimeClassSetManager(
 
     if (patcher.majorVersion === 3 && !customExtractCandidates) {
       for (const candidate of unknownCandidates) {
-        candidateValidityCache.set(candidate, true)
+        candidateValidityCache.set(
+          candidate,
+          knownSourceCandidates?.size
+            ? knownSourceCandidates.has(candidate)
+            : true,
+        )
       }
       return
     }
@@ -364,7 +370,7 @@ export function createBundleRuntimeClassSetManager(
       }
     }))
 
-    await validateUnknownCandidates(patcher, unknownCandidates)
+    await validateUnknownCandidates(patcher, unknownCandidates, nextBaseClassSet)
 
     let rawCandidateCount = 0
 

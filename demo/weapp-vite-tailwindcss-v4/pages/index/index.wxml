@@ -3,6 +3,7 @@
     <view class="bg-[#68c828] text-[100px] text-[#123456] w-[323px] {{true?'h-[30px]':'h-[45px]'}}">
       111
     </view>
+    <view class="{{ active ? 'text-[55rpx]' : 'text-red-700' }}">{{ message === 'Hello world!' ? 'keep-[business]' : 'at App.vue:4' }}</view>
     <view class="bg-[#3a32d1] text-[100rpx] text-red-700 w-[323px] {{false?'h-[30px]':'h-[45px]'}}">
       222
     </view>

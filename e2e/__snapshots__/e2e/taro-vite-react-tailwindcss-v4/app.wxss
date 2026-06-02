@@ -29,6 +29,9 @@ wx-root-portal-content {
 .bg-_b_h123456_B {
   background-color: #123456;
 }
+.bg-_bred_B {
+  background-color: red;
+}
 .bg-purple-300 {
   background-color: var(--color-purple-300);
 }

@@ -272,6 +272,7 @@ describe('bundlers/vite WeappTailwindcss bundle', () => {
     const runtimeSet = new Set(['from-patcher'])
     const currentContext = createContext({
       templateHandler: vi.fn(async () => '<view></view>'),
+      jsHandler: vi.fn((code: string) => ({ code })),
       twPatcher: {
         patch: vi.fn(async () => undefined),
         getClassSet: vi.fn(async () => runtimeSet),
@@ -298,7 +299,7 @@ describe('bundlers/vite WeappTailwindcss bundle', () => {
 
     await getTransformHandler(sourcePlugin)?.call(
       sourcePlugin,
-      '<view class="bg-[red] not-a-tailwind-class"></view>',
+      '<view class="bg-[red] not-a-tailwind-class">Hello world!</view>',
       path.join(process.cwd(), 'src/pages/index/index.vue'),
     )
 
@@ -311,6 +312,10 @@ describe('bundlers/vite WeappTailwindcss bundle', () => {
         ...createRollupAsset('<view class="bg-[red]"></view>'),
         fileName: 'pages/index/index.wxml',
       },
+      'pages/index/index.js': {
+        ...createRollupChunk('const vnode = "bg-[red] world!"'),
+        fileName: 'pages/index/index.js',
+      },
     }
     const generateBundle = getGenerateBundleHandler(postPlugin)
     await generateBundle?.call(postPlugin, {} as any, bundle)
@@ -318,7 +323,10 @@ describe('bundlers/vite WeappTailwindcss bundle', () => {
     expect(currentContext.twPatcher.extract).not.toHaveBeenCalled()
     expect(currentContext.twPatcher.getClassSet).not.toHaveBeenCalled()
     expect(currentContext.twPatcher.getClassSetSync).not.toHaveBeenCalled()
-    expect(validateCandidatesMock).not.toHaveBeenCalled()
+    expect(validateCandidatesMock).toHaveBeenCalledTimes(1)
+    expect([...(validateCandidatesMock.mock.calls[0]?.[0] as Set<string>)]).toEqual(
+      expect.arrayContaining(['bg-[red]', 'not-a-tailwind-class']),
+    )
     expect(generateMock).toHaveBeenCalledTimes(1)
     expect(generateMock.mock.calls[0]?.[0]).toEqual(expect.objectContaining({
       incrementalCache: true,
@@ -326,6 +334,7 @@ describe('bundlers/vite WeappTailwindcss bundle', () => {
     expect([...(generateMock.mock.calls[0]?.[0].candidates as Set<string>)]).toEqual(
       expect.arrayContaining(['bg-[red]']),
     )
+    expect([...(currentContext.jsHandler.mock.calls[0]?.[1] as Set<string>)]).toEqual(['bg-[red]'])
     expect((bundle['app.css'] as OutputAsset).source).toContain('background-color: red')
   }, TEST_TIMEOUT_MS)
 

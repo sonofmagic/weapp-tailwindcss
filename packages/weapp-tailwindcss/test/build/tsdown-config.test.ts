@@ -1,4 +1,5 @@
 import { describe, expect, it } from 'vitest'
+import tsconfigBuild from '../../tsconfig.build.json' with { type: 'json' }
 import {
   cliEntries,
   createTsdownConfigs,
@@ -52,5 +53,19 @@ describe('tsdown build layout', () => {
       expect(alwaysBundle?.(id)).toBe(true)
       expect(neverBundle?.(id)).toBe(false)
     }
+  })
+
+  it('keeps declaration builds from emitting workspace dependency dts into source folders', () => {
+    const paths = tsconfigBuild.compilerOptions.paths
+
+    expect(paths).toEqual({
+      '@/*': ['./src/*'],
+    })
+    expect(Object.keys(paths)).not.toContain('@weapp-tailwindcss/logger')
+    expect(Object.values(paths).flat()).not.toEqual(
+      expect.arrayContaining([
+        expect.stringMatching(/^\.\.\/(?:logger|postcss|reset|shared)\/src/),
+      ]),
+    )
   })
 })

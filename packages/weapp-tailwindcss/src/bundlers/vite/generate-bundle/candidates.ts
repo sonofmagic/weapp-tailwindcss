@@ -9,6 +9,7 @@ function isArbitraryValueCandidate(candidate: string) {
 
 export function collectUnescapedDynamicCandidates(
   source: string,
+  allowedCandidates?: Set<string>,
 ) {
   const matches = new Set<string>()
 
@@ -20,6 +21,9 @@ export function collectUnescapedDynamicCandidates(
       for (const candidate of splitCode(literal, true)) {
         const normalized = candidate.trim()
         if (!normalized || !isArbitraryValueCandidate(normalized)) {
+          continue
+        }
+        if (allowedCandidates && !allowedCandidates.has(normalized)) {
           continue
         }
         matches.add(normalized)
