@@ -1,5 +1,21 @@
 # weapp-tailwindcss
 
+## 5.0.0-next.33
+
+### Patch Changes
+
+- 🐛 **修复 `babelParserOptions` 默认开启缓存时的内存膨胀问题：解析缓存键改为哈希后缀，不再直接拼接源码；同时增加缓存条数和源码长度上限，避免大项目把 AST 缓存撑爆。** [`5c1bb9b`](https://github.com/sonofmagic/weapp-tailwindcss/commit/5c1bb9bd2b27352be80567c969da4b0ea06e0490) by @sonofmagic
+
+- 🐛 **新增 `splitCandidateTokens` 候选 token 分割入口，并保留 `splitCode` 作为兼容别名。** [#890](https://github.com/sonofmagic/weapp-tailwindcss/pull/890) by @sonofmagic
+  - `weapp-tailwindcss` 内部的 JS、WXML 动态表达式与 uni-app x 局部样式候选分割改为使用更明确的 `splitCandidateTokens`，继续保持 `classNameSet` 精确命中原则，避免普通字符串被误转义。
+
+- 🐛 **支持单引号和双引号包裹的 `content-*` 任意值默认同时提取，并将 `arbitraryValues.allowDoubleQuotes` 保留为兼容旧配置的废弃选项。** [#890](https://github.com/sonofmagic/weapp-tailwindcss/pull/890) by @sonofmagic
+
+- 🐛 **升级 `tailwindcss-patch` 到 `9.4.1`。** [#890](https://github.com/sonofmagic/weapp-tailwindcss/pull/890) by @sonofmagic
+  - `tailwindcss-patch@9.4.1` 的发布入口已经导出 `splitCandidateTokens`，`weapp-tailwindcss` 的 JS、Vite 产物和 uni-app x 局部样式候选 token 分割逻辑改为直接消费该 API，避免继续维护重复兼容实现。
+- 📦 **Dependencies** [`aaba811`](https://github.com/sonofmagic/weapp-tailwindcss/commit/aaba811cfc2ad003d3daf2cf290c9d8b770c6dfb)
+  → `@weapp-tailwindcss/shared@2.0.0-next.1`, `@weapp-tailwindcss/postcss@3.0.0-next.9`, `tailwindcss-config@2.0.0-next.3`
+
 ## 5.0.0-next.32
 
 ### Patch Changes
