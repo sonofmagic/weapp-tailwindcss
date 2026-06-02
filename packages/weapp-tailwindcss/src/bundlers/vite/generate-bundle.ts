@@ -291,7 +291,12 @@ export function createGenerateBundleHook(context: GenerateBundleContext) {
       sourceCandidates,
       filteredGeneratorCandidates,
     )
-    let transformRuntime = runtime
+    let transformRuntime = runtimeState.twPatcher.majorVersion === 3 && sourceCandidates.size > 0
+      ? new Set([
+          ...runtime,
+          ...sourceCandidates,
+        ])
+      : runtime
     const shouldValidateV3GeneratorRuntime = runtimeState.twPatcher.majorVersion === 3
       && generatorRuntime.size > 0
     if (shouldValidateV3GeneratorRuntime) {
@@ -394,22 +399,31 @@ export function createGenerateBundleHook(context: GenerateBundleContext) {
             async transform() {
               const start = performance.now()
               let transformed = await templateHandler(rawSource, defaultTemplateHandlerOptions)
-              let unresolvedDynamicCandidates = collectUnescapedDynamicCandidates(transformed, dynamicRetryCandidates)
+              let unresolvedDynamicCandidates = collectUnescapedDynamicCandidates(transformed)
+              let retryRuntimeSet: Set<string> | undefined
 
               if (unresolvedDynamicCandidates.length > 0) {
+                const fullRuntimeSet = await context.ensureRuntimeClassSet(true)
+                const allowedRetryCandidates = fullRuntimeSet.size === 0
+                  ? unresolvedDynamicCandidates
+                  : unresolvedDynamicCandidates.filter(candidate => dynamicRetryCandidates.has(candidate) || fullRuntimeSet.has(candidate))
+                retryRuntimeSet = new Set([
+                  ...fullRuntimeSet,
+                  ...allowedRetryCandidates,
+                ])
+                unresolvedDynamicCandidates = unresolvedDynamicCandidates.filter(candidate => retryRuntimeSet.has(candidate))
+              }
+
+              if (retryRuntimeSet && unresolvedDynamicCandidates.length > 0) {
                 logger.warn(
                   '检测到已提取 WXML 动态类名未完成转译，已回退到完整 runtimeSet 重试: %s -> %O',
                   file,
                   unresolvedDynamicCandidates,
                 )
-                const fullRuntimeSet = new Set([
-                  ...await context.ensureRuntimeClassSet(true),
-                  ...unresolvedDynamicCandidates,
-                ])
                 transformed = await templateHandler(rawSource, {
-                  runtimeSet: fullRuntimeSet,
+                  runtimeSet: retryRuntimeSet,
                 })
-                unresolvedDynamicCandidates = collectUnescapedDynamicCandidates(transformed, dynamicRetryCandidates)
+                unresolvedDynamicCandidates = collectUnescapedDynamicCandidates(transformed, retryRuntimeSet)
                 if (unresolvedDynamicCandidates.length > 0) {
                   logger.warn(
                     '已提取 WXML 动态类名在完整 runtimeSet 重试后仍未完成转译: %s -> %O',

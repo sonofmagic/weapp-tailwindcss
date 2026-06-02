@@ -170,6 +170,44 @@ describe('bundlers/vite incremental runtime class set', () => {
     )
   })
 
+  it('keeps current v3 high-confidence raw candidates even when base class set is stale', async () => {
+    const opts = createOptions()
+    const outDir = '/project/dist'
+    const state = createBundleBuildState()
+    const patcher = createV3Patcher()
+    const jsSource = 'const n = "flex bg-yellow-300/30"; const bgObj = common_vendor.ref({ "bg-[#999998]": true });'
+    const extractRawCandidates = vi.fn(async (content: string, extension?: string) => {
+      if (extension === 'js' && content.includes('bg-[#999998]')) {
+        return [
+          { rawCandidate: 'flex', start: content.indexOf('flex') },
+          { rawCandidate: 'bg-[#999998]' },
+          { rawCandidate: 'bg-yellow-300/30', start: content.indexOf('bg-yellow-300/30') },
+        ]
+      }
+      return []
+    })
+    const manager = createBundleRuntimeClassSetManager({
+      extractRawCandidates,
+    })
+
+    const snapshot = buildBundleSnapshot({
+      'assets/index.js': {
+        ...createRollupChunk(jsSource),
+        fileName: 'assets/index.js',
+      },
+    }, opts, outDir, state)
+
+    const runtimeSet = await manager.sync(patcher, snapshot, {
+      baseClassSet: new Set(['bg-[#999999]']),
+    })
+
+    expect(runtimeSet).toEqual(new Set(['bg-[#999999]', 'flex', 'bg-[#999998]', 'bg-yellow-300/30']))
+    expect(extractRawCandidates).toHaveBeenCalledWith(
+      jsSource,
+      'js',
+    )
+  })
+
   it('removes stale candidates when runtime files disappear from the bundle', async () => {
     const opts = createOptions()
     const outDir = '/project/dist'

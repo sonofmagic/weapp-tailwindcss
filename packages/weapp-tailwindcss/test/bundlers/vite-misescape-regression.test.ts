@@ -164,6 +164,11 @@ const view = (
 `
 
     expect(collectUnescapedDynamicCandidates(source, new Set([runtimeClass]))).toEqual([runtimeClass])
-    expect(collectUnescapedDynamicCandidates(source, new Set<string>())).toEqual([])
+    expect(collectUnescapedDynamicCandidates(source, new Set(['other-[1px]']))).toEqual([])
+    expect(collectUnescapedDynamicCandidates(source, new Set<string>())).toEqual([
+      runtimeClass,
+      'keep-[business]',
+      'before:content-[\\"not-generated\\"]',
+    ])
   })
 })

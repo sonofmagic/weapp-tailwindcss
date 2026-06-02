@@ -187,6 +187,106 @@ function createNonSourceBaseClassSet(
   return nextBaseClassSet
 }
 
+function isHighConfidenceV3Candidate(candidate: string) {
+  return candidate.includes('[')
+    || candidate.includes(':')
+    || candidate.includes('/')
+}
+
+function isRawCandidateInClassContext(source: string, start: number | undefined, extension: string) {
+  if (typeof start !== 'number' || start <= 0) {
+    return false
+  }
+
+  const before = source.slice(Math.max(0, start - 200), start)
+  if (extension === 'html') {
+    return /\bclass\s*=\s*["'][^"']*$/i.test(before)
+  }
+
+  return /\bclass(?:Name)?\s*[:=]\s*["'][^"']*$/i.test(before)
+    || /\.classList\.(?:add|remove|toggle|contains)\([^)]*$/i.test(before)
+}
+
+function resolveQuotedLiteralRange(source: string, start: number | undefined) {
+  if (typeof start !== 'number' || start <= 0) {
+    return undefined
+  }
+
+  let quote: string | undefined
+  let literalStart = -1
+  for (let index = start - 1; index >= 0; index--) {
+    const char = source[index]
+    if (char !== '"' && char !== '\'' && char !== '`') {
+      continue
+    }
+    quote = char
+    literalStart = index
+    break
+  }
+
+  if (!quote) {
+    return undefined
+  }
+
+  let escaped = false
+  for (let index = literalStart + 1; index < source.length; index++) {
+    const char = source[index]
+    if (escaped) {
+      escaped = false
+      continue
+    }
+    if (char === '\\') {
+      escaped = true
+      continue
+    }
+    if (char === quote) {
+      if (start < index) {
+        return {
+          start: literalStart,
+          end: index,
+        }
+      }
+      return undefined
+    }
+  }
+
+  return undefined
+}
+
+function createHighConfidenceLiteralRanges(source: string, matches: ExtractRawCandidateResult) {
+  const ranges: Array<{ start: number, end: number }> = []
+  for (const match of matches) {
+    const candidate = match?.rawCandidate
+    if (typeof candidate !== 'string' || !isHighConfidenceV3Candidate(candidate)) {
+      continue
+    }
+    const range = resolveQuotedLiteralRange(source, match.start)
+    if (range) {
+      ranges.push(range)
+    }
+  }
+  return ranges
+}
+
+function isRawCandidateInRanges(start: number | undefined, ranges: Array<{ start: number, end: number }>) {
+  return typeof start === 'number'
+    && ranges.some(range => start > range.start && start < range.end)
+}
+
+function isRawCandidateAllowedForV3(
+  source: string,
+  candidate: string,
+  start: number | undefined,
+  extension: string,
+  knownSourceCandidates?: Set<string>,
+  highConfidenceLiteralRanges: Array<{ start: number, end: number }> = [],
+) {
+  return isHighConfidenceV3Candidate(candidate)
+    || knownSourceCandidates?.has(candidate) === true
+    || isRawCandidateInClassContext(source, start, extension)
+    || isRawCandidateInRanges(start, highConfidenceLiteralRanges)
+}
+
 export function createBundleRuntimeClassSetManager(
   options: CreateBundleRuntimeClassSetManagerOptions = {},
 ): BundleRuntimeClassSetManager {
@@ -251,7 +351,6 @@ export function createBundleRuntimeClassSetManager(
   async function validateUnknownCandidates(
     patcher: TailwindcssPatcherLike,
     unknownCandidates: Set<string>,
-    knownSourceCandidates?: Set<string>,
   ) {
     if (unknownCandidates.size === 0) {
       return
@@ -259,12 +358,7 @@ export function createBundleRuntimeClassSetManager(
 
     if (patcher.majorVersion === 3 && !customExtractCandidates) {
       for (const candidate of unknownCandidates) {
-        candidateValidityCache.set(
-          candidate,
-          knownSourceCandidates?.size
-            ? knownSourceCandidates.has(candidate)
-            : true,
-        )
+        candidateValidityCache.set(candidate, true)
       }
       return
     }
@@ -291,12 +385,27 @@ export function createBundleRuntimeClassSetManager(
     }
   }
 
-  async function extractEntryRawCandidates(entry: BundleStateEntry) {
-    const matches = await extractRawCandidates(entry.source, resolveEntryExtension(entry))
+  async function extractEntryRawCandidates(
+    entry: BundleStateEntry,
+    patcher: TailwindcssPatcherLike,
+    knownSourceCandidates?: Set<string>,
+  ) {
+    const extension = resolveEntryExtension(entry)
+    const matches = await extractRawCandidates(entry.source, extension)
+    const highConfidenceLiteralRanges = patcher.majorVersion === 3 && !customExtractCandidates
+      ? createHighConfidenceLiteralRanges(entry.source, matches)
+      : []
     const candidates = new Set<string>()
     for (const match of matches) {
       const candidate = match?.rawCandidate
       if (typeof candidate === 'string' && candidate.length > 0) {
+        if (
+          patcher.majorVersion === 3
+          && !customExtractCandidates
+          && !isRawCandidateAllowedForV3(entry.source, candidate, match.start, extension, knownSourceCandidates, highConfidenceLiteralRanges)
+        ) {
+          continue
+        }
         candidates.add(candidate)
       }
     }
@@ -361,7 +470,7 @@ export function createBundleRuntimeClassSetManager(
       if (!entry) {
         return
       }
-      const candidates = await extractEntryRawCandidates(entry)
+      const candidates = await extractEntryRawCandidates(entry, patcher, nextBaseClassSet)
       rawCandidatesByFile.set(file, candidates)
       for (const candidate of candidates) {
         if (!candidateValidityCache.has(candidate)) {
@@ -370,7 +479,7 @@ export function createBundleRuntimeClassSetManager(
       }
     }))
 
-    await validateUnknownCandidates(patcher, unknownCandidates, nextBaseClassSet)
+    await validateUnknownCandidates(patcher, unknownCandidates)
 
     let rawCandidateCount = 0
 
