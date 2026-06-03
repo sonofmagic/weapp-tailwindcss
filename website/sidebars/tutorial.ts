@@ -22,23 +22,13 @@ const tutorialSidebar: SidebarConfig = [
         items: [
           {
             type: 'doc',
-            label: 'CLI Vue3 Vite（Tailwind CSS 3.x）',
+            label: 'CLI Vue3 Vite',
             id: 'quick-start/frameworks/uni-app-vite',
           },
           {
             type: 'doc',
-            label: 'CLI Vue3 Vite（Tailwind CSS 4.x）',
-            id: 'quick-start/v4/uni-app-vite',
-          },
-          {
-            type: 'doc',
-            label: 'HBuilderX Vue3 Vite（Tailwind CSS 3.x）',
+            label: 'HBuilderX Vue3 Vite',
             id: 'quick-start/frameworks/hbuilderx',
-          },
-          {
-            type: 'doc',
-            label: 'HBuilderX Vue3 Vite（Tailwind CSS 4.x）',
-            id: 'quick-start/v4/uni-app-vite-hbuilder',
           },
           {
             type: 'link',
@@ -47,23 +37,13 @@ const tutorialSidebar: SidebarConfig = [
           },
           {
             type: 'doc',
-            label: 'CLI Vue2 Webpack（Tailwind CSS 3.x）',
+            label: 'CLI Vue2 Webpack（存量项目）',
             id: 'quick-start/frameworks/uni-app',
           },
           {
             type: 'doc',
-            label: 'CLI Vue2 Webpack（Tailwind CSS 4.x）',
-            id: 'quick-start/v4/uni-app-webpack',
-          },
-          {
-            type: 'doc',
-            label: 'uni-app x（Tailwind CSS 3.x）',
+            label: 'uni-app x',
             id: 'quick-start/frameworks/uni-app-x',
-          },
-          {
-            type: 'doc',
-            label: 'uni-app x（Tailwind CSS 4.x）',
-            id: 'quick-start/v4/uni-app-x',
           },
         ],
       },
@@ -74,18 +54,8 @@ const tutorialSidebar: SidebarConfig = [
         items: [
           {
             type: 'doc',
-            label: 'Webpack（Tailwind CSS 3.x）',
+            label: 'Webpack / Vite',
             id: 'quick-start/frameworks/taro',
-          },
-          {
-            type: 'doc',
-            label: 'Webpack（Tailwind CSS 4.x）',
-            id: 'quick-start/v4/taro-webpack',
-          },
-          {
-            type: 'doc',
-            label: 'Vite（Tailwind CSS 4.x）',
-            id: 'quick-start/v4/taro-vite',
           },
         ],
       },
@@ -96,13 +66,8 @@ const tutorialSidebar: SidebarConfig = [
         items: [
           {
             type: 'doc',
-            label: 'weapp-vite（Tailwind CSS 3.x）',
+            label: 'weapp-vite',
             id: 'quick-start/native/install',
-          },
-          {
-            type: 'doc',
-            label: 'Weapp-vite（Tailwind CSS 4.x）',
-            id: 'quick-start/v4/weapp-vite',
           },
           {
             type: 'doc',
@@ -118,13 +83,8 @@ const tutorialSidebar: SidebarConfig = [
         items: [
           {
             type: 'doc',
-            label: 'Tailwind CSS 3.x',
+            label: 'Mpx',
             id: 'quick-start/frameworks/mpx',
-          },
-          {
-            type: 'doc',
-            label: 'Tailwind CSS 4.x',
-            id: 'quick-start/v4/mpx',
           },
         ],
       },

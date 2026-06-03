@@ -20,12 +20,12 @@ keywords:
 
 # 快速使用
 
-`weapp-tailwindcss@5` 默认使用生成模式。你只需要做两件事：
+`weapp-tailwindcss@5` 默认使用生成模式。接入时先处理两件事：
 
 1. 选择 `tailwindcss@3` 或 `tailwindcss@4`，准备 Tailwind CSS 入口。
 2. 按你的框架注册 `WeappTailwindcss` 构建器插件。
 
-也就是说，框架注册方式基本是一套；真正不同的是 Tailwind CSS 入口和扫描配置。
+框架注册方式基本是一套；真正不同的是 Tailwind CSS 入口和扫描配置。
 
 ## 1. 选择 Tailwind CSS 版本
 
@@ -184,18 +184,19 @@ export default defineConfig({
 
 ## 5. 各框架完整接入
 
-| 框架 | 构建工具 | Tailwind CSS 3.x | Tailwind CSS 4.x |
-| --- | --- | --- | --- |
-| uni-app CLI Vue3 | Vite | [uni-app cli vue3 vite](/docs/quick-start/frameworks/uni-app-vite) | [uni-app cli vue3 vite](/docs/quick-start/v4/uni-app-vite) |
-| uni-app HBuilderX Vue3 | Vite | [HBuilderX Vue3 Vite](/docs/quick-start/frameworks/hbuilderx) | [HBuilderX Vue3 Vite](/docs/quick-start/v4/uni-app-vite-hbuilder) |
-| uni-app CLI Vue2 | Webpack | [CLI Vue2 Webpack](/docs/quick-start/frameworks/uni-app) | [CLI Vue2 Webpack](/docs/quick-start/v4/uni-app-webpack) |
-| uni-app x | Vite | [uni-app x](/docs/quick-start/frameworks/uni-app-x) | [uni-app x](/docs/quick-start/v4/uni-app-x) |
-| Taro | Webpack | [Taro Webpack](/docs/quick-start/frameworks/taro) | [Taro Webpack](/docs/quick-start/v4/taro-webpack) |
-| Taro | Vite | [Taro Vite](/docs/quick-start/frameworks/taro) | [Taro Vite](/docs/quick-start/v4/taro-vite) |
-| 原生小程序 | weapp-vite | [原生小程序](/docs/quick-start/native/install) | [Weapp-vite](/docs/quick-start/v4/weapp-vite) |
-| Mpx | Webpack | [Mpx](/docs/quick-start/frameworks/mpx) | [Mpx](/docs/quick-start/v4/mpx) |
-| Rax | Webpack | [Rax](/docs/quick-start/frameworks/rax) | 暂无单独页面，可参考 Webpack 通用写法 |
-| Node.js API | 自定义构建 | [Node.js API](/docs/quick-start/frameworks/api) | [Tailwind CSS 4.x 参考](/docs/quick-start/v4) |
+下面这些页面都同时说明 Tailwind CSS 3.x 和 4.x 的入口差异。旧的 `/quick-start/v4/*` 链接会继续保留，方便外部文章和历史项目跳转。
+
+| 框架 | 构建工具 | 推荐入口 |
+| --- | --- | --- |
+| uni-app CLI Vue3 | Vite | [uni-app CLI Vue3 Vite](/docs/quick-start/frameworks/uni-app-vite) |
+| uni-app HBuilderX Vue3 | Vite | [HBuilderX Vue3 Vite](/docs/quick-start/frameworks/hbuilderx) |
+| uni-app CLI Vue2 | Webpack | [CLI Vue2 Webpack（存量项目）](/docs/quick-start/frameworks/uni-app) |
+| uni-app x | Vite | [uni-app x](/docs/quick-start/frameworks/uni-app-x) |
+| Taro | Webpack / Vite | [Taro](/docs/quick-start/frameworks/taro) |
+| 原生小程序 | weapp-vite | [原生小程序 / weapp-vite](/docs/quick-start/native/install) |
+| Mpx | Webpack | [Mpx](/docs/quick-start/frameworks/mpx) |
+| Rax | Webpack | [Rax](/docs/quick-start/frameworks/rax) |
+| Node.js API | 自定义构建 | [Node.js API](/docs/quick-start/frameworks/api) |
 
 ## 6. 运行与验证
 

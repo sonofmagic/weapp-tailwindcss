@@ -76,7 +76,26 @@ export default defineConfig({
 
 ```
 
-Tailwind CSS 3.x 的扫描范围仍由 `tailwind.config.js` 的 `content` 控制。生成模式下不要再注册 `tailwindcss` PostCSS 插件，也不需要执行 `weapp-tw patch`。常规 weapp-vite 项目会自动识别被引入的 Tailwind CSS 入口；多入口或自动识别失败时，再手动配置 `cssEntries`。
+Tailwind CSS 3.x 的扫描范围由 `tailwind.config.js` 的 `content` 控制；Tailwind CSS 4.x 的扫描范围写在 CSS 入口的 `@source` 里。生成模式下不要再注册 Tailwind 官方生成插件，也不需要执行 `weapp-tw patch`。
+
+常规 weapp-vite 项目会自动识别被引入的 Tailwind CSS 入口。多入口、入口没有被 Vite 引入、自动识别失败时，再手动配置 `cssEntries`：
+
+```ts title="vite.config.ts"
+import path from 'node:path'
+import { defineConfig } from 'weapp-vite/config'
+import { WeappTailwindcss } from 'weapp-tailwindcss/vite'
+
+export default defineConfig({
+  plugins: [
+    WeappTailwindcss({
+      rem2rpx: true,
+      cssEntries: [
+        path.resolve(__dirname, 'app.css'),
+      ],
+    }),
+  ],
+})
+```
 
 
 ## 开始运行
@@ -94,7 +113,7 @@ Tailwind CSS 3.x 的扫描范围仍由 `tailwind.config.js` 的 `content` 控制
 
 ## 配置好的模板
 
-假如你配置不成功，你可以参考以下模板进行配置文件对比:
+如果配置不成功，可以用下面的模板对比配置文件：
 
 [weapp-vite-tailwindcss-template](https://github.com/weapp-vite/weapp-vite/tree/main/apps/weapp-vite-tailwindcss-template)
 

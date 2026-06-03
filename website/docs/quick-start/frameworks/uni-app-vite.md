@@ -1,6 +1,6 @@
 ---
-title: uni-app cli vue3 vite
-description: 创建完成后，快速上手中的准备工作都完成之后，就可以便捷的注册了：
+title: uni-app CLI Vue3 Vite
+description: uni-app CLI Vue3 Vite 项目接入 weapp-tailwindcss@5，并同时说明 Tailwind CSS 3 和 4 的入口差异。
 keywords:
   - 快速开始
   - 安装
@@ -19,15 +19,58 @@ keywords:
   - taro
   - rax
 ---
-# uni-app cli vue3 vite
+# uni-app CLI Vue3 Vite
 
 :::warning
-这是 `uni-app cli` 创建的项目的注册方式，如果你使用 `HbuilderX`，应该查看 [uni-app HbuilderX 使用方式](/docs/quick-start/frameworks/hbuilderx)
+这是 `uni-app cli` 创建的 Vue3 Vite 项目。如果你使用 `HBuilderX` 创建项目，请看 [uni-app HBuilderX 使用方式](/docs/quick-start/frameworks/hbuilderx)。
 :::
+
+## 选择 Tailwind 入口
+
+| Tailwind 版本 | 安装 | CSS 入口 | 扫描配置 |
+| --- | --- | --- | --- |
+| 3.x | `pnpm add -D tailwindcss@3 weapp-tailwindcss` | `@tailwind base;` 等指令 | `tailwind.config.js` 的 `content` |
+| 4.x | `pnpm add -D tailwindcss weapp-tailwindcss` | `@import "tailwindcss";` | CSS 入口里的 `@source` |
+
+Tailwind CSS 生成由 `WeappTailwindcss` 接管，不要在小程序构建里再注册 `tailwindcss`、`@tailwindcss/postcss` 或 `@tailwindcss/vite`。
+
+### Tailwind CSS 3.x
+
+```css title="src/app.css"
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+```
+
+```ts title="tailwind.config.ts"
+export default {
+  content: [
+    './index.html',
+    './src/**/*.{html,js,ts,jsx,tsx,vue}',
+    '!./src/uni_modules/**/*',
+    '!./node_modules/**/*',
+    '!./dist/**/*',
+    '!./unpackage/**/*',
+  ],
+}
+```
+
+### Tailwind CSS 4.x
+
+```css title="src/app.css"
+@import "tailwindcss";
+@source "./**/*.{html,js,ts,jsx,tsx,vue}";
+@source not "./uni_modules";
+@source not "../node_modules";
+@source not "../dist";
+@source not "../unpackage";
+```
+
+Tailwind 4 的入口请放在纯 `.css` 文件里。业务里仍然可以使用 Sass/Less，但不要把 `@import "tailwindcss"` 直接写进预处理入口。
 
 ## 注册插件
 
-创建完成后，快速上手中的准备工作都完成之后，就可以便捷的注册了：
+在 `vite.config.ts` 中把 `WeappTailwindcss` 放在 `uni()` 后面：
 
 ```ts title="vite.config.ts"
 import uni from '@dcloudio/vite-plugin-uni'
@@ -35,7 +78,6 @@ import { defineConfig } from 'vite'
 import { WeappTailwindcss } from 'weapp-tailwindcss/vite'
 
 export default defineConfig({
-  // uni 是 uni-app 官方插件，WeappTailwindcss 一定要放在 uni 后，对生成文件进行处理
   plugins: [
     uni(),
     WeappTailwindcss({
@@ -46,13 +88,24 @@ export default defineConfig({
 
 ```
 
-Tailwind CSS 3.x 也由 `WeappTailwindcss` 生成 CSS，不要再把 `tailwindcss` 注册到 `postcss.config.js` 或 Vite 内联 PostCSS 配置里。常规 Vite 项目会自动识别被引入的 Tailwind CSS 入口；多入口或自动识别失败时，再手动配置 `cssEntries`。
+常规 Vite 项目会自动识别被引入的 Tailwind CSS 入口。入口没有被框架引入、多入口、自动识别失败时，再手动配置 `cssEntries`：
 
-## `tailwind.config` 扫描范围提醒
+```ts title="vite.config.ts"
+import path from 'node:path'
+
+WeappTailwindcss({
+  rem2rpx: true,
+  cssEntries: [
+    path.resolve(__dirname, 'src/app.css'),
+  ],
+})
+```
+
+## 扫描范围提醒
 
 ### 问题现象
 
-如果你的 `uni-app` 项目把第三方插件或依赖放进了 `src/uni_modules`，同时又在 `tailwind.config` 中直接扫描整个 `src/**/*.{html,js,ts,jsx,tsx,vue}`，Tailwind v3 可能会把依赖源码里的正则表达式、README 示例文本误识别为 class，最终生成异常 CSS。
+如果项目把第三方插件或依赖放进 `src/uni_modules`，同时扫描整个 `src`，Tailwind 可能会把依赖源码里的正则片段、README 示例或产物误识别为 class，最终生成异常 CSS。
 
 在小程序产物中，可能会看到类似：
 
@@ -64,45 +117,29 @@ Tailwind CSS 3.x 也由 `WeappTailwindcss` 生成 CSS，不要再把 `tailwindcs
 
 ### 根因
 
-这不是业务代码真的写了这样的类名，而是 Tailwind v3 的内容提取器误扫了 `src/uni_modules` 里的第三方源码或文档。
-
-### 推荐配置
-
-```ts title="tailwind.config.ts"
-export default {
-  content: [
-    './index.html',
-    './src/**/*.{html,js,ts,jsx,tsx,vue}',
-    '!./src/uni_modules/**/*',
-  ],
-}
-```
+这不是业务代码真的写了这样的类名，而是扫描范围太宽，把第三方源码、文档或构建产物也纳入了提取范围。Tailwind 3 用 `content` 排除，Tailwind 4 用 `@source not` 排除。
 
 ### 最佳实践
 
-- `content` 只扫业务源码，不要无差别扫整个 `src`
+- 扫描范围只覆盖业务源码，不要无差别扫整个 `src`
 - 默认排除 `uni_modules`、`node_modules`、`dist`、`unpackage`
 - 如果必须包含某个 `uni_modules` 包，只精确包含其中真正承载模板类名的文件
 
 ## 创建项目参考
 
-`uni-app vite` 版本是 `uni-app` 最新的升级，它使用 `vue3` 的语法。
+可以通过 `cli` 命令创建项目，具体参数以 [uni-app 官网文档](https://uniapp.dcloud.net.cn/quickstart-cli.html) 为准：
 
-你可以通过 `cli` 命令创建项目 ([参考官网文档](https://uniapp.dcloud.net.cn/quickstart-cli.html)):
-
-- 创建以 javascript 开发的工程（如命令行创建失败，请直接访问 gitee 下载模板）
+- JavaScript 项目：
 
 ```bash
 npx degit dcloudio/uni-preset-vue#vite my-vue3-project
 ```
 
-- 创建以 typescript 开发的工程（如命令行创建失败，请直接访问 gitee 下载模板）
+- TypeScript 项目：
 
 ```bash
 npx degit dcloudio/uni-preset-vue#vite-ts my-vue3-project
 ```
-
-> gitee 地址见上方的 `参考官网文档` 链接，点击跳转到 uni-app 官网即可
 
 ## 视频演示
 

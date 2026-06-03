@@ -1,6 +1,6 @@
 {
   "version": "1.0.0",
-  "generatedAt": "2026-05-29T06:06:48.833Z",
+  "generatedAt": "2026-06-03T09:57:53.981Z",
   "siteUrl": "https://tw.icebreaker.top",
   "totals": {
     "all": 182,
@@ -3756,8 +3756,8 @@
         "3. 清理 Tailwind 官方生成插件",
         "4. 检查 Tailwind CSS 入口",
         "5. 注册 WeappTailwindcss",
-        "6. 什么时候写 cssEntries",
-        "7. H5/Web 构建不要一刀切禁用"
+        "# Taro 迁移要覆盖 H5 和小程序",
+        "6. 什么时候写 cssEntries"
       ],
       "updatedAt": null,
       "source": "docs/migrations/v5.md"
@@ -4159,9 +4159,9 @@
     {
       "kind": "doc",
       "id": "doc:quick-start/frameworks/hbuilderx",
-      "title": "uni-app HbuilderX 使用方式",
+      "title": "uni-app HBuilderX 使用方式",
       "description": "HBuilderX Vue3 Vite 项目接入 weapp-tailwindcss@5 的配置方式，以及 Vue2 Webpack 存量项目的处理建议。",
-      "summary": "这条路线适合 HBuilderX 创建的 Vue3 Vite 项目。Tailwind CSS 3 继续使用 tailwind.config.js 的 content，Tailwind CSS 4 请改看 HBuilderX v4 接入。",
+      "summary": "这条路线适合 HBuilderX 创建的 Vue3 Vite 项目。HBuilderX 会改变运行时的 process.cwd()，所以扫描路径和 cssEntries 都建议使用绝对路径。",
       "url": "/docs/quick-start/frameworks/hbuilderx",
       "canonical": "https://tw.icebreaker.top/docs/quick-start/frameworks/hbuilderx",
       "keywords": [
@@ -4169,7 +4169,7 @@
         "安装",
         "配置",
         "uni-app",
-        "HbuilderX",
+        "HBuilderX",
         "使用方式",
         "quick start",
         "frameworks",
@@ -4184,6 +4184,7 @@
       "headings": [
         "HBuilderX Vue3 Vite",
         "# tailwind.config.js",
+        "# CSS 入口",
         "# vite.config.[tj]s",
         "HBuilderX 与 uni-app CLI 环境汇总",
         "HBuilderX Vue2 Webpack（存量项目） {#hbuilderx-vue2-webpack}",
@@ -4196,9 +4197,9 @@
     {
       "kind": "doc",
       "id": "doc:quick-start/frameworks/mpx",
-      "title": "mpx (原生增强)",
-      "description": "在 vue.config.js 中注册：",
-      "summary": "在 vue.config.js 中注册：",
+      "title": "Mpx",
+      "description": "Mpx 项目接入 weapp-tailwindcss@5，并同时说明 Tailwind CSS 3 和 4 的入口差异。",
+      "summary": "Mpx 使用 Webpack 链路，建议显式配置 cssEntries，让 weapp-tailwindcss 稳定定位 Tailwind CSS 入口。",
       "url": "/docs/quick-start/frameworks/mpx",
       "canonical": "https://tw.icebreaker.top/docs/quick-start/frameworks/mpx",
       "keywords": [
@@ -4218,7 +4219,11 @@
         "rax"
       ],
       "headings": [
+        "注册插件",
         "引入 Tailwind CSS 样式",
+        "# Tailwind CSS 3.x",
+        "# Tailwind CSS 4.x",
+        "# 在 app.mpx 中引入",
         "mpx 中的 vscode tailwindcss 智能提示缺失设置"
       ],
       "updatedAt": null,
@@ -4290,9 +4295,9 @@
     {
       "kind": "doc",
       "id": "doc:quick-start/frameworks/taro",
-      "title": "Taro (所有框架)",
-      "description": "目前 Taro v4 同时支持了 Webpack 和 Vite 进行打包编译，weapp-tailwindcss 这 2 者都支持，但是配置有些许的不同",
-      "summary": "目前 Taro v4 同时支持了 Webpack 和 Vite 进行打包编译，weapp-tailwindcss 这 2 者都支持，但是配置有些许的不同",
+      "title": "Taro",
+      "description": "Taro Webpack / Vite 项目接入 weapp-tailwindcss@5，并同时说明 Tailwind CSS 3 和 4 的入口差异。",
+      "summary": "Taro v4 可以使用 Webpack 或 Vite 构建。weapp-tailwindcss@5 两条链路都支持，但推荐优先使用 Webpack；Taro Vite 的样式链路仍有不少历史问题，更适合作为已有项目的排障参考。",
       "url": "/docs/quick-start/frameworks/taro",
       "canonical": "https://tw.icebreaker.top/docs/quick-start/frameworks/taro",
       "keywords": [
@@ -4313,6 +4318,8 @@
       ],
       "headings": [
         "Tailwind CSS 版本选择",
+        "# Tailwind CSS 3.x 入口",
+        "# Tailwind CSS 4.x 入口",
         "使用 Webpack 作为打包工具",
         "# 注册插件",
         "使用 Vite 作为打包工具",
@@ -4325,9 +4332,9 @@
     {
       "kind": "doc",
       "id": "doc:quick-start/frameworks/uni-app",
-      "title": "uni-app cli vue2 webpack",
-      "description": "这样所有的配置便完成了！赶紧启动你的项目试试吧！",
-      "summary": "src/app.css 继续写 Tailwind CSS 3.x 的 @tailwind base; @tailwind components; @tailwind utilities;。生成模式下不要再在 PostCSS 中注册 tailwindcss。",
+      "title": "uni-app CLI Vue2 Webpack",
+      "description": "uni-app CLI Vue2 Webpack 存量项目接入 weapp-tailwindcss@5 的配置说明。",
+      "summary": "src/app.css 按 Tailwind 版本选择入口：",
       "url": "/docs/quick-start/frameworks/uni-app",
       "canonical": "https://tw.icebreaker.top/docs/quick-start/frameworks/uni-app",
       "keywords": [
@@ -4355,9 +4362,9 @@
     {
       "kind": "doc",
       "id": "doc:quick-start/frameworks/uni-app-vite",
-      "title": "uni-app cli vue3 vite",
-      "description": "创建完成后，快速上手中的准备工作都完成之后，就可以便捷的注册了：",
-      "summary": "创建完成后，快速上手中的准备工作都完成之后，就可以便捷的注册了：",
+      "title": "uni-app CLI Vue3 Vite",
+      "description": "uni-app CLI Vue3 Vite 项目接入 weapp-tailwindcss@5，并同时说明 Tailwind CSS 3 和 4 的入口差异。",
+      "summary": "Tailwind CSS 生成由 WeappTailwindcss 接管，不要在小程序构建里再注册 tailwindcss、@tailwindcss/postcss 或 @tailwindcss/vite。",
       "url": "/docs/quick-start/frameworks/uni-app-vite",
       "canonical": "https://tw.icebreaker.top/docs/quick-start/frameworks/uni-app-vite",
       "keywords": [
@@ -4379,14 +4386,14 @@
         "rax"
       ],
       "headings": [
+        "选择 Tailwind 入口",
+        "# Tailwind CSS 3.x",
+        "# Tailwind CSS 4.x",
         "注册插件",
-        "`tailwind.config` 扫描范围提醒",
+        "扫描范围提醒",
         "# 问题现象",
         "# 根因",
-        "# 推荐配置",
-        "# 最佳实践",
-        "创建项目参考",
-        "视频演示"
+        "# 最佳实践"
       ],
       "updatedAt": null,
       "source": "docs/quick-start/frameworks/uni-app-vite.md"
@@ -4395,8 +4402,8 @@
       "kind": "doc",
       "id": "doc:quick-start/frameworks/uni-app-x",
       "title": "uni-app x",
-      "description": "weapp-tailwindcss@5 在 HBuilderX uni-app x 项目中接入 Tailwind CSS 3 的配置方式。",
-      "summary": "本文是 weapp-tailwindcss@5 配合 tailwindcss@3 的 uni-app x 接入方式。Tailwind CSS 3 继续通过 tailwind.config.js 的 content 扫描 uts / uvue 文件。",
+      "description": "weapp-tailwindcss@5 在 HBuilderX uni-app x 项目中接入 Tailwind CSS 3 或 4 的配置方式。",
+      "summary": "uni-app x 使用 HBuilderX 和 @dcloudio/vite-plugin-uni。weapp-tailwindcss@5 建议配合内置的 uniAppX 预设使用。",
       "url": "/docs/quick-start/frameworks/uni-app-x",
       "canonical": "https://tw.icebreaker.top/docs/quick-start/frameworks/uni-app-x",
       "keywords": [
@@ -4416,10 +4423,11 @@
         "mpx"
       ],
       "headings": [
-        "创建工具类",
         "注册插件",
-        "更改 tailwindcss 配置",
-        "现成模板可以直接使用或者参考"
+        "Tailwind CSS 3.x",
+        "Tailwind CSS 4.x",
+        "验证任意值类名",
+        "参考模板"
       ],
       "updatedAt": null,
       "source": "docs/quick-start/frameworks/uni-app-x.mdx"
@@ -4466,7 +4474,7 @@
       "id": "doc:quick-start/install",
       "title": "快速使用",
       "description": "使用 weapp-tailwindcss v5 接入 Tailwind CSS 3.x 或 4.x，并按框架注册构建器插件。",
-      "summary": "weapp-tailwindcss@5 默认使用生成模式。你只需要做两件事：",
+      "summary": "weapp-tailwindcss@5 默认使用生成模式。接入时先处理两件事：",
       "url": "/docs/quick-start/install",
       "canonical": "https://tw.icebreaker.top/docs/quick-start/install",
       "keywords": [
@@ -4541,9 +4549,9 @@
     {
       "kind": "doc",
       "id": "doc:quick-start/native/0.install",
-      "title": "1. 安装与配置 tailwindcss",
-      "description": "原生微信小程序项目接入 Tailwind CSS 3 和 weapp-tailwindcss@5 的安装与配置步骤。",
-      "summary": "本教程演示原生微信小程序 JS 模板接入 weapp-tailwindcss@5 和 Tailwind CSS 3 的方式。其他原生小程序平台也可以按同样思路处理，重点是让源码进入 Tailwind 扫描范围，并让 weapp-tailwindcss 负责小程序目标转译。",
+      "title": "1. 安装与配置 Tailwind CSS",
+      "description": "原生微信小程序项目接入 Tailwind CSS 3 或 4 与 weapp-tailwindcss@5 的安装与配置步骤。",
+      "summary": "本教程演示原生微信小程序 JS 模板接入 weapp-tailwindcss@5 的方式。Tailwind CSS 3 和 4 都可以用，重点是两件事：源码要进入 Tailwind 扫描范围，小程序目标转译交给 weapp-tailwindcss。",
       "url": "/docs/quick-start/native/0.install",
       "canonical": "https://tw.icebreaker.top/docs/quick-start/native/0.install",
       "keywords": [
@@ -4569,9 +4577,10 @@
         "# 运行环境",
         "创建项目",
         "0. 初始化 `package.json`",
-        "1. 使用包管理器安装 `tailwindcss`",
-        "2. 配置 `tailwind.config.js`",
-        "3. 引入 `tailwindcss`"
+        "1. 选择并安装 Tailwind CSS",
+        "2. 配置扫描范围",
+        "# Tailwind CSS 3.x",
+        "# Tailwind CSS 4.x"
       ],
       "updatedAt": null,
       "source": "docs/quick-start/native/0.install.mdx"
@@ -5213,8 +5222,8 @@
       "kind": "doc",
       "id": "doc:quick-start/v4/UniAppHbuilderShared",
       "title": "初始化 package.json",
-      "description": "现在，在你的页面里面去随意的编写样式，比如 bg-[#123456] text-[#654321], 然后运行到微信开发者工具即可",
-      "summary": "现在，在你的页面里面去随意的编写样式，比如 bg-[#123456] text-[#654321], 然后运行到微信开发者工具即可",
+      "description": "在页面里写一段可观察的工具类，例如 bg-[#123456] text-[#654321]，再运行到微信开发者工具检查效果。",
+      "summary": "在页面里写一段可观察的工具类，例如 bg-[#123456] text-[#654321]，再运行到微信开发者工具检查效果。",
       "url": "/docs/quick-start/v4/UniAppHbuilderShared",
       "canonical": "https://tw.icebreaker.top/docs/quick-start/v4/UniAppHbuilderShared",
       "keywords": [

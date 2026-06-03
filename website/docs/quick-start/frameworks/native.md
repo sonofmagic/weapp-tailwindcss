@@ -22,7 +22,7 @@ keywords:
 # 原生开发(打包方案)
 
 :::warning
-注意！这是原生开发(**打包方案**)，假如你需要纯原生方案，请查看 [快速开始(纯原生)](/docs/quick-start/native/install)
+这是原生开发的打包方案。如果你需要纯原生方案，请查看 [快速开始（纯原生）](/docs/quick-start/native/install)。
 :::
 
 > 由于原生小程序没有 `webpack/vite/gulp` 工具链暴露出来，所以我们要添加这一套机制，来整个前端社区接轨，以此来实现更强大的功能。
@@ -67,7 +67,16 @@ export default defineConfig({
 `weapp-tailwindcss@5` 生成模式会接管 Tailwind CSS 生成和小程序转译，不需要再注册 `tailwindcss` PostCSS 插件，也不需要执行 `weapp-tw patch`。
 常规 weapp-vite 项目会自动识别被引入的 Tailwind CSS 入口；多入口、入口未被 Vite 引入或自动识别失败时，再手动配置 `cssEntries`。
 
-如果你使用的是 `tailwindcss@4`，请改看 [Tailwind CSS 4.x / Weapp-vite](/docs/quick-start/v4/weapp-vite)，入口 CSS 需要改成 `@import "tailwindcss";` 和 `@source`。
+Tailwind CSS 4.x 项目的入口 CSS 改用：
+
+```css title="app.css"
+@import "tailwindcss";
+@source "./src/**/*.{wxml,js,ts,vue}";
+@source "./app.{js,ts,json}";
+@source not "./dist";
+```
+
+Tailwind 4 的入口只放在纯 `.css` 文件里。完整写法见 [纯原生 weapp-vite 接入](/docs/quick-start/native/install)。
 
 ## 组件样式的隔离性
 
@@ -100,7 +109,7 @@ Component({
 
 我们知道 `tailwindcss` 最佳实践，是要结合 `vscode`/`webstorm`提示插件一起使用的。
 
-假如你遇到了，在 `vscode` 的 `wxml` 文件中，编写 `class` 没有出智能提示的情况，可以参考以下步骤。
+如果在 `vscode` 的 `wxml` 文件中写 `class` 没有智能提示，可以按下面步骤处理。
 
 这里我们以 `vscode` 为例:
 
@@ -110,7 +119,7 @@ Component({
 
 接着找到 `Tailwind CSS IntelliSense` 的 `扩展设置`
 
-在 `include languages`,手动标记 `wxml` 的类型为 `html`
+在 `include languages` 里，把 `wxml` 标记为 `html`。
 
 ![如图所示](./img/vscode-setting.png)
 

@@ -1,12 +1,12 @@
 ---
-title: uni-app HbuilderX 使用方式
+title: uni-app HBuilderX 使用方式
 description: HBuilderX Vue3 Vite 项目接入 weapp-tailwindcss@5 的配置方式，以及 Vue2 Webpack 存量项目的处理建议。
 keywords:
   - 快速开始
   - 安装
   - 配置
   - uni-app
-  - HbuilderX
+  - HBuilderX
   - 使用方式
   - quick start
   - frameworks
@@ -29,58 +29,88 @@ keywords:
 
 ## HBuilderX Vue3 Vite
 
-这条路线适合 HBuilderX 创建的 Vue3 Vite 项目。Tailwind CSS 3 继续使用 `tailwind.config.js` 的 `content`，Tailwind CSS 4 请改看 [HBuilderX v4 接入](/docs/quick-start/v4/uni-app-vite-hbuilder)。
+这条路线适合 HBuilderX 创建的 Vue3 Vite 项目。HBuilderX 会改变运行时的 `process.cwd()`，所以扫描路径和 `cssEntries` 都建议使用绝对路径。
+
+Tailwind CSS 3 和 4 的框架注册方式一样，差异只在 CSS 入口和扫描配置：
+
+| Tailwind 版本 | CSS 入口 | 扫描配置 |
+| --- | --- | --- |
+| 3.x | `@tailwind base;` 等指令 | `tailwind.config.js` 的 `content` |
+| 4.x | `@import "tailwindcss";` | CSS 入口里的 `@source` |
 
 ### tailwind.config.js
 
-HBuilderX 会改变运行时的 `process.cwd()`，所以 `tailwind.config.js` 里的扫描路径建议转成绝对路径：
+Tailwind CSS 3.x 项目使用 `tailwind.config.js`：
 
 ```js title="tailwind.config.js"
-const path = require("path");
+const path = require('node:path')
 
 const resolve = (p) => {
-  return path.resolve(__dirname, p);
-};
+  return path.resolve(__dirname, p)
+}
 /** @type {import('tailwindcss').Config} */
 module.exports = {
-  // 注意此处，一定要 `path.resolve` 一下, 传入绝对路径
-  // 你要有其他目录，比如 components，也必须在这里，添加一下
-  content: ["./index.html", "./pages/**/*.{html,js,ts,jsx,tsx,vue}"].map(resolve),
-  // ...
+  content: [
+    './index.html',
+    './pages/**/*.{html,js,ts,jsx,tsx,vue}',
+    './components/**/*.{html,js,ts,jsx,tsx,vue}',
+    '!./uni_modules/**/*',
+    '!./unpackage/**/*',
+  ].map(resolve),
   corePlugins: {
-    // 跨多端可以 h5 开启，小程序关闭
     preflight: false,
   },
-};
+}
 ```
+
+### CSS 入口
+
+Tailwind CSS 3.x:
+
+```css title="src/app.css"
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+```
+
+Tailwind CSS 4.x:
+
+```css title="src/app.css"
+@import "tailwindcss";
+@source "../pages/**/*.{html,js,ts,jsx,tsx,vue}";
+@source "../components/**/*.{html,js,ts,jsx,tsx,vue}";
+@source not "../uni_modules";
+@source not "../unpackage";
+```
+
+Tailwind 4 的入口只放在纯 `.css` 文件里，不要直接写进 `scss`、`less`、`sass` 入口。VS Code IntelliSense 需要时，可以把 `tailwindCSS.experimental.configFile` 指向这个 CSS 文件。
 
 ### vite.config.[tj]s
 
-注册 `WeappTailwindcss` 时，也建议传入 Tailwind CSS 入口文件的绝对路径：
+注册 `WeappTailwindcss` 时传入入口 CSS 的绝对路径：
 
 ```js title="vite.config.[tj]s"
-import path from "path";
-import { defineConfig } from "vite";
-import uni from "@dcloudio/vite-plugin-uni";
-import { WeappTailwindcss } from "weapp-tailwindcss/vite";
+import path from 'node:path'
+import { defineConfig } from 'vite'
+import uni from '@dcloudio/vite-plugin-uni'
+import { WeappTailwindcss } from 'weapp-tailwindcss/vite'
 
 const resolve = (p) => {
-  return path.resolve(__dirname, p);
-};
+  return path.resolve(__dirname, p)
+}
 
 export default defineConfig({
   plugins: [
     uni(),
     WeappTailwindcss({
       rem2rpx: true,
-      // 由于 hbuilderx 会改变 process.cwd 所以这里必须传入当前目录的绝对路径
       tailwindcssBasedir: __dirname,
       cssEntries: [
-        resolve("src/app.css"),
+        resolve('src/app.css'),
       ],
     })
   ],
-});
+})
 ```
 
 `UNI_PLATFORM=h5`、`app` 或 `app-plus` 时，生成器默认目标会自动切换为 `web`，不再需要写 `disabled: WeappTailwindcssDisabled`。如果 App 构建不希望插件参与，可以只针对 App 目标显式禁用：
@@ -98,15 +128,7 @@ WeappTailwindcss({
 });
 ```
 
-`src/app.css` 中继续使用 Tailwind CSS 3.x 的入口指令：
-
-```css title="src/app.css"
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
-```
-
-生成模式下不要再注册 `tailwindcss` PostCSS 插件。如果项目已有 PostCSS 配置，只保留框架或业务需要的非 Tailwind 插件。
+生成模式下不要再注册 Tailwind 官方生成插件。Tailwind 3 不要注册 `tailwindcss` PostCSS 插件；Tailwind 4 不要注册 `@tailwindcss/postcss` 或 `@tailwindcss/vite`。项目已有 PostCSS 配置时，只保留框架或业务需要的非 Tailwind 插件。
 
 `hbuilderx` 正式版本的 `vue2` 项目由于使用 `webpack4` 和 `postcss7`，不再适配 `weapp-tailwindcss@5`。存量项目请继续停留在旧版本，或者迁移到 `HBuilderX Vue3 Vite` / `uni-app cli vue2 webpack5` 链路。
 
@@ -137,7 +159,7 @@ WeappTailwindcss({
 
 这不是推荐路径。它会让 HBuilderX 的全局编译环境和官方插件状态不一致，升级 HBuilderX 或重新安装编译插件后也可能失效。
 
-> Macos uniapp-cli 路径在 /Applications/HBuilderX.app/Contents/HBuilderX/plugins/uniapp-cli
+> macOS uniapp-cli 路径在 /Applications/HBuilderX.app/Contents/HBuilderX/plugins/uniapp-cli
 >
 > Windows 的路径通常也在 HBuilderX 安装目录下。需要先安装 Vue2 编译插件，这个目录才会出现。
 
