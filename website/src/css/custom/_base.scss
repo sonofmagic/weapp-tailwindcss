@@ -72,6 +72,16 @@ a:hover {
   text-decoration: none;
 }
 
+.icon-\[logos--openai-icon\],
+.home-v5 .icon-\[logos--openai-icon\] {
+  color: rgb(15 23 42);
+}
+
+[data-theme='dark'] .icon-\[logos--openai-icon\],
+[data-theme='dark'] .home-v5 .icon-\[logos--openai-icon\] {
+  color: rgb(248 250 252);
+}
+
 .theme-doc-markdown {
   max-width: 78ch;
   font-size: 1rem;

@@ -14,6 +14,15 @@ type TailwindPlugin = NonNullable<Config['plugins']>[number]
 const logosIcons = logosIconsRaw as IconifyJSON
 const mdiIcons = mdiIconsRaw as IconifyJSON
 const monoFontStack = 'ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace'
+
+function customiseIcon(content: string, name: string, prefix: string): string {
+  if (prefix === 'logos' && name === 'openai-icon') {
+    return `<g fill="currentColor">${content}</g>`
+  }
+
+  return content
+}
+
 const bxlIcons = {
   prefix: 'bxl',
   icons: {
@@ -288,7 +297,7 @@ const config = {
     themeTransitionPlugin() as unknown as TailwindPlugin,
     typography,
     addDynamicIconSelectors({
-      mode: 'mask',
+      customise: customiseIcon,
       iconSets: {
         mdi: mdiIcons,
         logos: logosIcons,

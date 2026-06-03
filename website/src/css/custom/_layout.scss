@@ -334,9 +334,20 @@ html[data-ui-homepage-frameworks-card='hidden'] .ui-homepage-frameworks-card {
 }
 
 .footer a {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.32rem;
+  max-width: 100%;
   font-weight: 500;
   color: rgb(39 84 110);
+  white-space: nowrap;
   transition: color 0.3s ease;
+}
+
+.footer a svg[class*='iconExternalLink'] {
+  display: inline-block;
+  flex: 0 0 auto;
+  margin-left: 0;
 }
 
 .footer a:hover {
