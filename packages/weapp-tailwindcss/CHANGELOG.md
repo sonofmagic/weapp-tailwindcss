@@ -1,5 +1,13 @@
 # weapp-tailwindcss
 
+## 5.0.0-next.36
+
+### Patch Changes
+
+- 🐛 **修复 Tailwind CSS v4 小程序产物移除 `@property` 后可能丢失 `--tw-border-style` 默认值的问题，避免只有 `border` 工具类时小程序端无法得到和 Web 端一致的默认实线边框；同时按需补齐实际使用到的 v4 运行时默认变量，并合并等价的小程序元素作用域规则，避免输出重复 selector。** [#890](https://github.com/sonofmagic/weapp-tailwindcss/pull/890) by @sonofmagic
+- 📦 **Dependencies** [`e6f624f`](https://github.com/sonofmagic/weapp-tailwindcss/commit/e6f624f5e69bb5a85df9ac93fda1badfd31f2bce)
+  → `@weapp-tailwindcss/postcss@3.0.0-next.10`
+
 ## 5.0.0-next.35
 
 ### Patch Changes
