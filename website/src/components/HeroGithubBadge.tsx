@@ -17,9 +17,9 @@ export default function HeroGithubBadge({ className }: HeroGithubBadgeProps = {}
       className={`
         group inline-flex min-h-10 items-center gap-2 rounded-full border
         border-slate-200 bg-white px-3 py-2 text-sm font-semibold text-slate-700
-        transition-all duration-200 hover:-translate-y-0.5 hover:border-[#07c160]/45
+        transition-all duration-200 hover:-translate-y-0.5 hover:border-[#0ea5e9]/45
         focus-visible:outline focus-visible:outline-2
-        focus-visible:outline-offset-2 focus-visible:outline-[#07c160]
+        focus-visible:outline-offset-2 focus-visible:outline-[#0ea5e9]
         dark:border-slate-700 dark:bg-slate-900 dark:text-slate-200
         ${className ?? ''}
       `}

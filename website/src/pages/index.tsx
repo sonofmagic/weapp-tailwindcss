@@ -138,9 +138,11 @@ function HomepageHeader() {
               <div className="home-hero__title-wrap">
                 {homepage.heroTitle && (
                   <h1 className="ui-homepage-hero-title home-hero__title">
-                    <span>weapp</span>
-                    <span className="from-weapp-to-tailwindcss">-</span>
-                    <span>tailwindcss</span>
+                    <span className="home-hero__title-prefix">
+                      <span>weapp</span>
+                      <span className="from-weapp-to-tailwindcss">-</span>
+                    </span>
+                    <span className="home-hero__title-tail">tailwindcss</span>
                   </h1>
                 )}
                 {homepage.gstarBadge && (

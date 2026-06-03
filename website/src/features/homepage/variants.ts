@@ -4,13 +4,13 @@ export const ctaButton = tv({
   base: [
     'relative inline-flex min-h-12 items-center justify-center gap-2 rounded-full px-6 py-3',
     'whitespace-nowrap font-semibold text-white dark:text-white',
-    'bg-[#07c160] shadow-[0_14px_28px_rgba(7,193,96,0.24)]',
+    'bg-[#0284c7] shadow-[0_14px_28px_rgba(2,132,199,0.24)]',
     'transition-all duration-200 ease-out',
-    'hover:-translate-y-0.5 hover:bg-[#06ad56] hover:shadow-[0_18px_34px_rgba(7,193,96,0.28)]',
-    'active:translate-y-px active:shadow-[0_10px_22px_rgba(7,193,96,0.22)]',
+    'hover:-translate-y-0.5 hover:bg-[#0369a1] hover:shadow-[0_18px_34px_rgba(2,132,199,0.28)]',
+    'active:translate-y-px active:shadow-[0_10px_22px_rgba(2,132,199,0.22)]',
     'no-underline hover:no-underline focus-visible:no-underline visited:text-white dark:visited:text-white',
     'hover:text-white dark:hover:text-white',
-    'focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#07c160]',
+    'focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#0ea5e9]',
   ].join(' '),
 })
 
@@ -18,7 +18,7 @@ export const interactionPill = tv({
   base: [
     'inline-flex w-full rounded-full border border-slate-200 bg-white sm:w-auto',
     'transition-all duration-200 ease-out',
-    'hover:-translate-y-0.5 hover:border-[#07c160]/45',
+    'hover:-translate-y-0.5 hover:border-[#0ea5e9]/45',
     'active:translate-y-px',
     'dark:border-slate-700 dark:bg-slate-900',
   ].join(' '),
@@ -37,10 +37,10 @@ export const interactionPillLink = tv({
 export const interactionPillIcon = tv({
   base: [
     'inline-flex h-[1.9rem] w-[1.9rem] items-center justify-center rounded-full',
-    'bg-[#07c160]/10 text-[#07c160]',
+    'bg-[#0ea5e9]/10 text-[#0ea5e9]',
     'transition-[background,color] duration-300',
-    'group-hover:bg-[#07c160]/18',
-    'dark:bg-[#07c160]/16 dark:text-[#38d984]',
+    'group-hover:bg-[#0ea5e9]/18',
+    'dark:bg-[#0ea5e9]/16 dark:text-[#38bdf8]',
   ].join(' '),
 })
 
@@ -111,9 +111,9 @@ export const toolOrbit = tv({
 export const toolOrbitCore = tv({
   base: [
     'absolute left-1/2 top-1/2 z-10 grid h-24 w-24 -translate-x-1/2 -translate-y-1/2 place-items-center rounded-2xl',
-    'border border-[#07c160]/30 bg-[#07c160]/10 text-[0.76rem] font-semibold uppercase tracking-[0.15em]',
+    'border border-[#0ea5e9]/30 bg-[#0ea5e9]/10 text-[0.76rem] font-semibold uppercase tracking-[0.15em]',
     'text-slate-800 dark:text-slate-100',
-    'dark:bg-[#07c160]/16',
+    'dark:bg-[#0ea5e9]/16',
   ].join(' '),
 })
 

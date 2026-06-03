@@ -34,7 +34,7 @@ export function PipelinePanel() {
       </div>
       <div className="home-pipeline__code" aria-hidden="true">
         <span className="text-slate-500">className=</span>
-        <span className="text-[#07c160]">"grid px-4 bg-[#07c160]"</span>
+        <span className="text-[#0ea5e9]">"grid px-4 bg-[#0ea5e9]"</span>
       </div>
       <div className="home-pipeline__steps">
         {pipelineSteps.map(step => (
