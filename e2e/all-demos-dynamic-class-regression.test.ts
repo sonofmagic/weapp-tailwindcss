@@ -3,6 +3,7 @@ import fs from 'node:fs/promises'
 import path from 'pathe'
 import { afterEach, describe, expect, it } from 'vitest'
 import { replaceWxml } from '../packages/weapp-tailwindcss/src/wxml'
+import { DEMO_COVERAGE_MATRIX } from './demoCoverageMatrix'
 import { E2E_PROJECTS } from './projectEntries'
 import { clearProjectBuildState, ensureProjectBuilt } from './projectTest'
 import { projectFilter } from './shared'
@@ -10,6 +11,11 @@ import { projectFilter } from './shared'
 const fixturesRoot = path.resolve(__dirname, '../demo')
 const rawClasses = ['h-[458rpx]', 'w-[218rpx]', 'inset-x-[30%]'] as const
 const markerClass = 'weapp-tw-dynamic-regression'
+const localHBuilderXProjectNames = new Set(
+  DEMO_COVERAGE_MATRIX
+    .filter(item => item.hbuilderxLocal)
+    .map(item => item.name),
+)
 
 interface PatchTarget {
   file: string
@@ -264,7 +270,7 @@ describe('all demo dynamic class regression', () => {
     await restorePatchedFiles()
   })
 
-  for (const entry of projectFilter(E2E_PROJECTS)) {
+  for (const entry of projectFilter(E2E_PROJECTS.filter(item => !localHBuilderXProjectNames.has(item.name)))) {
     it(entry.name, async () => {
       const patch = createPatch(entry)
       await applyPatch(patch)

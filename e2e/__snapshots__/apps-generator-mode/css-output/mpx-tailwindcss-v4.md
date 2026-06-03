@@ -6,7 +6,7 @@ Generator CSS files: app.wxss, styles/app.wxss, app.wxss, index.wxss
 
 | Bytes | Selectors | @supports | :hover | Tailwind banner | Raw arbitrary selector | Weapp escaped arbitrary selector |
 | ---: | ---: | --- | --- | --- | --- | --- |
-| 9491 | 68 | false | false | false | false | true |
+| 10161 | 68 | false | false | false | false | true |
 
 ## Generator CSS
 
@@ -23,6 +23,18 @@ Generator CSS files: app.wxss, styles/app.wxss, app.wxss, index.wxss
 :before,
 text,
 view {
+  --tw-space-y-reverse: 0;
+  --tw-border-style: solid;
+  --tw-divide-x-reverse: 0;
+  --tw-font-weight:;
+  --tw-content: '';
+  --tw-leading:;
+  --tw-shadow: 0 0 #0000;
+  --tw-shadow-color: initial;
+  --tw-inset-shadow: 0 0 #0000;
+  --tw-ring-shadow: 0 0 #0000;
+  --tw-inset-ring-shadow: 0 0 #0000;
+  --tw-ring-offset-shadow: 0 0 #0000;
   border: 0 solid;
   box-sizing: border-box;
   margin: 0;
@@ -246,6 +258,18 @@ wx-root-portal-content {
 :before,
 text,
 view {
+  --tw-space-y-reverse: 0;
+  --tw-border-style: solid;
+  --tw-divide-x-reverse: 0;
+  --tw-font-weight:;
+  --tw-content: '';
+  --tw-leading:;
+  --tw-shadow: 0 0 #0000;
+  --tw-shadow-color: initial;
+  --tw-inset-shadow: 0 0 #0000;
+  --tw-ring-shadow: 0 0 #0000;
+  --tw-inset-ring-shadow: 0 0 #0000;
+  --tw-ring-offset-shadow: 0 0 #0000;
   border: 0 solid;
   box-sizing: border-box;
   margin: 0;

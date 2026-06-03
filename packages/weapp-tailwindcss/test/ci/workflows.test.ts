@@ -95,6 +95,17 @@ describe('ci workflows', () => {
     expect(packageJson.scripts['e2e:static']).toContain('E2E_SKIP_OPEN_AUTOMATOR=1')
     expect(packageJson.scripts['e2e:static:u']).toContain('E2E_SKIP_OPEN_AUTOMATOR=1')
     expect(packageJson.scripts['e2e:static:dev']).not.toContain('E2E_SKIP_OPEN_AUTOMATOR=1')
+    for (const scriptName of ['e2e:static', 'e2e:static:u'] as const) {
+      const script = packageJson.scripts[scriptName]
+      expect(script).toContain('--exclude e2e/multiplatform-build-output.test.ts')
+      expect(script).toContain('--exclude e2e/preprocessor-source.test.ts')
+      expect(script).toContain('--exclude e2e/framework-ci-support.test.ts')
+      expect(script).toContain('--exclude e2e/framework-ide-support.test.ts')
+      expect(script).toContain('--exclude e2e/hbuilderx-local.test.ts')
+      expect(script).toContain('--exclude e2e/taro-web-demo-hmr.test.ts')
+      expect(script).toContain('--exclude e2e/web-vite-demo-hmr.test.ts')
+      expect(script).toContain('--exclude e2e/uni-app-vite-tailwindcss-dev-h5.test.ts')
+    }
     expect(packageJson.scripts['e2e:preprocessor']).toBe('vitest run -c ./e2e/vitest.e2e.config.ts e2e/preprocessor-source.test.ts')
     expect(stepRuns(workflow, 'quality')).toContain('pnpm e2e:preprocessor')
     expect(readText('e2e/preprocessor-source.test.ts')).toContain('@weapp-tailwindcss-demo/weapp-vite-tailwindcss-v4')

@@ -2,6 +2,18 @@
 :before,
 text,
 view {
+  --tw-space-y-reverse: 0;
+  --tw-border-style: solid;
+  --tw-divide-x-reverse: 0;
+  --tw-font-weight:;
+  --tw-content: '';
+  --tw-leading:;
+  --tw-shadow: 0 0 #0000;
+  --tw-shadow-color: initial;
+  --tw-inset-shadow: 0 0 #0000;
+  --tw-ring-shadow: 0 0 #0000;
+  --tw-inset-ring-shadow: 0 0 #0000;
+  --tw-ring-offset-shadow: 0 0 #0000;
   border: 0 solid;
   box-sizing: border-box;
   margin: 0;

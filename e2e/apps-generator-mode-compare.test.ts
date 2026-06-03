@@ -9,6 +9,7 @@ import path from 'pathe'
 import postcss from 'postcss'
 import { describe, expect, it } from 'vitest'
 import { createChineseMarkdownReport, createMarkdownReport } from './apps-generator-report'
+import { DEMO_COVERAGE_MATRIX } from './demoCoverageMatrix'
 import { E2E_PROJECTS } from './projectEntries'
 import { clearProjectBuildState } from './projectTest'
 import { collectCssSnapshots, resolveSnapshotFile } from './shared'
@@ -38,6 +39,11 @@ const SUBPACKAGE_MARKER_PATTERNS = [
   /normal[-_]subpackage/i,
   /independent[-_]subpackage/i,
 ]
+const localHBuilderXProjectNames = new Set(
+  DEMO_COVERAGE_MATRIX
+    .filter(item => item.hbuilderxLocal)
+    .map(item => item.name),
+)
 
 const MINI_PROGRAM_CSS_PATTERN = '**/*.{wx,ac,jx,tt,q,c,ty}ss'
 
@@ -52,7 +58,9 @@ function filterCompareProjects(projects: CompareProject[]) {
 }
 
 const projects: CompareProject[] = filterCompareProjects([
-  ...E2E_PROJECTS.map(entry => createCompareProject(entry, '../demo')),
+  ...E2E_PROJECTS
+    .filter(entry => !localHBuilderXProjectNames.has(entry.name))
+    .map(entry => createCompareProject(entry, '../demo')),
 ])
 const projectFilterEnabled = Boolean(process.env['E2E_PROJECT_FILTER'])
 

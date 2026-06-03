@@ -6,7 +6,7 @@ Generator CSS files: app.wxss, index.wxss, index.wxss, index.wxss, more.wxss
 
 | Bytes | Selectors | @supports | :hover | Tailwind banner | Raw arbitrary selector | Weapp escaped arbitrary selector |
 | ---: | ---: | --- | --- | --- | --- | --- |
-| 16065 | 49 | false | false | false | false | true |
+| 16033 | 49 | false | false | false | false | true |
 
 ## Generator CSS
 
@@ -15,18 +15,13 @@ Generator CSS files: app.wxss, index.wxss, index.wxss, index.wxss, more.wxss
 ```css
 view,
 text,
-:before,
-:after {
+:after,
+:before {
   --tw-content: '';
   box-sizing: border-box;
   border-width: 0;
   border-style: solid;
   border-color: currentColor;
-}
-view,
-text,
-:before,
-:after {
   --tw-border-spacing-x: 0;
   --tw-border-spacing-y: 0;
   --tw-translate-x: 0;
@@ -270,8 +265,8 @@ text,
 }
 view,
 text,
-:before,
-:after {
+:after,
+:before {
   --tw-border-spacing-x: 0;
   --tw-border-spacing-y: 0;
   --tw-translate-x: 0;
@@ -493,8 +488,8 @@ text,
 }
 view,
 text,
-:before,
-:after {
+:after,
+:before {
   --tw-border-spacing-x: 0;
   --tw-border-spacing-y: 0;
   --tw-translate-x: 0;

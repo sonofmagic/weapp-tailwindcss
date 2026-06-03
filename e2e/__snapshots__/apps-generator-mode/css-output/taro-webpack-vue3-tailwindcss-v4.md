@@ -6,7 +6,7 @@ Generator CSS files: app.wxss, index.wxss, index.wxss, index.wxss
 
 | Bytes | Selectors | @supports | :hover | Tailwind banner | Raw arbitrary selector | Weapp escaped arbitrary selector |
 | ---: | ---: | --- | --- | --- | --- | --- |
-| 4329 | 15 | false | false | false | false | true |
+| 4363 | 15 | false | false | false | false | true |
 
 ## Generator CSS
 
@@ -22,6 +22,7 @@ view {
   box-sizing: border-box;
   margin: 0;
   padding: 0;
+  --tw-content: '';
 }
 .tw-root,
 :host,
@@ -69,6 +70,14 @@ wx-root-portal-content {
 .before_ccontent-_b_anormal_subpackage_taro-webpack-vue3-tailwindcss-v4_a_B:before {
   --tw-content: 'normal subpackage taro-webpack-vue3-tailwindcss-v4';
   content: var(--tw-content);
+}
+```
+
+### index.wxss
+
+```css
+.tw-page-style-watch-anchor {
+  color: inherit;
 }
 ```
 
@@ -84,6 +93,7 @@ view {
   box-sizing: border-box;
   margin: 0;
   padding: 0;
+  --tw-content: '';
 }
 .tw-root,
 :host,
@@ -137,15 +147,6 @@ wx-root-portal-content {
 ### index.wxss
 
 ```css
-@reference "tailwindcss";
-.tw-page-style-watch-anchor {
-  color: inherit;
-}
-```
-
-### index.wxss
-
-```css
 view,
 text,
 :after,
@@ -154,6 +155,7 @@ text,
   margin: 0;
   padding: 0;
   border: 0 solid;
+  --tw-content: '';
 }
 :host,
 page,

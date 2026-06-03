@@ -827,6 +827,7 @@ text,
   margin: 0;
   padding: 0;
   border: 0 solid;
+  --tw-content: '';
 }
 :host,
 page,
@@ -853,6 +854,7 @@ text,
   margin: 0;
   padding: 0;
   border: 0 solid;
+  --tw-content: '';
 }
 :host,
 page,

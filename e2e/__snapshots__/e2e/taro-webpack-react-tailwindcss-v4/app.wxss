@@ -1,13 +1,9 @@
-:after,
-:before,
-text,
-view {
-  -webkit-box-sizing: border-box;
-}
 :host,
 page,
 .tw-root,
 wx-root-portal-content {
+  -webkit-box-sizing: border-box;
+  --tw-content: '';
   --color-gray-200: #e5e7eb;
   --color-gray-400: #9ca3af;
   --font-sans:

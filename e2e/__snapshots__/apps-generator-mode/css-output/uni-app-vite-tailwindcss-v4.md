@@ -6,7 +6,7 @@ Generator CSS files: app.wxss, home.wxss, index.wxss, index.wxss, user.wxss
 
 | Bytes | Selectors | @supports | :hover | Tailwind banner | Raw arbitrary selector | Weapp escaped arbitrary selector |
 | ---: | ---: | --- | --- | --- | --- | --- |
-| 39683 | 234 | false | false | false | false | true |
+| 40509 | 234 | false | false | false | false | true |
 
 ## Generator CSS
 
@@ -842,6 +842,7 @@ text,
   margin: 0;
   padding: 0;
   border: 0 solid;
+  --tw-content: '';
 }
 :host,
 page,
@@ -868,6 +869,7 @@ text,
   margin: 0;
   padding: 0;
   border: 0 solid;
+  --tw-content: '';
 }
 :host,
 page,
@@ -919,6 +921,19 @@ text,
   margin: 0;
   padding: 0;
   border: 0 solid;
+  --tw-space-x-reverse: 0;
+  --tw-space-y-reverse: 0;
+  --tw-border-style: solid;
+  --tw-divide-x-reverse: 0;
+  --tw-divide-y-reverse: 0;
+  --tw-font-weight:;
+  --tw-content: '';
+  --tw-shadow: 0 0 #0000;
+  --tw-shadow-color: initial;
+  --tw-inset-shadow: 0 0 #0000;
+  --tw-ring-shadow: 0 0 #0000;
+  --tw-inset-ring-shadow: 0 0 #0000;
+  --tw-ring-offset-shadow: 0 0 #0000;
 }
 :host,
 page,
@@ -1195,6 +1210,7 @@ text,
   margin: 0;
   padding: 0;
   border: 0 solid;
+  --tw-content: '';
 }
 :host,
 page,
@@ -1229,6 +1245,7 @@ text,
   margin: 0;
   padding: 0;
   border: 0 solid;
+  --tw-content: '';
 }
 :host,
 page,
@@ -1263,6 +1280,19 @@ text,
   margin: 0;
   padding: 0;
   border: 0 solid;
+  --tw-space-x-reverse: 0;
+  --tw-space-y-reverse: 0;
+  --tw-border-style: solid;
+  --tw-divide-x-reverse: 0;
+  --tw-divide-y-reverse: 0;
+  --tw-font-weight:;
+  --tw-content: '';
+  --tw-shadow: 0 0 #0000;
+  --tw-shadow-color: initial;
+  --tw-inset-shadow: 0 0 #0000;
+  --tw-ring-shadow: 0 0 #0000;
+  --tw-inset-ring-shadow: 0 0 #0000;
+  --tw-ring-offset-shadow: 0 0 #0000;
 }
 :host,
 page,
