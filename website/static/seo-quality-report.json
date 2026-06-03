@@ -1,9 +1,9 @@
 {
   "version": "1.0.0",
-  "generatedAt": "2026-05-27T08:14:31.775Z",
+  "generatedAt": "2026-06-03T15:46:58.343Z",
   "totals": {
-    "files": 182,
-    "issues": 1
+    "files": 180,
+    "issues": 2
   },
   "coverage": {
     "docs": {
@@ -23,9 +23,15 @@
     }
   },
   "issueTypes": {
-    "few_keywords": 1
+    "few_keywords": 2
   },
   "issues": [
+    {
+      "type": "few_keywords",
+      "file": "quick-start/install.mdx",
+      "message": "keywords 数量偏少（7）",
+      "scope": "docs"
+    },
     {
       "type": "few_keywords",
       "file": "tailwindcss/v5-official-plugin-parity.mdx",

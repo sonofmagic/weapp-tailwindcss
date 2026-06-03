@@ -1,243 +1,37 @@
 ---
-title: 快速使用
-description: 使用 weapp-tailwindcss 接入 Tailwind CSS 3.x 或 4.x，并按框架注册构建器插件。
+title: 安装依赖
+description: 安装 Tailwind CSS 与 weapp-tailwindcss。
 keywords:
   - 快速开始
   - 安装
-  - 配置
+  - 依赖
   - tailwindcss
   - tailwindcss 3
   - tailwindcss 4
-  - generator
   - weapp-tailwindcss
-  - 小程序
-  - 微信小程序
-  - uni-app
-  - taro
-  - rax
-  - mpx
 ---
 
-# 快速使用
+# 安装依赖
 
-`weapp-tailwindcss` 默认使用生成模式。接入时先处理两件事：
+这一页只处理包安装。框架注册方式放到下一章。
 
-1. 选择 `tailwindcss@3` 或 `tailwindcss@4`，准备 Tailwind CSS 入口。
-2. 按你的框架注册 `WeappTailwindcss` 构建器插件。
+## 选择 Tailwind CSS 版本
 
-框架注册方式基本是一套；真正不同的是 Tailwind CSS 入口和扫描配置。
+如果你不确定选哪个版本，先用 `tailwindcss@3`。它对存量小程序项目更稳。
 
-## 1. 选择 Tailwind CSS 版本
+新项目想用 Tailwind CSS 4 的 CSS-first 写法，再安装最新版 `tailwindcss`。
 
-| 版本 | 推荐场景 | 安装命令 | 样式入口 | 扫描范围 |
-| --- | --- | --- | --- | --- |
-| Tailwind CSS 3.x | 追求兼容性、存量项目、暂不迁移 CSS-first | `pnpm add -D tailwindcss@3 weapp-tailwindcss` | `@tailwind base;` 等指令 | `tailwind.config.js` 的 `content` |
-| Tailwind CSS 4.x | 新项目、希望使用 CSS-first 配置 | `pnpm add -D tailwindcss weapp-tailwindcss` | `@import "tailwindcss";` | CSS 入口里的 `@source` |
-
-:::tip 推荐选择
-如果你不确定应该选哪个版本，优先选 `tailwindcss@3`，兼容性更稳。准备新项目并且能接受 Tailwind CSS 4 的 CSS-first 写法时，再选 `tailwindcss@4`。
-:::
-
-## 2. 安装依赖
-
-### Tailwind CSS 3.x
+## Tailwind CSS 3.x
 
 ```bash
 pnpm add -D tailwindcss@3 weapp-tailwindcss
 pnpm exec tailwindcss init
 ```
 
-### Tailwind CSS 4.x
+## Tailwind CSS 4.x
 
 ```bash
 pnpm add -D tailwindcss weapp-tailwindcss
 ```
 
-`weapp-tailwindcss` 会在构建运行时接管 Tailwind CSS 生成。不要再为了小程序构建额外注册 `tailwindcss`、`@tailwindcss/postcss` 或 `@tailwindcss/vite`。
-
-如果项目已有 `postcss.config.*`，可以保留业务自己的非 Tailwind 插件。
-
-## 3. 准备 CSS 入口
-
-文档默认用 `src/app.css` 做 Tailwind 入口，这是最省心的写法。常规 Taro / Vite 项目只要入口被框架引入，通常不用写 `cssEntries`。多入口、入口未被引入、Gulp 或自定义构建链路，再手动配置。
-
-如果你用的是 Tailwind CSS 3，项目原本就是 `app.scss` 或 `app.less`，也可以继续把 `@tailwind` 写在这个预处理入口里。关键是构建链路要先编译 Sass/Less，再把结果交给 Tailwind 和 `weapp-tailwindcss`。
-
-### Tailwind CSS 3.x 入口
-
-```css title="src/app.css"
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
-```
-
-```js title="tailwind.config.js"
-/** @type {import('tailwindcss').Config} */
-module.exports = {
-  content: [
-    './src/**/*.{html,js,ts,jsx,tsx,vue,wxml,axml,ttml,mpx,uts,uvue}',
-    '!./src/uni_modules/**/*',
-    '!./node_modules/**/*',
-    '!./dist/**/*',
-    '!./unpackage/**/*',
-  ],
-  theme: {
-    extend: {},
-  },
-}
-```
-
-### Tailwind CSS 4.x 入口
-
-```css title="src/app.css"
-@import "tailwindcss";
-@source "./**/*.{html,js,ts,jsx,tsx,vue,wxml,axml,ttml,mpx,uts,uvue}";
-@source not "./uni_modules";
-@source not "../node_modules";
-@source not "../dist";
-@source not "../unpackage";
-```
-
-:::warning
-`tailwindcss@4` 的入口建议放在纯 `.css` 文件里，不要直接写进 `scss`、`less`、`sass` 文件。业务样式仍然可以用 Sass/Less，只是别把 `@import "tailwindcss"` 放进预处理入口。
-:::
-
-## 4. 注册构建器插件
-
-这里是所有框架共同的原则：
-
-- Vite 链路使用 `weapp-tailwindcss/vite`
-- Webpack 链路使用 `weapp-tailwindcss/webpack`
-- 常规 Taro / Vite 项目会自动识别被引入的 Tailwind CSS 入口，多入口或自动识别失败时再配置 `cssEntries`
-- Gulp、自定义构建等链路建议显式配置 `cssEntries`，并指向 Tailwind CSS 入口文件的绝对路径
-- 不要再为小程序构建注册 Tailwind 官方 Vite / PostCSS 生成插件
-
-### Vite 通用写法
-
-适用于 `uni-app Vue3 Vite`、`weapp-vite` 等构建链路。`uni-app` 项目中 `WeappTailwindcss` 要放在 `uni()` 后面。
-
-```ts title="vite.config.ts"
-import { defineConfig } from 'vite'
-import { WeappTailwindcss } from 'weapp-tailwindcss/vite'
-
-export default defineConfig({
-  plugins: [
-    WeappTailwindcss({
-      rem2rpx: true,
-    }),
-  ],
-})
-```
-
-如果入口 CSS 没有被 Vite 引入、项目有多个 Tailwind CSS 入口，或者自动识别失败，再补充：
-
-```ts title="vite.config.ts"
-import path from 'node:path'
-
-WeappTailwindcss({
-  cssEntries: [
-    path.resolve(__dirname, 'src/app.css'),
-  ],
-})
-```
-
-### Webpack 通用写法
-
-适用于 `Taro Webpack`、`uni-app CLI Vue2 Webpack`、`Mpx`、`Rax` 等构建链路。不同框架的 Webpack 配置入口不同，请按下方框架表进入对应页面复制完整写法。Taro 的完整页默认不写 `cssEntries`，这里保留的是通用写法。
-
-```js title="webpack config"
-const path = require('node:path')
-const { WeappTailwindcss } = require('weapp-tailwindcss/webpack')
-
-module.exports = {
-  plugins: [
-    new WeappTailwindcss({
-      rem2rpx: true,
-      cssEntries: [
-        path.resolve(__dirname, 'src/app.css'),
-      ],
-    }),
-  ],
-}
-```
-
-### uni-app x 写法
-
-`uni-app x` 推荐使用内置预设：
-
-```ts title="vite.config.ts"
-import { defineConfig } from 'vite'
-import uni from '@dcloudio/vite-plugin-uni'
-import { WeappTailwindcss } from 'weapp-tailwindcss/vite'
-import { uniAppX } from 'weapp-tailwindcss/presets'
-
-export default defineConfig({
-  plugins: [
-    uni(),
-    WeappTailwindcss(
-      uniAppX({
-        base: __dirname,
-        rem2rpx: true,
-      }),
-    ),
-  ],
-})
-```
-
-## 5. 各框架完整接入
-
-下面这些页面都同时说明 Tailwind CSS 3.x 和 4.x 的入口差异。旧的 `/quick-start/v4/*` 链接会继续保留，方便外部文章和历史项目跳转。
-
-| 框架 | 构建工具 | 推荐入口 |
-| --- | --- | --- |
-| uni-app CLI Vue3 | Vite | [uni-app CLI Vue3 Vite](/docs/quick-start/frameworks/uni-app-vite) |
-| uni-app HBuilderX Vue3 | Vite | [HBuilderX Vue3 Vite](/docs/quick-start/frameworks/hbuilderx) |
-| uni-app CLI Vue2 | Webpack | [CLI Vue2 Webpack（存量项目）](/docs/quick-start/frameworks/uni-app) |
-| uni-app x | Vite | [uni-app x](/docs/quick-start/frameworks/uni-app-x) |
-| Taro | Webpack / Vite | [Taro](/docs/quick-start/frameworks/taro) |
-| 原生小程序 | weapp-vite | [原生小程序 / weapp-vite](/docs/quick-start/native/install) |
-| Mpx | Webpack | [Mpx](/docs/quick-start/frameworks/mpx) |
-| Rax | Webpack | [Rax](/docs/quick-start/frameworks/rax) |
-| Node.js API | 自定义构建 | [Node.js API](/docs/quick-start/frameworks/api) |
-
-## 6. 运行与验证
-
-完成配置后，运行对应框架的小程序构建命令，例如：
-
-```bash
-pnpm dev:mp-weixin
-```
-
-或：
-
-```bash
-pnpm dev:weapp
-```
-
-然后在页面里写一个容易观察的类名：
-
-```html
-<view class="mt-4 rounded bg-sky-500 p-4 text-white">Hello weapp-tailwindcss</view>
-```
-
-如果样式没有生效，优先检查这几项：
-
-| 检查项 | Tailwind CSS 3.x | Tailwind CSS 4.x |
-| --- | --- | --- |
-| CSS 入口 | 是否写了 `@tailwind base;` 等指令 | 是否写了 `@import "tailwindcss";` |
-| 扫描范围 | `tailwind.config.js` 的 `content` 是否包含源码 | CSS 入口的 `@source` 是否包含源码 |
-| 构建器插件 | 入口是否被框架引入，必要时是否配置了 `cssEntries` | 入口是否被框架引入，必要时是否配置了 `cssEntries` |
-| PostCSS | 是否误注册了 `tailwindcss` | 是否误注册了 `@tailwindcss/postcss` |
-| 产物目录 | 是否误扫 `dist` / `unpackage` | 是否误扫 `dist` / `unpackage` |
-
-## 7. 旧项目迁移
-
-| 旧配置 | 新处理方式 |
-| --- | --- |
-| `postinstall: "weapp-tw patch"` | 删除，当前接入不需要手动 patch |
-| `postcss.config.js` 中的 `tailwindcss` / `@tailwindcss/postcss` | 删除，由 `WeappTailwindcss` 生成 |
-| 过宽的扫描范围 | 收窄到业务目录，并排除第三方和产物目录 |
-| Vite 项目手动写了单个 `cssEntries` | 入口能被 Vite 正常引入时可以删除 |
-| 多入口、入口未被引入或自定义构建没有 `cssEntries` | 在构建器插件中传入 Tailwind CSS 入口绝对路径 |
-
-更多 Tailwind CSS 4.x 的背景、`@apply`、`@layer` 和 IntelliSense 说明，请继续阅读 [Tailwind CSS 4.x 参考](/docs/quick-start/v4)。
+下一步：进入 [各框架注册方式](/docs/quick-start/frameworks/uni-app-vite)。

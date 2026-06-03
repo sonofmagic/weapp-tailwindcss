@@ -52,9 +52,9 @@ keywords:
 
 ## 快速开始 :rocket:
 
-### 👉 [快速使用](/docs/quick-start/install)
+### 👉 [安装依赖](/docs/quick-start/install)
 
-先选择 `tailwindcss@3` 或 `tailwindcss@4`，再按 `uni-app`、`Taro`、`Mpx`、原生小程序等框架注册 `WeappTailwindcss` 构建器插件。
+先选择 `tailwindcss@3` 或 `tailwindcss@4`，再按 `uni-app`、`Taro`、`Mpx`、`Weapp-vite` 等框架注册 `WeappTailwindcss` 构建器插件。
 
 ### 👉 [各框架模板](/docs/community/templates)
 

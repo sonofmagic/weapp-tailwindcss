@@ -8,7 +8,7 @@ const tutorialSidebar: SidebarConfig = [
   {
     type: 'doc',
     id: 'quick-start/install',
-    label: '快速使用',
+    label: '安装依赖',
   },
   {
     type: 'category',
@@ -27,13 +27,8 @@ const tutorialSidebar: SidebarConfig = [
           },
           {
             type: 'doc',
-            label: 'HBuilderX Vue3 Vite',
+            label: 'HBuilderX',
             id: 'quick-start/frameworks/hbuilderx',
-          },
-          {
-            type: 'link',
-            label: 'HBuilderX Vue2 Webpack（存量项目）',
-            href: '/docs/quick-start/frameworks/hbuilderx#hbuilderx-vue2-webpack',
           },
           {
             type: 'doc',
@@ -61,12 +56,12 @@ const tutorialSidebar: SidebarConfig = [
       },
       {
         type: 'category',
-        label: '原生小程序',
+        label: 'Weapp-vite',
         collapsed: true,
         items: [
           {
             type: 'doc',
-            label: 'weapp-vite',
+            label: '快速接入',
             id: 'quick-start/native/install',
           },
           {
@@ -92,8 +87,6 @@ const tutorialSidebar: SidebarConfig = [
       'quick-start/frameworks/api',
     ],
   },
-  'quick-start/this-plugin',
-  'quick-start/rem2rpx',
   'quick-start/unocss',
 
   {

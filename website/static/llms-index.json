@@ -1,10 +1,10 @@
 {
   "version": "1.0.0",
-  "generatedAt": "2026-06-03T12:02:22.564Z",
+  "generatedAt": "2026-06-03T15:46:58.117Z",
   "siteUrl": "https://tw.icebreaker.top",
   "totals": {
-    "all": 182,
-    "docs": 178,
+    "all": 180,
+    "docs": 176,
     "blog": 4
   },
   "documents": [
@@ -2986,7 +2986,7 @@
         "环境要求",
         "Why `weapp-tailwindcss`?",
         "快速开始 :rocket:",
-        "# 👉 [快速使用](/docs/quick-start/install)",
+        "# 👉 [安装依赖](/docs/quick-start/install)",
         "# 👉 [各框架模板](/docs/community/templates)",
         "# 👉 [Tailwind CSS 4.x 参考](/docs/quick-start/v4)",
         "演示视频"
@@ -4090,8 +4090,8 @@
       "kind": "doc",
       "id": "doc:quick-start/css-unit-transform",
       "title": "CSS 单位转化",
-      "description": "在 rem 转 rpx (或 px) 章节，我们做了 CSS 中 rem 转化成 px / rpx 的方式。",
-      "summary": "在 rem 转 rpx (或 px) 章节，我们做了 CSS 中 rem 转化成 px / rpx 的方式。",
+      "description": "配置 px2rpx 和 unitsToPx，处理小程序、多端和 uni-app x 场景里的单位转换。",
+      "summary": "最常见的情况是 rem 转 rpx，直接在 WeappTailwindcss 里开 rem2rpx 就行：",
       "url": "/docs/quick-start/css-unit-transform",
       "canonical": "https://tw.icebreaker.top/docs/quick-start/css-unit-transform",
       "keywords": [
@@ -4112,13 +4112,8 @@
         "mpx"
       ],
       "headings": [
-        "rem 转 rpx (或 px)",
         "px 转 rpx",
-        "# 4.3.0 以后",
-        "# 4.3.0 以前",
-        "## 安装插件",
-        "## 注册到 postcss 配置中",
-        "多单位转 px（unitsToPx）"
+        "多单位转 px"
       ],
       "updatedAt": null,
       "source": "docs/quick-start/css-unit-transform.mdx"
@@ -4472,38 +4467,33 @@
     {
       "kind": "doc",
       "id": "doc:quick-start/install",
-      "title": "快速使用",
-      "description": "使用 weapp-tailwindcss 接入 Tailwind CSS 3.x 或 4.x，并按框架注册构建器插件。",
-      "summary": "weapp-tailwindcss 默认使用生成模式。接入时先处理两件事：",
+      "title": "安装依赖",
+      "description": "安装 Tailwind CSS 与 weapp-tailwindcss。",
+      "summary": "这一页只处理包安装。框架注册方式放到下一章。",
       "url": "/docs/quick-start/install",
       "canonical": "https://tw.icebreaker.top/docs/quick-start/install",
       "keywords": [
         "快速开始",
         "安装",
-        "配置",
+        "依赖",
         "tailwindcss",
         "tailwindcss 3",
         "tailwindcss 4",
-        "generator",
         "weapp-tailwindcss",
+        "配置",
+        "安装依赖",
+        "quick start",
+        "install",
         "小程序",
         "微信小程序",
         "uni-app",
         "taro",
-        "rax",
-        "mpx",
-        "快速使用",
-        "quick start"
+        "rax"
       ],
       "headings": [
-        "1. 选择 Tailwind CSS 版本",
-        "2. 安装依赖",
-        "# Tailwind CSS 3.x",
-        "# Tailwind CSS 4.x",
-        "3. 准备 CSS 入口",
-        "# Tailwind CSS 3.x 入口",
-        "# Tailwind CSS 4.x 入口",
-        "4. 注册构建器插件"
+        "选择 Tailwind CSS 版本",
+        "Tailwind CSS 3.x",
+        "Tailwind CSS 4.x"
       ],
       "updatedAt": null,
       "source": "docs/quick-start/install.mdx"
@@ -4623,73 +4613,6 @@
       ],
       "updatedAt": null,
       "source": "docs/quick-start/native/1.install-plugin.mdx"
-    },
-    {
-      "kind": "doc",
-      "id": "doc:quick-start/rem2rpx",
-      "title": "4. rem 转 rpx (或 px)",
-      "description": "这是因为 tailwindcss 里面工具类的长度单位，默认都是 rem，比如:",
-      "summary": "这是因为 tailwindcss 里面工具类的长度单位，默认都是 rem，比如:",
-      "url": "/docs/quick-start/rem2rpx",
-      "canonical": "https://tw.icebreaker.top/docs/quick-start/rem2rpx",
-      "keywords": [
-        "快速开始",
-        "安装",
-        "配置",
-        "4.",
-        "rem",
-        "rpx",
-        "px",
-        "quick start",
-        "rem2rpx",
-        "weapp-tailwindcss",
-        "tailwindcss",
-        "小程序",
-        "微信小程序",
-        "uni-app",
-        "taro",
-        "rax"
-      ],
-      "headings": [
-        "为什么要配置 rem 转 rpx 呢？",
-        "三种转化方式(根据你的需求选其一即可)",
-        "插件内置 rem 转 rpx 功能 (推荐)",
-        "# 优势",
-        "外置 postcss 插件",
-        "# 优势",
-        "外置 tailwindcss 插件",
-        "# 优势"
-      ],
-      "updatedAt": null,
-      "source": "docs/quick-start/rem2rpx.md"
-    },
-    {
-      "kind": "doc",
-      "id": "doc:quick-start/this-plugin",
-      "title": "2. 安装 weapp-tailwindcss",
-      "description": "安装 weapp-tailwindcss，并移除旧版本遗留的手动补丁命令。",
-      "summary": "weapp-tailwindcss 会由 WeappTailwindcss 插件或生成器入口在构建运行时接管 Tailwind CSS，不需要再执行 weapp-tw patch，也不要把它写入 postinstall。",
-      "url": "/docs/quick-start/this-plugin",
-      "canonical": "https://tw.icebreaker.top/docs/quick-start/this-plugin",
-      "keywords": [
-        "快速开始",
-        "安装",
-        "配置",
-        "2.",
-        "weapp-tailwindcss",
-        "quick start",
-        "this plugin",
-        "tailwindcss",
-        "小程序",
-        "微信小程序",
-        "uni-app",
-        "taro",
-        "rax",
-        "mpx"
-      ],
-      "headings": [],
-      "updatedAt": null,
-      "source": "docs/quick-start/this-plugin.mdx"
     },
     {
       "kind": "doc",
