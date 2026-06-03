@@ -14,6 +14,7 @@ import {
   HOT_UPDATE_EXEMPT_PROJECTS,
 } from './e2eMatrix'
 import { MULTIPLATFORM_TARGETS } from './multiplatform-build-output/targets'
+import { taroWebHmrCaseNames } from './taro-web-demo-hmr-cases'
 import { webViteHmrCaseNames } from './web-vite-demo-hmr-cases'
 
 interface DemoPackageJson {
@@ -190,10 +191,55 @@ describe('e2e matrix', () => {
     expect(webViteHmrCaseNames).toEqual(expectedNames)
   })
 
+  it('wires every Taro demo H5 platform to browser HMR cases', () => {
+    const expectedNames = DEMO_COVERAGE_MATRIX
+      .filter(item => item.framework === 'taro-react' || item.framework === 'taro-vue3')
+      .map(item => item.name.replaceAll('-', ' '))
+      .map(item => item.replace('tailwindcss v', 'Tailwind v'))
+
+    expect(taroWebHmrCaseNames).toEqual(expectedNames)
+
+    for (const entry of DEMO_COVERAGE_MATRIX.filter(item => item.framework === 'taro-react' || item.framework === 'taro-vue3')) {
+      const weapp = entry.platforms.find(item => item.platform === 'weapp')
+      const h5 = entry.platforms.find(item => item.platform === 'h5')
+      expect(weapp?.hmrCoverage, `${entry.name} should automate mini-program HMR`).toBe('automated')
+      expect(h5?.hmrCoverage, `${entry.name} should automate H5 browser HMR`).toBe('automated')
+      expect(h5?.command, `${entry.name} H5 should run the Taro browser HMR suite`).toContain('e2e:taro:web-hmr')
+    }
+  })
+
+  it('keeps uni-app and uni-app x demo workflow coverage explicit for mini-program, web, Android and iOS', () => {
+    const expectedPlatformsByName = new Map([
+      ['uni-app-vite-tailwindcss-v3', ['mp-weixin', 'h5', 'app']],
+      ['uni-app-vite-tailwindcss-v4', ['mp-weixin', 'h5', 'app']],
+      ['uni-app-vite-vue3-hbuilderx-tailwindcss-v3', ['mp-weixin', 'h5', 'app', 'app-android', 'app-ios']],
+      ['uni-app-vite-vue3-hbuilderx-tailwindcss-v4', ['mp-weixin', 'h5', 'app', 'app-android', 'app-ios']],
+      ['uni-app-x-hbuilderx-tailwindcss-v3', ['mp-weixin', 'app-android', 'app-ios']],
+      ['uni-app-x-hbuilderx-tailwindcss-v4', ['mp-weixin', 'app-android', 'app-ios']],
+    ])
+
+    for (const [name, platforms] of expectedPlatformsByName) {
+      const entry = DEMO_COVERAGE_MATRIX.find(item => item.name === name)
+      expect(entry, `${name} should exist in DEMO_COVERAGE_MATRIX`).toBeDefined()
+      for (const platform of platforms) {
+        const coverage = entry?.platforms.find(item => item.platform === platform)
+        expect(coverage, `${name} should declare ${platform}`).toBeDefined()
+        expect(coverage?.command.length, `${name} ${platform} should document workflow command`).toBeGreaterThan(0)
+        if (platform === 'app' || platform === 'app-android' || platform === 'app-ios') {
+          expect(coverage?.hmrCoverage, `${name} ${platform} should be local HBuilderX coverage`).toBe('local')
+          expect(coverage?.evidence, `${name} ${platform} should point at HBuilderX evidence`).toContain('hbuilderx')
+        }
+      }
+    }
+  })
+
   it('wires local/default platform entries to the multiplatform target matrix', () => {
     const targets = new Set(MULTIPLATFORM_TARGETS.map(item => `${item.projectDir.replace('demo/', '')}:${item.platform}`))
     for (const entry of DEMO_COVERAGE_MATRIX.filter(item => ['mpx', 'taro-react', 'taro-vue3', 'uni-app', 'uni-app-x'].includes(item.framework))) {
       for (const platform of entry.platforms) {
+        if (platform.staticCoverage === 'exempt' && platform.hmrCoverage === 'exempt') {
+          continue
+        }
         if (entry.name.includes('hbuilderx') && entry.framework === 'uni-app') {
           continue
         }
@@ -243,6 +289,19 @@ describe('e2e matrix', () => {
       'web react vite Tailwind v4',
       'web vue vite Tailwind v3',
       'web vue vite Tailwind v4',
+    ])
+  })
+
+  it('covers every Taro demo package with browser source HMR', () => {
+    expect(taroWebHmrCaseNames).toEqual([
+      'taro vite react Tailwind v3',
+      'taro vite react Tailwind v4',
+      'taro vite vue3 Tailwind v3',
+      'taro vite vue3 Tailwind v4',
+      'taro webpack react Tailwind v3',
+      'taro webpack react Tailwind v4',
+      'taro webpack vue3 Tailwind v3',
+      'taro webpack vue3 Tailwind v4',
     ])
   })
 })

@@ -115,7 +115,7 @@ export function pruneMiniProgramGeneratedCss(
     }
 
     if (isCustomPropertyRule(rule) && isMiniProgramElementVariableScopeRule(rule)) {
-      rule.selector = DEFAULT_WEAPP_ELEMENT_VARIABLE_SCOPE
+      rule.selector = MINI_PROGRAM_ELEMENT_SCOPE_SELECTOR
       return
     }
 

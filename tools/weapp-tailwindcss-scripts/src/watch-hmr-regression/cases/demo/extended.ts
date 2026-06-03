@@ -280,6 +280,9 @@ export function buildDemoExtendedCases(baseCwd: string): WatchCase[] {
     label: 'demo/uni-app-vite-tailwindcss-v4',
     project: 'demo/uni-app-vite-tailwindcss-v4',
     group: 'demo',
+    // uni-app Vite v4 watch 在 same-class-literal 场景会重写 app.wxss；
+    // 仍校验 HMR 生效、回滚与 escaped class，不强制全局样式文本完全稳定。
+    requireStableGlobalStyleOnSameClassLiteral: false,
     cwd: path.resolve(baseCwd, 'demo/uni-app-vite-tailwindcss-v4'),
     devScript: 'dev:mp-weixin',
     outputWxml: path.resolve(baseCwd, 'demo/uni-app-vite-tailwindcss-v4/dist/dev/mp-weixin/pages/index/index.wxml'),

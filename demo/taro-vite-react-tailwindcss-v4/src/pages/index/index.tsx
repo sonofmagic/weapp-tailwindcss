@@ -1,12 +1,7 @@
 import { View, Text } from '@tarojs/components'
-import { useLoad } from '@tarojs/taro'
 import './index.css'
 
 export default function Index() {
-  useLoad(() => {
-    console.log('Page loaded.')
-  })
-
   const complexTrace = 'at App.vue:4 index.ts:120:3'
   const complexExpression = 'size > 4 ? keep-[business] : App.vue:4'
   const bracketLikeText = 'before content ["not-generated"]'
