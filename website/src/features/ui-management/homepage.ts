@@ -101,7 +101,7 @@ export const homepageUiControls: HomepageUiControlMeta[] = [
   {
     key: 'heroSubtitlePrimary',
     label: 'Hero 副标题一',
-    description: '控制“小程序使用 Tailwind CSS 的事实标准工具链”这一行文案。',
+    description: '控制“让 Tailwind CSS 稳定跑在小程序里”这一行文案。',
     className: 'ui-homepage-hero-subtitle-primary',
     htmlAttribute: 'data-ui-homepage-hero-subtitle-primary',
   },
@@ -121,7 +121,7 @@ export const homepageUiControls: HomepageUiControlMeta[] = [
   },
   {
     key: 'aiEntry',
-    label: 'v5 文档入口',
+    label: 'API 文档入口',
     description: '控制首页 hero 区域的 API 文档入口按钮。',
     className: 'ui-homepage-ai-entry',
     htmlAttribute: 'data-ui-homepage-ai-entry',

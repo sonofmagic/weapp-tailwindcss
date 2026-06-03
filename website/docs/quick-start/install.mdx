@@ -1,6 +1,6 @@
 ---
 title: 快速使用
-description: 使用 weapp-tailwindcss v5 接入 Tailwind CSS 3.x 或 4.x，并按框架注册构建器插件。
+description: 使用 weapp-tailwindcss 接入 Tailwind CSS 3.x 或 4.x，并按框架注册构建器插件。
 keywords:
   - 快速开始
   - 安装
@@ -20,7 +20,7 @@ keywords:
 
 # 快速使用
 
-`weapp-tailwindcss@5` 默认使用生成模式。接入时先处理两件事：
+`weapp-tailwindcss` 默认使用生成模式。接入时先处理两件事：
 
 1. 选择 `tailwindcss@3` 或 `tailwindcss@4`，准备 Tailwind CSS 入口。
 2. 按你的框架注册 `WeappTailwindcss` 构建器插件。
@@ -53,7 +53,7 @@ pnpm exec tailwindcss init
 pnpm add -D tailwindcss weapp-tailwindcss
 ```
 
-`weapp-tailwindcss@5` 会在构建运行时接管 Tailwind CSS 生成。不要再为了小程序构建额外注册 `tailwindcss`、`@tailwindcss/postcss` 或 `@tailwindcss/vite`。
+`weapp-tailwindcss` 会在构建运行时接管 Tailwind CSS 生成。不要再为了小程序构建额外注册 `tailwindcss`、`@tailwindcss/postcss` 或 `@tailwindcss/vite`。
 
 如果项目已有 `postcss.config.*`，可以保留业务自己的非 Tailwind 插件。
 
@@ -234,7 +234,7 @@ pnpm dev:weapp
 
 | 旧配置 | 新处理方式 |
 | --- | --- |
-| `postinstall: "weapp-tw patch"` | 删除，v5 不需要手动 patch |
+| `postinstall: "weapp-tw patch"` | 删除，当前接入不需要手动 patch |
 | `postcss.config.js` 中的 `tailwindcss` / `@tailwindcss/postcss` | 删除，由 `WeappTailwindcss` 生成 |
 | 过宽的扫描范围 | 收窄到业务目录，并排除第三方和产物目录 |
 | Vite 项目手动写了单个 `cssEntries` | 入口能被 Vite 正常引入时可以删除 |

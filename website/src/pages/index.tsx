@@ -72,7 +72,7 @@ const entries: Array<EntryItem & { control?: 'communityEntry' }> = [
   {
     href: '/docs/api-v2',
     label: 'API v2',
-    description: '面向 v5 的类型、插件与配置参考。',
+    description: '类型、插件与配置项的完整参考。',
     icon: 'icon-[mdi--api]',
   },
   {
@@ -161,7 +161,7 @@ function HomepageHeader() {
               </div>
               {homepage.heroSubtitlePrimary && (
                 <p className="ui-homepage-hero-subtitle-primary home-hero__lead">
-                  小程序使用 Tailwind CSS 的事实标准工具链。
+                  让 Tailwind CSS 稳定跑在小程序里。
                 </p>
               )}
               {homepage.heroSubtitleSecondary && (
@@ -233,8 +233,8 @@ function HomepageHeader() {
       {homepage.heroFeatureGrid && (
         <section className="ui-homepage-hero-feature-grid home-capabilities" aria-labelledby="home-capabilities-title">
           <div className="home-section-heading">
-            <h2 id="home-capabilities-title">v5 关注工程边界，而不是再造一套样式语法</h2>
-            <p>从源码扫描、生成目标到运行时工具，围绕“同源输入、目标输出、精确转译”建立稳定链路。</p>
+            <h2 id="home-capabilities-title">关注工程边界，不再造一套样式语法</h2>
+            <p>从源码扫描到运行时工具，把 Tailwind 输入、目标端输出和类名转译串成一条链路。</p>
           </div>
           <div className="home-capabilities__layout">
             {homepage.buildToolsCard && (

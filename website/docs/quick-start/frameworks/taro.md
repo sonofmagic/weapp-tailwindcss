@@ -1,6 +1,6 @@
 ---
 title: Taro
-description: Taro Webpack / Vite 项目接入 weapp-tailwindcss@5，并同时说明 Tailwind CSS 3 和 4 的入口差异。
+description: Taro Webpack / Vite 项目接入 weapp-tailwindcss，并同时说明 Tailwind CSS 3 和 4 的入口差异。
 keywords:
   - 快速开始
   - 安装
@@ -87,7 +87,7 @@ import './app.css'
 
 ### 注册插件
 
-在项目的配置文件 `config/index` 中注册。Taro 迁移到 v5 时，小程序和 H5 都需要注册 `WeappTailwindcss`：小程序目标会输出小程序可用 CSS，`TARO_ENV=h5` 时会自动切到 Web 目标。
+在项目的配置文件 `config/index` 中注册。小程序和 H5 都需要注册 `WeappTailwindcss`：小程序目标会输出小程序可用 CSS，`TARO_ENV=h5` 时会自动切到 Web 目标。
 
 ```js title="config/index.[jt]s"
 const { WeappTailwindcss } = require('weapp-tailwindcss/webpack')
@@ -151,7 +151,7 @@ const weappTailwindcssOptions = {
 :::info
 `weapp-tailwindcss/webpack` 对应的推荐插件名 `WeappTailwindcss` 适用于 `webpack@5`
 
-在使用 `Taro` 时，检查一下 `config/index` 文件的配置项 `compiler`，来确认你的 `webpack` 版本。`weapp-tailwindcss@5` 不再内置 Webpack4 入口，推荐使用 `'webpack5'`
+在使用 `Taro` 时，检查一下 `config/index` 文件的配置项 `compiler`，来确认你的 `webpack` 版本。当前版本不再内置 Webpack4 入口，推荐使用 `'webpack5'`
 
 如果你使用了 [`taro-plugin-compiler-optimization`](https://www.npmjs.com/package/taro-plugin-compiler-optimization)，建议移除。它会让打包结果变得混乱。详见 [issues/123](https://github.com/sonofmagic/weapp-tailwindcss/issues/123) [issues/131](https://github.com/sonofmagic/weapp-tailwindcss/issues/131)
 

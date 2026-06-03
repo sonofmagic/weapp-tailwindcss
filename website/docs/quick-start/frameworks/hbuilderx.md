@@ -1,6 +1,6 @@
 ---
 title: uni-app HBuilderX 使用方式
-description: HBuilderX Vue3 Vite 项目接入 weapp-tailwindcss@5 的配置方式，以及 Vue2 Webpack 存量项目的处理建议。
+description: HBuilderX Vue3 Vite 项目接入 weapp-tailwindcss 的配置方式，以及 Vue2 Webpack 存量项目的处理建议。
 keywords:
   - 快速开始
   - 安装
@@ -130,7 +130,7 @@ WeappTailwindcss({
 
 生成模式下不要再注册 Tailwind 官方生成插件。Tailwind 3 不要注册 `tailwindcss` PostCSS 插件；Tailwind 4 不要注册 `@tailwindcss/postcss` 或 `@tailwindcss/vite`。项目已有 PostCSS 配置时，只保留框架或业务需要的非 Tailwind 插件。
 
-`hbuilderx` 正式版本的 `vue2` 项目由于使用 `webpack4` 和 `postcss7`，不再适配 `weapp-tailwindcss@5`。存量项目请继续停留在旧版本，或者迁移到 `HBuilderX Vue3 Vite` / `uni-app cli vue2 webpack5` 链路。
+`hbuilderx` 正式版本的 `vue2` 项目由于使用 `webpack4` 和 `postcss7`，不再适配当前版本。存量项目请继续停留在旧版本，或者迁移到 `HBuilderX Vue3 Vite` / `uni-app cli vue2 webpack5` 链路。
 
 ## HBuilderX 与 uni-app CLI 环境汇总
 
@@ -143,11 +143,11 @@ WeappTailwindcss({
 | HBuilderX Vue3 | x | √ | postcss8 |
 | uni-app CLI Vue3 | x | √ | postcss8 |
 
-`weapp-tailwindcss@5` 推荐使用 Vite 或 Webpack5 链路。HBuilderX Vue2 Webpack4 项目建议停留在旧版插件，或迁移到 Vue3 Vite / uni-app CLI Vue2 Webpack5。
+当前版本推荐使用 Vite 或 Webpack5 链路。HBuilderX Vue2 Webpack4 项目建议停留在旧版插件，或迁移到 Vue3 Vite / uni-app CLI Vue2 Webpack5。
 
 ## HBuilderX Vue2 Webpack（存量项目） {#hbuilderx-vue2-webpack}
 
-`weapp-tailwindcss@5` 不再内置 Webpack4 / PostCSS7 / Tailwind CSS v2 兼容入口。如果你必须维护 `hbuilderx vue2` 项目，请继续使用旧版 `weapp-tailwindcss`，或迁移到上方推荐的 Vite / Webpack5 链路。
+当前版本不再内置 Webpack4 / PostCSS7 / Tailwind CSS v2 兼容入口。如果你必须维护 `hbuilderx vue2` 项目，请继续使用旧版 `weapp-tailwindcss`，或迁移到上方推荐的 Vite / Webpack5 链路。
 
 ## 不建议全局改 HBuilderX Vue2 编译器
 

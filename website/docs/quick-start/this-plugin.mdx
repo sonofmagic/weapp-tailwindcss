@@ -25,7 +25,7 @@ keywords:
 npm i -D weapp-tailwindcss
 ```
 
-`weapp-tailwindcss@5` 会由 `WeappTailwindcss` 插件或生成器入口在构建运行时接管 Tailwind CSS，不需要再执行 `weapp-tw patch`，也不要把它写入 `postinstall`。
+`weapp-tailwindcss` 会由 `WeappTailwindcss` 插件或生成器入口在构建运行时接管 Tailwind CSS，不需要再执行 `weapp-tw patch`，也不要把它写入 `postinstall`。
 
 :::info
 如果项目从旧版本迁移而来，请删除 `package.json` 中的 `postinstall: "weapp-tw patch"`。当前 `weapp-tw patch` 只是兼容旧脚本的提示命令，不再写补丁记录或清理缓存。

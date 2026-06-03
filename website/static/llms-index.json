@@ -1,6 +1,6 @@
 {
   "version": "1.0.0",
-  "generatedAt": "2026-06-03T11:20:20.682Z",
+  "generatedAt": "2026-06-03T12:02:22.564Z",
   "siteUrl": "https://tw.icebreaker.top",
   "totals": {
     "all": 182,
@@ -4160,7 +4160,7 @@
       "kind": "doc",
       "id": "doc:quick-start/frameworks/hbuilderx",
       "title": "uni-app HBuilderX 使用方式",
-      "description": "HBuilderX Vue3 Vite 项目接入 weapp-tailwindcss@5 的配置方式，以及 Vue2 Webpack 存量项目的处理建议。",
+      "description": "HBuilderX Vue3 Vite 项目接入 weapp-tailwindcss 的配置方式，以及 Vue2 Webpack 存量项目的处理建议。",
       "summary": "这条路线适合 HBuilderX 创建的 Vue3 Vite 项目。HBuilderX 会改变运行时的 process.cwd()，所以扫描路径和 cssEntries 都建议使用绝对路径。",
       "url": "/docs/quick-start/frameworks/hbuilderx",
       "canonical": "https://tw.icebreaker.top/docs/quick-start/frameworks/hbuilderx",
@@ -4198,7 +4198,7 @@
       "kind": "doc",
       "id": "doc:quick-start/frameworks/mpx",
       "title": "Mpx",
-      "description": "Mpx 项目接入 weapp-tailwindcss@5，并同时说明 Tailwind CSS 3 和 4 的入口差异。",
+      "description": "Mpx 项目接入 weapp-tailwindcss，并同时说明 Tailwind CSS 3 和 4 的入口差异。",
       "summary": "Mpx 使用 Webpack 链路，建议显式配置 cssEntries，让 weapp-tailwindcss 稳定定位 Tailwind CSS 入口。",
       "url": "/docs/quick-start/frameworks/mpx",
       "canonical": "https://tw.icebreaker.top/docs/quick-start/frameworks/mpx",
@@ -4269,7 +4269,7 @@
       "id": "doc:quick-start/frameworks/rax",
       "title": "Rax (react)",
       "description": "在根目录下创建一个 build.plugin.js 文件，然后在 build.json 中注册：",
-      "summary": "本文是 weapp-tailwindcss@5 配合 tailwindcss@3 的 Rax 接入方式。Tailwind CSS 3.x 入口 CSS 使用 @tailwind 指令，扫描范围继续写在 tailwind.config.js 的 content 中。",
+      "summary": "本文是 Rax 配合 tailwindcss@3 的接入方式。Tailwind CSS 3.x 入口 CSS 使用 @tailwind 指令，扫描范围继续写在 tailwind.config.js 的 content 中。",
       "url": "/docs/quick-start/frameworks/rax",
       "canonical": "https://tw.icebreaker.top/docs/quick-start/frameworks/rax",
       "keywords": [
@@ -4296,7 +4296,7 @@
       "kind": "doc",
       "id": "doc:quick-start/frameworks/taro",
       "title": "Taro",
-      "description": "Taro Webpack / Vite 项目接入 weapp-tailwindcss@5，并同时说明 Tailwind CSS 3 和 4 的入口差异。",
+      "description": "Taro Webpack / Vite 项目接入 weapp-tailwindcss，并同时说明 Tailwind CSS 3 和 4 的入口差异。",
       "summary": "Taro v4 可以走 Webpack，也可以走 Vite。新项目优先选 Webpack，问题少一些；Taro Vite 可以用，但更适合已有项目排障。",
       "url": "/docs/quick-start/frameworks/taro",
       "canonical": "https://tw.icebreaker.top/docs/quick-start/frameworks/taro",
@@ -4333,7 +4333,7 @@
       "kind": "doc",
       "id": "doc:quick-start/frameworks/uni-app",
       "title": "uni-app CLI Vue2 Webpack",
-      "description": "uni-app CLI Vue2 Webpack 存量项目接入 weapp-tailwindcss@5 的配置说明。",
+      "description": "uni-app CLI Vue2 Webpack 存量项目接入 weapp-tailwindcss 的配置说明。",
       "summary": "src/app.css 按 Tailwind 版本选择入口：",
       "url": "/docs/quick-start/frameworks/uni-app",
       "canonical": "https://tw.icebreaker.top/docs/quick-start/frameworks/uni-app",
@@ -4363,7 +4363,7 @@
       "kind": "doc",
       "id": "doc:quick-start/frameworks/uni-app-vite",
       "title": "uni-app CLI Vue3 Vite",
-      "description": "uni-app CLI Vue3 Vite 项目接入 weapp-tailwindcss@5，并同时说明 Tailwind CSS 3 和 4 的入口差异。",
+      "description": "uni-app CLI Vue3 Vite 项目接入 weapp-tailwindcss，并同时说明 Tailwind CSS 3 和 4 的入口差异。",
       "summary": "Tailwind CSS 生成由 WeappTailwindcss 接管，不要在小程序构建里再注册 tailwindcss、@tailwindcss/postcss 或 @tailwindcss/vite。",
       "url": "/docs/quick-start/frameworks/uni-app-vite",
       "canonical": "https://tw.icebreaker.top/docs/quick-start/frameworks/uni-app-vite",
@@ -4402,8 +4402,8 @@
       "kind": "doc",
       "id": "doc:quick-start/frameworks/uni-app-x",
       "title": "uni-app x",
-      "description": "weapp-tailwindcss@5 在 HBuilderX uni-app x 项目中接入 Tailwind CSS 3 或 4 的配置方式。",
-      "summary": "uni-app x 使用 HBuilderX 和 @dcloudio/vite-plugin-uni。weapp-tailwindcss@5 建议配合内置的 uniAppX 预设使用。",
+      "description": "HBuilderX uni-app x 项目接入 weapp-tailwindcss，并说明 Tailwind CSS 3 或 4 的配置方式。",
+      "summary": "uni-app x 使用 HBuilderX 和 @dcloudio/vite-plugin-uni。建议配合内置的 uniAppX 预设使用。",
       "url": "/docs/quick-start/frameworks/uni-app-x",
       "canonical": "https://tw.icebreaker.top/docs/quick-start/frameworks/uni-app-x",
       "keywords": [
@@ -4464,7 +4464,7 @@
         "# 创建多个 `tailwind.config.js`",
         "## 独立分包的上下文配置",
         "## 主包以及相互依赖的子包的上下文配置",
-        "# v5 生成模式配置"
+        "# 生成模式配置"
       ],
       "updatedAt": null,
       "source": "docs/quick-start/independent-pkg.md"
@@ -4473,8 +4473,8 @@
       "kind": "doc",
       "id": "doc:quick-start/install",
       "title": "快速使用",
-      "description": "使用 weapp-tailwindcss v5 接入 Tailwind CSS 3.x 或 4.x，并按框架注册构建器插件。",
-      "summary": "weapp-tailwindcss@5 默认使用生成模式。接入时先处理两件事：",
+      "description": "使用 weapp-tailwindcss 接入 Tailwind CSS 3.x 或 4.x，并按框架注册构建器插件。",
+      "summary": "weapp-tailwindcss 默认使用生成模式。接入时先处理两件事：",
       "url": "/docs/quick-start/install",
       "canonical": "https://tw.icebreaker.top/docs/quick-start/install",
       "keywords": [
@@ -4513,7 +4513,7 @@
       "id": "doc:quick-start/intelliSense",
       "title": "IDE 智能提示设置",
       "description": "tailwindcss-intellisense 在 v4 中必须看到 @import \"tailwindcss\" 才会将工作区视为 Tailwind 根文件。",
-      "summary": "tailwindcss-intellisense 在 v4 中必须看到 @import \"tailwindcss\" 才会将工作区视为 Tailwind 根文件。weapp-tailwindcss@5 的生成模式也推荐在真实入口直接写 @import 'tailwindcss';，再由 WeappTailwindcss 输出小程序目标 CSS。",
+      "summary": "tailwindcss-intellisense 在 Tailwind CSS 4 中必须看到 @import \"tailwindcss\" 才会将工作区视为 Tailwind 根文件。生成模式也推荐在真实入口直接写 @import 'tailwindcss';，再由 WeappTailwindcss 输出小程序目标 CSS。",
       "url": "/docs/quick-start/intelliSense",
       "canonical": "https://tw.icebreaker.top/docs/quick-start/intelliSense",
       "keywords": [
@@ -4550,8 +4550,8 @@
       "kind": "doc",
       "id": "doc:quick-start/native/0.install",
       "title": "1. 安装与配置 Tailwind CSS",
-      "description": "原生微信小程序项目接入 Tailwind CSS 3 或 4 与 weapp-tailwindcss@5 的安装与配置步骤。",
-      "summary": "本教程演示原生微信小程序 JS 模板接入 weapp-tailwindcss@5 的方式。Tailwind CSS 3 和 4 都可以用，重点是两件事：源码要进入 Tailwind 扫描范围，小程序目标转译交给 weapp-tailwindcss。",
+      "description": "原生微信小程序项目接入 Tailwind CSS 3 或 4 与 weapp-tailwindcss 的安装与配置步骤。",
+      "summary": "本教程演示原生微信小程序 JS 模板接入 weapp-tailwindcss 的方式。Tailwind CSS 3 和 4 都可以用，重点是两件事：源码要进入 Tailwind 扫描范围，小程序目标转译交给 weapp-tailwindcss。",
       "url": "/docs/quick-start/native/0.install",
       "canonical": "https://tw.icebreaker.top/docs/quick-start/native/0.install",
       "keywords": [
@@ -4668,7 +4668,7 @@
       "id": "doc:quick-start/this-plugin",
       "title": "2. 安装 weapp-tailwindcss",
       "description": "安装 weapp-tailwindcss，并移除旧版本遗留的手动补丁命令。",
-      "summary": "weapp-tailwindcss@5 会由 WeappTailwindcss 插件或生成器入口在构建运行时接管 Tailwind CSS，不需要再执行 weapp-tw patch，也不要把它写入 postinstall。",
+      "summary": "weapp-tailwindcss 会由 WeappTailwindcss 插件或生成器入口在构建运行时接管 Tailwind CSS，不需要再执行 weapp-tw patch，也不要把它写入 postinstall。",
       "url": "/docs/quick-start/this-plugin",
       "canonical": "https://tw.icebreaker.top/docs/quick-start/this-plugin",
       "keywords": [

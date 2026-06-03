@@ -178,9 +178,9 @@ module.exports = {
 
 这样 `2` 个配置文件创建好了，接下来就要通过配置让它们各自在打包中生效。
 
-### v5 生成模式配置
+### 生成模式配置
 
-`weapp-tailwindcss@5` 不再建议通过 `postcss.config.js` 创建多个 Tailwind 上下文。请为主包和独立分包准备不同的 CSS 入口，并把这些入口都加入 `cssEntries`：
+不再建议通过 `postcss.config.js` 创建多个 Tailwind 上下文。请为主包和独立分包准备不同的 CSS 入口，并把这些入口都加入 `cssEntries`：
 
 ```ts title="vite.config.ts"
 import path from 'node:path'

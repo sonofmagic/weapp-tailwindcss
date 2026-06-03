@@ -29,7 +29,7 @@ keywords:
 
 ### 让 `Tailwind CSS IntelliSense` 识别 Tailwind CSS v4
 
-`tailwindcss-intellisense` 在 v4 中必须看到 `@import "tailwindcss"` 才会将工作区视为 Tailwind 根文件。`weapp-tailwindcss@5` 的生成模式也推荐在真实入口直接写 `@import 'tailwindcss';`，再由 `WeappTailwindcss` 输出小程序目标 CSS。
+`tailwindcss-intellisense` 在 Tailwind CSS 4 中必须看到 `@import "tailwindcss"` 才会将工作区视为 Tailwind 根文件。生成模式也推荐在真实入口直接写 `@import 'tailwindcss';`，再由 `WeappTailwindcss` 输出小程序目标 CSS。
 
 如果仍希望与源码解耦，也可以使用 CLI 为 VS Code 生成一个仅供扩展使用的辅助 CSS：
 

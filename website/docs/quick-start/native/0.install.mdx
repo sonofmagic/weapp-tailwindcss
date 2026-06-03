@@ -1,6 +1,6 @@
 ---
 title: 1. 安装与配置 Tailwind CSS
-description: 原生微信小程序项目接入 Tailwind CSS 3 或 4 与 weapp-tailwindcss@5 的安装与配置步骤。
+description: 原生微信小程序项目接入 Tailwind CSS 3 或 4 与 weapp-tailwindcss 的安装与配置步骤。
 keywords:
   - 快速开始
   - 安装
@@ -23,7 +23,7 @@ keywords:
 
 ## 前言
 
-本教程演示原生微信小程序 JS 模板接入 `weapp-tailwindcss@5` 的方式。Tailwind CSS 3 和 4 都可以用，重点是两件事：源码要进入 Tailwind 扫描范围，小程序目标转译交给 `weapp-tailwindcss`。
+本教程演示原生微信小程序 JS 模板接入 `weapp-tailwindcss` 的方式。Tailwind CSS 3 和 4 都可以用，重点是两件事：源码要进入 Tailwind 扫描范围，小程序目标转译交给 `weapp-tailwindcss`。
 
 ### 运行环境
 
@@ -74,7 +74,7 @@ Tailwind CSS 4.x：
 npm i -D tailwindcss weapp-tailwindcss
 ```
 
-`weapp-tailwindcss@5` 会接管 Tailwind CSS 生成，不要再创建 Tailwind 专用的 `postcss.config.js`。如果项目已有 PostCSS 配置，只保留业务自己的非 Tailwind 插件。
+`weapp-tailwindcss` 会接管 Tailwind CSS 生成，不要再创建 Tailwind 专用的 `postcss.config.js`。如果项目已有 PostCSS 配置，只保留业务自己的非 Tailwind 插件。
 
 ## 2. 配置扫描范围
 

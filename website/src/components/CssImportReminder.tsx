@@ -12,7 +12,7 @@ export default function CssImportReminder(): React.JSX.Element {
   return (
     <Admonition type="info" title="关于 @import 'tailwindcss'">
       <p>
-        v5 生成模式下，推荐在 Tailwind CSS v4 入口里直接写
+        生成模式下，推荐在 Tailwind CSS 4.x 入口里直接写
         {' '}
         <code>@import &apos;tailwindcss&apos;</code>
         。

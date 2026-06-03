@@ -64,7 +64,7 @@ export default defineConfig({
 })
 ```
 
-`weapp-tailwindcss@5` 生成模式会接管 Tailwind CSS 生成和小程序转译，不需要再注册 `tailwindcss` PostCSS 插件，也不需要执行 `weapp-tw patch`。
+生成模式会接管 Tailwind CSS 生成和小程序转译，不需要再注册 `tailwindcss` PostCSS 插件，也不需要执行 `weapp-tw patch`。
 常规 weapp-vite 项目会自动识别被引入的 Tailwind CSS 入口；多入口、入口未被 Vite 引入或自动识别失败时，再手动配置 `cssEntries`。
 
 Tailwind CSS 4.x 项目的入口 CSS 改用：

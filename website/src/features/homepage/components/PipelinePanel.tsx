@@ -2,22 +2,28 @@ const pipelineSteps: Array<{ id: string, title: string, description: string, ton
   {
     id: 'source',
     title: 'Tailwind CSS 入口',
+    shortTitle: '入口',
     description: '@import "tailwindcss" + @source',
+    shortDescription: '@import + @source',
     tone: 'source',
   },
   {
     id: 'class-set',
     title: 'classNameSet 精确命中',
+    shortTitle: '命中',
     description: '从真实源码收集候选类名',
+    shortDescription: '只转已生成类名',
     tone: 'class-set',
   },
   {
     id: 'targets',
     title: 'Web / Weapp 同源输出',
+    shortTitle: '输出',
     description: '按目标生成 CSS',
+    shortDescription: 'Web 与小程序分端',
     tone: 'targets',
   },
-]
+] satisfies Array<{ id: string, title: string, shortTitle: string, description: string, shortDescription: string, tone: string }>
 
 export function PipelinePanel() {
   return (
@@ -35,8 +41,14 @@ export function PipelinePanel() {
           <div className={`home-pipeline__step home-pipeline__step--${step.tone}`} key={step.id}>
             <span className="home-pipeline__index" aria-hidden="true"></span>
             <div>
-              <strong>{step.title}</strong>
-              <p>{step.description}</p>
+              <strong>
+                <span className="home-pipeline__full-text">{step.title}</span>
+                <span className="home-pipeline__mobile-text">{step.shortTitle}</span>
+              </strong>
+              <p>
+                <span className="home-pipeline__full-text">{step.description}</span>
+                <span className="home-pipeline__mobile-text">{step.shortDescription}</span>
+              </p>
             </div>
           </div>
         ))}

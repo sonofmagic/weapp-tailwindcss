@@ -1,6 +1,6 @@
 ---
 title: uni-app CLI Vue3 Vite
-description: uni-app CLI Vue3 Vite 项目接入 weapp-tailwindcss@5，并同时说明 Tailwind CSS 3 和 4 的入口差异。
+description: uni-app CLI Vue3 Vite 项目接入 weapp-tailwindcss，并同时说明 Tailwind CSS 3 和 4 的入口差异。
 keywords:
   - 快速开始
   - 安装

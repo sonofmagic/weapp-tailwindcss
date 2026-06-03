@@ -25,7 +25,7 @@ keywords:
 有时候,我们不一定会使用 `webpack/vite/gulp`，可能是直接使用 `nodejs` 去构建应用，或者封装更高阶的工具，这时候可以使用`api`去转义你的应用。
 
 :::caution
-`weapp-tailwindcss@5` 的推荐接入方式仍然是 `weapp-tailwindcss/vite` 或 `weapp-tailwindcss/webpack`。Node.js API 适合自研构建器、批处理脚本、Gulp 插件封装等场景。
+普通项目推荐接入 `weapp-tailwindcss/vite` 或 `weapp-tailwindcss/webpack`。Node.js API 适合自研构建器、批处理脚本、Gulp 插件封装等场景。
 
 如果你只是普通 `uni-app`、`Taro`、`Mpx`、`Rax` 或原生小程序项目，请优先使用对应框架页的构建器插件。
 :::
