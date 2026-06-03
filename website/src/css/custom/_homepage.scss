@@ -1629,11 +1629,13 @@ html[data-theme='dark'] .homepage .home-cta:hover {
   }
 
   .home-hero__gstar-corner {
-    position: static;
+    position: absolute;
+    top: -0.12rem;
+    right: -0.52rem;
     flex: 0 0 auto;
-    width: 2.35rem;
-    height: 2.35rem;
-    margin-top: 0.45rem;
+    width: 1rem;
+    height: 1rem;
+    margin-top: 0;
     margin-left: 0;
   }
 
@@ -1653,8 +1655,10 @@ html[data-theme='dark'] .homepage .home-cta:hover {
 
   .home-hero__title-wrap {
     display: flex;
-    flex-direction: column;
+    position: relative;
+    flex-direction: row;
     align-items: flex-start;
+    padding-right: 0.85rem;
   }
 
   .home-hero__lead {
