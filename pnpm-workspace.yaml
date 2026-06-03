@@ -88,8 +88,8 @@ catalogs:
   react19:
     '@types/react': ^19.2.16
     '@types/react-dom': 19.2.3
-    react: ^19.2.6
-    react-dom: ^19.2.6
+    react: ^19.2.7
+    react-dom: ^19.2.7
   reactRefresh018:
     react-refresh: ^0.18.0
   sass195:
@@ -156,9 +156,9 @@ catalogs:
   vite5421:
     vite: ^5.4.21
   vite724:
-    vite: ^7.3.3
+    vite: ^7.3.5
   vite8:
-    vite: ^8.0.14
+    vite: ^8.0.16
   vitePluginInspect:
     vite-plugin-inspect: ^11.4.1
   vitePluginReact4:
@@ -182,9 +182,9 @@ catalogs:
   weappChildren:
     weapp-tailwindcss-children: ^0.1.0
   weappIdeCli:
-    weapp-ide-cli: ^5.3.3
+    weapp-ide-cli: ^5.4.0
   weappVite:
-    weapp-vite: ^6.16.34
+    weapp-vite: ^6.16.35
   wrangler:
     wrangler: ^4.97.0
 

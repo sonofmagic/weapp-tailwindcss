@@ -111,7 +111,7 @@
     "core-js": "^3.36.1",
     "eslint": "catalog:eslint10",
     "eslint-config-taro": "catalog:taro4",
-    "eslint-plugin-vue": "^10.9.1",
+    "eslint-plugin-vue": "^10.9.2",
     "postcss": "catalog:postcss85",
     "stylelint": "catalog:stylelint1625",
     "tailwindcss": "catalog:tailwindcss4",
