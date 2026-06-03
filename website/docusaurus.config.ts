@@ -243,11 +243,6 @@ const config: Config = {
         // https://github.com/FormidableLabs/prism-react-renderer/blob/master/packages/generate-prism-languages/index.ts#L9-L23
         additionalLanguages: ['json', 'javascript', 'css', 'clike', 'bash', 'scss', 'yaml', 'typescript', 'diff'],
       },
-      announcementBar: {
-        id: 'weapp-tailwindcss-v5-next',
-        isCloseable: true,
-        content: '<a class="announcement-bar-v5-next" href="https://next.tw.icebreaker.top/">下一代 weapp-tailwindcss@5 正在测试中，欢迎试用反馈</a>',
-      },
     } satisfies ThemeConfig,
   markdown: {
     format: 'detect',
