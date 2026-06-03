@@ -1,5 +1,15 @@
 # weapp-tailwindcss
 
+## 5.0.0-next.35
+
+### Patch Changes
+
+- 🐛 **修复 Tailwind CSS v3/v4 增量生成缓存只追加不删除的问题。当 HMR 中候选类集合减少时，生成器会完整重生成当前候选集合并刷新缓存，避免 Taro dev 回滚或删除 class 后旧 utilities 继续残留在 wxss 中。** [#890](https://github.com/sonofmagic/weapp-tailwindcss/pull/890) by @sonofmagic
+
+- 🐛 **修复 Webpack 产物中可能残留 Tailwind CSS v4 源指令的问题，避免页面级样式里的 `@reference` 等指令直出到小程序 WXSS 后触发开发者工具编译错误。** [#890](https://github.com/sonofmagic/weapp-tailwindcss/pull/890) by @sonofmagic
+
+- 🐛 **优化 Webpack `processAssets` 阶段的产物写回逻辑：当转换结果与当前 asset 内容一致时，不再调用 `updateAsset`，也不触发 `onUpdate`。这可以减少同一轮 asset processing 中的重复写回，并降低 watch 场景下的无效产物变更。** [#890](https://github.com/sonofmagic/weapp-tailwindcss/pull/890) by @sonofmagic
+
 ## 5.0.0-next.34
 
 ### Patch Changes

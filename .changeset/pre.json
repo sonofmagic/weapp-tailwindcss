@@ -188,6 +188,7 @@
     "tailwind-v4-vite-auto-css-entries",
     "tailwindcss-config-ts-source",
     "tailwindcss-root-import",
+    "taro-hmr-incremental-cache-rollback",
     "taro-webpack-watch-ignore-output",
     "tidy-v3-oxide-runtime",
     "tiny-cycles-draw",
@@ -211,6 +212,8 @@
     "weapp-tailwindcss-plugin-alias",
     "web-generator-framework-env",
     "web-hmr-watch-regression",
-    "web-v4-vite-css-target"
+    "web-v4-vite-css-target",
+    "webpack-css-source-directives",
+    "webpack-process-assets-idempotent"
   ]
 }
