@@ -59,7 +59,9 @@ pnpm add -D tailwindcss weapp-tailwindcss
 
 ## 3. 准备 CSS 入口
 
-无论使用 Tailwind CSS 3 还是 4，都建议创建一个纯 `.css` 文件作为小程序 Tailwind 入口，例如 `src/app.css`。常规 Taro / Vite 项目只要入口被框架引入，通常不用写 `cssEntries`。多入口、入口未被引入、Gulp 或自定义构建链路，再手动配置。
+文档默认用 `src/app.css` 做 Tailwind 入口，这是最省心的写法。常规 Taro / Vite 项目只要入口被框架引入，通常不用写 `cssEntries`。多入口、入口未被引入、Gulp 或自定义构建链路，再手动配置。
+
+如果你用的是 Tailwind CSS 3，项目原本就是 `app.scss` 或 `app.less`，也可以继续把 `@tailwind` 写在这个预处理入口里。关键是构建链路要先编译 Sass/Less，再把结果交给 Tailwind 和 `weapp-tailwindcss`。
 
 ### Tailwind CSS 3.x 入口
 
@@ -97,7 +99,7 @@ module.exports = {
 ```
 
 :::warning
-`tailwindcss@4` 的入口请只放在纯 `.css` 文件里，不要直接放进 `scss`、`less`、`sass` 文件。业务预处理样式可以再间接引入这个 CSS 入口。
+`tailwindcss@4` 的入口建议放在纯 `.css` 文件里，不要直接写进 `scss`、`less`、`sass` 文件。业务样式仍然可以用 Sass/Less，只是别把 `@import "tailwindcss"` 放进预处理入口。
 :::
 
 ## 4. 注册构建器插件

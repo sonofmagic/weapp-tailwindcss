@@ -51,6 +51,8 @@ Taro v4 可以走 Webpack，也可以走 Vite。新项目优先选 Webpack，问
 @tailwind utilities;
 ```
 
+如果你的 Taro 项目本来引入的是 `src/app.scss` 或 `src/app.less`，Tailwind CSS 3 也可以继续放在这个文件里。Taro 会先处理 Sass/Less，再进入后面的样式链路。
+
 ```js title="tailwind.config.js"
 module.exports = {
   content: [
@@ -75,7 +77,7 @@ module.exports = {
 
 `source(none)` 会关掉 Tailwind 4 的默认自动扫描，只按我们写的 `@source "../src"` 扫源码。这样不会把 `dist`、`node_modules` 这类目录带进来。
 
-Tailwind 4 的入口请放在纯 `.css` 文件里。业务样式可以继续使用 Sass/Less，但不要把 `@import "tailwindcss"` 直接写进预处理入口。记得在 `src/app.ts` 或 `src/app.js` 里引入它：
+Tailwind 4 的入口请放在纯 `.css` 文件里。业务样式可以继续使用 Sass/Less，但不要把 `@import "tailwindcss"` 直接写进预处理入口。记得在 `src/app.ts` 或 `src/app.js` 里引入这个 CSS 文件：
 
 ```ts title="src/app.ts"
 import './app.css'
@@ -142,7 +144,7 @@ const weappTailwindcssOptions = {
 }
 ```
 
-`cssEntries` 指向的是写了 `@import "tailwindcss"` 或 `@tailwind` 指令的 CSS 文件。用绝对路径，别指向 `.scss` / `.less`。
+`cssEntries` 指向的是 Tailwind 入口文件。Tailwind 4 请指向纯 `.css`；Tailwind 3 如果你确实把 `@tailwind` 写在 `app.scss` 或 `app.less` 里，就指向这个实际入口。
 
 不要在 H5 里写 `disabled: process.env.TARO_ENV === 'h5'`。小程序和 H5 都注册插件，`weapp-tailwindcss` 会按目标端处理。
 
