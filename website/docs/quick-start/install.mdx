@@ -59,7 +59,7 @@ pnpm add -D tailwindcss weapp-tailwindcss
 
 ## 3. 准备 CSS 入口
 
-无论使用 Tailwind CSS 3 还是 4，都建议创建一个纯 `.css` 文件作为小程序 Tailwind 入口，例如 `src/app.css`。Vite 链路通常会自动识别这个入口；多入口、入口未被框架引入、Webpack 或自定义构建链路再手动配置 `cssEntries`。
+无论使用 Tailwind CSS 3 还是 4，都建议创建一个纯 `.css` 文件作为小程序 Tailwind 入口，例如 `src/app.css`。常规 Taro / Vite 项目只要入口被框架引入，通常不用写 `cssEntries`。多入口、入口未被引入、Gulp 或自定义构建链路，再手动配置。
 
 ### Tailwind CSS 3.x 入口
 
@@ -106,8 +106,8 @@ module.exports = {
 
 - Vite 链路使用 `weapp-tailwindcss/vite`
 - Webpack 链路使用 `weapp-tailwindcss/webpack`
-- Vite 常规项目会自动识别 Tailwind CSS 入口，多入口或自动识别失败时再配置 `cssEntries`
-- Webpack、Gulp、自定义构建等链路建议显式配置 `cssEntries`，并指向 Tailwind CSS 入口文件的绝对路径
+- 常规 Taro / Vite 项目会自动识别被引入的 Tailwind CSS 入口，多入口或自动识别失败时再配置 `cssEntries`
+- Gulp、自定义构建等链路建议显式配置 `cssEntries`，并指向 Tailwind CSS 入口文件的绝对路径
 - 不要再为小程序构建注册 Tailwind 官方 Vite / PostCSS 生成插件
 
 ### Vite 通用写法
@@ -141,7 +141,7 @@ WeappTailwindcss({
 
 ### Webpack 通用写法
 
-适用于 `Taro Webpack`、`uni-app CLI Vue2 Webpack`、`Mpx`、`Rax` 等构建链路。不同框架的 Webpack 配置入口不同，请按下方框架表进入对应页面复制完整写法。
+适用于 `Taro Webpack`、`uni-app CLI Vue2 Webpack`、`Mpx`、`Rax` 等构建链路。不同框架的 Webpack 配置入口不同，请按下方框架表进入对应页面复制完整写法。Taro 的完整页默认不写 `cssEntries`，这里保留的是通用写法。
 
 ```js title="webpack config"
 const path = require('node:path')
@@ -224,7 +224,7 @@ pnpm dev:weapp
 | --- | --- | --- |
 | CSS 入口 | 是否写了 `@tailwind base;` 等指令 | 是否写了 `@import "tailwindcss";` |
 | 扫描范围 | `tailwind.config.js` 的 `content` 是否包含源码 | CSS 入口的 `@source` 是否包含源码 |
-| 构建器插件 | Vite 是否能识别入口，非 Vite 是否配置了 `cssEntries` | Vite 是否能识别入口，非 Vite 是否配置了 `cssEntries` |
+| 构建器插件 | 入口是否被框架引入，必要时是否配置了 `cssEntries` | 入口是否被框架引入，必要时是否配置了 `cssEntries` |
 | PostCSS | 是否误注册了 `tailwindcss` | 是否误注册了 `@tailwindcss/postcss` |
 | 产物目录 | 是否误扫 `dist` / `unpackage` | 是否误扫 `dist` / `unpackage` |
 
@@ -236,6 +236,6 @@ pnpm dev:weapp
 | `postcss.config.js` 中的 `tailwindcss` / `@tailwindcss/postcss` | 删除，由 `WeappTailwindcss` 生成 |
 | 过宽的扫描范围 | 收窄到业务目录，并排除第三方和产物目录 |
 | Vite 项目手动写了单个 `cssEntries` | 入口能被 Vite 正常引入时可以删除 |
-| 非 Vite 或多入口项目没有 `cssEntries` | 在构建器插件中传入 Tailwind CSS 入口绝对路径 |
+| 多入口、入口未被引入或自定义构建没有 `cssEntries` | 在构建器插件中传入 Tailwind CSS 入口绝对路径 |
 
 更多 Tailwind CSS 4.x 的背景、`@apply`、`@layer` 和 IntelliSense 说明，请继续阅读 [Tailwind CSS 4.x 参考](/docs/quick-start/v4)。

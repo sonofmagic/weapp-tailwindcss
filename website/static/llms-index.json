@@ -1,6 +1,6 @@
 {
   "version": "1.0.0",
-  "generatedAt": "2026-06-03T09:57:53.981Z",
+  "generatedAt": "2026-06-03T11:20:20.682Z",
   "siteUrl": "https://tw.icebreaker.top",
   "totals": {
     "all": 182,
@@ -4297,7 +4297,7 @@
       "id": "doc:quick-start/frameworks/taro",
       "title": "Taro",
       "description": "Taro Webpack / Vite 项目接入 weapp-tailwindcss@5，并同时说明 Tailwind CSS 3 和 4 的入口差异。",
-      "summary": "Taro v4 可以使用 Webpack 或 Vite 构建。weapp-tailwindcss@5 两条链路都支持，但推荐优先使用 Webpack；Taro Vite 的样式链路仍有不少历史问题，更适合作为已有项目的排障参考。",
+      "summary": "Taro v4 可以走 Webpack，也可以走 Vite。新项目优先选 Webpack，问题少一些；Taro Vite 可以用，但更适合已有项目排障。",
       "url": "/docs/quick-start/frameworks/taro",
       "canonical": "https://tw.icebreaker.top/docs/quick-start/frameworks/taro",
       "keywords": [
@@ -4868,7 +4868,7 @@
       "id": "doc:quick-start/v4/taro-vite",
       "title": "Taro vite",
       "description": "在项目目录下的 src/app.css 中，添加以下内容：",
-      "summary": "在项目目录下的 src/app.css 中，添加以下内容：",
+      "summary": "入口没有被引入、多入口、自动识别失败时，再补这一项：",
       "url": "/docs/quick-start/v4/taro-vite",
       "canonical": "https://tw.icebreaker.top/docs/quick-start/v4/taro-vite",
       "keywords": [
@@ -4902,7 +4902,7 @@
       "id": "doc:quick-start/v4/taro-webpack",
       "title": "Taro webpack",
       "description": "在项目的配置文件 config/index 中注册:",
-      "summary": "在项目的配置文件 config/index 中注册:",
+      "summary": "这段默认你的 Tailwind 入口是 src/app.css，所以 ../src 指向整个源码目录。Taro 模板里的页面、组件和后续新增目录都在 src 下面，不需要单独写 pages、components。",
       "url": "/docs/quick-start/v4/taro-webpack",
       "canonical": "https://tw.icebreaker.top/docs/quick-start/v4/taro-webpack",
       "keywords": [

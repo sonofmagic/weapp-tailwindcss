@@ -37,13 +37,13 @@ npm install -D tailwindcss weapp-tailwindcss
 ### 在你的 `app.css` 里面添加
 
 ```css
-@import "tailwindcss";
-@source "./pages/**/*.{ts,tsx,jsx,js}";
-@source "./components/**/*.{ts,tsx,jsx,js}";
-@source not "../dist";
+@import "tailwindcss" source(none);
+@source "../src";
 ```
 
 <CssImportReminder />
+
+这段默认你的 Tailwind 入口是 `src/app.css`，所以 `../src` 指向整个源码目录。Taro 模板里的页面、组件和后续新增目录都在 `src` 下面，不需要单独写 `pages`、`components`。
 
 ### 注册插件
 
@@ -51,10 +51,8 @@ npm install -D tailwindcss weapp-tailwindcss
 
 ```js title="config/index.[jt]s"
 import { WeappTailwindcss } from 'weapp-tailwindcss/webpack'
-import path from 'node:path'
 // 假如你使用 js 配置，则使用下方 require 的写法
 // const { WeappTailwindcss } = require('weapp-tailwindcss/webpack')
-// const path = require('node:path')
 
 {
   // 找到 mini 这个配置
@@ -71,10 +69,7 @@ import path from 'node:path'
             args: [{
               // 这里可以传参数
               rem2rpx: true,
-              cssEntries: [
-                // Tailwind CSS 入口文件绝对路径
-                path.resolve(__dirname, '../src/app.css'),
-              ],
+              tailwindcssBasedir: process.cwd(),
             }],
           },
         },
@@ -86,8 +81,22 @@ import path from 'node:path'
 }
 ```
 
-> tailwindcss@4 必须配置 `cssEntries` 并且使用绝对路径，否则 `tailwindcss` 生成的类名不会参与转译。
+> 常规 Taro Webpack 项目只要在 `src/app.ts` 或 `src/app.js` 里引入了 `./app.css`，可以不写 `cssEntries`。
 > `weapp-tailwindcss@5` 默认接管 Tailwind CSS 样式生成，不需要再创建 `postcss.config.mjs` 注册 `@tailwindcss/postcss`。如果项目已有 PostCSS 配置，只保留非 Tailwind 的业务插件即可。
+
+多入口、入口不在 `src/app.css`、自动识别失败时，再补这一项：
+
+```js
+import path from 'node:path'
+
+args: [{
+  rem2rpx: true,
+  tailwindcssBasedir: process.cwd(),
+  cssEntries: [
+    path.resolve(__dirname, '../src/app.css'),
+  ],
+}]
+```
 
 ## 运行
 
