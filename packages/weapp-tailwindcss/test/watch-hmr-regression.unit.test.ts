@@ -1335,8 +1335,8 @@ describe('watch-hmr regression cases', () => {
       expect(configSource, configPath).toContain('WEAPP_TW_WATCH_REGRESSION')
       expect(configSource, configPath).toContain('WeappTailwindcss')
       expect(configSource, configPath).toContain('target: process.env.TARO_ENV === \'h5\' ? \'web\' : \'weapp\'')
-      expect(configSource, configPath).toContain('chain.watchOptions({')
-      expect(configSource, configPath).toContain('ignored: [distDir]')
+      expect(configSource, configPath).not.toContain('chain.watchOptions({')
+      expect(configSource, configPath).not.toContain('ignored: [distDir]')
     }
 
     const webpackV5PluginSource = await readFile(

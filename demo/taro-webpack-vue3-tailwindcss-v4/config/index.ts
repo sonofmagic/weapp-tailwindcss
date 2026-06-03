@@ -1,12 +1,10 @@
 import { defineConfig, type UserConfigExport } from '@tarojs/cli'
-import path from 'node:path'
 import TsconfigPathsPlugin from 'tsconfig-paths-webpack-plugin'
 import devConfig from './dev'
 import prodConfig from './prod'
 import { WeappTailwindcss, UserDefinedOptions } from 'weapp-tailwindcss/webpack'
 
 const isWatchRegression = process.env.WEAPP_TW_WATCH_REGRESSION === '1'
-const distDir = path.resolve(process.cwd(), 'dist')
 
 const generator = {
   target: process.env.TARO_ENV === 'h5' ? 'web' : 'weapp',
@@ -72,9 +70,6 @@ export default defineConfig<'webpack5'>(async (merge, { command, mode }) => {
       },
       webpackChain(chain) {
         chain.resolve.plugin('tsconfig-paths').use(TsconfigPathsPlugin)
-        chain.watchOptions({
-          ignored: [distDir],
-        })
         chain.merge({
           plugin: {
             install: {
@@ -124,9 +119,6 @@ export default defineConfig<'webpack5'>(async (merge, { command, mode }) => {
           chain.plugins.delete('webpackbar')
         }
         chain.resolve.plugin('tsconfig-paths').use(TsconfigPathsPlugin)
-        chain.watchOptions({
-          ignored: [distDir],
-        })
         chain.merge({
           plugin: {
             install: {

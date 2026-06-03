@@ -3,6 +3,7 @@ import type { TailwindV4CssSource } from 'tailwindcss-patch'
 import type { Compiler } from 'webpack'
 import type { AppType, IBaseWebpackPlugin, InternalUserDefinedOptions, UserDefinedOptions } from '@/types'
 import path from 'node:path'
+import micromatch from 'micromatch'
 import { pluginName } from '@/constants'
 import { getCompilerContext } from '@/context'
 import { createDebug } from '@/debug'
@@ -20,17 +21,70 @@ import { setupWebpackV5Loaders } from './v5-loaders'
 
 const debug = createDebug()
 export const weappTailwindcssPackageDir = resolvePackageDir('weapp-tailwindcss')
-type WebpackWatchOptions = Parameters<Compiler['watch']>[0]
 
-function normalizeIgnoredList(ignored: WebpackWatchOptions['ignored']) {
+type WebpackWatchOptions = Parameters<Compiler['watch']>[0]
+type WebpackWatchIgnoredItem = string | RegExp | ((file: string) => boolean)
+const outputIgnoredPredicatePath = Symbol('weapp-tailwindcss.outputIgnoredPredicatePath')
+
+type OutputIgnoredPredicate = ((file: string) => boolean) & {
+  [outputIgnoredPredicatePath]?: string
+}
+
+function normalizeIgnoredList(ignored: WebpackWatchOptions['ignored']): WebpackWatchIgnoredItem[] {
   if (Array.isArray(ignored)) {
-    return ignored
+    return ignored.filter((item): item is WebpackWatchIgnoredItem =>
+      typeof item === 'string' || item instanceof RegExp || typeof item === 'function',
+    )
   }
-  return ignored == null ? [] : [ignored]
+  if (typeof ignored === 'string' || ignored instanceof RegExp || typeof ignored === 'function') {
+    return [ignored]
+  }
+  return []
+}
+
+function createOutputIgnoredPredicate(
+  ignoredList: WebpackWatchIgnoredItem[],
+  ignoredPath: string,
+) {
+  const predicate: OutputIgnoredPredicate = (file: string) => {
+    const resolvedFile = path.resolve(file)
+    if (resolvedFile === ignoredPath || resolvedFile.startsWith(`${ignoredPath}${path.sep}`)) {
+      return true
+    }
+
+    const normalizedFile = file.replace(/\\/g, '/')
+    return ignoredList.some((item) => {
+      if (typeof item === 'string') {
+        const resolvedItem = path.resolve(item)
+        if (resolvedFile === resolvedItem || resolvedFile.startsWith(`${resolvedItem}${path.sep}`)) {
+          return true
+        }
+        return micromatch.isMatch(normalizedFile, item)
+      }
+      if (item instanceof RegExp) {
+        return item.test(normalizedFile)
+      }
+      return item(file)
+    })
+  }
+  predicate[outputIgnoredPredicatePath] = ignoredPath
+  return predicate
 }
 
 function appendIgnoredPath(ignored: WebpackWatchOptions['ignored'], ignoredPath: string) {
+  if (
+    typeof ignored === 'function'
+    && (ignored as OutputIgnoredPredicate)[outputIgnoredPredicatePath] === ignoredPath
+  ) {
+    return ignored
+  }
+
   const ignoredList = normalizeIgnoredList(ignored)
+  const hasNonStringIgnoredRule = ignoredList.some(item => typeof item !== 'string')
+  if (hasNonStringIgnoredRule) {
+    return createOutputIgnoredPredicate(ignoredList, ignoredPath)
+  }
+
   if (ignoredList.some(item => typeof item === 'string' && path.resolve(item) === ignoredPath)) {
     return ignored
   }
@@ -38,22 +92,37 @@ function appendIgnoredPath(ignored: WebpackWatchOptions['ignored'], ignoredPath:
 }
 
 function setupWebpackWatchOutputIgnore(compiler: Compiler) {
-  const originalWatch = compiler.watch?.bind(compiler)
-  if (typeof originalWatch !== 'function') {
-    return
-  }
-  compiler.watch = ((watchOptions: WebpackWatchOptions, handler) => {
+  const appendOutputIgnoredPath = (watchOptions?: WebpackWatchOptions) => {
     const outputPath = compiler.outputPath || compiler.options?.output?.path
     const outputDir = outputPath ? path.resolve(outputPath) : undefined
     if (!outputDir) {
-      return originalWatch(watchOptions, handler)
+      return watchOptions
     }
 
-    return originalWatch({
-      ...watchOptions,
-      ignored: appendIgnoredPath(watchOptions.ignored, outputDir),
-    }, handler)
-  }) satisfies Compiler['watch']
+    if (watchOptions && typeof watchOptions === 'object') {
+      watchOptions.ignored = appendIgnoredPath(watchOptions.ignored, outputDir)
+      return watchOptions
+    }
+
+    return { ignored: appendIgnoredPath(undefined, outputDir) } as WebpackWatchOptions
+  }
+
+  compiler.options.watchOptions = appendOutputIgnoredPath(compiler.options.watchOptions)
+
+  const syncOutputIgnoredPath = () => {
+    const outputPath = compiler.outputPath || compiler.options?.output?.path
+    const outputDir = outputPath ? path.resolve(outputPath) : undefined
+    if (!outputDir) {
+      return
+    }
+
+    const watchOptions = (compiler.watching as { watchOptions?: WebpackWatchOptions } | undefined)?.watchOptions
+    if (watchOptions) {
+      appendOutputIgnoredPath(watchOptions)
+    }
+  }
+
+  compiler.hooks.watchRun?.tap(pluginName, syncOutputIgnoredPath)
 }
 
 /**
