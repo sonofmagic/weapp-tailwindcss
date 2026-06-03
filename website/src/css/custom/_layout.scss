@@ -53,6 +53,18 @@
   flex-shrink: 0;
 }
 
+.navbar .dropdown__link {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+  white-space: nowrap;
+}
+
+.navbar .dropdown__link svg[class*='iconExternalLink'] {
+  flex-shrink: 0;
+  margin-left: 0;
+}
+
 .navbar__item.navbar__link:not(.navbar__atomgit-link):not(.navbar__github-link) {
   flex-shrink: 0;
   padding-right: 0.45rem;
