@@ -2,6 +2,7 @@
 import type { Declaration, Plugin, PluginCreator, Root, Rule } from 'postcss'
 import type { IStyleHandlerOptions } from '../types'
 import { defu } from '@weapp-tailwindcss/shared'
+import { MINI_PROGRAM_ELEMENT_SCOPE_SELECTOR } from '../compat/mini-program-css/selectors'
 import { normalizeMiniProgramPrefixedDeclaration, removeUnsupportedMiniProgramPrefixedAtRule } from '../compat/mini-program-prefixes'
 import { normalizeTailwindcssRpxDeclaration } from '../compat/tailwindcss-rpx'
 import { collectUsedTailwindcssV4Variables, createMissingCssVarsV4Nodes, normalizeTailwindcssV4Declaration } from '../compat/tailwindcss-v4'
@@ -18,7 +19,6 @@ export type PostcssWeappTailwindcssRenamePlugin = PluginCreator<IStyleHandlerOpt
 export { reorderVariableDeclarations } from './post/decl-dedupe'
 
 const DEFAULT_ROOT_SELECTORS = ['page', '.tw-root', 'wx-root-portal-content'] as const
-const DEFAULT_ELEMENT_VARIABLE_SCOPE = 'view,text,:before,:after'
 const LEGACY_FLEXBOX_DECLARATION_PROPS = new Set([
   '-webkit-align-content',
   '-webkit-align-items',
@@ -81,7 +81,7 @@ function injectMissingTailwindcssV4Defaults(root: Root) {
     return
   }
   root.append({
-    selector: DEFAULT_ELEMENT_VARIABLE_SCOPE,
+    selector: MINI_PROGRAM_ELEMENT_SCOPE_SELECTOR,
     nodes,
   })
 }

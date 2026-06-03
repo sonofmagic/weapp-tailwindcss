@@ -6,8 +6,6 @@ exports[`vite > v4-vite-plugin > css 1`] = `
   margin: 0;
   padding: 0;
   border: 0 solid;
-}
-view,text,:before,:after {
   --tw-gradient-position: initial;
   --tw-gradient-from: #0000;
   --tw-gradient-to: #0000;

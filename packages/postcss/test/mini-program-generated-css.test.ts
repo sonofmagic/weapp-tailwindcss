@@ -93,9 +93,27 @@ describe('mini-program generated css cleanup', () => {
       '@property --tw-border-style{syntax:"*";inherits:false;initial-value:solid}',
     ].join(''))
 
-    expect(css).toContain('view,text,:before,:after{--tw-border-style:solid}')
+    expect(css).toContain('view,text,:after,:before{--tw-border-style:solid}')
     expect(css).toContain('.border{border-style:var(--tw-border-style);border-width:1px}')
     expect(css).not.toContain('@property')
+  })
+
+  it('merges mini-program preflight reset with Tailwind v4 property defaults', () => {
+    const css = finalizeMiniProgramCss([
+      '/*! tailwindcss v4.1.10 | MIT License | https://tailwindcss.com */',
+      '.border{border-style:var(--tw-border-style);border-width:1px}',
+      '@property --tw-border-style{syntax:"*";inherits:false;initial-value:solid}',
+    ].join(''), {
+      cssPreflight: {
+        'box-sizing': 'border-box',
+        margin: '0',
+        padding: '0',
+        border: '0 solid',
+      },
+    })
+
+    expect(css.match(/view,text,:after,:before\{/g)).toHaveLength(1)
+    expect(css).toContain('border:0 solid;--tw-border-style:solid')
   })
 
   it('synthesizes configured mini-program preflight when generator css misses base reset', () => {
@@ -175,7 +193,7 @@ describe('mini-program generated css cleanup', () => {
       '.bg-linear-to-r{background-image:linear-gradient(var(--tw-gradient-stops))}',
     ].join(''))
 
-    expect(css).toContain('view,text,:before,:after{--tw-gradient-position:initial')
+    expect(css).toContain('view,text,:after,:before{--tw-gradient-position:initial')
     expect(css).toContain('--tw-gradient-from:rgba(0,0,0,0)')
     expect(css).toContain('--tw-gradient-to:rgba(0,0,0,0)')
     expect(css).toContain('--tw-gradient-from-position:0%')

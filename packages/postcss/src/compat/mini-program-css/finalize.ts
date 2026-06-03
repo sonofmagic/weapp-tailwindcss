@@ -17,7 +17,7 @@ import {
   removeUnsupportedBrowserSelectors,
   removeUnsupportedModernColorDeclarations,
 } from './root-cleanups'
-import { MINI_PROGRAM_THEME_SCOPE_SELECTOR } from './selectors'
+import { getSortedRuleSelectorKey, MINI_PROGRAM_ELEMENT_SCOPE_SELECTOR, MINI_PROGRAM_THEME_SCOPE_SELECTOR } from './selectors'
 
 const HOIST_ANCHOR_COMMENT = '__weapp_tailwindcss_base_anchor__'
 const TAILWIND_V4_BANNER_RE = /\/\*!\s*tailwindcss v4\./
@@ -80,7 +80,7 @@ function createPreflightResetRule(cssPreflight: CssPreflightOptions | undefined)
   }
 
   const rule = postcss.rule({
-    selector: 'view,text,:after,:before',
+    selector: MINI_PROGRAM_ELEMENT_SCOPE_SELECTOR,
   })
   for (const [prop, value] of Object.entries(cssPreflight)) {
     if (value === false) {
@@ -205,6 +205,24 @@ export function insertHoistedRules(root: postcss.Root, rules: postcss.Rule[], an
   }
 }
 
+function mergeEquivalentHoistedRules(rules: postcss.Rule[]) {
+  const mergedRules: postcss.Rule[] = []
+  const ruleBySelector = new Map<string, postcss.Rule>()
+
+  for (const rule of rules) {
+    const key = getSortedRuleSelectorKey(rule)
+    const existingRule = ruleBySelector.get(key)
+    if (existingRule) {
+      existingRule.append(...(rule.nodes ?? []).map(node => node.clone()))
+      continue
+    }
+    ruleBySelector.set(key, rule)
+    mergedRules.push(rule)
+  }
+
+  return mergedRules
+}
+
 function unwrapTailwindSourceMedia(root: postcss.Root) {
   root.walkAtRules('media', (atRule) => {
     if (atRule.params.startsWith('source(') && atRule.nodes && atRule.nodes.length > 0) {
@@ -244,13 +262,13 @@ function finalizeMiniProgramCssRoot(root: postcss.Root, options: FinalizeMiniPro
   }
   if (tailwindcssV4DefaultNodes.length > 0) {
     preflightRules.push(postcss.rule({
-      selector: 'view,text,:before,:after',
+      selector: MINI_PROGRAM_ELEMENT_SCOPE_SELECTOR,
       nodes: tailwindcssV4DefaultNodes,
     }))
   }
   const themeRule = collectThemeVariableRule(root, options)
   const hoistedRules = themeRule ? [...preflightRules, themeRule] : preflightRules
-  insertHoistedRules(root, hoistedRules, hoistAnchor)
+  insertHoistedRules(root, mergeEquivalentHoistedRules(hoistedRules), hoistAnchor)
 }
 
 export function hoistTailwindPreflightBase(css: string) {

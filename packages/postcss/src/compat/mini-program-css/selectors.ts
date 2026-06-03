@@ -1,15 +1,20 @@
 import type postcss from 'postcss'
 
 export const MINI_PROGRAM_THEME_SCOPE_SELECTOR = ':host,page,.tw-root,wx-root-portal-content'
+export const MINI_PROGRAM_ELEMENT_SCOPE_SELECTOR = 'view,text,:after,:before'
 
-export const MINI_PROGRAM_PREFLIGHT_SELECTORS = new Set([
-  '*',
+export const MINI_PROGRAM_ELEMENT_SCOPE_SELECTORS = new Set([
   'view',
   'text',
   ':before',
   ':after',
   '::before',
   '::after',
+])
+
+export const MINI_PROGRAM_PREFLIGHT_SELECTORS = new Set([
+  '*',
+  ...MINI_PROGRAM_ELEMENT_SCOPE_SELECTORS,
 ])
 
 export const MINI_PROGRAM_THEME_SCOPE_SELECTORS = new Set([
@@ -100,6 +105,10 @@ export function getRuleSelectors(rule: postcss.Rule) {
     .split(',')
     .map(normalizeSelector)
     .filter(Boolean)
+}
+
+export function getSortedRuleSelectorKey(rule: postcss.Rule) {
+  return getRuleSelectors(rule).sort().join(',')
 }
 
 export function isUnsupportedBrowserSelector(selector: string) {

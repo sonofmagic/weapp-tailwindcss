@@ -10,12 +10,10 @@ import {
   usesTwContentVariable,
 } from './predicates'
 import { removeUnsupportedModernColorDeclarations } from './root-cleanups'
-import { getRuleSelectors } from './selectors'
+import { getRuleSelectors, MINI_PROGRAM_ELEMENT_SCOPE_SELECTOR, MINI_PROGRAM_ELEMENT_SCOPE_SELECTORS } from './selectors'
 
 const DEFAULT_WEAPP_VARIABLE_SCOPE = 'page,.tw-root,wx-root-portal-content,:host'
-const DEFAULT_WEAPP_ELEMENT_VARIABLE_SCOPE = 'view,text,:before,:after'
 const CLASS_SELECTOR_RE = /(?:^|[^\w-])\.[_a-z\u00A0-\uFFFF\\-]/i
-const MINI_PROGRAM_ELEMENT_VARIABLE_SCOPE_SELECTORS = new Set(['view', 'text', ':before', ':after', '::before', '::after'])
 
 export interface PruneMiniProgramGeneratedCssOptions {
   preservePreflight?: boolean
@@ -41,7 +39,7 @@ function removeEmptyContentInitDeclarations(rule: postcss.Rule) {
 function isMiniProgramElementVariableScopeRule(rule: postcss.Rule) {
   const selectors = getRuleSelectors(rule)
   return selectors.length > 0
-    && selectors.every(selector => MINI_PROGRAM_ELEMENT_VARIABLE_SCOPE_SELECTORS.has(selector))
+    && selectors.every(selector => MINI_PROGRAM_ELEMENT_SCOPE_SELECTORS.has(selector))
 }
 
 function isTailwindV4GradientRuntimeDeclaration(decl: postcss.Declaration) {
@@ -60,7 +58,7 @@ function moveTailwindV4GradientRuntimeDeclarations(rule: postcss.Rule) {
 
   if (gradientDeclarations.length > 0) {
     rule.before(new postcss.Rule({
-      selector: DEFAULT_WEAPP_ELEMENT_VARIABLE_SCOPE,
+      selector: MINI_PROGRAM_ELEMENT_SCOPE_SELECTOR,
       nodes: gradientDeclarations,
     }))
   }
