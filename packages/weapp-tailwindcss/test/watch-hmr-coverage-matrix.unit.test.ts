@@ -201,7 +201,13 @@ describe('watch-hmr coverage matrix', () => {
         .filter(entry => !shouldRequireIdeLivePageVisibility({ name: frameworkIdeWatchCaseNames[entry.name]! }))
         .map(entry => entry.name)
 
-      expect(relaxedCases).toEqual(['taro-webpack-react-tailwindcss-v4'])
+      expect(relaxedCases).toEqual([
+        'taro-webpack-react-tailwindcss-v4',
+        'uni-app-vite-vue3-hbuilderx-tailwindcss-v3',
+        'uni-app-vite-vue3-hbuilderx-tailwindcss-v4',
+        'uni-app-x-hbuilderx-tailwindcss-v3',
+        'uni-app-x-hbuilderx-tailwindcss-v4',
+      ])
     }
     finally {
       if (originalRequireLivePageVisibility == null) {

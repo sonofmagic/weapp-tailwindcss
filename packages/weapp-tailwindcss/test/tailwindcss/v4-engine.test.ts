@@ -133,7 +133,7 @@ describe('tailwindcss v4 engine', () => {
     })
     const css = compactCss(result.css)
 
-    expect(css).toContain('view,text,:before,:after{--tw-gradient-position:initial')
+    expect(css).toContain('view,text,:after,:before{--tw-gradient-position:initial')
     expect(css).toContain('page,.tw-root,wx-root-portal-content,:host{')
     expect(css).toContain('--tw-gradient-from:rgba(0,0,0,0)')
     expect(css).toContain('--tw-gradient-to:rgba(0,0,0,0)')
