@@ -142,6 +142,7 @@
     "fix-vite-missing-css-entry",
     "fix-vite-plugin-type-compat",
     "fix-vite-v4-vendor-source-scan",
+    "fix-webpack-watch-output-ignore-next",
     "framework-support-matrix",
     "fresh-demo-core-build",
     "fresh-v3-colors-for-weapp",
