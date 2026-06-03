@@ -84,6 +84,18 @@ function isHBuilderXMiniProgramProject(root: string, pkg?: { name?: string }) {
     || normalizedRoot.includes('/uni-app-x-hbuilderx-tailwindcss-')
 }
 
+function isIdeUniAppViteMiniProgramProject(root: string, pkg?: { name?: string }) {
+  if (process.env['E2E_IDE'] !== '1') {
+    return false
+  }
+  const name = pkg?.name ?? ''
+  const normalizedRoot = root.replaceAll('\\', '/')
+  return name.includes('uni-app-vite-tailwindcss-v3')
+    || name.includes('uni-app-vite-tailwindcss-v4')
+    || normalizedRoot.includes('/uni-app-vite-tailwindcss-v3')
+    || normalizedRoot.includes('/uni-app-vite-tailwindcss-v4')
+}
+
 async function ensureHBuilderXMiniProgramBuilt(root: string, pkgPath: string, pkg?: { name?: string }) {
   const timeoutMs = Number(process.env['E2E_IDE_HBUILDERX_DEV_BUILD_TIMEOUT_MS'] ?? process.env['E2E_IDE_BUILD_TIMEOUT_MS'] ?? 120_000)
   const hbuilderxCliPath = await resolveHBuilderXCliPath()
@@ -147,6 +159,77 @@ async function ensureHBuilderXMiniProgramBuilt(root: string, pkgPath: string, pk
   }
 }
 
+async function ensureUniAppViteDevMiniProgramBuilt(root: string, pkgPath: string, pkg?: { name?: string }) {
+  const timeoutMs = Number(process.env['E2E_IDE_UNI_APP_DEV_BUILD_TIMEOUT_MS'] ?? process.env['E2E_IDE_BUILD_TIMEOUT_MS'] ?? 120_000)
+  const outputRoot = path.resolve(root, 'dist/dev/mp-weixin')
+  const requiredFiles = [
+    'app.json',
+    'project.config.json',
+    'pages/index/index.js',
+    'pages/index/index.json',
+    'pages/index/index.wxml',
+  ]
+  const childEnv: Record<string, string | undefined> = {
+    ...process.env,
+    NODE_ENV: 'development',
+    BROWSERSLIST_ENV: 'development',
+    RUST_BACKTRACE: process.env['RUST_BACKTRACE'] ?? '1',
+    WEAPP_TW_HMR_TIMING: process.env['WEAPP_TW_HMR_TIMING'] ?? '1',
+    npm_package_json: pkgPath,
+    PNPM_PACKAGE_NAME: pkg?.name ?? process.env['PNPM_PACKAGE_NAME'],
+    INIT_CWD: root,
+  }
+
+  delete childEnv['VITEST']
+  for (const key of Object.keys(childEnv)) {
+    if (key.startsWith('VITEST_')) {
+      delete childEnv[key]
+    }
+  }
+
+  await fs.rm(outputRoot, {
+    recursive: true,
+    force: true,
+  })
+
+  const stdio = process.env['E2E_DEBUG_BUILD'] === '1' ? 'inherit' : 'pipe'
+  const child = execa('pnpm', ['run', 'dev:mp-weixin'], {
+    cwd: root,
+    env: childEnv,
+    stdio,
+    forceKillAfterDelay: 1000,
+  })
+  let childError: unknown
+  const childDone = child.catch((error) => {
+    childError = error
+  })
+
+  try {
+    const startedAt = Date.now()
+    while (Date.now() - startedAt < timeoutMs) {
+      if (childError) {
+        if (stdio !== 'inherit') {
+          logE2EError('[e2e] uni-app dev build failed in %s: %o', root, childError)
+        }
+        throw childError
+      }
+      const ready = await Promise.all(requiredFiles.map(file => fileExists(path.resolve(outputRoot, file))))
+      if (ready.every(Boolean)) {
+        return
+      }
+      await wait(500)
+    }
+    throw new Error(`[e2e] uni-app dev mp-weixin output did not become ready in ${timeoutMs}ms: ${outputRoot}`)
+  }
+  finally {
+    child.kill('SIGTERM')
+    await Promise.race([
+      childDone,
+      wait(3000),
+    ]).catch(() => undefined)
+  }
+}
+
 export async function ensureProjectBuilt(root: string, options: EnsureProjectBuiltOptions = {}) {
   const existing = buildTasks.get(root)
   if (existing && !options.force) {
@@ -166,6 +249,11 @@ export async function ensureProjectBuilt(root: string, options: EnsureProjectBui
 
     if (isHBuilderXMiniProgramProject(root, pkg)) {
       await ensureHBuilderXMiniProgramBuilt(root, pkgPath, pkg)
+      return
+    }
+
+    if (isIdeUniAppViteMiniProgramProject(root, pkg)) {
+      await ensureUniAppViteDevMiniProgramBuilt(root, pkgPath, pkg)
       return
     }
 

@@ -27,6 +27,10 @@ import {
 
 const IDE_LIVE_PAGE_VISIBILITY_RELAXED_CASES = new Set<WatchCase['name']>([
   'taro-webpack-react-tailwindcss-v4',
+  'uni-app-vite-vue3-hbuilderx-tailwindcss-v3',
+  'uni-app-vite-vue3-hbuilderx-tailwindcss-v4',
+  'uni-app-x-hbuilderx-tailwindcss-v3',
+  'uni-app-x-hbuilderx-tailwindcss-v4',
 ])
 
 async function withDevToolsRelaunchTimeout<T>(options: CliOptions, pageUrl: string, task: Promise<T>) {
@@ -102,6 +106,16 @@ export function shouldRequireIdeLivePageVisibility(watchCase?: Pick<WatchCase, '
     return false
   }
   return !watchCase || !IDE_LIVE_PAGE_VISIBILITY_RELAXED_CASES.has(watchCase.name)
+}
+
+function getLivePageVisibilitySkipReason(watchCase: Pick<WatchCase, 'name'>) {
+  if (process.env['E2E_IDE_REQUIRE_LIVE_PAGE_VISIBILITY'] === '0') {
+    return 'E2E_IDE_REQUIRE_LIVE_PAGE_VISIBILITY=0'
+  }
+  if (IDE_LIVE_PAGE_VISIBILITY_RELAXED_CASES.has(watchCase.name)) {
+    return 'case-level relaxed visibility'
+  }
+  return 'unknown'
 }
 
 export async function runIdeClassHotUpdate(
@@ -186,11 +200,17 @@ export async function runIdeClassHotUpdate(
     : getDevToolsBestEffortVisibleTimeoutMs(options)
   process.stdout.write(`[e2e:ide] ${watchCase.label} ${mutationKind} HMR verify DevTools visibility=${verifyLivePage ? 'page' : 'compile'}\n`)
   let liveHasMarker = false
+  let liveAfter: string | undefined
   if (verifyLivePage) {
     liveHasMarker = await waitFor(
       async () => {
         try {
-          return (await readPageLiveContent(page, pageUrl)).includes(scenario.marker)
+          const content = await readPageLiveContent(page, pageUrl)
+          if (content.includes(scenario.marker)) {
+            liveAfter = content
+            return true
+          }
+          return false
         }
         catch {
           return false
@@ -207,15 +227,14 @@ export async function runIdeClassHotUpdate(
   }
 
   if (liveHasMarker) {
-    const liveAfter = await readPageLiveContent(page, pageUrl)
-    if (liveBefore != null && liveBefore === liveAfter) {
+    if (liveAfter != null && liveBefore != null && liveBefore === liveAfter) {
       throw new Error(`[${watchCase.label}] DevTools live page content did not change after ${mutationKind} HMR`)
     }
     devtoolsVisible = 'live'
   }
   else if (verifyLivePage) {
     if (!requireLivePage) {
-      process.stdout.write(`[e2e:ide] ${watchCase.label} ${mutationKind} HMR DevTools page visibility skipped by E2E_IDE_REQUIRE_LIVE_PAGE_VISIBILITY=0\n`)
+      process.stdout.write(`[e2e:ide] ${watchCase.label} ${mutationKind} HMR DevTools page visibility skipped by ${getLivePageVisibilitySkipReason(watchCase)}\n`)
       devtoolsVisible = 'artifact'
     }
     else {

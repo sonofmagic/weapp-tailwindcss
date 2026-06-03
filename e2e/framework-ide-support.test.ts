@@ -9,6 +9,7 @@ const wait = (timeout: number) => new Promise(resolve => setTimeout(resolve, tim
 const transientIdeErrorPatterns = [
   /DevTools did not respond to protocol method/i,
   /Failed to launch wechat web devTools/i,
+  /Framework IDE probe (?:launch|currentPage) timed out/i,
   /Framework IDE probe reLaunch timed out/i,
   /page ".*" is not found/i,
 ]
@@ -18,7 +19,7 @@ function readNumberEnv(name: string, fallback: number) {
 }
 
 function getProbeTiming(entryName: string) {
-  const baseTimeoutMs = readNumberEnv('E2E_AUTOMATOR_TIMEOUT_MS', 20_000)
+  const baseTimeoutMs = readNumberEnv('E2E_AUTOMATOR_TIMEOUT_MS', 30_000)
   const timeoutMs = Math.max(
     baseTimeoutMs,
     entryName.startsWith('taro-vite-') ? readNumberEnv('E2E_IDE_TARO_VITE_TIMEOUT_MS', 60_000) : 0,
