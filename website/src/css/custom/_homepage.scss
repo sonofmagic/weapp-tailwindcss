@@ -808,13 +808,15 @@ html[data-theme='dark'] .homepage .home-cta:hover {
   margin-top: 1.25rem;
 }
 
-.home-hero__actions .ui-homepage-ai-entry {
+.home-hero__actions .ui-homepage-ai-entry,
+.home-hero__actions .ui-homepage-community-entry {
   border-color: rgb(125 211 252 / 18%);
   background: rgb(15 23 42 / 4%);
   box-shadow: inset 0 1px 0 rgb(255 255 255 / 36%);
 }
 
-[data-theme='dark'] .home-hero__actions .ui-homepage-ai-entry {
+[data-theme='dark'] .home-hero__actions .ui-homepage-ai-entry,
+[data-theme='dark'] .home-hero__actions .ui-homepage-community-entry {
   background: rgb(15 23 42 / 62%);
   box-shadow: inset 0 1px 0 rgb(255 255 255 / 8%);
 }
@@ -1073,9 +1075,9 @@ html[data-theme='dark'] .homepage .home-cta:hover {
   display: grid;
   width: min(1320px, calc(100% - clamp(1rem, 6vw, 6rem)));
   min-height: min(600px, calc(100dvh - var(--ifm-navbar-height) - 2.75rem));
-  grid-template-columns: minmax(0, 1fr) minmax(340px, 0.66fr);
+  grid-template-columns: minmax(0, 1.08fr) minmax(320px, 0.58fr);
   align-items: center;
-  gap: clamp(1.25rem, 3vw, 3.25rem);
+  gap: clamp(2rem, 4vw, 4.5rem);
   overflow: visible;
   margin: 0 auto;
   border: 0;
@@ -1114,7 +1116,7 @@ html[data-theme='dark'] .homepage .home-cta:hover {
 .home-hero__copy {
   align-items: flex-start;
   min-width: 0;
-  max-width: 820px;
+  max-width: 790px;
   text-align: left;
 }
 
@@ -1149,9 +1151,9 @@ html[data-theme='dark'] .homepage .home-cta:hover {
   display: flex;
   align-items: baseline;
   max-width: 100%;
-  font-size: clamp(3.35rem, 6.1vw, 5.85rem);
+  font-size: clamp(3.35rem, 5.35vw, 5.2rem);
   font-weight: 840;
-  line-height: 0.92;
+  line-height: 0.96;
   color: var(--home-ink);
   white-space: nowrap;
 }
@@ -1192,17 +1194,19 @@ html[data-theme='dark'] .homepage .home-cta:hover {
 }
 
 .home-hero__lead {
-  max-width: 18ch;
+  max-width: min(100%, 860px);
   margin-top: 0.85rem;
   font-size: clamp(1.42rem, 2.65vw, 2.45rem);
   line-height: 1.08;
+  white-space: nowrap;
 }
 
 .home-hero__sublead {
-  max-width: 620px;
+  max-width: min(100%, 860px);
   margin-top: 0.75rem;
   font-size: clamp(0.98rem, 1.16vw, 1.08rem);
   line-height: 1.68;
+  white-space: nowrap;
 }
 
 .home-hero__platform-strip {
@@ -1233,7 +1237,8 @@ html[data-theme='dark'] .homepage .home-cta:hover {
   margin-top: 1.15rem;
 }
 
-.home-hero__actions .ui-homepage-ai-entry {
+.home-hero__actions .ui-homepage-ai-entry,
+.home-hero__actions .ui-homepage-community-entry {
   background: rgb(255 255 255 / 62%);
 }
 
@@ -1244,7 +1249,7 @@ html[data-theme='dark'] .homepage .home-cta:hover {
 
 .home-pipeline {
   width: 100%;
-  max-width: 500px;
+  max-width: 470px;
   justify-self: end;
   align-self: center;
   overflow: visible;
@@ -1365,17 +1370,21 @@ html[data-theme='dark'] .homepage .home-cta:hover {
 }
 
 .home-section-heading {
-  max-width: 860px;
+  max-width: min(100%, 1180px);
 }
 
 .home-section-heading h2,
 .home-v5-story h2 {
-  max-width: 13ch;
+  max-width: min(100%, max-content);
+}
+
+.home-v5-story h2 {
+  max-width: min(100%, max-content);
 }
 
 .home-section-heading p,
 .home-v5-story__body p {
-  max-width: 60ch;
+  max-width: min(100%, 960px);
 }
 
 .home-capabilities__layout {
@@ -1469,6 +1478,16 @@ html[data-theme='dark'] .homepage .home-cta:hover {
   background: linear-gradient(145deg, rgb(14 165 233 / 14%), transparent 52%), var(--home-panel);
 }
 
+@media (max-width: 1100px) and (min-width: 997px) {
+  .home-entrypoints {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  .home-entrypoint {
+    min-height: 132px;
+  }
+}
+
 @media (prefers-reduced-motion: no-preference) {
   .home-pipeline {
     animation: home-pipeline-float 8s ease-in-out infinite;
@@ -1518,7 +1537,7 @@ html[data-theme='dark'] .homepage .home-cta:hover {
   }
 }
 
-@media (max-width: 1100px) {
+@media (max-width: 996px) {
   .home-hero__content {
     grid-template-columns: 1fr;
     min-height: auto;
@@ -1620,11 +1639,11 @@ html[data-theme='dark'] .homepage .home-cta:hover {
 
   .home-hero__title {
     display: flex;
-    flex-direction: column;
+    flex-direction: row;
     align-items: flex-start;
-    font-size: clamp(2.15rem, 12.2vw, 3.25rem);
+    font-size: clamp(2rem, 9.5vw, 2.28rem);
     line-height: 0.96;
-    white-space: normal;
+    white-space: nowrap;
   }
 
   .home-hero__title-prefix {
@@ -1643,6 +1662,7 @@ html[data-theme='dark'] .homepage .home-cta:hover {
     margin-top: 0.58rem;
     font-size: clamp(1.18rem, 5.7vw, 1.55rem);
     line-height: 1.14;
+    white-space: normal;
   }
 
   .home-hero__sublead {
@@ -1650,6 +1670,7 @@ html[data-theme='dark'] .homepage .home-cta:hover {
     margin-top: 0.52rem;
     font-size: 0.9rem;
     line-height: 1.55;
+    white-space: normal;
   }
 
   .home-hero__platform-strip {
@@ -1658,7 +1679,7 @@ html[data-theme='dark'] .homepage .home-cta:hover {
 
   .home-hero__actions {
     display: grid;
-    grid-template-columns: minmax(0, 1fr) minmax(0, 0.82fr);
+    grid-template-columns: 1fr;
     gap: 0.55rem;
     margin-top: 0.8rem;
   }
@@ -1669,18 +1690,21 @@ html[data-theme='dark'] .homepage .home-cta:hover {
   }
 
   .home-hero__actions .home-cta,
-  .home-hero__actions .ui-homepage-ai-entry a {
+  .home-hero__actions .ui-homepage-ai-entry a,
+  .home-hero__actions .ui-homepage-community-entry a {
     min-height: 2.85rem;
     padding: 0.68rem 0.78rem;
     font-size: 0.88rem;
     white-space: nowrap;
   }
 
-  .home-hero__actions .ui-homepage-ai-entry a {
+  .home-hero__actions .ui-homepage-ai-entry a,
+  .home-hero__actions .ui-homepage-community-entry a {
     justify-content: center;
   }
 
-  .home-hero__actions .ui-homepage-ai-entry a > i:last-child {
+  .home-hero__actions .ui-homepage-ai-entry a > i:last-child,
+  .home-hero__actions .ui-homepage-community-entry a > i:last-child {
     display: none;
   }
 
@@ -1834,6 +1858,10 @@ html[data-theme='dark'] .homepage .home-cta:hover {
     line-height: 1.08;
   }
 
+  .home-v5-story h2 {
+    max-width: 17ch;
+  }
+
   .home-section-heading p,
   .home-v5-story__body p {
     margin-top: 0.6rem;
@@ -1883,9 +1911,9 @@ html[data-theme='dark'] .homepage .home-cta:hover {
   }
 
   .home-entrypoint {
-    min-height: 96px;
+    min-height: 76px;
     border-radius: 18px;
-    padding: 0.95rem;
+    padding: 0.75rem 0.85rem;
   }
 
   .home-entrypoint > i {
@@ -1898,6 +1926,12 @@ html[data-theme='dark'] .homepage .home-cta:hover {
 
   .home-entrypoint small {
     font-size: 0.84rem;
-    line-height: 1.45;
+    line-height: 1.32;
+  }
+}
+
+@media (min-width: 560px) and (max-width: 760px) {
+  .home-hero__actions {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
   }
 }

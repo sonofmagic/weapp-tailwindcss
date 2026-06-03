@@ -241,6 +241,19 @@ html[data-ui-homepage-frameworks-card='hidden'] .ui-homepage-frameworks-card {
 }
 
 @media (width <= 996px) {
+  .navbar__inner,
+  .navbar__items,
+  .theme-layout-navbar-left,
+  .navbar__items--left {
+    max-width: 100%;
+    overflow: hidden;
+  }
+
+  .navbar .theme-layout-navbar-left .navbar__weapp-vite-link,
+  .navbar .navbar__items--left .navbar__weapp-vite-link {
+    display: none;
+  }
+
   .navbar .navbar__items--right .navbar__atomgit-link {
     display: none;
   }

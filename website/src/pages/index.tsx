@@ -183,17 +183,25 @@ function HomepageHeader() {
               )}
               <div className="home-hero__actions">
                 {homepage.primaryCta && (
-                  <a className={`${ctaButton()} home-cta ui-homepage-primary-cta`} href="/docs/quick-start/install">
-                    <span>开始使用</span>
+                  <a className={`${ctaButton()} home-cta ui-homepage-primary-cta`} href="/docs/intro">
+                    <span>立即开始体验</span>
                     <i aria-hidden="true" className="icon-[mdi--arrow-right] text-[1.1rem]"></i>
                   </a>
                 )}
                 {homepage.aiEntry && (
                   <InteractionPill
                     className="ui-homepage-ai-entry"
-                    href="/docs/api-v2"
-                    icon={<i aria-hidden="true" className="icon-[mdi--book-open-page-variant-outline] text-[18px]"></i>}
-                    label="API 文档"
+                    href="/llms"
+                    icon={<i aria-hidden="true" className="icon-[logos--openai-icon] text-[18px]"></i>}
+                    label="AI 学习入口"
+                  />
+                )}
+                {homepage.communityEntry && (
+                  <InteractionPill
+                    className="ui-homepage-community-entry"
+                    href="/docs/community/group"
+                    icon={<i aria-hidden="true" className="icon-[mdi--account-group-outline] text-[18px]"></i>}
+                    label="加入技术交流群"
                   />
                 )}
               </div>
@@ -235,15 +243,15 @@ function HomepageHeader() {
       {homepage.heroFeatureGrid && (
         <section className="ui-homepage-hero-feature-grid home-capabilities" aria-labelledby="home-capabilities-title">
           <div className="home-section-heading">
-            <h2 id="home-capabilities-title">关注工程边界，不再造一套样式语法</h2>
-            <p>从源码扫描到运行时工具，把 Tailwind 输入、目标端输出和类名转译串成一条链路。</p>
+            <h2 id="home-capabilities-title">守住工程边界，接管生成与转译</h2>
+            <p>复用 Tailwind 输入，把源码扫描、样式生成、类名转义和运行时工具放在一条工程链路里。</p>
           </div>
           <div className="home-capabilities__layout">
             {homepage.buildToolsCard && (
               <article className="ui-homepage-build-tools-card home-capability home-capability--large">
                 <i aria-hidden="true" className="icon-[mdi--webpack]"></i>
                 <h3>构建器接管 Tailwind 生成</h3>
-                <p>Webpack、Vite、Gulp 与自定义 Node 流程都由 weapp-tailwindcss 接管输出，不再依赖官方 Tailwind PostCSS/Vite 插件。</p>
+                <p>Webpack、Vite、Gulp 与自定义 Node 流程都由 weapp-tailwindcss 接管输出，不在小程序构建里叠加官方 Tailwind 生成插件。</p>
               </article>
             )}
             <div className="home-capabilities__grid">
@@ -272,11 +280,11 @@ function HomepageHeader() {
 
       <section className="home-v5-story" aria-labelledby="home-v5-title">
         <div>
-          <h2 id="home-v5-title">同一套 Tailwind 输入，按目标端生成可交付产物</h2>
+          <h2 id="home-v5-title">同一套 Tailwind 输入，按目标端交付产物</h2>
         </div>
         <div className="home-v5-story__body">
           <p>
-            在 Web 目标下保持 Tailwind CSS 原生语义；在小程序目标下补齐选择器、单位、转义与运行时边界。团队可以先统一样式入口，再按框架选择插件接入方式。
+            Web 保持 Tailwind 原生语义；小程序补齐选择器、单位、转义与运行时边界。团队统一入口，再按框架接入。
           </p>
           <a href="/docs/api-v2">查看 API v2</a>
         </div>
