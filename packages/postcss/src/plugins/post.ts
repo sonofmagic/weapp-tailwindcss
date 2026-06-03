@@ -1,10 +1,10 @@
 // 后处理阶段插件：负责选择器兜底、声明去重与变量排序
-import type { Declaration, Plugin, PluginCreator, Rule } from 'postcss'
+import type { Declaration, Plugin, PluginCreator, Root, Rule } from 'postcss'
 import type { IStyleHandlerOptions } from '../types'
 import { defu } from '@weapp-tailwindcss/shared'
 import { normalizeMiniProgramPrefixedDeclaration, removeUnsupportedMiniProgramPrefixedAtRule } from '../compat/mini-program-prefixes'
 import { normalizeTailwindcssRpxDeclaration } from '../compat/tailwindcss-rpx'
-import { normalizeTailwindcssV4Declaration } from '../compat/tailwindcss-v4'
+import { collectUsedTailwindcssV4Variables, createMissingCssVarsV4Nodes, normalizeTailwindcssV4Declaration } from '../compat/tailwindcss-v4'
 import { shouldRemoveEmptyRuleForUniAppX } from '../compat/uni-app-x'
 import { postcssPlugin } from '../constants'
 import { getFallbackRemove } from '../selectorParser'
@@ -18,6 +18,7 @@ export type PostcssWeappTailwindcssRenamePlugin = PluginCreator<IStyleHandlerOpt
 export { reorderVariableDeclarations } from './post/decl-dedupe'
 
 const DEFAULT_ROOT_SELECTORS = ['page', '.tw-root', 'wx-root-portal-content'] as const
+const DEFAULT_ELEMENT_VARIABLE_SCOPE = 'view,text,:before,:after'
 const LEGACY_FLEXBOX_DECLARATION_PROPS = new Set([
   '-webkit-align-content',
   '-webkit-align-items',
@@ -74,6 +75,17 @@ function removeLegacyFlexboxPrefix(decl: Declaration) {
   }
 }
 
+function injectMissingTailwindcssV4Defaults(root: Root) {
+  const nodes = createMissingCssVarsV4Nodes(root, collectUsedTailwindcssV4Variables(root))
+  if (nodes.length === 0) {
+    return
+  }
+  root.append({
+    selector: DEFAULT_ELEMENT_VARIABLE_SCOPE,
+    nodes,
+  })
+}
+
 // 后处理插件收敛所有规则，在退出阶段执行去重与兜底
 const postcssWeappTailwindcssPostPlugin: PostcssWeappTailwindcssRenamePlugin = (
   options,
@@ -87,6 +99,7 @@ const postcssWeappTailwindcssPostPlugin: PostcssWeappTailwindcssRenamePlugin = (
   const cleanRootSpecificity = createRootSpecificityCleaner(opts)
   const cleanFallbackPlaceholder = createFallbackPlaceholderCleaner()
   const shouldAppendHostSelector = createHostSelectorAppender(opts)
+  let shouldInjectTailwindcssV4Defaults = false
 
   const enableMainChunkTransforms = opts.isMainChunk !== false
   if (enableMainChunkTransforms || cleanRootSpecificity) {
@@ -148,6 +161,9 @@ const postcssWeappTailwindcssPostPlugin: PostcssWeappTailwindcssRenamePlugin = (
       root.walkAtRules((atRule) => {
         removeUnsupportedMiniProgramPrefixedAtRule(atRule)
       })
+      if (shouldInjectTailwindcssV4Defaults) {
+        injectMissingTailwindcssV4Defaults(root)
+      }
     }
 
     p.AtRuleExit = (atRule) => {
@@ -156,6 +172,9 @@ const postcssWeappTailwindcssPostPlugin: PostcssWeappTailwindcssRenamePlugin = (
        * @description 移除 property
        */
       if (opts.cssRemoveProperty && atRule.name === 'property') {
+        if (opts.majorVersion === 4 && atRule.params.trim().startsWith('--tw-')) {
+          shouldInjectTailwindcssV4Defaults = true
+        }
         atRule.remove()
       }
       /**

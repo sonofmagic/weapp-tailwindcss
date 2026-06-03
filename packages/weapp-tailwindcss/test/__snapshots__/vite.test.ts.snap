@@ -7,6 +7,15 @@ exports[`vite > v4-vite-plugin > css 1`] = `
   padding: 0;
   border: 0 solid;
 }
+view,text,:before,:after {
+  --tw-gradient-position: initial;
+  --tw-gradient-from: #0000;
+  --tw-gradient-to: #0000;
+  --tw-gradient-stops: initial;
+  --tw-gradient-via-stops: initial;
+  --tw-gradient-from-position: 0%;
+  --tw-gradient-to-position: 100%;
+}
 :host,page,.tw-root,wx-root-portal-content {
   --color-gray-200: #e5e7eb;
   --color-gray-400: #9ca3af;

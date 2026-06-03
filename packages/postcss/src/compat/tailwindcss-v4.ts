@@ -1,5 +1,5 @@
 // Tailwind CSS v4 兼容性相关的辅助方法，集中复用特殊处理逻辑
-import type { AtRule, Root, Rule } from 'postcss'
+import type { AtRule, Declaration as PostcssDeclaration, Root, Rule } from 'postcss'
 import { Declaration } from 'postcss'
 import cssVarsV4 from '../cssVarsV4'
 import { createCssVarNodes } from '../utils/css-vars'
@@ -24,6 +24,21 @@ const RADIUS_VALUE_RE = /\b([+-]?(?:\d+(?:\.\d+)?|\.\d+)(?:e[+-]?\d+)?)\s*(r?px)
 const SCIENTIFIC_NOTATION_RE = /e/i
 const TW_VAR_FUNCTION_RE = /var\(\s*(--tw-[\w-]+)\b/g
 const TW_CONTENT_VAR_RE = /var\(\s*--tw-content\b/
+const DEFAULT_VARIABLE_SCOPE_SELECTORS = new Set([
+  '*',
+  ':root',
+  ':host',
+  'page',
+  '.tw-root',
+  'wx-root-portal-content',
+  'view',
+  'text',
+  ':before',
+  ':after',
+  '::before',
+  '::after',
+  '::backdrop',
+])
 
 export function isTailwindcssV4(options?: { majorVersion?: number }) {
   return options?.majorVersion === 4
@@ -78,6 +93,62 @@ export function usesTailwindcssV4ContentVariable(root: Root) {
 export function createUsedCssVarsV4Nodes(usedProps: ReadonlySet<string>) {
   return cssVarsV4
     .filter(def => usedProps.has(def.prop))
+    .map(def => new Declaration({
+      prop: def.prop,
+      value: def.value,
+    }))
+}
+
+function isInsideAtRule(decl: PostcssDeclaration, name: string) {
+  let parent = decl.parent
+  while (parent) {
+    if (parent.type === 'atrule' && parent.name === name) {
+      return true
+    }
+    parent = parent.parent
+  }
+  return false
+}
+
+function isDefaultVariableScopeRule(rule: Rule) {
+  if (!rule.selectors.every(selector => DEFAULT_VARIABLE_SCOPE_SELECTORS.has(selector.trim()))) {
+    return false
+  }
+  let hasDeclaration = false
+  let onlyCustomProperties = true
+  rule.each((node) => {
+    if (node.type !== 'decl') {
+      return
+    }
+    hasDeclaration = true
+    if (!node.prop.startsWith('--')) {
+      onlyCustomProperties = false
+    }
+  })
+  return hasDeclaration && onlyCustomProperties
+}
+
+function collectScopedTailwindcssV4DefaultVariables(root: Root) {
+  const props = new Set<string>()
+  root.walkDecls((decl) => {
+    if (!decl.prop.startsWith('--tw-')) {
+      return
+    }
+    if (isInsideAtRule(decl, 'supports')) {
+      return
+    }
+    if (decl.parent?.type === 'rule' && isDefaultVariableScopeRule(decl.parent)) {
+      props.add(decl.prop)
+    }
+  })
+  return props
+}
+
+// 为会移除 @property 的小程序产物补齐缺失的 Tailwind v4 运行时默认变量
+export function createMissingCssVarsV4Nodes(root: Root, usedProps: ReadonlySet<string>) {
+  const scopedProps = collectScopedTailwindcssV4DefaultVariables(root)
+  return cssVarsV4
+    .filter(def => usedProps.has(def.prop) && !scopedProps.has(def.prop))
     .map(def => new Declaration({
       prop: def.prop,
       value: def.value,

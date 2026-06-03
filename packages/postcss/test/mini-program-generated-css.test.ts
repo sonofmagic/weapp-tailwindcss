@@ -86,6 +86,18 @@ describe('mini-program generated css cleanup', () => {
     expect(css).toContain('background-color: var(--color-red-500)')
   })
 
+  it('keeps Tailwind v4 property defaults after removing @property rules', () => {
+    const css = finalizeMiniProgramCss([
+      '/*! tailwindcss v4.1.10 | MIT License | https://tailwindcss.com */',
+      '.border{border-style:var(--tw-border-style);border-width:1px}',
+      '@property --tw-border-style{syntax:"*";inherits:false;initial-value:solid}',
+    ].join(''))
+
+    expect(css).toContain('view,text,:before,:after{--tw-border-style:solid}')
+    expect(css).toContain('.border{border-style:var(--tw-border-style);border-width:1px}')
+    expect(css).not.toContain('@property')
+  })
+
   it('synthesizes configured mini-program preflight when generator css misses base reset', () => {
     const css = finalizeMiniProgramCss([
       '.divide-x-4>view+view{border-left-width:4px}',

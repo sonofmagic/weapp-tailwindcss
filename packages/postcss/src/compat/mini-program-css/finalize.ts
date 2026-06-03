@@ -1,6 +1,7 @@
 import type { CssPreflightOptions } from '../../types'
 import postcss from 'postcss'
 import { normalizeMiniProgramPrefixedDeclaration, removeUnsupportedMiniProgramPrefixedAtRule } from '../mini-program-prefixes'
+import { collectUsedTailwindcssV4Variables, createMissingCssVarsV4Nodes } from '../tailwindcss-v4'
 import { removeUnsupportedCascadeLayers, removeUnsupportedMiniProgramAtRules } from './at-rules'
 import { isDisplayP3Declaration } from './color-gamut'
 import {
@@ -19,10 +20,12 @@ import {
 import { MINI_PROGRAM_THEME_SCOPE_SELECTOR } from './selectors'
 
 const HOIST_ANCHOR_COMMENT = '__weapp_tailwindcss_base_anchor__'
+const TAILWIND_V4_BANNER_RE = /\/\*!\s*tailwindcss v4\./
 
 export interface FinalizeMiniProgramCssOptions {
   cssPreflight?: CssPreflightOptions | undefined
   preservePseudoContentInit?: boolean
+  isTailwindcssV4?: boolean | undefined
 }
 
 function createPseudoContentInitRule() {
@@ -130,6 +133,21 @@ function collectThemeVariableRule(root: postcss.Root, options: FinalizeMiniProgr
   return rule
 }
 
+function hasTailwindcssV4Signal(css: string) {
+  if (TAILWIND_V4_BANNER_RE.test(css)) {
+    return true
+  }
+  const root = postcss.parse(css)
+  let hasProperty = false
+  root.walkAtRules('property', (atRule) => {
+    if (atRule.params.trim().startsWith('--tw-')) {
+      hasProperty = true
+      return false
+    }
+  })
+  return hasProperty
+}
+
 function getTopDirectiveTail(root: postcss.Root) {
   let tail: postcss.Node | undefined
   for (const node of root.nodes ?? []) {
@@ -196,6 +214,10 @@ function unwrapTailwindSourceMedia(root: postcss.Root) {
 }
 
 function finalizeMiniProgramCssRoot(root: postcss.Root, options: FinalizeMiniProgramCssOptions = {}) {
+  const shouldInjectTailwindcssV4Defaults = options.isTailwindcssV4 === true
+  const tailwindcssV4DefaultNodes = shouldInjectTailwindcssV4Defaults
+    ? createMissingCssVarsV4Nodes(root, collectUsedTailwindcssV4Variables(root))
+    : []
   removeUnsupportedCascadeLayers(root)
   unwrapTailwindSourceMedia(root)
   root.walkAtRules('property', (atRule) => {
@@ -220,6 +242,12 @@ function finalizeMiniProgramCssRoot(root: postcss.Root, options: FinalizeMiniPro
       preflightRules.push(resetRule)
     }
   }
+  if (tailwindcssV4DefaultNodes.length > 0) {
+    preflightRules.push(postcss.rule({
+      selector: 'view,text,:before,:after',
+      nodes: tailwindcssV4DefaultNodes,
+    }))
+  }
   const themeRule = collectThemeVariableRule(root, options)
   const hoistedRules = themeRule ? [...preflightRules, themeRule] : preflightRules
   insertHoistedRules(root, hoistedRules, hoistAnchor)
@@ -238,10 +266,19 @@ export function hoistTailwindPreflightBase(css: string) {
 }
 
 export function finalizeMiniProgramCss(css: string, options: FinalizeMiniProgramCssOptions = {}) {
+  let isTailwindcssV4 = options.isTailwindcssV4
+  if (isTailwindcssV4 === undefined) {
+    try {
+      isTailwindcssV4 = hasTailwindcssV4Signal(css)
+    }
+    catch {
+      isTailwindcssV4 = TAILWIND_V4_BANNER_RE.test(css)
+    }
+  }
   const cleanedCss = removeUnsupportedMiniProgramAtRules(css)
   try {
     const root = postcss.parse(cleanedCss)
-    finalizeMiniProgramCssRoot(root, options)
+    finalizeMiniProgramCssRoot(root, { ...options, isTailwindcssV4 })
     return root.toString()
   }
   catch {

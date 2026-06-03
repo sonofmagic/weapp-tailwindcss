@@ -597,6 +597,46 @@ page{--status-bar-height:25px;--top-window-height:0px;--window-top:0px;--window-
     expect(v2jit.css).toContain('font-size: 32rpx')
   })
 
+  it('keeps Tailwind CSS v4 border default style when only border utility is generated', async () => {
+    const styleHandler = createStyleHandler({
+      isMainChunk: true,
+    })
+    const code = [
+      '/*! tailwindcss v4.1.10 | MIT License | https://tailwindcss.com */',
+      '.border{border-style:var(--tw-border-style);border-width:1px}',
+      '@property --tw-border-style{syntax:"*";inherits:false;initial-value:solid}',
+    ].join('')
+    const { css } = await styleHandler(code, {
+      isMainChunk: true,
+      majorVersion: 4,
+    })
+
+    expect(css).toContain('view,text,:before,:after{--tw-border-style:solid}')
+    expect(css).toContain('.border{border-style:var(--tw-border-style);border-width:1px}')
+    expect(css).not.toContain('@property')
+  })
+
+  it('does not duplicate Tailwind CSS v4 border defaults when a default scope already exists', async () => {
+    const styleHandler = createStyleHandler({
+      isMainChunk: true,
+    })
+    const code = [
+      '/*! tailwindcss v4.1.10 | MIT License | https://tailwindcss.com */',
+      ':root,:host{--tw-border-style:solid}',
+      '.border{border-style:var(--tw-border-style);border-width:1px}',
+      '@property --tw-border-style{syntax:"*";inherits:false;initial-value:solid}',
+    ].join('')
+    const { css } = await styleHandler(code, {
+      isMainChunk: true,
+      majorVersion: 4,
+    })
+
+    expect(css).not.toContain('view,text,:before,:after{--tw-border-style:solid}')
+    expect(css.match(/--tw-border-style:solid/g)).toHaveLength(1)
+    expect(css).toContain('page,.tw-root,wx-root-portal-content,:host{--tw-border-style:solid}')
+    expect(css).not.toContain('@property')
+  })
+
   it('recovers misparsed arbitrary rpx lengths in non-main chunks', async () => {
     const styleHandler = createStyleHandler({
       isMainChunk: true,
