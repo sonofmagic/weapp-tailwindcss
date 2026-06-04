@@ -1,5 +1,13 @@
 # tailwindcss-injector
 
+## 1.0.12
+
+### Patch Changes
+
+- 🐛 **升级 ESM 化依赖后，将公开包的 Node.js 安装版本约束统一到 `^20.19.0 || >=22.12.0`，避免不支持稳定 ESM/CJS 混合加载的 Node.js 版本安装使用。** [#890](https://github.com/sonofmagic/weapp-tailwindcss/pull/890) by @sonofmagic
+- 📦 **Dependencies** [`73a7794`](https://github.com/sonofmagic/weapp-tailwindcss/commit/73a7794d50916d2189f22bfaa9e9ab9402b30df7)
+  → `tailwindcss-config@2.0.0`, `@weapp-tailwindcss/shared@2.0.0`
+
 ## 1.0.12-next.4
 
 ### Patch Changes
