@@ -5,7 +5,6 @@ export type {
   WeappTailwindcssGeneratorTarget,
   WeappTailwindcssPostcssPluginOptions,
 } from './index'
-export type { UserDefinedOptions } from './types/user-defined-options'
 export type {
   ApplyOptions,
   CacheOptions,
@@ -15,4 +14,5 @@ export type {
   TailwindV2Options,
   TailwindV3Options,
   TailwindV4Options,
-} from 'tailwindcss-patch'
+} from './types/typedoc-tailwindcss-patch'
+export type { UserDefinedOptions } from './types/user-defined-options'

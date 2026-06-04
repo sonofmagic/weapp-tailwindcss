@@ -1,20 +1,20 @@
 ---
-title: ⚙️ 一般配置
-sidebar_label: ⚙️ 一般配置
+title: "⚙️ 一般配置"
+sidebar_label: "⚙️ 一般配置"
 sidebar_position: 4
-description: ⚙️ 一般配置：18 个 UserDefinedOptions 配置项，包含类型、默认值和源码说明。
+description: "⚙️ 一般配置：18 个 UserDefinedOptions 配置项，包含类型、默认值和源码说明。"
 keywords:
-  - weapp-tailwindcss
-  - API
-  - 接口文档
-  - 配置项
-  - 小程序
-  - tailwindcss
-  - 微信小程序
-  - 一般配置
-  - ⚙️ 一般配置
-  - 一般配置 配置
-  - 插件参数
+  - "weapp-tailwindcss"
+  - "API"
+  - "接口文档"
+  - "配置项"
+  - "小程序"
+  - "tailwindcss"
+  - "微信小程序"
+  - "一般配置"
+  - "⚙️ 一般配置"
+  - "一般配置 配置"
+  - "插件参数"
 ---
 
 本页收录 18 个配置项，来源于 `UserDefinedOptions`。

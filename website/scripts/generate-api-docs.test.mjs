@@ -8,13 +8,14 @@ import {
   buildOptionsGroupSeoFrontmatter,
   buildOtherInterfacesSeoFrontmatter,
   buildUserDefinedOptionsOverviewFrontmatter,
+  renderInterfaceDoc,
 } from './generate-api-docs.ts'
 
 describe('generate-api-docs SEO frontmatter', () => {
   it('provides strong metadata for interface pages', () => {
     const frontmatter = buildInterfaceSeoFrontmatter({
       name: 'ApplyOptions',
-      description: 'Preferred options for runtime patch behavior.',
+      description: 'Tailwind 运行时补丁行为配置。',
     })
 
     expect(frontmatter.description.length).toBeGreaterThanOrEqual(16)
@@ -70,5 +71,24 @@ describe('generate-api-docs source extraction', () => {
       'https://github.com/sonofmagic/weapp-tailwindcss/issues/7',
     ])
     expect(doc?.properties[0]?.nested).toBeUndefined()
+  })
+
+  it('uses Chinese labels for optional interface properties', () => {
+    const project = new Project({ useInMemoryFileSystem: true })
+    const sourceFile = project.createSourceFile('api-fixture.ts', `
+      export interface ApiFixture {
+        /**
+         * 入口文件列表。
+         */
+        cssEntries?: string[]
+      }
+    `)
+    const doc = buildInterfaceDoc('ApiFixture', sourceFile.getInterfaceOrThrow('ApiFixture'))
+    const rendered = renderInterfaceDoc(doc)
+
+    expect(doc?.properties[0]?.optional).toBe(true)
+    expect(doc?.properties[0]?.description).toBe('入口文件列表。')
+    expect(rendered).toContain('> 可选 | **cssEntries**: `string[]`')
+    expect(rendered).not.toContain('`optional`')
   })
 })

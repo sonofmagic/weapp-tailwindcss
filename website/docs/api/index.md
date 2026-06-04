@@ -1,18 +1,18 @@
 ---
-title: weapp-tailwindcss
-description: weapp-tailwindcss API 首页，提供配置项分组和接口索引。
+title: "weapp-tailwindcss"
+description: "weapp-tailwindcss API 首页，提供配置项分组和接口索引。"
 keywords:
-  - weapp-tailwindcss
-  - API
-  - 接口文档
-  - 配置项
-  - 小程序
-  - tailwindcss
-  - 微信小程序
-  - API 首页
-  - 配置项索引
-  - 接口索引
-  - 参数说明
+  - "weapp-tailwindcss"
+  - "API"
+  - "接口文档"
+  - "配置项"
+  - "小程序"
+  - "tailwindcss"
+  - "微信小程序"
+  - "API 首页"
+  - "配置项索引"
+  - "接口索引"
+  - "参数说明"
 ---
 
 # weapp-tailwindcss

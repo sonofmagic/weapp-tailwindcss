@@ -193,6 +193,10 @@ function buildApiSeoKeywords(...values: Array<string | undefined>): string[] {
   ]).slice(0, 16)
 }
 
+function toYamlString(value: string): string {
+  return JSON.stringify(value)
+}
+
 function pushFrontmatter(
   lines: string[],
   frontmatter: {
@@ -204,17 +208,17 @@ function pushFrontmatter(
   },
 ): void {
   lines.push('---')
-  lines.push(`title: ${frontmatter.title}`)
+  lines.push(`title: ${toYamlString(frontmatter.title)}`)
   if (frontmatter.sidebarLabel) {
-    lines.push(`sidebar_label: ${frontmatter.sidebarLabel}`)
+    lines.push(`sidebar_label: ${toYamlString(frontmatter.sidebarLabel)}`)
   }
   if (typeof frontmatter.sidebarPosition === 'number') {
     lines.push(`sidebar_position: ${frontmatter.sidebarPosition}`)
   }
-  lines.push(`description: ${frontmatter.description}`)
+  lines.push(`description: ${toYamlString(frontmatter.description)}`)
   lines.push('keywords:')
   frontmatter.keywords.forEach((keyword) => {
-    lines.push(`  - ${keyword}`)
+    lines.push(`  - ${toYamlString(keyword)}`)
   })
   lines.push('---')
   lines.push('')
@@ -227,7 +231,7 @@ export function buildInterfaceSeoFrontmatter(doc: InterfaceDoc) {
   return {
     title: doc.name,
     description,
-    keywords: buildApiSeoKeywords(doc.name, `${doc.name} interface`, `${doc.name} 类型定义`, 'TypeScript'),
+    keywords: buildApiSeoKeywords(doc.name, `${doc.name} 接口`, `${doc.name} 类型定义`, 'TypeScript'),
   }
 }
 
@@ -697,7 +701,7 @@ function renderProperty(prop: PropertyDoc, level: number): string {
   lines.push(heading)
   lines.push('')
 
-  const optionalLabel = prop.optional ? '`optional` ' : ''
+  const optionalLabel = prop.optional ? '可选 | ' : ''
   lines.push(`> ${optionalLabel}**${prop.name}${prop.isFunction ? '()' : ''}**: \`${prop.typeText}\``)
   lines.push('')
 
@@ -860,7 +864,7 @@ function renderOptionsProperty(prop: PropertyDoc, level: number): string {
   return lines.join('\n').trimEnd()
 }
 
-function renderInterfaceDoc(doc: InterfaceDoc): string {
+export function renderInterfaceDoc(doc: InterfaceDoc): string {
   const lines: string[] = []
   pushFrontmatter(lines, buildInterfaceSeoFrontmatter(doc))
   lines.push(`# ${doc.name}`)

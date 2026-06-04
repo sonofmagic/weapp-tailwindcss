@@ -1,152 +1,151 @@
 ---
-title: TailwindCssPatchOptions
-description: Root configuration consumed by the Tailwind CSS patch runner.
+title: "TailwindCssPatchOptions"
+description: "Tailwind CSS 补丁运行器的根配置。"
 keywords:
-  - weapp-tailwindcss
-  - API
-  - 接口文档
-  - 配置项
-  - 小程序
-  - tailwindcss
-  - 微信小程序
-  - TailwindCssPatchOptions
-  - TailwindCssPatchOptions interface
-  - TailwindCssPatchOptions 类型定义
-  - TypeScript
+  - "weapp-tailwindcss"
+  - "API"
+  - "接口文档"
+  - "配置项"
+  - "小程序"
+  - "tailwindcss"
+  - "微信小程序"
+  - "TailwindCssPatchOptions"
+  - "TailwindCssPatchOptions 接口"
+  - "TailwindCssPatchOptions 类型定义"
+  - "TypeScript"
 ---
 
 # TailwindCssPatchOptions
 
-Root configuration consumed by the Tailwind CSS patch runner.
+Tailwind CSS 补丁运行器的根配置。
 
 ## 属性
 
 ### projectRoot?
 
-> `optional` **projectRoot**: `string`
+> 可选 | **projectRoot**: `string`
 
-Base directory used when resolving Tailwind resources.
-Defaults to `process.cwd()`.
+解析 Tailwind 资源时使用的项目根目录。默认是 `process.cwd()`。
 
 ***
 
 ### tailwindcss?
 
-> `optional` **tailwindcss**: `TailwindCssOptions`
+> 可选 | **tailwindcss**: `TailwindCssOptions`
 
-Preferred Tailwind runtime configuration.
+Tailwind 运行时配置。
 
 #### config?
 
-> `optional` **config**: `string`
+> 可选 | **config**: `string`
 
-Path to a Tailwind config file when auto-detection is insufficient.
+Tailwind 配置文件路径。自动识别不够准确时可以显式传入。
 #### cwd?
 
-> `optional` **cwd**: `string`
+> 可选 | **cwd**: `string`
 
-Custom working directory used when resolving config-relative paths.
+解析 Tailwind 配置相对路径时使用的工作目录。
 #### postcssPlugin?
 
-> `optional` **postcssPlugin**: `string`
+> 可选 | **postcssPlugin**: `string`
 
-Optional PostCSS plugin name to use instead of the default.
+自定义 PostCSS 插件名称。未传入时使用默认名称。
 #### version?
 
-> `optional` **version**: `3 | 4 | 2`
+> 可选 | **version**: `3 | 4 | 2`
 
-Explicit Tailwind CSS major version used by the current project. When omitted, the installed package version is inferred.
+当前项目使用的 Tailwind CSS 主版本。未传入时会从已安装包推断。
 #### packageName?
 
-> `optional` **packageName**: `string`
+> 可选 | **packageName**: `string`
 
-Tailwind package name if the project uses a fork.
+Tailwind 包名。项目使用分支包时可以改这里。
 #### resolve?
 
-> `optional` **resolve**: `PackageResolvingOptions`
+> 可选 | **resolve**: `PackageResolvingOptions`
 
-Package resolution options forwarded to `local-pkg`.
+传给 `local-pkg` 的包解析配置。
 #### v2?
 
-> `optional` **v2**: `TailwindV2Options`
+> 可选 | **v2**: `TailwindV2Options`
 
-Overrides applied when patching Tailwind CSS v2.
+Tailwind CSS v2 补丁选项。
 #### v3?
 
-> `optional` **v3**: `TailwindV3Options`
+> 可选 | **v3**: `TailwindV3Options`
 
-Overrides applied when patching Tailwind CSS v3.
+Tailwind CSS v3 补丁选项。
 #### v4?
 
-> `optional` **v4**: `TailwindV4Options`
+> 可选 | **v4**: `TailwindV4Options`
 
-Options specific to Tailwind CSS v4 patching.
+Tailwind CSS v4 补丁选项。
 
 ***
 
 ### apply?
 
-> `optional` **apply**: `ApplyOptions`
+> 可选 | **apply**: `ApplyOptions`
 
-Preferred patch toggles.
+补丁行为开关。
 
 #### overwrite?
 
-> `optional` **overwrite**: `boolean`
+> 可选 | **overwrite**: `boolean`
 
-Whether patched files can be overwritten on disk.
+是否允许覆盖磁盘上已经打过补丁的文件。
 #### exposeContext?
 
-> `optional` **exposeContext**: `boolean | ExposeContextOptions`
+> 可选 | **exposeContext**: `boolean | ExposeContextOptions`
 
-Whether to expose runtime Tailwind contexts (or configure how they are exposed).
+是否暴露运行时 Tailwind context，或配置具体暴露方式。
 #### extendLengthUnits?
 
-> `optional` **extendLengthUnits**: `false | ExtendLengthUnitsOptions`
+> 可选 | **extendLengthUnits**: `false | ExtendLengthUnitsOptions`
 
-Extends the length-unit patch or disables it entirely.
+扩展长度单位补丁，传入 `false` 可完全关闭。
 
 ***
 
 ### extract?
 
-> `optional` **extract**: `ExtractOptions`
+> 可选 | **extract**: `ExtractOptions`
 
-Preferred extraction output settings.
+类名提取结果输出配置。
 
 #### write?
 
-> `optional` **write**: `boolean`
+> 可选 | **write**: `boolean`
 
-Whether to produce an output file.
+是否写出提取结果文件。
 #### file?
 
-> `optional` **file**: `string`
+> 可选 | **file**: `string`
 
-Optional absolute or relative path to the output file.
+输出文件路径，可传绝对路径或相对路径。
 #### format?
 
-> `optional` **format**: `"json" | "lines"`
+> 可选 | **format**: `"json" | "lines"`
 
-Output format, defaults to JSON when omitted.
+输出格式。未传入时使用 JSON。
 #### pretty?
 
-> `optional` **pretty**: `number | boolean`
+> 可选 | **pretty**: `number | boolean`
 
-Pretty-print spacing (truthy value enables indentation).
+JSON 格式化缩进。传入可判定为真的值会启用缩进。
 #### removeUniversalSelector?
 
-> `optional` **removeUniversalSelector**: `boolean`
+> 可选 | **removeUniversalSelector**: `boolean`
 
-Whether to strip the universal selector (`*`) from the final list.
+是否从最终列表中移除通配选择器 `*`。
 
 ***
 
 ### filter()?
 
-> `optional` **filter()**: `(className: string) => boolean`
+> 可选 | **filter()**: `(className: string) => boolean`
 
-Optional function that filters final class names.
+过滤最终类名的函数。
 
 #### 参数
 
@@ -162,6 +161,6 @@ Optional function that filters final class names.
 
 ### cache?
 
-> `optional` **cache**: `boolean | CacheOptions`
+> 可选 | **cache**: `boolean | CacheOptions`
 
-Cache configuration or boolean to enable/disable quickly.
+缓存配置。传入布尔值可快速启用或关闭。

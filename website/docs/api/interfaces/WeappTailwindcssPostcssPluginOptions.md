@@ -1,31 +1,35 @@
 ---
-title: WeappTailwindcssPostcssPluginOptions
-description: WeappTailwindcssPostcssPluginOptions 的类型说明，列出公开属性、参数和使用边界。
+title: "WeappTailwindcssPostcssPluginOptions"
+description: "`weapp-tailwindcss` PostCSS 插件配置。"
 keywords:
-  - weapp-tailwindcss
-  - API
-  - 接口文档
-  - 配置项
-  - 小程序
-  - tailwindcss
-  - 微信小程序
-  - WeappTailwindcssPostcssPluginOptions
-  - WeappTailwindcssPostcssPluginOptions interface
-  - WeappTailwindcssPostcssPluginOptions 类型定义
-  - TypeScript
+  - "weapp-tailwindcss"
+  - "API"
+  - "接口文档"
+  - "配置项"
+  - "小程序"
+  - "tailwindcss"
+  - "微信小程序"
+  - "WeappTailwindcssPostcssPluginOptions"
+  - "WeappTailwindcssPostcssPluginOptions 接口"
+  - "WeappTailwindcssPostcssPluginOptions 类型定义"
+  - "TypeScript"
 ---
 
 # WeappTailwindcssPostcssPluginOptions
+
+`weapp-tailwindcss` PostCSS 插件配置。
 
 ## 属性
 
 ### generator?
 
-> `optional` **generator**: `import("./generator").WeappTailwindcssGeneratorOptions`
+> 可选 | **generator**: `import("./generator").WeappTailwindcssGeneratorOptions`
+
+生成器配置，用于控制目标端、Tailwind 配置路径和 v4 兼容层。
 
 #### target?
 
-> `optional` **target**: `WeappTailwindcssGeneratorTarget`
+> 可选 | **target**: `WeappTailwindcssGeneratorTarget`
 
 生成目标。小程序构建默认使用 `weapp`，H5/Web 与普通 uni-app App WebView 默认使用 `web`。
 
@@ -35,24 +39,24 @@ keywords:
 并通过 `uniAppX`、`platform` 与单位转换配置处理 App 差异。
 #### config?
 
-> `optional` **config**: `string`
+> 可选 | **config**: `string`
 
 Tailwind 配置文件路径，兼容原 Tailwind PostCSS 插件的 `config` 选项。
 #### styleOptions?
 
-> `optional` **styleOptions**: `Partial<IStyleHandlerOptions>`
+> 可选 | **styleOptions**: `Partial<IStyleHandlerOptions>`
 
 传给小程序 CSS 兼容转换器的额外配置。
 #### importFallback?
 
-> `optional` **importFallback**: `boolean`
+> 可选 | **importFallback**: `boolean`
 
 将 `@import "weapp-tailwindcss"` 作为 Tailwind CSS v4 生成入口的兜底别名。
 
 适用于框架无法把 `@import "tailwindcss"` 改写到 `weapp-tailwindcss` 包入口的场景，默认开启。
 #### tailwindcssV3Compatibility?
 
-> `optional` **tailwindcssV3Compatibility**: `boolean`
+> 可选 | **tailwindcssV3Compatibility**: `boolean`
 
 Tailwind CSS v4 小程序生成模式默认注入 v3 默认值兼容层，保持升级前的视觉行为。
 
@@ -62,164 +66,178 @@ Tailwind CSS v4 小程序生成模式默认注入 v3 默认值兼容层，保持
 
 ### version?
 
-> `optional` **version**: `3 | 4`
+> 可选 | **version**: `3 | 4`
+
+显式指定 Tailwind CSS 主版本。未传入时会从 CSS 与依赖环境推断。
 
 ***
 
 ### config?
 
-> `optional` **config**: `string`
+> 可选 | **config**: `string`
+
+Tailwind 配置文件路径。
 
 ***
 
 ### postcssPlugin?
 
-> `optional` **postcssPlugin**: `string`
+> 可选 | **postcssPlugin**: `string`
+
+Tailwind PostCSS 插件名称。
 
 ***
 
 ### candidates?
 
-> `optional` **candidates**: `Iterable<string>`
+> 可选 | **candidates**: `Iterable<string>`
+
+额外传入的候选类名。
 
 ***
 
 ### scanSources?
 
-> `optional` **scanSources**: `boolean | import("tailwindcss-patch").TailwindV4SourcePattern[]`
+> 可选 | **scanSources**: `boolean | import("tailwindcss-patch").TailwindV4SourcePattern[]`
+
+是否扫描 Tailwind v4 源码入口中的候选类名。
 
 ***
 
 ### sources?
 
-> `optional` **sources**: `TailwindV4CandidateSource[]`
+> 可选 | **sources**: `TailwindV4CandidateSource[]`
+
+额外传入的 Tailwind v4 内联候选来源。
 
 ***
 
 ### styleOptions?
 
-> `optional` **styleOptions**: `Partial<IStyleHandlerOptions>`
+> 可选 | **styleOptions**: `Partial<IStyleHandlerOptions>`
+
+传给小程序 CSS 兼容转换器的额外配置。
 
 #### isMainChunk?
 
-> `optional` **isMainChunk**: `boolean`
+> 可选 | **isMainChunk**: `boolean`
 #### cssPreflight?
 
-> `optional` **cssPreflight**: `CssPreflightOptions`
+> 可选 | **cssPreflight**: `CssPreflightOptions`
 #### cssInjectPreflight()?
 
-> `optional` **cssInjectPreflight()**: `InjectPreflight`
+> 可选 | **cssInjectPreflight()**: `InjectPreflight`
 #### escapeMap?
 
-> `optional` **escapeMap**: `Record<string, string>`
+> 可选 | **escapeMap**: `Record<string, string>`
 #### ctx?
 
-> `optional` **ctx**: `{ variablesScopeWeakMap: WeakMap<object, any>; isVariablesScope: (rule: WeakKey) => boolean; markVariablesScope: (rule: WeakKey) => void; }`
+> 可选 | **ctx**: `{ variablesScopeWeakMap: WeakMap<object, any>; isVariablesScope: (rule: WeakKey) => boolean; markVariablesScope: (rule: WeakKey) => void; }`
 #### platform?
 
-> `optional` **platform**: `string`
+> 可选 | **platform**: `string`
 #### postcssOptions?
 
-> `optional` **postcssOptions**: `Partial<Omit<Result, "file">>`
+> 可选 | **postcssOptions**: `Partial<Omit<Result, "file">>`
 #### cssRemoveProperty?
 
-> `optional` **cssRemoveProperty**: `boolean`
+> 可选 | **cssRemoveProperty**: `boolean`
 #### cssRemoveHoverPseudoClass?
 
-> `optional` **cssRemoveHoverPseudoClass**: `boolean`
+> 可选 | **cssRemoveHoverPseudoClass**: `boolean`
 #### cssPresetEnv?
 
-> `optional` **cssPresetEnv**: `PresetEnvOptions`
+> 可选 | **cssPresetEnv**: `PresetEnvOptions`
 #### autoprefixer?
 
-> `optional` **autoprefixer**: `WeappAutoprefixerOptions`
+> 可选 | **autoprefixer**: `WeappAutoprefixerOptions`
 #### cssCalc?
 
-> `optional` **cssCalc**: `boolean | CssCalcOptions | (string | RegExp)[]`
+> 可选 | **cssCalc**: `boolean | CssCalcOptions | (string | RegExp)[]`
 #### atRules?
 
-> `optional` **atRules**: `{ property?: boolean | undefined; supports?: boolean | undefined; media?: boolean | undefined; }`
+> 可选 | **atRules**: `{ property?: boolean | undefined; supports?: boolean | undefined; media?: boolean | undefined; }`
 #### uniAppX?
 
-> `optional` **uniAppX**: `boolean`
+> 可选 | **uniAppX**: `boolean`
 #### uniAppXCssTarget?
 
-> `optional` **uniAppXCssTarget**: `"uvue"`
+> 可选 | **uniAppXCssTarget**: `"uvue"`
 #### uniAppXUnsupported?
 
-> `optional` **uniAppXUnsupported**: `UniAppXUnsupportedMode`
+> 可选 | **uniAppXUnsupported**: `UniAppXUnsupportedMode`
 #### majorVersion?
 
-> `optional` **majorVersion**: `number`
+> 可选 | **majorVersion**: `number`
 #### cssPreflightRange?
 
-> `optional` **cssPreflightRange**: `"all"`
+> 可选 | **cssPreflightRange**: `"all"`
 #### cssChildCombinatorReplaceValue?
 
-> `optional` **cssChildCombinatorReplaceValue**: `string | string[]`
+> 可选 | **cssChildCombinatorReplaceValue**: `string | string[]`
 #### injectAdditionalCssVarScope?
 
-> `optional` **injectAdditionalCssVarScope**: `boolean`
+> 可选 | **injectAdditionalCssVarScope**: `boolean`
 #### cssSelectorReplacement?
 
-> `optional` **cssSelectorReplacement**: `{ root?: string | string[] | false | undefined; universal?: string | string[] | false | undefined; }`
+> 可选 | **cssSelectorReplacement**: `{ root?: string | string[] | false | undefined; universal?: string | string[] | false | undefined; }`
 #### rem2rpx?
 
-> `optional` **rem2rpx**: `boolean | Rem2rpxOptions`
+> 可选 | **rem2rpx**: `boolean | Rem2rpxOptions`
 #### px2rpx?
 
-> `optional` **px2rpx**: `boolean | Px2rpxOptions`
+> 可选 | **px2rpx**: `boolean | Px2rpxOptions`
 #### unitsToPx?
 
-> `optional` **unitsToPx**: `boolean | UnitsToPxOptions`
+> 可选 | **unitsToPx**: `boolean | UnitsToPxOptions`
 #### unitConversion?
 
-> `optional` **unitConversion**: `UnitConversionOptions`
+> 可选 | **unitConversion**: `UnitConversionOptions`
 
 ***
 
 ### projectRoot?
 
-> `optional` **projectRoot**: `string`
+> 可选 | **projectRoot**: `string`
 
 ***
 
 ### cwd?
 
-> `optional` **cwd**: `string`
+> 可选 | **cwd**: `string`
 
 ***
 
 ### base?
 
-> `optional` **base**: `string`
+> 可选 | **base**: `string`
 
 ***
 
 ### baseFallbacks?
 
-> `optional` **baseFallbacks**: `string[]`
+> 可选 | **baseFallbacks**: `string[]`
 
 ***
 
 ### css?
 
-> `optional` **css**: `string`
+> 可选 | **css**: `string`
 
 ***
 
 ### cssSources?
 
-> `optional` **cssSources**: `TailwindV4CssSource[]`
+> 可选 | **cssSources**: `TailwindV4CssSource[]`
 
 ***
 
 ### cssEntries?
 
-> `optional` **cssEntries**: `string[]`
+> 可选 | **cssEntries**: `string[]`
 
 ***
 
 ### packageName?
 
-> `optional` **packageName**: `string`
+> 可选 | **packageName**: `string`

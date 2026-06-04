@@ -1,69 +1,68 @@
 ---
-title: CacheOptions
-description: Configures how the Tailwind class cache is stored and where it lives on disk.
+title: "CacheOptions"
+description: "Tailwind 类名缓存配置。"
 keywords:
-  - weapp-tailwindcss
-  - API
-  - 接口文档
-  - 配置项
-  - 小程序
-  - tailwindcss
-  - 微信小程序
-  - CacheOptions
-  - CacheOptions interface
-  - CacheOptions 类型定义
-  - TypeScript
+  - "weapp-tailwindcss"
+  - "API"
+  - "接口文档"
+  - "配置项"
+  - "小程序"
+  - "tailwindcss"
+  - "微信小程序"
+  - "CacheOptions"
+  - "CacheOptions 接口"
+  - "CacheOptions 类型定义"
+  - "TypeScript"
 ---
 
 # CacheOptions
 
-Configures how the Tailwind class cache is stored and where it lives on disk.
+Tailwind 类名缓存配置。
 
 ## 属性
 
 ### enabled?
 
-> `optional` **enabled**: `boolean`
+> 可选 | **enabled**: `boolean`
 
-Whether caching is enabled.
+是否启用缓存。
 
 ***
 
 ### cwd?
 
-> `optional` **cwd**: `string`
+> 可选 | **cwd**: `string`
 
-Working directory used when resolving cache paths.
+解析缓存路径时使用的工作目录。
 
 ***
 
 ### dir?
 
-> `optional` **dir**: `string`
+> 可选 | **dir**: `string`
 
-Directory where cache files are written.
+缓存文件写入目录。
 
 ***
 
 ### file?
 
-> `optional` **file**: `string`
+> 可选 | **file**: `string`
 
-Cache filename. Defaults to `class-cache.json` inside the derived cache folder
-when omitted.
+缓存文件名。未传入时，会在推导出的缓存目录下使用 `class-cache.json`。
 
 ***
 
 ### strategy?
 
-> `optional` **strategy**: `CacheStrategy`
+> 可选 | **strategy**: `CacheStrategy`
 
-Strategy used when merging new class lists with an existing cache.
+新类名列表与已有缓存合并时使用的策略。
 
 ***
 
 ### driver?
 
-> `optional` **driver**: `CacheDriver`
+> 可选 | **driver**: `CacheDriver`
 
-Backend used to persist the cache (`file`, `memory`, or `noop`). Defaults to `file`.
+缓存持久化方式。默认使用 `file`。

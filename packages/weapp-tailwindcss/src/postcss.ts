@@ -19,14 +19,41 @@ import { resolvePostcssTailwindVersion } from './postcss/tailwind-version'
 
 const PLUGIN_NAME = 'weapp-tailwindcss'
 
+/**
+ * `weapp-tailwindcss` PostCSS 插件配置。
+ */
 export interface WeappTailwindcssPostcssPluginOptions extends TailwindV4SourceOptions {
+  /**
+   * 生成器配置，用于控制目标端、Tailwind 配置路径和 v4 兼容层。
+   */
   generator?: WeappTailwindcssGeneratorUserOptions
+  /**
+   * 显式指定 Tailwind CSS 主版本。未传入时会从 CSS 与依赖环境推断。
+   */
   version?: 3 | 4
+  /**
+   * Tailwind 配置文件路径。
+   */
   config?: string
+  /**
+   * Tailwind PostCSS 插件名称。
+   */
   postcssPlugin?: string
+  /**
+   * 额外传入的候选类名。
+   */
   candidates?: Iterable<string>
+  /**
+   * 是否扫描 Tailwind v4 源码入口中的候选类名。
+   */
   scanSources?: WeappTailwindcssGenerateOptions['scanSources']
+  /**
+   * 额外传入的 Tailwind v4 内联候选来源。
+   */
   sources?: TailwindV4CandidateSource[]
+  /**
+   * 传给小程序 CSS 兼容转换器的额外配置。
+   */
   styleOptions?: Partial<IStyleHandlerOptions>
 }
 

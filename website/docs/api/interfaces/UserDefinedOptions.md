@@ -1,20 +1,20 @@
 ---
-title: UserDefinedOptions
-sidebar_label: UserDefinedOptions 总览
+title: "UserDefinedOptions"
+sidebar_label: "UserDefinedOptions 总览"
 sidebar_position: 1
-description: UserDefinedOptions 配置总览，按源码分组列出可传入的插件选项。
+description: "UserDefinedOptions 配置总览，按源码分组列出可传入的插件选项。"
 keywords:
-  - weapp-tailwindcss
-  - API
-  - 接口文档
-  - 配置项
-  - 小程序
-  - tailwindcss
-  - 微信小程序
-  - UserDefinedOptions
-  - 配置总览
-  - 插件参数
-  - 选项总览
+  - "weapp-tailwindcss"
+  - "API"
+  - "接口文档"
+  - "配置项"
+  - "小程序"
+  - "tailwindcss"
+  - "微信小程序"
+  - "UserDefinedOptions"
+  - "配置总览"
+  - "插件参数"
+  - "选项总览"
 ---
 
 ## 分组入口

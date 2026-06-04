@@ -1,20 +1,20 @@
 ---
-title: ✅ 重要配置
-sidebar_label: ✅ 重要配置
+title: "✅ 重要配置"
+sidebar_label: "✅ 重要配置"
 sidebar_position: 1
-description: ✅ 重要配置：19 个 UserDefinedOptions 配置项，包含类型、默认值和源码说明。
+description: "✅ 重要配置：19 个 UserDefinedOptions 配置项，包含类型、默认值和源码说明。"
 keywords:
-  - weapp-tailwindcss
-  - API
-  - 接口文档
-  - 配置项
-  - 小程序
-  - tailwindcss
-  - 微信小程序
-  - 重要配置
-  - ✅ 重要配置
-  - 重要配置 配置
-  - 插件参数
+  - "weapp-tailwindcss"
+  - "API"
+  - "接口文档"
+  - "配置项"
+  - "小程序"
+  - "tailwindcss"
+  - "微信小程序"
+  - "重要配置"
+  - "✅ 重要配置"
+  - "重要配置 配置"
+  - "插件参数"
 ---
 
 本页收录 19 个配置项，来源于 `UserDefinedOptions`。

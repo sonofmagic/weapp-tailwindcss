@@ -1,78 +1,78 @@
 ---
-title: TailwindCssOptions
-description: High-level Tailwind patch configuration shared across versions.
+title: "TailwindCssOptions"
+description: "按 Tailwind 版本划分的补丁配置。"
 keywords:
-  - weapp-tailwindcss
-  - API
-  - 接口文档
-  - 配置项
-  - 小程序
-  - tailwindcss
-  - 微信小程序
-  - TailwindCssOptions
-  - TailwindCssOptions interface
-  - TailwindCssOptions 类型定义
-  - TypeScript
+  - "weapp-tailwindcss"
+  - "API"
+  - "接口文档"
+  - "配置项"
+  - "小程序"
+  - "tailwindcss"
+  - "微信小程序"
+  - "TailwindCssOptions"
+  - "TailwindCssOptions 接口"
+  - "TailwindCssOptions 类型定义"
+  - "TypeScript"
 ---
 
 # TailwindCssOptions
 
-High-level Tailwind patch configuration shared across versions.
+按 Tailwind 版本划分的补丁配置。
 
 ## 属性
 
 ### config?
 
-> `optional` **config**: `string`
+> 可选 | **config**: `string`
 
-Path to a Tailwind config file when auto-detection is insufficient.
+Tailwind 配置文件路径。自动识别不够准确时可以显式传入。
 
 ***
 
 ### cwd?
 
-> `optional` **cwd**: `string`
+> 可选 | **cwd**: `string`
 
-Custom working directory used when resolving config-relative paths.
+解析 Tailwind 配置相对路径时使用的工作目录。
 
 ***
 
 ### postcssPlugin?
 
-> `optional` **postcssPlugin**: `string`
+> 可选 | **postcssPlugin**: `string`
 
-Optional PostCSS plugin name to use instead of the default.
+自定义 PostCSS 插件名称。未传入时使用默认名称。
 
 ***
 
 ### version?
 
-> `optional` **version**: `3 | 4 | 2`
+> 可选 | **version**: `3 | 4 | 2`
 
-Explicit Tailwind CSS major version used by the current project. When omitted, the installed package version is inferred.
+当前项目使用的 Tailwind CSS 主版本。未传入时会从已安装包推断。
 
 ***
 
 ### packageName?
 
-> `optional` **packageName**: `string`
+> 可选 | **packageName**: `string`
 
-Tailwind package name if the project uses a fork.
+Tailwind 包名。项目使用分支包时可以改这里。
 
 ***
 
 ### resolve?
 
-> `optional` **resolve**: `PackageResolvingOptions`
+> 可选 | **resolve**: `PackageResolvingOptions`
 
-Package resolution options forwarded to `local-pkg`.
+传给 `local-pkg` 的包解析配置。
 
 #### paths?
 
-> `optional` **paths**: `string[]`
+> 可选 | **paths**: `string[]`
 #### platform?
 
-> `optional` **platform**: `"auto" | "posix" | "win32"`
+> 可选 | **platform**: `"auto" | "posix" | "win32"`
 
 ##### 默认值
 
@@ -85,85 +85,85 @@ Resolve path as posix or win32
 
 ### v2?
 
-> `optional` **v2**: `TailwindV2Options`
+> 可选 | **v2**: `TailwindV2Options`
 
-Overrides applied when patching Tailwind CSS v2.
+Tailwind CSS v2 补丁选项。
 
 #### config?
 
-> `optional` **config**: `string`
+> 可选 | **config**: `string`
 
-Path to a Tailwind config file when auto-detection is insufficient.
+Tailwind 配置文件路径。自动识别不够准确时可以显式传入。
 #### cwd?
 
-> `optional` **cwd**: `string`
+> 可选 | **cwd**: `string`
 
-Custom working directory used when resolving config-relative paths.
+解析 Tailwind 配置相对路径时使用的工作目录。
 #### postcssPlugin?
 
-> `optional` **postcssPlugin**: `string`
+> 可选 | **postcssPlugin**: `string`
 
-Optional PostCSS plugin name to use instead of the default.
+自定义 PostCSS 插件名称。未传入时使用默认名称。
 
 ***
 
 ### v3?
 
-> `optional` **v3**: `TailwindV3Options`
+> 可选 | **v3**: `TailwindV3Options`
 
-Overrides applied when patching Tailwind CSS v3.
+Tailwind CSS v3 补丁选项。
 
 #### config?
 
-> `optional` **config**: `string`
+> 可选 | **config**: `string`
 
-Path to a Tailwind config file when auto-detection is insufficient.
+Tailwind 配置文件路径。自动识别不够准确时可以显式传入。
 #### cwd?
 
-> `optional` **cwd**: `string`
+> 可选 | **cwd**: `string`
 
-Custom working directory used when resolving config-relative paths.
+解析 Tailwind 配置相对路径时使用的工作目录。
 #### postcssPlugin?
 
-> `optional` **postcssPlugin**: `string`
+> 可选 | **postcssPlugin**: `string`
 
-Optional PostCSS plugin name to use instead of the default.
+自定义 PostCSS 插件名称。未传入时使用默认名称。
 
 ***
 
 ### v4?
 
-> `optional` **v4**: `TailwindV4Options`
+> 可选 | **v4**: `TailwindV4Options`
 
-Options specific to Tailwind CSS v4 patching.
+Tailwind CSS v4 补丁选项。
 
 #### base?
 
-> `optional` **base**: `string`
+> 可选 | **base**: `string`
 
-Base directory used when resolving v4 content sources and configs.
+解析 v4 内容来源与配置时使用的基准目录。
 #### css?
 
-> `optional` **css**: `string`
+> 可选 | **css**: `string`
 
-Raw CSS passed directly to the v4 design system.
+直接传给 v4 设计系统的原始 CSS。
 #### cssSources?
 
-> `optional` **cssSources**: `TailwindV4CssSource[]`
+> 可选 | **cssSources**: `TailwindV4CssSource[]`
 
 构建器在 CSS 落盘前捕获的内存 CSS 入口。
 #### cssEntries?
 
-> `optional` **cssEntries**: `string[]`
+> 可选 | **cssEntries**: `string[]`
 
-Set of CSS entry files that should be scanned for `@config` directives.
+需要扫描 `@config` 指令的 CSS 入口文件。
 #### sources?
 
-> `optional` **sources**: `SourceEntry[]`
+> 可选 | **sources**: `SourceEntry[]`
 
-Overrides the content sources scanned by the oxide scanner.
+覆盖 oxide 扫描器默认扫描的内容来源。
 #### bareArbitraryValues?
 
-> `optional` **bareArbitraryValues**: `boolean | { units?: string[]; }`
+> 可选 | **bareArbitraryValues**: `boolean | { units?: string[]; }`
 
-Enables UnoCSS-style bare arbitrary values such as `p-10%` and `p-2.5px`.
+是否启用 UnoCSS 风格的裸任意值，例如 `p-10%`、`p-2.5px`。

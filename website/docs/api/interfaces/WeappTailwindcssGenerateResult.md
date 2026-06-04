@@ -1,21 +1,23 @@
 ---
-title: WeappTailwindcssGenerateResult
-description: WeappTailwindcssGenerateResult 的类型说明，列出公开属性、参数和使用边界。
+title: "WeappTailwindcssGenerateResult"
+description: "weapp-tailwindcss 生成器的输出结果。"
 keywords:
-  - weapp-tailwindcss
-  - API
-  - 接口文档
-  - 配置项
-  - 小程序
-  - tailwindcss
-  - 微信小程序
-  - WeappTailwindcssGenerateResult
-  - WeappTailwindcssGenerateResult interface
-  - WeappTailwindcssGenerateResult 类型定义
-  - TypeScript
+  - "weapp-tailwindcss"
+  - "API"
+  - "接口文档"
+  - "配置项"
+  - "小程序"
+  - "tailwindcss"
+  - "微信小程序"
+  - "WeappTailwindcssGenerateResult"
+  - "WeappTailwindcssGenerateResult 接口"
+  - "WeappTailwindcssGenerateResult 类型定义"
+  - "TypeScript"
 ---
 
 # WeappTailwindcssGenerateResult
+
+weapp-tailwindcss 生成器的输出结果。
 
 ## 属性
 
@@ -23,23 +25,31 @@ keywords:
 
 > **css**: `string`
 
+转换后的 CSS。
+
 ***
 
 ### rawCss
 
 > **rawCss**: `string`
 
+Tailwind 原始输出 CSS。
+
 ***
 
 ### incrementalCss?
 
-> `optional` **incrementalCss**: `string`
+> 可选 | **incrementalCss**: `string`
+
+本次增量新增的转换后 CSS。
 
 ***
 
 ### incrementalRawCss?
 
-> `optional` **incrementalRawCss**: `string`
+> 可选 | **incrementalRawCss**: `string`
+
+本次增量新增的 Tailwind 原始 CSS。
 
 ***
 
@@ -47,12 +57,14 @@ keywords:
 
 > **classSet**: `Set<string>`
 
+成功生成的 class 集合。
+
 #### size
 
 > **size**: `number`
-#### __@toStringTag@9859
+#### __@toStringTag@9861
 
-> **__@toStringTag@9859**: `string`
+> **__@toStringTag@9861**: `string`
 
 ***
 
@@ -60,12 +72,14 @@ keywords:
 
 > **rawCandidates**: `Set<string>`
 
+输入侧的原始候选 class 集合。
+
 #### size
 
 > **size**: `number`
-#### __@toStringTag@9859
+#### __@toStringTag@9861
 
-> **__@toStringTag@9859**: `string`
+> **__@toStringTag@9861**: `string`
 
 ***
 
@@ -73,11 +87,15 @@ keywords:
 
 > **dependencies**: `string[]`
 
+生成依赖的文件列表。
+
 ***
 
 ### sources
 
 > **sources**: `import("tailwindcss-patch").TailwindV4SourcePattern[] | TailwindV3SourcePattern[]`
+
+Tailwind 配置解析出的扫描规则。
 
 ***
 
@@ -85,8 +103,12 @@ keywords:
 
 > **root**: `import("tailwindcss-patch").TailwindV4CompiledSourceRoot`
 
+v3 生成器没有编译后的 source root，固定为 `null`。
+
 ***
 
 ### target
 
 > **target**: `"weapp" | "web" | "tailwind"`
+
+实际生成目标。
