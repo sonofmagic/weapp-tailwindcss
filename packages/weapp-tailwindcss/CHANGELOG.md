@@ -1,5 +1,13 @@
 # weapp-tailwindcss
 
+## 5.0.0-next.38
+
+### Patch Changes
+
+- 🐛 **修复开启 `unocss` 兼容后，`text-var(--brand)`、`w-calc(100%-1rem)`、`bg-#fff` 等 UnoCSS 风格裸任意值在 Tailwind CSS v3 / v4 生成链路中没有稳定进入候选或输出选择器无法和原始 class 对齐的问题。** [#890](https://github.com/sonofmagic/weapp-tailwindcss/pull/890) by @sonofmagic
+
+- 🐛 **升级 `tailwindcss-patch` 到 `9.4.2`，并改为统一消费 npm 发布版本，避免主仓库安装和 CI 依赖 `tailwindcss-mangle` submodule 的 workspace 链接。** [#890](https://github.com/sonofmagic/weapp-tailwindcss/pull/890) by @sonofmagic
+
 ## 5.0.0-next.37
 
 ### Patch Changes
