@@ -1,6 +1,6 @@
 {
   "version": "1.0.0",
-  "generatedAt": "2026-06-04T02:56:13.944Z",
+  "generatedAt": "2026-06-04T09:11:48.424Z",
   "siteUrl": "https://tw.icebreaker.top",
   "totals": {
     "all": 168,
@@ -3329,9 +3329,9 @@
     {
       "kind": "doc",
       "id": "doc:multi-platform",
-      "title": "💨跨多端开发CSS兼容",
-      "description": "本插件主要作用于小程序环境，让开发者可以在小程序环境下可以使用 tailwindcss 的特性",
-      "summary": "本插件主要作用于小程序环境，让开发者可以在小程序环境下可以使用 tailwindcss 的特性",
+      "title": "跨多端开发 CSS 兼容",
+      "description": "weapp-tailwindcss 在小程序、H5/Web、普通 App WebView 与 uni-app x 原生 App 构建中的当前配置口径。",
+      "summary": "weapp-tailwindcss 的主要职责仍然是让 Tailwind CSS 在小程序环境可用。但从 v5 开始，H5/Web 与普通 uni-app App WebView 构建通常也应该保留插件：生成器会按环境变量自动切到 web 目标，输出浏览器原生 Tailwind CSS，而不是小程序转义选择器。",
       "url": "/docs/multi-platform",
       "canonical": "https://tw.icebreaker.top/docs/multi-platform",
       "keywords": [
@@ -3342,19 +3342,23 @@
         "小程序",
         "微信小程序",
         "uni-app",
+        "uni-app x",
         "taro",
-        "rax",
-        "mpx"
+        "mpx",
+        "跨多端开发",
+        "CSS",
+        "兼容",
+        "rax"
       ],
       "headings": [
-        "何时开启插件",
-        "# uni-app 示例",
-        "# uni-app x 示例",
-        "# Mpx 示例",
-        "# Taro 示例",
-        "uni-app 打包到 h5 svg icon 偏移问题",
-        "uni-app 打包安卓 `rgb()` 颜色失效问题",
-        "# 安装 `postcss-preset-env`"
+        "目标端如何判断",
+        "什么时候禁用插件",
+        "各框架最小配置",
+        "# uni-app",
+        "# uni-app x",
+        "# Mpx",
+        "# Taro",
+        "不要重复注册 Tailwind 生成插件"
       ],
       "updatedAt": null,
       "source": "docs/multi-platform.md"

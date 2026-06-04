@@ -201,17 +201,22 @@ html.docs-wrapper .theme-edit-this-page svg {
   font-size: 1rem;
   font-weight: 600;
   color: #fff;
-  background-image: linear-gradient(to right, #10b981, #14b8a6);
-  box-shadow: 0 10px 28px rgba(16, 185, 129, 0.35);
+  background-image: linear-gradient(135deg, #075985, #0c4a6e);
+  box-shadow: 0 8px 22px rgba(7, 89, 133, 0.2);
   transition: all 300ms ease;
 }
 .docs-cta-primary:hover {
   transform: translateY(-2px);
-  box-shadow: 0 16px 40px rgba(16, 185, 129, 0.45);
+  background-image: linear-gradient(135deg, #0369a1, #075985);
+  box-shadow: 0 12px 30px rgba(7, 89, 133, 0.26);
 }
 .docs-cta-primary:focus-visible {
-  outline: 2px solid #6ee7b7;
+  outline: 2px solid rgba(56, 189, 248, 0.72);
   outline-offset: 2px;
+}
+.docs-cta-primary:active {
+  transform: translateY(0);
+  box-shadow: 0 6px 16px rgba(7, 89, 133, 0.18);
 }
 
 .docs-cta-secondary {

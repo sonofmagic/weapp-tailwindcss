@@ -1,6 +1,6 @@
 ---
-title: "\U0001F4A8跨多端开发CSS兼容"
-description: 本插件主要作用于小程序环境，让开发者可以在小程序环境下可以使用 tailwindcss 的特性
+title: 跨多端开发 CSS 兼容
+description: weapp-tailwindcss 在小程序、H5/Web、普通 App WebView 与 uni-app x 原生 App 构建中的当前配置口径。
 keywords:
   - 跨多端开发CSS兼容
   - multi platform
@@ -9,172 +9,205 @@ keywords:
   - 小程序
   - 微信小程序
   - uni-app
+  - uni-app x
   - taro
-  - rax
   - mpx
 ---
-# 💨跨多端开发CSS兼容
 
-## 何时开启插件
+# 跨多端开发 CSS 兼容
 
-本插件主要作用于小程序环境，让开发者可以在小程序环境下可以使用 `tailwindcss` 的特性
+`weapp-tailwindcss` 的主要职责仍然是让 Tailwind CSS 在小程序环境可用。但从 v5 开始，H5/Web 与普通 uni-app App WebView 构建通常也应该保留插件：生成器会按环境变量自动切到 `web` 目标，输出浏览器原生 Tailwind CSS，而不是小程序转义选择器。
 
-从 v5 开始，`WeappTailwindcss` 在 H5/Web 构建中也可以保留启用。插件会根据框架环境变量自动把生成器目标切到 `web`，输出浏览器原生 Tailwind CSS，而不是小程序转义 CSS。
+## 目标端如何判断
 
-当前内置识别：
+生成器默认目标是 `weapp`。命中以下环境变量时会自动切到 `web`：
 
-- `UNI_PLATFORM=h5`
-- `UNI_PLATFORM=app`、`app-plus`（普通 uni-app App WebView）
-- `UNI_UTS_PLATFORM=h5`、`web`、`web-*`
-- `MPX_CLI_MODE=web`
-- `MPX_CURRENT_TARGET_MODE=web`
-- `TARO_ENV=h5`
+| 场景 | 环境变量 |
+| --- | --- |
+| 显式指定 | `WEAPP_TW_TARGET=web`、`WEAPP_TAILWINDCSS_TARGET=web` |
+| uni-app H5 | `UNI_PLATFORM=h5` |
+| 普通 uni-app App WebView | `UNI_PLATFORM=app`、`UNI_PLATFORM=app-plus`，且 `UNI_UTS_PLATFORM` 不是 `app-*` |
+| uni-app x Web | `UNI_UTS_PLATFORM=h5`、`web`、`web-*` |
+| Mpx Web | `MPX_CLI_MODE=web`、`MPX_CURRENT_TARGET_MODE=web` |
+| Taro H5 | `TARO_ENV=h5` |
 
-因此 uni-app、uni-app x、Mpx、Taro 的 H5/Web 构建不再需要 `disabled: weappTailwindcssDisabled`。普通 uni-app App WebView 也会默认走 `web` 输出族，不会生成小程序转义选择器。只有 RN、Harmony、uni-app x 原生 App 等非 WebView 产物确实不希望插件参与时，才需要显式 `disabled` 或拆成独立构建配置。
+`target` 表示 CSS 输出形态，不是平台枚举。`uni-app x` 的 `app-android`、`app-ios`、`app-harmony` 这类原生 App 目标不会被当成 Web，也不需要配置 `target: 'app'`。这类目标继续使用小程序输出族，并通过 `uniAppX` 预设处理 `uvue` 与 App 端差异。
 
-### uni-app 示例
+## 什么时候禁用插件
 
-比如 `uni-app`:
+H5/Web 构建不要再写旧版的禁用逻辑：
 
-```js title="vite.config.[jt]s"
-import { WeappTailwindcss } from "weapp-tailwindcss/vite";
+```ts title="不推荐"
+const isH5 = process.env.UNI_PLATFORM === 'h5'
 
-const vitePlugins = [
-  uni(),
-  WeappTailwindcss({
-    rem2rpx: true
-  })
-];
+WeappTailwindcss({
+  disabled: isH5,
+})
 ```
 
-当 `UNI_PLATFORM=h5`、`app` 或 `app-plus` 时，生成器默认目标会自动切换为 `web`。如果 App 构建不希望插件参与，可以单独加：
+当前推荐保持插件启用：
 
-```js
-const isApp = process.env.UNI_PLATFORM === "app" || process.env.UNI_PLATFORM === "app-plus";
+```ts title="推荐"
+WeappTailwindcss({
+  rem2rpx: true,
+})
+```
+
+`disabled` 只适合“完全不希望插件参与”的构建，例如 RN、Harmony 或独立原生构建。对于 uni-app、uni-app x、Taro、Mpx 的 H5/Web 目标，通常不需要禁用。
+
+如果自定义构建环境没有注入上述变量，可以显式指定 Web 输出：
+
+```ts
+WeappTailwindcss({
+  generator: {
+    target: 'web',
+  },
+})
+```
+
+## 各框架最小配置
+
+### uni-app
+
+```ts title="vite.config.ts"
+import { defineConfig } from 'vite'
+import uni from '@dcloudio/vite-plugin-uni'
+import { WeappTailwindcss } from 'weapp-tailwindcss/vite'
+
+export default defineConfig({
+  plugins: [
+    uni(),
+    WeappTailwindcss({
+      rem2rpx: true,
+    }),
+  ],
+})
+```
+
+当 `UNI_PLATFORM=h5`、`app` 或 `app-plus` 时，生成器默认目标会自动切换为 `web`。如果某个 App 构建不希望插件参与，再只针对 App 显式禁用：
+
+```ts
+const isApp = process.env.UNI_PLATFORM === 'app' || process.env.UNI_PLATFORM === 'app-plus'
 
 WeappTailwindcss({
   disabled: isApp,
-  rem2rpx: true
-});
+  rem2rpx: true,
+})
 ```
 
-### uni-app x 示例
+### uni-app x
 
-uni-app x 的 Web 构建可直接保留插件：
+`uni-app x` 建议使用 `uniAppX` 预设。Tailwind CSS 4 建议显式传入入口 CSS 的绝对路径。
 
-```js title="vite.config.[jt]s"
-import { WeappTailwindcss } from "weapp-tailwindcss/vite";
+```ts title="vite.config.ts"
+import path from 'node:path'
+import { defineConfig } from 'vite'
+import uni from '@dcloudio/vite-plugin-uni'
+import { uniAppX } from 'weapp-tailwindcss/presets'
+import { WeappTailwindcss } from 'weapp-tailwindcss/vite'
 
-const vitePlugins = [
-  uni(),
-  WeappTailwindcss({
-    rem2rpx: true
-  })
-];
+export default defineConfig({
+  plugins: [
+    uni(),
+    WeappTailwindcss(
+      uniAppX({
+        base: __dirname,
+        cssEntries: [
+          path.resolve(__dirname, 'main.css'),
+        ],
+        rem2rpx: true,
+      }),
+    ),
+  ],
+})
 ```
 
-当 `UNI_UTS_PLATFORM=h5`、`web` 或 `web-*` 时，生成器默认目标会自动切换为 `web`。`app-android`、`app-ios`、`app-harmony` 这类 uni-app x 原生 App 目标不会被误判成 Web，也不需要新增 `target: 'app'`；请使用 `uniAppX(...)` 预设或 `uniAppX` 配置处理 uvue/App 差异。
+`UNI_UTS_PLATFORM=h5`、`web` 或 `web-*` 时会自动走 `web` 输出。`app-android`、`app-ios`、`app-harmony` 这类原生 App 目标使用 `uniAppX` 预设处理，不要额外写 `target: 'app'`。
 
-### Mpx 示例
+:::warning uni-app x 原生 App 限制
+`uvue` 原生 App 端不要依赖 `gap`、`gap-x-*`、`gap-y-*`。`space-x-*`、`space-y-*` 也不要作为 uni-app x 的主要布局方案。请改用子项显式 `mt-*` / `ml-*`，或封装固定结构的间距组件。
+:::
 
-Mpx 单目标构建会注入当前目标环境变量，Web 构建可直接保留插件：
+### Mpx
 
 ```js title="mpx.config.js"
-const { WeappTailwindcss } = require("weapp-tailwindcss/webpack");
+const { WeappTailwindcss } = require('weapp-tailwindcss/webpack')
 
 module.exports = {
   configureWebpack(config) {
     config.plugins.push(
       new WeappTailwindcss({
-        appType: "mpx",
-        rem2rpx: true
-      })
-    );
-  }
-};
-```
-
-当 `MPX_CLI_MODE=web` 或 `MPX_CURRENT_TARGET_MODE=web` 时，生成器默认目标会自动切换为 `web`。`wx`、`ali`、`swan`、`qq`、`tt`、`dd`、`ks`、`jd` 这类小程序目标不会被误判成 Web。
-
-### Taro 示例
-
-```js title="config/index.ts"
-import { WeappTailwindcss } from "weapp-tailwindcss/webpack";
-
-webpackChain(chain) {
-  chain.merge({
-    plugin: {
-      install: {
-        plugin: WeappTailwindcss,
-        args: [
-          {
-            rem2rpx: true
-          }
-        ]
-      }
-    }
-  });
-},
-```
-
-当 `TARO_ENV=h5` 时，生成器默认目标会自动切换为 `web`。如果 RN 构建不希望插件参与，可以保留 `disabled: process.env.TARO_ENV === "rn"`。
-
-其他框架请参考对应文档，确认目标平台使用的环境变量。
-
-## uni-app 打包到 h5 svg icon 偏移问题
-
-这是由于 `tailwindcss` 默认会把 `svg` 的 `display` 设置成 `block` 导致的，所以解决方案很简单
-
-在你的全局样式，引入 `tailwindcss` 的地方下面加一行，进行样式覆盖:
-
-```css
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
-/*  #ifdef  H5  */
-svg {
-  display: initial;
-}
-/*  #endif  */
-```
-
-## uni-app 打包安卓 `rgb()` 颜色失效问题
-
-这是由于 `uni-app` 打包成安卓中 `webview` 内核版本较低，无法兼容 `rgb(245 247 255 / var(--tw-bg-opacity))` 这样的 `css` 写法导致的
-
-这时候我们需要把这个写法，转换为兼容写法: `rgba(245, 247, 255, var(--tw-bg-opacity))`，具体解决方案:
-
-### 安装 `postcss-preset-env`
-
-```bash npm2yarn
-npm i -D postcss-preset-env
-```
-
-### 设置 `postcss.config.js`
-
-```js
-module.exports = {
-  plugins: {
-    // Tailwind CSS 由 weapp-tailwindcss 生成模式接管，这里不要再注册 tailwindcss
-    autoprefixer: {},
-    'postcss-preset-env': {
-      browsers: 'chrome >= 50', // configure a compatible browser version
-    },
+        appType: 'mpx',
+        rem2rpx: true,
+      }),
+    )
   },
-};
+}
 ```
 
-这样，所有的 `rgb` 和 `/` 写法就被转化成兼容写法了。
+当 `MPX_CLI_MODE=web` 或 `MPX_CURRENT_TARGET_MODE=web` 时，生成器默认目标会自动切换为 `web`。`wx`、`ali`、`swan`、`qq`、`tt`、`dd` 等小程序目标继续走小程序输出。
 
-相关issue详见:<https://github.com/tailwindlabs/tailwindcss/issues/7618#issuecomment-1140693288>
+### Taro
 
-## CSS变量计算模式
+```ts title="config/index.ts"
+import { WeappTailwindcss } from 'weapp-tailwindcss/webpack'
 
-在 `tailwindcss@4` 下，默认启用 CSS 变量计算模式。`tailwindcss@3` 默认不启用。
+export default {
+  webpackChain(chain) {
+    chain.merge({
+      plugin: {
+        install: {
+          plugin: WeappTailwindcss,
+          args: [
+            {
+              rem2rpx: true,
+            },
+          ],
+        },
+      },
+    })
+  },
+}
+```
 
-此模式下会去预编译所有的 `css` 变量和 `calc` 计算表达式。
+当 `TARO_ENV=h5` 时，生成器默认目标会自动切换为 `web`。如果 RN 构建不希望插件参与，可以只针对 RN 显式设置 `disabled: process.env.TARO_ENV === 'rn'`。
 
-比如 `tailwindcss@4` 下原先生成的样式为:
+## 不要重复注册 Tailwind 生成插件
+
+小程序构建链路里，Tailwind CSS 的样式生成统一交给 `weapp-tailwindcss`。不要为了兼容 H5、App 或 HMR 问题再额外注册这些插件：
+
+- `tailwindcss@3` PostCSS 插件
+- `@tailwindcss/postcss`
+- `@tailwindcss/vite`
+
+如果项目已有 `postcss.config.js`，只保留业务需要的非 Tailwind 插件即可。需要配置现代 CSS 兼容转换时，优先使用 `WeappTailwindcss` 自带的 `cssPresetEnv` 和 `autoprefixer` 选项。
+
+## 现代 CSS 与 App WebView 兼容
+
+普通 uni-app App WebView 或部分低版本内核可能不支持 `rgb(245 247 255 / var(--tw-bg-opacity))` 这类现代颜色写法。当前不需要在项目里额外安装并注册 `postcss-preset-env`，可以直接通过插件选项配置：
+
+```ts
+WeappTailwindcss({
+  rem2rpx: true,
+  cssPresetEnv: {
+    browsers: 'chrome >= 50',
+  },
+})
+```
+
+`autoprefixer` 默认启用，用于为小程序 WebView 补齐 `-webkit-` 等兼容前缀，例如让 `bg-clip-text` 输出 `-webkit-background-clip: text`。如果确实需要关闭，可以显式传入：
+
+```ts
+WeappTailwindcss({
+  autoprefixer: false,
+})
+```
+
+## CSS 变量计算模式
+
+Tailwind CSS 4 下，如果没有显式配置 `cssCalc`，插件会默认启用 CSS 变量与 `calc()` 的预计算。Tailwind CSS 3 默认不启用。
+
+例如 Tailwind CSS 4 生成：
 
 ```css
 page,
@@ -186,7 +219,7 @@ page,
 }
 ```
 
-在CSS变量计算模式启动，进行预编译之后，现在的结果为:
+启用 `cssCalc` 后会补出预计算结果，并默认保留原声明：
 
 ```css
 page,
@@ -195,182 +228,99 @@ page,
 }
 .h-2 {
   height: 16rpx;
- height: calc(var(--spacing) * 2);
+  height: calc(var(--spacing) * 2);
 }
 ```
 
-这个模式可以解决很多手机机型 `calc` `rpx` 单位的兼容问题。\
-当处于 Tailwind CSS 模式（`tailwindcss@4` 及以上）时，插件会默认把 `--spacing` 注入到 `includeCustomProperties`，因此常见的 `space-x`/`space-y` 等工具类会被稳定计算。
+如果你只想计算指定变量，可以传入数组或对象：
 
-> 可通过给插件，传入 `cssCalc` 配置项 `false` 来手动关闭这个功能
+```ts
+WeappTailwindcss({
+  cssCalc: ['--spacing'],
+})
+```
 
-假如这时候你需要去除 CSS 变量的声明，你可以传入
-
-```js
-{
-  cssCalc: ['--spacing']
-}
-// 或者更精确的
-{
+```ts
+WeappTailwindcss({
   cssCalc: {
-    includeCustomProperties: ['--spacing']
-  }
-}
+    includeCustomProperties: ['--spacing'],
+    preserve: true,
+  },
+})
 ```
 
-> 你也可以传入正则表达式
+也可以使用正则：
 
-这样生成的结果就是:
+```ts
+WeappTailwindcss({
+  cssCalc: [/^--(gap|spacing)$/],
+})
+```
+
+需要关闭 Tailwind CSS 4 默认的 `cssCalc` 时，传入：
+
+```ts
+WeappTailwindcss({
+  cssCalc: false,
+})
+```
+
+## 多端单位转换
+
+如果同一套代码需要按平台处理单位，优先使用 `unitConversion.platforms`。平台名称会兼容 `weapp`/`mp-weixin`、`h5`/`web`、`app-plus`/`app` 等常见别名；未显式传入 `platform` 时，会从常见构建环境变量推断。
+
+```ts
+import { unitConversionComposeRules, unitConversionPresets } from 'weapp-tailwindcss'
+
+WeappTailwindcss({
+  unitConversion: {
+    platforms: {
+      'mp-weixin': {
+        rules: unitConversionComposeRules(
+          unitConversionPresets.pxToRpx({ ratio: 2 }),
+          unitConversionPresets.remToRpx({ rootValue: 16 }),
+        ),
+      },
+      h5: {
+        rules: [
+          unitConversionPresets.rpxToPx({ ratio: 0.5 }),
+        ],
+      },
+    },
+  },
+})
+```
+
+## H5 SVG 图标偏移
+
+如果 H5 端启用了 Tailwind Preflight，`svg` 默认可能被设置为 `display: block`，部分图标会出现偏移。可以在全局样式里按 H5 条件覆盖：
 
 ```css
-page,
-:root {
-  --spacing: 8rpx;
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* #ifdef H5 */
+svg {
+  display: initial;
 }
-.h-2 {
-  height: 16rpx;
-}
+/* #endif */
 ```
 
-通过这种方式可以解决手机机型 `calc` `rpx` 单位的兼容问题
+## 验证建议
 
-详见: https://tw.icebreaker.top/docs/api/interfaces/UserDefinedOptions#csscalc
+跨多端项目改完配置后，至少分别验证以下内容：
 
-### `includeCustomProperties` 进阶用法
+- 小程序目标：基础工具类、任意值、伪类或变体选择器是否正常生成和转译。
+- H5/Web 目标：输出是否为浏览器原生选择器，而不是小程序转义选择器。
+- 普通 App WebView：现代颜色函数、`calc()`、`rpx` 相关样式是否被目标内核接受。
+- uni-app x 原生 App：避免使用 `gap`、`space-x-*`、`space-y-*` 作为核心布局能力。
 
-`cssCalc` 提供多种写法来控制需要参与计算的自定义属性。下面结合「执行前 / 执行后」的示例说明差异。
+常用命令按项目框架选择：
 
-**数组写法**
-
-```ts
-cssCalc: ['--spacing', '--gap']
+```bash
+pnpm dev:h5
+pnpm build:h5
+pnpm dev:mp-weixin
+pnpm build:mp-weixin
 ```
-
-- 执行前：
-
-  ```css
-  :root {
-    --gap: 6rpx;
-    --spacing: 8rpx;
-  }
-  .space-x-2>view+view {
-    margin-left: calc(var(--gap) * (1 - var(--tw-space-x-reverse)));
-    margin-right: calc(var(--spacing) * var(--tw-space-x-reverse));
-  }
-  ```
-
-- 执行后：
-
-  ```css
-  .space-x-2>view+view {
-    margin-left: 6rpx;
-    margin-right: 8rpx;
-  }
-  ```
-
-**对象写法**
-
-```ts
-cssCalc: {
-  includeCustomProperties: ['--gap'],
-  precision: 6,
-  preserve: true,
-}
-```
-
-- 执行前：
-
-  ```css
-  :root {
-    --gap: 12rpx;
-  }
-  .btn {
-    margin-bottom: calc(var(--gap) * 2);
-  }
-  ```
-
-- 执行后：
-
-  ```css
-  :root {
-    --gap: 12rpx;
-  }
-  .btn {
-    margin-bottom: 24rpx;
-    margin-bottom: calc(var(--gap) * 2);
-  }
-  ```
-
-**正则写法**
-
-```ts
-cssCalc: [/^--(gap|spacing)$/]
-```
-
-- 执行前：
-
-  ```css
-  :root {
-    --gap: 4rpx;
-    --spacing: 10rpx;
-  }
-  .card + .card {
-    margin-top: calc(var(--spacing) * 2);
-    margin-left: calc(var(--gap) * 3);
-  }
-  ```
-
-- 执行后：
-
-  ```css
-  .card + .card {
-    margin-top: 20rpx;
-    margin-top: calc(var(--spacing) * 2);
-    margin-left: 12rpx;
-    margin-left: calc(var(--gap) * 3);
-  }
-  ```
-
-**Tailwind 统一变量写法**
-
-```ts
-cssCalc: {
-  includeCustomProperties: [/^--tw-/],
-  preserve: true,
-}
-```
-
-- 执行前：
-
-  ```css
-  :root {
-    --tw-space-y-reverse: 0;
-    --tw-gradient-from: #38bdf8;
-    --tw-gradient-stops: var(--tw-gradient-from), rgba(56,189,248,0);
-  }
-  .space-y-3>view+view {
-    margin-top: calc(var(--spacing) * 3 * (1 - var(--tw-space-y-reverse)));
-  }
-  .from-sky-400 {
-    background-image: linear-gradient(to right, var(--tw-gradient-stops));
-  }
-  ```
-
-- 执行后：
-
-  ```css
-  :root {
-    --tw-space-y-reverse: 0;
-    --tw-gradient-from: #38bdf8;
-    --tw-gradient-stops: var(--tw-gradient-from), rgba(56,189,248,0);
-  }
-  .space-y-3>view+view {
-    margin-top: 24rpx;
-    margin-top: calc(var(--spacing) * 3 * (1 - var(--tw-space-y-reverse)));
-  }
-  .from-sky-400 {
-    background-image: linear-gradient(to right, var(--tw-gradient-stops));
-  }
-  ```
-
-以上示例可以自由组合使用，帮助你根据业务场景精确控制 `calc` 与自定义属性的计算范围。
