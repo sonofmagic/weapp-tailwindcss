@@ -55,6 +55,7 @@ html.docs-wrapper .main-wrapper > .container {
 }
 
 html.docs-wrapper .theme-doc-markdown > h1:first-child,
+html.docs-wrapper .theme-doc-markdown header h1,
 html.docs-wrapper .theme-doc-markdown > h2,
 html.docs-wrapper .theme-doc-markdown > h3,
 html.docs-wrapper .theme-doc-markdown > h4,
@@ -74,8 +75,9 @@ html.docs-wrapper .theme-doc-markdown .theme-admonition {
   max-width: none;
 }
 
-html.docs-wrapper .theme-doc-markdown > h1:first-child {
-  max-width: 24ch;
+html.docs-wrapper .theme-doc-markdown > h1:first-child,
+html.docs-wrapper .theme-doc-markdown header h1 {
+  max-width: 82ch;
 }
 
 html.docs-wrapper .pagination-nav__link {
