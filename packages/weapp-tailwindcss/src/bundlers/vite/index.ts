@@ -222,7 +222,9 @@ export function WeappTailwindcss(options: UserDefinedOptions = {}): WeappTailwin
   const customAttributesEntities = toCustomAttributesEntities(customAttributes)
   let resolvedConfig: ResolvedConfig | undefined
   let recordedGeneratorCandidates: Set<string> | undefined
-  const sourceCandidateCollector = createSourceCandidateCollector()
+  const sourceCandidateCollector = createSourceCandidateCollector({
+    bareArbitraryValues: opts.arbitraryValues?.bareArbitraryValues,
+  })
   const sourceCandidateScanCache = new Map<string, SourceCandidateCollectorSnapshot>()
   let sourceScanEntries: TailwindSourceEntry[] | undefined
   let sourceScanMatcher: ((file: string) => boolean) | undefined

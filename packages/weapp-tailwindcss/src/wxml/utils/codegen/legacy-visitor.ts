@@ -1,16 +1,16 @@
-import type { TraverseOptions } from '@babel/traverse'
+import type { NodePath, TraverseOptions } from '@babel/traverse'
 import type { StringLiteral } from '@babel/types'
 import type { JsTokenUpdater } from '../../../js/JsTokenUpdater'
 import type { ITemplateHandlerOptions } from '../../../types'
 import * as t from '@babel/types'
 import { replaceHandleValue } from '../../../js/handlers'
 
-function shouldSkipLegacyStringLiteral(path: import('@babel/traverse').NodePath<StringLiteral>) {
+function shouldSkipLegacyStringLiteral(path: NodePath<StringLiteral>) {
   // [g['人生']==='你好啊'?'highlight':'']
   if (t.isMemberExpression(path.parent)) {
     return true
   }
-  // parentPath maybe null
+  // parentPath 可能为空。
   // ['td',[(g.type==='你好啊')?'highlight':'']]
   return Boolean(
     t.isBinaryExpression(path.parent)
@@ -21,7 +21,7 @@ function shouldSkipLegacyStringLiteral(path: import('@babel/traverse').NodePath<
 export function createLegacyTraverseOptions(
   options: ITemplateHandlerOptions,
   jsTokenUpdater: JsTokenUpdater,
-) {
+): TraverseOptions & { noScope: true } {
   const legacyReplaceOptions = {
     escapeMap: options.escapeMap,
     classNameSet: options.runtimeSet,

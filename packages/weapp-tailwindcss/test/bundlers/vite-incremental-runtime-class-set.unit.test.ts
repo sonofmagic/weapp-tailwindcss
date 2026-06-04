@@ -126,6 +126,41 @@ describe('bundlers/vite incremental runtime class set', () => {
     expect(extractCandidates.mock.calls[0]?.[0]?.sources).toBeUndefined()
   })
 
+  it('passes bare arbitrary value options through runtime extraction', async () => {
+    const opts = createOptions()
+    const outDir = '/project/dist'
+    const state = createBundleBuildState()
+    const patcher = createPatcher('/project')
+    const extractCandidates = vi.fn(async (options) => {
+      expect(options?.bareArbitraryValues).toBe(true)
+      return String(options?.content ?? '').split(/\s+/).filter(Boolean)
+    })
+    const extractRawCandidates = vi.fn(async () => [
+      { rawCandidate: 'text-var(--brand)' },
+      { rawCandidate: 'w-calc(100%-1rem)' },
+    ])
+    const manager = createBundleRuntimeClassSetManager({
+      bareArbitraryValues: true,
+      extractCandidates,
+      extractRawCandidates,
+    })
+    const snapshot = buildBundleSnapshot({
+      'pages/index/index.wxml': {
+        ...createRollupAsset('<view class="text-var(--brand) w-calc(100%-1rem)" />'),
+        fileName: 'pages/index/index.wxml',
+      },
+    }, opts, outDir, state)
+
+    const runtimeSet = await manager.sync(patcher, snapshot)
+
+    expect(runtimeSet).toEqual(new Set(['text-var(--brand)', 'w-calc(100%-1rem)']))
+    expect(extractRawCandidates).toHaveBeenCalledWith(
+      expect.any(String),
+      'html',
+      { bareArbitraryValues: true },
+    )
+  })
+
   it('extracts extensionless uni-app html assets as html content', async () => {
     const opts = {
       ...createOptions(),

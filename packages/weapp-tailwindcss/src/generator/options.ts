@@ -1,5 +1,6 @@
 import type { IStyleHandlerOptions } from '@weapp-tailwindcss/postcss/types'
 import type { WeappTailwindcssGeneratorTarget } from './types'
+import type { IArbitraryValues } from '@/types/shared'
 import process from 'node:process'
 
 const explicitGeneratorTargetEnvKeys = [
@@ -96,6 +97,12 @@ export interface WeappTailwindcssGeneratorOptions {
    * 设为 `false` 时，完全使用 Tailwind CSS v4 原生默认值。
    */
   tailwindcssV3Compatibility?: boolean | undefined
+  /**
+   * 是否启用 UnoCSS 风格裸任意值。通常由顶层 `unocss` / `arbitraryValues` 配置注入。
+   *
+   * @internal
+   */
+  bareArbitraryValues?: IArbitraryValues['bareArbitraryValues'] | undefined
 }
 
 export type WeappTailwindcssGeneratorUserOptions = WeappTailwindcssGeneratorOptions
@@ -106,6 +113,7 @@ export interface NormalizedWeappTailwindcssGeneratorOptions {
   styleOptions?: Partial<IStyleHandlerOptions> | undefined
   importFallback: boolean
   tailwindcssV3Compatibility: boolean
+  bareArbitraryValues?: IArbitraryValues['bareArbitraryValues'] | undefined
 }
 
 export function normalizeWeappTailwindcssGeneratorOptions(
@@ -118,6 +126,7 @@ export function normalizeWeappTailwindcssGeneratorOptions(
       target,
       importFallback: true,
       tailwindcssV3Compatibility: target === 'weapp',
+      bareArbitraryValues: undefined,
     }
   }
 
@@ -127,5 +136,6 @@ export function normalizeWeappTailwindcssGeneratorOptions(
     styleOptions: options.styleOptions,
     importFallback: options.importFallback ?? true,
     tailwindcssV3Compatibility: options.tailwindcssV3Compatibility ?? target === 'weapp',
+    bareArbitraryValues: options.bareArbitraryValues,
   }
 }

@@ -1,5 +1,6 @@
 import type { IStyleHandlerOptions } from '@weapp-tailwindcss/postcss/types'
 import type { Config } from 'tailwindcss'
+import type { IArbitraryValues } from '@/types/shared'
 
 export type TailwindV3GenerateTarget = 'weapp' | 'web' | 'tailwind'
 
@@ -127,6 +128,10 @@ export interface TailwindV3GenerateOptions {
    * 额外的内联候选来源。
    */
   sources?: TailwindV3CandidateSource[] | undefined
+  /**
+   * 是否启用 UnoCSS 风格的裸任意值，例如 `p-10%`、`bg-#fff`。
+   */
+  bareArbitraryValues?: IArbitraryValues['bareArbitraryValues'] | undefined
   /**
    * 是否启用增量生成缓存。
    */

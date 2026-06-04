@@ -188,7 +188,9 @@ export function createPlugins(options: UserDefinedOptions = {}) {
     if (!forceRefresh && cachedGulpSourceCandidateSignature === nextSignature && cachedGulpSourceCandidates) {
       return cachedGulpSourceCandidates
     }
-    const collector = createSourceCandidateCollector()
+    const collector = createSourceCandidateCollector({
+      bareArbitraryValues: opts.arbitraryValues?.bareArbitraryValues,
+    })
     await collector.scanRoot({
       entries: sourceScan?.entries,
       root,

@@ -5,6 +5,50 @@ import { createTailwindV3Engine, resolveTailwindV3Source, transformTailwindV3Css
 import { TailwindcssPatcher } from 'tailwindcss-patch'
 import plugin from 'tailwindcss/plugin'
 
+const UNOCSS_DEFAULT_STYLE_CANDIDATES = [
+  'w-10px',
+  'w-1/2',
+  'w-50%',
+  'w-2.5rem',
+  'h-100vh',
+  'min-w-20em',
+  'max-w-80vw',
+  'size-10px',
+  'basis-20%',
+  'grid-cols-200px',
+  'aspect-16/9',
+  'p-10px',
+  'px-1.5rem',
+  'py-2em',
+  'm-4rem',
+  '-mt-2px',
+  'gap-12px',
+  'top-1/2',
+  '-top-1.5rem',
+  'translate-x-10px',
+  'rotate-45deg',
+  'rounded-2px',
+  'border-1px',
+  'outline-2px',
+  'blur-4px',
+  'leading-1.2em',
+  'tracking-0.1em',
+  'duration-300ms',
+  'delay-1s',
+  'opacity-50%',
+  'bg-#fff',
+  'bg-#ffffff80',
+  'text-#f00',
+  'text-rgb(255,0,0)',
+  'w-calc(100%-1rem)',
+]
+
+const UNOCSS_DEFAULT_SOURCE_CLASSES = [
+  'hover:!p-2.5px',
+  'sm:-top-1.5rem',
+  'text-var(--brand)',
+]
+
 function compactCss(css: string) {
   return css.replace(/\s+/g, '')
 }
@@ -107,6 +151,130 @@ describe('tailwindcss v3 engine', () => {
     expect(transformed).toContain('.text-_b55rpx_B')
     expect(transformed).toContain('font-size: 55rpx')
     expect(transformed).not.toContain('color: 55rpx')
+  })
+
+  it('supports default UnoCSS class syntax when bare arbitrary values are enabled', async () => {
+    const source = await resolveTailwindV3Source({
+      css: '@tailwind utilities;',
+      base: process.cwd(),
+      config: undefined,
+    })
+    const engine = createTailwindV3Engine(source)
+
+    const disabledResult = await engine.generate({
+      candidates: ['p-10%', 'p-2.5px', 'm-4rem'],
+    })
+    expect(disabledResult.classSet).toEqual(new Set())
+    expect(disabledResult.rawCss).not.toContain('.p-10\\%')
+
+    const enabledResult = await engine.generate({
+      bareArbitraryValues: true,
+      candidates: UNOCSS_DEFAULT_STYLE_CANDIDATES,
+      sources: [{
+        extension: 'html',
+        content: `<view class="${UNOCSS_DEFAULT_SOURCE_CLASSES.join(' ')}"></view>`,
+      }],
+    })
+
+    expect(enabledResult.classSet).toEqual(new Set([
+      ...UNOCSS_DEFAULT_STYLE_CANDIDATES,
+      ...UNOCSS_DEFAULT_SOURCE_CLASSES,
+    ]))
+    expect(enabledResult.rawCandidates).toEqual(new Set([
+      ...UNOCSS_DEFAULT_STYLE_CANDIDATES,
+      ...UNOCSS_DEFAULT_SOURCE_CLASSES,
+    ]))
+    expect(enabledResult.rawCss).toContain('.w-10px')
+    expect(enabledResult.rawCss).toContain('.w-1\\/2')
+    expect(enabledResult.rawCss).toContain('.w-50\\%')
+    expect(enabledResult.rawCss).toContain('.bg-\\#fff')
+    expect(enabledResult.rawCss).toContain('.text-rgb\\(255\\,0\\,0\\)')
+    expect(enabledResult.rawCss).toContain('.hover\\:\\!p-2\\.5px:hover')
+    expect(enabledResult.rawCss).toContain('.sm\\:-top-1\\.5rem')
+    expect(enabledResult.rawCss).not.toContain('.w-\\[10px\\]')
+    expect(enabledResult.rawCss).not.toContain('.bg-\\[\\#fff\\]')
+    expect(enabledResult.css).toContain('.w-10px')
+    expect(enabledResult.css).toContain('.w-1_f2')
+    expect(enabledResult.css).toContain('.w-50_v')
+    expect(enabledResult.css).toContain('.w-2_d5rem')
+    expect(enabledResult.css).toContain('.h-100vh')
+    expect(enabledResult.css).toContain('.min-w-20em')
+    expect(enabledResult.css).toContain('.max-w-80vw')
+    expect(enabledResult.css).toContain('.size-10px')
+    expect(enabledResult.css).toContain('.basis-20_v')
+    expect(enabledResult.css).toContain('.grid-cols-200px')
+    expect(enabledResult.css).toContain('.aspect-16_f9')
+    expect(enabledResult.css).toContain('.p-10px')
+    expect(enabledResult.css).toContain('.px-1_d5rem')
+    expect(enabledResult.css).toContain('.py-2em')
+    expect(enabledResult.css).toContain('.m-4rem')
+    expect(enabledResult.css).toContain('.-mt-2px')
+    expect(enabledResult.css).toContain('.gap-12px')
+    expect(enabledResult.css).toContain('.top-1_f2')
+    expect(enabledResult.css).toContain('.-top-1_d5rem')
+    expect(enabledResult.css).toContain('.translate-x-10px')
+    expect(enabledResult.css).toContain('.rotate-45deg')
+    expect(enabledResult.css).toContain('.rounded-2px')
+    expect(enabledResult.css).toContain('.border-1px')
+    expect(enabledResult.css).toContain('.outline-2px')
+    expect(enabledResult.css).toContain('.blur-4px')
+    expect(enabledResult.css).toContain('.leading-1_d2em')
+    expect(enabledResult.css).toContain('.tracking-0_d1em')
+    expect(enabledResult.css).toContain('.duration-300ms')
+    expect(enabledResult.css).toContain('.delay-1s')
+    expect(enabledResult.css).toContain('.opacity-50_v')
+    expect(enabledResult.css).toContain('.bg-_hfff')
+    expect(enabledResult.css).toContain('.bg-_hffffff80')
+    expect(enabledResult.css).toContain('.text-_hf00')
+    expect(enabledResult.css).toContain('.text-rgb_p255_m0_m0_P')
+    expect(enabledResult.css).toContain('.text-var_p--brand_P')
+    expect(enabledResult.css).toContain('.w-calc_p100_v-1rem_P')
+    expect(enabledResult.css).toContain('.sm_c-top-1_d5rem')
+    expect(enabledResult.css).toContain('@media (min-width: 640px)')
+    expect(enabledResult.css).toContain('background-color: rgba(255, 255, 255')
+    expect(enabledResult.css).toContain('color: var(--brand)')
+    expect(enabledResult.css).toContain('width: calc(100% - 1rem)')
+    expect(enabledResult.css).not.toContain(':hover')
+
+    const limitedResult = await engine.generate({
+      bareArbitraryValues: {
+        units: ['px'],
+      },
+      candidates: ['p-10%', 'p-10px'],
+    })
+
+    expect(limitedResult.classSet).toEqual(new Set(['p-10px']))
+    expect(limitedResult.css).toContain('.p-10px')
+    expect(limitedResult.css).not.toContain('.p-10_v')
+  })
+
+  it('keeps UnoCSS-style bare arbitrary values stable in v3 incremental generation', async () => {
+    const source = await resolveTailwindV3Source({
+      css: '@tailwind utilities;',
+      base: process.cwd(),
+      config: undefined,
+    })
+    const engine = createTailwindV3Engine(source)
+
+    const first = await engine.generate({
+      bareArbitraryValues: true,
+      candidates: ['w-10px'],
+      incrementalCache: true,
+    })
+    const second = await engine.generate({
+      bareArbitraryValues: true,
+      candidates: ['w-10px', 'bg-#fff', 'text-var(--brand)'],
+      incrementalCache: true,
+    })
+
+    expect(first.classSet).toEqual(new Set(['w-10px']))
+    expect(first.css).toContain('.w-10px')
+    expect(second.classSet).toEqual(new Set(['w-10px', 'bg-#fff', 'text-var(--brand)']))
+    expect(second.incrementalCss).toContain('.bg-_hfff')
+    expect(second.incrementalCss).toContain('.text-var_p--brand_P')
+    expect(second.incrementalCss).not.toContain('.w-10px')
+    expect(second.rawCss).not.toContain('.bg-\\[\\#fff\\]')
+    expect(second.rawCandidates).toEqual(new Set(['w-10px', 'bg-#fff', 'text-var(--brand)']))
   })
 
   it('expands divide child combinators for view and text in mini-program output', async () => {

@@ -548,7 +548,9 @@ export function createTailwindV4Engine(source: TailwindV4ResolvedSource): Tailwi
     const engine = createPatchTailwindV4Engine(compatibleSource)
     const resolvedScanSources = await resolveScanSources(generateSource, scanSources)
     const filesystemCandidates = Array.isArray(resolvedScanSources)
-      ? new Set(await extractRawCandidates(resolvedScanSources))
+      ? new Set(await extractRawCandidates(resolvedScanSources, {
+          bareArbitraryValues: patchOptions.bareArbitraryValues,
+        }))
       : undefined
     const resolvedCandidates = resolveTargetCandidates(new Set([
       ...collectCandidates(patchOptions.candidates),

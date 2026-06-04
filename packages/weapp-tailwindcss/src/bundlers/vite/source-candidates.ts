@@ -1,4 +1,5 @@
 import type { TailwindInlineSourceCandidates, TailwindSourceEntry } from '@/tailwindcss/source-scan'
+import type { IArbitraryValues } from '@/types/shared'
 import { readFile } from 'node:fs/promises'
 import path from 'node:path'
 import { extractSourceCandidates, resolveProjectSourceFiles } from 'tailwindcss-patch'
@@ -39,6 +40,13 @@ interface ScanSourceCandidateRootOptions {
   outDir?: string | undefined
   entries?: TailwindSourceEntry[] | undefined
   explicit?: boolean | undefined
+}
+
+export interface SourceCandidateCollectorOptions {
+  /**
+   * 是否补充 UnoCSS 风格裸任意值候选。
+   */
+  bareArbitraryValues?: IArbitraryValues['bareArbitraryValues'] | undefined
 }
 
 const CLEAN_URL_RE = /[?#].*$/
@@ -187,8 +195,12 @@ function resolveSourceCandidateExtension(id: string) {
   return match?.[1] ?? 'html'
 }
 
-function createSourceCandidateContentCacheKey(extension: string, source: string) {
-  return `${extension}\0${source}`
+function createSourceCandidateContentCacheKey(
+  extension: string,
+  source: string,
+  bareArbitraryValues: IArbitraryValues['bareArbitraryValues'] | undefined,
+) {
+  return `${extension}\0${JSON.stringify(bareArbitraryValues ?? false)}\0${source}`
 }
 
 export function isSourceCandidateRequest(id: string) {
@@ -221,7 +233,7 @@ function addCandidateSet(
   }
 }
 
-export function createSourceCandidateCollector(): SourceCandidateCollector {
+export function createSourceCandidateCollector(options: SourceCandidateCollectorOptions = {}): SourceCandidateCollector {
   const candidatesById = new Map<string, Set<string>>()
   const scanCandidatesById = new Map<string, Set<string>>()
   const transformCandidatesById = new Map<string, Set<string>>()
@@ -233,14 +245,16 @@ export function createSourceCandidateCollector(): SourceCandidateCollector {
   async function sync(id: string, source: string) {
     const normalizedId = cleanUrl(id)
     const extension = resolveSourceCandidateExtension(normalizedId)
-    const contentCacheKey = createSourceCandidateContentCacheKey(extension, source)
+    const contentCacheKey = createSourceCandidateContentCacheKey(extension, source, options.bareArbitraryValues)
     const cachedCandidates = sourceCandidateContentCache.get(contentCacheKey)
     if (cachedCandidates) {
       replaceScanLayer(normalizedId, new Set(cachedCandidates))
       return
     }
 
-    const nextCandidates = new Set(await extractSourceCandidates(source, extension))
+    const nextCandidates = new Set(await extractSourceCandidates(source, extension, {
+      bareArbitraryValues: options.bareArbitraryValues,
+    }))
     sourceCandidateContentCache.set(contentCacheKey, [...nextCandidates])
 
     replaceScanLayer(normalizedId, nextCandidates)
@@ -248,14 +262,16 @@ export function createSourceCandidateCollector(): SourceCandidateCollector {
 
   async function syncCss(id: string, source: string) {
     const normalizedId = cleanUrl(id)
-    const contentCacheKey = createSourceCandidateContentCacheKey('css', source)
+    const contentCacheKey = createSourceCandidateContentCacheKey('css', source, options.bareArbitraryValues)
     const cachedCandidates = sourceCandidateContentCache.get(contentCacheKey)
     if (cachedCandidates) {
       replaceCssLayer(normalizedId, new Set(cachedCandidates))
       return
     }
 
-    const nextCandidates = new Set(await extractSourceCandidates(source, 'css'))
+    const nextCandidates = new Set(await extractSourceCandidates(source, 'css', {
+      bareArbitraryValues: options.bareArbitraryValues,
+    }))
     sourceCandidateContentCache.set(contentCacheKey, [...nextCandidates])
 
     replaceCssLayer(normalizedId, nextCandidates)
@@ -264,11 +280,13 @@ export function createSourceCandidateCollector(): SourceCandidateCollector {
   async function merge(id: string, source: string) {
     const normalizedId = cleanUrl(id)
     const extension = resolveSourceCandidateExtension(normalizedId)
-    const contentCacheKey = createSourceCandidateContentCacheKey(extension, source)
+    const contentCacheKey = createSourceCandidateContentCacheKey(extension, source, options.bareArbitraryValues)
     const cachedCandidates = sourceCandidateContentCache.get(contentCacheKey)
     const extractedCandidates = cachedCandidates
       ? new Set(cachedCandidates)
-      : new Set(await extractSourceCandidates(source, extension))
+      : new Set(await extractSourceCandidates(source, extension, {
+          bareArbitraryValues: options.bareArbitraryValues,
+        }))
     if (!cachedCandidates) {
       sourceCandidateContentCache.set(contentCacheKey, [...extractedCandidates])
     }

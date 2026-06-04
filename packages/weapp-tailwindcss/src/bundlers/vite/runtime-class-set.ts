@@ -36,8 +36,12 @@ export function createViteRuntimeClassSet(options: CreateViteRuntimeClassSetOpti
     readyPromise,
     refreshTailwindcssPatcher,
   }
-  const bundleRuntimeClassSetManager = createBundleRuntimeClassSetManager()
-  const transformRuntimeClassSetManager = createBundleRuntimeClassSetManager()
+  const bundleRuntimeClassSetManager = createBundleRuntimeClassSetManager({
+    bareArbitraryValues: opts.arbitraryValues?.bareArbitraryValues,
+  })
+  const transformRuntimeClassSetManager = createBundleRuntimeClassSetManager({
+    bareArbitraryValues: opts.arbitraryValues?.bareArbitraryValues,
+  })
   let runtimeSet: Set<string> | undefined
   let runtimeSetPromise: Promise<Set<string>> | undefined
   let runtimeRefreshSignature: string | undefined

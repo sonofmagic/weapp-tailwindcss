@@ -147,6 +147,9 @@ catalogs:
     tailwindcss:
       specifier: ^3.4.19
       version: 3.4.19
+    tailwindcss-3:
+      specifier: npm:tailwindcss@^3.4.19
+      version: 3.4.19
   tailwindcss4:
     '@tailwindcss/postcss':
       specifier: ^4.3.0
@@ -156,6 +159,9 @@ catalogs:
       version: 4.3.0
     tailwindcss:
       specifier: ^4.3.0
+      version: 4.3.0
+    tailwindcss-4:
+      specifier: npm:tailwindcss@^4.3.0
       version: 4.3.0
     tailwindcss4:
       specifier: npm:tailwindcss@^4.3.0
@@ -881,7 +887,7 @@ importers:
     devDependencies:
       vitest:
         specifier: catalog:vitest
-        version: 4.1.8(@types/node@25.9.1)(@vitest/coverage-v8@4.1.8)(@vitest/ui@4.1.8)(jsdom@29.1.1)(vite@7.3.5(@types/node@25.9.1)(jiti@2.7.0)(less@4.6.4)(lightningcss@1.32.0)(sass-embedded@1.100.0)(sass@1.100.0)(stylus@0.57.0)(terser@5.48.0)(tsx@4.22.4)(yaml@2.9.0))
+        version: 4.1.8(@types/node@25.9.1)(@vitest/coverage-v8@4.1.8)(@vitest/ui@4.1.8)(jsdom@29.1.1)(vite@8.0.16(@types/node@25.9.1)(esbuild@0.28.0)(jiti@2.7.0)(less@4.6.4)(sass-embedded@1.100.0)(sass@1.100.0)(stylus@0.57.0)(terser@5.48.0)(tsx@4.22.4)(yaml@2.9.0))
 
   benchmark/tailwindcss4:
     dependencies:
@@ -909,7 +915,7 @@ importers:
     devDependencies:
       vitest:
         specifier: catalog:vitest
-        version: 4.1.8(@types/node@25.9.1)(@vitest/coverage-v8@4.1.8)(@vitest/ui@4.1.8)(jsdom@29.1.1)(vite@7.3.5(@types/node@25.9.1)(jiti@2.7.0)(less@4.6.4)(lightningcss@1.32.0)(sass-embedded@1.100.0)(sass@1.100.0)(stylus@0.57.0)(terser@5.48.0)(tsx@4.22.4)(yaml@2.9.0))
+        version: 4.1.8(@types/node@25.9.1)(@vitest/coverage-v8@4.1.8)(@vitest/ui@4.1.8)(jsdom@29.1.1)(vite@8.0.16(@types/node@25.9.1)(esbuild@0.28.0)(jiti@2.7.0)(less@4.6.4)(sass-embedded@1.100.0)(sass@1.100.0)(stylus@0.57.0)(terser@5.48.0)(tsx@4.22.4)(yaml@2.9.0))
 
   demo/gulp-tailwindcss-v3:
     dependencies:
@@ -3818,8 +3824,8 @@ importers:
   packages/test-helper:
     dependencies:
       tailwindcss-patch:
-        specifier: catalog:tailwindcssPatch
-        version: 9.4.1(magicast@0.5.3)(tailwindcss@4.3.0)
+        specifier: workspace:9.4.1
+        version: link:../../submodules/tailwindcss-mangle/packages/tailwindcss-patch
 
   packages/weapp-style-injector:
     dependencies:
@@ -3890,8 +3896,8 @@ importers:
         specifier: workspace:*
         version: link:../tailwindcss-config
       tailwindcss-patch:
-        specifier: catalog:tailwindcssPatch
-        version: 9.4.1(magicast@0.5.3)(tailwindcss@4.3.0)
+        specifier: workspace:9.4.1
+        version: link:../../submodules/tailwindcss-mangle/packages/tailwindcss-patch
       yaml:
         specifier: ^2.9.0
         version: 2.9.0
@@ -3924,6 +3930,93 @@ importers:
       cac:
         specifier: ^6.7.14
         version: 6.7.14
+
+  submodules/tailwindcss-mangle/packages/config:
+    dependencies:
+      '@tailwindcss-mangle/shared':
+        specifier: workspace:^
+        version: link:../shared
+      c12:
+        specifier: ^3.3.3
+        version: 3.3.4(magicast@0.5.3)
+      fs-extra:
+        specifier: ^11.3.5
+        version: 11.3.5
+      is-css-request:
+        specifier: ^1.0.1
+        version: 1.0.1
+      pathe:
+        specifier: ^2.0.3
+        version: 2.0.3
+
+  submodules/tailwindcss-mangle/packages/shared: {}
+
+  submodules/tailwindcss-mangle/packages/tailwindcss-patch:
+    dependencies:
+      '@babel/generator':
+        specifier: ^7.29.1
+        version: 7.29.7
+      '@babel/parser':
+        specifier: ^7.29.3
+        version: 7.29.7
+      '@babel/traverse':
+        specifier: ^7.29.0
+        version: 7.29.7
+      '@babel/types':
+        specifier: ^7.29.0
+        version: 7.29.7
+      '@tailwindcss-mangle/config':
+        specifier: workspace:*
+        version: link:../config
+      '@tailwindcss/node':
+        specifier: ^4.3.0
+        version: 4.3.0
+      '@tailwindcss/oxide':
+        specifier: ^4.3.0
+        version: 4.3.0
+      cac:
+        specifier: 6.7.14
+        version: 6.7.14
+      consola:
+        specifier: ^3.4.2
+        version: 3.4.2
+      fs-extra:
+        specifier: ^11.3.5
+        version: 11.3.5
+      local-pkg:
+        specifier: ^1.2.1
+        version: 1.2.1
+      micromatch:
+        specifier: ^4.0.8
+        version: 4.0.8
+      pathe:
+        specifier: ^2.0.3
+        version: 2.0.3
+      postcss:
+        specifier: ^8.5.15
+        version: 8.5.15
+      semver:
+        specifier: ^7.8.1
+        version: 7.8.1
+      tailwindcss-config:
+        specifier: ^1.1.5
+        version: 1.1.5
+    devDependencies:
+      '@tailwindcss/postcss':
+        specifier: ^4.3.0
+        version: 4.3.0
+      '@tailwindcss/vite':
+        specifier: ^4.3.0
+        version: 4.3.0(vite@8.0.16(@types/node@25.9.1)(esbuild@0.28.0)(jiti@2.7.0)(less@4.6.4)(sass-embedded@1.100.0)(sass@1.100.0)(stylus@0.57.0)(terser@5.48.0)(tsx@4.22.4)(yaml@2.9.0))
+      tailwindcss:
+        specifier: catalog:tailwindcss4
+        version: 4.3.0
+      tailwindcss-3:
+        specifier: catalog:tailwindcss3
+        version: tailwindcss@3.4.19(tsx@4.22.4)(yaml@2.9.0)
+      tailwindcss-4:
+        specifier: catalog:tailwindcss4
+        version: tailwindcss@4.3.0
 
   tools/weapp-tailwindcss-scripts:
     dependencies:
@@ -28957,8 +29050,8 @@ snapshots:
 
   '@babel/generator@7.29.1':
     dependencies:
-      '@babel/parser': 7.29.3
-      '@babel/types': 7.29.0
+      '@babel/parser': 7.29.7
+      '@babel/types': 7.29.7
       '@jridgewell/gen-mapping': 0.3.13
       '@jridgewell/trace-mapping': 0.3.31
       jsesc: 3.1.0
@@ -30005,11 +30098,11 @@ snapshots:
   '@babel/traverse@7.29.0':
     dependencies:
       '@babel/code-frame': 7.29.7
-      '@babel/generator': 7.29.1
+      '@babel/generator': 7.29.7
       '@babel/helper-globals': 7.28.0
-      '@babel/parser': 7.29.3
+      '@babel/parser': 7.29.7
       '@babel/template': 7.29.7
-      '@babel/types': 7.29.0
+      '@babel/types': 7.29.7
       debug: 4.4.3
     transitivePeerDependencies:
       - supports-color
@@ -38548,7 +38641,7 @@ snapshots:
   '@tailwindcss/node@4.3.0':
     dependencies:
       '@jridgewell/remapping': 2.3.5
-      enhanced-resolve: 5.21.3
+      enhanced-resolve: 5.22.1
       jiti: 2.7.0
       lightningcss: 1.32.0
       magic-string: 0.30.21
@@ -38637,6 +38730,13 @@ snapshots:
       '@tailwindcss/oxide': 4.3.0
       tailwindcss: 4.3.0
       vite: 7.3.5(@types/node@25.9.1)(jiti@2.7.0)(less@4.6.4)(lightningcss@1.32.0)(sass-embedded@1.100.0)(sass@1.100.0)(stylus@0.57.0)(terser@5.48.0)(tsx@4.22.4)(yaml@2.9.0)
+
+  '@tailwindcss/vite@4.3.0(vite@8.0.16(@types/node@25.9.1)(esbuild@0.28.0)(jiti@2.7.0)(less@4.6.4)(sass-embedded@1.100.0)(sass@1.100.0)(stylus@0.57.0)(terser@5.48.0)(tsx@4.22.4)(yaml@2.9.0))':
+    dependencies:
+      '@tailwindcss/node': 4.3.0
+      '@tailwindcss/oxide': 4.3.0
+      tailwindcss: 4.3.0
+      vite: 8.0.16(@types/node@25.9.1)(esbuild@0.28.0)(jiti@2.7.0)(less@4.6.4)(sass-embedded@1.100.0)(sass@1.100.0)(stylus@0.57.0)(terser@5.48.0)(tsx@4.22.4)(yaml@2.9.0)
 
   '@taro-hooks/ahooks@2.2.0':
     dependencies:
@@ -41582,7 +41682,7 @@ snapshots:
       obug: 2.1.1
       std-env: 4.1.0
       tinyrainbow: 3.1.0
-      vitest: 4.1.8(@types/node@25.9.1)(@vitest/coverage-v8@4.1.8)(@vitest/ui@4.1.8)(jsdom@29.1.1)(vite@7.3.5(@types/node@25.9.1)(jiti@2.7.0)(less@4.6.4)(lightningcss@1.32.0)(sass-embedded@1.100.0)(sass@1.100.0)(stylus@0.57.0)(terser@5.48.0)(tsx@4.22.4)(yaml@2.9.0))
+      vitest: 4.1.8(@types/node@25.9.1)(@vitest/coverage-v8@4.1.8)(@vitest/ui@4.1.8)(jsdom@29.1.1)(vite@8.0.16(@types/node@25.9.1)(esbuild@0.28.0)(jiti@2.7.0)(less@4.6.4)(sass-embedded@1.100.0)(sass@1.100.0)(stylus@0.57.0)(terser@5.48.0)(tsx@4.22.4)(yaml@2.9.0))
 
   '@vitest/eslint-plugin@1.6.18(@typescript-eslint/eslint-plugin@8.60.1(@typescript-eslint/parser@8.60.1(eslint@10.4.1(jiti@2.7.0))(typescript@6.0.3))(eslint@10.4.1(jiti@2.7.0))(typescript@6.0.3))(eslint@10.4.1(jiti@2.7.0))(typescript@6.0.3)(vitest@4.1.8)':
     dependencies:
@@ -41621,13 +41721,13 @@ snapshots:
     optionalDependencies:
       vite: 7.3.5(@types/node@24.12.4)(jiti@2.7.0)(less@4.6.4)(lightningcss@1.32.0)(sass-embedded@1.100.0)(sass@1.100.0)(stylus@0.57.0)(terser@5.48.0)(tsx@4.22.4)(yaml@2.9.0)
 
-  '@vitest/mocker@4.1.8(vite@7.3.5(@types/node@25.9.1)(jiti@2.7.0)(less@4.6.4)(lightningcss@1.32.0)(sass-embedded@1.100.0)(sass@1.100.0)(stylus@0.57.0)(terser@5.48.0)(tsx@4.22.4)(yaml@2.9.0))':
+  '@vitest/mocker@4.1.8(vite@8.0.16(@types/node@25.9.1)(esbuild@0.28.0)(jiti@2.7.0)(less@4.6.4)(sass-embedded@1.100.0)(sass@1.100.0)(stylus@0.57.0)(terser@5.48.0)(tsx@4.22.4)(yaml@2.9.0))':
     dependencies:
       '@vitest/spy': 4.1.8
       estree-walker: 3.0.3
       magic-string: 0.30.21
     optionalDependencies:
-      vite: 7.3.5(@types/node@25.9.1)(jiti@2.7.0)(less@4.6.4)(lightningcss@1.32.0)(sass-embedded@1.100.0)(sass@1.100.0)(stylus@0.57.0)(terser@5.48.0)(tsx@4.22.4)(yaml@2.9.0)
+      vite: 8.0.16(@types/node@25.9.1)(esbuild@0.28.0)(jiti@2.7.0)(less@4.6.4)(sass-embedded@1.100.0)(sass@1.100.0)(stylus@0.57.0)(terser@5.48.0)(tsx@4.22.4)(yaml@2.9.0)
 
   '@vitest/pretty-format@3.2.4':
     dependencies:
@@ -41664,7 +41764,7 @@ snapshots:
       sirv: 3.0.2
       tinyglobby: 0.2.17
       tinyrainbow: 3.1.0
-      vitest: 4.1.8(@types/node@25.9.1)(@vitest/coverage-v8@4.1.8)(@vitest/ui@4.1.8)(jsdom@29.1.1)(vite@7.3.5(@types/node@25.9.1)(jiti@2.7.0)(less@4.6.4)(lightningcss@1.32.0)(sass-embedded@1.100.0)(sass@1.100.0)(stylus@0.57.0)(terser@5.48.0)(tsx@4.22.4)(yaml@2.9.0))
+      vitest: 4.1.8(@types/node@25.9.1)(@vitest/coverage-v8@4.1.8)(@vitest/ui@4.1.8)(jsdom@29.1.1)(vite@8.0.16(@types/node@25.9.1)(esbuild@0.28.0)(jiti@2.7.0)(less@4.6.4)(sass-embedded@1.100.0)(sass@1.100.0)(stylus@0.57.0)(terser@5.48.0)(tsx@4.22.4)(yaml@2.9.0))
 
   '@vitest/utils@3.2.4':
     dependencies:
@@ -41706,7 +41806,7 @@ snapshots:
     dependencies:
       '@vue/compiler-sfc': 3.5.35
       ast-kit: 2.2.0
-      local-pkg: 1.1.2
+      local-pkg: 1.2.1
       magic-string-ast: 1.0.3
       unplugin-utils: 0.3.1
     optionalDependencies:
@@ -54184,7 +54284,7 @@ snapshots:
       cosmiconfig: 9.0.0(typescript@6.0.3)
       jiti: 2.7.0
       postcss: 8.5.15
-      semver: 7.8.0
+      semver: 7.8.1
     optionalDependencies:
       webpack: 5.105.4(@swc/core@1.15.40(@swc/helpers@0.5.19))(esbuild@0.28.0)
     transitivePeerDependencies:
@@ -54195,7 +54295,7 @@ snapshots:
       cosmiconfig: 9.0.0(typescript@6.0.3)
       jiti: 2.7.0
       postcss: 8.5.15
-      semver: 7.8.0
+      semver: 7.8.1
     optionalDependencies:
       webpack: 5.107.2(@swc/core@1.15.40(@swc/helpers@0.5.19))(esbuild@0.28.0)(lightningcss@1.32.0)(postcss@8.5.15)
     transitivePeerDependencies:
@@ -59429,10 +59529,10 @@ snapshots:
     transitivePeerDependencies:
       - msw
 
-  vitest@4.1.8(@types/node@25.9.1)(@vitest/coverage-v8@4.1.8)(@vitest/ui@4.1.8)(jsdom@29.1.1)(vite@7.3.5(@types/node@25.9.1)(jiti@2.7.0)(less@4.6.4)(lightningcss@1.32.0)(sass-embedded@1.100.0)(sass@1.100.0)(stylus@0.57.0)(terser@5.48.0)(tsx@4.22.4)(yaml@2.9.0)):
+  vitest@4.1.8(@types/node@25.9.1)(@vitest/coverage-v8@4.1.8)(@vitest/ui@4.1.8)(jsdom@29.1.1)(vite@8.0.16(@types/node@25.9.1)(esbuild@0.28.0)(jiti@2.7.0)(less@4.6.4)(sass-embedded@1.100.0)(sass@1.100.0)(stylus@0.57.0)(terser@5.48.0)(tsx@4.22.4)(yaml@2.9.0)):
     dependencies:
       '@vitest/expect': 4.1.8
-      '@vitest/mocker': 4.1.8(vite@7.3.5(@types/node@25.9.1)(jiti@2.7.0)(less@4.6.4)(lightningcss@1.32.0)(sass-embedded@1.100.0)(sass@1.100.0)(stylus@0.57.0)(terser@5.48.0)(tsx@4.22.4)(yaml@2.9.0))
+      '@vitest/mocker': 4.1.8(vite@8.0.16(@types/node@25.9.1)(esbuild@0.28.0)(jiti@2.7.0)(less@4.6.4)(sass-embedded@1.100.0)(sass@1.100.0)(stylus@0.57.0)(terser@5.48.0)(tsx@4.22.4)(yaml@2.9.0))
       '@vitest/pretty-format': 4.1.8
       '@vitest/runner': 4.1.8
       '@vitest/snapshot': 4.1.8
@@ -59449,7 +59549,7 @@ snapshots:
       tinyexec: 1.2.4
       tinyglobby: 0.2.17
       tinyrainbow: 3.1.0
-      vite: 7.3.5(@types/node@25.9.1)(jiti@2.7.0)(less@4.6.4)(lightningcss@1.32.0)(sass-embedded@1.100.0)(sass@1.100.0)(stylus@0.57.0)(terser@5.48.0)(tsx@4.22.4)(yaml@2.9.0)
+      vite: 8.0.16(@types/node@25.9.1)(esbuild@0.28.0)(jiti@2.7.0)(less@4.6.4)(sass-embedded@1.100.0)(sass@1.100.0)(stylus@0.57.0)(terser@5.48.0)(tsx@4.22.4)(yaml@2.9.0)
       why-is-node-running: 2.3.0
     optionalDependencies:
       '@types/node': 25.9.1

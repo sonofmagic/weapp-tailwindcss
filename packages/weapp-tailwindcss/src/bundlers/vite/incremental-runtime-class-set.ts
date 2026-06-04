@@ -1,7 +1,8 @@
 import type { BundleSnapshot, BundleStateEntry } from './bundle-state'
 import type { TailwindV4DesignSystem, TailwindV4ResolvedSource } from '@/tailwindcss/v4-engine'
 import type { TailwindcssPatcherLike } from '@/types'
-import { extractRawCandidatesWithPositions, extractValidCandidates } from 'tailwindcss-patch'
+import type { IArbitraryValues } from '@/types/shared'
+import { extractRawCandidatesWithPositions, extractValidCandidates, resolveValidTailwindV4Candidates } from 'tailwindcss-patch'
 import { createDebug } from '@/debug'
 import { getRuntimeClassSetSignature } from '@/tailwindcss/runtime/cache'
 import { loadTailwindV4DesignSystem, resolveTailwindV4SourceFromPatcher } from '@/tailwindcss/v4-engine'
@@ -15,7 +16,11 @@ type MemoryExtractValidCandidatesOptions = ExtractValidCandidatesOptions & {
 }
 type ExtractValidCandidatesFn = (options?: MemoryExtractValidCandidatesOptions) => Promise<string[]>
 type ExtractRawCandidateResult = Awaited<ReturnType<typeof extractRawCandidatesWithPositions>>
-type ExtractRawCandidatesFn = (content: string, extension?: string) => Promise<ExtractRawCandidateResult>
+type ExtractRawCandidatesFn = (
+  content: string,
+  extension?: string,
+  options?: { bareArbitraryValues?: IArbitraryValues['bareArbitraryValues'] | undefined },
+) => Promise<ExtractRawCandidateResult>
 
 export interface BundleRuntimeClassSetManager {
   sync: (patcher: TailwindcssPatcherLike, snapshot: BundleSnapshot, options?: BundleRuntimeClassSetSyncOptions) => Promise<Set<string>>
@@ -28,6 +33,7 @@ export interface BundleRuntimeClassSetSyncOptions {
 }
 
 interface CreateBundleRuntimeClassSetManagerOptions {
+  bareArbitraryValues?: IArbitraryValues['bareArbitraryValues'] | undefined
   extractCandidates?: ExtractValidCandidatesFn
   extractRawCandidates?: ExtractRawCandidatesFn
 }
@@ -102,6 +108,7 @@ function isRuntimeCandidateEntry(entry: BundleStateEntry) {
 function createExtractOptions(
   context: TailwindV4ResolvedSource,
   source: string,
+  bareArbitraryValues: IArbitraryValues['bareArbitraryValues'] | undefined,
 ): MemoryExtractValidCandidatesOptions {
   return {
     cwd: context.projectRoot,
@@ -110,6 +117,7 @@ function createExtractOptions(
     css: context.css,
     content: source,
     extension: 'html',
+    bareArbitraryValues,
   }
 }
 
@@ -329,19 +337,9 @@ export function createBundleRuntimeClassSetManager(
     designSystem: TailwindV4DesignSystem,
     unknownCandidates: Set<string>,
   ) {
-    const parsedCandidates = [...unknownCandidates].filter(candidate => designSystem.parseCandidate(candidate).length > 0)
-    const cssByCandidate = parsedCandidates.length > 0
-      ? designSystem.candidatesToCss(parsedCandidates)
-      : []
-    const validCandidates = new Set<string>()
-
-    for (let index = 0; index < parsedCandidates.length; index += 1) {
-      const candidate = parsedCandidates[index]
-      const css = cssByCandidate[index]
-      if (candidate && typeof css === 'string' && css.trim().length > 0) {
-        validCandidates.add(candidate)
-      }
-    }
+    const validCandidates = resolveValidTailwindV4Candidates(designSystem, unknownCandidates, {
+      bareArbitraryValues: options.bareArbitraryValues,
+    })
 
     for (const candidate of unknownCandidates) {
       candidateValidityCache.set(candidate, validCandidates.has(candidate))
@@ -378,7 +376,7 @@ export function createBundleRuntimeClassSetManager(
     }
 
     const source = createCandidateValidationSource(unknownCandidates)
-    const validCandidates = new Set(await extractCandidates(createExtractOptions(context, source)))
+    const validCandidates = new Set(await extractCandidates(createExtractOptions(context, source, options.bareArbitraryValues)))
 
     for (const candidate of unknownCandidates) {
       candidateValidityCache.set(candidate, validCandidates.has(candidate))
@@ -391,7 +389,11 @@ export function createBundleRuntimeClassSetManager(
     knownSourceCandidates?: Set<string>,
   ) {
     const extension = resolveEntryExtension(entry)
-    const matches = await extractRawCandidates(entry.source, extension)
+    const matches = options.bareArbitraryValues === undefined || options.bareArbitraryValues === false
+      ? await extractRawCandidates(entry.source, extension)
+      : await extractRawCandidates(entry.source, extension, {
+          bareArbitraryValues: options.bareArbitraryValues,
+        })
     const highConfidenceLiteralRanges = patcher.majorVersion === 3 && !customExtractCandidates
       ? createHighConfidenceLiteralRanges(entry.source, matches)
       : []

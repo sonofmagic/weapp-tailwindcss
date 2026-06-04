@@ -10,6 +10,11 @@ import type {
 import fs from 'node:fs'
 import { createRequire } from 'node:module'
 import postcss from 'postcss'
+import {
+  extractSourceCandidates,
+  isBareArbitraryValuesEnabled,
+  resolveBareArbitraryValueCandidate,
+} from 'tailwindcss-patch'
 import { hasCssMacroTailwindPlugin, withCssMacroStyleOptions } from '@/css-macro/auto'
 import { createTailwindcssPatcher } from '@/tailwindcss/patcher'
 import { ensureTailwindcssRuntimePatch } from '@/tailwindcss/runtime-patch'
@@ -36,6 +41,7 @@ interface TailwindV3Internals {
   createContext: (tailwindConfig: unknown, changedContent: unknown[], root: postcss.Root) => TailwindV3Context
   collapseAdjacentRules: (context: TailwindV3Context) => (root: postcss.Root, result: TailwindV3ProcessResult) => void
   collapseDuplicateDeclarations: (context: TailwindV3Context) => (root: postcss.Root, result: TailwindV3ProcessResult) => void
+  escapeClassName: (className: string) => string
   generateRules: (candidates: Set<string>, context: TailwindV3Context) => Array<[unknown, postcss.Node]>
   processTailwindFeatures: (setupContext: unknown) => (root: postcss.Root, result: TailwindV3ProcessResult) => Promise<TailwindV3Context>
   resolveDefaultsAtRules: (context: TailwindV3Context) => (root: postcss.Root, result: TailwindV3ProcessResult) => void
@@ -92,6 +98,106 @@ function createChangedContentEntries(candidates: Iterable<string>, sources: Tail
 
 function collectCandidates(candidates: Iterable<string> | undefined) {
   return new Set(candidates ?? [])
+}
+
+function normalizeBareArbitraryValueCandidate(
+  candidate: string,
+  bareArbitraryValues: TailwindV3GenerateOptions['bareArbitraryValues'],
+) {
+  return resolveBareArbitraryValueCandidate(candidate, bareArbitraryValues)?.canonicalCandidate ?? candidate
+}
+
+function normalizeBareArbitraryValueCandidates(
+  candidates: Iterable<string>,
+  bareArbitraryValues: TailwindV3GenerateOptions['bareArbitraryValues'],
+) {
+  const normalized = new Set<string>()
+  const restoreCandidates = new Map<string, string>()
+  for (const candidate of candidates) {
+    const normalizedCandidate = normalizeBareArbitraryValueCandidate(candidate, bareArbitraryValues)
+    normalized.add(normalizedCandidate)
+    if (normalizedCandidate !== candidate) {
+      restoreCandidates.set(normalizedCandidate, candidate)
+    }
+  }
+  return {
+    candidates: normalized,
+    restoreCandidates,
+  }
+}
+
+async function collectSourceBareArbitraryValueCandidates(
+  sources: TailwindV3CandidateSource[] | undefined,
+  bareArbitraryValues: TailwindV3GenerateOptions['bareArbitraryValues'],
+) {
+  if (!isBareArbitraryValuesEnabled(bareArbitraryValues)) {
+    return []
+  }
+  const candidates = new Set<string>()
+  for (const source of sources ?? []) {
+    for (const candidate of await extractSourceCandidates(source.content, source.extension ?? 'html', { bareArbitraryValues })) {
+      if (resolveBareArbitraryValueCandidate(candidate, bareArbitraryValues)) {
+        candidates.add(candidate)
+      }
+    }
+  }
+  return [...candidates]
+}
+
+function escapeCssClassSelector(className: string) {
+  return className.replace(/[^\w-]/g, char => `\\${char}`)
+}
+
+function restoreBareArbitraryValueCssSelectors(
+  css: string,
+  originalCandidates: Iterable<string>,
+  bareArbitraryValues: TailwindV3GenerateOptions['bareArbitraryValues'],
+  escapeClassName: TailwindV3Internals['escapeClassName'],
+) {
+  if (!isBareArbitraryValuesEnabled(bareArbitraryValues)) {
+    return css
+  }
+  let restored = css
+  for (const originalCandidate of originalCandidates) {
+    const canonical = resolveBareArbitraryValueCandidate(originalCandidate, bareArbitraryValues)?.canonicalCandidate
+    if (canonical) {
+      restored = restored.split(`.${escapeClassName(canonical)}`).join(`.${escapeCssClassSelector(originalCandidate)}`)
+    }
+  }
+  return restored
+}
+
+function restoreBareArbitraryValueClassSet(
+  classSet: Iterable<string>,
+  originalCandidates: Iterable<string>,
+  bareArbitraryValues: TailwindV3GenerateOptions['bareArbitraryValues'],
+) {
+  if (!isBareArbitraryValuesEnabled(bareArbitraryValues)) {
+    return new Set(classSet)
+  }
+  const restored = new Set(classSet)
+  for (const originalCandidate of originalCandidates) {
+    const canonical = resolveBareArbitraryValueCandidate(originalCandidate, bareArbitraryValues)?.canonicalCandidate
+    if (canonical && restored.has(canonical)) {
+      restored.delete(canonical)
+      restored.add(originalCandidate)
+    }
+  }
+  return restored
+}
+
+function collectGeneratedCandidates(
+  context: TailwindV3Context,
+  candidates: Iterable<string>,
+  restoreCandidates: ReadonlyMap<string, string>,
+) {
+  const classSet = new Set<string>()
+  for (const candidate of candidates) {
+    if (context.classCache.has(candidate)) {
+      classSet.add(restoreCandidates.get(candidate) ?? candidate)
+    }
+  }
+  return classSet
 }
 
 function hasRemovedCandidates(previousCandidates: Set<string>, nextCandidates: Set<string>) {
@@ -267,6 +373,7 @@ function loadTailwindV3Internals(source: TailwindV3ResolvedSource): TailwindV3In
   }
   const collapseAdjacentRulesModule = requireTailwind(`${source.packageName}/lib/lib/collapseAdjacentRules`)
   const collapseDuplicateDeclarationsModule = requireTailwind(`${source.packageName}/lib/lib/collapseDuplicateDeclarations`)
+  const escapeClassNameModule = requireTailwind(`${source.packageName}/lib/util/escapeClassName`)
   const generateRulesModule = requireTailwind(`${source.packageName}/lib/lib/generateRules`)
   const sharedStateModule = requireTailwind(`${source.packageName}/lib/lib/sharedState`)
   const setupContextUtils = requireTailwind(`${source.packageName}/lib/lib/setupContextUtils`)
@@ -278,6 +385,7 @@ function loadTailwindV3Internals(source: TailwindV3ResolvedSource): TailwindV3In
     collapseAdjacentRules: (collapseAdjacentRulesModule['default'] ?? collapseAdjacentRulesModule) as TailwindV3Internals['collapseAdjacentRules'],
     collapseDuplicateDeclarations: (collapseDuplicateDeclarationsModule['default'] ?? collapseDuplicateDeclarationsModule) as TailwindV3Internals['collapseDuplicateDeclarations'],
     createContext: setupContextUtils['createContext'] as TailwindV3Internals['createContext'],
+    escapeClassName: (escapeClassNameModule['default'] ?? escapeClassNameModule) as TailwindV3Internals['escapeClassName'],
     generateRules: generateRulesModule['generateRules'] as TailwindV3Internals['generateRules'],
     notOnDemandCandidate: String(sharedStateModule['NOT_ON_DEMAND'] ?? '*'),
     processTailwindFeatures: (processTailwindFeaturesModule['default'] ?? processTailwindFeaturesModule) as TailwindV3Internals['processTailwindFeatures'],
@@ -319,6 +427,7 @@ function createIncrementalGenerateCacheKey(
   source: TailwindV3ResolvedSource,
   target: TailwindV3GenerateTarget,
   styleOptions: Partial<IStyleHandlerOptions> | undefined,
+  bareArbitraryValues: TailwindV3GenerateOptions['bareArbitraryValues'],
 ) {
   return [
     source.packageName,
@@ -330,6 +439,7 @@ function createIncrementalGenerateCacheKey(
     createStableJson(normalizeConfigObject(source.configObject)?.content),
     target,
     createStableJson(styleOptions),
+    createStableJson(bareArbitraryValues),
   ].join('\0')
 }
 
@@ -436,8 +546,17 @@ export function createTailwindV3Engine(source: TailwindV3ResolvedSource): Tailwi
       target = 'weapp',
     } = options
     const resolvedStyleOptions = resolveStyleOptions(generateSource, styleOptions)
-    const tailwindConfig = internals.validateConfig(internals.resolveConfig(createTailwindConfig(generateSource, options)))
-    const candidates = mergeGenerateCandidates(generateSource, options)
+    const requestedCandidates = mergeGenerateCandidates(generateSource, options)
+    for (const candidate of await collectSourceBareArbitraryValueCandidates(options.sources, options.bareArbitraryValues)) {
+      requestedCandidates.add(candidate)
+    }
+    const normalizedCandidates = normalizeBareArbitraryValueCandidates(requestedCandidates, options.bareArbitraryValues)
+    const tailwindOptions = {
+      ...options,
+      candidates: normalizedCandidates.candidates,
+    }
+    const tailwindConfig = internals.validateConfig(internals.resolveConfig(createTailwindConfig(generateSource, tailwindOptions)))
+    const candidates = normalizedCandidates.candidates
     const changedContent = createChangedContentEntries(candidates, options.sources ?? [])
     const root = postcss.parse(generateSource.css, {
       from: undefined,
@@ -465,20 +584,25 @@ export function createTailwindV3Engine(source: TailwindV3ResolvedSource): Tailwi
       }
       context = await internals.processTailwindFeatures(setupContext)(root, result)
     }
-    const rawCss = root.toString()
+    const rawCss = restoreBareArbitraryValueCssSelectors(
+      root.toString(),
+      requestedCandidates,
+      options.bareArbitraryValues,
+      internals.escapeClassName,
+    )
     const css = await transformTailwindV3CssByTarget(rawCss, target, resolvedStyleOptions)
     const dependencies = collectDependencyMessages(result)
     for (const dependency of generateSource.dependencies) {
       dependencies.add(dependency)
     }
-    const classSet = collectClassSet(context)
+    const classSet = restoreBareArbitraryValueClassSet(collectClassSet(context), requestedCandidates, options.bareArbitraryValues)
 
     return {
       css,
       rawCss,
       context,
       classSet,
-      rawCandidates: candidates,
+      rawCandidates: requestedCandidates,
       dependencies: [...dependencies],
       sources: [],
       root: null,
@@ -492,6 +616,7 @@ export function createTailwindV3Engine(source: TailwindV3ResolvedSource): Tailwi
     candidates: string[],
     target: TailwindV3GenerateTarget,
     styleOptions: Partial<IStyleHandlerOptions> | undefined,
+    bareArbitraryValues: TailwindV3GenerateOptions['bareArbitraryValues'],
   ) {
     tailwindInternals ??= loadTailwindV3Internals(source)
     const internals = tailwindInternals
@@ -500,18 +625,25 @@ export function createTailwindV3Engine(source: TailwindV3ResolvedSource): Tailwi
       css: '',
       messages: [],
     }
-    const rules = internals.generateRules(new Set(sortCandidates(candidates)), context)
+    const normalizedCandidates = normalizeBareArbitraryValueCandidates(candidates, bareArbitraryValues)
+    const sortedCandidates = sortCandidates(normalizedCandidates.candidates)
+    const rules = internals.generateRules(new Set(sortedCandidates), context)
     appendUtilityRules(root, context, rules)
     internals.resolveDefaultsAtRules(context)(root, result)
     internals.collapseAdjacentRules(context)(root, result)
     internals.collapseDuplicateDeclarations(context)(root, result)
 
-    const rawCss = root.toString()
+    const rawCss = restoreBareArbitraryValueCssSelectors(
+      root.toString(),
+      candidates,
+      bareArbitraryValues,
+      internals.escapeClassName,
+    )
     const css = await transformTailwindV3CssByTarget(rawCss, target, resolveStyleOptions(source, styleOptions))
     return {
       css,
       rawCss,
-      classSet: collectClassSet(context),
+      classSet: collectGeneratedCandidates(context, sortedCandidates, normalizedCandidates.restoreCandidates),
       dependencies: collectDependencyMessages(result),
     }
   }
@@ -528,7 +660,7 @@ export function createTailwindV3Engine(source: TailwindV3ResolvedSource): Tailwi
     }
 
     const styleOptions = resolveStyleOptions(source, options.styleOptions)
-    const cacheKey = createIncrementalGenerateCacheKey(source, target, styleOptions)
+    const cacheKey = createIncrementalGenerateCacheKey(source, target, styleOptions, options.bareArbitraryValues)
     const cached = incrementalGenerateCache.get(cacheKey)
     if (cached) {
       if (hasRemovedCandidates(cached.seenCandidates, requestedCandidates)) {
@@ -567,6 +699,7 @@ export function createTailwindV3Engine(source: TailwindV3ResolvedSource): Tailwi
         missingCandidates,
         target,
         styleOptions,
+        options.bareArbitraryValues,
       )
       for (const candidate of missingCandidates) {
         cached.seenCandidates.add(candidate)

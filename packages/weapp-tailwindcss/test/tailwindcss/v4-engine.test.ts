@@ -5,6 +5,7 @@ import path from 'node:path'
 import type { TailwindCssPatchOptions } from 'tailwindcss-patch'
 import { resolveTailwindV4SourceFromPatchOptions } from 'tailwindcss-patch'
 import { afterEach, vi } from 'vitest'
+import { getCompilerContext } from '@/context'
 import { createTailwindV4Engine, resolveTailwindV4Source, resolveTailwindV4SourceOptionsFromPatcher, transformTailwindV4CssToWeapp } from '@/tailwindcss/v4-engine'
 
 const require = createRequire(import.meta.url)
@@ -16,10 +17,55 @@ const MINIMAL_THEME_CSS = `
   --color-red-500: oklch(63.7% 0.237 25.331);
   --color-blue-500: oklch(62.3% 0.214 259.815);
   --color-orange-200: oklch(90.1% 0.076 70.697);
+  --breakpoint-sm: 40rem;
   --spacing: 0.25rem;
 }
 @tailwind utilities;
 `
+
+const UNOCSS_DEFAULT_STYLE_CANDIDATES = [
+  'w-10px',
+  'w-1/2',
+  'w-50%',
+  'w-2.5rem',
+  'h-100vh',
+  'min-w-20em',
+  'max-w-80vw',
+  'size-10px',
+  'basis-20%',
+  'grid-cols-200px',
+  'aspect-16/9',
+  'p-10px',
+  'px-1.5rem',
+  'py-2em',
+  'm-4rem',
+  '-mt-2px',
+  'gap-12px',
+  'top-1/2',
+  '-top-1.5rem',
+  'translate-x-10px',
+  'rotate-45deg',
+  'rounded-2px',
+  'border-1px',
+  'outline-2px',
+  'blur-4px',
+  'leading-1.2em',
+  'tracking-0.1em',
+  'duration-300ms',
+  'delay-1s',
+  'opacity-50%',
+  'bg-#fff',
+  'bg-#ffffff80',
+  'text-#f00',
+  'text-rgb(255,0,0)',
+  'w-calc(100%-1rem)',
+]
+
+const UNOCSS_DEFAULT_SOURCE_CLASSES = [
+  'hover:!p-2.5px',
+  'sm:-top-1.5rem',
+  'text-var(--brand)',
+]
 
 function compactCss(css: string) {
   return css.replace(/\s+/g, '')
@@ -519,7 +565,7 @@ describe('tailwindcss v4 engine', () => {
     expect(result.css).toContain('.w-4')
   })
 
-  it('supports UnoCSS-style bare arbitrary values when explicitly enabled', async () => {
+  it('supports default UnoCSS class syntax when unocss compatibility is enabled', async () => {
     const source = await resolveTailwindV4Source({
       css: MINIMAL_THEME_CSS,
       base: process.cwd(),
@@ -532,38 +578,73 @@ describe('tailwindcss v4 engine', () => {
     expect(disabledResult.classSet).toEqual(new Set())
     expect(disabledResult.rawCss).not.toContain('.p-10\\%')
 
+    const { arbitraryValues } = getCompilerContext({
+      unocss: true,
+      __internalDeferMissingCssEntriesWarning: true,
+    } as any)
     const enabledResult = await engine.generate({
-      bareArbitraryValues: true,
-      candidates: [
-        'p-10%',
-        'p-2.5px',
-        'm-4rem',
-        'bg-#fff',
-        'text-rgb(255,0,0)',
-        'w-calc(100vh)',
-      ],
+      bareArbitraryValues: arbitraryValues.bareArbitraryValues,
+      candidates: UNOCSS_DEFAULT_STYLE_CANDIDATES,
       sources: [{
         extension: 'html',
-        content: '<view class="hover:!-mt-2rem sm:-top-1.5rem text-var(--brand)"></view>',
+        content: `<view class="${UNOCSS_DEFAULT_SOURCE_CLASSES.join(' ')}"></view>`,
       }],
     })
 
+    expect(arbitraryValues.bareArbitraryValues).toBe(true)
     expect(enabledResult.classSet).toEqual(new Set([
-      'bg-#fff',
-      'hover:!-mt-2rem',
-      'm-4rem',
-      'p-10%',
-      'p-2.5px',
-      'text-rgb(255,0,0)',
-      'w-calc(100vh)',
+      ...UNOCSS_DEFAULT_STYLE_CANDIDATES,
+      ...UNOCSS_DEFAULT_SOURCE_CLASSES,
     ]))
-    expect(enabledResult.rawCss).toContain('.p-10\\%')
-    expect(enabledResult.css).toContain('.p-10_v')
-    expect(enabledResult.css).toContain('.p-2_d5px')
+    expect(enabledResult.rawCss).toContain('.w-10px')
+    expect(enabledResult.rawCss).toContain('.w-1\\/2')
+    expect(enabledResult.rawCss).toContain('.w-50\\%')
+    expect(enabledResult.rawCss).toContain('.bg-\\#fff')
+    expect(enabledResult.rawCss).toContain('.text-rgb\\(255\\,0\\,0\\)')
+    expect(enabledResult.rawCss).toContain('.hover\\:\\!p-2\\.5px')
+    expect(enabledResult.rawCss).toContain('.sm\\:-top-1\\.5rem')
+    expect(enabledResult.css).toContain('.w-10px')
+    expect(enabledResult.css).toContain('.w-1_f2')
+    expect(enabledResult.css).toContain('.w-50_v')
+    expect(enabledResult.css).toContain('.w-2_d5rem')
+    expect(enabledResult.css).toContain('.h-100vh')
+    expect(enabledResult.css).toContain('.min-w-20em')
+    expect(enabledResult.css).toContain('.max-w-80vw')
+    expect(enabledResult.css).toContain('.size-10px')
+    expect(enabledResult.css).toContain('.basis-20_v')
+    expect(enabledResult.css).toContain('.grid-cols-200px')
+    expect(enabledResult.css).toContain('.aspect-16_f9')
+    expect(enabledResult.css).toContain('.p-10px')
+    expect(enabledResult.css).toContain('.px-1_d5rem')
+    expect(enabledResult.css).toContain('.py-2em')
     expect(enabledResult.css).toContain('.m-4rem')
+    expect(enabledResult.css).toContain('.-mt-2px')
+    expect(enabledResult.css).toContain('.gap-12px')
+    expect(enabledResult.css).toContain('.top-1_f2')
+    expect(enabledResult.css).toContain('.-top-1_d5rem')
+    expect(enabledResult.css).toContain('.translate-x-10px')
+    expect(enabledResult.css).toContain('.rotate-45deg')
+    expect(enabledResult.css).toContain('.rounded-2px')
+    expect(enabledResult.css).toContain('.border-1px')
+    expect(enabledResult.css).toContain('.outline-2px')
+    expect(enabledResult.css).toContain('.blur-4px')
+    expect(enabledResult.css).toContain('.leading-1_d2em')
+    expect(enabledResult.css).toContain('.tracking-0_d1em')
+    expect(enabledResult.css).toContain('.duration-300ms')
+    expect(enabledResult.css).toContain('.delay-1s')
+    expect(enabledResult.css).toContain('.opacity-50_v')
     expect(enabledResult.css).toContain('.bg-_hfff')
+    expect(enabledResult.css).toContain('.bg-_hffffff80')
+    expect(enabledResult.css).toContain('.text-_hf00')
     expect(enabledResult.css).toContain('.text-rgb_p255_m0_m0_P')
-    expect(enabledResult.css).toContain('.w-calc_p100vh_P')
+    expect(enabledResult.css).toContain('.text-var_p--brand_P')
+    expect(enabledResult.css).toContain('.w-calc_p100_v-1rem_P')
+    expect(enabledResult.css).toContain('.sm_c-top-1_d5rem')
+    expect(enabledResult.css).toContain('@media (min-width: 40rem)')
+    expect(enabledResult.css).toContain('background-color: rgba(255,255,255,0.50196)')
+    expect(enabledResult.css).toContain('color: var(--brand)')
+    expect(enabledResult.css).toContain('width: calc(100% - 1rem)')
+    expect(enabledResult.css).not.toContain(':hover')
 
     const bareColorResult = await engine.generate({
       bareArbitraryValues: true,
@@ -586,6 +667,38 @@ describe('tailwindcss v4 engine', () => {
     expect(limitedResult.classSet).toEqual(new Set(['p-10px']))
     expect(limitedResult.css).toContain('.p-10px')
     expect(limitedResult.css).not.toContain('.p-10_v')
+  })
+
+  it('collects UnoCSS-style bare arbitrary values from scanned source files', async () => {
+    const root = await mkdtemp(path.join(tmpdir(), 'weapp-tw-v4-unocss-source-'))
+    const sourceFile = path.join(root, 'index.html')
+    await writeFile(
+      sourceFile,
+      '<view class="text-var(--brand) w-calc(100%-1rem) bg-#fff"></view>',
+    )
+    const source = await resolveTailwindV4Source({
+      css: MINIMAL_THEME_CSS,
+      base: root,
+    })
+    const engine = createTailwindV4Engine(source)
+
+    const result = await engine.generate({
+      bareArbitraryValues: true,
+      scanSources: [{
+        base: root,
+        pattern: '*.html',
+        negated: false,
+      }],
+    })
+
+    expect(result.classSet).toEqual(new Set([
+      'bg-#fff',
+      'text-var(--brand)',
+      'w-calc(100%-1rem)',
+    ]))
+    expect(result.css).toContain('.bg-_hfff')
+    expect(result.css).toContain('.text-var_p--brand_P')
+    expect(result.css).toContain('.w-calc_p100_v-1rem_P')
   })
 
   it('includes @source inline candidates in the class set', async () => {

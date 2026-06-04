@@ -26,8 +26,9 @@ export interface IArbitraryValues {
    * 是否启用 UnoCSS 风格裸任意值。
    *
    * @remarks
-   * 开启后会透传给 `tailwindcss-patch` 的 v4 引擎，由 Tailwind 候选解析和生成链路识别
-   * `p-10%`、`p-2.5px`、`m-4rem` 等裸任意值。JS 转译仍遵循 `classNameSet` 精确命中原则。
+   * 开启后会在 Tailwind CSS v3 / v4 生成链路识别 `p-10%`、`p-2.5px`、
+   * `m-4rem`、`bg-#fff`、`text-rgb(255,0,0)` 等裸任意值。JS 转译仍遵循
+   * `classNameSet` 精确命中原则。
    *
    * @default `false`
    */
@@ -44,8 +45,8 @@ export interface IUnocssCompatibilityOptions {
    * 是否启用 UnoCSS 风格裸任意值。
    *
    * @remarks
-   * 开启后会透传给 `tailwindcss-patch` 的 v4 引擎，识别 `p-10%`、`bg-#fff`、
-   * `text-rgb(255,0,0)` 等写法。仅 Tailwind CSS v4 生成链路生效。
+   * 开启后会在 Tailwind CSS v3 / v4 生成链路识别 `p-10%`、`bg-#fff`、
+   * `text-rgb(255,0,0)` 等写法。
    *
    * @default `true`
    */

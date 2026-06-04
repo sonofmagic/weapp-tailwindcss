@@ -498,7 +498,10 @@ export async function generateCssByGenerator(
     styleHandler,
     debug,
   } = options
-  const generatorOptions = normalizeWeappTailwindcssGeneratorOptions(opts.generator)
+  const generatorOptions = {
+    ...normalizeWeappTailwindcssGeneratorOptions(opts.generator),
+    bareArbitraryValues: opts.arbitraryValues?.bareArbitraryValues,
+  }
   const majorVersion = runtimeState.twPatcher.majorVersion
   const effectiveRawSource = stripUnmatchedTailwindSourceMediaCloseFragments(
     stripTailwindSourceMediaFragments(
@@ -550,7 +553,9 @@ export async function generateCssByGenerator(
   try {
     await runtimeState.readyPromise
     const currentCssCandidates = majorVersion === 4
-      ? await extractSourceCandidates(effectiveRawSource, 'css')
+      ? await extractSourceCandidates(effectiveRawSource, 'css', {
+          bareArbitraryValues: generatorOptions.bareArbitraryValues,
+        })
       : []
     const runtimeWithCurrentCss = currentCssCandidates.length > 0
       ? new Set([
@@ -591,6 +596,7 @@ export async function generateCssByGenerator(
         ? filterUnsupportedMiniProgramTailwindV4Candidates(sourceRuntime)
         : sourceRuntime
       return generator.generate({
+        bareArbitraryValues: generatorOptions.bareArbitraryValues,
         candidates: generatorRuntime,
         incrementalCache: majorVersion === 3 || majorVersion === 4,
         scanSources: shouldScanTailwindV4Sources(
@@ -831,7 +837,10 @@ export async function validateCandidatesByGenerator(
     return new Set<string>()
   }
 
-  const generatorOptions = normalizeWeappTailwindcssGeneratorOptions(opts.generator)
+  const generatorOptions = {
+    ...normalizeWeappTailwindcssGeneratorOptions(opts.generator),
+    bareArbitraryValues: opts.arbitraryValues?.bareArbitraryValues,
+  }
   const sources = await resolveGeneratorSources(
     majorVersion,
     runtimeState,
@@ -845,10 +854,13 @@ export async function validateCandidatesByGenerator(
   )
   const classSets = await Promise.all(sources.map(async (source) => {
     const generator = createWeappTailwindcssGenerator(source)
-    if (typeof generator.validateCandidates === 'function') {
-      return generator.validateCandidates(candidates)
+    if (generatorOptions.bareArbitraryValues === undefined || generatorOptions.bareArbitraryValues === false) {
+      if (typeof generator.validateCandidates === 'function') {
+        return generator.validateCandidates(candidates)
+      }
     }
     const generated = await generator.generate({
+      bareArbitraryValues: generatorOptions.bareArbitraryValues,
       candidates,
       target: 'tailwind',
     })

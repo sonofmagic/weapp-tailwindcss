@@ -54,6 +54,25 @@ describe('bundlers/vite source candidates', () => {
     expect(values.has('[mask-type:luminance]')).toBe(true)
   })
 
+  it('collects UnoCSS-style bare arbitrary source candidates only when enabled', async () => {
+    const { createSourceCandidateCollector } = await import('@/bundlers/vite/source-candidates')
+    const source = '<view class="text-var(--brand) w-calc(100%-1rem) bg-#fff"></view>'
+    const disabledCollector = createSourceCandidateCollector()
+    const enabledCollector = createSourceCandidateCollector({
+      bareArbitraryValues: true,
+    })
+
+    await disabledCollector.sync('/project/pages/index.wxml', source)
+    await enabledCollector.sync('/project/pages/index.wxml', source)
+
+    expect(disabledCollector.values()).toEqual(new Set())
+    expect(enabledCollector.values()).toEqual(new Set([
+      'bg-#fff',
+      'text-var(--brand)',
+      'w-calc(100%-1rem)',
+    ]))
+  })
+
   it('does not collect html tag fragments from JavaScript template strings', async () => {
     const { createSourceCandidateCollector } = await import('@/bundlers/vite/source-candidates')
     const collector = createSourceCandidateCollector()
