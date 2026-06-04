@@ -71,12 +71,6 @@ let hasLoggedMissingTailwind = false
 const TAILWINDCSS_NOT_FOUND_RE = /tailwindcss not found/i
 const UNABLE_TO_LOCATE_TAILWINDCSS_RE = /unable to locate tailwind css package/i
 
-function isTailwindcssV4PackageName(packageName: string | undefined) {
-  return packageName === '@tailwindcss/postcss'
-    || packageName === 'tailwindcss4'
-    || Boolean(packageName && packageName.includes('tailwindcss4'))
-}
-
 export function createTailwindcssPatcher(options?: CreateTailwindcssPatcherOptions): TailwindcssPatcherLike {
   const { basedir, cacheDir, supportCustomLengthUnitsPatch, tailwindcss, tailwindcssPatcherOptions } = options || {}
   const cache: TailwindCacheOptions = {
@@ -127,9 +121,7 @@ export function createTailwindcssPatcher(options?: CreateTailwindcssPatcherOptio
   }
 
   if (!baseTailwindOptions.postcssPlugin) {
-    baseTailwindOptions.postcssPlugin = baseTailwindOptions.version === 4 || isTailwindcssV4PackageName(baseTailwindOptions.packageName)
-      ? '@tailwindcss/postcss'
-      : 'tailwindcss'
+    baseTailwindOptions.postcssPlugin = 'tailwindcss'
   }
 
   if (typeof baseTailwindOptions.postcssPlugin === 'string') {

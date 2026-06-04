@@ -13,8 +13,6 @@ export { groupCssEntriesByBase, guessBasedirFromEntries, normalizeCssEntries } f
 export { createMultiTailwindcssPatcher } from './multi-patcher'
 
 type TailwindUserOptions = NonNullable<TailwindCssPatchOptions['tailwindcss']>
-const CONFIGURED_TAILWIND_VERSION_RE = /Configured tailwindcss\.version=\d+/u
-const RESOLVED_TAILWIND_VERSION_RE = /resolved package ".+" is version /u
 
 function isTailwindcss4Package(packageName: string | undefined) {
   return Boolean(
@@ -31,25 +29,11 @@ function resolveExplicitTailwindVersion(
     return configuredVersion
   }
 
-  if (configuredPackageName === 'tailwindcss') {
-    return 3
-  }
-
   if (isTailwindcss4Package(configuredPackageName)) {
     return 4
   }
 
   return undefined
-}
-
-function hasOwnV4Signal(value: unknown) {
-  return typeof value === 'object' && value !== null && 'v4' in value
-}
-
-function isTailwindVersionMismatchError(error: unknown): error is Error {
-  return error instanceof Error
-    && CONFIGURED_TAILWIND_VERSION_RE.test(error.message)
-    && RESOLVED_TAILWIND_VERSION_RE.test(error.message)
 }
 
 export interface TailwindcssPatcherFactoryOptions {
@@ -73,8 +57,6 @@ export function createPatcherForBase(
   } = options
 
   const hasCssEntries = Boolean(cssEntries?.length)
-  const configuredV4Options = tailwindcss?.v4 ?? (tailwindcssPatcherOptions as any)?.tailwindcss?.v4
-  const hasCssSources = Boolean(configuredV4Options?.cssSources?.length)
 
   const defaultTailwindcssConfig: TailwindUserOptions = {
     cwd: baseDir,
@@ -140,11 +122,6 @@ export function createPatcherForBase(
     || mergedTailwindOptions.version
   const explicitTailwindVersion = resolveExplicitTailwindVersion(configuredVersion, configuredPackageName)
 
-  const hasExplicitV4Signals = hasCssEntries
-    || hasCssSources
-    || hasOwnV4Signal(tailwindcss)
-    || hasOwnV4Signal((tailwindcssPatcherOptions as any)?.tailwindcss)
-
   const packageNameForVersionDetection = configuredPackageName ?? mergedTailwindOptions.packageName ?? 'tailwindcss'
   const installedTailwindVersion = readInstalledPackageMajorVersion(packageNameForVersionDetection, baseDir)
   const resolvedTailwindVersion = installedTailwindVersion ?? explicitTailwindVersion
@@ -152,67 +129,20 @@ export function createPatcherForBase(
     ? resolvedTailwindVersion
     : undefined
 
-  const isV4 = (
-    resolvedTailwindVersion === 4 && (
-      installedTailwindVersion === 4
-      || explicitTailwindVersion === 4
-      || (hasExplicitV4Signals && isTailwindcss4Package(packageNameForVersionDetection))
-    )
-  )
-  || (
-    resolvedTailwindVersion === undefined && (
-      hasCssEntries
-      || hasCssSources
-      || hasOwnV4Signal(tailwindcss)
-      || hasOwnV4Signal((tailwindcssPatcherOptions as any)?.tailwindcss)
-    )
-  )
-
-  const tailwindPackageConfigured = Boolean(configuredPackageName)
-  const shouldPatchV4PostcssPackage = isV4 && !tailwindPackageConfigured
-  const packageCandidates = new Set<string>()
-  if (shouldPatchV4PostcssPackage) {
-    packageCandidates.add('@tailwindcss/postcss')
+  const tailwindOptionsForPackage: TailwindUserOptions = {
+    ...mergedTailwindOptions,
+    packageName: mergedTailwindOptions.packageName ?? configuredPackageName ?? 'tailwindcss',
   }
-  packageCandidates.add(
-    mergedTailwindOptions.packageName ?? configuredPackageName ?? 'tailwindcss',
-  )
-
-  const patchers: TailwindcssPatcherLike[] = []
-  const packageCandidateList = [...packageCandidates]
-  let firstVersionMismatchError: Error | undefined
-  for (const packageName of packageCandidateList) {
-    const tailwindOptionsForPackage: TailwindUserOptions = {
-      ...mergedTailwindOptions,
-      packageName,
-    }
-    if (supportedResolvedTailwindVersion) {
-      tailwindOptionsForPackage.version = supportedResolvedTailwindVersion
-    }
-    try {
-      patchers.push(createTailwindcssPatcher(omitUndefined({
-        basedir: baseDir,
-        supportCustomLengthUnitsPatch: supportCustomLengthUnitsPatch ?? true,
-        tailwindcss: tailwindOptionsForPackage,
-        tailwindcssPatcherOptions: patchedOptions,
-      })))
-    }
-    catch (error) {
-      if (packageCandidateList.length > 1 && isTailwindVersionMismatchError(error)) {
-        firstVersionMismatchError ??= error
-        logger.warn('skip incompatible Tailwind package candidate "%s" for v4 patcher: %s', packageName, error.message)
-        continue
-      }
-      throw error
-    }
+  if (supportedResolvedTailwindVersion) {
+    tailwindOptionsForPackage.version = supportedResolvedTailwindVersion
   }
 
-  if (patchers.length === 0 && firstVersionMismatchError) {
-    throw firstVersionMismatchError
-  }
-
-  const [singlePatcher] = patchers
-  return patchers.length === 1 && singlePatcher ? singlePatcher : createMultiTailwindcssPatcher(patchers)
+  return createTailwindcssPatcher(omitUndefined({
+    basedir: baseDir,
+    supportCustomLengthUnitsPatch: supportCustomLengthUnitsPatch ?? true,
+    tailwindcss: tailwindOptionsForPackage,
+    tailwindcssPatcherOptions: patchedOptions,
+  }))
 }
 
 export function tryCreateMultiTailwindcssPatcher(

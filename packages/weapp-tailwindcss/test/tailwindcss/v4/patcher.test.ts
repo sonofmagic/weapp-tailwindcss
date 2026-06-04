@@ -199,7 +199,7 @@ describe('tailwindcss/v4/patcher helpers', () => {
 
     const patcher = createPatcherForBase(baseDir, cssEntries, factoryOptions)
 
-    expect(createTailwindcssPatcher).toHaveBeenCalledTimes(2)
+    expect(createTailwindcssPatcher).toHaveBeenCalledTimes(1)
     const [callA] = createTailwindcssPatcher.mock.calls.map(call => call[0])
     expect(callA.basedir).toBe(baseDir)
     expect(callA.cacheDir).toBeUndefined()
@@ -236,7 +236,7 @@ describe('tailwindcss/v4/patcher helpers', () => {
     })
   })
 
-  it('creates dual patchers for v4 when no package is configured', async () => {
+  it('uses tailwindcss package for v4 when no package is configured', async () => {
     createTailwindcssPatcher.mockImplementation(options => ({
       packageInfo: { name: options.tailwindcss?.packageName } as any,
       majorVersion: 4,
@@ -254,10 +254,9 @@ describe('tailwindcss/v4/patcher helpers', () => {
       appType: 'taro',
     } as unknown as InternalUserDefinedOptions)
 
-    expect(createTailwindcssPatcher).toHaveBeenCalledTimes(2)
+    expect(createTailwindcssPatcher).toHaveBeenCalledTimes(1)
     const packageNames = createTailwindcssPatcher.mock.calls.map(call => call[0].tailwindcss?.packageName)
-    expect(packageNames).toContain('@tailwindcss/postcss')
-    expect(packageNames).toContain('tailwindcss')
+    expect(packageNames).toEqual(['tailwindcss'])
   })
 
   it('prefers the installed Tailwind package version over an explicit v4 setting', async () => {
@@ -276,10 +275,11 @@ describe('tailwindcss/v4/patcher helpers', () => {
     expect(patcher.tailwindcss?.version).toBe(3)
   })
 
-  it('skips incompatible tailwindcss candidate when fallback v4 package succeeds', async () => {
+  it('does not fallback to @tailwindcss/postcss when tailwindcss package is incompatible', async () => {
+    const tailwindcssError = 'Configured tailwindcss.version=4, but resolved package "tailwindcss" is version 3.4.19. Update the configuration or resolve the correct package.'
     createTailwindcssPatcher.mockImplementation((options) => {
       if (options.tailwindcss?.packageName === 'tailwindcss') {
-        throw new Error('Configured tailwindcss.version=4, but resolved package "tailwindcss" is version 3.4.19. Update the configuration or resolve the correct package.')
+        throw new Error(tailwindcssError)
       }
       return {
         packageInfo: { name: options.tailwindcss?.packageName } as any,
@@ -292,26 +292,21 @@ describe('tailwindcss/v4/patcher helpers', () => {
     })
     const { createPatcherForBase } = await loadModule()
 
-    const patcher = createPatcherForBase('/workspace/app', ['/workspace/app/src/app.css'], {
+    expect(() => createPatcherForBase('/workspace/app', ['/workspace/app/src/app.css'], {
       tailwindcss: { version: 4 },
       tailwindcssPatcherOptions: undefined,
       supportCustomLengthUnitsPatch: true,
       appType: 'taro',
-    } as unknown as InternalUserDefinedOptions)
+    } as unknown as InternalUserDefinedOptions)).toThrow(tailwindcssError)
 
-    expect(createTailwindcssPatcher).toHaveBeenCalledTimes(2)
-    expect(logger.warn).toHaveBeenCalledWith(
-      'skip incompatible Tailwind package candidate "%s" for v4 patcher: %s',
-      'tailwindcss',
-      'Configured tailwindcss.version=4, but resolved package "tailwindcss" is version 3.4.19. Update the configuration or resolve the correct package.',
-    )
-    expect((patcher as TailwindcssPatcherLike).packageInfo?.name).toBe('@tailwindcss/postcss')
+    expect(createTailwindcssPatcher).toHaveBeenCalledTimes(1)
+    expect(logger.warn).not.toHaveBeenCalled()
   })
 
-  it('rethrows non-version mismatch errors while trying v4 package candidates', async () => {
+  it('rethrows non-version mismatch errors from the tailwindcss package candidate', async () => {
     createTailwindcssPatcher.mockImplementation((options) => {
-      if (options.tailwindcss?.packageName === '@tailwindcss/postcss') {
-        throw new Error('postcss plugin load failed')
+      if (options.tailwindcss?.packageName === 'tailwindcss') {
+        throw new Error('tailwind package load failed')
       }
       return options
     })
@@ -322,18 +317,14 @@ describe('tailwindcss/v4/patcher helpers', () => {
       tailwindcssPatcherOptions: undefined,
       supportCustomLengthUnitsPatch: true,
       appType: 'taro',
-    } as unknown as InternalUserDefinedOptions)).toThrow('postcss plugin load failed')
+    } as unknown as InternalUserDefinedOptions)).toThrow('tailwind package load failed')
     expect(createTailwindcssPatcher).toHaveBeenCalledTimes(1)
     expect(logger.warn).not.toHaveBeenCalled()
   })
 
-  it('throws the first version mismatch when all v4 package candidates are incompatible', async () => {
-    const postcssError = 'Configured tailwindcss.version=4, but resolved package "@tailwindcss/postcss" is version 3.4.19. Update the configuration or resolve the correct package.'
+  it('throws the tailwindcss version mismatch without trying @tailwindcss/postcss', async () => {
     const tailwindcssError = 'Configured tailwindcss.version=4, but resolved package "tailwindcss" is version 3.4.19. Update the configuration or resolve the correct package.'
-    createTailwindcssPatcher.mockImplementation((options) => {
-      if (options.tailwindcss?.packageName === '@tailwindcss/postcss') {
-        throw new Error(postcssError)
-      }
+    createTailwindcssPatcher.mockImplementation(() => {
       throw new Error(tailwindcssError)
     })
     const { createPatcherForBase } = await loadModule()
@@ -343,21 +334,10 @@ describe('tailwindcss/v4/patcher helpers', () => {
       tailwindcssPatcherOptions: undefined,
       supportCustomLengthUnitsPatch: true,
       appType: 'taro',
-    } as unknown as InternalUserDefinedOptions)).toThrow(postcssError)
-    expect(createTailwindcssPatcher).toHaveBeenCalledTimes(2)
-    expect(logger.warn).toHaveBeenCalledTimes(2)
-    expect(logger.warn).toHaveBeenNthCalledWith(
-      1,
-      'skip incompatible Tailwind package candidate "%s" for v4 patcher: %s',
-      '@tailwindcss/postcss',
-      postcssError,
-    )
-    expect(logger.warn).toHaveBeenNthCalledWith(
-      2,
-      'skip incompatible Tailwind package candidate "%s" for v4 patcher: %s',
-      'tailwindcss',
-      tailwindcssError,
-    )
+    } as unknown as InternalUserDefinedOptions)).toThrow(tailwindcssError)
+    expect(createTailwindcssPatcher).toHaveBeenCalledTimes(1)
+    expect(createTailwindcssPatcher.mock.calls[0][0].tailwindcss?.packageName).toBe('tailwindcss')
+    expect(logger.warn).not.toHaveBeenCalled()
   })
 
   it('does not inject tailwindcss version when css entries are configured', async () => {
@@ -379,7 +359,7 @@ describe('tailwindcss/v4/patcher helpers', () => {
     } as unknown as InternalUserDefinedOptions)
 
     const versions = createTailwindcssPatcher.mock.calls.map(call => call[0].tailwindcss?.version)
-    expect(versions).toEqual([undefined, undefined])
+    expect(versions).toEqual([undefined])
   })
 
   it('does not create dual patchers when only default v4 scaffolding exists', async () => {
@@ -474,7 +454,7 @@ describe('tailwindcss/v4/patcher helpers', () => {
     expect(patcher.tailwindcss?.packageName).toBe('tailwindcss')
   })
 
-  it('infers explicit v3 from the tailwindcss package name', async () => {
+  it('does not infer v3 from the tailwindcss package name because it can also be v4', async () => {
     createTailwindcssPatcher.mockImplementation(options => options)
     const { createPatcherForBase } = await loadModule()
 
@@ -487,6 +467,7 @@ describe('tailwindcss/v4/patcher helpers', () => {
 
     expect(createTailwindcssPatcher).toHaveBeenCalledTimes(1)
     expect(patcher.tailwindcss?.packageName).toBe('tailwindcss')
+    expect(patcher.tailwindcss?.version).toBeUndefined()
   })
 
   it('infers explicit v4 from a tailwindcss4 package name', async () => {
@@ -626,9 +607,9 @@ describe('tailwindcss/v4/patcher helpers', () => {
     expect(patcher.tailwindcss?.v4?.cssSources).toEqual([cssSource])
   })
 
-  it('treats auto-detected v4 css sources as a v4 signal when selecting patch packages', async () => {
+  it('uses tailwindcss package when auto-detected v4 css sources are present', async () => {
     createTailwindcssPatcher.mockImplementation(options => ({
-      majorVersion: options.tailwindcss.packageName === '@tailwindcss/postcss' ? 4 : 3,
+      majorVersion: 4,
       packageName: options.tailwindcss.packageName,
       tailwindcss: options.tailwindcss,
     }))
@@ -652,13 +633,13 @@ describe('tailwindcss/v4/patcher helpers', () => {
 
     expect(createTailwindcssPatcher).toHaveBeenCalledWith(expect.objectContaining({
       tailwindcss: expect.objectContaining({
-        packageName: '@tailwindcss/postcss',
+        packageName: 'tailwindcss',
         v4: expect.objectContaining({
           cssSources: [cssSource],
         }),
       }),
     }))
-    expect(patcher.packageName).toBe('@tailwindcss/postcss')
+    expect(patcher.packageName).toBe('tailwindcss')
   })
 
   it('recreates v4 config when user explicitly disables it', async () => {
@@ -716,7 +697,6 @@ describe('tailwindcss/v4/patcher helpers', () => {
     } as unknown as InternalUserDefinedOptions) as any
 
     expect(withoutTailwind.tailwindcssPatcherOptions).toEqual({})
-
   })
 
   it('merges multiple patchers into a single runtime without exposing patch aggregation', async () => {
@@ -947,7 +927,7 @@ describe('tailwindcss/v4/patcher helpers', () => {
     } as unknown as InternalUserDefinedOptions)
 
     expect(merged).toBeDefined()
-    expect(createTailwindcssPatcher).toHaveBeenCalledTimes(4)
+    expect(createTailwindcssPatcher).toHaveBeenCalledTimes(2)
     expect(logger.debug).toHaveBeenCalled()
 
     const classSet = await merged!.getClassSet()

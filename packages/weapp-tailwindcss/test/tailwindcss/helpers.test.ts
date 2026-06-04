@@ -189,7 +189,7 @@ describe('tailwindcss helpers', () => {
     expect(path.isAbsolute(callArgs.tailwindcss?.postcssPlugin)).toBe(true)
   })
 
-  it('uses @tailwindcss/postcss as postcss plugin when packageName points to v4 package without explicit version', async () => {
+  it('uses tailwindcss package as postcss plugin when packageName points to v4 package without explicit version', async () => {
     const { createTailwindcssPatcher } = await import('@/tailwindcss')
 
     createTailwindcssPatcher({
@@ -201,7 +201,9 @@ describe('tailwindcss helpers', () => {
 
     const lastCall = tailwindcssPatcherMock.mock.calls.at(-1)
     const callArgs = lastCall?.[0] as any
-    expect(String(callArgs.tailwindcss?.postcssPlugin).replaceAll('\\', '/')).toContain('@tailwindcss/postcss')
+    const postcssPlugin = String(callArgs.tailwindcss?.postcssPlugin).replaceAll('\\', '/')
+    expect(postcssPlugin).toContain('/tailwindcss/')
+    expect(postcssPlugin).not.toContain('@tailwindcss/postcss')
   })
 
   it('resolves postcss plugin strings after legacy patcher options merge', async () => {
@@ -242,7 +244,9 @@ describe('tailwindcss helpers', () => {
     const resolvePaths = callArgs.tailwindcss?.resolve?.paths ?? []
     expect(resolvePaths[0]).toBe(customNodeModules)
     expect(resolvePaths).toContain(path.join(repoRoot, 'node_modules'))
-    expect(String(callArgs.tailwindcss?.postcssPlugin).replaceAll('\\', '/')).toContain('@tailwindcss/postcss')
+    const postcssPlugin = String(callArgs.tailwindcss?.postcssPlugin).replaceAll('\\', '/')
+    expect(postcssPlugin).toContain('/tailwindcss/')
+    expect(postcssPlugin).not.toContain('@tailwindcss/postcss')
   })
 
   it('falls back to default tailwind config when project has none', async () => {
