@@ -49,6 +49,7 @@ function loadProjectRootsFromWorkspace(): string[] {
     const roots = packages
       .map(entry => typeof entry === 'string' ? entry.trim() : '')
       .filter(entry => entry && !entry.startsWith('!'))
+      .filter(entry => !entry.startsWith('submodules/'))
       .map(extractBaseDirFromGlob)
       .filter((entry): entry is string => Boolean(entry))
 
