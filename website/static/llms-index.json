@@ -1,6 +1,6 @@
 {
   "version": "1.0.0",
-  "generatedAt": "2026-06-04T09:11:48.424Z",
+  "generatedAt": "2026-06-04T12:13:54.646Z",
   "siteUrl": "https://tw.icebreaker.top",
   "totals": {
     "all": 168,
@@ -4047,16 +4047,16 @@
         "tailwindcss",
         "tailwindcss 3",
         "tailwindcss 4",
+        "quick start",
+        "package install",
         "weapp-tailwindcss",
         "配置",
         "安装依赖",
-        "quick start",
         "install",
         "小程序",
         "微信小程序",
         "uni-app",
-        "taro",
-        "rax"
+        "taro"
       ],
       "headings": [
         "选择 Tailwind CSS 版本",
@@ -5728,6 +5728,8 @@
         "vite",
         "generator",
         "cssEntries",
+        "官方插件",
+        "plugin parity",
         "tailwindcss",
         "教程",
         "原子化",
@@ -5735,9 +5737,7 @@
         "与官方",
         "Tailwind",
         "插件对照",
-        "v5 official plugin parity",
-        "小程序",
-        "微信小程序"
+        "v5 official plugin parity"
       ],
       "headings": [
         "一一对应矩阵",
