@@ -23,7 +23,6 @@ jobs:
       - name: Check out code
         uses: actions/checkout@v5
         with:
-          submodules: recursive
           fetch-depth: 0
 
       - name: Setup pnpm

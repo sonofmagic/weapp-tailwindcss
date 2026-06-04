@@ -215,7 +215,7 @@
     "postcss-load-config": "^6.0.1",
     "semver": "~7.8.1",
     "tailwindcss-config": "workspace:*",
-    "tailwindcss-patch": "workspace:9.4.1",
+    "tailwindcss-patch": "catalog:tailwindcssPatch",
     "yaml": "^2.9.0"
   },
   "devDependencies": {

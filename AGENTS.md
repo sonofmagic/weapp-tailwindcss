@@ -15,6 +15,7 @@
 - 所有新增或修改的 Changeset 内容必须使用中文。
 - JSDoc 注释必须使用中文；新增行内注释默认中文（术语可保留英文）。
 - Tailwind CSS v3/v4 的样式生成统一由 `weapp-tailwindcss` 接管；禁止通过 `tailwindcss@3` PostCSS 插件、`@tailwindcss/postcss` 或 `@tailwindcss/vite` 生成样式。
+- `submodules/tailwindcss-mangle/` 只允许作为本地源码参考目录，不得加入 `pnpm-workspace.yaml`、`pnpm-lock.yaml`、CI/CD checkout、发布流程或仓库 submodule 追踪；`weapp-tailwindcss` 必须消费 npm 发布版 `tailwindcss-patch`。
 
 ## 多 Codex / 多代理协作
 - 同一个物理 checkout 只允许一个 Codex/代理执行写入型任务；多个 Codex 并发处理不同任务时，必须先为每个任务创建独立 `git worktree`。

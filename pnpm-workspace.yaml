@@ -6,9 +6,6 @@ packages:
   - benchmark/*
   - tools/*
   - e2e
-  - submodules/tailwindcss-mangle/packages/shared
-  - submodules/tailwindcss-mangle/packages/config
-  - submodules/tailwindcss-mangle/packages/tailwindcss-patch
   - '!tailwindcss-weapp'
   - '!**/test/**'
   - demo/*
@@ -113,7 +110,7 @@ catalogs:
     tailwindcss-4: npm:tailwindcss@^4.3.0
     tailwindcss4: npm:tailwindcss@^4.3.0
   tailwindcssPatch:
-    tailwindcss-patch: 9.4.1
+    tailwindcss-patch: 9.4.2
   tailwindcssRem:
     tailwindcss-rem2px-preset: ^1.0.3
   taro4:

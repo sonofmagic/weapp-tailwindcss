@@ -134,6 +134,9 @@ website/tests/index.spec.ts-snapshots
 .codex-tmp/
 **/.weapp-vite/
 
+# 本地参考源码，不进入 workspace / CI / 发布链路
+submodules/tailwindcss-mangle/
+
 # Python cache
 __pycache__/
 *.pyc
