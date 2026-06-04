@@ -2,6 +2,11 @@
 
 @config './tailwind.config.ts';
 
+/* Tailwind v4 默认的 rounded-full 无限半径写法会让 css-minimizer 无法解析。 */
+@theme {
+  --radius-full: 9999px;
+}
+
 @source './src/**/*.{js,jsx,ts,tsx,md,mdx}';
 @source './docs/**/*.{md,mdx}';
 @source './blog/**/*.{md,mdx}';
