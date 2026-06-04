@@ -3,7 +3,7 @@ import { createRequire } from 'node:module'
 import path from 'node:path'
 import process from 'node:process'
 import { fileURLToPath } from 'node:url'
-import { findNearestPackageRoot } from '@/context/workspace'
+import { findNearestPackageRoot, findWorkspaceRoot } from '@/context/workspace'
 
 const GENERIC_RELATIVE_SPECIFIERS = ['.', '..']
 const DEFAULT_TAILWIND_CONFIG_SPECIFIERS = [
@@ -95,6 +95,11 @@ export function createDefaultResolvePaths(basedir?: string) {
     if (packageRoot) {
       appendNodeModules(paths, packageRoot)
       fallbackCandidates.push(packageRoot)
+    }
+    const workspaceRoot = findWorkspaceRoot(resolvedBase)
+    if (workspaceRoot) {
+      appendNodeModules(paths, workspaceRoot)
+      fallbackCandidates.push(workspaceRoot)
     }
   }
   const cwd = process.cwd()

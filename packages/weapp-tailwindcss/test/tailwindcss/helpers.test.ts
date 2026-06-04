@@ -221,6 +221,30 @@ describe('tailwindcss helpers', () => {
     expect(path.isAbsolute(callArgs.tailwindcss?.postcssPlugin)).toBe(true)
   })
 
+  it('keeps custom resolve paths while appending default lookup paths', async () => {
+    const { createTailwindcssPatcher } = await import('@/tailwindcss')
+    const repoRoot = path.resolve(__dirname, '../../../..')
+    const appRoot = path.join(repoRoot, 'templates', 'demo')
+    const customNodeModules = path.join(appRoot, 'node_modules')
+
+    createTailwindcssPatcher({
+      basedir: appRoot,
+      tailwindcss: {
+        packageName: '@tailwindcss/postcss',
+        resolve: {
+          paths: [customNodeModules],
+        },
+      },
+    })
+
+    const lastCall = tailwindcssPatcherMock.mock.calls.at(-1)
+    const callArgs = lastCall?.[0] as any
+    const resolvePaths = callArgs.tailwindcss?.resolve?.paths ?? []
+    expect(resolvePaths[0]).toBe(customNodeModules)
+    expect(resolvePaths).toContain(path.join(repoRoot, 'node_modules'))
+    expect(String(callArgs.tailwindcss?.postcssPlugin).replaceAll('\\', '/')).toContain('@tailwindcss/postcss')
+  })
+
   it('falls back to default tailwind config when project has none', async () => {
     const tempDir = await mkdtemp(path.join(os.tmpdir(), 'wtw-tailwind-no-config-'))
     const { createTailwindcssPatcher } = await import('@/tailwindcss')

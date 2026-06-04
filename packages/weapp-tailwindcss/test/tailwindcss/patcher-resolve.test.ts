@@ -85,8 +85,9 @@ describe('tailwindcss patcher resolve helpers', () => {
     await mkdir(path.join(basedir, 'node_modules'), { recursive: true })
     await mkdir(path.join(packageRoot, 'node_modules'), { recursive: true })
     await mkdir(path.join(workspaceRoot, 'node_modules'), { recursive: true })
+    await writeFile(path.join(workspaceRoot, 'pnpm-workspace.yaml'), 'packages:\n  - packages/*\n', 'utf8')
     await writeFile(path.join(packageRoot, 'package.json'), '{"name":"demo"}', 'utf8')
-    vi.spyOn(process, 'cwd').mockReturnValue(workspaceRoot)
+    vi.spyOn(process, 'cwd').mockReturnValue(path.join(tempRoot, 'outside'))
 
     const paths = createDefaultResolvePaths(basedir)
 
