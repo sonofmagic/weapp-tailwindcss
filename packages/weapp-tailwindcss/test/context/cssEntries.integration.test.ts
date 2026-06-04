@@ -1,11 +1,15 @@
 import fs from 'node:fs/promises'
+import { createRequire } from 'node:module'
+import { tmpdir } from 'node:os'
 import path from 'node:path'
 import { escape } from '@weapp-core/escape'
 import { describe, expect, it } from 'vitest'
 import { getCompilerContext } from '@/context'
 import { collectRuntimeClassSet } from '@/tailwindcss/runtime'
 
+const require = createRequire(import.meta.url)
 const repoRoot = path.resolve(__dirname, '../../../..')
+const tailwindcss4Root = path.dirname(require.resolve('tailwindcss4/package.json'))
 const HIGH_RISK_ARBITRARY_ADD_TOKENS = [
   'bg-[#000]',
   'px-[432.43px]',
@@ -32,25 +36,64 @@ function appendScriptLiteralProbe(source: string, tokens: readonly string[]) {
   return source.replace('</script>', `${probe}</script>`)
 }
 
+async function createTailwindV4Fixture() {
+  const projectRoot = await fs.mkdtemp(path.join(tmpdir(), 'weapp-tw-css-entries-v4-'))
+  const sourceRoot = path.join(projectRoot, 'src')
+  const nodeModulesRoot = path.join(projectRoot, 'node_modules')
+  await fs.mkdir(sourceRoot, { recursive: true })
+  await fs.mkdir(nodeModulesRoot, { recursive: true })
+  await fs.symlink(tailwindcss4Root, path.join(nodeModulesRoot, 'tailwindcss'), 'dir')
+  await fs.writeFile(path.join(projectRoot, 'package.json'), JSON.stringify({
+    name: 'tailwind-v4-fixture',
+    private: true,
+    devDependencies: {
+      tailwindcss: 'catalog:tailwindcss4',
+    },
+  }, null, 2), 'utf8')
+  await fs.writeFile(path.join(sourceRoot, 'index.html'), [
+    '<!doctype html>',
+    '<html>',
+    '  <body>',
+    '    <div class="bg-[#00aa55]">',
+    '      fixture',
+    '    </div>',
+    '  </body>',
+    '</html>',
+  ].join('\n'), 'utf8')
+  const cssEntry = path.join(sourceRoot, 'main.css')
+  await fs.writeFile(cssEntry, '@import "tailwindcss";\n', 'utf8')
+  return {
+    cssEntry,
+    projectRoot,
+  }
+}
+
 describe('cssEntries integration', () => {
   it('collects class names from nested css entries and rewrites arbitrary classes', async () => {
-    const projectRoot = path.resolve(__dirname, '..', 'fixtures', 'tailwind-v4-app')
-    const cssEntry = path.join(projectRoot, 'src', 'main.css')
+    const { projectRoot, cssEntry } = await createTailwindV4Fixture()
 
-    const ctx = getCompilerContext({
-      tailwindcssBasedir: projectRoot,
-      cssEntries: [cssEntry],
-    })
+    try {
+      const ctx = getCompilerContext({
+        tailwindcssBasedir: projectRoot,
+        cssEntries: [cssEntry],
+      })
 
-    const runtimeSet = await collectRuntimeClassSet(ctx.twPatcher, { force: true, skipRefresh: true })
-    expect(runtimeSet.size).toBeGreaterThan(0)
-    expect(runtimeSet.has('bg-[#00aa55]')).toBe(true)
-    const source = 'const cls = \'bg-[#00aa55]\''
-    const result = ctx.jsHandler(source, runtimeSet)
-    const expectedClass = escape('bg-[#00aa55]')
+      expect(ctx.twPatcher.majorVersion).toBe(4)
+      expect(ctx.twPatcher.packageInfo?.name).toBe('tailwindcss')
 
-    expect(result.code).toContain(expectedClass)
-    expect(result.code).not.toContain('bg-[#00aa55]')
+      const runtimeSet = await collectRuntimeClassSet(ctx.twPatcher, { force: true, skipRefresh: true })
+      expect(runtimeSet.size).toBeGreaterThan(0)
+      expect(runtimeSet.has('bg-[#00aa55]')).toBe(true)
+      const source = 'const cls = \'bg-[#00aa55]\''
+      const result = ctx.jsHandler(source, runtimeSet)
+      const expectedClass = escape('bg-[#00aa55]')
+
+      expect(result.code).toContain(expectedClass)
+      expect(result.code).not.toContain('bg-[#00aa55]')
+    }
+    finally {
+      await fs.rm(projectRoot, { recursive: true, force: true })
+    }
   })
 
   it('refreshes script arbitrary values for uni-app-vite-tailwindcss-v3', async () => {

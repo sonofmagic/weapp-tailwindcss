@@ -172,12 +172,12 @@ describe('createTailwindcssPatcherFromContext', () => {
 
       const patcher = createTailwindcssPatcherFromContext(ctx)
 
-      expect(calls).toHaveLength(4)
+      expect(calls).toHaveLength(2)
       const basedirs = calls.map(call => call.basedir)
       expect(new Set(basedirs)).toEqual(new Set([workspace, externalRoot]))
-      // each base should produce two package candidates in v4 mode
-      expect(basedirs.filter(b => b === workspace)).toHaveLength(2)
-      expect(basedirs.filter(b => b === externalRoot)).toHaveLength(2)
+      expect(basedirs.filter(b => b === workspace)).toHaveLength(1)
+      expect(basedirs.filter(b => b === externalRoot)).toHaveLength(1)
+      expect(calls.map(call => call.tailwindcss?.packageName)).toEqual(['tailwindcss', 'tailwindcss'])
 
       expect(patcher.patch).toBeUndefined()
       expect(createdPatchers[0].patch).not.toHaveBeenCalled()
@@ -244,9 +244,10 @@ describe('createTailwindcssPatcherFromContext', () => {
 
       const _patcher = createTailwindcssPatcherFromContext(ctx)
 
-      expect(createTailwindcssPatcher).toHaveBeenCalledTimes(2)
+      expect(createTailwindcssPatcher).toHaveBeenCalledTimes(1)
       expect(new Set(calls.map(call => call.basedir))).toEqual(new Set([workspace]))
       expect(calls[0].tailwindcss?.v4?.base).toBeUndefined()
+      expect(calls[0].tailwindcss?.packageName).toBe('tailwindcss')
       expect(calls[0].tailwindcss?.v4?.cssEntries).toEqual([
         entryA,
         entryB,
@@ -301,9 +302,10 @@ describe('createTailwindcssPatcherFromContext', () => {
 
       const patcher = createTailwindcssPatcherFromContext(ctx)
       expect(patcher).toBeDefined()
-      expect(createTailwindcssPatcher).toHaveBeenCalledTimes(2)
+      expect(createTailwindcssPatcher).toHaveBeenCalledTimes(1)
       expect(createTailwindcssPatcher).toHaveBeenCalledWith(expect.objectContaining({
         tailwindcss: expect.objectContaining({
+          packageName: 'tailwindcss',
           v4: expect.objectContaining({
             cssEntries: [globalEntry],
           }),
