@@ -221,7 +221,7 @@ function pushFrontmatter(
 }
 
 export function buildInterfaceSeoFrontmatter(doc: InterfaceDoc) {
-  const fallbackDescription = `${doc.name} 接口文档，包含属性说明、类型定义与使用边界。`
+  const fallbackDescription = `${doc.name} 的类型说明，列出公开属性、参数和使用边界。`
   const rawDescription = normalizeSeoText(doc.description || '')
   const description = rawDescription.length >= 16 ? rawDescription : fallbackDescription
   return {
@@ -232,7 +232,7 @@ export function buildInterfaceSeoFrontmatter(doc: InterfaceDoc) {
 }
 
 export function buildUserDefinedOptionsOverviewFrontmatter(doc: InterfaceDoc) {
-  const description = normalizeSeoText(doc.description || 'UserDefinedOptions 总览，按分组汇总 weapp-tailwindcss 的核心配置项与跳转入口。')
+  const description = normalizeSeoText(doc.description || 'UserDefinedOptions 配置总览，按源码分组列出可传入的插件选项。')
   return {
     title: 'UserDefinedOptions',
     sidebarLabel: 'UserDefinedOptions 总览',
@@ -243,7 +243,7 @@ export function buildUserDefinedOptionsOverviewFrontmatter(doc: InterfaceDoc) {
 }
 
 export function buildOptionsGroupSeoFrontmatter(meta: GroupMeta, itemCount: number) {
-  const description = normalizeSeoText(`${meta.sidebarLabel}文档，汇总 ${itemCount} 个 weapp-tailwindcss 配置项的用途、默认值与注意事项。`)
+  const description = normalizeSeoText(`${meta.sidebarLabel}：${itemCount} 个 UserDefinedOptions 配置项，包含类型、默认值和源码说明。`)
   return {
     title: meta.displayTitle,
     sidebarLabel: meta.sidebarLabel,
@@ -254,7 +254,7 @@ export function buildOptionsGroupSeoFrontmatter(meta: GroupMeta, itemCount: numb
 }
 
 export function buildOtherInterfacesSeoFrontmatter(count: number) {
-  const description = normalizeSeoText(`其他接口索引页，汇总 ${count} 个 weapp-tailwindcss 运行时接口与补充类型定义。`)
+  const description = normalizeSeoText(`其他接口索引，列出 ${count} 个 weapp-tailwindcss 运行时接口和补充类型。`)
   return {
     title: `${otherInterfacesEmoji} 其他接口`,
     sidebarLabel: `${otherInterfacesEmoji} 其他接口`,
@@ -265,7 +265,7 @@ export function buildOtherInterfacesSeoFrontmatter(count: number) {
 }
 
 export function buildApiIndexFrontmatter(hasInterfaces: boolean) {
-  const description = normalizeSeoText(`weapp-tailwindcss API 文档首页，汇总配置项分组${hasInterfaces ? '与接口索引' : ''}，便于快速查阅参数定义。`)
+  const description = normalizeSeoText(`weapp-tailwindcss API 首页，提供配置项分组${hasInterfaces ? '和接口索引' : ''}。`)
   return {
     title: 'weapp-tailwindcss',
     description,
@@ -344,6 +344,10 @@ function getDefinitionLink(node: Node): string | undefined {
 }
 
 function readTagText(tag: JSDocTag): string {
+  const structuredText = tag.getStructure().text
+  if (structuredText) {
+    return structuredText.trim()
+  }
   const comment = tag.getComment()
   if (!comment) {
     return ''
@@ -435,6 +439,9 @@ function isOptionalDeclaration(decl: PropertySignature, symbol: MorphSymbol): bo
 
 function collectNestedProperties(type: Type): PropertyDoc[] {
   if (!type.isObject() || getPrimaryCallSignature(type)) {
+    return []
+  }
+  if (type.isArray() || type.isReadonlyArray() || type.isTuple()) {
     return []
   }
   const nestedProperties = type.getProperties()
@@ -539,7 +546,7 @@ function collectProperties(type: Type): PropertyDoc[] {
   return docs.sort((a, b) => a.orderKey - b.orderKey)
 }
 
-function buildInterfaceDoc(name: string, decl: InterfaceDeclaration | TypeAliasDeclaration): InterfaceDoc | undefined {
+export function buildInterfaceDoc(name: string, decl: InterfaceDeclaration | TypeAliasDeclaration): InterfaceDoc | undefined {
   const jsDoc = readJsDoc(decl)
   const source = getDefinitionLink(decl)
   const group = jsDoc.tags.group?.[0]

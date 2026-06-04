@@ -1,7 +1,9 @@
+import { Project } from 'ts-morph'
 import { describe, expect, it } from 'vitest'
 
 import {
   buildApiIndexFrontmatter,
+  buildInterfaceDoc,
   buildInterfaceSeoFrontmatter,
   buildOptionsGroupSeoFrontmatter,
   buildOtherInterfacesSeoFrontmatter,
@@ -26,12 +28,12 @@ describe('generate-api-docs SEO frontmatter', () => {
       description: '禁用插件功能的细粒度选项。',
     })
 
-    expect(frontmatter.description).toBe('DisabledOptions 接口文档，包含属性说明、类型定义与使用边界。')
+    expect(frontmatter.description).toBe('DisabledOptions 的类型说明，列出公开属性、参数和使用边界。')
   })
 
   it('provides strong metadata for generated index pages', () => {
     const userDefinedOptions = buildUserDefinedOptionsOverviewFrontmatter({
-      description: 'UserDefinedOptions 总览，按分组汇总 weapp-tailwindcss 的核心配置项与跳转入口。',
+      description: 'UserDefinedOptions 配置总览，按源码分组列出可传入的插件选项。',
     })
     const optionsGroup = buildOptionsGroupSeoFrontmatter({
       title: '一般配置',
@@ -46,5 +48,27 @@ describe('generate-api-docs SEO frontmatter', () => {
       expect(frontmatter.description.length).toBeGreaterThanOrEqual(16)
       expect(frontmatter.keywords.length).toBeGreaterThanOrEqual(8)
     }
+  })
+})
+
+describe('generate-api-docs source extraction', () => {
+  it('keeps @see URLs intact and does not expand array internals', () => {
+    const project = new Project({ useInMemoryFileSystem: true })
+    const sourceFile = project.createSourceFile('api-fixture.ts', `
+      export interface ApiFixture {
+        /**
+         * 入口文件列表。
+         *
+         * @see https://github.com/sonofmagic/weapp-tailwindcss/issues/7
+         */
+        cssEntries?: string[]
+      }
+    `)
+    const doc = buildInterfaceDoc('ApiFixture', sourceFile.getInterfaceOrThrow('ApiFixture'))
+
+    expect(doc?.properties[0]?.tags.see).toEqual([
+      'https://github.com/sonofmagic/weapp-tailwindcss/issues/7',
+    ])
+    expect(doc?.properties[0]?.nested).toBeUndefined()
   })
 })

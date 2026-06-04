@@ -1,6 +1,6 @@
 ---
 title: WeappTailwindcssGenerateResult
-description: WeappTailwindcssGenerateResult 接口文档，包含属性说明、类型定义与使用边界。
+description: WeappTailwindcssGenerateResult 的类型说明，列出公开属性、参数和使用边界。
 keywords:
   - weapp-tailwindcss
   - API
@@ -31,6 +31,18 @@ keywords:
 
 ***
 
+### incrementalCss?
+
+> `optional` **incrementalCss**: `string`
+
+***
+
+### incrementalRawCss?
+
+> `optional` **incrementalRawCss**: `string`
+
+***
+
 ### classSet
 
 > **classSet**: `Set<string>`
@@ -38,9 +50,9 @@ keywords:
 #### size
 
 > **size**: `number`
-#### __@toStringTag@12120
+#### __@toStringTag@9859
 
-> **__@toStringTag@12120**: `string`
+> **__@toStringTag@9859**: `string`
 
 ***
 
@@ -51,9 +63,9 @@ keywords:
 #### size
 
 > **size**: `number`
-#### __@toStringTag@12120
+#### __@toStringTag@9859
 
-> **__@toStringTag@12120**: `string`
+> **__@toStringTag@9859**: `string`
 
 ***
 
@@ -61,24 +73,17 @@ keywords:
 
 > **dependencies**: `string[]`
 
-#### __@unscopables@395
-
-> **__@unscopables@395**: `{ [x: number]: boolean | undefined; length?: boolean | undefined; toString?: boolean | undefined; toLocaleString?: boolean | undefined; pop?: boolean | undefined; push?: boolean | undefined; concat?: boolean | undefined; join?: boolean | undefined; reverse?: boolean | undefined; shift?: boolean | undefined; slice?: boolean | undefined; sort?: boolean | undefined; splice?: boolean | undefined; unshift?: boolean | undefined; indexOf?: boolean | undefined; lastIndexOf?: boolean | undefined; every?: boolean | undefined; some?: boolean | undefined; forEach?: boolean | undefined; map?: boolean | undefined; filter?: boolean | undefined; reduce?: boolean | undefined; reduceRight?: boolean | undefined; find?: boolean | undefined; findIndex?: boolean | undefined; fill?: boolean | undefined; copyWithin?: boolean | undefined; entries?: boolean | undefined; keys?: boolean | undefined; values?: boolean | undefined; includes?: boolean | undefined; flatMap?: boolean | undefined; flat?: boolean | undefined; at?: boolean | undefined; [Symbol.iterator]?: boolean | undefined; readonly [Symbol.unscopables]?: boolean | undefined; }`
-#### length
-
-> **length**: `number`
-
 ***
 
 ### sources
 
-> **sources**: `TailwindV4SourcePattern[] | TailwindV3SourcePattern[]`
+> **sources**: `import("tailwindcss-patch").TailwindV4SourcePattern[] | TailwindV3SourcePattern[]`
 
 ***
 
 ### root
 
-> **root**: `"none" | { base: string; pattern: string; } | null`
+> **root**: `import("tailwindcss-patch").TailwindV4CompiledSourceRoot`
 
 ***
 

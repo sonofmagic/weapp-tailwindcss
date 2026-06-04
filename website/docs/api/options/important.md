@@ -2,7 +2,7 @@
 title: ✅ 重要配置
 sidebar_label: ✅ 重要配置
 sidebar_position: 1
-description: ✅ 重要配置文档，汇总 17 个 weapp-tailwindcss 配置项的用途、默认值与注意事项。
+description: ✅ 重要配置：19 个 UserDefinedOptions 配置项，包含类型、默认值和源码说明。
 keywords:
   - weapp-tailwindcss
   - API
@@ -17,27 +17,29 @@ keywords:
   - 插件参数
 ---
 
-本页收录 17 个配置项，来源于 `UserDefinedOptions`。
+本页收录 19 个配置项，来源于 `UserDefinedOptions`。
 
 ## 配置一览
 
 | 配置项 | 类型 | 默认值 | 说明 |
 | --- | --- | --- | --- |
-| [disabled](#disabled) | <code>boolean &#124; { plugin?: boolean; }</code> | — | 是否禁用此插件。 |
+| [disabled](#disabled) | <code>boolean &#124; { plugin?: boolean &#124; undefined; }</code> | — | 是否禁用此插件。 |
 | [customAttributes](#customattributes) | <code>ICustomAttributes</code> | — | 自定义 `wxml` 标签属性的转换规则。 |
 | [customReplaceDictionary](#customreplacedictionary) | <code>Record<string, string></code> | <code>MappingChars2String</code> | 自定义 class 名称的替换字典。 |
 | [ignoreTaggedTemplateExpressionIdentifiers](#ignoretaggedtemplateexpressionidentifiers) | <code>(string &#124; RegExp)[]</code> | <code>['weappTwIgnore']</code> | 忽略指定标签模板表达式中的标识符。 |
 | [ignoreCallExpressionIdentifiers](#ignorecallexpressionidentifiers) | <code>(string &#124; RegExp)[]</code> | — | 忽略指定调用表达式中的标识符。 |
 | [cssPreflight](#csspreflight) | <code>CssPreflightOptions</code> | — | 控制在视图节点上注入的 CSS 预设。 |
 | [cssPreflightRange](#csspreflightrange) | <code>"all"</code> | — | 控制 `cssPreflight` 注入的 DOM 选择器范围。 |
-| [cssCalc](#csscalc) | <code>boolean &#124; (string &#124; RegExp)[] &#124; CssCalcOptions</code> | — | 预计算 CSS 变量或 `calc` 表达式的结果。 |
+| [cssCalc](#csscalc) | <code>boolean &#124; CssCalcOptions &#124; (string &#124; RegExp)[]</code> | — | 预计算 CSS 变量或 `calc` 表达式的结果。 |
 | [injectAdditionalCssVarScope](#injectadditionalcssvarscope) | <code>boolean</code> | <code>false</code> | 是否额外注入 `tailwindcss css var scope`。 |
-| [cssSelectorReplacement](#cssselectorreplacement) | <code>{ root?: string &#124; string[] &#124; false; universal?: string &#124; string[] &#124; false; }</code> | 详见下方 | 控制 CSS 选择器的替换规则。 |
+| [cssSelectorReplacement](#cssselectorreplacement) | <code>{ root?: string &#124; string[] &#124; false &#124; undefined; universal?: string &#124; string[] &#124; false &#124; undefined; }</code> | — | 控制 CSS 选择器的替换规则。 |
 | [rem2rpx](#rem2rpx) | <code>boolean &#124; Rem2rpxOptions</code> | — | rem 到 rpx 的转换配置。 |
 | [px2rpx](#px2rpx) | <code>boolean &#124; Px2rpxOptions</code> | — | px 到 rpx 的转换配置。 |
 | [unitsToPx](#unitstopx) | <code>boolean &#124; UnitsToPxOptions</code> | — | 多单位转 px 的转换配置。 |
+| [platform](#platform) | <code>string</code> | — | 当前样式处理平台。 |
+| [unitConversion](#unitconversion) | <code>UnitConversionOptions</code> | — | 任意样式单位转换配置。 |
 | [cssPresetEnv](#csspresetenv) | <code>PresetEnvOptions</code> | — | `postcss-preset-env` 的配置项。 |
-| [autoprefixer](#autoprefixer) | <code>WeappAutoprefixerOptions</code> | <code>true</code> | 控制内置 autoprefixer 后处理。 |
+| [autoprefixer](#autoprefixer) | <code>WeappAutoprefixerOptions</code> | <code>`true`</code> | 控制内置 autoprefixer 后处理。 |
 | [tailwindcss](#tailwindcss) | <code>import("tailwindcss-patch").TailwindCssOptions</code> | — | 为不同版本的 Tailwind 配置行为。 |
 | [cssEntries](#cssentries) | <code>string[]</code> | — | 指定 tailwindcss@4 的入口 CSS。 |
 
@@ -45,15 +47,13 @@ keywords:
 
 ### disabled
 
-> 可选 | 类型: `boolean | { plugin?: boolean; }`
+> 可选 | 类型: `boolean | { plugin?: boolean | undefined; }`
 
 是否禁用此插件。
 
 #### 备注
 
-用于完全跳过插件。v5 起，uni-app、uni-app x、Mpx、Taro 的 H5/Web 构建通常不需要再通过 `disabled` 关闭插件：生成器会根据 `UNI_PLATFORM=h5/app/app-plus`、`UNI_UTS_PLATFORM=h5/web/web-*`、`MPX_CLI_MODE=web`、`MPX_CURRENT_TARGET_MODE=web`、`TARO_ENV=h5` 自动切换到 `web` 目标。
-
-`disabled` 更适合 RN、Harmony、uni-app x 原生 App 等你明确不希望进入 `weapp-tailwindcss` 生成链路的独立构建。
+在多平台构建场景下常用：小程序构建保持默认，非小程序环境（H5、App）传入 `true` 即可跳过转换。
 
 #### 示例
 
@@ -61,12 +61,14 @@ keywords:
 // uni-app vue3 vite
 import process from 'node:process'
 
+const isH5 = process.env.UNI_PLATFORM === 'h5'
 const isApp = process.env.UNI_PLATFORM === 'app'
+const disabled = isH5 || isApp
 
 import { WeappTailwindcss } from 'weapp-tailwindcss/vite'
 
 WeappTailwindcss({
-  disabled: isApp,
+  disabled,
 })
 ```
 
@@ -144,7 +146,7 @@ MappingChars2String
 
 #### 参阅
 
-://github.com/sonofmagic/weapp-tailwindcss/issues/7
+https://github.com/sonofmagic/weapp-tailwindcss/issues/7
 
 #### 备注
 
@@ -185,7 +187,7 @@ cssPreflight: {
 
 #### 参阅
 
-://github.com/sonofmagic/weapp-tailwindcss/pull/62
+https://github.com/sonofmagic/weapp-tailwindcss/pull/62
 
 #### 备注
 
@@ -193,7 +195,7 @@ cssPreflight: {
 
 ### cssCalc
 
-> 可选 | 类型: `boolean | (string | RegExp)[] | CssCalcOptions` | 版本: ^4.3.0
+> 可选 | 类型: `boolean | CssCalcOptions | (string | RegExp)[]` | 版本: ^4.3.0
 
 预计算 CSS 变量或 `calc` 表达式的结果。
 
@@ -245,14 +247,9 @@ false
 
 ### cssSelectorReplacement
 
-> 可选 | 类型: `{ root?: string | string[] | false; universal?: string | string[] | false; }` | 默认值: 详见下方
+> 可选 | 类型: `{ root?: string | string[] | false | undefined; universal?: string | string[] | false | undefined; }`
 
 控制 CSS 选择器的替换规则。
-
-#### 默认值
-
-`ts 'page'` |
-| `universal?` | `string` \| `false` | **`Default`** `ts 'view'` |
 
 ### rem2rpx
 
@@ -292,6 +289,53 @@ px 到 rpx 的转换配置。
 传入 `true` 启用默认映射（postcss-units-to-px 默认单位表），或通过对象自定义行为。
 默认关闭。
 
+### platform
+
+> 可选 | 类型: `string`
+
+当前样式处理平台。
+
+#### 备注
+
+主要供 `unitConversion.platforms` 精确选择平台规则。未传入时会从常见构建环境变量推断。
+
+### unitConversion
+
+> 可选 | 类型: `UnitConversionOptions`
+
+任意样式单位转换配置。
+
+#### 备注
+
+底层使用 `postcss-rule-unit-converter`，可直接传入其 `rules`、`propList`、`selectorBlackList` 等配置。
+需要按平台区分时，使用 `platforms` 配置；平台名称会兼容 `weapp`/`mp-weixin`、`h5`/`web`、`app-plus`/`app` 等常见别名。
+平台优先读取当前样式处理选项的 `platform`，未传入时会从 `WEAPP_TW_TARGET`、`WEAPP_TAILWINDCSS_TARGET`、`UNI_PLATFORM`、`UNI_UTS_PLATFORM`、`TARO_ENV`、`MPX_CLI_MODE` 与 `MPX_CURRENT_TARGET_MODE` 推断。
+默认关闭，且不会隐式注册 Tailwind CSS 官方 PostCSS 插件。
+
+#### 示例
+
+```ts
+import { unitConversionComposeRules, unitConversionPresets } from 'weapp-tailwindcss'
+
+weappTailwindcss({
+  unitConversion: {
+    platforms: {
+      'mp-weixin': {
+        rules: unitConversionComposeRules(
+          unitConversionPresets.pxToRpx({ ratio: 2 }),
+          unitConversionPresets.remToRpx({ rootValue: 16 }),
+        ),
+      },
+      h5: {
+        rules: [
+          unitConversionPresets.rpxToPx({ ratio: 0.5 }),
+        ],
+      },
+    },
+  },
+})
+```
+
 ### cssPresetEnv
 
 > 可选 | 类型: `PresetEnvOptions` | 版本: ^4.0.0
@@ -300,27 +344,23 @@ px 到 rpx 的转换配置。
 
 #### 参阅
 
-- ://preset-env.cssdb.org/
-- ://github.com/csstools/postcss-plugins/tree/main/plugin-packs/postcss-preset-env#readme
+- https://preset-env.cssdb.org/
+- https://github.com/csstools/postcss-plugins/tree/main/plugin-packs/postcss-preset-env#readme
 
 ### autoprefixer
 
-> 可选 | 类型: `WeappAutoprefixerOptions` | 默认值: `Tailwind CSS v4 为 \`true\`，其他版本为 \`false\`` | 版本: ^4.11.3
+> 可选 | 类型: `WeappAutoprefixerOptions` | 默认值: `\`true\`` | 版本: ^4.11.3
 
 控制内置 autoprefixer 后处理。
 
-默认会在 Tailwind CSS v3 / v4 场景下启用，传入 `false` 可显式关闭。
-
 #### 备注
 
-Tailwind CSS v4 下默认启用，用于为小程序 WebView 补齐 `-webkit-` 等兼容前缀，例如让 `bg-clip-text` 输出 `-webkit-background-clip: text`。
-Tailwind CSS v3 默认保持关闭。传入 `false` 可显式关闭，传入 `true` 或对象可手动启用或自定义 autoprefixer 参数。
+Tailwind CSS v3 / v4 下默认启用，用于为小程序 WebView 补齐 `-webkit-` 等兼容前缀，例如让 `bg-clip-text` 输出 `-webkit-background-clip: text`。
+传入 `false` 可显式关闭，传入 `true` 或对象可手动启用或自定义 autoprefixer 参数。
 
 #### 默认值
 
-```ts
-Tailwind CSS v4 为 `true`，其他版本为 `false`
-```
+`true`
 
 #### 示例
 

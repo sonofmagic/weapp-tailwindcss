@@ -1,6 +1,6 @@
 {
   "version": "1.0.0",
-  "generatedAt": "2026-06-04T01:35:28.771Z",
+  "generatedAt": "2026-06-04T02:36:02.602Z",
   "siteUrl": "https://tw.icebreaker.top",
   "totals": {
     "all": 168,
@@ -929,8 +929,8 @@
       "kind": "doc",
       "id": "doc:api/index",
       "title": "weapp-tailwindcss",
-      "description": "weapp-tailwindcss API 文档首页，汇总配置项分组与接口索引，便于快速查阅参数定义。",
-      "summary": "weapp-tailwindcss API 文档首页，汇总配置项分组与接口索引，便于快速查阅参数定义。",
+      "description": "weapp-tailwindcss API 首页，提供配置项分组和接口索引。",
+      "summary": "weapp-tailwindcss API 首页，提供配置项分组和接口索引。",
       "url": "/docs/api",
       "canonical": "https://tw.icebreaker.top/docs/api",
       "keywords": [
@@ -1101,7 +1101,7 @@
         "# version?",
         "# packageName?",
         "# resolve?",
-        "# v2?"
+        "## paths?"
       ],
       "updatedAt": null,
       "source": "docs/api/interfaces/TailwindCssOptions.md"
@@ -1136,11 +1136,11 @@
         "属性",
         "# projectRoot?",
         "# tailwindcss?",
-        "# apply?",
-        "# extract?",
-        "# filter()?",
-        "## 参数",
-        "### className"
+        "## config?",
+        "## cwd?",
+        "## postcssPlugin?",
+        "## version?",
+        "## packageName?"
       ],
       "updatedAt": null,
       "source": "docs/api/interfaces/TailwindCssPatchOptions.md"
@@ -1245,8 +1245,10 @@
         "属性",
         "# base?",
         "# css?",
+        "# cssSources?",
         "# cssEntries?",
-        "# sources?"
+        "# sources?",
+        "# bareArbitraryValues?"
       ],
       "updatedAt": null,
       "source": "docs/api/interfaces/TailwindV4Options.md"
@@ -1255,8 +1257,8 @@
       "kind": "doc",
       "id": "doc:api/interfaces/UserDefinedOptions",
       "title": "UserDefinedOptions",
-      "description": "UserDefinedOptions 总览，按分组汇总 weapp-tailwindcss 的核心配置项与跳转入口。",
-      "summary": "UserDefinedOptions 总览，按分组汇总 weapp-tailwindcss 的核心配置项与跳转入口。",
+      "description": "UserDefinedOptions 配置总览，按源码分组列出可传入的插件选项。",
+      "summary": "UserDefinedOptions 配置总览，按源码分组列出可传入的插件选项。",
       "url": "/docs/api/interfaces/UserDefinedOptions",
       "canonical": "https://tw.icebreaker.top/docs/api/interfaces/UserDefinedOptions",
       "keywords": [
@@ -1287,8 +1289,8 @@
       "kind": "doc",
       "id": "doc:api/interfaces/WeappTailwindcssGenerateOptions",
       "title": "WeappTailwindcssGenerateOptions",
-      "description": "WeappTailwindcssGenerateOptions 接口文档，包含属性说明、类型定义与使用边界。",
-      "summary": "WeappTailwindcssGenerateOptions 接口文档，包含属性说明、类型定义与使用边界。",
+      "description": "WeappTailwindcssGenerateOptions 的类型说明，列出公开属性、参数和使用边界。",
+      "summary": "Enables UnoCSS-style bare arbitrary values such as p-10% and p-2.5px.",
       "url": "/docs/api/interfaces/WeappTailwindcssGenerateOptions",
       "canonical": "https://tw.icebreaker.top/docs/api/interfaces/WeappTailwindcssGenerateOptions",
       "keywords": [
@@ -1316,7 +1318,8 @@
         "# styleOptions?",
         "# tailwindcssV3Compatibility?",
         "# candidates?",
-        "# sources?"
+        "# sources?",
+        "# incrementalCache?"
       ],
       "updatedAt": null,
       "source": "docs/api/interfaces/WeappTailwindcssGenerateOptions.md"
@@ -1325,8 +1328,8 @@
       "kind": "doc",
       "id": "doc:api/interfaces/WeappTailwindcssGenerateResult",
       "title": "WeappTailwindcssGenerateResult",
-      "description": "WeappTailwindcssGenerateResult 接口文档，包含属性说明、类型定义与使用边界。",
-      "summary": "WeappTailwindcssGenerateResult 接口文档，包含属性说明、类型定义与使用边界。",
+      "description": "WeappTailwindcssGenerateResult 的类型说明，列出公开属性、参数和使用边界。",
+      "summary": "WeappTailwindcssGenerateResult 的类型说明，列出公开属性、参数和使用边界。",
       "url": "/docs/api/interfaces/WeappTailwindcssGenerateResult",
       "canonical": "https://tw.icebreaker.top/docs/api/interfaces/WeappTailwindcssGenerateResult",
       "keywords": [
@@ -1351,11 +1354,11 @@
         "属性",
         "# css",
         "# rawCss",
+        "# incrementalCss?",
+        "# incrementalRawCss?",
         "# classSet",
         "## size",
-        "## __@toStringTag@12120",
-        "# rawCandidates",
-        "## size"
+        "## __@toStringTag@9859"
       ],
       "updatedAt": null,
       "source": "docs/api/interfaces/WeappTailwindcssGenerateResult.md"
@@ -1364,7 +1367,7 @@
       "kind": "doc",
       "id": "doc:api/interfaces/WeappTailwindcssGenerator",
       "title": "WeappTailwindcssGenerator",
-      "description": "WeappTailwindcssGenerator 接口文档，包含属性说明、类型定义与使用边界。",
+      "description": "WeappTailwindcssGenerator 的类型说明，列出公开属性、参数和使用边界。",
       "summary": "WeappTailwindcssGenerateOptions",
       "url": "/docs/api/interfaces/WeappTailwindcssGenerator",
       "canonical": "https://tw.icebreaker.top/docs/api/interfaces/WeappTailwindcssGenerator",
@@ -1403,8 +1406,8 @@
       "kind": "doc",
       "id": "doc:api/interfaces/WeappTailwindcssGeneratorTarget",
       "title": "WeappTailwindcssGeneratorTarget",
-      "description": "WeappTailwindcssGeneratorTarget 接口文档，包含属性说明、类型定义与使用边界。",
-      "summary": "WeappTailwindcssGeneratorTarget 接口文档，包含属性说明、类型定义与使用边界。",
+      "description": "WeappTailwindcssGeneratorTarget 的类型说明，列出公开属性、参数和使用边界。",
+      "summary": "WeappTailwindcssGeneratorTarget 的类型说明，列出公开属性、参数和使用边界。",
       "url": "/docs/api/interfaces/WeappTailwindcssGeneratorTarget",
       "canonical": "https://tw.icebreaker.top/docs/api/interfaces/WeappTailwindcssGeneratorTarget",
       "keywords": [
@@ -1436,8 +1439,8 @@
       "kind": "doc",
       "id": "doc:api/interfaces/WeappTailwindcssPostcssPluginOptions",
       "title": "WeappTailwindcssPostcssPluginOptions",
-      "description": "WeappTailwindcssPostcssPluginOptions 接口文档，包含属性说明、类型定义与使用边界。",
-      "summary": "WeappTailwindcssPostcssPluginOptions 接口文档，包含属性说明、类型定义与使用边界。",
+      "description": "WeappTailwindcssPostcssPluginOptions 的类型说明，列出公开属性、参数和使用边界。",
+      "summary": "生成目标。小程序构建默认使用 weapp，H5/Web 与普通 uni-app App WebView 默认使用 web。",
       "url": "/docs/api/interfaces/WeappTailwindcssPostcssPluginOptions",
       "canonical": "https://tw.icebreaker.top/docs/api/interfaces/WeappTailwindcssPostcssPluginOptions",
       "keywords": [
@@ -1461,12 +1464,12 @@
       "headings": [
         "属性",
         "# generator?",
-        "# version?",
-        "# config?",
-        "# postcssPlugin?",
-        "# candidates?",
-        "# scanSources?",
-        "# sources?"
+        "## target?",
+        "### 备注",
+        "## config?",
+        "## styleOptions?",
+        "## importFallback?",
+        "## tailwindcssV3Compatibility?"
       ],
       "updatedAt": null,
       "source": "docs/api/interfaces/WeappTailwindcssPostcssPluginOptions.md"
@@ -1475,7 +1478,7 @@
       "kind": "doc",
       "id": "doc:api/options/general",
       "title": "⚙️ 一般配置",
-      "description": "⚙️ 一般配置文档，汇总 18 个 weapp-tailwindcss 配置项的用途、默认值与注意事项。",
+      "description": "⚙️ 一般配置：18 个 UserDefinedOptions 配置项，包含类型、默认值和源码说明。",
       "summary": "本页收录 18 个配置项，来源于 UserDefinedOptions。",
       "url": "/docs/api/options/general",
       "canonical": "https://tw.icebreaker.top/docs/api/options/general",
@@ -1514,8 +1517,8 @@
       "kind": "doc",
       "id": "doc:api/options/important",
       "title": "✅ 重要配置",
-      "description": "✅ 重要配置文档，汇总 17 个 weapp-tailwindcss 配置项的用途、默认值与注意事项。",
-      "summary": "本页收录 17 个配置项，来源于 UserDefinedOptions。",
+      "description": "✅ 重要配置：19 个 UserDefinedOptions 配置项，包含类型、默认值和源码说明。",
+      "summary": "本页收录 19 个配置项，来源于 UserDefinedOptions。",
       "url": "/docs/api/options/important",
       "canonical": "https://tw.icebreaker.top/docs/api/options/important",
       "keywords": [
@@ -1553,7 +1556,7 @@
       "kind": "doc",
       "id": "doc:api/options/lifecycle",
       "title": "🧭 生命周期",
-      "description": "🧭 生命周期文档，汇总 4 个 weapp-tailwindcss 配置项的用途、默认值与注意事项。",
+      "description": "🧭 生命周期：4 个 UserDefinedOptions 配置项，包含类型、默认值和源码说明。",
       "summary": "本页收录 4 个配置项，来源于 UserDefinedOptions。",
       "url": "/docs/api/options/lifecycle",
       "canonical": "https://tw.icebreaker.top/docs/api/options/lifecycle",
@@ -1592,7 +1595,7 @@
       "kind": "doc",
       "id": "doc:api/options/matchers",
       "title": "🧩 文件匹配",
-      "description": "🧩 文件匹配文档，汇总 6 个 weapp-tailwindcss 配置项的用途、默认值与注意事项。",
+      "description": "🧩 文件匹配：6 个 UserDefinedOptions 配置项，包含类型、默认值和源码说明。",
       "summary": "本页收录 6 个配置项，来源于 UserDefinedOptions。",
       "url": "/docs/api/options/matchers",
       "canonical": "https://tw.icebreaker.top/docs/api/options/matchers",
@@ -1631,7 +1634,7 @@
       "kind": "doc",
       "id": "doc:api/other-interfaces",
       "title": "🗂️ 其他接口",
-      "description": "其他接口索引页，汇总 13 个 weapp-tailwindcss 运行时接口与补充类型定义。",
+      "description": "其他接口索引，列出 13 个 weapp-tailwindcss 运行时接口和补充类型。",
       "summary": "以下接口用于补充配置或运行时能力，本页面仅提供索引。",
       "url": "/docs/api/other-interfaces",
       "canonical": "https://tw.icebreaker.top/docs/api/other-interfaces",

@@ -1,4 +1,11 @@
 [
+  "/__docusaurus/debug",
+  "/__docusaurus/debug/config",
+  "/__docusaurus/debug/content",
+  "/__docusaurus/debug/globalData",
+  "/__docusaurus/debug/metadata",
+  "/__docusaurus/debug/registry",
+  "/__docusaurus/debug/routes",
   "/blog",
   "/blog/2025/11/v4.7.0-merge-runtime",
   "/blog/2025/3/v4-release",

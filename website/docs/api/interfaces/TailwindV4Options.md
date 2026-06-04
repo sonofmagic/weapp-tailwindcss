@@ -37,6 +37,14 @@ Raw CSS passed directly to the v4 design system.
 
 ***
 
+### cssSources?
+
+> `optional` **cssSources**: `TailwindV4CssSource[]`
+
+构建器在 CSS 落盘前捕获的内存 CSS 入口。
+
+***
+
 ### cssEntries?
 
 > `optional` **cssEntries**: `string[]`
@@ -50,3 +58,11 @@ Set of CSS entry files that should be scanned for `@config` directives.
 > `optional` **sources**: `SourceEntry[]`
 
 Overrides the content sources scanned by the oxide scanner.
+
+***
+
+### bareArbitraryValues?
+
+> `optional` **bareArbitraryValues**: `boolean | { units?: string[]; }`
+
+Enables UnoCSS-style bare arbitrary values such as `p-10%` and `p-2.5px`.

@@ -1,6 +1,6 @@
 ---
 title: WeappTailwindcssGeneratorTarget
-description: WeappTailwindcssGeneratorTarget 接口文档，包含属性说明、类型定义与使用边界。
+description: WeappTailwindcssGeneratorTarget 的类型说明，列出公开属性、参数和使用边界。
 keywords:
   - weapp-tailwindcss
   - API

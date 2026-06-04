@@ -1,6 +1,6 @@
 ---
 title: WeappTailwindcssGenerateOptions
-description: WeappTailwindcssGenerateOptions 接口文档，包含属性说明、类型定义与使用边界。
+description: WeappTailwindcssGenerateOptions 的类型说明，列出公开属性、参数和使用边界。
 keywords:
   - weapp-tailwindcss
   - API
@@ -21,7 +21,7 @@ keywords:
 
 ### scanSources?
 
-> `optional` **scanSources**: `boolean | TailwindV4SourcePattern[]`
+> `optional` **scanSources**: `boolean | import("tailwindcss-patch").TailwindV4SourcePattern[]`
 
 ***
 
@@ -51,4 +51,18 @@ keywords:
 
 ### sources?
 
-> `optional` **sources**: `(TailwindV3CandidateSource[] & import("tailwindcss-patch").TailwindV4CandidateSource[])`
+> `optional` **sources**: `TailwindV3CandidateSource[] & import("tailwindcss-patch").TailwindV4CandidateSource[]`
+
+***
+
+### incrementalCache?
+
+> `optional` **incrementalCache**: `boolean`
+
+***
+
+### bareArbitraryValues?
+
+> `optional` **bareArbitraryValues**: `boolean | { units?: string[]; }`
+
+Enables UnoCSS-style bare arbitrary values such as `p-10%` and `p-2.5px`.
